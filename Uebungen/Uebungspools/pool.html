@@ -255,9 +255,6 @@ const COLOR_SCHEMES = {
   recht: { primary: '#73ab2c', primaryLight: '#8bc34a' }
 };
 
-// These will be populated by the loaded JS file
-let POOL_META, TOPICS, QUESTIONS;
-
 // Labels (shared across all pools)
 const DIFF_LABELS = {1:"⭐ Einfach",2:"⭐⭐ Mittel",3:"⭐⭐⭐ Schwer"};
 const TYPE_LABELS = {mc:"📝 Multiple Choice",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage"};
@@ -272,20 +269,18 @@ const TYPE_LABELS = {mc:"📝 Multiple Choice",tf:"✓✗ Richtig/Falsch",fill:"
   }
 
   try {
-    // Load the pool's JS file
-    const script = document.createElement('script');
-    script.src = 'config/' + poolId + '.js';
+    // Load the pool's JS file via fetch + eval to avoid const redeclaration issues
+    const response = await fetch('config/' + poolId + '.js');
+    if (!response.ok) throw new Error('Datei nicht gefunden: config/' + poolId + '.js');
+    const code = await response.text();
 
-    const loadPromise = new Promise((resolve, reject) => {
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('Datei nicht gefunden: config/' + poolId + '.js'));
-    });
+    // Execute in global scope
+    const scriptEl = document.createElement('script');
+    scriptEl.textContent = code;
+    document.head.appendChild(scriptEl);
 
-    document.head.appendChild(script);
-    await loadPromise;
-
-    // Verify data was loaded
-    if (typeof POOL_META === 'undefined' || typeof TOPICS === 'undefined' || typeof QUESTIONS === 'undefined') {
+    // Verify data was loaded (use window to check globals)
+    if (typeof window.POOL_META === 'undefined' || typeof window.TOPICS === 'undefined' || typeof window.QUESTIONS === 'undefined') {
       throw new Error('Pool-Daten unvollständig');
     }
 
