@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VWL Übungspool: Bedürfnisse, Knappheit, Produktionsfaktoren | SF GYM2</title>
+<title>VWL Übungspool: Bedürfnisse, Knappheit & Produktionsfaktoren | SF GYM1</title>
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
 :root{
---c-bg:#f0f2f5;--c-surface:#fff;--c-primary:#1a365d;--c-primary-light:#2a5298;
+--c-bg:#f0f2f5;--c-surface:#fff;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#fef3c7;--c-success:#16a34a;--c-success-bg:#f0fdf4;
 --c-error:#dc2626;--c-error-bg:#fef2f2;--c-info:#2563eb;--c-info-bg:#eff6ff;
 --c-text:#1e293b;--c-text-soft:#64748b;--c-border:#e2e8f0;--radius:10px;
@@ -21,7 +22,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .container{max-width:720px;margin:0 auto;padding:20px 16px 100px}
 .screen{display:none}.screen.active{display:block}
 .card{background:var(--c-surface);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1px solid var(--c-border)}
-.card h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;color:var(--c-primary)}
+.card h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;color:var(--c-text)}
 .mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
 .mode-card{border:2px solid var(--c-border);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center;transition:.2s}
 .mode-card:hover{border-color:var(--c-primary-light);background:#f8fafc}
@@ -33,17 +34,17 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .chip{display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:2px solid var(--c-border);background:#fff;transition:.15s;user-select:none}
 .chip:hover{border-color:var(--c-primary-light)}
 .chip.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
-.filter-count{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--c-primary);margin-top:8px}
+.filter-count{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--c-text);margin-top:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:.2s}
 .btn-primary{background:var(--c-primary);color:#fff}.btn-primary:hover{background:var(--c-primary-light)}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-accent{background:var(--c-accent);color:var(--c-primary)}.btn-accent:hover{filter:brightness(1.05)}
+.btn-accent{background:var(--c-accent);color:#fff}.btn-accent:hover{filter:brightness(1.05)}
 .btn-outline{background:transparent;border:2px solid var(--c-border);color:var(--c-text)}.btn-outline:hover{border-color:var(--c-primary);color:var(--c-primary)}
 .btn-block{width:100%;justify-content:center}
 .progress-bar-wrap{background:var(--c-border);border-radius:20px;height:8px;margin:12px 0;overflow:hidden}
 .progress-bar-fill{height:100%;background:var(--c-accent);border-radius:20px;transition:width .4s ease}
 .quiz-meta{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--c-text-soft);margin-bottom:4px}
-.quiz-meta .score{font-family:'DM Mono',monospace;font-weight:600;color:var(--c-primary)}
+.quiz-meta .score{font-family:'DM Mono',monospace;font-weight:600;color:var(--c-text)}
 .q-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .badge{font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.03em}
 .badge-topic{background:var(--c-info-bg);color:var(--c-info)}
@@ -79,14 +80,22 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .calc-row .unit{font-size:.85rem;color:var(--c-text-soft);min-width:30px}
 .calc-row input.correct{border-color:var(--c-success);background:var(--c-success-bg)}
 .calc-row input.wrong{border-color:var(--c-error);background:var(--c-error-bg)}
+.open-answer{width:100%;min-height:80px;padding:12px;border:2px solid var(--c-border);border-radius:var(--radius);font-family:inherit;font-size:.92rem;line-height:1.5;resize:vertical;outline:none;background:#fff}
+.open-answer:focus{border-color:var(--c-primary)}
+.open-sample{margin-top:12px;padding:14px;border-radius:var(--radius);background:var(--c-info-bg);border-left:4px solid var(--c-info);font-size:.9rem;line-height:1.6;display:none}
+.open-sample.show{display:block}
+.open-sample-title{font-weight:700;color:var(--c-info);margin-bottom:4px}
+.open-self{display:flex;gap:10px;margin-top:12px;display:none}
+.open-self.show{display:flex}
+.open-self .btn{flex:1}
 .sort-pool{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:12px;background:var(--c-bg);border-radius:var(--radius);margin-bottom:12px}
 .sort-item{padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:500;cursor:pointer;transition:.2s;border:2px solid var(--c-border);background:#fff;user-select:none}
-.sort-item:hover{border-color:var(--c-primary-light)}.sort-item.picked{border-color:var(--c-info);background:var(--c-info-bg);box-shadow:0 0 0 2px rgba(37,99,235,.2)}
+.sort-item:hover{border-color:var(--c-primary-light)}.sort-item.picked{border-color:var(--c-primary);background:var(--c-primary);color:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--c-primary) 25%,transparent)}
 .sort-cats{display:grid;gap:12px;margin-top:8px}
 .sort-cat{border:2px dashed var(--c-border);border-radius:var(--radius);padding:12px;min-height:60px;transition:.2s}
 .sort-cat:hover{border-color:var(--c-primary-light)}
-.sort-cat.active{border-color:var(--c-info);background:var(--c-info-bg)}
-.sort-cat-title{font-weight:700;font-size:.85rem;color:var(--c-primary);margin-bottom:8px}
+.sort-cat.active{border-color:var(--c-primary);background:color-mix(in srgb,var(--c-primary) 8%,transparent)}
+.sort-cat-title{font-weight:700;font-size:.85rem;color:var(--c-text);margin-bottom:8px}
 .sort-cat-items{display:flex;flex-wrap:wrap;gap:6px}
 .sort-cat-item{padding:6px 12px;border-radius:6px;font-size:.82rem;font-weight:500;cursor:pointer;background:var(--c-primary);color:#fff;transition:.15s}
 .sort-cat-item:hover{opacity:.85}
@@ -98,7 +107,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .feedback-title{font-weight:700;margin-bottom:4px}
 .quiz-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .result-score{text-align:center;padding:24px;font-family:'DM Mono',monospace}
-.result-score .big{font-size:2.8rem;font-weight:700;color:var(--c-primary)}
+.result-score .big{font-size:2.8rem;font-weight:700;color:var(--c-text)}
 .result-score .pct{font-size:1.4rem;color:var(--c-text-soft)}
 .topic-results{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .topic-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:var(--c-bg)}
@@ -113,7 +122,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .wrong-item .wa{font-size:.85rem;color:var(--c-text-soft);line-height:1.5}
 @media(prefers-color-scheme:dark){
 :root{
---c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#5b8def;--c-primary-light:#7ba4f7;
+--c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#3d2e10;--c-success:#22c55e;--c-success-bg:#0a2618;
 --c-error:#ef4444;--c-error-bg:#2a0f0f;--c-info:#60a5fa;--c-info-bg:#0f1d3a;
 --c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
@@ -130,19 +139,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .topic-row{background:var(--c-surface)}
 .wrong-item{background:var(--c-surface)}
 .calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
+.open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 }
 @media print{.app-header,.quiz-actions,.btn,#startScreen{display:none!important}.screen{display:block!important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <header class="app-header">
-<h1>Übungspool: Bedürfnisse, Knappheit, Produktionsfaktoren</h1>
-<div class="meta">SF GYM2 · Gymnasium Hofwil · Individuell üben</div>
+<h1>Übungspool: Bedürfnisse, Knappheit & Produktionsfaktoren</h1>
+<div class="meta">SF GYM1 · Gymnasium Hofwil · Individuell üben</div>
 </header>
 <div class="container">
-
-<!-- ═══ Startbildschirm ═══ -->
 <div id="startScreen" class="screen active">
 <div class="card">
 <h2>📋 Modus wählen</h2>
@@ -159,7 +168,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 </div>
 </div>
 </div>
-
 <div class="card">
 <h2>📚 Unterthema</h2>
 <div class="chips" id="topicChips"></div>
@@ -177,8 +185,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 <button class="btn btn-primary btn-block" id="startBtn" style="margin-top:14px" onclick="startQuiz()" disabled>Übung starten</button>
 </div>
 </div>
-
-<!-- ═══ Quiz-Bildschirm ═══ -->
 <div id="quizScreen" class="screen">
 <div class="card">
 <div class="quiz-meta">
@@ -193,8 +199,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 <button class="btn btn-outline" onclick="endQuiz()">Übung beenden</button>
 </div>
 </div>
-
-<!-- ═══ Auswertung ═══ -->
 <div id="resultScreen" class="screen">
 <div class="card">
 <div class="result-score">
@@ -210,903 +214,677 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 </div>
 </div>
 </div>
-
 <script>
-// ═══════════════════════════════════════════
-// THEMENSPEZIFISCHE DATEN
-// ═══════════════════════════════════════════
-
-const TOPICS = {
-  vwlbwl: {label:"VWL vs. BWL & Wirtschaftswissenschaften", short:"VWL/BWL"},
-  bed: {label:"Bedürfnisse & Maslow", short:"Bedürfnisse"},
-  knapp: {label:"Knappheit & ökonomisches Prinzip", short:"Knappheit"},
-  gueter: {label:"Güterarten", short:"Güterarten"},
-  prod: {label:"Produktionsfaktoren", short:"Prod.faktoren"},
-  arbeit: {label:"Arbeitsteilung, Tausch & Geld", short:"Arbeitsteilung"},
-  sektor: {label:"Wirtschaftssektoren & Strukturwandel", short:"Sektoren"}
+const TOPICS={
+  knappheit:{label:"Knappheit & Grundfragen der VWL",short:"Knappheit"},
+  beduerfnisse:{label:"Bedürfnisse & Bedürfnispyramide",short:"Bedürfnisse"},
+  gueter:{label:"Güterarten",short:"Güter"},
+  produktionsfaktoren:{label:"Produktionsfaktoren",short:"Prod.faktoren"},
+  oekprinzip:{label:"Ökonomisches Prinzip",short:"Ök. Prinzip"},
+  arbeitsteilung:{label:"Arbeitsteilung, Tausch & Geld",short:"Arbeitsteilung"},
+  sektoren:{label:"Wirtschaftssektoren & Strukturwandel",short:"Sektoren"}
 };
+const DIFF_LABELS={1:"\u2b50 Einfach",2:"\u2b50\u2b50 Mittel",3:"\u2b50\u2b50\u2b50 Schwer"};
+const TYPE_LABELS={mc:"\ud83d\udcdd Multiple Choice",tf:"\u2713\u2717 Richtig/Falsch",fill:"\ud83d\udcd6 L\u00fcckentext",calc:"\ud83d\udd22 Berechnung",sort:"\ud83d\udd00 Zuordnung",open:"\u270f\ufe0f Offene Frage"};
+const QUESTIONS=[
+// ──── KNAPPHEIT (k01–k07) ────
+{id:"k01",topic:"knappheit",type:"mc",diff:1,tax:"K1",
+ q:"Was ist das zentrale Problem, mit dem sich die Volkswirtschaftslehre beschäftigt?",
+ options:[{v:"A",t:"Knappheit – die verfügbaren Mittel reichen nicht aus, um alle Bedürfnisse zu befriedigen."},{v:"B",t:"Die Maximierung der Exporte eines Landes."},{v:"C",t:"Die Verteilung der Macht zwischen Staat und Wirtschaft."},{v:"D",t:"Die Verwaltung von Unternehmen."}],
+ correct:"A",explain:"Die VWL wird oft als «Lehre von Entscheidungen bei Knappheit» bezeichnet. Knappheit entsteht, weil wir von bestimmten Gütern mehr haben wollen, als uns zur Verfügung steht. Es geht also immer um das Verhältnis zwischen (unbegrenzten) Bedürfnissen und (begrenzten) Mitteln."},
 
-const QUESTIONS = [
+{id:"k02",topic:"knappheit",type:"tf",diff:1,tax:"K1",
+ q:"Knappheit bedeutet, dass ein Gut selten ist.",
+ correct:false,explain:"Falsch. Knappheit bedeutet nicht dasselbe wie Seltenheit. Knappheit entsteht durch das Verhältnis zwischen Bedürfnissen und verfügbaren Mitteln: Wir wollen mehr, als vorhanden ist. Auch ein häufig vorhandenes Gut kann knapp sein, wenn die Nachfrage das Angebot übersteigt."},
 
-// ═══ VWL VS. BWL (w01–w07) ═══
-
-{id:"w01", topic:"vwlbwl", type:"mc", diff:1, tax:"K1",
- q:"Welche Aussage beschreibt den Gegenstand der Volkswirtschaftslehre am besten?",
- options:[
-   {v:"A", t:"Sie untersucht, wie einzelne Unternehmen ihre Produkte vermarkten."},
-   {v:"B", t:"Sie beschäftigt sich mit gesamtgesellschaftlichen wirtschaftlichen Zusammenhängen und dem Problem der Knappheit."},
-   {v:"C", t:"Sie befasst sich mit der Buchhaltung und dem Rechnungswesen von Firmen."},
-   {v:"D", t:"Sie analysiert ausschliesslich die Finanzmärkte."}
- ],
- correct:"B",
- explain:"Die VWL betrachtet die gesamtwirtschaftlichen Zusammenhänge von einem übergeordneten Standpunkt aus – alle Unternehmungen, alle Haushalte, den Staat und die Beziehungen zwischen diesen. Ihr Kernthema ist das Problem der Knappheit."
-},
-
-{id:"w02", topic:"vwlbwl", type:"tf", diff:1, tax:"K1",
- q:"Die Betriebswirtschaftslehre (BWL) betrachtet die gesamtwirtschaftlichen Zusammenhänge, während die VWL sich mit einzelnen Betrieben befasst.",
- correct:false,
- explain:"Falsch – es ist genau umgekehrt. Die BWL betrachtet einzelne Betriebe und deren Innenleben (Produktion, Marketing, Personal etc.). Die VWL betrachtet die gesamtwirtschaftlichen Zusammenhänge aus einem übergeordneten Standpunkt."
-},
-
-{id:"w03", topic:"vwlbwl", type:"sort", diff:1, tax:"K2",
- q:"Ordnen Sie die Fragestellungen der VWL oder der BWL zu:",
- categories:["Volkswirtschaftslehre (VWL)","Betriebswirtschaftslehre (BWL)"],
- items:[
-   {t:"Warum gibt es Arbeitslosigkeit?",cat:0},
-   {t:"Wie soll ein Unternehmen seine Produkte vermarkten?",cat:1},
-   {t:"Welche Rolle spielt der Staat in der Wirtschaft?",cat:0},
-   {t:"Wie motiviert man Mitarbeitende?",cat:1},
-   {t:"Warum sind manche Länder arm und andere reich?",cat:0},
-   {t:"Wie erstellt man eine Bilanz?",cat:1}
- ],
- explain:"Die VWL befasst sich mit gesamtgesellschaftlichen Fragen (Arbeitslosigkeit, Rolle des Staates, Wohlstandsunterschiede). Die BWL konzentriert sich auf konkrete Herausforderungen der Unternehmensführung (Marketing, Personal, Rechnungswesen)."
-},
-
-{id:"w04", topic:"vwlbwl", type:"mc", diff:1, tax:"K1",
- q:"Zu welcher Wissenschaftskategorie gehören die Wirtschaftswissenschaften?",
- options:[
-   {v:"A", t:"Naturwissenschaften"},
-   {v:"B", t:"Geisteswissenschaften"},
-   {v:"C", t:"Sozialwissenschaften"},
-   {v:"D", t:"Rechtswissenschaften"}
- ],
- correct:"C",
- explain:"Die Wirtschaftswissenschaften gehören zu den Sozialwissenschaften, zusammen mit z.B. der Soziologie. Sie untersuchen das menschliche Zusammenleben aus wirtschaftlicher Perspektive."
-},
-
-{id:"w05", topic:"vwlbwl", type:"fill", diff:1, tax:"K1",
- q:"Wirtschaften bedeutet das Gewinnen, Herstellen und Verteilen von {0} Gütern und Dienstleistungen zur Deckung menschlicher {1} nach dem {2}.",
+{id:"k03",topic:"knappheit",type:"fill",diff:1,tax:"K1",
+ q:"Die VWL beschäftigt sich mit dem Problem der {0}. Knappheit entsteht, weil die {1} der Menschen unbegrenzt sind, die {2} zur Befriedigung aber begrenzt.",
  blanks:[
-   {answer:"knappen", alts:["knappe"]},
-   {answer:"Bedürfnisse", alts:["Bedürfnissen"]},
-   {answer:"ökonomischen Prinzip", alts:["Optimumsprinzip","Wirtschaftlichkeitsprinzip"]}
+   {answer:"Knappheit",alts:[]},
+   {answer:"Bedürfnisse",alts:["Wünsche"]},
+   {answer:"Mittel",alts:["Güter","Ressourcen"]}
  ],
- explain:"Wirtschaften ist die zentrale Tätigkeit, die sich aus dem Problem der Knappheit ergibt: Mit begrenzten Ressourcen sollen menschliche Bedürfnisse möglichst gut befriedigt werden – und zwar nach dem ökonomischen Prinzip (optimal, nicht verschwenderisch)."
-},
+ explain:"Das Grundproblem der VWL: Unbegrenzte Bedürfnisse treffen auf begrenzte Mittel (Güter, Ressourcen). Deshalb müssen wir wirtschaften, also Entscheidungen treffen, wie wir die knappen Mittel am besten einsetzen."},
 
-{id:"w06", topic:"vwlbwl", type:"tf", diff:2, tax:"K2",
- q:"Die VWL beschäftigt sich ausschliesslich mit Geld und Finanzen.",
- correct:false,
- explain:"Falsch. Die VWL beschäftigt sich mit dem Problem der Knappheit in allen Lebensbereichen – darunter Arbeitslosigkeit, Kriminalität, Umweltverschmutzung, Mietpreise, Heiratsverhalten und vieles mehr. Knapp können sehr unterschiedliche Dinge sein: Beschäftigungsmöglichkeiten, Zeit, saubere Luft usw."
-},
+{id:"k04",topic:"knappheit",type:"mc",diff:2,tax:"K2",
+ q:"Was ist der Unterschied zwischen Volkswirtschaftslehre (VWL) und Betriebswirtschaftslehre (BWL)?",
+ options:[{v:"A",t:"Die VWL betrachtet die gesamtwirtschaftlichen Zusammenhänge (alle Haushalte, Unternehmen, Staat), die BWL betrachtet einzelne Betriebe und deren Innenleben."},{v:"B",t:"Die VWL beschäftigt sich mit Geld, die BWL mit Gütern."},{v:"C",t:"Die VWL untersucht nur den Staat, die BWL nur die Privaten."},{v:"D",t:"Es gibt keinen wesentlichen Unterschied."}],
+ correct:"A",explain:"BWL = Mikro-Perspektive (einzelnes Unternehmen, z.B. Marketing, Buchführung, Organisation). VWL = Makro-Perspektive (gesamte Volkswirtschaft, z.B. Arbeitslosigkeit, Inflation, Wirtschaftswachstum). Beide gehören zu den Wirtschaftswissenschaften, die wiederum Teil der Sozialwissenschaften sind."},
 
-{id:"w07", topic:"vwlbwl", type:"mc", diff:2, tax:"K2",
- q:"Was unterscheidet die VWL von anderen Sozialwissenschaften wie der Soziologie?",
- options:[
-   {v:"A", t:"Die VWL untersucht nur Unternehmen, die Soziologie nur Familien."},
-   {v:"B", t:"Es ist nicht nur der Gegenstand, sondern auch der Denkansatz (Knappheit, Anreize, rationale Entscheidungen), der die VWL unterscheidet."},
-   {v:"C", t:"Die VWL verwendet nur mathematische Methoden."},
-   {v:"D", t:"Die VWL befasst sich nur mit der Schweizer Wirtschaft."}
- ],
- correct:"B",
- explain:"Die VWL unterscheidet sich von anderen Sozialwissenschaften nicht nur durch ihren Gegenstand, sondern vor allem durch ihren ökonomischen Denkansatz: die Analyse von Knappheit, Anreizen und rationalem Entscheidungsverhalten."
-},
+{id:"k05",topic:"knappheit",type:"open",diff:2,tax:"K2",
+ q:"Erklären Sie, warum «Wirtschaften» notwendig ist. Verwenden Sie die Begriffe «Knappheit» und «Bedürfnisse».",
+ sample:"Wirtschaften ist notwendig, weil die Bedürfnisse der Menschen unbegrenzt sind, die Mittel (Güter, Ressourcen, Zeit, Geld) aber begrenzt. Es entsteht Knappheit. Deshalb müssen wir Entscheidungen treffen: Welche Bedürfnisse befriedigen wir zuerst? Wie setzen wir die knappen Mittel am effizientesten ein? Wirtschaften bedeutet also das Gewinnen, Herstellen und Verteilen von knappen Gütern zur Deckung menschlicher Bedürfnisse nach dem ökonomischen Prinzip.",
+ explain:"Wirtschaften = rationaler Umgang mit Knappheit. Ohne Knappheit wäre Wirtschaften überflüssig (Schlaraffenland). Da wir aber nicht alles haben können, müssen wir abwägen und Prioritäten setzen."},
 
-// ═══ BEDÜRFNISSE & MASLOW (b01–b08) ═══
+{id:"k06",topic:"knappheit",type:"tf",diff:1,tax:"K1",
+ q:"Die Volkswirtschaftslehre gehört zu den Sozialwissenschaften.",
+ correct:true,explain:"Richtig. Die Wirtschaftswissenschaften (VWL und BWL) sind Teil der Sozialwissenschaften, zusammen mit z.B. Soziologie und Rechtswissenschaft. Sie gehören zu den Geisteswissenschaften (im Gegensatz zu den Naturwissenschaften)."},
 
-{id:"b01", topic:"bed", type:"mc", diff:1, tax:"K1",
- q:"Was versteht man in der VWL unter einem Bedürfnis?",
- options:[
-   {v:"A", t:"Den Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern."},
-   {v:"B", t:"Die Menge an Gütern, die ein Mensch besitzt."},
-   {v:"C", t:"Den Preis, den jemand für ein Gut zu zahlen bereit ist."},
-   {v:"D", t:"Die Pflicht, bestimmte Güter zu konsumieren."}
- ],
- correct:"A",
- explain:"Ein Bedürfnis ist der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern. Der Bedürfnisbegriff in der VWL ist sehr weit gefasst und umfasst nicht nur materielle Wünsche, sondern auch z.B. Macht, Ansehen, Sicherheit und Selbstverwirklichung."
-},
+{id:"k07",topic:"knappheit",type:"mc",diff:2,tax:"K2",
+ q:"Welche drei Aufgaben hat die Volkswirtschaftslehre?",
+ options:[{v:"A",t:"Beschreiben und erklären von Phänomenen, Prognostizieren von Entwicklungen, Möglichkeiten der Beeinflussung aufzeigen."},{v:"B",t:"Gewinne maximieren, Kosten senken, Märkte erobern."},{v:"C",t:"Gesetze erlassen, Steuern erheben, Währungen drucken."},{v:"D",t:"Preise festlegen, Löhne bestimmen, Handel regeln."}],
+ correct:"A",explain:"Die VWL hat drei Aufgaben: (1) Theoretisch-wissenschaftlich: Phänomene beschreiben und erklären (z.B. warum gibt es Arbeitslosigkeit?). (2) Prognosen: Entwicklungen vorhersagen. (3) Wirtschaftspolitisch: Möglichkeiten der Beeinflussung aufzeigen."},
 
-{id:"b02", topic:"bed", type:"tf", diff:1, tax:"K1",
- q:"In der VWL geht man davon aus, dass die Bedürfnisse der Menschen begrenzt sind.",
- correct:false,
- explain:"Falsch. Ökonomen gehen davon aus, dass die Bedürfnisse der Menschen unbegrenzt sind. Genau diese Unbegrenztheit der Bedürfnisse bei gleichzeitig begrenzten Mitteln erzeugt das grundlegende Problem der Knappheit."
-},
+// ──── BEDÜRFNISSE (b01–b08) ────
+{id:"b01",topic:"beduerfnisse",type:"mc",diff:1,tax:"K1",
+ q:"Was versteht man unter einem Bedürfnis?",
+ options:[{v:"A",t:"Den Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern."},{v:"B",t:"Die Menge an Gütern, die ein Haushalt kauft."},{v:"C",t:"Das Einkommen einer Person."},{v:"D",t:"Die Produktionsmenge eines Unternehmens."}],
+ correct:"A",explain:"Ein Bedürfnis ist der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern. Der Begriff wird in der VWL sehr weit gefasst: Er umfasst nicht nur materielle Wünsche, sondern auch z.B. Macht, Ansehen, Sicherheit, Schönheit, Abwechslung und Selbstverwirklichung."},
 
-{id:"b03", topic:"bed", type:"fill", diff:1, tax:"K1",
- q:"Die Maslow'sche Bedürfnispyramide umfasst von unten nach oben: {0}, Sicherheitsbedürfnisse, {1}, Wertschätzungsbedürfnisse und {2}.",
- blanks:[
-   {answer:"Grundbedürfnisse", alts:["körperliche Bedürfnisse","physiologische Bedürfnisse"]},
-   {answer:"soziale Bedürfnisse", alts:["Sozialbedürfnisse","Zugehörigkeitsbedürfnisse"]},
-   {answer:"Selbstverwirklichungsbedürfnisse", alts:["Selbstverwirklichung"]}
- ],
- explain:"Maslow ordnet die Bedürfnisse in fünf Stufen: Grundbedürfnisse (Essen, Trinken, Schlafen), Sicherheitsbedürfnisse (Schutz, Stabilität), soziale Bedürfnisse (Zugehörigkeit, Liebe), Wertschätzungsbedürfnisse (Anerkennung, Status) und Selbstverwirklichungsbedürfnisse (persönliche Entfaltung)."
-},
+{id:"b02",topic:"beduerfnisse",type:"tf",diff:1,tax:"K1",
+ q:"Gemäss der VWL sind die Bedürfnisse der Menschen grundsätzlich unbegrenzt.",
+ correct:true,explain:"Richtig. Ökonomen gehen davon aus, dass die Bedürfnisse der Menschen unbegrenzt sind. Sobald ein Bedürfnis befriedigt ist, entstehen neue Wünsche. Diese Annahme ist zentral für das Knappheitsproblem."},
 
-{id:"b04", topic:"bed", type:"sort", diff:1, tax:"K2",
- q:"Ordnen Sie die Beispiele der passenden Stufe der Maslow'schen Bedürfnispyramide zu:",
- categories:["Grundbedürfnisse","Sicherheitsbedürfnisse","Soziale Bedürfnisse","Selbstverwirklichung"],
+{id:"b03",topic:"beduerfnisse",type:"sort",diff:1,tax:"K2",
+ q:"Ordnen Sie die folgenden Beispiele den Stufen der Maslow'schen Bedürfnispyramide zu.",
+ categories:["Körperliche Bedürfnisse","Sicherheitsbedürfnisse","Soziale Bedürfnisse","Selbstverwirklichung"],
  items:[
-   {t:"Nahrung und Trinkwasser",cat:0},
-   {t:"Versicherung gegen Krankheit",cat:1},
-   {t:"Freundschaften pflegen",cat:2},
-   {t:"Ein Musikinstrument erlernen",cat:3},
-   {t:"Eine warme Wohnung",cat:0},
-   {t:"Mitglied in einem Sportverein sein",cat:2}
+   {t:"Essen und Trinken",cat:0},{t:"Krankenversicherung",cat:1},
+   {t:"Freundschaften pflegen",cat:2},{t:"Ein Buch schreiben",cat:3},
+   {t:"Ein Dach über dem Kopf",cat:0},{t:"Stabiler Arbeitsplatz",cat:1},
+   {t:"Zugehörigkeit zu einer Gruppe",cat:2},{t:"Kreativ tätig sein",cat:3}
  ],
- explain:"Grundbedürfnisse betreffen das physische Überleben. Sicherheitsbedürfnisse schützen vor Risiken. Soziale Bedürfnisse betreffen Zugehörigkeit und Beziehungen. Selbstverwirklichung ist die Entfaltung persönlicher Potenziale."
-},
+ explain:"Maslow'sche Bedürfnispyramide von unten nach oben: (1) Körperliche Grundbedürfnisse (Nahrung, Schlaf, Wärme), (2) Sicherheit (Schutz, Versicherung, Arbeitsplatz), (3) Soziale Bedürfnisse (Zugehörigkeit, Freundschaft), (4) Wertschätzung, (5) Selbstverwirklichung. In der Praxis versuchen Menschen, mehrere Stufen gleichzeitig zu erfüllen."},
 
-{id:"b05", topic:"bed", type:"mc", diff:2, tax:"K2",
- q:"Ein Sportler kauft einen Geländewagen für den Stadtverkehr. Welches Bedürfnis befriedigt er damit primär?",
- options:[
-   {v:"A", t:"Ein Grundbedürfnis (Mobilität)."},
-   {v:"B", t:"Ein Sicherheitsbedürfnis (robustes Fahrzeug)."},
-   {v:"C", t:"Ein Wertschätzungsbedürfnis (Status und Ansehen)."},
-   {v:"D", t:"Ein Selbstverwirklichungsbedürfnis."}
- ],
- correct:"C",
- explain:"Ein Geländewagen im Stadtverkehr erfüllt kaum einen praktischen Zweck – er dient als Statussymbol. Wie Eisenhut schreibt: Wenn jemand einen Geländewagen für den Stadtverkehr kauft, werden damit andere Bedürfnisse (Status) befriedigt, als dem Gut eigentlich zugedacht ist."
-},
-
-{id:"b06", topic:"bed", type:"tf", diff:2, tax:"K2",
- q:"Laut Maslow muss ein Mensch zuerst alle Grundbedürfnisse vollständig befriedigt haben, bevor er soziale Bedürfnisse verspürt.",
- correct:false,
- explain:"Falsch. Maslow beschreibt eine Hierarchie, aber Menschen versuchen in der Realität, Wünsche aus verschiedenen Ebenen gleichzeitig zu erfüllen. Die Pyramide zeigt eine Tendenz, keine strikte Reihenfolge."
-},
-
-{id:"b07", topic:"bed", type:"mc", diff:2, tax:"K3",
- q:"In einem Entwicklungsland fehlt es vielen Menschen an sauberem Trinkwasser und Nahrung. Auf welcher Stufe der Maslow-Pyramide befindet sich das Hauptproblem?",
- options:[
-   {v:"A", t:"Sicherheitsbedürfnisse"},
-   {v:"B", t:"Grundbedürfnisse"},
-   {v:"C", t:"Soziale Bedürfnisse"},
-   {v:"D", t:"Wertschätzungsbedürfnisse"}
- ],
- correct:"B",
- explain:"Sauberes Trinkwasser und Nahrung gehören zu den Grundbedürfnissen – der untersten Stufe der Pyramide. Wenn diese nicht gedeckt sind, stehen sie im Vordergrund aller Bemühungen."
-},
-
-{id:"b08", topic:"bed", type:"tf", diff:1, tax:"K1",
- q:"In der VWL umfasst der Bedürfnisbegriff nur materielle Wünsche wie Essen, Kleidung und Wohnen.",
- correct:false,
- explain:"Falsch. Der Bedürfnisbegriff in der VWL ist sehr weit gefasst und umfasst auch immaterielle Wünsche wie Macht, Ansehen, Sicherheit, Schönheit, Frieden, Abwechslung und Selbstverwirklichung."
-},
-
-// ═══ KNAPPHEIT & ÖKONOMISCHES PRINZIP (n01–n08) ═══
-
-{id:"n01", topic:"knapp", type:"mc", diff:1, tax:"K1",
- q:"Was ist der Ausgangspunkt allen ökonomischen Denkens?",
- options:[
-   {v:"A", t:"Das Gewinnstreben der Unternehmen."},
-   {v:"B", t:"Die Knappheit – das Missverhältnis zwischen unbegrenzten Bedürfnissen und begrenzten Mitteln."},
-   {v:"C", t:"Die Globalisierung der Wirtschaft."},
-   {v:"D", t:"Die Erfindung des Geldes."}
- ],
- correct:"B",
- explain:"Knappheit ist das Grundproblem der VWL. Sie entsteht dadurch, dass wir von bestimmten Gütern mehr haben wollen, als uns zur Verfügung steht. Die Bedürfnisse sind unbegrenzt, die Mittel (Geld, Zeit, Ressourcen) jedoch begrenzt."
-},
-
-{id:"n02", topic:"knapp", type:"fill", diff:1, tax:"K1",
- q:"Knappheit bringt das Verhältnis zwischen den verfügbaren {0} und den {1} zum Ausdruck. Deshalb wird die VWL oft als die Lehre von «Entscheidungen bei {2}» bezeichnet.",
+{id:"b04",topic:"beduerfnisse",type:"fill",diff:1,tax:"K1",
+ q:"Die Maslow'sche Bedürfnispyramide hat vier Hauptstufen: Zuunterst die {0}, darüber die {1}, dann die {2} und zuoberst die {3}.",
  blanks:[
-   {answer:"Mitteln", alts:["Ressourcen","Gütern"]},
-   {answer:"Bedürfnissen", alts:["Wünschen"]},
-   {answer:"Knappheit", alts:["Ressourcenknappheit"]}
+   {answer:"körperlichen Bedürfnisse",alts:["Grundbedürfnisse","körperliche Bedürfnisse","physiologischen Bedürfnisse"]},
+   {answer:"Sicherheitsbedürfnisse",alts:["Sicherheit"]},
+   {answer:"sozialen Bedürfnisse",alts:["soziale Bedürfnisse","Sozialbedürfnisse"]},
+   {answer:"Selbstverwirklichung",alts:["Selbstverwirklichungsbedürfnisse"]}
  ],
- explain:"Die VWL ist die Lehre von Entscheidungen bei Knappheit. Weil die Mittel begrenzt sind, müssen ständig Entscheidungen getroffen werden – jede Wahl bedeutet gleichzeitig einen Verzicht."
-},
+ explain:"Maslow ordnet Bedürfnisse hierarchisch: Körperlich → Sicherheit → Sozial → (Wertschätzung →) Selbstverwirklichung. Die Darstellung in der Präsentation fasst Wertschätzung und Selbstverwirklichung zusammen. Eisenhut nennt 5 Stufen inkl. Wertschätzungsbedürfnisse."},
 
-{id:"n03", topic:"knapp", type:"tf", diff:1, tax:"K2",
- q:"Knappheit bedeutet, dass etwas selten oder teuer ist.",
- correct:false,
- explain:"Falsch. Knappheit in der VWL bedeutet nicht Seltenheit oder einen hohen Preis, sondern dass von einem Gut weniger vorhanden ist, als die Menschen davon haben möchten. Auch häufige Güter wie Wohnungen oder Zeit können knapp sein."
-},
+{id:"b05",topic:"beduerfnisse",type:"mc",diff:2,tax:"K2",
+ q:"Jemand kauft einen teuren Geländewagen, obwohl er nur in der Stadt fährt. Welche Bedürfnisstufe wird hier primär befriedigt?",
+ options:[{v:"A",t:"Wertschätzungsbedürfnisse (Status, Ansehen) – der Geländewagen dient als Statussymbol."},{v:"B",t:"Körperliche Bedürfnisse – der Wagen bietet Mobilität."},{v:"C",t:"Sicherheitsbedürfnisse – der grosse Wagen schützt bei Unfällen."},{v:"D",t:"Soziale Bedürfnisse – man gehört zu einer Gemeinschaft."}],
+ correct:"A",explain:"Dieses Beispiel stammt direkt aus dem Lehrbuch (Eisenhut). Wenn jemand einen Geländewagen für den Stadtverkehr kauft, wird damit ein anderes Bedürfnis (Status, Ansehen) befriedigt als dem Gut eigentlich zugedacht ist (Geländefahrten). Das Gut wird zum Statussymbol."},
 
-{id:"n04", topic:"knapp", type:"mc", diff:1, tax:"K2",
- q:"Was beschreibt das Maximalprinzip (Ergiebigkeitsprinzip)?",
- options:[
-   {v:"A", t:"Ein bestimmtes Ziel mit möglichst wenig Mitteln erreichen."},
-   {v:"B", t:"Aus gegebenen Mitteln das bestmögliche Ergebnis herausholen."},
-   {v:"C", t:"Immer das teuerste Produkt wählen."},
-   {v:"D", t:"Die Kosten so weit wie möglich reduzieren."}
- ],
- correct:"B",
- explain:"Beim Maximalprinzip sind die Mittel gegeben, und man versucht, daraus das Maximum herauszuholen. Beispiel: Mit 4 Stunden Lernzeit die bestmögliche Note erzielen. Das Gegenstück ist das Minimalprinzip: Ein bestimmtes Ziel mit möglichst wenig Mitteln erreichen."
-},
+{id:"b06",topic:"beduerfnisse",type:"open",diff:2,tax:"K3",
+ q:"Nennen Sie ein eigenes Beispiel für ein Gut, das als Statussymbol verwendet wird, und erklären Sie, welches Bedürfnis damit eigentlich befriedigt wird.",
+ sample:"Beispiel: Teure Marken-Sneakers (z.B. Jordans für CHF 300+). Eigentlicher Zweck: Schutz der Füsse (Grundbedürfnis). Als Statussymbol: Wertschätzung und Zugehörigkeit zur Gruppe. Das Bedürfnis nach Ansehen und Anerkennung (Wertschätzungsbedürfnis) wird wichtiger als der praktische Nutzen.",
+ explain:"Eisenhut nennt weitere Beispiele: Champagner verspritzen statt trinken, Van Gogh im Banktresor statt an der Wand. Statussymbole zeigen, dass Güter oft mehrere Bedürfnisstufen gleichzeitig ansprechen."},
 
-{id:"n05", topic:"knapp", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Beispiele dem Maximal- oder Minimalprinzip zu:",
- categories:["Maximalprinzip","Minimalprinzip"],
+{id:"b07",topic:"beduerfnisse",type:"tf",diff:2,tax:"K2",
+ q:"Gemäss Maslow befriedigen Menschen immer zuerst alle Grundbedürfnisse, bevor sie sich höheren Bedürfnissen zuwenden.",
+ correct:false,explain:"Falsch. Maslow beschreibt zwar eine Hierarchie, aber in der Praxis versuchen Menschen, Bedürfnisse aus verschiedenen Stufen gleichzeitig zu erfüllen. Eisenhut betont: «Der Mensch versucht, möglichst viele Wünsche aus den unterschiedlichen Ebenen gleichzeitig zu erfüllen.»"},
+
+{id:"b08",topic:"beduerfnisse",type:"mc",diff:2,tax:"K3",
+ q:"Ein Schüler lernt 4 Stunden für eine Prüfung und erzielt die Note 5. Am nächsten Tag merkt er, dass sein Mitschüler mit nur 2 Stunden Lernzeit dieselbe Note erreicht hat. Welches ökonomische Konzept erklärt diesen Unterschied?",
+ options:[{v:"A",t:"Der Mitschüler hat das Minimumprinzip (Sparsamkeitsprinzip) besser umgesetzt."},{v:"B",t:"Der Mitschüler hat das Maximumprinzip besser umgesetzt."},{v:"C",t:"Es handelt sich um Knappheit von Lernzeit."},{v:"D",t:"Der Mitschüler hat mehr Produktionsfaktoren eingesetzt."}],
+ correct:"A",explain:"Minimumprinzip: Ein bestimmtes Ergebnis (Note 5) mit minimalem Aufwand (2 statt 4 Stunden) erreichen. Das ist wirtschaftlich effizienter. Das Maximumprinzip wäre umgekehrt: Mit gegebenem Aufwand das bestmögliche Ergebnis erzielen."},
+
+// ──── GÜTER (g01–g08) ────
+{id:"g01",topic:"gueter",type:"mc",diff:1,tax:"K1",
+ q:"Was unterscheidet freie Güter von wirtschaftlichen (knappen) Gütern?",
+ options:[{v:"A",t:"Freie Güter sind von der Natur in ausreichender Menge vorhanden und gratis. Wirtschaftliche Güter sind knapp und haben einen Preis."},{v:"B",t:"Freie Güter werden vom Staat bereitgestellt, wirtschaftliche von Unternehmen."},{v:"C",t:"Freie Güter sind immer Dienstleistungen."},{v:"D",t:"Es gibt keinen Unterschied."}],
+ correct:"A",explain:"Freie Güter: Von der Natur ausreichend vorhanden, z.B. Luft (in den meisten Situationen), Sonnenlicht. Wirtschaftliche Güter: Knapp und begehrt, deshalb nachgefragt und mit einem Preis versehen."},
+
+{id:"g02",topic:"gueter",type:"sort",diff:1,tax:"K2",
+ q:"Ordnen Sie die folgenden Beispiele der korrekten Güterkategorie zu.",
+ categories:["Konsumgüter","Investitionsgüter","Freie Güter"],
  items:[
-   {t:"Mit 4 Stunden Lernzeit die bestmögliche Note erzielen",cat:0},
-   {t:"Die Note 5 mit möglichst wenig Lernaufwand erreichen",cat:1},
-   {t:"Aus dem Wochenbudget von CHF 100 das beste Essen kochen",cat:0},
-   {t:"Den Arbeitsweg so schnell wie möglich zurücklegen",cat:1},
-   {t:"Mit dem verfügbaren Personal die höchste Produktionsmenge erreichen",cat:0},
-   {t:"Ein Haus mit möglichst geringen Baukosten errichten",cat:1}
+   {t:"Smartphone",cat:0},{t:"Friteuse in einem Restaurant",cat:1},
+   {t:"Sonnenlicht",cat:2},{t:"Schulbuch",cat:0},
+   {t:"Lastwagen für Gütertransport",cat:1},{t:"Luft zum Atmen",cat:2},
+   {t:"Fabrikgebäude",cat:1},{t:"Kleidung",cat:0}
  ],
- explain:"Maximalprinzip: gegebene Mittel → maximales Ergebnis. Minimalprinzip: gegebenes Ziel → minimaler Mitteleinsatz. Zusammen bilden sie das Optimumsprinzip (Wirtschaftlichkeitsprinzip)."
-},
+ explain:"Konsumgüter: Dienen direkt der Bedürfnisbefriedigung (Smartphone, Buch, Kleider). Investitionsgüter: Dienen der Herstellung von anderen Gütern (Friteuse, Lastwagen, Fabrik). Freie Güter: Von der Natur gratis und ausreichend vorhanden (Luft, Sonnenlicht)."},
 
-{id:"n06", topic:"knapp", type:"tf", diff:2, tax:"K2",
- q:"Das Optimumsprinzip (Wirtschaftlichkeitsprinzip) vereint Maximal- und Minimalprinzip und bedeutet, Input und Output optimal aufeinander abzustimmen.",
- correct:true,
- explain:"Richtig. Das Optimumsprinzip ist der Oberbegriff: Man soll weder verschwenderisch (zu viel Input für zu wenig Output) noch unrealistisch (zu hohe Ziele mit zu wenig Mitteln) planen, sondern Aufwand und Ertrag optimal aufeinander abstimmen."
-},
+{id:"g03",topic:"gueter",type:"tf",diff:1,tax:"K2",
+ q:"Luft ist immer ein freies Gut.",
+ correct:false,explain:"Falsch. Eisenhut schreibt: «Luft ist zum Beispiel in fast allen Situationen ein freies Gut.» In bestimmten Situationen kann Luft aber knapp und somit ein wirtschaftliches Gut werden – z.B. saubere Luft in stark verschmutzten Städten oder Atemluft unter Wasser (Tauchflasche)."},
 
-{id:"n07", topic:"knapp", type:"mc", diff:3, tax:"K3",
- q:"Eine Gemeinde hat ein festes Budget von CHF 2 Millionen für Investitionen. Sie muss zwischen dem Bau eines Spielplatzes, der Sanierung einer Strasse und dem Ausbau der Schule wählen. Welches ökonomische Grundproblem zeigt sich hier?",
- options:[
-   {v:"A", t:"Das Problem der Inflation."},
-   {v:"B", t:"Das Problem der Knappheit – die begrenzten Mittel reichen nicht für alle Wünsche."},
-   {v:"C", t:"Das Problem der Arbeitslosigkeit."},
-   {v:"D", t:"Das Problem des Marktversagens."}
- ],
- correct:"B",
- explain:"Die Gemeinde hat unbegrenzte Bedürfnisse (alle drei Projekte wären wünschenswert), aber begrenzte Mittel (CHF 2 Mio.). Sie muss eine Entscheidung treffen und auf mindestens ein Projekt verzichten – ein klassisches Knappheitsproblem."
-},
-
-{id:"n08", topic:"knapp", type:"tf", diff:3, tax:"K4",
- q:"Wenn eine Person ihr gesamtes Einkommen für Konsum ausgibt und nichts spart, hat sie das Knappheitsproblem gelöst.",
- correct:false,
- explain:"Falsch. Das Knappheitsproblem ist grundsätzlich nicht lösbar, sondern nur entschärfbar. Auch wer alles ausgibt, hatte begrenzte Mittel und musste auf bestimmte Güter verzichten. Ausserdem entstehen durch den Konsumentscheid Opportunitätskosten (Verzicht auf Sparen)."
-},
-
-// ═══ GÜTERARTEN (g01–g08) ═══
-
-{id:"g01", topic:"gueter", type:"mc", diff:1, tax:"K1",
- q:"Was sind «freie Güter»?",
- options:[
-   {v:"A", t:"Güter, die im Ausverkauf verschenkt werden."},
-   {v:"B", t:"Güter, die von der Natur in so ausreichender Menge zur Verfügung gestellt werden, dass sie gratis sind."},
-   {v:"C", t:"Güter, die der Staat subventioniert."},
-   {v:"D", t:"Güter, die ohne Zoll importiert werden können."}
- ],
- correct:"B",
- explain:"Freie Güter stehen in der Natur in so grosser Menge zur Verfügung, dass sie nicht knapp sind und keinen Preis haben. Luft ist in den meisten Situationen ein freies Gut. Im Gegensatz dazu sind wirtschaftliche Güter knapp, werden nachgefragt und erzielen einen Preis."
-},
-
-{id:"g02", topic:"gueter", type:"sort", diff:1, tax:"K2",
- q:"Ordnen Sie die Güter der richtigen Kategorie zu:",
- categories:["Freie Güter","Wirtschaftliche Güter"],
- items:[
-   {t:"Luft (im Normalfall)",cat:0},
-   {t:"Trinkwasser aus der Leitung",cat:1},
-   {t:"Sonnenlicht",cat:0},
-   {t:"Smartphone",cat:1},
-   {t:"Schulunterricht",cat:1},
-   {t:"Sand in der Sahara",cat:0}
- ],
- explain:"Freie Güter sind nicht knapp und haben keinen Preis (Luft, Sonnenlicht, Sand in der Wüste). Wirtschaftliche Güter sind knapp, werden nachgefragt und haben einen Preis – auch wenn sie vom Staat bezahlt werden (wie Schulunterricht)."
-},
-
-{id:"g03", topic:"gueter", type:"mc", diff:1, tax:"K1",
- q:"Worin liegt der Unterschied zwischen Konsumgütern und Investitionsgütern?",
- options:[
-   {v:"A", t:"Konsumgüter sind teurer als Investitionsgüter."},
-   {v:"B", t:"Konsumgüter dienen direkt der Bedürfnisbefriedigung, Investitionsgüter werden zur Herstellung anderer Güter eingesetzt."},
-   {v:"C", t:"Konsumgüter werden nur von Privaten, Investitionsgüter nur vom Staat gekauft."},
-   {v:"D", t:"Konsumgüter sind materiell, Investitionsgüter immateriell."}
- ],
- correct:"B",
- explain:"Konsumgüter befriedigen Bedürfnisse direkt (z.B. Nahrung, Kleidung, Handy). Investitionsgüter (z.B. Maschinen, Werkzeuge, Fabrikgebäude) werden in der Produktion eingesetzt, um andere Güter herzustellen."
-},
-
-{id:"g04", topic:"gueter", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Beispiele der richtigen Güterkategorie zu:",
- categories:["Konsumgut (Verbrauchsgut)","Konsumgut (Gebrauchsgut)","Investitionsgut","Dienstleistung"],
- items:[
-   {t:"Apfel",cat:0},
-   {t:"Smartphone",cat:1},
-   {t:"Friteuse in einem Restaurant",cat:2},
-   {t:"Zugfahrt",cat:3},
-   {t:"Benzin im Privatauto",cat:0},
-   {t:"Lastwagen einer Spedition",cat:2}
- ],
- explain:"Verbrauchsgüter werden beim Gebrauch verbraucht (Apfel, Benzin). Gebrauchsgüter nutzt man über längere Zeit (Smartphone). Investitionsgüter dienen der Produktion (Friteuse, Lastwagen). Dienstleistungen sind immaterielle Leistungen (Zugfahrt)."
-},
-
-{id:"g05", topic:"gueter", type:"tf", diff:1, tax:"K1",
- q:"Eine Dienstleistung ist ein immaterielles Gut – es geht nicht um den Wert einer Ware, sondern um den Wert einer Leistung.",
- correct:true,
- explain:"Richtig. Dienstleistungen wie Unterricht, Beratung, Transport oder ärztliche Behandlung sind immaterielle Güter. Sie werden nicht als physische Ware übergeben, sondern als Leistung erbracht."
-},
-
-{id:"g06", topic:"gueter", type:"mc", diff:2, tax:"K3",
- q:"Ein Laptop wird von einer Privatperson zum Surfen genutzt und von einem Grafikdesigner für seine Arbeit. Wie wird der Laptop jeweils eingeordnet?",
- options:[
-   {v:"A", t:"In beiden Fällen als Konsumgut."},
-   {v:"B", t:"Beim Privatanwender als Konsumgut, beim Grafikdesigner als Investitionsgut."},
-   {v:"C", t:"In beiden Fällen als Investitionsgut."},
-   {v:"D", t:"Beim Privatanwender als Investitionsgut, beim Grafikdesigner als Konsumgut."}
- ],
- correct:"B",
- explain:"Die Einordnung hängt vom Verwendungszweck ab: Der Privatanwender nutzt den Laptop zur direkten Bedürfnisbefriedigung (Konsumgut). Der Grafikdesigner setzt ihn als Produktionsmittel ein, um damit Einkommen zu erwirtschaften (Investitionsgut)."
-},
-
-{id:"g07", topic:"gueter", type:"tf", diff:2, tax:"K3",
- q:"Saubere Luft ist immer ein freies Gut.",
- correct:false,
- explain:"Falsch. Luft ist «in fast allen Situationen» ein freies Gut, aber nicht immer. In stark verschmutzten Städten oder unter Wasser (Taucherflasche) wird saubere Luft zum wirtschaftlichen Gut, weil sie knapp ist und einen Preis hat."
-},
-
-{id:"g08", topic:"gueter", type:"fill", diff:1, tax:"K1",
- q:"Wirtschaftliche Güter lassen sich in {0} (materielle Güter) und {1} (immaterielle Güter) einteilen. Sachgüter wiederum teilt man in {2} und Investitionsgüter.",
+{id:"g04",topic:"gueter",type:"fill",diff:1,tax:"K1",
+ q:"Güter, die direkt der Bedürfnisbefriedigung dienen, heissen {0}. Güter, die zur Herstellung anderer Güter benötigt werden, heissen {1}. Bei einer {2} geht es nicht um den Wert einer Ware, sondern um den Wert einer Leistung.",
  blanks:[
-   {answer:"Sachgüter", alts:["Sachgütern"]},
-   {answer:"Dienstleistungen", alts:[]},
-   {answer:"Konsumgüter", alts:["Konsumgütern"]}
+   {answer:"Konsumgüter",alts:["Konsumgut"]},
+   {answer:"Investitionsgüter",alts:["Investitionsgut","Produktionsgüter"]},
+   {answer:"Dienstleistung",alts:["Dienstleistungen"]}
  ],
- explain:"Die Gütereinteilung: Wirtschaftliche Güter → Sachgüter + Dienstleistungen. Sachgüter → Konsumgüter (direkte Bedürfnisbefriedigung) + Investitionsgüter (Einsatz in der Produktion). Konsumgüter → Verbrauchsgüter + Gebrauchsgüter."
-},
+ explain:"Konsumgüter = direkte Bedürfnisbefriedigung (z.B. Brot, Kleidung). Investitionsgüter = Herstellung anderer Güter (z.B. Maschinen, Fabrikgebäude). Dienstleistung = immaterielle Leistung (z.B. Zugfahrt, Unterricht, Beratung)."},
 
-// ═══ PRODUKTIONSFAKTOREN (p01–p07) ═══
+{id:"g05",topic:"gueter",type:"mc",diff:2,tax:"K2",
+ q:"Was unterscheidet Verbrauchsgüter von Gebrauchsgütern?",
+ options:[{v:"A",t:"Verbrauchsgüter werden bei der Nutzung aufgebraucht (z.B. Lebensmittel), Gebrauchsgüter können längere Zeit benutzt werden (z.B. Smartphone)."},{v:"B",t:"Verbrauchsgüter sind teurer als Gebrauchsgüter."},{v:"C",t:"Verbrauchsgüter sind immer Lebensmittel."},{v:"D",t:"Gebrauchsgüter sind immer Investitionsgüter."}],
+ correct:"A",explain:"Konsumgüter werden unterteilt in: Verbrauchsgüter (einmalige Nutzung, z.B. Essen, Getränke, Benzin) und Gebrauchsgüter (mehrmalige/längere Nutzung, z.B. Velo, Handy, Kleider, Spielkonsole)."},
 
-{id:"p01", topic:"prod", type:"mc", diff:1, tax:"K1",
- q:"Welches sind die vier Produktionsfaktoren?",
- options:[
-   {v:"A", t:"Angebot, Nachfrage, Preis, Markt"},
-   {v:"B", t:"Arbeit, natürliche Ressourcen, Realkapital, Wissen"},
-   {v:"C", t:"Land, Luft, Wasser, Feuer"},
-   {v:"D", t:"Unternehmen, Haushalte, Staat, Ausland"}
+{id:"g06",topic:"gueter",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie die Konsumgüter: Verbrauchsgüter oder Gebrauchsgüter?",
+ categories:["Verbrauchsgüter","Gebrauchsgüter"],
+ items:[
+   {t:"Sandwich",cat:0},{t:"Velo",cat:1},
+   {t:"Benzin",cat:0},{t:"Winterjacke",cat:1},
+   {t:"Mineralwasser",cat:0},{t:"Spielkonsole",cat:1}
  ],
- correct:"B",
- explain:"Die vier Produktionsfaktoren sind: Arbeit (jede produktive Tätigkeit), natürliche Ressourcen (Boden, Rohstoffe), Realkapital (Maschinen, Anlagen, Gebäude) und Wissen (Humankapital, technischer Fortschritt). Ihre Kombination bestimmt den Wohlstand eines Landes."
-},
+ explain:"Verbrauchsgüter werden beim Konsum aufgebraucht (Sandwich, Benzin, Wasser). Gebrauchsgüter können längere Zeit genutzt werden (Velo, Winterjacke, Spielkonsole)."},
 
-{id:"p02", topic:"prod", type:"fill", diff:1, tax:"K1",
- q:"Die vier Produktionsfaktoren sind: {0}, {1}, {2} und {3}.",
- blanks:[
-   {answer:"Arbeit", alts:[]},
-   {answer:"natürliche Ressourcen", alts:["Boden","Natur","natürliche Rohstoffe"]},
-   {answer:"Realkapital", alts:["Kapital","Sachkapital"]},
-   {answer:"Wissen", alts:["Humankapital","Know-how","technischer Fortschritt"]}
- ],
- explain:"Arbeit = jede produktive menschliche Tätigkeit. Natürliche Ressourcen = Boden, Rohstoffe, Energie. Realkapital = Maschinen, Anlagen, Gebäude. Wissen = Humankapital (Fähigkeiten, Bildung) und technischer Fortschritt."
-},
+{id:"g07",topic:"gueter",type:"open",diff:2,tax:"K3",
+ q:"Nennen Sie je zwei Beispiele für Sachgüter und Dienstleistungen, die Sie gestern direkt genutzt haben. Erklären Sie den Unterschied.",
+ sample:"Sachgüter: Brot zum Frühstück (Verbrauchsgut), Laptop für die Schule (Gebrauchsgut). Dienstleistungen: Zugfahrt zur Schule (Transportdienstleistung), Unterrichtsstunde (Bildungsdienstleistung). Unterschied: Bei Sachgütern besitzt man ein physisches Objekt. Bei Dienstleistungen geht es um den Wert einer Leistung, nicht einer Ware – sie sind immateriell und können nicht gelagert werden.",
+ explain:"Eisenhut betont: «Bei einer Dienstleistung geht es nicht um den Wert einer Ware, sondern um den Wert einer Leistung.» Beispiele: Zugfahrt, Unterricht, Studienberatung, Haarschnitt."},
 
-{id:"p03", topic:"prod", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Beispiele dem richtigen Produktionsfaktor zu:",
+{id:"g08",topic:"gueter",type:"tf",diff:2,tax:"K2",
+ q:"Ein Lastwagen ist immer ein Investitionsgut.",
+ correct:false,explain:"Falsch. Die Zuordnung hängt von der Verwendung ab. Ein Lastwagen, der für den gewerblichen Gütertransport eingesetzt wird, ist ein Investitionsgut. Ein Lastwagen, den jemand privat als Hobby-Fahrzeug nutzt, wäre ein Konsumgut (Gebrauchsgut). Entscheidend ist der Zweck."},
+// ──── PRODUKTIONSFAKTOREN (p01–p08) ────
+{id:"p01",topic:"produktionsfaktoren",type:"mc",diff:1,tax:"K1",
+ q:"Welche vier Produktionsfaktoren unterscheidet man in der VWL?",
+ options:[{v:"A",t:"Arbeit, natürliche Ressourcen (Boden), Realkapital und Wissen."},{v:"B",t:"Geld, Maschinen, Rohstoffe und Energie."},{v:"C",t:"Konsum, Investitionen, Staat und Exporte."},{v:"D",t:"Löhne, Zinsen, Mieten und Gewinne."}],
+ correct:"A",explain:"Die vier Produktionsfaktoren: (1) Arbeit = jede produktive Tätigkeit des Menschen. (2) Natürliche Ressourcen = Boden, Rohmaterial. (3) Realkapital = Maschinen, Anlagen, Gebäude. (4) Wissen = Humankapital (Können, Fähigkeiten) und technischer Fortschritt."},
+
+{id:"p02",topic:"produktionsfaktoren",type:"sort",diff:1,tax:"K2",
+ q:"Ordnen Sie die Beispiele den korrekten Produktionsfaktoren zu.",
  categories:["Arbeit","Natürliche Ressourcen","Realkapital","Wissen"],
  items:[
-   {t:"Tätigkeit eines Kochs",cat:0},
-   {t:"Ackerland für den Weizenanbau",cat:1},
-   {t:"Backofen einer Bäckerei",cat:2},
-   {t:"Ausbildung einer Ingenieurin",cat:3},
-   {t:"Eisenerz aus einem Bergwerk",cat:1},
-   {t:"Fabrikhalle",cat:2}
+   {t:"Koch bereitet Pommes frites zu",cat:0},{t:"Kartoffeln vom Feld",cat:1},
+   {t:"Friteuse im Restaurant",cat:2},{t:"Ausbildung des Kochs",cat:3},
+   {t:"Servierpersonal bedient Gäste",cat:0},{t:"Erdöl für Energie",cat:1},
+   {t:"Gebäude des Restaurants",cat:2},{t:"Rezepte und Know-how",cat:3}
  ],
- explain:"Arbeit umfasst jede produktive menschliche Tätigkeit. Natürliche Ressourcen sind Boden und Rohstoffe. Realkapital sind produzierte Produktionsmittel (Maschinen, Gebäude). Wissen umfasst Humankapital (Ausbildung) und Technologie."
-},
+ explain:"Am Beispiel der Pommes frites (nach Eisenhut): Um Pommes zu produzieren, braucht es immer eine Kombination aller vier Produktionsfaktoren: menschliche Arbeit, natürliche Ressourcen (Kartoffeln, Energie), Realkapital (Friteuse, Gebäude, Besteck) und Wissen (Ausbildung, Rezepte)."},
 
-{id:"p04", topic:"prod", type:"tf", diff:1, tax:"K2",
- q:"Um ein Gut zu produzieren, reicht ein einziger Produktionsfaktor aus.",
- correct:false,
- explain:"Falsch. Für jede Produktion braucht es immer eine Kombination aller vier Produktionsfaktoren. Selbst ein einfaches Produkt erfordert Arbeit, Rohstoffe, Werkzeuge/Maschinen und Wissen über den Herstellungsprozess."
-},
-
-{id:"p05", topic:"prod", type:"mc", diff:2, tax:"K2",
- q:"Was versteht man unter «Humankapital»?",
- options:[
-   {v:"A", t:"Das Bargeld, das eine Person besitzt."},
-   {v:"B", t:"Die Maschinen und Anlagen in einem Betrieb."},
-   {v:"C", t:"Das Wissen, Können und die Fähigkeiten eines Menschen."},
-   {v:"D", t:"Die Anzahl Arbeitskräfte in einem Land."}
- ],
- correct:"C",
- explain:"Humankapital bezeichnet das Wissen, Können, die Fähigkeiten und Fertigkeiten von Menschen. Es gehört zum Produktionsfaktor Wissen und ist für die wirtschaftliche Entwicklung eines Landes von grosser Bedeutung."
-},
-
-{id:"p06", topic:"prod", type:"mc", diff:3, tax:"K3",
- q:"Die Schweiz hat kaum eigene Rohstoffe, gehört aber zu den reichsten Ländern der Welt. Welcher Produktionsfaktor ist dafür hauptsächlich verantwortlich?",
- options:[
-   {v:"A", t:"Natürliche Ressourcen – die Schweiz nutzt ihr Wasser und ihre Landschaft."},
-   {v:"B", t:"Realkapital – die Schweiz hat die meisten Fabriken weltweit."},
-   {v:"C", t:"Wissen und Humankapital – hohe Bildung, Forschung und Innovation."},
-   {v:"D", t:"Arbeit – die Schweizer arbeiten mehr Stunden als alle anderen."}
- ],
- correct:"C",
- explain:"Der Wohlstand der Schweiz basiert wesentlich auf Humankapital und Wissen: hohes Bildungsniveau, Forschung, Innovation und spezialisierte Fachkräfte. Dies zeigt, dass Wissen als Produktionsfaktor fehlende natürliche Ressourcen mehr als kompensieren kann."
-},
-
-{id:"p07", topic:"prod", type:"tf", diff:2, tax:"K2",
- q:"Realkapital und Geldkapital sind dasselbe.",
- correct:false,
- explain:"Falsch. Realkapital (auch Sachkapital) umfasst produzierte Produktionsmittel wie Maschinen, Anlagen und Gebäude – also physische Güter, die in der Produktion eingesetzt werden. Geldkapital (Finanzen, Bargeld, Bankguthaben) ist kein Produktionsfaktor, sondern ein Tauschmittel."
-},
-
-// ═══ ARBEITSTEILUNG, TAUSCH & GELD (t01–t08) ═══
-
-{id:"t01", topic:"arbeit", type:"mc", diff:1, tax:"K1",
- q:"Warum ist Arbeitsteilung vorteilhaft?",
- options:[
-   {v:"A", t:"Weil alle dieselbe Arbeit verrichten und sich dadurch besser verstehen."},
-   {v:"B", t:"Weil jede Person und jedes Unternehmen sich auf das spezialisieren kann, wofür sie besonders geeignet sind, und so die Produktivität steigt."},
-   {v:"C", t:"Weil dadurch weniger Arbeit insgesamt anfällt."},
-   {v:"D", t:"Weil der Staat so besser kontrollieren kann, wer was produziert."}
- ],
- correct:"B",
- explain:"Durch Spezialisierung wird jeder in dem Bereich tätig, für den er besondere Fähigkeiten hat. Das erhöht die Produktivität (Leistung pro Stunde oder pro Arbeitskraft) und damit den Wohlstand für alle."
-},
-
-{id:"t02", topic:"arbeit", type:"tf", diff:1, tax:"K2",
- q:"Arbeitsteilung und Spezialisierung lösen das Knappheitsproblem vollständig.",
- correct:false,
- explain:"Falsch. Arbeitsteilung und Spezialisierung entschärfen das Knappheitsproblem, weil sie die Produktivität erhöhen. Vollständig gelöst wird es aber nicht – die Bedürfnisse bleiben unbegrenzt, auch wenn mehr Güter produziert werden können."
-},
-
-{id:"t03", topic:"arbeit", type:"fill", diff:1, tax:"K1",
- q:"Geld erfüllt drei Funktionen: als {0}, als {1} und als {2}.",
+{id:"p03",topic:"produktionsfaktoren",type:"fill",diff:1,tax:"K1",
+ q:"Unter dem Produktionsfaktor {0} versteht man jede produktive Tätigkeit des Menschen. {1} benötigt man z.B. in Form von Boden und Rohmaterial. {2} umfasst Maschinen, Anlagen und Gebäude.",
  blanks:[
-   {answer:"Zahlungsmittel", alts:["Tauschmittel"]},
-   {answer:"Rechnungseinheit", alts:["Wertmassstab","Recheneinheit"]},
-   {answer:"Wertaufbewahrungsmittel", alts:["Wertspeicher","Wertaufbewahrung"]}
+   {answer:"Arbeit",alts:[]},
+   {answer:"Natürliche Ressourcen",alts:["Boden","natürliche Ressourcen"]},
+   {answer:"Realkapital",alts:["Kapital"]}
  ],
- explain:"Zahlungsmittel: Geld ermöglicht den einfachen Austausch von Gütern. Rechnungseinheit: Alle Preise werden in Geld ausgedrückt und sind direkt vergleichbar. Wertaufbewahrungsmittel: Geld kann gespart werden, um den Konsum auf später zu verschieben."
-},
+ explain:"Arbeit = produktive Tätigkeit. Natürliche Ressourcen = Boden, Rohstoffe, Energie. Realkapital = Sachkapital (Maschinen, Anlagen, Gebäude). Der vierte Faktor ist Wissen (Humankapital, technischer Fortschritt)."},
 
-{id:"t04", topic:"arbeit", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Vorteile von Geld der richtigen Funktion zu:",
+{id:"p04",topic:"produktionsfaktoren",type:"tf",diff:1,tax:"K1",
+ q:"Humankapital (Wissen, Können, Fähigkeiten) gilt als eigenständiger Produktionsfaktor.",
+ correct:true,explain:"Richtig. Neben Arbeit, natürlichen Ressourcen und Realkapital wird Wissen als vierter Produktionsfaktor betrachtet. Es umfasst Humankapital (Wissen, Können, Fähigkeiten, Fertigkeiten) und technischen Fortschritt. Wissen ist für die wirtschaftliche Entwicklung eines Landes besonders bedeutungsvoll."},
+
+{id:"p05",topic:"produktionsfaktoren",type:"open",diff:2,tax:"K3",
+ q:"Wählen Sie ein beliebiges Produkt aus Ihrem Alltag und beschreiben Sie, welche vier Produktionsfaktoren für dessen Herstellung nötig sind.",
+ sample:"Beispiel Smartphone: (1) Arbeit: Ingenieure entwickeln das Design, Arbeiter*innen montieren die Teile. (2) Natürliche Ressourcen: Seltene Erden, Kupfer, Glas, Lithium für die Batterie. (3) Realkapital: Fabriken, Maschinen, Montagelinien, Transportmittel. (4) Wissen: Software-Entwicklung, Patente, Design-Know-how, Forschung.",
+ explain:"Eisenhut betont: Um ein Gut zu produzieren, braucht es immer eine Kombination aller vier Produktionsfaktoren. Die Qualität und Quantität dieser Faktoren bestimmt den «Wohlstandskuchen» eines Landes."},
+
+{id:"p06",topic:"produktionsfaktoren",type:"mc",diff:2,tax:"K2",
+ q:"Warum wird Wissen als der wichtigste Produktionsfaktor für moderne Volkswirtschaften angesehen?",
+ options:[{v:"A",t:"Weil technischer Fortschritt und Humankapital die Produktivität aller anderen Faktoren steigern."},{v:"B",t:"Weil Wissen gratis ist und unbegrenzt zur Verfügung steht."},{v:"C",t:"Weil man ohne Wissen gar keine Güter produzieren kann."},{v:"D",t:"Weil Wissen den Produktionsfaktor Arbeit ersetzt."}],
+ correct:"A",explain:"Wissen erhöht die Produktivität der anderen Faktoren: Besseres Know-how → effizientere Arbeit, bessere Nutzung von Ressourcen und produktivere Maschinen. Deshalb investieren moderne Volkswirtschaften stark in Bildung und Forschung."},
+
+{id:"p07",topic:"produktionsfaktoren",type:"tf",diff:2,tax:"K2",
+ q:"Ein Bäckermeister, der seine langjährige Erfahrung im Brotbacken einsetzt, nutzt dabei nur den Produktionsfaktor Arbeit.",
+ correct:false,explain:"Falsch. Der Bäckermeister nutzt mindestens zwei Produktionsfaktoren gleichzeitig: Arbeit (seine körperliche und geistige Tätigkeit) und Wissen (seine Erfahrung, sein Know-how, seine Ausbildung als Humankapital). Dazu kommen natürlich Realkapital (Backofen) und natürliche Ressourcen (Mehl, Wasser)."},
+
+{id:"p08",topic:"produktionsfaktoren",type:"mc",diff:1,tax:"K1",
+ q:"Welcher Produktionsfaktor wird mit dem Begriff «Realkapital» bezeichnet?",
+ options:[{v:"A",t:"Maschinen, Anlagen und Gebäude – also produzierte Produktionsmittel."},{v:"B",t:"Das Geld auf dem Bankkonto eines Unternehmens."},{v:"C",t:"Die Arbeitskraft der Mitarbeitenden."},{v:"D",t:"Patente und geistiges Eigentum."}],
+ correct:"A",explain:"Realkapital (auch Sachkapital) = produzierte Produktionsmittel wie Maschinen, Anlagen, Werkzeuge, Gebäude. Nicht zu verwechseln mit Geldkapital (Finanzmittel). Patente und Know-how gehören zum Produktionsfaktor Wissen."},
+
+// ──── ÖKONOMISCHES PRINZIP (o01–o06) ────
+{id:"o01",topic:"oekprinzip",type:"mc",diff:1,tax:"K1",
+ q:"Was besagt das Maximumprinzip (Ergiebigkeitsprinzip)?",
+ options:[{v:"A",t:"Mit gegebenem Aufwand (Input) das grösstmögliche Ergebnis (Output) erzielen."},{v:"B",t:"Ein bestimmtes Ergebnis mit minimalem Aufwand erreichen."},{v:"C",t:"Immer den maximalen Preis für ein Gut verlangen."},{v:"D",t:"Möglichst viel produzieren, unabhängig von den Kosten."}],
+ correct:"A",explain:"Maximumprinzip: Gegebener Input → maximaler Output. Beispiel: 4 Stunden lernen (gegebener Aufwand) → bestmögliche Note erzielen. Das Gegenstück ist das Minimumprinzip: Bestimmtes Ergebnis → minimaler Aufwand."},
+
+{id:"o02",topic:"oekprinzip",type:"mc",diff:1,tax:"K1",
+ q:"Was besagt das Minimumprinzip (Sparsamkeitsprinzip)?",
+ options:[{v:"A",t:"Ein bestimmtes Ergebnis (Output) mit möglichst geringem Aufwand (Input) erreichen."},{v:"B",t:"Immer das billigste Produkt kaufen."},{v:"C",t:"So wenig wie möglich arbeiten."},{v:"D",t:"Die Produktion auf ein Minimum reduzieren."}],
+ correct:"A",explain:"Minimumprinzip: Bestimmter Output → minimaler Input. Beispiel: Note 5 erreichen (bestimmtes Ergebnis) → möglichst wenig Lernzeit aufwenden. Das Optimumprinzip vereint beide: Input und Output optimal aufeinander abstimmen."},
+
+{id:"o03",topic:"oekprinzip",type:"sort",diff:2,tax:"K3",
+ q:"Ordnen Sie die Beispiele dem Maximum- oder Minimumprinzip zu.",
+ categories:["Maximumprinzip","Minimumprinzip"],
+ items:[
+   {t:"Mit CHF 50 möglichst viele Lebensmittel einkaufen",cat:0},
+   {t:"Die Note 5 mit möglichst wenig Lernaufwand erreichen",cat:1},
+   {t:"In 4 Stunden Lernzeit die bestmögliche Note erzielen",cat:0},
+   {t:"Die Strecke Bern-Zürich mit möglichst wenig Benzin fahren",cat:1},
+   {t:"Mit einem Tank Benzin möglichst weit kommen",cat:0},
+   {t:"Ein Haus bauen mit möglichst geringen Kosten",cat:1}
+ ],
+ explain:"Maximumprinzip: Input ist gegeben → Output maximieren (CHF 50 → max. Lebensmittel; 4h → beste Note; 1 Tank → max. Distanz). Minimumprinzip: Output ist gegeben → Input minimieren (Note 5 → min. Lernzeit; Strecke → min. Benzin; Haus → min. Kosten)."},
+
+{id:"o04",topic:"oekprinzip",type:"fill",diff:1,tax:"K1",
+ q:"Das ökonomische Prinzip hat zwei Ausprägungen: Das {0} (gegebener Aufwand → maximales Ergebnis) und das {1} (gegebenes Ergebnis → minimaler Aufwand). Zusammen bilden sie das {2}.",
+ blanks:[
+   {answer:"Maximumprinzip",alts:["Maximum-Prinzip","Ergiebigkeitsprinzip"]},
+   {answer:"Minimumprinzip",alts:["Minimum-Prinzip","Sparsamkeitsprinzip"]},
+   {answer:"Optimumprinzip",alts:["Wirtschaftlichkeitsprinzip","Optimum-Prinzip"]}
+ ],
+ explain:"Das Optimumprinzip (Wirtschaftlichkeitsprinzip) vereint Maximum- und Minimumprinzip: Input und Output werden optimal aufeinander abgestimmt. Wirtschaften bedeutet, nach diesem Prinzip zu handeln."},
+
+{id:"o05",topic:"oekprinzip",type:"tf",diff:2,tax:"K2",
+ q:"Wenn ein Unternehmen 1'000 Hemden mit möglichst geringen Kosten produzieren will, handelt es nach dem Maximumprinzip.",
+ correct:false,explain:"Falsch. Es handelt nach dem Minimumprinzip: Das Ergebnis ist vorgegeben (1'000 Hemden), der Aufwand (Kosten) soll minimiert werden. Beim Maximumprinzip wäre es umgekehrt: Mit einem gegebenen Budget möglichst viele Hemden produzieren."},
+
+{id:"o06",topic:"oekprinzip",type:"open",diff:2,tax:"K3",
+ q:"Formulieren Sie ein eigenes Alltagsbeispiel für das Maximumprinzip und eines für das Minimumprinzip.",
+ sample:"Maximumprinzip: Ich habe ein Budget von CHF 200 für Weihnachtsgeschenke und versuche, damit möglichst viele und gute Geschenke zu kaufen (gegebener Input → maximaler Output). Minimumprinzip: Ich möchte an den Bodensee fahren und suche die günstigste Verbindung (gegebenes Ziel → minimale Kosten/Aufwand).",
+ explain:"Entscheidend für die Zuordnung: Beim Maximumprinzip ist der Input fix (Budget, Zeit, Menge), beim Minimumprinzip ist der Output fix (Ziel, Ergebnis, Menge). Im Alltag wenden wir beide Prinzipien ständig an."},
+
+// ──── ARBEITSTEILUNG, TAUSCH UND GELD (a01–a07) ────
+{id:"a01",topic:"arbeitsteilung",type:"mc",diff:1,tax:"K1",
+ q:"Was ist der Hauptvorteil von Arbeitsteilung und Spezialisierung?",
+ options:[{v:"A",t:"Die Produktivität (Leistung pro Stunde/Arbeitskraft) steigt, weil sich jeder auf seine Stärken spezialisiert."},{v:"B",t:"Alle verdienen gleich viel."},{v:"C",t:"Es gibt weniger Arbeitslose."},{v:"D",t:"Die Preise sinken automatisch."}],
+ correct:"A",explain:"Arbeitsteilung und Spezialisierung erhöhen die Produktivität: Jeder konzentriert sich auf das, was er am besten kann. Besonders Kräftige werden Bauarbeiter, kreativ Begabte Künstler, besonders Unentwegte Volkswirtschafter (Eisenhut). Das entschärft das Knappheitsproblem."},
+
+{id:"a02",topic:"arbeitsteilung",type:"tf",diff:1,tax:"K1",
+ q:"Arbeitsteilung setzt eine Bereitschaft zum Tausch voraus.",
+ correct:true,explain:"Richtig. Eisenhut: «Die notwendige Ergänzung der Arbeitsteilung ist der Tausch.» Wer sich spezialisiert, produziert nur wenige Güter und muss die restlichen durch Tausch beschaffen. Ohne Tauschbereitschaft wäre Spezialisierung nicht möglich."},
+
+{id:"a03",topic:"arbeitsteilung",type:"mc",diff:2,tax:"K2",
+ q:"Welche drei Funktionen erfüllt Geld?",
+ options:[{v:"A",t:"Zahlungsmittel, Rechnungseinheit und Wertaufbewahrungsmittel."},{v:"B",t:"Sparmittel, Investitionsmittel und Kreditmittel."},{v:"C",t:"Tausch, Produktion und Konsum."},{v:"D",t:"Bargeld, Buchgeld und Kryptowährung."}],
+ correct:"A",explain:"Die drei Funktionen des Geldes: (1) Zahlungsmittel – ermöglicht einfachen Tausch ohne Gütertausch (spart Zeit und Kosten). (2) Rechnungseinheit – ermöglicht transparente, vergleichbare Preise. (3) Wertaufbewahrungsmittel – ermöglicht Sparen, Konsum zeitlich verschieben."},
+
+{id:"a04",topic:"arbeitsteilung",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie die Beispiele der korrekten Geldfunktion zu.",
  categories:["Zahlungsmittel","Rechnungseinheit","Wertaufbewahrungsmittel"],
  items:[
-   {t:"Man muss keinen Tauschpartner finden, der genau das hat, was man will",cat:0},
-   {t:"Alle Preise sind direkt vergleichbar",cat:1},
-   {t:"Man kann Konsum auf einen späteren Zeitpunkt verschieben",cat:2},
-   {t:"Güter können leicht und kostengünstig aufbewahrt werden",cat:2},
-   {t:"Man braucht weniger Informationen über Tauschverhältnisse",cat:1},
-   {t:"Zeit und Kosten beim Einkaufen werden eingespart",cat:0}
+   {t:"Mit Banknoten an der Kasse bezahlen",cat:0},
+   {t:"Preise verschiedener Handys vergleichen",cat:1},
+   {t:"Geld auf dem Sparkonto für die Ferien",cat:2},
+   {t:"Online-Überweisung für eine Bestellung",cat:0},
+   {t:"Preis eines Autos in CHF angeben",cat:1},
+   {t:"Geld für das Alter zurücklegen",cat:2}
  ],
- explain:"Jede Funktion des Geldes hilft, Transaktionskosten zu senken: als Zahlungsmittel (kein Suchen nach Tauschpartnern), als Rechnungseinheit (einfacher Preisvergleich) und als Wertaufbewahrungsmittel (Sparen ohne Wertverlust durch Verderb)."
-},
+ explain:"Zahlungsmittel: Geld zum Bezahlen verwenden. Rechnungseinheit: Preise in einer einheitlichen Währung ausdrücken und vergleichen. Wertaufbewahrung: Geld sparen, Kaufkraft über die Zeit erhalten, Konsum auf später verschieben."},
 
-{id:"t05", topic:"arbeit", type:"mc", diff:2, tax:"K2",
- q:"Was sind Transaktionskosten?",
- options:[
-   {v:"A", t:"Die Kosten für den Transport von Gütern."},
-   {v:"B", t:"Alle Kosten, die bei der Abwicklung eines Tauschgeschäfts entstehen – z.B. Suchen, Informationsbeschaffung, Vertragskosten."},
-   {v:"C", t:"Die Steuern, die beim Kauf eines Gutes anfallen."},
-   {v:"D", t:"Die Kosten für die Herstellung eines Gutes."}
- ],
- correct:"B",
- explain:"Transaktionskosten umfassen alle Kosten, die beim Abschluss eines Tauschgeschäfts anfallen: Suche nach Tauschpartnern, Informationsbeschaffung über Preise und Qualität, Vertragsverhandlungen und -kosten. Geld hilft, diese Kosten zu senken."
-},
-
-{id:"t06", topic:"arbeit", type:"tf", diff:2, tax:"K2",
- q:"In einer Tauschwirtschaft ohne Geld müsste man für jedes Gut einen Tauschpartner finden, der genau das besitzt, was man will, und gleichzeitig das möchte, was man eintauschen kann.",
- correct:true,
- explain:"Richtig. Dieses Problem der «doppelten Koinzidenz der Wünsche» macht Tauschwirtschaften extrem mühsam. Geld als Zahlungsmittel löst dieses Problem, indem es als universelles Tauschmittel dient."
-},
-
-{id:"t07", topic:"arbeit", type:"mc", diff:2, tax:"K2",
- q:"Was versteht man unter Produktivität?",
- options:[
-   {v:"A", t:"Die Gesamtmenge aller produzierten Güter in einem Land."},
-   {v:"B", t:"Die Leistung pro Stunde oder pro Arbeitskraft."},
-   {v:"C", t:"Die Anzahl der Beschäftigten in einem Unternehmen."},
-   {v:"D", t:"Der Gewinn eines Unternehmens pro Jahr."}
- ],
- correct:"B",
- explain:"Produktivität misst die Effizienz der Produktion: Wie viel Output (Leistung, Güter) wird pro Einheit Input (Arbeitsstunde, Arbeitskraft) erzeugt? Arbeitsteilung und Spezialisierung erhöhen die Produktivität."
-},
-
-{id:"t08", topic:"arbeit", type:"tf", diff:3, tax:"K4",
- q:"Spezialisierung, Arbeitsteilung, Tausch und Geld haben zusammen wesentlich zur Steigerung des Wohlstandes beigetragen.",
- correct:true,
- explain:"Richtig. Diese vier Elemente bilden eine logische Kette: Spezialisierung erhöht die Produktivität → Arbeitsteilung erfordert Tausch → Tausch wird durch Geld effizient gemacht → Transaktionskosten sinken → der Wohlstand steigt. Alle vier Elemente zusammen ermöglichen die moderne, komplexe Wirtschaft."
-},
-
-// ═══ WIRTSCHAFTSSEKTOREN & STRUKTURWANDEL (x01–x07) ═══
-
-{id:"x01", topic:"sektor", type:"mc", diff:1, tax:"K1",
- q:"Welcher Wirtschaftssektor umfasst die Urproduktion (Land- und Forstwirtschaft, Fischerei, Bergbau)?",
- options:[
-   {v:"A", t:"Primärer Sektor"},
-   {v:"B", t:"Sekundärer Sektor"},
-   {v:"C", t:"Tertiärer Sektor"},
-   {v:"D", t:"Quartärer Sektor"}
- ],
- correct:"A",
- explain:"Der primäre Sektor umfasst die Urproduktion: Land- und Forstwirtschaft, Fischerei und Bergbau. Der sekundäre Sektor ist die Industrie (Veredelung), der tertiäre Sektor die Dienstleistungen."
-},
-
-{id:"x02", topic:"sektor", type:"fill", diff:1, tax:"K1",
- q:"Der {0} Sektor umfasst die Urproduktion, der {1} Sektor die Industrie und der {2} Sektor die Dienstleistungen.",
+{id:"a05",topic:"arbeitsteilung",type:"fill",diff:1,tax:"K1",
+ q:"Alle drei Geldfunktionen helfen, die sogenannten {0} zu senken. Darunter versteht man alle Kosten, die bei der Abwicklung eines {1} entstehen, z.B. Suche nach Tauschpartnern und {2}.",
  blanks:[
-   {answer:"primäre", alts:["erste","1."]},
-   {answer:"sekundäre", alts:["zweite","2."]},
-   {answer:"tertiäre", alts:["dritte","3."]}
+   {answer:"Transaktionskosten",alts:[]},
+   {answer:"Tauschgeschäfts",alts:["Tauschgeschäftes","Tausches"]},
+   {answer:"Informationsbeschaffung",alts:["Informationskosten","Vertragskosten"]}
  ],
- explain:"Primär (1.) = Urproduktion (Landwirtschaft, Bergbau). Sekundär (2.) = Veredelung/Industrie (Güterherstellung). Tertiär (3.) = Dienstleistungen (Handel, Banken, Versicherungen, Bildung, Gesundheit)."
-},
+ explain:"Transaktionskosten = alle Kosten für die Anbahnung und Abwicklung eines Tauschgeschäfts: Suche nach Tauschpartnern, Informationen über Anbieter und Preise, Vertragskosten, Kontrolle. Geld senkt diese Kosten erheblich."},
 
-{id:"x03", topic:"sektor", type:"sort", diff:1, tax:"K2",
- q:"Ordnen Sie die Berufe/Tätigkeiten dem richtigen Wirtschaftssektor zu:",
+{id:"a06",topic:"arbeitsteilung",type:"open",diff:3,tax:"K4",
+ q:"Stellen Sie sich vor, es gäbe kein Geld. Welche drei konkreten Probleme hätten Sie beim Tausch? Nennen Sie zu jedem Problem die Geldfunktion, die es löst.",
+ sample:"(1) Problem: Ich müsste jemanden finden, der genau das will, was ich anbiete, und gleichzeitig das hat, was ich brauche (doppelte Koinzidenz der Wünsche). Lösung: Zahlungsmittelfunktion. (2) Problem: Wie viele Brote ist ein Velo wert? Ohne gemeinsame Einheit müsste man unzählige Tauschverhältnisse kennen. Lösung: Rechnungseinheit. (3) Problem: Verderbliche Güter (z.B. Äpfel) kann man nicht lagern, ohne dass sie an Wert verlieren. Lösung: Wertaufbewahrungsfunktion.",
+ explain:"Eisenhut beschreibt diese drei Probleme am Beispiel einer Tauschwirtschaft. Geld löst alle drei durch seine Funktionen und senkt so die Transaktionskosten erheblich."},
+
+{id:"a07",topic:"arbeitsteilung",type:"tf",diff:2,tax:"K2",
+ q:"In einer modernen Volkswirtschaft produzieren die meisten Menschen den Grossteil der Güter, die sie täglich konsumieren, selbst.",
+ correct:false,explain:"Falsch. In einer arbeitsteiligen Wirtschaft produzieren wir fast nichts von dem, was wir täglich konsumieren, selbst. Eisenhut fordert zum Nachdenken auf: Wie viele Güter stellen Sie selber her? Eines, zwei, vielleicht zehn? Wir sind Teil eines dichten Netzes der Arbeitsteilung und Spezialisierung."},
+
+// ──── WIRTSCHAFTSSEKTOREN (s01–s06) ────
+{id:"s01",topic:"sektoren",type:"mc",diff:1,tax:"K1",
+ q:"Welche drei Wirtschaftssektoren unterscheidet man?",
+ options:[{v:"A",t:"Primärer Sektor (Urproduktion), sekundärer Sektor (Industrie), tertiärer Sektor (Dienstleistungen)."},{v:"B",t:"Produktion, Handel und Konsum."},{v:"C",t:"Staat, Unternehmen und Haushalte."},{v:"D",t:"Import, Export und Binnenmarkt."}],
+ correct:"A",explain:"Primärer Sektor = Urproduktion (Land-/Forstwirtschaft, Fischerei, Bergbau). Sekundärer Sektor = Veredelung/Industrie (Verarbeitung der Güter aus der Urproduktion). Tertiärer Sektor = Dienstleistungen (Handel, Banken, Versicherungen, Bildung, Gesundheit)."},
+
+{id:"s02",topic:"sektoren",type:"sort",diff:1,tax:"K2",
+ q:"Ordnen Sie die Berufe dem korrekten Wirtschaftssektor zu.",
  categories:["Primärer Sektor","Sekundärer Sektor","Tertiärer Sektor"],
  items:[
-   {t:"Bauer",cat:0},
-   {t:"Automechaniker in einer Fabrik",cat:1},
-   {t:"Bankangestellte",cat:2},
-   {t:"Fischer",cat:0},
-   {t:"Lehrperson",cat:2},
-   {t:"Bäcker in einer Grossbäckerei",cat:1}
+   {t:"Bauer",cat:0},{t:"Automechaniker in Fabrik",cat:1},
+   {t:"Bankberaterin",cat:2},{t:"Förster",cat:0},
+   {t:"Uhrmacher",cat:1},{t:"Lehrerin",cat:2},
+   {t:"Fischer",cat:0},{t:"Krankenpfleger",cat:2}
  ],
- explain:"Der primäre Sektor gewinnt Rohstoffe (Bauer, Fischer). Der sekundäre Sektor verarbeitet und veredelt sie (Fabrik, Grossbäckerei). Der tertiäre Sektor erbringt Dienstleistungen (Bank, Schule)."
-},
+ explain:"Primär: Bauer, Förster, Fischer (Urproduktion/Rohstoffgewinnung). Sekundär: Automechaniker in Fabrik, Uhrmacher (Verarbeitung/Industrie). Tertiär: Bankberaterin, Lehrerin, Krankenpfleger (Dienstleistungen)."},
 
-{id:"x04", topic:"sektor", type:"mc", diff:2, tax:"K2",
- q:"Wie hat sich die Beschäftigung in den drei Sektoren in der Schweiz seit 1800 verändert?",
- options:[
-   {v:"A", t:"Der primäre Sektor wächst stetig, die anderen schrumpfen."},
-   {v:"B", t:"Vom Agrarland (1. Sektor dominiert) über das Industrieland (2. Sektor) zur Dienstleistungsgesellschaft (3. Sektor dominiert)."},
-   {v:"C", t:"Alle drei Sektoren sind heute gleich gross."},
-   {v:"D", t:"Der sekundäre Sektor dominiert heute, der tertiäre schrumpft."}
+{id:"s03",topic:"sektoren",type:"mc",diff:2,tax:"K2",
+ q:"Wie hat sich die Beschäftigungsstruktur in der Schweiz seit 1800 verändert (Strukturwandel)?",
+ options:[{v:"A",t:"Von einem Agrarland (primärer Sektor dominiert) über ein Industrieland (sekundärer Sektor dominiert) zur Dienstleistungsgesellschaft (tertiärer Sektor dominiert)."},{v:"B",t:"Der primäre Sektor ist stetig gewachsen."},{v:"C",t:"Alle drei Sektoren sind gleich gross geblieben."},{v:"D",t:"Die Industrie dominiert heute stärker als je zuvor."}],
+ correct:"A",explain:"Strukturwandel der Schweiz: Um 1800 arbeiteten über 50% im primären Sektor (Agrarland). Um 1900 dominierte der sekundäre Sektor (Industrieland). Heute arbeiten über 70% im tertiären Sektor (Dienstleistungsgesellschaft). Der primäre Sektor beschäftigt nur noch ca. 3%."},
+
+{id:"s04",topic:"sektoren",type:"tf",diff:1,tax:"K1",
+ q:"Die Schweiz ist heute eine Dienstleistungsgesellschaft – der tertiäre Sektor ist der grösste.",
+ correct:true,explain:"Richtig. Über 70% der Beschäftigten in der Schweiz arbeiten im tertiären Sektor (Dienstleistungen: Banken, Versicherungen, Handel, Bildung, Gesundheit, IT). Der sekundäre Sektor (Industrie) beschäftigt ca. 25%, der primäre (Landwirtschaft) nur noch ca. 3%."},
+
+{id:"s05",topic:"sektoren",type:"fill",diff:1,tax:"K1",
+ q:"Der {0} Sektor umfasst die Urproduktion (z.B. Landwirtschaft). Der {1} Sektor umfasst die Industrie. Der {2} Sektor umfasst die Dienstleistungen.",
+ blanks:[
+   {answer:"primäre",alts:["erste","1.","primaere"]},
+   {answer:"sekundäre",alts:["zweite","2.","sekundaere"]},
+   {answer:"tertiäre",alts:["dritte","3.","tertiaere"]}
  ],
- correct:"B",
- explain:"Um 1800 war die Schweiz ein Agrarland (primärer Sektor dominiert). Um 1900 wurde sie zum Industrieland (sekundärer Sektor). Heute ist sie eine Dienstleistungsgesellschaft (über 70% im tertiären Sektor). Dieser Wandel heisst Strukturwandel."
-},
+ explain:"Die drei Sektoren der Volkswirtschaft: Primär (Urproduktion), sekundär (Verarbeitung/Industrie), tertiär (Dienstleistungen). Der Strukturwandel beschreibt die Verschiebung der Beschäftigung vom primären zum tertiären Sektor über die Jahrhunderte."},
 
-{id:"x05", topic:"sektor", type:"tf", diff:2, tax:"K2",
- q:"Der Strukturwandel von der Agrar- zur Dienstleistungsgesellschaft wurde vor allem durch Produktivitätsfortschritte ermöglicht.",
- correct:true,
- explain:"Richtig. Durch technischen Fortschritt und Mechanisierung stieg die Produktivität in der Landwirtschaft und der Industrie stark an. Weniger Arbeitskräfte konnten mehr produzieren, sodass Arbeitskräfte für den Dienstleistungssektor frei wurden."
-},
-
-{id:"x06", topic:"sektor", type:"mc", diff:3, tax:"K3",
- q:"In vielen Entwicklungsländern arbeitet noch über die Hälfte der Bevölkerung in der Landwirtschaft. Was lässt sich daraus schliessen?",
- options:[
-   {v:"A", t:"Diese Länder produzieren mehr Nahrungsmittel als die Schweiz."},
-   {v:"B", t:"Die Produktivität in der Landwirtschaft ist tief, daher werden viele Arbeitskräfte benötigt."},
-   {v:"C", t:"Der tertiäre Sektor ist in diesen Ländern am grössten."},
-   {v:"D", t:"Dienstleistungen sind in diesen Ländern nicht gefragt."}
- ],
- correct:"B",
- explain:"Ein hoher Anteil im primären Sektor deutet auf tiefe Produktivität hin: Ohne Maschinen und moderne Technologie werden viele Arbeitskräfte benötigt, um die Bevölkerung zu ernähren. Dadurch fehlen Arbeitskräfte für Industrie und Dienstleistungen."
-},
-
-{id:"x07", topic:"sektor", type:"tf", diff:2, tax:"K2",
- q:"In der Schweiz arbeiten heute die meisten Menschen im sekundären Sektor (Industrie).",
- correct:false,
- explain:"Falsch. In der Schweiz arbeiten heute rund drei Viertel aller Beschäftigten im tertiären Sektor (Dienstleistungen). Der sekundäre Sektor (Industrie) beschäftigt noch etwa 20–25%, der primäre Sektor (Landwirtschaft) nur noch rund 3%."
-}
-
+{id:"s06",topic:"sektoren",type:"open",diff:3,tax:"K4",
+ q:"Erklären Sie, warum der Strukturwandel von der Agrar- zur Dienstleistungsgesellschaft stattgefunden hat. Welche Rolle spielen dabei Produktivität und Arbeitsteilung?",
+ sample:"Durch technischen Fortschritt (Maschinen, Düngemittel) stieg die Produktivität in der Landwirtschaft stark an – weniger Arbeitskräfte konnten mehr produzieren. Freigesetzte Arbeitskräfte wanderten in die Industrie (Industrialisierung). Dort wiederum stieg die Produktivität durch Automatisierung, und Arbeitskräfte wechselten in den Dienstleistungssektor. Zudem steigen mit dem Wohlstand die Bedürfnisse nach Dienstleistungen (Bildung, Gesundheit, Reisen, Beratung). Arbeitsteilung und Spezialisierung trieben diesen Wandel voran.",
+ explain:"Der Strukturwandel ist ein zentrales Phänomen der wirtschaftlichen Entwicklung. Steigende Produktivität in einem Sektor setzt Arbeitskräfte frei, die in wachsenden Sektoren absorbiert werden. Gleichzeitig verändern sich mit steigendem Wohlstand die Bedürfnisse."}
 ];
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+let pickedSortItem=null;
 
-
-// AB HIER: IDENTISCHER CODE FÜR ALLE POOLS
-// ═══════════════════════════════════════════
-
-const DIFF_LABELS = {1:"Einfach",2:"Mittel",3:"Schwer"};
-const TYPE_LABELS = {mc:"Multiple Choice",tf:"Richtig/Falsch",fill:"Lückentext",calc:"Berechnung",sort:"Zuordnung"};
-
-let mode="", selectedTopics=new Set(), selectedDiffs=new Set(), selectedTypes=new Set();
-let pool=[], current=0, score=0, answered=false, results=[];
-
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
 function init(){
-  const tc=document.getElementById("topicChips");
-  Object.entries(TOPICS).forEach(([k,v])=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=k;c.textContent=v.short;
-    c.onclick=()=>toggleChip(c,selectedTopics,k);tc.appendChild(c);
-  });
-  const dc=document.getElementById("diffChips");
-  [1,2,3].forEach(d=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=d;c.textContent=DIFF_LABELS[d];
-    c.onclick=()=>toggleChip(c,selectedDiffs,d);dc.appendChild(c);
-  });
-  const yc=document.getElementById("typeChips");
-  const usedTypes=[...new Set(QUESTIONS.map(q=>q.type))];
-  usedTypes.forEach(t=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=t;c.textContent=TYPE_LABELS[t];
-    c.onclick=()=>toggleChip(c,selectedTypes,t);yc.appendChild(c);
-  });
-  updateCount();
+  buildChips('topicChips',TOPICS,'topics',t=>TOPICS[t].short);
+  buildChips('diffChips',DIFF_LABELS,'diffs',d=>DIFF_LABELS[d]);
+  buildChips('typeChips',TYPE_LABELS,'types',t=>TYPE_LABELS[t]);
+  updateFilterCount();
 }
 
-function toggleChip(el,set,key){
-  if(set.has(key)){set.delete(key);el.classList.remove("active")}
-  else{set.add(key);el.classList.add("active")}
-  updateCount();
+function buildChips(containerId,obj,filterKey,labelFn){
+  const c=document.getElementById(containerId);
+  c.innerHTML='';
+  Object.keys(obj).forEach(k=>{
+    const ch=document.createElement('span');
+    ch.className='chip';
+    ch.textContent=labelFn(k);
+    ch.dataset.key=k;
+    ch.onclick=()=>toggleChip(ch,filterKey,k);
+    c.appendChild(ch);
+  });
 }
 
 function setMode(m){
-  mode=m;
-  document.querySelectorAll(".mode-card").forEach(c=>c.classList.toggle("active",c.dataset.mode===m));
-  if(m==="mix"){
-    document.querySelectorAll("#topicChips .chip").forEach(c=>{c.classList.add("active");selectedTopics.add(c.dataset.key)});
-    document.querySelectorAll("#diffChips .chip").forEach(c=>{c.classList.add("active");selectedDiffs.add(+c.dataset.key)});
-    document.querySelectorAll("#typeChips .chip").forEach(c=>{c.classList.add("active");selectedTypes.add(c.dataset.key)});
+  state.mode=m;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.toggle('active',c.dataset.mode===m));
+  if(m==='mix'){
+    ['topicChips','diffChips','typeChips'].forEach(id=>{
+      document.querySelectorAll('#'+id+' .chip').forEach(ch=>{
+        ch.classList.add('active');
+        state.filters[id==='topicChips'?'topics':id==='diffChips'?'diffs':'types'].add(ch.dataset.key);
+      });
+    });
   } else {
-    [selectedTopics,selectedDiffs,selectedTypes].forEach(s=>s.clear());
-    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-    document.querySelectorAll("#typeChips .chip").forEach(c=>{c.classList.add("active");selectedTypes.add(c.dataset.key)});
+    ['topicChips','diffChips'].forEach(id=>{
+      document.querySelectorAll('#'+id+' .chip').forEach(ch=>ch.classList.remove('active'));
+      state.filters[id==='topicChips'?'topics':'diffs'].clear();
+    });
+    document.querySelectorAll('#typeChips .chip').forEach(ch=>{
+      ch.classList.add('active');
+      state.filters.types.add(ch.dataset.key);
+    });
   }
-  updateCount();
+  updateFilterCount();
+}
+
+function toggleChip(el,filterKey,key){
+  el.classList.toggle('active');
+  if(el.classList.contains('active'))state.filters[filterKey].add(key);
+  else state.filters[filterKey].delete(key);
+  updateFilterCount();
 }
 
 function getFiltered(){
   return QUESTIONS.filter(q=>
-    (selectedTopics.size===0||selectedTopics.has(q.topic))&&
-    (selectedDiffs.size===0||selectedDiffs.has(q.diff))&&
-    (selectedTypes.size===0||selectedTypes.has(q.type))
+    (state.filters.topics.size===0||state.filters.topics.has(q.topic))&&
+    (state.filters.diffs.size===0||state.filters.diffs.has(String(q.diff)))&&
+    (state.filters.types.size===0||state.filters.types.has(q.type))
   );
 }
 
-function updateCount(){
+function updateFilterCount(){
   const n=getFiltered().length;
-  document.getElementById("filterCount").textContent=n+" Aufgabe"+(n!==1?"n":"")+" verfügbar";
-  document.getElementById("startBtn").disabled=n===0;
+  document.getElementById('filterCount').textContent=n+' Aufgabe'+(n!==1?'n':'')+' verfügbar';
+  document.getElementById('startBtn').disabled=n===0||!state.mode;
 }
 
+// ══════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════
 function startQuiz(){
-  pool=getFiltered();
-  if(mode==="mix") pool.sort(()=>Math.random()-.5);
-  else pool.sort((a,b)=>a.diff-b.diff);
-  current=0;score=0;results=[];answered=false;
-  showScreen("quizScreen");
+  let q=getFiltered();
+  if(state.mode==='focus')q.sort((a,b)=>a.diff-b.diff);
+  else shuffle(q);
+  state.queue=q;state.current=0;state.score=0;state.maxScore=0;state.answered=[];state.wrong=[];
+  showScreen('quizScreen');
   renderQuestion();
 }
 
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
 function renderQuestion(){
-  const q=pool[current];
-  document.getElementById("qProgress")=(current+1)+" / "+pool.length;
-  document.getElementById("qScore").textContent=score+" Punkt"+(score!==1?"e":"");
-  document.getElementById("progressBar").style.width=((current)/pool.length*100)+"%";
-  document.getElementById("nextBtn").style.display="none";
-  answered=false;
+  const q=state.queue[state.current];
+  const total=state.queue.length;
+  document.getElementById('qProgress').textContent=(state.current+1)+' / '+total;
+  document.getElementById('qScore').textContent=state.score+' Punkte';
+  document.getElementById('progressBar').style.width=((state.current)/total*100)+'%';
+  document.getElementById('nextBtn').style.display='none';
 
-  const card=document.getElementById("questionCard");
-  let html=`<div class="q-badges">
-    <span class="badge badge-topic">${TOPICS[q.topic].short}</span>
-    <span class="badge badge-diff${q.diff}">${DIFF_LABELS[q.diff]}</span>
-    <span class="badge badge-tax">${q.tax}</span>
-    <span class="badge badge-type">${TYPE_LABELS[q.type]}</span>
-  </div>
-  <div class="q-text">${q.q}</div>`;
+  let html='<div class="q-badges">';
+  html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
+  html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
+  html+='<span class="badge badge-tax">'+q.tax+'</span>';
+  html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+  html+='</div>';
+  html+='<div class="q-text">'+q.q+'</div>';
 
-  if(q.type==="mc"){
-    html+=`<div class="mc-options">`;
+  if(q.type==='mc'){
+    html+='<div class="mc-options">';
     q.options.forEach(o=>{
-      html+=`<div class="mc-opt" data-val="${o.v}" onclick="selectMC(this,'${q.id}')">
-        <div class="opt-letter">${o.v}</div><div class="opt-text">${o.t}</div></div>`;
+      html+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
+      html+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+o.t+'</span></div>';
     });
-    html+=`</div>`;
-  } else if(q.type==="tf"){
-    html+=`<div class="tf-btns">
-      <div class="tf-btn" data-val="true" onclick="selectTF(this,'${q.id}')">✅ Richtig</div>
-      <div class="tf-btn" data-val="false" onclick="selectTF(this,'${q.id}')">❌ Falsch</div>
-    </div>`;
-  } else if(q.type==="fill"){
-    let parts=q.q.split(/\{(\d+)\}/);
-    html=`<div class="q-badges">
-      <span class="badge badge-topic">${TOPICS[q.topic].short}</span>
-      <span class="badge badge-diff${q.diff}">${DIFF_LABELS[q.diff]}</span>
-      <span class="badge badge-tax">${q.tax}</span>
-      <span class="badge badge-type">${TYPE_LABELS[q.type]}</span>
-    </div><div class="q-text">`;
-    parts.forEach((p,i)=>{
-      if(i%2===0) html+=p;
-      else html+=`<input type="text" class="fill-input" data-idx="${p}" autocomplete="off" spellcheck="false">`;
-    });
-    html+=`</div><button class="btn btn-primary" style="margin-top:8px" onclick="checkFill('${q.id}')">Prüfen</button>`;
-  } else if(q.type==="calc"){
-    html+=`<div class="calc-rows">`;
+    html+='</div>';
+  } else if(q.type==='tf'){
+    html+='<div class="tf-btns"><div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',true)">\u2705 Richtig</div>';
+    html+='<div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',false)">\u274c Falsch</div></div>';
+  } else if(q.type==='fill'){
+    let parts=q.q.split(/\{(\d+)\}/g);
+    html='<div class="q-badges">';
+    html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
+    html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
+    html+='<span class="badge badge-tax">'+q.tax+'</span>';
+    html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+    html+='</div>';
+    html+='<div class="q-text">';
+    let bIdx=0;
+    for(let i=0;i<parts.length;i++){
+      if(i%2===0)html+=parts[i];
+      else html+='<input class="fill-input" data-bidx="'+bIdx+'" placeholder="\u2026" autocomplete="off" autocapitalize="off">';
+      if(i%2===1)bIdx++;
+    }
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerFill(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='calc'){
+    html+='<div class="calc-rows">';
     q.rows.forEach((r,i)=>{
-      html+=`<div class="calc-row"><label>${r.label}</label>
-        <input type="number" step="any" data-idx="${i}" autocomplete="off">
-        <span class="unit">${r.unit||""}</span></div>`;
+      html+='<div class="calc-row"><label>'+r.label+'</label><input type="number" step="any" data-ridx="'+i+'" placeholder="?"><span class="unit">'+r.unit+'</span></div>';
     });
-    html+=`</div><button class="btn btn-primary" style="margin-top:12px" onclick="checkCalc('${q.id}')">Prüfen</button>`;
-  } else if(q.type==="sort"){
-    const shuffled=[...q.items].sort(()=>Math.random()-.5);
-    html+=`<div class="sort-pool" id="sortPool">`;
-    shuffled.forEach((item,i)=>{
-      html+=`<div class="sort-item" data-idx="${q.items.indexOf(item)}" onclick="pickItem(this)">${item.t}</div>`;
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerCalc(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='sort'){
+    html+='<div class="sort-pool" id="sortPool">';
+    let items=[...q.items];shuffle(items);
+    items.forEach((it,i)=>{
+      html+='<span class="sort-item" data-oidx="'+q.items.indexOf(it)+'" onclick="pickSortItem(this)">'+it.t+'</span>';
     });
-    html+=`</div><div class="sort-cats" style="grid-template-columns:repeat(${q.categories.length},1fr)">`;
-    q.categories.forEach((cat,i)=>{
-      html+=`<div class="sort-cat" data-cat="${i}" onclick="placeToCat(this)">
-        <div class="sort-cat-title">${cat}</div><div class="sort-cat-items"></div></div>`;
+    html+='</div><div class="sort-cats" id="sortCats" style="grid-template-columns:repeat('+q.categories.length+',1fr)">';
+    q.categories.forEach((cat,ci)=>{
+      html+='<div class="sort-cat" data-cidx="'+ci+'" onclick="placeSortItem(this,'+ci+')"><div class="sort-cat-title">'+cat+'</div><div class="sort-cat-items" id="sortCat'+ci+'"></div></div>';
     });
-    html+=`</div><button class="btn btn-primary" style="margin-top:12px" onclick="checkSort('${q.id}')">Prüfen</button>`;
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerSort(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='open'){
+    html+='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier\u2026"></textarea>';
+    html+='<button class="btn btn-primary" style="margin-top:14px" onclick="showOpenSample(\''+q.id+'\')">L\u00f6sung anzeigen</button>';
+    html+='<div class="open-sample" id="openSample"><div class="open-sample-title">L\u00f6sungsvorschlag:</div><div id="openSampleText"></div></div>';
+    html+='<div class="open-self" id="openSelf">';
+    html+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">\u2705 Gewusst</button>';
+    html+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">\u274c Nicht gewusst</button>';
+    html+='</div>';
   }
-
-  html+=`<div class="feedback" id="feedback"></div>`;
-  card.innerHTML=html;
+  html+='<div class="feedback" id="feedback"></div>';
+  document.getElementById('questionCard').innerHTML=html;
+  pickedSortItem=null;
 }
 
-// ── MC ──
-function selectMC(el,qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current], val=el.dataset.val, ok=val===q.correct;
-  if(ok) score++;
-  results.push({q,ok,given:val});
-  document.querySelectorAll(".mc-opt").forEach(o=>{
-    o.style.pointerEvents="none";
-    if(o.dataset.val===q.correct) o.classList.add("correct");
-    else if(o===el&&!ok) o.classList.add("wrong");
+// ── Answer handlers ──
+function answerMC(el,qid,val){
+  if(document.querySelector('.mc-opt.correct,.mc-opt.wrong'))return;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.querySelectorAll('.mc-opt').forEach(o=>{
+    o.style.pointerEvents='none';
+    if(o.dataset.val===q.correct)o.classList.add('correct');
+    else if(o.dataset.val===val)o.classList.add('wrong');
   });
-  showFeedback(ok,q.explain);
+  finishAnswer(q,val===q.correct,q.explain);
 }
 
-// ── TF ──
-function selectTF(el,qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current], val=el.dataset.val==="true", ok=val===q.correct;
-  if(ok) score++;
-  results.push({q,ok,given:val});
-  document.querySelectorAll(".tf-btn").forEach(b=>{
-    b.style.pointerEvents="none";
-    if((b.dataset.val==="true")===q.correct) b.classList.add("correct");
-    else if(b===el&&!ok) b.classList.add("wrong");
-  });
-  showFeedback(ok,q.explain);
+function answerTF(el,qid,val){
+  if(document.querySelector('.tf-btn.correct,.tf-btn.wrong'))return;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const correct=val===q.correct;
+  document.querySelectorAll('.tf-btn').forEach(b=>b.style.pointerEvents='none');
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct)document.querySelectorAll('.tf-btn').forEach(b=>{if(b!==el)b.classList.add('correct')});
+  finishAnswer(q,correct,q.explain);
 }
 
-// ── Fill ──
-function checkFill(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".fill-input").forEach(inp=>{
-    const idx=+inp.dataset.idx, blank=q.blanks[idx];
+function answerFill(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const inputs=document.querySelectorAll('.fill-input');
+  let allCorrect=true;
+  inputs.forEach(inp=>{
+    const bi=parseInt(inp.dataset.bidx);
+    const blank=q.blanks[bi];
     const userVal=inp.value.trim().toLowerCase();
-    const correct=userVal===blank.answer.toLowerCase()||blank.alts.some(a=>a.toLowerCase()===userVal);
-    inp.classList.add(correct?"correct":"wrong");
-    if(!correct){allOk=false;inp.value=inp.value+" → "+blank.answer;}
-    inp.readOnly=true;
+    const ok=userVal===blank.answer.toLowerCase()||blank.alts.some(a=>userVal===a.toLowerCase());
+    inp.classList.add(ok?'correct':'wrong');
+    inp.disabled=true;
+    if(!ok){allCorrect=false;inp.value=inp.value+' \u2192 '+blank.answer}
   });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Lückentext)"});
-  showFeedback(allOk,q.explain);
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-// ── Calc ──
-function checkCalc(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".calc-row input").forEach(inp=>{
-    const idx=+inp.dataset.idx, row=q.rows[idx];
+function answerCalc(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const inputs=document.querySelectorAll('.calc-row input');
+  let allCorrect=true;
+  inputs.forEach(inp=>{
+    const ri=parseInt(inp.dataset.ridx);
+    const row=q.rows[ri];
     const val=parseFloat(inp.value);
-    const correct=!isNaN(val)&&Math.abs(val-row.answer)<=row.tolerance;
-    inp.classList.add(correct?"correct":"wrong");
-    if(!correct){allOk=false;inp.value=inp.value+" → "+row.answer;}
-    inp.readOnly=true;
+    const ok=!isNaN(val)&&Math.abs(val-row.answer)<=row.tolerance;
+    inp.classList.add(ok?'correct':'wrong');
+    inp.disabled=true;
+    if(!ok){allCorrect=false;inp.value=inp.value+' \u2192 '+row.answer}
   });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Berechnung)"});
-  showFeedback(allOk,q.explain);
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-// ── Sort ──
-let pickedItem=null;
-function pickItem(el){
-  if(answered) return;
-  if(pickedItem===el){pickedItem.classList.remove("picked");pickedItem=null;return;}
-  if(pickedItem) pickedItem.classList.remove("picked");
-  pickedItem=el;el.classList.add("picked");
+function pickSortItem(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.sort-item').forEach(s=>s.classList.remove('picked'));
+  el.classList.add('picked');
+  pickedSortItem=el;
 }
-function placeToCat(catEl){
-  if(answered||!pickedItem) return;
-  const items=catEl.querySelector(".sort-cat-items");
-  const chip=document.createElement("div");
-  chip.className="sort-cat-item";chip.textContent=pickedItem.textContent;
-  chip.dataset.idx=pickedItem.dataset.idx;
-  chip.onclick=function(){
-    const pool=document.getElementById("sortPool");
-    const orig=document.createElement("div");
-    orig.className="sort-item";orig.textContent=this.textContent;
-    orig.dataset.idx=this.dataset.idx;orig.onclick=function(){pickItem(this)};
-    pool.appendChild(orig);this.remove();
+
+function placeSortItem(catEl,cidx){
+  if(!pickedSortItem)return;
+  const container=catEl.querySelector('.sort-cat-items');
+  const clone=document.createElement('span');
+  clone.className='sort-cat-item';
+  clone.textContent=pickedSortItem.textContent;
+  clone.dataset.oidx=pickedSortItem.dataset.oidx;
+  clone.onclick=function(){this.remove();
+    const orig=document.querySelector('.sort-item[data-oidx="'+this.dataset.oidx+'"]');
+    if(orig){orig.style.display='';orig.classList.remove('placed')}
   };
-  items.appendChild(chip);
-  pickedItem.remove();pickedItem=null;
+  container.appendChild(clone);
+  pickedSortItem.style.display='none';
+  pickedSortItem.classList.add('placed');
+  pickedSortItem.classList.remove('picked');
+  pickedSortItem=null;
 }
 
-function checkSort(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".sort-cat").forEach(catEl=>{
-    const catIdx=+catEl.dataset.cat;
-    catEl.querySelectorAll(".sort-cat-item").forEach(chip=>{
-      const itemIdx=+chip.dataset.idx;
-      const correct=q.items[itemIdx].cat===catIdx;
-      chip.classList.add(correct?"correct-item":"wrong-item");
-      if(!correct) allOk=false;
+function answerSort(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  let allCorrect=true;
+  document.querySelectorAll('.sort-cat').forEach(catEl=>{
+    const cidx=parseInt(catEl.dataset.cidx);
+    catEl.querySelectorAll('.sort-cat-item').forEach(item=>{
+      const oidx=parseInt(item.dataset.oidx);
+      const ok=q.items[oidx].cat===cidx;
+      item.classList.add(ok?'correct-item':'wrong-item');
+      if(!ok)allCorrect=false;
     });
   });
-  // Show unplaced items as wrong
-  document.querySelectorAll("#sortPool .sort-item").forEach(item=>{
-    item.style.opacity=".5";allOk=false;
-  });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Zuordnung)"});
-  showFeedback(allOk,q.explain);
+  document.querySelectorAll('.sort-item').forEach(s=>s.style.pointerEvents='none');
+  document.querySelectorAll('.sort-cat').forEach(c=>c.style.pointerEvents='none');
+  document.querySelectorAll('#questionCard .btn-primary').forEach(b=>b.style.display='none');
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-function showFeedback(ok,explain){
-  const fb=document.getElementById("feedback");
-  fb.className="feedback show "+(ok?"correct":"wrong");
-  fb.innerHTML=`<div class="feedback-title">${ok?"✅ Richtig!":"❌ Leider falsch."}</div>${explain}`;
-  document.getElementById("nextBtn").style.display="inline-flex";
-  document.getElementById("questionCard").querySelectorAll("button.btn-primary").forEach(b=>b.style.display="none");
+function showOpenSample(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.getElementById('openSampleText').textContent=q.sample;
+  document.getElementById('openSample').classList.add('show');
+  document.getElementById('openSelf').classList.add('show');
+  document.querySelectorAll('#questionCard .btn-primary').forEach(b=>{if(b.textContent.includes('L\u00f6sung'))b.style.display='none'});
+}
+
+function answerOpen(qid,correct){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.getElementById('openSelf').style.display='none';
+  document.getElementById('openAnswer').disabled=true;
+  finishAnswer(q,correct,q.explain);
+}
+
+function finishAnswer(q,correct,explain){
+  state.maxScore++;
+  if(correct)state.score++;
+  else state.wrong.push({q:q.q,explain:q.explain,topic:q.topic});
+  state.answered.push({id:q.id,correct});
+  document.getElementById('qScore').textContent=state.score+' Punkte';
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.innerHTML='<div class="feedback-title">'+(correct?'\u2705 Richtig!':'\u274c Leider falsch')+'</div><div>'+explain+'</div>';
+  document.getElementById('nextBtn').style.display='inline-flex';
 }
 
 function nextQuestion(){
-  current++;
-  if(current>=pool.length) endQuiz();
-  else renderQuestion();
+  state.current++;
+  if(state.current>=state.queue.length)return endQuiz();
+  renderQuestion();
 }
 
 function endQuiz(){
-  showScreen("resultScreen");
-  const total=results.length;
-  document.getElementById("resPts").textContent=score+"/"+total;
-  document.getElementById("resPct").textContent=total?Math.round(score/total*100)+"%":"0%";
-
-  // Topic breakdown
-  const byTopic={};
-  results.forEach(r=>{
-    if(!byTopic[r.q.topic]) byTopic[r.q.topic]={ok:0,total:0};
-    byTopic[r.q.topic].total++;
-    if(r.ok) byTopic[r.q.topic].ok++;
+  document.getElementById('progressBar').style.width='100%';
+  showScreen('resultScreen');
+  const pct=state.maxScore?Math.round(state.score/state.maxScore*100):0;
+  document.getElementById('resPts').textContent=state.score+' / '+state.maxScore;
+  document.getElementById('resPct').textContent=pct+'%';
+  let topicData={};
+  state.queue.forEach((q,i)=>{
+    if(i>=state.answered.length)return;
+    if(!topicData[q.topic])topicData[q.topic]={correct:0,total:0};
+    topicData[q.topic].total++;
+    if(state.answered[i].correct)topicData[q.topic].correct++;
   });
-  const tr=document.getElementById("topicResults");tr.innerHTML="";
-  Object.entries(byTopic).forEach(([t,d])=>{
-    const pct=Math.round(d.ok/d.total*100);
-    const cls=pct>=70?"tg":pct>=40?"ty":"tr";
-    tr.innerHTML+=`<div class="topic-row">
-      <span class="topic-name">${TOPICS[t].label}</span>
-      <span class="topic-score">${d.ok}/${d.total}</span>
-      <div class="topic-bar"><div class="topic-bar-fill ${cls}" style="width:${pct}%"></div></div>
-    </div>`;
+  let tHtml='';
+  Object.keys(topicData).forEach(t=>{
+    const d=topicData[t];const p=Math.round(d.correct/d.total*100);
+    const cls=p>=70?'tg':p>=40?'ty':'tr';
+    tHtml+='<div class="topic-row"><span class="topic-name">'+TOPICS[t].label+'</span>';
+    tHtml+='<span class="topic-score">'+d.correct+'/'+d.total+'</span>';
+    tHtml+='<div class="topic-bar"><div class="topic-bar-fill '+cls+'" style="width:'+p+'%"></div></div></div>';
   });
-
-  // Wrong questions
-  const wl=document.getElementById("wrongList");wl.innerHTML="";
-  const wrongs=results.filter(r=>!r.ok);
-  if(wrongs.length===0) document.getElementById("wrongCard").style.display="none";
-  else{
-    document.getElementById("wrongCard").style.display="block";
-    wrongs.forEach(r=>{
-      wl.innerHTML+=`<div class="wrong-item"><div class="wq">${r.q.q.replace(/\{\d+\}/g,"___")}</div><div class="wa">${r.q.explain}</div></div>`;
+  document.getElementById('topicResults').innerHTML=tHtml;
+  if(state.wrong.length){
+    document.getElementById('wrongCard').style.display='';
+    let wHtml='';
+    state.wrong.forEach(w=>{
+      wHtml+='<div class="wrong-item"><div class="wq">'+w.q+'</div><div class="wa">'+w.explain+'</div></div>';
     });
-  }
+    document.getElementById('wrongList').innerHTML=wHtml;
+  }else{document.getElementById('wrongCard').style.display='none'}
 }
 
-function exportResults(){window.print();}
+function exportResults(){window.print()}
 
 function resetApp(){
-  mode="";selectedTopics.clear();selectedDiffs.clear();selectedTypes.clear();
-  pool=[];current=0;score=0;results=[];answered=false;pickedItem=null;
-  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-  document.querySelectorAll(".mode-card").forEach(c=>c.classList.remove("active"));
-  showScreen("startScreen");
-  updateCount();
+  state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('active'));
+  updateFilterCount();
+  showScreen('startScreen');
 }
 
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
 init();
+
 </script>
 </body>
 </html>

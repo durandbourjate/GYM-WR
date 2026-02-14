@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VWL Übungspool: Ökonomisches Menschenbild | SF GYM2</title>
+<title>VWL Übungspool: Ökonomisches Menschenbild | SF GYM1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
 :root{
---c-bg:#f0f2f5;--c-surface:#fff;--c-primary:#1a365d;--c-primary-light:#2a5298;
+--c-bg:#f0f2f5;--c-surface:#fff;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#fef3c7;--c-success:#16a34a;--c-success-bg:#f0fdf4;
 --c-error:#dc2626;--c-error-bg:#fef2f2;--c-info:#2563eb;--c-info-bg:#eff6ff;
 --c-text:#1e293b;--c-text-soft:#64748b;--c-border:#e2e8f0;--radius:10px;
@@ -21,7 +21,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .container{max-width:720px;margin:0 auto;padding:20px 16px 100px}
 .screen{display:none}.screen.active{display:block}
 .card{background:var(--c-surface);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow-sm);border:1px solid var(--c-border)}
-.card h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;color:var(--c-primary)}
+.card h2{font-size:1.05rem;font-weight:700;margin-bottom:14px;color:var(--c-text)}
 .mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
 .mode-card{border:2px solid var(--c-border);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center;transition:.2s}
 .mode-card:hover{border-color:var(--c-primary-light);background:#f8fafc}
@@ -33,17 +33,17 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .chip{display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:2px solid var(--c-border);background:#fff;transition:.15s;user-select:none}
 .chip:hover{border-color:var(--c-primary-light)}
 .chip.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
-.filter-count{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--c-primary);margin-top:8px}
+.filter-count{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--c-text);margin-top:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:.2s}
 .btn-primary{background:var(--c-primary);color:#fff}.btn-primary:hover{background:var(--c-primary-light)}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-accent{background:var(--c-accent);color:var(--c-primary)}.btn-accent:hover{filter:brightness(1.05)}
+.btn-accent{background:var(--c-accent);color:#fff}.btn-accent:hover{filter:brightness(1.05)}
 .btn-outline{background:transparent;border:2px solid var(--c-border);color:var(--c-text)}.btn-outline:hover{border-color:var(--c-primary);color:var(--c-primary)}
 .btn-block{width:100%;justify-content:center}
 .progress-bar-wrap{background:var(--c-border);border-radius:20px;height:8px;margin:12px 0;overflow:hidden}
 .progress-bar-fill{height:100%;background:var(--c-accent);border-radius:20px;transition:width .4s ease}
 .quiz-meta{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--c-text-soft);margin-bottom:4px}
-.quiz-meta .score{font-family:'DM Mono',monospace;font-weight:600;color:var(--c-primary)}
+.quiz-meta .score{font-family:'DM Mono',monospace;font-weight:600;color:var(--c-text)}
 .q-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .badge{font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.03em}
 .badge-topic{background:var(--c-info-bg);color:var(--c-info)}
@@ -79,14 +79,22 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .calc-row .unit{font-size:.85rem;color:var(--c-text-soft);min-width:30px}
 .calc-row input.correct{border-color:var(--c-success);background:var(--c-success-bg)}
 .calc-row input.wrong{border-color:var(--c-error);background:var(--c-error-bg)}
+.open-answer{width:100%;min-height:80px;padding:12px;border:2px solid var(--c-border);border-radius:var(--radius);font-family:inherit;font-size:.92rem;line-height:1.5;resize:vertical;outline:none;background:#fff}
+.open-answer:focus{border-color:var(--c-primary)}
+.open-sample{margin-top:12px;padding:14px;border-radius:var(--radius);background:var(--c-info-bg);border-left:4px solid var(--c-info);font-size:.9rem;line-height:1.6;display:none}
+.open-sample.show{display:block}
+.open-sample-title{font-weight:700;color:var(--c-info);margin-bottom:4px}
+.open-self{display:flex;gap:10px;margin-top:12px;display:none}
+.open-self.show{display:flex}
+.open-self .btn{flex:1}
 .sort-pool{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:12px;background:var(--c-bg);border-radius:var(--radius);margin-bottom:12px}
 .sort-item{padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:500;cursor:pointer;transition:.2s;border:2px solid var(--c-border);background:#fff;user-select:none}
-.sort-item:hover{border-color:var(--c-primary-light)}.sort-item.picked{border-color:var(--c-info);background:var(--c-info-bg);box-shadow:0 0 0 2px rgba(37,99,235,.2)}
+.sort-item:hover{border-color:var(--c-primary-light)}.sort-item.picked{border-color:var(--c-primary);background:var(--c-primary);color:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--c-primary) 25%,transparent)}
 .sort-cats{display:grid;gap:12px;margin-top:8px}
 .sort-cat{border:2px dashed var(--c-border);border-radius:var(--radius);padding:12px;min-height:60px;transition:.2s}
 .sort-cat:hover{border-color:var(--c-primary-light)}
-.sort-cat.active{border-color:var(--c-info);background:var(--c-info-bg)}
-.sort-cat-title{font-weight:700;font-size:.85rem;color:var(--c-primary);margin-bottom:8px}
+.sort-cat.active{border-color:var(--c-primary);background:color-mix(in srgb,var(--c-primary) 8%,transparent)}
+.sort-cat-title{font-weight:700;font-size:.85rem;color:var(--c-text);margin-bottom:8px}
 .sort-cat-items{display:flex;flex-wrap:wrap;gap:6px}
 .sort-cat-item{padding:6px 12px;border-radius:6px;font-size:.82rem;font-weight:500;cursor:pointer;background:var(--c-primary);color:#fff;transition:.15s}
 .sort-cat-item:hover{opacity:.85}
@@ -98,7 +106,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .feedback-title{font-weight:700;margin-bottom:4px}
 .quiz-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .result-score{text-align:center;padding:24px;font-family:'DM Mono',monospace}
-.result-score .big{font-size:2.8rem;font-weight:700;color:var(--c-primary)}
+.result-score .big{font-size:2.8rem;font-weight:700;color:var(--c-text)}
 .result-score .pct{font-size:1.4rem;color:var(--c-text-soft)}
 .topic-results{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .topic-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:var(--c-bg)}
@@ -113,7 +121,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .wrong-item .wa{font-size:.85rem;color:var(--c-text-soft);line-height:1.5}
 @media(prefers-color-scheme:dark){
 :root{
---c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#5b8def;--c-primary-light:#7ba4f7;
+--c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#3d2e10;--c-success:#22c55e;--c-success-bg:#0a2618;
 --c-error:#ef4444;--c-error-bg:#2a0f0f;--c-info:#60a5fa;--c-info-bg:#0f1d3a;
 --c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
@@ -130,6 +138,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .topic-row{background:var(--c-surface)}
 .wrong-item{background:var(--c-surface)}
 .calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
+.open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 }
 @media print{.app-header,.quiz-actions,.btn,#startScreen{display:none!important}.screen{display:block!important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
@@ -138,987 +147,686 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 <body>
 <header class="app-header">
 <h1>Übungspool: Ökonomisches Menschenbild</h1>
-<div class="meta">SF GYM2 · Gymnasium Hofwil · Individuell üben</div>
+<div class="meta">SF GYM1 · Gymnasium Hofwil · Individuell üben</div>
 </header>
 <div class="container">
-
-<!-- ═══ Startbildschirm ═══ -->
 <div id="startScreen" class="screen active">
-<div class="card">
-<h2>📋 Modus wählen</h2>
-<div class="mode-cards">
-<div class="mode-card" data-mode="focus" onclick="setMode('focus')">
-<div class="mode-icon">🎯</div>
-<div class="mode-title">Fokus</div>
-<div class="mode-desc">Gezielt ein Thema üben, nach Schwierigkeit sortiert</div>
+<div class="card"><h2>📋 Modus wählen</h2><div class="mode-cards"><div class="mode-card" data-mode="focus" onclick="setMode('focus')"><div class="mode-icon">🎯</div><div class="mode-title">Fokus</div><div class="mode-desc">Gezielt ein Thema üben, nach Schwierigkeit sortiert</div></div><div class="mode-card" data-mode="mix" onclick="setMode('mix')"><div class="mode-icon">🔀</div><div class="mode-title">Mix</div><div class="mode-desc">Zufällige Auswahl quer durch alle Themen</div></div></div></div>
+<div class="card"><h2>📚 Unterthema</h2><div class="chips" id="topicChips"></div></div>
+<div class="card"><h2>📊 Schwierigkeit</h2><div class="chips" id="diffChips"></div></div>
+<div class="card"><h2>✏️ Fragetyp</h2><div class="chips" id="typeChips"></div></div>
+<div class="card" style="text-align:center"><div class="filter-count" id="filterCount">0 Aufgaben verfügbar</div><button class="btn btn-primary btn-block" id="startBtn" style="margin-top:14px" onclick="startQuiz()" disabled>Übung starten</button></div>
 </div>
-<div class="mode-card" data-mode="mix" onclick="setMode('mix')">
-<div class="mode-icon">🔀</div>
-<div class="mode-title">Mix</div>
-<div class="mode-desc">Zufällige Auswahl quer durch alle Themen</div>
-</div>
-</div>
-</div>
-
-<div class="card">
-<h2>📚 Unterthema</h2>
-<div class="chips" id="topicChips"></div>
-</div>
-<div class="card">
-<h2>📊 Schwierigkeit</h2>
-<div class="chips" id="diffChips"></div>
-</div>
-<div class="card">
-<h2>✏️ Fragetyp</h2>
-<div class="chips" id="typeChips"></div>
-</div>
-<div class="card" style="text-align:center">
-<div class="filter-count" id="filterCount">0 Aufgaben verfügbar</div>
-<button class="btn btn-primary btn-block" id="startBtn" style="margin-top:14px" onclick="startQuiz()" disabled>Übung starten</button>
-</div>
-</div>
-
-<!-- ═══ Quiz-Bildschirm ═══ -->
 <div id="quizScreen" class="screen">
-<div class="card">
-<div class="quiz-meta">
-<span id="qProgress">1 / 10</span>
-<span class="score" id="qScore">0 Punkte</span>
-</div>
-<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
-</div>
+<div class="card"><div class="quiz-meta"><span id="qProgress">1 / 10</span><span class="score" id="qScore">0 Punkte</span></div><div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div></div>
 <div class="card" id="questionCard"></div>
-<div class="quiz-actions" id="quizActions">
-<button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none">Nächste Aufgabe →</button>
-<button class="btn btn-outline" onclick="endQuiz()">Übung beenden</button>
+<div class="quiz-actions" id="quizActions"><button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none">Nächste Aufgabe →</button><button class="btn btn-outline" onclick="endQuiz()">Übung beenden</button></div>
 </div>
-</div>
-
-<!-- ═══ Auswertung ═══ -->
 <div id="resultScreen" class="screen">
-<div class="card">
-<div class="result-score">
-<div class="big" id="resPts">0/0</div>
-<div class="pct" id="resPct">0%</div>
-</div>
-</div>
+<div class="card"><div class="result-score"><div class="big" id="resPts">0/0</div><div class="pct" id="resPct">0%</div></div></div>
 <div class="card"><h2>📊 Nach Unterthema</h2><div id="topicResults" class="topic-results"></div></div>
 <div class="card" id="wrongCard"><h2>❌ Zum Repetieren</h2><div id="wrongList" class="wrong-list"></div></div>
-<div class="card" style="text-align:center">
-<button class="btn btn-primary" onclick="exportResults()" style="margin-right:10px">📄 Als PDF speichern</button>
-<button class="btn btn-outline" onclick="resetApp()">Neue Übung starten</button>
+<div class="card" style="text-align:center"><button class="btn btn-primary" onclick="exportResults()" style="margin-right:10px">📄 Als PDF speichern</button><button class="btn btn-outline" onclick="resetApp()">Neue Übung starten</button></div>
 </div>
 </div>
-</div>
-
 <script>
-// ═══════════════════════════════════════════
-// THEMENSPEZIFISCHE DATEN
-// ═══════════════════════════════════════════
-
-const TOPICS = {
-  homo: {label:"Homo Oeconomicus: Eigenschaften & Modell", short:"Homo Oec."},
-  kritik: {label:"Kritik am Homo Oeconomicus", short:"Kritik"},
-  anreize: {label:"Anreize und ihre Wirkung", short:"Anreize"},
-  spiel: {label:"Spieltheorie & Gefangenendilemma", short:"Spieltheorie"},
-  strategie: {label:"Erfolgreiche Strategien (iterierte Spiele)", short:"Strategien"},
-  aufgaben: {label:"Aufgaben der Volkswirtschaftslehre", short:"Aufgaben VWL"},
-  ziele: {label:"Ziele der Wirtschaftspolitik", short:"Ziele WiPol"}
+const TOPICS={
+  homo:{label:"Homo Oeconomicus",short:"Homo Oec."},
+  kritik:{label:"Kritik & Verhaltensökonomie",short:"Kritik"},
+  opportunitaet:{label:"Opportunitätskosten & Trade-offs",short:"Opp.kosten"},
+  anreize:{label:"Anreize und ihre Wirkung",short:"Anreize"},
+  spieltheorie:{label:"Gefangenendilemma & Spieltheorie",short:"Spieltheorie"},
+  aufgaben:{label:"Aufgaben der VWL",short:"Aufgaben VWL"},
+  ziele:{label:"Ziele der Wirtschaftspolitik",short:"Ziele WiPol"}
 };
+const DIFF_LABELS={1:"\u2b50 Einfach",2:"\u2b50\u2b50 Mittel",3:"\u2b50\u2b50\u2b50 Schwer"};
+const TYPE_LABELS={mc:"\ud83d\udcdd Multiple Choice",tf:"\u2713\u2717 Richtig/Falsch",fill:"\ud83d\udcd6 L\u00fcckentext",calc:"\ud83d\udd22 Berechnung",sort:"\ud83d\udd00 Zuordnung",open:"\u270f\ufe0f Offene Frage"};
+const QUESTIONS=[
+// ──── HOMO OECONOMICUS (h01–h08) ────
+{id:"h01",topic:"homo",type:"mc",diff:1,tax:"K1",
+ q:"Was versteht man unter dem «Homo oeconomicus»?",
+ options:[{v:"A",t:"Ein Modell des rational handelnden Menschen, der unter Abwägung von Kosten und Nutzen seinen persönlichen Nutzen maximiert."},{v:"B",t:"Einen Menschen, der nur an Geld interessiert ist."},{v:"C",t:"Einen perfekten Konsumenten ohne Emotionen."},{v:"D",t:"Ein historisches Menschenbild aus der Antike."}],
+ correct:"A",explain:"Der Homo oeconomicus ist ein vereinfachtes Modell: Er bewertet vernünftig alle Fakten und trifft Entscheidungen, die seinen persönlichen Nutzen maximieren. Es ist ein Durchschnittsmodell, keine Beschreibung einzelner Menschen."},
 
-const QUESTIONS = [
+{id:"h02",topic:"homo",type:"tf",diff:1,tax:"K2",
+ q:"Der Homo oeconomicus beschreibt, wie sich ein einzelner Mensch tatsächlich verhält.",
+ correct:false,explain:"Falsch. Der Homo oeconomicus erklärt kein Individualverhalten, sondern soll ein Durchschnittsverhalten widerspiegeln. Eisenhut: «Wie alle anderen Wissenschaften ist auch die VWL auf Abstraktionen und Verallgemeinerungen angewiesen, um die Komplexität in den Griff zu bekommen.» Das Modell ist gezielt vereinfacht."},
 
-// ═══════════════════════════════════════════
-// HOMO OECONOMICUS (h01–h10)
-// ═══════════════════════════════════════════
-
-{id:"h01", topic:"homo", type:"mc", diff:1, tax:"K1",
- q:"Welche der folgenden Eigenschaften wird dem Homo Oeconomicus zugeschrieben?",
- options:[
-   {v:"A", t:"Er handelt stets altruistisch und stellt das Gemeinwohl über den eigenen Nutzen."},
-   {v:"B", t:"Er trifft rationale Entscheidungen, um seinen persönlichen Nutzen zu maximieren."},
-   {v:"C", t:"Er entscheidet immer aus dem Bauchgefühl heraus."},
-   {v:"D", t:"Er orientiert sich ausschliesslich an sozialen Normen seiner Umgebung."}
- ],
- correct:"B",
- explain:"Der Homo Oeconomicus ist ein Modellmensch, der rational handelt, eigennützig ist und seinen persönlichen Nutzen maximiert. Er wägt Kosten und Nutzen ab und wählt die für ihn beste Option."
-},
-
-{id:"h02", topic:"homo", type:"tf", diff:1, tax:"K1",
- q:"Der Homo Oeconomicus ist ein Modell, das das Durchschnittsverhalten von Menschen beschreiben soll – nicht das Verhalten einzelner Personen.",
- correct:true,
- explain:"Richtig. Das Modell abstrahiert von individuellen Persönlichkeitsmerkmalen und soll ein Durchschnittsverhalten widerspiegeln. Wie eine Karikatur übertreibt es bestimmte Eigenschaften, um wesentliche Muster sichtbar zu machen."
-},
-
-{id:"h03", topic:"homo", type:"mc", diff:1, tax:"K2",
- q:"Was versteht man unter «Opportunitätskosten»?",
- options:[
-   {v:"A", t:"Die Kosten, die bei der Produktion eines Gutes anfallen."},
-   {v:"B", t:"Den Nutzen der besten nicht gewählten Alternative, auf die man verzichtet."},
-   {v:"C", t:"Die Kosten für die Gelegenheit, ein Produkt günstiger einzukaufen."},
-   {v:"D", t:"Die versteckten Kosten in einem Kaufvertrag."}
- ],
- correct:"B",
- explain:"Opportunitätskosten bezeichnen den Nutzen der besten Alternative, auf die man bei einer Entscheidung verzichtet. Jeder Entscheid hat Opportunitätskosten, weil jede Wahl gleichzeitig ein Verzicht auf andere Möglichkeiten ist. Deshalb gilt: Nichts ist gratis."
-},
-
-{id:"h04", topic:"homo", type:"tf", diff:1, tax:"K2",
- q:"Eigennütziges Handeln bedeutet, dass der Mensch immer nur danach trachtet, anderen zu schaden.",
- correct:false,
- explain:"Falsch. Eigennütziges Handeln bedeutet lediglich, dass der Mensch sich an seinen eigenen Interessen orientiert. Menschen sind – von Ausnahmen abgesehen – weder Heilige noch Verbrecher. Eigennützigkeit schliesst soziale Orientierung nicht aus."
-},
-
-{id:"h05", topic:"homo", type:"fill", diff:1, tax:"K1",
- q:"Der Homo Oeconomicus handelt {0}, ist {1} und versucht, seinen {2} zu maximieren.",
+{id:"h03",topic:"homo",type:"fill",diff:1,tax:"K1",
+ q:"Der Homo oeconomicus handelt {0} – er wählt unter den verschiedenen Möglichkeiten diejenige, die seinen {1} maximiert. Dabei wägt er {2} und Nutzen sorgfältig ab.",
  blanks:[
-   {answer:"rational", alts:["vernünftig","ökonomisch rational"]},
-   {answer:"eigennützig", alts:["selbstinteressiert"]},
-   {answer:"Nutzen", alts:["persönlichen Nutzen","Eigennutzen"]}
+   {answer:"rational",alts:["ökonomisch rational","vernünftig"]},
+   {answer:"Nutzen",alts:["persönlichen Nutzen"]},
+   {answer:"Kosten",alts:[]}
  ],
- explain:"Die drei Kerneigenschaften des Homo Oeconomicus sind: rationales Handeln (Kosten-Nutzen-Abwägung), Eigennützigkeit (Orientierung an eigenen Interessen) und Nutzenmaximierung (Wahl der besten verfügbaren Option)."
-},
+ explain:"Die drei Kernmerkmale: (1) Rationales Handeln, (2) Nutzenmaximierung, (3) Kosten-Nutzen-Abwägung. Adam Smith formulierte 1776 die Grundidee: Nicht das Wohlwollen des Metzgers und Bäckers verschafft uns das Essen, sondern deren Eigeninteresse."},
 
-{id:"h06", topic:"homo", type:"mc", diff:2, tax:"K2",
- q:"Warum sagt man: «Tut mir leid, ich habe keine Zeit» sei eigentlich eine Aussage über Opportunitätskosten?",
- options:[
-   {v:"A", t:"Weil man damit sagt, dass die eigene Zeit wertvoller ist als das Treffen."},
-   {v:"B", t:"Weil man gar keine freien Stunden im Tag hat."},
-   {v:"C", t:"Weil der Nutzen der Alternativen höher eingeschätzt wird als der Nutzen des Treffens."},
-   {v:"D", t:"Weil man grundsätzlich ungern neue Termine vereinbart."}
- ],
- correct:"C",
- explain:"Die ehrliche Antwort wäre: «Die Opportunitätskosten sind mir zu hoch!» Man hat durchaus Zeit, schätzt aber den Nutzen anderer Aktivitäten höher ein. Jede Zeitverwendung hat Opportunitätskosten – den Verzicht auf die nächstbeste Alternative."
-},
-
-{id:"h07", topic:"homo", type:"tf", diff:2, tax:"K2",
- q:"Das ökonomische Prinzip besagt, dass man mit möglichst viel Mitteln ein Ziel erreichen soll.",
- correct:false,
- explain:"Falsch. Das ökonomische Prinzip besagt das Gegenteil: mit möglichst wenig Mitteln ein Ziel erreichen (Minimalprinzip) oder aus gegebenen Mitteln ein Maximum herausholen (Maximalprinzip). Der sparsame Umgang mit knappen Ressourcen ist der Kern des ökonomischen Denkens."
-},
-
-{id:"h08", topic:"homo", type:"mc", diff:2, tax:"K3",
- q:"Lisa kann in einer Stunde entweder CHF 30 als Nachhilfelehrerin verdienen oder für eine Prüfung lernen. Sie entscheidet sich fürs Lernen. Was sind die Opportunitätskosten ihrer Entscheidung?",
- options:[
-   {v:"A", t:"CHF 0, weil Lernen gratis ist."},
-   {v:"B", t:"CHF 30 – der entgangene Verdienst aus der Nachhilfe."},
-   {v:"C", t:"Die Note, die sie in der Prüfung erzielt."},
-   {v:"D", t:"Die Kosten für die Lernmaterialien."}
- ],
- correct:"B",
- explain:"Die Opportunitätskosten sind der Nutzen der besten nicht gewählten Alternative. In diesem Fall verzichtet Lisa auf CHF 30 Verdienst. Das Lernen ist also nicht gratis, auch wenn keine direkten Kosten anfallen."
-},
-
-{id:"h09", topic:"homo", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die folgenden Aussagen dem ökonomischen Prinzip zu:",
- categories:["Minimalprinzip","Maximalprinzip"],
+{id:"h04",topic:"homo",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie zu: Welche Eigenschaften gehören zum Homo oeconomicus und welche nicht?",
+ categories:["Eigenschaft des Homo oeconomicus","Gehört NICHT zum Modell"],
  items:[
-   {t:"Mit CHF 50 ein möglichst gutes Geburtstagsgeschenk kaufen", cat:1},
-   {t:"Die günstigste Zugverbindung nach Zürich wählen", cat:0},
-   {t:"Aus dem vorhandenen Budget die maximale Anzahl Eintritte kaufen", cat:1},
-   {t:"Den Schulweg mit möglichst wenig Zeitaufwand zurücklegen", cat:0},
-   {t:"Mit den vorhandenen Zutaten das bestmögliche Abendessen kochen", cat:1},
-   {t:"Für die Prüfungsvorbereitung möglichst wenig Zeit aufwenden und trotzdem bestehen", cat:0}
+   {t:"Handelt rational",cat:0},{t:"Handelt immer aus dem Bauch heraus",cat:1},
+   {t:"Maximiert seinen Nutzen",cat:0},{t:"Ist vollkommen altruistisch",cat:1},
+   {t:"Wägt Kosten und Nutzen ab",cat:0},{t:"Kennt alle Informationen perfekt",cat:1},
+   {t:"Reagiert auf Anreize",cat:0},{t:"Ignoriert sein Eigeninteresse",cat:1}
  ],
- explain:"Beim Minimalprinzip wird ein gegebenes Ziel mit möglichst wenig Mitteln erreicht. Beim Maximalprinzip wird aus gegebenen Mitteln das Maximum herausgeholt."
-},
+ explain:"Der Homo oeconomicus: rational, nutzenmaximierend, eigennützig, auf Anreize reagierend. NICHT: allwissend (das ist eine Karikatur), rein altruistisch, rein emotional. Eigennützig ≠ egoistisch: Er kann auch soziale Ziele verfolgen, wenn es seinem Nutzen dient."},
 
-{id:"h10", topic:"homo", type:"fill", diff:1, tax:"K1",
- q:"Die Grundlage des ökonomischen Denkens ist die Tatsache der {0}. Menschen haben {1} Bedürfnisse, aber nur {2} Mittel zur Verfügung.",
+{id:"h05",topic:"homo",type:"mc",diff:2,tax:"K2",
+ q:"«Nicht vom Wohlwollen des Metzgers, Brauers und Bäckers erwarten wir das, was wir zum Essen brauchen, sondern davon, dass sie ihre eigenen Interessen wahrnehmen.» Von wem stammt dieses Zitat?",
+ options:[{v:"A",t:"Adam Smith (1776)"},{v:"B",t:"Karl Marx (1867)"},{v:"C",t:"John M. Keynes (1936)"},{v:"D",t:"Milton Friedman (1962)"}],
+ correct:"A",explain:"Dieses berühmte Zitat stammt aus Adam Smiths Werk «Der Wohlstand der Nationen» (1776). Es beschreibt das Eigeninteresse als Triebkraft wirtschaftlichen Handelns – der Bäcker bäckt gutes Brot nicht aus Nächstenliebe, sondern um Geld zu verdienen. Davon profitieren beide Seiten."},
+
+{id:"h06",topic:"homo",type:"open",diff:2,tax:"K3",
+ q:"Erklären Sie anhand eines Alltagsbeispiels, wie ein Homo oeconomicus bei einer Entscheidung vorgeht.",
+ sample:"Beispiel Handykauf: Der Homo oeconomicus vergleicht verschiedene Modelle (Kosten, Funktionen, Bewertungen), wägt Preis gegen Nutzen ab, berücksichtigt sein Budget und wählt das Modell mit dem besten Preis-Leistungs-Verhältnis für seine Bedürfnisse. Er lässt sich nicht von Werbung oder Emotionen leiten, sondern entscheidet aufgrund objektiver Kriterien rational.",
+ explain:"In der Realität entscheiden wir selten so rational: Markenpräferenzen, Gruppendruck, Impulskäufe spielen eine Rolle. Das Modell vereinfacht, aber es erfasst das Durchschnittsverhalten oft erstaunlich gut."},
+
+{id:"h07",topic:"homo",type:"tf",diff:2,tax:"K2",
+ q:"Eigennütziges Handeln bedeutet gemäss dem Modell des Homo oeconomicus, dass der Mensch immer nur an sich selbst denkt und anderen bewusst schadet.",
+ correct:false,explain:"Falsch. Eigennutz ≠ Egoismus. Eisenhut: «Die Menschen sind – von Ausnahmen abgesehen – weder Heilige noch Verbrecher. Eigennütziges Handeln bedeutet, dass der Mensch sich in der Regel nach seinen eigenen Interessen orientiert.» Er kann auch Vertrauen, Solidarität und Gerechtigkeit in seinen Nutzen einbeziehen."},
+
+{id:"h08",topic:"homo",type:"mc",diff:1,tax:"K1",
+ q:"Wer hat die Idee des eigennützigen, rationalen Wirtschaftsmenschen als Erster formuliert?",
+ options:[{v:"A",t:"Adam Smith in «Der Wohlstand der Nationen» (1776)."},{v:"B",t:"Gary Becker in seiner Nobelpreisrede (1992)."},{v:"C",t:"Herbert Simon mit der «begrenzten Rationalität» (1957)."},{v:"D",t:"John Stuart Mill im 19. Jahrhundert."}],
+ correct:"A",explain:"Adam Smith gilt als Begründer. John Stuart Mill entwickelte die Idee im 19. Jh. weiter. Herbert Simon (1957) kritisierte die Annahme vollständiger Rationalität. Gary Becker (Nobelpreis 1992) wandte das Modell auf Bereiche wie Kriminalität und Familie an."},
+
+// ──── KRITIK AM HOMO OECONOMICUS (r01–r08) ────
+{id:"r01",topic:"kritik",type:"mc",diff:2,tax:"K2",
+ q:"Was ist der Hauptkritikpunkt am Modell des Homo oeconomicus?",
+ options:[{v:"A",t:"Menschen handeln oft nicht rational, sondern emotional, impulsiv, kurzsichtig oder nach sozialen Normen."},{v:"B",t:"Das Modell ist zu alt und daher veraltet."},{v:"C",t:"Menschen wollen nie ihren Nutzen maximieren."},{v:"D",t:"Das Modell berücksichtigt nur Geld als Nutzen."}],
+ correct:"A",explain:"Die Verhaltensökonomie zeigt: Menschen handeln oft voreilig, unlogisch, impulsiv, emotional oder kurzsichtig. Die Finanzkrise 2008 verstärkte die Kritik – kaum ein Ökonom hatte sie vorhergesagt, was die Grenzen des rationalen Modells aufzeigte."},
+
+{id:"r02",topic:"kritik",type:"tf",diff:2,tax:"K2",
+ q:"Herbert Simon stellte 1957 fest, dass die Rationalität der Menschen begrenzt ist, weil sie nicht alle Informationen verarbeiten können.",
+ correct:true,explain:"Richtig. Herbert Simon prägte den Begriff der «bounded rationality» (begrenzte Rationalität): Menschen können nicht alle relevanten Informationen sammeln und verarbeiten. Die Welt ist zu komplex. Stattdessen nutzen sie Faustregeln und Erfahrungswerte."},
+
+{id:"r03",topic:"kritik",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie zu: Spricht das Beispiel für oder gegen das Modell des Homo oeconomicus?",
+ categories:["Spricht FÜR das Modell","Spricht GEGEN das Modell"],
+ items:[
+   {t:"Kunde vergleicht Preise vor dem Kauf",cat:0},{t:"Impulskauf an der Kasse",cat:1},
+   {t:"Firma wählt günstigsten Lieferanten",cat:0},{t:"Sportler dopt wider besseres Wissen",cat:1},
+   {t:"Student wählt Studiengang nach Jobchancen",cat:0},{t:"Jemand spendet anonym für Hilfswerk",cat:1}
+ ],
+ explain:"Für das Modell: Preisvergleich, Lieferantenwahl, Studiengangwahl = rationale Kosten-Nutzen-Abwägung. Gegen das Modell: Impulskäufe (irrational), Doping (kurzfristig rational, langfristig irrational), anonyme Spenden (altruistisch, kein Eigennutz)."},
+
+{id:"r04",topic:"kritik",type:"mc",diff:2,tax:"K2",
+ q:"Was versteht man unter einem «Nudge» in der Verhaltensökonomie?",
+ options:[{v:"A",t:"Einen sanften Stoss – man versucht, das Verhalten von Menschen über psychologisch subtile Methoden zu steuern, ohne Verbote oder Gebote."},{v:"B",t:"Ein striktes Verbot unerwünschten Verhaltens."},{v:"C",t:"Eine finanzielle Belohnung für richtiges Verhalten."},{v:"D",t:"Eine wissenschaftliche Theorie von Adam Smith."}],
+ correct:"A",explain:"Nudging = «Stupsen»: Subtile Beeinflussung ohne Zwang. Beispiele: Grüne Fussabdrücke auf dem Boden, die zum Mülleimer führen (Abfall –40%), Widerspruchslösung bei der Organspende (Opt-out statt Opt-in). Weltweit setzen Regierungen «Nudge Units» ein."},
+
+{id:"r05",topic:"kritik",type:"open",diff:3,tax:"K5",
+ q:"«Der Homo oeconomicus ist unrealistisch und daher nutzlos.» Nehmen Sie kritisch Stellung zu dieser Aussage.",
+ sample:"Zu vereinfacht. Pro Modell: Es erklärt Durchschnittsverhalten gut, besonders bei Firmen (Gewinnmaximierung). Es ermöglicht Vorhersagen über Reaktionen auf Anreize (z.B. Preisänderungen). Karikaturvergleich: So wie ein Karikaturist wesentliche Merkmale übertreibt, vereinfacht das Modell gezielt. Contra: Individuelle Entscheidungen oft irrational, emotional, sozial beeinflusst. Grenzen bei Finanzblasen, Panik, Sucht. Fazit: Nützliches Werkzeug, aber kein vollständiges Abbild der Realität. Die VWL ergänzt es laufend durch Erkenntnisse der Verhaltensökonomie.",
+ explain:"Eisenhut: «Es wäre zu einfach, den Homo oeconomicus als vollständig rationalen Egoisten zu begreifen.» Das Modell wird ständig erweitert. Es ist keine Aussage darüber, wie Menschen sein sollen, sondern eine Arbeitshypothese."},
+
+{id:"r06",topic:"kritik",type:"fill",diff:2,tax:"K1",
+ q:"Die {0} erweitert die Standardtheorie um psychologische Aspekte. Sie zeigt, dass Menschen nicht immer {1} handeln. Eine praktische Anwendung ist das sogenannte {2}, bei dem Verhalten subtil beeinflusst wird.",
  blanks:[
-   {answer:"Knappheit", alts:["Ressourcenknappheit"]},
-   {answer:"unbegrenzte", alts:["unendliche","unbeschränkte"]},
-   {answer:"begrenzte", alts:["beschränkte","knappe","limitierte"]}
+   {answer:"Verhaltensökonomie",alts:["Verhaltensökonomik","Behavioral Economics"]},
+   {answer:"rational",alts:["vernünftig"]},
+   {answer:"Nudging",alts:["Nudge"]}
  ],
- explain:"Knappheit ist der Ausgangspunkt allen ökonomischen Denkens. Die Asymmetrie zwischen unbegrenzten Zielen/Bedürfnissen und begrenzten Mitteln (Geld, Zeit, Wissen) zwingt zu Entscheidungen mit Verzichtsfolgen."
-},
+ explain:"Die Verhaltensökonomie (Behavioral Economics) untersucht, wie und warum Menschen von rationalem Verhalten abweichen. Nudging nutzt diese Erkenntnisse, um Verhalten zu steuern, ohne Freiheiten einzuschränken."},
 
-// ═══════════════════════════════════════════
-// KRITIK AM HOMO OECONOMICUS (k01–k08)
-// ═══════════════════════════════════════════
+{id:"r07",topic:"kritik",type:"tf",diff:2,tax:"K2",
+ q:"Trotz der Kritik verwenden viele Ökonomen das Modell des Homo oeconomicus weiterhin, besonders zur Erklärung des Verhaltens von Unternehmen.",
+ correct:true,explain:"Richtig. Auch wenn das Modell individuelles Verhalten nicht perfekt erklärt, ist es für die Analyse von Unternehmensverhalten (Gewinnmaximierung) weiterhin sehr nützlich. Die VWL bemüht sich aber laufend, das Menschenbild zu erweitern und realitätsnaher zu gestalten."},
 
-{id:"k01", topic:"kritik", type:"mc", diff:1, tax:"K1",
- q:"Welcher Ökonom stellte fest, dass die Rationalität des Menschen begrenzt ist, weil er nicht alle Informationen verarbeiten kann?",
- options:[
-   {v:"A", t:"Adam Smith"},
-   {v:"B", t:"Herbert Simon"},
-   {v:"C", t:"Gary Becker"},
-   {v:"D", t:"John Stuart Mill"}
+{id:"r08",topic:"kritik",type:"mc",diff:2,tax:"K2",
+ q:"Gary Becker (Nobelpreis 1992) wandte das ökonomische Kosten-Nutzen-Prinzip auf ungewöhnliche Bereiche an. Welchen?",
+ options:[{v:"A",t:"Diskriminierung, Kriminalität, Humankapital und Familienökonomie."},{v:"B",t:"Nur auf den Aktienmarkt und die Banken."},{v:"C",t:"Ausschliesslich auf internationale Handelsabkommen."},{v:"D",t:"Auf Naturwissenschaften und Physik."}],
+ correct:"A",explain:"Becker zeigte, dass ökonomische Prinzipien auch ausserhalb der traditionellen Wirtschaft gelten: Ein Räuber wägt Nutzen (Beute) gegen Kosten (Gefahr, Strafe) ab. Eltern investieren in Kinder als «Humankapital». Heirat ist ein «Markt» mit Kosten-Nutzen-Überlegungen."},
+
+// ──── OPPORTUNITÄTSKOSTEN (o01–o07) ────
+{id:"o01",topic:"opportunitaet",type:"mc",diff:1,tax:"K1",
+ q:"Was sind Opportunitätskosten?",
+ options:[{v:"A",t:"Der entgangene Nutzen der besten nicht gewählten Alternative."},{v:"B",t:"Die Kosten, die beim Einkaufen anfallen."},{v:"C",t:"Die Gebühren für eine verpasste Gelegenheit."},{v:"D",t:"Die Kosten für eine zweite Meinung."}],
+ correct:"A",explain:"Jede Entscheidung ist gleichzeitig ein Verzicht auf andere Möglichkeiten. Die Opportunitätskosten sind der Nutzen der besten nicht gewählten Alternative. Eisenhut: «Die wichtigste Erkenntnis aus dem Opportunitätskostenprinzip ist, dass nichts gratis ist.»"},
+
+{id:"o02",topic:"opportunitaet",type:"open",diff:2,tax:"K3",
+ q:"Sie werden zum Nachtessen eingeladen. Warum ist dieses Essen nicht gratis, obwohl Sie nichts bezahlen? Verwenden Sie den Begriff «Opportunitätskosten».",
+ sample:"Obwohl das Essen kostenlos ist, gibt es Opportunitätskosten: Ich verwende meine Zeit für das Nachtessen und verzichte damit auf andere Aktivitäten (z.B. Lernen, Freunde treffen, Sport). Der Nutzen der besten nicht gewählten Alternative ist der Preis, den ich «bezahle». Auch ein geschenktes Essen ist nie gratis, weil mindestens Zeit aufgewendet wird.",
+ explain:"Eisenhut: «Auch ein geschenktes Nachtessen ist eben nicht gratis, weil dafür mindestens Zeit aufgewendet und damit auf eine andere Aktivität verzichtet werden muss.» Opportunitätskosten sind allgegenwärtig."},
+
+{id:"o03",topic:"opportunitaet",type:"tf",diff:1,tax:"K2",
+ q:"Wenn jemand sagt «Ich habe keine Zeit», meint er eigentlich «Die Opportunitätskosten sind mir zu hoch».",
+ correct:true,explain:"Richtig. Eisenhut formuliert es genau so: «Tut mir leid, die Opportunitätskosten sind mir zu hoch!» – das wäre die ehrliche ökonomische Antwort. Man hat immer 24 Stunden, aber andere Aktivitäten bringen mehr Nutzen."},
+
+{id:"o04",topic:"opportunitaet",type:"mc",diff:2,tax:"K3",
+ q:"Sie überlegen sich, am Samstagabend ins Kino zu gehen (Freude: Note 8/10). Alternativ könnten Sie lernen (Freude: 3/10), Freunde treffen (Freude: 9/10) oder ein Buch lesen (Freude: 6/10). Wie hoch sind die Opportunitätskosten des Kinobesuchs?",
+ options:[{v:"A",t:"9/10 – das ist der Nutzen der besten nicht gewählten Alternative (Freunde treffen)."},{v:"B",t:"18/10 – die Summe aller nicht gewählten Alternativen."},{v:"C",t:"3/10 – die schlechteste Alternative."},{v:"D",t:"8/10 – der Nutzen des Kinobesuchs selbst."}],
+ correct:"A",explain:"Opportunitätskosten = Nutzen der BESTEN nicht gewählten Alternative. Nicht die Summe aller Alternativen! Hier: Freunde treffen (9/10) > Buch (6/10) > Lernen (3/10). Also Opportunitätskosten = 9/10. Ökonomisch betrachtet lohnt sich das Kino nicht, weil 8 < 9."},
+
+{id:"o05",topic:"opportunitaet",type:"fill",diff:1,tax:"K1",
+ q:"Jede Entscheidung beinhaltet einen Verzicht. Diesen Verzicht nennt man {0}. Austauschbeziehungen zwischen verschiedenen Zielen nennt man in der Fachsprache {1}.",
+ blanks:[
+   {answer:"Opportunitätskosten",alts:["Opportunitätskosten","Verzichtskosten"]},
+   {answer:"Trade-offs",alts:["Trade-off","Tradeoffs","Tradeoff"]}
  ],
- correct:"B",
- explain:"Herbert Simon (1957) prägte den Begriff der «begrenzten Rationalität» (bounded rationality). Er stellte fest, dass Menschen nicht in der Lage sind, alle Informationen zu jedem Thema zu verarbeiten, und daher ihre Rationalität begrenzt ist."
-},
+ explain:"Jeder Entscheid hat Opportunitätskosten. Trade-offs sind Austauschbeziehungen: z.B. mehr Freizeit = weniger Einkommen, mehr Butter = weniger Kanonen, mehr Wachstum = möglicherweise weniger Umweltqualität."},
 
-{id:"k02", topic:"kritik", type:"tf", diff:1, tax:"K2",
- q:"Die Verhaltensökonomie bestätigt, dass Menschen sich im Alltag stets rational und eigennützig verhalten.",
- correct:false,
- explain:"Falsch. Die Verhaltensökonomie zeigt gerade das Gegenteil: Menschen handeln oft voreilig, unlogisch, impulsiv, emotional, kurzsichtig oder gleichgültig. Sie werden nicht nur von Eigennutz getrieben und handeln häufig irrational."
-},
+{id:"o06",topic:"opportunitaet",type:"tf",diff:2,tax:"K2",
+ q:"Warum sind Opportunitätskosten von gut bezahlten Managern besonders hoch? Weil ihr Zeitwert hoch ist – jede Stunde Freizeit bedeutet hohen entgangenen Verdienst.",
+ correct:true,explain:"Eisenhut: «Warum sind gut bezahlte Manager gehetzt und chronisch übermüdet? Bei ihnen sind die Opportunitätskosten einer alternativen Zeitverwendung besonders hoch.» Wer CHF 500/Stunde verdient, verzichtet bei einer Stunde Freizeit auf CHF 500."},
 
-{id:"k03", topic:"kritik", type:"mc", diff:2, tax:"K2",
- q:"Welcher der folgenden Kritikpunkte am Homo Oeconomicus ist korrekt formuliert?",
- options:[
-   {v:"A", t:"Menschen treffen immer rationale Entscheidungen, wenn sie genug Zeit haben."},
-   {v:"B", t:"Das Modell kann individuelles Verhalten nicht erklären, da es auf Durchschnittsverhalten abstrahiert."},
-   {v:"C", t:"Der Homo Oeconomicus geht davon aus, dass Menschen nur an Geld interessiert sind."},
-   {v:"D", t:"Das Modell wurde seit Adam Smith nicht mehr weiterentwickelt."}
- ],
- correct:"B",
- explain:"Der Homo Oeconomicus ist bewusst unrealistisch und erklärt kein Individualverhalten, sondern Durchschnittsverhalten. Er ist nicht auf Geld beschränkt – der Nutzen ist eine subjektive Grösse. Das Modell wird laufend weiterentwickelt (z.B. durch die Verhaltensökonomie)."
-},
+{id:"o07",topic:"opportunitaet",type:"open",diff:2,tax:"K3",
+ q:"Nennen Sie ein konkretes Beispiel aus Ihrem Schulalltag, bei dem Trade-offs und Opportunitätskosten eine Rolle spielen.",
+ sample:"Beispiel: Ich kann am Abend entweder für die Matheprüfung lernen oder für die VWL-Prüfung. Wenn ich Mathe wähle, sind die Opportunitätskosten die möglicherweise bessere VWL-Note. Es gibt einen Trade-off: mehr Zeit für Mathe = weniger Zeit für VWL. Ähnlich beim Entscheid zwischen Sporttraining und Lernen.",
+ explain:"Trade-offs und Opportunitätskosten sind allgegenwärtig: Schule vs. Freizeit, ein Fach vs. ein anderes, Geld ausgeben vs. sparen. Der Homo oeconomicus wägt diese Kosten systematisch ab."},
+// ──── ANREIZE UND IHRE WIRKUNG (a01–a07) ────
+{id:"a01",topic:"anreize",type:"mc",diff:1,tax:"K1",
+ q:"Warum sind Anreize in der Ökonomie so wichtig?",
+ options:[{v:"A",t:"Weil der Homo oeconomicus auf Anreize reagiert – Verhaltensänderungen werden durch Veränderungen der Rahmenbedingungen ausgelöst."},{v:"B",t:"Weil alle Menschen genau gleich auf Anreize reagieren."},{v:"C",t:"Weil Anreize nur in der Wirtschaft eine Rolle spielen."},{v:"D",t:"Weil Anreize immer zum gewünschten Ergebnis führen."}],
+ correct:"A",explain:"Anreize sind zentral: Der Homo oeconomicus stellt seinen Entscheid jederzeit zur Disposition. Veränderungen (höhere Gebühren, mehr Steuern, bessere Löhne) können eine Revision des Entscheids bewirken, wenn die Veränderung genügend gross ist."},
 
-{id:"k04", topic:"kritik", type:"tf", diff:2, tax:"K2",
- q:"Ein wesentlicher Kritikpunkt am Homo Oeconomicus ist, dass soziale Faktoren wie Vertrauen, Solidarität und Gerechtigkeit im Modell keine Rolle spielen.",
- correct:true,
- explain:"Richtig. In der Grundversion des Modells werden soziale Orientierungen nicht berücksichtigt. Die Ökonomie bemüht sich aber, das Menschenbild zu erweitern: Vertrauen, Solidarität und Gerechtigkeitsempfinden beeinflussen z.B. die Arbeitsmoral und damit wirtschaftliche Ergebnisse."
-},
-
-{id:"k05", topic:"kritik", type:"mc", diff:2, tax:"K3",
- q:"Jemand kauft wider besseres Wissen ein ungesundes Stück Kuchen, um ein momentanes Hungergefühl zu befriedigen. Dies ist ein Beispiel für:",
- options:[
-   {v:"A", t:"Rationales Verhalten, weil der Kuchen günstiger war als eine gesunde Alternative."},
-   {v:"B", t:"Den Konflikt zwischen kurzfristigen und langfristigen Zielen, der das Modell des Homo Oeconomicus schwächt."},
-   {v:"C", t:"Nutzenmaximierung, weil der Kuchen im Moment den grössten Nutzen stiftet."},
-   {v:"D", t:"Eigennütziges Handeln im klassischen Sinn."}
- ],
- correct:"B",
- explain:"Dieses Beispiel zeigt eine Schwäche des Homo-Oeconomicus-Modells: Wenn kurzfristige und langfristige Ziele im Widerstreit liegen, handeln Menschen oft impulsiv und nicht rational. Ein streng rationaler Homo Oeconomicus würde die langfristigen Gesundheitskosten berücksichtigen."
-},
-
-{id:"k06", topic:"kritik", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Aussagen dem Homo Oeconomicus oder der Kritik am Modell zu:",
- categories:["Homo Oeconomicus","Kritik am Modell"],
- items:[
-   {t:"Menschen wägen Kosten und Nutzen rational ab", cat:0},
-   {t:"Menschen entscheiden oft aus dem Bauchgefühl", cat:1},
-   {t:"Menschen orientieren sich an ihren eigenen Interessen", cat:0},
-   {t:"Soziale Normen beeinflussen Entscheidungen stark", cat:1},
-   {t:"Der Nutzen ist eine subjektive Grösse", cat:0},
-   {t:"Niemand kann alle relevanten Informationen verarbeiten", cat:1}
- ],
- explain:"Der Homo Oeconomicus geht von rationaler Kosten-Nutzen-Abwägung und Eigeninteresse aus. Die Kritiker betonen, dass Menschen oft irrational handeln, von Emotionen und sozialen Normen geleitet werden und nur begrenzt rational sein können."
-},
-
-{id:"k07", topic:"kritik", type:"tf", diff:3, tax:"K5",
- q:"Das Modell des Homo Oeconomicus ist trotz aller Kritik nützlich, weil es als vereinfachte Arbeitshypothese hilft, wirtschaftliche Zusammenhänge zu erklären und Prognosen zu erstellen.",
- correct:true,
- explain:"Richtig. Obwohl das Modell unrealistisch ist, hat es als Arbeitshypothese weiterhin einen hohen Erklärungswert – besonders für das Verhalten von Unternehmen (Gewinnmaximierung) und für Durchschnittsverhalten. Auch die Kritiker verwerfen es nicht vollständig, sondern erweitern es."
-},
-
-{id:"k08", topic:"kritik", type:"mc", diff:3, tax:"K4",
- q:"Warum wurde das Homo-Oeconomicus-Modell nach der Finanzkrise 2008 besonders stark kritisiert?",
- options:[
-   {v:"A", t:"Weil die Krise zeigte, dass Banken keine Gewinne maximieren."},
-   {v:"B", t:"Weil kaum ein Ökonom die Krise vorhergesehen hatte, was auf ein unzureichendes Menschenbild hindeutete."},
-   {v:"C", t:"Weil die Krise durch zu rationales Verhalten der Anleger verursacht wurde."},
-   {v:"D", t:"Weil das Modell erstmals von Gary Becker hinterfragt wurde."}
- ],
- correct:"B",
- explain:"Die Kritiker argumentierten, dass die VWL zu lange von einem unrealistischen Menschenbild ausgegangen sei. Irrationale Aspekte wie Herdenverhalten, Panik und Gier hatten die Krise mitverursacht – Faktoren, die der klassische Homo Oeconomicus nicht abbildet."
-},
-
-// ═══════════════════════════════════════════
-// ANREIZE UND IHRE WIRKUNG (a01–a07)
-// ═══════════════════════════════════════════
-
-{id:"a01", topic:"anreize", type:"mc", diff:1, tax:"K1",
- q:"Was versteht man unter einem «Nudge» im Kontext der Verhaltensökonomie?",
- options:[
-   {v:"A", t:"Eine gesetzliche Vorschrift, die bestimmtes Verhalten erzwingt."},
-   {v:"B", t:"Eine psychologisch subtile Methode, um Verhalten zu steuern, ohne etwas zu verbieten."},
-   {v:"C", t:"Eine finanzielle Strafe für unerwünschtes Verhalten."},
-   {v:"D", t:"Ein wirtschaftlicher Anreiz in Form von Subventionen."}
- ],
- correct:"B",
- explain:"Ein Nudge («Stupser») ist eine psychologisch subtile Methode, die das Verhalten von Menschen in eine bestimmte Richtung lenkt, ohne etwas zu verbieten oder finanzielle Anreize zu setzen. Beispiel: Grüne Fussabdrücke auf dem Bürgersteig, die zu Mülleimern führen."
-},
-
-{id:"a02", topic:"anreize", type:"tf", diff:1, tax:"K2",
- q:"Wenn eine Regierung die Widerspruchsregelung bei der Organspende einführt, ist dies ein Beispiel für Nudging.",
- correct:true,
- explain:"Richtig. Statt einer Zustimmungslösung (opt-in) wird eine Widerspruchsregelung (opt-out) eingeführt: Wer seine Organe nicht spenden will, muss sich aktiv registrieren. Die Standardoption wird verändert, ohne etwas zu verbieten – ein klassischer Nudge."
-},
-
-{id:"a03", topic:"anreize", type:"mc", diff:2, tax:"K2",
+{id:"a02",topic:"anreize",type:"mc",diff:2,tax:"K2",
  q:"Was beschreibt der «Kobra-Effekt»?",
- options:[
-   {v:"A", t:"Dass Anreize immer zum gewünschten Ergebnis führen."},
-   {v:"B", t:"Dass gut gemeinte Massnahmen unerwartete, kontraproduktive Nebenwirkungen haben können."},
-   {v:"C", t:"Dass Menschen auf negative Anreize stärker reagieren als auf positive."},
-   {v:"D", t:"Dass Schlangen in der Wirtschaft als Symbol für Gefahr verwendet werden."}
- ],
- correct:"B",
- explain:"Der Kobra-Effekt beschreibt eine Situation, in der eine Massnahme das Gegenteil des Beabsichtigten bewirkt. In Indien setzte die Kolonialverwaltung eine Prämie pro Kobra-Kopf aus – die Inder züchteten daraufhin Kobras, um die Prämie zu kassieren."
-},
+ options:[{v:"A",t:"Wenn ein Anreizsystem so wirkt, dass genau das Gegenteil des gewünschten Ergebnisses eintritt."},{v:"B",t:"Wenn Anreize besonders effektiv sind."},{v:"C",t:"Wenn Menschen irrational auf Anreize reagieren."},{v:"D",t:"Wenn der Staat zu viele Anreize setzt."}],
+ correct:"A",explain:"Der Kobra-Effekt: In Indien setzte die Kolonialregierung eine Prämie pro Kobra-Kopf aus, um die Plage zu bekämpfen. Ergebnis: Die Inder züchteten Kobras, um die Prämie zu kassieren. Die Plage wurde schlimmer. Das zeigt: Menschen reagieren auf Anreize, aber nicht immer wie erwartet."},
 
-{id:"a04", topic:"anreize", type:"tf", diff:2, tax:"K3",
- q:"Die Einführung von Kehrichtsackgebühren führte ausschliesslich zu einer Reduktion der Abfallmenge.",
- correct:false,
- explain:"Falsch. Zwar nahm die Anzahl Säcke ab, aber das Gewicht pro Sack nahm zu. Zudem vermehrten sich wilde Deponien, und es kam zu Abfalltransporten in Nachbargemeinden. Dies zeigt, dass Anreizsysteme oft unerwünschte Nebenwirkungen haben."
-},
-
-{id:"a05", topic:"anreize", type:"mc", diff:3, tax:"K3",
- q:"Eine Schule führt ein System ein, bei dem Schülerinnen und Schüler für jedes gelesene Buch CHF 5 erhalten. Welche unerwünschte Nebenwirkung ist am wahrscheinlichsten?",
- options:[
-   {v:"A", t:"Die SuS lesen gar keine Bücher mehr."},
-   {v:"B", t:"Die SuS lesen nur noch möglichst kurze und einfache Bücher, um schnell Geld zu verdienen."},
-   {v:"C", t:"Die SuS beginnen, Bücher zu kaufen statt auszuleihen."},
-   {v:"D", t:"Die SuS lesen ausschliesslich anspruchsvolle Klassiker."}
- ],
- correct:"B",
- explain:"Wenn der Anreiz pro Buch gesetzt wird, maximieren rational handelnde SuS ihren Gewinn, indem sie möglichst viele einfache Bücher wählen. Die intrinsische Motivation (Freude am Lesen) wird durch den extrinsischen Anreiz (Geld) verdrängt, und die Qualität des Lesens sinkt."
-},
-
-{id:"a06", topic:"anreize", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Beispiele der Art des Anreizes zu:",
- categories:["Nudge (subtiler Anstoss)","Regulierung (Vorschrift/Verbot)","Finanzieller Anreiz"],
+{id:"a03",topic:"anreize",type:"sort",diff:2,tax:"K3",
+ q:"Ordnen Sie zu: Welche Reaktion ist ein erwünschter und welche ein unerwünschter Nebeneffekt des Anreizsystems?",
+ categories:["Erwünschte Wirkung","Unerwünschter Nebeneffekt"],
  items:[
-   {t:"Grüne Fussabdrücke zu Mülleimern", cat:0},
-   {t:"Rauchverbot in Restaurants", cat:1},
-   {t:"Kehrichtsackgebühr", cat:2},
-   {t:"Organspende als Standardoption", cat:0},
-   {t:"CO₂-Abgabe auf Brennstoffe", cat:2},
-   {t:"Tempolimit auf Autobahnen", cat:1}
+   {t:"Kehrichtsackgebühren → weniger Abfall",cat:0},
+   {t:"Kehrichtsackgebühren → wilde Deponien",cat:1},
+   {t:"Kobra-Prämie → Inder züchten Kobras",cat:1},
+   {t:"Nudge (Fussabdrücke) → weniger Abfall auf Strassen",cat:0},
+   {t:"Alkoholrationierung → Schwarzbrennereien und Schmuggel",cat:1},
+   {t:"Organspende-Widerspruchslösung → mehr Organspender",cat:0}
  ],
- explain:"Nudges verändern die Entscheidungsarchitektur, ohne etwas zu verbieten. Regulierungen setzen verbindliche Regeln. Finanzielle Anreize machen erwünschtes Verhalten billiger oder unerwünschtes teurer."
-},
+ explain:"Anreize wirken – aber oft mit unerwünschten Nebenwirkungen. Eisenhut: «Eine Politik, die den Menschen als simple Reiz-Reaktions-Maschine auffasst, ist zum Scheitern verurteilt.» Menschen suchen kreativ nach Wegen, Anreize zu ihrem Vorteil auszunutzen."},
 
-{id:"a07", topic:"anreize", type:"tf", diff:3, tax:"K5",
- q:"Eine Politik, die den Menschen als einfache Reiz-Reaktions-Maschine auffasst, ist zum Scheitern verurteilt.",
- correct:true,
- explain:"Richtig. Menschen reagieren zwar auf Anreize, aber ihre Handlungsmöglichkeiten sind vielfältig und kreativ. Regulatorische Eingriffe haben oft unerwünschte Nebenfolgen (Kobra-Effekt, Schwarzmärkte, wilde Deponien). Effektive Politik muss die Komplexität menschlichen Verhaltens berücksichtigen."
-},
+{id:"a04",topic:"anreize",type:"tf",diff:2,tax:"K2",
+ q:"Wenn Kehrichtsackgebühren eingeführt werden, reduziert sich die Abfallmenge ohne Nebenwirkungen.",
+ correct:false,explain:"Falsch. Eisenhut berichtet: Die Anzahl Säcke nahm zwar ab, dafür stieg das Gewicht pro Sack, es entstanden wilde Deponien und Abfalltransporte in Nachbargemeinden. Anreize haben fast immer Nebenwirkungen, weil Menschen kreativ reagieren."},
 
-// ═══════════════════════════════════════════
-// SPIELTHEORIE & GEFANGENENDILEMMA (s01–s10)
-// ═══════════════════════════════════════════
+{id:"a05",topic:"anreize",type:"open",diff:3,tax:"K4",
+ q:"Im Schweizer Notensystem besteht man das Gymnasium mit einem Schnitt von 4.0. Analysieren Sie, welche Anreize dieses System für Schülerinnen und Schüler setzt. Gibt es auch unerwünschte Nebeneffekte?",
+ sample:"Erwünschte Anreize: SuS lernen regelmässig, um die Bestehensnormen zu erfüllen. Leistung wird belohnt. Unerwünschte Nebeneffekte: Einige SuS lernen strategisch nur so viel, dass sie knapp bestehen (Minimumprinzip). Es gibt Anreize, einfache Fächer zu wählen statt anspruchsvoller. Manche SuS optimieren für Prüfungen statt für nachhaltiges Lernen (Bulimie-Lernen). Das System belohnt Anpassung, nicht immer Kreativität.",
+ explain:"Das Notensystem ist ein Anreizsystem. Der Homo oeconomicus reagiert darauf rational – aber nicht immer im Sinne des Bildungsziels. Dies ist ein gutes Beispiel für den Unterschied zwischen individueller Rationalität und gesellschaftlicher Optimalität."},
 
-{id:"s01", topic:"spiel", type:"mc", diff:1, tax:"K1",
- q:"Was untersucht die Spieltheorie?",
- options:[
-   {v:"A", t:"Die Regeln von Gesellschaftsspielen und deren Fairness."},
-   {v:"B", t:"Menschliches Verhalten in strategischen Situationen, in denen das Ergebnis vom Verhalten anderer abhängt."},
-   {v:"C", t:"Die optimale Strategie beim Pokern und Schach."},
-   {v:"D", t:"Die Auswirkungen von Computerspielen auf die Wirtschaft."}
- ],
- correct:"B",
- explain:"Die Spieltheorie befasst sich mit der Analyse menschlichen Verhaltens in strategischen Situationen. Als «strategisch» wird eine Lage bezeichnet, in der jeder bei der Entscheidung über sein eigenes Verhalten berücksichtigen muss, wie andere wohl darauf reagieren."
-},
-
-{id:"s02", topic:"spiel", type:"fill", diff:1, tax:"K1",
- q:"Im Gefangenendilemma hat jeder Beteiligte eine {0} Strategie: Nicht zu {1}. Obwohl {2} für alle das beste Ergebnis wäre.",
+{id:"a06",topic:"anreize",type:"fill",diff:1,tax:"K1",
+ q:"Der sogenannte {0} beschreibt das Phänomen, dass eine gut gemeinte Massnahme genau das Gegenteil des gewünschten Ergebnisses bewirkt. Dieses Beispiel zeigt, dass {1} fast immer von ungewissen Nebenfolgen begleitet sind.",
  blanks:[
-   {answer:"dominante", alts:["dominierande"]},
-   {answer:"kooperieren", alts:["Kooperation"]},
-   {answer:"Kooperation", alts:["kooperieren","gegenseitige Kooperation","zusammenarbeiten"]}
+   {answer:"Kobra-Effekt",alts:["Kobraeffekt"]},
+   {answer:"Anreize",alts:["Anreizsysteme","regulatorische Eingriffe"]}
  ],
- explain:"Im Gefangenendilemma ist Nicht-Kooperieren die dominante Strategie: Sie schneidet unabhängig vom Verhalten des anderen immer besser ab. Das Dilemma besteht darin, dass Kooperation für alle das bessere Ergebnis liefern würde."
-},
+ explain:"Benannt nach dem Kobra-Beispiel aus Indien. Weitere Beispiele: Alkoholprohibition → Schwarzmarkt. Kehrichtsackgebühren → wilde Deponien. Der Mensch ist keine «Reiz-Reaktions-Maschine»."},
 
-{id:"s03", topic:"spiel", type:"tf", diff:1, tax:"K2",
- q:"Im Gefangenendilemma kommt es zu einem Dilemma, weil sich die Beteiligten irrational verhalten.",
- correct:false,
- explain:"Falsch. Das Dilemma entsteht gerade, weil sich die Beteiligten individuell rational verhalten. Aus individueller Sicht ist es vernünftig, nicht zu kooperieren – das führt aber zu einem schlechteren Gesamtergebnis. Das Dilemma liegt also nicht in der Irrationalität, sondern in der Struktur der Situation."
-},
+{id:"a07",topic:"anreize",type:"mc",diff:2,tax:"K2",
+ q:"Was unterscheidet Nudging von traditioneller Regulierung?",
+ options:[{v:"A",t:"Nudging beeinflusst Verhalten über psychologisch subtile Methoden, ohne Verbote oder Gebote zu erlassen."},{v:"B",t:"Nudging ist teurer als Regulierung."},{v:"C",t:"Nudging funktioniert nur bei irrationalen Menschen."},{v:"D",t:"Es gibt keinen Unterschied."}],
+ correct:"A",explain:"Traditionelle Regulierung: Verbote, Gebote, Strafen (z.B. Rauchverbot). Nudging: Sanfte Stupser, die das Verhalten lenken, ohne die Wahlfreiheit einzuschränken (z.B. Fussabdrücke zum Mülleimer, gesundes Essen in Augenhöhe in der Kantine)."},
 
-{id:"s04", topic:"spiel", type:"mc", diff:2, tax:"K2",
- q:"Im Couvert-Spiel: Ihr Gegenüber hat das Geld ins Couvert gesteckt. Welche Strategie maximiert Ihren individuellen Gewinn?",
- options:[
-   {v:"A", t:"Auch das Geld ins Couvert stecken – dann erhalten Sie 2."},
-   {v:"B", t:"Das Geld behalten – dann erhalten Sie 3."},
-   {v:"C", t:"Es spielt keine Rolle, das Ergebnis ist gleich."},
-   {v:"D", t:"Das Geld ins Couvert stecken – dann erhalten Sie 3."}
+// ──── SPIELTHEORIE / GEFANGENENDILEMMA (g01–g08) ────
+{id:"g01",topic:"spieltheorie",type:"mc",diff:1,tax:"K1",
+ q:"Womit beschäftigt sich die Spieltheorie?",
+ options:[{v:"A",t:"Mit der Analyse menschlichen Verhaltens in strategischen Situationen – also wenn das eigene Ergebnis auch vom Verhalten anderer abhängt."},{v:"B",t:"Mit der Analyse von Computerspielen."},{v:"C",t:"Mit der Entwicklung optimaler Brettspielstrategien."},{v:"D",t:"Mit der Psychologie von Spielsüchtigen."}],
+ correct:"A",explain:"Eine Situation ist «strategisch», wenn jeder bei seiner Entscheidung berücksichtigen muss, wie andere darauf reagieren. Die Spieltheorie analysiert solche Situationen systematisch. Das berühmteste Beispiel ist das Gefangenendilemma."},
+
+{id:"g02",topic:"spieltheorie",type:"fill",diff:1,tax:"K1",
+ q:"Beim Gefangenendilemma hat jeder Beteiligte einen individuellen Anreiz, nicht zu {0}. Dies führt zu einem schlechteren Ergebnis für alle, obwohl {1} für die Gruppe besser wäre. Die Strategie, die individuell immer besser abschneidet, nennt man {2} Strategie.",
+ blanks:[
+   {answer:"kooperieren",alts:["Kooperation"]},
+   {answer:"Kooperation",alts:["kooperieren","Zusammenarbeit"]},
+   {answer:"dominante",alts:["dominant"]}
  ],
- correct:"B",
- explain:"Wenn das Gegenüber kooperiert (Geld ins Couvert steckt), erhalten Sie total 3, wenn Sie nicht kooperieren (Geld behalten): Ihr eigenes Geld (1) plus das Geld aus dem vollen Couvert (2). Kooperieren Sie auch, erhalten Sie nur 2. Daher ist Nicht-Kooperieren die bessere Wahl."
-},
+ explain:"Das Dilemma: Kooperation wäre für alle besser, aber jeder einzelne hat den Anreiz, nicht zu kooperieren (dominante Strategie). Ergebnis: Alle stehen schlechter da, als wenn alle kooperiert hätten."},
 
-{id:"s05", topic:"spiel", type:"mc", diff:2, tax:"K2",
- q:"Was versteht man unter einer «dominanten Strategie» in der Spieltheorie?",
- options:[
-   {v:"A", t:"Die Strategie, die am häufigsten gewählt wird."},
-   {v:"B", t:"Die Strategie, die immer das beste Ergebnis liefert, unabhängig davon, was die anderen tun."},
-   {v:"C", t:"Die Strategie, die den Gegner dominiert und zum Aufgeben zwingt."},
-   {v:"D", t:"Die Strategie, die nur dann funktioniert, wenn alle sie wählen."}
+{id:"g03",topic:"spieltheorie",type:"mc",diff:2,tax:"K3",
+ q:"Bonnie und Clyde werden getrennt verhört. Beide schweigen → je 1 Jahr Haft. Beide verraten → je 10 Jahre. Einer verrät, einer schweigt → Verräter frei, Schweiger lebenslänglich. Was ist die dominante Strategie?",
+ options:[{v:"A",t:"Verraten – unabhängig davon, was der andere tut, ist man durch Verraten immer besser gestellt."},{v:"B",t:"Schweigen – man riskiert weniger."},{v:"C",t:"Es gibt keine dominante Strategie."},{v:"D",t:"Abwechselnd verraten und schweigen."}],
+ correct:"A",explain:"Wenn der andere schweigt: Verraten → frei (besser als 1 Jahr). Wenn der andere verrät: Verraten → 10 Jahre (besser als lebenslänglich). Verraten ist IMMER besser, egal was der andere tut = dominante Strategie. Aber: Wenn beide verraten, bekommen beide 10 Jahre statt nur 1 Jahr bei Kooperation."},
+
+{id:"g04",topic:"spieltheorie",type:"sort",diff:2,tax:"K3",
+ q:"Ordnen Sie zu: Welche Alltagssituationen sind Beispiele für ein Gefangenendilemma?",
+ categories:["Gefangenendilemma-Situation","KEIN Gefangenendilemma"],
+ items:[
+   {t:"Doping im Radsport – alle dopen, niemand gewinnt einen Vorteil",cat:0},
+   {t:"Zwei Firmen machen übermässig Werbung, obwohl Verzicht günstiger wäre",cat:0},
+   {t:"Überfischung der Meere – jeder fischt zu viel",cat:0},
+   {t:"Einkauf im Supermarkt",cat:1},
+   {t:"Wettbewerb bei einem Sprintrennen",cat:1},
+   {t:"Wettrüsten zwischen Staaten",cat:0}
  ],
- correct:"B",
- explain:"Eine dominante Strategie liefert aus individueller Perspektive immer das beste Ergebnis, egal wie sich die anderen Beteiligten verhalten. Im Gefangenendilemma ist Nicht-Kooperieren die dominante Strategie – obwohl das Gesamtergebnis bei Kooperation besser wäre."
-},
+ explain:"Gefangenendilemma-Situationen: Kooperation wäre besser, aber individuelle Anreize verhindern sie. Doping, exzessive Werbung, Überfischung, Wettrüsten – alle haben dieselbe Struktur. Einkauf/Sprint: Keine gegenseitige Abhängigkeit der Strategie."},
 
-{id:"s06", topic:"spiel", type:"tf", diff:2, tax:"K2",
+{id:"g05",topic:"spieltheorie",type:"open",diff:3,tax:"K4",
+ q:"Erklären Sie am Beispiel Doping im Radsport, warum die Situation ein Gefangenendilemma darstellt. Warum ist Doping gleichzeitig «absurd und rational»?",
+ sample:"Absurd: Wenn niemand dopen würde, wäre niemand benachteiligt – die Rennen wären genauso spannend. Rational: Wenn ich annehme, dass andere dopen, MUSS ich auch dopen, um konkurrenzfähig zu bleiben. Wenn andere NICHT dopen, lohnt sich Doping erst recht, um zu gewinnen. Nicht-Dopen ist nie die beste individuelle Strategie → Doping ist dominant. Ergebnis: Alle dopen, keiner hat einen Vorteil, aber alle riskieren ihre Gesundheit. Das Dilemma: Individuelle Rationalität führt zu kollektiver Irrationalität.",
+ explain:"Eisenhut: «Jeder Rennfahrer gewinnt lieber mit Doping, als ohne Doping zu verlieren. Denken alle so rational, dopen eben auch alle, und dies zum Schaden aller.»"},
+
+{id:"g06",topic:"spieltheorie",type:"mc",diff:2,tax:"K2",
+ q:"Welche drei Wege können helfen, das Gefangenendilemma zu überwinden?",
+ options:[{v:"A",t:"Kommunikation (Absprachen), Sanktionen (Strafen bei Abweichung) und wiederholte Interaktion (langfristige Beziehungen)."},{v:"B",t:"Mehr Geld, weniger Regeln und schnellere Entscheidungen."},{v:"C",t:"Nur strenge Gesetze können das Problem lösen."},{v:"D",t:"Das Dilemma kann grundsätzlich nicht überwunden werden."}],
+ correct:"A",explain:"Drei Lösungsansätze: (1) Kommunikation – Absprachen ermöglichen. (2) Sanktionen – Vertragsbruch bestrafen (z.B. Omertà bei der Mafia). (3) Wiederholung – bei langfristigen Beziehungen ist Kooperation attraktiver, weil Vergeltung droht. Im Veritasium-Video werden 4 Eigenschaften erfolgreicher Strategien genannt: nett, vergeltend, verzeihend, klar."},
+
+{id:"g07",topic:"spieltheorie",type:"tf",diff:2,tax:"K2",
+ q:"Im Gefangenendilemma kommt es zu einem schlechten Ergebnis, weil sich die Beteiligten irrational verhalten.",
+ correct:false,explain:"Falsch. Das Dilemma entsteht gerade WEIL die Beteiligten rational (eigennützig) handeln. Nicht-Kooperation ist die individuell rationale (dominante) Strategie. Das Problem: Individuelle Rationalität führt zu kollektiver Irrationalität. Das Dilemma entsteht durch die Struktur der Situation, nicht durch Irrationalität."},
+
+{id:"g08",topic:"spieltheorie",type:"tf",diff:2,tax:"K2",
  q:"Im Gefangenendilemma hängt das Ergebnis nicht nur vom eigenen, sondern auch vom Verhalten der anderen Beteiligten ab.",
- correct:true,
- explain:"Richtig. Genau durch diese gegenseitige Abhängigkeit zeichnen sich strategische Situationen aus. Mein Ergebnis hängt nicht nur von meiner eigenen Entscheidung ab, sondern auch davon, was mein Gegenüber tut."
-},
+ correct:true,explain:"Richtig. Das macht die Situation «strategisch»: Mein Ergebnis hängt von meiner UND der Entscheidung des anderen ab. Genau diese gegenseitige Abhängigkeit macht das Gefangenendilemma so faszinierend und relevant für viele Lebensbereiche."},
 
-{id:"s07", topic:"spiel", type:"mc", diff:2, tax:"K3",
- q:"Zwei Einkaufszentren überlegen, ob sie «viel» oder «wenig» für Werbung ausgeben. Beide wären am besten dran, wenn beide wenig werben. Warum wird trotzdem voraussichtlich viel geworben?",
- options:[
-   {v:"A", t:"Weil Werbung gesetzlich vorgeschrieben ist."},
-   {v:"B", t:"Weil jedes Einkaufszentrum einen Anreiz hat, mehr zu werben als das andere, um sich einen Vorteil zu verschaffen."},
-   {v:"C", t:"Weil die Kunden explizit nach mehr Werbung verlangen."},
-   {v:"D", t:"Weil die Einkaufszentren nicht miteinander kommunizieren dürfen."}
- ],
- correct:"B",
- explain:"Dies ist ein Gefangenendilemma: Beide Einkaufszentren haben einen individuellen Anreiz, von der optimalen Vereinbarung (wenig Werbung) abzuweichen und mehr zu werben. Am Ende werben beide viel und fahren schlechter, als wenn beide wenig geworben hätten."
-},
+// ──── AUFGABEN DER VWL (v01–v05) ────
+{id:"v01",topic:"aufgaben",type:"mc",diff:1,tax:"K1",
+ q:"Was sind die Aufgaben der Volkswirtschaftslehre?",
+ options:[{v:"A",t:"Wirtschaftliche Vorgänge beschreiben und erklären, Entwicklungen prognostizieren, wirtschaftspolitische Beeinflussung aufzeigen."},{v:"B",t:"Gesetze erlassen und Steuern festlegen."},{v:"C",t:"Unternehmen beraten und Gewinne maximieren."},{v:"D",t:"Nur Statistiken erstellen."}],
+ correct:"A",explain:"Die VWL hat vier Aufgaben: (1) Beschreiben (Was passiert?), (2) Erklären (Warum passiert es?), (3) Prognostizieren (Was wird passieren?), (4) Beeinflussen (Was soll getan werden?). Beispiel: (1) Die Arbeitslosigkeit steigt. (2) Weil die Nachfrage sinkt. (3) Sie wird weiter steigen. (4) Der Staat sollte Beschäftigungsprogramme lancieren."},
 
-{id:"s08", topic:"spiel", type:"sort", diff:2, tax:"K3",
- q:"Ordnen Sie die Beispiele zu: Handelt es sich um ein Gefangenendilemma oder nicht?",
- categories:["Gefangenendilemma","Kein Gefangenendilemma"],
- items:[
-   {t:"Zwei Länder rüsten Armeen auf, obwohl beide von Abrüstung profitieren würden", cat:0},
-   {t:"Rennfahrer dopen, obwohl alle ohne Doping gleich gut fahren würden", cat:0},
-   {t:"Ein Unternehmen senkt Preise, um Kunden von Konkurrenten abzuwerben", cat:0},
-   {t:"Eine Person wählt im Supermarkt zwischen Äpfeln und Birnen", cat:1},
-   {t:"Zwei Schüler arbeiten unabhängig an einer Einzelprüfung", cat:1}
- ],
- explain:"Ein Gefangenendilemma liegt vor, wenn: (1) die Beteiligten voneinander abhängig sind, (2) Kooperation für alle besser wäre, aber (3) jeder einen individuellen Anreiz hat, nicht zu kooperieren. Einkaufsentscheide oder unabhängige Prüfungen sind keine strategischen Situationen."
-},
-
-{id:"s09", topic:"spiel", type:"mc", diff:3, tax:"K4",
- q:"Die Mafia-Omertà verändert die Auszahlungsstruktur im Gefangenendilemma. Warum kann dies rationale Verbrecher dazu bringen, zu kooperieren (zu schweigen)?",
- options:[
-   {v:"A", t:"Weil die Omertà das Vertrauen zwischen den Verbrechern stärkt."},
-   {v:"B", t:"Weil die Morddrohung die Kosten des Verrats so stark erhöht, dass Schweigen zur dominanten Strategie wird."},
-   {v:"C", t:"Weil die Mafia ihre Mitglieder von der Polizei fernhält."},
-   {v:"D", t:"Weil die Omertà die Haftstrafe für beide verkürzt."}
- ],
- correct:"B",
- explain:"Die Omertà fügt dem Verrat eine drastische Konsequenz hinzu: die Ermordung. Dadurch wird Verraten in jedem Fall unattraktiver als Schweigen. Die Angst vor der Ermordung verändert die Anreizstruktur so, dass Kooperation (Schweigen) zur besseren Strategie wird – vorausgesetzt, die Drohung ist glaubwürdig."
-},
-
-{id:"s10", topic:"spiel", type:"tf", diff:3, tax:"K4",
- q:"Doping im Radsport lässt sich mit dem Gefangenendilemma erklären: Obwohl niemand vom Doping profitiert (da alle dopen), ist es für jeden einzelnen Fahrer rational zu dopen.",
- correct:true,
- explain:"Richtig. Wenn die Konkurrenten dopen, muss man auch dopen, um konkurrenzfähig zu bleiben. Wenn die Konkurrenten nicht dopen, bringt Doping einen Vorteil. In beiden Fällen ist Dopen individuell rational – obwohl es zum Schaden aller ist, wenn alle dopen."
-},
-
-// ═══════════════════════════════════════════
-// ERFOLGREICHE STRATEGIEN (e01–e06)
-// ═══════════════════════════════════════════
-
-{id:"e01", topic:"strategie", type:"mc", diff:1, tax:"K1",
- q:"Welche Strategie gilt in iterierten (wiederholten) Gefangenendilemma-Spielen als besonders erfolgreich?",
- options:[
-   {v:"A", t:"Immer kooperieren, egal was der andere tut."},
-   {v:"B", t:"Immer defektieren (nicht kooperieren)."},
-   {v:"C", t:"Tit-for-Tat: Im ersten Zug kooperieren, danach das Verhalten des Gegenübers imitieren."},
-   {v:"D", t:"Zufällig zwischen Kooperation und Defektion wechseln."}
- ],
- correct:"C",
- explain:"Tit-for-Tat (Wie du mir, so ich dir) erwies sich in Computerturnieren als überlegene Strategie. Sie startet kooperativ und ahmt danach das Verhalten des Gegenübers nach: Kooperation wird mit Kooperation beantwortet, Defektion mit Defektion."
-},
-
-{id:"e02", topic:"strategie", type:"fill", diff:1, tax:"K1",
- q:"Erfolgreiche Strategien in wiederholten Spielen sind: {0} (beginnen kooperativ), {1} (reagieren auf Defektion), {2} (verzeihen nach Bestrafung) und {3} (das Verhalten ist vorhersehbar).",
- blanks:[
-   {answer:"nett", alts:["freundlich","kooperativ"]},
-   {answer:"vergeltend", alts:["provozierbar","bestrafend","retaliatory"]},
-   {answer:"verzeihend", alts:["nachsichtig","großzügig"]},
-   {answer:"klar", alts:["vorhersehbar","transparent","berechenbar"]}
- ],
- explain:"Die vier Eigenschaften erfolgreicher Strategien (nach Robert Axelrod): (1) Nett – sie beginnen mit Kooperation. (2) Vergeltend – sie bestrafen Defektion. (3) Verzeihend – sie kehren zur Kooperation zurück, wenn der andere kooperiert. (4) Klar – ihr Verhalten ist für den anderen nachvollziehbar."
-},
-
-{id:"e03", topic:"strategie", type:"tf", diff:2, tax:"K2",
- q:"In einem einmaligen Gefangenendilemma (ohne Wiederholung) ist Kooperation die individuell rationale Strategie.",
- correct:false,
- explain:"Falsch. In einem einmaligen Spiel ist Defektion (Nicht-Kooperieren) die dominante Strategie. Erst bei wiederholten Spielen wird Kooperation attraktiver, weil langfristige Konsequenzen das Verhalten beeinflussen (z.B. Vergeltung oder Vertrauensaufbau)."
-},
-
-{id:"e04", topic:"strategie", type:"mc", diff:2, tax:"K2",
- q:"Warum fördert die Wiederholung eines Gefangenendilemmas die Kooperation?",
- options:[
-   {v:"A", t:"Weil man in wiederholten Spielen mehr Punkte bekommt."},
-   {v:"B", t:"Weil man in zukünftigen Runden vom Gegenüber bestraft werden kann und langfristige Kooperation attraktiver wird."},
-   {v:"C", t:"Weil man nach ein paar Runden die Regeln besser versteht."},
-   {v:"D", t:"Weil die Auszahlungen sich in jeder Runde erhöhen."}
- ],
- correct:"B",
- explain:"Bei wiederholten Spielen hat unkooperatives Verhalten langfristige Konsequenzen: Die Gegenpartei wird sich wahrscheinlich in Zukunft ebenfalls unkooperativ verhalten (Vergeltung). Langfristig ist beidseitige Kooperation daher attraktiver als kurzfristige Gewinnmaximierung durch Defektion."
-},
-
-{id:"e05", topic:"strategie", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Mechanismen zu: Welche fördern Kooperation im Gefangenendilemma, welche nicht?",
- categories:["Fördert Kooperation","Fördert Kooperation nicht"],
- items:[
-   {t:"Kommunikation zwischen den Beteiligten", cat:0},
-   {t:"Sanktionen für unkooperatives Verhalten", cat:0},
-   {t:"Wiederholte Interaktionen (repetitive Spiele)", cat:0},
-   {t:"Anonymität der Beteiligten", cat:1},
-   {t:"Einmaligkeit der Situation (nur ein Spiel)", cat:1},
-   {t:"Fehlende Durchsetzung von Abmachungen", cat:1}
- ],
- explain:"Kooperation wird gefördert durch Kommunikation (ermöglicht Absprachen), Sanktionen (machen Defektion teurer) und Wiederholung (langfristige Konsequenzen). Anonymität, Einmaligkeit und fehlende Durchsetzung begünstigen dagegen Defektion."
-},
-
-{id:"e06", topic:"strategie", type:"tf", diff:3, tax:"K5",
- q:"Die Strategie «immer kooperieren» ist in wiederholten Spielen erfolgreicher als Tit-for-Tat, weil sie nie Konflikte auslöst.",
- correct:false,
- explain:"Falsch. «Immer kooperieren» ist keine erfolgreiche Strategie, weil sie von defektierenden Gegnern ausgebeutet wird. Tit-for-Tat ist erfolgreicher, weil es zwar nett beginnt, aber Defektion bestraft. Nur so wird verhindert, dass Kooperation ausgenutzt wird."
-},
-
-// ═══════════════════════════════════════════
-// AUFGABEN DER VWL (v01–v05)
-// ═══════════════════════════════════════════
-
-{id:"v01", topic:"aufgaben", type:"mc", diff:1, tax:"K1",
- q:"Welche der folgenden Aufgaben gehört NICHT zu den Aufgaben der Volkswirtschaftslehre?",
- options:[
-   {v:"A", t:"Wirtschaftliche Vorgänge beschreiben"},
-   {v:"B", t:"Wirtschaftliche Vorgänge erklären"},
-   {v:"C", t:"Unternehmen bei der Buchhaltung unterstützen"},
-   {v:"D", t:"Die wirtschaftliche Entwicklung prognostizieren"}
- ],
- correct:"C",
- explain:"Die vier Aufgaben der VWL sind: Beschreiben (Was passiert?), Erklären (Warum passiert es?), Prognostizieren (Was wird passieren?) und Beeinflussen (Wie können wir die Entwicklung in eine gewünschte Richtung lenken?). Buchhaltung ist eine betriebswirtschaftliche Aufgabe."
-},
-
-{id:"v02", topic:"aufgaben", type:"sort", diff:1, tax:"K2",
- q:"Ordnen Sie die Fragen der jeweiligen Aufgabe der VWL zu:",
+{id:"v02",topic:"aufgaben",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie die Beispiele der korrekten Aufgabe der VWL zu.",
  categories:["Beschreiben","Erklären","Prognostizieren","Beeinflussen"],
  items:[
-   {t:"Wie hoch ist die aktuelle Arbeitslosenquote?", cat:0},
-   {t:"Warum steigt die Inflation?", cat:1},
-   {t:"Wie wird sich das BIP nächstes Jahr entwickeln?", cat:2},
-   {t:"Sollte der Mindestlohn erhöht werden?", cat:3},
-   {t:"Die Hypothekarzinsen sind gesunken.", cat:0},
-   {t:"Weshalb verlagern Firmen ihre Produktion ins Ausland?", cat:1}
+   {t:"Die Arbeitslosenquote beträgt 3.2%",cat:0},{t:"Die Arbeitslosigkeit steigt wegen sinkender Nachfrage",cat:1},
+   {t:"Die Inflation wird voraussichtlich 2% betragen",cat:2},{t:"Der Staat sollte die Zinsen senken",cat:3},
+   {t:"Das BIP ist im letzten Quartal um 0.5% gewachsen",cat:0},{t:"Subventionen für erneuerbare Energien einführen",cat:3}
  ],
- explain:"Beschreiben = Fakten darstellen. Erklären = Ursachen und Zusammenhänge aufzeigen. Prognostizieren = zukünftige Entwicklungen abschätzen. Beeinflussen = wirtschaftspolitische Massnahmen vorschlagen."
-},
+ explain:"Beschreiben = Fakten darstellen (Quoten, Zahlen). Erklären = Ursachen analysieren (warum?). Prognostizieren = Zukunft vorhersagen. Beeinflussen = wirtschaftspolitische Massnahmen empfehlen."},
 
-{id:"v03", topic:"aufgaben", type:"tf", diff:2, tax:"K2",
- q:"Die Volkswirtschaftslehre beschränkt sich darauf, wirtschaftliche Vorgänge zu beschreiben und zu erklären – sie macht keine Prognosen und keine Handlungsempfehlungen.",
- correct:false,
- explain:"Falsch. Die VWL hat vier Aufgaben: Beschreiben, Erklären, Prognostizieren UND Beeinflussen. Gerade die Beeinflussung (Wirtschaftspolitik) ist zentral: Die VWL soll Erkenntnisse liefern, um die wirtschaftliche Entwicklung in Richtung bestimmter Ziele zu lenken."
-},
-
-{id:"v04", topic:"aufgaben", type:"mc", diff:2, tax:"K3",
- q:"Die Meldung «Die Computerpreise fallen» ist ein Beispiel für welche Aufgabe der VWL?",
- options:[
-   {v:"A", t:"Beschreiben – sie stellt einen wirtschaftlichen Vorgang dar."},
-   {v:"B", t:"Erklären – sie nennt die Gründe für den Preisrückgang."},
-   {v:"C", t:"Prognostizieren – sie sagt die zukünftige Preisentwicklung voraus."},
-   {v:"D", t:"Beeinflussen – sie empfiehlt eine wirtschaftspolitische Massnahme."}
- ],
- correct:"A",
- explain:"Die Meldung beschreibt lediglich einen wirtschaftlichen Vorgang (sinkende Preise). Für eine Erklärung müssten die Ursachen genannt werden (z.B. technischer Fortschritt, globaler Wettbewerb). Erst dann könnte man prognostizieren oder Massnahmen ableiten."
-},
-
-{id:"v05", topic:"aufgaben", type:"fill", diff:1, tax:"K1",
- q:"Die VWL hat vier Aufgaben: wirtschaftliche Vorgänge {0}, {1}, {2} und zielgerichtet {3}.",
+{id:"v03",topic:"aufgaben",type:"fill",diff:1,tax:"K1",
+ q:"Die VWL hat vier Aufgaben: wirtschaftliche Vorgänge zu {0}, zu {1}, Entwicklungen zu {2} und die Wirtschaft zielgerichtet zu {3}.",
  blanks:[
-   {answer:"beschreiben", alts:["Beschreiben"]},
-   {answer:"erklären", alts:["Erklären"]},
-   {answer:"prognostizieren", alts:["Prognostizieren","vorhersagen","voraussagen"]},
-   {answer:"beeinflussen", alts:["Beeinflussen","steuern","lenken"]}
+   {answer:"beschreiben",alts:[]},
+   {answer:"erklären",alts:["erklaeren"]},
+   {answer:"prognostizieren",alts:["vorhersagen","voraussagen"]},
+   {answer:"beeinflussen",alts:["steuern"]}
  ],
- explain:"Die vier Aufgaben der Volkswirtschaftslehre bilden eine logische Kette: Zuerst muss man wirtschaftliche Phänomene beschreiben, dann erklären (Ursachen verstehen), darauf aufbauend prognostizieren und schliesslich mit wirtschaftspolitischen Massnahmen beeinflussen."
-},
+ explain:"Eisenhut: «Die VWL hat die Aufgabe, wirtschaftliche Vorgänge zu beschreiben, zu erklären, zu prognostizieren und zielgerichtet zu beeinflussen.» Dabei sollen nicht nur kurzfristige, sondern auch langfristige Auswirkungen berücksichtigt werden."},
 
-// ═══════════════════════════════════════════
-// ZIELE DER WIRTSCHAFTSPOLITIK (z01–z07)
-// ═══════════════════════════════════════════
+{id:"v04",topic:"aufgaben",type:"tf",diff:2,tax:"K2",
+ q:"Prognosen in der VWL sind einfach, weil die Zusammenhänge klar sind.",
+ correct:false,explain:"Falsch. Prognosen sind schwierig, weil: (1) Die Ursachen selbst wieder erklärungsbedürftig sind (Kausalitätsketten). (2) Viele Einflussfaktoren geschätzt werden müssen (Nachfrage, Löhne, technischer Fortschritt). (3) Menschen unvorhersehbar auf Anreize reagieren. Deshalb sind ökonomische Prognosen oft ungenau."},
 
-{id:"z01", topic:"ziele", type:"mc", diff:1, tax:"K1",
- q:"Welches der folgenden Ziele gehört NICHT zum magischen Sechseck der Wirtschaftspolitik?",
- options:[
-   {v:"A", t:"Vollbeschäftigung"},
-   {v:"B", t:"Preisstabilität"},
-   {v:"C", t:"Gewinnmaximierung"},
-   {v:"D", t:"Umweltqualität"}
- ],
- correct:"C",
- explain:"Das magische Sechseck umfasst: Vollbeschäftigung, Preisstabilität, Wirtschaftswachstum, aussenwirtschaftliches Gleichgewicht, sozialer Ausgleich (gerechte Verteilung) und Umweltqualität. Gewinnmaximierung ist ein betriebswirtschaftliches, kein wirtschaftspolitisches Ziel."
-},
+{id:"v05",topic:"aufgaben",type:"open",diff:2,tax:"K3",
+ q:"Wählen Sie eine aktuelle Wirtschaftsmeldung (z.B. steigende Mieten) und zeigen Sie, wie die VWL ihre vier Aufgaben darauf anwendet.",
+ sample:"Meldung: «Die Mieten in Schweizer Städten steigen.» (1) Beschreiben: Die Mieten sind im letzten Jahr um 3% gestiegen. (2) Erklären: Zuwanderung erhöht Nachfrage, wenig Neubau begrenzt Angebot. (3) Prognostizieren: Mieten werden weiter steigen, wenn nicht mehr gebaut wird. (4) Beeinflussen: Lockerung der Bauvorschriften, Förderung des gemeinnützigen Wohnungsbaus, Mietpreisregulierung.",
+ explain:"Dieses Vorgehen zeigt, wie die VWL systematisch an Probleme herangeht: Von der Beobachtung über die Ursachenanalyse zur Prognose und schliesslich zu Handlungsempfehlungen."},
 
-{id:"z02", topic:"ziele", type:"fill", diff:1, tax:"K1",
- q:"Die sechs Ziele des magischen Sechsecks sind: {0}, Preisstabilität, {1}, aussenwirtschaftliches Gleichgewicht, {2} und Umweltqualität.",
- blanks:[
-   {answer:"Vollbeschäftigung", alts:["Beschäftigung","hohe Beschäftigung"]},
-   {answer:"Wirtschaftswachstum", alts:["Wachstum"]},
-   {answer:"sozialer Ausgleich", alts:["gerechte Verteilung","Verteilungsgerechtigkeit","gerechte Einkommensverteilung"]}
- ],
- explain:"Das magische Sechseck besteht aus sechs wirtschaftspolitischen Zielen, die ursprünglich als Dreieck (Vollbeschäftigung, Preisstabilität, aussenwirtschaftliches Gleichgewicht) begannen und schrittweise erweitert wurden."
-},
+// ──── ZIELE DER WIRTSCHAFTSPOLITIK (z01–z06) ────
+{id:"z01",topic:"ziele",type:"mc",diff:1,tax:"K1",
+ q:"Welche sechs Ziele umfasst das «magische Sechseck» der Wirtschaftspolitik?",
+ options:[{v:"A",t:"Vollbeschäftigung, Preisstabilität, Wirtschaftswachstum, aussenwirtschaftliches Gleichgewicht, sozialer Ausgleich, Umweltqualität."},{v:"B",t:"Hohe Exporte, tiefe Steuern, hohe Gewinne, viel Konsum, wenig Staat, tiefe Inflation."},{v:"C",t:"BIP, Gini-Koeffizient, Lorenzkurve, Handelsbilanz, Zinssatz, Wechselkurs."},{v:"D",t:"Freiheit, Gleichheit, Brüderlichkeit, Demokratie, Wohlstand, Sicherheit."}],
+ correct:"A",explain:"Das magische Sechseck: (1) Vollbeschäftigung, (2) Preisstabilität, (3) Wirtschaftswachstum, (4) Aussenwirtschaftliches Gleichgewicht, (5) Sozialer Ausgleich (Verteilung), (6) Umweltqualität. Ursprünglich nur ein Dreieck (1-3), im Laufe der Zeit erweitert."},
 
-{id:"z03", topic:"ziele", type:"mc", diff:2, tax:"K2",
- q:"Warum werden die Ziele der Wirtschaftspolitik als «magisch» bezeichnet?",
- options:[
-   {v:"A", t:"Weil sie unerreichbar sind und nur in der Theorie existieren."},
-   {v:"B", t:"Weil es schwierig ist, alle Ziele gleichzeitig zu erreichen – sie stehen teilweise in Konkurrenz zueinander."},
-   {v:"C", t:"Weil sie auf magischem Denken der ersten Ökonomen basieren."},
-   {v:"D", t:"Weil sie nur von besonders talentierten Politikern erreicht werden können."}
- ],
- correct:"B",
- explain:"Das Vieleck heisst «magisch», weil die gleichzeitige Erreichung aller Ziele sehr schwierig ist. Es bestehen Zielkonflikte (z.B. Preisstabilität vs. Vollbeschäftigung) und Trade-offs, die politische Prioritätensetzung erfordern."
-},
+{id:"z02",topic:"ziele",type:"tf",diff:1,tax:"K2",
+ q:"Das Sechseck heisst «magisch», weil es schwierig ist, alle sechs Ziele gleichzeitig zu erreichen.",
+ correct:true,explain:"Richtig. Die Ziele stehen teilweise in Konkurrenz zueinander (Zielkonflikte). Beispiel: Wirtschaftswachstum kann die Umweltqualität beeinträchtigen. Preisstabilität und Vollbeschäftigung können kurzfristig in Konkurrenz stehen."},
 
-{id:"z04", topic:"ziele", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Beispiele der passenden Zielbeziehung zu:",
- categories:["Zielharmonie","Zielkonkurrenz","Zielneutralität"],
+{id:"z03",topic:"ziele",type:"sort",diff:2,tax:"K2",
+ q:"Ordnen Sie die Beispiele der korrekten Zielbeziehung zu.",
+ categories:["Zielharmonie","Zielkonkurrenz"],
  items:[
-   {t:"Wirtschaftswachstum fördert Vollbeschäftigung", cat:0},
-   {t:"Preisstabilität und Vollbeschäftigung stehen kurzfristig im Widerspruch", cat:1},
-   {t:"Preisstabilität hat keinen direkten Einfluss auf die Umweltqualität", cat:2},
-   {t:"Sozialer Ausgleich kann das Wirtschaftswachstum hemmen", cat:1}
+   {t:"Wirtschaftswachstum fördert Vollbeschäftigung",cat:0},
+   {t:"Mehr Wachstum kann Umwelt belasten",cat:1},
+   {t:"Preisstabilität und Vollbeschäftigung können sich kurzfristig widersprechen",cat:1},
+   {t:"Bildungsinvestitionen fördern Wachstum und sozialen Ausgleich gleichzeitig",cat:0}
  ],
- explain:"Zielharmonie: Ein Ziel fördert das andere. Zielkonkurrenz: Ziele behindern sich gegenseitig. Zielneutralität: Ziele beeinflussen sich nicht direkt. Die Beziehungen können sich je nach Zeitraum und Situation ändern."
-},
+ explain:"Zielharmonie: Das Erreichen eines Ziels fördert ein anderes. Zielkonkurrenz: Ein Ziel zu verfolgen behindert ein anderes. Zielneutralität (selten): Ziele beeinflussen sich nicht gegenseitig. Beispiel für den klassischen Trade-off: «Butter und Kanonen»."},
 
-{id:"z05", topic:"ziele", type:"tf", diff:2, tax:"K2",
- q:"Ein Trade-off in der Wirtschaftspolitik bedeutet, dass man auf ein Ziel vollständig verzichten muss, um ein anderes zu erreichen.",
- correct:false,
- explain:"Falsch. Ein Trade-off bedeutet nicht «alles oder nichts», sondern eine Austauschbeziehung: Ein «bisschen weniger» von einem Ziel ermöglicht ein «bisschen mehr» von einem anderen. Z.B. etwas weniger Preisstabilität für etwas weniger Arbeitslosigkeit."
-},
-
-{id:"z06", topic:"ziele", type:"mc", diff:3, tax:"K4",
- q:"Ein Land mit hoher Arbeitslosigkeit erhöht die Staatsausgaben massiv, um Arbeitsplätze zu schaffen. Welche Zielkonkurrenz droht am ehesten?",
- options:[
-   {v:"A", t:"Vollbeschäftigung vs. Umweltqualität"},
-   {v:"B", t:"Vollbeschäftigung vs. Preisstabilität (Inflationsgefahr durch steigende Nachfrage)"},
-   {v:"C", t:"Wirtschaftswachstum vs. sozialer Ausgleich"},
-   {v:"D", t:"Aussenwirtschaftliches Gleichgewicht vs. Umweltqualität"}
+{id:"z04",topic:"ziele",type:"fill",diff:2,tax:"K1",
+ q:"Wenn das Anstreben eines Ziels ein anderes fördert, spricht man von {0}. Wenn ein Ziel ein anderes behindert, spricht man von {1}. In der Fachsprache heissen solche Austauschbeziehungen {2}.",
+ blanks:[
+   {answer:"Zielharmonie",alts:["Ziel-Harmonie"]},
+   {answer:"Zielkonkurrenz",alts:["Ziel-Konkurrenz","Zielkonflikt"]},
+   {answer:"Trade-offs",alts:["Trade-off","Tradeoffs"]}
  ],
- correct:"B",
- explain:"Massive Staatsausgaben erhöhen die Nachfrage und können Arbeitsplätze schaffen (Ziel: Vollbeschäftigung). Gleichzeitig droht aber Inflation, wenn die Nachfrage schneller wächst als das Angebot (Zielkonkurrenz mit Preisstabilität). Dies ist der klassische Trade-off der Wirtschaftspolitik."
-},
+ explain:"Drei Zielbeziehungen: Zielharmonie, Zielneutralität, Zielkonkurrenz. Trade-offs = Austauschbeziehungen, z.B. «ein bisschen weniger Arbeitslose gegen ein bisschen weniger Preisstabilität» (Eisenhut)."},
 
-{id:"z07", topic:"ziele", type:"tf", diff:3, tax:"K5",
- q:"Wirtschaftswachstum und Umweltqualität stehen immer und zwingend in Zielkonkurrenz zueinander.",
- correct:false,
- explain:"Falsch. Die Beziehung ist nicht eindeutig. Einerseits kann Wachstum Umweltbelastung verursachen (Zielkonkurrenz). Andererseits kann Wachstum auch nötig sein, um in Umweltschutztechnologien zu investieren (mögliche Zielharmonie). Die Zielbeziehung hängt von der Art des Wachstums ab."
-}
+{id:"z05",topic:"ziele",type:"mc",diff:2,tax:"K2",
+ q:"Warum ist der klassische Trade-off «Butter und Kanonen» ein gutes Beispiel für wirtschaftspolitische Zielkonflikte?",
+ options:[{v:"A",t:"Weil mehr Ausgaben für die Armee (Kanonen) weniger Mittel für zivile Güter (Butter) bedeuten – die Ressourcen sind knapp."},{v:"B",t:"Weil Butter und Kanonen aus denselben Rohstoffen hergestellt werden."},{v:"C",t:"Weil die Armee kein Geld benötigt."},{v:"D",t:"Weil es in der Wirtschaft immer nur um Waffen geht."}],
+ correct:"A",explain:"Das «Butter-und-Kanonen»-Beispiel illustriert den grundlegenden Trade-off: Knappe Ressourcen (Geld, Arbeit, Material) können entweder für Rüstung oder für zivile Güter eingesetzt werden – nicht für beides gleichzeitig. Dies zeigt die Opportunitätskosten jeder Entscheidung auf gesamtwirtschaftlicher Ebene."},
 
+{id:"z06",topic:"ziele",type:"open",diff:3,tax:"K5",
+ q:"Stehen die Ziele «Wirtschaftswachstum» und «Umweltqualität» in Harmonie oder in Konkurrenz? Begründen Sie Ihre Einschätzung.",
+ sample:"Beides ist möglich. Zielkonkurrenz: Mehr Produktion bedeutet oft mehr Ressourcenverbrauch und Emissionen (quantitatives Wachstum). Zielharmonie: Qualitatives Wachstum (effizientere Technologien, erneuerbare Energien, Kreislaufwirtschaft) kann Wachstum und Umweltschutz verbinden. Zudem braucht es wirtschaftliche Mittel, um in Umwelttechnologien zu investieren. Fazit: Die Zielbeziehung ist nicht eindeutig – sie hängt von der Art des Wachstums ab.",
+ explain:"Eisenhut fragt: «Brauchen wir Wachstum, um unsere Umwelt zu retten?» Die Antwort ist nicht eindeutig. Entscheidend ist die Unterscheidung zwischen quantitativem und qualitativem Wachstum."}
 ];
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+let pickedSortItem=null;
 
-// ═══════════════════════════════════════════
-// AB HIER: IDENTISCHER CODE FÜR ALLE POOLS
-// ═══════════════════════════════════════════
-
-const DIFF_LABELS = {1:"Einfach",2:"Mittel",3:"Schwer"};
-const TYPE_LABELS = {mc:"Multiple Choice",tf:"Richtig/Falsch",fill:"Lückentext",calc:"Berechnung",sort:"Zuordnung"};
-
-let mode="", selectedTopics=new Set(), selectedDiffs=new Set(), selectedTypes=new Set();
-let pool=[], current=0, score=0, answered=false, results=[];
-
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
 function init(){
-  const tc=document.getElementById("topicChips");
-  Object.entries(TOPICS).forEach(([k,v])=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=k;c.textContent=v.short;
-    c.onclick=()=>toggleChip(c,selectedTopics,k);tc.appendChild(c);
-  });
-  const dc=document.getElementById("diffChips");
-  [1,2,3].forEach(d=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=d;c.textContent=DIFF_LABELS[d];
-    c.onclick=()=>toggleChip(c,selectedDiffs,d);dc.appendChild(c);
-  });
-  const yc=document.getElementById("typeChips");
-  const usedTypes=[...new Set(QUESTIONS.map(q=>q.type))];
-  usedTypes.forEach(t=>{
-    const c=document.createElement("div");c.className="chip";c.dataset.key=t;c.textContent=TYPE_LABELS[t];
-    c.onclick=()=>toggleChip(c,selectedTypes,t);yc.appendChild(c);
-  });
-  updateCount();
+  buildChips('topicChips',TOPICS,'topics',t=>TOPICS[t].short);
+  buildChips('diffChips',DIFF_LABELS,'diffs',d=>DIFF_LABELS[d]);
+  buildChips('typeChips',TYPE_LABELS,'types',t=>TYPE_LABELS[t]);
+  updateFilterCount();
 }
 
-function toggleChip(el,set,key){
-  if(set.has(key)){set.delete(key);el.classList.remove("active")}
-  else{set.add(key);el.classList.add("active")}
-  updateCount();
+function buildChips(containerId,obj,filterKey,labelFn){
+  const c=document.getElementById(containerId);
+  c.innerHTML='';
+  Object.keys(obj).forEach(k=>{
+    const ch=document.createElement('span');
+    ch.className='chip';
+    ch.textContent=labelFn(k);
+    ch.dataset.key=k;
+    ch.onclick=()=>toggleChip(ch,filterKey,k);
+    c.appendChild(ch);
+  });
 }
 
 function setMode(m){
-  mode=m;
-  document.querySelectorAll(".mode-card").forEach(c=>c.classList.toggle("active",c.dataset.mode===m));
-  if(m==="mix"){
-    document.querySelectorAll("#topicChips .chip").forEach(c=>{c.classList.add("active");selectedTopics.add(c.dataset.key)});
-    document.querySelectorAll("#diffChips .chip").forEach(c=>{c.classList.add("active");selectedDiffs.add(+c.dataset.key)});
-    document.querySelectorAll("#typeChips .chip").forEach(c=>{c.classList.add("active");selectedTypes.add(c.dataset.key)});
+  state.mode=m;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.toggle('active',c.dataset.mode===m));
+  if(m==='mix'){
+    ['topicChips','diffChips','typeChips'].forEach(id=>{
+      document.querySelectorAll('#'+id+' .chip').forEach(ch=>{
+        ch.classList.add('active');
+        state.filters[id==='topicChips'?'topics':id==='diffChips'?'diffs':'types'].add(ch.dataset.key);
+      });
+    });
   } else {
-    [selectedTopics,selectedDiffs,selectedTypes].forEach(s=>s.clear());
-    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-    document.querySelectorAll("#typeChips .chip").forEach(c=>{c.classList.add("active");selectedTypes.add(c.dataset.key)});
+    ['topicChips','diffChips'].forEach(id=>{
+      document.querySelectorAll('#'+id+' .chip').forEach(ch=>ch.classList.remove('active'));
+      state.filters[id==='topicChips'?'topics':'diffs'].clear();
+    });
+    document.querySelectorAll('#typeChips .chip').forEach(ch=>{
+      ch.classList.add('active');
+      state.filters.types.add(ch.dataset.key);
+    });
   }
-  updateCount();
+  updateFilterCount();
+}
+
+function toggleChip(el,filterKey,key){
+  el.classList.toggle('active');
+  if(el.classList.contains('active'))state.filters[filterKey].add(key);
+  else state.filters[filterKey].delete(key);
+  updateFilterCount();
 }
 
 function getFiltered(){
   return QUESTIONS.filter(q=>
-    (selectedTopics.size===0||selectedTopics.has(q.topic))&&
-    (selectedDiffs.size===0||selectedDiffs.has(q.diff))&&
-    (selectedTypes.size===0||selectedTypes.has(q.type))
+    (state.filters.topics.size===0||state.filters.topics.has(q.topic))&&
+    (state.filters.diffs.size===0||state.filters.diffs.has(String(q.diff)))&&
+    (state.filters.types.size===0||state.filters.types.has(q.type))
   );
 }
 
-function updateCount(){
+function updateFilterCount(){
   const n=getFiltered().length;
-  document.getElementById("filterCount").textContent=n+" Aufgabe"+(n!==1?"n":"")+" verfügbar";
-  document.getElementById("startBtn").disabled=n===0;
+  document.getElementById('filterCount').textContent=n+' Aufgabe'+(n!==1?'n':'')+' verfügbar';
+  document.getElementById('startBtn').disabled=n===0||!state.mode;
 }
 
+// ══════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════
 function startQuiz(){
-  pool=getFiltered();
-  if(mode==="mix") pool.sort(()=>Math.random()-.5);
-  else pool.sort((a,b)=>a.diff-b.diff);
-  current=0;score=0;results=[];answered=false;
-  showScreen("quizScreen");
+  let q=getFiltered();
+  if(state.mode==='focus')q.sort((a,b)=>a.diff-b.diff);
+  else shuffle(q);
+  state.queue=q;state.current=0;state.score=0;state.maxScore=0;state.answered=[];state.wrong=[];
+  showScreen('quizScreen');
   renderQuestion();
 }
 
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
 function renderQuestion(){
-  const q=pool[current];
-  document.getElementById("qProgress")=(current+1)+" / "+pool.length;
-  document.getElementById("qScore").textContent=score+" Punkt"+(score!==1?"e":"");
-  document.getElementById("progressBar").style.width=((current)/pool.length*100)+"%";
-  document.getElementById("nextBtn").style.display="none";
-  answered=false;
+  const q=state.queue[state.current];
+  const total=state.queue.length;
+  document.getElementById('qProgress').textContent=(state.current+1)+' / '+total;
+  document.getElementById('qScore').textContent=state.score+' Punkte';
+  document.getElementById('progressBar').style.width=((state.current)/total*100)+'%';
+  document.getElementById('nextBtn').style.display='none';
 
-  const card=document.getElementById("questionCard");
-  let html=`<div class="q-badges">
-    <span class="badge badge-topic">${TOPICS[q.topic].short}</span>
-    <span class="badge badge-diff${q.diff}">${DIFF_LABELS[q.diff]}</span>
-    <span class="badge badge-tax">${q.tax}</span>
-    <span class="badge badge-type">${TYPE_LABELS[q.type]}</span>
-  </div>
-  <div class="q-text">${q.q}</div>`;
+  let html='<div class="q-badges">';
+  html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
+  html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
+  html+='<span class="badge badge-tax">'+q.tax+'</span>';
+  html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+  html+='</div>';
+  html+='<div class="q-text">'+q.q+'</div>';
 
-  if(q.type==="mc"){
-    html+=`<div class="mc-options">`;
+  if(q.type==='mc'){
+    html+='<div class="mc-options">';
     q.options.forEach(o=>{
-      html+=`<div class="mc-opt" data-val="${o.v}" onclick="selectMC(this,'${q.id}')">
-        <div class="opt-letter">${o.v}</div><div class="opt-text">${o.t}</div></div>`;
+      html+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
+      html+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+o.t+'</span></div>';
     });
-    html+=`</div>`;
-  } else if(q.type==="tf"){
-    html+=`<div class="tf-btns">
-      <div class="tf-btn" data-val="true" onclick="selectTF(this,'${q.id}')">✅ Richtig</div>
-      <div class="tf-btn" data-val="false" onclick="selectTF(this,'${q.id}')">❌ Falsch</div>
-    </div>`;
-  } else if(q.type==="fill"){
-    let parts=q.q.split(/\{(\d+)\}/);
-    html=`<div class="q-badges">
-      <span class="badge badge-topic">${TOPICS[q.topic].short}</span>
-      <span class="badge badge-diff${q.diff}">${DIFF_LABELS[q.diff]}</span>
-      <span class="badge badge-tax">${q.tax}</span>
-      <span class="badge badge-type">${TYPE_LABELS[q.type]}</span>
-    </div><div class="q-text">`;
-    parts.forEach((p,i)=>{
-      if(i%2===0) html+=p;
-      else html+=`<input type="text" class="fill-input" data-idx="${p}" autocomplete="off" spellcheck="false">`;
-    });
-    html+=`</div><button class="btn btn-primary" style="margin-top:8px" onclick="checkFill('${q.id}')">Prüfen</button>`;
-  } else if(q.type==="calc"){
-    html+=`<div class="calc-rows">`;
+    html+='</div>';
+  } else if(q.type==='tf'){
+    html+='<div class="tf-btns"><div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',true)">\u2705 Richtig</div>';
+    html+='<div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',false)">\u274c Falsch</div></div>';
+  } else if(q.type==='fill'){
+    let parts=q.q.split(/\{(\d+)\}/g);
+    html='<div class="q-badges">';
+    html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
+    html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
+    html+='<span class="badge badge-tax">'+q.tax+'</span>';
+    html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+    html+='</div>';
+    html+='<div class="q-text">';
+    let bIdx=0;
+    for(let i=0;i<parts.length;i++){
+      if(i%2===0)html+=parts[i];
+      else html+='<input class="fill-input" data-bidx="'+bIdx+'" placeholder="\u2026" autocomplete="off" autocapitalize="off">';
+      if(i%2===1)bIdx++;
+    }
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerFill(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='calc'){
+    html+='<div class="calc-rows">';
     q.rows.forEach((r,i)=>{
-      html+=`<div class="calc-row"><label>${r.label}</label>
-        <input type="number" step="any" data-idx="${i}" autocomplete="off">
-        <span class="unit">${r.unit||""}</span></div>`;
+      html+='<div class="calc-row"><label>'+r.label+'</label><input type="number" step="any" data-ridx="'+i+'" placeholder="?"><span class="unit">'+r.unit+'</span></div>';
     });
-    html+=`</div><button class="btn btn-primary" style="margin-top:12px" onclick="checkCalc('${q.id}')">Prüfen</button>`;
-  } else if(q.type==="sort"){
-    const shuffled=[...q.items].sort(()=>Math.random()-.5);
-    html+=`<div class="sort-pool" id="sortPool">`;
-    shuffled.forEach((item,i)=>{
-      html+=`<div class="sort-item" data-idx="${q.items.indexOf(item)}" onclick="pickItem(this)">${item.t}</div>`;
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerCalc(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='sort'){
+    html+='<div class="sort-pool" id="sortPool">';
+    let items=[...q.items];shuffle(items);
+    items.forEach((it,i)=>{
+      html+='<span class="sort-item" data-oidx="'+q.items.indexOf(it)+'" onclick="pickSortItem(this)">'+it.t+'</span>';
     });
-    html+=`</div><div class="sort-cats" style="grid-template-columns:repeat(${q.categories.length},1fr)">`;
-    q.categories.forEach((cat,i)=>{
-      html+=`<div class="sort-cat" data-cat="${i}" onclick="placeToCat(this)">
-        <div class="sort-cat-title">${cat}</div><div class="sort-cat-items"></div></div>`;
+    html+='</div><div class="sort-cats" id="sortCats" style="grid-template-columns:repeat('+q.categories.length+',1fr)">';
+    q.categories.forEach((cat,ci)=>{
+      html+='<div class="sort-cat" data-cidx="'+ci+'" onclick="placeSortItem(this,'+ci+')"><div class="sort-cat-title">'+cat+'</div><div class="sort-cat-items" id="sortCat'+ci+'"></div></div>';
     });
-    html+=`</div><button class="btn btn-primary" style="margin-top:12px" onclick="checkSort('${q.id}')">Prüfen</button>`;
+    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerSort(\''+q.id+'\')">\u00dcberpr\u00fcfen</button>';
+  } else if(q.type==='open'){
+    html+='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier\u2026"></textarea>';
+    html+='<button class="btn btn-primary" style="margin-top:14px" onclick="showOpenSample(\''+q.id+'\')">L\u00f6sung anzeigen</button>';
+    html+='<div class="open-sample" id="openSample"><div class="open-sample-title">L\u00f6sungsvorschlag:</div><div id="openSampleText"></div></div>';
+    html+='<div class="open-self" id="openSelf">';
+    html+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">\u2705 Gewusst</button>';
+    html+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">\u274c Nicht gewusst</button>';
+    html+='</div>';
   }
-
-  html+=`<div class="feedback" id="feedback"></div>`;
-  card.innerHTML=html;
+  html+='<div class="feedback" id="feedback"></div>';
+  document.getElementById('questionCard').innerHTML=html;
+  pickedSortItem=null;
 }
 
-// ── MC ──
-function selectMC(el,qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current], val=el.dataset.val, ok=val===q.correct;
-  if(ok) score++;
-  results.push({q,ok,given:val});
-  document.querySelectorAll(".mc-opt").forEach(o=>{
-    o.style.pointerEvents="none";
-    if(o.dataset.val===q.correct) o.classList.add("correct");
-    else if(o===el&&!ok) o.classList.add("wrong");
+// ── Answer handlers ──
+function answerMC(el,qid,val){
+  if(document.querySelector('.mc-opt.correct,.mc-opt.wrong'))return;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.querySelectorAll('.mc-opt').forEach(o=>{
+    o.style.pointerEvents='none';
+    if(o.dataset.val===q.correct)o.classList.add('correct');
+    else if(o.dataset.val===val)o.classList.add('wrong');
   });
-  showFeedback(ok,q.explain);
+  finishAnswer(q,val===q.correct,q.explain);
 }
 
-// ── TF ──
-function selectTF(el,qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current], val=el.dataset.val==="true", ok=val===q.correct;
-  if(ok) score++;
-  results.push({q,ok,given:val});
-  document.querySelectorAll(".tf-btn").forEach(b=>{
-    b.style.pointerEvents="none";
-    if((b.dataset.val==="true")===q.correct) b.classList.add("correct");
-    else if(b===el&&!ok) b.classList.add("wrong");
-  });
-  showFeedback(ok,q.explain);
+function answerTF(el,qid,val){
+  if(document.querySelector('.tf-btn.correct,.tf-btn.wrong'))return;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const correct=val===q.correct;
+  document.querySelectorAll('.tf-btn').forEach(b=>b.style.pointerEvents='none');
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct)document.querySelectorAll('.tf-btn').forEach(b=>{if(b!==el)b.classList.add('correct')});
+  finishAnswer(q,correct,q.explain);
 }
 
-// ── Fill ──
-function checkFill(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".fill-input").forEach(inp=>{
-    const idx=+inp.dataset.idx, blank=q.blanks[idx];
+function answerFill(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const inputs=document.querySelectorAll('.fill-input');
+  let allCorrect=true;
+  inputs.forEach(inp=>{
+    const bi=parseInt(inp.dataset.bidx);
+    const blank=q.blanks[bi];
     const userVal=inp.value.trim().toLowerCase();
-    const correct=userVal===blank.answer.toLowerCase()||blank.alts.some(a=>a.toLowerCase()===userVal);
-    inp.classList.add(correct?"correct":"wrong");
-    if(!correct){allOk=false;inp.value=inp.value+" → "+blank.answer;}
-    inp.readOnly=true;
+    const ok=userVal===blank.answer.toLowerCase()||blank.alts.some(a=>userVal===a.toLowerCase());
+    inp.classList.add(ok?'correct':'wrong');
+    inp.disabled=true;
+    if(!ok){allCorrect=false;inp.value=inp.value+' \u2192 '+blank.answer}
   });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Lückentext)"});
-  showFeedback(allOk,q.explain);
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-// ── Calc ──
-function checkCalc(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".calc-row input").forEach(inp=>{
-    const idx=+inp.dataset.idx, row=q.rows[idx];
+function answerCalc(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const inputs=document.querySelectorAll('.calc-row input');
+  let allCorrect=true;
+  inputs.forEach(inp=>{
+    const ri=parseInt(inp.dataset.ridx);
+    const row=q.rows[ri];
     const val=parseFloat(inp.value);
-    const correct=!isNaN(val)&&Math.abs(val-row.answer)<=row.tolerance;
-    inp.classList.add(correct?"correct":"wrong");
-    if(!correct){allOk=false;inp.value=inp.value+" → "+row.answer;}
-    inp.readOnly=true;
+    const ok=!isNaN(val)&&Math.abs(val-row.answer)<=row.tolerance;
+    inp.classList.add(ok?'correct':'wrong');
+    inp.disabled=true;
+    if(!ok){allCorrect=false;inp.value=inp.value+' \u2192 '+row.answer}
   });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Berechnung)"});
-  showFeedback(allOk,q.explain);
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-// ── Sort ──
-let pickedItem=null;
-function pickItem(el){
-  if(answered) return;
-  if(pickedItem===el){pickedItem.classList.remove("picked");pickedItem=null;return;}
-  if(pickedItem) pickedItem.classList.remove("picked");
-  pickedItem=el;el.classList.add("picked");
+function pickSortItem(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.sort-item').forEach(s=>s.classList.remove('picked'));
+  el.classList.add('picked');
+  pickedSortItem=el;
 }
-function placeToCat(catEl){
-  if(answered||!pickedItem) return;
-  const items=catEl.querySelector(".sort-cat-items");
-  const chip=document.createElement("div");
-  chip.className="sort-cat-item";chip.textContent=pickedItem.textContent;
-  chip.dataset.idx=pickedItem.dataset.idx;
-  chip.onclick=function(){
-    const pool=document.getElementById("sortPool");
-    const orig=document.createElement("div");
-    orig.className="sort-item";orig.textContent=this.textContent;
-    orig.dataset.idx=this.dataset.idx;orig.onclick=function(){pickItem(this)};
-    pool.appendChild(orig);this.remove();
+
+function placeSortItem(catEl,cidx){
+  if(!pickedSortItem)return;
+  const container=catEl.querySelector('.sort-cat-items');
+  const clone=document.createElement('span');
+  clone.className='sort-cat-item';
+  clone.textContent=pickedSortItem.textContent;
+  clone.dataset.oidx=pickedSortItem.dataset.oidx;
+  clone.onclick=function(){this.remove();
+    const orig=document.querySelector('.sort-item[data-oidx="'+this.dataset.oidx+'"]');
+    if(orig){orig.style.display='';orig.classList.remove('placed')}
   };
-  items.appendChild(chip);
-  pickedItem.remove();pickedItem=null;
+  container.appendChild(clone);
+  pickedSortItem.style.display='none';
+  pickedSortItem.classList.add('placed');
+  pickedSortItem.classList.remove('picked');
+  pickedSortItem=null;
 }
 
-function checkSort(qid){
-  if(answered) return;
-  answered=true;
-  const q=pool[current];
-  let allOk=true;
-  document.querySelectorAll(".sort-cat").forEach(catEl=>{
-    const catIdx=+catEl.dataset.cat;
-    catEl.querySelectorAll(".sort-cat-item").forEach(chip=>{
-      const itemIdx=+chip.dataset.idx;
-      const correct=q.items[itemIdx].cat===catIdx;
-      chip.classList.add(correct?"correct-item":"wrong-item");
-      if(!correct) allOk=false;
+function answerSort(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  let allCorrect=true;
+  document.querySelectorAll('.sort-cat').forEach(catEl=>{
+    const cidx=parseInt(catEl.dataset.cidx);
+    catEl.querySelectorAll('.sort-cat-item').forEach(item=>{
+      const oidx=parseInt(item.dataset.oidx);
+      const ok=q.items[oidx].cat===cidx;
+      item.classList.add(ok?'correct-item':'wrong-item');
+      if(!ok)allCorrect=false;
     });
   });
-  // Show unplaced items as wrong
-  document.querySelectorAll("#sortPool .sort-item").forEach(item=>{
-    item.style.opacity=".5";allOk=false;
-  });
-  if(allOk) score++;
-  results.push({q,ok:allOk,given:"(Zuordnung)"});
-  showFeedback(allOk,q.explain);
+  document.querySelectorAll('.sort-item').forEach(s=>s.style.pointerEvents='none');
+  document.querySelectorAll('.sort-cat').forEach(c=>c.style.pointerEvents='none');
+  document.querySelectorAll('#questionCard .btn-primary').forEach(b=>b.style.display='none');
+  finishAnswer(q,allCorrect,q.explain);
 }
 
-function showFeedback(ok,explain){
-  const fb=document.getElementById("feedback");
-  fb.className="feedback show "+(ok?"correct":"wrong");
-  fb.innerHTML=`<div class="feedback-title">${ok?"✅ Richtig!":"❌ Leider falsch."}</div>${explain}`;
-  document.getElementById("nextBtn").style.display="inline-flex";
-  document.getElementById("questionCard").querySelectorAll("button.btn-primary").forEach(b=>b.style.display="none");
+function showOpenSample(qid){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.getElementById('openSampleText').textContent=q.sample;
+  document.getElementById('openSample').classList.add('show');
+  document.getElementById('openSelf').classList.add('show');
+  document.querySelectorAll('#questionCard .btn-primary').forEach(b=>{if(b.textContent.includes('L\u00f6sung'))b.style.display='none'});
+}
+
+function answerOpen(qid,correct){
+  const q=QUESTIONS.find(x=>x.id===qid);
+  document.getElementById('openSelf').style.display='none';
+  document.getElementById('openAnswer').disabled=true;
+  finishAnswer(q,correct,q.explain);
+}
+
+function finishAnswer(q,correct,explain){
+  state.maxScore++;
+  if(correct)state.score++;
+  else state.wrong.push({q:q.q,explain:q.explain,topic:q.topic});
+  state.answered.push({id:q.id,correct});
+  document.getElementById('qScore').textContent=state.score+' Punkte';
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.innerHTML='<div class="feedback-title">'+(correct?'\u2705 Richtig!':'\u274c Leider falsch')+'</div><div>'+explain+'</div>';
+  document.getElementById('nextBtn').style.display='inline-flex';
 }
 
 function nextQuestion(){
-  current++;
-  if(current>=pool.length) endQuiz();
-  else renderQuestion();
+  state.current++;
+  if(state.current>=state.queue.length)return endQuiz();
+  renderQuestion();
 }
 
 function endQuiz(){
-  showScreen("resultScreen");
-  const total=results.length;
-  document.getElementById("resPts").textContent=score+"/"+total;
-  document.getElementById("resPct").textContent=total?Math.round(score/total*100)+"%":"0%";
-
-  // Topic breakdown
-  const byTopic={};
-  results.forEach(r=>{
-    if(!byTopic[r.q.topic]) byTopic[r.q.topic]={ok:0,total:0};
-    byTopic[r.q.topic].total++;
-    if(r.ok) byTopic[r.q.topic].ok++;
+  document.getElementById('progressBar').style.width='100%';
+  showScreen('resultScreen');
+  const pct=state.maxScore?Math.round(state.score/state.maxScore*100):0;
+  document.getElementById('resPts').textContent=state.score+' / '+state.maxScore;
+  document.getElementById('resPct').textContent=pct+'%';
+  let topicData={};
+  state.queue.forEach((q,i)=>{
+    if(i>=state.answered.length)return;
+    if(!topicData[q.topic])topicData[q.topic]={correct:0,total:0};
+    topicData[q.topic].total++;
+    if(state.answered[i].correct)topicData[q.topic].correct++;
   });
-  const tr=document.getElementById("topicResults");tr.innerHTML="";
-  Object.entries(byTopic).forEach(([t,d])=>{
-    const pct=Math.round(d.ok/d.total*100);
-    const cls=pct>=70?"tg":pct>=40?"ty":"tr";
-    tr.innerHTML+=`<div class="topic-row">
-      <span class="topic-name">${TOPICS[t].label}</span>
-      <span class="topic-score">${d.ok}/${d.total}</span>
-      <div class="topic-bar"><div class="topic-bar-fill ${cls}" style="width:${pct}%"></div></div>
-    </div>`;
+  let tHtml='';
+  Object.keys(topicData).forEach(t=>{
+    const d=topicData[t];const p=Math.round(d.correct/d.total*100);
+    const cls=p>=70?'tg':p>=40?'ty':'tr';
+    tHtml+='<div class="topic-row"><span class="topic-name">'+TOPICS[t].label+'</span>';
+    tHtml+='<span class="topic-score">'+d.correct+'/'+d.total+'</span>';
+    tHtml+='<div class="topic-bar"><div class="topic-bar-fill '+cls+'" style="width:'+p+'%"></div></div></div>';
   });
-
-  // Wrong questions
-  const wl=document.getElementById("wrongList");wl.innerHTML="";
-  const wrongs=results.filter(r=>!r.ok);
-  if(wrongs.length===0) document.getElementById("wrongCard").style.display="none";
-  else{
-    document.getElementById("wrongCard").style.display="block";
-    wrongs.forEach(r=>{
-      wl.innerHTML+=`<div class="wrong-item"><div class="wq">${r.q.q.replace(/\{\d+\}/g,"___")}</div><div class="wa">${r.q.explain}</div></div>`;
+  document.getElementById('topicResults').innerHTML=tHtml;
+  if(state.wrong.length){
+    document.getElementById('wrongCard').style.display='';
+    let wHtml='';
+    state.wrong.forEach(w=>{
+      wHtml+='<div class="wrong-item"><div class="wq">'+w.q+'</div><div class="wa">'+w.explain+'</div></div>';
     });
-  }
+    document.getElementById('wrongList').innerHTML=wHtml;
+  }else{document.getElementById('wrongCard').style.display='none'}
 }
 
-function exportResults(){window.print();}
+function exportResults(){window.print()}
 
 function resetApp(){
-  mode="";selectedTopics.clear();selectedDiffs.clear();selectedTypes.clear();
-  pool=[];current=0;score=0;results=[];answered=false;pickedItem=null;
-  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-  document.querySelectorAll(".mode-card").forEach(c=>c.classList.remove("active"));
-  showScreen("startScreen");
-  updateCount();
+  state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('active'));
+  updateFilterCount();
+  showScreen('startScreen');
 }
 
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
 init();
+
 </script>
 </body>
 </html>
