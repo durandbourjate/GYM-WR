@@ -121,6 +121,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .wrong-item{padding:14px;border-radius:var(--radius);margin-bottom:10px;background:var(--c-bg);border-left:3px solid var(--c-error)}
 .wrong-item .wq{font-weight:600;font-size:.9rem;margin-bottom:4px}
 .wrong-item .wa{font-size:.85rem;color:var(--c-text-soft);line-height:1.5}
+.review-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.review-item{padding:14px;border-radius:var(--radius);background:var(--c-bg);border-left:3px solid var(--c-border)}
+.review-item.ri-correct{border-left-color:var(--c-success)}
+.review-item.ri-wrong{border-left-color:var(--c-error)}
+.review-item.ri-skipped{border-left-color:var(--c-text-soft)}
+.ri-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.ri-num{font-family:'DM Mono',monospace;font-weight:700;font-size:.8rem;color:var(--c-text-soft)}
+.ri-icon{font-size:.9rem}
+.ri-topic{font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--c-info-bg);color:var(--c-info)}
+.ri-question{font-weight:600;font-size:.9rem;margin-bottom:8px;line-height:1.5}
+.ri-answer{font-size:.85rem;line-height:1.5;color:var(--c-text)}
+.ri-answer strong{font-weight:600}
+.ri-explain{font-size:.82rem;color:var(--c-text-soft);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--c-border)}
 /* Loading screen */
 .loading{text-align:center;padding:60px 20px}
 .loading .spinner{width:40px;height:40px;border:4px solid var(--c-border);border-top-color:var(--c-primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
@@ -146,6 +159,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .badge-type{background:#1a1d27;color:#94a3b8}
 .topic-row{background:var(--c-surface)}
 .wrong-item{background:var(--c-surface)}
+.review-item{background:var(--c-surface)}
 .calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 .open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 }
@@ -157,6 +171,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .print-header{display:block!important;text-align:center;padding:16px 0 8px;border-bottom:2px solid #333;margin-bottom:16px}
 .print-header h1{font-size:1.3rem;font-weight:700;margin:0}.print-header .print-meta{font-size:.8rem;color:#666;margin-top:4px}
 .wrong-item{break-inside:avoid;page-break-inside:avoid}
+.review-item{break-inside:avoid;page-break-inside:avoid;border:1px solid #ddd;border-left:3px solid #999}
+.review-item.ri-correct{border-left-color:#16a34a}
+.review-item.ri-wrong{border-left-color:#dc2626}
+.ri-topic{border:1px solid #ccc}
 }
 .print-header{display:none}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
@@ -251,7 +269,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 </div>
 </div>
 <div class="card"><h2>📊 Nach Unterthema</h2><div id="topicResults" class="topic-results"></div></div>
-<div class="card" id="wrongCard"><h2>❌ Zum Repetieren</h2><div id="wrongList" class="wrong-list"></div></div>
+<div class="card" id="reviewCard"><h2>📋 Alle Fragen & Lösungen</h2><div id="reviewList" class="review-list"></div></div>
 <div class="card" style="text-align:center">
 <button class="btn btn-primary" onclick="exportResults()" style="margin-right:10px">📄 Als PDF speichern</button>
 <button class="btn btn-outline" onclick="resetApp()">Neue Übung starten</button>
@@ -638,14 +656,71 @@ function endQuiz(){
     tHtml+='<div class="topic-bar"><div class="topic-bar-fill '+cls+'" style="width:'+p+'%"></div></div></div>';
   });
   document.getElementById('topicResults').innerHTML=tHtml;
-  if(state.wrong.length){
-    document.getElementById('wrongCard').style.display='';
-    let wHtml='';
-    state.wrong.forEach(w=>{
-      wHtml+='<div class="wrong-item"><div class="wq">'+w.q+'</div><div class="wa">'+w.explain+'</div></div>';
+
+  // Build full review of all questions
+  let rHtml='';
+  state.queue.forEach((q,i)=>{
+    if(i>=state.answered.length) return;
+    const a=state.answered[i];
+    const cls=a.correct?'ri-correct':'ri-wrong';
+    const icon=a.correct?'✅':'❌';
+    rHtml+='<div class="review-item '+cls+'">';
+    rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">'+icon+'</span>';
+    rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
+    rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
+    rHtml+='<div class="ri-answer"><strong>Lösung:</strong> '+getCorrectAnswer(q)+'</div>';
+    rHtml+='<div class="ri-explain">'+q.explain+'</div>';
+    rHtml+='</div>';
+  });
+  // Show skipped questions if quiz ended early
+  for(let i=state.answered.length;i<state.queue.length;i++){
+    const q=state.queue[i];
+    rHtml+='<div class="review-item ri-skipped">';
+    rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">⏭️</span>';
+    rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
+    rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
+    rHtml+='<div class="ri-answer"><strong>Lösung:</strong> '+getCorrectAnswer(q)+'</div>';
+    rHtml+='<div class="ri-explain">'+q.explain+'</div>';
+    rHtml+='</div>';
+  }
+  document.getElementById('reviewList').innerHTML=rHtml;
+}
+
+function getQuestionDisplay(q){
+  if(q.type==='fill'){
+    // Replace {0},{1},… placeholders with the correct answers in bold
+    return q.q.replace(/\{(\d+)\}/g,function(_,idx){
+      const b=q.blanks[parseInt(idx)];
+      return b?'<strong>['+b.answer+']</strong>':'[…]';
     });
-    document.getElementById('wrongList').innerHTML=wHtml;
-  }else{document.getElementById('wrongCard').style.display='none'}
+  }
+  return q.q;
+}
+
+function getCorrectAnswer(q){
+  if(q.type==='mc'){
+    const opt=q.options.find(o=>o.v===q.correct);
+    return q.correct+') '+(opt?opt.t:'');
+  }
+  if(q.type==='tf'){
+    return q.correct?'Richtig':'Falsch';
+  }
+  if(q.type==='fill'){
+    return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · ');
+  }
+  if(q.type==='calc'){
+    return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · ');
+  }
+  if(q.type==='sort'){
+    return q.categories.map(function(cat,ci){
+      const items=q.items.filter(function(it){return it.cat===ci}).map(function(it){return it.t});
+      return '<strong>'+cat+':</strong> '+items.join(', ');
+    }).join(' · ');
+  }
+  if(q.type==='open'){
+    return q.sample||'Siehe Lösungsvorschlag';
+  }
+  return '';
 }
 
 function exportResults(){
