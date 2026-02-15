@@ -166,7 +166,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 @media print{
 body{min-height:auto!important;background:#fff!important}
 .container{padding:0 16px!important;max-width:100%!important}
-.app-header,.quiz-actions,#startScreen,#loadingScreen,#errorScreen,#quizScreen{display:none!important;height:0!important;overflow:hidden!important;padding:0!important;margin:0!important}
+.app-header,.quiz-actions,#startScreen,#loadingScreen,#errorScreen,#quizScreen,#infoScreen{display:none!important;height:0!important;overflow:hidden!important;padding:0!important;margin:0!important}
 #resultScreen{display:block!important}
 #resultScreen .btn{display:none!important}
 .card{break-inside:avoid;page-break-inside:avoid;box-shadow:none;border:1px solid #ccc;background:#fff!important}
@@ -181,6 +181,17 @@ body{min-height:auto!important;background:#fff!important}
 .topic-bar-fill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
 .print-header{display:none}
+.info-row{display:flex;align-items:stretch;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.info-row .info-topic{flex:1;min-width:150px}
+.info-row .info-topic-label{font-weight:600;font-size:.9rem}
+.info-row .info-topic-key{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--c-text-soft)}
+.info-row .info-topic-count{font-size:.78rem;color:var(--c-text-soft)}
+.info-link-box{flex:2;min-width:200px;position:relative}
+.info-link-input{width:100%;padding:8px 36px 8px 10px;border:2px solid var(--c-border);border-radius:6px;font-family:'DM Mono',monospace;font-size:.78rem;background:var(--c-bg);color:var(--c-text);outline:none;cursor:text}
+.info-link-input:focus{border-color:var(--c-primary)}
+.info-copy-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:4px;opacity:.6;transition:.15s}
+.info-copy-btn:hover{opacity:1;background:var(--c-border)}
+.info-copy-btn.copied{opacity:1}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
 </style>
 </head>
@@ -209,6 +220,18 @@ body{min-height:auto!important;background:#fff!important}
 <h2>⚠️ Pool nicht gefunden</h2>
 <p id="errorMsg">Der gewünschte Übungspool konnte nicht geladen werden.</p>
 <p style="margin-top:12px"><a href="index.html">← Zur Übersicht</a></p>
+</div>
+</div>
+
+<!-- ═══ Info / Deep-Link-Übersicht ═══ -->
+<div id="infoScreen" class="screen">
+<div class="card">
+<h2>🔗 Deep-Link-Übersicht</h2>
+<p style="font-size:.88rem;color:var(--c-text-soft);margin-bottom:16px;line-height:1.6">Kopiere diese Links, um in LearningView direkt auf ein Unterthema zu verlinken. Mit <code style="background:var(--c-bg);padding:2px 6px;border-radius:4px;font-size:.82rem">&amp;start=1</code> am Ende startet das Quiz automatisch.</p>
+<div id="infoLinks"></div>
+</div>
+<div class="card" style="text-align:center">
+<button class="btn btn-primary" onclick="document.getElementById('infoScreen').classList.remove('active');document.getElementById('startScreen').classList.add('active')">→ Zum Übungspool</button>
 </div>
 </div>
 
@@ -378,6 +401,13 @@ function init(){
 //   ?pool=vwl_bip&topic=2&type=mc,tf → Nur MC und R/F
 function applyDeepLink(){
   const params=new URLSearchParams(window.location.search);
+
+  // Info mode: show all topic keys with deep links
+  if(params.get('keys')==='1'){
+    showInfoScreen();
+    return;
+  }
+
   const topicParam=params.get('topic');
   if(!topicParam)return;
 
@@ -427,6 +457,44 @@ function applyDeepLink(){
   if(params.get('start')==='1'&&getFiltered().length>0){
     startQuiz();
   }
+}
+
+function showInfoScreen(){
+  const poolId=new URLSearchParams(window.location.search).get('pool')||'';
+  const baseUrl=window.location.origin+window.location.pathname+'?pool='+poolId;
+  let html='';
+
+  // Count questions per topic
+  const counts={};
+  QUESTIONS.forEach(q=>{counts[q.topic]=(counts[q.topic]||0)+1});
+
+  Object.keys(TOPICS).forEach(key=>{
+    const t=TOPICS[key];
+    const count=counts[key]||0;
+    const link=baseUrl+'&topic='+encodeURIComponent(key);
+    html+='<div class="info-row">';
+    html+='<div class="info-topic"><div class="info-topic-label">'+t.label+'</div>';
+    html+='<div class="info-topic-key">Key: <strong>'+key+'</strong></div>';
+    html+='<div class="info-topic-count">'+count+' Aufgabe'+(count!==1?'n':'')+'</div></div>';
+    html+='<div class="info-link-box">';
+    html+='<input class="info-link-input" value="'+link+'" readonly onclick="this.select()">';
+    html+='<button class="info-copy-btn" title="Link kopieren" onclick="copyInfoLink(this,\''+link.replace(/'/g,"\\'")+'\')">📋</button>';
+    html+='</div></div>';
+  });
+
+  document.getElementById('infoLinks').innerHTML=html;
+  document.getElementById('startScreen').classList.remove('active');
+  document.getElementById('infoScreen').classList.add('active');
+}
+
+function copyInfoLink(btn,link){
+  navigator.clipboard.writeText(link).then(()=>{
+    btn.textContent='✅';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied')},1500);
+  }).catch(()=>{
+    // Fallback: select the input
+    btn.parentElement.querySelector('.info-link-input').select();
+  });
 }
 
 function buildChips(containerId,obj,filterKey,labelFn){
