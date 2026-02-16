@@ -53,6 +53,12 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .badge-tax{background:#f3e8ff;color:#7c3aed}
 .badge-type{background:#f1f5f9;color:#475569}
 .q-text{font-size:1rem;font-weight:500;margin-bottom:18px;line-height:1.65}
+.q-img{margin-bottom:16px;text-align:center}
+.q-img img{max-width:100%;height:auto;border-radius:var(--radius);border:1px solid var(--c-border);box-shadow:var(--shadow-sm);cursor:zoom-in}
+.q-img img.zoomed{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:95vw;max-height:95vh;z-index:200;border-radius:0;box-shadow:0 0 0 9999px rgba(0,0,0,.7);cursor:zoom-out}
+.q-img figcaption{font-size:.78rem;color:var(--c-text-soft);margin-top:6px;font-style:italic}
+.ri-img{margin:8px 0;text-align:center}
+.ri-img img{max-width:100%;max-height:200px;height:auto;border-radius:6px;border:1px solid var(--c-border)}
 .mc-options{display:flex;flex-direction:column;gap:10px}
 .mc-opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;transition:.15s;background:#fff}
 .mc-opt:hover{border-color:var(--c-primary-light);background:#f8fafc}
@@ -175,6 +181,8 @@ body{min-height:auto!important;background:#fff!important}
 .review-item{break-inside:avoid;page-break-inside:avoid;border:1px solid #ddd;border-left:3px solid #999;background:#fff!important}
 .review-item.ri-correct{border-left-color:#16a34a}
 .review-item.ri-wrong{border-left-color:#dc2626}
+.ri-img img{max-height:150px}
+.q-img img.zoomed{position:static!important;transform:none!important;box-shadow:none!important;max-height:200px}
 .ri-topic{border:1px solid #ccc}
 .topic-row{background:#f5f5f5!important}
 .topic-bar{print-color-adjust:exact;-webkit-print-color-adjust:exact}
@@ -581,6 +589,7 @@ function renderQuestion(){
   html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
   html+='</div>';
   html+='<div class="q-text">'+q.q+'</div>';
+  html+=renderImg(q);
 
   if(q.type==='mc'){
     html+='<div class="mc-options">';
@@ -607,7 +616,9 @@ function renderQuestion(){
       else html+='<input class="fill-input" data-bidx="'+bIdx+'" placeholder="…" autocomplete="off" autocapitalize="off">';
       if(i%2===1)bIdx++;
     }
-    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerFill(\''+q.id+'\')">Überprüfen</button>';
+    html+='</div>';
+    html+=renderImg(q);
+    html+='<button class="btn btn-primary" style="margin-top:14px" onclick="answerFill(\''+q.id+'\')">Überprüfen</button>';
   } else if(q.type==='calc'){
     html+='<div class="calc-rows">';
     q.rows.forEach((r,i)=>{
@@ -803,6 +814,7 @@ function endQuiz(){
     rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">'+icon+'</span>';
     rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
     rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
+    if(q.img)rHtml+='<div class="ri-img"><img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'"></div>';
     rHtml+='<div class="ri-answer"><strong>Lösung:</strong> '+getCorrectAnswer(q)+'</div>';
     rHtml+='<div class="ri-explain">'+q.explain+'</div>';
     rHtml+='</div>';
@@ -869,6 +881,19 @@ function showScreen(id){
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+function renderImg(q){
+  if(!q.img)return '';
+  let h='<figure class="q-img">';
+  h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" onclick="toggleZoom(this)" loading="lazy">';
+  if(q.img.alt)h+='<figcaption>'+q.img.alt+'</figcaption>';
+  h+='</figure>';
+  return h;
+}
+
+function toggleZoom(img){
+  img.classList.toggle('zoomed');
+}
 </script>
 </body>
 </html>
