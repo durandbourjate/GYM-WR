@@ -717,16 +717,16 @@ function renderQuestion(){
     html+='</div>';
   }
   // Unified action row: type-specific button + skip (same line)
+  html+='<div class="feedback" id="feedback"></div>';
   html+='<div class="q-action-row" id="skipRow">';
-  if(q.type==='fill') html+='<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">Überprüfen</button>';
-  else if(q.type==='calc') html+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">Überprüfen</button>';
-  else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">Überprüfen</button>';
-  else if(q.type==='open') html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">Lösung anzeigen</button>';
+  if(q.type==='fill') html+='<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">🔍 Überprüfen</button>';
+  else if(q.type==='calc') html+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">🔍 Überprüfen</button>';
+  else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">🔍 Überprüfen</button>';
+  else if(q.type==='open') html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
   html+='<button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button>';
   html+='<button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none;margin-left:auto">Nächste Aufgabe →</button>';
   html+='</div>';
-  html+='<div class="feedback" id="feedback"></div>';
-  html+='<div class="q-bottom-row" id="qBottomRow"><button class="btn-end" onclick="endQuiz()">Übung beenden</button><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
+  html+='<div class="q-bottom-row" id="qBottomRow"><button class="btn-end" onclick="endQuiz()">🏁 Übung beenden</button><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
   document.getElementById('questionCard').innerHTML=html;
   pickedSortItem=null;
 }
