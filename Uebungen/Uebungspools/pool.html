@@ -200,6 +200,30 @@ body{min-height:auto!important;background:#fff!important}
 .info-copy-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1rem;cursor:pointer;padding:4px 6px;border-radius:4px;opacity:.6;transition:.15s}
 .info-copy-btn:hover{opacity:1;background:var(--c-border)}
 .info-copy-btn.copied{opacity:1}
+.btn-skip{background:transparent;border:2px solid var(--c-border);color:var(--c-text-soft);font-size:.85rem;padding:10px 18px}
+.btn-skip:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.report-row{margin-top:14px;text-align:right}
+.btn-report{background:none;border:none;color:var(--c-text-soft);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s;font-family:inherit}
+.btn-report:hover{background:var(--c-bg);color:var(--c-text)}
+.report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:16px}
+.report-overlay.show{display:flex}
+.report-box{background:var(--c-surface);border-radius:var(--radius);padding:24px;max-width:420px;width:100%;box-shadow:var(--shadow-md);border:1px solid var(--c-border)}
+.report-box h3{font-size:1rem;font-weight:700;margin-bottom:4px}
+.report-context{font-size:.78rem;color:var(--c-text-soft);margin-bottom:16px;font-family:'DM Mono',monospace;line-height:1.5}
+.report-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.report-cat{padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:2px solid var(--c-border);background:#fff;transition:.15s;user-select:none}
+.report-cat:hover{border-color:var(--c-primary-light)}
+.report-cat.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.report-comment{width:100%;min-height:60px;padding:10px;border:2px solid var(--c-border);border-radius:8px;font-family:inherit;font-size:.85rem;resize:vertical;outline:none;background:#fff;color:var(--c-text);margin-bottom:14px}
+.report-comment:focus{border-color:var(--c-primary)}
+.report-actions{display:flex;gap:10px}
+.report-actions .btn{flex:1;font-size:.85rem;padding:10px 16px}
+.report-ok{font-size:.82rem;color:var(--c-success);text-align:center;margin-top:10px;display:none}
+.report-ok.show{display:block}
+@media(prefers-color-scheme:dark){
+.report-cat{background:var(--c-surface)}
+.report-comment{background:var(--c-surface);border-color:var(--c-border)}
+}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
 </style>
 </head>
@@ -289,6 +313,7 @@ body{min-height:auto!important;background:#fff!important}
 <div class="card" id="questionCard"></div>
 <div class="quiz-actions" id="quizActions">
 <button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none">Nächste Aufgabe →</button>
+<button class="btn btn-skip" id="skipBtn" onclick="skipQuestion()">⏭️ Überspringen</button>
 <button class="btn btn-outline" onclick="endQuiz()">Übung beenden</button>
 </div>
 </div>
@@ -310,6 +335,26 @@ body{min-height:auto!important;background:#fff!important}
 </div>
 </div>
 
+</div>
+
+<!-- ═══ Report Modal ═══ -->
+<div class="report-overlay" id="reportOverlay" onclick="if(event.target===this)closeReport()">
+<div class="report-box">
+<h3>⚠️ Problem melden</h3>
+<div class="report-context" id="reportContext"></div>
+<div class="report-cats" id="reportCats">
+<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Fachlicher Fehler">🔴 Fachlicher Fehler</span>
+<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Technisches Problem">🟡 Technisches Problem</span>
+<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Unklar formuliert">🟠 Unklar formuliert</span>
+<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Anderes">⚪ Anderes</span>
+</div>
+<textarea class="report-comment" id="reportComment" placeholder="Optionaler Kommentar…"></textarea>
+<div class="report-actions">
+<button class="btn btn-primary" id="reportCopyBtn" onclick="copyReport()" disabled>📋 Kopieren</button>
+<button class="btn btn-outline" onclick="closeReport()">Abbrechen</button>
+</div>
+<div class="report-ok" id="reportOk">✅ In Zwischenablage kopiert!</div>
+</div>
 </div>
 
 <script>
@@ -392,6 +437,72 @@ function sendScoreToLV(){
     }
   };
   try{ window.parent.postMessage(xAPIscore,'*'); }catch(e){}
+}
+
+// ══════════════════════════════════════════
+// SKIP QUESTION
+// Skipped questions don't count toward score.
+// ══════════════════════════════════════════
+function skipQuestion(){
+  const q=state.queue[state.current];
+  state.answered.push({id:q.id,skipped:true});
+  state.current++;
+  if(state.current>=state.queue.length)return endQuiz();
+  renderQuestion();
+}
+
+// ══════════════════════════════════════════
+// REPORT PROBLEM
+// Copies structured problem report to clipboard.
+// ══════════════════════════════════════════
+let reportQid=null;
+function showReport(qid){
+  reportQid=qid;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const poolId=new URLSearchParams(window.location.search).get('pool')||'';
+  let ctx='Pool: '+POOL_META.title+'\n';
+  ctx+='Frage: '+q.id+' · '+TOPICS[q.topic].short+'\n';
+  ctx+='Text: '+q.q.replace(/<[^>]*>/g,'').substring(0,80)+(q.q.length>80?'…':'');
+  document.getElementById('reportContext').textContent=ctx;
+  document.querySelectorAll('.report-cat').forEach(c=>c.classList.remove('active'));
+  document.getElementById('reportComment').value='';
+  document.getElementById('reportCopyBtn').disabled=true;
+  document.getElementById('reportOk').classList.remove('show');
+  document.getElementById('reportOverlay').classList.add('show');
+}
+function toggleReportCat(el){
+  document.querySelectorAll('.report-cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('reportCopyBtn').disabled=false;
+}
+function closeReport(){
+  document.getElementById('reportOverlay').classList.remove('show');
+  reportQid=null;
+}
+function copyReport(){
+  const q=QUESTIONS.find(x=>x.id===reportQid);
+  if(!q)return;
+  const cat=document.querySelector('.report-cat.active');
+  if(!cat)return;
+  const comment=document.getElementById('reportComment').value.trim();
+  const poolId=new URLSearchParams(window.location.search).get('pool')||'';
+  let msg='⚠️ PROBLEM-MELDUNG Übungspool\n';
+  msg+='Pool: '+POOL_META.title+' ('+poolId+')\n';
+  msg+='Frage: '+q.id+' · '+TOPICS[q.topic].short+'\n';
+  msg+='Text: '+q.q.replace(/<[^>]*>/g,'').substring(0,120)+'\n';
+  msg+='Kategorie: '+cat.dataset.cat+'\n';
+  msg+='Kommentar: '+(comment||'–')+'\n';
+  navigator.clipboard.writeText(msg).then(()=>{
+    document.getElementById('reportOk').classList.add('show');
+    setTimeout(()=>closeReport(),1200);
+  }).catch(()=>{
+    // Fallback: select a temporary textarea
+    const ta=document.createElement('textarea');ta.value=msg;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    document.getElementById('reportOk').classList.add('show');
+    setTimeout(()=>closeReport(),1200);
+  });
 }
 
 // ══════════════════════════════════════════
@@ -544,6 +655,7 @@ function renderQuestion(){
   document.getElementById('qScore').textContent=state.score+' Punkte';
   document.getElementById('progressBar').style.width=((state.current)/total*100)+'%';
   document.getElementById('nextBtn').style.display='none';
+  document.getElementById('skipBtn').style.display='inline-flex';
   let html='<div class="q-badges">';
   html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
   html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
@@ -606,6 +718,7 @@ function renderQuestion(){
     html+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">❌ Nicht gewusst</button>';
     html+='</div>';
   }
+  html+='<div class="report-row"><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
   html+='<div class="feedback" id="feedback"></div>';
   document.getElementById('questionCard').innerHTML=html;
   pickedSortItem=null;
@@ -727,6 +840,7 @@ function finishAnswer(q,correct,explain){
   fb.className='feedback show '+(correct?'correct':'wrong');
   fb.innerHTML='<div class="feedback-title">'+(correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+explain+'</div>';
   document.getElementById('nextBtn').style.display='inline-flex';
+  document.getElementById('skipBtn').style.display='none';
 }
 
 function nextQuestion(){
@@ -746,6 +860,7 @@ function endQuiz(){
   let topicData={};
   state.queue.forEach((q,i)=>{
     if(i>=state.answered.length)return;
+    if(state.answered[i].skipped)return;
     if(!topicData[q.topic])topicData[q.topic]={correct:0,total:0};
     topicData[q.topic].total++;
     if(state.answered[i].correct)topicData[q.topic].correct++;
@@ -766,6 +881,14 @@ function endQuiz(){
   state.queue.forEach((q,i)=>{
     if(i>=state.answered.length) return;
     const a=state.answered[i];
+    if(a.skipped){
+      rHtml+='<div class="review-item ri-skipped">';
+      rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">⏭️</span>';
+      rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
+      rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
+      rHtml+='</div>';
+      return;
+    }
     const cls=a.correct?'ri-correct':'ri-wrong';
     const icon=a.correct?'✅':'❌';
     rHtml+='<div class="review-item '+cls+'">';
