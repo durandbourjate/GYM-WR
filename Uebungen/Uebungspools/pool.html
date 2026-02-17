@@ -204,7 +204,6 @@ body{min-height:auto!important;background:#fff!important}
 </style>
 </head>
 <body>
-
 <header class="app-header">
 <a href="index.html" class="home-btn" title="Zur Übersicht">🏠</a>
 <div>
@@ -310,12 +309,14 @@ body{min-height:auto!important;background:#fff!important}
 <button class="btn btn-outline" onclick="resetApp()">Neue Übung starten</button>
 </div>
 </div>
+
 </div>
 
 <script>
 // ══════════════════════════════════════════
 // POOL LOADER — loads data from external JS file
 // ══════════════════════════════════════════
+
 // Color schemes per Fachbereich
 const COLOR_SCHEMES = {
   vwl:   { primary: '#f89907', primaryLight: '#ffb74d' },
@@ -330,49 +331,33 @@ const TYPE_LABELS = {mc:"📝 Multiple Choice",tf:"✓✗ Richtig/Falsch",fill:"
 (async function loadPool() {
   const params = new URLSearchParams(window.location.search);
   const poolId = params.get('pool');
-
-  if (!poolId) {
-    showError('Kein Pool angegeben. Bitte verwenden Sie einen Link mit ?pool=NAME');
-    return;
-  }
-
+  if (!poolId) { showError('Kein Pool angegeben. Bitte verwenden Sie einen Link mit ?pool=NAME'); return; }
   try {
     // Load the pool's JS file via fetch + eval to avoid const redeclaration issues
     const response = await fetch('config/' + poolId + '.js');
     if (!response.ok) throw new Error('Datei nicht gefunden: config/' + poolId + '.js');
     const code = await response.text();
-
     // Execute in global scope
     const scriptEl = document.createElement('script');
     scriptEl.textContent = code;
     document.head.appendChild(scriptEl);
-
     // Verify data was loaded (use window to check globals)
     if (typeof window.POOL_META === 'undefined' || typeof window.TOPICS === 'undefined' || typeof window.QUESTIONS === 'undefined') {
       throw new Error('Pool-Daten unvollständig');
     }
-
     // Apply metadata
     document.getElementById('poolTitle').textContent = POOL_META.title;
     document.getElementById('poolMeta').textContent = POOL_META.meta;
     document.title = POOL_META.title + ' | Gymnasium Hofwil';
-
     // Apply color scheme
     const colors = COLOR_SCHEMES[POOL_META.color] || COLOR_SCHEMES.vwl;
     document.documentElement.style.setProperty('--c-primary', colors.primary);
     document.documentElement.style.setProperty('--c-primary-light', colors.primaryLight);
-
-    // Also apply for dark mode (same colors work in both modes)
-    // The CSS media query already handles the other variables
-
     // Show the start screen
     document.getElementById('loadingScreen').classList.remove('active');
     document.getElementById('startScreen').classList.add('active');
     init();
-
-  } catch (err) {
-    showError(err.message);
-  }
+  } catch (err) { showError(err.message); }
 })();
 
 function showError(msg) {
@@ -388,6 +373,28 @@ let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},
 let pickedSortItem=null;
 
 // ══════════════════════════════════════════
+// LEARNINGVIEW INTEGRATION
+// Sends xAPI score via postMessage when embedded as iframe.
+// LearningView uses result.score.scaled (0–1) as primary value.
+// Sends progressively after each answer AND on quiz end.
+// ══════════════════════════════════════════
+function sendScoreToLV(){
+  if(window.parent===window)return;
+  if(state.maxScore===0)return;
+  var scaled=state.score/state.maxScore;
+  var xAPIscore={
+    result:{
+      score:{
+        scaled: Math.round(scaled*1000)/1000,
+        max:    state.maxScore,
+        raw:    state.score
+      }
+    }
+  };
+  try{ window.parent.postMessage(xAPIscore,'*'); }catch(e){}
+}
+
+// ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
 function init(){
@@ -401,32 +408,14 @@ function init(){
 // ══════════════════════════════════════════
 // DEEP LINK — Direktzugriff auf Unterthemen via URL-Parameter
 // ══════════════════════════════════════════
-// Nutzung:
-//   ?pool=vwl_bip&topic=2            → Thema 2 vorausgewählt (Fokus-Modus)
-//   ?pool=vwl_bip&topic=2&start=1    → Startet direkt ins Quiz
-//   ?pool=vwl_bip&topic=2&diff=1     → Nur einfache Fragen
-//   ?pool=vwl_bip&topic=2&diff=1,2   → Einfach + Mittel
-//   ?pool=vwl_bip&topic=2&type=mc,tf → Nur MC und R/F
 function applyDeepLink(){
   const params=new URLSearchParams(window.location.search);
-
-  // Info mode: show all topic keys with deep links
-  if(params.get('keys')==='1'){
-    showInfoScreen();
-    return;
-  }
-
+  if(params.get('keys')==='1'){ showInfoScreen(); return; }
   const topicParam=params.get('topic');
   if(!topicParam)return;
-
-  // Validate topic exists
   const topicKeys=topicParam.split(',').filter(k=>TOPICS[k]);
   if(topicKeys.length===0)return;
-
-  // Set focus mode (most logical for deep links)
   setMode('focus');
-
-  // Clear auto-selected topics from setMode, then select only the linked ones
   state.filters.topics.clear();
   document.querySelectorAll('#topicChips .chip').forEach(ch=>ch.classList.remove('active'));
   topicKeys.forEach(k=>{
@@ -434,8 +423,6 @@ function applyDeepLink(){
     const chip=document.querySelector('#topicChips .chip[data-key="'+k+'"]');
     if(chip)chip.classList.add('active');
   });
-
-  // Optional: Filter by difficulty
   const diffParam=params.get('diff');
   if(diffParam){
     state.filters.diffs.clear();
@@ -446,8 +433,6 @@ function applyDeepLink(){
       if(chip)chip.classList.add('active');
     });
   }
-
-  // Optional: Filter by question type
   const typeParam=params.get('type');
   if(typeParam){
     state.filters.types.clear();
@@ -458,27 +443,18 @@ function applyDeepLink(){
       if(chip)chip.classList.add('active');
     });
   }
-
   updateFilterCount();
-
-  // Auto-start if requested
-  if(params.get('start')==='1'&&getFiltered().length>0){
-    startQuiz();
-  }
+  if(params.get('start')==='1'&&getFiltered().length>0){ startQuiz(); }
 }
 
 function showInfoScreen(){
   const poolId=new URLSearchParams(window.location.search).get('pool')||'';
   const baseUrl=window.location.origin+window.location.pathname+'?pool='+poolId;
   let html='';
-
-  // Count questions per topic
   const counts={};
   QUESTIONS.forEach(q=>{counts[q.topic]=(counts[q.topic]||0)+1});
-
   Object.keys(TOPICS).forEach(key=>{
-    const t=TOPICS[key];
-    const count=counts[key]||0;
+    const t=TOPICS[key]; const count=counts[key]||0;
     const link=baseUrl+'&topic='+encodeURIComponent(key);
     html+='<div class="info-row">';
     html+='<div class="info-topic"><div class="info-topic-label">'+t.label+'</div>';
@@ -489,7 +465,6 @@ function showInfoScreen(){
     html+='<button class="info-copy-btn" title="Link kopieren" onclick="copyInfoLink(this,\''+link.replace(/'/g,"\\'")+'\')">📋</button>';
     html+='</div></div>';
   });
-
   document.getElementById('infoLinks').innerHTML=html;
   document.getElementById('startScreen').classList.remove('active');
   document.getElementById('infoScreen').classList.add('active');
@@ -499,22 +474,14 @@ function copyInfoLink(btn,link){
   navigator.clipboard.writeText(link).then(()=>{
     btn.textContent='✅';btn.classList.add('copied');
     setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied')},1500);
-  }).catch(()=>{
-    // Fallback: select the input
-    btn.parentElement.querySelector('.info-link-input').select();
-  });
+  }).catch(()=>{ btn.parentElement.querySelector('.info-link-input').select(); });
 }
 
 function buildChips(containerId,obj,filterKey,labelFn){
-  const c=document.getElementById(containerId);
-  c.innerHTML='';
+  const c=document.getElementById(containerId); c.innerHTML='';
   Object.keys(obj).forEach(k=>{
-    const ch=document.createElement('span');
-    ch.className='chip';
-    ch.textContent=labelFn(k);
-    ch.dataset.key=k;
-    ch.onclick=()=>toggleChip(ch,filterKey,k);
-    c.appendChild(ch);
+    const ch=document.createElement('span'); ch.className='chip'; ch.textContent=labelFn(k);
+    ch.dataset.key=k; ch.onclick=()=>toggleChip(ch,filterKey,k); c.appendChild(ch);
   });
 }
 
@@ -534,8 +501,7 @@ function setMode(m){
       state.filters[id==='topicChips'?'topics':'diffs'].clear();
     });
     document.querySelectorAll('#typeChips .chip').forEach(ch=>{
-      ch.classList.add('active');
-      state.filters.types.add(ch.dataset.key);
+      ch.classList.add('active'); state.filters.types.add(ch.dataset.key);
     });
   }
   updateFilterCount();
@@ -567,21 +533,17 @@ function updateFilterCount(){
 // ══════════════════════════════════════════
 function startQuiz(){
   let q=getFiltered();
-  if(state.mode==='focus')q.sort((a,b)=>a.diff-b.diff);
-  else shuffle(q);
+  if(state.mode==='focus')q.sort((a,b)=>a.diff-b.diff); else shuffle(q);
   state.queue=q;state.current=0;state.score=0;state.maxScore=0;state.answered=[];state.wrong=[];
-  showScreen('quizScreen');
-  renderQuestion();
+  showScreen('quizScreen'); renderQuestion();
 }
 
 function renderQuestion(){
-  const q=state.queue[state.current];
-  const total=state.queue.length;
+  const q=state.queue[state.current]; const total=state.queue.length;
   document.getElementById('qProgress').textContent=(state.current+1)+' / '+total;
   document.getElementById('qScore').textContent=state.score+' Punkte';
   document.getElementById('progressBar').style.width=((state.current)/total*100)+'%';
   document.getElementById('nextBtn').style.display='none';
-
   let html='<div class="q-badges">';
   html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
   html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
@@ -590,7 +552,6 @@ function renderQuestion(){
   html+='</div>';
   html+='<div class="q-text">'+q.q+'</div>';
   html+=renderImg(q);
-
   if(q.type==='mc'){
     html+='<div class="mc-options">';
     q.options.forEach(o=>{
@@ -677,12 +638,10 @@ function answerFill(qid){
   const inputs=document.querySelectorAll('.fill-input');
   let allCorrect=true;
   inputs.forEach(inp=>{
-    const bi=parseInt(inp.dataset.bidx);
-    const blank=q.blanks[bi];
+    const bi=parseInt(inp.dataset.bidx); const blank=q.blanks[bi];
     const userVal=inp.value.trim().toLowerCase();
     const ok=userVal===blank.answer.toLowerCase()||blank.alts.some(a=>userVal===a.toLowerCase());
-    inp.classList.add(ok?'correct':'wrong');
-    inp.disabled=true;
+    inp.classList.add(ok?'correct':'wrong'); inp.disabled=true;
     if(!ok){allCorrect=false;inp.value=inp.value+' → '+blank.answer}
   });
   finishAnswer(q,allCorrect,q.explain);
@@ -693,12 +652,10 @@ function answerCalc(qid){
   const inputs=document.querySelectorAll('.calc-row input');
   let allCorrect=true;
   inputs.forEach(inp=>{
-    const ri=parseInt(inp.dataset.ridx);
-    const row=q.rows[ri];
+    const ri=parseInt(inp.dataset.ridx); const row=q.rows[ri];
     const val=parseFloat(inp.value);
     const ok=!isNaN(val)&&Math.abs(val-row.answer)<=row.tolerance;
-    inp.classList.add(ok?'correct':'wrong');
-    inp.disabled=true;
+    inp.classList.add(ok?'correct':'wrong'); inp.disabled=true;
     if(!ok){allCorrect=false;inp.value=inp.value+' → '+row.answer}
   });
   finishAnswer(q,allCorrect,q.explain);
@@ -707,16 +664,14 @@ function answerCalc(qid){
 function pickSortItem(el){
   if(el.classList.contains('placed'))return;
   document.querySelectorAll('.sort-item').forEach(s=>s.classList.remove('picked'));
-  el.classList.add('picked');
-  pickedSortItem=el;
+  el.classList.add('picked'); pickedSortItem=el;
 }
 
 function placeSortItem(catEl,cidx){
   if(!pickedSortItem)return;
   const container=catEl.querySelector('.sort-cat-items');
   const clone=document.createElement('span');
-  clone.className='sort-cat-item';
-  clone.textContent=pickedSortItem.textContent;
+  clone.className='sort-cat-item'; clone.textContent=pickedSortItem.textContent;
   clone.dataset.oidx=pickedSortItem.dataset.oidx;
   clone.onclick=function(){this.remove();
     const orig=document.querySelector('.sort-item[data-oidx="'+this.dataset.oidx+'"]');
@@ -764,9 +719,9 @@ function answerOpen(qid,correct){
 
 function finishAnswer(q,correct,explain){
   state.maxScore++;
-  if(correct)state.score++;
-  else state.wrong.push({q:q.q,explain:q.explain,topic:q.topic});
+  if(correct)state.score++; else state.wrong.push({q:q.q,explain:q.explain,topic:q.topic});
   state.answered.push({id:q.id,correct});
+  sendScoreToLV();
   document.getElementById('qScore').textContent=state.score+' Punkte';
   const fb=document.getElementById('feedback');
   fb.className='feedback show '+(correct?'correct':'wrong');
@@ -784,8 +739,10 @@ function endQuiz(){
   document.getElementById('progressBar').style.width='100%';
   showScreen('resultScreen');
   const pct=state.maxScore?Math.round(state.score/state.maxScore*100):0;
+  sendScoreToLV();
   document.getElementById('resPts').textContent=state.score+' / '+state.maxScore;
   document.getElementById('resPct').textContent=pct+'%';
+
   let topicData={};
   state.queue.forEach((q,i)=>{
     if(i>=state.answered.length)return;
@@ -793,6 +750,7 @@ function endQuiz(){
     topicData[q.topic].total++;
     if(state.answered[i].correct)topicData[q.topic].correct++;
   });
+
   let tHtml='';
   Object.keys(topicData).forEach(t=>{
     const d=topicData[t];const p=Math.round(d.correct/d.total*100);
@@ -824,7 +782,6 @@ function endQuiz(){
 
 function getQuestionDisplay(q){
   if(q.type==='fill'){
-    // Replace {0},{1},… placeholders with the correct answers in bold
     return q.q.replace(/\{(\d+)\}/g,function(_,idx){
       const b=q.blanks[parseInt(idx)];
       return b?'<strong>['+b.answer+']</strong>':'[…]';
@@ -834,28 +791,17 @@ function getQuestionDisplay(q){
 }
 
 function getCorrectAnswer(q){
-  if(q.type==='mc'){
-    const opt=q.options.find(o=>o.v===q.correct);
-    return q.correct+') '+(opt?opt.t:'');
-  }
-  if(q.type==='tf'){
-    return q.correct?'Richtig':'Falsch';
-  }
-  if(q.type==='fill'){
-    return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · ');
-  }
-  if(q.type==='calc'){
-    return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · ');
-  }
+  if(q.type==='mc'){ const opt=q.options.find(o=>o.v===q.correct); return q.correct+') '+(opt?opt.t:''); }
+  if(q.type==='tf'){ return q.correct?'Richtig':'Falsch'; }
+  if(q.type==='fill'){ return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · '); }
+  if(q.type==='calc'){ return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · '); }
   if(q.type==='sort'){
     return q.categories.map(function(cat,ci){
       const items=q.items.filter(function(it){return it.cat===ci}).map(function(it){return it.t});
       return '<strong>'+cat+':</strong> '+items.join(', ');
     }).join(' · ');
   }
-  if(q.type==='open'){
-    return q.sample||'Siehe Lösungsvorschlag';
-  }
+  if(q.type==='open'){ return q.sample||'Siehe Lösungsvorschlag'; }
   return '';
 }
 
@@ -892,9 +838,7 @@ function renderImg(q){
   return h;
 }
 
-function toggleZoom(img){
-  img.classList.toggle('zoomed');
-}
+function toggleZoom(img){ img.classList.toggle('zoomed'); }
 </script>
 </body>
 </html>
