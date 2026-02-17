@@ -143,30 +143,33 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .loading .msg{color:var(--c-text-soft);font-size:.95rem}
 .error{text-align:center;padding:60px 20px;color:var(--c-error)}
 .error h2{margin-bottom:8px}
-@media(prefers-color-scheme:dark){
-:root{
+html.dark{
 --c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#3d2e10;--c-success:#22c55e;--c-success-bg:#0a2618;
 --c-error:#ef4444;--c-error-bg:#2a0f0f;--c-info:#60a5fa;--c-info-bg:#0f1d3a;
 --c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
 --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
 }
-.app-header{box-shadow:0 2px 12px rgba(0,0,0,.4)}
-.mc-opt,.tf-btn,.sort-item{background:var(--c-surface)}
-.mc-opt:hover,.mode-card:hover{background:#1f2333}
-.mc-opt .opt-letter{background:var(--c-border);color:var(--c-text-soft)}
-.chip{background:var(--c-surface)}
-.badge-diff1{background:#0a2618;color:#22c55e}.badge-diff2{background:#3d2e10;color:#e8a838}.badge-diff3{background:#2a0f0f;color:#ef4444}
-.badge-progress{background:#3d2e10;color:#e8a838}.badge-score{background:#0a2618;color:#22c55e}
-.badge-tax{background:#1a0f2e;color:#a78bfa}
-.badge-type{background:#1a1d27;color:#94a3b8}
-.topic-row{background:var(--c-surface)}
-.wrong-item{background:var(--c-surface)}
-.review-item{background:var(--c-surface)}
-.calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
-.open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
-}
+html.dark .app-header{box-shadow:0 2px 12px rgba(0,0,0,.4)}
+html.dark .mc-opt,html.dark .tf-btn,html.dark .sort-item{background:var(--c-surface)}
+html.dark .mc-opt:hover,html.dark .mode-card:hover{background:#1f2333}
+html.dark .mc-opt .opt-letter{background:var(--c-border);color:var(--c-text-soft)}
+html.dark .chip{background:var(--c-surface)}
+html.dark .badge-diff1{background:#0a2618;color:#22c55e}html.dark .badge-diff2{background:#3d2e10;color:#e8a838}html.dark .badge-diff3{background:#2a0f0f;color:#ef4444}
+html.dark .badge-progress{background:#3d2e10;color:#e8a838}html.dark .badge-score{background:#0a2618;color:#22c55e}
+html.dark .badge-tax{background:#1a0f2e;color:#a78bfa}
+html.dark .badge-type{background:#1a1d27;color:#94a3b8}
+html.dark .topic-row{background:var(--c-surface)}
+html.dark .wrong-item{background:var(--c-surface)}
+html.dark .review-item{background:var(--c-surface)}
+html.dark .calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
+html.dark .open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
+html.dark .fill-input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-primary)}
+html.dark .fill-input:focus{background:var(--c-accent-light);color:var(--c-text)}
+html.dark .fill-input.correct{background:var(--c-success-bg);color:var(--c-text)}
+html.dark .fill-input.wrong{background:var(--c-error-bg);color:var(--c-text)}
 @media print{
+html.dark{--c-bg:#f0f2f5;--c-surface:#fff;--c-text:#1e293b;--c-text-soft:#64748b;--c-border:#e2e8f0;--c-success:#16a34a;--c-error:#dc2626;--c-info:#2563eb;--c-info-bg:#eff6ff}
 body{min-height:auto!important;background:#fff!important}
 .container{padding:0 16px!important;max-width:100%!important}
 .app-header,.quiz-actions,#startScreen,#loadingScreen,#errorScreen,#quizScreen,#infoScreen{display:none!important;height:0!important;overflow:hidden!important;padding:0!important;margin:0!important}
@@ -227,12 +230,22 @@ body{min-height:auto!important;background:#fff!important}
 .report-actions .btn{flex:1;font-size:.85rem;padding:10px 16px}
 .report-ok{font-size:.82rem;color:var(--c-success);text-align:center;margin-top:10px;display:none}
 .report-ok.show{display:block}
-@media(prefers-color-scheme:dark){
-.report-cat{background:var(--c-surface)}
-.report-comment{background:var(--c-surface);border-color:var(--c-border)}
-}
+html.dark .report-cat{background:var(--c-surface)}
+html.dark .report-comment{background:var(--c-surface);border-color:var(--c-border)}
+html.dark .mode-card{background:var(--c-surface)}
+html.dark .mode-card.active{background:var(--c-info-bg)}
+.theme-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1.15rem;cursor:pointer;flex-shrink:0;transition:.15s;margin-left:auto;padding:0;line-height:1}
+.theme-toggle:hover{background:rgba(255,255,255,.35)}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}}
 </style>
+<script>
+// Theme sofort anwenden (vor Render, verhindert Flackern)
+(function(){
+  var saved=localStorage.getItem('pool-theme');
+  var isDark=saved==='dark'||(saved===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(isDark)document.documentElement.classList.add('dark');
+})();
+</script>
 </head>
 <body>
 <header class="app-header">
@@ -241,6 +254,7 @@ body{min-height:auto!important;background:#fff!important}
 <h1 id="poolTitle">Übungspool laden…</h1>
 <div class="meta" id="poolMeta">Gymnasium Hofwil · Individuell üben</div>
 </div>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Light/Dark Mode wechseln" aria-label="Farbmodus wechseln">🌙</button>
 </header>
 <div class="container">
 
@@ -354,6 +368,28 @@ body{min-height:auto!important;background:#fff!important}
 </div>
 
 <script>
+// ══════════════════════════════════════════
+// THEME TOGGLE — Light/Dark Mode
+// ══════════════════════════════════════════
+function toggleTheme(){
+  var html=document.documentElement;
+  var isDark=html.classList.toggle('dark');
+  localStorage.setItem('pool-theme',isDark?'dark':'light');
+  updateThemeIcon();
+}
+function updateThemeIcon(){
+  var btn=document.getElementById('themeToggle');
+  if(btn)btn.textContent=document.documentElement.classList.contains('dark')?'☀️':'🌙';
+}
+// Set correct icon on load
+updateThemeIcon();
+// Listen for system theme changes (only if no manual override)
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){
+  if(localStorage.getItem('pool-theme'))return;
+  document.documentElement.classList.toggle('dark',e.matches);
+  updateThemeIcon();
+});
+
 // ══════════════════════════════════════════
 // POOL LOADER — loads data from external JS file
 // ══════════════════════════════════════════

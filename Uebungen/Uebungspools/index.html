@@ -16,7 +16,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.6;min-height:100vh}
-.header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:28px 24px;text-align:center}
+.header{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:28px 24px;text-align:center;display:flex;align-items:center;gap:16px}
 .header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
 .header .sub{font-size:.85rem;opacity:.7;margin-top:4px}
 .container{max-width:800px;margin:0 auto;padding:24px 16px 80px}
@@ -61,13 +61,14 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .footer{text-align:center;padding:20px;font-size:.75rem;color:var(--c-text-soft)}
 
 /* ── Dark Mode ── */
-@media(prefers-color-scheme:dark){
-  :root{--c-bg:#0f1117;--c-surface:#1a1d27;--c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
-    --c-vwl-bg:#2a1f0a;--c-bwl-bg:#0a1f2a;--c-recht-bg:#1a2a0a}
-  .header{background:linear-gradient(135deg,#0f1117,#1a1d27)}
-  .pool-card .stat,.fach-header .fach-questions{background:var(--c-border)}
-  .fach-header:hover{background:color-mix(in srgb,var(--c-border) 40%,transparent)}
-}
+html.dark{--c-bg:#0f1117;--c-surface:#1a1d27;--c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
+  --c-vwl-bg:#2a1f0a;--c-bwl-bg:#0a1f2a;--c-recht-bg:#1a2a0a}
+html.dark .header{background:linear-gradient(135deg,#0f1117,#1a1d27)}
+html.dark .pool-card .stat,html.dark .fach-header .fach-questions{background:var(--c-border)}
+html.dark .fach-header:hover{background:color-mix(in srgb,var(--c-border) 40%,transparent)}
+/* ── Theme Toggle ── */
+.theme-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.15rem;cursor:pointer;flex-shrink:0;transition:.15s;padding:0;line-height:1}
+.theme-toggle:hover{background:rgba(255,255,255,.3)}
 @media(max-width:500px){
   .pool-grid{grid-template-columns:1fr}
   .container{padding:16px 12px 60px}
@@ -75,12 +76,25 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
   .fach-body-inner{padding:0 16px 16px}
 }
 </style>
+<script>
+(function(){
+  var saved=localStorage.getItem('pool-theme');
+  var isDark=saved==='dark'||(saved===null&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  if(isDark)document.documentElement.classList.add('dark');
+})();
+</script>
 </head>
 <body>
 
 <div class="header">
+<div style="flex:1"></div>
+<div>
 <h1>📚 Übungspools</h1>
 <div class="sub">Wirtschaft und Recht · Gymnasium Hofwil</div>
+</div>
+<div style="flex:1;display:flex;justify-content:flex-end">
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Light/Dark Mode wechseln" aria-label="Farbmodus wechseln">🌙</button>
+</div>
 </div>
 
 <div class="container" id="content">
@@ -90,6 +104,26 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 <div class="footer">Gymnasium Hofwil · Wirtschaft und Recht</div>
 
 <script>
+// ══════════════════════════════════════════
+// THEME TOGGLE — Light/Dark Mode
+// ══════════════════════════════════════════
+function toggleTheme(){
+  var html=document.documentElement;
+  var isDark=html.classList.toggle('dark');
+  localStorage.setItem('pool-theme',isDark?'dark':'light');
+  updateThemeIcon();
+}
+function updateThemeIcon(){
+  var btn=document.getElementById('themeToggle');
+  if(btn)btn.textContent=document.documentElement.classList.contains('dark')?'☀️':'🌙';
+}
+updateThemeIcon();
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){
+  if(localStorage.getItem('pool-theme'))return;
+  document.documentElement.classList.toggle('dark',e.matches);
+  updateThemeIcon();
+});
+
 // ══════════════════════════════════════════
 // POOL REGISTRY
 // ══════════════════════════════════════════
