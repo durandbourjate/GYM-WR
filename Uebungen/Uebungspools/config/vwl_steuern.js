@@ -26,24 +26,19 @@ window.QUESTIONS = [
 
 {id:"z01", topic:"zweck", type:"mc", diff:1, tax:"K1",
  q:"Welcher Steuerzweck steht bei der Einkommenssteuer im Vordergrund?",
- options:["A) Fiskalzweck","B) Lenkungszweck","C) Umverteilungszweck","D) Kontrollzweck"],
+ options:[{v:"A",t:"Fiskalzweck"},{v:"B",t:"Lenkungszweck"},{v:"C",t:"Umverteilungszweck"},{v:"D",t:"Kontrollzweck"}],
  correct:"A",
  explain:"Der Hauptzweck der Einkommenssteuer ist der Fiskalzweck: Sie soll dem Staat genügend Mittel zur Finanzierung seiner Aufgaben verschaffen. Die Einkommenssteuer ist eine der wichtigsten Einnahmequellen des Staates."},
 
 {id:"z02", topic:"zweck", type:"mc", diff:1, tax:"K1",
  q:"Welcher Steuerzweck wird mit der Tabaksteuer primär verfolgt?",
- options:["A) Fiskalzweck","B) Lenkungszweck","C) Umverteilungszweck","D) Solidaritätszweck"],
+ options:[{v:"A",t:"Fiskalzweck"},{v:"B",t:"Lenkungszweck"},{v:"C",t:"Umverteilungszweck"},{v:"D",t:"Solidaritätszweck"}],
  correct:"B",
  explain:"Die Tabaksteuer verfolgt primär einen Lenkungszweck: Sie soll gesellschaftlich unerwünschtes Verhalten (Rauchen) verteuern und damit entmutigen. Daneben generiert sie natürlich auch Fiskaleinnahmen."},
 
 {id:"z03", topic:"zweck", type:"mc", diff:2, tax:"K2",
  q:"Warum wird die Steuerprogression oft mit dem Umverteilungszweck begründet?",
- options:[
-   "A) Weil alle den gleichen Betrag bezahlen",
-   "B) Weil höhere Einkommen einen höheren Prozentsatz entrichten",
-   "C) Weil sie nur auf indirekte Steuern angewendet wird",
-   "D) Weil sie den Konsum von Luxusgütern lenkt"
- ],
+ options:[{v:"A",t:"Weil alle den gleichen Betrag bezahlen"},{v:"B",t:"Weil höhere Einkommen einen höheren Prozentsatz entrichten"},{v:"C",t:"Weil sie nur auf indirekte Steuern angewendet wird"},{v:"D",t:"Weil sie den Konsum von Luxusgütern lenkt"}],
  correct:"B",
  explain:"Bei der Steuerprogression steigt der Steuersatz mit zunehmendem Einkommen. Dadurch werden Personen mit höherem Einkommen nicht nur absolut, sondern auch relativ (prozentual) stärker belastet. Dies bewirkt eine Umverteilung von wohlhabenden zu weniger wohlhabenden Personen."},
 
@@ -75,12 +70,7 @@ window.QUESTIONS = [
 
 {id:"z08", topic:"zweck", type:"mc", diff:2, tax:"K3",
  q:"Ein Kanton führt eine hohe Steuer auf Einweg-Plastiktüten ein, deren Ertrag in den Umweltschutz fliesst. Welche Kombination von Steuerzwecken liegt hier vor?",
- options:[
-   "A) Nur Fiskalzweck",
-   "B) Fiskalzweck und Lenkungszweck",
-   "C) Nur Umverteilungszweck",
-   "D) Lenkungszweck und Umverteilungszweck"
- ],
+ options:[{v:"A",t:"Nur Fiskalzweck"},{v:"B",t:"Fiskalzweck und Lenkungszweck"},{v:"C",t:"Nur Umverteilungszweck"},{v:"D",t:"Lenkungszweck und Umverteilungszweck"}],
  correct:"B",
  explain:"Die Steuer verteuert den Konsum von Einweg-Plastiktüten (Lenkungszweck: unerwünschtes Verhalten entmutigen) und generiert gleichzeitig Einnahmen, die zweckgebunden für den Umweltschutz verwendet werden (Fiskalzweck). Ein Umverteilungszweck (von Reich zu Arm) liegt nicht vor."},
 
@@ -91,12 +81,7 @@ window.QUESTIONS = [
 
 {id:"z10", topic:"zweck", type:"mc", diff:3, tax:"K5",
  q:"Ein Ökonom argumentiert, dass Lenkungssteuern «sich selbst abschaffen», wenn sie wirksam sind. Was ist damit gemeint?",
- options:[
-   "A) Die Steuer wird vom Parlament abgeschafft, sobald sie wirkt",
-   "B) Wenn das unerwünschte Verhalten abnimmt, sinken auch die Steuereinnahmen",
-   "C) Die Steuer wird automatisch gesenkt, wenn weniger konsumiert wird",
-   "D) Die Steuer wird durch Subventionen ersetzt"
- ],
+ options:[{v:"A",t:"Die Steuer wird vom Parlament abgeschafft, sobald sie wirkt"},{v:"B",t:"Wenn das unerwünschte Verhalten abnimmt, sinken auch die Steuereinnahmen"},{v:"C",t:"Die Steuer wird automatisch gesenkt, wenn weniger konsumiert wird"},{v:"D",t:"Die Steuer wird durch Subventionen ersetzt"}],
  correct:"B",
  explain:"Wenn eine Lenkungssteuer ihren Zweck erfüllt (z.B. weniger Tabakkonsum), sinkt die besteuerte Menge und damit auch die Steuereinnahmen. Eine «perfekt» wirkende Lenkungssteuer würde keine Einnahmen mehr generieren. Dies steht in einem Spannungsverhältnis zum Fiskalzweck."},
 
@@ -104,12 +89,7 @@ window.QUESTIONS = [
 
 {id:"f01", topic:"formen", type:"mc", diff:1, tax:"K1",
  q:"Welche drei Hauptquellen hat der Staat, um seine Ausgaben zu finanzieren?",
- options:[
-   "A) Steuern, Gebühren und Verschuldung",
-   "B) Steuern, Zölle und Spenden",
-   "C) Gebühren, Bussen und Lotterieeinnahmen",
-   "D) Steuern, Gebühren und Geldschöpfung"
- ],
+ options:[{v:"A",t:"Steuern, Gebühren und Verschuldung"},{v:"B",t:"Steuern, Zölle und Spenden"},{v:"C",t:"Gebühren, Bussen und Lotterieeinnahmen"},{v:"D",t:"Steuern, Gebühren und Geldschöpfung"}],
  correct:"A",
  explain:"Die drei Hauptquellen sind: Steuern (direkte und indirekte), Gebühren (für konkrete Staatsleistungen) und Verschuldung (Kreditaufnahme am Kapitalmarkt). Längerfristig ist die Finanzierung nur über Steuern möglich, da Schulden irgendwann zurückgezahlt werden müssen."},
 
@@ -125,12 +105,7 @@ window.QUESTIONS = [
 
 {id:"f04", topic:"formen", type:"mc", diff:2, tax:"K2",
  q:"Warum können indirekte Steuern degressiv wirken?",
- options:[
-   "A) Weil sie nur auf Luxusgüter erhoben werden",
-   "B) Weil Personen mit niedrigem Einkommen anteilig mehr für Konsum ausgeben",
-   "C) Weil der Steuersatz mit dem Einkommen sinkt",
-   "D) Weil sie nur von Unternehmen bezahlt werden"
- ],
+ options:[{v:"A",t:"Weil sie nur auf Luxusgüter erhoben werden"},{v:"B",t:"Weil Personen mit niedrigem Einkommen anteilig mehr für Konsum ausgeben"},{v:"C",t:"Weil der Steuersatz mit dem Einkommen sinkt"},{v:"D",t:"Weil sie nur von Unternehmen bezahlt werden"}],
  correct:"B",
  explain:"Indirekte Steuern wie die MwSt belasten alle mit demselben Satz. Da Personen mit niedrigem Einkommen einen grösseren Anteil ihres Einkommens für Konsum ausgeben (und weniger sparen), wird ihr Einkommen relativ stärker durch die MwSt belastet. Dies nennt man einen degressiven (regressiven) Effekt."},
 
@@ -153,23 +128,13 @@ window.QUESTIONS = [
 
 {id:"f07", topic:"formen", type:"mc", diff:2, tax:"K2",
  q:"Warum kann sich ein Staat langfristig nicht nur über Verschuldung finanzieren?",
- options:[
-   "A) Weil die Nationalbank keine Kredite an den Staat vergeben darf",
-   "B) Weil Schulden irgendwann zurückgezahlt werden müssen, was höhere Steuern erfordert",
-   "C) Weil die Inflation automatisch alle Schulden tilgt",
-   "D) Weil Obligationen nur an Inländer verkauft werden dürfen"
- ],
+ options:[{v:"A",t:"Weil die Nationalbank keine Kredite an den Staat vergeben darf"},{v:"B",t:"Weil Schulden irgendwann zurückgezahlt werden müssen, was höhere Steuern erfordert"},{v:"C",t:"Weil die Inflation automatisch alle Schulden tilgt"},{v:"D",t:"Weil Obligationen nur an Inländer verkauft werden dürfen"}],
  correct:"B",
  explain:"Schulden verschieben die Finanzierungslast in die Zukunft. In einer späteren Periode müssen die Steuereinnahmen zwingend höher sein als die Staatsausgaben, um die Schulden zurückzuzahlen. Verschuldung ist daher nur eine vorübergehende Finanzierungslösung."},
 
 {id:"f08", topic:"formen", type:"mc", diff:1, tax:"K1",
  q:"Wer ist bei der Mehrwertsteuer der Steuerschuldner und wer der Steuerträger?",
- options:[
-   "A) Steuerschuldner: Konsument; Steuerträger: Unternehmen",
-   "B) Steuerschuldner: Konsument; Steuerträger: Konsument",
-   "C) Steuerschuldner: Unternehmen; Steuerträger: Konsument",
-   "D) Steuerschuldner: Staat; Steuerträger: Unternehmen"
- ],
+ options:[{v:"A",t:"Steuerschuldner: Konsument; Steuerträger: Unternehmen"},{v:"B",t:"Steuerschuldner: Konsument; Steuerträger: Konsument"},{v:"C",t:"Steuerschuldner: Unternehmen; Steuerträger: Konsument"},{v:"D",t:"Steuerschuldner: Staat; Steuerträger: Unternehmen"}],
  correct:"C",
  explain:"Bei indirekten Steuern fallen Steuerschuldner und Steuerträger auseinander. Der Konsument bezahlt die MwSt beim Kauf (Steuerträger), aber das Unternehmen ist verpflichtet, die Steuer an den Staat abzuliefern (Steuerschuldner)."},
 
@@ -187,23 +152,13 @@ window.QUESTIONS = [
 
 {id:"s01", topic:"steuerarten", type:"mc", diff:1, tax:"K1",
  q:"Was bedeutet Steuerprogression?",
- options:[
-   "A) Der Steuersatz bleibt bei allen Einkommen gleich",
-   "B) Der Steuersatz sinkt mit zunehmendem Einkommen",
-   "C) Der Steuersatz steigt mit zunehmendem Einkommen",
-   "D) Die Steuer wird nur ab einem bestimmten Einkommen erhoben"
- ],
+ options:[{v:"A",t:"Der Steuersatz bleibt bei allen Einkommen gleich"},{v:"B",t:"Der Steuersatz sinkt mit zunehmendem Einkommen"},{v:"C",t:"Der Steuersatz steigt mit zunehmendem Einkommen"},{v:"D",t:"Die Steuer wird nur ab einem bestimmten Einkommen erhoben"}],
  correct:"C",
  explain:"Bei der Steuerprogression steigt der Steuersatz (Prozentsatz) mit zunehmendem Einkommen. Das Einkommen wird somit überproportional besteuert. Dies dient dem Umverteilungszweck: Personen mit höherem Einkommen tragen relativ und absolut mehr bei."},
 
 {id:"s02", topic:"steuerarten", type:"mc", diff:2, tax:"K2",
  q:"Was ist der Unterschied zwischen dem Grenzsteuersatz und dem Durchschnittssteuersatz?",
- options:[
-   "A) Der Grenzsteuersatz bezieht sich auf den letzten verdienten Franken, der Durchschnittssteuersatz auf das gesamte Einkommen",
-   "B) Der Grenzsteuersatz gilt nur für Unternehmen, der Durchschnittssteuersatz für Privatpersonen",
-   "C) Es gibt keinen Unterschied, beide Begriffe sind synonym",
-   "D) Der Grenzsteuersatz wird vom Bund erhoben, der Durchschnittssteuersatz vom Kanton"
- ],
+ options:[{v:"A",t:"Der Grenzsteuersatz bezieht sich auf den letzten verdienten Franken, der Durchschnittssteuersatz auf das gesamte Einkommen"},{v:"B",t:"Der Grenzsteuersatz gilt nur für Unternehmen, der Durchschnittssteuersatz für Privatpersonen"},{v:"C",t:"Es gibt keinen Unterschied, beide Begriffe sind synonym"},{v:"D",t:"Der Grenzsteuersatz wird vom Bund erhoben, der Durchschnittssteuersatz vom Kanton"}],
  correct:"A",
  explain:"Der Grenzsteuersatz gibt an, wie viel Steuer auf den zuletzt verdienten Franken entfällt (z.B. 30% auf den letzten verdienten Franken). Der Durchschnittssteuersatz gibt den Anteil der Steuern am gesamten Einkommen an (z.B. 15% des Gesamteinkommens). Bei einer progressiven Steuer liegt der Grenzsteuersatz immer über dem Durchschnittssteuersatz."},
 
@@ -214,7 +169,7 @@ window.QUESTIONS = [
 
 {id:"s04", topic:"steuerarten", type:"mc", diff:1, tax:"K1",
  q:"Wie hoch ist der Normalsatz der Mehrwertsteuer in der Schweiz (Stand 2024)?",
- options:["A) 7.7%","B) 8.1%","C) 10%","D) 19%"],
+ options:[{v:"A",t:"7.7%"},{v:"B",t:"8.1%"},{v:"C",t:"10%"},{v:"D",t:"19%"}],
  correct:"B",
  explain:"Der Normalsatz der Schweizer Mehrwertsteuer beträgt seit 2024 8.1% (zuvor 7.7%). Daneben gibt es einen reduzierten Satz von 2.6% (für Güter des täglichen Bedarfs wie Lebensmittel, Bücher, Zeitungen) und einen Sondersatz von 3.8% (für Beherbergungsleistungen)."},
 
@@ -225,12 +180,7 @@ window.QUESTIONS = [
 
 {id:"s06", topic:"steuerarten", type:"mc", diff:2, tax:"K2",
  q:"Warum wird die Verrechnungssteuer bei korrekter Deklaration zurückerstattet?",
- options:[
-   "A) Weil sie verfassungswidrig ist",
-   "B) Weil sie als Sicherungssteuer gegen Steuerhinterziehung dient",
-   "C) Weil sie nur für ausländische Anleger gedacht ist",
-   "D) Weil der Bund das Geld nicht benötigt"
- ],
+ options:[{v:"A",t:"Weil sie verfassungswidrig ist"},{v:"B",t:"Weil sie als Sicherungssteuer gegen Steuerhinterziehung dient"},{v:"C",t:"Weil sie nur für ausländische Anleger gedacht ist"},{v:"D",t:"Weil der Bund das Geld nicht benötigt"}],
  correct:"B",
  explain:"Die Verrechnungssteuer ist eine Sicherungssteuer: Sie soll sicherstellen, dass Kapitalerträge in der Steuererklärung deklariert werden. Wer die Erträge korrekt deklariert, erhält die 35% zurück. Wer nicht deklariert, verliert den Betrag – ein starker Anreiz zur ehrlichen Angabe."},
 
@@ -246,12 +196,7 @@ window.QUESTIONS = [
 
 {id:"s09", topic:"steuerarten", type:"mc", diff:1, tax:"K1",
  q:"Wovon hängt die Höhe der Einkommenssteuer in der Schweiz ab?",
- options:[
-   "A) Nur vom Einkommen",
-   "B) Vom Wohnort, Zivilstand und der Einkommenshöhe",
-   "C) Nur vom Kanton",
-   "D) Vom Arbeitgeber und dem Beruf"
- ],
+ options:[{v:"A",t:"Nur vom Einkommen"},{v:"B",t:"Vom Wohnort, Zivilstand und der Einkommenshöhe"},{v:"C",t:"Nur vom Kanton"},{v:"D",t:"Vom Arbeitgeber und dem Beruf"}],
  correct:"B",
  explain:"Die Einkommenssteuer in der Schweiz hängt von drei Faktoren ab: dem Wohnort (jeder Kanton und jede Gemeinde hat einen eigenen Steuersatz), dem Zivilstand (Ehepaare haben tiefere Sätze) und der Einkommenshöhe (Progression: höheres Einkommen → höherer Steuersatz)."},
 
@@ -269,34 +214,19 @@ window.QUESTIONS = [
 
 {id:"q02", topic:"quoten", type:"mc", diff:2, tax:"K2",
  q:"Die Schweiz hat im internationalen Vergleich eine tiefe Fiskalquote. Was deutet das an?",
- options:[
-   "A) Der Staat gibt wenig Geld aus",
-   "B) Der Anteil der staatlichen Abgaben am BIP ist relativ gering",
-   "C) Die Schweiz erhebt keine indirekten Steuern",
-   "D) Die Schweiz hat eine hohe Staatsverschuldung"
- ],
+ options:[{v:"A",t:"Der Staat gibt wenig Geld aus"},{v:"B",t:"Der Anteil der staatlichen Abgaben am BIP ist relativ gering"},{v:"C",t:"Die Schweiz erhebt keine indirekten Steuern"},{v:"D",t:"Die Schweiz hat eine hohe Staatsverschuldung"}],
  correct:"B",
  explain:"Eine tiefe Fiskalquote bedeutet, dass der Staat relativ wenig Steuern und Abgaben gemessen an der Wirtschaftsleistung erhebt. Die Schweiz liegt mit rund 28% deutlich unter dem OECD-Durchschnitt (ca. 34%). Dies widerspiegelt die traditionell liberale Wirtschaftspolitik mit vergleichsweise wenig staatlicher Umverteilung."},
 
 {id:"q03", topic:"quoten", type:"mc", diff:2, tax:"K3",
  q:"Land A hat eine Fiskalquote von 45% und Land B eine von 25%. Welche Aussage lässt sich daraus NICHT ableiten?",
- options:[
-   "A) Land A erhebt relativ mehr Steuern als Land B",
-   "B) Land A hat vermutlich ein umfassenderes Sozialsystem",
-   "C) Die Bevölkerung von Land A ist wohlhabender als die von Land B",
-   "D) In Land A spielt der Staat eine grössere Rolle in der Wirtschaft"
- ],
+ options:[{v:"A",t:"Land A erhebt relativ mehr Steuern als Land B"},{v:"B",t:"Land A hat vermutlich ein umfassenderes Sozialsystem"},{v:"C",t:"Die Bevölkerung von Land A ist wohlhabender als die von Land B"},{v:"D",t:"In Land A spielt der Staat eine grössere Rolle in der Wirtschaft"}],
  correct:"C",
  explain:"Die Fiskalquote sagt nichts über das absolute Wohlstandsniveau aus. Ein Land kann eine hohe Fiskalquote haben und trotzdem ärmer sein (oder umgekehrt). Die Quote misst nur den relativen Anteil der Abgaben am BIP, nicht den absoluten Wohlstand."},
 
 {id:"q04", topic:"quoten", type:"mc", diff:2, tax:"K2",
  q:"Was beschreibt die Laffer-Kurve?",
- options:[
-   "A) Den Zusammenhang zwischen Inflation und Arbeitslosigkeit",
-   "B) Den Zusammenhang zwischen Steuersatz und Steuereinnahmen",
-   "C) Den Zusammenhang zwischen BIP-Wachstum und Staatsquote",
-   "D) Den Zusammenhang zwischen Verschuldung und Zinssatz"
- ],
+ options:[{v:"A",t:"Den Zusammenhang zwischen Inflation und Arbeitslosigkeit"},{v:"B",t:"Den Zusammenhang zwischen Steuersatz und Steuereinnahmen"},{v:"C",t:"Den Zusammenhang zwischen BIP-Wachstum und Staatsquote"},{v:"D",t:"Den Zusammenhang zwischen Verschuldung und Zinssatz"}],
  correct:"B",
  explain:"Die Laffer-Kurve zeigt, dass die Steuereinnahmen bei einem Steuersatz von 0% und 100% jeweils null betragen. Dazwischen gibt es ein Maximum. Bei einem Steuersatz von 100% entfällt jeder Arbeitsanreiz, sodass niemand mehr arbeitet und keine Einnahmen generiert werden."},
 
@@ -322,12 +252,7 @@ window.QUESTIONS = [
 
 {id:"q09", topic:"quoten", type:"mc", diff:3, tax:"K4",
  q:"Warum kann die Staatsquote eines Landes höher sein als seine Fiskalquote?",
- options:[
-   "A) Weil der Staat mehr einnimmt als ausgibt",
-   "B) Weil der Staat die Differenz über Verschuldung finanziert",
-   "C) Weil Gebühren nicht zur Fiskalquote zählen",
-   "D) Weil die Staatsquote die Inflation berücksichtigt"
- ],
+ options:[{v:"A",t:"Weil der Staat mehr einnimmt als ausgibt"},{v:"B",t:"Weil der Staat die Differenz über Verschuldung finanziert"},{v:"C",t:"Weil Gebühren nicht zur Fiskalquote zählen"},{v:"D",t:"Weil die Staatsquote die Inflation berücksichtigt"}],
  correct:"B",
  explain:"Wenn die Staatsausgaben (Staatsquote) die Steuereinnahmen (Fiskalquote) übersteigen, finanziert der Staat die Differenz über Verschuldung. Dies führt zu einem Haushaltsdefizit. Umgekehrt weist ein Staat einen Überschuss auf, wenn die Fiskalquote höher ist als die Staatsquote."},
 
@@ -335,23 +260,13 @@ window.QUESTIONS = [
 
 {id:"w01", topic:"wettbewerb", type:"mc", diff:1, tax:"K1",
  q:"Was versteht man unter Steuerwettbewerb?",
- options:[
-   "A) Länder oder Kantone konkurrieren mit tiefen Steuern um attraktive Steuerzahlende",
-   "B) Steuerpflichtige konkurrieren um den günstigsten Steuersatz",
-   "C) Verschiedene Steuerarten konkurrieren um die höchsten Einnahmen",
-   "D) Der Bund und die Kantone streiten um die Verteilung der Steuereinnahmen"
- ],
+ options:[{v:"A",t:"Länder oder Kantone konkurrieren mit tiefen Steuern um attraktive Steuerzahlende"},{v:"B",t:"Steuerpflichtige konkurrieren um den günstigsten Steuersatz"},{v:"C",t:"Verschiedene Steuerarten konkurrieren um die höchsten Einnahmen"},{v:"D",t:"Der Bund und die Kantone streiten um die Verteilung der Steuereinnahmen"}],
  correct:"A",
  explain:"Steuerwettbewerb bedeutet, dass Länder, Kantone oder Gemeinden versuchen, durch tiefe Steuersätze attraktive Steuerzahlende (wohlhabende Privatpersonen und profitable Unternehmen) anzulocken. Das Schweizer föderalistische System mit unterschiedlichen Kantons- und Gemeindesteuern ist ein typisches Beispiel."},
 
 {id:"w02", topic:"wettbewerb", type:"mc", diff:1, tax:"K1",
  q:"Was misst der Steuerausschöpfungsindex?",
- options:[
-   "A) Den höchsten Steuersatz eines Kantons",
-   "B) Das Verhältnis der Steuereinnahmen zum steuerlich ausschöpfbaren Potenzial",
-   "C) Die Anzahl verschiedener Steuerarten in einem Kanton",
-   "D) Den Anteil der Steuern am BIP eines Kantons"
- ],
+ options:[{v:"A",t:"Den höchsten Steuersatz eines Kantons"},{v:"B",t:"Das Verhältnis der Steuereinnahmen zum steuerlich ausschöpfbaren Potenzial"},{v:"C",t:"Die Anzahl verschiedener Steuerarten in einem Kanton"},{v:"D",t:"Den Anteil der Steuern am BIP eines Kantons"}],
  correct:"B",
  explain:"Der Steuerausschöpfungsindex der Eidgenössischen Finanzverwaltung setzt die Steuereinnahmen eines Kantons ins Verhältnis zu seinem steuerlich ausschöpfbaren Potenzial (Wirtschaftskraft). Kantone wie Zug, Schwyz und Nidwalden schöpfen ihr Potenzial wenig aus (tiefe Steuern), während Genf, Bern oder Graubünden stark ausschöpfen."},
 
@@ -362,23 +277,13 @@ window.QUESTIONS = [
 
 {id:"w04", topic:"wettbewerb", type:"mc", diff:2, tax:"K3",
  q:"Warum konnte Obwalden seine Steuerstrategie erfolgreicher umsetzen als Luzern?",
- options:[
-   "A) Obwalden hat eine grössere Bevölkerung",
-   "B) Obwalden ist kleiner und hat weniger Zentrumslasten",
-   "C) Obwalden hat höhere Steuern als Luzern",
-   "D) Obwalden liegt näher bei Zürich"
- ],
+ options:[{v:"A",t:"Obwalden hat eine grössere Bevölkerung"},{v:"B",t:"Obwalden ist kleiner und hat weniger Zentrumslasten"},{v:"C",t:"Obwalden hat höhere Steuern als Luzern"},{v:"D",t:"Obwalden liegt näher bei Zürich"}],
  correct:"B",
  explain:"Obwalden ist ein kleiner Kanton ohne grosse Zentrumslasten. Schon wenige wohlhabende Neuzuzüger haben eine spürbare Wirkung auf die Steuerkraft. Luzern dagegen hat mit dem Entlebuch und dem Hinterland strukturschwache Gebiete und als Zentrum zusätzliche Kosten, die durch Steueranreize allein nicht kompensiert werden."},
 
 {id:"w05", topic:"wettbewerb", type:"mc", diff:1, tax:"K1",
  q:"Was ist der nationale Finanzausgleich (NFA)?",
- options:[
-   "A) Ein System, bei dem ressourcenstarke Kantone an ressourcenschwache Kantone zahlen",
-   "B) Ein Steuersenkungsprogramm des Bundes",
-   "C) Ein System zur Vereinheitlichung aller Kantonssteuern",
-   "D) Ein Kreditprogramm der Nationalbank für verschuldete Kantone"
- ],
+ options:[{v:"A",t:"Ein System, bei dem ressourcenstarke Kantone an ressourcenschwache Kantone zahlen"},{v:"B",t:"Ein Steuersenkungsprogramm des Bundes"},{v:"C",t:"Ein System zur Vereinheitlichung aller Kantonssteuern"},{v:"D",t:"Ein Kreditprogramm der Nationalbank für verschuldete Kantone"}],
  correct:"A",
  explain:"Der NFA (Nationaler Finanzausgleich) ist ein Ausgleichsmechanismus, bei dem finanzstarke Kantone (Geberkantone wie Zug, Schwyz, Zürich, Basel-Stadt) Beiträge an finanzschwache Kantone (Nehmerkantone wie Uri, Jura, Glarus, Wallis, Freiburg) leisten. Ziel ist es, allen Kantonen eine minimale finanzielle Ausstattung zu gewährleisten."},
 
@@ -411,12 +316,7 @@ window.QUESTIONS = [
 
 {id:"w10", topic:"wettbewerb", type:"mc", diff:3, tax:"K4",
  q:"Der Kanton Luzern senkte die Unternehmenssteuern drastisch, musste aber gleichzeitig Sparpakete schnüren und die Steuern für Privatpersonen erhöhen. Was erklärt dieses Paradox am besten?",
- options:[
-   "A) Luzern hat zu viele Unternehmen angelockt",
-   "B) Die Steuerausfälle wurden nicht ausreichend durch Neuzuzüger kompensiert, und der NFA-Beitrag sank gleichzeitig",
-   "C) Die Bundessteuer wurde gleichzeitig erhöht",
-   "D) Die Finanzkrise hat alle Steuereinnahmen zunichtegemacht"
- ],
+ options:[{v:"A",t:"Luzern hat zu viele Unternehmen angelockt"},{v:"B",t:"Die Steuerausfälle wurden nicht ausreichend durch Neuzuzüger kompensiert, und der NFA-Beitrag sank gleichzeitig"},{v:"C",t:"Die Bundessteuer wurde gleichzeitig erhöht"},{v:"D",t:"Die Finanzkrise hat alle Steuereinnahmen zunichtegemacht"}],
  correct:"B",
  explain:"Luzern erlebte einen doppelten Effekt: Die tiefen Unternehmenssteuern lockten nicht genug Neuzuzüger an, um die Ausfälle zu kompensieren (strukturelle Nachteile: Zentrumslast, ländliche Gebiete). Gleichzeitig stieg die Ressourcenstärke, sodass Luzern weniger NFA-Mittel erhielt. Die Bevölkerung musste die Lücke über höhere Privatsteuern und Sparmassnahmen finanzieren."},
 
@@ -424,23 +324,13 @@ window.QUESTIONS = [
 
 {id:"e01", topic:"elastizitaeten", type:"mc", diff:1, tax:"K1",
  q:"Was versteht man unter Steuerinzidenz?",
- options:[
-   "A) Die Frage, wie hoch eine Steuer ist",
-   "B) Die Frage, welche Bevölkerungsgruppe eine Steuer letztlich bezahlen muss",
-   "C) Die Frage, wie oft eine Steuer erhoben wird",
-   "D) Die Frage, ob eine Steuer direkt oder indirekt ist"
- ],
+ options:[{v:"A",t:"Die Frage, wie hoch eine Steuer ist"},{v:"B",t:"Die Frage, welche Bevölkerungsgruppe eine Steuer letztlich bezahlen muss"},{v:"C",t:"Die Frage, wie oft eine Steuer erhoben wird"},{v:"D",t:"Die Frage, ob eine Steuer direkt oder indirekt ist"}],
  correct:"B",
  explain:"Die Steuerinzidenz beschreibt, wer die Last einer Steuer tatsächlich trägt. Dies muss nicht die Seite sein, die die Steuer formal bezahlt. Entscheidend ist, welche Marktseite (Anbieter oder Nachfrager) der Preisveränderung weniger gut ausweichen kann."},
 
 {id:"e02", topic:"elastizitaeten", type:"mc", diff:2, tax:"K2",
  q:"Wer trägt bei einer Steuer die grössere Last?",
- options:[
-   "A) Immer der Konsument",
-   "B) Immer der Produzent",
-   "C) Die Marktseite mit der geringeren Preiselastizität",
-   "D) Die Marktseite, auf der die Steuer formal erhoben wird"
- ],
+ options:[{v:"A",t:"Immer der Konsument"},{v:"B",t:"Immer der Produzent"},{v:"C",t:"Die Marktseite mit der geringeren Preiselastizität"},{v:"D",t:"Die Marktseite, auf der die Steuer formal erhoben wird"}],
  correct:"C",
  explain:"Die Steuerlast wird stets von der weniger elastischen Marktseite getragen. Wer der Preisveränderung weniger gut ausweichen kann (unelastische Seite), muss den grösseren Teil der Steuer tragen – unabhängig davon, bei wem die Steuer formal erhoben wird."},
 
@@ -451,23 +341,13 @@ window.QUESTIONS = [
 
 {id:"e04", topic:"elastizitaeten", type:"mc", diff:2, tax:"K2",
  q:"Warum sind die Wohlfahrtsverluste einer Steuer besonders gross, wenn Angebot und Nachfrage elastisch sind?",
- options:[
-   "A) Weil die Steuereinnahmen dann besonders hoch sind",
-   "B) Weil die Mengenreaktion stark ausfällt und viele Transaktionen nicht mehr stattfinden",
-   "C) Weil die Preise sinken",
-   "D) Weil die Steuer dann nicht erhoben werden kann"
- ],
+ options:[{v:"A",t:"Weil die Steuereinnahmen dann besonders hoch sind"},{v:"B",t:"Weil die Mengenreaktion stark ausfällt und viele Transaktionen nicht mehr stattfinden"},{v:"C",t:"Weil die Preise sinken"},{v:"D",t:"Weil die Steuer dann nicht erhoben werden kann"}],
  correct:"B",
  explain:"Bei hoher Elastizität reagieren Angebot und Nachfrage stark auf die steuerbedingte Preisveränderung. Viele Transaktionen finden nicht mehr statt (die Menge sinkt deutlich), was zu einem grossen Wohlfahrtsverlust führt. Bei unelastischer Nachfrage oder unelastischem Angebot hingegen bleibt die Menge relativ stabil und der Wohlfahrtsverlust ist geringer."},
 
 {id:"e05", topic:"elastizitaeten", type:"mc", diff:3, tax:"K3",
  q:"Die Tabaksteuer wird formal beim Produzenten erhoben. Warum tragen trotzdem vor allem die Raucherinnen und Raucher die Steuerlast?",
- options:[
-   "A) Weil die Produzenten die Steuer nicht bezahlen müssen",
-   "B) Weil die Nachfrage nach Zigaretten sehr unelastisch ist und die Produzenten die Steuer auf den Preis überwälzen können",
-   "C) Weil Raucher freiwillig mehr bezahlen",
-   "D) Weil die Tabaksteuer eine direkte Steuer ist"
- ],
+ options:[{v:"A",t:"Weil die Produzenten die Steuer nicht bezahlen müssen"},{v:"B",t:"Weil die Nachfrage nach Zigaretten sehr unelastisch ist und die Produzenten die Steuer auf den Preis überwälzen können"},{v:"C",t:"Weil Raucher freiwillig mehr bezahlen"},{v:"D",t:"Weil die Tabaksteuer eine direkte Steuer ist"}],
  correct:"B",
  explain:"Die Nachfrage nach Zigaretten ist sehr unelastisch (Suchtcharakter). Die Produzenten können daher den grössten Teil der Steuer auf den Verkaufspreis überwälzen, ohne dass die Nachfrage wesentlich einbricht. Damit tragen die Konsumenten (Raucher) den Löwenanteil der Steuer, obwohl sie formal beim Produzenten erhoben wird."},
 
@@ -483,23 +363,13 @@ window.QUESTIONS = [
 
 {id:"e08", topic:"elastizitaeten", type:"mc", diff:2, tax:"K3",
  q:"Auf welche Güter sollte der Staat gemäss der Elastizitätsanalyse Steuern erheben, um möglichst geringe Wohlfahrtsverluste zu verursachen?",
- options:[
-   "A) Auf Güter mit elastischer Nachfrage und elastischem Angebot",
-   "B) Auf Güter mit unelastischer Nachfrage oder unelastischem Angebot",
-   "C) Nur auf Luxusgüter",
-   "D) Nur auf importierte Güter"
- ],
+ options:[{v:"A",t:"Auf Güter mit elastischer Nachfrage und elastischem Angebot"},{v:"B",t:"Auf Güter mit unelastischer Nachfrage oder unelastischem Angebot"},{v:"C",t:"Nur auf Luxusgüter"},{v:"D",t:"Nur auf importierte Güter"}],
  correct:"B",
  explain:"Bei unelastischer Nachfrage oder unelastischem Angebot führt eine Steuer zu geringen Mengenreaktionen und damit zu geringen Wohlfahrtsverlusten. Die Steuer verzerrt die Marktmengen kaum. Umgekehrt verursachen Steuern auf Güter mit hoher Elastizität grosse Verzerrungen und Wohlfahrtsverluste."},
 
 {id:"e09", topic:"elastizitaeten", type:"mc", diff:3, tax:"K4",
  q:"Ein Arbeitgeber und ein Arbeitnehmer teilen sich formal je hälftig die AHV-Beiträge. Wer trägt ökonomisch gesehen die grössere Last?",
- options:[
-   "A) Immer der Arbeitgeber",
-   "B) Immer der Arbeitnehmer",
-   "C) Es hängt von der Elastizität des Arbeitsangebots und der Arbeitsnachfrage ab",
-   "D) Beide genau gleich viel, weil es so im Gesetz steht"
- ],
+ options:[{v:"A",t:"Immer der Arbeitgeber"},{v:"B",t:"Immer der Arbeitnehmer"},{v:"C",t:"Es hängt von der Elastizität des Arbeitsangebots und der Arbeitsnachfrage ab"},{v:"D",t:"Beide genau gleich viel, weil es so im Gesetz steht"}],
  correct:"C",
  explain:"Wie bei jeder Steuer oder Abgabe bestimmen die Elastizitäten die tatsächliche Lastverteilung, nicht die gesetzliche Aufteilung. Da die Arbeitsnachfrage meist elastischer ist als das Arbeitsangebot, tragen Arbeitnehmer tendenziell den grösseren Teil. Die formale Aufteilung 50:50 sagt nichts über die tatsächliche ökonomische Belastung aus."},
 
