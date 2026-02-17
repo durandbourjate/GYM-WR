@@ -311,9 +311,6 @@ body{min-height:auto!important;background:#fff!important}
 <!-- ═══ Quiz-Bildschirm ═══ -->
 <div id="quizScreen" class="screen">
 <div class="card q-card" id="questionCard"></div>
-<div class="quiz-actions" id="quizActions">
-<button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none">Nächste Aufgabe →</button>
-</div>
 </div>
 
 <!-- ═══ Ergebnis ═══ -->
@@ -653,7 +650,6 @@ function startQuiz(){
 function renderQuestion(){
   const q=state.queue[state.current]; const total=state.queue.length;
   const pctProgress=Math.round(state.current/total*100);
-  document.getElementById('nextBtn').style.display='none';
   let html='<div class="q-progress-bg"></div><div class="q-progress-bar" style="width:'+pctProgress+'%"></div>';
   html+='<div class="q-badges">';
   html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
@@ -727,6 +723,7 @@ function renderQuestion(){
   else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">Überprüfen</button>';
   else if(q.type==='open') html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">Lösung anzeigen</button>';
   html+='<button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button>';
+  html+='<button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none;margin-left:auto">Nächste Aufgabe →</button>';
   html+='</div>';
   html+='<div class="feedback" id="feedback"></div>';
   html+='<div class="q-bottom-row" id="qBottomRow"><button class="btn-end" onclick="endQuiz()">Übung beenden</button><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
@@ -850,7 +847,9 @@ function finishAnswer(q,correct,explain){
   fb.className='feedback show '+(correct?'correct':'wrong');
   fb.innerHTML='<div class="feedback-title">'+(correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+explain+'</div>';
   document.getElementById('nextBtn').style.display='inline-flex';
-  var skipRow=document.getElementById('skipRow');if(skipRow)skipRow.style.display='none';
+  document.getElementById('nextBtn').style.marginLeft='auto';
+  var skip=document.querySelector('.btn-skip');if(skip)skip.style.display='none';
+  var actionBtns=document.querySelectorAll('#skipRow .btn-primary');actionBtns.forEach(function(b){b.style.display='none'});
 }
 
 function nextQuestion(){
