@@ -42,10 +42,6 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .btn-accent{background:var(--c-accent);color:#fff}.btn-accent:hover{filter:brightness(1.05)}
 .btn-outline{background:transparent;border:2px solid var(--c-border);color:var(--c-text)}.btn-outline:hover{border-color:var(--c-primary);color:var(--c-primary)}
 .btn-block{width:100%;justify-content:center}
-.progress-bar-wrap{background:var(--c-border);border-radius:20px;height:8px;margin:12px 0;overflow:hidden}
-.progress-bar-fill{height:100%;background:var(--c-accent);border-radius:20px;transition:width .4s ease}
-.quiz-meta{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--c-text-soft);margin-bottom:4px}
-.quiz-meta .score{font-family:'DM Mono',monospace;font-weight:600;color:var(--c-text)}
 .q-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .badge{font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.03em}
 .badge-topic{background:var(--c-info-bg);color:var(--c-info)}
@@ -206,10 +202,14 @@ body{min-height:auto!important;background:#fff!important}
 .q-progress-bg{position:absolute;top:0;left:0;right:0;height:4px;background:var(--c-border)}
 .badge-progress{background:var(--c-accent-light);color:var(--c-accent);margin-left:auto}
 .badge-score{background:var(--c-success-bg);color:var(--c-success)}
-.q-action-row{display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
-.btn-skip{background:transparent;border:2px solid var(--c-border);color:var(--c-text-soft);font-size:.85rem;padding:10px 18px}
-.btn-skip:hover{border-color:var(--c-primary);color:var(--c-primary)}
-.report-row{margin-top:14px;text-align:right}
+.q-action-row{display:flex;gap:10px;margin-top:14px;align-items:center}
+.q-action-row .btn{flex:none}
+.q-action-row .btn-skip{margin-left:auto}
+.btn-skip{background:transparent;border:2px solid var(--c-primary);color:var(--c-primary);font-size:.85rem;padding:10px 18px}
+.btn-skip:hover{background:color-mix(in srgb,var(--c-primary) 10%,transparent)}
+.q-bottom-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--c-border)}
+.btn-end{background:none;border:none;color:var(--c-text-soft);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s;font-family:inherit}
+.btn-end:hover{background:var(--c-bg);color:var(--c-text)}
 .btn-report{background:none;border:none;color:var(--c-text-soft);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s;font-family:inherit}
 .btn-report:hover{background:var(--c-bg);color:var(--c-text)}
 .report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:16px}
@@ -313,7 +313,6 @@ body{min-height:auto!important;background:#fff!important}
 <div class="card q-card" id="questionCard"></div>
 <div class="quiz-actions" id="quizActions">
 <button class="btn btn-accent" id="nextBtn" onclick="nextQuestion()" style="display:none">Nächste Aufgabe →</button>
-<button class="btn btn-outline" onclick="endQuiz()">Übung beenden</button>
 </div>
 </div>
 
@@ -678,11 +677,14 @@ function renderQuestion(){
     html+='<div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',false)">❌ Falsch</div></div>';
   } else if(q.type==='fill'){
     let parts=q.q.split(/\{(\d+)\}/g);
-    html='<div class="q-badges">';
+    html='<div class="q-progress-bg"></div><div class="q-progress-bar" style="width:'+pctProgress+'%"></div>';
+    html+='<div class="q-badges">';
     html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
     html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
     html+='<span class="badge badge-tax">'+q.tax+'</span>';
     html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+    html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
+    html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
     html+='</div>';
     html+='<div class="q-text">';
     let bIdx=0;
@@ -693,13 +695,12 @@ function renderQuestion(){
     }
     html+='</div>';
     html+=renderImg(q);
-    html+='<button class="btn btn-primary" style="margin-top:14px" onclick="answerFill(\''+q.id+'\')">Überprüfen</button>';
   } else if(q.type==='calc'){
     html+='<div class="calc-rows">';
     q.rows.forEach((r,i)=>{
       html+='<div class="calc-row"><label>'+r.label+'</label><input type="number" step="any" data-ridx="'+i+'" placeholder="?"><span class="unit">'+r.unit+'</span></div>';
     });
-    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerCalc(\''+q.id+'\')">Überprüfen</button>';
+    html+='</div>';
   } else if(q.type==='sort'){
     html+='<div class="sort-pool" id="sortPool">';
     let items=[...q.items];shuffle(items);
@@ -710,19 +711,25 @@ function renderQuestion(){
     q.categories.forEach((cat,ci)=>{
       html+='<div class="sort-cat" data-cidx="'+ci+'" onclick="placeSortItem(this,'+ci+')"><div class="sort-cat-title">'+cat+'</div><div class="sort-cat-items" id="sortCat'+ci+'"></div></div>';
     });
-    html+='</div><button class="btn btn-primary" style="margin-top:14px" onclick="answerSort(\''+q.id+'\')">Überprüfen</button>';
+    html+='</div>';
   } else if(q.type==='open'){
     html+='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier…"></textarea>';
-    html+='<button class="btn btn-primary" style="margin-top:14px" onclick="showOpenSample(\''+q.id+'\')">Lösung anzeigen</button>';
     html+='<div class="open-sample" id="openSample"><div class="open-sample-title">Lösungsvorschlag:</div><div id="openSampleText"></div></div>';
     html+='<div class="open-self" id="openSelf">';
     html+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">✅ Gewusst</button>';
     html+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">❌ Nicht gewusst</button>';
     html+='</div>';
   }
-  html+='<div class="q-action-row" id="skipRow"><button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button></div>';
-  html+='<div class="report-row"><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
+  // Unified action row: type-specific button + skip (same line)
+  html+='<div class="q-action-row" id="skipRow">';
+  if(q.type==='fill') html+='<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">Überprüfen</button>';
+  else if(q.type==='calc') html+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">Überprüfen</button>';
+  else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">Überprüfen</button>';
+  else if(q.type==='open') html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">Lösung anzeigen</button>';
+  html+='<button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button>';
+  html+='</div>';
   html+='<div class="feedback" id="feedback"></div>';
+  html+='<div class="q-bottom-row" id="qBottomRow"><button class="btn-end" onclick="endQuiz()">Übung beenden</button><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
   document.getElementById('questionCard').innerHTML=html;
   pickedSortItem=null;
 }
@@ -824,6 +831,7 @@ function showOpenSample(qid){
   document.getElementById('openSample').classList.add('show');
   document.getElementById('openSelf').classList.add('show');
   document.querySelectorAll('#questionCard .btn-primary').forEach(b=>{if(b.textContent.includes('Lösung'))b.style.display='none'});
+  document.querySelector('.btn-skip').style.display='none';
 }
 
 function answerOpen(qid,correct){
