@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="480" height="280" fill="none"/>
+  <text x="240" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Güterklassifikation</text>
+  <!-- Ebene 0: Güter -->
+  <rect x="190" y="36" width="100" height="32" rx="6" fill="#f89907" opacity="0.9"/>
+  <text x="240" y="57" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Güter</text>
+  <!-- Verzweigung 1 -->
+  <line x1="220" y1="68" x2="120" y2="95" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="260" y1="68" x2="360" y2="95" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Freie Güter -->
+  <rect x="60" y="95" width="120" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="120" y="114" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Freie Güter</text>
+  <!-- Wirtschaftliche Güter -->
+  <rect x="300" y="95" width="120" height="30" rx="6" fill="#ffa726" opacity="0.85"/>
+  <text x="360" y="114" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Wirtschaftl. Güter</text>
+  <!-- Verzweigung 2 von Wirtschaftl. Güter -->
+  <line x1="330" y1="125" x2="220" y2="155" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="360" y1="125" x2="360" y2="155" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="390" y1="125" x2="440" y2="155" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Sachgüter -->
+  <rect x="160" y="155" width="110" height="28" rx="6" fill="#ffb74d" opacity="0.8"/>
+  <text x="215" y="174" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Sachgüter</text>
+  <!-- Dienstleistungen -->
+  <rect x="310" y="155" width="100" height="28" rx="6" fill="#ffb74d" opacity="0.8"/>
+  <text x="360" y="174" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Dienstleistungen</text>
+  <!-- Rechte -->
+  <rect x="418" y="155" width="55" height="28" rx="6" fill="#ffb74d" opacity="0.8"/>
+  <text x="445" y="174" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Rechte</text>
+  <!-- Sachgüter Untergliederung -->
+  <line x1="195" y1="183" x2="140" y2="210" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="235" y1="183" x2="290" y2="210" stroke="#94a3b8" stroke-width="1"/>
+  <!-- Konsumgüter -->
+  <rect x="80" y="210" width="110" height="26" rx="5" fill="#fff3e0"/>
+  <text x="135" y="228" text-anchor="middle" font-size="10" font-weight="500" fill="#b45309">Konsumgüter</text>
+  <!-- Investitionsgüter -->
+  <rect x="230" y="210" width="120" height="26" rx="5" fill="#fff3e0"/>
+  <text x="290" y="228" text-anchor="middle" font-size="10" font-weight="500" fill="#b45309">Investitionsgüter</text>
+  <!-- Konsumgüter Untergliederung -->
+  <line x1="110" y1="236" x2="80" y2="255" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="160" y1="236" x2="195" y2="255" stroke="#94a3b8" stroke-width="1"/>
+  <!-- Verbrauchsgüter -->
+  <rect x="30" y="255" width="100" height="22" rx="4" fill="#fef3c7"/>
+  <text x="80" y="270" text-anchor="middle" font-size="9" fill="#92400e">Verbrauchsgüter</text>
+  <!-- Gebrauchsgüter -->
+  <rect x="150" y="255" width="100" height="22" rx="4" fill="#fef3c7"/>
+  <text x="200" y="270" text-anchor="middle" font-size="9" fill="#92400e">Gebrauchsgüter</text>
+</svg>
