@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 260" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 13px; font-weight: 700; fill: #1e293b; }
+      .year { font-size: 11px; font-weight: 700; fill: #1e293b; }
+      .seg-label { font-size: 9.5px; font-weight: 600; fill: #fff; }
+      .legend { font-size: 10px; fill: #475569; }
+    </style>
+  </defs>
+  <text x="270" y="22" text-anchor="middle" class="title">Strukturwandel der Schweiz: Beschäftigungsanteile nach Sektoren</text>
+  <!-- 1800 -->
+  <text x="90" y="52" text-anchor="middle" class="year">~1800</text>
+  <!-- 1. Sektor 65% -->
+  <rect x="30" y="58" width="120" height="130" rx="6" fill="#16a34a"/>
+  <text x="90" y="120" text-anchor="middle" class="seg-label">1. Sektor</text>
+  <text x="90" y="135" text-anchor="middle" class="seg-label">65 %</text>
+  <!-- 2. Sektor 25% -->
+  <rect x="30" y="192" width="120" height="50" rx="6" fill="#2563eb"/>
+  <text x="90" y="222" text-anchor="middle" class="seg-label">2. Sektor 25 %</text>
+  <!-- 3. Sektor 10% -->
+  <rect x="155" y="58" width="25" height="20" rx="4" fill="#f89907"/>
+  <text x="167" y="73" text-anchor="middle" font-size="7.5" fill="#fff" font-weight="600">10 %</text>
+  <!-- 1900 -->
+  <text x="260" y="52" text-anchor="middle" class="year">~1900</text>
+  <!-- 1. Sektor 30% -->
+  <rect x="200" y="58" width="120" height="60" rx="6" fill="#16a34a"/>
+  <text x="260" y="93" text-anchor="middle" class="seg-label">1. Sektor 30 %</text>
+  <!-- 2. Sektor 45% -->
+  <rect x="200" y="122" width="120" height="90" rx="6" fill="#2563eb"/>
+  <text x="260" y="165" text-anchor="middle" class="seg-label">2. Sektor</text>
+  <text x="260" y="180" text-anchor="middle" class="seg-label">45 %</text>
+  <!-- 3. Sektor 25% -->
+  <rect x="200" y="216" width="120" height="26" rx="6" fill="#f89907"/>
+  <text x="260" y="234" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">3. Sektor 25 %</text>
+  <!-- Heute -->
+  <text x="430" y="52" text-anchor="middle" class="year">~2020</text>
+  <!-- 1. Sektor 3% -->
+  <rect x="370" y="58" width="120" height="7" rx="3" fill="#16a34a"/>
+  <text x="430" y="78" text-anchor="middle" font-size="8" fill="#16a34a" font-weight="600">1. Sek. ≈ 3 %</text>
+  <!-- 2. Sektor 25% -->
+  <rect x="370" y="86" width="120" height="50" rx="6" fill="#2563eb"/>
+  <text x="430" y="116" text-anchor="middle" class="seg-label">2. Sektor ≈ 25 %</text>
+  <!-- 3. Sektor 72% -->
+  <rect x="370" y="140" width="120" height="102" rx="6" fill="#f89907"/>
+  <text x="430" y="185" text-anchor="middle" class="seg-label">3. Sektor</text>
+  <text x="430" y="200" text-anchor="middle" class="seg-label">≈ 72 %</text>
+  <!-- Arrows -->
+  <path d="M155,140 L195,140" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <path d="M325,140 L365,140" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L7,2.5 L0,5" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>

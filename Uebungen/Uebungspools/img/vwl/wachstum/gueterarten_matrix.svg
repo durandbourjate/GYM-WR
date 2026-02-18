@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .label { font-size: 13px; font-weight: 600; fill: #1e293b; }
+      .axis-label { font-size: 12px; font-weight: 700; fill: #475569; }
+      .cell-label { font-size: 11.5px; font-weight: 600; fill: #fff; }
+      .cell-sub { font-size: 10px; fill: rgba(255,255,255,0.85); }
+      .header { font-size: 14px; font-weight: 700; fill: #1e293b; }
+    </style>
+  </defs>
+  <!-- Title -->
+  <text x="260" y="28" text-anchor="middle" class="header">Güterarten nach Rivalität und Ausschliessbarkeit</text>
+  <!-- Axis labels -->
+  <text x="300" y="58" text-anchor="middle" class="axis-label">Ausschliessbarkeit</text>
+  <text x="210" y="76" text-anchor="middle" font-size="11" fill="#64748b">ja</text>
+  <text x="410" y="76" text-anchor="middle" font-size="11" fill="#64748b">nein</text>
+  <!-- Vertical axis -->
+  <text transform="translate(68,200) rotate(-90)" text-anchor="middle" class="axis-label">Rivalität</text>
+  <text x="88" y="150" text-anchor="middle" font-size="11" fill="#64748b">ja</text>
+  <text x="88" y="275" text-anchor="middle" font-size="11" fill="#64748b">nein</text>
+  <!-- Grid -->
+  <rect x="105" y="85" width="200" height="120" rx="8" fill="#2563eb"/>
+  <rect x="310" y="85" width="200" height="120" rx="8" fill="#dc2626"/>
+  <rect x="105" y="210" width="200" height="120" rx="8" fill="#7c3aed"/>
+  <rect x="310" y="210" width="200" height="120" rx="8" fill="#16a34a"/>
+  <!-- Cell content -->
+  <text x="205" y="140" text-anchor="middle" class="cell-label">Private Güter</text>
+  <text x="205" y="160" text-anchor="middle" class="cell-sub">z. B. ?</text>
+  <text x="410" y="140" text-anchor="middle" class="cell-label">Allmendegüter</text>
+  <text x="410" y="160" text-anchor="middle" class="cell-sub">z. B. ?</text>
+  <text x="205" y="265" text-anchor="middle" class="cell-label">Klubgüter</text>
+  <text x="205" y="285" text-anchor="middle" class="cell-sub">z. B. ?</text>
+  <text x="410" y="265" text-anchor="middle" class="cell-label">Öffentliche Güter</text>
+  <text x="410" y="285" text-anchor="middle" class="cell-sub">z. B. ?</text>
+</svg>

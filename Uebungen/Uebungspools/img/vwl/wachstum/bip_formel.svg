@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 180" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .box { rx: 8; stroke-width: 2; }
+      .box-label { font-size: 12px; font-weight: 700; fill: #fff; }
+      .box-sub { font-size: 9.5px; fill: rgba(255,255,255,0.85); }
+      .op { font-size: 22px; font-weight: 700; fill: #64748b; }
+      .title { font-size: 13px; font-weight: 700; fill: #1e293b; }
+      .note { font-size: 9.5px; fill: #94a3b8; font-style: italic; }
+    </style>
+  </defs>
+  <text x="270" y="22" text-anchor="middle" class="title">Zerlegung des BIP pro Einwohner</text>
+  <!-- BIP pro Einwohner -->
+  <rect x="10" y="50" width="150" height="70" class="box" fill="#1e293b" stroke="#1e293b"/>
+  <text x="85" y="80" text-anchor="middle" class="box-label">BIP pro Einwohner</text>
+  <text x="85" y="98" text-anchor="middle" class="box-sub">(Wohlstandsmass)</text>
+  <!-- = -->
+  <text x="178" y="93" text-anchor="middle" class="op">=</text>
+  <!-- Arbeitseinsatz -->
+  <rect x="195" y="50" width="150" height="70" class="box" fill="#dc2626" stroke="#dc2626"/>
+  <text x="270" y="76" text-anchor="middle" class="box-label">Arbeitseinsatz</text>
+  <text x="270" y="92" text-anchor="middle" class="box-sub">pro Einwohner</text>
+  <text x="270" y="106" text-anchor="middle" class="box-sub">(Stunden × Erwerbsquote)</text>
+  <!-- × -->
+  <text x="363" y="93" text-anchor="middle" class="op">×</text>
+  <!-- Produktivität -->
+  <rect x="380" y="50" width="150" height="70" class="box" fill="#2563eb" stroke="#2563eb"/>
+  <text x="455" y="76" text-anchor="middle" class="box-label">Arbeitsproduktivität</text>
+  <text x="455" y="92" text-anchor="middle" class="box-sub">(Output pro Stunde)</text>
+  <text x="455" y="106" text-anchor="middle" class="box-sub">(Kapital, Wissen, Technik)</text>
+  <!-- Arrows showing direction -->
+  <text x="270" y="145" text-anchor="middle" class="note">CH seit 2000: ≈ −7 %</text>
+  <text x="455" y="145" text-anchor="middle" class="note">CH seit 2000: ≈ +25 %</text>
+  <text x="85" y="145" text-anchor="middle" class="note">CH seit 2000: ≈ +16 %</text>
+  <!-- Bottom note -->
+  <text x="270" y="172" text-anchor="middle" font-size="9.5" fill="#94a3b8">In der Schweiz stammt der Wohlstandszuwachs vollständig aus der Produktivitätssteigerung.</text>
+</svg>

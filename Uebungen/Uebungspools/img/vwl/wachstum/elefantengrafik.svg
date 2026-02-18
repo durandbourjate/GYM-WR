@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 320" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .axis { stroke: #334155; stroke-width: 1.5; }
+      .axis-label { font-size: 11px; fill: #475569; font-weight: 600; }
+      .tick { font-size: 9px; fill: #94a3b8; }
+      .title { font-size: 13px; font-weight: 700; fill: #1e293b; }
+      .curve { fill: none; stroke: #f89907; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .area { fill: url(#grad); opacity: 0.3; }
+      .marker { font-size: 9.5px; fill: #64748b; }
+      .marker-line { stroke: #cbd5e1; stroke-width: 1; stroke-dasharray: 4 3; }
+    </style>
+    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f89907" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#f89907" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <text x="270" y="24" text-anchor="middle" class="title">Globale Einkommensentwicklung 1988–2008 (vereinfacht)</text>
+  <!-- Axes -->
+  <line x1="70" y1="260" x2="510" y2="260" class="axis"/>
+  <line x1="70" y1="260" x2="70" y2="45" class="axis"/>
+  <!-- Y axis label -->
+  <text transform="translate(22,165) rotate(-90)" text-anchor="middle" class="axis-label">Reale Einkommens-</text>
+  <text transform="translate(34,165) rotate(-90)" text-anchor="middle" class="axis-label">veränderung (%)</text>
+  <!-- X axis label -->
+  <text x="290" y="295" text-anchor="middle" class="axis-label">Einkommensperzentil (global)</text>
+  <!-- Y ticks -->
+  <text x="62" y="264" text-anchor="end" class="tick">0</text>
+  <text x="62" y="207" text-anchor="end" class="tick">20</text>
+  <text x="62" y="150" text-anchor="end" class="tick">40</text>
+  <text x="62" y="93" text-anchor="end" class="tick">60</text>
+  <line x1="68" y1="203" x2="510" y2="203" stroke="#e2e8f0" stroke-width="0.5"/>
+  <line x1="68" y1="146" x2="510" y2="146" stroke="#e2e8f0" stroke-width="0.5"/>
+  <line x1="68" y1="89" x2="510" y2="89" stroke="#e2e8f0" stroke-width="0.5"/>
+  <!-- X ticks -->
+  <text x="70" y="278" text-anchor="middle" class="tick">5</text>
+  <text x="158" y="278" text-anchor="middle" class="tick">20</text>
+  <text x="246" y="278" text-anchor="middle" class="tick">40</text>
+  <text x="334" y="278" text-anchor="middle" class="tick">60</text>
+  <text x="422" y="278" text-anchor="middle" class="tick">80</text>
+  <text x="500" y="278" text-anchor="middle" class="tick">99</text>
+  <!-- Elephant curve (characteristic shape) -->
+  <path class="area" d="M70,240 Q90,220 110,175 Q140,115 180,100 Q220,90 260,105 Q300,120 340,130 Q370,145 400,180 Q420,210 435,240 Q445,255 450,260 Q455,250 465,215 Q475,160 490,100 Q495,80 500,65 L500,260 Z"/>
+  <path class="curve" d="M70,240 Q90,220 110,175 Q140,115 180,100 Q220,90 260,105 Q300,120 340,130 Q370,145 400,180 Q420,210 435,240 Q445,255 450,260 Q455,250 465,215 Q475,160 490,100 Q495,80 500,65"/>
+  <!-- Region markers (letters only, no labels - students must identify) -->
+  <line x1="180" y1="50" x2="180" y2="260" class="marker-line"/>
+  <text x="180" y="44" text-anchor="middle" class="marker" font-weight="700">A</text>
+  <line x1="440" y1="50" x2="440" y2="260" class="marker-line"/>
+  <text x="440" y="44" text-anchor="middle" class="marker" font-weight="700">B</text>
+  <line x1="495" y1="50" x2="495" y2="260" class="marker-line"/>
+  <text x="495" y="44" text-anchor="middle" class="marker" font-weight="700">C</text>
+  <!-- Source -->
+  <text x="290" y="312" text-anchor="middle" font-size="9" fill="#94a3b8" font-style="italic">Nach: Lakner / Milanovic (vereinfacht). Bereiche A, B, C: siehe Aufgabe.</text>
+</svg>

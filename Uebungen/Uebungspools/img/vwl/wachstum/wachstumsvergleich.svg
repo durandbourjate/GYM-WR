@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 13px; font-weight: 700; fill: #1e293b; }
+      .axis { stroke: #334155; stroke-width: 1.5; }
+      .axis-label { font-size: 10.5px; fill: #475569; font-weight: 600; }
+      .tick { font-size: 9px; fill: #94a3b8; }
+      .curve-a { fill: none; stroke: #dc2626; stroke-width: 2.5; }
+      .curve-b { fill: none; stroke: #2563eb; stroke-width: 2.5; }
+      .curve-c { fill: none; stroke: #16a34a; stroke-width: 2.5; }
+      .legend-text { font-size: 10px; fill: #1e293b; }
+    </style>
+  </defs>
+  <text x="260" y="22" text-anchor="middle" class="title">Exponentielles Wachstum: Wirkung unterschiedlicher Wachstumsraten</text>
+  <!-- Axes -->
+  <line x1="60" y1="230" x2="480" y2="230" class="axis"/>
+  <line x1="60" y1="230" x2="60" y2="40" class="axis"/>
+  <!-- Y axis -->
+  <text transform="translate(18,140) rotate(-90)" text-anchor="middle" class="axis-label">BIP pro Kopf (Index)</text>
+  <text x="55" y="234" text-anchor="end" class="tick">100</text>
+  <text x="55" y="135" text-anchor="end" class="tick">200</text>
+  <text x="55" y="75" text-anchor="end" class="tick">300</text>
+  <line x1="60" y1="131" x2="480" y2="131" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4 3"/>
+  <!-- X axis -->
+  <text x="260" y="258" text-anchor="middle" class="axis-label">Jahre</text>
+  <text x="60" y="248" text-anchor="middle" class="tick">0</text>
+  <text x="144" y="248" text-anchor="middle" class="tick">10</text>
+  <text x="228" y="248" text-anchor="middle" class="tick">20</text>
+  <text x="312" y="248" text-anchor="middle" class="tick">30</text>
+  <text x="396" y="248" text-anchor="middle" class="tick">40</text>
+  <text x="480" y="248" text-anchor="middle" class="tick">50</text>
+  <!-- Curves (exponential growth) -->
+  <!-- 1% growth: doubles in 70y, after 50y: 100*1.01^50 = 164 -->
+  <path class="curve-c" d="M60,230 Q180,220 270,205 Q370,182 480,161"/>
+  <!-- 3% growth: doubles in ~23y, after 50y: 100*1.03^50 = 438 → capped at chart -->
+  <path class="curve-b" d="M60,230 Q140,210 200,185 Q270,147 340,100 Q400,62 440,45"/>
+  <!-- 7% growth: doubles in 10y, after 30y = 8x → off chart quickly -->
+  <path class="curve-a" d="M60,230 Q100,195 130,160 Q160,120 190,80 Q210,55 230,42"/>
+  <!-- Doubling line -->
+  <line x1="60" y1="131" x2="60" y2="131" stroke="#94a3b8" stroke-width="0"/>
+  <text x="485" y="128" text-anchor="start" font-size="8" fill="#94a3b8">Verdopplung</text>
+  <!-- Legend -->
+  <line x1="70" y1="272" x2="90" y2="272" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="95" y="276" class="legend-text">7 % (≈ 10 J. Verdopplung)</text>
+  <line x1="230" y1="272" x2="250" y2="272" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="255" y="276" class="legend-text">3 % (≈ 23 J.)</text>
+  <line x1="360" y1="272" x2="380" y2="272" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="385" y="276" class="legend-text">1 % (≈ 70 J.)</text>
+</svg>
