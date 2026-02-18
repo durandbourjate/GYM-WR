@@ -373,7 +373,7 @@ window.QUESTIONS = [
  explain:"Das Angebot steigt (Rechtsverschiebung), wenn die Produktionskosten sinken (Technologie, Subventionen). Das Angebot sinkt (Linksverschiebung), wenn die Kosten steigen (Rohstoffe, Steuern, Löhne)."},
 
 {id:"v04", topic:"verschiebungen", type:"mc", diff:2, tax:"K3",
- img:{src:"img/vwl/markteffizienz/nachfrageverschiebung_rechts.svg", alt:"Nachfrageverschiebung nach rechts: N₁ → N₂"},
+ img:{src:"img/vwl/markteffizienz/angebot_nachfrage_grunddiagramm.svg", alt:"Preis-Mengen-Diagramm mit Angebots- und Nachfragekurve"},
  q:"Mountainbikes werden immer beliebter (steigende Wertschätzung). Was passiert ceteris paribus im Markt für Mountainbikes?",
  options:[
    {v:"A", t:"Die Nachfragekurve verschiebt sich nach rechts → Gleichgewichtspreis und -menge steigen."},
@@ -433,7 +433,7 @@ window.QUESTIONS = [
  explain:"Eine Einkommenselastizität > 1 kennzeichnet ein Luxusgut: Die Nachfrage steigt überproportional zum Einkommen. Bei normalen Gütern liegt sie zwischen 0 und 1, bei inferioren Gütern unter 0 (steigende Einkommen → sinkende Nachfrage)."},
 
 {id:"v11", topic:"verschiebungen", type:"mc", diff:2, tax:"K3",
- img:{src:"img/vwl/markteffizienz/angebotsverschiebung_links.svg", alt:"Angebotsverschiebung nach links: A₁ → A₂"},
+ img:{src:"img/vwl/markteffizienz/angebot_nachfrage_grunddiagramm.svg", alt:"Preis-Mengen-Diagramm mit Angebots- und Nachfragekurve"},
  q:"Die Nachfragekurve für Insulin verläuft sehr steil (nahezu senkrecht). Welche ökonomische Aussage trifft zu?",
  options:[
    {v:"A", t:"Die Nachfrage ist sehr unelastisch — Diabetiker brauchen Insulin unabhängig vom Preis."},

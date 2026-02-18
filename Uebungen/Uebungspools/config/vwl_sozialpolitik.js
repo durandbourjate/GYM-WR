@@ -613,7 +613,7 @@ window.QUESTIONS = [
 
 {id:"i03", topic:"versicherung", type:"mc", diff:2, tax:"K2",
  q:"Was versteht man unter «Adverse Selektion» (Negativauslese) bei Versicherungen?",
- img: {src:"img/vwl/sozialpolitik/adverse_selektion.svg", alt:"Adverse Selektion – Todesspirale bei Einheitsprämien ohne Obligatorium"},
+ img: {src:"img/vwl/sozialpolitik/adverse_selektion.svg", alt:"Versicherungsmarkt mit Einheitsprämien ohne Obligatorium"},
  options:[
    {v:"A", t:"Versicherungen wählen absichtlich die schlechtesten Kunden aus."},
    {v:"B", t:"Gute Risiken scheiden nach und nach aus dem Markt aus, weil die Durchschnittsprämie für sie zu hoch ist."},
