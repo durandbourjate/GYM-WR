@@ -322,7 +322,6 @@ window.QUESTIONS = [
 
 {id:"s02", topic:"sozialversicherungen", type:"sort", diff:1, tax:"K1",
  q:"Ordnen Sie die Sozialversicherungen der richtigen Säule der Altersvorsorge zu.",
- img: {src:"img/vwl/sozialpolitik/drei_saeulen.svg", alt:"Drei-Säulen-System der Altersvorsorge (Schweiz)"},
  categories:["1. Säule (AHV)", "2. Säule (BV)", "3. Säule (Individuelle Vorsorge)"],
  items:[
    {t:"Deckung des Existenzbedarfs im Alter", cat:0},
@@ -361,7 +360,7 @@ window.QUESTIONS = [
 
 {id:"s06", topic:"sozialversicherungen", type:"tf", diff:2, tax:"K2",
  q:"Die Berufliche Vorsorge (2. Säule), die AHV und die Krankenversicherung vereinigen zusammen rund 80% der Sozialversicherungseinnahmen auf sich.",
- img: {src:"img/vwl/sozialpolitik/sozialversicherungen_anteile.svg", alt:"Sozialversicherungseinnahmen nach Zweig (2017): BV 39%, AHV 25%, KV 17%"},
+ img: {src:"img/vwl/sozialpolitik/sozialversicherungen_anteile.svg", alt:"Sozialversicherungseinnahmen nach Zweig (2017)"},
  correct:true,
  explain:"Korrekt. Gemäss den Daten von 2017 entfallen auf die BV 39%, die AHV (inkl. EL) 25% und die Krankenversicherung 17% der Einnahmen – zusammen also rund 81%. Sie sind damit die mit Abstand wichtigsten Zweige des sozialen Sicherungssystems."},
 
@@ -869,7 +868,7 @@ window.QUESTIONS = [
 // ══════════════════════════════════════════════
 {id:"h01", topic:"herausforderungen", type:"mc", diff:1, tax:"K1",
  q:"Wie hat sich der Alterslastquotient (Verhältnis der über 64-Jährigen zu den 20–64-Jährigen) in der Schweiz entwickelt?",
- img: {src:"img/vwl/sozialpolitik/alterslastquotient.svg", alt:"Alterslastquotient Schweiz 1948–2050: sinkend von 9.5:1 auf prognostizierte 2:1"},
+ img: {src:"img/vwl/sozialpolitik/alterslastquotient.svg", alt:"Alterslastquotient Schweiz 1948–2050"},
  options:[
    {v:"A", t:"Er ist von 2:1 (1948) auf 9.5:1 (heute) gestiegen."},
    {v:"B", t:"Er ist von 9.5:1 (1948) auf ca. 2.9:1 (heute) gesunken und wird weiter auf 2:1 sinken."},
@@ -896,7 +895,7 @@ window.QUESTIONS = [
  explain:"Die negative Einkommenssteuer verbindet Sozial- und Steuersystem: Tiefe Einkommen erhalten Transferzahlungen (negative Steuer), die mit steigendem Einkommen abnehmen. Ab einem Schwellenwert werden reguläre Steuern fällig. Da die Transfers nicht vollständig gekürzt werden, besteht immer ein Anreiz zur Erwerbstätigkeit – die «Armutsfalle» wird vermieden."},
 
 {id:"h04", topic:"herausforderungen", type:"sort", diff:2, tax:"K2",
- q:"Ordnen Sie die Reformvorschläge der richtigen Seite zu.",
+ q:"Ordnen Sie die Reformvorschläge der Seite zu, auf der sie primär wirken.",
  categories:["Leistungsseite (Ausgaben ändern)", "Finanzierungsseite (Einnahmen ändern)"],
  items:[
    {t:"Heraufsetzung des Rentenalters", cat:0},
@@ -953,7 +952,7 @@ window.QUESTIONS = [
  explain:"Das BGE wird mit dem Abbau der Armutsfalle (A), mehr individueller Freiheit (B) und weniger Bürokratie (C) begründet. Es ist allerdings nicht unbedingt günstiger als das bestehende System (D) – je nach Höhe des BGE könnten die Kosten sogar massiv steigen. In der Schweizer Abstimmung 2016 wurde das BGE u.a. wegen Finanzierungsbedenken abgelehnt."},
 
 {id:"h10", topic:"herausforderungen", type:"fill", diff:1, tax:"K1",
- q:"Im Jahr 2024 stimmte das Schweizer Volk der AHV-Reform «AHV 21» zu. Eine zentrale Massnahme war die Erhöhung des Rentenalters der Frauen von {0} auf {1} Jahre.",
+ q:"Die AHV-Reform «AHV 21» wurde 2022 vom Schweizer Volk angenommen und trat 2024 in Kraft. Eine zentrale Massnahme war die Erhöhung des Rentenalters der Frauen von {0} auf {1} Jahre.",
  blanks:[
    {answer:"64", alts:[]},
    {answer:"65", alts:[]}
