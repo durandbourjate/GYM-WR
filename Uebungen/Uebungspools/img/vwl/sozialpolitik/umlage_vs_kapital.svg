@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="560" height="300" fill="#fff" rx="8"/>
+  <text x="280" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Umlageverfahren vs. Kapitaldeckungsverfahren</text>
+
+  <!-- Umlageverfahren (links) -->
+  <rect x="20" y="50" width="250" height="230" rx="8" fill="#dc262610" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="145" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">Umlageverfahren (AHV)</text>
+
+  <!-- Erwerbstätige -->
+  <rect x="40" y="90" width="90" height="50" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="85" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#dc2626">Erwerbstätige</text>
+  <text x="85" y="128" text-anchor="middle" font-size="9" fill="#64748b">(Beiträge)</text>
+
+  <!-- Arrow -->
+  <path d="M135,115 L155,115" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <text x="145" y="108" text-anchor="middle" font-size="8" fill="#dc2626">direkt</text>
+
+  <!-- Rentner -->
+  <rect x="160" y="90" width="90" height="50" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="205" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#dc2626">Rentner/innen</text>
+  <text x="205" y="128" text-anchor="middle" font-size="9" fill="#64748b">(Renten)</text>
+
+  <!-- Info boxes -->
+  <text x="145" y="165" text-anchor="middle" font-size="9" fill="#334155">✓ Solidarisch (Jung → Alt)</text>
+  <text x="145" y="182" text-anchor="middle" font-size="9" fill="#334155">✓ Sofort einsetzbar</text>
+  <text x="145" y="199" text-anchor="middle" font-size="9" fill="#334155">✓ Inflationsresistent</text>
+  <line x1="40" y1="210" x2="250" y2="210" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="145" y="228" text-anchor="middle" font-size="9" fill="#dc2626">⚠ Demografieabhängig</text>
+  <text x="145" y="245" text-anchor="middle" font-size="9" fill="#dc2626">⚠ Generationenkonflikt</text>
+  <text x="145" y="262" text-anchor="middle" font-size="9" fill="#dc2626">⚠ Kein individuelles Konto</text>
+
+  <!-- Kapitaldeckungsverfahren (rechts) -->
+  <rect x="290" y="50" width="250" height="230" rx="8" fill="#2563eb10" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="415" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb">Kapitaldeckung (BV)</text>
+
+  <!-- Erwerbstätige -->
+  <rect x="310" y="90" width="90" height="50" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1"/>
+  <text x="355" y="112" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">Erwerbstätige</text>
+  <text x="355" y="128" text-anchor="middle" font-size="9" fill="#64748b">(Beiträge)</text>
+
+  <!-- Arrow -->
+  <path d="M405,115 L425,115" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="415" y="108" text-anchor="middle" font-size="8" fill="#2563eb">Konto</text>
+
+  <!-- Konto/Rente -->
+  <rect x="430" y="90" width="90" height="50" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1"/>
+  <text x="475" y="108" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">Individuelles</text>
+  <text x="475" y="123" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">Sparkonto</text>
+  <text x="475" y="136" text-anchor="middle" font-size="8" fill="#64748b">+ Zins</text>
+
+  <!-- Info boxes -->
+  <text x="415" y="165" text-anchor="middle" font-size="9" fill="#334155">✓ Individuell zurechenbar</text>
+  <text x="415" y="182" text-anchor="middle" font-size="9" fill="#334155">✓ Demografieunabhängig</text>
+  <text x="415" y="199" text-anchor="middle" font-size="9" fill="#334155">✓ Kapitalbildung</text>
+  <line x1="310" y1="210" x2="520" y2="210" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="415" y="228" text-anchor="middle" font-size="9" fill="#2563eb">⚠ Anlagerisiko (Börse)</text>
+  <text x="415" y="245" text-anchor="middle" font-size="9" fill="#2563eb">⚠ Aufbauphase nötig</text>
+  <text x="415" y="262" text-anchor="middle" font-size="9" fill="#2563eb">⚠ Inflationsgefahr</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+</svg>

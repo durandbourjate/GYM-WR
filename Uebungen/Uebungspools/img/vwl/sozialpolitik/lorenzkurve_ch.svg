@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="520" height="440" fill="#fff" rx="8"/>
+  <text x="260" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Lorenzkurve Schweiz – Einkommensverteilung</text>
+
+  <!-- Axes -->
+  <line x1="70" y1="380" x2="470" y2="380" stroke="#334155" stroke-width="2"/>
+  <line x1="70" y1="380" x2="70" y2="50" stroke="#334155" stroke-width="2"/>
+
+  <!-- Grid lines -->
+  <line x1="70" y1="297.5" x2="470" y2="297.5" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="70" y1="215" x2="470" y2="215" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="70" y1="132.5" x2="470" y2="132.5" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="70" y1="50" x2="470" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="170" y1="380" x2="170" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="270" y1="380" x2="270" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="370" y1="380" x2="370" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="470" y1="380" x2="470" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Axis labels -->
+  <text x="70" y="398" text-anchor="middle" font-size="11" fill="#64748b">0%</text>
+  <text x="170" y="398" text-anchor="middle" font-size="11" fill="#64748b">25%</text>
+  <text x="270" y="398" text-anchor="middle" font-size="11" fill="#64748b">50%</text>
+  <text x="370" y="398" text-anchor="middle" font-size="11" fill="#64748b">75%</text>
+  <text x="470" y="398" text-anchor="middle" font-size="11" fill="#64748b">100%</text>
+  <text x="270" y="425" text-anchor="middle" font-size="12" fill="#334155" font-weight="600">Kumulierter Anteil der Bevölkerung</text>
+
+  <text x="60" y="384" text-anchor="end" font-size="11" fill="#64748b">0%</text>
+  <text x="60" y="301" text-anchor="end" font-size="11" fill="#64748b">25%</text>
+  <text x="60" y="219" text-anchor="end" font-size="11" fill="#64748b">50%</text>
+  <text x="60" y="136" text-anchor="end" font-size="11" fill="#64748b">75%</text>
+  <text x="60" y="54" text-anchor="end" font-size="11" fill="#64748b">100%</text>
+  <text x="30" y="215" text-anchor="middle" font-size="12" fill="#334155" font-weight="600" transform="rotate(-90 30 215)">Kumulierter Anteil am Einkommen</text>
+
+  <!-- Gleichverteilungslinie -->
+  <line x1="70" y1="380" x2="470" y2="50" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,4"/>
+
+  <!-- Shaded area between curves (Umverteilungseffekt) -->
+  <path d="M70,380 Q170,365 270,310 Q370,220 470,50 L470,50 Q370,250 270,335 Q170,375 70,380 Z" fill="#f8990720" stroke="none"/>
+
+  <!-- Primäre Verteilung (Gini 0.38) -->
+  <path d="M70,380 Q170,375 270,335 Q370,250 470,50" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+
+  <!-- Sekundäre Verteilung (Gini 0.29) -->
+  <path d="M70,380 Q170,365 270,310 Q370,220 470,50" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+
+  <!-- Labels -->
+  <text x="325" y="290" font-size="11" fill="#dc2626" font-weight="600">Primäre Verteilung</text>
+  <text x="325" y="305" font-size="10" fill="#dc2626">(Gini ≈ 0.38)</text>
+
+  <text x="200" y="252" font-size="11" fill="#16a34a" font-weight="600">Sekundäre Verteilung</text>
+  <text x="200" y="267" font-size="10" fill="#16a34a">(Gini ≈ 0.29)</text>
+
+  <text x="380" y="155" font-size="10" fill="#94a3b8" font-style="italic">Gleichverteilung</text>
+
+  <!-- Arrow: Umverteilungseffekt -->
+  <text x="180" y="340" font-size="10" fill="#f89907" font-weight="600">↕ Umverteilungseffekt</text>
+
+  <!-- Dots at endpoints -->
+  <circle cx="70" cy="380" r="3" fill="#334155"/>
+  <circle cx="470" cy="50" r="3" fill="#334155"/>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 380" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="480" height="380" fill="#fff" rx="8"/>
+  <text x="240" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Adverse Selektion – Todesspirale</text>
+
+  <!-- Step 1 -->
+  <rect x="140" y="50" width="200" height="40" rx="8" fill="#2563eb" opacity="0.9"/>
+  <text x="240" y="75" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Einheitsprämie für alle</text>
+
+  <!-- Arrow 1 -->
+  <path d="M240,90 L240,110" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Step 2 -->
+  <rect x="100" y="115" width="280" height="40" rx="8" fill="#f89907" opacity="0.9"/>
+  <text x="240" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Gute Risiken: «Zu teuer für mich!» → Austritt</text>
+
+  <!-- Arrow 2 -->
+  <path d="M240,155 L240,175" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Step 3 -->
+  <rect x="100" y="180" width="280" height="40" rx="8" fill="#dc2626" opacity="0.85"/>
+  <text x="240" y="205" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Nur noch schlechte Risiken im Pool</text>
+
+  <!-- Arrow 3 -->
+  <path d="M240,220 L240,240" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+
+  <!-- Step 4 -->
+  <rect x="120" y="245" width="240" height="40" rx="8" fill="#dc2626" opacity="0.95"/>
+  <text x="240" y="270" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Prämien steigen weiter ↑</text>
+
+  <!-- Feedback arrow (loop) -->
+  <path d="M360,265 Q420,265 420,200 Q420,130 360,135" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowRedS)"/>
+  <text x="440" y="200" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="600">Teufels-</text>
+  <text x="440" y="213" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="600">kreislauf</text>
+
+  <!-- Step 5 (result) -->
+  <path d="M240,285 L240,305" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  <rect x="100" y="310" width="280" height="45" rx="8" fill="#1e293b"/>
+  <text x="240" y="332" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">☠ Markt bricht zusammen</text>
+  <text x="240" y="348" text-anchor="middle" font-size="9" fill="#94a3b8">→ Lösung: Obligatorium (Versicherungspflicht)</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrowRedS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+</svg>

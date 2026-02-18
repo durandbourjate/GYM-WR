@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 280" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="560" height="280" fill="#fff" rx="8"/>
+  <text x="280" y="28" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Gerechtigkeitstheorien – Politisches Spektrum</text>
+
+  <!-- Spectrum bar -->
+  <defs>
+    <linearGradient id="spectrum" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#dc2626"/>
+      <stop offset="50%" style="stop-color:#f89907"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect x="50" y="55" width="460" height="14" rx="7" fill="url(#spectrum)" opacity="0.3"/>
+  <rect x="50" y="55" width="460" height="14" rx="7" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Labels on spectrum -->
+  <text x="50" y="48" text-anchor="start" font-size="10" fill="#dc2626" font-weight="600">Mehr Staat</text>
+  <text x="510" y="48" text-anchor="end" font-size="10" fill="#2563eb" font-weight="600">Weniger Staat</text>
+
+  <!-- Collectivists -->
+  <line x1="110" y1="55" x2="110" y2="90" stroke="#dc2626" stroke-width="1.5"/>
+  <circle cx="110" cy="62" r="6" fill="#dc2626"/>
+  <rect x="30" y="95" width="160" height="150" rx="8" fill="#dc262610" stroke="#dc2626" stroke-width="1"/>
+  <text x="110" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">Collectivists</text>
+  <text x="110" y="132" text-anchor="middle" font-size="10" fill="#dc2626">(Sozialisten)</text>
+  <line x1="50" y1="142" x2="170" y2="142" stroke="#dc262630" stroke-width="1"/>
+  <text x="110" y="160" text-anchor="middle" font-size="9" fill="#334155">Marx, Engels</text>
+  <text x="110" y="178" text-anchor="middle" font-size="9" fill="#64748b">• Verstaatlichung</text>
+  <text x="110" y="193" text-anchor="middle" font-size="9" fill="#64748b">• Gleichheit als Ziel</text>
+  <text x="110" y="208" text-anchor="middle" font-size="9" fill="#64748b">• Umfassende</text>
+  <text x="110" y="221" text-anchor="middle" font-size="9" fill="#64748b">  Umverteilung</text>
+  <text x="110" y="238" text-anchor="middle" font-size="9" fill="#dc2626" font-weight="500">⬅ Planwirtschaft</text>
+
+  <!-- Liberals -->
+  <line x1="280" y1="55" x2="280" y2="90" stroke="#f89907" stroke-width="1.5"/>
+  <circle cx="280" cy="62" r="6" fill="#f89907"/>
+  <rect x="200" y="95" width="160" height="150" rx="8" fill="#f8990710" stroke="#f89907" stroke-width="1"/>
+  <text x="280" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#b45309">Liberals</text>
+  <text x="280" y="132" text-anchor="middle" font-size="10" fill="#b45309">(Sozial-Liberale)</text>
+  <line x1="220" y1="142" x2="340" y2="142" stroke="#f8990730" stroke-width="1"/>
+  <text x="280" y="160" text-anchor="middle" font-size="9" fill="#334155">Rawls, Sen</text>
+  <text x="280" y="178" text-anchor="middle" font-size="9" fill="#64748b">• Differenzprinzip</text>
+  <text x="280" y="193" text-anchor="middle" font-size="9" fill="#64748b">• Schleier d. Nichtwissens</text>
+  <text x="280" y="208" text-anchor="middle" font-size="9" fill="#64748b">• Gezielte Umverteilung</text>
+  <text x="280" y="221" text-anchor="middle" font-size="9" fill="#64748b">• Chancengleichheit</text>
+  <text x="280" y="238" text-anchor="middle" font-size="9" fill="#b45309" font-weight="500">Soz. Marktwirtschaft</text>
+
+  <!-- Libertarians -->
+  <line x1="450" y1="55" x2="450" y2="90" stroke="#2563eb" stroke-width="1.5"/>
+  <circle cx="450" cy="62" r="6" fill="#2563eb"/>
+  <rect x="370" y="95" width="160" height="150" rx="8" fill="#2563eb10" stroke="#2563eb" stroke-width="1"/>
+  <text x="450" y="115" text-anchor="middle" font-size="12" font-weight="700" fill="#2563eb">Libertarians</text>
+  <text x="450" y="132" text-anchor="middle" font-size="10" fill="#2563eb">(Neo-Liberale)</text>
+  <line x1="390" y1="142" x2="510" y2="142" stroke="#2563eb30" stroke-width="1"/>
+  <text x="450" y="160" text-anchor="middle" font-size="9" fill="#334155">Nozick, Hayek, Friedman</text>
+  <text x="450" y="178" text-anchor="middle" font-size="9" fill="#64748b">• Eigentumsrechte</text>
+  <text x="450" y="193" text-anchor="middle" font-size="9" fill="#64748b">• Keine Umverteilung</text>
+  <text x="450" y="208" text-anchor="middle" font-size="9" fill="#64748b">• Steuer = «Diebstahl»</text>
+  <text x="450" y="221" text-anchor="middle" font-size="9" fill="#64748b">• Minimaler Staat</text>
+  <text x="450" y="238" text-anchor="middle" font-size="9" fill="#2563eb" font-weight="500">Reine Marktwirtschaft ➡</text>
+
+  <!-- Schweiz-Pfeil -->
+  <path d="M260,263 L300,263" stroke="#16a34a" stroke-width="2"/>
+  <circle cx="280" cy="263" r="4" fill="#16a34a"/>
+  <text x="280" y="278" text-anchor="middle" font-size="9" fill="#16a34a" font-weight="600">🇨🇭 Schweiz (soziale Marktwirtschaft)</text>
+</svg>

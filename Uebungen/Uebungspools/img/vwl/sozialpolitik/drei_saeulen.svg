@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="560" height="380" fill="#fff" rx="8"/>
+  <text x="280" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Drei-Säulen-System der Altersvorsorge (Schweiz)</text>
+
+  <!-- Foundation -->
+  <rect x="40" y="320" width="480" height="30" rx="4" fill="#334155"/>
+  <text x="280" y="340" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Bundesverfassung Art. 111–113</text>
+
+  <!-- Säule 1 -->
+  <rect x="55" y="80" width="140" height="240" rx="6" fill="#dc2626" opacity="0.12" stroke="#dc2626" stroke-width="2"/>
+  <rect x="55" y="80" width="140" height="40" rx="6" fill="#dc2626"/>
+  <text x="125" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1. Säule</text>
+  <text x="125" y="140" text-anchor="middle" font-size="12" font-weight="600" fill="#dc2626">AHV / IV</text>
+  <text x="125" y="160" text-anchor="middle" font-size="10" fill="#64748b">+ Ergänzungsleistungen</text>
+  <text x="125" y="190" text-anchor="middle" font-size="10" fill="#334155" font-weight="500">Existenzbedarf</text>
+  <line x1="90" y1="200" x2="160" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="125" y="220" text-anchor="middle" font-size="9" fill="#64748b">Umlageverfahren</text>
+  <text x="125" y="235" text-anchor="middle" font-size="9" fill="#64748b">Obligatorisch</text>
+  <text x="125" y="250" text-anchor="middle" font-size="9" fill="#64748b">Seit 1948</text>
+  <text x="125" y="275" text-anchor="middle" font-size="9" fill="#64748b">Lohnbeiträge</text>
+  <text x="125" y="290" text-anchor="middle" font-size="9" fill="#64748b">+ Bundesbeiträge</text>
+  <text x="125" y="305" text-anchor="middle" font-size="9" fill="#64748b">+ MWST-Anteil</text>
+
+  <!-- Säule 2 -->
+  <rect x="210" y="80" width="140" height="240" rx="6" fill="#2563eb" opacity="0.12" stroke="#2563eb" stroke-width="2"/>
+  <rect x="210" y="80" width="140" height="40" rx="6" fill="#2563eb"/>
+  <text x="280" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2. Säule</text>
+  <text x="280" y="140" text-anchor="middle" font-size="12" font-weight="600" fill="#2563eb">Berufliche Vorsorge</text>
+  <text x="280" y="160" text-anchor="middle" font-size="10" fill="#64748b">(Pensionskasse)</text>
+  <text x="280" y="190" text-anchor="middle" font-size="10" fill="#334155" font-weight="500">Gewohnte Lebenshaltung</text>
+  <line x1="245" y1="200" x2="315" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="280" y="220" text-anchor="middle" font-size="9" fill="#64748b">Kapitaldeckungsverfahren</text>
+  <text x="280" y="235" text-anchor="middle" font-size="9" fill="#64748b">Obligatorisch</text>
+  <text x="280" y="250" text-anchor="middle" font-size="9" fill="#64748b">Seit 1985</text>
+  <text x="280" y="275" text-anchor="middle" font-size="9" fill="#64748b">Lohnbeiträge</text>
+  <text x="280" y="290" text-anchor="middle" font-size="9" fill="#64748b">(je hälftig AG/AN)</text>
+  <text x="280" y="305" text-anchor="middle" font-size="9" fill="#64748b">Individuelles Konto</text>
+
+  <!-- Säule 3 -->
+  <rect x="365" y="80" width="140" height="240" rx="6" fill="#16a34a" opacity="0.12" stroke="#16a34a" stroke-width="2"/>
+  <rect x="365" y="80" width="140" height="40" rx="6" fill="#16a34a"/>
+  <text x="435" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3. Säule</text>
+  <text x="435" y="140" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">Private Vorsorge</text>
+  <text x="435" y="160" text-anchor="middle" font-size="10" fill="#64748b">(Säule 3a / 3b)</text>
+  <text x="435" y="190" text-anchor="middle" font-size="10" fill="#334155" font-weight="500">Komfortbedarf</text>
+  <line x1="400" y1="200" x2="470" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="435" y="220" text-anchor="middle" font-size="9" fill="#64748b">Kapitaldeckungsverfahren</text>
+  <text x="435" y="235" text-anchor="middle" font-size="9" fill="#64748b">Freiwillig</text>
+  <text x="435" y="250" text-anchor="middle" font-size="9" fill="#64748b">Steuerlich begünstigt</text>
+  <text x="435" y="275" text-anchor="middle" font-size="9" fill="#64748b">Individuelle Beiträge</text>
+  <text x="435" y="290" text-anchor="middle" font-size="9" fill="#64748b">3a: gebunden</text>
+  <text x="435" y="305" text-anchor="middle" font-size="9" fill="#64748b">3b: flexibel</text>
+
+  <!-- Ziel-Pfeil -->
+  <text x="280" y="60" text-anchor="middle" font-size="11" fill="#64748b" font-style="italic">Ziel: 1. + 2. Säule = ca. 60% des letzten Lohns</text>
+</svg>
