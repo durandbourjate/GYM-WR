@@ -48,6 +48,16 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .badge-diff1{background:#f0fdf4;color:#16a34a}.badge-diff2{background:#fef3c7;color:#b45309}.badge-diff3{background:#fef2f2;color:#dc2626}
 .badge-tax{background:#f3e8ff;color:#7c3aed}
 .badge-type{background:#f1f5f9;color:#475569}
+.filter-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.filter-header h2{margin-bottom:0}
+.toggle-all{font-family:inherit;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:12px;cursor:pointer;border:1.5px solid var(--c-border);background:var(--c-bg);color:var(--c-text-soft);transition:.15s;white-space:nowrap}
+.toggle-all:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.multi-hint{font-size:.8rem;color:var(--c-primary);font-weight:600;margin-bottom:12px}
+.mc-opt .opt-check{width:18px;height:18px;border:2px solid var(--c-border);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;transition:.15s}
+.mc-opt.selected .opt-check{background:var(--c-info);border-color:var(--c-info);color:#fff}
+.mc-opt.correct .opt-check{background:var(--c-success);border-color:var(--c-success);color:#fff}
+.mc-opt.wrong .opt-check{background:var(--c-error);border-color:var(--c-error);color:#fff}
+.mc-opt.multi-neutral .opt-check{background:var(--c-border);border-color:var(--c-border);color:var(--c-text-soft)}
 .q-text{font-size:1rem;font-weight:500;margin-bottom:18px;line-height:1.65}
 .q-img{margin-bottom:16px;text-align:center}
 .q-img img{max-width:100%;height:auto;border-radius:var(--radius);border:1px solid var(--c-border);box-shadow:var(--shadow-sm);cursor:zoom-in}
@@ -155,6 +165,7 @@ html.dark .mc-opt,html.dark .tf-btn,html.dark .sort-item{background:var(--c-surf
 html.dark .mc-opt:hover,html.dark .mode-card:hover{background:#1f2333}
 html.dark .mc-opt .opt-letter{background:var(--c-border);color:var(--c-text-soft)}
 html.dark .chip{background:var(--c-surface)}
+html.dark .toggle-all{background:var(--c-surface);border-color:var(--c-border)}
 html.dark .badge-diff1{background:#0a2618;color:#22c55e}html.dark .badge-diff2{background:#3d2e10;color:#e8a838}html.dark .badge-diff3{background:#2a0f0f;color:#ef4444}
 html.dark .badge-progress{background:#3d2e10;color:#e8a838}html.dark .badge-score{background:#0a2618;color:#22c55e}
 html.dark .badge-tax{background:#1a0f2e;color:#a78bfa}
@@ -305,15 +316,15 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 </div>
 </div>
 <div class="card">
-<h2>📚 Unterthema</h2>
+<div class="filter-header"><h2>📚 Unterthema</h2><button class="toggle-all" onclick="toggleAll('topicChips','topics')">Alle ⇄</button></div>
 <div class="chips" id="topicChips"></div>
 </div>
 <div class="card">
-<h2>📊 Schwierigkeit</h2>
+<div class="filter-header"><h2>📊 Schwierigkeit</h2><button class="toggle-all" onclick="toggleAll('diffChips','diffs')">Alle ⇄</button></div>
 <div class="chips" id="diffChips"></div>
 </div>
 <div class="card">
-<h2>✏️ Fragetyp</h2>
+<div class="filter-header"><h2>✏️ Fragetyp</h2><button class="toggle-all" onclick="toggleAll('typeChips','types')">Alle ⇄</button></div>
 <div class="chips" id="typeChips"></div>
 </div>
 <div class="card" style="text-align:center">
@@ -403,7 +414,7 @@ const COLOR_SCHEMES = {
 
 // Labels (shared across all pools)
 const DIFF_LABELS = {1:"⭐ Einfach",2:"⭐⭐ Mittel",3:"⭐⭐⭐ Schwer"};
-const TYPE_LABELS = {mc:"📝 Multiple Choice",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage"};
+const TYPE_LABELS = {mc:"📝 Multiple Choice",multi:"☑️ Mehrfachauswahl",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage"};
 
 (async function loadPool() {
   const params = new URLSearchParams(window.location.search);
@@ -659,6 +670,21 @@ function toggleChip(el,filterKey,key){
   updateFilterCount();
 }
 
+function toggleAll(containerId,filterKey){
+  const chips=document.querySelectorAll('#'+containerId+' .chip');
+  const allActive=[...chips].every(c=>c.classList.contains('active'));
+  chips.forEach(ch=>{
+    if(allActive){
+      ch.classList.remove('active');
+      state.filters[filterKey].delete(ch.dataset.key);
+    } else {
+      ch.classList.add('active');
+      state.filters[filterKey].add(ch.dataset.key);
+    }
+  });
+  updateFilterCount();
+}
+
 function getFiltered(){
   return QUESTIONS.filter(q=>
     (state.filters.topics.size===0||state.filters.topics.has(q.topic))&&
@@ -702,6 +728,14 @@ function renderQuestion(){
     q.options.forEach(o=>{
       html+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
       html+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+o.t+'</span></div>';
+    });
+    html+='</div>';
+  } else if(q.type==='multi'){
+    html+='<div class="multi-hint">☑️ Mehrere Antworten können richtig sein.</div>';
+    html+='<div class="mc-options" id="multiOpts">';
+    q.options.forEach(o=>{
+      html+='<div class="mc-opt" data-val="'+o.v+'" onclick="toggleMulti(this)">';
+      html+='<span class="opt-check"></span><span class="opt-letter">'+o.v+'</span><span class="opt-text">'+o.t+'</span></div>';
     });
     html+='</div>';
   } else if(q.type==='tf'){
@@ -756,6 +790,7 @@ function renderQuestion(){
   html+='<div class="feedback" id="feedback"></div>';
   html+='<div class="q-action-row" id="skipRow">';
   if(q.type==='fill') html+='<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">🔍 Überprüfen</button>';
+  else if(q.type==='multi') html+='<button class="btn btn-primary" onclick="answerMulti(\''+q.id+'\')">🔍 Überprüfen</button>';
   else if(q.type==='calc') html+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">🔍 Überprüfen</button>';
   else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">🔍 Überprüfen</button>';
   else if(q.type==='open') html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
@@ -777,6 +812,33 @@ function answerMC(el,qid,val){
     else if(o.dataset.val===val)o.classList.add('wrong');
   });
   finishAnswer(q,val===q.correct,q.explain);
+}
+
+function toggleMulti(el){
+  if(el.classList.contains('correct')||el.classList.contains('wrong'))return;
+  el.classList.toggle('selected');
+  el.querySelector('.opt-check').textContent=el.classList.contains('selected')?'✓':'';
+}
+
+function answerMulti(qid){
+  if(document.querySelector('#multiOpts .mc-opt.correct,#multiOpts .mc-opt.wrong'))return;
+  const q=QUESTIONS.find(x=>x.id===qid);
+  const correctSet=new Set(q.correct);
+  const selected=new Set();
+  document.querySelectorAll('#multiOpts .mc-opt.selected').forEach(o=>selected.add(o.dataset.val));
+  let allCorrect=correctSet.size===selected.size&&[...correctSet].every(v=>selected.has(v));
+  document.querySelectorAll('#multiOpts .mc-opt').forEach(o=>{
+    o.style.pointerEvents='none';
+    const val=o.dataset.val;
+    const isCorrect=correctSet.has(val);
+    const isSelected=selected.has(val);
+    if(isCorrect)o.classList.add('correct');
+    else if(isSelected)o.classList.add('wrong');
+    else o.classList.add('multi-neutral');
+    o.querySelector('.opt-check').textContent=isCorrect?'✓':'';
+  });
+  document.querySelectorAll('#skipRow .btn-primary').forEach(b=>b.style.display='none');
+  finishAnswer(q,allCorrect,q.explain);
 }
 
 function answerTF(el,qid,val){
@@ -959,6 +1021,7 @@ function getQuestionDisplay(q){
 
 function getCorrectAnswer(q){
   if(q.type==='mc'){ const opt=q.options.find(o=>o.v===q.correct); return q.correct+') '+(opt?opt.t:''); }
+  if(q.type==='multi'){ return q.correct.map(function(v){ const opt=q.options.find(o=>o.v===v); return v+') '+(opt?opt.t:''); }).join(' · '); }
   if(q.type==='tf'){ return q.correct?'Richtig':'Falsch'; }
   if(q.type==='fill'){ return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · '); }
   if(q.type==='calc'){ return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · '); }
