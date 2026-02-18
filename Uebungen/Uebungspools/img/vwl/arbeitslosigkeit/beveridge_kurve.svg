@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="520" height="420" fill="#fff" rx="8"/>
+  
+  <!-- Axes -->
+  <line x1="70" y1="350" x2="480" y2="350" stroke="#1e293b" stroke-width="2"/>
+  <line x1="70" y1="350" x2="70" y2="30" stroke="#1e293b" stroke-width="2"/>
+  
+  <!-- Arrow heads -->
+  <polygon points="480,350 470,345 470,355" fill="#1e293b"/>
+  <polygon points="70,30 65,40 75,40" fill="#1e293b"/>
+  
+  <!-- Axis labels -->
+  <text x="275" y="390" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b">Arbeitslose</text>
+  <text x="25" y="190" text-anchor="middle" font-size="14" font-weight="600" fill="#1e293b" transform="rotate(-90, 25, 190)">Offene Stellen</text>
+  
+  <!-- 45 degree line -->
+  <line x1="70" y1="350" x2="420" y2="0" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="8,5"/>
+  <text x="400" y="28" font-size="11" fill="#94a3b8" font-style="italic">45°</text>
+  
+  <!-- Beveridge curve -->
+  <path d="M 100,60 C 120,80 140,140 170,200 C 200,260 280,320 440,340" fill="none" stroke="#f89907" stroke-width="3"/>
+  <text x="445" y="335" font-size="12" font-weight="600" fill="#f89907">BC</text>
+  
+  <!-- Points on curve - neutral colors -->
+  <circle cx="120" cy="95" r="7" fill="#7c3aed" stroke="#fff" stroke-width="2"/>
+  <text x="133" y="90" font-size="12" font-weight="700" fill="#7c3aed">A</text>
+  
+  <circle cx="220" cy="255" r="7" fill="#0891b2" stroke="#fff" stroke-width="2"/>
+  <text x="233" y="250" font-size="12" font-weight="700" fill="#0891b2">B</text>
+  
+  <circle cx="170" cy="200" r="7" fill="#1e293b" stroke="#fff" stroke-width="2"/>
+  <text x="183" y="195" font-size="12" font-weight="700" fill="#1e293b">C</text>
+  
+  <!-- Dashed lines from point C to axes -->
+  <line x1="170" y1="200" x2="170" y2="350" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="170" y1="200" x2="70" y2="200" stroke="#1e293b" stroke-width="1" stroke-dasharray="4,3"/>
+</svg>
