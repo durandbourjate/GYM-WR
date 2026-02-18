@@ -1,6 +1,6 @@
 // Übungspool: Wirtschaftswachstum – Triebkräfte und Effekte
 // Fachbereich: VWL
-// Anzahl Fragen: 54
+// Anzahl Fragen: 76
 
 window.POOL_META = {
   id: "vwl_wachstum",
@@ -49,6 +49,7 @@ window.QUESTIONS = [
  explain:"Konjunktur beschäftigt sich mit dem Auf und Ab des BIP in kurzer Frist (Quartale, 1–2 Jahre). Wachstum hingegen betrachtet die langfristige Entwicklung des realen BIP pro Kopf über Jahre und Jahrzehnte."},
 
 {id:"d04", topic:"definition", type:"calc", diff:2, tax:"K3",
+ img:{src:"img/wachstumsvergleich.svg", alt:"Exponentielles Wachstum bei unterschiedlichen Wachstumsraten"},
  q:"Ein Land hat eine jährliche Wachstumsrate des BIP pro Kopf von 2 %. Berechnen Sie mit der 70er-Regel:",
  rows:[
    {label:"Anzahl Jahre bis zur Verdopplung des BIP pro Kopf", answer:35, tolerance:0.5, unit:"Jahre"}
@@ -104,6 +105,37 @@ window.QUESTIONS = [
  correct:"A",
  explain:"Bei Nullwachstum könnte niemand materiell reicher werden, ohne dass jemand anderes ärmer wird. Zudem sind die Sozialwerke so konzipiert, dass ihre Finanzierung ohne Wachstum stark gefährdet wäre."},
 
+{id:"d11", topic:"definition", type:"multi", diff:2, tax:"K2",
+ q:"Welche der folgenden Aussagen treffen auf das Konzept «Wirtschaftswachstum» zu? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Es bezieht sich auf die langfristige Entwicklung, nicht auf kurzfristige Schwankungen."},
+   {v:"B", t:"Es wird anhand des realen (preisbereinigten) BIP gemessen."},
+   {v:"C", t:"Es berücksichtigt nur die Menge der produzierten Güter, nicht deren Qualität."},
+   {v:"D", t:"Es wird pro Kopf betrachtet, um das Bevölkerungswachstum herauszurechnen."}
+ ],
+ correct:["A","B","D"],
+ explain:"Wachstum ist langfristig (A), real gemessen (B) und pro Kopf betrachtet (D). Aussage C ist falsch: Das BIP misst den Wert der Güter, nicht nur die Menge. Qualitätsverbesserungen («immer besser» statt «immer mehr») fliessen in die Wertschöpfung ein."},
+
+{id:"d12", topic:"definition", type:"mc", diff:3, tax:"K4",
+ q:"Land A und Land B hatten im Jahr 2000 beide ein BIP pro Kopf von CHF 40'000. Land A wächst seither mit 1 %, Land B mit 3 %. Welche Aussage ist nach 25 Jahren am zutreffendsten?",
+ options:[
+   {v:"A", t:"Land B hat sein BIP pro Kopf ungefähr verdoppelt, Land A liegt noch deutlich darunter."},
+   {v:"B", t:"Beide Länder haben ihr BIP pro Kopf ungefähr verdoppelt."},
+   {v:"C", t:"Der Unterschied zwischen den Ländern beträgt weniger als CHF 10'000."},
+   {v:"D", t:"Land A hat Land B inzwischen überholt."}
+ ],
+ correct:"A",
+ explain:"Nach 25 Jahren: Land A ≈ 40'000 × 1,01²⁵ ≈ 51'300. Land B ≈ 40'000 × 1,03²⁵ ≈ 83'800. Land B hat sein BIP also mehr als verdoppelt, Land A liegt weit zurück. Der Unterschied beträgt über CHF 32'000 – die Kraft des Zinseszinses."},
+
+{id:"d13", topic:"definition", type:"calc", diff:3, tax:"K3",
+ q:"Land X hat ein BIP pro Kopf von CHF 20'000 und wächst mit 5 % pro Jahr. Land Y hat ein BIP pro Kopf von CHF 60'000 und wächst mit 1 % pro Jahr.",
+ rows:[
+   {label:"Verdopplungszeit Land X (70er-Regel)", answer:14, tolerance:0.5, unit:"Jahre"},
+   {label:"Verdopplungszeit Land Y (70er-Regel)", answer:70, tolerance:1, unit:"Jahre"},
+   {label:"Ungefähres BIP pro Kopf Land X nach 28 Jahren", answer:80000, tolerance:5000, unit:"CHF"}
+ ],
+ explain:"Land X: 70/5 = 14 Jahre, Land Y: 70/1 = 70 Jahre. Nach 28 Jahren hat sich das BIP von Land X zweimal verdoppelt: 20'000 → 40'000 → 80'000. Land Y hat in dieser Zeit kaum aufgeholt (≈ 79'000). Die Konvergenz zeigt: Hohe Wachstumsraten in ärmeren Ländern können den Abstand zu reichen Ländern schliessen."},
+
 // ── UNMITTELBARE EBENE: EINKOMMEN & PRODUKTION (e01–e08) ──
 {id:"e01", topic:"ebene1", type:"mc", diff:1, tax:"K1",
  q:"Auf welche zwei grundsätzlichen Arten kann eine Volkswirtschaft wachsen?",
@@ -153,6 +185,7 @@ window.QUESTIONS = [
  explain:"BIP pro Einwohner = Arbeitseinsatz × Produktivität. Also: (1 + 0,25) × (1 − 0,07) = 1,25 × 0,93 = 1,1625 → ca. +16 %. Der gesamte Wohlstandszuwachs stammt aus der Produktivitätssteigerung."},
 
 {id:"e06", topic:"ebene1", type:"open", diff:2, tax:"K2",
+ img:{src:"img/bip_formel.svg", alt:"Zerlegung des BIP pro Einwohner"},
  q:"Erklären Sie anhand der Formel «BIP pro Einwohner = Arbeitseinsatz pro Einwohner × Arbeitsproduktivität», weshalb die Produktivität für den Wohlstand in der Schweiz entscheidend ist.",
  sample:"Da der Arbeitseinsatz pro Einwohner in der Schweiz seit Jahren sinkt (weniger Wochenstunden, alternde Bevölkerung), kann das BIP pro Kopf nur steigen, wenn die Produktivität überproportional wächst. Tatsächlich ist der gesamte Wohlstandszuwachs der Schweiz der letzten Jahrzehnte auf Produktivitätssteigerungen zurückzuführen.",
  explain:"Mehr Arbeitsstunden sind begrenzt (max. 24h/Tag, Erwerbsquote bereits hoch in der Schweiz). Daher ist Produktivitätswachstum der einzig nachhaltige Weg zu mehr Wohlstand."},
@@ -172,6 +205,46 @@ window.QUESTIONS = [
  ],
  correct:"A",
  explain:"Die Arbeitsmenge hat eine natürliche Obergrenze (Niveaueffekt): Niemand kann mehr als 24 Stunden pro Tag arbeiten, und die Erwerbsquote kann nicht über 100 % steigen. Zudem zeigen Studien, dass übermässig viel Arbeit die Produktivität pro Stunde senkt."},
+
+{id:"e09", topic:"ebene1", type:"multi", diff:2, tax:"K2",
+ q:"Welche der folgenden Massnahmen steigern die Arbeitsproduktivität? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Investitionen in bessere Maschinen und Anlagen."},
+   {v:"B", t:"Erhöhung des Rentenalters von 65 auf 67."},
+   {v:"C", t:"Weiterbildungsprogramme für Arbeitnehmende."},
+   {v:"D", t:"Einführung neuer Software zur Automatisierung von Routinetätigkeiten."}
+ ],
+ correct:["A","C","D"],
+ explain:"A, C und D steigern die Produktivität (mehr Output pro Stunde): besseres Sachkapital (A), besseres Humankapital (C), technischer Fortschritt (D). Die Erhöhung des Rentenalters (B) erhöht den Arbeitseinsatz, nicht die Produktivität pro Stunde."},
+
+{id:"e10", topic:"ebene1", type:"fill", diff:1, tax:"K1",
+ q:"Das BIP pro Einwohner lässt sich zerlegen in: {0} pro Einwohner multipliziert mit der {1}.",
+ blanks:[
+   {answer:"Arbeitseinsatz", alts:["Arbeitsstunden","Arbeitsvolumen"]},
+   {answer:"Arbeitsproduktivität", alts:["Produktivität"]}
+ ],
+ explain:"Die fundamentale Wachstumsgleichung: BIP/Einwohner = Arbeitseinsatz/Einwohner × Arbeitsproduktivität. Sie zeigt die zwei grundsätzlichen Hebel für mehr Wohlstand."},
+
+{id:"e11", topic:"ebene1", type:"mc", diff:3, tax:"K4",
+ img:{src:"img/bip_formel.svg", alt:"Zerlegung des BIP pro Einwohner"},
+ q:"Die Schweiz hat eine der höchsten Erwerbsquoten Europas. Die durchschnittliche Wochenarbeitszeit sinkt aber seit Jahrzehnten. Welche Schlussfolgerung ist am überzeugendsten?",
+ options:[
+   {v:"A", t:"Die Schweiz muss ihre Produktivität stetig steigern, da kaum noch Potenzial bei der Arbeitsmenge besteht."},
+   {v:"B", t:"Die Schweiz sollte die Arbeitszeit wieder erhöhen, um weiter zu wachsen."},
+   {v:"C", t:"Sinkende Arbeitszeit führt automatisch zu sinkendem Wohlstand."},
+   {v:"D", t:"Die Erwerbsquote ist für das Wachstum irrelevant."}
+ ],
+ correct:"A",
+ explain:"Da der Arbeitseinsatz kaum noch steigerbar ist (hohe Erwerbsquote, sinkende Wochenstunden), bleibt die Produktivitätssteigerung der einzige nachhaltige Wachstumsmotor. Die Schweiz zeigt: Weniger Arbeitsstunden bei gleichzeitig höherem Wohlstand – dank Produktivität."},
+
+{id:"e12", topic:"ebene1", type:"calc", diff:3, tax:"K3",
+ q:"Land A hat 5 Mio. Einwohner. Die Erwerbsquote beträgt 70 %, jede Erwerbsperson arbeitet im Schnitt 1'600 Stunden pro Jahr. Die Produktivität beträgt CHF 80 pro Stunde.",
+ rows:[
+   {label:"Total Arbeitsstunden pro Jahr (in Mio.)", answer:5600, tolerance:50, unit:"Mio. h"},
+   {label:"BIP total (in Mrd. CHF)", answer:448, tolerance:5, unit:"Mrd. CHF"},
+   {label:"BIP pro Kopf (in CHF)", answer:89600, tolerance:500, unit:"CHF"}
+ ],
+ explain:"Erwerbspersonen: 5 Mio. × 0,70 = 3,5 Mio. Total Arbeitsstunden: 3,5 Mio. × 1'600 = 5'600 Mio. h. BIP = 5'600 Mio. h × CHF 80 = CHF 448 Mrd. BIP pro Kopf = 448 Mrd. / 5 Mio. = CHF 89'600."},
 
 // ── ZWISCHENEBENE: INVESTITIONEN & INNOVATION (i01–i10) ──
 {id:"i01", topic:"ebene2", type:"mc", diff:1, tax:"K1",
@@ -260,6 +333,37 @@ window.QUESTIONS = [
  sample:"Ressourcenreichtum kann sogar zum Fluch werden (Resource Curse / Dutch Disease): Die Einnahmen aus Rohstoffen können zu Korruption, mangelnder Diversifikation der Wirtschaft und Vernachlässigung von Bildung und Innovation führen. Zudem steigt oft die Währung, was andere Exporte verteuert. Länder wie die Schweiz oder Japan zeigen, dass Investitionen in Humankapital und Innovation wichtiger sind als natürliche Ressourcen.",
  explain:"Der sogenannte «Ressourcenfluch» zeigt, dass Rohstoffreichtum ohne gute Institutionen, Bildung und Diversifikation sogar schaden kann. Entscheidend sind die gestaltbaren Rahmenbedingungen."},
 
+{id:"i11", topic:"ebene2", type:"multi", diff:2, tax:"K2",
+ q:"Welche der folgenden Beispiele sind Investitionen in Humankapital? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Ein Unternehmen finanziert Sprachkurse für seine Angestellten."},
+   {v:"B", t:"Der Staat baut eine neue Autobahnbrücke."},
+   {v:"C", t:"Eine Studentin absolviert ein Masterstudium in Informatik."},
+   {v:"D", t:"Ein Betrieb kauft neue CNC-Fräsmaschinen."}
+ ],
+ correct:["A","C"],
+ explain:"Humankapital umfasst Wissen, Fähigkeiten und Erfahrung von Menschen. Sprachkurse (A) und ein Studium (C) sind Investitionen in Humankapital. Eine Autobahnbrücke (B) ist Infrastruktur (Sachkapital), CNC-Maschinen (D) sind Investitionen in Sachkapital/Realkapital."},
+
+{id:"i12", topic:"ebene2", type:"calc", diff:2, tax:"K3",
+ q:"Land A investiert 15 % seines BIP von 500 Mrd. CHF. Land B investiert 40 % seines BIP von 200 Mrd. CHF.",
+ rows:[
+   {label:"Investitionsvolumen Land A (in Mrd. CHF)", answer:75, tolerance:0.5, unit:"Mrd. CHF"},
+   {label:"Investitionsvolumen Land B (in Mrd. CHF)", answer:80, tolerance:0.5, unit:"Mrd. CHF"}
+ ],
+ explain:"Land A: 500 × 0,15 = 75 Mrd. CHF. Land B: 200 × 0,40 = 80 Mrd. CHF. Obwohl Land B ein viel kleineres BIP hat, investiert es absolut mehr. Die hohe Investitionsquote erklärt, weshalb solche Länder (z. B. China) schnell wachsen."},
+
+{id:"i13", topic:"ebene2", type:"mc", diff:3, tax:"K4",
+ img:{src:"img/strukturwandel_ch.svg", alt:"Strukturwandel der Schweiz: Beschäftigungsanteile nach Sektoren"},
+ q:"Die Grafik zeigt den Strukturwandel der Schweiz. Was ist die wahrscheinlichste Erklärung dafür, dass der 3. Sektor heute dominiert?",
+ options:[
+   {v:"A", t:"Produktivitätssteigerungen in Landwirtschaft und Industrie haben Arbeitskräfte freigesetzt, die in den Dienstleistungssektor gewechselt sind."},
+   {v:"B", t:"Die Schweiz hat Landwirtschaft und Industrie verboten."},
+   {v:"C", t:"Die Nachfrage nach Agrarprodukten ist auf null gesunken."},
+   {v:"D", t:"Der 3. Sektor wächst automatisch mit der Bevölkerung."}
+ ],
+ correct:"A",
+ explain:"Der Strukturwandel wird primär durch Produktivitätssteigerungen getrieben: Dank Mechanisierung braucht die Landwirtschaft weniger Arbeitskräfte für denselben Output. Dank Automatisierung gilt Ähnliches für die Industrie. Die freigesetzten Arbeitskräfte wandern in den Dienstleistungssektor, wo die Nachfrage mit steigendem Einkommen überproportional wächst."},
+
 // ── TIEF LIEGENDE EBENE: INSTITUTIONEN & RAHMENBEDINGUNGEN (r01–r09) ──
 {id:"r01", topic:"ebene3", type:"sort", diff:2, tax:"K2",
  q:"Ordnen Sie die folgenden Wirtschaftsordnungen chronologisch ihrer historischen Entwicklung zu.",
@@ -283,6 +387,7 @@ window.QUESTIONS = [
  explain:"Der Staat soll Spielregeln setzen, Voraussetzungen schaffen und Marktversagen verhindern – aber nicht die Preise aller Güter staatlich festlegen. Preise sollen sich grundsätzlich über den Markt bilden."},
 
 {id:"r03", topic:"ebene3", type:"sort", diff:2, tax:"K2",
+ img:{src:"img/gueterarten_matrix.svg", alt:"Güterarten nach Rivalität und Ausschliessbarkeit"},
  q:"Ordnen Sie die folgenden Güter der korrekten Güterart zu.",
  categories:["Privates Gut", "Klubgut", "Allmendegut", "Öffentliches Gut"],
  items:[
@@ -339,6 +444,34 @@ window.QUESTIONS = [
  q:"Der Nachtwächterstaat beschränkt sich auf Rechtsordnung, Ausbildung, Verkehrsinfrastruktur und Landesverteidigung.",
  correct:true,
  explain:"Richtig. Im Konzept der Laissez-faire-Marktwirtschaft übernimmt der Staat nur minimale Aufgaben (Nachtwächterstaat): Rechtsordnung, Ausbildung, Verkehrsinfrastruktur und Landesverteidigung."},
+
+{id:"r10", topic:"ebene3", type:"multi", diff:2, tax:"K2",
+ q:"Welche der folgenden Elemente gehören zu den gestaltbaren Rahmenbedingungen für Wirtschaftswachstum? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Bildungspolitik und Investitionen in Forschung."},
+   {v:"B", t:"Geografische Lage des Landes."},
+   {v:"C", t:"Rechtssicherheit und Schutz des Eigentums."},
+   {v:"D", t:"Offene Aussenwirtschaftspolitik."}
+ ],
+ correct:["A","C","D"],
+ explain:"Gestaltbar sind Faktoren, die durch politische Entscheide beeinflusst werden können: Bildung (A), Rechtssicherheit (C), Handelspolitik (D). Die geografische Lage (B) ist ein nicht gestaltbarer Faktor – ein Land kann seinen Standort nicht wählen."},
+
+{id:"r11", topic:"ebene3", type:"mc", diff:3, tax:"K4",
+ img:{src:"img/drei_ebenen_modell.svg", alt:"Drei-Ebenen-Modell des Wirtschaftswachstums"},
+ q:"Im Drei-Ebenen-Modell beeinflusst die tief liegende Ebene (Institutionen) die beiden oberen Ebenen. Welches Beispiel illustriert diesen Zusammenhang am besten?",
+ options:[
+   {v:"A", t:"Ein Land mit schwacher Rechtsstaatlichkeit hat wenig ausländische Investitionen, was die Produktivität bremst und das BIP pro Kopf niedrig hält."},
+   {v:"B", t:"Ein Land mit vielen natürlichen Ressourcen hat automatisch hohe Produktivität."},
+   {v:"C", t:"Ein Land mit hohem BIP pro Kopf hat automatisch gute Institutionen."},
+   {v:"D", t:"Institutionen haben keinen Einfluss auf die unmittelbare Ebene."}
+ ],
+ correct:"A",
+ explain:"Das Drei-Ebenen-Modell zeigt: Schlechte Institutionen (tief liegende Ebene) → weniger Investitionen in Sach- und Humankapital (Zwischenebene) → geringere Produktivität und weniger Arbeitsstunden (unmittelbare Ebene) → tieferes BIP pro Kopf. Die Kausalität verläuft von unten nach oben."},
+
+{id:"r12", topic:"ebene3", type:"tf", diff:3, tax:"K4",
+ q:"Die soziale Marktwirtschaft unterscheidet sich von der neoliberalen Ordnung vor allem dadurch, dass der Staat zusätzlich Verteilungsaufgaben übernimmt (z. B. Bekämpfung von Arbeitslosigkeit und Armut).",
+ correct:true,
+ explain:"Richtig. In der neoliberalen Ordnung sichert der Staat primär den Wettbewerb (Kartellbekämpfung). Die soziale Marktwirtschaft geht weiter: Der Staat greift auch bei der Einkommensverteilung ein (Sozialversicherungen, Arbeitslosenversicherung, Sozialhilfe) – allerdings ohne den Leistungsanreiz zu zerstören."},
 
 // ── WACHSTUM & VERTEILUNG (v01–v09) ──
 {id:"v01", topic:"verteilung", type:"mc", diff:1, tax:"K1",
@@ -415,6 +548,45 @@ window.QUESTIONS = [
  correct:"A",
  explain:"Die westliche Mittelschicht – im Knick des Rüssels – sieht, wie andere (Schwellenländer, Superreiche) reicher werden, während ihr eigenes Einkommen stagniert. Diese gefühlte Ungerechtigkeit schafft Nährboden für populistische Bewegungen, die Wandel versprechen."},
 
+{id:"v10", topic:"verteilung", type:"fill", diff:1, tax:"K1",
+ q:"Die Elefantengrafik zeigt auf der x-Achse die {0} der globalen Einkommensverteilung und auf der y-Achse die prozentuale Veränderung der {1} von 1988 bis 2008.",
+ blanks:[
+   {answer:"Perzentile", alts:["Einkommensperzentile","Einkommensgruppen"]},
+   {answer:"Realeinkommen", alts:["realen Einkommen","Einkommen"]}
+ ],
+ explain:"Die Elefantengrafik ordnet alle Menschen der Welt nach ihrem Einkommen (x-Achse: Perzentile, 0 = ärmste, 100 = reichste) und zeigt, wie stark sich ihr Realeinkommen in 20 Jahren verändert hat (y-Achse)."},
+
+{id:"v11", topic:"verteilung", type:"multi", diff:2, tax:"K2",
+ q:"Welche Gruppen haben gemäss der Elefantengrafik besonders stark vom globalen Wirtschaftswachstum (1988–2008) profitiert? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Die aufstrebende Mittelschicht in Schwellenländern wie China und Indien."},
+   {v:"B", t:"Die untere Mittelschicht in westlichen Industrieländern."},
+   {v:"C", t:"Die globalen Superreichen (Top 1 %)."},
+   {v:"D", t:"Die allerärmsten Menschen der Welt (ca. 5. Perzentil)."}
+ ],
+ correct:["A","C"],
+ explain:"Stark profitiert haben die globale Mittelschicht in Schwellenländern (Rücken des Elefanten, ca. 20.–60. Perzentil) und die reichsten 1 % (Rüsselspitze). Die westliche Mittelschicht (B, Knick) und die Allerärmsten (D) haben kaum profitiert."},
+
+{id:"v12", topic:"verteilung", type:"calc", diff:2, tax:"K3",
+ q:"Ein Arbeiter in den USA verdiente 1970 real ca. USD 25'000. Die Produktivität hat sich seither verdoppelt (× 2). Der Reallohn stagnierte aber bei ca. USD 27'000.",
+ rows:[
+   {label:"Wie hoch wäre der Lohn, wenn er proportional zur Produktivität gestiegen wäre? (in USD)", answer:50000, tolerance:500, unit:"USD"},
+   {label:"Wie gross ist die «Lohnlücke» (Differenz Ist vs. Soll)? (in USD)", answer:23000, tolerance:500, unit:"USD"}
+ ],
+ explain:"Bei proportionalem Anstieg: 25'000 × 2 = USD 50'000. Tatsächlicher Lohn: USD 27'000. Lohnlücke: 50'000 − 27'000 = USD 23'000. Diese Differenz floss in Kapitalerträge, Managergehälter und Unternehmensgewinne – die Produktivitäts-Lohn-Schere."},
+
+{id:"v13", topic:"verteilung", type:"mc", diff:2, tax:"K2",
+ img:{src:"img/elefantengrafik.svg", alt:"Globale Einkommensentwicklung 1988–2008 (vereinfacht)"},
+ q:"Betrachten Sie die Grafik. Der Bereich B zeigt einen deutlichen Knick nach unten. Welche Bevölkerungsgruppe ist hier betroffen und warum?",
+ options:[
+   {v:"A", t:"Die westliche untere Mittelschicht – ihre Einkommen stagnierten, weil einfache Arbeit durch Globalisierung und Automatisierung unter Druck geriet."},
+   {v:"B", t:"Die ärmsten Menschen Afrikas – sie haben keinen Zugang zu Bildung."},
+   {v:"C", t:"Die Mittelschicht in China – sie wurde durch die Kulturrevolution gebremst."},
+   {v:"D", t:"Die Superreichen – ihre Vermögen sind durch die Finanzkrise geschrumpft."}
+ ],
+ correct:"A",
+ explain:"Bereich B (ca. 75.–85. Perzentil) zeigt die westliche untere Mittelschicht, deren Realeinkommen kaum stiegen. Durch Globalisierung (Verlagerung ins Ausland) und Automatisierung (Maschinen ersetzen Routinearbeit) gerieten ihre Arbeitsplätze und Löhne unter Druck."},
+
 // ── WACHSTUM & NACHHALTIGKEIT (n01–n09) ──
 {id:"n01", topic:"nachhaltigkeit", type:"fill", diff:1, tax:"K1",
  q:"Nachhaltige Entwicklung ist die Entwicklung, die die Bedürfnisse der {0} befriedigt, ohne zu riskieren, dass {1} Generationen ihre eigenen Bedürfnisse nicht befriedigen können.",
@@ -436,6 +608,7 @@ window.QUESTIONS = [
  explain:"Der ökologische Fussabdruck misst den Flächenbedarf für Produktion und Abfallentsorgung. Die Schweiz hat einen Fussabdruck von ca. 5 Hektaren pro Person – lebten alle so, bräuchte es ca. 2,8 Planeten."},
 
 {id:"n03", topic:"nachhaltigkeit", type:"calc", diff:2, tax:"K3",
+ img:{src:"img/oekologischer_fussabdruck.svg", alt:"Ökologischer Fussabdruck im Ländervergleich"},
  q:"Der ökologische Fussabdruck der Schweiz beträgt ca. 5 Hektaren pro Einwohner, das Ideal für einen Planeten wäre ca. 1,8 Hektaren. Wie viele Planeten bräuchte es, wenn alle so lebten wie die Schweizer?",
  rows:[
    {label:"Anzahl Planeten (gerundet auf 1 Dezimalstelle)", answer:2.8, tolerance:0.2, unit:"Planeten"}
@@ -490,5 +663,44 @@ window.QUESTIONS = [
 {id:"n09", topic:"nachhaltigkeit", type:"open", diff:3, tax:"K5",
  q:"Hans Rosling zeigt, dass Wirtschaftswachstum und steigender Energieverbrauch zusammenhängen: Bis 2050 könnten 22 Milliarden Einheiten Energie verbraucht werden (statt 12 im Jahr 2010). Beurteilen Sie, wie dieses Dilemma zwischen Entwicklung und Nachhaltigkeit gelöst werden könnte.",
  sample:"Das Dilemma ist real: Milliarden Menschen streben zu Recht nach mehr Wohlstand (z.B. einer Waschmaschine), was den Energieverbrauch steigert. Lösungsansätze: 1) Massive Investitionen in erneuerbare Energien (Solar, Wind), damit der zusätzliche Energiebedarf klimaneutral gedeckt werden kann. 2) Technologische Effizienzsteigerungen (weniger Energie pro Waschgang). 3) Internalisierung externer Kosten (CO₂-Preise), damit fossile Energie teurer und erneuerbare wettbewerbsfähiger wird. 4) Technologietransfer in Entwicklungsländer, damit diese nicht denselben emissionsintensiven Weg gehen müssen wie die Industrieländer.",
- explain:"Roslings Botschaft ist: Wir können den Menschen in Entwicklungsländern den Wohlstand nicht verwehren, müssen aber sicherstellen, dass der zusätzliche Energiebedarf aus nachhaltigen Quellen gedeckt wird. Technischer Fortschritt ist der Schlüssel."}
+ explain:"Roslings Botschaft ist: Wir können den Menschen in Entwicklungsländern den Wohlstand nicht verwehren, müssen aber sicherstellen, dass der zusätzliche Energiebedarf aus nachhaltigen Quellen gedeckt wird. Technischer Fortschritt ist der Schlüssel."},
+
+{id:"n10", topic:"nachhaltigkeit", type:"multi", diff:2, tax:"K2",
+ q:"Welche der folgenden Instrumente gelten als marktbasierte Instrumente der Umweltpolitik? (Mehrere Antworten möglich.)",
+ options:[
+   {v:"A", t:"Handelbare Emissionszertifikate."},
+   {v:"B", t:"Verbot von Einwegplastik."},
+   {v:"C", t:"CO₂-Lenkungsabgabe mit Rückverteilung."},
+   {v:"D", t:"Subventionen für erneuerbare Energien."}
+ ],
+ correct:["A","C","D"],
+ explain:"Marktbasierte Instrumente nutzen Preissignale: Emissionszertifikate (A), Lenkungsabgaben (C) und Subventionen (D) verändern die relativen Preise und schaffen Anreize für umweltfreundliches Verhalten. Ein Verbot (B) ist ein ordnungsrechtliches Instrument (Gebot/Verbot)."},
+
+{id:"n11", topic:"nachhaltigkeit", type:"mc", diff:3, tax:"K5",
+ q:"Ein Kritiker argumentiert: «Emissionszertifikate sind ungerecht, weil reiche Unternehmen sich das Recht erkaufen können, die Umwelt zu verschmutzen.» Wie lässt sich diese Kritik am besten einordnen?",
+ options:[
+   {v:"A", t:"Der Einwand verkennt, dass die Gesamtemissionen durch die fixe Obergrenze (Cap) begrenzt sind – wer mehr kauft, bedeutet, dass ein anderer weniger emittiert."},
+   {v:"B", t:"Die Kritik ist vollständig berechtigt – Emissionszertifikate sollten abgeschafft werden."},
+   {v:"C", t:"Emissionszertifikate funktionieren nur, wenn alle Unternehmen gleich reich sind."},
+   {v:"D", t:"Die Kritik betrifft nur Lenkungsabgaben, nicht Zertifikate."}
+ ],
+ correct:"A",
+ explain:"Das Cap-and-Trade-System setzt eine Obergrenze (Cap) für die Gesamtemissionen. Innerhalb dieser Grenze werden die Reduktionen dort vorgenommen, wo sie am günstigsten sind (Effizienz). Ein reiches Unternehmen, das Zertifikate kauft, finanziert damit indirekt die Emissionsreduktion bei einem anderen Unternehmen. Die Gesamtmenge bleibt gleich."},
+
+{id:"n12", topic:"nachhaltigkeit", type:"tf", diff:3, tax:"K4",
+ q:"Die Entkopplung (Decoupling) von Wirtschaftswachstum und CO₂-Emissionen ist in einigen Industrieländern bereits gelungen: Das reale BIP stieg, während die territorialen CO₂-Emissionen sanken.",
+ correct:true,
+ explain:"Richtig. Länder wie die Schweiz, Schweden und Grossbritannien haben in den letzten Jahrzehnten ihr reales BIP gesteigert und gleichzeitig ihre CO₂-Emissionen pro Kopf gesenkt. Allerdings muss man beachten, dass ein Teil der Emissionen ins Ausland «exportiert» wurde (importierte Güter), weshalb die Bilanz bei konsumbasierten Emissionen weniger eindeutig ist."},
+
+{id:"n13", topic:"nachhaltigkeit", type:"mc", diff:1, tax:"K2",
+ img:{src:"img/oekologischer_fussabdruck.svg", alt:"Ökologischer Fussabdruck im Ländervergleich"},
+ q:"Die Grafik zeigt den ökologischen Fussabdruck verschiedener Länder. Was bedeutet es, wenn der Fussabdruck eines Landes über der gestrichelten Linie (1,8 Hektaren) liegt?",
+ options:[
+   {v:"A", t:"Das Land verbraucht mehr Ressourcen, als die Erde pro Person dauerhaft bereitstellen kann."},
+   {v:"B", t:"Das Land hat ein höheres BIP pro Kopf als der Durchschnitt."},
+   {v:"C", t:"Das Land importiert mehr als es exportiert."},
+   {v:"D", t:"Das Land hat mehr Einwohner als Hektaren Fläche."}
+ ],
+ correct:"A",
+ explain:"Die 1,8-Hektaren-Linie zeigt die global verfügbare Biokapazität pro Person. Liegt ein Land darüber, verbraucht es mehr, als die Erde langfristig regenerieren kann. Würden alle so leben, bräuchte es mehrere Planeten."}
 ];
