@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <rect width="800" height="420" fill="#ffffff" rx="8"/>
+  
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Keynesianische Konzeption: Antizyklische Fiskalpolitik</text>
+  
+  <!-- Two columns: Rezession | Hochkonjunktur -->
+  
+  <!-- Rezession column -->
+  <rect x="40" y="55" width="345" height="350" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="212" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#dc2626">In der Rezession</text>
+  <text x="212" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Nachfragelücke → Arbeitslosigkeit</text>
+  
+  <!-- Steps Rezession -->
+  <rect x="62" y="112" width="300" height="35" rx="6" fill="#ffffff" stroke="#dc2626" stroke-width="1"/>
+  <text x="212" y="134" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#dc2626">Staat erhöht Ausgaben (G ↑)</text>
+  
+  <polygon points="207,147 217,147 212,157" fill="#94a3b8"/>
+  
+  <rect x="62" y="162" width="300" height="35" rx="6" fill="#ffffff" stroke="#dc2626" stroke-width="1"/>
+  <text x="212" y="184" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Finanziert durch <tspan font-weight="600">Budgetdefizit</tspan></text>
+  
+  <polygon points="207,197 217,197 212,207" fill="#94a3b8"/>
+  
+  <rect x="62" y="212" width="300" height="35" rx="6" fill="#ffffff" stroke="#dc2626" stroke-width="1"/>
+  <text x="212" y="234" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Gesamtnachfrage steigt (AD ↑)</text>
+  
+  <polygon points="207,247 217,247 212,257" fill="#94a3b8"/>
+  
+  <rect x="62" y="262" width="300" height="45" rx="6" fill="#ffffff" stroke="#dc2626" stroke-width="1"/>
+  <text x="212" y="281" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Multiplikatoreffekt</text>
+  <text x="212" y="297" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Zusätzliche Einkommen → Konsum → ...</text>
+  
+  <polygon points="207,307 217,307 212,317" fill="#94a3b8"/>
+  
+  <rect x="62" y="322" width="300" height="35" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="212" y="344" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#16a34a">BIP ↑ · Beschäftigung ↑</text>
+  
+  <!-- Hochkonjunktur column -->
+  <rect x="415" y="55" width="345" height="350" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="587" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#2563eb">In der Hochkonjunktur</text>
+  <text x="587" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Nachfrageüberhang → Inflation</text>
+  
+  <!-- Steps Hochkonjunktur -->
+  <rect x="437" y="112" width="300" height="35" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1"/>
+  <text x="587" y="134" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2563eb">Staat senkt Ausgaben (G ↓)</text>
+  
+  <polygon points="582,147 592,147 587,157" fill="#94a3b8"/>
+  
+  <rect x="437" y="162" width="300" height="35" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1"/>
+  <text x="587" y="184" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Erzielt <tspan font-weight="600">Budgetüberschuss</tspan></text>
+  
+  <polygon points="582,197 592,197 587,207" fill="#94a3b8"/>
+  
+  <rect x="437" y="212" width="300" height="35" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1"/>
+  <text x="587" y="234" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Gesamtnachfrage sinkt (AD ↓)</text>
+  
+  <polygon points="582,247 592,247 587,257" fill="#94a3b8"/>
+  
+  <rect x="437" y="262" width="300" height="45" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1"/>
+  <text x="587" y="281" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Kontraktionseffekt</text>
+  <text x="587" y="297" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Weniger Einkommen → weniger Konsum</text>
+  
+  <polygon points="582,307 592,307 587,317" fill="#94a3b8"/>
+  
+  <rect x="437" y="322" width="300" height="35" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="587" y="344" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2563eb">Inflation ↓ · Überhitzung gebremst</text>
+  
+  <!-- Center connector -->
+  <line x1="400" y1="280" x2="400" y2="280" stroke="#94a3b8" stroke-width="0"/>
+  <text x="400" y="415" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziel: Glättung der Konjunkturschwankungen durch aktive Fiskalpolitik</text>
+</svg>

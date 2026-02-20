@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" width="800" height="380">
+  <rect width="800" height="380" fill="#ffffff" rx="8"/>
+  
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Ursachen von Konjunkturschwankungen</text>
+  
+  <!-- Center: Konjunkturschwankungen -->
+  <circle cx="400" cy="190" r="55" fill="#f1f5f9" stroke="#1e293b" stroke-width="2"/>
+  <text x="400" y="185" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Konjunktur-</text>
+  <text x="400" y="200" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">schwankungen</text>
+  
+  <!-- Branch 1: Reale Schocks (top left) -->
+  <line x1="360" y1="150" x2="180" y2="80" stroke="#dc2626" stroke-width="2"/>
+  <rect x="60" y="52" width="200" height="55" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="160" y="73" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#dc2626">Reale Schocks</text>
+  <text x="160" y="90" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Ölkrisen, Naturkatastrophen,</text>
+  <text x="160" y="102" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Technologiesprünge, Pandemien</text>
+  
+  <!-- Branch 2: Überinvestition (top right) -->
+  <line x1="440" y1="150" x2="620" y2="80" stroke="#ea580c" stroke-width="2"/>
+  <rect x="520" y="52" width="200" height="55" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="620" y="73" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#ea580c">Überinvestitionstheorie</text>
+  <text x="620" y="90" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Zu hohe Investitionen →</text>
+  <text x="620" y="102" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Überkapazitäten → Einbruch</text>
+  
+  <!-- Branch 3: Unterkonsumtion (left) -->
+  <line x1="345" y1="190" x2="195" y2="190" stroke="#2563eb" stroke-width="2"/>
+  <rect x="20" y="162" width="175" height="55" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="107" y="183" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2563eb">Unterkonsumtion</text>
+  <text x="107" y="200" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Zu tiefe Löhne → zu wenig</text>
+  <text x="107" y="212" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Nachfrage (Keynes-nah)</text>
+  
+  <!-- Branch 4: Monetäre Theorie (right) -->
+  <line x1="455" y1="190" x2="605" y2="190" stroke="#7c3aed" stroke-width="2"/>
+  <rect x="605" y="162" width="175" height="55" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="692" y="183" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#7c3aed">Monetäre Theorie</text>
+  <text x="692" y="200" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Geldmengen-Schwankungen</text>
+  <text x="692" y="212" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">verursachen BIP-Schwankungen</text>
+  
+  <!-- Branch 5: Psychologische Theorie (bottom left) -->
+  <line x1="360" y1="230" x2="180" y2="300" stroke="#16a34a" stroke-width="2"/>
+  <rect x="55" y="275" width="210" height="55" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="160" y="296" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#16a34a">Psychologische Theorie</text>
+  <text x="160" y="313" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Optimismus/Pessimismus als</text>
+  <text x="160" y="325" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Verstärker (animal spirits)</text>
+  
+  <!-- Branch 6: Politische Theorie (bottom right) -->
+  <line x1="440" y1="230" x2="620" y2="300" stroke="#ca8a04" stroke-width="2"/>
+  <rect x="520" y="275" width="210" height="55" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="625" y="296" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#ca8a04">Politische Theorie</text>
+  <text x="625" y="313" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Wahlzyklen → expansive Politik</text>
+  <text x="625" y="325" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">vor Wahlen, Sparpolitik danach</text>
+  
+  <!-- Note -->
+  <text x="400" y="370" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">In der Realität wirken oft mehrere Ursachen gleichzeitig zusammen</text>
+</svg>

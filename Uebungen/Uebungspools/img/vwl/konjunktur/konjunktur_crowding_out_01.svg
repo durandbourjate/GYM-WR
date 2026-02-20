@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="800" height="360">
+  <rect width="800" height="360" fill="#ffffff" rx="8"/>
+  
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Der Crowding-Out-Effekt (Verdrängungseffekt)</text>
+  
+  <!-- Flow: left to right -->
+  <!-- Step 1 -->
+  <rect x="30" y="70" width="150" height="65" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="105" y="93" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2563eb">Staat verschuldet</text>
+  <text x="105" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#2563eb">sich am Kapitalmarkt</text>
+  <text x="105" y="125" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">(deficit spending)</text>
+  
+  <!-- Arrow -->
+  <line x1="180" y1="102" x2="220" y2="102" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="218,97 218,107 230,102" fill="#94a3b8"/>
+  
+  <!-- Step 2 -->
+  <rect x="230" y="70" width="150" height="65" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="305" y="93" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#ea580c">Nachfrage nach</text>
+  <text x="305" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#ea580c">Kapital steigt</text>
+  <text x="305" y="125" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Kreditnachfrage ↑</text>
+  
+  <!-- Arrow -->
+  <line x1="380" y1="102" x2="420" y2="102" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="418,97 418,107 430,102" fill="#94a3b8"/>
+  
+  <!-- Step 3 -->
+  <rect x="430" y="70" width="150" height="65" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="505" y="93" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#dc2626">Zinsen steigen</text>
+  <text x="505" y="112" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="20" fill="#dc2626">↑</text>
+  
+  <!-- Arrow -->
+  <line x1="580" y1="102" x2="620" y2="102" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="618,97 618,107 630,102" fill="#94a3b8"/>
+  
+  <!-- Step 4 -->
+  <rect x="630" y="55" width="150" height="80" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="705" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#dc2626">Private Investitionen</text>
+  <text x="705" y="95" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#dc2626">werden verdrängt</text>
+  <text x="705" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">I privat ↓</text>
+  
+  <!-- Result box -->
+  <rect x="150" y="175" width="500" height="50" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="400" y="196" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#1e293b">Ergebnis: Staatliche Nachfrage ersetzt private Nachfrage</text>
+  <text x="400" y="214" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">→ Gesamtwirkung auf BIP ist geringer als erwartet (oder null)</text>
+  
+  <!-- Two perspectives -->
+  <rect x="50" y="255" width="320" height="85" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="210" y="278" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#7c3aed">Monetaristische Sicht</text>
+  <text x="210" y="298" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#475569">Crowding-Out ist stark → Fiskalpolitik</text>
+  <text x="210" y="314" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#475569">ist wirkungslos. Nur Geldpolitik hilft.</text>
+  <text x="210" y="330" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">«Fiskalpolitik verschiebt nur Nachfrage»</text>
+  
+  <rect x="430" y="255" width="320" height="85" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1"/>
+  <text x="590" y="278" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#2563eb">Keynesianische Sicht</text>
+  <text x="590" y="298" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#475569">Crowding-Out ist schwach in der Rezession</text>
+  <text x="590" y="314" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#475569">→ ungenutzte Kapazitäten, tiefe Zinsen.</text>
+  <text x="590" y="330" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">«In der Rezession verdrängt nichts»</text>
+</svg>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" width="800" height="340">
+  <rect width="800" height="340" fill="#ffffff" rx="8"/>
+  
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Monetaristische Konzeption: Quantitätsgleichung</text>
+  
+  <!-- Main equation -->
+  <rect x="180" y="55" width="440" height="60" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  
+  <text x="250" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="28" font-weight="700" fill="#7c3aed">M</text>
+  <text x="290" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="24" fill="#64748b">·</text>
+  <text x="330" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="28" font-weight="700" fill="#7c3aed">V</text>
+  
+  <text x="400" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="28" fill="#1e293b">=</text>
+  
+  <text x="470" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="28" font-weight="700" fill="#ea580c">P</text>
+  <text x="510" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="24" fill="#64748b">·</text>
+  <text x="550" y="92" text-anchor="middle" font-family="'DM Mono',monospace" font-size="28" font-weight="700" fill="#ea580c">Y</text>
+  
+  <!-- Labels below equation -->
+  <text x="250" y="140" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#7c3aed" font-weight="600">Geldmenge</text>
+  <text x="330" y="140" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#7c3aed" font-weight="600">Umlauf-</text>
+  <text x="330" y="153" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#7c3aed" font-weight="600">geschwindigkeit</text>
+  <text x="470" y="140" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#ea580c" font-weight="600">Preisniveau</text>
+  <text x="550" y="140" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#ea580c" font-weight="600">Reales BIP</text>
+  
+  <!-- Friedman's key assumptions -->
+  <text x="400" y="190" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">Kernannahmen der Monetaristen</text>
+  
+  <rect x="50" y="210" width="210" height="55" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="155" y="232" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#7c3aed">V ist stabil</text>
+  <text x="155" y="250" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Umlaufgeschwindigkeit ändert</text>
+  <text x="155" y="262" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">sich kaum kurzfristig</text>
+  
+  <rect x="295" y="210" width="210" height="55" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="400" y="232" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#7c3aed">Y ist gegeben</text>
+  <text x="400" y="250" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Langfristig bestimmt durch</text>
+  <text x="400" y="262" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">reale Faktoren (Arbeit, Kapital)</text>
+  
+  <rect x="540" y="210" width="210" height="55" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="1"/>
+  <text x="645" y="232" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#ea580c">→ M bestimmt P</text>
+  <text x="645" y="250" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Zu viel Geld → Inflation</text>
+  <text x="645" y="262" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Zu wenig Geld → Deflation</text>
+  
+  <!-- Policy conclusion -->
+  <rect x="150" y="285" width="500" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="400" y="305" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#16a34a">Forderung: Regelgebundene Geldpolitik</text>
+  <text x="400" y="319" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Geldmenge soll stetig und moderat wachsen (keine diskretionäre Politik)</text>
+</svg>
