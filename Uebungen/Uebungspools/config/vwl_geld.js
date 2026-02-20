@@ -7,26 +7,27 @@
 // ══════════════════════════════════════════════════════════════
 
 window.POOL_META = {
-  title: "Geld, Geldpolitik und Finanzmärkte",
+  id: "vwl_geld",
   fach: "VWL",
-  color: "#f89907",
-  level: "SF GYM3–GYM4"
+  title: "Übungspool: Geld, Geldpolitik und Finanzmärkte",
+  meta: "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+  color: "vwl"
 };
 
 window.TOPICS = {
-  "tauschwirtschaft": "Tauschwirtschaft vs. Geldwirtschaft",
-  "geldfunktionen": "Geldfunktionen",
-  "eigenschaften": "Eigenschaften von Geld",
-  "geldarten": "Warengeld, Papiergeld & Buchgeld",
-  "vertrauen": "Vertrauen & Rolle der Nationalbank",
-  "preise": "Absolute & relative Preise",
-  "grundlagen": "Grundlagen: Geld und Geldfunktionen",
-  "kaufkraft": "Geldmenge, Kaufkraft und Preisniveau",
-  "geldnachfrage": "Geldnachfrage",
-  "geldangebot": "Geldangebot und Geldschöpfung",
-  "geldmengen": "Geldmengen und Geldaggregate (M0–M3)",
-  "zinssteuerung": "Konventionelle Geldpolitik und Transmissionskanäle",
-  "unkonventionell": "Unkonventionelle Geldpolitik seit der Finanzkrise"
+  "tauschwirtschaft": {label:"Tauschwirtschaft vs. Geldwirtschaft", short:"Tauschwirtschaft"},
+  "geldfunktionen":   {label:"Geldfunktionen", short:"Geldfunktionen"},
+  "eigenschaften":    {label:"Eigenschaften von Geld", short:"Eigenschaften"},
+  "geldarten":        {label:"Warengeld, Papiergeld & Buchgeld", short:"Geldarten"},
+  "vertrauen":        {label:"Vertrauen & Rolle der Nationalbank", short:"Vertrauen"},
+  "preise":           {label:"Absolute & relative Preise", short:"Preise"},
+  "grundlagen":       {label:"Grundlagen: Geld und Geldfunktionen", short:"Grundlagen"},
+  "kaufkraft":        {label:"Geldmenge, Kaufkraft und Preisniveau", short:"Kaufkraft"},
+  "geldnachfrage":    {label:"Geldnachfrage", short:"Geldnachfrage"},
+  "geldangebot":      {label:"Geldangebot und Geldschöpfung", short:"Geldangebot"},
+  "geldmengen":       {label:"Geldmengen und Geldaggregate (M0–M3)", short:"Geldmengen"},
+  "zinssteuerung":    {label:"Konventionelle Geldpolitik und Transmissionskanäle", short:"Zinssteuerung"},
+  "unkonventionell":  {label:"Unkonventionelle Geldpolitik seit der Finanzkrise", short:"Unkonventionell"}
 };
 
 window.QUESTIONS = [
