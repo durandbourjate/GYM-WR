@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 420" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="550" height="420" fill="#ffffff"/>
+  
+  <text x="310" y="30" font-size="15" font-weight="700" fill="#0284c7" text-anchor="middle">Produkt-Markt-Matrix nach Ansoff</text>
+  
+  <!-- Column headers: Märkte -->
+  <text x="310" y="60" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="600">Märkte</text>
+  <text x="240" y="80" font-size="12" fill="#64748b" text-anchor="middle">bisherige</text>
+  <text x="420" y="80" font-size="12" fill="#64748b" text-anchor="middle">neue</text>
+  
+  <!-- Row headers: Produkte -->
+  <!-- Rotated text for "Produkte / Dienstleistungen" -->
+  <text x="55" y="210" font-size="13" fill="#1e293b" text-anchor="middle" font-weight="600" transform="rotate(-90, 55, 210)">Produkte / Dienstleistungen</text>
+  <text x="95" y="170" font-size="12" fill="#64748b" text-anchor="middle" transform="rotate(-90, 95, 170)">bisherige</text>
+  <text x="95" y="310" font-size="12" fill="#64748b" text-anchor="middle" transform="rotate(-90, 95, 310)">neue</text>
+  
+  <!-- Grid lines -->
+  <line x1="130" y1="90" x2="510" y2="90" stroke="#0284c7" stroke-width="2"/>
+  <line x1="130" y1="230" x2="510" y2="230" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="130" y1="370" x2="510" y2="370" stroke="#0284c7" stroke-width="2"/>
+  <line x1="130" y1="90" x2="130" y2="370" stroke="#0284c7" stroke-width="2"/>
+  <line x1="320" y1="90" x2="320" y2="370" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="510" y1="90" x2="510" y2="370" stroke="#0284c7" stroke-width="2"/>
+  
+  <!-- Cell 1: bisherige Produkte × bisherige Märkte -->
+  <rect x="132" y="92" width="186" height="136" fill="#0ea5e9" opacity="0.08"/>
+  <text x="225" y="155" font-size="14" fill="#0284c7" text-anchor="middle" font-weight="600">?</text>
+  <text x="225" y="175" font-size="10" fill="#94a3b8" text-anchor="middle" font-style="italic">tiefstes Risiko</text>
+  
+  <!-- Cell 2: bisherige Produkte × neue Märkte -->
+  <rect x="322" y="92" width="186" height="136" fill="#0ea5e9" opacity="0.12"/>
+  <text x="415" y="165" font-size="14" fill="#0284c7" text-anchor="middle" font-weight="600">?</text>
+  
+  <!-- Cell 3: neue Produkte × bisherige Märkte -->
+  <rect x="132" y="232" width="186" height="136" fill="#0ea5e9" opacity="0.12"/>
+  <text x="225" y="305" font-size="14" fill="#0284c7" text-anchor="middle" font-weight="600">?</text>
+  
+  <!-- Cell 4: neue Produkte × neue Märkte -->
+  <rect x="322" y="232" width="186" height="136" fill="#0ea5e9" opacity="0.2"/>
+  <text x="415" y="295" font-size="14" fill="#0284c7" text-anchor="middle" font-weight="600">?</text>
+  <text x="415" y="315" font-size="10" fill="#94a3b8" text-anchor="middle" font-style="italic">höchstes Risiko</text>
+  
+  <!-- Risk arrow -->
+  <!-- Diagonal arrow from top-left to bottom-right indicating increasing risk -->
+  <defs>
+    <marker id="arrowRisk" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M 0 0 L 8 3 L 0 6 Z" fill="#ef4444"/>
+    </marker>
+  </defs>
+  <line x1="155" y1="355" x2="485" y2="115" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+  
+  <text x="310" y="400" font-size="10" fill="#94a3b8" text-anchor="middle" font-style="italic">Welche vier Strategien unterscheidet Ansoff?</text>
+</svg>
