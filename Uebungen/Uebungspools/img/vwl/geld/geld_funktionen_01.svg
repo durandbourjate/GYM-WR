@@ -4,12 +4,11 @@
   <!-- Title -->
   <text x="400" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Die drei Geldfunktionen</text>
   
-  <!-- Box 1: Tauschmittel -->
+  <!-- Box 1 -->
   <rect x="30" y="60" width="230" height="260" rx="12" fill="#fff7ed" stroke="#f89907" stroke-width="2"/>
   <circle cx="145" cy="110" r="30" fill="#f89907" opacity="0.15"/>
   <text x="145" y="117" text-anchor="middle" font-size="28">🔄</text>
-  <text x="145" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Tauschmittel</text>
-  <text x="145" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Tauschmittel</text>
+  <text x="145" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">?</text>
   <line x1="80" y1="172" x2="210" y2="172" stroke="#f89907" stroke-width="1.5" opacity="0.4"/>
   <text x="145" y="195" text-anchor="middle" font-size="11.5" fill="#475569">Geld erleichtert den</text>
   <text x="145" y="212" text-anchor="middle" font-size="11.5" fill="#475569">Kauf und Verkauf</text>
@@ -18,11 +17,11 @@
   <rect x="55" y="268" width="180" height="30" rx="6" fill="#f89907" opacity="0.12"/>
   <text x="145" y="288" text-anchor="middle" font-size="10.5" font-weight="600" fill="#9a3412">Ware → Geld → Ware</text>
 
-  <!-- Box 2: Recheneinheit -->
+  <!-- Box 2 -->
   <rect x="285" y="60" width="230" height="260" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
   <circle cx="400" cy="110" r="30" fill="#2563eb" opacity="0.12"/>
   <text x="400" y="117" text-anchor="middle" font-size="28">📐</text>
-  <text x="400" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Recheneinheit</text>
+  <text x="400" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">?</text>
   <line x1="335" y1="172" x2="465" y2="172" stroke="#2563eb" stroke-width="1.5" opacity="0.4"/>
   <text x="400" y="195" text-anchor="middle" font-size="11.5" fill="#475569">Geld dient als</text>
   <text x="400" y="212" text-anchor="middle" font-size="11.5" fill="#475569">gemeinsamer Massstab</text>
@@ -31,11 +30,11 @@
   <rect x="310" y="268" width="180" height="30" rx="6" fill="#2563eb" opacity="0.1"/>
   <text x="400" y="288" text-anchor="middle" font-size="10.5" font-weight="600" fill="#1e40af">1 Brot = CHF 5</text>
 
-  <!-- Box 3: Wertaufbewahrung -->
+  <!-- Box 3 -->
   <rect x="540" y="60" width="230" height="260" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
   <circle cx="655" cy="110" r="30" fill="#16a34a" opacity="0.12"/>
   <text x="655" y="117" text-anchor="middle" font-size="28">🏦</text>
-  <text x="655" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Wertaufbewahrung</text>
+  <text x="655" y="160" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">?</text>
   <line x1="590" y1="172" x2="720" y2="172" stroke="#16a34a" stroke-width="1.5" opacity="0.4"/>
   <text x="655" y="195" text-anchor="middle" font-size="11.5" fill="#475569">Geld ermöglicht es,</text>
   <text x="655" y="212" text-anchor="middle" font-size="11.5" fill="#475569">Kaufkraft über die</text>
