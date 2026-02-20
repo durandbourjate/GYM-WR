@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="800" height="350" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="400" y="35" text-anchor="middle" font-size="20" font-weight="700" fill="#1e293b">Wechselwirkungskette</text>
+  <text x="400" y="58" text-anchor="middle" font-size="12" fill="#64748b">Eine Veränderung löst eine Kettenreaktion aus</text>
+
+  <!-- Pfeilmarker -->
+  <defs>
+    <marker id="chainArrow" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#475569"/>
+    </marker>
+    <marker id="chainArrowRed" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <!-- Schritt 1: Unternehmen (links) -->
+  <rect x="40" y="120" width="140" height="70" rx="10" fill="#1e293b"/>
+  <text x="110" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Unter-</text>
+  <text x="110" y="172" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">nehmen</text>
+
+  <!-- Pfeil 1: Unternehmen → Sphäre ? -->
+  <!-- Berechnung: rect rechts bei x=180, Sphäre links bei x=260 → Pfeil von 185 bis 255 -->
+  <line x1="185" y1="155" x2="255" y2="155" stroke="#475569" stroke-width="2.5" marker-end="url(#chainArrow)"/>
+  <text x="220" y="140" text-anchor="middle" font-size="18" fill="#475569">①</text>
+
+  <!-- Schritt 2: Sphäre A (Mitte links) -->
+  <rect x="260" y="120" width="140" height="70" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="330" y="150" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Sphäre</text>
+  <text x="330" y="172" text-anchor="middle" font-size="20" font-weight="700" fill="#1e40af">?</text>
+
+  <!-- Pfeil 2: Sphäre A → Sphäre B -->
+  <!-- Berechnung: Sphäre A rechts bei x=400, Sphäre B links bei x=480 → Pfeil von 405 bis 475 -->
+  <line x1="405" y1="155" x2="475" y2="155" stroke="#475569" stroke-width="2.5" marker-end="url(#chainArrow)"/>
+  <text x="440" y="140" text-anchor="middle" font-size="18" fill="#475569">②</text>
+
+  <!-- Schritt 3: Sphäre B (Mitte rechts) -->
+  <rect x="480" y="120" width="140" height="70" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="550" y="150" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">Sphäre</text>
+  <text x="550" y="172" text-anchor="middle" font-size="20" font-weight="700" fill="#92400e">?</text>
+
+  <!-- Pfeil 3: Sphäre B → Unternehmen (Rückwirkung) -->
+  <!-- Berechnung: Sphäre B rechts bei x=620, Unternehmen rechts bei x=700 → Pfeil geht nach unten und zurück -->
+  <path d="M620,170 L700,170 L700,260 L110,260 L110,200" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#chainArrowRed)"/>
+  <text x="710" y="220" font-size="18" fill="#dc2626">③</text>
+
+  <!-- Nummerierung-Labels unten -->
+  <rect x="100" y="285" width="600" height="50" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="190" y="315" text-anchor="middle" font-size="11" fill="#475569">① Unternehmen</text>
+  <text x="190" y="328" text-anchor="middle" font-size="11" fill="#475569">beeinflusst Sphäre</text>
+  <text x="400" y="315" text-anchor="middle" font-size="11" fill="#475569">② Sphäre beeinflusst</text>
+  <text x="400" y="328" text-anchor="middle" font-size="11" fill="#475569">andere Sphäre</text>
+  <text x="610" y="315" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="600">③ Rückwirkung</text>
+  <text x="610" y="328" text-anchor="middle" font-size="11" fill="#dc2626">auf Unternehmen</text>
+</svg>
