@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="600" height="420" fill="#ffffff"/>
+  
+  <title>Bedürfnispyramide nach Maslow mit vier sichtbaren Stufen</title>
+  
+  <!-- Titel -->
+  <text x="300" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Maslow'sche Bedürfnispyramide</text>
+  
+  <!-- Pyramide als Trapeze von unten nach oben -->
+  <!-- Stufe 1 (unten, breiteste) -->
+  <polygon points="60,380 540,380 470,310 130,310" fill="#2563eb" opacity="0.15" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="352" text-anchor="middle" font-size="16" font-weight="600" fill="#2563eb">?</text>
+  <text x="300" y="372" text-anchor="middle" font-size="11" fill="#64748b">🍽️ Nahrung, Schlaf, Wärme</text>
+  
+  <!-- Stufe 2 -->
+  <polygon points="130,310 470,310 410,240 190,240" fill="#7c3aed" opacity="0.15" stroke="#7c3aed" stroke-width="2"/>
+  <text x="300" y="282" text-anchor="middle" font-size="16" font-weight="600" fill="#7c3aed">?</text>
+  <text x="300" y="299" text-anchor="middle" font-size="11" fill="#64748b">🛡️ Schutz, Absicherung</text>
+  
+  <!-- Stufe 3 -->
+  <polygon points="190,240 410,240 355,170 245,170" fill="#16a34a" opacity="0.15" stroke="#16a34a" stroke-width="2"/>
+  <text x="300" y="210" text-anchor="middle" font-size="16" font-weight="600" fill="#16a34a">?</text>
+  <text x="300" y="228" text-anchor="middle" font-size="11" fill="#64748b">👥 Zugehörigkeit, Freundschaft</text>
+  
+  <!-- Stufe 4 (oben, schmalste) -->
+  <!-- Hinweis: Die Maslow-Pyramide im Lehrbuch zeigt 4 Stufen (die oberste fasst Anerkennung und Selbstverwirklichung zusammen) -->
+  <polygon points="245,170 355,170 310,100 290,100" fill="#dc2626" opacity="0.15" stroke="#dc2626" stroke-width="2"/>
+  <text x="300" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#dc2626">?</text>
+  <text x="300" y="157" text-anchor="middle" font-size="11" fill="#64748b">⭐ Anerkennung, Entfaltung</text>
+  
+  <!-- Pfeil links: Dringlichkeit -->
+  <line x1="40" y1="380" x2="40" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGrey)"/>
+  <text x="35" y="240" text-anchor="middle" font-size="11" fill="#94a3b8" transform="rotate(-90, 35, 240)">Priorität</text>
+  
+  <!-- Pfeilspitze -->
+  <defs>
+    <marker id="arrowGrey" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  
+  <!-- Hinweis -->
+  <text x="300" y="410" text-anchor="middle" font-size="10" fill="#94a3b8">Ordnen Sie die Bedürfniskategorien den Stufen zu.</text>
+</svg>
