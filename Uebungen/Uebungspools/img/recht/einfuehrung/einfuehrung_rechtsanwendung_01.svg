@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- White background -->
+  <rect width="800" height="500" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#1a1a1a">Vorgehen bei der Rechtsanwendung</text>
+  
+  <!-- Step 1: Sachverhalt -->
+  <rect x="50" y="65" width="310" height="90" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="70" y="92" font-size="13" font-weight="700" fill="#92400e">1.</text>
+  <text x="90" y="92" font-size="15" font-weight="700" fill="#92400e">Sachverhalt feststellen</text>
+  <text x="70" y="115" font-size="12" fill="#78350f">• Was ist passiert?</text>
+  <text x="70" y="133" font-size="12" fill="#78350f">• Wer sind die Parteien?</text>
+  <text x="70" y="151" font-size="12" fill="#78350f">• Welche Ansprüche?</text>
+
+  <!-- Step 2: Rechtsregel -->
+  <rect x="440" y="65" width="310" height="90" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="460" y="92" font-size="13" font-weight="700" fill="#1e40af">2.</text>
+  <text x="480" y="92" font-size="15" font-weight="700" fill="#1e40af">Rechtsregel finden</text>
+  <text x="460" y="115" font-size="12" fill="#1e3a5f">• Welches Gesetz?</text>
+  <text x="460" y="133" font-size="12" fill="#1e3a5f">• Welcher Artikel?</text>
+  <text x="460" y="151" font-size="12" fill="#1e3a5f">• TBM und RF identifizieren</text>
+
+  <!-- Arrow from 1 to 2 -->
+  <line x1="360" y1="110" x2="435" y2="110" stroke="#374151" stroke-width="2"/>
+  <polygon points="430,104 443,110 430,116" fill="#374151"/>
+
+  <!-- Arrow down from both to Step 3 -->
+  <line x1="205" y1="155" x2="205" y2="220" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="595" y1="155" x2="595" y2="220" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="205" y1="220" x2="400" y2="220" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="595" y1="220" x2="400" y2="220" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="400" y1="220" x2="400" y2="240" stroke="#374151" stroke-width="2"/>
+  <polygon points="393,235 400,248 407,235" fill="#374151"/>
+  
+  <!-- Step 3: Subsumtion (central, larger) -->
+  <rect x="150" y="250" width="500" height="110" rx="12" fill="#fae8ff" stroke="#a855f7" stroke-width="2.5"/>
+  <text x="175" y="280" font-size="13" font-weight="700" fill="#7e22ce">3.</text>
+  <text x="195" y="280" font-size="17" font-weight="700" fill="#7e22ce">Subsumtion</text>
+  <text x="175" y="308" font-size="13" fill="#581c87">Stimmt der Sachverhalt mit den Tatbestandsmerkmalen überein?</text>
+  <text x="175" y="332" font-size="13" fill="#581c87">Jedes TBM einzeln am konkreten Sachverhalt prüfen.</text>
+  
+  <!-- Yes/No branches -->
+  <!-- "Ja" arrow -->
+  <line x1="300" y1="360" x2="300" y2="410" stroke="#16a34a" stroke-width="2"/>
+  <polygon points="293,405 300,418 307,405" fill="#16a34a"/>
+  <text x="275" y="390" font-size="12" font-weight="600" fill="#16a34a">Ja ✓</text>
+
+  <!-- "Nein" text -->
+  <line x1="500" y1="360" x2="500" y2="410" stroke="#dc2626" stroke-width="2"/>
+  <polygon points="493,405 500,418 507,405" fill="#dc2626"/>
+  <text x="515" y="390" font-size="12" font-weight="600" fill="#dc2626">Nein ✗</text>
+
+  <!-- Step 4a: Rechtsfolge (if yes) -->
+  <rect x="170" y="420" width="260" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="190" y="447" font-size="13" font-weight="700" fill="#166534">4.</text>
+  <text x="210" y="447" font-size="15" font-weight="700" fill="#166534">Rechtsfolge tritt ein</text>
+  <text x="190" y="470" font-size="12" fill="#14532d">→ Rechtliche Konsequenz bestimmen</text>
+
+  <!-- Step 4b: No consequence (if no) -->
+  <rect x="460" y="420" width="260" height="60" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="480" y="447" font-size="15" font-weight="700" fill="#991b1b">Keine Rechtsfolge</text>
+  <text x="480" y="470" font-size="12" fill="#7f1d1d">→ Evtl. andere Norm prüfen</text>
+</svg>

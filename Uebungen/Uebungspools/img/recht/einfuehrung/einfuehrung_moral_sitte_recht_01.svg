@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- White background for dark mode compatibility -->
+  <rect width="800" height="500" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#1a1a1a">Wie wird unser Verhalten geregelt?</text>
+  
+  <!-- Subtitle: Individuelle Ebene -->
+  <text x="400" y="75" text-anchor="middle" font-size="14" fill="#6b7280" font-style="italic">Drei Komplexe von Verhaltensvorschriften</text>
+  
+  <!-- Box 1: Moral -->
+  <rect x="30" y="100" width="230" height="180" rx="12" fill="#f0f4ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="145" y="135" text-anchor="middle" font-size="18" font-weight="700" fill="#6366f1">Moral</text>
+  <text x="145" y="160" text-anchor="middle" font-size="13" fill="#4b5563">(Ethik, Religion)</text>
+  <line x1="70" y1="175" x2="220" y2="175" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="145" y="200" text-anchor="middle" font-size="14" fill="#374151">Haltung: ?</text>
+  <text x="145" y="225" text-anchor="middle" font-size="14" fill="#374151">Erzwingbar: ?</text>
+  <text x="145" y="255" text-anchor="middle" font-size="12" fill="#6b7280">Beispiel: Einem in Not</text>
+  <text x="145" y="272" text-anchor="middle" font-size="12" fill="#6b7280">geratenen Menschen helfen</text>
+
+  <!-- Box 2: Sitte -->
+  <rect x="285" y="100" width="230" height="180" rx="12" fill="#fefce8" stroke="#eab308" stroke-width="2"/>
+  <text x="400" y="135" text-anchor="middle" font-size="18" font-weight="700" fill="#b45309">Sitte</text>
+  <text x="400" y="160" text-anchor="middle" font-size="13" fill="#4b5563">(Brauch, Anstand)</text>
+  <line x1="325" y1="175" x2="475" y2="175" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="400" y="200" text-anchor="middle" font-size="14" fill="#374151">Haltung: ?</text>
+  <text x="400" y="225" text-anchor="middle" font-size="14" fill="#374151">Erzwingbar: ?</text>
+  <text x="400" y="255" text-anchor="middle" font-size="12" fill="#6b7280">Beispiel: Sich beim</text>
+  <text x="400" y="272" text-anchor="middle" font-size="12" fill="#6b7280">Nachbarn vorstellen</text>
+
+  <!-- Box 3: Recht -->
+  <rect x="540" y="100" width="230" height="180" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="655" y="135" text-anchor="middle" font-size="18" font-weight="700" fill="#16a34a">Recht</text>
+  <text x="655" y="160" text-anchor="middle" font-size="13" fill="#4b5563">(Ordnungsregeln)</text>
+  <line x1="580" y1="175" x2="730" y2="175" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="655" y="200" text-anchor="middle" font-size="14" fill="#374151">Haltung: ?</text>
+  <text x="655" y="225" text-anchor="middle" font-size="14" fill="#374151">Erzwingbar: ?</text>
+  <text x="655" y="255" text-anchor="middle" font-size="12" fill="#6b7280">Beispiel: Sich bei der</text>
+  <text x="655" y="272" text-anchor="middle" font-size="12" fill="#6b7280">Einwohnerkontrolle anmelden</text>
+
+  <!-- Arrow from all three boxes to "Menschliches Verhalten" -->
+  <line x1="145" y1="280" x2="400" y2="340" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="400" y1="280" x2="400" y2="340" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="655" y1="280" x2="400" y2="340" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,3"/>
+  
+  <!-- Central target box -->
+  <rect x="250" y="340" width="300" height="50" rx="10" fill="#f3f4f6" stroke="#374151" stroke-width="2"/>
+  <text x="400" y="372" text-anchor="middle" font-size="16" font-weight="600" fill="#374151">Menschliches Verhalten</text>
+
+  <!-- Key question at bottom -->
+  <rect x="100" y="420" width="600" height="55" rx="8" fill="#fafafa" stroke="#d1d5db" stroke-width="1"/>
+  <text x="400" y="446" text-anchor="middle" font-size="13" fill="#6b7280">💡 Leitfrage: Welche Merkmale unterscheiden die drei Normsysteme?</text>
+  <text x="400" y="466" text-anchor="middle" font-size="13" fill="#6b7280">Was bedeutet «innere» vs. «äussere» Haltung? Wann ist eine Norm «erzwingbar»?</text>
+</svg>
