@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 520" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="780" height="520" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="390" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Gutgläubiger Erwerb beweglicher Sachen</text>
+  <text x="390" y="48" text-anchor="middle" font-size="11" fill="#64748b">Entscheidungsbaum: Art. 933, 934, 936 ZGB</text>
+
+  <!-- Question 1: Gutgläubig? -->
+  <rect x="240" y="65" width="300" height="44" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="390" y="85" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">War der Erwerber beim Erwerb</text>
+  <text x="390" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">gutgläubig?</text>
+
+  <!-- Arrow Nein right -->
+  <line x1="540" y1="87" x2="600" y2="87" stroke="#dc2626" stroke-width="2"/>
+  <polygon points="598,82 610,87 598,92" fill="#dc2626"/>
+  <text x="570" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">Nein</text>
+
+  <!-- Result: Art. 936 -->
+  <rect x="612" y="63" width="155" height="66" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="689" y="81" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">Art. 936 ZGB</text>
+  <text x="689" y="96" text-anchor="middle" font-size="10" fill="#991b1b">Eigentümer kann Sache</text>
+  <text x="689" y="109" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">jederzeit herausverlangen</text>
+  <text x="689" y="122" text-anchor="middle" font-size="9" fill="#b91c1c">(entschädigungslos)</text>
+
+  <!-- Arrow Ja down -->
+  <line x1="390" y1="109" x2="390" y2="148" stroke="#16a34a" stroke-width="2"/>
+  <polygon points="385,146 390,158 395,146" fill="#16a34a"/>
+  <text x="404" y="135" font-size="11" font-weight="700" fill="#16a34a">Ja</text>
+
+  <!-- Question 2: Anvertraut oder abhanden? -->
+  <rect x="215" y="160" width="350" height="44" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="390" y="180" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">Wurde die Sache dem früheren Besitzer</text>
+  <text x="390" y="195" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">anvertraut oder ist sie abhanden gekommen?</text>
+
+  <!-- Arrow Anvertraut left -->
+  <line x1="215" y1="182" x2="155" y2="182" stroke="#2563eb" stroke-width="2"/>
+  <polygon points="157,177 145,182 157,187" fill="#2563eb"/>
+  <text x="185" y="173" text-anchor="middle" font-size="10" font-weight="700" fill="#2563eb">Anvertraut</text>
+
+  <!-- Result: Art. 933 -->
+  <rect x="12" y="155" width="135" height="66" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="80" y="175" text-anchor="middle" font-size="11" font-weight="700" fill="#1e40af">Art. 933 ZGB</text>
+  <text x="80" y="190" text-anchor="middle" font-size="10" fill="#1e40af">Erwerber wird</text>
+  <text x="80" y="203" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Eigentümer</text>
+  <text x="80" y="216" text-anchor="middle" font-size="9" fill="#3b82f6">(Eigentümer verliert Recht)</text>
+
+  <!-- Arrow Abhanden down -->
+  <line x1="390" y1="204" x2="390" y2="248" stroke="#d97706" stroke-width="2"/>
+  <polygon points="385,246 390,258 395,246" fill="#d97706"/>
+  <text x="430" y="235" font-size="10" font-weight="700" fill="#d97706">Abhanden</text>
+
+  <!-- Question 3: > 5 Jahre? -->
+  <rect x="240" y="260" width="300" height="44" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="390" y="280" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">Ist die Sache dem Eigentümer vor</text>
+  <text x="390" y="295" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">mehr als 5 Jahren abhanden gekommen?</text>
+
+  <!-- Arrow Ja right -->
+  <line x1="540" y1="282" x2="600" y2="282" stroke="#16a34a" stroke-width="2"/>
+  <polygon points="598,277 610,282 598,287" fill="#16a34a"/>
+  <text x="570" y="273" text-anchor="middle" font-size="11" font-weight="700" fill="#16a34a">Ja</text>
+
+  <!-- Result: > 5 Jahre -->
+  <rect x="612" y="255" width="155" height="66" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="689" y="275" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">Art. 934 ZGB</text>
+  <text x="689" y="290" text-anchor="middle" font-size="10" fill="#166534">Erwerber darf Sache</text>
+  <text x="689" y="303" text-anchor="middle" font-size="10" font-weight="600" fill="#166534">behalten</text>
+  <text x="689" y="315" text-anchor="middle" font-size="9" fill="#22c55e">(Eigentum erworben)</text>
+
+  <!-- Arrow Nein down -->
+  <line x1="390" y1="304" x2="390" y2="348" stroke="#dc2626" stroke-width="2"/>
+  <polygon points="385,346 390,358 395,346" fill="#dc2626"/>
+  <text x="404" y="335" font-size="11" font-weight="700" fill="#dc2626">Nein</text>
+
+  <!-- Question 4: Öffentlich versteigert / Kaufmann? -->
+  <rect x="215" y="360" width="350" height="44" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="390" y="378" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">Hat der Erwerber die Sache an einer öffentl.</text>
+  <text x="390" y="393" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">Versteigerung, Markt oder Kaufmann erworben?</text>
+
+  <!-- Arrow Ja right -->
+  <line x1="565" y1="382" x2="600" y2="382" stroke="#16a34a" stroke-width="2"/>
+  <polygon points="598,377 610,382 598,387" fill="#16a34a"/>
+  <text x="582" y="373" text-anchor="middle" font-size="11" font-weight="700" fill="#16a34a">Ja</text>
+
+  <!-- Result: Rückerstattung -->
+  <rect x="612" y="355" width="155" height="66" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="689" y="373" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Art. 934 Abs. 2</text>
+  <text x="689" y="388" text-anchor="middle" font-size="10" fill="#854d0e">Herausgabe nur gegen</text>
+  <text x="689" y="401" text-anchor="middle" font-size="10" font-weight="600" fill="#854d0e">Rückerstattung</text>
+  <text x="689" y="414" text-anchor="middle" font-size="9" fill="#a16207">des Kaufpreises</text>
+
+  <!-- Arrow Nein down -->
+  <line x1="390" y1="404" x2="390" y2="440" stroke="#dc2626" stroke-width="2"/>
+  <polygon points="385,438 390,450 395,438" fill="#dc2626"/>
+  <text x="404" y="430" font-size="11" font-weight="700" fill="#dc2626">Nein</text>
+
+  <!-- Result: Entschädigungslos herausgeben -->
+  <rect x="290" y="452" width="200" height="56" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="390" y="471" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">Art. 934 Abs. 1</text>
+  <text x="390" y="486" text-anchor="middle" font-size="10" fill="#991b1b">Sache entschädigungslos</text>
+  <text x="390" y="499" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">herausgeben</text>
+</svg>
