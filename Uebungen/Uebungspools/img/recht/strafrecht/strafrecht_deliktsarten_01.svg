@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img" aria-label="Übersicht der drei Deliktsarten im Schweizer Strafrecht">
+  <!-- Hintergrund -->
+  <rect width="720" height="400" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="360" y="38" font-family="DM Sans, system-ui, sans-serif" font-size="20" font-weight="700" fill="#1a1a1a" text-anchor="middle">Deliktsarten nach Schwere</text>
+  <text x="360" y="58" font-family="DM Sans, system-ui, sans-serif" font-size="13" fill="#666" text-anchor="middle">Art. 10 und Art. 103 StGB</text>
+
+  <!-- Verbindungslinie horizontal -->
+  <line x1="120" y1="100" x2="600" y2="100" stroke="#ccc" stroke-width="2"/>
+
+  <!-- Verbrechen (links) -->
+  <!-- Kreis x=120 -->
+  <circle cx="120" cy="100" r="8" fill="#c62828"/>
+  <text x="120" y="140" font-family="DM Sans, system-ui, sans-serif" font-size="17" font-weight="700" fill="#c62828" text-anchor="middle">Verbrechen</text>
+  <text x="120" y="162" font-family="DM Sans, system-ui, sans-serif" font-size="12" fill="#555" text-anchor="middle">Art. 10 Abs. 2 StGB</text>
+  <!-- Box Verbrechen -->
+  <rect x="20" y="180" width="200" height="90" rx="8" fill="#fbe9e7" stroke="#c62828" stroke-width="1.5"/>
+  <text x="120" y="205" font-family="DM Sans, system-ui, sans-serif" font-size="13" fill="#333" text-anchor="middle">Freiheitsstrafe</text>
+  <text x="120" y="224" font-family="DM Sans, system-ui, sans-serif" font-size="15" font-weight="700" fill="#c62828" text-anchor="middle">mehr als 3 Jahre</text>
+  <line x1="40" y1="240" x2="200" y2="240" stroke="#e0c0c0" stroke-width="1"/>
+  <text x="120" y="260" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">z. B. Mord, Raub,</text>
+  <text x="120" y="275" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">Vergewaltigung</text>
+
+  <!-- Vergehen (Mitte) -->
+  <!-- Kreis x=360 -->
+  <circle cx="360" cy="100" r="8" fill="#e65100"/>
+  <text x="360" y="140" font-family="DM Sans, system-ui, sans-serif" font-size="17" font-weight="700" fill="#e65100" text-anchor="middle">Vergehen</text>
+  <text x="360" y="162" font-family="DM Sans, system-ui, sans-serif" font-size="12" fill="#555" text-anchor="middle">Art. 10 Abs. 3 StGB</text>
+  <!-- Box Vergehen -->
+  <rect x="260" y="180" width="200" height="90" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="360" y="205" font-family="DM Sans, system-ui, sans-serif" font-size="13" fill="#333" text-anchor="middle">Freiheitsstrafe</text>
+  <text x="360" y="224" font-family="DM Sans, system-ui, sans-serif" font-size="15" font-weight="700" fill="#e65100" text-anchor="middle">bis 3 Jahre / Geldstrafe</text>
+  <line x1="280" y1="240" x2="440" y2="240" stroke="#e0d0c0" stroke-width="1"/>
+  <text x="360" y="260" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">z. B. Diebstahl, Betrug,</text>
+  <text x="360" y="275" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">einf. Körperverletzung</text>
+
+  <!-- Übertretung (rechts) -->
+  <!-- Kreis x=600 -->
+  <circle cx="600" cy="100" r="8" fill="#2e7d32"/>
+  <text x="600" y="140" font-family="DM Sans, system-ui, sans-serif" font-size="17" font-weight="700" fill="#2e7d32" text-anchor="middle">Übertretung</text>
+  <text x="600" y="162" font-family="DM Sans, system-ui, sans-serif" font-size="12" fill="#555" text-anchor="middle">Art. 103 StGB</text>
+  <!-- Box Übertretung -->
+  <rect x="500" y="180" width="200" height="90" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="600" y="205" font-family="DM Sans, system-ui, sans-serif" font-size="13" fill="#333" text-anchor="middle">Busse</text>
+  <text x="600" y="224" font-family="DM Sans, system-ui, sans-serif" font-size="15" font-weight="700" fill="#2e7d32" text-anchor="middle">bis CHF 10 000</text>
+  <line x1="520" y1="240" x2="680" y2="240" stroke="#c0d8c0" stroke-width="1"/>
+  <text x="600" y="260" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">z. B. Tätlichkeiten,</text>
+  <text x="600" y="275" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#666" text-anchor="middle">geringf. Sachbeschädigung</text>
+
+  <!-- Pfeil Schweregrad -->
+  <line x1="60" y1="340" x2="660" y2="340" stroke="#888" stroke-width="1.5" marker-end="url(#arrowRight)" marker-start="url(#arrowLeft)"/>
+  <text x="360" y="370" font-family="DM Sans, system-ui, sans-serif" font-size="12" fill="#888" text-anchor="middle">Schweregrad</text>
+  <text x="80" y="370" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#c62828" text-anchor="start">schwer</text>
+  <text x="640" y="370" font-family="DM Sans, system-ui, sans-serif" font-size="11" fill="#2e7d32" text-anchor="end">leicht</text>
+
+  <defs>
+    <marker id="arrowRight" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#888"/>
+    </marker>
+    <marker id="arrowLeft" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+      <path d="M8,0 L0,3 L8,6" fill="#888"/>
+    </marker>
+  </defs>
+</svg>
