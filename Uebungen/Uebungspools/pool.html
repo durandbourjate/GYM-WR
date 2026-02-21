@@ -262,7 +262,7 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 .kbd-hint kbd{background:var(--c-bg);border:1px solid var(--c-border);border-radius:4px;padding:1px 6px;font-family:'DM Mono',monospace;font-size:.7rem}
 @media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}.kbd-hint{display:none}}
 
-/* ═══ LERNZIELE — 🎯 im Chip ═══ */
+/* ═══ LERNZIELE — 🏁 im Chip ═══ */
 .chip-lz{display:inline-flex;align-items:center;justify-content:center;width:auto;height:auto;background:none;border:none;font-size:.6rem;cursor:pointer;transition:.15s;flex-shrink:0;margin-left:3px;margin-right:-4px;padding:0}
 .chip-lz:hover{transform:scale(1.2)}
 /* ═══ LERNZIELE — Mini-Modal (Topic-Lernziele, zentriert) ═══ */
@@ -280,7 +280,7 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 .lz-list{list-style:none;padding:0}
 .lz-list li{position:relative;padding:7px 0 7px 22px;font-size:.88rem;line-height:1.5;border-bottom:1px solid var(--c-border)}
 .lz-list li:last-child{border-bottom:none}
-.lz-list li::before{content:'🎯';position:absolute;left:0;top:7px;font-size:.72rem}
+.lz-list li::before{content:'🏁';position:absolute;left:0;top:7px;font-size:.72rem}
 .lz-tax{font-family:'DM Mono',monospace;font-size:.68rem;background:var(--c-border);color:var(--c-text-soft);padding:1px 6px;border-radius:4px;margin-left:4px;white-space:nowrap}
 /* ═══ LERNZIELE — Vollständiges Modal (Header-Button) ═══ */
 .lz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -326,7 +326,7 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 <h1 id="poolTitle">Übungspool laden…</h1>
 <div class="meta" id="poolMeta">Gymnasium Hofwil · Individuell üben</div>
 </div>
-<button class="header-lz-btn" onclick="toggleFullModal()" title="Alle Lernziele" id="headerLzBtn" style="display:none">🎯</button>
+<button class="header-lz-btn" onclick="toggleFullModal()" title="Alle Lernziele" id="headerLzBtn" style="display:none">🏁</button>
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Light/Dark Mode wechseln" aria-label="Farbmodus wechseln">🌙</button>
 </header>
 <div class="container">
@@ -366,7 +366,7 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 <h2>📋 Modus wählen</h2>
 <div class="mode-cards">
 <div class="mode-card" data-mode="focus" onclick="setMode('focus')">
-<div class="mode-icon">🎯</div>
+<div class="mode-icon">🔍</div>
 <div class="mode-title">Fokus</div>
 <div class="mode-desc">Gezielt ein Thema üben, nach Schwierigkeit sortiert</div>
 </div>
@@ -492,6 +492,7 @@ const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"
       let allTopics = {};
       let fach = '';
       let colorKey = '';
+      let collectedPoolLZ = [];
       for (const pid of poolIds) {
         window.POOL_META = undefined; window.TOPICS = undefined; window.QUESTIONS = undefined;
         const resp = await fetch('config/' + pid + '.js');
@@ -500,11 +501,14 @@ const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"
         const s = document.createElement('script'); s.textContent = code; document.head.appendChild(s);
         if (!window.POOL_META || !window.TOPICS || !window.QUESTIONS) continue;
         if (!fach) { fach = window.POOL_META.fach || ''; colorKey = window.POOL_META.color || fach.toLowerCase(); }
+        if (window.POOL_META.lernziele) collectedPoolLZ = collectedPoolLZ.concat(window.POOL_META.lernziele);
         // Add topics with pool prefix to avoid key collisions
         const poolLabel = window.POOL_META.title.replace(/^Übungspool:\s*/i,'').replace(/^Einführung\s*/i,'Einf. ');
         Object.keys(window.TOPICS).forEach(key => {
           const t = window.TOPICS[key];
-          allTopics[pid+'::'+key] = {label: poolLabel+' → '+t.label, short: t.short+' ('+poolLabel.substring(0,12)+')'};
+          const topicCopy = {label: poolLabel+' → '+t.label, short: t.short+' ('+poolLabel.substring(0,12)+')'};
+          if (t.lernziele) topicCopy.lernziele = t.lernziele;
+          allTopics[pid+'::'+key] = topicCopy;
         });
         // Prefix question IDs and topic keys
         window.QUESTIONS.forEach(q => {
@@ -515,7 +519,7 @@ const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"
       }
       if (allQuestions.length === 0) throw new Error('Keine Fragen geladen.');
       // Set combined globals
-      window.POOL_META = { title: 'Ganzer Fachbereich: ' + fach, fach: fach, color: colorKey, level: '' };
+      window.POOL_META = { title: 'Ganzer Fachbereich: ' + fach, fach: fach, color: colorKey, level: '', lernziele: collectedPoolLZ.length ? collectedPoolLZ : undefined };
       window.TOPICS = allTopics;
       window.QUESTIONS = allQuestions;
     } else {
@@ -870,7 +874,7 @@ function buildChips(containerId,obj,filterKey,labelFn){
     // Lernziele-Button für Topic-Chips
     var hasLZ=containerId==='topicChips'&&obj[k].lernziele&&obj[k].lernziele.length;
     if(hasLZ){
-      ch.innerHTML=label+' <span class="chip-lz" onclick="event.stopPropagation();openMini(\''+k+'\')" title="Lernziele anzeigen">🎯</span>';
+      ch.innerHTML=label+' <span class="chip-lz" onclick="event.stopPropagation();openMini(\''+k+'\')" title="Lernziele anzeigen">🏁</span>';
     } else {
       ch.textContent=label;
     }
@@ -1410,7 +1414,7 @@ document.addEventListener('keydown', function(e) {
 <div class="lz-overlay" id="lzOverlay" onclick="if(event.target===this)closeFullModal()">
   <div class="lz-modal">
     <div class="lz-modal-header">
-      <h2>🎯 Lernziele</h2>
+      <h2>🏁 Lernziele</h2>
       <button class="lz-modal-close" onclick="closeFullModal()">&times;</button>
     </div>
     <div class="lz-modal-body" id="lzModalBody"></div>
