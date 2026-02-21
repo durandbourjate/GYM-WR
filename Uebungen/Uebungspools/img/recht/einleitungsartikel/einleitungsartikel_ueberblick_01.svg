@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 420" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="750" height="420" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="375" y="32" text-anchor="middle" font-size="19" font-weight="700" fill="#1e293b">ZGB Einleitungsartikel – Überblick</text>
+  <text x="375" y="52" text-anchor="middle" font-size="12" fill="#64748b">Ordne die Inhalte den Artikeln zu</text>
+
+  <!-- Linke Spalte: Artikel -->
+  <rect x="30" y="75" width="120" height="48" rx="8" fill="#16a34a" opacity="0.15" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="90" y="103" text-anchor="middle" font-size="14" font-weight="600" fill="#16a34a">Art. 1 ZGB</text>
+
+  <rect x="30" y="140" width="120" height="48" rx="8" fill="#2563eb" opacity="0.12" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="90" y="161" text-anchor="middle" font-size="14" font-weight="600" fill="#2563eb">Art. 2</text>
+  <text x="90" y="177" text-anchor="middle" font-size="11" fill="#2563eb">Abs. 1 ZGB</text>
+
+  <rect x="30" y="205" width="120" height="48" rx="8" fill="#dc2626" opacity="0.1" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="90" y="226" text-anchor="middle" font-size="14" font-weight="600" fill="#dc2626">Art. 2</text>
+  <text x="90" y="242" text-anchor="middle" font-size="11" fill="#dc2626">Abs. 2 ZGB</text>
+
+  <rect x="30" y="270" width="120" height="48" rx="8" fill="#7c3aed" opacity="0.1" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="90" y="298" text-anchor="middle" font-size="14" font-weight="600" fill="#7c3aed">Art. 3 ZGB</text>
+
+  <rect x="30" y="335" width="120" height="48" rx="8" fill="#ea580c" opacity="0.1" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="90" y="363" text-anchor="middle" font-size="14" font-weight="600" fill="#ea580c">Art. 8 ZGB</text>
+
+  <!-- Verbindungslinien (gestrichelt) -->
+  <line x1="150" y1="99" x2="260" y2="99" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="150" y1="164" x2="260" y2="164" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="150" y1="229" x2="260" y2="229" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="150" y1="294" x2="260" y2="294" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <line x1="150" y1="359" x2="260" y2="359" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+
+  <!-- Rechte Spalte: Inhalte (bewusst gemischt, damit Zuordnung nicht trivial) -->
+  <rect x="260" y="75" width="460" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="490" y="103" text-anchor="middle" font-size="13" fill="#334155">?  →  Rechtsquellen &amp; richterliche Rechtsfindung</text>
+
+  <rect x="260" y="140" width="460" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="490" y="168" text-anchor="middle" font-size="13" fill="#334155">?  →  Gebot: anständiges Verhalten in der Rechtsausübung</text>
+
+  <rect x="260" y="205" width="460" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="490" y="233" text-anchor="middle" font-size="13" fill="#334155">?  →  Offenbarer Missbrauch findet keinen Rechtsschutz</text>
+
+  <rect x="260" y="270" width="460" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="490" y="298" text-anchor="middle" font-size="13" fill="#334155">?  →  Vermutung der Gutgläubigkeit / Bösgläubigkeit</text>
+
+  <rect x="260" y="335" width="460" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="490" y="363" text-anchor="middle" font-size="13" fill="#334155">?  →  Wer Rechte ableitet, muss Tatsachen beweisen</text>
+
+  <!-- Hinweis unten -->
+  <text x="375" y="408" text-anchor="middle" font-size="11" fill="#94a3b8">Welcher Artikel gehört zu welchem Inhalt?</text>
+</svg>
