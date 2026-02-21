@@ -58,6 +58,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .mc-opt.correct .opt-check{background:var(--c-success);border-color:var(--c-success);color:#fff}
 .mc-opt.wrong .opt-check{background:var(--c-error);border-color:var(--c-error);color:#fff}
 .mc-opt.multi-neutral .opt-check{background:var(--c-border);border-color:var(--c-border);color:var(--c-text-soft)}
+.q-context{font-size:.9rem;line-height:1.65;margin-bottom:16px;padding:14px 16px;border-radius:var(--radius);background:var(--c-bg);border-left:4px solid var(--c-primary);color:var(--c-text);font-style:italic}
+.q-context-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c-primary);margin-bottom:4px;font-style:normal}
 .q-text{font-size:1rem;font-weight:500;margin-bottom:18px;line-height:1.65}
 .q-img{margin-bottom:16px;text-align:center}
 .q-img img{max-width:100%;height:auto;border-radius:var(--radius);border:1px solid var(--c-border);box-shadow:var(--shadow-sm);cursor:zoom-in}
@@ -146,6 +148,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .ri-answer{font-size:.85rem;line-height:1.5;color:var(--c-text)}
 .ri-answer strong{font-weight:600}
 .ri-explain{font-size:.82rem;color:var(--c-text-soft);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--c-border)}
+.ri-context{font-size:.82rem;font-style:italic;color:var(--c-text-soft);margin-bottom:6px;padding:8px 10px;background:var(--c-bg);border-left:3px solid var(--c-primary);border-radius:4px;line-height:1.5}
 /* Loading screen */
 .loading{text-align:center;padding:60px 20px}
 .loading .spinner{width:40px;height:40px;border:4px solid var(--c-border);border-top-color:var(--c-primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
@@ -173,6 +176,8 @@ html.dark .badge-type{background:#1a1d27;color:#94a3b8}
 html.dark .topic-row{background:var(--c-surface)}
 html.dark .wrong-item{background:var(--c-surface)}
 html.dark .review-item{background:var(--c-surface)}
+html.dark .q-context{background:var(--c-surface);border-left-color:var(--c-primary);color:var(--c-text)}
+html.dark .ri-context{background:var(--c-surface);border-left-color:var(--c-primary)}
 html.dark .calc-row input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 html.dark .open-answer{background:var(--c-surface);color:var(--c-text);border-color:var(--c-border)}
 html.dark .fill-input{background:var(--c-surface);color:var(--c-text);border-color:var(--c-primary)}
@@ -195,6 +200,7 @@ body{min-height:auto!important;background:#fff!important}
 .ri-img img{max-height:150px}
 .q-img img.zoomed{position:static!important;transform:none!important;box-shadow:none!important;max-height:200px}
 .ri-topic{border:1px solid #ccc}
+.ri-context{background:#f5f5f5!important;border-left-color:#999}
 .topic-row{background:#f5f5f5!important}
 .topic-bar{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .topic-bar-fill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
@@ -721,6 +727,7 @@ function renderQuestion(){
   html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
   html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
   html+='</div>';
+  html+=renderContext(q);
   html+='<div class="q-text">'+q.q+'</div>';
   html+=renderImg(q);
   if(q.type==='mc'){
@@ -752,6 +759,7 @@ function renderQuestion(){
     html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
     html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
     html+='</div>';
+    html+=renderContext(q);
     html+='<div class="q-text">';
     let bIdx=0;
     for(let i=0;i<parts.length;i++){
@@ -991,6 +999,7 @@ function endQuiz(){
       rHtml+='<div class="review-item ri-skipped">';
       rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">⏭️</span>';
       rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
+      if(q.context)rHtml+='<div class="ri-context">'+q.context+'</div>';
       rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
       rHtml+='</div>';
       return;
@@ -1000,6 +1009,7 @@ function endQuiz(){
     rHtml+='<div class="review-item '+cls+'">';
     rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">'+icon+'</span>';
     rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
+    if(q.context)rHtml+='<div class="ri-context">'+q.context+'</div>';
     rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
     if(q.img)rHtml+='<div class="ri-img"><img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'"></div>';
     rHtml+='<div class="ri-answer"><strong>Lösung:</strong> '+getCorrectAnswer(q)+'</div>';
@@ -1058,6 +1068,11 @@ function showScreen(id){
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+function renderContext(q){
+  if(!q.context)return '';
+  return '<div class="q-context"><div class="q-context-label">Sachverhalt</div>'+q.context+'</div>';
+}
 
 function renderImg(q){
   if(!q.img)return '';
