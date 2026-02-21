@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 340" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="700" height="340" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Kündigungsfristen im Arbeitsrecht</text>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#94a3b8">Minimale gesetzliche Fristen (OR 335b/c)</text>
+
+  <!-- Zeitachse -->
+  <line x1="80" y1="200" x2="650" y2="200" stroke="#cbd5e1" stroke-width="2"/>
+  <!-- Pfeilspitze -->
+  <polygon points="650,195 665,200 650,205" fill="#cbd5e1"/>
+
+  <!-- Probezeit (1. Monat) -->
+  <!-- Bereich: x=80 bis x=130 -->
+  <rect x="80" y="120" width="50" height="80" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" opacity="0.8"/>
+  <text x="105" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">Probe-</text>
+  <text x="105" y="158" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">zeit</text>
+  <text x="105" y="178" text-anchor="middle" font-size="10" fill="#92400e">(1 Mt.)</text>
+  <circle cx="105" cy="200" r="5" fill="#f59e0b"/>
+  <text x="105" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#f59e0b">?</text>
+  <text x="105" y="240" text-anchor="middle" font-size="9" fill="#94a3b8">OR 335b</text>
+
+  <!-- 1. Dienstjahr -->
+  <!-- Bereich: x=160 bis x=260 -->
+  <rect x="160" y="120" width="100" height="80" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5" opacity="0.8"/>
+  <text x="210" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">1. Dienstjahr</text>
+  <text x="210" y="165" text-anchor="middle" font-size="22">📅</text>
+  <circle cx="210" cy="200" r="5" fill="#2563eb"/>
+  <text x="210" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#2563eb">?</text>
+  <text x="210" y="240" text-anchor="middle" font-size="9" fill="#94a3b8">OR 335c</text>
+
+  <!-- 2.–9. Dienstjahr -->
+  <!-- Bereich: x=290 bis x=440 -->
+  <rect x="290" y="120" width="150" height="80" rx="4" fill="#d1fae5" stroke="#16a34a" stroke-width="1.5" opacity="0.8"/>
+  <text x="365" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#166534">2.–9. Dienstjahr</text>
+  <text x="365" y="165" text-anchor="middle" font-size="22">📅📅</text>
+  <circle cx="365" cy="200" r="5" fill="#16a34a"/>
+  <text x="365" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#16a34a">?</text>
+  <text x="365" y="240" text-anchor="middle" font-size="9" fill="#94a3b8">OR 335c</text>
+
+  <!-- Ab 10. Dienstjahr -->
+  <!-- Bereich: x=470 bis x=640 -->
+  <rect x="470" y="120" width="170" height="80" rx="4" fill="#fce7f3" stroke="#dc2626" stroke-width="1.5" opacity="0.8"/>
+  <text x="555" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">Ab 10. Dienstjahr</text>
+  <text x="555" y="165" text-anchor="middle" font-size="22">📅📅📅</text>
+  <circle cx="555" cy="200" r="5" fill="#dc2626"/>
+  <text x="555" y="225" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">?</text>
+  <text x="555" y="240" text-anchor="middle" font-size="9" fill="#94a3b8">OR 335c</text>
+
+  <!-- Achsenbeschriftung -->
+  <text x="80" y="270" text-anchor="middle" font-size="9" fill="#64748b">0</text>
+  <text x="160" y="270" text-anchor="middle" font-size="9" fill="#64748b">1</text>
+  <text x="290" y="270" text-anchor="middle" font-size="9" fill="#64748b">2</text>
+  <text x="440" y="270" text-anchor="middle" font-size="9" fill="#64748b">9</text>
+  <text x="470" y="270" text-anchor="middle" font-size="9" fill="#64748b">10</text>
+  <text x="640" y="270" text-anchor="middle" font-size="9" fill="#64748b">Jahre</text>
+
+  <!-- Hinweis -->
+  <text x="350" y="300" text-anchor="middle" font-size="10" fill="#94a3b8">Kündigungstermin: jeweils auf das Ende des Monats</text>
+  <text x="350" y="316" text-anchor="middle" font-size="10" fill="#94a3b8">Ergänze die fehlenden Kündigungsfristen</text>
+</svg>
