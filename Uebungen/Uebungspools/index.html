@@ -32,6 +32,11 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .fach-header .fach-questions{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:10px;background:var(--c-bg);color:var(--c-text-soft)}
 .fach-header .chevron{width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--c-text-soft);transition:transform .25s ease;flex-shrink:0}
 .fach-section.open .chevron{transform:rotate(180deg)}
+.fach-all-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:16px;font-size:.75rem;font-weight:600;text-decoration:none;border:1.5px solid;transition:.2s;white-space:nowrap;flex-shrink:0}
+.fach-all-btn:hover{color:#fff!important}
+.fach-all-btn.fach-all-vwl{color:var(--c-vwl);border-color:var(--c-vwl)}.fach-all-btn.fach-all-vwl:hover{background:var(--c-vwl)}
+.fach-all-btn.fach-all-bwl{color:var(--c-bwl);border-color:var(--c-bwl)}.fach-all-btn.fach-all-bwl:hover{background:var(--c-bwl)}
+.fach-all-btn.fach-all-recht{color:var(--c-recht);border-color:var(--c-recht)}.fach-all-btn.fach-all-recht:hover{background:var(--c-recht)}
 
 /* Klappbarer Inhalt */
 .fach-body{overflow:hidden;transition:max-height .3s ease,opacity .25s ease;max-height:0;opacity:0}
@@ -308,6 +313,10 @@ function render() {
     if (totalQ > 0) {
       html += '<span class="fach-questions">' + totalQ + ' Fragen</span>';
     }
+    if (pools.length > 1) {
+      var allIds = pools.map(p => p.id).join(',');
+      html += '<a href="pool.html?pools=' + allIds + '" class="fach-all-btn fach-all-' + colorClass + '" onclick="event.stopPropagation()" title="Alle ' + fach + '-Pools kombiniert üben">🎯 Alle</a>';
+    }
     html += '</div>';
     html += '<div class="chevron">' + CHEVRON_SVG + '</div>';
     html += '</div>';
@@ -329,14 +338,6 @@ function render() {
         html += '</a>';
       });
       html += '</div>';
-      // "Ganzer Fachbereich" link
-      if (pools.length > 1) {
-        var allIds = pools.map(p => p.id).join(',');
-        html += '<div style="text-align:center;margin-top:12px">';
-        html += '<a href="pool.html?pools=' + allIds + '" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;font-size:.85rem;font-weight:600;text-decoration:none;color:' + dotColor + ';border:2px solid ' + dotColor + ';transition:.2s" onmouseover="this.style.background=\'' + dotColor + '\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'' + dotColor + '\'">';
-        html += '🎯 Ganzer Fachbereich ' + fach + ' (' + totalQ + ' Fragen)';
-        html += '</a></div>';
-      }
     }
     html += '</div></div>';
     html += '</div>';
