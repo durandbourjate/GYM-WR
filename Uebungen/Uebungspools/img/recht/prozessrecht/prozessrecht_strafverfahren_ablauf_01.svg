@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 280" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="700" height="280" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Ablauf eines Strafverfahrens</text>
+
+  <!-- Phase 1: Einleitung -->
+  <rect x="20" y="56" width="120" height="80" rx="10" fill="#fef3e2" stroke="#f89907" stroke-width="2"/>
+  <text x="80" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#f89907">1. EINLEITUNG</text>
+  <text x="80" y="102" text-anchor="middle" font-size="10" fill="#1e293b">Strafanzeige /</text>
+  <text x="80" y="116" text-anchor="middle" font-size="10" fill="#1e293b">Strafantrag</text>
+
+  <!-- Pfeil 1→2 -->
+  <line x1="140" y1="96" x2="160" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="156,90 168,96 156,102" fill="#94a3b8"/>
+
+  <!-- Phase 2: Vorverfahren -->
+  <rect x="168" y="56" width="140" height="80" rx="10" fill="#fef3e2" stroke="#f89907" stroke-width="2"/>
+  <text x="238" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#f89907">2. VORVERFAHREN</text>
+  <text x="238" y="102" text-anchor="middle" font-size="10" fill="#1e293b">Polizei: Ermittlung</text>
+  <text x="238" y="116" text-anchor="middle" font-size="10" fill="#1e293b">StA: Untersuchung</text>
+
+  <!-- Pfeil 2→3 -->
+  <line x1="308" y1="96" x2="328" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="324,90 336,96 324,102" fill="#94a3b8"/>
+
+  <!-- Phase 3: Anklage -->
+  <rect x="336" y="56" width="120" height="80" rx="10" fill="#fef3e2" stroke="#f89907" stroke-width="2"/>
+  <text x="396" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#f89907">3. ANKLAGE</text>
+  <text x="396" y="102" text-anchor="middle" font-size="10" fill="#1e293b">Anklageerhebung</text>
+  <text x="396" y="116" text-anchor="middle" font-size="10" fill="#1e293b">durch die StA</text>
+
+  <!-- Pfeil 3→4 -->
+  <line x1="456" y1="96" x2="476" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="472,90 484,96 472,102" fill="#94a3b8"/>
+
+  <!-- Phase 4: Hauptverhandlung -->
+  <rect x="484" y="56" width="120" height="80" rx="10" fill="#fef3e2" stroke="#f89907" stroke-width="2"/>
+  <text x="544" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#f89907">4. HAUPT-</text>
+  <text x="544" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="#f89907">VERHANDLUNG</text>
+  <text x="544" y="110" text-anchor="middle" font-size="10" fill="#1e293b">Beweisaufnahme</text>
+  <text x="544" y="124" text-anchor="middle" font-size="10" fill="#1e293b">Plädoyers</text>
+
+  <!-- Pfeil 4→5 -->
+  <line x1="604" y1="96" x2="624" y2="96" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="620,90 632,96 620,102" fill="#94a3b8"/>
+
+  <!-- Phase 5: Urteil -->
+  <rect x="632" y="56" width="50" height="80" rx="10" fill="#f89907"/>
+  <text x="657" y="93" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff" transform="rotate(-90, 657, 96)">URTEIL</text>
+
+  <!-- Beteiligte -->
+  <text x="350" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#64748b">Beteiligte</text>
+
+  <!-- Rolle 1: Staatsanwaltschaft -->
+  <rect x="40" y="186" width="180" height="46" rx="8" fill="#e2e8f0"/>
+  <text x="130" y="207" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Staatsanwaltschaft</text>
+  <text x="130" y="222" text-anchor="middle" font-size="10" fill="#64748b">Anklage, Untersuchung</text>
+
+  <!-- Rolle 2: Beschuldigte/r -->
+  <rect x="240" y="186" width="180" height="46" rx="8" fill="#e2e8f0"/>
+  <text x="330" y="207" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Beschuldigte/r</text>
+  <text x="330" y="222" text-anchor="middle" font-size="10" fill="#64748b">Unschuldsvermutung</text>
+
+  <!-- Rolle 3: Gericht -->
+  <rect x="440" y="186" width="180" height="46" rx="8" fill="#e2e8f0"/>
+  <text x="530" y="207" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Gericht</text>
+  <text x="530" y="222" text-anchor="middle" font-size="10" fill="#64748b">Urteil, unabhängig</text>
+
+  <!-- Hinweis -->
+  <text x="350" y="264" text-anchor="middle" font-size="10" fill="#94a3b8">StA = Staatsanwaltschaft</text>
+</svg>
