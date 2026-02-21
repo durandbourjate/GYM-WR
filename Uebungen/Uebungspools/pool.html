@@ -109,6 +109,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .sort-cats{display:grid;gap:12px;margin-top:8px}
 .sort-cat{border:2px dashed var(--c-border);border-radius:var(--radius);padding:12px;min-height:60px;transition:.2s}
 .sort-cat:hover{border-color:var(--c-primary-light)}
+/* Pulse-Hinweis wenn Item ausgewählt ist */
+.sort-cat.awaiting{border-color:var(--c-primary);border-style:solid;background:color-mix(in srgb,var(--c-primary) 5%,transparent)}
 .sort-cat.active{border-color:var(--c-primary);background:color-mix(in srgb,var(--c-primary) 8%,transparent)}
 .sort-cat-title{font-weight:700;font-size:.85rem;color:var(--c-text);margin-bottom:8px}
 .sort-cat-items{display:flex;flex-wrap:wrap;gap:6px}
@@ -260,7 +262,125 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 .btn-back:hover{border-color:var(--c-primary);color:var(--c-primary);background:color-mix(in srgb,var(--c-primary) 8%,transparent)}
 .kbd-hint{font-size:.72rem;color:var(--c-text-soft);text-align:center;margin-top:8px;opacity:.6}
 .kbd-hint kbd{background:var(--c-bg);border:1px solid var(--c-border);border-radius:4px;padding:1px 6px;font-family:'DM Mono',monospace;font-size:.7rem}
-@media(max-width:500px){.mode-cards{grid-template-columns:1fr}.container{padding:12px 10px 80px}.card{padding:18px}.tf-btns{grid-template-columns:1fr}.kbd-hint{display:none}}
+/* ═══ MOBILE RESPONSIVE ═══ */
+@media(max-width:600px){
+  /* Container & Cards */
+  .container{padding:12px 10px 80px}
+  .card{padding:16px 14px}
+  .mode-cards{grid-template-columns:1fr}
+  .tf-btns{grid-template-columns:1fr}
+  .kbd-hint{display:none}
+
+  /* ── Badges kompakter ── */
+  .q-badges{gap:4px;margin-bottom:10px}
+  .badge{font-size:.62rem;padding:2px 7px;letter-spacing:.02em}
+  .badge-progress,.badge-score{font-size:.68rem}
+  /* Typ-Badge auf Mobile ausblenden (spart Platz, Typ ist aus Aufgabe erkennbar) */
+  .badge-type{display:none}
+
+  /* ── Frage-Text ── */
+  .q-text{font-size:.93rem;margin-bottom:14px}
+  .q-context{font-size:.84rem;padding:10px 12px}
+
+  /* ── Zuordnungs-Aufgaben: Kategorien vertikal stapeln ── */
+  .sort-cats{grid-template-columns:1fr!important;gap:10px}
+  .sort-cat{min-height:48px;padding:10px}
+  .sort-cat-title{font-size:.82rem}
+  .sort-pool{padding:10px;gap:6px}
+  .sort-item{padding:7px 12px;font-size:.82rem}
+  .sort-cat-item{padding:5px 10px;font-size:.8rem}
+
+  /* ── Aktions-Buttons: sauber umbrechen ── */
+  .q-action-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:14px;
+  }
+  .q-action-row .btn{
+    font-size:.82rem;
+    padding:10px 12px;
+    min-height:44px;
+    white-space:nowrap;
+  }
+  .q-action-row .btn-back{
+    grid-column:1;
+    justify-content:center;
+  }
+  .q-action-row .btn-primary{
+    grid-column:1/-1;
+    width:100%;
+    justify-content:center;
+    order:-1;
+  }
+  .q-action-row .btn-skip{
+    grid-column:1/-1;
+    width:100%;
+    justify-content:center;
+    margin-left:0;
+  }
+  .q-action-row .btn-accent{
+    grid-column:1/-1;
+    width:100%;
+    justify-content:center;
+    margin-left:0;
+  }
+  /* Wenn Zurück + Tipps nebeneinander */
+  .q-action-row .btn-outline{
+    justify-content:center;
+  }
+  /* Zurück-Button: nur Icon auf sehr schmalen Screens */
+  .q-action-row .btn-back{font-size:.8rem;padding:10px 14px}
+
+  /* ── Bottom Row: grössere Touch-Targets ── */
+  .q-bottom-row{
+    margin-top:12px;
+    padding-top:12px;
+  }
+  .btn-end,.btn-report{
+    min-height:44px;
+    padding:8px 12px;
+    font-size:.8rem;
+    display:inline-flex;
+    align-items:center;
+  }
+
+  /* ── MC-Optionen kompakter ── */
+  .mc-opt{padding:11px 12px;gap:10px}
+  .mc-opt .opt-text{font-size:.88rem}
+  .mc-opt .opt-letter{min-width:22px;height:22px;font-size:.8rem}
+
+  /* ── Calc-Rows ── */
+  .calc-row{gap:8px}
+  .calc-row label{font-size:.85rem;min-width:0;flex:1 1 100%}
+  .calc-row input{width:80px;padding:8px;font-size:.88rem}
+
+  /* ── Fill-Input ── */
+  .fill-input{min-width:90px;font-size:.88rem;padding:5px 8px}
+
+  /* ── Result Screen ── */
+  .result-score .big{font-size:2.2rem}
+  .result-score .pct{font-size:1.2rem}
+
+  /* ── Feedback ── */
+  .feedback{padding:12px;font-size:.85rem;margin-top:12px}
+
+  /* ── Chips ── */
+  .chips{gap:6px}
+  .chip{padding:5px 11px;font-size:.78rem}
+
+  /* ── Filter-Header ── */
+  .filter-header h2{font-size:.95rem}
+
+  /* ── Report Modal ── */
+  .report-box{padding:18px}
+  .report-cats{gap:6px}
+  .report-cat{padding:5px 10px;font-size:.78rem}
+
+  /* ── Fill Hints ── */
+  .fill-hints{padding:10px;gap:6px}
+  .fill-hint-word{padding:4px 10px;font-size:.82rem}
+}
 /* ═══ KOMPAKTER HEADER beim Scrollen (Mobile) ═══ */
 .app-header{transition:padding .25s ease}
 .app-header .meta{transition:font-size .25s ease,margin-top .25s ease,opacity .25s ease,max-height .25s ease;overflow:hidden;max-height:2em}
@@ -1161,6 +1281,8 @@ function pickSortItem(el){
   if(el.classList.contains('placed'))return;
   document.querySelectorAll('.sort-item').forEach(s=>s.classList.remove('picked'));
   el.classList.add('picked'); pickedSortItem=el;
+  // Highlight categories as drop targets
+  document.querySelectorAll('.sort-cat').forEach(c=>c.classList.add('awaiting'));
 }
 
 function placeSortItem(catEl,cidx){
@@ -1178,6 +1300,8 @@ function placeSortItem(catEl,cidx){
   pickedSortItem.classList.add('placed');
   pickedSortItem.classList.remove('picked');
   pickedSortItem=null;
+  // Remove drop target highlight
+  document.querySelectorAll('.sort-cat').forEach(c=>c.classList.remove('awaiting'));
 }
 
 function answerSort(qid){
