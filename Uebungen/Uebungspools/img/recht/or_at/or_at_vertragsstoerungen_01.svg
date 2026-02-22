@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="400" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Störungen der Vertragserfüllung</text>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#94a3b8">Drei Arten von Leistungsstörungen</text>
+
+  <!-- Oberbegriff -->
+  <rect x="225" y="70" width="250" height="36" rx="8" fill="#73ab2c" opacity="0.15" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="350" y="93" text-anchor="middle" font-size="13" font-weight="600" fill="#2e7d32">Vertragsstörung</text>
+
+  <!-- Linien -->
+  <line x1="280" y1="106" x2="120" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="350" y1="106" x2="350" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="420" y1="106" x2="580" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Schuldnerverzug -->
+  <rect x="15" y="140" width="210" height="220" rx="10" fill="#fce4ec" stroke="#e53935" stroke-width="1.5"/>
+  <text x="120" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#c62828">Schuldnerverzug</text>
+  <text x="120" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="#e53935">OR 102 ff.</text>
+  <line x1="40" y1="198" x2="200" y2="198" stroke="#ef9a9a" stroke-width="1"/>
+  <text x="120" y="216" text-anchor="middle" font-size="10" fill="#1e293b">Schuldner leistet nicht</text>
+  <text x="120" y="231" text-anchor="middle" font-size="10" fill="#1e293b">rechtzeitig</text>
+  <text x="120" y="255" text-anchor="middle" font-size="10" font-weight="600" fill="#1e293b">Voraussetzungen:</text>
+  <text x="120" y="273" text-anchor="middle" font-size="10" fill="#1e293b">• Fälligkeit</text>
+  <text x="120" y="288" text-anchor="middle" font-size="10" fill="#1e293b">• Mahnung (OR 102 I)</text>
+  <text x="120" y="303" text-anchor="middle" font-size="10" fill="#1e293b">• Leistungsmöglichkeit</text>
+  <rect x="35" y="316" width="170" height="30" rx="6" fill="#ffffff" stroke="#ef9a9a" stroke-width="1"/>
+  <text x="120" y="330" text-anchor="middle" font-size="9" fill="#64748b">Folge: Nachfrist setzen</text>
+  <text x="120" y="342" text-anchor="middle" font-size="9" fill="#64748b">(OR 107/108)</text>
+
+  <!-- Sachgewährleistung -->
+  <rect x="245" y="140" width="210" height="220" rx="10" fill="#e3f2fd" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="350" y="163" text-anchor="middle" font-size="14" font-weight="700" fill="#1565c0">Sach-</text>
+  <text x="350" y="180" text-anchor="middle" font-size="14" font-weight="700" fill="#1565c0">gewährleistung</text>
+  <text x="350" y="198" text-anchor="middle" font-size="11" font-weight="500" fill="#2563eb">OR 197 ff.</text>
+  <line x1="270" y1="208" x2="430" y2="208" stroke="#90caf9" stroke-width="1"/>
+  <text x="350" y="226" text-anchor="middle" font-size="10" fill="#1e293b">Sache hat Mängel</text>
+  <text x="350" y="255" text-anchor="middle" font-size="10" font-weight="600" fill="#1e293b">Rechte des Käufers:</text>
+  <text x="350" y="273" text-anchor="middle" font-size="10" fill="#1e293b">• Wandelung (OR 205)</text>
+  <text x="350" y="288" text-anchor="middle" font-size="10" fill="#1e293b">• Minderung (OR 205)</text>
+  <text x="350" y="303" text-anchor="middle" font-size="10" fill="#1e293b">• Ersatzlieferung</text>
+  <rect x="270" y="316" width="160" height="30" rx="6" fill="#ffffff" stroke="#bbdefb" stroke-width="1"/>
+  <text x="350" y="330" text-anchor="middle" font-size="9" fill="#64748b">Rüge sofort!</text>
+  <text x="350" y="342" text-anchor="middle" font-size="9" fill="#64748b">(OR 201)</text>
+
+  <!-- Gläubigerverzug -->
+  <rect x="475" y="140" width="210" height="220" rx="10" fill="#fff3e0" stroke="#f89907" stroke-width="1.5"/>
+  <text x="580" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#e65100">Gläubigerverzug</text>
+  <text x="580" y="186" text-anchor="middle" font-size="11" font-weight="500" fill="#f89907">OR 91 ff.</text>
+  <line x1="500" y1="198" x2="660" y2="198" stroke="#ffcc80" stroke-width="1"/>
+  <text x="580" y="216" text-anchor="middle" font-size="10" fill="#1e293b">Gläubiger nimmt Leistung</text>
+  <text x="580" y="231" text-anchor="middle" font-size="10" fill="#1e293b">nicht an</text>
+  <text x="580" y="255" text-anchor="middle" font-size="10" font-weight="600" fill="#1e293b">Folgen für Schuldner:</text>
+  <text x="580" y="273" text-anchor="middle" font-size="10" fill="#1e293b">• Hinterlegung (OR 92)</text>
+  <text x="580" y="288" text-anchor="middle" font-size="10" fill="#1e293b">• Selbsthilfeverkauf</text>
+  <text x="580" y="303" text-anchor="middle" font-size="10" fill="#1e293b">  (OR 93)</text>
+  <text x="580" y="321" text-anchor="middle" font-size="10" fill="#1e293b">• Rücktritt (OR 95)</text>
+
+  <text x="350" y="390" text-anchor="middle" font-size="10" fill="#94a3b8">Die drei Hauptstörungen der Vertragserfüllung im OR AT</text>
+</svg>
