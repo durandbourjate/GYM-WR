@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Übungspool: Kryptographie | Informatik</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --c-bg: #f0f2f5;
+    --c-surface: #ffffff;
+    --c-primary: #1a365d;
+    --c-primary-light: #2a5298;
+    --c-accent: #e8a838;
+    --c-accent-light: #fef3c7;
+    --c-success: #16a34a;
+    --c-success-bg: #f0fdf4;
+    --c-error: #dc2626;
+    --c-error-bg: #fef2f2;
+    --c-info: #2563eb;
+    --c-info-bg: #eff6ff;
+    --c-text: #1e293b;
+    --c-text-soft: #64748b;
+    --c-border: #e2e8f0;
+    --c-hover: #f8fafc;
+    --radius: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--c-bg);
+    color: var(--c-text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .app-header {
+    background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+    color: white;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .app-header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+  .app-header .meta { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px 100px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .start-card {
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--c-border);
+  }
+  .start-card h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--c-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .start-card h2 .icon { font-size: 1.2rem; }
+
+  .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+  .mode-card {
+    padding: 18px 16px;
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .mode-card:hover { border-color: var(--c-primary-light); background: var(--c-hover); }
+  .mode-card.selected { border-color: var(--c-primary); background: #eef2ff; }
+  .mode-card .mode-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .mode-card .mode-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 4px; }
+  .mode-card .mode-desc { font-size: 0.78rem; color: var(--c-text-soft); line-height: 1.4; }
+
+  .filter-group { margin-bottom: 16px; }
+  .filter-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--c-text-soft);
+    margin-bottom: 8px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 6px 14px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--c-primary-light); }
+  .chip.selected { background: var(--c-primary); color: white; border-color: var(--c-primary); }
+  .chip .chip-count {
+    display: inline-block;
+    background: rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: 0.72rem;
+    margin-left: 4px;
+  }
+  .chip.selected .chip-count { background: rgba(255,255,255,0.25); }
+
+  .start-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--c-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .start-btn:hover { background: var(--c-primary-light); }
+  .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .question-count-info {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--c-text-soft);
+    margin-bottom: 14px;
+    min-height: 1.4em;
+  }
+
+  .quiz-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: var(--c-text-soft);
+  }
+  .quiz-progress-track {
+    height: 5px;
+    background: var(--c-border);
+    border-radius: 3px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--c-accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .q-card {
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--c-border);
+    margin-bottom: 16px;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-badges { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .q-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+  .badge-topic { background: #dbeafe; color: #1e40af; }
+  .badge-diff-1 { background: #dcfce7; color: #166534; }
+  .badge-diff-2 { background: #fef9c3; color: #854d0e; }
+  .badge-diff-3 { background: #fee2e2; color: #991b1b; }
+  .badge-type { background: #f3e8ff; color: #7c3aed; }
+  .badge-tax { background: #e0e7ff; color: #3730a3; }
+
+  .q-text {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 2px solid var(--c-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .q-opt:hover { border-color: #94a3b8; background: var(--c-hover); }
+  .q-opt.selected { border-color: var(--c-info); background: var(--c-info-bg); }
+  .q-opt.correct { border-color: var(--c-success); background: var(--c-success-bg); }
+  .q-opt.wrong { border-color: var(--c-error); background: var(--c-error-bg); }
+  .q-opt.was-correct { border-color: var(--c-success); background: var(--c-success-bg); }
+  .q-opt.locked { cursor: default; pointer-events: none; }
+  .q-opt-marker {
+    width: 26px; height: 26px; min-width: 26px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: #94a3b8;
+    transition: all 0.15s;
+  }
+  .q-opt.selected .q-opt-marker { border-color: var(--c-info); color: var(--c-info); }
+  .q-opt.correct .q-opt-marker { border-color: var(--c-success); color: white; background: var(--c-success); }
+  .q-opt.wrong .q-opt-marker { border-color: var(--c-error); color: white; background: var(--c-error); }
+  .q-opt.was-correct .q-opt-marker { border-color: var(--c-success); color: white; background: var(--c-success); }
+
+  .q-fill-input {
+    display: inline-block;
+    border: none;
+    border-bottom: 2px solid var(--c-info);
+    background: #f8fafc;
+    padding: 3px 6px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    width: 180px;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .q-fill-input:focus { border-color: var(--c-primary); background: var(--c-info-bg); }
+  .q-fill-input.correct { border-color: var(--c-success); background: var(--c-success-bg); color: #166534; }
+  .q-fill-input.wrong { border-color: var(--c-error); background: var(--c-error-bg); color: #991b1b; }
+
+  .q-calc-input {
+    width: 90px;
+    padding: 7px 10px;
+    border: 2px solid var(--c-border);
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    text-align: right;
+    outline: none;
+  }
+  .q-calc-input:focus { border-color: var(--c-info); }
+  .q-calc-input.correct { border-color: var(--c-success); background: var(--c-success-bg); }
+  .q-calc-input.wrong { border-color: var(--c-error); background: var(--c-error-bg); }
+
+  .q-feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    display: none;
+  }
+  .q-feedback.visible { display: block; animation: fadeIn 0.25s ease; }
+  .q-feedback.success { background: var(--c-success-bg); border: 1px solid #bbf7d0; color: #166534; }
+  .q-feedback.error { background: var(--c-error-bg); border: 1px solid #fecaca; color: #991b1b; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-check { background: var(--c-primary); color: white; }
+  .btn-check:hover { background: var(--c-primary-light); }
+  .btn-next { background: var(--c-accent); color: var(--c-primary); }
+  .btn-next:hover { background: #d4952e; }
+  .btn-stop { background: #fee2e2; color: var(--c-error); }
+  .btn-stop:hover { background: #fecaca; }
+  .btn-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+  .results-card {
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--c-border);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .results-score {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    line-height: 1;
+    margin: 12px 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .results-label { font-size: 0.85rem; color: var(--c-text-soft); }
+  .results-bar {
+    height: 8px;
+    background: var(--c-border);
+    border-radius: 4px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .results-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .topic-breakdown { text-align: left; margin-top: 16px; }
+  .topic-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--c-border);
+    font-size: 0.88rem;
+  }
+  .topic-row:last-child { border-bottom: none; }
+  .topic-row .topic-name { font-weight: 500; }
+  .topic-row .topic-score { font-family: 'DM Mono', monospace; font-weight: 600; }
+  .topic-score.good { color: var(--c-success); }
+  .topic-score.ok { color: #d97706; }
+  .topic-score.bad { color: var(--c-error); }
+
+  .wrong-list { text-align: left; margin-top: 16px; }
+  .wrong-item {
+    padding: 14px 16px;
+    background: var(--c-error-bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    border: 1px solid #fecaca;
+  }
+  .wrong-item .wi-q { font-weight: 600; margin-bottom: 6px; color: #991b1b; }
+  .wrong-item .wi-a { color: #166534; }
+
+  @media print {
+    .app-header { position: static !important; box-shadow: none !important; }
+    .btn, .quiz-topbar, .q-badges .badge-type, .q-badges .badge-tax { display: none !important; }
+    .q-card { break-inside: avoid; box-shadow: none !important; }
+    .q-feedback.visible { display: block !important; }
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 14px 10px 80px; }
+    .start-card, .q-card, .results-card { padding: 20px 16px; }
+    .mode-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>Übungspool: Kryptographie</h1>
+  <div class="meta">Informatik · Gymnasium Hofwil · Individuell üben</div>
+</div>
+
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="startScreen">
+    <div class="start-card">
+      <h2><span class="icon">🎯</span> Modus wählen</h2>
+      <div class="mode-cards">
+        <div class="mode-card selected" data-mode="fokus" onclick="selectMode(this)">
+          <div class="mode-icon">🔍</div>
+          <div class="mode-title">Fokus</div>
+          <div class="mode-desc">Üben Sie gezielt ein Unterthema — von einfach nach schwierig.</div>
+        </div>
+        <div class="mode-card" data-mode="mix" onclick="selectMode(this)">
+          <div class="mode-icon">🔀</div>
+          <div class="mode-title">Mix</div>
+          <div class="mode-desc">Zufällige Mischung aller Themen — ideal zur Repetition.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="start-card" id="filterCard">
+      <h2><span class="icon">⚙️</span> Übungen anpassen</h2>
+      <div class="filter-group">
+        <div class="filter-label">Unterthema</div>
+        <div class="chips" id="topicChips"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Schwierigkeit</div>
+        <div class="chips" id="diffChips">
+          <div class="chip" data-diff="1" onclick="toggleChip(this, 'diff')">⭐ Einfach</div>
+          <div class="chip" data-diff="2" onclick="toggleChip(this, 'diff')">⭐⭐ Mittel</div>
+          <div class="chip" data-diff="3" onclick="toggleChip(this, 'diff')">⭐⭐⭐ Schwer</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Fragetyp</div>
+        <div class="chips" id="typeChips">
+          <div class="chip selected" data-type="mc" onclick="toggleChip(this, 'type')">Multiple Choice</div>
+          <div class="chip selected" data-type="tf" onclick="toggleChip(this, 'type')">Richtig/Falsch</div>
+          <div class="chip selected" data-type="fill" onclick="toggleChip(this, 'type')">Lückentext</div>
+          <div class="chip selected" data-type="calc" onclick="toggleChip(this, 'type')">Berechnung</div>
+          <div class="chip selected" data-type="sort" onclick="toggleChip(this, 'type')">Zuordnung</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="start-card">
+      <div class="question-count-info" id="questionCountInfo">Laden…</div>
+      <button class="start-btn" id="startBtn" onclick="startQuiz()">Übung starten</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quizScreen">
+    <div class="quiz-topbar">
+      <span id="quizCounter">Aufgabe 1 / 10</span>
+      <span id="quizScore">0 Punkte</span>
+    </div>
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="quizProgressFill"></div>
+    </div>
+    <div id="quizContent"></div>
+    <div class="btn-row" style="justify-content:center; margin-top:12px;">
+      <button class="btn btn-stop" onclick="endQuiz()">Übung beenden</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="resultsScreen">
+    <div class="results-card">
+      <h2 style="justify-content:center;">Zusammenfassung</h2>
+      <div class="results-score" id="resultsScore">0/0</div>
+      <div class="results-label" id="resultsLabel">Punkte erreicht</div>
+      <div class="results-bar"><div class="results-bar-fill" id="resultsBarFill"></div></div>
+      <div class="topic-breakdown" id="topicBreakdown"></div>
+    </div>
+    <div class="results-card" id="wrongCard" style="display:none;">
+      <h2 style="justify-content:center; color:var(--c-error);">Zum Repetieren</h2>
+      <div class="wrong-list" id="wrongList"></div>
+    </div>
+    <div class="results-card">
+      <button class="start-btn" onclick="exportResults()">📄 Als PDF speichern</button>
+      <div style="height:10px;"></div>
+      <button class="start-btn" style="background:var(--c-accent); color:var(--c-primary);" onclick="resetApp()">Neue Übung starten</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// AUFGABENPOOL
+// ══════════════════════════════════════════
+const QUESTIONS = [
+
+  // ── SICHERHEITSZIELE ──
+  {id:"s01", topic:"sicherheit", type:"mc", diff:1, tax:"K1",
+   q:"Welches Sicherheitsziel beschreibt, dass eine Nachricht nur vom vorgesehenen Empfänger gelesen werden kann?",
+   options:[
+     {v:"A", t:"Integrität"},
+     {v:"B", t:"Vertraulichkeit"},
+     {v:"C", t:"Authentizität"},
+     {v:"D", t:"Verfügbarkeit"}
+   ],
+   correct:"B",
+   explain:"Vertraulichkeit (Confidentiality) bedeutet, dass nur autorisierte Personen Zugang zu einer Information haben. Integrität betrifft die Unverändertheit, Authentizität die Echtheit des Absenders, Verfügbarkeit die Erreichbarkeit."
+  },
+  {id:"s02", topic:"sicherheit", type:"mc", diff:1, tax:"K1",
+   q:"Welches Sicherheitsziel ist verletzt, wenn Eve eine Nachricht zwischen Alice und Bob unbemerkt verändert?",
+   options:[
+     {v:"A", t:"Vertraulichkeit"},
+     {v:"B", t:"Verfügbarkeit"},
+     {v:"C", t:"Integrität"},
+     {v:"D", t:"Authentizität"}
+   ],
+   correct:"C",
+   explain:"Integrität bedeutet, dass Daten vollständig und unverändert sind. Wenn Eve die Nachricht verändert (Teile löscht, hinzufügt oder ändert), ist die Integrität verletzt — auch wenn sie die Nachricht gar nicht lesen kann."
+  },
+  {id:"s03", topic:"sicherheit", type:"tf", diff:1, tax:"K1",
+   q:"Authentizität bedeutet, dass man sicher sein kann, mit wem man kommuniziert.",
+   correct: true,
+   explain:"Richtig. Authentizität (Authentication) stellt sicher, dass der Kommunikationspartner tatsächlich die Person ist, die er vorgibt zu sein. Ohne Authentizität könnte sich Eve als Bob ausgeben."
+  },
+  {id:"s04", topic:"sicherheit", type:"tf", diff:2, tax:"K2",
+   q:"Wenn Eve eine Nachricht von Alice mitlesen kann, ist sowohl die Vertraulichkeit als auch die Integrität verletzt.",
+   correct: false,
+   explain:"Falsch. Wenn Eve nur mitlest, ist die Vertraulichkeit verletzt. Die Integrität ist nur dann verletzt, wenn Eve die Nachricht auch verändert. Mitlesen allein verändert die Nachricht nicht."
+  },
+  {id:"s05", topic:"sicherheit", type:"sort", diff:1, tax:"K2",
+   q:"Ordnen Sie die Situationen dem jeweils verletzten Sicherheitsziel zu.",
+   categories:["Vertraulichkeit verletzt", "Integrität verletzt", "Authentizität verletzt"],
+   items:[
+     {t:"Eve liest Alices E-Mail", cat:0},
+     {t:"Eve verändert den Betrag in einer Überweisung", cat:1},
+     {t:"Eve gibt sich als Bob aus", cat:2},
+     {t:"Ein Hacker kopiert vertrauliche Daten", cat:0},
+     {t:"Ein Virus verändert eine gespeicherte Datei", cat:1},
+     {t:"Eine Phishing-Mail täuscht eine Bank vor", cat:2}
+   ],
+   explain:"Vertraulichkeit: unbefugtes Lesen/Kopieren. Integrität: unbefugtes Verändern von Daten. Authentizität: sich als jemand anderes ausgeben (Identitätsdiebstahl, Phishing)."
+  },
+  {id:"s06", topic:"sicherheit", type:"mc", diff:2, tax:"K3",
+   q:"Alice verschickt eine Postkarte an Bob. Welche Sicherheitsziele sind potenziell gefährdet?",
+   options:[
+     {v:"A", t:"Nur Vertraulichkeit — jeder kann die Karte lesen."},
+     {v:"B", t:"Vertraulichkeit und Integrität — jeder kann lesen und die Karte könnte verändert werden."},
+     {v:"C", t:"Alle vier Sicherheitsziele sind gefährdet."},
+     {v:"D", t:"Keines — Postkarten sind ein sicheres Kommunikationsmittel."}
+   ],
+   correct:"C",
+   explain:"Postkarten sind unsicher in allen Dimensionen: Jeder kann sie lesen (Vertraulichkeit), der Inhalt könnte verändert werden (Integrität), der Absender könnte gefälscht sein (Authentizität), und die Karte könnte verloren gehen (Verfügbarkeit)."
+  },
+  {id:"s07", topic:"sicherheit", type:"fill", diff:1, tax:"K1",
+   q:"Die vier zentralen Sicherheitsziele der Informationssicherheit sind: {0}, {1}, {2} und {3}.",
+   blanks:[
+     {answer:"Vertraulichkeit", alts:["vertraulichkeit", "Confidentiality"]},
+     {answer:"Integrität", alts:["integrität", "Integrity"]},
+     {answer:"Authentizität", alts:["authentizität", "Authentication"]},
+     {answer:"Verfügbarkeit", alts:["verfügbarkeit", "Availability"]}
+   ],
+   explain:"Die vier Sicherheitsziele: Vertraulichkeit (nur Berechtigte lesen), Integrität (Daten unverändert), Authentizität (Identität gesichert), Verfügbarkeit (System erreichbar)."
+  },
+  {id:"s08", topic:"sicherheit", type:"mc", diff:2, tax:"K3",
+   q:"Im Einstiegsspiel zur Kryptologie versuchen Alice und Bob eine geheime Nachricht zu übermitteln, während Eve mithört. In welchem Szenario ist es am schwierigsten, die Vertraulichkeit zu gewährleisten?",
+   options:[
+     {v:"A", t:"A und B können vorher unter Ausschluss von Eve kommunizieren."},
+     {v:"B", t:"A und B können vorher kommunizieren, aber Eve hört zu."},
+     {v:"C", t:"A und B können vorher gar nicht kommunizieren."},
+     {v:"D", t:"Alle drei Szenarien sind gleich schwierig."}
+   ],
+   correct:"C",
+   explain:"Wenn Alice und Bob vorher gar nicht kommunizieren können, können sie sich nicht auf ein Verschlüsselungsverfahren oder einen Schlüssel einigen. Das entspricht dem Problem der asymmetrischen Kryptographie — wie tauscht man Schlüssel aus, wenn der Kanal nicht sicher ist?"
+  },
+
+  // ── VERSCHLÜSSELUNG GRUNDLAGEN ──
+  {id:"v01", topic:"verschluesselung", type:"mc", diff:1, tax:"K1",
+   q:"Was ist der Unterschied zwischen Kryptographie und Kryptoanalyse?",
+   options:[
+     {v:"A", t:"Kryptographie verschlüsselt, Kryptoanalyse entschlüsselt ohne Schlüssel (=knackt Verschlüsselung)."},
+     {v:"B", t:"Kryptographie ist älter als Kryptoanalyse."},
+     {v:"C", t:"Kryptographie ist symmetrisch, Kryptoanalyse ist asymmetrisch."},
+     {v:"D", t:"Es gibt keinen Unterschied — beide Begriffe meinen dasselbe."}
+   ],
+   correct:"A",
+   explain:"Kryptographie ist die Wissenschaft vom Verschlüsseln von Nachrichten. Kryptoanalyse ist die Wissenschaft vom Brechen von Verschlüsselungen — also dem Entschlüsseln ohne Kenntnis des Schlüssels. Zusammen bilden sie die Kryptologie."
+  },
+  {id:"v02", topic:"verschluesselung", type:"fill", diff:1, tax:"K1",
+   q:"Die Wissenschaft, die sich mit Ver- und Entschlüsselung beschäftigt, heisst {0}. Sie besteht aus der {1} (Verschlüsseln) und der {2} (Brechen von Verschlüsselungen).",
+   blanks:[
+     {answer:"Kryptologie", alts:["kryptologie"]},
+     {answer:"Kryptographie", alts:["kryptographie", "Kryptografie", "kryptografie"]},
+     {answer:"Kryptoanalyse", alts:["kryptoanalyse"]}
+   ],
+   explain:"Kryptologie = Kryptographie (Verschlüsseln) + Kryptoanalyse (Entschlüsseln/Brechen)."
+  },
+  {id:"v03", topic:"verschluesselung", type:"mc", diff:1, tax:"K1",
+   q:"Wie nennt man den unverschlüsselten Originaltext in der Kryptographie?",
+   options:[
+     {v:"A", t:"Chiffretext (Ciphertext)"},
+     {v:"B", t:"Schlüsseltext"},
+     {v:"C", t:"Klartext (Plaintext)"},
+     {v:"D", t:"Quelltext"}
+   ],
+   correct:"C",
+   explain:"Der unverschlüsselte Text heisst Klartext (Plaintext). Der verschlüsselte Text heisst Chiffretext oder Geheimtext (Ciphertext). Der Schlüssel (Key) bestimmt, wie der Klartext in den Chiffretext umgewandelt wird."
+  },
+  {id:"v04", topic:"verschluesselung", type:"tf", diff:1, tax:"K2",
+   q:"Bei der Caesar-Verschlüsselung wird jeder Buchstabe im Alphabet um eine feste Anzahl Stellen verschoben.",
+   correct: true,
+   explain:"Richtig. Die Caesar-Verschlüsselung ist eine einfache Substitutionschiffre. Beispiel mit Verschiebung 3: A→D, B→E, C→F usw. Sie ist nach Julius Caesar benannt, der sie für militärische Nachrichten nutzte."
+  },
+  {id:"v05", topic:"verschluesselung", type:"calc", diff:2, tax:"K3",
+   q:"Verschlüsseln Sie die folgenden Buchstaben mit der Caesar-Verschlüsselung (Verschiebung = 3). Geben Sie die Position des verschlüsselten Buchstabens im Alphabet ein (A=1, B=2, ... Z=26).",
+   rows:[
+     {label:"A (Position 1) wird zu:", answer:4, tolerance:0, unit:"(=D)"},
+     {label:"H (Position 8) wird zu:", answer:11, tolerance:0, unit:"(=K)"},
+     {label:"X (Position 24) wird zu:", answer:1, tolerance:0, unit:"(=A)"}
+   ],
+   explain:"A(1)+3=D(4), H(8)+3=K(11), X(24)+3=A(1) — bei X wird «umgebrochen»: 24+3=27, und 27 mod 26 = 1 (=A). Diese Modulo-Rechnung ist zentral in der Kryptographie."
+  },
+  {id:"v06", topic:"verschluesselung", type:"mc", diff:2, tax:"K2",
+   q:"Warum ist die Caesar-Verschlüsselung unsicher?",
+   options:[
+     {v:"A", t:"Weil es nur 26 mögliche Schlüssel gibt — man kann alle durchprobieren (Brute Force)."},
+     {v:"B", t:"Weil der Schlüssel immer 3 ist."},
+     {v:"C", t:"Weil sie nur auf Latein funktioniert."},
+     {v:"D", t:"Weil Computer sie nicht berechnen können."}
+   ],
+   correct:"A",
+   explain:"Bei 26 Buchstaben gibt es nur 25 sinnvolle Verschiebungen (0 wäre keine Verschlüsselung). Ein Angreifer kann einfach alle 25 Möglichkeiten durchprobieren — ein sogenannter Brute-Force-Angriff. Zudem verrät die Häufigkeitsanalyse der Buchstaben viel über den Klartext."
+  },
+  {id:"v07", topic:"verschluesselung", type:"tf", diff:2, tax:"K2",
+   q:"Die Vigenère-Verschlüsselung ist sicherer als die Caesar-Verschlüsselung, weil sie mehrere verschiedene Verschiebungen verwendet.",
+   correct: true,
+   explain:"Richtig. Bei Vigenère wird ein Schlüsselwort verwendet (z.B. «SCHLUESSEL»). Jeder Buchstabe des Klartextes wird um eine andere Anzahl verschoben, abhängig vom jeweiligen Buchstaben des Schlüsselwortes. Dadurch ist eine einfache Häufigkeitsanalyse nicht mehr möglich."
+  },
+  {id:"v08", topic:"verschluesselung", type:"mc", diff:3, tax:"K4",
+   q:"Eine Häufigkeitsanalyse zeigt, dass in einem mit Caesar verschlüsselten deutschen Text der Buchstabe 'H' am häufigsten vorkommt. Was lässt sich daraus schliessen?",
+   options:[
+     {v:"A", t:"Der Schlüssel ist wahrscheinlich 3, weil H der dritthäufigste Buchstabe im Deutschen ist."},
+     {v:"B", t:"Der häufigste Buchstabe im Deutschen ist 'E'. 'H' liegt 3 Stellen nach 'E', also ist der Schlüssel vermutlich 3."},
+     {v:"C", t:"Die Verschlüsselung ist nicht Caesar, sondern Vigenère."},
+     {v:"D", t:"Man kann daraus nichts schliessen."}
+   ],
+   correct:"B",
+   explain:"Im Deutschen ist 'E' mit Abstand der häufigste Buchstabe. Wenn im Chiffretext 'H' am häufigsten vorkommt und H drei Stellen nach E liegt (E→F→G→H), ist der Schlüssel höchstwahrscheinlich 3. Das ist das Prinzip der Häufigkeitsanalyse."
+  },
+
+  // ── SYMMETRISCH vs. ASYMMETRISCH ──
+  {id:"a01", topic:"symmasymm", type:"mc", diff:1, tax:"K1",
+   q:"Was ist das Hauptmerkmal der symmetrischen Verschlüsselung?",
+   options:[
+     {v:"A", t:"Es werden zwei verschiedene Schlüssel verwendet."},
+     {v:"B", t:"Sender und Empfänger verwenden denselben Schlüssel."},
+     {v:"C", t:"Der Schlüssel ist öffentlich bekannt."},
+     {v:"D", t:"Nur der Empfänger hat einen Schlüssel."}
+   ],
+   correct:"B",
+   explain:"Bei symmetrischer Verschlüsselung verwenden Sender und Empfänger denselben geheimen Schlüssel — sowohl zum Verschlüsseln als auch zum Entschlüsseln. Das Hauptproblem: Wie tauscht man den Schlüssel sicher aus?"
+  },
+  {id:"a02", topic:"symmasymm", type:"mc", diff:1, tax:"K1",
+   q:"Bei der asymmetrischen Verschlüsselung gibt es zwei Schlüssel. Wie heissen sie?",
+   options:[
+     {v:"A", t:"Master Key und Session Key"},
+     {v:"B", t:"Öffentlicher Schlüssel (Public Key) und privater Schlüssel (Private Key)"},
+     {v:"C", t:"Verschlüsselungsschlüssel und Entschlüsselungsschlüssel"},
+     {v:"D", t:"Primärschlüssel und Sekundärschlüssel"}
+   ],
+   correct:"B",
+   explain:"Asymmetrische Verschlüsselung nutzt ein Schlüsselpaar: Der öffentliche Schlüssel (Public Key) kann frei verteilt werden und dient zum Verschlüsseln. Der private Schlüssel (Private Key) bleibt geheim und dient zum Entschlüsseln."
+  },
+  {id:"a03", topic:"symmasymm", type:"tf", diff:2, tax:"K2",
+   q:"Bei asymmetrischer Verschlüsselung kann eine Nachricht, die mit dem öffentlichen Schlüssel verschlüsselt wurde, nur mit dem zugehörigen privaten Schlüssel entschlüsselt werden.",
+   correct: true,
+   explain:"Richtig. Das ist das Grundprinzip: Was mit dem Public Key verschlüsselt wurde, kann nur der Besitzer des Private Keys entschlüsseln. Selbst der Sender kann seine eigene Nachricht nicht mehr entschlüsseln, sobald sie mit dem Public Key des Empfängers verschlüsselt ist."
+  },
+  {id:"a04", topic:"symmasymm", type:"sort", diff:2, tax:"K2",
+   q:"Ordnen Sie die Eigenschaften der symmetrischen oder asymmetrischen Verschlüsselung zu.",
+   categories:["Symmetrisch", "Asymmetrisch"],
+   items:[
+     {t:"Ein gemeinsamer geheimer Schlüssel", cat:0},
+     {t:"Schlüsselpaar: öffentlich + privat", cat:1},
+     {t:"Schnelle Berechnung", cat:0},
+     {t:"Löst das Schlüsselaustausch-Problem", cat:1},
+     {t:"Caesar- und Vigenère-Chiffre", cat:0},
+     {t:"RSA-Verfahren", cat:1}
+   ],
+   explain:"Symmetrisch: ein Schlüssel, schnell, aber Schlüsselaustausch problematisch. Asymmetrisch: Schlüsselpaar, langsamer, aber kein geheimer Schlüsselaustausch nötig. In der Praxis werden oft beide kombiniert (z.B. TLS/HTTPS)."
+  },
+  {id:"a05", topic:"symmasymm", type:"mc", diff:2, tax:"K2",
+   q:"Warum ist der Schlüsselaustausch bei symmetrischer Verschlüsselung ein Problem?",
+   options:[
+     {v:"A", t:"Weil der Schlüssel zu lang ist, um ihn zu merken."},
+     {v:"B", t:"Weil Sender und Empfänger den gleichen geheimen Schlüssel brauchen, ihn aber über einen unsicheren Kanal austauschen müssen."},
+     {v:"C", t:"Weil symmetrische Schlüssel ablaufen und erneuert werden müssen."},
+     {v:"D", t:"Weil es zu viele mögliche Schlüssel gibt."}
+   ],
+   correct:"B",
+   explain:"Das Schlüsselaustausch-Problem: Alice und Bob brauchen denselben geheimen Schlüssel. Aber wie teilen sie ihn, wenn Eve den Kommunikationskanal abhört? Genau dieses Problem löst die asymmetrische Verschlüsselung, bei der der öffentliche Schlüssel offen verteilt werden kann."
+  },
+  {id:"a06", topic:"symmasymm", type:"mc", diff:3, tax:"K3",
+   q:"Alice möchte Bob eine verschlüsselte Nachricht schicken. Welchen Schlüssel verwendet sie bei asymmetrischer Verschlüsselung?",
+   options:[
+     {v:"A", t:"Alices privaten Schlüssel"},
+     {v:"B", t:"Bobs öffentlichen Schlüssel"},
+     {v:"C", t:"Alices öffentlichen Schlüssel"},
+     {v:"D", t:"Bobs privaten Schlüssel"}
+   ],
+   correct:"B",
+   explain:"Alice verschlüsselt mit Bobs öffentlichem Schlüssel. Nur Bob kann die Nachricht dann mit seinem privaten Schlüssel entschlüsseln. Alice darf Bobs privaten Schlüssel gar nicht kennen — sonst wäre das System unsicher."
+  },
+  {id:"a07", topic:"symmasymm", type:"tf", diff:2, tax:"K2",
+   q:"In der Praxis wird oft symmetrische und asymmetrische Verschlüsselung kombiniert: Der symmetrische Schlüssel wird asymmetrisch ausgetauscht, die eigentlichen Daten werden dann symmetrisch verschlüsselt.",
+   correct: true,
+   explain:"Richtig. Dieses Hybridverfahren nutzt die Stärken beider Methoden: Asymmetrische Verschlüsselung löst das Schlüsselaustausch-Problem, symmetrische Verschlüsselung ist schnell für grosse Datenmengen. So funktioniert z.B. HTTPS (TLS)."
+  },
+  {id:"a08", topic:"symmasymm", type:"mc", diff:3, tax:"K4",
+   q:"Welches Szenario aus dem Einstiegsspiel entspricht am ehesten dem Problem der symmetrischen Verschlüsselung?",
+   options:[
+     {v:"A", t:"Szenario 1: A und B können vorher nicht kommunizieren."},
+     {v:"B", t:"Szenario 2: A und B können vorher kommunizieren, C hört zu."},
+     {v:"C", t:"Szenario 3: A und B können vorher unter Ausschluss von C kommunizieren."},
+     {v:"D", t:"Keines der Szenarien."}
+   ],
+   correct:"C",
+   explain:"Symmetrische Verschlüsselung funktioniert gut, wenn Alice und Bob einen geheimen Schlüssel vereinbaren können, ohne dass Eve mithört (Szenario 3). Das Problem entsteht in Szenario 2 (Eve hört zu) — dann braucht man asymmetrische Verfahren."
+  },
+
+  // ── BLOCKCHAIN ──
+  {id:"b01", topic:"blockchain", type:"mc", diff:1, tax:"K1",
+   q:"Was ist eine Blockchain grundsätzlich?",
+   options:[
+     {v:"A", t:"Eine besonders schnelle Datenbank."},
+     {v:"B", t:"Eine Kette von Datenblöcken, bei der jeder Block kryptographisch mit dem vorherigen verknüpft ist."},
+     {v:"C", t:"Ein Computervirus, der sich über das Internet verbreitet."},
+     {v:"D", t:"Ein Verschlüsselungsverfahren für E-Mails."}
+   ],
+   correct:"B",
+   explain:"Eine Blockchain ist eine dezentrale Datenstruktur: Daten werden in Blöcken gespeichert, die chronologisch aneinandergehängt werden. Jeder Block enthält einen kryptographischen Hash des vorherigen Blocks, wodurch nachträgliche Änderungen sofort auffallen."
+  },
+  {id:"b02", topic:"blockchain", type:"tf", diff:1, tax:"K1",
+   q:"Bitcoin ist eine Kryptowährung, die auf der Blockchain-Technologie basiert.",
+   correct: true,
+   explain:"Richtig. Bitcoin war die erste grosse Anwendung der Blockchain-Technologie. Die Blockchain dient als dezentrales, öffentliches Kassenbuch, das alle Transaktionen fälschungssicher aufzeichnet — ohne dass eine Bank oder Nationalbank nötig ist."
+  },
+  {id:"b03", topic:"blockchain", type:"mc", diff:2, tax:"K2",
+   q:"Welche Rolle übernimmt die Blockchain-Technologie, die traditionell von Institutionen wie Banken erfüllt wird?",
+   options:[
+     {v:"A", t:"Die Rolle des Gesetzgebers"},
+     {v:"B", t:"Die Vertrauensrolle — sie garantiert, dass Transaktionen korrekt und nicht manipuliert sind."},
+     {v:"C", t:"Die Rolle des Kreditgebers"},
+     {v:"D", t:"Die Rolle der Regulierungsbehörde"}
+   ],
+   correct:"B",
+   explain:"Traditionell vertrauen wir Banken, dass sie Transaktionen korrekt abwickeln und Kontostände stimmen. Die Blockchain ersetzt dieses institutionelle Vertrauen durch mathematisches Vertrauen: Kryptographische Verfahren und das dezentrale Netzwerk garantieren die Korrektheit."
+  },
+  {id:"b04", topic:"blockchain", type:"tf", diff:2, tax:"K2",
+   q:"Die Blockchain kann nur für Kryptowährungen wie Bitcoin verwendet werden.",
+   correct: false,
+   explain:"Falsch. Die Blockchain-Technologie hat viele mögliche Anwendungen über Kryptowährungen hinaus: Smart Contracts, Supply-Chain-Management, digitale Identitäten, Grundbucheinträge, Abstimmungssysteme, NFTs und viele mehr."
+  },
+  {id:"b05", topic:"blockchain", type:"sort", diff:2, tax:"K2",
+   q:"Ordnen Sie zu: Welche Aussagen treffen auf die Blockchain zu und welche nicht?",
+   categories:["Trifft zu", "Trifft nicht zu"],
+   items:[
+     {t:"Dezentral — keine zentrale Kontrollinstanz", cat:0},
+     {t:"Nachträgliche Änderungen sind leicht möglich", cat:1},
+     {t:"Jeder Block ist mit dem vorherigen kryptographisch verknüpft", cat:0},
+     {t:"Nur Banken können Transaktionen verifizieren", cat:1},
+     {t:"Alle Transaktionen sind transparent einsehbar", cat:0},
+     {t:"Benötigt schnellere Computer als herkömmliche Datenbanken", cat:1}
+   ],
+   explain:"Blockchain: dezentral, kryptographisch verknüpft, transparent und manipulationssicher. Nachträgliche Änderungen sind praktisch unmöglich (ein geänderter Block würde den Hash ändern und die ganze Kette ungültig machen)."
+  },
+  {id:"b06", topic:"blockchain", type:"mc", diff:3, tax:"K4",
+   q:"Warum ist es praktisch unmöglich, einen bereits bestätigten Block in der Blockchain zu manipulieren?",
+   options:[
+     {v:"A", t:"Weil die Blockchain durch ein Passwort geschützt ist."},
+     {v:"B", t:"Weil jeder Block den Hash des vorherigen Blocks enthält — eine Änderung würde alle nachfolgenden Hashes ungültig machen und vom Netzwerk sofort erkannt werden."},
+     {v:"C", t:"Weil nur eine Person Zugang zur Blockchain hat."},
+     {v:"D", t:"Weil die Daten nach 24 Stunden automatisch gelöscht werden."}
+   ],
+   correct:"B",
+   explain:"Jeder Block enthält einen kryptographischen Hash des vorherigen Blocks. Ändert man Daten in einem Block, ändert sich sein Hash, was den Hash des nächsten Blocks ungültig macht — ein Dominoeffekt. Zudem müsste der Angreifer die Mehrheit des dezentralen Netzwerks kontrollieren (51%-Angriff)."
+  },
+
+  // ── GESELLSCHAFT & ETHIK ──
+  {id:"g01", topic:"gesellschaft", type:"mc", diff:2, tax:"K2",
+   q:"Im Spannungsfeld «Freiheit vs. Sicherheit»: Warum fordern manche Regierungen Hintertüren (Backdoors) in Verschlüsselungssystemen?",
+   options:[
+     {v:"A", t:"Um Software-Updates schneller verteilen zu können."},
+     {v:"B", t:"Um bei Verdacht auf Straftaten wie Kinderpornographie oder Terrorismus die verschlüsselte Kommunikation überwachen zu können."},
+     {v:"C", t:"Um Verschlüsselung billiger zu machen."},
+     {v:"D", t:"Weil Verschlüsselung zu viel Strom verbraucht."}
+   ],
+   correct:"B",
+   explain:"Regierungen argumentieren, dass starke Verschlüsselung Kriminellen ermöglicht, unentdeckt zu kommunizieren. Backdoors würden Strafverfolgungsbehörden Zugang ermöglichen. Kritiker warnen: Eine Hintertür für die Polizei ist auch eine Hintertür für Hacker und autoritäre Regime."
+  },
+  {id:"g02", topic:"gesellschaft", type:"tf", diff:2, tax:"K5",
+   q:"Eine Hintertür in Verschlüsselungssystemen kann so gebaut werden, dass nur die Polizei sie nutzen kann und Kriminelle keinen Zugang haben.",
+   correct: false,
+   explain:"Falsch. Technisch ist es nicht möglich, eine Hintertür zu bauen, die nur von «guten» Akteuren genutzt werden kann. Eine Schwachstelle im System ist eine Schwachstelle für alle — Polizei, Geheimdienste, aber auch Hacker und feindliche Staaten. Das ist ein zentrales Argument gegen Backdoors."
+  },
+  {id:"g03", topic:"gesellschaft", type:"mc", diff:2, tax:"K3",
+   q:"In welcher alltäglichen Situation profitieren Sie persönlich von kryptographischen Verfahren?",
+   options:[
+     {v:"A", t:"Beim Lesen einer gedruckten Zeitung."},
+     {v:"B", t:"Beim Bezahlen mit Bargeld."},
+     {v:"C", t:"Beim Online-Banking und beim Surfen auf HTTPS-Websites."},
+     {v:"D", t:"Beim Telefonieren über Festnetz."}
+   ],
+   correct:"C",
+   explain:"HTTPS (das Schloss-Symbol im Browser) nutzt TLS-Verschlüsselung, um Ihre Daten zu schützen. Online-Banking, E-Mail, Messaging (WhatsApp, Signal) — all das basiert auf Kryptographie. Ohne Verschlüsselung könnten Ihre Passwörter, Nachrichten und Bankdaten mitgelesen werden."
+  },
+  {id:"g04", topic:"gesellschaft", type:"sort", diff:2, tax:"K5",
+   q:"Ordnen Sie die Argumente: Welche sprechen FÜR starke Verschlüsselung ohne Hintertüren und welche FÜR staatliche Überwachungsmöglichkeiten?",
+   categories:["Für starke Verschlüsselung", "Für Überwachungsmöglichkeit"],
+   items:[
+     {t:"Schutz der Privatsphäre als Grundrecht", cat:0},
+     {t:"Bekämpfung von Terrorismus und organisierter Kriminalität", cat:1},
+     {t:"Hintertüren können auch von Hackern missbraucht werden", cat:0},
+     {t:"Aufdeckung von Kinderpornographie", cat:1},
+     {t:"Schutz von Journalisten und Whistleblowern", cat:0},
+     {t:"Nationale Sicherheit", cat:1}
+   ],
+   explain:"Es handelt sich um ein echtes Dilemma ohne einfache Lösung: Starke Verschlüsselung schützt die Privatsphäre, aber erschwert die Strafverfolgung. Schwache Verschlüsselung hilft der Polizei, macht aber alle Bürger unsicherer."
+  },
+  {id:"g05", topic:"gesellschaft", type:"mc", diff:3, tax:"K5",
+   q:"In einer Demokratie wird diskutiert, ob der Staat verschlüsselte Messenger-Nachrichten lesen dürfen soll. Welches Argument ist aus kryptographischer Sicht am stärksten?",
+   options:[
+     {v:"A", t:"Der Staat braucht Zugang, weil Terroristen Messenger nutzen."},
+     {v:"B", t:"Verschlüsselung lässt sich nicht «ein bisschen» schwächen — jede Schwachstelle gefährdet alle Nutzer gleichermassen."},
+     {v:"C", t:"Messenger-Verschlüsselung ist ohnehin leicht zu brechen."},
+     {v:"D", t:"Die Polizei kann Nachrichten auch ohne Hintertür lesen."}
+   ],
+   correct:"B",
+   explain:"Aus technischer Sicht ist das stärkste Argument: Verschlüsselung ist entweder sicher oder unsicher. Man kann keine Hintertür bauen, die nur für «die Guten» funktioniert. Eine Schwächung der Verschlüsselung betrifft alle — Kriminelle und unbescholtene Bürger gleichermassen."
+  },
+  {id:"g06", topic:"gesellschaft", type:"tf", diff:1, tax:"K2",
+   q:"WhatsApp verwendet Ende-zu-Ende-Verschlüsselung. Das bedeutet, dass auch WhatsApp selbst die Nachrichten nicht lesen kann.",
+   correct: true,
+   explain:"Richtig. Bei Ende-zu-Ende-Verschlüsselung (E2E) werden die Nachrichten auf dem Gerät des Senders verschlüsselt und erst auf dem Gerät des Empfängers entschlüsselt. Weder WhatsApp noch der Internetanbieter können den Inhalt lesen — nur Sender und Empfänger haben die Schlüssel."
+  },
+
+  // ── ZUSÄTZLICHE QUERFRAGEN ──
+  {id:"x01", topic:"sicherheit", type:"mc", diff:3, tax:"K4",
+   q:"Ein Unternehmen wird Opfer einer Ransomware-Attacke: Alle Daten werden verschlüsselt und nur gegen Lösegeld freigegeben. Welche Sicherheitsziele sind verletzt?",
+   options:[
+     {v:"A", t:"Nur Vertraulichkeit."},
+     {v:"B", t:"Nur Verfügbarkeit."},
+     {v:"C", t:"Verfügbarkeit und Integrität — die Daten sind nicht mehr zugänglich und wurden verändert (verschlüsselt)."},
+     {v:"D", t:"Alle vier Sicherheitsziele."}
+   ],
+   correct:"C",
+   explain:"Ransomware verletzt primär die Verfügbarkeit (das Unternehmen kann nicht mehr auf seine Daten zugreifen) und die Integrität (die Daten wurden verschlüsselt, also verändert). Die Vertraulichkeit ist nicht zwingend verletzt — der Angreifer hat die Daten verschlüsselt, aber nicht unbedingt gelesen (obwohl moderne Ransomware oft auch Daten stiehlt)."
+  },
+  {id:"x02", topic:"verschluesselung", type:"tf", diff:2, tax:"K2",
+   q:"Eine Verschlüsselung ist nur dann sicher, wenn der Algorithmus (das Verfahren) geheim gehalten wird.",
+   correct: false,
+   explain:"Falsch. Nach dem Kerckhoffs'schen Prinzip (1883) soll die Sicherheit eines Kryptosystems nur vom Schlüssel abhängen, nicht von der Geheimhaltung des Algorithmus. Moderne Verschlüsselungsstandards wie AES sind öffentlich bekannt und trotzdem sicher — weil der Schlüssel geheim bleibt."
+  },
+  {id:"x03", topic:"symmasymm", type:"mc", diff:3, tax:"K3",
+   q:"Bob möchte beweisen, dass eine Nachricht wirklich von ihm stammt (Authentizität). Welchen Schlüssel nutzt er dafür bei einer digitalen Signatur?",
+   options:[
+     {v:"A", t:"Seinen öffentlichen Schlüssel"},
+     {v:"B", t:"Alices privaten Schlüssel"},
+     {v:"C", t:"Seinen privaten Schlüssel"},
+     {v:"D", t:"Einen gemeinsamen symmetrischen Schlüssel"}
+   ],
+   correct:"C",
+   explain:"Bei einer digitalen Signatur «unterschreibt» Bob die Nachricht mit seinem privaten Schlüssel. Jeder kann mit Bobs öffentlichem Schlüssel prüfen, ob die Signatur echt ist. Nur Bob besitzt den privaten Schlüssel — daher kann nur er die Signatur erstellt haben."
+  },
+  {id:"x04", topic:"blockchain", type:"mc", diff:2, tax:"K2",
+   q:"Was ist ein Hash in der Kryptographie?",
+   options:[
+     {v:"A", t:"Ein besonders langer Schlüssel."},
+     {v:"B", t:"Eine Einweg-Funktion, die aus beliebigen Daten eine Zeichenfolge fester Länge erzeugt — jede Änderung der Daten ergibt einen völlig anderen Hash."},
+     {v:"C", t:"Eine Methode zum Komprimieren von Dateien."},
+     {v:"D", t:"Ein Passwort für die Blockchain."}
+   ],
+   correct:"B",
+   explain:"Ein Hash ist ein kryptographischer «Fingerabdruck» von Daten. Egal wie gross die Eingabe ist, der Hash hat immer die gleiche Länge. Schon die kleinste Änderung der Daten ergibt einen völlig anderen Hash. Deshalb eignen sich Hashes hervorragend zur Integritätsprüfung."
+  },
+  {id:"x05", topic:"verschluesselung", type:"mc", diff:1, tax:"K1",
+   q:"Welche der folgenden Personen wird in der Kryptographie traditionell als Angreiferin bezeichnet?",
+   options:[
+     {v:"A", t:"Alice"},
+     {v:"B", t:"Bob"},
+     {v:"C", t:"Eve"},
+     {v:"D", t:"Carol"}
+   ],
+   correct:"C",
+   explain:"In der Kryptographie gibt es traditionelle Rollennamen: Alice und Bob sind die Kommunikationspartner, Eve (von «Eavesdropper» = Lauscherin) ist die Angreiferin. Weitere Namen: Mallory (aktiver Angreifer), Trent (vertrauenswürdige dritte Partei)."
+  },
+  {id:"x06", topic:"gesellschaft", type:"tf", diff:2, tax:"K2",
+   q:"Das Schloss-Symbol im Browser (HTTPS) zeigt an, dass die Website vertrauenswürdig und sicher ist.",
+   correct: false,
+   explain:"Falsch. Das Schloss zeigt nur an, dass die Verbindung verschlüsselt ist (Vertraulichkeit). Eine Phishing-Seite kann ebenfalls HTTPS nutzen. HTTPS schützt die Übertragung, sagt aber nichts über die Vertrauenswürdigkeit des Inhalts oder des Betreibers der Website aus."
+  },
+  {id:"x07", topic:"sicherheit", type:"mc", diff:2, tax:"K3",
+   q:"Ein Schüler schickt im Unterricht einen Zettel mit einer Nachricht an einen Mitschüler. Die Lehrperson fängt den Zettel ab und liest ihn. Welches Sicherheitsziel ist verletzt?",
+   options:[
+     {v:"A", t:"Integrität"},
+     {v:"B", t:"Authentizität"},
+     {v:"C", t:"Vertraulichkeit"},
+     {v:"D", t:"Verfügbarkeit"}
+   ],
+   correct:"C",
+   explain:"Die Lehrperson hat die Nachricht gelesen, obwohl sie nicht die vorgesehene Empfängerin ist — das ist eine Verletzung der Vertraulichkeit. Wenn die Lehrperson den Zettel auch noch einbehält, wäre zusätzlich die Verfügbarkeit verletzt."
+  },
+  {id:"x08", topic:"verschluesselung", type:"fill", diff:2, tax:"K1",
+   q:"Bei der Verschlüsselung wird der {0} mithilfe eines {1} in den {2} umgewandelt. Der Empfänger kehrt diesen Prozess um: Er {3} den Geheimtext.",
+   blanks:[
+     {answer:"Klartext", alts:["klartext", "Plaintext", "plaintext"]},
+     {answer:"Schlüssels", alts:["schlüssels", "Schlüssel", "schlüssel", "Key", "Keys"]},
+     {answer:"Geheimtext", alts:["geheimtext", "Chiffretext", "chiffretext", "Ciphertext"]},
+     {answer:"entschlüsselt", alts:["Entschlüsselt", "dechiffriert"]}
+   ],
+   explain:"Verschlüsselung: Klartext + Schlüssel → Geheimtext (Chiffretext). Entschlüsselung: Geheimtext + Schlüssel → Klartext."
+  },
+  {id:"x09", topic:"symmasymm", type:"tf", diff:3, tax:"K4",
+   q:"Wenn alle Kommunikation Ende-zu-Ende-verschlüsselt wäre, könnte die Polizei gar keine Straftaten mehr im Internet verfolgen.",
+   correct: false,
+   explain:"Falsch. Verschlüsselung schützt den Inhalt der Kommunikation, aber nicht die Metadaten (wer kommuniziert wann mit wem, wie oft, wie lange). Zudem gibt es weitere Ermittlungsmethoden: Beschlagnahmung von Geräten, verdeckte Ermittlungen, Zeugenbefragungen etc. Verschlüsselung erschwert die Arbeit der Polizei, macht sie aber nicht unmöglich."
+  },
+  {id:"x10", topic:"blockchain", type:"tf", diff:2, tax:"K2",
+   q:"Bei Bitcoin sind alle Transaktionen für jeden öffentlich einsehbar.",
+   correct: true,
+   explain:"Richtig. Die Bitcoin-Blockchain ist vollständig transparent — jede Transaktion ist öffentlich einsehbar. Was geschützt ist, sind die Identitäten hinter den Bitcoin-Adressen (Pseudonymität, nicht Anonymität). Mit genügend Analyse können Adressen aber oft realen Personen zugeordnet werden."
+  },
+
+  // ── LEHRBUCH-ERGÄNZUNGEN (Fit fürs Studium Informatik, Kap. 15) ──
+  {id:"l01", topic:"verschluesselung", type:"mc", diff:1, tax:"K1",
+   q:"Die Skytale gilt als eines der ältesten bekannten Verschlüsselungsverfahren. Wie funktioniert sie?",
+   options:[
+     {v:"A", t:"Ein Streifen Stoff wird spiralförmig um einen Holzstab gerollt und der Klartext darauf geschrieben. Abgewickelt erscheinen die Buchstaben in einer anderen Reihenfolge."},
+     {v:"B", t:"Buchstaben werden durch Zahlen ersetzt."},
+     {v:"C", t:"Der Text wird rückwärts geschrieben."},
+     {v:"D", t:"Jeder Buchstabe wird durch den nächsten im Alphabet ersetzt."}
+   ],
+   correct:"A",
+   explain:"Die Skytale wurde von den Spartanern vor über 2500 Jahren benutzt. Der abgewickelte Streifen enthält die Buchstaben in einer veränderten Reihenfolge (Transposition). Nur mit einem Stab gleichen Durchmessers kann die Nachricht wieder gelesen werden."
+  },
+  {id:"l02", topic:"verschluesselung", type:"sort", diff:2, tax:"K2",
+   q:"Ordnen Sie die Verschlüsselungsverfahren: Handelt es sich um eine Substitution (Buchstaben ersetzen) oder eine Transposition (Reihenfolge ändern)?",
+   categories:["Substitution", "Transposition"],
+   items:[
+     {t:"Caesar-Verschlüsselung", cat:0},
+     {t:"Skytale", cat:1},
+     {t:"Allgemeine monoalphabetische Chiffre", cat:0},
+     {t:"Buchstaben eines Textes nach einem Muster umordnen", cat:1},
+     {t:"ROT13 (Verschiebung um 13)", cat:0}
+   ],
+   explain:"Substitution ersetzt Buchstaben durch andere (Caesar, allgemeine Chiffre, ROT13). Transposition ändert die Reihenfolge der Buchstaben, ohne sie zu ersetzen (Skytale, Spaltentransposition)."
+  },
+  {id:"l03", topic:"verschluesselung", type:"mc", diff:2, tax:"K2",
+   q:"Eine allgemeine Substitutions-Chiffre (jeder Buchstabe wird durch einen beliebigen anderen ersetzt) hat 26! ≈ 4·10²⁶ mögliche Schlüssel. Warum ist Brute Force hier nicht mehr möglich, die Häufigkeitsanalyse aber schon?",
+   options:[
+     {v:"A", t:"Weil 26! zu viele Möglichkeiten zum Durchprobieren sind, aber gleiche Buchstaben immer gleich ersetzt werden — die Häufigkeitsverteilung bleibt erhalten."},
+     {v:"B", t:"Weil Brute Force nur bei digitalen Verfahren funktioniert."},
+     {v:"C", t:"Weil die Häufigkeitsanalyse nur bei deutschen Texten funktioniert."},
+     {v:"D", t:"Weil 26! eine Primzahl ist."}
+   ],
+   correct:"A",
+   explain:"Bei der monoalphabetischen Substitution wird jeder Buchstabe immer durch denselben Buchstaben ersetzt. Deshalb spiegelt der Geheimtext die Buchstabenhäufigkeit des Klartexts wider: Der häufigste Buchstabe im Geheimtext entspricht vermutlich dem 'E'. So kann man den Text schrittweise entschlüsseln."
+  },
+  {id:"l04", topic:"symmasymm", type:"mc", diff:1, tax:"K2",
+   q:"Im Lehrbuch wird symmetrische Verschlüsselung mit einer Kiste und einem Zahlenschloss erklärt. Was ist das Problem bei dieser Analogie?",
+   options:[
+     {v:"A", t:"Die Kiste ist zu klein für lange Nachrichten."},
+     {v:"B", t:"Bob und Alice müssen sich vorher treffen, um den Code auszutauschen — über das Internet ist das nicht möglich."},
+     {v:"C", t:"Zahlenschlösser sind unsicher."},
+     {v:"D", t:"Es gibt kein Problem — die Analogie ist perfekt."}
+   ],
+   correct:"B",
+   explain:"Die Kisten-Analogie zeigt das zentrale Problem symmetrischer Verschlüsselung: Der Schlüssel (Code des Zahlenschlosses) muss auf einem sicheren Weg übermittelt werden. Wenn Alice und Bob sich nur über das Internet kennen, können sie sich nicht einfach treffen."
+  },
+  {id:"l05", topic:"symmasymm", type:"mc", diff:2, tax:"K2",
+   q:"Asymmetrische Verschlüsselung wird im Lehrbuch mit einer Kiste und einem Vorhängeschloss erklärt. Alice verteilt offene Vorhängeschlösser. Was entspricht dem öffentlichen und was dem privaten Schlüssel?",
+   options:[
+     {v:"A", t:"Das offene Vorhängeschloss = öffentlicher Schlüssel, der Schlüssel zum Öffnen = privater Schlüssel."},
+     {v:"B", t:"Das Vorhängeschloss = privater Schlüssel, die Kiste = öffentlicher Schlüssel."},
+     {v:"C", t:"Beides sind öffentliche Schlüssel."},
+     {v:"D", t:"Das Vorhängeschloss = symmetrischer Schlüssel."}
+   ],
+   correct:"A",
+   explain:"Das offene Vorhängeschloss kann Alice frei verteilen (Public Key) — jeder kann die Kiste damit zuschliessen. Aber nur Alice hat den passenden Schlüssel zum Öffnen (Private Key). Genau so funktioniert asymmetrische Verschlüsselung."
+  },
+  {id:"l06", topic:"symmasymm", type:"sort", diff:2, tax:"K1",
+   q:"Ordnen Sie die Verfahren: Welche sind symmetrische und welche asymmetrische Verschlüsselungsverfahren?",
+   categories:["Symmetrisch", "Asymmetrisch"],
+   items:[
+     {t:"Caesar-Verschlüsselung", cat:0},
+     {t:"DES (Data Encryption Standard)", cat:0},
+     {t:"RSA", cat:1},
+     {t:"AES (Advanced Encryption Standard)", cat:0},
+     {t:"Triple-DES", cat:0}
+   ],
+   explain:"Caesar, DES, Triple-DES und AES sind symmetrische Verfahren (ein Schlüssel). RSA ist das bekannteste asymmetrische Verfahren (Schlüsselpaar). DES gilt heute als unsicher (56-Bit-Schlüssel), AES ist der aktuelle Standard."
+  },
+  {id:"l07", topic:"verschluesselung", type:"tf", diff:2, tax:"K2",
+   q:"DES (Data Encryption Standard) gilt heute als sicher, weil er einen 56-Bit-Schlüssel verwendet.",
+   correct: false,
+   explain:"Falsch. 56 Bit sind für heutige Computer zu wenig — ein Brute-Force-Angriff ist möglich. Deshalb wurde DES durch Triple-DES (dreifache Anwendung) und schliesslich durch AES (Advanced Encryption Standard) mit Schlüssellängen von 128, 192 oder 256 Bit ersetzt."
+  },
+  {id:"l08", topic:"symmasymm", type:"mc", diff:3, tax:"K3",
+   q:"Das RSA-Verfahren basiert auf der Schwierigkeit der Primfaktorzerlegung. 37 · 43 = 1591 ist leicht zu berechnen. Warum ist der umgekehrte Weg (die Primfaktoren von 1591 finden) schwierig?",
+   options:[
+     {v:"A", t:"Weil Division schwieriger ist als Multiplikation."},
+     {v:"B", t:"Weil es keinen effizienten Algorithmus gibt, der bei sehr grossen Zahlen (mehrere hundert Stellen) die Primfaktoren in vernünftiger Zeit findet."},
+     {v:"C", t:"Weil Primzahlen geheim sind."},
+     {v:"D", t:"Weil Computer nicht dividieren können."}
+   ],
+   correct:"B",
+   explain:"Multiplikation ist einfach: 37 · 43 = 1591. Aber bei Zahlen mit mehreren hundert Stellen gibt es keinen bekannten Algorithmus, der die Primfaktoren effizient findet. Diese Einweg-Eigenschaft (leicht in eine Richtung, schwer zurück) ist die Grundlage der RSA-Sicherheit."
+  },
+  {id:"l09", topic:"verschluesselung", type:"mc", diff:2, tax:"K2",
+   q:"Was ist eine Hashfunktion?",
+   options:[
+     {v:"A", t:"Ein Verschlüsselungsverfahren mit zwei Schlüsseln."},
+     {v:"B", t:"Eine mathematische Funktion, die aus einer beliebig grossen Eingabe einen Wert fester Länge berechnet (Prüfsumme). Schon kleinste Änderungen ergeben einen völlig anderen Hash."},
+     {v:"C", t:"Eine Methode, um Passwörter zu speichern."},
+     {v:"D", t:"Eine Komprimierungsmethode für grosse Dateien."}
+   ],
+   correct:"B",
+   explain:"Eine Hashfunktion berechnet aus beliebigen Daten eine Prüfsumme fester Länge. Wichtige Eigenschaften: Determinismus (gleiche Eingabe = gleicher Hash), Einweg (vom Hash kann man nicht auf die Eingabe schliessen), Kollisionsresistenz (verschiedene Eingaben sollen verschiedene Hashes ergeben)."
+  },
+  {id:"l10", topic:"verschluesselung", type:"tf", diff:2, tax:"K2",
+   q:"Wenn zwei verschiedene Eingaben denselben Hashwert erzeugen, spricht man von einer Kollision.",
+   correct: true,
+   explain:"Richtig. Eine Kollision tritt auf, wenn zwei verschiedene Eingaben denselben Hashwert produzieren. Gute Hashfunktionen minimieren die Wahrscheinlichkeit von Kollisionen. Bei kryptographischen Hashfunktionen soll es praktisch unmöglich sein, gezielt eine Kollision zu erzeugen."
+  },
+  {id:"l11", topic:"symmasymm", type:"mc", diff:2, tax:"K2",
+   q:"Was ist eine digitale Signatur und wie funktioniert sie?",
+   options:[
+     {v:"A", t:"Ein eingescanntes Bild einer handschriftlichen Unterschrift."},
+     {v:"B", t:"Der Absender bildet den Hash des Dokuments und verschlüsselt diesen mit seinem privaten Schlüssel. Der Empfänger prüft mit dem öffentlichen Schlüssel des Absenders."},
+     {v:"C", t:"Ein Passwort, das an das Dokument angehängt wird."},
+     {v:"D", t:"Eine symmetrische Verschlüsselung des gesamten Dokuments."}
+   ],
+   correct:"B",
+   explain:"Eine digitale Signatur funktioniert so: 1) Hash des Dokuments berechnen. 2) Hash mit dem privaten Schlüssel verschlüsseln (= Signatur). 3) Empfänger entschlüsselt die Signatur mit dem öffentlichen Schlüssel und vergleicht mit dem selbst berechneten Hash. Stimmen sie überein, ist das Dokument authentisch und unverändert."
+  },
+  {id:"l12", topic:"verschluesselung", type:"mc", diff:3, tax:"K2",
+   q:"Was ist ein One-Time-Pad und warum gilt es als theoretisch unknackbar?",
+   options:[
+     {v:"A", t:"Ein Passwort, das nur einmal verwendet wird."},
+     {v:"B", t:"Eine symmetrische Verschlüsselung, bei der der Schlüssel zufällig ist, genauso lang wie die Nachricht und nur einmal verwendet wird. Da der Schlüssel keine Muster hat, gibt die Häufigkeitsanalyse keine Hinweise."},
+     {v:"C", t:"Ein Notizbuch mit geheimen Codes."},
+     {v:"D", t:"Eine Verschlüsselung, die nur auf Papier funktioniert."}
+   ],
+   correct:"B",
+   explain:"Das One-Time-Pad ist eine Abwandlung der Caesar-Verschlüsselung: Statt alle Zeichen um denselben Wert zu verschieben, wird jedes Zeichen um einen anderen, zufälligen Wert verschoben. Bedingungen: Schlüssel muss zufällig sein, mindestens so lang wie die Nachricht, und darf nie wiederverwendet werden. In der Praxis ist es unpraktisch, da der Schlüssel sicher übermittelt werden muss."
+  },
+  {id:"l13", topic:"verschluesselung", type:"mc", diff:3, tax:"K4",
+   q:"Im Zweiten Weltkrieg verschlüsselten die Deutschen ihre Nachrichten mit der Enigma-Maschine. Wie gelang es den Alliierten um Alan Turing, die Verschlüsselung zu knacken?",
+   options:[
+     {v:"A", t:"Sie stahlen eine Enigma-Maschine und kopierten den Schlüssel."},
+     {v:"B", t:"Sie nutzten bekannte Textteile (z.B. tägliche Wetterberichte begannen mit WETTERVORHERSAGE), um die Menge möglicher Schlüssel zu reduzieren."},
+     {v:"C", t:"Sie verwendeten Brute Force mit Computern."},
+     {v:"D", t:"Die Enigma hatte einen bekannten Fehler im Algorithmus."}
+   ],
+   correct:"B",
+   explain:"Die Alliierten nutzten sogenannte Known-Plaintext-Angriffe: Da sie wussten, dass deutsche Nachrichten oft mit vorhersagbaren Wörtern begannen (z.B. WETTERVORHERSAGE), konnten sie die Menge der möglichen Schlüssel stark einschränken. Da die Deutschen ihren Schlüssel täglich wechselten, musste der gefundene Schlüssel schnell auf andere Nachrichten desselben Tages angewendet werden."
+  },
+  {id:"l14", topic:"symmasymm", type:"mc", diff:2, tax:"K2",
+   q:"Warum werden in der Praxis Hybridverfahren eingesetzt, die symmetrische und asymmetrische Verschlüsselung kombinieren?",
+   options:[
+     {v:"A", t:"Weil Hybridverfahren billiger sind."},
+     {v:"B", t:"Weil asymmetrische Verschlüsselung das Schlüsselaustausch-Problem löst, aber rechenaufwendig ist — die eigentlichen Daten werden dann schnell und symmetrisch verschlüsselt."},
+     {v:"C", t:"Weil symmetrische Verschlüsselung allein nicht existiert."},
+     {v:"D", t:"Weil Hybridverfahren nur einen Schlüssel brauchen."}
+   ],
+   correct:"B",
+   explain:"Hybridverfahren nutzen das Beste beider Welten: Zuerst wird ein zufälliger symmetrischer Schlüssel (Session Key) asymmetrisch verschlüsselt und sicher übertragen. Dann werden die eigentlichen Daten symmetrisch verschlüsselt — das ist viel schneller. So funktioniert z.B. HTTPS/TLS beim Onlinebanking."
+  },
+  {id:"l15", topic:"verschluesselung", type:"calc", diff:2, tax:"K3",
+   q:"Entschlüsseln Sie die folgende Caesar-Chiffre. Das Beispiel aus dem Lehrbuch: 'Glh Zxhuiho vlqg jhidoohq.' — Verschiebung = 3. Geben Sie die Position des entschlüsselten ersten Buchstabens ein (A=1, B=2, ... Z=26).",
+   rows:[
+     {label:"G (Position 7) minus 3 =", answer:4, tolerance:0, unit:"(=D)"},
+     {label:"Z (Position 26) minus 3 =", answer:23, tolerance:0, unit:"(=W)"},
+     {label:"I (Position 9) minus 3 =", answer:6, tolerance:0, unit:"(=F)"}
+   ],
+   explain:"Entschlüsselung bei Caesar: Jeden Buchstaben um 3 zurückverschieben. G(7)-3=D(4), Z(26)-3=W(23), I(9)-3=F(6). Der vollständige Klartext lautet: 'Die Wuerfel sind gefallen.' — ein berühmtes Caesar-Zitat!"
+  }
+];
+
+// Topic metadata
+const TOPICS = {
+  sicherheit: {label:"Sicherheitsziele", short:"Sicherheitsziele"},
+  verschluesselung: {label:"Verschlüsselung & Grundlagen", short:"Verschlüsselung"},
+  symmasymm: {label:"Symmetrisch vs. Asymmetrisch", short:"Sym./Asym."},
+  blockchain: {label:"Blockchain", short:"Blockchain"},
+  gesellschaft: {label:"Gesellschaft & Ethik", short:"Gesellschaft"}
+};
+
+// ══════════════════════════════════════════
+// APP STATE & LOGIC (identisch zum BIP-Pool)
+// ══════════════════════════════════════════
+let state = {
+  mode: 'fokus',
+  queue: [], current: 0, score: 0, maxScore: 0, answered: [], wrong: []
+};
+
+function init() {
+  const topicChips = document.getElementById('topicChips');
+  for (const [key, val] of Object.entries(TOPICS)) {
+    const count = QUESTIONS.filter(q => q.topic === key).length;
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.dataset.topic = key;
+    chip.innerHTML = val.short + ' <span class="chip-count">' + count + '</span>';
+    chip.onclick = function() { toggleChip(this, 'topic'); };
+    topicChips.appendChild(chip);
+  }
+  updateQuestionCount();
+}
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.mode = el.dataset.mode;
+  applyModeDefaults();
+  updateQuestionCount();
+}
+
+function applyModeDefaults() {
+  if (state.mode === 'fokus') {
+    document.querySelectorAll('#topicChips .chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('#diffChips .chip').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('#typeChips .chip').forEach(c => c.classList.add('selected'));
+  } else {
+    document.querySelectorAll('#topicChips .chip').forEach(c => c.classList.add('selected'));
+    document.querySelectorAll('#diffChips .chip').forEach(c => c.classList.add('selected'));
+    document.querySelectorAll('#typeChips .chip').forEach(c => c.classList.add('selected'));
+  }
+}
+
+function toggleChip(el) { el.classList.toggle('selected'); updateQuestionCount(); }
+
+function getSelectedFilters() {
+  return {
+    topics: [...document.querySelectorAll('#topicChips .chip.selected')].map(c => c.dataset.topic),
+    diffs: [...document.querySelectorAll('#diffChips .chip.selected')].map(c => parseInt(c.dataset.diff)),
+    types: [...document.querySelectorAll('#typeChips .chip.selected')].map(c => c.dataset.type)
+  };
+}
+
+function getFilteredQuestions() {
+  const f = getSelectedFilters();
+  return QUESTIONS.filter(q => f.topics.includes(q.topic) && f.diffs.includes(q.diff) && f.types.includes(q.type));
+}
+
+function updateQuestionCount() {
+  const filtered = getFilteredQuestions();
+  const info = document.getElementById('questionCountInfo');
+  const btn = document.getElementById('startBtn');
+  if (filtered.length === 0) {
+    info.textContent = 'Keine Aufgaben mit diesen Filtern verfügbar.';
+    btn.disabled = true;
+  } else {
+    info.textContent = filtered.length + ' Aufgaben verfügbar — Sie können jederzeit aufhören.';
+    btn.disabled = false;
+  }
+}
+
+function startQuiz() {
+  let pool = getFilteredQuestions();
+  if (pool.length === 0) return;
+  if (state.mode === 'fokus') pool.sort((a, b) => a.diff - b.diff || a.id.localeCompare(b.id));
+  else pool = shuffle([...pool]);
+  state.queue = pool; state.current = 0; state.score = 0; state.maxScore = 0; state.answered = []; state.wrong = [];
+  showScreen('quizScreen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.queue[state.current];
+  const total = state.queue.length;
+  document.getElementById('quizCounter').textContent = 'Aufgabe ' + (state.current + 1) + ' / ' + total;
+  document.getElementById('quizScore').textContent = state.score + ' Punkt' + (state.score !== 1 ? 'e' : '');
+  document.getElementById('quizProgressFill').style.width = ((state.current / total) * 100) + '%';
+
+  const diffLabels = {1:'Einfach', 2:'Mittel', 3:'Schwer'};
+  const typeLabels = {mc:'Multiple Choice', tf:'Richtig/Falsch', fill:'Lückentext', calc:'Berechnung', sort:'Zuordnung'};
+
+  let html = '<div class="q-card" id="currentQ">';
+  html += '<div class="q-badges">';
+  html += '<span class="q-badge badge-topic">' + TOPICS[q.topic].short + '</span>';
+  html += '<span class="q-badge badge-diff-' + q.diff + '">' + diffLabels[q.diff] + '</span>';
+  html += '<span class="q-badge badge-type">' + typeLabels[q.type] + '</span>';
+  html += '<span class="q-badge badge-tax">' + q.tax + '</span>';
+  html += '</div>';
+
+  if (q.type === 'mc') {
+    html += '<div class="q-text">' + q.q + '</div><div class="q-options" id="qOpts">';
+    q.options.forEach(o => {
+      html += '<div class="q-opt" data-value="' + o.v + '" onclick="selectOpt(this)"><div class="q-opt-marker">' + o.v + '</div><div>' + o.t + '</div></div>';
+    });
+    html += '</div><div class="btn-row"><button class="btn btn-check" onclick="checkMCQ()">Überprüfen</button></div>';
+  }
+  else if (q.type === 'tf') {
+    html += '<div class="q-text">' + q.q + '</div><div class="q-options" id="qOpts">';
+    html += '<div class="q-opt" data-value="true" onclick="selectOpt(this)"><div class="q-opt-marker">R</div><div>Richtig</div></div>';
+    html += '<div class="q-opt" data-value="false" onclick="selectOpt(this)"><div class="q-opt-marker">F</div><div>Falsch</div></div>';
+    html += '</div><div class="btn-row"><button class="btn btn-check" onclick="checkTFQ()">Überprüfen</button></div>';
+  }
+  else if (q.type === 'fill') {
+    let text = q.q;
+    q.blanks.forEach((b, i) => { text = text.replace('{' + i + '}', '<input class="q-fill-input" data-idx="' + i + '" placeholder="…">'); });
+    html += '<div class="q-text" style="font-weight:400; line-height:2.2;">' + text + '</div>';
+    html += '<div class="btn-row"><button class="btn btn-check" onclick="checkFillQ()">Überprüfen</button></div>';
+  }
+  else if (q.type === 'calc') {
+    html += '<div class="q-text">' + q.q + '</div><div style="display:flex; flex-direction:column; gap:10px;">';
+    q.rows.forEach((r, i) => {
+      html += '<div style="display:flex; align-items:center; gap:10px; font-size:0.92rem; flex-wrap:wrap;">';
+      html += '<span style="min-width:200px;">' + r.label + '</span>';
+      html += '<input class="q-calc-input" data-idx="' + i + '" placeholder="?"> <span>' + (r.unit || '') + '</span></div>';
+    });
+    html += '</div><div class="btn-row"><button class="btn btn-check" onclick="checkCalcQ()">Überprüfen</button></div>';
+  }
+  else if (q.type === 'sort') {
+    html += '<div class="q-text">' + q.q + '</div>';
+    html += '<p style="font-size:0.82rem; color:var(--c-text-soft); margin-bottom:14px;">Wählen Sie einen Begriff aus, dann klicken Sie auf die Kategorie, in die er gehört.</p>';
+    html += '<div id="sortArea">';
+    html += '<div class="filter-label">Begriffe</div>';
+    html += '<div id="sortPool" style="display:flex; flex-wrap:wrap; gap:6px; padding:10px; border:2px solid var(--c-border); border-radius:8px; min-height:44px; margin-bottom:14px; background:#f8fafc;">';
+    const shuffled = shuffle([...q.items]);
+    shuffled.forEach((item) => {
+      html += '<div class="chip" data-sort-idx="' + q.items.indexOf(item) + '" onclick="selectSortItem(this)" style="cursor:pointer;">' + item.t + '</div>';
+    });
+    html += '</div>';
+    q.categories.forEach((cat, ci) => {
+      html += '<div style="margin-bottom:10px;"><div class="filter-label">' + cat + '</div>';
+      html += '<div class="sort-drop" data-cat="' + ci + '" onclick="placeSortItem(this)" style="min-height:44px; padding:10px; border:2px dashed var(--c-border); border-radius:8px; display:flex; flex-wrap:wrap; gap:6px; cursor:pointer; transition: border-color 0.15s; background:white;"></div></div>';
+    });
+    html += '</div><div class="btn-row"><button class="btn btn-check" onclick="checkSortQ()">Überprüfen</button></div>';
+  }
+
+  html += '<div class="q-feedback" id="qFeedback"></div>';
+  html += '<div class="btn-row" id="nextRow" style="display:none;">';
+  html += state.current < state.queue.length - 1
+    ? '<button class="btn btn-next" onclick="nextQuestion()">Nächste Aufgabe →</button>'
+    : '<button class="btn btn-next" onclick="endQuiz()">Auswertung anzeigen →</button>';
+  html += '</div></div>';
+  document.getElementById('quizContent').innerHTML = html;
+}
+
+function selectOpt(el) {
+  if (el.closest('.q-options').dataset.locked) return;
+  el.closest('.q-options').querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+let selectedSortChip = null;
+function selectSortItem(el) {
+  if (el === selectedSortChip) { el.classList.remove('selected'); selectedSortChip = null; clearDropHighlights(); return; }
+  if (selectedSortChip) selectedSortChip.classList.remove('selected');
+  selectedSortChip = el; el.classList.add('selected');
+  document.querySelectorAll('.sort-drop').forEach(d => { d.style.borderColor = 'var(--c-accent)'; d.style.borderStyle = 'solid'; });
+}
+function placeSortItem(dropEl) {
+  if (!selectedSortChip) return;
+  dropEl.appendChild(selectedSortChip);
+  selectedSortChip.classList.remove('selected');
+  selectedSortChip.onclick = function() { returnSortItem(this); };
+  selectedSortChip = null; clearDropHighlights();
+}
+function returnSortItem(el) {
+  document.getElementById('sortPool').appendChild(el);
+  el.onclick = function() { selectSortItem(this); }; el.classList.remove('selected');
+}
+function clearDropHighlights() {
+  document.querySelectorAll('.sort-drop').forEach(d => { d.style.borderColor = 'var(--c-border)'; d.style.borderStyle = 'dashed'; });
+}
+
+function checkMCQ() {
+  const q = state.queue[state.current]; const opts = document.getElementById('qOpts');
+  if (opts.dataset.locked) return; const selected = opts.querySelector('.q-opt.selected'); if (!selected) return;
+  opts.dataset.locked = 'true';
+  opts.querySelectorAll('.q-opt').forEach(o => { o.classList.add('locked'); if (o.dataset.value === q.correct) o.classList.add('was-correct'); });
+  const isCorrect = selected.dataset.value === q.correct;
+  selected.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (isCorrect) state.score++; else state.wrong.push({q: q.q, explain: q.explain, topic: q.topic});
+  state.maxScore++; state.answered.push({id: q.id, topic: q.topic, correct: isCorrect});
+  showFeedback(isCorrect, q.explain);
+}
+
+function checkTFQ() {
+  const q = state.queue[state.current]; const opts = document.getElementById('qOpts');
+  if (opts.dataset.locked) return; const selected = opts.querySelector('.q-opt.selected'); if (!selected) return;
+  opts.dataset.locked = 'true'; const userVal = selected.dataset.value === 'true'; const isCorrect = userVal === q.correct;
+  opts.querySelectorAll('.q-opt').forEach(o => { o.classList.add('locked'); if ((o.dataset.value === 'true') === q.correct) o.classList.add('was-correct'); });
+  selected.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (isCorrect) state.score++; else state.wrong.push({q: q.q, explain: q.explain, topic: q.topic});
+  state.maxScore++; state.answered.push({id: q.id, topic: q.topic, correct: isCorrect});
+  showFeedback(isCorrect, q.explain);
+}
+
+function checkFillQ() {
+  const q = state.queue[state.current]; const inputs = document.querySelectorAll('.q-fill-input'); let correct = 0;
+  inputs.forEach((inp, i) => {
+    const b = q.blanks[i]; const user = inp.value.trim();
+    const allAnswers = [b.answer, ...(b.alts || [])];
+    if (allAnswers.some(a => a.toLowerCase() === user.toLowerCase())) { inp.classList.add('correct'); correct++; }
+    else if (user) { inp.classList.add('wrong'); inp.title = 'Lösung: ' + b.answer; }
+    inp.readOnly = true;
+  });
+  const total = q.blanks.length; const isCorrect = correct === total;
+  if (isCorrect) state.score += total; else state.wrong.push({q: q.q.replace(/\{(\d+)\}/g, '___'), explain: q.explain, topic: q.topic});
+  state.maxScore += total; state.answered.push({id: q.id, topic: q.topic, correct: isCorrect});
+  showFeedback(isCorrect, q.explain + (isCorrect ? '' : '<br><strong>Lösungen:</strong> ' + q.blanks.map(b => b.answer).join(', ')));
+}
+
+function checkCalcQ() {
+  const q = state.queue[state.current]; const inputs = document.querySelectorAll('.q-calc-input'); let correct = 0;
+  inputs.forEach((inp, i) => {
+    const r = q.rows[i]; const user = parseFloat(inp.value.replace(',', '.'));
+    if (!isNaN(user) && Math.abs(user - r.answer) <= r.tolerance) { inp.classList.add('correct'); correct++; }
+    else { inp.classList.add('wrong'); inp.title = 'Lösung: ' + r.answer; }
+    inp.readOnly = true;
+  });
+  const total = q.rows.length; const isCorrect = correct === total;
+  if (isCorrect) state.score += total; else state.wrong.push({q: q.q, explain: q.explain, topic: q.topic});
+  state.maxScore += total; state.answered.push({id: q.id, topic: q.topic, correct: isCorrect});
+  showFeedback(isCorrect, q.explain + (isCorrect ? '' : '<br><strong>Lösungen:</strong> ' + q.rows.map(r => r.answer + (r.unit||'')).join(', ')));
+}
+
+function checkSortQ() {
+  const q = state.queue[state.current]; const drops = document.querySelectorAll('.sort-drop');
+  let correct = 0; let total = q.items.length;
+  drops.forEach((drop, ci) => {
+    drop.querySelectorAll('.chip').forEach(chip => {
+      const idx = parseInt(chip.dataset.sortIdx);
+      if (q.items[idx].cat === ci) { chip.style.background = 'var(--c-success-bg)'; chip.style.borderColor = 'var(--c-success)'; chip.style.color = '#166534'; correct++; }
+      else { chip.style.background = 'var(--c-error-bg)'; chip.style.borderColor = 'var(--c-error)'; chip.style.color = '#991b1b'; }
+    });
+  });
+  document.querySelectorAll('#sortPool .chip').forEach(chip => { chip.style.background = 'var(--c-error-bg)'; chip.style.borderColor = 'var(--c-error)'; chip.style.color = '#991b1b'; });
+  const isCorrect = correct === total;
+  if (isCorrect) state.score += total; else state.wrong.push({q: q.q, explain: q.explain, topic: q.topic});
+  state.maxScore += total; state.answered.push({id: q.id, topic: q.topic, correct: isCorrect});
+  showFeedback(isCorrect, q.explain);
+}
+
+function showFeedback(isCorrect, explain) {
+  const fb = document.getElementById('qFeedback');
+  fb.className = 'q-feedback visible ' + (isCorrect ? 'success' : 'error');
+  fb.innerHTML = (isCorrect ? '✓ Korrekt! ' : '✗ ') + explain;
+  document.getElementById('nextRow').style.display = 'flex';
+  document.getElementById('quizScore').textContent = state.score + ' Punkt' + (state.score !== 1 ? 'e' : '');
+  fb.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+
+function nextQuestion() { state.current++; renderQuestion(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+function endQuiz() {
+  showScreen('resultsScreen');
+  const pct = state.maxScore > 0 ? Math.round((state.score / state.maxScore) * 100) : 0;
+  document.getElementById('resultsScore').textContent = state.score + ' / ' + state.maxScore;
+  document.getElementById('resultsLabel').textContent = pct + '% richtig';
+  const bar = document.getElementById('resultsBarFill');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 70 ? 'var(--c-success)' : pct >= 40 ? 'var(--c-accent)' : 'var(--c-error)';
+  const breakdown = {};
+  state.answered.forEach(a => { if (!breakdown[a.topic]) breakdown[a.topic] = {correct:0, total:0}; breakdown[a.topic].total++; if (a.correct) breakdown[a.topic].correct++; });
+  let tbHtml = '';
+  for (const [topic, data] of Object.entries(breakdown)) {
+    const tpct = Math.round((data.correct / data.total) * 100);
+    const cls = tpct >= 70 ? 'good' : tpct >= 40 ? 'ok' : 'bad';
+    tbHtml += '<div class="topic-row"><span class="topic-name">' + TOPICS[topic].label + '</span><span class="topic-score ' + cls + '">' + data.correct + '/' + data.total + ' (' + tpct + '%)</span></div>';
+  }
+  document.getElementById('topicBreakdown').innerHTML = tbHtml;
+  if (state.wrong.length > 0) {
+    document.getElementById('wrongCard').style.display = 'block';
+    let wHtml = '';
+    state.wrong.forEach(w => { wHtml += '<div class="wrong-item"><div class="wi-q">' + TOPICS[w.topic].short + ': ' + w.q.substring(0, 120) + (w.q.length > 120 ? '…' : '') + '</div><div class="wi-a">' + w.explain + '</div></div>'; });
+    document.getElementById('wrongList').innerHTML = wHtml;
+  } else { document.getElementById('wrongCard').style.display = 'none'; }
+}
+
+function exportResults() { window.print(); }
+function resetApp() { showScreen('startScreen'); state = {mode: state.mode, queue:[], current:0, score:0, maxScore:0, answered:[], wrong:[]}; }
+
+function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo({top:0}); }
+
+function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+
+init();
+</script>
+</body>
+</html>
