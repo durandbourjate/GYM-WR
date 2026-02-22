@@ -848,7 +848,7 @@ document.addEventListener('keydown',function(e){
 // ══════════════════════════════════════════
 const REPORT_CONFIG={
   // ══ DEINE APPS-SCRIPT-URL HIER EINTRAGEN: ══
-  endpoint:'https://script.google.com/macros/s/AKfycbyKVJbrsre2dwwFvPzbH8IANVU8zlTmDZPMUxUmy8S-zNPrCNwtfu869FSOnSCkIHA0ag/exec',
+  endpoint:'https://script.google.com/macros/s/AKfycbw46sH_lj9uH9f1C6olplv2PMhTUHU9i1LELin2GDO4a2N8S5adX4CzUyATO0jQW4Yuvw/exec',
   categories:['Fachlicher Fehler','Technisches Problem','Unklar formuliert','Anderes']
 };
 var _reportQid=null;
@@ -913,22 +913,53 @@ function sendReport(){
   btn.textContent='Wird gesendet…';
   document.getElementById('reportError').style.display='none';
 
-  fetch(REPORT_CONFIG.endpoint,{
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  }).then(function(){
-    // no-cors → response is opaque, but data was sent
+  // Unsichtbarer iframe + Form-POST — umgeht CORS komplett
+  var iframeName='_reportFrame'+Date.now();
+  var iframe=document.createElement('iframe');
+  iframe.name=iframeName;
+  iframe.style.display='none';
+  document.body.appendChild(iframe);
+
+  var form=document.createElement('form');
+  form.method='POST';
+  form.action=REPORT_CONFIG.endpoint;
+  form.target=iframeName;
+  form.style.display='none';
+
+  // Alle Felder als hidden inputs
+  Object.keys(payload).forEach(function(key){
+    var input=document.createElement('input');
+    input.type='hidden';
+    input.name=key;
+    input.value=payload[key];
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+
+  // Erfolg anzeigen (iframe-load = Antwort kam)
+  iframe.onload=function(){
     document.getElementById('reportForm').style.display='none';
     document.getElementById('reportDone').style.display='block';
-    setTimeout(closeReport,1800);
-  }).catch(function(err){
-    document.getElementById('reportError').textContent='Senden fehlgeschlagen. Bitte versuche es nochmals.';
-    document.getElementById('reportError').style.display='block';
-    btn.disabled=false;
-    btn.textContent='📨 Senden';
-  });
+    setTimeout(function(){
+      closeReport();
+      // Aufräumen
+      document.body.removeChild(iframe);
+      document.body.removeChild(form);
+    },1800);
+  };
+
+  // Fallback-Timeout falls onload nicht feuert
+  setTimeout(function(){
+    if(document.getElementById('reportDone').style.display==='none'){
+      document.getElementById('reportForm').style.display='none';
+      document.getElementById('reportDone').style.display='block';
+      setTimeout(closeReport,1800);
+    }
+    try{document.body.removeChild(iframe)}catch(e){}
+    try{document.body.removeChild(form)}catch(e){}
+  },5000);
 }
 
 // ══════════════════════════════════════════
