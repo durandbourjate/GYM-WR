@@ -234,23 +234,6 @@ body{min-height:auto!important;background:#fff!important}
 .btn-end:hover{background:var(--c-bg);color:var(--c-text)}
 .btn-report{background:none;border:none;color:var(--c-text-soft);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s;font-family:inherit}
 .btn-report:hover{background:var(--c-bg);color:var(--c-text)}
-.report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:16px}
-.report-overlay.show{display:flex}
-.report-box{background:var(--c-surface);border-radius:var(--radius);padding:24px;max-width:420px;width:100%;box-shadow:var(--shadow-md);border:1px solid var(--c-border)}
-.report-box h3{font-size:1rem;font-weight:700;margin-bottom:4px}
-.report-context{font-size:.78rem;color:var(--c-text-soft);margin-bottom:16px;font-family:'DM Mono',monospace;line-height:1.5}
-.report-cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.report-cat{padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:500;cursor:pointer;border:2px solid var(--c-border);background:#fff;transition:.15s;user-select:none}
-.report-cat:hover{border-color:var(--c-primary-light)}
-.report-cat.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
-.report-comment{width:100%;min-height:60px;padding:10px;border:2px solid var(--c-border);border-radius:8px;font-family:inherit;font-size:.85rem;resize:vertical;outline:none;background:#fff;color:var(--c-text);margin-bottom:14px}
-.report-comment:focus{border-color:var(--c-primary)}
-.report-actions{display:flex;gap:10px}
-.report-actions .btn{flex:1;font-size:.85rem;padding:10px 16px}
-.report-ok{font-size:.82rem;color:var(--c-success);text-align:center;margin-top:10px;display:none}
-.report-ok.show{display:block}
-html.dark .report-cat{background:var(--c-surface)}
-html.dark .report-comment{background:var(--c-surface);border-color:var(--c-border)}
 html.dark .mode-card{background:var(--c-surface)}
 html.dark .mode-card.active{background:var(--c-info-bg)}
 .theme-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1.15rem;cursor:pointer;flex-shrink:0;transition:.15s;padding:0;line-height:1}
@@ -354,11 +337,6 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 
   /* ── Filter-Header ── */
   .filter-header h2{font-size:.95rem}
-
-  /* ── Report Modal ── */
-  .report-box{padding:18px}
-  .report-cats{gap:6px}
-  .report-cat{padding:5px 10px;font-size:.78rem}
 
   /* ── Fill Hints ── */
   .fill-hints{padding:10px;gap:6px}
@@ -530,27 +508,6 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 </div>
 </div>
 
-</div>
-
-<!-- ═══ Report Modal ═══ -->
-<div class="report-overlay" id="reportOverlay" onclick="if(event.target===this)closeReport()">
-<div class="report-box">
-<h3>⚠️ Problem melden</h3>
-<div class="report-context" id="reportContext"></div>
-<div class="report-cats" id="reportCats">
-<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Fachlicher Fehler">🔴 Fachlicher Fehler</span>
-<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Technisches Problem">🟡 Technisches Problem</span>
-<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Unklar formuliert">🟠 Unklar formuliert</span>
-<span class="report-cat" onclick="toggleReportCat(this)" data-cat="Anderes">⚪ Anderes</span>
-</div>
-<textarea class="report-comment" id="reportComment" placeholder="Optionaler Kommentar…"></textarea>
-<div style="font-size:.78rem;color:var(--c-text-soft);margin-bottom:14px;line-height:1.5">💬 Nach dem Kopieren die Nachricht in LearningView im <strong>Chat des Bausteins</strong> einfügen und absenden.</div>
-<div class="report-actions">
-<button class="btn btn-primary" id="reportCopyBtn" onclick="copyReport()" disabled>📋 Kopieren</button>
-<button class="btn btn-outline" onclick="closeReport()">Abbrechen</button>
-</div>
-<div class="report-ok" id="reportOk">✅ In Zwischenablage kopiert!</div>
-</div>
 </div>
 
 <script>
@@ -856,57 +813,30 @@ document.addEventListener('keydown',function(e){
 });
 
 // ══════════════════════════════════════════
-// REPORT PROBLEM
-// Copies structured problem report to clipboard.
+// REPORT PROBLEM — Google Form
+// Opens pre-filled Google Form in new tab.
 // ══════════════════════════════════════════
-let reportQid=null;
+const REPORT_CONFIG={
+  url:'https://docs.google.com/forms/d/e/1FAIpQLSdmNapzDvTsJeRNqxbM7_TjzG2YE_DJUWXgifPOG2Oc4mzjDQ/viewform',
+  e:{
+    pool:'entry.122865322',
+    qid:'entry.2142422105',
+    topic:'entry.1356876520',
+    text:'entry.1353239356',
+  }
+};
 function showReport(qid){
-  reportQid=qid;
   const q=QUESTIONS.find(x=>x.id===qid);
-  const poolId=new URLSearchParams(window.location.search).get('pool')||'';
-  let ctx='Pool: '+POOL_META.title+'\n';
-  ctx+='Frage: '+q.id+' · '+TOPICS[q.topic].short+'\n';
-  ctx+='Text: '+q.q.replace(/<[^>]*>/g,'').substring(0,80)+(q.q.length>80?'…':'');
-  document.getElementById('reportContext').textContent=ctx;
-  document.querySelectorAll('.report-cat').forEach(c=>c.classList.remove('active'));
-  document.getElementById('reportComment').value='';
-  document.getElementById('reportCopyBtn').disabled=true;
-  document.getElementById('reportOk').classList.remove('show');
-  document.getElementById('reportOverlay').classList.add('show');
-}
-function toggleReportCat(el){
-  document.querySelectorAll('.report-cat').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('reportCopyBtn').disabled=false;
-}
-function closeReport(){
-  document.getElementById('reportOverlay').classList.remove('show');
-  reportQid=null;
-}
-function copyReport(){
-  const q=QUESTIONS.find(x=>x.id===reportQid);
   if(!q)return;
-  const cat=document.querySelector('.report-cat.active');
-  if(!cat)return;
-  const comment=document.getElementById('reportComment').value.trim();
   const poolId=new URLSearchParams(window.location.search).get('pool')||'';
-  let msg='⚠️ PROBLEM-MELDUNG Übungspool\n';
-  msg+='Pool: '+POOL_META.title+' ('+poolId+')\n';
-  msg+='Frage: '+q.id+' · '+TOPICS[q.topic].short+'\n';
-  msg+='Text: '+q.q.replace(/<[^>]*>/g,'').substring(0,120)+'\n';
-  msg+='Kategorie: '+cat.dataset.cat+'\n';
-  msg+='Kommentar: '+(comment||'–')+'\n';
-  navigator.clipboard.writeText(msg).then(()=>{
-    document.getElementById('reportOk').classList.add('show');
-    setTimeout(()=>closeReport(),1200);
-  }).catch(()=>{
-    // Fallback: select a temporary textarea
-    const ta=document.createElement('textarea');ta.value=msg;
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);
-    document.getElementById('reportOk').classList.add('show');
-    setTimeout(()=>closeReport(),1200);
+  const p=new URLSearchParams({
+    usp:'pp_url',
+    [REPORT_CONFIG.e.pool]:POOL_META.title+' ('+poolId+')',
+    [REPORT_CONFIG.e.qid]:q.id,
+    [REPORT_CONFIG.e.topic]:TOPICS[q.topic]?TOPICS[q.topic].short:q.topic,
+    [REPORT_CONFIG.e.text]:q.q.replace(/<[^>]*>/g,'').substring(0,150),
   });
+  window.open(REPORT_CONFIG.url+'?'+p.toString(),'_blank');
 }
 
 // ══════════════════════════════════════════

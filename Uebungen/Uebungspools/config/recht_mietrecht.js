@@ -9,17 +9,23 @@ window.POOL_META = {
   title: "Mietrecht – OR 253 bis 274",
   fach: "Recht",
   color: "#73ab2c",
-  level: "SF GYM3"
+  level: "SF GYM3",
+  lernziele: [
+    "Ich kann die Grundlagen des Mietvertrags (OR 253–274) erklären und den Mietvertrag von verwandten Vertragstypen abgrenzen. (K2)",
+    "Ich kann die Rechte und Pflichten von Mieter und Vermieter beschreiben. (K2)",
+    "Ich kann die Regeln zu Kündigung, Mängeln und Mietzins auf konkrete Fälle anwenden. (K3)",
+    "Ich kann den Mieterschutz im schweizerischen Recht beurteilen. (K5)"
+  ]
 };
 
 window.TOPICS = {
-  "grundlagen":    {label: "Grundlagen des Mietvertrags",           short: "Grundlagen"},
-  "mietzins":      {label: "Mietzins, Nebenkosten & Depot",         short: "Mietzins"},
-  "kuendigung":    {label: "Kündigung & Kündigungsfristen",          short: "Kündigung"},
-  "maengel":       {label: "Mängel & Reparaturen",                  short: "Mängel"},
-  "untermiete":    {label: "Untermiete & Erstreckung",              short: "Untermiete"},
-  "uebergabe":     {label: "Wohnungsübergabe & -abgabe",            short: "Übergabe"},
-  "zusammenleben": {label: "Zusammenleben, Haustiere & Datenschutz", short: "Zusammenleben"}
+  "grundlagen":    {label: "Grundlagen des Mietvertrags",           short: "Grundlagen",      lernziele: ["Ich kann den Mietvertrag definieren und von Pacht, Gebrauchsleihe und Leasing abgrenzen. (K2)", "Ich kann die Hauptpflichten von Mieter und Vermieter gemäss OR nennen. (K1)"]},
+  "mietzins":      {label: "Mietzins, Nebenkosten & Depot",         short: "Mietzins",        lernziele: ["Ich kann die Regeln zur Mietzinsanpassung und zur Anfechtung des Anfangsmietzinses erklären. (K2)", "Ich kann Nebenkosten von der Nettomiete abgrenzen und die Regeln zum Mietzinsdepot (OR 257e) nennen. (K2)"]},
+  "kuendigung":    {label: "Kündigung & Kündigungsfristen",          short: "Kündigung",       lernziele: ["Ich kann die ordentlichen Kündigungsfristen und -termine für Wohn- und Geschäftsräume nennen (OR 266a ff.). (K1)", "Ich kann beurteilen, ob eine Kündigung formgültig und missbräuchlich ist. (K5)"]},
+  "maengel":       {label: "Mängel & Reparaturen",                  short: "Mängel",          lernziele: ["Ich kann die Rechte des Mieters bei Mängeln an der Mietsache (OR 259a–259h) erklären. (K2)", "Ich kann zwischen kleinem und grossem Unterhalt unterscheiden. (K2)"]},
+  "untermiete":    {label: "Untermiete & Erstreckung",              short: "Untermiete",      lernziele: ["Ich kann die Voraussetzungen der Untermiete (OR 262) und der Mieterstreckung (OR 272) erklären. (K2)", "Ich kann beurteilen, wann der Vermieter die Untermiete verweigern darf. (K3)"]},
+  "uebergabe":     {label: "Wohnungsübergabe & -abgabe",            short: "Übergabe",        lernziele: ["Ich kann den Ablauf der Wohnungsübergabe und -rückgabe beschreiben. (K2)", "Ich kann die Pflichten von Mieter und Vermieter bei der Rückgabe der Mietsache erklären (OR 267). (K2)"]},
+  "zusammenleben": {label: "Zusammenleben, Haustiere & Datenschutz", short: "Zusammenleben",  lernziele: ["Ich kann die Regeln zum nachbarschaftlichen Zusammenleben im Mietrecht erklären. (K2)", "Ich kann die Rechte des Mieters bezüglich Haustieren und Datenschutz einordnen. (K2)"]}
 };
 
 window.QUESTIONS = [

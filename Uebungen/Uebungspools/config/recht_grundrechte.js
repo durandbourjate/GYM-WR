@@ -8,14 +8,20 @@ window.POOL_META = {
   title: "Menschenrechte und Grundrechte",
   fach: "Recht",
   color: "#73ab2c",
-  level: "SF GYM2 / EWR GYM2"
+  level: "SF GYM2 / EWR GYM2",
+  lernziele: [
+    "Ich kann die Allgemeine Erklärung der Menschenrechte (AEMR) und ihre Bedeutung erklären. (K2)",
+    "Ich kann die Grundrechte der schweizerischen Bundesverfassung nennen und einordnen. (K2)",
+    "Ich kann die Voraussetzungen für die Einschränkung von Grundrechten (Art. 36 BV) erklären und anwenden. (K3)",
+    "Ich kann Grundrechtsfragen auf konkrete Alltagssituationen anwenden. (K3)"
+  ]
 };
 
 window.TOPICS = {
-  "menschenrechte": {label: "Allgemeine Menschenrechte & AEMR", short: "Menschenrechte"},
-  "grundrechte_bv": {label: "Grundrechte in der Bundesverfassung", short: "Grundrechte BV"},
-  "einschraenkung": {label: "Einschränkung von Grundrechten (Art. 36 BV)", short: "Einschränkung"},
-  "faelle": {label: "Fallanwendungen – Grundrechte im Alltag", short: "Fälle"}
+  "menschenrechte": {label: "Allgemeine Menschenrechte & AEMR", short: "Menschenrechte", lernziele: ["Ich kann die Entstehung und den Inhalt der AEMR beschreiben. (K1)", "Ich kann die Merkmale der Menschenrechte (universell, unveräusserlich, unteilbar) erklären. (K2)"]},
+  "grundrechte_bv": {label: "Grundrechte in der Bundesverfassung", short: "Grundrechte BV", lernziele: ["Ich kann die wichtigsten Grundrechte der BV (Art. 7–34 BV) nennen und einordnen. (K1)", "Ich kann den Unterschied zwischen Freiheitsrechten, politischen Rechten und Sozialzielen erklären. (K2)"]},
+  "einschraenkung": {label: "Einschränkung von Grundrechten (Art. 36 BV)", short: "Einschränkung", lernziele: ["Ich kann die vier Voraussetzungen für die Einschränkung von Grundrechten nach Art. 36 BV nennen. (K1)", "Ich kann anhand eines Falles prüfen, ob eine Grundrechtseinschränkung zulässig ist. (K3)"]},
+  "faelle": {label: "Fallanwendungen – Grundrechte im Alltag", short: "Fälle", lernziele: ["Ich kann Grundrechtsfragen in konkreten Alltagssituationen erkennen und analysieren. (K4)", "Ich kann bei Grundrechtskollisionen eine Güterabwägung vornehmen. (K5)"]}
 };
 
 window.QUESTIONS = [

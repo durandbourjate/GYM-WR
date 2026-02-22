@@ -9,20 +9,26 @@ window.POOL_META = {
   title: "Strafrecht – Grundlagen, Strafbarkeit und Strafzumessung",
   fach: "Recht",
   color: "#73ab2c",
-  level: "SF GYM3–GYM4"
+  level: "SF GYM3–GYM4",
+  lernziele: [
+    "Ich kann die Grundsätze und Zwecke des Strafrechts (Vergeltung, Spezial- und Generalprävention) erklären. (K2)",
+    "Ich kann die Strafbarkeitsvoraussetzungen (Tatbestandsmässigkeit, Rechtswidrigkeit, Schuld) prüfen. (K3)",
+    "Ich kann die verschiedenen Strafarten und Massnahmen des schweizerischen Strafrechts beschreiben. (K2)",
+    "Ich kann bei der Strafzumessung relevante Faktoren nennen und ihre Anwendung beurteilen. (K4)"
+  ]
 };
 
 window.TOPICS = {
-  "zweck":           {label: "Zweck & Grundsätze des Strafrechts", short: "Zweck & Grundsätze"},
-  "strafarten":      {label: "Strafarten & Deliktsarten", short: "Strafarten"},
-  "vollzug":         {label: "Strafvollzug & bedingter Vollzug", short: "Strafvollzug"},
-  "massnahmen":      {label: "Massnahmen & Verwahrung", short: "Massnahmen"},
-  "tatbestand":      {label: "Tatbestandsmässigkeit", short: "Tatbestand"},
-  "verfahren":       {label: "Strafantrag, Offizialdelikt & Verjährung", short: "Antrag & Verjährung"},
-  "rechtfertigung":  {label: "Rechtfertigungs- & Schuldausschliessungsgründe", short: "Rechtfertigung"},
-  "taeter":          {label: "Mehrere Täter*innen", short: "Mehrere Täter"},
-  "strafzumessung":  {label: "Strafzumessung & Strafregister", short: "Strafzumessung"},
-  "jugend":          {label: "Jugendstrafrecht & SVG", short: "Jugend & SVG"}
+  "zweck":           {label: "Zweck & Grundsätze des Strafrechts", short: "Zweck & Grundsätze", lernziele: ["Ich kann die drei Strafzwecke (Vergeltung, Spezialprävention, Generalprävention) erklären. (K2)", "Ich kann die Grundsätze des Strafrechts (nulla poena sine lege, in dubio pro reo, ne bis in idem) nennen und erklären. (K2)"]},
+  "strafarten":      {label: "Strafarten & Deliktsarten", short: "Strafarten", lernziele: ["Ich kann die drei Strafarten (Freiheitsstrafe, Geldstrafe, Busse) unterscheiden und deren Bemessung erklären. (K2)", "Ich kann Verbrechen, Vergehen und Übertretungen unterscheiden. (K1)"]},
+  "vollzug":         {label: "Strafvollzug & bedingter Vollzug", short: "Strafvollzug", lernziele: ["Ich kann den bedingten, teilbedingten und unbedingten Vollzug erklären. (K2)", "Ich kann die Voraussetzungen für eine bedingte Strafe (Art. 42 StGB) nennen. (K1)"]},
+  "massnahmen":      {label: "Massnahmen & Verwahrung", short: "Massnahmen", lernziele: ["Ich kann therapeutische Massnahmen und Verwahrung unterscheiden. (K2)", "Ich kann erklären, wann und warum Massnahmen anstelle von Strafen angeordnet werden. (K2)"]},
+  "tatbestand":      {label: "Tatbestandsmässigkeit", short: "Tatbestand", lernziele: ["Ich kann den objektiven und subjektiven Tatbestand erklären. (K2)", "Ich kann bei einem Straffall prüfen, ob ein Tatbestand erfüllt ist. (K3)"]},
+  "verfahren":       {label: "Strafantrag, Offizialdelikt & Verjährung", short: "Antrag & Verjährung", lernziele: ["Ich kann Antrags- und Offizialdelikte unterscheiden. (K2)", "Ich kann die Verjährungsfristen im Strafrecht erklären. (K2)"]},
+  "rechtfertigung":  {label: "Rechtfertigungs- & Schuldausschliessungsgründe", short: "Rechtfertigung", lernziele: ["Ich kann Rechtfertigungsgründe (Notwehr, Notstand, Einwilligung) nennen und erklären. (K2)", "Ich kann Schuldausschliessungsgründe (Unzurechnungsfähigkeit, Schuldunfähigkeit) erkennen. (K2)"]},
+  "taeter":          {label: "Mehrere Täter*innen", short: "Mehrere Täter", lernziele: ["Ich kann Mittäterschaft, Anstiftung und Gehilfenschaft unterscheiden. (K2)", "Ich kann in einem Fall die Beteiligungsform bestimmen. (K3)"]},
+  "strafzumessung":  {label: "Strafzumessung & Strafregister", short: "Strafzumessung", lernziele: ["Ich kann die Kriterien der Strafzumessung (Art. 47 StGB) nennen. (K1)", "Ich kann strafmildernde und strafschärfende Umstände erklären. (K2)"]},
+  "jugend":          {label: "Jugendstrafrecht & SVG", short: "Jugend & SVG", lernziele: ["Ich kann die Besonderheiten des Jugendstrafrechts (JStG) erklären. (K2)", "Ich kann wichtige Verkehrsdelikte nach SVG nennen und deren Strafen einordnen. (K2)"]}
 };
 
 window.QUESTIONS = [

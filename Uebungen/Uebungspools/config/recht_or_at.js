@@ -8,19 +8,25 @@ window.POOL_META = {
   title: "OR AT – Vertragslehre",
   fach: "Recht",
   color: "#73ab2c",
-  level: "SF GYM3–GYM4"
+  level: "SF GYM3–GYM4",
+  lernziele: [
+    "Ich kann die drei Entstehungsgründe von Obligationen (Vertrag, unerlaubte Handlung, ungerechtfertigte Bereicherung) erklären. (K2)",
+    "Ich kann die Voraussetzungen eines gültigen Vertrags prüfen und Willensmängel erkennen. (K3)",
+    "Ich kann die Regeln zur Vertragserfüllung, Sicherung und zum Erlöschen von Obligationen anwenden. (K3)",
+    "Ich kann Vertragsstörungen (Verzug, Schlechterfüllung, Nichterfüllung) rechtlich einordnen und die Rechtsfolgen bestimmen. (K4)"
+  ]
 };
 
 window.TOPICS = {
-  "entstehung":              {label: "Entstehungsgründe der Obligationen",              short: "Entstehung"},
-  "unerlaubte_handlung":     {label: "Obligationen aus unerlaubter Handlung",           short: "Unerlaubte Handlung"},
-  "bereicherung":            {label: "Ungerechtfertigte Bereicherung",                  short: "Bereicherung"},
-  "vertragsvoraussetzungen": {label: "Voraussetzungen gültiger Verträge",               short: "Voraussetzungen"},
-  "willensmaengel":          {label: "Anfechtungsgründe und Willensmängel",             short: "Willensmängel"},
-  "erfuellung":              {label: "Vertragserfüllung",                               short: "Erfüllung"},
-  "sicherung":               {label: "Sicherung von Forderungen",                      short: "Sicherung"},
-  "erloeschen":              {label: "Erlöschen der Obligation",                        short: "Erlöschen"},
-  "stoerung":                {label: "Störung der Vertragserfüllung",                   short: "Störung"}
+  "entstehung":              {label: "Entstehungsgründe der Obligationen",              short: "Entstehung",           lernziele: ["Ich kann die drei Entstehungsgründe von Obligationen (Vertrag, Delikt, Bereicherung) nennen und unterscheiden. (K1)", "Ich kann die Begriffe Forderung, Schuld, Stückschuld und Gattungsschuld erklären. (K2)"]},
+  "unerlaubte_handlung":     {label: "Obligationen aus unerlaubter Handlung",           short: "Unerlaubte Handlung",  lernziele: ["Ich kann die Voraussetzungen der ausservertraglichen Haftung (OR 41) nennen. (K1)", "Ich kann Schadenersatz und Genugtuung unterscheiden. (K2)"]},
+  "bereicherung":            {label: "Ungerechtfertigte Bereicherung",                  short: "Bereicherung",         lernziele: ["Ich kann die Voraussetzungen des Bereicherungsanspruchs (OR 62 ff.) erklären. (K2)", "Ich kann in einem Fall beurteilen, ob ein Bereicherungsanspruch besteht. (K3)"]},
+  "vertragsvoraussetzungen": {label: "Voraussetzungen gültiger Verträge",               short: "Voraussetzungen",      lernziele: ["Ich kann die Voraussetzungen eines gültigen Vertrags (Handlungsfähigkeit, Willensübereinstimmung, Formvorschriften, Inhaltsschranken) nennen. (K1)", "Ich kann prüfen, ob ein Vertrag gültig zustande gekommen ist. (K3)"]},
+  "willensmaengel":          {label: "Anfechtungsgründe und Willensmängel",             short: "Willensmängel",        lernziele: ["Ich kann die Willensmängel (Irrtum, Täuschung, Furchterregung) definieren und unterscheiden. (K2)", "Ich kann in einem konkreten Fall prüfen, ob ein Willensmangel vorliegt und welche Rechtsfolge sich ergibt. (K3)"]},
+  "erfuellung":              {label: "Vertragserfüllung",                               short: "Erfüllung",            lernziele: ["Ich kann die Regeln zur Vertragserfüllung (Ort, Zeit, Gegenstand) erklären. (K2)", "Ich kann bestimmen, wann eine Obligation erfüllt ist. (K3)"]},
+  "sicherung":               {label: "Sicherung von Forderungen",                      short: "Sicherung",            lernziele: ["Ich kann die Instrumente zur Sicherung von Forderungen (Bürgschaft, Konventionalstrafe, Retentionsrecht) erklären. (K2)", "Ich kann in einem Fall die passende Sicherungsform bestimmen. (K3)"]},
+  "erloeschen":              {label: "Erlöschen der Obligation",                        short: "Erlöschen",            lernziele: ["Ich kann die verschiedenen Gründe für das Erlöschen von Obligationen (Erfüllung, Verrechnung, Verjährung) nennen. (K1)", "Ich kann die Verjährungsfristen des OR nennen und anwenden. (K3)"]},
+  "stoerung":                {label: "Störung der Vertragserfüllung",                   short: "Störung",              lernziele: ["Ich kann die Formen der Vertragsstörung (Schuldnerverzug, Gläubigerverzug, Schlechterfüllung, Nichterfüllung) unterscheiden. (K2)", "Ich kann die Rechtsfolgen bei Schuldnerverzug (OR 102 ff.) und Schlechterfüllung (OR 97) erklären. (K2)"]}
 };
 
 window.QUESTIONS = [

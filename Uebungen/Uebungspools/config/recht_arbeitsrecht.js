@@ -2,18 +2,24 @@ window.POOL_META = {
   title: "Arbeitsrecht",
   fach: "Recht",
   color: "#73ab2c",
-  level: "SF GYM3–GYM4"
+  level: "SF GYM3–GYM4",
+  lernziele: [
+    "Ich kann die drei Bereiche des Arbeitsrechts (öffentliches, kollektives, individuelles) unterscheiden. (K2)",
+    "Ich kann die wichtigsten Rechte und Pflichten von Arbeitgeber und Arbeitnehmer erklären. (K2)",
+    "Ich kann die Regeln zur Beendigung des Arbeitsverhältnisses und den Kündigungsschutz anwenden. (K3)",
+    "Ich kann die Bedeutung des GAV und des öffentlichen Arbeitsrechts für den Arbeitnehmerschutz erklären. (K2)"
+  ]
 };
 
 window.TOPICS = {
-  "grundlagen": {label: "Grundlagen & 3 Bereiche des Arbeitsrechts", short: "Grundlagen"},
-  "vertragsarten": {label: "Verträge auf Arbeitsleistung & Arbeitsvertragsarten", short: "Vertragsarten"},
-  "pflichten_an": {label: "Pflichten des Arbeitnehmers", short: "Pflichten AN"},
-  "pflichten_ag": {label: "Pflichten des Arbeitgebers", short: "Pflichten AG"},
-  "beendigung": {label: "Beendigung des Arbeitsverhältnisses & Kündigung", short: "Kündigung"},
-  "kuendigungsschutz": {label: "Kündigungsschutz & Sperrfristen", short: "Schutz"},
-  "oeffentliches_ar": {label: "Öffentlich-rechtliches Arbeitsrecht (ArG)", short: "ArG"},
-  "kollektives_ar": {label: "Kollektives Arbeitsrecht (GAV, NAV, GlG)", short: "GAV/NAV"}
+  "grundlagen": {label: "Grundlagen & 3 Bereiche des Arbeitsrechts", short: "Grundlagen", lernziele: ["Ich kann die drei Bereiche des Arbeitsrechts (öffentliches, kollektives, individuelles Arbeitsrecht) nennen und beschreiben. (K1)", "Ich kann den Grundsatz der Formfreiheit und die relative Zwingendheit im Arbeitsrecht erklären. (K2)"]},
+  "vertragsarten": {label: "Verträge auf Arbeitsleistung & Arbeitsvertragsarten", short: "Vertragsarten", lernziele: ["Ich kann die Verträge auf Arbeitsleistung (Arbeitsvertrag, Werkvertrag, Auftrag) unterscheiden. (K2)", "Ich kann verschiedene Arbeitsvertragsarten (EAV, Lehrvertrag, Handelsreisendenvertrag, Heimarbeit) nennen und abgrenzen. (K2)"]},
+  "pflichten_an": {label: "Pflichten des Arbeitnehmers", short: "Pflichten AN", lernziele: ["Ich kann die Pflichten des Arbeitnehmers (Arbeitspflicht, Sorgfaltspflicht, Treuepflicht etc.) nennen und erklären. (K2)", "Ich kann in konkreten Fällen beurteilen, ob ein Arbeitnehmer seine Pflichten verletzt hat. (K3)"]},
+  "pflichten_ag": {label: "Pflichten des Arbeitgebers", short: "Pflichten AG", lernziele: ["Ich kann die Pflichten des Arbeitgebers (Lohnzahlung, Fürsorgepflicht etc.) nennen und erklären. (K2)", "Ich kann die Lohnfortzahlungspflicht bei Krankheit und Unfall erklären. (K2)"]},
+  "beendigung": {label: "Beendigung des Arbeitsverhältnisses & Kündigung", short: "Kündigung", lernziele: ["Ich kann die ordentliche und die fristlose Kündigung unterscheiden und deren Voraussetzungen nennen. (K2)", "Ich kann die gesetzlichen Kündigungsfristen nach OR 335c nennen und anwenden. (K3)"]},
+  "kuendigungsschutz": {label: "Kündigungsschutz & Sperrfristen", short: "Schutz", lernziele: ["Ich kann den zeitlichen und sachlichen Kündigungsschutz erklären. (K2)", "Ich kann beurteilen, ob eine Kündigung missbräuchlich ist (OR 336). (K5)"]},
+  "oeffentliches_ar": {label: "Öffentlich-rechtliches Arbeitsrecht (ArG)", short: "ArG", lernziele: ["Ich kann die Schutzvorschriften des Arbeitsgesetzes (Höchstarbeitszeit, Ruhezeit, Nachtarbeit) nennen. (K1)", "Ich kann erklären, warum öffentlich-rechtliche Schutzvorschriften nötig sind. (K2)"]},
+  "kollektives_ar": {label: "Kollektives Arbeitsrecht (GAV, NAV, GlG)", short: "GAV/NAV", lernziele: ["Ich kann den Gesamtarbeitsvertrag (GAV) und den Normalarbeitsvertrag (NAV) unterscheiden. (K2)", "Ich kann die Bedeutung des Gleichstellungsgesetzes (GlG) im Arbeitsrecht erklären. (K2)"]}
 };
 
 window.QUESTIONS = [
