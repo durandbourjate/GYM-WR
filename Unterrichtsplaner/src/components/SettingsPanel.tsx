@@ -11,6 +11,7 @@ import {
 import { WR_CATEGORIES, generateColorVariants } from '../data/categories';
 import { getGymStufe } from '../utils/gradeRequirements';
 import { IW_PRESET_2526 } from '../data/iwPresets';
+import { useInstanceStore } from '../store/instanceStore';
 
 // === Duration helper for courses ===
 const COURSE_DURATION_PRESETS = [
@@ -754,36 +755,57 @@ export function SettingsPanel() {
       <Section title="💾 Daten exportieren / importieren">
         <div className="space-y-3">
           <div>
-            <p className="text-[8px] text-gray-400 font-semibold mb-1">Einstellungen (Kurse, Ferien, Sonderwochen)</p>
+            <p className="text-[8px] text-gray-400 font-semibold mb-1">Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
             <div className="flex gap-1">
               <button onClick={() => {
+                const activeMeta = useInstanceStore.getState().getActive();
+                const planerName = (activeMeta?.name || 'planer').replace(/[^a-zA-Z0-9äöüÄÖÜ_-]/g, '_');
+                const datum = new Date().toISOString().slice(0, 10);
                 const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url; a.download = 'unterrichtsplaner-settings.json'; a.click();
+                a.href = url; a.download = `planer-config-${planerName}-${datum}.json`; a.click();
                 URL.revokeObjectURL(url);
               }}
                 className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all">
-                ⬇ Export
+                📤 Konfiguration exportieren
               </button>
               <label className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-center cursor-pointer transition-all">
-                ⬆ Import
+                📥 Konfiguration importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
                   const reader = new FileReader();
                   reader.onload = () => {
                     try {
-                      const imported = JSON.parse(reader.result as string) as PlannerSettings;
-                      if (imported.version && imported.courses) {
-                        setSettings(imported);
-                        doSave(imported);
-                      } else {
-                        alert('Ungültige Datei: Keine gültigen Einstellungen gefunden.');
+                      const imported = JSON.parse(reader.result as string);
+                      // Validate required fields
+                      if (!imported || typeof imported !== 'object') {
+                        alert('Ungültige Datei: Kein gültiges JSON-Objekt.');
+                        return;
                       }
+                      if (!Array.isArray(imported.courses)) {
+                        alert('Ungültige Datei: Feld "courses" fehlt oder ist kein Array.');
+                        return;
+                      }
+                      if (!Array.isArray(imported.holidays)) {
+                        alert('Ungültige Datei: Feld "holidays" fehlt oder ist kein Array.');
+                        return;
+                      }
+                      if (!Array.isArray(imported.specialWeeks)) {
+                        alert('Ungültige Datei: Feld "specialWeeks" fehlt oder ist kein Array.');
+                        return;
+                      }
+                      // Confirm before overwriting
+                      if (!confirm(`Bestehende Einstellungen werden überschrieben (${imported.courses.length} Kurse, ${imported.holidays.length} Ferienperioden, ${imported.specialWeeks.length} Sonderwochen). Fortfahren?`)) {
+                        return;
+                      }
+                      setSettings(imported as PlannerSettings);
+                      doSave(imported as PlannerSettings);
                     } catch { alert('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
+                  e.target.value = ''; // Reset to allow re-import of same file
                 }} />
               </label>
             </div>
