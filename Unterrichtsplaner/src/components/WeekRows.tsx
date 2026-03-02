@@ -383,33 +383,36 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   const allWeekKeys = allWeeksProp || weeks.map(w => w.w);
 
   // Pre-compute holiday/event spans for merged rows (like ZoomYearView)
-  const { holidaySkipSet, holidaySpanStart } = React.useMemo(() => {
-    const spans: { startIdx: number; len: number; label: string; type: 'holiday' | 'event'; weekKeys: string[] }[] = [];
+  const { holidaySkipSet, holidaySpanStart, eventWeeks } = React.useMemo(() => {
+    const spans: { startIdx: number; len: number; label: string; type: 'holiday'; weekKeys: string[] }[] = [];
+    const events = new Map<string, { label: string; affectedCols: Set<number> }>();
     let i = 0;
     const dwKeys = displayWeeks.map(w => w.w);
     while (i < displayWeeks.length) {
       const wk = displayWeeks[i];
-      const entries = Object.values(wk.lessons || {});
-      const allHoliday = entries.length > 0 && entries.every(e => (e as any).type === 6);
-      const allEvent = entries.length > 0 && entries.every(e => (e as any).type === 5);
+      const entries = Object.entries(wk.lessons || {});
+      const allHoliday = entries.length > 0 && entries.every(([, e]) => (e as any).type === 6);
 
       if (allHoliday) {
-        const label = (entries[0] as any)?.title || 'Ferien';
+        const label = (entries[0]?.[1] as any)?.title || 'Ferien';
         const startIdx = i;
         const weekKeys: string[] = [];
         while (i < displayWeeks.length) {
           const nwk = displayWeeks[i];
-          const ne = Object.values(nwk.lessons || {});
-          if (!(ne.length > 0 && ne.every(e => (e as any).type === 6))) break;
+          const ne = Object.entries(nwk.lessons || {});
+          if (!(ne.length > 0 && ne.every(([, e]) => (e as any).type === 6))) break;
           weekKeys.push(nwk.w);
           i++;
         }
         spans.push({ startIdx, len: i - startIdx, label, type: 'holiday', weekKeys });
-      } else if (allEvent) {
-        const label = (entries[0] as any)?.title || 'Sonderwoche';
-        spans.push({ startIdx: i, len: 1, label, type: 'event', weekKeys: [wk.w] });
-        i++;
       } else {
+        // Check for event/sonderwoche: any course has type 5
+        const eventEntries = entries.filter(([, e]) => (e as any).type === 5);
+        if (eventEntries.length > 0) {
+          const label = (eventEntries[0][1] as any)?.title || 'Sonderwoche';
+          const affectedCols = new Set(eventEntries.map(([col]) => parseInt(col)));
+          events.set(wk.w, { label, affectedCols });
+        }
         i++;
       }
     }
@@ -422,7 +425,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         skipSet.add(dwKeys[span.startIdx + j]);
       }
     }
-    return { holidaySkipSet: skipSet, holidaySpanStart: spanStart };
+    return { holidaySkipSet: skipSet, holidaySpanStart: spanStart, eventWeeks: events };
   }, [displayWeeks]);
 
   // Single click: select + show mini-buttons (no detail panel)
@@ -561,11 +564,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         // Skip weeks that are covered by a holiday/event rowSpan
         if (holidaySkipSet.has(week.w)) return null;
 
-        // Check if this is the start of a holiday/event span
+        // Check if this is the start of a holiday span
         const hSpan = holidaySpanStart.get(week.w);
         if (hSpan) {
-          const isHoliday = hSpan.type === 'holiday';
-          const ROW_H = 36; // approximate row height
+          const ROW_H = 36;
           const spanH = hSpan.len * ROW_H;
           return (
             <tr
@@ -594,13 +596,13 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 rowSpan={hSpan.len}
                 className="border-b border-slate-800/30 text-center align-middle"
                 style={{
-                  background: isHoliday ? '#1e293b50' : '#37415130',
+                  background: '#1e293b50',
                   height: spanH,
                 }}
               >
                 <div className="flex items-center justify-center gap-1.5">
-                  <span className="text-[11px]">{isHoliday ? '🏖' : '📅'}</span>
-                  <span className={`text-[11px] font-medium ${isHoliday ? 'text-gray-400' : 'text-amber-400/80'}`}>
+                  <span className="text-[11px]">🏖</span>
+                  <span className="text-[11px] font-medium text-gray-400">
                     {hSpan.label}
                   </span>
                   {hSpan.len > 1 && (
@@ -612,13 +614,18 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
           );
         }
 
+        const eventInfo = eventWeeks.get(week.w);
+
         return (
           <tr
             key={week.w}
             ref={isCurrent ? currentRef : undefined}
             data-week={week.w}
             className="group"
-            style={{ opacity: dimPastWeeks && past && !isCurrent ? 0.6 : 1 }}
+            style={{
+              opacity: dimPastWeeks && past && !isCurrent ? 0.6 : 1,
+              background: eventInfo ? '#78350f18' : undefined,
+            }}
           >
             {/* Week number */}
             <td
@@ -629,6 +636,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 {week.w}
               </div>
               {isCurrent && <div className="w-1 h-1 rounded-full bg-blue-400 mx-auto mt-0.5 animate-pulse" />}
+              {eventInfo && <div className="text-[7px] text-amber-500/70 leading-tight mt-0.5 max-w-[40px] overflow-hidden" title={eventInfo.label}>📅</div>}
             </td>
 
             {/* Lesson cells */}
@@ -963,19 +971,39 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                         onCancel={() => setEditing(null)}
                       />
                     </div>
-                  ) : title && isFixed ? (
-                    /* Holiday/Event cells: dezent, grau, nicht draggable */
+                  ) : title && lessonType === 6 ? (
+                    /* Holiday cells: grau, nicht klickbar/draggable */
                     <div
                       className="mx-0.5 ml-1.5 px-1.5 py-1 rounded flex items-center justify-center cursor-default"
                       style={{
                         minHeight: Math.max(cellHeight, 32),
                         opacity: isSearchDimmed ? 0.2 : 1,
-                        background: lessonType === 6 ? '#1e293b60' : '#37415140',
-                        border: `1px solid ${lessonType === 6 ? '#334155' : '#475569'}`,
+                        background: '#1e293b60',
+                        border: '1px solid #334155',
                       }}
                     >
-                      <span className="mr-1 text-[9px]">{lessonType === 6 ? '🏖' : '📅'}</span>
-                      <span className={`text-[9px] font-medium leading-tight ${lessonType === 6 ? 'text-gray-400' : 'text-amber-400/80'}`}
+                      <span className="mr-1 text-[9px]">🏖</span>
+                      <span className="text-[9px] font-medium leading-tight text-gray-400"
+                        style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {displayTitle}
+                      </span>
+                    </div>
+                  ) : title && lessonType === 5 ? (
+                    /* Event/Sonderwoche cells: amber, klickbar (Studienreisen etc. brauchen Planung) */
+                    <div
+                      className="mx-0.5 ml-1.5 px-1.5 py-1 rounded flex items-center justify-center cursor-pointer hover:brightness-110 transition-all"
+                      style={{
+                        minHeight: Math.max(cellHeight, 32),
+                        opacity: isSearchDimmed ? 0.2 : isSelected ? 1 : 0.9,
+                        background: isSelected ? '#78350f' : '#451a0340',
+                        border: `1px solid ${isSelected ? '#f59e0b' : '#92400e60'}`,
+                        boxShadow: isSelected ? '0 0 0 2px #f59e0b40' : 'none',
+                      }}
+                      onClick={(e) => { e.stopPropagation(); handleClick(week.w, c, title, e); }}
+                      onDoubleClick={() => handleDoubleClick(week.w, c, title)}
+                    >
+                      <span className="mr-1 text-[9px]">📅</span>
+                      <span className="text-[9px] font-medium leading-tight text-amber-400/80"
                         style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {displayTitle}
                       </span>
