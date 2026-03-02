@@ -1,13 +1,26 @@
-# Unterrichtsplaner – Handoff v3.28
+# Unterrichtsplaner – Handoff v3.50
 
-## Status: ✅ Deployed (v3.49)
-- **Commit:** 2087f87
+## Status: ✅ Deployed (v3.50)
+- **Commit:** 06c9227
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
 ## Nächster Schritt (in neuem Chat fortsetzen)
 
-**Google Calendar Integration** oder weitere UX-Verbesserungen. Die Kategorien-Migration (Phase 1–3) ist vollständig abgeschlossen. Einzige verbleibende WR-spezifische Stelle: `TYPE_LABELS` in ExcelImport.tsx (Legacy-Import-Preview, bewusst belassen da nur für alte Excel-Formate relevant). Andere Lehrpersonen können jetzt über Settings > Fachbereiche eigene Kategorien mit Farbwähler definieren.
+**Offene UX-Feedback-Punkte aus Tester-Session (v3.50):**
+1. ~~Zoom 2 entfernen~~ ✅ (v3.50)
+2. ~~Settings Auto-Save (kein "Anwenden"-Button)~~ ✅ (v3.50, war bereits z.T. implementiert)
+3. ~~Kurs: SOL-Checkbox, grössere Zeit-Inputs~~ ✅ (v3.50)
+4. ~~Ferien: Tagesauswahl für partielle Wochen~~ ✅ (v3.50)
+5. ~~Sequenz-Name = Oberthema Sync~~ ✅ (v3.50)
+6. **Kurs speichern/exportieren/archivieren** — Button zum Exportieren/Importieren einzelner Kurs-Konfigurationen (nicht ganze Settings). Verlinken mit Sammlung.
+7. **Sonderwochen hierarchisch pro GYM-Stufe** — IW-Konzept: verschiedene Sonderwochen pro GYM-Stufe in gleicher KW. Struktur: KW → GYM-Stufe → Details. Bestehende SpecialWeeksEditor hat Basis-Hierarchie (KW-Gruppierung), braucht aber GYM-Stufen-Feld und "In Planer übernehmen"-Button statt Auto-Apply.
+8. **"Aus Sammlung laden"** bei Hinzufügen (Kurse, Sonderwochen, Ferien) — Verknüpfung zwischen Settings-Editoren und CollectionPanel.
+9. **UE-Details auf Sequenz übertragen** — Erweitert: Nicht nur Fachbereich/Oberthema, sondern auch Dauer, SOL, Beschreibung als "bei Sequenz anwenden"-Aktion.
+10. **UE-Name = Unterthema als Default** — Wenn Lektion keinen Titel hat, Unterthema des Blocks als Fallback im Tile anzeigen (bereits im LessonsList, fehlt in WeekRows-Tiles).
+11. **Klick&Drag auch auf nicht-leere Zellen** für Mehrfachauswahl und Sequenz-Erstellung (aktuell nur Shift+Klick/Cmd+Klick).
+
+Weitere Optionen: Google Calendar Integration (Konzept steht), Automatischer Lehrplanbezug, Template-System erweitern.
 
 ## Architektur
 - **Stack:** React + TypeScript + Vite + Zustand + PWA
@@ -100,6 +113,8 @@
 - v3.45: **Schuljahr-Presets + Ferien-Automatik + Zeitraum-Konfiguration** — (1) Neue Datei `data/holidayPresets.ts` mit Ferien-Presets für Gym Agglomeration Bern (SJ 2025/26, 2026/27, 2027/28). Enthält Herbst-, Winter-, Sport-, Frühlingsferien als KW-Bereiche. (2) **Neuer-Planer-Dialog:** Schuljahr-Dropdown (Preset-Auswahl), Ferien-Checkbox (🏖), Template-Dropdown (Kurse von bestehendem Planer). Start-/Endwoche und Semesterbruch werden aus Preset übernommen. (3) **WelcomeScreen:** Gleiche Optionen bei Ersteinrichtung. Auto-Detect des passenden Presets basierend auf aktuellem Datum. (4) WeekData-Init reagiert auf `plannerSettings`-Änderungen (Template-Ferien werden nachträglich angewendet).
 
 - v3.46: **Legacy-Auto-Migration** — Kritischer Bug behoben: Bestehende Nutzer mit Daten in `unterrichtsplaner-storage` aber ohne Instanzen im `instanceStore` sahen den WelcomeScreen statt ihren Planer. Fix: `onRehydrateStorage`-Callback im instanceStore prüft nach Hydration, ob Legacy-Daten existieren und erstellt automatisch eine Instanz "SJ 25/26" mit den bestehenden Daten.
+
+- v3.50: **UX-Feedback Runde 1** — (1) **Zoom 2 entfernt:** Toolbar zeigt nur noch 2 Zoom-Stufen (◫ Jahresübersicht, ▦ Wochenansicht). Zoom 2 (Semesteransicht) wurde als zu komplex/unklar empfunden. ZoomYearView-Komponente bleibt im Code (Zoom 2 leitet auf Zoom 1 weiter). (2) **Settings Auto-Save:** `ApplySettingsButton` entfernt, auto-save mit 400ms debounce war bereits implementiert. `setDirty`-Referenz im Import-Flow durch `doSave` ersetzt. (3) **Kurs SOL-Checkbox:** Neues `sol?: boolean` Feld in `CourseConfig`. Checkbox im CourseEditor neben HK/S1/S2. (4) **Zeit-Inputs grösser:** `w-24 text-[11px]` statt `w-[5.5rem]` für time-Inputs. (5) **Ferien Tagesauswahl:** `days?: number[]` (1=Mo..5=Fr) in `HolidayConfig`. HolidaysEditor zeigt Mo–Fr Buttons analog zu SpecialWeeksEditor. Für partielle Ferien wie Auffahrt. (6) **Sequenz-Name = Oberthema Sync:** Beim Ändern des Oberthemas im FlatBlockCard wird der Reihen-Titel automatisch synchronisiert (wenn Titel leer oder gleich dem alten Oberthema).
 
 - v3.49: **Flexible Kategorien Phase 3 (Abschluss)** — (1) **SubjectsEditor** im SettingsPanel: Fachbereiche erstellen/bearbeiten/entfernen mit Farbwähler und Live-Badge-Vorschau. W&R-Standard-Laden-Button. (2) ZoomMultiYearView: Record-Initialisierer dynamisch (emptyCountRecord/emptyArrayRecord/emptyGoalRecord). (3) DetailPanel: autoMap entfernt, Fachbereich-Erkennung über categories. (4) PlannerTabs: LessonEntry type-Fix (text→title, number→LessonType), unused Import entfernt. (5) categories.ts: generateColorVariants exportiert. Alle Phase-1-bis-3-Migrationen abgeschlossen.
 
