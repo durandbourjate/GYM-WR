@@ -1,8 +1,8 @@
 # Unterrichtsplaner – Handoff v3.28
 
-## Status: ✅ Deployed (v3.39)
-- **Commit:** c1af172
-- **Datum:** 2026-03-01
+## Status: ✅ Deployed (v3.40)
+- **Commit:** af9439e
+- **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
 ## Architektur
@@ -82,6 +82,8 @@
 
 - v3.39: Zoom 3 Ferien/Events Overhaul — (1) Aufeinanderfolgende Ferien-Wochen (type 6) werden als zusammengefasste rowSpan+colspan-Blöcke gerendert (analog Zoom 2). KW-Range-Label, 🏖-Icon, Name und Wochenzähler (z.B. "2W"). (2) Ganztags-Events (type 5, alle Kurse betroffen) ebenso als colspan-Block mit 📅-Icon. (3) Partielle Events (nur einzelne Kurse) bleiben als individuelle Zellen. (4) holidaySpans/holidaySkipSet/holidaySpanStart useMemo in WeekRows.tsx.
 
+- v3.40: Ferien/Events/Sonderwochen differenziert — (1) Ferien (type 6) bleiben als zusammengefasste rowSpan-Blöcke (grau, nicht klickbar). (2) Events/Sonderwochen (type 5) werden separat behandelt: amber-Hintergrund, klickbar+doppelklickbar (Studienreisen, IW, Besuchstage brauchen Detailplanung). (3) Event-Wochen: amber-Akzent auf ganzer Zeile + 📅 am KW-Label. (4) Kurse mit Unterricht in Event-Wochen: Normale Kacheln über dem Event-Hintergrund. (5) ESC-Taste löscht Suchfeld-Inhalt und defokussiert.
+
 #### 🔵 Nächste Runde (v3.37+) — ✅ Erledigt
 11. ✅ Ferien als durchgehende Blöcke (rowSpan, zusammengefasst, normalgross)
 12. ✅ Studienreisen/Sonderwochen visuell (colspan für Ganz-Events, pro-Kurs-Blöcke für partielle)
@@ -135,6 +137,13 @@
 ### 🟡 Geplant (mittlere Priorität)
 1. **Google Calendar Integration** — Konzept dokumentiert (siehe Feature-Spec oben). Planer→Kalender Sync, Kalender→Planer Import, Kollisionswarnungen.
 2. **Dauer-Warnung bei Verschieben (1L↔2L):** Relevant wenn cross-column oder Sequenz-Auto-Place erweitert wird.
+
+### 🔴 Nächste Runde (v3.41+) — Feedback 2026-03-02
+3. **Shift-Klick nur im selben Kurs:** Range-Select soll nur innerhalb desselben Kurses möglich sein (selbe cls+typ = ok, z.B. SF WR Di+Do). Cross-Kurs-Range (z.B. GYM1→GYM2) blockieren oder mit Warnung versehen — Fehlerquelle grösser als Nutzen. Entscheidung: Vorerst auf selben cls+typ beschränken.
+4. **Zellen-Badge-System:** Erweiterung des HK-Badge-Mechanismus auf weitere Anwendungsfälle. Im DetailPanel wählbar (Toggle aktiv/nicht sichtbar). Vorläufig 2-3 Zeichen mit wählbarer Farbe. Hauptanwendung: **Prüfungen** (rotes "P"), aber allgemein nutzbar.
+5. **Auftrag-Unterricht visuell differenzieren:** Unterrichtseinheiten mit Aufträgen sollen ähnlich wie normaler Unterricht aussehen (Stoff wird bearbeitet), anders als ein Ausfall. Möglicherweise über Category/Subtype im DetailPanel steuerbar.
+6. **Event-Overlay bei partieller Sonderwoche:** Wenn in einer Event-Woche (📅) einzelne Kurse Unterricht haben, sollen die Unterrichts-Kacheln ÜBER dem Event-Hintergrund liegen. Wenn eine Kachel genau über dem Event-Namen liegt, soll der Name nach links/rechts verschoben und in beiden Teilen gezeigt werden.
+7. **IW-Plan Verknüpfung:** Bei IW-Wochen könnte der IW-Plan (Projektwissen) als Link/Materialverweis verknüpft werden.
 
 ### 🔵 Ideen (niedrige Priorität)
 3. **Automatischer Lehrplanbezug:** Lehrplanziele automatisch aus Thema/Fachbereich vorschlagen.
