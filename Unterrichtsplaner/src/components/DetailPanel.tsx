@@ -8,7 +8,7 @@ import { SettingsPanel } from './SettingsPanel';
 import { CollectionPanel } from './CollectionPanel';
 import { suggestGoals, suggestSubjectArea } from '../utils/autoSuggest';
 import { inferSubjectAreaFromLessonType } from '../data/categories';
-import type { SubjectArea, BlockCategory, LessonDetail, SolDetails, Course, SequenceBlock } from '../types';
+import type { SubjectArea, BlockCategory, LessonDetail, SolDetails, Course, SequenceBlock, CollectionItem } from '../types';
 
 // SUBJECT_AREAS is now provided via usePlannerData().categories — no local constant needed
 
@@ -542,8 +542,11 @@ function DetailsTab() {
     selection,
     lessonDetails, updateLessonDetail,
     weekData, sequences,
+    collection, addCollectionItem, pushUndo,
   } = usePlannerStore();
   const { categories } = usePlannerData();
+  const [showCollectionPicker, setShowCollectionPicker] = useState(false);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
 
   const c = selection?.course;
   const detailKey = selection && c ? `${selection.week}-${c.col}` : '';
@@ -868,6 +871,91 @@ function DetailsTab() {
           <textarea value={detail.notes || ''} onChange={(e) => updateField('notes', e.target.value)}
             placeholder="Notizen, Hinweise…" rows={3}
             className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400 resize-y" />
+        </div>
+
+        {/* Collection: Save / Load */}
+        <div className="border-t border-slate-700 pt-2 space-y-1.5">
+          <label className="text-[9px] text-gray-400 font-medium block">Sammlung</label>
+          <div className="flex gap-1.5">
+            <button onClick={() => {
+              if (!selection || !c) return;
+              const title = currentLesson?.title || effectiveDetail.topicMain || 'UE';
+              addCollectionItem({
+                type: 'unit',
+                title,
+                subjectArea: effectiveDetail.subjectArea,
+                courseType: c.typ as any,
+                cls: c.cls,
+                units: [{
+                  block: { weeks: [], label: '', topicMain: effectiveDetail.topicMain, topicSub: effectiveDetail.topicSub, subjectArea: effectiveDetail.subjectArea, curriculumGoal: effectiveDetail.curriculumGoal, description: effectiveDetail.description, materialLinks: effectiveDetail.materialLinks },
+                  lessonDetails: { '0': { ...detail } },
+                  lessonTitles: [currentLesson?.title || ''],
+                }],
+              });
+              setSavedMsg('✅ In Sammlung gespeichert');
+              setTimeout(() => setSavedMsg(null), 2500);
+            }}
+              className="flex-1 px-2 py-1 rounded text-[9px] border border-amber-600/60 text-amber-300 hover:bg-amber-900/20 cursor-pointer transition-all">
+              💾 In Sammlung
+            </button>
+            <button onClick={() => setShowCollectionPicker(!showCollectionPicker)}
+              className="flex-1 px-2 py-1 rounded text-[9px] border border-blue-600/60 text-blue-300 hover:bg-blue-900/20 cursor-pointer transition-all">
+              📥 Aus Sammlung
+            </button>
+          </div>
+          {savedMsg && <div className="text-[8px] text-green-400">{savedMsg}</div>}
+          {showCollectionPicker && (() => {
+            const area = effectiveDetail.subjectArea;
+            const unitItems = collection.filter(item => item.type === 'unit');
+            const sorted = [...unitItems].sort((a, b) => {
+              // Prioritize matching subjectArea
+              const aMatch = a.subjectArea === area ? 0 : 1;
+              const bMatch = b.subjectArea === area ? 0 : 1;
+              if (aMatch !== bMatch) return aMatch - bMatch;
+              return (b.createdAt || '').localeCompare(a.createdAt || '');
+            });
+            return (
+              <div className="bg-slate-800 border border-slate-600 rounded p-1.5 max-h-48 overflow-y-auto space-y-1">
+                {sorted.length === 0 && <p className="text-[8px] text-gray-500 italic px-1">Keine UEs in der Sammlung.</p>}
+                {sorted.map(item => {
+                  const unit = item.units[0];
+                  if (!unit) return null;
+                  return (
+                    <button key={item.id} onClick={() => {
+                      if (!selection || !c) return;
+                      pushUndo();
+                      // Apply lesson details from collection unit
+                      const srcDetail = unit.lessonDetails['0'] || {};
+                      const patch: Partial<LessonDetail> = {};
+                      if (srcDetail.subjectArea) patch.subjectArea = srcDetail.subjectArea;
+                      if (srcDetail.topicMain) patch.topicMain = srcDetail.topicMain;
+                      if (srcDetail.topicSub) patch.topicSub = srcDetail.topicSub;
+                      if (srcDetail.curriculumGoal) patch.curriculumGoal = srcDetail.curriculumGoal;
+                      if (srcDetail.description) patch.description = srcDetail.description;
+                      if (srcDetail.materialLinks?.length) patch.materialLinks = srcDetail.materialLinks;
+                      if (srcDetail.notes) patch.notes = srcDetail.notes;
+                      if (srcDetail.sol) patch.sol = srcDetail.sol;
+                      if (srcDetail.blockCategory) patch.blockCategory = srcDetail.blockCategory;
+                      if (srcDetail.blockSubtype) patch.blockSubtype = srcDetail.blockSubtype;
+                      if (srcDetail.duration) patch.duration = srcDetail.duration;
+                      if (srcDetail.badges) patch.badges = srcDetail.badges;
+                      updateLessonDetail(selection.week, c.col, patch);
+                      setShowCollectionPicker(false);
+                      setSavedMsg('📥 Aus Sammlung geladen');
+                      setTimeout(() => setSavedMsg(null), 2500);
+                    }}
+                      className="w-full text-left px-2 py-1.5 rounded text-[9px] hover:bg-slate-700 cursor-pointer transition-all flex items-center gap-2">
+                      <span className={`px-1 py-px rounded text-[7px] ${item.subjectArea === area ? 'bg-blue-900/40 text-blue-300' : 'bg-slate-700 text-gray-400'}`}>
+                        {item.subjectArea || '—'}
+                      </span>
+                      <span className="text-gray-200 truncate flex-1">{item.title}</span>
+                      {item.cls && <span className="text-[7px] text-gray-500">{item.cls}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
