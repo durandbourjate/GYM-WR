@@ -5,9 +5,124 @@
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
-## Nächster Schritt (in neuem Chat fortsetzen)
+## Nächster Auftrag: v3.52 — Sonderwochen: GYM-Stufen-Feld + IW-Preset
 
-**Offene UX-Feedback-Punkte aus Tester-Session:**
+### Kontext
+
+Der IW-Plan (Intensivwochen) von Gym Hofwil definiert pro Kalenderwoche **unterschiedliche Sonderwochen für verschiedene GYM-Stufen**. Beispiel IW 27:
+- GYM1: Medienwoche
+- GYM2: MINT
+- GYM3: Schwerpunktfach
+- GYM4: Studienreise
+
+Aktuell kann man pro KW mehrere Einträge manuell anlegen, aber es fehlt:
+1. Ein **GYM-Stufe-Feld** pro Eintrag (welche Stufe betrifft dieser Eintrag?)
+2. Intelligentere **Kurs-Ausschluss-Logik** basierend auf der GYM-Stufe
+3. Ein **IW-Preset** zum schnellen Laden des offiziellen IW-Plans
+
+### Aufgabe
+
+#### 1. Datenmodell erweitern (`settingsStore.ts`)
+
+`SpecialWeekConfig` erweitern:
+```typescript
+export interface SpecialWeekConfig {
+  id: string;
+  label: string;
+  week: string; // KW
+  type: 'event' | 'holiday';
+  gymLevel?: string; // z.B. 'GYM1', 'GYM2', 'GYM3', 'GYM4', 'alle' oder undefined (=alle)
+  excludedCourseIds?: string[];
+  days?: number[];
+}
+```
+
+Rückwärtskompatibel: `gymLevel` ist optional, undefined = wie bisher (betrifft alle).
+
+#### 2. SpecialWeeksEditor erweitern (`SettingsPanel.tsx`, ab Zeile ~302)
+
+Pro Eintrag innerhalb einer KW-Gruppe ein **GYM-Stufe-Dropdown** hinzufügen:
+- Optionen: `alle`, `GYM1`, `GYM2`, `GYM3`, `GYM4`, `GYM5`, `TaF`
+- Position: nach dem Label-Feld, vor dem Typ-Dropdown
+- Wenn GYM-Stufe gewählt: die `excludedCourseIds` automatisch vorschlagen (Kurse, deren Klassenname nicht zur GYM-Stufe passt, vorselektieren). Dazu braucht es eine Hilfsfunktion die aus dem Kursnamen die GYM-Stufe ableitet (wie bei gradeRequirements.ts, Maturjahrgang → GYM-Stufe).
+- Die manuelle Kurs-Ausschluss-Liste bleibt als Override erhalten.
+
+Visuell: Das GYM-Stufe-Badge soll in der KW-Zeile (collapsed) neben dem Label angezeigt werden, z.B.:
+```
+▸ KW27  GYM1 Medienwoche, GYM2 MINT, GYM3 SF-Woche, GYM4 Studienreise  4 Einträge
+```
+
+#### 3. IW-Preset-Button
+
+Einen Button **"📋 IW-Plan SJ 25/26 laden"** am Ende des SpecialWeeksEditors hinzufügen. Beim Klick:
+- Bestehende Sonderwochen bleiben (kein Überschreiben)
+- Die IW-Einträge aus `SCHULKONTEXT.md` (Abschnitt "Intensivwochen") werden als neue Einträge hinzugefügt
+- Die Preset-Daten als Konstante in einer neuen Datei `data/iwPresets.ts` definieren
+
+Preset-Daten für SJ 25/26 (aus IW-Plan):
+```typescript
+export const IW_PRESET_2526: SpecialWeekConfig[] = [
+  // IW 38
+  { id: 'iw38-gym1', label: 'Klassenwoche', week: '38', type: 'event', gymLevel: 'GYM1' },
+  { id: 'iw38-gym2', label: 'SOL-Projekt', week: '38', type: 'event', gymLevel: 'GYM2' },
+  { id: 'iw38-gym3', label: 'Franz-Aufenthalt', week: '38', type: 'event', gymLevel: 'GYM3' },
+  { id: 'iw38-gym4', label: 'Studienreise', week: '38', type: 'event', gymLevel: 'GYM4' },
+  // IW 46 — nur TaF, Unterricht gem. Stundenplan für Regelklassen
+  { id: 'iw46-taf', label: 'IW TaF', week: '46', type: 'event', gymLevel: 'TaF' },
+  // IW 12
+  { id: 'iw12-gym2', label: 'Schneesportlager', week: '12', type: 'event', gymLevel: 'GYM2' },
+  // IW 14
+  { id: 'iw14-gym1', label: 'Nothilfekurs/Gesundheit', week: '14', type: 'event', gymLevel: 'GYM1' },
+  { id: 'iw14-gym2', label: 'Deutsch', week: '14', type: 'event', gymLevel: 'GYM2' },
+  { id: 'iw14-gym3', label: 'EF-Woche', week: '14', type: 'event', gymLevel: 'GYM3' },
+  { id: 'iw14-gym4', label: 'Franz/Englisch', week: '14', type: 'event', gymLevel: 'GYM4' },
+  // IW 25
+  { id: 'iw25-gym1', label: 'Geo + Sport', week: '25', type: 'event', gymLevel: 'GYM1' },
+  { id: 'iw25-gym2', label: 'Wirtschaftswoche', week: '25', type: 'event', gymLevel: 'GYM2' },
+  { id: 'iw25-gym3', label: 'Maturaarbeit', week: '25', type: 'event', gymLevel: 'GYM3' },
+  { id: 'iw25-gym4', label: 'Maturprüfung', week: '25', type: 'event', gymLevel: 'GYM4' },
+  // IW 27
+  { id: 'iw27-gym1', label: 'Medienwoche', week: '27', type: 'event', gymLevel: 'GYM1' },
+  { id: 'iw27-gym2', label: 'MINT', week: '27', type: 'event', gymLevel: 'GYM2' },
+  { id: 'iw27-gym3', label: 'Schwerpunktfach', week: '27', type: 'event', gymLevel: 'GYM3' },
+  { id: 'iw27-gym4', label: 'Studienreise', week: '27', type: 'event', gymLevel: 'GYM4' },
+];
+```
+
+#### 4. Kurs-Ausschluss-Automatik
+
+Neue Hilfsfunktion in `utils/` oder direkt in `SettingsPanel.tsx`:
+```typescript
+function getGymLevel(className: string): string | null {
+  // Aus Maturjahrgang die GYM-Stufe ableiten
+  // Aktuelles SJ: 25/26 → AK29=GYM1, AK28=GYM2, AK27=GYM3, AK26=GYM4
+  // TaF: Klassen mit 'f' oder 's' am Ende
+  // Ähnliche Logik wie in gradeRequirements.ts
+}
+```
+
+Wenn `gymLevel` bei einem SpecialWeek-Eintrag gesetzt wird, sollen die `excludedCourseIds` automatisch berechnet werden: Alle Kurse ausschliessen, deren Klasse **nicht** zur gewählten GYM-Stufe gehört. Der Benutzer kann danach manuell Kurse wieder einschliessen/ausschliessen.
+
+### Nicht ändern
+
+- WeekRows.tsx und die Darstellung der Sonderwochen im Planer — die bestehende Logik (type 5 Events, excludedCourseIds) funktioniert weiterhin korrekt.
+- Kein "In Planer übernehmen"-Button nötig — Sonderwochen werden automatisch angewendet (Auto-Save).
+
+### Testhinweise
+
+- Neuen Planer erstellen → IW-Preset laden → prüfen ob alle KW korrekt gruppiert angezeigt werden
+- GYM-Stufe wählen → prüfen ob Kurs-Ausschlüsse korrekt vorgeschlagen werden
+- Legacy-Planer ohne gymLevel → muss weiterhin funktionieren (Rückwärtskompatibilität)
+
+### Commit
+
+`v3.52: Sonderwochen GYM-Stufen-Feld, IW-Preset SJ 25/26, automatische Kurs-Ausschlüsse`
+
+---
+
+## Offene UX-Feedback-Punkte
+
+**Erledigte Punkte:**
 1. ~~Zoom 2 entfernen~~ ✅ (v3.50)
 2. ~~Settings Auto-Save (kein "Anwenden"-Button)~~ ✅ (v3.50)
 3. ~~Kurs: SOL-Checkbox, grössere Zeit-Inputs~~ ✅ (v3.50)
