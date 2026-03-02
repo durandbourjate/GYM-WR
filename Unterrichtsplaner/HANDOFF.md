@@ -8,8 +8,9 @@
 ## Architektur
 - **Stack:** React + TypeScript + Vite + Zustand + PWA
 - **Store:** `plannerStore.ts` (~1230 Z.), `settingsStore.ts` (~256 Z.), `instanceStore.ts` (~204 Z.)
-- **Hook:** `usePlannerData.ts` — dynamische Courses/Weeks basierend auf Settings
-- **Hauptkomponenten:** WeekRows (~1021 Z.), SequencePanel (~660 Z.), DetailPanel (~1027 Z.), ZoomYearView (~569 Z.), Toolbar (~463 Z.), SettingsPanel (~444 Z.), CollectionPanel (~295 Z.)
+- **Hook:** `usePlannerData.ts` — dynamische Courses/Weeks; generiert Wochen aus instanceStore-Meta für neue Planer, fällt auf hardcoded WEEKS zurück für Legacy-Planer. Gibt `isLegacy`-Flag zurück.
+- **Multi-Planer:** `instanceStore.ts` verwaltet Planer-Instanzen (Tabs). Jeder Planer hat eigenen localStorage-Slot (`planner-data-{id}`). `plannerStore.ts` speichert/lädt Daten pro Instanz via `switchInstance()`.
+- **Hauptkomponenten:** WeekRows (~1021 Z.), SequencePanel (~660 Z.), DetailPanel (~1027 Z.), ZoomYearView (~569 Z.), Toolbar (~463 Z.), SettingsPanel (~494 Z.), CollectionPanel (~295 Z.), PlannerTabs (~263 Z.)
 
 ## Changelog v3.0–v3.14
 - v3.0–v3.7: Grundfunktionen (siehe frühere Handoffs)
