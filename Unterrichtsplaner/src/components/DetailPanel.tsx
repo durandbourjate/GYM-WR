@@ -8,7 +8,7 @@ import { SettingsPanel } from './SettingsPanel';
 import { CollectionPanel } from './CollectionPanel';
 import { suggestGoals, suggestSubjectArea } from '../utils/autoSuggest';
 import { inferSubjectAreaFromLessonType } from '../data/categories';
-import type { SubjectArea, BlockCategory, LessonDetail, SolDetails, Course } from '../types';
+import type { SubjectArea, BlockCategory, LessonDetail, SolDetails, Course, SequenceBlock } from '../types';
 
 // SUBJECT_AREAS is now provided via usePlannerData().categories — no local constant needed
 
@@ -721,6 +721,31 @@ function DetailsTab() {
           )}
           {!seqInfo && (
             <AddToSequenceButton week={selection.week} course={c} />
+          )}
+          {/* Apply UE fields to parent block/sequence */}
+          {seqInfo && parentSeq && parentBlock && (
+            <button onClick={() => {
+              const fieldsToApply: string[] = [];
+              if (detail.subjectArea && detail.subjectArea !== parentBlock.subjectArea) fieldsToApply.push(`Fachbereich: ${detail.subjectArea}`);
+              if (detail.topicMain && detail.topicMain !== parentBlock.topicMain) fieldsToApply.push(`Oberthema: ${detail.topicMain}`);
+              if (detail.duration) fieldsToApply.push(`Dauer: ${detail.duration}`);
+              if (fieldsToApply.length === 0) { alert('Keine UE-Felder gesetzt, die sich vom Block unterscheiden.'); return; }
+              if (!confirm(`Folgende Felder auf den Sequenz-Block übertragen?\n\n${fieldsToApply.join('\n')}`)) return;
+              const blockIdx = parentSeq.blocks.findIndex(b => b.weeks.includes(selection!.week));
+              if (blockIdx < 0) return;
+              const patch: Partial<SequenceBlock> = {};
+              if (detail.subjectArea) patch.subjectArea = detail.subjectArea;
+              if (detail.topicMain) patch.topicMain = detail.topicMain;
+              usePlannerStore.getState().updateBlockInSequence(parentSeq.id, blockIdx, patch);
+              // Also update sequence title if it matches old topic
+              if (detail.topicMain && (!parentSeq.title || parentSeq.title === parentBlock.topicMain || parentSeq.title === 'Neue Reihe')) {
+                usePlannerStore.getState().updateSequence(parentSeq.id, { title: detail.topicMain });
+              }
+            }}
+              className="text-[8px] px-1 py-px rounded border border-dashed border-blue-500/40 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
+              title="UE-Felder (Fachbereich, Oberthema) auf den Sequenz-Block übertragen">
+              ↑ Auf Sequenz
+            </button>
           )}
         </div>
       </div>

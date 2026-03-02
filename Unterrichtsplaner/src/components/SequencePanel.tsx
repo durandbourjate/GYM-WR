@@ -57,7 +57,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
               }}>
               <span className="text-[8px] text-gray-500">{isExpanded ? '▾' : '▸'}</span>
               <span className="text-gray-400 font-mono w-8">KW{weekW}</span>
-              <span className={`truncate ${entry?.title ? 'text-gray-300' : 'text-gray-500 italic'}`}>{entry?.title || detail?.topicMain || block.topicSub || '—'}</span>
+              <span className={`truncate ${entry?.title ? 'text-gray-300' : 'text-gray-500 italic'}`}>{entry?.title || detail?.topicSub || detail?.topicMain || block.topicSub || '—'}</span>
               {detail?.topicMain && <span className="text-[7px] text-gray-400 ml-auto truncate max-w-20">📌{detail.topicMain}</span>}
             </div>
             {isExpanded && course && (
