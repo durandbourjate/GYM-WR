@@ -1030,20 +1030,17 @@ function BatchEditTab() {
       <div className="space-y-1">
         <label className="text-[9px] text-gray-400 font-medium">Dauer setzen {currentValues.mixedDur && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1 flex-wrap">
-          {[1, 2, 3].map(d => {
-            const isActive = currentValues.duration !== null && (
-              currentValues.duration === String(d) || currentValues.duration === `${d}` ||
-              (d === 1 && currentValues.duration === '45 min') ||
-              (d === 2 && (currentValues.duration === '90 min' || currentValues.duration === '2 Lektionen')) ||
-              (d === 3 && (currentValues.duration === '135 min' || currentValues.duration === '3 Lektionen'))
-            );
+          {DURATION_PRESETS.map(preset => {
+            const isActive = currentValues.duration === preset.key;
             return (
-              <button key={d} onClick={() => applyToAll('duration', d)}
+              <button key={preset.key} onClick={() => applyToAll('duration', preset.key)}
                 className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
-                {d}L
+                {preset.label}
               </button>
             );
           })}
+          <button onClick={() => applyToAll('duration', undefined)}
+            className="px-2 py-0.5 rounded text-[9px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
         </div>
       </div>
 
@@ -1125,6 +1122,7 @@ export function DetailPanel() {
         const target = e.target as HTMLElement;
         if (target.closest('table') || target.closest('.app-header')) return;
         setSidePanelOpen(false);
+        usePlannerStore.getState().setEditingSequenceId(null);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -1213,6 +1211,7 @@ export function DetailPanel() {
           onClick={() => {
             setSidePanelOpen(false);
             usePlannerStore.getState().setSequencePanelOpen(false);
+            usePlannerStore.getState().setEditingSequenceId(null);
           }}
           className="text-gray-400 hover:text-gray-200 cursor-pointer text-xs px-1"
           title="Panel schliessen (Esc)"

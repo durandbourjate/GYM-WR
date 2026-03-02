@@ -222,8 +222,8 @@ function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }: { wee
   const handleNewLesson = () => {
     pushUndo();
     updateLesson(week, course.col, { title: 'Neue Lektion', type: 1 });
-    // Set default blockCategory to LESSON
-    usePlannerStore.getState().updateLessonDetail(week, course.col, { blockCategory: 'LESSON' });
+    // Set defaults: blockCategory=LESSON, duration=90 min
+    usePlannerStore.getState().updateLessonDetail(week, course.col, { blockCategory: 'LESSON', duration: '90 min' });
     setSelection({ week, courseId: course.id, title: 'Neue Lektion', course });
     setSidePanelOpen(true);
     setSidePanelTab('details');
