@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.59
+# Unterrichtsplaner – Handoff v3.60
 
-## Status: ✅ Deployed (v3.59)
+## Status: ✅ Deployed (v3.60)
 - **Commit:** (pending)
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
@@ -136,7 +136,7 @@ Aufträge in empfohlener Reihenfolge. Jeden Auftrag einzeln umsetzen, dann commi
 
 **Dieser Auftrag ist zu gross für eine einzelne Version.** Empfohlene Aufteilung:
 
-**Phase 1 (v3.60): OAuth + Kalender-Auswahl**
+**✅ Phase 1 (v3.60): OAuth + Kalender-Auswahl**
 - Google Calendar API OAuth-Flow in Settings (Login-Button, Kalender-Liste laden, Schreib-/Lese-Kalender wählen)
 - Neuer Abschnitt "📅 Google Calendar" im SettingsPanel
 - Token-Persistierung im localStorage
@@ -161,6 +161,8 @@ Aufträge in empfohlener Reihenfolge. Jeden Auftrag einzeln umsetzen, dann commi
 
 ## Erledigte Aufträge
 
+### ✅ v3.59 — Doppelklick auf Spaltentitel als Kursfilter
+### ✅ v3.58 — Drag&Drop Verschieben von Lektionen innerhalb eines Kurses
 ### ✅ v3.57 — Warnung bei gestörter 1L/2L Rhythmisierung nach Push
 ### ✅ v3.56 — Kachel-Badge für Prüfungen und Spezialanlässe
 ### ✅ v3.55 — Aus Sammlung laden für Settings-Konfigurationen

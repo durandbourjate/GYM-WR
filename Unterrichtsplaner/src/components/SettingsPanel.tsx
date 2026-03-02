@@ -12,6 +12,8 @@ import { WR_CATEGORIES, generateColorVariants } from '../data/categories';
 import { getGymStufe } from '../utils/gradeRequirements';
 import { IW_PRESET_2526 } from '../data/iwPresets';
 import { useInstanceStore } from '../store/instanceStore';
+import { useGCalStore } from '../store/gcalStore';
+import { loginWithGoogle, logout as gcalLogout, fetchCalendarList } from '../services/gcal';
 
 // === Duration helper for courses ===
 const COURSE_DURATION_PRESETS = [
@@ -667,6 +669,152 @@ function SettingsCollectionPicker({ onLoad, onClose }: { onLoad: (snapshot: stri
   );
 }
 
+// === Google Calendar Section (v3.60) ===
+function GCalSection() {
+  const { clientId, setClientId, calendars, setCalendars,
+    writeCalendarId, setWriteCalendarId, readCalendarIds, toggleReadCalendar } = useGCalStore();
+  const isAuth = useGCalStore(s => s.isAuthenticated());
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [editClientId, setEditClientId] = useState(clientId);
+
+  const handleLogin = useCallback(async () => {
+    if (!editClientId.trim()) { setError('Client ID erforderlich'); return; }
+    setClientId(editClientId.trim());
+    setLoading(true); setError(null);
+    try {
+      await loginWithGoogle(editClientId.trim());
+      const cals = await fetchCalendarList();
+      setCalendars(cals);
+      // Auto-select primary calendar as write calendar
+      const primary = cals.find((c: any) => c.primary);
+      if (primary && !writeCalendarId) setWriteCalendarId(primary.id);
+    } catch (e: any) {
+      setError(e.message || 'Login fehlgeschlagen');
+    }
+    setLoading(false);
+  }, [editClientId, setClientId, setCalendars, writeCalendarId, setWriteCalendarId]);
+
+  const handleLogout = useCallback(() => {
+    gcalLogout();
+    setError(null);
+  }, []);
+
+  const handleRefreshCalendars = useCallback(async () => {
+    setLoading(true); setError(null);
+    try {
+      const cals = await fetchCalendarList();
+      setCalendars(cals);
+    } catch (e: any) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [setCalendars]);
+
+  return (
+    <Section title="📅 Google Calendar">
+      <div className="space-y-2">
+        <p className="text-[8px] text-gray-400">
+          Verbinde einen Google Kalender, um Lektionen als Events zu synchronisieren und Kollisionen zu erkennen.
+        </p>
+
+        {/* Client ID */}
+        <div>
+          <label className="text-[8px] text-gray-400 block mb-0.5">OAuth Client ID</label>
+          <input
+            type="text"
+            value={editClientId}
+            onChange={(e) => setEditClientId(e.target.value)}
+            placeholder="xxxx.apps.googleusercontent.com"
+            className="w-full bg-slate-700 text-slate-200 text-[9px] px-2 py-1 rounded border border-slate-600 outline-none focus:border-blue-500"
+          />
+          <p className="text-[7px] text-gray-500 mt-0.5">
+            Erstelle eine OAuth Client ID in der <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" className="text-blue-400 hover:underline">Google Cloud Console</a>.
+          </p>
+        </div>
+
+        {/* Login/Logout */}
+        <div className="flex gap-1">
+          {!isAuth ? (
+            <button onClick={handleLogin} disabled={loading}
+              className="flex-1 py-1.5 rounded text-[9px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              {loading ? '⏳ Verbinde…' : '🔑 Mit Google anmelden'}
+            </button>
+          ) : (
+            <>
+              <div className="flex-1 py-1.5 rounded text-[9px] font-medium bg-green-900/40 text-green-300 text-center border border-green-800/50">
+                ✅ Verbunden
+              </div>
+              <button onClick={handleLogout}
+                className="px-2 py-1.5 rounded text-[9px] bg-slate-700 hover:bg-red-900/60 text-gray-300 hover:text-red-300 cursor-pointer transition-all">
+                Abmelden
+              </button>
+            </>
+          )}
+        </div>
+
+        {error && <div className="text-[8px] text-red-400 bg-red-900/20 px-2 py-1 rounded">❌ {error}</div>}
+
+        {/* Calendar selection (when authenticated) */}
+        {isAuth && calendars.length > 0 && (
+          <div className="space-y-2 pt-1 border-t border-slate-700">
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-semibold text-gray-300">Kalender</span>
+              <button onClick={handleRefreshCalendars} disabled={loading}
+                className="text-[8px] text-blue-400 hover:text-blue-300 cursor-pointer">
+                🔄 Aktualisieren
+              </button>
+            </div>
+
+            {/* Write calendar */}
+            <div>
+              <label className="text-[8px] text-gray-400 block mb-0.5">Schreib-Kalender (Planer → Kalender)</label>
+              <select
+                value={writeCalendarId || ''}
+                onChange={(e) => setWriteCalendarId(e.target.value || null)}
+                className="w-full bg-slate-700 text-slate-200 text-[9px] px-2 py-1 rounded border border-slate-600"
+              >
+                <option value="">— Kein Kalender —</option>
+                {calendars
+                  .filter(c => c.accessRole === 'owner' || c.accessRole === 'writer')
+                  .map(c => (
+                    <option key={c.id} value={c.id}>{c.summary}{c.primary ? ' (Primär)' : ''}</option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Read calendars */}
+            <div>
+              <label className="text-[8px] text-gray-400 block mb-0.5">Lese-Kalender (Kalender → Planer / Kollisionen)</label>
+              <div className="max-h-32 overflow-y-auto space-y-0.5">
+                {calendars.map(c => (
+                  <label key={c.id} className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-slate-700/60 cursor-pointer text-[9px]">
+                    <input
+                      type="checkbox"
+                      checked={readCalendarIds.includes(c.id)}
+                      onChange={() => toggleReadCalendar(c.id)}
+                      className="accent-blue-500 w-3 h-3"
+                    />
+                    <span className="text-gray-200 truncate">{c.summary}</span>
+                    {c.primary && <span className="text-[7px] text-blue-400">Primär</span>}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isAuth && calendars.length === 0 && !loading && (
+          <button onClick={handleRefreshCalendars}
+            className="w-full py-1.5 rounded text-[9px] bg-slate-700 hover:bg-slate-600 text-gray-300 cursor-pointer transition-all">
+            📋 Kalender laden
+          </button>
+        )}
+      </div>
+    </Section>
+  );
+}
+
 // === Main Settings Panel ===
 export function SettingsPanel() {
   const storeSettings = usePlannerStore(s => s.plannerSettings);
@@ -942,6 +1090,9 @@ export function SettingsPanel() {
 
       {/* Collection picker modal */}
       {showCollectionPicker && <SettingsCollectionPicker onLoad={loadFromCollection} onClose={() => setShowCollectionPicker(false)} />}
+
+      {/* Google Calendar */}
+      <GCalSection />
 
       {/* Danger zone */}
       <div className="pt-2 border-t border-slate-700">
