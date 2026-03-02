@@ -1,7 +1,7 @@
 # Unterrichtsplaner – Handoff v3.28
 
-## Status: ✅ Deployed (v3.45)
-- **Commit:** d5df362
+## Status: ✅ Deployed (v3.46)
+- **Commit:** pending
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
@@ -94,6 +94,8 @@
 - v3.44: **Neue Planer starten wirklich leer + Template-System + Empty State** — (1) `usePlannerData()` Legacy-Erkennung als eigenes `useMemo` separiert. Neue Planer ohne `storeSettings` erhalten leeres Kurs-Array (`[]`) statt Fallback auf `COURSES`. Nur Legacy-Planer (Default-Range + globale Settings + kein storeSettings) nutzen hardcoded Daten. (2) **Empty State UI:** Wenn `allCourses.length === 0`, zeigt die App eine hilfreiche Meldung mit Button zum Öffnen der Einstellungen statt leerem Raster. (3) **Template bei Planer-Erstellung:** Neuer-Planer-Dialog hat Dropdown "Kurse von: [bestehender Planer]". Kopiert `plannerSettings` (Kurse, Ferien, Sonderwochen) vom gewählten Template-Planer in den neuen.
 
 - v3.45: **Schuljahr-Presets + Ferien-Automatik + Zeitraum-Konfiguration** — (1) Neue Datei `data/holidayPresets.ts` mit Ferien-Presets für Gym Agglomeration Bern (SJ 2025/26, 2026/27, 2027/28). Enthält Herbst-, Winter-, Sport-, Frühlingsferien als KW-Bereiche. (2) **Neuer-Planer-Dialog:** Schuljahr-Dropdown (Preset-Auswahl), Ferien-Checkbox (🏖), Template-Dropdown (Kurse von bestehendem Planer). Start-/Endwoche und Semesterbruch werden aus Preset übernommen. (3) **WelcomeScreen:** Gleiche Optionen bei Ersteinrichtung. Auto-Detect des passenden Presets basierend auf aktuellem Datum. (4) WeekData-Init reagiert auf `plannerSettings`-Änderungen (Template-Ferien werden nachträglich angewendet).
+
+- v3.46: **Legacy-Auto-Migration** — Kritischer Bug behoben: Bestehende Nutzer mit Daten in `unterrichtsplaner-storage` aber ohne Instanzen im `instanceStore` sahen den WelcomeScreen statt ihren Planer. Fix: `onRehydrateStorage`-Callback im instanceStore prüft nach Hydration, ob Legacy-Daten existieren und erstellt automatisch eine Instanz "SJ 25/26" mit den bestehenden Daten.
 
 #### 🔵 Nächste Runde (v3.37+) — ✅ Erledigt
 11. ✅ Ferien als durchgehende Blöcke (rowSpan, zusammengefasst, normalgross)

@@ -33,14 +33,10 @@ export function usePlannerData() {
   // Fall back to global settings for legacy planners only
   const globalSettings = useMemo(() => loadSettings(), []);
   
-  // Determine if this is a legacy planner (no store settings + default range or no instance)
-  const isLegacyPlanner = useMemo(() => {
-    if (!activeMeta) return true;
-    if (storeSettings) return false; // has per-instance settings → not legacy
-    const isDefaultRange = activeMeta.startWeek === 33 && activeMeta.startYear === 2025
-      && activeMeta.endWeek === 27 && activeMeta.endYear === 2026;
-    return isDefaultRange && !storeSettings && globalSettings !== null;
-  }, [activeMeta, storeSettings, globalSettings]);
+  // Legacy planner = no per-instance plannerSettings in store.
+  // All new planners get plannerSettings set immediately on creation (even if empty/default).
+  // Legacy planners (migrated from pre-multi-planner era) have storeSettings === null.
+  const isLegacyPlanner = !storeSettings;
 
   const settings = storeSettings ?? (isLegacyPlanner ? globalSettings : null);
   const hasCustomCourses = settings !== null && settings.courses.length > 0;

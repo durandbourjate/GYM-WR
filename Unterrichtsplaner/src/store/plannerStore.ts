@@ -1174,12 +1174,13 @@ export function loadFromInstance(instanceId: string): void {
     try {
       const parsed = JSON.parse(raw);
       const data = parsed.state || parsed;
+      const isNew = !!data.plannerSettings;
       usePlannerStore.setState({
         weekData: data.weekData || [],
         lessonDetails: data.lessonDetails || {},
         sequences: data.sequences || [],
-        sequencesMigrated: data.sequencesMigrated ?? false,
-        sequenceTitlesFixed: data.sequenceTitlesFixed ?? false,
+        sequencesMigrated: data.sequencesMigrated ?? isNew,
+        sequenceTitlesFixed: data.sequenceTitlesFixed ?? isNew,
         hkOverrides: data.hkOverrides || {},
         hkStartGroups: data.hkStartGroups || {},
         tafPhases: data.tafPhases || [],

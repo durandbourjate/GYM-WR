@@ -2,7 +2,7 @@
  * PlannerTabs — Tab bar for switching between planner instances
  */
 import { useState, useRef } from 'react';
-import { useInstanceStore } from '../store/instanceStore';
+import { useInstanceStore, instanceStorageKey } from '../store/instanceStore';
 import { usePlannerStore, saveToInstance } from '../store/plannerStore';
 import { SCHOOL_YEAR_PRESETS, getPresetForYear } from '../data/holidayPresets';
 import { generateId, type HolidayConfig, type PlannerSettings, getDefaultSettings } from '../store/settingsStore';
@@ -67,18 +67,19 @@ export function PlannerTabs({ onImport }: Props) {
         }
       }
 
-      // Apply preset holidays (merge with template holidays or create new settings)
+      // Always set plannerSettings for new planners (even if empty).
+      // This distinguishes new planners (storeSettings !== null) from legacy ones.
+      if (!initialSettings) {
+        initialSettings = getDefaultSettings();
+      }
+
       if (autoHolidays && preset) {
-        if (!initialSettings) {
-          initialSettings = getDefaultSettings();
-        }
         const presetHolidays: HolidayConfig[] = preset.holidays.map(h => ({
           id: generateId(),
           label: h.label,
           startWeek: h.startWeek,
           endWeek: h.endWeek,
         }));
-        // Only add holidays that don't already exist (from template)
         const existingLabels = new Set(initialSettings.holidays.map(h => h.label));
         for (const h of presetHolidays) {
           if (!existingLabels.has(h.label)) {
@@ -87,11 +88,11 @@ export function PlannerTabs({ onImport }: Props) {
         }
       }
 
-      if (initialSettings) {
-        setTimeout(() => {
-          usePlannerStore.getState().setPlannerSettings(initialSettings!);
-        }, 50);
-      }
+      // Pre-seed the new instance's localStorage BEFORE switchInstance runs,
+      // so loadFromInstance() picks up settings immediately (no setTimeout race).
+      localStorage.setItem(instanceStorageKey(newId), JSON.stringify({
+        state: { plannerSettings: initialSettings },
+      }));
     }
 
     setNewName('');
@@ -322,14 +323,18 @@ export function WelcomeScreen() {
       semesterBreakWeek: preset?.semesterBreakWeek ?? 7,
     });
 
-    if (newId && autoHolidays && preset) {
+    if (newId) {
+      // Always set plannerSettings for new planners (distinguishes from legacy)
       const initialSettings = getDefaultSettings();
-      initialSettings.holidays = preset.holidays.map(h => ({
-        id: generateId(), label: h.label, startWeek: h.startWeek, endWeek: h.endWeek,
+      if (autoHolidays && preset) {
+        initialSettings.holidays = preset.holidays.map(h => ({
+          id: generateId(), label: h.label, startWeek: h.startWeek, endWeek: h.endWeek,
+        }));
+      }
+      // Pre-seed localStorage so loadFromInstance() picks up settings immediately
+      localStorage.setItem(instanceStorageKey(newId), JSON.stringify({
+        state: { plannerSettings: initialSettings },
       }));
-      setTimeout(() => {
-        usePlannerStore.getState().setPlannerSettings(initialSettings);
-      }, 50);
     }
   };
 

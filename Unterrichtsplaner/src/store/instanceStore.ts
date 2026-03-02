@@ -199,6 +199,54 @@ export const useInstanceStore = create<InstanceState>()(
     }),
     {
       name: 'unterrichtsplaner-instances',
+      onRehydrateStorage: () => {
+        // Called after zustand has loaded persisted state from localStorage
+        return () => migrateIfLegacy();
+      },
     }
   )
 );
+
+// === Auto-migration: Legacy data → Instance ===
+// If no instances exist but legacy data is present in 'unterrichtsplaner-storage',
+// create a default instance pointing to that data.
+function migrateIfLegacy() {
+  const state = useInstanceStore.getState();
+  if (state.instances.length > 0) return; // already has instances
+
+  const legacyRaw = localStorage.getItem('unterrichtsplaner-storage');
+  if (!legacyRaw) return; // no legacy data
+
+  try {
+    const parsed = JSON.parse(legacyRaw);
+    const hasData = parsed.state?.weekData?.length > 0 || parsed.weekData?.length > 0;
+    if (!hasData) return; // empty legacy data, skip
+
+    // Create a legacy instance
+    const id = generateId();
+    const now = new Date().toISOString();
+    const meta: PlannerMeta = {
+      id,
+      name: 'SJ 25/26',
+      createdAt: now,
+      updatedAt: now,
+      startWeek: 33,
+      startYear: 2025,
+      endWeek: 27,
+      endYear: 2026,
+      semesterBreakWeek: 7,
+    };
+
+    // Copy legacy data to instance slot
+    localStorage.setItem(instanceStorageKey(id), legacyRaw);
+
+    useInstanceStore.setState({
+      instances: [meta],
+      activeId: id,
+    });
+
+    console.log('[Migration] Legacy planner data migrated to instance:', id);
+  } catch (e) {
+    console.error('[Migration] Failed to migrate legacy data:', e);
+  }
+}

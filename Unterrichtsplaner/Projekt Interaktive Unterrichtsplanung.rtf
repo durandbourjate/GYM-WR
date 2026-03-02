@@ -1,0 +1,314 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13600\viewh12580\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 - Interaktives Tool f\'fcr die Unterrichtsplanung\
+\
+V:1\
+- soll Excel- bzw. Word Dokumente ersetzen, in welchen bisher Unterrichtsplanung geschieht.\
+- das tool soll mir helfen zu planen, in welchen lektionen ich welche inhalte durchf\'fchre. \
+- Beispiele f\'fcr bisherige Herangehensweise zur verf\'fcgung stellen.\
+- grunds\'e4tzlich eine Matrix mit a\
+	- Spalten die Kurse \
+		- SF WR GYM 1 29c\
+		- SF WR GYM 2 28bc29fs\
+		- SF WR GYM 3 27a28f\
+		- SF WR GYM 4\
+		- EWR 29c\
+		- \'85\
+	- Zeilen\
+		- DIN-Wochen\
+- Modulare Felder pro Lektion. gruppierbar, da h\'e4ufig Doppellektionen als Paket.\
+- Es soll sichtbar werden, wann Unterricht stattfindet. Planbare Ausf\'e4lle aufgrund von z.B. Ferien, Sonderwochen, Events wie Besuchstag, Fachschaftstag, Terminkonflikten etc.\
+- In \'dcbersicht in wenigen Worten beschreiben worum es in dieser Lektion geht. Fachbereich, \'dcberthema, Unterthema. Z.B. VWL, Einf\'fchrung Preimodell / FIBU K.3.2 Bilanzkonten, Recht / OR AT / Entstehung, \'85)\
+- Details zur Lektion in \
+- Farbcode, welcher auf einen blick zeigt, ob es sich um ferien, ausf\'e4lle, unterricht (unterschielich nach fach\'85) handelt.\
+- das system sollte es einfach machen, anpassungen vorzunehmen. wenn ich z.b krank bin und der unterricht ausf\'e4llt, sollte ich den ganzen weiteren verlauf \'93hinausschieben\'94 k\'f6nnen. ferien, fixe ausf\'e4lle etc. d\'fcrften nat\'fcrlich nicht verschoben werden.\
+- lektionen-bausteine sollten gruppiert werden k\'f6nnen, damit ich z.b. eine sequenz von 10 lektionen zu einem thema planen kann und diese im tool als zusammengeh\'f6rend verstanden werden. \
+- sehr sinnvoll w\'e4re ein verlinken von learningview bausteinen, da mein unterricht in learningview organisiert/durchgef\'fchrt wird.\
+- die m\'f6glichkeit, lokal gespeicherte unterrichtsmaterialien, links, kalenereintr\'e4ge, mails verlinken k\'f6nnen. \
+- bausteine/kurse/themensequenzen etc. sollten gespeicher werden k\'f6nnen, damit diese \'fcber die jahre hinweg recykliert werden k\'f6nnen. ich k\'f6nnte in einem n\'e4chsten jahr dann einen kurs \'93sf wr \'97> gmy2\'94 w\'e4hlen und w\'fcrde dort themensequenzen \'93hinzuf\'fcgen\'94 k\'f6nnen. diese m\'fcssten nat\'fcrlich bearbeitbar sein, aber ein template bieten, damit nicht immer von grund auf begonnen werden muss.\
+- verschiedene ansichten sind hilfreich:\
+	- \'fcberblick \'fcber das ganze jahr\
+	- \'fcberblick \'fcber einen kurs, mit mehr details\
+	- \'fcberblick \'fcber eine themensequenz\
+- das dokument sollte anderen arbeitsprozessen interagieren k\'f6nnen, insbesondere mit dem scheduled task unterrichtsadministration. diese beiden teile w\'fcrden sich als info-quellen brauchen.\
+- das tool soll mir helfen, vorgaben einzuhalten (z.b. muss ich eine mindestanzahl noten pro zeitspanne haben. das tool soll mir helfen, dies nicht zu vergessen bei der planung).\
+\
+V:2\
+- wie \'fcberblick \'fcber alle 4 jahre beim sf? ewr nun 1J, mit wegm wird gf wr 2J dauern. allenfalls nach oben weiter zur\'fcckscrollen, ins fr\'fchere schuljahr?\
+- infos (hilfe) was ein button macht bei mouse over.\
+- lektion bei doppelklick info \'f6ffnen\
+- klick neben info feld soll dieses schliessen\
+- Titel der lektion (das, was angezeigt wird in der \'fcbersicht = oberthema & unterthema\
+- Lehrplanbezug automatisch?\
+- Taxonomiestufe automatisch?\
+- importierte lektionen automatisch blocktyp zuordnen? zumindest lektion als standard setzen.\
+- wie sequenz direkt aus \'fcbersicht \'f6ffen? auf lektion \'97>detaisl\'97>sequenz-tag\'97>\
+- was bedeutet zb. c4 beim sequenzen \'97>klassentag 28c\'97>sequenzen c4?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - sequenz fach tag automatisch setzen, da nach fach (spalte) organisiert. farbe auch.\
+- wenn etwas ausgew\'e4hlt wird, zb. sequenz im sequenzen-fenster, sollte das jeweilig markierte im \'fcbersichtsplan hervorgehoben werden.\
+- name/titel von sequenz in \'fcbersichtsplan sollte klickbar sein\
+- multiple lektionenkacheln anw\'e4hlen: mit command+click mehrere ausw\'e4hlen, mit shift+klick alle von-bis anw\'e4hlen.\
+- interaktion m\'f6glichst in \'fcbersichtsplan erm\'f6glichen, so wenig wie n\'f6tig in men\'fcs etc. z.B. klick shift+klick sollten mehrere zellen anw\'e4hlen k\'f6nnen und diese sequenz zuordnen. \
+- leere zellen sollten auch anklickbar und \'fcber diesen weg f\'fcllbar sein.\
+- wenn mehrere lektionen-kacheln angew\'e4hlt sind sollte gruppe drag und drop verschoben werden k\'f6nnen.\
+- bei klick auf lektionen-kachel direkt in detailansicht\
+- sequenzenmen\'fc\'97>bl\'f6cke sollte noch ein detail men\'fc erm\'f6glichen, wo \'e4hnlich zum lektionen-block men\'fc infos eingetragen werden k\'f6nnen f\'fcr den ganzen block. diese infos sollten bei den einzelnen kacheln auch gespeichert werden.\
+- nicht alle zellen sollten per drag und drop verschoben werden k\'f6nnen (z.b. ferien, sonderwochen). zumindest fixieren und beim verschiebeversuch best\'e4tigung verlangen. auch bei push sollten diese zellen fix sein.\
+- alle buttons sollten klickbar sein und den entsprechenden filter anzeigen (bei titel (klasse) auf sf odr HK..)\
+- button in \'fcbersichtsplan (neue sequenz)\'97> von-bis markieren\'97>details einrichten. dasselbe mit neue kachel-button. diese buttons zb .in titelzeile des \'fcbersichtsplans.\
+- ferien, sonderwochen-kacheln in voller gr\'f6sse, nicht wie 1L.\
+- bei klick auf sequenz button (z.b. steuern bei 27a28f direkt men\'fc mit diesem block \'f6ffnen.\
+- klick oder doppelklick  in leere zelle sollte menu neue kachel / neue sequenz \'f6ffnen.\
+- sequenz-markierung in der \'fcbersicht sollte bei verschiebungen mitrutschen. sie sind ja and die kacheln gebunden.\
+- kachel men\'fc(inkl. details) sollte wie sequenz-men\'fc rechts sein. (tabs im selben fenster). da grunds\'e4tzlich pro kurs geplant wird, da macht es sinn m\'f6glichst viel der spalte zu sehen. wenn andere kursspalten verdeckt werden vom men\'fc ist das kein problem.\
+- alle spalten gleich breit.\
+- buttons einf\'fcgen, push, details sollten beim 1x klicken auf kachel in kachel angezeigt werden. minimalistisch als +, pfeil und i.\
+- detail modal bei mouse-over (zb. nach 2sec) \'fcber kachel (am ort wo das men\'fc sowieso w\'e4re, rechts am rand). \
+- ansicht wie bei EWR button in kopfzeile (nur die eine klasse) sollte auch gezeigt werden, wenn auf klassennamen in kopfzeile doppelt geklickt wird.\
+- im sequenz-men\'fc bei klick auf block sollten im \'fcbersichtsplan die kacheln bearbeitet werden k\'f6nnen, also innerhalb der sequenz mehrere kacheln bearbeiten, hervorheben um die \'fcbersichtlichkeit zu erh\'f6hen.\
+\
+\
+V3:\
+- statistik sj: farbcode \'e4ndern. fachbereiche vwl bwl recht in farben wie beim \'fcbungspool (bzw learningview). informatik grau.\
+- wieso sf am mittwoch? sollte allels am di/do sein\
+- sf l\'e4uft di-do-di-do-di-do etc. dies sollte in sequenzen so abgebildet sein. ausser ich plane explizit eine sequenzreihe an di und eine am do, das ist auch m\'f6glich\
+- sequenzennamen immer noch mit c19 c19 c31 etc. bedeutung?\
+- \
+\
+V4:\
+- Taxonomiestufen brauchen wir nicht. das ist bei den lerninhalten auf learningview abgedeckt.\
+- auswahl mehrerer zellen mit gedr\'fcckter shit+klick geht nicht wie es sollte. ich m\'f6chte auf eine zelle klicken und dann mit shift+klick auf eine adnere, und das sollte alle zellen dazwischen w\'e4hlen. herausforderung: sequenz am gleichen tag, oder sequenz eines kurses, wenn an zwei tagen kacheln von beiden tagen w\'e4hlen?. funktioniert noch gleich wie gedr\'fcckte commant+klick taste (eine zelle nach der anderen anw\'e4hlen.\
+- auswahl mehrerer zellen: blaues men\'fc oben erlaubt die gruppe zu verschieben. drag & drop geht nicht, da wird nur die mit der maus \'93gepackte\'94 zelle verschoben.\
+- details men\'fc: block-typ: gruppieren. alle beurteilungstypen (pr\'fcfung, m\'fcndliche pr\'fcfung, langpr\'fcfung, projektabgabe, pr\'e4sentation) in einem button, welcher beim klick aufklappt und auswahl erm\'f6glicht.\
+- sequenznamen unklar (wieso c17 c31 etc. im namen? \'fcbersicht mit sequenzen gruppiert nicht n\'f6tig. oben button f\'fcr alle und klassen reicht. bei klick auf klassenbutton anzeigen der infos (fachbereich, farbe), welche jedoch vorangew\'e4hlt sein m\'fcssen, da dies aus der kurs\'fcbersicht schon klar ist). und darunter die verschiedenen bl\'f6cke. diese nach fachbereich sortieren w\'e4re hilfreich.\
+- bei der detailansicht eines blocks innerhalb der sequenz-ansicht externe verlinkung zum material (z.b thema learningview, \'fcbungspool\'85)\
+- details eines blocks anzeigen, wenn auf titel des blocks geklickt wird, nicht details-button. allenfalls neben block-titel ein \'93i\'94 anzeigen.\
+- im planer sind noch immer falsche wochentage. ich habe am freitag keinen unterricht, das sf findet IMMER di/do statt. die 30s informatik ist am mittwochmorgen. schau unsesre konversation dazu an.\
+- ich m\'f6chte mehrere kacheln anklicken und diese zu einer sequenz zusammenf\'fcgen k\'f6nnen.\
+- allf\'e4llige auswahl abw\'e4hlen mit \'93esc\'94 oder mausklick in neben die auswahl (z.b. leeres feld), men\'fc oder andere kachel. im moment bleibt z.t. die sequenz ausgew\'e4hlt.\
+\
+V5:\
+- shift+klick auswahl geht nicht.\
+- command+klick auswahl scheint buggy.\
+- mehrfachauswahl drag+drop geht nicht.\
+- \'93est\'94 soll generell alles abw\'e4hlen. z.b. auch, wenn in leeres feld geklickt wird und auswahl \'93neue kachel neue sequenz\'94 kommt soll dies mit esc wieder verschwinden.\
+- doppelklick in leeres feld soll  auswahl \'93neue kachel neue sequenz\'94 triggern, nicht schon ein klick.\
+- ein klick in leeres feld soll bisherige auswahl abw\'e4hlen, wie esc.\
+- block typ \'93lektion\'94 soll standard sein. jeweils im detail men\'fc \'e4nderbar.\
+- block typ einf\'fchrung, diskussion sind details des typs lektion. vielleicht sollten wir 2 rubriken haben: block typ (lektion, beurteilung, event, ferien) und block-untertyp (lektion \'97>einf\'fchrung, \'fcbung, theorie, sol, diskussion / beurteilung \'97> pr\'fcfung schriftlich, pr\'fcfung m\'fcndlich, pr\'e4sentation, projektabgabe... /Event \'97> Exkursion, tag der offenen t\'fcr, ausfall, auftrag, \'85).\
+- bei block-typ und block-untertyp sollten auch eigene labels hinzugef\'fcgt werden k\'f6nnen. dies maximiert die flexibilit\'e4t/individualisierung.\
+- dauer der einheit sollte ingetragen werden k\'f6nnen. vorwahl mit 1L, 2L, aber auch durch user definierbare zeit. somit k\'f6nnte mau auch mehrlektionenpr\'fcfungen, halbe lektionen etc. erm\'f6glichen.\
+- in detailansicht sollten beschreibungen nicht zu kurz gefasst werden ( Einf\'fchrung BWL, nicht Einf. BWL), da hier ja der platz besteht und es lesbarer wird. bei kachel sllte es kurz angezeigt werden.\
+- bei sequenzansicht sollte bei klick auf einen block dieser im planer markiert sein. klick auf eine spezifische kalenderwoche  sollte diese kachel w\'e4hlen. \
+- details des blocks in sequenzansicht sollte bei klick auf block-titel ein und ausgeklappt werden. \'93details\'94 button braucht es hier nicht.\
+- bl\'f6cke-kacheln in sequenzansicht sollten mit farbe hinterlegt sein\
+- bei klick auf klasse in sequenzansicht sollte direkt die bl\'f6cke aufgelistets ein, keine vorauswahl mit den sequenzen ob di/do oder di+do. \
+- beim block sollte jeweils in der \'fcbersichtskachel gezeigt werden, ob es ein di-di, di-do oder do-do block ist.\
+- beim detail des blocks in der sequenzansicht externe links erm\'f6glichen (z.b. f\'fcr learningview, \'fcbungspools)\
+\
+V6:\
+- shit+klick auswal klappt, ebenfalls drag+ drop der mehrfachauswahl.\
+- bei mehrfachauswahl sollten die sonderwochen & ferien \'fcbersprungen werden. im moment werden sie bei shift-klick auch angew\'e4hlt und bei drag & drop auch verschoben.\
+- shift-klick soll nur lektionen des kurses anw\'e4hlen. mit command klick k\'f6nnten auch noch leere zellen hinzugef\'fcgt werden bei bedarf.\
+- ansicht sollte mo-di-mi-do-fr sein, da ich als lehrer einen tag nach dem anderen abarbeite im unterricht. die mehrfachauswahl bei mehrt\'e4gigen kursen sollte intelligent in beiden relevanten spalten anw\'e4hlen, auch wenn diese nicht nebeneinander liegen. (di-do)\
+- informatik als grau.\
+- SOL muss mit kurs verkn\'fcpft werden k\'f6nnen, dies kann jedoch nicht im planer representiert werden mit kacheln. bei einer kachel soll aber ein tag hinzugef\'fcgt werden, wenn diese SOL beinhaltet. dies soll in der detailansicht eingestellt werden k\'f6nnen: wieviel SOL zum kurs geh\'f6rt, alle details welche auch bei lektion m\'f6glich sind (thema, materiallink, beschreibung \'85) spezifisch zum sol.\
+- ein einstellungsmenu, in welchem grunds\'e4tzliche einstellungen vorgenommen werden k\'f6nnen wie z.b.\
+	- eine lehrperson sollte mit dem leeren planer starten k\'f6nnen ohne import. hier sollten die wichtigsten informationen eingegeben werden k\'f6nnen welche die grundstruktur bilden\
+	- stundenplan \'97>  kurse hinzuf\'fcgen\
+	- sonderwochen, inklusive welche kurse betroffen sind (standard alle, kurse abw\'e4hlbar, f\'fcr welche die sonderwoche nicht gilt)\
+	- default lektionen-dauer (standard auf 1L oder 2L, es ist aber denkbar dass eine Schule 60min kurse hat.\
+	- f\'e4cher, welche unterrichtet werden\
+	- kurse hinzuf\'fcgen\
+	- sonderwochen eingegeben werden k\'f6nnen (diese sollten nicht einzeln eingegeben werden m\'fcssen.\
+	- ferien definieren, diese sind nicht in allen schulen gleich.\
+	- \
+- B)dauer der einheit: vereinfachung, nur mit xxmin arbeiten. also 1L mit 45min, 2L mit 90min 3L mit 135min ersetzen. andere freie min w\'e4hlbar. bei andere auch die m\'f6glichkeit \'93halbtag\'94 \'93ganztag\'94 w\'e4hlbar (so m\'fcssen minuten nicht gerechnet werden)\
+- a) kategorie \'97> typ (nicht \'93untertyp\'94.\
+\
+V7:\
+- scrollen bei mouse-over men\'fc (details, sequenz) soll in den menps scrollen, nicht im \'fcbersichtsplan\
+- klick (and hold)+maus ziehen auf leere zelle soll diese zellen ausw\'e4hlen f\'fcr neue sequenz\
+- sequenzansicht:\
+	- bei sequenzansicht werden di liste der bl\'f6cke pro kurs gezeigt. dort kann ich noch immer nicht auf den titel eines blocks klicken um die detaisl anzeigen zu lassen. den button details brauchts nicht.\
+	- bei der kachel des blocks m\'f6chte ich auf den titel (OR AT) klicken k\'f6nnen und so die entsprechende sequenz im plan ausw\'e4hlen k\'f6nnen.\
+	- bei der kachel des blocks m\'f6chte ich auf die kw nummer klicken k\'f6nnen und so die entsprechende kachel im plan ausw\'e4hlen k\'f6nnen.\
+	- materiallinks fehlen in der detailansicht des blocks\
+	- die sequenzansicht erlaubt f\'fcr die bl\'f6cke eine kompakte bzw. erweiterte ansicht. diese sind im moment mit den gleichen inhalten gef\'fcllt. was k\'f6nnte sinnvollerweise bei der erweiterten ansicht zus\'e4tzlich gezeigt werden?\
+	- bei der detailansicht eines blocks sollten die verschiedenen kacheln (lektionen) aufgelistet werden (mit grobinfow wie z.b. unterthema) mit der m\'f6glichkeit, auf eine lektion klicken zu k\'f6nnen und somit in die lektiondetailansicht zu wechseln.\
+- der tabs Detail sollte Unterrichtseinheit heissen, der andere Sequenz.\
+- \
+\
+V8:\
+- mit block habe ich bisher im fenster zur bearbeitung von seqeuenzen di liste der bl\'f6cke, welche zu dieser seqeuen geh\'f6ren, gemeint.\
+macht die rubrik \'93sequenz\'94 \'fcberhautp sinn? meinen wir nicht immer das, was bis jetzt \'93block\'94 heist im sequenzmen\'fc? wir brauchen ja nur die ebene Sequenz (also reihe von lektionen, heist noch \'93block\'94, und definieren dort die details im men\'fc. in der ansicht sequenzentab kann ich ja dann die existierenden sequenzen (momentan noch block) filtern nach klasse, fachbereich\'85 und habe direkt eine auflistung der lektionenreihen, welche diese filterkriterien erf\'fcllen. innerhalb solcher lektionenreihen kann ich dann gewisse details f\'fcr die lektionensequenz definieren, das noch im tab sequenzen. sobald ich auf eine einzelne lektion gehe, m\'fcsste es in den tab lektionendetaisl springen.\
+- mittlere zoom-ansicht (block ansicht) :\
+	- sollte auch kurse vertikal zeigen, gleich wie in wochenansicht, aber wie jetzt im detailgrad.\
+- wochen-ansicht\
+	- die titelzeilen mit kursname zeit etc. muss in allen ansichten fixiert sein, und bei scrollen zu semester 2 muss die titelzeile des semester2 sticky fixiert werden. (bei alle, sf, ewr, in\'85)\
+\
+V9:\
+- ansicht etwas dunkel, schlecht lesbar. vergangene wochen etwas mehr aufhellen. men\'fc (unterrichtseinheit, sequenz heller, mehr kontrast).\
+- bug: wenn sequenz angew\'e4hlt wurde, men\'fc geschlossen, f\'fchrt klick in leere zellen oder esc nicht zur abwahl der sequenz.\
+- h\'e4ufig falsche fachbereich tags, z.b. 28bc29fs preistheorie als recht getagt.\
+- shift-klick sollte auch \'fcber den semesterwechsel hin m\'f6glich sein.\
+- werden anpassungen in unterrichtseinheit bzw. sequenz direkt gespeicher, oder muss noch ein speicher-button hin?\
+- wenn ich mehrere unterrichtseinheiten anw\'e4hle, sollte ich f\'fcr viele zusammen z.b. den fachbereich-tag, kategorie, typ, dauer, sol-zinzuf\'fcgen etc. w\'e4hlen k\'f6nnen. also nicht nur f\'fcr einzelne lektionen die eingaben, sondern auch f\'fcr lektionengruppen. das muss nicht heissen, dass diese lektion als eine sequenz gespeichert werden sollen.\
+- im sequenz tab gibt es immer noch die \'fcberkategorie \'93sequenzen\'85\'94, welche mehrere bl\'f6cke beinhalten. diese bl\'f6cke sollen Sequenz heissen, der tab soll Sequenzen heissen (analog zu Unterrichtseinheit als zweiten tab). im Tab Sequenzen soll direkt die bl\'f6cke  auflisten (welche Sequenz heissen sollen), gefiltern nach klasse und fachbereich wenn die filter gew\'e4hlt werden.\
+	- wenn ich im tab Sequenzen auf den titel einer unterrichtsreihe klicke \'f6ffnet sich die ansicht Unterrichtseinheit. diese \'fcbersicht soll klar darlegen, dass diese einstellungen die ganze unterrichtsreihe betrefen, nicht nur eine unterrichtseinheit. gehe ich richtig in der annahme, dass diese funktionalit\'e4t im moment beim klicken auf felder geschieht? das klicken auf den titel der unterrichtsreihe soll die reihe im \'fcbersichtsplan aktivieren, ein wechsel in den anderen tab wie oben beschrieben ist wohl nicht sinnvoll. die einstellungen zur sequenz machen wir also lieber wie mit dem aufklapparen felder-mechanismus. es sollten grunds\'e4tzlich die selben einstellungen m\'f6glich sein wie im tab unterrichtseinheit, wenn dies sinnvoll ist. \
+	- wenn ich im tab sequenz im feld der unterrichtsreihe auf \'93lektionen\'94 klicke, werden die verschiedenen unterrichtseinheiten wie gew\'fcnscht aufgelistet. beim klicken wird der tab unterrichtseinheit ge\'f6ffnet, dieser soll nun diese konkrete eine unterrichtseinheit betreffen. diverse tags (fachbereich, kategorie etc. sollen dieselben sein wie bei der unterrichtsreihe definiert. ich gehe davon aus, dass dies im moment so ist.\
+- die men\'fcs f\'fcr die details der unterrichtseinheit und sequenzen d\'fcrfen gerne gr\'f6sser sein, da der fokus der LP beim bearbeiten ind en men\'fcs ist. wichtig ist, dass im planer immer noch einige spalten sichtbar sind, aber 4-5 sichtbare spalten sollten ausreichen.\
+die mittlere zoomansicht scheint mir buggy. es m\'fcssten noch immer alle kalenderwochen als zeilen aufgelistet sein und die unterrichtseinheiten zusammengefasster (sequenzen, themen, fachbereiche\'85) angezeigt werden.\
+- in de multy-year-overview zoom ansicht heist eine sich tlehrplan, diese kommt aber wohl ausmeinem jahresplan? der lehrplan selber definiert zuminest im fach wr mindestlektionen pro zyklus, aber nicht mehr. somit macht die ansicht wenig sinn. es soll eine zoom-ansicht aus dem detailplan sein. ansonsten gef\'e4llt mir die ansicht gut. was ist die ansicht \'93ist-zustand\'94?\
+- das anw\'e4hlen von mehreren zellen f\'fcrs erstellen von unterrichtseinheiten, sequenzen ist noch nicht ganz klar. ich muss eine zelle mit einem klick \'93anw\'e4hlen\'94 k\'f6nnen, auch eine leere. da soll noch kein men\'fc kommen oder so. aber ich k\'f6nnte dann diese vorerst markieren und mit shift+klick auf eine andere zelle eine sequenz starten (nach men\'fc-popup). das w\'e4hlen von neue sequenz beim klick auf zelle und wahl im popupmen\'fc l\'f6st aber nichts aus, das scheint buggy.\
+- bei command+klick auf zelle erscheint das men\'fc f\'fcr die m\'f6glichen aktionen bei der kopfzeile. kannst du das men\'fc kompakt nahe bei der zelle zeigen? da wo die aufmerkamkeit des users auch ist.\
+\
+V10:\
+- beim detailmen\'fc zu einer unterrichtseinheit sollte diese auch zu einer sequenz hinzuf\'fcgen k\'f6nnen (neue, bestehende)\
+- sequenzen (und allenfalls unterrichtseinheiten) sollten in einer art materialsammlung gespeichert werden, damit sie in sp\'e4teren jahren wieder verwendet werden k\'f6nnen (und den akteullen bed\'fcrfnissen enstprechend angepasst.) vielleicht nicht mit allen, aber eine m\'f6glichkeit, eine sequenz (oder unterrichtseinheit ) der materialsammlung hinzuzuf\'fcgen.\
+	- szenario: ich starte als lehrer ins neue schuljahr. f\'fcr eine klasse kann ich die lektionen inklusive sequenzen etc. des letzen jahres \'fcbernemen\
+	- szenario: ich starte ins neue schuljahr, will aber nicht vom letzten jahr \'fcbernehmen. ich generiere neue unterrichtseinheiten und sequenzen, will aber stellenweise auf gespeicherte unterrichtseinheiten oder sequenzen aus der materialsammlung zur\'fcckgreiffen.\
+- somit w\'e4re vielleicht ein dritter tab \'93Sammlung\'94 sinnvoll, rechts neben \'93sequenzen\'94. ich kann dann von unterrichtseinheit oder sequenz-tab aus der Sammlung imortieren, oder von der sammlung her eine unterrichtrseinheit oder eine sequenz einem kurs zuordnen.\
+- feiertage sollten getrackt und wie ferien blockiert werden.\
+- ich m\'f6chte einen niedeschwelligen weg, details (notizen) zu den unterrichtseinheiten sehen zu k\'f6nnen. bisher denken wir ja stark \'fcber die interaktion mit dem unterrichtsplaner, wenn unterricht geplant wird nach. der planer hat aber eine zweite funktion, n\'e4hmlich die unterst\'fctzung beim durchf\'fchren von unterricht. da will ich zu einer unterrichtseinheit nicht das ganze men\'fc sehen mit allen einstellungsm\'f6glichkeiten, sondern die f\'fcrs unterrichten releanten details, kommentare f\'fcr mich, was ich gemacht habe, wie es mit der klasse funktioniert hat etc. kannst du mir helfen, eine sinnvolle l\'f6sung daf\'fcr zu finden? ich habe dies in meinem extel so gel\'f6st, dass neben jeder spalte eines kurses eine versteckte spalte mit den details \'fcber das + (gruppieren) auf und zuklappbar war. bei mouse-over einer unterrichtseinheit-kachel wurden die details angezeigt. mouse over ist eine option, f\'fcr den guten \'fcberblick w\'e4re es aber auch wertvoll, wie im excel bei aufgeklappter detailspalte die notizen zur ganzen unterrichtsreihe des kurses direkt einsehbar sind. vielleicht w\'e4re eine solche aufklappbare detailspalte auch ein gangbarer weg? dies k\'f6nnte ja in einer ansicht, wo nur ein jeweiliger kurs gezeigt wird sinnvoll umsetzbar sein.\
+- im men\'fc sequenzen wenn eine sequenz angew\'e4hlt ist (z.b. OR AT), kann ich ja auf felder oder lektionen klicken um die spezialansicht anzuzeigen. die \'93buttons\'94 sollten zeigen, welche ansicht im moment aktiv ist. vielleich wie ein tab?\
+	- wenn ich in dieser ansicht unter felder einen fachbereich anklicke klappt sich das modal zusammen. es sollte unver\'e4ndert offen bleiben, da ich weitere eintr\'e4ge machen m\'f6chte.\
+	- wenn ich mehrere Sequenzen mit dem gleichen oberthema definiere (z.b. OR AT, mit verschiedenen unterthemen (Entstehung, Erl\'f6schung\'85), w\'fcrden diese jeweils gleichen oberthemen zu einer reihe geh\'f6ren? oder wie hast du dir das mit den sequenz-reihen vorgestellt (im moment als kleiner oranger link sichtbar). mir ist bisher die rolle der Unterrichtsreihe nicht klar geworden, ich sehe aber einen sinn wenn mehrere kleine Sequenzen zusammengeh\'f6ren wie oben beschrieben.\
+- das ein- ausklappen bei sequenzen (felder, lektionen, reihe) finde ich super.\
+- beim verschieben braucht es eine warnung, wie damit umgegangen werden soll, wenn die rhythmisierung 1L-2L gest\'f6rt wird. dh. ich habe am dienstag eine einzellektion, am donnerstag eine doppellektion. das f\'fchrt beim verschieben einer sequenz zum problem, wenn nun inhalte f\'fcr eine doppellektion auf iene einzellektion geschoben w\'fcrden. hier braucht es eine warnung und entsprechende kontrolle. ich definiere ja bei der unterrichtseinheit, dass sie 90 minuten dauert am donnerstag. wenn ich diese nun auf den dienstag schiebe mit 45min muss das angepasst werden m\'fcssen von der LP.\
+- in der wochenansicht (nah)  hat es neben den unterrichtseinheitenkacheln eine gr\'fcne linie wenn die kachel zu einer sequenz geh\'f6rt. das sollte \'fcberarbeitet werden. manche zellen haben nun eine solche gr\'fcne linie, aber keine kachel. beim verschieben von unterrichseinheiten sollen diese sequenzhinweislinien sticky sein bei der kachel.\
+- die gr\'fcnen sequenzhinweislinien sind klickbar, das ist super. sie sind aber sehr d\'fcnn. kann das gel\'f6st werden, dass zum einen deutlicher wird, dass einheiten zusammengeh\'f6ren? und sie besser angeklickt werden k\'f6nnen, um die sequenz zu bearbeiten?\
+- im header hat es eine legende mit vwl, pr\'fcfung event ferien sequenz\'85, da sind recht vwl zusammen. das soll angepasst werden. die farben sollen bwl blau, recht gr\'fcn, vwl orange, ferien weiss, event vielleicht grau?\
+- \
+\
+V11:\
+- was macht das \'93i\'94 bei den unterrichtseinheitskacheln? wunsch ist, neben der m\'f6glichkeit \'fcber das detailmen\'fc im tab unterrichtseinheit auch einen direkteren weg zu haben, um Thema und Notizen zu einer Unterrichseinheit anzuzeigen (mouseover). idealerweise kann ich aber f\'fcr den ganzen kurs diese infos (z.b. als ausklappbare spalte) anzeigen lassen f\'fcr verschiedene unterrichtseinheiten.\
+- bei doppelklick auf leere zelle erscheint das men\'fc neue u.einheit bzw. sequend. diese buttons machen nichts, bug\
+- bei klick auf gr\'fcnen sequenzbalken werden die unterrichtseinheiten der sequenz markiert. es sollte sich aber auch das bearbeitungsmen\'fc dieser spezifischen sequenz \'f6ffnen.\
+- wenn im bearbeitungsmen\'fc einer unterrichtseinheit auf den tag der sequenz geklickt wird, zu der die einheit geh\'f6rt, sollte direkt zur bearbeitungsmen\'fc dieser sequenz gesprungen werden.\
+- bei der lektionen-ansicht zu einer sequenz im sequenzmen\'fc sollte bei einem klick auf eine unerrichtseinheit wie jetzt in den tab unterrichtseinheit dieser einheit gesprungen werdne. wichtig w\'e4re jeoch eine m\'f6glichkeit, direkt wider zur sequenz zur\'fcckzuspringen. da im workflow hier ein fleissiges hin-und herpsringen zu erwarten w\'e4re. eine m\'f6glichkeit w\'e4re auch, bei einem klick auf die unterrichtseinheit im sequenzmen\'fc \'93lektionen\'94 die wichtigsten details zur direkten bearbeitung aufgeklappt w\'fcrden, erst bei doppelklick w\'fcrde in den bearbeitungstab unterrichtseinheit gewechselt.\
+- \
+\
+V12\
+- mittlere zoom ansicht soll alle kalenderwochen zeigen.\
+- beim klicken auf den seuenztag in der unterrichtseinheit-detailmen\'fc sollte direkt zuur sequenz gesprungen werden, ohne noch runter scrollen zu m\'fcssen.\
+- click+drag in leere felder in der wochenansicht \'f6ffnet nun das men\'fc f\'fcr das erstellen der sequenz. auch hier sollte direkt hingescrollt werden. auch sollten die markierten zellen im plan hervorgehoben sein.\
+- analog zu click+drag select bei leeren zellen auch bei existierenden gef\'fcllten zellen m\'f6glich? oder \'fcber shift-klick?\
+- bei klick auf sequenz aus zoom 2 ansicht soll die sequenz im men\'fc angew\'e4hlt werden f\'fcr die direkte bearbeitung.\
+- das kleine i-symbol braucht es bei den unterrichtseinheits-kacheln nich, da mit doppelklick sowieso die bearbeitungsansicht ge\'f6ffnet wird.\
+- einstellungen button in kopfzeile scheint nicht aktiv zu sein.\
+- export / import (json&excel) in einstellungen menu legen\
+- im menu grauer text auf dunkler fl\'e4che ist schlecht lesbar. auch blau/gr\'fcn auf dunkel ist schwer lesbar.\
+- \
+\
+V13:\
+- mouse over unterrichtseinheit: detailfeld soll immer angezeigt werden. wenn lektion ganz unten am bildschirm ist ist das infofenster kaum sichtbar.\
+- zoom2: felder sollten in farbe des fachs/fachbereichs sein, nicht text. text gr\'f6sser, so kaum lesbar.\
+- zoom2: kann als jahr gezeigt werden, da die wochentage hier nicht relevant sind. in dieser ansicht geht es um einen \'fcberblick, da sollten die kurse durchgehend gezeigt werden. frage: wie umgehen mit kursen, welche an 2 tagen stattfinden. als breiten balken wenn sich eine sequenz durchzieht, 2 schmalere balken wen di/do unterschiedliche seqeunzen behandelt werden?\
+- sol hinzuf\'fcgen ist insbesondere bei sequenzen wichtig, damit das sol als total zu allen zugeh\'f6rigen unterrichtseinheiten verlinkt wird\
+- feature: kalender im tool anzeigen (z.b. mein google-kalender)\
+- der details-toggle-button for die notizenstalte ist sehr klein.\
+- die spaltenbreite f\'fcr die notizen sollte anpassbar sein. default breiter (ca. 2x normal).\
+- notizentext anzeigen mit umbr\'fcchen. sonst sehr un\'fcbersichtlich.\
+\
+\
+V14:\
+- wenn nichts angew\'e4hlt wird soll detail-fenster auf der rechten seite wieder schliessen.\
+- \'e4nderungen automatisch speichern beim detail-fenster zu unterrichtseinheiten oder sequenzen. speicher button mit \'93nicht speichern\'94 ersetzen, somit kann man \'e4nderungen r\'fcckg\'e4ngig machen, muss aber nicht ans speichern denken wenn alles ok ist.\
+- zoom2 ansicht nicht in semester aufteilen. durchgehend anzeigen, nicht nach wochentag sortiert sondern nach kursen. siehe letzte feature-kommentare meinerseits.\
+\
+\
+ V15:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - ein klick auf eine leere zelle sollte diese auch anw\'e4hlen\
+- klick+drag auf leere zellen sollte diese anw\'e4hlen (auch optisch hervorheben)\
+- zoom2: schrift sehr klein\
+- wenn z.b. in zoom2 eine sequenz angew\'e4hlt wird und das detailfenster \'f6ffnet, soll die angew\'e4hlte sequenz ganz oben im scroll-window gezeigt werden. \
+- \
+\
+V16:\
+- bei google calendar push feature: ferien, sonderwochen nicht als einzellektion\
+- bei zoom 2 wird sticky kopfzeile leicht abgeschnitten beim scrollen\
+- batch bearbeitung von mehreren unterrichtseinheiten: buttons reagieren nicht wirklich (an/abw\'e4hlen. sollten zeigen, welche angew\'e4hlt sind durch farbliche hervorhebung. nicht angew\'e4hlte nicht farbig?\
+- \
+\
+V17:\
+- klick auf leere zelle markiert nun die zelle. klick+drag noch immer nicht.\
+-  \'e4nderungen automatisch speichern beim detail-fenster zu unterrichtseinheiten oder sequenzen. speicher button mit \'93nicht speichern\'94 ersetzen, somit kann man \'e4nderungen r\'fcckg\'e4ngig machen, muss aber nicht ans speichern denken wenn alles ok ist.\
+- in zoom2 nicht nur sequenzen anzeigen, auch einzelne unterrichtseinheiten.\
+- in zoom3 wochenansicht einen toggle, um vergangene wochen dunkler zu machen wie jetzt standard (f\'fcr einsatz im unterricht) oder alles gleich darstellen, wenn in allen einheiten gearbreitet wird und die sichtbarkeit gew\'fcnscht ist.\
+- shift klick bei mehrtageskursen geht nicht mehr. jetzt wird nur am gleichen tag angew\'e4hlt. wenn ich klicke, sollte ein men\'fc aufpoppen, welches mich fragt, ob ich beide anw\'e4hlen m\'f6chte. \
+- wenn im wochenplan auf gr\'fcne linie (sequenz) geklickt wird, \'f6ffneet sich ja das sequenzen detailfenster. hier soll die aktive sequenz ganz oben unter den Klassenbuttons angezeigt werden und angew\'e4hlt sein (mit hellem rahmen). buttons felder und lektionen standardm\'e4ssig ausklappen f\'fcr bearbeitung.\
+- \
+\
+V18:\
+- Ferien st\'e4rker differenzieren, z.b. als leere bl\'f6cke mit beschriftung (z.b. herbstferien) zeigen.\
+- Studienreisen als optisch durchgehende bl\'f6cke visualisieren, ausser f\'fcr unterrichseinheiten, welche in der sonderwuche anwesend sind(z.b. taf w\'e4hrend iw12 schneesportwoche). dies w\'fcrde auch der visuellen unterscheidung vom regelunterricht dienen.\
+- kleinere darstellung von einzellektionen macht wenig sinn bei sonderwochen und ferien, hier normalgross darstellen.\
+- linie neben unterrichtseinheiten, welche sequenzen symbolisiert sollte im farbcode der unterrichtseinheiten sein. also bei vwl orange, bwl blau, recht gr\'fcn, informatik grau.\
+- alt-shift-klick f\'fcr mehrfachauswahl bei zweitageskursen beibehalten. wenn nicht alt-klick, das men\'fc zeigen. oder? k\'f6nnte auch eine einstellung sein, wie man das haben m\'f6chte.ich bef\'fcrchte, dass bei zu vielen insiderwissen (wie tastenkombinationen) die bedinbarkeit f\'fcr neue user leidet. es soll m\'f6glichst intuitiv sein.\
+- bei sequenz-detail ansicht \'93lehrplanziel\'94 weniger prominent. beschreibung anschliessend an unterthema.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - bei sequenz-detail ansicht wird unter lektionen auch ferien angezeigt, welche angew\'e4hlt und mit thema etc. bef\'fcllt werden k\'f6nnen. das macht wenig sinn.\
+- bei sequenz-detail felder und lektionen default ausklappen. \
+- bei unterrichtseinheit-detail wird unterschieden zwischen learningview link und materiallink. das kann vereinfacht werden auf nur material.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - 
+\f1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Zoom 2: Einzellektionen anzeigen\uc0\u9989  Gestrichelte Bl\'f6cke, halbtransparent \'97> wird nur stellenweise so angezeigt (IN 30s) sonst nicht.\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec2 - Shift-Klick Mehrtages-Kurse Popup\uc0\u9989  Popup "Auch [Tag] ausw\'e4hlen?" \'97> w\'e4hlt nur in letzte woche auch den zweiten tag aus. sollte von der ersten bis zur letzten geschehen. dieses men\'fc sollte nicht getriggert werden, wenn ich zuerst am einen tag ausw\'e4hle, dann shift klick auf den anderen tag. dann ist klar, dass ich beide will. das pop-up men\'fc sollte bei klick daneben oder esc wieder verschwinden. momentan braucht es klick auf nein.\
+- sequenz OR AT \'f6ffnet zwei \'93fenster untereinander\'94 bei den sequenzdetails. wieso?\
+- beim detailfenster zu unterrichtseinheiten hats keinen speicherbutton. ich gehe davon aus, dass alle \'e4nderungen automatisch gespeichert werden. wieso hat es bei den sequenzen einen speicherbutton? einen UE speichern, einen Reihe? ich m\'f6chte alles automatisch speichern lassen. r\'fcckg\'e4ngig machen ist ja verf\'fcgbar.
+\f0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\
+\
+V19\
+- Ferien haben auch sequenz-balken mit fach-farbe. ferien k\'f6nnen kein fach-tag bekommen und sowieso nicht teil einer sequenz sein.\
+- zoom 2 einzelne unterrichtseinheiten ijmmer noch nur bei 30s sichtbar.\
+- zoom2 kopfzeile schneidet immer noch etwas ab, die klassenbezeichnungen sind nicht mehr voll lesbar.\
+- schrift auf dunklen hintergr\'fcnden muss heller sein. zoom 2 ansicht ist nicht sehr gut lesbar, ferien sogar kaum.\
+- der hell/schatten toggle muss auch in der zoom2 ansicht funktionieren.\
+\
+\
+V20:\
+- esc soll auch eingabe in suchfeld l\'f6schen.\
+- shift-klick mehrfachauswahl sollte nur im selben kurs m\'f6glich sein. also sf wr gym2, welches an beiden tagen m\'f6glich ist, sollte angew\'e4hlt werden k\'f6nnen und sequenzen sollten erschaffen werden k\'f6nnen. kann es sinnvoll sein, dass auch \'fcber zwei kurse unterrichtseinheiten gew\'e4hlt werden sollen (z.b sf wr gym1 und gym2)? dies k\'f6nnte m\'f6glicherweise sinnvoll sein, aber es besteht auch eine fehlerquelle, da allermeistens derselbe kurs gemeint ist.\
+- ausf\'e4lle wegen einzelnen events gleich darstellen wie iw/ferien?\
+- bei iws k\'f6nnte der iw-plan verkn\'fcpft werden.\
+- ferien, sonderwochen und einzelne termine sollten deutlicher voneinander unterscheidbar sein. ferien so wie jetzt implementiert. studienreisen m\'fcssen auch klickbar sein, wie besondere termine, da auch bei studienreisen geplant werden muss.\
+- mechanismus von halbklassen breiter einsetzen. z.b. bei pr\'fcfungen ein rotes P. vielleicht beim detailpanel w\'e4hlbar (feld toggle aktiv/nicht sichtbar. vorerst einfach 2-3 Zeichen, farbe w\'e4hlbar.\
+- unterrichtseinheiten mit auftr\'e4gen sollten \'e4hnlich wie normaler unterricht aussehen, da hier stoff bearbeitet wird. das ist anders aus ein ausfall. \
+- derien und sonderwochen durchgehend zeigen wie jetzt implementiert. falls z.b ein kurs doch unterricht hat in einer sonderwoche, k\'f6nnten diese kacheln einfach dar\'fcber gelegt werden. achtung wenn dieser genau \'fcber dem namen der sonderwoche liegt, dann m\'fcsste der namen daneben geschoben werden und in beiden teilen gezeigt werden.\
+\
+\
+V21:\
+- men\'fc icons in kopfzeile schieben, wenn detailmenu unterrichtseinheiten/sequenzen\'85 ge\'f6ffnet wird\
+- mehrfachauswahl von unterrichtseinheiten sollte batch bearbeitung \'97> neue seqeunz bzw. zu bestehender sequenz hinzuf\'fcgen erm\'f6glichen.\
+\pard\pardeftab720\partightenfactor0
+\cf0 - m\'f6glichst alles sollte bearbeitbar sein. im detailmen\'fc sollte z.b. zeiten, kalenderwochen etc. ge\'e4ndert werden k\'f6nnen \'fcber bearbeitungsbutton.\
+\pard\pardeftab720\partightenfactor0
+\cf0 - \
+\
+V22:\
+- 
+\f1 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 mehrere planer erm\'f6glichen? wenn jemand 2 ansgtellungen hat? als tab neben kopfzeile titel "unterrichtsplaner, dort wo jetzt sj25/26 steht.\'a0\
+- bei einstellungen sollte \'93Neuer Unterrichtsplaner\'94 m\'f6glich sein. dieser \'f6ffent wie oben erw\'e4hnt einen neuen planer in einem tab. UE und sequenzen sollten zwischen planern (\'fcber die sammlung).\
+
+\f0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 - bei klick auf sequenz-linie neben unterrichtseinheiten wird nicht wie gew\'fcnscht die richtige sequenz im bearbeitungsmen\'fc aktiv ge\'f6ffnet.\
+- neu aufsetzen des unterrichtsplaners mit vorgegebener excel-tabelle scheint sehr kompliziert. ich habs nicht \'fcber die import-funktion versucht sondern in code. hat lange gerechnet bis ers geschafft hat. claude versucht nacheinander verschiedene approeaches, scheitert jeweils und versucht es anders. \
+\
+\
+V30\
+- Neuer planer:\
+- bug: bei neuer kurs hinzuf\'fcgen im feld klasse muss ich f\'fcr jedes zeichen wieder neu in zelle klicken\
+- bei den einstellungen sind ferien und sonderwochen voreingestellt. das ist sinnvoll, wenn fr\'fchere planer existierten, damit solche informationen de fakto aus der sammlung importiert und allenfalls angepasst werden k\'f6nnten. im moment sehe ich eintr\'e4ge bei ferien/sonderwochen/kursen, wie kann ich diese in meinen plan \'fcbertragen?\
+\
+}
