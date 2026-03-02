@@ -196,9 +196,19 @@ export function AppHeader() {
           className={`px-2 py-0.5 rounded text-[10px] border cursor-pointer ${
             showHelp ? 'bg-slate-800 border-gray-600 text-gray-300' : 'border-gray-700 text-gray-500'
           }`}
+          title="Kurzanleitung"
         >
           ?
         </button>
+        <a
+          href="wiki.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-2 py-0.5 rounded text-[10px] border border-gray-700 text-gray-500 cursor-pointer hover:text-cyan-300 hover:border-cyan-700 no-underline"
+          title="Ausführliche Anleitung (Wiki)"
+        >
+          📖
+        </a>
       </div>
     </div>
   );

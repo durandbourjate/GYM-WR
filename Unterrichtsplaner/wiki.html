@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unterrichtsplaner – Anleitung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-hover: #334155;
+    --border: #334155;
+    --border-accent: #475569;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #3b82f6;
+    --accent-green: #22c55e;
+    --accent-amber: #f59e0b;
+    --accent-purple: #a855f7;
+    --accent-red: #ef4444;
+    --accent-cyan: #06b6d4;
+    --vwl: #f97316;
+    --bwl: #3b82f6;
+    --recht: #22c55e;
+    --info: #0ea5e9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Layout === */
+  .wiki-container {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .wiki-container { grid-template-columns: 1fr; }
+    .wiki-nav { display: none; }
+    .wiki-nav.open { display: block; position: fixed; inset: 0; z-index: 100; background: var(--bg); overflow-y: auto; padding: 60px 20px 20px; }
+    .mobile-toggle { display: flex !important; }
+  }
+
+  /* === Navigation === */
+  .wiki-nav {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 24px 16px;
+    border-right: 1px solid var(--border);
+    background: #0c1322;
+  }
+
+  .wiki-nav::-webkit-scrollbar { width: 3px; }
+  .wiki-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .nav-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-section {
+    margin-bottom: 16px;
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-left: 8px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--bg-card);
+    border-left-color: var(--accent-blue);
+  }
+
+  .nav-link.active {
+    color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.1);
+    border-left-color: var(--accent-blue);
+  }
+
+  /* === Main Content === */
+  .wiki-main {
+    padding: 32px 40px 80px;
+    overflow-y: auto;
+    max-width: 800px;
+  }
+
+  @media (max-width: 768px) {
+    .wiki-main { padding: 20px 16px 60px; }
+  }
+
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 101;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* === Typography === */
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    color: #f8fafc;
+  }
+
+  h1 .version {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 15px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 40px 0 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: #f1f5f9;
+  }
+
+  h2:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px 0 10px;
+    color: var(--accent-cyan);
+  }
+
+  p { margin-bottom: 12px; color: var(--text-dim); }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  /* === Inline code / keys === */
+  kbd, code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--accent-cyan);
+  }
+
+  kbd {
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border-bottom-width: 2px;
+    color: var(--text);
+    font-size: 11px;
+  }
+
+  /* === Cards === */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* === Shortcut table === */
+  .shortcuts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+    margin: 12px 0;
+  }
+
+  .shortcuts dt {
+    text-align: right;
+    padding: 3px 0;
+  }
+
+  .shortcuts dd {
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 3px 0;
+  }
+
+  /* === Color badges === */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .badge-vwl { background: rgba(249, 115, 22, 0.2); color: var(--vwl); border: 1px solid rgba(249, 115, 22, 0.3); }
+  .badge-bwl { background: rgba(59, 130, 246, 0.2); color: var(--bwl); border: 1px solid rgba(59, 130, 246, 0.3); }
+  .badge-recht { background: rgba(34, 197, 94, 0.2); color: var(--recht); border: 1px solid rgba(34, 197, 94, 0.3); }
+  .badge-info { background: rgba(14, 165, 233, 0.15); color: var(--info); border: 1px solid rgba(14, 165, 233, 0.2); }
+  .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.2); }
+
+  /* === Tip boxes === */
+  .tip {
+    border-left: 3px solid var(--accent-blue);
+    background: rgba(59, 130, 246, 0.06);
+    padding: 10px 14px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .tip::before {
+    content: '💡 ';
+  }
+  .tip.warn {
+    border-left-color: var(--accent-amber);
+    background: rgba(245, 158, 11, 0.06);
+  }
+  .tip.warn::before { content: '⚠️ '; }
+
+  /* === Hierarchy diagram === */
+  .hierarchy {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 12px 0;
+  }
+  .hierarchy .hl { color: var(--accent-cyan); font-weight: 500; }
+
+  /* === List styles === */
+  ul, ol { margin: 8px 0 12px 20px; color: var(--text-dim); }
+  li { margin-bottom: 4px; font-size: 13px; }
+  li strong { font-size: 13px; }
+
+  /* === Back-to-planner button === */
+  .back-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+    z-index: 50;
+  }
+  .back-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="document.querySelector('.wiki-nav').classList.toggle('open')">☰</button>
+
+<div class="wiki-container">
+
+<!-- === NAVIGATION === -->
+<nav class="wiki-nav">
+  <div class="nav-title">⊞ Planer-Wiki</div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Einstieg</div>
+    <a class="nav-link" href="#ueberblick">Überblick</a>
+    <a class="nav-link" href="#erster-start">Erster Start</a>
+    <a class="nav-link" href="#oberflaeche">Oberfläche</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Arbeiten</div>
+    <a class="nav-link" href="#lektionen">Lektionen erstellen</a>
+    <a class="nav-link" href="#details">Detailansicht</a>
+    <a class="nav-link" href="#sequenzen">Sequenzen</a>
+    <a class="nav-link" href="#batch">Mehrfachauswahl</a>
+    <a class="nav-link" href="#drag-drop">Verschieben</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Konfiguration</div>
+    <a class="nav-link" href="#einstellungen">Einstellungen</a>
+    <a class="nav-link" href="#kurse">Kurse / Stundenplan</a>
+    <a class="nav-link" href="#ferien">Ferien & Sonderwochen</a>
+    <a class="nav-link" href="#multi-planer">Multi-Planer</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Features</div>
+    <a class="nav-link" href="#sammlung">Materialsammlung</a>
+    <a class="nav-link" href="#sol">SOL-Tracking</a>
+    <a class="nav-link" href="#noten">Noten-Vorgaben</a>
+    <a class="nav-link" href="#taf">TaF-Phasen</a>
+    <a class="nav-link" href="#gcal">Google Calendar</a>
+    <a class="nav-link" href="#export">Export & Import</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Referenz</div>
+    <a class="nav-link" href="#shortcuts">Tastenkürzel</a>
+    <a class="nav-link" href="#farbschema">Farbschema</a>
+    <a class="nav-link" href="#hierarchie">Daten-Hierarchie</a>
+  </div>
+</nav>
+
+<!-- === MAIN CONTENT === -->
+<main class="wiki-main">
+
+<h1>⊞ Unterrichtsplaner <span class="version">v3.70</span></h1>
+<p class="subtitle">Jahresplanung Wirtschaft &amp; Recht – Gymnasium Hofwil. Dieses Wiki erklärt alle Funktionen des Planungstools.</p>
+
+<h2 id="ueberblick">Überblick</h2>
+<p>Der Unterrichtsplaner ist eine Web-App für die Semesterplanung im Fach Wirtschaft und Recht. Er zeigt alle Kurse (SF, EWR, EF, IN, KS) als Spalten und die Kalenderwochen als Zeilen. Jede Zelle entspricht einer Unterrichtseinheit.</p>
+<p>Die wichtigsten Konzepte auf einen Blick:</p>
+<ul>
+  <li><strong>Kachel</strong> – eine einzelne Zelle im Raster (= eine Unterrichtseinheit in einer bestimmten Woche und einem bestimmten Kurs)</li>
+  <li><strong>Sequenz</strong> – eine zusammenhängende Folge von Kacheln, die thematisch zusammengehören (z.B. «OR AT Grundlagen», 6 Wochen)</li>
+  <li><strong>Block</strong> – ein Abschnitt innerhalb einer Sequenz mit eigenem Thema</li>
+  <li><strong>Reihe</strong> – eine übergreifende Einheit, die mehrere Sequenzen umfasst (z.B. ein ganzes Semester)</li>
+</ul>
+<div class="tip">Der Planer speichert automatisch nach jeder Änderung lokal im Browser (localStorage). Kein manuelles Speichern nötig.</div>
+
+<h2 id="erster-start">Erster Start</h2>
+<p>Beim ersten Aufruf erscheint ein <strong>Willkommensbildschirm</strong> mit der Auswahl des Schuljahres. Wähle ein Preset (z.B. «SJ 25/26»), und der Planer generiert automatisch die Kalenderwochen, Ferienperioden und Sonderwochen.</p>
+<p>Anschliessend konfigurierst du deine <strong>Kurse</strong> in den Einstellungen (⚙️). Jeder Kurs entspricht einer Spalte im Planer: Klasse, Kurstyp (SF/EWR/EF/IN/KS), Wochentag, Uhrzeiten und Semesterzugehörigkeit.</p>
+<div class="tip">Du kannst mehrere Planer als Tabs anlegen (z.B. einen pro Schuljahr). Jeder Tab hat eigene Einstellungen und Daten.</div>
+
+<h2 id="oberflaeche">Oberfläche</h2>
+<h3>Toolbar (Kopfzeile)</h3>
+<p>Die Toolbar enthält von links nach rechts:</p>
+<ul>
+  <li><strong>Kursfilter</strong> – <code>Alle</code>, <code>SF</code>, <code>EWR</code>, <code>IN</code>, <code>KS</code> etc. Blendet Spalten ein/aus. Die Buttons werden dynamisch aus deinen konfigurierten Kursen generiert.</li>
+  <li><strong>TaF</strong> – öffnet das TaF-Phasenmodell-Panel</li>
+  <li><strong>Suche</strong> – filtert Kacheln nach Titel, Thema oder Beschreibung</li>
+  <li><strong>↩ Undo</strong> – macht die letzte Aktion rückgängig (auch via <kbd>⌘Z</kbd>)</li>
+  <li><strong>◉</strong> – scrollt zur aktuellen Kalenderwoche</li>
+  <li><strong>📊</strong> – Statistik und Noten-Vorgaben-Check. Rote Zahl = offene Warnungen</li>
+  <li><strong>Zoom</strong> – umschalten zwischen Jahresübersicht (◫) und Wochenansicht (▦)</li>
+  <li><strong>◐/●</strong> – vergangene Wochen abdunkeln ein/aus</li>
+  <li><strong>▧ Seq</strong> – Sequenzen-Panel öffnen/schliessen</li>
+  <li><strong>⚙️</strong> – Einstellungen (Kurse, Ferien, Sonderwochen, Export/Import)</li>
+  <li><strong>?</strong> – Kurzanleitung ein-/ausblenden</li>
+</ul>
+<h3>Legende</h3>
+<p>Unter der Toolbar zeigt eine Legende die Farbbedeutung: <span class="badge badge-vwl">VWL</span> <span class="badge badge-bwl">BWL</span> <span class="badge badge-recht">Recht</span> sowie Prüfung, Event, Ferien und Sequenz-Markierungen.</p>
+<h3>Seitenpanel</h3>
+<p>Rechts öffnet sich ein Panel mit vier Tabs:</p>
+<ul>
+  <li><strong>Unterrichtseinheit</strong> – Details zur ausgewählten Kachel</li>
+  <li><strong>Sequenzen</strong> – Sequenz-Verwaltung und -bearbeitung</li>
+  <li><strong>Sammlung</strong> – Materialsammlung (Archiv)</li>
+  <li><strong>⚙️</strong> – Einstellungen</li>
+</ul>
+
+<h2 id="lektionen">Lektionen erstellen</h2>
+<h3>Neue Kachel</h3>
+<p>Klicke auf eine <strong>leere Zelle</strong> im Raster. Es erscheint ein Mini-Menü mit den Optionen <strong>+</strong> (neue Kachel einfügen), <strong>↓</strong> (bestehende Kacheln nach unten schieben) und <strong>i</strong> (Details öffnen).</p>
+<p>Bei Doppelklick auf eine leere Zelle wird direkt eine neue Kachel mit dem Titel «Neue Lektion» erstellt und das Detailpanel geöffnet. Neue Kacheln erhalten automatisch diese Defaults:</p>
+<ul>
+  <li>Kategorie: <strong>Lektion</strong></li>
+  <li>Dauer: <strong>90 min</strong></li>
+  <li>SOL: <strong>nicht aktiv</strong></li>
+</ul>
+<h3>Kachel bearbeiten</h3>
+<p><strong>Einfach-Klick</strong> auf eine gefüllte Kachel wählt sie aus und zeigt eine Vorschau. <strong>Doppelklick</strong> öffnet die Detailansicht im Seitenpanel. Du kannst den Titel direkt in der Kachel bearbeiten (Inline-Editing).</p>
+<h3>Kachel löschen</h3>
+<p>Wähle eine Kachel aus und drücke <kbd>Delete</kbd> oder <kbd>Backspace</kbd>. Die Kachel wird geleert (aber nicht gelöscht — die Zeile bleibt bestehen).</p>
+
+<h2 id="details">Detailansicht (Unterrichtseinheit)</h2>
+<p>Im Tab «Unterrichtseinheit» des Seitenpanels kannst du folgende Felder bearbeiten:</p>
+<div class="card">
+  <div class="card-title">📋 Felder einer Unterrichtseinheit</div>
+  <ul>
+    <li><strong>Fachbereich</strong> – <span class="badge badge-bwl">BWL</span> <span class="badge badge-vwl">VWL</span> <span class="badge badge-recht">Recht</span> <code>Informatik</code> <code>Interdisziplinär</code></li>
+    <li><strong>Kategorie</strong> – Lektion, Beurteilung, Event, Ferien/Frei</li>
+    <li><strong>Typ</strong> (Unterkategorie) – z.B. bei Lektion: Einführung, Theorie, Übung, SOL, Diskussion. Bei Beurteilung: Prüfung, mündlich, Präsentation, Projektabgabe. Eigene Labels möglich.</li>
+    <li><strong>Dauer</strong> – 45 min, 90 min, 135 min, Halbtag, Ganztag oder benutzerdefiniert</li>
+    <li><strong>SOL</strong> – Selbstorganisiertes Lernen (Thema, Dauer, Beschreibung, Material)</li>
+    <li><strong>Thema</strong> – Hauptthema und optionales Unterthema</li>
+    <li><strong>Lehrplanziel (LP17)</strong> – Auswahl oder Freitext, basierend auf kantonalem Lehrplan 17</li>
+    <li><strong>Material</strong> – Links zu Dokumenten, LearningView, Webseiten</li>
+    <li><strong>Badges</strong> – Kleine Markierungen auf der Kachel (z.B. «P» für Prüfung, «HK» für Halbklasse)</li>
+    <li><strong>Notizen</strong> – Freitextfeld für persönliche Anmerkungen</li>
+  </ul>
+</div>
+<p>Über die Buttons oben im Detailpanel kannst du die Kachel zu einer <strong>Sequenz hinzufügen</strong> oder Daten <strong>in die Sammlung speichern</strong> bzw. <strong>aus der Sammlung laden</strong>.</p>
+
+<h2 id="sequenzen">Sequenzen</h2>
+<p>Sequenzen sind das Kernkonzept für die thematische Strukturierung. Eine Sequenz gruppiert mehrere aufeinanderfolgende Kacheln eines Kurses unter einem gemeinsamen Thema.</p>
+<h3>Sequenz erstellen</h3>
+<p>Es gibt drei Wege:</p>
+<ul>
+  <li><strong>Im Detailpanel</strong> – bei einer einzelnen Kachel auf <code>+ Sequenz</code> klicken</li>
+  <li><strong>Bei Mehrfachauswahl</strong> – mehrere Kacheln auswählen → im Batch-Panel «✨ Neue Sequenz» klicken</li>
+  <li><strong>Im Sequenzen-Tab</strong> – über den Sequenzen-Tab im Seitenpanel (<code>▧ Seq</code>)</li>
+</ul>
+<h3>Sequenz bearbeiten</h3>
+<p>Im Sequenzen-Tab siehst du alle Sequenzen als aufklappbare Karten. Jede Karte zeigt:</p>
+<ul>
+  <li><strong>Felder-Tab</strong> – Fachbereich, Bezeichnung, Oberthema, Unterthema, Beschreibung, Lehrplanziel</li>
+  <li><strong>Lektionen-Tab</strong> – Liste aller enthaltenen Wochen/Kacheln</li>
+  <li><strong>Reihe-Tab</strong> – Übergeordnete Reihen-Einstellungen (optional)</li>
+</ul>
+<div class="hierarchy">
+<span class="hl">Reihe</span> (optional, z.B. «Semester 3»)
+  └── <span class="hl">Sequenz</span> (z.B. «OR AT Grundlagen»)
+        └── <span class="hl">Block</span> (z.B. «Vertragsrecht», KW 38–42)
+              └── <span class="hl">Lektion</span> (= Kachel, z.B. KW 38 Di)
+</div>
+<div class="tip">Die farbige Sequenz-Leiste am linken Rand jeder Kachel zeigt die Fachbereichsfarbe der Sequenz. Klick auf die Leiste öffnet die Sequenz im Seitenpanel.</div>
+<h3>Bezeichnung vs. Oberthema</h3>
+<p>Die <strong>Bezeichnung</strong> ist der interne Name der Sequenz — er wird in der Navigation, der Sammlung und den Dropdown-Menüs angezeigt. Falls leer, wird das Oberthema verwendet. Das <strong>Oberthema</strong> ist der fachliche Titel, der auf den Kacheln und im Planer erscheint.</p>
+
+<h2 id="batch">Mehrfachauswahl &amp; Batch-Bearbeitung</h2>
+<p>Wähle mehrere Kacheln gleichzeitig aus:</p>
+<ul>
+  <li><kbd>⌘</kbd> + Klick (Mac) / <kbd>Ctrl</kbd> + Klick (Windows) – einzelne Kacheln zur Auswahl hinzufügen/entfernen</li>
+  <li><kbd>⇧ Shift</kbd> + Klick – Bereich auswählen (alle Kacheln zwischen letzter und aktueller Auswahl)</li>
+  <li><strong>Klick+Ziehen</strong> auf leere Zellen – Bereich markieren</li>
+</ul>
+<p>Bei Mehrfachauswahl erscheint der <strong>Batch-Editor</strong> im Seitenpanel. Dort kannst du auf alle ausgewählten Kacheln gleichzeitig anwenden:</p>
+<ul>
+  <li>Fachbereich setzen</li>
+  <li>Kategorie setzen</li>
+  <li>Dauer setzen</li>
+  <li>SOL ein-/ausschalten</li>
+  <li>Neue Sequenz aus Auswahl erstellen oder zu bestehender Sequenz hinzufügen</li>
+</ul>
+<p>Am unteren Bildschirmrand erscheint zusätzlich eine <strong>schwebende Toolbar</strong> mit den Aktionen: Neue Sequenz, Verschieben (+1), Einfügen davor, Aufheben.</p>
+<div class="tip">Wenn du im Batch-Editor einen Fachbereich setzt und dann «Neue Sequenz» klickst, wird der Fachbereich automatisch auf die neue Sequenz übertragen.</div>
+
+<h2 id="drag-drop">Verschieben (Drag &amp; Drop)</h2>
+<p>Kacheln können per Drag &amp; Drop innerhalb eines Kurses verschoben werden:</p>
+<ul>
+  <li><strong>Auf leere Zelle ziehen</strong> – Kachel wird dorthin verschoben</li>
+  <li><strong>Auf gefüllte Zelle ziehen</strong> – Kacheln werden getauscht</li>
+  <li><strong>↓ Verschieben (+1)</strong> – schiebt alle Kacheln ab der markierten Position um eine Woche nach unten (Events und Ferien bleiben fix)</li>
+</ul>
+<div class="tip warn">Bei Kursen mit alternierenden 1L/2L-Slots (z.B. eine Woche Einzellektion, nächste Woche Doppellektion) warnt der Planer, wenn eine Verschiebung die Rhythmisierung stört.</div>
+
+<h2 id="einstellungen">Einstellungen</h2>
+<p>Öffne die Einstellungen über <code>⚙️</code> in der Toolbar oder über den ⚙️-Tab im Seitenpanel. Die Einstellungen umfassen:</p>
+<ul>
+  <li><strong>Kurse / Stundenplan</strong> – Kurs-Definitionen mit Klasse, Typ, Tag, Zeiten, Semester</li>
+  <li><strong>Ferien</strong> – Ferienperioden als KW-Bereiche</li>
+  <li><strong>Sonderwochen</strong> – Intensivwochen, Wirtschaftswoche, etc. mit GYM-Stufen</li>
+  <li><strong>Fachbereiche</strong> – Labels und Farben anpassen</li>
+  <li><strong>Sammlung</strong> – Konfigurationen sichern/laden</li>
+  <li><strong>Export/Import</strong> – Planerdaten als JSON exportieren/importieren</li>
+  <li><strong>Google Calendar</strong> – Kalender-Synchronisation</li>
+</ul>
+<div class="tip">Alle Einstellungen werden automatisch gespeichert (Auto-Save). Ferien und Sonderwochen werden beim Erstellen eines neuen Planers automatisch in den Planer übernommen.</div>
+
+<h2 id="kurse">Kurse / Stundenplan</h2>
+<p>Jeder Kurs definiert eine Spalte im Planer. Die Felder pro Kurs:</p>
+<ul>
+  <li><strong>Klasse</strong> – z.B. «29c», «27a28f», «28bc29fs»</li>
+  <li><strong>Typ</strong> – SF (Schwerpunktfach), EWR (Einführung WR), EF (Ergänzungsfach), IN (Informatik), KS (Klassenstunde)</li>
+  <li><strong>Wochentag</strong> – Mo bis Fr. Über «+ Tag» können mehrere Tage pro Kurs hinzugefügt werden (z.B. Di + Do)</li>
+  <li><strong>Zeiten</strong> – Anfangs- und Endzeit. Die Endzeit wird automatisch berechnet, wenn Anfangszeit und Dauer gesetzt sind</li>
+  <li><strong>Dauer</strong> – in Lektionen (1L = 45 min, 2L = 90 min, 3L = 135 min) oder benutzerdefiniert</li>
+  <li><strong>Semester</strong> – S1, S2 oder beide. HK (Halbklasse) optional</li>
+</ul>
+<p>Die Kursfilter-Buttons in der Toolbar werden automatisch aus den konfigurierten Kurstypen generiert. Doppelklick auf einen Spaltentitel filtert auf diesen einzelnen Kurs.</p>
+
+<h2 id="ferien">Ferien &amp; Sonderwochen</h2>
+<h3>Ferien</h3>
+<p>Ferienperioden werden als KW-Bereiche definiert (z.B. Herbstferien KW 39–41). Bei Einzelwochen (Start-KW = End-KW, z.B. Pfingstmontag KW 22) kannst du einzelne Tage auswählen.</p>
+<p>Schuljahr-Presets (z.B. «SJ 25/26 Bern») laden die offiziellen Feriendaten automatisch.</p>
+<h3>Sonderwochen</h3>
+<p>Sonderwochen (Intensivwochen, Wirtschaftswoche, SF-Woche etc.) können mit GYM-Stufe versehen werden. Mehrere Sonderwochen in derselben KW sind möglich (z.B. GYM1 Intensivwoche + GYM3 SF-Woche). Die Zuordnung «Ausgenommen» zeigt, welche Kurse in dieser Woche keinen regulären Unterricht haben.</p>
+
+<h2 id="multi-planer">Multi-Planer (Tabs)</h2>
+<p>Über das <strong>+</strong> neben den Planer-Tabs kannst du neue Planer erstellen. Jeder Planer hat eigene Kurse, Daten und Einstellungen. Anwendungsfälle:</p>
+<ul>
+  <li>Ein Planer pro Schuljahr (z.B. «SJ 25/26», «SJ 26/27»)</li>
+  <li>Ein Planer pro Szenario (z.B. «Variante A», «Variante B»)</li>
+  <li>Ein Test-Planer zum Ausprobieren</li>
+</ul>
+
+<h2 id="sammlung">Materialsammlung</h2>
+<p>Die Sammlung ist ein Archiv für wiederverwendbare Unterrichtseinheiten und Konfigurationen. Du kannst speichern:</p>
+<ul>
+  <li><strong>Einzelne UE</strong> – über «In Sammlung» im Detailpanel</li>
+  <li><strong>Ganze Sequenzen</strong> – über den Sequenzen-Tab</li>
+  <li><strong>Konfigurationen</strong> – Kurse, Ferien, Sonderwochen als Paket</li>
+</ul>
+<p>Aus der Sammlung kannst du Einträge wieder in den Planer laden — z.B. bewährte Sequenzen ins nächste Schuljahr übernehmen.</p>
+
+<h2 id="sol">SOL-Tracking</h2>
+<p><strong>SOL</strong> (Selbstorganisiertes Lernen) kann pro Kachel aktiviert werden. Für jede SOL-Einheit kannst du festhalten:</p>
+<ul>
+  <li>SOL-Thema und -Beschreibung</li>
+  <li>SOL-Dauer (unabhängig von der Lektionsdauer)</li>
+  <li>Material-Links für Lernende</li>
+</ul>
+<p>In der Statistik (📊) wird der <strong>SOL-Total</strong> pro Kurs angezeigt — wie viele SOL-Stunden im Schuljahr geplant sind.</p>
+
+<h2 id="noten">Noten-Vorgaben</h2>
+<p>Das Statistik-Panel (📊) prüft die <strong>Mindestanzahl Noten pro Semester</strong> gemäss MiSDV Art. 4. Für jeden Kurs wird angezeigt:</p>
+<ul>
+  <li>Anzahl geplanter Beurteilungen (Prüfungen, Präsentationen, Projektabgaben)</li>
+  <li>Status: ✅ genug, ⚠️ knapp, ❌ zu wenig</li>
+</ul>
+<p>Die rote Zahl auf dem 📊-Button in der Toolbar zeigt die Anzahl Kurse mit offenen Warnungen.</p>
+
+<h2 id="taf">TaF-Phasenmodell</h2>
+<p>Für <strong>Talentförderklassen</strong> (TaF Sport/Kunst/Musik) kann das Phasenmodell konfiguriert werden. TaF-Schüler besuchen das Gymnasium in 5 statt 4 Jahren und haben phasenweise keinen Unterricht.</p>
+<p>Im TaF-Panel (<code>TaF</code>-Button in der Toolbar) kannst du Phasen definieren mit Start-/End-KW, anwesenden und abwesenden Klassen. Die betroffenen Wochen werden im Planer entsprechend markiert.</p>
+
+<h2 id="gcal">Google Calendar</h2>
+<p>Der Planer kann mit Google Calendar synchronisiert werden (bidirektional):</p>
+<ul>
+  <li><strong>Planer → Kalender:</strong> Lektionen als Kalendereinträge exportieren</li>
+  <li><strong>Kalender → Planer:</strong> Kalendereinträge als Events importieren</li>
+  <li><strong>Kollisionswarnungen:</strong> Konflikte zwischen Planer und Kalender werden angezeigt</li>
+</ul>
+<div class="tip warn">Google Calendar erfordert ein Google Cloud Projekt mit OAuth Client ID. Die Einrichtung erfolgt einmalig in den Einstellungen.</div>
+
+<h2 id="export">Export &amp; Import</h2>
+<p>Im Einstellungs-Tab findest du:</p>
+<ul>
+  <li><strong>Planerdaten exportieren</strong> – speichert alle Daten (Wochen, Lektionen, Sequenzen, Details) als JSON-Datei</li>
+  <li><strong>Planerdaten importieren</strong> – lädt eine zuvor exportierte JSON-Datei</li>
+  <li><strong>Kurs-Konfiguration exportieren/importieren</strong> – nur die Kurseinstellungen (ohne Lektionsdaten)</li>
+  <li><strong>Sammlung</strong> – Konfigurationen in der Sammlung speichern und laden</li>
+</ul>
+<div class="tip">Nutze den Export regelmässig als Backup. Die Daten liegen nur im Browser — bei Cache-Löschung gehen sie verloren.</div>
+
+<h2 id="shortcuts">Tastenkürzel</h2>
+<dl class="shortcuts">
+  <dt><kbd>⌘Z</kbd></dt><dd>Rückgängig (Undo)</dd>
+  <dt><kbd>⌘F</kbd></dt><dd>Suche öffnen/fokussieren</dd>
+  <dt><kbd>⌘P</kbd></dt><dd>Drucken</dd>
+  <dt><kbd>Delete</kbd></dt><dd>Ausgewählte Kachel(n) leeren</dd>
+  <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Nächste/vorherige Woche</dd>
+  <dt><kbd>⇧</kbd> + Klick</dt><dd>Bereich auswählen</dd>
+  <dt><kbd>⌘</kbd> + Klick</dt><dd>Zur Auswahl hinzufügen/entfernen</dd>
+  <dt><kbd>Esc</kbd></dt><dd>Auswahl aufheben / Panel schliessen</dd>
+  <dt>Doppelklick</dt><dd>Details öffnen / Inline-Bearbeitung</dd>
+  <dt>Hover (800ms)</dt><dd>Vorschau-Popup mit Fachbereich, Thema, Notizen</dd>
+</dl>
+
+<h2 id="farbschema">Farbschema</h2>
+<p>Die Fachbereiche verwenden das LearningView-Farbschema:</p>
+<div style="display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap;">
+  <span class="badge badge-vwl">VWL – Orange</span>
+  <span class="badge badge-bwl">BWL – Blau</span>
+  <span class="badge badge-recht">Recht – Grün</span>
+  <span class="badge badge-info">Informatik – Cyan</span>
+  <span class="badge badge-purple">Interdisziplinär – Violett</span>
+</div>
+<p>Zusätzliche Farbcodierungen:</p>
+<ul>
+  <li><strong>Rot/Rosa</strong> – Prüfungen und Beurteilungen</li>
+  <li><strong>Grau</strong> – Ferien und unterrichtsfreie Wochen</li>
+  <li><strong>Amber/Gelb</strong> – Sonderwochen und Events</li>
+  <li><strong>Farbige Sequenz-Leiste</strong> (links an der Kachel) – zeigt den Fachbereich der übergeordneten Sequenz</li>
+</ul>
+
+<h2 id="hierarchie">Daten-Hierarchie</h2>
+<p>Die Datenstruktur des Planers hat folgende Ebenen:</p>
+<div class="hierarchy">
+<span class="hl">Planer-Instanz</span> (= ein Tab, z.B. «SJ 25/26»)
+  ├── <span class="hl">Einstellungen</span> (Kurse, Ferien, Sonderwochen)
+  ├── <span class="hl">Wochen</span> (KW 33 – KW 26, je nach SJ)
+  │     └── <span class="hl">Kacheln</span> (pro Kurs-Spalte)
+  │           ├── Titel, Typ (LessonEntry)
+  │           └── <span class="hl">Details</span> (LessonDetail)
+  │                 ├── Fachbereich, Kategorie, Typ
+  │                 ├── Thema, Lehrplanziel, Material
+  │                 ├── SOL (Thema, Dauer, Beschreibung)
+  │                 └── Badges, Notizen
+  ├── <span class="hl">Sequenzen</span> (ManagedSequence)
+  │     ├── Fachbereich, Bezeichnung, Farbe
+  │     └── <span class="hl">Blöcke</span> (SequenceBlock)
+  │           └── Wochen-Zuordnung, Thema, Lehrplanziel
+  └── <span class="hl">Sammlung</span> (CollectionItem)
+        └── Archivierte UE, Sequenzen, Konfigurationen
+</div>
+
+<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px;">
+  Unterrichtsplaner v3.70 · Gymnasium Hofwil · DUY · <a href="./" style="color: var(--accent-blue); text-decoration: none;">← Zurück zum Planer</a>
+</div>
+
+</main>
+</div>
+
+<a class="back-btn" href="./" title="Zurück zum Planer">← Zum Planer</a>
+
+<script>
+// Scroll-spy: highlight active nav link
+const links = document.querySelectorAll('.nav-link');
+const sections = [...links].map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+
+function updateActive() {
+  const scroll = document.querySelector('.wiki-main')?.scrollTop || window.scrollY;
+  let current = '';
+  for (const s of sections) {
+    if (s.offsetTop - 100 <= scroll) current = s.id;
+  }
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+
+// Listen on both main scroll and window scroll
+document.querySelector('.wiki-main')?.addEventListener('scroll', updateActive);
+window.addEventListener('scroll', updateActive);
+updateActive();
+
+// Smooth scroll for nav links
+links.forEach(l => {
+  l.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(l.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelector('.wiki-nav')?.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
