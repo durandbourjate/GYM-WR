@@ -931,7 +931,14 @@ function BatchEditTab() {
     if (!sharedCourseId) return;
     const course = COURSES.find(c => c.id === sharedCourseId);
     pushUndo();
-    const seqId = addSequence({ courseId: sharedCourseId, title: `Neue Sequenz ${course?.cls || ''}`, blocks: [{ weeks: selectedWeeks, label: '' }] });
+    // Transfer batch settings (subjectArea) to new sequence
+    const batchArea = currentValues.subjectArea as import('../types').SubjectArea | null;
+    const seqId = addSequence({
+      courseId: sharedCourseId,
+      title: `Neue Sequenz ${course?.cls || ''}`,
+      blocks: [{ weeks: selectedWeeks, label: '', ...(batchArea ? { subjectArea: batchArea } : {}) }],
+      ...(batchArea ? { subjectArea: batchArea } : {}),
+    });
     setEditingSequenceId(`${seqId}-0`);
     setSidePanelTab('sequences');
     setShowSeqMenu(false);

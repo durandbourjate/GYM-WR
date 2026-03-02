@@ -231,7 +231,7 @@ export function HelpBar() {
 
 export function MultiSelectToolbar() {
   const { multiSelection, clearMultiSelect, batchShiftDown, batchInsertBefore, weekData,
-    addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab } = usePlannerStore();
+    addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab, lessonDetails } = usePlannerStore();
   if (multiSelection.length === 0) return null;
 
   const allWeeks = weekData.map(w => w.w);
@@ -261,14 +261,23 @@ export function MultiSelectToolbar() {
     // Sort weeks chronologically
     const sortedWeeks = [...weeks].sort();
 
+    // Detect shared subjectArea across selected cells
+    const areas = new Set<string>();
+    for (const { week, courseId: cid } of parsed) {
+      const d = lessonDetails[`${week}-${cid}`];
+      if (d?.subjectArea) areas.add(d.subjectArea);
+    }
+    const sharedArea = areas.size === 1 ? [...areas][0] as import('../types').SubjectArea : undefined;
+
     // Create single block with all selected weeks
     const seqId = addSequence({
       courseId,
       title: `Neue Sequenz ${course.cls}`,
-      blocks: [{ weeks: sortedWeeks, label: '' }],
+      blocks: [{ weeks: sortedWeeks, label: '', ...(sharedArea ? { subjectArea: sharedArea } : {}) }],
+      ...(sharedArea ? { subjectArea: sharedArea } : {}),
     });
 
-    setEditingSequenceId(seqId);
+    setEditingSequenceId(`${seqId}-0`);
     setSidePanelOpen(true);
     setSidePanelTab('sequences');
     clearMultiSelect();
@@ -282,7 +291,7 @@ export function MultiSelectToolbar() {
   const singleCourse = courseIds.size === 1;
 
   return (
-    <div className="bg-indigo-950 border-b-2 border-indigo-500 px-4 py-1.5 flex items-center gap-3 text-[10px] sticky top-9 z-[55]">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-indigo-950/95 backdrop-blur border border-indigo-500 rounded-lg px-4 py-2 flex items-center gap-3 text-[10px] z-[55] shadow-xl shadow-black/40">
       <span className="font-bold text-indigo-200">{multiSelection.length} markiert</span>
       {singleCourse && (
         <button
