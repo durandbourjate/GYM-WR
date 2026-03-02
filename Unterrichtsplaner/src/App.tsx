@@ -65,7 +65,7 @@ function App() {
 
 /** The actual planner grid — separated so it re-renders on instance switch */
 function PlannerContent() {
-  const { filter, classFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, zoomLevel, panelWidth } = usePlannerStore();
+  const { filter, classFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, zoomLevel, panelWidth, plannerSettings } = usePlannerStore();
   const { courses: allCourses, weeks: hookWeeks, s2StartIndex, isLegacy } = usePlannerData();
   const curRef = useRef<HTMLTableRowElement>(null);
 
@@ -75,7 +75,8 @@ function PlannerContent() {
   useEffect(() => {
     if (weekData.length === 0) {
       let initial = hookWeeks.map((w) => ({ ...w, lessons: { ...w.lessons } }));
-      const settings = loadSettings();
+      // Apply holidays/special weeks from per-instance or global settings
+      const settings = plannerSettings ?? loadSettings();
       if (settings && (settings.holidays.length > 0 || settings.specialWeeks.length > 0)) {
         const applied = applySettingsToWeekData(initial, settings);
         initial = applied.weekData;
@@ -220,7 +221,25 @@ function PlannerContent() {
 
       <div className="flex" style={{ height: 'calc(100vh - 36px)' }}>
         <div className="overflow-auto flex-1" style={{ paddingBottom: 20, marginRight: (sidePanelOpen || sequencePanelOpen) ? panelWidth : 0 }}>
-          {zoomLevel === 2 ? (
+          {allCourses.length === 0 ? (
+            /* Empty state: no courses configured */
+            <div className="flex flex-col items-center justify-center h-full text-center px-8">
+              <div className="text-4xl mb-4">📚</div>
+              <h2 className="text-lg font-bold text-white mb-2">Noch keine Kurse konfiguriert</h2>
+              <p className="text-slate-400 text-sm mb-6 max-w-md">
+                Lege im Einstellungen-Panel deine Kurse an (Klasse, Tag, Lektionen), um das Planungsraster zu erstellen.
+              </p>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500 transition-colors cursor-pointer"
+                onClick={() => {
+                  usePlannerStore.getState().setSidePanelOpen(true);
+                  usePlannerStore.getState().setSidePanelTab('settings');
+                }}
+              >
+                ⚙️ Einstellungen öffnen
+              </button>
+            </div>
+          ) : zoomLevel === 2 ? (
             <ZoomYearView />
           ) : zoomLevel === 1 ? (
             <ZoomMultiYearView />

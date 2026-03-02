@@ -30,31 +30,41 @@ export function usePlannerData() {
   const activeMeta = useInstanceStore(s => s.getActive());
   const storeSettings = usePlannerStore(s => s.plannerSettings);
   
-  // Fall back to global settings for legacy planners
+  // Fall back to global settings for legacy planners only
   const globalSettings = useMemo(() => loadSettings(), []);
-  const settings = storeSettings ?? globalSettings;
+  
+  // Determine if this is a legacy planner (no store settings + default range or no instance)
+  const isLegacyPlanner = useMemo(() => {
+    if (!activeMeta) return true;
+    if (storeSettings) return false; // has per-instance settings → not legacy
+    const isDefaultRange = activeMeta.startWeek === 33 && activeMeta.startYear === 2025
+      && activeMeta.endWeek === 27 && activeMeta.endYear === 2026;
+    return isDefaultRange && !storeSettings && globalSettings !== null;
+  }, [activeMeta, storeSettings, globalSettings]);
+
+  const settings = storeSettings ?? (isLegacyPlanner ? globalSettings : null);
   const hasCustomCourses = settings !== null && settings.courses.length > 0;
 
   // === Courses ===
+  // Legacy planners: fall back to hardcoded COURSES
+  // New planners without settings: empty (no courses until configured)
   const courses: Course[] = useMemo(() => {
     if (hasCustomCourses && settings) {
       return configToCourses(settings.courses);
     }
-    return COURSES;
-  }, [settings, hasCustomCourses]);
+    if (isLegacyPlanner) return COURSES;
+    return []; // new planner, no courses configured yet
+  }, [settings, hasCustomCourses, isLegacyPlanner]);
 
   // === Weeks ===
-  const { weeks, s2StartIndex, isLegacy } = useMemo(() => {
+  const { weeks, s2StartIndex } = useMemo(() => {
     if (!activeMeta) {
-      return { weeks: WEEKS, s2StartIndex: settings?.semesterBreak ?? S2_START_INDEX, isLegacy: true };
+      return { weeks: WEEKS, s2StartIndex: settings?.semesterBreak ?? S2_START_INDEX };
     }
 
-    // Legacy planner detection: default SJ 25/26 range + no custom courses + no store settings
-    const isDefaultRange = activeMeta.startWeek === 33 && activeMeta.startYear === 2025
-      && activeMeta.endWeek === 27 && activeMeta.endYear === 2026;
-    
-    if (isDefaultRange && WEEKS.length > 0 && !hasCustomCourses && !storeSettings) {
-      return { weeks: WEEKS, s2StartIndex: settings?.semesterBreak ?? S2_START_INDEX, isLegacy: true };
+    if (isLegacyPlanner && WEEKS.length > 0) {
+      // Legacy planner — use static WEEKS with hardcoded lesson data
+      return { weeks: WEEKS, s2StartIndex: settings?.semesterBreak ?? S2_START_INDEX };
     }
 
     // Dynamic weeks from instance metadata
@@ -69,8 +79,8 @@ export function usePlannerData() {
     const breakIdx = weekIds.indexOf(breakWeek);
     const s2Idx = breakIdx >= 0 ? breakIdx : Math.floor(weekIds.length / 2);
 
-    return { weeks: dynamicWeeks, s2StartIndex: s2Idx, isLegacy: false };
-  }, [activeMeta, settings, hasCustomCourses, storeSettings]);
+    return { weeks: dynamicWeeks, s2StartIndex: s2Idx };
+  }, [activeMeta, settings, isLegacyPlanner]);
 
   const currentWeek = useMemo(() => getCurrentISOWeek(), []);
 
@@ -86,5 +96,5 @@ export function usePlannerData() {
     };
   }, [courses, hasCustomCourses]);
 
-  return { courses, weeks, s2StartIndex, currentWeek, getLinkedCourseIds, hasCustomCourses, isLegacy };
+  return { courses, weeks, s2StartIndex, currentWeek, getLinkedCourseIds, hasCustomCourses, isLegacy: isLegacyPlanner };
 }

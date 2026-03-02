@@ -3,6 +3,7 @@
  */
 import { useState, useRef } from 'react';
 import { useInstanceStore } from '../store/instanceStore';
+import { usePlannerStore, saveToInstance } from '../store/plannerStore';
 
 interface Props {
   onImport: (json: string) => void;
@@ -12,6 +13,7 @@ export function PlannerTabs({ onImport }: Props) {
   const { instances, activeId, setActive, createInstance, deleteInstance, renameInstance, exportInstance } = useInstanceStore();
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
+  const [templateId, setTemplateId] = useState<string | ''>('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [contextMenu, setContextMenu] = useState<{ id: string; x: number; y: number } | null>(null);
@@ -21,16 +23,39 @@ export function PlannerTabs({ onImport }: Props) {
     if (!newName.trim()) return;
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
-    // If after July, school year starts this year; otherwise last year
     const startYear = currentMonth >= 6 ? currentYear : currentYear - 1;
-    createInstance(newName.trim(), {
+
+    // Save current instance before switching
+    if (activeId) saveToInstance(activeId);
+
+    const newId = createInstance(newName.trim(), {
       startWeek: 33,
       startYear,
       endWeek: 27,
       endYear: startYear + 1,
       semesterBreakWeek: 7,
     });
+
+    // Copy settings (courses, holidays, special weeks) from template planner
+    if (templateId && newId) {
+      // We need to load the template's plannerSettings
+      const templateData = localStorage.getItem(`planner-data-${templateId}`);
+      if (templateData) {
+        try {
+          const parsed = JSON.parse(templateData);
+          const data = parsed.state || parsed;
+          if (data.plannerSettings) {
+            // Apply template settings to new instance after a tick (let switchInstance happen first)
+            setTimeout(() => {
+              usePlannerStore.getState().setPlannerSettings(data.plannerSettings);
+            }, 50);
+          }
+        } catch { /* ignore parse errors */ }
+      }
+    }
+
     setNewName('');
+    setTemplateId('');
     setShowNew(false);
   };
 
@@ -133,16 +158,29 @@ export function PlannerTabs({ onImport }: Props) {
         {showNew ? (
           <div className="flex items-center gap-1">
             <input
-              className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm outline-none w-40"
+              className="bg-slate-800 border border-slate-600 rounded px-2 py-1 text-white text-sm outline-none w-32"
               placeholder="Name des Planers..."
               value={newName}
               onChange={e => setNewName(e.target.value)}
               onKeyDown={e => {
                 if (e.key === 'Enter') handleCreate();
-                if (e.key === 'Escape') { setShowNew(false); setNewName(''); }
+                if (e.key === 'Escape') { setShowNew(false); setNewName(''); setTemplateId(''); }
               }}
               autoFocus
             />
+            {instances.length > 0 && (
+              <select
+                className="bg-slate-800 border border-slate-600 rounded px-1 py-1 text-slate-400 text-[10px] outline-none cursor-pointer"
+                value={templateId}
+                onChange={e => setTemplateId(e.target.value)}
+                title="Kurse & Ferien übernehmen von..."
+              >
+                <option value="">Leer starten</option>
+                {instances.map(inst => (
+                  <option key={inst.id} value={inst.id}>Kurse von: {inst.name}</option>
+                ))}
+              </select>
+            )}
             <button
               className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-500"
               onClick={handleCreate}
@@ -151,7 +189,7 @@ export function PlannerTabs({ onImport }: Props) {
             </button>
             <button
               className="px-2 py-1 text-slate-400 hover:text-white text-xs"
-              onClick={() => { setShowNew(false); setNewName(''); }}
+              onClick={() => { setShowNew(false); setNewName(''); setTemplateId(''); }}
             >
               ✕
             </button>
