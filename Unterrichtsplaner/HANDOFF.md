@@ -1,19 +1,13 @@
 # Unterrichtsplaner – Handoff v3.28
 
-## Status: ✅ Deployed (v3.47)
-- **Commit:** f870e07
+## Status: ✅ Deployed (v3.48)
+- **Commit:** 32dd36d
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
 ## Nächster Schritt (in neuem Chat fortsetzen)
 
-**UX-Fix: "Neuer Block" Default-Label umbenennen.** Beim Erstellen einer neuen Sequenz erhält der erste Block das Label `'Neuer Block'` — das ist nichtssagend. Betroffene Stellen (4×):
-- `Toolbar.tsx:440` — Kontextmenü "Sequenz erstellen"
-- `WeekRows.tsx:234` — Drag-Erstellung
-- `DetailPanel.tsx:432` — "Zu Sequenz hinzufügen"-Button
-- `DetailPanel.tsx:896` — Batch-Edit Sequenz-Erstellung
-
-`block.label` wird als Titel in FlatBlockCard angezeigt (`SequencePanel.tsx:181`) und im Confirm-Dialog (`SequencePanel.tsx:390`). Vorschlag: Kurs-Kürzel als Default (z.B. `course.cls + ' ' + course.typ`) oder leerer String mit Placeholder.
+**Konfigurierbare Kategorien Phase 3:** Settings-UI zum Erstellen/Bearbeiten eigener Kategorien (Fachbereiche) pro Planer-Instanz. Verbleibende hardcoded Stellen: Record-Initialisierer in ZoomMultiYearView (Statistik-Zähler), ExcelImport (typeLabels), autoMap in DetailPanel. Ziel: Andere Lehrpersonen können mit eigenen Fächern (nicht nur WR) arbeiten.
 
 ## Architektur
 - **Stack:** React + TypeScript + Vite + Zustand + PWA
@@ -106,6 +100,8 @@
 - v3.45: **Schuljahr-Presets + Ferien-Automatik + Zeitraum-Konfiguration** — (1) Neue Datei `data/holidayPresets.ts` mit Ferien-Presets für Gym Agglomeration Bern (SJ 2025/26, 2026/27, 2027/28). Enthält Herbst-, Winter-, Sport-, Frühlingsferien als KW-Bereiche. (2) **Neuer-Planer-Dialog:** Schuljahr-Dropdown (Preset-Auswahl), Ferien-Checkbox (🏖), Template-Dropdown (Kurse von bestehendem Planer). Start-/Endwoche und Semesterbruch werden aus Preset übernommen. (3) **WelcomeScreen:** Gleiche Optionen bei Ersteinrichtung. Auto-Detect des passenden Presets basierend auf aktuellem Datum. (4) WeekData-Init reagiert auf `plannerSettings`-Änderungen (Template-Ferien werden nachträglich angewendet).
 
 - v3.46: **Legacy-Auto-Migration** — Kritischer Bug behoben: Bestehende Nutzer mit Daten in `unterrichtsplaner-storage` aber ohne Instanzen im `instanceStore` sahen den WelcomeScreen statt ihren Planer. Fix: `onRehydrateStorage`-Callback im instanceStore prüft nach Hydration, ob Legacy-Daten existieren und erstellt automatisch eine Instanz "SJ 25/26" mit den bestehenden Daten.
+
+- v3.48: **Block-Label UX** — (1) Default-Label bei neuer Sequenz von `'Neuer Block'` auf leeren String geändert (4 Stellen: Toolbar, WeekRows, DetailPanel ×2). (2) FlatBlockCard-Header zeigt Fallback-Kette: `block.label || block.topicMain || "Block N"` (Placeholder in grau/kursiv). (3) Confirm-Dialog nutzt gleichen Fallback. (4) Neues editierbares "Bezeichnung"-Feld im Felder-Bereich der FlatBlockCard (vor Oberthema), mit dynamischem Placeholder (Oberthema oder "Block N").
 
 - v3.47: **Flexible Kategorien Phase 1+2 — Zentralisierung + Zoom-Views** — (1) Neue Datei `data/categories.ts`: `CategoryDefinition`-Interface, `WR_CATEGORIES` als Default, `subjectConfigsToCategories()` für benutzerdefinierte Fachbereiche, `generateColorVariants()` für automatische bg/fg/border aus Primärfarbe, `getCategoryColors()`, `categoriesToColorMap()`, `inferSubjectAreaFromLessonType()`, `getBlockColors()`, `WR_BLOCK_COLORS`. (2) `usePlannerData()` gibt `categories: CategoryDefinition[]` zurück (aus plannerSettings oder WR-Default). INTERDISZ wird automatisch ergänzt. (3) **Phase 1:** Lokale `SUBJECT_AREAS`-Konstanten entfernt aus: DetailPanel (DetailsTab + BatchEditTab), SequencePanel (FlatBlockCard + Hauptkomponente), CollectionPanel (Filter-Buttons). (4) **Phase 2:** `colors.ts` SUBJECT_AREA_COLORS generiert aus WR_CATEGORIES. Toolbar Legend dynamisch aus categories. ZoomYearView/ZoomBlockView: lokale BLOCK_COLORS/inferSubjectArea entfernt, importiert aus categories.ts. ZoomMultiYearView: SUBJECT_COLORS generiert, MAIN_AREAS-Konstante. WeekRows: SUBJECT_AREA_COLORS_PREVIEW generiert. (5) **Verbleibend (Phase 3):** Record-Initialisierer in ZoomMultiYearView, ExcelImport typeLabels, autoMap in DetailPanel — diese sind WR-spezifisch und werden erst bei UI für eigene Kategorien migriert.
 
