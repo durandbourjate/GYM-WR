@@ -13,7 +13,7 @@ import { getGymStufe } from '../utils/gradeRequirements';
 import { IW_PRESET_2526 } from '../data/iwPresets';
 import { useInstanceStore } from '../store/instanceStore';
 import { useGCalStore } from '../store/gcalStore';
-import { loginWithGoogle, logout as gcalLogout, fetchCalendarList } from '../services/gcal';
+import { loginWithGoogle, logout as gcalLogout, fetchCalendarList, syncPlannerToCalendar, buildWeekYearMap, type SyncProgress } from '../services/gcal';
 
 // === Duration helper for courses ===
 const COURSE_DURATION_PRESETS = [
@@ -677,6 +677,9 @@ function GCalSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editClientId, setEditClientId] = useState(clientId);
+  const [syncing, setSyncing] = useState(false);
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
+  const [syncResult, setSyncResult] = useState<SyncProgress | null>(null);
 
   const handleLogin = useCallback(async () => {
     if (!editClientId.trim()) { setError('Client ID erforderlich'); return; }
@@ -710,6 +713,51 @@ function GCalSection() {
     }
     setLoading(false);
   }, [setCalendars]);
+
+  const handleSync = useCallback(async () => {
+    if (!writeCalendarId) { setError('Kein Schreib-Kalender ausgewählt'); return; }
+    const activeMeta = useInstanceStore.getState().getActive();
+    if (!activeMeta) { setError('Kein aktiver Planer'); return; }
+    const store = usePlannerStore.getState();
+    const weekData = store.weekData;
+    const settings = store.plannerSettings;
+    if (!settings || !weekData.length) { setError('Keine Planerdaten vorhanden'); return; }
+
+    // Build courses from settings (same logic as usePlannerData)
+    const courses: import('../types').Course[] = settings.courses.map((cc, i) => ({
+      id: cc.id || `c${i}`,
+      col: i,
+      cls: cc.cls,
+      typ: cc.typ as import('../types').CourseType,
+      day: cc.day as import('../types').DayOfWeek,
+      from: cc.from,
+      to: cc.to,
+      les: cc.les as 1 | 2 | 3,
+      hk: cc.hk ?? false,
+      semesters: cc.semesters as import('../types').Semester[],
+      note: cc.note,
+    }));
+
+    const weekYearMap = buildWeekYearMap(
+      activeMeta.startWeek, activeMeta.startYear,
+      activeMeta.endWeek, activeMeta.endYear,
+    );
+
+    setSyncing(true); setSyncProgress(null); setSyncResult(null); setError(null);
+    try {
+      const result = await syncPlannerToCalendar(
+        writeCalendarId, weekData, courses, weekYearMap,
+        (p) => setSyncProgress({ ...p }),
+      );
+      setSyncResult(result);
+      if (result.errors.length > 0) {
+        setError(`${result.errors.length} Fehler beim Sync`);
+      }
+    } catch (e: any) {
+      setError(e.message || 'Sync fehlgeschlagen');
+    }
+    setSyncing(false);
+  }, [writeCalendarId]);
 
   return (
     <Section title="📅 Google Calendar">
@@ -809,6 +857,59 @@ function GCalSection() {
             className="w-full py-1.5 rounded text-[9px] bg-slate-700 hover:bg-slate-600 text-gray-300 cursor-pointer transition-all">
             📋 Kalender laden
           </button>
+        )}
+
+        {/* Sync section (v3.61) */}
+        {isAuth && writeCalendarId && (
+          <div className="space-y-1.5 pt-1.5 border-t border-slate-700">
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-semibold text-gray-300">Planer → Kalender Sync</span>
+            </div>
+            <p className="text-[7px] text-gray-500">
+              Erstellt/aktualisiert Google Calendar Events für alle Lektionen. Events werden mit einem <code>planer-managed</code>-Tag markiert.
+            </p>
+            <button onClick={handleSync} disabled={syncing}
+              className="w-full py-1.5 rounded text-[9px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              {syncing ? '⏳ Synchronisiere…' : '🔄 Jetzt synchronisieren'}
+            </button>
+
+            {/* Progress bar */}
+            {syncing && syncProgress && (
+              <div className="space-y-0.5">
+                <div className="w-full bg-slate-700 rounded-full h-1.5">
+                  <div className="bg-blue-500 h-1.5 rounded-full transition-all"
+                    style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total * 100) : 0}%` }} />
+                </div>
+                <p className="text-[7px] text-gray-500">
+                  {syncProgress.done} / {syncProgress.total} — {syncProgress.created} erstellt, {syncProgress.updated} aktualisiert, {syncProgress.deleted} gelöscht
+                </p>
+              </div>
+            )}
+
+            {/* Result */}
+            {syncResult && !syncing && (
+              <div className={`text-[8px] px-2 py-1 rounded ${syncResult.errors.length > 0 ? 'bg-amber-900/20 text-amber-300' : 'bg-green-900/20 text-green-300'}`}>
+                ✅ Sync abgeschlossen: {syncResult.created} erstellt, {syncResult.updated} aktualisiert, {syncResult.deleted} gelöscht
+                {syncResult.errors.length > 0 && (
+                  <div className="mt-1 text-[7px] text-red-400">
+                    {syncResult.errors.slice(0, 5).map((e, i) => <div key={i}>• {e}</div>)}
+                    {syncResult.errors.length > 5 && <div>… und {syncResult.errors.length - 5} weitere</div>}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Clear event mapping */}
+            <button onClick={() => {
+              if (confirm('Event-Mapping zurücksetzen? Beim nächsten Sync werden alle Events neu erstellt (bestehende Events im Kalender werden nicht gelöscht).')) {
+                useGCalStore.getState().clearEventMap();
+                setSyncResult(null);
+              }
+            }}
+              className="text-[7px] text-gray-500 hover:text-gray-300 cursor-pointer">
+              🗑 Event-Mapping zurücksetzen
+            </button>
+          </div>
         )}
       </div>
     </Section>

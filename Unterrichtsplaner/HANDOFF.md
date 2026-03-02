@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.60
+# Unterrichtsplaner – Handoff v3.61
 
-## Status: ✅ Deployed (v3.60)
+## Status: ✅ Deployed (v3.61)
 - **Commit:** (pending)
 - **Datum:** 2026-03-02
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
@@ -141,10 +141,10 @@ Aufträge in empfohlener Reihenfolge. Jeden Auftrag einzeln umsetzen, dann commi
 - Neuer Abschnitt "📅 Google Calendar" im SettingsPanel
 - Token-Persistierung im localStorage
 
-**Phase 2 (v3.61): Planer→Kalender Sync**
+**✅ Phase 2 (v3.61): Planer→Kalender Sync**
 - Lektionen als Calendar-Events erstellen (`planer-managed` Tag)
 - Sync bei Änderungen (Create/Update/Delete)
-- eventId-Mapping im plannerStore
+- eventId-Mapping im gcalStore
 
 **Phase 3 (v3.62): Kalender→Planer Import**
 - Events aus Lese-Kalendern lesen
@@ -161,6 +161,8 @@ Aufträge in empfohlener Reihenfolge. Jeden Auftrag einzeln umsetzen, dann commi
 
 ## Erledigte Aufträge
 
+### ✅ v3.61 — Google Calendar Phase 2: Planer→Kalender Sync
+### ✅ v3.60 — Google Calendar Phase 1: OAuth + Kalender-Auswahl
 ### ✅ v3.59 — Doppelklick auf Spaltentitel als Kursfilter
 ### ✅ v3.58 — Drag&Drop Verschieben von Lektionen innerhalb eines Kurses
 ### ✅ v3.57 — Warnung bei gestörter 1L/2L Rhythmisierung nach Push

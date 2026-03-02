@@ -22,6 +22,11 @@ interface GCalState {
   toggleReadCalendar: (id: string) => void;
   calendars: GCalCalendar[];
   setCalendars: (cals: GCalCalendar[]) => void;
+  // Event ID mapping: "weekKey-col" → Google Calendar eventId
+  eventMap: Record<string, string>;
+  setEventMapping: (key: string, eventId: string) => void;
+  removeEventMapping: (key: string) => void;
+  clearEventMap: () => void;
 }
 
 export const useGCalStore = create<GCalState>()(
@@ -54,6 +59,15 @@ export const useGCalStore = create<GCalState>()(
       })),
       calendars: [],
       setCalendars: (cals) => set({ calendars: cals }),
+      eventMap: {},
+      setEventMapping: (key, eventId) => set((s) => ({
+        eventMap: { ...s.eventMap, [key]: eventId },
+      })),
+      removeEventMapping: (key) => set((s) => {
+        const { [key]: _, ...rest } = s.eventMap;
+        return { eventMap: rest };
+      }),
+      clearEventMap: () => set({ eventMap: {} }),
     }),
     { name: 'gcal-config' }
   )
