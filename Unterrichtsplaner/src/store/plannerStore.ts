@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { FilterType, Week, LessonEntry, Course, LessonDetail, ManagedSequence, SequenceBlock, HKGroup, TaFPhase, CollectionItem, CollectionUnit } from '../types';
 import { SEQUENCES as STATIC_SEQUENCES } from '../data/sequences';
 import { COURSES, getLinkedCourseIds } from '../data/courses';
+import { INITIAL_LESSON_DETAILS } from '../data/initialLessonDetails';
 
 interface Selection {
   week: string;
@@ -283,7 +284,7 @@ export const usePlannerStore = create<PlannerState>()(
   setInsertDialog: (d) => set({ insertDialog: d }),
 
   // Lesson Details
-  lessonDetails: {},
+  lessonDetails: { ...INITIAL_LESSON_DETAILS },
   updateLessonDetail: (weekW, col, detail) =>
     set((state) => {
       const key = `${weekW}-${col}`;
@@ -1097,7 +1098,7 @@ export const usePlannerStore = create<PlannerState>()(
   }),
     {
       name: 'unterrichtsplaner-storage',
-      version: 2,
+      version: 3,
       partialize: (state) => ({
         weekData: state.weekData,
         lessonDetails: state.lessonDetails,
@@ -1110,8 +1111,21 @@ export const usePlannerStore = create<PlannerState>()(
         collection: state.collection,
       }),
       migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>;
         if (version < 2) {
-          return { ...(persisted as Record<string, unknown>), sequences: [], sequencesMigrated: false, sequenceTitlesFixed: false };
+          return { ...state, sequences: [], sequencesMigrated: false, sequenceTitlesFixed: false };
+        }
+        if (version < 3) {
+          // Merge initial lesson details (from Excel) without overwriting user edits
+          const existing = (state.lessonDetails || {}) as Record<string, unknown>;
+          const merged = { ...INITIAL_LESSON_DETAILS };
+          // User edits take precedence
+          for (const [key, val] of Object.entries(existing)) {
+            if (val && typeof val === 'object') {
+              merged[key] = { ...(merged[key] || {}), ...val } as typeof merged[string];
+            }
+          }
+          return { ...state, lessonDetails: merged };
         }
         return persisted;
       },
