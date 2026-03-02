@@ -213,6 +213,16 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
           {/* Block-level fields */}
           {showFields && (
             <div className="space-y-1.5 p-1.5 bg-slate-800/30 rounded">
+              {/* Hierarchy indicator */}
+              <div className="flex items-center gap-1 text-[7px] text-gray-500 pb-0.5 border-b border-slate-700/50">
+                <span className="text-amber-500/60">Reihe</span>
+                <span>›</span>
+                <span className="text-blue-400 font-medium">Sequenz</span>
+                <span>›</span>
+                <span className="text-gray-400">Block</span>
+                <span>›</span>
+                <span className="text-gray-500">Lektion</span>
+              </div>
               <div className="flex gap-1 flex-wrap">
                 <span className="text-[8px] text-gray-400 w-full">Fachbereich:</span>
                 {categories.map((s) => (
@@ -241,6 +251,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 }}
                   placeholder={block.topicMain || `Block ${fb.blockIndex + 1}`}
                   className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400 placeholder:text-gray-500 placeholder:italic" />
+                <p className="text-[7px] text-gray-500 mt-0.5">Interner Name der Sequenz (z.B. für Sammlung und Navigation). Wird aus Oberthema übernommen falls leer.</p>
               </div>
               <div>
                 <label className="text-[8px] text-gray-400">Oberthema</label>
@@ -327,9 +338,9 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 📂 Reihe: {parentSeq.title}
                 <span className="text-gray-400 font-normal ml-1">({parentSeq.blocks.length} Sequenz{parentSeq.blocks.length !== 1 ? 'en' : ''})</span>
               </div>
-              <div className="text-[7px] text-gray-500 mb-1.5">
-                Mehrere Sequenzen mit dem gleichen Oberthema bilden eine Reihe.
-                Reihen-Einstellungen gelten für alle Sequenzen darin.
+              <div className="text-[7px] text-gray-500 mb-1.5 space-y-0.5">
+                <p>Reihe = übergreifende Einheit mehrerer Sequenzen (z.B. ein ganzes Semester oder Themenblock). Optional.</p>
+                <p>Reihen-Einstellungen (Fachbereich, SOL) gelten für alle Sequenzen darin.</p>
               </div>
               <div>
                 <label className="text-[8px] text-gray-400">Reihen-Titel</label>
