@@ -593,21 +593,35 @@ function DetailsTab() {
 
   const handleCategoryChange = useCallback((cat: BlockCategory | undefined) => {
     if (!selection || !c) return;
-    updateLessonDetail(selection.week, c.col, {
+    const patch: Partial<LessonDetail> = {
       blockCategory: cat || 'LESSON',
       blockSubtype: undefined,
       blockType: undefined, // clear legacy
-    });
-  }, [selection?.week, c?.col, updateLessonDetail]);
+    };
+    // Auto-badge: set "P" badge when switching to ASSESSMENT (if no badges yet)
+    if (cat === 'ASSESSMENT' && !(detail.badges?.length)) {
+      patch.badges = [{ label: 'P', color: '#ef4444' }];
+    }
+    // Remove auto-badge when switching away from ASSESSMENT
+    if (cat !== 'ASSESSMENT' && detail.badges?.length === 1 && detail.badges[0].label === 'P' && detail.badges[0].color === '#ef4444') {
+      patch.badges = undefined;
+    }
+    updateLessonDetail(selection.week, c.col, patch);
+  }, [selection?.week, c?.col, updateLessonDetail, detail.badges]);
 
   const handleSubtypeChange = useCallback((st: string | undefined) => {
     if (!selection || !c) return;
-    updateLessonDetail(selection.week, c.col, {
+    const patch: Partial<LessonDetail> = {
       blockSubtype: st,
       blockCategory: effectiveCategory || 'LESSON',
       blockType: undefined, // clear legacy
-    });
-  }, [selection?.week, c?.col, updateLessonDetail, effectiveCategory]);
+    };
+    // Auto-badge: set "P" badge for written exams if no badges yet
+    if (effectiveCategory === 'ASSESSMENT' && st === 'EXAM' && !(detail.badges?.length)) {
+      patch.badges = [{ label: 'P', color: '#ef4444' }];
+    }
+    updateLessonDetail(selection.week, c.col, patch);
+  }, [selection?.week, c?.col, updateLessonDetail, effectiveCategory, detail.badges]);
 
   // Auto-detect subjectArea from LessonType (unambiguous types only)
   useEffect(() => {
