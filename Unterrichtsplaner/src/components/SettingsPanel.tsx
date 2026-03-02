@@ -559,6 +559,8 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
 
 // === Holidays Editor (mit Tagesauswahl für partielle Wochen) ===
 function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onChange: (h: HolidayConfig[]) => void }) {
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+
   const addHoliday = () => {
     onChange([...holidays, { id: generateId(), label: '', startWeek: '', endWeek: '' }]);
   };
@@ -571,10 +573,22 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
     onChange(holidays.filter(h => h.id !== id));
   };
 
+  const toggleExpanded = (id: string) => {
+    setExpandedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
   return (
     <div className="space-y-1.5">
-      <p className="text-[8px] text-gray-400">Ferienperioden als KW-Bereiche. Standard = ganze Wochen. Für Einzeltage (z.B. Auffahrt) die betroffenen Tage wählen.</p>
-      {holidays.map(h => (
+      <p className="text-[8px] text-gray-400">Ferienperioden als KW-Bereiche. Tagesauswahl erscheint automatisch bei Einzelwochen (z.B. Auffahrt).</p>
+      {holidays.map(h => {
+        const isSingleWeek = h.startWeek && h.endWeek && h.startWeek === h.endWeek;
+        const hasPartialDays = h.days && h.days.length < 5;
+        const showDays = isSingleWeek || hasPartialDays || expandedDays.has(h.id);
+        return (
         <div key={h.id} className="bg-slate-800 rounded p-2 space-y-1.5">
           <div className="flex gap-1 items-center">
             <SmallInput value={h.label} onChange={(v) => update(h.id, { label: v })} placeholder="Name (z.B. Herbstferien)" className="flex-1" />
@@ -582,9 +596,17 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
             <SmallInput value={h.startWeek} onChange={(v) => update(h.id, { startWeek: v })} placeholder="von" className="w-10" />
             <span className="text-[8px] text-gray-400">–</span>
             <SmallInput value={h.endWeek} onChange={(v) => update(h.id, { endWeek: v })} placeholder="bis" className="w-10" />
+            {!isSingleWeek && !hasPartialDays && (
+              <button onClick={() => toggleExpanded(h.id)}
+                className="text-[7px] text-gray-500 cursor-pointer hover:text-gray-300"
+                title="Tagesauswahl anzeigen">
+                {expandedDays.has(h.id) ? '▾' : '▸'}
+              </button>
+            )}
             <button onClick={() => remove(h.id)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
           </div>
-          {/* Day selector for partial holidays */}
+          {/* Day selector — auto-shown for single weeks, toggled for multi-week */}
+          {showDays && (
           <div className="flex items-center gap-1">
             <span className="text-[7px] text-gray-400">Tage:</span>
             {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((day, di) => {
@@ -609,8 +631,10 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
                 className="text-[7px] text-gray-500 cursor-pointer hover:text-gray-300 ml-1">Ganze Woche</button>
             )}
           </div>
+          )}
         </div>
-      ))}
+        );
+      })}
       <button onClick={addHoliday}
         className="w-full py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
         + Ferienperiode hinzufügen
@@ -619,41 +643,7 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
   );
 }
 
-// === Re-apply Settings to Weeks (rarely needed) ===
-function ReapplyButton({ settings }: { settings: PlannerSettings }) {
-  const [result, setResult] = useState<{ holidays: number; specials: number } | null>(null);
-
-  const applyToWeeks = () => {
-    const store = usePlannerStore.getState();
-    const applied = applySettingsToWeekData(store.weekData, settings);
-    store.pushUndo();
-    store.setWeekData(applied.weekData);
-    setResult({ holidays: applied.holidayWeeks, specials: applied.specialWeeks });
-    setTimeout(() => setResult(null), 4000);
-  };
-
-  const totalEntries = settings.holidays.length + settings.specialWeeks.length;
-
-  return (
-    <div className="space-y-1">
-      {result && (
-        <div className="text-[8px] p-1.5 rounded bg-green-900/30 text-green-300">
-          ✅ {result.holidays} Ferienwochen und {result.specials} Sonderwochen eingetragen. Undo verfügbar.
-        </div>
-      )}
-      <button onClick={() => {
-        if (totalEntries === 0) return;
-        if (confirm(`${totalEntries} Einträge (Ferien + Sonderwochen) erneut in die Planerdaten übernehmen? (Undo möglich)`)) {
-          applyToWeeks();
-        }
-      }}
-        className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer"
-        disabled={totalEntries === 0}>
-        🔄 Ferien & Sonderwochen erneut eintragen
-      </button>
-    </div>
-  );
-}
+// ReapplyButton removed — Auto-Save with 400ms debounce makes manual re-apply unnecessary
 
 // === Settings Collection Picker Modal ===
 function SettingsCollectionPicker({ onLoad, onClose }: { onLoad: (snapshot: string) => void; onClose: () => void }) {
