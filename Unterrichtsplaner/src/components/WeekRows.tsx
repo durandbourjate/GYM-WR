@@ -34,9 +34,8 @@ function InlineEdit({ value, onSave, onCancel }: { value: string; onSave: (v: st
 }
 
 /* Hover preview popover — enhanced v3.23 */
-const SUBJECT_AREA_COLORS_PREVIEW: Record<string, string> = {
-  BWL: '#3b82f6', VWL: '#f97316', RECHT: '#22c55e', IN: '#6b7280', INTERDISZ: '#a855f7',
-};
+import { WR_CATEGORIES } from '../data/categories';
+const SUBJECT_AREA_COLORS_PREVIEW: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
 
 function HoverPreview({ week, col, courses, courseIndex, totalCourses }: { week: string; col: number; courses: Course[]; courseIndex: number; totalCourses: number }) {
   const { lessonDetails, weekData, sequences } = usePlannerStore();

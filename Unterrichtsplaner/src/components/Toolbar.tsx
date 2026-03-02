@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
+import { usePlannerData } from '../hooks/usePlannerData';
 import { StatsPanel } from './StatsPanel';
 import { TaFPanel } from './TaFPanel';
 import { COURSES } from '../data/courses';
@@ -486,22 +487,23 @@ export function MultiSelectToolbar() {
 }
 
 export function Legend() {
+  const { categories } = usePlannerData();
+  const fixedItems: [string, string][] = [
+    ['Prüfung', '#fee2e2'],
+    ['Event', '#e5e7eb'],
+    ['Ferien', '#ffffff'],
+  ];
   return (
     <div className="px-4 py-1 flex gap-2.5 flex-wrap text-[8px] text-gray-400 border-b border-slate-900/60">
-      {[
-        ['BWL', '#dbeafe'],
-        ['VWL', '#fff7ed'],
-        ['Recht', '#dcfce7'],
-        ['IN', '#f3f4f6'],
-        ['Prüfung', '#fee2e2'],
-        ['Event', '#e5e7eb'],
-        ['Ferien', '#ffffff'],
-      ].map(([label, bg]) => (
+      {categories.map(cat => (
+        <span key={cat.key} className="flex items-center gap-0.5">
+          <span className="w-2 h-2 rounded-sm border border-black/10" style={{ background: cat.bg }} />
+          {cat.label}
+        </span>
+      ))}
+      {fixedItems.map(([label, bg]) => (
         <span key={label} className="flex items-center gap-0.5">
-          <span
-            className="w-2 h-2 rounded-sm border border-black/10"
-            style={{ background: bg }}
-          />
+          <span className="w-2 h-2 rounded-sm border border-black/10" style={{ background: bg }} />
           {label}
         </span>
       ))}

@@ -11,13 +11,10 @@ export const LESSON_COLORS: Record<LessonType, { bg: string; fg: string; border:
 };
 
 // SubjectArea-based colors matching LearningView: VWL=orange, BWL=blau, Recht=grün, IN=grau
-export const SUBJECT_AREA_COLORS: Record<string, { bg: string; fg: string; border: string }> = {
-  VWL:      { bg: '#fff7ed', fg: '#9a3412', border: '#fdba74' },
-  BWL:      { bg: '#dbeafe', fg: '#1e40af', border: '#93c5fd' },
-  RECHT:    { bg: '#dcfce7', fg: '#166534', border: '#86efac' },
-  IN:       { bg: '#f3f4f6', fg: '#4b5563', border: '#d1d5db' },
-  INTERDISZ:{ bg: '#f5f3ff', fg: '#5b21b6', border: '#c4b5fd' },
-};
+// Legacy export — still used by WeekRows, HoverPreview etc. for static color lookup.
+// For dynamic (per-planner) colors, use usePlannerData().categories + getCategoryColors().
+import { WR_CATEGORIES, categoriesToColorMap } from '../data/categories';
+export const SUBJECT_AREA_COLORS: Record<string, { bg: string; fg: string; border: string }> = categoriesToColorMap(WR_CATEGORIES);
 
 export const DAY_COLORS: Record<string, string> = {
   Mo: '#818cf8', Di: '#a78bfa', Mi: '#c084fc', Do: '#e879f9', Fr: '#f472b6',

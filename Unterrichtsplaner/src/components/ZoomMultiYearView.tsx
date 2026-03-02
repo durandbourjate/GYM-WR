@@ -3,6 +3,7 @@ import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { COURSES } from '../data/courses';
 import { CURRICULUM_GOALS, type CurriculumGoal } from '../data/curriculumGoals';
+import { WR_CATEGORIES } from '../data/categories';
 import type { SubjectArea, ManagedSequence } from '../types';
 
 /**
@@ -16,13 +17,18 @@ import type { SubjectArea, ManagedSequence } from '../types';
  * - "actual" = Ist-Zustand (what IS planned in the current planner data)
  */
 
-const SUBJECT_COLORS: Record<SubjectArea, { bg: string; text: string; border: string; light: string }> = {
-  BWL: { bg: '#1e3a5f', text: '#93c5fd', border: '#3b82f6', light: '#dbeafe' },
-  VWL: { bg: '#3b1f0b', text: '#fdba74', border: '#f97316', light: '#ffedd5' },
-  RECHT: { bg: '#052e16', text: '#86efac', border: '#22c55e', light: '#dcfce7' },
-  IN: { bg: '#1f2937', text: '#9ca3af', border: '#6b7280', light: '#f3f4f6' },
-  INTERDISZ: { bg: '#2e1065', text: '#c4b5fd', border: '#a855f7', light: '#ede9fe' },
-};
+// Generated from WR_CATEGORIES — dark-mode variants for Zoom 1
+const SUBJECT_COLORS: Record<string, { bg: string; text: string; border: string; light: string }> = Object.fromEntries(
+  WR_CATEGORIES.map(cat => [cat.key, {
+    bg: cat.key === 'BWL' ? '#1e3a5f' : cat.key === 'VWL' ? '#3b1f0b' : cat.key === 'RECHT' ? '#052e16' : cat.key === 'IN' ? '#1f2937' : '#2e1065',
+    text: cat.border,   // use border color as text in dark mode
+    border: cat.color,
+    light: cat.bg,
+  }])
+);
+
+/** The three main WR subject areas (used for Stoffverteilung, totals, etc.) */
+const MAIN_AREAS = WR_CATEGORIES.filter(c => ['BWL', 'VWL', 'RECHT'].includes(c.key)).map(c => c.key) as SubjectArea[];
 
 // Stoffverteilung from Grobzuteilung DUY
 const STOFF_VERTEILUNG: { semester: string; gym: string; recht: number; bwl: number; vwl: number }[] = [
@@ -119,7 +125,7 @@ function SemesterCard({ sv, expanded, onToggle }: {
       {/* Expanded details */}
       {expanded && (
         <div className="px-3 pb-2 space-y-1.5 border-t border-slate-700/50 pt-2">
-          {(['BWL', 'VWL', 'RECHT'] as SubjectArea[]).map(area => {
+          {MAIN_AREAS.map(area => {
             const areaGoals = goalsByArea[area];
             if (areaGoals.length === 0) return null;
             const c = SUBJECT_COLORS[area];
@@ -199,7 +205,7 @@ function ActualDataCard({ semester, gymYear }: { semester: string; gymYear: stri
       </div>
       {total > 0 ? (
         <div className="space-y-1">
-          {(['BWL', 'VWL', 'RECHT', 'IN'] as SubjectArea[]).map(area => {
+          {[...MAIN_AREAS, 'IN' as SubjectArea].map(area => {
             if (stats.counts[area] === 0) return null;
             const c = SUBJECT_COLORS[area];
             return (
@@ -218,7 +224,7 @@ function ActualDataCard({ semester, gymYear }: { semester: string; gymYear: stri
           })}
           {/* Topics preview */}
           <div className="mt-1 pt-1 border-t border-slate-700/30">
-            {(['BWL', 'VWL', 'RECHT'] as SubjectArea[]).map(area => {
+            {MAIN_AREAS.map(area => {
               if (stats.topics[area].length === 0) return null;
               const c = SUBJECT_COLORS[area];
               return (
@@ -312,7 +318,7 @@ function ClassViewCard({ group, sequences }: { group: typeof SF_GROUPS[0]; seque
                 <div className="flex items-center gap-1.5">
                   <span className="text-[7px] text-gray-500 w-8 shrink-0">Ist</span>
                   <div className="flex-1 flex gap-px">
-                    {(['BWL', 'VWL', 'RECHT'] as SubjectArea[]).map(area => {
+                    {MAIN_AREAS.map(area => {
                       if (stats.counts[area] === 0) return null;
                       const c = SUBJECT_COLORS[area];
                       const pct = Math.min((stats.counts[area] / Math.max(total, 1)) * 100, 100);
@@ -498,7 +504,7 @@ export function ZoomMultiYearView() {
 
       {/* Legend */}
       <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center gap-4">
-        {(['BWL', 'VWL', 'RECHT'] as SubjectArea[]).map(area => {
+        {MAIN_AREAS.map(area => {
           const c = SUBJECT_COLORS[area];
           return (
             <div key={area} className="flex items-center gap-1">

@@ -2,6 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
+import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
 import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types';
 
 const DAY_ORDER: Record<string, number> = { Mo: 0, Di: 1, Mi: 2, Do: 3, Fr: 4 };
@@ -28,13 +29,7 @@ interface BlockSpan {
   weeks: string[];
 }
 
-/** Infer subject area from lesson type when sequence has none set */
-function inferSubjectArea(lessonType?: LessonType): SubjectArea | undefined {
-  if (lessonType === 1) return 'BWL';
-  if (lessonType === 2) return 'VWL';
-  if (lessonType === 3) return 'IN';
-  return undefined;
-}
+// inferSubjectArea + getBlockColors now imported from data/categories.ts
 
 /** Detect holiday/event from weekData for a specific course column */
 function getWeekType(weekW: string, weekData: any[], col: number): 'holiday' | 'event' | 'normal' {
@@ -47,20 +42,7 @@ function getWeekType(weekW: string, weekData: any[], col: number): 'holiday' | '
   return 'normal';
 }
 
-/** Dark-mode block colors for Zoom 2 — saturated backgrounds with light text */
-const BLOCK_COLORS: Record<string, { bg: string; fg: string; border: string }> = {
-  VWL:      { bg: '#7c2d12', fg: '#fed7aa', border: '#ea580c' },   // Orange-braun
-  BWL:      { bg: '#1e3a5f', fg: '#bfdbfe', border: '#3b82f6' },   // Dunkelblau
-  RECHT:    { bg: '#14532d', fg: '#bbf7d0', border: '#22c55e' },   // Dunkelgrün
-  IN:       { bg: '#374151', fg: '#d1d5db', border: '#6b7280' },   // Grau
-  INTERDISZ: { bg: '#4c1d95', fg: '#ddd6fe', border: '#8b5cf6' },  // Violett
-};
-const DEFAULT_BLOCK = { bg: '#334155', fg: '#94a3b8', border: '#64748b' };
-
-function getBlockColors(subjectArea?: string) {
-  if (subjectArea && BLOCK_COLORS[subjectArea]) return BLOCK_COLORS[subjectArea];
-  return DEFAULT_BLOCK;
-}
+// Block colors now imported from data/categories.ts (getBlockColors)
 
 export function ZoomBlockView({ semester }: Props) {
   const {
@@ -136,7 +118,7 @@ export function ZoomBlockView({ semester }: Props) {
             const firstWeek = semWeeks[weekIndices[0]];
             const wd = effectiveWeeks.find(w => w.w === firstWeek);
             const entry = wd?.lessons[course.col];
-            if (entry) area = inferSubjectArea(entry.type as LessonType);
+            if (entry) area = inferSubjectAreaFromLessonType(entry.type as LessonType);
           }
 
           for (const run of runs) {

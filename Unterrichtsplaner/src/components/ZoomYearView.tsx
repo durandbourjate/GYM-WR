@@ -2,27 +2,16 @@ import { useMemo, useCallback } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
+import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
 import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types';
 
 const ROW_H = 26;
 const GROUP_W = 140; // width for single-day course group
 const SUBDAY_W = 70; // width for each sub-day in 2-day course group
 
-/** Dark-mode block colors */
-const BLOCK_COLORS: Record<string, { bg: string; fg: string; border: string }> = {
-  VWL:      { bg: '#7c2d12', fg: '#fde6cc', border: '#ea580c' },
-  BWL:      { bg: '#1e3a5f', fg: '#dbeafe', border: '#3b82f6' },
-  RECHT:    { bg: '#14532d', fg: '#d1fae5', border: '#22c55e' },
-  IN:       { bg: '#374151', fg: '#e5e7eb', border: '#6b7280' },
-  INTERDISZ: { bg: '#4c1d95', fg: '#ede9fe', border: '#8b5cf6' },
-};
-const DEFAULT_BLOCK = { bg: '#334155', fg: '#cbd5e1', border: '#64748b' };
-function getBlockColors(sa?: string) { return (sa && BLOCK_COLORS[sa]) || DEFAULT_BLOCK; }
+// Block colors are now in data/categories.ts (getBlockColors)
 
-function inferSubjectArea(lt?: LessonType): SubjectArea | undefined {
-  if (lt === 1) return 'BWL'; if (lt === 2) return 'VWL'; if (lt === 3) return 'IN';
-  return undefined;
-}
+// inferSubjectArea is now inferSubjectAreaFromLessonType in data/categories.ts
 
 /** Group courses by cls+typ. Each group has 1+ courses (1 per day). */
 interface CourseGroup {
@@ -120,7 +109,7 @@ export function ZoomYearView() {
               const firstWeek = allWeekKeys[weekIndices[0]];
               const wd = effectiveWeeks.find(w => w.w === firstWeek);
               const entry = wd?.lessons[course.col];
-              if (entry) area = inferSubjectArea(entry.type as LessonType);
+              if (entry) area = inferSubjectAreaFromLessonType(entry.type as LessonType);
             }
 
             // Group into contiguous runs
@@ -179,7 +168,7 @@ export function ZoomYearView() {
           if (entry.type === 5 || entry.type === 6) continue;
           // This week has a lesson but no sequence → loose lesson
           const detail = lessonDetails[`${weekW}-${course.col}`];
-          const area = detail?.subjectArea || inferSubjectArea(entry.type as LessonType);
+          const area = detail?.subjectArea || inferSubjectAreaFromLessonType(entry.type as LessonType);
           const looseKey = `${wi}:${course.id}:loose`;
           if (spanMap.has(looseKey)) continue;
           // Create a dummy seq for type compatibility

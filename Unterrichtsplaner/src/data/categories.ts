@@ -102,3 +102,29 @@ export function categoriesToColorMap(categories: CategoryDefinition[]): Record<s
   }
   return map;
 }
+
+/**
+ * Legacy lessonType → SubjectArea mapping (W&R-specific).
+ * In the old Excel import, type 1=BWL, 2=VWL, 3=IN.
+ * Used by ZoomYearView, ZoomBlockView, and WeekRows for color inference.
+ */
+export function inferSubjectAreaFromLessonType(lt?: number): string | undefined {
+  if (lt === 1) return 'BWL';
+  if (lt === 2) return 'VWL';
+  if (lt === 3) return 'IN';
+  return undefined;
+}
+
+/**
+ * Dark-mode block colors for Zoom 2 (ZoomYearView).
+ * Generated from WR_CATEGORIES with darkened bg.
+ */
+export const WR_BLOCK_COLORS: Record<string, { bg: string; fg: string; border: string }> = {
+  VWL:      { bg: '#7c2d12', fg: '#fde6cc', border: '#ea580c' },
+  BWL:      { bg: '#1e3a5f', fg: '#dbeafe', border: '#3b82f6' },
+  RECHT:    { bg: '#14532d', fg: '#d1fae5', border: '#22c55e' },
+  IN:       { bg: '#374151', fg: '#e5e7eb', border: '#6b7280' },
+  INTERDISZ: { bg: '#4c1d95', fg: '#ede9fe', border: '#8b5cf6' },
+};
+export const DEFAULT_BLOCK_COLOR = { bg: '#334155', fg: '#cbd5e1', border: '#64748b' };
+export function getBlockColors(sa?: string) { return (sa && WR_BLOCK_COLORS[sa]) || DEFAULT_BLOCK_COLOR; }
