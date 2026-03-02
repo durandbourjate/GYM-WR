@@ -8,28 +8,44 @@
 | Lektion | Montag | Dienstag | Mittwoch | Donnerstag | Freitag |
 |---------|--------|----------|----------|------------|---------|
 | 1 (08:05) | | | | | |
-| 2 (09:00) | | **29c WR!** (C-03) | **30s IN** (C-02) | **28bc9f9s WR!** (H-204) | |
-| 3 (10:05) | | | | **29c WR!** (H-204) | |
-| 4 (11:00) | **28c IN** (H-111) | | | **29c WR!** (H-204) | |
-| 5–6 | | | | | |
-| 7 (13:40) | | **29f IN** (C-01) | **27abcd8f WR!** (H-204) | **27abcd8f WR!** (H-204) | |
-| 8 (14:35) | | **30s IN** (H-106) | **27abcd8f WR!** (H-204) | **27abcd8f WR!** (H-204) | |
-| 9 (15:35) | | | **28bc9f9s WR!** (H-204) | | |
-| 10 (16:25) | | | **28bc9f9s WR!** (H-204) | **27a KS** (H-101) | |
+| 2 (09:00) | | **29c SF WR GYM1** (C-03) | **30s IN** (C-02) | **28bc29fs SF WR GYM2** (H-204) | |
+| 3 (10:05) | | | | **29c SF WR GYM1** (H-204) | |
+| 4 (11:00) | **28c IN** (H-111) | | | **29c SF WR GYM1** (H-204) | |
+| 5 (11:55) | | | | **29fs EWR** (H-204)| |
+| 6 (12:50) | | | | | |
+| 7 (13:40) | | **29f IN** (C-01) | **27a28f SF WR GYM3** (H-204) | **27a28f SF WR GYM3** (H-204) | |
+| 8 (14:35) | | **30s IN** (H-106) | **27a28f SF WR GYM3** (H-204) | **27a28f SF WR GYM3** (H-204) | |
+| 9 (15:35) | | | **28bc29fs SF WR GYM2** (H-204) | | |
+| 10 (16:25) | | | **28bc29fs SF WR GYM2** (H-204) | **27a KS** (H-101) | |
+
+## Stundenplan DUY — S2, Phase 4 (SJ 25/26)
+
+| Lektion | Montag | Dienstag | Mittwoch | Donnerstag | Freitag |
+|---------|--------|----------|----------|------------|---------|
+| 1 (08:05) | | | | | |
+| 2 (09:00) | | **29c SF WR GYM1** (C-03) | | **28bc29fs SF WR GYM2** (H-204) | |
+| 3 (10:05) | | | | **29c SF WR GYM1** (H-204) | |
+| 4 (11:00) | **28c IN** (H-111) | | | **29c SF WR GYM1** (H-204) | |
+| 5 (11:55) | | | | **29fs EWR** (H-204)| |
+| 6 (12:50) | | | | | |
+| 7 (13:40) | | **29f IN** (C-01) | **27a28f SF WR GYM3** (H-204) | **27a28f SF WR GYM3** (H-204) | |
+| 8 (14:35) | | | **27a28f SF WR GYM3** (H-204) | **27a28f SF WR GYM3** (H-204) | |
+| 9 (15:35) | | | **28bc29fs SF WR GYM2** (H-204) | | |
+| 10 (16:25) | | | **28bc29fs SF WR GYM2** (H-204) | **27a KS** (H-101) | |
 
 ### Kurse DUY (Zusammenfassung)
 
 | Kurs | Klasse | Fach | Tag(e) | Lektionen | Raum |
 |------|--------|------|--------|-----------|------|
-| SF WR GYM1 | 29c | WR! | Di 2L + Do 2L | 4L/Wo | C-03, H-204 |
-| SF WR GYM2 | 28bc9f9s | WR! | Mi 2L + Do 1L | 3L/Wo | H-204 |
-| SF WR GYM3 | 27abcd8f | WR! | Mi 2L + Do 2L | 4L/Wo | H-204 |
+| SF WR GYM1 | 29c | SF WR | Di 1L + Do 2L | 3L/Wo | C-03, H-204 |
+| SF WR GYM2 | 28bc29fs | SF WR | Di 2L + Do 1L | 3L/Wo | H-204 |
+| SF WR GYM3 | 27a28f | SF WR | Di 2L + Do 2L | 4L/Wo | H-204 |
 | IN 28c | 28c | IN | Mo 1L | 1L/Wo | H-111 |
 | IN 29f | 29f | IN | Di 1L | 1L/Wo | C-01 |
 | IN 30s | 30s | IN | Mi 1L + Di 1L | 2L/Wo | C-02, H-106 |
 | KS 27a | 27a | KS | Do 1L | 1L/Wo | H-101 |
 
-**Hinweis:** WR! = Schwerpunktfach. Phase 3 = KW 7–12 im TaF-Phasenmodell.
+**Hinweis:** SF WR = Schwerpunktfach. Phase 3 = KW 7–12 Phase 4 = KW 17–26 im TaF-Phasenmodell.
 
 ## Intensivwochen (IW-Plan SJ 25/26)
 

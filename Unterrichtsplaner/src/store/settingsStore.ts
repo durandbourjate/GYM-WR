@@ -43,6 +43,7 @@ export interface SpecialWeekConfig {
   label: string;
   week: string; // KW
   type: 'event' | 'holiday';
+  gymLevel?: string; // 'GYM1'|'GYM2'|'GYM3'|'GYM4'|'GYM5'|'TaF'|'alle' — undefined = alle
   excludedCourseIds?: string[]; // courses NOT affected (default: all affected)
   days?: number[]; // 1=Mo..5=Fr, undefined = all days
 }
@@ -237,14 +238,22 @@ export function applySettingsToWeekData(
     }
   }
 
+  // Build col → courseId mapping for exclusion checks
+  const colToCourseId = new Map<number, string>();
+  let colCounter = 100;
+  for (const c of settings.courses) {
+    colToCourseId.set(colCounter++, c.id);
+  }
+
   // Apply special weeks (events/partial holidays)
   for (const special of settings.specialWeeks) {
     const weekEntry = result.find(w => w.w === special.week);
     if (!weekEntry) continue;
     const excluded = new Set(special.excludedCourseIds || []);
     for (const col of allCols) {
-      // Skip excluded courses (mapped by settings course id → col position)
-      const isExcluded = settings.courses.some(c => excluded.has(c.id));
+      // Skip excluded courses (mapped by col → course config id)
+      const courseId = colToCourseId.get(col);
+      const isExcluded = courseId ? excluded.has(courseId) : false;
       if (!isExcluded) {
         weekEntry.lessons[col] = {
           title: special.label,

@@ -9,6 +9,8 @@ import {
   type SubjectConfig,
 } from '../store/settingsStore';
 import { WR_CATEGORIES, generateColorVariants } from '../data/categories';
+import { getGymStufe } from '../utils/gradeRequirements';
+import { IW_PRESET_2526 } from '../data/iwPresets';
 
 // === Duration helper for courses ===
 const COURSE_DURATION_PRESETS = [
@@ -300,6 +302,58 @@ function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange
   );
 }
 
+// === GYM-Level helpers ===
+const GYM_LEVEL_OPTIONS: { key: string; label: string }[] = [
+  { key: 'alle', label: 'alle' },
+  { key: 'GYM1', label: 'GYM1' },
+  { key: 'GYM2', label: 'GYM2' },
+  { key: 'GYM3', label: 'GYM3' },
+  { key: 'GYM4', label: 'GYM4' },
+  { key: 'GYM5', label: 'GYM5' },
+  { key: 'TaF', label: 'TaF' },
+];
+
+/**
+ * Derive GYM level from a class name for course-exclusion purposes.
+ * Reuses the Maturjahrgang logic from gradeRequirements.ts.
+ * TaF classes have 'f' or 's' suffix (e.g. 29fs, 28f).
+ */
+function getCourseGymLevel(cls: string): string {
+  // TaF detection: class name ends with 'f', 's', or 'fs' (e.g. '29fs', '28f', '30s')
+  if (/\d{2}[fs]+$/.test(cls) || /[fs]{1,2}$/.test(cls.replace(/\d/g, ''))) {
+    // Mixed classes like '28bc29fs' contain both regular and TaF
+    // If the class is purely TaF (e.g. '29fs', '30s'), return 'TaF'
+    // If mixed (e.g. '27a28f'), derive from the primary regular class
+  }
+  const stufe = getGymStufe(cls);
+  if (stufe === 'UNKNOWN') return 'alle';
+  return stufe;
+}
+
+/**
+ * Compute excludedCourseIds based on gymLevel:
+ * All courses whose class does NOT match the gymLevel are excluded.
+ */
+function computeExcludedCourses(gymLevel: string | undefined, courses: CourseConfig[]): string[] {
+  if (!gymLevel || gymLevel === 'alle') return [];
+
+  const excluded: string[] = [];
+  for (const c of courses) {
+    const courseLevel = getCourseGymLevel(c.cls);
+    // For TaF: exclude courses that don't have TaF students
+    if (gymLevel === 'TaF') {
+      const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
+      if (!isTaF) excluded.push(c.id);
+    } else {
+      // For GYM1-5: exclude courses whose GYM level doesn't match
+      if (courseLevel !== gymLevel && courseLevel !== 'alle') {
+        excluded.push(c.id);
+      }
+    }
+  }
+  return excluded;
+}
+
 // === Special Weeks Editor (Hierarchisch: KW → GYM-Stufen) ===
 function SpecialWeeksEditor({ weeks, courses, onChange }: {
   weeks: SpecialWeekConfig[]; courses: CourseConfig[]; onChange: (w: SpecialWeekConfig[]) => void;
@@ -314,10 +368,9 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
       if (!map.has(kw)) map.set(kw, []);
       map.get(kw)!.push(w);
     }
-    // Sort by KW number
+    // Sort by KW number (school year order: KW33-52 then KW01-27)
     return [...map.entries()].sort((a, b) => {
       const na = parseInt(a[0]) || 0, nb = parseInt(b[0]) || 0;
-      // School year: KW33-52 then KW01-27
       const wa = na >= 33 ? na : na + 52;
       const wb = nb >= 33 ? nb : nb + 52;
       return wa - wb;
@@ -338,8 +391,31 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
     onChange(weeks.map(w => w.id === id ? { ...w, ...patch } : w));
   };
 
+  const updateGymLevel = (id: string, gymLevel: string) => {
+    const level = gymLevel === 'alle' ? undefined : gymLevel;
+    const excluded = computeExcludedCourses(level, courses);
+    onChange(weeks.map(w => w.id === id ? { ...w, gymLevel: level, excludedCourseIds: excluded.length > 0 ? excluded : undefined } : w));
+  };
+
   const remove = (id: string) => {
     onChange(weeks.filter(w => w.id !== id));
+  };
+
+  const loadIWPreset = () => {
+    // Add IW preset entries (don't overwrite existing)
+    const existingIds = new Set(weeks.map(w => w.id));
+    const newEntries = IW_PRESET_2526
+      .filter(e => !existingIds.has(e.id))
+      .map(e => ({
+        ...e,
+        // Auto-compute excludedCourseIds for each preset entry
+        excludedCourseIds: computeExcludedCourses(e.gymLevel, courses) || undefined,
+      }));
+    if (newEntries.length === 0) {
+      alert('Alle IW-Einträge sind bereits vorhanden.');
+      return;
+    }
+    onChange([...weeks, ...newEntries]);
   };
 
   return (
@@ -347,14 +423,27 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
       <p className="text-[8px] text-gray-400">Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
       {grouped.map(([kw, entries]) => {
         const isExpanded = expandedWeek === kw;
-        const labels = entries.map(e => e.label).filter(Boolean).join(', ');
+        // Build label with GYM-Stufe badges
+        const labelParts = entries.map(e => {
+          const badge = e.gymLevel ? `${e.gymLevel} ` : '';
+          return badge + (e.label || '');
+        }).filter(Boolean);
+        const labels = labelParts.join(', ');
         return (
           <div key={kw || 'new'} className="border border-slate-700/50 rounded overflow-hidden">
             <div className="flex items-center gap-2 px-2 py-1.5 bg-slate-800/50 cursor-pointer hover:bg-slate-800"
               onClick={() => setExpandedWeek(isExpanded ? null : kw)}>
               <span className="text-[9px] text-gray-400">{isExpanded ? '▾' : '▸'}</span>
               <span className="text-[10px] font-semibold text-amber-400 font-mono w-10">{kw ? `KW${kw}` : 'Neu'}</span>
-              <span className="text-[9px] text-gray-300 truncate flex-1">{labels || '(unbenannt)'}</span>
+              <span className="text-[9px] text-gray-300 truncate flex-1">
+                {entries.map((e, i) => (
+                  <span key={e.id}>
+                    {i > 0 && ', '}
+                    {e.gymLevel && <span className="text-[8px] font-semibold text-blue-400">{e.gymLevel} </span>}
+                    {e.label || '(unbenannt)'}
+                  </span>
+                ))}
+              </span>
               <span className="text-[8px] text-gray-500">{entries.length} {entries.length === 1 ? 'Eintrag' : 'Einträge'}</span>
             </div>
             {isExpanded && (
@@ -363,7 +452,9 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                   <div key={w.id} className="bg-slate-800 rounded p-2 space-y-1.5">
                     <div className="flex gap-1 items-center">
                       <SmallInput value={w.week} onChange={(v) => update(w.id, { week: v })} placeholder="KW" className="w-10" />
-                      <SmallInput value={w.label} onChange={(v) => update(w.id, { label: v })} placeholder="z.B. SF-Woche GYM3" className="flex-1" />
+                      <SmallInput value={w.label} onChange={(v) => update(w.id, { label: v })} placeholder="z.B. Medienwoche" className="flex-1" />
+                      <SmallSelect value={w.gymLevel || 'alle'} onChange={(v) => updateGymLevel(w.id, v)}
+                        options={GYM_LEVEL_OPTIONS} />
                       <SmallSelect value={w.type} onChange={(v) => update(w.id, { type: v })}
                         options={[{ key: 'event', label: '📅 Event' }, { key: 'holiday', label: '🏖 Frei' }]} />
                       <button onClick={() => remove(w.id)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
@@ -427,6 +518,10 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
       <button onClick={addNewWeek}
         className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
         + Sonderwoche hinzufügen
+      </button>
+      <button onClick={loadIWPreset}
+        className="w-full py-1.5 rounded text-[9px] font-medium bg-amber-900/30 border border-amber-500/30 text-amber-300 hover:bg-amber-900/50 cursor-pointer transition-all">
+        IW-Plan SJ 25/26 laden
       </button>
     </div>
   );
