@@ -42,15 +42,18 @@ function computeStats(weekData: Week[], courses: Course[]): CourseStats[] {
   });
 }
 
-const TYPE_LABELS: Record<number, { label: string; color: string }> = {
-  0: { label: 'Andere', color: '#94a3b8' },
-  1: { label: 'BWL', color: '#3b82f6' },      // blau (LearningView)
-  2: { label: 'VWL', color: '#f97316' },       // orange (LearningView) — legacy: was Recht/VWL
-  3: { label: 'IN', color: '#6b7280' },        // grau
-  4: { label: 'Prüfung', color: '#ef4444' },
-  5: { label: 'Event', color: '#eab308' },
-  6: { label: 'Ferien', color: '#d4d4d8' },
-};
+import { WR_CATEGORIES, inferSubjectAreaFromLessonType } from '../data/categories';
+
+/** Legacy lessonType → label/color. Subject types (1,2,3) derived dynamically from categories. */
+function getTypeLabel(lt: number): { label: string; color: string } {
+  if (lt === 4) return { label: 'Prüfung', color: '#ef4444' };
+  if (lt === 5) return { label: 'Event', color: '#eab308' };
+  if (lt === 6) return { label: 'Ferien', color: '#d4d4d8' };
+  const sa = inferSubjectAreaFromLessonType(lt);
+  const cat = sa ? WR_CATEGORIES.find(c => c.key === sa) : undefined;
+  if (cat) return { label: cat.label, color: cat.color };
+  return { label: 'Andere', color: '#94a3b8' };
+}
 
 function MiniBar({ byType, total }: { byType: Record<number, number>; total: number }) {
   if (total === 0) return <div className="h-2 bg-gray-800 rounded" />;
@@ -65,9 +68,9 @@ function MiniBar({ byType, total }: { byType: Record<number, number>; total: num
             key={t}
             style={{
               width: `${(count / total) * 100}%`,
-              background: TYPE_LABELS[t]?.color || '#666',
+              background: getTypeLabel(t)?.color || '#666',
             }}
-            title={`${TYPE_LABELS[t]?.label}: ${count}`}
+            title={`${getTypeLabel(t)?.label}: ${count}`}
           />
         );
       })}
@@ -306,8 +309,8 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         <div className="mt-3 flex gap-3 flex-wrap">
           {[1, 2, 3, 0, 4, 5].map((t) => (
             <span key={t} className="flex items-center gap-1 text-[8px] text-gray-500">
-              <span className="w-2 h-2 rounded-sm" style={{ background: TYPE_LABELS[t].color }} />
-              {TYPE_LABELS[t].label}
+              <span className="w-2 h-2 rounded-sm" style={{ background: getTypeLabel(t).color }} />
+              {getTypeLabel(t).label}
             </span>
           ))}
         </div>

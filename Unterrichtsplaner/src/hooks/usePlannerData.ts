@@ -83,6 +83,8 @@ export function usePlannerData() {
   const currentWeek = useMemo(() => getCurrentISOWeek(), []);
 
   // === Categories (Subject Areas) ===
+  // New planners: empty until user configures subjects in settings.
+  // Legacy planners: fall back to WR_CATEGORIES for backward compatibility.
   const categories: CategoryDefinition[] = useMemo(() => {
     if (settings?.subjects && settings.subjects.length > 0) {
       const converted = subjectConfigsToCategories(settings.subjects);
@@ -92,8 +94,8 @@ export function usePlannerData() {
       }
       return converted;
     }
-    return WR_CATEGORIES;
-  }, [settings]);
+    return isLegacyPlanner ? WR_CATEGORIES : [];
+  }, [settings, isLegacyPlanner]);
 
   // === Linked course IDs ===
   const getLinkedCourseIds = useMemo(() => {

@@ -2,7 +2,7 @@ import { useMemo, useState, useRef } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { type CurriculumGoal } from '../data/curriculumGoals';
-import { WR_CATEGORIES, type CategoryDefinition } from '../data/categories';
+import { WR_CATEGORIES, WR_BLOCK_COLORS, DEFAULT_BLOCK_COLOR, type CategoryDefinition } from '../data/categories';
 import type { SubjectArea, ManagedSequence } from '../types';
 import type { StoffverteilungEntry } from '../store/settingsStore';
 
@@ -34,14 +34,17 @@ function emptyGoalRecord(cats: CategoryDefinition[]): Record<string, CurriculumG
  * - "actual" = Ist-Zustand (what IS planned in the current planner data)
  */
 
-// Generated from WR_CATEGORIES — dark-mode variants for Zoom 1
+// Generated from WR_CATEGORIES + WR_BLOCK_COLORS — dark-mode variants for Zoom 1
 const SUBJECT_COLORS: Record<string, { bg: string; text: string; border: string; light: string }> = Object.fromEntries(
-  WR_CATEGORIES.map(cat => [cat.key, {
-    bg: cat.key === 'BWL' ? '#1e3a5f' : cat.key === 'VWL' ? '#3b1f0b' : cat.key === 'RECHT' ? '#052e16' : cat.key === 'IN' ? '#1f2937' : '#2e1065',
-    text: cat.border,   // use border color as text in dark mode
-    border: cat.color,
-    light: cat.bg,
-  }])
+  WR_CATEGORIES.map(cat => {
+    const blk = WR_BLOCK_COLORS[cat.key] || DEFAULT_BLOCK_COLOR;
+    return [cat.key, {
+      bg: blk.bg,
+      text: cat.border,   // use border color as text in dark mode
+      border: cat.color,
+      light: cat.bg,
+    }];
+  })
 );
 
 /** All subject areas from categories (dynamic, no hardcoded filter) */

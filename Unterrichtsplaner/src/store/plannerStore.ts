@@ -202,7 +202,7 @@ export const usePlannerStore = create<PlannerState>()(
     const [fromWeek, fromCourseId] = fromKey.split('-');
     const [toWeek, toCourseId] = toKey.split('-');
 
-    // Helper: check if a week+course has a non-fixed lesson (skip holidays/events type 5,6)
+    // Helper: check if a week+course is selectable (allow empty cells, skip holidays/events)
     const weekMap = new Map(state.weekData.map(w => [w.w, w]));
     const isSelectableLesson = (wk: string, courseId: string): boolean => {
       const course = courses.find(c => c.id === courseId);
@@ -210,7 +210,7 @@ export const usePlannerStore = create<PlannerState>()(
       const week = weekMap.get(wk);
       if (!week) return false;
       const entry = week.lessons[course.col];
-      if (!entry) return false; // Shift: skip empty cells
+      if (!entry) return true; // Allow empty cells (for creating sequences on blank weeks)
       if (entry.type === 5 || entry.type === 6) return false; // skip events/holidays
       return true;
     };
@@ -479,9 +479,8 @@ export const usePlannerStore = create<PlannerState>()(
     // Get available weeks based on primary column
     const available = state.getAvailableWeeks(seq.courseId, startWeek, allWeekOrder);
     
-    // Determine LessonType from subjectArea
-    const typeMap: Record<string, number> = { BWL: 1, VWL: 2, RECHT: 2, IN: 3, INTERDISZ: 0 };
-    const lessonType = (seq.subjectArea ? typeMap[seq.subjectArea] : 0) as import('../types').LessonType;
+    // Determine LessonType from subjectArea (legacy mapping for grid rendering)
+    const lessonType: import('../types').LessonType = 0; // Subject area is stored on the sequence, not the lesson type
     
     state.pushUndo();
     

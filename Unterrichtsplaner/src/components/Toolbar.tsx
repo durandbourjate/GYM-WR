@@ -36,7 +36,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">SJ 25/26 · DUY · v3.74</span>
+        <span className="text-[10px] text-gray-500">SJ 25/26 · DUY · v3.75</span>
       </div>
       <div className="flex gap-1 items-center">
         {/* Quick-add sequence button */}

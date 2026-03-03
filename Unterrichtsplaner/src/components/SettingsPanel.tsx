@@ -128,7 +128,7 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
       {subjects.length === 0 && (
         <button onClick={loadWRDefaults}
           className="w-full py-1.5 rounded text-[9px] font-medium bg-blue-900/30 border border-blue-500/30 text-blue-300 hover:bg-blue-900/50 cursor-pointer transition-all">
-          📋 W&R-Standard laden (BWL, VWL, Recht, IN)
+          📋 W&R-Vorlage laden
         </button>
       )}
       {subjects.map(s => (

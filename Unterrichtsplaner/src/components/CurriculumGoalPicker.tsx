@@ -2,14 +2,10 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { CURRICULUM_GOALS, searchGoals } from '../data/curriculumGoals';
 import type { CurriculumGoal } from '../data/curriculumGoals';
 import type { SubjectArea } from '../types';
+import { WR_CATEGORIES } from '../data/categories';
 
-const AREA_COLORS: Record<string, string> = {
-  BWL: '#3b82f6',
-  VWL: '#f97316',
-  RECHT: '#22c55e',
-  IN: '#6b7280',
-  INTERDISZ: '#a855f7',
-};
+/** Dynamic color lookup — reads from WR_CATEGORIES instead of hardcoded map */
+const AREA_COLORS: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
 
 interface CurriculumGoalPickerProps {
   value: string | undefined;

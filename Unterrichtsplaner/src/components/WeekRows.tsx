@@ -35,8 +35,11 @@ function InlineEdit({ value, onSave, onCancel }: { value: string; onSave: (v: st
 }
 
 /* Hover preview popover — enhanced v3.23 */
-import { WR_CATEGORIES } from '../data/categories';
+import { WR_CATEGORIES, FALLBACK_CATEGORY } from '../data/categories';
 const SUBJECT_AREA_COLORS_PREVIEW: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
+/** Dynamic color lookup for sequence bars — reads from categories, falls back to WR_CATEGORIES */
+function getCatColor(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.color || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }
+function getCatBorder(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.border || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }
 
 function HoverPreview({ week, col, courses, courseIndex, totalCourses }: { week: string; col: number; courses: Course[]; courseIndex: number; totalCourses: number }) {
   const { lessonDetails, weekData, sequences } = usePlannerStore();
@@ -600,9 +603,28 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     if (lesson?.type === 6) return; // Skip holidays
     if (!dragSelectedWeeks.includes(weekW)) {
       dragMoved.current = true;
-      setDragSelectedWeeks(prev => [...prev, weekW]);
+      // Interpolate: fill all weeks between the last selected and the current one
+      // This prevents skipped cells when the mouse moves fast.
+      setDragSelectedWeeks(prev => {
+        const lastW = prev[prev.length - 1];
+        const lastIdx = displayWeeks.findIndex(w => w.w === lastW);
+        const curIdx = displayWeeks.findIndex(w => w.w === weekW);
+        if (lastIdx === -1 || curIdx === -1 || Math.abs(curIdx - lastIdx) <= 1) {
+          return [...prev, weekW];
+        }
+        const step = curIdx > lastIdx ? 1 : -1;
+        const toAdd: string[] = [];
+        for (let i = lastIdx + step; step > 0 ? i <= curIdx : i >= curIdx; i += step) {
+          const w = displayWeeks[i];
+          if (!w) continue;
+          const l = w.lessons[dragSelectCol ?? -1];
+          if (l?.type === 6) continue; // skip holidays
+          if (!prev.includes(w.w)) toAdd.push(w.w);
+        }
+        return [...prev, ...toAdd];
+      });
     }
-  }, [isDragSelecting, dragMoveSource, dragSelectCourse, displayWeeks, dragSelectedWeeks, lessonDetails]);
+  }, [isDragSelecting, dragMoveSource, dragSelectCourse, dragSelectCol, displayWeeks, dragSelectedWeeks, lessonDetails]);
 
   const handleDragSelectEnd = useCallback(() => {
     // Clear hold timer
@@ -911,9 +933,9 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     }
                   }}
                 >
-                  {/* Sequence bar — color from subject area (VWL=orange, BWL=blue, Recht=green) */}
+                  {/* Sequence bar — color from subject area, visible even on empty cells */}
                   {/* Don't show sequence bar for holidays (type 6) and events (type 5) */}
-                  {seq && title && !isFixed && (
+                  {seq && !isFixed && (
                     <div
                       className="absolute left-0 w-[5px] opacity-80 cursor-pointer hover:opacity-100 hover:w-[7px] transition-all"
                       style={{
@@ -926,10 +948,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                             const block = parentSeq?.blocks.find(b => b.weeks.includes(week.w));
                             return block?.subjectArea || parentSeq?.subjectArea;
                           })();
-                          const SA_BAR_COLORS: Record<string, string> = {
-                            VWL: '#f97316', BWL: '#3b82f6', RECHT: '#22c55e', IN: '#6b7280', INTERDISZ: '#a855f7'
-                          };
-                          return (seqBarSA && SA_BAR_COLORS[seqBarSA]) || seq.color || '#16a34a';
+                          return seqBarSA ? getCatColor(seqBarSA) : (seq.color || '#16a34a');
                         })(),
                         borderRadius: seq.isFirst ? '2px 0 0 0' : seq.isLast ? '0 0 0 2px' : '0',
                       }}
@@ -955,7 +974,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       title={`Klick: Sequenz hervorheben · Doppelklick: Sequenz bearbeiten`}
                     />
                   )}
-                  {seq?.isFirst && title && !isFixed && (
+                  {seq?.isFirst && !isFixed && (
                     <div className="absolute left-1.5 -top-0.5 text-[6px] font-bold z-10 bg-[#0c0f1a] px-0.5 rounded whitespace-nowrap cursor-pointer"
                       style={{ color: (() => {
                         const seqLabelSA = effectiveSubjectArea || (() => {
@@ -963,10 +982,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                           const block = parentSeq?.blocks.find(b => b.weeks.includes(week.w));
                           return block?.subjectArea || parentSeq?.subjectArea;
                         })();
-                        const SA_LABEL_COLORS: Record<string, string> = {
-                          VWL: '#fb923c', BWL: '#60a5fa', RECHT: '#4ade80', IN: '#9ca3af', INTERDISZ: '#c084fc'
-                        };
-                        return (seqLabelSA && SA_LABEL_COLORS[seqLabelSA]) || seq.color || '#4ade80';
+                        return seqLabelSA ? getCatBorder(seqLabelSA) : (seq.color || '#4ade80');
                       })() }}
                       onClick={(e) => {
                         e.stopPropagation();

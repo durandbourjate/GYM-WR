@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.74
+# Unterrichtsplaner – Handoff v3.75
 
-## Status: ✅ Built & Deployed (v3.74)
+## Status: ✅ Built & Deployed (v3.75)
 - **Datum:** 2026-03-03
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
@@ -58,6 +58,15 @@
 | 31 | Stift-Icon 23✏ → "23 frei" mit besserem Tooltip | ✅ |
 | 32 | Mehrjahresübersicht: Leerer Zustand + Import bei neuem Plan | ✅ |
 
+## Erledigte Aufträge (v3.75 — Auftrag v3.75, 4 Tasks)
+
+| # | Beschreibung | Status |
+|---|-------------|--------|
+| 1 | Fachbereiche überall dynamisch (6+ Stellen: WeekRows, StatsPanel, CurriculumGoalPicker, ZoomMultiYearView, SettingsPanel, plannerStore) | ✅ |
+| 2 | Sequenz im Planer sichtbar auf allen zugewiesenen KW (selectRange + WeekRows Rendering) | ✅ |
+| 3 | Schnelles Klick/Drag: Interpolation bei mouseenter füllt übersprungene Zellen | ✅ |
+| 4 | HANDOFF.md Status-Update + Commit/Push | ✅ |
+
 ## Erledigte Aufträge (v3.64–v3.70, UX-Feedback Runde 2)
 
 | Version | Auftrag | Status |
@@ -87,7 +96,7 @@
 ## Architektur
 
 - **Stack:** React + TypeScript + Vite + Zustand + PWA
-- **Build & Deploy:** `./deploy.sh` baut die App und kopiert Build-Output (assets/, index.html, sw.js etc.) in den Repo-Root. GitHub Pages serviert direkt aus `main`. `dist/` ist in .gitignore — nur die kopierten Dateien werden committet. Für lokale Entwicklung: `npm run dev` (nutzt `src/index.dev.html` als Vite-Entry).
+- **Build & Deploy:** GitHub Actions (`.github/workflows/deploy.yml`) baut und deployed automatisch bei Push auf `main`. `dist/` ist in .gitignore — Build-Artefakte werden NICHT committet. Für lokale Entwicklung: `npm run dev` (nutzt `src/index.dev.html` als Vite-Entry). `deploy.sh` ist nur für lokale Tests.
 - **Wiki:** `wiki.html` (Standalone-HTML, kein Build nötig). Erreichbar über 📖-Button in der Toolbar.
 - **Store:** `plannerStore.ts` (~1260 Z.), `settingsStore.ts` (~323 Z.), `instanceStore.ts` (~204 Z.)
 - **Hook:** `usePlannerData.ts` — liest Kurse/Wochen reaktiv aus `plannerStore.plannerSettings` (pro Instanz) → Fallback auf globale Settings → Fallback auf hardcoded WEEKS/COURSES. Gibt `isLegacy`-Flag zurück.
@@ -141,3 +150,4 @@
 - v3.71: Wiki-Anleitung (wiki.html), Build-Pipeline (deploy.sh, dist/ ignoriert), 📖-Button in Toolbar
 - v3.73: Auftrag v3.73 — 20 Tasks in 5 Batches (Bugs, Settings, UX, Sonderwochen, Features)
 - v3.74: Auftrag v3.74 — 12 neue Tasks #21–#32 (Sync-Bug, Sequenz-UX, Mehrjahresübersicht generisch, Assessment-UI, Import-Hints)
+- v3.75: Auftrag v3.75 — 4 Tasks (Fachbereiche dynamisch, Sequenz-Sichtbarkeit, Drag-Interpolation, HANDOFF)
