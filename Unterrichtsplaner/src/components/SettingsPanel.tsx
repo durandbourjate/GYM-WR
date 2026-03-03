@@ -290,11 +290,9 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-[8px] text-gray-400">Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
-        <RubricCollectionButtons rubricType="fachbereiche" getData={() => subjects}
-          onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Fachbereiche laden? Bestehende werden ersetzt.`)) onChange(data); }} />
-      </div>
+      <RubricCollectionButtons rubricType="fachbereiche" getData={() => subjects}
+        onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Fachbereiche laden? Bestehende werden ersetzt.`)) onChange(data); }} />
+      <p className="text-[8px] text-gray-400">Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
       {subjects.map(s => (
         <div key={s.id}>
           {editingId === s.id ? (
@@ -952,9 +950,9 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
 const DEFAULT_GYM_RULES: AssessmentRule[] = [
   { label: 'Standortbestimmung (Nov)', deadline: 'KW 45', minGrades: 1, semester: 1, stufe: 'GYM1' },
   { label: 'Semesterzeugnis', deadline: 'Ende Semester 1', minGrades: 2, semester: 1, stufe: 'GYM1' },
-  { label: 'Jahreszeugnis (≤2L)', deadline: 'Ende Schuljahr', minGrades: 3, semester: 'year', stufe: 'GYM1', weeklyLessonsThreshold: undefined },
+  { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: 3, semester: 'year', stufe: 'GYM1', weeklyLessonsThreshold: 3, minGradesAboveThreshold: 4 },
   { label: 'Zwischenbericht', deadline: 'Ende Semester 1', minGrades: 1, semester: 1, stufe: 'GYM2' },
-  { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: 3, semester: 'year' },
+  { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: 3, semester: 'year', weeklyLessonsThreshold: 3, minGradesAboveThreshold: 4 },
 ];
 
 function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {

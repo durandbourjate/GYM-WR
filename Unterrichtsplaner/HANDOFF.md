@@ -1,8 +1,20 @@
-# Unterrichtsplaner – Handoff v3.77
+# Unterrichtsplaner – Handoff v3.78
 
-## Status: ✅ Built (v3.77)
+## Status: ✅ Built (v3.78)
 - **Datum:** 2026-03-03
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
+
+## Erledigte Aufträge (v3.78 — Ergänzung, 7 Tasks)
+
+| # | Typ | Beschreibung | Status |
+|---|-----|-------------|--------|
+| 14 | Bug | Side-Panel scrollt bei langen Inhalten (overflow-hidden auf Outer, Tab-Inhalte scrollen eigenständig) | ✅ |
+| 15 | Bug | Neue UE erscheint oben statt in der Mitte (justify-start, Button zuerst) | ✅ |
+| 16 | Bug | UE-Beschriftung im Sequenz-Detailmenü zeigt Thema statt "Neue UE"; 📌-Tooltip hinzugefügt | ✅ |
+| 17 | Bug | Notenanzahl-Berechnung korrigiert: Schwelle ≤3L/\>3L (statt ≤2L/\>2L), Default-Regeln aktualisiert | ✅ |
+| 18 | UX | Fachbereich-Speichern/Laden-Buttons konsistent links oben (wie andere Rubriken) | ✅ |
+| 19 | Feature | Sequenz per Klick+Drag: UE erben Fachbereich aus Settings, blockCategory+duration auto-gesetzt | ✅ |
+| 20 | UX | Breadcrumb bereinigt: "Sequenz › Unterrichtseinheit" (statt "Reihe › Sequenz › Block › Lektion") | ✅ |
 
 ## Erledigte Aufträge (v3.77 — Auftrag v3.77, 13 Tasks)
 
@@ -185,3 +197,4 @@
 - v3.75: Auftrag v3.75 — 4 Tasks (Fachbereiche dynamisch, Sequenz-Sichtbarkeit, Drag-Interpolation, HANDOFF)
 - v3.76: Auftrag v3.76 — 10 Tasks (Bug-Fixes & UX: Doppelklick, Ferien, Sonderwoche, Sequenz, Scrolling, Kurstyp, Vorlage, Deadline, Badge)
 - v3.77: Auftrag v3.77 — 13 Tasks (Bugs: Klick/ESC/Wiki/Ferien; UX: Toolbar-Reorg, Sammlung-Rubrik, Zeit-Alignment; Features: Rubrik-Collection, Replace/New-Dialog, Assessment-Erweiterung)
+- v3.78: Ergänzung v3.78 — 7 Tasks (Panel-Scroll, UE-Position, UE-Beschriftung, Notenberechnung, Fachbereich-Buttons, Drag-Sequenz-Vererbung, Breadcrumb)

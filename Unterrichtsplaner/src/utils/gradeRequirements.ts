@@ -7,11 +7,11 @@
  * GYM1:
  *   - Standortbestimmung (Nov): mind. 1 Note/Fach
  *   - Semesterzeugnis (Ende Sem1): mind. 2 Noten/Fach
- *   - Jahreszeugnis (Ende SJ): ≤2L → mind. 3, >2L → mind. 4
+ *   - Jahreszeugnis (Ende SJ): ≤3L → mind. 3, >3L → mind. 4
  *
  * GYM2–4:
  *   - Zwischenbericht (Sem1): mind. 1 Note/Fach
- *   - Jahreszeugnis (Ende SJ): ≤2L → mind. 3, >2L → mind. 4
+ *   - Jahreszeugnis (Ende SJ): ≤3L → mind. 3, >3L → mind. 4
  */
 
 import type { Course, Week, LessonDetail } from '../types';
@@ -61,13 +61,13 @@ export function getGradeRequirements(gymStufe: GymStufe, weeklyLessons: number):
     return [
       { label: 'Standortbestimmung (Nov)', deadline: 'KW 45', minGrades: 1, semester: 1 },
       { label: 'Semesterzeugnis', deadline: 'Ende Semester 1', minGrades: 2, semester: 1 },
-      { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: weeklyLessons > 2 ? 4 : 3, semester: 'year' },
+      { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: weeklyLessons > 3 ? 4 : 3, semester: 'year' },
     ];
   }
   // GYM2–GYM5
   return [
     { label: 'Zwischenbericht', deadline: 'Ende Semester 1', minGrades: 1, semester: 1 },
-    { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: weeklyLessons > 2 ? 4 : 3, semester: 'year' },
+    { label: 'Jahreszeugnis', deadline: 'Ende Schuljahr', minGrades: weeklyLessons > 3 ? 4 : 3, semester: 'year' },
   ];
 }
 

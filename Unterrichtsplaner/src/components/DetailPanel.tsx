@@ -716,9 +716,9 @@ function DetailsTab() {
 
   if (!selection || !c) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center text-[10px] text-gray-400 p-4 gap-3">
-        <span>Wähle eine Unterrichtseinheit aus, um Details zu bearbeiten.</span>
+      <div className="flex-1 flex flex-col items-center justify-start text-[10px] text-gray-400 p-4 pt-8 gap-3">
         <NewUEButton />
+        <span>Wähle eine Unterrichtseinheit aus, um Details zu bearbeiten.</span>
       </div>
     );
   }
@@ -1303,8 +1303,8 @@ export function DetailPanel() {
   return (
     <div
       ref={panelRef}
-      className="fixed right-0 top-0 bottom-0 bg-slate-850 border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-y-auto"
-      style={{ overscrollBehavior: 'contain', width: panelWidth, background: '#151b2e' }}
+      className="fixed right-0 top-0 bottom-0 bg-slate-850 border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden"
+      style={{ width: panelWidth, background: '#151b2e' }}
       onWheel={(e) => e.stopPropagation()}
     >
       {/* Resize handle */}

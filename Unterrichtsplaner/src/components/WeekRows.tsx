@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
-import type { Course, Week } from '../types';
+import type { Course, Week, SubjectArea } from '../types';
 import { LESSON_COLORS, SUBJECT_AREA_COLORS, DAY_COLORS, getSequenceInfoFromStore, isPastWeek } from '../utils/colors';
 import { CURRENT_WEEK } from '../data/weeks';
 import { usePlannerStore } from '../store/plannerStore';
@@ -236,13 +236,24 @@ function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }: { wee
   const handleNewSequence = () => {
     const weeks = selectedWeeks && selectedWeeks.length > 0 ? selectedWeeks : [week];
     pushUndo();
-    const seqId = addSequence({ courseId: course.id, title: `Neue Sequenz ${course.cls}`, blocks: [{ weeks, label: '' }] });
+    // v3.78 #19: Inherit subjectArea from first available fachbereich for the course type
+    const settings = usePlannerStore.getState().plannerSettings;
+    const courseSubjects = settings?.subjects;
+    const firstSA = courseSubjects?.length ? courseSubjects[0].id : undefined;
+    const seqId = addSequence({
+      courseId: course.id,
+      title: `Neue Sequenz ${course.cls}`,
+      subjectArea: firstSA as SubjectArea | undefined,
+      blocks: [{ weeks, label: '', subjectArea: firstSA as SubjectArea | undefined }],
+    });
     // Auto-create placeholder lessons for assigned weeks (v3.76 #9)
+    // v3.78 #19: Also set blockCategory + inherited subjectArea on lessonDetails
     for (const w of weeks) {
       const existing = usePlannerStore.getState().weekData.find(wd => wd.w === w)?.lessons[course.col];
       if (!existing?.title) {
         updateLesson(w, course.col, { title: 'UE', type: 1 });
       }
+      usePlannerStore.getState().updateLessonDetail(w, course.col, { blockCategory: 'LESSON', duration: '45 min' });
     }
     setEditingSequenceId(`${seqId}-0`); // flat format: seqId-blockIndex
     setSidePanelOpen(true);

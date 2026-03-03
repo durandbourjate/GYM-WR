@@ -50,7 +50,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.77</span>
+        <span className="text-[10px] text-gray-500">v3.78</span>
       </div>
       <div className="flex gap-1 items-center">
         {/* === Group 1: Add === */}

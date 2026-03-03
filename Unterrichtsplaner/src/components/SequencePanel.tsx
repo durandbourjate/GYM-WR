@@ -57,8 +57,12 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
               }}>
               <span className="text-[8px] text-gray-500">{isExpanded ? '▾' : '▸'}</span>
               <span className="text-gray-400 font-mono w-8">KW{weekW}</span>
-              <span className={`truncate ${entry?.title ? 'text-gray-300' : 'text-gray-500 italic'}`}>{entry?.title || detail?.topicSub || detail?.topicMain || block.topicSub || '—'}</span>
-              {detail?.topicMain && <span className="text-[7px] text-gray-400 ml-auto truncate max-w-20">📌{detail.topicMain}</span>}
+              <span className={`truncate ${entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE' ? 'text-gray-300' : 'text-gray-500 italic'}`}>{(() => {
+                const isPlaceholder = !entry?.title || entry.title === 'UE' || entry.title === 'Neue UE';
+                const thematic = detail?.topicMain || detail?.topicSub || block.topicSub || block.topicMain;
+                return isPlaceholder ? (thematic || entry?.title || '—') : entry.title;
+              })()}</span>
+              {detail?.topicMain && !(entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE') && <span className="text-[7px] text-gray-400 ml-auto truncate max-w-20" title="Zugewiesenes Thema">📌{detail.topicMain}</span>}
             </div>
             {isExpanded && course && (
               <div className="ml-5 mr-1 my-1 p-1.5 bg-slate-900/50 rounded space-y-1 border-l-2 border-blue-500/30">
@@ -213,15 +217,11 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
           {/* Block-level fields */}
           {showFields && (
             <div className="space-y-1.5 p-1.5 bg-slate-800/30 rounded">
-              {/* Hierarchy indicator */}
+              {/* Hierarchy indicator (v3.78 #20: flache Struktur) */}
               <div className="flex items-center gap-1 text-[7px] text-gray-500 pb-0.5 border-b border-slate-700/50">
-                <span className="text-amber-500/60">Reihe</span>
-                <span>›</span>
                 <span className="text-blue-400 font-medium">Sequenz</span>
                 <span>›</span>
-                <span className="text-gray-400">Block</span>
-                <span>›</span>
-                <span className="text-gray-500">Lektion</span>
+                <span className="text-gray-400">Unterrichtseinheit</span>
               </div>
               <div className="flex gap-1 flex-wrap">
                 <span className="text-[8px] text-gray-400 w-full">Fachbereich:</span>
