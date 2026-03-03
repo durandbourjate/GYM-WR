@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import type { Course, Week } from '../types';
 import { DAY_COLORS, TYPE_BADGES } from '../utils/colors';
 import { usePlannerStore } from '../store/plannerStore';
@@ -41,9 +42,8 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
           const newDay = i === 0 || c.day !== courses[i - 1]?.day;
           const expanded = !!expandedNoteCols[c.id];
           return (
-            <>
+            <Fragment key={`${c.id}-day`}>
               <th
-                key={`${c.id}-day`}
                 className="bg-gray-900 px-0 pt-0.5 border-b border-gray-800 text-center"
                 style={{
                   borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}40` : 'none',
@@ -53,10 +53,10 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                 {newDay ? c.day : ''}
               </th>
               {expanded && (
-                <th key={`${c.id}-day-note`} className="bg-gray-900 border-b border-gray-800"
+                <th className="bg-gray-900 border-b border-gray-800"
                   style={{ width: ncw, minWidth: ncw, maxWidth: ncw }} />
               )}
-            </>
+            </Fragment>
           );
         })}
       </tr>
@@ -70,9 +70,8 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
           const badge = TYPE_BADGES[c.typ];
           const expanded = !!expandedNoteCols[c.id];
           return (
-            <>
+            <Fragment key={`${c.id}-info`}>
               <th
-                key={`${c.id}-info`}
                 className={`bg-gray-900 px-0.5 pb-1 border-b-2 text-center ${courseFilter === `${c.cls}|${c.typ}` ? 'border-blue-500' : 'border-gray-700'}`}
                 style={{
                   borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}40` : 'none',
@@ -138,7 +137,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                 {c.note && <div className="text-[6px] text-amber-600 mt-0.5">{c.note}</div>}
               </th>
               {expanded && (
-                <th key={`${c.id}-info-note`}
+                <th
                   className="bg-gray-900/80 px-1 pb-1 border-b-2 border-gray-700 text-center border-l border-gray-800 relative"
                   style={{ width: ncw, minWidth: ncw, maxWidth: ncw }}>
                   <div className="text-[8px] text-gray-500">📝 Notizen</div>
@@ -149,7 +148,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   />
                 </th>
               )}
-            </>
+            </Fragment>
           );
         })}
       </tr>
