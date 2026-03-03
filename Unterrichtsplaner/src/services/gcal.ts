@@ -28,22 +28,47 @@ function loadGIS(): Promise<void> {
 
 /** Initiate OAuth login flow — returns access_token */
 export async function loginWithGoogle(clientId: string): Promise<string> {
+  // Validate client ID format
+  if (!clientId || !clientId.includes('.apps.googleusercontent.com')) {
+    throw new Error('Ungültige Client-ID. Format: xxx.apps.googleusercontent.com');
+  }
+
   await loadGIS();
   const google = (window as any).google;
-  if (!google?.accounts?.oauth2) throw new Error('Google Identity Services nicht verfügbar');
+  if (!google?.accounts?.oauth2) throw new Error('Google Identity Services konnte nicht geladen werden. Prüfe deine Internetverbindung.');
 
   return new Promise((resolve, reject) => {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: clientId,
-      scope: SCOPES,
-      callback: (resp: any) => {
-        if (resp.error) { reject(new Error(resp.error_description || resp.error)); return; }
-        const store = useGCalStore.getState();
-        store.setToken(resp.access_token, parseInt(resp.expires_in));
-        resolve(resp.access_token);
-      },
-    });
-    client.requestAccessToken();
+    try {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: SCOPES,
+        callback: (resp: any) => {
+          if (resp.error) {
+            const msg = resp.error === 'access_denied'
+              ? 'Zugriff verweigert. Bitte Berechtigung erteilen.'
+              : resp.error === 'invalid_client'
+              ? 'Ungültige Client-ID. Bitte in den Einstellungen prüfen.'
+              : resp.error_description || resp.error;
+            reject(new Error(msg));
+            return;
+          }
+          const store = useGCalStore.getState();
+          store.setToken(resp.access_token, parseInt(resp.expires_in));
+          resolve(resp.access_token);
+        },
+        error_callback: (err: any) => {
+          const msg = err?.type === 'popup_closed'
+            ? 'Anmeldefenster wurde geschlossen.'
+            : err?.type === 'popup_failed_to_open'
+            ? 'Popup konnte nicht geöffnet werden. Bitte Popup-Blocker deaktivieren.'
+            : `Anmeldefehler: ${err?.type || 'Unbekannt'}`;
+          reject(new Error(msg));
+        },
+      });
+      client.requestAccessToken();
+    } catch (e: any) {
+      reject(new Error(`OAuth-Initialisierung fehlgeschlagen: ${e.message || 'Unbekannter Fehler'}`));
+    }
   });
 }
 

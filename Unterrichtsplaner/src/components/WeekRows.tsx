@@ -820,6 +820,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               return (
                 <React.Fragment key={c.id}>
                 <td
+                  data-cell-key={`${week.w}-${c.id}`}
                   className="p-0 border-b border-slate-900/40 relative group-hover:bg-slate-950/40"
                   style={{
                     borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}12` : 'none',

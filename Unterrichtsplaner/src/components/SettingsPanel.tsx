@@ -5,10 +5,12 @@ import {
   loadSettings, saveSettings, getDefaultSettings, generateId,
   importCurrentCourses, importCurrentHolidays, importCurrentSpecialWeeks,
   applySettingsToWeekData,
+  STUFE_OPTIONS,
   type PlannerSettings, type CourseConfig, type SpecialWeekConfig, type HolidayConfig,
-  type SubjectConfig,
+  type SubjectConfig, type SchoolLevel,
 } from '../store/settingsStore';
 import { WR_CATEGORIES, generateColorVariants } from '../data/categories';
+import { CURRICULUM_GOALS, type CurriculumGoal } from '../data/curriculumGoals';
 import { getGymStufe } from '../utils/gradeRequirements';
 import { IW_PRESET_2526 } from '../data/iwPresets';
 import { useInstanceStore, weekToDate } from '../store/instanceStore';
@@ -195,7 +197,7 @@ function CourseDurationPicker({ value, onChange }: { value: number; onChange: (m
 }
 
 // === Course Editor ===
-function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void }) {
+function CourseEditor({ courses, onChange, schoolLevel }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void; schoolLevel?: SchoolLevel }) {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const addCourse = () => {
@@ -238,8 +240,10 @@ function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange
     <div className="space-y-2">
       {grouped.map(({ stableKey, courses: group }) => (
         <div key={stableKey} className="border border-slate-700/50 rounded p-2 space-y-1">
-          <div className="text-[9px] font-semibold text-gray-300">
+          <div className="text-[9px] font-semibold text-gray-300 cursor-pointer hover:text-blue-300 transition-colors"
+            onClick={() => setEditingId(editingId === group[0].id ? null : group[0].id)}>
             {group[0].cls || '(neu)'} <span className="text-blue-400">{group[0].typ}</span>
+            <span className="text-[7px] text-gray-500 ml-1">({group.map(c => c.day).join(', ')})</span>
           </div>
           {group.map(c => (
             <div key={c.id}>
@@ -248,7 +252,49 @@ function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange
                   <div className="flex gap-1 flex-wrap">
                     <SmallInput value={c.cls} onChange={(v) => updateCourse(c.id, { cls: v })} placeholder="Klasse" className="w-20" />
                     <SmallSelect value={c.typ} onChange={(v) => updateCourse(c.id, { typ: v })} options={COURSE_TYPES} />
-                    <SmallSelect value={c.day} onChange={(v) => updateCourse(c.id, { day: v })} options={DAYS.map(d => ({ key: d, label: d }))} />
+                    {schoolLevel && (
+                      <select value={c.stufe || ''} onChange={(e) => updateCourse(c.id, { stufe: e.target.value || undefined })}
+                        className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer">
+                        <option value="">Stufe…</option>
+                        {STUFE_OPTIONS[schoolLevel].map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                      </select>
+                    )}
+                    {/* Day checkboxes — each checked day = a course entry in the same cls+typ group */}
+                    <div className="flex gap-0.5 items-center ml-1">
+                      {DAYS.map(d => {
+                        const sibling = group.find(s => s.day === d && s.id !== c.id);
+                        const isThisDay = c.day === d;
+                        const isChecked = isThisDay || !!sibling;
+                        return (
+                          <label key={d} className={`flex items-center gap-0 text-[8px] cursor-pointer select-none px-0.5 py-0.5 rounded ${
+                            isChecked ? 'text-blue-300 bg-blue-900/30' : 'text-gray-500 hover:text-gray-400'
+                          }`}>
+                            <input type="checkbox" checked={isChecked}
+                              className="cursor-pointer w-3 h-3"
+                              onChange={(e) => {
+                                if (e.target.checked && !isChecked) {
+                                  // Clone this course for the new day
+                                  const dup: CourseConfig = { ...c, id: generateId(), day: d };
+                                  onChange([...courses, dup]);
+                                } else if (!e.target.checked && isChecked) {
+                                  if (isThisDay) {
+                                    // Can't uncheck own day if it's the only day left
+                                    const siblingCount = group.filter(s => s.id !== c.id).length;
+                                    if (siblingCount === 0) return; // don't remove last entry
+                                    onChange(courses.filter(x => x.id !== c.id));
+                                    setEditingId(group.find(s => s.id !== c.id)?.id || null);
+                                  } else if (sibling) {
+                                    // Remove the sibling course for this day
+                                    onChange(courses.filter(x => x.id !== sibling.id));
+                                  }
+                                }
+                              }}
+                            />
+                            {d}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div className="flex gap-1 items-center flex-wrap">
                     <div>
@@ -298,11 +344,6 @@ function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange
                   <SmallInput value={c.note || ''} onChange={(v) => updateCourse(c.id, { note: v || undefined })} placeholder="Bemerkung (optional)" className="w-full" />
                   <div className="flex gap-1 mt-1 flex-wrap">
                     <button onClick={() => setEditingId(null)} className="text-[8px] text-blue-400 cursor-pointer">✓ Fertig</button>
-                    <button onClick={() => {
-                      const dup: CourseConfig = { ...c, id: generateId(), day: 'Di' as DayOfWeek };
-                      onChange([...courses, dup]);
-                      setEditingId(dup.id);
-                    }} className="text-[8px] text-green-400 cursor-pointer" title="Kurs mit anderem Tag duplizieren (z.B. für Di+Do-Kurse)">+ Tag</button>
                     <button onClick={() => removeCourse(c.id)} className="text-[8px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
                   </div>
                 </div>
@@ -313,6 +354,7 @@ function CourseEditor({ courses, onChange }: { courses: CourseConfig[]; onChange
                   <span>{c.from}–{c.to}</span>
                   <span className="text-gray-500">{c.les * 45}min{c.hk ? ' HK' : ''}</span>
                   <span className="text-gray-500">{c.semesters.map(s => `S${s}`).join('+')}</span>
+                  {c.stufe && <span className="text-cyan-500 text-[8px]">{c.stufe}</span>}
                   {c.note && <span className="text-amber-600 text-[8px]">{c.note}</span>}
                 </div>
               )}
@@ -535,13 +577,54 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
           </div>
         );
       })}
-      <button onClick={addNewWeek}
-        className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
-        + Sonderwoche hinzufügen
-      </button>
+      <div className="flex gap-1">
+        <button onClick={addNewWeek}
+          className="flex-1 py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+          + Sonderwoche hinzufügen
+        </button>
+        <label className="py-1.5 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500">
+          📥 JSON/CSV
+          <input type="file" accept=".json,.csv,.txt" className="hidden" onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              try {
+                const text = reader.result as string;
+                let imported: SpecialWeekConfig[] = [];
+                if (file.name.endsWith('.json')) {
+                  imported = JSON.parse(text) as SpecialWeekConfig[];
+                  if (!Array.isArray(imported)) { alert('Ungültiges Format.'); return; }
+                } else {
+                  // CSV: Label,KW,Type,GymLevel
+                  const lines = text.split('\n').filter(l => l.trim());
+                  for (const line of lines) {
+                    const parts = line.split(/[,;\t]/).map(p => p.trim());
+                    if (parts.length >= 2) {
+                      imported.push({
+                        id: generateId(),
+                        label: parts[0],
+                        week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'),
+                        type: (parts[2] === 'holiday' ? 'holiday' : 'event') as 'event' | 'holiday',
+                        gymLevel: parts[3] || undefined,
+                      });
+                    }
+                  }
+                }
+                if (imported.length === 0) { alert('Keine gültigen Einträge gefunden.'); return; }
+                if (confirm(`${imported.length} Sonderwochen importieren?`)) {
+                  onChange([...weeks, ...imported]);
+                }
+              } catch { alert('Datei konnte nicht gelesen werden.'); }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+          }} />
+        </label>
+      </div>
       <button onClick={loadIWPreset}
-        className="w-full py-1.5 rounded text-[9px] font-medium bg-amber-900/30 border border-amber-500/30 text-amber-300 hover:bg-amber-900/50 cursor-pointer transition-all">
-        IW-Plan SJ 25/26 laden
+        className="py-1 rounded text-[8px] bg-amber-900/20 border border-amber-500/20 text-amber-400/70 hover:bg-amber-900/40 cursor-pointer transition-all">
+        Hofwil 25/26 Preset
       </button>
     </div>
   );
@@ -625,10 +708,43 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
         </div>
         );
       })}
-      <button onClick={addHoliday}
-        className="w-full py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
-        + Ferienperiode hinzufügen
-      </button>
+      <div className="flex gap-1">
+        <button onClick={addHoliday}
+          className="flex-1 py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
+          + Ferienperiode hinzufügen
+        </button>
+        <label className="py-1 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500">
+          📥 CSV
+          <input type="file" accept=".csv,.txt" className="hidden" onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              try {
+                const lines = (reader.result as string).split('\n').filter(l => l.trim());
+                const imported: HolidayConfig[] = [];
+                for (const line of lines) {
+                  const parts = line.split(/[,;\t]/).map(p => p.trim());
+                  if (parts.length >= 3) {
+                    imported.push({
+                      id: generateId(),
+                      label: parts[0],
+                      startWeek: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'),
+                      endWeek: parts[2].replace(/^KW\s*/i, '').padStart(2, '0'),
+                    });
+                  }
+                }
+                if (imported.length === 0) { alert('Keine gültigen Zeilen gefunden. Format: Name,KW-Start,KW-Ende'); return; }
+                if (confirm(`${imported.length} Ferienperioden importieren? (werden zu bestehenden hinzugefügt)`)) {
+                  onChange([...holidays, ...imported]);
+                }
+              } catch { alert('CSV konnte nicht gelesen werden.'); }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+          }} />
+        </label>
+      </div>
     </div>
   );
 }
@@ -1254,6 +1370,16 @@ export function SettingsPanel() {
             <SmallInput value={settings.school?.name || ''} onChange={(v) => updateSettings({ school: { ...settings.school!, name: v } })} placeholder="z.B. Gymnasium Hofwil" className="w-full" />
           </div>
           <div>
+            <label className="text-[8px] text-gray-400 mb-0.5 block">Schulstufe</label>
+            <select value={settings.schoolLevel || ''} onChange={(e) => updateSettings({ schoolLevel: (e.target.value || undefined) as SchoolLevel | undefined })}
+              className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 cursor-pointer w-full">
+              <option value="">-- Nicht gesetzt --</option>
+              <option value="Grundstufe">Grundstufe (1.–6. Klasse)</option>
+              <option value="Sek1">Sekundarstufe I (7.–9. Klasse)</option>
+              <option value="Sek2">Sekundarstufe II (Gymnasium)</option>
+            </select>
+          </div>
+          <div>
             <label className="text-[8px] text-gray-400 mb-0.5 block">Standard-Lektionsdauer (Minuten)</label>
             <SmallInput value={String(settings.school?.lessonDurationMin || 45)} onChange={(v) => {
               const n = parseInt(v) || 45;
@@ -1270,7 +1396,7 @@ export function SettingsPanel() {
 
       {/* Courses */}
       <Section title={`📚 Kurse / Stundenplan (${settings.courses.length})`}>
-        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} />
+        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} />
       </Section>
 
       {/* Special Weeks */}
@@ -1281,6 +1407,61 @@ export function SettingsPanel() {
       {/* Holidays */}
       <Section title={`🏖 Ferien (${settings.holidays.length})`}>
         <HolidaysEditor holidays={settings.holidays} onChange={(h) => updateSettings({ holidays: h })} />
+      </Section>
+
+      {/* Curriculum Goals */}
+      <Section title={`🎯 Lehrplanziele (${settings.curriculumGoals?.length || ((!settings.schoolLevel || settings.schoolLevel === 'Sek2') ? CURRICULUM_GOALS.length : 0)})`}>
+        <div className="space-y-2">
+          <p className="text-[8px] text-gray-400">
+            {settings.curriculumGoals?.length
+              ? `${settings.curriculumGoals.length} eigene Lehrplanziele konfiguriert.`
+              : (!settings.schoolLevel || settings.schoolLevel === 'Sek2')
+                ? `Standard: ${CURRICULUM_GOALS.length} W&R-Lehrplanziele (Sek2 DUY) aktiv.`
+                : 'Für diese Schulstufe sind keine Standard-Lehrplanziele hinterlegt.'}
+          </p>
+          <div className="flex gap-1 flex-wrap">
+            {/* Preset button */}
+            {(settings.schoolLevel && settings.schoolLevel !== 'Sek2') && (
+              <button onClick={() => {
+                if (confirm(`${CURRICULUM_GOALS.length} Lehrplanziele (W&R Sek2 DUY) als Custom-Set laden?`)) {
+                  updateSettings({ curriculumGoals: [...CURRICULUM_GOALS] });
+                }
+              }} className="px-2 py-1 rounded border border-blue-500/40 text-blue-300 text-[9px] cursor-pointer hover:bg-blue-500/10">
+                📋 W&R Sek2 DUY laden
+              </button>
+            )}
+            {/* JSON import */}
+            <label className="px-2 py-1 rounded border border-slate-600 text-gray-400 text-[9px] cursor-pointer hover:text-gray-300 hover:border-slate-500">
+              📥 JSON importieren
+              <input type="file" accept=".json" className="hidden" onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                  try {
+                    const data = JSON.parse(reader.result as string) as CurriculumGoal[];
+                    if (!Array.isArray(data) || data.length === 0) { alert('Ungültiges Format: erwartet Array von CurriculumGoal-Objekten.'); return; }
+                    if (confirm(`${data.length} Lehrplanziele importieren? Bestehende werden ersetzt.`)) {
+                      updateSettings({ curriculumGoals: data });
+                    }
+                  } catch { alert('JSON konnte nicht gelesen werden.'); }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+              }} />
+            </label>
+            {/* Clear button */}
+            {settings.curriculumGoals && settings.curriculumGoals.length > 0 && (
+              <button onClick={() => {
+                if (confirm('Eigene Lehrplanziele entfernen? (Standard wird verwendet falls Sek2)')) {
+                  updateSettings({ curriculumGoals: undefined as any });
+                }
+              }} className="px-2 py-1 rounded border border-red-500/30 text-red-400 text-[9px] cursor-pointer hover:bg-red-500/10">
+                ✕ Eigene entfernen
+              </button>
+            )}
+          </div>
+        </div>
       </Section>
 
       {/* Export / Import JSON */}

@@ -148,9 +148,9 @@ function PillSelect<T extends string>({
           <button key={opt} onClick={() => onChange(active ? undefined : opt)}
             className="px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all"
             style={{
-              background: active ? (color || '#3b82f6') + '30' : 'transparent',
-              borderColor: active ? (color || '#3b82f6') : '#374151',
-              color: active ? '#e5e7eb' : '#9ca3af',
+              background: active ? (color || '#3b82f6') + '40' : 'transparent',
+              borderColor: active ? (color || '#3b82f6') : '#4b5563',
+              color: active ? (color || '#3b82f6') : '#9ca3af',
             }}>
             {icon && <span className="mr-0.5">{icon}</span>}{label}
           </button>
@@ -337,10 +337,10 @@ function SolSection({ sol, onChange }: { sol?: SolDetails; onChange: (s: SolDeta
         <button
           onClick={() => onChange({ ...sol, enabled: !enabled, topic: sol?.topic, description: sol?.description, materialLinks: sol?.materialLinks, duration: sol?.duration })}
           className={`px-2 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all ${
-            enabled ? 'bg-purple-500/20 border-purple-500 text-purple-300' : 'border-gray-600 text-gray-400 hover:text-gray-300'
+            enabled ? 'bg-green-900/40 border-green-500 text-green-300' : 'border-gray-600 text-gray-400 hover:border-green-600 hover:text-green-400'
           }`}
         >
-          📚 {enabled ? 'SOL aktiv' : 'SOL hinzufügen'}
+          🎒 SOL{enabled ? ' ✓' : ''}
         </button>
         {enabled && sol?.duration && <span className="text-[8px] text-gray-400">{sol.duration}</span>}
       </div>
@@ -544,7 +544,7 @@ function DetailsTab() {
     weekData, sequences,
     collection, addCollectionItem, pushUndo,
   } = usePlannerStore();
-  const { categories } = usePlannerData();
+  const { categories, effectiveGoals } = usePlannerData();
   const [showCollectionPicker, setShowCollectionPicker] = useState(false);
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
 
@@ -643,16 +643,16 @@ function DetailsTab() {
     if (lessonType !== undefined && lessonType !== 0 && lessonType !== 2) return;
     const topic = detail.topicMain || effectiveDetail.topicMain;
     if (!topic || topic.length < 3) return;
-    const suggested = suggestSubjectArea(topic);
+    const suggested = suggestSubjectArea(topic, effectiveGoals);
     if (suggested) updateLessonDetail(selection.week, c.col, { subjectArea: suggested });
-  }, [selection?.week, c?.col, detail.topicMain, effectiveDetail.topicMain, detail.subjectArea, currentLesson?.type]);
+  }, [selection?.week, c?.col, detail.topicMain, effectiveDetail.topicMain, detail.subjectArea, currentLesson?.type, effectiveGoals]);
 
   // Auto-suggest curriculum goals
   const goalSuggestions = useMemo(() => {
     const topic = detail.topicMain || effectiveDetail.topicMain;
     if (!topic || topic.length < 2) return [];
-    return suggestGoals(topic, effectiveDetail.subjectArea, 3, 0.2);
-  }, [detail.topicMain, effectiveDetail.topicMain, effectiveDetail.subjectArea]);
+    return suggestGoals(topic, effectiveDetail.subjectArea, 3, 0.2, effectiveGoals);
+  }, [detail.topicMain, effectiveDetail.topicMain, effectiveDetail.subjectArea, effectiveGoals]);
 
   // Mismatch warning: inherited subjectArea doesn't match topic
   const subjectAreaMismatch = useMemo(() => {
@@ -660,7 +660,7 @@ function DetailsTab() {
     if (!effective) return null;
     const topic = detail.topicMain || effectiveDetail.topicMain;
     if (!topic || topic.length < 3) return null;
-    const suggested = suggestSubjectArea(topic);
+    const suggested = suggestSubjectArea(topic, effectiveGoals);
     if (!suggested || suggested === effective) return null;
     // Only warn if the mismatch is from inheritance (not own value)
     return { current: effective, suggested, isInherited: !detail.subjectArea };
@@ -841,7 +841,7 @@ function DetailsTab() {
           {parentBlock?.curriculumGoal && !detail.curriculumGoal && (
             <div className="text-[8px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
           )}
-          <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} subjectArea={effectiveDetail.subjectArea} />
+          <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} subjectArea={effectiveDetail.subjectArea} goals={effectiveGoals} />
         </div>
         <div>
           <label className="text-[9px] text-gray-400 font-medium mb-1 block">Material</label>
@@ -1095,7 +1095,7 @@ function BatchEditTab() {
             return (
               <button key={sa.key} onClick={() => applyToAll('subjectArea', sa.key)}
                 className={`px-2 py-0.5 rounded text-[9px] font-medium border cursor-pointer hover:opacity-80 ${isActive ? 'ring-1 ring-offset-1 ring-offset-slate-800' : ''}`}
-                style={{ background: isActive ? sa.color + '40' : sa.color + '20', borderColor: isActive ? sa.color : sa.color + '60', color: sa.color }}>
+                style={{ background: isActive ? sa.color + '40' : 'transparent', borderColor: isActive ? sa.color : '#4b5563', color: isActive ? sa.color : '#9ca3af' }}>
                 {sa.label}
               </button>
             );
@@ -1143,10 +1143,14 @@ function BatchEditTab() {
       <div className="space-y-1">
         <label className="text-[9px] text-gray-400 font-medium">SOL (Selbstorganisiertes Lernen) {currentValues.mixedSol && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1">
-          <button onClick={() => applyToAll('sol', { enabled: true })}
-            className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer ${currentValues.sol === true ? 'bg-green-900/40 border-green-500 text-green-300 ring-1 ring-green-500/30' : 'border-green-600 text-green-400 hover:bg-green-900/30'}`}>SOL ✓</button>
-          <button onClick={() => applyToAll('sol', { enabled: false })}
-            className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer ${currentValues.sol === false ? 'bg-slate-700 border-gray-500 text-gray-300' : 'border-gray-600 text-gray-400 hover:bg-slate-700'}`}>SOL ✕</button>
+          <button onClick={() => applyToAll('sol', currentValues.sol === true ? { enabled: false } : { enabled: true })}
+            className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer transition-all ${
+              currentValues.sol === true
+                ? 'bg-green-900/40 border-green-500 text-green-300 ring-1 ring-green-500/30'
+                : 'border-gray-600 text-gray-400 hover:border-green-600 hover:text-green-400'
+            }`}>
+            🎒 SOL{currentValues.sol === true ? ' ✓' : ''}{currentValues.mixedSol ? ' (gemischt)' : ''}
+          </button>
         </div>
       </div>
 

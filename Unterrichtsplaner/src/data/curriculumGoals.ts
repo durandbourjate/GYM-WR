@@ -396,17 +396,28 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
 ];
 
+/**
+ * Get effective goals: custom goals from settings → Sek2 default → empty.
+ */
+export function getEffectiveGoals(settings?: { schoolLevel?: string; curriculumGoals?: CurriculumGoal[] } | null): CurriculumGoal[] {
+  if (settings?.curriculumGoals && settings.curriculumGoals.length > 0) return settings.curriculumGoals;
+  if (!settings?.schoolLevel || settings.schoolLevel === 'Sek2') return CURRICULUM_GOALS;
+  return []; // Grundstufe / Sek1: no default goals
+}
+
 // Helper: get goals filtered by area and/or cycle
-export function getGoalsByArea(area: SubjectArea, cycle?: 1 | 2): CurriculumGoal[] {
-  return CURRICULUM_GOALS.filter(
+export function getGoalsByArea(area: SubjectArea, cycle?: 1 | 2, goals?: CurriculumGoal[]): CurriculumGoal[] {
+  const source = goals ?? CURRICULUM_GOALS;
+  return source.filter(
     (g) => g.area === area && (cycle === undefined || g.cycle === cycle)
   );
 }
 
 // Helper: search goals by text
-export function searchGoals(query: string, area?: SubjectArea): CurriculumGoal[] {
+export function searchGoals(query: string, area?: SubjectArea, goals?: CurriculumGoal[]): CurriculumGoal[] {
+  const source = goals ?? CURRICULUM_GOALS;
   const q = query.toLowerCase();
-  return CURRICULUM_GOALS.filter((g) => {
+  return source.filter((g) => {
     if (area && g.area !== area) return false;
     return (
       g.topic.toLowerCase().includes(q) ||

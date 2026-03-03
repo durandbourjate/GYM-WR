@@ -3,8 +3,28 @@ import { COURSES } from '../data/courses';
 import { WEEKS, S2_START_INDEX } from '../data/weeks';
 
 // === Settings Types ===
+export type SchoolLevel = 'Grundstufe' | 'Sek1' | 'Sek2';
+
+export const STUFE_OPTIONS: Record<SchoolLevel, { key: string; label: string }[]> = {
+  Sek2: [
+    { key: 'GYM1', label: 'GYM1' }, { key: 'GYM2', label: 'GYM2' },
+    { key: 'GYM3', label: 'GYM3' }, { key: 'GYM4', label: 'GYM4' },
+    { key: 'GYM5', label: 'GYM5 (TaF)' },
+  ],
+  Sek1: [
+    { key: '7. Klasse', label: '7. Klasse' }, { key: '8. Klasse', label: '8. Klasse' },
+    { key: '9. Klasse', label: '9. Klasse' },
+  ],
+  Grundstufe: [
+    { key: '1. Klasse', label: '1. Kl.' }, { key: '2. Klasse', label: '2. Kl.' },
+    { key: '3. Klasse', label: '3. Kl.' }, { key: '4. Klasse', label: '4. Kl.' },
+    { key: '5. Klasse', label: '5. Kl.' }, { key: '6. Klasse', label: '6. Kl.' },
+  ],
+};
+
 export interface PlannerSettings {
   version: number;
+  schoolLevel?: SchoolLevel;
   school?: {
     name: string;
     lessonDurationMin: number; // default 45
@@ -14,6 +34,14 @@ export interface PlannerSettings {
   specialWeeks: SpecialWeekConfig[];
   holidays: HolidayConfig[];
   semesterBreak: number; // week index where S2 starts
+  stoffverteilung?: StoffverteilungEntry[];
+  curriculumGoals?: import('../data/curriculumGoals').CurriculumGoal[];
+}
+
+export interface StoffverteilungEntry {
+  semester: string; // e.g. 'S1'
+  gym: string;      // e.g. 'GYM1'
+  weights: Record<string, number>; // subjectKey -> weight, e.g. { BWL: 3, VWL: 0, RECHT: 1 }
 }
 
 export interface SubjectConfig {
@@ -36,6 +64,7 @@ export interface CourseConfig {
   semesters: Semester[];
   note?: string;
   sol?: boolean;
+  stufe?: string; // GYM1–GYM5, 7.–9. Klasse, 1.–6. Klasse
 }
 
 export interface SpecialWeekConfig {
@@ -213,6 +242,16 @@ export function applySettingsToWeekData(
 
   let holidayWeeks = 0;
   let specialWeeks = 0;
+
+  // Clear existing type-6 (holiday) and type-5 (event) entries before applying settings
+  for (const w of result) {
+    for (const col of allCols) {
+      const entry = w.lessons[col];
+      if (entry && (entry.type === 6 || entry.type === 5)) {
+        delete w.lessons[col];
+      }
+    }
+  }
 
   // Helper: expand KW range within weekData order
   const allWeekIds = result.map(w => w.w);

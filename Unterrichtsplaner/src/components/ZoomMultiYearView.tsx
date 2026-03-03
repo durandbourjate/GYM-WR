@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
-import { COURSES } from '../data/courses';
-import { CURRICULUM_GOALS, type CurriculumGoal } from '../data/curriculumGoals';
+import { type CurriculumGoal } from '../data/curriculumGoals';
 import { WR_CATEGORIES, type CategoryDefinition } from '../data/categories';
 import type { SubjectArea, ManagedSequence } from '../types';
+import type { StoffverteilungEntry } from '../store/settingsStore';
 
 /** Build a zero-initialized Record from category keys */
 function emptyCountRecord(cats: CategoryDefinition[]): Record<string, number> {
@@ -60,8 +60,8 @@ const STOFF_VERTEILUNG: { semester: string; gym: string; recht: number; bwl: num
 ];
 
 // Group curriculum goals by semester
-function getGoalsBySemester(semester: string): CurriculumGoal[] {
-  return CURRICULUM_GOALS.filter(g => {
+function getGoalsBySemester(semester: string, allGoals: CurriculumGoal[]): CurriculumGoal[] {
+  return allGoals.filter(g => {
     if (!g.semester) return false;
     // Handle ranges like "S3/S4", "S5–S8"
     return g.semester.includes(semester) ||
@@ -71,12 +71,21 @@ function getGoalsBySemester(semester: string): CurriculumGoal[] {
 
 type ViewMode = 'curriculum' | 'actual' | 'class';
 
-// SF groups with their GYM year in current SJ 25/26
-const SF_GROUPS = [
+// Default SF groups (legacy fallback for SJ 25/26)
+const DEFAULT_SF_GROUPS = [
   { cls: '29c', gymYear: 1, semesters: ['S1', 'S2'], label: '29c · GYM1' },
   { cls: '28bc29fs', gymYear: 2, semesters: ['S3', 'S4'], label: '28bc29fs · GYM2' },
   { cls: '27a28f', gymYear: 3, semesters: ['S5', 'S6'], label: '27a28f · GYM3' },
 ];
+
+type SFGroup = { cls: string; gymYear: number; semesters: string[]; label: string };
+
+/** Map stufe (e.g. 'GYM1') to semesters (e.g. ['S1','S2']) */
+function stufeToSemesters(stufe: string): string[] {
+  const num = parseInt(stufe.replace(/\D/g, ''));
+  if (!num || num < 1) return ['S1', 'S2'];
+  return [`S${(num - 1) * 2 + 1}`, `S${num * 2}`];
+}
 
 function SubjectBar({ area, weight, total }: { area: SubjectArea; weight: number; total: number }) {
   if (weight === 0) return null;
@@ -108,12 +117,13 @@ function GoalChip({ goal }: { goal: CurriculumGoal }) {
   );
 }
 
-function SemesterCard({ sv, expanded, onToggle }: { 
-  sv: typeof STOFF_VERTEILUNG[0]; 
-  expanded: boolean; 
+function SemesterCard({ sv, expanded, onToggle, allGoals }: {
+  sv: typeof STOFF_VERTEILUNG[0];
+  expanded: boolean;
   onToggle: () => void;
+  allGoals: CurriculumGoal[];
 }) {
-  const goals = useMemo(() => getGoalsBySemester(sv.semester), [sv.semester]);
+  const goals = useMemo(() => getGoalsBySemester(sv.semester, allGoals), [sv.semester, allGoals]);
   const total = sv.recht + sv.bwl + sv.vwl;
   
   // Group goals by area
@@ -166,23 +176,23 @@ function SemesterCard({ sv, expanded, onToggle }: {
   );
 }
 
-function ActualDataCard({ semester, gymYear }: { semester: string; gymYear: string }) {
+function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gymYear: string; sfGroups: SFGroup[] }) {
   const { sequences, weekData } = usePlannerStore();
-  const { s2StartIndex } = usePlannerData();
-  
+  const { s2StartIndex, courses: plannerCourses } = usePlannerData();
+
   // Determine which weeks belong to S1 vs S2
   const s1Weeks = useMemo(() => new Set(weekData.slice(0, s2StartIndex).map(w => w.w)), [weekData, s2StartIndex]);
   const s2Weeks = useMemo(() => new Set(weekData.slice(s2StartIndex).map(w => w.w)), [weekData, s2StartIndex]);
   const semesterNum = parseInt(semester.replace('S', ''));
   const isOddSemester = semesterNum % 2 === 1; // S1, S3, S5, S7 = 1. Semester
   const relevantWeeks = isOddSemester ? s1Weeks : s2Weeks;
-  
+
   // Find courses for this GYM year (SF courses matching the class)
-  const sfGroup = SF_GROUPS.find(g => g.semesters.includes(semester));
+  const sfGroup = sfGroups.find(g => g.semesters.includes(semester));
   const courseIds = useMemo(() => {
     if (!sfGroup) return new Set<string>();
-    return new Set(COURSES.filter(c => c.cls === sfGroup.cls && c.typ === 'SF').map(c => c.id));
-  }, [sfGroup]);
+    return new Set(plannerCourses.filter(c => c.cls === sfGroup.cls && c.typ === 'SF').map(c => c.id));
+  }, [sfGroup, plannerCourses]);
 
   // Count actual planned lessons by subject area from sequences (filtered by semester weeks + courses)
   const stats = useMemo(() => {
@@ -260,14 +270,15 @@ function ActualDataCard({ semester, gymYear }: { semester: string; gymYear: stri
   );
 }
 
-function ClassViewCard({ group, sequences }: { group: typeof SF_GROUPS[0]; sequences: ManagedSequence[] }) {
+function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group: SFGroup; sequences: ManagedSequence[]; stoffverteilung: { semester: string; gym: string; recht: number; bwl: number; vwl: number }[]; allGoals: CurriculumGoal[] }) {
+  const { courses: plannerCourses } = usePlannerData();
   // Find sequences for this class group
   const classSequences = useMemo(() => {
-    const courseIds = COURSES.filter(c => c.cls === group.cls && c.typ === 'SF').map(c => c.id);
+    const courseIds = plannerCourses.filter(c => c.cls === group.cls && c.typ === 'SF').map(c => c.id);
     return sequences.filter(s =>
       courseIds.includes(s.courseId) || (s.courseIds && s.courseIds.some(cid => courseIds.includes(cid)))
     );
-  }, [group.cls, sequences]);
+  }, [group.cls, sequences, plannerCourses]);
 
   // Count weeks by subject area
   const stats = useMemo(() => {
@@ -290,13 +301,13 @@ function ClassViewCard({ group, sequences }: { group: typeof SF_GROUPS[0]; seque
   const semesterGoals = useMemo(() => {
     const goals: Record<string, CurriculumGoal[]> = {};
     for (const sem of group.semesters) {
-      goals[sem] = getGoalsBySemester(sem);
+      goals[sem] = getGoalsBySemester(sem, allGoals);
     }
     return goals;
-  }, [group.semesters]);
+  }, [group.semesters, allGoals]);
 
-  const sv1 = STOFF_VERTEILUNG.find(s => s.semester === group.semesters[0]);
-  const sv2 = STOFF_VERTEILUNG.find(s => s.semester === group.semesters[1]);
+  const sv1 = stoffverteilung.find(s => s.semester === group.semesters[0]);
+  const sv2 = stoffverteilung.find(s => s.semester === group.semesters[1]);
 
   return (
     <div className="rounded-lg border border-slate-600 bg-slate-900/80 overflow-hidden">
@@ -386,11 +397,63 @@ function ClassViewCard({ group, sequences }: { group: typeof SF_GROUPS[0]; seque
   );
 }
 
+/** Convert StoffverteilungEntry[] to legacy format for rendering */
+function entriesToLegacy(entries: StoffverteilungEntry[]): { semester: string; gym: string; recht: number; bwl: number; vwl: number }[] {
+  return entries.map(e => ({
+    semester: e.semester,
+    gym: e.gym,
+    recht: e.weights['RECHT'] || 0,
+    bwl: e.weights['BWL'] || 0,
+    vwl: e.weights['VWL'] || 0,
+  }));
+}
+
 export function ZoomMultiYearView() {
   const { sequences } = usePlannerStore();
+  const { settings, effectiveGoals } = usePlannerData();
   const [mode, setMode] = useState<ViewMode>('curriculum');
   const [expandedSemesters, setExpandedSemesters] = useState<Set<string>>(new Set());
-  
+  const importRef = useRef<HTMLInputElement>(null);
+
+  // Dynamic SF groups from courses with stufe, fallback to hardcoded
+  const sfGroups: SFGroup[] = useMemo(() => {
+    if (!settings?.courses?.length) return DEFAULT_SF_GROUPS;
+    const grouped = new Map<string, { cls: string; stufe: string; }>();
+    for (const c of settings.courses) {
+      if (c.typ === 'SF' && c.stufe) {
+        const key = `${c.cls}|${c.stufe}`;
+        if (!grouped.has(key)) grouped.set(key, { cls: c.cls, stufe: c.stufe });
+      }
+    }
+    if (grouped.size === 0) return DEFAULT_SF_GROUPS;
+    return [...grouped.values()].map(g => {
+      const num = parseInt(g.stufe.replace(/\D/g, '')) || 1;
+      return {
+        cls: g.cls,
+        gymYear: num,
+        semesters: stufeToSemesters(g.stufe),
+        label: `${g.cls} · ${g.stufe}`,
+      };
+    }).sort((a, b) => a.gymYear - b.gymYear);
+  }, [settings]);
+
+  // Dynamic Stoffverteilung from settings, fallback to hardcoded
+  const stoffverteilung = useMemo(() => {
+    if (settings?.stoffverteilung?.length) return entriesToLegacy(settings.stoffverteilung);
+    return STOFF_VERTEILUNG;
+  }, [settings]);
+
+  const hasStoffverteilung = stoffverteilung.length > 0;
+
+  // Distinct GYM years for rendering
+  const gymYears = useMemo(() => {
+    const years = [...new Set(stoffverteilung.map(s => s.gym))];
+    return years.map(gym => {
+      const semesters = stoffverteilung.filter(s => s.gym === gym).map(s => s.semester);
+      return { gym, semesters };
+    });
+  }, [stoffverteilung]);
+
   const toggleSemester = (s: string) => {
     setExpandedSemesters(prev => {
       const next = new Set(prev);
@@ -399,20 +462,39 @@ export function ZoomMultiYearView() {
     });
   };
 
-  const expandAll = () => setExpandedSemesters(new Set(STOFF_VERTEILUNG.map(s => s.semester)));
+  const expandAll = () => setExpandedSemesters(new Set(stoffverteilung.map(s => s.semester)));
   const collapseAll = () => setExpandedSemesters(new Set());
+
+  // Import Stoffverteilung from JSON
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string) as StoffverteilungEntry[];
+        if (!Array.isArray(data) || data.length === 0) { alert('Ungültiges Format.'); return; }
+        if (confirm(`${data.length} Semester-Einträge importieren?`)) {
+          const store = usePlannerStore.getState();
+          store.setPlannerSettings({ ...store.plannerSettings, stoffverteilung: data } as Parameters<typeof store.setPlannerSettings>[0]);
+        }
+      } catch { alert('JSON konnte nicht gelesen werden.'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   // Summary stats
   const totals = useMemo(() => {
     const t = { recht: 0, bwl: 0, vwl: 0, goals: 0 };
-    for (const sv of STOFF_VERTEILUNG) {
+    for (const sv of stoffverteilung) {
       t.recht += sv.recht;
       t.bwl += sv.bwl;
       t.vwl += sv.vwl;
     }
-    t.goals = CURRICULUM_GOALS.length;
+    t.goals = effectiveGoals.length;
     return t;
-  }, []);
+  }, [stoffverteilung, effectiveGoals]);
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
@@ -421,7 +503,9 @@ export function ZoomMultiYearView() {
         <div>
           <h2 className="text-sm font-bold text-gray-200">◫ Mehrjahresübersicht</h2>
           <p className="text-[9px] text-gray-500 mt-0.5">
-            SF WR · 4 Gymnasialjahre (S1–S8) · Grobzuteilung DUY
+            {sfGroups.length > 0
+              ? `SF WR · ${gymYears.length} Jahrgänge (${stoffverteilung.at(0)?.semester || 'S1'}–${stoffverteilung.at(-1)?.semester || 'S8'})`
+              : 'SF WR · Keine Kurse mit Stufe konfiguriert'}
           </p>
         </div>
         <div className="flex gap-1">
@@ -448,6 +532,18 @@ export function ZoomMultiYearView() {
 
       {mode === 'curriculum' && (
         <>
+          {!hasStoffverteilung ? (
+            <div className="text-center py-8">
+              <div className="text-2xl mb-2">📋</div>
+              <p className="text-gray-400 text-sm">Keine Stoffverteilung konfiguriert</p>
+              <p className="text-gray-500 text-[10px] mt-1">Importiere eine Stoffverteilung (JSON) oder konfiguriere Fachbereiche.</p>
+              <label className="inline-block mt-3 px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[10px] cursor-pointer hover:bg-blue-500/10">
+                📥 Stoffverteilung importieren (JSON)
+                <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+              </label>
+            </div>
+          ) : (
+          <>
           {/* Summary bar */}
           <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-slate-800/50 rounded-md border border-slate-700">
             <span className="text-[9px] text-gray-400">Gesamt:</span>
@@ -455,31 +551,38 @@ export function ZoomMultiYearView() {
             <span className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS.VWL.text }}>VWL {totals.vwl}</span>
             <span className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS.RECHT.text }}>Recht {totals.recht}</span>
             <span className="text-[8px] text-gray-500 ml-auto">{totals.goals} Lehrplanziele</span>
+            <label className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer" title="Stoffverteilung importieren (JSON)">
+              📥<input type="file" accept=".json" className="hidden" onChange={handleImport} />
+            </label>
             <button onClick={expandAll} className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer" title="Alle aufklappen">⊞</button>
             <button onClick={collapseAll} className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer" title="Alle zuklappen">⊟</button>
           </div>
 
           {/* GYM years */}
           <div className="space-y-4">
-            {[['GYM1', 'S1', 'S2'], ['GYM2', 'S3', 'S4'], ['GYM3', 'S5', 'S6'], ['GYM4', 'S7', 'S8']].map(([gym, s1, s2]) => (
+            {gymYears.map(({ gym, semesters }) => (
               <div key={gym}>
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-[10px] font-bold text-amber-500">{gym}</span>
                   <div className="flex-1 h-px bg-amber-800/30" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  {[s1, s2].map(sem => {
-                    const sv = STOFF_VERTEILUNG.find(s => s.semester === sem)!;
+                  {semesters.map(sem => {
+                    const sv = stoffverteilung.find(s => s.semester === sem);
+                    if (!sv) return null;
                     return (
                       <SemesterCard key={sem} sv={sv}
                         expanded={expandedSemesters.has(sem)}
-                        onToggle={() => toggleSemester(sem)} />
+                        onToggle={() => toggleSemester(sem)}
+                        allGoals={effectiveGoals} />
                     );
                   })}
                 </div>
               </div>
             ))}
           </div>
+          </>
+          )}
         </>
       )}
 
@@ -489,33 +592,50 @@ export function ZoomMultiYearView() {
           <div className="text-[9px] text-gray-500 mb-3 px-2 py-1.5 bg-slate-800/50 rounded-md border border-slate-700">
             Zeigt geplante Lektionen aus den Sequenzen des aktuellen Schuljahres.
           </div>
+          {gymYears.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-2xl mb-2">📊</div>
+              <p className="text-gray-400 text-sm">Keine Daten verfügbar</p>
+              <p className="text-gray-500 text-[10px] mt-1">Konfiguriere Kurse mit Stufe und Stoffverteilung.</p>
+            </div>
+          ) : (
           <div className="space-y-4">
-            {[['GYM1', 'S1', 'S2'], ['GYM2', 'S3', 'S4'], ['GYM3', 'S5', 'S6'], ['GYM4', 'S7', 'S8']].map(([gym, s1, s2]) => (
+            {gymYears.map(({ gym, semesters }) => (
               <div key={gym}>
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-[10px] font-bold text-amber-500">{gym}</span>
                   <div className="flex-1 h-px bg-amber-800/30" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <ActualDataCard semester={s1} gymYear={gym} />
-                  <ActualDataCard semester={s2} gymYear={gym} />
+                  {semesters.map(sem => (
+                    <ActualDataCard key={sem} semester={sem} gymYear={gym} sfGroups={sfGroups} />
+                  ))}
                 </div>
               </div>
             ))}
           </div>
+          )}
         </>
       )}
 
       {mode === 'class' && (
         <>
           <div className="text-[9px] text-gray-500 mb-3 px-2 py-1.5 bg-slate-800/50 rounded-md border border-slate-700">
-            Zeigt Soll- und Ist-Zustand pro SF-Gruppe im aktuellen Schuljahr (SJ 25/26).
+            Zeigt Soll- und Ist-Zustand pro SF-Gruppe im aktuellen Schuljahr.
           </div>
+          {sfGroups.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-2xl mb-2">🎓</div>
+              <p className="text-gray-400 text-sm">Keine SF-Gruppen konfiguriert</p>
+              <p className="text-gray-500 text-[10px] mt-1">Konfiguriere Kurse mit Stufe in den Einstellungen.</p>
+            </div>
+          ) : (
           <div className="space-y-3">
-            {SF_GROUPS.map(group => (
-              <ClassViewCard key={group.cls} group={group} sequences={sequences} />
+            {sfGroups.map(group => (
+              <ClassViewCard key={group.cls} group={group} sequences={sequences} stoffverteilung={stoffverteilung} allGoals={effectiveGoals} />
             ))}
           </div>
+          )}
         </>
       )}
 
@@ -530,7 +650,7 @@ export function ZoomMultiYearView() {
             </div>
           );
         })}
-        <span className="text-[7px] text-gray-600 ml-auto">Zahlen = Gewichtungseinheiten (Grobzuteilung DUY)</span>
+        <span className="text-[7px] text-gray-600 ml-auto">Zahlen = Gewichtungseinheiten</span>
       </div>
     </div>
   );

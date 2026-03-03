@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
-import { COURSES } from '../data/courses';
-import { WEEKS, S2_START_INDEX } from '../data/weeks';
 import { checkGradeRequirements } from '../utils/gradeRequirements';
+import { usePlannerData } from '../hooks/usePlannerData';
 import type { Course, Week } from '../types';
 
 interface CourseStats {
@@ -15,9 +14,9 @@ interface CourseStats {
   examWeeks: string[];
 }
 
-function computeStats(weekData: Week[]): CourseStats[] {
-  const data = weekData.length > 0 ? weekData : WEEKS;
-  return COURSES.map((course) => {
+function computeStats(weekData: Week[], courses: Course[]): CourseStats[] {
+  if (courses.length === 0 || weekData.length === 0) return [];
+  return courses.map((course) => {
     const stats: CourseStats = {
       course,
       totalLessons: 0,
@@ -27,7 +26,7 @@ function computeStats(weekData: Week[]): CourseStats[] {
       byType: {},
       examWeeks: [],
     };
-    for (const week of data) {
+    for (const week of weekData) {
       const entry = week.lessons[course.col];
       if (!entry) continue;
       stats.totalLessons++;
@@ -143,11 +142,12 @@ function findExamCollisions(stats: CourseStats[]): Collision[] {
 
 export function StatsPanel({ onClose }: { onClose: () => void }) {
   const { weekData, sequences, lessonDetails } = usePlannerStore();
-  const stats = useMemo(() => computeStats(weekData), [weekData]);
+  const { courses: plannerCourses, s2StartIndex } = usePlannerData();
+  const stats = useMemo(() => computeStats(weekData, plannerCourses), [weekData, plannerCourses]);
   const collisions = useMemo(() => findExamCollisions(stats), [stats]);
   const gradeWarnings = useMemo(
-    () => checkGradeRequirements(weekData, lessonDetails, COURSES, S2_START_INDEX),
-    [weekData, lessonDetails]
+    () => plannerCourses.length > 0 ? checkGradeRequirements(weekData, lessonDetails, plannerCourses, s2StartIndex) : [],
+    [weekData, lessonDetails, plannerCourses, s2StartIndex]
   );
 
   const gradeIssues = gradeWarnings.filter(w => w.status !== 'ok');
@@ -166,10 +166,19 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-sm font-bold text-gray-100">📊 Statistik SJ 25/26</h2>
+          <h2 className="text-sm font-bold text-gray-100">📊 Statistik</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 cursor-pointer text-xs">✕</button>
         </div>
 
+        {stats.length === 0 && (
+          <div className="text-center py-8">
+            <div className="text-2xl mb-2">📊</div>
+            <p className="text-gray-400 text-sm">Keine Daten vorhanden</p>
+            <p className="text-gray-500 text-[10px] mt-1">Lege zuerst Kurse an und plane Lektionen.</p>
+          </div>
+        )}
+
+        {stats.length > 0 && <>
         {/* Summary */}
         <div className="grid grid-cols-4 gap-3 mb-4">
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
@@ -177,7 +186,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
             <div className="text-[9px] text-gray-400">Prüfungen total</div>
           </div>
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
-            <div className="text-lg font-bold text-gray-100">{COURSES.length}</div>
+            <div className="text-lg font-bold text-gray-100">{plannerCourses.length}</div>
             <div className="text-[9px] text-gray-400">Kurse</div>
           </div>
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
@@ -290,6 +299,8 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
             )}
           </div>
         </div>
+
+        </>}
 
         {/* Legend */}
         <div className="mt-3 flex gap-3 flex-wrap">

@@ -15,9 +15,10 @@ interface CurriculumGoalPickerProps {
   value: string | undefined;
   onChange: (value: string) => void;
   subjectArea?: SubjectArea;
+  goals?: CurriculumGoal[];
 }
 
-export function CurriculumGoalPicker({ value, onChange, subjectArea }: CurriculumGoalPickerProps) {
+export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: CurriculumGoalPickerProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [cycleFilter, setCycleFilter] = useState<1 | 2 | null>(null);
@@ -53,24 +54,26 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea }: Curriculu
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
+  const source = goals ?? CURRICULUM_GOALS;
+
   // Filter goals
   const filtered = (() => {
-    let goals: CurriculumGoal[];
+    let result: CurriculumGoal[];
     if (search.trim()) {
-      goals = searchGoals(search, subjectArea);
+      result = searchGoals(search, subjectArea, source);
     } else if (subjectArea) {
-      goals = CURRICULUM_GOALS.filter((g) => g.area === subjectArea);
+      result = source.filter((g) => g.area === subjectArea);
     } else {
-      goals = [...CURRICULUM_GOALS];
+      result = [...source];
     }
     if (cycleFilter !== null) {
-      goals = goals.filter((g) => g.cycle === cycleFilter);
+      result = result.filter((g) => g.cycle === cycleFilter);
     }
-    return goals;
+    return result;
   })();
 
   // Find currently selected goal
-  const selectedGoal = CURRICULUM_GOALS.find(
+  const selectedGoal = source.find(
     (g) => g.id === value || `${g.id}: ${g.goal}` === value
   );
 
@@ -103,6 +106,8 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea }: Curriculu
           </div>
         ) : value ? (
           <span className="text-gray-300 flex-1">{value}</span>
+        ) : source.length === 0 ? (
+          <span className="text-gray-600 flex-1 italic">Keine Lehrplanziele konfiguriert</span>
         ) : (
           <span className="text-gray-500 flex-1">Lehrplanziel wählen oder eingeben…</span>
         )}

@@ -92,12 +92,14 @@ export function suggestGoals(
   topicMain: string,
   subjectArea?: SubjectArea,
   maxResults = 3,
-  threshold = 0.2
+  threshold = 0.2,
+  goals?: CurriculumGoal[]
 ): SuggestResult[] {
   const queryTokens = tokenize(topicMain);
   if (queryTokens.length === 0) return [];
 
-  const scored = CURRICULUM_GOALS
+  const source = goals ?? CURRICULUM_GOALS;
+  const scored = source
     .map(goal => {
       const { score, reason } = scoreGoal(queryTokens, goal, subjectArea);
       return { goal, score, matchReason: reason };
@@ -114,14 +116,15 @@ export function suggestGoals(
  * curriculum goal and returning its area. Returns undefined if no
  * confident match is found (score < 0.35).
  */
-export function suggestSubjectArea(topicMain: string): SubjectArea | undefined {
+export function suggestSubjectArea(topicMain: string, goals?: CurriculumGoal[]): SubjectArea | undefined {
   const queryTokens = tokenize(topicMain);
   if (queryTokens.length === 0) return undefined;
 
+  const source = goals ?? CURRICULUM_GOALS;
   let bestScore = 0;
   let bestArea: SubjectArea | undefined;
 
-  for (const goal of CURRICULUM_GOALS) {
+  for (const goal of source) {
     // Score without subject area bonus to get unbiased match
     const { score } = scoreGoal(queryTokens, goal);
     if (score > bestScore) {

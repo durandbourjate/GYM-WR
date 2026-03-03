@@ -5,6 +5,7 @@ import { configToCourses, loadSettings } from '../store/settingsStore';
 import { usePlannerStore } from '../store/plannerStore';
 import { useInstanceStore, generateWeekIds } from '../store/instanceStore';
 import { WR_CATEGORIES, subjectConfigsToCategories, type CategoryDefinition } from '../data/categories';
+import { getEffectiveGoals, type CurriculumGoal } from '../data/curriculumGoals';
 import type { Course, Week } from '../types';
 
 /**
@@ -106,5 +107,13 @@ export function usePlannerData() {
     };
   }, [courses, hasCustomCourses]);
 
-  return { courses, weeks, s2StartIndex, currentWeek, getLinkedCourseIds, hasCustomCourses, isLegacy: isLegacyPlanner, categories };
+  const schoolLevel = settings?.schoolLevel;
+
+  // === Effective curriculum goals ===
+  const effectiveGoals: CurriculumGoal[] = useMemo(
+    () => getEffectiveGoals(settings),
+    [settings]
+  );
+
+  return { courses, weeks, s2StartIndex, currentWeek, getLinkedCourseIds, hasCustomCourses, isLegacy: isLegacyPlanner, categories, schoolLevel, settings, effectiveGoals };
 }

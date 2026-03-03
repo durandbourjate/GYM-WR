@@ -1,10 +1,9 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback, useLayoutEffect } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { StatsPanel } from './StatsPanel';
 import { TaFPanel } from './TaFPanel';
-import { COURSES } from '../data/courses';
-import { CURRENT_WEEK, S2_START_INDEX } from '../data/weeks';
+import { CURRENT_WEEK } from '../data/weeks';
 import { checkGradeRequirements } from '../utils/gradeRequirements';
 import type { FilterType } from '../types';
 
@@ -23,11 +22,12 @@ export function AppHeader() {
 
   // Grade warnings badge
   const { weekData, lessonDetails } = usePlannerStore();
+  const { s2StartIndex } = usePlannerData();
   const gradeIssueCount = useMemo(() => {
-    if (!weekData.length) return 0;
-    return checkGradeRequirements(weekData, lessonDetails, COURSES, S2_START_INDEX)
+    if (!weekData.length || !plannerCourses.length) return 0;
+    return checkGradeRequirements(weekData, lessonDetails, plannerCourses, s2StartIndex)
       .filter(w => w.status !== 'ok').length;
-  }, [weekData, lessonDetails]);
+  }, [weekData, lessonDetails, plannerCourses, s2StartIndex]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -242,13 +242,68 @@ export function HelpBar() {
 export function MultiSelectToolbar() {
   const { multiSelection, clearMultiSelect, batchShiftDown, batchInsertBefore, weekData,
     addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab, lessonDetails } = usePlannerStore();
+  const { courses: plannerCoursesInner } = usePlannerData();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Compute position from selected cells' bounding rects
+  const computePosition = useCallback(() => {
+    if (multiSelection.length === 0) { setPos(null); return; }
+    if (window.innerWidth < 768) { setIsMobile(true); setPos(null); return; }
+    setIsMobile(false);
+
+    const rects: DOMRect[] = [];
+    for (const key of multiSelection) {
+      const el = document.querySelector(`[data-cell-key="${key}"]`);
+      if (el) rects.push(el.getBoundingClientRect());
+    }
+    if (rects.length === 0) { setPos(null); return; }
+
+    // Union bounding rect
+    const top = Math.min(...rects.map(r => r.top));
+    const right = Math.max(...rects.map(r => r.right));
+    const left = Math.min(...rects.map(r => r.left));
+
+    const menuW = 160;
+    const menuH = 180;
+    const gap = 8;
+
+    // Default: right of selection
+    let posLeft = right + gap;
+    let posTop = top;
+
+    // Flip left if overflows right
+    if (posLeft + menuW > window.innerWidth - 8) {
+      posLeft = left - menuW - gap;
+    }
+    // Shift up if overflows bottom
+    if (posTop + menuH > window.innerHeight - 8) {
+      posTop = Math.max(8, window.innerHeight - menuH - 8);
+    }
+    // Ensure not above viewport
+    if (posTop < 8) posTop = 8;
+
+    setPos({ top: posTop, left: Math.max(8, posLeft) });
+  }, [multiSelection]);
+
+  useLayoutEffect(() => { computePosition(); }, [computePosition]);
+
+  // Re-position on scroll
+  useEffect(() => {
+    if (multiSelection.length === 0) return;
+    const handler = () => computePosition();
+    window.addEventListener('scroll', handler, true);
+    window.addEventListener('resize', handler);
+    return () => { window.removeEventListener('scroll', handler, true); window.removeEventListener('resize', handler); };
+  }, [multiSelection, computePosition]);
+
   if (multiSelection.length === 0) return null;
 
   const allWeeks = weekData.map(w => w.w);
 
   // Group selection by courseId and create sequence
   const handleCreateSequence = () => {
-    // Parse selection keys: "2026-W09-c11" → { week, courseId }
     const parsed = multiSelection.map(key => {
       const parts = key.split('-');
       const courseId = parts[parts.length - 1];
@@ -256,22 +311,18 @@ export function MultiSelectToolbar() {
       return { week, courseId };
     });
 
-    // Group by courseId
     const byCourse = new Map<string, string[]>();
     for (const { week, courseId } of parsed) {
       if (!byCourse.has(courseId)) byCourse.set(courseId, []);
       byCourse.get(courseId)!.push(week);
     }
 
-    // Use the first (or only) courseId
     const [courseId, weeks] = [...byCourse.entries()][0];
-    const course = COURSES.find(c => c.id === courseId);
+    const course = plannerCoursesInner.find(c => c.id === courseId);
     if (!course) return;
 
-    // Sort weeks chronologically
     const sortedWeeks = [...weeks].sort();
 
-    // Detect shared subjectArea across selected cells
     const areas = new Set<string>();
     for (const { week, courseId: cid } of parsed) {
       const d = lessonDetails[`${week}-${cid}`];
@@ -279,7 +330,6 @@ export function MultiSelectToolbar() {
     }
     const sharedArea = areas.size === 1 ? [...areas][0] as import('../types').SubjectArea : undefined;
 
-    // Create single block with all selected weeks
     const seqId = addSequence({
       courseId,
       title: `Neue Sequenz ${course.cls}`,
@@ -293,40 +343,65 @@ export function MultiSelectToolbar() {
     clearMultiSelect();
   };
 
-  // Check if all selections are in the same course column
   const courseIds = new Set(multiSelection.map(key => {
     const parts = key.split('-');
     return parts[parts.length - 1];
   }));
   const singleCourse = courseIds.size === 1;
 
+  // Mobile fallback: fixed bottom bar
+  if (isMobile || !pos) {
+    return (
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-indigo-950/95 backdrop-blur border border-indigo-500 rounded-lg px-4 py-2 flex items-center gap-3 text-[10px] z-[55] shadow-xl shadow-black/40">
+        <span className="font-bold text-indigo-200">{multiSelection.length} markiert</span>
+        {singleCourse && (
+          <button onClick={handleCreateSequence}
+            className="px-2 py-0.5 rounded bg-green-700 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-green-600">
+            ▧ Sequenz
+          </button>
+        )}
+        <button onClick={() => batchShiftDown(multiSelection, allWeeks, plannerCoursesInner)}
+          className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
+          ↓ +1
+        </button>
+        <button onClick={() => batchInsertBefore(multiSelection, allWeeks, plannerCoursesInner)}
+          className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
+          ⊞ Einfügen
+        </button>
+        <button onClick={clearMultiSelect}
+          className="px-2 py-0.5 rounded bg-transparent text-indigo-300 border border-indigo-500 text-[9px] cursor-pointer">
+          ✕
+        </button>
+      </div>
+    );
+  }
+
+  // Desktop: floating context menu next to selection
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-indigo-950/95 backdrop-blur border border-indigo-500 rounded-lg px-4 py-2 flex items-center gap-3 text-[10px] z-[55] shadow-xl shadow-black/40">
-      <span className="font-bold text-indigo-200">{multiSelection.length} markiert</span>
+    <div
+      ref={menuRef}
+      className="fixed bg-indigo-950/95 backdrop-blur border border-indigo-500 rounded-lg p-1.5 flex flex-col gap-1 text-[10px] z-[55] shadow-xl shadow-black/40"
+      style={{ top: pos.top, left: pos.left, minWidth: 140 }}
+    >
+      <div className="text-[9px] font-bold text-indigo-200 px-1.5 pb-0.5 border-b border-indigo-700/50 mb-0.5">
+        {multiSelection.length} markiert
+      </div>
       {singleCourse && (
-        <button
-          onClick={handleCreateSequence}
-          className="px-2 py-0.5 rounded bg-green-700 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-green-600"
-        >
+        <button onClick={handleCreateSequence}
+          className="w-full text-left px-1.5 py-1 rounded bg-green-700/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-green-600">
           ▧ Neue Sequenz
         </button>
       )}
-      <button
-        onClick={() => batchShiftDown(multiSelection, allWeeks, COURSES)}
-        className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500"
-      >
+      <button onClick={() => batchShiftDown(multiSelection, allWeeks, plannerCoursesInner)}
+        className="w-full text-left px-1.5 py-1 rounded bg-indigo-600/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
         ↓ Verschieben (+1)
       </button>
-      <button
-        onClick={() => batchInsertBefore(multiSelection, allWeeks, COURSES)}
-        className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500"
-      >
+      <button onClick={() => batchInsertBefore(multiSelection, allWeeks, plannerCoursesInner)}
+        className="w-full text-left px-1.5 py-1 rounded bg-indigo-600/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
         ⊞ Einfügen davor
       </button>
-      <button
-        onClick={clearMultiSelect}
-        className="px-2 py-0.5 rounded bg-transparent text-indigo-300 border border-indigo-500 text-[9px] cursor-pointer"
-      >
+      <button onClick={clearMultiSelect}
+        className="w-full text-left px-1.5 py-1 rounded bg-transparent text-indigo-300 border border-indigo-500/50 text-[9px] cursor-pointer hover:bg-indigo-800/30">
         ✕ Aufheben
       </button>
     </div>
