@@ -341,7 +341,7 @@ export function CollectionPanel() {
       </div>
 
       {/* Collection list */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5"
+      <div className="flex-1 overflow-y-auto px-3 py-2 pb-12 space-y-1.5"
         style={{ overscrollBehavior: 'contain' }}
         onWheel={(e) => e.stopPropagation()}>
         {filtered.length === 0 && (

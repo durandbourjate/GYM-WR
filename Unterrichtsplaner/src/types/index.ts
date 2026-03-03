@@ -1,6 +1,6 @@
 // Core types for the Unterrichtsplaner
 
-export type CourseType = 'SF' | 'EWR' | 'EF' | 'KS' | 'IN';
+export type CourseType = string; // Previously: 'SF' | 'EWR' | 'EF' | 'KS' | 'IN'; now flexible (v3.76 #1)
 export type DayOfWeek = 'Mo' | 'Di' | 'Mi' | 'Do' | 'Fr';
 export type LessonType = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 // 0=other, 1=BWL, 2=Recht/VWL, 3=IN, 4=exam, 5=event, 6=holiday

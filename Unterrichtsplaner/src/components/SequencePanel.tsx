@@ -505,6 +505,11 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     const course = COURSES.find(c => c.id === newCourseId);
     const autoColor: Record<string, string> = { SF: '#16a34a', EWR: '#d97706', IN: '#0ea5e9', KS: '#7c3aed', EF: '#ec4899' };
     const linkedIds = getLinkedCourseIds(newCourseId);
+    // Use multi-selection weeks if they match the course (v3.76 #9)
+    const store = usePlannerStore.getState();
+    const selWeeks = store.multiSelection
+      .filter(k => k.endsWith(`-${newCourseId}`))
+      .map(k => k.split('-').slice(0, -1).join('-'));
     const seqId = addSequence({
       courseId: newCourseId,
       courseIds: linkedIds.length > 1 ? linkedIds : undefined,
@@ -512,8 +517,18 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
       blocks: [],
       color: course ? autoColor[course.typ] || '#16a34a' : '#16a34a',
     });
-    // Auto-add first block and open detail view
-    addBlockToSequence(seqId, { weeks: [], label: newTitle.trim() });
+    // Auto-add first block with selected weeks (or empty)
+    addBlockToSequence(seqId, { weeks: selWeeks, label: newTitle.trim() });
+    // Auto-create placeholder lessons for assigned weeks (v3.76 #9)
+    if (course && selWeeks.length > 0) {
+      store.pushUndo();
+      for (const w of selWeeks) {
+        const existing = store.weekData.find(wd => wd.w === w)?.lessons[course.col];
+        if (!existing?.title) {
+          store.updateLesson(w, course.col, { title: 'UE', type: 1 });
+        }
+      }
+    }
     setEditingSequenceId(`${seqId}-0`);
     setNewTitle(''); setShowNewForm(false);
   };
@@ -649,44 +664,43 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
         );
       })()}
 
-      {/* Flat block list */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3">
+      {/* Flat block list + new sequence form (v3.76 #3: inline like UE button) */}
+      <div className="flex-1 overflow-y-auto px-3 py-2 pb-8 space-y-3">
+        {/* New sequence form — inline at top */}
+        <div>
+          {showNewForm ? (
+            <div className="space-y-1.5 bg-slate-800/50 rounded p-2 border border-slate-600/50">
+              <input autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleCreateSequence(); if (e.key === 'Escape') setShowNewForm(false); }}
+                placeholder="Titel der Sequenz…"
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400" />
+              <select value={newCourseId} onChange={(e) => {
+                  setNewCourseId(e.target.value);
+                  const course = COURSES.find(c => c.id === e.target.value);
+                  if (course && !newTitle.trim()) setNewTitle(`${course.cls} – `);
+                }}
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400">
+                {COURSES.map((c) => (
+                  <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to} ({c.les}L)</option>
+                ))}
+              </select>
+              <div className="flex gap-1 justify-end">
+                <button onClick={() => setShowNewForm(false)}
+                  className="px-2 py-0.5 rounded text-[9px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
+                <button onClick={handleCreateSequence}
+                  className="px-2 py-0.5 rounded text-[9px] text-white bg-green-600 border border-green-500 cursor-pointer hover:bg-green-500">Erstellen</button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setShowNewForm(true)}
+              className="w-full px-2 py-1.5 rounded text-[10px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300">
+              + Neue Sequenz
+            </button>
+          )}
+        </div>
         {renderFlatBlocks()}
         {flatBlocks.length === 0 && sequences.length === 0 && (
           <div className="text-[10px] text-gray-400 text-center py-4">Noch keine Sequenzen erstellt</div>
-        )}
-      </div>
-
-      {/* New sequence form */}
-      <div className="px-3 py-2 border-t border-slate-600 shrink-0">
-        {showNewForm ? (
-          <div className="space-y-1.5">
-            <input autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleCreateSequence(); if (e.key === 'Escape') setShowNewForm(false); }}
-              placeholder="Titel der Sequenz…"
-              className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400" />
-            <select value={newCourseId} onChange={(e) => {
-                setNewCourseId(e.target.value);
-                const course = COURSES.find(c => c.id === e.target.value);
-                if (course && !newTitle.trim()) setNewTitle(`${course.cls} – `);
-              }}
-              className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400">
-              {COURSES.map((c) => (
-                <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to} ({c.les}L)</option>
-              ))}
-            </select>
-            <div className="flex gap-1 justify-end">
-              <button onClick={() => setShowNewForm(false)}
-                className="px-2 py-0.5 rounded text-[9px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
-              <button onClick={handleCreateSequence}
-                className="px-2 py-0.5 rounded text-[9px] text-white bg-green-600 border border-green-500 cursor-pointer hover:bg-green-500">Erstellen</button>
-            </div>
-          </div>
-        ) : (
-          <button onClick={() => setShowNewForm(true)}
-            className="w-full px-2 py-1.5 rounded text-[10px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300">
-            + Neue Sequenz
-          </button>
         )}
       </div>
     </>

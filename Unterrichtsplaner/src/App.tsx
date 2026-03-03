@@ -81,13 +81,11 @@ function PlannerContent() {
       }
       setWeekData(initial);
     } else if (plannerSettings) {
-      // Re-apply holidays/special weeks when plannerSettings are set (e.g. from template)
-      // Only if weekData is "empty" (all lessons maps are empty = no user edits)
-      const hasContent = weekData.some(w => Object.keys(w.lessons).length > 0);
-      if (!hasContent && (plannerSettings.holidays.length > 0 || plannerSettings.specialWeeks.length > 0)) {
-        const applied = applySettingsToWeekData(weekData, plannerSettings);
-        setWeekData(applied.weekData);
-      }
+      // Re-apply holidays/special weeks whenever plannerSettings change.
+      // applySettingsToWeekData first clears old type-5/6 entries, then reapplies —
+      // user lessons (not holidays/events) are preserved. (v3.76 #7)
+      const applied = applySettingsToWeekData(weekData, plannerSettings);
+      setWeekData(applied.weekData);
     }
   }, [plannerSettings]);
 

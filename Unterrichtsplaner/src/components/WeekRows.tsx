@@ -235,7 +235,15 @@ function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }: { wee
 
   const handleNewSequence = () => {
     const weeks = selectedWeeks && selectedWeeks.length > 0 ? selectedWeeks : [week];
+    pushUndo();
     const seqId = addSequence({ courseId: course.id, title: `Neue Sequenz ${course.cls}`, blocks: [{ weeks, label: '' }] });
+    // Auto-create placeholder lessons for assigned weeks (v3.76 #9)
+    for (const w of weeks) {
+      const existing = usePlannerStore.getState().weekData.find(wd => wd.w === w)?.lessons[course.col];
+      if (!existing?.title) {
+        updateLesson(w, course.col, { title: 'UE', type: 1 });
+      }
+    }
     setEditingSequenceId(`${seqId}-0`); // flat format: seqId-blockIndex
     setSidePanelOpen(true);
     setSidePanelTab('sequences');
@@ -360,6 +368,9 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   const dragMoved = useRef(false);
   // Multi-day shift-click popup
   const [multiDayPrompt, setMultiDayPrompt] = useState<{ weekW: string; courseId: string; position: { x: number; y: number } } | null>(null);
+
+  // Delayed single-click to allow double-click detection (v3.76 #2)
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Long-hold drag-move state (v3.58)
   const [dragMoveSource, setDragMoveSource] = useState<{ week: string; col: number } | null>(null);
@@ -909,16 +920,22 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       // Clear drag selection when clicking filled cell
                       setDragSelectedWeeks([]); setDragSelectCol(null); setDragSelectCourse(null);
                     } else {
-                      // Click on empty cell: select it (mark visually) and close panel
-                      clearMultiSelect();
-                      setSelection({ week: week.w, courseId: c.id, title: '', course: c });
-                      setEmptyCellMenu(null);
-                      setDragSelectedWeeks([]); setDragSelectCol(null); setDragSelectCourse(null);
-                      usePlannerStore.getState().setEditingSequenceId(null);
-                      setSidePanelOpen(false);
+                      // Click on empty cell: delay to allow double-click detection (v3.76 #2)
+                      if (clickTimerRef.current) { clearTimeout(clickTimerRef.current); clickTimerRef.current = null; }
+                      clickTimerRef.current = setTimeout(() => {
+                        clickTimerRef.current = null;
+                        clearMultiSelect();
+                        setSelection({ week: week.w, courseId: c.id, title: '', course: c });
+                        setEmptyCellMenu(null);
+                        setDragSelectedWeeks([]); setDragSelectCol(null); setDragSelectCourse(null);
+                        usePlannerStore.getState().setEditingSequenceId(null);
+                        setSidePanelOpen(false);
+                      }, 250);
                     }
                   }}
                   onDoubleClick={(e) => {
+                    // Cancel pending single-click (v3.76 #2)
+                    if (clickTimerRef.current) { clearTimeout(clickTimerRef.current); clickTimerRef.current = null; }
                     if (title) {
                       handleDoubleClick(week.w, c, title);
                     } else {

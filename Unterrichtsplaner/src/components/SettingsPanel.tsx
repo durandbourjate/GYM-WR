@@ -45,10 +45,20 @@ function addMinutesToTime(time: string, minutes: number): string {
 }
 
 const DAYS: DayOfWeek[] = ['Mo', 'Di', 'Mi', 'Do', 'Fr'];
-const COURSE_TYPES: { key: CourseType; label: string }[] = [
-  { key: 'SF', label: 'SF' }, { key: 'EWR', label: 'EWR' },
-  { key: 'EF', label: 'EF' }, { key: 'KS', label: 'KS' }, { key: 'IN', label: 'IN' },
+// WR-specific course types (only shown when WR-Fachbereiche configured)
+const WR_COURSE_TYPES: { key: CourseType; label: string }[] = [
+  { key: 'SF', label: 'SF' }, { key: 'EWR', label: 'EWR' }, { key: 'EF', label: 'EF' },
 ];
+// General course types (always available)
+const GENERAL_COURSE_TYPES: { key: CourseType; label: string }[] = [
+  { key: 'KS', label: 'KS' }, { key: 'IN', label: 'IN' },
+];
+const WR_KEYS = new Set(['BWL', 'VWL', 'RECHT']);
+
+function getCourseTypes(subjects: SubjectConfig[]): { key: CourseType; label: string }[] {
+  const hasWR = subjects.some(s => WR_KEYS.has(s.id?.toUpperCase() || '') || WR_KEYS.has(s.label?.toUpperCase() || ''));
+  return hasWR ? [...WR_COURSE_TYPES, ...GENERAL_COURSE_TYPES] : GENERAL_COURSE_TYPES;
+}
 
 // === Helper Components ===
 function Section({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -125,12 +135,11 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
   return (
     <div className="space-y-2">
       <p className="text-[8px] text-gray-400">Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
-      {subjects.length === 0 && (
-        <button onClick={loadWRDefaults}
-          className="w-full py-1.5 rounded text-[9px] font-medium bg-blue-900/30 border border-blue-500/30 text-blue-300 hover:bg-blue-900/50 cursor-pointer transition-all">
-          📋 W&R-Vorlage laden
-        </button>
-      )}
+      <button onClick={loadWRDefaults}
+        className="w-full py-1.5 rounded text-[9px] font-medium bg-blue-900/30 border border-blue-500/30 text-blue-300 hover:bg-blue-900/50 cursor-pointer transition-all"
+        title="Lädt die Standard-Fachbereiche für Wirtschaft & Recht (BWL, VWL, Recht, Informatik). Überschreibt bestehende Fachbereiche. Vorlage ist in src/data/categories.ts definiert.">
+        📋 W&R-Vorlage laden {subjects.length > 0 && '(zurücksetzen)'}
+      </button>
       {subjects.map(s => (
         <div key={s.id}>
           {editingId === s.id ? (
@@ -209,7 +218,7 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
 }
 
 // === Course Editor ===
-function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focusCourseId }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void; schoolLevel?: SchoolLevel; baseDuration?: number; focusCourseId?: string | null }) {
+function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focusCourseId, subjects = [] }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void; schoolLevel?: SchoolLevel; baseDuration?: number; focusCourseId?: string | null; subjects?: SubjectConfig[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const focusRef = useRef<HTMLDivElement>(null);
 
@@ -277,7 +286,10 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                 <div className="space-y-1.5 bg-slate-800 rounded p-2">
                   <div className="flex gap-1 flex-wrap">
                     <SmallInput value={c.cls} onChange={(v) => updateCourse(c.id, { cls: v })} placeholder="Klasse" className="w-20" />
-                    <SmallSelect value={c.typ} onChange={(v) => updateCourse(c.id, { typ: v })} options={COURSE_TYPES} />
+                    {subjects.length > 0
+                      ? <SmallSelect value={c.typ} onChange={(v) => updateCourse(c.id, { typ: v })} options={getCourseTypes(subjects)} />
+                      : <SmallInput value={c.typ} onChange={(v) => updateCourse(c.id, { typ: v as CourseType })} placeholder="Typ" className="w-14" />
+                    }
                     {schoolLevel && (
                       <select value={c.stufe || ''} onChange={(e) => updateCourse(c.id, { stufe: e.target.value || undefined })}
                         className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer">
@@ -484,6 +496,10 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
 
   const update = (id: string, patch: Partial<SpecialWeekConfig>) => {
     onChange(weeks.map(w => w.id === id ? { ...w, ...patch } : w));
+    // When KW changes, keep the group expanded by updating expandedWeek (v3.76 #8)
+    if (patch.week !== undefined) {
+      setExpandedWeek(patch.week);
+    }
   };
 
   const updateGymLevel = (id: string, gymLevel: string) => {
@@ -502,8 +518,9 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
       <p className="text-[8px] text-gray-400">Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
       {grouped.map(([kw, entries]) => {
         const isExpanded = expandedWeek === kw;
+        const stableKey = entries[0]?.id || kw || 'new';
         return (
-          <div key={kw || 'new'} className="border border-slate-700/50 rounded overflow-hidden">
+          <div key={stableKey} className="border border-slate-700/50 rounded overflow-hidden">
             <div className="flex items-center gap-2 px-2 py-1.5 bg-slate-800/50 cursor-pointer hover:bg-slate-800"
               onClick={() => setExpandedWeek(isExpanded ? null : kw)}>
               <span className="text-[9px] text-gray-400">{isExpanded ? '▾' : '▸'}</span>
@@ -680,12 +697,12 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
             <SmallInput value={h.endWeek} onChange={(v) => update(h.id, { endWeek: v })} placeholder="bis" className="w-10" />
             {!isSingleWeek && !hasPartialDays && (
               <button onClick={() => toggleExpanded(h.id)}
-                className="text-[7px] text-gray-500 cursor-pointer hover:text-gray-300"
+                className="w-5 h-5 flex items-center justify-center text-[10px] text-gray-500 cursor-pointer hover:text-gray-300 hover:bg-slate-700 rounded"
                 title="Tagesauswahl anzeigen">
                 {expandedDays.has(h.id) ? '▾' : '▸'}
               </button>
             )}
-            <button onClick={() => remove(h.id)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
+            <button onClick={() => remove(h.id)} className="ml-1 w-5 h-5 flex items-center justify-center text-[9px] text-red-400 cursor-pointer hover:bg-red-900/30 rounded" title="Entfernen">✕</button>
           </div>
           {/* Day selector — auto-shown for single weeks, toggled for multi-week */}
           {showDays && (
@@ -811,7 +828,8 @@ function AssessmentRulesEditor({ rules, onChange }: {
         <div key={i} className="bg-slate-800 rounded p-2 space-y-1">
           <div className="flex gap-1 items-center">
             <SmallInput value={r.label} onChange={(v) => update(i, { label: v })} placeholder="Bezeichnung" className="flex-1" />
-            <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })} placeholder="Deadline (Datum)" className="w-32" type="date" />
+            <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })}
+              placeholder={r.semester === 'year' ? 'Ende SJ' : `Ende Sem ${r.semester}`} className="w-32" />
             <button onClick={() => remove(i)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
           </div>
           <div className="flex gap-1.5 items-center flex-wrap">
@@ -1420,7 +1438,7 @@ export function SettingsPanel() {
   }, [doSave]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 space-y-3">
+    <div className="flex-1 overflow-y-auto p-3 pb-12 space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -1487,7 +1505,7 @@ export function SettingsPanel() {
 
       {/* Courses */}
       <Section title={`📚 Kurse / Stundenplan (${settings.courses.length})`}>
-        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} baseDuration={settings.school?.lessonDurationMin || 45} focusCourseId={settingsEditCourseId} />
+        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} baseDuration={settings.school?.lessonDurationMin || 45} focusCourseId={settingsEditCourseId} subjects={settings.subjects || []} />
       </Section>
 
       {/* Special Weeks */}

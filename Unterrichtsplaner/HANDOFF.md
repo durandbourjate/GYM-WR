@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.75
+# Unterrichtsplaner – Handoff v3.76
 
-## Status: ✅ Built & Deployed (v3.75)
+## Status: ✅ Built & Deployed (v3.76)
 - **Datum:** 2026-03-03
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
@@ -57,6 +57,21 @@
 | 30 | Sonderwochen-Import: Button-Text + Tooltip für Formate aktualisiert | ✅ |
 | 31 | Stift-Icon 23✏ → "23 frei" mit besserem Tooltip | ✅ |
 | 32 | Mehrjahresübersicht: Leerer Zustand + Import bei neuem Plan | ✅ |
+
+## Erledigte Aufträge (v3.76 — Auftrag v3.76, 10 Tasks Bug-Fixes & UX)
+
+| # | Typ | Beschreibung | Status |
+|---|-----|-------------|--------|
+| 1 | Feature | Kurstyp-Dropdown dynamisch (WR-Typen nur bei WR-Fachbereichen, sonst Freitext) | ✅ |
+| 2 | Bug | Doppelklick schliesst Detailfenster nicht mehr (verzögerter Single-Click) | ✅ |
+| 3 | UX | «Neue Sequenz»-Button inline wie UE (nicht mehr sticky bottom) | ✅ |
+| 4 | Bug | W&R-Vorlage immer sichtbar (mit Tooltip zur Herkunft) | ✅ |
+| 5 | UX | Default-Platzhalter «Ende SJ» / «Ende Sem X» bei leerer Deadline | ✅ |
+| 6 | Bug | Scrolling im Side-Panel: pb-12 auf allen Scroll-Containern | ✅ |
+| 7 | Bug+UX | Ferien erscheinen nach Settings-Änderung + Expand/✕-Buttons vergrössert | ✅ |
+| 8 | Bug | Sonderwoche-Formular springt nicht mehr weg (stabiler Key + expandedWeek-Sync) | ✅ |
+| 9 | Bug | Neue Sequenz: Platzhalter-Lektionen werden automatisch erstellt | ✅ |
+| 10 | UX | Fachbereich-Badge zeigt Herkunft (↓ + gestrichelt = geerbt) | ✅ |
 
 ## Erledigte Aufträge (v3.75 — Auftrag v3.75, 4 Tasks)
 
@@ -151,3 +166,4 @@
 - v3.73: Auftrag v3.73 — 20 Tasks in 5 Batches (Bugs, Settings, UX, Sonderwochen, Features)
 - v3.74: Auftrag v3.74 — 12 neue Tasks #21–#32 (Sync-Bug, Sequenz-UX, Mehrjahresübersicht generisch, Assessment-UI, Import-Hints)
 - v3.75: Auftrag v3.75 — 4 Tasks (Fachbereiche dynamisch, Sequenz-Sichtbarkeit, Drag-Interpolation, HANDOFF)
+- v3.76: Auftrag v3.76 — 10 Tasks (Bug-Fixes & UX: Doppelklick, Ferien, Sonderwoche, Sequenz, Scrolling, Kurstyp, Vorlage, Deadline, Badge)

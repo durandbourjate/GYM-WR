@@ -731,7 +731,7 @@ function DetailsTab() {
   const subtypeDef = effectiveSubtype ? subtypes.find(s => s.key === effectiveSubtype) : null;
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 space-y-3">
+    <div className="flex-1 overflow-y-auto p-3 pb-12 space-y-3">
       {/* Header info */}
       <div>
         <div className="flex gap-2 items-center mb-1">
@@ -742,13 +742,17 @@ function DetailsTab() {
         <div className="text-sm text-gray-200">{selection.title}</div>
         {/* Tags */}
         <div className="flex gap-1 mt-1.5 flex-wrap">
-          {effectiveDetail.subjectArea && (
-            <span className={`text-[8px] px-1 py-px rounded border ${!detail.subjectArea && parentBlock?.subjectArea ? 'opacity-60' : ''}`}
-              style={{ borderColor: categories.find(s => s.key === effectiveDetail.subjectArea)?.color, color: categories.find(s => s.key === effectiveDetail.subjectArea)?.color }}
-              title={!detail.subjectArea && parentBlock?.subjectArea ? 'Vom Block geerbt' : undefined}>
-              {effectiveDetail.subjectArea}
-            </span>
-          )}
+          {effectiveDetail.subjectArea && (() => {
+            const isInherited = !detail.subjectArea && parentBlock?.subjectArea;
+            const catColor = categories.find(s => s.key === effectiveDetail.subjectArea)?.color;
+            return (
+              <span className={`text-[8px] px-1 py-px rounded border ${isInherited ? 'opacity-60 border-dashed' : ''}`}
+                style={{ borderColor: catColor, color: catColor }}
+                title={isInherited ? 'Vom Sequenz-Block geerbt' : 'Direkt gesetzt'}>
+                {isInherited && '↓ '}{effectiveDetail.subjectArea}
+              </span>
+            );
+          })()}
           {catDef && catDef.key !== 'LESSON' && (
             <span className="text-[8px] px-1 py-px rounded border" style={{ borderColor: catDef.color + '80', color: catDef.color }}>
               {catDef.icon} {catDef.label}
@@ -1127,7 +1131,7 @@ function BatchEditTab() {
   };
 
   return (
-    <div className="p-3 space-y-3 overflow-y-auto flex-1">
+    <div className="p-3 pb-12 space-y-3 overflow-y-auto flex-1">
       <div className="text-[11px] font-bold text-amber-300">
         ✏ Batch-Bearbeitung ({cells.length} Zellen)
       </div>
