@@ -281,8 +281,12 @@ function CategorySubtypeSelector({
   );
 }
 
-function DurationSelector({ value, onChange, baseDuration = 45 }: { value?: string; onChange: (v: string | undefined) => void; baseDuration?: number }) {
-  const presets = useMemo(() => getDurationPresets(baseDuration), [baseDuration]);
+function DurationSelector({ value, onChange, baseDuration = 45, compact }: { value?: string; onChange: (v: string | undefined) => void; baseDuration?: number; compact?: boolean }) {
+  const presets = useMemo(() => {
+    const all = getDurationPresets(baseDuration);
+    // compact mode: only 1x, 2x base + Andere (for SOL)
+    return compact ? all.slice(0, 2) : all;
+  }, [baseDuration, compact]);
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState('');
   const isPreset = value && presets.some(p => p.key === value);
@@ -358,7 +362,7 @@ function SolSection({ sol, onChange }: { sol?: SolDetails; onChange: (s: SolDeta
           </div>
           <div>
             <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Dauer</label>
-            <DurationSelector value={sol?.duration} onChange={(v) => update({ duration: v })} />
+            <DurationSelector value={sol?.duration} onChange={(v) => update({ duration: v })} compact />
           </div>
           <div>
             <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Beschreibung</label>

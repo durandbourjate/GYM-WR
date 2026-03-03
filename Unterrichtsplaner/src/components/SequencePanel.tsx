@@ -243,10 +243,11 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 <label className="text-[8px] text-gray-400">Bezeichnung</label>
                 <input value={block.label || ''} onChange={(e) => {
                   const val = e.target.value;
-                  updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val });
-                  // Sync: wenn Oberthema leer ist, setze es gleich mit
-                  if (val && !block.topicMain) {
+                  // Sync: wenn Oberthema leer ist oder noch dem alten Label entspricht (= nicht manuell editiert)
+                  if (!block.topicMain || block.topicMain === block.label) {
                     updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val, topicMain: val });
+                  } else {
+                    updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val });
                   }
                 }}
                   placeholder={block.topicMain || `Block ${fb.blockIndex + 1}`}
@@ -479,7 +480,7 @@ function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; 
 export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
   const {
     sequences, sequencePanelOpen, setSequencePanelOpen,
-    addSequence, editingSequenceId,
+    addSequence, addBlockToSequence, editingSequenceId, setEditingSequenceId,
   } = usePlannerStore();
   const { courses: COURSES, getLinkedCourseIds, categories } = usePlannerData();
 
@@ -504,13 +505,16 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     const course = COURSES.find(c => c.id === newCourseId);
     const autoColor: Record<string, string> = { SF: '#16a34a', EWR: '#d97706', IN: '#0ea5e9', KS: '#7c3aed', EF: '#ec4899' };
     const linkedIds = getLinkedCourseIds(newCourseId);
-    addSequence({
+    const seqId = addSequence({
       courseId: newCourseId,
       courseIds: linkedIds.length > 1 ? linkedIds : undefined,
       title: newTitle.trim(),
       blocks: [],
       color: course ? autoColor[course.typ] || '#16a34a' : '#16a34a',
     });
+    // Auto-add first block and open detail view
+    addBlockToSequence(seqId, { weeks: [], label: newTitle.trim() });
+    setEditingSequenceId(`${seqId}-0`);
     setNewTitle(''); setShowNewForm(false);
   };
 

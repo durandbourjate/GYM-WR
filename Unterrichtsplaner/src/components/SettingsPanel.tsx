@@ -334,6 +334,7 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                     <div>
                       <label className="text-[8px] text-gray-400 mb-0.5 block">Ende <span className="text-gray-500">(auto)</span></label>
                       <SmallInput value={c.to} onChange={(v) => updateCourse(c.id, { to: v })} placeholder="08:50" className="w-28 text-[11px]" type="time" />
+                      {c.les > 1 && <p className="text-[6px] text-yellow-600 mt-0.5" title="Pausen zwischen Lektionen werden nicht automatisch berücksichtigt. Endzeit ggf. manuell anpassen.">⚠ ohne Pausen</p>}
                     </div>
                   </div>
                   <div>
@@ -343,19 +344,19 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                       updateCourse(c.id, { les: durationToLes(min, baseDuration), to: autoEnd });
                     }} />
                   </div>
-                  <div className="flex gap-3 items-center flex-wrap">
+                  <div className="flex gap-3 items-center flex-wrap" title="Für unterschiedliche Tage pro Semester: separate Einträge mit S1 bzw. S2 erstellen (via Tage-Checkboxen oben)">
                     <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer">
                       <input type="checkbox" checked={c.hk} onChange={(e) => updateCourse(c.id, { hk: e.target.checked })} className="cursor-pointer" />
                       HK
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer">
+                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer" title="Semester 1 — Eintrag nur im 1. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(1)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 1 as Semester])] : c.semesters.filter(x => x !== 1);
                         updateCourse(c.id, { semesters: s });
                       }} className="cursor-pointer" />
                       S1
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer">
+                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer" title="Semester 2 — Eintrag nur im 2. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(2)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 2 as Semester])] : c.semesters.filter(x => x !== 2);
                         updateCourse(c.id, { semesters: s });
@@ -593,8 +594,9 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
           className="flex-1 py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
           + Sonderwoche hinzufügen
         </button>
-        <label className="py-1.5 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500">
-          📥 JSON/CSV
+        <label className="py-1.5 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500"
+          title="Importiere Sonderwochen aus JSON oder CSV/TXT (Spalten: Bezeichnung, KW, Typ, Stufe — getrennt durch Komma, Semikolon oder Tab)">
+          📥 Import (JSON/CSV/TXT)
           <input type="file" accept=".json,.csv,.txt" className="hidden" onChange={(e) => {
             const file = e.target.files?.[0];
             if (!file) return;
@@ -809,15 +811,15 @@ function AssessmentRulesEditor({ rules, onChange }: {
         <div key={i} className="bg-slate-800 rounded p-2 space-y-1">
           <div className="flex gap-1 items-center">
             <SmallInput value={r.label} onChange={(v) => update(i, { label: v })} placeholder="Bezeichnung" className="flex-1" />
-            <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })} placeholder="Deadline" className="w-28" />
+            <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })} placeholder="Deadline (Datum)" className="w-32" type="date" />
             <button onClick={() => remove(i)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
           </div>
-          <div className="flex gap-1 items-center flex-wrap">
+          <div className="flex gap-1.5 items-center flex-wrap">
             <span className="text-[7px] text-gray-400">Min. Noten:</span>
-            <SmallInput value={String(r.minGrades)} onChange={(v) => update(i, { minGrades: parseInt(v) || 1 })} className="w-8" type="number" />
+            <SmallInput value={String(r.minGrades)} onChange={(v) => update(i, { minGrades: parseInt(v) || 1 })} className="w-12 text-center" type="number" />
             <SmallSelect value={String(r.semester)} onChange={(v) => update(i, { semester: v === 'year' ? 'year' : parseInt(v) as 1 | 2 })}
               options={[{ key: '1', label: 'Sem 1' }, { key: '2', label: 'Sem 2' }, { key: 'year', label: 'Ganz SJ' }]} />
-            <SmallInput value={r.stufe || ''} onChange={(v) => update(i, { stufe: v || undefined })} placeholder="Stufe (opt.)" className="w-16" />
+            <SmallInput value={r.stufe || ''} onChange={(v) => update(i, { stufe: v || undefined })} placeholder="Stufe (opt.)" className="w-20" />
           </div>
         </div>
       ))}

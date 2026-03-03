@@ -44,20 +44,11 @@ const SUBJECT_COLORS: Record<string, { bg: string; text: string; border: string;
   }])
 );
 
-/** The three main WR subject areas (used for Stoffverteilung, totals, etc.) */
-const MAIN_AREAS = WR_CATEGORIES.filter(c => ['BWL', 'VWL', 'RECHT'].includes(c.key)).map(c => c.key) as SubjectArea[];
+/** All subject areas from categories (dynamic, no hardcoded filter) */
+const ALL_AREAS = WR_CATEGORIES.map(c => c.key) as SubjectArea[];
 
-// Stoffverteilung from Grobzuteilung DUY
-const STOFF_VERTEILUNG: { semester: string; gym: string; recht: number; bwl: number; vwl: number }[] = [
-  { semester: 'S1', gym: 'GYM1', recht: 0, bwl: 3, vwl: 0 },
-  { semester: 'S2', gym: 'GYM1', recht: 1, bwl: 2, vwl: 0 },
-  { semester: 'S3', gym: 'GYM2', recht: 2, bwl: 1, vwl: 2 },
-  { semester: 'S4', gym: 'GYM2', recht: 3, bwl: 0, vwl: 2 },
-  { semester: 'S5', gym: 'GYM3', recht: 2, bwl: 0, vwl: 2 },
-  { semester: 'S6', gym: 'GYM3', recht: 0, bwl: 2, vwl: 2 },
-  { semester: 'S7', gym: 'GYM4', recht: 2, bwl: 0, vwl: 2 },
-  { semester: 'S8', gym: 'GYM4', recht: 0, bwl: 2, vwl: 2 },
-];
+/** Row type for dynamic stoffverteilung data */
+type StoffRow = { semester: string; gym: string; weights: Record<string, number> };
 
 // Group curriculum goals by semester
 function getGoalsBySemester(semester: string, allGoals: CurriculumGoal[]): CurriculumGoal[] {
@@ -71,12 +62,8 @@ function getGoalsBySemester(semester: string, allGoals: CurriculumGoal[]): Curri
 
 type ViewMode = 'curriculum' | 'actual' | 'class';
 
-// Default SF groups (legacy fallback for SJ 25/26)
-const DEFAULT_SF_GROUPS = [
-  { cls: '29c', gymYear: 1, semesters: ['S1', 'S2'], label: '29c · GYM1' },
-  { cls: '28bc29fs', gymYear: 2, semesters: ['S3', 'S4'], label: '28bc29fs · GYM2' },
-  { cls: '27a28f', gymYear: 3, semesters: ['S5', 'S6'], label: '27a28f · GYM3' },
-];
+// No default SF groups — must be configured via course settings with stufe
+const DEFAULT_SF_GROUPS: SFGroup[] = [];
 
 type SFGroup = { cls: string; gymYear: number; semesters: string[]; label: string };
 
@@ -118,13 +105,13 @@ function GoalChip({ goal }: { goal: CurriculumGoal }) {
 }
 
 function SemesterCard({ sv, expanded, onToggle, allGoals }: {
-  sv: typeof STOFF_VERTEILUNG[0];
+  sv: StoffRow;
   expanded: boolean;
   onToggle: () => void;
   allGoals: CurriculumGoal[];
 }) {
   const goals = useMemo(() => getGoalsBySemester(sv.semester, allGoals), [sv.semester, allGoals]);
-  const total = sv.recht + sv.bwl + sv.vwl;
+  const total = Object.values(sv.weights).reduce((a, b) => a + b, 0);
   
   // Group goals by area
   const goalsByArea = useMemo(() => {
@@ -141,9 +128,9 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
         <span className="text-[11px] font-bold text-gray-200 w-6">{sv.semester}</span>
         {/* Subject distribution bar */}
         <div className="flex-1 flex gap-px">
-          <SubjectBar area="BWL" weight={sv.bwl} total={Math.max(total, 1)} />
-          <SubjectBar area="VWL" weight={sv.vwl} total={Math.max(total, 1)} />
-          <SubjectBar area="RECHT" weight={sv.recht} total={Math.max(total, 1)} />
+          {ALL_AREAS.map(area => (
+            <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(total, 1)} />
+          ))}
         </div>
         <span className="text-[8px] text-gray-500 w-12 text-right">{goals.length} Ziele</span>
         <span className="text-[9px] text-gray-500">{expanded ? '▾' : '▸'}</span>
@@ -152,7 +139,7 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
       {/* Expanded details */}
       {expanded && (
         <div className="px-3 pb-2 space-y-1.5 border-t border-slate-700/50 pt-2">
-          {MAIN_AREAS.map(area => {
+          {ALL_AREAS.map(area => {
             const areaGoals = goalsByArea[area];
             if (areaGoals.length === 0) return null;
             const c = SUBJECT_COLORS[area];
@@ -232,7 +219,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
       </div>
       {total > 0 ? (
         <div className="space-y-1">
-          {[...MAIN_AREAS, 'IN' as SubjectArea].map(area => {
+          {ALL_AREAS.map(area => {
             if (stats.counts[area] === 0) return null;
             const c = SUBJECT_COLORS[area];
             return (
@@ -251,7 +238,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
           })}
           {/* Topics preview */}
           <div className="mt-1 pt-1 border-t border-slate-700/30">
-            {MAIN_AREAS.map(area => {
+            {ALL_AREAS.map(area => {
               if (stats.topics[area].length === 0) return null;
               const c = SUBJECT_COLORS[area];
               return (
@@ -270,7 +257,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
   );
 }
 
-function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group: SFGroup; sequences: ManagedSequence[]; stoffverteilung: { semester: string; gym: string; recht: number; bwl: number; vwl: number }[]; allGoals: CurriculumGoal[] }) {
+function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group: SFGroup; sequences: ManagedSequence[]; stoffverteilung: StoffRow[]; allGoals: CurriculumGoal[] }) {
   const { courses: plannerCourses } = usePlannerData();
   // Find sequences for this class group
   const classSequences = useMemo(() => {
@@ -325,6 +312,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
         {group.semesters.map((sem, idx) => {
           const sv = idx === 0 ? sv1 : sv2;
           if (!sv) return null;
+          const svTotal = Object.values(sv.weights).reduce((a, b) => a + b, 0);
           const goals = semesterGoals[sem] || [];
           return (
             <div key={sem} className="space-y-1.5">
@@ -336,9 +324,9 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
               <div className="flex items-center gap-1.5">
                 <span className="text-[7px] text-gray-500 w-8 shrink-0">Soll</span>
                 <div className="flex-1 flex gap-px">
-                  <SubjectBar area="BWL" weight={sv.bwl} total={Math.max(sv.bwl + sv.vwl + sv.recht, 1)} />
-                  <SubjectBar area="VWL" weight={sv.vwl} total={Math.max(sv.bwl + sv.vwl + sv.recht, 1)} />
-                  <SubjectBar area="RECHT" weight={sv.recht} total={Math.max(sv.bwl + sv.vwl + sv.recht, 1)} />
+                  {ALL_AREAS.map(area => (
+                    <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(svTotal, 1)} />
+                  ))}
                 </div>
               </div>
               {/* Ist bars */}
@@ -346,7 +334,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
                 <div className="flex items-center gap-1.5">
                   <span className="text-[7px] text-gray-500 w-8 shrink-0">Ist</span>
                   <div className="flex-1 flex gap-px">
-                    {MAIN_AREAS.map(area => {
+                    {ALL_AREAS.map(area => {
                       if (stats.counts[area] === 0) return null;
                       const c = SUBJECT_COLORS[area];
                       const pct = Math.min((stats.counts[area] / Math.max(total, 1)) * 100, 100);
@@ -397,14 +385,12 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
   );
 }
 
-/** Convert StoffverteilungEntry[] to legacy format for rendering */
-function entriesToLegacy(entries: StoffverteilungEntry[]): { semester: string; gym: string; recht: number; bwl: number; vwl: number }[] {
+/** Convert StoffverteilungEntry[] to StoffRow format for rendering */
+function entriesToRows(entries: StoffverteilungEntry[]): StoffRow[] {
   return entries.map(e => ({
     semester: e.semester,
     gym: e.gym,
-    recht: e.weights['RECHT'] || 0,
-    bwl: e.weights['BWL'] || 0,
-    vwl: e.weights['VWL'] || 0,
+    weights: { ...e.weights },
   }));
 }
 
@@ -437,10 +423,10 @@ export function ZoomMultiYearView() {
     }).sort((a, b) => a.gymYear - b.gymYear);
   }, [settings]);
 
-  // Dynamic Stoffverteilung from settings, fallback to hardcoded
+  // Dynamic Stoffverteilung from settings (no hardcoded fallback)
   const stoffverteilung = useMemo(() => {
-    if (settings?.stoffverteilung?.length) return entriesToLegacy(settings.stoffverteilung);
-    return STOFF_VERTEILUNG;
+    if (settings?.stoffverteilung?.length) return entriesToRows(settings.stoffverteilung);
+    return [] as StoffRow[];
   }, [settings]);
 
   const hasStoffverteilung = stoffverteilung.length > 0;
@@ -484,16 +470,14 @@ export function ZoomMultiYearView() {
     e.target.value = '';
   };
 
-  // Summary stats
+  // Summary stats — dynamic per area
   const totals = useMemo(() => {
-    const t = { recht: 0, bwl: 0, vwl: 0, goals: 0 };
+    const areaTotals: Record<string, number> = {};
+    for (const area of ALL_AREAS) areaTotals[area] = 0;
     for (const sv of stoffverteilung) {
-      t.recht += sv.recht;
-      t.bwl += sv.bwl;
-      t.vwl += sv.vwl;
+      for (const area of ALL_AREAS) areaTotals[area] += sv.weights[area] || 0;
     }
-    t.goals = effectiveGoals.length;
-    return t;
+    return { areas: areaTotals, goals: effectiveGoals.length };
   }, [stoffverteilung, effectiveGoals]);
 
   return (
@@ -504,8 +488,8 @@ export function ZoomMultiYearView() {
           <h2 className="text-sm font-bold text-gray-200">◫ Mehrjahresübersicht</h2>
           <p className="text-[9px] text-gray-500 mt-0.5">
             {sfGroups.length > 0
-              ? `SF WR · ${gymYears.length} Jahrgänge (${stoffverteilung.at(0)?.semester || 'S1'}–${stoffverteilung.at(-1)?.semester || 'S8'})`
-              : 'SF WR · Keine Kurse mit Stufe konfiguriert'}
+              ? `${gymYears.length} Jahrgänge · ${sfGroups.length} Klassen (${stoffverteilung.at(0)?.semester || ''}–${stoffverteilung.at(-1)?.semester || ''})`
+              : 'Keine Kurse mit Stufe konfiguriert'}
           </p>
         </div>
         <div className="flex gap-1">
@@ -547,9 +531,9 @@ export function ZoomMultiYearView() {
           {/* Summary bar */}
           <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-slate-800/50 rounded-md border border-slate-700">
             <span className="text-[9px] text-gray-400">Gesamt:</span>
-            <span className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS.BWL.text }}>BWL {totals.bwl}</span>
-            <span className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS.VWL.text }}>VWL {totals.vwl}</span>
-            <span className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS.RECHT.text }}>Recht {totals.recht}</span>
+            {ALL_AREAS.filter(a => totals.areas[a] > 0).map(area => (
+              <span key={area} className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS[area]?.text }}>{area} {totals.areas[area]}</span>
+            ))}
             <span className="text-[8px] text-gray-500 ml-auto">{totals.goals} Lehrplanziele</span>
             <label className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer" title="Stoffverteilung importieren (JSON)">
               📥<input type="file" accept=".json" className="hidden" onChange={handleImport} />
@@ -641,7 +625,7 @@ export function ZoomMultiYearView() {
 
       {/* Legend */}
       <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center gap-4">
-        {MAIN_AREAS.map(area => {
+        {ALL_AREAS.map(area => {
           const c = SUBJECT_COLORS[area];
           return (
             <div key={area} className="flex items-center gap-1">

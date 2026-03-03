@@ -64,7 +64,7 @@ function App() {
 
 /** The actual planner grid — separated so it re-renders on instance switch */
 function PlannerContent() {
-  const { filter, classFilter, courseFilter, setCourseFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, zoomLevel, panelWidth, plannerSettings } = usePlannerStore();
+  const { filter, classFilter, courseFilter, setCourseFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, sidePanelTab, zoomLevel, panelWidth, plannerSettings } = usePlannerStore();
   const { courses: allCourses, weeks: hookWeeks, s2StartIndex, isLegacy } = usePlannerData();
   const curRef = useRef<HTMLTableRowElement>(null);
 
@@ -249,15 +249,19 @@ function PlannerContent() {
               <p className="text-slate-400 text-sm mb-6 max-w-md">
                 Lege im Einstellungen-Panel deine Kurse an (Klasse, Tag, Lektionen), um das Planungsraster zu erstellen.
               </p>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500 transition-colors cursor-pointer"
-                onClick={() => {
-                  usePlannerStore.getState().setSidePanelOpen(true);
-                  usePlannerStore.getState().setSidePanelTab('settings');
-                }}
-              >
-                ⚙️ Einstellungen öffnen
-              </button>
+              {sidePanelOpen && sidePanelTab === 'settings' ? (
+                <p className="text-blue-400 text-sm">→ Kurse im geöffneten Einstellungs-Panel anlegen</p>
+              ) : (
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500 transition-colors cursor-pointer"
+                  onClick={() => {
+                    usePlannerStore.getState().setSidePanelOpen(true);
+                    usePlannerStore.getState().setSidePanelTab('settings');
+                  }}
+                >
+                  ⚙️ Einstellungen öffnen
+                </button>
+              )}
             </div>
           ) : zoomLevel === 1 || zoomLevel === 2 ? (
             <ZoomMultiYearView />

@@ -127,8 +127,8 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                     const planned = weeks.filter(w => { const e = w.lessons[c.col]; return e && e.type !== 6; }).length;
                     const free = weeks.filter(w => !w.lessons[c.col]).length;
                     return free > 0 ? (
-                      <span className="text-[6px] px-0.5 rounded bg-slate-800/60 text-gray-500" title={`${planned} geplant, ${free} frei`}>
-                        {free}✎
+                      <span className="text-[6px] px-0.5 rounded bg-slate-800/60 text-gray-500" title={`${free} freie Wochen (${planned} geplant)`}>
+                        {free} frei
                       </span>
                     ) : null;
                   })()}

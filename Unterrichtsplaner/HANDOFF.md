@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.73
+# Unterrichtsplaner – Handoff v3.74
 
-## Status: ✅ Built (v3.73)
+## Status: ✅ Built & Deployed (v3.74)
 - **Datum:** 2026-03-03
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
 
@@ -40,6 +40,23 @@
 | 20 | 5-Feature | Beurteilungsregeln konfigurierbar (Settings) | ✅ |
 | 18 | 5-Feature | Lehrplanziele-Text nach Schulstufe | ✅ |
 | 19 | 5-Feature | GCal OAuth: besseres Error Handling (403, 404, Netzwerk) | ✅ |
+
+## Erledigte Aufträge (v3.74 — Auftrag v3.74, 12 neue Tasks #21–#32)
+
+| # | Beschreibung | Status |
+|---|-------------|--------|
+| 21 | Neuer Plan zeigt keine Stale-Daten im UE-Panel (bereits korrekt isoliert) | ✅ |
+| 22 | Sequenz Bezeichnung→Oberthema: Sync über ersten Buchstaben hinaus | ✅ |
+| 23 | Neue Sequenz: Mini-Dialog + erster Block + Detail öffnet automatisch | ✅ |
+| 24 | "Einstellungen öffnen"-Button: Hinweis wenn Panel bereits offen | ✅ |
+| 25 | SOL-Dauer: nur 45, 90 und "Andere" (compact-Modus) | ✅ |
+| 26 | Endzeit-Berechnung: Hinweis "⚠ ohne Pausen" bei >1 Lektion | ✅ |
+| 27 | Semester-Tage: Tooltip für unterschiedliche Tage pro Semester | ✅ |
+| 28 | Mehrjahresübersicht: dynamisch statt hardcoded BWL/VWL/Recht | ✅ |
+| 29 | Beurteilungsregeln: Deadline als Datepicker, grössere Felder | ✅ |
+| 30 | Sonderwochen-Import: Button-Text + Tooltip für Formate aktualisiert | ✅ |
+| 31 | Stift-Icon 23✏ → "23 frei" mit besserem Tooltip | ✅ |
+| 32 | Mehrjahresübersicht: Leerer Zustand + Import bei neuem Plan | ✅ |
 
 ## Erledigte Aufträge (v3.64–v3.70, UX-Feedback Runde 2)
 
@@ -123,3 +140,4 @@
 - v3.70: Sequenz-Felder — Erklärtexte und Feld-Hierarchie
 - v3.71: Wiki-Anleitung (wiki.html), Build-Pipeline (deploy.sh, dist/ ignoriert), 📖-Button in Toolbar
 - v3.73: Auftrag v3.73 — 20 Tasks in 5 Batches (Bugs, Settings, UX, Sonderwochen, Features)
+- v3.74: Auftrag v3.74 — 12 neue Tasks #21–#32 (Sync-Bug, Sequenz-UX, Mehrjahresübersicht generisch, Assessment-UI, Import-Hints)
