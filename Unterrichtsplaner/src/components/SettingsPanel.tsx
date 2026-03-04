@@ -9,7 +9,7 @@ import {
   type SubjectConfig, type SchoolLevel, type AssessmentRule,
 } from '../store/settingsStore';
 import { generateColorVariants } from '../data/categories';
-import { SUBJECT_PRESETS } from '../data/subjectPresets';
+import { SUBJECT_PRESETS, SUBJECT_GROUPS } from '../data/subjectPresets';
 import { type CurriculumGoal } from '../data/curriculumGoals';
 import { getGymStufe } from '../utils/gradeRequirements';
 import { useInstanceStore, weekToDate } from '../store/instanceStore';
@@ -272,7 +272,7 @@ function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onIm
       <RubricCollectionButtons rubricType={rubricType} getData={getData} onLoad={onLoad} />
       {onImport && (
         <label className={ACT_BTN} title="Aus Datei importieren">
-          📥<input type="file" accept={importAccept || '.json'} className="hidden" onChange={onImport} />
+          ⬆<input type="file" accept={importAccept || '.json'} className="hidden" onChange={onImport} />
         </label>
       )}
     </>
@@ -319,6 +319,11 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
   return (
     <div className="space-y-2">
       <p className="text-[8px] text-gray-400">Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
+      {subjects.length === 0 && (
+        <p className="text-[9px] text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1.5">
+          Keine Fachbereiche konfiguriert. Füge einen Fachbereich hinzu oder wähle eine Vorlage.
+        </p>
+      )}
       {subjects.map(s => (
         <div key={s.id}>
           {editingId === s.id ? (
@@ -358,23 +363,47 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
           + Fachbereich hinzufügen
         </button>
       </div>
-      {/* Vorlagen-Buttons (v3.80 C4) */}
-      <div className="flex gap-1 flex-wrap">
-        <span className="text-[8px] text-gray-500 self-center">Vorlagen:</span>
-        {SUBJECT_PRESETS.map(preset => (
-          <button key={preset.id} onClick={() => {
+      {/* Fach-Dropdown (v3.81 D4) */}
+      <div className="flex gap-1 items-center">
+        <span className="text-[8px] text-gray-500">Vorlage:</span>
+        <select
+          className="bg-slate-800 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] text-gray-300 outline-none cursor-pointer flex-1"
+          value=""
+          onChange={(e) => {
+            const preset = SUBJECT_PRESETS.find(p => p.id === e.target.value);
+            if (!preset) return;
             const ids = new Set(subjects.map(s => s.id));
             const labels = new Set(subjects.map(s => s.label.toLowerCase()));
             const unique = preset.subjects.filter(s => !ids.has(s.id) && !labels.has(s.label.toLowerCase()));
             const dupes = preset.subjects.length - unique.length;
             if (unique.length === 0) { alert('Alle Fachbereiche dieser Vorlage sind bereits vorhanden.'); return; }
-            const action = subjects.length > 0 ? confirm(`${unique.length} Fachbereiche ergänzen?${dupes > 0 ? ` (${dupes} Duplikate übersprungen)` : ''}\n\nOK = Ergänzen, Abbrechen = Abbruch`) : confirm(`${preset.label} laden?`);
-            if (action) onChange([...subjects, ...unique]);
+            if (subjects.length === 0) {
+              // Leer → direkt laden
+              onChange([...unique]);
+            } else {
+              // Dialog: Ersetzen oder Ergänzen
+              const choice = confirm(
+                `«${preset.label}» laden:\n\n` +
+                `• OK = Bestehende ersetzen (${subjects.length} → ${preset.subjects.length})\n` +
+                `• Abbrechen = Ergänzen (${unique.length} hinzufügen${dupes > 0 ? `, ${dupes} Duplikate übersprungen` : ''})`
+              );
+              if (choice) {
+                onChange([...preset.subjects]);
+              } else {
+                onChange([...subjects, ...unique]);
+              }
+            }
           }}
-            className="px-1.5 py-0.5 rounded text-[8px] border border-slate-600 text-gray-400 hover:text-gray-200 hover:border-slate-500 cursor-pointer transition-all">
-            {preset.icon} {preset.label.split('(')[0].trim()}
-          </button>
-        ))}
+        >
+          <option value="">Fach wählen…</option>
+          {SUBJECT_GROUPS.map(group => (
+            <optgroup key={group} label={`── ${group} ──`}>
+              {SUBJECT_PRESETS.filter(p => p.group === group).map(p => (
+                <option key={p.id} value={p.id}>{p.icon} {p.label}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       </div>
     </div>
   );
@@ -602,39 +631,10 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
           ))}
         </div>
       ))}
-      <div className="flex gap-1">
-        <button onClick={addCourse}
-          className="flex-1 py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
-          + Kurs hinzufügen
-        </button>
-        <label className="py-1.5 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500"
-          title="Kurse aus JSON importieren ({kurse: CourseConfig[]} oder CourseConfig[])">
-          📥 Import
-          <input type="file" accept=".json" className="hidden" onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-              try {
-                const data = JSON.parse(reader.result as string);
-                const arr: CourseConfig[] = Array.isArray(data) ? data : data.kurse || data.courses || [];
-                if (arr.length === 0) { alert('Keine gültigen Kurse gefunden.\nFormat: CourseConfig[] oder {kurse: CourseConfig[]}'); return; }
-                // Duplikat-Prüfung: cls + day + from (v3.79 B7)
-                const existingKeys = new Set(courses.map(c => `${c.cls}|${c.day}|${c.from}`));
-                const unique = arr.filter(c => !existingKeys.has(`${c.cls}|${c.day}|${c.from}`));
-                const dupes = arr.length - unique.length;
-                if (unique.length === 0) { alert(`Alle ${arr.length} Kurse sind bereits vorhanden.`); return; }
-                // IDs generieren falls nötig
-                const withIds = unique.map(c => ({ ...c, id: c.id || generateId() }));
-                const msg = dupes > 0 ? `${withIds.length} importieren, ${dupes} Duplikate übersprungen.` : `${withIds.length} Kurse importieren?`;
-                if (confirm(msg)) onChange([...courses, ...withIds]);
-              } catch { alert('JSON konnte nicht gelesen werden.'); }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-          }} />
-        </label>
-      </div>
+      <button onClick={addCourse}
+        className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+        + Kurs hinzufügen
+      </button>
     </div>
   );
 }
@@ -836,58 +836,10 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
           </div>
         );
       })}
-      <div className="flex gap-1">
-        <button onClick={addNewWeek}
-          className="flex-1 py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
-          + Sonderwoche hinzufügen
-        </button>
-        <label className="py-1.5 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500"
-          title="Importiere Sonderwochen aus JSON oder CSV/TXT (Spalten: Bezeichnung, KW, Typ, Stufe — getrennt durch Komma, Semikolon oder Tab)">
-          📥 Import (JSON/CSV/TXT)
-          <input type="file" accept=".json,.csv,.txt" className="hidden" onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-              try {
-                const text = reader.result as string;
-                let imported: SpecialWeekConfig[] = [];
-                if (file.name.endsWith('.json')) {
-                  imported = JSON.parse(text) as SpecialWeekConfig[];
-                  if (!Array.isArray(imported)) { alert('Ungültiges Format.'); return; }
-                } else {
-                  // CSV: Label,KW,Type,GymLevel
-                  const lines = text.split('\n').filter(l => l.trim());
-                  for (const line of lines) {
-                    const parts = line.split(/[,;\t]/).map(p => p.trim());
-                    if (parts.length >= 2) {
-                      imported.push({
-                        id: generateId(),
-                        label: parts[0],
-                        week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'),
-                        type: (parts[2] === 'holiday' ? 'holiday' : 'event') as 'event' | 'holiday',
-                        gymLevel: parts[3] || undefined,
-                      });
-                    }
-                  }
-                }
-                if (imported.length === 0) { alert('Keine gültigen Einträge gefunden.'); return; }
-                // Duplikat-Prüfung: label + week (v3.79 B5)
-                const existingKeys = new Set(weeks.map(w => `${w.label}|${w.week}`));
-                const unique = imported.filter(w => !existingKeys.has(`${w.label}|${w.week}`));
-                const dupes = imported.length - unique.length;
-                if (unique.length === 0) { alert(`Alle ${imported.length} Einträge sind bereits vorhanden.`); return; }
-                const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} Duplikate übersprungen.` : `${unique.length} Sonderwochen importieren?`;
-                if (confirm(msg)) {
-                  onChange([...weeks, ...unique]);
-                }
-              } catch { alert('Datei konnte nicht gelesen werden.'); }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-          }} />
-        </label>
-      </div>
+      <button onClick={addNewWeek}
+        className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+        + Sonderwoche hinzufügen
+      </button>
     </div>
   );
 }
@@ -970,63 +922,10 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
         </div>
         );
       })}
-      <div className="flex gap-1">
-        <button onClick={addHoliday}
-          className="flex-1 py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
-          + Ferienperiode hinzufügen
-        </button>
-        <label className="py-1 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500"
-          title="CSV: Name,KW-Start,KW-Ende (pro Zeile) · JSON: Array von {label, startWeek, endWeek}">
-          📥 Import
-          <input type="file" accept=".csv,.txt,.json" className="hidden" onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-              try {
-                const text = reader.result as string;
-                let imported: HolidayConfig[] = [];
-                if (file.name.endsWith('.json')) {
-                  const data = JSON.parse(text);
-                  const arr = Array.isArray(data) ? data : data.holidays || [];
-                  imported = arr.map((h: any) => ({
-                    id: generateId(),
-                    label: h.label || h.name || '',
-                    startWeek: String(h.startWeek || h.start || '').replace(/^KW\s*/i, '').padStart(2, '0'),
-                    endWeek: String(h.endWeek || h.end || '').replace(/^KW\s*/i, '').padStart(2, '0'),
-                    ...(h.days ? { days: h.days } : {}),
-                  }));
-                } else {
-                  const lines = text.split('\n').filter(l => l.trim());
-                  for (const line of lines) {
-                    const parts = line.split(/[,;\t]/).map(p => p.trim());
-                    if (parts.length >= 3) {
-                      imported.push({
-                        id: generateId(),
-                        label: parts[0],
-                        startWeek: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'),
-                        endWeek: parts[2].replace(/^KW\s*/i, '').padStart(2, '0'),
-                      });
-                    }
-                  }
-                }
-                if (imported.length === 0) { alert('Keine gültigen Einträge gefunden.\nCSV: Name,KW-Start,KW-Ende\nJSON: [{label, startWeek, endWeek}]'); return; }
-                // Duplikat-Prüfung: label + startWeek (v3.79 B5)
-                const existingKeys = new Set(holidays.map(h => `${h.label}|${h.startWeek}`));
-                const unique = imported.filter(h => !existingKeys.has(`${h.label}|${h.startWeek}`));
-                const dupes = imported.length - unique.length;
-                if (unique.length === 0) { alert(`Alle ${imported.length} Einträge sind bereits vorhanden.`); return; }
-                const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} Duplikate übersprungen.` : `${unique.length} Ferienperioden importieren?`;
-                if (confirm(msg)) {
-                  onChange([...holidays, ...unique]);
-                }
-              } catch { alert('Datei konnte nicht gelesen werden.'); }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-          }} />
-        </label>
-      </div>
+      <button onClick={addHoliday}
+        className="w-full py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
+        + Ferienperiode hinzufügen
+      </button>
     </div>
   );
 }
@@ -1075,30 +974,7 @@ function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
     return opts;
   }, [schoolLevel]);
 
-  // Import rules from JSON (v3.77 #11)
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result as string);
-        const imported: AssessmentRule[] = Array.isArray(data) ? data : data.assessmentRules || data.rules || [];
-        if (imported.length === 0) { alert('Keine gültigen Regeln gefunden.'); return; }
-        // Duplikat-Prüfung: label + semester + stufe (v3.79 B5)
-        const existingKeys = new Set(rules.map(r => `${r.label || ''}|${r.semester || ''}|${r.stufe || ''}`));
-        const unique = imported.filter(r => !existingKeys.has(`${r.label || ''}|${r.semester || ''}|${r.stufe || ''}`));
-        const dupes = imported.length - unique.length;
-        if (unique.length === 0) { alert(`Alle ${imported.length} Regeln sind bereits vorhanden.`); return; }
-        const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} Duplikate übersprungen.` : `${unique.length} Beurteilungsregeln importieren?`;
-        if (confirm(msg)) {
-          onChange([...rules, ...unique]);
-        }
-      } catch { alert('Datei konnte nicht gelesen werden.'); }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
+  // v3.81 D1: handleImport entfernt — Import läuft über SectionActions im Header
 
   return (
     <div className="space-y-1.5">
@@ -1173,11 +1049,6 @@ function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
             📋 GYM-Standard laden
           </button>
         )}
-        <label className="py-1 px-2 rounded border border-slate-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer hover:border-slate-500"
-          title="Beurteilungsregeln aus JSON importieren">
-          📥 Import
-          <input type="file" accept=".json" className="hidden" onChange={handleImport} />
-        </label>
       </div>
     </div>
   );
@@ -1899,27 +1770,7 @@ export function SettingsPanel() {
               : 'Keine Lehrplanziele konfiguriert. Importiere eigene Ziele als JSON oder lade sie aus der Sammlung.'}
           </p>
           <div className="flex gap-1 flex-wrap">
-            {/* JSON import */}
-            <label className="px-2 py-1 rounded border border-slate-600 text-gray-400 text-[9px] cursor-pointer hover:text-gray-300 hover:border-slate-500">
-              📥 JSON importieren
-              <input type="file" accept=".json" className="hidden" onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const data = JSON.parse(reader.result as string) as CurriculumGoal[];
-                    if (!Array.isArray(data) || data.length === 0) { alert('Ungültiges Format: erwartet Array von CurriculumGoal-Objekten.'); return; }
-                    if (confirm(`${data.length} Lehrplanziele importieren? Bestehende werden ersetzt.`)) {
-                      updateSettings({ curriculumGoals: data });
-                    }
-                  } catch { alert('JSON konnte nicht gelesen werden.'); }
-                };
-                reader.readAsText(file);
-                e.target.value = '';
-              }} />
-            </label>
-            {/* Clear button */}
+            {/* v3.81 D1: Import-Button nur noch im Header (⬆). Hier nur Clear-Button */}
             {settings.curriculumGoals && settings.curriculumGoals.length > 0 && (
               <button onClick={() => {
                 if (confirm('Eigene Lehrplanziele entfernen? (Standard wird verwendet falls Sek2)')) {
@@ -1946,9 +1797,10 @@ export function SettingsPanel() {
         />
       </Section>
 
-      {/* Export / Import JSON */}
-      <Section title="💾 Daten exportieren / importieren">
+      {/* v3.81 D5: «Daten» + «Sammlung» zusammengeführt */}
+      <Section title="💾 Daten & Sammlung">
         <div className="space-y-3">
+          {/* Konfiguration */}
           <div>
             <p className="text-[8px] text-gray-400 font-semibold mb-1">Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
             <div className="flex gap-1">
@@ -1963,10 +1815,10 @@ export function SettingsPanel() {
                 URL.revokeObjectURL(url);
               }}
                 className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all">
-                📤 Konfiguration exportieren
+                📤 Exportieren
               </button>
               <label className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-center cursor-pointer transition-all">
-                📥 Konfiguration importieren
+                📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
@@ -1974,39 +1826,24 @@ export function SettingsPanel() {
                   reader.onload = () => {
                     try {
                       const imported = JSON.parse(reader.result as string);
-                      // Validate required fields
-                      if (!imported || typeof imported !== 'object') {
-                        alert('Ungültige Datei: Kein gültiges JSON-Objekt.');
-                        return;
-                      }
-                      if (!Array.isArray(imported.courses)) {
-                        alert('Ungültige Datei: Feld "courses" fehlt oder ist kein Array.');
-                        return;
-                      }
-                      if (!Array.isArray(imported.holidays)) {
-                        alert('Ungültige Datei: Feld "holidays" fehlt oder ist kein Array.');
-                        return;
-                      }
-                      if (!Array.isArray(imported.specialWeeks)) {
-                        alert('Ungültige Datei: Feld "specialWeeks" fehlt oder ist kein Array.');
-                        return;
-                      }
-                      // Confirm before overwriting
-                      if (!confirm(`Bestehende Einstellungen werden überschrieben (${imported.courses.length} Kurse, ${imported.holidays.length} Ferienperioden, ${imported.specialWeeks.length} Sonderwochen). Fortfahren?`)) {
-                        return;
-                      }
+                      if (!imported || typeof imported !== 'object') { alert('Ungültige Datei.'); return; }
+                      if (!Array.isArray(imported.courses)) { alert('Feld "courses" fehlt.'); return; }
+                      if (!Array.isArray(imported.holidays)) { alert('Feld "holidays" fehlt.'); return; }
+                      if (!Array.isArray(imported.specialWeeks)) { alert('Feld "specialWeeks" fehlt.'); return; }
+                      if (!confirm(`Einstellungen überschreiben? (${imported.courses.length} Kurse, ${imported.holidays.length} Ferien, ${imported.specialWeeks.length} Sonderwochen)`)) return;
                       setSettings(imported as PlannerSettings);
                       doSave(imported as PlannerSettings);
                     } catch { alert('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
-                  e.target.value = ''; // Reset to allow re-import of same file
+                  e.target.value = '';
                 }} />
               </label>
             </div>
           </div>
 
-          <div className="border-t border-slate-700 pt-2">
+          {/* Planerdaten */}
+          <div className="border-t border-white/10 pt-3">
             <p className="text-[8px] text-gray-400 font-semibold mb-1">Planerdaten (Lektionen, Sequenzen, Details)</p>
             <div className="flex gap-1">
               <button onClick={() => {
@@ -2029,11 +1866,8 @@ export function SettingsPanel() {
                   reader.onload = () => {
                     try {
                       const success = usePlannerStore.getState().importData(reader.result as string);
-                      if (success) {
-                        alert('Planerdaten erfolgreich importiert.');
-                      } else {
-                        alert('Ungültige Datei: Keine gültigen Planerdaten gefunden.');
-                      }
+                      if (success) alert('Planerdaten erfolgreich importiert.');
+                      else alert('Keine gültigen Planerdaten gefunden.');
                     } catch { alert('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
@@ -2041,24 +1875,20 @@ export function SettingsPanel() {
               </label>
             </div>
           </div>
-        </div>
-      </Section>
 
-      {/* Collection save/load (v3.77 #10: replace or new dialog) */}
-      <Section title="📚 Sammlung (Gesamtkonfiguration)">
-        <div className="space-y-2">
-          <p className="text-[8px] text-gray-400">Gesamte Konfiguration (Kurse, Ferien, Sonderwochen, Fachbereiche, Regeln) in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
-          <RubricCollectionButtons rubricType="settings" getData={() => settings}
-            onLoad={(data) => {
-              if (!data || typeof data !== 'object') { alert('Ungültige Konfiguration.'); return; }
-              if (!Array.isArray(data.courses) || !Array.isArray(data.holidays) || !Array.isArray(data.specialWeeks)) {
-                alert('Ungültige Konfiguration in der Sammlung.');
-                return;
-              }
-              if (!confirm(`Bestehende Einstellungen werden überschrieben (${data.courses.length} Kurse, ${data.holidays.length} Ferien, ${data.specialWeeks.length} Sonderwochen). Fortfahren?`)) return;
-              setSettings(data as PlannerSettings);
-              doSave(data as PlannerSettings);
-            }} />
+          {/* Sammlung */}
+          <div className="border-t border-white/10 pt-3">
+            <p className="text-[8px] text-gray-400 font-semibold mb-1">Sammlung (Gesamtkonfiguration)</p>
+            <p className="text-[8px] text-gray-400 mb-1.5">Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
+            <RubricCollectionButtons rubricType="settings" getData={() => settings}
+              onLoad={(data) => {
+                if (!data || typeof data !== 'object') { alert('Ungültige Konfiguration.'); return; }
+                if (!Array.isArray(data.courses) || !Array.isArray(data.holidays) || !Array.isArray(data.specialWeeks)) { alert('Ungültige Konfiguration.'); return; }
+                if (!confirm(`Einstellungen überschreiben? (${data.courses.length} Kurse, ${data.holidays.length} Ferien, ${data.specialWeeks.length} Sonderwochen)`)) return;
+                setSettings(data as PlannerSettings);
+                doSave(data as PlannerSettings);
+              }} />
+          </div>
         </div>
       </Section>
 

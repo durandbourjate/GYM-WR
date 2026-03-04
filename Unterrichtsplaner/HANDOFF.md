@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.81
 
-## Status: 🔜 v3.81 — 6 Tasks offen
+## Status: ✅ v3.81 — 6 Tasks erledigt
 
 ---
 
@@ -136,6 +136,33 @@ git add -A
 git commit -m "v3.81: Import-Bug (D1), Fachbereiche-Leer (D2), Ferien-Dropdown entfernt (D3), Fach-Dropdown (D4), Daten+Sammlung (D5), KW-Fix (D6)"
 git push
 ```
+
+---
+
+## ✅ Erledigte Tasks v3.81
+
+| # | Task | Status |
+|---|------|--------|
+| D1 | Bug — Import-Button doppelt: untere Import-Buttons in 5 Editoren entfernt, Icon auf ⬆ geändert | ✅ |
+| D2 | Bug — Fachbereiche leer → Crash: Leer-Warnung im SubjectsEditor, bestehende Fallbacks bestätigt | ✅ |
+| D3 | Bug — Ferien-Preset-Dropdown beim Planer-Erstellen komplett entfernt (WelcomeScreen + PlannerTabs) | ✅ |
+| D4 | Feature — Fachbereiche-Vorlagen: Dropdown mit allen Gymnasialfächern Kt. Bern (15 Presets in 7 Gruppen) | ✅ |
+| D5 | UX — «Daten exportieren» + «Sammlung» zu einer Rubrik «💾 Daten & Sammlung» zusammengeführt | ✅ |
+| D6 | Data — Sonderwochen KW-Fix: .ts-Dateien geprüft, kein KW19 hardcoded → bereits korrekt | ✅ |
+
+### Änderungen im Detail
+
+**D1:** Import-Icon in `SectionActions` von `📥` auf `⬆` geändert (unterscheidbar von Speichern `📥`). Untere Import-Buttons aus CourseEditor, SpecialWeeksEditor, HolidaysEditor, AssessmentRulesEditor und Lehrplanziele-Body entfernt. Nur Header-Import bleibt.
+
+**D2:** Leer-Zustand-Warnung im SubjectsEditor: «Keine Fachbereiche konfiguriert…». Bestehende defensive Fallbacks in `usePlannerData`, `sc()`, `getCategoryColors()`, `Toolbar` bestätigt — kein Crash mehr möglich.
+
+**D3:** `WelcomeScreen`: `presetId`, `autoHolidays`, Import-Schnellzugriffe (C8) komplett entfernt. Vereinfacht zu Name-Input + Button + Hinweis «Ferien, Kurse und Fachbereiche in den Einstellungen importieren». `PlannerTabs`: `autoHolidays`-State und -Checkbox entfernt. Neuer Planer startet mit leeren Ferien.
+
+**D4:** `subjectPresets.ts` von 5 auf 15 Presets erweitert. 7 Gruppen: W&R, Naturwiss., Sprachen (+Italienisch, Latein, Spanisch), Geistes-/Sozialwiss. (Geschichte, Geografie, Philosophie), Gestalterisch (BG, Musik, Sport), Mathe&Info, Andere. Vorlagen-Buttons durch `<select>` mit `<optgroup>` ersetzt. Dialog: «Ersetzen» / «Ergänzen (Duplikate übersprungen)». Farben lt. Spezifikation.
+
+**D5:** Zwei `Section`-Komponenten (Daten + Sammlung) zu einer «💾 Daten & Sammlung» zusammengeführt. Drei Unterabschnitte mit `border-t border-white/10 pt-3`: Konfiguration, Planerdaten, Sammlung.
+
+**D6:** `iwPresets.ts` und `initialLessonDetails.ts` durchsucht — kein KW19/«Maturprüfungen schriftlich» hardcoded. JSON bereits korrigiert.
 
 ---
 
@@ -333,26 +360,37 @@ Modal zeigt «Noch keine TaF-Phasen definiert» + «+ Phase hinzufügen» (nur m
 
 ---
 
-### Task C8: Feature — Startbildschirm: Import-Optionen erweitern
+### Task C8: Feature — Startbildschirm: dritte Zeile mit Sammlung-Import/Export
 
-**Betrifft:** Startbildschirm (leerer Zustand, kein Planer vorhanden), `PlannerTabs` oder `App.tsx`
+**Betrifft:** `PlannerTabs.tsx` — Formular «Neuen Planer erstellen» (`showNew`-State)
 
-**Ist-Zustand (Screenshot `startbildschirm_import_von_jsons...`):**
-Startbildschirm zeigt nur: Name-Eingabe + SJ-Dropdown + «✅ Ferien eintragen» + «+ Neuen Planer erstellen»
-Hinweis: «Oder importiere einen bestehenden Planer via JSON-Datei (Tab-Leiste → 📥 Import)»
-
-**Ziel:** Direkt auf dem Startbildschirm zusätzliche Import-Schnellzugriffe anbieten:
-
+**Ist-Zustand:** Das Formular hat 2 Zeilen:
 ```
-+ Neuen Planer erstellen
-
-── oder direkt importieren ──
-[📥 Ferien]  [📥 Sonderwochen]  [📥 Stundenplan]  [📥 Beurteilungsregeln]
+Zeile 1: [Name-Eingabe]
+Zeile 2: [SJ-Preset-Dropdown]  [✅ Ferien eintragen]
+         [+ Neuen Planer erstellen]
 ```
 
-- Diese Buttons öffnen direkt den Datei-Picker für das jeweilige JSON-Format
-- Nach dem Import + «Planer erstellen» werden die importierten Daten direkt in den neuen Planer übernommen
-- Alternativ: Die Buttons erscheinen erst **nach** «Neuen Planer erstellen» als Onboarding-Schritt
+**Ziel:** Dritte Zeile mit direkten Import-Schnellzugriffen für Sammlung-Daten:
+```
+Zeile 1: [Name-Eingabe]
+Zeile 2: [SJ-Preset-Dropdown]  [✅ Ferien eintragen]
+Zeile 3: [📥 Ferien]  [📥 Sonderwochen]  [📥 Stundenplan]  [📥 Beurteilungsregeln]
+         [+ Neuen Planer erstellen]
+```
+
+**Verhalten der Import-Buttons in Zeile 3:**
+- Jeder Button öffnet einen Datei-Picker für das jeweilige JSON-Format
+- Die importierten Daten werden in einem lokalen State zwischengespeichert
+- Beim Klick «+ Neuen Planer erstellen» werden die importierten Daten in `initialSettings` übernommen
+- Wenn ein Button angeklickt wurde und Daten geladen sind → Button zeigt Häkchen + Dateiname («✅ ferien_hofwil_2526.json»)
+- Button erneut klicken → Datei ersetzen oder zurücksetzen
+
+**Implementierungshinweis:**
+- In `handleCreate()` in `PlannerTabs.tsx`: nach dem `getDefaultSettings()`-Aufruf die importierten Daten in `initialSettings` mergen
+- Neue States: `importedHolidays`, `importedSpecialWeeks`, `importedCourses`, `importedAssessmentRules` (jeweils `null | Array`)
+- Format der JSON-Dateien: identisch mit den Preset-Dateien in `public/presets/Hofwil/`
+- Bestehende `autoHolidays`-Logik bleibt: wenn `autoHolidays` aktiv UND `importedHolidays` vorhanden → importierte Ferien haben Vorrang vor Preset-Ferien
 
 ---
 
@@ -833,3 +871,4 @@ git push
 - v3.78: Ergänzung v3.78 — 7 Tasks (Panel-Scroll, UE-Position, UE-Beschriftung, Notenberechnung, Fachbereich-Buttons, Drag-Sequenz-Vererbung, Breadcrumb)
 - v3.79: Auftrag v3.79 — 7 Tasks (Import-Duplikatprüfung, Fachbereich/Kurs-Import, Jahrgänge-Bug, Settings-Header-Buttons, Panel-Scroll, Auto-Zoom)
 - v3.80: Auftrag v3.80 — 8 Tasks (Settings-Buttons C1, Hardcoded-Daten entfernt C2+C3, Fachbereich-Vorlagen C4, Kurs-Header C5, Stoffverteilung-Vorlagen C6, TaF-Import C7, Startscreen-Import C8)
+- v3.81: Auftrag v3.81 — 6 Tasks (Import-Bug D1, Fachbereiche-Leer D2, Ferien-Dropdown entfernt D3, Fach-Dropdown D4, Daten+Sammlung D5, KW-Fix D6)

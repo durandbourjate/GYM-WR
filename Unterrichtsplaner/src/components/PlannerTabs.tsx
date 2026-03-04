@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useInstanceStore, instanceStorageKey, generateWeekIds } from '../store/instanceStore';
 import { saveToInstance } from '../store/plannerStore';
 import { SCHOOL_YEAR_PRESETS, getPresetForYear } from '../data/holidayPresets';
-import { generateId, configToCourses, type HolidayConfig, type CourseConfig, type SpecialWeekConfig, type AssessmentRule, type PlannerSettings, getDefaultSettings, applySettingsToWeekData } from '../store/settingsStore';
+import { configToCourses, type PlannerSettings, getDefaultSettings, applySettingsToWeekData } from '../store/settingsStore';
 import type { LessonType } from '../types';
 
 export function PlannerTabs() {
@@ -14,7 +14,6 @@ export function PlannerTabs() {
   const [newName, setNewName] = useState('');
   const [templateId, setTemplateId] = useState<string | ''>('');
   const [presetId, setPresetId] = useState<string>('');
-  const [autoHolidays, setAutoHolidays] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [contextMenu, setContextMenu] = useState<{ id: string; x: number; y: number } | null>(null);
@@ -68,21 +67,7 @@ export function PlannerTabs() {
       if (!initialSettings) {
         initialSettings = getDefaultSettings();
       }
-
-      if (autoHolidays && preset) {
-        const presetHolidays: HolidayConfig[] = preset.holidays.map(h => ({
-          id: generateId(),
-          label: h.label,
-          startWeek: h.startWeek,
-          endWeek: h.endWeek,
-        }));
-        const existingLabels = new Set(initialSettings.holidays.map(h => h.label));
-        for (const h of presetHolidays) {
-          if (!existingLabels.has(h.label)) {
-            initialSettings.holidays.push(h);
-          }
-        }
-      }
+      // v3.81 D3: Keine automatischen Ferien mehr — Import nur über Einstellungen
 
       // Pre-seed the new instance's localStorage BEFORE switchInstance runs,
       // so loadFromInstance() picks up settings immediately (no setTimeout race).
@@ -225,12 +210,6 @@ export function PlannerTabs() {
               ))}
               <option value="">Manuell</option>
             </select>
-            {(presetId || defaultPresetId) && (
-              <label className="flex items-center gap-0.5 text-[10px] text-slate-400 cursor-pointer" title="Schulferien Kt. Bern automatisch eintragen">
-                <input type="checkbox" checked={autoHolidays} onChange={e => setAutoHolidays(e.target.checked)} className="cursor-pointer" />
-                🏖
-              </label>
-            )}
             {instances.length > 0 && (
               <select
                 className="bg-slate-800 border border-slate-600 rounded px-1 py-1 text-slate-400 text-[10px] outline-none cursor-pointer"
@@ -291,14 +270,7 @@ export function PlannerTabs() {
 export function WelcomeScreen() {
   const { createInstance } = useInstanceStore();
   const [name, setName] = useState('');
-  const [presetId, setPresetId] = useState('');
-  const [autoHolidays, setAutoHolidays] = useState(true);
-  // Quick-import state (v3.80 C8)
-  const [importedHolidays, setImportedHolidays] = useState<HolidayConfig[]>([]);
-  const [importedSpecialWeeks, setImportedSpecialWeeks] = useState<SpecialWeekConfig[]>([]);
-  const [importedCourses, setImportedCourses] = useState<CourseConfig[]>([]);
-  const [importedRules, setImportedRules] = useState<AssessmentRule[]>([]);
-
+  // v3.81 D3: Ferien-Preset-Dropdown und autoHolidays entfernt — Ferien nur noch via Einstellungen
   const defaultPresetId = (() => {
     const now = new Date();
     const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
@@ -306,7 +278,7 @@ export function WelcomeScreen() {
   })();
 
   const handleCreate = () => {
-    const preset = SCHOOL_YEAR_PRESETS.find(p => p.id === (presetId || defaultPresetId));
+    const preset = SCHOOL_YEAR_PRESETS.find(p => p.id === defaultPresetId);
     const startYear = preset?.startYear ?? new Date().getFullYear();
     const plannerName = name.trim() || `Planer ${startYear}/${(startYear + 1) % 100}`;
 
@@ -319,18 +291,8 @@ export function WelcomeScreen() {
     });
 
     if (newId) {
-      // Always set plannerSettings for new planners (distinguishes from legacy)
+      // v3.81 D3: Neuer Planer startet mit leeren Ferien (kein automatischer Preset)
       const initialSettings = getDefaultSettings();
-      if (autoHolidays && preset) {
-        initialSettings.holidays = preset.holidays.map(h => ({
-          id: generateId(), label: h.label, startWeek: h.startWeek, endWeek: h.endWeek,
-        }));
-      }
-      // Apply quick-imported data (v3.80 C8)
-      if (importedHolidays.length > 0) initialSettings.holidays = [...initialSettings.holidays, ...importedHolidays];
-      if (importedSpecialWeeks.length > 0) initialSettings.specialWeeks = [...initialSettings.specialWeeks, ...importedSpecialWeeks];
-      if (importedCourses.length > 0) initialSettings.courses = [...initialSettings.courses, ...importedCourses];
-      if (importedRules.length > 0) initialSettings.assessmentRules = importedRules;
       // Pre-seed localStorage so loadFromInstance() picks up settings immediately
       localStorage.setItem(instanceStorageKey(newId), JSON.stringify({
         state: { plannerSettings: initialSettings },
@@ -346,6 +308,7 @@ export function WelcomeScreen() {
         Du kannst mehrere Planer für verschiedene Schuljahre oder Anstellungen verwalten.
       </p>
 
+      {/* v3.81 D3: Vereinfacht — nur Name + Button, kein Ferien-Preset */}
       <div className="flex flex-col gap-4 w-full max-w-sm">
         <input
           className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white text-center outline-none focus:border-blue-500"
@@ -354,109 +317,15 @@ export function WelcomeScreen() {
           onChange={e => setName(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') handleCreate(); }}
         />
-        <div className="flex gap-2 items-center justify-center">
-          <select
-            className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm outline-none cursor-pointer"
-            value={presetId || defaultPresetId}
-            onChange={e => setPresetId(e.target.value)}
-          >
-            {SCHOOL_YEAR_PRESETS.map(p => (
-              <option key={p.id} value={p.id}>{p.label}</option>
-            ))}
-          </select>
-          <label className="flex items-center gap-1.5 text-sm text-slate-400 cursor-pointer" title="Schulferien Kt. Bern automatisch eintragen">
-            <input type="checkbox" checked={autoHolidays} onChange={e => setAutoHolidays(e.target.checked)} className="cursor-pointer" />
-            🏖 Ferien eintragen
-          </label>
-        </div>
         <button
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors cursor-pointer"
           onClick={() => handleCreate()}
         >
           + Neuen Planer erstellen
         </button>
-        {/* Quick-import badges (v3.80 C8) */}
-        {(importedHolidays.length > 0 || importedSpecialWeeks.length > 0 || importedCourses.length > 0 || importedRules.length > 0) && (
-          <div className="flex flex-wrap gap-1.5 justify-center mt-1">
-            {importedHolidays.length > 0 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-900/30 text-green-400 border border-green-700/50">🏖 {importedHolidays.length} Ferien</span>}
-            {importedSpecialWeeks.length > 0 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-400 border border-amber-700/50">📅 {importedSpecialWeeks.length} Sonderwochen</span>}
-            {importedCourses.length > 0 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-900/30 text-blue-400 border border-blue-700/50">📚 {importedCourses.length} Kurse</span>}
-            {importedRules.length > 0 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-900/30 text-purple-400 border border-purple-700/50">📝 {importedRules.length} Regeln</span>}
-          </div>
-        )}
-
-        {/* Import-Schnellzugriffe (v3.80 C8) */}
-        <div className="mt-4 pt-3 border-t border-slate-700/50">
-          <p className="text-slate-500 text-xs mb-2">Direkt importieren (JSON)</p>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <label className="px-3 py-1.5 rounded border border-slate-600 text-slate-400 text-xs cursor-pointer hover:text-slate-200 hover:border-slate-500 transition-colors">
-              📥 Ferien
-              <input type="file" accept=".json,.csv,.txt" className="hidden" onChange={(e) => {
-                const file = e.target.files?.[0]; if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const data = JSON.parse(reader.result as string);
-                    const arr: HolidayConfig[] = (Array.isArray(data) ? data : data.holidays || []).map((h: any) => ({
-                      id: generateId(), label: h.label || h.name || '', startWeek: String(h.startWeek || h.start || ''), endWeek: String(h.endWeek || h.end || ''), ...(h.days ? { days: h.days } : {}),
-                    }));
-                    if (arr.length === 0) { alert('Keine gültigen Ferien.'); return; }
-                    setImportedHolidays(arr);
-                  } catch { alert('JSON konnte nicht gelesen werden.'); }
-                };
-                reader.readAsText(file); e.target.value = '';
-              }} />
-            </label>
-            <label className="px-3 py-1.5 rounded border border-slate-600 text-slate-400 text-xs cursor-pointer hover:text-slate-200 hover:border-slate-500 transition-colors">
-              📥 Sonderwochen
-              <input type="file" accept=".json" className="hidden" onChange={(e) => {
-                const file = e.target.files?.[0]; if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const data = JSON.parse(reader.result as string) as SpecialWeekConfig[];
-                    const arr = Array.isArray(data) ? data : [];
-                    if (arr.length === 0) { alert('Keine gültigen Sonderwochen.'); return; }
-                    setImportedSpecialWeeks(arr.map(w => ({ ...w, id: w.id || generateId() })));
-                  } catch { alert('JSON konnte nicht gelesen werden.'); }
-                };
-                reader.readAsText(file); e.target.value = '';
-              }} />
-            </label>
-            <label className="px-3 py-1.5 rounded border border-slate-600 text-slate-400 text-xs cursor-pointer hover:text-slate-200 hover:border-slate-500 transition-colors">
-              📥 Stundenplan
-              <input type="file" accept=".json" className="hidden" onChange={(e) => {
-                const file = e.target.files?.[0]; if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const data = JSON.parse(reader.result as string);
-                    const arr: CourseConfig[] = Array.isArray(data) ? data : data.kurse || data.courses || [];
-                    if (arr.length === 0) { alert('Keine gültigen Kurse.'); return; }
-                    setImportedCourses(arr.map(c => ({ ...c, id: c.id || generateId() })));
-                  } catch { alert('JSON konnte nicht gelesen werden.'); }
-                };
-                reader.readAsText(file); e.target.value = '';
-              }} />
-            </label>
-            <label className="px-3 py-1.5 rounded border border-slate-600 text-slate-400 text-xs cursor-pointer hover:text-slate-200 hover:border-slate-500 transition-colors">
-              📥 Beurteilungsregeln
-              <input type="file" accept=".json" className="hidden" onChange={(e) => {
-                const file = e.target.files?.[0]; if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const data = JSON.parse(reader.result as string);
-                    const arr: AssessmentRule[] = Array.isArray(data) ? data : data.assessmentRules || data.rules || [];
-                    if (arr.length === 0) { alert('Keine gültigen Regeln.'); return; }
-                    setImportedRules(arr);
-                  } catch { alert('JSON konnte nicht gelesen werden.'); }
-                };
-                reader.readAsText(file); e.target.value = '';
-              }} />
-            </label>
-          </div>
-        </div>
+        <p className="text-slate-500 text-xs text-center">
+          Ferien, Kurse und Fachbereiche kannst du anschliessend in den Einstellungen importieren.
+        </p>
       </div>
     </div>
   );
