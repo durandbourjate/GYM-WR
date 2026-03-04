@@ -1,6 +1,25 @@
-# Unterrichtsplaner – Handoff v3.82
+# Unterrichtsplaner – Handoff v3.83
 
-## Status: ✅ v3.82 — 7/7 Tasks erledigt (04.03.2026)
+## Status: 🔧 v3.83 — 1/5 Tasks erledigt (04.03.2026)
+
+---
+
+## Ergebnis v3.83
+
+| # | Typ | Beschreibung | Status |
+|---|-----|-------------|--------|
+| F1 | Bug | Recht fehlt im Semesterbalken (Jahresübersicht) — Case-Mismatch `Recht` → `RECHT` | ✅ |
+| F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ⏳ |
+| F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ⏳ |
+| F4 | Feature | Separate Importoptionen auf Startseite | ⏳ |
+| F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ⏳ |
+
+### Änderungsdetails
+
+**F1 — Recht im Semesterbalken:**
+- **Ursache:** `stoffverteilungPresets.ts` verwendete `Recht` als Key, aber `WR_CATEGORIES` definiert `RECHT` (Grossbuchstaben). `sv.weights['RECHT']` ergab `undefined` → Balken zeigte 0.
+- `stoffverteilungPresets.ts`: Alle `Recht` → `RECHT` Keys korrigiert (SF- und EF-Presets)
+- `ZoomMultiYearView.tsx` `entriesToRows()`: Normalisierung aller Weight-Keys auf Uppercase, damit auch bereits gespeicherte Daten mit Mixed-Case korrekt angezeigt werden
 
 ---
 

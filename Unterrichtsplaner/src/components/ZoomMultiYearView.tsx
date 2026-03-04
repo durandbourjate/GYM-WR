@@ -393,13 +393,16 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
   );
 }
 
-/** Convert StoffverteilungEntry[] to StoffRow format for rendering */
+/** Convert StoffverteilungEntry[] to StoffRow format for rendering.
+ *  Normalizes weight keys to uppercase to match WR_CATEGORIES keys (z.B. 'Recht' → 'RECHT'). */
 function entriesToRows(entries: StoffverteilungEntry[]): StoffRow[] {
-  return entries.map(e => ({
-    semester: e.semester,
-    gym: e.gym,
-    weights: { ...e.weights },
-  }));
+  return entries.map(e => {
+    const normalized: Record<string, number> = {};
+    for (const [key, val] of Object.entries(e.weights)) {
+      normalized[key.toUpperCase()] = (normalized[key.toUpperCase()] || 0) + val;
+    }
+    return { semester: e.semester, gym: e.gym, weights: normalized };
+  });
 }
 
 export function ZoomMultiYearView() {
