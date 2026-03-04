@@ -60,7 +60,7 @@ function App() {
 
 /** The actual planner grid — separated so it re-renders on instance switch */
 function PlannerContent() {
-  const { filter, classFilter, courseFilter, setCourseFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, sidePanelTab, zoomLevel, panelWidth, plannerSettings } = usePlannerStore();
+  const { filter, classFilter, courseFilter, setCourseFilter, weekData, setWeekData, migrateStaticSequences, fixSequenceTitles, sequencePanelOpen, sidePanelOpen, sidePanelTab, zoomLevel, autoFitZoom, panelWidth, plannerSettings } = usePlannerStore();
   const { courses: allCourses, weeks: hookWeeks, s2StartIndex, isLegacy } = usePlannerData();
   const curRef = useRef<HTMLTableRowElement>(null);
 
@@ -262,7 +262,7 @@ function PlannerContent() {
           ) : (
             <>
               {/* Semester 1 — Week View */}
-              <table className="border-collapse w-max min-w-full">
+              <table className={`border-collapse ${autoFitZoom ? 'table-fixed w-full' : 'w-max min-w-full'}`}>
                 <SemesterHeader courses={s1Courses} semester={1} weeks={s1Weeks} />
                 <tbody>
                   <WeekRows weeks={s1Weeks} courses={s1Courses} allWeeks={allWeekKeys} currentRef={curRef} />
@@ -276,7 +276,7 @@ function PlannerContent() {
               </div>
 
               {/* Semester 2 — Week View */}
-              <table className="border-collapse w-max min-w-full">
+              <table className={`border-collapse ${autoFitZoom ? 'table-fixed w-full' : 'w-max min-w-full'}`}>
                 <SemesterHeader courses={s2Courses} semester={2} weeks={s2Weeks} />
                 <tbody>
                   <WeekRows weeks={s2Weeks} courses={s2Courses} allWeeks={allWeekKeys} currentRef={curRef} />

@@ -46,6 +46,10 @@ const SUBJECT_COLORS: Record<string, { bg: string; text: string; border: string;
     }];
   })
 );
+// Fallback for custom/unknown subject areas (v3.79 B8)
+const FALLBACK_SC: { bg: string; text: string; border: string; light: string } = { bg: '#334155', text: '#94a3b8', border: '#64748b', light: '#f1f5f9' };
+/** Safe lookup — never returns undefined */
+function sc(area: string): { bg: string; text: string; border: string; light: string } { return SUBJECT_COLORS[area] || FALLBACK_SC; }
 
 /** All subject areas from categories (dynamic, no hardcoded filter) */
 const ALL_AREAS = WR_CATEGORIES.map(c => c.key) as SubjectArea[];
@@ -80,7 +84,7 @@ function stufeToSemesters(stufe: string): string[] {
 function SubjectBar({ area, weight, total }: { area: SubjectArea; weight: number; total: number }) {
   if (weight === 0) return null;
   const pct = (weight / total) * 100;
-  const c = SUBJECT_COLORS[area];
+  const c = sc(area);
   return (
     <div className="flex items-center" style={{ width: `${pct}%`, minWidth: 20 }}>
       <div className="h-5 rounded-sm w-full flex items-center justify-center"
@@ -92,7 +96,7 @@ function SubjectBar({ area, weight, total }: { area: SubjectArea; weight: number
 }
 
 function GoalChip({ goal }: { goal: CurriculumGoal }) {
-  const c = SUBJECT_COLORS[goal.area];
+  const c = sc(goal.area);
   return (
     <div className="flex items-start gap-1 py-0.5 group"
       title={`${goal.goal}\n\nInhalte: ${goal.contents.join(', ')}`}>
@@ -145,7 +149,7 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
           {ALL_AREAS.map(area => {
             const areaGoals = goalsByArea[area];
             if (areaGoals.length === 0) return null;
-            const c = SUBJECT_COLORS[area];
+            const c = sc(area);
             return (
               <div key={area}>
                 <div className="flex items-center gap-1 mb-0.5">
@@ -224,7 +228,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
         <div className="space-y-1">
           {ALL_AREAS.map(area => {
             if (stats.counts[area] === 0) return null;
-            const c = SUBJECT_COLORS[area];
+            const c = sc(area);
             return (
               <div key={area} className="flex items-center gap-2">
                 <span className="text-[8px] font-bold w-10 shrink-0" style={{ color: c.text }}>{area}</span>
@@ -243,7 +247,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
           <div className="mt-1 pt-1 border-t border-slate-700/30">
             {ALL_AREAS.map(area => {
               if (stats.topics[area].length === 0) return null;
-              const c = SUBJECT_COLORS[area];
+              const c = sc(area);
               return (
                 <div key={area} className="text-[7px] text-gray-500 truncate">
                   <span style={{ color: c.text }}>{area}:</span>{' '}
@@ -339,7 +343,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
                   <div className="flex-1 flex gap-px">
                     {ALL_AREAS.map(area => {
                       if (stats.counts[area] === 0) return null;
-                      const c = SUBJECT_COLORS[area];
+                      const c = sc(area);
                       const pct = Math.min((stats.counts[area] / Math.max(total, 1)) * 100, 100);
                       return (
                         <div key={area} className="flex items-center" style={{ width: `${pct}%`, minWidth: 20 }}>
@@ -368,7 +372,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
             <span className="text-[8px] text-gray-500 font-semibold">Geplante Blöcke:</span>
             <div className="mt-1 space-y-0.5">
               {stats.blocks.map((b, i) => {
-                const c = SUBJECT_COLORS[b.area];
+                const c = sc(b.area);
                 return (
                   <div key={i} className="flex items-center gap-1.5">
                     <span className="text-[7px] px-1 py-px rounded shrink-0"
@@ -535,7 +539,7 @@ export function ZoomMultiYearView() {
           <div className="flex items-center gap-3 mb-3 px-2 py-1.5 bg-slate-800/50 rounded-md border border-slate-700">
             <span className="text-[9px] text-gray-400">Gesamt:</span>
             {ALL_AREAS.filter(a => totals.areas[a] > 0).map(area => (
-              <span key={area} className="text-[9px] font-bold" style={{ color: SUBJECT_COLORS[area]?.text }}>{area} {totals.areas[area]}</span>
+              <span key={area} className="text-[9px] font-bold" style={{ color: sc(area)?.text }}>{area} {totals.areas[area]}</span>
             ))}
             <span className="text-[8px] text-gray-500 ml-auto">{totals.goals} Lehrplanziele</span>
             <label className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer" title="Stoffverteilung importieren (JSON)">
@@ -629,7 +633,7 @@ export function ZoomMultiYearView() {
       {/* Legend */}
       <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center gap-4">
         {ALL_AREAS.map(area => {
-          const c = SUBJECT_COLORS[area];
+          const c = sc(area);
           return (
             <div key={area} className="flex items-center gap-1">
               <div className="w-3 h-3 rounded-sm" style={{ background: c.bg, border: `1px solid ${c.border}` }} />

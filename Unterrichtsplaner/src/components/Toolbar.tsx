@@ -8,7 +8,7 @@ import { checkGradeRequirements } from '../utils/gradeRequirements';
 import type { FilterType } from '../types';
 
 export function AppHeader() {
-  const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
+  const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, autoFitZoom, setAutoFitZoom, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
   const [showStats, setShowStats] = useState(false);
   const [showTaF, setShowTaF] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -188,6 +188,17 @@ export function AppHeader() {
             </button>
           ))}
         </div>
+        {zoomLevel === 3 && (
+          <button
+            onClick={() => setAutoFitZoom(!autoFitZoom)}
+            className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer transition-colors border ${
+              autoFitZoom ? 'bg-cyan-600/30 border-cyan-500 text-cyan-300' : 'border-gray-700 text-gray-500 hover:text-gray-300'
+            }`}
+            title={autoFitZoom ? 'Auto-Fit: Tabelle passt sich an Bildschirmbreite an' : 'Auto-Fit: Tabelle hat feste Spaltenbreite'}
+          >
+            ⟷
+          </button>
+        )}
         <button
           onClick={() => setDimPastWeeks(!dimPastWeeks)}
           className={`px-2 py-0.5 rounded text-[9px] cursor-pointer transition-colors ${dimPastWeeks ? 'text-amber-400 bg-amber-900/30 border border-amber-700' : 'text-gray-500 border border-gray-700 hover:text-gray-300'}`}

@@ -665,7 +665,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
       })()}
 
       {/* Flat block list + new sequence form (v3.76 #3: inline like UE button) */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 pb-8 space-y-3">
+      <div className="flex-1 overflow-y-auto px-3 py-2 pb-8 space-y-3" style={{ overscrollBehavior: 'contain' }}>
         {/* New sequence form — inline at top */}
         <div>
           {showNewForm ? (

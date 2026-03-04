@@ -1,8 +1,238 @@
-# Unterrichtsplaner – Handoff v3.78
+# Unterrichtsplaner – Handoff v3.79
 
-## Status: ✅ Built (v3.78)
-- **Datum:** 2026-03-03
+## Status: ✅ v3.79 — 7 Tasks erledigt (Import, Bugs, UX, Auto-Zoom)
+- **Datum:** 2026-03-04
+- **Basis:** v3.78 (gebaut + deployed)
 - **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
+
+---
+
+## ✅ Erledigte Tasks v3.79
+
+| # | Task | Status |
+|---|------|--------|
+| B5 | Duplikat-Prüfung beim Import (Ferien, Sonderwochen, Beurteilungsregeln) | ✅ |
+| B6 | Import-Button für Fachbereiche (JSON) | ✅ |
+| B7 | Import-Button für Kurse (JSON) | ✅ |
+| B8 | Bug — Jahrgänge-Tab weisse Seite (SUBJECT_COLORS Fallback) | ✅ |
+| B9 | UX — Settings-Rubriken Buttons in Kopfzeile (Section actions-Prop) | ✅ |
+| B10 | Bug — Side-Panel Scroll-Verhalten (overscroll-behavior: contain) | ✅ |
+| B11 | Auto-Zoom an Bildschirmbreite (autoFitZoom Toggle + table-fixed) | ✅ |
+
+### Änderungen im Detail
+
+**B5:** Import-Handler für Ferien (`label+startWeek`), Sonderwochen (`label+week`), Beurteilungsregeln (`label+semester+stufe`) prüfen auf Duplikate. Feedback: "X importiert, Y übersprungen".
+
+**B6:** `📥 Import`-Button im SubjectsEditor. Format: `SubjectConfig[]` oder `{subjects: [...]}`. Duplikat-Prüfung by id/label.
+
+**B7:** `📥 Import`-Button im CourseEditor. Format: `CourseConfig[]` oder `{kurse: [...]}` oder `{courses: [...]}`. Duplikat-Prüfung by `cls+day+from`.
+
+**B8:** `SUBJECT_COLORS[area]` konnte `undefined` zurückgeben bei custom SubjectAreas → Crash. Fix: `sc(area)` Helper mit `FALLBACK_SC` Fallback-Farben.
+
+**B9:** `Section`-Komponente erweitert um `actions`-Prop (React.ReactNode). `RubricCollectionButtons` aus Section-Body in Section-Header verschoben für alle 6 Rubriken.
+
+**B10:** `overscroll-behavior: contain` auf Panel-Root, SettingsPanel, BatchOrDetailsTab, SequencePanel. Verhindert Scroll-Propagation zum Planer.
+
+**B11:** `autoFitZoom` Boolean im plannerStore. Toggle-Button `⟷` in Toolbar (nur bei Zoom 3). Tabellen wechseln zwischen `w-max min-w-full` (normal) und `table-fixed w-full` (Auto-Fit).
+
+---
+
+## Aufgaben-Details (Originaltext)
+
+---
+
+## Originalauftrag v3.79
+
+### Vorbereitung abgeschlossen (in diesem Chat)
+
+Folgende Datendateien wurden bereits erstellt/aktualisiert:
+- `src/data/iwPresets.ts` — IW-Presets v2 (detailiert nach GYM-Stufe, korrekte Labels)
+- `src/data/stundenplan_alle_phasen.md` — Stundenplan-Dokumentation alle 4 Phasen
+- `src/data/kurse_duy_2526.json` — Import-Vorlage für Kurs-Import (JSON, 16 Einträge)
+
+### Task B5: Duplikat-Prüfung beim Import (Ferien + Sonderwochen + Beurteilungsregeln)
+
+**Betrifft:** Alle Import-Handler in SettingsPanel (oder deren Store-Funktionen)
+
+**Problem:** Wenn man Ferien oder Sonderwochen zweimal importiert, entstehen Duplikate.
+
+**Lösung:** Vor dem Hinzufügen eines Eintrags prüfen, ob ein Eintrag mit identischen Schlüsselfeldern bereits existiert. Duplikate überspringen.
+
+**Duplikat-Keys:**
+- Ferien: `label + week` (z.B. "Herbstferien" + "41")
+- Sonderwochen (SpecialWeekConfig): `label + week + gymLevel`
+- Beurteilungsregeln: `courseId + semester` (falls vorhanden; sonst `label + courseId`)
+
+**Feedback nach Import:** Statt nur "X Einträge importiert" → "X importiert, Y übersprungen (bereits vorhanden)"
+- Toast-Meldung (wie bestehende Import-Toasts) mit beiden Zahlen
+- Y=0 → normales Feedback ohne "übersprungen"
+
+**Hinweis:** Ferien-Import ist in `SettingsPanel.tsx` (handleHolidayImport o.ä.), Sonderwochen-Import ebenfalls. Beurteilungsregeln-Import (JSON) analog.
+
+---
+
+### Task B6: Import-Button für Fachbereiche
+
+**Betrifft:** Fachbereiche-Rubrik in SettingsPanel
+
+**Problem:** Fachbereiche haben nur Speichern/Laden via Sammlung. Kein direkter Datei-Import.
+
+**Lösung:** `📥 Import`-Button zur Fachbereiche-Rubrik hinzufügen (gleiche Position wie bei Ferien/Sonderwochen — kleiner Button links der Rubrik-Überschrift oder bei den anderen Buttons).
+
+**Format:** JSON-Array von `SubjectConfig[]`
+```json
+[
+  { "id": "vwl", "name": "VWL", "color": "#f97316", "active": true },
+  { "id": "bwl", "name": "BWL", "color": "#3b82f6", "active": true },
+  { "id": "recht", "name": "Recht", "color": "#22c55e", "active": true }
+]
+```
+
+**Duplikat-Prüfung (B5 integriert):** Prüfen ob `id` oder `name` bereits existiert → überspringen.
+
+**Toast-Feedback:** "X Fachbereiche importiert, Y übersprungen."
+
+**Hinweis:** `SubjectConfig` Typ in `settingsStore.ts` nachschauen. Import-Handler analog zu Ferien-Import.
+
+---
+
+### Task B7: Import-Button für Kurse
+
+**Betrifft:** Kurse-Rubrik in SettingsPanel
+
+**Problem:** Kurse können exportiert werden, aber nicht direkt aus JSON importiert (nur via manuelle Eingabe oder GCal).
+
+**Lösung:** `📥 Import`-Button zur Kurse-Rubrik.
+
+**Format:** JSON-Objekt mit `kurse`-Array (entspricht `kurse_duy_2526.json` in `src/data/`):
+```json
+{
+  "_meta": { ... },
+  "kurse": [ { "id": "c11", "cls": "29c", "typ": "SF", ... }, ... ]
+}
+```
+Alternativ auch direkt `CourseConfig[]` (Array ohne Wrapper) unterstützen.
+
+**Duplikat-Key:** `cls + day + from` (gleiche Klasse, gleicher Tag, gleiche Anfangszeit = Duplikat)
+- Falls `id` identisch → ebenfalls Duplikat
+
+**Toast-Feedback:** "X Kurse importiert, Y übersprungen."
+
+**Hinweis:** `Course`-Typ (oder `CourseConfig`) in `types.ts` / `settingsStore.ts` nachschauen. `COURSES`-Array in `courses.ts` ist das Format-Referenz. Importierte Kurse landen im plannerSettings (nicht in der hardcoded `COURSES`-Liste).
+
+---
+
+---
+
+### Task B8: Bug — «Jahrgänge»-Tab zeigt weisse Seite
+
+**Betrifft:** ZoomMultiYearView (oder die Komponente hinter dem «Jahrgänge»-Button in der Zoom-Leiste)
+
+**Problem:** Klick auf «Jahrgänge»-Tab (neben «Stoffverteilung» und «Ist-Zustand») → die gesamte Seite wird weiss (vermutlich ungefangener Render-Fehler / uncaught exception).
+
+**Lösung:**
+1. Fehlerursache identifizieren (fehlende Daten? leerer State? fehlender Null-Check?)
+2. Absturz beheben — Komponente soll mindestens einen sinnvollen Leer-Zustand zeigen («Noch keine Daten» o.ä.) statt zu crashen
+3. Optional: React Error Boundary um die Jahrgänge-Komponente, damit ein Crash nicht die ganze App reisst
+
+**Hinweis:** Könnte mit fehlenden Fachbereichen oder leerem `plannerSettings` zusammenhängen. `ZoomYearView` oder `ZoomMultiYearView` in den Haupt-Komponenten suchen.
+
+---
+
+### Task B9: UX — Einstellungs-Rubriken: Buttons in Kopfzeile verschieben
+
+**Betrifft:** Alle Rubriken in SettingsPanel (Kurse, Fachbereiche, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln — überall wo es Speichern/Laden/Hinzufügen/Import gibt)
+
+**Problem:** Aktuell sind «+ Hinzufügen» und «📥 Import» als separate Buttons am unteren Ende der Rubrik, während «💾 Speichern» / «📂 Laden» oben links stehen. Das ist inkonsistent und braucht unnötig Platz.
+
+**Ziel-Layout** (aus Screenshot — Sonderwochen als Referenz):
+```
+┌─────────────────────────────────────────────────┐
+│ 📅 Sonderwochen (5)                          ▼  │
+│  [+ Hinzufügen]  [💾 Speichern]  [📂 Laden]  [📥 Import]  │
+│                                                 │
+│  ... Einträge ...                               │
+└─────────────────────────────────────────────────┘
+```
+
+**Reihenfolge in der Kopfzeile (links nach rechts):** `+ Hinzufügen` → `💾 Speichern` → `📂 Laden` → `📥 Import`
+
+**Gilt für alle Rubriken** die mindestens einen dieser Buttons haben. Buttons die nicht existieren (z.B. keine Import-Funktion bei Lehrplanzielen) einfach weglassen.
+
+**Styling:** Kleine kompakte Buttons (wie die bestehenden Speichern/Laden-Buttons), gleiche Höhe, gleicher Abstand. Der Rubrik-Header `<div>` muss `flex`+`items-center`+`justify-between` oder ähnlich werden.
+
+**Achtung:** Der «+ Sonderwoche hinzufügen»-Button unten (gestrichelt) kann bleiben oder entfernt werden — Hauptsache der Button ist oben vorhanden.
+
+---
+
+### Task B10: Bug — Side-Panel scrollt nicht (Planer scrollt stattdessen)
+
+**Betrifft:** Side-Panel (rechtes Panel: Unterrichtseinheit / Sequenzen / Sammlung / Einstellungen)
+
+**Problem (aus Screenshot):** Wenn der Inhalt im Side-Panel länger als die Bildschirmhöhe ist, scrollt nicht das Panel, sondern der Planer-Hintergrund. Das Panel «klebt» oben und lässt sich nicht nach unten scrollen.
+
+**Ursache (wahrscheinlich):** `overflow-hidden` oder fehlendes `overflow-y-auto` auf dem Panel-Container oder dessen Scroll-Wrapper. Evtl. fehlt `overscroll-contain` um den Scroll vom Planer zu isolieren.
+
+**Lösung:**
+1. Panel-Wrapper: `overflow-y-auto` sicherstellen + `overscroll-contain` (verhindert Scroll-Propagation zum Planer)
+2. Panel-Wrapper: `max-h` muss auf Viewport-Höhe begrenzt sein (z.B. `h-full` oder `max-h-screen`)
+3. Innere Scroll-Container der Tabs (Unterrichtseinheit, Sequenzen etc.) ebenfalls prüfen
+4. Mousewheel-Events: `e.stopPropagation()` am Panel-Root wenn nötig, um Scroll-Bubbling zu verhindern
+
+**Hinweis:** Dieser Bug wurde in v3.78 (#14) schon einmal angegangen. Evtl. ist das `overflow-hidden` auf dem äusseren Container korrekt, aber ein inneres Element fehlt `overflow-y-auto`. Den ganzen Panel-Stack (äusseres Div → Tab-Wrapper → Tab-Inhalt) auf Overflow-Konfiguration prüfen.
+
+---
+
+### Task B11: Feature — Zoom automatisch an Bildschirmbreite anpassen
+
+**Betrifft:** Haupt-Planer-Ansicht (WeekRows / Zoom-Steuerung)
+
+**Problem (aus Screenshot):** Die Tabelle ist breiter als der Bildschirm → horizontales Scrollen nötig. Kein automatisches Anpassen.
+
+**Ziel:** Einen «Auto-Fit»-Modus einführen, der die Spaltenbreite (und ggf. Schriftgrösse) so skaliert, dass alle Kursspalten ohne horizontales Scrollen sichtbar sind.
+
+**Lösung — 2 Teile:**
+
+**Teil 1: Auto-Fit-Logik**
+- `useEffect` der auf `window.innerWidth` und Anzahl der sichtbaren Kursspalten reagiert
+- Berechne optimale Spaltenbreite: `verfügbare Breite / Anzahl sichtbare Spalten`
+- Setze CSS-Variable oder State `colWidth` entsprechend
+- Mindestbreite pro Spalte: ~80px (darunter wird es unleserlich)
+- Bei weniger Spalten (z.B. nur SF gefiltert): breitere Spalten
+
+**Teil 2: Zoom-Button erweitern**
+Aktuell gibt es Zoom-Buttons (aus Screenshot: Raster-Icon, Spalten-Icon, Kreis-Icon in der Toolbar). Diese sollen um «Auto»-Modus ergänzt werden:
+
+- Neuer Button «⊞ Auto» (oder ähnliches Icon) in der Zoom-Gruppe
+- Beim Klick: Auto-Fit aktivieren (Spaltenbreite passt sich dynamisch an)
+- Auto-Fit bleibt aktiv bis manueller Zoom gewählt wird
+- `ResizeObserver` auf dem Planer-Container für reaktives Update beim Fenstergrössen-Ändern
+
+**State:** `zoomMode: 'auto' | 'compact' | 'normal' | 'wide'` (oder wie die bestehenden Modi heissen)
+- Auto = dynamisch berechnet
+- Die anderen Modi = fixe Spaltenbreiten (bestehende Logik)
+
+**Persistenz:** `zoomMode` im plannerStore speichern (bereits der Fall für andere Zoom-Modi).
+
+---
+
+### Commit-Anweisung (nach allen 7 Tasks B5–B11)
+
+```bash
+# Build prüfen:
+npm run build 2>&1 | tail -20
+
+# Committen:
+git add -A
+git commit -m "v3.79: Import-Duplikatprüfung, Fachbereich/Kurs-Import, Jahrgänge-Bug, Settings-Header-Buttons, Panel-Scroll, Auto-Zoom"
+git push
+
+# HANDOFF.md aktualisieren: Status auf ✅, alle 7 Tasks dokumentieren
+```
+
+**Empfohlene Reihenfolge:** B8 (Crash-Bug) → B10 (Scroll-Bug) → B9 (UX Settings) → B5 (Import-Duplikat) → B6+B7 (neue Import-Buttons) → B11 (Auto-Zoom)
+
+---
 
 ## Erledigte Aufträge (v3.78 — Ergänzung, 7 Tasks)
 
