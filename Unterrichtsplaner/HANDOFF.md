@@ -1,96 +1,231 @@
 # Unterrichtsplaner – Handoff v3.80
 
-## Status: 🔜 v3.80 — 4 Tasks offen (Bugs + UX)
+## Status: 🔜 v3.80 — 8 Tasks offen
 
 ---
 
-## Originalauftrag v3.80
+## Originalauftrag v3.80 (04.03.2026)
 
-### Screenshots-Analyse (04.03.2026)
+| # | Typ | Beschreibung |
+|---|-----|-------------|
+| C1 | UX | Settings-Rubriken: Buttons in Kopfzeile (Hinzufügen + Speichern + Laden + Import) |
+| C2 | Bug | Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernen |
+| C3 | Bug | Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernen |
+| C4 | Feature | Fachbereich-Import: Vorlagen für andere Fächer anbieten (nicht nur W&R) |
+| C5 | UX | Kurs-Header: Stufe anzeigen (z.B. SF GYM2 2L), GK-Badge weglassen, nur HK anzeigen |
+| C6 | Feature | Stoffverteilung-Import für alle Fächer anbieten (Mehrjahresübersicht) |
+| C7 | Feature | TaF-Phasenmodell: Import aus JSON (statt nur manuell + hinzufügen) |
+| C8 | Feature | Startbildschirm: Import-Buttons für Ferien, Sonderwochen, Beurteilungen, Stundenplan etc. |
 
-Vier neue Aufträge aus Screenshots:
+**Empfohlene Reihenfolge:** C3 → C2 → C1 → C5 → C4 → C6 → C7 → C8
 
 ---
 
-### Task C1: Bug — «Jahrgänge»-Tab zeigt weisse Seite (Regression)
+### Task C1: UX — Settings-Rubriken: alle Buttons in Kopfzeile
 
-**Screenshot:** `bug_klick_auf_jahrgange_ganze_seite_weiss.png`
-**Betrifft:** Zoom-Leiste, Button «Jahrgänge» (neben «Stoffverteilung» / «Ist-Zustand»)
+**Betrifft:** Alle Rubriken in `SettingsPanel` (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln)
 
-**Problem:** Klick auf «Jahrgänge» → gesamte Seite wird weiss. Uncaught Render-Error.
+**Ist-Zustand (Screenshot `bei_allen_einstellungen...`):**
+- Kopfzeile zeigt nur «💾 Speichern» + «📂 Laden»
+- «+ Hinzufügen» und «📥 Import» sind nur unten in der Rubrik als separate Buttons
 
-**Status in v3.79:** War als B8 angeblich behoben (SUBJECT_COLORS Fallback). Tritt aber weiterhin auf → Regression oder unvollständiger Fix.
+**Ziel — Kopfzeile jeder Rubrik (links → rechts):**
+```
+[Rubrik-Titel + Anzahl]   [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import]  [▼]
+```
+- Alle Buttons gleiche kompakte Grösse wie bestehende Speichern/Laden-Buttons
+- Buttons nur anzeigen wenn die Rubrik die jeweilige Aktion unterstützt
+- «+ Hinzufügen»-Button unten (gestrichelt) kann bleiben oder entfernt werden — Hauptsache oben vorhanden
+
+**Hinweis:** `Section`-Komponente hat bereits `actions`-Prop (eingeführt in B9). Falls vorhanden, darauf aufbauen. Buttons für alle 6 Rubriken ergänzen.
+
+---
+
+### Task C2: Bug — Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernen
+
+**Betrifft:** Kurse-Rubrik in `SettingsPanel` (oder Kurs-Leer-Zustand)
+
+**Ist-Zustand (Screenshot `das_ist_auch_hardcoded_stundenplan...`):**
+Wenn keine Kurse konfiguriert sind, erscheint ein blauer Hinweis-Banner:
+> «Keine Kurse konfiguriert. Du kannst den aktuellen Stundenplan importieren oder von Grund auf neu anfangen.»
+> [📋 Aktuellen Stundenplan (DUY SJ 25/26) importieren]
+
+**Problem:** Dieser Hinweis ist hardcoded auf DUY/SJ 25/26. In einem generischen Planer ist das irreführend.
 
 **Lösung:**
-1. Alle Render-Pfade in `ZoomMultiYearView` (oder der Jahrgänge-Komponente) auf `undefined`/`null`-Zugriffe prüfen
-2. React Error Boundary um die gesamte Jahrgänge-Ansicht → zeigt Fehlertext statt weisse Seite
-3. Sicherstellen dass leerer Fachbereich-Array (`subjects: []`) nicht crasht
-4. `console.error` Ausgabe im Build prüfen um genaue Fehlerquelle zu finden
+- Hinweis-Banner und den hardcoded Import-Button komplett entfernen
+- Leer-Zustand der Kurse-Rubrik: neutral lassen (kein spezifischer Stundenplan erwähnt)
+- Der normale «+ Kurs hinzufügen» + «📥 Import»-Button reichen
 
 ---
 
-### Task C2: UX — Einstellungs-Kopfzeile: «Hinzufügen» + «Import» ergänzen
+### Task C3: Bug — Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernen
 
-**Screenshot:** `in_den_ganzen_einstellungen_hinzufugen_und_import_auch_in_oberste_zeile.png`
-**Betrifft:** Alle Rubriken in SettingsPanel
+**Betrifft:** `plannerStore` / `settingsStore` — Initialisierungsdaten beim Erstellen eines neuen Planers
 
-**Problem:** Aktuell zeigt die Kopfzeile nur «Speichern» + «Laden». «+ Hinzufügen» und «📥 Import» fehlen oben — diese Buttons sind nur unten in der Rubrik vorhanden.
+**Ist-Zustand (Screenshot `ferien_und_lehrplanziele_bei_neuem_planer_schon_drin...`):**
+Ein frisch erstellter Planer enthält bereits:
+- **Ferien (4):** Herbstferien KW39–41, Winterferien KW52–01, Sportferien KW06, Frühlingsferien KW15–16
+- **Lehrplanziele (40):** Vermutlich hardcoded W&R-Lehrplanziele
 
-**Ziel-Reihenfolge in der Kopfzeile (links → rechts):**
+**Problem:** Diese Daten sind spezifisch für Gymnasium Bern SJ 25/26 und sollten nicht automatisch in jeden neuen Planer eingefügt werden.
+
+**Lösung:**
+1. Neuer Planer startet mit **leeren** Ferien, Sonderwochen, Lehrplanzielen, Beurteilungsregeln
+2. Einzige Ausnahme: Wenn auf dem Startbildschirm «✅ Ferien eintragen» aktiviert ist **und** ein Ferienpreset ausgewählt wurde → nur dann Ferien eintragen
+3. Lehrplanziele: komplett leer bei neuem Planer. Import über «📥 Import»-Button oder Sammlung
+4. In `plannerStore` / `settingsStore` den Default-State auf leere Arrays setzen (`holidays: []`, `curriculumGoals: []`)
+
+---
+
+### Task C4: Feature — Fachbereich-Import: Vorlagen für andere Fächer
+
+**Betrifft:** Fachbereiche-Rubrik in `SettingsPanel`, Import-Button
+
+**Ist-Zustand (Screenshot `fur_fachbereich_import_auch_andere_facher...`):**
+Fachbereiche zeigen W&R-Vorlage (VWL orange, BWL blau, Recht grün). Import-Button existiert, aber keine Vorlagen für andere Fächer.
+
+**Ziel:** Beim Klick auf «📥 Import» in der Fachbereiche-Rubrik ein **Vorlagen-Dropdown** oder **Vorlagen-Dialog** anbieten:
+
 ```
-[+ Hinzufügen]  [💾 Speichern]  [📂 Laden]  [📥 Import]
+📥 Import
+  ├── 📂 Aus Datei (JSON)
+  ├── ── Vorlagen ──
+  ├── 🎓 W&R (VWL / BWL / Recht)
+  ├── 🔬 Naturwissenschaften (Bio / Chemie / Physik)
+  ├── 🌍 Sprachen (Deutsch / Englisch / Französisch)
+  ├── 📐 Mathematik & Informatik
+  └── ✏️ Leer (nur Vorlage-Struktur)
 ```
 
-**Gilt für alle Rubriken** die diese Aktionen unterstützen (Kurse, Fachbereiche, Ferien, Sonderwochen, Beurteilungsregeln, Lehrplanziele). Buttons die nicht existieren einfach weglassen.
-
-**Hinweis:** Task B9 in v3.79 hat dies bereits implementiert. Falls nicht korrekt umgesetzt, erneut prüfen und korrigieren. «+ Hinzufügen» unten (gestrichelt) kann bleiben oder entfernt werden.
-
----
-
-### Task C3: Bug — Side-Panel scrollt nicht (Regression)
-
-**Screenshot:** `kann_noch_immer_nicht_runterscrollen_im_menu_der_planer_scrollt.png`
-**Betrifft:** Side-Panel (Sequenzen-Tab, aber auch andere Tabs)
-
-**Problem:** Langer Panel-Inhalt → Scrollen im Panel funktioniert nicht, stattdessen scrollt der Planer-Hintergrund. War als B10 in v3.79 behoben, tritt aber weiterhin auf.
-
-**Lösung (erneut, präziser):**
-1. Panel-Root-Element: `overflow-y-auto` + `overscroll-behavior: contain` + explizite Höhe (`h-full` oder `max-h-[calc(100vh-Xpx)]`)
-2. Prüfen ob das Problem spezifisch im Sequenzen-Tab auftritt (Screenshot zeigt Sequenz-Inhalt) → `SequencePanel`-Scroll-Container separat prüfen
-3. Mousewheel-Event-Propagation: `e.stopPropagation()` am Panel-Root-Div
-4. Evtl. Tailwind `overflow-hidden` auf einem Elternelement, das verhindert dass `overflow-y-auto` greift → gesamten DOM-Stack von Panel-Root bis Tab-Inhalt prüfen
+- Vorlagen als hardcoded Array in einer Datei `data/subjectPresets.ts`
+- Klick auf Vorlage → öffnet Bestätigungs-Dialog («Bestehende ersetzen» / «Ergänzen»)
+- Duplikat-Prüfung wie bei normalem Import (by `id` oder `name`)
 
 ---
 
-### Task C4: Feature — Auto-Zoom / Zoom-Buttons für verschiedene Ansichten
+### Task C5: UX — Kurs-Header: Stufe anzeigen, GK weglassen, nur HK anzeigen
 
-**Screenshot:** `zoom_automatisch_an_bildschirmbreite_anpassen_zoom_button_fur_verschiedene_ansichten.png`
-**Betrifft:** Toolbar, Zoom-Steuerung, WeekRows
+**Betrifft:** Kurs-Spaltenheader in `WeekRows` (Hauptplaner-Ansicht)
 
-**Problem:** Die Tabelle ist breiter als der Bildschirm → horizontales Scrollen nötig. Kein automatischer Fit.
+**Ist-Zustand (Screenshot `hier_auch_stufe_angeben_z_b_SF_GYM2_2L...`):**
+Kurs-Header zeigt: `[SF] [GK] [2L] [14 frei]`
 
-**Status in v3.79:** Task B11 hat «Auto-Fit» via `table-fixed` implementiert. Screenshot zeigt v3.78 mit der Anforderung — prüfen ob B11 ausreichend war oder ob Nachbesserung nötig.
+**Probleme:**
+1. «GK» (Gesamtklasse) ist uninformativ — wird nie gebraucht, immer klar
+2. Keine GYM-Stufe sichtbar (z.B. GYM2)
+3. HK (Halbklasse) ist relevant → soll angezeigt werden
 
-**Falls B11 nicht ausreichend:**
-1. `ResizeObserver` auf Planer-Container → bei Fenstergrössenänderung Spaltenbreite neu berechnen
-2. Formel: `colWidth = (containerWidth - KW-Spalte - Puffer) / anzahlSichtbareSpalten`
-3. CSS-Variable `--col-width` setzen, die WeekRows-Spalten nutzen
-4. Mindestbreite: 80px pro Spalte
-5. Zoom-Buttons in Toolbar: bestehende Icons (`⊞`/Raster, `☰`/Spalten, `⦿`/Kreis, `⟷`/Auto) klar beschriften mit Tooltip
+**Ziel-Format:**
+```
+[SF] [GYM2] [2L] [14 frei]   ← wenn Stufe vorhanden, kein GK/HK-Badge nötig
+[IN] [HK] [2L] [14 frei]     ← wenn hk=true, HK-Badge anzeigen (kein GK)
+[EWR] [GYM1] [1L] [20 frei]
+```
+
+**Regeln:**
+- `hk: true` → Badge «HK» anzeigen (lila oder eigene Farbe)
+- `hk: false` → **kein** GK-Badge
+- `gymLevel` (z.B. «GYM2») → Badge anzeigen falls vorhanden, kein separates GK
+- Reihenfolge: Typ → Stufe/HK → Lektionen → Frei-Zähler
 
 ---
 
-### Commit-Anweisung (nach allen 4 Tasks C1–C4)
+### Task C6: Feature — Stoffverteilung-Import für alle Fächer
+
+**Betrifft:** `ZoomYearView` / Mehrjahresübersicht, «Stoffverteilung»-Tab
+
+**Ist-Zustand (Screenshot `import_stoffverteilung_fur_alle_facher...`):**
+Leer-Zustand zeigt: «Keine Stoffverteilung konfiguriert» + Button «📥 Stoffverteilung importieren (JSON)»
+
+**Ziel:** Analog zu C4 — beim Import-Button **Vorlagen** für gängige Fächer anbieten:
+
+```
+📥 Stoffverteilung importieren
+  ├── 📂 Aus Datei (JSON)
+  ├── ── Vorlagen ──
+  ├── 📘 W&R Schwerpunktfach (DUY, Lehrplan 17 Kt. Bern)
+  ├── 📗 W&R Ergänzungsfach
+  └── ✏️ Leere Vorlage
+```
+
+- W&R-SF-Vorlage entspricht der `DUY_Grobzuteilung`-Tabelle aus dem Projektdokument (S1–S8, Recht/BWL/VWL-Gewichtungen)
+- Vorlage als hardcoded JSON in `data/stoffverteilungPresets.ts`
+- Format muss zum bestehenden Import-Format der Mehrjahresübersicht passen
+
+**W&R SF Vorlage (DUY):**
+```json
+[
+  { "semester": 1, "gymLevel": "GYM1", "subjects": { "BWL": 3, "Recht": 0, "VWL": 0 } },
+  { "semester": 2, "gymLevel": "GYM1", "subjects": { "BWL": 2, "Recht": 1, "VWL": 0 } },
+  { "semester": 3, "gymLevel": "GYM2", "subjects": { "BWL": 1, "Recht": 2, "VWL": 2 } },
+  { "semester": 4, "gymLevel": "GYM2", "subjects": { "BWL": 0, "Recht": 3, "VWL": 2 } },
+  { "semester": 5, "gymLevel": "GYM3", "subjects": { "BWL": 0, "Recht": 2, "VWL": 2 } },
+  { "semester": 6, "gymLevel": "GYM3", "subjects": { "BWL": 2, "Recht": 0, "VWL": 2 } },
+  { "semester": 7, "gymLevel": "GYM4", "subjects": { "BWL": 0, "Recht": 2, "VWL": 2 } },
+  { "semester": 8, "gymLevel": "GYM4", "subjects": { "BWL": 2, "Recht": 0, "VWL": 2 } }
+]
+```
+
+---
+
+### Task C7: Feature — TaF-Phasenmodell: JSON-Import
+
+**Betrifft:** `TaFPanel` (Modal «TaF Phasenmodell»)
+
+**Ist-Zustand (Screenshot `Phasen_aus_Phasenplan_importieren_als_json`):**
+Modal zeigt «Noch keine TaF-Phasen definiert» + «+ Phase hinzufügen» (nur manuell)
+
+**Ziel:** Import-Button «📥 Import (JSON)» hinzufügen
+
+**Format:**
+```json
+[
+  { "name": "Phase 1", "startKW": 33, "endKW": 38, "semester": 1 },
+  { "name": "Phase 2", "startKW": 47, "endKW": 5,  "semester": 1 },
+  { "name": "Phase 3", "startKW": 7,  "endKW": 12, "semester": 2 },
+  { "name": "Phase 4", "startKW": 17, "endKW": 25, "semester": 2 }
+]
+```
+
+- Preset «SJ 25/26 Hofwil» als Vorlage direkt im Dialog anbieten (hardcoded, einmaliger Klick)
+- Preset-Daten: Phase 1 KW33–38, Phase 2 KW47–5, Phase 3 KW7–12, Phase 4 KW17–25
+- Duplikat-Prüfung by `name + startKW`
+
+---
+
+### Task C8: Feature — Startbildschirm: Import-Optionen erweitern
+
+**Betrifft:** Startbildschirm (leerer Zustand, kein Planer vorhanden), `PlannerTabs` oder `App.tsx`
+
+**Ist-Zustand (Screenshot `startbildschirm_import_von_jsons...`):**
+Startbildschirm zeigt nur: Name-Eingabe + SJ-Dropdown + «✅ Ferien eintragen» + «+ Neuen Planer erstellen»
+Hinweis: «Oder importiere einen bestehenden Planer via JSON-Datei (Tab-Leiste → 📥 Import)»
+
+**Ziel:** Direkt auf dem Startbildschirm zusätzliche Import-Schnellzugriffe anbieten:
+
+```
++ Neuen Planer erstellen
+
+── oder direkt importieren ──
+[📥 Ferien]  [📥 Sonderwochen]  [📥 Stundenplan]  [📥 Beurteilungsregeln]
+```
+
+- Diese Buttons öffnen direkt den Datei-Picker für das jeweilige JSON-Format
+- Nach dem Import + «Planer erstellen» werden die importierten Daten direkt in den neuen Planer übernommen
+- Alternativ: Die Buttons erscheinen erst **nach** «Neuen Planer erstellen» als Onboarding-Schritt
+
+---
+
+### Commit-Anweisung (nach allen 8 Tasks)
 
 ```bash
 npm run build 2>&1 | tail -20
 git add -A
-git commit -m "v3.80: Jahrgänge-Bug (C1), Settings-Header-Buttons (C2), Panel-Scroll (C3), Auto-Zoom (C4)"
+git commit -m "v3.80: Settings-Buttons (C1), Hardcoded-Daten entfernt (C2+C3), Fachbereich-Vorlagen (C4), Kurs-Header (C5), Stoffverteilung-Vorlagen (C6), TaF-Import (C7), Startscreen-Import (C8)"
 git push
-# HANDOFF.md: Status auf ✅, Tasks C1–C4 dokumentieren
+# HANDOFF.md: Status auf ✅, alle Tasks dokumentieren
 ```
-
-**Empfohlene Reihenfolge:** C1 (Crash-Bug) → C3 (Scroll-Bug) → C2 (UX Settings) → C4 (Auto-Zoom)
 
 ---
 
