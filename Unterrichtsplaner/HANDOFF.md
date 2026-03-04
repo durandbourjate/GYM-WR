@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.80
 
-## Status: 🔜 v3.80 — 8 Tasks offen
+## Status: ✅ v3.80 — 8 Tasks erledigt
 
 ---
 
@@ -226,6 +226,41 @@ git commit -m "v3.80: Settings-Buttons (C1), Hardcoded-Daten entfernt (C2+C3), F
 git push
 # HANDOFF.md: Status auf ✅, alle Tasks dokumentieren
 ```
+
+---
+
+## ✅ Erledigte Tasks v3.80
+
+| # | Task | Status |
+|---|------|--------|
+| C1 | UX — Settings-Rubriken: alle Buttons in Kopfzeile (+ Hinzufügen, Speichern, Laden, Import) | ✅ |
+| C2 | Bug — Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernt | ✅ |
+| C3 | Bug — Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernt | ✅ |
+| C4 | Feature — Fachbereich-Import: 5 Vorlagen (W&R, Nawi, Sprachen, Mathe&Info, Leer) | ✅ |
+| C5 | UX — Kurs-Header: Stufe anzeigen, GK weglassen, nur HK | ✅ |
+| C6 | Feature — Stoffverteilung-Import: 3 Vorlagen (W&R SF, W&R EF, Leer) | ✅ |
+| C7 | Feature — TaF-Phasenmodell: JSON-Import + Hofwil-Preset | ✅ |
+| C8 | Feature — Startbildschirm: Import-Buttons (Ferien, Sonderwochen, Stundenplan, Beurteilungsregeln) | ✅ |
+
+### Änderungen im Detail
+
+**C1:** Neue `SectionActions`-Komponente kombiniert [+] [Speichern] [Laden] [📥] Buttons. Alle 6 Rubriken (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln) nutzen `SectionActions` im Header. `ACT_BTN`-Style + `fileImport`-Helper für einheitliches Verhalten.
+
+**C2:** Blauer Banner mit hardcoded "DUY SJ 25/26"-Import-Button in der Kurse-Rubrik komplett entfernt. Unused Imports aufgeräumt.
+
+**C3:** `getEffectiveGoals()` gibt `[]` zurück statt auf `CURRICULUM_GOALS` fallback. Lehrplanziele-Titel zeigt korrekte Anzahl. "Standard-Konfiguration (DUY SJ 25/26)" → "Standard-Konfiguration". W&R Sek2 DUY Preset-Button entfernt.
+
+**C4:** Neue Datei `data/subjectPresets.ts` mit 5 Vorlagen: W&R (VWL/BWL/Recht), Naturwissenschaften (Bio/Chemie/Physik), Sprachen (D/E/F), Mathematik & Informatik, Leere Vorlage. Preset-Buttons im SubjectsEditor.
+
+**C5:** `stufe` Feld zum `Course`-Interface hinzugefügt + Mapping in `configToCourses()`. SemesterHeader zeigt Stufe-Badge (cyan) wenn vorhanden, HK-Badge nur bei `hk=true`, kein GK-Badge mehr.
+
+**C6:** Neue Datei `data/stoffverteilungPresets.ts` mit 3 Vorlagen: W&R SF (DUY, 8 Semester), W&R EF (4 Semester), Leere Vorlage. Preset-Buttons im ZoomMultiYearView Empty-State.
+
+**C7:** `HOFWIL_PRESET` (4 Phasen KW33–38, 47–05, 07–12, 17–25) direkt im TaFPanel. `handleImport` mit JSON-Parsing + Duplikat-Check by `name|startKW`. Buttons: 📥 Import (JSON) + 🏫 SJ 25/26 Hofwil.
+
+**C8:** Startbildschirm (PlannerTabs) erweitert: Import-Schnellzugriff-Buttons für Ferien, Sonderwochen, Stundenplan, Beurteilungsregeln direkt beim Planer-Erstellen. Importierte Daten werden beim Erstellen in initialSettings übernommen. Badges zeigen Anzahl importierter Einträge.
+
+**Zusätzlich:** `index.html` korrigiert — Build-Artefakte durch Vite-Template ersetzt (war seit v3.72 kaputt).
 
 ---
 
@@ -657,3 +692,5 @@ git push
 - v3.76: Auftrag v3.76 — 10 Tasks (Bug-Fixes & UX: Doppelklick, Ferien, Sonderwoche, Sequenz, Scrolling, Kurstyp, Vorlage, Deadline, Badge)
 - v3.77: Auftrag v3.77 — 13 Tasks (Bugs: Klick/ESC/Wiki/Ferien; UX: Toolbar-Reorg, Sammlung-Rubrik, Zeit-Alignment; Features: Rubrik-Collection, Replace/New-Dialog, Assessment-Erweiterung)
 - v3.78: Ergänzung v3.78 — 7 Tasks (Panel-Scroll, UE-Position, UE-Beschriftung, Notenberechnung, Fachbereich-Buttons, Drag-Sequenz-Vererbung, Breadcrumb)
+- v3.79: Auftrag v3.79 — 7 Tasks (Import-Duplikatprüfung, Fachbereich/Kurs-Import, Jahrgänge-Bug, Settings-Header-Buttons, Panel-Scroll, Auto-Zoom)
+- v3.80: Auftrag v3.80 — 8 Tasks (Settings-Buttons C1, Hardcoded-Daten entfernt C2+C3, Fachbereich-Vorlagen C4, Kurs-Header C5, Stoffverteilung-Vorlagen C6, TaF-Import C7, Startscreen-Import C8)

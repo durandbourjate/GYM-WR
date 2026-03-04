@@ -6,6 +6,14 @@ import type { TaFPhase } from '../types';
 const PHASE_COLORS = ['#8b5cf6', '#f59e0b', '#10b981', '#ef4444', '#3b82f6', '#ec4899'];
 const allWeeks = WEEKS.map(w => w.w);
 
+// Preset: SJ 25/26 Hofwil (v3.80 C7)
+const HOFWIL_PRESET: Omit<TaFPhase, 'id'>[] = [
+  { name: 'Phase 1', startWeek: '33', endWeek: '38', color: '#8b5cf6', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 2', startWeek: '47', endWeek: '05', color: '#f59e0b', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 3', startWeek: '07', endWeek: '12', color: '#10b981', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 4', startWeek: '17', endWeek: '25', color: '#ef4444', absentClasses: [], presentClasses: [] },
+];
+
 export function TaFPanel({ onClose }: { onClose: () => void }) {
   const { tafPhases, addTaFPhase, updateTaFPhase, deleteTaFPhase } = usePlannerStore();
   const [showNew, setShowNew] = useState(false);
@@ -26,6 +34,49 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
     });
     setNewName('');
     setShowNew(false);
+  };
+
+  // Import from JSON (v3.80 C7)
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result as string);
+        const arr = Array.isArray(data) ? data : data.phases || [];
+        if (arr.length === 0) { alert('Keine gültigen Phasen gefunden.'); return; }
+        const existingKeys = new Set(tafPhases.map(p => `${p.name}|${p.startWeek}`));
+        const unique = arr.filter((p: any) => !existingKeys.has(`${p.name}|${p.startKW || p.startWeek}`));
+        const dupes = arr.length - unique.length;
+        if (unique.length === 0) { alert(`Alle ${arr.length} Phasen sind bereits vorhanden.`); return; }
+        const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Phasen importieren?`;
+        if (confirm(msg)) {
+          for (const p of unique) {
+            addTaFPhase({
+              name: p.name || '',
+              startWeek: String(p.startKW || p.startWeek || ''),
+              endWeek: String(p.endKW || p.endWeek || ''),
+              color: p.color || PHASE_COLORS[tafPhases.length % PHASE_COLORS.length],
+              absentClasses: p.absentClasses || [],
+              presentClasses: p.presentClasses || [],
+            });
+          }
+        }
+      } catch { alert('JSON konnte nicht gelesen werden.'); }
+    };
+    reader.readAsText(file); e.target.value = '';
+  };
+
+  // Load preset (v3.80 C7)
+  const loadPreset = (preset: Omit<TaFPhase, 'id'>[]) => {
+    const existingKeys = new Set(tafPhases.map(p => `${p.name}|${p.startWeek}`));
+    const unique = preset.filter(p => !existingKeys.has(`${p.name}|${p.startWeek}`));
+    const dupes = preset.length - unique.length;
+    if (unique.length === 0) { alert('Alle Phasen bereits vorhanden.'); return; }
+    const msg = dupes > 0 ? `${unique.length} Phasen laden, ${dupes} übersprungen.` : `${unique.length} Phasen laden?`;
+    if (confirm(msg)) {
+      for (const p of unique) addTaFPhase(p);
+    }
   };
 
   return (
@@ -53,6 +104,18 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
               }}
             />
           ))}
+
+          {/* Import & Presets (v3.80 C7) */}
+          <div className="flex gap-1.5 flex-wrap">
+            <label className="text-[9px] px-2 py-1 rounded border border-slate-600 text-gray-400 hover:text-gray-200 cursor-pointer hover:border-slate-500">
+              📥 Import (JSON)
+              <input type="file" accept=".json" className="hidden" onChange={handleImport} />
+            </label>
+            <button onClick={() => loadPreset(HOFWIL_PRESET)}
+              className="text-[9px] px-2 py-1 rounded border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 cursor-pointer">
+              🏫 SJ 25/26 Hofwil
+            </button>
+          </div>
 
           {showNew ? (
             <div className="bg-slate-750 rounded-lg p-3 border border-slate-600 space-y-2">

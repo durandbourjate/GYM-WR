@@ -151,6 +151,7 @@ export function configToCourses(configs: CourseConfig[]): Course[] {
     hk: c.hk,
     semesters: c.semesters,
     note: c.note,
+    stufe: c.stufe, // v3.80 C5
   }));
 }
 

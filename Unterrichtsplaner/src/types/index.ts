@@ -19,6 +19,7 @@ export interface Course {
   hk: boolean;           // Is Halbklasse?
   semesters: Semester[];  // Active in which semesters
   note?: string;         // Additional info
+  stufe?: string;        // GYM level (e.g. 'GYM1', 'GYM2') — v3.80 C5
 }
 
 export interface LessonEntry {

@@ -401,8 +401,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
  */
 export function getEffectiveGoals(settings?: { schoolLevel?: string; curriculumGoals?: CurriculumGoal[] } | null): CurriculumGoal[] {
   if (settings?.curriculumGoals && settings.curriculumGoals.length > 0) return settings.curriculumGoals;
-  if (!settings?.schoolLevel || settings.schoolLevel === 'Sek2') return CURRICULUM_GOALS;
-  return []; // Grundstufe / Sek1: no default goals
+  return []; // v3.80 C3: Keine hardcoded Lehrplanziele mehr — Import oder Sammlung verwenden
 }
 
 // Helper: get goals filtered by area and/or cycle

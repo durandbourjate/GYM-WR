@@ -5,6 +5,7 @@ import { type CurriculumGoal } from '../data/curriculumGoals';
 import { WR_CATEGORIES, WR_BLOCK_COLORS, DEFAULT_BLOCK_COLOR, type CategoryDefinition } from '../data/categories';
 import type { SubjectArea, ManagedSequence } from '../types';
 import type { StoffverteilungEntry } from '../store/settingsStore';
+import { STOFFVERTEILUNG_PRESETS } from '../data/stoffverteilungPresets';
 
 /** Build a zero-initialized Record from category keys */
 function emptyCountRecord(cats: CategoryDefinition[]): Record<string, number> {
@@ -527,11 +528,24 @@ export function ZoomMultiYearView() {
             <div className="text-center py-8">
               <div className="text-2xl mb-2">📋</div>
               <p className="text-gray-400 text-sm">Keine Stoffverteilung konfiguriert</p>
-              <p className="text-gray-500 text-[10px] mt-1">Importiere eine Stoffverteilung (JSON) oder konfiguriere Fachbereiche.</p>
-              <label className="inline-block mt-3 px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[10px] cursor-pointer hover:bg-blue-500/10">
-                📥 Stoffverteilung importieren (JSON)
-                <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
-              </label>
+              <p className="text-gray-500 text-[10px] mt-1">Importiere eine Stoffverteilung oder wähle eine Vorlage.</p>
+              <div className="flex flex-wrap gap-2 justify-center mt-3">
+                <label className="px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[10px] cursor-pointer hover:bg-blue-500/10">
+                  📂 Aus Datei (JSON)
+                  <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
+                </label>
+                {STOFFVERTEILUNG_PRESETS.map(preset => (
+                  <button key={preset.id} onClick={() => {
+                    if (confirm(`Vorlage «${preset.label}» laden? (${preset.data.length} Semester)`)) {
+                      const store = usePlannerStore.getState();
+                      store.setPlannerSettings({ ...store.plannerSettings, stoffverteilung: preset.data } as Parameters<typeof store.setPlannerSettings>[0]);
+                    }
+                  }}
+                    className="px-3 py-1.5 rounded border border-slate-600 text-gray-400 text-[10px] cursor-pointer hover:text-gray-200 hover:border-slate-500">
+                    {preset.icon} {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
           ) : (
           <>

@@ -117,11 +117,13 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   >
                     {c.typ}
                   </span>
-                  <span className={`text-[7px] px-1 rounded font-semibold ${
-                    c.hk ? 'bg-orange-900/60 text-orange-200' : 'bg-gray-700 text-gray-400'
-                  }`}>
-                    {c.hk ? 'HK' : 'GK'}
-                  </span>
+                  {/* v3.80 C5: Show Stufe if available, show HK only when hk=true, never show GK */}
+                  {c.stufe && (
+                    <span className="text-[7px] px-1 rounded font-semibold bg-cyan-900/60 text-cyan-300">{c.stufe}</span>
+                  )}
+                  {c.hk && (
+                    <span className="text-[7px] px-1 rounded font-semibold bg-orange-900/60 text-orange-200">HK</span>
+                  )}
                   <span className="text-[7px] px-0.5 rounded bg-slate-800 text-slate-400">{c.les}L</span>
                   {weeks && (() => {
                     const planned = weeks.filter(w => { const e = w.lessons[c.col]; return e && e.type !== 6; }).length;
