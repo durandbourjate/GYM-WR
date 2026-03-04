@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.83
 
-## Status: 🔧 v3.83 — 3/5 Tasks erledigt (04.03.2026)
+## Status: 🔧 v3.83 — 4/5 Tasks erledigt (04.03.2026)
 
 ---
 
@@ -11,7 +11,7 @@
 | F1 | Bug | Recht fehlt im Semesterbalken (Jahresübersicht) — Case-Mismatch `Recht` → `RECHT` | ✅ |
 | F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ✅ |
 | F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ✅ |
-| F4 | Feature | Separate Importoptionen auf Startseite | ⏳ |
+| F4 | Feature | Separate Importoptionen auf Startseite | ✅ |
 | F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ⏳ |
 
 ### Änderungsdetails
@@ -34,6 +34,13 @@
 - **Problem:** `editingSequenceId` wurde auf `parentSeq.id` gesetzt (z.B. `"seq-abc"`), aber `FlatBlockCard` erwartet `"seq-abc-0"` (mit Block-Index). → Sequenz nie als aktiv erkannt.
 - `WeekRows.tsx`: Beide Klick-Handler (Sequenzbalken + Label) setzen jetzt den korrekten Block-Key `"${seqId}-${blockIdx}"` basierend auf der angeklickten Woche
 - SequencePanel scrollt automatisch zur aktiven Sequenz und klappt sie auf
+
+**F4 — Separate Importoptionen auf Startseite:**
+- `PlannerTabs.tsx` `WelcomeScreen`: Aufklappbare Sektion «Einzelne Rubriken importieren» mit 6 Import-Buttons (2×3 Grid)
+- Rubriken: Schulferien, Sonderwochen, Stundenplan/Kurse, Fachbereiche, Lehrplanziele, Beurteilungsregeln
+- Jeder Button öffnet File-Picker (JSON, CSV/TXT je nach Rubrik) und zeigt ✅ nach erfolgreichem Import
+- Einzel-Imports überschreiben entsprechende Felder aus der Gesamtkonfiguration
+- Bestehender «Gesamtkonfiguration importieren»-Button bleibt erhalten
 
 ---
 

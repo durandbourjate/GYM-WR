@@ -5,7 +5,10 @@ import { useState } from 'react';
 import { useInstanceStore, instanceStorageKey, generateWeekIds } from '../store/instanceStore';
 import { saveToInstance } from '../store/plannerStore';
 import { SCHOOL_YEAR_PRESETS, getPresetForYear } from '../data/holidayPresets';
-import { configToCourses, type PlannerSettings, getDefaultSettings, applySettingsToWeekData } from '../store/settingsStore';
+import { configToCourses, type PlannerSettings, type CourseConfig, type SpecialWeekConfig, type HolidayConfig, getDefaultSettings, applySettingsToWeekData } from '../store/settingsStore';
+import type { SubjectConfig } from '../store/settingsStore';
+import type { CurriculumGoal } from '../data/curriculumGoals';
+import type { AssessmentRule } from '../store/settingsStore';
 import type { LessonType } from '../types';
 
 export function PlannerTabs() {
@@ -266,13 +269,27 @@ export function PlannerTabs() {
   );
 }
 
+/** v3.83 F4: Einzel-Import-Typen für Startseite */
+type PartialImports = {
+  holidays?: HolidayConfig[];
+  specialWeeks?: SpecialWeekConfig[];
+  courses?: CourseConfig[];
+  subjects?: SubjectConfig[];
+  curriculumGoals?: CurriculumGoal[];
+  assessmentRules?: AssessmentRule[];
+};
+
 /** Welcome screen shown when no planner exists */
 export function WelcomeScreen() {
   const { createInstance } = useInstanceStore();
   const [name, setName] = useState('');
   const [importedConfig, setImportedConfig] = useState<PlannerSettings | null>(null);
   const [importedFileName, setImportedFileName] = useState('');
-  // v3.81 D3: Ferien-Preset-Dropdown und autoHolidays entfernt — Ferien nur noch via Einstellungen
+  // v3.83 F4: Einzel-Imports
+  const [partialImports, setPartialImports] = useState<PartialImports>({});
+  const [partialFileNames, setPartialFileNames] = useState<Record<string, string>>({});
+  const [showPartial, setShowPartial] = useState(false);
+
   const defaultPresetId = (() => {
     const now = new Date();
     const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
@@ -287,7 +304,6 @@ export function WelcomeScreen() {
       try {
         const parsed = JSON.parse(reader.result as string);
         if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
-        // Flexibel: mindestens eines der Kern-Felder muss vorhanden sein
         if (!Array.isArray(parsed.courses) && !Array.isArray(parsed.subjects) && !Array.isArray(parsed.holidays)) {
           alert('Keine gültige Konfiguration gefunden.');
           return;
@@ -299,6 +315,45 @@ export function WelcomeScreen() {
     reader.readAsText(file);
     e.target.value = '';
   };
+
+  // v3.83 F4: Generischer Einzel-Import-Handler
+  const handlePartialImport = (key: keyof PartialImports, label: string, _accept?: string) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const text = reader.result as string;
+          let data: any[];
+          if (file.name.endsWith('.json')) {
+            const parsed = JSON.parse(text);
+            data = Array.isArray(parsed) ? parsed : parsed[key] || parsed.kurse || parsed.rules || [];
+          } else {
+            // CSV/TXT: Zeilen splitten
+            const lines = text.split('\n').filter(l => l.trim());
+            if (key === 'holidays') {
+              data = lines.map(line => {
+                const p = line.split(/[,;\t]/).map(s => s.trim());
+                return p.length >= 3 ? { id: crypto.randomUUID(), label: p[0], startWeek: p[1].replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: p[2].replace(/^KW\s*/i, '').padStart(2, '0') } : null;
+              }).filter(Boolean);
+            } else if (key === 'specialWeeks') {
+              data = lines.map(line => {
+                const p = line.split(/[,;\t]/).map(s => s.trim());
+                return p.length >= 2 ? { id: crypto.randomUUID(), label: p[0], week: p[1].replace(/^KW\s*/i, '').padStart(2, '0'), type: (p[2] === 'holiday' ? 'holiday' : 'event'), gymLevel: p[3] || undefined } : null;
+              }).filter(Boolean);
+            } else {
+              data = [];
+            }
+          }
+          if (!data || data.length === 0) { alert(`Keine gültigen ${label} gefunden.`); return; }
+          setPartialImports(prev => ({ ...prev, [key]: data }));
+          setPartialFileNames(prev => ({ ...prev, [key]: file.name }));
+        } catch { alert('Datei konnte nicht gelesen werden.'); }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    };
 
   const handleCreate = () => {
     const preset = SCHOOL_YEAR_PRESETS.find(p => p.id === defaultPresetId);
@@ -314,10 +369,9 @@ export function WelcomeScreen() {
     });
 
     if (newId) {
-      // v3.82 E6: Gesamtkonfiguration übernehmen falls importiert
       let initialSettings = getDefaultSettings();
+      // v3.82 E6: Gesamtkonfiguration übernehmen
       if (importedConfig) {
-        // Merge imported config into default settings
         if (Array.isArray(importedConfig.courses)) initialSettings.courses = importedConfig.courses;
         if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
         if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
@@ -327,6 +381,13 @@ export function WelcomeScreen() {
         if (importedConfig.school) initialSettings.school = importedConfig.school;
         if ((importedConfig as any).schoolLevel) initialSettings.schoolLevel = (importedConfig as any).schoolLevel;
       }
+      // v3.83 F4: Einzel-Imports überschreiben Gesamtkonfiguration
+      if (partialImports.courses) initialSettings.courses = partialImports.courses;
+      if (partialImports.holidays) initialSettings.holidays = partialImports.holidays;
+      if (partialImports.specialWeeks) initialSettings.specialWeeks = partialImports.specialWeeks;
+      if (partialImports.subjects) initialSettings.subjects = partialImports.subjects;
+      if (partialImports.curriculumGoals) initialSettings.curriculumGoals = partialImports.curriculumGoals;
+      if (partialImports.assessmentRules) initialSettings.assessmentRules = partialImports.assessmentRules;
 
       // Build initial weekData with courses
       const weekIds = generateWeekIds(
@@ -359,6 +420,19 @@ export function WelcomeScreen() {
     }
   };
 
+  const importCount = Object.keys(partialImports).length;
+  const hasAnyImport = importedConfig || importCount > 0;
+
+  // v3.83 F4: Einzel-Import-Buttons Definition
+  const partialButtons: { key: keyof PartialImports; label: string; icon: string; accept: string }[] = [
+    { key: 'holidays', label: 'Schulferien', icon: '🏖️', accept: '.json,.csv,.txt' },
+    { key: 'specialWeeks', label: 'Sonderwochen', icon: '📅', accept: '.json,.csv,.txt' },
+    { key: 'courses', label: 'Stundenplan / Kurse', icon: '📋', accept: '.json' },
+    { key: 'subjects', label: 'Fachbereiche', icon: '🎨', accept: '.json' },
+    { key: 'curriculumGoals', label: 'Lehrplanziele', icon: '🎯', accept: '.json' },
+    { key: 'assessmentRules', label: 'Beurteilungsregeln', icon: '📊', accept: '.json' },
+  ];
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-8">
       <h1 className="text-3xl font-bold text-white mb-2">Unterrichtsplaner</h1>
@@ -367,7 +441,6 @@ export function WelcomeScreen() {
         Du kannst mehrere Planer für verschiedene Schuljahre oder Anstellungen verwalten.
       </p>
 
-      {/* v3.81 D3: Vereinfacht — nur Name + Button, kein Ferien-Preset */}
       <div className="flex flex-col gap-4 w-full max-w-sm">
         <input
           className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white text-center outline-none focus:border-blue-500"
@@ -385,6 +458,34 @@ export function WelcomeScreen() {
           {importedConfig ? `✅ ${importedFileName}` : '📥 Gesamtkonfiguration importieren'}
           <input type="file" accept=".json" className="hidden" onChange={handleConfigImport} />
         </label>
+
+        {/* v3.83 F4: Einzelne Rubriken importieren */}
+        <button
+          className="text-[10px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+          onClick={() => setShowPartial(!showPartial)}
+        >
+          {showPartial ? '▾' : '▸'} Einzelne Rubriken importieren {importCount > 0 && `(${importCount})`}
+        </button>
+        {showPartial && (
+          <div className="grid grid-cols-2 gap-2">
+            {partialButtons.map(({ key, label, icon, accept }) => {
+              const isLoaded = !!partialImports[key];
+              const fileName = partialFileNames[key];
+              return (
+                <label key={key} className={`px-2 py-1.5 rounded-md text-[10px] font-medium transition-colors cursor-pointer text-center ${
+                  isLoaded
+                    ? 'bg-green-800/40 text-green-300 border border-green-700'
+                    : 'bg-slate-800/80 text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300'
+                }`} title={isLoaded ? fileName : `${label} importieren`}>
+                  {isLoaded ? `✅ ${label}` : `${icon} ${label}`}
+                  <input type="file" accept={accept} className="hidden"
+                    onChange={handlePartialImport(key, label, accept)} />
+                </label>
+              );
+            })}
+          </div>
+        )}
+
         <button
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors cursor-pointer"
           onClick={() => handleCreate()}
@@ -392,8 +493,8 @@ export function WelcomeScreen() {
           + Neuen Planer erstellen
         </button>
         <p className="text-slate-500 text-xs text-center">
-          {importedConfig
-            ? 'Konfiguration wird beim Erstellen übernommen. Ferien, Kurse und Fachbereiche können auch später in den Einstellungen angepasst werden.'
+          {hasAnyImport
+            ? 'Konfiguration wird beim Erstellen übernommen. Einzelne Rubriken können auch später in den Einstellungen angepasst werden.'
             : 'Ferien, Kurse und Fachbereiche kannst du anschliessend in den Einstellungen importieren.'}
         </p>
       </div>
