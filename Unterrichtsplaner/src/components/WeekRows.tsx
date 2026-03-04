@@ -357,7 +357,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     tafPhases,
     setSidePanelOpen, setSidePanelTab,
     lessonDetails,
-    setInsertDialog, pushLessons, pushUndo,
+    setInsertDialog, pushUndo,
     searchQuery,
     expandedNoteCols,
     dimPastWeeks,
@@ -380,9 +380,11 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   // Multi-day shift-click popup
   const [multiDayPrompt, setMultiDayPrompt] = useState<{ weekW: string; courseId: string; position: { x: number; y: number } } | null>(null);
 
-  // Long-hold drag-move state (v3.58)
+  // Long-hold drag-move state (v3.82 E4: reduced to 150ms, 5px threshold)
   const [dragMoveSource, setDragMoveSource] = useState<{ week: string; col: number } | null>(null);
   const [dragMoveTarget, setDragMoveTarget] = useState<{ week: string; col: number } | null>(null);
+  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
+  const pendingDragCell = useRef<{ week: string; col: number } | null>(null);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Rhythm warning after push (1L↔2L)
@@ -551,19 +553,6 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     setInsertDialog({ week: weekW, course, hasMismatch: paired.length > 0, pairedCourses: paired });
   }, [setInsertDialog]);
 
-  const handleMiniPush = useCallback((e: React.MouseEvent, course: Course, weekW: string) => {
-    e.stopPropagation();
-    pushUndo();
-    pushLessons(course.col, weekW, allWeekKeys);
-    checkRhythmAfterPush(course);
-  }, [pushUndo, pushLessons, allWeekKeys, checkRhythmAfterPush]);
-
-  const handleMiniDetails = useCallback((e: React.MouseEvent, course: Course, weekW: string, title: string) => {
-    e.stopPropagation();
-    setSelection({ week: weekW, courseId: course.id, title, course });
-    setSidePanelOpen(true);
-    setSidePanelTab('details');
-  }, [setSelection, setSidePanelOpen, setSidePanelTab]);
 
   // Drag-selection handlers (works on both empty and filled cells)
   const handleDragSelectStart = useCallback((weekW: string, course: Course, e: React.MouseEvent) => {
@@ -574,10 +563,12 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     if (lesson?.type === 6) return; // Holidays not draggable
     // Clear any previous hold timer
     if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
-    // For filled, non-fixed cells: start 300ms hold timer for move-drag (v3.58)
+    // v3.82 E4: 150ms timer OR 5px movement triggers drag-move for filled cells
     if (lesson?.title) {
       const isFixed = lesson.type === 5 && !(lessonDetails[`${weekW}-${course.col}`]?.blockCategory === 'LESSON');
       if (!isFixed) {
+        dragStartPos.current = { x: e.clientX, y: e.clientY };
+        pendingDragCell.current = { week: weekW, col: course.col };
         holdTimerRef.current = setTimeout(() => {
           holdTimerRef.current = null;
           setIsDragSelecting(false);
@@ -586,7 +577,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
           setDragSelectCourse(null);
           setDragMoveSource({ week: weekW, col: course.col });
           dragMoved.current = true;
-        }, 300);
+          pendingDragCell.current = null;
+        }, 150);
       }
     }
     setIsDragSelecting(true);
@@ -598,15 +590,18 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   }, [displayWeeks, lessonDetails]);
 
   const handleDragSelectMove = useCallback((weekW: string, course: Course) => {
-    // Move-drag mode (v3.58): track target cell
+    // Move-drag mode (v3.82 E4: cross-column drag): track target cell
     if (dragMoveSource) {
-      if (course.col === dragMoveSource.col && weekW !== dragMoveSource.week) {
-        const entry = displayWeeks.find(w => w.w === weekW);
-        const lesson = entry?.lessons[course.col];
-        const isFixed = lesson?.type === 6 || (lesson?.type === 5 && !(lessonDetails[`${weekW}-${course.col}`]?.blockCategory === 'LESSON'));
-        if (!isFixed) {
-          setDragMoveTarget({ week: weekW, col: course.col });
-        }
+      // Allow drag to any cell (same or different column), skip source cell
+      if (weekW === dragMoveSource.week && course.col === dragMoveSource.col) {
+        setDragMoveTarget(null);
+        return;
+      }
+      const entry = displayWeeks.find(w => w.w === weekW);
+      const lesson = entry?.lessons[course.col];
+      const isFixed = lesson?.type === 6 || (lesson?.type === 5 && !(lessonDetails[`${weekW}-${course.col}`]?.blockCategory === 'LESSON'));
+      if (!isFixed) {
+        setDragMoveTarget({ week: weekW, col: course.col });
       } else {
         setDragMoveTarget(null);
       }
@@ -648,16 +643,25 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   const handleDragSelectEnd = useCallback(() => {
     // Clear hold timer
     if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
-    // Handle move-drag drop (v3.58)
+    // Handle move-drag drop (v3.82 E4: cross-column support)
     if (dragMoveSource) {
-      if (dragMoveTarget && dragMoveSource.week !== dragMoveTarget.week) {
+      if (dragMoveTarget && (dragMoveSource.week !== dragMoveTarget.week || dragMoveSource.col !== dragMoveTarget.col)) {
         pushUndo();
-        const targetEntry = displayWeeks.find(w => w.w === dragMoveTarget.week);
-        const targetLesson = targetEntry?.lessons[dragMoveTarget.col];
-        if (targetLesson?.title) {
-          swapLessons(dragMoveSource.col, dragMoveSource.week, dragMoveTarget.week);
+        if (dragMoveSource.col === dragMoveTarget.col) {
+          // Same column: use existing swap/move logic
+          const targetEntry = displayWeeks.find(w => w.w === dragMoveTarget.week);
+          const targetLesson = targetEntry?.lessons[dragMoveTarget.col];
+          if (targetLesson?.title) {
+            swapLessons(dragMoveSource.col, dragMoveSource.week, dragMoveTarget.week);
+          } else {
+            moveLessonToEmpty(dragMoveSource.col, dragMoveSource.week, dragMoveTarget.week);
+          }
         } else {
-          moveLessonToEmpty(dragMoveSource.col, dragMoveSource.week, dragMoveTarget.week);
+          // Cross-column: use moveLessonToColumn
+          usePlannerStore.getState().moveLessonToColumn(
+            dragMoveSource.col, dragMoveSource.week,
+            dragMoveTarget.col, dragMoveTarget.week
+          );
         }
         const course = courses.find(cc => cc.col === dragMoveSource.col);
         if (course) checkRhythmAfterPush(course);
@@ -692,6 +696,31 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     window.addEventListener('mouseup', handler);
     return () => window.removeEventListener('mouseup', handler);
   }, [isDragSelecting, dragMoveSource, handleDragSelectEnd]);
+
+  // v3.82 E4: 5px movement detection for early drag start
+  useEffect(() => {
+    if (!isDragSelecting || !pendingDragCell.current || !dragStartPos.current) return;
+    const startPos = dragStartPos.current;
+    const cell = pendingDragCell.current;
+    const handler = (e: MouseEvent) => {
+      const dx = e.clientX - startPos.x;
+      const dy = e.clientY - startPos.y;
+      if (Math.sqrt(dx * dx + dy * dy) >= 5) {
+        // Movement threshold reached → start drag immediately
+        if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
+        setIsDragSelecting(false);
+        setDragSelectedWeeks([]);
+        setDragSelectCol(null);
+        setDragSelectCourse(null);
+        setDragMoveSource({ week: cell.week, col: cell.col });
+        dragMoved.current = true;
+        pendingDragCell.current = null;
+        dragStartPos.current = null;
+      }
+    };
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, [isDragSelecting]);
 
   return (
     <>
@@ -1179,7 +1208,11 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       </div>
 
                       {/* Mini action buttons on selection */}
-                      {isSelected && (
+                      {isSelected && (() => {
+                        const weekIdx = allWeekKeys.indexOf(week.w);
+                        const isFirst = weekIdx <= 0;
+                        const isLast = weekIdx >= allWeekKeys.length - 1;
+                        return (
                         <div className="absolute right-0.5 bottom-0.5 flex gap-px z-20">
                           <button
                             onClick={(e) => handleMiniInsert(e, c, week.w)}
@@ -1187,17 +1220,20 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                             title="Einfügen (leere Zeile davor)"
                           >+</button>
                           <button
-                            onClick={(e) => handleMiniPush(e, c, week.w)}
-                            className="w-4 h-4 rounded bg-slate-700/90 text-gray-300 text-[8px] flex items-center justify-center cursor-pointer hover:bg-blue-600 hover:text-white border border-slate-600"
-                            title="Push (nach unten verschieben)"
-                          >↓</button>
+                            onClick={(e) => { e.stopPropagation(); if (!isFirst) { pushUndo(); swapLessons(c.col, week.w, allWeekKeys[weekIdx - 1]); } }}
+                            disabled={isFirst}
+                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${isFirst ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            title="Nach oben verschieben"
+                          >↑</button>
                           <button
-                            onClick={(e) => handleMiniDetails(e, c, week.w, title)}
-                            className="w-4 h-4 rounded bg-slate-700/90 text-gray-300 text-[8px] flex items-center justify-center cursor-pointer hover:bg-blue-600 hover:text-white border border-slate-600"
-                            title="Details öffnen"
-                          >i</button>
+                            onClick={(e) => { e.stopPropagation(); if (!isLast) { pushUndo(); swapLessons(c.col, week.w, allWeekKeys[weekIdx + 1]); } }}
+                            disabled={isLast}
+                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${isLast ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            title="Nach unten verschieben"
+                          >↓</button>
                         </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   ) : (
                     <div

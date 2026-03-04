@@ -270,12 +270,35 @@ export function PlannerTabs() {
 export function WelcomeScreen() {
   const { createInstance } = useInstanceStore();
   const [name, setName] = useState('');
+  const [importedConfig, setImportedConfig] = useState<PlannerSettings | null>(null);
+  const [importedFileName, setImportedFileName] = useState('');
   // v3.81 D3: Ferien-Preset-Dropdown und autoHolidays entfernt — Ferien nur noch via Einstellungen
   const defaultPresetId = (() => {
     const now = new Date();
     const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
     return getPresetForYear(year)?.id ?? SCHOOL_YEAR_PRESETS[0]?.id ?? '';
   })();
+
+  const handleConfigImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result as string);
+        if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
+        // Flexibel: mindestens eines der Kern-Felder muss vorhanden sein
+        if (!Array.isArray(parsed.courses) && !Array.isArray(parsed.subjects) && !Array.isArray(parsed.holidays)) {
+          alert('Keine gültige Konfiguration gefunden.');
+          return;
+        }
+        setImportedConfig(parsed as PlannerSettings);
+        setImportedFileName(file.name);
+      } catch { alert('Fehler beim Lesen der Datei.'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   const handleCreate = () => {
     const preset = SCHOOL_YEAR_PRESETS.find(p => p.id === defaultPresetId);
@@ -291,11 +314,47 @@ export function WelcomeScreen() {
     });
 
     if (newId) {
-      // v3.81 D3: Neuer Planer startet mit leeren Ferien (kein automatischer Preset)
-      const initialSettings = getDefaultSettings();
-      // Pre-seed localStorage so loadFromInstance() picks up settings immediately
+      // v3.82 E6: Gesamtkonfiguration übernehmen falls importiert
+      let initialSettings = getDefaultSettings();
+      if (importedConfig) {
+        // Merge imported config into default settings
+        if (Array.isArray(importedConfig.courses)) initialSettings.courses = importedConfig.courses;
+        if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
+        if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
+        if (Array.isArray(importedConfig.subjects)) initialSettings.subjects = importedConfig.subjects;
+        if (Array.isArray((importedConfig as any).curriculumGoals)) initialSettings.curriculumGoals = (importedConfig as any).curriculumGoals;
+        if (Array.isArray((importedConfig as any).assessmentRules)) initialSettings.assessmentRules = (importedConfig as any).assessmentRules;
+        if (importedConfig.school) initialSettings.school = importedConfig.school;
+        if ((importedConfig as any).schoolLevel) initialSettings.schoolLevel = (importedConfig as any).schoolLevel;
+      }
+
+      // Build initial weekData with courses
+      const weekIds = generateWeekIds(
+        preset?.startWeek ?? 33, startYear,
+        preset?.endWeek ?? 27, preset?.endYear ?? startYear + 1
+      );
+      const courses = initialSettings.courses.length > 0 ? configToCourses(initialSettings.courses) : [];
+      const emptyLessons: Record<number, { type: import('../types').LessonType; title: string }> = {};
+      for (const c of courses) {
+        emptyLessons[c.col] = { type: 0 as import('../types').LessonType, title: '' };
+      }
+      let initWeekData = weekIds.map(w => ({ w, lessons: { ...emptyLessons } }));
+
+      // Auto-apply holidays & special weeks
+      if (initialSettings.holidays.length > 0 || initialSettings.specialWeeks.length > 0) {
+        const applied = applySettingsToWeekData(initWeekData, initialSettings);
+        initWeekData = applied.weekData;
+      }
+
+      // Pre-seed localStorage
       localStorage.setItem(instanceStorageKey(newId), JSON.stringify({
-        state: { plannerSettings: initialSettings },
+        state: {
+          plannerSettings: initialSettings,
+          weekData: initWeekData,
+          sequences: [],
+          lessonDetails: {},
+          collection: [],
+        },
       }));
     }
   };
@@ -317,6 +376,15 @@ export function WelcomeScreen() {
           onChange={e => setName(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') handleCreate(); }}
         />
+        {/* v3.82 E6: Gesamtkonfiguration importieren */}
+        <label className={`px-4 py-2.5 rounded-lg font-medium transition-colors cursor-pointer text-center ${
+          importedConfig
+            ? 'bg-green-800/50 text-green-300 border border-green-600'
+            : 'bg-slate-800 text-slate-400 border border-slate-600 hover:border-slate-500 hover:text-slate-300'
+        }`}>
+          {importedConfig ? `✅ ${importedFileName}` : '📥 Gesamtkonfiguration importieren'}
+          <input type="file" accept=".json" className="hidden" onChange={handleConfigImport} />
+        </label>
         <button
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors cursor-pointer"
           onClick={() => handleCreate()}
@@ -324,7 +392,9 @@ export function WelcomeScreen() {
           + Neuen Planer erstellen
         </button>
         <p className="text-slate-500 text-xs text-center">
-          Ferien, Kurse und Fachbereiche kannst du anschliessend in den Einstellungen importieren.
+          {importedConfig
+            ? 'Konfiguration wird beim Erstellen übernommen. Ferien, Kurse und Fachbereiche können auch später in den Einstellungen angepasst werden.'
+            : 'Ferien, Kurse und Fachbereiche kannst du anschliessend in den Einstellungen importieren.'}
         </p>
       </div>
     </div>

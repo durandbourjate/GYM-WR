@@ -262,9 +262,10 @@ function RubricCollectionButtons({ rubricType, getData, onLoad }: {
 const ACT_BTN = "px-1.5 py-0.5 rounded text-[8px] bg-slate-700/50 border border-slate-600 text-gray-400 hover:text-gray-200 hover:border-slate-500 cursor-pointer transition-all";
 
 /** Combined header actions for a settings rubric: [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import] */
-function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onImport }: {
+function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onImport, onClearAll, itemCount }: {
   rubricType: RubricType; getData: () => any; onLoad: (data: any) => void;
   onAdd?: () => void; importAccept?: string; onImport?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClearAll?: () => void; itemCount?: number;
 }) {
   return (
     <>
@@ -274,6 +275,14 @@ function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onIm
         <label className={ACT_BTN} title="Aus Datei importieren">
           ⬆<input type="file" accept={importAccept || '.json'} className="hidden" onChange={onImport} />
         </label>
+      )}
+      {onClearAll && (
+        <button
+          onClick={onClearAll}
+          disabled={!itemCount || itemCount === 0}
+          className={`${ACT_BTN} ${!itemCount || itemCount === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-red-300 hover:border-red-500/50'}`}
+          title={itemCount ? `Alle ${itemCount} Einträge entfernen` : 'Keine Einträge vorhanden'}
+        >✕ Alle</button>
       )}
     </>
   );
@@ -363,7 +372,7 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
           + Fachbereich hinzufügen
         </button>
       </div>
-      {/* Fach-Dropdown (v3.81 D4) */}
+      {/* Fach-Dropdown (v3.82 E5: Einzelfächer statt Gruppen) */}
       <div className="flex gap-1 items-center">
         <span className="text-[8px] text-gray-500">Vorlage:</span>
         <select
@@ -376,12 +385,12 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
             const labels = new Set(subjects.map(s => s.label.toLowerCase()));
             const unique = preset.subjects.filter(s => !ids.has(s.id) && !labels.has(s.label.toLowerCase()));
             const dupes = preset.subjects.length - unique.length;
-            if (unique.length === 0) { alert('Alle Fachbereiche dieser Vorlage sind bereits vorhanden.'); return; }
+            if (unique.length === 0) { alert(`«${preset.label}» ist bereits vorhanden.`); return; }
             if (subjects.length === 0) {
               // Leer → direkt laden
               onChange([...unique]);
             } else {
-              // Dialog: Ersetzen oder Ergänzen
+              // Dialog: Ergänzen oder Ersetzen
               const choice = confirm(
                 `«${preset.label}» laden:\n\n` +
                 `• OK = Bestehende ersetzen (${subjects.length} → ${preset.subjects.length})\n` +
@@ -823,6 +832,60 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                             </button>
                           );
                         })}
+                      </div>
+                    )}
+                    {/* v3.82 E7: Sichtbarkeit pro Kurs */}
+                    {courses.length > 0 && (
+                      <div className="space-y-1">
+                        <label className="flex items-center gap-1.5 cursor-pointer">
+                          <input type="checkbox" checked={!!w.courseFilter && w.courseFilter.length > 0}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                // Aktivieren: alle Kurse vorselektiert
+                                update(w.id, { courseFilter: courses.map(c => c.id) });
+                              } else {
+                                // Deaktivieren: kein Filter
+                                update(w.id, { courseFilter: undefined });
+                              }
+                            }}
+                            className="accent-amber-500 cursor-pointer" />
+                          <span className="text-[8px] text-gray-300">Nur für bestimmte Kurse anzeigen</span>
+                        </label>
+                        {w.courseFilter && w.courseFilter.length > 0 && (
+                          <div className="ml-4 space-y-1">
+                            <div className="flex flex-wrap gap-1">
+                              {courses.map(c => {
+                                const included = w.courseFilter!.includes(c.id);
+                                return (
+                                  <button key={c.id} onClick={() => {
+                                    const current = w.courseFilter || [];
+                                    update(w.id, {
+                                      courseFilter: included ? current.filter(x => x !== c.id) : [...current, c.id]
+                                    });
+                                  }}
+                                    className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'}`}>
+                                    {c.cls} {c.typ}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            {/* Schnellauswahl-Buttons */}
+                            <div className="flex gap-1 flex-wrap">
+                              {/* Alle GYM2 */}
+                              {courses.some(c => c.stufe === 'GYM2') && (
+                                <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.stufe === 'GYM2').map(c => c.id) })}
+                                  className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle GYM2</button>
+                              )}
+                              {/* Alle SF */}
+                              {courses.some(c => c.typ === 'SF') && (
+                                <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.typ === 'SF').map(c => c.id) })}
+                                  className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle SF</button>
+                              )}
+                              <button onClick={() => update(w.id, { courseFilter: courses.map(c => c.id) })}
+                                className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle</button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1725,7 +1788,9 @@ export function SettingsPanel() {
       <Section title={`🎨 Fachbereiche (${settings.subjects.length})`} actions={
         <SectionActions rubricType="fachbereiche" getData={() => settings.subjects}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Fachbereiche laden? Bestehende werden ersetzt.`)) updateSettings({ subjects: data }); }}
-          onAdd={addSubjectHeader} onImport={importSubjectsHeader} />
+          onAdd={addSubjectHeader} onImport={importSubjectsHeader}
+          itemCount={settings.subjects.length}
+          onClearAll={() => { if (confirm(`Alle ${settings.subjects.length} Fachbereiche entfernen?`)) updateSettings({ subjects: [] }); }} />
       }>
         <SubjectsEditor subjects={settings.subjects} onChange={(s) => updateSettings({ subjects: s })} />
       </Section>
@@ -1734,7 +1799,9 @@ export function SettingsPanel() {
       <Section title={`📚 Kurse / Stundenplan (${settings.courses.length})`} actions={
         <SectionActions rubricType="kurse" getData={() => settings.courses}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Kurse laden? Bestehende werden ersetzt.`)) updateSettings({ courses: data }); }}
-          onAdd={addCourseHeader} onImport={importCoursesHeader} />
+          onAdd={addCourseHeader} onImport={importCoursesHeader}
+          itemCount={settings.courses.length}
+          onClearAll={() => { if (confirm(`Alle ${settings.courses.length} Kurse entfernen?`)) updateSettings({ courses: [] }); }} />
       }>
         <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} baseDuration={settings.school?.lessonDurationMin || 45} focusCourseId={settingsEditCourseId} subjects={settings.subjects || []} />
       </Section>
@@ -1743,7 +1810,9 @@ export function SettingsPanel() {
       <Section title={`📅 Sonderwochen (${settings.specialWeeks.length})`} actions={
         <SectionActions rubricType="sonderwochen" getData={() => settings.specialWeeks}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Sonderwochen laden? Bestehende werden ersetzt.`)) updateSettings({ specialWeeks: data }); }}
-          onAdd={addSpecialWeekHeader} importAccept=".json,.csv,.txt" onImport={importSpecialWeeksHeader} />
+          onAdd={addSpecialWeekHeader} importAccept=".json,.csv,.txt" onImport={importSpecialWeeksHeader}
+          itemCount={settings.specialWeeks.length}
+          onClearAll={() => { if (confirm(`Alle ${settings.specialWeeks.length} Sonderwochen entfernen?`)) updateSettings({ specialWeeks: [] }); }} />
       }>
         <SpecialWeeksEditor weeks={settings.specialWeeks} courses={settings.courses} onChange={(w) => updateSettings({ specialWeeks: w })} />
       </Section>
@@ -1752,7 +1821,9 @@ export function SettingsPanel() {
       <Section title={`🏖 Ferien (${settings.holidays.length})`} actions={
         <SectionActions rubricType="ferien" getData={() => settings.holidays}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Ferienperioden laden? Bestehende werden ersetzt.`)) updateSettings({ holidays: data }); }}
-          onAdd={addHolidayHeader} importAccept=".csv,.txt,.json" onImport={importHolidaysHeader} />
+          onAdd={addHolidayHeader} importAccept=".csv,.txt,.json" onImport={importHolidaysHeader}
+          itemCount={settings.holidays.length}
+          onClearAll={() => { if (confirm(`Alle ${settings.holidays.length} Ferienperioden entfernen?`)) updateSettings({ holidays: [] }); }} />
       }>
         <HolidaysEditor holidays={settings.holidays} onChange={(h) => updateSettings({ holidays: h })} />
       </Section>
@@ -1761,7 +1832,9 @@ export function SettingsPanel() {
       <Section title={`🎯 Lehrplanziele (${settings.curriculumGoals?.length || 0})`} actions={
         <SectionActions rubricType="lehrplanziele" getData={() => settings.curriculumGoals || []}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Lehrplanziele laden? Bestehende werden ersetzt.`)) updateSettings({ curriculumGoals: data }); }}
-          onImport={importLehrplanzieleHeader} />
+          onImport={importLehrplanzieleHeader}
+          itemCount={settings.curriculumGoals?.length || 0}
+          onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined as any }); }} />
       }>
         <div className="space-y-2">
           <p className="text-[8px] text-gray-400">
@@ -1788,7 +1861,9 @@ export function SettingsPanel() {
       <Section title={`📝 Beurteilungsregeln (${settings.assessmentRules?.length || 0})`} actions={
         <SectionActions rubricType="beurteilungsregeln" getData={() => settings.assessmentRules || []}
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Beurteilungsregeln laden? Bestehende werden ersetzt.`)) updateSettings({ assessmentRules: data }); }}
-          onAdd={addAssessmentHeader} onImport={importAssessmentHeader} />
+          onAdd={addAssessmentHeader} onImport={importAssessmentHeader}
+          itemCount={settings.assessmentRules?.length || 0}
+          onClearAll={() => { if (confirm(`Alle ${settings.assessmentRules?.length || 0} Beurteilungsregeln entfernen?`)) updateSettings({ assessmentRules: undefined as any }); }} />
       }>
         <AssessmentRulesEditor
           rules={settings.assessmentRules || []}
@@ -1827,12 +1902,37 @@ export function SettingsPanel() {
                     try {
                       const imported = JSON.parse(reader.result as string);
                       if (!imported || typeof imported !== 'object') { alert('Ungültige Datei.'); return; }
-                      if (!Array.isArray(imported.courses)) { alert('Feld "courses" fehlt.'); return; }
-                      if (!Array.isArray(imported.holidays)) { alert('Feld "holidays" fehlt.'); return; }
-                      if (!Array.isArray(imported.specialWeeks)) { alert('Feld "specialWeeks" fehlt.'); return; }
-                      if (!confirm(`Einstellungen überschreiben? (${imported.courses.length} Kurse, ${imported.holidays.length} Ferien, ${imported.specialWeeks.length} Sonderwochen)`)) return;
-                      setSettings(imported as PlannerSettings);
-                      doSave(imported as PlannerSettings);
+                      // Flexibler Parser: mindestens eines der Kern-Felder muss vorhanden sein
+                      const hasCourses = Array.isArray(imported.courses);
+                      const hasHolidays = Array.isArray(imported.holidays);
+                      const hasSpecialWeeks = Array.isArray(imported.specialWeeks);
+                      const hasSubjects = Array.isArray(imported.subjects);
+                      if (!hasCourses && !hasHolidays && !hasSpecialWeeks && !hasSubjects) {
+                        alert('Keine gültige Konfiguration gefunden. Erwartet: courses, holidays, specialWeeks oder subjects.');
+                        return;
+                      }
+                      // Zusammenfassung für Bestätigung
+                      const parts: string[] = [];
+                      if (hasCourses) parts.push(`${imported.courses.length} Kurse`);
+                      if (hasHolidays) parts.push(`${imported.holidays.length} Ferien`);
+                      if (hasSpecialWeeks) parts.push(`${imported.specialWeeks.length} Sonderwochen`);
+                      if (hasSubjects) parts.push(`${imported.subjects.length} Fachbereiche`);
+                      if (Array.isArray(imported.curriculumGoals)) parts.push(`${imported.curriculumGoals.length} Lehrplanziele`);
+                      if (Array.isArray(imported.assessmentRules)) parts.push(`${imported.assessmentRules.length} Beurteilungsregeln`);
+                      if (!confirm(`Einstellungen überschreiben?\n${parts.join(', ')}`)) return;
+                      // Merge: nur vorhandene Felder übernehmen, Rest beibehalten
+                      const merged: PlannerSettings = { ...settings };
+                      if (hasCourses) merged.courses = imported.courses;
+                      if (hasHolidays) merged.holidays = imported.holidays;
+                      if (hasSpecialWeeks) merged.specialWeeks = imported.specialWeeks;
+                      if (hasSubjects) merged.subjects = imported.subjects;
+                      if (Array.isArray(imported.curriculumGoals)) merged.curriculumGoals = imported.curriculumGoals;
+                      if (Array.isArray(imported.assessmentRules)) merged.assessmentRules = imported.assessmentRules;
+                      if (imported.school) merged.school = imported.school;
+                      if (imported.schoolLevel) merged.schoolLevel = imported.schoolLevel;
+                      if (imported.semesterBreak !== undefined) merged.semesterBreak = imported.semesterBreak;
+                      setSettings(merged);
+                      doSave(merged);
                     } catch { alert('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
@@ -1855,10 +1955,10 @@ export function SettingsPanel() {
                 URL.revokeObjectURL(url);
               }}
                 className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all">
-                ⬇ Export
+                📤 Exportieren
               </button>
               <label className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-center cursor-pointer transition-all">
-                ⬆ Import
+                📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;

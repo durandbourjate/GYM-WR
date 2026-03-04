@@ -1,130 +1,292 @@
-# Unterrichtsplaner – Handoff v3.81
+# Unterrichtsplaner – Handoff v3.82
 
-## Status: ✅ v3.81 — 6 Tasks erledigt
+## Status: ✅ v3.82 — 7/7 Tasks erledigt (04.03.2026)
 
 ---
 
-## Originalauftrag v3.81 (04.03.2026)
+## Ergebnis v3.82
+
+| # | Typ | Beschreibung | Status |
+|---|-----|-------------|--------|
+| E1 | UX | UE-Buttons: «i» durch ↑ ersetzt → UE nach oben + unten verschieben (swap) | ✅ |
+| E2 | Feature | «✕ Alle»-Button in allen 6 Einstellungsrubriken (Kopfzeile) | ✅ |
+| E3 | Bug | Konfiguration-Import-Bug gefixt (flexibler Parser), Labels vereinheitlicht (📤/📥) | ✅ |
+| E4 | Feature | Drag & Drop cross-column: UE in beliebige Zelle verschieben (150ms/5px Schwelle) | ✅ |
+| E5 | Data | Fach-Dropdown: 21 Einzelfächer statt Gruppen-Presets in `<optgroup>` | ✅ |
+| E6 | Feature | Startscreen: «📥 Gesamtkonfiguration importieren» Button mit Vorschau | ✅ |
+| E7 | Feature | Sonderwochen: `courseFilter` pro Sonderwoche mit Checkbox-UI + Schnellauswahl | ✅ |
+
+### Änderungsdetails
+
+**E3 — Import-Bug + Labels:**
+- `SettingsPanel.tsx`: Konfiguration-Import-Handler flexibilisiert — akzeptiert jetzt Partial-JSON (courses, holidays, specialWeeks, subjects einzeln oder kombiniert), merged statt überschreibt
+- Planerdaten-Labels «⬇ Export» / «⬆ Import» → «📤 Exportieren» / «📥 Importieren»
+
+**E2 — «Alle entfernen»:**
+- `SectionActions` Komponente um `onClearAll` + `itemCount` erweitert
+- Alle 6 Rubriken (Fachbereiche, Kurse, Sonderwochen, Ferien, Lehrplanziele, Beurteilungsregeln) haben «✕ Alle» Button
+- Button disabled wenn leer, Bestätigungs-Dialog vor Löschung
+
+**E1 — UE-Buttons ↑/↓:**
+- `WeekRows.tsx`: «i»-Button entfernt, «↑»-Button hinzugefügt
+- Beide nutzen `swapLessons` für positionsbasierten Tausch
+- Erster Eintrag: ↑ disabled, letzter: ↓ disabled
+
+**E5 — Einzelfächer:**
+- `subjectPresets.ts` komplett überarbeitet: 21 Einzelfach-Presets statt 6 Gruppen
+- IDs: vwl, bwl, recht, biologie, chemie, physik, deutsch, englisch, franzoesisch, italienisch, latein, spanisch, geschichte, geografie, philosophie, bg, musik, sport, mathematik, informatik + leer
+- Farben gemäss Spec im HANDOFF
+
+**E7 — Sonderwochen courseFilter:**
+- `SpecialWeekConfig` um `courseFilter?: string[]` erweitert (settingsStore.ts)
+- UI: Toggle «Nur für bestimmte Kurse anzeigen» → Checkbox-Liste + Schnellauswahl (Alle GYM2, Alle SF, Alle)
+- `applySettingsToWeekData`: courseFilter wird beim Rendern respektiert
+
+**E6 — Startscreen Sammlung-Import:**
+- `PlannerTabs.tsx/WelcomeScreen`: «📥 Gesamtkonfiguration importieren» Button mit File-Picker
+- Zeigt ✅ + Dateiname nach erfolgreichem Import
+- Bei Erstellen → Konfiguration in initialSettings übernommen inkl. weekData-Generierung
+
+**E4 — Cross-Column Drag & Drop:**
+- `plannerStore.ts`: neue `moveLessonToColumn()` Funktion (verschiebt UE + LessonDetail + Sequenz-Update)
+- `WeekRows.tsx`: Drag-Erkennung 150ms Timer ODER 5px Bewegung
+- Cross-Column-Drop: Target-Highlight (blauer Rahmen) für alle Spalten
+- Same-Column: weiterhin swap/moveLessonToEmpty
+
+---
+
+## Originalauftrag v3.82 (04.03.2026)
 
 | # | Typ | Beschreibung |
 |---|-----|-------------|
-| D1 | Bug | Import-Button doppelt in Rubriken — unten entfernen, Icon in Kopfzeile ändern |
-| D2 | Bug | Fachbereiche leer → Crash beheben, leerer Zustand crashfrei |
-| D3 | Bug | Ferien-Preset-Dropdown beim neuen Planer entfernen (verhindert Duplikate) |
-| D4 | Feature | Fachbereiche-Vorlagen: Dropdown mit allen Gymnasialfächern |
-| D5 | UX | «Daten exportieren» + «Sammlung» zu einer Rubrik zusammenführen |
-| D6 | Data | Sonderwochen-Preset KW-Fix ✅ (JSON bereits korrigiert, .ts prüfen) |
+| E1 | UX | UE-Buttons: «i»-Icon durch Pfeil-oben ersetzen → UE nach oben + unten verschieben |
+| E2 | Feature | «Alle entfernen»-Button bei allen Einstellungsrubriken |
+| E3 | Bug | «Konfiguration Importieren» führt zu Fehlermeldung; inkonsistente Button-Bezeichnungen |
+| E4 | Feature | Drag & Drop: UE in beliebige Zelle (anderer Kurs + andere KW) verschieben |
+| E5 | Data | Fach-Dropdown aufteilen: Einzelfächer statt Gruppen (VWL/BWL/Recht, Bio/Chemie/Physik etc.) |
+| E6 | Feature | Startscreen: Gesamtkonfiguration direkt beim Erstellen importierbar (Sammlung-Import) |
+| E7 | Feature | Sonderwochen: Sichtbarkeit pro Kurs konfigurierbar (nur relevante Kurse) |
 
-**Empfohlene Reihenfolge:** D2 → D1 → D3 → D5 → D4 → D6
-
----
-
-### Task D1: Bug — Import-Button doppelt
-
-**Betrifft:** Alle Rubriken in `SettingsPanel`
-
-**Problem (Screenshot `import_ist_doppelt`):** Nach C1 erscheint Import jetzt in der Kopfzeile UND noch unten als zweiter Button. Ausserdem ist das Import-Icon gleich wie das Speichern-Icon — verwirrend.
-
-**Lösung:**
-1. Unteren Import-Button aus jeder Rubrik entfernen (der gestrichelte «+ Hinzufügen»-Button unten bleibt)
-2. Import-Icon in Kopfzeile auf `⬆️` oder `📂` ändern — klar unterscheidbar von `💾 Speichern`
-3. Reihenfolge Kopfzeile konsistent: `[+]` `[💾 Speichern]` `[📂 Laden]` `[⬆️ Import]`
-4. Gilt für alle 6 Rubriken
+**Empfohlene Reihenfolge:** E3 → E2 → E1 → E5 → E7 → E6 → E4
 
 ---
 
-### Task D2: Bug — Fachbereiche leer → Crash
+### Task E1: UX — UE-Buttons: «i» durch Pfeil-oben ersetzen
 
-**Betrifft:** `SettingsPanel`, `WeekRows`, `ZoomYearView`, `ZoomMultiYearView`, `StatsPanel`
+**Betrifft:** UE-Inline-Buttons (erscheinen beim Hover/Fokus auf einer UE-Kachel)
 
-**Problem (Screenshot `alle_fachbereiche_entfernen_leer_ist_buggy`):** Wenn alle Fachbereiche gelöscht werden, crasht die App oder zeigt Fehler.
+**Ist-Zustand (Screenshot):**
+`[Neue UE] [+] [↓] [i]`
 
-**Lösung:**
-1. Alle `subjects[0]`, `subjects.map(...)`, `SUBJECT_COLORS[area]` ohne Null-Check finden und defensiv machen
-2. Leer-Zustand in Fachbereiche-Rubrik: «Keine Fachbereiche konfiguriert. Füge einen Fachbereich hinzu oder wähle eine Vorlage.»
-3. `SUBJECT_COLORS[area]` → Fallback `#6b7280` (grau) wenn `area` nicht gefunden
-4. Löschen des letzten Fachbereichs **nicht blockieren** — leerer Zustand soll erlaubt sein, nur crashfrei
+**Problem:** Der «i»-Button hat eine unklare Funktion. Der «↓»-Button verschiebt die UE nach unten, aber es gibt keinen Pfeil nach oben.
 
----
+**Ziel:**
+`[Neue UE] [+] [↑] [↓]`
 
-### Task D3: Bug — Ferien-Preset-Dropdown beim Planer-Erstellen entfernen
+- «i»-Button komplett entfernen
+- Neuen «↑»-Button hinzufügen (verschiebt UE um eine Position nach oben innerhalb der Spalte)
+- «↓»-Button bleibt (verschiebt nach unten)
+- Tooltip: «Nach oben verschieben» / «Nach unten verschieben»
+- An erster Position: ↑-Button deaktiviert (disabled, gegraut)
+- An letzter Position: ↓-Button deaktiviert
 
-**Betrifft:** Startbildschirm, `PlannerTabs.tsx` oder `App.tsx`
-
-**Problem (Screenshot `beim_start_ferien_json_importieren`):** Checkbox «✅ Ferien eintragen» + Dropdown «SJ 2025/26 (Gym Bern)» führt zu Duplikaten, wenn danach nochmals via JSON importiert wird (Screenshot zeigt 11 Ferien statt 7).
-
-**Lösung:**
-1. Checkbox «Ferien eintragen» und das SJ-Preset-Dropdown komplett aus dem Startbildschirm entfernen
-2. Neuer Planer startet mit leeren Ferien (kein automatischer Preset)
-3. Ferien-Import läuft ausschliesslich über Einstellungen → Ferien-Rubrik → Import-Button
-4. Startbildschirm vereinfacht: nur Name-Eingabe + «+ Neuen Planer erstellen» + Hinweis auf JSON-Import
-
-**Hinweis:** `ferien_hofwil_2526.json` in `public/presets/Hofwil/` bleibt bestehen — nur der automatische Eintrag beim Planer-Erstellen fällt weg.
+**Hinweis:** Die Pfeil-Buttons lösen die Funktion «UE innerhalb einer Spalte verschieben» aus — das ist der einfache Weg. Drag & Drop über Spalten hinweg kommt separat (E4).
 
 ---
 
-### Task D4: Feature — Fachbereiche-Vorlagen: Dropdown mit allen Gymnasialfächern
+### Task E2: Feature — «Alle entfernen»-Button bei allen Einstellungsrubriken
 
-**Betrifft:** Fachbereiche-Rubrik in `SettingsPanel`, `data/subjectPresets.ts`
+**Betrifft:** Alle Rubriken in `SettingsPanel` (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln)
 
-**Problem (Screenshot `das_sind_nicht_alle_facher`):** Aktuell gibt es Kategorie-Buttons (W&R, NaWi, Sprachen, Mathe&Info). Einzelfächer wie Geschichte, Geografie, BG, Musik fehlen.
+**Ist-Zustand:** Kein «Alle entfernen»-Button vorhanden. Jeder Eintrag muss einzeln gelöscht werden.
 
-**Ziel:** Ein **Fach-Dropdown** mit allen Gymnasialfächern Kt. Bern (Lehrplan 17):
+**Ziel:** In der Kopfzeile jeder Rubrik einen kompakten «✕ Alle»-Button ergänzen.
 
+**Reihenfolge Kopfzeile (neu):**
 ```
-── W&R ──            VWL / BWL / Recht
-── Naturwiss. ──     Biologie / Chemie / Physik
-── Sprachen ──       Deutsch / Englisch / Französisch / Italienisch / Latein / Spanisch
-── Geistes-/Soz. ── Geschichte / Geografie / Philosophie
-── Gestalterisch ── Bildnerisches Gestalten / Musik / Sport
-── Mathe & Info ──  Mathematik / Informatik
-── Andere ──         Leer
+[Rubrik-Titel (N)]  [+]  [💾]  [📂]  [⬆]  [✕ Alle]  [▼]
 ```
 
-**Farben für neue Fächer:**
-- Geschichte `#b45309`, Geografie `#0891b2`, BG `#ec4899`, Musik `#8b5cf6`
-- Sport `#10b981`, Latein `#6b7280`, Philosophie `#f59e0b`, Spanisch `#ef4444`
+**Verhalten:**
+- Klick → Bestätigungs-Dialog: «Alle X Einträge entfernen?» → [Abbrechen] / [Alle entfernen]
+- Nach Bestätigung: Array wird auf `[]` gesetzt, Toast «X Einträge entfernt»
+- Button graut aus (disabled) wenn Rubrik bereits leer ist
+
+**Gilt für alle 6 Rubriken** (auch Fachbereiche — leerer Zustand ist seit D2 crashfrei).
+
+---
+
+### Task E3: Bug — «Konfiguration Importieren» Fehlermeldung + inkonsistente Button-Bezeichnungen
+
+**Betrifft:** `SettingsPanel` → Rubrik «💾 Daten & Sammlung», Abschnitt «Konfiguration»
+
+**Problem 1 — Fehlermeldung:**
+Der «📥 Importieren»-Button im Konfiguration-Abschnitt führt zu einer Fehlermeldung. Vermutlich liest der Handler ein falsches Format oder die JSON-Struktur stimmt nicht mit dem erwarteten Format überein.
+
+**Problem 2 — Inkonsistente Bezeichnungen:**
+- Konfiguration: «📤 Exportieren» / «📥 Importieren»
+- Planerdaten: «⬇️ Export» / «⬆️ Import»
+- Sammlung: «💾 Speichern» / «📂 Laden»
+
+**Lösung:**
+1. Fehlermeldung beim Konfiguration-Import debuggen und beheben:
+   - Format der exportierten Konfiguration mit dem Import-Handler abgleichen
+   - Falls nötig: Format-Migration oder flexibler Parser (unterstützt altes + neues Format)
+2. Bezeichnungen vereinheitlichen — durchgängig:
+   - «📤 Exportieren» / «📥 Importieren» (ausgeschriebene Verben, konsistent in allen 3 Abschnitten)
+
+**Hinweis:** Konfiguration-Export und -Import betreffen `courses`, `holidays`, `specialWeeks`, `subjects`, `curriculumGoals`, `assessmentRules`. Format prüfen ob es einem `PlannerSettings`-Subset entspricht oder ein eigenes `ConfigExport`-Interface hat.
+
+---
+
+### Task E4: Feature — Drag & Drop: UE in beliebige Zelle verschieben
+
+**Betrifft:** Haupt-Planer-Ansicht (`WeekRows`), UE-Kacheln
+
+**Ist-Zustand:** Drag & Drop existiert, aber:
+- Beim Klicken + Ziehen auf eine UE werden stattdessen Zellen markiert (Lasso-Select)
+- UE können nicht in eine andere Kurs-Spalte verschoben werden
+
+**Ziel:**
+1. **Drag-Erkennung:** Mousedown auf UE → kurzes Timeout (100–150ms) unterscheidet Klick von Drag-Start
+   - Klick (< 150ms, keine Bewegung > 5px) → Zelle auswählen / Panel öffnen (bestehend)
+   - Drag (> 150ms oder Mausbewegung > 5px) → UE-Drag startet
+2. **Zellen markieren via Modifier-Keys:**
+   - Shift-Klick → Bereich markieren
+   - Command/Ctrl-Klick → Einzelne Zellen zur Auswahl hinzufügen
+   - Normaler Klick (ohne Modifier, keine Drag-Bewegung) → Einzelzelle auswählen
+3. **Drag-Verhalten:**
+   - Ghost-Bild der UE folgt dem Mauszeiger
+   - Gültige Drop-Targets: alle Wochen-Zellen aller Kursspalten (ausser Ferien/Sonderwochen-Zellen)
+   - Hover über Drop-Target: Highlight (blauer Rahmen)
+   - Drop → UE wird aus der Quell-Zelle entfernt und in die Ziel-Zelle eingefügt
+   - Ziel-Kurs und Ziel-KW werden in der UE-Daten aktualisiert
+4. **Zwischen Spalten:** Beim Verschieben in eine andere Kurs-Spalte → Kurs-ID der UE wird auf Ziel-Kurs aktualisiert
+
+**Technisch:**
+- `mousedown` auf UE → `isDraggingUE`-State starten (mit Timer)
+- `mousemove` → wenn `isDraggingUE`: Ghost zeigen, Drop-Target berechnen
+- `mouseup` → Drop ausführen oder abbrechen
+- `e.preventDefault()` während Drag um Text-Selektion zu verhindern
+- Bestehende `multiSelection`-Logik (Shift/Cmd-Klick) bleibt erhalten
+
+---
+
+### Task E5: Data — Fach-Dropdown: Einzelfächer statt Gruppen
+
+**Betrifft:** `data/subjectPresets.ts`, Fachbereiche-Rubrik in `SettingsPanel`
+
+**Ist-Zustand:** Das Dropdown zeigt Gruppen-Einträge:
+- «W&R (VWL / BWL / Recht)» — lädt alle 3 auf einmal
+- «Naturwissenschaften (Bio / Chemie / Physik)» — lädt alle 3 auf einmal
+
+**Ziel:** Jedes Fach einzeln auswählbar:
+
+```
+── W&R ──
+  VWL          (orange  #f97316)
+  BWL          (blau    #3b82f6)
+  Recht        (grün    #22c55e)
+── Naturwissenschaften ──
+  Biologie     (#16a34a)
+  Chemie       (#dc2626)
+  Physik       (#7c3aed)
+── Sprachen ──
+  Deutsch      (#1d4ed8)
+  Englisch     (#0369a1)
+  Französisch  (#0891b2)
+  Italienisch  (#b45309)
+  Latein       (#6b7280)
+  Spanisch     (#ef4444)
+── Geistes-/Sozialwiss. ──
+  Geschichte   (#b45309)
+  Geografie    (#0891b2)
+  Philosophie  (#f59e0b)
+── Gestalterisch ──
+  Bildnerisches Gestalten  (#ec4899)
+  Musik        (#8b5cf6)
+  Sport        (#10b981)
+── Mathe & Info ──
+  Mathematik   (#1d4ed8)
+  Informatik   (#6366f1)
+── Andere ──
+  Leer (Vorlage-Struktur)
+```
+
+**IDs:** `vwl`, `bwl`, `recht`, `biologie`, `chemie`, `physik`, `deutsch`, `englisch`, `franzoesisch`, `italienisch`, `latein`, `spanisch`, `geschichte`, `geografie`, `philosophie`, `bg`, `musik`, `sport`, `mathematik`, `informatik`
 
 **Verhalten beim Laden:**
-- Dialog: «Bestehende Fachbereiche ersetzen» / «Ergänzen (Duplikate überspringen)»
-- Duplikat-Prüfung by `id` oder `name`
+- Einzelfach-Auswahl → Dialog «Ergänzen» / «Ersetzen»
+- Duplikat-Prüfung by `id` — Fach mit gleichem `id` wird übersprungen
 
-**Technisch:** Vorlagen in `data/subjectPresets.ts` als exportiertes Array, Dropdown in der Fachbereiche-Rubrik unterhalb der Liste. Die bestehenden 4 Kategorie-Buttons durch das Dropdown ersetzen (kompakter).
-
----
-
-### Task D5: UX — «Daten» + «Sammlung» zusammenführen
-
-**Betrifft:** Ende von `SettingsPanel` — die zwei letzten Rubriken
-
-**Ist-Zustand (Screenshot `diese_beiden_menus_zusammenfuhren`):**
-- Rubrik 1: «💾 Daten exportieren / importieren» (Konfiguration + Planerdaten)
-- Rubrik 2: «📚 Sammlung (Gesamtkonfiguration)» (Speichern/Laden)
-
-**Ziel:** Eine einzige Rubrik «💾 Daten & Sammlung» mit drei Unterabschnitten:
-
-```
-💾 Daten & Sammlung
-├── Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)
-│   [📤 Exportieren]  [📥 Importieren]
-├── ─────────────────────────────────
-├── Planerdaten (Lektionen, Sequenzen, Details)
-│   [⬇️ Export]  [⬆️ Import]
-└── ─────────────────────────────────
-    Sammlung (gesamte Konfiguration)
-    [💾 Speichern]  [📂 Laden]
-```
-
-**Technisch:** Zwei `Section`-Komponenten durch eine ersetzen, Unterabschnitte mit `border-t border-white/10 pt-3 mt-3` trennen.
+**Technisch:** `subjectPresets.ts` überarbeiten — statt Gruppen-Presets → 21 Einzel-Presets mit `<optgroup>`. Das `<select>`-Dropdown bleibt, aber jede `<option>` entspricht einem Einzelfach.
 
 ---
 
-### Task D6: Data — Sonderwochen KW-Fix ✅ + .ts prüfen
+### Task E6: Feature — Startscreen: Gesamtkonfiguration importieren
 
-**JSON bereits korrigiert** (04.03.2026):
-- `sonderwochen_hofwil_2526.json`: «Maturprüfungen schriftlich» KW19 → **KW22**
+**Betrifft:** `WelcomeScreen` / `PlannerTabs.tsx` — Formular «Neuen Planer erstellen»
 
-**Noch zu tun:** Prüfen ob der Wert auch in `iwPresets.ts` oder `initialLessonDetails.ts` hardcoded steht und ggf. dort ebenfalls auf KW22 korrigieren.
+**Ist-Zustand:** Startscreen zeigt nur Name-Eingabe + «+ Neuen Planer erstellen» + Hinweis auf spätere Importe in Einstellungen.
+
+**Ziel:** Einen «📥 Gesamtkonfiguration importieren»-Button direkt auf dem Startscreen:
+
+```
+[Name-Eingabe]
+[📥 Gesamtkonfiguration importieren]   ← NEU
+[+ Neuen Planer erstellen]
+```
+
+**Verhalten:**
+- Klick → öffnet Datei-Picker (JSON)
+- Erwartet dasselbe Format wie «Sammlung laden» (Gesamtkonfiguration-JSON)
+- Wenn Datei geladen: Button zeigt ✅ + Dateiname («✅ konfiguration_sj2526.json»)
+- Beim Klick «+ Neuen Planer erstellen» → geladene Konfiguration wird in `initialSettings` übernommen (Kurse, Ferien, Sonderwochen, Fachbereiche, Lehrplanziele, Beurteilungsregeln)
+- Falls keine Datei geladen → Planer startet leer (bestehend)
+
+**Format:** Identisch mit dem Export aus «💾 Daten & Sammlung → Sammlung → Speichern» (Gesamtkonfiguration-JSON).
+
+**Hinweis:** C8 hat bereits Einzel-Import-Buttons (Ferien, Sonderwochen, Stundenplan, Beurteilungsregeln). E6 ergänzt einen übergeordneten Sammlung-Import, der alles auf einmal lädt. Die C8-Buttons bleiben für Einzel-Importe.
+
+---
+
+### Task E7: Feature — Sonderwochen: Sichtbarkeit pro Kurs konfigurierbar
+
+**Betrifft:** Sonderwochen-Rubrik in `SettingsPanel`, Sonderwoche-Formular, `WeekRows`-Rendering
+
+**Ist-Zustand:** Sonderwochen (z.B. «Schneesportlager GYM2») erscheinen in **allen** Kursspalten.
+
+**Ziel:** Jede Sonderwoche kann auf bestimmte Kurse beschränkt werden.
+
+**UI im Sonderwoche-Formular:**
+```
+[x] Nur für bestimmte Kurse anzeigen
+    Wenn aktiviert: Checkbox-Liste aller konfigurierten Kurse
+    □ 29c SF    □ 27a28f SF    □ 28bc29fs SF
+    □ 27a KS    □ 28c IN       □ 29f IN
+    □ 30s IN    □ 29fs EWR
+    [Alle GYM2] [Alle SF] [Alle]  ← Schnellauswahl-Buttons
+```
+
+**Datenmodell:**
+```typescript
+interface SpecialWeekConfig {
+  // bestehende Felder...
+  courseFilter?: string[] // Array von Kurs-IDs; undefined/leer = alle Kurse
+}
+```
+
+**Rendering in `WeekRows`:**
+- Beim Rendern einer Kurs-Spalte: prüfen ob `specialWeek.courseFilter` definiert und nicht leer ist
+- Falls ja: Sonderwoche nur anzeigen wenn `courseId` in `courseFilter` enthalten
+- Falls `courseFilter` undefined oder leer: wie bisher alle Spalten
+
+**Schnellauswahl-Buttons:**
+- «Alle GYM2» → wählt alle Kurse mit `gymLevel === 'GYM2'` aus
+- «Alle SF» → wählt alle Kurse mit `typ === 'SF'` aus
+- «Alle» → alle Kurse auswählen (= Filter deaktivieren)
+
+**Hinweis:** `SpecialWeekConfig` Typ in `types.ts` oder `settingsStore.ts` nachschauen und um `courseFilter?` ergänzen. Bestehende Sonderwochen ohne `courseFilter` bleiben unverändert sichtbar für alle.
 
 ---
 
@@ -133,742 +295,8 @@
 ```bash
 npm run build 2>&1 | tail -20
 git add -A
-git commit -m "v3.81: Import-Bug (D1), Fachbereiche-Leer (D2), Ferien-Dropdown entfernt (D3), Fach-Dropdown (D4), Daten+Sammlung (D5), KW-Fix (D6)"
-git push
-```
-
----
-
-## ✅ Erledigte Tasks v3.81
-
-| # | Task | Status |
-|---|------|--------|
-| D1 | Bug — Import-Button doppelt: untere Import-Buttons in 5 Editoren entfernt, Icon auf ⬆ geändert | ✅ |
-| D2 | Bug — Fachbereiche leer → Crash: Leer-Warnung im SubjectsEditor, bestehende Fallbacks bestätigt | ✅ |
-| D3 | Bug — Ferien-Preset-Dropdown beim Planer-Erstellen komplett entfernt (WelcomeScreen + PlannerTabs) | ✅ |
-| D4 | Feature — Fachbereiche-Vorlagen: Dropdown mit allen Gymnasialfächern Kt. Bern (15 Presets in 7 Gruppen) | ✅ |
-| D5 | UX — «Daten exportieren» + «Sammlung» zu einer Rubrik «💾 Daten & Sammlung» zusammengeführt | ✅ |
-| D6 | Data — Sonderwochen KW-Fix: .ts-Dateien geprüft, kein KW19 hardcoded → bereits korrekt | ✅ |
-
-### Änderungen im Detail
-
-**D1:** Import-Icon in `SectionActions` von `📥` auf `⬆` geändert (unterscheidbar von Speichern `📥`). Untere Import-Buttons aus CourseEditor, SpecialWeeksEditor, HolidaysEditor, AssessmentRulesEditor und Lehrplanziele-Body entfernt. Nur Header-Import bleibt.
-
-**D2:** Leer-Zustand-Warnung im SubjectsEditor: «Keine Fachbereiche konfiguriert…». Bestehende defensive Fallbacks in `usePlannerData`, `sc()`, `getCategoryColors()`, `Toolbar` bestätigt — kein Crash mehr möglich.
-
-**D3:** `WelcomeScreen`: `presetId`, `autoHolidays`, Import-Schnellzugriffe (C8) komplett entfernt. Vereinfacht zu Name-Input + Button + Hinweis «Ferien, Kurse und Fachbereiche in den Einstellungen importieren». `PlannerTabs`: `autoHolidays`-State und -Checkbox entfernt. Neuer Planer startet mit leeren Ferien.
-
-**D4:** `subjectPresets.ts` von 5 auf 15 Presets erweitert. 7 Gruppen: W&R, Naturwiss., Sprachen (+Italienisch, Latein, Spanisch), Geistes-/Sozialwiss. (Geschichte, Geografie, Philosophie), Gestalterisch (BG, Musik, Sport), Mathe&Info, Andere. Vorlagen-Buttons durch `<select>` mit `<optgroup>` ersetzt. Dialog: «Ersetzen» / «Ergänzen (Duplikate übersprungen)». Farben lt. Spezifikation.
-
-**D5:** Zwei `Section`-Komponenten (Daten + Sammlung) zu einer «💾 Daten & Sammlung» zusammengeführt. Drei Unterabschnitte mit `border-t border-white/10 pt-3`: Konfiguration, Planerdaten, Sammlung.
-
-**D6:** `iwPresets.ts` und `initialLessonDetails.ts` durchsucht — kein KW19/«Maturprüfungen schriftlich» hardcoded. JSON bereits korrigiert.
-
----
-
-## Status: ✅ v3.80 — 8 Tasks erledigt
-
----
-
-## Originalauftrag v3.80 (04.03.2026)
-
-| # | Typ | Beschreibung |
-|---|-----|-------------|
-| C1 | UX | Settings-Rubriken: Buttons in Kopfzeile (Hinzufügen + Speichern + Laden + Import) |
-| C2 | Bug | Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernen |
-| C3 | Bug | Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernen |
-| C4 | Feature | Fachbereich-Import: Vorlagen für andere Fächer anbieten (nicht nur W&R) |
-| C5 | UX | Kurs-Header: Stufe anzeigen (z.B. SF GYM2 2L), GK-Badge weglassen, nur HK anzeigen |
-| C6 | Feature | Stoffverteilung-Import für alle Fächer anbieten (Mehrjahresübersicht) |
-| C7 | Feature | TaF-Phasenmodell: Import aus JSON (statt nur manuell + hinzufügen) |
-| C8 | Feature | Startbildschirm: Import-Buttons für Ferien, Sonderwochen, Beurteilungen, Stundenplan etc. |
-
-**Empfohlene Reihenfolge:** C3 → C2 → C1 → C5 → C4 → C6 → C7 → C8
-
----
-
-### Task C1: UX — Settings-Rubriken: alle Buttons in Kopfzeile
-
-**Betrifft:** Alle Rubriken in `SettingsPanel` (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln)
-
-**Ist-Zustand (Screenshot `bei_allen_einstellungen...`):**
-- Kopfzeile zeigt nur «💾 Speichern» + «📂 Laden»
-- «+ Hinzufügen» und «📥 Import» sind nur unten in der Rubrik als separate Buttons
-
-**Ziel — Kopfzeile jeder Rubrik (links → rechts):**
-```
-[Rubrik-Titel + Anzahl]   [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import]  [▼]
-```
-- Alle Buttons gleiche kompakte Grösse wie bestehende Speichern/Laden-Buttons
-- Buttons nur anzeigen wenn die Rubrik die jeweilige Aktion unterstützt
-- «+ Hinzufügen»-Button unten (gestrichelt) kann bleiben oder entfernt werden — Hauptsache oben vorhanden
-
-**Hinweis:** `Section`-Komponente hat bereits `actions`-Prop (eingeführt in B9). Falls vorhanden, darauf aufbauen. Buttons für alle 6 Rubriken ergänzen.
-
----
-
-### Task C2: Bug — Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernen
-
-**Betrifft:** Kurse-Rubrik in `SettingsPanel` (oder Kurs-Leer-Zustand)
-
-**Ist-Zustand (Screenshot `das_ist_auch_hardcoded_stundenplan...`):**
-Wenn keine Kurse konfiguriert sind, erscheint ein blauer Hinweis-Banner:
-> «Keine Kurse konfiguriert. Du kannst den aktuellen Stundenplan importieren oder von Grund auf neu anfangen.»
-> [📋 Aktuellen Stundenplan (DUY SJ 25/26) importieren]
-
-**Problem:** Dieser Hinweis ist hardcoded auf DUY/SJ 25/26. In einem generischen Planer ist das irreführend.
-
-**Lösung:**
-- Hinweis-Banner und den hardcoded Import-Button komplett entfernen
-- Leer-Zustand der Kurse-Rubrik: neutral lassen (kein spezifischer Stundenplan erwähnt)
-- Der normale «+ Kurs hinzufügen» + «📥 Import»-Button reichen
-
----
-
-### Task C3: Bug — Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernen
-
-**Betrifft:** `plannerStore` / `settingsStore` — Initialisierungsdaten beim Erstellen eines neuen Planers
-
-**Ist-Zustand (Screenshot `ferien_und_lehrplanziele_bei_neuem_planer_schon_drin...`):**
-Ein frisch erstellter Planer enthält bereits:
-- **Ferien (4):** Herbstferien KW39–41, Winterferien KW52–01, Sportferien KW06, Frühlingsferien KW15–16
-- **Lehrplanziele (40):** Vermutlich hardcoded W&R-Lehrplanziele
-
-**Problem:** Diese Daten sind spezifisch für Gymnasium Bern SJ 25/26 und sollten nicht automatisch in jeden neuen Planer eingefügt werden.
-
-**Lösung:**
-1. Neuer Planer startet mit **leeren** Ferien, Sonderwochen, Lehrplanzielen, Beurteilungsregeln
-2. Einzige Ausnahme: Wenn auf dem Startbildschirm «✅ Ferien eintragen» aktiviert ist **und** ein Ferienpreset ausgewählt wurde → nur dann Ferien eintragen
-3. Lehrplanziele: komplett leer bei neuem Planer. Import über «📥 Import»-Button oder Sammlung
-4. In `plannerStore` / `settingsStore` den Default-State auf leere Arrays setzen (`holidays: []`, `curriculumGoals: []`)
-
----
-
-### Task C4: Feature — Fachbereich-Import: Vorlagen für andere Fächer
-
-**Betrifft:** Fachbereiche-Rubrik in `SettingsPanel`, Import-Button
-
-**Ist-Zustand (Screenshot `fur_fachbereich_import_auch_andere_facher...`):**
-Fachbereiche zeigen W&R-Vorlage (VWL orange, BWL blau, Recht grün). Import-Button existiert, aber keine Vorlagen für andere Fächer.
-
-**Ziel:** Beim Klick auf «📥 Import» in der Fachbereiche-Rubrik ein **Vorlagen-Dropdown** oder **Vorlagen-Dialog** anbieten:
-
-```
-📥 Import
-  ├── 📂 Aus Datei (JSON)
-  ├── ── Vorlagen ──
-  ├── 🎓 W&R (VWL / BWL / Recht)
-  ├── 🔬 Naturwissenschaften (Bio / Chemie / Physik)
-  ├── 🌍 Sprachen (Deutsch / Englisch / Französisch)
-  ├── 📐 Mathematik & Informatik
-  └── ✏️ Leer (nur Vorlage-Struktur)
-```
-
-- Vorlagen als hardcoded Array in einer Datei `data/subjectPresets.ts`
-- Klick auf Vorlage → öffnet Bestätigungs-Dialog («Bestehende ersetzen» / «Ergänzen»)
-- Duplikat-Prüfung wie bei normalem Import (by `id` oder `name`)
-
----
-
-### Task C5: UX — Kurs-Header: Stufe anzeigen, GK weglassen, nur HK anzeigen
-
-**Betrifft:** Kurs-Spaltenheader in `WeekRows` (Hauptplaner-Ansicht)
-
-**Ist-Zustand (Screenshot `hier_auch_stufe_angeben_z_b_SF_GYM2_2L...`):**
-Kurs-Header zeigt: `[SF] [GK] [2L] [14 frei]`
-
-**Probleme:**
-1. «GK» (Gesamtklasse) ist uninformativ — wird nie gebraucht, immer klar
-2. Keine GYM-Stufe sichtbar (z.B. GYM2)
-3. HK (Halbklasse) ist relevant → soll angezeigt werden
-
-**Ziel-Format:**
-```
-[SF] [GYM2] [2L] [14 frei]   ← wenn Stufe vorhanden, kein GK/HK-Badge nötig
-[IN] [HK] [2L] [14 frei]     ← wenn hk=true, HK-Badge anzeigen (kein GK)
-[EWR] [GYM1] [1L] [20 frei]
-```
-
-**Regeln:**
-- `hk: true` → Badge «HK» anzeigen (lila oder eigene Farbe)
-- `hk: false` → **kein** GK-Badge
-- `gymLevel` (z.B. «GYM2») → Badge anzeigen falls vorhanden, kein separates GK
-- Reihenfolge: Typ → Stufe/HK → Lektionen → Frei-Zähler
-
----
-
-### Task C6: Feature — Stoffverteilung-Import für alle Fächer
-
-**Betrifft:** `ZoomYearView` / Mehrjahresübersicht, «Stoffverteilung»-Tab
-
-**Ist-Zustand (Screenshot `import_stoffverteilung_fur_alle_facher...`):**
-Leer-Zustand zeigt: «Keine Stoffverteilung konfiguriert» + Button «📥 Stoffverteilung importieren (JSON)»
-
-**Ziel:** Analog zu C4 — beim Import-Button **Vorlagen** für gängige Fächer anbieten:
-
-```
-📥 Stoffverteilung importieren
-  ├── 📂 Aus Datei (JSON)
-  ├── ── Vorlagen ──
-  ├── 📘 W&R Schwerpunktfach (DUY, Lehrplan 17 Kt. Bern)
-  ├── 📗 W&R Ergänzungsfach
-  └── ✏️ Leere Vorlage
-```
-
-- W&R-SF-Vorlage entspricht der `DUY_Grobzuteilung`-Tabelle aus dem Projektdokument (S1–S8, Recht/BWL/VWL-Gewichtungen)
-- Vorlage als hardcoded JSON in `data/stoffverteilungPresets.ts`
-- Format muss zum bestehenden Import-Format der Mehrjahresübersicht passen
-
-**W&R SF Vorlage (DUY):**
-```json
-[
-  { "semester": 1, "gymLevel": "GYM1", "subjects": { "BWL": 3, "Recht": 0, "VWL": 0 } },
-  { "semester": 2, "gymLevel": "GYM1", "subjects": { "BWL": 2, "Recht": 1, "VWL": 0 } },
-  { "semester": 3, "gymLevel": "GYM2", "subjects": { "BWL": 1, "Recht": 2, "VWL": 2 } },
-  { "semester": 4, "gymLevel": "GYM2", "subjects": { "BWL": 0, "Recht": 3, "VWL": 2 } },
-  { "semester": 5, "gymLevel": "GYM3", "subjects": { "BWL": 0, "Recht": 2, "VWL": 2 } },
-  { "semester": 6, "gymLevel": "GYM3", "subjects": { "BWL": 2, "Recht": 0, "VWL": 2 } },
-  { "semester": 7, "gymLevel": "GYM4", "subjects": { "BWL": 0, "Recht": 2, "VWL": 2 } },
-  { "semester": 8, "gymLevel": "GYM4", "subjects": { "BWL": 2, "Recht": 0, "VWL": 2 } }
-]
-```
-
----
-
-### Task C7: Feature — TaF-Phasenmodell: JSON-Import
-
-**Betrifft:** `TaFPanel` (Modal «TaF Phasenmodell»)
-
-**Ist-Zustand (Screenshot `Phasen_aus_Phasenplan_importieren_als_json`):**
-Modal zeigt «Noch keine TaF-Phasen definiert» + «+ Phase hinzufügen» (nur manuell)
-
-**Ziel:** Import-Button «📥 Import (JSON)» hinzufügen
-
-**Format:**
-```json
-[
-  { "name": "Phase 1", "startKW": 33, "endKW": 38, "semester": 1 },
-  { "name": "Phase 2", "startKW": 47, "endKW": 5,  "semester": 1 },
-  { "name": "Phase 3", "startKW": 7,  "endKW": 12, "semester": 2 },
-  { "name": "Phase 4", "startKW": 17, "endKW": 25, "semester": 2 }
-]
-```
-
-- Preset «SJ 25/26 Hofwil» als Vorlage direkt im Dialog anbieten (hardcoded, einmaliger Klick)
-- Preset-Daten: Phase 1 KW33–38, Phase 2 KW47–5, Phase 3 KW7–12, Phase 4 KW17–25
-- Duplikat-Prüfung by `name + startKW`
-
----
-
-### Task C8: Feature — Startbildschirm: dritte Zeile mit Sammlung-Import/Export
-
-**Betrifft:** `PlannerTabs.tsx` — Formular «Neuen Planer erstellen» (`showNew`-State)
-
-**Ist-Zustand:** Das Formular hat 2 Zeilen:
-```
-Zeile 1: [Name-Eingabe]
-Zeile 2: [SJ-Preset-Dropdown]  [✅ Ferien eintragen]
-         [+ Neuen Planer erstellen]
-```
-
-**Ziel:** Dritte Zeile mit direkten Import-Schnellzugriffen für Sammlung-Daten:
-```
-Zeile 1: [Name-Eingabe]
-Zeile 2: [SJ-Preset-Dropdown]  [✅ Ferien eintragen]
-Zeile 3: [📥 Ferien]  [📥 Sonderwochen]  [📥 Stundenplan]  [📥 Beurteilungsregeln]
-         [+ Neuen Planer erstellen]
-```
-
-**Verhalten der Import-Buttons in Zeile 3:**
-- Jeder Button öffnet einen Datei-Picker für das jeweilige JSON-Format
-- Die importierten Daten werden in einem lokalen State zwischengespeichert
-- Beim Klick «+ Neuen Planer erstellen» werden die importierten Daten in `initialSettings` übernommen
-- Wenn ein Button angeklickt wurde und Daten geladen sind → Button zeigt Häkchen + Dateiname («✅ ferien_hofwil_2526.json»)
-- Button erneut klicken → Datei ersetzen oder zurücksetzen
-
-**Implementierungshinweis:**
-- In `handleCreate()` in `PlannerTabs.tsx`: nach dem `getDefaultSettings()`-Aufruf die importierten Daten in `initialSettings` mergen
-- Neue States: `importedHolidays`, `importedSpecialWeeks`, `importedCourses`, `importedAssessmentRules` (jeweils `null | Array`)
-- Format der JSON-Dateien: identisch mit den Preset-Dateien in `public/presets/Hofwil/`
-- Bestehende `autoHolidays`-Logik bleibt: wenn `autoHolidays` aktiv UND `importedHolidays` vorhanden → importierte Ferien haben Vorrang vor Preset-Ferien
-
----
-
-### Commit-Anweisung (nach allen 8 Tasks)
-
-```bash
-npm run build 2>&1 | tail -20
-git add -A
-git commit -m "v3.80: Settings-Buttons (C1), Hardcoded-Daten entfernt (C2+C3), Fachbereich-Vorlagen (C4), Kurs-Header (C5), Stoffverteilung-Vorlagen (C6), TaF-Import (C7), Startscreen-Import (C8)"
+git commit -m "v3.82: UE-Pfeil-oben (E1), Alle-entfernen (E2), Import-Bug (E3), Drag&Drop (E4), Einzelfächer (E5), Sammlung-Import Startscreen (E6), Sonderwoche-Kursfilter (E7)"
 git push
 # HANDOFF.md: Status auf ✅, alle Tasks dokumentieren
 ```
 
----
-
-## ✅ Erledigte Tasks v3.80
-
-| # | Task | Status |
-|---|------|--------|
-| C1 | UX — Settings-Rubriken: alle Buttons in Kopfzeile (+ Hinzufügen, Speichern, Laden, Import) | ✅ |
-| C2 | Bug — Hardcoded Stundenplan-Import-Hint bei leeren Kursen entfernt | ✅ |
-| C3 | Bug — Hardcoded Ferien + Lehrplanziele bei neuem Planer entfernt | ✅ |
-| C4 | Feature — Fachbereich-Import: 5 Vorlagen (W&R, Nawi, Sprachen, Mathe&Info, Leer) | ✅ |
-| C5 | UX — Kurs-Header: Stufe anzeigen, GK weglassen, nur HK | ✅ |
-| C6 | Feature — Stoffverteilung-Import: 3 Vorlagen (W&R SF, W&R EF, Leer) | ✅ |
-| C7 | Feature — TaF-Phasenmodell: JSON-Import + Hofwil-Preset | ✅ |
-| C8 | Feature — Startbildschirm: Import-Buttons (Ferien, Sonderwochen, Stundenplan, Beurteilungsregeln) | ✅ |
-
-### Änderungen im Detail
-
-**C1:** Neue `SectionActions`-Komponente kombiniert [+] [Speichern] [Laden] [📥] Buttons. Alle 6 Rubriken (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln) nutzen `SectionActions` im Header. `ACT_BTN`-Style + `fileImport`-Helper für einheitliches Verhalten.
-
-**C2:** Blauer Banner mit hardcoded "DUY SJ 25/26"-Import-Button in der Kurse-Rubrik komplett entfernt. Unused Imports aufgeräumt.
-
-**C3:** `getEffectiveGoals()` gibt `[]` zurück statt auf `CURRICULUM_GOALS` fallback. Lehrplanziele-Titel zeigt korrekte Anzahl. "Standard-Konfiguration (DUY SJ 25/26)" → "Standard-Konfiguration". W&R Sek2 DUY Preset-Button entfernt.
-
-**C4:** Neue Datei `data/subjectPresets.ts` mit 5 Vorlagen: W&R (VWL/BWL/Recht), Naturwissenschaften (Bio/Chemie/Physik), Sprachen (D/E/F), Mathematik & Informatik, Leere Vorlage. Preset-Buttons im SubjectsEditor.
-
-**C5:** `stufe` Feld zum `Course`-Interface hinzugefügt + Mapping in `configToCourses()`. SemesterHeader zeigt Stufe-Badge (cyan) wenn vorhanden, HK-Badge nur bei `hk=true`, kein GK-Badge mehr.
-
-**C6:** Neue Datei `data/stoffverteilungPresets.ts` mit 3 Vorlagen: W&R SF (DUY, 8 Semester), W&R EF (4 Semester), Leere Vorlage. Preset-Buttons im ZoomMultiYearView Empty-State.
-
-**C7:** `HOFWIL_PRESET` (4 Phasen KW33–38, 47–05, 07–12, 17–25) direkt im TaFPanel. `handleImport` mit JSON-Parsing + Duplikat-Check by `name|startKW`. Buttons: 📥 Import (JSON) + 🏫 SJ 25/26 Hofwil.
-
-**C8:** Startbildschirm (PlannerTabs) erweitert: Import-Schnellzugriff-Buttons für Ferien, Sonderwochen, Stundenplan, Beurteilungsregeln direkt beim Planer-Erstellen. Importierte Daten werden beim Erstellen in initialSettings übernommen. Badges zeigen Anzahl importierter Einträge.
-
-**Zusätzlich:** `index.html` korrigiert — Build-Artefakte durch Vite-Template ersetzt (war seit v3.72 kaputt).
-
----
-
-## Status: ✅ v3.79 — 7 Tasks erledigt (Import, Bugs, UX, Auto-Zoom)
-- **Datum:** 2026-03-04
-- **Basis:** v3.78 (gebaut + deployed)
-- **Deploy:** https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/
-
----
-
-## ✅ Erledigte Tasks v3.79
-
-| # | Task | Status |
-|---|------|--------|
-| B5 | Duplikat-Prüfung beim Import (Ferien, Sonderwochen, Beurteilungsregeln) | ✅ |
-| B6 | Import-Button für Fachbereiche (JSON) | ✅ |
-| B7 | Import-Button für Kurse (JSON) | ✅ |
-| B8 | Bug — Jahrgänge-Tab weisse Seite (SUBJECT_COLORS Fallback) | ✅ |
-| B9 | UX — Settings-Rubriken Buttons in Kopfzeile (Section actions-Prop) | ✅ |
-| B10 | Bug — Side-Panel Scroll-Verhalten (overscroll-behavior: contain) | ✅ |
-| B11 | Auto-Zoom an Bildschirmbreite (autoFitZoom Toggle + table-fixed) | ✅ |
-
-### Änderungen im Detail
-
-**B5:** Import-Handler für Ferien (`label+startWeek`), Sonderwochen (`label+week`), Beurteilungsregeln (`label+semester+stufe`) prüfen auf Duplikate. Feedback: "X importiert, Y übersprungen".
-
-**B6:** `📥 Import`-Button im SubjectsEditor. Format: `SubjectConfig[]` oder `{subjects: [...]}`. Duplikat-Prüfung by id/label.
-
-**B7:** `📥 Import`-Button im CourseEditor. Format: `CourseConfig[]` oder `{kurse: [...]}` oder `{courses: [...]}`. Duplikat-Prüfung by `cls+day+from`.
-
-**B8:** `SUBJECT_COLORS[area]` konnte `undefined` zurückgeben bei custom SubjectAreas → Crash. Fix: `sc(area)` Helper mit `FALLBACK_SC` Fallback-Farben.
-
-**B9:** `Section`-Komponente erweitert um `actions`-Prop (React.ReactNode). `RubricCollectionButtons` aus Section-Body in Section-Header verschoben für alle 6 Rubriken.
-
-**B10:** `overscroll-behavior: contain` auf Panel-Root, SettingsPanel, BatchOrDetailsTab, SequencePanel. Verhindert Scroll-Propagation zum Planer.
-
-**B11:** `autoFitZoom` Boolean im plannerStore. Toggle-Button `⟷` in Toolbar (nur bei Zoom 3). Tabellen wechseln zwischen `w-max min-w-full` (normal) und `table-fixed w-full` (Auto-Fit).
-
----
-
-## Aufgaben-Details (Originaltext)
-
----
-
-## Originalauftrag v3.79
-
-### Vorbereitung abgeschlossen (in diesem Chat)
-
-Folgende Datendateien wurden bereits erstellt/aktualisiert:
-- `src/data/iwPresets.ts` — IW-Presets v2 (detailiert nach GYM-Stufe, korrekte Labels)
-- `src/data/stundenplan_alle_phasen.md` — Stundenplan-Dokumentation alle 4 Phasen
-- `src/data/kurse_duy_2526.json` — Import-Vorlage für Kurs-Import (JSON, 16 Einträge)
-
-### Task B5: Duplikat-Prüfung beim Import (Ferien + Sonderwochen + Beurteilungsregeln)
-
-**Betrifft:** Alle Import-Handler in SettingsPanel (oder deren Store-Funktionen)
-
-**Problem:** Wenn man Ferien oder Sonderwochen zweimal importiert, entstehen Duplikate.
-
-**Lösung:** Vor dem Hinzufügen eines Eintrags prüfen, ob ein Eintrag mit identischen Schlüsselfeldern bereits existiert. Duplikate überspringen.
-
-**Duplikat-Keys:**
-- Ferien: `label + week` (z.B. "Herbstferien" + "41")
-- Sonderwochen (SpecialWeekConfig): `label + week + gymLevel`
-- Beurteilungsregeln: `courseId + semester` (falls vorhanden; sonst `label + courseId`)
-
-**Feedback nach Import:** Statt nur "X Einträge importiert" → "X importiert, Y übersprungen (bereits vorhanden)"
-- Toast-Meldung (wie bestehende Import-Toasts) mit beiden Zahlen
-- Y=0 → normales Feedback ohne "übersprungen"
-
-**Hinweis:** Ferien-Import ist in `SettingsPanel.tsx` (handleHolidayImport o.ä.), Sonderwochen-Import ebenfalls. Beurteilungsregeln-Import (JSON) analog.
-
----
-
-### Task B6: Import-Button für Fachbereiche
-
-**Betrifft:** Fachbereiche-Rubrik in SettingsPanel
-
-**Problem:** Fachbereiche haben nur Speichern/Laden via Sammlung. Kein direkter Datei-Import.
-
-**Lösung:** `📥 Import`-Button zur Fachbereiche-Rubrik hinzufügen (gleiche Position wie bei Ferien/Sonderwochen — kleiner Button links der Rubrik-Überschrift oder bei den anderen Buttons).
-
-**Format:** JSON-Array von `SubjectConfig[]`
-```json
-[
-  { "id": "vwl", "name": "VWL", "color": "#f97316", "active": true },
-  { "id": "bwl", "name": "BWL", "color": "#3b82f6", "active": true },
-  { "id": "recht", "name": "Recht", "color": "#22c55e", "active": true }
-]
-```
-
-**Duplikat-Prüfung (B5 integriert):** Prüfen ob `id` oder `name` bereits existiert → überspringen.
-
-**Toast-Feedback:** "X Fachbereiche importiert, Y übersprungen."
-
-**Hinweis:** `SubjectConfig` Typ in `settingsStore.ts` nachschauen. Import-Handler analog zu Ferien-Import.
-
----
-
-### Task B7: Import-Button für Kurse
-
-**Betrifft:** Kurse-Rubrik in SettingsPanel
-
-**Problem:** Kurse können exportiert werden, aber nicht direkt aus JSON importiert (nur via manuelle Eingabe oder GCal).
-
-**Lösung:** `📥 Import`-Button zur Kurse-Rubrik.
-
-**Format:** JSON-Objekt mit `kurse`-Array (entspricht `kurse_duy_2526.json` in `src/data/`):
-```json
-{
-  "_meta": { ... },
-  "kurse": [ { "id": "c11", "cls": "29c", "typ": "SF", ... }, ... ]
-}
-```
-Alternativ auch direkt `CourseConfig[]` (Array ohne Wrapper) unterstützen.
-
-**Duplikat-Key:** `cls + day + from` (gleiche Klasse, gleicher Tag, gleiche Anfangszeit = Duplikat)
-- Falls `id` identisch → ebenfalls Duplikat
-
-**Toast-Feedback:** "X Kurse importiert, Y übersprungen."
-
-**Hinweis:** `Course`-Typ (oder `CourseConfig`) in `types.ts` / `settingsStore.ts` nachschauen. `COURSES`-Array in `courses.ts` ist das Format-Referenz. Importierte Kurse landen im plannerSettings (nicht in der hardcoded `COURSES`-Liste).
-
----
-
----
-
-### Task B8: Bug — «Jahrgänge»-Tab zeigt weisse Seite
-
-**Betrifft:** ZoomMultiYearView (oder die Komponente hinter dem «Jahrgänge»-Button in der Zoom-Leiste)
-
-**Problem:** Klick auf «Jahrgänge»-Tab (neben «Stoffverteilung» und «Ist-Zustand») → die gesamte Seite wird weiss (vermutlich ungefangener Render-Fehler / uncaught exception).
-
-**Lösung:**
-1. Fehlerursache identifizieren (fehlende Daten? leerer State? fehlender Null-Check?)
-2. Absturz beheben — Komponente soll mindestens einen sinnvollen Leer-Zustand zeigen («Noch keine Daten» o.ä.) statt zu crashen
-3. Optional: React Error Boundary um die Jahrgänge-Komponente, damit ein Crash nicht die ganze App reisst
-
-**Hinweis:** Könnte mit fehlenden Fachbereichen oder leerem `plannerSettings` zusammenhängen. `ZoomYearView` oder `ZoomMultiYearView` in den Haupt-Komponenten suchen.
-
----
-
-### Task B9: UX — Einstellungs-Rubriken: Buttons in Kopfzeile verschieben
-
-**Betrifft:** Alle Rubriken in SettingsPanel (Kurse, Fachbereiche, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln — überall wo es Speichern/Laden/Hinzufügen/Import gibt)
-
-**Problem:** Aktuell sind «+ Hinzufügen» und «📥 Import» als separate Buttons am unteren Ende der Rubrik, während «💾 Speichern» / «📂 Laden» oben links stehen. Das ist inkonsistent und braucht unnötig Platz.
-
-**Ziel-Layout** (aus Screenshot — Sonderwochen als Referenz):
-```
-┌─────────────────────────────────────────────────┐
-│ 📅 Sonderwochen (5)                          ▼  │
-│  [+ Hinzufügen]  [💾 Speichern]  [📂 Laden]  [📥 Import]  │
-│                                                 │
-│  ... Einträge ...                               │
-└─────────────────────────────────────────────────┘
-```
-
-**Reihenfolge in der Kopfzeile (links nach rechts):** `+ Hinzufügen` → `💾 Speichern` → `📂 Laden` → `📥 Import`
-
-**Gilt für alle Rubriken** die mindestens einen dieser Buttons haben. Buttons die nicht existieren (z.B. keine Import-Funktion bei Lehrplanzielen) einfach weglassen.
-
-**Styling:** Kleine kompakte Buttons (wie die bestehenden Speichern/Laden-Buttons), gleiche Höhe, gleicher Abstand. Der Rubrik-Header `<div>` muss `flex`+`items-center`+`justify-between` oder ähnlich werden.
-
-**Achtung:** Der «+ Sonderwoche hinzufügen»-Button unten (gestrichelt) kann bleiben oder entfernt werden — Hauptsache der Button ist oben vorhanden.
-
----
-
-### Task B10: Bug — Side-Panel scrollt nicht (Planer scrollt stattdessen)
-
-**Betrifft:** Side-Panel (rechtes Panel: Unterrichtseinheit / Sequenzen / Sammlung / Einstellungen)
-
-**Problem (aus Screenshot):** Wenn der Inhalt im Side-Panel länger als die Bildschirmhöhe ist, scrollt nicht das Panel, sondern der Planer-Hintergrund. Das Panel «klebt» oben und lässt sich nicht nach unten scrollen.
-
-**Ursache (wahrscheinlich):** `overflow-hidden` oder fehlendes `overflow-y-auto` auf dem Panel-Container oder dessen Scroll-Wrapper. Evtl. fehlt `overscroll-contain` um den Scroll vom Planer zu isolieren.
-
-**Lösung:**
-1. Panel-Wrapper: `overflow-y-auto` sicherstellen + `overscroll-contain` (verhindert Scroll-Propagation zum Planer)
-2. Panel-Wrapper: `max-h` muss auf Viewport-Höhe begrenzt sein (z.B. `h-full` oder `max-h-screen`)
-3. Innere Scroll-Container der Tabs (Unterrichtseinheit, Sequenzen etc.) ebenfalls prüfen
-4. Mousewheel-Events: `e.stopPropagation()` am Panel-Root wenn nötig, um Scroll-Bubbling zu verhindern
-
-**Hinweis:** Dieser Bug wurde in v3.78 (#14) schon einmal angegangen. Evtl. ist das `overflow-hidden` auf dem äusseren Container korrekt, aber ein inneres Element fehlt `overflow-y-auto`. Den ganzen Panel-Stack (äusseres Div → Tab-Wrapper → Tab-Inhalt) auf Overflow-Konfiguration prüfen.
-
----
-
-### Task B11: Feature — Zoom automatisch an Bildschirmbreite anpassen
-
-**Betrifft:** Haupt-Planer-Ansicht (WeekRows / Zoom-Steuerung)
-
-**Problem (aus Screenshot):** Die Tabelle ist breiter als der Bildschirm → horizontales Scrollen nötig. Kein automatisches Anpassen.
-
-**Ziel:** Einen «Auto-Fit»-Modus einführen, der die Spaltenbreite (und ggf. Schriftgrösse) so skaliert, dass alle Kursspalten ohne horizontales Scrollen sichtbar sind.
-
-**Lösung — 2 Teile:**
-
-**Teil 1: Auto-Fit-Logik**
-- `useEffect` der auf `window.innerWidth` und Anzahl der sichtbaren Kursspalten reagiert
-- Berechne optimale Spaltenbreite: `verfügbare Breite / Anzahl sichtbare Spalten`
-- Setze CSS-Variable oder State `colWidth` entsprechend
-- Mindestbreite pro Spalte: ~80px (darunter wird es unleserlich)
-- Bei weniger Spalten (z.B. nur SF gefiltert): breitere Spalten
-
-**Teil 2: Zoom-Button erweitern**
-Aktuell gibt es Zoom-Buttons (aus Screenshot: Raster-Icon, Spalten-Icon, Kreis-Icon in der Toolbar). Diese sollen um «Auto»-Modus ergänzt werden:
-
-- Neuer Button «⊞ Auto» (oder ähnliches Icon) in der Zoom-Gruppe
-- Beim Klick: Auto-Fit aktivieren (Spaltenbreite passt sich dynamisch an)
-- Auto-Fit bleibt aktiv bis manueller Zoom gewählt wird
-- `ResizeObserver` auf dem Planer-Container für reaktives Update beim Fenstergrössen-Ändern
-
-**State:** `zoomMode: 'auto' | 'compact' | 'normal' | 'wide'` (oder wie die bestehenden Modi heissen)
-- Auto = dynamisch berechnet
-- Die anderen Modi = fixe Spaltenbreiten (bestehende Logik)
-
-**Persistenz:** `zoomMode` im plannerStore speichern (bereits der Fall für andere Zoom-Modi).
-
----
-
-### Commit-Anweisung (nach allen 7 Tasks B5–B11)
-
-```bash
-# Build prüfen:
-npm run build 2>&1 | tail -20
-
-# Committen:
-git add -A
-git commit -m "v3.79: Import-Duplikatprüfung, Fachbereich/Kurs-Import, Jahrgänge-Bug, Settings-Header-Buttons, Panel-Scroll, Auto-Zoom"
-git push
-
-# HANDOFF.md aktualisieren: Status auf ✅, alle 7 Tasks dokumentieren
-```
-
-**Empfohlene Reihenfolge:** B8 (Crash-Bug) → B10 (Scroll-Bug) → B9 (UX Settings) → B5 (Import-Duplikat) → B6+B7 (neue Import-Buttons) → B11 (Auto-Zoom)
-
----
-
-## Erledigte Aufträge (v3.78 — Ergänzung, 7 Tasks)
-
-| # | Typ | Beschreibung | Status |
-|---|-----|-------------|--------|
-| 14 | Bug | Side-Panel scrollt bei langen Inhalten (overflow-hidden auf Outer, Tab-Inhalte scrollen eigenständig) | ✅ |
-| 15 | Bug | Neue UE erscheint oben statt in der Mitte (justify-start, Button zuerst) | ✅ |
-| 16 | Bug | UE-Beschriftung im Sequenz-Detailmenü zeigt Thema statt "Neue UE"; 📌-Tooltip hinzugefügt | ✅ |
-| 17 | Bug | Notenanzahl-Berechnung korrigiert: Schwelle ≤3L/\>3L (statt ≤2L/\>2L), Default-Regeln aktualisiert | ✅ |
-| 18 | UX | Fachbereich-Speichern/Laden-Buttons konsistent links oben (wie andere Rubriken) | ✅ |
-| 19 | Feature | Sequenz per Klick+Drag: UE erben Fachbereich aus Settings, blockCategory+duration auto-gesetzt | ✅ |
-| 20 | UX | Breadcrumb bereinigt: "Sequenz › Unterrichtseinheit" (statt "Reihe › Sequenz › Block › Lektion") | ✅ |
-
-## Erledigte Aufträge (v3.77 — Auftrag v3.77, 13 Tasks)
-
-| # | Typ | Beschreibung | Status |
-|---|-----|-------------|--------|
-| 1 | Bug | Linksklick öffnet Modal nicht mehr kurz (nur Doppelklick zeigt EmptyCellMenu) | ✅ |
-| 2 | Bug | ESC schliesst Kontextmenü bei Mehrfachauswahl | ✅ |
-| 3 | Bug | Wiki-Button entfernt (vermied Duplikat-Tab), Hilfe über ?-Button | ✅ |
-| 4+13 | Bug+Feature | Ferien/Sonderwochen werden im Planer korrekt angezeigt (colIdx-Fix in applySettingsToWeekData) | ✅ |
-| 5 | UX | Toolbar in 5 logische Gruppen reorganisiert (Add, Filter, Suche, Navigation, Einstellungen) | ✅ |
-| 6 | UX | "Seq"-Button entfernt, +-Button mit Dropdown (Neue Sequenz / Neue UE) | ✅ |
-| 7 | UX | Import-Button aus Tab-Leiste entfernt (nur noch in Einstellungen) | ✅ |
-| 8 | UX | W&R-Vorlage-Button entfernt, ersetzt durch Sammlung-Speichern/Laden für Fachbereiche | ✅ |
-| 9 | Feature | Einzelne Rubriken separat in Sammlung speichern/laden (Fachbereiche, Kurse, Ferien, Sonderwochen, Lehrplanziele, Beurteilungsregeln) | ✅ |
-| 10 | Feature | Sammlung-Speichern: Dialog "Bestehende ersetzen" oder "Als neue speichern" | ✅ |
-| 11 | Feature | Beurteilungsregeln erweitert: Stufe-Dropdown, "Andere…"-Semester mit Datepicker, Lektionenzahl-Schwellenwerte, JSON-Import | ✅ |
-| 12 | UX | Zeit-Eingabefelder (Beginn/Ende) auf gleicher Höhe, Pause-Warnung in eigener Zeile | ✅ |
-
-## Erledigte Aufträge (v3.54–v3.63)
-
-| Version | Auftrag | Status |
-|---------|---------|--------|
-| v3.54 | Kurs-Konfiguration Export/Import | ✅ |
-| v3.55 | Aus Sammlung laden für Settings | ✅ |
-| v3.56 | Kachel-Badge für Prüfungen | ✅ |
-| v3.57 | Warnung bei 1L/2L Rhythmisierung | ✅ |
-| v3.58 | Drag&Drop Verschieben | ✅ |
-| v3.59 | Doppelklick Kursfilter | ✅ |
-| v3.60–63 | Google Calendar Integration (4 Phasen) | ✅ |
-
-## Erledigte Aufträge (v3.73 — Auftrag v3.73, 20 Tasks)
-
-| # | Batch | Beschreibung | Status |
-|---|-------|-------------|--------|
-| 4 | 1-Bug | Leere Statistik crash fix (keine Kurse) | ✅ |
-| 6 | 1-Bug | Phantom-Ferien nach Settings-Änderung | ✅ |
-| 13 | 1-Bug | Cursor-Bug: pointer auf Klick-Elemente | ✅ |
-| 12 | 1-Bug | Benennung: "Batch"→"Sequenz" durchgängig | ✅ |
-| 1 | 2-Settings | Schulstufe wählbar (Grundstufe–Hochschule) | ✅ |
-| 2 | 2-Settings | Lektionendauer konfigurierbar (45/50 min) | ✅ |
-| 3 | 2-Settings | GYM-Stufe pro Kurs in Settings | ✅ |
-| 5 | 2-Settings | Fachbereiche: leerer Default, +Vorlage-Button | ✅ |
-| 11 | 3-UX | Doppelklick öffnet direkt Detail-Panel | ✅ |
-| 14 | 3-UX | Klick auf Klassenname → Settings mit Kurs | ✅ |
-| 15 | 3-UX | "Neue UE"-Button im Side-Panel | ✅ |
-| 16 | 3-UX | "+"-Button vor "Alle" für neue Sequenz | ✅ |
-| 17 | 3-UX | Legende zeigt nur aktive Kategorien | ✅ |
-| 8 | 4-Sonderw | Sonderwochen: Doppelklick=Edit, Rechtsklick=Entfernen | ✅ |
-| 9 | 4-Sonderw | "Ausgenommen"→"Nicht betroffen" mit Tooltip | ✅ |
-| 10 | 4-Sonderw | Hofwil-Preset entfernt (generisch) | ✅ |
-| 7 | 4-Import | Ferien-Import: CSV + JSON Format | ✅ |
-| 20 | 5-Feature | Beurteilungsregeln konfigurierbar (Settings) | ✅ |
-| 18 | 5-Feature | Lehrplanziele-Text nach Schulstufe | ✅ |
-| 19 | 5-Feature | GCal OAuth: besseres Error Handling (403, 404, Netzwerk) | ✅ |
-
-## Erledigte Aufträge (v3.74 — Auftrag v3.74, 12 neue Tasks #21–#32)
-
-| # | Beschreibung | Status |
-|---|-------------|--------|
-| 21 | Neuer Plan zeigt keine Stale-Daten im UE-Panel (bereits korrekt isoliert) | ✅ |
-| 22 | Sequenz Bezeichnung→Oberthema: Sync über ersten Buchstaben hinaus | ✅ |
-| 23 | Neue Sequenz: Mini-Dialog + erster Block + Detail öffnet automatisch | ✅ |
-| 24 | "Einstellungen öffnen"-Button: Hinweis wenn Panel bereits offen | ✅ |
-| 25 | SOL-Dauer: nur 45, 90 und "Andere" (compact-Modus) | ✅ |
-| 26 | Endzeit-Berechnung: Hinweis "⚠ ohne Pausen" bei >1 Lektion | ✅ |
-| 27 | Semester-Tage: Tooltip für unterschiedliche Tage pro Semester | ✅ |
-| 28 | Mehrjahresübersicht: dynamisch statt hardcoded BWL/VWL/Recht | ✅ |
-| 29 | Beurteilungsregeln: Deadline als Datepicker, grössere Felder | ✅ |
-| 30 | Sonderwochen-Import: Button-Text + Tooltip für Formate aktualisiert | ✅ |
-| 31 | Stift-Icon 23✏ → "23 frei" mit besserem Tooltip | ✅ |
-| 32 | Mehrjahresübersicht: Leerer Zustand + Import bei neuem Plan | ✅ |
-
-## Erledigte Aufträge (v3.76 — Auftrag v3.76, 10 Tasks Bug-Fixes & UX)
-
-| # | Typ | Beschreibung | Status |
-|---|-----|-------------|--------|
-| 1 | Feature | Kurstyp-Dropdown dynamisch (WR-Typen nur bei WR-Fachbereichen, sonst Freitext) | ✅ |
-| 2 | Bug | Doppelklick schliesst Detailfenster nicht mehr (verzögerter Single-Click) | ✅ |
-| 3 | UX | «Neue Sequenz»-Button inline wie UE (nicht mehr sticky bottom) | ✅ |
-| 4 | Bug | W&R-Vorlage immer sichtbar (mit Tooltip zur Herkunft) | ✅ |
-| 5 | UX | Default-Platzhalter «Ende SJ» / «Ende Sem X» bei leerer Deadline | ✅ |
-| 6 | Bug | Scrolling im Side-Panel: pb-12 auf allen Scroll-Containern | ✅ |
-| 7 | Bug+UX | Ferien erscheinen nach Settings-Änderung + Expand/✕-Buttons vergrössert | ✅ |
-| 8 | Bug | Sonderwoche-Formular springt nicht mehr weg (stabiler Key + expandedWeek-Sync) | ✅ |
-| 9 | Bug | Neue Sequenz: Platzhalter-Lektionen werden automatisch erstellt | ✅ |
-| 10 | UX | Fachbereich-Badge zeigt Herkunft (↓ + gestrichelt = geerbt) | ✅ |
-
-## Erledigte Aufträge (v3.75 — Auftrag v3.75, 4 Tasks)
-
-| # | Beschreibung | Status |
-|---|-------------|--------|
-| 1 | Fachbereiche überall dynamisch (6+ Stellen: WeekRows, StatsPanel, CurriculumGoalPicker, ZoomMultiYearView, SettingsPanel, plannerStore) | ✅ |
-| 2 | Sequenz im Planer sichtbar auf allen zugewiesenen KW (selectRange + WeekRows Rendering) | ✅ |
-| 3 | Schnelles Klick/Drag: Interpolation bei mouseenter füllt übersprungene Zellen | ✅ |
-| 4 | HANDOFF.md Status-Update + Commit/Push | ✅ |
-
-## Erledigte Aufträge (v3.64–v3.70, UX-Feedback Runde 2)
-
-| Version | Auftrag | Status |
-|---------|---------|--------|
-| v3.64 | Bugfixes & Defaults (Dauer min, SOL/Kategorie/Dauer Defaults, Sequenz-Persistenz) | ✅ |
-| v3.65 | Toolbar aufräumen (dynamische Kursfilter, DataMenu/+Neu entfernt) | ✅ |
-| v3.66 | Kurs-Settings (Endzeit auto, + Tag Button, grössere Zeitfelder) | ✅ |
-| v3.67 | Ferien vereinfacht (Tage nur bei Einzelwochen, ReapplyButton entfernt) | ✅ |
-| v3.68 | Batch→Sequenz (Fachbereich übertragen, floating Toolbar) | ✅ |
-| v3.69 | Sammlung im Detail-Tab (Speichern/Laden einzelner UE) | ✅ |
-| v3.70 | Sequenz-Felder (Erklärtexte, Hierarchie-Indikator) | ✅ |
-
-**Hinweis:** Google Calendar benötigt Google Cloud Projekt mit OAuth Client ID.
-
----
-
-## Backlog (niedrigere Priorität)
-
-1. **Template-System erweitern:** Komplette Planer-Daten als Template, Vorlagen-Bibliothek.
-2. **Event-Overlay Name-Verschiebung:** Bei partiellen Sonderwochen Name verschieben.
-3. **IW-Plan Auto-Verknüpfung:** Automatische IW-Event-Erkennung im DetailPanel.
-4. **Automatischer Lehrplanbezug:** Lehrplanziele aus Thema/Fachbereich vorschlagen.
-5. **Zoom 1 (Multi-Year):** Weitere Verbesserungen der Jahrgänge-Ansicht.
-
----
-
-## Architektur
-
-- **Stack:** React + TypeScript + Vite + Zustand + PWA
-- **Build & Deploy:** GitHub Actions (`.github/workflows/deploy.yml`) baut und deployed automatisch bei Push auf `main`. `dist/` ist in .gitignore — Build-Artefakte werden NICHT committet. Für lokale Entwicklung: `npm run dev` (nutzt `src/index.dev.html` als Vite-Entry). `deploy.sh` ist nur für lokale Tests.
-- **Wiki:** `wiki.html` (Standalone-HTML, kein Build nötig). Nicht mehr direkt verlinkt (v3.77 #3).
-- **Store:** `plannerStore.ts` (~1260 Z.), `settingsStore.ts` (~323 Z.), `instanceStore.ts` (~204 Z.)
-- **Hook:** `usePlannerData.ts` — liest Kurse/Wochen reaktiv aus `plannerStore.plannerSettings` (pro Instanz) → Fallback auf globale Settings → Fallback auf hardcoded WEEKS/COURSES. Gibt `isLegacy`-Flag zurück.
-- **Multi-Planer:** `instanceStore.ts` verwaltet Planer-Instanzen (Tabs). Jeder Planer hat eigenen localStorage-Slot (`planner-data-{id}`) inkl. `plannerSettings`. `plannerStore.ts` speichert/lädt Daten pro Instanz via `switchInstance()`.
-- **Hauptkomponenten:** WeekRows (~1200 Z.), SequencePanel (~708 Z.), DetailPanel (~1370 Z.), ZoomYearView (~569 Z.), Toolbar (~460 Z.), SettingsPanel (~1550 Z.), CollectionPanel (~295 Z.), PlannerTabs (~263 Z.)
-
-### Architektur-Details
-
-- **editingSequenceId Format:** `seqId-blockIndex` (z.B. `abc123-0`). WeekRows parsed mit Regex und highlightet nur den spezifischen Block.
-- **panelWidth:** Im plannerStore persistiert, über Resize-Handle (320–700px) einstellbar.
-- **allWeeks Prop:** WeekRows erhält optionale `allWeeks`-Prop für Cross-Semester Shift-Select.
-- **BatchOrDetailsTab:** Switcher — zeigt BatchEditTab bei multiSelection.length > 1, sonst DetailsTab.
-- **FlatBlockCard:** Ersetzt alte SequenceCard. Aufklappbare Sections: Felder, Lektionen, Reihen-Einstellungen.
-- **CollectionPanel:** Datenmodell `CollectionItem` mit `CollectionUnit[]`. Archiv-Hierarchie: UE < Sequenz < Schuljahr < Bildungsgang.
-- **ZoomYearView:** rowSpan für zusammenhängende Sequenz-Blöcke. BlockSpan-Datenstruktur mit skipSet.
-- **sidePanelTab:** `'details' | 'sequences' | 'collection' | 'settings'`.
-
----
-
-## Changelog
-
-- v3.0–v3.7: Grundfunktionen (siehe frühere Handoffs)
-- v3.8–v3.10: Lektionsliste, Settings→Weeks, Print-Optimierung
-- v3.11–v3.14: Kontrast, Panel-Resize, FlatBlockCard, Batch-Editing, Legende
-- v3.15–v3.18: Kontextmenü, Tag-Vererbung, Mismatch-Warnung, HoverPreview, Delete-Taste
-- v3.19: Materialsammlung (CollectionPanel)
-- v3.20–v3.21: Zoom 2 (KW-Zeilen, rowSpan, BlockSpan)
-- v3.22: Zoom 1 Ist-Zustand, Deutsch, Feiertag-Erkennung
-- v3.23–v3.24: Enhanced HoverPreview, UX-Kontrast, Bundle halbiert, Deploy-Fix
-- v3.25–v3.27: Notizen-Spalte, Zoom 2 Farben, Resizable
-- v3.28–v3.29: Zoom 2→Jahresansicht, SOL-Total
-- v3.30–v3.34: SidePanel-Fixes, Noten-Vorgaben, Batch-Active-State, dimPastWeeks, Pin-Card
-- v3.35–v3.41: Sequenz-Bar Farbcode, Ferien/Events Overhaul (Zoom 2+3), Batch-Sequenzen
-- v3.42–v3.46: Multi-Planer, Settings pro Instanz, Templates, Presets, Legacy-Migration
-- v3.47–v3.49: Flexible Kategorien (3 Phasen), Block-Label UX
-- v3.50–v3.53: UX-Feedback Runde 1 (Zoom 2 entfernt, Auto-Save, UE-Workflow, Sonderwochen, Drag)
-- v3.54: Kurs-Konfiguration Export/Import in Settings
-- v3.55: Aus Sammlung laden für Settings-Konfigurationen
-- v3.56: Kachel-Badge für Prüfungen und Spezialanlässe
-- v3.57: Warnung bei gestörter 1L/2L Rhythmisierung nach Push
-- v3.58: Drag&Drop Verschieben von Lektionen innerhalb eines Kurses
-- v3.59: Doppelklick auf Spaltentitel als Kursfilter
-- v3.60–63: Google Calendar Integration (OAuth, Sync, Import, Kollisionen)
-- v3.64: Bugfixes — Dauer in min, SOL/Kategorie/Dauer Defaults, Sequenz-Persistenz
-- v3.65: Toolbar aufräumen — dynamische Kursfilter, DataMenu/+Neu entfernt
-- v3.66: Kurs-Settings — Endzeit auto, + Tag Button, grössere Zeitfelder
-- v3.67: Ferien vereinfacht — Tage nur bei Einzelwochen, ReapplyButton entfernt
-- v3.68: Batch→Sequenz — Fachbereich übertragen, floating Toolbar
-- v3.69: Sammlung im Detail-Tab — Speichern/Laden einzelner UE
-- v3.70: Sequenz-Felder — Erklärtexte und Feld-Hierarchie
-- v3.71: Wiki-Anleitung (wiki.html), Build-Pipeline (deploy.sh, dist/ ignoriert), 📖-Button in Toolbar
-- v3.73: Auftrag v3.73 — 20 Tasks in 5 Batches (Bugs, Settings, UX, Sonderwochen, Features)
-- v3.74: Auftrag v3.74 — 12 neue Tasks #21–#32 (Sync-Bug, Sequenz-UX, Mehrjahresübersicht generisch, Assessment-UI, Import-Hints)
-- v3.75: Auftrag v3.75 — 4 Tasks (Fachbereiche dynamisch, Sequenz-Sichtbarkeit, Drag-Interpolation, HANDOFF)
-- v3.76: Auftrag v3.76 — 10 Tasks (Bug-Fixes & UX: Doppelklick, Ferien, Sonderwoche, Sequenz, Scrolling, Kurstyp, Vorlage, Deadline, Badge)
-- v3.77: Auftrag v3.77 — 13 Tasks (Bugs: Klick/ESC/Wiki/Ferien; UX: Toolbar-Reorg, Sammlung-Rubrik, Zeit-Alignment; Features: Rubrik-Collection, Replace/New-Dialog, Assessment-Erweiterung)
-- v3.78: Ergänzung v3.78 — 7 Tasks (Panel-Scroll, UE-Position, UE-Beschriftung, Notenberechnung, Fachbereich-Buttons, Drag-Sequenz-Vererbung, Breadcrumb)
-- v3.79: Auftrag v3.79 — 7 Tasks (Import-Duplikatprüfung, Fachbereich/Kurs-Import, Jahrgänge-Bug, Settings-Header-Buttons, Panel-Scroll, Auto-Zoom)
-- v3.80: Auftrag v3.80 — 8 Tasks (Settings-Buttons C1, Hardcoded-Daten entfernt C2+C3, Fachbereich-Vorlagen C4, Kurs-Header C5, Stoffverteilung-Vorlagen C6, TaF-Import C7, Startscreen-Import C8)
-- v3.81: Auftrag v3.81 — 6 Tasks (Import-Bug D1, Fachbereiche-Leer D2, Ferien-Dropdown entfernt D3, Fach-Dropdown D4, Daten+Sammlung D5, KW-Fix D6)

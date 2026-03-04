@@ -96,6 +96,7 @@ export interface SpecialWeekConfig {
   gymLevel?: string; // 'GYM1'|'GYM2'|'GYM3'|'GYM4'|'GYM5'|'TaF'|'alle' — undefined = alle
   excludedCourseIds?: string[]; // courses NOT affected (default: all affected)
   days?: number[]; // 1=Mo..5=Fr, undefined = all days
+  courseFilter?: string[]; // v3.82 E7: Array von Kurs-IDs; undefined/leer = alle Kurse sichtbar
 }
 
 export interface HolidayConfig {
@@ -313,11 +314,17 @@ export function applySettingsToWeekData(
     const weekEntry = result.find(w => w.w === special.week);
     if (!weekEntry) continue;
     const excluded = new Set(special.excludedCourseIds || []);
+    // v3.82 E7: courseFilter — nur für bestimmte Kurse sichtbar
+    const courseFilterSet = special.courseFilter && special.courseFilter.length > 0
+      ? new Set(special.courseFilter)
+      : null; // null = alle Kurse
     for (const col of allCols) {
       // Skip excluded courses (mapped by col → course config id)
       const courseId = colToCourseId.get(col);
       const isExcluded = courseId ? excluded.has(courseId) : false;
-      if (!isExcluded) {
+      // v3.82 E7: Skip if courseFilter is active and course is not in filter
+      const isFiltered = courseFilterSet && courseId ? !courseFilterSet.has(courseId) : false;
+      if (!isExcluded && !isFiltered) {
         weekEntry.lessons[col] = {
           title: special.label,
           type: special.type === 'holiday' ? 6 : 5,

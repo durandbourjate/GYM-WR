@@ -66,6 +66,8 @@ interface PlannerState {
   pushLessons: (courseCol: number, beforeWeekW: string, allWeeks: string[]) => void;
   batchShiftDown: (keys: string[], allWeeks: string[], courses: Course[]) => void;
   batchInsertBefore: (keys: string[], allWeeks: string[], courses: Course[]) => void;
+  // v3.82 E4: Cross-column move
+  moveLessonToColumn: (fromCol: number, fromWeek: string, toCol: number, toWeek: string) => void;
   // Group drag & drop
   moveGroup: (col: number, fromWeeks: string[], toWeek: string, allWeeks: string[]) => void;
   // Lesson Details
@@ -685,6 +687,61 @@ export const usePlannerStore = create<PlannerState>()(
         }
         return w;
       }),
+      sequences: updatedSeqs,
+    });
+  },
+  // v3.82 E4: Cross-column move (UE von einer Spalte in eine andere verschieben)
+  moveLessonToColumn: (fromCol, fromWeek, toCol, toWeek) => {
+    if (fromCol === toCol && fromWeek === toWeek) return;
+    const state = get();
+    const sourceEntry = state.weekData.find(w => w.w === fromWeek)?.lessons[fromCol];
+    if (!sourceEntry) return;
+    // Move lesson detail too
+    const detailKey = `${fromWeek}-${fromCol}`;
+    const newDetailKey = `${toWeek}-${toCol}`;
+    const detail = state.lessonDetails[detailKey];
+    const newDetails = { ...state.lessonDetails };
+    if (detail) {
+      newDetails[newDetailKey] = detail;
+      delete newDetails[detailKey];
+    }
+    // Update sequences: remap courseId + week for matching blocks
+    const fromCourseId = COURSES.find(c => c.col === fromCol)?.id;
+    const toCourseId = COURSES.find(c => c.col === toCol)?.id;
+    const updatedSeqs = state.sequences.map(seq => {
+      if (!fromCourseId || (seq.courseId !== fromCourseId && !(seq.courseIds && seq.courseIds.includes(fromCourseId)))) return seq;
+      let changed = false;
+      const newBlocks = seq.blocks.map(b => {
+        if (!b.weeks.includes(fromWeek)) return b;
+        changed = true;
+        return { ...b, weeks: b.weeks.map(w => w === fromWeek ? toWeek : w) };
+      });
+      if (!changed) return seq;
+      const newSeq = { ...seq, blocks: newBlocks, updatedAt: new Date().toISOString() };
+      // Update courseId if moving to different course
+      if (toCourseId && fromCourseId !== toCourseId) {
+        newSeq.courseId = toCourseId;
+        if (newSeq.courseIds) {
+          newSeq.courseIds = newSeq.courseIds.map(id => id === fromCourseId ? toCourseId : id);
+        }
+      }
+      return newSeq;
+    });
+    set({
+      weekData: state.weekData.map(w => {
+        const newLessons = { ...w.lessons };
+        if (w.w === fromWeek) {
+          delete newLessons[fromCol];
+        }
+        if (w.w === toWeek) {
+          newLessons[toCol] = { ...sourceEntry };
+        }
+        if (w.w === fromWeek || w.w === toWeek) {
+          return { ...w, lessons: newLessons };
+        }
+        return w;
+      }),
+      lessonDetails: newDetails,
       sequences: updatedSeqs,
     });
   },
