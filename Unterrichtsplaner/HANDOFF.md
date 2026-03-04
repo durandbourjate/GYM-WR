@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.83
 
-## Status: 🔧 v3.83 — 1/5 Tasks erledigt (04.03.2026)
+## Status: 🔧 v3.83 — 2/5 Tasks erledigt (04.03.2026)
 
 ---
 
@@ -9,7 +9,7 @@
 | # | Typ | Beschreibung | Status |
 |---|-----|-------------|--------|
 | F1 | Bug | Recht fehlt im Semesterbalken (Jahresübersicht) — Case-Mismatch `Recht` → `RECHT` | ✅ |
-| F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ⏳ |
+| F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ✅ |
 | F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ⏳ |
 | F4 | Feature | Separate Importoptionen auf Startseite | ⏳ |
 | F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ⏳ |
@@ -20,6 +20,15 @@
 - **Ursache:** `stoffverteilungPresets.ts` verwendete `Recht` als Key, aber `WR_CATEGORIES` definiert `RECHT` (Grossbuchstaben). `sv.weights['RECHT']` ergab `undefined` → Balken zeigte 0.
 - `stoffverteilungPresets.ts`: Alle `Recht` → `RECHT` Keys korrigiert (SF- und EF-Presets)
 - `ZoomMultiYearView.tsx` `entriesToRows()`: Normalisierung aller Weight-Keys auf Uppercase, damit auch bereits gespeicherte Daten mit Mixed-Case korrekt angezeigt werden
+
+**F2 — Sonderwochen Stufen-/TaF-Filter:**
+- **Problem:** `gymLevel`-Feld wurde nur zum Berechnen von `excludedCourseIds` im SettingsPanel genutzt, aber nicht dynamisch in `applySettingsToWeekData()` geprüft.
+- `settingsStore.ts` `applySettingsToWeekData()`: Dynamische gymLevel-Filterung hinzugefügt
+  - `alle` → alle Kurse (bisheriges Verhalten)
+  - `GYM1`–`GYM5` → nur Kurse mit passender `stufe`
+  - `TaF` → nur Kurse mit TaF-Klassennamen (enthält f/s)
+- Zwei Filterebenen: gymLevel (1.) + courseFilter (2.) müssen beide erfüllt sein
+- `colToCourse` Map für direkten CourseConfig-Zugriff pro Spalte
 
 ---
 

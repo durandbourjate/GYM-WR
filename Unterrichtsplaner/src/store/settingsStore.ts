@@ -309,6 +309,13 @@ export function applySettingsToWeekData(
     colToCourseId.set(colCounter++, c.id);
   }
 
+  // Build col → CourseConfig lookup for gymLevel filtering
+  const colToCourse = new Map<number, CourseConfig>();
+  let colLookup = 100;
+  for (const c of settings.courses) {
+    colToCourse.set(colLookup++, c);
+  }
+
   // Apply special weeks (events/partial holidays)
   for (const special of settings.specialWeeks) {
     const weekEntry = result.find(w => w.w === special.week);
@@ -318,18 +325,36 @@ export function applySettingsToWeekData(
     const courseFilterSet = special.courseFilter && special.courseFilter.length > 0
       ? new Set(special.courseFilter)
       : null; // null = alle Kurse
+    // v3.83 F2: gymLevel-Filter dynamisch prüfen
+    const gymLevel = special.gymLevel;
+    const hasGymFilter = !!gymLevel && gymLevel !== 'alle';
+
     for (const col of allCols) {
-      // Skip excluded courses (mapped by col → course config id)
       const courseId = colToCourseId.get(col);
-      const isExcluded = courseId ? excluded.has(courseId) : false;
-      // v3.82 E7: Skip if courseFilter is active and course is not in filter
-      const isFiltered = courseFilterSet && courseId ? !courseFilterSet.has(courseId) : false;
-      if (!isExcluded && !isFiltered) {
-        weekEntry.lessons[col] = {
-          title: special.label,
-          type: special.type === 'holiday' ? 6 : 5,
-        };
+      const course = colToCourse.get(col);
+
+      // Filter 1: gymLevel — Stufe/TaF (v3.83 F2)
+      if (hasGymFilter && course) {
+        if (gymLevel === 'TaF') {
+          // TaF: nur Kurse mit TaF-Schülern (Klassenname enthält f/s)
+          const isTaF = /[fs]/.test(course.cls.replace(/\d/g, ''));
+          if (!isTaF) continue;
+        } else {
+          // GYM1–GYM5: Kurs-Stufe muss übereinstimmen
+          if (course.stufe !== gymLevel) continue;
+        }
       }
+
+      // Filter 2: courseFilter — explizite Kursliste (v3.82 E7)
+      if (courseFilterSet && courseId && !courseFilterSet.has(courseId)) continue;
+
+      // Legacy: excludedCourseIds
+      if (courseId && excluded.has(courseId)) continue;
+
+      weekEntry.lessons[col] = {
+        title: special.label,
+        type: special.type === 'holiday' ? 6 : 5,
+      };
     }
     specialWeeks++;
   }
