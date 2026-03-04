@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.83
 
-## Status: 🔧 v3.83 — 2/5 Tasks erledigt (04.03.2026)
+## Status: 🔧 v3.83 — 3/5 Tasks erledigt (04.03.2026)
 
 ---
 
@@ -10,7 +10,7 @@
 |---|-----|-------------|--------|
 | F1 | Bug | Recht fehlt im Semesterbalken (Jahresübersicht) — Case-Mismatch `Recht` → `RECHT` | ✅ |
 | F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ✅ |
-| F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ⏳ |
+| F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ✅ |
 | F4 | Feature | Separate Importoptionen auf Startseite | ⏳ |
 | F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ⏳ |
 
@@ -29,6 +29,11 @@
   - `TaF` → nur Kurse mit TaF-Klassennamen (enthält f/s)
 - Zwei Filterebenen: gymLevel (1.) + courseFilter (2.) müssen beide erfüllt sein
 - `colToCourse` Map für direkten CourseConfig-Zugriff pro Spalte
+
+**F3 — Sequenzbalken-Klick wählt Sequenz vor:**
+- **Problem:** `editingSequenceId` wurde auf `parentSeq.id` gesetzt (z.B. `"seq-abc"`), aber `FlatBlockCard` erwartet `"seq-abc-0"` (mit Block-Index). → Sequenz nie als aktiv erkannt.
+- `WeekRows.tsx`: Beide Klick-Handler (Sequenzbalken + Label) setzen jetzt den korrekten Block-Key `"${seqId}-${blockIdx}"` basierend auf der angeklickten Woche
+- SequencePanel scrollt automatisch zur aktiven Sequenz und klappt sie auf
 
 ---
 

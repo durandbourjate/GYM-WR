@@ -994,7 +994,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Single click: highlight + open sequences panel
+                        // Single click: highlight + open sequences panel with correct block
                         const parentSeq = sequences.find(s => s.id === seq.sequenceId);
                         if (parentSeq) {
                           const currentEditing = usePlannerStore.getState().editingSequenceId;
@@ -1002,7 +1002,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                           if (isAlreadyEditing) {
                             usePlannerStore.getState().setEditingSequenceId(null);
                           } else {
-                            usePlannerStore.getState().setEditingSequenceId(parentSeq.id);
+                            // v3.83 F3: Block-Index für aktuelle Woche bestimmen
+                            const blockIdx = parentSeq.blocks.findIndex(b => b.weeks.includes(week.w));
+                            const blockKey = `${parentSeq.id}-${blockIdx >= 0 ? blockIdx : 0}`;
+                            usePlannerStore.getState().setEditingSequenceId(blockKey);
                             setSidePanelOpen(true);
                             setSidePanelTab('sequences');
                           }
@@ -1033,7 +1036,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                           if (isAlreadyEditing) {
                             usePlannerStore.getState().setEditingSequenceId(null);
                           } else {
-                            usePlannerStore.getState().setEditingSequenceId(parentSeq.id);
+                            // v3.83 F3: Block-Index für aktuelle Woche bestimmen
+                            const blockIdx = parentSeq.blocks.findIndex(b => b.weeks.includes(week.w));
+                            const blockKey = `${parentSeq.id}-${blockIdx >= 0 ? blockIdx : 0}`;
+                            usePlannerStore.getState().setEditingSequenceId(blockKey);
                             setSidePanelOpen(true);
                             setSidePanelTab('sequences');
                           }
