@@ -1,4 +1,98 @@
-# Unterrichtsplaner – Handoff v3.79
+# Unterrichtsplaner – Handoff v3.80
+
+## Status: 🔜 v3.80 — 4 Tasks offen (Bugs + UX)
+
+---
+
+## Originalauftrag v3.80
+
+### Screenshots-Analyse (04.03.2026)
+
+Vier neue Aufträge aus Screenshots:
+
+---
+
+### Task C1: Bug — «Jahrgänge»-Tab zeigt weisse Seite (Regression)
+
+**Screenshot:** `bug_klick_auf_jahrgange_ganze_seite_weiss.png`
+**Betrifft:** Zoom-Leiste, Button «Jahrgänge» (neben «Stoffverteilung» / «Ist-Zustand»)
+
+**Problem:** Klick auf «Jahrgänge» → gesamte Seite wird weiss. Uncaught Render-Error.
+
+**Status in v3.79:** War als B8 angeblich behoben (SUBJECT_COLORS Fallback). Tritt aber weiterhin auf → Regression oder unvollständiger Fix.
+
+**Lösung:**
+1. Alle Render-Pfade in `ZoomMultiYearView` (oder der Jahrgänge-Komponente) auf `undefined`/`null`-Zugriffe prüfen
+2. React Error Boundary um die gesamte Jahrgänge-Ansicht → zeigt Fehlertext statt weisse Seite
+3. Sicherstellen dass leerer Fachbereich-Array (`subjects: []`) nicht crasht
+4. `console.error` Ausgabe im Build prüfen um genaue Fehlerquelle zu finden
+
+---
+
+### Task C2: UX — Einstellungs-Kopfzeile: «Hinzufügen» + «Import» ergänzen
+
+**Screenshot:** `in_den_ganzen_einstellungen_hinzufugen_und_import_auch_in_oberste_zeile.png`
+**Betrifft:** Alle Rubriken in SettingsPanel
+
+**Problem:** Aktuell zeigt die Kopfzeile nur «Speichern» + «Laden». «+ Hinzufügen» und «📥 Import» fehlen oben — diese Buttons sind nur unten in der Rubrik vorhanden.
+
+**Ziel-Reihenfolge in der Kopfzeile (links → rechts):**
+```
+[+ Hinzufügen]  [💾 Speichern]  [📂 Laden]  [📥 Import]
+```
+
+**Gilt für alle Rubriken** die diese Aktionen unterstützen (Kurse, Fachbereiche, Ferien, Sonderwochen, Beurteilungsregeln, Lehrplanziele). Buttons die nicht existieren einfach weglassen.
+
+**Hinweis:** Task B9 in v3.79 hat dies bereits implementiert. Falls nicht korrekt umgesetzt, erneut prüfen und korrigieren. «+ Hinzufügen» unten (gestrichelt) kann bleiben oder entfernt werden.
+
+---
+
+### Task C3: Bug — Side-Panel scrollt nicht (Regression)
+
+**Screenshot:** `kann_noch_immer_nicht_runterscrollen_im_menu_der_planer_scrollt.png`
+**Betrifft:** Side-Panel (Sequenzen-Tab, aber auch andere Tabs)
+
+**Problem:** Langer Panel-Inhalt → Scrollen im Panel funktioniert nicht, stattdessen scrollt der Planer-Hintergrund. War als B10 in v3.79 behoben, tritt aber weiterhin auf.
+
+**Lösung (erneut, präziser):**
+1. Panel-Root-Element: `overflow-y-auto` + `overscroll-behavior: contain` + explizite Höhe (`h-full` oder `max-h-[calc(100vh-Xpx)]`)
+2. Prüfen ob das Problem spezifisch im Sequenzen-Tab auftritt (Screenshot zeigt Sequenz-Inhalt) → `SequencePanel`-Scroll-Container separat prüfen
+3. Mousewheel-Event-Propagation: `e.stopPropagation()` am Panel-Root-Div
+4. Evtl. Tailwind `overflow-hidden` auf einem Elternelement, das verhindert dass `overflow-y-auto` greift → gesamten DOM-Stack von Panel-Root bis Tab-Inhalt prüfen
+
+---
+
+### Task C4: Feature — Auto-Zoom / Zoom-Buttons für verschiedene Ansichten
+
+**Screenshot:** `zoom_automatisch_an_bildschirmbreite_anpassen_zoom_button_fur_verschiedene_ansichten.png`
+**Betrifft:** Toolbar, Zoom-Steuerung, WeekRows
+
+**Problem:** Die Tabelle ist breiter als der Bildschirm → horizontales Scrollen nötig. Kein automatischer Fit.
+
+**Status in v3.79:** Task B11 hat «Auto-Fit» via `table-fixed` implementiert. Screenshot zeigt v3.78 mit der Anforderung — prüfen ob B11 ausreichend war oder ob Nachbesserung nötig.
+
+**Falls B11 nicht ausreichend:**
+1. `ResizeObserver` auf Planer-Container → bei Fenstergrössenänderung Spaltenbreite neu berechnen
+2. Formel: `colWidth = (containerWidth - KW-Spalte - Puffer) / anzahlSichtbareSpalten`
+3. CSS-Variable `--col-width` setzen, die WeekRows-Spalten nutzen
+4. Mindestbreite: 80px pro Spalte
+5. Zoom-Buttons in Toolbar: bestehende Icons (`⊞`/Raster, `☰`/Spalten, `⦿`/Kreis, `⟷`/Auto) klar beschriften mit Tooltip
+
+---
+
+### Commit-Anweisung (nach allen 4 Tasks C1–C4)
+
+```bash
+npm run build 2>&1 | tail -20
+git add -A
+git commit -m "v3.80: Jahrgänge-Bug (C1), Settings-Header-Buttons (C2), Panel-Scroll (C3), Auto-Zoom (C4)"
+git push
+# HANDOFF.md: Status auf ✅, Tasks C1–C4 dokumentieren
+```
+
+**Empfohlene Reihenfolge:** C1 (Crash-Bug) → C3 (Scroll-Bug) → C2 (UX Settings) → C4 (Auto-Zoom)
+
+---
 
 ## Status: ✅ v3.79 — 7 Tasks erledigt (Import, Bugs, UX, Auto-Zoom)
 - **Datum:** 2026-03-04
