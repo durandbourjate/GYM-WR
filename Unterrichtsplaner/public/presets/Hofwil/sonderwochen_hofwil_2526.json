@@ -1,14 +1,26 @@
 [
-  { "label": "Klassenwoche / SOL", "week": "38", "type": "event", "gymLevel": "alle" },
-  { "label": "IW TaF (G&K, MU, SP)", "week": "46", "type": "event", "gymLevel": "TaF" },
-  { "label": "Schneesportlager GYM2", "week": "12", "type": "event", "gymLevel": "GYM2" },
-  { "label": "IW 14 (Gesundheit / EF / Sprachen)", "week": "14", "type": "event", "gymLevel": "alle" },
-  { "label": "IW 25 (Wirtschaftswoche / Matur / Prüfungen)", "week": "25", "type": "event", "gymLevel": "alle" },
-  { "label": "IW 27 (Medien / MINT / SF-Woche)", "week": "27", "type": "event", "gymLevel": "alle" },
-  { "label": "Prüfungswoche 1 (Nov)", "week": "45", "type": "event", "gymLevel": "alle" },
-  { "label": "Prüfungswoche TaF (März)", "week": "13", "type": "event", "gymLevel": "TaF" },
-  { "label": "Kollegiumstagung", "week": "34", "type": "event", "gymLevel": "alle" },
-  { "label": "Tag der offenen Tür", "week": "44", "type": "event", "gymLevel": "alle" },
-  { "label": "Maturprüfungen schriftlich", "week": "22", "type": "event", "gymLevel": "GYM4" },
-  { "label": "Maturprüfungen mündlich", "week": "25", "type": "event", "gymLevel": "GYM4" }
+  { "id": "iw38-gym1", "label": "Klassenwoche", "week": "38", "type": "event", "gymLevel": "GYM1" },
+  { "id": "iw38-taf", "label": "IW TaF (G&K/MU/SP)", "week": "38", "type": "event", "gymLevel": "TaF" },
+  { "id": "iw38-gym2", "label": "SOL-Projekt", "week": "38", "type": "event", "gymLevel": "GYM2" },
+  { "id": "iw38-gym3", "label": "Franzaufenthalt / Kompensation", "week": "38", "type": "event", "gymLevel": "GYM3" },
+  { "id": "iw38-gym4", "label": "Studienreise", "week": "38", "type": "event", "gymLevel": "GYM4" },
+
+  { "id": "iw46-taf", "label": "IW TaF (G&K/MU/SP)", "week": "46", "type": "event", "gymLevel": "TaF" },
+
+  { "id": "iw12-gym2", "label": "Schneesportlager", "week": "12", "type": "event", "gymLevel": "GYM2" },
+
+  { "id": "iw14-gym1", "label": "Gesundheit / Nothilfekurs", "week": "14", "type": "event", "gymLevel": "GYM1" },
+  { "id": "iw14-gym2", "label": "Deutsch", "week": "14", "type": "event", "gymLevel": "GYM2" },
+  { "id": "iw14-gym3", "label": "EF-Woche", "week": "14", "type": "event", "gymLevel": "GYM3" },
+  { "id": "iw14-gym4", "label": "Französisch/Englisch", "week": "14", "type": "event", "gymLevel": "GYM4" },
+
+  { "id": "iw25-gym1", "label": "Geografie und Sport", "week": "25", "type": "event", "gymLevel": "GYM1" },
+  { "id": "iw25-gym2", "label": "Wirtschaftswoche", "week": "25", "type": "event", "gymLevel": "GYM2" },
+  { "id": "iw25-gym3", "label": "Maturaarbeit", "week": "25", "type": "event", "gymLevel": "GYM3" },
+  { "id": "iw25-gym4", "label": "Maturprüfung", "week": "25", "type": "event", "gymLevel": "GYM4" },
+
+  { "id": "iw27-gym1", "label": "Medienwoche", "week": "27", "type": "event", "gymLevel": "GYM1" },
+  { "id": "iw27-taf", "label": "Spezialwoche TaF", "week": "27", "type": "event", "gymLevel": "TaF" },
+  { "id": "iw27-gym2", "label": "MINT", "week": "27", "type": "event", "gymLevel": "GYM2" },
+  { "id": "iw27-gym3", "label": "Schwerpunktfach", "week": "27", "type": "event", "gymLevel": "GYM3" }
 ]

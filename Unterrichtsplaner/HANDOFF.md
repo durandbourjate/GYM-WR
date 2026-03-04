@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.83
 
-## Status: 🔧 v3.83 — 4/5 Tasks erledigt (04.03.2026)
+## Status: ✅ v3.83 — 5/5 Tasks erledigt (04.03.2026)
 
 ---
 
@@ -12,7 +12,7 @@
 | F2 | Feature | Sonderwochen: Filterwirkung nach GYM-Stufe und TaF im Planer | ✅ |
 | F3 | UX | Sequenzbalken-Klick wählt Sequenz im Detailmenü vor | ✅ |
 | F4 | Feature | Separate Importoptionen auf Startseite | ✅ |
-| F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ⏳ |
+| F5 | Data | Sonderwochen-Daten gemäss IW-Plan SJ 25/26 | ✅ |
 
 ### Änderungsdetails
 
@@ -41,6 +41,15 @@
 - Jeder Button öffnet File-Picker (JSON, CSV/TXT je nach Rubrik) und zeigt ✅ nach erfolgreichem Import
 - Einzel-Imports überschreiben entsprechende Felder aus der Gesamtkonfiguration
 - Bestehender «Gesamtkonfiguration importieren»-Button bleibt erhalten
+
+**F5 — Sonderwochen-Daten gemäss IW-Plan SJ 25/26:**
+- `iwPresets.ts`: Komplett überarbeitet — 19 Einträge gemäss IW_Plan_SJ_25_26_250710.pdf
+- `sonderwochen_hofwil_2526.json`: Identische Daten als JSON-Preset
+- KW38: +TaF-Eintrag, Labels aktualisiert (SOL-Projekt, Franzaufenthalt/Kompensation)
+- KW14: Labels aktualisiert (EF-Woche statt Ergänzungsfach, Französisch/Englisch statt Maturvorbereitung)
+- KW25: Geo+Sport (GYM1) + Wirtschaftswoche (GYM2) separat statt zusammen
+- KW27: TaF+GYM2 aufgesplittet (Spezialwoche TaF + MINT), GYM4/GYM5 entfernt
+- Kollegiumstagung, Prüfungswochen und andere Nicht-IW-Einträge entfernt
 
 ---
 
