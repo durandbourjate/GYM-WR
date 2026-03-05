@@ -652,20 +652,19 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
         ))}
       </div>
 
-      {/* Active sequence pinned at top */}
-      {editingSequenceId && (() => {
-        const activeFb = flatBlocks.find(fb => `${fb.seqId}-${fb.blockIndex}` === editingSequenceId);
-        if (!activeFb) return null;
-        return (
-          <div className="px-3 pt-2 pb-1 border-b border-purple-500/30 bg-slate-900/50 shrink-0 max-h-[40vh] overflow-y-auto">
-            <div className="text-[8px] text-purple-400 font-medium mb-1">▶ Aktive Sequenz</div>
-            <FlatBlockCard fb={activeFb} />
-          </div>
-        );
-      })()}
-
-      {/* Flat block list + new sequence form (v3.76 #3: inline like UE button) */}
+      {/* v3.91 N2: Ein einziger Scroll-Container für alles (aktive Sequenz + Blockliste) */}
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 pb-8 space-y-3" style={{ overscrollBehavior: 'contain' }}>
+        {/* Active sequence pinned at top — inside scroll container */}
+        {editingSequenceId && (() => {
+          const activeFb = flatBlocks.find(fb => `${fb.seqId}-${fb.blockIndex}` === editingSequenceId);
+          if (!activeFb) return null;
+          return (
+            <div className="pt-1 pb-2 mb-2 border-b border-purple-500/30 bg-slate-900/50 rounded max-h-[40vh] overflow-y-auto -mx-3 px-3">
+              <div className="text-[8px] text-purple-400 font-medium mb-1">▶ Aktive Sequenz</div>
+              <FlatBlockCard fb={activeFb} />
+            </div>
+          );
+        })()}
         {/* New sequence form — inline at top */}
         <div>
           {showNewForm ? (

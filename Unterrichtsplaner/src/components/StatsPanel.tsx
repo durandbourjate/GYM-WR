@@ -203,8 +203,8 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
             <div className="text-lg font-bold text-gray-100">{teachingWeeks}</div>
             <div className="text-[9px] text-gray-400">Unterrichts-Einträge</div>
           </div>
-          <div className={`rounded p-2.5 text-center ${collisions.length > 0 ? 'bg-red-900/40 border border-red-800' : 'bg-slate-700/50'}`}>
-            <div className={`text-lg font-bold ${collisions.length > 0 ? 'text-red-400' : 'text-gray-100'}`}>
+          <div className="rounded p-2.5 text-center" style={collisions.length > 0 ? { background: 'var(--status-crit-bg)', border: '1px solid var(--status-crit-border)' } : undefined}>
+            <div className={`text-lg font-bold ${collisions.length > 0 ? '' : 'text-gray-100'}`} style={collisions.length > 0 ? { color: 'var(--status-crit-text)' } : undefined}>
               {collisions.length}
             </div>
             <div className="text-[9px] text-gray-400">Prüfungskollisionen</div>
@@ -256,18 +256,18 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
 
         {/* Exam collisions – enhanced with class-group analysis */}
         {collisions.length > 0 && (
-          <div className="bg-red-950/30 border border-red-800 rounded p-3 mb-4">
-            <div className="text-[10px] font-bold text-red-300 mb-2">⚠ Prüfungskollisionen (gleiche SuS betroffen)</div>
+          <div className="rounded p-3 mb-4" style={{ background: 'var(--status-crit-bg)', border: '1px solid var(--status-crit-border)' }}>
+            <div className="text-[10px] font-bold mb-2" style={{ color: 'var(--status-crit-text)' }}>⚠ Prüfungskollisionen (gleiche SuS betroffen)</div>
             <div className="space-y-1.5">
               {collisions.map((c) => (
-                <div key={c.week} className="bg-red-950/40 rounded p-2">
+                <div key={c.week} className="rounded p-2" style={{ background: 'var(--status-crit-bg)' }}>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-bold text-red-300">KW {c.week}</span>
-                    <span className="text-[8px] text-red-400/70">
+                    <span className="text-[10px] font-bold" style={{ color: 'var(--status-crit-text)' }}>KW {c.week}</span>
+                    <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
                       {c.courses.join(' & ')}
                     </span>
                   </div>
-                  <div className="text-[9px] text-red-400">
+                  <div className="text-[9px]" style={{ color: 'var(--status-crit-text)' }}>
                     Betroffene Klassen: {c.classes.join(', ')}
                   </div>
                 </div>
@@ -277,24 +277,31 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         )}
 
         {collisions.length === 0 && (
-          <div className="bg-green-950/20 border border-green-800/40 rounded p-3 mb-4">
-            <div className="text-[10px] text-green-400">✓ Keine Prüfungskollisionen erkannt</div>
+          <div className="rounded p-3 mb-4" style={{ background: 'var(--status-ok-bg)', border: '1px solid var(--status-ok-border)' }}>
+            <div className="text-[10px]" style={{ color: 'var(--status-ok-text)' }}>✓ Keine Prüfungskollisionen erkannt</div>
           </div>
         )}
 
-        {/* Grade requirements (MiSDV) */}
-        <div className={`rounded p-3 mb-4 border ${gradeIssues.length > 0 ? 'bg-amber-950/30 border-amber-800' : 'bg-green-950/20 border-green-800/40'}`}>
-          <div className={`text-[10px] font-bold mb-2 ${gradeIssues.length > 0 ? 'text-amber-300' : 'text-green-400'}`}>
+        {/* Grade requirements (MiSDV) — v3.91 N1: CSS-Variablen für Light-Mode Kontrast */}
+        <div className="rounded p-3 mb-4" style={{
+          background: gradeIssues.length > 0 ? 'var(--status-warn-bg)' : 'var(--status-ok-bg)',
+          border: `1px solid ${gradeIssues.length > 0 ? 'var(--status-warn-border)' : 'var(--status-ok-border)'}`,
+        }}>
+          <div className="text-[10px] font-bold mb-2" style={{ color: gradeIssues.length > 0 ? 'var(--status-warn-text)' : 'var(--status-ok-text)' }}>
             📋 Beurteilungsvorgaben (MiSDV Art. 4)
           </div>
           {gradeIssues.length === 0 ? (
-            <div className="text-[10px] text-green-400">✓ Alle Mindestanforderungen erfüllt</div>
+            <div className="text-[10px]" style={{ color: 'var(--status-ok-text)' }}>✓ Alle Mindestanforderungen erfüllt</div>
           ) : (
             <div className="space-y-1">
               {gradeIssues.map((w, i) => (
-                <div key={i} className={`rounded p-2 text-[9px] ${w.status === 'critical' ? 'bg-red-950/40 text-red-300' : 'bg-amber-950/40 text-amber-300'}`}>
+                <div key={i} className="rounded p-2 text-[9px]" style={{
+                  background: w.status === 'critical' ? 'var(--status-crit-bg)' : 'var(--status-warn-bg)',
+                  color: w.status === 'critical' ? 'var(--status-crit-text)' : 'var(--status-warn-text)',
+                  border: `1px solid ${w.status === 'critical' ? 'var(--status-crit-border)' : 'var(--status-warn-border)'}`,
+                }}>
                   <span className="font-bold">{w.courseGroup}</span>
-                  <span className="text-gray-400 ml-1">({w.gymStufe}, {w.weeklyLessons}L/Wo)</span>
+                  <span style={{ color: 'var(--text-muted)' }} className="ml-1">({w.gymStufe}, {w.weeklyLessons}L/Wo)</span>
                   <span className="ml-1">{w.status === 'critical' ? '🔴' : '🟡'} {w.message}</span>
                 </div>
               ))}
@@ -303,7 +310,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
           {/* Compact overview of all groups */}
           <div className="mt-2 flex flex-wrap gap-1.5">
             {gradeWarnings.filter(w => w.status === 'ok').length > 0 && (
-              <div className="text-[8px] text-gray-500">
+              <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
                 ✓ OK: {gradeWarnings.filter(w => w.status === 'ok').map(w => `${w.courseGroup} (${w.requirement.label}: ${w.currentCount}/${w.requirement.minGrades})`).join(' · ')}
               </div>
             )}

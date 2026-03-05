@@ -1,4 +1,130 @@
-# Unterrichtsplaner – Handoff v3.90
+# Unterrichtsplaner – Handoff v3.91
+
+## Status: ✅ v3.91 — Abgeschlossen
+
+---
+
+## Originalauftrag v3.91
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| N1 | Bug | Beurteilungsvorgaben Light-Mode: zu schwacher Kontrast, Farben (gelb/rot) auf braunem Hintergrund schlecht lesbar | 🔴 Kritisch | ✅ |
+| N2 | Bug | Sequenz-Panel: Fenster halbiert sich wenn KW ausgeklappt, Scroll nur über oberes Feld erreichbar | 🟠 Hoch | ✅ |
+| N3 | Feature | Zoom-Funktion: 3–5 Stufen in Toolbar-Button, gilt für Jahresübersicht und Wochendetail | 🟡 Mittel | ✅ |
+
+---
+
+## Task N1: Bug — Beurteilungsvorgaben Light-Mode Kontrast
+
+### Problem
+Das Beurteilungsvorgaben-Panel zeigt im **Light-Mode** einen braunen/rosafarbenen Hintergrund für die Kurs-Zeilen. Darauf werden Statuskreise (rot = fehlend, gelb = ausstehend) und Text angezeigt. Der Kontrast ist ungenügend:
+- Roter Kreis (🔴) auf braunem Hintergrund: kaum erkennbar
+- Gelber Kreis (🟡) auf braunem Hintergrund: kaum erkennbar
+- Weisser/heller Text auf braunem Hintergrund: zu wenig Kontrast
+- Generell: die brownish/rosy Hintergrundfarbe passt nicht zum Light-Mode-Farbschema
+
+### Gewünschtes Verhalten
+- **Zeilenfarben im Light-Mode:** Weisser oder sehr hellgrauer Hintergrund (`#ffffff` oder `#f8fafc`) statt brown/rose
+- **Statuskreise:** Die Emoji-Kreise (🔴🟡) sind ausreichend kontrastreich auf hellem Hintergrund — sie bleiben unverändert
+- **Text:** Dunkelgrauer/schwarzer Text (`#0f172a` oder `#1e293b`) auf hellem Hintergrund — WCAG-AA-konform (≥ 4.5:1)
+- **Kursname (bold):** Gut lesbar, klar abgesetzt
+- **Statustext:** Lesbar in etwas gedämpfterem Ton (z.B. `#475569`)
+- **Trennlinien:** Subtile hellgraue Border zwischen Zeilen (`#e2e8f0`)
+
+### Wo suchen
+- Komponente die das Beurteilungsvorgaben-Panel rendert (vermutlich `BeurteilungVorgaben.tsx`, `DetailPanel.tsx` oder ein Modal)
+- Suche nach der braunen/rosafarbenen Farbe: typischerweise `bg-rose-*`, `bg-red-*`, ein hardcodierter Hex-Wert, oder eine CSS-Variable die im Light-Mode nicht korrekt gesetzt ist
+- Besonders prüfen: Zeilen-Container `background`, Text-Farbe, Border-Farbe
+
+### Konkrete Lösung
+1. **Zeilenfarbe**: `background: var(--bg-card)` oder `background: var(--bg-secondary)` statt hardcodierter Farbe
+2. **Textfarbe**: `color: var(--text-primary)` für Kursnamen, `color: var(--text-muted)` für Statustext
+3. **Border**: `border-color: var(--border)`
+4. Falls die braune Farbe ein spezifischer Zustand ist (z.B. «Warnung»): im Light-Mode helleres Pendant wählen (z.B. `#fef3c7` für gelb-warn statt braun)
+5. **Prüfen**: Dark-Mode darf nicht beeinträchtigt werden — nur Light-Mode-spezifische Korrekturen
+
+---
+
+## Task N2: Bug — Sequenz-Panel Fenster halbiert sich
+
+### Problem
+Im Sequenzen-Panel (rechtes Side-Panel, Tab «Sequenzen») tritt nach dem v3.90-Fix ein Folgeproblem auf:
+- Wenn ein KW-Eintrag ausgeklappt wird, **halbiert sich das Fenster** — das Panel wird plötzlich nur noch halb so hoch dargestellt
+- Um wieder nach oben zu scrollen, muss man mit der Maus ins **obere Feld** fahren — im ausgeklappten Bereich selbst scrollt man nicht
+
+### Ursache (Hypothese)
+Der v3.90-Fix hat `max-h-[40vh] overflow-y-auto shrink-0` auf die aktive Sequenz gesetzt. Das Panel-Container hat keine stabile Höhe → beim Ausklappen «wächst» der Content und drängt den Rest aus dem Viewport. Zwei separate Scroll-Bereiche entstehen.
+
+### Gewünschtes Verhalten
+- Das Sequenz-Panel hat immer **eine fixe Höhe** (100vh minus Toolbar) — es wächst nicht
+- **Ein einziger Scroll-Container** für das gesamte Panel-Innere
+- Kein Halbieren, kein Layout-Sprung beim Ausklappen
+
+### Vorgehen
+1. `SequencePanel.tsx` vollständig lesen
+2. Panel-Wurzel-Container: `height: calc(100vh - [Toolbar-Höhe]px)`
+3. **Genau einen** scrollbaren Inner-Container: `overflow-y: auto; flex: 1 1 0; min-height: 0`
+4. Aktive Sequenz: `max-h-[40vh] overflow-y-auto` beibehalten, aber `shrink-0` entfernen
+5. Alle Flex-Vorfahren bis Root: `min-height: 0`
+
+---
+
+## Task N3: Feature — Zoom-Funktion in Toolbar
+
+### Anforderung
+Zoom-Regler in der **Toolbar oben** mit **3–5 Stufen**. Skaliert Spaltenbreite und Schriftgrösse in Jahresübersicht und Wochendetail.
+
+### Stufen (5 Stufen)
+| Stufe | Spaltenbreite | Schriftgrösse |
+|-------|--------------|---------------|
+| 1 (min) | ~120px | 9px |
+| 2 | ~160px | 10px |
+| 3 (default) | ~200px | 11px |
+| 4 | ~260px | 12px |
+| 5 (max) | ~340px | 14px |
+
+### UI
+- Zwei Buttons `−` / `+` in der Toolbar, rechtsbündig
+- Persistenz: `localStorage` Key `zoomLevel`, Default Stufe 3
+
+### Technische Umsetzung
+```typescript
+const ZOOM_LEVELS = [
+  { colWidth: 120, fontSize: 9 },
+  { colWidth: 160, fontSize: 10 },
+  { colWidth: 200, fontSize: 11 },  // default
+  { colWidth: 260, fontSize: 12 },
+  { colWidth: 340, fontSize: 14 },
+];
+```
+- Spaltenbreite: `style={{ width: zoom.colWidth + 'px' }}` in `WeekRows.tsx` / `ZoomYearView.tsx`
+- Schriftgrösse: CSS-Variable `--zoom-font` via `document.documentElement.style.setProperty`
+- Kurs-Header: `overflow: hidden; text-overflow: ellipsis` bei kleinen Breiten
+
+**Priorität:** N1+N2 zuerst, N3 danach.
+
+---
+
+## Ergebnis v3.91
+
+| # | Typ | Beschreibung | Status | Details |
+|---|-----|-------------|--------|---------|
+| N1 | Bug | Beurteilungsvorgaben Light-Mode Kontrast | ✅ | CSS-Variablen `--status-warn/ok/crit-bg/border/text` in `index.css` (Dark+Light), `StatsPanel.tsx` auf Variablen umgestellt — Kollisionen + Beurteilungsvorgaben + Summary-Box |
+| N2 | Bug | Sequenz-Panel Fenster-Halbierung | ✅ | Active-Sequence-Pin in den Haupt-Scroll-Container verschoben (ein einziger Scrollbereich), `shrink-0` entfernt |
+| N3 | Feature | Zoom-Funktion (5 Stufen) | ✅ | `ZOOM_LEVELS` in `plannerStore.ts` (120–340px Spaltenbreite, 9–14px Schrift), `−`/`+` Buttons in Toolbar, `columnZoom` via localStorage persistiert, angewandt in `WeekRows.tsx`, `SemesterHeader.tsx`, `ZoomYearView.tsx`, `ZoomBlockView.tsx` |
+
+---
+
+## Commit-Anweisung für v3.91
+
+```bash
+npx tsc --noEmit && npm run build 2>&1 | tail -20
+git add -A
+git commit -m "fix/feat: v3.91 — Beurteilungsvorgaben Kontrast (N1), Sequenz-Panel Layout (N2), Zoom-Funktion (N3)"
+git push
+```
+
+---
 
 ## Status: ✅ v3.90 — Abgeschlossen
 

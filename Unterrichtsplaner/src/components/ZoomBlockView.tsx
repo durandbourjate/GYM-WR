@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react';
-import { usePlannerStore } from '../store/plannerStore';
+import { usePlannerStore, ZOOM_LEVELS } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
 import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
@@ -8,7 +8,6 @@ import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types'
 const DAY_ORDER: Record<string, number> = { Mo: 0, Di: 1, Mi: 2, Do: 3, Fr: 4 };
 const ROW_H = 24; // px per week row
 const HOLIDAY_ROW_H = 18;
-const COL_W = 110; // column width
 
 interface Props {
   semester: 1 | 2;
@@ -50,7 +49,11 @@ export function ZoomBlockView({ semester }: Props) {
     setZoomLevel, setEditingSequenceId,
     setSidePanelOpen, setSidePanelTab, setSelection,
     searchQuery, setClassFilter, setFilter,
+    columnZoom,
   } = usePlannerStore();
+
+  const zoomCfg = ZOOM_LEVELS[columnZoom] || ZOOM_LEVELS[2];
+  const COL_W = zoomCfg.colWidth;
 
   const { courses: allCourses, weeks: staticWeeks, s2StartIndex, currentWeek } = usePlannerData();
 

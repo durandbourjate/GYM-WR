@@ -8,9 +8,10 @@ import { CURRENT_WEEK } from '../data/weeks';
 import { checkGradeRequirements } from '../utils/gradeRequirements';
 import { useTheme } from '../hooks/useTheme';
 import type { FilterType } from '../types';
+import { ZOOM_LEVELS } from '../store/plannerStore';
 
 export function AppHeader() {
-  const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, autoFitZoom, setAutoFitZoom, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
+  const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, autoFitZoom, setAutoFitZoom, columnZoom, setColumnZoom, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
   const [showStats, setShowStats] = useState(false);
   const [showTaF, setShowTaF] = useState(false);
   const { isLight, toggleTheme } = useTheme();
@@ -57,7 +58,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.90</span>
+        <span className="text-[10px] text-gray-500">v3.91</span>
       </div>
       {/* J6: Toolbar-Layout — Suche links, Filter mitte, Icons rechts */}
       {/* === Area 1: Search (flex-1, nimmt verfügbaren Platz) === */}
@@ -211,6 +212,25 @@ export function AppHeader() {
             ⟷
           </button>
         )}
+        {/* v3.91 N3: Zoom − / + Buttons */}
+        <div className="flex items-center border border-gray-700 rounded overflow-hidden">
+          <button
+            onClick={() => setColumnZoom(columnZoom - 1)}
+            disabled={columnZoom <= 0}
+            className={`px-1.5 py-0.5 text-[9px] font-semibold cursor-pointer transition-colors border-r border-gray-700 ${columnZoom <= 0 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'}`}
+            title={`Zoom verkleinern (Stufe ${columnZoom + 1}/${ZOOM_LEVELS.length})`}
+          >
+            −
+          </button>
+          <button
+            onClick={() => setColumnZoom(columnZoom + 1)}
+            disabled={columnZoom >= ZOOM_LEVELS.length - 1}
+            className={`px-1.5 py-0.5 text-[9px] font-semibold cursor-pointer transition-colors ${columnZoom >= ZOOM_LEVELS.length - 1 ? 'text-gray-700 cursor-not-allowed' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'}`}
+            title={`Zoom vergrössern (Stufe ${columnZoom + 1}/${ZOOM_LEVELS.length})`}
+          >
+            +
+          </button>
+        </div>
         <button
           onClick={() => setDimPastWeeks(!dimPastWeeks)}
           className={`px-2 py-0.5 rounded text-[9px] cursor-pointer transition-colors ${dimPastWeeks ? 'text-amber-400 bg-amber-900/30 border border-amber-700' : 'text-gray-500 border border-gray-700 hover:text-gray-300'}`}

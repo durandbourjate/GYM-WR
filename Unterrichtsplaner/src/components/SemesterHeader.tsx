@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import type { Course, Week } from '../types';
 import { DAY_COLORS, TYPE_BADGES } from '../utils/colors';
-import { usePlannerStore } from '../store/plannerStore';
+import { usePlannerStore, ZOOM_LEVELS } from '../store/plannerStore';
 
 interface Props {
   courses: Course[];
@@ -10,8 +10,10 @@ interface Props {
 }
 
 export function SemesterHeader({ courses, semester, weeks }: Props) {
-  const { classFilter, setClassFilter, courseFilter, setCourseFilter, setFilter, expandedNoteCols, toggleNoteCol, noteColWidth, setNoteColWidth, setSidePanelOpen, setSidePanelTab, setSettingsEditCourseId } = usePlannerStore();
+  const { classFilter, setClassFilter, courseFilter, setCourseFilter, setFilter, expandedNoteCols, toggleNoteCol, noteColWidth, setNoteColWidth, setSidePanelOpen, setSidePanelTab, setSettingsEditCourseId, columnZoom } = usePlannerStore();
   const ncw = noteColWidth;
+  const zoomCfg = ZOOM_LEVELS[columnZoom] || ZOOM_LEVELS[2];
+  const colW = zoomCfg.colWidth;
 
   // Drag resize for note column
   const handleResizeStart = (e: React.MouseEvent) => {
@@ -75,15 +77,16 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                 className={`bg-gray-900 px-0.5 pb-1 border-b-2 text-center ${courseFilter === `${c.cls}|${c.typ}` ? 'border-blue-500' : 'border-gray-700'}`}
                 style={{
                   borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}40` : 'none',
-                  width: 110, minWidth: 110, maxWidth: 110,
+                  width: colW, minWidth: colW, maxWidth: colW,
                 }}
                 onDoubleClick={() => setCourseFilter(courseFilter === `${c.cls}|${c.typ}` ? null : `${c.cls}|${c.typ}`)}
               >
-                <div className="flex items-center justify-center gap-0.5">
+                <div className="flex items-center justify-center gap-0.5 overflow-hidden">
                   <div
-                    className={`text-[10px] font-bold cursor-pointer transition-colors ${
+                    className={`font-bold cursor-pointer transition-colors truncate ${
                       classFilter === c.cls ? 'text-blue-400' : 'text-gray-200 hover:text-blue-300'
                     }`}
+                    style={{ fontSize: Math.max(8, zoomCfg.fontSize - 1) }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSettingsEditCourseId(c.id);

@@ -8,6 +8,15 @@ import { instanceStorageKey } from './instanceStore';
 import type { PlannerSettings } from './settingsStore';
 import { configToCourses, loadSettings } from './settingsStore';
 
+// v3.91 N3: Zoom-Stufen für Spaltenbreite und Schriftgrösse
+export const ZOOM_LEVELS = [
+  { colWidth: 120, fontSize: 9 },   // Stufe 1 (min)
+  { colWidth: 160, fontSize: 10 },  // Stufe 2
+  { colWidth: 200, fontSize: 11 },  // Stufe 3 (default)
+  { colWidth: 260, fontSize: 12 },  // Stufe 4
+  { colWidth: 340, fontSize: 14 },  // Stufe 5 (max)
+] as const;
+
 interface Selection {
   week: string;
   courseId: string;
@@ -38,6 +47,8 @@ interface PlannerState {
   setZoomLevel: (z: 1 | 2 | 3) => void;
   autoFitZoom: boolean;
   setAutoFitZoom: (v: boolean) => void;
+  columnZoom: number; // 0-4 index into ZOOM_LEVELS
+  setColumnZoom: (z: number) => void;
   dimPastWeeks: boolean;
   setDimPastWeeks: (v: boolean) => void;
   searchQuery: string;
@@ -176,6 +187,8 @@ export const usePlannerStore = create<PlannerState>()(
   setZoomLevel: (z) => set({ zoomLevel: z }),
   autoFitZoom: false,
   setAutoFitZoom: (v) => set({ autoFitZoom: v }),
+  columnZoom: parseInt(localStorage.getItem('columnZoom') || '2', 10),
+  setColumnZoom: (z) => { const clamped = Math.max(0, Math.min(4, z)); localStorage.setItem('columnZoom', String(clamped)); set({ columnZoom: clamped }); },
   dimPastWeeks: true,
   setDimPastWeeks: (v) => set({ dimPastWeeks: v }),
   searchQuery: '',

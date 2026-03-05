@@ -1,13 +1,11 @@
 import { useMemo, useCallback } from 'react';
-import { usePlannerStore } from '../store/plannerStore';
+import { usePlannerStore, ZOOM_LEVELS } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
 import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
 import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types';
 
 const ROW_H = 26;
-const GROUP_W = 140; // width for single-day course group
-const SUBDAY_W = 70; // width for each sub-day in 2-day course group
 
 // Block colors are now in data/categories.ts (getBlockColors)
 
@@ -43,8 +41,13 @@ export function ZoomYearView() {
     setZoomLevel, setEditingSequenceId,
     setSidePanelOpen, setSidePanelTab, setSelection,
     searchQuery, setClassFilter, setFilter,
-    dimPastWeeks,
+    dimPastWeeks, columnZoom,
   } = usePlannerStore();
+
+  // v3.91 N3: Zoom-abhängige Breiten
+  const zoomCfg = ZOOM_LEVELS[columnZoom] || ZOOM_LEVELS[2];
+  const GROUP_W = zoomCfg.colWidth;
+  const SUBDAY_W = Math.round(zoomCfg.colWidth / 2);
 
   const { courses: allCourses, weeks: staticWeeks, s2StartIndex, currentWeek } = usePlannerData();
 
@@ -414,7 +417,7 @@ export function ZoomYearView() {
                               title={`${sharedSpan.seq.title} → ${displayLabel}\n${sharedSpan.spanLen}W\nKlick: Sequenz · Doppelklick: Wochenansicht`}
                               onClick={() => handleBlockClick(sharedSpan)}
                               onDoubleClick={() => handleBlockDblClick(sharedSpan.weeks[0], group.courses[0], sharedSpan)}>
-                              <span className="text-[12px] font-bold leading-tight" style={{ color: colors.fg, display: '-webkit-box', WebkitLineClamp: sharedSpan.spanLen >= 3 ? 3 : 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                              <span className="font-bold leading-tight" style={{ color: colors.fg, fontSize: zoomCfg.fontSize + 1, display: '-webkit-box', WebkitLineClamp: sharedSpan.spanLen >= 3 ? 3 : 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                 {displayLabel}
                               </span>
                               {sharedSpan.spanLen >= 2 && (
@@ -472,7 +475,7 @@ export function ZoomYearView() {
                               title={`${daySpan.seq.title} → ${displayLabel} (${course.day})\n${daySpan.spanLen}W`}
                               onClick={() => handleBlockClick(daySpan)}
                               onDoubleClick={() => handleBlockDblClick(daySpan.weeks[0], course, daySpan)}>
-                              <span className="text-[10px] font-bold leading-tight" style={{ color: colors.fg, display: '-webkit-box', WebkitLineClamp: daySpan.spanLen >= 3 ? 2 : 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                              <span className="font-bold leading-tight" style={{ color: colors.fg, fontSize: zoomCfg.fontSize, display: '-webkit-box', WebkitLineClamp: daySpan.spanLen >= 3 ? 2 : 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                 {displayLabel}
                               </span>
                             </div>
@@ -536,7 +539,7 @@ export function ZoomYearView() {
                               : `${span.seq.title} → ${displayLabel}\n${span.spanLen}W\nKlick: Sequenz · Doppelklick: Wochenansicht`}
                             onClick={() => handleBlockClick(span)}
                             onDoubleClick={() => handleBlockDblClick(span.weeks[0], course, span)}>
-                            <span className="text-[10px] font-bold leading-tight" style={{ color: colors.fg, display: '-webkit-box', WebkitLineClamp: span.spanLen >= 3 ? 3 : 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <span className="font-bold leading-tight" style={{ color: colors.fg, fontSize: zoomCfg.fontSize, display: '-webkit-box', WebkitLineClamp: span.spanLen >= 3 ? 3 : 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                               {displayLabel}
                             </span>
                             {span.spanLen >= 2 && (

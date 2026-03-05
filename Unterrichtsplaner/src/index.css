@@ -84,6 +84,30 @@
   color: #475569 !important;
 }
 
+/* v3.91 N1: Status-Farben für Beurteilungsvorgaben, Kollisionen etc. */
+:root {
+  --status-warn-bg: rgba(69, 26, 3, 0.3);
+  --status-warn-border: #92400e;
+  --status-warn-text: #fcd34d;
+  --status-ok-bg: rgba(5, 46, 22, 0.2);
+  --status-ok-border: rgba(22, 101, 52, 0.4);
+  --status-ok-text: #4ade80;
+  --status-crit-bg: rgba(69, 10, 10, 0.4);
+  --status-crit-border: #991b1b;
+  --status-crit-text: #fca5a5;
+}
+:root.light-mode {
+  --status-warn-bg: #fefce8;
+  --status-warn-border: #ca8a04;
+  --status-warn-text: #854d0e;
+  --status-ok-bg: #f0fdf4;
+  --status-ok-border: #22c55e;
+  --status-ok-text: #166534;
+  --status-crit-bg: #fef2f2;
+  --status-crit-border: #dc2626;
+  --status-crit-text: #b91c1c;
+}
+
 body {
   background: var(--bg-primary);
   color: var(--text-primary);

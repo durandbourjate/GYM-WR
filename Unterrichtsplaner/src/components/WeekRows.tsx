@@ -2,7 +2,7 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import type { Course, Week, SubjectArea } from '../types';
 import { LESSON_COLORS, SUBJECT_AREA_COLORS, DAY_COLORS, getSequenceInfoFromStore, isPastWeek } from '../utils/colors';
 import { CURRENT_WEEK } from '../data/weeks';
-import { usePlannerStore } from '../store/plannerStore';
+import { usePlannerStore, ZOOM_LEVELS } from '../store/plannerStore';
 import { useGCalStore } from '../store/gcalStore';
 import { getHKGroup } from '../utils/hkRotation';
 import { getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel, CATEGORIES } from './DetailPanel';
@@ -363,7 +363,11 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     dimPastWeeks,
     plannerSettings,
     filter,
+    columnZoom,
   } = usePlannerStore();
+
+  const zoomCfg = ZOOM_LEVELS[columnZoom] || ZOOM_LEVELS[2];
+  const colW = zoomCfg.colWidth;
 
   const gcalCollisions = useGCalStore(s => s.collisions);
 
@@ -968,9 +972,9 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     background: isDragOver ? '#1e3a5f30'
                       : (dragSelectCol === c.col && dragSelectedWeeks.includes(week.w)) ? '#7c3aed20'
                       : isMulti ? '#312e8140' : undefined,
-                    width: 110,
-                    minWidth: 110,
-                    maxWidth: 110,
+                    width: colW,
+                    minWidth: colW,
+                    maxWidth: colW,
                     cursor: dragMoveSource ? 'grabbing' : undefined,
                   }}
                   onMouseDown={(e) => {
@@ -1272,7 +1276,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                         }}
                         title="Klick: Details öffnen"
                         style={{
-                          fontSize: c.les >= 2 ? 9 : 8,
+                          fontSize: c.les >= 2 ? zoomCfg.fontSize : zoomCfg.fontSize - 1,
                           fontWeight: lessonType === 4 || isFixed ? 700 : 500,
                           color: isInEditingSeq ? '#93c5fd' : isMulti ? '#c7d2fe' : isSelected ? '#e2e8f0' : cellColors?.fg || '#475569',
                           display: '-webkit-box',
