@@ -711,7 +711,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
   }
 
   return (
-    <div className="fixed right-0 top-0 bottom-0 w-[320px] border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden" style={{ background: '#151b2e' }} onWheel={(e) => e.stopPropagation()}>
+    <div className="fixed right-0 top-0 bottom-0 w-[320px] border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden" style={{ background: '#151b2e', overscrollBehavior: 'contain' }} onWheel={(e) => e.stopPropagation()}>
       <div className="px-3 py-2 border-b border-slate-600 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-bold text-gray-200">▧ Sequenzen</span>

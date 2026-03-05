@@ -93,6 +93,31 @@ function PlannerContent() {
     }
   }, [isLegacy]);
 
+  // K3: Startup-Sync — Sequenz-Wochen ohne weekData-Eintrag nachrüsten
+  useEffect(() => {
+    if (weekData.length === 0 || allCourses.length === 0) return;
+    const store = usePlannerStore.getState();
+    if (store.sequences.length === 0) return;
+    let modified = false;
+    let wd = weekData.map(w => ({ ...w, lessons: { ...w.lessons } }));
+    for (const seq of store.sequences) {
+      const course = allCourses.find(c => c.id === seq.courseId);
+      if (!course) continue;
+      for (const block of seq.blocks) {
+        for (const weekW of block.weeks) {
+          const w = wd.find(x => x.w === weekW);
+          if (!w) continue;
+          const existing = w.lessons[course.col];
+          if (!existing?.title) {
+            w.lessons[course.col] = { title: 'UE', type: 1 };
+            modified = true;
+          }
+        }
+      }
+    }
+    if (modified) setWeekData(wd);
+  }, [weekData.length > 0 && allCourses.length > 0]); // einmalig beim Start
+
   // Auto-open settings for new empty planners (no courses configured)
   useEffect(() => {
     if (!isLegacy && allCourses.length === 0) {

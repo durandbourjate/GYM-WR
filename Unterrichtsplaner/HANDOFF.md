@@ -1,4 +1,140 @@
-# Unterrichtsplaner – Handoff v3.87
+# Unterrichtsplaner – Handoff v3.88
+
+## Status: ✅ v3.88 — 6/6 Tasks erledigt
+
+---
+
+## Originalauftrag v3.88
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| K1 | Bug | Sonderwochen: nur TaF-Events im Planer sichtbar — alle anderen fehlen | 🔴 Kritisch | ✅ |
+| K2 | Bug | Panel-Scroll: Scrollen im Panel scrollt Planer dahinter (v3.87 J2 nicht gefixt) | 🔴 Kritisch | ✅ |
+| K3 | Bug | Sequenz-Kacheln erscheinen nicht im Planer (v3.87 J3 nicht gefixt) | 🔴 Kritisch | ✅ |
+| K4 | Bug | «+» Button in Toolbar reagiert nicht auf Klick | 🟠 Hoch | ✅ |
+| K5 | Bug | Sonderwoche Kursliste: Kurse mehrfach (einmal pro Tag) + falsche ID-Zuordnung | 🟡 Mittel | ✅ |
+| K6 | Feature | TaF-Phasenwochen ohne Unterricht visuell wie Ferien markieren | 🟡 Mittel | ✅ |
+
+---
+
+## Task K1: Bug — Sonderwochen nur TaF sichtbar
+
+**Problem:** 19 Sonderwochen konfiguriert, im Planer erscheinen nur TaF-Events (braune Kacheln «IW TaF»). Alle anderen (Klassenwoche GYM1, Gesundheit/Nothilfekurs GYM2 usw.) fehlen vollständig. Beispiel: IW14 betrifft GYM1+GYM2 — erscheint gar nicht.
+
+**Ursache:** In `settingsStore.ts → applySettingsToWeekData()`:
+```typescript
+return course.stufe === lv; // schlägt fehl wenn course.stufe undefined
+```
+`course.stufe` ist für bestehende Kurse möglicherweise nicht gesetzt → `undefined === 'GYM1'` = false → kein Kurs matched ausser TaF.
+
+**Parallel:** `validEventCols` in `WeekRows.tsx` benutzt sequenziellen `ci = 100+i`, aber `applySettingsToWeekData` nutzt `c.col ?? (100+i)`. Bei explizit gesetztem `c.col` entstehen Col-Nummern-Mismatches.
+
+**Fix:**
+1. `settingsStore.ts`: Bei fehlendem `course.stufe` alle Kurse als Match behandeln:
+```typescript
+return course.stufe ? course.stufe === lv : true;
+```
+2. `WeekRows.tsx → validEventCols`: Col-Index-Berechnung angleichen an `configToCourses`:
+```typescript
+const colIdx = c.col ?? (100 + idx); // statt sequenziellem ci++
+```
+
+---
+
+## Task K2: Bug — Panel-Scroll scrollt Planer dahinter
+
+**Problem:** Scrollen im Sequenz- oder Einstellungs-Panel scrollt den Planer-Grid dahinter. War bereits in v3.87 (J2) als gefixt markiert, funktioniert aber noch immer nicht.
+
+**Ursache:** `stopPropagation` hinzugefügt, aber Scroll-Container hat kein `overflow-y: auto` oder falsche Höhe → kein eigener Scroll-Kontext.
+
+**Fix** in `SequencePanel.tsx` + `SettingsPanel.tsx`:
+1. Scrollbaren Container: `overflow-y: auto; max-height: calc(100vh - [Header-Höhe]); height: 100%`
+2. Äusserster Panel-Container: `onWheel={(e) => e.stopPropagation()}`
+3. `overscroll-behavior: contain` auf Panel-Container — verhindert Scroll-Bubbling
+4. Panel hat `position: fixed/absolute` mit expliziter Höhe → eigener Scroll-Kontext
+
+---
+
+## Task K3: Bug — Sequenz-Kacheln fehlen im Planer
+
+**Problem:** Neue Sequenz (z.B. «test», KW34–37) angelegt — im Panel sind 4 Lektionen sichtbar, im Planer erscheint nur eine Outline-Box für KW34, keine befüllten Kacheln für KW35–37. War in v3.87 (J3) als gefixt markiert, noch immer aktiv.
+
+**Ursache:** `addSequence`/`addBlockToSequence` speichern Lektionen in `sequences[].blocks[].weeks[]`, aber `weekData[].lessons[col]` wird nicht für alle KWs synchronisiert. Nur die erste KW bekommt beim initialen Erstellen einen Eintrag.
+
+**Fix:**
+1. `plannerStore.ts → addBlockToSequence`: für alle `block.weeks` einen `weekData`-Eintrag erstellen falls noch keiner vorhanden
+2. `plannerStore.ts → updateBlockInSequence`: bei Label-Änderung `weekData` synchronisieren
+3. App-Start-Sync: Sequenz-Lektionen ohne `weekData`-Eintrag nachrüsten
+4. `SequencePanel.tsx`: beim Bearbeiten einer Lektion (Thema-Input) zusätzlich `updateLesson(week, col, { title, type: 1 })` aufrufen
+
+---
+
+## Task K4: Bug — «+» Button reagiert nicht
+
+**Problem:** Grüner «+»-Button in der Toolbar (neben Suchfeld) reagiert nicht auf Klick. Sichtbar, aber keine Aktion.
+
+**Ursache (Hypothese):** Nach Toolbar-Refactoring (J6 v3.87) ist `onClick` nicht korrekt verdrahtet, oder ein überlagerndes Element blockiert die Klick-Events.
+
+**Fix** in `Toolbar.tsx`:
+1. `onClick`-Verdrahtung prüfen — soll `setInsertDialog` oder `handleNewLesson` aufrufen
+2. `z-index: 50` auf Button setzen
+3. Kein überlagerndes Element mit `pointer-events` blockiert den Button
+
+---
+
+## Task K5: Bug — Kursliste in Sonderwoche zeigt Duplikate
+
+**Problem:** «Nur für bestimmte Kurse anzeigen» — Kurse erscheinen mehrfach (z.B. «30s IN» 3×, «28c IN» 3×). Ursache: Kurs hat mehrere Einträge (einen pro Wochentag/Semester). Zudem: markierter «30s IN» bezieht sich auf 29f → falsche ID-Zuordnung.
+
+**Fix** in `SettingsPanel.tsx`:
+1. Kursliste nach `cls + typ` deduplizieren (nicht nach `id`)
+2. Wenn ein `cls+typ` mehrere IDs hat: alle IDs in `courseFilter` aufnehmen wenn ausgewählt
+3. Anzeige-Label: `${course.cls} ${course.typ}`
+4. `kurse_duy_2526.json`: Kurs-ID-Zuordnungen auf Korrektheit prüfen (30s IN → 29f)
+
+---
+
+## Task K6: Feature — TaF-Phasenwochen ohne Unterricht wie Ferien markieren
+
+**Problem:** TaF-Kurse haben Phasenunterricht. Wochen ausserhalb der Phasen sind leer im Planer — nicht unterscheidbar von «noch nicht geplant».
+
+**Gewünschtes Verhalten:** Phasenfreie Wochen grau hinterlegen wie Ferien, mit Label «— keine Phase —».
+
+**Fix** in `WeekRows.tsx`:
+- Bestehende Variable `tafPhase` nutzen: wenn `tafPhase === undefined` UND Kurs ist TaF-Kurs (`/[fs]/.test(cls.replace(/\d/g,''))`) → phasenfreie Woche
+- Zelle rendern mit:
+```tsx
+background: '#1e293b60'
+<span className="text-[8px] text-gray-600 italic">— keine Phase —</span>
+```
+
+---
+
+## Ergebnis v3.88
+
+| # | Typ | Beschreibung | Status |
+|---|-----|-------------|--------|
+| K1 | Bug | Sonderwochen: `course.stufe` Fallback (undefined → matcht alle) + col-Index in WeekRows an configToCourses angeglichen (c.col ?? 100+i) | ✅ |
+| K2 | Bug | Panel-Scroll: min-h-0 auf Detail/Batch-Content, overscroll-behavior:contain auf Panel-Container (DetailPanel + SequencePanel) | ✅ |
+| K3 | Bug | Sequenz-Kacheln: addSequence synct weekData für Blocks mit Wochen, addBlockToSequence/updateBlockInSequence Fallback auf loadSettings(), Startup-Sync in App.tsx | ✅ |
+| K4 | Bug | «+» Button aus overflow-hidden Container herausgelöst → Dropdown nicht mehr abgeschnitten | ✅ |
+| K5 | Bug | Kursliste in Sonderwoche nach cls+typ dedupliziert — ein Button pro Kursgruppe, Toggle schaltet alle IDs | ✅ |
+| K6 | Feature | TaF-Phasenwochen ohne Phase: grauer Hintergrund + «— keine Phase —» Label (wie Ferien) | ✅ |
+
+---
+
+## Commit-Anweisung für v3.88
+
+```bash
+npx tsc --noEmit && npm run build 2>&1 | tail -20
+git add -A
+git commit -m "fix/feat: v3.88 — Sonderwochen (K1), Panel-Scroll (K2), Sequenz-Sync (K3), Plus-Button (K4), Kurs-Duplikate (K5), Phasen-Ferien (K6)"
+git push
+```
+
+---
+
+## Vorherige Version: v3.87 ✅
 
 ## Status: ✅ v3.87 — 6/6 Tasks erledigt
 

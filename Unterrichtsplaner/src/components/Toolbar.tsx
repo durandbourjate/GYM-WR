@@ -50,7 +50,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.87</span>
+        <span className="text-[10px] text-gray-500">v3.88</span>
       </div>
       {/* J6: Toolbar-Layout — Suche links, Filter mitte, Icons rechts */}
       {/* === Area 1: Search (flex-1, nimmt verfügbaren Platz) === */}
@@ -71,38 +71,39 @@ export function AppHeader() {
           >✕</button>
         )}
       </div>
+      {/* K4: «+» Button ausserhalb von overflow-hidden, damit Dropdown sichtbar */}
+      <div className="relative flex-shrink-0" ref={addMenuRef}>
+        <button
+          onClick={() => setShowAddMenu(!showAddMenu)}
+          className="px-1.5 py-0.5 rounded text-[10px] font-semibold border border-dashed border-green-700 text-green-500 cursor-pointer hover:bg-green-900/20 hover:text-green-300 transition-colors z-50"
+          title="Neue Sequenz oder UE erstellen"
+        >
+          +
+        </button>
+        {showAddMenu && (
+          <div className="absolute top-full left-0 mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44 z-[70]">
+            <button onClick={() => {
+              setSidePanelOpen(true);
+              setSidePanelTab('sequences');
+              setSequencePanelOpen(true);
+              setShowAddMenu(false);
+            }}
+              className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+              <span className="text-green-400">▧</span> Neue Sequenz
+            </button>
+            <button onClick={() => {
+              setSidePanelOpen(true);
+              setSidePanelTab('details');
+              setShowAddMenu(false);
+            }}
+              className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+              <span className="text-blue-400">📖</span> Neue UE
+            </button>
+          </div>
+        )}
+      </div>
       {/* === Area 2: Filters (flex-shrink, bei Platzmangel zusammengestaucht) === */}
       <div className="flex gap-1 items-center flex-shrink overflow-hidden">
-        <div className="relative" ref={addMenuRef}>
-          <button
-            onClick={() => setShowAddMenu(!showAddMenu)}
-            className="px-1.5 py-0.5 rounded text-[10px] font-semibold border border-dashed border-green-700 text-green-500 cursor-pointer hover:bg-green-900/20 hover:text-green-300 transition-colors"
-            title="Neue Sequenz oder UE erstellen"
-          >
-            +
-          </button>
-          {showAddMenu && (
-            <div className="absolute top-full left-0 mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44 z-[70]">
-              <button onClick={() => {
-                setSidePanelOpen(true);
-                setSidePanelTab('sequences');
-                setSequencePanelOpen(true);
-                setShowAddMenu(false);
-              }}
-                className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
-                <span className="text-green-400">▧</span> Neue Sequenz
-              </button>
-              <button onClick={() => {
-                setSidePanelOpen(true);
-                setSidePanelTab('details');
-                setShowAddMenu(false);
-              }}
-                className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
-                <span className="text-blue-400">📖</span> Neue UE
-              </button>
-            </div>
-          )}
-        </div>
         <button
           onClick={() => setFilter('ALL')}
           className={`px-2 py-0.5 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${

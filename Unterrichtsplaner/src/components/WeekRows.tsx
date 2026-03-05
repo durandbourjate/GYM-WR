@@ -437,14 +437,14 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   // H2: Sonderwochen-Scope prüfen — bei aktivem Filter nur relevante Events anzeigen
   const validEventCols = React.useMemo(() => {
     if (filter === 'ALL' || !plannerSettings?.specialWeeks) return null; // null = keine Filterung
-    // Kurs-ID → col Mapping
+    // Kurs-ID → col Mapping (K1: gleiche Logik wie configToCourses — c.col ?? 100+i)
     const courseIdToCol = new Map<string, number>();
     const colToCourseType = new Map<number, string>();
-    let colIdx = 100;
-    for (const c of plannerSettings.courses) {
-      courseIdToCol.set(c.id, colIdx);
-      colToCourseType.set(colIdx, c.typ);
-      colIdx++;
+    for (let i = 0; i < plannerSettings.courses.length; i++) {
+      const c = plannerSettings.courses[i];
+      const col = c.col ?? (100 + i);
+      courseIdToCol.set(c.id, col);
+      colToCourseType.set(col, c.typ);
     }
     // Pro Woche: welche Cols dürfen type 5 zeigen?
     const validMap = new Map<string, Set<number>>();
@@ -466,16 +466,16 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         }
       }
       if (hasGymLevel) {
-        let ci = 100;
-        for (const c of plannerSettings.courses) {
+        for (let i = 0; i < plannerSettings.courses.length; i++) {
+          const c = plannerSettings.courses[i];
+          const col = c.col ?? (100 + i); // K1: gleiche Logik wie configToCourses
           const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
           const matchesAny = levels.some(lv => {
             if (lv === 'TaF') return isTaF;
             if (lv === 'alle') return true;
-            return c.stufe === lv;
+            return c.stufe ? c.stufe === lv : true; // K1: ohne stufe → matcht alle
           });
-          if (matchesAny) cols.add(ci);
-          ci++;
+          if (matchesAny) cols.add(col);
         }
       }
       if (!validMap.has(sw.week)) validMap.set(sw.week, new Set());
@@ -957,6 +957,9 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 const wi = allW.indexOf(week.w);
                 return si >= 0 && ei >= 0 && wi >= si && wi <= ei;
               });
+              // K6: TaF-Kurs ohne aktive Phase → phasenfreie Woche
+              const isTafCourse = tafPhases.length > 0 && /[fs]/.test(c.cls.replace(/\d/g, ''));
+              const isPhaseFree = isTafCourse && !tafPhase;
 
               return (
                 <React.Fragment key={c.id}>
@@ -1314,6 +1317,14 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                         </div>
                         );
                       })()}
+                    </div>
+                  ) : isPhaseFree ? (
+                    /* K6: TaF phasenfreie Woche — grau wie Ferien */
+                    <div
+                      className="mx-0.5 ml-1.5 px-1.5 py-1 rounded flex items-center justify-center"
+                      style={{ minHeight: Math.max(cellHeight, 32), background: '#1e293b60', border: '1px solid #334155' }}
+                    >
+                      <span className="text-[8px] text-gray-600 italic">— keine Phase —</span>
                     </div>
                   ) : (
                     <div

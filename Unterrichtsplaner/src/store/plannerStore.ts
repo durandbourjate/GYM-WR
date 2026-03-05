@@ -418,7 +418,26 @@ export const usePlannerStore = create<PlannerState>()(
     const now = new Date().toISOString();
     const id = `seq-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     const newSeq: ManagedSequence = { ...seq, id, createdAt: now, updatedAt: now };
-    set((state) => ({ sequences: [...state.sequences, newSeq] }));
+    // K3: Sync weekData for blocks that already have weeks assigned (z.B. MultiSelectToolbar)
+    const state = get();
+    const settings = state.plannerSettings || loadSettings();
+    let newWeekData = state.weekData;
+    if (settings && seq.blocks && seq.blocks.length > 0) {
+      const courses = configToCourses(settings.courses);
+      const course = courses.find(c => c.id === seq.courseId);
+      if (course) {
+        const allBlockWeeks = new Set(seq.blocks.flatMap(b => b.weeks));
+        if (allBlockWeeks.size > 0) {
+          newWeekData = state.weekData.map(w => {
+            if (!allBlockWeeks.has(w.w)) return w;
+            const existing = w.lessons[course.col];
+            if (existing?.title) return w;
+            return { ...w, lessons: { ...w.lessons, [course.col]: { title: 'UE', type: 1 as LessonType } } };
+          });
+        }
+      }
+    }
+    set((s) => ({ sequences: [...s.sequences, newSeq], weekData: newWeekData }));
     return id;
   },
   updateSequence: (id, updates) =>
@@ -432,17 +451,19 @@ export const usePlannerStore = create<PlannerState>()(
   addBlockToSequence: (seqId, block) => {
     const state = get();
     const seq = state.sequences.find(s => s.id === seqId);
-    // J3: Sync weekData — create placeholder lessons for all weeks in block
+    // K3: Sync weekData — create placeholder lessons for all weeks in block
+    // Fallback auf loadSettings() wenn plannerSettings noch null
     let newWeekData = state.weekData;
-    if (seq && block.weeks.length > 0 && state.plannerSettings) {
-      const courses = configToCourses(state.plannerSettings.courses);
+    const settings = state.plannerSettings || loadSettings();
+    if (seq && block.weeks.length > 0 && settings) {
+      const courses = configToCourses(settings.courses);
       const course = courses.find(c => c.id === seq.courseId);
       if (course) {
         newWeekData = state.weekData.map(w => {
           if (!block.weeks.includes(w.w)) return w;
           const existing = w.lessons[course.col];
           if (existing?.title) return w; // Don't overwrite existing
-          return { ...w, lessons: { ...w.lessons, [course.col]: { title: 'UE', type: 0 as LessonType } } };
+          return { ...w, lessons: { ...w.lessons, [course.col]: { title: 'UE', type: 1 as LessonType } } };
         });
       }
     }
@@ -458,13 +479,14 @@ export const usePlannerStore = create<PlannerState>()(
   updateBlockInSequence: (seqId, blockIndex, updates) => {
     const state = get();
     const seq = state.sequences.find(s => s.id === seqId);
-    // J3: Sync weekData when weeks change
+    // K3: Sync weekData when weeks change — Fallback auf loadSettings()
     let newWeekData = state.weekData;
-    if (seq && updates.weeks && state.plannerSettings) {
+    const settings = state.plannerSettings || loadSettings();
+    if (seq && updates.weeks && settings) {
       const oldBlock = seq.blocks[blockIndex];
       const newWeeks = updates.weeks.filter(w => !oldBlock?.weeks.includes(w));
       if (newWeeks.length > 0) {
-        const courses = configToCourses(state.plannerSettings.courses);
+        const courses = configToCourses(settings.courses);
         const course = courses.find(c => c.id === seq.courseId);
         if (course) {
           newWeekData = state.weekData.map(w => {

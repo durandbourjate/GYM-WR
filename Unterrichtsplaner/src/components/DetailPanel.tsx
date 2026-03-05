@@ -737,7 +737,7 @@ function DetailsTab() {
   const subtypeDef = effectiveSubtype ? subtypes.find(s => s.key === effectiveSubtype) : null;
 
   return (
-    <div className="flex-1 overflow-y-auto p-3 pb-12 space-y-3" style={{ overscrollBehavior: 'contain' }}>
+    <div className="flex-1 min-h-0 overflow-y-auto p-3 pb-12 space-y-3" style={{ overscrollBehavior: 'contain' }}>
       {/* Header info */}
       <div>
         <div className="flex gap-2 items-center mb-1">
@@ -1137,7 +1137,7 @@ function BatchEditTab() {
   };
 
   return (
-    <div className="p-3 pb-12 space-y-3 overflow-y-auto flex-1">
+    <div className="p-3 pb-12 space-y-3 overflow-y-auto flex-1 min-h-0" style={{ overscrollBehavior: 'contain' }}>
       <div className="text-[11px] font-bold text-amber-300">
         ✏ Batch-Bearbeitung ({cells.length} Zellen)
       </div>
@@ -1323,7 +1323,7 @@ export function DetailPanel() {
     <div
       ref={panelRef}
       className="fixed right-0 top-0 bottom-0 bg-slate-850 border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden"
-      style={{ width: panelWidth, background: '#151b2e' }}
+      style={{ width: panelWidth, background: '#151b2e', overscrollBehavior: 'contain' }}
       onWheel={(e) => e.stopPropagation()}
     >
       {/* Resize handle */}

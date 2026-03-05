@@ -891,20 +891,31 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                         {w.courseFilter && w.courseFilter.length > 0 && (
                           <div className="ml-4 space-y-1">
                             <div className="flex flex-wrap gap-1">
-                              {courses.map(c => {
-                                const included = w.courseFilter!.includes(c.id);
-                                return (
-                                  <button key={c.id} onClick={() => {
-                                    const current = w.courseFilter || [];
-                                    update(w.id, {
-                                      courseFilter: included ? current.filter(x => x !== c.id) : [...current, c.id]
-                                    });
-                                  }}
-                                    className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'}`}>
-                                    {c.cls} {c.typ}
-                                  </button>
-                                );
-                              })}
+                              {/* K5: Deduplizierung nach cls+typ — ein Button pro Kursgruppe */}
+                              {(() => {
+                                const groups = new Map<string, { label: string; ids: string[] }>();
+                                for (const c of courses) {
+                                  const key = `${c.cls} ${c.typ}`;
+                                  if (!groups.has(key)) groups.set(key, { label: key, ids: [] });
+                                  groups.get(key)!.ids.push(c.id);
+                                }
+                                return [...groups.values()].map(g => {
+                                  const included = g.ids.some(id => w.courseFilter!.includes(id));
+                                  return (
+                                    <button key={g.label} onClick={() => {
+                                      const current = w.courseFilter || [];
+                                      update(w.id, {
+                                        courseFilter: included
+                                          ? current.filter(x => !g.ids.includes(x))
+                                          : [...current, ...g.ids.filter(id => !current.includes(id))]
+                                      });
+                                    }}
+                                      className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'}`}>
+                                      {g.label}
+                                    </button>
+                                  );
+                                });
+                              })()}
                             </div>
                             {/* Schnellauswahl-Buttons */}
                             <div className="flex gap-1 flex-wrap">
