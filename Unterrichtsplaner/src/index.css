@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+/* v3.89 L7: Light-/Darkmode CSS-Variablen */
+:root {
+  --bg-primary:   #0f172a;   /* slate-900 */
+  --bg-secondary: #1e293b;   /* slate-800 */
+  --bg-card:      #1e293b;
+  --bg-hover:     #334155;   /* slate-700 */
+  --bg-input:     #1e293b;
+  --text-primary: #f1f5f9;   /* slate-100 */
+  --text-secondary: #cbd5e1; /* slate-300 */
+  --text-muted:   #94a3b8;   /* slate-400 */
+  --text-dim:     #64748b;   /* slate-500 */
+  --border:       #334155;   /* slate-700 */
+  --border-light: #475569;   /* slate-600 */
+  --accent-bg:    #1e293b80;
+  --holiday-bg:   #0c0f1a;
+  --holiday-bar:  #1e293b;
+  --toolbar-bg:   #111827;   /* gray-900 */
+  --toolbar-border: #1f2937; /* gray-800 */
+  --panel-bg:     #151b2e;
+}
+
+:root.light-mode {
+  --bg-primary:   #f8fafc;   /* slate-50 */
+  --bg-secondary: #f1f5f9;   /* slate-100 */
+  --bg-card:      #ffffff;
+  --bg-hover:     #e2e8f0;   /* slate-200 */
+  --bg-input:     #ffffff;
+  --text-primary: #0f172a;   /* slate-900 */
+  --text-secondary: #334155; /* slate-700 */
+  --text-muted:   #475569;   /* slate-600 */
+  --text-dim:     #94a3b8;   /* slate-400 */
+  --border:       #cbd5e1;   /* slate-300 */
+  --border-light: #94a3b8;   /* slate-400 */
+  --accent-bg:    #e2e8f080;
+  --holiday-bg:   #f1f5f9;
+  --holiday-bar:  #e2e8f0;
+  --toolbar-bg:   #ffffff;
+  --toolbar-border: #e2e8f0;
+  --panel-bg:     #f8fafc;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}

@@ -38,7 +38,7 @@ function App() {
   // No instances yet → Welcome screen
   if (instances.length === 0) {
     return (
-      <div className="bg-[#0c0f1a] text-slate-200 min-h-screen font-sans">
+      <div className="text-slate-200 min-h-screen font-sans" style={{ background: 'var(--bg-primary)' }}>
         <WelcomeScreen />
       </div>
     );
@@ -51,7 +51,7 @@ function App() {
   }
 
   return (
-    <div className="bg-[#0c0f1a] text-slate-200 min-h-screen font-sans" data-app-root>
+    <div className="text-slate-200 min-h-screen font-sans" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }} data-app-root>
       <PlannerTabs />
       <PlannerContent />
     </div>

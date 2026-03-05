@@ -357,7 +357,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     tafPhases,
     setSidePanelOpen, setSidePanelTab,
     lessonDetails,
-    setInsertDialog, pushUndo,
+    pushUndo,
     searchQuery,
     expandedNoteCols,
     dimPastWeeks,
@@ -609,13 +609,6 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
   }, []);
 
-  // Mini action buttons for selected cell
-  const handleMiniInsert = useCallback((e: React.MouseEvent, course: Course, weekW: string) => {
-    e.stopPropagation();
-    const paired = COURSES_CACHE.filter(c => c.id !== course.id && c.cls === course.cls && c.typ === course.typ && c.les !== course.les);
-    setInsertDialog({ week: weekW, course, hasMismatch: paired.length > 0, pairedCourses: paired });
-  }, [setInsertDialog]);
-
 
   // Drag-selection handlers (works on both empty and filled cells)
   const handleDragSelectStart = useCallback((weekW: string, course: Course, e: React.MouseEvent) => {
@@ -810,7 +803,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               {/* Week number(s) */}
               <td
                 className="sticky left-0 z-30 px-1 text-center border-b border-slate-900/60"
-                style={{ background: '#0c0f1a' }}
+                style={{ background: 'var(--holiday-bg)' }}
                 rowSpan={hSpan.len}
               >
                 <div className="flex flex-col items-center">
@@ -826,7 +819,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 rowSpan={hSpan.len}
                 className="border-b border-slate-800/30 text-center align-middle"
                 style={{
-                  background: '#1e293b50',
+                  background: 'color-mix(in srgb, var(--holiday-bar) 80%, transparent)',
                   height: spanH,
                 }}
               >
@@ -861,7 +854,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
             {/* Week number — G6: Doppelklick öffnet Ferien-Dialog */}
             <td
               className="sticky left-0 z-30 px-1 text-center border-b border-slate-900/60 cursor-pointer"
-              style={{ background: isCurrent ? '#172554' : '#0c0f1a' }}
+              style={{ background: isCurrent ? '#172554' : 'var(--holiday-bg)' }}
               onDoubleClick={() => {
                 usePlannerStore.getState().setPendingHolidayKw(week.w);
                 setSidePanelOpen(true);
@@ -1095,8 +1088,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     />
                   )}
                   {seq?.isFirst && !isFixed && (
-                    <div className="absolute left-1.5 -top-0.5 text-[6px] font-bold z-10 bg-[#0c0f1a] px-0.5 rounded whitespace-nowrap cursor-pointer"
-                      style={{ color: (() => {
+                    <div className="absolute left-1.5 -top-0.5 text-[6px] font-bold z-10 px-0.5 rounded whitespace-nowrap cursor-pointer"
+                      style={{ background: 'var(--holiday-bg)', color: (() => {
                         const seqLabelSA = effectiveSubjectArea || (() => {
                           const parentSeq = sequences.find(s => s.id === seq.sequenceId);
                           const block = parentSeq?.blocks.find(b => b.weeks.includes(week.w));
@@ -1201,8 +1194,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       style={{
                         minHeight: Math.max(cellHeight, 32),
                         opacity: isSearchDimmed ? 0.2 : 1,
-                        background: '#1e293b60',
-                        border: '1px solid #334155',
+                        background: 'color-mix(in srgb, var(--holiday-bar) 60%, transparent)',
+                        border: '1px solid var(--border)',
                       }}
                       onDoubleClick={(e) => {
                         e.stopPropagation();
@@ -1293,26 +1286,36 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       {/* Mini action buttons on selection */}
                       {isSelected && (() => {
                         const weekIdx = allWeekKeys.indexOf(week.w);
-                        const isFirst = weekIdx <= 0;
-                        const isLast = weekIdx >= allWeekKeys.length - 1;
+                        // L6: Nächste freie Woche finden (Ferien/Sonderwochen überspringen)
+                        const findNextFree = (dir: -1 | 1): string | null => {
+                          let i = weekIdx + dir;
+                          while (i >= 0 && i < allWeekKeys.length) {
+                            const kw = allWeekKeys[i];
+                            const wk = weekData.find(w => w.w === kw);
+                            if (wk) {
+                              const entry = wk.lessons[c.col];
+                              const t = (entry as any)?.type;
+                              if (t !== 5 && t !== 6) return kw; // Weder Sonderwoche noch Ferien
+                            }
+                            i += dir;
+                          }
+                          return null;
+                        };
+                        const prevFree = findNextFree(-1);
+                        const nextFree = findNextFree(1);
                         return (
                         <div className="absolute right-0.5 bottom-0.5 flex gap-px z-20">
                           <button
-                            onClick={(e) => handleMiniInsert(e, c, week.w)}
-                            className="w-4 h-4 rounded bg-slate-700/90 text-gray-300 text-[8px] flex items-center justify-center cursor-pointer hover:bg-blue-600 hover:text-white border border-slate-600"
-                            title="Einfügen (leere Zeile davor)"
-                          >+</button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); if (!isFirst) { pushUndo(); swapLessons(c.col, week.w, allWeekKeys[weekIdx - 1]); } }}
-                            disabled={isFirst}
-                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${isFirst ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
-                            title="Nach oben verschieben"
+                            onClick={(e) => { e.stopPropagation(); if (prevFree) { pushUndo(); swapLessons(c.col, week.w, prevFree); } }}
+                            disabled={!prevFree}
+                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${!prevFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            title="Nach oben verschieben (überspringt Ferien)"
                           >↑</button>
                           <button
-                            onClick={(e) => { e.stopPropagation(); if (!isLast) { pushUndo(); swapLessons(c.col, week.w, allWeekKeys[weekIdx + 1]); } }}
-                            disabled={isLast}
-                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${isLast ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
-                            title="Nach unten verschieben"
+                            onClick={(e) => { e.stopPropagation(); if (nextFree) { pushUndo(); swapLessons(c.col, week.w, nextFree); } }}
+                            disabled={!nextFree}
+                            className={`w-4 h-4 rounded bg-slate-700/90 text-[8px] flex items-center justify-center border border-slate-600 ${!nextFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            title="Nach unten verschieben (überspringt Ferien)"
                           >↓</button>
                         </div>
                         );
@@ -1322,7 +1325,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     /* K6: TaF phasenfreie Woche — grau wie Ferien */
                     <div
                       className="mx-0.5 ml-1.5 px-1.5 py-1 rounded flex items-center justify-center"
-                      style={{ minHeight: Math.max(cellHeight, 32), background: '#1e293b60', border: '1px solid #334155' }}
+                      style={{ minHeight: Math.max(cellHeight, 32), background: 'color-mix(in srgb, var(--holiday-bar) 60%, transparent)', border: '1px solid var(--border)' }}
                     >
                       <span className="text-[8px] text-gray-600 italic">— keine Phase —</span>
                     </div>

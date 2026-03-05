@@ -5,12 +5,14 @@ import { StatsPanel } from './StatsPanel';
 import { TaFPanel } from './TaFPanel';
 import { CURRENT_WEEK } from '../data/weeks';
 import { checkGradeRequirements } from '../utils/gradeRequirements';
+import { useTheme } from '../hooks/useTheme';
 import type { FilterType } from '../types';
 
 export function AppHeader() {
   const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, autoFitZoom, setAutoFitZoom, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
   const [showStats, setShowStats] = useState(false);
   const [showTaF, setShowTaF] = useState(false);
+  const { isLight, toggleTheme } = useTheme();
   const [showAddMenu, setShowAddMenu] = useState(false);
   const addMenuRef = useRef<HTMLDivElement>(null);
   const { courses: plannerCourses } = usePlannerData();
@@ -45,12 +47,12 @@ export function AppHeader() {
   }, [showAddMenu]);
 
   return (
-    <div className="bg-gray-900 border-b border-gray-800 px-4 py-2 sticky top-0 z-[60] flex items-center gap-2 no-print overflow-hidden">
+    <div className="border-b px-4 py-2 sticky top-0 z-[60] flex items-center gap-2 no-print overflow-hidden" style={{ background: 'var(--toolbar-bg)', borderColor: 'var(--toolbar-border)' }}>
       <div className="flex items-baseline gap-2 flex-shrink-0">
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.88</span>
+        <span className="text-[10px] text-gray-500">v3.89</span>
       </div>
       {/* J6: Toolbar-Layout — Suche links, Filter mitte, Icons rechts */}
       {/* === Area 1: Search (flex-1, nimmt verfügbaren Platz) === */}
@@ -81,7 +83,7 @@ export function AppHeader() {
           +
         </button>
         {showAddMenu && (
-          <div className="absolute top-full left-0 mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44 z-[70]">
+          <div className="absolute top-full left-0 mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44 z-[9999]">
             <button onClick={() => {
               setSidePanelOpen(true);
               setSidePanelTab('sequences');
@@ -203,6 +205,13 @@ export function AppHeader() {
           {dimPastWeeks ? '◐' : '●'}
         </button>
         <button
+          onClick={toggleTheme}
+          className={`px-2 py-0.5 rounded text-[9px] cursor-pointer transition-colors border ${isLight ? 'text-amber-500 bg-amber-100 border-amber-300' : 'text-gray-500 border-gray-700 hover:text-yellow-300'}`}
+          title={isLight ? 'Wechsel zu Darkmode' : 'Wechsel zu Lightmode'}
+        >
+          {isLight ? '☀' : '☽'}
+        </button>
+        <button
           onClick={() => setShowStats(true)}
           className="px-2 py-0.5 rounded text-[10px] border border-gray-700 text-gray-500 cursor-pointer hover:text-gray-300 hover:border-gray-500 relative"
           title="Statistik"
@@ -244,7 +253,7 @@ export function HelpBar() {
   if (!showHelp) return null;
 
   return (
-    <div className="bg-slate-800 border-b border-gray-700 px-4 py-2 text-[10px] text-slate-400 leading-relaxed no-print">
+    <div className="border-b px-4 py-2 text-[10px] leading-relaxed no-print" style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
       <b className="text-gray-200">Bedienung:</b>{' '}
       <b>1× Klick</b> = Auswählen (Mini-Buttons: + ↓ i) ·{' '}
       <b>2× Klick</b> = Details öffnen ·{' '}
@@ -265,7 +274,7 @@ export function HelpBar() {
 }
 
 export function MultiSelectToolbar() {
-  const { multiSelection, clearMultiSelect, batchShiftDown, batchInsertBefore, weekData,
+  const { multiSelection, clearMultiSelect,
     addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab, lessonDetails } = usePlannerStore();
   const { courses: plannerCoursesInner } = usePlannerData();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -335,8 +344,6 @@ export function MultiSelectToolbar() {
 
   if (multiSelection.length === 0) return null;
 
-  const allWeeks = weekData.map(w => w.w);
-
   // Group selection by courseId and create sequence
   const handleCreateSequence = () => {
     const parsed = multiSelection.map(key => {
@@ -395,14 +402,6 @@ export function MultiSelectToolbar() {
             ▧ Sequenz
           </button>
         )}
-        <button onClick={() => batchShiftDown(multiSelection, allWeeks, plannerCoursesInner)}
-          className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
-          ↓ +1
-        </button>
-        <button onClick={() => batchInsertBefore(multiSelection, allWeeks, plannerCoursesInner)}
-          className="px-2 py-0.5 rounded bg-indigo-600 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
-          ⊞ Einfügen
-        </button>
         <button onClick={clearMultiSelect}
           className="px-2 py-0.5 rounded bg-transparent text-indigo-300 border border-indigo-500 text-[9px] cursor-pointer">
           ✕
@@ -427,14 +426,6 @@ export function MultiSelectToolbar() {
           ▧ Neue Sequenz
         </button>
       )}
-      <button onClick={() => batchShiftDown(multiSelection, allWeeks, plannerCoursesInner)}
-        className="w-full text-left px-1.5 py-1 rounded bg-indigo-600/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
-        ↓ Verschieben (+1)
-      </button>
-      <button onClick={() => batchInsertBefore(multiSelection, allWeeks, plannerCoursesInner)}
-        className="w-full text-left px-1.5 py-1 rounded bg-indigo-600/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-indigo-500">
-        ⊞ Einfügen davor
-      </button>
       <button onClick={clearMultiSelect}
         className="w-full text-left px-1.5 py-1 rounded bg-transparent text-indigo-300 border border-indigo-500/50 text-[9px] cursor-pointer hover:bg-indigo-800/30">
         ✕ Aufheben
@@ -466,7 +457,7 @@ export function Legend() {
     ['Ferien', '#ffffff'],
   ];
   return (
-    <div className="px-4 py-1 flex gap-2.5 flex-wrap text-[8px] text-gray-400 border-b border-slate-900/60">
+    <div className="px-4 py-1 flex gap-2.5 flex-wrap text-[8px] border-b" style={{ background: 'var(--bg-primary)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
       {activeCategories.map(cat => (
         <span key={cat.key} className="flex items-center gap-0.5">
           <span className="w-2 h-2 rounded-sm border border-black/10" style={{ background: cat.bg }} />

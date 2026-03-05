@@ -665,7 +665,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
       })()}
 
       {/* Flat block list + new sequence form (v3.76 #3: inline like UE button) */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 pb-8 space-y-3" style={{ overscrollBehavior: 'contain' }}>
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 pb-8 space-y-3" style={{ overscrollBehavior: 'contain' }}>
         {/* New sequence form — inline at top */}
         <div>
           {showNewForm ? (
@@ -707,11 +707,11 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
   );
 
   if (embedded) {
-    return <div className="flex flex-col flex-1 overflow-hidden">{content}</div>;
+    return <div className="flex flex-col flex-1 min-h-0 overflow-hidden">{content}</div>;
   }
 
   return (
-    <div className="fixed right-0 top-0 bottom-0 w-[320px] border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden" style={{ background: '#151b2e', overscrollBehavior: 'contain' }} onWheel={(e) => e.stopPropagation()}>
+    <div className="fixed right-0 top-0 bottom-0 w-[320px] border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)]" style={{ background: 'var(--panel-bg)', overscrollBehavior: 'contain' }} onWheel={(e) => e.stopPropagation()}>
       <div className="px-3 py-2 border-b border-slate-600 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-bold text-gray-200">▧ Sequenzen</span>

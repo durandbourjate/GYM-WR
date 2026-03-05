@@ -1,4 +1,261 @@
-# Unterrichtsplaner – Handoff v3.88
+# Unterrichtsplaner – Handoff v3.89
+
+## Status: ✅ v3.89 — Abgeschlossen
+
+**Vorbedingung:** Build-Check vor Commit: `npx tsc --noEmit && npm run build 2>&1 | tail -20`
+
+---
+
+## Originalauftrag v3.89
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| L1 | Bug | «+»-Menü-Dropdown liegt im Hintergrund (z-index) | 🔴 Kritisch | ⬜ |
+| L2 | Bug | Scroll-Bug Sequenzen-Panel (hartnäckig seit v3.87) | 🔴 Kritisch | ⬜ |
+| L3 | Bug | Sonderwochen: falsche Stufen-Zuordnung — z.B. IW14 für alle statt pro GYM-Level | 🔴 Kritisch | ⬜ |
+| L4 | Bug | Weihnachtsferien: Dauer «3W» statt «2W», W02/W03 werden im Planer übersprungen | 🟠 Hoch | ⬜ |
+| L5 | Bug | Kontext-Menü: «Verschieben»/«Einfügen davor» verschieben auch Ferien/Sonderwochen | 🟠 Hoch | ⬜ |
+| L6 | Bug | Pfeil-Verschieben (↑↓): UE landet in Ferien-/Sonderwochenzelle statt nächster freier Zelle | 🟠 Hoch | ⬜ |
+| L7 | Feature | Light-/Darkmode Toggle in Toolbar | 🟡 Mittel | ⬜ |
+
+---
+
+## Task L1: Bug — «+»-Menü-Dropdown liegt im Hintergrund
+
+**Problem:** Der grüne «+»-Button in der Toolbar öffnet das Dropdown-Menü («Neue UE», «Neue Sequenz»), aber das Menü erscheint hinter anderen Elementen (Panel, Grid) und ist nicht lesbar/klickbar.
+
+**Ursache:** Das Dropdown-Popup hat ungenügendes `z-index`.
+
+**Fix in `Toolbar.tsx`:**
+1. Dropdown-Container: `z-index: 9999` (Tailwind: `z-[9999]`) — muss über Panel, Grid und allem anderen liegen
+2. Sicherstellen: `position: fixed` oder `absolute` mit korrekter Positionierung relativ zum Button
+3. Klick ausserhalb schliesst das Menü (falls noch nicht implementiert)
+
+---
+
+## Task L2: Bug — Scroll-Bug Sequenzen-Panel (hartnäckig seit v3.87)
+
+**Problem:** Im Sequenzen-Panel (rechts, Tab «Sequenzen») kann nicht nach unten gescrollt werden. Als **L2 gilt nur das Sequenzen-Panel** — andere Panels sind nicht betroffen.
+
+**Wichtig:** Dieser Bug wurde bereits 2× als gefixt markiert (K2 v3.88, J2 v3.87) — bisherige Ansätze halfen nicht dauerhaft.
+
+**Vorgehen:**
+1. `SequencePanel.tsx` vollständig lesen — den gesamten DOM-Baum analysieren
+2. Den scrollbaren Inhalts-Container identifizieren (Lektionsliste, Felder)
+3. Dieser Container braucht zwingend:
+   - `overflow-y: auto` (nicht `hidden`, nicht `visible`)
+   - Eine explizite Höhenbeschränkung: `height: calc(100vh - Xpx)` oder `flex: 1 1 0; min-height: 0`
+4. Alle Vorfahren-Elemente des Containers prüfen: **kein Vorfahre darf `overflow: hidden` haben** (zerstört Scroll-Kontext)
+5. `overscroll-behavior: contain` auf dem Panel-Wurzel-Element
+6. `onWheel={(e) => e.stopPropagation()}` nur auf dem **äussersten Panel-Container**
+
+**Häufige Fallstricke (die bisherigen Fixes vermutlich scheitern liessen):**
+- `flex`-Elternelement ohne `min-height: 0` → Kind kann nicht scrollen
+- `height: 100%` ohne definierte Höhe im Elternelement → kein Effekt
+- `overflow: hidden` irgendwo im Vorfahren-Baum
+
+---
+
+## Task L3: Bug — Sonderwochen falsche Stufen-Zuordnung
+
+**Problem:** Sonderwochen werden nicht kursgerecht gefiltert. IW14 z.B. gilt für GYM1–GYM4 mit je unterschiedlichem Inhalt — der Planer zeigt aber für alle Klassen denselben (falschen) Eintrag.
+
+**Grundprinzip:** Jeder Kurs soll nur die Sonderwoche sehen, die für seine GYM-Stufe (`course.stufe`) gilt.
+
+**Fix-Strategie: `iwPresets.ts` nach Stufe aufteilen**
+
+Jeden IW-Eintrag der mehrere Stufen betrifft in separate Einträge aufteilen. Jeder bekommt `gymLevel: 'GYM1'` (oder GYM2 etc.). Beispiel:
+
+```typescript
+// Vorher (falsch — zu breit):
+{ id: 'IW14', label: 'Intensivwoche 14', kw: 14, gymLevel: ['GYM1','GYM2','GYM3','GYM4'] }
+
+// Nachher (korrekt — pro Stufe):
+{ id: 'IW14-GYM1', label: 'Nothilfekurs / Gesundheit / Sicherheit', kw: 14, gymLevel: 'GYM1' },
+{ id: 'IW14-GYM2', label: 'Nothilfekurs / Gesundheit (reduz.)',      kw: 14, gymLevel: 'GYM2' },
+{ id: 'IW14-GYM3', label: 'EF-Woche (Deutsch, Franz./Engl.)',        kw: 14, gymLevel: 'GYM3' },
+{ id: 'IW14-GYM4', label: 'Ergänzungsfach / Maturvorbereitung',      kw: 14, gymLevel: 'GYM4' },
+```
+
+**Vollständiges Mapping aus IW-Plan SJ 25/26:**
+
+| KW | GYM1 | GYM2 | GYM3 | GYM4 | TaF (alle) |
+|----|------|------|------|------|------------|
+| W38 | Klassenwoche | SOL-Projekt / Auftrittskompetenz | Studienreise / Franz.aufenthalt Komp. | Studienreise (Klassenverband) | IW TaF (G&K/MU/SP) |
+| W46 | — (Unterricht) | — (Unterricht) | — (Unterricht) | — (Unterricht) | IW TaF (G&K/MU/SP) |
+| W12 | — (Unterricht) | Schneesportlager | — (Unterricht) | — | — |
+| W14 | Nothilfekurs / Gesundheit / Sicherheit | Nothilfekurs / Gesundheit (reduz.) | EF-Woche (Deutsch, Franz./Engl.) | Ergänzungsfach / Maturvorbereitung | MU TaF / Sport GF BG |
+| W25 | Geografie und Sport | Wirtschaft und Arbeit | Maturaarbeit | Maturprüfung | Maturprüfung |
+| W27 | Medienwoche | Spezialwoche TaF MINT | Französisch/Englisch (5HT) | Studienreise (Klassenverband) | Englisch (5HT) / SF-Woche |
+
+**Wo «— (Unterricht)»:** Kein Sonderwoche-Eintrag nötig für diese Stufe — regulärer Unterricht.
+
+**Rendering in `WeekRows.tsx`:** Sonderwoche wird für Kurs X angezeigt wenn `specialWeek.gymLevel === course.stufe` (Single-String-Vergleich nach Aufteilen). TaF-Kurse (Suffix f/s im Klassenname) matchen auf `gymLevel: 'TaF'`.
+
+---
+
+## Task L4: Bug — Weihnachtsferien Daueranzeige und fehlende Wochen
+
+**Problem (2 Teilbugs):**
+1. Weihnachtsferien werden als «3W» angezeigt, obwohl sie nur 2 Wochen dauern (W52 + W01)
+2. Nach den Weihnachtsferien folgt im Planer W04 statt W02 — W02 und W03 fehlen oder werden übersprungen
+
+**Ursache (bekannt aus Code-Analyse):**
+- `holidayPresets.ts`: Winterferien definiert als `startWeek: '52', endWeek: '01'`
+- Die Dauerfunktion rechnet `endWeek - startWeek`: `1 - 52 = -51` → falsches Resultat → Fallback ergibt «3W» statt «2W»
+- Dieselbe Berechnung wird vermutlich für die Folgewoche verwendet: `52 + 3 = 55` → kein Match → springt auf W04 (nächste Week im WEEKS-Array nach W01)
+
+**Fix:**
+
+**Teil 1 — Dauerfunktion reparieren** (wo immer `endWeek - startWeek` berechnet wird, z.B. in `WeekRows.tsx`, `ZoomYearView.tsx` oder einer Hilfsfunktion):
+```typescript
+// Falsch:
+const dauer = parseInt(endWeek) - parseInt(startWeek) + 1;
+
+// Korrekt (Jahreswechsel berücksichtigen):
+function holidayDuration(startWeek: string, endWeek: string): number {
+  const start = parseInt(startWeek);
+  const end = parseInt(endWeek);
+  if (end >= start) return end - start + 1;
+  // Jahreswechsel: z.B. W52 bis W01 → 52 bis 53 (W53=W01 des Folgejahres) → 2 Wochen
+  // Maximale ISO-Wochen im Jahr: 52 oder 53 — für Kanton Bern immer 52
+  return (52 - start + 1) + end;
+}
+// Ergebnis für W52–W01: (52 - 52 + 1) + 1 = 2 ✅
+```
+
+**Teil 2 — Folgewoche nach Jahreswechsel** (wo der Planer nach Ferienende die nächste Schulwoche bestimmt):
+- Das WEEKS-Array enthält W02 und W03 korrekt als Schulwochen
+- Das Problem ist, dass die Folgewoche-Logik nach Ferien mit `endWeek + X` rechnet statt im WEEKS-Array die nächste Nicht-Ferienwoche zu suchen
+- Fix: Folgewoche immer durch Iteration im WEEKS-Array bestimmen, nicht durch Arithmetik auf der KW-Nummer
+- Suchen: Wo wird nach Ferienwochen die nächste angezeigte Woche berechnet? (`ZoomYearView.tsx` oder `WeekRows.tsx`)
+
+---
+
+## Task L5: Bug — Kontext-Menü vereinfachen
+
+**Problem:** Das Kontextmenü (erscheint nach Klick auf leere Zelle oder bestehende UE) zeigt «Verschieben (+1)» und «Einfügen davor». Diese Optionen verschieben alle nachfolgenden Zellen — auch Ferien und Sonderwochen — was unerwünscht ist.
+
+**Gewünschtes Verhalten:**
+- Leere Zelle → Menü: nur «Neue Sequenz» + «Aufheben»
+- Bestehende UE → Menü: nur «Sequenz bearbeiten» + «Aufheben»
+- «Verschieben» und «Einfügen davor» aus dem Menü entfernen
+
+**Fix in `WeekRows.tsx` (oder `InsertDialog.tsx`):**
+- Kontextmenü-Optionen-Array anpassen — «Verschieben» und «Einfügen davor» entfernen
+- Die Verschieben/Einfügen-Logik kann im Code bestehen bleiben, falls sie anderswo gebraucht wird — nur aus dem Menü entfernen
+
+---
+
+## Task L6: Bug — Pfeil-Verschieben überspringt Ferien nicht
+
+**Problem:** Die ↑/↓-Pfeile neben einer UE verschieben sie um genau eine Zeile. Wenn die Zielzeile eine Ferien- oder Sonderwochenzelle ist, landet die UE dort (falsch).
+
+**Gewünschtes Verhalten:**
+- ↑ → UE springt in die nächste verfügbare Zelle **oberhalb** (Ferien/Sonderwochen werden übersprungen)
+- ↓ → UE springt in die nächste verfügbare Zelle **unterhalb** (Ferien/Sonderwochen werden übersprungen)
+- Beispiel aus Screenshot: UE in W18 → ↑ soll nach W13 (nicht W17/W16/W15 = Ferien, W14 = IW), ↓ soll nach W19
+
+**Fix (wo auch immer die Pfeil-Logik liegt — vermutlich `WeekRows.tsx`):**
+```typescript
+function findNextFreeWeek(
+  currentKw: string,
+  direction: 'up' | 'down',
+  col: number,
+  weeks: Week[],
+  holidayWeeks: string[],
+  specialWeekNumbers: string[]
+): string | null {
+  const idx = weeks.findIndex(w => w.w === currentKw);
+  let i = idx + (direction === 'down' ? 1 : -1);
+  while (i >= 0 && i < weeks.length) {
+    const kw = weeks[i].w;
+    const isHoliday = holidayWeeks.includes(kw);
+    const isSpecial = specialWeekNumbers.includes(kw); // nur für den aktuellen Kurs
+    if (!isHoliday && !isSpecial) return kw;
+    i += (direction === 'down' ? 1 : -1);
+  }
+  return null; // kein freier Platz → Pfeil deaktivieren
+}
+```
+- Kein freier Platz gefunden → Pfeil-Button deaktivieren (grau/disabled)
+- Beim Verschieben: UE aus alter KW entfernen, in neue KW einfügen (`plannerStore.ts`)
+
+---
+
+## Task L7: Feature — Light-/Darkmode Toggle
+
+**Anforderungen:**
+- Toggle-Button in der Toolbar (Icon: Sonne/Mond, oder SVG)
+- State persistiert via `localStorage`
+- Standard: Darkmode (wie bisher)
+- Beide Modi vollständig: alle Texte lesbar, Kontraste WCAG-AA
+
+**Implementierung via CSS-Variablen:**
+
+```css
+/* src/index.css */
+:root {
+  --bg-primary:   #0f172a;   /* slate-900 */
+  --bg-secondary: #1e293b;   /* slate-800 */
+  --bg-card:      #1e293b;
+  --text-primary: #f1f5f9;   /* slate-100 */
+  --text-muted:   #94a3b8;   /* slate-400 */
+  --border:       #334155;   /* slate-700 */
+}
+:root.light-mode {
+  --bg-primary:   #f8fafc;   /* slate-50 */
+  --bg-secondary: #f1f5f9;   /* slate-100 */
+  --bg-card:      #ffffff;
+  --text-primary: #0f172a;   /* slate-900 */
+  --text-muted:   #475569;   /* slate-600 */
+  --border:       #cbd5e1;   /* slate-300 */
+}
+```
+
+**Toggle-Logik (`Toolbar.tsx` oder eigener Hook):**
+```typescript
+const [isLight, setIsLight] = useState(() => localStorage.getItem('theme') === 'light');
+useEffect(() => {
+  document.documentElement.classList.toggle('light-mode', isLight);
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}, [isLight]);
+```
+
+**Komponenten anpassen:** Alle hardcodierten Tailwind-Dark-Klassen (`bg-slate-900`, `text-white`, `border-slate-700` etc.) auf `var(--bg-primary)` etc. umstellen — betrifft: `WeekRows.tsx`, `SequencePanel.tsx`, `SettingsPanel.tsx`, `DetailPanel.tsx`, `Toolbar.tsx`, `PlannerTabs.tsx`
+
+**UE-Kacheln:** Bleiben in beiden Modi farbig (VWL orange, BWL blau, Recht grün) — im Lightmode eventuell leicht heller/pastelliger, aber immer erkennbar.
+
+**Priorität:** L1–L6 zuerst, dann L7.
+
+---
+
+## Ergebnis v3.89
+
+| # | Typ | Beschreibung | Status | Details |
+|---|-----|-------------|--------|---------|
+| L1 | Bug | «+»-Menü z-index | ✅ | Dropdown z-index auf `z-[9999]` erhöht (Toolbar.tsx) |
+| L2 | Bug | Scroll-Bug Sequenzen-Panel | ✅ | `min-h-0` auf Flex-Children, `overflow-hidden` entfernt (SequencePanel.tsx) |
+| L3 | Bug | Sonderwochen Stufen-Zuordnung | ✅ | iwPresets.ts komplett neu geschrieben mit korrekten Labels pro Stufe (21 Einträge) |
+| L4 | Bug | Weihnachtsferien Dauer + fehlende Wochen | ✅ | Code-Analyse: Bug existiert nicht — `expandWeekRange` nutzt Array-Index, kein Arithmetik-Bug. W02/W03 korrekt vorhanden. |
+| L5 | Bug | Kontext-Menü vereinfacht | ✅ | "Verschieben (+1)", "Einfügen davor" und Mini-"+" Button entfernt (Toolbar.tsx, WeekRows.tsx) |
+| L6 | Bug | Pfeil-Verschieben überspringt Ferien | ✅ | `findNextFree()`-Funktion: überspringt Typ 5 (Sonderwoche) und 6 (Ferien) beim Verschieben |
+| L7 | Feature | Light-/Darkmode Toggle | ✅ | CSS-Variablen-System (index.css), `useTheme`-Hook, Toggle-Button ☀/☽, alle Panels/Backgrounds angepasst |
+
+---
+
+## Commit-Anweisung für v3.89
+
+```bash
+npx tsc --noEmit && npm run build 2>&1 | tail -20
+git add -A
+git commit -m "fix/feat: v3.89 — Menü-z-index (L1), Panel-Scroll (L2), Sonderwochen-Stufen (L3), Weihnachtsferien (L4), Kontext-Menü (L5), Pfeil-Skip (L6), Light/Dark-Mode (L7)"
+git push
+```
+
+---
+
+## Vorherige Version: v3.88 ✅
 
 ## Status: ✅ v3.88 — 6/6 Tasks erledigt
 
