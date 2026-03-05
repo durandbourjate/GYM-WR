@@ -4,6 +4,15 @@
 
 **Vorbedingung:** Build-Check vor Commit: `npx tsc --noEmit && npm run build 2>&1 | tail -20`
 
+> ⚠️ **Deploy-Weg: Immer lokalen Build verwenden — NICHT einfach `git push` ohne vorherigen `bash deploy.sh`.**
+> Ein Push ohne lokalen Build triggert GitHub Actions (langsam, ~10–15 Min Queue). Korrekte Reihenfolge:
+> ```bash
+> # 1. Aus Unterrichtsplaner/:
+> npx tsc --noEmit && npm run build && bash deploy.sh
+> # 2. Aus GYM-WR-DUY/:
+> git add -A && git commit -m "fix/feat: vX.XX — ..." && git push
+> ```
+
 ---
 
 ## Originalauftrag v3.89
