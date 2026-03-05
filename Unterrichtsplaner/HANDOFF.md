@@ -136,14 +136,14 @@ git push
 
 ## Status: ✅ v3.89 — Abgeschlossen
 
-**Deploy-Weg: Immer lokal via `deploy.sh` — GitHub Actions ist deaktiviert**
+**Deploy-Weg: GitHub Actions (automatisch bei Push)**
 ```bash
-# 1. Aus Unterrichtsplaner/:
-npx tsc --noEmit && bash deploy.sh
-# 2. Aus GYM-WR-DUY/:
+# Aus Unterrichtsplaner/:
+npx tsc --noEmit
+# Aus GYM-WR-DUY/:
 git add -A && git commit -m "fix/feat: vX.XX — ..." && git push
 ```
-`deploy.sh` stellt zuerst `src/index.dev.html` wieder her, baut mit Vite, und kopiert den Output ins Repo-Root. GitHub Actions würde nochmals bauen und scheitern — deshalb deaktiviert.
+GitHub Actions baut nach jedem Push auf `main` automatisch (~1–2 Min). Kein `deploy.sh`, kein manueller Build nötig.
 
 ---
 
