@@ -66,12 +66,13 @@ function Section({ title, children, defaultOpen = false, actions, sectionId, for
   // G6: Section von aussen öffnen
   useEffect(() => { if (forceOpen) setOpen(true); }, [forceOpen]);
   return (
-    <div className="border border-slate-700 rounded-lg overflow-hidden" data-section={sectionId}>
-      <div className="flex items-center bg-slate-800 hover:bg-slate-750">
+    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }} data-section={sectionId}>
+      <div className="flex items-center" style={{ background: 'var(--bg-secondary)' }}>
         <button onClick={() => setOpen(!open)}
-          className="flex-1 px-3 py-2 text-left text-[11px] font-semibold text-gray-200 cursor-pointer flex items-center justify-between">
+          className="flex-1 px-3 py-2 text-left text-[11px] font-semibold cursor-pointer flex items-center justify-between"
+          style={{ color: 'var(--text-primary)' }}>
           {title}
-          <span className="text-gray-400">{open ? '▾' : '▸'}</span>
+          <span style={{ color: 'var(--text-muted)' }}>{open ? '▾' : '▸'}</span>
         </button>
         {open && actions && (
           <div className="flex items-center gap-1 pr-2" onClick={(e) => e.stopPropagation()}>
@@ -79,7 +80,7 @@ function Section({ title, children, defaultOpen = false, actions, sectionId, for
           </div>
         )}
       </div>
-      {open && <div className="p-3 space-y-2 bg-slate-900/50">{children}</div>}
+      {open && <div className="p-3 space-y-2" style={{ background: 'var(--bg-primary)' }}>{children}</div>}
     </div>
   );
 }
@@ -96,7 +97,8 @@ function SmallInput({ value, onChange, placeholder, className = '', type = 'text
       onBlur={() => { if (local !== value) onChange(local); }}
       onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); } }}
       placeholder={placeholder} type={type}
-      className={`bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`} />
+      className={`rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`}
+      style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
   );
 }
 
@@ -105,7 +107,8 @@ function SmallSelect<T extends string>({ value, onChange, options }: {
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value as T)}
-      className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer">
+      className="rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+      style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
       {options.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
     </select>
   );
@@ -148,16 +151,18 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center" onClick={onClose}>
-      <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 w-80 shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <div className="text-[11px] font-bold text-gray-200 mb-3">📥 {label} in Sammlung speichern</div>
+      <div className="rounded-lg p-4 w-80 shadow-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="text-[11px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📥 {label} in Sammlung speichern</div>
         <div className="space-y-2">
           {existing.length > 0 && (
             <div className="flex gap-2 text-[9px]">
-              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'replace' ? 'text-blue-300' : 'text-gray-400'}`}>
+              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'replace' ? 'text-blue-300' : ''}`}
+                style={mode === 'replace' ? undefined : { color: 'var(--text-muted)' }}>
                 <input type="radio" checked={mode === 'replace'} onChange={() => setMode('replace')} className="cursor-pointer" />
                 Bestehende ersetzen
               </label>
-              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'new' ? 'text-blue-300' : 'text-gray-400'}`}>
+              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'new' ? 'text-blue-300' : ''}`}
+                style={mode === 'new' ? undefined : { color: 'var(--text-muted)' }}>
                 <input type="radio" checked={mode === 'new'} onChange={() => setMode('new')} className="cursor-pointer" />
                 Als neue speichern
               </label>
@@ -165,7 +170,8 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
           )}
           {mode === 'replace' && existing.length > 0 ? (
             <select value={selectedId} onChange={e => setSelectedId(e.target.value)}
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[10px] outline-none cursor-pointer">
+              className="w-full rounded px-2 py-1.5 text-[10px] outline-none cursor-pointer"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               {existing.map(item => (
                 <option key={item.id} value={item.id}>{item.title}</option>
               ))}
@@ -174,12 +180,13 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
             <input value={newName} onChange={e => setNewName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
               placeholder="Name…" autoFocus
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[10px] outline-none focus:border-blue-400" />
+              className="w-full rounded px-2 py-1.5 text-[10px] outline-none focus:border-blue-400"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
           )}
         </div>
         <div className="flex gap-1 mt-3">
           <button onClick={handleSave} className="flex-1 py-1.5 rounded text-[9px] font-medium bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">Speichern</button>
-          <button onClick={onClose} className="flex-1 py-1.5 rounded text-[9px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-1.5 rounded text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
         </div>
       </div>
     </div>
@@ -195,10 +202,10 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center" onClick={onClose}>
-      <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 w-80 max-h-[60vh] shadow-xl flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="text-[11px] font-bold text-gray-200 mb-3">📚 {label} aus Sammlung laden</div>
+      <div className="rounded-lg p-4 w-80 max-h-[60vh] shadow-xl flex flex-col" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="text-[11px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📚 {label} aus Sammlung laden</div>
         {items.length === 0 ? (
-          <div className="text-[9px] text-gray-400 text-center py-4">
+          <div className="text-[9px] text-center py-4" style={{ color: 'var(--text-muted)' }}>
             Keine gespeicherten {label} in der Sammlung.
           </div>
         ) : (
@@ -208,15 +215,16 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
               const isFullConfig = item.type === 'settings';
               return (
                 <button key={item.id} onClick={() => onLoad(item.settingsSnapshot!)}
-                  className="w-full text-left px-3 py-2 rounded bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-blue-500 cursor-pointer transition-all">
-                  <div className="text-[10px] font-semibold text-gray-200">{item.title}</div>
-                  <div className="text-[8px] text-gray-400">{isFullConfig ? '(Gesamtkonfiguration)' : label} · {dateStr}</div>
+                  className="w-full text-left px-3 py-2 rounded hover:border-blue-500 cursor-pointer transition-all"
+                  style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)' }}>
+                  <div className="text-[10px] font-semibold" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
+                  <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{isFullConfig ? '(Gesamtkonfiguration)' : label} · {dateStr}</div>
                 </button>
               );
             })}
           </div>
         )}
-        <button onClick={onClose} className="w-full py-1.5 rounded text-[9px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
+        <button onClick={onClose} className="w-full py-1.5 rounded text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
       </div>
     </div>
   );
@@ -244,12 +252,14 @@ function RubricCollectionButtons({ rubricType, getData, onLoad }: {
     <>
       <div className="flex gap-1">
         <button onClick={() => setShowSave(true)}
-          className="px-1.5 py-0.5 rounded text-[8px] bg-slate-700/50 border border-slate-600 text-gray-400 hover:text-gray-200 hover:border-slate-500 cursor-pointer transition-all"
+          className="px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all"
+          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' }}
           title={`${RUBRIC_LABELS[rubricType]} in Sammlung speichern`}>
           📥 Speichern
         </button>
         <button onClick={() => setShowLoad(true)}
-          className="px-1.5 py-0.5 rounded text-[8px] bg-slate-700/50 border border-slate-600 text-gray-400 hover:text-gray-200 hover:border-slate-500 cursor-pointer transition-all"
+          className="px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all"
+          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' }}
           title={`${RUBRIC_LABELS[rubricType]} aus Sammlung laden`}>
           📚 Laden
         </button>
@@ -261,7 +271,8 @@ function RubricCollectionButtons({ rubricType, getData, onLoad }: {
 }
 
 /** Compact action button style for Section headers (v3.80 C1) */
-const ACT_BTN = "px-1.5 py-0.5 rounded text-[8px] bg-slate-700/50 border border-slate-600 text-gray-400 hover:text-gray-200 hover:border-slate-500 cursor-pointer transition-all";
+const ACT_BTN = "px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all";
+const ACT_BTN_STYLE: React.CSSProperties = { background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' };
 
 /** Combined header actions for a settings rubric: [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import] */
 function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onImport, onClearAll, itemCount }: {
@@ -271,10 +282,10 @@ function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onIm
 }) {
   return (
     <>
-      {onAdd && <button onClick={onAdd} className={ACT_BTN} title="Hinzufügen">+</button>}
+      {onAdd && <button onClick={onAdd} className={ACT_BTN} style={ACT_BTN_STYLE} title="Hinzufügen">+</button>}
       <RubricCollectionButtons rubricType={rubricType} getData={getData} onLoad={onLoad} />
       {onImport && (
-        <label className={ACT_BTN} title="Aus Datei importieren">
+        <label className={ACT_BTN} style={ACT_BTN_STYLE} title="Aus Datei importieren">
           ⬆<input type="file" accept={importAccept || '.json'} className="hidden" onChange={onImport} />
         </label>
       )}
@@ -283,6 +294,7 @@ function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onIm
           onClick={onClearAll}
           disabled={!itemCount || itemCount === 0}
           className={`${ACT_BTN} ${!itemCount || itemCount === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-red-300 hover:border-red-500/50'}`}
+          style={ACT_BTN_STYLE}
           title={itemCount ? `Alle ${itemCount} Einträge entfernen` : 'Keine Einträge vorhanden'}
         >✕ Alle</button>
       )}
@@ -329,7 +341,7 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
 
   return (
     <div className="space-y-2">
-      <p className="text-[8px] text-gray-400">Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
+      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
       {subjects.length === 0 && (
         <p className="text-[9px] text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1.5">
           Keine Fachbereiche konfiguriert. Füge einen Fachbereich hinzu oder wähle eine Vorlage.
@@ -338,7 +350,7 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
       {subjects.map(s => (
         <div key={s.id}>
           {editingId === s.id ? (
-            <div className="bg-slate-800 rounded p-2 space-y-1.5">
+            <div className="rounded p-2 space-y-1.5" style={{ background: 'var(--bg-secondary)' }}>
               <div className="flex gap-1 items-center">
                 <input type="color" value={s.color} onChange={(e) => update(s.id, { color: e.target.value })}
                   className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent" />
@@ -346,7 +358,7 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
                 <SmallInput value={s.shortLabel} onChange={(v) => update(s.id, { shortLabel: v })} placeholder="Kürzel" className="w-12" />
               </div>
               <div className="flex gap-1 items-center">
-                <span className="text-[7px] text-gray-400">Vorschau:</span>
+                <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Vorschau:</span>
                 {(() => { const cv = generateColorVariants(s.color); return (
                   <span className="text-[8px] px-1.5 py-0.5 rounded font-semibold" style={{ background: cv.bg, color: cv.fg, border: `1px solid ${cv.border}` }}>
                     {s.shortLabel || s.label || '?'}
@@ -359,26 +371,29 @@ function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onC
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-[9px] text-gray-400 hover:text-gray-200 cursor-pointer group px-1 py-0.5"
+            <div className="flex items-center gap-2 text-[9px] cursor-pointer group px-1 py-0.5"
+              style={{ color: 'var(--text-muted)' }}
               onClick={() => setEditingId(s.id)}>
               <div className="w-3 h-3 rounded-sm shrink-0" style={{ background: s.color }} />
-              <span className="font-medium text-gray-300">{s.label || '(unbenennt)'}</span>
-              <span className="text-gray-500">{s.shortLabel}</span>
+              <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{s.label || '(unbenennt)'}</span>
+              <span style={{ color: 'var(--text-dim)' }}>{s.shortLabel}</span>
             </div>
           )}
         </div>
       ))}
       <div className="flex gap-1 flex-wrap">
         <button onClick={addSubject}
-          className="flex-1 py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+          className="flex-1 py-1 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+          style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           + Fachbereich hinzufügen
         </button>
       </div>
       {/* Fach-Dropdown (v3.82 E5: Einzelfächer statt Gruppen) */}
       <div className="flex gap-1 items-center">
-        <span className="text-[8px] text-gray-500">Vorlage:</span>
+        <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>Vorlage:</span>
         <select
-          className="bg-slate-800 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] text-gray-300 outline-none cursor-pointer flex-1"
+          className="rounded px-1.5 py-0.5 text-[9px] outline-none cursor-pointer flex-1"
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}
           value=""
           onChange={(e) => {
             const preset = SUBJECT_PRESETS.find(p => p.id === e.target.value);
@@ -432,8 +447,9 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
       {presets.map(p => (
         <button key={p.min} onClick={() => { onChange(p.min); setCustomMode(false); }}
           className={`px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all ${
-            value === p.min ? 'bg-blue-600/30 border-blue-500 text-gray-200' : 'border-gray-600 text-gray-400 hover:text-gray-300'
-          }`}>
+            value === p.min ? 'bg-blue-600/30 border-blue-500' : ''
+          }`}
+          style={value === p.min ? { color: 'var(--text-primary)' } : { borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           {p.label}
         </button>
       ))}
@@ -443,12 +459,14 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
             onChange={(e) => { const n = parseInt(e.target.value) || 0; setCustomVal(e.target.value); if (n > 0) onChange(n); }}
             onKeyDown={(e) => { if (e.key === 'Escape') setCustomMode(false); }}
             placeholder="min"
-            className="bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[9px] outline-none w-14" />
-          <span className="text-[8px] text-gray-400">min</span>
+            className="border border-blue-400 rounded px-1.5 py-0.5 text-[9px] outline-none w-14"
+            style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }} />
+          <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>min</span>
         </div>
       ) : (
         <button onClick={() => setCustomMode(true)}
-          className="px-1.5 py-0.5 rounded text-[9px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 cursor-pointer">
+          className="px-1.5 py-0.5 rounded text-[9px] border border-dashed cursor-pointer"
+          style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           Andere
         </button>
       )}
@@ -513,16 +531,16 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
   return (
     <div className="space-y-2">
       {grouped.map(({ stableKey, courses: group }) => (
-        <div key={stableKey} ref={group.some(c => c.id === editingId) ? focusRef : undefined} className="border border-slate-700/50 rounded p-2 space-y-1">
-          <div className="text-[9px] font-semibold text-gray-300 cursor-pointer hover:text-blue-300 transition-colors"
+        <div key={stableKey} ref={group.some(c => c.id === editingId) ? focusRef : undefined} className="rounded p-2 space-y-1" style={{ border: '1px solid var(--border)' }}>
+          <div className="text-[9px] font-semibold cursor-pointer hover:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}
             onClick={() => setEditingId(editingId === group[0].id ? null : group[0].id)}>
             {group[0].cls || '(neu)'} <span className="text-blue-400">{group[0].typ}</span>
-            <span className="text-[7px] text-gray-500 ml-1">({group.map(c => c.day).join(', ')})</span>
+            <span className="text-[7px] ml-1" style={{ color: 'var(--text-dim)' }}>({group.map(c => c.day).join(', ')})</span>
           </div>
           {group.map(c => (
             <div key={c.id}>
               {editingId === c.id ? (
-                <div className="space-y-1.5 bg-slate-800 rounded p-2">
+                <div className="space-y-1.5 rounded p-2" style={{ background: 'var(--bg-secondary)' }}>
                   <div className="flex gap-1 flex-wrap">
                     <SmallInput value={c.cls} onChange={(v) => updateCourse(c.id, { cls: v })} placeholder="Klasse" className="w-20" />
                     {subjects.length > 0
@@ -531,7 +549,8 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                     }
                     {schoolLevel && (
                       <select value={c.stufe || ''} onChange={(e) => updateCourse(c.id, { stufe: e.target.value || undefined })}
-                        className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer">
+                        className="rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+                        style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
                         <option value="">Stufe…</option>
                         {STUFE_OPTIONS[schoolLevel].map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
@@ -544,8 +563,9 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                         const isChecked = isThisDay || !!sibling;
                         return (
                           <label key={d} className={`flex items-center gap-0 text-[8px] cursor-pointer select-none px-0.5 py-0.5 rounded ${
-                            isChecked ? 'text-blue-300 bg-blue-900/30' : 'text-gray-500 hover:text-gray-400'
-                          }`}>
+                            isChecked ? 'text-blue-300 bg-blue-900/30' : ''
+                          }`}
+                            style={isChecked ? undefined : { color: 'var(--text-dim)' }}>
                             <input type="checkbox" checked={isChecked}
                               className="cursor-pointer w-3 h-3"
                               onChange={(e) => {
@@ -576,47 +596,47 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                   <div>
                     <div className="flex gap-1 items-start flex-wrap">
                       <div>
-                        <label className="text-[8px] text-gray-400 mb-0.5 block">Beginn</label>
+                        <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Beginn</label>
                         <SmallInput value={c.from} onChange={(v) => {
                           const autoEnd = addMinutesToTime(v, c.les * 45);
                           updateCourse(c.id, { from: v, to: autoEnd });
                         }} placeholder="08:05" className="w-28 text-[11px]" type="time" />
                       </div>
-                      <span className="text-[10px] text-gray-400 mt-4">–</span>
+                      <span className="text-[10px] mt-4" style={{ color: 'var(--text-muted)' }}>–</span>
                       <div>
-                        <label className="text-[8px] text-gray-400 mb-0.5 block">Ende <span className="text-gray-500">(auto)</span></label>
+                        <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Ende <span style={{ color: 'var(--text-dim)' }}>(auto)</span></label>
                         <SmallInput value={c.to} onChange={(v) => updateCourse(c.id, { to: v })} placeholder="08:50" className="w-28 text-[11px]" type="time" />
                       </div>
                     </div>
                     {c.les > 1 && <p className="text-[6px] text-yellow-600 mt-0.5" title="Pausen zwischen Lektionen werden nicht automatisch berücksichtigt. Endzeit ggf. manuell anpassen.">⚠ ohne Pausen</p>}
                   </div>
                   <div>
-                    <label className="text-[8px] text-gray-400 mb-0.5 block">Dauer</label>
+                    <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Dauer</label>
                     <CourseDurationPicker value={c.les * baseDuration} baseDuration={baseDuration} onChange={(min) => {
                       const autoEnd = addMinutesToTime(c.from, min);
                       updateCourse(c.id, { les: durationToLes(min, baseDuration), to: autoEnd });
                     }} />
                   </div>
                   <div className="flex gap-3 items-center flex-wrap" title="Für unterschiedliche Tage pro Semester: separate Einträge mit S1 bzw. S2 erstellen (via Tage-Checkboxen oben)">
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer">
+                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }}>
                       <input type="checkbox" checked={c.hk} onChange={(e) => updateCourse(c.id, { hk: e.target.checked })} className="cursor-pointer" />
                       HK
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer" title="Semester 1 — Eintrag nur im 1. Semester aktiv">
+                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 1 — Eintrag nur im 1. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(1)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 1 as Semester])] : c.semesters.filter(x => x !== 1);
                         updateCourse(c.id, { semesters: s });
                       }} className="cursor-pointer" />
                       S1
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer" title="Semester 2 — Eintrag nur im 2. Semester aktiv">
+                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 2 — Eintrag nur im 2. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(2)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 2 as Semester])] : c.semesters.filter(x => x !== 2);
                         updateCourse(c.id, { semesters: s });
                       }} className="cursor-pointer" />
                       S2
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] text-gray-400 cursor-pointer" title="Selbstorganisiertes Lernen">
+                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Selbstorganisiertes Lernen">
                       <input type="checkbox" checked={!!c.sol} onChange={(e) => updateCourse(c.id, { sol: e.target.checked || undefined })} className="cursor-pointer" />
                       SOL
                     </label>
@@ -628,12 +648,13 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-[9px] text-gray-400 hover:text-gray-200 cursor-pointer group"
+                <div className="flex items-center gap-2 text-[9px] cursor-pointer group"
+                  style={{ color: 'var(--text-muted)' }}
                   onClick={() => setEditingId(c.id)}>
-                  <span className="text-gray-400 font-mono">{c.day}</span>
+                  <span className="font-mono" style={{ color: 'var(--text-muted)' }}>{c.day}</span>
                   <span>{c.from}–{c.to}</span>
-                  <span className="text-gray-500">{c.les * 45}min{c.hk ? ' HK' : ''}</span>
-                  <span className="text-gray-500">{c.semesters.map(s => `S${s}`).join('+')}</span>
+                  <span style={{ color: 'var(--text-dim)' }}>{c.les * 45}min{c.hk ? ' HK' : ''}</span>
+                  <span style={{ color: 'var(--text-dim)' }}>{c.semesters.map(s => `S${s}`).join('+')}</span>
                   {c.stufe && <span className="text-cyan-500 text-[8px]">{c.stufe}</span>}
                   {c.note && <span className="text-amber-600 text-[8px]">{c.note}</span>}
                 </div>
@@ -643,7 +664,8 @@ function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focus
         </div>
       ))}
       <button onClick={addCourse}
-        className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+        className="w-full py-1.5 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+        style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
         + Kurs hinzufügen
       </button>
     </div>
@@ -779,17 +801,18 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
 
   return (
     <div className="space-y-1.5">
-      <p className="text-[8px] text-gray-400">Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
+      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
       {grouped.map(([kw, entries]) => {
         const isExpanded = expandedWeek === kw;
         const stableKey = entries[0]?.id || kw || 'new';
         return (
-          <div key={stableKey} className="border border-slate-700/50 rounded overflow-hidden">
-            <div className="flex items-center gap-2 px-2 py-1.5 bg-slate-800/50 cursor-pointer hover:bg-slate-800"
+          <div key={stableKey} className="rounded overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+            <div className="flex items-center gap-2 px-2 py-1.5 cursor-pointer"
+              style={{ background: 'var(--bg-secondary)' }}
               onClick={() => setExpandedWeek(isExpanded ? null : kw)}>
-              <span className="text-[9px] text-gray-400">{isExpanded ? '▾' : '▸'}</span>
+              <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{isExpanded ? '▾' : '▸'}</span>
               <span className="text-[10px] font-semibold text-amber-400 font-mono w-10">{kw ? `KW${kw}` : 'Neu'}</span>
-              <span className="text-[9px] text-gray-300 truncate flex-1">
+              <span className="text-[9px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>
                 {entries.map((e, i) => (
                   <span key={e.id}>
                     {i > 0 && ', '}
@@ -798,12 +821,12 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                   </span>
                 ))}
               </span>
-              <span className="text-[8px] text-gray-500">{entries.length} {entries.length === 1 ? 'Eintrag' : 'Einträge'}</span>
+              <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>{entries.length} {entries.length === 1 ? 'Eintrag' : 'Einträge'}</span>
             </div>
             {isExpanded && (
-              <div className="p-2 space-y-2 bg-slate-900/30">
+              <div className="p-2 space-y-2" style={{ background: 'var(--bg-primary)' }}>
                 {entries.map(w => (
-                  <div key={w.id} className="bg-slate-800 rounded p-2 space-y-1.5">
+                  <div key={w.id} className="rounded p-2 space-y-1.5" style={{ background: 'var(--bg-secondary)' }}>
                     <div className="flex gap-1 items-center">
                       <SmallInput value={w.week} onChange={(v) => update(w.id, { week: v })} placeholder="KW" className="w-10" />
                       <SmallInput value={w.label} onChange={(v) => update(w.id, { label: v })} placeholder="z.B. Medienwoche" className="flex-1" />
@@ -816,8 +839,9 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                           return (
                             <button key={opt.key} onClick={() => toggleGymLevel(w.id, opt.key)}
                               className={`px-1 py-px rounded text-[7px] cursor-pointer transition-colors ${
-                                active ? 'bg-blue-600/40 text-blue-200 border border-blue-500/60' : 'bg-slate-700/50 text-gray-500 border border-transparent hover:text-gray-300'
-                              }`}>{opt.label}</button>
+                                active ? 'bg-blue-600/40 text-blue-200 border border-blue-500/60' : 'border border-transparent'
+                              }`}
+                              style={active ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>{opt.label}</button>
                           );
                         })}
                       </div>
@@ -827,7 +851,7 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                     </div>
                     {/* Day selector */}
                     <div className="flex items-center gap-1">
-                      <span className="text-[7px] text-gray-400">Tage:</span>
+                      <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Tage:</span>
                       {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((day, di) => {
                         const dayNum = di + 1;
                         const days = w.days || [1,2,3,4,5]; // default all
@@ -839,21 +863,22 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                             update(w.id, { days: next.length === 5 ? undefined : next }); // undefined = all
                           }}
                             className={`px-1.5 py-px rounded text-[8px] cursor-pointer transition-all ${
-                              active ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'
-                            }`}>
+                              active ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'border border-transparent'
+                            }`}
+                            style={active ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>
                             {day}
                           </button>
                         );
                       })}
                       {(w.days && w.days.length < 5) && (
                         <button onClick={() => update(w.id, { days: undefined })}
-                          className="text-[7px] text-gray-500 cursor-pointer hover:text-gray-300 ml-1">Ganze Woche</button>
+                          className="text-[7px] cursor-pointer ml-1" style={{ color: 'var(--text-dim)' }}>Ganze Woche</button>
                       )}
                     </div>
                     {/* Course exclusions */}
                     {courses.length > 0 && (
                       <div className="flex flex-wrap gap-1 items-center">
-                        <span className="text-[7px] text-gray-400" title="Kurse, die von dieser Sonderwoche NICHT betroffen sind (= normaler Unterricht)">Nicht betroffen:</span>
+                        <span className="text-[7px]" style={{ color: 'var(--text-muted)' }} title="Kurse, die von dieser Sonderwoche NICHT betroffen sind (= normaler Unterricht)">Nicht betroffen:</span>
                         {courses.map(c => {
                           const excluded = w.excludedCourseIds?.includes(c.id);
                           return (
@@ -864,7 +889,8 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               });
                             }}
                               title={excluded ? `${c.cls} ${c.typ} (${c.day}) hat normalen Unterricht` : `${c.cls} ${c.typ} (${c.day}) ist von Sonderwoche betroffen`}
-                              className={`text-[7px] px-1 py-px rounded cursor-pointer ${excluded ? 'bg-red-900/40 text-red-300 border border-red-500/50' : 'bg-slate-700 text-gray-400 border border-transparent'}`}>
+                              className={`text-[7px] px-1 py-px rounded cursor-pointer ${excluded ? 'bg-red-900/40 text-red-300 border border-red-500/50' : 'border border-transparent'}`}
+                              style={excluded ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-muted)' }}>
                               {c.cls} {c.day}
                             </button>
                           );
@@ -886,7 +912,7 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               }
                             }}
                             className="accent-amber-500 cursor-pointer" />
-                          <span className="text-[8px] text-gray-300">Nur für bestimmte Kurse anzeigen</span>
+                          <span className="text-[8px]" style={{ color: 'var(--text-secondary)' }}>Nur für bestimmte Kurse anzeigen</span>
                         </label>
                         {w.courseFilter && w.courseFilter.length > 0 && (
                           <div className="ml-4 space-y-1">
@@ -910,7 +936,8 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                                           : [...current, ...g.ids.filter(id => !current.includes(id))]
                                       });
                                     }}
-                                      className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'}`}>
+                                      className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'border border-transparent'}`}
+                                      style={included ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>
                                       {g.label}
                                     </button>
                                   );
@@ -922,15 +949,15 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               {/* Alle GYM2 */}
                               {courses.some(c => c.stufe === 'GYM2') && (
                                 <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.stufe === 'GYM2').map(c => c.id) })}
-                                  className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle GYM2</button>
+                                  className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle GYM2</button>
                               )}
                               {/* Alle SF */}
                               {courses.some(c => c.typ === 'SF') && (
                                 <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.typ === 'SF').map(c => c.id) })}
-                                  className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle SF</button>
+                                  className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle SF</button>
                               )}
                               <button onClick={() => update(w.id, { courseFilter: courses.map(c => c.id) })}
-                                className="text-[7px] px-1.5 py-0.5 rounded bg-slate-700 text-gray-400 border border-slate-600 cursor-pointer hover:text-gray-200">Alle</button>
+                                className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle</button>
                             </div>
                           </div>
                         )}
@@ -939,7 +966,8 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                   </div>
                 ))}
                 <button onClick={() => addEntry(kw)}
-                  className="w-full py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[8px] cursor-pointer">
+                  className="w-full py-1 rounded border border-dashed text-[8px] cursor-pointer"
+                  style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
                   + Weiteren Eintrag für KW{kw}
                 </button>
               </div>
@@ -948,7 +976,8 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
         );
       })}
       <button onClick={addNewWeek}
-        className="w-full py-1.5 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 text-[9px] cursor-pointer transition-all">
+        className="w-full py-1.5 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+        style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
         + Sonderwoche hinzufügen
       </button>
     </div>
@@ -981,22 +1010,23 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
 
   return (
     <div className="space-y-1.5">
-      <p className="text-[8px] text-gray-400">Ferienperioden als KW-Bereiche. Tagesauswahl erscheint automatisch bei Einzelwochen (z.B. Auffahrt).</p>
+      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Ferienperioden als KW-Bereiche. Tagesauswahl erscheint automatisch bei Einzelwochen (z.B. Auffahrt).</p>
       {holidays.map(h => {
         const isSingleWeek = h.startWeek && h.endWeek && h.startWeek === h.endWeek;
         const hasPartialDays = h.days && h.days.length < 5;
         const showDays = isSingleWeek || hasPartialDays || expandedDays.has(h.id);
         return (
-        <div key={h.id} className="bg-slate-800 rounded p-2 space-y-1.5">
+        <div key={h.id} className="rounded p-2 space-y-1.5" style={{ background: 'var(--bg-secondary)' }}>
           <div className="flex gap-1 items-center">
             <SmallInput value={h.label} onChange={(v) => update(h.id, { label: v })} placeholder="Name (z.B. Herbstferien)" className="flex-1" />
-            <span className="text-[8px] text-gray-400">KW</span>
+            <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>KW</span>
             <SmallInput value={h.startWeek} onChange={(v) => update(h.id, { startWeek: v })} placeholder="von" className="w-10" />
-            <span className="text-[8px] text-gray-400">–</span>
+            <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>–</span>
             <SmallInput value={h.endWeek} onChange={(v) => update(h.id, { endWeek: v })} placeholder="bis" className="w-10" />
             {!isSingleWeek && !hasPartialDays && (
               <button onClick={() => toggleExpanded(h.id)}
-                className="w-5 h-5 flex items-center justify-center text-[10px] text-gray-500 cursor-pointer hover:text-gray-300 hover:bg-slate-700 rounded"
+                className="w-5 h-5 flex items-center justify-center text-[10px] cursor-pointer rounded"
+                style={{ color: 'var(--text-dim)' }}
                 title="Tagesauswahl anzeigen">
                 {expandedDays.has(h.id) ? '▾' : '▸'}
               </button>
@@ -1006,7 +1036,7 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
           {/* Day selector — auto-shown for single weeks, toggled for multi-week */}
           {showDays && (
           <div className="flex items-center gap-1">
-            <span className="text-[7px] text-gray-400">Tage:</span>
+            <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Tage:</span>
             {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((day, di) => {
               const dayNum = di + 1;
               const days = h.days || [1,2,3,4,5];
@@ -1017,16 +1047,17 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
                   const next = active ? current.filter(d => d !== dayNum) : [...current, dayNum].sort();
                   update(h.id, { days: next.length === 5 ? undefined : next });
                 }}
-                  className={`px-1.5 py-px rounded text-[8px] cursor-pointer transition-all ${
-                    active ? 'bg-gray-600/40 text-gray-200 border border-gray-500/50' : 'bg-slate-700 text-gray-500 border border-transparent'
-                  }`}>
+                  className={`px-1.5 py-px rounded text-[8px] cursor-pointer transition-all border ${
+                    active ? '' : 'border-transparent'
+                  }`}
+                  style={active ? { background: 'var(--bg-hover)', borderColor: 'var(--border-light)', color: 'var(--text-primary)' } : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>
                   {day}
                 </button>
               );
             })}
             {(h.days && h.days.length < 5) && (
               <button onClick={() => update(h.id, { days: undefined })}
-                className="text-[7px] text-gray-500 cursor-pointer hover:text-gray-300 ml-1">Ganze Woche</button>
+                className="text-[7px] cursor-pointer ml-1" style={{ color: 'var(--text-dim)' }}>Ganze Woche</button>
             )}
           </div>
           )}
@@ -1034,7 +1065,8 @@ function HolidaysEditor({ holidays, onChange }: { holidays: HolidayConfig[]; onC
         );
       })}
       <button onClick={addHoliday}
-        className="w-full py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
+        className="w-full py-1 rounded border border-dashed text-[9px] cursor-pointer"
+        style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
         + Ferienperiode hinzufügen
       </button>
     </div>
@@ -1089,19 +1121,19 @@ function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
 
   return (
     <div className="space-y-1.5">
-      <p className="text-[8px] text-gray-400">
+      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
         {rules.length > 0
           ? `${rules.length} eigene Beurteilungsregeln aktiv. Prüfungen werden in der Statistik dagegen geprüft.`
           : 'Standard-Regelwerk (GYM1–5, MiSDV Art. 4) wird verwendet. Eigene Regeln überschreiben den Standard.'}
       </p>
       {rules.map((r, i) => (
-        <div key={i} className="bg-slate-800 rounded p-2 space-y-1">
+        <div key={i} className="rounded p-2 space-y-1" style={{ background: 'var(--bg-secondary)' }}>
           <div className="flex gap-1 items-center">
             <SmallInput value={r.label} onChange={(v) => update(i, { label: v })} placeholder="Bezeichnung" className="flex-1" />
             <button onClick={() => remove(i)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
           </div>
           <div className="flex gap-1.5 items-center flex-wrap">
-            <span className="text-[7px] text-gray-400">Zeitraum:</span>
+            <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Zeitraum:</span>
             <SmallSelect value={String(r.semester)} onChange={(v) => {
               const sem = v === 'year' ? 'year' : v === 'custom' ? 'custom' : parseInt(v) as 1 | 2;
               const deadlineAuto = sem === 1 ? 'Ende Semester 1' : sem === 2 ? 'Ende Semester 2' : sem === 'year' ? 'Ende Schuljahr' : r.deadline;
@@ -1114,35 +1146,37 @@ function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
             {r.semester === 'custom' ? (
               <input type="date" value={r.customDate || ''}
                 onChange={(e) => update(i, { customDate: e.target.value, deadline: e.target.value })}
-                className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer" />
+                className="rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+                style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
             ) : (
               <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })}
                 placeholder={r.semester === 'year' ? 'Ende SJ' : `Ende Sem ${r.semester}`} className="w-28" />
             )}
           </div>
           <div className="flex gap-1.5 items-center flex-wrap">
-            <span className="text-[7px] text-gray-400">Stufe:</span>
+            <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Stufe:</span>
             <select value={r.stufe || ''} onChange={(e) => update(i, { stufe: e.target.value || undefined })}
-              className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer">
+              className="rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               {stufeOptions.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
             </select>
-            <span className="text-[7px] text-gray-400 ml-1">Min. Noten:</span>
+            <span className="text-[7px] ml-1" style={{ color: 'var(--text-muted)' }}>Min. Noten:</span>
             <SmallInput value={String(r.minGrades)} onChange={(v) => update(i, { minGrades: parseInt(v) || 1 })} className="w-10 text-center" type="number" />
           </div>
           {/* Lektionenzahl-abhängige Regeln (v3.77 #11) */}
           <div className="flex gap-1.5 items-center flex-wrap">
-            <span className="text-[7px] text-gray-400">Bei &gt;</span>
+            <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Bei &gt;</span>
             <SmallInput value={r.weeklyLessonsThreshold != null ? String(r.weeklyLessonsThreshold) : ''} onChange={(v) => {
               const n = parseInt(v);
               update(i, { weeklyLessonsThreshold: isNaN(n) ? undefined : n });
             }} placeholder="L/W" className="w-10 text-center" type="number" />
-            <span className="text-[7px] text-gray-400">L/Woche → Min. Noten:</span>
+            <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>L/Woche → Min. Noten:</span>
             <SmallInput value={r.minGradesAboveThreshold != null ? String(r.minGradesAboveThreshold) : ''} onChange={(v) => {
               const n = parseInt(v);
               update(i, { minGradesAboveThreshold: isNaN(n) ? undefined : n });
             }} placeholder="—" className="w-10 text-center" type="number" />
             {r.weeklyLessonsThreshold != null && r.minGradesAboveThreshold != null && (
-              <span className="text-[7px] text-gray-500">
+              <span className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
                 (≤{r.weeklyLessonsThreshold}L → {r.minGrades}, &gt;{r.weeklyLessonsThreshold}L → {r.minGradesAboveThreshold})
               </span>
             )}
@@ -1151,7 +1185,8 @@ function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
       ))}
       <div className="flex gap-1">
         <button onClick={addRule}
-          className="flex-1 py-1 rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 text-[9px] cursor-pointer">
+          className="flex-1 py-1 rounded border border-dashed text-[9px] cursor-pointer"
+          style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           + Regel hinzufügen
         </button>
         {rules.length === 0 && (
@@ -1369,21 +1404,22 @@ function GCalSection() {
   return (
     <Section title="📅 Google Calendar">
       <div className="space-y-2">
-        <p className="text-[8px] text-gray-400">
+        <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
           Verbinde einen Google Kalender, um Lektionen als Events zu synchronisieren und Kollisionen zu erkennen.
         </p>
 
         {/* Client ID */}
         <div>
-          <label className="text-[8px] text-gray-400 block mb-0.5">OAuth Client ID</label>
+          <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>OAuth Client ID</label>
           <input
             type="text"
             value={editClientId}
             onChange={(e) => setEditClientId(e.target.value)}
             placeholder="xxxx.apps.googleusercontent.com"
-            className="w-full bg-slate-700 text-slate-200 text-[9px] px-2 py-1 rounded border border-slate-600 outline-none focus:border-blue-500"
+            className="w-full text-[9px] px-2 py-1 rounded outline-none focus:border-blue-500"
+            style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
           />
-          <p className="text-[7px] text-gray-500 mt-0.5">
+          <p className="text-[7px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
             Erstelle eine OAuth Client ID in der <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" className="text-blue-400 hover:underline">Google Cloud Console</a>.
           </p>
         </div>
@@ -1401,7 +1437,8 @@ function GCalSection() {
                 ✅ Verbunden
               </div>
               <button onClick={handleLogout}
-                className="px-2 py-1.5 rounded text-[9px] bg-slate-700 hover:bg-red-900/60 text-gray-300 hover:text-red-300 cursor-pointer transition-all">
+                className="px-2 py-1.5 rounded text-[9px] hover:bg-red-900/60 hover:text-red-300 cursor-pointer transition-all"
+                style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
                 Abmelden
               </button>
             </>
@@ -1412,9 +1449,9 @@ function GCalSection() {
 
         {/* Calendar selection (when authenticated) */}
         {isAuth && calendars.length > 0 && (
-          <div className="space-y-2 pt-1 border-t border-slate-700">
+          <div className="space-y-2 pt-1 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold text-gray-300">Kalender</span>
+              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender</span>
               <button onClick={handleRefreshCalendars} disabled={loading}
                 className="text-[8px] text-blue-400 hover:text-blue-300 cursor-pointer">
                 🔄 Aktualisieren
@@ -1423,11 +1460,12 @@ function GCalSection() {
 
             {/* Write calendar */}
             <div>
-              <label className="text-[8px] text-gray-400 block mb-0.5">Schreib-Kalender (Planer → Kalender)</label>
+              <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Schreib-Kalender (Planer → Kalender)</label>
               <select
                 value={writeCalendarId || ''}
                 onChange={(e) => setWriteCalendarId(e.target.value || null)}
-                className="w-full bg-slate-700 text-slate-200 text-[9px] px-2 py-1 rounded border border-slate-600"
+                className="w-full text-[9px] px-2 py-1 rounded"
+                style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
               >
                 <option value="">— Kein Kalender —</option>
                 {calendars
@@ -1440,17 +1478,17 @@ function GCalSection() {
 
             {/* Read calendars */}
             <div>
-              <label className="text-[8px] text-gray-400 block mb-0.5">Lese-Kalender (Kalender → Planer / Kollisionen)</label>
+              <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Lese-Kalender (Kalender → Planer / Kollisionen)</label>
               <div className="max-h-32 overflow-y-auto space-y-0.5">
                 {calendars.map(c => (
-                  <label key={c.id} className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-slate-700/60 cursor-pointer text-[9px]">
+                  <label key={c.id} className="flex items-center gap-1.5 px-1.5 py-0.5 rounded cursor-pointer text-[9px]">
                     <input
                       type="checkbox"
                       checked={readCalendarIds.includes(c.id)}
                       onChange={() => toggleReadCalendar(c.id)}
                       className="accent-blue-500 w-3 h-3"
                     />
-                    <span className="text-gray-200 truncate">{c.summary}</span>
+                    <span className="truncate" style={{ color: 'var(--text-primary)' }}>{c.summary}</span>
                     {c.primary && <span className="text-[7px] text-blue-400">Primär</span>}
                   </label>
                 ))}
@@ -1461,18 +1499,19 @@ function GCalSection() {
 
         {isAuth && calendars.length === 0 && !loading && (
           <button onClick={handleRefreshCalendars}
-            className="w-full py-1.5 rounded text-[9px] bg-slate-700 hover:bg-slate-600 text-gray-300 cursor-pointer transition-all">
+            className="w-full py-1.5 rounded text-[9px] cursor-pointer transition-all"
+            style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
             📋 Kalender laden
           </button>
         )}
 
         {/* Sync section (v3.61) */}
         {isAuth && writeCalendarId && (
-          <div className="space-y-1.5 pt-1.5 border-t border-slate-700">
+          <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold text-gray-300">Planer → Kalender Sync</span>
+              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Planer → Kalender Sync</span>
             </div>
-            <p className="text-[7px] text-gray-500">
+            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
               Erstellt/aktualisiert Google Calendar Events für alle Lektionen. Events werden mit einem <code>planer-managed</code>-Tag markiert.
             </p>
             <button onClick={handleSync} disabled={syncing}
@@ -1483,11 +1522,11 @@ function GCalSection() {
             {/* Progress bar */}
             {syncing && syncProgress && (
               <div className="space-y-0.5">
-                <div className="w-full bg-slate-700 rounded-full h-1.5">
+                <div className="w-full rounded-full h-1.5" style={{ background: 'var(--bg-hover)' }}>
                   <div className="bg-blue-500 h-1.5 rounded-full transition-all"
                     style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total * 100) : 0}%` }} />
                 </div>
-                <p className="text-[7px] text-gray-500">
+                <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
                   {syncProgress.done} / {syncProgress.total} — {syncProgress.created} erstellt, {syncProgress.updated} aktualisiert, {syncProgress.deleted} gelöscht
                 </p>
               </div>
@@ -1513,7 +1552,7 @@ function GCalSection() {
                 setSyncResult(null);
               }
             }}
-              className="text-[7px] text-gray-500 hover:text-gray-300 cursor-pointer">
+              className="text-[7px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
               🗑 Event-Mapping zurücksetzen
             </button>
           </div>
@@ -1521,15 +1560,16 @@ function GCalSection() {
 
         {/* Import section (v3.62) */}
         {isAuth && readCalendarIds.length > 0 && (
-          <div className="space-y-1.5 pt-1.5 border-t border-slate-700">
+          <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold text-gray-300">Kalender → Planer Import</span>
+              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender → Planer Import</span>
             </div>
-            <p className="text-[7px] text-gray-500">
+            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
               Scannt Lese-Kalender nach Sonderwochen (IW, Besuchstag, Studienreise etc.) und importiert sie als Sonderwochen-Einstellungen.
             </p>
             <button onClick={handleScanImport} disabled={importing}
-              className="w-full py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all disabled:opacity-50">
+              className="w-full py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all disabled:opacity-50"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
               {importing ? '⏳ Scanne Kalender…' : '📥 Sonderwochen aus Kalender importieren'}
             </button>
 
@@ -1537,13 +1577,13 @@ function GCalSection() {
             {importCandidates !== null && (
               <div className="space-y-1">
                 {importCandidates.length === 0 ? (
-                  <p className="text-[8px] text-gray-500 italic">Keine passenden Events gefunden.</p>
+                  <p className="text-[8px] italic" style={{ color: 'var(--text-dim)' }}>Keine passenden Events gefunden.</p>
                 ) : (
                   <>
-                    <p className="text-[8px] text-gray-400">{importCandidates.length} Events gefunden:</p>
+                    <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{importCandidates.length} Events gefunden:</p>
                     <div className="max-h-48 overflow-y-auto space-y-0.5">
                       {importCandidates.map(c => (
-                        <label key={c.event.id} className="flex items-start gap-1.5 px-1.5 py-1 rounded hover:bg-slate-700/60 cursor-pointer text-[9px]">
+                        <label key={c.event.id} className="flex items-start gap-1.5 px-1.5 py-1 rounded cursor-pointer text-[9px]">
                           <input
                             type="checkbox"
                             checked={selectedImports.has(c.event.id)}
@@ -1556,8 +1596,8 @@ function GCalSection() {
                             className="accent-blue-500 w-3 h-3 mt-0.5"
                           />
                           <div>
-                            <div className="text-gray-200">{c.event.summary}</div>
-                            <div className="text-[7px] text-gray-500">
+                            <div style={{ color: 'var(--text-primary)' }}>{c.event.summary}</div>
+                            <div className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
                               KW {c.suggestedConfig.week} · {c.matchedKeyword}
                               {c.suggestedConfig.gymLevel && ` · ${formatGymLevel(c.suggestedConfig.gymLevel)}`}
                               {c.suggestedConfig.days && ` · Tage: ${c.suggestedConfig.days.map(d => ['Mo','Di','Mi','Do','Fr'][d-1]).join(',')}`}
@@ -1572,7 +1612,8 @@ function GCalSection() {
                         ✅ {selectedImports.size} importieren
                       </button>
                       <button onClick={() => { setImportCandidates(null); setSelectedImports(new Set()); }}
-                        className="px-2 py-1 rounded text-[9px] bg-slate-700 hover:bg-slate-600 text-gray-300 cursor-pointer transition-all">
+                        className="px-2 py-1 rounded text-[9px] cursor-pointer transition-all"
+                        style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
                         Abbrechen
                       </button>
                     </div>
@@ -1585,18 +1626,19 @@ function GCalSection() {
 
         {/* Collision check section (v3.63) */}
         {isAuth && readCalendarIds.length > 0 && (
-          <div className="space-y-1.5 pt-1.5 border-t border-slate-700">
+          <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold text-gray-300">Kollisionswarnungen</span>
+              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kollisionswarnungen</span>
               {collisionCount > 0 && (
                 <span className="text-[8px] text-amber-400 font-bold">⚠️ {collisionCount}</span>
               )}
             </div>
-            <p className="text-[7px] text-gray-500">
+            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
               Prüft ob externe Kalender-Events (Sitzungen, Konferenzen) mit Lektionszeiten kollidieren. Kollisionen werden als ⚠️ im Wochenplan angezeigt.
             </p>
             <button onClick={handleCheckCollisions} disabled={checkingCollisions}
-              className="w-full py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all disabled:opacity-50">
+              className="w-full py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all disabled:opacity-50"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
               {checkingCollisions ? '⏳ Prüfe Kollisionen…' : '⚠️ Kollisionen prüfen'}
             </button>
             {collisionCount > 0 && (
@@ -1606,7 +1648,7 @@ function GCalSection() {
             )}
             {collisionCount > 0 && (
               <button onClick={() => useGCalStore.getState().clearCollisions()}
-                className="text-[7px] text-gray-500 hover:text-gray-300 cursor-pointer">
+                className="text-[7px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
                 ✕ Warnungen ausblenden
               </button>
             )}
@@ -1809,13 +1851,13 @@ export function SettingsPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-[11px] font-bold text-gray-200">Einstellungen</h3>
-          <p className="text-[8px] text-gray-400 mt-0.5">
+          <h3 className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>Einstellungen</h3>
+          <p className="text-[8px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
             {hasCustomSettings ? 'Eigene Konfiguration aktiv' : 'Standard-Konfiguration'}
           </p>
         </div>
         <div className="flex gap-1 items-center">
-          {saveStatus === 'saving' && <span className="text-[9px] text-gray-500">Speichern…</span>}
+          {saveStatus === 'saving' && <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>Speichern…</span>}
           {saveStatus === 'saved' && <span className="text-[9px] text-green-400">✓ Gespeichert</span>}
         </div>
       </div>
@@ -1826,13 +1868,14 @@ export function SettingsPanel() {
       <Section title="🏫 Schule & Grundeinstellungen" defaultOpen>
         <div className="space-y-1.5">
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">Schulname (optional)</label>
+            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulname (optional)</label>
             <SmallInput value={settings.school?.name || ''} onChange={(v) => updateSettings({ school: { ...settings.school!, name: v } })} placeholder="z.B. Gymnasium Hofwil" className="w-full" />
           </div>
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">Schulstufe</label>
+            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulstufe</label>
             <select value={settings.schoolLevel || ''} onChange={(e) => updateSettings({ schoolLevel: (e.target.value || undefined) as SchoolLevel | undefined })}
-              className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 cursor-pointer w-full">
+              className="rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 cursor-pointer w-full"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               <option value="">-- Nicht gesetzt --</option>
               <option value="Grundstufe">Grundstufe (Primarstufe)</option>
               <option value="Sek1">Sekundarstufe I</option>
@@ -1842,7 +1885,7 @@ export function SettingsPanel() {
             </select>
           </div>
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">Standard-Lektionsdauer (Minuten)</label>
+            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Standard-Lektionsdauer (Minuten)</label>
             <SmallInput value={String(settings.school?.lessonDurationMin || 45)} onChange={(v) => {
               const n = parseInt(v) || 45;
               updateSettings({ school: { ...settings.school!, lessonDurationMin: n } });
@@ -1904,7 +1947,7 @@ export function SettingsPanel() {
           onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined as any }); }} />
       }>
         <div className="space-y-2">
-          <p className="text-[8px] text-gray-400">
+          <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
             {settings.curriculumGoals?.length
               ? `${settings.curriculumGoals.length} Lehrplanziele konfiguriert.`
               : 'Keine Lehrplanziele konfiguriert. Importiere eigene Ziele als JSON oder lade sie aus der Sammlung.'}
@@ -1944,7 +1987,7 @@ export function SettingsPanel() {
         <div className="space-y-3">
           {/* Konfiguration */}
           <div>
-            <p className="text-[8px] text-gray-400 font-semibold mb-1">Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
+            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
             <div className="flex gap-1">
               <button onClick={() => {
                 const activeMeta = useInstanceStore.getState().getActive();
@@ -1956,10 +1999,11 @@ export function SettingsPanel() {
                 a.href = url; a.download = `planer-config-${planerName}-${datum}.json`; a.click();
                 URL.revokeObjectURL(url);
               }}
-                className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all">
+                className="flex-1 py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all"
+                style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📤 Exportieren
               </button>
-              <label className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-center cursor-pointer transition-all">
+              <label className="flex-1 py-1.5 rounded text-[9px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -2015,8 +2059,8 @@ export function SettingsPanel() {
           </div>
 
           {/* Planerdaten */}
-          <div className="border-t border-white/10 pt-3">
-            <p className="text-[8px] text-gray-400 font-semibold mb-1">Planerdaten (Lektionen, Sequenzen, Details)</p>
+          <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
+            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Planerdaten (Lektionen, Sequenzen, Details)</p>
             <div className="flex gap-1">
               <button onClick={() => {
                 const json = usePlannerStore.getState().exportData();
@@ -2026,10 +2070,11 @@ export function SettingsPanel() {
                 a.href = url; a.download = `unterrichtsplaner-daten-${new Date().toISOString().slice(0, 10)}.json`; a.click();
                 URL.revokeObjectURL(url);
               }}
-                className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 cursor-pointer transition-all">
+                className="flex-1 py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all"
+                style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📤 Exportieren
               </button>
-              <label className="flex-1 py-1.5 rounded text-[9px] font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-center cursor-pointer transition-all">
+              <label className="flex-1 py-1.5 rounded text-[9px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -2062,9 +2107,9 @@ export function SettingsPanel() {
           </div>
 
           {/* Sammlung */}
-          <div className="border-t border-white/10 pt-3">
-            <p className="text-[8px] text-gray-400 font-semibold mb-1">Sammlung (Gesamtkonfiguration)</p>
-            <p className="text-[8px] text-gray-400 mb-1.5">Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
+          <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
+            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Sammlung (Gesamtkonfiguration)</p>
+            <p className="text-[8px] mb-1.5" style={{ color: 'var(--text-muted)' }}>Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
             <RubricCollectionButtons rubricType="settings" getData={() => settings}
               onLoad={(data) => {
                 if (!data || typeof data !== 'object') { alert('Ungültige Konfiguration.'); return; }
@@ -2081,7 +2126,7 @@ export function SettingsPanel() {
       <GCalSection />
 
       {/* Danger zone */}
-      <div className="pt-2 border-t border-slate-700">
+      <div className="pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
         <button onClick={handleReset}
           className="text-[9px] text-red-400 hover:text-red-300 cursor-pointer">
           ⚠ Einstellungen zurücksetzen
