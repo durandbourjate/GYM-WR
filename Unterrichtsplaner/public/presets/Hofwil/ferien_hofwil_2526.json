@@ -1,9 +1,9 @@
 [
   { "label": "Herbstferien", "startWeek": "39", "endWeek": "42" },
-  { "label": "Weihnachtsferien", "startWeek": "52", "endWeek": "02" },
-  { "label": "Sportferien", "startWeek": "06", "endWeek": "06" },
-  { "label": "Frühlingsferien", "startWeek": "15", "endWeek": "16" },
-  { "label": "Auffahrt", "startWeek": "21", "endWeek": "21", "days": [4, 5] },
+  { "label": "Weihnachtsferien", "startWeek": "51", "endWeek": "01" },
+  { "label": "Sportferien", "startWeek": "08", "endWeek": "08" },
+  { "label": "Frühlingsferien", "startWeek": "14", "endWeek": "15" },
+  { "label": "Auffahrt", "startWeek": "20", "endWeek": "20", "days": [4, 5] },
   { "label": "Pfingstmontag", "startWeek": "22", "endWeek": "22", "days": [1] },
   { "label": "Sommerferien", "startWeek": "28", "endWeek": "32" }
 ]
