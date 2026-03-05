@@ -6,7 +6,7 @@ import { COURSES, getLinkedCourseIds } from '../data/courses';
 import { INITIAL_LESSON_DETAILS } from '../data/initialLessonDetails';
 import { instanceStorageKey } from './instanceStore';
 import type { PlannerSettings } from './settingsStore';
-import { configToCourses } from './settingsStore';
+import { configToCourses, loadSettings } from './settingsStore';
 
 interface Selection {
   week: string;
@@ -633,9 +633,69 @@ export const usePlannerStore = create<PlannerState>()(
       if (!data.weekData || !Array.isArray(data.weekData)) throw new Error('Invalid data');
       const state = get();
       state.pushUndo();
+
+      // v3.86 I1-P1: col-Migration — alte col-IDs auf aktuelle Konfiguration mappen
+      let weekData = data.weekData as Week[];
+      let lessonDetails = (data.lessonDetails || {}) as Record<string, LessonDetail>;
+      const settings = loadSettings();
+      if (settings && settings.courses.length > 0) {
+        const currentCourses = configToCourses(settings.courses);
+        const currentColIds = new Set(currentCourses.map(c => c.col));
+        // Sammle alle col-IDs im importierten weekData
+        const importedColIds = new Set<number>();
+        for (const w of weekData) {
+          for (const col of Object.keys(w.lessons).map(Number)) importedColIds.add(col);
+        }
+        // Prüfe ob Migration nötig (importierte cols != aktuelle cols)
+        const needsMigration = [...importedColIds].some(c => !currentColIds.has(c) && c !== 0);
+        if (needsMigration) {
+          // Baue Map: courseId → aktuelle col
+          const courseIdToNewCol = new Map<string, number>();
+          for (const c of currentCourses) courseIdToNewCol.set(c.id, c.col);
+          // Baue Map: alte col → courseId (aus COURSES legacy-Tabelle)
+          const oldColToCourseId = new Map<number, string>();
+          for (const c of COURSES) oldColToCourseId.set(c.col, c.id);
+          // Migrations-Map: oldCol → newCol
+          const colMap = new Map<number, number>();
+          for (const oldCol of importedColIds) {
+            if (currentColIds.has(oldCol)) continue; // schon korrekt
+            const courseId = oldColToCourseId.get(oldCol);
+            if (courseId) {
+              const newCol = courseIdToNewCol.get(courseId);
+              if (newCol !== undefined) colMap.set(oldCol, newCol);
+            }
+          }
+          // Migration anwenden
+          if (colMap.size > 0) {
+            weekData = weekData.map(w => {
+              const newLessons: Record<number, LessonEntry> = {};
+              for (const [col, entry] of Object.entries(w.lessons)) {
+                const numCol = Number(col);
+                const mappedCol = colMap.get(numCol) ?? numCol;
+                newLessons[mappedCol] = entry;
+              }
+              return { ...w, lessons: newLessons };
+            });
+            // lessonDetails: Keys sind "weekW-col" Format
+            const newDetails: Record<string, LessonDetail> = {};
+            for (const [key, detail] of Object.entries(lessonDetails)) {
+              const match = key.match(/^(.+)-(\d+)$/);
+              if (match) {
+                const oldCol = Number(match[2]);
+                const mappedCol = colMap.get(oldCol) ?? oldCol;
+                newDetails[`${match[1]}-${mappedCol}`] = detail;
+              } else {
+                newDetails[key] = detail;
+              }
+            }
+            lessonDetails = newDetails;
+          }
+        }
+      }
+
       set({
-        weekData: data.weekData,
-        lessonDetails: data.lessonDetails || {},
+        weekData,
+        lessonDetails,
         sequences: data.sequences || state.sequences,
         hkOverrides: data.hkOverrides || {},
         hkStartGroups: data.hkStartGroups || {},

@@ -75,6 +75,7 @@ export interface SubjectConfig {
 
 export interface CourseConfig {
   id: string;
+  col?: number;  // v3.86 I1-P1: explizite Spalten-ID (aus JSON-Konfiguration)
   cls: string;
   typ: CourseType;
   day: DayOfWeek;
@@ -107,6 +108,26 @@ export interface HolidayConfig {
   days?: number[]; // 1=Mo..5=Fr, undefined = all days (for partial holidays like Auffahrt)
 }
 
+// === Legacy Migration (v3.86 I1-P4) ===
+/** Ältere HolidayConfigs ohne days-Feld: bekannte Einzel-Tag-Feiertage heuristisch ergänzen */
+export function migrateLegacyHoliday(h: HolidayConfig): HolidayConfig {
+  if (h.days !== undefined) return h; // bereits korrekt
+  if (h.startWeek === h.endWeek) {
+    const label = h.label.toLowerCase();
+    if (label.includes('auffahrt')) return { ...h, days: [4] }; // Donnerstag
+    if (label.includes('pfingstmontag')) return { ...h, days: [1] }; // Montag
+    if (label.includes('1. august') || label.includes('bundesfeier')) return { ...h, days: [1] };
+    if (label.includes('neujahr')) return { ...h, days: [1] };
+    if (label.includes('berchtoldstag')) return { ...h, days: [2] };
+  }
+  return h;
+}
+
+/** Alle Holidays in einem Settings-Objekt migrieren */
+export function migrateHolidays(holidays: HolidayConfig[]): HolidayConfig[] {
+  return holidays.map(migrateLegacyHoliday);
+}
+
 // === Persistence ===
 const SETTINGS_KEY = 'unterrichtsplaner-settings';
 
@@ -117,7 +138,10 @@ export function loadSettings(): PlannerSettings | null {
   try {
     const data = localStorage.getItem(SETTINGS_KEY);
     if (!data) return null;
-    return JSON.parse(data);
+    const parsed = JSON.parse(data) as PlannerSettings;
+    // v3.86 I1-P4: Legacy-Holidays migrieren
+    if (parsed.holidays) parsed.holidays = migrateHolidays(parsed.holidays);
+    return parsed;
   } catch { return null; }
 }
 
@@ -138,11 +162,11 @@ export function getDefaultSettings(): PlannerSettings {
 }
 
 // Convert CourseConfig[] to Course[] (for use with existing planner logic)
+// v3.86 I1-P1: bevorzuge explizites col-Feld aus Konfiguration
 export function configToCourses(configs: CourseConfig[]): Course[] {
-  let colCounter = 100; // start high to avoid conflicts with legacy col numbers
-  return configs.map(c => ({
+  return configs.map((c, i) => ({
     id: c.id,
-    col: colCounter++,
+    col: c.col ?? (100 + i), // bevorzuge explizites col-Feld, Fallback 100+
     cls: c.cls,
     typ: c.typ,
     day: c.day,
@@ -251,11 +275,10 @@ export function applySettingsToWeekData(
   settings: PlannerSettings
 ): { weekData: import('../types').Week[]; holidayWeeks: number; specialWeeks: number } {
   const result = weekData.map(w => ({ ...w, lessons: { ...w.lessons } }));
-  // Build col set from settings courses (same col numbering as configToCourses) (v3.77 #4)
+  // Build col set from settings courses (same col numbering as configToCourses) (v3.77 #4, v3.86 I1-P1)
   const allCols = new Set<number>();
-  let colIdx = 100;
-  for (const _c of settings.courses) {
-    allCols.add(colIdx++);
+  for (let i = 0; i < settings.courses.length; i++) {
+    allCols.add(settings.courses[i].col ?? (100 + i));
   }
   // Also include any existing cols from weekData (legacy planners)
   for (const w of result) {
@@ -283,18 +306,25 @@ export function applySettingsToWeekData(
   const expandWeekRange = (start: string, end: string): string[] => {
     const startIdx = allWeekIds.indexOf(start);
     const endIdx = allWeekIds.indexOf(end);
-    if (startIdx === -1 || endIdx === -1) return [];
-    const weeks: string[] = [];
-    for (let i = startIdx; i <= endIdx; i++) weeks.push(allWeekIds[i]);
-    return weeks;
+    if (startIdx === -1) return [];
+    // Normalfall: endIdx >= startIdx
+    if (endIdx !== -1 && endIdx >= startIdx) {
+      return allWeekIds.slice(startIdx, endIdx + 1);
+    }
+    // Jahreswechsel: endIdx < startIdx → bis Ende + ab Anfang (v3.86 I1-P3)
+    if (endIdx !== -1 && endIdx < startIdx) {
+      return [...allWeekIds.slice(startIdx), ...allWeekIds.slice(0, endIdx + 1)];
+    }
+    // endIdx nicht im Array → nur startIdx
+    return [allWeekIds[startIdx]];
   };
 
   // G1: Tag-Mapping für Einzel-Tag-Ferien (1=Mo..5=Fr)
   const DAY_TO_NUM: Record<string, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5 };
   const colToDay = new Map<number, number>();
-  let dayColIdx = 100;
-  for (const c of settings.courses) {
-    colToDay.set(dayColIdx++, DAY_TO_NUM[c.day] || 0);
+  for (let i = 0; i < settings.courses.length; i++) {
+    const c = settings.courses[i];
+    colToDay.set(c.col ?? (100 + i), DAY_TO_NUM[c.day] || 0);
   }
 
   // Apply holidays (G1: Einzel-Tag-Ferien nur auf passende Tage)
@@ -317,18 +347,18 @@ export function applySettingsToWeekData(
     }
   }
 
-  // Build col → courseId mapping for exclusion checks
+  // Build col → courseId mapping for exclusion checks (v3.86 I1-P1: use c.col)
   const colToCourseId = new Map<number, string>();
-  let colCounter = 100;
-  for (const c of settings.courses) {
-    colToCourseId.set(colCounter++, c.id);
+  for (let i = 0; i < settings.courses.length; i++) {
+    const c = settings.courses[i];
+    colToCourseId.set(c.col ?? (100 + i), c.id);
   }
 
-  // Build col → CourseConfig lookup for gymLevel filtering
+  // Build col → CourseConfig lookup for gymLevel filtering (v3.86 I1-P1: use c.col)
   const colToCourse = new Map<number, CourseConfig>();
-  let colLookup = 100;
-  for (const c of settings.courses) {
-    colToCourse.set(colLookup++, c);
+  for (let i = 0; i < settings.courses.length; i++) {
+    const c = settings.courses[i];
+    colToCourse.set(c.col ?? (100 + i), c);
   }
 
   // Apply special weeks (events/partial holidays)

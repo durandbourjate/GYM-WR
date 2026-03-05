@@ -3,7 +3,7 @@ import type { CourseType, DayOfWeek, Semester } from '../types';
 import { usePlannerStore } from '../store/plannerStore';
 import {
   loadSettings, saveSettings, getDefaultSettings, generateId,
-  applySettingsToWeekData,
+  applySettingsToWeekData, migrateHolidays,
   STUFE_OPTIONS,
   type PlannerSettings, type CourseConfig, type SpecialWeekConfig, type HolidayConfig,
   type SubjectConfig, type SchoolLevel, type AssessmentRule,
@@ -1723,6 +1723,8 @@ export function SettingsPanel() {
         for (const line of lines) { const parts = line.split(/[,;\t]/).map(p => p.trim()); if (parts.length >= 3) imported.push({ id: generateId(), label: parts[0], startWeek: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: parts[2].replace(/^KW\s*/i, '').padStart(2, '0') }); }
       }
       if (imported.length === 0) { alert('Keine gültigen Einträge.'); return; }
+      // v3.86 I1-P4: Legacy-Holidays migrieren (days-Feld ergänzen)
+      imported = migrateHolidays(imported);
       const keys = new Set(settings.holidays.map(h => `${h.label}|${h.startWeek}`));
       const unique = imported.filter(h => !keys.has(`${h.label}|${h.startWeek}`));
       const dupes = imported.length - unique.length;
@@ -1921,6 +1923,11 @@ export function SettingsPanel() {
                     try {
                       const imported = JSON.parse(reader.result as string);
                       if (!imported || typeof imported !== 'object') { alert('Ungültige Datei.'); return; }
+                      // v3.86 I1-P2: Typ-Guard — Planerdaten erkennen
+                      if ('weekData' in imported && !('courses' in imported)) {
+                        alert('Diese Datei enthält Planerdaten (Lektionen/Sequenzen), keine Einstellungen. Bitte unter «Planerdaten» importieren.');
+                        return;
+                      }
                       // Flexibler Parser: mindestens eines der Kern-Felder muss vorhanden sein
                       const hasCourses = Array.isArray(imported.courses);
                       const hasHolidays = Array.isArray(imported.holidays);
@@ -1942,7 +1949,7 @@ export function SettingsPanel() {
                       // Merge: nur vorhandene Felder übernehmen, Rest beibehalten
                       const merged: PlannerSettings = { ...settings };
                       if (hasCourses) merged.courses = imported.courses;
-                      if (hasHolidays) merged.holidays = imported.holidays;
+                      if (hasHolidays) merged.holidays = migrateHolidays(imported.holidays);
                       if (hasSpecialWeeks) merged.specialWeeks = imported.specialWeeks;
                       if (hasSubjects) merged.subjects = imported.subjects;
                       if (Array.isArray(imported.curriculumGoals)) merged.curriculumGoals = imported.curriculumGoals;
@@ -1984,7 +1991,20 @@ export function SettingsPanel() {
                   const reader = new FileReader();
                   reader.onload = () => {
                     try {
-                      const success = usePlannerStore.getState().importData(reader.result as string);
+                      const text = reader.result as string;
+                      const parsed = JSON.parse(text);
+                      // v3.86 I1-P2: Typ-Guards — Format erkennen
+                      const isPlannerData = typeof parsed === 'object' && parsed !== null && 'weekData' in parsed;
+                      const isSettingsExport = typeof parsed === 'object' && parsed !== null && 'courses' in parsed && !('weekData' in parsed);
+                      if (isSettingsExport) {
+                        alert('Diese Datei enthält Einstellungen (Konfiguration), keine Planerdaten. Bitte unter «Einstellungen» importieren.');
+                        return;
+                      }
+                      if (!isPlannerData) {
+                        alert('Unbekanntes Import-Format — bitte aktuellen Export verwenden.');
+                        return;
+                      }
+                      const success = usePlannerStore.getState().importData(text);
                       if (success) alert('Planerdaten erfolgreich importiert.');
                       else alert('Keine gültigen Planerdaten gefunden.');
                     } catch { alert('Fehler beim Lesen der Datei.'); }
