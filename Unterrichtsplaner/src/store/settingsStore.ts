@@ -94,7 +94,7 @@ export interface SpecialWeekConfig {
   label: string;
   week: string; // KW
   type: 'event' | 'holiday';
-  gymLevel?: string; // 'GYM1'|'GYM2'|'GYM3'|'GYM4'|'GYM5'|'TaF'|'alle' — undefined = alle
+  gymLevel?: string | string[]; // 'GYM1'|'GYM2'|... | string[] — undefined = alle (J5: Mehrfachauswahl)
   excludedCourseIds?: string[]; // courses NOT affected (default: all affected)
   days?: number[]; // 1=Mo..5=Fr, undefined = all days
   courseFilter?: string[]; // v3.82 E7: Array von Kurs-IDs; undefined/leer = alle Kurse sichtbar
@@ -370,24 +370,24 @@ export function applySettingsToWeekData(
     const courseFilterSet = special.courseFilter && special.courseFilter.length > 0
       ? new Set(special.courseFilter)
       : null; // null = alle Kurse
-    // v3.83 F2: gymLevel-Filter dynamisch prüfen
-    const gymLevel = special.gymLevel;
-    const hasGymFilter = !!gymLevel && gymLevel !== 'alle';
+    // J5: gymLevel Mehrfachauswahl — normalisieren zu Array
+    const rawLevel = special.gymLevel;
+    const levels = !rawLevel ? [] : Array.isArray(rawLevel) ? rawLevel : [rawLevel];
+    const hasGymFilter = levels.length > 0 && !(levels.length === 1 && levels[0] === 'alle');
 
     for (const col of allCols) {
       const courseId = colToCourseId.get(col);
       const course = colToCourse.get(col);
 
-      // Filter 1: gymLevel — Stufe/TaF (v3.83 F2)
+      // Filter 1: gymLevel — Stufe/TaF (J5: Mehrfachauswahl)
       if (hasGymFilter && course) {
-        if (gymLevel === 'TaF') {
-          // TaF: nur Kurse mit TaF-Schülern (Klassenname enthält f/s)
-          const isTaF = /[fs]/.test(course.cls.replace(/\d/g, ''));
-          if (!isTaF) continue;
-        } else {
-          // GYM1–GYM5: Kurs-Stufe muss übereinstimmen
-          if (course.stufe !== gymLevel) continue;
-        }
+        const isTaF = /[fs]/.test(course.cls.replace(/\d/g, ''));
+        const matchesAny = levels.some(lv => {
+          if (lv === 'TaF') return isTaF;
+          if (lv === 'alle') return true;
+          return course.stufe === lv;
+        });
+        if (!matchesAny) continue;
       }
 
       // Filter 2: courseFilter — explizite Kursliste (v3.82 E7)

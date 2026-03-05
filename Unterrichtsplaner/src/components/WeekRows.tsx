@@ -451,7 +451,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     for (const sw of plannerSettings.specialWeeks) {
       if (sw.type === 'holiday') continue;
       const hasCourseFilter = sw.courseFilter && sw.courseFilter.length > 0;
-      const hasGymLevel = !!sw.gymLevel && sw.gymLevel !== 'alle';
+      // J5: gymLevel Mehrfachauswahl — normalisieren zu Array
+      const rawLevel = sw.gymLevel;
+      const levels = !rawLevel ? [] : Array.isArray(rawLevel) ? rawLevel : [rawLevel];
+      const hasGymLevel = levels.length > 0 && !(levels.length === 1 && levels[0] === 'alle');
       // Ohne jeglichen Filter → überall anzeigen (null = nicht filtern)
       if (!hasCourseFilter && !hasGymLevel) continue;
       // Betroffene Cols ermitteln
@@ -465,12 +468,13 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
       if (hasGymLevel) {
         let ci = 100;
         for (const c of plannerSettings.courses) {
-          if (sw.gymLevel === 'TaF') {
-            const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
-            if (isTaF) cols.add(ci);
-          } else {
-            if (c.stufe === sw.gymLevel) cols.add(ci);
-          }
+          const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
+          const matchesAny = levels.some(lv => {
+            if (lv === 'TaF') return isTaF;
+            if (lv === 'alle') return true;
+            return c.stufe === lv;
+          });
+          if (matchesAny) cols.add(ci);
           ci++;
         }
       }

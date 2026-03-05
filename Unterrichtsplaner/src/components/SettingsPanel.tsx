@@ -679,27 +679,38 @@ function getCourseGymLevel(cls: string): string {
 }
 
 /**
- * Compute excludedCourseIds based on gymLevel:
- * All courses whose class does NOT match the gymLevel are excluded.
+ * J5: Compute excludedCourseIds based on gymLevel (string | string[]).
+ * All courses whose class does NOT match ANY gymLevel are excluded.
  */
-function computeExcludedCourses(gymLevel: string | undefined, courses: CourseConfig[]): string[] {
-  if (!gymLevel || gymLevel === 'alle') return [];
+function computeExcludedCourses(gymLevel: string | string[] | undefined, courses: CourseConfig[]): string[] {
+  const levels = !gymLevel ? [] : Array.isArray(gymLevel) ? gymLevel : [gymLevel];
+  if (levels.length === 0 || levels.includes('alle')) return [];
 
   const excluded: string[] = [];
   for (const c of courses) {
     const courseLevel = getCourseGymLevel(c.cls);
-    // For TaF: exclude courses that don't have TaF students
-    if (gymLevel === 'TaF') {
-      const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
-      if (!isTaF) excluded.push(c.id);
-    } else {
-      // For GYM1-5: exclude courses whose GYM level doesn't match
-      if (courseLevel !== gymLevel && courseLevel !== 'alle') {
-        excluded.push(c.id);
-      }
-    }
+    const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
+    const matchesAny = levels.some(lv => {
+      if (lv === 'TaF') return isTaF;
+      if (lv === 'alle') return true;
+      return courseLevel === lv;
+    });
+    if (!matchesAny) excluded.push(c.id);
   }
   return excluded;
+}
+
+/** J5: Normalize gymLevel to string[] for display */
+function normalizeGymLevel(gl?: string | string[]): string[] {
+  if (!gl) return [];
+  return Array.isArray(gl) ? gl : [gl];
+}
+
+/** J5: Format gymLevel array for header display */
+function formatGymLevel(gl?: string | string[]): string {
+  const arr = normalizeGymLevel(gl);
+  if (arr.length === 0) return '';
+  return arr.join(', ');
 }
 
 // === Special Weeks Editor (Hierarchisch: KW → GYM-Stufen) ===
@@ -743,10 +754,22 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
     }
   };
 
-  const updateGymLevel = (id: string, gymLevel: string) => {
-    const level = gymLevel === 'alle' ? undefined : gymLevel;
-    const excluded = computeExcludedCourses(level, courses);
-    onChange(weeks.map(w => w.id === id ? { ...w, gymLevel: level, excludedCourseIds: excluded.length > 0 ? excluded : undefined } : w));
+  // J5: Mehrfachauswahl — toggle einzelne Stufe
+  const toggleGymLevel = (id: string, level: string) => {
+    const entry = weeks.find(w => w.id === id);
+    if (!entry) return;
+    const current = normalizeGymLevel(entry.gymLevel);
+    let next: string[];
+    if (level === 'alle') {
+      next = []; // "alle" = kein Filter
+    } else if (current.includes(level)) {
+      next = current.filter(l => l !== level);
+    } else {
+      next = [...current, level];
+    }
+    const gymLevel = next.length === 0 ? undefined : next.length === 1 ? next[0] : next;
+    const excluded = computeExcludedCourses(gymLevel, courses);
+    onChange(weeks.map(w => w.id === id ? { ...w, gymLevel, excludedCourseIds: excluded.length > 0 ? excluded : undefined } : w));
   };
 
   const remove = (id: string) => {
@@ -770,7 +793,7 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                 {entries.map((e, i) => (
                   <span key={e.id}>
                     {i > 0 && ', '}
-                    {e.gymLevel && <span className="text-[8px] font-semibold text-blue-400">{e.gymLevel} </span>}
+                    {e.gymLevel && <span className="text-[8px] font-semibold text-blue-400">{formatGymLevel(e.gymLevel)} </span>}
                     {e.label || '(unbenannt)'}
                   </span>
                 ))}
@@ -784,8 +807,20 @@ function SpecialWeeksEditor({ weeks, courses, onChange }: {
                     <div className="flex gap-1 items-center">
                       <SmallInput value={w.week} onChange={(v) => update(w.id, { week: v })} placeholder="KW" className="w-10" />
                       <SmallInput value={w.label} onChange={(v) => update(w.id, { label: v })} placeholder="z.B. Medienwoche" className="flex-1" />
-                      <SmallSelect value={w.gymLevel || 'alle'} onChange={(v) => updateGymLevel(w.id, v)}
-                        options={GYM_LEVEL_OPTIONS} />
+                      {/* J5: Checkbox-Mehrfachauswahl statt Dropdown */}
+                      <div className="flex flex-wrap gap-0.5">
+                        {GYM_LEVEL_OPTIONS.map(opt => {
+                          const active = opt.key === 'alle'
+                            ? normalizeGymLevel(w.gymLevel).length === 0
+                            : normalizeGymLevel(w.gymLevel).includes(opt.key);
+                          return (
+                            <button key={opt.key} onClick={() => toggleGymLevel(w.id, opt.key)}
+                              className={`px-1 py-px rounded text-[7px] cursor-pointer transition-colors ${
+                                active ? 'bg-blue-600/40 text-blue-200 border border-blue-500/60' : 'bg-slate-700/50 text-gray-500 border border-transparent hover:text-gray-300'
+                              }`}>{opt.label}</button>
+                          );
+                        })}
+                      </div>
                       <SmallSelect value={w.type} onChange={(v) => update(w.id, { type: v })}
                         options={[{ key: 'event', label: '📅 Event' }, { key: 'holiday', label: '🏖 Frei' }]} />
                       <button onClick={() => remove(w.id)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
@@ -1513,7 +1548,7 @@ function GCalSection() {
                             <div className="text-gray-200">{c.event.summary}</div>
                             <div className="text-[7px] text-gray-500">
                               KW {c.suggestedConfig.week} · {c.matchedKeyword}
-                              {c.suggestedConfig.gymLevel && ` · ${c.suggestedConfig.gymLevel}`}
+                              {c.suggestedConfig.gymLevel && ` · ${formatGymLevel(c.suggestedConfig.gymLevel)}`}
                               {c.suggestedConfig.days && ` · Tage: ${c.suggestedConfig.days.map(d => ['Mo','Di','Mi','Do','Fr'][d-1]).join(',')}`}
                             </div>
                           </div>

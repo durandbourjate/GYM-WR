@@ -549,7 +549,7 @@ function BadgeEditor({ badges, onChange }: { badges: import('../types').CellBadg
 /** Button to create a new UE in the next available empty cell */
 function NewUEButton() {
   const { weekData, pushUndo, updateLesson, updateLessonDetail, setSelection, setSidePanelOpen, setSidePanelTab } = usePlannerStore();
-  const { courses } = usePlannerData();
+  const { courses, settings } = usePlannerData();
 
   const handleCreate = () => {
     if (courses.length === 0 || weekData.length === 0) return;
@@ -560,7 +560,9 @@ function NewUEButton() {
         if (!entry || (!entry.title && entry.type === 0)) {
           pushUndo();
           updateLesson(week.w, course.col, { title: 'Neue UE', type: 1 });
-          updateLessonDetail(week.w, course.col, { blockCategory: 'LESSON', duration: '90 min' });
+          // J4: Dauer-Default aus Kurs-Config
+          const dur = course.les * (settings?.school?.lessonDurationMin || 45);
+          updateLessonDetail(week.w, course.col, { blockCategory: 'LESSON', duration: `${dur} min` });
           setSelection({ week: week.w, courseId: course.id, title: 'Neue UE', course });
           setSidePanelOpen(true);
           setSidePanelTab('details');
@@ -616,6 +618,9 @@ function DetailsTab() {
     return null;
   })() : null;
 
+  // J4: Default-Dauer aus Kurs-Config (les × lessonDurationMin)
+  const defaultDuration = c?.les ? `${c.les * (settings?.school?.lessonDurationMin || 45)} min` : undefined;
+
   // Effective detail = own detail with block defaults for empty fields
   const effectiveDetail: LessonDetail = {
     topicMain: detail.topicMain || parentBlock?.topicMain,
@@ -628,7 +633,7 @@ function DetailsTab() {
     description: detail.description || parentBlock?.description,
     materialLinks: detail.materialLinks?.length ? detail.materialLinks : parentBlock?.materialLinks,
     learningviewUrl: detail.learningviewUrl,
-    duration: detail.duration,
+    duration: detail.duration || defaultDuration,
     notes: detail.notes,
   };
 
@@ -855,7 +860,7 @@ function DetailsTab() {
         />
         <div>
           <label className="text-[9px] text-gray-400 font-medium mb-1 block">Dauer</label>
-          <DurationSelector value={detail.duration} onChange={(v) => updateField('duration', v)} baseDuration={settings?.school?.lessonDurationMin} />
+          <DurationSelector value={effectiveDetail.duration} onChange={(v) => updateField('duration', v)} baseDuration={settings?.school?.lessonDurationMin} />
         </div>
         <div>
           <label className="text-[9px] text-gray-400 font-medium mb-1 block">SOL (Selbstorganisiertes Lernen)</label>
@@ -1317,8 +1322,9 @@ export function DetailPanel() {
   return (
     <div
       ref={panelRef}
-      className="fixed right-0 top-0 bottom-0 bg-slate-850 border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)]"
+      className="fixed right-0 top-0 bottom-0 bg-slate-850 border-l border-slate-600 z-[65] flex flex-col shadow-[-4px_0_16px_rgba(0,0,0,0.4)] overflow-hidden"
       style={{ width: panelWidth, background: '#151b2e' }}
+      onWheel={(e) => e.stopPropagation()}
     >
       {/* Resize handle */}
       <div

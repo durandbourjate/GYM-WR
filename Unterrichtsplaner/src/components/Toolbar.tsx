@@ -50,10 +50,29 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.85</span>
+        <span className="text-[10px] text-gray-500">v3.87</span>
       </div>
-      <div className="flex gap-1 items-center min-w-0 flex-1 overflow-hidden">
-        {/* === Group 1: Add === */}
+      {/* J6: Toolbar-Layout — Suche links, Filter mitte, Icons rechts */}
+      {/* === Area 1: Search (flex-1, nimmt verfügbaren Platz) === */}
+      <div className="relative flex-1 min-w-[120px]">
+        <input
+          ref={searchInputRef}
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Escape') { setSearchQuery(''); (e.target as HTMLInputElement).blur(); } }}
+          placeholder="🔍 Suche…"
+          className="w-full px-2 py-0.5 rounded text-[10px] bg-slate-800 border border-gray-700 text-gray-300 outline-none focus:border-blue-400 placeholder-gray-600"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => { setSearchQuery(''); searchInputRef.current?.focus(); }}
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-[9px] text-gray-500 hover:text-gray-300 cursor-pointer"
+          >✕</button>
+        )}
+      </div>
+      {/* === Area 2: Filters (flex-shrink, bei Platzmangel zusammengestaucht) === */}
+      <div className="flex gap-1 items-center flex-shrink overflow-hidden">
         <div className="relative" ref={addMenuRef}>
           <button
             onClick={() => setShowAddMenu(!showAddMenu)}
@@ -74,7 +93,6 @@ export function AppHeader() {
                 <span className="text-green-400">▧</span> Neue Sequenz
               </button>
               <button onClick={() => {
-                // Open details panel for creating a new UE (user selects cell first)
                 setSidePanelOpen(true);
                 setSidePanelTab('details');
                 setShowAddMenu(false);
@@ -85,9 +103,6 @@ export function AppHeader() {
             </div>
           )}
         </div>
-        <span className="w-px h-4 bg-gray-700 mx-0.5" />
-
-        {/* === Group 2: Filters === */}
         <button
           onClick={() => setFilter('ALL')}
           className={`px-2 py-0.5 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${
@@ -130,29 +145,9 @@ export function AppHeader() {
           </button>
         )}
         {showTaF && <TaFPanel onClose={() => setShowTaF(false)} />}
-        <span className="w-px h-4 bg-gray-700 mx-0.5" />
-
-        {/* === Group 3: Search === */}
-        <div className="relative">
-          <input
-            ref={searchInputRef}
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Escape') { setSearchQuery(''); (e.target as HTMLInputElement).blur(); } }}
-            placeholder="🔍 Suche…"
-            className="w-28 focus:w-44 transition-all px-2 py-0.5 rounded text-[10px] bg-slate-800 border border-gray-700 text-gray-300 outline-none focus:border-blue-400 placeholder-gray-600"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => { setSearchQuery(''); searchInputRef.current?.focus(); }}
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-[9px] text-gray-500 hover:text-gray-300 cursor-pointer"
-            >✕</button>
-          )}
-        </div>
-        <span className="w-px h-4 bg-gray-700 mx-1" />
-
-        {/* === Group 4: Navigation & View === */}
+      </div>
+      {/* === Area 3: Icons + Stats + Settings (flex-none, immer sichtbar) === */}
+      <div className="flex gap-1 items-center flex-shrink-0">
         {undoStack.length > 0 && (
           <button
             onClick={undo}
@@ -206,10 +201,6 @@ export function AppHeader() {
         >
           {dimPastWeeks ? '◐' : '●'}
         </button>
-      </div>
-      {/* === Group 5: Stats & Settings (flex-shrink-0: immer sichtbar) === */}
-      <div className="flex gap-1 items-center flex-shrink-0">
-        <span className="w-px h-4 bg-gray-700 mx-0.5" />
         <button
           onClick={() => setShowStats(true)}
           className="px-2 py-0.5 rounded text-[10px] border border-gray-700 text-gray-500 cursor-pointer hover:text-gray-300 hover:border-gray-500 relative"

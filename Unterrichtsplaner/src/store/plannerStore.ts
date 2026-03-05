@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { FilterType, Week, LessonEntry, Course, LessonDetail, ManagedSequence, SequenceBlock, HKGroup, TaFPhase, CollectionItem, CollectionUnit } from '../types';
+import type { FilterType, Week, LessonEntry, LessonType, Course, LessonDetail, ManagedSequence, SequenceBlock, HKGroup, TaFPhase, CollectionItem, CollectionUnit } from '../types';
 import { SEQUENCES as STATIC_SEQUENCES } from '../data/sequences';
 import { COURSES, getLinkedCourseIds } from '../data/courses';
 import { INITIAL_LESSON_DETAILS } from '../data/initialLessonDetails';
@@ -429,26 +429,66 @@ export const usePlannerStore = create<PlannerState>()(
     })),
   deleteSequence: (id) =>
     set((state) => ({ sequences: state.sequences.filter((s) => s.id !== id) })),
-  addBlockToSequence: (seqId, block) =>
-    set((state) => ({
+  addBlockToSequence: (seqId, block) => {
+    const state = get();
+    const seq = state.sequences.find(s => s.id === seqId);
+    // J3: Sync weekData — create placeholder lessons for all weeks in block
+    let newWeekData = state.weekData;
+    if (seq && block.weeks.length > 0 && state.plannerSettings) {
+      const courses = configToCourses(state.plannerSettings.courses);
+      const course = courses.find(c => c.id === seq.courseId);
+      if (course) {
+        newWeekData = state.weekData.map(w => {
+          if (!block.weeks.includes(w.w)) return w;
+          const existing = w.lessons[course.col];
+          if (existing?.title) return w; // Don't overwrite existing
+          return { ...w, lessons: { ...w.lessons, [course.col]: { title: 'UE', type: 0 as LessonType } } };
+        });
+      }
+    }
+    set({
+      weekData: newWeekData,
       sequences: state.sequences.map((s) =>
         s.id === seqId
           ? { ...s, blocks: [...s.blocks, block], updatedAt: new Date().toISOString() }
           : s
       ),
-    })),
-  updateBlockInSequence: (seqId, blockIndex, block) =>
-    set((state) => ({
+    });
+  },
+  updateBlockInSequence: (seqId, blockIndex, updates) => {
+    const state = get();
+    const seq = state.sequences.find(s => s.id === seqId);
+    // J3: Sync weekData when weeks change
+    let newWeekData = state.weekData;
+    if (seq && updates.weeks && state.plannerSettings) {
+      const oldBlock = seq.blocks[blockIndex];
+      const newWeeks = updates.weeks.filter(w => !oldBlock?.weeks.includes(w));
+      if (newWeeks.length > 0) {
+        const courses = configToCourses(state.plannerSettings.courses);
+        const course = courses.find(c => c.id === seq.courseId);
+        if (course) {
+          newWeekData = state.weekData.map(w => {
+            if (!newWeeks.includes(w.w)) return w;
+            const existing = w.lessons[course.col];
+            if (existing?.title) return w;
+            return { ...w, lessons: { ...w.lessons, [course.col]: { title: 'UE', type: 0 as LessonType } } };
+          });
+        }
+      }
+    }
+    set({
+      weekData: newWeekData,
       sequences: state.sequences.map((s) =>
         s.id === seqId
           ? {
               ...s,
-              blocks: s.blocks.map((b, i) => (i === blockIndex ? { ...b, ...block } : b)),
+              blocks: s.blocks.map((b, i) => (i === blockIndex ? { ...b, ...updates } : b)),
               updatedAt: new Date().toISOString(),
             }
           : s
       ),
-    })),
+    });
+  },
   removeBlockFromSequence: (seqId, blockIndex) =>
     set((state) => ({
       sequences: state.sequences.map((s) =>

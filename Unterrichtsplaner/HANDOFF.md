@@ -1,161 +1,207 @@
-# Unterrichtsplaner – Handoff v3.86
+# Unterrichtsplaner – Handoff v3.87
 
-## Status: ✅ v3.86 — 1/1 Tasks erledigt
+## Status: ✅ v3.87 — 6/6 Tasks erledigt
 
 ---
 
-## Originalauftrag v3.86 — Import-Kompatibilität
+## Originalauftrag v3.87
 
 | # | Typ | Beschreibung |
 |---|-----|-------------|
-| I1 | Bug | Import-Kompatibilität: ältere Planerdaten führen zu Spalten-Mismatch, fehlenden Ferien und falschem Verhalten |
+| J1 | Bug-fix | H4-Regression: Schuljahr-Dropdown entfernt statt Vorlage-Dropdown |
+| J2 | Bug | Panel-Scroll: Sequenz- und Einstellungs-Panel fangen Scroll-Events nicht ab |
+| J3 | Bug | Sequenz-UE erscheinen nicht als Kacheln im Planer |
+| J4 | Feature | UE/Sequenz Defaults: Dauer aus Kurseinstellungen vorausfüllen |
+| J5 | Feature | Sonderwochen GymLevel: Mehrfachauswahl (string[] statt string) |
+| J6 | UI | Toolbar: Suche links, Icons rechtsbündig gruppiert |
 
 ---
 
-## Task I1: Bug — Import-Kompatibilität älterer Konfigurationen
+## Task J1: Bug-fix — H4-Regression Schuljahr-Dropdown
 
-Durch Code-Analyse wurden 4 strukturelle Probleme gefunden die auftreten wenn ältere JSON-Exporte importiert werden. Diese Bugs erklären mehrere bisher schwer reproduzierbare Fehler.
+**Problem:** In v3.85 (Task H4) wurde das falsche Dropdown entfernt. Entfernt wurde das
+Schuljahr-Dropdown («SJ 2025/26 (Gym Bern)»), aber erhalten blieb das Vorlage-Dropdown
+(«Ohne Vorlage»). Sollte umgekehrt sein.
+
+**Erwarteter Zustand nach Fix:**
+- Obere Zeile im «Neuer Planer erstellen»-Dialog: `[Name-Eingabe] [Schuljahr-Dropdown]`
+- Vorlage-Dropdown («Ohne Vorlage») komplett entfernt
+- Schuljahr-Dropdown mit Optionen: SJ 2025/26, 2026/27, 2027/28, Manuell — bleibt erhalten
+
+**Suche:** `PlannerTabs.tsx` — Dialog «Neuer Planer erstellen», dort das korrekte Dropdown
+identifizieren und nur das Vorlage-Dropdown (`templateId`-State o.ä.) entfernen.
 
 ---
 
-### Problem 1 — Spalten-ID Mismatch (kritisch)
+## Task J2: Bug — Panel-Scroll fängt Events nicht ab
 
-**Ursache:** `configToCourses()` in `settingsStore.ts` weist Spalten-IDs ab 100 aufwärts zu (`colCounter = 100`), ignoriert dabei das `col`-Feld im `CourseConfig`-Objekt. Ältere Planerdaten (z.B. `planner_backup_SJ2526.json`) verwenden aber die originalen niedrigen IDs (2, 4, 6, 11, 13...) aus der hardcodierten `COURSES`-Tabelle.
+**Problem:** Sowohl das Sequenz-Panel (rechte Seite, Sequenzen-Tab) als auch das
+Einstellungs-Panel scrollen nicht korrekt:
+- Scroll-Events werden vom Panel nicht abgefangen
+- Stattdessen scrollt der Planer dahinter
+- Teile des Panels (untere UE-Einträge, obere Icons) sind nicht erreichbar
 
-**Folge:** UEs aus einem alten Export landen nach Import in falschen oder nicht existierenden Spalten. Das Backup zeigt z.B. `"11": { title: "Kennenlernen SF WR" }` — nach Re-Import über neue Konfiguration zeigt Spalte 11 nichts, weil der neue Code Spalte 11 nicht kennt (er beginnt bei 100).
+**Ursache (Hypothese):** Die Panel-Container haben kein `overflow-y: auto/scroll` oder
+ein übergeordnetes Element hat `overflow: hidden` das Scroll-Events konsumiert. Die
+`onWheel`-Events bubbeln durch zum Planer-Scroll-Container.
 
 **Fix:**
-- `CourseConfig` hat bereits ein `col?`-Feld in `kurse_duy_2526.json` — dieses Feld in `configToCourses()` respektieren
-- Wenn `c.col` definiert ist → diesen Wert als Spalten-ID verwenden statt `colCounter++`
-- Falls `c.col` fehlt (ältere Configs) → Fallback auf `colCounter++` (bisheriges Verhalten)
-- Das `col`-Feld zu `CourseConfig` Interface in `settingsStore.ts` als optional hinzufügen: `col?: number`
-- Beim Import einer Planerdatei (weekData): Spalten-IDs der UEs mit den tatsächlichen `col`-Werten der geladenen Kurse abgleichen — eine Migrations-Map erstellen: `oldColId → newColId`
+1. Alle Panel-Container (`SequencePanel`, `SettingsPanel`, `DetailPanel`) mit
+   `overflow-y: auto` und expliziter `max-height` oder `height: 100%` versehen
+2. `onWheel`-Event auf Panel-Containern mit `e.stopPropagation()` abfangen damit
+   der Planer dahinter nicht mitscrollt
+3. Panel beim Öffnen immer auf `scrollTop = 0` setzen (via `useEffect` + `ref`)
+4. Sicherstellen dass `position: fixed` oder `absolute` Overlays ihren eigenen
+   Scroll-Kontext haben
 
+**Gilt für:** `SequencePanel.tsx`, `SettingsPanel.tsx`, `DetailPanel.tsx` — alle
+rechten Panels die über dem Planer liegen.
+
+---
+
+## Task J3: Bug — Sequenz-UE erscheinen nicht als Kacheln im Planer
+
+**Problem:** Eine Sequenz wird im Sequenz-Panel mit 3 Lektionen angelegt
+(KW37 «preise», KW38 «mengen», KW39 «gleichgewicht»). Im Planer erscheint aber
+nur KW37 als Kachel — KW38 und KW39 haben keine sichtbare Kachel, obwohl die
+Daten im Panel eingetragen sind.
+
+**Gewünschtes Verhalten:** Sobald eine Sequenz angelegt wird und Lektionen
+eingetragen sind, sollen im Planer sofort **leere Kacheln** für alle Wochen der
+Sequenz erscheinen. Die Kacheln werden dann mit den Feldinhalten (Thema, Typ etc.)
+der jeweiligen Lektion befüllt sobald diese eingetragen werden.
+
+**Ursache (Hypothese):** Die Sequenz-Lektionen werden im `plannerStore` zwar
+gespeichert, aber `weekData` wird nicht entsprechend aktualisiert. Das Rendering
+liest `weekData[kw].lessons[col]` — wenn dort kein Eintrag für die Sequenz-Lektion
+existiert, bleibt die Zelle leer.
+
+**Fix:**
+1. Beim Anlegen einer Sequenz-Lektion (oder beim Speichern der Sequenz): für jede
+   Lektion einen Eintrag in `weekData[kw].lessons[col]` erstellen
+   - `type: 0` (normale UE) oder der konfigurierte Typ
+   - `title`: Thema aus der Lektion, oder leer falls noch nicht eingetragen
+   - `sequenceId`: Referenz auf die Sequenz für die Darstellung des Sequenzbalkens
+2. Beim Aktualisieren einer Sequenz-Lektion (Thema, Typ etc.): entsprechenden
+   `weekData`-Eintrag synchron aktualisieren
+3. Beim Löschen einer Sequenz-Lektion: `weekData`-Eintrag entfernen
+4. Sicherstellen dass die Synchronisation in beide Richtungen funktioniert:
+   Sequenz-Panel → weekData UND weekData → Sequenz-Panel
+
+**Hinweis:** Schaue in `SequencePanel.tsx` und `plannerStore.ts` nach der Funktion
+die Lektionen zu einer Sequenz hinzufügt — dort muss der weekData-Sync ergänzt werden.
+
+---
+
+## Task J4: Feature — UE/Sequenz Defaults aus Kurseinstellungen
+
+**Problem:** Beim Erstellen einer neuen UE oder Sequenz-Lektion werden keine
+sinnvollen Standardwerte vorausgefüllt. Insbesondere die Dauer muss manuell
+gesetzt werden, obwohl sie aus den Kurseinstellungen bekannt ist.
+
+**Gewünschtes Verhalten:**
+- **Dauer:** Wird aus der Kurseinstellung berechnet: `les × lessonDurationMin`
+  (z.B. 2 Lektionen × 45min = 90min). Der passende Dauer-Button (45/90/135min)
+  soll beim Öffnen der UE vorausgewählt sein.
+- **Fachbereich:** Bereits implementiert («geerbt von Sequenz») — kein Handlungsbedarf
+  falls korrekt funktionierend
+
+**Implementierung:**
+1. Beim Öffnen des UE-Formulars (`DetailPanel`): Kurs-Config für die aktuelle
+   Spalte laden → `les × lessonDurationMin` berechnen → als Default-Dauer setzen
+2. Beim Anlegen einer neuen Sequenz-Lektion: gleiche Logik
+3. Default gilt nur für **neue** UEs — bestehende UEs mit gesetzter Dauer nicht
+   überschreiben
+4. Falls `les` nicht verfügbar: kein Default (bisheriges Verhalten)
+
+**Kurs-Config Zugriff:** `settingsStore.getEffectiveCourses()` gibt alle Kurse
+zurück; über `col`-Nummer der aktuellen Spalte den passenden Kurs finden →
+`course.les` und `settings.school.lessonDurationMin` (Default: 45).
+
+---
+
+## Task J5: Feature — Sonderwochen GymLevel Mehrfachauswahl
+
+**Problem:** `SpecialWeekConfig.gymLevel` ist `string | undefined` — es kann nur
+eine Stufe pro Sonderwoche-Eintrag gewählt werden. Wenn eine Woche für GYM2 und
+GYM3 gilt, braucht es zwei separate Einträge.
+
+**Lösung:** `gymLevel` auf `string[] | undefined` ändern (Mehrfachauswahl).
+
+**Datenmodell-Änderung:**
 ```typescript
-// In configToCourses():
-return configs.map((c, i) => ({
-  id: c.id,
-  col: c.col ?? (100 + i), // bevorzuge explizites col-Feld
-  cls: c.cls,
+// settingsStore.ts
+interface SpecialWeekConfig {
   // ...
-}));
-```
-
----
-
-### Problem 2 — `version`-Feld Mismatch
-
-**Ursache:** Planerdaten-Exports (weekData) enthalten `meta.version: "2.9"` (String im `meta`-Objekt). `PlannerSettings` erwartet `version: number` (Zahl im Root-Objekt). Das sind zwei völlig verschiedene Felder die nichts miteinander zu tun haben — der Import-Handler kann deshalb nicht erkennen ob ein altes oder neues Format vorliegt.
-
-**Folge:** Kein Versions-Check möglich → keine Migration → stille Fehler beim Import.
-
-**Fix:**
-- Im Import-Handler: beide Formate erkennen:
-  - `data.meta?.version` → Planerdaten-Format (weekData Export)
-  - `data.version` → Settings-Format (Konfiguration Export)
-- Explizite Typ-Guards: `isPlannerDataExport(data)` vs `isPlannerSettingsExport(data)`
-- Toast-Meldung wenn Format unbekannt: «Unbekanntes Import-Format — bitte aktuellen Export verwenden»
-
-```typescript
-function isPlannerDataExport(data: unknown): boolean {
-  return typeof data === 'object' && data !== null && 'meta' in data && 'weeks' in data;
-}
-function isPlannerSettingsExport(data: unknown): boolean {
-  return typeof data === 'object' && data !== null && 'version' in data && 'courses' in data;
+  gymLevel?: string | string[]; // Rückwärtskompatibel: string wird als [string] behandelt
 }
 ```
 
----
+Rückwärtskompatibel halten: wenn `gymLevel` ein String ist (alte Daten), wie
+`[gymLevel]` behandeln. So funktionieren alle bestehenden gespeicherten Configs
+ohne Migration.
 
-### Problem 3 — `expandWeekRange` bricht bei Jahreswechsel (Weihnachtsferien)
-
-**Ursache:** `expandWeekRange(start, end)` in `applySettingsToWeekData()` sucht `startIdx = allWeekIds.indexOf(start)` und `endIdx = allWeekIds.indexOf(end)`. Das Array `allWeekIds` läuft von KW 33 bis KW 27 (chronologisch übers Schuljahr). KW 52 hat Index ~19, KW 01 hat Index ~20 — das funktioniert **nur wenn das Jahr exakt 52 Wochen hat und KW 01 direkt nach KW 52 im Array steht**.
-
-Wenn die Ferien-Konfiguration `startWeek: '52'` und `endWeek: '01'` hat, aber das Array so aufgebaut ist dass `indexOf('01') < indexOf('52')` (z.B. bei falsch sortierten oder fehlenden Wochen), gibt die Funktion ein leeres Array zurück → Weihnachtsferien werden nie angewendet.
-
-**Fix:** `expandWeekRange` robuster machen:
+**Filter-Logik in `applySettingsToWeekData`:**
 ```typescript
-const expandWeekRange = (start: string, end: string): string[] => {
-  const startIdx = allWeekIds.indexOf(start);
-  const endIdx = allWeekIds.indexOf(end);
-  if (startIdx === -1) return [];
-  // Jahreswechsel: endIdx < startIdx → bis Ende + ab Anfang
-  if (endIdx !== -1 && endIdx >= startIdx) {
-    return allWeekIds.slice(startIdx, endIdx + 1);
-  }
-  // Jahreswechsel oder endIdx nicht gefunden: alle Wochen ab startIdx bis endIdx (zyklisch)
-  if (endIdx !== -1 && endIdx < startIdx) {
-    return [...allWeekIds.slice(startIdx), ...allWeekIds.slice(0, endIdx + 1)];
-  }
-  // endIdx nicht im Array → nur startIdx
-  return [allWeekIds[startIdx]];
-};
+// Statt: if (course.stufe !== gymLevel)
+// Neu:
+const levels = Array.isArray(gymLevel) ? gymLevel : [gymLevel];
+if (!levels.includes(course.stufe)) continue;
+// Für TaF: gleiche Logik, 'TaF' als möglicher Wert im Array
 ```
 
+**UI in `SettingsPanel` (Sonderwoche-Formular):**
+- Dropdown → Checkbox-Liste mit: `alle`, `GYM1`, `GYM2`, `GYM3`, `GYM4`, `GYM5`, `TaF`
+- Mehrere können gleichzeitig ausgewählt sein
+- Anzeige im Sonderwoche-Header: «GYM2, GYM3» statt nur «GYM2»
+- Schnellauswahl: «Alle GYM» (GYM1–GYM5), «Nur TaF», «Alle»
+
+**Migration `iwPresets.ts`:** Einträge die für mehrere Stufen gelten zusammenführen
+wo sinnvoll (z.B. IW38 GYM1+GYM2 als ein Eintrag mit `gymLevel: ['GYM1', 'GYM2']`).
+
 ---
 
-### Problem 4 — `days`-Feld fehlt in älteren HolidayConfig-JSONs (Auffahrt/Pfingstmontag)
+## Task J6: UI — Toolbar Layout Neuordnung
 
-**Ursache:** Das `days`-Array in `HolidayConfig` wurde erst in v3.84 (G1-Fix) eingeführt. Ältere exportierte Konfigurationen haben dieses Feld nicht. Beim Import ist `holiday.days` dann `undefined` → `hasPartialDays` ist false → die ganze Woche wird als Ferienblock markiert statt nur der betroffene Tag.
+**Problem:** Aktuelle Reihenfolge in der Toolbar (v3.85):
+`[+] [Alle] [SF] [EWR] [IN] [KS] [TaF] [Suche] | [Icons...] [Lücke] [Statistik] [Einstellungen]`
 
-**Folge:** Auffahrt (KW 21, nur Do) und Pfingstmontag (KW 22, nur Mo) markieren nach Import einer alten Konfiguration wieder die ganze Woche — obwohl G1 das eigentlich gefixt hat.
+Die Icons sind teilweise linksbündig, teilweise rechtsbündig — es entsteht eine
+unschöne Lücke zwischen den abgedunkelten Icons und Statistik/Einstellungen.
 
-**Fix:** Beim Import einer `HolidayConfig` ohne `days`-Feld: heuristische Erkennung bekannter Einzel-Tag-Ferien:
-```typescript
-function migrateLegacyHoliday(h: HolidayConfig): HolidayConfig {
-  if (h.days !== undefined) return h; // bereits korrekt
-  // Bekannte Einzel-Tag-Feiertage erkennen
-  if (h.startWeek === h.endWeek) {
-    const label = h.label.toLowerCase();
-    if (label.includes('auffahrt')) return { ...h, days: [4] }; // Donnerstag
-    if (label.includes('pfingstmontag')) return { ...h, days: [1] }; // Montag
-    if (label.includes('1. august') || label.includes('bundesfeier')) return { ...h, days: [1] };
-    if (label.includes('neujahr')) return { ...h, days: [1] };
-    if (label.includes('berchtoldstag')) return { ...h, days: [2] };
-  }
-  return h;
-}
+**Gewünschte Reihenfolge:**
+`[Suche_______________________] [+] [Alle] [SF] [EWR] [IN] [KS] [TaF] | [Icons...] [Statistik] [Einstellungen] [?]`
+
+- **Suche:** ganz links, nimmt den verfügbaren Platz ein (`flex: 1 1 auto`)
+- **Filter-Buttons** (`[+] [Alle] [SF]...`): nach der Suche, feste Breite, bei
+  Platzmangel zusammengestaucht (`overflow: hidden`, `flex-shrink: 1`)
+- **Icons + Statistik + Einstellungen:** ganz rechts, immer sichtbar (`flex: 0 0 auto`)
+- **Kein Leerraum** zwischen den Icon-Gruppen — alle Icons direkt nebeneinander
+
+**Implementierung:**
 ```
-Diese Funktion beim Import (SettingsPanel Import-Handler) und beim Laden aus localStorage auf alle Holidays anwenden.
+<toolbar>
+  <div class="search-area flex-1">  <!-- Suche, nimmt Platz -->
+  <div class="filter-area flex-shrink overflow-hidden">  <!-- Filter-Buttons -->
+  <div class="icon-area flex-none">  <!-- Alle Icons rechtsbündig -->
+</toolbar>
+```
+
+**Suche links:** Suchfeld bekommt `flex: 1 1 auto; min-width: 120px` damit es
+nie ganz verschwindet, aber Platz abgibt wenn nötig.
 
 ---
 
-### Zusatz — `col`-Feld Dokumentation in `kurse_duy_2526.json`
-
-Das `col`-Feld in `kurse_duy_2526.json` ist aktuell dokumentiert aber wird von `configToCourses()` ignoriert. Nach Fix von Problem 1 ist dieses Feld offiziell Teil des Formats. Die bestehenden `col`-Werte in der JSON sind korrekt und sollen beibehalten werden.
-
-**Prüfe:** Ob `CourseConfig` Interface in `settingsStore.ts` das `col?`-Feld bereits hat — falls nicht, ergänzen.
-
----
-
-## Ergebnis v3.86
+## Ergebnis v3.87
 
 | # | Typ | Beschreibung | Status |
 |---|-----|-------------|--------|
-| I1 | Bug | Import-Kompatibilität: 4 Teilprobleme (Spalten-ID, Version, Jahreswechsel, days-Feld) | ✅ |
-
----
-
-### Änderungen I1
-
-**Problem 3 (expandWeekRange Jahreswechsel):**
-- `settingsStore.ts` `expandWeekRange()`: Jahreswechsel-Logik — wenn `endIdx < startIdx`, wird zyklisch gewrappt (`slice(startIdx) + slice(0, endIdx+1)`). Weihnachtsferien KW 52→01 funktionieren jetzt korrekt.
-
-**Problem 4 (days-Migration):**
-- `settingsStore.ts`: Neue `migrateLegacyHoliday()` + `migrateHolidays()` Funktionen — erkennt bekannte Einzel-Tag-Feiertage (Auffahrt→Do, Pfingstmontag→Mo, etc.) und ergänzt `days`-Feld heuristisch.
-- `loadSettings()`: Wendet Migration beim Laden aus localStorage an.
-- `SettingsPanel.tsx`: Migration bei Holiday-Import und Gesamt-Settings-Import.
-
-**Problem 1 (col-Feld in configToCourses):**
-- `CourseConfig` Interface: `col?: number` Feld hinzugefügt.
-- `configToCourses()`: Nutzt `c.col ?? (100 + i)` statt hart `colCounter++`.
-- `applySettingsToWeekData()`: Alle 4 col-Mapping-Schleifen (allCols, colToDay, colToCourseId, colToCourse) verwenden dieselbe `c.col ?? (100 + i)` Logik.
-- `plannerStore.ts` `importData()`: Baut Migrations-Map `oldCol → newCol` beim Planerdaten-Import. Mapped weekData-Einträge und lessonDetails-Keys auf neue col-IDs.
-
-**Problem 2 (Versionscheck + Typ-Guards):**
-- Planerdaten-Import: Erkennt Settings-Exporte (`courses` ohne `weekData`) und zeigt hilfreiche Fehlermeldung.
-- Einstellungen-Import: Erkennt Planerdaten-Exporte (`weekData` ohne `courses`) und leitet auf richtigen Import-Bereich.
-- Unbekannte Formate: Klare Fehlermeldung «Unbekanntes Import-Format».
+| J1 | Bug-fix | H4-Regression: Schuljahr-Dropdown bereits korrekt (kein Vorlage-Dropdown vorhanden) | ✅ |
+| J2 | Bug | Panel-Scroll: onWheel stopPropagation + overflow-hidden auf DetailPanel + SequencePanel | ✅ |
+| J3 | Bug | Sequenz-UE: weekData-Sync in addBlockToSequence + updateBlockInSequence (Placeholder-Lektionen) | ✅ |
+| J4 | Feature | UE Dauer-Default: effectiveDetail.duration = les × lessonDurationMin, NewUEButton dynamisch | ✅ |
+| J5 | Feature | gymLevel string\|string[] + Checkbox-Toggle-UI + normalizeGymLevel/formatGymLevel + Filter-Logik Array-kompatibel | ✅ |
+| J6 | UI | Toolbar: Suche links (flex-1), Filter mitte (flex-shrink), Icons+Stats+Settings rechts (flex-none), v3.87 | ✅ |
 
 ---
 
@@ -164,21 +210,16 @@ Das `col`-Feld in `kurse_duy_2526.json` ist aktuell dokumentiert aber wird von `
 ```bash
 npm run build 2>&1 | tail -20
 git add -A
-git commit -m "fix: v3.86 — Import-Kompatibilität (Spalten-ID col-Feld, Versionscheck, expandWeekRange Jahreswechsel, HolidayConfig days-Migration)"
+git commit -m "fix/feat: v3.87 — Schuljahr-Dropdown (J1), Panel-Scroll (J2), Sequenz-weekData-Sync (J3), Dauer-Default (J4), GymLevel Mehrfachauswahl (J5), Toolbar-Layout (J6)"
 git push
 ```
 
-Nach Abschluss: HANDOFF.md Status auf ✅ setzen, Änderungsdetails pro Teilproblem dokumentieren.
+Nach Abschluss: HANDOFF.md Status auf ✅ setzen und Änderungsdetails dokumentieren.
 
 ---
 
-## Vorherige Version: v3.85 ✅
+## Vorherige Version: v3.86 ✅
 
 | # | Typ | Beschreibung | Status |
 |---|-----|-------------|--------|
-| H1 | Bug-fix | Feriendauer-Label: KW 39–41 = 3W, KW 52–01 = 2W | ✅ |
-| H2 | Bug-fix | Sonderwochen in gefilterten Spalten | ✅ |
-| H3 | Bug-fix | Toolbar Layout + Panel-Scroll | ✅ |
-| H4 | UI-fix | «Ohne Vorlage»-Dropdown entfernen | ✅ |
-| H5 | Bug-fix | PW-Badge nur reine TaF-Klassen | ✅ |
-| H6 | Bug-neu | Einstellungen-Panel Scroll-Bug | ✅ |
+| I1 | Bug | Import-Kompatibilität: Spalten-ID, Versionscheck, expandWeekRange, days-Migration | ✅ |
