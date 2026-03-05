@@ -1,9 +1,7 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: # Nur manuell starten — Deploy läuft lokal via deploy.sh
 
 permissions:
   contents: read
