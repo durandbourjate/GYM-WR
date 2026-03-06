@@ -45,7 +45,7 @@ index.html             ← Übersichtsseite aller Pools
 
 Eine neue `.js`-Datei in `config/` anlegen, die das `poolConfig`-Objekt exportiert. Struktur siehe bestehende Pools oder den Claude-Skill «uebungspool».
 
-## Features pool.html (Stand März 2026)
+## Features pool.html
 
 ### ✅ Implementiert
 - **Farbschema pro Fachbereich:** `COLOR_SCHEMES` setzt `--c-primary` basierend auf `POOL_META.color`/`POOL_META.fach` (VWL=orange, BWL=blau, Recht=grün)

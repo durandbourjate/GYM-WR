@@ -4,18 +4,22 @@ Digitale Werkzeuge für den Wirtschaft-und-Recht-Unterricht am Gymnasium Hofwil 
 
 ## Projekte
 
-### Unterrichtsplaner (v3.70)
+### Unterrichtsplaner (v3.92)
 
-Semesterplaner für Lektionen, Sequenzen und Prüfungen.
+Webbasierter Semesterplaner für Lektionen, Sequenzen und Prüfungen.
 
 **[→ Live öffnen](https://durandbourjate.github.io/GYM-WR-DUY/Unterrichtsplaner/)** · [Quellcode](./Unterrichtsplaner/)
 
-- React + TypeScript + Vite + Zustand (PWA)
+- React 19 + TypeScript + Vite + Zustand (PWA)
+- 2 Zoom-Stufen: Jahresübersicht (Grid) und Wochendetail (Inline-Editing)
 - Multi-Planer mit Tabs, Settings pro Instanz
-- Sequenzen, Batch-Bearbeitung, Drag & Drop
+- Sequenzen mit Blöcken und Reihen, Batch-Bearbeitung, Drag & Drop
 - Materialsammlung mit Archiv-Hierarchie
-- Ferien/Sonderwochen-Automatik, Schuljahr-Presets
+- Ferien/Sonderwochen-Automatik, Schuljahr-Presets (JSON-basiert)
 - Noten-Vorgaben-Tracking (MiSDV Art. 4)
+- SOL-Tracking mit Summen-Badge
+- Notizen-Spalte (aufklappbar, resizable)
+- Stufenlose Zoom-Funktion (Texte, Icons, Badges skalieren proportional)
 - Google Calendar Integration (OAuth, bidirektionaler Sync)
 - LearningView-Farbschema (VWL orange, BWL blau, Recht grün)
 
@@ -29,9 +33,9 @@ Modulare Architektur: `pool.html` (Template) + `config/*.js` (Inhalte).
 
 | Fach | Pools | Themen |
 |------|-------|--------|
-| VWL | 11 | Bedürfnisse, Menschenbild, BIP, Wachstum, Konjunktur, Arbeitslosigkeit, Geld, Steuern, Sozialpolitik, Staatsverschuldung, Markteffizienz |
-| Recht | 10 | Einführung, Einleitungsartikel, Grundrechte, Personenrecht, OR AT, Sachenrecht, Mietrecht, Arbeitsrecht, Strafrecht, Prozessrecht |
-| BWL | 5 | Einführung, Unternehmensmodell, Strategie & Führung, Marketing, Finanzbuchhaltung |
+| VWL | 11 | Bedürfnisse, Menschenbild, Markteffizienz, BIP, Konjunktur, Wachstum, Geld, Arbeitslosigkeit, Sozialpolitik, Steuern, Staatsverschuldung |
+| Recht | 10 | Einführung, Einleitungsartikel, Grundrechte, Personenrecht, Sachenrecht, OR AT, Arbeitsrecht, Mietrecht, Strafrecht, Prozessrecht |
+| BWL | 5 | Einführung, Unternehmensmodell, Strategie/Führung, Marketing, Fibu |
 | Informatik | 1 | Kryptographie |
 
 Unterstützt Multiple-Choice, Lückentext, Zuordnung, Kurzfälle. xAPI-kompatibel für LearningView-Iframe-Modus.
