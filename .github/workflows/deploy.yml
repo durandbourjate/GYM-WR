@@ -38,10 +38,8 @@ jobs:
       - name: Prepare combined site
         run: |
           mkdir -p _site/Unterrichtsplaner
-          # Copy static content (Uebungen, Projektdateien, root index)
+          # Copy static content (Uebungen + root landing page)
           cp -r Uebungen _site/Uebungen
-          cp -r Projektdateien _site/Projektdateien 2>/dev/null || true
-          cp README.md _site/ 2>/dev/null || true
           cp index.html _site/ 2>/dev/null || true
           # Copy Unterrichtsplaner build output
           cp -r Unterrichtsplaner/dist/* _site/Unterrichtsplaner/
