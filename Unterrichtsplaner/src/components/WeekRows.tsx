@@ -163,60 +163,25 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
     return validMap;
   }, [filter, plannerSettings]);
 
-  const { holidaySkipSet, holidaySpanStart, eventWeeks } = React.useMemo(() => {
-    const spans: { startIdx: number; len: number; label: string; type: 'holiday'; weekKeys: string[] }[] = [];
+  // U1: Nur noch eventWeeks berechnen (kein holidaySpans/holidaySkipSet/holidaySpanStart mehr)
+  const eventWeeks = React.useMemo(() => {
     const events = new Map<string, { label: string; affectedCols: Set<number> }>();
-    let i = 0;
-    const dwKeys = displayWeeks.map(w => w.w);
-    while (i < displayWeeks.length) {
-      const wk = displayWeeks[i];
-      // G3: Nur sichtbare (gefilterte) Spalten prüfen
+    for (const wk of displayWeeks) {
       const entries = Object.entries(wk.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
-      const allHoliday = entries.length > 0 && entries.every(([, e]) => (e as any).type === 6);
-
-      if (allHoliday) {
-        const label = (entries[0]?.[1] as any)?.title || 'Ferien';
-        const startIdx = i;
-        const weekKeys: string[] = [];
-        // T1-Fix: Merge nur Wochen mit gleichem Label
-        while (i < displayWeeks.length) {
-          const nwk = displayWeeks[i];
-          const ne = Object.entries(nwk.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
-          if (!(ne.length > 0 && ne.every(([, e]) => (e as any).type === 6))) break;
-          const nLabel = (ne[0]?.[1] as any)?.title || 'Ferien';
-          if (nLabel !== label) break;
-          weekKeys.push(nwk.w);
-          i++;
-        }
-        spans.push({ startIdx, len: i - startIdx, label, type: 'holiday', weekKeys });
-      } else {
-        // Check for event/sonderwoche: nur sichtbare Spalten (G3)
-        // H2: Bei aktivem Filter Sonderwochen-Scope berücksichtigen
-        const scopedCols = validEventCols?.get(wk.w);
-        const eventEntries = entries.filter(([col, e]) => {
-          if ((e as any).type !== 5) return false;
-          // Wenn scopedCols existiert für diese Woche, nur erlaubte Cols anzeigen
-          if (scopedCols && !scopedCols.has(parseInt(col))) return false;
-          return true;
-        });
-        if (eventEntries.length > 0) {
-          const label = (eventEntries[0][1] as any)?.title || 'Sonderwoche';
-          const affectedCols = new Set(eventEntries.map(([col]) => parseInt(col)));
-          events.set(wk.w, { label, affectedCols });
-        }
-        i++;
+      // H2: Bei aktivem Filter Sonderwochen-Scope berücksichtigen
+      const scopedCols = validEventCols?.get(wk.w);
+      const eventEntries = entries.filter(([col, e]) => {
+        if ((e as any).type !== 5) return false;
+        if (scopedCols && !scopedCols.has(parseInt(col))) return false;
+        return true;
+      });
+      if (eventEntries.length > 0) {
+        const label = (eventEntries[0][1] as any)?.title || 'Sonderwoche';
+        const affectedCols = new Set(eventEntries.map(([col]) => parseInt(col)));
+        events.set(wk.w, { label, affectedCols });
       }
     }
-
-    const skipSet = new Set<string>();
-    const spanStart = new Map<string, typeof spans[0]>();
-    for (const span of spans) {
-      spanStart.set(dwKeys[span.startIdx], span);
-      for (let j = 1; j < span.len; j++) {
-        skipSet.add(dwKeys[span.startIdx + j]);
-      }
-    }
-    return { holidaySkipSet: skipSet, holidaySpanStart: spanStart, eventWeeks: events };
+    return events;
   }, [displayWeeks, visibleCols, validEventCols]);
 
   // Single click: select + show mini-buttons (no detail panel)
@@ -485,54 +450,33 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         const isCurrent = week.w === CURRENT_WEEK;
         const past = isPastWeek(week.w, CURRENT_WEEK);
 
-        // Skip weeks that are covered by a holiday/event rowSpan
-        if (holidaySkipSet.has(week.w)) return null;
+        // U1: Ferien/Events — jede Woche einzeln als colspan-Balken (kein rowSpan)
+        const visEntries = Object.entries(week.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
+        const isAllHoliday = visEntries.length > 0 && visEntries.every(([, e]) => (e as any).type === 6);
+        const isAllEvent = visEntries.length > 0 && visEntries.every(([, e]) => (e as any).type === 5);
 
-        // Check if this is the start of a holiday span
-        const hSpan = holidaySpanStart.get(week.w);
-        if (hSpan) {
-          const ROW_H = z(36);
-          const spanH = hSpan.len * ROW_H;
+        if (isAllHoliday || isAllEvent) {
+          const label = (visEntries[0]?.[1] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
           return (
-            <tr
-              key={week.w}
-              ref={isCurrent ? currentRef : undefined}
-              data-week={week.w}
-              className="group"
-              style={{ opacity: dimPastWeeks && past && !isCurrent ? 0.5 : 1 }}
-            >
-              {/* Week number(s) */}
-              <td
-                className="sticky left-0 z-30 px-1 text-center border-b border-slate-900/60"
-                style={{ background: 'var(--holiday-bg)' }}
-                rowSpan={hSpan.len}
-              >
-                <div className="flex flex-col items-center">
-                  <span className="font-mono font-medium text-gray-500" style={{ fontSize: z(9) }}>{hSpan.weekKeys[0]}</span>
-                  {hSpan.len > 1 && (
-                    <span className="font-mono text-gray-600" style={{ fontSize: z(8) }}>–{hSpan.weekKeys[hSpan.len - 1]}</span>
-                  )}
-                </div>
+            <tr key={week.w} ref={isCurrent ? currentRef : undefined} data-week={week.w} className="group"
+              style={{ opacity: dimPastWeeks && past && !isCurrent ? 0.5 : 1 }}>
+              <td className="sticky left-0 z-30 px-1 text-center border-b border-slate-900/60"
+                style={{ background: 'var(--holiday-bg)' }}>
+                <span className="font-mono font-medium text-gray-500" style={{ fontSize: z(9) }}>{week.w}</span>
               </td>
-              {/* Merged cell spanning all course columns */}
-              <td
-                colSpan={courses.length}
-                rowSpan={hSpan.len}
+              <td colSpan={courses.length}
                 className="border-b border-slate-800/30 text-center align-middle"
                 style={{
-                  background: 'color-mix(in srgb, var(--holiday-bar) 80%, transparent)',
-                  height: spanH,
-                }}
-              >
+                  background: isAllHoliday
+                    ? 'color-mix(in srgb, var(--holiday-bar) 80%, transparent)'
+                    : '#78350f30',
+                  height: z(36),
+                }}>
                 <div className="flex items-center justify-center gap-1.5">
-                  <span style={{ fontSize: z(11) }}>🏖</span>
-                  <span className="font-medium text-gray-400" style={{ fontSize: z(11) }}>
-                    {hSpan.label}
+                  <span style={{ fontSize: z(11) }}>{isAllHoliday ? '🏖' : '📅'}</span>
+                  <span className={`font-medium ${isAllHoliday ? 'text-gray-400' : 'text-amber-200'}`} style={{ fontSize: z(11) }}>
+                    {label}
                   </span>
-                  {/* H1-fix: hSpan.len = Anzahl eindeutige Zeilen (KWs), direkt verwenden */}
-                  {hSpan.len > 1 && (
-                    <span className="text-gray-500" style={{ fontSize: z(9) }}>({hSpan.len}W)</span>
-                  )}
                 </div>
               </td>
             </tr>

@@ -223,63 +223,6 @@ export function ZoomYearView() {
   // Semester break line index
   const s2Idx = s2StartIndex;
 
-  // Pre-compute holiday/event blocks: merge consecutive holiday weeks into spans
-  // and detect event weeks (type 5) that cover all courses in a group
-  const holidaySpans = useMemo(() => {
-    const spans: { startIdx: number; len: number; label: string; type: 'holiday' | 'event' }[] = [];
-    let i = 0;
-    while (i < allWeekKeys.length) {
-      const weekEntry = effectiveWeeks.find(w => w.w === allWeekKeys[i]);
-      const entries = weekEntry ? Object.values(weekEntry.lessons) : [];
-      const isHoliday = entries.length > 0 && entries.every(e => (e as any).type === 6);
-      const isEvent = entries.length > 0 && entries.every(e => (e as any).type === 5);
-
-      if (isHoliday) {
-        const label = (entries[0] as any)?.title || 'Ferien';
-        const startIdx = i;
-        // Merge consecutive holiday weeks with same label (T1-Fix: label must match)
-        while (i < allWeekKeys.length) {
-          const nextWeek = effectiveWeeks.find(w => w.w === allWeekKeys[i]);
-          const nextEntries = nextWeek ? Object.values(nextWeek.lessons) : [];
-          const nextIsHoliday = nextEntries.length > 0 && nextEntries.every(e => (e as any).type === 6);
-          if (!nextIsHoliday) break;
-          const nextLabel = (nextEntries[0] as any)?.title || 'Ferien';
-          if (nextLabel !== label) break;
-          i++;
-        }
-        spans.push({ startIdx, len: i - startIdx, label, type: 'holiday' });
-      } else if (isEvent) {
-        const label = (entries[0] as any)?.title || 'Sonderwoche';
-        spans.push({ startIdx: i, len: 1, label, type: 'event' });
-        i++;
-      } else {
-        i++;
-      }
-    }
-    return spans;
-  }, [allWeekKeys, effectiveWeeks]);
-
-  // Build skip set for holiday/event merged rows
-  const holidaySkipSet = useMemo(() => {
-    const skip = new Set<number>();
-    for (const span of holidaySpans) {
-      // Skip all rows after the first in a span (they're covered by rowSpan)
-      for (let j = 1; j < span.len; j++) {
-        skip.add(span.startIdx + j);
-      }
-    }
-    return skip;
-  }, [holidaySpans]);
-
-  // Lookup: weekIdx → span (for the first row of each span)
-  const holidaySpanStart = useMemo(() => {
-    const map = new Map<number, typeof holidaySpans[0]>();
-    for (const span of holidaySpans) {
-      map.set(span.startIdx, span);
-    }
-    return map;
-  }, [holidaySpans]);
-
   return (
     <div className="px-1 pt-0 pb-1">
       <table className="border-collapse w-max min-w-full">
@@ -322,58 +265,45 @@ export function ZoomYearView() {
         </thead>
         <tbody>
           {allWeekKeys.map((weekW, weekIdx) => {
-            // Skip rows covered by holiday/event rowSpan
-            if (holidaySkipSet.has(weekIdx)) return null;
-
             const past = isPastWeek(weekW, currentWeek);
             const isCurrent = weekW === currentWeek;
             const isSemBreak = weekIdx === s2Idx;
-
-            // Check if this is the start of a holiday/event span
-            const hSpan = holidaySpanStart.get(weekIdx);
             const totalCols = groups.reduce((sum, g) => sum + (g.isMultiDay ? g.courses.length : 1), 0);
 
-            if (hSpan) {
-              const spanH = hSpan.len * ROW_H;
-              const isHoliday = hSpan.type === 'holiday';
+            // U1: Ferien/Events — jede Woche einzeln als colspan-Balken (kein rowSpan)
+            const weekEntry = effectiveWeeks.find(w => w.w === weekW);
+            const allEntries = weekEntry ? Object.values(weekEntry.lessons) : [];
+            const isAllHoliday = allEntries.length > 0 && allEntries.every(e => (e as any).type === 6);
+            const isAllEvent = allEntries.length > 0 && allEntries.every(e => (e as any).type === 5);
+
+            if (isAllHoliday || isAllEvent) {
+              const label = (allEntries[0] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
               return (
                 <tr key={weekW} data-week={weekW}
                   style={{
                     opacity: dimPastWeeks && past && !isCurrent ? 0.4 : 1,
+                    height: ROW_H,
                     borderTop: isSemBreak ? '3px solid #f59e0b50' : undefined,
                   }}>
-                  <td className={`bg-gray-900 sticky left-0 z-10 text-center py-0 px-0.5 border-b border-slate-800/50`}
-                    rowSpan={hSpan.len}
-                    style={{ height: spanH }}>
-                    <div className="flex flex-col items-center">
-                      <span className="font-mono text-gray-400" style={{ fontSize: z(9) }}>{weekW}</span>
-                      {hSpan.len > 1 && (
-                        <span className="font-mono text-gray-500" style={{ fontSize: z(8) }}>–{allWeekKeys[weekIdx + hSpan.len - 1]}</span>
-                      )}
-                    </div>
+                  <td className="bg-gray-900 sticky left-0 z-10 text-center py-0 px-0.5 border-b border-slate-800/50">
+                    <span className="font-mono text-gray-400" style={{ fontSize: z(9) }}>{weekW}</span>
                   </td>
-                  <td colSpan={totalCols} rowSpan={hSpan.len}
+                  <td colSpan={totalCols}
                     className="border-b border-slate-800/30 text-center align-middle"
                     style={{
-                      background: isHoliday ? '#1e293b50' : '#78350f30',
-                      height: spanH,
+                      background: isAllHoliday ? '#1e293b50' : '#78350f30',
+                      height: ROW_H,
                     }}>
                     <div className="flex items-center justify-center gap-1.5">
-                      <span style={{ fontSize: z(10) }}>{isHoliday ? '🏖' : '📅'}</span>
-                      <span className={`font-medium ${isHoliday ? 'text-gray-300' : 'text-amber-100'}`} style={{ fontSize: z(11) }}>
-                        {hSpan.label}
+                      <span style={{ fontSize: z(10) }}>{isAllHoliday ? '🏖' : '📅'}</span>
+                      <span className={`font-medium ${isAllHoliday ? 'text-gray-300' : 'text-amber-100'}`} style={{ fontSize: z(11) }}>
+                        {label}
                       </span>
-                      {hSpan.len > 1 && (
-                        <span className="text-gray-500" style={{ fontSize: z(9) }}>({hSpan.len}W)</span>
-                      )}
                     </div>
                   </td>
                 </tr>
               );
             }
-
-            // Check per-course events (type 5) that don't cover ALL courses
-            const weekEntry = effectiveWeeks.find(w => w.w === weekW);
 
             return (
               <tr key={weekW} data-week={weekW}
