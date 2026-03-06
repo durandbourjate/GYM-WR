@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.94
 
-## Status: 🔄 v3.94 — Refactoring Phase 2 (WeekRows + DetailPanel)
+## Status: ✅ v3.94 — Refactoring Phase 2 (WeekRows + DetailPanel)
 
 **Referenz:** Lies `REFACTORING.md` für Analyse, Regeln und Verbote.
 
