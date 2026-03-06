@@ -1,17 +1,310 @@
-# Unterrichtsplaner – Handoff v3.95
+# Unterrichtsplaner – Handoff v3.96
 
-## Status: ✅ v3.95 — Refactoring Phase 3 (plannerStore aufteilen)
+## Status: ⬜ v3.96 — Bug-Fixes + UX-Verbesserungen (11 Tasks)
 
-**Referenz:** Lies `REFACTORING.md` für Analyse, Regeln und Verbote.
+**Vorgänger:** v3.95 (Refactoring P2 plannerStore → Slices abgeschlossen). Refactoring ist FERTIG — diese Version enthält reine Bug-Fixes und UX-Verbesserungen.
 
 ---
 
 ## OBERSTE REGEL
 
-**Keine Funktionalität darf verloren gehen oder sich verändern.**
-Reines Strukturrefactoring: Move + Extract. Die App muss vor und nach jedem Schritt exakt gleich funktionieren. Siehe REFACTORING.md → Regeln.
+**Immer `npx tsc --noEmit && npm run build` vor und nach jeder Änderung.**
+Commit nach jedem erledigten Task: `git add -A && git commit -m "fix/feat: v3.96 T[N] — [Beschreibung]" && git push`
 
 ---
+
+## Originalauftrag v3.96
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| T1 | Bug | Ferien-Bug Regression: KW-Zeilen fehlen komplett (KW 3–4, 17, 43–45) | 🔴 Kritisch | ⬜ |
+| T2 | Bug | Sonderwochen: falscher Inhalt (alle Kurse zeigen dasselbe) + Text kaum lesbar | 🔴 Kritisch | ⬜ |
+| T3 | Bug | Auto-Fit Zoom: leere Spalten neben Kursspalten in Wochendetailansicht | 🟠 Hoch | ⬜ |
+| T4 | Bug | Badges (P/PW/HK): zu blass, schlechtes Alignment, vertikal statt horizontal | 🟠 Hoch | ⬜ |
+| T5 | Bug | Sequenz Drag&Drop: nur erste UE wird verschoben, Rest bleibt | 🟠 Hoch | ⬜ |
+| T6 | Bug | Sequenz entfernen: keine Option «Sequenz + UEs entfernen» | 🟠 Hoch | ⬜ |
+| T7 | Bug | Light-Mode Überbleibsel: Mehrjahresübersicht Semester-Karten dunkel | 🟡 Mittel | ⬜ |
+| T8 | Bug | Sequenz-Menü (Neue Sequenz): zu klein, Schrift im Tab unlesbar | 🟡 Mittel | ⬜ |
+| T9 | Feature | «Zur aktuellen Woche»-Button: soll in jeder Ansicht funktionieren (Ansicht wechseln + scrollen) | 🟡 Mittel | ⬜ |
+| T10 | Feature | Sequenz aus Sammlung importieren: bei Markierung + im Sequenz-Menü | 🟡 Mittel | ⬜ |
+| T11 | Feature | Importierte Sequenz KW-Zuordnung: UX klären nach Import aus Sammlung | 🟡 Mittel | ⬜ |
+
+**Empfohlene Reihenfolge:** T1 → T2 → T3 → T5 → T6 → T4 → T7 → T8 → T9 → T10 → T11
+
+---
+
+## Task T1: Bug — Ferien-Regression, KW-Zeilen fehlen komplett
+
+### Problem
+In der Jahresübersicht fehlen KW 3–4 (nach Weihnachtsferien), KW 17 (nach Frühlingsferien) und KW 43–45 (nach Herbstferien) als Zeilen komplett. Die Zeilen werden nicht angezeigt — weder als Ferien noch als normale Wochen.
+
+### Ursache (Hypothese)
+Die `holidaySpans`-Logik in `ZoomYearView.tsx` (und analog `WeekRows.tsx`) fasst aufeinanderfolgende Ferien-Wochen per `rowSpan` zusammen. Die Merge-Schleife (Zeile ~242 in ZoomYearView) läuft weiter solange die nächste Woche auch `isHoliday` ist:
+
+```typescript
+while (i < allWeekKeys.length) {
+  const nextWeek = effectiveWeeks.find(w => w.w === allWeekKeys[i]);
+  const nextEntries = nextWeek ? Object.values(nextWeek.lessons) : [];
+  const nextIsHoliday = nextEntries.length > 0 && nextEntries.every(e => (e as any).type === 6);
+  if (!nextIsHoliday) break;
+  i++;
+}
+```
+
+**Kritischer Bug:** Wenn `nextEntries.length === 0` (Woche hat keine Lektionseinträge), ist `nextIsHoliday = false` und die Schleife bricht ab — das ist korrekt. ABER: die `applySettingsToWeekData`-Funktion in `settingsStore.ts` könnte zu viele Wochen als type 6 markieren. 
+
+Die Ferien-JSON sagt: Herbstferien KW 39–41, Weihnachtsferien KW 51–01, Frühlingsferien KW 15–16.
+- KW 43–45 fehlen → sie werden fälschlicherweise als Ferienverlängerung der Herbstferien (39–41) erkannt. Möglicherweise markiert `applySettingsToWeekData` KW 42–45 als type 6 (z.B. wegen der Sonderwochen-Logik die dort ebenfalls type 5/6 setzt).
+- KW 3–4 fehlen → Weihnachtsferien 51–01 werden bis KW 4 verlängert.
+- KW 17 fehlt → Frühlingsferien 15–16 werden bis KW 17 verlängert.
+
+### Debugging-Anleitung
+1. **`settingsStore.ts` → `applySettingsToWeekData()`**: Nach dem Holiday-Block die `result`-Array loggen/prüfen. Für jede Woche schauen: welche Kurse haben type 6?
+2. **`expandWeekRange("39", "41")`**: Soll genau `["39","40","41"]` liefern — prüfen ob mehr kommt.
+3. **Sonderwochen-Block** (nach den Holidays): Prüfen ob Sonderwochen fälschlicherweise type 6 statt type 5 setzen, was die Holiday-Span-Erkennung verwirrt.
+4. **`holidaySpans` in `ZoomYearView.tsx`**: Console.log der berechneten Spans — welche Wochen werden geskippt?
+
+### Fix-Strategie
+- In `applySettingsToWeekData()`: Sicherstellen dass NUR die exakten Wochen aus `expandWeekRange` als type 6 markiert werden.
+- In `holidaySpans`-Berechnung: Zusätzlich den **Label** prüfen — nur Wochen mit demselben Label mergen (verhindert, dass Sonderwoche direkt nach Ferien irrtümlich angehängt wird).
+- Die `holidaySkipSet` loggen und mit der erwarteten KW-Liste abgleichen.
+
+### Dateien
+- `src/store/settingsStore.ts` (applySettingsToWeekData, expandWeekRange)
+- `src/components/ZoomYearView.tsx` (holidaySpans, holidaySkipSet)
+- `src/components/WeekRows.tsx` (analoge Logik falls vorhanden)
+- `public/presets/Hofwil/ferien_hofwil_2526.json` (Referenz — nicht ändern)
+
+---
+
+## Task T2: Bug — Sonderwochen falscher Inhalt + unlesbarer Text
+
+### Problem (2 Teilprobleme)
+1. **Falscher Inhalt:** In der Wochendetailansicht zeigen alle Kurse dieselbe Sonderwoche (z.B. alle zeigen «Schneesportlager»), obwohl die Sonderwochen stufenspezifisch unterschiedlich sein sollten (29c=GYM1, 27a28f=GYM2/GYM3, 28bc29fs=GYM2/GYM3).
+2. **Schlechte Lesbarkeit:** Der Sonderwochen-Text ist rötlich/orange auf beigem Hintergrund — kaum erkennbar.
+
+### Ursache (Regression)
+In v3.89 (L3) wurde die stufenspezifische Zuordnung implementiert via `iwPresets.ts` mit `gymLevel`-pro-Eintrag. Das Refactoring (v3.93–v3.95) hat möglicherweise die Filter-Logik beschädigt: `course.stufe`-Matching funktioniert nicht mehr korrekt.
+
+### Fix
+
+**Teil 1 — Inhalt:** In `settingsStore.ts → applySettingsToWeekData()`, Sonderwochen-Block:
+1. Prüfen wie `gymLevel` mit `course.stufe` verglichen wird.
+2. Sicherstellen dass jeder Kurs nur die Sonderwoche seiner Stufe bekommt:
+   - 29c (GYM1) → «Schneesportlager» nur wenn `gymLevel` GYM2 ist → 29c darf KEIN Schneesportlager bekommen
+   - 27a28f (GYM2/GYM3) → andere Sonderwoche
+   - 28bc29fs (GYM2/GYM3) → andere Sonderwoche
+3. Fallback wenn `course.stufe` undefined: Kurs bekommt KEINE Sonderwoche (streng), nicht alle (zu locker).
+
+**Teil 2 — Lesbarkeit:** In `WeekRows.tsx` und/oder `ZoomYearView.tsx`:
+- Sonderwochen-Text: Farbe auf `var(--text-primary)` oder kontrastreichen Wert setzen
+- Sonderwochen-Hintergrund: Entweder dunklerer amber/orange-Ton ODER weisser Text auf amber
+- Light-Mode: WCAG-AA Kontrast sicherstellen (≥ 4.5:1)
+- Dark-Mode: Bestehende amber-Farben prüfen
+
+### Dateien
+- `src/store/settingsStore.ts` (Sonderwochen-Filter)
+- `src/components/WeekRows.tsx` (Rendering Sonderwoche)
+- `src/components/ZoomYearView.tsx` (Rendering Sonderwoche)
+- `src/data/iwPresets.ts` (Referenz — nicht ändern)
+
+---
+
+## Task T3: Bug — Auto-Fit Zoom zeigt leere Spalten
+
+### Problem
+In der Wochendetailansicht (WeekRows) zeigt der Auto-Fit-Zoom-Modus leere Spalten neben den echten Kursspalten. Die relevanten Kurse werden auf die Hälfte des Bildschirms zusammengedrückt, und daneben erscheinen unnötige leere Spalten die keinem Kurs zugeordnet sind.
+
+### Gewünschtes Verhalten
+Auto-Fit soll NUR Spalten für Kurse anzeigen, die tatsächlich existieren (d.h. in den `courses`-Array vorhanden sind). Leere/nicht-existierende Spalten sollen komplett ausgeblendet werden. Die vorhandenen Kurse sollen den gesamten verfügbaren Platz nutzen.
+
+### Fix
+In `WeekRows.tsx` (oder wo Auto-Fit die Spaltenbreite berechnet):
+1. Finde die Auto-Fit-Logik: Suche nach `ResizeObserver`, `auto-fit`, `autoFit` oder der Berechnung der Spaltenbreite.
+2. Beim Auto-Fit: Nur die Spalten zählen, die einen tatsächlichen Kurs haben (`courses.length`), nicht alle möglichen Spalten-Indizes.
+3. Spaltenbreite = verfügbare Breite / Anzahl existierender Kurse (nicht / Anzahl aller möglichen Spalten).
+4. Leere Spalten-Platzhalter (falls vorhanden) im Auto-Fit-Modus nicht rendern.
+
+### Dateien
+- `src/components/WeekRows.tsx` (Auto-Fit-Logik, Spaltenbreite)
+- `src/components/SemesterHeader.tsx` (Header-Spalten müssen übereinstimmen)
+
+---
+
+## Task T4: Bug — Badges (P/PW/HK) Styling und Layout
+
+### Problem (3 Teilprobleme)
+1. **Farben zu blass:** Die P (Prüfung), PW (Prüfungsarbeit), HK (Halbklasse) Badges sind zu unauffällig — sie sollten knalligere, auffälligere Farben haben.
+2. **Alignment bei Einzellektionen:** Bei UEs mit nur einer Lektion (EL) stimmt das vertikale Alignment der Badges mit der UE-Kachel nicht überein.
+3. **Mehrere Badges untereinander:** Wenn eine UE mehrere Badges hat (z.B. P + PW + HK), werden diese vertikal gestapelt, was unübersichtlich ist. Sie sollten horizontal rechtsbündig angeordnet werden.
+
+### Gewünschtes Verhalten
+- **Farben:** Satte, gut sichtbare Farben: P = Rot (#ef4444 / red-500), PW = Violett (#a855f7 / purple-500), HK = Orange (#f97316 / orange-500) — oder ähnlich knallig, gut unterscheidbar.
+- **Layout:** Badges horizontal in einer Zeile, rechtsbündig innerhalb der Kachel. Maximal 3 nebeneinander.
+- **Alignment:** Badges vertikal zentriert zur UE-Kachel, auch bei 1L-Kursen.
+- **Schrift:** Weisser Text auf farbigem Hintergrund, leicht abgerundete Ecken, kompakt (text-[8px] oder text-[9px]).
+
+### Dateien
+- `src/components/WeekRows.tsx` (Badge-Rendering in Kacheln)
+- Eventuell `src/components/ZoomYearView.tsx` (falls Badges auch in Jahresübersicht)
+
+---
+
+## Task T5: Bug — Sequenz Drag&Drop verschiebt nur erste UE
+
+### Problem
+Beim Verschieben einer Sequenz per Drag am Sequenzbalken (oberer farbiger Balken über den UEs) wird nur die erste UE an die neue Position verschoben. Die restlichen UEs der Sequenz bleiben an ihrer alten Position stehen.
+
+### Gewünschtes Verhalten
+Alle UEs einer Sequenz sollen gemeinsam verschoben werden. Wenn die erste UE um z.B. +2 Wochen verschoben wird, sollen alle nachfolgenden UEs der Sequenz ebenfalls um +2 Wochen verschoben werden. Dabei:
+- Ferien/Sonderwochen überspringen (wie bei Einzel-Verschiebung)
+- Falls am Ziel nicht genug Platz: Warnung anzeigen oder die verschiebbaren UEs verschieben und den Rest am alten Platz lassen
+
+### Fix
+In der Drag&Drop-Logik (vermutlich `WeekRows.tsx` oder `plannerStore` / `dataSlice.ts`):
+1. Beim Drop einer Sequenz-UE: prüfen ob die UE Teil einer Sequenz ist (`sequenceId`)
+2. Falls ja: ALLE UEs der Sequenz identifizieren (über `sequences[]` im Store)
+3. Den Offset berechnen: `neueKW - alteKW` der gedroppten UE
+4. Alle UEs der Sequenz um denselben Offset verschieben
+5. Sowohl `weekData` als auch `sequences[].blocks[].weeks[]` synchron aktualisieren
+
+### Dateien
+- `src/components/WeekRows.tsx` (Drag-Handler)
+- `src/store/slices/dataSlice.ts` (swapLessons, moveLessonToEmpty)
+- `src/store/slices/sequenceSlice.ts` (Sequence-Daten aktualisieren)
+
+---
+
+## Task T6: Bug — Sequenz entfernen braucht zwei Optionen
+
+### Problem
+Wenn eine Sequenz markiert wird und «Entfernen» geklickt wird, wird nur die Sequenz-Gruppierung aufgelöst — die einzelnen UEs bleiben als unverbundene Kacheln im Planer stehen.
+
+### Gewünschtes Verhalten
+Zwei Optionen im Entfernen-Dialog/-Menü:
+1. **«Sequenz auflösen»** (bisheriges Verhalten): Entfernt die Sequenz-Gruppierung, UEs bleiben als Einzelkacheln erhalten.
+2. **«Sequenz + UEs entfernen»**: Entfernt die Sequenz UND alle zugehörigen UEs (weekData-Einträge) komplett.
+
+### UI
+Im Sequenz-Menü (rechtes Panel, oder Kontextmenü) statt einem «Entfernen»-Button:
+- 🔗 «Auflösen» — Gruppierung entfernen, UEs behalten
+- 🗑 «Komplett entfernen» — Sequenz + alle UEs löschen
+
+Oder: «Entfernen» öffnet einen Bestätigungs-Dialog mit den zwei Optionen.
+
+### Fix
+In `SequencePanel.tsx` (und/oder `sequenceSlice.ts`):
+1. Bestehende `deleteSequence`-Action = «Auflösen» (umbenennen in `dissolveSequence` o.ä.)
+2. Neue Action `deleteSequenceWithLessons`: Löscht die Sequenz UND iteriert über alle `blocks[].weeks[]` → entfernt die entsprechenden `weekData`-Einträge
+
+### Dateien
+- `src/components/SequencePanel.tsx` (UI: zwei Buttons/Dialog)
+- `src/store/slices/sequenceSlice.ts` (deleteSequence → dissolveSequence + deleteSequenceWithLessons)
+- `src/store/slices/dataSlice.ts` (weekData-Einträge entfernen)
+
+---
+
+## Task T7: Bug — Light-Mode Überbleibsel Mehrjahresübersicht
+
+### Problem
+In der Mehrjahresübersicht (Stoffverteilung-Tab) haben die Semester-Karten im Light-Mode noch einen dunklen Hintergrund (#1e293b o.ä.). Die Karten sollten im Light-Mode hell sein.
+
+### Fix
+In der Komponente die die Mehrjahresübersicht rendert (vermutlich ein separater View/Tab innerhalb des Planers):
+1. Hardcodierte Dark-Farben durch CSS-Variablen ersetzen: `var(--bg-card)`, `var(--bg-secondary)`
+2. Text-Farben: `var(--text-primary)`, `var(--text-muted)`
+3. Borders: `var(--border)`
+4. Die farbigen Balken (VWL orange, BWL blau, Recht grün) sollen in beiden Modi farbig bleiben.
+
+### Dateien
+- Suche nach dem Komponenten-Namen: vermutlich `MultiYearView.tsx`, `CurriculumView.tsx`, `StoffverteilungView.tsx` oder ähnlich
+- `src/index.css` (falls neue CSS-Variablen nötig)
+
+---
+
+## Task T8: Bug — Sequenz-Menü zu klein + Tab-Schrift unlesbar
+
+### Problem
+1. Das Popup/Menü beim Erstellen einer neuen Sequenz ist zu klein. Es sollte eine fixe Mindestgrösse haben (ca. halbe Panel-Breite).
+2. Die Schrift im Tab «Sequenzen» (in der Tab-Leiste des Side-Panels) ist nicht lesbar — zu klein oder zu wenig Kontrast.
+
+### Fix
+In `SequencePanel.tsx` und/oder `DetailPanel.tsx`:
+1. **Menügrösse:** `min-width: 300px` oder `min-width: 50%` des Panels auf den Neue-Sequenz-Dialog.
+2. **Tab-Schrift:** `fontSize` und `color` des Tab-Labels prüfen. Mindestens `12px`, Farbe `var(--text-primary)`.
+
+### Dateien
+- `src/components/SequencePanel.tsx`
+- `src/components/DetailPanel.tsx` (Tab-Leiste)
+
+---
+
+## Task T9: Feature — «Zur aktuellen Woche» in jeder Ansicht
+
+### Problem
+Der Button «Zur aktuellen Woche (KW XX) scrollen» funktioniert nur in der Wochendetailansicht. In der Jahresübersicht passiert nichts beim Klick.
+
+### Gewünschtes Verhalten
+- **In der Wochendetailansicht:** Wie bisher — scrollt zur aktuellen KW-Zeile.
+- **In der Jahresübersicht:** Wechselt automatisch zur Wochendetailansicht UND scrollt dann zur aktuellen KW.
+- **In der Blockansicht:** Wechselt zur Wochendetailansicht UND scrollt.
+
+### Fix
+In `Toolbar.tsx` (oder wo der Button definiert ist):
+1. Beim Klick prüfen welche Ansicht aktiv ist.
+2. Falls nicht Wochendetail: Zuerst `setZoomLevel` auf Wochendetail setzen.
+3. Dann (ggf. nach kurzem `requestAnimationFrame` oder `useEffect`): zur aktuellen KW scrollen.
+
+### Dateien
+- `src/components/Toolbar.tsx` (Button-Handler)
+- `src/store/slices/uiSlice.ts` (zoomLevel setzen)
+
+---
+
+## Task T10: Feature — Sequenz aus Sammlung importieren
+
+### Problem
+Beim Markieren von Zellen und «Neue Sequenz» fehlt die Option, eine bestehende Sequenz aus der Sammlung diesen Wochen zuzuteilen. Auch im Sequenz-Menü fehlt neben «In Sammlung speichern» ein «Aus Sammlung importieren»-Button.
+
+### Gewünschtes Verhalten
+1. **Bei Markierung + «Neue Sequenz»:** Zusätzlich zur leeren neuen Sequenz eine Option «Aus Sammlung importieren» anbieten. Öffnet eine Liste der gespeicherten Sequenzen in der Sammlung. Bei Auswahl: Sequenz wird den markierten Wochen zugeordnet.
+2. **Im Sequenz-Menü (rechtes Panel):** Button «Aus Sammlung importieren» neben «In Sammlung speichern».
+
+### Fix
+1. `SequencePanel.tsx`: Button «Aus Sammlung» in der Aktionsleiste.
+2. Import-Dialog: Liste der Collection-Sequenzen (gefiltert nach Fachbereich falls möglich). Bei Klick: `importFromCollection`-Logik die Sequenz-Daten kopiert und den markierten Wochen zuweist.
+3. Im Markierungs-Popup (WeekRows.tsx): Neben «Neue Sequenz» einen «Aus Sammlung»-Button.
+
+### Dateien
+- `src/components/SequencePanel.tsx`
+- `src/components/WeekRows.tsx` (Markierungs-Popup)
+- `src/store/slices/collectionSlice.ts` (Import-Logik)
+
+---
+
+## Task T11: Feature — KW-Zuordnung nach Import aus Sammlung
+
+### Problem
+Nach dem Import einer Sequenz aus der Sammlung steht «Keine Wochen zugewiesen». Es ist unklar, wie man dieser Sequenz konkrete KWs zuordnet.
+
+### Gewünschtes Verhalten
+Nach dem Import soll die Sequenz automatisch Wochen zugewiesen bekommen:
+- **Wenn aus Markierung importiert (T10):** Die markierten Wochen werden automatisch zugewiesen.
+- **Wenn über Panel-Button importiert:** Ein KW-Zuordnungs-Dialog erscheint: «Ab welcher KW soll die Sequenz beginnen?» mit Dropdown/Wochenauswahl. Die Sequenz wird dann ab der gewählten KW platziert (autoPlace-Logik).
+
+### Fix
+1. Import-aus-Markierung: Die markierten Wochen als `weeks[]` direkt an die neue Sequenz übergeben.
+2. Import-über-Panel: Nach Auswahl der Collection-Sequenz → Dialog mit Start-KW → `autoPlaceSequence()` aufrufen.
+3. Sicherstellen dass `weekData` synchron aktualisiert wird (wie bei normaler Sequenz-Erstellung).
+
+### Dateien
+- `src/components/SequencePanel.tsx`
+- `src/store/slices/sequenceSlice.ts` (autoPlaceSequence)
+- `src/store/slices/dataSlice.ts` (weekData sync)
+
+---
+
+## Vorherige Version: v3.95 ✅ (Refactoring Phase 2 — plannerStore Slices)
 
 ## Refactoring P2: plannerStore.ts in Slice-Dateien aufteilen
 
