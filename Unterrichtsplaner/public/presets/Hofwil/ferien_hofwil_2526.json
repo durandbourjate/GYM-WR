@@ -1,6 +1,6 @@
 [
   { "label": "Herbstferien", "startWeek": "39", "endWeek": "41" },
-  { "label": "Weihnachtsferien", "startWeek": "51", "endWeek": "01" },
+  { "label": "Weihnachtsferien", "startWeek": "52", "endWeek": "01" },
   { "label": "Sportferien", "startWeek": "06", "endWeek": "06" },
   { "label": "Frühlingsferien", "startWeek": "15", "endWeek": "16" },
   { "label": "Auffahrt", "startWeek": "20", "endWeek": "20", "days": [4, 5] },

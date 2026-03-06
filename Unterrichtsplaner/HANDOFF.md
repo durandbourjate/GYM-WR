@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.97
 
-## Status: ✅ v3.97 — Ferien-Rendering Vereinfachung — ABGESCHLOSSEN
+## Status: ✅ v3.97 — Ferien-Rendering + Sequenz-Menü Fix — ABGESCHLOSSEN
 
 **Vorgänger:** v3.96 (11 Bug-Fixes + UX abgeschlossen und deployed).
 
@@ -84,29 +84,20 @@ Analog: Die `holidaySpans`/`holidaySkipSet`/`holidaySpanStart` useMemos entferne
 ## Task U2: Bug — Sequenz-Menü zu klein + Tab-Schrift unlesbar (T8-Regression)
 
 ### Problem
-Das in v3.96 T8 angeblich gefixt, funktioniert aber nicht:
-1. **Menü bei «Neue Sequenz» zu klein:** Das Popup/Dialog zum Erstellen einer neuen Sequenz ist immer noch zu klein. Es nutzt den verfügbaren Platz im Side-Panel nicht aus.
-2. **Schrift im Tab «Sequenzen» nicht lesbar:** Der Tab-Text in der Tab-Leiste (Unterrichtseinheit / Sequenzen / Sammlung) ist zu klein oder hat zu wenig Kontrast.
+1. **Tab-Schrift «Sequenzen» nicht lesbar im Light-Mode:** Grüne Schrift auf grünem Hintergrund = kein Kontrast
+2. **FlatBlockCard-Bearbeitungsfelder zu klein:** Die Inputs für Oberthema, Fachbereich, Notizen, betroffene KW sind winzig (8-9px)
 
-### Gewünschtes Verhalten
-1. **Menügrösse:** Das Neue-Sequenz-Formular soll mindestens die halbe Breite des Side-Panels einnehmen. Fixe `min-width: 320px` oder `width: 100%` des Panel-Inhaltsbereichs.
-2. **Tab-Schrift:** Die Tab-Labels (Unterrichtseinheit / Sequenzen / Sammlung) müssen gut lesbar sein: mindestens `13px` Schriftgrösse, Farbe `var(--text-primary)` für den aktiven Tab, `var(--text-muted)` für inaktive Tabs. WCAG-AA Kontrast in beiden Modi (Light + Dark).
+### Fix (umgesetzt)
+1. **Tab-Farben (DetailPanel.tsx):** Hardcoded Tailwind-Farben → CSS-Variables `var(--text-primary)` (aktiv) / `var(--text-muted)` (inaktiv). Funktioniert in Light + Dark Mode.
+2. **FlatBlockCard vergrössert (SequencePanel.tsx):** Header 10px→12px, Labels 8px→10px, Inputs 9px→11px mit px-2 py-1 Padding, Buttons 8px→10px. Alle Bereiche: Block-Felder, Reihen-Felder, SOL-Felder, Action-Buttons.
 
-### Debugging-Anleitung
-1. Das Side-Panel öffnen (rechts) und zum Tab «Sequenzen» wechseln
-2. Prüfen: Ist der Tab-Text «Sequenzen» lesbar? (Schriftgrösse, Farbe, Kontrast)
-3. Auf «+ Neue Sequenz» klicken → Prüfen: Wie gross ist das Formular?
-4. In den DevTools die CSS-Properties inspizieren: `font-size`, `color`, `min-width`, `width`
-
-### Fix
-In `SequencePanel.tsx` und/oder `DetailPanel.tsx`:
-1. **Tab-Schrift:** Die Tab-Buttons finden (vermutlich in `DetailPanel.tsx` als Tab-Leiste). `fontSize` auf mindestens `13px` setzen, `color` auf CSS-Variable.
-2. **Menügrösse:** Den Container des Neue-Sequenz-Formulars finden. `width: 100%` und `min-width: 320px` setzen. Sicherstellen dass das Formular den gesamten Panel-Inhaltsbereich nutzt.
-3. **Beide Modi testen:** Light-Mode und Dark-Mode müssen funktionieren.
+### Bonus-Fix: Weihnachtsferien
+- `ferien_hofwil_2526.json`: startWeek "51" → "52" (war 3 Wochen statt 2)
 
 ### Dateien
-- `src/components/SequencePanel.tsx` (Formular-Container)
-- `src/components/DetailPanel.tsx` (Tab-Leiste)
+- `src/components/DetailPanel.tsx` (Tab-Farben)
+- `src/components/SequencePanel.tsx` (FlatBlockCard-Grösse)
+- `public/presets/Hofwil/ferien_hofwil_2526.json` (Weihnachtsferien-Daten)
 
 ---
 
