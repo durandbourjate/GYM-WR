@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.96
 
-## Status: ⬜ v3.96 — Bug-Fixes + UX-Verbesserungen (11 Tasks)
+## Status: ✅ v3.96 — Bug-Fixes + UX-Verbesserungen (11 Tasks) — ABGESCHLOSSEN
 
 **Vorgänger:** v3.95 (Refactoring P2 plannerStore → Slices abgeschlossen). Refactoring ist FERTIG — diese Version enthält reine Bug-Fixes und UX-Verbesserungen.
 
@@ -17,17 +17,17 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "fix/feat: v3.96
 
 | # | Typ | Beschreibung | Priorität | Status |
 |---|-----|-------------|-----------|--------|
-| T1 | Bug | Ferien-Bug Regression: KW-Zeilen fehlen komplett (KW 3–4, 17, 43–45) | 🔴 Kritisch | ⬜ |
-| T2 | Bug | Sonderwochen: falscher Inhalt (alle Kurse zeigen dasselbe) + Text kaum lesbar | 🔴 Kritisch | ⬜ |
-| T3 | Bug | Auto-Fit Zoom: leere Spalten neben Kursspalten in Wochendetailansicht | 🟠 Hoch | ⬜ |
-| T4 | Bug | Badges (P/PW/HK): zu blass, schlechtes Alignment, vertikal statt horizontal | 🟠 Hoch | ⬜ |
-| T5 | Bug | Sequenz Drag&Drop: nur erste UE wird verschoben, Rest bleibt | 🟠 Hoch | ⬜ |
-| T6 | Bug | Sequenz entfernen: keine Option «Sequenz + UEs entfernen» | 🟠 Hoch | ⬜ |
-| T7 | Bug | Light-Mode Überbleibsel: Mehrjahresübersicht Semester-Karten dunkel | 🟡 Mittel | ⬜ |
-| T8 | Bug | Sequenz-Menü (Neue Sequenz): zu klein, Schrift im Tab unlesbar | 🟡 Mittel | ⬜ |
-| T9 | Feature | «Zur aktuellen Woche»-Button: soll in jeder Ansicht funktionieren (Ansicht wechseln + scrollen) | 🟡 Mittel | ⬜ |
-| T10 | Feature | Sequenz aus Sammlung importieren: bei Markierung + im Sequenz-Menü | 🟡 Mittel | ⬜ |
-| T11 | Feature | Importierte Sequenz KW-Zuordnung: UX klären nach Import aus Sammlung | 🟡 Mittel | ⬜ |
+| T1 | Bug | Ferien-Bug Regression: KW-Zeilen fehlen komplett (KW 3–4, 17, 43–45) | 🔴 Kritisch | ✅ |
+| T2 | Bug | Sonderwochen: falscher Inhalt (alle Kurse zeigen dasselbe) + Text kaum lesbar | 🔴 Kritisch | ✅ |
+| T3 | Bug | Auto-Fit Zoom: leere Spalten neben Kursspalten in Wochendetailansicht | 🟠 Hoch | ✅ |
+| T4 | Bug | Badges (P/PW/HK): zu blass, schlechtes Alignment, vertikal statt horizontal | 🟠 Hoch | ✅ |
+| T5 | Bug | Sequenz Drag&Drop: nur erste UE wird verschoben, Rest bleibt | 🟠 Hoch | ✅ |
+| T6 | Bug | Sequenz entfernen: keine Option «Sequenz + UEs entfernen» | 🟠 Hoch | ✅ |
+| T7 | Bug | Light-Mode Überbleibsel: Mehrjahresübersicht Semester-Karten dunkel | 🟡 Mittel | ✅ |
+| T8 | Bug | Sequenz-Menü (Neue Sequenz): zu klein, Schrift im Tab unlesbar | 🟡 Mittel | ✅ |
+| T9 | Feature | «Zur aktuellen Woche»-Button: soll in jeder Ansicht funktionieren (Ansicht wechseln + scrollen) | 🟡 Mittel | ✅ |
+| T10 | Feature | Sequenz aus Sammlung importieren: bei Markierung + im Sequenz-Menü | 🟡 Mittel | ✅ |
+| T11 | Feature | Importierte Sequenz KW-Zuordnung: UX klären nach Import aus Sammlung | 🟡 Mittel | ✅ |
 
 **Empfohlene Reihenfolge:** T1 → T2 → T3 → T5 → T6 → T4 → T7 → T8 → T9 → T10 → T11
 
