@@ -274,7 +274,10 @@ export function ZoomYearView() {
             const weekEntry = effectiveWeeks.find(w => w.w === weekW);
             const allEntries = weekEntry ? Object.values(weekEntry.lessons) : [];
             const isAllHoliday = allEntries.length > 0 && allEntries.every(e => (e as any).type === 6);
-            const isAllEvent = allEntries.length > 0 && allEntries.every(e => (e as any).type === 5);
+            // Nur mergen wenn alle denselben Titel haben (stufenspezifische Sonderwochen → verschiedene Titel → kein colspan)
+            const isAllEvent = allEntries.length > 0
+              && allEntries.every(e => (e as any).type === 5)
+              && new Set(allEntries.map(e => (e as any).title)).size === 1;
 
             if (isAllHoliday || isAllEvent) {
               const label = (allEntries[0] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');

@@ -453,7 +453,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         // U1: Ferien/Events — jede Woche einzeln als colspan-Balken (kein rowSpan)
         const visEntries = Object.entries(week.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
         const isAllHoliday = visEntries.length > 0 && visEntries.every(([, e]) => (e as any).type === 6);
-        const isAllEvent = visEntries.length > 0 && visEntries.every(([, e]) => (e as any).type === 5);
+        // Nur mergen wenn alle denselben Titel haben (stufenspezifische Sonderwochen → verschiedene Titel → kein colspan)
+        const isAllEvent = visEntries.length > 0
+          && visEntries.every(([, e]) => (e as any).type === 5)
+          && new Set(visEntries.map(([, e]) => (e as any).title)).size === 1;
 
         if (isAllHoliday || isAllEvent) {
           const label = (visEntries[0]?.[1] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
