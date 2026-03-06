@@ -1,6 +1,6 @@
-# Unterrichtsplaner – Handoff v3.94
+# Unterrichtsplaner – Handoff v3.95
 
-## Status: ✅ v3.94 — Refactoring Phase 2 (WeekRows + DetailPanel)
+## Status: 🔄 v3.95 — Refactoring Phase 3 (plannerStore aufteilen)
 
 **Referenz:** Lies `REFACTORING.md` für Analyse, Regeln und Verbote.
 
@@ -13,58 +13,108 @@ Reines Strukturrefactoring: Move + Extract. Die App muss vor und nach jedem Schr
 
 ---
 
-## Refactoring P3: WeekRows.tsx Sub-Komponenten extrahieren
+## Refactoring P2: plannerStore.ts in Slice-Dateien aufteilen
 
-WeekRows.tsx hat 1445 Zeilen mit mehreren eigenständigen Sub-Komponenten.
-Ziel: Sub-Komponenten in eigene Dateien. WeekRows.tsx wird schlanker.
+plannerStore.ts hat 1503 Zeilen mit ~40 Actions. 25 Dateien importieren `usePlannerStore`.
+Ziel: Store intern in Slice-Dateien aufteilen. Der Export (`usePlannerStore`) bleibt **identisch** — keine Komponente muss Imports ändern.
 
-### Zu extrahierende Komponenten
+### WICHTIG: Sicherster Ansatz
 
-| # | Schritt | Was | Zeilen ca. | Ziel |
-|---|---------|-----|------------|------|
-| R8 | InlineEdit | Inline-Edit-Feld (Z.17–41) + getCatColor/getCatBorder Helper (Z.43–44) | ~30 | `components/InlineEdit.tsx` |
-| R9 | HoverPreview | Hover-Vorschau auf Zellen (Z.46–207) | ~160 | `components/HoverPreview.tsx` |
-| R10 | EmptyCellMenu | Kontextmenü für leere Zellen (Z.208–288) | ~80 | `components/EmptyCellMenu.tsx` |
-| R11 | NoteCell | Notizen-Zelle pro Kurs/Woche (Z.289–~360) | ~70 | `components/NoteCell.tsx` |
+Die Slice-Dateien exportieren nur Objekt-Factories (Funktionen), die im Haupt-Store zusammengesetzt werden. `usePlannerStore` bleibt die einzige öffentliche API. Keine Komponente darf ihre Imports ändern müssen.
 
-### Regeln (identisch mit P1)
+### Zielstruktur
+
+```
+src/store/
+├── plannerStore.ts          ← Bleibt: Erstellt den Store, kombiniert Slices, exportiert usePlannerStore
+├── slices/
+│   ├── uiSlice.ts           ← Filter, Zoom, Selection, Dimming, Search, SidePanel, Help, Editing, HoveredCell, EmptyCellAction, DragSelect, Settings-UI, NoteCol, PanelWidth
+│   ├── dataSlice.ts         ← WeekData, LessonDetails, Drag&Drop, Move, Push, Batch, Import/Export, Undo, PlannerSettings
+│   ├── sequenceSlice.ts     ← Sequences CRUD, Blocks, AutoPlace, SequencePanel-UI
+│   └── collectionSlice.ts   ← Collection CRUD, Archive-Funktionen, ImportFromCollection
+├── settingsStore.ts         ← Bleibt unverändert
+├── instanceStore.ts         ← Bleibt unverändert
+└── gcalStore.ts             ← Bleibt unverändert
+```
+
+### Schritte (je ein Commit)
+
+| # | Schritt | Was |
+|---|---------|-----|
+| R14 | `store/slices/` Ordner erstellen. `uiSlice.ts` extrahieren: Alle einfachen UI-State-Setter (filter, zoom, selection, dimming, search, sidepanel, help, editing, hoveredCell, emptyCellAction, dragSelect, settingsOpen, settingsEditCourseId, panelWidth, noteCol) | 
+| R15 | `collectionSlice.ts` extrahieren: collection[], addCollectionItem, updateCollectionItem, deleteCollectionItem, archiveBlock, archiveSequence, archiveSchoolYear, archiveCurriculum, importFromCollection |
+| R16 | `sequenceSlice.ts` extrahieren: sequences[], sequencesMigrated, sequenceTitlesFixed, migrateStaticSequences, fixSequenceTitles, addSequence, updateSequence, deleteSequence, addBlockToSequence, updateBlockInSequence, removeBlockFromSequence, reorderBlocks, autoPlaceSequence, getAvailableWeeks, sequencePanelOpen, editingSequenceId |
+| R17 | `dataSlice.ts` extrahieren: weekData, lessonDetails, updateLesson, updateLessonDetail, getLessonDetail, dragSource, swapLessons, moveLessonToEmpty, pushLessons, batchShiftDown, batchInsertBefore, moveLessonToColumn, moveGroup, exportData, importData, hkOverrides, hkStartGroups, tafPhases, undoStack, pushUndo, undo, plannerSettings |
+| R18 | plannerStore.ts aufräumen: Importiert alle 4 Slices, kombiniert sie im `create()` Call. Typ `PlannerState` zusammensetzen aus Slice-Types. Standalone-Funktionen (saveToInstance, loadFromInstance, etc.) bleiben in plannerStore.ts |
+
+### Slice-Pattern (Vorlage)
+
+```typescript
+// store/slices/uiSlice.ts
+import type { StateCreator } from 'zustand';
+import type { PlannerState } from '../plannerStore'; // Circular OK — nur Type-Import
+
+export interface UISlice {
+  filter: FilterType;
+  setFilter: (f: FilterType) => void;
+  // ... weitere UI-State
+}
+
+export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, get) => ({
+  filter: 'ALL',
+  setFilter: (f) => set({ filter: f }),
+  // ... weitere Implementierung (1:1 aus plannerStore kopiert)
+});
+```
+
+```typescript
+// store/plannerStore.ts (nach Refactoring)
+import { createUISlice, type UISlice } from './slices/uiSlice';
+import { createDataSlice, type DataSlice } from './slices/dataSlice';
+// ...
+
+export type PlannerState = UISlice & DataSlice & SequenceSlice & CollectionSlice;
+
+export const usePlannerStore = create<PlannerState>()(
+  persist(
+    (...a) => ({
+      ...createUISlice(...a),
+      ...createDataSlice(...a),
+      ...createSequenceSlice(...a),
+      ...createCollectionSlice(...a),
+    }),
+    { name: 'planner-data', ... }
+  )
+);
+```
+
+### Regeln (BESONDERS WICHTIG bei P2)
 
 1. **Vor** dem Schritt: `npx tsc --noEmit && npm run build` (Baseline)
 2. Code 1:1 verschieben — KEINE Logik-Änderungen
-3. Imports in der neuen Datei ergänzen, in WeekRows.tsx auf Import umstellen
-4. **Nach** dem Schritt: `npx tsc --noEmit && npm run build` (muss fehlerfrei)
-5. Commit: `git add -A && git commit -m "refactor R[N]: [Beschreibung]"`
-6. Push: `git push`
+3. **`usePlannerStore` Export bleibt identisch** — keine Komponente darf Imports ändern müssen
+4. **Persist-Config unverändert** — localStorage-Keys und Serialisierung dürfen sich nicht ändern
+5. **Type-Exports unverändert** — `PlannerState` und alle Sub-Types müssen gleich bleiben
+6. **Nach** dem Schritt: `npx tsc --noEmit && npm run build` (muss fehlerfrei)
+7. Commit: `git add -A && git commit -m "refactor R[N]: [Beschreibung]"`
+8. Push: `git push`
 
----
-
-## Refactoring P4: DetailPanel.tsx Datenlogik extrahieren
-
-DetailPanel.tsx hat 1396 Zeilen. Z.15–121 ist ein reines Datenmodell (Block-Kategorie/Untertyp-System) mit Konstanten und Lookup-Funktionen — hat nichts mit der React-Komponente zu tun.
-
-### Zu extrahierende Teile
-
-| # | Schritt | Was | Zeilen ca. | Ziel |
-|---|---------|-----|------------|------|
-| R12 | Block-Kategorie-System | CATEGORIES, DEFAULT_SUBTYPES, loadCustomSubtypes, saveCustomSubtypes, getSubtypesForCategory, migrateBlockType, getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel + Types (BlockCategory, SubtypeDef, CategoryDef) | ~110 | `data/blockCategories.ts` |
-| R13 | Shared UI-Helpers | PillSelect, DurationSelector (getDurationPresets), SolSection, MaterialLinks, SequenceAssignMenu — kleine generische Komponenten | ~250 | `components/detail/shared.tsx` |
-
-### Regeln (identisch)
-
-Gleiche Regeln wie oben. Ein Commit pro Schritt.
-
----
-
-## Verbote (aus REFACTORING.md)
+### Verbote (aus REFACTORING.md + zusätzlich für P2)
 
 - KEINE neuen Features
 - KEINE Logik-Änderungen
 - KEINE API-Änderungen (exportierte Funktionen/Typen/Props unverändert)
 - KEINE Umbenennung von State-Keys oder localStorage-Keys
-- KEINE Hook-Reihenfolge ändern
+- KEINE Änderungen an der persist-Konfiguration (name, partialize, version, migrate)
+- KEINE Änderungen an Standalone-Funktionen (saveToInstance, loadFromInstance, etc.)
 - KEINE «Optimierungen» an bestehender Logik
 
 ---
+
+## Vorherige Version: v3.94 ✅ (Refactoring P3+P4: WeekRows + DetailPanel)
+
+WeekRows.tsx: 1445 → 1113 Z. (InlineEdit, HoverPreview, EmptyCellMenu, NoteCell extrahiert).
+DetailPanel.tsx: 1396 → 1047 Z. (blockCategories.ts + detail/shared.tsx extrahiert).
 
 ## Vorherige Version: v3.93 ✅ (Refactoring P1: SettingsPanel)
 
