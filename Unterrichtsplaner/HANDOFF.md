@@ -18,6 +18,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.99 — 
 | # | Typ | Beschreibung | Priorität | Status |
 |---|-----|-------------|-----------|--------|
 | V1 | Feature | Schuljahr bis KW 32 verlängern — Sommerferien sichtbar im Planer | 🟠 Hoch | ✅ |
+| V2 | Bug | Sommerferien unsichtbar: weekData im localStorage enthält nur KW 33–27, KW 28–32 fehlen | 🔴 Kritisch | ⬜ |
 
 ---
 
@@ -69,6 +70,48 @@ Die `applySettingsToWeekData()`-Funktion in `settingsStore.ts` wird diese Wochen
 ---
 
 ## Vorherige Version: v3.98 ✅ (Toolbar-Redesign)
+
+---
+
+## Task V2: Bug — weekData-Migration für KW 28–32
+
+### Problem
+V1 hat `endWeek: 32` gesetzt und `weeks.ts` erweitert, aber bestehende Planer im localStorage haben weekData nur mit KW 33–27. Die instanceStore-Migration ändert `endWeek` in der Meta, aber ergänzt KEINE neuen Wochen im weekData-Array. Deshalb werden die Sommerferien (KW 28–32) nicht angezeigt.
+
+### Ursache
+`dataSlice.ts` initialisiert `weekData: []`. Beim Laden aus localStorage (persist) kommen die gespeicherten KW 33–27 zurück. Nirgends wird geprüft ob die weekData alle Wochen bis `endWeek` enthalten.
+
+### Fix
+Beim Laden eines Planers (in `plannerStore.ts` → persist `onRehydrate` oder in `App.tsx` beim Mount):
+
+1. Die erwarteten Wochen berechnen: `generateWeekIds(meta.startWeek, meta.startYear, meta.endWeek, meta.endYear)`
+2. Prüfen welche KWs in weekData fehlen
+3. Fehlende Wochen als `{ w: "28", lessons: {} }` etc. am Ende von weekData einfügen
+4. Danach `applySettingsToWeekData()` aufrufen — damit werden die neuen Wochen automatisch als Sommerferien (type 6) markiert
+
+```typescript
+// Pseudocode — in plannerStore.ts oder App.tsx nach Hydration
+const expectedWeeks = generateWeekIds(meta.startWeek, meta.startYear, meta.endWeek, meta.endYear);
+const existingWeekIds = new Set(weekData.map(w => w.w));
+const missingWeeks = expectedWeeks.filter(wId => !existingWeekIds.has(wId));
+if (missingWeeks.length > 0) {
+  const newWeekData = [...weekData, ...missingWeeks.map(w => ({ w, lessons: {} }))];
+  // Sortierung nach expectedWeeks-Reihenfolge beibehalten
+  setWeekData(newWeekData);
+}
+```
+
+### Checkliste
+- [ ] Beim Laden eines Planers: fehlende Wochen in weekData ergänzen
+- [ ] Reihenfolge der Wochen muss stimmen (KW 27 → KW 28 → ... → KW 32)
+- [ ] `applySettingsToWeekData()` wird danach ausgeführt → KW 28–32 als Sommerferien markiert
+- [ ] Verifizieren: Im Planer erscheinen 5 Sommerferien-Zeilen am Ende
+- [ ] `npx tsc --noEmit && npm run build` fehlerfrei
+
+### Dateien
+- `src/store/plannerStore.ts` (persist onRehydrate oder loadFromInstance)
+- `src/store/instanceStore.ts` (generateWeekIds)
+- Eventuell `src/App.tsx` (wenn Migration beim Mount passiert)
 
 ---
 
