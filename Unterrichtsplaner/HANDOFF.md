@@ -23,6 +23,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.98 — 
 | T4 | UX | Kursfilter-Buttons → Dropdown "Kurse" | 🟡 Mittel | ✅ |
 | T5 | UX | TaF-Button → neue Settings-Rubrik (über Beurteilungsregeln) | 🟡 Mittel | ✅ |
 | T6 | UX | Legend-Bar entfernen → Infos in HelpBar (Kurzanleitung) | 🟡 Mittel | ✅ |
+| T7 | Bug | Weihnachtsferien W51→W52 im Export-Preset korrigiert | 🟠 Hoch | ✅ |
 
 ### Geänderte Dateien
 - `src/components/Toolbar.tsx` — Hauptumbau: Planer-Name, PlannerTabs inline, Kursfilter-Dropdown, TaF-Button entfernt, Legend→HelpBar, Toolbar-Höhenmessung via `--toolbar-h`
@@ -31,6 +32,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.98 — 
 - `src/components/SettingsPanel.tsx` — Neue TaF-Section eingefügt
 - `src/components/TaFPanel.tsx` — `TaFSection` als einbettbare Komponente exportiert
 - `src/App.tsx` — PlannerTabs + Legend aus Root-Layout entfernt
+- `public/presets/Hofwil/planer-config-SJ_25___26-2026-03-05.json` — Weihnachtsferien startWeek "51"→"52" korrigiert
 
 ---
 
