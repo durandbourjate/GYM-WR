@@ -24,6 +24,7 @@
   --event-text:   #fef3c7;     /* amber-100 */
   --event-label:  #fde68a;     /* amber-200 */
   --holiday-label: #9ca3af;    /* gray-400 */
+  --row-hover:    rgba(0,0,0,0.15);  /* Zeilen-Hover Dark */
 }
 
 :root.light-mode {
@@ -49,6 +50,7 @@
   --event-text:   #92400e;     /* amber-800 */
   --event-label:  #92400e;     /* amber-800 */
   --holiday-label: #475569;    /* slate-600 */
+  --row-hover:    rgba(0,0,0,0.06);  /* Zeilen-Hover Light */
 
   /* v3.90 M1-M3: Tailwind-Farbpaletten invertieren für Light-Mode.
      Alle hardcodierten bg-slate-*, text-gray-*, border-slate-* etc.
@@ -92,6 +94,11 @@
 /* Placeholder-Kontrast auf hellem Input-Hintergrund sicherstellen */
 :root.light-mode .placeholder-gray-600::placeholder {
   color: #475569 !important;
+}
+
+/* v3.100: Zeilen-Hover mit CSS-Variable (funktioniert in Light + Dark) */
+.group:hover .week-cell-hover {
+  background-color: var(--row-hover);
 }
 
 /* v3.91 N1: Status-Farben für Beurteilungsvorgaben, Kollisionen etc. */
