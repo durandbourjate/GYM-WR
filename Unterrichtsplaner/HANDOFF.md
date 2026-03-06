@@ -1,8 +1,74 @@
-# Unterrichtsplaner – Handoff v3.98
+# Unterrichtsplaner – Handoff v3.99
 
-## Status: ✅ v3.98 — Toolbar-Redesign: kompaktere Kopfzeile — ABGESCHLOSSEN
+## Status: ⬜ v3.99 — Schuljahr vollständig (Sommerferien)
 
-**Vorgänger:** v3.97 (Ferien-Rendering + Sequenz-Menü + Schriftgrössen + Sonderwochen).
+**Vorgänger:** v3.98 (Toolbar-Redesign abgeschlossen).
+
+---
+
+## OBERSTE REGEL
+
+**Immer `npx tsc --noEmit && npm run build` vor und nach jeder Änderung.**
+Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.99 — [Beschreibung]" && git push`
+
+---
+
+## Originalauftrag v3.99
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| V1 | Feature | Schuljahr bis KW 32 verlängern — Sommerferien sichtbar im Planer | 🟠 Hoch | ⬜ |
+
+---
+
+## Task V1: Schuljahr bis KW 32 verlängern
+
+### Problem
+Das Schuljahr im Planer endet bei KW 27 (letzte Intensivwoche). Die Sommerferien (KW 28–32) fehlen komplett — es werden keine Zeilen für diese Wochen angezeigt. Die Ferien-JSON definiert Sommerferien KW 28–32, aber die Wochen-Generierung endet bei KW 27.
+
+### Gewünschtes Verhalten
+Der Planer soll das vollständige Schuljahr abbilden: KW 33 (Schulstart) bis KW 32 (Ende Sommerferien). Die Wochen KW 28–32 werden als Sommerferien-Balken angezeigt (analog zu Herbstferien etc.).
+
+### Änderungen
+
+**1. `src/store/instanceStore.ts` — Standard-`endWeek` ändern:**
+```typescript
+// Zeile ~235: Default für neuen Planer
+endWeek: 32,   // WAR: 27 — neu: 32 (inkl. Sommerferien)
+```
+Auch den SJ-Preset (SJ 25/26) anpassen, falls dort `endWeek: 27` steht.
+
+**2. `src/data/weeks.ts` — Wochen KW 28–32 hinzufügen:**
+Am Ende des WEEKS-Arrays (nach KW 27) fünf leere Wochen einfügen:
+```typescript
+{w:"28",lessons:{}},
+{w:"29",lessons:{}},
+{w:"30",lessons:{}},
+{w:"31",lessons:{}},
+{w:"32",lessons:{}},
+```
+Die `applySettingsToWeekData()`-Funktion in `settingsStore.ts` wird diese Wochen dann automatisch als type 6 (Ferien) markieren, basierend auf der Ferien-JSON (`"Sommerferien", startWeek: "28", endWeek: "32"`).
+
+**3. Bestehende Instanzen:** Bestehende Planer-Instanzen im localStorage haben `endWeek: 27`. Zwei Optionen:
+- **Option A (einfach):** Beim Laden einer Instanz prüfen: wenn `endWeek < 32`, automatisch auf 32 setzen.
+- **Option B (sicher):** Nichts automatisch ändern, nur neue Instanzen bekommen 32. Bestehende Planer zeigen die neuen Wochen erst nach manuellem Reset.
+- **Empfohlen: Option A** — am wenigsten verwirrend für den User.
+
+### Checkliste
+- [ ] `instanceStore.ts`: Default `endWeek: 27` → `endWeek: 32`
+- [ ] `weeks.ts`: Wochen 28–32 als leere Einträge am Ende hinzufügen
+- [ ] `instanceStore.ts` oder `plannerStore.ts`: Bestehende Instanzen mit `endWeek < 32` automatisch auf 32 hochsetzen
+- [ ] Verifizieren: Im Planer erscheinen nach KW 27 fünf Sommerferien-Zeilen als Balken
+- [ ] `npx tsc --noEmit && npm run build` fehlerfrei
+
+### Dateien
+- `src/store/instanceStore.ts` (endWeek Default + Migration)
+- `src/data/weeks.ts` (Wochen 28–32 hinzufügen)
+- Eventuell `src/store/settingsStore.ts` (falls Wochen-Generierung angepasst werden muss)
+
+---
+
+## Vorherige Version: v3.98 ✅ (Toolbar-Redesign)
 
 ---
 
