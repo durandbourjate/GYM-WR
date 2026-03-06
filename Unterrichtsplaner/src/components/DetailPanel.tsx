@@ -986,10 +986,10 @@ export function DetailPanel() {
         <div className="flex gap-1">
           <button
             onClick={() => setSidePanelTab('details')}
-            className={`px-2.5 py-1 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'details'
                 ? 'bg-blue-500/25 border-blue-400 text-blue-200'
-                : 'border-gray-600 text-gray-400 hover:text-gray-200'
+                : 'border-gray-600 text-gray-300 hover:text-gray-100'
             }`}
             title="Lektionsdetails anzeigen"
           >
@@ -997,10 +997,10 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('sequences')}
-            className={`px-2.5 py-1 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'sequences'
                 ? 'bg-green-500/25 border-green-400 text-green-200'
-                : 'border-gray-600 text-gray-400 hover:text-gray-200'
+                : 'border-gray-600 text-gray-300 hover:text-gray-100'
             }`}
             title="Sequenzen verwalten"
           >
@@ -1008,10 +1008,10 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('collection')}
-            className={`px-2.5 py-1 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'collection'
                 ? 'bg-amber-500/25 border-amber-400 text-amber-200'
-                : 'border-gray-600 text-gray-400 hover:text-gray-200'
+                : 'border-gray-600 text-gray-300 hover:text-gray-100'
             }`}
             title="Materialsammlung"
           >
@@ -1019,10 +1019,10 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('settings')}
-            className={`px-2.5 py-1 rounded text-[10px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'settings'
                 ? 'bg-gray-500/25 border-gray-400 text-gray-200'
-                : 'border-gray-600 text-gray-400 hover:text-gray-200'
+                : 'border-gray-600 text-gray-300 hover:text-gray-100'
             }`}
             title="Einstellungen"
           >

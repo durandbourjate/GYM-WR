@@ -671,26 +671,26 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
         {/* New sequence form — inline at top */}
         <div>
           {showNewForm ? (
-            <div className="space-y-1.5 bg-slate-800/50 rounded p-2 border border-slate-600/50">
+            <div className="space-y-1.5 bg-slate-800/50 rounded p-2 border border-slate-600/50" style={{ minWidth: 300 }}>
               <input autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleCreateSequence(); if (e.key === 'Escape') setShowNewForm(false); }}
                 placeholder="Titel der Sequenz…"
-                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400" />
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[11px] outline-none focus:border-blue-400" />
               <select value={newCourseId} onChange={(e) => {
                   setNewCourseId(e.target.value);
                   const course = COURSES.find(c => c.id === e.target.value);
                   if (course && !newTitle.trim()) setNewTitle(`${course.cls} – `);
                 }}
-                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400">
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[11px] outline-none focus:border-blue-400">
                 {COURSES.map((c) => (
                   <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to} ({c.les}L)</option>
                 ))}
               </select>
               <div className="flex gap-1 justify-end">
                 <button onClick={() => setShowNewForm(false)}
-                  className="px-2 py-0.5 rounded text-[9px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
+                  className="px-2.5 py-1 rounded text-[10px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">Abbrechen</button>
                 <button onClick={handleCreateSequence}
-                  className="px-2 py-0.5 rounded text-[9px] text-white bg-green-600 border border-green-500 cursor-pointer hover:bg-green-500">Erstellen</button>
+                  className="px-2.5 py-1 rounded text-[10px] text-white bg-green-600 border border-green-500 cursor-pointer hover:bg-green-500">Erstellen</button>
               </div>
             </div>
           ) : (
