@@ -29,9 +29,9 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
 
   return (
     <div className="space-y-2">
-      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
+      <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
       {subjects.length === 0 && (
-        <p className="text-[9px] text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1.5">
+        <p className="text-[11px] text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1.5">
           Keine Fachbereiche konfiguriert. Füge einen Fachbereich hinzu oder wähle eine Vorlage.
         </p>
       )}
@@ -46,20 +46,20 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
                 <SmallInput value={s.shortLabel} onChange={(v) => update(s.id, { shortLabel: v })} placeholder="Kürzel" className="w-12" />
               </div>
               <div className="flex gap-1 items-center">
-                <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Vorschau:</span>
+                <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Vorschau:</span>
                 {(() => { const cv = generateColorVariants(s.color); return (
-                  <span className="text-[8px] px-1.5 py-0.5 rounded font-semibold" style={{ background: cv.bg, color: cv.fg, border: `1px solid ${cv.border}` }}>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold" style={{ background: cv.bg, color: cv.fg, border: `1px solid ${cv.border}` }}>
                     {s.shortLabel || s.label || '?'}
                   </span>
                 ); })()}
               </div>
               <div className="flex gap-1 mt-1">
-                <button onClick={() => setEditingId(null)} className="text-[8px] text-blue-400 cursor-pointer">✓ Fertig</button>
-                <button onClick={() => remove(s.id)} className="text-[8px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
+                <button onClick={() => setEditingId(null)} className="text-[9px] text-blue-400 cursor-pointer">✓ Fertig</button>
+                <button onClick={() => remove(s.id)} className="text-[9px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-[9px] cursor-pointer group px-1 py-0.5"
+            <div className="flex items-center gap-2 text-[11px] cursor-pointer group px-1 py-0.5"
               style={{ color: 'var(--text-muted)' }}
               onClick={() => setEditingId(s.id)}>
               <div className="w-3 h-3 rounded-sm shrink-0" style={{ background: s.color }} />
@@ -71,16 +71,16 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
       ))}
       <div className="flex gap-1 flex-wrap">
         <button onClick={addSubject}
-          className="flex-1 py-1 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+          className="flex-1 py-1 rounded border border-dashed text-[11px] cursor-pointer transition-all"
           style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           + Fachbereich hinzufügen
         </button>
       </div>
       {/* Fach-Dropdown (v3.82 E5: Einzelfächer statt Gruppen) */}
       <div className="flex gap-1 items-center">
-        <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>Vorlage:</span>
+        <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>Vorlage:</span>
         <select
-          className="rounded px-1.5 py-0.5 text-[9px] outline-none cursor-pointer flex-1"
+          className="rounded px-1.5 py-0.5 text-[11px] outline-none cursor-pointer flex-1"
           style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}
           value=""
           onChange={(e) => {

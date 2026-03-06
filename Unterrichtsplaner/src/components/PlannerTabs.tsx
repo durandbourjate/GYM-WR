@@ -265,7 +265,7 @@ export function PlannerTabs() {
       {showNew && (
         <div className="absolute top-full left-0 right-0 z-50 bg-slate-900 border-b border-slate-600 shadow-xl px-4 py-3">
           <div className="max-w-lg mx-auto space-y-3">
-            <div className="text-[11px] font-bold text-gray-200 mb-1">Neuer Planer erstellen</div>
+            <div className="text-[13px] font-bold text-gray-200 mb-1">Neuer Planer erstellen</div>
             <div className="flex gap-2 items-center flex-wrap">
               <input
                 className="bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-white text-sm outline-none flex-1 min-w-[120px]"
@@ -279,7 +279,7 @@ export function PlannerTabs() {
                 autoFocus
               />
               <select
-                className="bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-slate-300 text-[10px] outline-none cursor-pointer"
+                className="bg-slate-800 border border-slate-600 rounded px-2 py-1.5 text-slate-300 text-[12px] outline-none cursor-pointer"
                 value={presetId || defaultPresetId}
                 onChange={e => setPresetId(e.target.value)}
                 title="Schuljahr"
@@ -291,7 +291,7 @@ export function PlannerTabs() {
               </select>
             </div>
             {/* Gesamtkonfiguration importieren */}
-            <label className={`block px-3 py-2 rounded-lg text-[10px] font-medium transition-colors cursor-pointer text-center ${
+            <label className={`block px-3 py-2 rounded-lg text-[12px] font-medium transition-colors cursor-pointer text-center ${
               importedConfig
                 ? 'bg-green-800/50 text-green-300 border border-green-600'
                 : 'bg-slate-800 text-slate-400 border border-slate-600 hover:border-slate-500 hover:text-slate-300'
@@ -301,7 +301,7 @@ export function PlannerTabs() {
             </label>
             {/* Einzelne Rubriken importieren */}
             <button
-              className="text-[10px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+              className="text-[12px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
               onClick={() => setShowPartial(!showPartial)}
             >
               {showPartial ? '▾' : '▸'} Einzelne Rubriken importieren {Object.keys(partialImports).length > 0 && `(${Object.keys(partialImports).length})`}
@@ -311,7 +311,7 @@ export function PlannerTabs() {
                 {partialButtons.map(({ key, label, icon, accept }) => {
                   const isLoaded = !!partialImports[key];
                   return (
-                    <label key={key} className={`px-2 py-1.5 rounded-md text-[9px] font-medium transition-colors cursor-pointer text-center ${
+                    <label key={key} className={`px-2 py-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer text-center ${
                       isLoaded
                         ? 'bg-green-800/40 text-green-300 border border-green-700'
                         : 'bg-slate-800/80 text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300'
@@ -553,7 +553,7 @@ export function WelcomeScreen() {
 
         {/* v3.83 F4: Einzelne Rubriken importieren */}
         <button
-          className="text-[10px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+          className="text-[12px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
           onClick={() => setShowPartial(!showPartial)}
         >
           {showPartial ? '▾' : '▸'} Einzelne Rubriken importieren {importCount > 0 && `(${importCount})`}
@@ -564,7 +564,7 @@ export function WelcomeScreen() {
               const isLoaded = !!partialImports[key];
               const fileName = partialFileNames[key];
               return (
-                <label key={key} className={`px-2 py-1.5 rounded-md text-[10px] font-medium transition-colors cursor-pointer text-center ${
+                <label key={key} className={`px-2 py-1.5 rounded-md text-[12px] font-medium transition-colors cursor-pointer text-center ${
                   isLoaded
                     ? 'bg-green-800/40 text-green-300 border border-green-700'
                     : 'bg-slate-800/80 text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300'

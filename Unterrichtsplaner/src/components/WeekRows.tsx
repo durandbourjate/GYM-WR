@@ -1022,7 +1022,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
                 style={{ top: multiDayPrompt.position.y - 40, left: multiDayPrompt.position.x - 60 }}>
-                <div className="text-[9px] text-gray-300 mb-1">Auch <span className="font-bold text-purple-300">{otherDays}</span> auswählen?</div>
+                <div className="text-[11px] text-gray-300 mb-1">Auch <span className="font-bold text-purple-300">{otherDays}</span> auswählen?</div>
                 <div className="flex gap-1">
                   <button onClick={() => {
                     // Expand entire current multiSelection to include other days
@@ -1049,9 +1049,9 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       }));
                     }
                     setMultiDayPrompt(null);
-                  }} className="px-2 py-0.5 rounded text-[9px] bg-purple-600 text-white cursor-pointer hover:bg-purple-500">Ja, beide Tage</button>
+                  }} className="px-2 py-0.5 rounded text-[11px] bg-purple-600 text-white cursor-pointer hover:bg-purple-500">Ja, beide Tage</button>
                   <button onClick={() => setMultiDayPrompt(null)}
-                    className="px-2 py-0.5 rounded text-[9px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-200">Nein</button>
+                    className="px-2 py-0.5 rounded text-[11px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-200">Nein</button>
                 </div>
               </div>
             </td>
@@ -1065,8 +1065,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
           <td colSpan={courses.length + 1} className="p-0 relative">
             <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[90] bg-amber-900/90 border border-amber-500/50 rounded-lg shadow-2xl px-4 py-2 flex items-center gap-2 max-w-md">
               <span className="text-amber-300 text-sm">⚠️</span>
-              <span className="text-[10px] text-amber-200">{rhythmWarning}</span>
-              <button onClick={() => setRhythmWarning(null)} className="text-amber-400 hover:text-amber-200 text-[10px] cursor-pointer ml-2">✕</button>
+              <span className="text-[12px] text-amber-200">{rhythmWarning}</span>
+              <button onClick={() => setRhythmWarning(null)} className="text-amber-400 hover:text-amber-200 text-[12px] cursor-pointer ml-2">✕</button>
             </div>
           </td>
         </tr>

@@ -11,18 +11,19 @@ import { createDataSlice, type DataSlice } from './slices/dataSlice';
 export type { UISlice, DataSlice, SequenceSlice, CollectionSlice };
 
 // v3.91 N3: Zoom-Stufen für Spaltenbreite und Schriftgrösse
+// v3.97: Referenz auf 12 angehoben, Schritte ~15% statt ~10%
 export const ZOOM_LEVELS = [
-  { colWidth: 120, fontSize: 9 },   // Stufe 1 (min)
-  { colWidth: 160, fontSize: 10 },  // Stufe 2
-  { colWidth: 200, fontSize: 11 },  // Stufe 3 (default)
-  { colWidth: 260, fontSize: 12 },  // Stufe 4
-  { colWidth: 340, fontSize: 14 },  // Stufe 5 (max)
+  { colWidth: 120, fontSize: 10 },  // Stufe 1 (min)  — war 9
+  { colWidth: 160, fontSize: 11 },  // Stufe 2         — war 10
+  { colWidth: 200, fontSize: 12 },  // Stufe 3 (default) — war 11
+  { colWidth: 260, fontSize: 14 },  // Stufe 4         — war 12
+  { colWidth: 340, fontSize: 16 },  // Stufe 5 (max)   — war 14
 ] as const;
 
 /** Zoom-Scale Helper: skaliert einen Pixel-Basiswert proportional zur Zoom-Stufe.
- *  Referenz = Stufe 3 (fontSize 11). Bei Stufe 1 ~18% kleiner, Stufe 5 ~27% grösser. */
+ *  Referenz = Stufe 3 (fontSize 12). Bei Stufe 1 ~17% kleiner, Stufe 5 ~33% grösser. */
 export function zs(base: number, zoomCfg: typeof ZOOM_LEVELS[number]): number {
-  return Math.round(base * zoomCfg.fontSize / 11);
+  return Math.round(base * zoomCfg.fontSize / 12);
 }
 
 // PlannerState = Kombination aller Slices

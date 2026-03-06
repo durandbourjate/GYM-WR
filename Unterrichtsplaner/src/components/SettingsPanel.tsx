@@ -209,14 +209,14 @@ export function SettingsPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>Einstellungen</h3>
-          <p className="text-[8px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+          <h3 className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>Einstellungen</h3>
+          <p className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
             {hasCustomSettings ? 'Eigene Konfiguration aktiv' : 'Standard-Konfiguration'}
           </p>
         </div>
         <div className="flex gap-1 items-center">
-          {saveStatus === 'saving' && <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>Speichern…</span>}
-          {saveStatus === 'saved' && <span className="text-[9px] text-green-400">✓ Gespeichert</span>}
+          {saveStatus === 'saving' && <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>Speichern…</span>}
+          {saveStatus === 'saved' && <span className="text-[11px] text-green-400">✓ Gespeichert</span>}
         </div>
       </div>
 
@@ -226,13 +226,13 @@ export function SettingsPanel() {
       <Section title="🏫 Schule & Grundeinstellungen" defaultOpen>
         <div className="space-y-1.5">
           <div>
-            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulname (optional)</label>
+            <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulname (optional)</label>
             <SmallInput value={settings.school?.name || ''} onChange={(v) => updateSettings({ school: { ...settings.school!, name: v } })} placeholder="z.B. Gymnasium Hofwil" className="w-full" />
           </div>
           <div>
-            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulstufe</label>
+            <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulstufe</label>
             <select value={settings.schoolLevel || ''} onChange={(e) => updateSettings({ schoolLevel: (e.target.value || undefined) as SchoolLevel | undefined })}
-              className="rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 cursor-pointer w-full"
+              className="rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-blue-400 cursor-pointer w-full"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               <option value="">-- Nicht gesetzt --</option>
               <option value="Grundstufe">Grundstufe (Primarstufe)</option>
@@ -243,7 +243,7 @@ export function SettingsPanel() {
             </select>
           </div>
           <div>
-            <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Standard-Lektionsdauer (Minuten)</label>
+            <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Standard-Lektionsdauer (Minuten)</label>
             <SmallInput value={String(settings.school?.lessonDurationMin || 45)} onChange={(v) => {
               const n = parseInt(v) || 45;
               updateSettings({ school: { ...settings.school!, lessonDurationMin: n } });
@@ -305,7 +305,7 @@ export function SettingsPanel() {
           onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined as any }); }} />
       }>
         <div className="space-y-2">
-          <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
             {settings.curriculumGoals?.length
               ? `${settings.curriculumGoals.length} Lehrplanziele konfiguriert.`
               : 'Keine Lehrplanziele konfiguriert. Importiere eigene Ziele als JSON oder lade sie aus der Sammlung.'}
@@ -317,7 +317,7 @@ export function SettingsPanel() {
                 if (confirm('Eigene Lehrplanziele entfernen? (Standard wird verwendet falls Sek2)')) {
                   updateSettings({ curriculumGoals: undefined as any });
                 }
-              }} className="px-2 py-1 rounded border border-red-500/30 text-red-400 text-[9px] cursor-pointer hover:bg-red-500/10">
+              }} className="px-2 py-1 rounded border border-red-500/30 text-red-400 text-[11px] cursor-pointer hover:bg-red-500/10">
                 ✕ Eigene entfernen
               </button>
             )}
@@ -345,7 +345,7 @@ export function SettingsPanel() {
         <div className="space-y-3">
           {/* Konfiguration */}
           <div>
-            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
+            <p className="text-[9px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Konfiguration (Kurse, Ferien, Sonderwochen, Fächer)</p>
             <div className="flex gap-1">
               <button onClick={() => {
                 const activeMeta = useInstanceStore.getState().getActive();
@@ -357,11 +357,11 @@ export function SettingsPanel() {
                 a.href = url; a.download = `planer-config-${planerName}-${datum}.json`; a.click();
                 URL.revokeObjectURL(url);
               }}
-                className="flex-1 py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all"
+                className="flex-1 py-1.5 rounded text-[11px] font-medium cursor-pointer transition-all"
                 style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📤 Exportieren
               </button>
-              <label className="flex-1 py-1.5 rounded text-[9px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
+              <label className="flex-1 py-1.5 rounded text-[11px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -418,7 +418,7 @@ export function SettingsPanel() {
 
           {/* Planerdaten */}
           <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
-            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Planerdaten (Lektionen, Sequenzen, Details)</p>
+            <p className="text-[9px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Planerdaten (Lektionen, Sequenzen, Details)</p>
             <div className="flex gap-1">
               <button onClick={() => {
                 const json = usePlannerStore.getState().exportData();
@@ -428,11 +428,11 @@ export function SettingsPanel() {
                 a.href = url; a.download = `unterrichtsplaner-daten-${new Date().toISOString().slice(0, 10)}.json`; a.click();
                 URL.revokeObjectURL(url);
               }}
-                className="flex-1 py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all"
+                className="flex-1 py-1.5 rounded text-[11px] font-medium cursor-pointer transition-all"
                 style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📤 Exportieren
               </button>
-              <label className="flex-1 py-1.5 rounded text-[9px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
+              <label className="flex-1 py-1.5 rounded text-[11px] font-medium text-center cursor-pointer transition-all" style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
                 📥 Importieren
                 <input type="file" accept=".json" className="hidden" onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -466,8 +466,8 @@ export function SettingsPanel() {
 
           {/* Sammlung */}
           <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
-            <p className="text-[8px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Sammlung (Gesamtkonfiguration)</p>
-            <p className="text-[8px] mb-1.5" style={{ color: 'var(--text-muted)' }}>Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
+            <p className="text-[9px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Sammlung (Gesamtkonfiguration)</p>
+            <p className="text-[9px] mb-1.5" style={{ color: 'var(--text-muted)' }}>Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
             <RubricCollectionButtons rubricType="settings" getData={() => settings}
               onLoad={(data) => {
                 if (!data || typeof data !== 'object') { alert('Ungültige Konfiguration.'); return; }
@@ -486,7 +486,7 @@ export function SettingsPanel() {
       {/* Danger zone */}
       <div className="pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
         <button onClick={handleReset}
-          className="text-[9px] text-red-400 hover:text-red-300 cursor-pointer">
+          className="text-[11px] text-red-400 hover:text-red-300 cursor-pointer">
           ⚠ Einstellungen zurücksetzen
         </button>
       </div>

@@ -62,7 +62,7 @@ function CategorySubtypeSelector({
     <div className="space-y-2">
       {/* Category row */}
       <div>
-        <label className="text-[9px] text-gray-400 font-medium mb-1 block">Kategorie</label>
+        <label className="text-[11px] text-gray-400 font-medium mb-1 block">Kategorie</label>
         <div className="flex flex-wrap gap-1">
           {CATEGORIES.map((cat) => {
             const active = effectiveCategory === cat.key;
@@ -72,7 +72,7 @@ function CategorySubtypeSelector({
                   onChangeCategory(cat.key === 'LESSON' ? undefined : cat.key);
                   onChangeSubtype(undefined);
                 }}
-                className="px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all"
+                className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
                 style={{
                   background: active ? cat.color + '30' : 'transparent',
                   borderColor: active ? cat.color : '#374151',
@@ -87,7 +87,7 @@ function CategorySubtypeSelector({
       {/* Subtype row (only if category has subtypes) */}
       {subtypes.length > 0 && (
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Typ</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Typ</label>
           <div className="flex flex-wrap gap-1">
             {subtypes.map((st) => {
               const active = subtype === st.key;
@@ -96,7 +96,7 @@ function CategorySubtypeSelector({
                 <div key={st.key} className="relative group inline-flex">
                   <button
                     onClick={() => onChangeSubtype(active ? undefined : st.key)}
-                    className="px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all"
+                    className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
                     style={{
                       background: active ? (catDef?.color || '#3b82f6') + '20' : 'transparent',
                       borderColor: active ? (catDef?.color || '#3b82f6') + '80' : '#374151',
@@ -107,7 +107,7 @@ function CategorySubtypeSelector({
                   {st.custom && (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleRemoveCustom(st.key); }}
-                      className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-600 text-white text-[7px] flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
+                      className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-600 text-white text-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
                       title="Eigenes Label entfernen"
                     >✕</button>
                   )}
@@ -120,13 +120,13 @@ function CategorySubtypeSelector({
                 <input autoFocus value={customLabel} onChange={(e) => setCustomLabel(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleAddCustom(); if (e.key === 'Escape') setAddingCustom(false); }}
                   placeholder="Neues Label…"
-                  className="bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[9px] outline-none w-24" />
-                <button onClick={handleAddCustom} className="text-[9px] text-green-400 cursor-pointer">✓</button>
-                <button onClick={() => setAddingCustom(false)} className="text-[9px] text-gray-400 cursor-pointer">✕</button>
+                  className="bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-24" />
+                <button onClick={handleAddCustom} className="text-[11px] text-green-400 cursor-pointer">✓</button>
+                <button onClick={() => setAddingCustom(false)} className="text-[11px] text-gray-400 cursor-pointer">✕</button>
               </div>
             ) : (
               <button onClick={() => setAddingCustom(true)}
-                className="px-1.5 py-0.5 rounded text-[9px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 cursor-pointer transition-all">
+                className="px-1.5 py-0.5 rounded text-[11px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 cursor-pointer transition-all">
                 + Eigenes
               </button>
             )}
@@ -164,10 +164,10 @@ function BadgeEditor({ badges, onChange }: { badges: import('../types').CellBadg
       {badges.length > 0 && (
         <div className="flex gap-1 flex-wrap">
           {badges.map((b, i) => (
-            <span key={i} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold"
+            <span key={i} className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-bold"
               style={{ background: b.color + '30', color: b.color, border: `1px solid ${b.color}60` }}>
               {b.label}
-              <button onClick={() => removeBadge(i)} className="text-[8px] opacity-60 hover:opacity-100 cursor-pointer ml-0.5">✕</button>
+              <button onClick={() => removeBadge(i)} className="text-[9px] opacity-60 hover:opacity-100 cursor-pointer ml-0.5">✕</button>
             </span>
           ))}
         </div>
@@ -176,7 +176,7 @@ function BadgeEditor({ badges, onChange }: { badges: import('../types').CellBadg
       <div className="flex gap-1 flex-wrap">
         {BADGE_PRESETS.map(p => (
           <button key={p.label} onClick={() => addBadge(p.label, p.color)}
-            className="px-1.5 py-0.5 rounded text-[8px] border border-dashed cursor-pointer hover:opacity-80"
+            className="px-1.5 py-0.5 rounded text-[9px] border border-dashed cursor-pointer hover:opacity-80"
             style={{ borderColor: p.color + '60', color: p.color + 'cc' }}
             title={p.title}
             disabled={badges.some(b => b.label === p.label)}
@@ -187,12 +187,12 @@ function BadgeEditor({ badges, onChange }: { badges: import('../types').CellBadg
       <div className="flex gap-1 items-center">
         <input value={customLabel} onChange={e => setCustomLabel(e.target.value.slice(0, 3))}
           placeholder="1-3 Z." maxLength={3}
-          className="w-12 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400" />
+          className="w-12 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400" />
         <input type="color" value={customColor} onChange={e => setCustomColor(e.target.value)}
           className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
         <button onClick={() => { if (customLabel.trim()) { addBadge(customLabel.trim(), customColor); setCustomLabel(''); } }}
           disabled={!customLabel.trim()}
-          className="px-1.5 py-0.5 rounded text-[8px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-200 cursor-pointer disabled:opacity-30">+</button>
+          className="px-1.5 py-0.5 rounded text-[9px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-200 cursor-pointer disabled:opacity-30">+</button>
       </div>
     </div>
   );
@@ -232,7 +232,7 @@ function NewUEButton() {
   return (
     <button
       onClick={handleCreate}
-      className="px-3 py-1.5 rounded text-[10px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300"
+      className="px-3 py-1.5 rounded text-[12px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300"
       title="Neue Unterrichtseinheit in nächster freier Zelle erstellen"
     >
       + Neue UE
@@ -374,7 +374,7 @@ function DetailsTab() {
 
   if (!selection || !c) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-start text-[10px] text-gray-400 p-4 pt-8 gap-3">
+      <div className="flex-1 flex flex-col items-center justify-start text-[12px] text-gray-400 p-4 pt-8 gap-3">
         <NewUEButton />
         <span>Wähle eine Unterrichtseinheit aus, um Details zu bearbeiten.</span>
       </div>
@@ -394,8 +394,8 @@ function DetailsTab() {
       <div>
         <div className="flex gap-2 items-center mb-1">
           <span className="text-xs font-bold text-gray-100">{c.cls}</span>
-          <span className="text-[9px] px-1.5 py-px rounded text-white" style={{ background: badge?.bg }}>{c.typ}</span>
-          <span className="text-[9px] text-gray-400">{c.day} {c.from}–{c.to} · KW {selection.week}</span>
+          <span className="text-[11px] px-1.5 py-px rounded text-white" style={{ background: badge?.bg }}>{c.typ}</span>
+          <span className="text-[11px] text-gray-400">{c.day} {c.from}–{c.to} · KW {selection.week}</span>
         </div>
         <div className="text-sm text-gray-200">{selection.title}</div>
         {/* Tags */}
@@ -404,7 +404,7 @@ function DetailsTab() {
             const isInherited = !detail.subjectArea && parentBlock?.subjectArea;
             const catColor = categories.find(s => s.key === effectiveDetail.subjectArea)?.color;
             return (
-              <span className={`text-[8px] px-1 py-px rounded border ${isInherited ? 'opacity-60 border-dashed' : ''}`}
+              <span className={`text-[9px] px-1 py-px rounded border ${isInherited ? 'opacity-60 border-dashed' : ''}`}
                 style={{ borderColor: catColor, color: catColor }}
                 title={isInherited ? 'Vom Sequenz-Block geerbt' : 'Direkt gesetzt'}>
                 {isInherited && '↓ '}{effectiveDetail.subjectArea}
@@ -412,27 +412,27 @@ function DetailsTab() {
             );
           })()}
           {catDef && catDef.key !== 'LESSON' && (
-            <span className="text-[8px] px-1 py-px rounded border" style={{ borderColor: catDef.color + '80', color: catDef.color }}>
+            <span className="text-[9px] px-1 py-px rounded border" style={{ borderColor: catDef.color + '80', color: catDef.color }}>
               {catDef.icon} {catDef.label}
             </span>
           )}
           {subtypeDef && (
-            <span className="text-[8px] px-1 py-px rounded border border-gray-600 text-gray-400">
+            <span className="text-[9px] px-1 py-px rounded border border-gray-600 text-gray-400">
               {subtypeDef.icon} {subtypeDef.label}
             </span>
           )}
           {effectiveDetail.duration && (
-            <span className="text-[8px] px-1 py-px rounded border border-gray-600 text-gray-400">
+            <span className="text-[9px] px-1 py-px rounded border border-gray-600 text-gray-400">
               ⏱ {effectiveDetail.duration}
             </span>
           )}
           {detail.sol?.enabled && (
-            <span className="text-[8px] px-1 py-px rounded border border-purple-500/50 text-purple-400">
+            <span className="text-[9px] px-1 py-px rounded border border-purple-500/50 text-purple-400">
               📚 SOL{detail.sol.duration ? ` (${detail.sol.duration})` : ''}
             </span>
           )}
           {seqInfo && (
-            <span className="text-[8px] px-1 py-px rounded border cursor-pointer hover:opacity-80"
+            <span className="text-[9px] px-1 py-px rounded border cursor-pointer hover:opacity-80"
               style={{ borderColor: seqInfo.color || '#16a34a', color: seqInfo.color || '#4ade80' }}
               onClick={() => {
                 if (parentSeq && seqInfo) {
@@ -470,7 +470,7 @@ function DetailsTab() {
                 usePlannerStore.getState().updateSequence(parentSeq.id, { title: detail.topicMain });
               }
             }}
-              className="text-[8px] px-1 py-px rounded border border-dashed border-blue-500/40 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
+              className="text-[9px] px-1 py-px rounded border border-dashed border-blue-500/40 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
               title="UE-Felder (Fachbereich, Oberthema) auf den Sequenz-Block übertragen">
               ↑ Auf Sequenz
             </button>
@@ -481,24 +481,24 @@ function DetailsTab() {
       {/* Form fields */}
       <div className="space-y-2.5">
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">
             Fachbereich
             {!detail.subjectArea && effectiveDetail.subjectArea && (
-              <span className="text-[8px] text-gray-500 font-normal ml-1">(geerbt von Sequenz)</span>
+              <span className="text-[9px] text-gray-500 font-normal ml-1">(geerbt von Sequenz)</span>
             )}
           </label>
           <PillSelect options={categories.map(s => s.key)} value={detail.subjectArea}
             onChange={(v) => updateField('subjectArea', v as SubjectArea)}
             renderOption={(v) => { const s = categories.find(x => x.key === v)!; return { label: s.label, color: s.color }; }} />
           {subjectAreaMismatch && (
-            <div className="mt-1 flex items-center gap-1 text-[8px]">
+            <div className="mt-1 flex items-center gap-1 text-[9px]">
               <span className="text-amber-400">⚠</span>
               <span className="text-amber-400/80">
                 Topic passt zu <strong>{subjectAreaMismatch.suggested}</strong>{subjectAreaMismatch.isInherited ? ' (geerbt: ' + subjectAreaMismatch.current + ')' : ''}
               </span>
               <button
                 onClick={() => updateField('subjectArea', subjectAreaMismatch.suggested)}
-                className="text-[8px] text-blue-400 hover:text-blue-300 cursor-pointer underline ml-1">
+                className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer underline ml-1">
                 Korrigieren
               </button>
             </div>
@@ -511,36 +511,36 @@ function DetailsTab() {
           onChangeSubtype={handleSubtypeChange}
         />
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Dauer</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Dauer</label>
           <DurationSelector value={effectiveDetail.duration} onChange={(v) => updateField('duration', v)} baseDuration={settings?.school?.lessonDurationMin} />
         </div>
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">SOL (Selbstorganisiertes Lernen)</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">SOL (Selbstorganisiertes Lernen)</label>
           <SolSection sol={detail.sol} onChange={(s) => updateField('sol', s)} />
         </div>
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Thema</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Thema</label>
           {parentBlock?.topicMain && !detail.topicMain && (
-            <div className="text-[8px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.topicMain}</div>
+            <div className="text-[9px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.topicMain}</div>
           )}
           <input value={detail.topicMain || ''} onChange={(e) => updateField('topicMain', e.target.value)}
             placeholder={effectiveDetail.topicMain || 'Hauptthema…'}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400" />
           <input value={detail.topicSub || ''} onChange={(e) => updateField('topicSub', e.target.value)}
             placeholder={effectiveDetail.topicSub || 'Unterthema (optional)…'}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400 mt-1" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 mt-1" />
           {goalSuggestions.length > 0 && !detail.curriculumGoal && !effectiveDetail.curriculumGoal && (
             <div className="mt-1.5 space-y-0.5">
-              <span className="text-[8px] text-amber-500/70">💡 Vorgeschlagene Lehrplanziele:</span>
+              <span className="text-[9px] text-amber-500/70">💡 Vorgeschlagene Lehrplanziele:</span>
               {goalSuggestions.map(s => (
                 <button key={s.goal.id}
                   onClick={() => updateField('curriculumGoal', `${s.goal.id}: ${s.goal.goal}`)}
                   className="w-full text-left px-1.5 py-1 rounded bg-amber-900/20 hover:bg-amber-900/40 border border-amber-700/30 hover:border-amber-600/50 transition-colors cursor-pointer"
                   title={`${s.matchReason}\nScore: ${(s.score * 100).toFixed(0)}%\n${s.goal.contents.join(', ')}`}>
                   <div className="flex items-center gap-1">
-                    <span className="text-[7px] font-mono text-amber-400/80 shrink-0">{s.goal.id}</span>
-                    <span className="text-[8px] text-amber-200/80 truncate">{s.goal.topic}</span>
-                    <span className="text-[7px] text-amber-600/60 shrink-0 ml-auto">{(s.score * 100).toFixed(0)}%</span>
+                    <span className="text-[8px] font-mono text-amber-400/80 shrink-0">{s.goal.id}</span>
+                    <span className="text-[9px] text-amber-200/80 truncate">{s.goal.topic}</span>
+                    <span className="text-[8px] text-amber-600/60 shrink-0 ml-auto">{(s.score * 100).toFixed(0)}%</span>
                   </div>
                 </button>
               ))}
@@ -548,14 +548,14 @@ function DetailsTab() {
           )}
         </div>
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Lehrplanziel (LP17)</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Lehrplanziel (LP17)</label>
           {parentBlock?.curriculumGoal && !detail.curriculumGoal && (
-            <div className="text-[8px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
+            <div className="text-[9px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
           )}
           <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} subjectArea={effectiveDetail.subjectArea} goals={effectiveGoals} />
         </div>
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Material</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Material</label>
           <MaterialLinks links={[
             ...(detail.learningviewUrl ? [detail.learningviewUrl] : []),
             ...(detail.materialLinks || []),
@@ -573,20 +573,20 @@ function DetailsTab() {
         </div>
         {/* Badges */}
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Badges</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Badges</label>
           <BadgeEditor badges={detail.badges || []} onChange={(badges) => updateField('badges', badges.length > 0 ? badges : undefined)} />
         </div>
 
         <div>
-          <label className="text-[9px] text-gray-400 font-medium mb-1 block">Notizen</label>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Notizen</label>
           <textarea value={detail.notes || ''} onChange={(e) => updateField('notes', e.target.value)}
             placeholder="Notizen, Hinweise…" rows={3}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400 resize-y" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
         </div>
 
         {/* Collection: Save / Load */}
         <div className="border-t border-slate-700 pt-2 space-y-1.5">
-          <label className="text-[9px] text-gray-400 font-medium block">Sammlung</label>
+          <label className="text-[11px] text-gray-400 font-medium block">Sammlung</label>
           <div className="flex gap-1.5">
             <button onClick={() => {
               if (!selection || !c) return;
@@ -606,15 +606,15 @@ function DetailsTab() {
               setSavedMsg('✅ In Sammlung gespeichert');
               setTimeout(() => setSavedMsg(null), 2500);
             }}
-              className="flex-1 px-2 py-1 rounded text-[9px] border border-amber-600/60 text-amber-300 hover:bg-amber-900/20 cursor-pointer transition-all">
+              className="flex-1 px-2 py-1 rounded text-[11px] border border-amber-600/60 text-amber-300 hover:bg-amber-900/20 cursor-pointer transition-all">
               💾 In Sammlung
             </button>
             <button onClick={() => setShowCollectionPicker(!showCollectionPicker)}
-              className="flex-1 px-2 py-1 rounded text-[9px] border border-blue-600/60 text-blue-300 hover:bg-blue-900/20 cursor-pointer transition-all">
+              className="flex-1 px-2 py-1 rounded text-[11px] border border-blue-600/60 text-blue-300 hover:bg-blue-900/20 cursor-pointer transition-all">
               📥 Aus Sammlung
             </button>
           </div>
-          {savedMsg && <div className="text-[8px] text-green-400">{savedMsg}</div>}
+          {savedMsg && <div className="text-[9px] text-green-400">{savedMsg}</div>}
           {showCollectionPicker && (() => {
             const area = effectiveDetail.subjectArea;
             const unitItems = collection.filter(item => item.type === 'unit');
@@ -627,7 +627,7 @@ function DetailsTab() {
             });
             return (
               <div className="bg-slate-800 border border-slate-600 rounded p-1.5 max-h-48 overflow-y-auto space-y-1">
-                {sorted.length === 0 && <p className="text-[8px] text-gray-500 italic px-1">Keine UEs in der Sammlung.</p>}
+                {sorted.length === 0 && <p className="text-[9px] text-gray-500 italic px-1">Keine UEs in der Sammlung.</p>}
                 {sorted.map(item => {
                   const unit = item.units[0];
                   if (!unit) return null;
@@ -655,12 +655,12 @@ function DetailsTab() {
                       setSavedMsg('📥 Aus Sammlung geladen');
                       setTimeout(() => setSavedMsg(null), 2500);
                     }}
-                      className="w-full text-left px-2 py-1.5 rounded text-[9px] hover:bg-slate-700 cursor-pointer transition-all flex items-center gap-2">
-                      <span className={`px-1 py-px rounded text-[7px] ${item.subjectArea === area ? 'bg-blue-900/40 text-blue-300' : 'bg-slate-700 text-gray-400'}`}>
+                      className="w-full text-left px-2 py-1.5 rounded text-[11px] hover:bg-slate-700 cursor-pointer transition-all flex items-center gap-2">
+                      <span className={`px-1 py-px rounded text-[8px] ${item.subjectArea === area ? 'bg-blue-900/40 text-blue-300' : 'bg-slate-700 text-gray-400'}`}>
                         {item.subjectArea || '—'}
                       </span>
                       <span className="text-gray-200 truncate flex-1">{item.title}</span>
-                      {item.cls && <span className="text-[7px] text-gray-500">{item.cls}</span>}
+                      {item.cls && <span className="text-[8px] text-gray-500">{item.cls}</span>}
                     </button>
                   );
                 })}
@@ -806,41 +806,41 @@ function BatchEditTab() {
 
   return (
     <div className="p-3 pb-12 space-y-3 overflow-y-auto flex-1 min-h-0" style={{ overscrollBehavior: 'contain' }}>
-      <div className="text-[11px] font-bold text-amber-300">
+      <div className="text-[13px] font-bold text-amber-300">
         ✏ Batch-Bearbeitung ({cells.length} Zellen)
       </div>
       {applied && (
-        <div className="text-[9px] text-green-400 bg-green-900/20 rounded px-2 py-1">✅ {applied}</div>
+        <div className="text-[11px] text-green-400 bg-green-900/20 rounded px-2 py-1">✅ {applied}</div>
       )}
 
       {/* Subject Area */}
       <div className="space-y-1">
-        <label className="text-[9px] text-gray-400 font-medium">Fachbereich setzen {currentValues.mixedArea && <span className="text-amber-400">(gemischt)</span>}</label>
+        <label className="text-[11px] text-gray-400 font-medium">Fachbereich setzen {currentValues.mixedArea && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1 flex-wrap">
           {categories.map(sa => {
             const isActive = currentValues.subjectArea === sa.key;
             return (
               <button key={sa.key} onClick={() => applyToAll('subjectArea', sa.key)}
-                className={`px-2 py-0.5 rounded text-[9px] font-medium border cursor-pointer hover:opacity-80 ${isActive ? 'ring-1 ring-offset-1 ring-offset-slate-800' : ''}`}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium border cursor-pointer hover:opacity-80 ${isActive ? 'ring-1 ring-offset-1 ring-offset-slate-800' : ''}`}
                 style={{ background: isActive ? sa.color + '40' : 'transparent', borderColor: isActive ? sa.color : '#4b5563', color: isActive ? sa.color : '#9ca3af' }}>
                 {sa.label}
               </button>
             );
           })}
           <button onClick={() => applyToAll('subjectArea', undefined)}
-            className="px-2 py-0.5 rounded text-[9px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
+            className="px-2 py-0.5 rounded text-[11px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
         </div>
       </div>
 
       {/* Category */}
       <div className="space-y-1">
-        <label className="text-[9px] text-gray-400 font-medium">Kategorie setzen {currentValues.mixedCat && <span className="text-amber-400">(gemischt)</span>}</label>
+        <label className="text-[11px] text-gray-400 font-medium">Kategorie setzen {currentValues.mixedCat && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1 flex-wrap">
           {CATEGORIES.map(cat => {
             const isActive = currentValues.blockCategory === cat.key;
             return (
               <button key={cat.key} onClick={() => applyToAll('blockCategory', cat.key)}
-                className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
+                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
                 {cat.icon} {cat.label}
               </button>
             );
@@ -850,28 +850,28 @@ function BatchEditTab() {
 
       {/* Duration */}
       <div className="space-y-1">
-        <label className="text-[9px] text-gray-400 font-medium">Dauer setzen {currentValues.mixedDur && <span className="text-amber-400">(gemischt)</span>}</label>
+        <label className="text-[11px] text-gray-400 font-medium">Dauer setzen {currentValues.mixedDur && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1 flex-wrap">
           {getDurationPresets(settings?.school?.lessonDurationMin).map(preset => {
             const isActive = currentValues.duration === preset.key;
             return (
               <button key={preset.key} onClick={() => applyToAll('duration', preset.key)}
-                className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
+                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
                 {preset.label}
               </button>
             );
           })}
           <button onClick={() => applyToAll('duration', undefined)}
-            className="px-2 py-0.5 rounded text-[9px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
+            className="px-2 py-0.5 rounded text-[11px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
         </div>
       </div>
 
       {/* SOL toggle */}
       <div className="space-y-1">
-        <label className="text-[9px] text-gray-400 font-medium">SOL (Selbstorganisiertes Lernen) {currentValues.mixedSol && <span className="text-amber-400">(gemischt)</span>}</label>
+        <label className="text-[11px] text-gray-400 font-medium">SOL (Selbstorganisiertes Lernen) {currentValues.mixedSol && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1">
           <button onClick={() => applyToAll('sol', currentValues.sol === true ? { enabled: false } : { enabled: true })}
-            className={`px-2 py-0.5 rounded text-[9px] border cursor-pointer transition-all ${
+            className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer transition-all ${
               currentValues.sol === true
                 ? 'bg-green-900/40 border-green-500 text-green-300 ring-1 ring-green-500/30'
                 : 'border-gray-600 text-gray-400 hover:border-green-600 hover:text-green-400'
@@ -884,21 +884,21 @@ function BatchEditTab() {
       {/* Sequence actions */}
       {sharedCourseId && (
         <div className="space-y-1 pt-2 border-t border-slate-700">
-          <label className="text-[9px] text-gray-400 font-medium">Sequenz</label>
+          <label className="text-[11px] text-gray-400 font-medium">Sequenz</label>
           <div className="relative" ref={seqMenuRef}>
             <div className="flex gap-1 flex-wrap">
               <button
                 onClick={handleNewSequence}
-                className="px-2 py-1 rounded text-[9px] font-medium border border-dashed border-green-600 text-green-400 hover:bg-green-900/20 cursor-pointer"
+                className="px-2 py-1 rounded text-[11px] font-medium border border-dashed border-green-600 text-green-400 hover:bg-green-900/20 cursor-pointer"
               >✨ Neue Sequenz ({cells.length} UE)</button>
               <button
                 onClick={() => setShowCollectionPicker(!showCollectionPicker)}
-                className="px-2 py-1 rounded text-[9px] font-medium border border-dashed border-amber-600 text-amber-400 hover:bg-amber-900/20 cursor-pointer"
+                className="px-2 py-1 rounded text-[11px] font-medium border border-dashed border-amber-600 text-amber-400 hover:bg-amber-900/20 cursor-pointer"
               >📥 Aus Sammlung</button>
               {matchingSequences.length > 0 && (
                 <button
                   onClick={() => setShowSeqMenu(!showSeqMenu)}
-                  className="px-2 py-1 rounded text-[9px] font-medium border border-dashed border-blue-600 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
+                  className="px-2 py-1 rounded text-[11px] font-medium border border-dashed border-blue-600 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
                 >+ Zu bestehender ({matchingSequences.length})</button>
               )}
             </div>
@@ -915,11 +915,11 @@ function BatchEditTab() {
                     return (
                       <button key={`${seq.id}-${bi}`}
                         onClick={() => handleAddToBlock(seq.id, bi)}
-                        className="w-full px-3 py-1.5 text-left text-[10px] text-gray-300 hover:bg-slate-700 cursor-pointer flex items-center gap-1.5"
+                        className="w-full px-3 py-1.5 text-left text-[12px] text-gray-300 hover:bg-slate-700 cursor-pointer flex items-center gap-1.5"
                         disabled={allIncluded}>
                         <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: seq.color || '#16a34a' }} />
                         <span className="truncate">{seq.title} → {block.label}</span>
-                        {allIncluded && <span className="text-[8px] text-gray-500 ml-auto shrink-0">bereits</span>}
+                        {allIncluded && <span className="text-[9px] text-gray-500 ml-auto shrink-0">bereits</span>}
                       </button>
                     );
                   })
@@ -930,12 +930,12 @@ function BatchEditTab() {
         </div>
       )}
       {!sharedCourseId && cells.length > 0 && (
-        <div className="text-[8px] text-amber-400/70 pt-2 border-t border-slate-700">
+        <div className="text-[9px] text-amber-400/70 pt-2 border-t border-slate-700">
           ⚠ Sequenzen nur innerhalb desselben Kurses erstellbar. Auswahl enthält verschiedene Kurse.
         </div>
       )}
 
-      <div className="text-[8px] text-gray-500 pt-2 border-t border-slate-700">
+      <div className="text-[9px] text-gray-500 pt-2 border-t border-slate-700">
         Tipp: Wähle mehrere Zellen mit Shift+Klick oder Cmd+Klick, dann setze Eigenschaften hier.
       </div>
     </div>
@@ -1012,7 +1012,7 @@ export function DetailPanel() {
         <div className="flex gap-1">
           <button
             onClick={() => setSidePanelTab('details')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[13px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'details'
                 ? 'bg-blue-500/15 border-blue-500/50'
                 : 'border-transparent'
@@ -1024,7 +1024,7 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('sequences')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[13px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'sequences'
                 ? 'bg-green-500/15 border-green-500/50'
                 : 'border-transparent'
@@ -1036,7 +1036,7 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('collection')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[13px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'collection'
                 ? 'bg-amber-500/15 border-amber-500/50'
                 : 'border-transparent'
@@ -1048,7 +1048,7 @@ export function DetailPanel() {
           </button>
           <button
             onClick={() => setSidePanelTab('settings')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[13px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'settings'
                 ? 'bg-gray-500/15 border-gray-500/50'
                 : 'border-transparent'

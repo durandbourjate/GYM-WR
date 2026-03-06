@@ -90,7 +90,7 @@ function SubjectBar({ area, weight, total }: { area: SubjectArea; weight: number
     <div className="flex items-center" style={{ width: `${pct}%`, minWidth: 20 }}>
       <div className="h-5 rounded-sm w-full flex items-center justify-center"
         style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-        <span className="text-[8px] font-bold" style={{ color: c.text }}>{weight}</span>
+        <span className="text-[9px] font-bold" style={{ color: c.text }}>{weight}</span>
       </div>
     </div>
   );
@@ -101,11 +101,11 @@ function GoalChip({ goal }: { goal: CurriculumGoal }) {
   return (
     <div className="flex items-start gap-1 py-0.5 group"
       title={`${goal.goal}\n\nInhalte: ${goal.contents.join(', ')}`}>
-      <span className="text-[7px] font-mono px-1 py-px rounded shrink-0"
+      <span className="text-[8px] font-mono px-1 py-px rounded shrink-0"
         style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}>
         {goal.id}
       </span>
-      <span className="text-[8px] leading-tight" style={{ color: 'var(--text-secondary)' }}>
+      <span className="text-[9px] leading-tight" style={{ color: 'var(--text-secondary)' }}>
         {goal.topic}
       </span>
     </div>
@@ -133,15 +133,15 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
       style={{ background: expanded ? 'var(--bg-primary)' : 'var(--bg-card)' }}>
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-2 cursor-pointer" onClick={onToggle}>
-        <span className="text-[11px] font-bold w-6" style={{ color: 'var(--text-primary)' }}>{sv.semester}</span>
+        <span className="text-[13px] font-bold w-6" style={{ color: 'var(--text-primary)' }}>{sv.semester}</span>
         {/* Subject distribution bar */}
         <div className="flex-1 flex gap-px">
           {ALL_AREAS.map(area => (
             <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(total, 1)} />
           ))}
         </div>
-        <span className="text-[8px] w-12 text-right" style={{ color: 'var(--text-dim)' }}>{goals.length} Ziele</span>
-        <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{expanded ? '▾' : '▸'}</span>
+        <span className="text-[9px] w-12 text-right" style={{ color: 'var(--text-dim)' }}>{goals.length} Ziele</span>
+        <span className="text-[11px]" style={{ color: 'var(--text-dim)' }}>{expanded ? '▾' : '▸'}</span>
       </div>
       
       {/* Expanded details */}
@@ -154,7 +154,7 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
             return (
               <div key={area}>
                 <div className="flex items-center gap-1 mb-0.5">
-                  <span className="text-[8px] font-bold px-1 rounded"
+                  <span className="text-[9px] font-bold px-1 rounded"
                     style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}>
                     {area}
                   </span>
@@ -221,9 +221,9 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
   return (
     <div className="rounded-md border px-3 py-2" style={{ borderColor: 'var(--border)', background: 'var(--bg-card)' }}>
       <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-[11px] font-bold" style={{ color: 'var(--text-primary)' }}>{semester}</span>
-        <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>{gymYear}</span>
-        <span className="text-[8px] ml-auto" style={{ color: 'var(--text-dim)' }}>{total} Lektionen geplant</span>
+        <span className="text-[13px] font-bold" style={{ color: 'var(--text-primary)' }}>{semester}</span>
+        <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{gymYear}</span>
+        <span className="text-[9px] ml-auto" style={{ color: 'var(--text-dim)' }}>{total} Lektionen geplant</span>
       </div>
       {total > 0 ? (
         <div className="space-y-1">
@@ -232,7 +232,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
             const c = sc(area);
             return (
               <div key={area} className="flex items-center gap-2">
-                <span className="text-[8px] font-bold w-10 shrink-0" style={{ color: c.text }}>{area}</span>
+                <span className="text-[9px] font-bold w-10 shrink-0" style={{ color: c.text }}>{area}</span>
                 <div className="flex-1 h-3 rounded-sm overflow-hidden" style={{ background: 'var(--bg-secondary)' }}>
                   <div className="h-full rounded-sm transition-all" style={{
                     width: `${(stats.counts[area] / total) * 100}%`,
@@ -240,7 +240,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
                     opacity: 0.7,
                   }} />
                 </div>
-                <span className="text-[8px] w-6 text-right" style={{ color: 'var(--text-dim)' }}>{stats.counts[area]}</span>
+                <span className="text-[9px] w-6 text-right" style={{ color: 'var(--text-dim)' }}>{stats.counts[area]}</span>
               </div>
             );
           })}
@@ -250,7 +250,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
               if (stats.topics[area].length === 0) return null;
               const c = sc(area);
               return (
-                <div key={area} className="text-[7px] truncate" style={{ color: 'var(--text-dim)' }}>
+                <div key={area} className="text-[8px] truncate" style={{ color: 'var(--text-dim)' }}>
                   <span style={{ color: c.text }}>{area}:</span>{' '}
                   {stats.topics[area].slice(0, 3).join(', ')}{stats.topics[area].length > 3 ? ' …' : ''}
                 </div>
@@ -259,7 +259,7 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
           </div>
         </div>
       ) : (
-        <div className="text-[9px] italic" style={{ color: 'var(--text-dim)' }}>Keine Daten verfügbar</div>
+        <div className="text-[11px] italic" style={{ color: 'var(--text-dim)' }}>Keine Daten verfügbar</div>
       )}
     </div>
   );
@@ -310,8 +310,8 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
       <div className="px-3 py-2" style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center gap-2">
           <span className="text-[12px] font-bold text-amber-400">GYM{group.gymYear}</span>
-          <span className="text-[10px] font-semibold" style={{ color: 'var(--text-primary)' }}>{group.cls}</span>
-          <span className="text-[8px] ml-auto" style={{ color: 'var(--text-dim)' }}>{group.semesters.join(' + ')} · {total} Wochen geplant</span>
+          <span className="text-[12px] font-semibold" style={{ color: 'var(--text-primary)' }}>{group.cls}</span>
+          <span className="text-[9px] ml-auto" style={{ color: 'var(--text-dim)' }}>{group.semesters.join(' + ')} · {total} Wochen geplant</span>
         </div>
       </div>
 
@@ -325,12 +325,12 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
           return (
             <div key={sem} className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold" style={{ color: 'var(--text-secondary)' }}>{sem}</span>
+                <span className="text-[12px] font-bold" style={{ color: 'var(--text-secondary)' }}>{sem}</span>
                 <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
               </div>
               {/* Soll bar */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[7px] w-8 shrink-0" style={{ color: 'var(--text-dim)' }}>Soll</span>
+                <span className="text-[8px] w-8 shrink-0" style={{ color: 'var(--text-dim)' }}>Soll</span>
                 <div className="flex-1 flex gap-px">
                   {ALL_AREAS.map(area => (
                     <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(svTotal, 1)} />
@@ -340,7 +340,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
               {/* Ist bars */}
               {total > 0 && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[7px] w-8 shrink-0" style={{ color: 'var(--text-dim)' }}>Ist</span>
+                  <span className="text-[8px] w-8 shrink-0" style={{ color: 'var(--text-dim)' }}>Ist</span>
                   <div className="flex-1 flex gap-px">
                     {ALL_AREAS.map(area => {
                       if (stats.counts[area] === 0) return null;
@@ -350,7 +350,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
                         <div key={area} className="flex items-center" style={{ width: `${pct}%`, minWidth: 20 }}>
                           <div className="h-5 rounded-sm w-full flex items-center justify-center"
                             style={{ background: c.bg, border: `1px solid ${c.border}`, opacity: 0.8 }}>
-                            <span className="text-[8px] font-bold" style={{ color: c.text }}>{stats.counts[area]}</span>
+                            <span className="text-[9px] font-bold" style={{ color: c.text }}>{stats.counts[area]}</span>
                           </div>
                         </div>
                       );
@@ -361,7 +361,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
               {/* Goals */}
               <div className="pl-9 space-y-px">
                 {goals.slice(0, 6).map(g => <GoalChip key={g.id} goal={g} />)}
-                {goals.length > 6 && <span className="text-[7px]" style={{ color: 'var(--text-dim)' }}>+{goals.length - 6} weitere</span>}
+                {goals.length > 6 && <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>+{goals.length - 6} weitere</span>}
               </div>
             </div>
           );
@@ -370,18 +370,18 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
         {/* Planned blocks detail */}
         {stats.blocks.length > 0 && (
           <div className="pt-2" style={{ borderTop: '1px solid var(--border)' }}>
-            <span className="text-[8px] font-semibold" style={{ color: 'var(--text-dim)' }}>Geplante Blöcke:</span>
+            <span className="text-[9px] font-semibold" style={{ color: 'var(--text-dim)' }}>Geplante Blöcke:</span>
             <div className="mt-1 space-y-0.5">
               {stats.blocks.map((b, i) => {
                 const c = sc(b.area);
                 return (
                   <div key={i} className="flex items-center gap-1.5">
-                    <span className="text-[7px] px-1 py-px rounded shrink-0"
+                    <span className="text-[8px] px-1 py-px rounded shrink-0"
                       style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}>
                       {b.area}
                     </span>
-                    <span className="text-[8px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>{b.topicMain || b.label}</span>
-                    <span className="text-[7px] shrink-0" style={{ color: 'var(--text-dim)' }}>{b.weeks}W</span>
+                    <span className="text-[9px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>{b.topicMain || b.label}</span>
+                    <span className="text-[8px] shrink-0" style={{ color: 'var(--text-dim)' }}>{b.weeks}W</span>
                   </div>
                 );
               })}
@@ -497,7 +497,7 @@ export function ZoomMultiYearView() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>◫ Mehrjahresübersicht</h2>
-          <p className="text-[9px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
+          <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
             {sfGroups.length > 0
               ? `${gymYears.length} Jahrgänge · ${sfGroups.length} Klassen (${stoffverteilung.at(0)?.semester || ''}–${stoffverteilung.at(-1)?.semester || ''})`
               : 'Keine Kurse mit Stufe konfiguriert'}
@@ -505,19 +505,19 @@ export function ZoomMultiYearView() {
         </div>
         <div className="flex gap-1">
           <button onClick={() => setMode('curriculum')}
-            className={`px-2.5 py-1 rounded text-[9px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               mode === 'curriculum' ? 'bg-blue-500/20 border-blue-500 text-blue-300' : 'border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
             }`}>
             📋 Stoffverteilung
           </button>
           <button onClick={() => setMode('actual')}
-            className={`px-2.5 py-1 rounded text-[9px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               mode === 'actual' ? 'bg-green-500/20 border-green-500 text-green-300' : 'border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
             }`}>
             📊 Ist-Zustand
           </button>
           <button onClick={() => setMode('class')}
-            className={`px-2.5 py-1 rounded text-[9px] font-semibold border cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
               mode === 'class' ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
             }`}>
             🎓 Jahrgänge
@@ -531,9 +531,9 @@ export function ZoomMultiYearView() {
             <div className="text-center py-8">
               <div className="text-2xl mb-2">📋</div>
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Stoffverteilung konfiguriert</p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-dim)' }}>Importiere eine Stoffverteilung oder wähle eine Vorlage.</p>
+              <p className="text-[12px] mt-1" style={{ color: 'var(--text-dim)' }}>Importiere eine Stoffverteilung oder wähle eine Vorlage.</p>
               <div className="flex flex-wrap gap-2 justify-center mt-3">
-                <label className="px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[10px] cursor-pointer hover:bg-blue-500/10">
+                <label className="px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[12px] cursor-pointer hover:bg-blue-500/10">
                   📂 Aus Datei (JSON)
                   <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
                 </label>
@@ -544,7 +544,7 @@ export function ZoomMultiYearView() {
                       store.setPlannerSettings({ ...store.plannerSettings, stoffverteilung: preset.data } as Parameters<typeof store.setPlannerSettings>[0]);
                     }
                   }}
-                    className="px-3 py-1.5 rounded border text-[10px] cursor-pointer" style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
+                    className="px-3 py-1.5 rounded border text-[12px] cursor-pointer" style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
                     {preset.icon} {preset.label}
                   </button>
                 ))}
@@ -554,16 +554,16 @@ export function ZoomMultiYearView() {
           <>
           {/* Summary bar */}
           <div className="flex items-center gap-3 mb-3 px-2 py-1.5 rounded-md border" style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-            <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Gesamt:</span>
+            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Gesamt:</span>
             {ALL_AREAS.filter(a => totals.areas[a] > 0).map(area => (
-              <span key={area} className="text-[9px] font-bold" style={{ color: sc(area)?.text }}>{area} {totals.areas[area]}</span>
+              <span key={area} className="text-[11px] font-bold" style={{ color: sc(area)?.text }}>{area} {totals.areas[area]}</span>
             ))}
-            <span className="text-[8px] ml-auto" style={{ color: 'var(--text-dim)' }}>{totals.goals} Lehrplanziele</span>
-            <label className="text-[8px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Stoffverteilung importieren (JSON)">
+            <span className="text-[9px] ml-auto" style={{ color: 'var(--text-dim)' }}>{totals.goals} Lehrplanziele</span>
+            <label className="text-[9px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Stoffverteilung importieren (JSON)">
               📥<input type="file" accept=".json" className="hidden" onChange={handleImport} />
             </label>
-            <button onClick={expandAll} className="text-[8px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Alle aufklappen">⊞</button>
-            <button onClick={collapseAll} className="text-[8px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Alle zuklappen">⊟</button>
+            <button onClick={expandAll} className="text-[9px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Alle aufklappen">⊞</button>
+            <button onClick={collapseAll} className="text-[9px] cursor-pointer" style={{ color: 'var(--text-dim)' }} title="Alle zuklappen">⊟</button>
           </div>
 
           {/* GYM years */}
@@ -571,7 +571,7 @@ export function ZoomMultiYearView() {
             {gymYears.map(({ gym, semesters }) => (
               <div key={gym}>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-[10px] font-bold text-amber-500">{gym}</span>
+                  <span className="text-[12px] font-bold text-amber-500">{gym}</span>
                   <div className="flex-1 h-px bg-amber-800/40" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -597,21 +597,21 @@ export function ZoomMultiYearView() {
       {mode === 'actual' && (
         <>
           {/* Actual data view */}
-          <div className="text-[9px] mb-3 px-2 py-1.5 rounded-md border" style={{ color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          <div className="text-[11px] mb-3 px-2 py-1.5 rounded-md border" style={{ color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
             Zeigt geplante Lektionen aus den Sequenzen des aktuellen Schuljahres.
           </div>
           {gymYears.length === 0 ? (
             <div className="text-center py-8">
               <div className="text-2xl mb-2">📊</div>
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Daten verfügbar</p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-dim)' }}>Konfiguriere Kurse mit Stufe und Stoffverteilung.</p>
+              <p className="text-[12px] mt-1" style={{ color: 'var(--text-dim)' }}>Konfiguriere Kurse mit Stufe und Stoffverteilung.</p>
             </div>
           ) : (
           <div className="space-y-4">
             {gymYears.map(({ gym, semesters }) => (
               <div key={gym}>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-[10px] font-bold text-amber-500">{gym}</span>
+                  <span className="text-[12px] font-bold text-amber-500">{gym}</span>
                   <div className="flex-1 h-px bg-amber-800/40" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -628,14 +628,14 @@ export function ZoomMultiYearView() {
 
       {mode === 'class' && (
         <>
-          <div className="text-[9px] mb-3 px-2 py-1.5 rounded-md border" style={{ color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          <div className="text-[11px] mb-3 px-2 py-1.5 rounded-md border" style={{ color: 'var(--text-dim)', background: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
             Zeigt Soll- und Ist-Zustand pro SF-Gruppe im aktuellen Schuljahr.
           </div>
           {sfGroups.length === 0 ? (
             <div className="text-center py-8">
               <div className="text-2xl mb-2">🎓</div>
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine SF-Gruppen konfiguriert</p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-dim)' }}>Konfiguriere Kurse mit Stufe in den Einstellungen.</p>
+              <p className="text-[12px] mt-1" style={{ color: 'var(--text-dim)' }}>Konfiguriere Kurse mit Stufe in den Einstellungen.</p>
             </div>
           ) : (
           <div className="space-y-3">
@@ -654,11 +654,11 @@ export function ZoomMultiYearView() {
           return (
             <div key={area} className="flex items-center gap-1">
               <div className="w-3 h-3 rounded-sm" style={{ background: c.bg, border: `1px solid ${c.border}` }} />
-              <span className="text-[8px] font-medium" style={{ color: c.text }}>{area}</span>
+              <span className="text-[9px] font-medium" style={{ color: c.text }}>{area}</span>
             </div>
           );
         })}
-        <span className="text-[7px] ml-auto" style={{ color: 'var(--text-dim)' }}>Zahlen = Gewichtungseinheiten</span>
+        <span className="text-[8px] ml-auto" style={{ color: 'var(--text-dim)' }}>Zahlen = Gewichtungseinheiten</span>
       </div>
     </div>
   );

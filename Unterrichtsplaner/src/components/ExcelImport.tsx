@@ -195,13 +195,13 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
           {/* Step 1: Upload */}
           {step === 'upload' && (
             <div className="space-y-3">
-              <p className="text-[10px] text-gray-400">
+              <p className="text-[12px] text-gray-400">
                 Excel-Datei mit Unterrichtsplanung importieren. Die erste Zeile wird als Header interpretiert,
                 die erste Spalte als Wochennummer (KW).
               </p>
               <input ref={fileRef} type="file" accept=".xlsx,.xls"
                 onChange={handleFile}
-                className="block w-full text-[10px] text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-medium file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-500"
+                className="block w-full text-[12px] text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[12px] file:font-medium file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-500"
               />
             </div>
           )}
@@ -212,10 +212,10 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
               {/* Sheet selector */}
               {sheetNames.length > 1 && (
                 <div className="flex items-center gap-2">
-                  <label className="text-[9px] text-gray-400">Sheet:</label>
+                  <label className="text-[11px] text-gray-400">Sheet:</label>
                   <select value={selectedSheet}
                     onChange={(e) => { setSelectedSheet(e.target.value); if (workbook) loadSheet(workbook, e.target.value); }}
-                    className="text-[9px] bg-slate-700 border border-slate-600 rounded px-2 py-1 text-gray-200">
+                    className="text-[11px] bg-slate-700 border border-slate-600 rounded px-2 py-1 text-gray-200">
                     {sheetNames.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
@@ -223,12 +223,12 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
 
               {/* Column mapping */}
               <div>
-                <h3 className="text-[10px] font-semibold text-gray-300 mb-1">
+                <h3 className="text-[12px] font-semibold text-gray-300 mb-1">
                   Spalten-Mapping ({mappedCols} von {colMappings.length} zugeordnet)
                 </h3>
                 <div className="max-h-[150px] overflow-y-auto space-y-1">
                   {colMappings.map((cm, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[9px]">
+                    <div key={i} className="flex items-center gap-2 text-[11px]">
                       <span className="text-gray-500 w-20 truncate" title={cm.excelHeader}>
                         {cm.excelHeader || `Spalte ${i + 1}`}
                       </span>
@@ -239,7 +239,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                           const val = e.target.value === '' ? null : parseInt(e.target.value);
                           setColMappings(prev => prev.map((c, j) => j === i ? { ...c, courseCol: val } : c));
                         }}
-                        className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200 flex-1">
+                        className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200 flex-1">
                         <option value="">— überspringen —</option>
                         {COURSES.map(c => (
                           <option key={c.col} value={c.col}>{c.cls} {c.day} {c.typ} ({c.les}L)</option>
@@ -252,12 +252,12 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
 
               {/* Row mapping */}
               <div>
-                <h3 className="text-[10px] font-semibold text-gray-300 mb-1">
+                <h3 className="text-[12px] font-semibold text-gray-300 mb-1">
                   Zeilen-Mapping ({mappedRows} von {rowMappings.length} zugeordnet)
                 </h3>
                 <div className="max-h-[150px] overflow-y-auto space-y-1">
                   {rowMappings.map((rm, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[9px]">
+                    <div key={i} className="flex items-center gap-2 text-[11px]">
                       <span className="text-gray-500 w-20 truncate">{rm.firstCell || `Zeile ${rm.excelRow + 1}`}</span>
                       <span className="text-gray-600">→</span>
                       <select
@@ -266,7 +266,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                           const val = e.target.value === '' ? null : e.target.value;
                           setRowMappings(prev => prev.map((r, j) => j === i ? { ...r, weekW: val } : r));
                         }}
-                        className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200 flex-1">
+                        className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200 flex-1">
                         <option value="">— überspringen —</option>
                         {WEEK_ORDER.map(w => <option key={w} value={w}>KW {w}</option>)}
                       </select>
@@ -277,12 +277,12 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
 
               {/* Import mode */}
               <div className="flex items-center gap-3">
-                <label className="text-[9px] text-gray-400">Modus:</label>
-                <label className="text-[9px] text-gray-300 flex items-center gap-1">
+                <label className="text-[11px] text-gray-400">Modus:</label>
+                <label className="text-[11px] text-gray-300 flex items-center gap-1">
                   <input type="radio" checked={importMode === 'merge'} onChange={() => setImportMode('merge')} />
                   Nur leere Zellen füllen
                 </label>
-                <label className="text-[9px] text-gray-300 flex items-center gap-1">
+                <label className="text-[11px] text-gray-300 flex items-center gap-1">
                   <input type="radio" checked={importMode === 'overwrite'} onChange={() => setImportMode('overwrite')} />
                   Alles überschreiben
                 </label>
@@ -291,11 +291,11 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
               <div className="flex gap-2">
                 <button onClick={generatePreview}
                   disabled={mappedCols === 0 || mappedRows === 0}
-                  className="text-[9px] bg-blue-600 hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-500 text-white px-3 py-1 rounded cursor-pointer disabled:cursor-not-allowed">
+                  className="text-[11px] bg-blue-600 hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-500 text-white px-3 py-1 rounded cursor-pointer disabled:cursor-not-allowed">
                   Vorschau →
                 </button>
                 <button onClick={() => setStep('upload')}
-                  className="text-[9px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
+                  className="text-[11px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
                   ← Zurück
                 </button>
               </div>
@@ -305,12 +305,12 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
           {/* Step 3: Preview */}
           {step === 'preview' && (
             <div className="space-y-3">
-              <h3 className="text-[10px] font-semibold text-gray-300">
+              <h3 className="text-[12px] font-semibold text-gray-300">
                 Vorschau: {preview.length} Einträge
                 ({preview.filter(p => p.isNew).length} neu, {preview.filter(p => !p.isNew).length} bestehend)
               </h3>
               <div className="max-h-[300px] overflow-y-auto">
-                <table className="w-full text-[9px]">
+                <table className="w-full text-[11px]">
                   <thead className="sticky top-0 bg-slate-800">
                     <tr className="text-gray-500">
                       <th className="text-left px-1 py-0.5">KW</th>
@@ -336,18 +336,18 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                   </tbody>
                 </table>
                 {preview.length > 100 && (
-                  <div className="text-[8px] text-gray-500 text-center py-1">
+                  <div className="text-[9px] text-gray-500 text-center py-1">
                     … und {preview.length - 100} weitere
                   </div>
                 )}
               </div>
               <div className="flex gap-2">
                 <button onClick={executeImport}
-                  className="text-[9px] bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded cursor-pointer">
+                  className="text-[11px] bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded cursor-pointer">
                   ✓ Importieren ({importMode === 'merge' ? 'nur neue' : 'alles'})
                 </button>
                 <button onClick={() => setStep('map')}
-                  className="text-[9px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
+                  className="text-[11px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
                   ← Mapping anpassen
                 </button>
               </div>
@@ -358,18 +358,18 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
           {step === 'done' && importResult && (
             <div className="space-y-3 text-center py-4">
               <div className="text-2xl">✅</div>
-              <div className="text-[11px] font-semibold text-green-400">
+              <div className="text-[13px] font-semibold text-green-400">
                 Import abgeschlossen
               </div>
-              <div className="text-[10px] text-gray-400">
+              <div className="text-[12px] text-gray-400">
                 {importResult.added} Einträge hinzugefügt
                 {importResult.updated > 0 && `, ${importResult.updated} aktualisiert`}
               </div>
-              <div className="text-[9px] text-gray-500">
+              <div className="text-[11px] text-gray-500">
                 Rückgängig mit Ctrl+Z
               </div>
               <button onClick={onClose}
-                className="text-[9px] bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded cursor-pointer">
+                className="text-[11px] bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded cursor-pointer">
                 Schliessen
               </button>
             </div>

@@ -132,7 +132,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
 
   return (
     <div className="space-y-1.5">
-      <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
+      <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Pro Kalenderwoche können verschiedene GYM-Stufen unterschiedliche Sonderwochen haben. Klicke auf eine KW um Details zu bearbeiten.</p>
       {grouped.map(([kw, entries]) => {
         const isExpanded = expandedWeek === kw;
         const stableKey = entries[0]?.id || kw || 'new';
@@ -141,18 +141,18 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
             <div className="flex items-center gap-2 px-2 py-1.5 cursor-pointer"
               style={{ background: 'var(--bg-secondary)' }}
               onClick={() => setExpandedWeek(isExpanded ? null : kw)}>
-              <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{isExpanded ? '▾' : '▸'}</span>
-              <span className="text-[10px] font-semibold text-amber-400 font-mono w-10">{kw ? `KW${kw}` : 'Neu'}</span>
-              <span className="text-[9px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>
+              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{isExpanded ? '▾' : '▸'}</span>
+              <span className="text-[12px] font-semibold text-amber-400 font-mono w-10">{kw ? `KW${kw}` : 'Neu'}</span>
+              <span className="text-[11px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>
                 {entries.map((e, i) => (
                   <span key={e.id}>
                     {i > 0 && ', '}
-                    {e.gymLevel && <span className="text-[8px] font-semibold text-blue-400">{formatGymLevel(e.gymLevel)} </span>}
+                    {e.gymLevel && <span className="text-[9px] font-semibold text-blue-400">{formatGymLevel(e.gymLevel)} </span>}
                     {e.label || '(unbenannt)'}
                   </span>
                 ))}
               </span>
-              <span className="text-[8px]" style={{ color: 'var(--text-dim)' }}>{entries.length} {entries.length === 1 ? 'Eintrag' : 'Einträge'}</span>
+              <span className="text-[9px]" style={{ color: 'var(--text-dim)' }}>{entries.length} {entries.length === 1 ? 'Eintrag' : 'Einträge'}</span>
             </div>
             {isExpanded && (
               <div className="p-2 space-y-2" style={{ background: 'var(--bg-primary)' }}>
@@ -169,7 +169,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                             : normalizeGymLevel(w.gymLevel).includes(opt.key);
                           return (
                             <button key={opt.key} onClick={() => toggleGymLevel(w.id, opt.key)}
-                              className={`px-1 py-px rounded text-[7px] cursor-pointer transition-colors ${
+                              className={`px-1 py-px rounded text-[8px] cursor-pointer transition-colors ${
                                 active ? 'bg-blue-600/40 text-blue-200 border border-blue-500/60' : 'border border-transparent'
                               }`}
                               style={active ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>{opt.label}</button>
@@ -178,11 +178,11 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                       </div>
                       <SmallSelect value={w.type} onChange={(v) => update(w.id, { type: v })}
                         options={[{ key: 'event', label: '📅 Event' }, { key: 'holiday', label: '🏖 Frei' }]} />
-                      <button onClick={() => remove(w.id)} className="text-[8px] text-red-400 cursor-pointer">✕</button>
+                      <button onClick={() => remove(w.id)} className="text-[9px] text-red-400 cursor-pointer">✕</button>
                     </div>
                     {/* Day selector */}
                     <div className="flex items-center gap-1">
-                      <span className="text-[7px]" style={{ color: 'var(--text-muted)' }}>Tage:</span>
+                      <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Tage:</span>
                       {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map((day, di) => {
                         const dayNum = di + 1;
                         const days = w.days || [1,2,3,4,5]; // default all
@@ -193,7 +193,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                             const next = active ? current.filter(d => d !== dayNum) : [...current, dayNum].sort();
                             update(w.id, { days: next.length === 5 ? undefined : next }); // undefined = all
                           }}
-                            className={`px-1.5 py-px rounded text-[8px] cursor-pointer transition-all ${
+                            className={`px-1.5 py-px rounded text-[9px] cursor-pointer transition-all ${
                               active ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'border border-transparent'
                             }`}
                             style={active ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>
@@ -203,13 +203,13 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                       })}
                       {(w.days && w.days.length < 5) && (
                         <button onClick={() => update(w.id, { days: undefined })}
-                          className="text-[7px] cursor-pointer ml-1" style={{ color: 'var(--text-dim)' }}>Ganze Woche</button>
+                          className="text-[8px] cursor-pointer ml-1" style={{ color: 'var(--text-dim)' }}>Ganze Woche</button>
                       )}
                     </div>
                     {/* Course exclusions */}
                     {courses.length > 0 && (
                       <div className="flex flex-wrap gap-1 items-center">
-                        <span className="text-[7px]" style={{ color: 'var(--text-muted)' }} title="Kurse, die von dieser Sonderwoche NICHT betroffen sind (= normaler Unterricht)">Nicht betroffen:</span>
+                        <span className="text-[8px]" style={{ color: 'var(--text-muted)' }} title="Kurse, die von dieser Sonderwoche NICHT betroffen sind (= normaler Unterricht)">Nicht betroffen:</span>
                         {courses.map(c => {
                           const excluded = w.excludedCourseIds?.includes(c.id);
                           return (
@@ -220,7 +220,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               });
                             }}
                               title={excluded ? `${c.cls} ${c.typ} (${c.day}) hat normalen Unterricht` : `${c.cls} ${c.typ} (${c.day}) ist von Sonderwoche betroffen`}
-                              className={`text-[7px] px-1 py-px rounded cursor-pointer ${excluded ? 'bg-red-900/40 text-red-300 border border-red-500/50' : 'border border-transparent'}`}
+                              className={`text-[8px] px-1 py-px rounded cursor-pointer ${excluded ? 'bg-red-900/40 text-red-300 border border-red-500/50' : 'border border-transparent'}`}
                               style={excluded ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-muted)' }}>
                               {c.cls} {c.day}
                             </button>
@@ -243,7 +243,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               }
                             }}
                             className="accent-amber-500 cursor-pointer" />
-                          <span className="text-[8px]" style={{ color: 'var(--text-secondary)' }}>Nur für bestimmte Kurse anzeigen</span>
+                          <span className="text-[9px]" style={{ color: 'var(--text-secondary)' }}>Nur für bestimmte Kurse anzeigen</span>
                         </label>
                         {w.courseFilter && w.courseFilter.length > 0 && (
                           <div className="ml-4 space-y-1">
@@ -267,7 +267,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                                           : [...current, ...g.ids.filter(id => !current.includes(id))]
                                       });
                                     }}
-                                      className={`text-[7px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'border border-transparent'}`}
+                                      className={`text-[8px] px-1.5 py-0.5 rounded cursor-pointer transition-all ${included ? 'bg-amber-700/40 text-amber-300 border border-amber-500/50' : 'border border-transparent'}`}
                                       style={included ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>
                                       {g.label}
                                     </button>
@@ -280,15 +280,15 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                               {/* Alle GYM2 */}
                               {courses.some(c => c.stufe === 'GYM2') && (
                                 <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.stufe === 'GYM2').map(c => c.id) })}
-                                  className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle GYM2</button>
+                                  className="text-[8px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle GYM2</button>
                               )}
                               {/* Alle SF */}
                               {courses.some(c => c.typ === 'SF') && (
                                 <button onClick={() => update(w.id, { courseFilter: courses.filter(c => c.typ === 'SF').map(c => c.id) })}
-                                  className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle SF</button>
+                                  className="text-[8px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle SF</button>
                               )}
                               <button onClick={() => update(w.id, { courseFilter: courses.map(c => c.id) })}
-                                className="text-[7px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle</button>
+                                className="text-[8px] px-1.5 py-0.5 rounded cursor-pointer" style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}>Alle</button>
                             </div>
                           </div>
                         )}
@@ -297,7 +297,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                   </div>
                 ))}
                 <button onClick={() => addEntry(kw)}
-                  className="w-full py-1 rounded border border-dashed text-[8px] cursor-pointer"
+                  className="w-full py-1 rounded border border-dashed text-[9px] cursor-pointer"
                   style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
                   + Weiteren Eintrag für KW{kw}
                 </button>
@@ -307,7 +307,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
         );
       })}
       <button onClick={addNewWeek}
-        className="w-full py-1.5 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+        className="w-full py-1.5 rounded border border-dashed text-[11px] cursor-pointer transition-all"
         style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
         + Sonderwoche hinzufügen
       </button>

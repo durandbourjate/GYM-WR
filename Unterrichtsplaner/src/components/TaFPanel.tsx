@@ -98,7 +98,7 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
 
         <div className="p-4 space-y-3">
           {tafPhases.length === 0 && !showNew && (
-            <div className="text-[10px] text-gray-500 text-center py-4">
+            <div className="text-[12px] text-gray-500 text-center py-4">
               Noch keine TaF-Phasen definiert.
             </div>
           )}
@@ -114,12 +114,12 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
 
           {/* Import & Presets (v3.80 C7) */}
           <div className="flex gap-1.5 flex-wrap">
-            <label className="text-[9px] px-2 py-1 rounded border border-slate-600 text-gray-400 hover:text-gray-200 cursor-pointer hover:border-slate-500">
+            <label className="text-[11px] px-2 py-1 rounded border border-slate-600 text-gray-400 hover:text-gray-200 cursor-pointer hover:border-slate-500">
               📥 Import (JSON)
               <input type="file" accept=".json" className="hidden" onChange={handleImport} />
             </label>
             <button onClick={() => loadPreset(HOFWIL_PRESET)}
-              className="text-[9px] px-2 py-1 rounded border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 cursor-pointer">
+              className="text-[11px] px-2 py-1 rounded border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 cursor-pointer">
               🏫 SJ 25/26 Hofwil
             </button>
           </div>
@@ -128,27 +128,27 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
             <div className="bg-slate-750 rounded-lg p-3 border border-slate-600 space-y-2">
               <input value={newName} onChange={(e) => setNewName(e.target.value)}
                 placeholder="Phasenname…" autoFocus
-                className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400"
+                className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400"
                 onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
               />
               <div className="flex gap-3">
                 <div className="flex items-center gap-1">
-                  <label className="text-[9px] text-gray-400">Von:</label>
+                  <label className="text-[11px] text-gray-400">Von:</label>
                   <select value={newStart} onChange={(e) => setNewStart(e.target.value)}
-                    className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200">
+                    className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200">
                     {allWeeks.map(w => <option key={w} value={w}>KW {w}</option>)}
                   </select>
                 </div>
                 <div className="flex items-center gap-1">
-                  <label className="text-[9px] text-gray-400">Bis:</label>
+                  <label className="text-[11px] text-gray-400">Bis:</label>
                   <select value={newEnd} onChange={(e) => setNewEnd(e.target.value)}
-                    className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200">
+                    className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-200">
                     {allWeeks.map(w => <option key={w} value={w}>KW {w}</option>)}
                   </select>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-[9px] text-gray-400">Farbe:</span>
+                <span className="text-[11px] text-gray-400">Farbe:</span>
                 {PHASE_COLORS.map(c => (
                   <button key={c} onClick={() => setNewColor(c)}
                     className="w-4 h-4 rounded-full cursor-pointer border-2"
@@ -158,18 +158,18 @@ export function TaFPanel({ onClose }: { onClose: () => void }) {
               </div>
               <div className="flex gap-2 pt-1">
                 <button onClick={handleAdd}
-                  className="text-[9px] bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded cursor-pointer">
+                  className="text-[11px] bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded cursor-pointer">
                   Hinzufügen
                 </button>
                 <button onClick={() => setShowNew(false)}
-                  className="text-[9px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
+                  className="text-[11px] text-gray-400 hover:text-gray-300 cursor-pointer px-2 py-1">
                   Abbrechen
                 </button>
               </div>
             </div>
           ) : (
             <button onClick={() => setShowNew(true)}
-              className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer">
+              className="text-[11px] text-blue-400 hover:text-blue-300 cursor-pointer">
               + Phase hinzufügen
             </button>
           )}
@@ -193,34 +193,34 @@ function PhaseRow({ phase, onUpdate, onDelete }: {
         {editing ? (
           <input value={phase.name} onChange={(e) => onUpdate({ name: e.target.value })}
             onBlur={() => setEditing(false)} autoFocus
-            className="flex-1 bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[10px] outline-none"
+            className="flex-1 bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[12px] outline-none"
           />
         ) : (
-          <span className="text-[10px] font-semibold text-gray-200 flex-1 cursor-pointer"
+          <span className="text-[12px] font-semibold text-gray-200 flex-1 cursor-pointer"
             onDoubleClick={() => setEditing(true)}>{phase.name}</span>
         )}
-        <span className="text-[8px] text-gray-500">KW {phase.startWeek}–{phase.endWeek}</span>
+        <span className="text-[9px] text-gray-500">KW {phase.startWeek}–{phase.endWeek}</span>
         <button onClick={onDelete}
-          className="text-[9px] text-red-400 hover:text-red-300 cursor-pointer px-1">✕</button>
+          className="text-[11px] text-red-400 hover:text-red-300 cursor-pointer px-1">✕</button>
       </div>
       <div className="mt-1.5 flex gap-3">
         <div className="flex items-center gap-1">
-          <label className="text-[8px] text-gray-500">Von:</label>
+          <label className="text-[9px] text-gray-500">Von:</label>
           <select value={phase.startWeek} onChange={(e) => onUpdate({ startWeek: e.target.value })}
-            className="text-[8px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-300">
+            className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-300">
             {allWeeks.map(w => <option key={w} value={w}>KW {w}</option>)}
           </select>
         </div>
         <div className="flex items-center gap-1">
-          <label className="text-[8px] text-gray-500">Bis:</label>
+          <label className="text-[9px] text-gray-500">Bis:</label>
           <select value={phase.endWeek} onChange={(e) => onUpdate({ endWeek: e.target.value })}
-            className="text-[8px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-300">
+            className="text-[9px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-gray-300">
             {allWeeks.map(w => <option key={w} value={w}>KW {w}</option>)}
           </select>
         </div>
       </div>
       {(phase.absentClasses.length > 0 || phase.presentClasses.length > 0) && (
-        <div className="mt-1 text-[8px] text-gray-500">
+        <div className="mt-1 text-[9px] text-gray-500">
           {phase.absentClasses.length > 0 && <span>Abwesend: {phase.absentClasses.join(', ')} </span>}
           {phase.presentClasses.length > 0 && <span>Anwesend: {phase.presentClasses.join(', ')}</span>}
         </div>

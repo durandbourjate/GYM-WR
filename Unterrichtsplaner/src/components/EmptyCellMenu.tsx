@@ -90,9 +90,9 @@ export function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }
           ? { top: position.y, left: position.x, transform: 'translate(-25%, -25%)' }
           : { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
         }>
-        <div className="px-3 py-1 text-[9px] text-gray-400 font-medium border-b border-slate-700/50 flex items-center justify-between">
+        <div className="px-3 py-1 text-[11px] text-gray-400 font-medium border-b border-slate-700/50 flex items-center justify-between">
           <span>📥 Aus Sammlung</span>
-          <button onClick={() => setShowCollection(false)} className="text-gray-500 hover:text-gray-300 cursor-pointer text-[10px]">←</button>
+          <button onClick={() => setShowCollection(false)} className="text-gray-500 hover:text-gray-300 cursor-pointer text-[12px]">←</button>
         </div>
         <CollectionPickerList onSelect={handleImportFromCollection} courseType={course.typ} />
       </div>
@@ -109,16 +109,16 @@ export function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }
         : { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
       }>
       <button onClick={handleNewLesson}
-        className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+        className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
         <span>📖</span> Neue Unterrichtseinheit
       </button>
       <button onClick={handleNewSequence}
-        className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+        className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
         <span>▧</span> {selectedWeeks && selectedWeeks.length > 1 ? `Neue Sequenz (${selectedWeeks.length} KW)` : 'Neue Sequenz'}
       </button>
       {hasImportable && (
         <button onClick={() => setShowCollection(true)}
-          className="w-full px-3 py-1.5 text-left text-[10px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+          className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
           <span>📥</span> Aus Sammlung
         </button>
       )}

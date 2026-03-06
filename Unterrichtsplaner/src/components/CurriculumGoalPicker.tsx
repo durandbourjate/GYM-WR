@@ -89,12 +89,12 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
       {/* Display / trigger area */}
       <div
         ref={triggerRef}
-        className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] cursor-pointer hover:border-blue-400 transition-colors min-h-[28px] flex items-start gap-1"
+        className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] cursor-pointer hover:border-blue-400 transition-colors min-h-[28px] flex items-start gap-1"
         onClick={() => { setOpen(!open); setTimeout(() => inputRef.current?.focus(), 50); }}
       >
         {selectedGoal ? (
           <div className="flex-1">
-            <span className="text-[8px] font-mono mr-1 px-1 py-px rounded"
+            <span className="text-[9px] font-mono mr-1 px-1 py-px rounded"
               style={{ background: (AREA_COLORS[selectedGoal.area] || '#555') + '30', color: AREA_COLORS[selectedGoal.area] }}>
               {selectedGoal.id}
             </span>
@@ -107,7 +107,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
         ) : (
           <span className="text-gray-500 flex-1">Lehrplanziel wählen oder eingeben…</span>
         )}
-        <span className="text-gray-500 text-[8px] shrink-0 mt-0.5">{open ? '▾' : '▸'}</span>
+        <span className="text-gray-500 text-[9px] shrink-0 mt-0.5">{open ? '▾' : '▸'}</span>
       </div>
 
       {/* Dropdown */}
@@ -132,15 +132,15 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                 if (e.key === 'Enter' && filtered.length === 1) { handleSelect(filtered[0]); }
               }}
               placeholder="Suchen… (Thema, Inhalt, ID)"
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[10px] outline-none focus:border-blue-400"
+              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400"
             />
             <div className="flex gap-1 items-center">
-              <span className="text-[8px] text-gray-500">Zyklus:</span>
+              <span className="text-[9px] text-gray-500">Zyklus:</span>
               {([null, 1, 2] as const).map((c) => (
                 <button
                   key={String(c)}
                   onClick={() => setCycleFilter(c)}
-                  className={`px-1.5 py-px rounded text-[8px] border cursor-pointer transition-colors ${
+                  className={`px-1.5 py-px rounded text-[9px] border cursor-pointer transition-colors ${
                     cycleFilter === c
                       ? 'bg-blue-600/30 border-blue-500 text-blue-300'
                       : 'border-slate-600 text-gray-500 hover:text-gray-300'
@@ -151,7 +151,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
               ))}
               {value && (
                 <button onClick={handleClear}
-                  className="ml-auto text-[8px] text-red-400 hover:text-red-300 cursor-pointer">
+                  className="ml-auto text-[9px] text-red-400 hover:text-red-300 cursor-pointer">
                   ✕ Löschen
                 </button>
               )}
@@ -161,7 +161,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
           {/* Results list */}
           <div className="overflow-y-auto flex-1 p-1">
             {filtered.length === 0 ? (
-              <div className="text-[9px] text-gray-500 p-2 text-center">
+              <div className="text-[11px] text-gray-500 p-2 text-center">
                 Keine Treffer.
                 {search.trim() && (
                   <button
@@ -185,18 +185,18 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                     }`}
                   >
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[8px] font-mono px-1 py-px rounded shrink-0"
+                      <span className="text-[9px] font-mono px-1 py-px rounded shrink-0"
                         style={{ background: (AREA_COLORS[goal.area] || '#555') + '20', color: AREA_COLORS[goal.area] }}>
                         {goal.id}
                       </span>
-                      <span className="text-[8px] text-gray-500 shrink-0">Z{goal.cycle}</span>
-                      <span className="text-[9px] font-medium text-gray-200 truncate">{goal.topic}</span>
+                      <span className="text-[9px] text-gray-500 shrink-0">Z{goal.cycle}</span>
+                      <span className="text-[11px] font-medium text-gray-200 truncate">{goal.topic}</span>
                       {goal.semester && (
-                        <span className="text-[7px] text-gray-500 shrink-0 ml-auto">{goal.semester}</span>
+                        <span className="text-[8px] text-gray-500 shrink-0 ml-auto">{goal.semester}</span>
                       )}
                     </div>
-                    <div className="text-[9px] text-gray-400 mt-0.5 leading-tight">{goal.goal}</div>
-                    <div className="text-[8px] text-gray-600 mt-0.5 truncate">
+                    <div className="text-[11px] text-gray-400 mt-0.5 leading-tight">{goal.goal}</div>
+                    <div className="text-[9px] text-gray-600 mt-0.5 truncate">
                       {goal.contents.slice(0, 3).join(' · ')}{goal.contents.length > 3 ? ' …' : ''}
                     </div>
                   </div>
@@ -210,7 +210,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
             <div className="border-t border-slate-700 p-1.5">
               <button
                 onClick={() => { onChange(search.trim()); setOpen(false); setSearch(''); }}
-                className="text-[8px] text-gray-500 hover:text-gray-300 cursor-pointer">
+                className="text-[9px] text-gray-500 hover:text-gray-300 cursor-pointer">
                 ↳ «{search}» als Freitext übernehmen
               </button>
             </div>

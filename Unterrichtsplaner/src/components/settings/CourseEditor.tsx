@@ -62,7 +62,7 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
     <div className="flex flex-wrap gap-1 items-center">
       {presets.map(p => (
         <button key={p.min} onClick={() => { onChange(p.min); setCustomMode(false); }}
-          className={`px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all ${
+          className={`px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all ${
             value === p.min ? 'bg-blue-600/30 border-blue-500' : ''
           }`}
           style={value === p.min ? { color: 'var(--text-primary)' } : { borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
@@ -75,13 +75,13 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
             onChange={(e) => { const n = parseInt(e.target.value) || 0; setCustomVal(e.target.value); if (n > 0) onChange(n); }}
             onKeyDown={(e) => { if (e.key === 'Escape') setCustomMode(false); }}
             placeholder="min"
-            className="border border-blue-400 rounded px-1.5 py-0.5 text-[9px] outline-none w-14"
+            className="border border-blue-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-14"
             style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }} />
-          <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>min</span>
+          <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>min</span>
         </div>
       ) : (
         <button onClick={() => setCustomMode(true)}
-          className="px-1.5 py-0.5 rounded text-[9px] border border-dashed cursor-pointer"
+          className="px-1.5 py-0.5 rounded text-[11px] border border-dashed cursor-pointer"
           style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           Andere
         </button>
@@ -148,10 +148,10 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
     <div className="space-y-2">
       {grouped.map(({ stableKey, courses: group }) => (
         <div key={stableKey} ref={group.some(c => c.id === editingId) ? focusRef : undefined} className="rounded p-2 space-y-1" style={{ border: '1px solid var(--border)' }}>
-          <div className="text-[9px] font-semibold cursor-pointer hover:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}
+          <div className="text-[11px] font-semibold cursor-pointer hover:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}
             onClick={() => setEditingId(editingId === group[0].id ? null : group[0].id)}>
             {group[0].cls || '(neu)'} <span className="text-blue-400">{group[0].typ}</span>
-            <span className="text-[7px] ml-1" style={{ color: 'var(--text-dim)' }}>({group.map(c => c.day).join(', ')})</span>
+            <span className="text-[8px] ml-1" style={{ color: 'var(--text-dim)' }}>({group.map(c => c.day).join(', ')})</span>
           </div>
           {group.map(c => (
             <div key={c.id}>
@@ -165,7 +165,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                     }
                     {schoolLevel && (
                       <select value={c.stufe || ''} onChange={(e) => updateCourse(c.id, { stufe: e.target.value || undefined })}
-                        className="rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+                        className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
                         style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
                         <option value="">Stufe…</option>
                         {STUFE_OPTIONS[schoolLevel].map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
@@ -178,7 +178,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                         const isThisDay = c.day === d;
                         const isChecked = isThisDay || !!sibling;
                         return (
-                          <label key={d} className={`flex items-center gap-0 text-[8px] cursor-pointer select-none px-0.5 py-0.5 rounded ${
+                          <label key={d} className={`flex items-center gap-0 text-[9px] cursor-pointer select-none px-0.5 py-0.5 rounded ${
                             isChecked ? 'text-blue-300 bg-blue-900/30' : ''
                           }`}
                             style={isChecked ? undefined : { color: 'var(--text-dim)' }}>
@@ -212,67 +212,67 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                   <div>
                     <div className="flex gap-1 items-start flex-wrap">
                       <div>
-                        <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Beginn</label>
+                        <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Beginn</label>
                         <SmallInput value={c.from} onChange={(v) => {
                           const autoEnd = addMinutesToTime(v, c.les * 45);
                           updateCourse(c.id, { from: v, to: autoEnd });
-                        }} placeholder="08:05" className="w-28 text-[11px]" type="time" />
+                        }} placeholder="08:05" className="w-28 text-[13px]" type="time" />
                       </div>
-                      <span className="text-[10px] mt-4" style={{ color: 'var(--text-muted)' }}>–</span>
+                      <span className="text-[12px] mt-4" style={{ color: 'var(--text-muted)' }}>–</span>
                       <div>
-                        <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Ende <span style={{ color: 'var(--text-dim)' }}>(auto)</span></label>
-                        <SmallInput value={c.to} onChange={(v) => updateCourse(c.id, { to: v })} placeholder="08:50" className="w-28 text-[11px]" type="time" />
+                        <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Ende <span style={{ color: 'var(--text-dim)' }}>(auto)</span></label>
+                        <SmallInput value={c.to} onChange={(v) => updateCourse(c.id, { to: v })} placeholder="08:50" className="w-28 text-[13px]" type="time" />
                       </div>
                     </div>
                     {c.les > 1 && <p className="text-[6px] text-yellow-600 mt-0.5" title="Pausen zwischen Lektionen werden nicht automatisch berücksichtigt. Endzeit ggf. manuell anpassen.">⚠ ohne Pausen</p>}
                   </div>
                   <div>
-                    <label className="text-[8px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Dauer</label>
+                    <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Dauer</label>
                     <CourseDurationPicker value={c.les * baseDuration} baseDuration={baseDuration} onChange={(min) => {
                       const autoEnd = addMinutesToTime(c.from, min);
                       updateCourse(c.id, { les: durationToLes(min, baseDuration), to: autoEnd });
                     }} />
                   </div>
                   <div className="flex gap-3 items-center flex-wrap" title="Für unterschiedliche Tage pro Semester: separate Einträge mit S1 bzw. S2 erstellen (via Tage-Checkboxen oben)">
-                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }}>
+                    <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }}>
                       <input type="checkbox" checked={c.hk} onChange={(e) => updateCourse(c.id, { hk: e.target.checked })} className="cursor-pointer" />
                       HK
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 1 — Eintrag nur im 1. Semester aktiv">
+                    <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 1 — Eintrag nur im 1. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(1)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 1 as Semester])] : c.semesters.filter(x => x !== 1);
                         updateCourse(c.id, { semesters: s });
                       }} className="cursor-pointer" />
                       S1
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 2 — Eintrag nur im 2. Semester aktiv">
+                    <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Semester 2 — Eintrag nur im 2. Semester aktiv">
                       <input type="checkbox" checked={c.semesters.includes(2)} onChange={(e) => {
                         const s = e.target.checked ? [...new Set([...c.semesters, 2 as Semester])] : c.semesters.filter(x => x !== 2);
                         updateCourse(c.id, { semesters: s });
                       }} className="cursor-pointer" />
                       S2
                     </label>
-                    <label className="flex items-center gap-1 text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Selbstorganisiertes Lernen">
+                    <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Selbstorganisiertes Lernen">
                       <input type="checkbox" checked={!!c.sol} onChange={(e) => updateCourse(c.id, { sol: e.target.checked || undefined })} className="cursor-pointer" />
                       SOL
                     </label>
                   </div>
                   <SmallInput value={c.note || ''} onChange={(v) => updateCourse(c.id, { note: v || undefined })} placeholder="Bemerkung (optional)" className="w-full" />
                   <div className="flex gap-1 mt-1 flex-wrap">
-                    <button onClick={() => setEditingId(null)} className="text-[8px] text-blue-400 cursor-pointer">✓ Fertig</button>
-                    <button onClick={() => removeCourse(c.id)} className="text-[8px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
+                    <button onClick={() => setEditingId(null)} className="text-[9px] text-blue-400 cursor-pointer">✓ Fertig</button>
+                    <button onClick={() => removeCourse(c.id)} className="text-[9px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-[9px] cursor-pointer group"
+                <div className="flex items-center gap-2 text-[11px] cursor-pointer group"
                   style={{ color: 'var(--text-muted)' }}
                   onClick={() => setEditingId(c.id)}>
                   <span className="font-mono" style={{ color: 'var(--text-muted)' }}>{c.day}</span>
                   <span>{c.from}–{c.to}</span>
                   <span style={{ color: 'var(--text-dim)' }}>{c.les * 45}min{c.hk ? ' HK' : ''}</span>
                   <span style={{ color: 'var(--text-dim)' }}>{c.semesters.map(s => `S${s}`).join('+')}</span>
-                  {c.stufe && <span className="text-cyan-500 text-[8px]">{c.stufe}</span>}
-                  {c.note && <span className="text-amber-600 text-[8px]">{c.note}</span>}
+                  {c.stufe && <span className="text-cyan-500 text-[9px]">{c.stufe}</span>}
+                  {c.note && <span className="text-amber-600 text-[9px]">{c.note}</span>}
                 </div>
               )}
             </div>
@@ -280,7 +280,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
         </div>
       ))}
       <button onClick={addCourse}
-        className="w-full py-1.5 rounded border border-dashed text-[9px] cursor-pointer transition-all"
+        className="w-full py-1.5 rounded border border-dashed text-[11px] cursor-pointer transition-all"
         style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
         + Kurs hinzufügen
       </button>

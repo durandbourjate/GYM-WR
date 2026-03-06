@@ -31,7 +31,7 @@ export function PillSelect<T extends string>({
         const active = value === opt;
         return (
           <button key={opt} onClick={() => onChange(active ? undefined : opt)}
-            className="px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all"
+            className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
             style={{
               background: active ? (color || '#3b82f6') + '40' : 'transparent',
               borderColor: active ? (color || '#3b82f6') : '#4b5563',
@@ -61,7 +61,7 @@ export function DurationSelector({ value, onChange, baseDuration = 45, compact }
       {presets.map((preset) => (
         <button key={preset.key}
           onClick={() => onChange(value === preset.key ? undefined : preset.key)}
-          className={`px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all ${
+          className={`px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all ${
             value === preset.key
               ? 'bg-slate-600/40 border-slate-500 text-gray-200'
               : 'border-gray-700 text-gray-400 hover:text-gray-300'
@@ -84,14 +84,14 @@ export function DurationSelector({ value, onChange, baseDuration = 45, compact }
             }}
             onBlur={() => { if (customValue) { onChange(customValue); } setCustomMode(false); }}
             placeholder="z.B. 60 min"
-            className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400 w-20" />
+            className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400 w-20" />
           {isCustom && (
-            <button onClick={() => onChange(undefined)} className="text-[9px] text-gray-400 cursor-pointer hover:text-red-400">✕</button>
+            <button onClick={() => onChange(undefined)} className="text-[11px] text-gray-400 cursor-pointer hover:text-red-400">✕</button>
           )}
         </div>
       ) : (
         <button onClick={() => setCustomMode(true)}
-          className="px-1.5 py-0.5 rounded text-[9px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 cursor-pointer">
+          className="px-1.5 py-0.5 rounded text-[11px] border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 cursor-pointer">
           Andere…
         </button>
       )}
@@ -108,34 +108,34 @@ export function SolSection({ sol, onChange }: { sol?: SolDetails; onChange: (s: 
       <div className="flex items-center gap-2">
         <button
           onClick={() => onChange({ ...sol, enabled: !enabled, topic: sol?.topic, description: sol?.description, materialLinks: sol?.materialLinks, duration: sol?.duration })}
-          className={`px-2 py-0.5 rounded text-[9px] font-medium border cursor-pointer transition-all ${
+          className={`px-2 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all ${
             enabled ? 'bg-green-900/40 border-green-500 text-green-300' : 'border-gray-600 text-gray-400 hover:border-green-600 hover:text-green-400'
           }`}
         >
           🎒 SOL{enabled ? ' ✓' : ''}
         </button>
-        {enabled && sol?.duration && <span className="text-[8px] text-gray-400">{sol.duration}</span>}
+        {enabled && sol?.duration && <span className="text-[9px] text-gray-400">{sol.duration}</span>}
       </div>
       {enabled && (
         <div className="pl-2 border-l-2 border-purple-500/30 space-y-1.5">
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Thema</label>
+            <label className="text-[9px] text-gray-400 mb-0.5 block">SOL-Thema</label>
             <input value={sol?.topic || ''} onChange={(e) => update({ topic: e.target.value })}
               placeholder="SOL-Thema…"
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-0.5 text-[9px] outline-none focus:border-purple-400" />
+              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-0.5 text-[11px] outline-none focus:border-purple-400" />
           </div>
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Dauer</label>
+            <label className="text-[9px] text-gray-400 mb-0.5 block">SOL-Dauer</label>
             <DurationSelector value={sol?.duration} onChange={(v) => update({ duration: v })} compact />
           </div>
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Beschreibung</label>
+            <label className="text-[9px] text-gray-400 mb-0.5 block">SOL-Beschreibung</label>
             <textarea value={sol?.description || ''} onChange={(e) => update({ description: e.target.value })}
               placeholder="Beschreibung, Auftrag…" rows={2}
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-0.5 text-[9px] outline-none focus:border-purple-400 resize-y" />
+              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-0.5 text-[11px] outline-none focus:border-purple-400 resize-y" />
           </div>
           <div>
-            <label className="text-[8px] text-gray-400 mb-0.5 block">SOL-Material</label>
+            <label className="text-[9px] text-gray-400 mb-0.5 block">SOL-Material</label>
             <MaterialLinks links={sol?.materialLinks || []} onChange={(links) => update({ materialLinks: links })} />
           </div>
         </div>
@@ -155,11 +155,11 @@ export function MaterialLinks({ links, onChange }: { links: string[]; onChange: 
       {links.map((link, i) => (
         <div key={i} className="flex items-center gap-1 group">
           <a href={link} target="_blank" rel="noopener noreferrer"
-            className="text-[9px] text-blue-400 hover:text-blue-300 truncate flex-1">
+            className="text-[11px] text-blue-400 hover:text-blue-300 truncate flex-1">
             {link.length > 50 ? link.slice(0, 50) + '…' : link}
           </a>
           <button onClick={() => onChange(links.filter((_, j) => j !== i))}
-            className="text-[9px] text-red-400 opacity-0 group-hover:opacity-100 cursor-pointer">✕</button>
+            className="text-[11px] text-red-400 opacity-0 group-hover:opacity-100 cursor-pointer">✕</button>
         </div>
       ))}
       {adding ? (
@@ -167,12 +167,12 @@ export function MaterialLinks({ links, onChange }: { links: string[]; onChange: 
           <input autoFocus value={newLink} onChange={(e) => setNewLink(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') setAdding(false); }}
             placeholder="URL eingeben…"
-            className="flex-1 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400" />
-          <button onClick={handleAdd} className="text-[9px] text-green-400 cursor-pointer">✓</button>
-          <button onClick={() => setAdding(false)} className="text-[9px] text-gray-400 cursor-pointer">✕</button>
+            className="flex-1 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400" />
+          <button onClick={handleAdd} className="text-[11px] text-green-400 cursor-pointer">✓</button>
+          <button onClick={() => setAdding(false)} className="text-[11px] text-gray-400 cursor-pointer">✕</button>
         </div>
       ) : (
-        <button onClick={() => setAdding(true)} className="text-[9px] text-gray-400 hover:text-gray-300 cursor-pointer">
+        <button onClick={() => setAdding(true)} className="text-[11px] text-gray-400 hover:text-gray-300 cursor-pointer">
           + Link hinzufügen
         </button>
       )}
@@ -221,13 +221,13 @@ export function AddToSequenceButton({ week, course }: { week: string; course: Co
     <span className="relative inline-block">
       <button
         onClick={() => setOpen(!open)}
-        className="text-[8px] px-1 py-px rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 cursor-pointer"
+        className="text-[9px] px-1 py-px rounded border border-dashed border-gray-600 text-gray-400 hover:text-gray-300 hover:border-gray-400 cursor-pointer"
         title="Zu Sequenz hinzufügen"
       >+ Sequenz</button>
       {open && (
         <div ref={menuRef} className="absolute left-0 top-full mt-1 z-[90] bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-52">
           <button onClick={handleNew}
-            className="w-full px-3 py-1.5 text-left text-[10px] text-blue-300 hover:bg-slate-700 cursor-pointer">
+            className="w-full px-3 py-1.5 text-left text-[12px] text-blue-300 hover:bg-slate-700 cursor-pointer">
             ✨ Neue Sequenz erstellen
           </button>
           {matching.length > 0 && <hr className="border-slate-700 my-0.5" />}
@@ -235,11 +235,11 @@ export function AddToSequenceButton({ week, course }: { week: string; course: Co
             seq.blocks.map((block, bi) => (
               <button key={`${seq.id}-${bi}`}
                 onClick={() => handleAddToExisting(seq.id, bi)}
-                className="w-full px-3 py-1.5 text-left text-[10px] text-gray-300 hover:bg-slate-700 cursor-pointer flex items-center gap-1.5"
+                className="w-full px-3 py-1.5 text-left text-[12px] text-gray-300 hover:bg-slate-700 cursor-pointer flex items-center gap-1.5"
                 disabled={block.weeks.includes(week)}>
                 <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: seq.color || '#16a34a' }} />
                 <span className="truncate">{block.label}</span>
-                {block.weeks.includes(week) && <span className="text-[8px] text-gray-500 ml-auto">bereits</span>}
+                {block.weeks.includes(week) && <span className="text-[9px] text-gray-500 ml-auto">bereits</span>}
               </button>
             ))
           ))}

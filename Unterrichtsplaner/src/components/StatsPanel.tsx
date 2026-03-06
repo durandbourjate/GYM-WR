@@ -184,7 +184,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
           <div className="text-center py-8">
             <div className="text-2xl mb-2">📊</div>
             <p className="text-gray-400 text-sm">Keine Daten vorhanden</p>
-            <p className="text-gray-500 text-[10px] mt-1">Lege zuerst Kurse an und plane Lektionen.</p>
+            <p className="text-gray-500 text-[12px] mt-1">Lege zuerst Kurse an und plane Lektionen.</p>
           </div>
         )}
 
@@ -193,36 +193,36 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         <div className="grid grid-cols-4 gap-3 mb-4">
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
             <div className="text-lg font-bold text-gray-100">{totalExams}</div>
-            <div className="text-[9px] text-gray-400">Prüfungen total</div>
+            <div className="text-[11px] text-gray-400">Prüfungen total</div>
           </div>
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
             <div className="text-lg font-bold text-gray-100">{plannerCourses.length}</div>
-            <div className="text-[9px] text-gray-400">Kurse</div>
+            <div className="text-[11px] text-gray-400">Kurse</div>
           </div>
           <div className="bg-slate-700/50 rounded p-2.5 text-center">
             <div className="text-lg font-bold text-gray-100">{teachingWeeks}</div>
-            <div className="text-[9px] text-gray-400">Unterrichts-Einträge</div>
+            <div className="text-[11px] text-gray-400">Unterrichts-Einträge</div>
           </div>
           <div className="rounded p-2.5 text-center" style={collisions.length > 0 ? { background: 'var(--status-crit-bg)', border: '1px solid var(--status-crit-border)' } : undefined}>
             <div className={`text-lg font-bold ${collisions.length > 0 ? '' : 'text-gray-100'}`} style={collisions.length > 0 ? { color: 'var(--status-crit-text)' } : undefined}>
               {collisions.length}
             </div>
-            <div className="text-[9px] text-gray-400">Prüfungskollisionen</div>
+            <div className="text-[11px] text-gray-400">Prüfungskollisionen</div>
           </div>
         </div>
 
         {/* Sequenz-Übersicht */}
         <div className="bg-slate-700/30 rounded p-2.5 mb-4 flex gap-6">
-          <div className="text-[10px] text-gray-400">
+          <div className="text-[12px] text-gray-400">
             <span className="font-semibold text-gray-300">{totalSequences}</span> Sequenzen
           </div>
-          <div className="text-[10px] text-gray-400">
+          <div className="text-[12px] text-gray-400">
             <span className="font-semibold text-gray-300">{totalBlocks}</span> Blöcke
           </div>
         </div>
 
         {/* Per-course table */}
-        <table className="w-full text-[10px] mb-4">
+        <table className="w-full text-[12px] mb-4">
           <thead>
             <tr className="text-gray-500 border-b border-gray-700">
               <th className="text-left py-1 pr-2">Kurs</th>
@@ -238,7 +238,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
               <tr key={s.course.id} className="border-b border-gray-800 hover:bg-slate-700/30">
                 <td className="py-1.5 pr-2 font-semibold text-gray-200">{s.course.cls}</td>
                 <td className="py-1.5 pr-2">
-                  <span className="px-1 py-px rounded text-[8px] font-bold" style={{
+                  <span className="px-1 py-px rounded text-[9px] font-bold" style={{
                     background: s.course.typ === 'SF' ? '#16a34a' : s.course.typ === 'IN' ? '#0ea5e9' : s.course.typ === 'EWR' ? '#d97706' : '#7c3aed',
                     color: '#fff',
                   }}>{s.course.typ}</span>
@@ -257,17 +257,17 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         {/* Exam collisions – enhanced with class-group analysis */}
         {collisions.length > 0 && (
           <div className="rounded p-3 mb-4" style={{ background: 'var(--status-crit-bg)', border: '1px solid var(--status-crit-border)' }}>
-            <div className="text-[10px] font-bold mb-2" style={{ color: 'var(--status-crit-text)' }}>⚠ Prüfungskollisionen (gleiche SuS betroffen)</div>
+            <div className="text-[12px] font-bold mb-2" style={{ color: 'var(--status-crit-text)' }}>⚠ Prüfungskollisionen (gleiche SuS betroffen)</div>
             <div className="space-y-1.5">
               {collisions.map((c) => (
                 <div key={c.week} className="rounded p-2" style={{ background: 'var(--status-crit-bg)' }}>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-bold" style={{ color: 'var(--status-crit-text)' }}>KW {c.week}</span>
-                    <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+                    <span className="text-[12px] font-bold" style={{ color: 'var(--status-crit-text)' }}>KW {c.week}</span>
+                    <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
                       {c.courses.join(' & ')}
                     </span>
                   </div>
-                  <div className="text-[9px]" style={{ color: 'var(--status-crit-text)' }}>
+                  <div className="text-[11px]" style={{ color: 'var(--status-crit-text)' }}>
                     Betroffene Klassen: {c.classes.join(', ')}
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
 
         {collisions.length === 0 && (
           <div className="rounded p-3 mb-4" style={{ background: 'var(--status-ok-bg)', border: '1px solid var(--status-ok-border)' }}>
-            <div className="text-[10px]" style={{ color: 'var(--status-ok-text)' }}>✓ Keine Prüfungskollisionen erkannt</div>
+            <div className="text-[12px]" style={{ color: 'var(--status-ok-text)' }}>✓ Keine Prüfungskollisionen erkannt</div>
           </div>
         )}
 
@@ -287,15 +287,15 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
           background: gradeIssues.length > 0 ? 'var(--status-warn-bg)' : 'var(--status-ok-bg)',
           border: `1px solid ${gradeIssues.length > 0 ? 'var(--status-warn-border)' : 'var(--status-ok-border)'}`,
         }}>
-          <div className="text-[10px] font-bold mb-2" style={{ color: gradeIssues.length > 0 ? 'var(--status-warn-text)' : 'var(--status-ok-text)' }}>
+          <div className="text-[12px] font-bold mb-2" style={{ color: gradeIssues.length > 0 ? 'var(--status-warn-text)' : 'var(--status-ok-text)' }}>
             📋 Beurteilungsvorgaben (MiSDV Art. 4)
           </div>
           {gradeIssues.length === 0 ? (
-            <div className="text-[10px]" style={{ color: 'var(--status-ok-text)' }}>✓ Alle Mindestanforderungen erfüllt</div>
+            <div className="text-[12px]" style={{ color: 'var(--status-ok-text)' }}>✓ Alle Mindestanforderungen erfüllt</div>
           ) : (
             <div className="space-y-1">
               {gradeIssues.map((w, i) => (
-                <div key={i} className="rounded p-2 text-[9px]" style={{
+                <div key={i} className="rounded p-2 text-[11px]" style={{
                   background: w.status === 'critical' ? 'var(--status-crit-bg)' : 'var(--status-warn-bg)',
                   color: w.status === 'critical' ? 'var(--status-crit-text)' : 'var(--status-warn-text)',
                   border: `1px solid ${w.status === 'critical' ? 'var(--status-crit-border)' : 'var(--status-warn-border)'}`,
@@ -310,7 +310,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
           {/* Compact overview of all groups */}
           <div className="mt-2 flex flex-wrap gap-1.5">
             {gradeWarnings.filter(w => w.status === 'ok').length > 0 && (
-              <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
+              <div className="text-[9px]" style={{ color: 'var(--text-dim)' }}>
                 ✓ OK: {gradeWarnings.filter(w => w.status === 'ok').map(w => `${w.courseGroup} (${w.requirement.label}: ${w.currentCount}/${w.requirement.minGrades})`).join(' · ')}
               </div>
             )}
@@ -322,7 +322,7 @@ export function StatsPanel({ onClose }: { onClose: () => void }) {
         {/* Legend */}
         <div className="mt-3 flex gap-3 flex-wrap">
           {[1, 2, 3, 0, 4, 5].map((t) => (
-            <span key={t} className="flex items-center gap-1 text-[8px] text-gray-500">
+            <span key={t} className="flex items-center gap-1 text-[9px] text-gray-500">
               <span className="w-2 h-2 rounded-sm" style={{ background: getTypeLabel(t).color }} />
               {getTypeLabel(t).label}
             </span>

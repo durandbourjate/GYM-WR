@@ -63,9 +63,9 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
     >
       {/* Colored header bar */}
       <div className="rounded-t-lg px-2.5 py-1.5" style={{ background: accentColor + '20', borderBottom: `2px solid ${accentColor}40` }}>
-        <div className="text-[10px] font-bold text-gray-200 leading-tight">{entry.title}</div>
+        <div className="text-[12px] font-bold text-gray-200 leading-tight">{entry.title}</div>
         {effectiveTopicMain && (
-          <div className="text-[9px] text-gray-400 mt-0.5">
+          <div className="text-[11px] text-gray-400 mt-0.5">
             📌 {effectiveTopicMain}{effectiveTopicSub ? ` › ${effectiveTopicSub}` : ''}
           </div>
         )}
@@ -75,7 +75,7 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
         {/* Badges row */}
         <div className="flex flex-wrap gap-1 mb-1">
           {effectiveSubjectArea && (
-            <span className="text-[8px] px-1 py-px rounded border text-gray-300 font-medium"
+            <span className="text-[9px] px-1 py-px rounded border text-gray-300 font-medium"
               style={{ borderColor: accentColor + '60', background: accentColor + '15' }}>
               {effectiveSubjectArea}
             </span>
@@ -85,15 +85,15 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
             const catDef = category ? CATEGORIES.find(c => c.key === category) : null;
             return <>
               {catDef && catDef.key !== 'LESSON' && (
-                <span className="text-[8px] px-1 py-px rounded border border-gray-600 text-gray-400">{catDef.icon} {getCategoryLabel(catDef.key, false)}</span>
+                <span className="text-[9px] px-1 py-px rounded border border-gray-600 text-gray-400">{catDef.icon} {getCategoryLabel(catDef.key, false)}</span>
               )}
               {subtype && category && (
-                <span className="text-[8px] px-1 py-px rounded border border-gray-600 text-gray-400">{getSubtypeLabel(category, subtype, false)}</span>
+                <span className="text-[9px] px-1 py-px rounded border border-gray-600 text-gray-400">{getSubtypeLabel(category, subtype, false)}</span>
               )}
             </>;
           })()}
           {detail?.duration && (
-            <span className="text-[8px] px-1 py-px rounded border border-gray-600 text-gray-400">⏱ {detail.duration}</span>
+            <span className="text-[9px] px-1 py-px rounded border border-gray-600 text-gray-400">⏱ {detail.duration}</span>
           )}
         </div>
 
@@ -101,7 +101,7 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
         {seq && (() => {
           const parentSeq = sequences.find(s => s.id === seq.sequenceId);
           return (
-            <div className="text-[8px] text-gray-500 mb-1">
+            <div className="text-[9px] text-gray-500 mb-1">
               ▧ {seq.label} ({seq.index + 1}/{seq.total})
               {parentSeq?.sol?.enabled && <span className="text-emerald-500 ml-1" title={`SOL: ${parentSeq.sol.topic || ''} ${parentSeq.sol.duration || ''}`}>📚 SOL</span>}
             </div>
@@ -110,14 +110,14 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
 
         {/* Curriculum goal */}
         {hasCurriculumGoal && (
-          <div className="text-[8px] text-gray-500 mb-1 leading-relaxed" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <div className="text-[9px] text-gray-500 mb-1 leading-relaxed" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             🎯 {detail!.curriculumGoal}
           </div>
         )}
 
         {/* Description */}
         {hasDescription && (
-          <div className="text-[8px] text-gray-400 mb-1 leading-relaxed" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <div className="text-[9px] text-gray-400 mb-1 leading-relaxed" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {detail!.description}
           </div>
         )}
@@ -125,8 +125,8 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
         {/* Notes — the main value-add, shown prominently */}
         {hasNotes && (
           <div className="mt-1 pt-1 border-t border-slate-700">
-            <div className="text-[7px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Notizen</div>
-            <div className="text-[9px] text-gray-300 leading-relaxed whitespace-pre-line" style={{ display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            <div className="text-[8px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Notizen</div>
+            <div className="text-[11px] text-gray-300 leading-relaxed whitespace-pre-line" style={{ display: '-webkit-box', WebkitLineClamp: 6, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {detail!.notes}
             </div>
           </div>
@@ -134,7 +134,7 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
 
         {/* SOL details */}
         {hasSol && (
-          <div className="text-[8px] text-gray-500 mt-1">
+          <div className="text-[9px] text-gray-500 mt-1">
             📚 SOL{detail!.sol!.topic ? `: ${detail!.sol!.topic}` : ''}{detail!.sol!.duration ? ` (${detail!.sol!.duration})` : ''}
           </div>
         )}
@@ -146,20 +146,20 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
               const isLV = link.includes('learningview');
               const label = isLV ? 'LV' : link.replace(/^https?:\/\//, '').split('/')[0].slice(0, 20);
               return (
-                <span key={i} className="text-[7px] px-1 py-px rounded bg-slate-700 text-gray-400">
+                <span key={i} className="text-[8px] px-1 py-px rounded bg-slate-700 text-gray-400">
                   📎 {label}
                 </span>
               );
             })}
             {detail!.materialLinks!.length > 4 && (
-              <span className="text-[7px] px-1 py-px text-gray-500">+{detail!.materialLinks!.length - 4}</span>
+              <span className="text-[8px] px-1 py-px text-gray-500">+{detail!.materialLinks!.length - 4}</span>
             )}
           </div>
         )}
 
         {/* Hint if no extras */}
         {!hasExtras && !seq && (
-          <div className="text-[8px] text-gray-600 italic">Doppelklick für Details</div>
+          <div className="text-[9px] text-gray-600 italic">Doppelklick für Details</div>
         )}
       </div>
     </div>

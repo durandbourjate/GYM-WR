@@ -11,7 +11,7 @@ export function Section({ title, children, defaultOpen = false, actions, section
     <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }} data-section={sectionId}>
       <div className="flex items-center" style={{ background: 'var(--bg-secondary)' }}>
         <button onClick={() => setOpen(!open)}
-          className="flex-1 px-3 py-2 text-left text-[11px] font-semibold cursor-pointer flex items-center justify-between"
+          className="flex-1 px-3 py-2 text-left text-[13px] font-semibold cursor-pointer flex items-center justify-between"
           style={{ color: 'var(--text-primary)' }}>
           {title}
           <span style={{ color: 'var(--text-muted)' }}>{open ? '▾' : '▸'}</span>
@@ -39,7 +39,7 @@ export function SmallInput({ value, onChange, placeholder, className = '', type 
       onBlur={() => { if (local !== value) onChange(local); }}
       onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); } }}
       placeholder={placeholder} type={type}
-      className={`rounded px-1.5 py-0.5 text-[10px] outline-none focus:border-blue-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`}
+      className={`rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-blue-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`}
       style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
   );
 }
@@ -49,7 +49,7 @@ export function SmallSelect<T extends string>({ value, onChange, options }: {
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value as T)}
-      className="rounded px-1 py-0.5 text-[9px] outline-none focus:border-blue-400 cursor-pointer"
+      className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
       style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
       {options.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
     </select>
@@ -94,10 +94,10 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
   return (
     <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center" onClick={onClose}>
       <div className="rounded-lg p-4 w-80 shadow-xl" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }} onClick={(e) => e.stopPropagation()}>
-        <div className="text-[11px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📥 {label} in Sammlung speichern</div>
+        <div className="text-[13px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📥 {label} in Sammlung speichern</div>
         <div className="space-y-2">
           {existing.length > 0 && (
-            <div className="flex gap-2 text-[9px]">
+            <div className="flex gap-2 text-[11px]">
               <label className={`flex items-center gap-1 cursor-pointer ${mode === 'replace' ? 'text-blue-300' : ''}`}
                 style={mode === 'replace' ? undefined : { color: 'var(--text-muted)' }}>
                 <input type="radio" checked={mode === 'replace'} onChange={() => setMode('replace')} className="cursor-pointer" />
@@ -112,7 +112,7 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
           )}
           {mode === 'replace' && existing.length > 0 ? (
             <select value={selectedId} onChange={e => setSelectedId(e.target.value)}
-              className="w-full rounded px-2 py-1.5 text-[10px] outline-none cursor-pointer"
+              className="w-full rounded px-2 py-1.5 text-[12px] outline-none cursor-pointer"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               {existing.map(item => (
                 <option key={item.id} value={item.id}>{item.title}</option>
@@ -122,13 +122,13 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
             <input value={newName} onChange={e => setNewName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
               placeholder="Name…" autoFocus
-              className="w-full rounded px-2 py-1.5 text-[10px] outline-none focus:border-blue-400"
+              className="w-full rounded px-2 py-1.5 text-[12px] outline-none focus:border-blue-400"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
           )}
         </div>
         <div className="flex gap-1 mt-3">
-          <button onClick={handleSave} className="flex-1 py-1.5 rounded text-[9px] font-medium bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">Speichern</button>
-          <button onClick={onClose} className="flex-1 py-1.5 rounded text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
+          <button onClick={handleSave} className="flex-1 py-1.5 rounded text-[11px] font-medium bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">Speichern</button>
+          <button onClick={onClose} className="flex-1 py-1.5 rounded text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
         </div>
       </div>
     </div>
@@ -145,9 +145,9 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
   return (
     <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center" onClick={onClose}>
       <div className="rounded-lg p-4 w-80 max-h-[60vh] shadow-xl flex flex-col" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-light)' }} onClick={(e) => e.stopPropagation()}>
-        <div className="text-[11px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📚 {label} aus Sammlung laden</div>
+        <div className="text-[13px] font-bold mb-3" style={{ color: 'var(--text-primary)' }}>📚 {label} aus Sammlung laden</div>
         {items.length === 0 ? (
-          <div className="text-[9px] text-center py-4" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-[11px] text-center py-4" style={{ color: 'var(--text-muted)' }}>
             Keine gespeicherten {label} in der Sammlung.
           </div>
         ) : (
@@ -159,14 +159,14 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
                 <button key={item.id} onClick={() => onLoad(item.settingsSnapshot!)}
                   className="w-full text-left px-3 py-2 rounded hover:border-blue-500 cursor-pointer transition-all"
                   style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)' }}>
-                  <div className="text-[10px] font-semibold" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
-                  <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{isFullConfig ? '(Gesamtkonfiguration)' : label} · {dateStr}</div>
+                  <div className="text-[12px] font-semibold" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{isFullConfig ? '(Gesamtkonfiguration)' : label} · {dateStr}</div>
                 </button>
               );
             })}
           </div>
         )}
-        <button onClick={onClose} className="w-full py-1.5 rounded text-[9px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
+        <button onClick={onClose} className="w-full py-1.5 rounded text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
       </div>
     </div>
   );
@@ -194,13 +194,13 @@ export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
     <>
       <div className="flex gap-1">
         <button onClick={() => setShowSave(true)}
-          className="px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all"
+          className="px-1.5 py-0.5 rounded text-[9px] cursor-pointer transition-all"
           style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' }}
           title={`${RUBRIC_LABELS[rubricType]} in Sammlung speichern`}>
           📥 Speichern
         </button>
         <button onClick={() => setShowLoad(true)}
-          className="px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all"
+          className="px-1.5 py-0.5 rounded text-[9px] cursor-pointer transition-all"
           style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' }}
           title={`${RUBRIC_LABELS[rubricType]} aus Sammlung laden`}>
           📚 Laden
@@ -213,7 +213,7 @@ export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
 }
 
 /** Compact action button style for Section headers (v3.80 C1) */
-export const ACT_BTN = "px-1.5 py-0.5 rounded text-[8px] cursor-pointer transition-all";
+export const ACT_BTN = "px-1.5 py-0.5 rounded text-[9px] cursor-pointer transition-all";
 export const ACT_BTN_STYLE: React.CSSProperties = { background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)' };
 
 /** Combined header actions for a settings rubric: [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import] */

@@ -210,22 +210,22 @@ export function GCalSection() {
   return (
     <Section title="📅 Google Calendar">
       <div className="space-y-2">
-        <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
           Verbinde einen Google Kalender, um Lektionen als Events zu synchronisieren und Kollisionen zu erkennen.
         </p>
 
         {/* Client ID */}
         <div>
-          <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>OAuth Client ID</label>
+          <label className="text-[9px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>OAuth Client ID</label>
           <input
             type="text"
             value={editClientId}
             onChange={(e) => setEditClientId(e.target.value)}
             placeholder="xxxx.apps.googleusercontent.com"
-            className="w-full text-[9px] px-2 py-1 rounded outline-none focus:border-blue-500"
+            className="w-full text-[11px] px-2 py-1 rounded outline-none focus:border-blue-500"
             style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
           />
-          <p className="text-[7px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
+          <p className="text-[8px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
             Erstelle eine OAuth Client ID in der <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" className="text-blue-400 hover:underline">Google Cloud Console</a>.
           </p>
         </div>
@@ -234,16 +234,16 @@ export function GCalSection() {
         <div className="flex gap-1">
           {!isAuth ? (
             <button onClick={handleLogin} disabled={loading}
-              className="flex-1 py-1.5 rounded text-[9px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              className="flex-1 py-1.5 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
               {loading ? '⏳ Verbinde…' : '🔑 Mit Google anmelden'}
             </button>
           ) : (
             <>
-              <div className="flex-1 py-1.5 rounded text-[9px] font-medium bg-green-900/40 text-green-300 text-center border border-green-800/50">
+              <div className="flex-1 py-1.5 rounded text-[11px] font-medium bg-green-900/40 text-green-300 text-center border border-green-800/50">
                 ✅ Verbunden
               </div>
               <button onClick={handleLogout}
-                className="px-2 py-1.5 rounded text-[9px] hover:bg-red-900/60 hover:text-red-300 cursor-pointer transition-all"
+                className="px-2 py-1.5 rounded text-[11px] hover:bg-red-900/60 hover:text-red-300 cursor-pointer transition-all"
                 style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
                 Abmelden
               </button>
@@ -251,26 +251,26 @@ export function GCalSection() {
           )}
         </div>
 
-        {error && <div className="text-[8px] text-red-400 bg-red-900/20 px-2 py-1 rounded">❌ {error}</div>}
+        {error && <div className="text-[9px] text-red-400 bg-red-900/20 px-2 py-1 rounded">❌ {error}</div>}
 
         {/* Calendar selection (when authenticated) */}
         {isAuth && calendars.length > 0 && (
           <div className="space-y-2 pt-1 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender</span>
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender</span>
               <button onClick={handleRefreshCalendars} disabled={loading}
-                className="text-[8px] text-blue-400 hover:text-blue-300 cursor-pointer">
+                className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer">
                 🔄 Aktualisieren
               </button>
             </div>
 
             {/* Write calendar */}
             <div>
-              <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Schreib-Kalender (Planer → Kalender)</label>
+              <label className="text-[9px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Schreib-Kalender (Planer → Kalender)</label>
               <select
                 value={writeCalendarId || ''}
                 onChange={(e) => setWriteCalendarId(e.target.value || null)}
-                className="w-full text-[9px] px-2 py-1 rounded"
+                className="w-full text-[11px] px-2 py-1 rounded"
                 style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
               >
                 <option value="">— Kein Kalender —</option>
@@ -284,10 +284,10 @@ export function GCalSection() {
 
             {/* Read calendars */}
             <div>
-              <label className="text-[8px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Lese-Kalender (Kalender → Planer / Kollisionen)</label>
+              <label className="text-[9px] block mb-0.5" style={{ color: 'var(--text-muted)' }}>Lese-Kalender (Kalender → Planer / Kollisionen)</label>
               <div className="max-h-32 overflow-y-auto space-y-0.5">
                 {calendars.map(c => (
-                  <label key={c.id} className="flex items-center gap-1.5 px-1.5 py-0.5 rounded cursor-pointer text-[9px]">
+                  <label key={c.id} className="flex items-center gap-1.5 px-1.5 py-0.5 rounded cursor-pointer text-[11px]">
                     <input
                       type="checkbox"
                       checked={readCalendarIds.includes(c.id)}
@@ -295,7 +295,7 @@ export function GCalSection() {
                       className="accent-blue-500 w-3 h-3"
                     />
                     <span className="truncate" style={{ color: 'var(--text-primary)' }}>{c.summary}</span>
-                    {c.primary && <span className="text-[7px] text-blue-400">Primär</span>}
+                    {c.primary && <span className="text-[8px] text-blue-400">Primär</span>}
                   </label>
                 ))}
               </div>
@@ -305,7 +305,7 @@ export function GCalSection() {
 
         {isAuth && calendars.length === 0 && !loading && (
           <button onClick={handleRefreshCalendars}
-            className="w-full py-1.5 rounded text-[9px] cursor-pointer transition-all"
+            className="w-full py-1.5 rounded text-[11px] cursor-pointer transition-all"
             style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
             📋 Kalender laden
           </button>
@@ -315,13 +315,13 @@ export function GCalSection() {
         {isAuth && writeCalendarId && (
           <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Planer → Kalender Sync</span>
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Planer → Kalender Sync</span>
             </div>
-            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
+            <p className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
               Erstellt/aktualisiert Google Calendar Events für alle Lektionen. Events werden mit einem <code>planer-managed</code>-Tag markiert.
             </p>
             <button onClick={handleSync} disabled={syncing}
-              className="w-full py-1.5 rounded text-[9px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              className="w-full py-1.5 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
               {syncing ? '⏳ Synchronisiere…' : '🔄 Jetzt synchronisieren'}
             </button>
 
@@ -332,7 +332,7 @@ export function GCalSection() {
                   <div className="bg-blue-500 h-1.5 rounded-full transition-all"
                     style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total * 100) : 0}%` }} />
                 </div>
-                <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
+                <p className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
                   {syncProgress.done} / {syncProgress.total} — {syncProgress.created} erstellt, {syncProgress.updated} aktualisiert, {syncProgress.deleted} gelöscht
                 </p>
               </div>
@@ -340,10 +340,10 @@ export function GCalSection() {
 
             {/* Result */}
             {syncResult && !syncing && (
-              <div className={`text-[8px] px-2 py-1 rounded ${syncResult.errors.length > 0 ? 'bg-amber-900/20 text-amber-300' : 'bg-green-900/20 text-green-300'}`}>
+              <div className={`text-[9px] px-2 py-1 rounded ${syncResult.errors.length > 0 ? 'bg-amber-900/20 text-amber-300' : 'bg-green-900/20 text-green-300'}`}>
                 ✅ Sync abgeschlossen: {syncResult.created} erstellt, {syncResult.updated} aktualisiert, {syncResult.deleted} gelöscht
                 {syncResult.errors.length > 0 && (
-                  <div className="mt-1 text-[7px] text-red-400">
+                  <div className="mt-1 text-[8px] text-red-400">
                     {syncResult.errors.slice(0, 5).map((e, i) => <div key={i}>• {e}</div>)}
                     {syncResult.errors.length > 5 && <div>… und {syncResult.errors.length - 5} weitere</div>}
                   </div>
@@ -358,7 +358,7 @@ export function GCalSection() {
                 setSyncResult(null);
               }
             }}
-              className="text-[7px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
+              className="text-[8px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
               🗑 Event-Mapping zurücksetzen
             </button>
           </div>
@@ -368,13 +368,13 @@ export function GCalSection() {
         {isAuth && readCalendarIds.length > 0 && (
           <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender → Planer Import</span>
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender → Planer Import</span>
             </div>
-            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
+            <p className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
               Scannt Lese-Kalender nach Sonderwochen (IW, Besuchstag, Studienreise etc.) und importiert sie als Sonderwochen-Einstellungen.
             </p>
             <button onClick={handleScanImport} disabled={importing}
-              className="w-full py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all disabled:opacity-50"
+              className="w-full py-1.5 rounded text-[11px] font-medium cursor-pointer transition-all disabled:opacity-50"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
               {importing ? '⏳ Scanne Kalender…' : '📥 Sonderwochen aus Kalender importieren'}
             </button>
@@ -383,13 +383,13 @@ export function GCalSection() {
             {importCandidates !== null && (
               <div className="space-y-1">
                 {importCandidates.length === 0 ? (
-                  <p className="text-[8px] italic" style={{ color: 'var(--text-dim)' }}>Keine passenden Events gefunden.</p>
+                  <p className="text-[9px] italic" style={{ color: 'var(--text-dim)' }}>Keine passenden Events gefunden.</p>
                 ) : (
                   <>
-                    <p className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{importCandidates.length} Events gefunden:</p>
+                    <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{importCandidates.length} Events gefunden:</p>
                     <div className="max-h-48 overflow-y-auto space-y-0.5">
                       {importCandidates.map(c => (
-                        <label key={c.event.id} className="flex items-start gap-1.5 px-1.5 py-1 rounded cursor-pointer text-[9px]">
+                        <label key={c.event.id} className="flex items-start gap-1.5 px-1.5 py-1 rounded cursor-pointer text-[11px]">
                           <input
                             type="checkbox"
                             checked={selectedImports.has(c.event.id)}
@@ -403,7 +403,7 @@ export function GCalSection() {
                           />
                           <div>
                             <div style={{ color: 'var(--text-primary)' }}>{c.event.summary}</div>
-                            <div className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
+                            <div className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
                               KW {c.suggestedConfig.week} · {c.matchedKeyword}
                               {c.suggestedConfig.gymLevel && ` · ${formatGymLevel(c.suggestedConfig.gymLevel)}`}
                               {c.suggestedConfig.days && ` · Tage: ${c.suggestedConfig.days.map(d => ['Mo','Di','Mi','Do','Fr'][d-1]).join(',')}`}
@@ -414,11 +414,11 @@ export function GCalSection() {
                     </div>
                     <div className="flex gap-1">
                       <button onClick={handleConfirmImport} disabled={selectedImports.size === 0}
-                        className="flex-1 py-1 rounded text-[9px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+                        className="flex-1 py-1 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
                         ✅ {selectedImports.size} importieren
                       </button>
                       <button onClick={() => { setImportCandidates(null); setSelectedImports(new Set()); }}
-                        className="px-2 py-1 rounded text-[9px] cursor-pointer transition-all"
+                        className="px-2 py-1 rounded text-[11px] cursor-pointer transition-all"
                         style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}>
                         Abbrechen
                       </button>
@@ -434,27 +434,27 @@ export function GCalSection() {
         {isAuth && readCalendarIds.length > 0 && (
           <div className="space-y-1.5 pt-1.5 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kollisionswarnungen</span>
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kollisionswarnungen</span>
               {collisionCount > 0 && (
-                <span className="text-[8px] text-amber-400 font-bold">⚠️ {collisionCount}</span>
+                <span className="text-[9px] text-amber-400 font-bold">⚠️ {collisionCount}</span>
               )}
             </div>
-            <p className="text-[7px]" style={{ color: 'var(--text-dim)' }}>
+            <p className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
               Prüft ob externe Kalender-Events (Sitzungen, Konferenzen) mit Lektionszeiten kollidieren. Kollisionen werden als ⚠️ im Wochenplan angezeigt.
             </p>
             <button onClick={handleCheckCollisions} disabled={checkingCollisions}
-              className="w-full py-1.5 rounded text-[9px] font-medium cursor-pointer transition-all disabled:opacity-50"
+              className="w-full py-1.5 rounded text-[11px] font-medium cursor-pointer transition-all disabled:opacity-50"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
               {checkingCollisions ? '⏳ Prüfe Kollisionen…' : '⚠️ Kollisionen prüfen'}
             </button>
             {collisionCount > 0 && (
-              <div className="text-[8px] text-amber-300 bg-amber-900/20 px-2 py-1 rounded">
+              <div className="text-[9px] text-amber-300 bg-amber-900/20 px-2 py-1 rounded">
                 {collisionCount} Lektion(en) haben Zeitkonflikte mit externen Kalender-Events. Siehe ⚠️ im Wochenplan.
               </div>
             )}
             {collisionCount > 0 && (
               <button onClick={() => useGCalStore.getState().clearCollisions()}
-                className="text-[7px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
+                className="text-[8px] cursor-pointer" style={{ color: 'var(--text-dim)' }}>
                 ✕ Warnungen ausblenden
               </button>
             )}
