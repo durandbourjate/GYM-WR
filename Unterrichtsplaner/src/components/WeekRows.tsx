@@ -548,7 +548,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               </div>
               {isCurrent && <div className="w-1 h-1 rounded-full bg-blue-400 mx-auto mt-0.5 animate-pulse" />}
               {eventInfo && (
-                <div className="text-amber-500/80 leading-tight mt-0.5 max-w-[48px] truncate font-medium" style={{ fontSize: z(6) }} title={eventInfo.label}>
+                <div className="text-amber-300 leading-tight mt-0.5 max-w-[48px] truncate font-medium" style={{ fontSize: z(6) }} title={eventInfo.label}>
                   📅 {eventInfo.label}
                 </div>
               )}
@@ -905,8 +905,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       style={{
                         minHeight: Math.max(cellHeight, z(32)),
                         opacity: isSearchDimmed ? 0.2 : isSelected ? 1 : 0.9,
-                        background: isSelected ? '#78350f' : '#451a0340',
-                        border: `1px solid ${isSelected ? '#f59e0b' : '#92400e60'}`,
+                        background: isSelected ? '#78350f' : '#78350f50',
+                        border: `1px solid ${isSelected ? '#f59e0b' : '#92400e80'}`,
                         boxShadow: isSelected ? '0 0 0 2px #f59e0b40' : 'none',
                       }}
                       onClick={(e) => { e.stopPropagation(); handleClick(week.w, c, title, e); }}
@@ -923,7 +923,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       title="Klick: Auswählen · Doppelklick: Bearbeiten · Rechtsklick: Aufheben"
                     >
                       <span className="mr-1" style={{ fontSize: z(9) }}>📅</span>
-                      <span className="font-medium leading-tight text-amber-400/80"
+                      <span className="font-medium leading-tight text-amber-100"
                         style={{ fontSize: z(9), display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {displayTitle}
                       </span>

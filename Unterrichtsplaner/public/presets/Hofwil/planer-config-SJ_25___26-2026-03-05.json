@@ -43,7 +43,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM1"
     },
     {
       "id": "c31",
@@ -59,7 +60,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM1"
     },
     {
       "id": "c17",
@@ -75,7 +77,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM3"
     },
     {
       "id": "c35",
@@ -91,7 +94,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM3"
     },
     {
       "id": "c19",
@@ -107,7 +111,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM2"
     },
     {
       "id": "c29",
@@ -123,7 +128,8 @@
       "semesters": [
         1,
         2
-      ]
+      ],
+      "stufe": "GYM2"
     },
     {
       "_kommentar": "KS Klassenstunde 27a",
@@ -139,7 +145,8 @@
       "room": "H-104",
       "semesters": [
         1
-      ]
+      ],
+      "stufe": "GYM3"
     },
     {
       "id": "c2b",
@@ -154,7 +161,8 @@
       "room": "H-101",
       "semesters": [
         2
-      ]
+      ],
+      "stufe": "GYM3"
     },
     {
       "_kommentar": "IN Informatik 28c — S1: Mo L7 Praktikum + Di L3-4 Praktikum; S2: Mo L3-4",
@@ -171,7 +179,8 @@
       "semesters": [
         1
       ],
-      "note": "Praktikum hk"
+      "note": "Praktikum hk",
+      "stufe": "GYM2"
     },
     {
       "id": "c13",
@@ -187,7 +196,8 @@
       "semesters": [
         1
       ],
-      "note": "Praktikum hk"
+      "note": "Praktikum hk",
+      "stufe": "GYM2"
     },
     {
       "id": "c4s2",
@@ -202,7 +212,8 @@
       "room": "H-111",
       "semesters": [
         2
-      ]
+      ],
+      "stufe": "GYM2"
     },
     {
       "_kommentar": "IN Informatik 29f — S1: Mo L8-9 Praktikum; S2: Mo L7",
@@ -219,7 +230,8 @@
       "semesters": [
         1
       ],
-      "note": "Praktikum hk"
+      "note": "Praktikum hk",
+      "stufe": "GYM2"
     },
     {
       "id": "c6s2",
@@ -234,7 +246,8 @@
       "room": "C-01",
       "semesters": [
         2
-      ]
+      ],
+      "stufe": "GYM2"
     },
     {
       "_kommentar": "IN Informatik 30s — Phasenunterricht, nicht in allen Phasen aktiv",
@@ -251,7 +264,8 @@
       "semesters": [
         1
       ],
-      "note": "Phasenunterricht (nur Phase 1)"
+      "note": "Phasenunterricht (nur Phase 1)",
+      "stufe": "GYM1"
     },
     {
       "id": "c30s_do",
@@ -267,7 +281,8 @@
       "semesters": [
         1
       ],
-      "note": "Phasenunterricht"
+      "note": "Phasenunterricht",
+      "stufe": "GYM1"
     },
     {
       "id": "c30s_mi2",
@@ -283,7 +298,8 @@
       "semesters": [
         2
       ],
-      "note": "Phasenunterricht (nur Phase 3)"
+      "note": "Phasenunterricht (nur Phase 3)",
+      "stufe": "GYM1"
     },
     {
       "id": "c30s_mo2",
@@ -299,7 +315,8 @@
       "semesters": [
         2
       ],
-      "note": "Phasenunterricht (nur Phase 3)"
+      "note": "Phasenunterricht (nur Phase 3)",
+      "stufe": "GYM1"
     },
     {
       "_kommentar": "EWR Ergaenzungsfach 29fs — S1: Di L6 H-108; S2: Do L6 H-204",
@@ -315,7 +332,8 @@
       "room": "H-108",
       "semesters": [
         1
-      ]
+      ],
+      "stufe": "GYM2"
     },
     {
       "id": "c15s2",
@@ -330,7 +348,8 @@
       "room": "H-204",
       "semesters": [
         2
-      ]
+      ],
+      "stufe": "GYM2"
     }
   ],
   "specialWeeks": [

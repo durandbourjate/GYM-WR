@@ -355,12 +355,12 @@ export function ZoomYearView() {
                   <td colSpan={totalCols} rowSpan={hSpan.len}
                     className="border-b border-slate-800/30 text-center align-middle"
                     style={{
-                      background: isHoliday ? '#1e293b50' : '#37415130',
+                      background: isHoliday ? '#1e293b50' : '#78350f30',
                       height: spanH,
                     }}>
                     <div className="flex items-center justify-center gap-1.5">
                       <span style={{ fontSize: z(10) }}>{isHoliday ? '🏖' : '📅'}</span>
-                      <span className={`font-medium ${isHoliday ? 'text-gray-300' : 'text-amber-300/80'}`} style={{ fontSize: z(11) }}>
+                      <span className={`font-medium ${isHoliday ? 'text-gray-300' : 'text-amber-100'}`} style={{ fontSize: z(11) }}>
                         {hSpan.label}
                       </span>
                       {hSpan.len > 1 && (
@@ -446,8 +446,8 @@ export function ZoomYearView() {
                               <td key={course.id} className="border-b border-slate-800/20 p-0"
                                 style={{ width: SUBDAY_W, minWidth: SUBDAY_W, maxWidth: SUBDAY_W }}>
                                 <div className="h-full flex items-center justify-center"
-                                  style={{ background: cellType === 6 ? '#1e293b40' : '#37415130', minHeight: ROW_H - 2 }}>
-                                  <span className={`${cellType === 6 ? 'text-gray-400' : 'text-amber-400/70'}`} style={{ fontSize: z(8) }}>
+                                  style={{ background: cellType === 6 ? '#1e293b40' : '#78350f30', minHeight: ROW_H - 2 }}>
+                                  <span className={`${cellType === 6 ? 'text-gray-400' : 'text-amber-200'}`} style={{ fontSize: z(8) }}>
                                     {cellType === 6 ? '🏖' : '📅'}
                                   </span>
                                 </div>
@@ -504,8 +504,8 @@ export function ZoomYearView() {
                             <td key={group.key} className="border-b border-slate-800/20 p-0"
                               style={{ width: GROUP_W, minWidth: GROUP_W, maxWidth: GROUP_W }}>
                               <div className="h-full flex items-center justify-center px-1"
-                                style={{ background: cellType === 6 ? '#1e293b40' : '#37415130', minHeight: ROW_H - 2 }}>
-                                <span className={cellType === 6 ? 'text-gray-400' : 'text-amber-400/70'} style={{ fontSize: z(9) }}>
+                                style={{ background: cellType === 6 ? '#1e293b40' : '#78350f30', minHeight: ROW_H - 2 }}>
+                                <span className={cellType === 6 ? 'text-gray-400' : 'text-amber-200'} style={{ fontSize: z(9) }}>
                                   {cellType === 6 ? '🏖' : '📅'} {cellLabel}
                                 </span>
                               </div>

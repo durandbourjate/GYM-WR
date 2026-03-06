@@ -385,7 +385,7 @@ export function applySettingsToWeekData(
         const matchesAny = levels.some(lv => {
           if (lv === 'TaF') return isTaF;
           if (lv === 'alle') return true;
-          return course.stufe ? course.stufe === lv : true; // K1: ohne stufe → matcht alle
+          return course.stufe ? course.stufe === lv : false; // T2-Fix: ohne stufe → matcht NICHTS (streng)
         });
         if (!matchesAny) continue;
       }
