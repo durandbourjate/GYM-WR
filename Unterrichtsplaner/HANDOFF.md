@@ -1,6 +1,6 @@
 # Unterrichtsplaner – Handoff v3.99
 
-## Status: ✅ v3.99 — Schuljahr vollständig (Sommerferien) — ABGESCHLOSSEN
+## Status: ✅ v3.99 — Schuljahr vollständig (Sommerferien + weekData-Migration) — ABGESCHLOSSEN
 
 **Vorgänger:** v3.98 (Toolbar-Redesign abgeschlossen).
 
@@ -18,7 +18,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.99 — 
 | # | Typ | Beschreibung | Priorität | Status |
 |---|-----|-------------|-----------|--------|
 | V1 | Feature | Schuljahr bis KW 32 verlängern — Sommerferien sichtbar im Planer | 🟠 Hoch | ✅ |
-| V2 | Bug | Sommerferien unsichtbar: weekData im localStorage enthält nur KW 33–27, KW 28–32 fehlen | 🔴 Kritisch | ⬜ |
+| V2 | Bug | Sommerferien unsichtbar: weekData im localStorage enthält nur KW 33–27, KW 28–32 fehlen | 🔴 Kritisch | ✅ |
 
 ---
 

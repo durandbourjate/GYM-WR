@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { INITIAL_LESSON_DETAILS } from '../data/initialLessonDetails';
-import { instanceStorageKey } from './instanceStore';
+import { instanceStorageKey, generateWeekIds, useInstanceStore } from './instanceStore';
 import { createUISlice, type UISlice } from './slices/uiSlice';
 import { createCollectionSlice, type CollectionSlice } from './slices/collectionSlice';
 import { createSequenceSlice, type SequenceSlice } from './slices/sequenceSlice';
@@ -109,8 +109,25 @@ export function loadFromInstance(instanceId: string): void {
       const parsed = JSON.parse(raw);
       const data = parsed.state || parsed;
       const isNew = !!data.plannerSettings;
+
+      // v3.99 V2: Fehlende Wochen ergänzen (z.B. KW 28–32 Sommerferien)
+      let weekData = data.weekData || [];
+      const meta = useInstanceStore.getState().instances.find(i => i.id === instanceId);
+      if (meta && weekData.length > 0) {
+        const expected = generateWeekIds(meta.startWeek, meta.startYear, meta.endWeek, meta.endYear);
+        const existing = new Set(weekData.map((w: { w: string }) => w.w));
+        const missing = expected.filter(wId => !existing.has(wId));
+        if (missing.length > 0) {
+          weekData = [...weekData, ...missing.map(w => ({ w, lessons: {} as Record<number, never> }))];
+          // Sortierung nach erwarteter Reihenfolge
+          const order = new Map(expected.map((id, idx) => [id, idx]));
+          weekData.sort((a: { w: string }, b: { w: string }) => (order.get(a.w) ?? 999) - (order.get(b.w) ?? 999));
+          console.log('[Migration V2] Fehlende Wochen ergänzt:', missing);
+        }
+      }
+
       usePlannerStore.setState({
-        weekData: data.weekData || [],
+        weekData,
         lessonDetails: data.lessonDetails || {},
         sequences: data.sequences || [],
         sequencesMigrated: data.sequencesMigrated ?? isNew,
