@@ -177,10 +177,13 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         const label = (entries[0]?.[1] as any)?.title || 'Ferien';
         const startIdx = i;
         const weekKeys: string[] = [];
+        // T1-Fix: Merge nur Wochen mit gleichem Label
         while (i < displayWeeks.length) {
           const nwk = displayWeeks[i];
           const ne = Object.entries(nwk.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
           if (!(ne.length > 0 && ne.every(([, e]) => (e as any).type === 6))) break;
+          const nLabel = (ne[0]?.[1] as any)?.title || 'Ferien';
+          if (nLabel !== label) break;
           weekKeys.push(nwk.w);
           i++;
         }

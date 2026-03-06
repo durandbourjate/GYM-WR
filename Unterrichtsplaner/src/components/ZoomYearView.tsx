@@ -237,12 +237,14 @@ export function ZoomYearView() {
       if (isHoliday) {
         const label = (entries[0] as any)?.title || 'Ferien';
         const startIdx = i;
-        // Merge consecutive holiday weeks with same label
+        // Merge consecutive holiday weeks with same label (T1-Fix: label must match)
         while (i < allWeekKeys.length) {
           const nextWeek = effectiveWeeks.find(w => w.w === allWeekKeys[i]);
           const nextEntries = nextWeek ? Object.values(nextWeek.lessons) : [];
           const nextIsHoliday = nextEntries.length > 0 && nextEntries.every(e => (e as any).type === 6);
           if (!nextIsHoliday) break;
+          const nextLabel = (nextEntries[0] as any)?.title || 'Ferien';
+          if (nextLabel !== label) break;
           i++;
         }
         spans.push({ startIdx, len: i - startIdx, label, type: 'holiday' });
