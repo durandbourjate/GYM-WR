@@ -177,8 +177,19 @@ export function AppHeader() {
         )}
         <button
           onClick={() => {
-            const el = document.querySelector(`tr[data-week="${CURRENT_WEEK}"]`);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // T9: If not in Wochendetail, switch first then scroll
+            if (zoomLevel !== 3) {
+              setZoomLevel(3);
+              requestAnimationFrame(() => {
+                setTimeout(() => {
+                  const el = document.querySelector(`tr[data-week="${CURRENT_WEEK}"]`);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+              });
+            } else {
+              const el = document.querySelector(`tr[data-week="${CURRENT_WEEK}"]`);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }}
           className="px-2 py-0.5 rounded text-[10px] border border-gray-700 text-gray-400 cursor-pointer hover:text-gray-200 hover:border-gray-500"
           title={`Zur aktuellen Woche (KW ${CURRENT_WEEK}) scrollen`}
