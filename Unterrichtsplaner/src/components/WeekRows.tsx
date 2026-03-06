@@ -822,37 +822,38 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     </div>
                   )}
 
-                  {/* HK Rotation Badge */}
-                  {hkGroup && title && (
-                    <div
-                      className="absolute right-0.5 top-0 font-bold z-10 px-1 py-px rounded-bl cursor-pointer select-none"
-                      style={{
-                        fontSize: z(7),
-                        background: hkGroup === 'A' ? '#7c3aed40' : '#0ea5e940',
-                        color: hkGroup === 'A' ? '#a78bfa' : '#67e8f9',
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setHKOverride(week.w, c.col, hkGroup === 'A' ? 'B' : 'A');
-                      }}
-                      title={`HK ${hkGroup} – Klick zum Wechseln`}
-                    >
-                      {hkGroup}
-                    </div>
-                  )}
-
-                  {/* Custom Badges */}
+                  {/* T4: Badges (HK + Custom) — horizontal, vivid colors */}
                   {(() => {
+                    if (!title) return null;
                     const cellBadges = lessonDetails[`${week.w}-${c.col}`]?.badges;
-                    if (!cellBadges?.length || !title) return null;
-                    const topOffset = hkGroup ? z(12) : 0;
-                    return cellBadges.map((b, bi) => (
-                      <div key={bi}
-                        className="absolute right-0.5 font-bold z-10 px-1 py-px rounded-bl select-none pointer-events-none"
-                        style={{ fontSize: z(7), top: topOffset + bi * z(12), background: b.color + '40', color: b.color }}>
-                        {b.label}
+                    if (!hkGroup && !cellBadges?.length) return null;
+                    return (
+                      <div className="absolute right-0.5 top-0 flex gap-px z-10 items-center" style={{ fontSize: z(7) }}>
+                        {cellBadges?.map((b, bi) => (
+                          <div key={bi}
+                            className="font-bold px-1 py-px rounded-sm select-none pointer-events-none"
+                            style={{ background: b.color, color: '#fff' }}>
+                            {b.label}
+                          </div>
+                        ))}
+                        {hkGroup && (
+                          <div
+                            className="font-bold px-1 py-px rounded-sm cursor-pointer select-none"
+                            style={{
+                              background: hkGroup === 'A' ? '#f97316' : '#06b6d4',
+                              color: '#fff',
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setHKOverride(week.w, c.col, hkGroup === 'A' ? 'B' : 'A');
+                            }}
+                            title={`HK ${hkGroup} – Klick zum Wechseln`}
+                          >
+                            {hkGroup}
+                          </div>
+                        )}
                       </div>
-                    ));
+                    );
                   })()}
 
                   {/* Collision warning (v3.63) */}
