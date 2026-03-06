@@ -58,7 +58,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Unterrichtsplaner
         </span>
-        <span className="text-[10px] text-gray-500">v3.94</span>
+        <span className="text-[10px] text-gray-500">v3.95</span>
       </div>
       {/* J6: Toolbar-Layout — Suche links, Filter mitte, Icons rechts */}
       {/* === Area 1: Search (flex-1, nimmt verfügbaren Platz) === */}
