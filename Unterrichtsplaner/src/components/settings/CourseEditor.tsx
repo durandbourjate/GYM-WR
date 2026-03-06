@@ -253,10 +253,36 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                       S2
                     </label>
                     <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Selbstorganisiertes Lernen">
-                      <input type="checkbox" checked={!!c.sol} onChange={(e) => updateCourse(c.id, { sol: e.target.checked || undefined })} className="cursor-pointer" />
+                      <input type="checkbox" checked={!!c.sol && (typeof c.sol === 'boolean' ? c.sol : c.sol.enabled)} onChange={(e) => {
+                        if (e.target.checked) {
+                          updateCourse(c.id, { sol: { enabled: true } as any });
+                        } else {
+                          updateCourse(c.id, { sol: undefined as any });
+                        }
+                      }} className="cursor-pointer" />
                       SOL
                     </label>
                   </div>
+                  {/* v3.100 #3b: SOL-Konfiguration pro Kurs */}
+                  {c.sol && (typeof c.sol === 'boolean' ? c.sol : (c.sol as any).enabled) && (() => {
+                    const solConfig = typeof c.sol === 'object' ? c.sol as { enabled: boolean; duration?: string; description?: string; topic?: string } : { enabled: true };
+                    return (
+                      <div className="pl-2 border-l-2 rounded-sm space-y-1.5 mt-1" style={{ borderColor: '#8b5cf6' }}>
+                        <div>
+                          <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Thema</label>
+                          <SmallInput value={solConfig.topic || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, topic: v || undefined } as any })} placeholder="SOL-Thema…" className="w-full" />
+                        </div>
+                        <div>
+                          <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Dauer</label>
+                          <SmallInput value={solConfig.duration || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, duration: v || undefined } as any })} placeholder="z.B. 45 min" className="w-24" />
+                        </div>
+                        <div>
+                          <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Beschreibung</label>
+                          <SmallInput value={solConfig.description || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, description: v || undefined } as any })} placeholder="Auftrag, Hinweise…" className="w-full" />
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <SmallInput value={c.note || ''} onChange={(v) => updateCourse(c.id, { note: v || undefined })} placeholder="Bemerkung (optional)" className="w-full" />
                   <div className="flex gap-1 mt-1 flex-wrap">
                     <button onClick={() => setEditingId(null)} className="text-[9px] text-blue-400 cursor-pointer">✓ Fertig</button>

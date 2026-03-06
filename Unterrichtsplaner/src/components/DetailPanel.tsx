@@ -75,8 +75,8 @@ function CategorySubtypeSelector({
                 className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
                 style={{
                   background: active ? cat.color + '30' : 'transparent',
-                  borderColor: active ? cat.color : '#374151',
-                  color: active ? '#e5e7eb' : '#9ca3af',
+                  borderColor: active ? cat.color : 'var(--border)',
+                  color: active ? 'var(--text-primary)' : 'var(--text-muted)',
                 }}>
                 <span className="mr-0.5">{cat.icon}</span>{cat.label}
               </button>
@@ -99,8 +99,8 @@ function CategorySubtypeSelector({
                     className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
                     style={{
                       background: active ? (catDef?.color || '#3b82f6') + '20' : 'transparent',
-                      borderColor: active ? (catDef?.color || '#3b82f6') + '80' : '#374151',
-                      color: active ? '#d1d5db' : '#6b7280',
+                      borderColor: active ? (catDef?.color || '#3b82f6') + '80' : 'var(--border)',
+                      color: active ? 'var(--text-secondary)' : 'var(--text-dim)',
                     }}>
                     <span className="mr-0.5">{st.icon}</span>{st.label}
                   </button>
@@ -133,6 +133,99 @@ function CategorySubtypeSelector({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * v3.100 #3a: Vereinfachte Typ-Auswahl (flache 5 Buttons statt 2-stufig Kategorie+Subtype).
+ * Mapping: Lektion, SOL, Auftrag, Ausfall → bestehendes category/subtype-System.
+ * + Eigenes: Custom-Subtype-System beibehalten.
+ */
+const SIMPLE_TYPES = [
+  { key: 'lektion', label: 'Lektion', icon: '📖', category: 'LESSON' as BlockCategory, subtype: undefined },
+  { key: 'sol', label: 'SOL', icon: '📚', category: 'LESSON' as BlockCategory, subtype: 'sol' },
+  { key: 'auftrag', label: 'Auftrag', icon: '📋', category: 'EVENT' as BlockCategory, subtype: 'auftrag' },
+  { key: 'ausfall', label: 'Ausfall', icon: '❌', category: 'EVENT' as BlockCategory, subtype: 'ausfall' },
+] as const;
+
+function SimpleTypeSelector({
+  category, subtype, onChangeCategory, onChangeSubtype,
+}: {
+  category?: BlockCategory;
+  subtype?: string;
+  onChangeCategory: (v: BlockCategory | undefined) => void;
+  onChangeSubtype: (v: string | undefined) => void;
+}) {
+  const [addingCustom, setAddingCustom] = useState(false);
+  const [customLabel, setCustomLabel] = useState('');
+
+  // Determine active simple type
+  const activeKey = SIMPLE_TYPES.find(t =>
+    t.category === (category || 'LESSON') && t.subtype === subtype
+  )?.key;
+  const isCustom = !activeKey && subtype;
+
+  const handleAddCustom = () => {
+    if (!customLabel.trim()) return;
+    const key = customLabel.trim().toLowerCase().replace(/[^a-z0-9äöü]/g, '_');
+    const custom = loadCustomSubtypes();
+    const cat = category || 'LESSON';
+    if (!custom[cat]) custom[cat] = [];
+    custom[cat].push({ key, label: customLabel.trim(), labelShort: customLabel.trim().slice(0, 5) + '.', icon: '🏷️' });
+    saveCustomSubtypes(custom);
+    onChangeSubtype(key);
+    setCustomLabel('');
+    setAddingCustom(false);
+  };
+
+  return (
+    <div>
+      <label className="text-[11px] font-medium mb-1 block" style={{ color: 'var(--text-muted)' }}>Typ</label>
+      <div className="flex flex-wrap gap-1">
+        {SIMPLE_TYPES.map((t) => {
+          const active = activeKey === t.key;
+          return (
+            <button key={t.key}
+              onClick={() => {
+                onChangeCategory(t.category === 'LESSON' ? undefined : t.category);
+                onChangeSubtype(t.subtype);
+              }}
+              className="px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all"
+              style={{
+                background: active ? '#3b82f620' : 'transparent',
+                borderColor: active ? '#3b82f6' : 'var(--border)',
+                color: active ? 'var(--text-primary)' : 'var(--text-muted)',
+              }}>
+              <span className="mr-0.5">{t.icon}</span>{t.label}
+            </button>
+          );
+        })}
+        {/* Eigenes label (custom subtype) */}
+        {isCustom && (
+          <span className="px-1.5 py-0.5 rounded text-[11px] font-medium border"
+            style={{ borderColor: '#3b82f6', background: '#3b82f620', color: 'var(--text-primary)' }}>
+            🏷️ {subtype}
+          </span>
+        )}
+        {addingCustom ? (
+          <div className="flex gap-0.5 items-center">
+            <input autoFocus value={customLabel} onChange={(e) => setCustomLabel(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddCustom(); if (e.key === 'Escape') setAddingCustom(false); }}
+              placeholder="Neues Label…"
+              className="border border-blue-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-24"
+              style={{ background: 'var(--bg-input)', color: 'var(--text-primary)' }} />
+            <button onClick={handleAddCustom} className="text-[11px] text-green-400 cursor-pointer">✓</button>
+            <button onClick={() => setAddingCustom(false)} className="text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }}>✕</button>
+          </div>
+        ) : (
+          <button onClick={() => setAddingCustom(true)}
+            className="px-1.5 py-0.5 rounded text-[11px] border border-dashed cursor-pointer transition-all"
+            style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
+            + Eigenes
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -504,7 +597,7 @@ function DetailsTab() {
             </div>
           )}
         </div>
-        <CategorySubtypeSelector
+        <SimpleTypeSelector
           category={effectiveCategory}
           subtype={effectiveSubtype}
           onChangeCategory={handleCategoryChange}
@@ -514,10 +607,7 @@ function DetailsTab() {
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Dauer</label>
           <DurationSelector value={effectiveDetail.duration} onChange={(v) => updateField('duration', v)} baseDuration={settings?.school?.lessonDurationMin} />
         </div>
-        <div>
-          <label className="text-[11px] text-gray-400 font-medium mb-1 block">SOL (Selbstorganisiertes Lernen)</label>
-          <SolSection sol={detail.sol} onChange={(s) => updateField('sol', s)} />
-        </div>
+        {/* v3.100 #3b: SOL-Section entfernt (wird jetzt pro Kurs in Einstellungen konfiguriert) */}
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Thema</label>
           {parentBlock?.topicMain && !detail.topicMain && (
@@ -547,6 +637,13 @@ function DetailsTab() {
             </div>
           )}
         </div>
+        {/* v3.100 #4: Notizen vor Lehrplanziel (häufiger genutzt) */}
+        <div>
+          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Notizen</label>
+          <textarea value={detail.notes || ''} onChange={(e) => updateField('notes', e.target.value)}
+            placeholder="Notizen, Hinweise…" rows={3}
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
+        </div>
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Lehrplanziel (LP17)</label>
           {parentBlock?.curriculumGoal && !detail.curriculumGoal && (
@@ -575,13 +672,6 @@ function DetailsTab() {
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Badges</label>
           <BadgeEditor badges={detail.badges || []} onChange={(badges) => updateField('badges', badges.length > 0 ? badges : undefined)} />
-        </div>
-
-        <div>
-          <label className="text-[11px] text-gray-400 font-medium mb-1 block">Notizen</label>
-          <textarea value={detail.notes || ''} onChange={(e) => updateField('notes', e.target.value)}
-            placeholder="Notizen, Hinweise…" rows={3}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
         </div>
 
         {/* Collection: Save / Load */}

@@ -8,10 +8,10 @@ const allWeeks = WEEKS.map(w => w.w);
 
 // Preset: SJ 25/26 Hofwil (v3.80 C7)
 const HOFWIL_PRESET: Omit<TaFPhase, 'id'>[] = [
-  { name: 'Phase 1', startWeek: '33', endWeek: '38', color: '#8b5cf6', absentClasses: [], presentClasses: [] },
-  { name: 'Phase 2', startWeek: '47', endWeek: '05', color: '#f59e0b', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 1', startWeek: '33', endWeek: '44', color: '#8b5cf6', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 2', startWeek: '47', endWeek: '04', color: '#f59e0b', absentClasses: [], presentClasses: [] },
   { name: 'Phase 3', startWeek: '07', endWeek: '12', color: '#10b981', absentClasses: [], presentClasses: [] },
-  { name: 'Phase 4', startWeek: '17', endWeek: '25', color: '#ef4444', absentClasses: [], presentClasses: [] },
+  { name: 'Phase 4', startWeek: '17', endWeek: '24', color: '#ef4444', absentClasses: [], presentClasses: [] },
 ];
 
 /** Einbettbare TaF-Phasen-Verwaltung (für SettingsPanel) */

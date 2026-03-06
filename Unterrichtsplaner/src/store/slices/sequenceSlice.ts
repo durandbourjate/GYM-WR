@@ -175,6 +175,8 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
           ? { ...s, blocks: s.blocks.filter((_, i) => i !== blockIndex), updatedAt: new Date().toISOString() }
           : s
       ),
+      // v3.100 #5: editingSequenceId nullen wenn gelöschte Sequenz editiert wird
+      editingSequenceId: state.editingSequenceId?.startsWith(seqId) ? null : state.editingSequenceId,
     })),
   // T6: Remove block AND delete weekData + lessonDetails for all block weeks
   removeBlockWithLessons: (seqId, blockIndex) => {
@@ -206,7 +208,9 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     const newSequences = newBlocks.length > 0
       ? state.sequences.map(s => s.id === seqId ? { ...s, blocks: newBlocks, updatedAt: new Date().toISOString() } : s)
       : state.sequences.filter(s => s.id !== seqId);
-    set({ weekData: newWeekData, lessonDetails: newDetails, sequences: newSequences });
+    // v3.100 #5: editingSequenceId nullen wenn gelöschte Sequenz editiert wird → verhindert Weisser-Bildschirm
+    const clearEditing = state.editingSequenceId?.startsWith(seqId) ? null : state.editingSequenceId;
+    set({ weekData: newWeekData, lessonDetails: newDetails, sequences: newSequences, editingSequenceId: clearEditing });
   },
   reorderBlocks: (seqId, fromIndex, toIndex) =>
     set((state) => ({

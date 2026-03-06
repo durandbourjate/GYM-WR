@@ -90,7 +90,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Planer
         </span>
-        <span className="text-[12px] text-gray-500">v3.99</span>
+        <span className="text-[12px] text-gray-500">v3.100</span>
       </div>
       {/* v3.98: PlannerTabs inline in der Toolbar */}
       <PlannerTabs />
@@ -112,47 +112,7 @@ export function AppHeader() {
           >✕</button>
         )}
       </div>
-      {/* M4: «+» Button — Dropdown als Portal gerendert (kein overflow-clip-Problem) */}
-      <div className="flex-shrink-0" ref={addMenuRef}>
-        <button
-          ref={addBtnRef}
-          onClick={() => {
-            if (!showAddMenu) {
-              const rect = addBtnRef.current?.getBoundingClientRect();
-              if (rect) setDropdownPos({ top: rect.bottom + 4, left: rect.left });
-            }
-            setShowAddMenu(!showAddMenu);
-          }}
-          className="px-1.5 py-0.5 rounded text-[12px] font-semibold border border-dashed border-green-700 text-green-500 cursor-pointer hover:bg-green-900/20 hover:text-green-300 transition-colors"
-          title="Neue Sequenz oder UE erstellen"
-        >
-          +
-        </button>
-      </div>
-      {showAddMenu && createPortal(
-        <div ref={addMenuRef} className="bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44"
-          style={{ position: 'fixed', top: dropdownPos.top, left: dropdownPos.left, zIndex: 9999 }}>
-          <button onClick={() => {
-            setSidePanelOpen(true);
-            setSidePanelTab('sequences');
-            setSequencePanelOpen(true);
-            setShowAddMenu(false);
-          }}
-            className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
-            <span className="text-green-400">▧</span> Neue Sequenz
-          </button>
-          <button onClick={() => {
-            setSidePanelOpen(true);
-            setSidePanelTab('details');
-            setShowAddMenu(false);
-          }}
-            className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
-            <span className="text-blue-400">📖</span> Neue UE
-          </button>
-        </div>,
-        document.body
-      )}
-      {/* === Area 2: Kursfilter-Dropdown === */}
+      {/* === Area 2: Kursfilter-Dropdown (v3.100 #7: vor + Button) === */}
       <div className="flex-shrink-0 relative">
         <button
           ref={courseBtnRef}
@@ -200,6 +160,46 @@ export function AppHeader() {
               </button>
             </>
           )}
+        </div>,
+        document.body
+      )}
+      {/* M4: «+» Button — Dropdown als Portal (v3.100 #7: nach Kurse-Dropdown) */}
+      <div className="flex-shrink-0" ref={addMenuRef}>
+        <button
+          ref={addBtnRef}
+          onClick={() => {
+            if (!showAddMenu) {
+              const rect = addBtnRef.current?.getBoundingClientRect();
+              if (rect) setDropdownPos({ top: rect.bottom + 4, left: rect.left });
+            }
+            setShowAddMenu(!showAddMenu);
+          }}
+          className="px-1.5 py-0.5 rounded text-[12px] font-semibold border border-dashed border-green-700 text-green-500 cursor-pointer hover:bg-green-900/20 hover:text-green-300 transition-colors"
+          title="Neue Sequenz oder UE erstellen"
+        >
+          +
+        </button>
+      </div>
+      {showAddMenu && createPortal(
+        <div ref={addMenuRef} className="bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-44"
+          style={{ position: 'fixed', top: dropdownPos.top, left: dropdownPos.left, zIndex: 9999 }}>
+          <button onClick={() => {
+            setSidePanelOpen(true);
+            setSidePanelTab('sequences');
+            setSequencePanelOpen(true);
+            setShowAddMenu(false);
+          }}
+            className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+            <span className="text-green-400">▧</span> Neue Sequenz
+          </button>
+          <button onClick={() => {
+            setSidePanelOpen(true);
+            setSidePanelTab('details');
+            setShowAddMenu(false);
+          }}
+            className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
+            <span className="text-blue-400">📖</span> Neue UE
+          </button>
         </div>,
         document.body
       )}
@@ -286,7 +286,7 @@ export function AppHeader() {
           className={`px-2 py-0.5 rounded text-[11px] cursor-pointer transition-colors ${dimPastWeeks ? 'text-amber-400 bg-amber-900/30 border border-amber-700' : 'text-gray-500 border border-gray-700 hover:text-gray-300'}`}
           title={dimPastWeeks ? 'Vergangene Wochen: abgedunkelt' : 'Vergangene Wochen: volle Helligkeit'}
         >
-          {dimPastWeeks ? '◐' : '●'}
+          ≋
         </button>
         <button
           onClick={toggleTheme}

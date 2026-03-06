@@ -19,6 +19,11 @@
   --toolbar-bg:   #111827;   /* gray-900 */
   --toolbar-border: #1f2937; /* gray-800 */
   --panel-bg:     #151b2e;
+  /* v3.100 #1+#2: Kontrast-Variablen für Light/Dark */
+  --current-week-bg: #172554;  /* blue-950 */
+  --event-text:   #fef3c7;     /* amber-100 */
+  --event-label:  #fde68a;     /* amber-200 */
+  --holiday-label: #9ca3af;    /* gray-400 */
 }
 
 :root.light-mode {
@@ -39,6 +44,11 @@
   --toolbar-bg:   #ffffff;
   --toolbar-border: #e2e8f0;
   --panel-bg:     #f8fafc;
+  /* v3.100 #1+#2: Kontrast-Variablen Light Mode */
+  --current-week-bg: #dbeafe;  /* blue-100 */
+  --event-text:   #92400e;     /* amber-800 */
+  --event-label:  #92400e;     /* amber-800 */
+  --holiday-label: #475569;    /* slate-600 */
 
   /* v3.90 M1-M3: Tailwind-Farbpaletten invertieren für Light-Mode.
      Alle hardcodierten bg-slate-*, text-gray-*, border-slate-* etc.

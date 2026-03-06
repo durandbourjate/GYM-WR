@@ -1,17 +1,45 @@
-# Unterrichtsplaner – Handoff v3.99
+# Unterrichtsplaner – Handoff v3.100
 
-## Status: ✅ v3.99 — Schuljahr vollständig (Sommerferien + weekData-Migration) — ABGESCHLOSSEN
+## Status: ✅ v3.100 — 8 UI-Verbesserungen & Bugfixes — ABGESCHLOSSEN
 
-**Vorgänger:** v3.98 (Toolbar-Redesign abgeschlossen).
+**Vorgänger:** v3.99 (Sommerferien + weekData-Migration abgeschlossen).
 
 ---
 
 ## OBERSTE REGEL
 
 **Immer `npx tsc --noEmit && npm run build` vor und nach jeder Änderung.**
-Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.99 — [Beschreibung]" && git push`
+Commit nach jedem erledigten Task: `git add -A && git commit -m "fix: v3.100 — [Beschreibung]" && git push`
 
 ---
+
+## Originalauftrag v3.100 — UI-Verbesserungen & Bugfixes
+
+| # | Typ | Beschreibung | Priorität | Status |
+|---|-----|-------------|-----------|--------|
+| 1 | UX | Light Mode: aktuelle Woche leicht hervorheben (CSS-Variable `--current-week-bg`) | 🟡 Mittel | ✅ |
+| 2 | UX | Light Mode: Text-Kontrast verbessern (Event-/Ferien-Labels, Button-Farben) | 🟡 Mittel | ✅ |
+| 3a | UX | DetailPanel: Flache Typ-Buttons (Lektion, SOL, Auftrag, Ausfall, Eigenes) statt 2-stufig | 🟡 Mittel | ✅ |
+| 3b | Feature | SOL-Konfiguration aus DetailPanel → Settings > Kurse (pro Kurs) | 🟠 Hoch | ✅ |
+| 4 | UX | DetailPanel: Notizen vor Lehrplanziel (häufiger genutzt) | 🟢 Niedrig | ✅ |
+| 5 | Bug | Sequenz-Löschung → Weisser Bildschirm (editingSequenceId nicht genullt) | 🔴 Kritisch | ✅ |
+| 6 | UX | Dim-Past-Weeks Icon: ◐/● → ≋ (Triple Tilde, Nebel-Symbol) | 🟢 Niedrig | ✅ |
+| 7 | UX | Toolbar: Kurse-Dropdown links, + Button rechts (getauscht) | 🟢 Niedrig | ✅ |
+| 8 | Bug | TaF HOFWIL_PRESET: Phasen korrigiert (P1:W33-44, P2:W47-04, P3:W07-12, P4:W17-24) | 🟠 Hoch | ✅ |
+
+### Geänderte Dateien
+- `src/components/Toolbar.tsx` — Version v3.100, ≋ Icon, Toolbar-Reihenfolge (Kurse vor +)
+- `src/components/DetailPanel.tsx` — SimpleTypeSelector (flache Typ-Buttons), Notizen↔Lehrplanziel getauscht, SOL-Section entfernt, Light-Mode CSS-Variablen
+- `src/components/TaFPanel.tsx` — HOFWIL_PRESET Phasen korrigiert
+- `src/store/slices/sequenceSlice.ts` — editingSequenceId clearing bei removeBlock/removeBlockWithLessons
+- `src/store/settingsStore.ts` — CourseConfig.sol erweitert (boolean → SolCourseConfig Objekt)
+- `src/components/settings/CourseEditor.tsx` — SOL-Konfiguration pro Kurs (Thema, Dauer, Beschreibung)
+- `src/components/WeekRows.tsx` — CSS-Variablen für current-week-bg, event-text, holiday-label
+- `src/index.css` — Neue CSS-Variablen: --current-week-bg, --event-text, --event-label, --holiday-label
+
+---
+
+## Vorherige Version: v3.99 ✅ (Sommerferien + weekData-Migration)
 
 ## Originalauftrag v3.99
 

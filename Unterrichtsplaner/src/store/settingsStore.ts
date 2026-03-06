@@ -85,8 +85,16 @@ export interface CourseConfig {
   hk: boolean;
   semesters: Semester[];
   note?: string;
-  sol?: boolean;
+  sol?: boolean | SolCourseConfig; // v3.100: erweitert von boolean zu Objekt
   stufe?: string; // GYM1–GYM5, 7.–9. Klasse, 1.–6. Klasse
+}
+
+/** v3.100 #3b: SOL-Konfiguration pro Kurs */
+export interface SolCourseConfig {
+  enabled: boolean;
+  duration?: string;     // z.B. "45 min"
+  description?: string;  // SOL-Auftrag Beschreibung
+  topic?: string;        // SOL-Thema
 }
 
 export interface SpecialWeekConfig {

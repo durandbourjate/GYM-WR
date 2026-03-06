@@ -477,7 +477,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 }}>
                 <div className="flex items-center justify-center gap-1.5">
                   <span style={{ fontSize: z(11) }}>{isAllHoliday ? '🏖' : '📅'}</span>
-                  <span className={`font-medium ${isAllHoliday ? 'text-gray-400' : 'text-amber-200'}`} style={{ fontSize: z(11) }}>
+                  <span className="font-medium" style={{ fontSize: z(11), color: isAllHoliday ? 'var(--holiday-label)' : 'var(--event-label)' }}>
                     {label}
                   </span>
                 </div>
@@ -502,7 +502,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
             {/* Week number — G6: Doppelklick öffnet Ferien-Dialog */}
             <td
               className="sticky left-0 z-30 px-1 text-center border-b border-slate-900/60 cursor-pointer"
-              style={{ background: isCurrent ? '#172554' : 'var(--holiday-bg)' }}
+              style={{ background: isCurrent ? 'var(--current-week-bg)' : 'var(--holiday-bg)' }}
               onDoubleClick={() => {
                 usePlannerStore.getState().setPendingHolidayKw(week.w);
                 setSidePanelOpen(true);
@@ -889,8 +889,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       title="Klick: Auswählen · Doppelklick: Bearbeiten · Rechtsklick: Aufheben"
                     >
                       <span className="mr-1" style={{ fontSize: z(9) }}>📅</span>
-                      <span className="font-medium leading-tight text-amber-100"
-                        style={{ fontSize: z(9), display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      <span className="font-medium leading-tight"
+                        style={{ fontSize: z(9), color: 'var(--event-text)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {displayTitle}
                       </span>
                     </div>
