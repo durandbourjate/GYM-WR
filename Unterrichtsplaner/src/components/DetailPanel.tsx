@@ -8,8 +8,9 @@ import { SettingsPanel } from './SettingsPanel';
 import { CollectionPanel } from './CollectionPanel';
 import { suggestGoals, suggestSubjectArea } from '../utils/autoSuggest';
 import { inferSubjectAreaFromLessonType } from '../data/categories';
-import type { SubjectArea, BlockCategory, LessonDetail, Course, SequenceBlock } from '../types';
+import type { SubjectArea, BlockCategory, LessonDetail, Course, SequenceBlock, CollectionItem } from '../types';
 import { CATEGORIES, getSubtypesForCategory, getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel, loadCustomSubtypes, saveCustomSubtypes } from '../data/blockCategories';
+import { CollectionPickerList } from './CollectionPicker';
 
 // SUBJECT_AREAS is now provided via usePlannerData().categories — no local constant needed
 
@@ -685,6 +686,7 @@ function BatchEditTab() {
   const { courses: COURSES, categories, settings } = usePlannerData();
   const [applied, setApplied] = useState<string | null>(null);
   const [showSeqMenu, setShowSeqMenu] = useState(false);
+  const [showCollectionPicker, setShowCollectionPicker] = useState(false);
   const seqMenuRef = useRef<HTMLDivElement>(null);
 
   // Parse multi-selection keys to week-col pairs
@@ -752,6 +754,21 @@ function BatchEditTab() {
     setEditingSequenceId(`${seqId}-${blockIdx}`);
     setShowSeqMenu(false);
   };
+
+  // T10: Import from collection with selected weeks (T11)
+  const handleImportFromCollection = (item: CollectionItem) => {
+    if (!sharedCourseId) return;
+    pushUndo();
+    const seqId = usePlannerStore.getState().importFromCollection(item.id, sharedCourseId, {
+      includeNotes: true, includeMaterialLinks: true, targetWeeks: [...selectedWeeks].sort(),
+    });
+    if (seqId) {
+      setEditingSequenceId(`${seqId}-0`);
+      setSidePanelTab('sequences');
+    }
+    setShowCollectionPicker(false);
+  };
+  const sharedCourse = sharedCourseId ? COURSES.find(c => c.id === sharedCourseId) : undefined;
 
   // Determine current values across selection (for highlighting active state)
   const currentValues = useMemo(() => {
@@ -874,6 +891,10 @@ function BatchEditTab() {
                 onClick={handleNewSequence}
                 className="px-2 py-1 rounded text-[9px] font-medium border border-dashed border-green-600 text-green-400 hover:bg-green-900/20 cursor-pointer"
               >✨ Neue Sequenz ({cells.length} UE)</button>
+              <button
+                onClick={() => setShowCollectionPicker(!showCollectionPicker)}
+                className="px-2 py-1 rounded text-[9px] font-medium border border-dashed border-amber-600 text-amber-400 hover:bg-amber-900/20 cursor-pointer"
+              >📥 Aus Sammlung</button>
               {matchingSequences.length > 0 && (
                 <button
                   onClick={() => setShowSeqMenu(!showSeqMenu)}
@@ -881,6 +902,11 @@ function BatchEditTab() {
                 >+ Zu bestehender ({matchingSequences.length})</button>
               )}
             </div>
+            {showCollectionPicker && (
+              <div className="absolute left-0 top-full mt-1 z-[90] bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-56 max-h-48 overflow-y-auto">
+                <CollectionPickerList onSelect={handleImportFromCollection} courseType={sharedCourse?.typ} />
+              </div>
+            )}
             {showSeqMenu && matchingSequences.length > 0 && (
               <div className="absolute left-0 top-full mt-1 z-[90] bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-56 max-h-48 overflow-y-auto">
                 {matchingSequences.map(seq => (

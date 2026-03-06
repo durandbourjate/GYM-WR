@@ -14,7 +14,7 @@ export interface CollectionSlice {
   archiveSequence: (seqId: string, schoolYear?: string) => string;
   archiveSchoolYear: (courseType: string, cls: string, schoolYear: string) => string;
   archiveCurriculum: (courseType: string, cls: string, schoolYear: string, gymYears: string) => string;
-  importFromCollection: (itemId: string, targetCourseId: string, options: { includeNotes: boolean; includeMaterialLinks: boolean }) => string | null;
+  importFromCollection: (itemId: string, targetCourseId: string, options: { includeNotes: boolean; includeMaterialLinks: boolean; targetWeeks?: string[] }) => string | null;
 }
 
 // === CollectionSlice Implementation ===
@@ -193,6 +193,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
   },
 
   // Import from collection → create new sequence
+  // T10/T11: targetWeeks = auto-assign these weeks to imported blocks
   importFromCollection: (itemId, targetCourseId, options) => {
     const state = get();
     const item = state.collection.find((c) => c.id === itemId);
@@ -200,10 +201,27 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     const course = COURSES.find((c) => c.id === targetCourseId);
     if (!course) return null;
 
-    // Create blocks from units (without weeks — user assigns manually)
-    const blocks: SequenceBlock[] = item.units.map((u) => ({
+    // T11: Distribute targetWeeks across blocks proportionally
+    const tw = options.targetWeeks;
+    let weekDistribution: string[][] | null = null;
+    if (tw && tw.length > 0) {
+      const blockSizes = item.units.map(u => Math.max(u.lessonTitles.length, 1));
+      const totalOriginal = blockSizes.reduce((a, b) => a + b, 0);
+      weekDistribution = [];
+      let idx = 0;
+      for (let i = 0; i < item.units.length; i++) {
+        const numWeeks = i < item.units.length - 1
+          ? Math.max(1, Math.round(tw.length * blockSizes[i] / totalOriginal))
+          : Math.max(0, tw.length - idx); // last block gets remainder
+        weekDistribution.push(tw.slice(idx, idx + numWeeks));
+        idx += numWeeks;
+      }
+    }
+
+    // Create blocks from units
+    const blocks: SequenceBlock[] = item.units.map((u, i) => ({
       ...u.block,
-      weeks: [], // Must be assigned by user
+      weeks: weekDistribution ? weekDistribution[i] : [],
       materialLinks: options.includeMaterialLinks ? u.block.materialLinks : undefined,
     }));
 
@@ -216,16 +234,32 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
       color: item.sequenceColor,
     });
 
-    // Optionally import lesson detail snapshots (stored for later when weeks are assigned)
-    // Note: Since weeks aren't assigned yet, we store the details in notes
-    if (options.includeNotes) {
+    // T11: Restore lesson titles and details when weeks are assigned
+    if (weekDistribution) {
+      for (let bi = 0; bi < blocks.length && bi < item.units.length; bi++) {
+        const unit = item.units[bi];
+        const blockWeeks = blocks[bi].weeks;
+        for (let wi = 0; wi < blockWeeks.length && wi < unit.lessonTitles.length; wi++) {
+          const title = unit.lessonTitles[wi];
+          if (title) {
+            get().updateLesson(blockWeeks[wi], course.col, { title, type: 1 });
+          }
+          const detailKey = String(wi);
+          if (unit.lessonDetails[detailKey]) {
+            get().updateLessonDetail(blockWeeks[wi], course.col, { ...unit.lessonDetails[detailKey] });
+          }
+        }
+      }
+    }
+
+    // Import notes to block descriptions (when no targetWeeks = manual assignment later)
+    if (options.includeNotes && !weekDistribution) {
       item.units.forEach((u) => {
         const detailNotes = Object.entries(u.lessonDetails)
           .filter(([, d]) => d.notes)
           .map(([idx, d]) => `[${u.lessonTitles[Number(idx)] || `L${idx}`}] ${d.notes}`)
           .join('\n');
         if (detailNotes && u.block.description === undefined) {
-          // Append to block description as reference
           const blockIdx = item.units.indexOf(u);
           get().updateBlockInSequence(seqId, blockIdx, {
             description: (u.block.description || '') + (detailNotes ? '\n--- Notizen (Import) ---\n' + detailNotes : ''),

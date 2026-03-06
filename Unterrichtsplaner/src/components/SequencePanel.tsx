@@ -3,7 +3,8 @@ import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { SUBJECT_AREA_COLORS } from '../utils/colors';
 import { computeSeqSolTotal } from '../utils/solTotal';
-import type { Course, SubjectArea, SequenceBlock } from '../types';
+import type { Course, SubjectArea, SequenceBlock, CollectionItem } from '../types';
+import { CollectionPickerList } from './CollectionPicker';
 
 
 // === Inline Lessons List for Sequence Panel ===
@@ -491,6 +492,11 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
   const [showNewForm, setShowNewForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newCourseId, setNewCourseId] = useState(COURSES[0]?.id || '');
+  // T10: Collection import state
+  const [showCollectionImport, setShowCollectionImport] = useState(false);
+  const [pendingImportItem, setPendingImportItem] = useState<CollectionItem | null>(null);
+  const [importStartWeek, setImportStartWeek] = useState('');
+  const [importCourseId, setImportCourseId] = useState(COURSES[0]?.id || '');
 
   if (!embedded && !sequencePanelOpen) return null;
 
@@ -534,6 +540,29 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     }
     setEditingSequenceId(`${seqId}-0`);
     setNewTitle(''); setShowNewForm(false);
+  };
+
+  // T10: Handle import from collection with start-KW auto-place (T11)
+  const handleCollectionImport = () => {
+    if (!pendingImportItem || !importStartWeek || !importCourseId) return;
+    const store = usePlannerStore.getState();
+    const allWeekOrder = store.weekData.map(w => w.w);
+    // Total weeks needed from collection item
+    const totalNeeded = pendingImportItem.units.reduce((n, u) => n + Math.max(u.lessonTitles.length, 1), 0);
+    // Find available weeks from start KW
+    const available = store.getAvailableWeeks(importCourseId, importStartWeek, allWeekOrder);
+    const targetWeeks = available.slice(0, totalNeeded);
+    if (targetWeeks.length === 0) { alert('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
+    store.pushUndo();
+    const seqId = store.importFromCollection(pendingImportItem.id, importCourseId, {
+      includeNotes: true, includeMaterialLinks: true, targetWeeks,
+    });
+    if (seqId) {
+      setEditingSequenceId(`${seqId}-0`);
+    }
+    setPendingImportItem(null);
+    setShowCollectionImport(false);
+    setImportStartWeek('');
   };
 
   // === Flat block listing ===
@@ -693,11 +722,74 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
                   className="px-2.5 py-1 rounded text-[10px] text-white bg-green-600 border border-green-500 cursor-pointer hover:bg-green-500">Erstellen</button>
               </div>
             </div>
+          ) : showCollectionImport ? (
+            /* T10: Collection import flow */
+            <div className="space-y-1.5 bg-amber-900/10 rounded p-2 border border-amber-700/30" style={{ minWidth: 300 }}>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-amber-400 font-medium">📥 Aus Sammlung importieren</span>
+                <button onClick={() => { setShowCollectionImport(false); setPendingImportItem(null); }}
+                  className="text-gray-500 hover:text-gray-300 cursor-pointer text-[10px]">✕</button>
+              </div>
+              {!pendingImportItem ? (
+                /* Step 1: Pick collection item */
+                <div className="bg-slate-800/50 rounded max-h-48 overflow-y-auto">
+                  <CollectionPickerList
+                    onSelect={(item) => {
+                      setPendingImportItem(item);
+                      setImportCourseId(COURSES[0]?.id || '');
+                      // Default start week: first available in weekData
+                      const firstWeek = usePlannerStore.getState().weekData[0]?.w || '';
+                      setImportStartWeek(firstWeek);
+                    }}
+                  />
+                </div>
+              ) : (
+                /* Step 2: Pick course + start KW */
+                <div className="space-y-1.5">
+                  <div className="text-[9px] text-gray-300">
+                    <span className="font-medium">{pendingImportItem.title}</span>
+                    <span className="text-gray-500 ml-1">
+                      ({pendingImportItem.units.reduce((n, u) => n + Math.max(u.lessonTitles.length, 1), 0)} Lektionen)
+                    </span>
+                  </div>
+                  <div>
+                    <label className="text-[8px] text-gray-400">Kurs</label>
+                    <select value={importCourseId} onChange={(e) => setImportCourseId(e.target.value)}
+                      className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[11px] outline-none focus:border-amber-400">
+                      {COURSES.map((c) => (
+                        <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[8px] text-gray-400">Ab welcher KW platzieren?</label>
+                    <select value={importStartWeek} onChange={(e) => setImportStartWeek(e.target.value)}
+                      className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[11px] outline-none focus:border-amber-400">
+                      {usePlannerStore.getState().weekData.map(w => (
+                        <option key={w.w} value={w.w}>KW {w.w}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex gap-1 justify-end">
+                    <button onClick={() => setPendingImportItem(null)}
+                      className="px-2.5 py-1 rounded text-[10px] text-gray-400 border border-gray-700 cursor-pointer hover:text-gray-200">← Zurück</button>
+                    <button onClick={handleCollectionImport}
+                      className="px-2.5 py-1 rounded text-[10px] text-white bg-amber-600 border border-amber-500 cursor-pointer hover:bg-amber-500">Importieren</button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
-            <button onClick={() => setShowNewForm(true)}
-              className="w-full px-2 py-1.5 rounded text-[10px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300">
-              + Neue Sequenz
-            </button>
+            <div className="flex gap-1">
+              <button onClick={() => setShowNewForm(true)}
+                className="flex-1 px-2 py-1.5 rounded text-[10px] text-green-400 border border-dashed border-green-700 cursor-pointer hover:bg-green-900/20 hover:text-green-300">
+                + Neue Sequenz
+              </button>
+              <button onClick={() => { setShowCollectionImport(true); setPendingImportItem(null); }}
+                className="px-2 py-1.5 rounded text-[10px] text-amber-400 border border-dashed border-amber-700 cursor-pointer hover:bg-amber-900/20 hover:text-amber-300">
+                📥 Sammlung
+              </button>
+            </div>
           )}
         </div>
         {renderFlatBlocks()}

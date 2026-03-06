@@ -7,8 +7,9 @@ import { TaFPanel } from './TaFPanel';
 import { CURRENT_WEEK } from '../data/weeks';
 import { checkGradeRequirements } from '../utils/gradeRequirements';
 import { useTheme } from '../hooks/useTheme';
-import type { FilterType } from '../types';
+import type { FilterType, CollectionItem } from '../types';
 import { ZOOM_LEVELS } from '../store/plannerStore';
+import { CollectionPickerList } from './CollectionPicker';
 
 export function AppHeader() {
   const { filter, setFilter, classFilter, setClassFilter, showHelp, toggleHelp, undoStack, undo, setSequencePanelOpen, setSidePanelOpen, setSidePanelTab, zoomLevel, setZoomLevel, autoFitZoom, setAutoFitZoom, columnZoom, setColumnZoom, searchQuery, setSearchQuery, dimPastWeeks, setDimPastWeeks } = usePlannerStore();
@@ -320,11 +321,12 @@ export function HelpBar() {
 
 export function MultiSelectToolbar() {
   const { multiSelection, clearMultiSelect,
-    addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab, lessonDetails } = usePlannerStore();
+    addSequence, setEditingSequenceId, setSidePanelOpen, setSidePanelTab, lessonDetails, pushUndo } = usePlannerStore();
   const { courses: plannerCoursesInner } = usePlannerData();
   const menuRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [showCollection, setShowCollection] = useState(false);
 
   // Compute position from selected cells' bounding rects
   const computePosition = useCallback(() => {
@@ -430,11 +432,36 @@ export function MultiSelectToolbar() {
     clearMultiSelect();
   };
 
+  // T10: Import from collection with selected weeks (T11)
+  const handleImportFromCollection = (item: CollectionItem) => {
+    const parsed = multiSelection.map(key => {
+      const parts = key.split('-');
+      const courseId = parts[parts.length - 1];
+      const week = parts.slice(0, parts.length - 1).join('-');
+      return { week, courseId };
+    });
+    const [courseId] = [...new Set(parsed.map(p => p.courseId))];
+    const sortedWeeks = [...new Set(parsed.map(p => p.week))].sort();
+    pushUndo();
+    const seqId = usePlannerStore.getState().importFromCollection(item.id, courseId, {
+      includeNotes: true, includeMaterialLinks: true, targetWeeks: sortedWeeks,
+    });
+    if (seqId) {
+      setEditingSequenceId(`${seqId}-0`);
+      setSidePanelOpen(true);
+      setSidePanelTab('sequences');
+    }
+    clearMultiSelect();
+    setShowCollection(false);
+  };
+
   const courseIds = new Set(multiSelection.map(key => {
     const parts = key.split('-');
     return parts[parts.length - 1];
   }));
   const singleCourse = courseIds.size === 1;
+  const firstCourseId = singleCourse ? [...courseIds][0] : undefined;
+  const firstCourse = firstCourseId ? plannerCoursesInner.find(c => c.id === firstCourseId) : undefined;
 
   // Mobile fallback: fixed bottom bar
   if (isMobile || !pos) {
@@ -442,15 +469,26 @@ export function MultiSelectToolbar() {
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-indigo-950/95 backdrop-blur border border-indigo-500 rounded-lg px-4 py-2 flex items-center gap-3 text-[10px] z-[55] shadow-xl shadow-black/40">
         <span className="font-bold text-indigo-200">{multiSelection.length} markiert</span>
         {singleCourse && (
-          <button onClick={handleCreateSequence}
-            className="px-2 py-0.5 rounded bg-green-700 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-green-600">
-            ▧ Sequenz
-          </button>
+          <>
+            <button onClick={handleCreateSequence}
+              className="px-2 py-0.5 rounded bg-green-700 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-green-600">
+              ▧ Sequenz
+            </button>
+            <button onClick={() => setShowCollection(!showCollection)}
+              className="px-2 py-0.5 rounded bg-amber-700 text-white border-none text-[9px] font-semibold cursor-pointer hover:bg-amber-600">
+              📥 Sammlung
+            </button>
+          </>
         )}
         <button onClick={clearMultiSelect}
           className="px-2 py-0.5 rounded bg-transparent text-indigo-300 border border-indigo-500 text-[9px] cursor-pointer">
           ✕
         </button>
+        {showCollection && singleCourse && (
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-56 max-h-48 overflow-y-auto">
+            <CollectionPickerList onSelect={handleImportFromCollection} courseType={firstCourse?.typ} />
+          </div>
+        )}
       </div>
     );
   }
@@ -466,10 +504,21 @@ export function MultiSelectToolbar() {
         {multiSelection.length} markiert
       </div>
       {singleCourse && (
-        <button onClick={handleCreateSequence}
-          className="w-full text-left px-1.5 py-1 rounded bg-green-700/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-green-600">
-          ▧ Neue Sequenz
-        </button>
+        <>
+          <button onClick={handleCreateSequence}
+            className="w-full text-left px-1.5 py-1 rounded bg-green-700/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-green-600">
+            ▧ Neue Sequenz
+          </button>
+          <button onClick={() => setShowCollection(!showCollection)}
+            className="w-full text-left px-1.5 py-1 rounded bg-amber-700/80 text-white text-[9px] font-semibold cursor-pointer hover:bg-amber-600">
+            📥 Aus Sammlung
+          </button>
+        </>
+      )}
+      {showCollection && singleCourse && (
+        <div className="bg-slate-800 border border-slate-600 rounded py-1 max-h-48 overflow-y-auto">
+          <CollectionPickerList onSelect={handleImportFromCollection} courseType={firstCourse?.typ} />
+        </div>
       )}
       <button onClick={clearMultiSelect}
         className="w-full text-left px-1.5 py-1 rounded bg-transparent text-indigo-300 border border-indigo-500/50 text-[9px] cursor-pointer hover:bg-indigo-800/30">
