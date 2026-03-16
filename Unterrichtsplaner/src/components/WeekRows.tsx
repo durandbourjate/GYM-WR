@@ -10,6 +10,7 @@ import { HoverPreview } from './HoverPreview';
 import { EmptyCellMenu } from './EmptyCellMenu';
 import { NoteCell } from './NoteCell';
 import { useDragHandlers } from '../hooks/useDragHandlers';
+import { getGymStufe } from '../utils/gradeRequirements';
 
 interface Props {
   weeks: Week[];
@@ -92,11 +93,15 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         for (let i = 0; i < plannerSettings.courses.length; i++) {
           const c = plannerSettings.courses[i];
           const col = c.col ?? (100 + i);
-          const isTaF = /[fs]/.test(c.cls.replace(/\d/g, ''));
+          const letters = c.cls.replace(/\d/g, '').toLowerCase();
+          const isPureTaF = letters.length > 0 && /^[fs]+$/.test(letters);
+          const isTaF = /[fs]/.test(letters);
+          const derivedLevel = c.stufe || getGymStufe(c.cls);
           const matchesAny = levels.some(lv => {
             if (lv === 'TaF') return isTaF;
             if (lv === 'alle') return true;
-            return c.stufe ? c.stufe === lv : true;
+            if (isPureTaF) return false;
+            return derivedLevel === lv;
           });
           if (matchesAny) cols.add(col);
         }

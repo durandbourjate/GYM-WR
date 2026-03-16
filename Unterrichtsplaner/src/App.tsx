@@ -11,6 +11,7 @@ import { InsertDialog } from './components/InsertDialog';
 import { ZoomMultiYearView } from './components/ZoomMultiYearView';
 import { WelcomeScreen } from './components/PlannerTabs';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { UpdateBanner } from './components/UpdateBanner';
 
 function App() {
   const { instances, activeId, setActive } = useInstanceStore();
@@ -339,6 +340,7 @@ function PlannerContent() {
       <ErrorBoundary fallbackLabel="Detail-Panel">
         <DetailPanel />
       </ErrorBoundary>
+      <UpdateBanner />
     </>
   );
 }

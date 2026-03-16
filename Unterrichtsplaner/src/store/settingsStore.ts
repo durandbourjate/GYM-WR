@@ -1,4 +1,5 @@
 import type { Course, CourseType, DayOfWeek, Semester } from '../types';
+import { getGymStufe } from '../utils/gradeRequirements';
 import { COURSES } from '../data/courses';
 import { WEEKS, S2_START_INDEX } from '../data/weeks';
 
@@ -387,13 +388,17 @@ export function applySettingsToWeekData(
       const courseId = colToCourseId.get(col);
       const course = colToCourse.get(col);
 
-      // Filter 1: gymLevel — Stufe/TaF (J5: Mehrfachauswahl)
+      // Filter 1: gymLevel — Stufe/TaF (v3.102: derive from cls, pure TaF only matches 'TaF')
       if (hasGymFilter && course) {
-        const isTaF = /[fs]/.test(course.cls.replace(/\d/g, ''));
+        const letters = course.cls.replace(/\d/g, '').toLowerCase();
+        const isPureTaF = letters.length > 0 && /^[fs]+$/.test(letters);
+        const isTaF = /[fs]/.test(letters);
+        const derivedLevel = course.stufe || getGymStufe(course.cls);
         const matchesAny = levels.some(lv => {
           if (lv === 'TaF') return isTaF;
           if (lv === 'alle') return true;
-          return course.stufe ? course.stufe === lv : false; // T2-Fix: ohne stufe → matcht NICHTS (streng)
+          if (isPureTaF) return false; // Pure TaF courses only match 'TaF', not GYMx
+          return derivedLevel === lv;
         });
         if (!matchesAny) continue;
       }

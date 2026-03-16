@@ -130,6 +130,14 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                     <span className="px-1 rounded font-semibold bg-orange-900/60 text-orange-200" style={{ fontSize: z(7) }}>HK</span>
                   )}
                   <span className="px-0.5 rounded bg-slate-800 text-slate-400" style={{ fontSize: z(7) }}>{c.les}L</span>
+                  {/* v3.102: TaF-Phase als Badge statt orange Text */}
+                  {(() => {
+                    if (!c.note) return null;
+                    const phaseMatch = c.note.match(/Phase\s*(\d)/i);
+                    return phaseMatch ? (
+                      <span className="px-1 rounded font-semibold bg-purple-900/60 text-purple-300" style={{ fontSize: z(7) }} title={c.note}>Ph{phaseMatch[1]}</span>
+                    ) : null;
+                  })()}
                   {weeks && (() => {
                     const planned = weeks.filter(w => { const e = w.lessons[c.col]; return e && e.type !== 6; }).length;
                     const free = weeks.filter(w => !w.lessons[c.col]).length;
@@ -141,7 +149,10 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   })()}
                 </div>
                 <div className="text-gray-500 font-mono mt-0.5" style={{ fontSize: z(7) }}>{c.from}–{c.to}</div>
-                {c.note && <div className="text-amber-600 mt-0.5" style={{ fontSize: z(6) }}>{c.note}</div>}
+                {/* v3.102: Redundante Notes filtern (HK/Praktikum als Badge, Phase als Badge) */}
+                {c.note && !(/^(praktikum\s*)?(hk)?$/i.test(c.note.trim())) && !(/phasenunterricht/i.test(c.note)) && (
+                  <div className="text-amber-600 mt-0.5" style={{ fontSize: z(6) }}>{c.note}</div>
+                )}
               </th>
               {expanded && (
                 <th

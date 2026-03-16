@@ -8,6 +8,7 @@ import { checkGradeRequirements } from '../utils/gradeRequirements';
 import { useTheme } from '../hooks/useTheme';
 import type { FilterType, CollectionItem } from '../types';
 import { ZOOM_LEVELS } from '../store/plannerStore';
+import { APP_VERSION } from '../version';
 import { CollectionPickerList } from './CollectionPicker';
 import { PlannerTabs } from './PlannerTabs';
 
@@ -90,7 +91,7 @@ export function AppHeader() {
         <span className="text-base font-bold text-gray-50">
           <span className="text-blue-400">⊞</span> Planer
         </span>
-        <span className="text-[12px] text-gray-500">v3.100</span>
+        <span className="text-[12px] text-gray-500">{APP_VERSION}</span>
       </div>
       {/* v3.98: PlannerTabs inline in der Toolbar */}
       <PlannerTabs />
