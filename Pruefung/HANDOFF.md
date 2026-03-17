@@ -6,14 +6,14 @@
 
 ## Aktueller Stand
 
-**Phase 2a: Google OAuth + Auth-Flow** (17.03.2026)
+**Phase 2b: Monitoring + SEB + Focus-Detection** (17.03.2026)
 
 ### Was funktioniert
 - Startbildschirm mit Prüfungsinfo + Sitzungswiederherstellung
 - 3 Fragetypen: MC (Einzel-/Mehrfachauswahl), Freitext (Tiptap), Lückentext
 - Fragennavigation mit Kacheln (✓ beantwortet, ? unsicher, — offen)
 - Timer mit Countdown + Warnungen (15 Min. orange, 5 Min. rot)
-- Auto-Save: LocalStorage (sofort) + IndexedDB (15s) + Remote-Mock
+- Auto-Save: LocalStorage (sofort) + IndexedDB (15s) + Remote via Apps Script (30s, konfigurierbar)
 - Light/Dark Mode: System-Erkennung + manueller Toggle
 - Abgabe-Dialog mit Bestätigung + Statusübersicht
 - 7 Demo-Fragen (3 MC, 3 Freitext, 1 Lückentext)
@@ -23,6 +23,11 @@
 - **NEU: API-Service** (Interface für Google Apps Script Backend)
 - **NEU: URL-basierte Prüfungs-ID** (`?id=PRUEFUNGS_ID` → lädt Config vom Backend)
 - **NEU: User-Info** in Sidebar und Abgabe-Bestätigung
+- **NEU: Monitoring-Hook** (`usePruefungsMonitoring`) — zentraler Hook für Auto-Save, Remote-Save, Heartbeat, Focus-Detection, Online/Offline
+- **NEU: SEB-Erkennung** (User-Agent-Check + Warnbanner wenn nicht im SEB)
+- **NEU: Focus-Detection** (visibilitychange → Unterbrechungen >2s werden protokolliert)
+- **NEU: Heartbeat-Monitoring** (konfigurierbares Intervall, Ausfälle werden protokolliert)
+- **NEU: Online/Offline-Events** (Browser-Events → automatischer Status-Wechsel)
 
 ### Auth-Flow
 1. Kein User → LoginScreen (Google-Button / Schülercode / Demo)
@@ -64,11 +69,14 @@ Pruefung/
 │   ├── data/
 │   │   ├── demoFragen.ts                — 7 Demo-Fragen
 │   │   └── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 3 Abschnitte)
+│   ├── hooks/
+│   │   └── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook (NEU)
 │   ├── services/
 │   │   ├── autoSave.ts                  — IndexedDB Backup
 │   │   ├── remoteSave.ts                — Mock für Remote-Save (Phase 1)
-│   │   ├── authService.ts              — Google Identity Services Wrapper (NEU)
-│   │   └── apiService.ts               — Apps Script API Client (NEU)
+│   │   ├── sebService.ts               — SEB User-Agent Erkennung (NEU)
+│   │   ├── authService.ts              — Google Identity Services Wrapper
+│   │   └── apiService.ts               — Apps Script API Client
 │   ├── components/
 │   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode + Demo (NEU)
 │   │   ├── Layout.tsx                   — Header + Sidebar (mit User-Info) + Main
@@ -103,7 +111,7 @@ Pruefung/
 
 Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo-Prüfung).
 
-## Nächste Schritte (Phase 2b)
+## Nächste Schritte (Phase 2c)
 
 Der User muss zuerst die **Google_Workspace_Setup.md** abarbeiten:
 1. Google Cloud Projekt + OAuth Client-ID erstellen
@@ -112,11 +120,12 @@ Der User muss zuerst die **Google_Workspace_Setup.md** abarbeiten:
 4. `.env.local` mit Client-ID + Apps Script URL befüllen
 5. GitHub Actions Secrets setzen
 
-Danach in der App:
-1. Remote-Save aktivieren (apiService statt remoteSave-Mock im Auto-Save-Zyklus)
-2. Heartbeat-Monitoring (alle 10s an Apps Script)
-3. SEB-Erkennung (User-Agent-Check)
-4. GitHub Actions Workflow anpassen (Env-Variablen im Build)
+Danach:
+1. GitHub Actions Workflow anpassen (Env-Variablen im Build)
+2. End-to-End-Test mit echtem Backend (Remote-Save + Heartbeat)
+3. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
+4. Tablet-/Smartphone-Tests
+5. Lehrpersonen-Ansicht (Monitoring-Dashboard: Live-Heartbeats, Unterbrechungen, Abgabe-Status)
 
 ## Commits
 
@@ -125,3 +134,4 @@ Danach in der App:
 | `de498e7` | Phase 1: Projekt-Setup, MC+Freitext+Lückentext, Auto-Save, Demo-Modus (35 Dateien) |
 | `70624b5` | UI-Überarbeitung: Kontrast, neutrales Farbschema, Header-Buttons, Freitext-Features (14 Dateien) |
 | *pending* | Phase 2a: Google OAuth Login, Auth-Store, API-Service, LoginScreen, URL-Param (10 Dateien) |
+| *pending* | Phase 2b: Monitoring-Hook, SEB-Erkennung, Focus-Detection, Heartbeat, Remote-Save (4 Dateien) |

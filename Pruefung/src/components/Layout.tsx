@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
+import { usePruefungsMonitoring } from '../hooks/usePruefungsMonitoring.ts'
+import { istImSEB } from '../services/sebService.ts'
 import Timer from './Timer.tsx'
 import VerbindungsStatus from './VerbindungsStatus.tsx'
 import AutoSaveIndikator from './AutoSaveIndikator.tsx'
@@ -10,7 +12,6 @@ import ThemeToggle from './ThemeToggle.tsx'
 import MCFrage from './fragetypen/MCFrage.tsx'
 import FreitextFrage from './fragetypen/FreitextFrage.tsx'
 import LueckentextFrage from './fragetypen/LueckentextFrage.tsx'
-import { saveToIndexedDB } from '../services/autoSave.ts'
 import type { MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType } from '../types/fragen.ts'
 
 export default function Layout() {
@@ -18,32 +19,16 @@ export default function Layout() {
   const config = usePruefungStore((s) => s.config)
   const fragen = usePruefungStore((s) => s.fragen)
   const aktuelleFrageIndex = usePruefungStore((s) => s.aktuelleFrageIndex)
-  const antworten = usePruefungStore((s) => s.antworten)
   const markierungen = usePruefungStore((s) => s.markierungen)
-  const startzeit = usePruefungStore((s) => s.startzeit)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
   const naechsteFrage = usePruefungStore((s) => s.naechsteFrage)
   const vorherigeFrage = usePruefungStore((s) => s.vorherigeFrage)
   const toggleMarkierung = usePruefungStore((s) => s.toggleMarkierung)
-  const setLetzterSave = usePruefungStore((s) => s.setLetzterSave)
-  const incrementAutoSaveCount = usePruefungStore((s) => s.incrementAutoSaveCount)
   const [zeigAbgabeDialog, setZeigAbgabeDialog] = useState(false)
+  const [sebWarnungGeschlossen, setSebWarnungGeschlossen] = useState(false)
 
-  // IndexedDB Auto-Save alle 15 Sekunden
-  const antwortenRef = useRef(antworten)
-  antwortenRef.current = antworten
-
-  useEffect(() => {
-    if (!config || abgegeben) return
-
-    const interval = setInterval(() => {
-      saveToIndexedDB(config.id, antwortenRef.current, startzeit)
-      setLetzterSave(new Date().toISOString())
-      incrementAutoSaveCount()
-    }, 15000)
-
-    return () => clearInterval(interval)
-  }, [config, abgegeben, startzeit, setLetzterSave, incrementAutoSaveCount])
+  // Monitoring: Auto-Save (lokal + remote), Heartbeat, Focus-Detection, Online/Offline
+  usePruefungsMonitoring()
 
   if (!config || fragen.length === 0) return null
 
@@ -52,6 +37,22 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+      {/* SEB-Warnung */}
+      {config.sebErforderlich && !istImSEB() && !sebWarnungGeschlossen && (
+        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-300 dark:border-amber-700 px-4 py-2 flex items-center justify-between">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            Diese Prüfung sollte im Safe Exam Browser (SEB) geschrieben werden. Du verwendest einen normalen Browser.
+          </p>
+          <button
+            onClick={() => setSebWarnungGeschlossen(true)}
+            className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 text-lg leading-none cursor-pointer"
+            title="Warnung schliessen"
+          >
+            &times;
+          </button>
+        </div>
+      )}
+
       {/* Header — alle Steuerungen */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 py-2 sticky top-0 z-20">
         <div className="flex items-center justify-between gap-2">

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Frage } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
-import type { Antwort } from '../types/antworten.ts'
+import type { Antwort, Unterbrechung } from '../types/antworten.ts'
 
 export type AppPhase = 'start' | 'pruefung' | 'uebersicht' | 'abgegeben'
 
@@ -26,6 +26,12 @@ interface PruefungState {
   letzterSave: string | null
   autoSaveCount: number
 
+  // Monitoring
+  remoteSaveVersion: number
+  heartbeats: number
+  netzwerkFehler: number
+  unterbrechungen: Unterbrechung[]
+
   // Actions
   setAntwort: (frageId: string, antwort: Antwort) => void
   toggleMarkierung: (frageId: string) => void
@@ -38,6 +44,10 @@ interface PruefungState {
   setVerbindungsstatus: (status: 'online' | 'offline' | 'syncing') => void
   setLetzterSave: (timestamp: string) => void
   incrementAutoSaveCount: () => void
+  incrementRemoteSaveVersion: () => void
+  incrementHeartbeats: () => void
+  incrementNetzwerkFehler: () => void
+  addUnterbrechung: (unterbrechung: Unterbrechung) => void
   zuruecksetzen: () => void
 }
 
@@ -53,6 +63,10 @@ const initialState = {
   verbindungsstatus: 'online' as const,
   letzterSave: null,
   autoSaveCount: 0,
+  remoteSaveVersion: 0,
+  heartbeats: 0,
+  netzwerkFehler: 0,
+  unterbrechungen: [] as Unterbrechung[],
 }
 
 export const usePruefungStore = create<PruefungState>()(
@@ -107,6 +121,10 @@ export const usePruefungStore = create<PruefungState>()(
           startzeit: new Date().toISOString(),
           abgegeben: false,
           autoSaveCount: 0,
+          remoteSaveVersion: 0,
+          heartbeats: 0,
+          netzwerkFehler: 0,
+          unterbrechungen: [],
         }),
 
       pruefungAbgeben: () =>
@@ -119,6 +137,14 @@ export const usePruefungStore = create<PruefungState>()(
       setLetzterSave: (timestamp) => set({ letzterSave: timestamp }),
       incrementAutoSaveCount: () =>
         set((state) => ({ autoSaveCount: state.autoSaveCount + 1 })),
+      incrementRemoteSaveVersion: () =>
+        set((state) => ({ remoteSaveVersion: state.remoteSaveVersion + 1 })),
+      incrementHeartbeats: () =>
+        set((state) => ({ heartbeats: state.heartbeats + 1 })),
+      incrementNetzwerkFehler: () =>
+        set((state) => ({ netzwerkFehler: state.netzwerkFehler + 1 })),
+      addUnterbrechung: (unterbrechung) =>
+        set((state) => ({ unterbrechungen: [...state.unterbrechungen, unterbrechung] })),
 
       zuruecksetzen: () => set(initialState),
     }),
@@ -135,6 +161,10 @@ export const usePruefungStore = create<PruefungState>()(
         abgegeben: state.abgegeben,
         letzterSave: state.letzterSave,
         autoSaveCount: state.autoSaveCount,
+        remoteSaveVersion: state.remoteSaveVersion,
+        heartbeats: state.heartbeats,
+        netzwerkFehler: state.netzwerkFehler,
+        unterbrechungen: state.unterbrechungen,
       }),
     }
   )
