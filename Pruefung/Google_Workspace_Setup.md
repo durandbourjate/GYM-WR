@@ -228,6 +228,8 @@ function doPost(e) {
       return heartbeat(body);
     case 'speichereConfig':
       return speichereConfig(body);
+    case 'speichereFrage':
+      return speichereFrage(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -642,6 +644,98 @@ function speichereConfig(body) {
     return jsonResponse({ success: true, id: config.id });
   } catch (error) {
     return jsonResponse({ error: error.message });
+  }
+}
+
+// === FRAGE SPEICHERN (FragenEditor → Fragenbank-Sheet) ===
+
+function speichereFrage(body) {
+  try {
+    const { email, frage } = body;
+
+    // Nur LPs dürfen Fragen speichern
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    if (!frage || !frage.id || !frage.typ || !frage.fachbereich) {
+      return jsonResponse({ error: 'Ungültige Frage-Daten' });
+    }
+
+    // Fachbereich → Sheet-Tab bestimmen
+    const tabName = frage.fachbereich; // 'VWL', 'BWL', 'Recht', 'Informatik'
+    const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    let sheet = fragenbank.getSheetByName(tabName);
+
+    if (!sheet) {
+      return jsonResponse({ error: 'Fachbereich-Tab "' + tabName + '" nicht gefunden' });
+    }
+
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const data = getSheetData(sheet);
+
+    // Frage als flache Zeile vorbereiten (typ-unabhängig)
+    const rowData = {
+      id: frage.id,
+      typ: frage.typ,
+      version: String(frage.version || 1),
+      erstelltAm: frage.erstelltAm || new Date().toISOString(),
+      geaendertAm: new Date().toISOString(),
+      thema: frage.thema || '',
+      unterthema: frage.unterthema || '',
+      semester: (frage.semester || []).join(','),
+      gefaesse: (frage.gefaesse || []).join(','),
+      bloom: frage.bloom || 'K1',
+      tags: (frage.tags || []).join(','),
+      punkte: String(frage.punkte || 0),
+      musterlosung: frage.musterlosung || '',
+      bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
+      fragetext: frage.fragetext || '',
+      quelle: frage.quelle || 'manuell',
+      // Typ-spezifische Felder als JSON
+      typDaten: JSON.stringify(getTypDaten(frage)),
+    };
+
+    // Bestehende Zeile suchen (Update) oder neue Zeile anfügen
+    const existingRow = data.findIndex(row => row.id === frage.id);
+
+    if (existingRow >= 0) {
+      // Update
+      const rowIndex = existingRow + 2; // +1 Header, +1 für 1-basiert
+      headers.forEach((header, colIndex) => {
+        if (rowData[header] !== undefined) {
+          sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+        }
+      });
+    } else {
+      // Neue Zeile
+      const newRow = headers.map(h => rowData[h] || '');
+      sheet.appendRow(newRow);
+    }
+
+    return jsonResponse({ success: true, id: frage.id });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// Typ-spezifische Felder extrahieren (werden als JSON in einer Spalte gespeichert)
+function getTypDaten(frage) {
+  switch (frage.typ) {
+    case 'mc':
+      return { optionen: frage.optionen, mehrfachauswahl: frage.mehrfachauswahl, zufallsreihenfolge: frage.zufallsreihenfolge };
+    case 'freitext':
+      return { laenge: frage.laenge, hilfstextPlaceholder: frage.hilfstextPlaceholder };
+    case 'lueckentext':
+      return { textMitLuecken: frage.textMitLuecken, luecken: frage.luecken };
+    case 'zuordnung':
+      return { paare: frage.paare, zufallsreihenfolge: frage.zufallsreihenfolge };
+    case 'richtigfalsch':
+      return { aussagen: frage.aussagen };
+    case 'berechnung':
+      return { ergebnisse: frage.ergebnisse, rechenwegErforderlich: frage.rechenwegErforderlich, hilfsmittel: frage.hilfsmittel };
+    default:
+      return {};
   }
 }
 
