@@ -57,7 +57,7 @@ Die Prüfungsplattform braucht drei Dinge aus Google:
 6. **Autorisierte Weiterleitungs-URIs:** (leer lassen — wir nutzen das Google-Popup, keine Weiterleitung)
 7. **Erstellen** → **Client-ID kopieren**
 
-Die Client-ID sieht so aus: `123456789-abcdefg.apps.googleusercontent.com`
+Die Client-ID ist: `522991918024-8a9mgghp1eue65dkqj15ag0p1c0rgtv8.apps.googleusercontent.com`
 
 ### 1.4 Client-ID in der App eintragen
 

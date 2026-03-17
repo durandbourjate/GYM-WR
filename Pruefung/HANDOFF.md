@@ -143,21 +143,24 @@ Pruefung/
 
 Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo-Prüfung).
 
+## Google Workspace Setup (Stand 17.03.2026)
+
+| Teil | Status | Details |
+|------|--------|---------|  
+| 1: OAuth Client-ID | ✅ erledigt | Client-ID in `.env.local` + GitHub Secrets |
+| 2: Google Sheets | ✅ erledigt | Fragenbank, Klassenlisten, Configs, Antworten-Ordner angelegt |
+| 3: Apps Script | ✅ erledigt | Deployed, Berechtigungen autorisiert, URL in `.env.local` |
+| 4: GitHub Actions | ✅ erledigt | Secrets `VITE_GOOGLE_CLIENT_ID` + `VITE_APPS_SCRIPT_URL` gesetzt |
+| 5: End-to-End-Test | ⬜ offen | Login + Backend-Laden + Save testen |
+
 ## Nächste Schritte (Phase 3)
 
-Der User muss zuerst die **Google_Workspace_Setup.md** abarbeiten:
-1. Google Cloud Projekt + OAuth Client-ID erstellen
-2. Google Sheets anlegen (Fragenbank, Klassenlisten, Configs)
-3. Apps Script deployen (inkl. Monitoring-Endpoint)
-4. `.env.local` mit Client-ID + Apps Script URL befüllen
-5. GitHub Actions Secrets setzen (`VITE_GOOGLE_CLIENT_ID`, `VITE_APPS_SCRIPT_URL`)
-
-Danach:
 1. End-to-End-Test mit echtem Backend (Remote-Save + Heartbeat + Monitoring)
-2. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
-3. Tablet-/Smartphone-Tests
-4. Prüfungs-Composer (LP erstellt Prüfungen via UI)
-5. KI-Korrektur (Claude API für Freitext-Bewertung)
+2. Test-Fragen in Fragenbank-Sheet eintragen, Test-Config erstellen
+3. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
+4. Tablet-/Smartphone-Tests
+5. Prüfungs-Composer (LP erstellt Prüfungen via UI)
+6. KI-Korrektur (Claude API für Freitext-Bewertung)
 
 ## Commits
 
