@@ -6,7 +6,7 @@
 
 ## Aktueller Stand
 
-**Phase 3: Backend-Integration & E2E ✅** (17.03.2026)
+**Phase 4: Composer & SEB** (17.03.2026)
 
 ### Was funktioniert
 - **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
@@ -24,9 +24,12 @@
 - API-Service (Apps Script Backend, CORS-sicher mit `text/plain`)
 - URL-basierte Prüfungs-ID (`?id=PRUEFUNGS_ID` → lädt Config vom Backend)
 - Monitoring-Hook (Auto-Save, Remote-Save, Heartbeat, Focus-Detection, Online/Offline)
-- SEB-Erkennung (User-Agent-Check + Warnbanner)
+- SEB-Erkennung (User-Agent-Check + Warnbanner) + SEB-Konfigurationsvorlage (`seb/`)
 - LP-Monitoring-Dashboard (Live-Übersicht aller SuS)
-- Rollen-Routing (LP → Dashboard, SuS → Prüfung)
+- **LP-Startseite:** Prüfungen verwalten, Monitoring/Bearbeiten/URL-Links
+- **Prüfungs-Composer:** 3-Tab-Editor (Einstellungen, Abschnitte & Fragen, Vorschau)
+- **Fragenbank-Browser:** Slide-over mit Filtern (Fachbereich, Typ, Bloom, Freitext-Suche)
+- Rollen-Routing (LP ohne `?id=` → LPStartseite/Composer, mit `?id=` → Monitoring)
 - Zuordnung, Abschnitt-Header, Fortschrittsbalken, FragenÜbersicht
 - Abgabe-Zusammenfassung (Read-only, druckbar)
 - Tab-Konflikterkennung, Error Boundary, Sticky Fragetext
@@ -94,6 +97,9 @@ Pruefung/
 │   │   └── apiService.ts               — Apps Script API Client (text/plain CORS-Fix)
 │   ├── components/
 │   │   ├── lp/
+│   │   │   ├── LPStartseite.tsx         — LP-Startseite: Prüfungen verwalten + erstellen
+│   │   │   ├── PruefungsComposer.tsx    — 3-Tab-Editor (Einstellungen, Abschnitte, Vorschau)
+│   │   │   ├── FragenBrowser.tsx        — Slide-over: Fragenbank durchsuchen + filtern
 │   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS
 │   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel
 │   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI
@@ -117,8 +123,11 @@ Pruefung/
 │       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
 │       └── zeit.ts                      — Timer-Hilfsfunktionen
+├── seb/
+│   ├── GymHofwil_Pruefung_Konfig.xml   — SEB-Konfigurationsvorlage (Import in SEB Config Tool)
+│   └── README.md                        — SEB-Anleitung (URL anpassen, exportieren, verteilen)
 ├── .env.example                         — Template für Environment-Variablen
-├── Google_Workspace_Setup.md            — Anleitung: OAuth + Sheets + Apps Script
+├── Google_Workspace_Setup.md            — Anleitung: OAuth + Sheets + Apps Script + Composer-Endpoints
 ├── Pruefungsplattform_Spec_v2.md        — Gesamtspezifikation
 ├── Auftrag_Pruefungsplattform_Phase1.md — Phase-1-Auftrag (erledigt)
 └── HANDOFF.md                           — Dieses Dokument
@@ -143,13 +152,14 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 4: GitHub Actions | ✅ erledigt | Secrets `VITE_GOOGLE_CLIENT_ID` + `VITE_APPS_SCRIPT_URL` gesetzt |
 | 5: End-to-End-Test | ✅ erledigt | Login → Laden → Ausfüllen → Abgabe → Datei in Drive |
 
-## Nächste Schritte (Phase 4)
+## Nächste Schritte (Phase 5)
 
-1. Test-Fragen in Fragenbank-Sheet eintragen (echte Prüfungsinhalte)
-2. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
-3. Tablet-/Smartphone-Tests
-4. Prüfungs-Composer (LP erstellt Prüfungen via UI)
-5. KI-Korrektur (Claude API für Freitext-Bewertung)
+1. **Apps Script aktualisieren:** Neuen Code aus `Google_Workspace_Setup.md` in Apps Script Editor kopieren + neue Version bereitstellen
+2. **Configs-Sheet:** Spalte `fachbereiche` zur Header-Zeile hinzufügen
+3. Composer E2E testen (Prüfung erstellen → Fragen zuordnen → Speichern → mit `?id=` öffnen)
+4. SEB-Datei im SEB Config Tool erstellen (XML importieren → URL anpassen → .seb exportieren)
+5. Tablet-/Smartphone-Tests
+6. KI-Korrektur (Claude API für Freitext-Bewertung)
 
 ## Commits
 
@@ -167,3 +177,4 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | `705380f` | Fix: Demo/Abmelden setzt Prüfungszustand zurück |
 | `569f81a` | HANDOFF: Google Workspace Setup (Teil 1-4) erledigt |
 | `d1a3d00` | Phase 3: CORS-Fix, E-Mail bei Schülercode-Login, Session-Restore robuster (5 Dateien) |
+| *pending* | Phase 4: SEB-Konfiguration + Prüfungs-Composer (LP-Startseite, 3-Tab-Editor, FragenBrowser) |

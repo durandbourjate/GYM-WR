@@ -206,6 +206,12 @@ function doGet(e) {
   switch (action) {
     case 'ladePruefung':
       return ladePruefung(e.parameter.id, email);
+    case 'ladeAlleConfigs':
+      return ladeAlleConfigs(email);
+    case 'ladeFragenbank':
+      return ladeFragenbank(email);
+    case 'monitoring':
+      return ladeMonitoring(e.parameter.id, email);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -220,6 +226,8 @@ function doPost(e) {
       return speichereAntworten(body);
     case 'heartbeat':
       return heartbeat(body);
+    case 'speichereConfig':
+      return speichereConfig(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -498,6 +506,200 @@ function jsonResponse(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// === ALLE CONFIGS LADEN (LP-Dashboard / Composer) ===
+
+function ladeAlleConfigs(email) {
+  try {
+    // Nur LPs dürfen alle Configs sehen
+    if (!email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const data = getSheetData(configSheet);
+
+    const configs = data.map(row => ({
+      id: row.id,
+      titel: row.titel,
+      klasse: row.klasse,
+      gefaess: row.gefaess,
+      semester: row.semester,
+      fachbereiche: (row.fachbereiche || '').split(',').map(s => s.trim()).filter(Boolean),
+      datum: row.datum,
+      typ: row.typ,
+      modus: row.modus || 'pruefung',
+      dauerMinuten: Number(row.dauerMinuten),
+      gesamtpunkte: Number(row.gesamtpunkte),
+      erlaubteKlasse: row.erlaubteKlasse,
+      sebErforderlich: row.sebErforderlich === 'true',
+      abschnitte: safeJsonParse(row.abschnitte, []),
+      zeitanzeigeTyp: row.zeitanzeigeTyp || 'countdown',
+      ruecknavigation: row.ruecknavigation !== 'false',
+      zufallsreihenfolgeFragen: row.zufallsreihenfolgeFragen === 'true',
+      autoSaveIntervallSekunden: Number(row.autoSaveIntervallSekunden) || 30,
+      heartbeatIntervallSekunden: Number(row.heartbeatIntervallSekunden) || 10,
+      korrektur: { aktiviert: false, modus: 'batch' },
+      feedback: { zeitpunkt: 'nach-review', format: 'pdf', detailgrad: 'vollstaendig' },
+    }));
+
+    return jsonResponse({ configs });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === FRAGENBANK LADEN (Composer) ===
+
+function ladeFragenbank(email) {
+  try {
+    // Nur LPs dürfen die Fragenbank sehen
+    if (!email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    const tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+    const alleFragen = [];
+
+    for (const tab of tabs) {
+      const sheet = fragenbank.getSheetByName(tab);
+      if (!sheet) continue;
+      const data = getSheetData(sheet);
+      for (const row of data) {
+        if (row.id) {
+          alleFragen.push(parseFrage(row, tab));
+        }
+      }
+    }
+
+    return jsonResponse({ fragen: alleFragen });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === CONFIG SPEICHERN (Composer → Configs-Sheet) ===
+
+function speichereConfig(body) {
+  try {
+    const { email, config } = body;
+
+    // Nur LPs dürfen Configs speichern
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    if (!config || !config.id || !config.titel) {
+      return jsonResponse({ error: 'Ungültige Config-Daten' });
+    }
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const data = getSheetData(configSheet);
+    const headers = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
+
+    // Config als flache Zeile vorbereiten
+    const rowData = {
+      id: config.id,
+      titel: config.titel,
+      klasse: config.klasse || '',
+      gefaess: config.gefaess || 'SF',
+      semester: config.semester || '',
+      fachbereiche: (config.fachbereiche || []).join(','),
+      datum: config.datum || '',
+      typ: config.typ || 'summativ',
+      modus: config.modus || 'pruefung',
+      dauerMinuten: String(config.dauerMinuten || 45),
+      gesamtpunkte: String(config.gesamtpunkte || 0),
+      erlaubteKlasse: config.erlaubteKlasse || config.klasse || '',
+      sebErforderlich: config.sebErforderlich ? 'true' : 'false',
+      abschnitte: JSON.stringify(config.abschnitte || []),
+      zeitanzeigeTyp: config.zeitanzeigeTyp || 'countdown',
+      ruecknavigation: config.ruecknavigation !== false ? 'true' : 'false',
+      zufallsreihenfolgeFragen: config.zufallsreihenfolgeFragen ? 'true' : 'false',
+      autoSaveIntervallSekunden: String(config.autoSaveIntervallSekunden || 30),
+      heartbeatIntervallSekunden: String(config.heartbeatIntervallSekunden || 10),
+    };
+
+    // Bestehende Zeile suchen (Update) oder neue Zeile anfügen
+    const existingRow = data.findIndex(row => row.id === config.id);
+
+    if (existingRow >= 0) {
+      // Update
+      const rowIndex = existingRow + 2; // +1 Header, +1 für 1-basiert
+      headers.forEach((header, colIndex) => {
+        if (rowData[header] !== undefined) {
+          configSheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+        }
+      });
+    } else {
+      // Neue Zeile
+      const newRow = headers.map(h => rowData[h] || '');
+      configSheet.appendRow(newRow);
+    }
+
+    return jsonResponse({ success: true, id: config.id });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === MONITORING LADEN (LP Live-Übersicht) ===
+
+function ladeMonitoring(pruefungId, email) {
+  try {
+    if (!email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    if (!pruefungId) {
+      return jsonResponse({ error: 'Keine Prüfungs-ID angegeben' });
+    }
+
+    // Config laden für Prüfungsinfo
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configData = getSheetData(configSheet);
+    const configRow = configData.find(row => row.id === pruefungId);
+
+    if (!configRow) {
+      return jsonResponse({ error: 'Prüfung nicht gefunden' });
+    }
+
+    // Antworten-Sheet laden
+    const sheetName = 'Antworten_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+
+    const schueler = [];
+
+    if (files.hasNext()) {
+      const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+      const data = getSheetData(sheet);
+
+      for (const row of data) {
+        schueler.push({
+          email: row.email || '',
+          name: row.name || row.email || '',
+          status: row.istAbgabe === 'true' ? 'abgegeben' : (row.letzterHeartbeat ? 'aktiv' : 'nicht-gestartet'),
+          letzterSave: row.letzterSave || '',
+          letzterHeartbeat: row.letzterHeartbeat || '',
+          heartbeats: Number(row.heartbeats) || 0,
+          version: Number(row.version) || 0,
+          istAbgegeben: row.istAbgabe === 'true',
+        });
+      }
+    }
+
+    return jsonResponse({
+      pruefungId: pruefungId,
+      titel: configRow.titel,
+      schueler: schueler,
+      aktualisiert: new Date().toISOString(),
+    });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
 }
 ```
 

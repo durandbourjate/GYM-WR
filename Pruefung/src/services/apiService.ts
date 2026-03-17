@@ -102,6 +102,68 @@ export const apiService = {
     }
   },
 
+  /** Alle Prüfungs-Configs laden (für LP-Dashboard) */
+  async ladeAlleConfigs(email: string): Promise<PruefungsConfig[] | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const url = `${APPS_SCRIPT_URL}?action=ladeAlleConfigs&email=${encodeURIComponent(email)}`
+      const response = await fetch(url)
+      if (!response.ok) return null
+
+      const data = await response.json()
+      if (data.error) {
+        console.error('[API] Configs-Fehler:', data.error)
+        return null
+      }
+      return data.configs ?? []
+    } catch (error) {
+      console.error('[API] Configs-Netzwerkfehler:', error)
+      return null
+    }
+  },
+
+  /** Fragenbank laden (alle Fragen für Composer) */
+  async ladeFragenbank(email: string): Promise<Frage[] | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const url = `${APPS_SCRIPT_URL}?action=ladeFragenbank&email=${encodeURIComponent(email)}`
+      const response = await fetch(url)
+      if (!response.ok) return null
+
+      const data = await response.json()
+      if (data.error) {
+        console.error('[API] Fragenbank-Fehler:', data.error)
+        return null
+      }
+      return data.fragen ?? []
+    } catch (error) {
+      console.error('[API] Fragenbank-Netzwerkfehler:', error)
+      return null
+    }
+  },
+
+  /** Prüfungs-Config speichern (Composer → Configs-Sheet) */
+  async speichereConfig(email: string, config: PruefungsConfig): Promise<boolean> {
+    if (!APPS_SCRIPT_URL) return false
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'speichereConfig', email, config }),
+      })
+      if (!response.ok) return false
+
+      const data = await response.json()
+      return data.success === true
+    } catch (error) {
+      console.error('[API] Config-Save-Fehler:', error)
+      return false
+    }
+  },
+
   /** Prüft ob das Backend konfiguriert ist */
   istKonfiguriert(): boolean {
     return !!APPS_SCRIPT_URL

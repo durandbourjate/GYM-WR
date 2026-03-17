@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- ============================================================ -->
+    <!-- SEB-Konfiguration: Prüfungsplattform Gymnasium Hofwil        -->
+    <!-- Erstellt: 17.03.2026                                         -->
+    <!-- Vorlage zum Import in SEB Config Tool                        -->
+    <!-- ============================================================ -->
+
+    <!-- === GENERAL === -->
+
+    <!-- Start-URL: MUSS pro Prüfung angepasst werden! -->
+    <key>startURL</key>
+    <string>https://durandbourjate.github.io/GYM-WR-DUY/Pruefung/?id=PRUEFUNGS_ID</string>
+
+    <!-- SEB-Titel in der Taskbar -->
+    <key>browserWindowTitleSuffix</key>
+    <string>Gymnasium Hofwil — Prüfung</string>
+
+    <!-- Vollbildmodus -->
+    <key>browserViewMode</key>
+    <integer>1</integer>
+    <!-- 0 = Fenster, 1 = Vollbild -->
+
+    <!-- Kein Fenster-Schliessen erlauben -->
+    <key>allowWindowClose</key>
+    <false/>
+
+    <!-- === BROWSER === -->
+
+    <!-- Kein Zurück/Vorwärts (Navigation nur in der App) -->
+    <key>enableBrowserWindowNavigation</key>
+    <false/>
+
+    <!-- Kein Reload erlauben (verhindert Doppel-Abgabe) -->
+    <key>browserWindowAllowReload</key>
+    <true/>
+    <!-- true: Reload erlaubt — nötig falls Netzwerkfehler -->
+
+    <!-- Kein neues Fenster -->
+    <key>newBrowserWindowByLinkPolicy</key>
+    <integer>0</integer>
+    <!-- 0 = Block, 1 = Same window, 2 = New window -->
+
+    <key>newBrowserWindowByScriptPolicy</key>
+    <integer>0</integer>
+
+    <!-- JavaScript aktivieren (React-App benötigt JS) -->
+    <key>enableJavaScript</key>
+    <true/>
+
+    <!-- Plugins deaktivieren -->
+    <key>enablePlugIns</key>
+    <false/>
+
+    <!-- === USER INTERFACE === -->
+
+    <!-- Taskbar/Dock verstecken -->
+    <key>showTaskBar</key>
+    <false/>
+
+    <!-- Uhr in SEB anzeigen -->
+    <key>showTime</key>
+    <true/>
+
+    <!-- Kein Reload-Button -->
+    <key>showReloadButton</key>
+    <false/>
+
+    <!-- Keine Adressleiste -->
+    <key>enableURLFilter</key>
+    <true/>
+
+    <!-- === SICHERHEIT === -->
+
+    <!-- Rechtsklick blockieren -->
+    <key>enableRightMouse</key>
+    <false/>
+
+    <!-- Alt+Tab / Cmd+Tab blockieren -->
+    <key>enableAltTab</key>
+    <false/>
+
+    <!-- Screenshots blockieren (macOS) -->
+    <key>enableScreenCapture</key>
+    <false/>
+
+    <!-- Zwischenablage: nur innerhalb SEB -->
+    <key>enableClipboard</key>
+    <false/>
+
+    <!-- Spell-Check deaktivieren -->
+    <key>enableSpellChecking</key>
+    <false/>
+
+    <!-- Dictation deaktivieren -->
+    <key>enableDictation</key>
+    <false/>
+
+    <!-- Touchpad-Gesten einschränken -->
+    <key>enableTouchExit</key>
+    <false/>
+
+    <!-- Virtual Machine blockieren -->
+    <key>allowVirtualMachine</key>
+    <false/>
+
+    <!-- Siri blockieren (macOS) -->
+    <key>allowSiri</key>
+    <false/>
+
+    <!-- Display Mirroring blockieren -->
+    <key>allowDisplayMirroring</key>
+    <false/>
+
+    <!-- === URL-FILTER === -->
+
+    <key>URLFilterEnable</key>
+    <true/>
+
+    <key>URLFilterEnableContentFilter</key>
+    <true/>
+
+    <!-- Erlaubte URLs (Whitelist) -->
+    <key>URLFilterRules</key>
+    <array>
+        <!-- Prüfungsplattform (GitHub Pages) -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <!-- 1 = Allow -->
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>durandbourjate.github.io/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google OAuth Login -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>accounts.google.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google APIs (OAuth Token, Sheets) -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>*.googleapis.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google Apps Script Backend -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>script.google.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google Identity Services (GIS) -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>*.gstatic.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google Login Domains -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>*.google.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Google Fonts (falls Tailwind diese lädt) -->
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>fonts.googleapis.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>fonts.gstatic.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+
+        <!-- Alles andere blockieren -->
+        <dict>
+            <key>action</key>
+            <integer>0</integer>
+            <!-- 0 = Block -->
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+    </array>
+
+    <!-- === BEENDEN === -->
+
+    <!-- Quit-Passwort (SuS können SEB nicht einfach beenden) -->
+    <!-- Muss im SEB Config Tool gesetzt werden! -->
+    <key>hashedQuitPassword</key>
+    <string></string>
+
+    <!-- Quit-Link: Kein automatischer Quit-Link -->
+    <key>quitURL</key>
+    <string></string>
+
+    <!-- Bestätigungsdialog beim Beenden -->
+    <key>allowQuit</key>
+    <true/>
+
+    <!-- Ctrl+Q / Cmd+Q zum Beenden (mit Passwort) -->
+    <key>quitURLConfirm</key>
+    <true/>
+
+    <!-- === NETZWERK === -->
+
+    <!-- Zertifikatsvalidierung -->
+    <key>pinEmbeddedCertificates</key>
+    <false/>
+
+    <!-- Proxy: System-Einstellungen verwenden -->
+    <key>proxySettingsPolicy</key>
+    <integer>0</integer>
+    <!-- 0 = System -->
+
+    <!-- === ZUSÄTZLICHE EINSTELLUNGEN === -->
+
+    <!-- SEB-Version in User-Agent einbetten (für sebService.ts-Erkennung) -->
+    <key>sendBrowserExamKey</key>
+    <true/>
+
+    <!-- Kiosk-Modus -->
+    <key>createNewDesktop</key>
+    <true/>
+
+    <!-- Log-Dateien erstellen (für Debugging) -->
+    <key>enableLogging</key>
+    <true/>
+
+    <key>logLevel</key>
+    <integer>1</integer>
+    <!-- 0 = Error, 1 = Warning, 2 = Info, 3 = Debug -->
+
+</dict>
+</plist>

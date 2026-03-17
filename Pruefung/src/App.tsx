@@ -12,6 +12,7 @@ import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
 import AbgabeZusammenfassung from './components/AbgabeZusammenfassung.tsx'
 import MonitoringDashboard from './components/lp/MonitoringDashboard.tsx'
+import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
 
 // Theme-Store importieren damit er initialisiert wird
@@ -76,9 +77,12 @@ export default function App() {
     return <LoginScreen />
   }
 
-  // LP-Modus: Lehrpersonen sehen das Monitoring-Dashboard
+  // LP-Modus: mit ?id= → Monitoring, ohne → Startseite (Composer/Verwaltung)
   if (user.rolle === 'lp') {
-    return <MonitoringDashboard pruefungId={pruefungIdAusUrl} />
+    if (pruefungIdAusUrl) {
+      return <MonitoringDashboard pruefungId={pruefungIdAusUrl} />
+    }
+    return <LPStartseite />
   }
 
   // Ladefehler
