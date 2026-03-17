@@ -6,55 +6,45 @@
 
 ## Aktueller Stand
 
-**Phase 2g: Robustheit & Qualität** (17.03.2026)
+**Phase 3: Backend-Integration & E2E ✅** (17.03.2026)
 
 ### Was funktioniert
+- **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
 - Startbildschirm mit Prüfungsinfo + Sitzungswiederherstellung
-- **4 Fragetypen:** MC (Einzel-/Mehrfachauswahl), Freitext (Tiptap), Lückentext, **Zuordnung (NEU)**
+- **4 Fragetypen:** MC (Einzel-/Mehrfachauswahl), Freitext (Tiptap), Lückentext, Zuordnung
 - Fragennavigation mit Kacheln (✓ beantwortet, ? unsicher, — offen)
 - Timer mit Countdown + Warnungen (15 Min. orange, 5 Min. rot)
 - Auto-Save: LocalStorage (sofort) + IndexedDB (15s) + Remote via Apps Script (30s, konfigurierbar)
 - Light/Dark Mode: System-Erkennung + manueller Toggle
-- Abgabe-Dialog mit Bestätigung + Statusübersicht
-- 7 Demo-Fragen (3 MC, 3 Freitext, 1 Lückentext)
-- GitHub Actions Deploy
-- **NEU: Login-Screen** (Google OAuth + Schülercode-Fallback + Demo-Modus)
-- **NEU: Auth-Store** (Session via sessionStorage, Rollen-Erkennung aus E-Mail-Domain)
-- **NEU: API-Service** (Interface für Google Apps Script Backend)
-- **NEU: URL-basierte Prüfungs-ID** (`?id=PRUEFUNGS_ID` → lädt Config vom Backend)
-- **NEU: User-Info** in Sidebar und Abgabe-Bestätigung
-- **NEU: Monitoring-Hook** (`usePruefungsMonitoring`) — zentraler Hook für Auto-Save, Remote-Save, Heartbeat, Focus-Detection, Online/Offline
-- **NEU: SEB-Erkennung** (User-Agent-Check + Warnbanner wenn nicht im SEB)
-- **NEU: Focus-Detection** (visibilitychange → Unterbrechungen >2s werden protokolliert)
-- **NEU: Heartbeat-Monitoring** (konfigurierbares Intervall, Ausfälle werden protokolliert)
-- **NEU: Online/Offline-Events** (Browser-Events → automatischer Status-Wechsel)
-- **NEU: LP-Monitoring-Dashboard** (Live-Übersicht aller SuS: Status, Fortschritt, Heartbeats, Unterbrechungen)
-- **NEU: Rollen-Routing** (LP → Dashboard, SuS → Prüfung, automatisch via E-Mail-Domain)
-- **NEU: GitHub Actions** Env-Variablen für Pruefung-Build (Secrets)
-- **NEU: ZuordnungFrage** (Dropdown-basierte Zuordnung, gemischte Reihenfolge, Fortschrittsanzeige)
-- **NEU: Verbesserte Abgabe** (PruefungsAbgabe-Objekt mit Meta-Daten: SEB, Browser, Heartbeats, Unterbrechungen)
-- **NEU: Abgabe-Dialog** mit Sende-Status (bereit → senden → erfolg/fehler), Retry bei Fehler, localStorage-Fallback
-- **NEU: Retry-Queue** (IndexedDB-basiert, fehlgeschlagene Remote-Saves werden bei Reconnect nachgesendet)
-- **NEU: 8 Demo-Fragen** (3 MC, 3 Freitext, 1 Lückentext, 1 Zuordnung) in 4 Abschnitten
-- **NEU: Zeitablauf-Auto-Abgabe** (Timer sendet Daten an Backend + localStorage-Backup + Banner)
-- **NEU: beforeunload-Warnung** (verhindert versehentliches Tab-Schliessen während Prüfung)
-- **NEU: Tastaturnavigation** (← → / Ctrl+← → für Fragen, Escape für Dialog)
-- **NEU: Verbesserter Startbildschirm** (Punkte pro Abschnitt, User-Info, SEB-Blockade, Keyboard-Hinweis)
-- **NEU: Abschnitt-Header im Fragenfluss** (prominenter Titel bei erster Frage, kompakter Kontext danach)
-- **NEU: Fortschrittsbalken im Header** (1px-Balken zeigt Gesamtfortschritt)
-- **NEU: Verbesserte FragenÜbersicht** (Fortschrittsbalken pro Abschnitt, Punkte, Detail-Info je Fragetyp)
-- **NEU: Abgabe-Zusammenfassung** (Read-only Ansicht aller Fragen + Antworten, Druck-optimiert, "Meine Antworten ansehen"-Button)
-- **NEU: Druckansicht** (@media print Styles für sauberen PDF-Export der Zusammenfassung)
-- **NEU: Tab-Konflikterkennung** (BroadcastChannel API + localStorage-Fallback, Warnung bei mehreren Tabs)
-- **NEU: Error Boundary** (Fängt Rendering-Fehler ab, zeigt Recovery-UI + Daten-Export-Button)
-- **NEU: Sticky Fragetext** (Fragetext bleibt beim Scrollen sichtbar, alle 4 Fragetypen)
+- Abgabe-Dialog mit Bestätigung + Statusübersicht + Sende-Status + Retry
+- 8 Demo-Fragen (3 MC, 3 Freitext, 1 Lückentext, 1 Zuordnung) in 4 Abschnitten
+- GitHub Actions Deploy (mit Env-Variablen für Backend)
+- Login-Screen (Google OAuth + Schülercode mit E-Mail + Demo-Modus)
+- Auth-Store (Session via sessionStorage, Rollen-Erkennung aus E-Mail-Domain)
+- API-Service (Apps Script Backend, CORS-sicher mit `text/plain`)
+- URL-basierte Prüfungs-ID (`?id=PRUEFUNGS_ID` → lädt Config vom Backend)
+- Monitoring-Hook (Auto-Save, Remote-Save, Heartbeat, Focus-Detection, Online/Offline)
+- SEB-Erkennung (User-Agent-Check + Warnbanner)
+- LP-Monitoring-Dashboard (Live-Übersicht aller SuS)
+- Rollen-Routing (LP → Dashboard, SuS → Prüfung)
+- Zuordnung, Abschnitt-Header, Fortschrittsbalken, FragenÜbersicht
+- Abgabe-Zusammenfassung (Read-only, druckbar)
+- Tab-Konflikterkennung, Error Boundary, Sticky Fragetext
+- Retry-Queue (IndexedDB, fehlgeschlagene Saves bei Reconnect nachsenden)
+- Zeitablauf-Auto-Abgabe, beforeunload-Warnung, Tastaturnavigation
 
 ### Auth-Flow
-1. Kein User → LoginScreen (Google-Button / Schülercode / Demo)
+1. Kein User → LoginScreen (Google-Button / Schülercode mit E-Mail / Demo)
 2. Google Login → JWT dekodiert → E-Mail-Domain bestimmt Rolle (SuS/LP)
-3. Session in sessionStorage (überlebt Reload, nicht Tab-Schliessung)
-4. Wenn `VITE_APPS_SCRIPT_URL` gesetzt + `?id=...` in URL → Prüfung vom Backend laden
-5. Sonst → Demo-Prüfung (wie bisher)
+3. Schülercode-Login → E-Mail-Eingabe (auto-Ergänzung `@stud.gymhofwil.ch`) + Name + 4-stelliger Code
+4. Session in sessionStorage (überlebt Reload, nicht Tab-Schliessung)
+5. Wenn `VITE_APPS_SCRIPT_URL` gesetzt + `?id=...` in URL → Prüfung vom Backend laden
+6. Sonst → Demo-Prüfung (wie bisher)
+
+### Technische Hinweise
+- **CORS:** Apps Script beantwortet keine OPTIONS-Preflight-Requests → POST-Requests verwenden `Content-Type: text/plain` statt `application/json`
+- **Session-Restore:** Bei erkannter vorheriger Sitzung wird immer der Startbildschirm gezeigt (User entscheidet ob fortsetzen)
+- **Layout-Fallback:** Bei fehlenden Prüfungsdaten wird "Zurück zum Start"-Button statt weisser Bildschirm gezeigt
 
 ### UI-Design-Entscheide (vom User bestätigt)
 - **Neutrales Farbschema:** Weiss/Grau/Schwarz als Basis, kein Blau für Buttons
@@ -82,37 +72,37 @@ Pruefung/
 │   │   ├── pruefung.ts                  — PruefungsConfig, PruefungsAbschnitt
 │   │   ├── antworten.ts                 — PruefungsAbgabe, Antwort-Union-Typ
 │   │   ├── auth.ts                      — AuthUser, Rolle
-│   │   └── monitoring.ts                — SchuelerStatus, MonitoringDaten (NEU)
+│   │   └── monitoring.ts                — SchuelerStatus, MonitoringDaten
 │   ├── store/
 │   │   ├── pruefungStore.ts             — Zustand-Store (Antworten, Navigation, Phase)
-│   │   ├── authStore.ts                 — Auth-State: User, Demo, Login/Logout (NEU)
+│   │   ├── authStore.ts                 — Auth-State: User, Demo, Login/Logout
 │   │   └── themeStore.ts                — Light/Dark/System Mode mit Persist
 │   ├── data/
 │   │   ├── demoFragen.ts                — 8 Demo-Fragen (inkl. Zuordnung)
 │   │   ├── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 4 Abschnitte)
-│   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard (NEU)
+│   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard
 │   ├── hooks/
-│   │   ├── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook (NEU)
-│   │   ├── usePruefungsUX.ts           — beforeunload, Tastaturnavigation (NEU)
-│   │   └── useTabKonflikt.ts           — BroadcastChannel Tab-Erkennung (NEU)
+│   │   ├── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook
+│   │   ├── usePruefungsUX.ts           — beforeunload, Tastaturnavigation
+│   │   └── useTabKonflikt.ts           — BroadcastChannel Tab-Erkennung
 │   ├── services/
 │   │   ├── autoSave.ts                  — IndexedDB Backup
 │   │   ├── remoteSave.ts                — Mock für Remote-Save (Phase 1)
-│   │   ├── sebService.ts               — SEB User-Agent Erkennung (NEU)
-│   │   ├── retryQueue.ts              — IndexedDB Retry-Queue für fehlgeschlagene Saves (NEU)
+│   │   ├── sebService.ts               — SEB User-Agent Erkennung
+│   │   ├── retryQueue.ts              — IndexedDB Retry-Queue für fehlgeschlagene Saves
 │   │   ├── authService.ts              — Google Identity Services Wrapper
-│   │   └── apiService.ts               — Apps Script API Client
+│   │   └── apiService.ts               — Apps Script API Client (text/plain CORS-Fix)
 │   ├── components/
 │   │   ├── lp/
-│   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS (NEU)
-│   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel (NEU)
-│   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI (NEU)
-│   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode + Demo
+│   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS
+│   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel
+│   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI
+│   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode (mit E-Mail) + Demo
 │   │   ├── Layout.tsx                   — Header + Sidebar (mit User-Info) + Main
 │   │   ├── Startbildschirm.tsx          — Prüfungsinfo + Start-Button
 │   │   ├── FragenNavigation.tsx         — Kacheln mit Icons + Legende + fachbereichFarbe()
 │   │   ├── FragenUebersicht.tsx         — Alle Fragen mit Status + Fortschritt pro Abschnitt
-│   │   ├── AbgabeZusammenfassung.tsx   — Read-only Antworten-Review, druckbar (NEU)
+│   │   ├── AbgabeZusammenfassung.tsx   — Read-only Antworten-Review, druckbar
 │   │   ├── Timer.tsx                    — Countdown mit Warnstufen
 │   │   ├── VerbindungsStatus.tsx        — Online/Offline-Indikator
 │   │   ├── AutoSaveIndikator.tsx        — "Gespeichert ✓" Fade-Animation
@@ -122,13 +112,13 @@ Pruefung/
 │   │       ├── MCFrage.tsx              — MC mit neutraler Selektion
 │   │       ├── FreitextFrage.tsx        — Tiptap + Heading + ArrowReplace + Auto-Focus
 │   │       ├── LueckentextFrage.tsx     — Inline-Inputs
-│   │       └── ZuordnungFrage.tsx      — Dropdown-Zuordnung mit Fortschritt (NEU)
+│   │       └── ZuordnungFrage.tsx      — Dropdown-Zuordnung mit Fortschritt
 │   └── utils/
-│       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt() (NEU)
+│       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
 │       └── zeit.ts                      — Timer-Hilfsfunktionen
-├── .env.example                         — Template für Environment-Variablen (NEU)
-├── Google_Workspace_Setup.md            — Anleitung: OAuth + Sheets + Apps Script (NEU)
+├── .env.example                         — Template für Environment-Variablen
+├── Google_Workspace_Setup.md            — Anleitung: OAuth + Sheets + Apps Script
 ├── Pruefungsplattform_Spec_v2.md        — Gesamtspezifikation
 ├── Auftrag_Pruefungsplattform_Phase1.md — Phase-1-Auftrag (erledigt)
 └── HANDOFF.md                           — Dieses Dokument
@@ -146,21 +136,20 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 ## Google Workspace Setup (Stand 17.03.2026)
 
 | Teil | Status | Details |
-|------|--------|---------|  
+|------|--------|---------|
 | 1: OAuth Client-ID | ✅ erledigt | Client-ID in `.env.local` + GitHub Secrets |
 | 2: Google Sheets | ✅ erledigt | Fragenbank, Klassenlisten, Configs, Antworten-Ordner angelegt |
 | 3: Apps Script | ✅ erledigt | Deployed, Berechtigungen autorisiert, URL in `.env.local` |
 | 4: GitHub Actions | ✅ erledigt | Secrets `VITE_GOOGLE_CLIENT_ID` + `VITE_APPS_SCRIPT_URL` gesetzt |
-| 5: End-to-End-Test | ⬜ offen | Login + Backend-Laden + Save testen |
+| 5: End-to-End-Test | ✅ erledigt | Login → Laden → Ausfüllen → Abgabe → Datei in Drive |
 
-## Nächste Schritte (Phase 3)
+## Nächste Schritte (Phase 4)
 
-1. End-to-End-Test mit echtem Backend (Remote-Save + Heartbeat + Monitoring)
-2. Test-Fragen in Fragenbank-Sheet eintragen, Test-Config erstellen
-3. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
-4. Tablet-/Smartphone-Tests
-5. Prüfungs-Composer (LP erstellt Prüfungen via UI)
-6. KI-Korrektur (Claude API für Freitext-Bewertung)
+1. Test-Fragen in Fragenbank-Sheet eintragen (echte Prüfungsinhalte)
+2. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
+3. Tablet-/Smartphone-Tests
+4. Prüfungs-Composer (LP erstellt Prüfungen via UI)
+5. KI-Korrektur (Claude API für Freitext-Bewertung)
 
 ## Commits
 
@@ -174,4 +163,7 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | `c95d83d` | Phase 2d: ZuordnungFrage, verbesserte Abgabe mit Meta-Daten, Retry-Queue (6 Dateien) |
 | `44ec263` | Phase 2e: Zeitablauf-Remote-Abgabe, beforeunload, Tastaturnavigation, Startbildschirm (5 Dateien) |
 | `f77a1ca` | Phase 2f: Abschnitt-Header, Fortschrittsbalken, FragenÜbersicht, Abgabe-Zusammenfassung (6 Dateien) |
-| *pending* | Phase 2g: Tab-Konflikterkennung, Error Boundary, Sticky Fragetext (8 Dateien) |
+| `6a46c8e` | Phase 2g: Tab-Konflikterkennung, Error Boundary, Sticky Fragetext (8 Dateien) |
+| `705380f` | Fix: Demo/Abmelden setzt Prüfungszustand zurück |
+| `569f81a` | HANDOFF: Google Workspace Setup (Teil 1-4) erledigt |
+| `d1a3d00` | Phase 3: CORS-Fix, E-Mail bei Schülercode-Login, Session-Restore robuster (5 Dateien) |
