@@ -1,6 +1,7 @@
 import type { Frage } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import type { Antwort } from '../types/antworten.ts'
+import type { MonitoringDaten } from '../types/monitoring.ts'
 
 /** URL des deployed Google Apps Script Web-Apps */
 const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL || ''
@@ -75,6 +76,27 @@ export const apiService = {
       return response.ok
     } catch {
       return false
+    }
+  },
+
+  /** Monitoring-Daten für LP laden (alle SuS einer Prüfung) */
+  async ladeMonitoring(pruefungId: string, email: string): Promise<MonitoringDaten | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const url = `${APPS_SCRIPT_URL}?action=monitoring&id=${encodeURIComponent(pruefungId)}&email=${encodeURIComponent(email)}`
+      const response = await fetch(url)
+      if (!response.ok) return null
+
+      const data = await response.json()
+      if (data.error) {
+        console.error('[API] Monitoring-Fehler:', data.error)
+        return null
+      }
+      return data as MonitoringDaten
+    } catch (error) {
+      console.error('[API] Monitoring-Netzwerkfehler:', error)
+      return null
     }
   },
 

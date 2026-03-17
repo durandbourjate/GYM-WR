@@ -6,7 +6,7 @@
 
 ## Aktueller Stand
 
-**Phase 2b: Monitoring + SEB + Focus-Detection** (17.03.2026)
+**Phase 2c: LP-Monitoring-Dashboard + GitHub Actions** (17.03.2026)
 
 ### Was funktioniert
 - Startbildschirm mit Prüfungsinfo + Sitzungswiederherstellung
@@ -28,6 +28,9 @@
 - **NEU: Focus-Detection** (visibilitychange → Unterbrechungen >2s werden protokolliert)
 - **NEU: Heartbeat-Monitoring** (konfigurierbares Intervall, Ausfälle werden protokolliert)
 - **NEU: Online/Offline-Events** (Browser-Events → automatischer Status-Wechsel)
+- **NEU: LP-Monitoring-Dashboard** (Live-Übersicht aller SuS: Status, Fortschritt, Heartbeats, Unterbrechungen)
+- **NEU: Rollen-Routing** (LP → Dashboard, SuS → Prüfung, automatisch via E-Mail-Domain)
+- **NEU: GitHub Actions** Env-Variablen für Pruefung-Build (Secrets)
 
 ### Auth-Flow
 1. Kein User → LoginScreen (Google-Button / Schülercode / Demo)
@@ -54,21 +57,23 @@
 ```
 Pruefung/
 ├── src/
-│   ├── App.tsx                          — Auth-Gate + Routing + URL-Param (?id=)
+│   ├── App.tsx                          — Auth-Gate + Rollen-Routing (LP→Dashboard, SuS→Prüfung)
 │   ├── index.css                        — Tailwind + Tiptap-Styles + Dark-Mode-Kontrast
 │   ├── main.tsx
 │   ├── types/
 │   │   ├── fragen.ts                    — FrageBase, MCFrage, FreitextFrage, LueckentextFrage, etc.
 │   │   ├── pruefung.ts                  — PruefungsConfig, PruefungsAbschnitt
 │   │   ├── antworten.ts                 — PruefungsAbgabe, Antwort-Union-Typ
-│   │   └── auth.ts                      — AuthUser, Rolle (NEU)
+│   │   ├── auth.ts                      — AuthUser, Rolle
+│   │   └── monitoring.ts                — SchuelerStatus, MonitoringDaten (NEU)
 │   ├── store/
 │   │   ├── pruefungStore.ts             — Zustand-Store (Antworten, Navigation, Phase)
 │   │   ├── authStore.ts                 — Auth-State: User, Demo, Login/Logout (NEU)
 │   │   └── themeStore.ts                — Light/Dark/System Mode mit Persist
 │   ├── data/
 │   │   ├── demoFragen.ts                — 7 Demo-Fragen
-│   │   └── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 3 Abschnitte)
+│   │   ├── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 3 Abschnitte)
+│   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard (NEU)
 │   ├── hooks/
 │   │   └── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook (NEU)
 │   ├── services/
@@ -78,7 +83,10 @@ Pruefung/
 │   │   ├── authService.ts              — Google Identity Services Wrapper
 │   │   └── apiService.ts               — Apps Script API Client
 │   ├── components/
-│   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode + Demo (NEU)
+│   │   ├── lp/
+│   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS (NEU)
+│   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel (NEU)
+│   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode + Demo
 │   │   ├── Layout.tsx                   — Header + Sidebar (mit User-Info) + Main
 │   │   ├── Startbildschirm.tsx          — Prüfungsinfo + Start-Button
 │   │   ├── FragenNavigation.tsx         — Kacheln mit Icons + Legende + fachbereichFarbe()
@@ -111,21 +119,21 @@ Pruefung/
 
 Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo-Prüfung).
 
-## Nächste Schritte (Phase 2c)
+## Nächste Schritte (Phase 3)
 
 Der User muss zuerst die **Google_Workspace_Setup.md** abarbeiten:
 1. Google Cloud Projekt + OAuth Client-ID erstellen
 2. Google Sheets anlegen (Fragenbank, Klassenlisten, Configs)
-3. Apps Script deployen
+3. Apps Script deployen (inkl. Monitoring-Endpoint)
 4. `.env.local` mit Client-ID + Apps Script URL befüllen
-5. GitHub Actions Secrets setzen
+5. GitHub Actions Secrets setzen (`VITE_GOOGLE_CLIENT_ID`, `VITE_APPS_SCRIPT_URL`)
 
 Danach:
-1. GitHub Actions Workflow anpassen (Env-Variablen im Build)
-2. End-to-End-Test mit echtem Backend (Remote-Save + Heartbeat)
-3. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
-4. Tablet-/Smartphone-Tests
-5. Lehrpersonen-Ansicht (Monitoring-Dashboard: Live-Heartbeats, Unterbrechungen, Abgabe-Status)
+1. End-to-End-Test mit echtem Backend (Remote-Save + Heartbeat + Monitoring)
+2. SEB-Konfigurationsdatei (.seb) für Gymnasium Hofwil erstellen
+3. Tablet-/Smartphone-Tests
+4. Prüfungs-Composer (LP erstellt Prüfungen via UI)
+5. KI-Korrektur (Claude API für Freitext-Bewertung)
 
 ## Commits
 
@@ -135,3 +143,4 @@ Danach:
 | `70624b5` | UI-Überarbeitung: Kontrast, neutrales Farbschema, Header-Buttons, Freitext-Features (14 Dateien) |
 | *pending* | Phase 2a: Google OAuth Login, Auth-Store, API-Service, LoginScreen, URL-Param (10 Dateien) |
 | *pending* | Phase 2b: Monitoring-Hook, SEB-Erkennung, Focus-Detection, Heartbeat, Remote-Save (4 Dateien) |
+| *pending* | Phase 2c: LP-Monitoring-Dashboard, GitHub Actions Env-Vars, Rollen-Routing (8 Dateien) |

@@ -10,6 +10,7 @@ import LoginScreen from './components/LoginScreen.tsx'
 import Startbildschirm from './components/Startbildschirm.tsx'
 import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
+import MonitoringDashboard from './components/lp/MonitoringDashboard.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
 
 // Theme-Store importieren damit er initialisiert wird
@@ -68,6 +69,11 @@ export default function App() {
   // Auth-Gate: Kein User → Login-Screen
   if (!user) {
     return <LoginScreen />
+  }
+
+  // LP-Modus: Lehrpersonen sehen das Monitoring-Dashboard
+  if (user.rolle === 'lp') {
+    return <MonitoringDashboard pruefungId={pruefungIdAusUrl} />
   }
 
   // Ladefehler

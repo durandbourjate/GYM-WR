@@ -42,6 +42,9 @@ jobs:
 
       - name: Build Pruefung
         working-directory: Pruefung
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
         run: npx tsc -b && npx vite build
 
       # Combine: repo root (Uebungen etc.) + Unterrichtsplaner + Pruefung builds
