@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
+import { useAuthStore } from '../store/authStore.ts'
 import Timer from './Timer.tsx'
 import VerbindungsStatus from './VerbindungsStatus.tsx'
 import AutoSaveIndikator from './AutoSaveIndikator.tsx'
@@ -13,6 +14,7 @@ import { saveToIndexedDB } from '../services/autoSave.ts'
 import type { MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType } from '../types/fragen.ts'
 
 export default function Layout() {
+  const user = useAuthStore((s) => s.user)
   const config = usePruefungStore((s) => s.config)
   const fragen = usePruefungStore((s) => s.fragen)
   const aktuelleFrageIndex = usePruefungStore((s) => s.aktuelleFrageIndex)
@@ -140,6 +142,14 @@ export default function Layout() {
       <div className="flex-1 flex">
         {/* Sidebar Navigation */}
         <aside className="hidden md:block w-56 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-4 overflow-auto">
+          {user && (
+            <div className="mb-3 pb-3 border-b border-slate-200 dark:border-slate-700">
+              <p className="text-xs font-medium text-slate-700 dark:text-slate-200 truncate">{user.name}</p>
+              {user.email && user.email !== 'demo@example.com' && (
+                <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{user.email}</p>
+              )}
+            </div>
+          )}
           <FragenNavigation />
         </aside>
 
