@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
 import { fachbereichFarbe, typLabel } from '../../utils/fachbereich.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../../types/fragen.ts'
-import FragenEditor from './FragenEditor.tsx'
+import FragenEditor from './frageneditor/FragenEditor.tsx'
 
 interface Props {
   onHinzufuegen: (frageIds: string[]) => void
@@ -21,6 +22,9 @@ const SEITEN_GROESSE = 30
 export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerwendet }: Props) {
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
+
+  const panelRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(panelRef)
 
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
@@ -240,7 +244,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
       <div className="absolute inset-0 bg-black/40" onClick={onSchliessen} />
 
       {/* Panel (rechts) */}
-      <div className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
+      <div ref={panelRef} className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">

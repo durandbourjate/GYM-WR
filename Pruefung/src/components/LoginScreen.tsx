@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../store/authStore.ts'
+import { apiService } from '../services/apiService.ts'
 import { initializeGoogleAuth, renderGoogleButton, CLIENT_ID } from '../services/authService.ts'
 import ThemeToggle from './ThemeToggle.tsx'
 
@@ -64,7 +65,9 @@ export default function LoginScreen() {
     }
   }, [googleGeladen])
 
-  function handleCodeLogin(e: React.FormEvent): void {
+  const [codeWirdValidiert, setCodeWirdValidiert] = useState(false)
+
+  async function handleCodeLogin(e: React.FormEvent): Promise<void> {
     e.preventDefault()
     if (code.length !== 4 || !name.trim() || !email.trim()) {
       setFehler('Bitte E-Mail, Namen und 4-stelligen Code eingeben.')
@@ -79,7 +82,33 @@ export default function LoginScreen() {
       setFehler('Bitte verwenden Sie Ihre Schul-E-Mail (@stud.gymhofwil.ch).')
       return
     }
-    anmeldenMitCode(code, name.trim(), volleEmail)
+
+    // Backend-Validierung wenn konfiguriert
+    if (apiService.istKonfiguriert()) {
+      setCodeWirdValidiert(true)
+      setFehler(null)
+      const result = await apiService.validiereSchuelercode(volleEmail, code)
+      setCodeWirdValidiert(false)
+
+      if (result === null) {
+        // Netzwerkfehler → Fallback auf lokale Anmeldung
+        console.warn('[Login] Backend nicht erreichbar — Fallback auf lokale Code-Anmeldung')
+        anmeldenMitCode(code, name.trim(), volleEmail)
+        return
+      }
+      if (!result.success) {
+        setFehler(result.error ?? 'Code ungültig oder E-Mail nicht in Klassenliste.')
+        return
+      }
+      // Backend hat validiert: Name aus Klassenliste verwenden
+      const validierterName = result.vorname && result.name
+        ? `${result.vorname} ${result.name}`
+        : name.trim()
+      anmeldenMitCode(code, validierterName, volleEmail)
+    } else {
+      // Kein Backend → direkt anmelden
+      anmeldenMitCode(code, name.trim(), volleEmail)
+    }
   }
 
   return (
@@ -190,10 +219,10 @@ export default function LoginScreen() {
             </div>
             <button
               type="submit"
-              disabled={code.length !== 4 || !name.trim() || !email.trim()}
+              disabled={code.length !== 4 || !name.trim() || !email.trim() || codeWirdValidiert}
               className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-200 dark:hover:bg-slate-100 text-white dark:text-slate-800 text-sm font-semibold rounded-xl transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Anmelden
+              {codeWirdValidiert ? 'Code wird geprüft…' : 'Anmelden'}
             </button>
           </form>
         )}

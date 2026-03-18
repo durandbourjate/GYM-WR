@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
+import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../types/pruefung.ts'
@@ -47,6 +48,9 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
   const [zeigFragenBrowser, setZeigFragenBrowser] = useState(false)
   const [zielAbschnittIndex, setZielAbschnittIndex] = useState<number>(0)
   const [loeschDialog, setLoeschDialog] = useState<{ index: number; titel: string } | null>(null)
+
+  const loeschDialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(loeschDialog ? loeschDialogRef : { current: null })
 
   // Gesamtpunkte berechnen (wird in Vorschau angezeigt)
   const gesamtFragen = pruefung.abschnitte.reduce((s, a) => s + a.fragenIds.length, 0)
@@ -252,7 +256,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
 
       {/* Lösch-Bestätigungsdialog */}
       {loeschDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div ref={loeschDialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">
               Abschnitt löschen?

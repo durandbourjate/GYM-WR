@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useFocusTrap } from '../hooks/useFocusTrap.ts'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
@@ -31,6 +32,9 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   const [status, setStatus] = useState<AbgabeStatus>('bereit')
   const [abgabezeit, setAbgabezeit] = useState<string>('')
   const [retryCount, setRetryCount] = useState(0)
+
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef)
 
   const beantwortet = fragen.filter((f) => !!antworten[f.id]).length
   const unbeantwortet = fragen.length - beantwortet
@@ -119,7 +123,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   // === Erfolgs-Anzeige ===
   if (status === 'erfolg') {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +147,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   // === Fehler-Anzeige (Retry möglich) ===
   if (status === 'fehler') {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
             <span className="text-3xl">⚠</span>
@@ -176,7 +180,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   // === Senden-Anzeige ===
   if (status === 'senden') {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="w-12 h-12 mx-auto mb-4 border-4 border-slate-200 dark:border-slate-600 border-t-slate-700 dark:border-t-slate-300 rounded-full animate-spin" />
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
@@ -189,7 +193,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
 
   // === Bestätigungs-Dialog ===
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full">
         <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">
           Prüfung abgeben?

@@ -225,6 +225,38 @@ export const apiService = {
     }
   },
 
+
+  /** Schülercode gegen Klassenliste validieren */
+  async validiereSchuelercode(email: string, code: string): Promise<{
+    success: boolean
+    name?: string
+    vorname?: string
+    klasse?: string
+    error?: string
+  } | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'validiereSchuelercode', email, code }),
+      })
+      if (!response.ok) return null
+
+      const text = await response.text()
+      try {
+        return JSON.parse(text)
+      } catch {
+        console.error('[API] validiereSchuelercode: Antwort ist kein JSON')
+        return null
+      }
+    } catch (error) {
+      console.error('[API] validiereSchuelercode: Netzwerkfehler:', error)
+      return null
+    }
+  },
+
   /** Prüft ob das Backend konfiguriert ist */
   istKonfiguriert(): boolean {
     return !!APPS_SCRIPT_URL

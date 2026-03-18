@@ -97,6 +97,7 @@ Pruefung/
 │   │   ├── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 4 Abschnitte)
 │   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard
 │   ├── hooks/
+│   │   ├── useFocusTrap.ts             — Keyboard-Focus-Trap für Modals/Dialoge
 │   │   ├── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook
 │   │   ├── usePruefungsUX.ts           — beforeunload, Tastaturnavigation
 │   │   └── useTabKonflikt.ts           — BroadcastChannel Tab-Erkennung
@@ -111,7 +112,16 @@ Pruefung/
 │   │   │   ├── LPStartseite.tsx         — LP-Startseite: Prüfungen verwalten + erstellen
 │   │   │   ├── PruefungsComposer.tsx    — 3-Tab-Editor (Einstellungen, Abschnitte, Vorschau)
 │   │   │   ├── FragenBrowser.tsx        — Slide-over: Fragenbank durchsuchen + filtern
-│   │   │   ├── FragenEditor.tsx        — Fragen erstellen/bearbeiten (6 Typen)
+│   │   │   ├── frageneditor/           — Aufgesplitteter FragenEditor (vorher 949 Zeilen)
+│   │   │   │   ├── FragenEditor.tsx    — Hauptkomponente (~290 Z.)
+│   │   │   │   ├── editorUtils.ts      — FrageTyp, generiereFrageId(), parseLuecken()
+│   │   │   │   ├── EditorBausteine.tsx — Abschnitt + Feld UI-Wrapper
+│   │   │   │   ├── MCEditor.tsx        — MC-Optionen-Editor
+│   │   │   │   ├── FreitextEditor.tsx  — Freitext-Editor
+│   │   │   │   ├── LueckentextEditor.tsx — Lückentext-Editor
+│   │   │   │   ├── ZuordnungEditor.tsx — Zuordnung-Editor
+│   │   │   │   ├── RichtigFalschEditor.tsx — Richtig/Falsch-Editor
+│   │   │   │   └── BerechnungEditor.tsx — Berechnung-Editor
 │   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS
 │   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel
 │   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI
@@ -175,10 +185,10 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 2. Composer E2E testen (Prüfung erstellen → Fragen zuordnen → Speichern → mit `?id=` öffnen)
 3. Tablet-/Smartphone-Tests
 
-### Code-Review-Rückstand (separat angehen)
-4. **W4: Schülercode-Validierung** — Server-seitige Validierung nötig (Backend-Änderung)
-5. **W5: Focus-Trap für Modals** — Braucht neue Dependency (z.B. `@headlessui/react`) oder viel manueller Code
-6. **W6: FragenEditor Split** — 971 Zeilen, substanzielles Refactoring (Extract Component/Hook)
+### Code-Review-Rückstand (erledigt 18.03.2026)
+4. ~~**W4: Schülercode-Validierung**~~ ✅ — `validiereSchuelercode` in apiService + LoginScreen Backend-Check mit Fallback
+5. ~~**W5: Focus-Trap für Modals**~~ ✅ — Custom `useFocusTrap` Hook (ohne Dependency), integriert in AbgabeDialog, PruefungsComposer, FragenBrowser, FragenEditor
+6. ~~**W6: FragenEditor Split**~~ ✅ — 949→290 Zeilen, aufgeteilt in `frageneditor/` (8 Dateien: editorUtils, EditorBausteine, MC/Freitext/Lückentext/Zuordnung/RichtigFalsch/BerechnungEditor)
 
 ### Später
 7. KI-Korrektur (Claude API für Freitext-Bewertung)
