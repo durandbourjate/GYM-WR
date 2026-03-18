@@ -151,6 +151,7 @@ Pruefung/
 │       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
 │       ├── fachbereich.ts              — Shared: fachbereichFarbe(), typLabel(), bloomLabel()
 │       ├── korrekturUtils.ts          — berechneNote(), effektivePunkte(), Statistiken
+│       ├── exportUtils.ts              — CSV-Export (Semicolon, BOM für Excel)
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
 │       └── zeit.ts                      — Timer-Hilfsfunktionen
 ├── seb/
@@ -200,11 +201,15 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 13 | Login-Vereinfachung | ✅ | Name aus E-Mail, "Schüler-ID", Backend-Validierung |
 | 14 | Monitoring robust | ✅ | Backend-Daten-Mapping mit Defaults, Zurück-Buttons auf Fehlerscreens |
 
-### Offen (Priorität 2+3)
-- Erweitertes LP-Monitoring (SEB-Verstösse, Antwort-Einsicht in Echtzeit)
-- Chat mit einzelnen SuS während Prüfung
-- Fragen-Dashboard (pro Frage statt pro SuS)
-- Kollaboratives Korrigieren
+### Priorität 2+3 Features (18.03.2026)
+| # | Feature | Status | Beschreibung |
+|---|---------|--------|-------------|
+| 15 | Erweitertes LP-Monitoring | ✅ | Antwort-Einsicht pro SuS (Fragen-Fortschritt + Kurzvorschau) |
+| 16 | Fragen-Dashboard | ✅ | SuS/Fragen Toggle im Monitoring (aggregierter Fortschritt pro Frage) |
+| 17 | LP-zu-SuS Chat | ✅ | Nachrichten senden/empfangen während Prüfung (Einzel + Broadcast) |
+
+### Offen
+- Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung)
 - Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
 
 ### Backend-Hinweis
