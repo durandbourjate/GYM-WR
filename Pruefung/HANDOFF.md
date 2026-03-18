@@ -182,33 +182,33 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 4: GitHub Actions | ✅ erledigt | Secrets `VITE_GOOGLE_CLIENT_ID` + `VITE_APPS_SCRIPT_URL` gesetzt |
 | 5: End-to-End-Test | ✅ erledigt | Login → Laden → Ausfüllen → Abgabe → Datei in Drive |
 | 6: Fragenbank+Composer | ✅ erledigt | Login → Frage erstellen → Speichern → Prüfung zusammenstellen (17.03.2026) |
-| 7: KI-Korrektur | 🔧 Frontend fertig | Backend-Code dokumentiert, API-Key + Deploy pending |
+| 7: KI-Korrektur | ✅ erledigt | Backend deployed, API-Key gesetzt, alle Endpoints funktionieren |
 
 ## Nächste Schritte
 
-### Sofort
-1. SEB-Datei im SEB Config Tool erstellen (XML aus `seb/` importieren → URL anpassen → .seb exportieren)
-2. Composer E2E testen (Prüfung erstellen → Fragen zuordnen → Speichern → mit `?id=` öffnen)
-3. Tablet-/Smartphone-Tests
+### Erledigt (18.03.2026)
+- W4-W6 Code-Review ✅, KI-Korrektur ✅, UI-Fixes ✅, 4 neue Features ✅
 
-### Code-Review-Rückstand (erledigt 18.03.2026)
-4. ~~**W4: Schülercode-Validierung**~~ ✅ — `validiereSchuelercode` in apiService + LoginScreen Backend-Check mit Fallback
-5. ~~**W5: Focus-Trap für Modals**~~ ✅ — Custom `useFocusTrap` Hook (ohne Dependency), integriert in AbgabeDialog, PruefungsComposer, FragenBrowser, FragenEditor
-6. ~~**W6: FragenEditor Split**~~ ✅ — 949→290 Zeilen, aufgeteilt in `frageneditor/` (8 Dateien: editorUtils, EditorBausteine, MC/Freitext/Lückentext/Zuordnung/RichtigFalsch/BerechnungEditor)
+### Neue Features (18.03.2026)
+| # | Feature | Status | Beschreibung |
+|---|---------|--------|-------------|
+| 8 | Warteraum + Freischaltung | ✅ | `freigeschaltet` in Config, Polling im Startbildschirm, LP-Freigabe im Monitoring |
+| 9 | CSV-Export | ✅ | `exportUtils.ts`, Button im KorrekturDashboard (Semicolon-CSV mit BOM) |
+| 10 | Fragen-Statistiken | ✅ | Aufklappbare Fragen-Analyse mit Lösungsquote-Balken |
+| 11 | Zeitzuschläge | ✅ | `zeitverlaengerungen` in Config, Timer-Integration, Composer-UI, Badge in Monitoring |
+| 12 | Dark Mode Fix | ✅ | Neutrales Grau, 3-Wege-Toggle, `@custom-variant dark` für Tailwind v4 |
+| 13 | Login-Vereinfachung | ✅ | Name aus E-Mail, "Schüler-ID", Backend-Validierung |
+| 14 | Monitoring robust | ✅ | Backend-Daten-Mapping mit Defaults, Zurück-Buttons auf Fehlerscreens |
 
-### KI-Korrektur (18.03.2026 — Frontend fertig, Backend-Code dokumentiert)
-7. **KI-Korrektur** ✅ Frontend + Backend-Doku:
-   - Types: `src/types/korrektur.ts` (FragenBewertung, SchuelerKorrektur, PruefungsKorrektur)
-   - API: 6 neue Endpoints in `apiService.ts` (ladeKorrektur, ladeAbgaben, starteKorrektur, etc.)
-   - UI: `KorrekturDashboard.tsx`, `KorrekturSchuelerZeile.tsx`, `KorrekturFrageZeile.tsx`
-   - Utils: `korrekturUtils.ts` (berechneNote CH 1-6, effektivePunkte, Statistiken)
-   - Routing: `?id=X&ansicht=korrektur` → KorrekturDashboard
-   - Apps Script: Kompletter Backend-Code in `Google_Workspace_Setup.md` Teil 6
-   - **TODO:** Anthropic API-Key erstellen + in Apps Script eintragen (→ `docs/CLAUDE_API_SETUP.md`)
-   - **TODO:** Apps Script Code einfügen + neu deployen
+### Offen (Priorität 2+3)
+- Erweitertes LP-Monitoring (SEB-Verstösse, Antwort-Einsicht in Echtzeit)
+- Chat mit einzelnen SuS während Prüfung
+- Fragen-Dashboard (pro Frage statt pro SuS)
+- Kollaboratives Korrigieren
+- Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
 
-### Später
-8. Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
+### Backend-Hinweis
+`apps-script-code.js` enthält den kompletten Apps Script Code. Nach Änderungen: Code kopieren → Apps Script Editor → Bereitstellung aktualisieren (Stift → Neue Version). Die Spalten `freigeschaltet` und `zeitverlaengerungen` müssen im Configs-Sheet vorhanden sein.
 
 ## Commits
 
