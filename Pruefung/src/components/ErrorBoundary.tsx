@@ -101,6 +101,12 @@ export default class ErrorBoundary extends Component<Props, State> {
                 Seite neu laden
               </button>
               <button
+                onClick={() => { window.history.pushState({}, '', window.location.pathname); window.location.reload() }}
+                className="w-full px-4 py-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+              >
+                ← Zurück zur Startseite
+              </button>
+              <button
                 onClick={this.handleDatenExport}
                 className="w-full px-4 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
               >

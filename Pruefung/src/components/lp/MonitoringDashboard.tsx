@@ -34,7 +34,29 @@ export default function MonitoringDashboard({ pruefungId }: { pruefungId: string
 
     const result = await apiService.ladeMonitoring(pruefungId, user.email)
     if (result) {
-      setDaten(result)
+      // Backend liefert minimale Daten — fehlende Felder mit Defaults ergänzen
+      const mappedResult = {
+        ...result,
+        gesamtSus: result.gesamtSus ?? result.schueler?.length ?? 0,
+        schueler: ((result.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
+          email: s.email || '',
+          name: s.name || s.email || '',
+          status: s.status || (s.istAbgegeben === 'true' || s.istAbgegeben === true ? 'abgegeben' : 'nicht-gestartet'),
+          letzterHeartbeat: s.letzterHeartbeat || null,
+          letzterSave: s.letzterSave || null,
+          beantworteteFragen: Number(s.beantworteteFragen) || 0,
+          gesamtFragen: Number(s.gesamtFragen) || 0,
+          abgabezeit: s.abgabezeit || null,
+          startzeit: s.startzeit || null,
+          heartbeats: Number(s.heartbeats) || 0,
+          netzwerkFehler: Number(s.netzwerkFehler) || 0,
+          autoSaveCount: Number(s.autoSaveCount) || 0,
+          unterbrechungen: Array.isArray(s.unterbrechungen) ? s.unterbrechungen : [],
+          sebVersion: s.sebVersion || undefined,
+          browserInfo: s.browserInfo || undefined,
+        })),
+      }
+      setDaten(mappedResult as MonitoringDaten)
       setLadeStatus('fertig')
     } else {
       setLadeStatus('fehler')
@@ -111,7 +133,13 @@ export default function MonitoringDashboard({ pruefungId }: { pruefungId: string
           <p className="text-slate-700 dark:text-slate-300 mb-4">
             Monitoring-Daten konnten nicht geladen werden.
           </p>
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button
+              onClick={() => { window.history.pushState({}, '', window.location.pathname); window.location.reload() }}
+              className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            >
+              ← Zurück
+            </button>
             <button
               onClick={ladeDaten}
               className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
