@@ -1,6 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
+import { apiService } from '../services/apiService.ts'
+import type { PruefungsNachricht } from '../types/monitoring.ts'
 import { usePruefungsMonitoring } from '../hooks/usePruefungsMonitoring.ts'
 import { usePruefungsUX } from '../hooks/usePruefungsUX.ts'
 import { useTabKonflikt } from '../hooks/useTabKonflikt.ts'
@@ -48,6 +50,29 @@ export default function Layout() {
     onAbgabeDialogOeffnen: handleAbgabeDialogOeffnen,
     onAbgabeDialogSchliessen: handleAbgabeDialogSchliessen,
   })
+
+  // LP-Nachrichten für SuS
+  const [lpNachrichten, setLpNachrichten] = useState<PruefungsNachricht[]>([])
+  const [geschlosseneNachrichten, setGeschlosseneNachrichten] = useState<Set<string>>(new Set())
+  useEffect(() => {
+    if (!user || !config || abgegeben) return
+
+    const pruefungId = config.id
+    const email = user.email
+
+    async function pollNachrichten() {
+      const result = await apiService.ladeNachrichten(pruefungId, email)
+      if (result.length > 0) {
+        setLpNachrichten(result)
+      }
+    }
+
+    pollNachrichten()
+    const interval = setInterval(pollNachrichten, 10000)
+    return () => clearInterval(interval)
+  }, [user, config, abgegeben])
+
+  const ungelesenNachrichten = lpNachrichten.filter((n) => !geschlosseneNachrichten.has(n.id))
 
   if (!config || fragen.length === 0) {
     return (
@@ -103,6 +128,30 @@ export default function Layout() {
           >
             &times;
           </button>
+        </div>
+      )}
+
+      {/* LP-Nachrichten */}
+      {ungelesenNachrichten.length > 0 && (
+        <div className="bg-blue-50 dark:bg-blue-900/30 border-b border-blue-300 dark:border-blue-700 px-4 py-2 space-y-1">
+          {ungelesenNachrichten.map((n) => (
+            <div key={n.id} className="flex items-start justify-between gap-2">
+              <div className="flex items-start gap-2 text-sm text-blue-800 dark:text-blue-200 min-w-0">
+                <span className="flex-shrink-0 font-medium">Lehrperson:</span>
+                <span className="break-words min-w-0">{n.text}</span>
+                <span className="flex-shrink-0 text-xs text-blue-500 dark:text-blue-400 tabular-nums mt-0.5">
+                  {new Date(n.zeitpunkt).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+              <button
+                onClick={() => setGeschlosseneNachrichten((prev) => new Set(prev).add(n.id))}
+                className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 text-lg leading-none flex-shrink-0 cursor-pointer"
+                title="Nachricht schliessen"
+              >
+                &times;
+              </button>
+            </div>
+          ))}
         </div>
       )}
 

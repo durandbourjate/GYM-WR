@@ -39,6 +39,8 @@ function doGet(e) {
       return ladeAbgaben(e.parameter.id, email);
     case 'korrekturFortschritt':
       return ladeKorrekturFortschritt(e.parameter.id, email);
+    case 'ladeNachrichten':
+      return ladeNachrichtenEndpoint(e.parameter.id, email);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -67,6 +69,8 @@ function doPost(e) {
       return validiereSchuelercode(body);
     case 'schalteFrei':
       return schalteFreiEndpoint(body);
+    case 'sendeNachricht':
+      return sendeNachrichtEndpoint(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -1182,5 +1186,117 @@ function validiereSchuelercode(body) {
     return jsonResponse({ success: false, error: 'Code ungültig oder E-Mail nicht in Klassenliste.' });
   } catch (error) {
     return jsonResponse({ success: false, error: error.message });
+  }
+}
+
+// === NACHRICHTEN (LP → SuS) ===
+
+/**
+ * Nachrichten-Sheet finden oder erstellen.
+ * Speichert Nachrichten in einem eigenen Sheet pro Prüfung.
+ */
+function findOrCreateNachrichtenSheet(pruefungId) {
+  const sheetName = 'Nachrichten_' + pruefungId;
+  const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+  const files = ordner.getFilesByName(sheetName);
+
+  if (files.hasNext()) {
+    return SpreadsheetApp.open(files.next()).getSheets()[0];
+  }
+
+  const ss = SpreadsheetApp.create(sheetName);
+  const sheet = ss.getSheets()[0];
+  const headers = ['id', 'von', 'an', 'text', 'zeitpunkt', 'gelesen'];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+
+  const file = DriveApp.getFileById(ss.getId());
+  ordner.addFile(file);
+  DriveApp.getRootFolder().removeFile(file);
+  return sheet;
+}
+
+/**
+ * Nachricht von LP an SuS senden (POST)
+ * Body: { pruefungId, von, an, text }
+ */
+function sendeNachrichtEndpoint(body) {
+  try {
+    const { pruefungId, von, an, text } = body;
+
+    if (!pruefungId || !von || !an || !text) {
+      return jsonResponse({ error: 'Fehlende Parameter' });
+    }
+
+    // Nur LP darf senden
+    if (!von.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur Lehrpersonen können Nachrichten senden' });
+    }
+
+    const sheet = findOrCreateNachrichtenSheet(pruefungId);
+    const id = new Date().getTime().toString() + '_' + Math.random().toString(36).substr(2, 5);
+    const zeitpunkt = new Date().toISOString();
+
+    sheet.appendRow([id, von, an, text, zeitpunkt, false]);
+
+    return jsonResponse({ success: true, id: id });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Nachrichten für eine Person laden (GET)
+ * Parameter: id (pruefungId), email
+ * Gibt Nachrichten zurück, die an diese E-Mail oder an '*' (Broadcast) gerichtet sind.
+ * LP sieht alle Nachrichten (auch an andere SuS).
+ */
+function ladeNachrichtenEndpoint(pruefungId, email) {
+  try {
+    if (!pruefungId) {
+      return jsonResponse({ error: 'Fehlende Prüfungs-ID' });
+    }
+
+    const sheetName = 'Nachrichten_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+
+    // Kein Nachrichten-Sheet vorhanden → leeres Array
+    if (!files.hasNext()) {
+      return jsonResponse({ nachrichten: [] });
+    }
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      return jsonResponse({ nachrichten: [] });
+    }
+
+    const headers = data[0];
+    const istLP = email.endsWith('@' + LP_DOMAIN);
+    const nachrichten = [];
+
+    for (var i = 1; i < data.length; i++) {
+      var row = {};
+      for (var j = 0; j < headers.length; j++) {
+        row[headers[j]] = data[i][j];
+      }
+
+      // LP sieht alle Nachrichten, SuS nur ihre eigenen + Broadcasts
+      if (istLP || row.an === email || row.an === '*') {
+        nachrichten.push({
+          id: row.id || '',
+          von: row.von || '',
+          an: row.an || '',
+          text: row.text || '',
+          zeitpunkt: row.zeitpunkt || '',
+          gelesen: row.gelesen === true || row.gelesen === 'true',
+        });
+      }
+    }
+
+    return jsonResponse({ nachrichten: nachrichten });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
   }
 }

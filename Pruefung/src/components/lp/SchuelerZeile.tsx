@@ -1,6 +1,8 @@
-import type { SchuelerStatus } from '../../types/monitoring.ts'
+import { useState, useCallback } from 'react'
+import type { SchuelerStatus, PruefungsNachricht } from '../../types/monitoring.ts'
 import type { Antwort } from '../../types/antworten.ts'
 import type { Frage } from '../../types/fragen.ts'
+import { apiService } from '../../services/apiService.ts'
 
 interface Props {
   schueler: SchuelerStatus
@@ -9,9 +11,13 @@ interface Props {
   zeitverlaengerung?: number // Zusätzliche Minuten (Nachteilsausgleich)
   antworten?: Record<string, Antwort> // Antworten des Schülers (frageId → Antwort)
   fragen?: Frage[] // Fragen der Prüfung (für Metadaten)
+  pruefungId?: string // Prüfungs-ID für Nachrichten
+  lpEmail?: string // E-Mail der LP für Nachrichten
+  nachrichten?: PruefungsNachricht[] // Bereits geladene Nachrichten für diesen Schüler
+  onNachrichtGesendet?: () => void // Callback nach erfolgreichem Senden
 }
 
-export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitverlaengerung, antworten, fragen }: Props) {
+export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitverlaengerung, antworten, fragen, pruefungId, lpEmail, nachrichten, onNachrichtGesendet }: Props) {
   const fortschrittProzent = schueler.gesamtFragen > 0
     ? Math.round((schueler.beantworteteFragen / schueler.gesamtFragen) * 100)
     : 0
@@ -143,6 +149,17 @@ export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitver
           {fragen && fragen.length > 0 && (
             <FragenFortschritt fragen={fragen} antworten={antworten} />
           )}
+
+          {/* Nachrichten an SuS */}
+          {pruefungId && lpEmail && (
+            <NachrichtenBereich
+              pruefungId={pruefungId}
+              lpEmail={lpEmail}
+              susEmail={schueler.email}
+              nachrichten={nachrichten}
+              onNachrichtGesendet={onNachrichtGesendet}
+            />
+          )}
         </div>
       )}
     </div>
@@ -208,6 +225,94 @@ function FragenFortschritt({ fragen, antworten }: { fragen: Frage[]; antworten?:
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+/** Nachrichten-Bereich im Detail-Panel (LP → SuS) */
+function NachrichtenBereich({
+  pruefungId,
+  lpEmail,
+  susEmail,
+  nachrichten,
+  onNachrichtGesendet,
+}: {
+  pruefungId: string
+  lpEmail: string
+  susEmail: string
+  nachrichten?: PruefungsNachricht[]
+  onNachrichtGesendet?: () => void
+}) {
+  const [text, setText] = useState('')
+  const [sendet, setSendet] = useState(false)
+
+  // Nachrichten für diesen Schüler filtern (direkt + Broadcast)
+  const relevante = (nachrichten ?? []).filter(
+    (n) => n.an === susEmail || n.an === '*'
+  )
+
+  const handleSenden = useCallback(async () => {
+    const nachricht = text.trim()
+    if (!nachricht || sendet) return
+
+    setSendet(true)
+    const ok = await apiService.sendeNachricht(pruefungId, lpEmail, susEmail, nachricht)
+    setSendet(false)
+
+    if (ok) {
+      setText('')
+      onNachrichtGesendet?.()
+    }
+  }, [text, sendet, pruefungId, lpEmail, susEmail, onNachrichtGesendet])
+
+  return (
+    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+      <h4 className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-2">
+        Nachricht an Schüler/in
+      </h4>
+
+      {/* Bisherige Nachrichten */}
+      {relevante.length > 0 && (
+        <div className="space-y-1 mb-2 max-h-32 overflow-y-auto">
+          {relevante.map((n) => (
+            <div
+              key={n.id}
+              className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/50 px-2 py-1.5 rounded"
+            >
+              <span className="text-slate-400 dark:text-slate-500 tabular-nums flex-shrink-0">
+                {new Date(n.zeitpunkt).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <span className="break-words min-w-0">
+                {n.an === '*' && <span className="text-blue-500 dark:text-blue-400 mr-1" title="Broadcast">[Alle]</span>}
+                {n.text}
+              </span>
+              {n.gelesen && (
+                <span className="text-green-500 flex-shrink-0" title="Gelesen">✓</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Eingabefeld */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSenden() }}
+          placeholder="Nachricht eingeben..."
+          className="flex-1 text-xs px-2 py-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500"
+          disabled={sendet}
+        />
+        <button
+          onClick={handleSenden}
+          disabled={!text.trim() || sendet}
+          className="px-3 py-1.5 text-xs font-medium text-white bg-slate-700 dark:bg-slate-600 rounded hover:bg-slate-800 dark:hover:bg-slate-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        >
+          {sendet ? '...' : 'Senden'}
+        </button>
       </div>
     </div>
   )

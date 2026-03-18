@@ -3,7 +3,7 @@ import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import { erstelleDemoMonitoring } from '../../data/demoMonitoring.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
-import type { MonitoringDaten, SchuelerStatus } from '../../types/monitoring.ts'
+import type { MonitoringDaten, SchuelerStatus, PruefungsNachricht } from '../../types/monitoring.ts'
 import type { SchuelerAbgabe } from '../../types/korrektur.ts'
 import type { Frage } from '../../types/fragen.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
@@ -31,6 +31,23 @@ export default function MonitoringDashboard({ pruefungId }: { pruefungId: string
   const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
   const [fragen, setFragen] = useState<Frage[]>([])
   const abgabenGeladen = useRef(false)
+
+  // Nachrichten (LP → SuS)
+  const [nachrichten, setNachrichten] = useState<PruefungsNachricht[]>([])
+
+  // Nachrichten laden
+  const ladeNachrichten = useCallback(async () => {
+    if (!user || istDemoModus || !apiService.istKonfiguriert() || !pruefungId) return
+    const result = await apiService.ladeNachrichten(pruefungId, user.email)
+    setNachrichten(result)
+  }, [user, istDemoModus, pruefungId])
+
+  // Nachrichten initial + periodisch laden (alle 10s)
+  useEffect(() => {
+    ladeNachrichten()
+    const interval = setInterval(ladeNachrichten, 10000)
+    return () => clearInterval(interval)
+  }, [ladeNachrichten])
 
   // Daten laden (Backend oder Demo)
   const ladeDaten = useCallback(async () => {
@@ -373,6 +390,10 @@ export default function MonitoringDashboard({ pruefungId }: { pruefungId: string
                 zeitverlaengerung={daten?.zeitverlaengerungen?.[schueler.email]}
                 antworten={abgaben[schueler.email]?.antworten}
                 fragen={fragen}
+                pruefungId={pruefungId ?? undefined}
+                lpEmail={user?.email}
+                nachrichten={nachrichten}
+                onNachrichtGesendet={ladeNachrichten}
               />
             ))
           )}

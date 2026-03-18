@@ -53,3 +53,13 @@ export interface MonitoringDaten {
   schueler: SchuelerStatus[]
   zeitverlaengerungen?: Record<string, number> // E-Mail → zusätzliche Minuten (Nachteilsausgleich)
 }
+
+/** Nachricht von LP an SuS während einer Prüfung */
+export interface PruefungsNachricht {
+  id: string           // timestamp-basierte unique ID
+  von: string          // E-Mail des Absenders (LP)
+  an: string           // E-Mail des Empfängers (SuS), oder '*' für Broadcast
+  text: string         // Nachrichteninhalt
+  zeitpunkt: string    // ISO-Timestamp
+  gelesen: boolean     // Vom Empfänger gelesen
+}
