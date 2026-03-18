@@ -440,6 +440,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Bewertungsraster */}
           <Abschnitt titel="Bewertungsraster">
             <div className="space-y-2">
+              {/* Spalten-Header */}
+              {bewertungsraster.length > 0 && (
+                <div className="flex gap-2 items-center text-xs text-slate-500 dark:text-slate-400">
+                  <span className="flex-1">Kriterium</span>
+                  <span className="w-16 text-center">Pkt.</span>
+                  <span className="w-7" />
+                </div>
+              )}
               {bewertungsraster.map((kriterium, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <input
@@ -458,12 +466,13 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                     value={kriterium.punkte}
                     onChange={(e) => {
                       const neu = [...bewertungsraster]
-                      neu[i] = { ...neu[i], punkte: parseInt(e.target.value) || 0 }
+                      neu[i] = { ...neu[i], punkte: parseFloat(e.target.value) || 0 }
                       setBewertungsraster(neu)
                     }}
                     min={0}
+                    step={0.5}
                     className="input-field w-16 text-center"
-                    title="Punkte"
+                    title="Punkte für dieses Kriterium"
                   />
                   <button
                     onClick={() => setBewertungsraster(bewertungsraster.filter((_, j) => j !== i))}
