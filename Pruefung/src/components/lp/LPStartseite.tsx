@@ -194,6 +194,14 @@ export default function LPStartseite() {
                   >
                     Monitoring
                   </a>
+                  {/* Korrektur-Link */}
+                  <a
+                    href={`${window.location.pathname}?id=${c.id}&ansicht=korrektur`}
+                    className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                    title="KI-Korrektur & Feedback"
+                  >
+                    Korrektur
+                  </a>
                   {/* Bearbeiten */}
                   <button
                     onClick={() => handleBearbeiten(c)}

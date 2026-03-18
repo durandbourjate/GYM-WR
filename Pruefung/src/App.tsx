@@ -12,6 +12,7 @@ import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
 import AbgabeZusammenfassung from './components/AbgabeZusammenfassung.tsx'
 import MonitoringDashboard from './components/lp/MonitoringDashboard.tsx'
+import KorrekturDashboard from './components/lp/KorrekturDashboard.tsx'
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
 
@@ -78,9 +79,13 @@ export default function App() {
     return <LoginScreen />
   }
 
-  // LP-Modus: mit ?id= → Monitoring, ohne → Startseite (Composer/Verwaltung)
+  // LP-Modus: mit ?id= → Monitoring/Korrektur, ohne → Startseite (Composer/Verwaltung)
   if (user.rolle === 'lp') {
     if (pruefungIdAusUrl) {
+      const ansicht = new URLSearchParams(window.location.search).get('ansicht')
+      if (ansicht === 'korrektur') {
+        return <KorrekturDashboard pruefungId={pruefungIdAusUrl} />
+      }
       return <MonitoringDashboard pruefungId={pruefungIdAusUrl} />
     }
     return <LPStartseite />

@@ -87,6 +87,7 @@ Pruefung/
 │   │   ├── pruefung.ts                  — PruefungsConfig, PruefungsAbschnitt
 │   │   ├── antworten.ts                 — PruefungsAbgabe, Antwort-Union-Typ
 │   │   ├── auth.ts                      — AuthUser, Rolle
+│   │   ├── korrektur.ts                 — FragenBewertung, SchuelerKorrektur, PruefungsKorrektur
 │   │   └── monitoring.ts                — SchuelerStatus, MonitoringDaten
 │   ├── store/
 │   │   ├── pruefungStore.ts             — Zustand-Store (Antworten, Navigation, Phase)
@@ -122,6 +123,9 @@ Pruefung/
 │   │   │   │   ├── ZuordnungEditor.tsx — Zuordnung-Editor
 │   │   │   │   ├── RichtigFalschEditor.tsx — Richtig/Falsch-Editor
 │   │   │   │   └── BerechnungEditor.tsx — Berechnung-Editor
+│   │   │   ├── KorrekturDashboard.tsx   — KI-Korrektur: Review + Feedback
+│   │   │   ├── KorrekturSchuelerZeile.tsx — Aufklappbare SuS-Zeile mit Bewertungen
+│   │   │   ├── KorrekturFrageZeile.tsx   — Einzelne Frage: KI-Vorschlag + LP-Override
 │   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS
 │   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel
 │   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI
@@ -146,6 +150,7 @@ Pruefung/
 │   └── utils/
 │       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
 │       ├── fachbereich.ts              — Shared: fachbereichFarbe(), typLabel(), bloomLabel()
+│       ├── korrekturUtils.ts          — berechneNote(), effektivePunkte(), Statistiken
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
 │       └── zeit.ts                      — Timer-Hilfsfunktionen
 ├── seb/
@@ -177,6 +182,7 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 4: GitHub Actions | ✅ erledigt | Secrets `VITE_GOOGLE_CLIENT_ID` + `VITE_APPS_SCRIPT_URL` gesetzt |
 | 5: End-to-End-Test | ✅ erledigt | Login → Laden → Ausfüllen → Abgabe → Datei in Drive |
 | 6: Fragenbank+Composer | ✅ erledigt | Login → Frage erstellen → Speichern → Prüfung zusammenstellen (17.03.2026) |
+| 7: KI-Korrektur | 🔧 Frontend fertig | Backend-Code dokumentiert, API-Key + Deploy pending |
 
 ## Nächste Schritte
 
@@ -190,8 +196,18 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 5. ~~**W5: Focus-Trap für Modals**~~ ✅ — Custom `useFocusTrap` Hook (ohne Dependency), integriert in AbgabeDialog, PruefungsComposer, FragenBrowser, FragenEditor
 6. ~~**W6: FragenEditor Split**~~ ✅ — 949→290 Zeilen, aufgeteilt in `frageneditor/` (8 Dateien: editorUtils, EditorBausteine, MC/Freitext/Lückentext/Zuordnung/RichtigFalsch/BerechnungEditor)
 
+### KI-Korrektur (18.03.2026 — Frontend fertig, Backend-Code dokumentiert)
+7. **KI-Korrektur** ✅ Frontend + Backend-Doku:
+   - Types: `src/types/korrektur.ts` (FragenBewertung, SchuelerKorrektur, PruefungsKorrektur)
+   - API: 6 neue Endpoints in `apiService.ts` (ladeKorrektur, ladeAbgaben, starteKorrektur, etc.)
+   - UI: `KorrekturDashboard.tsx`, `KorrekturSchuelerZeile.tsx`, `KorrekturFrageZeile.tsx`
+   - Utils: `korrekturUtils.ts` (berechneNote CH 1-6, effektivePunkte, Statistiken)
+   - Routing: `?id=X&ansicht=korrektur` → KorrekturDashboard
+   - Apps Script: Kompletter Backend-Code in `Google_Workspace_Setup.md` Teil 6
+   - **TODO:** Anthropic API-Key erstellen + in Apps Script eintragen (→ `docs/CLAUDE_API_SETUP.md`)
+   - **TODO:** Apps Script Code einfügen + neu deployen
+
 ### Später
-7. KI-Korrektur (Claude API für Freitext-Bewertung)
 8. Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
 
 ## Commits

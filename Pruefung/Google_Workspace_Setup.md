@@ -961,3 +961,689 @@ npm run dev
 | "Kein Zugang" | E-Mail nicht in der Klassenliste für diese Prüfung. |
 | CORS-Fehler | Apps Script muss als Web-App deployed sein (nicht als API Executable). Zugriff muss korrekt gesetzt sein. |
 | Antworten werden nicht gespeichert | Prüfe ob der Antworten-Ordner existiert und das Apps Script Schreibrechte hat. |
+
+## Teil 6: KI-Korrektur (Claude API)
+
+> Für die Einrichtung des Anthropic API-Keys siehe [docs/CLAUDE_API_SETUP.md](docs/CLAUDE_API_SETUP.md).
+
+### 6.1 Neue Endpoints im Apps Script
+
+Folgende Abschnitte zum bestehenden `doGet` und `doPost` in `Code.gs` hinzufügen:
+
+**In `doGet` — neue Cases:**
+
+```javascript
+    case 'ladeKorrektur':
+      return ladeKorrektur(e.parameter.id, email);
+    case 'ladeAbgaben':
+      return ladeAbgaben(e.parameter.id, email);
+    case 'korrekturFortschritt':
+      return ladeKorrekturFortschritt(e.parameter.id, email);
+```
+
+**In `doPost` — neue Cases:**
+
+```javascript
+    case 'starteKorrektur':
+      return starteKorrekturEndpoint(body);
+    case 'speichereKorrekturZeile':
+      return speichereKorrekturZeile(body);
+    case 'generiereUndSendeFeedback':
+      return generiereUndSendeFeedbackEndpoint(body);
+    case 'validiereSchuelercode':
+      return validiereSchuelercode(body);
+```
+
+### 6.2 Claude API Caller
+
+```javascript
+// === CLAUDE API ===
+
+function rufeClaudeAuf(systemPrompt, userPrompt) {
+  const apiKey = PropertiesService.getScriptProperties().getProperty('CLAUDE_API_KEY');
+  if (!apiKey) {
+    throw new Error('CLAUDE_API_KEY nicht als Script Property gesetzt');
+  }
+
+  const response = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    payload: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    }),
+    muteHttpExceptions: true,
+  });
+
+  const status = response.getResponseCode();
+  if (status !== 200) {
+    throw new Error('Claude API ' + status + ': ' + response.getContentText().substring(0, 200));
+  }
+
+  const result = JSON.parse(response.getContentText());
+  const text = result.content[0].text;
+
+  // JSON aus Antwort extrahieren (Claude kann Markdown-Codeblocks verwenden)
+  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  return JSON.parse(cleaned);
+}
+```
+
+### 6.3 Auto-Korrektur (deterministische Fragetypen)
+
+```javascript
+// === AUTO-KORREKTUR ===
+
+function autoBewerteAntwort(frage, antwort) {
+  if (!antwort) return { punkte: 0, begruendung: 'Keine Antwort', quelle: 'auto' };
+
+  switch (frage.typ) {
+    case 'mc': {
+      const korrekte = (frage.optionen || []).filter(o => o.korrekt).map(o => o.id);
+      const gewaehlt = antwort.gewaehlteOptionen || [];
+      const alleKorrekt = korrekte.every(id => gewaehlt.includes(id));
+      const keineFalschen = gewaehlt.every(id => korrekte.includes(id));
+      const richtig = alleKorrekt && keineFalschen;
+      return {
+        punkte: richtig ? frage.punkte : 0,
+        begruendung: richtig ? 'Alle Optionen korrekt' : 'Falsche/fehlende Optionen',
+        quelle: 'auto'
+      };
+    }
+
+    case 'richtigfalsch': {
+      const aussagen = frage.aussagen || [];
+      let korrekt = 0;
+      for (const a of aussagen) {
+        if (antwort.bewertungen && antwort.bewertungen[a.id] === a.korrekt) korrekt++;
+      }
+      const punkte = aussagen.length > 0 ? Math.round(frage.punkte * korrekt / aussagen.length * 2) / 2 : 0;
+      return {
+        punkte,
+        begruendung: korrekt + '/' + aussagen.length + ' korrekt',
+        quelle: 'auto'
+      };
+    }
+
+    case 'zuordnung': {
+      const paare = frage.paare || [];
+      let korrekt = 0;
+      for (const p of paare) {
+        if (antwort.zuordnungen && antwort.zuordnungen[p.links] === p.rechts) korrekt++;
+      }
+      const punkte = paare.length > 0 ? Math.round(frage.punkte * korrekt / paare.length * 2) / 2 : 0;
+      return {
+        punkte,
+        begruendung: korrekt + '/' + paare.length + ' korrekt zugeordnet',
+        quelle: 'auto'
+      };
+    }
+
+    case 'lueckentext': {
+      const luecken = frage.luecken || [];
+      let korrekt = 0;
+      for (const l of luecken) {
+        const eingabe = (antwort.eintraege && antwort.eintraege[l.id] || '').toLowerCase().trim();
+        const akzeptiert = (l.korrekteAntworten || [l.korrekt]).map(a => a.toLowerCase().trim());
+        if (akzeptiert.includes(eingabe)) korrekt++;
+      }
+      const punkte = luecken.length > 0 ? Math.round(frage.punkte * korrekt / luecken.length * 2) / 2 : 0;
+      return {
+        punkte,
+        begruendung: korrekt + '/' + luecken.length + ' Lücken korrekt',
+        quelle: 'auto'
+      };
+    }
+
+    case 'berechnung': {
+      const ergebnisse = frage.ergebnisse || [];
+      let korrekt = 0;
+      for (const e of ergebnisse) {
+        const eingabe = parseFloat(antwort.ergebnisse && antwort.ergebnisse[e.id] || '');
+        if (!isNaN(eingabe) && Math.abs(eingabe - e.korrekt) <= (e.toleranz || 0)) korrekt++;
+      }
+      const punkte = ergebnisse.length > 0 ? Math.round(frage.punkte * korrekt / ergebnisse.length * 2) / 2 : 0;
+      return {
+        punkte,
+        begruendung: korrekt + '/' + ergebnisse.length + ' Ergebnisse korrekt',
+        quelle: 'auto'
+      };
+    }
+
+    case 'freitext':
+      return null; // → KI-Korrektur nötig
+
+    default:
+      return { punkte: 0, begruendung: 'Unbekannter Fragetyp', quelle: 'auto' };
+  }
+}
+```
+
+### 6.4 Batch-Korrektur Orchestrator
+
+```javascript
+// === BATCH-KORREKTUR ===
+
+function starteKorrekturEndpoint(body) {
+  try {
+    const { pruefungId, email } = body;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    // Fortschritt-Tracking initialisieren
+    const statusSheet = findOrCreateKorrekturSheet(pruefungId);
+    setKorrekturStatus(statusSheet, 'laeuft', 0, 1);
+
+    // Synchron ausführen (passt in 6-Min-Limit für <120 API-Calls)
+    batchKorrektur(pruefungId, email, statusSheet);
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ success: false, fehler: error.message });
+  }
+}
+
+function batchKorrektur(pruefungId, lpEmail, korrekturSheet) {
+  // 1. Config + Fragen laden
+  const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  const configData = getSheetData(configSheet);
+  const configRow = configData.find(row => row.id === pruefungId);
+  if (!configRow) throw new Error('Prüfung nicht gefunden');
+
+  const abschnitte = safeJsonParse(configRow.abschnitte, []);
+  const fragenIds = abschnitte.flatMap(a => a.fragenIds);
+  const fragen = ladeFragen(fragenIds);
+  const fragenMap = {};
+  for (const f of fragen) fragenMap[f.id] = f;
+
+  // 2. Antworten aller SuS laden
+  const sheetName = 'Antworten_' + pruefungId;
+  const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+  const files = ordner.getFilesByName(sheetName);
+  if (!files.hasNext()) {
+    setKorrekturStatus(korrekturSheet, 'fehler', 0, 0);
+    return;
+  }
+
+  const antwortenSheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+  const antwortenData = getSheetData(antwortenSheet);
+
+  // 3. Gesamt-Anzahl berechnen
+  const gesamt = antwortenData.length * fragenIds.length;
+  let erledigt = 0;
+
+  // 4. Pro SuS, pro Frage bewerten
+  const korrekturZeilen = [];
+
+  for (const sus of antwortenData) {
+    const antworten = safeJsonParse(sus.antworten, {});
+
+    for (const frageId of fragenIds) {
+      const frage = fragenMap[frageId];
+      if (!frage) { erledigt++; continue; }
+
+      const antwort = antworten[frageId];
+      const autoBewertung = autoBewerteAntwort(frage, antwort);
+
+      if (autoBewertung !== null) {
+        // Deterministische Bewertung
+        korrekturZeilen.push({
+          email: sus.email,
+          name: sus.name || sus.email,
+          frageId: frageId,
+          fragenTyp: frage.typ,
+          maxPunkte: frage.punkte,
+          kiPunkte: autoBewertung.punkte,
+          lpPunkte: '',
+          kiBegruendung: autoBewertung.begruendung,
+          kiFeedback: '',
+          lpKommentar: '',
+          quelle: autoBewertung.quelle,
+          geprueft: 'false',
+          status: 'ki-bewertet',
+        });
+      } else {
+        // Freitext → Claude API
+        try {
+          const systemPrompt = buildKorrekturPrompt(frage);
+          const userPrompt = antwort ? antwort.text || '(keine Antwort)' : '(keine Antwort)';
+          const kiResult = rufeClaudeAuf(systemPrompt, userPrompt);
+
+          korrekturZeilen.push({
+            email: sus.email,
+            name: sus.name || sus.email,
+            frageId: frageId,
+            fragenTyp: frage.typ,
+            maxPunkte: frage.punkte,
+            kiPunkte: Number(kiResult.punkte) || 0,
+            lpPunkte: '',
+            kiBegruendung: kiResult.begruendung || '',
+            kiFeedback: kiResult.feedback || '',
+            lpKommentar: '',
+            quelle: 'ki',
+            geprueft: 'false',
+            status: 'ki-bewertet',
+          });
+        } catch (err) {
+          korrekturZeilen.push({
+            email: sus.email,
+            name: sus.name || sus.email,
+            frageId: frageId,
+            fragenTyp: frage.typ,
+            maxPunkte: frage.punkte,
+            kiPunkte: '',
+            lpPunkte: '',
+            kiBegruendung: 'API-Fehler: ' + err.message,
+            kiFeedback: '',
+            lpKommentar: '',
+            quelle: 'fehler',
+            geprueft: 'false',
+            status: 'offen',
+          });
+        }
+      }
+
+      erledigt++;
+      if (erledigt % 10 === 0) {
+        setKorrekturStatus(korrekturSheet, 'laeuft', erledigt, gesamt);
+      }
+    }
+  }
+
+  // 5. Korrektur-Sheet befüllen
+  const headers = ['email', 'name', 'frageId', 'fragenTyp', 'maxPunkte', 'kiPunkte', 'lpPunkte', 'kiBegruendung', 'kiFeedback', 'lpKommentar', 'quelle', 'geprueft', 'status'];
+  korrekturSheet.clear();
+  korrekturSheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+
+  if (korrekturZeilen.length > 0) {
+    const rows = korrekturZeilen.map(z => headers.map(h => z[h] || ''));
+    korrekturSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  }
+
+  setKorrekturStatus(korrekturSheet, 'fertig', erledigt, gesamt);
+}
+
+function buildKorrekturPrompt(frage) {
+  const raster = (frage.bewertungsraster || [])
+    .map(b => '- ' + b.beschreibung + ' (' + b.punkte + ' P.)')
+    .join('\n');
+
+  return 'Du bist Korrektor für eine Gymnasialprüfung im Fach Wirtschaft und Recht ' +
+    '(Kanton Bern, Lehrplan 17). Bewerte die folgende Antwort anhand des Bewertungsrasters. ' +
+    'Sei fair aber streng. Verwende Schweizer Hochdeutsch.\n\n' +
+    'Frage: ' + (frage.fragetext || '') + '\n' +
+    'Maximalpunktzahl: ' + frage.punkte + '\n' +
+    'Musterlösung: ' + (frage.musterlosung || '(keine)') + '\n' +
+    'Bewertungsraster:\n' + (raster || '(keines)') + '\n\n' +
+    'Antworte ausschliesslich im JSON-Format:\n' +
+    '{"punkte": <number>, "begruendung": "<kurze Begründung für die LP>", "feedback": "<konstruktives Feedback für den/die SuS>"}';
+}
+```
+
+### 6.5 Hilfs-Funktionen für Korrektur
+
+```javascript
+// === KORREKTUR HILFSFUNKTIONEN ===
+
+function findOrCreateKorrekturSheet(pruefungId) {
+  const sheetName = 'Korrektur_' + pruefungId;
+  const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+  const files = ordner.getFilesByName(sheetName);
+
+  if (files.hasNext()) {
+    return SpreadsheetApp.open(files.next()).getSheets()[0];
+  }
+
+  const ss = SpreadsheetApp.create(sheetName);
+  const sheet = ss.getSheets()[0];
+  const file = DriveApp.getFileById(ss.getId());
+  ordner.addFile(file);
+  DriveApp.getRootFolder().removeFile(file);
+  return sheet;
+}
+
+function setKorrekturStatus(sheet, status, erledigt, gesamt) {
+  // Status in Zelle Z1 schreiben (ausserhalb der Daten)
+  sheet.getRange('Z1').setValue(JSON.stringify({ status, erledigt, gesamt, timestamp: new Date().toISOString() }));
+}
+
+function ladeKorrektur(pruefungId, email) {
+  try {
+    if (!email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    const sheetName = 'Korrektur_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+
+    if (!files.hasNext()) {
+      // Noch keine Korrektur gestartet
+      const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+      const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
+      return jsonResponse({
+        pruefungId,
+        pruefungTitel: configRow ? configRow.titel : pruefungId,
+        datum: configRow ? configRow.datum : '',
+        klasse: configRow ? configRow.klasse : '',
+        schueler: [],
+        batchStatus: 'idle',
+        letzteAktualisierung: new Date().toISOString(),
+      });
+    }
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = getSheetData(sheet);
+    const statusJson = safeJsonParse(sheet.getRange('Z1').getValue(), { status: 'idle' });
+
+    // Config laden
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
+
+    // Zeilen nach SuS gruppieren
+    const schuelerMap = {};
+    for (const row of data) {
+      if (!row.email) continue;
+      if (!schuelerMap[row.email]) {
+        schuelerMap[row.email] = {
+          email: row.email,
+          name: row.name || row.email,
+          bewertungen: {},
+          gesamtPunkte: 0,
+          maxPunkte: 0,
+          korrekturStatus: 'offen',
+        };
+      }
+      const b = {
+        frageId: row.frageId,
+        fragenTyp: row.fragenTyp || '',
+        maxPunkte: Number(row.maxPunkte) || 0,
+        kiPunkte: row.kiPunkte !== '' ? Number(row.kiPunkte) : null,
+        lpPunkte: row.lpPunkte !== '' ? Number(row.lpPunkte) : null,
+        kiBegruendung: row.kiBegruendung || null,
+        kiFeedback: row.kiFeedback || null,
+        lpKommentar: row.lpKommentar || null,
+        quelle: row.quelle || 'auto',
+        geprueft: row.geprueft === 'true',
+      };
+      schuelerMap[row.email].bewertungen[row.frageId] = b;
+      const eff = b.lpPunkte !== null ? b.lpPunkte : (b.kiPunkte !== null ? b.kiPunkte : 0);
+      schuelerMap[row.email].gesamtPunkte += eff;
+      schuelerMap[row.email].maxPunkte += b.maxPunkte;
+    }
+
+    // Status pro SuS bestimmen
+    for (const s of Object.values(schuelerMap)) {
+      const bewertungen = Object.values(s.bewertungen);
+      if (bewertungen.every(b => b.geprueft)) {
+        s.korrekturStatus = 'review-fertig';
+      } else if (bewertungen.some(b => b.quelle === 'ki' || b.quelle === 'auto')) {
+        s.korrekturStatus = 'ki-bewertet';
+      }
+    }
+
+    return jsonResponse({
+      pruefungId,
+      pruefungTitel: configRow ? configRow.titel : pruefungId,
+      datum: configRow ? configRow.datum : '',
+      klasse: configRow ? configRow.klasse : '',
+      schueler: Object.values(schuelerMap),
+      batchStatus: statusJson.status || 'idle',
+      batchFortschritt: statusJson.erledigt !== undefined ? { erledigt: statusJson.erledigt, gesamt: statusJson.gesamt } : undefined,
+      letzteAktualisierung: new Date().toISOString(),
+    });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+function ladeAbgaben(pruefungId, email) {
+  try {
+    if (!email.endsWith('@' + LP_DOMAIN)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
+
+    const sheetName = 'Antworten_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ abgaben: {} });
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = getSheetData(sheet);
+    const abgaben = {};
+
+    for (const row of data) {
+      abgaben[row.email] = {
+        email: row.email,
+        name: row.name || row.email,
+        antworten: safeJsonParse(row.antworten, {}),
+        abgabezeit: row.letzterSave || '',
+      };
+    }
+
+    return jsonResponse({ abgaben });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+function ladeKorrekturFortschritt(pruefungId, email) {
+  try {
+    if (!email.endsWith('@' + LP_DOMAIN)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
+
+    const sheetName = 'Korrektur_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ status: 'idle', fortschritt: { erledigt: 0, gesamt: 0 } });
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const statusJson = safeJsonParse(sheet.getRange('Z1').getValue(), { status: 'idle', erledigt: 0, gesamt: 0 });
+
+    return jsonResponse({
+      status: statusJson.status,
+      fortschritt: { erledigt: statusJson.erledigt || 0, gesamt: statusJson.gesamt || 0 },
+    });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+function speichereKorrekturZeile(body) {
+  try {
+    const { email, pruefungId, schuelerEmail, frageId } = body;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
+
+    const sheetName = 'Korrektur_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ error: 'Korrektur-Sheet nicht gefunden' });
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = getSheetData(sheet);
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    const rowIndex = data.findIndex(r => r.email === schuelerEmail && r.frageId === frageId);
+    if (rowIndex < 0) return jsonResponse({ error: 'Zeile nicht gefunden' });
+
+    const row = rowIndex + 2;
+    if (body.lpPunkte !== undefined) {
+      const col = headers.indexOf('lpPunkte');
+      if (col >= 0) sheet.getRange(row, col + 1).setValue(body.lpPunkte !== null ? body.lpPunkte : '');
+    }
+    if (body.lpKommentar !== undefined) {
+      const col = headers.indexOf('lpKommentar');
+      if (col >= 0) sheet.getRange(row, col + 1).setValue(body.lpKommentar || '');
+    }
+    if (body.geprueft !== undefined) {
+      const col = headers.indexOf('geprueft');
+      if (col >= 0) sheet.getRange(row, col + 1).setValue(body.geprueft ? 'true' : 'false');
+    }
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+```
+
+### 6.6 PDF-Generierung + E-Mail-Versand
+
+```javascript
+// === FEEDBACK PDF + E-MAIL ===
+
+function generiereUndSendeFeedbackEndpoint(body) {
+  try {
+    const { email, pruefungId, schuelerEmails } = body;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
+    if (!configRow) return jsonResponse({ error: 'Prüfung nicht gefunden' });
+
+    // Korrektur-Daten laden
+    const sheetName = 'Korrektur_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ error: 'Korrektur nicht gefunden' });
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = getSheetData(sheet);
+
+    const erfolg = [];
+    const fehler = [];
+
+    for (const susEmail of schuelerEmails) {
+      try {
+        const zeilen = data.filter(r => r.email === susEmail);
+        if (zeilen.length === 0) { fehler.push(susEmail); continue; }
+
+        const susName = zeilen[0].name || susEmail;
+        const html = buildFeedbackHtml(configRow, zeilen, susName);
+
+        // HTML → PDF via Google Doc
+        const tempDoc = DocumentApp.create('Feedback_temp_' + Date.now());
+        const tempBody = tempDoc.getBody();
+        tempBody.appendParagraph(''); // Workaround: HtmlService nicht direkt in Doc
+        tempDoc.saveAndClose();
+
+        // Stattdessen: Blob direkt aus HTML erstellen
+        const blob = HtmlService.createHtmlOutput(html).getBlob().setName(
+          'Feedback_' + configRow.titel.replace(/[^a-zA-Z0-9äöüÄÖÜ ]/g, '') + '_' + susName.replace(/[^a-zA-Z0-9äöüÄÖÜ ]/g, '') + '.pdf'
+        ).getAs('application/pdf');
+
+        // Temp-Doc löschen
+        DriveApp.getFileById(tempDoc.getId()).setTrashed(true);
+
+        // PDF in Ordner speichern
+        const pdfOrdner = findOrCreatePdfOrdner();
+        pdfOrdner.createFile(blob);
+
+        // E-Mail senden
+        GmailApp.sendEmail(susEmail,
+          'Feedback: ' + configRow.titel,
+          'Im Anhang findest du das Feedback zu deiner Prüfung «' + configRow.titel + '».\n\nBei Fragen wende dich bitte an deine Lehrperson.',
+          {
+            attachments: [blob],
+            name: 'Prüfungsplattform WR — Gymnasium Hofwil',
+          }
+        );
+
+        erfolg.push(susEmail);
+      } catch (err) {
+        fehler.push(susEmail);
+        Logger.log('Feedback-Fehler für ' + susEmail + ': ' + err.message);
+      }
+    }
+
+    return jsonResponse({ erfolg, fehler });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+function buildFeedbackHtml(configRow, zeilen, susName) {
+  let totalPunkte = 0;
+  let totalMax = 0;
+
+  let fragenHtml = '';
+  for (const z of zeilen) {
+    const eff = z.lpPunkte !== '' ? Number(z.lpPunkte) : (z.kiPunkte !== '' ? Number(z.kiPunkte) : 0);
+    const max = Number(z.maxPunkte) || 0;
+    totalPunkte += eff;
+    totalMax += max;
+
+    const feedback = z.lpKommentar || z.kiFeedback || '';
+    fragenHtml += '<div style="margin-bottom:12px;padding:8px;border:1px solid #e2e8f0;border-radius:6px;">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+        '<span style="font-weight:600;font-size:13px;">' + z.frageId + ' (' + z.fragenTyp + ')</span>' +
+        '<span style="font-weight:700;font-size:14px;">' + eff + ' / ' + max + '</span>' +
+      '</div>' +
+      (feedback ? '<p style="font-size:12px;color:#475569;margin:4px 0 0;">' + feedback + '</p>' : '') +
+    '</div>';
+  }
+
+  const note = totalMax > 0 ? Math.round((1 + 5 * totalPunkte / totalMax) * 2) / 2 : 1;
+
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>' +
+    'body{font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1e293b}' +
+    'h1{font-size:18px;margin-bottom:4px}h2{font-size:14px;color:#64748b;margin-top:20px;margin-bottom:8px}' +
+    '.total{font-size:20px;font-weight:700;text-align:center;padding:12px;background:#f1f5f9;border-radius:8px;margin:16px 0}' +
+    '</style></head><body>' +
+    '<h1>Feedback: ' + configRow.titel + '</h1>' +
+    '<p style="color:#64748b;font-size:13px">' + susName + ' · ' + (configRow.klasse || '') + ' · ' + (configRow.datum || '') + '</p>' +
+    '<div class="total">Gesamtpunkte: ' + totalPunkte + ' / ' + totalMax + ' · Note: ' + note.toFixed(1) + '</div>' +
+    '<h2>Einzelbewertungen</h2>' +
+    fragenHtml +
+    '<p style="color:#94a3b8;font-size:11px;margin-top:20px;text-align:center">Generiert von der Prüfungsplattform WR — Gymnasium Hofwil</p>' +
+    '</body></html>';
+}
+
+function findOrCreatePdfOrdner() {
+  const antworten = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+  const iter = antworten.getFoldersByName('Feedback-PDFs');
+  if (iter.hasNext()) return iter.next();
+  return antworten.createFolder('Feedback-PDFs');
+}
+
+// === SCHÜLERCODE VALIDIERUNG ===
+
+function validiereSchuelercode(body) {
+  try {
+    const { email, code } = body;
+    if (!email || !code) return jsonResponse({ success: false, error: 'E-Mail und Code erforderlich' });
+
+    const klassenlisten = SpreadsheetApp.openById(KLASSENLISTEN_ID);
+    const sheets = klassenlisten.getSheets();
+
+    for (const sheet of sheets) {
+      const data = getSheetData(sheet);
+      const eintrag = data.find(r => r.email === email && String(r.schuelerCode) === String(code));
+      if (eintrag) {
+        return jsonResponse({
+          success: true,
+          name: eintrag.name || '',
+          vorname: eintrag.vorname || '',
+          klasse: eintrag.klasse || sheet.getName(),
+        });
+      }
+    }
+
+    return jsonResponse({ success: false, error: 'Code ungültig oder E-Mail nicht in Klassenliste.' });
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.message });
+  }
+}
+```
+
+### 6.7 Nach dem Einfügen
+
+1. **Neues Deployment erstellen** (Bereitstellen → Neue Bereitstellung) — oder bestehende aktualisieren
+2. **Berechtigungen neu autorisieren** (GmailApp benötigt zusätzliche Berechtigung für E-Mail-Versand)
+3. **Claude API Key als Script Property setzen** (siehe [CLAUDE_API_SETUP.md](docs/CLAUDE_API_SETUP.md))
+4. **Testen:** Im Apps Script Editor `testClaudeApi` ausführen
+
