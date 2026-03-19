@@ -11,8 +11,9 @@ const FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
 const KLASSENLISTEN_ID = '1tCLVobfVPXIu52aP_xsziCLKuVfZ7cNwp77g1yKCtCM';
 const CONFIGS_ID = '1QpcC44Ly7BUTLgUkVQtdqjTUDXmgdWdVD8ajjzsd7tE';
 const ANTWORTEN_ORDNER_ID = '1PAF1SUnR7nQ175muXn4iQERdQLJ-UnQQ';
-const ANHAENGE_ORDNER_ID = '1Ql4XuKmxyNW9ZIGsn4getcaB4FhLbjtm';
-const MATERIALIEN_ORDNER_ID = '1yBqm-9iKOcp8QptnISmwKaZGbR63mF5V';
+const ANHAENGE_ORDNER_ID = '1Ql4XuKmxyNW9ZIGsn4getcaB4FhLbjtm';       // LP-Anhänge bei Fragen (Bilder, PDFs)
+const MATERIALIEN_ORDNER_ID = '1yBqm-9iKOcp8QptnISmwKaZGbR63mF5V';    // LP-Materialien bei Prüfungen (Gesetze etc.)
+const SUS_UPLOADS_ORDNER_ID = '1pQdSujvdzTp5MAbBdJU3ipiaG3zstyu8';     // SuS-Uploads während Prüfung (im Antworten-Ordner)
 const LP_DOMAIN = 'gymhofwil.ch';
 const SUS_DOMAIN = 'stud.gymhofwil.ch';
 
