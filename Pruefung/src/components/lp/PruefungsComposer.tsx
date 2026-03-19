@@ -1,7 +1,9 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
+import { demoFragen } from '../../data/demoFragen.ts'
+import type { Frage } from '../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../types/pruefung.ts'
 
 import { formatDatum } from '../../utils/zeit.ts'
@@ -56,6 +58,25 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
 
   const loeschDialogRef = useRef<HTMLDivElement>(null)
   useFocusTrap(loeschDialog ? loeschDialogRef : { current: null })
+
+  // Fragen-Map laden (für Vorschau der Fragetexte in AbschnitteTab)
+  const [fragenMap, setFragenMap] = useState<Record<string, Frage>>({})
+  useEffect(() => {
+    async function ladeFragen(): Promise<void> {
+      let fragen: Frage[]
+      if (istDemoModus || !apiService.istKonfiguriert()) {
+        fragen = demoFragen
+      } else if (user) {
+        fragen = await apiService.ladeFragenbank(user.email) ?? []
+      } else {
+        return
+      }
+      const map: Record<string, Frage> = {}
+      for (const f of fragen) map[f.id] = f
+      setFragenMap(map)
+    }
+    ladeFragen()
+  }, [istDemoModus, user])
 
   // Gesamtpunkte berechnen (wird in Vorschau angezeigt)
   const gesamtFragen = pruefung.abschnitte.reduce((s, a) => s + a.fragenIds.length, 0)
@@ -234,6 +255,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
         {tab === 'abschnitte' && (
           <AbschnitteTab
             pruefung={pruefung}
+            fragenMap={fragenMap}
             onAddAbschnitt={addAbschnitt}
             onRemoveAbschnitt={removeAbschnitt}
             onMoveAbschnitt={moveAbschnitt}
@@ -569,6 +591,7 @@ function ConfigTab({
 
 function AbschnitteTab({
   pruefung,
+  fragenMap,
   onAddAbschnitt,
   onRemoveAbschnitt,
   onMoveAbschnitt,
@@ -579,6 +602,7 @@ function AbschnitteTab({
   onEditFrage,
 }: {
   pruefung: PruefungsConfig
+  fragenMap: Record<string, Frage>
   onAddAbschnitt: () => void
   onRemoveAbschnitt: (index: number) => void
   onMoveAbschnitt: (index: number, richtung: 'hoch' | 'runter') => void
@@ -662,20 +686,31 @@ function AbschnitteTab({
               </p>
             ) : (
               <div className="space-y-1.5">
-                {abschnitt.fragenIds.map((frageId, fIndex) => (
+                {abschnitt.fragenIds.map((frageId, fIndex) => {
+                  const frage = fragenMap[frageId]
+                  const fragetext = frage && 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
+                  const vorschau = fragetext.length > 60 ? fragetext.slice(0, 60) + '...' : fragetext
+                  return (
                   <div
                     key={frageId}
                     className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm"
                   >
-                    <span className="text-xs text-slate-400 dark:text-slate-500 w-5 text-center tabular-nums">
+                    <span className="text-xs text-slate-400 dark:text-slate-500 w-5 text-center tabular-nums shrink-0">
                       {fIndex + 1}.
                     </span>
                     <button
                       onClick={() => onEditFrage(frageId)}
-                      className="flex-1 text-left text-slate-700 dark:text-slate-200 font-mono text-xs truncate cursor-pointer hover:text-slate-900 dark:hover:text-slate-100 underline decoration-slate-300 dark:decoration-slate-600"
+                      className="flex-1 text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50 rounded px-1 -mx-1 min-w-0"
                       title="In Fragenbank öffnen"
                     >
-                      {frageId}
+                      <span className="block text-slate-700 dark:text-slate-200 font-mono text-xs underline decoration-slate-300 dark:decoration-slate-600">
+                        {frageId}
+                      </span>
+                      {vorschau && (
+                        <span className="block text-[11px] text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                          {vorschau}
+                        </span>
+                      )}
                     </button>
                     <div className="flex gap-0.5">
                       <button
@@ -695,7 +730,8 @@ function AbschnitteTab({
                       >×</button>
                     </div>
                   </div>
-                ))}
+                  )
+                })}
               </div>
             )}
 

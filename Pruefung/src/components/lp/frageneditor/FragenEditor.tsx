@@ -17,7 +17,7 @@ import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
-import KIAssistentPanel from './KIAssistentPanel.tsx'
+import { useKIAssistent, KIFragetextButtons, KIMusterlosungButton, KIMCOptionenButton } from './KIAssistentPanel.tsx'
 
 interface Props {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
@@ -113,6 +113,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
   // Validierung
   const [fehler, setFehler] = useState<string[]>([])
+
+  // KI-Assistent
+  const ki = useKIAssistent()
 
   const panelRef = useRef<HTMLDivElement>(null)
   useFocusTrap(panelRef)
@@ -384,6 +387,17 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               Tipp: **fett** für Hervorhebungen, \n für Absätze
             </p>
+            <KIFragetextButtons
+              ki={ki}
+              typ={typ}
+              fachbereich={fachbereich}
+              thema={thema}
+              unterthema={unterthema}
+              bloom={bloom}
+              fragetext={fragetext}
+              onSetFragetext={setFragetext}
+              onSetMusterlosung={setMusterlosung}
+            />
           </Abschnitt>
 
           {/* Anhänge (Bilder, PDFs) */}
@@ -395,29 +409,22 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             onNeuenAnhangEntfernen={(idx) => setNeueAnhaenge((prev) => prev.filter((_, i) => i !== idx))}
           />
 
-          {/* KI-Assistent */}
-          <KIAssistentPanel
-            typ={typ}
-            fachbereich={fachbereich}
-            thema={thema}
-            unterthema={unterthema}
-            bloom={bloom}
-            fragetext={fragetext}
-            musterlosung={musterlosung}
-            optionen={optionen}
-            onSetFragetext={setFragetext}
-            onSetMusterlosung={setMusterlosung}
-            onSetOptionen={setOptionen}
-          />
-
           {/* Typ-spezifische Felder */}
           {typ === 'mc' && (
-            <MCEditor
-              optionen={optionen}
-              setOptionen={setOptionen}
-              mehrfachauswahl={mehrfachauswahl}
-              setMehrfachauswahl={setMehrfachauswahl}
-            />
+            <>
+              <MCEditor
+                optionen={optionen}
+                setOptionen={setOptionen}
+                mehrfachauswahl={mehrfachauswahl}
+                setMehrfachauswahl={setMehrfachauswahl}
+              />
+              <KIMCOptionenButton
+                ki={ki}
+                fragetext={fragetext}
+                optionen={optionen}
+                onSetOptionen={setOptionen}
+              />
+            </>
           )}
 
           {typ === 'freitext' && (
@@ -466,6 +473,12 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               placeholder="Erwartete korrekte Antwort..."
               className="input-field resize-y"
             />
+            <KIMusterlosungButton
+              ki={ki}
+              fragetext={fragetext}
+              musterlosung={musterlosung}
+              onSetMusterlosung={setMusterlosung}
+            />
           </Abschnitt>
 
           {/* Bewertungsraster */}
@@ -502,7 +515,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                     }}
                     min={0}
                     step={0.5}
-                    className="input-field w-14 text-center shrink-0"
+                    className="px-2 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-center shrink-0" style={{ width: "56px" }}
                     title="Punkte für dieses Kriterium"
                   />
                   <button
