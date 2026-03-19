@@ -71,8 +71,65 @@ function doPost(e) {
       return schalteFreiEndpoint(body);
     case 'sendeNachricht':
       return sendeNachrichtEndpoint(body);
+    case 'uploadAnhang':
+      return uploadAnhang(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
+  }
+}
+
+// === ANHANG UPLOAD ===
+
+function uploadAnhang(body) {
+  try {
+    var email = body.email;
+    var frageId = body.frageId;
+    var dateiname = body.dateiname;
+    var mimeType = body.mimeType;
+    var groesseBytes = body.groesseBytes;
+    var base64Data = body.base64Data;
+
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!base64Data || !dateiname) {
+      return jsonResponse({ error: 'Keine Dateidaten' });
+    }
+    if (groesseBytes > 5 * 1024 * 1024) {
+      return jsonResponse({ error: 'Datei zu gross (max. 5 MB)' });
+    }
+
+    // Base64 dekodieren und als Blob erstellen
+    var decoded = Utilities.base64Decode(base64Data);
+    var blob = Utilities.newBlob(decoded, mimeType, dateiname);
+
+    // Im Antworten-Ordner einen Unterordner "Anhaenge" finden/erstellen
+    var hauptOrdner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    var anhaengeOrdner;
+    var unterordner = hauptOrdner.getFoldersByName('Anhaenge');
+    if (unterordner.hasNext()) {
+      anhaengeOrdner = unterordner.next();
+    } else {
+      anhaengeOrdner = hauptOrdner.createFolder('Anhaenge');
+    }
+
+    // Datei speichern
+    var file = anhaengeOrdner.createFile(blob);
+
+    // Öffentlich lesbar machen (für SuS während Prüfung)
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    var anhang = {
+      id: Utilities.getUuid(),
+      dateiname: dateiname,
+      mimeType: mimeType,
+      groesseBytes: groesseBytes,
+      driveFileId: file.getId(),
+    };
+
+    return jsonResponse({ success: true, ...anhang });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
   }
 }
 
