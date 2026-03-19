@@ -73,6 +73,8 @@ function doPost(e) {
       return sendeNachrichtEndpoint(body);
     case 'uploadAnhang':
       return uploadAnhang(body);
+    case 'kiAssistent':
+      return kiAssistentEndpoint(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -685,6 +687,86 @@ function ladeMonitoring(pruefungId, email) {
 // ============================================================
 
 // === CLAUDE API ===
+
+// === KI-ASSISTENT (Frageneditor) ===
+
+function kiAssistentEndpoint(body) {
+  try {
+    var email = body.email;
+    var aktion = body.aktion;
+    var daten = body.daten || {};
+
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!aktion) {
+      return jsonResponse({ error: 'Keine Aktion angegeben' });
+    }
+
+    var systemPrompt = 'Du bist Assistent für einen Gymnasiallehrer (Wirtschaft & Recht, Kanton Bern, Lehrplan 17). ' +
+      'Verwende Schweizer Hochdeutsch. ' +
+      'Antworte IMMER als valides JSON-Objekt (kein Markdown, kein erklärender Text davor oder danach).';
+
+    var userPrompt = '';
+    var result;
+
+    switch (aktion) {
+
+      case 'generiereFragetext':
+        userPrompt = 'Generiere eine Prüfungsfrage für das Gymnasium.\n' +
+          'Fachbereich: ' + (daten.fachbereich || 'Wirtschaft & Recht') + '\n' +
+          'Thema: ' + (daten.thema || '') + '\n' +
+          (daten.unterthema ? 'Unterthema: ' + daten.unterthema + '\n' : '') +
+          'Fragetyp: ' + (daten.typ || 'freitext') + '\n' +
+          'Bloom-Stufe: ' + (daten.bloom || 'K2') + '\n\n' +
+          'Antworte als JSON: { "fragetext": "...", "musterlosung": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'verbessereFragetext':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Verbessere den folgenden Prüfungsfrage-Text bezüglich Klarheit, Präzision und Grammatik. ' +
+          'Korrigiere allfällige Fehler und mache die Frage unmissverständlich.\n\n' +
+          'Originaler Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "fragetext": "..." , "aenderungen": "kurze Zusammenfassung der Änderungen" }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'pruefeMusterloesung':
+        if (!daten.fragetext || !daten.musterlosung) return jsonResponse({ error: 'Fragetext und Musterlösung nötig' });
+        userPrompt = 'Prüfe ob die Musterlösung zur Frage korrekt und vollständig ist.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Musterlösung:\n' + daten.musterlosung + '\n\n' +
+          'Antworte als JSON: { "korrekt": true/false, "bewertung": "...", "verbesserteLosung": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'generiereOptionen':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Generiere 4 Multiple-Choice-Optionen für die folgende Frage. ' +
+          'Genau eine Option soll korrekt sein, die anderen 3 sollen plausible Distraktoren sein.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "optionen": [{ "text": "...", "korrekt": true/false }, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'generiereDistraktoren':
+        if (!daten.fragetext || !daten.korrekteAntwort) return jsonResponse({ error: 'Fragetext und korrekte Antwort nötig' });
+        userPrompt = 'Generiere 3 plausible, aber falsche Antwortmöglichkeiten (Distraktoren) für diese MC-Frage.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Korrekte Antwort: ' + daten.korrekteAntwort + '\n\n' +
+          'Antworte als JSON: { "distraktoren": ["...", "...", "..."] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      default:
+        return jsonResponse({ error: 'Unbekannte KI-Aktion: ' + aktion });
+    }
+
+  } catch (err) {
+    return jsonResponse({ error: 'KI-Assistent Fehler: ' + err.message });
+  }
+}
 
 function rufeClaudeAuf(systemPrompt, userPrompt) {
   const apiKey = PropertiesService.getScriptProperties().getProperty('CLAUDE_API_KEY');

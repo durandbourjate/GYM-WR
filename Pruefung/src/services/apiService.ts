@@ -532,6 +532,36 @@ export const apiService = {
     }
   },
 
+  /** KI-Assistent: Claude-basierte Hilfe beim Fragenschreiben */
+  async kiAssistent(email: string, aktion: string, daten: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'kiAssistent', email, aktion, daten }),
+      })
+      if (!response.ok) return null
+
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        if (data.error) {
+          console.error('[API] kiAssistent:', data.error)
+          return { error: data.error }
+        }
+        return data.ergebnis ?? null
+      } catch {
+        console.error('[API] kiAssistent: Antwort ist kein JSON')
+        return null
+      }
+    } catch (error) {
+      console.error('[API] kiAssistent: Netzwerkfehler:', error)
+      return null
+    }
+  },
+
   /** Prüft ob das Backend konfiguriert ist */
   istKonfiguriert(): boolean {
     return !!APPS_SCRIPT_URL

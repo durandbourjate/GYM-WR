@@ -17,6 +17,7 @@ import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
+import KIAssistentPanel from './KIAssistentPanel.tsx'
 
 interface Props {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
@@ -392,6 +393,21 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             onAnhangHinzu={(file) => setNeueAnhaenge((prev) => [...prev, file])}
             onAnhangEntfernen={(id) => setAnhaenge((prev) => prev.filter((a) => a.id !== id))}
             onNeuenAnhangEntfernen={(idx) => setNeueAnhaenge((prev) => prev.filter((_, i) => i !== idx))}
+          />
+
+          {/* KI-Assistent */}
+          <KIAssistentPanel
+            typ={typ}
+            fachbereich={fachbereich}
+            thema={thema}
+            unterthema={unterthema}
+            bloom={bloom}
+            fragetext={fragetext}
+            musterlosung={musterlosung}
+            optionen={optionen}
+            onSetFragetext={setFragetext}
+            onSetMusterlosung={setMusterlosung}
+            onSetOptionen={setOptionen}
           />
 
           {/* Typ-spezifische Felder */}
