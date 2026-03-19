@@ -249,12 +249,12 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-3 sticky top-0 z-[60]">
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2 sticky top-0 z-20">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={onZurueck}
-              className="px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+              className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
               ← Zurück
             </button>
@@ -262,7 +262,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
               {config ? 'Prüfung bearbeiten' : 'Neue Prüfung'}
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {speicherStatus === 'erfolg' && (
               <span className="text-sm text-green-600 dark:text-green-400">Gespeichert ✓</span>
             )}
@@ -276,7 +276,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
               <button
                 onClick={handleSpeichern}
                 disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
-                className="px-4 py-2 text-sm font-semibold text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="px-3 py-1.5 text-sm font-semibold text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
               </button>
@@ -287,7 +287,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
         </div>
 
         {/* Tabs */}
-        <div className="max-w-5xl mx-auto mt-3 flex gap-1">
+        <div className="max-w-5xl mx-auto mt-2 flex gap-1">
           {([
             { key: 'config' as ComposerTab, label: 'Einstellungen' },
             { key: 'abschnitte' as ComposerTab, label: `Abschnitte & Fragen (${gesamtFragen})` },
@@ -298,7 +298,7 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
               key={t.key}
               onClick={() => t.key !== 'analyse' || gesamtFragen > 0 ? setTab(t.key) : undefined}
               disabled={t.key === 'analyse' && gesamtFragen === 0}
-              className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors cursor-pointer
+              className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors cursor-pointer
                 ${tab === t.key
                   ? 'bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-b-0 border-slate-200 dark:border-slate-700'
                   : t.key === 'analyse' && gesamtFragen === 0

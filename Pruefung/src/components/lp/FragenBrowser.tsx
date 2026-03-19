@@ -5,6 +5,7 @@ import { apiService } from '../../services/apiService.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
 import { fachbereichFarbe, typLabel } from '../../utils/fachbereich.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../../types/fragen.ts'
+import ThemeToggle from '../ThemeToggle.tsx'
 import FragenEditor from './frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
 
@@ -311,6 +312,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
               >
                 + Neue Frage
               </button>
+              <ThemeToggle />
               <button
                 onClick={onSchliessen}
                 className="w-8 h-8 text-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer"
