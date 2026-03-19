@@ -1,8 +1,10 @@
 import type { AktionErgebnis } from './useKIAssistent.ts'
 
-/** Einzelner KI-Aktions-Button mit Lade- und Hinweis-State */
-export function InlineAktionButton({ label, hinweis, disabled, ladend, onClick }: {
+/** Einzelner KI-Aktions-Button mit Lade-, Hinweis- und Tooltip-State */
+export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, onClick }: {
   label: string
+  /** Hilfetext bei Mouseover */
+  tooltip?: string
   hinweis?: string
   disabled: boolean
   ladend: boolean
@@ -13,6 +15,7 @@ export function InlineAktionButton({ label, hinweis, disabled, ladend, onClick }
       <button
         onClick={onClick}
         disabled={disabled}
+        title={tooltip}
         className={`px-2.5 py-1 text-xs rounded-lg border transition-colors cursor-pointer inline-flex items-center gap-1.5
           ${disabled
             ? 'border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 cursor-not-allowed'
@@ -83,12 +86,14 @@ export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorsch
       <div className="flex gap-2 pt-1">
         <button
           onClick={onUebernehmen}
+          title="Vorschlag in die Frage übernehmen"
           className="px-3 py-1 text-xs font-medium text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
         >
           Übernehmen
         </button>
         <button
           onClick={onVerwerfen}
+          title="Vorschlag verwerfen"
           className="px-3 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
         >
           Verwerfen

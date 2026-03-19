@@ -25,14 +25,16 @@ export function KIZuordnungButtons({ ki, fragetext, fachbereich, thema, paare, o
     <div className="space-y-2">
       <div className="flex gap-2 mt-2">
         <InlineAktionButton
-          label="Paare generieren"
+          label="Generieren"
+          tooltip="KI erstellt passende Zuordnungspaare basierend auf dem Fragetext"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'generierePaare'}
           onClick={() => ki.ausfuehren('generierePaare', { fragetext, fachbereich, thema })}
         />
         <InlineAktionButton
-          label="Paare prüfen"
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft die Paare auf Konsistenz und Eindeutigkeit"
           hinweis={!hatPaare ? 'Mind. 2 Paare nötig' : undefined}
           disabled={!hatPaare || !fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'pruefePaare'}
@@ -103,14 +105,16 @@ export function KIRichtigFalschButtons({ ki, fragetext, fachbereich, thema, auss
     <div className="space-y-2">
       <div className="flex gap-2 mt-2">
         <InlineAktionButton
-          label="Aussagen generieren"
+          label="Generieren"
+          tooltip="KI erstellt Richtig/Falsch-Aussagen passend zum Thema"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'generiereAussagen'}
           onClick={() => ki.ausfuehren('generiereAussagen', { fragetext, fachbereich, thema })}
         />
         <InlineAktionButton
-          label="Aussagen prüfen"
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft Aussagen auf Balance, Eindeutigkeit und fachliche Korrektheit"
           hinweis={!hatAussagen ? 'Mind. 2 Aussagen nötig' : undefined}
           disabled={!hatAussagen || !fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'pruefeAussagen'}
@@ -188,14 +192,16 @@ export function KILueckentextButtons({ ki, fragetext, textMitLuecken, luecken, o
     <div className="space-y-2">
       <div className="flex gap-2 mt-2">
         <InlineAktionButton
-          label="Lücken vorschlagen"
+          label="Generieren"
+          tooltip="KI markiert sinnvolle Lückenstellen im Text und schlägt Antworten vor"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'generiereLuecken'}
           onClick={() => ki.ausfuehren('generiereLuecken', { fragetext, textMitLuecken: textMitLuecken || fragetext })}
         />
         <InlineAktionButton
-          label="Antworten prüfen"
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft ob alle akzeptierten Antwort-Varianten vollständig sind"
           hinweis={!hatLuecken ? 'Lückentext mit {{}} nötig' : undefined}
           disabled={!hatLuecken || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'pruefeLueckenAntworten'}
@@ -305,14 +311,16 @@ export function KIBerechnungButtons({ ki, fragetext, ergebnisse, onSetErgebnisse
     <div className="space-y-2">
       <div className="flex gap-2 mt-2">
         <InlineAktionButton
-          label="Ergebnis berechnen"
+          label="Generieren"
+          tooltip="KI berechnet die korrekten Ergebnisse aus dem Aufgabentext"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'berechneErgebnis'}
           onClick={() => ki.ausfuehren('berechneErgebnis', { fragetext })}
         />
         <InlineAktionButton
-          label="Toleranz prüfen"
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft ob die Toleranzbereiche sinnvoll gewählt sind"
           hinweis={!hatErgebnisse ? 'Mind. 1 Ergebnis nötig' : undefined}
           disabled={!hatErgebnisse || !fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'pruefeToleranz'}

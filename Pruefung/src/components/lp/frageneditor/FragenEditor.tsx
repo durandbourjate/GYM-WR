@@ -17,7 +17,7 @@ import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
-import { useKIAssistent, KIFragetextButtons, KIMusterlosungButton, KIMCOptionenButton } from './KIAssistentPanel.tsx'
+import { useKIAssistent, KIFragetextButtons, KIMusterlosungButtons, KIMCOptionenButton } from './KIAssistentPanel.tsx'
 import { KIZuordnungButtons, KIRichtigFalschButtons, KILueckentextButtons, KIBerechnungButtons } from './KITypButtons.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 
@@ -543,10 +543,13 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               placeholder="Erwartete korrekte Antwort..."
               className="input-field resize-y"
             />
-            <KIMusterlosungButton
+            <KIMusterlosungButtons
               ki={ki}
               fragetext={fragetext}
               musterlosung={musterlosung}
+              typ={typ}
+              fachbereich={fachbereich}
+              bloom={bloom}
               onSetMusterlosung={setMusterlosung}
             />
           </Abschnitt>

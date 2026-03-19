@@ -6,6 +6,7 @@ export type AktionKey =
   // Bestehende Aktionen
   | 'generiereFragetext'
   | 'verbessereFragetext'
+  | 'generiereMusterloesung'
   | 'pruefeMusterloesung'
   | 'generiereOptionen'
   // Zuordnung

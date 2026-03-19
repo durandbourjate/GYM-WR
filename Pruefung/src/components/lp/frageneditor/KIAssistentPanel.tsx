@@ -25,7 +25,7 @@ interface KIFragetextButtonsProps {
   onSetMusterlosung: (text: string) => void
 }
 
-/** Inline-Buttons "Generieren" und "Verbessern" neben dem Fragetext */
+/** Inline-Buttons "Generieren" und "Prüfen & Verbessern" neben dem Fragetext */
 export function KIFragetextButtons({
   ki, typ, fachbereich, thema, unterthema, bloom, fragetext,
   onSetFragetext, onSetMusterlosung,
@@ -37,13 +37,15 @@ export function KIFragetextButtons({
       <div className="flex gap-2 mt-2">
         <InlineAktionButton
           label="Generieren"
+          tooltip="KI erstellt einen neuen Fragetext basierend auf Thema, Fachbereich und Taxonomiestufe"
           hinweis={!thema.trim() ? 'Thema nötig' : undefined}
           disabled={!thema.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'generiereFragetext'}
           onClick={() => ki.ausfuehren('generiereFragetext', { fachbereich, thema, unterthema, typ, bloom })}
         />
         <InlineAktionButton
-          label="Verbessern"
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft den Fragetext auf Klarheit, Eindeutigkeit und Taxonomie-Passung und schlägt Verbesserungen vor"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'verbessereFragetext'}
@@ -85,30 +87,55 @@ export function KIFragetextButtons({
   )
 }
 
-// === Musterlösung-Button ===
+// === Musterlösung-Buttons ===
 
-interface KIMusterlosungButtonProps {
+interface KIMusterlosungButtonsProps {
   ki: ReturnType<typeof useKIAssistent>
   fragetext: string
   musterlosung: string
+  typ: FrageTyp
+  fachbereich: Fachbereich
+  bloom: BloomStufe
   onSetMusterlosung: (text: string) => void
 }
 
-/** Inline-Button "Prüfen" neben der Musterlösung */
-export function KIMusterlosungButton({ ki, fragetext, musterlosung, onSetMusterlosung }: KIMusterlosungButtonProps) {
+/** Inline-Buttons "Generieren" und "Prüfen & Verbessern" neben der Musterlösung */
+export function KIMusterlosungButtons({ ki, fragetext, musterlosung, typ, fachbereich, bloom, onSetMusterlosung }: KIMusterlosungButtonsProps) {
   if (!ki.verfuegbar) return null
 
   return (
     <div className="space-y-2">
-      <div className="mt-2">
+      <div className="flex gap-2 mt-2">
         <InlineAktionButton
-          label="Prüfen"
+          label="Generieren"
+          tooltip="KI erstellt eine Musterlösung basierend auf dem Fragetext"
+          hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
+          disabled={!fragetext.trim() || ki.ladeAktion !== null}
+          ladend={ki.ladeAktion === 'generiereMusterloesung'}
+          onClick={() => ki.ausfuehren('generiereMusterloesung', { fragetext, typ, fachbereich, bloom })}
+        />
+        <InlineAktionButton
+          label="Prüfen & Verbessern"
+          tooltip="KI prüft die Musterlösung auf Korrektheit und Vollständigkeit und schlägt Verbesserungen vor"
           hinweis={!fragetext.trim() || !musterlosung.trim() ? 'Fragetext + Musterlösung nötig' : undefined}
           disabled={!fragetext.trim() || !musterlosung.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'pruefeMusterloesung'}
           onClick={() => ki.ausfuehren('pruefeMusterloesung', { fragetext, musterlosung })}
         />
       </div>
+
+      {ki.ergebnisse.generiereMusterloesung && (
+        <ErgebnisAnzeige
+          ergebnis={ki.ergebnisse.generiereMusterloesung}
+          vorschauKey="musterlosung"
+          onUebernehmen={() => {
+            const d = ki.ergebnisse.generiereMusterloesung?.daten
+            if (d && typeof d.musterlosung === 'string') onSetMusterlosung(d.musterlosung)
+            ki.verwerfen('generiereMusterloesung')
+          }}
+          onVerwerfen={() => ki.verwerfen('generiereMusterloesung')}
+        />
+      )}
 
       {ki.ergebnisse.pruefeMusterloesung && (
         <ErgebnisAnzeige
@@ -127,6 +154,10 @@ export function KIMusterlosungButton({ ki, fragetext, musterlosung, onSetMusterl
   )
 }
 
+// Rückwärtskompatibilität
+/** @deprecated Nutze KIMusterlosungButtons stattdessen */
+export const KIMusterlosungButton = KIMusterlosungButtons
+
 // === MC-Optionen-Button ===
 
 interface KIMCOptionenButtonProps {
@@ -136,7 +167,7 @@ interface KIMCOptionenButtonProps {
   onSetOptionen: (optionen: MCOption[]) => void
 }
 
-/** Inline-Button "Optionen generieren" neben den MC-Optionen */
+/** Inline-Button "Generieren" neben den MC-Optionen */
 export function KIMCOptionenButton({ ki, fragetext, optionen, onSetOptionen }: KIMCOptionenButtonProps) {
   if (!ki.verfuegbar) return null
 
@@ -145,6 +176,7 @@ export function KIMCOptionenButton({ ki, fragetext, optionen, onSetOptionen }: K
       <div className="mt-2">
         <InlineAktionButton
           label="Optionen generieren"
+          tooltip="KI erstellt Antwortoptionen (korrekte und falsche) passend zum Fragetext"
           hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
           disabled={!fragetext.trim() || ki.ladeAktion !== null}
           ladend={ki.ladeAktion === 'generiereOptionen'}
