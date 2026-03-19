@@ -88,6 +88,30 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
     }
   }, [batchLaeuft, user, pruefungId, korrektur])
 
+  // Note Override aktualisieren
+  const handleNoteOverride = useCallback((schuelerEmail: string, noteOverride: number | null) => {
+    setKorrektur((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        schueler: prev.schueler.map((s) => {
+          if (s.email !== schuelerEmail) return s
+          return { ...s, noteOverride }
+        }),
+      }
+    })
+
+    // Ans Backend senden
+    if (user) {
+      apiService.speichereKorrekturZeile({
+        pruefungId,
+        schuelerEmail,
+        frageId: '__note_override__',
+        lpPunkte: noteOverride,
+      }, user.email)
+    }
+  }, [pruefungId, user])
+
   // Bewertung aktualisieren (einzelne Frage eines SuS)
   const handleBewertungUpdate = useCallback((schuelerEmail: string, frageId: string, updates: {
     lpPunkte?: number | null
@@ -286,9 +310,10 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
       <main className="max-w-5xl mx-auto p-6">
         {/* Statistik-Leiste */}
         {stats && korrektur && korrektur.schueler.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6">
             <StatKarte label="Durchschnitt" wert={`${stats.durchschnitt} Pkt.`} />
-            <StatKarte label="∅ Note" wert={String(stats.durchschnittNote)} />
+            <StatKarte label="∅ Note" wert={stats.durchschnittNote.toFixed(1)} />
+            <StatKarte label="Median Note" wert={stats.medianNote.toFixed(1)} />
             <StatKarte label="Median" wert={`${stats.median} Pkt.`} />
             <StatKarte label="Bestanden" wert={`${stats.bestanden}/${korrektur.schueler.length}`} />
             <StatKarte label="Durchgefallen" wert={String(stats.durchgefallen)} highlight={stats.durchgefallen > 0} />
@@ -413,6 +438,7 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
               abgabe={abgaben[schueler.email]}
               fragen={fragen}
               onBewertungUpdate={handleBewertungUpdate}
+              onNoteOverride={handleNoteOverride}
             />
           ))}
         </div>

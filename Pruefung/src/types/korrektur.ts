@@ -34,6 +34,7 @@ export interface SchuelerKorrektur {
   gesamtPunkte: number
   maxPunkte: number
   note?: number  // Optional, LP setzt manuell oder via berechneNote()
+  noteOverride?: number | null  // LP-Überschreibung der berechneten Note
 
   // Status
   korrekturStatus: 'offen' | 'ki-bewertet' | 'review-fertig' | 'versendet'

@@ -47,6 +47,11 @@ export interface FrageBase {
   // Herkunft
   quelle?: 'pool' | 'papier' | 'manuell' | 'ki-generiert';
   quellReferenz?: string;
+
+  // Sharing / Zusammenarbeit
+  autor?: string;  // E-Mail der erstellenden LP
+  geteilt?: 'privat' | 'schule';  // Standard: privat; 'schule' = sichtbar für alle @gymhofwil.ch
+  geteiltVon?: string;  // Anzeigename bei geteilten Fragen
 }
 
 export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik';

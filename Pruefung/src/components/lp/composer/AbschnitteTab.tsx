@@ -1,6 +1,8 @@
 import type { Frage } from '../../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefung.ts'
-import { typLabel } from '../../../utils/fachbereich.ts'
+import type { BloomStufe } from '../../../types/fragen.ts'
+import { fachbereichFarbe, typLabel } from '../../../utils/fachbereich.ts'
+import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -104,26 +106,28 @@ export default function AbschnitteTab({
                 {abschnitt.fragenIds.map((frageId, fIndex) => {
                   const frage = fragenMap[frageId]
                   const fragetext = frage && 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
-                  const vorschau = fragetext.length > 80 ? fragetext.slice(0, 80) + '...' : fragetext
-                  const fb = frage?.fachbereich
-                  const fbFarben: Record<string, string> = {
-                    VWL: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-                    BWL: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-                    Recht: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-                  }
+                  const vorschau = fragetext
+                    ? fragetext.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 150)
+                    : ''
+                  const zeit = frage
+                    ? frage.zeitbedarf ?? berechneZeitbedarf(
+                        frage.typ as 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'visualisierung',
+                        frage.bloom as BloomStufe,
+                      )
+                    : undefined
                   return (
                   <div
                     key={frageId}
                     className="px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm"
                   >
+                    {/* Zeile 1: Nummer, Badges, Aktionen */}
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-slate-400 dark:text-slate-500 w-5 text-center tabular-nums shrink-0">
                         {fIndex + 1}.
                       </span>
-                      <span className="font-mono text-xs text-slate-600 dark:text-slate-300">{frageId}</span>
-                      {fb && (
-                        <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${fbFarben[fb] ?? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
-                          {fb}
+                      {frage?.fachbereich && (
+                        <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${fachbereichFarbe(frage.fachbereich)}`}>
+                          {frage.fachbereich}
                         </span>
                       )}
                       {frage && (
@@ -132,9 +136,17 @@ export default function AbschnitteTab({
                         </span>
                       )}
                       {frage && (
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
                           {frage.bloom} · {frage.punkte}P.
                         </span>
+                      )}
+                      {zeit !== undefined && (
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                          ~{zeit} Min.
+                        </span>
+                      )}
+                      {!frage && (
+                        <span className="font-mono text-xs text-red-400 dark:text-red-500 italic">{frageId} (nicht gefunden)</span>
                       )}
                       <span className="flex-1" />
                       <button
@@ -162,22 +174,26 @@ export default function AbschnitteTab({
                         >×</button>
                       </div>
                     </div>
+                    {/* Zeile 2: Fragetext-Vorschau */}
                     {vorschau && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-7 truncate">
+                      <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 ml-7 line-clamp-2">
                         {vorschau}
                       </p>
                     )}
+                    {/* Zeile 3: Thema + Tags */}
                     {frage?.thema && (
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 ml-7">
-                        {frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}
+                      <div className="flex items-center gap-2 mt-1 ml-7 flex-wrap">
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                          {frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}
+                        </span>
                         {frage.tags && frage.tags.length > 0 && (
                           <>
                             {frage.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className="ml-2 px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px]">{tag}</span>
+                              <span key={tag} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tag}</span>
                             ))}
                           </>
                         )}
-                      </p>
+                      </div>
                     )}
                   </div>
                   )

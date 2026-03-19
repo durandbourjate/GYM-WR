@@ -6,6 +6,7 @@ import { demoFragen } from '../../data/demoFragen.ts'
 import { fachbereichFarbe, typLabel } from '../../utils/fachbereich.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../../types/fragen.ts'
 import FragenEditor from './frageneditor/FragenEditor.tsx'
+import FragenImport from './FragenImport.tsx'
 
 interface Props {
   onHinzufuegen: (frageIds: string[]) => void
@@ -36,10 +37,12 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
   const [filterTyp, setFilterTyp] = useState<string>('')
   const [filterBloom, setFilterBloom] = useState<BloomStufe | ''>('')
   const [filterThema, setFilterThema] = useState('')
+  const [filterBesitzer, setFilterBesitzer] = useState<'alle' | 'meine'>('alle')
 
-  // Editor
+  // Editor / Import
   const [zeigEditor, setZeigEditor] = useState(false)
   const [editFrage, setEditFrage] = useState<Frage | null>(null)
+  const [zeigImport, setZeigImport] = useState(false)
 
   // Ansicht
   const [sortierung, setSortierung] = useState<Sortierung>('thema')
@@ -105,6 +108,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
       if (filterFachbereich && f.fachbereich !== filterFachbereich) return false
       if (filterTyp && f.typ !== filterTyp) return false
       if (filterBloom && f.bloom !== filterBloom) return false
+      if (filterBesitzer === 'meine' && user && f.autor && f.autor !== user.email) return false
       if (filterThema) {
         const key = f.thema + (f.unterthema ? ` › ${f.unterthema}` : '')
         if (key !== filterThema && f.thema !== filterThema) return false
@@ -122,7 +126,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
       }
       return true
     })
-  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, suchtext])
+  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterBesitzer, suchtext, user])
 
   // Sortieren
   const sortierteFragen = useMemo(() => {
@@ -174,7 +178,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
   }, [gefilterteFragen])
 
   // Aktive Filter zählen
-  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, suchtext].filter(Boolean).length
+  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, suchtext, filterBesitzer !== 'alle' ? filterBesitzer : ''].filter(Boolean).length
 
   function toggleAuswahl(id: string): void {
     setAusgewaehlt((prev) => {
@@ -214,6 +218,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
     setFilterTyp('')
     setFilterBloom('')
     setFilterThema('')
+    setFilterBesitzer('alle')
   }
 
   async function handleFrageGespeichert(neueFrage: Frage): Promise<void> {
@@ -230,6 +235,22 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
       const ok = await apiService.speichereFrage(user.email, neueFrage)
       if (!ok) {
         console.warn('[FragenBrowser] Frage lokal hinzugefügt, aber Backend-Speichern fehlgeschlagen')
+      }
+    }
+  }
+
+  async function handleImportFragen(importierteFragen: Frage[]): Promise<void> {
+    // Zur lokalen Liste hinzufügen
+    setAlleFragen((prev) => [...prev, ...importierteFragen])
+    setZeigImport(false)
+
+    // Ans Backend senden (im Hintergrund)
+    if (user && apiService.istKonfiguriert() && !istDemoModus) {
+      for (const frage of importierteFragen) {
+        const ok = await apiService.speichereFrage(user.email, frage)
+        if (!ok) {
+          console.warn(`[FragenBrowser] Import: Backend-Speichern fehlgeschlagen für ${frage.id}`)
+        }
       }
     }
   }
@@ -260,6 +281,13 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
               )}
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => setZeigImport(true)}
+                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                title="Fragen via KI aus Text importieren"
+              >
+                Import via KI
+              </button>
               <button
                 onClick={() => { setEditFrage(null); setZeigEditor(true) }}
                 className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
@@ -326,6 +354,30 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
                 <option key={k} value={k}>{k}</option>
               ))}
             </select>
+            {/* Besitzer-Filter */}
+            <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
+              <button
+                onClick={() => setFilterBesitzer('alle')}
+                className={`text-xs px-2 py-1.5 transition-colors cursor-pointer ${
+                  filterBesitzer === 'alle'
+                    ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                Alle
+              </button>
+              <button
+                onClick={() => setFilterBesitzer('meine')}
+                className={`text-xs px-2 py-1.5 transition-colors cursor-pointer border-l border-slate-300 dark:border-slate-600 ${
+                  filterBesitzer === 'meine'
+                    ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                Meine
+              </button>
+            </div>
+
             {verfuegbareThemen.length > 1 && (
               <select
                 value={filterThema}
@@ -497,6 +549,14 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
           onAbbrechen={() => { setZeigEditor(false); setEditFrage(null) }}
         />
       )}
+
+      {/* Import Overlay */}
+      {zeigImport && (
+        <FragenImport
+          onImportiert={handleImportFragen}
+          onSchliessen={() => setZeigImport(false)}
+        />
+      )}
     </div>
   )
 }
@@ -641,7 +701,7 @@ function DetailKarte({ frage, istVerwendet, istAusgewaehlt, onToggle, onEdit }: 
             </p>
           )}
 
-          {/* Thema + Tags */}
+          {/* Thema + Tags + Sharing */}
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             <span className="text-xs text-slate-400 dark:text-slate-500">
               {frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}
@@ -654,6 +714,11 @@ function DetailKarte({ frage, istVerwendet, istAusgewaehlt, onToggle, onEdit }: 
                 {tag}
               </span>
             ))}
+            {frage.geteilt === 'schule' && (
+              <span className="text-[10px] px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded">
+                Geteilt{frage.geteiltVon ? ` · ${frage.geteiltVon}` : ''}
+              </span>
+            )}
           </div>
         </div>
       </div>

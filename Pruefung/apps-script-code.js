@@ -282,6 +282,9 @@ function parseFrage(row, fachbereich) {
     bewertungsraster: safeJsonParse(row.bewertungsraster, []),
     anhaenge: safeJsonParse(row.anhaenge, []),
     verwendungen: [],
+    autor: row.autor || '',
+    geteilt: row.geteilt || 'privat',
+    geteiltVon: row.geteiltVon || '',
   };
 
   // Typ-spezifische Felder aus typDaten-Spalte laden (falls vorhanden)
@@ -460,6 +463,9 @@ function speichereFrage(body) {
       quelle: frage.quelle || 'manuell',
       anhaenge: JSON.stringify(frage.anhaenge || []),
       typDaten: JSON.stringify(getTypDaten(frage)),
+      autor: frage.autor || email,
+      geteilt: frage.geteilt || 'privat',
+      geteiltVon: frage.geteiltVon || '',
     };
 
     const existingRow = data.findIndex(row => row.id === frage.id);
@@ -561,7 +567,17 @@ function ladeFragenbank(email) {
       const data = getSheetData(sheet);
       for (const row of data) {
         if (row.id) {
-          alleFragen.push(parseFrage(row, tab));
+          const frage = parseFrage(row, tab);
+          // Sichtbarkeitsfilter: eigene Fragen immer, geteilte wenn 'schule'
+          const istEigene = !frage.autor || frage.autor === email;
+          const istGeteilt = frage.geteilt === 'schule';
+          if (istEigene || istGeteilt) {
+            // Bei geteilten Fragen den Autor-Namen als geteiltVon setzen
+            if (!istEigene && istGeteilt && frage.autor) {
+              frage.geteiltVon = frage.autor.split('@')[0];
+            }
+            alleFragen.push(frage);
+          }
         }
       }
     }
@@ -759,6 +775,144 @@ function kiAssistentEndpoint(body) {
         result = rufeClaudeAuf(systemPrompt, userPrompt);
         return jsonResponse({ success: true, ergebnis: result });
 
+      case 'generiereMusterloesung':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Erstelle eine vollständige Musterlösung für die folgende Prüfungsfrage. ' +
+          'Berücksichtige die Bloom-Stufe ' + (daten.bloom || 'K2') + ' und den Fachbereich ' + (daten.fachbereich || 'Wirtschaft & Recht') + '. ' +
+          'Bei Freitext-Fragen: formuliere eine Antwort die der erwarteten Länge und Tiefe entspricht. ' +
+          'Bei MC/R-F/Zuordnung/Lückentext: beschreibe die korrekten Antworten und erkläre kurz warum.\n\n' +
+          'Fragetyp: ' + (daten.typ || 'freitext') + '\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "musterlosung": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'generierePaare':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Generiere 4–6 Zuordnungspaare für die folgende Prüfungsfrage. ' +
+          'Jedes Paar besteht aus einem linken und einem rechten Element, die inhaltlich zusammengehören.\n\n' +
+          'Fachbereich: ' + (daten.fachbereich || 'Wirtschaft & Recht') + '\n' +
+          'Thema: ' + (daten.thema || '') + '\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "paare": [{ "links": "...", "rechts": "..." }, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'pruefePaare':
+        if (!daten.fragetext || !daten.paare) return jsonResponse({ error: 'Fragetext und Paare nötig' });
+        userPrompt = 'Prüfe die folgenden Zuordnungspaare auf Konsistenz, Eindeutigkeit und fachliche Korrektheit. ' +
+          'Stelle sicher, dass jedes linke Element genau einem rechten Element zugeordnet werden kann und keine Mehrdeutigkeiten bestehen.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Paare:\n' + JSON.stringify(daten.paare) + '\n\n' +
+          'Antworte als JSON: { "bewertung": "...", "verbesserungen": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'generiereAussagen':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Generiere 4–6 Richtig-/Falsch-Aussagen zur folgenden Prüfungsfrage. ' +
+          'Mische richtige und falsche Aussagen (nicht alle gleich). ' +
+          'Begründe jeweils kurz, warum die Aussage richtig oder falsch ist.\n\n' +
+          'Fachbereich: ' + (daten.fachbereich || 'Wirtschaft & Recht') + '\n' +
+          'Thema: ' + (daten.thema || '') + '\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "aussagen": [{ "text": "...", "korrekt": true/false, "erklaerung": "..." }, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'pruefeAussagen':
+        if (!daten.fragetext || !daten.aussagen) return jsonResponse({ error: 'Fragetext und Aussagen nötig' });
+        userPrompt = 'Prüfe die folgenden Richtig-/Falsch-Aussagen auf Ausgewogenheit, Eindeutigkeit und fachliche Korrektheit. ' +
+          'Achte darauf, dass die Aussagen nicht mehrdeutig formuliert sind und die Balance zwischen richtig und falsch stimmt.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Aussagen:\n' + JSON.stringify(daten.aussagen) + '\n\n' +
+          'Antworte als JSON: { "bewertung": "...", "verbesserungen": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'generiereLuecken':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Erstelle einen Lückentext für die folgende Prüfungsfrage. ' +
+          'Setze Lücken an sinnvollen Stellen (Schlüsselbegriffe, wichtige Fachbegriffe). ' +
+          'Verwende {{1}}, {{2}}, {{3}} usw. als Platzhalter. ' +
+          'Gib für jede Lücke die korrekten Antworten an (inkl. Synonyme und alternative Schreibweisen).\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n' +
+          (daten.textMitLuecken ? 'Basistext:\n' + daten.textMitLuecken + '\n' : '') + '\n' +
+          'Antworte als JSON: { "textMitLuecken": "...", "luecken": [{ "id": "1", "korrekteAntworten": ["antwort1", "synonym"] }, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'pruefeLueckenAntworten':
+        if (!daten.textMitLuecken || !daten.luecken) return jsonResponse({ error: 'Text mit Lücken und Lücken-Array nötig' });
+        userPrompt = 'Prüfe ob für die folgenden Lücken alle gültigen Antwortvarianten erfasst sind. ' +
+          'Ergänze fehlende Synonyme, alternative Schreibweisen und gleichwertige Formulierungen.\n\n' +
+          'Text mit Lücken:\n' + daten.textMitLuecken + '\n\n' +
+          'Aktuelle Lücken-Antworten:\n' + JSON.stringify(daten.luecken) + '\n\n' +
+          'Antworte als JSON: { "bewertung": "...", "ergaenzteAntworten": [{ "id": "1", "korrekteAntworten": ["erweiterte", "liste"] }, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'berechneErgebnis':
+        if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        userPrompt = 'Löse die folgende Rechenaufgabe Schritt für Schritt. ' +
+          'Gib das numerische Ergebnis (oder mehrere Teilergebnisse) mit passenden Einheiten und einer sinnvollen Toleranz an.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Antworte als JSON: { "ergebnisse": [{ "label": "...", "korrekt": 42.5, "toleranz": 0.5, "einheit": "CHF" }, ...], "rechenweg": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'pruefeToleranz':
+        if (!daten.fragetext || !daten.ergebnisse) return jsonResponse({ error: 'Fragetext und Ergebnisse nötig' });
+        userPrompt = 'Prüfe ob die angegebenen Toleranzbereiche für die folgende Rechenaufgabe sinnvoll sind. ' +
+          'Berücksichtige den Aufgabentyp, die Grössenordnung der Ergebnisse und übliche Rundungsregeln.\n\n' +
+          'Fragetext:\n' + daten.fragetext + '\n\n' +
+          'Ergebnisse mit Toleranzen:\n' + JSON.stringify(daten.ergebnisse) + '\n\n' +
+          'Antworte als JSON: { "bewertung": "...", "empfohleneToleranz": "..." }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'importiereFragen':
+        if (!daten.text) return jsonResponse({ error: 'Text zum Importieren fehlt' });
+        userPrompt = 'Analysiere den folgenden Text und extrahiere alle identifizierbaren Prüfungsfragen. ' +
+          'Für jede Frage bestimme den Typ (mc, freitext, zuordnung, lueckentext, richtigfalsch, berechnung), ' +
+          'die Bloom-Stufe (K1–K6), eine sinnvolle Punktzahl und die vollständige Frage.\n\n' +
+          'Fachbereich: ' + (daten.fachbereich || 'Wirtschaft & Recht') + '\n' +
+          (daten.thema ? 'Thema: ' + daten.thema + '\n' : '') +
+          'Standard-Bloom-Stufe (falls nicht erkennbar): ' + (daten.bloom || 'K2') + '\n\n' +
+          'Text:\n' + daten.text + '\n\n' +
+          'Regeln:\n' +
+          '- Wenn MC-Optionen (a, b, c, d) erkennbar sind: typ = "mc", mit optionen-Array\n' +
+          '- Wenn Richtig/Falsch-Aussagen erkennbar: typ = "richtigfalsch"\n' +
+          '- Wenn Zuordnungspaare erkennbar: typ = "zuordnung"\n' +
+          '- Sonst: typ = "freitext"\n' +
+          '- Für jede Frage eine Musterlösung erstellen\n\n' +
+          'Antworte als JSON: { "fragen": [{ "typ": "mc"|"freitext"|"zuordnung"|"richtigfalsch"|"berechnung", ' +
+          '"fragetext": "...", "bloom": "K1"-"K6", "punkte": 1-10, "musterlosung": "...", ' +
+          '"optionen": [{"text": "...", "korrekt": true/false}] (nur bei MC), ' +
+          '"paare": [{"links": "...", "rechts": "..."}] (nur bei Zuordnung), ' +
+          '"aussagen": [{"text": "...", "korrekt": true/false, "erklaerung": "..."}] (nur bei R/F) ' +
+          '}, ...] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt, 4096);
+        return jsonResponse({ success: true, ergebnis: result });
+
+      case 'analysierePruefung':
+        if (!daten.pruefung || !daten.pruefung.fragen) return jsonResponse({ error: 'Prüfungsdaten mit Fragen nötig' });
+        userPrompt = 'Analysiere die folgende Prüfung umfassend:\n\n' +
+          'Prüfung: ' + JSON.stringify(daten.pruefung) + '\n\n' +
+          'Analysiere folgende Aspekte:\n' +
+          '1. Bloom-Taxonomie-Verteilung (K1–K6): Wie viele Fragen auf welcher Stufe?\n' +
+          '2. Fragetypen-Mix: Verteilung der verschiedenen Fragetypen\n' +
+          '3. Zeitschätzung: Geschätzte Bearbeitungszeit pro Frage und gesamt vs. verfügbare Zeit (' + (daten.pruefung.dauerMinuten || '?') + ' Min.)\n' +
+          '4. Themenabdeckung: Sind alle relevanten Themen abgedeckt?\n' +
+          '5. Schwierigkeitsbalance: Ist die Schwierigkeit ausgewogen?\n' +
+          '6. Verbesserungsvorschläge: Konkrete Empfehlungen\n\n' +
+          'Antworte als JSON: { "taxonomie": { "K1": 0, "K2": 0, "K3": 0, "K4": 0, "K5": 0, "K6": 0 }, ' +
+          '"typenMix": { "mc": 0, "freitext": 0, ... }, ' +
+          '"zeitschaetzung": { "gesamt": 0, "proFrage": [{ "frageNr": 1, "minuten": 0 }, ...] }, ' +
+          '"themenAbdeckung": "...", "schwierigkeitsBalance": "...", "verbesserungen": ["...", "..."] }';
+        result = rufeClaudeAuf(systemPrompt, userPrompt, 2048);
+        return jsonResponse({ success: true, ergebnis: result });
+
       default:
         return jsonResponse({ error: 'Unbekannte KI-Aktion: ' + aktion });
     }
@@ -768,7 +922,8 @@ function kiAssistentEndpoint(body) {
   }
 }
 
-function rufeClaudeAuf(systemPrompt, userPrompt) {
+function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens) {
+  maxTokens = maxTokens || 1024;
   const apiKey = PropertiesService.getScriptProperties().getProperty('CLAUDE_API_KEY');
   if (!apiKey) {
     throw new Error('CLAUDE_API_KEY nicht als Script Property gesetzt');
@@ -783,7 +938,7 @@ function rufeClaudeAuf(systemPrompt, userPrompt) {
     },
     payload: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
+      max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     }),

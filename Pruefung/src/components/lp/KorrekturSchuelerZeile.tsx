@@ -14,6 +14,7 @@ interface Props {
     frageId: string,
     updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean }
   ) => void
+  onNoteOverride: (schuelerEmail: string, noteOverride: number | null) => void
 }
 
 /** Wandelt eine Antwort in lesbaren Text um */
@@ -72,17 +73,41 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
   }
 }
 
-export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, onBewertungUpdate }: Props) {
+export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, onBewertungUpdate, onNoteOverride }: Props) {
   const [offen, setOffen] = useState(false)
+  const [noteEditModus, setNoteEditModus] = useState(false)
+  const [noteInput, setNoteInput] = useState('')
 
   // Aggregierte Werte
   const bewertungenListe = Object.values(schueler.bewertungen)
   const totalPunkte = bewertungenListe.reduce((s, b) => s + effektivePunkte(b), 0)
   const totalMax = bewertungenListe.reduce((s, b) => s + b.maxPunkte, 0)
-  const note = berechneNote(totalPunkte, totalMax)
+  const berechneteNote = berechneNote(totalPunkte, totalMax)
+  const note = schueler.noteOverride ?? berechneteNote
+  const hatOverride = schueler.noteOverride != null
   const geprueftCount = bewertungenListe.filter((b) => b.geprueft).length
   const totalCount = bewertungenListe.length
   const alleGeprueft = totalCount > 0 && geprueftCount === totalCount
+
+  function handleNoteEdit(): void {
+    setNoteInput(note.toFixed(1))
+    setNoteEditModus(true)
+  }
+
+  function handleNoteSpeichern(): void {
+    const parsed = parseFloat(noteInput)
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= 6) {
+      // Auf 0.5 runden
+      const gerundet = Math.round(parsed * 2) / 2
+      onNoteOverride(schueler.email, gerundet)
+    }
+    setNoteEditModus(false)
+  }
+
+  function handleNoteZuruecksetzen(): void {
+    onNoteOverride(schueler.email, null)
+    setNoteEditModus(false)
+  }
 
   const handleAlleBestaetigen = () => {
     for (const bew of bewertungenListe) {
@@ -121,7 +146,14 @@ export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, onBew
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {totalPunkte} / {totalMax}
           </span>
-          <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+          <span
+            className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+              note >= 4
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+            } ${hatOverride ? 'ring-1 ring-amber-400 dark:ring-amber-500' : ''}`}
+            title={hatOverride ? `Berechnet: ${berechneteNote.toFixed(1)}, Überschrieben: ${note.toFixed(1)}` : `Note: ${note.toFixed(1)}`}
+          >
             {note.toFixed(1)}
           </span>
         </div>
@@ -145,7 +177,7 @@ export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, onBew
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {totalPunkte}/{totalMax}
           </span>
-          <span className="ml-1 text-xs text-slate-500 dark:text-slate-400">
+          <span className={`ml-1 text-xs ${note >= 4 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
             ({note.toFixed(1)})
           </span>
         </div>
@@ -171,6 +203,71 @@ export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, onBew
               />
             ) : null
           })}
+
+          {/* Note-Anzeige und Override */}
+          <div className="pt-3 mt-2 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Note:</span>
+            {noteEditModus ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  value={noteInput}
+                  onChange={(e) => setNoteInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleNoteSpeichern(); if (e.key === 'Escape') setNoteEditModus(false) }}
+                  min={1}
+                  max={6}
+                  step={0.5}
+                  className="w-16 px-2 py-1 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                  autoFocus
+                />
+                <button
+                  onClick={handleNoteSpeichern}
+                  className="text-xs px-2 py-1 rounded bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 cursor-pointer"
+                >
+                  OK
+                </button>
+                {hatOverride && (
+                  <button
+                    onClick={handleNoteZuruecksetzen}
+                    className="text-xs px-2 py-1 rounded text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 cursor-pointer"
+                  >
+                    Zurücksetzen
+                  </button>
+                )}
+                <button
+                  onClick={() => setNoteEditModus(false)}
+                  className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
+                >
+                  Abbrechen
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-semibold px-2 py-0.5 rounded ${
+                  note >= 4
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                }`}>
+                  {note.toFixed(1)}
+                </span>
+                {hatOverride && (
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400">
+                    (berechnet: {berechneteNote.toFixed(1)})
+                  </span>
+                )}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleNoteEdit() }}
+                  className="text-[10px] px-1.5 py-0.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-colors cursor-pointer"
+                  title="Note überschreiben"
+                >
+                  Anpassen
+                </button>
+              </div>
+            )}
+            <div className="ml-auto text-xs text-slate-400 dark:text-slate-500">
+              {totalPunkte} / {totalMax} Pkt. ({totalMax > 0 ? Math.round(totalPunkte / totalMax * 100) : 0}%)
+            </div>
+          </div>
 
           {/* Alle bestätigen */}
           {!alleGeprueft && totalCount > 0 && (

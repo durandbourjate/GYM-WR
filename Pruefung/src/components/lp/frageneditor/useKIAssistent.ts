@@ -23,6 +23,8 @@ export type AktionKey =
   | 'pruefeToleranz'
   // Prüfungs-Analyse
   | 'analysierePruefung'
+  // Import
+  | 'importiereFragen'
 
 export interface AktionErgebnis {
   daten: Record<string, unknown> | null

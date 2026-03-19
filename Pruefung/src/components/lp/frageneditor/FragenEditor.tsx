@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useAuthStore } from '../../../store/authStore.ts'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { typLabel, bloomLabel } from '../../../utils/fachbereich.ts'
 import type {
@@ -30,6 +31,8 @@ interface Props {
 
 /** Vollbild-Editor zum Erstellen und Bearbeiten von Prüfungsfragen */
 export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props) {
+  const user = useAuthStore((s) => s.user)
+
   // Grunddaten
   const [typ, setTyp] = useState<FrageTyp>(frage?.typ as FrageTyp ?? 'mc')
   const [fachbereich, setFachbereich] = useState<Fachbereich>(frage?.fachbereich ?? 'VWL')
@@ -119,6 +122,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   )
   const [zeitbedarfManuell, setZeitbedarfManuell] = useState(!!frage?.zeitbedarf)
 
+  // Sharing
+  const [geteilt, setGeteilt] = useState<'privat' | 'schule'>(frage?.geteilt ?? 'privat')
+
   // Anhänge
   const [anhaenge, setAnhaenge] = useState<FrageAnhang[]>(frage?.anhaenge ?? [])
   const [neueAnhaenge, setNeueAnhaenge] = useState<File[]>([])
@@ -192,6 +198,8 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
       verwendungen: frage?.verwendungen ?? [],
       quelle: frage?.quelle ?? 'manuell' as const,
       anhaenge: anhaenge.length > 0 ? anhaenge : undefined,
+      autor: frage?.autor ?? user?.email,
+      geteilt,
     }
 
     let neueFrage: Frage
@@ -403,6 +411,36 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                     >{g}</button>
                   ))}
                 </div>
+              </div>
+
+              {/* Sharing / Teilen */}
+              <div>
+                <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Sichtbarkeit</label>
+                <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
+                  <button
+                    onClick={() => setGeteilt('privat')}
+                    className={`px-3 py-1 text-xs transition-colors cursor-pointer ${
+                      geteilt === 'privat'
+                        ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    Privat
+                  </button>
+                  <button
+                    onClick={() => setGeteilt('schule')}
+                    className={`px-3 py-1 text-xs transition-colors cursor-pointer border-l border-slate-300 dark:border-slate-600 ${
+                      geteilt === 'schule'
+                        ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    Schule
+                  </button>
+                </div>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                  {geteilt === 'schule' ? 'Sichtbar für alle @gymhofwil.ch Lehrpersonen' : 'Nur für Sie sichtbar'}
+                </p>
               </div>
             </div>
           </Abschnitt>
