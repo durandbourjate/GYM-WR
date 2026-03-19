@@ -6,7 +6,7 @@
 
 ## Aktueller Stand
 
-**Phase 4: Composer & SEB** (17.03.2026) — Backend getestet & funktioniert ✅
+**Phase 4: Composer & SEB** (19.03.2026) — KI-Integration, Analyse-Dashboard, UX-Polish ✅
 
 ### Was funktioniert
 - **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
@@ -111,8 +111,13 @@ Pruefung/
 │   ├── components/
 │   │   ├── lp/
 │   │   │   ├── LPStartseite.tsx         — LP-Startseite: Prüfungen verwalten + erstellen
-│   │   │   ├── PruefungsComposer.tsx    — 3-Tab-Editor (Einstellungen, Abschnitte, Vorschau)
-│   │   │   ├── FragenBrowser.tsx        — Slide-over: Fragenbank durchsuchen + filtern
+│   │   │   ├── PruefungsComposer.tsx    — 4-Tab-Editor (Einstellungen, Abschnitte, Vorschau, Analyse) + Autosave
+│   │   │   ├── FragenBrowser.tsx        — Slide-over: Fragenbank + Direktes Hinzufügen/Entfernen + Resize
+│   │   │   ├── HilfeSeite.tsx           — In-App Hilfe mit Akkordeon-Sektionen + Resize
+│   │   │   ├── composer/
+│   │   │   │   ├── AbschnitteTab.tsx    — Abschnitte mit Fragen-Details (Badges, Bloom, Punkte, Zeit)
+│   │   │   │   ├── VorschauTab.tsx      — Inline Schülervorschau (MC/Freitext/Lückentext/Zuordnung)
+│   │   │   │   └── AnalyseTab.tsx       — Taxonomie, Fragetypen-Mix, Zeitschätzung, KI-Analyse
 │   │   │   ├── frageneditor/           — Aufgesplitteter FragenEditor (vorher 949 Zeilen)
 │   │   │   │   ├── FragenEditor.tsx    — Hauptkomponente (~290 Z.)
 │   │   │   │   ├── editorUtils.ts      — FrageTyp, generiereFrageId(), parseLuecken()
@@ -247,12 +252,29 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 42 | BerechnungEditor Layout Fix | ✅ | Header-Spacer für Lösch-Button nur anzeigen wenn >1 Ergebnis vorhanden |
 | 43 | Einklappbare Abschnitte | ✅ | Abschnitt-Komponente mit einklappbar/standardOffen Props; Fragetyp + Zuordnung eingeklappt bei Bearbeitung, Anhänge + Bewertungsraster standardmässig zu |
 | 44 | KI-Klassifizierung | ✅ | "KI klassifizieren"-Button in Zuordnung-Abschnitt: füllt Fachbereich, Thema, Unterthema, Bloom, Tags aus Fragetext |
+| 45 | Sichtbarkeit-Button neutral | ✅ | Privat/Schule-Toggle: `bg-slate-800` statt blau, `w-48` fixe Breite |
+| 46 | Bewertungsraster-Vorlagen editierbar | ✅ | Alle Vorlagen löschbar + editierbar, Defaults als Startvorschläge |
+| 47 | Autosave (3s Debounce) | ✅ | `useRef` für Previous-State-Vergleich, `handleSpeichernIntern()` wiederverwendbar |
+| 48 | Direktes Hinzufügen/Entfernen | ✅ | Klick auf Frage in Browser = direkt hinzufügen/entfernen, "In Prüfung"-Badge |
+| 49 | Vorschau inline Schüleransicht | ✅ | MC mit A/B/C/D, Freitext mit Textarea, Lückentext mit Inputs, Zusammenfassungsleiste |
+| 50 | Header schlank + Buttons einheitlich | ✅ | `py-2`, Reihenfolge: Neue Prüfung → Fragenbank → Hilfe → ThemeToggle → Abmelden, Ghost-Buttons |
+| 51 | Overlays unter Header | ✅ | Dynamische Header-Höhe-Messung, alle Panels starten unter Header |
+| 52 | Resize-Handle überall | ✅ | FragenBrowser, FragenEditor, HilfeSeite: Drag-to-Resize |
+| 53 | Bilder in Vorschau | ✅ | Anhänge inline angezeigt, `bildGroesse` Feld (klein/mittel/gross) auf FrageAnhang |
+| 54 | Material-Upload zu Drive | ✅ | Datei vom Computer hochladen → Base64 → Apps Script → Google Drive |
+| 55 | Drive-Ordner getrennt | ✅ | 3 Ordner: Anhänge (`1Ql4...`), Materialien (`1yBq...`), SuS-Uploads (`1pQd...`) |
+| 56 | Berechnung Layout-Fix | ✅ | Header-Spacer nur bei >1 Ergebnis |
+| 57 | initialEditFrageId | ✅ | "Bearbeiten" in AbschnitteTab öffnet FragenBrowser + Editor direkt |
 
 ### Offen
 - Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung)
 - Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
 - Buchhaltungs-Fragetyp (Soll/Haben, Kontenrahmen, T-Konten — wie bei eLoB)
 - Audio/Video in Fragen (Multimedia-Einbettung)
+- Lückentext-Helper-Button (Wort markieren → Klick → `{{}}` wrappen)
+- Formatierungs-Buttons für Fragetext/Lösungen
+- Fragen-Export (JSON)
+- Fragen teilen zwischen LP (Sharing-Infrastruktur)
 
 ### Backend-Hinweis
 `apps-script-code.js` enthält den kompletten Apps Script Code. Nach Änderungen: Code kopieren → Apps Script Editor → Bereitstellung aktualisieren (Stift → Neue Version). Die Spalten `freigeschaltet` und `zeitverlaengerungen` müssen im Configs-Sheet vorhanden sein.
@@ -280,3 +302,12 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | `0c9f0f0` | 2 neue Fragetypen (Richtig/Falsch + Berechnung), FragenEditor, Backend-Fixes |
 | `a6aaeb1` | FragenBrowser: Redesign für Skalierbarkeit mit vielen Fragen |
 | *pending* | Code-Review-Cleanup: Shared Utils, Debug-Logs, toter Code, Custom-Dialoge, eslint-Fixes |
+| `77cd9b1` | UI-Fixes, einklappbare Abschnitte, KI-Klassifizierung |
+| `d3d89ba` | Material-Dateiupload zu Google Drive |
+| `34898cb` | UX-Verbesserungen (6 Fixes) |
+| `1ab2ff7` | Sichtbarkeit-Button fix + Bewertungsraster-Vorlagen |
+| `fdef587` | Autosave, direktes Hinzufügen/Entfernen, Vorschau-Fix |
+| `8f7fa78` | Header schlank + einheitliche Buttons + z-index Fix |
+| `cf8646b` | Overlays unter Header, Resize überall, Bilder in Vorschau |
+| `da76399` | Drive-Ordner für Anhänge + Materialien getrennt |
+| `ec44621` | SuS-Uploads Ordner-ID hinzugefügt |
