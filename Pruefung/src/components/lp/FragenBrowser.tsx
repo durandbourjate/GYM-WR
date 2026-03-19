@@ -455,6 +455,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
                                 istVerwendet={bereitsVerwendet.includes(frage.id)}
                                 istAusgewaehlt={ausgewaehlt.has(frage.id)}
                                 onToggle={() => toggleAuswahl(frage.id)}
+                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
                                 zeigeGruppierung={gruppierung}
                               />
                             : <DetailKarte
@@ -463,6 +464,7 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
                                 istVerwendet={bereitsVerwendet.includes(frage.id)}
                                 istAusgewaehlt={ausgewaehlt.has(frage.id)}
                                 onToggle={() => toggleAuswahl(frage.id)}
+                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
                               />
                         ))}
                       </div>
@@ -502,11 +504,12 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
 // === SUB-KOMPONENTEN ===
 
 /** Kompakte Zeile für grosse Listen */
-function KompaktZeile({ frage, istVerwendet, istAusgewaehlt, onToggle, zeigeGruppierung }: {
+function KompaktZeile({ frage, istVerwendet, istAusgewaehlt, onToggle, onEdit, zeigeGruppierung }: {
   frage: Frage
   istVerwendet: boolean
   istAusgewaehlt: boolean
   onToggle: () => void
+  onEdit: () => void
   zeigeGruppierung: Gruppierung
 }) {
   return (
@@ -559,16 +562,26 @@ function KompaktZeile({ frage, istVerwendet, istAusgewaehlt, onToggle, zeigeGrup
       {istVerwendet && (
         <span className="text-[10px] text-slate-400 italic shrink-0">verwendet</span>
       )}
+
+      {/* Bearbeiten-Button */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onEdit() }}
+        className="text-[10px] px-1.5 py-0.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-colors cursor-pointer shrink-0"
+        title="Frage bearbeiten"
+      >
+        ✎
+      </button>
     </div>
   )
 }
 
 /** Detaillierte Karte mit Fragetext-Vorschau */
-function DetailKarte({ frage, istVerwendet, istAusgewaehlt, onToggle }: {
+function DetailKarte({ frage, istVerwendet, istAusgewaehlt, onToggle, onEdit }: {
   frage: Frage
   istVerwendet: boolean
   istAusgewaehlt: boolean
   onToggle: () => void
+  onEdit: () => void
 }) {
   const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
 
@@ -611,6 +624,14 @@ function DetailKarte({ frage, istVerwendet, istAusgewaehlt, onToggle }: {
             {istVerwendet && (
               <span className="text-xs text-slate-400 italic">bereits verwendet</span>
             )}
+            {/* Bearbeiten-Button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit() }}
+              className="ml-auto text-xs px-2 py-0.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 rounded transition-colors cursor-pointer shrink-0"
+              title="Frage bearbeiten"
+            >
+              Bearbeiten
+            </button>
           </div>
 
           {/* Fragetext (gekürzt) */}

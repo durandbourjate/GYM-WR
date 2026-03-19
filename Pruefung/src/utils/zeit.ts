@@ -1,7 +1,22 @@
-/** Formatiert ein Datum-String (z.B. "2026-04-01") als "Mi 01. April 2026" */
-export function formatDatum(datumStr: string): string {
-  const d = new Date(datumStr + 'T00:00:00')
-  if (isNaN(d.getTime())) return datumStr
+/** Formatiert ein Datum (String oder Date-Objekt) als "Mi 01. April 2026".
+ *  Akzeptiert ISO-Strings ("2026-04-01"), Date-Objekte und rohe Date.toString()-Ausgaben. */
+export function formatDatum(datum: string | Date): string {
+  let d: Date
+  if (datum instanceof Date) {
+    d = datum
+  } else if (typeof datum === 'string') {
+    // ISO-Format (YYYY-MM-DD) → explizit als lokale Mitternacht parsen
+    if (/^\d{4}-\d{2}-\d{2}$/.test(datum)) {
+      d = new Date(datum + 'T00:00:00')
+    } else {
+      // Alles andere (z.B. rohe Date.toString()-Ausgabe) → direkt parsen
+      d = new Date(datum)
+    }
+  } else {
+    // Fallback: versuche String-Konvertierung (z.B. wenn ein Date-Objekt als any durchkommt)
+    d = new Date(String(datum))
+  }
+  if (isNaN(d.getTime())) return String(datum)
   return new Intl.DateTimeFormat('de-CH', {
     weekday: 'short',
     day: '2-digit',
