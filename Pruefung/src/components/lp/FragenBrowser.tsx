@@ -282,6 +282,26 @@ export default function FragenBrowser({ onHinzufuegen, onSchliessen, bereitsVerw
             </div>
             <div className="flex items-center gap-2">
               <button
+                onClick={() => {
+                  const zuExportieren = ausgewaehlt.size > 0
+                    ? gefilterteFragen.filter((f) => ausgewaehlt.has(f.id))
+                    : gefilterteFragen
+                  const json = JSON.stringify(zuExportieren, null, 2)
+                  const blob = new Blob([json], { type: 'application/json' })
+                  const url = URL.createObjectURL(blob)
+                  const datum = new Date().toISOString().slice(0, 10)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `fragenbank_export_${datum}.json`
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                title={ausgewaehlt.size > 0 ? `${ausgewaehlt.size} ausgewählte Fragen als JSON exportieren` : 'Alle gefilterten Fragen als JSON exportieren'}
+              >
+                Export{ausgewaehlt.size > 0 ? ` (${ausgewaehlt.size})` : ''}
+              </button>
+              <button
                 onClick={() => setZeigImport(true)}
                 className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
                 title="Fragen via KI aus Text importieren"

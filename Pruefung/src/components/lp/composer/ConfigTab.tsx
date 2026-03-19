@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { PruefungsConfig } from '../../../types/pruefung.ts'
+import type { PruefungsConfig, PruefungsMaterial } from '../../../types/pruefung.ts'
 import { Section, Field, Toggle } from './ComposerUI.tsx'
 
 interface Props {
@@ -260,6 +260,192 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich 
           </button>
         </div>
       </Section>
+
+      {/* Materialien (Gesetze, PDFs, Hilfsmittel) */}
+      <MaterialienSection
+        materialien={pruefung.materialien ?? []}
+        setMaterialien={(m) => updatePruefung({ materialien: m })}
+      />
     </div>
+  )
+}
+
+/** Verwaltung von Prüfungs-Materialien (PDFs, Texte, Links) */
+function MaterialienSection({ materialien, setMaterialien }: {
+  materialien: PruefungsMaterial[]
+  setMaterialien: (m: PruefungsMaterial[]) => void
+}) {
+  const [zeigHinzufuegen, setZeigHinzufuegen] = useState(false)
+  const [neuerTyp, setNeuerTyp] = useState<PruefungsMaterial['typ']>('pdf')
+  const [neuerTitel, setNeuerTitel] = useState('')
+  const [neueUrl, setNeueUrl] = useState('')
+  const [neuerInhalt, setNeuerInhalt] = useState('')
+
+  function addMaterial(): void {
+    const titel = neuerTitel.trim()
+    if (!titel) return
+    if ((neuerTyp === 'pdf' || neuerTyp === 'link') && !neueUrl.trim()) return
+    if (neuerTyp === 'text' && !neuerInhalt.trim()) return
+
+    const neu: PruefungsMaterial = {
+      id: crypto.randomUUID(),
+      titel,
+      typ: neuerTyp,
+      ...(neuerTyp !== 'text' ? { url: neueUrl.trim() } : {}),
+      ...(neuerTyp === 'text' ? { inhalt: neuerInhalt.trim() } : {}),
+    }
+    setMaterialien([...materialien, neu])
+    setNeuerTitel('')
+    setNeueUrl('')
+    setNeuerInhalt('')
+    setZeigHinzufuegen(false)
+  }
+
+  function removeMaterial(id: string): void {
+    setMaterialien(materialien.filter((m) => m.id !== id))
+  }
+
+  function updateMaterial(id: string, partial: Partial<PruefungsMaterial>): void {
+    setMaterialien(materialien.map((m) => m.id === id ? { ...m, ...partial } : m))
+  }
+
+  const typLabel: Record<PruefungsMaterial['typ'], string> = {
+    pdf: 'PDF',
+    text: 'Text',
+    link: 'Link',
+  }
+
+  return (
+    <Section titel="Materialien (Hilfsmittel)">
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+        Referenzmaterialien für SuS während der Prüfung (z.B. Gesetzestexte, Formeln, Nachschlagewerke).
+      </p>
+
+      {/* Bestehende Materialien */}
+      {materialien.length > 0 && (
+        <div className="space-y-2 mb-4">
+          {materialien.map((mat) => (
+            <div
+              key={mat.id}
+              className="flex items-start gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg"
+            >
+              <span className="text-xs px-2 py-0.5 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded font-medium shrink-0 mt-0.5">
+                {typLabel[mat.typ]}
+              </span>
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <input
+                  type="text"
+                  value={mat.titel}
+                  onChange={(e) => updateMaterial(mat.id, { titel: e.target.value })}
+                  className="input-field text-sm font-medium"
+                  placeholder="Titel"
+                />
+                {(mat.typ === 'pdf' || mat.typ === 'link') && (
+                  <input
+                    type="url"
+                    value={mat.url ?? ''}
+                    onChange={(e) => updateMaterial(mat.id, { url: e.target.value })}
+                    className="input-field text-xs"
+                    placeholder={mat.typ === 'pdf' ? 'PDF-URL oder Google-Drive-Link' : 'URL'}
+                  />
+                )}
+                {mat.typ === 'text' && (
+                  <textarea
+                    value={mat.inhalt ?? ''}
+                    onChange={(e) => updateMaterial(mat.id, { inhalt: e.target.value })}
+                    className="input-field text-xs"
+                    rows={3}
+                    placeholder="Textinhalt..."
+                  />
+                )}
+              </div>
+              <button
+                onClick={() => removeMaterial(mat.id)}
+                className="w-6 h-6 text-xs text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer transition-colors shrink-0 mt-0.5"
+                title="Entfernen"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Neues Material hinzufügen */}
+      {!zeigHinzufuegen ? (
+        <button
+          onClick={() => setZeigHinzufuegen(true)}
+          className="px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors cursor-pointer w-full"
+        >
+          + Material hinzufügen
+        </button>
+      ) : (
+        <div className="border border-slate-200 dark:border-slate-600 rounded-lg p-4 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Titel">
+              <input
+                type="text"
+                value={neuerTitel}
+                onChange={(e) => setNeuerTitel(e.target.value)}
+                placeholder="z.B. OR Art. 1–10"
+                className="input-field"
+                autoFocus
+              />
+            </Field>
+            <Field label="Typ">
+              <select
+                value={neuerTyp}
+                onChange={(e) => setNeuerTyp(e.target.value as PruefungsMaterial['typ'])}
+                className="input-field"
+              >
+                <option value="pdf">PDF (eingebettet)</option>
+                <option value="text">Text (inline)</option>
+                <option value="link">Link (extern)</option>
+              </select>
+            </Field>
+          </div>
+
+          {(neuerTyp === 'pdf' || neuerTyp === 'link') && (
+            <Field label={neuerTyp === 'pdf' ? 'PDF-URL / Google-Drive-Link' : 'URL'}>
+              <input
+                type="url"
+                value={neueUrl}
+                onChange={(e) => setNeueUrl(e.target.value)}
+                placeholder={neuerTyp === 'pdf' ? 'https://drive.google.com/file/d/...' : 'https://...'}
+                className="input-field"
+              />
+            </Field>
+          )}
+
+          {neuerTyp === 'text' && (
+            <Field label="Inhalt">
+              <textarea
+                value={neuerInhalt}
+                onChange={(e) => setNeuerInhalt(e.target.value)}
+                placeholder="Gesetzestext, Formeln, etc."
+                className="input-field"
+                rows={5}
+              />
+            </Field>
+          )}
+
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => { setZeigHinzufuegen(false); setNeuerTitel(''); setNeueUrl(''); setNeuerInhalt('') }}
+              className="px-3 py-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={addMaterial}
+              disabled={!neuerTitel.trim() || ((neuerTyp === 'pdf' || neuerTyp === 'link') && !neueUrl.trim()) || (neuerTyp === 'text' && !neuerInhalt.trim())}
+              className="px-3 py-1.5 text-sm font-medium text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              Hinzufügen
+            </button>
+          </div>
+        </div>
+      )}
+    </Section>
   )
 }

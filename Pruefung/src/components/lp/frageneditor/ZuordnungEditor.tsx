@@ -50,7 +50,7 @@ export default function ZuordnungEditor({ paare, setPaare }: ZuordnungEditorProp
       {paare.length < 10 && (
         <button
           onClick={() => setPaare([...paare, { links: '', rechts: '' }])}
-          className="mt-2 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+          className="mt-2 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors cursor-pointer"
         >
           + Paar hinzufügen
         </button>

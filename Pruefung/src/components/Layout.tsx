@@ -13,6 +13,7 @@ import AutoSaveIndikator from './AutoSaveIndikator.tsx'
 import FragenNavigation from './FragenNavigation.tsx'
 import AbgabeDialog from './AbgabeDialog.tsx'
 import ThemeToggle from './ThemeToggle.tsx'
+import MaterialPanel from './MaterialPanel.tsx'
 import MCFrage from './fragetypen/MCFrage.tsx'
 import FreitextFrage from './fragetypen/FreitextFrage.tsx'
 import LueckentextFrage from './fragetypen/LueckentextFrage.tsx'
@@ -34,6 +35,7 @@ export default function Layout() {
   const vorherigeFrage = usePruefungStore((s) => s.vorherigeFrage)
   const toggleMarkierung = usePruefungStore((s) => s.toggleMarkierung)
   const [zeigAbgabeDialog, setZeigAbgabeDialog] = useState(false)
+  const [zeigMaterial, setZeigMaterial] = useState(false)
   const [tabKonfliktGeschlossen, setTabKonfliktGeschlossen] = useState(false)
   const [zeitAbgelaufen, setZeitAbgelaufen] = useState(false)
 
@@ -187,8 +189,27 @@ export default function Layout() {
             <Timer onZeitAbgelaufen={() => setZeitAbgelaufen(true)} />
           </div>
 
-          {/* Rechts: Markieren + Abgeben + Status + Theme */}
+          {/* Rechts: Material + Markieren + Abgeben + Status + Theme */}
           <div className="flex items-center gap-1.5">
+            {/* Material-Button (nur wenn Materialien vorhanden) */}
+            {config.materialien && config.materialien.length > 0 && (
+              <button
+                onClick={() => setZeigMaterial(true)}
+                title="Material anzeigen"
+                className={`px-2 py-1.5 text-xs rounded-lg border transition-colors cursor-pointer hidden sm:flex items-center gap-1
+                  ${zeigMaterial
+                    ? 'bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300'
+                    : 'border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }
+                `}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="hidden md:inline">Material</span>
+              </button>
+            )}
+
             {aktuelleFrage && (
               <button
                 onClick={() => toggleMarkierung(aktuelleFrage.id)}
@@ -219,9 +240,9 @@ export default function Layout() {
           </div>
         </div>
 
-        {/* Mobile: Markieren-Button */}
-        {aktuelleFrage && (
-          <div className="sm:hidden mt-1.5 flex items-center gap-2">
+        {/* Mobile: Markieren + Material */}
+        <div className="sm:hidden mt-1.5 flex items-center gap-2">
+          {aktuelleFrage && (
             <button
               onClick={() => toggleMarkierung(aktuelleFrage.id)}
               className={`px-2 py-1 text-xs rounded-lg border transition-colors cursor-pointer flex items-center gap-1
@@ -234,11 +255,22 @@ export default function Layout() {
               <span>?</span>
               <span>{istMarkiert ? 'Markiert' : 'Unsicher'}</span>
             </button>
-            <span className="text-xs text-slate-400 dark:text-slate-500 truncate">
-              {config.titel}
-            </span>
-          </div>
-        )}
+          )}
+          {config.materialien && config.materialien.length > 0 && (
+            <button
+              onClick={() => setZeigMaterial(true)}
+              className="px-2 py-1 text-xs rounded-lg border border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400 transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Material</span>
+            </button>
+          )}
+          <span className="text-xs text-slate-400 dark:text-slate-500 truncate">
+            {config.titel}
+          </span>
+        </div>
         {/* Fortschrittsbalken */}
         <div className="h-1 bg-slate-100 dark:bg-slate-700">
           <div
@@ -308,6 +340,14 @@ export default function Layout() {
       {/* Abgabe-Dialog */}
       {zeigAbgabeDialog && (
         <AbgabeDialog onSchliessen={() => setZeigAbgabeDialog(false)} />
+      )}
+
+      {/* Material-Panel */}
+      {zeigMaterial && config.materialien && config.materialien.length > 0 && (
+        <MaterialPanel
+          materialien={config.materialien}
+          onSchliessen={() => setZeigMaterial(false)}
+        />
       )}
     </div>
   )

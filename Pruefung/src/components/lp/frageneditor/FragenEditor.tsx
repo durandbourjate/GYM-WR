@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { typLabel, bloomLabel } from '../../../utils/fachbereich.ts'
@@ -21,6 +21,7 @@ import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent, KIFragetextButtons, KIMusterlosungButtons, KIMCOptionenButton } from './KIAssistentPanel.tsx'
 import { KIZuordnungButtons, KIRichtigFalschButtons, KILueckentextButtons, KIBerechnungButtons } from './KITypButtons.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
+import FormattierungsToolbar from './FormattierungsToolbar.tsx'
 
 interface Props {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
@@ -136,7 +137,51 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   const ki = useKIAssistent()
 
   const panelRef = useRef<HTMLDivElement>(null)
+  const fragetextRef = useRef<HTMLTextAreaElement>(null)
+  const musterloeRef = useRef<HTMLTextAreaElement>(null)
   useFocusTrap(panelRef)
+
+  // Resizable Panel
+  const MIN_BREITE = 480
+  const MAX_BREITE_FAKTOR = 0.9 // 90vw
+  const [panelBreite, setPanelBreite] = useState(672) // entspricht max-w-2xl (42rem)
+  const ziehtRef = useRef(false)
+  const startXRef = useRef(0)
+  const startBreiteRef = useRef(0)
+
+  const handleZiehStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    ziehtRef.current = true
+    startXRef.current = e.clientX
+    startBreiteRef.current = panelBreite
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }, [panelBreite])
+
+  useEffect(() => {
+    function handleMauseBewegung(e: MouseEvent): void {
+      if (!ziehtRef.current) return
+      const maxBreite = window.innerWidth * MAX_BREITE_FAKTOR
+      // Panel ist rechts → nach links ziehen = grösser
+      const delta = startXRef.current - e.clientX
+      const neueBreite = Math.min(maxBreite, Math.max(MIN_BREITE, startBreiteRef.current + delta))
+      setPanelBreite(neueBreite)
+    }
+
+    function handleMauseLos(): void {
+      if (!ziehtRef.current) return
+      ziehtRef.current = false
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+
+    document.addEventListener('mousemove', handleMauseBewegung)
+    document.addEventListener('mouseup', handleMauseLos)
+    return () => {
+      document.removeEventListener('mousemove', handleMauseBewegung)
+      document.removeEventListener('mouseup', handleMauseLos)
+    }
+  }, [])
 
   function validiere(): string[] {
     const errs: string[] = []
@@ -272,7 +317,13 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     <div className="fixed inset-0 z-50 flex">
       <div className="absolute inset-0 bg-black/40" onClick={onAbbrechen} />
 
-      <div ref={panelRef} className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
+      <div ref={panelRef} className="absolute right-0 top-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col" style={{ width: panelBreite, maxWidth: '90vw' }}>
+        {/* Drag-Handle zum Resize */}
+        <div
+          onMouseDown={handleZiehStart}
+          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
+          title="Breite anpassen"
+        />
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
@@ -447,7 +498,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
           {/* Fragetext */}
           <Abschnitt titel="Fragetext *">
+            <FormattierungsToolbar textareaRef={fragetextRef} value={fragetext} onChange={setFragetext} />
             <textarea
+              ref={fragetextRef}
               value={fragetext}
               onChange={(e) => setFragetext(e.target.value)}
               rows={4}
@@ -574,7 +627,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
           {/* Musterlösung */}
           <Abschnitt titel="Musterlösung">
+            <FormattierungsToolbar textareaRef={musterloeRef} value={musterlosung} onChange={setMusterlosung} />
             <textarea
+              ref={musterloeRef}
               value={musterlosung}
               onChange={(e) => setMusterlosung(e.target.value)}
               rows={3}

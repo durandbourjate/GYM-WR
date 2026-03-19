@@ -57,6 +57,9 @@ export interface PruefungsConfig {
 
   vorlageVon?: string;
 
+  // Materialien (Gesetze, PDFs, Hilfsmittel)
+  materialien?: PruefungsMaterial[];
+
   // Notenberechnung
   notenConfig?: NotenConfig;
 }
@@ -66,6 +69,16 @@ export interface NotenConfig {
   punkteFuerSechs: number;
   /** Rundungsgenauigkeit: 0.1 (Zehntel), 0.25 (Viertel), 0.5 (Halbe), 1 (Ganze) */
   rundung: 0.1 | 0.25 | 0.5 | 1;
+}
+
+export interface PruefungsMaterial {
+  id: string;
+  titel: string;
+  typ: 'pdf' | 'text' | 'link';
+  /** URL für PDF oder Link */
+  url?: string;
+  /** Inline-Inhalt für Typ 'text' */
+  inhalt?: string;
 }
 
 export interface PruefungsAbschnitt {
