@@ -21,9 +21,70 @@ import BerechnungEditor from './BerechnungEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from './KIBausteine.tsx'
-import { KIZuordnungButtons } from './KITypButtons.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 import FormattierungsToolbar from './FormattierungsToolbar.tsx'
+
+// === Bewertungsraster-Vorlagen ===
+
+interface BewertungsrasterVorlage {
+  id: string
+  name: string
+  kriterien: Array<{ beschreibung: string; punkte: number }>
+  builtin?: boolean
+}
+
+const BUILTIN_VORLAGEN: BewertungsrasterVorlage[] = [
+  {
+    id: '__freitext_standard',
+    name: 'Freitext Standard',
+    builtin: true,
+    kriterien: [
+      { beschreibung: 'Inhalt', punkte: 2 },
+      { beschreibung: 'Argumentation', punkte: 2 },
+      { beschreibung: 'Sprache', punkte: 1 },
+    ],
+  },
+  {
+    id: '__berechnung_standard',
+    name: 'Berechnung Standard',
+    builtin: true,
+    kriterien: [
+      { beschreibung: 'Lösungsweg', punkte: 2 },
+      { beschreibung: 'Ergebnis', punkte: 1 },
+      { beschreibung: 'Einheit', punkte: 0.5 },
+    ],
+  },
+  {
+    id: '__analyse_standard',
+    name: 'Analyse Standard',
+    builtin: true,
+    kriterien: [
+      { beschreibung: 'Sachkenntnis', punkte: 2 },
+      { beschreibung: 'Analyse', punkte: 2 },
+      { beschreibung: 'Bewertung', punkte: 1 },
+      { beschreibung: 'Darstellung', punkte: 1 },
+    ],
+  },
+]
+
+function ladeCustomVorlagen(): BewertungsrasterVorlage[] {
+  try {
+    const raw = localStorage.getItem('bewertungsraster-vorlagen')
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter(
+      (v: unknown): v is BewertungsrasterVorlage =>
+        typeof v === 'object' && v !== null && 'id' in v && 'name' in v && 'kriterien' in v
+    )
+  } catch {
+    return []
+  }
+}
+
+function speichereCustomVorlagen(vorlagen: BewertungsrasterVorlage[]): void {
+  localStorage.setItem('bewertungsraster-vorlagen', JSON.stringify(vorlagen))
+}
 
 interface Props {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
@@ -55,6 +116,8 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   const [bewertungsraster, setBewertungsraster] = useState<Bewertungskriterium[]>(
     frage?.bewertungsraster ?? [{ beschreibung: '', punkte: 1 }]
   )
+  const [customVorlagen, setCustomVorlagen] = useState<BewertungsrasterVorlage[]>(ladeCustomVorlagen)
+  const alleVorlagen = [...BUILTIN_VORLAGEN, ...customVorlagen]
 
   // MC-spezifisch
   const [optionen, setOptionen] = useState<MCOption[]>(
@@ -560,7 +623,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               {/* Sharing / Teilen */}
               <div>
                 <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Sichtbarkeit</label>
-                <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
+                <div className="flex w-48 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
                   <button
                     onClick={() => setGeteilt('privat')}
                     className={`flex-1 px-3 py-1 text-xs transition-colors cursor-pointer ${
@@ -846,15 +909,72 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
           {typ === 'zuordnung' && (
             <>
-              <ZuordnungEditor paare={paare} setPaare={setPaare} />
-              <KIZuordnungButtons
-                ki={ki}
-                fragetext={fragetext}
-                fachbereich={fachbereich}
-                thema={thema}
+              <ZuordnungEditor
                 paare={paare}
-                onSetPaare={setPaare}
+                setPaare={setPaare}
+                titelRechts={ki.verfuegbar ? (
+                  <div className="flex gap-1.5">
+                    <InlineAktionButton
+                      label="Generieren"
+                      tooltip="KI erstellt passende Zuordnungspaare basierend auf dem Fragetext"
+                      hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
+                      disabled={!fragetext.trim() || ki.ladeAktion !== null}
+                      ladend={ki.ladeAktion === 'generierePaare'}
+                      onClick={() => ki.ausfuehren('generierePaare', { fragetext, fachbereich, thema })}
+                    />
+                    <InlineAktionButton
+                      label="Prüfen & Verbessern"
+                      tooltip="KI prüft die Paare auf Konsistenz und Eindeutigkeit"
+                      hinweis={!(paare.filter((p) => p.links.trim() && p.rechts.trim()).length >= 2) ? 'Mind. 2 Paare nötig' : undefined}
+                      disabled={!(paare.filter((p) => p.links.trim() && p.rechts.trim()).length >= 2) || !fragetext.trim() || ki.ladeAktion !== null}
+                      ladend={ki.ladeAktion === 'pruefePaare'}
+                      onClick={() => ki.ausfuehren('pruefePaare', { fragetext, paare })}
+                    />
+                  </div>
+                ) : undefined}
               />
+              {ki.ergebnisse.generierePaare && (
+                <div className="-mt-2">
+                  <ErgebnisAnzeige
+                    ergebnis={ki.ergebnisse.generierePaare}
+                    vorschauKey="paare"
+                    renderVorschau={(daten) => {
+                      const p = daten.paare as Array<{ links: string; rechts: string }> | undefined
+                      if (!Array.isArray(p)) return null
+                      return (
+                        <div className="space-y-1">
+                          {p.map((paar, i) => (
+                            <div key={i} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2">
+                              <span className="font-medium">{paar.links}</span>
+                              <span className="text-slate-400">{'\u2192'}</span>
+                              <span>{paar.rechts}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    }}
+                    onUebernehmen={() => {
+                      const d = ki.ergebnisse.generierePaare?.daten
+                      if (d && Array.isArray(d.paare)) {
+                        setPaare(d.paare as { links: string; rechts: string }[])
+                      }
+                      ki.verwerfen('generierePaare')
+                    }}
+                    onVerwerfen={() => ki.verwerfen('generierePaare')}
+                  />
+                </div>
+              )}
+              {ki.ergebnisse.pruefePaare && (
+                <div className="-mt-2">
+                  <ErgebnisAnzeige
+                    ergebnis={ki.ergebnisse.pruefePaare}
+                    vorschauKey="bewertung"
+                    zusatzKey="verbesserungen"
+                    onUebernehmen={() => ki.verwerfen('pruefePaare')}
+                    onVerwerfen={() => ki.verwerfen('pruefePaare')}
+                  />
+                </div>
+              )}
             </>
           )}
 
@@ -1074,7 +1194,82 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           </Abschnitt>
 
           {/* Bewertungsraster */}
-          <Abschnitt titel="Bewertungsraster" einklappbar standardOffen={false}>
+          <Abschnitt
+            titel="Bewertungsraster"
+            einklappbar
+            standardOffen={false}
+            titelRechts={
+              <div className="flex items-center gap-1.5">
+                <select
+                  value=""
+                  onChange={(e) => {
+                    const vorlage = alleVorlagen.find((v) => v.id === e.target.value)
+                    if (vorlage) {
+                      setBewertungsraster(vorlage.kriterien.map((k) => ({ ...k })))
+                    }
+                  }}
+                  className="text-[11px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer"
+                  title="Vorlage laden"
+                >
+                  <option value="">Vorlage laden...</option>
+                  <optgroup label="Standard-Vorlagen">
+                    {BUILTIN_VORLAGEN.map((v) => (
+                      <option key={v.id} value={v.id}>{v.name}</option>
+                    ))}
+                  </optgroup>
+                  {customVorlagen.length > 0 && (
+                    <optgroup label="Eigene Vorlagen">
+                      {customVorlagen.map((v) => (
+                        <option key={v.id} value={v.id}>{v.name}</option>
+                      ))}
+                    </optgroup>
+                  )}
+                </select>
+                <button
+                  onClick={() => {
+                    const gueltig = bewertungsraster.filter((k) => k.beschreibung.trim())
+                    if (gueltig.length === 0) return
+                    const name = window.prompt('Name der Vorlage:')
+                    if (!name?.trim()) return
+                    const neue: BewertungsrasterVorlage = {
+                      id: `custom_${Date.now()}`,
+                      name: name.trim(),
+                      kriterien: gueltig.map((k) => ({ beschreibung: k.beschreibung, punkte: k.punkte })),
+                    }
+                    const aktualisiert = [...customVorlagen, neue]
+                    setCustomVorlagen(aktualisiert)
+                    speichereCustomVorlagen(aktualisiert)
+                  }}
+                  className="text-[11px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 cursor-pointer transition-colors"
+                  title="Aktuelles Bewertungsraster als Vorlage speichern"
+                >
+                  Speichern
+                </button>
+                {customVorlagen.length > 0 && (
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      const id = e.target.value
+                      if (!id) return
+                      const vorlage = customVorlagen.find((v) => v.id === id)
+                      if (vorlage && window.confirm(`Vorlage "${vorlage.name}" löschen?`)) {
+                        const aktualisiert = customVorlagen.filter((v) => v.id !== id)
+                        setCustomVorlagen(aktualisiert)
+                        speichereCustomVorlagen(aktualisiert)
+                      }
+                    }}
+                    className="text-[11px] px-1.5 py-0.5 rounded border border-red-300 dark:border-red-600 bg-white dark:bg-slate-700 text-red-500 dark:text-red-400 cursor-pointer"
+                    title="Eigene Vorlage löschen"
+                  >
+                    <option value="">Löschen...</option>
+                    {customVorlagen.map((v) => (
+                      <option key={v.id} value={v.id}>{v.name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            }
+          >
             <div className="space-y-2">
               {/* Spalten-Header */}
               {bewertungsraster.length > 0 && (

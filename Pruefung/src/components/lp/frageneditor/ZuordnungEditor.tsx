@@ -3,9 +3,10 @@ import { Abschnitt } from './EditorBausteine.tsx'
 interface ZuordnungEditorProps {
   paare: { links: string; rechts: string }[]
   setPaare: (p: { links: string; rechts: string }[]) => void
+  titelRechts?: React.ReactNode
 }
 
-export default function ZuordnungEditor({ paare, setPaare }: ZuordnungEditorProps) {
+export default function ZuordnungEditor({ paare, setPaare, titelRechts }: ZuordnungEditorProps) {
   function updatePaar(index: number, seite: 'links' | 'rechts', wert: string): void {
     const neu = [...paare]
     neu[index] = { ...neu[index], [seite]: wert }
@@ -13,7 +14,7 @@ export default function ZuordnungEditor({ paare, setPaare }: ZuordnungEditorProp
   }
 
   return (
-    <Abschnitt titel="Zuordnungspaare">
+    <Abschnitt titel="Zuordnungspaare" titelRechts={titelRechts}>
       <div className="space-y-2">
         <div className="flex gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
           <span className="flex-1">Begriff (links)</span>
