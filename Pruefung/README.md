@@ -13,8 +13,13 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 
 **Für Lehrpersonen**
 - Prüfungs-Composer: Prüfungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragenbank)
+- Prüfungs-Analyse: Taxonomie-Verteilung (K1-K6), Fragetypen-Mix, Zeitbedarf vs. Dauer, Themen-Abdeckung
+- KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken und Berechnungsergebnisse generieren oder prüfen lassen
+- KI-Korrektur: Automatische Bewertung mit manueller Übersteuerung + individuelles Feedback per E-Mail
 - Live-Monitoring: Fortschritt, Heartbeat, SEB-Status aller SuS in Echtzeit
 - Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe filtern
+- In-App Hilfe: Anleitung, FAQ und Tipps direkt in der Plattform
+- Zeitzuschläge (Nachteilsausgleich) pro SuS konfigurierbar
 - SEB-Integration: Safe Exam Browser Konfiguration mitgeliefert
 
 **Backend**
