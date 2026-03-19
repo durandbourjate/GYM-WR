@@ -34,11 +34,10 @@ interface BewertungsrasterVorlage {
   builtin?: boolean
 }
 
-const BUILTIN_VORLAGEN: BewertungsrasterVorlage[] = [
+const DEFAULT_VORLAGEN: BewertungsrasterVorlage[] = [
   {
     id: '__freitext_standard',
     name: 'Freitext Standard',
-    builtin: true,
     kriterien: [
       { beschreibung: 'Inhalt', punkte: 2 },
       { beschreibung: 'Argumentation', punkte: 2 },
@@ -48,7 +47,6 @@ const BUILTIN_VORLAGEN: BewertungsrasterVorlage[] = [
   {
     id: '__berechnung_standard',
     name: 'Berechnung Standard',
-    builtin: true,
     kriterien: [
       { beschreibung: 'Lösungsweg', punkte: 2 },
       { beschreibung: 'Ergebnis', punkte: 1 },
@@ -58,7 +56,6 @@ const BUILTIN_VORLAGEN: BewertungsrasterVorlage[] = [
   {
     id: '__analyse_standard',
     name: 'Analyse Standard',
-    builtin: true,
     kriterien: [
       { beschreibung: 'Sachkenntnis', punkte: 2 },
       { beschreibung: 'Analyse', punkte: 2 },
@@ -68,10 +65,17 @@ const BUILTIN_VORLAGEN: BewertungsrasterVorlage[] = [
   },
 ]
 
-function ladeCustomVorlagen(): BewertungsrasterVorlage[] {
+const VORLAGEN_KEY = 'bewertungsraster-vorlagen'
+
+/** Lädt alle Vorlagen aus localStorage. Beim allerersten Aufruf werden die Standard-Vorlagen geseedet. */
+function ladeVorlagen(): BewertungsrasterVorlage[] {
   try {
-    const raw = localStorage.getItem('bewertungsraster-vorlagen')
-    if (!raw) return []
+    const raw = localStorage.getItem(VORLAGEN_KEY)
+    if (raw === null) {
+      // Erster Aufruf: Standard-Vorlagen seeden
+      localStorage.setItem(VORLAGEN_KEY, JSON.stringify(DEFAULT_VORLAGEN))
+      return DEFAULT_VORLAGEN.map((v) => ({ ...v }))
+    }
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
     return parsed.filter(
@@ -83,8 +87,14 @@ function ladeCustomVorlagen(): BewertungsrasterVorlage[] {
   }
 }
 
-function speichereCustomVorlagen(vorlagen: BewertungsrasterVorlage[]): void {
-  localStorage.setItem('bewertungsraster-vorlagen', JSON.stringify(vorlagen))
+function speichereVorlagen(vorlagen: BewertungsrasterVorlage[]): void {
+  localStorage.setItem(VORLAGEN_KEY, JSON.stringify(vorlagen))
+}
+
+function resetVorlagenZuDefaults(): BewertungsrasterVorlage[] {
+  const kopie = DEFAULT_VORLAGEN.map((v) => ({ ...v, kriterien: v.kriterien.map((k) => ({ ...k })) }))
+  speichereVorlagen(kopie)
+  return kopie
 }
 
 interface Props {
@@ -117,8 +127,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   const [bewertungsraster, setBewertungsraster] = useState<Bewertungskriterium[]>(
     frage?.bewertungsraster ?? [{ beschreibung: '', punkte: 1 }]
   )
-  const [customVorlagen, setCustomVorlagen] = useState<BewertungsrasterVorlage[]>(ladeCustomVorlagen)
-  const alleVorlagen = [...BUILTIN_VORLAGEN, ...customVorlagen]
+  const [vorlagen, setVorlagen] = useState<BewertungsrasterVorlage[]>(ladeVorlagen)
 
   // MC-spezifisch
   const [optionen, setOptionen] = useState<MCOption[]>(
@@ -207,6 +216,13 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   const fragetextRef = useRef<HTMLTextAreaElement>(null)
   const musterloeRef = useRef<HTMLTextAreaElement>(null)
   useFocusTrap(panelRef)
+
+  // Header-Höhe messen, damit Overlay unterhalb des Headers beginnt
+  const [headerH, setHeaderH] = useState(0)
+  useEffect(() => {
+    const h = document.querySelector('header')?.getBoundingClientRect()?.height ?? 0
+    setHeaderH(h)
+  }, [])
 
   // Resizable Panel
   const MIN_BREITE = 480
@@ -404,9 +420,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="absolute inset-0 bg-black/40" onClick={onAbbrechen} />
+      <div className="absolute left-0 right-0 bottom-0 bg-black/40" style={{ top: headerH }} onClick={onAbbrechen} />
 
-      <div ref={panelRef} className="absolute right-0 top-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col" style={{ width: panelBreite, maxWidth: '90vw' }}>
+      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }}>
         {/* Drag-Handle zum Resize */}
         <div
           onMouseDown={handleZiehStart}
@@ -640,7 +656,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                     onClick={() => setGeteilt('schule')}
                     className={`flex-1 px-3 py-1 text-xs transition-colors cursor-pointer border-l border-slate-300 dark:border-slate-600 ${
                       geteilt === 'schule'
-                        ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                        ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                   >
@@ -1205,7 +1221,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                 <select
                   value=""
                   onChange={(e) => {
-                    const vorlage = alleVorlagen.find((v) => v.id === e.target.value)
+                    const vorlage = vorlagen.find((v) => v.id === e.target.value)
                     if (vorlage) {
                       setBewertungsraster(vorlage.kriterien.map((k) => ({ ...k })))
                     }
@@ -1214,18 +1230,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                   title="Vorlage laden"
                 >
                   <option value="">Vorlage laden...</option>
-                  <optgroup label="Standard-Vorlagen">
-                    {BUILTIN_VORLAGEN.map((v) => (
-                      <option key={v.id} value={v.id}>{v.name}</option>
-                    ))}
-                  </optgroup>
-                  {customVorlagen.length > 0 && (
-                    <optgroup label="Eigene Vorlagen">
-                      {customVorlagen.map((v) => (
-                        <option key={v.id} value={v.id}>{v.name}</option>
-                      ))}
-                    </optgroup>
-                  )}
+                  {vorlagen.map((v) => (
+                    <option key={v.id} value={v.id}>{v.name}</option>
+                  ))}
                 </select>
                 <button
                   onClick={() => {
@@ -1238,37 +1245,49 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                       name: name.trim(),
                       kriterien: gueltig.map((k) => ({ beschreibung: k.beschreibung, punkte: k.punkte })),
                     }
-                    const aktualisiert = [...customVorlagen, neue]
-                    setCustomVorlagen(aktualisiert)
-                    speichereCustomVorlagen(aktualisiert)
+                    const aktualisiert = [...vorlagen, neue]
+                    setVorlagen(aktualisiert)
+                    speichereVorlagen(aktualisiert)
                   }}
                   className="text-[11px] px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 cursor-pointer transition-colors"
                   title="Aktuelles Bewertungsraster als Vorlage speichern"
                 >
                   Speichern
                 </button>
-                {customVorlagen.length > 0 && (
+                {vorlagen.length > 0 && (
                   <select
                     value=""
                     onChange={(e) => {
                       const id = e.target.value
                       if (!id) return
-                      const vorlage = customVorlagen.find((v) => v.id === id)
+                      const vorlage = vorlagen.find((v) => v.id === id)
                       if (vorlage && window.confirm(`Vorlage "${vorlage.name}" löschen?`)) {
-                        const aktualisiert = customVorlagen.filter((v) => v.id !== id)
-                        setCustomVorlagen(aktualisiert)
-                        speichereCustomVorlagen(aktualisiert)
+                        const aktualisiert = vorlagen.filter((v) => v.id !== id)
+                        setVorlagen(aktualisiert)
+                        speichereVorlagen(aktualisiert)
                       }
                     }}
                     className="text-[11px] px-1.5 py-0.5 rounded border border-red-300 dark:border-red-600 bg-white dark:bg-slate-700 text-red-500 dark:text-red-400 cursor-pointer"
-                    title="Eigene Vorlage löschen"
+                    title="Vorlage löschen"
                   >
                     <option value="">Löschen...</option>
-                    {customVorlagen.map((v) => (
+                    {vorlagen.map((v) => (
                       <option key={v.id} value={v.id}>{v.name}</option>
                     ))}
                   </select>
                 )}
+                <button
+                  onClick={() => {
+                    if (window.confirm('Alle Vorlagen auf die 3 Standard-Vorlagen zurücksetzen?')) {
+                      const defaults = resetVorlagenZuDefaults()
+                      setVorlagen(defaults)
+                    }
+                  }}
+                  className="text-[11px] px-1.5 py-0.5 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer transition-colors"
+                  title="Standard-Vorlagen wiederherstellen"
+                >
+                  Zurücksetzen
+                </button>
               </div>
             }
           >

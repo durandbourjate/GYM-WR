@@ -6,6 +6,8 @@ export interface FrageAnhang {
   groesseBytes: number
   driveFileId: string
   beschreibung?: string
+  /** Bildgrösse für Inline-Anzeige in Vorschau */
+  bildGroesse?: 'klein' | 'mittel' | 'gross'
 }
 
 // === FRAGE (Basis) ===

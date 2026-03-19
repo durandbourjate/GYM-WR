@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { PruefungsConfig } from '../../../types/pruefung.ts'
-import type { Frage, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage } from '../../../types/fragen.ts'
+import type { Frage, FrageAnhang, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage } from '../../../types/fragen.ts'
 import { formatDatum } from '../../../utils/zeit.ts'
 import { typLabel, fachbereichFarbe } from '../../../utils/fachbereich.ts'
 
@@ -228,6 +228,11 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
         </div>
       )}
 
+      {/* Bild-Anhänge inline anzeigen */}
+      {frage.anhaenge && frage.anhaenge.length > 0 && (
+        <AnhangBilder anhaenge={frage.anhaenge} />
+      )}
+
       {/* Typ-spezifische Vorschau */}
       {frage.typ === 'mc' && <MCVorschau frage={frage as MCFrage} />}
       {frage.typ === 'freitext' && <FreitextVorschau frage={frage as FreitextFrage} />}
@@ -382,5 +387,71 @@ function BerechnungVorschau({ frage }: { frage: BerechnungFrage }) {
         </div>
       )}
     </div>
+  )
+}
+
+/** Zeigt Bild-Anhänge inline an (nur Bilder, keine PDFs) */
+function AnhangBilder({ anhaenge }: { anhaenge: FrageAnhang[] }) {
+  const bildAnhaenge = anhaenge.filter((a) => a.mimeType.startsWith('image/'))
+  if (bildAnhaenge.length === 0) return null
+
+  const groesseMap: Record<string, string> = {
+    klein: 'w200',
+    mittel: 'w400',
+    gross: 'w800',
+  }
+
+  return (
+    <div className="flex flex-wrap gap-3 mb-4">
+      {bildAnhaenge.map((anhang) => {
+        const sz = groesseMap[anhang.bildGroesse ?? 'mittel'] ?? 'w400'
+        const thumbnailUrl = `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=${sz}`
+        return (
+          <AnhangBild key={anhang.id} anhang={anhang} thumbnailUrl={thumbnailUrl} />
+        )
+      })}
+    </div>
+  )
+}
+
+function AnhangBild({ anhang, thumbnailUrl }: { anhang: FrageAnhang; thumbnailUrl: string }) {
+  const [vergroessert, setVergroessert] = useState(false)
+  const grossUrl = `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=w800`
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setVergroessert(true)}
+        className="cursor-pointer group"
+        title={anhang.beschreibung || anhang.dateiname}
+      >
+        <img
+          src={thumbnailUrl}
+          alt={anhang.beschreibung || anhang.dateiname}
+          className="rounded-lg border border-slate-200 dark:border-slate-600 max-h-48 object-contain group-hover:shadow-md transition-shadow"
+          loading="lazy"
+        />
+        {anhang.beschreibung && (
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 text-center truncate max-w-[200px]">
+            {anhang.beschreibung}
+          </p>
+        )}
+      </button>
+
+      {/* Vergrössertes Bild als Modal */}
+      {vergroessert && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
+          onClick={() => setVergroessert(false)}
+        >
+          <img
+            src={grossUrl}
+            alt={anhang.beschreibung || anhang.dateiname}
+            className="max-w-[90vw] max-h-[85vh] rounded-xl border-2 border-white/20 shadow-2xl object-contain"
+          />
+        </div>
+      )}
+    </>
   )
 }

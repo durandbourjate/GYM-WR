@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
@@ -30,6 +30,32 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
   const panelRef = useRef<HTMLDivElement>(null)
   useFocusTrap(panelRef)
+
+  // Header-Höhe messen, damit Overlay unterhalb des Headers beginnt
+  const [headerH, setHeaderH] = useState(0)
+  useEffect(() => {
+    const h = document.querySelector('header')?.getBoundingClientRect()?.height ?? 0
+    setHeaderH(h)
+  }, [])
+
+  // Resizable Panel
+  const [panelBreite, setPanelBreite] = useState(672)
+
+  const handleZiehStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startW = panelBreite
+    function onMove(ev: MouseEvent) {
+      const diff = startX - ev.clientX
+      setPanelBreite(Math.max(400, Math.min(startW + diff, window.innerWidth * 0.9)))
+    }
+    function onUp() {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+  }, [panelBreite])
 
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
@@ -262,10 +288,16 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   return (
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40" onClick={onSchliessen} />
+      <div className="absolute left-0 right-0 bottom-0 bg-black/40" style={{ top: headerH }} onClick={onSchliessen} />
 
       {/* Panel (rechts) */}
-      <div ref={panelRef} className="absolute right-0 top-0 bottom-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
+      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }}>
+        {/* Drag-Handle zum Resize */}
+        <div
+          onMouseDown={handleZiehStart}
+          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
+          title="Breite anpassen"
+        />
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
