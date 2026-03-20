@@ -23,6 +23,7 @@ import { useKIAssistent } from './KIAssistentPanel.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from './KIBausteine.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 import FormattierungsToolbar from './FormattierungsToolbar.tsx'
+import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
 
 
 
@@ -403,6 +404,46 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
         {/* Scrollbarer Inhalt */}
         <div className="flex-1 overflow-auto px-5 py-4 space-y-5">
+
+          {/* Pool-Info für importierte Fragen */}
+          {frage?.quelle === 'pool' && frage.poolId && (
+            <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm text-slate-600 dark:text-slate-300">
+                  Importiert aus Pool: <strong>{frage.quellReferenz || frage.poolId}</strong>
+                </span>
+                <div className="flex gap-2">
+                  {!frage.pruefungstauglich ? (
+                    <button
+                      onClick={() => {
+                        const aktualisiert = { ...frage, pruefungstauglich: true, geaendertAm: new Date().toISOString() }
+                        onSpeichern(aktualisiert)
+                      }}
+                      className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                    >
+                      Prüfungstauglich ✓
+                    </button>
+                  ) : (
+                    <span className="px-3 py-1 text-sm bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded">
+                      ✓ Prüfungstauglich
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {frage.poolUpdateVerfuegbar && frage.poolVersion && (
+                <PoolUpdateVergleich
+                  frage={frage}
+                  onUebernehmen={() => {
+                    onSpeichern({ ...frage, poolUpdateVerfuegbar: false, geaendertAm: new Date().toISOString() })
+                  }}
+                  onIgnorieren={() => {
+                    onSpeichern({ ...frage, poolUpdateVerfuegbar: false, geaendertAm: new Date().toISOString() })
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
