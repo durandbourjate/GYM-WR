@@ -26,6 +26,33 @@ type Gruppierung = 'keine' | 'fachbereich' | 'thema' | 'typ' | 'bloom'
 
 const SEITEN_GROESSE = 30
 
+/** Pool-Badges: Zeigt Quelle und Status von Pool-Fragen */
+function PoolBadges({ frage }: { frage: Frage }) {
+  if (frage.quelle !== 'pool') return null
+  return (
+    <span className="inline-flex gap-1">
+      {frage.poolUpdateVerfuegbar && (
+        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 animate-pulse">
+          Update
+        </span>
+      )}
+      {frage.pruefungstauglich ? (
+        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300">
+          Prüfungstauglich
+        </span>
+      ) : frage.poolGeprueft ? (
+        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300">
+          Pool ✓
+        </span>
+      ) : (
+        <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+          Pool / ungeprüft
+        </span>
+      )}
+    </span>
+  )
+}
+
 /** Overlay-Panel zum Durchsuchen und Auswählen von Fragen aus der Fragenbank */
 export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen, bereitsVerwendet, initialEditFrageId, zielPruefungTitel, zielAbschnittTitel }: Props) {
   const user = useAuthStore((s) => s.user)
@@ -73,6 +100,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [filterBloom, setFilterBloom] = useState<BloomStufe | ''>('')
   const [filterThema, setFilterThema] = useState('')
   const [filterBesitzer, setFilterBesitzer] = useState<'alle' | 'meine'>('alle')
+  const [filterQuelle, setFilterQuelle] = useState<'alle' | 'eigene' | 'pool'>('alle')
+  const [filterPoolStatus, setFilterPoolStatus] = useState<'alle' | 'ungeprueft' | 'pool_geprueft' | 'pruefungstauglich' | 'update'>('alle')
 
   // Editor / Import
   const [zeigEditor, setZeigEditor] = useState(false)
@@ -160,6 +189,19 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         const key = f.thema + (f.unterthema ? ` › ${f.unterthema}` : '')
         if (key !== filterThema && f.thema !== filterThema) return false
       }
+      // Quelle-Filter
+      if (filterQuelle === 'eigene' && f.quelle === 'pool') return false
+      if (filterQuelle === 'pool' && f.quelle !== 'pool') return false
+      // Pool-Status-Filter
+      if (filterPoolStatus !== 'alle') {
+        if (f.quelle !== 'pool') return false
+        switch (filterPoolStatus) {
+          case 'ungeprueft': if (f.poolGeprueft || f.pruefungstauglich) return false; break
+          case 'pool_geprueft': if (!f.poolGeprueft || f.pruefungstauglich) return false; break
+          case 'pruefungstauglich': if (!f.pruefungstauglich) return false; break
+          case 'update': if (!f.poolUpdateVerfuegbar) return false; break
+        }
+      }
       if (suchtext) {
         const text = suchtext.toLowerCase()
         const fragetext = 'fragetext' in f ? (f as { fragetext: string }).fragetext : ''
@@ -173,7 +215,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       }
       return true
     })
-  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterBesitzer, suchtext, user])
+  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterBesitzer, filterQuelle, filterPoolStatus, suchtext, user])
 
   // Sortieren
   const sortierteFragen = useMemo(() => {
@@ -225,7 +267,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   }, [gefilterteFragen])
 
   // Aktive Filter zählen
-  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, suchtext, filterBesitzer !== 'alle' ? filterBesitzer : ''].filter(Boolean).length
+  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, suchtext, filterBesitzer !== 'alle' ? filterBesitzer : '', filterQuelle !== 'alle' ? filterQuelle : '', filterPoolStatus !== 'alle' ? filterPoolStatus : ''].filter(Boolean).length
 
   /** Ein Klick: Frage hinzufügen oder entfernen */
   function toggleFrageInPruefung(frageId: string): void {
@@ -252,6 +294,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     setFilterBloom('')
     setFilterThema('')
     setFilterBesitzer('alle')
+    setFilterQuelle('alle')
+    setFilterPoolStatus('alle')
   }
 
   async function handleFrageGespeichert(neueFrage: Frage): Promise<void> {
@@ -429,6 +473,30 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                 Meine
               </button>
             </div>
+
+            <select
+              value={filterQuelle}
+              onChange={(e) => { setFilterQuelle(e.target.value as typeof filterQuelle); if (e.target.value === 'eigene') setFilterPoolStatus('alle'); setAngezeigteMenge(SEITEN_GROESSE) }}
+              className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
+            >
+              <option value="alle">Alle Quellen</option>
+              <option value="eigene">Eigene</option>
+              <option value="pool">Pool</option>
+            </select>
+
+            {filterQuelle !== 'eigene' && (
+              <select
+                value={filterPoolStatus}
+                onChange={(e) => { setFilterPoolStatus(e.target.value as typeof filterPoolStatus); setAngezeigteMenge(SEITEN_GROESSE) }}
+                className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
+              >
+                <option value="alle">Alle Status</option>
+                <option value="ungeprueft">Ungeprüft</option>
+                <option value="pool_geprueft">Pool ✓</option>
+                <option value="pruefungstauglich">Prüfungstauglich</option>
+                <option value="update">Update verfügbar</option>
+              </select>
+            )}
 
             {verfuegbareThemen.length > 1 && (
               <select
@@ -646,6 +714,7 @@ function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, zeigeGruppierung
           {frage.fachbereich}
         </span>
       )}
+      <PoolBadges frage={frage} />
 
       {/* Typ */}
       <span className="text-[10px] px-1 py-0.5 bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded shrink-0">
@@ -711,6 +780,7 @@ function DetailKarte({ frage, istInPruefung, onToggle, onEdit }: {
             <span className={`px-1.5 py-0.5 text-xs rounded ${fachbereichFarbe(frage.fachbereich)}`}>
               {frage.fachbereich}
             </span>
+            <PoolBadges frage={frage} />
             <span className="px-1.5 py-0.5 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
               {typLabel(frage.typ)}
             </span>
