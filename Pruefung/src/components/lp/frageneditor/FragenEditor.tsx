@@ -22,6 +22,7 @@ import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from './KIBausteine.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
+import type { Lernziel } from '../../../types/pool.ts'
 import FormattierungsToolbar from './FormattierungsToolbar.tsx'
 import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
 
@@ -141,6 +142,11 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
 
   // KI-Assistent
   const ki = useKIAssistent()
+
+  // Lernziel-Generierung
+  const [lernziele, setLernziele] = useState<Lernziel[]>([])
+  const [zeigLernzielDialog, setZeigLernzielDialog] = useState(false)
+  const [gewaehlterLernzielId, setGewaehlterLernzielId] = useState('')
 
   const panelRef = useRef<HTMLDivElement>(null)
   const fragetextRef = useRef<HTMLTextAreaElement>(null)
@@ -672,6 +678,19 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                   ladend={ki.ladeAktion === 'verbessereFragetext'}
                   onClick={() => ki.ausfuehren('verbessereFragetext', { fragetext })}
                 />
+                <InlineAktionButton
+                  label="🎯 Lernziel"
+                  tooltip="Frage basierend auf einem Lernziel aus den Übungspools generieren"
+                  disabled={ki.ladeAktion !== null}
+                  ladend={ki.ladeAktion === 'generiereFrageZuLernziel'}
+                  onClick={async () => {
+                    if (!lernziele.length) {
+                      const lz = await apiService.ladeLernziele(fachbereich)
+                      setLernziele(lz)
+                    }
+                    setZeigLernzielDialog(true)
+                  }}
+                />
               </div>
             ) : undefined}
           >
@@ -718,6 +737,63 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                     ki.verwerfen('verbessereFragetext')
                   }}
                   onVerwerfen={() => ki.verwerfen('verbessereFragetext')}
+                />
+              </div>
+            )}
+            {/* Lernziel-Dialog */}
+            {zeigLernzielDialog && (
+              <div className="mt-2 p-3 bg-slate-50 dark:bg-slate-700/50 rounded border border-slate-200 dark:border-slate-600">
+                <label className="block text-sm font-medium mb-1 dark:text-white">Lernziel auswählen:</label>
+                <select
+                  value={gewaehlterLernzielId}
+                  onChange={e => setGewaehlterLernzielId(e.target.value)}
+                  className="w-full px-2 py-1 text-sm border border-slate-300 rounded mb-2 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                >
+                  <option value="">— Lernziel wählen —</option>
+                  {lernziele.map(lz => (
+                    <option key={lz.id} value={lz.id}>{lz.text} ({lz.bloom})</option>
+                  ))}
+                </select>
+                <div className="flex gap-2">
+                  <button
+                    disabled={!gewaehlterLernzielId || ki.ladeAktion === 'generiereFrageZuLernziel'}
+                    onClick={() => {
+                      const lz = lernziele.find(l => l.id === gewaehlterLernzielId)
+                      if (lz) {
+                        ki.ausfuehren('generiereFrageZuLernziel', {
+                          lernziel: lz.text, bloom: lz.bloom || bloom,
+                          thema: lz.thema, fragetyp: typ,
+                        })
+                        setZeigLernzielDialog(false)
+                      }
+                    }}
+                    className="px-3 py-1 text-sm bg-slate-800 text-white rounded hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-600"
+                  >
+                    {ki.ladeAktion === 'generiereFrageZuLernziel' ? 'Generiert...' : 'Generieren'}
+                  </button>
+                  <button onClick={() => setZeigLernzielDialog(false)}
+                    className="px-3 py-1 text-sm border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300">
+                    Abbrechen
+                  </button>
+                </div>
+              </div>
+            )}
+            {/* KI-Ergebnis: Lernziel-Generierung */}
+            {ki.ergebnisse.generiereFrageZuLernziel && (
+              <div className="mt-2">
+                <ErgebnisAnzeige
+                  ergebnis={ki.ergebnisse.generiereFrageZuLernziel}
+                  vorschauKey="fragetext"
+                  zusatzKey="musterlosung"
+                  onUebernehmen={() => {
+                    const d = ki.ergebnisse.generiereFrageZuLernziel?.daten
+                    if (d) {
+                      if (typeof d.fragetext === 'string') setFragetext(d.fragetext)
+                      if (typeof d.musterlosung === 'string') setMusterlosung(d.musterlosung)
+                    }
+                    ki.verwerfen('generiereFrageZuLernziel')
+                  }}
+                  onVerwerfen={() => ki.verwerfen('generiereFrageZuLernziel')}
                 />
               </div>
             )}

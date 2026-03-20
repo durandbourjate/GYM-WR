@@ -30,6 +30,8 @@ export type AktionKey =
   | 'analysierePruefung'
   // Import
   | 'importiereFragen'
+  // Pool-Brücke: Lernziel → Frage
+  | 'generiereFrageZuLernziel'
 
 export interface AktionErgebnis {
   daten: Record<string, unknown> | null
