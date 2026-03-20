@@ -31,7 +31,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
 
   return (
     <Abschnitt titel="Berechnungs-Parameter" titelRechts={titelRechts}>
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-4 mb-4 flex-wrap">
         <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
           <input
             type="checkbox"
@@ -41,7 +41,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
           />
           Rechenweg erforderlich
         </label>
-        <div className="w-64">
+        <div className="flex-1 min-w-[200px] max-w-xs">
           <input
             type="text"
             value={hilfsmittel}
@@ -55,11 +55,11 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
       <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-2">
         Erwartete Ergebnisse
       </label>
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-hidden">
         {/* Spalten-Header */}
         {ergebnisse.length > 0 && (
           <div className="flex gap-2 items-center text-xs text-slate-500 dark:text-slate-400">
-            <span className="w-48 shrink-0">Bezeichnung</span>
+            <span className="w-36 shrink-0">Bezeichnung</span>
             <span className="flex-1 min-w-0 text-center">Ergebnis</span>
             <span className="flex-1 min-w-0 text-center">±Toleranz</span>
             <span className="w-16 text-center">Einheit</span>
@@ -73,7 +73,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
               value={erg.label}
               onChange={(e) => updateErgebnis(i, { label: e.target.value })}
               placeholder="z.B. Gewinn"
-              className="input-field w-48 shrink-0"
+              className="input-field w-36 shrink-0"
             />
             <input
               type="number"

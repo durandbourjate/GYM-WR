@@ -347,11 +347,23 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     onSpeichern(neueFrage)
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex">
-      <div className="absolute left-0 right-0 bottom-0 bg-black/40" style={{ top: headerH }} onClick={onAbbrechen} />
+  // ESC schliesst den Editor (stoppt Propagation, damit nicht die Fragenbank geschlossen wird)
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent): void {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        onAbbrechen()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown, true) // capture phase
+    return () => document.removeEventListener('keydown', handleKeyDown, true)
+  }, [onAbbrechen])
 
-      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }}>
+  return (
+    <div className="fixed inset-0 z-[55] flex pointer-events-none">
+      <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onAbbrechen} />
+
+      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto" style={{ top: headerH, width: panelBreite, maxWidth: '90vw', overscrollBehavior: 'contain' }}>
         {/* Drag-Handle zum Resize */}
         <div
           onMouseDown={handleZiehStart}
@@ -368,7 +380,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               onClick={onAbbrechen}
               className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
-              Abbrechen
+              ← Zurück
             </button>
             <button
               onClick={handleSpeichern}

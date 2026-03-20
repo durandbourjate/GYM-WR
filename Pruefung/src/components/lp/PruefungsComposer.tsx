@@ -18,6 +18,7 @@ import AnalyseTab from './composer/AnalyseTab.tsx'
 interface Props {
   config: PruefungsConfig | null
   onZurueck: () => void
+  onDuplizieren?: (config: PruefungsConfig) => void
 }
 
 type ComposerTab = 'config' | 'abschnitte' | 'vorschau' | 'analyse'
@@ -49,7 +50,7 @@ const leerePruefung: PruefungsConfig = {
   zeitverlaengerungen: {},
 }
 
-export default function PruefungsComposer({ config, onZurueck }: Props) {
+export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: Props) {
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
@@ -285,13 +286,24 @@ export default function PruefungsComposer({ config, onZurueck }: Props) {
           : undefined
         }
         ansichtsButtons={
-          <button
-            onClick={handleSpeichern}
-            disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
-            className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          >
-            {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
-          </button>
+          <div className="flex items-center gap-1">
+            {config && onDuplizieren && (
+              <button
+                onClick={() => onDuplizieren(pruefung)}
+                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                title="Prüfung duplizieren (Kopie erstellen)"
+              >
+                Duplizieren
+              </button>
+            )}
+            <button
+              onClick={handleSpeichern}
+              disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
+              className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
+            </button>
+          </div>
         }
         onFragenbank={() => { setZeigHilfe(false); setZeigFragenBrowser(!zeigFragenBrowser) }}
         onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}

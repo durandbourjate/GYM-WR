@@ -142,7 +142,7 @@ export default function LPStartseite() {
   }
 
   if (ansicht === 'composer') {
-    return <PruefungsComposer config={editConfig} onZurueck={handleZurueck} />
+    return <PruefungsComposer config={editConfig} onZurueck={handleZurueck} onDuplizieren={handleDuplizieren} />
   }
 
   return (
@@ -249,7 +249,7 @@ export default function LPStartseite() {
                   </button>
                 ))}
                 <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
-                {(['SF', 'EF', 'EWR'] as const).map(g => (
+                {(['SF', 'EF', 'EWR', 'GF'] as const).map(g => (
                   <button
                     key={g}
                     onClick={() => setFilterGefaess(filterGefaess === g ? null : g)}
