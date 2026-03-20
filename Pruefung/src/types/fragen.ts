@@ -8,6 +8,7 @@ export interface FrageAnhang {
   beschreibung?: string
   /** Bildgrösse für Inline-Anzeige in Vorschau */
   bildGroesse?: 'klein' | 'mittel' | 'gross'
+  url?: string  // YouTube/Vimeo/nanoo.tv URL (nur bei URL-Embeds)
 }
 
 // === FRAGE (Basis) ===

@@ -46,6 +46,7 @@ export interface PruefungsConfig {
     aktiviert: boolean;
     modus: 'sofort' | 'batch';
     systemPrompt?: string;
+    freigegeben?: boolean;  // Korrektur für SuS sichtbar (Default: false)
   };
 
   // Feedback

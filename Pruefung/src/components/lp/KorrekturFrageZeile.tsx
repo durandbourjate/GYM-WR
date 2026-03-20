@@ -1,5 +1,6 @@
 import type { FragenBewertung } from '../../types/korrektur.ts'
 import { effektivePunkte, quelleLabel } from '../../utils/korrekturUtils.ts'
+import AudioRecorder from '../AudioRecorder.tsx'
 
 interface Props {
   frageId: string
@@ -7,7 +8,8 @@ interface Props {
   fragenTyp: string
   antwortText: string
   bewertung: FragenBewertung
-  onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean }) => void
+  onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null }) => void
+  onAudioUpload: (frageId: string, blob: Blob) => Promise<string | null>
 }
 
 /** Farbe für Quelle-Badge */
@@ -41,6 +43,7 @@ export default function KorrekturFrageZeile({
   antwortText,
   bewertung,
   onUpdate,
+  onAudioUpload,
 }: Props) {
   const aktuellePunkte = effektivePunkte(bewertung)
   const hatKiErgebnis = bewertung.quelle === 'ki' || bewertung.quelle === 'auto'
@@ -171,6 +174,20 @@ export default function KorrekturFrageZeile({
           placeholder="Kommentar für SuS..."
           onChange={(e) => onUpdate({ lpKommentar: e.target.value || null })}
           className="w-full rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500 resize-none"
+        />
+      </div>
+
+      {/* Audio-Kommentar */}
+      <div className="mt-2">
+        <AudioRecorder
+          bestehendeAudioId={bewertung.audioKommentarId}
+          kompakt
+          onSpeichern={async (blob) => {
+            const driveId = await onAudioUpload(frageId, blob)
+            if (driveId) {
+              onUpdate({ audioKommentarId: driveId })
+            }
+          }}
         />
       </div>
     </div>

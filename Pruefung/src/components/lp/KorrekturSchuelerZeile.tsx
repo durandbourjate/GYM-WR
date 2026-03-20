@@ -5,6 +5,7 @@ import type { Antwort } from '../../types/antworten.ts'
 import { effektivePunkte, berechneNote, statusLabel, statusFarbe } from '../../utils/korrekturUtils.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
 import KorrekturFrageZeile from './KorrekturFrageZeile.tsx'
+import AudioRecorder from '../AudioRecorder.tsx'
 
 interface Props {
   schueler: SchuelerKorrektur
@@ -14,9 +15,11 @@ interface Props {
   onBewertungUpdate: (
     schuelerEmail: string,
     frageId: string,
-    updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean }
+    updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null }
   ) => void
   onNoteOverride: (schuelerEmail: string, noteOverride: number | null) => void
+  onAudioUpload: (schuelerEmail: string, frageId: string, blob: Blob) => Promise<string | null>
+  onGesamtAudioUpdate: (email: string, audioId: string) => void
 }
 
 /** Wandelt eine Antwort in lesbaren Text um */
@@ -75,7 +78,7 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
   }
 }
 
-export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, notenConfig, onBewertungUpdate, onNoteOverride }: Props) {
+export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, notenConfig, onBewertungUpdate, onNoteOverride, onAudioUpload, onGesamtAudioUpdate }: Props) {
   const [offen, setOffen] = useState(false)
   const [noteEditModus, setNoteEditModus] = useState(false)
   const [noteInput, setNoteInput] = useState('')
@@ -203,6 +206,7 @@ export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, noten
                 bewertung={bewertung}
                 antwortText={antwortText}
                 onUpdate={(updates) => onBewertungUpdate(schueler.email, frage.id, updates)}
+                onAudioUpload={(frageId, blob) => onAudioUpload(schueler.email, frageId, blob)}
               />
             ) : null
           })}
@@ -269,6 +273,22 @@ export default function KorrekturSchuelerZeile({ schueler, abgabe, fragen, noten
             )}
             <div className="ml-auto text-xs text-slate-400 dark:text-slate-500">
               {totalPunkte} / {totalMax} Pkt. ({totalMax > 0 ? Math.round(totalPunkte / totalMax * 100) : 0}%)
+            </div>
+          </div>
+
+          {/* Audio-Gesamtkommentar */}
+          <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Audio-Gesamtkommentar:</span>
+            <div className="mt-1">
+              <AudioRecorder
+                bestehendeAudioId={schueler.audioGesamtkommentarId}
+                onSpeichern={async (blob) => {
+                  const driveId = await onAudioUpload(schueler.email, 'gesamt', blob)
+                  if (driveId) {
+                    onGesamtAudioUpdate(schueler.email, driveId)
+                  }
+                }}
+              />
             </div>
           </div>
 

@@ -601,8 +601,139 @@ export const apiService = {
     }
   },
 
+  /** Audio-Kommentar (Blob) als Base64 hochladen, gibt Drive-File-ID zurück */
+  async uploadAudioKommentar(email: string, pruefungId: string, schuelerEmail: string, frageId: string, blob: Blob): Promise<string | null> {
+    if (!APPS_SCRIPT_URL) return null
+
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve((reader.result as string).split(',')[1])
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+
+      const mimeType = blob.type || 'audio/webm'
+      const dateiname = `audio_${pruefungId}_${schuelerEmail}_${frageId}_${Date.now()}.${mimeType.includes('mp4') ? 'm4a' : 'webm'}`
+
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          action: 'uploadAnhang',
+          email,
+          frageId: `korrektur-${pruefungId}`,
+          dateiname,
+          mimeType,
+          groesseBytes: blob.size,
+          base64Data: base64,
+        }),
+      })
+      if (!response.ok) return null
+
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        if (data.error) return null
+        return data.driveFileId ?? null
+      } catch {
+        return null
+      }
+    } catch {
+      return null
+    }
+  },
+
+  /** Korrektur für SuS freigeben/sperren */
+  async korrekturFreigeben(pruefungId: string, freigegeben: boolean, email: string): Promise<boolean> {
+    if (!APPS_SCRIPT_URL) return false
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'korrekturFreigeben', email, pruefungId, freigegeben }),
+      })
+      if (!response.ok) return false
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        return data.success === true
+      } catch { return false }
+    } catch { return false }
+  },
+
+  /** Freigegebene Korrekturen für SuS laden */
+  async ladeKorrekturenFuerSuS(email: string): Promise<KorrekturListeEintrag[] | null> {
+    if (!APPS_SCRIPT_URL) return null
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'ladeKorrekturenFuerSuS', email }),
+      })
+      if (!response.ok) return null
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        return data.korrekturen ?? null
+      } catch { return null }
+    } catch { return null }
+  },
+
+  /** Detail einer korrigierten Prüfung für SuS laden */
+  async ladeKorrekturDetail(pruefungId: string, email: string): Promise<KorrekturDetailDaten | null> {
+    if (!APPS_SCRIPT_URL) return null
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'ladeKorrekturDetail', email, pruefungId }),
+      })
+      if (!response.ok) return null
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        if (!data.success) return null
+        return data as KorrekturDetailDaten
+      } catch { return null }
+    } catch { return null }
+  },
+
   /** Prüft ob das Backend konfiguriert ist */
   istKonfiguriert(): boolean {
     return !!APPS_SCRIPT_URL
   },
+}
+
+// Typen für SuS-Korrektur-Einsicht
+export interface KorrekturListeEintrag {
+  pruefungId: string
+  titel: string
+  datum: string
+  klasse: string
+  gesamtPunkte: number
+  maxPunkte: number
+  note?: number
+}
+
+export interface KorrekturDetailBewertung {
+  frageId: string
+  punkte: number
+  maxPunkte: number
+  lpKommentar: string | null
+  kiFeedback: string | null
+  audioKommentarId: string | null
+}
+
+export interface KorrekturDetailDaten {
+  success: boolean
+  titel: string
+  datum: string
+  klasse: string
+  fragen: Array<{ id: string; typ: string; fragetext?: string; anhaenge?: Array<{ id: string; dateiname: string; mimeType: string; groesseBytes: number; driveFileId: string; beschreibung?: string; url?: string }> }>
+  antworten: Record<string, unknown>
+  bewertungen: Record<string, KorrekturDetailBewertung>
+  gesamtPunkte: number
+  maxPunkte: number
+  audioGesamtkommentarId: string | null
 }

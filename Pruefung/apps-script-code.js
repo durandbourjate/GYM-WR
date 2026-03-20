@@ -80,6 +80,12 @@ function doPost(e) {
       return uploadMaterial(body);
     case 'kiAssistent':
       return kiAssistentEndpoint(body);
+    case 'korrekturFreigeben':
+      return korrekturFreigebenEndpoint(body);
+    case 'ladeKorrekturenFuerSuS':
+      return ladeKorrekturenFuerSuSEndpoint(body);
+    case 'ladeKorrekturDetail':
+      return ladeKorrekturDetailEndpoint(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -1373,6 +1379,15 @@ function speichereKorrekturZeile(body) {
       const col = headers.indexOf('geprueft');
       if (col >= 0) sheet.getRange(row, col + 1).setValue(body.geprueft ? 'true' : 'false');
     }
+    if (body.audioKommentarId !== undefined) {
+      let col = headers.indexOf('audioKommentarId');
+      if (col < 0) {
+        // Spalte hinzufügen
+        col = headers.length;
+        sheet.getRange(1, col + 1).setValue('audioKommentarId');
+      }
+      sheet.getRange(row, col + 1).setValue(body.audioKommentarId || '');
+    }
 
     return jsonResponse({ success: true });
   } catch (error) {
@@ -1647,6 +1662,183 @@ function ladeNachrichtenEndpoint(pruefungId, email) {
     }
 
     return jsonResponse({ nachrichten: nachrichten });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === KORREKTUR FREIGEBEN (LP → SuS-Einsicht aktivieren) ===
+
+function korrekturFreigebenEndpoint(body) {
+  try {
+    const { email, pruefungId, freigegeben } = body;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const data = getSheetData(configSheet);
+    const headers = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
+
+    const rowIndex = data.findIndex(r => r.id === pruefungId);
+    if (rowIndex < 0) return jsonResponse({ error: 'Prüfung nicht gefunden' });
+
+    // korrekturFreigegeben-Spalte suchen oder anlegen
+    let col = headers.indexOf('korrekturFreigegeben');
+    if (col < 0) {
+      col = headers.length;
+      configSheet.getRange(1, col + 1).setValue('korrekturFreigegeben');
+    }
+    configSheet.getRange(rowIndex + 2, col + 1).setValue(freigegeben ? 'true' : 'false');
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === KORREKTUREN FÜR SUS LADEN (Liste freigegebener Prüfungen) ===
+
+function ladeKorrekturenFuerSuSEndpoint(body) {
+  try {
+    const { email: schuelerEmail } = body;
+    if (!schuelerEmail) return jsonResponse({ error: 'E-Mail fehlt' });
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configs = getSheetData(configSheet);
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+
+    const ergebnis = [];
+    for (const configRow of configs) {
+      if (configRow.korrekturFreigegeben !== 'true') continue;
+
+      const pruefungId = configRow.id;
+      const sheetName = 'Korrektur_' + pruefungId;
+      const files = ordner.getFilesByName(sheetName);
+      if (!files.hasNext()) continue;
+
+      const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+      const data = getSheetData(sheet);
+      const zeilen = data.filter(r => r.email === schuelerEmail);
+      if (zeilen.length === 0) continue;
+
+      // Punkte aggregieren
+      let gesamtPunkte = 0;
+      let maxPunkte = 0;
+      for (const z of zeilen) {
+        const lp = z.lpPunkte !== '' && z.lpPunkte !== undefined ? Number(z.lpPunkte) : null;
+        const ki = z.kiPunkte !== '' && z.kiPunkte !== undefined ? Number(z.kiPunkte) : null;
+        const punkte = lp !== null ? lp : (ki !== null ? ki : 0);
+        gesamtPunkte += punkte;
+        maxPunkte += Number(z.maxPunkte) || 0;
+      }
+
+      ergebnis.push({
+        pruefungId,
+        titel: configRow.titel || pruefungId,
+        datum: configRow.datum || '',
+        klasse: configRow.klasse || '',
+        gesamtPunkte,
+        maxPunkte,
+      });
+    }
+
+    return jsonResponse({ success: true, korrekturen: ergebnis });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === KORREKTUR-DETAIL FÜR SUS LADEN (einzelne Prüfung) ===
+
+function ladeKorrekturDetailEndpoint(body) {
+  try {
+    const { email: schuelerEmail, pruefungId } = body;
+    if (!schuelerEmail || !pruefungId) return jsonResponse({ error: 'Parameter fehlen' });
+
+    // Prüfen ob Korrektur freigegeben
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
+    if (!configRow) return jsonResponse({ error: 'Prüfung nicht gefunden' });
+    if (configRow.korrekturFreigegeben !== 'true') {
+      return jsonResponse({ error: 'Korrektur nicht freigegeben' });
+    }
+
+    // Korrektur-Daten laden
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const korrekturFiles = ordner.getFilesByName('Korrektur_' + pruefungId);
+    if (!korrekturFiles.hasNext()) return jsonResponse({ error: 'Korrektur nicht gefunden' });
+
+    const korrekturSheet = SpreadsheetApp.open(korrekturFiles.next()).getSheets()[0];
+    const korrekturData = getSheetData(korrekturSheet);
+    const zeilen = korrekturData.filter(r => r.email === schuelerEmail);
+    if (zeilen.length === 0) return jsonResponse({ error: 'Keine Daten gefunden' });
+
+    // Bewertungen zusammenbauen
+    const bewertungen = {};
+    let gesamtPunkte = 0;
+    let maxPunkte = 0;
+    let audioGesamtkommentarId = null;
+
+    for (const z of zeilen) {
+      if (z.frageId === '_gesamt') {
+        audioGesamtkommentarId = z.audioKommentarId || null;
+        continue;
+      }
+
+      const lp = z.lpPunkte !== '' && z.lpPunkte !== undefined ? Number(z.lpPunkte) : null;
+      const ki = z.kiPunkte !== '' && z.kiPunkte !== undefined ? Number(z.kiPunkte) : null;
+      const punkte = lp !== null ? lp : (ki !== null ? ki : 0);
+      const max = Number(z.maxPunkte) || 0;
+      gesamtPunkte += punkte;
+      maxPunkte += max;
+
+      bewertungen[z.frageId] = {
+        frageId: z.frageId,
+        punkte: punkte,
+        maxPunkte: max,
+        lpKommentar: z.lpKommentar || null,
+        kiFeedback: z.kiFeedback || null,
+        audioKommentarId: z.audioKommentarId || null,
+      };
+    }
+
+    // Antworten laden
+    const antwortFiles = ordner.getFilesByName('Antworten_' + pruefungId);
+    const antworten = {};
+    if (antwortFiles.hasNext()) {
+      const antwortSheet = SpreadsheetApp.open(antwortFiles.next()).getSheets()[0];
+      const antwortData = getSheetData(antwortSheet);
+      const susAntwort = antwortData.find(r => r.email === schuelerEmail);
+      if (susAntwort && susAntwort.antworten) {
+        const parsed = safeJsonParse(susAntwort.antworten, {});
+        Object.assign(antworten, parsed);
+      }
+    }
+
+    // Fragen laden (für Fragetext-Anzeige)
+    const fragenSheet = SpreadsheetApp.openById(FRAGENBANK_ID).getSheets()[0];
+    const fragenData = getSheetData(fragenSheet);
+    const fragen = [];
+    const frageIds = Object.keys(bewertungen);
+    for (const fd of fragenData) {
+      if (frageIds.includes(fd.id)) {
+        fragen.push(safeJsonParse(fd.json || fd.daten, null) || { id: fd.id, typ: 'freitext', fragetext: fd.id });
+      }
+    }
+
+    return jsonResponse({
+      success: true,
+      titel: configRow.titel || pruefungId,
+      datum: configRow.datum || '',
+      klasse: configRow.klasse || '',
+      fragen,
+      antworten,
+      bewertungen,
+      gesamtPunkte,
+      maxPunkte,
+      audioGesamtkommentarId,
+    });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

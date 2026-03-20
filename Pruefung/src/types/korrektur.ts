@@ -19,6 +19,7 @@ export interface FragenBewertung {
   // Meta
   quelle: 'auto' | 'ki' | 'manuell' | 'fehler'
   geprueft: boolean             // LP hat explizit bestätigt
+  audioKommentarId?: string     // Drive-File-ID des Audio-Kommentars
 }
 
 // === Gesamte Korrektur eines SuS ===
@@ -39,6 +40,7 @@ export interface SchuelerKorrektur {
   // Status
   korrekturStatus: 'offen' | 'ki-bewertet' | 'review-fertig' | 'versendet'
   feedbackGesendet?: string  // ISO-Timestamp
+  audioGesamtkommentarId?: string  // Drive-File-ID des Gesamt-Audio-Kommentars
 }
 
 // === Gesamter Korrektur-Datensatz einer Prüfung ===
@@ -77,6 +79,7 @@ export interface KorrekturZeileUpdate {
   lpPunkte?: number | null
   lpKommentar?: string | null
   geprueft?: boolean
+  audioKommentarId?: string | null  // null = entfernen
 }
 
 // === Feedback-Versand-Payload ===

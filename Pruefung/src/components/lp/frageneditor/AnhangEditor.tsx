@@ -1,9 +1,9 @@
 import { useRef, useState, useCallback } from 'react'
 import type { FrageAnhang } from '../../../types/fragen.ts'
 import { Abschnitt } from './EditorBausteine.tsx'
+import { maxGroesseFuerMimeType, formatGroesse, AKZEPTIERTE_MIME_TYPES, parseVideoUrl, istBild, istAudio, istVideo, istEmbed } from '../../../utils/mediaUtils.ts'
 
 const MAX_ANHAENGE = 5
-const MAX_DATEI_GROESSE = 5 * 1024 * 1024 // 5 MB
 
 interface Props {
   anhaenge: FrageAnhang[]
@@ -11,18 +11,15 @@ interface Props {
   onAnhangHinzu: (file: File) => void
   onAnhangEntfernen: (id: string) => void
   onNeuenAnhangEntfernen: (index: number) => void
+  onUrlAnhangHinzu: (anhang: FrageAnhang) => void
 }
 
-/** Formatiert Dateigrösse menschenlesbar */
-function formatGroesse(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
-
-/** Prüft ob MIME-Type ein Bild ist */
-function istBild(mimeType: string): boolean {
-  return mimeType.startsWith('image/')
+/** Icon für Medientyp */
+function medienIcon(mimeType: string): string {
+  if (istBild(mimeType)) return '🖼️'
+  if (istAudio(mimeType)) return '🎵'
+  if (istVideo(mimeType) || istEmbed(mimeType)) return '🎬'
+  return '📄'
 }
 
 export default function AnhangEditor({
@@ -31,10 +28,14 @@ export default function AnhangEditor({
   onAnhangHinzu,
   onAnhangEntfernen,
   onNeuenAnhangEntfernen,
+  onUrlAnhangHinzu,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [fehler, setFehler] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState(false)
+  const [urlModus, setUrlModus] = useState(false)
+  const [urlEingabe, setUrlEingabe] = useState('')
+  const [urlFehler, setUrlFehler] = useState('')
 
   const gesamtAnzahl = anhaenge.length + neueAnhaenge.length
 
@@ -47,12 +48,15 @@ export default function AnhangEditor({
         setFehler(`Maximal ${MAX_ANHAENGE} Anhänge erlaubt.`)
         break
       }
-      if (datei.size > MAX_DATEI_GROESSE) {
-        setFehler(`"${datei.name}" ist zu gross (max. 5 MB).`)
+      const maxGroesse = maxGroesseFuerMimeType(datei.type)
+      if (datei.size > maxGroesse) {
+        setFehler(`"${datei.name}" ist zu gross (max. ${formatGroesse(maxGroesse)}).`)
         continue
       }
-      if (!datei.type.startsWith('image/') && datei.type !== 'application/pdf') {
-        setFehler(`"${datei.name}": Nur Bilder und PDFs erlaubt.`)
+      const erlaubt = datei.type.startsWith('image/') || datei.type === 'application/pdf'
+        || datei.type.startsWith('audio/') || datei.type.startsWith('video/')
+      if (!erlaubt) {
+        setFehler(`"${datei.name}": Nur Bilder, PDFs, Audio und Video erlaubt.`)
         continue
       }
       onAnhangHinzu(datei)
@@ -96,23 +100,77 @@ export default function AnhangEditor({
         <input
           ref={inputRef}
           type="file"
-          accept="image/*,application/pdf"
+          accept={AKZEPTIERTE_MIME_TYPES}
           multiple
           onChange={(e) => handleDateiWaehlen(e.target.files)}
           className="hidden"
         />
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={gesamtAnzahl >= MAX_ANHAENGE}
-          className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Bild oder PDF hinzufügen
-        </button>
+        <div className="flex gap-2 justify-center">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={gesamtAnzahl >= MAX_ANHAENGE}
+            className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            + Datei hochladen
+          </button>
+          <button
+            type="button"
+            onClick={() => setUrlModus(!urlModus)}
+            disabled={gesamtAnzahl >= MAX_ANHAENGE}
+            className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            + URL einbetten
+          </button>
+        </div>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
-          Dateien hierher ziehen oder klicken — max. {MAX_ANHAENGE} Dateien, je max. 5 MB
+          Dateien hierher ziehen oder klicken — max. {MAX_ANHAENGE} Anhänge, Bilder/PDF/Audio max. 5 MB, Video max. 25 MB
         </p>
       </div>
+
+      {/* URL-Einbettung */}
+      {urlModus && (
+        <div className="mt-2 flex gap-2">
+          <input
+            type="url"
+            value={urlEingabe}
+            onChange={(e) => { setUrlEingabe(e.target.value); setUrlFehler('') }}
+            placeholder="YouTube, Vimeo oder nanoo.tv URL"
+            className="flex-1 text-sm border rounded px-2 py-1 dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const info = parseVideoUrl(urlEingabe.trim())
+              if (!info) {
+                setUrlFehler('URL nicht erkannt. Unterstützt: YouTube, Vimeo, nanoo.tv')
+                return
+              }
+              if (gesamtAnzahl >= MAX_ANHAENGE) {
+                setUrlFehler(`Maximal ${MAX_ANHAENGE} Anhänge`)
+                return
+              }
+              const embed: FrageAnhang = {
+                id: `embed-${Date.now()}`,
+                dateiname: info.titel,
+                mimeType: 'video/embed',
+                groesseBytes: 0,
+                driveFileId: '',
+                url: info.embedUrl,
+                beschreibung: info.plattform === 'youtube' ? 'YouTube' : info.plattform === 'vimeo' ? 'Vimeo' : 'nanoo.tv',
+              }
+              onUrlAnhangHinzu(embed)
+              setUrlEingabe('')
+              setUrlModus(false)
+              setUrlFehler('')
+            }}
+            className="text-sm px-3 py-1 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer"
+          >
+            Hinzufügen
+          </button>
+        </div>
+      )}
+      {urlFehler && <p className="text-xs text-red-500 mt-1">{urlFehler}</p>}
 
       {/* Fehlermeldung */}
       {fehler && (
@@ -129,14 +187,14 @@ export default function AnhangEditor({
             >
               {/* Thumbnail oder Icon */}
               <div className="w-10 h-10 shrink-0 rounded bg-slate-200 dark:bg-slate-600 flex items-center justify-center overflow-hidden">
-                {istBild(a.mimeType) ? (
+                {istBild(a.mimeType) && a.driveFileId ? (
                   <img
                     src={`https://drive.google.com/thumbnail?id=${a.driveFileId}&sz=w80`}
                     alt={a.dateiname}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-lg" title="PDF-Datei">📄</span>
+                  <span className="text-lg">{medienIcon(a.mimeType)}</span>
                 )}
               </div>
               {/* Info */}
@@ -166,11 +224,7 @@ export default function AnhangEditor({
             >
               {/* Icon */}
               <div className="w-10 h-10 shrink-0 rounded bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
-                {istBild(datei.type) ? (
-                  <span className="text-lg">🖼️</span>
-                ) : (
-                  <span className="text-lg">📄</span>
-                )}
+                <span className="text-lg">{medienIcon(datei.type)}</span>
               </div>
               {/* Info + Badge */}
               <div className="flex-1 min-w-0">

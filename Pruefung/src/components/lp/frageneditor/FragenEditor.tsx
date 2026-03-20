@@ -742,13 +742,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             )}
           </Abschnitt>
 
-          {/* Anhänge (Bilder, PDFs) */}
+          {/* Anhänge (Bilder, PDFs, Audio, Video, URLs) */}
           <AnhangEditor
             anhaenge={anhaenge}
             neueAnhaenge={neueAnhaenge}
             onAnhangHinzu={(file) => setNeueAnhaenge((prev) => [...prev, file])}
             onAnhangEntfernen={(id) => setAnhaenge((prev) => prev.filter((a) => a.id !== id))}
             onNeuenAnhangEntfernen={(idx) => setNeueAnhaenge((prev) => prev.filter((_, i) => i !== idx))}
+            onUrlAnhangHinzu={(anhang) => setAnhaenge((prev) => [...prev, anhang])}
           />
 
           {/* Typ-spezifische Felder */}

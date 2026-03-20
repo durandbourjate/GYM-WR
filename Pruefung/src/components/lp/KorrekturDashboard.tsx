@@ -35,6 +35,7 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
   const [analyseSortierungAsc, setAnalyseSortierungAsc] = useState(true)
   const [notenConfigOffen, setNotenConfigOffen] = useState(false)
   const [notenConfig, setNotenConfig] = useState<NotenConfig>({ punkteFuerSechs: 0, rundung: 0.5 })
+  const [korrekturFreigegeben, setKorrekturFreigegeben] = useState(false)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Daten laden
@@ -148,6 +149,34 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
         schuelerEmail,
         frageId,
         ...updates,
+      }, user.email)
+    }
+  }, [pruefungId, user])
+
+  // Audio-Kommentar hochladen
+  const handleAudioUpload = useCallback(async (schuelerEmail: string, frageId: string, blob: Blob): Promise<string | null> => {
+    if (!user) return null
+    return apiService.uploadAudioKommentar(user.email, pruefungId, schuelerEmail, frageId, blob)
+  }, [pruefungId, user])
+
+  // Gesamt-Audio-Kommentar aktualisieren
+  const handleGesamtAudioUpdate = useCallback((email: string, audioId: string) => {
+    setKorrektur((prev) => {
+      if (!prev) return prev
+      return {
+        ...prev,
+        schueler: prev.schueler.map((s) =>
+          s.email === email ? { ...s, audioGesamtkommentarId: audioId } : s
+        ),
+      }
+    })
+    // Ans Backend senden
+    if (user) {
+      apiService.speichereKorrekturZeile({
+        pruefungId,
+        schuelerEmail: email,
+        frageId: '_gesamt',
+        audioKommentarId: audioId,
       }, user.email)
     }
   }, [pruefungId, user])
@@ -289,6 +318,26 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
               <span className="text-sm text-red-600 dark:text-red-400">
                 Fehler: {korrektur.batchFehler}
               </span>
+            )}
+            {/* Korrektur freigeben / sperren */}
+            {korrektur && (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!user) return
+                  const neuerWert = !korrekturFreigegeben
+                  const ok = await apiService.korrekturFreigeben(pruefungId, neuerWert, user.email)
+                  if (ok) setKorrekturFreigegeben(neuerWert)
+                }}
+                className={`text-sm px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  korrekturFreigegeben
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                }`}
+                title={korrekturFreigegeben ? 'Korrektur für SuS sperren' : 'Korrektur für SuS freigeben'}
+              >
+                {korrekturFreigegeben ? '✓ Freigegeben' : 'Freigeben'}
+              </button>
             )}
             {korrektur && korrektur.schueler.length > 0 && (
               <button
@@ -531,6 +580,8 @@ export default function KorrekturDashboard({ pruefungId }: Props) {
               notenConfig={notenConfig}
               onBewertungUpdate={handleBewertungUpdate}
               onNoteOverride={handleNoteOverride}
+              onAudioUpload={handleAudioUpload}
+              onGesamtAudioUpdate={handleGesamtAudioUpdate}
             />
           ))}
         </div>

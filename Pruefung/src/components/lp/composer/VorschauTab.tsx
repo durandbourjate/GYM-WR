@@ -3,6 +3,7 @@ import type { PruefungsConfig } from '../../../types/pruefung.ts'
 import type { Frage, FrageAnhang, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage } from '../../../types/fragen.ts'
 import { formatDatum } from '../../../utils/zeit.ts'
 import { typLabel, fachbereichFarbe } from '../../../utils/fachbereich.ts'
+import MediaAnhang from '../../MediaAnhang.tsx'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -230,7 +231,7 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
 
       {/* Bild-Anhänge inline anzeigen */}
       {frage.anhaenge && frage.anhaenge.length > 0 && (
-        <AnhangBilder anhaenge={frage.anhaenge} />
+        <AnhangMedien anhaenge={frage.anhaenge} />
       )}
 
       {/* Typ-spezifische Vorschau */}
@@ -390,65 +391,33 @@ function BerechnungVorschau({ frage }: { frage: BerechnungFrage }) {
   )
 }
 
-/** Zeigt Bild-Anhänge inline an (nur Bilder, keine PDFs) */
-function AnhangBilder({ anhaenge }: { anhaenge: FrageAnhang[] }) {
-  const bildAnhaenge = anhaenge.filter((a) => a.mimeType.startsWith('image/'))
-  if (bildAnhaenge.length === 0) return null
+/** Zeigt alle Medien-Anhänge inline an */
+function AnhangMedien({ anhaenge }: { anhaenge: FrageAnhang[] }) {
+  const [lightboxId, setLightboxId] = useState<string | null>(null)
+  if (!anhaenge || anhaenge.length === 0) return null
 
-  const groesseMap: Record<string, string> = {
-    klein: 'w200',
-    mittel: 'w400',
-    gross: 'w800',
-  }
-
-  return (
-    <div className="flex flex-wrap gap-3 mb-4">
-      {bildAnhaenge.map((anhang) => {
-        const sz = groesseMap[anhang.bildGroesse ?? 'mittel'] ?? 'w400'
-        const thumbnailUrl = `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=${sz}`
-        return (
-          <AnhangBild key={anhang.id} anhang={anhang} thumbnailUrl={thumbnailUrl} />
-        )
-      })}
-    </div>
-  )
-}
-
-function AnhangBild({ anhang, thumbnailUrl }: { anhang: FrageAnhang; thumbnailUrl: string }) {
-  const [vergroessert, setVergroessert] = useState(false)
-  const grossUrl = `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=w800`
+  const lightboxAnhang = lightboxId ? anhaenge.find((a) => a.id === lightboxId) : null
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setVergroessert(true)}
-        className="cursor-pointer group"
-        title={anhang.beschreibung || anhang.dateiname}
-      >
-        <img
-          src={thumbnailUrl}
-          alt={anhang.beschreibung || anhang.dateiname}
-          className="rounded-lg border border-slate-200 dark:border-slate-600 max-h-48 object-contain group-hover:shadow-md transition-shadow"
-          loading="lazy"
-        />
-        {anhang.beschreibung && (
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 text-center truncate max-w-[200px]">
-            {anhang.beschreibung}
-          </p>
-        )}
-      </button>
-
-      {/* Vergrössertes Bild als Modal */}
-      {vergroessert && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
-          onClick={() => setVergroessert(false)}
-        >
+      <div className="space-y-2 mt-2">
+        {anhaenge.map((a) => (
+          <MediaAnhang
+            key={a.id}
+            anhang={a}
+            bildSz={a.bildGroesse === 'klein' ? 'w200' : a.bildGroesse === 'gross' ? 'w800' : 'w400'}
+            onLightbox={setLightboxId}
+          />
+        ))}
+      </div>
+      {lightboxAnhang && lightboxAnhang.mimeType.startsWith('image/') && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80" onClick={() => setLightboxId(null)}>
+          <button type="button" onClick={() => setLightboxId(null)} className="absolute top-4 right-4 w-10 h-10 text-white text-2xl bg-black/40 rounded-full hover:bg-black/60 cursor-pointer flex items-center justify-center" title="Schliessen">×</button>
           <img
-            src={grossUrl}
-            alt={anhang.beschreibung || anhang.dateiname}
-            className="max-w-[90vw] max-h-[85vh] rounded-xl border-2 border-white/20 shadow-2xl object-contain"
+            src={`https://drive.google.com/thumbnail?id=${lightboxAnhang.driveFileId}&sz=w800`}
+            alt={lightboxAnhang.beschreibung || lightboxAnhang.dateiname}
+            className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

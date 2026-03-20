@@ -15,6 +15,8 @@ import MonitoringDashboard from './components/lp/MonitoringDashboard.tsx'
 import KorrekturDashboard from './components/lp/KorrekturDashboard.tsx'
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
+import KorrekturListe from './components/sus/KorrekturListe.tsx'
+import KorrekturEinsicht from './components/sus/KorrekturEinsicht.tsx'
 
 // Theme-Store importieren damit er initialisiert wird
 import './store/themeStore.ts'
@@ -29,6 +31,7 @@ export default function App() {
   const [pruefungsFragen, setPruefungsFragen] = useState<Frage[]>([])
   const [wiederhergestellt, setWiederhergestellt] = useState(false)
   const [ladeFehler, setLadeFehler] = useState<string | null>(null)
+  const [korrekturId, setKorrekturId] = useState<string | null>(null)
 
   // Prüfungs-ID aus URL lesen (?id=...)
   const pruefungIdAusUrl = new URLSearchParams(window.location.search).get('id')
@@ -89,6 +92,14 @@ export default function App() {
       return <MonitoringDashboard pruefungId={pruefungIdAusUrl} />
     }
     return <LPStartseite />
+  }
+
+  // SuS ohne Prüfungs-ID: Korrektur-Einsicht
+  if (user.rolle === 'sus' && !pruefungIdAusUrl && !istDemoModus && apiService.istKonfiguriert()) {
+    if (korrekturId) {
+      return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
+    }
+    return <KorrekturListe onWaehle={setKorrekturId} />
   }
 
   // Ladefehler

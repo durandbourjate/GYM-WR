@@ -6,7 +6,7 @@
 
 ## Aktueller Stand
 
-**Phase 4: Composer & SEB** (19.03.2026) — KI-Integration, Analyse-Dashboard, UX-Polish ✅
+**Phase 5: Audio/Video + Korrektur-Einsicht** (20.03.2026) — Audio/Video-Anhänge, Audio-Korrektur, SuS-Korrektur-Einsicht ✅
 
 ### Was funktioniert
 - **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
@@ -36,6 +36,22 @@
 - Tab-Konflikterkennung, Error Boundary, Sticky Fragetext
 - Retry-Queue (IndexedDB, fehlgeschlagene Saves bei Reconnect nachsenden)
 - Zeitablauf-Auto-Abgabe, beforeunload-Warnung, Tastaturnavigation
+- **Audio/Video-Anhänge (20.03.2026):**
+  - Fragen können jetzt Audio- und Video-Dateien als Anhänge haben (Upload bis 5MB/25MB)
+  - URL-Einbettung für YouTube, Vimeo, nanoo.tv (kein Upload nötig)
+  - MediaAnhang-Komponente als zentraler Renderer (Bild/Audio/Video/Embed/PDF)
+  - AnhangEditor erweitert: MIME-Filter, Grössenlimits, URL-Button
+- **Audio-Korrektur (20.03.2026):**
+  - Browser MediaRecorder API (WebM/Opus, MP4-Fallback für Safari)
+  - AudioRecorder-Komponente: Aufnehmen → Anhören → Speichern/Verwerfen
+  - Pro Frage + Gesamt-Audio-Kommentar im KorrekturDashboard
+  - Audio-Dateien werden als Base64 zu Google Drive hochgeladen
+- **SuS-Korrektur-Einsicht (20.03.2026):**
+  - LP kann Korrektur "freigeben" → Toggle-Button im KorrekturDashboard
+  - SuS sehen freigegebene Korrekturen als Liste (KorrekturListe)
+  - Detailansicht pro Prüfung: Fragen, Punkte, Kommentare, Audio-Feedback
+  - Symbole: ✓ (volle Punkte), ~ (Teilpunkte), ✗ (0 Punkte)
+  - 3 neue Backend-Endpoints: korrekturFreigeben, ladeKorrekturenFuerSuS, ladeKorrekturDetail
 - **Code-Review-Cleanup (17.03.2026):**
   - XSS-Schutz: DOMPurify für alle `dangerouslySetInnerHTML`-Stellen
   - Stale-Closure-Fix: `useRef` für Timer/Intervall-Callbacks
@@ -71,8 +87,9 @@
 - **Sortierung:** Nur durch Lehrperson (Abschnitte in PruefungsConfig), SuS nicht
 
 ### Offene User-Wünsche (für spätere Iterationen)
-- Textfeld-Höhe: User möchte testen ob auto-grow oder begrenzter Bereich mit Scrollen besser ist
+- Buchhaltungs-Fragetyp: Buchungsaufgaben wie bei eLoB (Soll/Haben, Kontenrahmen, T-Konten)
 - Tablet-/Smartphone-Optimierung: grundsätzlich responsive, aber noch nicht spezifisch getestet
+- Skalierung/Kollaboration: Apps für andere LP nutzbar machen (grösserer Umbau)
 
 ## Verzeichnisstruktur
 
@@ -98,6 +115,7 @@ Pruefung/
 │   │   ├── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 4 Abschnitte)
 │   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard
 │   ├── hooks/
+│   │   ├── useAudioRecorder.ts         — MediaRecorder Hook (WebM/Opus, MP4-Fallback)
 │   │   ├── useFocusTrap.ts             — Keyboard-Focus-Trap für Modals/Dialoge
 │   │   ├── usePruefungsMonitoring.ts    — Zentraler Monitoring-Hook
 │   │   ├── usePruefungsUX.ts           — beforeunload, Tastaturnavigation
@@ -134,6 +152,12 @@ Pruefung/
 │   │   │   ├── SuSVorschau.tsx          — Fullscreen SuS-Vorschau (Preview aus Schüler-Sicht)
 │   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS
 │   │   │   └── SchuelerZeile.tsx        — Einzelne SuS-Zeile mit Detail-Panel
+│   │   ├── sus/
+│   │   │   ├── KorrekturListe.tsx      — SuS: Liste freigegebener Korrekturen
+│   │   │   └── KorrekturEinsicht.tsx   — SuS: Detailansicht einer korrigierten Prüfung
+│   │   ├── AudioPlayer.tsx             — Wiederverwendbarer Mini-Audio-Player
+│   │   ├── AudioRecorder.tsx           — Audio-Aufnahme UI (Mikrofon → Preview → Speichern)
+│   │   ├── MediaAnhang.tsx             — Zentraler Medien-Renderer (Bild/Audio/Video/Embed/PDF)
 │   │   ├── ErrorBoundary.tsx            — Fängt Rendering-Fehler, Recovery-UI
 │   │   ├── LoginScreen.tsx              — Google OAuth + Schülercode (mit E-Mail) + Demo
 │   │   ├── Layout.tsx                   — Header + Sidebar (mit User-Info) + Main
@@ -159,6 +183,8 @@ Pruefung/
 │       ├── korrekturUtils.ts          — berechneNote(), effektivePunkte(), Statistiken
 │       ├── exportUtils.ts              — CSV-Export (Semicolon, BOM für Excel)
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
+│       ├── mediaUtils.ts               — MIME-Helpers, URL-Parsing (YouTube/Vimeo/nanoo), Drive-URLs
+│       ├── zeitbedarf.ts               — Zeitbedarfs-Schätzung pro Fragetyp
 │       └── zeit.ts                      — Timer-Hilfsfunktionen
 ├── seb/
 │   ├── GymHofwil_Pruefung_Konfig.xml   — SEB-Konfigurationsvorlage (Import in SEB Config Tool)
@@ -267,14 +293,10 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 57 | initialEditFrageId | ✅ | "Bearbeiten" in AbschnitteTab öffnet FragenBrowser + Editor direkt |
 
 ### Offen
-- Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung)
-- Textfeld-Höhe testen (auto-grow vs. begrenzter Bereich)
 - Buchhaltungs-Fragetyp (Soll/Haben, Kontenrahmen, T-Konten — wie bei eLoB)
-- Audio/Video in Fragen (Multimedia-Einbettung)
-- Lückentext-Helper-Button (Wort markieren → Klick → `{{}}` wrappen)
-- Formatierungs-Buttons für Fragetext/Lösungen
-- Fragen-Export (JSON)
-- Fragen teilen zwischen LP (Sharing-Infrastruktur)
+- Audio/Video in Fragen (Multimedia-Einbettung, aktuell nur Bilder + PDFs)
+- Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung — Architektur-Klärung nötig)
+- Tablet/Smartphone-Optimierung (responsive by design, spezifische Tests ausstehend)
 
 ### Backend-Hinweis
 `apps-script-code.js` enthält den kompletten Apps Script Code. Nach Änderungen: Code kopieren → Apps Script Editor → Bereitstellung aktualisieren (Stift → Neue Version). Die Spalten `freigeschaltet` und `zeitverlaengerungen` müssen im Configs-Sheet vorhanden sein.
