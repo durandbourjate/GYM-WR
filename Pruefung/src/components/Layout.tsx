@@ -366,11 +366,25 @@ export default function Layout() {
         )}
       </div>
 
-      {/* Zeitablauf-Banner */}
+      {/* Zeitablauf-Dialog (prominent, zentriert — wie AbgabeDialog-Erfolg) */}
       {zeitAbgelaufen && abgegeben && (
-        <div className="fixed bottom-0 left-0 right-0 bg-red-600 dark:bg-red-700 text-white px-4 py-3 text-center z-30">
-          <p className="font-semibold">Die Zeit ist abgelaufen — Ihre Prüfung wurde automatisch abgegeben.</p>
-          <p className="text-sm text-red-100 mt-1">Ihre Antworten wurden gespeichert. Sie können das Fenster schliessen.</p>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+              Zeit abgelaufen
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 mb-1">
+              Ihre Prüfung wurde automatisch abgegeben.
+            </p>
+            <p className="text-sm text-slate-400 dark:text-slate-500">
+              Alle Antworten wurden gespeichert. Sie können das Fenster schliessen.
+            </p>
+          </div>
         </div>
       )}
 

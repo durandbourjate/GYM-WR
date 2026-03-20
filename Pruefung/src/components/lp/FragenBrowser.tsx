@@ -294,7 +294,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onSchliessen} />
 
       {/* Panel (rechts) */}
-      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto" style={{ top: headerH, width: panelBreite, maxWidth: '90vw', overscrollBehavior: 'contain' }}>
+      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto overflow-hidden" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }} onWheel={(e) => e.stopPropagation()}>
         {/* Drag-Handle zum Resize */}
         <div
           onMouseDown={handleZiehStart}

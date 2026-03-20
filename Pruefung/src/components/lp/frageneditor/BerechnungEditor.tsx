@@ -55,7 +55,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
       <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-2">
         Erwartete Ergebnisse
       </label>
-      <div className="space-y-2 overflow-hidden">
+      <div className="space-y-2">
         {/* Spalten-Header */}
         {ergebnisse.length > 0 && (
           <div className="flex gap-2 items-center text-xs text-slate-500 dark:text-slate-400">

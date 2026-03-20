@@ -6,7 +6,7 @@
 
 ## Aktueller Stand
 
-**Phase 5c: UX-Fixes Runde 1–3** (20.03.2026) — Editor-Fixes, GF-Gefäss, Panel-Flow ✅
+**Phase 5c: UX-Fixes Runde 1–4** (20.03.2026) — Editor-Fixes, GF-Gefäss, Panel-Flow, Scroll-Fix, Auto-Submit-Dialog ✅
 
 ### Letzte Änderungen (20.03.2026 Abend)
 
@@ -24,18 +24,22 @@
 - Freitext-Optionen (erwartete Länge) Sektion aus FragenEditor entfernt
 
 **Runde 3**:
-- BerechnungEditor Layout-Fix: `overflow-hidden` + responsive Breiten (Bezeichnung w-36, Hilfsmittel flex)
-- Fragenbank/HilfeSeite Scroll-Fix: `overscroll-behavior: contain` auf allen Panels
+- BerechnungEditor Layout-Fix: responsive Breiten (Bezeichnung w-36, Hilfsmittel flex)
 - Panel-Flow: `pointer-events-none` Wrapper + `pointer-events-auto` Kinder → Header bleibt klickbar über Overlays
-- LPHeader z-60, FragenEditor z-55, Panels z-50 → Header-Buttons immer erreichbar
+- LPHeader z-60, FragenEditor z-55, Panels z-50 → Header-Buttons (inkl. ThemeToggle) immer erreichbar
 - FragenEditor: ESC schliesst Editor (capture-Phase), "Abbrechen" → "← Zurück"
 - Duplizieren-Button im Composer-Header (neben Speichern)
 - GF zu Gefäss-Filter auf LPStartseite hinzugefügt
 
+**Runde 4**:
+- BerechnungEditor: `overflow-hidden` entfernt → alle 4 Eingabefelder (Bezeichnung, Ergebnis, Toleranz, Einheit) sichtbar
+- Scroll-Fix alle Panels (FragenBrowser, FragenEditor, HilfeSeite): `onWheel={stopPropagation}` + `overflow-hidden` → Scrollen im Header-Bereich scrollt nicht mehr den Hintergrund
+- Auto-Submit-Bestätigung: Bottom-Banner durch prominenten Vollbild-Dialog ersetzt (wie AbgabeDialog-Erfolg, mit Checkmark-Icon)
+
 ### Offene Punkte (noch nicht umgesetzt)
 - **Lernziele-Integration:** Eingabefeld, Datenbank, KI-basierte Fragen-/Musterlösungs-Generierung, Übungspool als Quelle
 - **Übungspool-Import:** Fragen aus bestehenden JS-Pools ins Prüfungstool importieren
-- **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live, Bestätigungs-Dialog bei Auto-Abgabe
+- **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
 - **Wichtig nach Code-Änderungen:** `apps-script-code.js` muss in Apps Script Editor kopiert + neue Bereitstellung erstellt werden (für `loeschePruefung` Endpoint)
 
 ### Was funktioniert
