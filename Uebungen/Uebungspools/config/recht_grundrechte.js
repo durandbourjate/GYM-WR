@@ -5,6 +5,7 @@
 // ============================================================
 
 window.POOL_META = {
+  id: "recht_grundrechte",
   title: "Menschenrechte und Grundrechte",
   fach: "Recht",
   color: "#73ab2c",
@@ -32,7 +33,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "m01", topic: "menschenrechte", type: "mc", diff: 1, tax: "K1"
+    id: "m01", topic: "menschenrechte", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wann wurde die Allgemeine Erklärung der Menschenrechte (AEMR) verabschiedet?",
     options: [
@@ -45,14 +46,14 @@ window.QUESTIONS = [
     explain: "Die Allgemeine Erklärung der Menschenrechte wurde am 10. Dezember 1948 von der Generalversammlung der Vereinten Nationen als Resolution 217 A (III) verabschiedet."
   },
   {
-    id: "m02", topic: "menschenrechte", type: "tf", diff: 1, tax: "K1"
+    id: "m02", topic: "menschenrechte", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Allgemeine Erklärung der Menschenrechte ist für alle UNO-Mitgliedstaaten rechtlich verbindlich.",
     correct: false,
     explain: "Die AEMR ist eine Erklärung (Deklaration) und kein völkerrechtlicher Vertrag. Sie ist daher nicht direkt rechtlich verbindlich, hat aber als Ausdruck eines gemeinsamen Ideals grosse moralische und politische Bedeutung. Rechtlich verbindlich sind erst die darauf aufbauenden Menschenrechtspakte (z.B. der UNO-Pakt II über bürgerliche und politische Rechte)."
   },
   {
-    id: "m03", topic: "menschenrechte", type: "fill", diff: 1, tax: "K1"
+    id: "m03", topic: "menschenrechte", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Gemäss Art. 1 der AEMR sind alle Menschen frei und gleich an {0} und {1} geboren.",
     blanks: [
@@ -62,7 +63,7 @@ window.QUESTIONS = [
     explain: "Art. 1 AEMR lautet: «Alle Menschen sind frei und gleich an Würde und Rechten geboren. Sie sind mit Vernunft und Gewissen begabt und sollen einander im Geiste der Brüderlichkeit begegnen.»"
   },
   {
-    id: "m04", topic: "menschenrechte", type: "mc", diff: 1, tax: "K2"
+    id: "m04", topic: "menschenrechte", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Was bedeutet die «Unteilbarkeit» der Menschenrechte?",
     options: [
@@ -75,7 +76,7 @@ window.QUESTIONS = [
     explain: "Unteilbarkeit bedeutet, dass bürgerliche, politische, wirtschaftliche, soziale und kulturelle Menschenrechte gleichwertig sind und sich gegenseitig bedingen. Es wäre sinnlos, jemandem politische Rechte zu gewähren, wenn er keinen Zugang zu Bildung oder Nahrung hat."
   },
   {
-    id: "m05", topic: "menschenrechte", type: "tf", diff: 1, tax: "K1"
+    id: "m05", topic: "menschenrechte", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Menschenrechte stehen nur Staatsbürgern des jeweiligen Landes zu.",
     correct: false,
@@ -84,7 +85,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "m06", topic: "menschenrechte", type: "multi", diff: 2, tax: "K2"
+    id: "m06", topic: "menschenrechte", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Rechte gehören zu den bürgerlichen und politischen Menschenrechten (1. Dimension)? (Mehrere Antworten möglich.)",
     options: [
@@ -97,7 +98,7 @@ window.QUESTIONS = [
     explain: "Bürgerliche und politische Rechte (1. Dimension) umfassen Abwehrrechte gegen den Staat wie das Recht auf Leben, Freiheit, Meinungsfreiheit und politische Teilhabe. Das Recht auf Arbeit und Bildung gehören zu den wirtschaftlichen, sozialen und kulturellen Rechten (2. Dimension), die Leistungsansprüche darstellen."
   },
   {
-    id: "m07", topic: "menschenrechte", type: "mc", diff: 2, tax: "K2"
+    id: "m07", topic: "menschenrechte", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Wer ist gemäss der AEMR primär für die Umsetzung und Einhaltung der Menschenrechte verantwortlich?",
     options: [
@@ -110,7 +111,7 @@ window.QUESTIONS = [
     explain: "Primär verantwortlich für die Umsetzung und Einhaltung der Menschenrechte sind die einzelnen Staaten. Dies bringt ein grundlegendes Problem mit sich: Gerade jene Staaten, die Menschenrechte verletzen, sollen diese gleichzeitig schützen. NGOs übernehmen daher eine wichtige Überwachungsfunktion."
   },
   {
-    id: "m08", topic: "menschenrechte", type: "mc", diff: 2, tax: "K2"
+    id: "m08", topic: "menschenrechte", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aufgabe haben Nichtregierungsorganisationen (NGOs) im Bereich der Menschenrechte?",
     options: [
@@ -123,7 +124,7 @@ window.QUESTIONS = [
     explain: "NGOs wie Amnesty International oder Human Rights Watch können weder Gesetze erlassen noch Sanktionen verhängen. Ihre Stärke liegt in der Überwachung (Monitoring), Dokumentation von Menschenrechtsverletzungen und der Mobilisierung von öffentlichem Druck auf die verantwortlichen Staaten."
   },
   {
-    id: "m09", topic: "menschenrechte", type: "multi", diff: 2, tax: "K4"
+    id: "m09", topic: "menschenrechte", type: "multi", diff: 2, tax: "K4",
  reviewed:false,
     q: "Welche der folgenden Punkte gelten als Hauptstreitpunkte bezüglich der Allgemeinen Menschenrechtserklärung? (Mehrere Antworten möglich.)",
     options: [
@@ -138,7 +139,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "m10", topic: "menschenrechte", type: "mc", diff: 3, tax: "K5"
+    id: "m10", topic: "menschenrechte", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Art. 29 Abs. 2 AEMR erlaubt Beschränkungen von Menschenrechten unter bestimmten Bedingungen. Welche Aussage gibt diese Bedingungen am treffendsten wieder?",
     options: [
@@ -151,7 +152,7 @@ window.QUESTIONS = [
     explain: "Art. 29 Abs. 2 AEMR lautet sinngemäss: Jeder ist bei der Ausübung seiner Rechte und Freiheiten nur den Beschränkungen unterworfen, die das Gesetz vorsieht, und zwar ausschliesslich zu dem Zweck, die Rechte anderer zu sichern und den Anforderungen der Moral, der öffentlichen Ordnung und des allgemeinen Wohles in einer demokratischen Gesellschaft zu genügen. Dies zeigt Parallelen zum schweizerischen Art. 36 BV."
   },
   {
-    id: "m11", topic: "menschenrechte", type: "mc", diff: 3, tax: "K4"
+    id: "m11", topic: "menschenrechte", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     img: {src: "img/recht/grundrechte/grundrechte_ebenen_01.svg", alt: "Übersicht: Menschenrechtsschutz auf internationaler, europäischer und nationaler Ebene"},
     q: "Welcher grundlegende Unterschied besteht zwischen der Allgemeinen Erklärung der Menschenrechte (AEMR) und der Europäischen Menschenrechtskonvention (EMRK)?",
@@ -165,7 +166,7 @@ window.QUESTIONS = [
     explain: "Die AEMR (1948) ist eine Erklärung ohne direkte Rechtsverbindlichkeit. Die EMRK (1950) hingegen ist ein völkerrechtlicher Vertrag, der für die Vertragsstaaten (Mitglieder des Europarats) verbindlich ist. Zur Durchsetzung besteht der Europäische Gerichtshof für Menschenrechte (EGMR) in Strassburg, an den sich auch Einzelpersonen wenden können."
   },
   {
-    id: "m12", topic: "menschenrechte", type: "tf", diff: 3, tax: "K5"
+    id: "m12", topic: "menschenrechte", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Das Argument des Kulturrelativismus — wonach Menschenrechte keine universelle Geltung beanspruchen können, da sie kulturell bedingt seien — wird in der AEMR selbst durch Art. 30 entkräftet.",
     correct: true,
@@ -178,7 +179,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "g01", topic: "grundrechte_bv", type: "mc", diff: 1, tax: "K1"
+    id: "g01", topic: "grundrechte_bv", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welchen Artikeln der Bundesverfassung (BV) sind die Grundrechte geregelt?",
     options: [
@@ -191,7 +192,7 @@ window.QUESTIONS = [
     explain: "Die Grundrechte der Schweiz sind im 2. Titel der Bundesverfassung in den Art. 7 bis 36 unter der Überschrift «Grundrechte, Bürgerrechte und Sozialziele» verankert."
   },
   {
-    id: "g02", topic: "grundrechte_bv", type: "fill", diff: 1, tax: "K1"
+    id: "g02", topic: "grundrechte_bv", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Grundrechte sollen den Einfluss des {0} auf die Personen beschränken. Sie verpflichten ihn i.d.R. zu einem {1}.",
     blanks: [
@@ -201,14 +202,14 @@ window.QUESTIONS = [
     explain: "Grundrechte sind primär Abwehrrechte: Sie schützen die Einzelnen vor staatlichen Eingriffen. Der Staat ist verpflichtet, diese Rechte zu respektieren und grundsätzlich nicht in sie einzugreifen (Unterlassungspflicht). Nur selten begründen Grundrechte auch Leistungsansprüche (Pflicht zu einem Tun)."
   },
   {
-    id: "g03", topic: "grundrechte_bv", type: "tf", diff: 1, tax: "K1"
+    id: "g03", topic: "grundrechte_bv", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Menschenwürde ist in Art. 7 BV verankert.",
     correct: true,
     explain: "Art. 7 BV lautet: «Die Würde des Menschen ist zu achten und zu schützen.» Die Menschenwürde steht bewusst am Anfang des Grundrechtskatalogs und bildet die Basis aller anderen Grundrechte."
   },
   {
-    id: "g04", topic: "grundrechte_bv", type: "mc", diff: 1, tax: "K1"
+    id: "g04", topic: "grundrechte_bv", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welches Grundrecht schützt Art. 16 BV?",
     options: [
@@ -223,7 +224,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "g05", topic: "grundrechte_bv", type: "multi", diff: 2, tax: "K2"
+    id: "g05", topic: "grundrechte_bv", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Grundrechte sind in der Bundesverfassung verankert? (Mehrere Antworten möglich.)",
     options: [
@@ -236,7 +237,7 @@ window.QUESTIONS = [
     explain: "Die Versammlungsfreiheit (Art. 22 BV), die Glaubens- und Gewissensfreiheit (Art. 15 BV) und die persönliche Freiheit (Art. 10 BV) sind als Grundrechte in der BV verankert. Ein eigenständiges «Recht auf eine Wohnung» gibt es in der BV nicht als Grundrecht, sondern nur als Sozialziel (Art. 41 Abs. 1 Bst. e BV)."
   },
   {
-    id: "g06", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2"
+    id: "g06", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was unterscheidet Grundrechte von Sozialzielen in der Bundesverfassung?",
     options: [
@@ -249,14 +250,14 @@ window.QUESTIONS = [
     explain: "Grundrechte (Art. 7–34 BV) sind subjektive Rechte, die vor Gericht eingeklagt werden können. Sozialziele (Art. 41 BV) sind demgegenüber Aufträge an den Gesetzgeber, bestimmte Ziele anzustreben (z.B. soziale Sicherheit, Wohnraum). Aus Sozialzielen können Einzelne jedoch keine direkten Leistungsansprüche ableiten (Art. 41 Abs. 4 BV)."
   },
   {
-    id: "g07", topic: "grundrechte_bv", type: "tf", diff: 2, tax: "K2"
+    id: "g07", topic: "grundrechte_bv", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Grundrechte gelten in der Schweiz absolut und dürfen unter keinen Umständen eingeschränkt werden.",
     correct: false,
     explain: "Art. 36 BV regelt ausdrücklich, dass Grundrechte unter bestimmten Voraussetzungen eingeschränkt werden können: Es braucht eine gesetzliche Grundlage, ein öffentliches Interesse oder den Schutz von Grundrechten Dritter, die Massnahme muss verhältnismässig sein, und der Kerngehalt muss unangetastet bleiben."
   },
   {
-    id: "g08", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2"
+    id: "g08", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist mit der Aussage gemeint, Grundrechte hätten primär eine «Abwehrfunktion»?",
     options: [
@@ -271,7 +272,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "g09", topic: "grundrechte_bv", type: "mc", diff: 3, tax: "K4"
+    id: "g09", topic: "grundrechte_bv", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Auf dem Bundesplatz in Bern plant eine Gruppe von Neonazis eine Kundgebung, an der rassistisches Gedankengut verbreitet werden soll.",
     q: "Können sich die Organisatoren auf die Meinungsäusserungsfreiheit (Art. 16 BV) und die Versammlungsfreiheit (Art. 22 BV) berufen?",
@@ -285,7 +286,7 @@ window.QUESTIONS = [
     explain: "Die Meinungsäusserungsfreiheit (Art. 16 BV) und die Versammlungsfreiheit (Art. 22 BV) schützen grundsätzlich auch kontroverse Meinungen — Grundrechte stehen allen Menschen zu. Allerdings gelten Grundrechte nicht absolut: Gemäss Art. 36 BV können sie eingeschränkt werden, wenn eine gesetzliche Grundlage besteht, ein öffentliches Interesse vorliegt (z.B. Schutz der öffentlichen Ordnung) oder Grundrechte Dritter geschützt werden müssen (z.B. Schutz vor rassistischer Diskriminierung, Art. 8 Abs. 2 BV), die Einschränkung verhältnismässig ist und der Kerngehalt unangetastet bleibt."
   },
   {
-    id: "g10", topic: "grundrechte_bv", type: "multi", diff: 3, tax: "K4"
+    id: "g10", topic: "grundrechte_bv", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Art. 35 Abs. 3 BV verlangt, dass Behörden dafür sorgen, dass Grundrechte auch unter Privaten wirksam werden. Welche Aussagen treffen auf diese sogenannte «Drittwirkung» zu? (Mehrere Antworten möglich.)",
     options: [
@@ -298,7 +299,7 @@ window.QUESTIONS = [
     explain: "Die Schweiz kennt grundsätzlich eine indirekte Drittwirkung: Grundrechte gelten nicht direkt zwischen Privaten, sondern der Gesetzgeber ist verpflichtet, die Grundrechte auch im Privatrechtsverkehr zu berücksichtigen. Beispiel: Das Arbeitsgesetz und das OR schützen die Persönlichkeit der Arbeitnehmenden (Art. 328 OR). Eine direkte Drittwirkung (Antwort A) ist die Ausnahme."
   },
   {
-    id: "g11", topic: "grundrechte_bv", type: "tf", diff: 3, tax: "K4"
+    id: "g11", topic: "grundrechte_bv", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Die Bundesverfassung unterscheidet zwischen Grundrechten, die allen Menschen zustehen, und Bürgerrechten, die nur Schweizer Staatsangehörigen zukommen (z.B. politische Rechte gemäss Art. 34 BV).",
     correct: true,
@@ -311,7 +312,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "e01", topic: "einschraenkung", type: "mc", diff: 1, tax: "K1"
+    id: "e01", topic: "einschraenkung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welcher Artikel der Bundesverfassung regelt die Voraussetzungen für die Einschränkung von Grundrechten?",
     options: [
@@ -324,7 +325,7 @@ window.QUESTIONS = [
     explain: "Art. 36 BV legt die Voraussetzungen fest, unter denen Grundrechte eingeschränkt werden dürfen: gesetzliche Grundlage (Abs. 1), öffentliches Interesse oder Schutz von Grundrechten Dritter (Abs. 2), Verhältnismässigkeit (Abs. 3) und Unantastbarkeit des Kerngehalts (Abs. 4)."
   },
   {
-    id: "e02", topic: "einschraenkung", type: "fill", diff: 1, tax: "K1"
+    id: "e02", topic: "einschraenkung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Gemäss Art. 36 Abs. 1 BV bedürfen Einschränkungen von Grundrechten einer {0} Grundlage.",
     blanks: [
@@ -333,14 +334,14 @@ window.QUESTIONS = [
     explain: "Art. 36 Abs. 1 BV verlangt eine gesetzliche Grundlage für jede Grundrechtseinschränkung. Dies stellt sicher, dass Einschränkungen demokratisch legitimiert sind — nur der Gesetzgeber (Parlament) kann durch ein Gesetz die Freiheit der Bürgerinnen und Bürger einschränken."
   },
   {
-    id: "e03", topic: "einschraenkung", type: "tf", diff: 1, tax: "K1"
+    id: "e03", topic: "einschraenkung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der Kerngehalt eines Grundrechts darf unter keinen Umständen angetastet werden.",
     correct: true,
     explain: "Art. 36 Abs. 4 BV bestimmt ausdrücklich: «Der Kerngehalt der Grundrechte ist unantastbar.» Der Kerngehalt ist derjenige Bereich eines Grundrechts, der keinen Eingriff duldet. Beispiel: Das Folterverbot gehört zum unantastbaren Kerngehalt der persönlichen Freiheit (Art. 10 Abs. 3 BV)."
   },
   {
-    id: "e04", topic: "einschraenkung", type: "mc", diff: 1, tax: "K2"
+    id: "e04", topic: "einschraenkung", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Die vier Voraussetzungen für eine zulässige Grundrechtseinschränkung gemäss Art. 36 BV müssen …",
     options: [
@@ -355,7 +356,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "e05", topic: "einschraenkung", type: "multi", diff: 2, tax: "K2"
+    id: "e05", topic: "einschraenkung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     img: {src: "img/recht/grundrechte/grundrechte_pruefschema_01.svg", alt: "Flussdiagramm: Prüfschema zur Einschränkung von Grundrechten nach Art. 36 BV"},
     q: "Welche der folgenden Elemente gehören zum Prüfschema bei Grundrechtseinschränkungen nach Art. 36 BV? (Mehrere Antworten möglich.)",
@@ -369,7 +370,7 @@ window.QUESTIONS = [
     explain: "Das Prüfschema nach Art. 36 BV umfasst: (1) Liegt eine Grundrechtseinschränkung vor? (2) Gesetzliche Grundlage (Abs. 1), (3) Öffentliches Interesse oder Schutz von Grundrechten Dritter (Abs. 2), (4) Verhältnismässigkeit (Abs. 3), (5) Kerngehalt unangetastet (Abs. 4). Die Zustimmung der betroffenen Person ist nicht erforderlich — gerade das macht Grundrechte so wichtig: Sie schützen auch gegen den Willen der Mehrheit."
   },
   {
-    id: "e06", topic: "einschraenkung", type: "mc", diff: 2, tax: "K2"
+    id: "e06", topic: "einschraenkung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was versteht man unter der «polizeilichen Generalklausel» im Zusammenhang mit Grundrechtseinschränkungen?",
     options: [
@@ -382,7 +383,7 @@ window.QUESTIONS = [
     explain: "Die polizeiliche Generalklausel erlaubt ausnahmsweise Grundrechtseinschränkungen ohne spezifische gesetzliche Grundlage, wenn eine ernste, unmittelbare und nicht anders abwendbare Gefahr für wichtige Rechtsgüter besteht. Beispiel: Bei einer Naturkatastrophe darf die Polizei ein Gebiet evakuieren, auch wenn kein Gesetz dies ausdrücklich vorsieht."
   },
   {
-    id: "e07", topic: "einschraenkung", type: "mc", diff: 2, tax: "K3"
+    id: "e07", topic: "einschraenkung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Was bedeutet «Verhältnismässigkeit» bei einer Grundrechtseinschränkung gemäss Art. 36 Abs. 3 BV?",
     options: [
@@ -395,7 +396,7 @@ window.QUESTIONS = [
     explain: "Verhältnismässigkeit hat zwei Komponenten: (1) Eignung — die Massnahme muss geeignet sein, das angestrebte Ziel zu erreichen. (2) Verhältnismässigkeit im engeren Sinne (Zumutbarkeit) — der Eingriff muss für den Betroffenen in einem angemessenen Verhältnis zum verfolgten Zweck stehen. Beispiel: Der Staat darf für den Bau einer Autobahn nicht mehr Land enteignen, als tatsächlich benötigt wird."
   },
   {
-    id: "e08", topic: "einschraenkung", type: "tf", diff: 2, tax: "K2"
+    id: "e08", topic: "einschraenkung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die aktuelle Meinung der Bevölkerung stellt ein legitimes öffentliches Interesse dar, das eine Grundrechtseinschränkung rechtfertigen kann.",
     correct: false,
@@ -404,7 +405,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "e09", topic: "einschraenkung", type: "mc", diff: 3, tax: "K5"
+    id: "e09", topic: "einschraenkung", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Während einer Pandemie erlässt der Bundesrat per Notverordnung ein Verbot aller öffentlichen Versammlungen von mehr als 5 Personen. Herr Müller möchte dagegen klagen.",
     q: "Prüfen Sie: Welche Grundrechte werden durch das Versammlungsverbot primär eingeschränkt?",
@@ -418,7 +419,7 @@ window.QUESTIONS = [
     explain: "Ein Versammlungsverbot greift primär in die Versammlungsfreiheit (Art. 22 BV) ein. Da Versammlungen oft der Meinungsäusserung dienen, ist auch Art. 16 BV betroffen. Zudem schränkt ein solches Verbot die allgemeine persönliche Freiheit (Art. 10 Abs. 2 BV, Bewegungsfreiheit) ein. Dass die Massnahme einen gesundheitspolitischen Zweck verfolgt, ändert nichts daran, dass Grundrechte eingeschränkt werden — es kann aber ein öffentliches Interesse (Gesundheitsschutz) begründen."
   },
   {
-    id: "e10", topic: "einschraenkung", type: "multi", diff: 3, tax: "K5"
+    id: "e10", topic: "einschraenkung", type: "multi", diff: 3, tax: "K5",
  reviewed:false,
     context: "Die Stadt Bern verbietet das Tragen von religiösen Symbolen in allen öffentlichen Gebäuden, gestützt auf eine städtische Verordnung.",
     q: "Welche Prüfpunkte gemäss Art. 36 BV sind bei dieser Massnahme problematisch? (Mehrere Antworten möglich.)",
@@ -432,7 +433,7 @@ window.QUESTIONS = [
     explain: "Alle vier Punkte sind problematisch: (1) Für einen schweren Grundrechtseingriff (Glaubensfreiheit, Art. 15 BV) genügt eine Verordnung nicht — es braucht ein formelles Gesetz im demokratischen Verfahren. (2) Ein generelles Symbolverbot in allen öffentlichen Gebäuden lässt sich kaum mit einem konkreten öffentlichen Interesse begründen. (3) Mildere Mittel (z.B. Regelung nur für bestimmte Berufsgruppen) wären möglich. (4) Ein umfassendes Verbot religiöser Symbole tangiert den Kerngehalt der Glaubens- und Gewissensfreiheit, da es die Religionsausübung weitgehend verunmöglicht."
   },
   {
-    id: "e11", topic: "einschraenkung", type: "mc", diff: 3, tax: "K4"
+    id: "e11", topic: "einschraenkung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Was gehört zum «Kerngehalt» der persönlichen Freiheit (Art. 10 BV), der gemäss Art. 36 Abs. 4 BV unter keinen Umständen angetastet werden darf?",
     options: [
@@ -445,7 +446,7 @@ window.QUESTIONS = [
     explain: "Zum unantastbaren Kerngehalt der persönlichen Freiheit gehört insbesondere das Folterverbot (Art. 10 Abs. 3 BV). Das Verbot der Folter und grausamer, unmenschlicher oder erniedrigender Behandlung darf selbst in Krisenzeiten nicht eingeschränkt werden. Die Bewegungsfreiheit oder die Reisefreiheit hingegen können unter den Voraussetzungen von Art. 36 BV eingeschränkt werden."
   },
   {
-    id: "e12", topic: "einschraenkung", type: "tf", diff: 2, tax: "K2"
+    id: "e12", topic: "einschraenkung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei der Prüfung von Grundrechtseinschränkungen muss als Erstes geprüft werden, ob überhaupt ein Grundrecht betroffen ist.",
     correct: true,
@@ -458,7 +459,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "f01", topic: "faelle", type: "mc", diff: 1, tax: "K1"
+    id: "f01", topic: "faelle", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Im Fall «Es darf weggewiesen werden» ging es um Wegweisungen aus dem Berner Bahnhof. Auf welche gesetzliche Grundlage stützte sich die Polizei?",
     options: [
@@ -471,14 +472,14 @@ window.QUESTIONS = [
     explain: "Die Polizei stützte sich auf Art. 29b (heute Art. 29) des kantonalen Polizeigesetzes des Kantons Bern. Dieser erlaubt die vorübergehende Wegweisung oder Fernhaltung von Personen unter bestimmten Voraussetzungen, etwa wenn sie die öffentliche Sicherheit und Ordnung gefährden oder stören."
   },
   {
-    id: "f02", topic: "faelle", type: "tf", diff: 1, tax: "K2"
+    id: "f02", topic: "faelle", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Im Wegweisungsfall beurteilte das Bundesgericht den Wegweisungsartikel als grundsätzlich verfassungskonform.",
     correct: true,
     explain: "Das Bundesgericht entschied mit 4 gegen 1 Stimme, dass der Berner Wegweisungsartikel grundsätzlich verfassungskonform ist. Alle fünf Richter hielten den Artikel für verfassungskonform — auch der dissentierende Richter Fonjallaz sah nur in der konkreten Anwendung auf die 13 Beschwerdeführer ein Problem, nicht im Artikel selbst."
   },
   {
-    id: "f03", topic: "faelle", type: "mc", diff: 1, tax: "K1"
+    id: "f03", topic: "faelle", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Übung handelt vom Fall einer Lehrerin, der das Tragen eines Kopftuchs im Unterricht verboten wurde?",
     options: [
@@ -493,7 +494,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "f04", topic: "faelle", type: "mc", diff: 2, tax: "K3"
+    id: "f04", topic: "faelle", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "13 Personen wurden wegen Alkoholkonsums und Störung der öffentlichen Ordnung für drei Monate aus dem Berner Bahnhof weggewiesen. Ihr Anwalt rügte die Wegweisungen als «ästhetische Säuberung» und Verstoss gegen die Bundesverfassung.",
     q: "In welches Grundrecht greifen die Wegweisungen gemäss dem Bundesgericht ein?",
@@ -507,7 +508,7 @@ window.QUESTIONS = [
     explain: "Das Bundesgericht erkannte einstimmig, dass die Wegweisungen in die Versammlungsfreiheit (Art. 22 BV) eingreifen. Einzelne Richter sahen zudem einen Eingriff in die persönliche Freiheit (Art. 10 BV). Der Eingriff wurde jedoch als «nicht sehr schwer» taxiert, da die Betroffenen lediglich den Bahnhof nicht mehr aufsuchen durften, aber weiterhin Züge nehmen und einkaufen konnten."
   },
   {
-    id: "f05", topic: "faelle", type: "multi", diff: 2, tax: "K3"
+    id: "f05", topic: "faelle", type: "multi", diff: 2, tax: "K3",
  reviewed:false,
     context: "Im Fall «Es darf weggewiesen werden» prüfte das Bundesgericht die Zulässigkeit der Grundrechtseinschränkung nach dem Schema von Art. 36 BV.",
     q: "Welche der folgenden Argumente verwendete das Bundesgericht zur Begründung der Verfassungskonformität? (Mehrere Antworten möglich.)",
@@ -521,7 +522,7 @@ window.QUESTIONS = [
     explain: "Das Bundesgericht argumentierte: (1) Art. 29b PolG BE ist zwar offen formuliert, genügt aber als gesetzliche Grundlage. (2) Das öffentliche Interesse liegt in der Störung der öffentlichen Ordnung und Sicherheit — «negative Erscheinungen» wie Belästigung von Passanten, aggressives Betteln und grosse Unordnung. (3) Befristete und örtlich begrenzte Wegweisungen sind ein geeignetes und verhältnismässiges Mittel. Der Wegweisungsartikel verstösst laut Bundesgericht nicht gegen die Menschenwürde, da die Betroffenen nicht wegen ihrer Person, sondern wegen ihres Verhaltens weggewiesen wurden."
   },
   {
-    id: "f06", topic: "faelle", type: "mc", diff: 2, tax: "K3"
+    id: "f06", topic: "faelle", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Die Lehrerin Rosalie in Genf konvertierte zum Islam und trägt seither ein Kopftuch. Die Schulleitung verbietet ihr das Tragen des Kopftuchs im Unterricht, gestützt auf das kantonale Schulgesetz, das die religiöse Neutralität der Schule festschreibt.",
     q: "Welches Grundrecht wird durch das Kopftuchverbot eingeschränkt?",
@@ -537,7 +538,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "f07", topic: "faelle", type: "mc", diff: 3, tax: "K5"
+    id: "f07", topic: "faelle", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Die Lehrerin Rosalie (Genf) klagt gegen das Kopftuchverbot im Unterricht. Die Schulleitung stützt sich auf das kantonale Schulgesetz, das die religiöse Neutralität der Schule vorschreibt.",
     q: "Prüfen Sie alle fünf Punkte von Art. 36 BV: Ist das Kopftuchverbot insgesamt verfassungskonform?",
@@ -551,7 +552,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob das Kopftuchverbot die Glaubensfreiheit (Art. 15 BV) zulässig einschränkt. Prüfung: (1) Grundrecht betroffen: Ja, Art. 15 BV (Glaubens- und Gewissensfreiheit). (2) Gesetzliche Grundlage: Ja, das kantonale Schulgesetz schreibt religiöse Neutralität vor. (3) Öffentliches Interesse: Ja, die religiöse Neutralität der öffentlichen Schule ist ein anerkanntes öffentliches Interesse. (4) Verhältnismässigkeit: Ja, das Verbot gilt nur im Unterricht; ausserhalb der Schule kann Rosalie ihr Kopftuch tragen. (5) Kerngehalt: Gewahrt, da Rosalie ihren Glauben weiterhin privat und ausserhalb der Schule ausüben kann. Schlussfolgerung: Das Verbot ist verfassungskonform. Der EGMR hat dies in einem vergleichbaren Fall (Dahlab gegen die Schweiz, 2001) bestätigt."
   },
   {
-    id: "f08", topic: "faelle", type: "multi", diff: 3, tax: "K5"
+    id: "f08", topic: "faelle", type: "multi", diff: 3, tax: "K5",
  reviewed:false,
     context: "Während der COVID-19-Pandemie erliess der Bundesrat per Notverordnung weitreichende Massnahmen: Verbot von Veranstaltungen mit mehr als 5 Personen, Schliessung von Restaurants und Geschäften, Einreisebeschränkungen und eine Maskenpflicht im öffentlichen Raum.",
     q: "Welche Grundrechte wurden durch die COVID-Massnahmen des Bundesrats eingeschränkt? (Mehrere Antworten möglich.)",
@@ -565,7 +566,7 @@ window.QUESTIONS = [
     explain: "Die COVID-Massnahmen griffen in zahlreiche Grundrechte ein: (A) Versammlungsfreiheit — durch das Verbot von Veranstaltungen und Versammlungen. (B) Wirtschaftsfreiheit — durch Schliessungen von Restaurants, Geschäften und Betrieben. (C) Persönliche Freiheit — durch Einreisebeschränkungen, Quarantänepflichten und Bewegungseinschränkungen. (D) Glaubens- und Gewissensfreiheit — durch das Verbot von Gottesdiensten und religiösen Versammlungen. Die Massnahmen waren besonders kontrovers, da sie per Notverordnung des Bundesrates erfolgten und nicht vom Parlament beschlossen wurden."
   },
   {
-    id: "f09", topic: "faelle", type: "mc", diff: 3, tax: "K5"
+    id: "f09", topic: "faelle", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Der dissentierende Bundesrichter Fonjallaz hielt im Wegweisungsfall den Art. 29b Polizeigesetz zwar für grundsätzlich verfassungskonform, rügte jedoch die konkrete Anwendung auf die 13 Beschwerdeführer.",
     q: "Was war das Hauptargument von Richter Fonjallaz gegen die Rechtfertigung der konkreten Wegweisungen?",
@@ -579,7 +580,7 @@ window.QUESTIONS = [
     explain: "Richter Fonjallaz hielt den Wegweisungsartikel grundsätzlich für verfassungskonform, kritisierte aber die Anwendung im konkreten Fall: Die polizeiliche Sachverhaltsabklärung sei ungenügend gewesen. Für Leute, die lediglich Lärm machten und Unrat produzierten, aber nicht aggressiv waren, sah er kein ausreichendes öffentliches Interesse für eine Wegweisung. Er verglich die Wegweisung mit der «Verbannung im Mittelalter» und gab zu bedenken, dass Alkoholkranke, Arbeits- und Obdachlose keinen anderen Ort hätten, um sich zu treffen."
   },
   {
-    id: "f10", topic: "faelle", type: "tf", diff: 2, tax: "K3"
+    id: "f10", topic: "faelle", type: "tf", diff: 2, tax: "K3",
  reviewed:false,
     context: "Im Berner Wegweisungsfall argumentierte der Anwalt der Betroffenen, die Wegweisungen seien eine «ästhetische Säuberung» und diskriminierten die Betroffenen aufgrund ihres Aussehens und ihrer Lebensform.",
     q: "Das Bundesgericht stellte fest, dass die Betroffenen nicht wegen eines personenspezifischen Merkmals, sondern allein wegen ihres Verhaltens weggewiesen wurden.",
@@ -587,7 +588,7 @@ window.QUESTIONS = [
     explain: "Das Bundesgericht wies den Vorwurf der Diskriminierung zurück. Bundesrichter Nay erläuterte, die Betroffenen seien nicht wegen ihrer Rasse, ihres Geschlechts, ihrer Sprache oder ihrer Lebensweise weggewiesen worden, sondern allein wegen ihres Verhaltens: Sie hatten in erheblichem Mass Alkohol konsumiert, Lärm verursacht und grosse Unordnung erzeugt, was Passanten belästigt hatte."
   },
   {
-    id: "f11", topic: "faelle", type: "mc", diff: 2, tax: "K3"
+    id: "f11", topic: "faelle", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Die Lehrerin Rosalie will im Unterricht ein Kopftuch tragen. Die Schulleitung verbietet dies unter Berufung auf die religiöse Neutralität der Schule.",
     q: "Welches Prüfkriterium von Art. 36 BV ist bei diesem Fall am ehesten umstritten?",
@@ -604,7 +605,7 @@ window.QUESTIONS = [
   // --- weitere Fragen zur Abrundung ---
 
   {
-    id: "m13", topic: "menschenrechte", type: "mc", diff: 1, tax: "K1"
+    id: "m13", topic: "menschenrechte", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie viele Artikel umfasst die Allgemeine Erklärung der Menschenrechte (AEMR)?",
     options: [
@@ -617,7 +618,7 @@ window.QUESTIONS = [
     explain: "Die AEMR umfasst eine Präambel und 30 Artikel. Sie deckt ein breites Spektrum von Rechten ab: bürgerliche und politische Rechte (Art. 1–21) sowie wirtschaftliche, soziale und kulturelle Rechte (Art. 22–27). Die letzten Artikel (Art. 28–30) regeln den Rahmen und die Grenzen der Rechte."
   },
   {
-    id: "m14", topic: "menschenrechte", type: "fill", diff: 2, tax: "K1"
+    id: "m14", topic: "menschenrechte", type: "fill", diff: 2, tax: "K1",
  reviewed:false,
     q: "Gemäss Art. 3 AEMR hat jeder das Recht auf {0}, {1} und Sicherheit der Person.",
     blanks: [
@@ -627,7 +628,7 @@ window.QUESTIONS = [
     explain: "Art. 3 AEMR: «Jeder hat das Recht auf Leben, Freiheit und Sicherheit der Person.» Dieser Artikel gehört zu den fundamentalsten Menschenrechten und bildet die Grundlage für zahlreiche weitere Rechte."
   },
   {
-    id: "g12", topic: "grundrechte_bv", type: "fill", diff: 1, tax: "K1"
+    id: "g12", topic: "grundrechte_bv", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Grundrechte der Schweiz stehen im {0}. Titel der Bundesverfassung, unter dem Namen «Grundrechte, {1} und Sozialziele».",
     blanks: [
@@ -637,7 +638,7 @@ window.QUESTIONS = [
     explain: "Der 2. Titel der BV trägt die Überschrift «Grundrechte, Bürgerrechte und Sozialziele» und umfasst die Art. 7–41 BV. Die Grundrechte (Art. 7–34) stehen allen Menschen zu, die Bürgerrechte (Art. 34–40) nur Schweizer Staatsangehörigen."
   },
   {
-    id: "e13", topic: "einschraenkung", type: "fill", diff: 1, tax: "K1"
+    id: "e13", topic: "einschraenkung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Grundrechtseinschränkungen müssen gemäss Art. 36 Abs. 3 BV {0} sein.",
     blanks: [
@@ -646,14 +647,14 @@ window.QUESTIONS = [
     explain: "Art. 36 Abs. 3 BV: «Einschränkungen von Grundrechten müssen verhältnismässig sein.» Die Verhältnismässigkeit verlangt, dass die Massnahme geeignet ist und dass der Eingriff in einem angemessenen Verhältnis zum verfolgten Zweck steht."
   },
   {
-    id: "f12", topic: "faelle", type: "tf", diff: 1, tax: "K2"
+    id: "f12", topic: "faelle", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Im Berner Wegweisungsfall ging es um Personen, die aus dem Berner Bahnhof weggewiesen wurden, weil sie in erheblichem Mass Alkohol konsumiert und die öffentliche Ordnung gestört hatten.",
     correct: true,
     explain: "Gemäss Polizeiangaben hatte die Gruppe bei den Steinen im Bahnhof «in erheblichem Mass dem Alkohol zugesprochen», es hatte Lärm und grosse Unordnung geherrscht, und zahlreiche Passanten hatten am Verhalten der Gruppe Anstoss genommen. Die Polizei verbot darauf den 13 Leuten für drei Monate, sich im Bahnhofsbereich in Personenansammlungen aufzuhalten, in welchen Alkohol konsumiert wird."
   },
   {
-    id: "e14", topic: "einschraenkung", type: "mc", diff: 3, tax: "K4"
+    id: "e14", topic: "einschraenkung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welches der folgenden Beispiele illustriert die polizeiliche Generalklausel korrekt?",
     options: [
@@ -666,7 +667,7 @@ window.QUESTIONS = [
     explain: "Die polizeiliche Generalklausel erlaubt Grundrechtseinschränkungen ohne spezifische gesetzliche Grundlage bei ernster, unmittelbarer und nicht anders abwendbarer Gefahr. Ein Erdbeben mit Einsturzgefahr ist ein klassisches Beispiel: Die Evakuierung greift in die persönliche Freiheit und das Eigentumsrecht ein, ist aber wegen der akuten Gefahr auch ohne spezifische Rechtsgrundlage zulässig. Routinekontrollen (B) erfordern hingegen eine ordentliche gesetzliche Grundlage."
   },
   {
-    id: "g13", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2"
+    id: "g13", topic: "grundrechte_bv", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Art. 8 BV garantiert die Rechtsgleichheit. Was bedeutet das Diskriminierungsverbot in Art. 8 Abs. 2 BV?",
     options: [
@@ -679,14 +680,14 @@ window.QUESTIONS = [
     explain: "Art. 8 Abs. 2 BV enthält ein qualifiziertes Diskriminierungsverbot: Es verbietet Ungleichbehandlungen, die an bestimmte verpönte Merkmale anknüpfen (Herkunft, Geschlecht, Alter, Sprache, Behinderung etc.). Dies bedeutet nicht, dass alle Gesetze identisch sein müssen — sachlich begründete Unterscheidungen sind erlaubt. Aber Benachteiligungen aufgrund der genannten Merkmale sind verboten."
   },
   {
-    id: "m15", topic: "menschenrechte", type: "tf", diff: 2, tax: "K2"
+    id: "m15", topic: "menschenrechte", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Art. 5 AEMR verbietet Folter und grausame, unmenschliche oder erniedrigende Behandlung oder Strafe — dieses Recht gilt absolut und darf nicht eingeschränkt werden.",
     correct: true,
     explain: "Das Folterverbot gehört zu den sogenannten notstandsfesten Menschenrechten: Es darf unter keinen Umständen eingeschränkt oder aufgehoben werden, auch nicht in Krisenzeiten oder bei Bedrohung der nationalen Sicherheit. In der schweizerischen BV entspricht dies dem Kerngehalt der persönlichen Freiheit (Art. 10 Abs. 3 BV), der gemäss Art. 36 Abs. 4 BV unantastbar ist."
   },
   {
-    id: "f13", topic: "faelle", type: "mc", diff: 3, tax: "K5"
+    id: "f13", topic: "faelle", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Während der COVID-19-Pandemie wehrten sich verschiedene Gruppen gegen die Grundrechtseinschränkungen durch den Bundesrat. Es kam zu Demonstrationen gegen die Massnahmen, die teilweise verboten wurden.",
     q: "Warum waren die Grundrechtseinschränkungen durch den Bundesrat während der COVID-19-Pandemie besonders kontrovers?",

@@ -5,6 +5,7 @@
 // Version 3: Erweiterung um 14 Fragen zu Steuerparadiesen (Topic «wettbewerb»), 1 neues SVG
 
 window.POOL_META = {
+  id: "vwl_steuern",
   "id": "vwl_steuern",
   "fach": "VWL",
   "title": "Übungspool: Steuern und Staatseinnahmen",

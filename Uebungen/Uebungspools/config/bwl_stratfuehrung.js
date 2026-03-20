@@ -5,6 +5,7 @@
 // ============================================================
 
 window.POOL_META = {
+  id: "bwl_stratfuehrung",
   title: "Strategische Unternehmensführung",
   fach: "BWL",
   color: "#01a9f4",
@@ -33,7 +34,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "e01", topic: "einfuehrung", type: "mc", diff: 1, tax: "K1"
+    id: "e01", topic: "einfuehrung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist die zentrale Aufgabe der strategischen Unternehmensführung?",
     options: [
@@ -46,14 +47,14 @@ window.QUESTIONS = [
     explain: "Die strategische Unternehmensführung ist für die Gesamtkoordination und -steuerung verantwortlich. Sie denkt langfristig und sichert den Erfolg auf lange Sicht. Die anderen Optionen beschreiben operative Aufgaben."
   },
   {
-    id: "e02", topic: "einfuehrung", type: "tf", diff: 1, tax: "K1"
+    id: "e02", topic: "einfuehrung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die strategische Unternehmensführung ist den betrieblichen Funktionen wie Marketing oder Produktion übergeordnet.",
     correct: true,
     explain: "Die strategische Unternehmensführung bestimmt die längerfristigen (strategischen) Ziele und koordiniert die verschiedenen Funktionsbereiche auf diese Ziele hin."
   },
   {
-    id: "e03", topic: "einfuehrung", type: "fill", diff: 1, tax: "K1"
+    id: "e03", topic: "einfuehrung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die strategische Planung erfolgt als Prozess in {0} aufeinanderfolgenden Schritten.",
     blanks: [
@@ -62,7 +63,7 @@ window.QUESTIONS = [
     explain: "Die strategische Planung umfasst vier Schritte: 1. Analyse der Ausgangslage, 2. Entwicklung der Unternehmensstrategie, 3. Umsetzung der Strategie, 4. Evaluation."
   },
   {
-    id: "e04", topic: "einfuehrung", type: "mc", diff: 2, tax: "K2"
+    id: "e04", topic: "einfuehrung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Reihenfolge beschreibt den Prozess der strategischen Planung korrekt?",
     options: [
@@ -76,7 +77,7 @@ window.QUESTIONS = [
     explain: "Der Prozess beginnt mit der Analyse der Ausgangslage (intern und extern), darauf folgt die Entwicklung der Strategie, dann deren Umsetzung und schliesslich die Evaluation. Werte, Vision und Leitbild bilden den Mittelpunkt."
   },
   {
-    id: "e05", topic: "einfuehrung", type: "multi", diff: 2, tax: "K2"
+    id: "e05", topic: "einfuehrung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zur strategischen Unternehmensführung treffen zu? (Mehrere Antworten möglich.)",
     options: [
@@ -89,14 +90,14 @@ window.QUESTIONS = [
     explain: "Die strategische Planung ist langfristig und wiederholt sich. Werte, Vision und Leitbild bilden den Orientierungspunkt. Sie befasst sich gerade nicht mit dem Tagesgeschäft (C ist falsch), sondern mit der langfristigen Ausrichtung."
   },
   {
-    id: "e06", topic: "einfuehrung", type: "tf", diff: 2, tax: "K2"
+    id: "e06", topic: "einfuehrung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Prozess der strategischen Planung ist linear und wird nur einmal durchlaufen.",
     correct: false,
     explain: "Die strategische Planung ist ein zyklischer Prozess. Die Resultate der Evaluation fliessen wieder in den Prozess ein, wenn die strategische Planung von Neuem beginnt."
   },
   {
-    id: "e07", topic: "einfuehrung", type: "mc", diff: 2, tax: "K2"
+    id: "e07", topic: "einfuehrung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was versteht man unter «digitaler Transformation» im Kontext der strategischen Unternehmensführung?",
     options: [
@@ -109,7 +110,7 @@ window.QUESTIONS = [
     explain: "Digitale Transformation geht über einzelne IT-Massnahmen hinaus. Sie umfasst die grundlegende Veränderung von Organisation und Geschäftsmodell aufgrund der Digitalisierung — z.B. neue Produkte, neue Geschäftsfelder, neue Formen der Marktbearbeitung."
   },
   {
-    id: "e08", topic: "einfuehrung", type: "mc", diff: 3, tax: "K4"
+    id: "e08", topic: "einfuehrung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Eine Schule stellt ihre Notenverwaltung auf ein Online-System um und bietet Prüfungen via Webshop auch externen Personen an. Welche Stufe der Digitalisierung wird damit erreicht?",
     options: [
@@ -122,7 +123,7 @@ window.QUESTIONS = [
     explain: "Die Notenverwaltung online ist eine digitale Vernetzung bestehender Prozesse. Aber der Verkauf von Prüfungen an externe Personen über einen Webshop eröffnet ein völlig neues Geschäftsfeld — das entspricht der digitalen Transformation."
   },
   {
-    id: "e09", topic: "einfuehrung", type: "tf", diff: 3, tax: "K5"
+    id: "e09", topic: "einfuehrung", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein Unternehmen ohne ausformulierte Strategie kann langfristig trotzdem erfolgreich sein, weil die Unternehmensleitung intuitiv richtig entscheidet.",
     correct: false,
@@ -134,7 +135,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "g01", topic: "grundsaetze", type: "mc", diff: 1, tax: "K1"
+    id: "g01", topic: "grundsaetze", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was beschreibt eine Unternehmensvision?",
     options: [
@@ -147,7 +148,7 @@ window.QUESTIONS = [
     explain: "Die Vision beschreibt das gewünschte Zukunftsbild des Unternehmens — wohin es sich langfristig entwickeln will. Sie dient als Orientierung für alle strategischen Entscheidungen."
   },
   {
-    id: "g02", topic: "grundsaetze", type: "fill", diff: 1, tax: "K1"
+    id: "g02", topic: "grundsaetze", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein {0} enthält die Grundwerte und -prinzipien eines Unternehmens und dient als Orientierungshilfe für alle Beteiligten.",
     blanks: [
@@ -156,14 +157,14 @@ window.QUESTIONS = [
     explain: "Das Leitbild (auch Unternehmensleitbild) formuliert die Grundwerte und -prinzipien eines Unternehmens. Es dient intern und extern als Orientierung."
   },
   {
-    id: "g03", topic: "grundsaetze", type: "tf", diff: 1, tax: "K2"
+    id: "g03", topic: "grundsaetze", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Corporate Social Responsibility (CSR) bedeutet, dass Unternehmen Verantwortung gegenüber Gesellschaft und Umwelt wahrnehmen.",
     correct: true,
     explain: "CSR umfasst die freiwillige Übernahme gesellschaftlicher und ökologischer Verantwortung durch Unternehmen — über die gesetzlichen Pflichten hinaus."
   },
   {
-    id: "g04", topic: "grundsaetze", type: "multi", diff: 2, tax: "K2"
+    id: "g04", topic: "grundsaetze", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aspekte gehören zur Corporate Social Responsibility? (Mehrere Antworten möglich.)",
     options: [
@@ -176,7 +177,7 @@ window.QUESTIONS = [
     explain: "CSR umfasst faire Arbeitsbedingungen, Menschenrechte, Umweltschutz, fairen Wettbewerb, Transparenz und Konsumenteninteressen. Die reine Profitmaximierung ohne Rücksicht auf diese Aspekte widerspricht dem CSR-Gedanken."
   },
   {
-    id: "g05", topic: "grundsaetze", type: "mc", diff: 2, tax: "K2"
+    id: "g05", topic: "grundsaetze", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welches Instrument wird eingesetzt, wenn ein Unternehmen einen verbindlichen Verhaltenskodex für alle Führungsstufen einführt?",
     options: [
@@ -189,7 +190,7 @@ window.QUESTIONS = [
     explain: "Ein Code of Conduct (Verhaltenskodex) legt Handlungsrichtlinien für alle Ebenen fest. Er wird im Rahmen der Führung und in Mitarbeitergesprächen verankert und überprüft."
   },
   {
-    id: "g06", topic: "grundsaetze", type: "multi", diff: 2, tax: "K2"
+    id: "g06", topic: "grundsaetze", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Instrumente dienen der Umsetzung von CSR-Zielen? (Mehrere Antworten möglich.)",
     options: [
@@ -202,7 +203,7 @@ window.QUESTIONS = [
     explain: "Gütesiegel, Sponsoring und Nachhaltigkeitsberichte sind typische CSR-Instrumente. Eine aggressive Preisstrategie ist eine Wettbewerbsstrategie, die nichts mit CSR zu tun hat."
   },
   {
-    id: "g07", topic: "grundsaetze", type: "mc", diff: 3, tax: "K5"
+    id: "g07", topic: "grundsaetze", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein Ölkonzern veröffentlicht einen aufwendigen Nachhaltigkeitsbericht, investiert aber gleichzeitig Milliarden in neue Ölfelder. Wie ist dieses Verhalten aus CSR-Perspektive zu bewerten?",
     options: [
@@ -215,14 +216,14 @@ window.QUESTIONS = [
     explain: "CSR wird kritisch diskutiert, wenn Unternehmen es primär zur Verbesserung des Images oder zur Verhinderung neuer staatlicher Regulierungen einsetzen. Wenn die Kernstrategie den CSR-Zielen widerspricht, spricht man von Greenwashing."
   },
   {
-    id: "g08", topic: "grundsaetze", type: "tf", diff: 3, tax: "K4"
+    id: "g08", topic: "grundsaetze", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "CSR dient ausschliesslich der Verbesserung der Welt und hat keinen wirtschaftlichen Nutzen für das Unternehmen.",
     correct: false,
     explain: "CSR kann sich auch wirtschaftlich auszahlen: Durch verantwortungsvolles Handeln steigt das Ansehen bei Konsumenten, Investoren und Medien. Negative Berichte können sich via soziale Medien schnell verbreiten und dem Unternehmen schaden. CSR ist also auch ökonomisch sinnvoll."
   },
   {
-    id: "g09", topic: "grundsaetze", type: "mc", diff: 3, tax: "K4"
+    id: "g09", topic: "grundsaetze", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Anspruchsgruppen haben gemäss Lehrbuch beim Thema CSR unterschiedliche Interessen?",
     options: [
@@ -240,7 +241,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "i01", topic: "analyse_intern", type: "mc", diff: 1, tax: "K1"
+    id: "i01", topic: "analyse_intern", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist das Ziel der Unternehmensanalyse?",
     options: [
@@ -253,7 +254,7 @@ window.QUESTIONS = [
     explain: "Die Unternehmensanalyse durchleuchtet die internen Rahmenbedingungen. Ziel ist es, die Fähigkeiten zu bestimmen, die das Unternehmen von anderen abheben — sogenannte strategische Erfolgspotenziale."
   },
   {
-    id: "i02", topic: "analyse_intern", type: "fill", diff: 1, tax: "K1"
+    id: "i02", topic: "analyse_intern", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Fähigkeiten und Kompetenzen, die es einem Unternehmen erlauben, im Vergleich zur Konkurrenz dauerhaft vorhandene Stärken aufzubauen, nennt man strategische {0}.",
     blanks: [
@@ -262,14 +263,14 @@ window.QUESTIONS = [
     explain: "Strategische Erfolgspotenziale sind Fähigkeiten und Kompetenzen, die dauerhaft Wettbewerbsvorteile gegenüber der Konkurrenz ermöglichen."
   },
   {
-    id: "i03", topic: "analyse_intern", type: "tf", diff: 1, tax: "K2"
+    id: "i03", topic: "analyse_intern", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Bei der Fähigkeitsanalyse vergleicht ein Unternehmen seine Leistungen mit denen eines Hauptkonkurrenten.",
     correct: true,
     explain: "Die Fähigkeitsanalyse zeigt auf, in welchen Bereichen das Unternehmen gegenüber einem Hauptkonkurrenten Stärken besitzt und wo es Schwächen hat. Die Einschätzungen sollten möglichst mit objektiven Daten gestützt werden."
   },
   {
-    id: "i04", topic: "analyse_intern", type: "multi", diff: 2, tax: "K2"
+    id: "i04", topic: "analyse_intern", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Bereiche werden in einer Fähigkeitsanalyse typischerweise untersucht? (Mehrere Antworten möglich.)",
     options: [
@@ -283,7 +284,7 @@ window.QUESTIONS = [
     explain: "Die Fähigkeitsanalyse untersucht interne Bereiche: Marketing, Produktion, F&E, Finanzen, Personal, Führung, Innovationsfähigkeit, Know-how und Synergien. Politische Rahmenbedingungen (C) gehören zur externen Umweltanalyse."
   },
   {
-    id: "i05", topic: "analyse_intern", type: "mc", diff: 2, tax: "K3"
+    id: "i05", topic: "analyse_intern", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Unternehmen stellt fest, dass seine Produktionsanlagen moderner sind als die des Hauptkonkurrenten, aber der Kundenservice schlechter bewertet wird. Was zeigt die Fähigkeitsanalyse?",
     options: [
@@ -296,14 +297,14 @@ window.QUESTIONS = [
     explain: "Die Fähigkeitsanalyse vergleicht mit dem Hauptkonkurrenten: Moderne Anlagen = Stärke bei Produktion, schlechterer Kundenservice = Schwäche im Bereich Marketing/Service. Chancen und Gefahren (C, D) gehören zur Umweltanalyse."
   },
   {
-    id: "i06", topic: "analyse_intern", type: "tf", diff: 2, tax: "K2"
+    id: "i06", topic: "analyse_intern", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Erfolgspotenzial wird erst dann zum echten Wettbewerbsvorteil, wenn es durch nachgelagerte Funktionen wie Leistungserstellung oder Marketing gewinnbringend umgesetzt wird.",
     correct: true,
     explain: "Ein Erfolgspotenzial allein genügt nicht. Es muss durch die nachgelagerten betrieblichen Funktionen (Produktion, Marketing, Vertrieb) in einen tatsächlichen Wettbewerbsvorteil am Markt umgesetzt werden."
   },
   {
-    id: "i07", topic: "analyse_intern", type: "mc", diff: 3, tax: "K4"
+    id: "i07", topic: "analyse_intern", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Softwareunternehmen hat hervorragende Programmierer (Know-how), aber eine veraltete Website und kaum Social-Media-Präsenz. Welche strategische Schlussfolgerung lässt die Fähigkeitsanalyse zu?",
     options: [
@@ -316,7 +317,7 @@ window.QUESTIONS = [
     explain: "Die Fähigkeitsanalyse zeigt eine klare Stärke (Know-how bei F&E) und eine klare Schwäche (Marketing). Das Potenzial wird nicht voll genutzt, weil die nachgelagerte Funktion Marketing das Produkt nicht ausreichend am Markt positioniert."
   },
   {
-    id: "i08", topic: "analyse_intern", type: "mc", diff: 3, tax: "K5"
+    id: "i08", topic: "analyse_intern", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Warum sollten die Einschätzungen einer Fähigkeitsanalyse möglichst mit objektiven Daten gestützt werden?",
     options: [
@@ -334,7 +335,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "x01", topic: "analyse_extern", type: "mc", diff: 1, tax: "K1"
+    id: "x01", topic: "analyse_extern", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wer hat das Fünf-Kräfte-Modell zur Analyse der Wettbewerbsintensität entwickelt?",
     options: [
@@ -347,7 +348,7 @@ window.QUESTIONS = [
     explain: "Michael Porter entwickelte das Fünf-Kräfte-Modell (Five Forces), mit dem die Wettbewerbsintensität eines Marktes analysiert wird."
   },
   {
-    id: "x02", topic: "analyse_extern", type: "fill", diff: 1, tax: "K1"
+    id: "x02", topic: "analyse_extern", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Umweltanalyse untersucht die {0} Rahmenbedingungen eines Unternehmens.",
     blanks: [
@@ -356,7 +357,7 @@ window.QUESTIONS = [
     explain: "Im Gegensatz zur Unternehmensanalyse (intern) untersucht die Umweltanalyse die externen Rahmenbedingungen — also alles ausserhalb des Unternehmens: Markt, Konkurrenz, Trends, gesetzliche Entwicklungen."
   },
   {
-    id: "x03", topic: "analyse_extern", type: "multi", diff: 1, tax: "K1"
+    id: "x03", topic: "analyse_extern", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche der folgenden gehören zu den fünf Wettbewerbskräften nach Porter? (Mehrere Antworten möglich.)",
     options: [
@@ -370,7 +371,7 @@ window.QUESTIONS = [
     explain: "Die fünf Kräfte sind: 1. Bestehende Rivalität, 2. Verhandlungsmacht der Kunden, 3. Verhandlungsmacht der Lieferanten, 4. Gefahr potenzieller neuer Konkurrenten, 5. Gefahr durch Ersatzprodukte. Die technologische Umweltsphäre (C) gehört zum Unternehmensmodell, nicht zu Porter."
   },
   {
-    id: "x04", topic: "analyse_extern", type: "mc", diff: 2, tax: "K2"
+    id: "x04", topic: "analyse_extern", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was misst die «Verhandlungsmacht der Kunden» im Fünf-Kräfte-Modell?",
     options: [
@@ -383,7 +384,7 @@ window.QUESTIONS = [
     explain: "Die Verhandlungsmacht der Kunden beschreibt, ob Kunden Preisdruck ausüben können und wie leicht sie zur Konkurrenz wechseln können. Je höher die Verhandlungsmacht, desto schwieriger ist es für das Unternehmen, hohe Preise durchzusetzen."
   },
   {
-    id: "x05", topic: "analyse_extern", type: "mc", diff: 2, tax: "K3"
+    id: "x05", topic: "analyse_extern", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "In einem Markt mit vielen Anbietern standardisierter Produkte und niedrigen Eintrittsbarrieren — welche Wettbewerbskraft ist besonders hoch?",
     options: [
@@ -396,14 +397,14 @@ window.QUESTIONS = [
     explain: "Viele Anbieter mit ähnlichen Produkten führen zu hoher Rivalität. Zudem erleichtern niedrige Eintrittsbarrieren den Markteintritt neuer Konkurrenten, was die Intensität weiter steigert."
   },
   {
-    id: "x06", topic: "analyse_extern", type: "tf", diff: 2, tax: "K2"
+    id: "x06", topic: "analyse_extern", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Je stärker der Konkurrenzkampf in einem Markt, desto attraktiver ist dieser Markt für Unternehmen.",
     correct: false,
     explain: "Es ist umgekehrt: Je stärker der Konkurrenzkampf, desto grösser ist der Preisdruck und desto weniger attraktiv ist der Markt. Ein intensiver Wettbewerb drückt die Margen und erschwert es, Gewinne zu erzielen."
   },
   {
-    id: "x07", topic: "analyse_extern", type: "mc", diff: 3, tax: "K4"
+    id: "x07", topic: "analyse_extern", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Die Migros steht im Schweizer Detailhandel im Wettbewerb mit Coop, Aldi, Lidl und Onlineanbietern. Warum ist die Verhandlungsmacht der Lieferanten gegenüber der Migros eher gering?",
     options: [
@@ -416,7 +417,7 @@ window.QUESTIONS = [
     explain: "Die Migros ist eine der grössten Abnehmerin im Schweizer Detailhandel. Ihre Grösse gibt ihr starke Verhandlungsposition gegenüber den Lieferanten — sie kann Preise und Konditionen mitbestimmen. Dies führt teilweise zu Protesten (z.B. Bauernproteste)."
   },
   {
-    id: "x08", topic: "analyse_extern", type: "mc", diff: 3, tax: "K4"
+    id: "x08", topic: "analyse_extern", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Netflix war ursprünglich ein DVD-Verleih per Post. Welche der fünf Kräfte nach Porter beschreibt die Bedrohung, die Netflix für traditionelle Videotheken darstellte?",
     options: [
@@ -429,7 +430,7 @@ window.QUESTIONS = [
     explain: "Netflix als Online-Streaming-Dienst war ein Ersatzprodukt für den klassischen Videoverleih. Es ersetzte die bestehende Dienstleistung durch eine technologisch neue Lösung — genau das beschreibt die «Gefahr durch Ersatzprodukte» im Porter-Modell."
   },
   {
-    id: "x09", topic: "analyse_extern", type: "tf", diff: 3, tax: "K5"
+    id: "x09", topic: "analyse_extern", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Hohe Eintrittsbarrieren in einem Markt schützen bestehende Unternehmen, weil die Gefahr potenzieller neuer Konkurrenten dadurch sinkt.",
     correct: true,
@@ -441,7 +442,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "s01", topic: "swot", type: "fill", diff: 1, tax: "K1"
+    id: "s01", topic: "swot", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "SWOT steht für: S = {0}, W = {1}, O = {2}, T = {3}.",
     blanks: [
@@ -453,7 +454,7 @@ window.QUESTIONS = [
     explain: "SWOT steht für Strengths (Stärken), Weaknesses (Schwächen), Opportunities (Chancen) und Threats (Gefahren). Stärken und Schwächen betreffen das Unternehmen selbst, Chancen und Gefahren das Umfeld."
   },
   {
-    id: "s02", topic: "swot", type: "mc", diff: 1, tax: "K2"
+    id: "s02", topic: "swot", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Welcher Teil der SWOT-Analyse bezieht sich auf das Unternehmen selbst (intern)?",
     options: [
@@ -466,14 +467,14 @@ window.QUESTIONS = [
     explain: "Stärken (Strengths) und Schwächen (Weaknesses) beziehen sich auf das Unternehmen selbst — sie stammen aus der Unternehmensanalyse. Chancen und Gefahren stammen aus dem Marktumfeld (Umweltanalyse)."
   },
   {
-    id: "s03", topic: "swot", type: "tf", diff: 1, tax: "K2"
+    id: "s03", topic: "swot", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Die SWOT-Analyse kombiniert die interne und die externe Sicht auf ein Unternehmen.",
     correct: true,
     explain: "Die SWOT-Analyse ist eine strategische Analyse, die die Ergebnisse der Unternehmensanalyse (Stärken/Schwächen) und der Umweltanalyse (Chancen/Gefahren) zusammenführt."
   },
   {
-    id: "s04", topic: "swot", type: "mc", diff: 2, tax: "K2"
+    id: "s04", topic: "swot", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist das Ziel der Kombination «Stärken treffen auf Chancen» in der SWOT-Matrix?",
     options: [
@@ -486,7 +487,7 @@ window.QUESTIONS = [
     explain: "Wenn Stärken auf Chancen treffen, ist das der Idealfall: Das Unternehmen kann seine vorhandenen Stärken nutzen, um die sich bietenden Chancen optimal auszuschöpfen."
   },
   {
-    id: "s05", topic: "swot", type: "mc", diff: 2, tax: "K2"
+    id: "s05", topic: "swot", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Kombination in der SWOT-Matrix ist die gefährlichste für ein Unternehmen?",
     options: [
@@ -499,7 +500,7 @@ window.QUESTIONS = [
     explain: "Wenn Schwächen auf Gefahren treffen, ist das die gefährlichste Kombination. Das Unternehmen muss gleichzeitig Schwächen abbauen und Gefahren verringern — sonst drohen ernsthafte Probleme."
   },
   {
-    id: "s06", topic: "swot", type: "multi", diff: 2, tax: "K3"
+    id: "s06", topic: "swot", type: "multi", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Softdrinkhersteller hat einen guten Zugang zu Cafés und Tankstellen (Stärke) und ein qualitativ gutes Produkt (Stärke), aber hohe Produktionskosten (Schwäche) und schwaches Marketing (Schwäche). Welche sind Schwächen? (Mehrere Antworten möglich.)",
     options: [
@@ -512,7 +513,7 @@ window.QUESTIONS = [
     explain: "Hohe Produktionskosten (und dadurch hoher Preis) sowie schwaches Marketing sind interne Schwächen. Der gute Zugang zu Verkaufsstellen und die Produktqualität sind hingegen Stärken."
   },
   {
-    id: "s07", topic: "swot", type: "mc", diff: 3, tax: "K4"
+    id: "s07", topic: "swot", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Softdrinkhersteller hat die Schwäche «hohe Produktionskosten» und die Chance «Konsumenten kaufen vermehrt unterwegs ein». Welche strategische Handlung empfiehlt die SWOT-Logik?",
     options: [
@@ -525,14 +526,14 @@ window.QUESTIONS = [
     explain: "Bei der Kombination «Schwächen treffen auf Chancen» sollen Schwächen abgebaut oder in Stärken verwandelt werden, um die Chancen nutzen zu können. Hier: Produktionskosten senken, um vom Trend «Einkauf unterwegs» profitieren zu können."
   },
   {
-    id: "s08", topic: "swot", type: "tf", diff: 3, tax: "K5"
+    id: "s08", topic: "swot", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Eine SWOT-Analyse ist nur dann sinnvoll, wenn sie auf einer fundierten Unternehmens- und Umweltanalyse basiert.",
     correct: true,
     explain: "Die SWOT-Analyse ist eine Zusammenführung der Ergebnisse aus der internen und externen Analyse. Ohne fundierte Datengrundlage (z.B. Fähigkeitsanalyse, Fünf-Kräfte-Modell) wäre die SWOT nur oberflächlich und könnte zu Fehlentscheidungen führen."
   },
   {
-    id: "s09", topic: "swot", type: "mc", diff: 3, tax: "K4"
+    id: "s09", topic: "swot", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Auf der Basis der SWOT-Analyse wird die Unternehmensstrategie entwickelt. Was sollte die Strategie idealerweise bewirken?",
     options: [
@@ -550,7 +551,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "t01", topic: "strategie", type: "multi", diff: 1, tax: "K1"
+    id: "t01", topic: "strategie", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Unternehmensziele lassen sich in drei Kategorien einteilen. Welche? (Mehrere Antworten möglich.)",
     options: [
@@ -563,7 +564,7 @@ window.QUESTIONS = [
     explain: "Unternehmensziele werden in drei Kategorien gegliedert: leistungswirtschaftlich (Marktanteil, Produkte), finanzwirtschaftlich (Gewinn, Rendite, Liquidität) und sozial/ökologisch (Mitarbeitende, Umwelt)."
   },
   {
-    id: "t02", topic: "strategie", type: "mc", diff: 1, tax: "K1"
+    id: "t02", topic: "strategie", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Von wem stammt die Produkt-Markt-Matrix?",
     options: [
@@ -576,7 +577,7 @@ window.QUESTIONS = [
     explain: "Die Produkt-Markt-Matrix wurde von Harry Ansoff entwickelt. Sie zeigt vier Strategiemöglichkeiten, je nachdem ob bestehende oder neue Produkte auf bestehenden oder neuen Märkten angeboten werden."
   },
   {
-    id: "t03", topic: "strategie", type: "fill", diff: 1, tax: "K1"
+    id: "t03", topic: "strategie", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Bei der {0} werden bestehende Märkte mit bisherigen Produkten intensiver bearbeitet, z.B. durch verstärktes Marketing.",
     blanks: [
@@ -585,7 +586,7 @@ window.QUESTIONS = [
     explain: "Marktdurchdringung (Ansoff) bedeutet: Bestehende Produkte auf bestehenden Märkten intensiver verkaufen — z.B. durch mehr Werbung, Aktionen oder besseren Service, um Marktanteile zu gewinnen."
   },
   {
-    id: "t04", topic: "strategie", type: "mc", diff: 2, tax: "K2"
+    id: "t04", topic: "strategie", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Unternehmen bringt ein völlig neues Produkt auf einen Markt, den es noch nicht bearbeitet hat. Welche Ansoff-Strategie verfolgt es?",
     options: [
@@ -599,7 +600,7 @@ window.QUESTIONS = [
     explain: "Diversifikation = neues Produkt + neuer Markt. Die riskanteste Strategie nach Ansoff, da weder Produkt- noch Markterfahrung vorhanden ist."
   },
   {
-    id: "t05", topic: "strategie", type: "multi", diff: 2, tax: "K2"
+    id: "t05", topic: "strategie", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche drei Formen der Diversifikation werden unterschieden? (Mehrere Antworten möglich.)",
     options: [
@@ -612,7 +613,7 @@ window.QUESTIONS = [
     explain: "Es werden drei Formen unterschieden: Horizontal (neue Produkte im Zusammenhang mit bisherigen), vertikal (Übernahme von vor-/nachgelagerten Stufen) und lateral (völlig neues Geschäftsfeld ohne Zusammenhang). Diagonale Diversifikation (D) gibt es als Fachbegriff nicht."
   },
   {
-    id: "t06", topic: "strategie", type: "mc", diff: 2, tax: "K3"
+    id: "t06", topic: "strategie", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Victorinox stellt neben Messern neu auch Uhren, Reisegepäck und Parfüms her. Welche Form der Diversifikation liegt vor?",
     options: [
@@ -625,7 +626,7 @@ window.QUESTIONS = [
     explain: "Victorinox erweitert sein Sortiment mit Produkten, die thematisch im Zusammenhang mit der Marke stehen (Swiss Quality, Lifestyle). Es handelt sich um horizontale Diversifikation, da Synergien mit dem bisherigen Markenimage genutzt werden können."
   },
   {
-    id: "t07", topic: "strategie", type: "mc", diff: 2, tax: "K2"
+    id: "t07", topic: "strategie", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was versteht man unter einer Differenzierungsstrategie nach Porter?",
     options: [
@@ -638,7 +639,7 @@ window.QUESTIONS = [
     explain: "Bei der Differenzierungsstrategie versucht ein Unternehmen, sich durch einzigartige Produkteigenschaften (USP) oder einzigartige Kommunikation (UAP) von der Konkurrenz abzuheben und so dem Preiswettbewerb zu entkommen."
   },
   {
-    id: "t08", topic: "strategie", type: "fill", diff: 2, tax: "K1"
+    id: "t08", topic: "strategie", type: "fill", diff: 2, tax: "K1",
  reviewed:false,
     q: "USP steht für {0} und beschreibt ein einmaliges Verkaufsargument basierend auf Produkteigenschaften.",
     blanks: [
@@ -647,7 +648,7 @@ window.QUESTIONS = [
     explain: "USP (Unique Selling Proposition) = einmaliges Verkaufsargument. Es basiert auf herausragenden Eigenschaften des Produkts oder der Dienstleistung (z.B. besonderes Design, lange Lebensdauer, besonderer Service)."
   },
   {
-    id: "t09", topic: "strategie", type: "mc", diff: 3, tax: "K4"
+    id: "t09", topic: "strategie", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Red Bull differenziert sich nicht primär über Produkteigenschaften, sondern über seine Verbindung mit Extremsport-Events. Welche Art der Differenzierung liegt vor?",
     options: [
@@ -660,7 +661,7 @@ window.QUESTIONS = [
     explain: "Red Bull setzt auf eine UAP (Unique Advertising Proposition) — ein einmaliges Kommunikationsargument. Die Verbindung mit Extremsport schafft ein emotionales Image, das sich von der Konkurrenz abhebt, obwohl das Produkt (Energydrink) an sich austauschbar wäre."
   },
   {
-    id: "t10", topic: "strategie", type: "mc", diff: 3, tax: "K4"
+    id: "t10", topic: "strategie", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Aldi, Denner und Lidl verfolgen eine aggressive Preisstrategie. Welche Voraussetzung ist dafür zwingend nötig?",
     options: [
@@ -673,7 +674,7 @@ window.QUESTIONS = [
     explain: "Eine aggressive Preisstrategie (Kostenführerschaft) kann nur von Unternehmen verfolgt werden, die ihre Kosten dauerhaft tief halten können. Sonst verkauft man unter den Herstellkosten und macht Verlust. Discounter erreichen dies durch Standardisierung, hohe Stückzahlen und schlanke Prozesse."
   },
   {
-    id: "t11", topic: "strategie", type: "tf", diff: 3, tax: "K5"
+    id: "t11", topic: "strategie", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Bei einer Nischenstrategie kann auch ein kleines Unternehmen gegen grosse Konzerne bestehen, wenn es sich auf einen spezifischen Teilmarkt spezialisiert.",
     correct: true,
@@ -685,7 +686,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "k01", topic: "konzept", type: "mc", diff: 1, tax: "K1"
+    id: "k01", topic: "konzept", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was beschreibt ein Unternehmenskonzept?",
     options: [
@@ -698,7 +699,7 @@ window.QUESTIONS = [
     explain: "Das Unternehmenskonzept formuliert die Unternehmensstrategie aus. Es beschreibt die konkreten Ziele und gibt den Mitarbeitenden Auskunft über die Mittel und die Methoden, wie die Strategie umgesetzt werden soll."
   },
   {
-    id: "k02", topic: "konzept", type: "multi", diff: 1, tax: "K1"
+    id: "k02", topic: "konzept", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Das Unternehmenskonzept umfasst Ziele, Mittel und Methoden in drei Bereichen. Welche? (Mehrere Antworten möglich.)",
     options: [
@@ -711,7 +712,7 @@ window.QUESTIONS = [
     explain: "Das Unternehmenskonzept gliedert sich in drei Bereiche: leistungswirtschaftlich (Produkte, Märkte, Produktion), finanzwirtschaftlich (Gewinn, Kapital, Wirtschaftlichkeit) und sozial/ökologisch (Mitarbeitende, Gesellschaft, Umwelt)."
   },
   {
-    id: "k03", topic: "konzept", type: "fill", diff: 1, tax: "K1"
+    id: "k03", topic: "konzept", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Evaluation bildet den {0} im Prozess der strategischen Planung.",
     blanks: [
@@ -720,7 +721,7 @@ window.QUESTIONS = [
     explain: "Die Evaluation ist der vierte und letzte Schritt der strategischen Planung. Sie überprüft, ob die Umsetzung erfolgreich war und die gesteckten Ziele erreicht wurden."
   },
   {
-    id: "k04", topic: "konzept", type: "mc", diff: 2, tax: "K2"
+    id: "k04", topic: "konzept", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was gehört zum leistungswirtschaftlichen Bereich eines Unternehmenskonzepts?",
     options: [
@@ -733,7 +734,7 @@ window.QUESTIONS = [
     explain: "Der leistungswirtschaftliche Bereich umfasst Ziele zu Produkten, Märkten und Image. Gewinn und Kapital gehören zum finanzwirtschaftlichen Bereich, Mitarbeitende und Umwelt zum sozialen Bereich."
   },
   {
-    id: "k05", topic: "konzept", type: "multi", diff: 2, tax: "K2"
+    id: "k05", topic: "konzept", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Auf welchen drei Ebenen erfolgt die Strategiekontrolle bei der Evaluation? (Mehrere Antworten möglich.)",
     options: [
@@ -746,7 +747,7 @@ window.QUESTIONS = [
     explain: "Die Strategiekontrolle erfolgt auf drei Ebenen: 1. Stimmen die anfänglichen Annahmen noch? 2. Gibt es Widerstände oder Schwierigkeiten bei der Umsetzung? 3. Wurden die Ziele erreicht (Soll-Ist-Vergleich)? Die Mitarbeiterleistung wird im operativen Controlling beurteilt."
   },
   {
-    id: "k06", topic: "konzept", type: "mc", diff: 2, tax: "K3"
+    id: "k06", topic: "konzept", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Cupcake-Startup definiert als Ziel: «Wir wollen im ersten Jahr 100'000 CHF Umsatz erzielen.» In welchen Bereich des Unternehmenskonzepts gehört dieses Ziel?",
     options: [
@@ -759,14 +760,14 @@ window.QUESTIONS = [
     explain: "Ein Umsatzziel ist ein finanzwirtschaftliches Ziel. Es gehört in den finanzwirtschaftlichen Bereich des Unternehmenskonzepts, zusammen mit Gewinn-, Kapital- und Wirtschaftlichkeitszielen."
   },
   {
-    id: "k07", topic: "konzept", type: "tf", diff: 2, tax: "K2"
+    id: "k07", topic: "konzept", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei der Umsetzung der Strategie genügt es, wenn nur die obere Führungsebene die Strategie kennt.",
     correct: false,
     explain: "Die Vision, Ziele und Strategie müssen allen Mitarbeitenden nachvollziehbar und stufengerecht kommuniziert werden. Nur wenn alle die gleiche Richtung kennen, können sie auch bei Schwierigkeiten an der Strategie arbeiten. Es muss ein gemeinsames Verständnis geschaffen werden."
   },
   {
-    id: "k08", topic: "konzept", type: "mc", diff: 3, tax: "K4"
+    id: "k08", topic: "konzept", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Das Cupcake-Startup stellt nach 6 Monaten fest, dass die Nachfrage nach veganen Cupcakes viel höher ist als erwartet, aber das ursprüngliche Sortiment kaum vegane Optionen enthält. Welche Ebene der Evaluation ist betroffen?",
     options: [
@@ -779,7 +780,7 @@ window.QUESTIONS = [
     explain: "Die anfängliche Annahme über die Nachfrage (wenig Bedarf an veganen Cupcakes) hat sich als falsch erwiesen. Dies fällt unter die «Kontrolle der zugrunde liegenden Annahmen». Die Strategie muss entsprechend angepasst werden."
   },
   {
-    id: "k09", topic: "konzept", type: "mc", diff: 3, tax: "K5"
+    id: "k09", topic: "konzept", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Warum ist es wichtig, dass ein Unternehmenskonzept nicht nur die Ziele, sondern auch die Mittel und Verfahren enthält?",
     options: [
@@ -792,7 +793,7 @@ window.QUESTIONS = [
     explain: "Ein abstraktes Strategiedokument nützt wenig, wenn nicht klar ist, wie die Ziele konkret erreicht werden sollen. Mittel (Ressourcen) und Verfahren (Methoden) machen die Strategie operationalisierbar — sie zeigen den Mitarbeitenden, was zu tun ist."
   },
   {
-    id: "k10", topic: "konzept", type: "tf", diff: 3, tax: "K4"
+    id: "k10", topic: "konzept", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Die Evaluation findet erst statt, wenn die gesamte Strategie vollständig umgesetzt wurde.",
     correct: false,

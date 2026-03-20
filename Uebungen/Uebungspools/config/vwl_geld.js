@@ -42,7 +42,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was versteht man unter einer Tauschwirtschaft?",
     "options": [
@@ -71,7 +71,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "In einer reinen Tauschwirtschaft muss jeder Tauschpartner genau das Gut besitzen, das der andere haben möchte – man spricht von der «doppelten Koinzidenz der Bedürfnisse».",
     "correct": true,
@@ -82,7 +82,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "multi",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Welche der folgenden Probleme treten in einer reinen Tauschwirtschaft auf? (Mehrere Antworten möglich.)",
     "options": [
@@ -115,7 +115,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Im Spiel BOB (Barter or Buy) übernimmt der Buchstabe X eine besondere Funktion. Was passiert nachweislich, wenn X konsequent als Tauschmittel eingesetzt wird?",
     "options": [
@@ -144,7 +144,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "tf",
     "diff": 2,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Im Spiel BOB findet eine Entwicklung von der Autarkie (Selbstversorgung) über eine Tauschwirtschaft hin zu einer Geldwirtschaft statt.",
     "correct": true,
@@ -155,7 +155,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Warum sind die Vorteile einer Geldwirtschaft in der realen Welt noch grösser als im Spiel BOB?",
     "options": [
@@ -184,7 +184,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "In einer Geldwirtschaft wird nicht Ware gegen Ware getauscht, sondern Ware gegen {0}. Dies erleichtert den Handel, weil man keinen Tauschpartner finden muss, der genau die angebotene Ware braucht – man spricht vom Wegfall der doppelten {1} der Bedürfnisse.",
     "blanks": [
@@ -208,7 +208,7 @@ window.QUESTIONS = [
     "topic": "tauschwirtschaft",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Eine Kollegin behauptet: «Geld ist eigentlich überflüssig – man könnte auch einfach tauschen.» Welches Argument entkräftet diese Aussage am besten?",
     "options": [
@@ -237,7 +237,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Welche drei Funktionen erfüllt Geld?",
     "img": {
@@ -270,7 +270,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "In modernen Volkswirtschaften wird in der Regel nicht Ware gegen Ware getauscht, sondern Ware gegen Geld. Somit spielt Geld eine zentrale Rolle als {0}. Eng mit dieser Rolle verknüpft ist die Funktion als {1}, weil man vor jedem Kauf den Wert der Gegenleistung einschätzen will. Wenn man Geld zur Seite legt, um es später auszugeben, dient es als {2}.",
     "blanks": [
@@ -302,7 +302,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "mc",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Max verkauft seine gebrauchte Spielkonsole für CHF 200 und legt das Geld auf sein Sparkonto, um sich in einigen Monaten ein neues Fahrrad zu kaufen. Welche Geldfunktionen werden in diesem Beispiel genutzt?",
     "options": [
@@ -331,7 +331,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "multi",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "In welchen der folgenden Situationen wird die Funktion des Geldes als Recheneinheit besonders deutlich? (Mehrere Antworten möglich.)",
     "options": [
@@ -363,7 +363,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Im Spiel BOB übernimmt X neben der Funktion als Tauschmittel auch die Funktion als Wertaufbewahrungsmittel, da X im Gegensatz zu anderen Buchstaben zwischen den Runden behalten werden darf.",
     "correct": true,
@@ -374,7 +374,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Welche Geldfunktion wird durch eine hohe Inflation am stärksten beeinträchtigt?",
     "options": [
@@ -403,7 +403,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Stellen Sie sich vor, in einem Land verlören Banknoten nach einer Woche ihren Wert und würden wertlos. Welche Auswirkung hätte dies voraussichtlich auf das Wirtschaftsverhalten der Bevölkerung?",
     "options": [
@@ -432,7 +432,7 @@ window.QUESTIONS = [
     "topic": "geldfunktionen",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Die Recheneinheit-Funktion des Geldes ermöglicht es, den Wert unterschiedlicher Güter in einer gemeinsamen Einheit (z.B. Schweizer Franken) auszudrücken und somit Preise einfach zu vergleichen.",
     "correct": true,
@@ -443,7 +443,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "multi",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Welche Eigenschaften sollte ein Gegenstand aufweisen, damit er als Geld geeignet ist? (Mehrere Antworten möglich.)",
     "options": [
@@ -476,7 +476,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "mc",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Warum eignen sich Wassermelonen schlecht als Geld?",
     "options": [
@@ -505,7 +505,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Im Spiel BOB eignet sich X besonders gut als Tauschmittel, weil es in keinem Wort des vorgegebenen Satzes vorkommt und deshalb von allen als «neutrale Tauschware» akzeptiert wird.",
     "correct": true,
@@ -516,7 +516,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "multi",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Welche Eigenschaften von Geld sind bei Zigaretten als Zahlungsmittel in Gefangenenlagern des Zweiten Weltkriegs erfüllt? (Mehrere Antworten möglich.)",
     "options": [
@@ -550,7 +550,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Warum ist «Knappheit» eine wichtige Eigenschaft von Geld?",
     "options": [
@@ -579,7 +579,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Was ist für die Funktion von Geld wichtiger: Dass pro Geldeinheit möglichst viele Waren erhältlich sind, oder dass das Geld von allen als Zahlungsmittel akzeptiert wird?",
     "options": [
@@ -608,7 +608,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "tf",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Geld muss zwingend einen eigenen materiellen Wert haben (z.B. aus Gold oder Silber bestehen), um als Zahlungsmittel funktionieren zu können.",
     "correct": false,
@@ -619,7 +619,7 @@ window.QUESTIONS = [
     "topic": "eigenschaften",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Damit ein Gegenstand als Geld funktioniert, muss er unter anderem {0} (nicht verderblich), {1} (begrenzt verfügbar) und {2} (leicht zu transportieren) sein.",
     "blanks": [
@@ -650,7 +650,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Wie nennt man Geld, das selbst einen konkreten Wert als Ware aufweist (z.B. Goldmünzen, Muscheln, Tierfelle)?",
     "options": [
@@ -679,7 +679,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Die drei historischen Entwicklungsstufen des Geldes sind: Zunächst {0} (z.B. Goldmünzen), dann {1} (z.B. Banknoten) und schliesslich {2} (z.B. Bankguthaben).",
     "img": {
@@ -713,7 +713,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "multi",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Welche der folgenden Aussagen über Buchgeld sind korrekt? (Mehrere Antworten möglich.)",
     "options": [
@@ -746,7 +746,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "mc",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Im Spiel BOB hat X einen eigenen Wert (1 Siegpunkt). Welcher Geldart entspricht X im Spiel am ehesten?",
     "options": [
@@ -775,7 +775,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Die Produktion einer Schweizer 100-Franken-Banknote kostet rund 40 Rappen. Banknoten sind deshalb ein Beispiel für Warengeld.",
     "correct": false,
@@ -786,7 +786,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Unter welchen Voraussetzungen würde X im Spiel BOB eher Papiergeld entsprechen?",
     "options": [
@@ -815,7 +815,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "tf",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Als Erfinder des Papiergeldes gelten die Chinesen. Erste Formen von Papiergeld kamen in China im 7. Jahrhundert auf.",
     "correct": true,
@@ -826,7 +826,7 @@ window.QUESTIONS = [
     "topic": "geldarten",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "In der herkömmlichen Sichtweise entstand Geld, weil eine spezielle Ware zum allgemeinen Tauschmittel erhoben wurde. Eine alternative Sichtweise sieht Geld primär als etwas anderes. Welche Funktion steht in der alternativen Sichtweise im Vordergrund?",
     "options": [
@@ -855,7 +855,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Welche Institution hat in der Schweiz das alleinige Recht, Banknoten herauszugeben?",
     "options": [
@@ -884,7 +884,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "multi",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wie sorgt die Nationalbank für Vertrauen in das Geld? (Mehrere Antworten möglich.)",
     "options": [
@@ -917,7 +917,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Das Geldmonopol liegt in der Schweiz beim Staat beziehungsweise bei der Schweizerischen Nationalbank.",
     "correct": true,
@@ -928,7 +928,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "mc",
     "diff": 2,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Was würde passieren, wenn es viele gut gemachte Fälschungen von Banknoten gäbe?",
     "options": [
@@ -957,7 +957,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Stellen Sie sich einen Staat vor, der seiner Bevölkerung unbegrenzt Banknoten druckt und auf der Strasse verteilt. Wäre dies «das Paradies auf Erden»?",
     "options": [
@@ -986,7 +986,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "tf",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Die Tatsache, dass Papiergeld keinen materiellen Eigenwert hat, macht Vertrauen zu einer noch wichtigeren Voraussetzung als bei Warengeld.",
     "correct": true,
@@ -997,7 +997,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "fill",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wenn eine hohe {0} herrscht, das heisst, wenn man für gleich viel Geld mit der Zeit immer weniger Waren erhält, wird die Verwendung von Geld unattraktiv. Die Nationalbank muss deshalb dafür sorgen, dass nicht zu viel Geld im {1} ist.",
     "blanks": [
@@ -1021,7 +1021,7 @@ window.QUESTIONS = [
     "topic": "vertrauen",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Welches der folgenden Sicherheitsmerkmale findet sich auf Schweizer Banknoten?",
     "options": [
@@ -1050,7 +1050,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was versteht man unter einem «absoluten Preis»?",
     "options": [
@@ -1079,7 +1079,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "mc",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Was ist ein «relativer Preis»?",
     "options": [
@@ -1108,7 +1108,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "calc",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "In einer Ortschaft werden alle Preise in Kilo Salz ausgedrückt: 1 Apfel = 1 Kilo Salz, 1 Kuchen = 20 Kilo Salz, 1 Banane = 2 Kilo Salz, 1 Brot = 10 Kilo Salz. Wie viele Äpfel ist ein Kuchen wert?",
     "rows": [
@@ -1126,7 +1126,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "calc",
     "diff": 3,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "In einer Volkswirtschaft werden 5 verschiedene Güter gehandelt. Wie viele Tauschverhältnisse (relative Preise) müsste man ohne gemeinsame Recheneinheit kennen? (Formel: n × (n − 1) / 2)",
     "img": {
@@ -1148,7 +1148,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wenn sich alle absoluten Preise in einer Volkswirtschaft verdoppeln, ändern sich auch die relativen Preise.",
     "correct": false,
@@ -1159,7 +1159,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Der Preis von einem Kilo Zucker steigt innerhalb eines Jahres um 40 %, während die allgemeine Teuerung nahe bei null liegt. Was lässt sich daraus schliessen?",
     "options": [
@@ -1188,7 +1188,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Bei einer hohen und unberechenbaren Inflation (20–50 % pro Jahr) steigt der Zuckerpreis um 40 %. Warum ist die Interpretation dieses Preisanstiegs jetzt schwieriger als bei stabilen Preisen?",
     "options": [
@@ -1217,7 +1217,7 @@ window.QUESTIONS = [
     "topic": "preise",
     "type": "multi",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Welche Vorteile bietet eine gemeinsame Recheneinheit (z.B. Franken) gegenüber einem System mit lauter bilateralen Tauschverhältnissen? (Mehrere Antworten möglich.)",
     "options": [
@@ -1250,7 +1250,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was versteht man in der Volkswirtschaftslehre unter «Geld»?",
     "options": [
@@ -1279,7 +1279,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "multi",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Welche Eigenschaften muss Geld aufweisen, damit es als Zahlungsmittel akzeptiert wird? (Mehrere Antworten möglich.)",
     "options": [
@@ -1312,7 +1312,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Eine Kreditkarte (z.B. Visa) ist selbst kein Geld, sondern dient lediglich als Mittel, um Buchgeld von einem Konto auf ein anderes zu übertragen.",
     "correct": true,
@@ -1323,7 +1323,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Was unterscheidet Warengeld von Papiergeld?",
     "options": [
@@ -1352,7 +1352,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "In der Schweiz darf nur die {0} Banknoten herausgeben. Man spricht vom Geld- oder {1} des Staates.",
     "blanks": [
@@ -1377,7 +1377,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Weshalb eignen sich Wassermelonen oder Baumstämme nicht als Geld?",
     "options": [
@@ -1406,7 +1406,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "tf",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Buchgeld (Bankguthaben) ist sicherer als Bargeld, da es durch die Zentralbank garantiert wird.",
     "correct": false,
@@ -1417,7 +1417,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was misst der Landesindex der Konsumentenpreise (LIK)?",
     "options": [
@@ -1446,7 +1446,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Je höher das Preisniveau, desto geringer ist die Kaufkraft des Geldes.",
     "correct": true,
@@ -1457,7 +1457,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Betrachten Sie das Geldmarktdiagramm. Was geschieht mit der Kaufkraft des Geldes, wenn die Zentralbank das Geldangebot stark ausweitet (bei gleichbleibender Geldnachfrage)?",
     "img": {
@@ -1490,7 +1490,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "fill",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Ein anhaltender Anstieg des allgemeinen Preisniveaus wird als {0} bezeichnet. Das Gegenteil — ein anhaltendes Sinken des Preisniveaus — nennt man {1}.",
     "blanks": [
@@ -1512,7 +1512,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "tf",
     "diff": 2,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Wenn sich nur der Benzinpreis deutlich verteuert, alle anderen Preise aber stabil bleiben, herrscht Inflation.",
     "correct": false,
@@ -1523,7 +1523,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "multi",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Welche Verschiebungen im Geldmarkt führen zu einer Erhöhung des Preisniveaus (Inflation)? (Mehrere Antworten möglich.)",
     "options": [
@@ -1555,7 +1555,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "mc",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Weshalb hat die Geldnachfragekurve eine negative Steigung?",
     "options": [
@@ -1584,7 +1584,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wenn das reale BIP einer Volkswirtschaft zunimmt, steigt in der Regel auch die Geldnachfrage.",
     "correct": true,
@@ -1595,7 +1595,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Was sind die Opportunitätskosten der Geldhaltung?",
     "options": [
@@ -1624,7 +1624,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "tf",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Steigen die Zinsen auf Sparkonten, nehmen die Opportunitätskosten der Bargeldhaltung zu, und das Publikum hält weniger Bargeld.",
     "correct": true,
@@ -1635,7 +1635,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "mc",
     "diff": 2,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Während der Finanzkrise 2007/2008 stieg der Umlauf grosser Banknoten (1000-Franken-Noten) stark an. Was war der Hauptgrund?",
     "options": [
@@ -1664,7 +1664,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "multi",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Welche Faktoren führen zu einer Erhöhung der Geldnachfrage? (Mehrere Antworten möglich.)",
     "options": [
@@ -1697,7 +1697,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "{0} sind Guthaben, welche die Geschäftsbanken bei der Nationalbank halten müssen. Der aktuelle Mindestreservesatz beträgt {1} Prozent.",
     "blanks": [
@@ -1721,7 +1721,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was sind die gesetzlichen Zahlungsmittel in der Schweiz?",
     "options": [
@@ -1750,7 +1750,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wie schaffen Geschäftsbanken neues Geld?",
     "options": [
@@ -1779,7 +1779,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "multi",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Welche Faktoren begrenzen die Geldschöpfung durch Geschäftsbanken? (Mehrere Antworten möglich.)",
     "options": [
@@ -1812,7 +1812,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wenn ein Kreditnehmer seinen Kredit zurückzahlt (Tilgung), wird zuvor geschaffenes Geld wieder vernichtet.",
     "correct": true,
@@ -1823,7 +1823,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Was geschieht im Zahlungsverkehr, wenn Bank A einen Kredit an einen Kunden vergibt und dieser eine Zahlung an einen Kunden von Bank B tätigt?",
     "options": [
@@ -1852,7 +1852,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "tf",
     "diff": 1,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Die Geldangebotskurve verläuft senkrecht, weil das Geldangebot von der Zentralbank festgelegt wird.",
     "correct": true,
@@ -1863,7 +1863,7 @@ window.QUESTIONS = [
     "topic": "geldangebot",
     "type": "fill",
     "diff": 3,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Die Geldschöpfung ist ein zweistufiger Prozess: Die {0} schöpft Notenbankgeld (M0), und die {1} schöpfen daraus über die Kreditvergabe die breiteren Geldmengen (M1–M3).",
     "blanks": [
@@ -1891,7 +1891,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Woraus setzt sich die Notenbankgeldmenge (M0) zusammen?",
     "options": [
@@ -1920,7 +1920,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Betrachten Sie die Übersicht der Geldmengen. Wie unterscheidet sich M1 von M2?",
     "img": {
@@ -1953,7 +1953,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Die SNB definiert die Geldmenge M3 als Summe der Geldmenge {0} und der {1}.",
     "blanks": [
@@ -1975,7 +1975,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "multi",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Sie zahlen eine 100-Franken-Note auf Ihr Sparkonto ein. Wie verändern sich die Geldmengen? (Mehrere Antworten möglich.)",
     "options": [
@@ -2008,7 +2008,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Was ist der Geldschöpfungsmultiplikator?",
     "options": [
@@ -2037,7 +2037,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "tf",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Der Geldschöpfungsmultiplikator ist ein fester, unveränderlicher Wert.",
     "correct": false,
@@ -2048,7 +2048,7 @@ window.QUESTIONS = [
     "topic": "geldmengen",
     "type": "tf",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Münzen gehören nicht zur Notenbankgeldmenge M0, da sie Verpflichtungen des Bundes (nicht der SNB) darstellen.",
     "correct": true,
@@ -2059,7 +2059,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "fill",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Die Nationalbank setzt ihre Geldpolitik um, indem sie den {0} festlegt. Der wichtigste kurzfristige Geldmarktzinssatz ist der {1}.",
     "blanks": [
@@ -2083,7 +2083,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "mc",
     "diff": 2,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Die Inflationsprognose der SNB zeigt steigende Teuerung. Betrachten Sie das Schema des Kreditkanals. Wie reagiert die Nationalbank?",
     "img": {
@@ -2116,7 +2116,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Was versteht man unter dem Wechselkurskanal der Geldpolitik?",
     "options": [
@@ -2145,7 +2145,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "multi",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Welche Transmissionskanäle der Geldpolitik werden im Fachtext beschrieben? (Mehrere Antworten möglich.)",
     "options": [
@@ -2178,7 +2178,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Inflationserwartungen können zu einer «sich selbst erfüllenden Prophezeiung» werden: Bereits die blosse Erwartung einer Geldentwertung kann tatsächlich zur Geldentwertung führen.",
     "correct": true,
@@ -2189,7 +2189,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Weshalb ist die Glaubwürdigkeit einer Zentralbank entscheidend für die Wirksamkeit der Geldpolitik?",
     "options": [
@@ -2218,7 +2218,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Was versteht man unter «Quantitative Easing» (mengenmässige Lockerung)?",
     "options": [
@@ -2247,7 +2247,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "fill",
     "diff": 2,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Am {0} 2011 führte die SNB einen Mindestkurs von {1} Franken pro Euro ein, um die Frankenaufwertung zu stoppen.",
     "blanks": [
@@ -2274,7 +2274,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "mc",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Wie hat die SNB den Mindestkurs von 1.20 CHF/EUR durchgesetzt?",
     "options": [
@@ -2303,7 +2303,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "tf",
     "diff": 2,
-    "tax": "K2"
+    "tax": "K2",
     "reviewed":false,
     "q": "Der Negativzins der SNB (eingeführt im Januar 2015) zielte darauf ab, Anlagen in Franken weniger attraktiv zu machen und so den Aufwertungsdruck auf den Franken zu begrenzen.",
     "correct": true,
@@ -2314,7 +2314,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "mc",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Weshalb kann die SNB die Zinsen nicht unbegrenzt in den negativen Bereich senken?",
     "options": [
@@ -2343,7 +2343,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "multi",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Welche Aussagen zur Auswirkung der unkonventionellen Geldpolitik auf die Geldmengen treffen zu? (Mehrere Antworten möglich.)",
     "options": [
@@ -2376,7 +2376,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "mc",
     "diff": 1,
-    "tax": "K1"
+    "tax": "K1",
     "reviewed":false,
     "q": "Wann wurde der EUR/CHF-Mindestkurs der SNB aufgehoben?",
     "options": [
@@ -2405,7 +2405,7 @@ window.QUESTIONS = [
     "topic": "unkonventionell",
     "type": "tf",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Ein Negativzins wirkt sich nachteilig auf die Profitabilität der Geschäftsbanken aus, da diese den Negativzins nur ungern an ihre Sparkunden weitergeben.",
     "correct": true,
@@ -2416,7 +2416,7 @@ window.QUESTIONS = [
     "topic": "kaufkraft",
     "type": "mc",
     "diff": 3,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Die Quantitätsgleichung lautet M × V = P × Y. Was passiert laut dieser Gleichung, wenn die Geldmenge (M) stärker steigt als das reale BIP (Y), bei konstanter Umlaufgeschwindigkeit (V)?",
     "options": [
@@ -2445,7 +2445,7 @@ window.QUESTIONS = [
     "topic": "grundlagen",
     "type": "mc",
     "diff": 3,
-    "tax": "K5"
+    "tax": "K5",
     "reviewed":false,
     "q": "Warum ist es in modernen Volkswirtschaften die Aufgabe der Zentralbank (und nicht des freien Marktes), für die Werthaltigkeit des Geldes zu sorgen?",
     "options": [
@@ -2474,7 +2474,7 @@ window.QUESTIONS = [
     "topic": "zinssteuerung",
     "type": "tf",
     "diff": 3,
-    "tax": "K4"
+    "tax": "K4",
     "reviewed":false,
     "q": "Eine Aufwertung des Schweizer Frankens wirkt sich immer inflationär auf das Preisniveau in der Schweiz aus.",
     "correct": false,
@@ -2485,7 +2485,7 @@ window.QUESTIONS = [
     "topic": "geldnachfrage",
     "type": "mc",
     "diff": 3,
-    "tax": "K3"
+    "tax": "K3",
     "reviewed":false,
     "q": "Die Geldnachfragefunktion lautet Mᵈ = P × f(Y, R, …). Was bedeutet es, wenn die Nominalzinsen (R) sinken?",
     "options": [

@@ -1,4 +1,5 @@
 window.POOL_META = {
+  id: "recht_arbeitsrecht",
   title: "Arbeitsrecht",
   fach: "Recht",
   color: "#73ab2c",
@@ -29,7 +30,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Das Arbeitsrecht enthält viele zwingende Vorschriften, die den schwächeren Vertragspartner (Arbeitnehmer) schützen.",
     correct: true,
@@ -40,7 +41,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     img: {src: "img/recht/arbeitsrecht/arbeitsrecht_bereiche_01.svg", alt: "Diagramm: Bereiche des Arbeitsrechts mit Fragezeichen"},
     q: "In wie viele Bereiche wird das Arbeitsrecht typischerweise eingeteilt?",
@@ -58,7 +59,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Das Arbeitsrecht ist grundsätzlich ________, d.h. es bedarf keiner bestimmten Form für den Abschluss eines Arbeitsvertrags.",
     blanks: [
@@ -71,7 +72,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 1,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussage zur Abänderung zwingender Arbeitsrechtsvorschriften ist korrekt?",
     options: [
@@ -88,7 +89,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitgeber und sein neuer Arbeitnehmer besprechen die Arbeitsbedingungen mündlich über Kaffee und einigen sich auf alle wesentlichen Punkte. Hat sich ein Arbeitsvertrag gebildet?",
     options: [
@@ -105,7 +106,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Das öffentlich-rechtliche Arbeitsrecht wird durch Staat und Behörden geprägt und enthält Schutzvorschriften für Arbeitnehmer wie Höchstarbeitszeiten.",
     correct: true,
@@ -116,7 +117,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Der Arbeitgeber muss die wesentlichen Bedingungen des Arbeitsverhältnisses gemäss OR 330b ________ und ________ mitteilen.",
     blanks: [
@@ -130,7 +131,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 2,
-    tax: "K3"
+    tax: "K3",
     reviewed:false,
     q: "Welche Aussage zur Funktion des kollektiven Arbeitsrechts ist richtig?",
     options: [
@@ -147,7 +148,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Merkmale gelten für das Arbeitsrecht? (Mehrfachauswahl)",
     options: [
@@ -164,7 +165,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Ein Arbeitnehmer möchte wissen, ob eine Vereinbarung, die seinen Urlaubsanspruch unter das gesetzliche Minimum senkt, gültig ist. Auf welches Prinzip des Arbeitsrechts ist hinzuweisen?",
     options: [
@@ -181,7 +182,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Das öffentlich-rechtliche Arbeitsrecht gilt für Leitende Angestellte und Betriebe mit weniger als 5 Arbeitnehmern in gleicher Weise wie für andere Betriebe.",
     correct: false,
@@ -192,7 +193,7 @@ window.QUESTIONS = [
     topic: "grundlagen",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Beurteilen Sie diese Aussage: 'Das Arbeitsrecht bietet umfassenden Schutz für Arbeitnehmer, weshalb zusätzliche kollektive Vereinbarungen (GAV) überflüssig sind.' Ist dies zutreffend?",
     options: [
@@ -211,7 +212,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Ein Arbeitsvertrag wird charakterisiert durch eine untergeordnete Stellung des Arbeiters gegenüber dem Arbeitgeber.",
     correct: true,
@@ -222,7 +223,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     img: {src: "img/recht/arbeitsrecht/arbeitsrecht_vertragsarten_01.svg", alt: "Übersicht: Drei Vertragstypen auf Arbeitsleistung mit Fragezeichen"},
     q: "Was ist das Kernmerkmal eines Arbeitsvertrags nach OR 319?",
@@ -240,7 +241,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Die Probezeit bei Arbeitsverträgen beträgt maximal ________ Monate, wobei das Minimum ________ Tag(e) ist.",
     blanks: [
@@ -254,7 +255,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Was ist der Unterschied zwischen einem Arbeitsvertrag und einem Werkvertrag?",
     options: [
@@ -271,7 +272,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitsvertrag entsteht auch, wenn die Parteien nicht ausdrücklich zustimmen, sondern nur konkludent (durch das Verhalten) übereinstimmen, z.B. wenn ein Arbeitnehmer seine Stelle antritt.",
     correct: true,
@@ -282,7 +283,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Lehrvertrag ist eine besondere Form des Arbeitsvertrags. Welche zusätzliche Besonderheit schreibt OR 344 ff. vor?",
     options: [
@@ -299,7 +300,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Die Priorisierung von Vertragsarten unterscheidet zwischen Verträgen auf Arbeitsleistung und Verträgen auf ________. Der Arbeitsvertrag gehört zu den Verträgen auf Arbeitsleistung.",
     blanks: [
@@ -312,7 +313,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "mc",
     diff: 2,
-    tax: "K3"
+    tax: "K3",
     reviewed:false,
     q: "Ein Einzelunternehmer wird beauftragt, eine komplexe Steuerberatung durchzuführen, ohne dass er dabei Weisungen des Auftraggebers unterliegt und völlig eigenverantwortlich arbeitet. Welcher Vertragstyp liegt vor?",
     options: [
@@ -329,7 +330,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen über Besondere Arbeitsverträge sind richtig? (Mehrfachauswahl)",
     options: [
@@ -346,7 +347,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Ein Unternehmer schliesst mit einem Designer einen Vertrag ab, der die Gestaltung eines neuen Logos vorsieht. Der Designer ist zeitlich flexibel und unterliegt keinen Weisungen. Dies ist zweifellos ein Arbeitsvertrag nach OR 319.",
     correct: false,
@@ -357,7 +358,7 @@ window.QUESTIONS = [
     topic: "vertragsarten",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Eine Arbeitgeberin und ein Arbeitnehmer vereinbaren zunächst mündlich einen Arbeitsvertrag. Welche Rechtsfolgen hat das Fehlen schriftlicher Dokumentation nach OR 330b?",
     options: [
@@ -376,7 +377,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Der Arbeitnehmer muss seine Arbeit selbst verrichten und kann sie nicht einfach auf eine andere Person übertragen (Persönliche Arbeitspflicht).",
     correct: true,
@@ -387,7 +388,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Welche Pflicht ist nach OR 321a für einen Arbeitnehmer zentral?",
     options: [
@@ -404,7 +405,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Der Arbeitnehmer muss nach OR 321a Abs. 4 auch nach Beendigung des Arbeitsverhältnisses ________ des Arbeitgebers schützen.",
     blanks: [
@@ -417,7 +418,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "mc",
     diff: 1,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitnehmer wird aufgefordert, Überstundenarbeit zu leisten. Muss er dies akzeptieren?",
     options: [
@@ -434,7 +435,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Wenn ein Arbeitnehmer fahrlässig arbeitet und dadurch Schaden am Betrieb verursacht, haftet er nicht, da der Arbeitgeber diese Risiken tragen muss.",
     correct: false,
@@ -445,7 +446,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitnehmer wird von seinem Arbeitgeber angewiesen, bei einer Kundenbeschwerde unwahrheitsgemäss vorzugehen. Darf der Arbeitnehmer diese Weisung ablehnen?",
     options: [
@@ -462,7 +463,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Nach OR 321b muss der Arbeitnehmer den Arbeitgeber über alles informieren, was dieser braucht, und ist zur ________ und ________ verpflichtet.",
     blanks: [
@@ -476,7 +477,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "mc",
     diff: 2,
-    tax: "K3"
+    tax: "K3",
     reviewed:false,
     q: "Ein Arbeitnehmer erfährt von einer geplanten Geschäftsexpansion seines Arbeitgebers und teilt diese Information seinem Bruder mit, der in der Konkurrenzfirma arbeitet. Welche Pflicht verletzt der Arbeitnehmer damit primär?",
     options: [
@@ -493,7 +494,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen über Arbeitnehmerpflichten sind richtig? (Mehrfachauswahl)",
     options: [
@@ -510,7 +511,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Arbeitnehmer in einer Apotheke wird angewiesen, ein bestimmtes Medikament einem Kunden zu verkaufen, ohne die vorgeschriebene ärztliche Verordnung zu prüfen. Der Arbeitnehmer weigert sich.",
     q: "Kann sich der Arbeitnehmer rechtlich auf seine Verweigerung berufen?",
@@ -528,7 +529,7 @@ window.QUESTIONS = [
     topic: "pflichten_an",
     type: "tf",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Ein Arbeitnehmerin wird schwanger und möchte nach der Geburt weiterarbeiten. Ein strenges Konkurrenzverbot im Arbeitsvertrag verbietet ihr, für Konkurrenten zu arbeiten. Nach Beendigung des Arbeitsverhältnisses kann die Konkurrenzklausel vollständig durchgesetzt werden, wenn dies im Vertrag stand.",
     correct: false,
@@ -541,7 +542,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Die Lohnzahlung ist die Hauptpflicht des Arbeitgebers nach dem Arbeitsrecht.",
     correct: true,
@@ -552,7 +553,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Aus welchen Bestandteilen setzt sich ein Bruttolohn typischerweise zusammen?",
     options: [
@@ -569,7 +570,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Der Arbeitgeber muss dem Arbeitnehmer bei jedem Lohnzahlungstermin eine ________ mit allen wesentlichen Angaben aushändigen.",
     blanks: [
@@ -582,7 +583,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Muss der Arbeitgeber dem Arbeitnehmer Arbeitsgeräte und Material zur Verfügung stellen?",
     options: [
@@ -599,7 +600,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Der Arbeitgeber muss dem Arbeitnehmer bei unverschuldeter Verhinderung (z.B. Krankheit) den Lohn noch für eine bestimmte Dauer weiterzahlen.",
     correct: true,
@@ -610,7 +611,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitnehmer mit 3 Jahren Dienstzeit wird krank und kann nicht arbeiten. Wie lange muss der Arbeitgeber nach der Berner Skala (OR 324a) den Lohn weiterzahlen?",
     options: [
@@ -627,7 +628,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Der Arbeitgeber muss die Persönlichkeit des Arbeiters schützen, einschliesslich seiner ________ und ________ (OR 328 ff.).",
     blanks: [
@@ -641,7 +642,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 2,
-    tax: "K3"
+    tax: "K3",
     reviewed:false,
     q: "Ein Arbeiter möchte von seinem Arbeitgeber ein Arbeitszeugnis erhalten. Was muss dieses nach OR 330a enthalten?",
     options: [
@@ -658,7 +659,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen über Arbeitgeberpflichten sind korrekt? (Mehrfachauswahl)",
     options: [
@@ -675,7 +676,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Arbeitgeber verbietet einem Arbeitnehmer, während der Arbeit ein religiöses Symbol zu tragen. Der Arbeitnehmer sieht darin eine Verletzung seiner Persönlichkeit.",
     q: "Kann der Arbeitnehmer sich auf eine Verletzung seiner Persönlichkeitsrechte nach OR 328 berufen?",
@@ -693,7 +694,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Ein Arbeitgeber muss für alle Arbeitsunfälle die vollständige Heilungskosten ersetzen, unabhängig davon, wie der Unfall geschah.",
     correct: false,
@@ -704,7 +705,7 @@ window.QUESTIONS = [
     topic: "pflichten_ag",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Ein Arbeitgeber zahlt seinem Angestellten immer Bargeld ohne schriftliche Lohnabrechnung aus. Welche Konsequenzen hat dies rechtlich?",
     options: [
@@ -723,7 +724,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Ein Arbeitsvertrag mit Ablauf einer vereinbarten Frist endet automatisch nach Ablauf der Zeit, ohne dass eine Kündigung nötig ist.",
     correct: true,
@@ -734,7 +735,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     img: {src: "img/recht/arbeitsrecht/arbeitsrecht_kuendigungsfristen_01.svg", alt: "Zeitleiste: Kündigungsfristen nach Dienstjahren mit Fragezeichen"},
     q: "Wie lange beträgt die Kündigungsfrist während der Probezeit nach OR 335b?",
@@ -752,7 +753,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Die Kündigungsfrist nach dem ersten Dienstjahr beträgt nach OR 335c ________ Monat(e), und das Kündigungstermin ist das Ende des folgenden ________.",
     blanks: [
@@ -766,7 +767,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Was ist der wesentliche Unterschied zwischen ordentlicher und ausserordentlicher Kündigung?",
     options: [
@@ -783,7 +784,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Eine Kündigung ist nur gültig, wenn sie schriftlich erfolgt und von beiden Parteien unterschrieben ist.",
     correct: false,
@@ -794,7 +795,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitnehmer mit 8 Jahren Dienstzeit kündigt am 10. März. Welches ist das früheste Kündigungsdatum?",
     options: [
@@ -811,7 +812,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Eine ausserordentliche Kündigung nach OR 337 ist sofort wirksam, wenn ein ________ Grund besteht und die Fortführung dem Kündigenden ________ ist.",
     blanks: [
@@ -825,7 +826,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen zum Arbeitszeugnis nach Beendigung sind richtig? (Mehrfachauswahl)",
     options: [
@@ -842,7 +843,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Arbeitgeber kündigt einem treuen Mitarbeiter ausserordentlich/fristlos. Als Grund gibt er an, dass der Mitarbeiter mit dem falschen Lohn-System nicht umgehen kann. Der Mitarbeiter behauptet, dass dies kein wichtiger Grund ist.",
     q: "Hat der Arbeitnehmer Recht?",
@@ -860,7 +861,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Wenn ein Arbeitnehmer wegen Leistungsmängeln ausserordentlich gekündigt wird und vor Gericht gewinnt, hat er Anspruch auf Schadensersatz, aber nicht auf Lohnfortzahlung.",
     correct: false,
@@ -871,7 +872,7 @@ window.QUESTIONS = [
     topic: "beendigung",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Ein Arbeitgeber teilt einem langjährigen Arbeitnehmer am 01. März per Telefon mit, dass das Arbeitsverhältnis 'per sofort' endet. Welche rechtswidrigen Aspekte liegen vor?",
     options: [
@@ -890,7 +891,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Eine missbräuchliche Kündigung kann dem Arbeitnehmer eine Entschädigung durch das Arbeitsgericht bringen.",
     correct: true,
@@ -901,7 +902,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Was ist ein Beispiel für missbräuchliche Kündigung nach OR 336?",
     options: [
@@ -918,7 +919,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Die Entschädigung für eine missbräuchliche Kündigung beträgt nach OR 336a mindestens ________ und höchstens ________ Monatslöhne.",
     blanks: [
@@ -932,7 +933,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "In welchem Fall darf ein Arbeitgeber eine Arbeitnehmerin nicht kündigen?",
     options: [
@@ -949,7 +950,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Wenn ein Arbeitnehmer während einer Sperrfrist (z.B. Krankheit) gekündigt wird, ist diese Kündigung nichtig und hat keine Wirkung.",
     correct: true,
@@ -960,7 +961,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitnehmer wird krank. Die Sperrfrist beginnt mit dem ersten Tag der Krankheit. Der Arbeitgeber versucht, am Tag 1 der Krankheit zu kündigen. Welche Sperrfristdauer schützt den Arbeitnehmer?",
     options: [
@@ -977,7 +978,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Eine Kündigung vor einer Sperrfrist ist rechtlich wirksam, aber die ________ wird unterbrochen und läuft nach Ablauf der Sperrfrist ________, bis der Kündigungstermin erreicht ist.",
     blanks: [
@@ -991,7 +992,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Situationen begründen nach OR 336c Kündigungssperrfristen? (Mehrfachauswahl)",
     options: [
@@ -1008,7 +1009,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Arbeitnehmer teilt seinem Arbeitgeber am 05. März mit, dass er schwanger ist. Am 20. März erhält er eine ordentliche Kündigung mit 2 Monaten Frist (Kündigungstermin 31. Mai). Der Arbeitnehmer behauptet, die Kündigung sei wegen der Schwangerschaft erfolgt und somit nichtig.",
     q: "Hat der Arbeitnehmer Recht, dass die Kündigung nichtig ist?",
@@ -1026,7 +1027,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Ein Arbeitgeber kann eine missbräuchliche Kündigung durch Zahlung von Entschädigung ersetzen und muss den Arbeitnehmer nicht wieder in sein Amt einsetzen.",
     correct: false,
@@ -1037,7 +1038,7 @@ window.QUESTIONS = [
     topic: "kuendigungsschutz",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Beurteilen Sie diese Situation: Ein Arbeitnehmer wird am 15. Juni gekündigt, sein Arbeitgeber merkt dabei, dass der Arbeitnehmer schwanger ist. Der Arbeitgeber möchte die Kündigung zurückziehen, aber es ist nun zu spät. Was folgt aus dem Arbeitsrecht?",
     options: [
@@ -1056,7 +1057,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Das Arbeitsgesetz (ArG) gilt grundsätzlich für alle Betriebe in der Schweiz.",
     correct: true,
@@ -1067,7 +1068,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Welche maximale Höchstarbeitszeit schreibt das Arbeitsgesetz (ArG 9) für industrielle Betriebe vor?",
     options: [
@@ -1084,7 +1085,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Nach dem ArG 9 beträgt die Höchstarbeitszeit für übrige Betriebe (z.B. Landwirtschaft, Gaststättenbetriebe) ________ Stunden pro Woche.",
     blanks: [
@@ -1097,7 +1098,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Darf ein Arbeitgeber ein Nachtschicht-Arbeiter (23:00–06:00 Uhr) ohne zusätzliche Vergütung einsetzen?",
     options: [
@@ -1114,7 +1115,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Überzeit (Stunden über die Höchstarbeitszeit hinaus) darf pro Jahr maximal 170 Stunden betragen und muss durch Freizeit oder Lohnzuschlag kompensiert werden.",
     correct: true,
@@ -1125,7 +1126,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitgeber lässt einen Arbeitnehmer an einem Tag 10 Stunden arbeiten, obwohl seine normale Arbeitszeit 8 Stunden pro Tag beträgt. Ist dies zulässig?",
     options: [
@@ -1142,7 +1143,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Nach ArG 15 hat ein Arbeitnehmer bei einer Arbeitszeit über 7 Stunden Anspruch auf mindestens ________ Minuten Pause.",
     blanks: [
@@ -1155,7 +1156,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen zum öffentlich-rechtlichen Arbeitsrecht (ArG) sind korrekt? (Mehrfachauswahl)",
     options: [
@@ -1172,7 +1173,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Arbeitgeber beschäftigt 6 ständig angestellte Arbeitnehmer in einem Elektrobetrieb. Er möchte sie regelmässig in Nachtschichten arbeiten lassen ohne Lohnzuschlag, um Kosten zu sparen. Ein Arbeitnehmer wehrt sich.",
     q: "Kann der Arbeitgeber diese Regelung durchsetzen?",
@@ -1190,7 +1191,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Das Arbeitsgesetz (ArG) ist absolut zwingendes Recht und jede Abweichung, auch zu Gunsten der Arbeitnehmer, ist ungültig.",
     correct: false,
@@ -1201,7 +1202,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Eine schwangere Arbeitnehmerin soll während der Nacht (23:00–06:00) arbeiten. Welche Schutzbestimmungen des ArG sind relevant?",
     options: [
@@ -1218,7 +1219,7 @@ window.QUESTIONS = [
     topic: "oeffentliches_ar",
     type: "tf",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Ein Arbeitgeber kann von einem Arbeitnehmer in einem Elektrobetrieb verlangen, 15 Stunden pro Woche Überzeit zu leisten, ohne diese durch Freizeit oder Zuschlag zu kompensieren, da dies notwendig ist.",
     correct: false,
@@ -1231,7 +1232,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "tf",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Ein Gesamtarbeitsvertrag (GAV) ist eine Vereinbarung zwischen einer Arbeitnehmerverbaenden/Gewerkschaft und einem Arbeitgeberverband.",
     correct: true,
@@ -1242,7 +1243,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Was regelt ein Gesamtarbeitsvertrag (GAV) typischerweise?",
     options: [
@@ -1259,7 +1260,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "fill",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Die ________ nach OR 357a verpflichtet die Parteien eines GAV, während der Laufzeit keine ________ oder Streiks durchzuführen.",
     blanks: [
@@ -1273,7 +1274,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "mc",
     diff: 1,
-    tax: "K1"
+    tax: "K1",
     reviewed:false,
     q: "Wer kann die Allgemeinverbindlichkeit eines GAV erklären?",
     options: [
@@ -1290,7 +1291,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "tf",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein Arbeitgeber, der nicht Mitglied eines Arbeitgeberverbands ist, ist nicht an einen GAV gebunden.",
     correct: false,
@@ -1301,7 +1302,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "mc",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Ein GAV sieht einen Mindestlohn von CHF 4'500.– vor, aber ein Arbeitgeber zahlt nur CHF 4'000.–. Was folgt?",
     options: [
@@ -1318,7 +1319,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "fill",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Eine Normalarbeitsverordnung (NAV) wird von ________ erlassen und regelt Arbeitsbedingungen in Branchen, wo AN ________ gefährdet oder das Lohnniveau sehr tief ist.",
     blanks: [
@@ -1332,7 +1333,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "multi",
     diff: 2,
-    tax: "K2"
+    tax: "K2",
     reviewed:false,
     q: "Welche Aussagen zu kollektiven Arbeitsverträgen (GAV/NAV) sind richtig? (Mehrfachauswahl)",
     options: [
@@ -1349,7 +1350,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "mc",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     context: "Ein Verband von Bäckerei-Arbeitnehmern und ein Verband von Bäckerei-Arbeitgebern schliessen einen GAV. Sie vereinbaren u.a. Mindestlöhne und dass während 2 Jahren keine Streiks durchgeführt werden. Die Bäckerei-Arbeitnehmer erfahren von besseren Bedingungen bei konkurrierenden Bäckereien.",
     q: "Können die Arbeitnehmer trotz GAV streiken?",
@@ -1367,7 +1368,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "tf",
     diff: 3,
-    tax: "K4"
+    tax: "K4",
     reviewed:false,
     q: "Das Gleichstellungsgesetz (GlG) verlangt von Arbeitgebern automatisch, dass sie Männer und Frauen gleich bezahlen, auch wenn ein GAV tiefere Frauenlöhne zulässt.",
     correct: true,
@@ -1378,7 +1379,7 @@ window.QUESTIONS = [
     topic: "kollektives_ar",
     type: "mc",
     diff: 3,
-    tax: "K5"
+    tax: "K5",
     reviewed:false,
     q: "Ein GAV wird für allgemeinverbindlich erklärt. Danach wird eine kleine, nicht verbandseigene Bäckerei eröffnet, die GAV-Standard unterschreitet. Kann die Bäckerei berechtigt gegen das GAV argumentieren?",
     options: [

@@ -6,6 +6,7 @@
 // =====================================================
 
 window.POOL_META = {
+  id: "bwl_marketing",
   title: "Markt- und Leistungsanalyse",
   fach: "BWL",
   color: "#01a9f4",
@@ -34,14 +35,14 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "e01", topic: "marketing", type: "tf", diff: 1, tax: "K1"
+    id: "e01", topic: "marketing", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Marketing ist das Bindeglied zwischen Unternehmen und Markt.",
     correct: true,
     explain: "Marketing stellt tatsächlich das Bindeglied zwischen Unternehmen und Markt dar. Es umfasst die Aufgaben, Kundenbedürfnisse zu erkennen und zu befriedigen."
   },
   {
-    id: "e02", topic: "marketing", type: "mc", diff: 1, tax: "K1"
+    id: "e02", topic: "marketing", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist die Hauptaufgabe des Marketings?",
     options: [
@@ -54,7 +55,7 @@ window.QUESTIONS = [
     explain: "Marketing nimmt die Aufgaben wahr, Kundenbedürfnisse zu erkennen und zu befriedigen. Es schliesst die Denkhaltung mit ein, dass das Unternehmen immer mit Blick auf den Markt geführt werden sollte."
   },
   {
-    id: "e03", topic: "marketing", type: "fill", diff: 1, tax: "K1"
+    id: "e03", topic: "marketing", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein {0} wird entwickelt, um Produkte und Dienstleistungen bei einem breiten Publikum bekannt zu machen und den Absatz optimal zu gestalten.",
     blanks: [
@@ -65,7 +66,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "e04", topic: "marketing", type: "mc", diff: 2, tax: "K2"
+    id: "e04", topic: "marketing", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "In welcher Reihenfolge werden die vier Schritte eines Marketingkonzepts durchlaufen?",
     options: [
@@ -78,7 +79,7 @@ window.QUESTIONS = [
     explain: "Das Marketingkonzept umfasst vier Schritte in dieser Reihenfolge: 1. Markt- und Leistungsanalyse, 2. Marktforschung, 3. Produkt- und Marktziele, 4. Marketing-Mix."
   },
   {
-    id: "e05", topic: "marketing", type: "multi", diff: 2, tax: "K2"
+    id: "e05", topic: "marketing", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Elemente gehören zu den vier Schritten eines Marketingkonzepts? (Mehrere Antworten möglich.)",
     options: [
@@ -91,7 +92,7 @@ window.QUESTIONS = [
     explain: "Die vier Schritte des Marketingkonzepts sind: 1. Markt- und Leistungsanalyse, 2. Marktforschung, 3. Produkt- und Marktziele, 4. Marketing-Mix. Personalplanung gehört nicht dazu."
   },
   {
-    id: "e06", topic: "marketing", type: "tf", diff: 2, tax: "K2"
+    id: "e06", topic: "marketing", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Das Marketingkonzept wird unabhängig von der Unternehmensstrategie entwickelt.",
     correct: false,
@@ -100,7 +101,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "e07", topic: "marketing", type: "mc", diff: 3, tax: "K4"
+    id: "e07", topic: "marketing", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Warum muss die Markt- und Leistungsanalyse vor der Formulierung der Produkt- und Marktziele durchgeführt werden?",
     options: [
@@ -113,7 +114,7 @@ window.QUESTIONS = [
     explain: "Die Markt- und Leistungsanalyse liefert die Grundlage für realistische Zielsetzungen. Ohne Kenntnis der Marktgrösse, der Konkurrenz und der eigenen Leistungsposition wären die Ziele nicht fundiert."
   },
   {
-    id: "e08", topic: "marketing", type: "mc", diff: 3, tax: "K5"
+    id: "e08", topic: "marketing", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein Start-up plant den Markteintritt mit einem neuartigen Produkt. Es hat wenig Budget und kennt den Markt kaum. Welcher Schritt des Marketingkonzepts ist für dieses Unternehmen besonders kritisch?",
     options: [
@@ -126,7 +127,7 @@ window.QUESTIONS = [
     explain: "Für ein Start-up, das den Markt noch nicht kennt, ist die Markt- und Leistungsanalyse besonders kritisch. Ohne dieses Wissen besteht die Gefahr, am Markt vorbei zu produzieren und knappe Ressourcen falsch einzusetzen."
   },
   {
-    id: "e09", topic: "marketing", type: "tf", diff: 3, tax: "K4"
+    id: "e09", topic: "marketing", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Unternehmen, das seit Jahrzehnten erfolgreich am Markt ist, kann auf die Markt- und Leistungsanalyse verzichten, da es den Markt bereits gut kennt.",
     correct: false,
@@ -139,7 +140,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "g01", topic: "marktgroesse", type: "mc", diff: 1, tax: "K1"
+    id: "g01", topic: "marktgroesse", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche drei Kennzahlen werden zur Analyse der Marktgrösse verwendet?",
     options: [
@@ -152,7 +153,7 @@ window.QUESTIONS = [
     explain: "Für die Analyse der Marktgrösse werden drei Kennzahlen verwendet: das Marktpotenzial, das Marktvolumen und der Sättigungsgrad."
   },
   {
-    id: "g02", topic: "marktgroesse", type: "fill", diff: 1, tax: "K1"
+    id: "g02", topic: "marktgroesse", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Das {0} beschreibt die theoretisch höchstmögliche Absatzmenge einer Leistung im Markt.",
     blanks: [
@@ -161,14 +162,14 @@ window.QUESTIONS = [
     explain: "Das Marktpotenzial beschreibt die theoretisch höchstmögliche Absatzmenge einer Leistung im Markt. Es handelt sich um eine Abschätzung der Aufnahmefähigkeit eines Marktes."
   },
   {
-    id: "g03", topic: "marktgroesse", type: "tf", diff: 1, tax: "K1"
+    id: "g03", topic: "marktgroesse", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Das Marktvolumen gibt die effektiv verkaufte Menge einer Leistung pro Jahr an.",
     correct: true,
     explain: "Das Marktvolumen gibt die effektiv verkaufte Menge einer Leistung pro Jahr an. Berücksichtigt werden dabei die Umsatzzahlen aller Anbieter."
   },
   {
-    id: "g04", topic: "marktgroesse", type: "mc", diff: 1, tax: "K2"
+    id: "g04", topic: "marktgroesse", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Was zeigt der Sättigungsgrad eines Marktes an?",
     options: [
@@ -183,7 +184,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "g05", topic: "marktgroesse", type: "calc", diff: 2, tax: "K3"
+    id: "g05", topic: "marktgroesse", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Das Marktpotenzial für Elektrofahrräder in der Schweiz wird auf CHF 800 Mio. geschätzt. Das aktuelle Marktvolumen beträgt CHF 520 Mio. Berechnen Sie den Sättigungsgrad.",
     rows: [
@@ -192,7 +193,7 @@ window.QUESTIONS = [
     explain: "Sättigungsgrad = (Marktvolumen / Marktpotenzial) × 100 = (520 / 800) × 100 = 65 %. Der Markt hat noch Wachstumspotenzial von rund 35 %."
   },
   {
-    id: "g06", topic: "marktgroesse", type: "mc", diff: 2, tax: "K2"
+    id: "g06", topic: "marktgroesse", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was bedeutet ein hoher Sättigungsgrad für Unternehmen auf dem Markt?",
     options: [
@@ -205,7 +206,7 @@ window.QUESTIONS = [
     explain: "Ist der Sättigungsgrad hoch, kann der Markt kaum noch wachsen. Eine Umsatzsteigerung ist dann nur noch auf Kosten der Konkurrenz möglich – es findet ein Verdrängungskampf statt."
   },
   {
-    id: "g07", topic: "marktgroesse", type: "multi", diff: 2, tax: "K2"
+    id: "g07", topic: "marktgroesse", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zum Marktpotenzial sind korrekt? (Mehrere Antworten möglich.)",
     options: [
@@ -218,7 +219,7 @@ window.QUESTIONS = [
     explain: "Das Marktpotenzial ist die theoretisch höchstmögliche Absatzmenge (A), wird als Umsatzzahl angegeben (B) und basiert auf einer Abschätzung (D). Der tatsächlich erzielte Umsatz aller Anbieter ist das Marktvolumen, nicht das Marktpotenzial (C ist falsch)."
   },
   {
-    id: "g08", topic: "marktgroesse", type: "tf", diff: 2, tax: "K2"
+    id: "g08", topic: "marktgroesse", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein tiefer Sättigungsgrad deutet auf einen wachsenden Markt hin, der für Unternehmen besonders attraktiv ist.",
     correct: true,
@@ -227,7 +228,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "g09", topic: "marktgroesse", type: "calc", diff: 3, tax: "K3"
+    id: "g09", topic: "marktgroesse", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Der Schweizer Markt für Bio-Lebensmittel hat ein geschätztes Marktpotenzial von CHF 6 Mrd. und einen Sättigungsgrad von 58 %. Berechnen Sie das aktuelle Marktvolumen.",
     rows: [
@@ -236,7 +237,7 @@ window.QUESTIONS = [
     explain: "Sättigungsgrad = Marktvolumen / Marktpotenzial × 100. Umgestellt: Marktvolumen = Sättigungsgrad × Marktpotenzial / 100 = 58 % × 6 Mrd. / 100 = 3.48 Mrd. CHF."
   },
   {
-    id: "g10", topic: "marktgroesse", type: "mc", diff: 3, tax: "K4"
+    id: "g10", topic: "marktgroesse", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Der Markt für Streaming-Dienste in der Schweiz hat einen Sättigungsgrad von 92 %. Welche strategische Konsequenz ergibt sich daraus am ehesten für einen neuen Anbieter?",
     options: [
@@ -249,7 +250,7 @@ window.QUESTIONS = [
     explain: "Bei einem Sättigungsgrad von 92 % ist der Markt nahezu gesättigt. Neukunden zu gewinnen ist schwierig, und Wachstum ist fast nur über die Verdrängung bestehender Anbieter möglich. Ein Markteintritt ist daher sehr riskant und erfordert ein klares Differenzierungsmerkmal."
   },
   {
-    id: "g11", topic: "marktgroesse", type: "mc", diff: 3, tax: "K5"
+    id: "g11", topic: "marktgroesse", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Warum ist das Marktpotenzial immer nur eine Schätzung und kein exakter Wert?",
     options: [
@@ -268,7 +269,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "s01", topic: "marktstellung", type: "fill", diff: 1, tax: "K1"
+    id: "s01", topic: "marktstellung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der {0} entspricht dem Anteil in Prozent am Marktvolumen, welchen ein Unternehmen erwirtschaftet hat.",
     blanks: [
@@ -277,7 +278,7 @@ window.QUESTIONS = [
     explain: "Der Marktanteil entspricht dem Anteil in Prozent am Marktvolumen (bzw. vom Gesamtumsatz), welchen ein Unternehmen erwirtschaftet hat."
   },
   {
-    id: "s02", topic: "marktstellung", type: "mc", diff: 1, tax: "K1"
+    id: "s02", topic: "marktstellung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie wird das Unternehmen mit dem höchsten Marktanteil bezeichnet?",
     options: [
@@ -290,7 +291,7 @@ window.QUESTIONS = [
     explain: "Das Unternehmen mit dem höchsten Marktanteil wird als Marktführer (bzw. Marktleader) bezeichnet."
   },
   {
-    id: "s03", topic: "marktstellung", type: "tf", diff: 1, tax: "K1"
+    id: "s03", topic: "marktstellung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der relative Marktanteil setzt den eigenen Marktanteil ins Verhältnis zum Marktanteil des stärksten Konkurrenten.",
     correct: true,
@@ -299,7 +300,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "s04", topic: "marktstellung", type: "calc", diff: 2, tax: "K3"
+    id: "s04", topic: "marktstellung", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Das Marktvolumen für Sportschuhe in der Schweiz beträgt CHF 450 Mio. Ein Unternehmen erzielt einen Umsatz von CHF 72 Mio. Berechnen Sie den Marktanteil des Unternehmens.",
     rows: [
@@ -308,7 +309,7 @@ window.QUESTIONS = [
     explain: "Marktanteil = (Umsatz des Unternehmens / Marktvolumen) × 100 = (72 / 450) × 100 = 16 %."
   },
   {
-    id: "s05", topic: "marktstellung", type: "calc", diff: 2, tax: "K3"
+    id: "s05", topic: "marktstellung", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Unternehmen A hat einen Marktanteil von 8 %. Der Marktführer (Unternehmen B) hat einen Marktanteil von 20 %. Berechnen Sie den relativen Marktanteil von Unternehmen A.",
     rows: [
@@ -317,7 +318,7 @@ window.QUESTIONS = [
     explain: "Relativer Marktanteil = Eigener Marktanteil / Marktanteil des grössten Konkurrenten = 8 % / 20 % = 0,4. Ein Wert unter 1 bedeutet, dass das Unternehmen nicht Marktführer ist."
   },
   {
-    id: "s06", topic: "marktstellung", type: "mc", diff: 2, tax: "K2"
+    id: "s06", topic: "marktstellung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Warum kann ein hoher Marktanteil für ein Unternehmen vorteilhaft sein?",
     options: [
@@ -330,7 +331,7 @@ window.QUESTIONS = [
     explain: "Ein hoher Marktanteil (Marktführerschaft) kann es dem Unternehmen ermöglichen, den Markt nach seinen Bedingungen zu gestalten, z.B. bei der Preissetzung oder bei Produktstandards."
   },
   {
-    id: "s07", topic: "marktstellung", type: "tf", diff: 2, tax: "K2"
+    id: "s07", topic: "marktstellung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein relativer Marktanteil von genau 1,0 bedeutet, dass das Unternehmen und sein stärkster Konkurrent gleich grosse Marktanteile haben.",
     correct: true,
@@ -339,7 +340,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "s08", topic: "marktstellung", type: "calc", diff: 3, tax: "K3"
+    id: "s08", topic: "marktstellung", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Der Pharma-Markt hat ein Marktvolumen von USD 1162 Mrd. Roche erzielt einen Umsatz von USD 62,1 Mrd. und Sinopharm (Marktführer) USD 66,3 Mrd. Berechnen Sie den Marktanteil von Roche und den relativen Marktanteil von Roche.",
     rows: [
@@ -349,7 +350,7 @@ window.QUESTIONS = [
     explain: "Marktanteil Roche = (62,1 / 1162) × 100 = 5,3 %. Relativer Marktanteil Roche = 5,3 % / 5,7 % = 0,93. Obwohl Roche nicht Marktführer ist, liegt der relative Marktanteil nahe bei 1, was auf einen stark umkämpften Markt ohne klaren Dominanten hindeutet."
   },
   {
-    id: "s09", topic: "marktstellung", type: "mc", diff: 3, tax: "K4"
+    id: "s09", topic: "marktstellung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Der relative Marktanteil von Roche im Pharma-Markt beträgt 0,93. Was lässt sich daraus über die Marktstruktur ableiten?",
     options: [
@@ -362,7 +363,7 @@ window.QUESTIONS = [
     explain: "Ein relativer Marktanteil von 0,93 liegt sehr nahe bei 1,0. Das bedeutet, dass Roche und der Marktführer fast gleich grosse Marktanteile haben. Der Pharma-Markt ist stark umkämpft mit mehreren grossen Anbietern, ohne dass ein einzelner dominiert."
   },
   {
-    id: "s10", topic: "marktstellung", type: "multi", diff: 3, tax: "K4"
+    id: "s10", topic: "marktstellung", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Wann ist der relative Marktanteil aussagekräftiger als der absolute Marktanteil? (Mehrere Antworten möglich.)",
     options: [
@@ -381,7 +382,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "z01", topic: "segmentierung", type: "mc", diff: 1, tax: "K1"
+    id: "z01", topic: "segmentierung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was versteht man unter Marktsegmentierung?",
     options: [
@@ -394,7 +395,7 @@ window.QUESTIONS = [
     explain: "Marktsegmentierung bedeutet, den Gesamtmarkt in Teilmärkte (Marktsegmente) aufzuteilen. Die Segmente bestehen aus Konsumenten, die sich anhand bestimmter Kriterien gruppieren lassen."
   },
   {
-    id: "z02", topic: "segmentierung", type: "multi", diff: 1, tax: "K1"
+    id: "z02", topic: "segmentierung", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche der folgenden sind Kriterien zur Marktsegmentierung? (Mehrere Antworten möglich.)",
     options: [
@@ -407,7 +408,7 @@ window.QUESTIONS = [
     explain: "Die vier Hauptkriterien der Marktsegmentierung sind: Geografie, Demografie, Kundenverhalten und Psychografie. Die Eigenkapitalquote ist eine interne Finanzkennzahl und kein Segmentierungskriterium."
   },
   {
-    id: "z03", topic: "segmentierung", type: "fill", diff: 1, tax: "K1"
+    id: "z03", topic: "segmentierung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Das Unternehmen wählt aus den verschiedenen Marktsegmenten seine {0} aus.",
     blanks: [
@@ -418,7 +419,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "z04", topic: "segmentierung", type: "mc", diff: 2, tax: "K2"
+    id: "z04", topic: "segmentierung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welches Segmentierungskriterium wird angewendet, wenn ein Reiseanbieter seine Angebote nach «Familien mit Kindern», «Abenteuerreisende» und «Senioren» unterteilt?",
     options: [
@@ -431,7 +432,7 @@ window.QUESTIONS = [
     explain: "Die Unterteilung nach Familien, Abenteuerreisenden und Senioren basiert primär auf demografischen Kriterien wie Alter und Familienstand."
   },
   {
-    id: "z05", topic: "segmentierung", type: "mc", diff: 2, tax: "K2"
+    id: "z05", topic: "segmentierung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Kosmetikunternehmen beschreibt seine Zielgruppe als «Frauen um die 30, die Karriere machen, Wert auf ein gepflegtes Äusseres legen und in etablierten Parfümerieketten einkaufen». Welche Segmentierungskriterien werden hier kombiniert?",
     options: [
@@ -444,7 +445,7 @@ window.QUESTIONS = [
     explain: "Hier werden mehrere Kriterien kombiniert: Demografie (Frauen um 30, Beruf), Psychografie (Wert auf gepflegtes Äusseres) und Kundenverhalten (Einkauf in Parfümerieketten). In der Praxis werden Marktsegmente meist anhand einer Kombination von Kriterien gebildet."
   },
   {
-    id: "z06", topic: "segmentierung", type: "multi", diff: 2, tax: "K2"
+    id: "z06", topic: "segmentierung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei der Konkurrenzanalyse interessieren vor allem folgende Punkte: (Mehrere Antworten möglich.)",
     options: [
@@ -459,7 +460,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "z07", topic: "segmentierung", type: "mc", diff: 3, tax: "K4"
+    id: "z07", topic: "segmentierung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Schweizer Bio-Getränkehersteller will seine Zielgruppe definieren. Er segmentiert nach Geografie (Deutschschweiz), Demografie (25–45 Jahre, mittleres bis hohes Einkommen), Psychografie (umweltbewusst) und Kundenverhalten (kauft regelmässig im Bio-Fachhandel). Welcher Vorteil ergibt sich aus dieser Kombination?",
     options: [
@@ -472,14 +473,14 @@ window.QUESTIONS = [
     explain: "Je präziser die Zielgruppe definiert ist, desto gezielter können Marketingmassnahmen auf deren Bedürfnisse abgestimmt werden (Produktgestaltung, Kommunikation, Vertriebskanäle). Allerdings wird die Zielgruppe kleiner (nicht grösser), was eine bewusste strategische Entscheidung ist."
   },
   {
-    id: "z08", topic: "segmentierung", type: "tf", diff: 3, tax: "K4"
+    id: "z08", topic: "segmentierung", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Zur Beantwortung von Fragen über die Konkurrenz genügt es in der Regel, das Verhalten der Konkurrenz zu beobachten und Unternehmensinformationen auszuwerten (Sekundärmarktforschung).",
     correct: true,
     explain: "Das Lehrbuch bestätigt: Zur Beantwortung von Fragen über die Konkurrenz genügt es in der Regel, die Konkurrenz zu beobachten und Unternehmensinformationen (Sekundärmarktforschung) auszuwerten."
   },
   {
-    id: "z09", topic: "segmentierung", type: "mc", diff: 3, tax: "K5"
+    id: "z09", topic: "segmentierung", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein Unternehmen stellt fest, dass seine Konkurrenten zunehmend in Online-Marketing investieren, während es selbst nur klassische Printwerbung einsetzt. Welche Schlussfolgerung ist am sinnvollsten?",
     options: [
@@ -498,7 +499,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "b01", topic: "bcg", type: "mc", diff: 1, tax: "K1"
+    id: "b01", topic: "bcg", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Von wem wurde die BCG-Portfolio-Methode entwickelt?",
     options: [
@@ -511,7 +512,7 @@ window.QUESTIONS = [
     explain: "Die BCG-Portfolio-Methode wurde von der Boston Consulting Group (BCG) entwickelt, einem weltweit tätigen Managementberatungs-Unternehmen."
   },
   {
-    id: "b02", topic: "bcg", type: "fill", diff: 1, tax: "K1"
+    id: "b02", topic: "bcg", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die BCG-Portfolio-Methode beurteilt Leistungen anhand von zwei Grössen: dem {0} und dem {1}.",
     blanks: [
@@ -521,7 +522,7 @@ window.QUESTIONS = [
     explain: "Das BCG-Portfolio beurteilt Leistungen nach zwei Grössen: dem Marktwachstum (y-Achse) und dem relativen Marktanteil (x-Achse)."
   },
   {
-    id: "b03", topic: "bcg", type: "multi", diff: 1, tax: "K1"
+    id: "b03", topic: "bcg", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche der folgenden sind Quadranten des BCG-Portfolios? (Mehrere Antworten möglich.)",
     options: [
@@ -534,7 +535,7 @@ window.QUESTIONS = [
     explain: "Die vier Quadranten des BCG-Portfolios sind: Poor Dogs, Question Marks, Stars und Cash Cows. «Rising Stars» existiert im BCG-Modell nicht."
   },
   {
-    id: "b04", topic: "bcg", type: "mc", diff: 1, tax: "K1"
+    id: "b04", topic: "bcg", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Leistungen zeichnen sich durch einen hohen Marktanteil und niedrige Marktwachstumsraten aus?",
     options: [
@@ -549,7 +550,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "b05", topic: "bcg", type: "mc", diff: 2, tax: "K2"
+    id: "b05", topic: "bcg", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist die Normstrategie für Poor Dogs?",
     options: [
@@ -562,7 +563,7 @@ window.QUESTIONS = [
     explain: "Poor Dogs haben einen kleinen Marktanteil und niedrige Marktwachstumsraten. Die Normstrategie ist der Ausstieg: Abbau dieser Leistungen und Einsatz der frei werdenden Ressourcen für besser positionierte Marktleistungen."
   },
   {
-    id: "b06", topic: "bcg", type: "mc", diff: 2, tax: "K2"
+    id: "b06", topic: "bcg", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Warum sind Stars trotz ihres Erfolgs kostenintensiv?",
     options: [
@@ -575,14 +576,14 @@ window.QUESTIONS = [
     explain: "Stars haben einen hohen Marktanteil in wachsenden Märkten. Um diese Position zu halten oder auszubauen, sind hohe Investitionen in Werbung und Marktbearbeitung nötig – Stars sind daher werbe- und kostenintensiv."
   },
   {
-    id: "b07", topic: "bcg", type: "tf", diff: 2, tax: "K2"
+    id: "b07", topic: "bcg", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Cash Cows erwirtschaften hohe und stabile Gewinne bei niedrigen Ausgaben, weil sie keine nennenswerten Investitionen mehr erfordern.",
     correct: true,
     explain: "Da Cash Cows ihre Leistung früher oder später verlieren werden, wird kaum noch investiert. Trotzdem erzielen sie einen beachtlichen Umsatz bei kaum noch Ausgaben, weshalb sie hohe und stabile Gewinne abwerfen."
   },
   {
-    id: "b08", topic: "bcg", type: "multi", diff: 2, tax: "K2"
+    id: "b08", topic: "bcg", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zu Question Marks sind korrekt? (Mehrere Antworten möglich.)",
     options: [
@@ -597,7 +598,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "b09", topic: "bcg", type: "mc", diff: 3, tax: "K4"
+    id: "b09", topic: "bcg", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     img: {src: "img/bwl/marketing/bcg_portfolio_01.svg", alt: "BCG-Portfolio mit vier Leistungen eines Unternehmens"},
     q: "Ein Unternehmen hat folgendes Portfolio: Leistung A (Poor Dog, CHF 200'000), Leistung B (Star, CHF 425'000), Leistung C (Cash Cow / Star-Grenze, CHF 800'000), Leistung D (Cash Cow, CHF 950'000). Warum ist dieses Portfolio problematisch?",
@@ -611,7 +612,7 @@ window.QUESTIONS = [
     explain: "Obwohl das Portfolio viele umsatzstarke Leistungen hat, fehlen Question Marks als Nachfolgeprodukte. Wenn die Cash Cows und Stars ihre Marktposition verlieren, hat das Unternehmen keine Nachfolger – es wird mittel- bis langfristig Probleme bekommen."
   },
   {
-    id: "b10", topic: "bcg", type: "mc", diff: 3, tax: "K5"
+    id: "b10", topic: "bcg", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein Unternehmen hat drei Cash Cows und ein Question Mark. Wie sollte es seine finanziellen Mittel strategisch einsetzen?",
     options: [
@@ -624,7 +625,7 @@ window.QUESTIONS = [
     explain: "Die Cash Cows generieren hohe Gewinne bei niedrigen Investitionskosten. Diese Mittel sollten strategisch eingesetzt werden, um das Question Mark durch intensive Marktbearbeitung zum Star zu entwickeln – das sichert die Zukunft des Unternehmens."
   },
   {
-    id: "b11", topic: "bcg", type: "mc", diff: 3, tax: "K4"
+    id: "b11", topic: "bcg", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welcher Zusammenhang besteht zwischen dem BCG-Portfolio und dem Produktlebenszyklus?",
     options: [
@@ -637,7 +638,7 @@ window.QUESTIONS = [
     explain: "Es besteht ein typischer Zusammenhang: Neue Produkte starten oft als Question Marks (Einführungsphase), werden bei Erfolg zu Stars (Wachstumsphase), dann zu Cash Cows (Reife-/Sättigungsphase) und schliesslich zu Poor Dogs (Rückgangsphase)."
   },
   {
-    id: "b12", topic: "bcg", type: "tf", diff: 3, tax: "K5"
+    id: "b12", topic: "bcg", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Ein ausgewogenes BCG-Portfolio enthält Leistungen in allen vier Quadranten.",
     correct: false,
@@ -650,7 +651,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "p01", topic: "plz", type: "mc", diff: 1, tax: "K1"
+    id: "p01", topic: "plz", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche fünf Phasen umfasst der Produktlebenszyklus?",
     options: [
@@ -663,7 +664,7 @@ window.QUESTIONS = [
     explain: "Der Produktlebenszyklus umfasst fünf Phasen: Einführung, Wachstum, Reife, Sättigung und Rückgang. Diese beschreiben den Verlauf von Umsatz und Gewinn über die Zeit."
   },
   {
-    id: "p02", topic: "plz", type: "fill", diff: 1, tax: "K1"
+    id: "p02", topic: "plz", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der Punkt, an dem die Umsatzkurve die Gewinnschwelle erreicht, heisst {0}.",
     blanks: [
@@ -672,14 +673,14 @@ window.QUESTIONS = [
     explain: "Die Gewinnschwelle (Break-even) ist der Punkt, an dem der Umsatz erstmals die Kosten deckt und das Produkt beginnt, Gewinn zu erzielen."
   },
   {
-    id: "p03", topic: "plz", type: "tf", diff: 1, tax: "K1"
+    id: "p03", topic: "plz", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "In der Einführungsphase wird in der Regel noch kaum Gewinn realisiert, obwohl der Umsatz bereits steigt.",
     correct: true,
     explain: "In der Einführungsphase sind die Kosten sehr hoch (Anfangsinvestitionen, Bekanntmachung), sodass bei steigendem Umsatz noch kaum Gewinn realisiert wird."
   },
   {
-    id: "p04", topic: "plz", type: "mc", diff: 1, tax: "K1"
+    id: "p04", topic: "plz", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welcher Phase des Produktlebenszyklus erreichen Umsatz und Gewinnkurve ihren Höhepunkt?",
     options: [
@@ -694,7 +695,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "p05", topic: "plz", type: "mc", diff: 2, tax: "K2"
+    id: "p05", topic: "plz", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Warum besteht in der Einführungsphase ein hohes Risiko für das Produkt?",
     options: [
@@ -707,7 +708,7 @@ window.QUESTIONS = [
     explain: "In der Einführungsphase entscheidet sich, ob die Leistung am Markt Fuss fassen kann. Falls nicht, wird sie aus dem Sortiment genommen. Das Risiko des Scheiterns ist hier am höchsten."
   },
   {
-    id: "p06", topic: "plz", type: "multi", diff: 2, tax: "K2"
+    id: "p06", topic: "plz", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Merkmale kennzeichnen die Sättigungsphase? (Mehrere Antworten möglich.)",
     options: [
@@ -720,7 +721,7 @@ window.QUESTIONS = [
     explain: "In der Sättigungsphase ist der Markt gesättigt, der Preiskampf intensiv (A), die Umsatzkurve flacht ab und der Gewinn sinkt (B). Um den Ausstieg hinauszuzögern, werden oft Varianten der Leistung lanciert (C). Die Anstrengungen für Marketing werden eher reduziert, da kaum noch Neukunden zu erreichen sind (D falsch)."
   },
   {
-    id: "p07", topic: "plz", type: "mc", diff: 2, tax: "K2"
+    id: "p07", topic: "plz", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was geschieht typischerweise in der Rückgangsphase eines Produkts?",
     options: [
@@ -733,7 +734,7 @@ window.QUESTIONS = [
     explain: "In der Rückgangsphase wenden sich Kunden neuen, innovativeren Produkten zu. Der Umsatz bricht ein, der Gewinn tendiert gegen null oder es entstehen sogar Verluste. Das Unternehmen ersetzt die Leistung durch neue Produkte."
   },
   {
-    id: "p08", topic: "plz", type: "tf", diff: 2, tax: "K2"
+    id: "p08", topic: "plz", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "In der Reifephase richten sich Marketingaktivitäten vor allem gegen die Mitkonkurrenten, um Marktanteile zu gewinnen.",
     correct: true,
@@ -742,7 +743,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "p09", topic: "plz", type: "mc", diff: 3, tax: "K4"
+    id: "p09", topic: "plz", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Coca-Cola (seit 1886) und das iPhone (seit 2007) durchlaufen beide den Produktlebenszyklus. Was erklärt den Unterschied in der Dauer der Sättigungsphase?",
     options: [
@@ -755,7 +756,7 @@ window.QUESTIONS = [
     explain: "Die Dauer der einzelnen Phasen, insbesondere der Sättigungsphase, variiert stark je nach Produktart. Produkte wie Coca-Cola halten sich seit über 100 Jahren, während Technologieprodukte wie Handys und Computer innerhalb kurzer Zeit veralten."
   },
   {
-    id: "p10", topic: "plz", type: "mc", diff: 3, tax: "K5"
+    id: "p10", topic: "plz", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     q: "Warum ist es für ein Unternehmen wichtig, dass sich seine verschiedenen Marktleistungen nicht alle in derselben Phase des Produktlebenszyklus befinden?",
     options: [
@@ -768,7 +769,7 @@ window.QUESTIONS = [
     explain: "Es ist entscheidend, dass sich die Produkte in verschiedenen Phasen befinden, damit die Geldflüsse die Waage halten: Cash Cows (Reife/Sättigung) finanzieren neue Produkte in der Einführungs- und Wachstumsphase. So steht das Unternehmen nicht plötzlich ohne einzige verkaufbare Leistung da."
   },
   {
-    id: "p11", topic: "plz", type: "mc", diff: 3, tax: "K4"
+    id: "p11", topic: "plz", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Swiffer lancierte nach Swiffer Dry auch Swiffer Wet, und Rivella erweiterte sein Sortiment über die Jahre um neue Geschmacksrichtungen. In welcher Phase des Produktlebenszyklus treten solche Varianten typischerweise auf?",
     options: [
@@ -781,7 +782,7 @@ window.QUESTIONS = [
     explain: "In der Sättigungsphase werden häufig Varianten zur ursprünglichen Marktleistung lanciert, um den Ausstieg hinauszuzögern. Die Beispiele Swiffer (Dry → Wet) und Rivella (neue Geschmacksrichtungen) illustrieren diese Strategie."
   },
   {
-    id: "p12", topic: "plz", type: "tf", diff: 3, tax: "K5"
+    id: "p12", topic: "plz", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Das Modell des Produktlebenszyklus lässt sich nutzen, um den exakten Zeitpunkt vorherzusagen, an dem ein Produkt in die Rückgangsphase eintritt.",
     correct: false,

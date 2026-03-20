@@ -5,6 +5,7 @@
 // ============================================================
 
 window.POOL_META = {
+  id: "bwl_einfuehrung",
   title: "Einführung BWL – Grundlagen der Betriebswirtschaftslehre",
   fach: "BWL",
   color: "#01a9f4",
@@ -34,7 +35,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "w01", topic: "wirtschaft", type: "mc", diff: 1, tax: "K1"
+    id: "w01", topic: "wirtschaft", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist ein Bedürfnis?",
     options: [
@@ -47,7 +48,7 @@ window.QUESTIONS = [
     explain: "Ein Bedürfnis ist gemäss Definition der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern. Bedürfnisse sind der Ausgangspunkt wirtschaftlicher Aktivitäten."
   },
   {
-    id: "w02", topic: "wirtschaft", type: "mc", diff: 1, tax: "K1"
+    id: "w02", topic: "wirtschaft", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Stufe der Maslow'schen Bedürfnispyramide bildet die Basis?",
     options: [
@@ -61,7 +62,7 @@ window.QUESTIONS = [
     explain: "Die physiologischen Bedürfnisse (z.B. Nahrung, Schlaf, Wärme) bilden die unterste Stufe der Pyramide. Sie müssen zuerst befriedigt werden, bevor höhere Bedürfnisse relevant werden."
   },
   {
-    id: "w03", topic: "wirtschaft", type: "fill", diff: 1, tax: "K1"
+    id: "w03", topic: "wirtschaft", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Bedürfnisse der Menschen sind der Ausgangspunkt der {0}. Diese ungelösten Probleme bieten die Möglichkeit für das Anbieten von Lösungen, für welche eine {1} bestehen kann.",
     blanks: [
@@ -71,14 +72,14 @@ window.QUESTIONS = [
     explain: "Bedürfnisse sind der Motor der Wirtschaft. Wenn Menschen bereit sind, für die Lösung eines Problems zu bezahlen, entsteht ein Markt."
   },
   {
-    id: "w04", topic: "wirtschaft", type: "tf", diff: 1, tax: "K2"
+    id: "w04", topic: "wirtschaft", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Dem Menschen gelingt es, alle seine Bedürfnisse vollständig zu befriedigen, wenn er genug Geld verdient.",
     correct: false,
     explain: "Falsch. Dem Menschen gelingt es nie, alle seine Bedürfnisse zu befriedigen. Sein Budget ist beschränkt und die zur Verfügung stehenden Ressourcen und Güter sind knapp. Auch mit viel Geld bleiben Bedürfnisse unerfüllt (z.B. Zeit, Gesundheit)."
   },
   {
-    id: "w05", topic: "wirtschaft", type: "mc", diff: 2, tax: "K2"
+    id: "w05", topic: "wirtschaft", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Aussagen beschreibt den Zusammenhang zwischen Bedürfnissen und Knappheit korrekt?",
     options: [
@@ -91,7 +92,7 @@ window.QUESTIONS = [
     explain: "Das Grundproblem der Wirtschaft ist, dass die menschlichen Bedürfnisse praktisch unbegrenzt sind, während die Ressourcen (Geld, Rohstoffe, Zeit) zur Befriedigung begrenzt sind. Dieses Spannungsfeld zwischen Bedarf und Deckungsmöglichkeit ist die Ursache der Knappheit."
   },
   {
-    id: "w06", topic: "wirtschaft", type: "multi", diff: 2, tax: "K2"
+    id: "w06", topic: "wirtschaft", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "In welchen Rollen sind Menschen mit der Wirtschaft verknüpft? (Mehrere Antworten möglich.)",
     options: [
@@ -104,7 +105,7 @@ window.QUESTIONS = [
     explain: "Alle Menschen sind auf vielfältige Weise mit der Wirtschaft verknüpft: als Arbeitnehmende (Einkommen erzielen), als Konsumierende (Bedürfnisse befriedigen), als Produzierende (Güter herstellen, Gewinn erzielen) und als Sparende (Zinsen erwirtschaften)."
   },
   {
-    id: "w07", topic: "wirtschaft", type: "mc", diff: 2, tax: "K2"
+    id: "w07", topic: "wirtschaft", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Frau Wepfer schliesst eine Privathaftpflichtversicherung ab. Welcher Kategorie der Maslow'schen Bedürfnispyramide entspricht dieses Bedürfnis?",
     options: [
@@ -117,7 +118,7 @@ window.QUESTIONS = [
     explain: "Eine Privathaftpflichtversicherung dient der Absicherung gegen finanzielle Risiken. Dies entspricht einem Sicherheitsbedürfnis (Schutz vor Gefahren, festes Einkommen, Absicherung, Unterkunft)."
   },
   {
-    id: "w08", topic: "wirtschaft", type: "mc", diff: 3, tax: "K4"
+    id: "w08", topic: "wirtschaft", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Herr Sommer kauft sich einen Porsche. Welche Bedürfniskategorie(n) könnten hier zutreffen?",
     options: [
@@ -130,14 +131,14 @@ window.QUESTIONS = [
     explain: "Ein Porsche geht weit über das Grundbedürfnis nach Mobilität hinaus. Der Kauf eines Luxusautos befriedigt primär das Bedürfnis nach Anerkennung und Prestige (Achtung). Je nach Motivation kann auch Selbstverwirklichung eine Rolle spielen."
   },
   {
-    id: "w09", topic: "wirtschaft", type: "tf", diff: 3, tax: "K5"
+    id: "w09", topic: "wirtschaft", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Die Maslow'sche Bedürfnispyramide impliziert, dass höhere Bedürfnisse erst dann relevant werden, wenn die darunterliegenden vollständig befriedigt sind. Dieses Modell bildet die Realität exakt ab.",
     correct: false,
     explain: "Falsch. Die Maslow'sche Bedürfnispyramide ist ein vereinfachtes Modell. In der Realität können Menschen durchaus höhere Bedürfnisse verfolgen, obwohl niedrigere noch nicht vollständig befriedigt sind (z.B. Künstler, die trotz finanzieller Not kreativ arbeiten). Die starre Hierarchie ist eine Kritik am Modell."
   },
   {
-    id: "w10", topic: "wirtschaft", type: "fill", diff: 2, tax: "K1"
+    id: "w10", topic: "wirtschaft", type: "fill", diff: 2, tax: "K1",
  reviewed:false,
     q: "{0} bedeutet eine möglichst effiziente Umwandlung von Inputs hin zu Outputs, also die Vermeidung von Verschwendung.",
     blanks: [
@@ -151,7 +152,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "g01", topic: "gueter", type: "mc", diff: 1, tax: "K1"
+    id: "g01", topic: "gueter", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie werden Güter genannt, die durch die Wirtschaft bereitgestellt werden und der Bedürfnisbefriedigung dienen?",
     options: [
@@ -164,7 +165,7 @@ window.QUESTIONS = [
     explain: "Wirtschaftsgüter sind Güter, die knapp sind und bewirtschaftet werden müssen. Im Gegensatz dazu sind freie Güter (wie Luft) in ausreichender Menge vorhanden und werden von der BWL nicht näher betrachtet."
   },
   {
-    id: "g02", topic: "gueter", type: "mc", diff: 1, tax: "K2"
+    id: "g02", topic: "gueter", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Welches der folgenden Beispiele ist ein Verbrauchsgut?",
     options: [
@@ -178,14 +179,14 @@ window.QUESTIONS = [
     explain: "Lebensmittel sind Verbrauchsgüter, weil sie mit dem Konsum verbraucht werden. Fernseher, Bücher und Kletterseile können wiederholt benutzt werden und sind somit Gebrauchsgüter."
   },
   {
-    id: "g03", topic: "gueter", type: "tf", diff: 1, tax: "K2"
+    id: "g03", topic: "gueter", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Dienstleistungen zählen zu den immateriellen Gütern.",
     correct: true,
     explain: "Richtig. Immaterielle Güter umfassen Dienstleistungen aller Art, Patente, Rechte und Lizenzen. Im Gegensatz dazu sind materielle Güter (Sachgüter) physisch greifbar."
   },
   {
-    id: "g04", topic: "gueter", type: "fill", diff: 1, tax: "K1"
+    id: "g04", topic: "gueter", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Materielle Güter lassen sich in {0} und {1} unterteilen.",
     blanks: [
@@ -195,7 +196,7 @@ window.QUESTIONS = [
     explain: "Materielle Güter (Sachgüter) werden in Konsumgüter (für den privaten Verbrauch) und Investitionsgüter (für die Erstellung von Konsumgütern, z.B. Maschinen) unterteilt."
   },
   {
-    id: "g05", topic: "gueter", type: "mc", diff: 2, tax: "K2"
+    id: "g05", topic: "gueter", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was unterscheidet Investitionsgüter von Konsumgütern?",
     options: [
@@ -208,7 +209,7 @@ window.QUESTIONS = [
     explain: "Investitionsgüter (z.B. Maschinen, Fahrzeuge) werden für die Erstellung von Konsumgütern verwendet. Sie tragen somit indirekt zur Bedürfnisbefriedigung bei, während Konsumgüter direkt dem privaten Verbrauch dienen."
   },
   {
-    id: "g06", topic: "gueter", type: "multi", diff: 2, tax: "K2"
+    id: "g06", topic: "gueter", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zum ökonomischen Prinzip treffen zu? (Mehrere Antworten möglich.)",
     options: [
@@ -221,7 +222,7 @@ window.QUESTIONS = [
     explain: "Das ökonomische Prinzip kennt drei Varianten: Maximumprinzip (gegebener Input → maximaler Output), Minimumprinzip (vorgegebener Output → minimaler Input) und Optimumprinzip (Input und Output optimal abstimmen). Ein «Gewinnprinzip» gibt es in dieser Form nicht."
   },
   {
-    id: "g07", topic: "gueter", type: "mc", diff: 2, tax: "K3"
+    id: "g07", topic: "gueter", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Unternehmen will aus 125 Holzlatten möglichst viele Tischplatten herstellen. Welches ökonomische Prinzip wird hier angewendet?",
     options: [
@@ -234,7 +235,7 @@ window.QUESTIONS = [
     explain: "Hier ist der Input (125 Holzlatten) gegeben und der Output (Anzahl Tischplatten) soll maximiert werden. Das entspricht dem Maximumprinzip (auch Ergiebigkeitsprinzip genannt)."
   },
   {
-    id: "g08", topic: "gueter", type: "mc", diff: 2, tax: "K3"
+    id: "g08", topic: "gueter", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Sechs Tischplatten sollen aus möglichst wenigen Holzlatten fabriziert werden. Welches ökonomische Prinzip wird angewendet?",
     options: [
@@ -247,7 +248,7 @@ window.QUESTIONS = [
     explain: "Hier ist der Output (sechs Tischplatten) vorgegeben und der Input (Holzlatten) soll minimiert werden. Das entspricht dem Minimumprinzip (auch Sparsamkeitsprinzip genannt)."
   },
   {
-    id: "g09", topic: "gueter", type: "mc", diff: 3, tax: "K3"
+    id: "g09", topic: "gueter", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Ein Flughafen soll mit vertretbaren Kosten so ausgebaut werden, dass damit mehr Passagiere befördert werden können. Welches ökonomische Prinzip wird hier angewendet?",
     options: [
@@ -260,14 +261,14 @@ window.QUESTIONS = [
     explain: "Weder der zu erreichende Output (Passagierzahl) noch der verfügbare Input (Budget) sind genau vorgegeben. Es wird nach dem Optimumprinzip vorgegangen: eine Abwägung zwischen Kosten und Nutzen, um eine optimale Relation zu finden."
   },
   {
-    id: "g10", topic: "gueter", type: "tf", diff: 3, tax: "K4"
+    id: "g10", topic: "gueter", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Produkte und Dienstleistungen bilden zusammen die Marktleistungen eines Unternehmens.",
     correct: true,
     explain: "Richtig. Konsum- und Investitionsgüter werden unter dem Begriff «Produkte» zusammengefasst und von den Dienstleistungen unterschieden. Produkte und Dienstleistungen bilden zusammen die Marktleistungen."
   },
   {
-    id: "g11", topic: "gueter", type: "mc", diff: 3, tax: "K4"
+    id: "g11", topic: "gueter", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Eine Maschine in einer Fabrik wird als Investitionsgut klassifiziert. Welcher Untertyp trifft zu?",
     options: [
@@ -285,7 +286,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "s01", topic: "struktur", type: "mc", diff: 1, tax: "K1"
+    id: "s01", topic: "struktur", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welcher Sektor umfasst die Land- und Forstwirtschaft, den Gartenbau und die Fischerei?",
     options: [
@@ -298,7 +299,7 @@ window.QUESTIONS = [
     explain: "Der 1. Sektor (Primärsektor) umfasst die Land- und Forstwirtschaft, den Gartenbau und die Fischerei."
   },
   {
-    id: "s02", topic: "struktur", type: "fill", diff: 1, tax: "K1"
+    id: "s02", topic: "struktur", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der 2. Sektor umfasst {0} und {1}. Der 3. Sektor umfasst die {2}.",
     blanks: [
@@ -309,14 +310,14 @@ window.QUESTIONS = [
     explain: "Die drei Wirtschaftssektoren: 1. Sektor = Land-/Forstwirtschaft; 2. Sektor = Industrie und Gewerbe; 3. Sektor = Dienstleistungen."
   },
   {
-    id: "s03", topic: "struktur", type: "tf", diff: 1, tax: "K2"
+    id: "s03", topic: "struktur", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "In der Schweiz arbeiten heute über 75% der Erwerbstätigen im 3. Sektor (Dienstleistungen).",
     correct: true,
     explain: "Richtig. Gemäss der Statistik arbeiten rund 76,7% der Erwerbstätigen im 3. Sektor. Die Schweiz ist eine typische Dienstleistungsgesellschaft."
   },
   {
-    id: "s04", topic: "struktur", type: "mc", diff: 2, tax: "K2"
+    id: "s04", topic: "struktur", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Wie hat sich die Verteilung der Erwerbstätigen auf die drei Sektoren in der Schweiz seit 1850 verändert?",
     options: [
@@ -329,7 +330,7 @@ window.QUESTIONS = [
     explain: "Seit 1850 hat ein massiver Strukturwandel stattgefunden: Der 1. Sektor (Landwirtschaft) ist von über 50% auf ca. 2,6% geschrumpft. Der 3. Sektor (Dienstleistungen) ist auf ca. 76,7% gewachsen. Der 2. Sektor (Industrie) lag zwischenzeitlich hoch und liegt heute bei ca. 20,7%."
   },
   {
-    id: "s05", topic: "struktur", type: "mc", diff: 2, tax: "K2"
+    id: "s05", topic: "struktur", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Branche hat in der Schweiz den höchsten monatlichen Medianlohn (Bruttolohn)?",
     options: [
@@ -342,7 +343,7 @@ window.QUESTIONS = [
     explain: "Gemäss der Schweizerischen Lohnstrukturerhebung hat das Finanz- und Versicherungsgewerbe mit CHF 9'630 den höchsten Medianlohn, gefolgt von IT und Kommunikation (CHF 8'724) sowie Erziehung und Unterricht (CHF 8'494)."
   },
   {
-    id: "s06", topic: "struktur", type: "multi", diff: 2, tax: "K2"
+    id: "s06", topic: "struktur", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zur Unternehmensstruktur der Schweiz sind korrekt? (Mehrere Antworten möglich.)",
     options: [
@@ -355,7 +356,7 @@ window.QUESTIONS = [
     explain: "99,7% der marktwirtschaftlichen Unternehmen sind KMU (bis 249 Vollzeitstellen). Grossunternehmen (ca. 1'706) beschäftigen mit ca. 1,5 Mio. Personen knapp ein Drittel aller Erwerbstätigen. Die Schweiz hat rund 617'700 Arbeitsstätten."
   },
   {
-    id: "s07", topic: "struktur", type: "mc", diff: 3, tax: "K4"
+    id: "s07", topic: "struktur", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Die Mammut Sports Group AG produziert Outdoor-Bekleidung und Sportgeräte. Welchem Sektor gehört das Unternehmen an?",
     options: [
@@ -368,7 +369,7 @@ window.QUESTIONS = [
     explain: "Die Mammut Sports Group AG ist dem 2. Sektor (Verarbeitung und Fabrikation) zuzuordnen. Obwohl das Unternehmen auch Produkte verkauft, ist die Herstellung von Bekleidung und Sportgeräten das Kerngeschäft, was der Branche «Herstellung von Bekleidung und Sportgeräten» entspricht."
   },
   {
-    id: "s08", topic: "struktur", type: "mc", diff: 3, tax: "K4"
+    id: "s08", topic: "struktur", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "In welcher Grossregion der Schweiz gibt es am meisten Unternehmen?",
     options: [
@@ -381,7 +382,7 @@ window.QUESTIONS = [
     explain: "Der Espace Mittelland hat mit 120'971 Unternehmen die meisten Unternehmen, knapp vor der Genferseeregion (115'242) und Zürich (105'835). Dies ist auch durch die grosse Fläche und Bevölkerung dieser Region bedingt."
   },
   {
-    id: "s09", topic: "struktur", type: "tf", diff: 3, tax: "K5"
+    id: "s09", topic: "struktur", type: "tf", diff: 3, tax: "K5",
  reviewed:false,
     q: "Die Tatsache, dass der Frauenanteil im Baugewerbe bei nur 11,7% liegt, kann als Indiz für bestehende Geschlechterstereotypen bei der Berufswahl interpretiert werden.",
     correct: true,
@@ -393,7 +394,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "u01", topic: "unternehmen", type: "mc", diff: 1, tax: "K1"
+    id: "u01", topic: "unternehmen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ab wie vielen Vollzeitstellen gilt ein Unternehmen in der Schweiz als Grossunternehmen?",
     options: [
@@ -406,7 +407,7 @@ window.QUESTIONS = [
     explain: "Die Grössenklassen: Mikrounternehmen (0–9), Kleinunternehmen (10–49), Mittelunternehmen (50–249), Grossunternehmen (250 und mehr Vollzeitstellen)."
   },
   {
-    id: "u02", topic: "unternehmen", type: "fill", diff: 1, tax: "K1"
+    id: "u02", topic: "unternehmen", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Unternehmen mit 0 bis 9 Vollzeitstellen werden als {0} bezeichnet. Zusammen mit Klein- und Mittelunternehmen bilden sie die Gruppe der {1}.",
     blanks: [
@@ -416,7 +417,7 @@ window.QUESTIONS = [
     explain: "Mikrounternehmen (0–9 Vollzeitstellen), Kleinunternehmen (10–49) und Mittelunternehmen (50–249) bilden zusammen die KMU (Klein- und Mittelunternehmen). Sie machen 99,7% aller Unternehmen in der Schweiz aus."
   },
   {
-    id: "u03", topic: "unternehmen", type: "mc", diff: 1, tax: "K2"
+    id: "u03", topic: "unternehmen", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Welche Rechtsform ist in der Schweiz am häufigsten?",
     options: [
@@ -429,7 +430,7 @@ window.QUESTIONS = [
     explain: "Die Einzelunternehmung ist mit 166'658 Firmen die in der Schweiz am häufigsten vorkommende Rechtsform, noch vor der GmbH (231'250) und der AG (229'736) (Stand 2022). Hinweis: Die Zahlen zeigen, dass es sich knapp um die Einzelunternehmung handelt."
   },
   {
-    id: "u04", topic: "unternehmen", type: "multi", diff: 2, tax: "K2"
+    id: "u04", topic: "unternehmen", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Nach welchen Kriterien können Unternehmen unterschieden werden? (Mehrere Antworten möglich.)",
     options: [
@@ -442,7 +443,7 @@ window.QUESTIONS = [
     explain: "Unternehmen lassen sich nach allen genannten Kriterien unterscheiden: Sektor/Branche (Tätigkeitsgebiet), Eigentumsverhältnisse (privat/öffentlich/gemischt), Gewinnorientierung (gewinnorientiert/NPO), Grösse (Mikro bis Gross), Reichweite (lokal bis international) und Rechtsform."
   },
   {
-    id: "u05", topic: "unternehmen", type: "mc", diff: 2, tax: "K2"
+    id: "u05", topic: "unternehmen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was kennzeichnet eine Non-Profit-Organisation (NPO)?",
     options: [
@@ -455,14 +456,14 @@ window.QUESTIONS = [
     explain: "Bei NPOs steht nicht die Gewinnerzielung im Vordergrund, sondern gemeinnützige, soziale, kulturelle oder wissenschaftliche Ziele. Beispiele sind die Schweizerische Rettungsflugwacht Rega oder die Krebsliga Schweiz. NPOs können durchaus Umsatz und Überschüsse erzielen."
   },
   {
-    id: "u06", topic: "unternehmen", type: "tf", diff: 2, tax: "K2"
+    id: "u06", topic: "unternehmen", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die Swisscom ist ein Beispiel für ein gemischtwirtschaftliches Unternehmen, weil sowohl der Staat als auch Private am Unternehmen beteiligt sind.",
     correct: true,
     explain: "Richtig. Bei gemischtwirtschaftlichen Unternehmen sind sowohl der Staat als auch Private beteiligt. Die Swisscom ist ein typisches Beispiel: Der Bund hält eine Mehrheitsbeteiligung, aber auch private Aktionäre sind beteiligt."
   },
   {
-    id: "u07", topic: "unternehmen", type: "mc", diff: 2, tax: "K2"
+    id: "u07", topic: "unternehmen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Unternehmen, das in mehreren Ländern produziert und seine Produkte weltweit vertreibt, hat welche Reichweite?",
     options: [
@@ -475,7 +476,7 @@ window.QUESTIONS = [
     explain: "Ein Unternehmen mit Produktion und Vertrieb in mehreren Ländern hat eine internationale Tätigkeit. Beispiele sind Nestlé oder die Mammut Sports Group AG."
   },
   {
-    id: "u08", topic: "unternehmen", type: "mc", diff: 3, tax: "K4"
+    id: "u08", topic: "unternehmen", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Drei Freundinnen haben einen Impfstoff entwickelt und wollen ein Unternehmen gründen. Sie wünschen sich beschränkte Haftung, geringes Mindestkapital und aktive Mitarbeit aller Gesellschafterinnen. Welche Rechtsform passt am besten?",
     options: [
@@ -488,14 +489,14 @@ window.QUESTIONS = [
     explain: "Die GmbH bietet beschränkte Haftung (nur Gesellschaftsvermögen haftet), erfordert geringes Mindestkapital (CHF 20'000) und ist besonders geeignet für kleinere, personenbezogene Unternehmen mit aktiver Mitarbeit der Gesellschafterinnen. Eine Einzelunternehmung scheidet aus (3 Personen), eine KollG hat unbeschränkte Haftung, und eine AG erfordert höheres Kapital (CHF 100'000)."
   },
   {
-    id: "u09", topic: "unternehmen", type: "tf", diff: 3, tax: "K4"
+    id: "u09", topic: "unternehmen", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Bei einer Kollektivgesellschaft haften die Gesellschafter primär mit dem Gesellschaftsvermögen. Reicht dieses nicht aus, haften sie subsidiär, unbeschränkt und solidarisch mit ihrem persönlichen Vermögen.",
     correct: true,
     explain: "Richtig. Bei der Kollektivgesellschaft haftet primär das Gesellschaftsvermögen. Subsidiär (ergänzend) haften die Gesellschafter unbeschränkt und solidarisch mit ihrem gesamten persönlichen Vermögen – ein wesentlicher Nachteil dieser Rechtsform."
   },
   {
-    id: "u10", topic: "unternehmen", type: "multi", diff: 3, tax: "K4"
+    id: "u10", topic: "unternehmen", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Vorteile bietet die Aktiengesellschaft (AG)? (Mehrere Antworten möglich.)",
     options: [
@@ -513,7 +514,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "z01", topic: "ziele", type: "mc", diff: 1, tax: "K1"
+    id: "z01", topic: "ziele", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist das Kernziel, das ein Unternehmen langfristig verfolgen muss, um am Markt zu bestehen?",
     options: [
@@ -526,7 +527,7 @@ window.QUESTIONS = [
     explain: "Das Kernziel eines Unternehmens ist die Erwirtschaftung einer nachhaltigen und marktgerechten Rentabilität. Nur wenn der Ertrag langfristig grösser ist als der Aufwand, kann ein Unternehmen bestehen."
   },
   {
-    id: "z02", topic: "ziele", type: "fill", diff: 1, tax: "K1"
+    id: "z02", topic: "ziele", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "SMART steht für: {0}, Measurable, {1}, Relevant, {2}.",
     blanks: [
@@ -537,7 +538,7 @@ window.QUESTIONS = [
     explain: "SMART ist eine Systematik zur Zielformulierung: Specific (spezifisch), Measurable (messbar), Achievable (erreichbar), Relevant (sachbezogen), Time-bound (terminiert)."
   },
   {
-    id: "z03", topic: "ziele", type: "mc", diff: 1, tax: "K2"
+    id: "z03", topic: "ziele", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Was bedeutet das «M» in der SMART-Systematik?",
     options: [
@@ -550,7 +551,7 @@ window.QUESTIONS = [
     explain: "Das «M» steht für Measurable (messbar). Ziele müssen so formuliert sein, dass ihre Erreichung überprüft werden kann – z.B. durch Kennzahlen, Mengen oder Zeitangaben."
   },
   {
-    id: "z04", topic: "ziele", type: "mc", diff: 2, tax: "K2"
+    id: "z04", topic: "ziele", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Unternehmen will seinen Ausschuss senken und gleichzeitig die Kosten reduzieren. Durch die Reduktion des Ausschusses werden automatisch auch Kosten gesenkt. Welche Zielbeziehung liegt vor?",
     options: [
@@ -563,7 +564,7 @@ window.QUESTIONS = [
     explain: "Es liegt Zielharmonie vor: Das Erreichen des einen Ziels (Ausschuss senken) fördert automatisch das andere Ziel (Kosten senken), da weniger fehlerhafte Produkte auch weniger Kosten verursachen."
   },
   {
-    id: "z05", topic: "ziele", type: "mc", diff: 2, tax: "K2"
+    id: "z05", topic: "ziele", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Unternehmen will eine hohe Lieferbereitschaft garantieren, aber gleichzeitig die Lagerhaltungskosten senken. Welche Zielbeziehung besteht?",
     options: [
@@ -576,14 +577,14 @@ window.QUESTIONS = [
     explain: "Es liegt Zielkonkurrenz vor: Um schnell liefern zu können, muss das Unternehmen grosse Lagerbestände halten. Grosse Lagerbestände bedeuten aber hohe Lagerhaltungskosten. Die beiden Ziele stehen in einem Spannungsverhältnis."
   },
   {
-    id: "z06", topic: "ziele", type: "tf", diff: 2, tax: "K2"
+    id: "z06", topic: "ziele", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Strategische Ziele sind langfristige Unternehmensziele mit einem Zeithorizont von über 3 Jahren.",
     correct: true,
     explain: "Richtig. Strategische Ziele haben einen Zeithorizont von über 3 Jahren (z.B. neue Märkte erschliessen). Mittelfristige Ziele umfassen 1–3 Jahre, operative Ziele weniger als 1 Jahr (z.B. Quartalsziele)."
   },
   {
-    id: "z07", topic: "ziele", type: "multi", diff: 3, tax: "K3"
+    id: "z07", topic: "ziele", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welches der folgenden Ziele ist SMART formuliert? (Mehrere Antworten möglich.)",
     options: [
@@ -596,7 +597,7 @@ window.QUESTIONS = [
     explain: "Ziel A ist SMART: spezifisch (Umsatz), messbar (10%), erreichbar, relevant, terminiert (Ende 2026). Ziel C ebenso: spezifisch (Kundenzufriedenheit), messbar (7,5→8,5), terminiert (Q2 2026). Ziele B und D sind zu vage formuliert – sie sind weder spezifisch noch messbar oder terminiert."
   },
   {
-    id: "z08", topic: "ziele", type: "mc", diff: 3, tax: "K4"
+    id: "z08", topic: "ziele", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Unternehmen erneuert seine alte Lastwagenflotte aus Umweltschutzgründen und will gleichzeitig eine hohe Produktqualität sicherstellen. Die Erneuerung der Flotte hat keinen Einfluss auf die Produktqualität. Welche Zielbeziehung liegt vor?",
     options: [
@@ -614,7 +615,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "k01", topic: "kennzahlen", type: "fill", diff: 1, tax: "K1"
+    id: "k01", topic: "kennzahlen", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Produktivität = {0} (Menge) / {1} (Menge)",
     blanks: [
@@ -624,7 +625,7 @@ window.QUESTIONS = [
     explain: "Produktivität bezeichnet das Verhältnis zwischen produzierten Gütern (Output) und den dafür eingesetzten Produktionsfaktoren (Input), jeweils in Mengeneinheiten gemessen."
   },
   {
-    id: "k02", topic: "kennzahlen", type: "mc", diff: 1, tax: "K1"
+    id: "k02", topic: "kennzahlen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Kennzahl setzt den Gewinn ins Verhältnis zum eingesetzten Kapital?",
     options: [
@@ -637,7 +638,7 @@ window.QUESTIONS = [
     explain: "Die Rentabilität setzt den Gewinn ins Verhältnis zum eingesetzten Kapital (Rentabilität = Gewinn / Kapital × 100). Sie zeigt, wie effizient das Kapital eingesetzt wurde."
   },
   {
-    id: "k03", topic: "kennzahlen", type: "mc", diff: 2, tax: "K2"
+    id: "k03", topic: "kennzahlen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Wie ergibt sich die Wirtschaftlichkeit aus der Produktivität?",
     options: [
@@ -650,7 +651,7 @@ window.QUESTIONS = [
     explain: "Die Wirtschaftlichkeit ergibt sich, indem die Outputmenge mit dem Verkaufspreis und die Inputmenge mit dem Einkaufspreis multipliziert wird: (Output × Verkaufspreis) / (Input × Einkaufspreis) = Ertrag / Aufwand. So werden verschiedene Produktivitäten monetär vergleichbar."
   },
   {
-    id: "k04", topic: "kennzahlen", type: "calc", diff: 2, tax: "K3"
+    id: "k04", topic: "kennzahlen", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Möbelschreiner stellt in 8 Stunden 4 Stühle her. Wie hoch ist seine Arbeitsproduktivität (in Stühle pro Stunde)?",
     rows: [
@@ -659,7 +660,7 @@ window.QUESTIONS = [
     explain: "Arbeitsproduktivität = Output / Input = 4 Stühle / 8 Stunden = 0,5 Stühle pro Stunde."
   },
   {
-    id: "k05", topic: "kennzahlen", type: "calc", diff: 2, tax: "K3"
+    id: "k05", topic: "kennzahlen", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     q: "Ein Unternehmen erzielt einen Gewinn von CHF 150'000 bei einem Eigenkapital von CHF 1'000'000. Wie hoch ist die Eigenkapitalrentabilität (in %)?",
     rows: [
@@ -668,7 +669,7 @@ window.QUESTIONS = [
     explain: "Eigenkapitalrentabilität = Gewinn / Eigenkapital × 100 = 150'000 / 1'000'000 × 100 = 15%."
   },
   {
-    id: "k06", topic: "kennzahlen", type: "calc", diff: 3, tax: "K3"
+    id: "k06", topic: "kennzahlen", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Ein Unternehmen hat einen Ertrag von CHF 800'000 und einen Aufwand von CHF 600'000. Wie hoch ist die Wirtschaftlichkeit?",
     rows: [
@@ -677,7 +678,7 @@ window.QUESTIONS = [
     explain: "Wirtschaftlichkeit = Ertrag / Aufwand = 800'000 / 600'000 = 1,33. Ein Wert über 1 bedeutet, dass das Unternehmen wirtschaftlich arbeitet (mehr einnimmt als ausgibt)."
   },
   {
-    id: "k07", topic: "kennzahlen", type: "mc", diff: 2, tax: "K2"
+    id: "k07", topic: "kennzahlen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Unternehmen hat eine Wirtschaftlichkeit von 0,85. Was bedeutet das?",
     options: [
@@ -690,14 +691,14 @@ window.QUESTIONS = [
     explain: "Eine Wirtschaftlichkeit unter 1 (hier 0,85) bedeutet, dass der Aufwand grösser ist als der Ertrag – das Unternehmen arbeitet also mit Verlust. Wirtschaftlichkeit = Ertrag / Aufwand."
   },
   {
-    id: "k08", topic: "kennzahlen", type: "tf", diff: 1, tax: "K2"
+    id: "k08", topic: "kennzahlen", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Produktivität wird in Mengeneinheiten gemessen, Wirtschaftlichkeit in Geldeinheiten.",
     correct: true,
     explain: "Richtig. Produktivität setzt Mengen ins Verhältnis (z.B. Stühle pro Arbeitsstunde), während die Wirtschaftlichkeit die monetäre Bewertung darstellt (Ertrag in CHF / Aufwand in CHF)."
   },
   {
-    id: "k09", topic: "kennzahlen", type: "calc", diff: 3, tax: "K3"
+    id: "k09", topic: "kennzahlen", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Ein Unternehmen erzielt einen Gewinn von CHF 200'000 und zahlt CHF 50'000 an Fremdkapitalzinsen. Das Gesamtkapital beträgt CHF 2'500'000. Wie hoch ist die Gesamtkapitalrentabilität (in %)?",
     rows: [
@@ -706,7 +707,7 @@ window.QUESTIONS = [
     explain: "Gesamtkapitalrentabilität = (Gewinn + Zinsen) / Gesamtkapital × 100 = (200'000 + 50'000) / 2'500'000 × 100 = 250'000 / 2'500'000 × 100 = 10%."
   },
   {
-    id: "k10", topic: "kennzahlen", type: "multi", diff: 3, tax: "K4"
+    id: "k10", topic: "kennzahlen", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Aussagen zur Beziehung zwischen Produktivität, Wirtschaftlichkeit und Rentabilität sind korrekt? (Mehrere Antworten möglich.)",
     options: [
@@ -724,7 +725,7 @@ window.QUESTIONS = [
   // ============================================================
 
   {
-    id: "t01", topic: "standort", type: "mc", diff: 1, tax: "K1"
+    id: "t01", topic: "standort", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was versteht man unter einem Standortfaktor?",
     options: [
@@ -737,7 +738,7 @@ window.QUESTIONS = [
     explain: "Ein Standortfaktor ist ein Kriterium, das bei der Wahl des Unternehmensstandorts eine Rolle spielt. Je nach Unternehmensart können unterschiedliche Standortfaktoren ausschlaggebend sein."
   },
   {
-    id: "t02", topic: "standort", type: "multi", diff: 1, tax: "K1"
+    id: "t02", topic: "standort", type: "multi", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche der folgenden sind Standortfaktoren? (Mehrere Antworten möglich.)",
     options: [
@@ -750,7 +751,7 @@ window.QUESTIONS = [
     explain: "Absatzorientierte, verkehrsorientierte und infrastrukturorientierte Faktoren sind anerkannte Standortfaktoren. Persönliche Vorlieben wie eine Lieblingsfarbe sind keine Standortfaktoren."
   },
   {
-    id: "t03", topic: "standort", type: "mc", diff: 2, tax: "K2"
+    id: "t03", topic: "standort", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Für welchen Unternehmenstyp sind absatzorientierte Standortfaktoren (Nähe zur Kundschaft) besonders wichtig?",
     options: [
@@ -763,7 +764,7 @@ window.QUESTIONS = [
     explain: "Für Detailhandelsgeschäfte, Restaurants, Hotels und ähnliche Betriebe ist die Nähe zur Kundschaft entscheidend. Banken, Hotels und Handwerkerbetriebe sind weitere Beispiele, bei denen absatzorientierte Standortfaktoren im Vordergrund stehen."
   },
   {
-    id: "t04", topic: "standort", type: "mc", diff: 2, tax: "K2"
+    id: "t04", topic: "standort", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was versteht man unter einer Nutzwertanalyse (NWA)?",
     options: [
@@ -777,14 +778,14 @@ window.QUESTIONS = [
     explain: "Die Nutzwertanalyse ist ein Entscheidungsinstrument, bei dem gemeinsame Faktoren definiert, gewichtet (total 100%) und je Standort bewertet (z.B. 1–6) werden. Der Standort mit der höchsten Punktzahl erhält den Zuschlag."
   },
   {
-    id: "t05", topic: "standort", type: "tf", diff: 2, tax: "K2"
+    id: "t05", topic: "standort", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei einer Nutzwertanalyse muss die Summe aller Gewichtungen 100% ergeben.",
     correct: true,
     explain: "Richtig. Die Gewichtungen der Kriterien müssen in der Summe genau 100% (bzw. 100 Punkte) ergeben. So wird sichergestellt, dass die Kriterien im Verhältnis zueinander stehen."
   },
   {
-    id: "t06", topic: "standort", type: "mc", diff: 2, tax: "K2"
+    id: "t06", topic: "standort", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Warum werden bei arbeitsintensiver Produktion die Arbeitskosten als besonders wichtiger Standortfaktor betrachtet?",
     options: [
@@ -797,7 +798,7 @@ window.QUESTIONS = [
     explain: "Bei arbeitsintensiver Produktion mit wenig Know-how-Anforderung (z.B. Bekleidungsindustrie) sind die Arbeitskosten der ausschlaggebende Standortfaktor. Da die Schweiz hohe Lohn- und Lohnnebenkosten hat, werden Produktionsstätten häufig ins Ausland verlagert."
   },
   {
-    id: "t07", topic: "standort", type: "calc", diff: 3, tax: "K3"
+    id: "t07", topic: "standort", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     q: "In einer Nutzwertanalyse wird das Kriterium «Kundenfrequenz» mit 40% gewichtet und der Standort «Bahnhof» erhält die Bewertung 5 (von 6). Wie viele Nutzwertpunkte ergibt das für dieses Kriterium?",
     rows: [
@@ -806,7 +807,7 @@ window.QUESTIONS = [
     explain: "Nutzwert = Gewichtung × Bewertung = 40 × 5 = 200 Punkte. Die Gewichtung wird als ganze Zahl (40 statt 0,4) mit der Bewertung multipliziert."
   },
   {
-    id: "t08", topic: "standort", type: "multi", diff: 3, tax: "K4"
+    id: "t08", topic: "standort", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Schwächen hat die Nutzwertanalyse? (Mehrere Antworten möglich.)",
     options: [
@@ -819,7 +820,7 @@ window.QUESTIONS = [
     explain: "Die NWA hat mehrere Schwächen: Die Bewertung ist subjektiv (persönliche Vorlieben), die Vergleichbarkeit ist nicht immer gegeben, und die Einigung auf Gewichtungen kann bei mehreren Personen schwierig sein. Trotzdem ist sie ein wertvolles Instrument – sie liefert nicht grundsätzlich falsche Ergebnisse, sondern hilft, den Entscheid zu objektivieren."
   },
   {
-    id: "t09", topic: "standort", type: "mc", diff: 3, tax: "K4"
+    id: "t09", topic: "standort", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Standortfaktoren stehen bei einem Chemieunternehmen im Vordergrund?",
     options: [
@@ -832,7 +833,7 @@ window.QUESTIONS = [
     explain: "Für ein Chemieunternehmen sind umweltorientierte Faktoren (strenge Umweltauflagen für Abgaswerte, Abwasser) und material-/rohstofforientierte Faktoren (Zugang zu Rohstoffen, Transportkosten) besonders relevant. Auch verkehrsorientierte und infrastrukturorientierte Faktoren spielen eine Rolle."
   },
   {
-    id: "t10", topic: "standort", type: "tf", diff: 1, tax: "K2"
+    id: "t10", topic: "standort", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Den idealen Standort gibt es in der Regel nicht – Unternehmen müssen Kompromisse eingehen.",
     correct: true,

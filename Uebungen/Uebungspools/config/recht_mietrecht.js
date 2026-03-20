@@ -6,6 +6,7 @@
 // ============================================================
 
 window.POOL_META = {
+  id: "recht_mietrecht",
   title: "Mietrecht – OR 253 bis 274",
   fach: "Recht",
   color: "#73ab2c",
@@ -36,7 +37,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "g01", topic: "grundlagen", type: "mc", diff: 1, tax: "K1"
+    id: "g01", topic: "grundlagen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welchen Artikeln des Obligationenrechts ist das Mietrecht geregelt?",
     options: [
@@ -49,14 +50,14 @@ window.QUESTIONS = [
     explain: "Das Mietrecht ist in den Art. 253–274 OR geregelt. Art. 319–362 OR betreffen den Arbeitsvertrag, Art. 184–215 OR den Kaufvertrag."
   },
   {
-    id: "g02", topic: "grundlagen", type: "tf", diff: 1, tax: "K1"
+    id: "g02", topic: "grundlagen", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein Mietvertrag muss zwingend schriftlich abgeschlossen werden.",
     correct: false,
     explain: "Der Mietvertrag ist grundsätzlich formfrei (formlos). Er kann mündlich, schriftlich oder sogar stillschweigend abgeschlossen werden. Das Gesetz schreibt keine besondere Form vor."
   },
   {
-    id: "g03", topic: "grundlagen", type: "fill", diff: 1, tax: "K1"
+    id: "g03", topic: "grundlagen", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der Mietvertrag gehört zur Kategorie der Verträge auf {0}.",
     blanks: [
@@ -65,7 +66,7 @@ window.QUESTIONS = [
     explain: "Neben der Miete gehören auch die Gebrauchsleihe, das Darlehen und die Pacht zu den Verträgen auf Gebrauchsüberlassung."
   },
   {
-    id: "g04", topic: "grundlagen", type: "mc", diff: 1, tax: "K2"
+    id: "g04", topic: "grundlagen", type: "mc", diff: 1, tax: "K2",
  reviewed:false,
     q: "Was unterscheidet die Miete von der Pacht?",
     options: [
@@ -80,7 +81,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "g05", topic: "grundlagen", type: "multi", diff: 2, tax: "K2"
+    id: "g05", topic: "grundlagen", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Aussagen zum Mietrecht treffen zu? (Mehrere Antworten möglich.)",
     options: [
@@ -93,7 +94,7 @@ window.QUESTIONS = [
     explain: "Das Mietrecht schützt den Mieter als schwächere Partei durch zwingende Vorschriften. Abweichungen sind nur zu Gunsten des Mieters möglich, nicht zu seinen Ungunsten. Der Mietvertrag ist grundsätzlich formfrei (C ist falsch). Koppelungsgeschäfte sind nach Art. 254 OR verboten."
   },
   {
-    id: "g06", topic: "grundlagen", type: "mc", diff: 2, tax: "K2"
+    id: "g06", topic: "grundlagen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist die Hauptpflicht des Vermieters gemäss OR 253?",
     options: [
@@ -106,7 +107,7 @@ window.QUESTIONS = [
     explain: "Nach Art. 253 und Art. 256 OR ist der Vermieter verpflichtet, die Mietsache dem Mieter in einem zum vorausgesetzten Gebrauch tauglichen Zustand zu übergeben und in diesem Zustand zu erhalten."
   },
   {
-    id: "g07", topic: "grundlagen", type: "multi", diff: 2, tax: "K2"
+    id: "g07", topic: "grundlagen", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welches sind Pflichten des Mieters? (Mehrere Antworten möglich.)",
     options: [
@@ -121,7 +122,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "g08", topic: "grundlagen", type: "mc", diff: 3, tax: "K4"
+    id: "g08", topic: "grundlagen", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Lisa unterschreibt einen Mietvertrag für eine 3-Zimmer-Wohnung. Der Vertrag enthält eine Klausel, die besagt: «Der Mieter verzichtet auf das Recht, bei der Schlichtungsbehörde eine Mietzinssenkung zu beantragen.»",
     q: "Ist diese Vertragsklausel gültig?",
@@ -135,7 +136,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob die Vertragsklausel gültig ist. Voraussetzungen: Das Mietrecht enthält zahlreiche zwingende Vorschriften zum Schutz des Mieters. Art. 270a OR (Mietzinsherabsetzung) ist eine solche zwingende Bestimmung. Subsumtion: Von zwingenden Bestimmungen darf nur zu Gunsten der schwächeren Partei (Mieter) abgewichen werden, nicht zu ihren Ungunsten. Ein Verzicht auf das Recht zur Mietzinssenkung benachteiligt den Mieter. Schlussfolgerung: Die Klausel ist nichtig."
   },
   {
-    id: "g09", topic: "grundlagen", type: "mc", diff: 3, tax: "K4"
+    id: "g09", topic: "grundlagen", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Marco und sein Vermieter haben mündlich einen Mietvertrag abgeschlossen. Nach einem Monat behauptet der Vermieter, der vereinbarte Mietzins sei CHF 1'500 gewesen. Marco ist überzeugt, dass man sich auf CHF 1'300 geeinigt hat.",
     q: "Welche rechtliche Problematik ergibt sich hier?",
@@ -149,7 +150,7 @@ window.QUESTIONS = [
     explain: "Der Mietvertrag ist grundsätzlich formfrei und daher auch mündlich gültig. Das Problem liegt in der Beweisbarkeit: Ohne schriftlichen Vertrag kann keine Partei den vereinbarten Mietzins eindeutig beweisen. Dies zeigt, weshalb ein schriftlicher Vertrag zwar nicht rechtlich vorgeschrieben, aber praktisch sehr empfehlenswert ist."
   },
   {
-    id: "g10", topic: "grundlagen", type: "tf", diff: 2, tax: "K2"
+    id: "g10", topic: "grundlagen", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Ein Mietvertrag kann sowohl auf bestimmte als auch auf unbestimmte Zeit abgeschlossen werden (Art. 255 OR).",
     correct: true,
@@ -162,7 +163,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "m01", topic: "mietzins", type: "mc", diff: 1, tax: "K1"
+    id: "m01", topic: "mietzins", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie hoch darf das Mietzinsdepot (Kaution) maximal sein?",
     options: [
@@ -175,14 +176,14 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 257e OR darf der Vermieter ein Depot von maximal drei Bruttomieten verlangen. Das Depot wird auf einem Sperrkonto im Namen des Mieters hinterlegt und muss spätestens ein Jahr nach dem Auszug zurückerstattet werden."
   },
   {
-    id: "m02", topic: "mietzins", type: "tf", diff: 1, tax: "K1"
+    id: "m02", topic: "mietzins", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Nebenkosten sind automatisch im Mietzins inbegriffen, wenn nichts anderes vereinbart ist.",
     correct: true,
     explain: "Wird im Mietvertrag nichts anderes vereinbart, sind die Nebenkosten mit dem Mietzins abgegolten. Sollen Nebenkosten separat bezahlt werden, müssen diese im Vertrag einzeln aufgeführt werden (Art. 257a OR)."
   },
   {
-    id: "m03", topic: "mietzins", type: "fill", diff: 1, tax: "K1"
+    id: "m03", topic: "mietzins", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein gängiger Richtwert besagt, dass der Mietzins maximal einen {0} des Bruttoeinkommens ausmachen sollte.",
     blanks: [
@@ -193,7 +194,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "m04", topic: "mietzins", type: "mc", diff: 2, tax: "K2"
+    id: "m04", topic: "mietzins", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welcher Gesetzesartikel regelt das Herabsetzungsbegehren des Mieters bei gesunkenem Referenzzinssatz?",
     options: [
@@ -206,7 +207,7 @@ window.QUESTIONS = [
     explain: "Art. 270a OR regelt das Recht des Mieters, eine Herabsetzung des Mietzinses zu verlangen, wenn sich die Berechnungsgrundlage wesentlich verändert hat (z.B. Senkung des Referenzzinssatzes)."
   },
   {
-    id: "m05", topic: "mietzins", type: "mc", diff: 2, tax: "K3"
+    id: "m05", topic: "mietzins", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Die Familie Lachmann hat vor einigen Jahren eine Wohnung gemietet, wobei der Referenzzinssatz damals bei 3% lag. Mittlerweile ist er auf 2.25% gesunken. Der Vermieter hat den Mietzins nicht angepasst.",
     q: "Was muss die Familie Lachmann als Erstes tun, um eine Mietzinssenkung zu erreichen?",
@@ -220,7 +221,7 @@ window.QUESTIONS = [
     explain: "Der erste Schritt ist ein schriftliches Herabsetzungsbegehren an den Vermieter. Dann muss man 30 Tage auf seine Stellungnahme warten. Reagiert der Vermieter nicht oder lehnt ab, kann der Mieter innert 30 Tagen die Schlichtungsbehörde anrufen (Art. 270a OR). Eine eigenmächtige Mietzinskürzung ist nicht zulässig."
   },
   {
-    id: "m06", topic: "mietzins", type: "multi", diff: 2, tax: "K2"
+    id: "m06", topic: "mietzins", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Nebenkosten müssen im Mietvertrag einzeln aufgeführt werden, damit sie separat verrechnet werden dürfen? (Mehrere Antworten möglich.)",
     options: [
@@ -235,7 +236,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "m07", topic: "mietzins", type: "mc", diff: 3, tax: "K4"
+    id: "m07", topic: "mietzins", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Der Vermieter schreibt seiner Mieterin per normalem Brief: «Wir teilen Ihnen mit, dass wir den Mietzins auf Anfang April um CHF 100 auf CHF 2'500 anheben müssen.»",
     q: "Ist diese Mietzinserhöhung rechtsgültig?",
@@ -249,7 +250,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob die Mietzinserhöhung formgültig ist. Voraussetzungen: Gemäss Art. 269d OR muss eine Mietzinserhöhung auf dem vom Kanton genehmigten Formular mitgeteilt und begründet werden. Subsumtion: Der Vermieter hat lediglich einen normalen Brief geschickt, nicht das offizielle Formular verwendet. Schlussfolgerung: Die Mietzinserhöhung ist formungültig und damit nichtig."
   },
   {
-    id: "m08", topic: "mietzins", type: "mc", diff: 3, tax: "K5"
+    id: "m08", topic: "mietzins", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Die Familie Lachmann hat erfolgreich beim Vermieter ein Herabsetzungsbegehren eingereicht, doch der Vermieter lehnt ab. Die 30-tägige Frist läuft.",
     q: "Wie lautet die korrekte Reihenfolge der weiteren Schritte?",
@@ -263,7 +264,7 @@ window.QUESTIONS = [
     explain: "Nach der Ablehnung des Herabsetzungsbegehrens kann der Mieter innert 30 Tagen die Schlichtungsbehörde anrufen. Wird dort keine Einigung erzielt, kann er innert 30 Tagen sein Begehren dem Regionalgericht vorbringen. Eine eigenmächtige Mietzinskürzung ist nicht zulässig."
   },
   {
-    id: "m09", topic: "mietzins", type: "tf", diff: 2, tax: "K2"
+    id: "m09", topic: "mietzins", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Wer nicht genügend Geld für das Mietzinsdepot aufbringen kann, hat die Möglichkeit, eine Mietkautionsversicherung abzuschliessen.",
     correct: true,
@@ -276,7 +277,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "k01", topic: "kuendigung", type: "fill", diff: 1, tax: "K1"
+    id: "k01", topic: "kuendigung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die gesetzliche Kündigungsfrist für Wohnungen beträgt {0} Monate (Art. 266c OR).",
     blanks: [
@@ -285,7 +286,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 266c OR beträgt die Kündigungsfrist für Wohnungen drei Monate. Fehlt ein Ortsgebrauch, kann auf einen ortsüblichen Termin oder auf das Ende einer dreimonatigen Mietdauer gekündigt werden."
   },
   {
-    id: "k02", topic: "kuendigung", type: "mc", diff: 1, tax: "K1"
+    id: "k02", topic: "kuendigung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welcher Form muss eine Kündigung des Mietverhältnisses erfolgen?",
     options: [
@@ -298,7 +299,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 266l Abs. 1 OR muss die Kündigung schriftlich erfolgen. Bei Wohnungen muss der Vermieter zudem das offizielle Formular verwenden (Art. 266l Abs. 2 OR). Die Kündigung ist eine empfangsbedürftige Willenserklärung."
   },
   {
-    id: "k03", topic: "kuendigung", type: "mc", diff: 1, tax: "K1"
+    id: "k03", topic: "kuendigung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie lange beträgt die gesetzliche Kündigungsfrist für Geschäftsräume (Art. 266d OR)?",
     options: [
@@ -313,7 +314,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "k04", topic: "kuendigung", type: "mc", diff: 2, tax: "K3"
+    id: "k04", topic: "kuendigung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Gabriel wohnt in Höfen bei Thun. Heute, am 15. Februar, beschliesst er, seine Wohnung zu kündigen. Es sind keine besonderen Termine oder Fristen vereinbart. Die Kündigungstermine gemäss Ortsgebrauch (Region Bern-Thun) sind der 30. April und der 31. Oktober.",
     q: "Auf welchen Termin kann Gabriel frühestens kündigen?",
@@ -327,7 +328,7 @@ window.QUESTIONS = [
     explain: "In der Region Bern-Thun gelten die Kündigungstermine 30. April und 31. Oktober (Ortsgebrauch). Die Kündigungsfrist beträgt 3 Monate. Für den 30. April hätte die Kündigung bis spätestens 31. Januar beim Vermieter eingehen müssen. Da Gabriel erst am 15. Februar kündigt, ist dieser Termin verpasst. Der nächste Termin ist der 31. Oktober (Kündigung muss bis 31. Juli eingehen)."
   },
   {
-    id: "k05", topic: "kuendigung", type: "multi", diff: 2, tax: "K2"
+    id: "k05", topic: "kuendigung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Voraussetzungen muss ein Nachmieter gemäss Art. 264 OR erfüllen? (Mehrere Antworten möglich.)",
     options: [
@@ -340,7 +341,7 @@ window.QUESTIONS = [
     explain: "Nach Art. 264 Abs. 1 OR kann der Mieter vorzeitig aus dem Vertrag aussteigen, wenn er einen zumutbaren, zahlungsfähigen Nachmieter vorschlägt, der bereit ist, den Vertrag zu den gleichen Bedingungen zu übernehmen. Das Geschlecht spielt keine Rolle."
   },
   {
-    id: "k06", topic: "kuendigung", type: "mc", diff: 2, tax: "K2"
+    id: "k06", topic: "kuendigung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was passiert, wenn eine Kündigung zu spät abgeschickt wird und der Termin verpasst wird?",
     options: [
@@ -353,7 +354,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 266a OR gilt eine verspätete Kündigung nicht auf den verpassten Termin, sondern auf den nächstfolgenden Kündigungstermin."
   },
   {
-    id: "k07", topic: "kuendigung", type: "tf", diff: 2, tax: "K2"
+    id: "k07", topic: "kuendigung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Kündigungsfristen können vertraglich verlängert, aber nicht verkürzt werden (Art. 266a Abs. 1 OR).",
     correct: true,
@@ -362,7 +363,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "k08", topic: "kuendigung", type: "mc", diff: 3, tax: "K3"
+    id: "k08", topic: "kuendigung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Sandra unterzeichnet am 15. Oktober einen Mietvertrag für eine 2-Zimmer-Wohnung in Bern. Der Vertrag beginnt am 1. November und ist kündbar mit einer Frist von 3 Monaten, jeweils auf Ende eines Monats. Wenige Tage nach Vertragsunterzeichnung erhält sie ein Jobangebot in Zürich und will den Vertrag sofort wieder kündigen.",
     q: "Bis wann muss Sandra mindestens die Miete bezahlen?",
@@ -376,7 +377,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ab wann Sandra den Vertrag beenden kann. Voraussetzungen: Der Vertrag ist gültig abgeschlossen. Die Kündigungsfrist beträgt 3 Monate auf Ende eines Monats. Subsumtion: Selbst wenn Sandra sofort kündigt, läuft die 3-monatige Frist ab November. Die Kündigung wirkt frühestens auf Ende Januar. Schlussfolgerung: Sandra muss die Miete bis Ende Januar bezahlen. Alternativ könnte sie einen zumutbaren Nachmieter stellen (Art. 264 OR)."
   },
   {
-    id: "k09", topic: "kuendigung", type: "mc", diff: 3, tax: "K3"
+    id: "k09", topic: "kuendigung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Mieter stirbt unerwartet. Seine Erben sind unsicher, was mit dem Mietvertrag geschieht.",
     q: "Was gilt gemäss Art. 266i OR beim Tod des Mieters?",
@@ -390,7 +391,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 266i OR geht das Mietverhältnis auf die Erben über. Die Erben können den Vertrag mit der gesetzlichen Kündigungsfrist (3 Monate bei Wohnungen) auf den nächsten gesetzlichen Termin kündigen — auch wenn vertraglich eine längere Frist vereinbart wurde. Tun die Erben nichts, läuft der Vertrag weiter und sie müssen die Miete bezahlen."
   },
   {
-    id: "k10", topic: "kuendigung", type: "mc", diff: 2, tax: "K2"
+    id: "k10", topic: "kuendigung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei welchem Mietobjekt beträgt die Kündigungsfrist nur zwei Wochen (Art. 266e OR)?",
     options: [
@@ -403,7 +404,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 266e OR beträgt die Kündigungsfrist für möblierte Zimmer und gesondert vermietete Einstellplätze oder ähnliches zwei Wochen auf Ende eines Monats nach Beginn der Miete."
   },
   {
-    id: "k11", topic: "kuendigung", type: "tf", diff: 3, tax: "K4"
+    id: "k11", topic: "kuendigung", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Eine Kündigung der Familienwohnung durch den Vermieter ist nur rechtskräftig, wenn sie beiden Ehepartnern separat zugestellt wird — selbst wenn nur ein Ehepartner den Mietvertrag unterschrieben hat (Art. 266n/266m OR).",
     correct: true,
@@ -416,7 +417,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "r01", topic: "maengel", type: "mc", diff: 1, tax: "K1"
+    id: "r01", topic: "maengel", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welchen Artikeln des OR ist das Vorgehen bei Mängeln an der Mietsache geregelt?",
     options: [
@@ -429,14 +430,14 @@ window.QUESTIONS = [
     explain: "Die Art. 259 bis 259i OR regeln die Mängelrechte des Mieters: vom kleinen Unterhalt (Art. 259 OR) über die Pflichten bei grösseren Mängeln (Art. 259a ff. OR) bis zur Hinterlegung des Mietzinses (Art. 259g–h OR)."
   },
   {
-    id: "r02", topic: "maengel", type: "tf", diff: 1, tax: "K2"
+    id: "r02", topic: "maengel", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Kleine Mängel, die durch gewöhnlichen Unterhalt behoben werden können (z.B. eine Glühbirne wechseln), muss der Mieter auf eigene Kosten beheben (Art. 259 OR).",
     correct: true,
     explain: "Gemäss Art. 259 OR ist der Mieter für den gewöhnlichen Unterhalt der Mietsache verantwortlich. Darunter fallen kleine Reparaturen, die jeder selbst erledigen kann (z.B. Glühbirne ersetzen, verstopften Abfluss reinigen). Sobald ein Fachmann nötig ist, handelt es sich nicht mehr um gewöhnlichen Unterhalt."
   },
   {
-    id: "r03", topic: "maengel", type: "fill", diff: 1, tax: "K1"
+    id: "r03", topic: "maengel", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Gemäss Art. 257f OR hat der Mieter eine {0}: Er muss dem Vermieter Schäden an der Mietsache mitteilen.",
     blanks: [
@@ -447,7 +448,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "r04", topic: "maengel", type: "multi", diff: 2, tax: "K2"
+    id: "r04", topic: "maengel", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Rechte hat der Mieter bei einem Mangel, den er nicht selbst verschuldet hat und der nicht durch gewöhnlichen Unterhalt behoben werden kann (Art. 259a–259f OR)? (Mehrere Antworten möglich.)",
     options: [
@@ -460,7 +461,7 @@ window.QUESTIONS = [
     explain: "Bei Mängeln, die der Mieter nicht zu verantworten hat und die er nicht selber beheben muss, kann er gemäss Art. 259a–259f OR: die Mängelbeseitigung verlangen (259b), eine Mietzinsherabsetzung fordern (259d), Schadenersatz verlangen (259e), und unter Umständen fristlos kündigen (259b lit. a). Eine strafrechtliche Anzeige ist in diesem Zusammenhang nicht vorgesehen."
   },
   {
-    id: "r05", topic: "maengel", type: "mc", diff: 2, tax: "K3"
+    id: "r05", topic: "maengel", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "In der Wohnung der Familie Kunz tropft seit Tagen Wasser von der Decke. Die Verwaltung reagiert nicht auf Meldungen. Die Familie hat den Schaden gemeldet und eine Frist zur Behebung gesetzt, aber es passiert nichts.",
     q: "Welche letzte Druckmöglichkeit hat Frau Kunz nach Art. 259g und 259h OR?",
@@ -476,7 +477,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "r06", topic: "maengel", type: "mc", diff: 3, tax: "K4"
+    id: "r06", topic: "maengel", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Die Familie Kunz wohnt seit 8 Jahren in einer 4½-Zimmer-Wohnung. Plötzlich tropft Wasser von der Decke. Der Vermieter behauptet, die Familie müsse den Schaden selbst beheben.",
     q: "Prüfen Sie die Tatbestandsmerkmale: Handelt es sich um einen Mangel nach Art. 259 OR (gewöhnlicher Unterhalt) oder nach Art. 259a OR (Mängelbeseitigung durch Vermieter)?",
@@ -490,14 +491,14 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob Art. 259 oder Art. 259a OR anwendbar ist. Voraussetzungen Art. 259: Gewöhnlicher Unterhalt = einfache Arbeiten, die jeder selbst erledigen kann. Voraussetzungen Art. 259a: (1) Mangel nicht vom Mieter verschuldet, (2) nicht durch gewöhnlichen Unterhalt behebbar, (3) Mieter wird im Gebrauch gestört. Subsumtion: Ein tropfendes Dach oder eine defekte Wasserleitung erfordert einen Fachmann und ist kein gewöhnlicher Unterhalt. Die Familie hat den Schaden nicht verursacht und wird im Gebrauch der Wohnung erheblich gestört. Schlussfolgerung: Art. 259a OR ist anwendbar. Die Familie kann die Mängelbeseitigung, Mietzinsreduktion und Schadenersatz verlangen."
   },
   {
-    id: "r07", topic: "maengel", type: "tf", diff: 2, tax: "K2"
+    id: "r07", topic: "maengel", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Mieter darf den Mangel auch selbst beheben lassen und die Kosten dem Vermieter in Rechnung stellen, wenn dieser trotz Fristsetzung nicht handelt (Art. 259b OR).",
     correct: true,
     explain: "Gemäss Art. 259b lit. b OR kann der Mieter bei einem Mangel, den der Vermieter kennt und trotz Fristsetzung nicht behebt, den Mangel auf Kosten des Vermieters selbst beseitigen lassen (Ersatzvornahme)."
   },
   {
-    id: "r08", topic: "maengel", type: "mc", diff: 3, tax: "K5"
+    id: "r08", topic: "maengel", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "In Linas Mietwohnung fällt die Heizung im Januar aus. Sie meldet dies sofort dem Vermieter und setzt eine Frist von einer Woche. Der Vermieter reagiert nicht.",
     q: "Welche der folgenden Vorgehensweisen wäre für Lina am sinnvollsten?",
@@ -517,7 +518,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "u01", topic: "untermiete", type: "mc", diff: 1, tax: "K1"
+    id: "u01", topic: "untermiete", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welchem Artikel des OR ist die Untermiete geregelt?",
     options: [
@@ -530,14 +531,14 @@ window.QUESTIONS = [
     explain: "Die Untermiete ist in Art. 262 OR geregelt. Der Mieter darf die Mietsache mit Zustimmung des Vermieters ganz oder teilweise untervermieten."
   },
   {
-    id: "u02", topic: "untermiete", type: "tf", diff: 1, tax: "K1"
+    id: "u02", topic: "untermiete", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Zwischen dem Vermieter und dem Untermieter besteht eine direkte Rechtsbeziehung.",
     correct: false,
     explain: "Zwischen dem Vermieter und dem Untermieter besteht keine direkte Rechtsbeziehung. Der Hauptmieter bleibt Vertragspartner des Vermieters und haftet für den Mietzins und die Sorgfaltspflicht. Der Untermieter steht nur zum Hauptmieter in einem Vertragsverhältnis."
   },
   {
-    id: "u03", topic: "untermiete", type: "tf", diff: 1, tax: "K2"
+    id: "u03", topic: "untermiete", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Der Mieter benötigt grundsätzlich die Zustimmung des Vermieters, bevor er untervermieten darf.",
     correct: true,
@@ -546,7 +547,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "u04", topic: "untermiete", type: "multi", diff: 2, tax: "K2"
+    id: "u04", topic: "untermiete", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "In welchen Fällen kann der Vermieter die Zustimmung zur Untermiete verweigern (Art. 262 Abs. 2 OR)? (Mehrere Antworten möglich.)",
     options: [
@@ -559,7 +560,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 262 Abs. 2 OR kann der Vermieter die Zustimmung verweigern, wenn: (a) der Mieter die Bedingungen nicht offenlegt, (b) die Bedingungen missbräuchlich sind (z.B. überhöhter Untermietzins), oder (c) dem Vermieter wesentliche Nachteile entstehen. Die Nationalität ist kein zulässiger Verweigerungsgrund."
   },
   {
-    id: "u05", topic: "untermiete", type: "mc", diff: 2, tax: "K3"
+    id: "u05", topic: "untermiete", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Linus hat eine Wohnung für CHF 1'350 pro Monat gemietet. Er vermietet zwei Zimmer an seine Studienkollegen für je CHF 700 — also insgesamt CHF 1'400.",
     q: "Darf der Vermieter diese Untermiete verbieten?",
@@ -573,7 +574,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 262 Abs. 2 lit. b OR kann der Vermieter die Zustimmung verweigern, wenn die Bedingungen der Untermiete missbräuchlich sind. Hier verlangen die Untermieter zusammen CHF 1'400, während Linus nur CHF 1'350 Hauptmiete zahlt. Linus verdient somit an der Untermiete, was als missbräuchlich gilt."
   },
   {
-    id: "u06", topic: "untermiete", type: "mc", diff: 2, tax: "K1"
+    id: "u06", topic: "untermiete", type: "mc", diff: 2, tax: "K1",
  reviewed:false,
     q: "Wie lange kann eine Erstreckung des Mietverhältnisses bei Wohnungen maximal dauern (Art. 272b OR)?",
     options: [
@@ -588,7 +589,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "u07", topic: "untermiete", type: "mc", diff: 3, tax: "K4"
+    id: "u07", topic: "untermiete", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Linus hat eine Wohnung gemietet und zwei Zimmer an Lukas und Simon untervermietet. Linus ist seit zwei Monaten mit der Miete im Rückstand. Lukas und Simon befürchten, dass der Vermieter von ihnen die ausstehenden Mietzinse verlangen könnte.",
     q: "Ist die Angst von Lukas und Simon berechtigt?",
@@ -602,7 +603,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob der Vermieter die Mietzinse von den Untermietern verlangen kann. Voraussetzungen: Zwischen dem Vermieter und dem Untermieter besteht keine direkte Rechtsbeziehung (Art. 262 OR). Der Mietvertrag besteht nur zwischen Vermieter und Hauptmieter. Subsumtion: Lukas und Simon haben ihren Untermietvertrag mit Linus abgeschlossen, nicht mit dem Vermieter. Der Vermieter kann nur von Linus den Mietzins verlangen. Schlussfolgerung: Die Angst ist unberechtigt — allerdings riskieren die Untermieter bei einer Kündigung des Hauptmietvertrags den Verlust ihrer Wohnung."
   },
   {
-    id: "u08", topic: "untermiete", type: "multi", diff: 3, tax: "K4"
+    id: "u08", topic: "untermiete", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "In welchen Fällen ist eine Erstreckung des Mietverhältnisses ausgeschlossen (Art. 272a OR)? (Mehrere Antworten möglich.)",
     options: [
@@ -621,7 +622,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "a01", topic: "uebergabe", type: "fill", diff: 1, tax: "K1"
+    id: "a01", topic: "uebergabe", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Bei der Übernahme einer Mietwohnung wird ein {0} erstellt, in dem vorhandene Mängel und Schäden festgehalten werden.",
     blanks: [
@@ -630,14 +631,14 @@ window.QUESTIONS = [
     explain: "Das Antrittsprotokoll (auch Übergabe- oder Schadenprotokoll genannt) dokumentiert den Zustand der Wohnung beim Einzug. Es wird gemeinsam von Mieter und Vermieter erstellt und von beiden unterzeichnet. Es dient als Beweis, dass bestimmte Mängel bereits vor dem Einzug bestanden."
   },
   {
-    id: "a02", topic: "uebergabe", type: "tf", diff: 1, tax: "K2"
+    id: "a02", topic: "uebergabe", type: "tf", diff: 1, tax: "K2",
  reviewed:false,
     q: "Ohne Antrittsprotokoll wird bei einem späteren Auszug angenommen, dass alle Schäden vom Mieter verursacht wurden.",
     correct: true,
     explain: "Ohne Antrittsprotokoll gerät der Mieter in Beweisnot. Wenn bei der Wohnungsabgabe Mängel festgestellt werden, kann der Mieter nicht beweisen, dass diese bereits beim Einzug vorhanden waren. Der Vermieter wird davon ausgehen, dass der Mieter sie verursacht hat."
   },
   {
-    id: "a03", topic: "uebergabe", type: "mc", diff: 1, tax: "K1"
+    id: "a03", topic: "uebergabe", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist eine paritätische Lebensdauertabelle?",
     options: [
@@ -652,7 +653,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "a04", topic: "uebergabe", type: "calc", diff: 2, tax: "K3"
+    id: "a04", topic: "uebergabe", type: "calc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Sandra hat 6 Jahre lang eine Wohnung gemietet. Der 30-jährige massive Parkettboden hat durch unsorgfältiges Giessen von Pflanzen Wasserschäden erlitten und muss renoviert werden. Die Renovationskosten betragen CHF 6'000. Die Lebensdauer eines massiven Parkettbodens beträgt gemäss Lebensdauertabelle 40 Jahre.",
     q: "Berechnen Sie den Anteil, den Sandra dem Vermieter bezahlen muss.",
@@ -663,7 +664,7 @@ window.QUESTIONS = [
     explain: "Lösungsweg: Der Parkettboden ist 30 Jahre alt, seine Gesamtlebensdauer beträgt 40 Jahre. Die Restlebensdauer beträgt 10 Jahre. Sandra muss nur den Anteil bezahlen, der der noch nicht abgelaufenen Lebensdauer entspricht: 10/40 × CHF 6'000 = CHF 1'500."
   },
   {
-    id: "a05", topic: "uebergabe", type: "multi", diff: 2, tax: "K2"
+    id: "a05", topic: "uebergabe", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche drei Schritte sollte ein Mieter bei der Wohnungsabgabe beachten? (Mehrere Antworten möglich.)",
     options: [
@@ -676,7 +677,7 @@ window.QUESTIONS = [
     explain: "Bei der Wohnungsabgabe sollte der Mieter: (1) die Wohnung gründlich reinigen, da ein sauberer Zustand den ersten Eindruck positiv beeinflusst, (2) Defekte dokumentieren als Beweis, und (3) mit dem Vermieter die Kostenaufteilung klären. Die Schlüssel sollten nie ohne offizielle Abnahme übergeben werden."
   },
   {
-    id: "a06", topic: "uebergabe", type: "mc", diff: 2, tax: "K2"
+    id: "a06", topic: "uebergabe", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was bedeutet der «Zeitwert» im Zusammenhang mit der Wohnungsabgabe?",
     options: [
@@ -691,7 +692,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "a07", topic: "uebergabe", type: "calc", diff: 3, tax: "K3"
+    id: "a07", topic: "uebergabe", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Mieterpaar hat eine Wohnung 5 Jahre lang bewohnt. Beim Auszug wird festgestellt, dass der Wandanstrich (Lebensdauer 8 Jahre gemäss Lebensdauertabelle) durch Rauchschäden erneuert werden muss. Die Kosten für den Neuanstrich betragen CHF 4'000.",
     q: "Berechnen Sie den Anteil, den das Mieterpaar bezahlen muss.",
@@ -702,7 +703,7 @@ window.QUESTIONS = [
     explain: "Lösungsweg: Die Lebensdauer des Anstrichs beträgt 8 Jahre. Das Mieterpaar hat 5 Jahre gewohnt, somit beträgt die Restlebensdauer 3 Jahre. Ihr Anteil: 3/8 × CHF 4'000 = CHF 1'500. Die normale Abnutzung für 5 Jahre muss der Mieter nicht bezahlen — nur die Restlebensdauer, die durch den Schaden verloren geht."
   },
   {
-    id: "a08", topic: "uebergabe", type: "tf", diff: 3, tax: "K4"
+    id: "a08", topic: "uebergabe", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Wenn der Vermieter sich weigert, Mängel ins Antrittsprotokoll aufzunehmen, sollte der Mieter ihm stattdessen eine eigene Mängelliste per Einschreiben schicken.",
     correct: true,
@@ -715,7 +716,7 @@ window.QUESTIONS = [
 
   // --- diff 1 ---
   {
-    id: "z01", topic: "zusammenleben", type: "mc", diff: 1, tax: "K1"
+    id: "z01", topic: "zusammenleben", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welcher Gesetzesartikel regelt das Verhalten des Mieters und die Rücksichtnahme auf Hausbewohner und Nachbarn?",
     options: [
@@ -728,14 +729,14 @@ window.QUESTIONS = [
     explain: "Art. 257f OR regelt die Sorgfaltspflicht des Mieters und die Pflicht zur Rücksichtnahme auf die Hausbewohner und Nachbarn. Bei schwerwiegenden Verstössen kann der Vermieter nach Abmahnung die Kündigung aussprechen."
   },
   {
-    id: "z02", topic: "zusammenleben", type: "tf", diff: 1, tax: "K1"
+    id: "z02", topic: "zusammenleben", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Meerschweinchen, Hamster und Wellensittiche dürfen auch ohne Einwilligung des Vermieters in der Mietwohnung gehalten werden.",
     correct: true,
     explain: "Unproblematische Kleintiere wie Meerschweinchen, Hamster, Wellensittiche und Kanarienvögel dürfen auch ohne ausdrückliche Einwilligung des Vermieters gehalten werden, solange sie nicht in grosser Zahl gehalten werden und keine Klagen verursachen. Dies gilt sogar, wenn der Mietvertrag die Tierhaltung verbietet."
   },
   {
-    id: "z03", topic: "zusammenleben", type: "fill", diff: 1, tax: "K1"
+    id: "z03", topic: "zusammenleben", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die übliche Nachtruhe dauert von {0} Uhr bis {1} Uhr.",
     blanks: [
@@ -747,7 +748,7 @@ window.QUESTIONS = [
 
   // --- diff 2 ---
   {
-    id: "z04", topic: "zusammenleben", type: "mc", diff: 2, tax: "K3"
+    id: "z04", topic: "zusammenleben", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Carla hält seit langem eine Hauskatze in ihrer Mietwohnung. Die Vermieterin Frau Neckermann wusste davon, hat es stillschweigend akzeptiert und streichelt die Katze sogar gelegentlich im Garten. Nun fordert Frau Neckermann plötzlich die Beseitigung aller Tiere.",
     q: "Darf die Vermieterin die Beseitigung der Hauskatze verlangen?",
@@ -761,7 +762,7 @@ window.QUESTIONS = [
     explain: "Eine einmal erteilte Einwilligung zur Tierhaltung — auch eine stillschweigende — darf nicht ohne triftigen Grund widerrufen werden. Da Frau Neckermann die Katze über längere Zeit geduldet und sogar gestreichelt hat, gilt die Einwilligung als stillschweigend erteilt. Sie kann die Beseitigung der Katze daher nicht mehr verlangen."
   },
   {
-    id: "z05", topic: "zusammenleben", type: "multi", diff: 2, tax: "K2"
+    id: "z05", topic: "zusammenleben", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Fragen darf ein Vermieter einem Mietinteressenten gemäss Datenschutzrecht NICHT stellen? (Mehrere Antworten möglich.)",
     options: [
@@ -774,7 +775,7 @@ window.QUESTIONS = [
     explain: "Gemäss den Richtlinien des Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) darf der Vermieter nur Angaben verlangen, die für die Mieterauswahl nach objektiven Kriterien nötig sind. Fragen zu Krankheiten, Mitgliedschaft bei Mieterschutzorganisationen oder politischen Parteien sind unzulässig. Die ungefähre Höhe des Einkommens (in 10'000er-Schritten) darf erfragt werden."
   },
   {
-    id: "z06", topic: "zusammenleben", type: "mc", diff: 2, tax: "K2"
+    id: "z06", topic: "zusammenleben", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was sollte ein Mieter als Erstes tun, wenn ein Nachbar wiederholt gegen die Ruhezeiten verstösst?",
     options: [
@@ -789,7 +790,7 @@ window.QUESTIONS = [
 
   // --- diff 3 ---
   {
-    id: "z07", topic: "zusammenleben", type: "mc", diff: 3, tax: "K4"
+    id: "z07", topic: "zusammenleben", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Carla hat ein grosses 840-Liter-Aquarium für Saugschmerlen angeschafft und kürzlich einen Hund adoptiert, der beim Heimkommen minutenlang laut bellt. Die Vermieterin fordert die Beseitigung aller Tiere und droht mit sofortiger Kündigung.",
     q: "Wie ist die Rechtslage bezüglich des Hundes zu beurteilen?",
@@ -803,7 +804,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob die Vermieterin die Beseitigung des Hundes verlangen und fristlos kündigen kann. Voraussetzungen: Hunde benötigen grundsätzlich die Einwilligung des Vermieters. Ein störender Hund, der die Nachbarschaft belästigt, kann ein Grund für eine Beseitigungsforderung sein. Für eine fristlose Kündigung braucht es vorher eine schriftliche Mahnung (Art. 257f Abs. 3 OR). Subsumtion: Konny bellt laut und stört die Nachbarschaft. Die Vermieterin hat keine Einwilligung erteilt. Schlussfolgerung: Die Vermieterin darf die Beseitigung des Hundes verlangen. Eine sofortige Kündigung ist aber erst nach erfolgloser schriftlicher Mahnung und unter Einhaltung einer Frist von 30 Tagen auf Monatsende möglich."
   },
   {
-    id: "z08", topic: "zusammenleben", type: "multi", diff: 2, tax: "K2"
+    id: "z08", topic: "zusammenleben", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche der folgenden Informationen darf ein Vermieter von einem Mietinteressenten verlangen? (Mehrere Antworten möglich.)",
     options: [
@@ -816,14 +817,14 @@ window.QUESTIONS = [
     explain: "Der Vermieter darf nach grundlegenden Personalien, Haustieren und lärmigen Tätigkeiten wie dem Spielen eines Musikinstruments fragen, da diese Informationen für die Mieterauswahl objektiv relevant sind. Fragen nach einem Kinderwunsch sind hingegen nicht zulässig, da sie die Privatsphäre verletzen und diskriminierend wirken können."
   },
   {
-    id: "z09", topic: "zusammenleben", type: "tf", diff: 1, tax: "K1"
+    id: "z09", topic: "zusammenleben", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein Betreibungsauszug gibt Auskunft über die Zahlungsmoral einer Person und ist für Vermieter ein wichtiges Dokument bei der Mieterauswahl.",
     correct: true,
     explain: "Der Betreibungsauszug zeigt, ob gegen eine Person in den letzten Jahren Betreibungen eingeleitet wurden. Für den Vermieter ist dies ein Indiz (aber kein Beweis) für die Zahlungsmoral des potenziellen Mieters. Viele Vermieter verlangen dieses Dokument als Bestandteil der Mietbewerbung."
   },
   {
-    id: "z10", topic: "zusammenleben", type: "mc", diff: 3, tax: "K5"
+    id: "z10", topic: "zusammenleben", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Peter spielt seit kurzem Schlagzeug in seiner Mietwohnung. Der Mietvertrag enthält keine Regelung zur Tierhaltung oder Musizieren. Ein Nachbar beschwert sich regelmässig über den Lärm.",
     q: "Darf Peter Schlagzeug spielen, und was riskiert er?",
@@ -844,7 +845,7 @@ window.QUESTIONS = [
 
   // --- SVG 1: Systematik-Übersicht ---
   {
-    id: "s01", topic: "grundlagen", type: "mc", diff: 2, tax: "K3"
+    id: "s01", topic: "grundlagen", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_systematik_01.svg", alt: "Übersicht Mietrecht OR 253–274"},
     context: "Die Vermieterin verweigert seit Wochen die Reparatur einer defekten Heizung in Leonas Wohnung.",
@@ -861,7 +862,7 @@ window.QUESTIONS = [
 
   // --- SVG 2: Kündigungsfristen ---
   {
-    id: "s02", topic: "kuendigung", type: "mc", diff: 2, tax: "K3"
+    id: "s02", topic: "kuendigung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_kuendigungsfristen_02.svg", alt: "Kündigungsfristen im Mietrecht"},
     context: "Betrachte die Zeitleiste auf dem Bild. Matteo möchte sein möbliertes Zimmer in Bern kündigen. Heute ist der 10. Oktober.",
@@ -876,7 +877,7 @@ window.QUESTIONS = [
     explain: "Für möblierte Zimmer gilt eine Kündigungsfrist von zwei Wochen auf ein Monatsende (Art. 266e OR). Kündigt Matteo am 10. Oktober, endet das Mietverhältnis am 31. Oktober."
   },
   {
-    id: "s03", topic: "kuendigung", type: "mc", diff: 3, tax: "K3"
+    id: "s03", topic: "kuendigung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_kuendigungsfristen_02.svg", alt: "Kündigungsfristen im Mietrecht"},
     context: "Ein Geschäftsinhaber in Bern will seinen Laden kündigen. Heute ist der 20. März. Die Kündigungstermine gemäss Ortsgebrauch sind der 30. April und der 31. Oktober.",
@@ -893,7 +894,7 @@ window.QUESTIONS = [
 
   // --- SVG 3: Mängelrecht ---
   {
-    id: "s04", topic: "maengel", type: "mc", diff: 2, tax: "K3"
+    id: "s04", topic: "maengel", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_maengelrecht_03.svg", alt: "Flussdiagramm Vorgehen bei Mängeln"},
     context: "Der Abfluss in Sarahs Badewanne ist verstopft. Es handelt sich um eine einfache Verstopfung, die mit einem Saugnapf behoben werden kann.",
@@ -908,7 +909,7 @@ window.QUESTIONS = [
     explain: "Ein verstopfter Abfluss, der mit einem Saugnapf behoben werden kann, ist gewöhnlicher (kleiner) Unterhalt gemäss Art. 259 OR. Im Flussdiagramm folgt man: Mangel entdeckt → Gewöhnlicher Unterhalt? → Ja → Mieter behebt selbst. Erst bei grösseren Mängeln (defekte Heizung, undichtes Dach) muss der Vermieter eingeschaltet werden."
   },
   {
-    id: "s05", topic: "maengel", type: "mc", diff: 3, tax: "K4"
+    id: "s05", topic: "maengel", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_maengelrecht_03.svg", alt: "Flussdiagramm Vorgehen bei Mängeln"},
     context: "In Jonas' Wohnung ist die Geschirrspülmaschine seit zwei Wochen defekt. Er hat den Vermieter schriftlich informiert und eine Frist von 10 Tagen gesetzt. Die Frist ist abgelaufen, der Vermieter hat nicht reagiert.",
@@ -925,7 +926,7 @@ window.QUESTIONS = [
 
   // --- SVG 4: Zeitwertberechnung ---
   {
-    id: "s06", topic: "uebergabe", type: "calc", diff: 3, tax: "K3"
+    id: "s06", topic: "uebergabe", type: "calc", diff: 3, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_zeitwert_04.svg", alt: "Zeitwertberechnung bei Wohnungsabgabe"},
     context: "Beim Auszug nach 4 Jahren wird festgestellt, dass der Teppichboden (Lebensdauer 10 Jahre gemäss Lebensdauertabelle) durch Brandflecken ersetzt werden muss. Die Kosten betragen CHF 5'000.",
@@ -937,7 +938,7 @@ window.QUESTIONS = [
     explain: "Lösungsweg: Die Lebensdauer des Teppichbodens beträgt 10 Jahre. Der Mieter hat 4 Jahre gewohnt, die Restlebensdauer beträgt 6 Jahre. Der Kostenanteil: 6/10 × CHF 5'000 = CHF 3'000. Der Mieter muss also CHF 3'000 bezahlen."
   },
   {
-    id: "s07", topic: "uebergabe", type: "mc", diff: 2, tax: "K3"
+    id: "s07", topic: "uebergabe", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_zeitwert_04.svg", alt: "Zeitwertberechnung bei Wohnungsabgabe"},
     context: "Familie Becker zieht nach 12 Jahren aus ihrer Wohnung aus. Bei der Wohnungsabgabe werden Schäden am Teppichboden und am Kühlschrank festgestellt (jeweils durch unsachgemässen Gebrauch).",
@@ -954,7 +955,7 @@ window.QUESTIONS = [
 
   // --- SVG 5: Pflichten ---
   {
-    id: "s08", topic: "grundlagen", type: "mc", diff: 2, tax: "K3"
+    id: "s08", topic: "grundlagen", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     img: {src: "img/recht/mietrecht/mietrecht_pflichten_05.svg", alt: "Pflichten Vermieter und Mieter"},
     context: "Herr Weber zahlt seit zwei Monaten keinen Mietzins, wohnt aber weiterhin in der Wohnung und nutzt alle Einrichtungen.",
@@ -971,7 +972,7 @@ window.QUESTIONS = [
 
   // --- Zusätzliche diff-3-Fragen zur Verstärkung ---
   {
-    id: "s09", topic: "mietzins", type: "mc", diff: 3, tax: "K4"
+    id: "s09", topic: "mietzins", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Frau Meier zieht in eine neue Wohnung ein und stellt fest, dass der Mietzins 20% über dem Mietzins des Vormieters liegt. Der Vermieter hat keine wertvermehrenden Investitionen vorgenommen.",
     q: "Welches Recht hat Frau Meier gemäss Art. 270 OR?",
@@ -985,7 +986,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob Frau Meier den Anfangsmietzins anfechten kann. Voraussetzungen: Gemäss Art. 270 OR kann ein neuer Mieter den Anfangsmietzins als missbräuchlich anfechten, wenn er sich in einer persönlichen oder familiären Notlage zum Vertragsabschluss gezwungen sah, oder wenn der Mietzins deutlich über dem Vormieter-Niveau liegt und keine wertvermehrenden Investitionen vorgenommen wurden. Die Frist beträgt 30 Tage nach Übernahme. Subsumtion: Der Mietzins liegt 20% über dem Vormieter-Niveau ohne Investitionen. Schlussfolgerung: Frau Meier kann den Anfangsmietzins innert 30 Tagen bei der Schlichtungsbehörde anfechten."
   },
   {
-    id: "s10", topic: "zusammenleben", type: "mc", diff: 3, tax: "K4"
+    id: "s10", topic: "zusammenleben", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Herr Brunner entdeckt, dass sein Vermieter eine Überwachungskamera im Eingangsbereich installiert hat, die auch den Zugang zu seiner Wohnung filmt. Der Vermieter begründet dies mit 'Sicherheitsgründen'.",
     q: "Wie ist die Rechtslage einzuschätzen?",
@@ -999,7 +1000,7 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob die Videoüberwachung zulässig ist. Voraussetzungen: Gemäss dem Datenschutzgesetz (DSG) und der Rechtsprechung muss eine Videoüberwachung verhältnismässig sein, die Betroffenen müssen informiert werden, und Privatbereiche (Wohnungszugänge, Balkone) dürfen nicht überwacht werden. Subsumtion: Die Kamera filmt den Zugang zu Herrn Brunners Wohnung. Es fehlt die vorgängige Information. Schlussfolgerung: Die Videoüberwachung in dieser Form ist datenschutzrechtlich problematisch und der Mieter kann die Entfernung oder Neuausrichtung der Kamera verlangen."
   },
   {
-    id: "s11", topic: "untermiete", type: "mc", diff: 2, tax: "K3"
+    id: "s11", topic: "untermiete", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Anna vermietet während ihres Auslandsemesters (6 Monate) ihre gesamte 3-Zimmer-Wohnung über eine Online-Plattform an Touristen, jeweils für wenige Tage.",
     q: "Ist diese Nutzung als Untermiete zulässig?",
@@ -1013,7 +1014,7 @@ window.QUESTIONS = [
     explain: "Gemäss Art. 262 Abs. 2 lit. c OR kann der Vermieter die Zustimmung verweigern, wenn ihm wesentliche Nachteile entstehen. Kurzfristige Touristenvermietungen (z.B. über Airbnb) verursachen typischerweise höheren Verschleiss, häufigen Personenwechsel und können die Nachbarn stören. Zudem kann der Mietzins im Vergleich zur Hauptmiete missbräuchlich hoch sein (Art. 262 Abs. 2 lit. b OR)."
   },
   {
-    id: "s12", topic: "kuendigung", type: "mc", diff: 3, tax: "K5"
+    id: "s12", topic: "kuendigung", type: "mc", diff: 3, tax: "K5",
  reviewed:false,
     context: "Der Vermieter kündigt Frau Müller die Wohnung, nachdem sie sich bei der Schlichtungsbehörde über eine ungerechtfertigte Mietzinserhöhung beschwert hat.",
     q: "Wie ist diese Kündigung rechtlich zu beurteilen?",
@@ -1027,14 +1028,14 @@ window.QUESTIONS = [
     explain: "Obersatz: Es ist zu prüfen, ob die Kündigung missbräuchlich ist. Voraussetzungen: Gemäss Art. 271a Abs. 1 lit. a OR ist eine Kündigung anfechtbar, wenn sie ausgesprochen wird, weil der Mieter Ansprüche aus dem Mietverhältnis geltend macht. Subsumtion: Frau Müller hat eine Mietzinserhöhung bei der Schlichtungsbehörde angefochten — ein gesetzlich vorgesehenes Recht. Die Kündigung erfolgte als Reaktion darauf. Schlussfolgerung: Die Kündigung ist mit hoher Wahrscheinlichkeit missbräuchlich (Rachekündigung) und kann bei der Schlichtungsbehörde angefochten werden."
   },
   {
-    id: "s13", topic: "grundlagen", type: "tf", diff: 3, tax: "K4"
+    id: "s13", topic: "grundlagen", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Ein Koppelungsgeschäft liegt vor, wenn der Vermieter den Abschluss des Mietvertrags davon abhängig macht, dass der Mieter gleichzeitig einen Parkplatz mietet, den er gar nicht braucht (Art. 254 OR).",
     correct: true,
     explain: "Gemäss Art. 254 OR ist ein Koppelungsgeschäft im Zusammenhang mit der Miete nichtig. Ein Koppelungsgeschäft liegt vor, wenn der Vermieter den Abschluss oder die Fortsetzung des Mietvertrags mit dem Abschluss eines weiteren Vertrags verknüpft, der in keinem sachlichen Zusammenhang zur Miete steht. Der ungewollte Parkplatz ist ein klassisches Beispiel."
   },
   {
-    id: "s14", topic: "zusammenleben", type: "mc", diff: 2, tax: "K3"
+    id: "s14", topic: "zusammenleben", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Familie Weber hat sich bei der Vermieterin über den lauten Nachbarn beschwert. Die Vermieterin hat den Nachbarn bereits zweimal schriftlich abgemahnt, doch dieser feiert weiterhin laut bis in die Nacht.",
     q: "Welchen nächsten Schritt kann die Vermieterin nun einleiten?",
@@ -1048,14 +1049,14 @@ window.QUESTIONS = [
     explain: "Nach Art. 257f Abs. 3 OR kann der Vermieter bei schwerer Verletzung der Sorgfaltspflicht (fortgesetzte Ruhestörung trotz Abmahnung) ausserordentlich kündigen. Die Frist beträgt mindestens 30 Tage auf Monatsende bei Wohnungen. Die schriftliche Mahnung ist Voraussetzung — hier wurde sie bereits zweimal erteilt."
   },
   {
-    id: "s15", topic: "mietzins", type: "tf", diff: 2, tax: "K2"
+    id: "s15", topic: "mietzins", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Referenzzinssatz ist ein vom Bundesamt für Wohnungswesen vierteljährlich publizierter Durchschnittszinssatz, der als Grundlage für Mietzinsanpassungen dient.",
     correct: true,
     explain: "Der Referenzzinssatz basiert auf dem Durchschnittszinssatz der inländischen Hypothekarforderungen. Er wird vierteljährlich vom Bundesamt für Wohnungswesen publiziert. Sinkt er, können Mieter eine Mietzinssenkung verlangen; steigt er, kann der Vermieter eine Erhöhung durchsetzen."
   },
   {
-    id: "s16", topic: "uebergabe", type: "multi", diff: 3, tax: "K4"
+    id: "s16", topic: "uebergabe", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     context: "Beim Auszug nach 3 Jahren Mietdauer werden folgende Schäden festgestellt: (1) Kratzer im Parkettboden durch einen schweren Schrank, (2) vergilbte Wände in der Küche durch normales Kochen, (3) ein Loch in der Wand (Durchmesser ca. 5 cm).",
     q: "Für welche dieser Schäden muss der Mieter aufkommen? (Mehrere Antworten möglich.)",

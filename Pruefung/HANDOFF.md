@@ -53,6 +53,7 @@
 
 ### Offene Punkte (noch nicht umgesetzt)
 - **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
+- **Pool-Rück-Sync (on demand):** Änderungen an importierten Pool-Fragen im Prüfungstool optional zurück in Übungspools schreiben. Nur auf Aufforderung (Button pro Frage), mit Diff-Vorschau. Prüfungsspezifische Anpassungen sollen nicht automatisch Pool-Originale überschreiben.
 - **Wichtig nach Code-Änderungen:** `apps-script-code.js` muss in Apps Script Editor kopiert + neue Bereitstellung erstellt werden
 
 ### Was funktioniert

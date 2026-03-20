@@ -184,6 +184,7 @@ function AbgabeBestaetigung() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
       <div className="absolute top-4 right-4 flex items-center gap-2">
+        <ThemeToggle />
         {user && (
           <button
             onClick={abmelden}
@@ -193,7 +194,6 @@ function AbgabeBestaetigung() {
             Abmelden
           </button>
         )}
-        <ThemeToggle />
       </div>
       <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
         <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">

@@ -5,6 +5,7 @@
 // ══════════════════════════════════════════════════════════════
 
 window.POOL_META = {
+  id: "recht_or_at",
   title: "OR AT – Vertragslehre",
   fach: "Recht",
   color: "#73ab2c",
@@ -31,7 +32,7 @@ window.TOPICS = {
 
 window.QUESTIONS = [
   {
-    id: "e01", topic: "entstehung", type: "mc", diff: 1, tax: "K1"
+    id: "e01", topic: "entstehung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist eine Obligation im schweizerischen Recht?",
     options: [{v: "A", t: "Ein einklagbares Recht auf Eigentum"},{v: "B", t: "Ein Vertrag zwischen zwei Parteien über den Kauf eines Grundstücks"},{v: "C", t: "Eine strafrechtliche Verpflichtung"},{v: "D", t: "Ein Rechtsverhältnis, in dem ein Schuldner verpflichtet ist, eine Leistung zu erbringen, und ein Gläubiger das Recht hat, diese zu fordern"}],
@@ -40,7 +41,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e02", topic: "entstehung", type: "tf", diff: 1, tax: "K1"
+    id: "e02", topic: "entstehung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Eine Obligation kann nur aus einem Vertrag entstehen.",
     correct: false,
@@ -48,7 +49,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e03", topic: "entstehung", type: "fill", diff: 1, tax: "K1"
+    id: "e03", topic: "entstehung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die drei Entstehungsgründe von Obligationen sind: Vertrag, {0} und {1}.",
     blanks: [{answer: "unerlaubte Handlung", alts: ["Delikt"]}, {answer: "ungerechtfertigte Bereicherung", alts: ["Bereicherung"]}],
@@ -56,7 +57,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e04", topic: "entstehung", type: "mc", diff: 1, tax: "K1"
+    id: "e04", topic: "entstehung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist der Unterschied zwischen einer Forderung und einer Schuld?",
     options: [{v: "A", t: "Forderung = Pflicht zur Zahlung; Schuld = Recht auf Zahlung"},{v: "B", t: "Forderung = Recht des Gläubigers auf Leistung; Schuld = Pflicht des Schuldners zur Leistung"},{v: "C", t: "Forderung betrifft nur Geldleistungen, Schuld nur Sachleistungen"},{v: "D", t: "Forderung und Schuld sind Synonyme"}],
@@ -65,7 +66,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e05", topic: "entstehung", type: "mc", diff: 1, tax: "K1"
+    id: "e05", topic: "entstehung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist eine Stückschuld (Speziesschuld)?",
     options: [{v: "A", t: "Eine Schuld, bei der die geschuldete Sache nur der Gattung nach bestimmt ist"}, {v: "B", t: "Eine Schuld, bei der die geschuldete Sache individuell bestimmt ist"}, {v: "C", t: "Eine Schuld, die in Geld zu begleichen ist"}, {v: "D", t: "Eine Schuld aus unerlaubter Handlung"}],
@@ -74,7 +75,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e06", topic: "entstehung", type: "multi", diff: 2, tax: "K2"
+    id: "e06", topic: "entstehung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen über Leistungen im Obligationenrecht sind korrekt? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Eine Leistung kann in einem Tun bestehen (positive Leistungspflicht)"}, {v: "B", t: "Eine Leistung kann in einem Unterlassen bestehen (negative Leistungspflicht)"}, {v: "C", t: "Eine Leistung kann nur in einer einmaligen Zahlung bestehen"}, {v: "D", t: "Eine Leistung kann eine Dauerschuld sein (z.B. Miete)"}],
@@ -83,7 +84,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e07", topic: "entstehung", type: "mc", diff: 2, tax: "K2"
+    id: "e07", topic: "entstehung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was unterscheidet Schadenersatz von Genugtuung?",
     options: [{v: "A", t: "Schadenersatz und Genugtuung sind dasselbe"},{v: "B", t: "Schadenersatz wird nur bei Verträgen geschuldet, Genugtuung nur bei Delikten"},{v: "C", t: "Schadenersatz deckt materielle Schäden, Genugtuung deckt immaterielle Schäden"},{v: "D", t: "Genugtuung ist immer höher als Schadenersatz"}],
@@ -92,7 +93,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e08", topic: "entstehung", type: "tf", diff: 2, tax: "K2"
+    id: "e08", topic: "entstehung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Vertragliche Schäden werden mittels OR 41 ff. (unerlaubte Handlung) abgegolten.",
     correct: false,
@@ -100,7 +101,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e09", topic: "entstehung", type: "fill", diff: 2, tax: "K2"
+    id: "e09", topic: "entstehung", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei einer {0} ist die geschuldete Sache nur der Gattung (Qualität und Quantität) nach bestimmt, während bei einer begrenzten Gattungsschuld die Sache aus einem begrenzten {1} stammt.",
     blanks: [{answer: "Gattungsschuld", alts: ["Genus-Schuld"]}, {answer: "Vorrat", alts: ["Bestand", "Lager"]}],
@@ -108,7 +109,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e10", topic: "entstehung", type: "mc", diff: 2, tax: "K3"
+    id: "e10", topic: "entstehung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Marco bestellt bei einem Weinhändler 12 Flaschen Bordeaux Jahrgang 2020. Der Händler hat 500 solche Flaschen im Lager.",
     q: "Um welche Art von Schuld handelt es sich?",
@@ -118,7 +119,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e11", topic: "entstehung", type: "mc", diff: 3, tax: "K4"
+    id: "e11", topic: "entstehung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Sandra wird von einem herabfallenden Blumentopf auf dem Balkon ihrer Nachbarin getroffen und verletzt sich.",
     q: "Aus welchem Entstehungsgrund kann eine Obligation für die Nachbarin entstehen?",
@@ -128,7 +129,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e12", topic: "entstehung", type: "multi", diff: 3, tax: "K4"
+    id: "e12", topic: "entstehung", type: "multi", diff: 3, tax: "K4",
  reviewed:false,
     q: "Welche Aussagen zum Verhältnis von vertraglicher und ausservertraglicher Haftung sind korrekt?",
     options: [{v: "A", t: "Vertragliche Haftung (OR 97) setzt einen gültigen Vertrag voraus"}, {v: "B", t: "Ausservertragliche Haftung (OR 41 ff.) greift auch ohne Vertrag zwischen den Parteien"}, {v: "C", t: "Beide Haftungsarten können nie gleichzeitig vorliegen"}, {v: "D", t: "Bei vertraglicher Haftung muss der Schuldner beweisen, dass ihn kein Verschulden trifft (Beweislastumkehr)"}],
@@ -137,7 +138,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "e13", topic: "entstehung", type: "tf", diff: 3, tax: "K3"
+    id: "e13", topic: "entstehung", type: "tf", diff: 3, tax: "K3",
  reviewed:false,
     q: "Eine Dauerschuld (z.B. Miete) ist eine einmalige Leistungspflicht, die in Raten erfüllt wird.",
     correct: false,
@@ -145,7 +146,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u01", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1"
+    id: "u01", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Tatbestandsmerkmale muss die Verschuldenshaftung nach OR 41 erfüllen?",
     options: [{v: "A", t: "Verschulden, Vertrag, Schaden, Verjährung"},{v: "B", t: "Schaden, Kausalzusammenhang, Widerrechtlichkeit, Verschulden"},{v: "C", t: "Widerrechtlichkeit, Bereicherung, Kausalzusammenhang"},{v: "D", t: "Schaden, Vertrag, Verschulden"}],
@@ -154,7 +155,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u02", topic: "unerlaubte_handlung", type: "tf", diff: 1, tax: "K1"
+    id: "u02", topic: "unerlaubte_handlung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Bei der Kausalhaftung muss der Geschädigte ein Verschulden des Haftpflichtigen beweisen.",
     correct: false,
@@ -162,7 +163,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u03", topic: "unerlaubte_handlung", type: "fill", diff: 1, tax: "K1"
+    id: "u03", topic: "unerlaubte_handlung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der Haftung des Geschäftsherrn für seine Angestellten ist in {0} geregelt.",
     blanks: [{answer: "OR 55", alts: ["Art. 55 OR"]}],
@@ -170,7 +171,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u04", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1"
+    id: "u04", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche ist eine einfache Kausalhaftung?",
     options: [{v: "A", t: "Haftung aus Vertrag"},{v: "B", t: "Haftung des Tierhalters (OR 56)"},{v: "C", t: "Motorfahrzeughaftung"},{v: "D", t: "Haftung für vorsätzliche Körperverletzung"}],
@@ -179,7 +180,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u05", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1"
+    id: "u05", topic: "unerlaubte_handlung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was unterscheidet die Gefährdungshaftung von der einfachen Kausalhaftung?",
     options: [{v: "A", t: "Einfache Kausalhaftung gilt nur für Fahrzeuge"},{v: "B", t: "Es gibt keinen Unterschied"},{v: "C", t: "Gefährdungshaftung erfordert immer Verschulden"},{v: "D", t: "Bei der Gefährdungshaftung geht es um besonders gefährliche Vorrichtungen oder Sachen"}],
@@ -188,7 +189,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u06", topic: "unerlaubte_handlung", type: "multi", diff: 2, tax: "K2"
+    id: "u06", topic: "unerlaubte_handlung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Haftpflichtigen gehören zur einfachen Kausalhaftung? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Geschäftsherr (OR 55)"}, {v: "B", t: "Tierhalter (OR 56)"}, {v: "C", t: "Motorfahrzeughalter (SVG)"}, {v: "D", t: "Werkeigentümer (OR 58)"}],
@@ -197,7 +198,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u07", topic: "unerlaubte_handlung", type: "mc", diff: 2, tax: "K3"
+    id: "u07", topic: "unerlaubte_handlung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Der Hund von Frau Meier beisst einen Jogger im Park. Frau Meier hatte den Hund an der Leine, aber der Hund riss sich los.",
     q: "Haftet Frau Meier für den Schaden?",
@@ -207,7 +208,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u08", topic: "unerlaubte_handlung", type: "tf", diff: 2, tax: "K2"
+    id: "u08", topic: "unerlaubte_handlung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei der Verschuldenshaftung muss der Geschädigte alle vier Haftungsvoraussetzungen beweisen.",
     correct: true,
@@ -215,7 +216,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u09", topic: "unerlaubte_handlung", type: "mc", diff: 2, tax: "K3"
+    id: "u09", topic: "unerlaubte_handlung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Ein Hauseigentümer versäumt es, Schneefänger auf seinem Dach anzubringen. Eine Dachlawine beschädigt das parkierte Auto eines Nachbarn.",
     q: "Auf welcher Haftungsgrundlage kann der Nachbar den Hauseigentümer belangen?",
@@ -225,7 +226,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u10", topic: "unerlaubte_handlung", type: "fill", diff: 2, tax: "K2"
+    id: "u10", topic: "unerlaubte_handlung", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei der Gefährdungshaftung kann sich der Halter nur entlasten durch: grobes {0}, höhere Gewalt oder grobes {1} des Geschädigten.",
     blanks: [{answer: "Drittverschulden", alts: ["Verschulden eines Dritten"]}, {answer: "Selbstverschulden", alts: ["Eigenverschulden"]}],
@@ -233,7 +234,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u11", topic: "unerlaubte_handlung", type: "mc", diff: 3, tax: "K4"
+    id: "u11", topic: "unerlaubte_handlung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Ein Nachbar hilft beim Zügeln und beschädigt dabei versehentlich einen teuren Tisch. Er hat aus Gefälligkeit geholfen, ohne Entgelt.",
     q: "Wie ist die Haftung zu beurteilen?",
@@ -243,7 +244,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u12", topic: "unerlaubte_handlung", type: "tf", diff: 3, tax: "K4"
+    id: "u12", topic: "unerlaubte_handlung", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Wer in berechtigter Notwehr einen Angreifer verletzt, muss dem Angreifer Schadenersatz leisten.",
     correct: false,
@@ -251,7 +252,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u13", topic: "unerlaubte_handlung", type: "multi", diff: 3, tax: "K3"
+    id: "u13", topic: "unerlaubte_handlung", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche Funktionen hat das Deliktsrecht? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Ausgleich unter Rechtssubjekten"}, {v: "B", t: "Schaffung von Kostenwahrheit durch sachgerechte Kostenallokation"}, {v: "C", t: "Verhaltenslenkung (Prävention)"}, {v: "D", t: "Bestrafung des Schädigers"}],
@@ -260,7 +261,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "u14", topic: "unerlaubte_handlung", type: "mc", diff: 3, tax: "K4"
+    id: "u14", topic: "unerlaubte_handlung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Ein urteilsunfähiges Kind (5 Jahre) wirft im Supermarkt eine Flasche um und beschädigt die Ware. Die Eltern waren anwesend und haben das Kind beaufsichtigt.",
     q: "Wer haftet für den Schaden?",
@@ -270,7 +271,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b01", topic: "bereicherung", type: "mc", diff: 1, tax: "K1"
+    id: "b01", topic: "bereicherung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist der Grundsatz der ungerechtfertigten Bereicherung nach OR 62?",
     options: [{v: "A", t: "Jeder Vertrag muss schriftlich sein"},{v: "B", t: "Bereicherung ist immer strafbar"},{v: "C", t: "Vermögensverschiebungen ohne Rechtsgrund müssen zurückerstattet werden"},{v: "D", t: "Wer einen Gewinn erzielt, muss diesen versteuern"}],
@@ -279,7 +280,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b02", topic: "bereicherung", type: "tf", diff: 1, tax: "K1"
+    id: "b02", topic: "bereicherung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der Bereicherungsanspruch verjährt in 3 Jahren nach Kenntnisnahme, spätestens aber nach 10 Jahren.",
     correct: true,
@@ -287,7 +288,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b03", topic: "bereicherung", type: "fill", diff: 1, tax: "K1"
+    id: "b03", topic: "bereicherung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Kondiktion ist die {0} aufgrund einer ungerechtfertigten Bereicherung.",
     blanks: [{answer: "Rückerstattungsforderung", alts: ["Rückforderung", "Rueckforderung"]}],
@@ -295,7 +296,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b04", topic: "bereicherung", type: "mc", diff: 1, tax: "K1"
+    id: "b04", topic: "bereicherung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was bedeutet der subsidiäre Charakter des Bereicherungsanspruchs?",
     options: [{v: "A", t: "Der Bereicherungsanspruch gilt nur bei Verträgen"},{v: "B", t: "Der Bereicherungsanspruch hat immer Vorrang"},{v: "C", t: "Der Bereicherungsanspruch gilt nur, wenn keine andere Klage möglich ist"},{v: "D", t: "Der Bereicherungsanspruch ist unwichtig"}],
@@ -304,7 +305,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b05", topic: "bereicherung", type: "mc", diff: 2, tax: "K2"
+    id: "b05", topic: "bereicherung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was muss der gutgläubig Bereicherte zurückerstatten?",
     options: [{v: "A", t: "Nur den Teil, um den er im Zeitpunkt der Rückforderung noch bereichert ist"},{v: "B", t: "Nichts, da er gutgläubig war"},{v: "C", t: "Den ganzen Betrag"},{v: "D", t: "Den doppelten Betrag als Strafe"}],
@@ -313,7 +314,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b06", topic: "bereicherung", type: "tf", diff: 2, tax: "K2"
+    id: "b06", topic: "bereicherung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der bösgläubig Bereicherte muss nur den Teil der Bereicherung zurückgeben, um den er noch bereichert ist.",
     correct: false,
@@ -321,7 +322,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b07", topic: "bereicherung", type: "multi", diff: 2, tax: "K2"
+    id: "b07", topic: "bereicherung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Entstehungsgründe können zu einer ungerechtfertigten Bereicherung führen? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Ohne jeden gültigen Rechtsgrund"}, {v: "B", t: "Nicht verwirklichter Rechtsgrund"}, {v: "C", t: "Nachträglich weggefallener Rechtsgrund"}, {v: "D", t: "Eingriffsbereicherung"}],
@@ -330,7 +331,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b08", topic: "bereicherung", type: "mc", diff: 2, tax: "K3"
+    id: "b08", topic: "bereicherung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Anna überweist irrtümlich CHF 5000 an Bruno, mit dem sie kein Vertragsverhältnis hat. Bruno weiss, dass das Geld nicht für ihn bestimmt ist, gibt aber CHF 3000 bereits aus.",
     q: "Wie viel muss Bruno zurückerstatten?",
@@ -340,7 +341,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b09", topic: "bereicherung", type: "tf", diff: 2, tax: "K2"
+    id: "b09", topic: "bereicherung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die Rückforderung einer freiwillig bezahlten Nichtschuld setzt voraus, dass ein Irrtum in der Schuldpflicht vorlag (OR 63).",
     correct: true,
@@ -348,7 +349,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b10", topic: "bereicherung", type: "mc", diff: 3, tax: "K3"
+    id: "b10", topic: "bereicherung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Carl zahlt Daniel CHF 10000 als Gegenleistung dafür, dass Daniel ein illegales Geschäft für ihn erledigt. Das Geschäft wird nicht durchgeführt.",
     q: "Kann Carl die CHF 10000 zurückfordern?",
@@ -358,7 +359,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b11", topic: "bereicherung", type: "fill", diff: 3, tax: "K3"
+    id: "b11", topic: "bereicherung", type: "fill", diff: 3, tax: "K3",
  reviewed:false,
     q: "Die drei Voraussetzungen einer Kondiktion sind: (1) {0}, (2) auf Kosten eines Anderen, (3) Fehlen eines genügenden {1}.",
     blanks: [{answer: "Bereicherung", alts: ["Vermögensvermehrung"]}, {answer: "Grundes", alts: ["Rechtsgrunds", "Rechtsgrundes"]}],
@@ -366,7 +367,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "b12", topic: "bereicherung", type: "mc", diff: 3, tax: "K4"
+    id: "b12", topic: "bereicherung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Eva bezahlt ihrem ehemaligen Vermieter CHF 800, weil sie glaubt, noch eine Monatsmiete zu schulden. Tatsächlich war die Miete bereits vollständig bezahlt.",
     q: "Kann Eva die CHF 800 zurückfordern?",
@@ -376,7 +377,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v01", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1"
+    id: "v01", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche drei kumulativen Voraussetzungen müssen für einen gültigen Vertrag erfüllt sein?",
     options: [{v: "A", t: "Handlungsfähigkeit, Vertragsdauer, Unterschrift"},{v: "B", t: "Gegenseitige übereinstimmende Willenserklärungen, gültiger Vertragsinhalt, korrekte Vertragsform"},{v: "C", t: "Schriftform, Zeugen, notarielle Beurkundung"},{v: "D", t: "Angebot, Nachfrage, Preis"}],
@@ -385,7 +386,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v02", topic: "vertragsvoraussetzungen", type: "tf", diff: 1, tax: "K1"
+    id: "v02", topic: "vertragsvoraussetzungen", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Formfreiheit ist der Grundsatz im schweizerischen Vertragsrecht (OR 11).",
     correct: true,
@@ -393,7 +394,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v03", topic: "vertragsvoraussetzungen", type: "fill", diff: 1, tax: "K1"
+    id: "v03", topic: "vertragsvoraussetzungen", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein Vertrag mit unmöglichem, {0} oder unsittlichem Inhalt ist nach OR 19/20 nichtig.",
     blanks: [{answer: "widerrechtlichem", alts: ["rechtswidrigem", "illegalem"]}],
@@ -401,7 +402,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v04", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1"
+    id: "v04", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist die Rechtsfolge, wenn eine der drei Vertragsvoraussetzungen nicht erfüllt ist?",
     options: [{v: "A", t: "Der Vertrag ist anfechtbar"},{v: "B", t: "Der Vertrag wird vom Gericht angepasst"},{v: "C", t: "Der Vertrag ist nichtig"},{v: "D", t: "Der Vertrag ist gültig, aber der Geschädigte kann Schadenersatz fordern"}],
@@ -410,7 +411,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v05", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1"
+    id: "v05", topic: "vertragsvoraussetzungen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was bedeutet ein Antrag im Vertragsrecht?",
     options: [{v: "A", t: "Ein verbindliches Angebot zum Abschluss eines Vertrags"},{v: "B", t: "Eine Beschwerde beim Gericht"},{v: "C", t: "Ein Kündigungsschreiben"},{v: "D", t: "Eine unverbindliche Anfrage"}],
@@ -419,7 +420,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v06", topic: "vertragsvoraussetzungen", type: "mc", diff: 2, tax: "K2"
+    id: "v06", topic: "vertragsvoraussetzungen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Formvorschriften kennt das Schweizer Recht?",
     options: [{v: "A", t: "Nur mündliche und schriftliche Form"}, {v: "B", t: "Einfache Schriftlichkeit, qualifizierte Schriftlichkeit und öffentliche Beurkundung"}, {v: "C", t: "Nur öffentliche Beurkundung"}, {v: "D", t: "Einfache Schriftlichkeit und digitale Signatur"}],
@@ -428,7 +429,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v07", topic: "vertragsvoraussetzungen", type: "mc", diff: 2, tax: "K3"
+    id: "v07", topic: "vertragsvoraussetzungen", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Fabio und Gina einigen sich mündlich auf den Kauf eines Grundstücks für CHF 500000.",
     q: "Ist der Kaufvertrag gültig?",
@@ -438,7 +439,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v08", topic: "vertragsvoraussetzungen", type: "multi", diff: 2, tax: "K2"
+    id: "v08", topic: "vertragsvoraussetzungen", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Vertragsinhalte führen nach OR 19/20 zur Nichtigkeit? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Unmöglicher Inhalt"}, {v: "B", t: "Widerrechtlicher Inhalt"}, {v: "C", t: "Unsittlicher Inhalt"}, {v: "D", t: "Für eine Partei wirtschaftlich nachteiliger Inhalt"}],
@@ -447,7 +448,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v09", topic: "vertragsvoraussetzungen", type: "tf", diff: 2, tax: "K2"
+    id: "v09", topic: "vertragsvoraussetzungen", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Parteien können vertraglich eine strengere Form vereinbaren, als das Gesetz vorschreibt.",
     correct: true,
@@ -455,7 +456,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v10", topic: "vertragsvoraussetzungen", type: "fill", diff: 2, tax: "K2"
+    id: "v10", topic: "vertragsvoraussetzungen", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Grundsatz der Vertragsfreiheit erlaubt es den Parteien, den Inhalt frei zu bestimmen, solange er nicht gegen OR {0} verstösst.",
     blanks: [{answer: "19/20", alts: ["19", "20"]}],
@@ -463,7 +464,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v11", topic: "vertragsvoraussetzungen", type: "mc", diff: 3, tax: "K3"
+    id: "v11", topic: "vertragsvoraussetzungen", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Heinrich bestellt telefonisch bei Ilona ein handgefertigtes Möbelstück für CHF 8000. Am Telefon einigen sich beide auf alle Details. Ilona fertigt das Möbelstück an, aber Heinrich verweigert die Zahlung mit der Begründung, es gebe keinen schriftlichen Vertrag.",
     q: "Ist Heinrichs Einwand berechtigt?",
@@ -473,7 +474,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v12", topic: "vertragsvoraussetzungen", type: "mc", diff: 3, tax: "K4"
+    id: "v12", topic: "vertragsvoraussetzungen", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Jan bietet Klara an, ihr Auto für CHF 15000 zu kaufen. Klara antwortet: «Einverstanden, aber für CHF 17000.»",
     q: "Ist ein Vertrag zustande gekommen?",
@@ -483,7 +484,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "v13", topic: "vertragsvoraussetzungen", type: "multi", diff: 3, tax: "K3"
+    id: "v13", topic: "vertragsvoraussetzungen", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche Aussagen zum Unterschied zwischen Nichtigkeit und Anfechtbarkeit sind korrekt?",
     options: [{v: "A", t: "Nichtigkeit: Vertrag entfaltet von Anfang an keine Wirkung"}, {v: "B", t: "Anfechtbarkeit: Vertrag ist gültig bis zur Anfechtung"}, {v: "C", t: "Ein nichtiger Vertrag kann durch Ratifizierung gültig werden"}, {v: "D", t: "Nichtigkeit tritt ein bei fehlenden Vertragsvoraussetzungen, Anfechtbarkeit bei Willensmängeln"}],
@@ -492,7 +493,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w01", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1"
+    id: "w01", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Arten von Willensmängeln kennt das OR?",
     options: [{v: "A", t: "Nur Furchterregung"},{v: "B", t: "Formfehler und Inhaltsfehler"},{v: "C", t: "Nur wesentliche Irrtümer und Täuschung"},{v: "D", t: "Übervorteilung, wesentliche Irrtümer, absichtliche Täuschung, Furchterregung"}],
@@ -501,7 +502,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w02", topic: "willensmaengel", type: "tf", diff: 1, tax: "K1"
+    id: "w02", topic: "willensmaengel", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Ein Vertrag mit einem Willensmangel ist ab initio nichtig.",
     correct: false,
@@ -509,7 +510,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w03", topic: "willensmaengel", type: "fill", diff: 1, tax: "K1"
+    id: "w03", topic: "willensmaengel", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der {0} nach OR 24 Abs. 1 Ziff. 1-3 betrifft einen Irrtum über den Inhalt oder die Natur der Erklärung.",
     blanks: [{answer: "Erklärungsirrtum", alts: ["Erklaerungsirrtum"]}],
@@ -517,7 +518,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w04", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1"
+    id: "w04", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist die Rechtsfolge bei einem anfechtbaren Vertrag wegen Willensmangels?",
     options: [{v: "A", t: "Der Vertrag muss vom Gericht aufgehoben werden"},{v: "B", t: "Der Vertrag wird automatisch aufgelöst"},{v: "C", t: "Der Vertrag ist von Anfang an nichtig"},{v: "D", t: "Der Geschädigte kann den Vertrag durch einseitige Erklärung als unverbindlich erklären"}],
@@ -526,7 +527,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w05", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1"
+    id: "w05", topic: "willensmaengel", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "In welchem Artikel ist die Übervorteilung geregelt?",
     options: [{v: "A", t: "OR 24"},{v: "B", t: "OR 29"},{v: "C", t: "OR 21"},{v: "D", t: "OR 28"}],
@@ -535,7 +536,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w06", topic: "willensmaengel", type: "mc", diff: 2, tax: "K2"
+    id: "w06", topic: "willensmaengel", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist ein Grundlagenirrtum nach OR 24 Abs. 1 Ziff. 4?",
     options: [{v: "A", t: "Ein Irrtum über eine Tatsache, die von beiden Parteien als Grundlage des Vertrags angenommen wurde"},{v: "B", t: "Ein Irrtum über das geltende Recht"},{v: "C", t: "Ein Rechenfehler bei der Preiskalkulation"},{v: "D", t: "Ein Irrtum über die eigene finanzielle Situation"}],
@@ -544,7 +545,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w07", topic: "willensmaengel", type: "mc", diff: 2, tax: "K3"
+    id: "w07", topic: "willensmaengel", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Lisa kauft ein Gemälde für CHF 20000, das beide Parteien für ein Original halten. Später stellt sich heraus, dass es eine Fälschung ist.",
     q: "Welcher Willensmangel liegt vor?",
@@ -554,7 +555,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w08", topic: "willensmaengel", type: "tf", diff: 2, tax: "K2"
+    id: "w08", topic: "willensmaengel", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Furchterregung (OR 29) liegt vor, wenn jemand durch Drohung mit einem Übel zum Vertragsabschluss bewegt wird.",
     correct: true,
@@ -562,7 +563,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w09", topic: "willensmaengel", type: "mc", diff: 2, tax: "K3"
+    id: "w09", topic: "willensmaengel", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Maria (in finanzieller Notlage) verkauft ihren Oldtimer im Wert von CHF 60000 an Niklaus für CHF 15000. Niklaus nutzt bewusst Marias Notlage aus.",
     q: "Welcher Anfechtungsgrund liegt vor?",
@@ -572,7 +573,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w10", topic: "willensmaengel", type: "multi", diff: 2, tax: "K2"
+    id: "w10", topic: "willensmaengel", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zu den Erklärungsirrtümern nach OR 24 Abs. 1 Ziff. 1-3 sind korrekt?",
     options: [{v: "A", t: "Ziff. 1: Irrtum über die Natur des Vertrags (z.B. Kauf statt Schenkung)"}, {v: "B", t: "Ziff. 2: Irrtum über die Person des Vertragspartners"}, {v: "C", t: "Ziff. 3: Irrtum über den Umfang der Leistung"}, {v: "D", t: "Ziff. 4: Irrtum über den Preis"}],
@@ -581,7 +582,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w11", topic: "willensmaengel", type: "mc", diff: 3, tax: "K3"
+    id: "w11", topic: "willensmaengel", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Oliver verkauft Petra ein Auto und behauptet, es sei unfallfrei. Petra kauft das Auto für CHF 25000. Später stellt sich heraus, dass das Auto einen schweren Unfall hatte, was Oliver wusste.",
     q: "Welcher Anfechtungsgrund liegt vor?",
@@ -591,7 +592,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w12", topic: "willensmaengel", type: "tf", diff: 3, tax: "K3"
+    id: "w12", topic: "willensmaengel", type: "tf", diff: 3, tax: "K3",
  reviewed:false,
     q: "Ein blosser Motivirrtum (z.B. ich kaufe ein Geschenk, aber die Feier findet nicht statt) berechtigt zur Anfechtung des Vertrags.",
     correct: false,
@@ -599,7 +600,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w13", topic: "willensmaengel", type: "fill", diff: 3, tax: "K3"
+    id: "w13", topic: "willensmaengel", type: "fill", diff: 3, tax: "K3",
  reviewed:false,
     q: "Beim Grundlagenirrtum muss die Tatsache von {0} Parteien als Vertragsgrundlage angenommen worden sein, im Gegensatz zum blossen {1}, der nicht zur Anfechtung berechtigt.",
     blanks: [{answer: "beiden", alts: ["beiderseitig", "beidseitig"]}, {answer: "Motivirrtum", alts: ["einseitigen Irrtum"]}],
@@ -607,7 +608,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "w14", topic: "willensmaengel", type: "mc", diff: 3, tax: "K4"
+    id: "w14", topic: "willensmaengel", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Reto droht Sabine, ihren Ruf öffentlich zu schädigen, wenn sie ihm nicht ihr Ferienhaus für CHF 50000 verkauft (Marktwert CHF 200000). Sabine unterzeichnet aus Angst den Vertrag.",
     q: "Welche Anfechtungsgründe kommen in Betracht?",
@@ -617,7 +618,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f01", topic: "erfuellung", type: "mc", diff: 1, tax: "K1"
+    id: "f01", topic: "erfuellung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wer muss eine Obligation grundsätzlich erfüllen (OR 68)?",
     options: [{v: "A", t: "Der Schuldner, aber nicht zwingend persönlich, wenn die Persönlichkeit keine Rolle spielt"},{v: "B", t: "Jeder beliebige Dritte"},{v: "C", t: "Immer der Schuldner persönlich"},{v: "D", t: "Der Gläubiger bestimmt, wer erfüllt"}],
@@ -626,7 +627,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f02", topic: "erfuellung", type: "tf", diff: 1, tax: "K1"
+    id: "f02", topic: "erfuellung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Geldschulden sind Bringschulden – sie sind am Wohnsitz des Gläubigers zu erfüllen.",
     correct: true,
@@ -634,7 +635,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f03", topic: "erfuellung", type: "fill", diff: 1, tax: "K1"
+    id: "f03", topic: "erfuellung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Eine Obligation ist grundsätzlich {0} nach ihrer Entstehung fällig und erfüllbar (OR 75).",
     blanks: [{answer: "sofort", alts: ["unmittelbar", "gleich"]}],
@@ -642,7 +643,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f04", topic: "erfuellung", type: "mc", diff: 1, tax: "K1"
+    id: "f04", topic: "erfuellung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wo ist eine Speziesschuld (bestimmte Sache) zu erfüllen?",
     options: [{v: "A", t: "Am Wohnsitz des Gläubigers"},{v: "B", t: "Am Ort des Vertragsabschlusses"},{v: "C", t: "Am Wohnsitz des Schuldners"},{v: "D", t: "Dort, wo sich die Sache zur Zeit des Vertragsabschlusses befand (OR 74 Abs. 2 Ziff. 2)"}],
@@ -651,7 +652,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f05", topic: "erfuellung", type: "mc", diff: 1, tax: "K1"
+    id: "f05", topic: "erfuellung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist der Erfüllungsort bei einer Gattungsschuld?",
     options: [{v: "A", t: "Am Ort, wo die Ware produziert wurde"},{v: "B", t: "Am Wohnsitz des Schuldners bei Entstehung der Schuld (OR 74 Abs. 2 Ziff. 3)"},{v: "C", t: "Am Wohnsitz des Gläubigers"},{v: "D", t: "Am nächstgelegenen Marktplatz"}],
@@ -660,7 +661,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f06", topic: "erfuellung", type: "multi", diff: 2, tax: "K2"
+    id: "f06", topic: "erfuellung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Zuordnungen Erfüllungsort–Schuldart sind nach OR 74 korrekt?",
     options: [{v: "A", t: "Geldschuld → Wohnsitz des Gläubigers (Bringschuld)"}, {v: "B", t: "Speziesschuld → Standort der Sache (Holschuld)"}, {v: "C", t: "Gattungsschuld → Wohnsitz des Schuldners"}, {v: "D", t: "Geldschuld → Wohnsitz des Schuldners"}],
@@ -669,7 +670,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f07", topic: "erfuellung", type: "mc", diff: 2, tax: "K3"
+    id: "f07", topic: "erfuellung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Thomas schuldet Ursula ein bestimmtes antikes Klavier. Das Klavier steht in Bern. Thomas wohnt in Zürich, Ursula in Basel. Es wurde kein Erfüllungsort vereinbart.",
     q: "Wo muss Thomas das Klavier übergeben?",
@@ -679,7 +680,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f08", topic: "erfuellung", type: "tf", diff: 2, tax: "K2"
+    id: "f08", topic: "erfuellung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei einer Gattungsschuld hat der Schuldner grundsätzlich die Auswahl, welche Sache aus der Gattung er liefert (OR 71).",
     correct: true,
@@ -687,7 +688,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f09", topic: "erfuellung", type: "fill", diff: 2, tax: "K2"
+    id: "f09", topic: "erfuellung", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Unterschied zwischen vertretbaren und nicht vertretbaren Sachen ist: Vertretbare Sachen sind nach Art, Zahl, Mass oder {0} bestimmt, nicht vertretbare sind {1} bestimmt.",
     blanks: [{answer: "Gewicht", alts: ["Mass"]}, {answer: "individuell", alts: ["einzeln", "konkret"]}],
@@ -695,7 +696,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f10", topic: "erfuellung", type: "mc", diff: 2, tax: "K3"
+    id: "f10", topic: "erfuellung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Vera schuldet Werner CHF 5000 aus einem Darlehen. Sie vereinbaren keinen Fälligkeitstermin.",
     q: "Wann ist die Schuld fällig?",
@@ -705,7 +706,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f11", topic: "erfuellung", type: "mc", diff: 3, tax: "K3"
+    id: "f11", topic: "erfuellung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Bäcker schuldet einem Restaurant 50 kg Mehl (Gattungsschuld). Der Bäcker wohnt in Luzern, das Restaurant ist in Bern. Kein Erfüllungsort vereinbart. Der Bäcker schickt das Mehl per Post nach Bern.",
     q: "Wer trägt das Transportrisiko?",
@@ -715,7 +716,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f12", topic: "erfuellung", type: "multi", diff: 3, tax: "K3"
+    id: "f12", topic: "erfuellung", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche Aussagen zur Erfüllung von Obligationen sind korrekt?",
     options: [{v: "A", t: "Persönliche Erfüllung ist nur nötig, wenn es auf die Person des Schuldners ankommt (OR 68)"}, {v: "B", t: "Der Gläubiger kann die Leistung nur an sich selbst fordern"}, {v: "C", t: "Bei Geldschulden gilt: Bringschuld zum Gläubiger"}, {v: "D", t: "Fälligkeit kann durch Parteivereinbarung vom Grundsatz abweichen"}],
@@ -724,7 +725,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "f13", topic: "erfuellung", type: "tf", diff: 3, tax: "K4"
+    id: "f13", topic: "erfuellung", type: "tf", diff: 3, tax: "K4",
  reviewed:false,
     q: "Bei einer Speziesschuld kann der Schuldner eine gleichwertige Ersatzsache liefern, wenn die geschuldete Sache beschädigt wird.",
     correct: false,
@@ -732,7 +733,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s01", topic: "sicherung", type: "mc", diff: 1, tax: "K1"
+    id: "s01", topic: "sicherung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist der Unterschied zwischen Personalsicherheiten und Realsicherheiten?",
     options: [{v: "A", t: "Realsicherheiten sind nur für Unternehmen"},{v: "B", t: "Personalsicherheiten: Eine Person steht ein. Realsicherheiten: Eine Sache oder ein Geldbetrag dient als Sicherheit."},{v: "C", t: "Personalsicherheiten sind teurer als Realsicherheiten"},{v: "D", t: "Es gibt keinen Unterschied"}],
@@ -741,7 +742,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s02", topic: "sicherung", type: "tf", diff: 1, tax: "K1"
+    id: "s02", topic: "sicherung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Konventionalstrafe ist eine Schadenersatzzahlung.",
     correct: false,
@@ -749,7 +750,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s03", topic: "sicherung", type: "fill", diff: 1, tax: "K1"
+    id: "s03", topic: "sicherung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Das {0} nach OR 158 Abs. 3 erlaubt es einer Partei, gegen Bezahlung eines Entgelts vom Vertrag zurückzutreten.",
     blanks: [{answer: "Reuegeld", alts: ["Reugeld"]}],
@@ -757,7 +758,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s04", topic: "sicherung", type: "mc", diff: 1, tax: "K1"
+    id: "s04", topic: "sicherung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist eine Bürgschaft nach OR 492?",
     options: [{v: "A", t: "Eine Sicherheit durch Hinterlegung von Geld"},{v: "B", t: "Eine Versicherungspolice"},{v: "C", t: "Ein Eigentumsrecht an einer Sache"},{v: "D", t: "Ein Vertrag, bei dem sich ein Bürge gegenüber dem Gläubiger verpflichtet, für die Schuld des Hauptschuldners einzustehen"}],
@@ -766,7 +767,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s05", topic: "sicherung", type: "mc", diff: 1, tax: "K1"
+    id: "s05", topic: "sicherung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Welche Formvorschrift gilt für die Bürgschaft (OR 493)?",
     options: [{v: "A", t: "Mündliche Form genügt"}, {v: "B", t: "Schriftliche Form mit Angabe des Höchstbetrags"}, {v: "C", t: "Öffentliche Beurkundung"}, {v: "D", t: "Keine Formvorschrift"}],
@@ -775,7 +776,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s06", topic: "sicherung", type: "mc", diff: 2, tax: "K2"
+    id: "s06", topic: "sicherung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was unterscheidet die einfache Bürgschaft (OR 492) von der Solidarbürgschaft (OR 496)?",
     options: [{v: "A", t: "Die einfache Bürgschaft erfordert keine schriftliche Form"},{v: "B", t: "Bei der Solidarbürgschaft kann der Gläubiger den Bürgen schon nach Mahnung des Hauptschuldners belangen"},{v: "C", t: "Es gibt keinen Unterschied"},{v: "D", t: "Die Solidarbürgschaft hat keinen Höchstbetrag"}],
@@ -784,7 +785,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s07", topic: "sicherung", type: "mc", diff: 2, tax: "K2"
+    id: "s07", topic: "sicherung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was ist das Retentionsrecht nach OR 895?",
     options: [{v: "A", t: "Ein Vorkaufsrecht"},{v: "B", t: "Das Recht, eine Sache zu verkaufen"},{v: "C", t: "Das Recht auf Rücktritt vom Vertrag"},{v: "D", t: "Das Recht des Gläubigers, eine Sache des Schuldners zurückzubehalten, bis die fällige Forderung befriedigt ist"}],
@@ -793,7 +794,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s08", topic: "sicherung", type: "multi", diff: 2, tax: "K2"
+    id: "s08", topic: "sicherung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche gehören zu den Realsicherheiten? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Kaution"}, {v: "B", t: "Konventionalstrafe"}, {v: "C", t: "Pfandrechte (Fahrnispfand, Grundpfand)"}, {v: "D", t: "Eigentumsvorbehalt"}],
@@ -802,7 +803,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s09", topic: "sicherung", type: "tf", diff: 2, tax: "K2"
+    id: "s09", topic: "sicherung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Der Eigentumsvorbehalt wirkt auch gegenüber gutgläubigen Dritten, ohne dass er im Register eingetragen sein muss.",
     correct: false,
@@ -810,7 +811,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s10", topic: "sicherung", type: "fill", diff: 2, tax: "K2"
+    id: "s10", topic: "sicherung", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die Kaution im Mietrecht ist in OR {0} geregelt, im Arbeitsrecht in OR {1}.",
     blanks: [{answer: "257e", alts: ["257 e"]}, {answer: "330", alts: []}],
@@ -818,7 +819,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s11", topic: "sicherung", type: "mc", diff: 3, tax: "K3"
+    id: "s11", topic: "sicherung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Automechaniker repariert das Auto von Frau Weber für CHF 3000. Frau Weber kann nicht bezahlen. Das Auto steht noch in der Werkstatt.",
     q: "Welches Sicherungsmittel kann der Mechaniker anwenden?",
@@ -828,7 +829,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s12", topic: "sicherung", type: "mc", diff: 3, tax: "K3"
+    id: "s12", topic: "sicherung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Möbelhaus verkauft einen Schrank unter Eigentumsvorbehalt (nicht im Register eingetragen) an Herrn Keller. Dieser verkauft den Schrank weiter an Frau Lang, die nichts vom Eigentumsvorbehalt weiss.",
     q: "Wem gehört der Schrank?",
@@ -838,7 +839,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s13", topic: "sicherung", type: "multi", diff: 3, tax: "K3"
+    id: "s13", topic: "sicherung", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche Aussagen zur Bürgschaft sind korrekt?",
     options: [{v: "A", t: "Die Bürgschaft erfordert schriftliche Form und Höchstbetrag (OR 493)"}, {v: "B", t: "Der Bürge haftet unbegrenzt"}, {v: "C", t: "Bei der Solidarbürgschaft kann der Bürge nach Mahnung des Hauptschuldners belangt werden"}, {v: "D", t: "Die Konventionalstrafe für die Bürgschaft bedarf derselben Form wie die Hauptobligation"}],
@@ -847,7 +848,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "s14", topic: "sicherung", type: "tf", diff: 3, tax: "K3"
+    id: "s14", topic: "sicherung", type: "tf", diff: 3, tax: "K3",
  reviewed:false,
     q: "Der Gläubiger kann bei der Konventionalstrafe sowohl die Erfüllung als auch die Konventionalstrafe verlangen.",
     correct: false,
@@ -855,7 +856,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l01", topic: "erloeschen", type: "mc", diff: 1, tax: "K1"
+    id: "l01", topic: "erloeschen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Auf wie viele Arten kann eine Obligation erlöschen?",
     options: [{v: "A", t: "7"},{v: "B", t: "3"},{v: "C", t: "5"},{v: "D", t: "10"}],
@@ -864,7 +865,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l02", topic: "erloeschen", type: "tf", diff: 1, tax: "K1"
+    id: "l02", topic: "erloeschen", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Die Verjährung einer Forderung bedeutet, dass die Forderung nicht mehr existiert.",
     correct: false,
@@ -872,7 +873,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l03", topic: "erloeschen", type: "fill", diff: 1, tax: "K1"
+    id: "l03", topic: "erloeschen", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Beim {0} (OR 115) einigen sich Gläubiger und Schuldner, dass der Schuldner nicht mehr leisten muss.",
     blanks: [{answer: "Erlass", alts: ["Übereinkunft", "Uebereinkunft"]}],
@@ -880,7 +881,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l04", topic: "erloeschen", type: "mc", diff: 1, tax: "K1"
+    id: "l04", topic: "erloeschen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist eine Neuerung (Novation) nach OR 116?",
     options: [{v: "A", t: "Die Übertragung einer Forderung auf einen Dritten"},{v: "B", t: "Die Verlängerung einer Frist"},{v: "C", t: "Die Teilzahlung einer Schuld"},{v: "D", t: "Die Tilgung einer alten Schuld durch Begründung einer neuen Schuld"}],
@@ -889,7 +890,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l05", topic: "erloeschen", type: "mc", diff: 1, tax: "K1"
+    id: "l05", topic: "erloeschen", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Wie lange beträgt die allgemeine Verjährungsfrist nach OR 127?",
     options: [{v: "A", t: "20 Jahre"},{v: "B", t: "3 Jahre"},{v: "C", t: "10 Jahre"},{v: "D", t: "5 Jahre"}],
@@ -898,7 +899,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l06", topic: "erloeschen", type: "mc", diff: 2, tax: "K2"
+    id: "l06", topic: "erloeschen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Was passiert bei der Vereinigung (OR 118)?",
     options: [{v: "A", t: "Gläubiger und Schuldner werden zu einer Person, wodurch die Obligation erlischt"},{v: "B", t: "Zwei Parteien fusionieren ihre Unternehmen"},{v: "C", t: "Ein neuer Vertrag wird geschlossen"},{v: "D", t: "Zwei Forderungen werden zusammengelegt"}],
@@ -907,7 +908,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l07", topic: "erloeschen", type: "mc", diff: 2, tax: "K2"
+    id: "l07", topic: "erloeschen", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Voraussetzungen müssen für eine Verrechnung nach OR 120 vorliegen?",
     options: [{v: "A", t: "Gegenseitige, fällige, gleichartige Forderungen"},{v: "B", t: "Nur Geldforderungen"},{v: "C", t: "Ein richterliches Urteil"},{v: "D", t: "Die Zustimmung beider Parteien"}],
@@ -916,7 +917,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l08", topic: "erloeschen", type: "tf", diff: 2, tax: "K2"
+    id: "l08", topic: "erloeschen", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die Verjährungsfrist kann durch Anerkennung der Schuld durch den Schuldner unterbrochen werden (OR 135).",
     correct: true,
@@ -924,7 +925,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l09", topic: "erloeschen", type: "fill", diff: 2, tax: "K2"
+    id: "l09", topic: "erloeschen", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Die Verjährungsfrist beginnt mit der {0} der Forderung zu laufen (OR 130).",
     blanks: [{answer: "Fälligkeit", alts: ["Faelligkeit"]}],
@@ -932,7 +933,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l10", topic: "erloeschen", type: "multi", diff: 2, tax: "K2"
+    id: "l10", topic: "erloeschen", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zum Erlöschen von Obligationen sind korrekt?",
     options: [{v: "A", t: "Erfüllung (OR 68) ist die häufigste Art des Erlöschens"}, {v: "B", t: "Unmöglichwerden (OR 119) setzt nachträgliche und unverschuldete Unmöglichkeit voraus"}, {v: "C", t: "Die Verjährung löscht die Forderung vollständig aus"}, {v: "D", t: "Die Verrechnung erfordert die Zustimmung beider Parteien"}],
@@ -941,7 +942,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l11", topic: "erloeschen", type: "mc", diff: 3, tax: "K3"
+    id: "l11", topic: "erloeschen", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Sohn erbt von seinem Vater ein Haus. Gleichzeitig hatte der Sohn dem Vater CHF 50000 geliehen.",
     q: "Was geschieht mit der Darlehensforderung des Sohnes gegen den Vater?",
@@ -951,7 +952,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l12", topic: "erloeschen", type: "mc", diff: 3, tax: "K3"
+    id: "l12", topic: "erloeschen", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche drei Varianten der Unmöglichkeit sind zu unterscheiden?",
     options: [{v: "A", t: "Ursprünglich (OR 20 = kein Vertrag), nachträglich unverschuldet (OR 119 = Erlöschen), nachträglich verschuldet (OR 97 = Schadenersatz)"}, {v: "B", t: "Leichte, mittlere und schwere Unmöglichkeit"}, {v: "C", t: "Vorübergehende, dauernde und teilweise Unmöglichkeit"}, {v: "D", t: "Es gibt nur eine Art von Unmöglichkeit"}],
@@ -960,7 +961,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l13", topic: "erloeschen", type: "tf", diff: 3, tax: "K3"
+    id: "l13", topic: "erloeschen", type: "tf", diff: 3, tax: "K3",
  reviewed:false,
     q: "Wer eine verjährte Forderung freiwillig bezahlt, kann das Geleistete als ungerechtfertigte Bereicherung zurückfordern.",
     correct: false,
@@ -968,7 +969,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l14", topic: "erloeschen", type: "mc", diff: 3, tax: "K3"
+    id: "l14", topic: "erloeschen", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "A schuldet B CHF 8000 aus einem Kaufvertrag. B schuldet A CHF 5000 aus einem Darlehen. Beide Forderungen sind fällig.",
     q: "Was geschieht bei einer Verrechnung?",
@@ -978,7 +979,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "l15", topic: "erloeschen", type: "fill", diff: 3, tax: "K3"
+    id: "l15", topic: "erloeschen", type: "fill", diff: 3, tax: "K3",
  reviewed:false,
     q: "Die Verjährung kann durch {0} des Gläubigers oder {1} der Schuld durch den Schuldner unterbrochen werden (OR 135).",
     blanks: [{answer: "Betreibung", alts: ["Klage", "Klageerhebung"]}, {answer: "Anerkennung", alts: ["Schuldanerkennung"]}],
@@ -986,7 +987,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t01", topic: "stoerung", type: "mc", diff: 1, tax: "K1"
+    id: "t01", topic: "stoerung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Von welchen Seiten kann die Vertragserfüllung gestört werden?",
     options: [{v: "A", t: "Nur vom Schuldner"},{v: "B", t: "Von einem Dritten"},{v: "C", t: "Nur vom Gläubiger"},{v: "D", t: "Vom Gläubiger (Gläubigerverzug) und vom Schuldner (Schuldnerverzug, Schlechterfüllung, Nichterfüllung)"}],
@@ -995,7 +996,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t02", topic: "stoerung", type: "tf", diff: 1, tax: "K1"
+    id: "t02", topic: "stoerung", type: "tf", diff: 1, tax: "K1",
  reviewed:false,
     q: "Beim Schuldnerverzug ist grundsätzlich eine Mahnung erforderlich (OR 102 Abs. 1).",
     correct: true,
@@ -1003,7 +1004,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t03", topic: "stoerung", type: "fill", diff: 1, tax: "K1"
+    id: "t03", topic: "stoerung", type: "fill", diff: 1, tax: "K1",
  reviewed:false,
     q: "Der gesetzliche Verzugszins bei Geldschulden beträgt {0} pro Jahr.",
     blanks: [{answer: "5%", alts: ["5 Prozent", "fünf Prozent", "5 %"]}],
@@ -1011,7 +1012,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t04", topic: "stoerung", type: "mc", diff: 1, tax: "K1"
+    id: "t04", topic: "stoerung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was ist ein Fixgeschäft nach OR 108?",
     options: [{v: "A", t: "Ein Geschäft ohne Rücktrittsrecht"},{v: "B", t: "Ein Geschäft mit fester Laufzeit"},{v: "C", t: "Ein Geschäft mit festem Preis"},{v: "D", t: "Ein Geschäft, bei dem die rechtzeitige Erfüllung wesentlich ist"}],
@@ -1020,7 +1021,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t05", topic: "stoerung", type: "mc", diff: 1, tax: "K1"
+    id: "t05", topic: "stoerung", type: "mc", diff: 1, tax: "K1",
  reviewed:false,
     q: "Was versteht man unter Sachgewährleistung?",
     options: [{v: "A", t: "Eine Garantie des Herstellers"},{v: "B", t: "Eine Versicherung gegen Sachschäden"},{v: "C", t: "Die Pflicht des Verkäufers, für zugesicherte Eigenschaften und Mängelfreiheit der Kaufsache einzustehen"},{v: "D", t: "Die Pflicht des Käufers, die Ware zu prüfen"}],
@@ -1029,7 +1030,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t06", topic: "stoerung", type: "mc", diff: 2, tax: "K2"
+    id: "t06", topic: "stoerung", type: "mc", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Wahlrechte hat der Gläubiger bei zweiseitigen Verträgen nach fruchtloser Nachfrist (OR 107 Abs. 2)?",
     options: [{v: "A", t: "Beharren auf Erfüllung + SE, Verzicht auf Leistung + SE, oder Rücktritt + SE"},{v: "B", t: "Verlängerung der Nachfrist"},{v: "C", t: "Nur Schadenersatz"},{v: "D", t: "Nur Rücktritt"}],
@@ -1038,7 +1039,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t07", topic: "stoerung", type: "fill", diff: 2, tax: "K2"
+    id: "t07", topic: "stoerung", type: "fill", diff: 2, tax: "K2",
  reviewed:false,
     q: "Bei Schuldnerverzug bei zweiseitigen Verträgen muss der Gläubiger dem Schuldner zunächst eine {0} setzen (OR 107 Abs. 1).",
     blanks: [{answer: "Nachfrist", alts: ["angemessene Nachfrist", "Frist"]}],
@@ -1046,7 +1047,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t08", topic: "stoerung", type: "mc", diff: 2, tax: "K3"
+    id: "t08", topic: "stoerung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Ein Kunde bestellt bei einem Online-Shop ein Smartphone. Bei Erhalt stellt er fest, dass das Display einen Kratzer hat. Er meldet dies sofort dem Verkäufer.",
     q: "Welche Rechte hat der Kunde bei diesem Sachmangel?",
@@ -1056,7 +1057,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t09", topic: "stoerung", type: "multi", diff: 2, tax: "K2"
+    id: "t09", topic: "stoerung", type: "multi", diff: 2, tax: "K2",
  reviewed:false,
     q: "Welche Aussagen zur Mängelrüge sind korrekt? (Mehrere Antworten möglich.)",
     options: [{v: "A", t: "Offene Mängel müssen sofort nach Erhalt gerügt werden (OR 201)"}, {v: "B", t: "Versteckte Mängel müssen nach Entdeckung gerügt werden"}, {v: "C", t: "Ohne rechtzeitige Rüge gilt die Ware als genehmigt (OR 200/201)"}, {v: "D", t: "Eine Mängelrüge ist nur schriftlich gültig"}],
@@ -1065,7 +1066,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t10", topic: "stoerung", type: "tf", diff: 2, tax: "K2"
+    id: "t10", topic: "stoerung", type: "tf", diff: 2, tax: "K2",
  reviewed:false,
     q: "Beim Gläubigerverzug kann der Schuldner die Sachleistung auf Gefahr und Kosten des Gläubigers hinterlegen (OR 92).",
     correct: true,
@@ -1073,7 +1074,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t11", topic: "stoerung", type: "mc", diff: 2, tax: "K3"
+    id: "t11", topic: "stoerung", type: "mc", diff: 2, tax: "K3",
  reviewed:false,
     context: "Eine Reinigungskraft erscheint pünktlich zur Arbeit. Die Büros, die sie reinigen soll, sind jedoch verschlossen.",
     q: "Welche Art von Störung liegt vor?",
@@ -1083,7 +1084,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t12", topic: "stoerung", type: "mc", diff: 3, tax: "K3"
+    id: "t12", topic: "stoerung", type: "mc", diff: 3, tax: "K3",
  reviewed:false,
     context: "Ein Lieferant verspricht einem Restaurant Frischfisch für eine Gala am 20. März (Verfalltag). Am 20. März liefert der Lieferant nicht. Am 22. März bietet er die Lieferung an.",
     q: "Muss das Restaurant die verspätete Lieferung annehmen?",
@@ -1093,7 +1094,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t13", topic: "stoerung", type: "fill", diff: 3, tax: "K3"
+    id: "t13", topic: "stoerung", type: "fill", diff: 3, tax: "K3",
  reviewed:false,
     q: "Die Wegbedingung der Sachgewährleistung nach OR {0} ist möglich, aber der Verkäufer kann sich nicht auf die Wegbedingung berufen, wenn er den Mangel absichtlich verschwiegen hat.",
     blanks: [{answer: "199", alts: ["Art. 199 OR"]}],
@@ -1101,7 +1102,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t14", topic: "stoerung", type: "mc", diff: 3, tax: "K4"
+    id: "t14", topic: "stoerung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Im kaufmännischen Verkehr bestellt Firma A bei Firma B Maschinen mit Liefertermin 15. Mai (Verfalltag). Die Lieferung erfolgt am 25. Mai.",
     q: "Welche Vermutungen gelten nach OR 190?",
@@ -1111,7 +1112,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t15", topic: "stoerung", type: "multi", diff: 3, tax: "K3"
+    id: "t15", topic: "stoerung", type: "multi", diff: 3, tax: "K3",
  reviewed:false,
     q: "Welche Aussagen zum Schuldnerverzug sind korrekt?",
     options: [{v: "A", t: "Voraussetzung: Fälligkeit und Mahnung (OR 102 Abs. 1)"}, {v: "B", t: "Ausnahme: Bei Verfalltag ist keine Mahnung nötig (OR 102 Abs. 2)"}, {v: "C", t: "Verschuldensunabhängig: Verzugszins von 5% bei Geldschulden (OR 104)"}, {v: "D", t: "Der Schuldner haftet für nachträglich gewordene Unmöglichkeit (OR 103 Abs. 1)"}],
@@ -1120,7 +1121,7 @@ window.QUESTIONS = [
   },
 
   {
-    id: "t16", topic: "stoerung", type: "mc", diff: 3, tax: "K4"
+    id: "t16", topic: "stoerung", type: "mc", diff: 3, tax: "K4",
  reviewed:false,
     context: "Ein Werbeatelier hat den Auftrag, Ende November die Schaufenster eines Optikers zu dekorieren. Am 6. Dezember ist der Auftrag noch nicht ausgeführt.",
     q: "Welche Art von Leistungsstörung liegt vor?",

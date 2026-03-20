@@ -15,10 +15,14 @@ interface Props {
 
 type SyncPhase = 'idle' | 'laden' | 'vorschau' | 'importieren' | 'fertig' | 'fehler'
 
+/** Batch-Grösse für den Import (Apps Script Timeout-Schutz) */
+const BATCH_GROESSE = 50
+
 export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, onImportAbgeschlossen }: Props) {
   const user = useAuthStore(s => s.user)
   const [phase, setPhase] = useState<SyncPhase>('idle')
   const [fortschritt, setFortschritt] = useState('')
+  const [fortschrittProzent, setFortschrittProzent] = useState(0)
   const [ergebnisse, setErgebnisse] = useState<PoolSyncErgebnis[]>([])
   const [neuAnzahl, setNeuAnzahl] = useState(0)
   const [updateAnzahl, setUpdateAnzahl] = useState(0)
@@ -29,6 +33,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   const startSync = useCallback(async () => {
     setPhase('laden')
     setFehlerText('')
+    setFortschrittProzent(0)
 
     try {
       // 1. Index laden
@@ -42,6 +47,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
       for (let i = 0; i < index.length; i++) {
         const eintrag = index[i]
         setFortschritt(`Lade Pool ${i + 1}/${index.length}: ${eintrag.title}...`)
+        setFortschrittProzent(Math.round(((i + 1) / index.length) * 100))
         try {
           const config = await ladePoolConfig(eintrag.file)
           configs.push(config)
@@ -57,6 +63,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
 
       // 3. Delta berechnen
       setFortschritt('Berechne Änderungen...')
+      setFortschrittProzent(100)
       const fragenMap = new Map(
         bestehendeFragen
           .filter(f => f.poolId)
@@ -81,17 +88,36 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   const handleImport = useCallback(async () => {
     if (!importDaten || !user) return
     setPhase('importieren')
+    setFortschrittProzent(0)
 
     try {
-      setFortschritt('Importiere Fragen...')
-      const fragenResult = await apiService.importierePoolFragen(user.email, importDaten.neueFragen)
-      if (!fragenResult?.erfolg) {
-        throw new Error('Fragen-Import fehlgeschlagen')
+      const { neueFragen, lernziele } = importDaten
+      const totalBatches = Math.ceil(neueFragen.length / BATCH_GROESSE)
+      let importiertGesamt = 0
+
+      // Fragen in Batches importieren
+      for (let batch = 0; batch < totalBatches; batch++) {
+        const start = batch * BATCH_GROESSE
+        const end = Math.min(start + BATCH_GROESSE, neueFragen.length)
+        const batchFragen = neueFragen.slice(start, end)
+
+        setFortschritt(`Importiere Fragen ${start + 1}–${end} von ${neueFragen.length}...`)
+        setFortschrittProzent(Math.round(((batch + 1) / (totalBatches + 1)) * 100))
+
+        const fragenResult = await apiService.importierePoolFragen(user.email, batchFragen)
+        if (!fragenResult?.erfolg) {
+          throw new Error(`Batch ${batch + 1} fehlgeschlagen (Fragen ${start + 1}–${end})`)
+        }
+        importiertGesamt += fragenResult.importiert
       }
 
+      // Lernziele importieren
       setFortschritt('Importiere Lernziele...')
-      await apiService.importiereLernziele(importDaten.lernziele)
+      setFortschrittProzent(95)
+      await apiService.importiereLernziele(lernziele)
 
+      setFortschrittProzent(100)
+      setNeuAnzahl(importiertGesamt)
       setPhase('fertig')
       onImportAbgeschlossen()
     } catch (e) {
@@ -101,6 +127,8 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   }, [importDaten, user, onImportAbgeschlossen])
 
   if (!offen) return null
+
+  const zeigeProgressbar = phase === 'laden' || phase === 'importieren'
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50">
@@ -126,10 +154,16 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
           </div>
         )}
 
-        {phase === 'laden' && (
-          <div className="text-center py-8">
-            <div className="animate-spin w-8 h-8 border-2 border-slate-300 border-t-slate-800 rounded-full mx-auto mb-4" />
-            <p className="text-slate-600 dark:text-slate-300">{fortschritt}</p>
+        {zeigeProgressbar && (
+          <div className="py-8">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 mb-4">
+              <div
+                className="bg-slate-700 dark:bg-slate-300 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${fortschrittProzent}%` }}
+              />
+            </div>
+            <p className="text-center text-sm text-slate-600 dark:text-slate-300">{fortschritt}</p>
+            <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-1">{fortschrittProzent}%</p>
           </div>
         )}
 
@@ -185,13 +219,6 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
                 {neuAnzahl === 0 ? 'Schliessen' : 'Abbrechen'}
               </button>
             </div>
-          </div>
-        )}
-
-        {phase === 'importieren' && (
-          <div className="text-center py-8">
-            <div className="animate-spin w-8 h-8 border-2 border-slate-300 border-t-slate-800 rounded-full mx-auto mb-4" />
-            <p className="text-slate-600 dark:text-slate-300">{fortschritt}</p>
           </div>
         )}
 
