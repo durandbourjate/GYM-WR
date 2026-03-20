@@ -126,8 +126,8 @@ export default function LPStartseite() {
   }
 
   async function handleOeffneSyncDialog(): Promise<void> {
-    // Fragenbank laden damit Delta-Berechnung bestehende Pool-Fragen kennt
-    if (user && apiService.istKonfiguriert() && !istDemoModus && fragenbank.length === 0) {
+    // Fragenbank IMMER frisch laden (nicht aus Cache), damit Delta-Berechnung korrekt ist
+    if (user && apiService.istKonfiguriert() && !istDemoModus) {
       const result = await apiService.ladeFragenbank(user.email)
       if (result) setFragenbank(result)
     }

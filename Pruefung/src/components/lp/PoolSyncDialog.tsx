@@ -1,5 +1,5 @@
 // Pruefung/src/components/lp/PoolSyncDialog.tsx
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { ladePoolIndex, ladePoolConfig, berechneDelta } from '../../services/poolSync'
 import { apiService } from '../../services/apiService'
@@ -13,7 +13,7 @@ interface Props {
   onImportAbgeschlossen: () => void
 }
 
-type SyncPhase = 'idle' | 'laden' | 'vorschau' | 'importieren' | 'fertig' | 'fehler'
+type SyncPhase = 'idle' | 'laden' | 'vorschau' | 'importieren' | 'fertig' | 'fehler' | 'abgebrochen'
 
 /** Batch-Grösse für den Import (Apps Script Timeout-Schutz) */
 const BATCH_GROESSE = 50
@@ -29,11 +29,16 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   const [unveraendertAnzahl, setUnveraendertAnzahl] = useState(0)
   const [fehlerText, setFehlerText] = useState('')
   const [importDaten, setImportDaten] = useState<{ neueFragen: Frage[]; lernziele: Lernziel[] } | null>(null)
+  const [importiertBisher, setImportiertBisher] = useState(0)
+
+  // AbortController für Abbruch
+  const abbruchRef = useRef(false)
 
   const startSync = useCallback(async () => {
     setPhase('laden')
     setFehlerText('')
     setFortschrittProzent(0)
+    abbruchRef.current = false
 
     try {
       // 1. Index laden
@@ -45,6 +50,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
       const poolFehler: PoolSyncErgebnis[] = []
 
       for (let i = 0; i < index.length; i++) {
+        if (abbruchRef.current) { setPhase('abgebrochen'); return }
         const eintrag = index[i]
         setFortschritt(`Lade Pool ${i + 1}/${index.length}: ${eintrag.title}...`)
         setFortschrittProzent(Math.round(((i + 1) / index.length) * 100))
@@ -61,14 +67,24 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
         }
       }
 
+      if (abbruchRef.current) { setPhase('abgebrochen'); return }
+
       // 3. Delta berechnen
       setFortschritt('Berechne Änderungen...')
       setFortschrittProzent(100)
+
+      // Debug: Fragenbank-Infos loggen
+      const poolFragen = bestehendeFragen.filter(f => f.poolId)
+      console.log(`[PoolSync] Bestehende Fragen: ${bestehendeFragen.length}, davon mit poolId: ${poolFragen.length}`)
+      if (poolFragen.length > 0) {
+        console.log('[PoolSync] Beispiel poolId:', poolFragen[0].poolId)
+      }
+
       const fragenMap = new Map(
-        bestehendeFragen
-          .filter(f => f.poolId)
-          .map(f => [f.poolId!, f])
+        poolFragen.map(f => [f.poolId!, f])
       )
+      console.log(`[PoolSync] FragenMap Grösse: ${fragenMap.size}`)
+
       const delta = await berechneDelta(configs, fragenMap)
 
       // Ergebnis setzen
@@ -89,6 +105,8 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
     if (!importDaten || !user) return
     setPhase('importieren')
     setFortschrittProzent(0)
+    setImportiertBisher(0)
+    abbruchRef.current = false
 
     try {
       const { neueFragen, lernziele } = importDaten
@@ -97,6 +115,12 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
 
       // Fragen in Batches importieren
       for (let batch = 0; batch < totalBatches; batch++) {
+        if (abbruchRef.current) {
+          setFortschritt(`Abgebrochen nach ${importiertGesamt} von ${neueFragen.length} Fragen`)
+          setPhase('abgebrochen')
+          return
+        }
+
         const start = batch * BATCH_GROESSE
         const end = Math.min(start + BATCH_GROESSE, neueFragen.length)
         const batchFragen = neueFragen.slice(start, end)
@@ -109,6 +133,13 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
           throw new Error(`Batch ${batch + 1} fehlgeschlagen (Fragen ${start + 1}–${end})`)
         }
         importiertGesamt += fragenResult.importiert
+        setImportiertBisher(importiertGesamt)
+      }
+
+      if (abbruchRef.current) {
+        setFortschritt(`Abgebrochen nach ${importiertGesamt} von ${neueFragen.length} Fragen`)
+        setPhase('abgebrochen')
+        return
       }
 
       // Lernziele importieren
@@ -126,6 +157,18 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
     }
   }, [importDaten, user, onImportAbgeschlossen])
 
+  const handleAbbrechen = useCallback(() => {
+    abbruchRef.current = true
+  }, [])
+
+  const handleSchliessen = useCallback(() => {
+    abbruchRef.current = true
+    setPhase('idle')
+    setFortschrittProzent(0)
+    setImportiertBisher(0)
+    onSchliessen()
+  }, [onSchliessen])
+
   if (!offen) return null
 
   const zeigeProgressbar = phase === 'laden' || phase === 'importieren'
@@ -139,14 +182,17 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
           <div>
             <p className="text-slate-600 dark:text-slate-300 mb-4">
               Übungspools von GitHub Pages laden und mit der Fragenbank abgleichen.
-              Neue Fragen werden importiert, geänderte Fragen als "Update verfügbar" markiert.
+              Neue Fragen werden importiert, geänderte Fragen als &ldquo;Update verfügbar&rdquo; markiert.
+            </p>
+            <p className="text-sm text-slate-400 dark:text-slate-500 mb-4">
+              Bestehende Fragen in Fragenbank: {bestehendeFragen.length} (davon {bestehendeFragen.filter(f => f.poolId).length} aus Pools)
             </p>
             <div className="flex gap-3">
               <button onClick={startSync}
                 className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
                 Synchronisierung starten
               </button>
-              <button onClick={onSchliessen}
+              <button onClick={handleSchliessen}
                 className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer">
                 Abbrechen
               </button>
@@ -164,6 +210,17 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
             </div>
             <p className="text-center text-sm text-slate-600 dark:text-slate-300">{fortschritt}</p>
             <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-1">{fortschrittProzent}%</p>
+            {phase === 'importieren' && importiertBisher > 0 && (
+              <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-1">
+                {importiertBisher} Fragen bisher importiert
+              </p>
+            )}
+            <div className="text-center mt-4">
+              <button onClick={handleAbbrechen}
+                className="px-4 py-2 border border-red-300 text-red-600 dark:border-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer">
+                Abbrechen
+              </button>
+            </div>
           </div>
         )}
 
@@ -214,7 +271,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
                   {neuAnzahl} Fragen importieren
                 </button>
               )}
-              <button onClick={onSchliessen}
+              <button onClick={handleSchliessen}
                 className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer">
                 {neuAnzahl === 0 ? 'Schliessen' : 'Abbrechen'}
               </button>
@@ -229,22 +286,49 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
               {neuAnzahl} Fragen importiert, {updateAnzahl} Updates markiert
             </p>
-            <button onClick={onSchliessen}
+            <button onClick={handleSchliessen}
               className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
               Schliessen
             </button>
           </div>
         )}
 
+        {phase === 'abgebrochen' && (
+          <div className="text-center py-8">
+            <p className="text-lg font-medium dark:text-white mb-2">Abgebrochen</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">{fortschritt}</p>
+            {importiertBisher > 0 && (
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                {importiertBisher} Fragen wurden bereits importiert (keine Duplikate bei erneutem Sync).
+              </p>
+            )}
+            <div className="flex gap-3 justify-center">
+              <button onClick={startSync}
+                className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
+                Erneut versuchen
+              </button>
+              <button onClick={handleSchliessen}
+                className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer">
+                Schliessen
+              </button>
+            </div>
+          </div>
+        )}
+
         {phase === 'fehler' && (
           <div>
             <p className="text-red-500 mb-4">{fehlerText}</p>
+            {importiertBisher > 0 && (
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                {importiertBisher} Fragen wurden vor dem Fehler bereits importiert.
+              </p>
+            )}
             <div className="flex gap-3">
               <button onClick={startSync}
                 className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
                 Erneut versuchen
               </button>
-              <button onClick={onSchliessen}
+              <button onClick={handleSchliessen}
                 className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer">
                 Schliessen
               </button>
