@@ -55,6 +55,15 @@ export interface FrageBase {
   autor?: string;  // E-Mail der erstellenden LP
   geteilt?: 'privat' | 'schule';  // Standard: privat; 'schule' = sichtbar für alle @gymhofwil.ch
   geteiltVon?: string;  // Anzeigename bei geteilten Fragen
+
+  // Pool-Sync (importierte Fragen aus Übungspools)
+  poolId?: string                     // Compound-Key '{pool}:{frage}', z.B. 'vwl_bip:d01'
+  poolGeprueft?: boolean              // Review-Status in Pool-Quelle
+  pruefungstauglich?: boolean         // Separat abgesegnet im Prüfungstool
+  poolContentHash?: string            // SHA-256 für Änderungserkennung
+  poolUpdateVerfuegbar?: boolean      // true wenn Pool-Version neuer
+  poolVersion?: import('./pool').PoolFrageSnapshot
+  lernzielIds?: string[]              // Referenzen auf Lernziel-Einträge
 }
 
 export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik';
