@@ -101,7 +101,8 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - **berechneRueckSyncDiff:** Feld-für-Feld Vergleich (Fragetext, Erklärung, Bloom, Schwierigkeit, Optionen, Korrekt, Spezifisch)
 - **RueckSyncDialog.tsx:** Zwei-Modus-Dialog — Update mit Feld-Checkboxen / Export mit Pool+Topic-Wahl
 - **FragenEditor Buttons:** "↑ An Pool" (Update bestehender Pool-Frage) + "↑ In Pool exportieren" (neue Frage)
-- **FragenBrowser:** "↑ Pool-Export" Batch-Button (Platzhalter für Phase 2)
+- **FragenBrowser:** "↑ Pool-Export" Batch-Button → öffnet BatchExportDialog
+- **BatchExportDialog.tsx:** Batch-Export mehrerer Fragen in Pools — 2 Phasen (Auswahl → Pool/Topic-Zuweisung), Bulk-Zuweisung, Fortschrittsanzeige, gruppiert API-Calls pro Pool-Datei
 - **Apps Script Backend:** `schreibePoolAenderung` Endpoint — GitHub Contents API (GET/PUT), JS-Parsing mit Bracket-Depth-Counting, SHA-256 Content-Hash identisch zum Frontend
 - **GitHub API:** Fine-Grained PAT als Apps Script Script Property (`GITHUB_TOKEN`), repo contents read/write Scope
 - **Wichtig nach Push:** `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen
@@ -180,7 +181,7 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 
 ### Offene Punkte (noch nicht umgesetzt)
 - **Pool-Rück-Sync End-to-End-Test:** GitHub API-Calls noch nicht live getestet (GITHUB_TOKEN als Script Property konfiguriert, aber kein realer Rück-Sync durchgeführt)
-- **Pool-Rück-Sync Batch-Export:** Batch-Dialog für Export mehrerer Fragen (Button platziert, Logik Phase 2)
+- **Pool-Rück-Sync Batch-Export:** ✅ Implementiert — BatchExportDialog mit Fragen-Auswahl, Pool/Topic-Zuweisung (einzeln + bulk), Fortschrittsanzeige
 - **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
 - **Apps Script Deployment nötig:** `apps-script-code.js` muss nach jedem Push in Apps Script Editor kopiert + neue Bereitstellung erstellt werden (aktuell: img-Hash + anhaenge-Sync ausstehend)
 
@@ -522,7 +523,7 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 
 ### Offen (User-Wünsche für spätere Iterationen)
 - Pool-Rück-Sync End-to-End-Test (GITHUB_TOKEN konfiguriert, Live-Test ausstehend)
-- Pool-Rück-Sync Batch-Export (Button platziert, Logik noch nicht implementiert)
+- Pool-Rück-Sync Batch-Export ✅ implementiert
 - Prüfungs-Durchführung erweitern (Open-End-Modus, LP-kontrolliertes Beenden)
 - ~~Buchhaltungs-Fragetyp~~ ✅ (4 FiBu-Typen + Aufgabengruppe implementiert)
 - Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung — Architektur-Klärung nötig)

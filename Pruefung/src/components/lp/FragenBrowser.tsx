@@ -7,6 +7,7 @@ import { fachbereichFarbe, typLabel } from '../../utils/fachbereich.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../../types/fragen.ts'
 import FragenEditor from './frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
+import BatchExportDialog from './BatchExportDialog.tsx'
 
 interface Props {
   onHinzufuegen: (frageIds: string[]) => void
@@ -107,6 +108,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigEditor, setZeigEditor] = useState(false)
   const [editFrage, setEditFrage] = useState<Frage | null>(null)
   const [zeigImport, setZeigImport] = useState(false)
+  const [zeigBatchExport, setZeigBatchExport] = useState(false)
 
   // Ansicht
   const [sortierung, setSortierung] = useState<Sortierung>('thema')
@@ -368,7 +370,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                 + Neue Frage
               </button>
               <button
-                onClick={() => {/* TODO: Batch-Export Dialog — Phase 2, erstmal Einzelexport fertigstellen */}}
+                onClick={() => setZeigBatchExport(true)}
                 className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
                 title="Mehrere Fragen in Pools exportieren"
               >
@@ -679,6 +681,22 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         <FragenImport
           onImportiert={handleImportFragen}
           onSchliessen={() => setZeigImport(false)}
+        />
+      )}
+
+      {/* Batch-Export Overlay */}
+      {zeigBatchExport && (
+        <BatchExportDialog
+          fragen={gefilterteFragen}
+          onSchliessen={() => setZeigBatchExport(false)}
+          onErfolg={(updates) => {
+            // Pool-IDs in lokaler Fragenliste aktualisieren
+            setAlleFragen(prev => prev.map(f => {
+              const upd = updates.find(u => u.frageId === f.id)
+              if (!upd) return f
+              return { ...f, poolId: upd.poolId, quelle: 'pool' as const, poolContentHash: upd.poolContentHash }
+            }))
+          }}
         />
       )}
     </div>
