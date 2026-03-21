@@ -282,7 +282,7 @@ function KontoZeile({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 min-w-0">
+      <div className="flex-[2] min-w-0">
         <KontenSelect
           value={konto.kontonummer}
           onChange={onChangeKonto}
@@ -294,8 +294,8 @@ function KontoZeile({
         type="number"
         value={konto.betrag || ''}
         onChange={(e) => onChangeBetrag(parseFloat(e.target.value) || 0)}
-        placeholder="Betrag"
-        className="input-field w-28 text-right font-mono"
+        placeholder="Betrag (CHF)"
+        className="input-field w-36 text-right font-mono"
         min={0}
         step={0.01}
       />

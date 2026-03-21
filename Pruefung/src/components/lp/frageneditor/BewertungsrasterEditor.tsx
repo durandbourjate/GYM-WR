@@ -77,9 +77,11 @@ interface BewertungsrasterEditorProps {
   setBewertungsraster: (raster: Bewertungskriterium[]) => void
   /** Optionaler Inhalt rechts im Abschnitt-Header (z.B. KI-Buttons) */
   kiButtons?: React.ReactNode
+  /** Typ-spezifische Bewertungsoptionen, die oberhalb des Rasters angezeigt werden */
+  extraContent?: React.ReactNode
 }
 
-export default function BewertungsrasterEditor({ bewertungsraster, setBewertungsraster, kiButtons }: BewertungsrasterEditorProps) {
+export default function BewertungsrasterEditor({ bewertungsraster, setBewertungsraster, kiButtons, extraContent }: BewertungsrasterEditorProps) {
   const [vorlagen, setVorlagen] = useState<BewertungsrasterVorlage[]>(ladeVorlagen)
 
   return (
@@ -90,6 +92,9 @@ export default function BewertungsrasterEditor({ bewertungsraster, setBewertungs
       titelRechts={kiButtons}
     >
       <div className="space-y-2">
+        {/* Typ-spezifische Bewertungsoptionen */}
+        {extraContent}
+
         {/* Vorlage-Controls */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <select

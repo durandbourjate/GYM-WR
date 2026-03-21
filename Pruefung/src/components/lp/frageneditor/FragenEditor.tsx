@@ -27,9 +27,10 @@ import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
 import BuchungssatzEditor from './BuchungssatzEditor.tsx'
-import TKontoEditor from './TKontoEditor.tsx'
+import TKontoEditor, { TKontoBewertungsoptionen } from './TKontoEditor.tsx'
 import KontenbestimmungEditor from './KontenbestimmungEditor.tsx'
-import BilanzEREditor from './BilanzEREditor.tsx'
+import BilanzEREditor, { BilanzERBewertungsoptionen } from './BilanzEREditor.tsx'
+import { KIBuchungssatzButtons, KITKontoButtons, KIKontenbestimmungButtons, KIBilanzERButtons } from './KIFiBuButtons.tsx'
 import AufgabengruppeEditor from './AufgabengruppeEditor.tsx'
 import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
@@ -691,7 +692,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
         )}
 
         {/* Scrollbarer Inhalt */}
-        <div className="flex-1 overflow-auto px-5 py-4 space-y-5">
+        <div className="flex-1 overflow-auto px-5 py-4 space-y-5 overscroll-contain">
 
           {/* Pool-Info für importierte Fragen */}
           {frage?.quelle === 'pool' && frage.poolId && (
@@ -1485,6 +1486,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setBuchungen={setBuchungen}
               kontenauswahl={kontenauswahl}
               setKontenauswahl={setKontenauswahl}
+              titelRechts={<KIBuchungssatzButtons ki={ki} geschaeftsfall={geschaeftsfall} />}
             />
           )}
 
@@ -1498,8 +1500,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setKonten={setTkKonten}
               kontenauswahl={kontenauswahl}
               setKontenauswahl={setKontenauswahl}
-              bewertungsoptionen={tkBewertungsoptionen}
-              setBewertungsoptionen={setTkBewertungsoptionen}
+              titelRechts={<KITKontoButtons ki={ki} aufgabentext={tkAufgabentext} />}
             />
           )}
 
@@ -1513,6 +1514,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setAufgaben={setKbAufgaben}
               kontenauswahl={kbKontenauswahl}
               setKontenauswahl={setKbKontenauswahl}
+              titelRechts={<KIKontenbestimmungButtons ki={ki} aufgabentext={kbAufgabentext} />}
             />
           )}
 
@@ -1526,8 +1528,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setKontenMitSaldi={setBiKontenMitSaldi}
               loesung={biLoesung}
               setLoesung={setBiLoesung}
-              bewertungsoptionen={biBewertungsoptionen}
-              setBewertungsoptionen={setBiBewertungsoptionen}
+              titelRechts={<KIBilanzERButtons ki={ki} aufgabentext={biAufgabentext} modus={biModus} />}
             />
           )}
 
@@ -1540,7 +1541,8 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             />
           )}
 
-          {/* Musterlösung */}
+          {/* Musterlösung (nicht für FiBu-Typen — diese haben strukturierte Musterlösungen in ihren Editoren) */}
+          {!['buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur'].includes(typ) && (
           <Abschnitt
             titel="Musterlösung"
             titelRechts={ki.verfuegbar ? (
@@ -1603,11 +1605,26 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               </div>
             )}
           </Abschnitt>
+          )}
 
           {/* Bewertungsraster */}
           <BewertungsrasterEditor
             bewertungsraster={bewertungsraster}
             setBewertungsraster={setBewertungsraster}
+            extraContent={
+              typ === 'tkonto' ? (
+                <TKontoBewertungsoptionen
+                  bewertungsoptionen={tkBewertungsoptionen}
+                  setBewertungsoptionen={setTkBewertungsoptionen}
+                />
+              ) : typ === 'bilanzstruktur' ? (
+                <BilanzERBewertungsoptionen
+                  bewertungsoptionen={biBewertungsoptionen}
+                  setBewertungsoptionen={setBiBewertungsoptionen}
+                  modus={biModus}
+                />
+              ) : undefined
+            }
             kiButtons={ki.verfuegbar ? (
               <>
                 <InlineAktionButton

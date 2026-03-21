@@ -12,8 +12,6 @@ interface BilanzEREditorProps {
   setKontenMitSaldi: (k: KontoMitSaldo[]) => void
   loesung: BilanzERLoesung
   setLoesung: (l: BilanzERLoesung) => void
-  bewertungsoptionen: BilanzERBewertung
-  setBewertungsoptionen: (b: BilanzERBewertung) => void
   titelRechts?: React.ReactNode
 }
 
@@ -22,7 +20,6 @@ export default function BilanzEREditor({
   modus, setModus,
   kontenMitSaldi, setKontenMitSaldi,
   loesung, setLoesung,
-  bewertungsoptionen, setBewertungsoptionen,
   titelRechts,
 }: BilanzEREditorProps) {
 
@@ -103,7 +100,7 @@ export default function BilanzEREditor({
                 placeholder="Saldo"
                 min="0"
                 step="0.01"
-                className="min-h-[44px] w-32 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400"
+                className="min-h-[44px] w-32 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 placeholder:text-slate-400"
               />
               {kontenMitSaldi.length > 1 && (
                 <button
@@ -117,32 +114,6 @@ export default function BilanzEREditor({
               )}
             </div>
           ))}
-        </div>
-      </Abschnitt>
-
-      {/* Bewertungsoptionen */}
-      <Abschnitt titel="Bewertungsoptionen" einklappbar standardOffen={false}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <CheckboxOption label="Seitenbeschriftung (Aktiven/Passiven korrekt)" checked={bewertungsoptionen.seitenbeschriftung}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, seitenbeschriftung: v })} />
-          <CheckboxOption label="Gruppenbildung (UV, AV, kf. FK, lf. FK, EK)" checked={bewertungsoptionen.gruppenbildung}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, gruppenbildung: v })} />
-          <CheckboxOption label="Gruppenreihenfolge" checked={bewertungsoptionen.gruppenreihenfolge}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, gruppenreihenfolge: v })} />
-          <CheckboxOption label="Kontenreihenfolge innerhalb Gruppen" checked={bewertungsoptionen.kontenreihenfolge}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, kontenreihenfolge: v })} />
-          <CheckboxOption label="Beträge korrekt" checked={bewertungsoptionen.betraegeKorrekt}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, betraegeKorrekt: v })} />
-          <CheckboxOption label="Zwischentotale" checked={bewertungsoptionen.zwischentotale}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, zwischentotale: v })} />
-          <CheckboxOption label="Bilanzsumme / Gewinn/Verlust" checked={bewertungsoptionen.bilanzsummeOderGewinn}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, bilanzsummeOderGewinn: v })} />
-          <CheckboxOption
-            label="Mehrstufigkeit (nur ER)"
-            checked={bewertungsoptionen.mehrstufigkeit}
-            onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, mehrstufigkeit: v })}
-            disabled={modus === 'bilanz'}
-          />
         </div>
       </Abschnitt>
 
@@ -167,7 +138,7 @@ export default function BilanzEREditor({
   )
 }
 
-/* ─── Checkbox-Option ─── */
+/* ─── Bilanz/ER Bewertungsoptionen (für Einbettung im Bewertungsraster) ─── */
 
 function CheckboxOption({ label, checked, onChange, disabled }: {
   label: string; checked: boolean; onChange: (v: boolean) => void; disabled?: boolean
@@ -183,6 +154,42 @@ function CheckboxOption({ label, checked, onChange, disabled }: {
       />
       <span className="text-slate-700 dark:text-slate-200">{label}</span>
     </label>
+  )
+}
+
+export function BilanzERBewertungsoptionen({ bewertungsoptionen, setBewertungsoptionen, modus }: {
+  bewertungsoptionen: BilanzERBewertung
+  setBewertungsoptionen: (b: BilanzERBewertung) => void
+  modus: BilanzERFrage['modus']
+}) {
+  return (
+    <div className="mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+        Bilanz/ER Bewertungsoptionen
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <CheckboxOption label="Seitenbeschriftung (Aktiven/Passiven korrekt)" checked={bewertungsoptionen.seitenbeschriftung}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, seitenbeschriftung: v })} />
+        <CheckboxOption label="Gruppenbildung (UV, AV, kf. FK, lf. FK, EK)" checked={bewertungsoptionen.gruppenbildung}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, gruppenbildung: v })} />
+        <CheckboxOption label="Gruppenreihenfolge" checked={bewertungsoptionen.gruppenreihenfolge}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, gruppenreihenfolge: v })} />
+        <CheckboxOption label="Kontenreihenfolge innerhalb Gruppen" checked={bewertungsoptionen.kontenreihenfolge}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, kontenreihenfolge: v })} />
+        <CheckboxOption label="Beträge korrekt" checked={bewertungsoptionen.betraegeKorrekt}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, betraegeKorrekt: v })} />
+        <CheckboxOption label="Zwischentotale" checked={bewertungsoptionen.zwischentotale}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, zwischentotale: v })} />
+        <CheckboxOption label="Bilanzsumme / Gewinn/Verlust" checked={bewertungsoptionen.bilanzsummeOderGewinn}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, bilanzsummeOderGewinn: v })} />
+        <CheckboxOption
+          label="Mehrstufigkeit (nur ER)"
+          checked={bewertungsoptionen.mehrstufigkeit}
+          onChange={(v) => setBewertungsoptionen({ ...bewertungsoptionen, mehrstufigkeit: v })}
+          disabled={modus === 'bilanz'}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -213,17 +220,21 @@ function BilanzMusterloesung({ bilanz, onBilanzChange, verfuegbareKonten }: {
       <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Bilanz-Musterlösung</h4>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Aktiven — dezent blau hinterlegt */}
         <GruppenEditor
           label="Aktiven"
           gruppen={b.aktivSeite.gruppen}
           onChange={(g) => updateSeite('aktiv', g)}
           verfuegbareKonten={verfuegbareKonten}
+          bgClass="bg-blue-50/40 dark:bg-blue-900/10"
         />
+        {/* Passiven — dezent grau hinterlegt */}
         <GruppenEditor
           label="Passiven"
           gruppen={b.passivSeite.gruppen}
           onChange={(g) => updateSeite('passiv', g)}
           verfuegbareKonten={verfuegbareKonten}
+          bgClass="bg-slate-50/60 dark:bg-slate-700/15"
         />
       </div>
 
@@ -236,7 +247,7 @@ function BilanzMusterloesung({ bilanz, onBilanzChange, verfuegbareKonten }: {
           placeholder="CHF"
           min="0"
           step="0.01"
-          className="min-h-[36px] w-32 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+          className="min-h-[36px] w-32 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none placeholder:text-slate-400"
         />
       </div>
     </div>
@@ -245,11 +256,12 @@ function BilanzMusterloesung({ bilanz, onBilanzChange, verfuegbareKonten }: {
 
 /* ─── Gruppen-Editor (für Bilanz-Musterlösung) ─── */
 
-function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten }: {
+function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten, bgClass }: {
   label: string
   gruppen: BilanzGruppe[]
   onChange: (g: BilanzGruppe[]) => void
   verfuegbareKonten: string[]
+  bgClass?: string
 }) {
   function addGruppe() {
     onChange([...gruppen, { label: '', konten: [] }])
@@ -287,7 +299,7 @@ function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten }: {
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-600 p-2">
+    <div className={`rounded-lg border border-slate-200 dark:border-slate-600 p-2 ${bgClass ?? ''}`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{label}</span>
         <button type="button" onClick={addGruppe}
@@ -298,14 +310,14 @@ function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten }: {
 
       <div className="space-y-2">
         {gruppen.map((gruppe, gi) => (
-          <div key={gi} className="bg-slate-50 dark:bg-slate-700/30 rounded p-2">
+          <div key={gi} className="bg-white/60 dark:bg-slate-700/30 rounded p-2">
             <div className="flex items-center gap-1 mb-1">
               <input
                 type="text"
                 value={gruppe.label}
                 onChange={(e) => updateGruppeLabel(gi, e.target.value)}
                 placeholder="Gruppenname"
-                className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none placeholder:text-slate-400"
               />
               {gruppen.length > 1 && (
                 <button type="button" onClick={() => removeGruppe(gi)}
@@ -322,7 +334,7 @@ function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten }: {
                   <select
                     value={nr}
                     onChange={(e) => updateKonto(gi, ki, e.target.value)}
-                    className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-xs text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none"
+                    className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-xs text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none"
                   >
                     <option value="">Konto...</option>
                     {verfuegbareKonten.map(n => (
@@ -410,14 +422,14 @@ function ERMusterloesung({ er, onERChange, verfuegbareKonten }: {
               value={stufe.label}
               onChange={(e) => updateStufe(si, { label: e.target.value })}
               placeholder="Stufenbezeichnung (z.B. Bruttogewinn)"
-              className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none placeholder:text-slate-400"
             />
             <input
               type="number"
               value={stufe.zwischentotal || ''}
               onChange={(e) => updateStufe(si, { zwischentotal: parseFloat(e.target.value) || 0 })}
               placeholder="Total"
-              className="min-h-[32px] w-24 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="min-h-[32px] w-24 rounded border border-slate-300 bg-white px-2 py-0.5 text-xs text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none placeholder:text-slate-400"
             />
             {s.stufen.length > 1 && (
               <button type="button" onClick={() => removeStufe(si)}
@@ -435,7 +447,7 @@ function ERMusterloesung({ er, onERChange, verfuegbareKonten }: {
                 {stufe.aufwandKonten.map((nr, ki) => (
                   <div key={ki} className="flex items-center gap-1">
                     <select value={nr} onChange={(e) => updateKontoInStufe(si, 'aufwand', ki, e.target.value)}
-                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none">
+                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none">
                       <option value="">Konto...</option>
                       {verfuegbareKonten.map(n => <option key={n} value={n}>{n} {kontoLabel(n)}</option>)}
                     </select>
@@ -455,7 +467,7 @@ function ERMusterloesung({ er, onERChange, verfuegbareKonten }: {
                 {stufe.ertragKonten.map((nr, ki) => (
                   <div key={ki} className="flex items-center gap-1">
                     <select value={nr} onChange={(e) => updateKontoInStufe(si, 'ertrag', ki, e.target.value)}
-                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-blue-500 focus:outline-none">
+                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none">
                       <option value="">Konto...</option>
                       {verfuegbareKonten.map(n => <option key={n} value={n}>{n} {kontoLabel(n)}</option>)}
                     </select>

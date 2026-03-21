@@ -12,8 +12,6 @@ interface TKontoEditorProps {
   setKonten: (k: TKontoDefinition[]) => void
   kontenauswahl: KontenauswahlConfig
   setKontenauswahl: (k: KontenauswahlConfig) => void
-  bewertungsoptionen: TKontoBewertung
-  setBewertungsoptionen: (b: TKontoBewertung) => void
   titelRechts?: React.ReactNode
 }
 
@@ -25,7 +23,6 @@ export default function TKontoEditor({
   geschaeftsfaelle, setGeschaeftsfaelle,
   konten, setKonten,
   kontenauswahl, setKontenauswahl,
-  bewertungsoptionen, setBewertungsoptionen,
   titelRechts,
 }: TKontoEditorProps) {
 
@@ -220,37 +217,6 @@ export default function TKontoEditor({
         )}
       </Abschnitt>
 
-      {/* Bewertungsoptionen */}
-      <Abschnitt titel="Bewertungsoptionen">
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-          Welche Aspekte sollen die SuS bearbeiten und bewertet werden?
-        </p>
-        <div className="space-y-2">
-          {([
-            ['beschriftungSollHaben', 'Beschriftung Soll/Haben', 'SuS müssen die Seiten korrekt beschriften'],
-            ['kontenkategorie', 'Kontenkategorie', 'SuS bestimmen aktiv/passiv/aufwand/ertrag'],
-            ['zunahmeAbnahme', 'Zunahme/Abnahme', 'SuS ordnen korrekt zu'],
-            ['buchungenKorrekt', 'Buchungen korrekt', 'Gegenkonten + Beträge werden geprüft'],
-            ['saldoKorrekt', 'Saldo korrekt', 'Betrag + Seite des Saldos werden geprüft'],
-          ] as const).map(([key, label, hinweis]) => (
-            <label key={key} className="flex items-start gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={bewertungsoptionen[key]}
-                onChange={(e) => setBewertungsoptionen({ ...bewertungsoptionen, [key]: e.target.checked })}
-                className="mt-0.5 rounded accent-slate-700 dark:accent-slate-300"
-              />
-              <div>
-                <span className="text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100">
-                  {label}
-                </span>
-                <p className="text-xs text-slate-400 dark:text-slate-500">{hinweis}</p>
-              </div>
-            </label>
-          ))}
-        </div>
-      </Abschnitt>
-
       {/* Musterlösung: T-Konten */}
       <Abschnitt titel="Musterlösung — T-Konten">
         <div className="space-y-4">
@@ -420,5 +386,47 @@ export default function TKontoEditor({
         )}
       </Abschnitt>
     </>
+  )
+}
+
+/* ─── T-Konto Bewertungsoptionen (für Einbettung im Bewertungsraster) ─── */
+
+export function TKontoBewertungsoptionen({ bewertungsoptionen, setBewertungsoptionen }: {
+  bewertungsoptionen: TKontoBewertung
+  setBewertungsoptionen: (b: TKontoBewertung) => void
+}) {
+  return (
+    <div className="mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+        T-Konto Bewertungsoptionen
+      </p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+        Welche Aspekte sollen die SuS bearbeiten und bewertet werden?
+      </p>
+      <div className="space-y-2">
+        {([
+          ['beschriftungSollHaben', 'Beschriftung Soll/Haben', 'SuS müssen die Seiten korrekt beschriften'],
+          ['kontenkategorie', 'Kontenkategorie', 'SuS bestimmen aktiv/passiv/aufwand/ertrag'],
+          ['zunahmeAbnahme', 'Zunahme/Abnahme', 'SuS ordnen korrekt zu'],
+          ['buchungenKorrekt', 'Buchungen korrekt', 'Gegenkonten + Beträge werden geprüft'],
+          ['saldoKorrekt', 'Saldo korrekt', 'Betrag + Seite des Saldos werden geprüft'],
+        ] as const).map(([key, label, hinweis]) => (
+          <label key={key} className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={bewertungsoptionen[key]}
+              onChange={(e) => setBewertungsoptionen({ ...bewertungsoptionen, [key]: e.target.checked })}
+              className="mt-0.5 rounded accent-slate-700 dark:accent-slate-300"
+            />
+            <div>
+              <span className="text-sm text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100">
+                {label}
+              </span>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{hinweis}</p>
+            </div>
+          </label>
+        ))}
+      </div>
+    </div>
   )
 }

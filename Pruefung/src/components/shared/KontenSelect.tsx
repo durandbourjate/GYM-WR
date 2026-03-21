@@ -1,6 +1,7 @@
 /**
  * KontenSelect — Wiederverwendbare Konto-Auswahl (KMU-Kontenrahmen).
  * Zwei Modi: eingeschränkt (einfaches <select>) und voll (Autocomplete).
+ * Farbschema: schlicht grau/slate, Kategorie-Farben nur in Badges + Zeilenhintergrund.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react'
@@ -24,6 +25,14 @@ const kategorieBadge: Record<KontoEintrag['kategorie'], string> = {
   passiv:  'bg-gray-100 text-gray-700 dark:bg-gray-700/40 dark:text-gray-300',
   aufwand: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
   ertrag:  'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+}
+
+/** Dezente Kategorie-Hintergrundfarben für Dropdown-Zeilen */
+const kategorieZeile: Record<KontoEintrag['kategorie'], string> = {
+  aktiv:   'bg-blue-50/60 dark:bg-blue-900/10',
+  passiv:  'bg-slate-50/60 dark:bg-slate-700/15',
+  aufwand: 'bg-red-50/60 dark:bg-red-900/10',
+  ertrag:  'bg-green-50/60 dark:bg-green-900/10',
 }
 
 export default function KontenSelect({
@@ -82,9 +91,9 @@ function EingeschraenktSelect({
       value={value}
       onChange={e => onChange(e.target.value)}
       disabled={disabled}
-      className={`min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2
-        text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100
-        focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
+      className={`min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-3 py-2
+        text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
+        focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400
         disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       <option value="">{placeholder}</option>
@@ -207,9 +216,9 @@ function VollAutocomplete({
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
-        className={`min-h-[44px] w-full rounded-md border border-gray-300 bg-white px-3 py-2
-          text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100
-          focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
+        className={`min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-3 py-2
+          text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
+          focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400
           disabled:cursor-not-allowed disabled:opacity-50`}
         role="combobox"
         aria-expanded={open}
@@ -225,7 +234,7 @@ function VollAutocomplete({
           type="button"
           onClick={() => { onChange(''); setQuery('') }}
           className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[28px] min-w-[28px]
-            rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
           aria-label="Auswahl löschen"
         >
           ×
@@ -238,27 +247,30 @@ function VollAutocomplete({
           ref={listRef}
           role="listbox"
           className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-md border
-            border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
+            border-slate-200 bg-white shadow-lg dark:border-slate-600 dark:bg-slate-800"
         >
           {results.length === 0 ? (
-            <li className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+            <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
               Kein Konto gefunden
             </li>
           ) : (
             results.map((k, idx) => {
               const konto = findKonto(k.nummer)
+              const isHighlighted = idx === highlightIdx
+              // Kategorie-Hintergrund für nicht-highlightete Zeilen
+              const zeileBg = konto && !isHighlighted ? kategorieZeile[konto.kategorie] : ''
               return (
                 <li
                   key={k.nummer}
                   id={`konto-opt-${k.nummer}`}
                   role="option"
-                  aria-selected={idx === highlightIdx}
+                  aria-selected={isHighlighted}
                   onMouseDown={e => { e.preventDefault(); selectKonto(k.nummer) }}
                   onMouseEnter={() => setHighlightIdx(idx)}
                   className={`flex min-h-[44px] cursor-pointer items-center gap-2 px-3 py-2 text-sm
-                    ${idx === highlightIdx
-                      ? 'bg-blue-50 text-gray-900 dark:bg-blue-900/30 dark:text-gray-100'
-                      : 'text-gray-700 dark:text-gray-200'
+                    ${isHighlighted
+                      ? 'bg-slate-100 text-slate-900 dark:bg-slate-700/50 dark:text-slate-100'
+                      : `text-slate-700 dark:text-slate-200 ${zeileBg}`
                     }`}
                 >
                   <span className="font-mono font-medium">{k.nummer}</span>
