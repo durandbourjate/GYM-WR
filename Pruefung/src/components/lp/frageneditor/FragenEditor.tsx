@@ -9,6 +9,7 @@ import type {
   RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage,
   TKontoFrage, TKontoDefinition, TKontoBewertung,
   KontenbestimmungFrage, Kontenaufgabe,
+  BilanzERFrage, KontoMitSaldo, BilanzERLoesung, BilanzERBewertung,
   SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
 } from '../../../types/fragen.ts'
@@ -23,6 +24,7 @@ import BerechnungEditor from './BerechnungEditor.tsx'
 import BuchungssatzEditor from './BuchungssatzEditor.tsx'
 import TKontoEditor from './TKontoEditor.tsx'
 import KontenbestimmungEditor from './KontenbestimmungEditor.tsx'
+import BilanzEREditor from './BilanzEREditor.tsx'
 import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
@@ -181,6 +183,27 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     frage?.typ === 'kontenbestimmung' ? (frage as KontenbestimmungFrage).kontenauswahl : { modus: 'voll' }
   )
 
+  // Bilanz/ER-spezifisch
+  const [biAufgabentext, setBiAufgabentext] = useState(
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).aufgabentext : ''
+  )
+  const [biModus, setBiModus] = useState<BilanzERFrage['modus']>(
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).modus : 'bilanz'
+  )
+  const [biKontenMitSaldi, setBiKontenMitSaldi] = useState<KontoMitSaldo[]>(
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).kontenMitSaldi : [{ kontonummer: '', saldo: 0 }]
+  )
+  const [biLoesung, setBiLoesung] = useState<BilanzERLoesung>(
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).loesung : {}
+  )
+  const [biBewertungsoptionen, setBiBewertungsoptionen] = useState<BilanzERBewertung>(
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).bewertungsoptionen : {
+      seitenbeschriftung: true, gruppenbildung: true, gruppenreihenfolge: true,
+      kontenreihenfolge: true, betraegeKorrekt: true, zwischentotale: true,
+      bilanzsummeOderGewinn: true, mehrstufigkeit: true,
+    }
+  )
+
   // Zeitbedarf
   const [zeitbedarf, setZeitbedarf] = useState<number>(
     frage?.zeitbedarf ?? berechneZeitbedarf(
@@ -270,7 +293,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   function validiere(): string[] {
     const errs: string[] = []
     if (!thema.trim()) errs.push('Thema fehlt')
-    if (!fragetext.trim() && typ !== 'tkonto' && typ !== 'kontenbestimmung') errs.push('Fragetext fehlt')
+    if (!fragetext.trim() && typ !== 'tkonto' && typ !== 'kontenbestimmung' && typ !== 'bilanzstruktur') errs.push('Fragetext fehlt')
     if (punkte <= 0) errs.push('Punkte müssen > 0 sein')
 
     if (typ === 'mc') {
@@ -305,6 +328,12 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
       if (!kbAufgabentext.trim()) errs.push('Aufgabentext erforderlich')
       if (kbAufgaben.filter(a => a.text.trim()).length < 1) {
         errs.push('Mindestens 1 Aufgabe mit Text nötig')
+      }
+    }
+    if (typ === 'bilanzstruktur') {
+      if (!biAufgabentext.trim()) errs.push('Aufgabentext erforderlich')
+      if (biKontenMitSaldi.filter(k => k.kontonummer).length < 1) {
+        errs.push('Mindestens 1 Konto mit Saldo nötig')
       }
     }
     return errs
@@ -461,6 +490,17 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           kontenauswahl: kbKontenauswahl,
         } as KontenbestimmungFrage
         break
+      case 'bilanzstruktur':
+        neueFrage = {
+          ...basis,
+          typ: 'bilanzstruktur',
+          aufgabentext: biAufgabentext.trim(),
+          modus: biModus,
+          kontenMitSaldi: biKontenMitSaldi.filter(k => k.kontonummer),
+          loesung: biLoesung,
+          bewertungsoptionen: biBewertungsoptionen,
+        } as BilanzERFrage
+        break
       default:
         setSpeicherLaeuft(false)
         return
@@ -588,7 +628,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung'] as FrageTyp[]).map((t) => (
+              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -1367,6 +1407,21 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setAufgaben={setKbAufgaben}
               kontenauswahl={kbKontenauswahl}
               setKontenauswahl={setKbKontenauswahl}
+            />
+          )}
+
+          {typ === 'bilanzstruktur' && (
+            <BilanzEREditor
+              aufgabentext={biAufgabentext}
+              setAufgabentext={setBiAufgabentext}
+              modus={biModus}
+              setModus={setBiModus}
+              kontenMitSaldi={biKontenMitSaldi}
+              setKontenMitSaldi={setBiKontenMitSaldi}
+              loesung={biLoesung}
+              setLoesung={setBiLoesung}
+              bewertungsoptionen={biBewertungsoptionen}
+              setBewertungsoptionen={setBiBewertungsoptionen}
             />
           )}
 
