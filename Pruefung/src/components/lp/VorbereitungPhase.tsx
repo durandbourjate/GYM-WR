@@ -29,9 +29,14 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props
     setFehler('')
     try {
       const daten = await apiService.ladeKlassenlisten(user.email)
-      // Nach Klasse gruppieren
+      // Nach Klasse gruppieren, SuS per E-Mail deduplizieren
+      // (gleicher SuS kann in mehreren Kurs-Sheets vorkommen, z.B. 29f in EWR + SF)
       const map = new Map<string, KlassenGruppe>()
+      const gesehen = new Set<string>() // "klasse:email"
       for (const eintrag of daten) {
+        const key = `${eintrag.klasse}:${eintrag.email}`
+        if (gesehen.has(key)) continue
+        gesehen.add(key)
         if (!map.has(eintrag.klasse)) {
           map.set(eintrag.klasse, { klasse: eintrag.klasse, schueler: [] })
         }
