@@ -9,10 +9,9 @@ import TeilnehmerListe from './TeilnehmerListe'
 interface Props {
   config: PruefungsConfig
   onTeilnehmerGesetzt: (teilnehmer: Teilnehmer[]) => void
-  onPruefungStarten: () => void
 }
 
-export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onPruefungStarten }: Props) {
+export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props) {
   const user = useAuthStore((s) => s.user)
   const [gruppen, setGruppen] = useState<KlassenGruppe[]>([])
   const [ladeStatus, setLadeStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
@@ -224,11 +223,11 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onPruef
 
         <button
           type="button"
-          onClick={async () => { await handleSpeichern(); onPruefungStarten() }}
+          onClick={handleSpeichern}
           disabled={effektiveTeilnehmer.length === 0}
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 cursor-pointer font-medium"
+          className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 cursor-pointer font-medium"
         >
-          Prüfung starten →
+          Weiter zur Lobby →
         </button>
       </div>
     </div>

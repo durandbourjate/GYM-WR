@@ -5,21 +5,17 @@ import type { SchuelerStatus, PruefungsPhase } from '../types/monitoring'
  * Bestimmt die aktuelle Prüfungsphase deterministisch aus dem Zustand.
  * Evaluationsreihenfolge (höchste Priorität zuerst):
  * 1. beendetUm gesetzt → beendet
- * 2. freigeschaltet → aktiv
- * 3. teilnehmer gesetzt + mind. 1 SuS eingeloggt → lobby
- * 4. sonst → vorbereitung
+ * 2. freigeschaltet → aktiv (Prüfung läuft)
+ * 3. teilnehmer gesetzt (≥1) → lobby (LP wartet auf SuS)
+ * 4. sonst → vorbereitung (Teilnehmer noch nicht gewählt)
  */
 export function bestimmePhase(
   config: PruefungsConfig,
-  schuelerStatus: SchuelerStatus[],
+  _schuelerStatus: SchuelerStatus[],
 ): PruefungsPhase {
   if (config.beendetUm) return 'beendet'
   if (config.freigeschaltet) return 'aktiv'
-  if (
-    config.teilnehmer &&
-    config.teilnehmer.length > 0 &&
-    schuelerStatus.some((s) => s.status !== 'nicht-gestartet')
-  ) {
+  if (config.teilnehmer && config.teilnehmer.length > 0) {
     return 'lobby'
   }
   return 'vorbereitung'

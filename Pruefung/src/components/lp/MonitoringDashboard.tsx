@@ -318,12 +318,6 @@ export default function MonitoringDashboard({ pruefungId }: { pruefungId: string
               onTeilnehmerGesetzt={(teilnehmer) => {
                 setConfig({ ...config, teilnehmer })
               }}
-              onPruefungStarten={async () => {
-                if (user) {
-                  await apiService.schaltePruefungFrei(config.id, user.email)
-                  setConfig({ ...config, freigeschaltet: true })
-                }
-              }}
             />
           )}
 

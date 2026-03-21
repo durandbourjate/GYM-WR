@@ -27,9 +27,11 @@ export default function BeendenDialog({
   const [restzeitMinuten, setRestzeitMinuten] = useState(5)
   const [bestaetigung, setBestaetigung] = useState(false)
   const [lade, setLade] = useState(false)
+  const [fehler, setFehler] = useState('')
 
   async function handleBeenden(): Promise<void> {
     setLade(true)
+    setFehler('')
     const result = await apiService.beendePruefung({
       pruefungId,
       email: lpEmail,
@@ -41,6 +43,10 @@ export default function BeendenDialog({
 
     if (result.success) {
       onBeendet()
+    } else {
+      setFehler(result.error === 'nicht_konfiguriert'
+        ? 'Backend nicht konfiguriert (Demo-Modus). Prüfung kann nur mit aktivem Backend beendet werden.'
+        : `Fehler beim Beenden: ${result.error || 'Unbekannter Fehler'}`)
     }
   }
 
@@ -141,6 +147,12 @@ export default function BeendenDialog({
               {modus === 'restzeit' && ` Sie erhalten noch ${restzeitMinuten} Minuten.`}
               {modus === 'sofort' && ' Alle Antworten werden sofort abgegeben.'}
             </p>
+
+            {fehler && (
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
+                {fehler}
+              </div>
+            )}
 
             <div className="flex gap-2 justify-end">
               <button
