@@ -6,9 +6,18 @@
 
 ## Aktueller Stand
 
-**Phase 5e: Pool-Rück-Sync** (21.03.2026) — Bidirektionaler Sync: Änderungen zurückschreiben + Export in Pools ✅
+**Phase 5f: T-Konto-Fragetyp** (21.03.2026) — Vollständige Integration des T-Konto-Fragetyps ✅
 
-### Letzte Änderungen (21.03.2026) — Pool-Rück-Sync
+### Letzte Änderungen (21.03.2026) — T-Konto-Fragetyp
+
+**T-Konto-Fragetyp** (3 Tasks) — Neuer FiBu-Fragetyp für T-Konten-Buchungen:
+- **Task 7 — Student Component:** `TKontoFrage.tsx` mit T-Form-Layout (Soll/Haben), KontenSelect für Gegenkonten, optionale Beschriftungs-Dropdowns, Kontenkategorie-Dropdown, Anfangsbestand (vorgegeben oder editierbar), Saldo-Eingabe. Registriert in `Layout.tsx`.
+- **Task 8 — Editor Component:** `TKontoEditor.tsx` mit Aufgabentext, Geschäftsfälle-Liste, Kontenauswahl (voll/eingeschränkt), 5 Bewertungsoptionen (Checkboxen), Musterlösung mit T-Konto-Karten (Kontonummer, Anfangsbestand, Einträge, Saldo). Registriert in `FragenEditor.tsx` inkl. State, Validierung, Save-Case, Type-Selector.
+- **Task 9 — Integration:** VorschauTab (Zeitschätzung + TKontoVorschau), KorrekturSchuelerZeile (antwortAlsText), FragenBrowser (Typ-Filter), apps-script-code.js (row-to-object + getTypDaten + fragetext-Mapping), fibuAutoKorrektur.ts (`korrigiereTKonto` mit 4 Bewertungskriterien: Beschriftung, Kontenkategorie, Buchungen, Saldo).
+- **Typen:** `TKontoFrage`, `TKontoDefinition`, `TKontoBewertung`, `TKontoEintrag` (in fragen.ts), Antwort-Typ `tkonto` (in antworten.ts) — waren bereits definiert.
+- **Wichtig nach Push:** `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen
+
+### Änderungen (21.03.2026) — Pool-Rück-Sync
 
 **Pool-Rück-Sync** (8 Tasks) — Bidirektionaler Sync: Änderungen an Pool-Fragen zurückschreiben + neue Fragen in Pools exportieren:
 - **poolExporter.ts:** Reverse Type Mapping (Prüfungstool → Pool-Format), 7 Typen (mc/multi/tf/fill/calc/sort/open)
