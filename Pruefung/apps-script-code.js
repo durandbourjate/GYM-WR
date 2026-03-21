@@ -428,6 +428,15 @@ function parseFrage(row, fachbereich) {
           zunahmeAbnahme: true, buchungenKorrekt: true, saldoKorrekt: true
         },
       };
+    case 'kontenbestimmung':
+      return {
+        ...base,
+        typ: 'kontenbestimmung',
+        aufgabentext: row.fragetext || '',
+        modus: typDaten.modus || 'gemischt',
+        aufgaben: typDaten.aufgaben || [],
+        kontenauswahl: typDaten.kontenauswahl || { modus: 'voll' },
+      };
     default:
       return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
   }
@@ -597,6 +606,8 @@ function getTypDaten(frage) {
         kontenauswahl: frage.kontenauswahl,
         bewertungsoptionen: frage.bewertungsoptionen,
       };
+    case 'kontenbestimmung':
+      return { modus: frage.modus, aufgaben: frage.aufgaben, kontenauswahl: frage.kontenauswahl };
     default:
       return {};
   }

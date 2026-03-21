@@ -91,6 +91,14 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
       }).join('; ')
     }
 
+    case 'kontenbestimmung': {
+      const entries = Object.entries(antwort.aufgaben)
+      if (entries.length === 0) return '(keine Antworten)'
+      return entries.map(([_id, a]) =>
+        a.antworten.map(ant => [ant.kontonummer, ant.kategorie, ant.seite].filter(Boolean).join(' / ')).join(', ')
+      ).join('; ')
+    }
+
     default:
       return '(unbekannter Typ)'
   }
