@@ -99,6 +99,20 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
       ).join('; ')
     }
 
+    case 'bilanzstruktur': {
+      const parts: string[] = []
+      if (antwort.bilanz) {
+        const links = antwort.bilanz.linkeSeite.gruppen.flatMap(g => g.konten.map(k => k.nr)).length
+        const rechts = antwort.bilanz.rechteSeite.gruppen.flatMap(g => g.konten.map(k => k.nr)).length
+        parts.push(`Bilanz: ${links}+${rechts} Konten`)
+      }
+      if (antwort.erfolgsrechnung) {
+        const stufen = antwort.erfolgsrechnung.stufen.length
+        parts.push(`ER: ${stufen} Stufen`)
+      }
+      return parts.length > 0 ? parts.join(', ') : '(leer)'
+    }
+
     default:
       return '(unbekannter Typ)'
   }

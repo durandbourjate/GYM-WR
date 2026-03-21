@@ -437,6 +437,20 @@ function parseFrage(row, fachbereich) {
         aufgaben: typDaten.aufgaben || [],
         kontenauswahl: typDaten.kontenauswahl || { modus: 'voll' },
       };
+    case 'bilanzstruktur':
+      return {
+        ...base,
+        typ: 'bilanzstruktur',
+        aufgabentext: row.fragetext || '',
+        modus: typDaten.modus || 'bilanz',
+        kontenMitSaldi: typDaten.kontenMitSaldi || [],
+        loesung: typDaten.loesung || {},
+        bewertungsoptionen: typDaten.bewertungsoptionen || {
+          seitenbeschriftung: true, gruppenbildung: true, gruppenreihenfolge: true,
+          kontenreihenfolge: true, betraegeKorrekt: true, zwischentotale: true,
+          bilanzsummeOderGewinn: true, mehrstufigkeit: true,
+        },
+      };
     default:
       return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
   }
@@ -608,6 +622,13 @@ function getTypDaten(frage) {
       };
     case 'kontenbestimmung':
       return { modus: frage.modus, aufgaben: frage.aufgaben, kontenauswahl: frage.kontenauswahl };
+    case 'bilanzstruktur':
+      return {
+        modus: frage.modus,
+        kontenMitSaldi: frage.kontenMitSaldi,
+        loesung: frage.loesung,
+        bewertungsoptionen: frage.bewertungsoptionen,
+      };
     default:
       return {};
   }
