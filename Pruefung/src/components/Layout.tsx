@@ -20,7 +20,8 @@ import LueckentextFrage from './fragetypen/LueckentextFrage.tsx'
 import ZuordnungFrage from './fragetypen/ZuordnungFrage.tsx'
 import RichtigFalschFrage from './fragetypen/RichtigFalschFrage.tsx'
 import BerechnungFrage from './fragetypen/BerechnungFrage.tsx'
-import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType } from '../types/fragen.ts'
+import BuchungssatzFrage from './fragetypen/BuchungssatzFrage.tsx'
+import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType } from '../types/fragen.ts'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 
 export default function Layout() {
@@ -420,6 +421,8 @@ function renderFrage(frage: Frage) {
       return <RichtigFalschFrage frage={frage as RichtigFalschFrageType} />
     case 'berechnung':
       return <BerechnungFrage frage={frage as BerechnungFrageType} />
+    case 'buchungssatz':
+      return <BuchungssatzFrage frage={frage as BuchungssatzFrageType} />
     default:
       return (
         <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">
