@@ -12,6 +12,7 @@ import type {
   BilanzERFrage, KontoMitSaldo, BilanzERLoesung, BilanzERBewertung,
   SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
+  AufgabengruppeFrage,
 } from '../../../types/fragen.ts'
 import type { FrageTyp } from './editorUtils.ts'
 import { generiereFrageId, parseLuecken } from './editorUtils.ts'
@@ -25,6 +26,7 @@ import BuchungssatzEditor from './BuchungssatzEditor.tsx'
 import TKontoEditor from './TKontoEditor.tsx'
 import KontenbestimmungEditor from './KontenbestimmungEditor.tsx'
 import BilanzEREditor from './BilanzEREditor.tsx'
+import AufgabengruppeEditor from './AufgabengruppeEditor.tsx'
 import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
@@ -204,6 +206,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     }
   )
 
+  // Aufgabengruppe-spezifisch
+  const [agKontext, setAgKontext] = useState(
+    frage?.typ === 'aufgabengruppe' ? (frage as AufgabengruppeFrage).kontext : ''
+  )
+  const [agTeilaufgabenIds, setAgTeilaufgabenIds] = useState<string[]>(
+    frage?.typ === 'aufgabengruppe' ? (frage as AufgabengruppeFrage).teilaufgabenIds : []
+  )
+
   // Zeitbedarf
   const [zeitbedarf, setZeitbedarf] = useState<number>(
     frage?.zeitbedarf ?? berechneZeitbedarf(
@@ -293,7 +303,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   function validiere(): string[] {
     const errs: string[] = []
     if (!thema.trim()) errs.push('Thema fehlt')
-    if (!fragetext.trim() && typ !== 'tkonto' && typ !== 'kontenbestimmung' && typ !== 'bilanzstruktur') errs.push('Fragetext fehlt')
+    if (!fragetext.trim() && typ !== 'tkonto' && typ !== 'kontenbestimmung' && typ !== 'bilanzstruktur' && typ !== 'aufgabengruppe') errs.push('Fragetext fehlt')
     if (punkte <= 0) errs.push('Punkte müssen > 0 sein')
 
     if (typ === 'mc') {
@@ -335,6 +345,10 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
       if (biKontenMitSaldi.filter(k => k.kontonummer).length < 1) {
         errs.push('Mindestens 1 Konto mit Saldo nötig')
       }
+    }
+    if (typ === 'aufgabengruppe') {
+      if (!agKontext.trim()) errs.push('Kontext erforderlich')
+      if (agTeilaufgabenIds.length < 1) errs.push('Mindestens 1 Teilaufgabe erforderlich')
     }
     return errs
   }
@@ -501,6 +515,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           bewertungsoptionen: biBewertungsoptionen,
         } as BilanzERFrage
         break
+      case 'aufgabengruppe':
+        neueFrage = {
+          ...basis,
+          typ: 'aufgabengruppe',
+          kontext: agKontext.trim(),
+          teilaufgabenIds: agTeilaufgabenIds,
+        } as AufgabengruppeFrage
+        break
       default:
         setSpeicherLaeuft(false)
         return
@@ -628,7 +650,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur'] as FrageTyp[]).map((t) => (
+              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -1422,6 +1444,15 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setLoesung={setBiLoesung}
               bewertungsoptionen={biBewertungsoptionen}
               setBewertungsoptionen={setBiBewertungsoptionen}
+            />
+          )}
+
+          {typ === 'aufgabengruppe' && (
+            <AufgabengruppeEditor
+              kontext={agKontext}
+              setKontext={setAgKontext}
+              teilaufgabenIds={agTeilaufgabenIds}
+              setTeilaufgabenIds={setAgTeilaufgabenIds}
             />
           )}
 
