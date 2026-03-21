@@ -6,7 +6,8 @@ import { typLabel, bloomLabel } from '../../../utils/fachbereich.ts'
 import type {
   Frage, Fachbereich, BloomStufe, Gefaess, FrageAnhang,
   MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage,
-  RichtigFalschFrage, BerechnungFrage,
+  RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage,
+  SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
 } from '../../../types/fragen.ts'
 import type { FrageTyp } from './editorUtils.ts'
@@ -17,6 +18,7 @@ import LueckentextEditor from './LueckentextEditor.tsx'
 import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
+import BuchungssatzEditor from './BuchungssatzEditor.tsx'
 import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
@@ -118,6 +120,19 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   )
   const [hilfsmittel, setHilfsmittel] = useState(
     frage?.typ === 'berechnung' ? (frage as BerechnungFrage).hilfsmittel ?? '' : ''
+  )
+
+  // Buchungssatz-spezifisch
+  const [geschaeftsfall, setGeschaeftsfall] = useState(
+    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).geschaeftsfall : ''
+  )
+  const [buchungen, setBuchungen] = useState<SollHabenZeile[]>(
+    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).buchungen : [
+      { id: '1', sollKonten: [{ kontonummer: '', betrag: 0 }], habenKonten: [{ kontonummer: '', betrag: 0 }] },
+    ]
+  )
+  const [kontenauswahl, setKontenauswahl] = useState<KontenauswahlConfig>(
+    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).kontenauswahl : { modus: 'voll' }
   )
 
   // Zeitbedarf
@@ -227,6 +242,12 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     }
     if (typ === 'berechnung') {
       if (ergebnisse.filter((e) => e.label.trim()).length < 1) errs.push('Mindestens 1 Ergebnis nötig')
+    }
+    if (typ === 'buchungssatz') {
+      if (!geschaeftsfall.trim()) errs.push('Geschäftsfall erforderlich')
+      if (buchungen.filter(b => b.sollKonten.some(k => k.kontonummer) || b.habenKonten.some(k => k.kontonummer)).length < 1) {
+        errs.push('Mindestens 1 Buchung mit Konten nötig')
+      }
     }
     return errs
   }
@@ -352,6 +373,18 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           hilfsmittel: hilfsmittel.trim() || undefined,
         } as BerechnungFrage
         break
+      case 'buchungssatz':
+        neueFrage = {
+          ...basis,
+          typ: 'buchungssatz',
+          geschaeftsfall: geschaeftsfall.trim(),
+          buchungen,
+          kontenauswahl,
+        } as BuchungssatzFrage
+        break
+      default:
+        setSpeicherLaeuft(false)
+        return
     }
 
     setSpeicherLaeuft(false)
@@ -476,7 +509,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung'] as FrageTyp[]).map((t) => (
+              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -1217,6 +1250,17 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                 </div>
               )}
             </>
+          )}
+
+          {typ === 'buchungssatz' && (
+            <BuchungssatzEditor
+              geschaeftsfall={geschaeftsfall}
+              setGeschaeftsfall={setGeschaeftsfall}
+              buchungen={buchungen}
+              setBuchungen={setBuchungen}
+              kontenauswahl={kontenauswahl}
+              setKontenauswahl={setKontenauswahl}
+            />
           )}
 
           {/* Musterlösung */}

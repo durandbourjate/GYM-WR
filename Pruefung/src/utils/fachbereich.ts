@@ -17,6 +17,11 @@ export function typLabel(typ: string): string {
     case 'zuordnung': return 'Zuordnung'
     case 'richtigfalsch': return 'Richtig/Falsch'
     case 'berechnung': return 'Berechnung'
+    case 'buchungssatz': return 'Buchungssatz'
+    case 'tkonto': return 'T-Konto'
+    case 'kontenbestimmung': return 'Kontenbestimmung'
+    case 'bilanzstruktur': return 'Bilanz/ER'
+    case 'aufgabengruppe': return 'Aufgabengruppe'
     default: return typ
   }
 }

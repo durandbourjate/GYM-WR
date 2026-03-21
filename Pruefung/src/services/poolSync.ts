@@ -311,8 +311,9 @@ export function berechneRueckSyncDiff(frage: Frage, snapshot: PoolFrageSnapshot)
   const diffs: RueckSyncDiffFeld[] = []
 
   // Fragetext
-  if (frage.fragetext !== snapshot.fragetext) {
-    diffs.push({ feld: 'Fragetext', poolFeld: 'q', alt: snapshot.fragetext, neu: frage.fragetext })
+  const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
+  if (fragetext !== snapshot.fragetext) {
+    diffs.push({ feld: 'Fragetext', poolFeld: 'q', alt: snapshot.fragetext, neu: fragetext })
   }
 
   // Erklärung/Musterlösung

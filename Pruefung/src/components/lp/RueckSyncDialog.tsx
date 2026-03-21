@@ -252,7 +252,7 @@ export default function RueckSyncDialog({ frage, offen, onSchliessen, onErfolg }
                 <div className="font-medium mb-2 dark:text-white">Vorschau (Pool-Format)</div>
                 <div className="text-xs dark:text-gray-300"><strong>Typ:</strong> {frage.typ}</div>
                 <div className="text-xs dark:text-gray-300"><strong>Bloom:</strong> {frage.bloom}</div>
-                <div className="text-xs dark:text-gray-300"><strong>Fragetext:</strong> {frage.fragetext?.substring(0, 100)}...</div>
+                <div className="text-xs dark:text-gray-300"><strong>Fragetext:</strong> {('fragetext' in frage ? (frage as { fragetext?: string }).fragetext?.substring(0, 100) : '')}...</div>
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">

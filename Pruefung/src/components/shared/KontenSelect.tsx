@@ -5,12 +5,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { sucheKonten, kontoLabel, findKonto, type KontoEintrag } from '../../utils/kontenrahmen'
-
-// Lokale Definition — wird in Task 3 nach fragen.ts verschoben
-export interface KontenauswahlConfig {
-  modus: 'eingeschraenkt' | 'voll'
-  konten?: string[]
-}
+import type { KontenauswahlConfig } from '../../types/fragen.ts'
 
 interface KontenSelectProps {
   value: string

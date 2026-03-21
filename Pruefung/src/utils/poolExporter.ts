@@ -48,7 +48,7 @@ export function konvertiereZuPoolFormat(
     diff: frage.schwierigkeit || 2,
     tax: frage.bloom || 'K2',
     reviewed: frage.poolGeprueft ?? false,
-    q: frage.fragetext,
+    q: 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : '',
   }
 
   // Musterlosung-Mapping: open → sample, rest → explain
