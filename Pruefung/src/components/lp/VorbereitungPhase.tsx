@@ -35,7 +35,10 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props
         if (!map.has(eintrag.klasse)) {
           map.set(eintrag.klasse, { klasse: eintrag.klasse, schueler: [] })
         }
-        map.get(eintrag.klasse)!.schueler.push(eintrag)
+        map.get(eintrag.klasse)!.schueler.push({
+          ...eintrag,
+          kurs: eintrag.kurs,
+        })
       }
       setGruppen(Array.from(map.values()).sort((a, b) => a.klasse.localeCompare(b.klasse)))
       setLadeStatus('fertig')

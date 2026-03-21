@@ -84,6 +84,7 @@ function doGet(e) {
             if (!klasseVal || klasseVal.includes('@')) klasseVal = sheetName;
             result.push({
               klasse: klasseVal,
+              kurs: sheetName,
               name: String(row[colName] || '').trim(),
               vorname: colVorname >= 0 ? String(row[colVorname] || '').trim() : '',
               email: emailVal,

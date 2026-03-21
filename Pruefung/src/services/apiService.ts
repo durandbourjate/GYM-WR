@@ -9,6 +9,7 @@ const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL || ''
 
 interface KlassenlistenEintrag {
   klasse: string
+  kurs?: string
   email: string
   name: string
   vorname: string
