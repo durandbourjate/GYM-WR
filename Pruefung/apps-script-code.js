@@ -631,10 +631,11 @@ function ladeFragenbank(email) {
       for (const row of data) {
         if (row.id) {
           const frage = parseFrage(row, tab);
-          // Sichtbarkeitsfilter: eigene Fragen immer, geteilte wenn 'schule'
+          // Sichtbarkeitsfilter: eigene Fragen immer, geteilte wenn 'schule', Pool-Fragen immer
           const istEigene = !frage.autor || frage.autor === email;
           const istGeteilt = frage.geteilt === 'schule';
-          if (istEigene || istGeteilt) {
+          const istPool = frage.quelle === 'pool';
+          if (istEigene || istGeteilt || istPool) {
             // Bei geteilten Fragen den Autor-Namen als geteiltVon setzen
             if (!istEigene && istGeteilt && frage.autor) {
               frage.geteiltVon = frage.autor.split('@')[0];

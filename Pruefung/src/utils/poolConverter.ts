@@ -176,9 +176,9 @@ export function konvertierePoolFrage(
     quelle: 'pool' as const,
     quellReferenz: `Pool: ${poolMeta.title}`,
 
-    // Sharing
+    // Sharing — Pool-Fragen sind für alle LP sichtbar
     autor: 'pool-import',
-    geteilt: 'privat' as const,
+    geteilt: 'schule' as const,
 
     // Pool-Sync Felder
     poolId: `${poolMeta.id}:${poolFrage.id}`,
