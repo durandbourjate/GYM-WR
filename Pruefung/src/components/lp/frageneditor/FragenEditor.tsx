@@ -7,6 +7,7 @@ import type {
   Frage, Fachbereich, BloomStufe, Gefaess, FrageAnhang,
   MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage,
   RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage,
+  TKontoFrage, TKontoDefinition, TKontoBewertung,
   SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
 } from '../../../types/fragen.ts'
@@ -19,6 +20,7 @@ import ZuordnungEditor from './ZuordnungEditor.tsx'
 import RichtigFalschEditor from './RichtigFalschEditor.tsx'
 import BerechnungEditor from './BerechnungEditor.tsx'
 import BuchungssatzEditor from './BuchungssatzEditor.tsx'
+import TKontoEditor from './TKontoEditor.tsx'
 import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
 import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
@@ -132,7 +134,31 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
     ]
   )
   const [kontenauswahl, setKontenauswahl] = useState<KontenauswahlConfig>(
-    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).kontenauswahl : { modus: 'voll' }
+    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).kontenauswahl
+    : frage?.typ === 'tkonto' ? (frage as TKontoFrage).kontenauswahl
+    : { modus: 'voll' }
+  )
+
+  // T-Konto-spezifisch
+  const [tkAufgabentext, setTkAufgabentext] = useState(
+    frage?.typ === 'tkonto' ? (frage as TKontoFrage).aufgabentext : ''
+  )
+  const [tkGeschaeftsfaelle, setTkGeschaeftsfaelle] = useState<string[]>(
+    frage?.typ === 'tkonto' ? (frage as TKontoFrage).geschaeftsfaelle ?? [] : []
+  )
+  const [tkKonten, setTkKonten] = useState<TKontoDefinition[]>(
+    frage?.typ === 'tkonto' ? (frage as TKontoFrage).konten : [
+      { id: '1', kontonummer: '', anfangsbestandVorgegeben: false, eintraege: [], saldo: { betrag: 0, seite: 'soll' } },
+    ]
+  )
+  const [tkBewertungsoptionen, setTkBewertungsoptionen] = useState<TKontoBewertung>(
+    frage?.typ === 'tkonto' ? (frage as TKontoFrage).bewertungsoptionen : {
+      beschriftungSollHaben: true,
+      kontenkategorie: true,
+      zunahmeAbnahme: true,
+      buchungenKorrekt: true,
+      saldoKorrekt: true,
+    }
   )
 
   // Zeitbedarf
@@ -224,7 +250,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   function validiere(): string[] {
     const errs: string[] = []
     if (!thema.trim()) errs.push('Thema fehlt')
-    if (!fragetext.trim()) errs.push('Fragetext fehlt')
+    if (!fragetext.trim() && typ !== 'tkonto') errs.push('Fragetext fehlt')
     if (punkte <= 0) errs.push('Punkte müssen > 0 sein')
 
     if (typ === 'mc') {
@@ -247,6 +273,12 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
       if (!geschaeftsfall.trim()) errs.push('Geschäftsfall erforderlich')
       if (buchungen.filter(b => b.sollKonten.some(k => k.kontonummer) || b.habenKonten.some(k => k.kontonummer)).length < 1) {
         errs.push('Mindestens 1 Buchung mit Konten nötig')
+      }
+    }
+    if (typ === 'tkonto') {
+      if (!tkAufgabentext.trim()) errs.push('Aufgabentext erforderlich')
+      if (tkKonten.filter(k => k.kontonummer).length < 1) {
+        errs.push('Mindestens 1 T-Konto mit Kontonummer nötig')
       }
     }
     return errs
@@ -382,6 +414,17 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           kontenauswahl,
         } as BuchungssatzFrage
         break
+      case 'tkonto':
+        neueFrage = {
+          ...basis,
+          typ: 'tkonto',
+          aufgabentext: tkAufgabentext.trim(),
+          geschaeftsfaelle: tkGeschaeftsfaelle.filter(gf => gf.trim()),
+          konten: tkKonten,
+          kontenauswahl,
+          bewertungsoptionen: tkBewertungsoptionen,
+        } as TKontoFrage
+        break
       default:
         setSpeicherLaeuft(false)
         return
@@ -509,7 +552,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz'] as FrageTyp[]).map((t) => (
+              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -1260,6 +1303,21 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
               setBuchungen={setBuchungen}
               kontenauswahl={kontenauswahl}
               setKontenauswahl={setKontenauswahl}
+            />
+          )}
+
+          {typ === 'tkonto' && (
+            <TKontoEditor
+              aufgabentext={tkAufgabentext}
+              setAufgabentext={setTkAufgabentext}
+              geschaeftsfaelle={tkGeschaeftsfaelle}
+              setGeschaeftsfaelle={setTkGeschaeftsfaelle}
+              konten={tkKonten}
+              setKonten={setTkKonten}
+              kontenauswahl={kontenauswahl}
+              setKontenauswahl={setKontenauswahl}
+              bewertungsoptionen={tkBewertungsoptionen}
+              setBewertungsoptionen={setTkBewertungsoptionen}
             />
           )}
 
