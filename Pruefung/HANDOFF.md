@@ -18,11 +18,8 @@
 - **Abbruch-Button:** Import jederzeit abbrechbar (ref-basierter Abort zwischen Batches)
 - **Fragenbank-Cache:** `handleOeffneSyncDialog()` lädt Fragenbank IMMER frisch (nicht aus Cache), damit Delta-Berechnung korrekt ist
 - **Abmelden-Button:** Ganz rechts in Header verschoben (war vor ThemeToggle)
-
-**Nach Push (WICHTIG):**
-1. `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen
-2. Alle pool-importierten Fragen in Google Sheets löschen (haben kein poolId wegen altem Bug)
-3. Neu synchronisieren → sauberer Import aller ~2062 Fragen mit korrekten Pool-Spalten
+- **Sichtbarkeitsfilter:** `parseFrage()` fehlte `quelle`-Feld → Pool-Fragen hatten `quelle: undefined` → wurden vom Sichtbarkeitsfilter ausgeblendet. Fix: `quelle` in `parseFrage()` base-Objekt + `quelle === 'pool'` als dritte Bedingung im Filter
+- **Pool-Converter:** `geteilt` von `'privat'` auf `'schule'` geändert (Pool-Fragen sollen für alle LP sichtbar sein)
 
 ### Änderungen (20.03.2026 Nacht)
 
