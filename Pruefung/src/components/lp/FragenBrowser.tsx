@@ -668,10 +668,10 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         />
       )}
 
-      {/* Lösch-Bestätigung */}
+      {/* Lösch-Bestätigung (pointer-events-auto nötig weil Eltern-Container pointer-events-none hat) */}
       {loeschKandidat && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 max-w-md">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 pointer-events-auto" onClick={() => setLoeschKandidat(null)}>
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 max-w-md" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-bold dark:text-white mb-2">Frage löschen?</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
               <strong>{loeschKandidat.id}</strong> · {loeschKandidat.fachbereich} · {typLabel(loeschKandidat.typ)}

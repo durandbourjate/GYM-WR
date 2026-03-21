@@ -52,6 +52,9 @@ export default function FreitextFrage({ frage }: Props) {
   const setAntwort = usePruefungStore((s) => s.setAntwort)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
+  // Ref für aktuelle frage.id — verhindert stale closure im onUpdate-Callback
+  const frageIdRef = useRef(frage.id)
+  frageIdRef.current = frage.id
 
   const aktuelleAntwort = antworten[frage.id]
   const gespeicherterText =
@@ -78,13 +81,15 @@ export default function FreitextFrage({ frage }: Props) {
     onUpdate: ({ editor: ed }) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
+        debounceRef.current = null
         const html = ed.getHTML()
-        setAntwort(frage.id, { typ: 'freitext', text: html, formatierung: 'html' })
-      }, 500)
+        // frageIdRef statt frage.id aus Closure → immer aktuell
+        setAntwort(frageIdRef.current, { typ: 'freitext', text: html, formatierung: 'html' })
+      }, 300) // 300ms statt 500ms — kürzeres Fenster für Datenverlust
     },
   })
 
-  // Sync editor content when switching between questions
+  // Sync editor content bei Fragewechsel + Cleanup für Debounce
   useEffect(() => {
     if (editor && !editor.isDestroyed) {
       const currentContent = editor.getHTML()
@@ -94,7 +99,16 @@ export default function FreitextFrage({ frage }: Props) {
         editor.commands.clearContent()
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps — Nur bei Fragewechsel triggern, editor/gespeicherterText wuerden Loop verursachen
+    // Cleanup: bei Fragewechsel oder Unmount pending Debounce sofort flushen
+    return () => {
+      if (debounceRef.current && editor && !editor.isDestroyed) {
+        clearTimeout(debounceRef.current)
+        debounceRef.current = null
+        const html = editor.getHTML()
+        setAntwort(frageIdRef.current, { typ: 'freitext', text: html, formatierung: 'html' })
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps — Nur bei Fragewechsel triggern
   }, [frage.id])
 
   // Auto-Focus: Cursor automatisch ins Textfeld
