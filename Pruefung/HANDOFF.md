@@ -240,10 +240,10 @@ Pruefung/
 │   ├── index.css                        — Tailwind + Tiptap-Styles + Dark-Mode-Kontrast
 │   ├── main.tsx
 │   ├── types/
-│   │   ├── fragen.ts                    — FrageBase, MCFrage, FreitextFrage, LueckentextFrage, etc.
+│   │   ├── fragen.ts                    — FrageBase, MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + FiBu (Buchungssatz, TKonto, Kontenbestimmung, BilanzER, Aufgabengruppe)
 │   │   ├── pool.ts                      — Pool-spezifische Typen (PoolConfig, Lernziel, PoolSyncErgebnis)
 │   │   ├── pruefung.ts                  — PruefungsConfig, PruefungsAbschnitt
-│   │   ├── antworten.ts                 — PruefungsAbgabe, Antwort-Union-Typ
+│   │   ├── antworten.ts                 — PruefungsAbgabe, Antwort-Union-Typ (inkl. FiBu-Antworten)
 │   │   ├── auth.ts                      — AuthUser, Rolle
 │   │   ├── korrektur.ts                 — FragenBewertung, SchuelerKorrektur, PruefungsKorrektur
 │   │   └── monitoring.ts                — SchuelerStatus, MonitoringDaten
@@ -254,7 +254,8 @@ Pruefung/
 │   ├── data/
 │   │   ├── demoFragen.ts                — 8 Demo-Fragen (inkl. Zuordnung)
 │   │   ├── demoPruefung.ts              — Demo-PruefungsConfig (45 Min, 4 Abschnitte)
-│   │   └── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard
+│   │   ├── demoMonitoring.ts            — Demo-Monitoring-Daten für LP-Dashboard
+│   │   └── kontenrahmen-kmu.json        — 76 KMU-Konten (Schweizer Kontenrahmen, statisch)
 │   ├── hooks/
 │   │   ├── useAudioRecorder.ts         — MediaRecorder Hook (WebM/Opus, MP4-Fallback)
 │   │   ├── useFocusTrap.ts             — Keyboard-Focus-Trap für Modals/Dialoge
@@ -281,9 +282,9 @@ Pruefung/
 │   │   │   │   ├── AbschnitteTab.tsx    — Abschnitte mit Fragen-Details (Badges, Bloom, Punkte, Zeit)
 │   │   │   │   ├── VorschauTab.tsx      — Inline Schülervorschau (MC/Freitext/Lückentext/Zuordnung)
 │   │   │   │   └── AnalyseTab.tsx       — Taxonomie, Fragetypen-Mix, Zeitschätzung, KI-Analyse
-│   │   │   ├── frageneditor/           — Aufgesplitteter FragenEditor (vorher 949 Zeilen)
-│   │   │   │   ├── FragenEditor.tsx    — Hauptkomponente (~290 Z.)
-│   │   │   │   ├── editorUtils.ts      — FrageTyp, generiereFrageId(), parseLuecken()
+│   │   │   ├── frageneditor/           — Aufgesplitteter FragenEditor
+│   │   │   │   ├── FragenEditor.tsx    — Hauptkomponente (~1680 Z., Ausnahme dokumentiert)
+│   │   │   │   ├── editorUtils.ts      — FrageTyp (11 Typen), generiereFrageId(), parseLuecken()
 │   │   │   │   ├── EditorBausteine.tsx — Abschnitt + Feld UI-Wrapper
 │   │   │   │   ├── MCEditor.tsx        — MC-Optionen-Editor
 │   │   │   │   ├── FreitextEditor.tsx  — Freitext-Editor
@@ -291,9 +292,15 @@ Pruefung/
 │   │   │   │   ├── ZuordnungEditor.tsx — Zuordnung-Editor
 │   │   │   │   ├── RichtigFalschEditor.tsx — Richtig/Falsch-Editor
 │   │   │   │   ├── BerechnungEditor.tsx — Berechnung-Editor
+│   │   │   │   ├── BuchungssatzEditor.tsx — Buchungssatz-Editor (Geschäftsfall, Buchungen, Kontenauswahl)
+│   │   │   │   ├── TKontoEditor.tsx    — T-Konto-Editor (5 Bewertungsoptionen, Musterlösung-Cards)
+│   │   │   │   ├── KontenbestimmungEditor.tsx — Kontenbestimmung-Editor (3 Modi)
+│   │   │   │   ├── BilanzEREditor.tsx  — Bilanz/ER-Editor (Konten mit Saldi, 8 Bewertungsoptionen)
+│   │   │   │   ├── AufgabengruppeEditor.tsx — Aufgabengruppe-Editor (Kontext + Teilaufgaben-IDs)
+│   │   │   │   ├── KIFiBuButtons.tsx   — KI-Buttons für FiBu-Typen (4 exportierte Komponenten)
 │   │   │   │   ├── BewertungsrasterEditor.tsx — Bewertungsraster-Editor (extrahiert)
 │   │   │   │   ├── PoolUpdateVergleich.tsx — Side-by-side Update-Vergleich (Pool vs. aktuell)
-│   │   │   │   └── useKIAssistent.ts  — KI-Assistent Hook (18 Aktionen inkl. generiereFrageZuLernziel)
+│   │   │   │   └── useKIAssistent.ts  — KI-Assistent Hook (25 Aktionen inkl. 7 FiBu-Aktionen)
 │   │   │   ├── KorrekturDashboard.tsx   — KI-Korrektur: Review + Feedback
 │   │   │   ├── KorrekturSchuelerZeile.tsx — Aufklappbare SuS-Zeile mit Bewertungen
 │   │   │   ├── KorrekturFrageZeile.tsx   — Einzelne Frage: KI-Vorschlag + LP-Override
@@ -303,6 +310,8 @@ Pruefung/
 │   │   ├── sus/
 │   │   │   ├── KorrekturListe.tsx      — SuS: Liste freigegebener Korrekturen
 │   │   │   └── KorrekturEinsicht.tsx   — SuS: Detailansicht einer korrigierten Prüfung
+│   │   ├── shared/
+│   │   │   └── KontenSelect.tsx        — Konten-Auswahl (eingeschränkt/voll, Kategorie-Badges)
 │   │   ├── AudioPlayer.tsx             — Wiederverwendbarer Mini-Audio-Player
 │   │   ├── AudioRecorder.tsx           — Audio-Aufnahme UI (Mikrofon → Preview → Speichern)
 │   │   ├── MediaAnhang.tsx             — Zentraler Medien-Renderer (Bild/Audio/Video/Embed/PDF)
@@ -324,12 +333,19 @@ Pruefung/
 │   │       ├── LueckentextFrage.tsx     — Inline-Inputs
 │   │       ├── ZuordnungFrage.tsx      — Dropdown-Zuordnung mit Fortschritt
 │   │       ├── RichtigFalschFrage.tsx  — Richtig/Falsch-Buttons pro Aussage
-│   │       └── BerechnungFrage.tsx     — Numerische Eingabe + Rechenweg
+│   │       ├── BerechnungFrage.tsx     — Numerische Eingabe + Rechenweg
+│   │       ├── BuchungssatzFrage.tsx   — Buchungssatz-Eingabe (Soll/Haben, compound)
+│   │       ├── TKontoFrage.tsx         — T-Konto-Darstellung (CSS-Grid, Gegenkonten)
+│   │       ├── KontenbestimmungFrage.tsx — Kontenbestimmung-Tabelle (3 Modi)
+│   │       ├── BilanzERFrage.tsx       — Bilanz + ER mehrstufig (komplexester SuS-Typ)
+│   │       └── AufgabengruppeFrage.tsx — Aufgabengruppe (rendert Teilaufgaben, Rekursionsschutz)
 │   └── utils/
 │       ├── poolConverter.ts            — Typ-Konvertierung Pool→Prüfungstool (7→6 Typen) + konvertierePoolBild (exported)
 │       ├── poolExporter.ts            — Reverse Type Mapping Prüfungstool→Pool-Format (7 Typen) + Diff-Berechnung
 │       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
-│       ├── fachbereich.ts              — Shared: fachbereichFarbe(), typLabel(), bloomLabel()
+│       ├── fachbereich.ts              — Shared: fachbereichFarbe(), typLabel() (11 Typen), bloomLabel()
+│       ├── kontenrahmen.ts             — alleKonten, findKonto(), sucheKonten(), kontoLabel(), kontenNachKategorie()
+│       ├── fibuAutoKorrektur.ts       — Regelbasierte Auto-Korrektur für alle FiBu-Typen (4 Korrekturfunktionen)
 │       ├── korrekturUtils.ts          — berechneNote(), effektivePunkte(), Statistiken
 │       ├── exportUtils.ts              — CSV-Export (Semicolon, BOM für Excel)
 │       ├── markdown.ts                  — Einfacher Markdown→HTML Renderer
