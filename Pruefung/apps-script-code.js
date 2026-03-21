@@ -61,14 +61,32 @@ function doGet(e) {
           const data = sheet.getDataRange().getValues();
           if (data.length < 2) continue; // Nur Header, keine Daten
           // Format: A=Klasse, B=Nachname, C=Vorname, D=E-Mail (Zeile 1 = Header)
+          // Spaltenreihenfolge automatisch erkennen anhand Header
+          const header = data[0].map(h => String(h).trim().toLowerCase());
+          let colKlasse = header.indexOf('klasse');
+          let colName = header.indexOf('nachname');
+          if (colName === -1) colName = header.indexOf('name');
+          let colVorname = header.indexOf('vorname');
+          let colEmail = header.indexOf('e-mail');
+          if (colEmail === -1) colEmail = header.indexOf('email');
+          if (colEmail === -1) colEmail = header.indexOf('mail');
+          // Fallback: alte Reihenfolge (A=Klasse, B=Name, C=Vorname, D=Email)
+          if (colEmail === -1) { colKlasse = 0; colName = 1; colVorname = 2; colEmail = 3; }
+          if (colName === -1) colName = 1;
+          if (colVorname === -1) colVorname = 2;
+
           for (let i = 1; i < data.length; i++) {
             const row = data[i];
-            if (!row[3]) continue; // Kein E-Mail → überspringe
+            const emailVal = colEmail >= 0 ? String(row[colEmail] || '').trim().toLowerCase() : '';
+            if (!emailVal || !emailVal.includes('@')) continue;
+            // Klasse: aus Spalte lesen, aber falls Wert wie E-Mail aussieht → Sheet-Name nutzen
+            let klasseVal = colKlasse >= 0 ? String(row[colKlasse] || '').trim() : '';
+            if (!klasseVal || klasseVal.includes('@')) klasseVal = sheetName;
             result.push({
-              klasse: String(row[0] || sheetName).trim(),
-              name: String(row[1] || '').trim(),
-              vorname: String(row[2] || '').trim(),
-              email: String(row[3]).trim().toLowerCase(),
+              klasse: klasseVal,
+              name: String(row[colName] || '').trim(),
+              vorname: colVorname >= 0 ? String(row[colVorname] || '').trim() : '',
+              email: emailVal,
             });
           }
         }
