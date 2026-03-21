@@ -23,7 +23,8 @@ import BerechnungFrage from './fragetypen/BerechnungFrage.tsx'
 import BuchungssatzFrage from './fragetypen/BuchungssatzFrage.tsx'
 import TKontoFrageComponent from './fragetypen/TKontoFrage.tsx'
 import KontenbestimmungFrageComponent from './fragetypen/KontenbestimmungFrage.tsx'
-import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType } from '../types/fragen.ts'
+import BilanzERFrageComponent from './fragetypen/BilanzERFrage.tsx'
+import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType, BilanzERFrage as BilanzERFrageType } from '../types/fragen.ts'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 
 export default function Layout() {
@@ -429,6 +430,8 @@ function renderFrage(frage: Frage) {
       return <TKontoFrageComponent frage={frage as TKontoFrageType} />
     case 'kontenbestimmung':
       return <KontenbestimmungFrageComponent frage={frage as KontenbestimmungFrageType} />
+    case 'bilanzstruktur':
+      return <BilanzERFrageComponent frage={frage as BilanzERFrageType} />
     default:
       return (
         <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">
