@@ -39,11 +39,13 @@ export default function BeendenDialog({
       restzeitMinuten: modus === 'restzeit' ? restzeitMinuten : undefined,
       einzelneSuS: einzelnerSuS ? [einzelnerSuS.email] : undefined,
     })
-    setLade(false)
 
     if (result.success) {
+      // lade bleibt true → Button bleibt disabled bis Phase wechselt
       onBeendet()
+      return
     } else {
+      setLade(false)
       setFehler(result.error === 'nicht_konfiguriert'
         ? 'Backend nicht konfiguriert (Demo-Modus). Prüfung kann nur mit aktivem Backend beendet werden.'
         : `Fehler beim Beenden: ${result.error || 'Unbekannter Fehler'}`)
