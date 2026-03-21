@@ -1,7 +1,6 @@
 import type { BilanzERFrage, KontoMitSaldo, BilanzERLoesung, BilanzERBewertung, BilanzStruktur, BilanzGruppe, ERStruktur, ERStufe } from '../../../types/fragen.ts'
 import { Abschnitt } from './EditorBausteine.tsx'
 import KontenSelect from '../../shared/KontenSelect.tsx'
-import { kontoLabel } from '../../../utils/kontenrahmen.ts'
 
 interface BilanzEREditorProps {
   aufgabentext: string
@@ -331,18 +330,18 @@ function GruppenEditor({ label, gruppen, onChange, verfuegbareKonten, bgClass }:
             <div className="space-y-0.5 ml-2">
               {gruppe.konten.map((nr, ki) => (
                 <div key={ki} className="flex items-center gap-1">
-                  <select
-                    value={nr}
-                    onChange={(e) => updateKonto(gi, ki, e.target.value)}
-                    className="min-h-[32px] flex-1 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-xs text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none"
-                  >
-                    <option value="">Konto...</option>
-                    {verfuegbareKonten.map(n => (
-                      <option key={n} value={n}>{n} {kontoLabel(n)}</option>
-                    ))}
-                  </select>
+                  <div className="flex-1 min-w-0">
+                    <KontenSelect
+                      value={nr}
+                      onChange={(v) => updateKonto(gi, ki, v)}
+                      config={{ modus: 'voll' }}
+                      filterKonten={verfuegbareKonten}
+                      placeholder="Konto..."
+                      compact
+                    />
+                  </div>
                   <button type="button" onClick={() => removeKonto(gi, ki)}
-                    className="min-h-[32px] min-w-[20px] text-slate-400 hover:text-red-500 text-xs" title="Entfernen">
+                    className="min-h-[28px] min-w-[20px] text-slate-400 hover:text-red-500 text-xs" title="Entfernen">
                     ×
                   </button>
                 </div>
@@ -446,11 +445,16 @@ function ERMusterloesung({ er, onERChange, verfuegbareKonten }: {
               <div className="space-y-0.5 mt-1">
                 {stufe.aufwandKonten.map((nr, ki) => (
                   <div key={ki} className="flex items-center gap-1">
-                    <select value={nr} onChange={(e) => updateKontoInStufe(si, 'aufwand', ki, e.target.value)}
-                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none">
-                      <option value="">Konto...</option>
-                      {verfuegbareKonten.map(n => <option key={n} value={n}>{n} {kontoLabel(n)}</option>)}
-                    </select>
+                    <div className="flex-1 min-w-0">
+                      <KontenSelect
+                        value={nr}
+                        onChange={(v) => updateKontoInStufe(si, 'aufwand', ki, v)}
+                        config={{ modus: 'voll' }}
+                        filterKonten={verfuegbareKonten}
+                        placeholder="Konto..."
+                        compact
+                      />
+                    </div>
                     <button type="button" onClick={() => removeKontoVonStufe(si, 'aufwand', ki)}
                       className="text-slate-400 hover:text-red-500 text-xs">×</button>
                   </div>
@@ -466,11 +470,16 @@ function ERMusterloesung({ er, onERChange, verfuegbareKonten }: {
               <div className="space-y-0.5 mt-1">
                 {stufe.ertragKonten.map((nr, ki) => (
                   <div key={ki} className="flex items-center gap-1">
-                    <select value={nr} onChange={(e) => updateKontoInStufe(si, 'ertrag', ki, e.target.value)}
-                      className="min-h-[28px] flex-1 rounded border border-slate-300 bg-white px-1 py-0.5 text-[11px] text-slate-800 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-slate-400 focus:outline-none">
-                      <option value="">Konto...</option>
-                      {verfuegbareKonten.map(n => <option key={n} value={n}>{n} {kontoLabel(n)}</option>)}
-                    </select>
+                    <div className="flex-1 min-w-0">
+                      <KontenSelect
+                        value={nr}
+                        onChange={(v) => updateKontoInStufe(si, 'ertrag', ki, v)}
+                        config={{ modus: 'voll' }}
+                        filterKonten={verfuegbareKonten}
+                        placeholder="Konto..."
+                        compact
+                      />
+                    </div>
                     <button type="button" onClick={() => removeKontoVonStufe(si, 'ertrag', ki)}
                       className="text-slate-400 hover:text-red-500 text-xs">×</button>
                   </div>

@@ -15,9 +15,13 @@ interface KontenSelectProps {
   placeholder?: string
   disabled?: boolean
   className?: string
+  /** Optional: Nur diese Kontonummern im Autocomplete anbieten (filtert sucheKonten) */
+  filterKonten?: string[]
+  /** Kompakte Darstellung (kleinere Höhe, Text) für verschachtelte Editoren */
+  compact?: boolean
 }
 
-const MAX_RESULTS = 15
+const MAX_RESULTS = 80
 
 /** Kategorie-Badge-Farben — aktiv=gelb, passiv=blau, aufwand=rot, ertrag=grün */
 const kategorieBadge: Record<KontoEintrag['kategorie'], string> = {
@@ -42,6 +46,8 @@ export default function KontenSelect({
   placeholder = 'Konto wählen…',
   disabled = false,
   className = '',
+  filterKonten,
+  compact = false,
 }: KontenSelectProps) {
   if (config.modus === 'eingeschraenkt') {
     return (
@@ -63,6 +69,8 @@ export default function KontenSelect({
       placeholder={placeholder}
       disabled={disabled}
       className={className}
+      filterKonten={filterKonten}
+      compact={compact}
     />
   )
 }
@@ -114,12 +122,16 @@ function VollAutocomplete({
   placeholder,
   disabled,
   className,
+  filterKonten,
+  compact = false,
 }: {
   value: string
   onChange: (n: string) => void
   placeholder: string
   disabled: boolean
   className: string
+  filterKonten?: string[]
+  compact?: boolean
 }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -129,8 +141,8 @@ function VollAutocomplete({
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
 
-  // Angezeigte Ergebnisse
-  const results = sucheKonten(query).slice(0, MAX_RESULTS)
+  // Angezeigte Ergebnisse (optional gefiltert auf bestimmte Kontonummern)
+  const results = sucheKonten(query, filterKonten).slice(0, MAX_RESULTS)
 
   // Input-Text: wenn nicht offen, zeige gewähltes Konto
   const displayValue = open ? query : (value ? kontoLabel(value) : '')
@@ -216,8 +228,9 @@ function VollAutocomplete({
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
-        className={`min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-3 py-2
-          text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
+        className={`${compact ? 'min-h-[28px] text-[11px] px-1.5 py-0.5' : 'min-h-[44px] text-sm px-3 py-2'}
+          w-full rounded-md border border-slate-300 bg-white
+          text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
           focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400
           disabled:cursor-not-allowed disabled:opacity-50`}
         role="combobox"
@@ -233,8 +246,9 @@ function VollAutocomplete({
         <button
           type="button"
           onClick={() => { onChange(''); setQuery('') }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[28px] min-w-[28px]
-            rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          className={`absolute right-1 top-1/2 -translate-y-1/2
+            ${compact ? 'min-h-[20px] min-w-[20px] text-xs' : 'min-h-[28px] min-w-[28px]'}
+            rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200`}
           aria-label="Auswahl löschen"
         >
           ×
@@ -267,7 +281,8 @@ function VollAutocomplete({
                   aria-selected={isHighlighted}
                   onMouseDown={e => { e.preventDefault(); selectKonto(k.nummer) }}
                   onMouseEnter={() => setHighlightIdx(idx)}
-                  className={`flex min-h-[44px] cursor-pointer items-center gap-2 px-3 py-2 text-sm
+                  className={`flex cursor-pointer items-center gap-2
+                    ${compact ? 'min-h-[28px] px-1.5 py-1 text-[11px]' : 'min-h-[44px] px-3 py-2 text-sm'}
                     ${isHighlighted
                       ? 'bg-slate-100 text-slate-900 dark:bg-slate-700/50 dark:text-slate-100'
                       : `text-slate-700 dark:text-slate-200 ${zeileBg}`
