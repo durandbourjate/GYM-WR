@@ -184,4 +184,154 @@ export interface BerechnungFrage extends FrageBase {
   hilfsmittel?: string;
 }
 
-export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage | VisualisierungFrage | RichtigFalschFrage | BerechnungFrage;
+// === SHARED FIBU ===
+
+export type Kontenkategorie = 'aktiv' | 'passiv' | 'aufwand' | 'ertrag'
+
+export interface KontenauswahlConfig {
+  modus: 'eingeschraenkt' | 'voll'
+  konten?: string[]
+}
+
+// === BUCHUNGSSATZ ===
+
+export interface BuchungsKonto {
+  kontonummer: string
+  betrag: number
+}
+
+export interface SollHabenZeile {
+  id: string
+  sollKonten: BuchungsKonto[]
+  habenKonten: BuchungsKonto[]
+  buchungstext?: string
+}
+
+export interface BuchungssatzFrage extends FrageBase {
+  typ: 'buchungssatz'
+  geschaeftsfall: string
+  buchungen: SollHabenZeile[]
+  kontenauswahl: KontenauswahlConfig
+}
+
+// === T-KONTO ===
+
+export interface TKontoEintrag {
+  seite: 'soll' | 'haben'
+  gegenkonto: string
+  betrag: number
+  buchungstext?: string
+}
+
+export interface TKontoDefinition {
+  id: string
+  kontonummer: string
+  anfangsbestand?: number
+  anfangsbestandVorgegeben: boolean
+  eintraege: TKontoEintrag[]
+  saldo: { betrag: number; seite: 'soll' | 'haben' }
+}
+
+export interface TKontoBewertung {
+  beschriftungSollHaben: boolean
+  kontenkategorie: boolean
+  zunahmeAbnahme: boolean
+  buchungenKorrekt: boolean
+  saldoKorrekt: boolean
+}
+
+export interface TKontoFrage extends FrageBase {
+  typ: 'tkonto'
+  aufgabentext: string
+  geschaeftsfaelle?: string[]
+  konten: TKontoDefinition[]
+  kontenauswahl: KontenauswahlConfig
+  bewertungsoptionen: TKontoBewertung
+}
+
+// === KONTENBESTIMMUNG ===
+
+export interface KontenAntwort {
+  kontonummer?: string
+  kategorie?: Kontenkategorie
+  seite?: 'soll' | 'haben'
+}
+
+export interface Kontenaufgabe {
+  id: string
+  text: string
+  erwarteteAntworten: KontenAntwort[]
+}
+
+export interface KontenbestimmungFrage extends FrageBase {
+  typ: 'kontenbestimmung'
+  aufgabentext: string
+  modus: 'konto_bestimmen' | 'kategorie_bestimmen' | 'gemischt'
+  aufgaben: Kontenaufgabe[]
+  kontenauswahl: KontenauswahlConfig
+}
+
+// === BILANZ / ERFOLGSRECHNUNG ===
+
+export interface KontoMitSaldo {
+  kontonummer: string
+  saldo: number
+}
+
+export interface BilanzGruppe {
+  label: string
+  konten: string[]
+}
+
+export interface BilanzStruktur {
+  aktivSeite: { label: string; gruppen: BilanzGruppe[] }
+  passivSeite: { label: string; gruppen: BilanzGruppe[] }
+  bilanzsumme: number
+}
+
+export interface ERStufe {
+  label: string
+  aufwandKonten: string[]
+  ertragKonten: string[]
+  zwischentotal: number
+}
+
+export interface ERStruktur {
+  stufen: ERStufe[]
+}
+
+export interface BilanzERLoesung {
+  bilanz?: BilanzStruktur
+  erfolgsrechnung?: ERStruktur
+}
+
+export interface BilanzERBewertung {
+  seitenbeschriftung: boolean
+  gruppenbildung: boolean
+  gruppenreihenfolge: boolean
+  kontenreihenfolge: boolean
+  betraegeKorrekt: boolean
+  zwischentotale: boolean
+  bilanzsummeOderGewinn: boolean
+  mehrstufigkeit: boolean
+}
+
+export interface BilanzERFrage extends FrageBase {
+  typ: 'bilanzstruktur'
+  aufgabentext: string
+  modus: 'bilanz' | 'erfolgsrechnung' | 'beides'
+  kontenMitSaldi: KontoMitSaldo[]
+  loesung: BilanzERLoesung
+  bewertungsoptionen: BilanzERBewertung
+}
+
+// === AUFGABENGRUPPE ===
+
+export interface AufgabengruppeFrage extends FrageBase {
+  typ: 'aufgabengruppe'
+  kontext: string
+  kontextAnhaenge?: FrageAnhang[]
+  teilaufgabenIds: string[]
+}
+
+export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage | VisualisierungFrage | RichtigFalschFrage | BerechnungFrage | BuchungssatzFrage | TKontoFrage | KontenbestimmungFrage | BilanzERFrage | AufgabengruppeFrage;

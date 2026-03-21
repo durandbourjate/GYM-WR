@@ -32,4 +32,32 @@ export type Antwort =
   | { typ: 'lueckentext'; eintraege: Record<string, string> }
   | { typ: 'visualisierung'; daten: string; bildLink?: string }
   | { typ: 'richtigfalsch'; bewertungen: Record<string, boolean> }
-  | { typ: 'berechnung'; ergebnisse: Record<string, string>; rechenweg?: string };
+  | { typ: 'berechnung'; ergebnisse: Record<string, string>; rechenweg?: string }
+  | { typ: 'buchungssatz'; buchungen: {
+      id: string;
+      sollKonten: { kontonummer: string; betrag: number }[];
+      habenKonten: { kontonummer: string; betrag: number }[];
+      buchungstext?: string;
+    }[] }
+  | { typ: 'tkonto'; konten: {
+      id: string;
+      beschriftungLinks?: string;
+      beschriftungRechts?: string;
+      kontenkategorie?: string;
+      eintraegeLinks: { gegenkonto: string; betrag: number }[];
+      eintraegeRechts: { gegenkonto: string; betrag: number }[];
+      saldo?: { betrag: number; seite: 'links' | 'rechts' };
+    }[] }
+  | { typ: 'kontenbestimmung'; aufgaben: Record<string, {
+      antworten: { kontonummer?: string; kategorie?: string; seite?: string }[];
+    }> }
+  | { typ: 'bilanzstruktur'; bilanz?: {
+      linkeSeite: { label: string; gruppen: { label: string; konten: { nr: string; betrag: number }[] }[] };
+      rechteSeite: { label: string; gruppen: { label: string; konten: { nr: string; betrag: number }[] }[] };
+      bilanzsummeLinks?: number;
+      bilanzsummeRechts?: number;
+    };
+    erfolgsrechnung?: {
+      stufen: { label: string; konten: { nr: string; betrag: number }[]; zwischentotal?: number }[];
+      gewinnVerlust?: number;
+    } };
