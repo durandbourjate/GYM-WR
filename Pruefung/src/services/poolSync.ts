@@ -8,7 +8,15 @@ import type {
   Lernziel,
   PoolSyncErgebnis,
 } from '../types/pool'
-import type { Frage } from '../types/fragen'
+import type {
+  Frage,
+  MCFrage,
+  RichtigFalschFrage,
+  LueckentextFrage,
+  BerechnungFrage,
+  ZuordnungFrage,
+} from '../types/fragen'
+import type { PoolFrageSnapshot } from '../types/pool'
 import { konvertierePoolFrage, erzeugeSnapshot } from '../utils/poolConverter'
 
 // === KONSTANTEN ===
@@ -271,5 +279,95 @@ export async function berechneDelta(
     unveraendert: unveraendertGesamt,
     lernziele: alleLernziele,
     ergebnisse,
+  }
+}
+
+// === RÜCK-SYNC DIFF ===
+
+export interface RueckSyncDiffFeld {
+  feld: string        // Anzeigename (z.B. "Fragetext", "Erklärung")
+  poolFeld: string    // Pool-Feldname (z.B. "q", "explain")
+  alt: unknown        // Wert im Pool (aus Snapshot)
+  neu: unknown        // Aktueller Wert im Prüfungstool
+}
+
+/**
+ * Vergleicht eine bearbeitete Frage mit ihrem Pool-Snapshot.
+ * Gibt nur geänderte Felder zurück (für Feld-für-Feld-Dialog).
+ */
+export function berechneRueckSyncDiff(frage: Frage, snapshot: PoolFrageSnapshot): RueckSyncDiffFeld[] {
+  const diffs: RueckSyncDiffFeld[] = []
+
+  // Fragetext
+  if (frage.fragetext !== snapshot.fragetext) {
+    diffs.push({ feld: 'Fragetext', poolFeld: 'q', alt: snapshot.fragetext, neu: frage.fragetext })
+  }
+
+  // Erklärung/Musterlösung
+  const snapshotErklaerung = snapshot.musterlosung || snapshot.erklaerung || ''
+  if (frage.musterlosung !== snapshotErklaerung) {
+    diffs.push({
+      feld: 'Erklärung',
+      poolFeld: frage.typ === 'freitext' ? 'sample' : 'explain',
+      alt: snapshotErklaerung,
+      neu: frage.musterlosung,
+    })
+  }
+
+  // Bloom-Stufe
+  if (snapshot.bloom && frage.bloom !== snapshot.bloom) {
+    diffs.push({ feld: 'Bloom-Stufe', poolFeld: 'tax', alt: snapshot.bloom, neu: frage.bloom })
+  }
+
+  // Schwierigkeit
+  if (snapshot.schwierigkeit !== undefined && frage.schwierigkeit !== snapshot.schwierigkeit) {
+    diffs.push({ feld: 'Schwierigkeit', poolFeld: 'diff', alt: snapshot.schwierigkeit, neu: frage.schwierigkeit })
+  }
+
+  // Optionen (MC, Richtig/Falsch)
+  if (snapshot.optionen && JSON.stringify(getOptionen(frage)) !== JSON.stringify(snapshot.optionen)) {
+    diffs.push({ feld: 'Optionen', poolFeld: 'options', alt: snapshot.optionen, neu: getOptionen(frage) })
+  }
+
+  // Korrekte Antwort
+  if (snapshot.korrekt !== undefined && JSON.stringify(getKorrekt(frage)) !== JSON.stringify(snapshot.korrekt)) {
+    diffs.push({ feld: 'Korrekte Antwort', poolFeld: 'correct', alt: snapshot.korrekt, neu: getKorrekt(frage) })
+  }
+
+  // Typ-spezifische Daten (Lücken, Berechnungen, Zuordnungen)
+  if (snapshot.spezifisch !== undefined) {
+    const aktuellesSpez = getSpezifisch(frage)
+    if (JSON.stringify(aktuellesSpez) !== JSON.stringify(snapshot.spezifisch)) {
+      diffs.push({ feld: 'Typ-spezifische Daten', poolFeld: 'spezifisch', alt: snapshot.spezifisch, neu: aktuellesSpez })
+    }
+  }
+
+  return diffs
+}
+
+// Hilfsfunktionen für Vergleich
+
+function getOptionen(frage: Frage): unknown[] | undefined {
+  if (frage.typ === 'mc') return (frage as MCFrage).optionen.map(o => ({ text: o.text, korrekt: o.korrekt }))
+  if (frage.typ === 'richtigfalsch') return (frage as RichtigFalschFrage).aussagen.map(a => ({ text: a.text, korrekt: a.korrekt }))
+  return undefined
+}
+
+function getKorrekt(frage: Frage): unknown {
+  if (frage.typ === 'mc') {
+    const mc = frage as MCFrage
+    if (mc.mehrfachauswahl) return mc.optionen.filter(o => o.korrekt).map((_, i) => String.fromCharCode(65 + i))
+    return String.fromCharCode(65 + mc.optionen.findIndex(o => o.korrekt))
+  }
+  if (frage.typ === 'richtigfalsch') return (frage as RichtigFalschFrage).aussagen[0]?.korrekt
+  return undefined
+}
+
+function getSpezifisch(frage: Frage): unknown {
+  switch (frage.typ) {
+    case 'lueckentext': return (frage as LueckentextFrage).luecken
+    case 'berechnung': return (frage as BerechnungFrage).ergebnisse
+    case 'zuordnung': return (frage as ZuordnungFrage).paare
+    default: return undefined
   }
 }

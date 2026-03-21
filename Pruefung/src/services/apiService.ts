@@ -266,6 +266,50 @@ export const apiService = {
     }
   },
 
+  /** Schreibt Änderungen an Pool-Fragen zurück via GitHub API */
+  async schreibePoolAenderung(
+    email: string,
+    poolDatei: string,
+    aenderungen: Array<{
+      poolFrageId: string | null
+      typ: 'update' | 'export'
+      felder: Record<string, unknown>
+    }>,
+  ): Promise<{
+    erfolg: boolean
+    aktualisiert: number
+    exportiert: number
+    commitSha: string
+    neueHashes: Record<string, string>
+    exportierteIds: Record<string, string>
+    fehler: string[]
+  } | null> {
+    if (!APPS_SCRIPT_URL) return null
+    try {
+      const payload = JSON.stringify({
+        action: 'schreibePoolAenderung',
+        email,
+        poolDatei,
+        aenderungen,
+      })
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: payload,
+      })
+      if (!response.ok) return null
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text)
+        if (data.error) { console.error('[API] schreibePoolAenderung:', data.error); return null }
+        return data
+      } catch { return null }
+    } catch (error) {
+      console.error('[API] schreibePoolAenderung: Netzwerkfehler:', error)
+      return null
+    }
+  },
+
   /** Lernziele laden (optional nach Fach gefiltert) */
   async ladeLernziele(fach?: string): Promise<import('../types/pool').Lernziel[]> {
     if (!APPS_SCRIPT_URL) return []

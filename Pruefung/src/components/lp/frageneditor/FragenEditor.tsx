@@ -25,6 +25,7 @@ import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 import type { Lernziel } from '../../../types/pool.ts'
 import FormattierungsToolbar from './FormattierungsToolbar.tsx'
 import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
+import RueckSyncDialog from '../RueckSyncDialog.tsx'
 
 
 
@@ -139,6 +140,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   // Validierung
   const [fehler, setFehler] = useState<string[]>([])
   const [speicherLaeuft, setSpeicherLaeuft] = useState(false)
+
+  // Pool-Rück-Sync
+  const [rueckSyncOffen, setRueckSyncOffen] = useState(false)
 
   // KI-Assistent
   const ki = useKIAssistent()
@@ -383,6 +387,25 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             {frage ? 'Frage bearbeiten' : 'Neue Frage erstellen'}
           </h2>
           <div className="flex items-center gap-2">
+            {/* Pool-Rück-Sync Buttons */}
+            {frage && frage.poolId && frage.poolVersion && (
+              <button
+                onClick={() => setRueckSyncOffen(true)}
+                title="Änderungen an Pool zurückschreiben"
+                className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              >
+                ↑ An Pool
+              </button>
+            )}
+            {frage && !frage.poolId && frage.typ !== 'visualisierung' && (
+              <button
+                onClick={() => setRueckSyncOffen(true)}
+                title="Frage in einen Übungspool exportieren"
+                className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              >
+                ↑ In Pool exportieren
+              </button>
+            )}
             <button
               onClick={onAbbrechen}
               className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
@@ -1324,6 +1347,20 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           )}
         </div>
       </div>
+
+      {/* Pool-Rück-Sync Dialog */}
+      {frage && rueckSyncOffen && (
+        <RueckSyncDialog
+          frage={frage}
+          offen={rueckSyncOffen}
+          onSchliessen={() => setRueckSyncOffen(false)}
+          onErfolg={(updates) => {
+            const aktualisiert = { ...frage, ...updates, geaendertAm: new Date().toISOString() }
+            onSpeichern(aktualisiert as Frage)
+            setRueckSyncOffen(false)
+          }}
+        />
+      )}
     </div>
   )
 }

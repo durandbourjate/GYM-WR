@@ -108,6 +108,8 @@ export function erzeugeSnapshot(poolFrage: PoolFrage): PoolFrageSnapshot {
   const snapshot: PoolFrageSnapshot = {
     fragetext: poolFrage.q,
     typ: poolFrage.type,
+    bloom: poolFrage.tax || 'K2',
+    schwierigkeit: poolFrage.diff || 2,
   }
 
   if (poolFrage.options !== undefined) snapshot.optionen = poolFrage.options

@@ -6,9 +6,22 @@
 
 ## Aktueller Stand
 
-**Phase 5d: Pool-Brücke** (20.03.2026) — Übungspools ↔ Prüfungstool Sync-Bridge ✅
+**Phase 5e: Pool-Rück-Sync** (21.03.2026) — Bidirektionaler Sync: Änderungen zurückschreiben + Export in Pools ✅
 
-### Letzte Änderungen (21.03.2026) — Bugfix Pool-Sync
+### Letzte Änderungen (21.03.2026) — Pool-Rück-Sync
+
+**Pool-Rück-Sync** (8 Tasks) — Bidirektionaler Sync: Änderungen an Pool-Fragen zurückschreiben + neue Fragen in Pools exportieren:
+- **poolExporter.ts:** Reverse Type Mapping (Prüfungstool → Pool-Format), 7 Typen (mc/multi/tf/fill/calc/sort/open)
+- **berechneRueckSyncDiff:** Feld-für-Feld Vergleich (Fragetext, Erklärung, Bloom, Schwierigkeit, Optionen, Korrekt, Spezifisch)
+- **RueckSyncDialog.tsx:** Zwei-Modus-Dialog — Update mit Feld-Checkboxen / Export mit Pool+Topic-Wahl
+- **FragenEditor Buttons:** "↑ An Pool" (Update bestehender Pool-Frage) + "↑ In Pool exportieren" (neue Frage)
+- **FragenBrowser:** "↑ Pool-Export" Batch-Button (Platzhalter für Phase 2)
+- **Apps Script Backend:** `schreibePoolAenderung` Endpoint — GitHub Contents API (GET/PUT), JS-Parsing mit Bracket-Depth-Counting, SHA-256 Content-Hash identisch zum Frontend
+- **GitHub API:** Fine-Grained PAT als Apps Script Script Property (`GITHUB_TOKEN`), repo contents read/write Scope
+- **Wichtig nach Push:** `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen
+- **Wichtig:** `GITHUB_TOKEN` muss als Script Property konfiguriert werden (Projekteinstellungen → Skripteigenschaften)
+
+### Änderungen (21.03.2026) — Bugfix Pool-Sync
 
 **Pool-Sync Bugfixes** (kritisch):
 - **CORE BUG:** Bestehende Fragenbank-Tabs (VWL, BWL, Recht) hatten keine Pool-Spalten (`poolId`, `poolContentHash`, etc.) — `importierePoolFragen` erstellte diese nur für NEUE Tabs. Fix: Auto-Migration in `apps-script-code.js` fügt fehlende Spalten automatisch hinzu
@@ -66,7 +79,7 @@
 
 ### Offene Punkte (noch nicht umgesetzt)
 - **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
-- **Pool-Rück-Sync (on demand):** Änderungen an importierten Pool-Fragen im Prüfungstool optional zurück in Übungspools schreiben. Nur auf Aufforderung (Button pro Frage), mit Diff-Vorschau. Prüfungsspezifische Anpassungen sollen nicht automatisch Pool-Originale überschreiben.
+- **Pool-Rück-Sync Batch-Export:** Batch-Dialog für Export mehrerer Fragen (Button platziert, Logik Phase 2)
 - **Wichtig nach Code-Änderungen:** `apps-script-code.js` muss in Apps Script Editor kopiert + neue Bereitstellung erstellt werden
 
 ### Was funktioniert

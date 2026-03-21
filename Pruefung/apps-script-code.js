@@ -95,6 +95,8 @@ function doPost(e) {
       return importiereLernziele(body);
     case 'ladeLernziele':
       return ladeLernziele(body);
+    case 'schreibePoolAenderung':
+      return schreibePoolAenderung(body);
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -2203,4 +2205,418 @@ function ladeKorrekturDetailEndpoint(body) {
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
+}
+
+// === GitHub API Helpers ===
+
+function githubApiRequest(method, path, payload) {
+  var token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
+  if (!token) throw new Error('GITHUB_TOKEN nicht konfiguriert');
+
+  var options = {
+    method: method,
+    headers: {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'GymHofwil-Pruefungsplattform'
+    },
+    muteHttpExceptions: true
+  };
+
+  if (payload) {
+    options.contentType = 'application/json';
+    options.payload = JSON.stringify(payload);
+  }
+
+  var url = 'https://api.github.com' + path;
+  var response = UrlFetchApp.fetch(url, options);
+  var code = response.getResponseCode();
+  var body = JSON.parse(response.getContentText());
+
+  if (code >= 400) {
+    throw new Error('GitHub API ' + code + ': ' + (body.message || 'Unbekannter Fehler'));
+  }
+
+  return body;
+}
+
+function githubGetFile(pfad) {
+  return githubApiRequest('GET', '/repos/durandbourjate/GYM-WR-DUY/contents/' + pfad);
+}
+
+function githubPutFile(pfad, content, sha, message) {
+  return githubApiRequest('PUT', '/repos/durandbourjate/GYM-WR-DUY/contents/' + pfad, {
+    message: message,
+    content: Utilities.base64Encode(content, Utilities.Charset.UTF_8),
+    sha: sha,
+    branch: 'main'
+  });
+}
+
+// === Pool-JS-Parsing ===
+
+/**
+ * Findet ein Frage-Objekt im JS-String anhand der ID.
+ * Gibt {start, end, text} Positionen zurück.
+ */
+function findeFrageImJS(jsContent, frageId) {
+  var idPattern = new RegExp('id:\\s*["\']' + frageId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '["\']');
+  var idMatch = idPattern.exec(jsContent);
+  if (!idMatch) return null;
+
+  // Rückwärts zum öffnenden { suchen
+  var start = idMatch.index;
+  while (start > 0 && jsContent[start] !== '{') start--;
+
+  // Vorwärts zum schliessenden } mit Bracket-Matching
+  var depth = 0;
+  var end = start;
+  for (var i = start; i < jsContent.length; i++) {
+    if (jsContent[i] === '{') depth++;
+    if (jsContent[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        end = i + 1;
+        break;
+      }
+    }
+  }
+
+  return { start: start, end: end, text: jsContent.substring(start, end) };
+}
+
+/**
+ * Ersetzt ein einzelnes Feld innerhalb eines Frage-Objekt-Strings.
+ * Verwendet Bracket-Depth-Counting für Arrays/Objects.
+ */
+function ersetzeFeldImObjekt(objektText, feldName, neuerWert) {
+  var feldPattern = new RegExp(feldName + ':\\s*');
+  var match = feldPattern.exec(objektText);
+
+  if (!match) {
+    // Feld existiert nicht → vor dem letzten } einfügen
+    var letzteKlammer = objektText.lastIndexOf('}');
+    var vorher = objektText.substring(0, letzteKlammer).trimEnd();
+    var komma = vorher.endsWith(',') ? '' : ',';
+    return vorher + komma + '\n    ' + feldName + ': ' + serialisiereWert(neuerWert) + '\n  }';
+  }
+
+  var wertStart = match.index + match[0].length;
+  var wertEnde = findeWertEnde(objektText, wertStart);
+  return objektText.substring(0, wertStart) + serialisiereWert(neuerWert) + objektText.substring(wertEnde);
+}
+
+/**
+ * Findet das Ende eines JS-Werts ab einer Position.
+ * Bracket-Depth-Counting für verschachtelte Arrays/Objects.
+ */
+function findeWertEnde(text, start) {
+  var ch = text.charAt(start);
+
+  // String: suche schliessendes "
+  if (ch === '"') {
+    for (var i = start + 1; i < text.length; i++) {
+      if (text.charAt(i) === '\\') { i++; continue; }
+      if (text.charAt(i) === '"') return i + 1;
+    }
+    return text.length;
+  }
+
+  // Array oder Object: Bracket-Depth-Counting
+  if (ch === '[' || ch === '{') {
+    var close = ch === '[' ? ']' : '}';
+    var depth = 0;
+    for (var i = start; i < text.length; i++) {
+      if (text.charAt(i) === '"') {
+        for (i++; i < text.length; i++) {
+          if (text.charAt(i) === '\\') { i++; continue; }
+          if (text.charAt(i) === '"') break;
+        }
+        continue;
+      }
+      if (text.charAt(i) === ch) depth++;
+      if (text.charAt(i) === close) { depth--; if (depth === 0) return i + 1; }
+    }
+    return text.length;
+  }
+
+  // Number, Boolean: bis zum nächsten Trennzeichen
+  for (var i = start; i < text.length; i++) {
+    if (',\n\r}'.indexOf(text.charAt(i)) >= 0) return i;
+  }
+  return text.length;
+}
+
+function serialisiereWert(wert) {
+  if (typeof wert === 'string') return JSON.stringify(wert);
+  if (typeof wert === 'number' || typeof wert === 'boolean') return String(wert);
+  if (Array.isArray(wert)) {
+    if (wert.length === 0) return '[]';
+    if (typeof wert[0] === 'string') return '[' + wert.map(function(v) { return JSON.stringify(v); }).join(', ') + ']';
+    var items = wert.map(function(item) {
+      var pairs = Object.keys(item).map(function(k) { return k + ': ' + serialisiereWert(item[k]); });
+      return '      {' + pairs.join(', ') + '}';
+    });
+    return '[\n' + items.join(',\n') + '\n    ]';
+  }
+  return JSON.stringify(wert);
+}
+
+/**
+ * Berechnet SHA-256 Content-Hash.
+ * WICHTIG: Exakt gleiche Logik wie berechneContentHash() im Frontend (poolSync.ts).
+ */
+function berechnePoolContentHash(frage) {
+  var obj = {};
+  obj.q = frage.q;
+  obj.type = frage.type;
+  obj.explain = frage.explain;
+  obj.options = frage.options;
+  obj.correct = frage.correct;
+  obj.blanks = frage.blanks;
+  obj.rows = frage.rows;
+  obj.categories = frage.categories;
+  obj.items = frage.items;
+  obj.sample = frage.sample;
+  var hashInput = JSON.stringify(obj);
+  var rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, hashInput, Utilities.Charset.UTF_8);
+  return rawHash.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+}
+
+/**
+ * Extrahiert Frage-Felder aus einem JS-Objekt-String (für Hash nach Update).
+ */
+function extrahiereFrageFelder(objektText) {
+  var felder = {};
+  var feldNamen = ['q', 'type', 'explain', 'options', 'correct', 'blanks', 'rows', 'categories', 'items', 'sample'];
+  for (var i = 0; i < feldNamen.length; i++) {
+    var name = feldNamen[i];
+    var pattern = new RegExp(name + ':\\s*');
+    var match = pattern.exec(objektText);
+    if (match) {
+      var start = match.index + match[0].length;
+      var ch = objektText.charAt(start);
+      if (ch === '"') {
+        var end = start + 1;
+        while (end < objektText.length && !(objektText.charAt(end) === '"' && objektText.charAt(end - 1) !== '\\')) end++;
+        try { felder[name] = JSON.parse(objektText.substring(start, end + 1)); } catch(e) {}
+      } else if (ch === '[') {
+        var depth = 0; var end = start;
+        for (var j = start; j < objektText.length; j++) {
+          if (objektText.charAt(j) === '[') depth++;
+          if (objektText.charAt(j) === ']') { depth--; if (depth === 0) { end = j + 1; break; } }
+        }
+        try { felder[name] = JSON.parse(objektText.substring(start, end).replace(/(\w+)\s*:/g, '"$1":')); } catch(e) {}
+      } else if (ch === 't' || ch === 'f') {
+        felder[name] = ch === 't';
+      } else if (!isNaN(parseInt(ch))) {
+        felder[name] = parseFloat(objektText.substring(start).match(/[\d.]+/)[0]);
+      }
+    }
+  }
+  return felder;
+}
+
+/**
+ * Generiert eine neue Frage-ID für Export.
+ */
+function generiereNeueFrageId(jsContent, topicKey) {
+  var prefix = topicKey.charAt(0);
+  var idPattern = new RegExp('id:\\s*["\'](' + prefix + '\\d+)["\']', 'g');
+  var maxNum = 0;
+  var match;
+  while ((match = idPattern.exec(jsContent)) !== null) {
+    var num = parseInt(match[1].substring(prefix.length), 10);
+    if (num > maxNum) maxNum = num;
+  }
+  var neueNummer = maxNum + 1;
+  return prefix + (neueNummer < 10 ? '0' : '') + neueNummer;
+}
+
+// === Pool-Rück-Sync Hauptfunktion ===
+
+function schreibePoolAenderung(body) {
+  var email = body.email;
+  if (!email || !email.endsWith('@gymhofwil.ch')) {
+    return jsonResponse({ erfolg: false, fehler: ['Nicht autorisiert'] });
+  }
+
+  var poolDatei = body.poolDatei;
+  var aenderungen = body.aenderungen;
+
+  if (!poolDatei || !aenderungen || !aenderungen.length) {
+    return jsonResponse({ erfolg: false, fehler: ['Fehlende Parameter'] });
+  }
+
+  try {
+    // 1. Pool-Datei von GitHub laden
+    var pfad = 'Uebungen/Uebungspools/config/' + poolDatei;
+    var githubFile = githubGetFile(pfad);
+    var jsContent = Utilities.newBlob(Utilities.base64Decode(githubFile.content)).getDataAsString('UTF-8');
+    var sha = githubFile.sha;
+
+    var modifizierterContent = jsContent;
+    var aktualisiert = 0;
+    var exportiert = 0;
+    var fehler = [];
+    var neueHashes = {};
+    var exportierteIds = {};
+
+    for (var a = 0; a < aenderungen.length; a++) {
+      var aenderung = aenderungen[a];
+      try {
+        if (aenderung.typ === 'update') {
+          // Bestehende Frage aktualisieren
+          var fragePos = findeFrageImJS(modifizierterContent, aenderung.poolFrageId);
+          if (!fragePos) {
+            fehler.push('Frage ' + aenderung.poolFrageId + ' nicht gefunden im Pool');
+            continue;
+          }
+
+          var objektText = fragePos.text;
+
+          // Felder einzeln ersetzen
+          var felderKeys = Object.keys(aenderung.felder);
+          for (var f = 0; f < felderKeys.length; f++) {
+            var feld = felderKeys[f];
+            if (feld === 'spezifisch') continue;
+            objektText = ersetzeFeldImObjekt(objektText, feld, aenderung.felder[feld]);
+          }
+
+          modifizierterContent = modifizierterContent.substring(0, fragePos.start) + objektText + modifizierterContent.substring(fragePos.end);
+
+          // Hash aus dem VOLLSTÄNDIGEN aktualisierten Frage-Objekt berechnen
+          var aktualisiertePos = findeFrageImJS(modifizierterContent, aenderung.poolFrageId);
+          var volleFelder = aktualisiertePos ? extrahiereFrageFelder(aktualisiertePos.text) : aenderung.felder;
+          neueHashes[aenderung.poolFrageId] = berechnePoolContentHash(volleFelder);
+          aktualisiert++;
+
+        } else if (aenderung.typ === 'export') {
+          // Neue Frage am Ende des QUESTIONS-Arrays einfügen
+          var felder = aenderung.felder;
+
+          var neueId = felder.id || generiereNeueFrageId(modifizierterContent, felder.topic || 'x');
+          felder.id = neueId;
+
+          var neueFrageStr = serialisiereNeuePoolFrage(felder);
+
+          // Vor dem letzten ]; einfügen
+          var arrayEndPattern = /\n\s*\];?\s*$/;
+          var arrayEndMatch = modifizierterContent.match(arrayEndPattern);
+          if (!arrayEndMatch) {
+            fehler.push('QUESTIONS-Array-Ende nicht gefunden');
+            continue;
+          }
+
+          var insertPos = modifizierterContent.length - arrayEndMatch[0].length;
+          var vorInsert = modifizierterContent.substring(0, insertPos).trimEnd();
+          var brauchtKomma = !vorInsert.endsWith(',') && !vorInsert.endsWith('[');
+
+          modifizierterContent = vorInsert + (brauchtKomma ? ',' : '') + '\n' + neueFrageStr + arrayEndMatch[0];
+
+          neueHashes[neueId] = berechnePoolContentHash(felder);
+          exportierteIds[aenderung.poolFrageId || 'new'] = neueId;
+          exportiert++;
+        }
+      } catch (e) {
+        fehler.push((aenderung.poolFrageId || 'export') + ': ' + e.message);
+      }
+    }
+
+    if (aktualisiert === 0 && exportiert === 0) {
+      return jsonResponse({ erfolg: false, fehler: fehler.length ? fehler : ['Keine Änderungen angewendet'] });
+    }
+
+    // 2. Commit via GitHub API
+    var message = 'Pool-Sync: ' + poolDatei.replace('.js', '') + ' — ' +
+      (aktualisiert > 0 ? aktualisiert + ' aktualisiert' : '') +
+      (aktualisiert > 0 && exportiert > 0 ? ', ' : '') +
+      (exportiert > 0 ? exportiert + ' neu' : '');
+
+    var result = githubPutFile(pfad, modifizierterContent, sha, message);
+
+    return jsonResponse({
+      erfolg: true,
+      aktualisiert: aktualisiert,
+      exportiert: exportiert,
+      commitSha: result.content.sha,
+      neueHashes: neueHashes,
+      exportierteIds: exportierteIds,
+      fehler: fehler
+    });
+
+  } catch (e) {
+    if (e.message && e.message.indexOf('409') >= 0) {
+      return jsonResponse({ erfolg: false, fehler: ['Pool wurde extern geändert. Bitte zuerst Pool-Sync (vorwärts) durchführen.'] });
+    }
+    return jsonResponse({ erfolg: false, fehler: [e.message || 'Unbekannter Fehler'] });
+  }
+}
+
+function serialisiereNeuePoolFrage(felder) {
+  var lines = [];
+  lines.push('  {id: "' + felder.id + '", topic: "' + (felder.topic || '') + '", type: "' + (felder.type || 'mc') + '", diff: ' + (felder.diff || 2) + ', tax: "' + (felder.tax || 'K2') + '", reviewed: ' + (felder.reviewed || false) + ',');
+  lines.push('    q: ' + JSON.stringify(felder.q || '') + ',');
+
+  if (felder.options) {
+    lines.push('    options: [');
+    felder.options.forEach(function(o, i) {
+      var comma = i < felder.options.length - 1 ? ',' : '';
+      lines.push('      {v: "' + o.v + '", t: ' + JSON.stringify(o.t) + '}' + comma);
+    });
+    lines.push('    ],');
+  }
+
+  if (felder.correct !== undefined) {
+    if (Array.isArray(felder.correct)) {
+      lines.push('    correct: [' + felder.correct.map(function(c) { return '"' + c + '"'; }).join(', ') + '],');
+    } else if (typeof felder.correct === 'boolean') {
+      lines.push('    correct: ' + felder.correct + ',');
+    } else {
+      lines.push('    correct: "' + felder.correct + '",');
+    }
+  }
+
+  if (felder.blanks) {
+    lines.push('    blanks: [');
+    felder.blanks.forEach(function(b, i) {
+      var alts = b.alts && b.alts.length ? ', alts: [' + b.alts.map(function(a) { return JSON.stringify(a); }).join(', ') + ']' : '';
+      var comma = i < felder.blanks.length - 1 ? ',' : '';
+      lines.push('      {answer: ' + JSON.stringify(b.answer) + alts + '}' + comma);
+    });
+    lines.push('    ],');
+  }
+
+  if (felder.rows) {
+    lines.push('    rows: [');
+    felder.rows.forEach(function(r, i) {
+      var unit = r.unit ? ', unit: "' + r.unit + '"' : '';
+      var comma = i < felder.rows.length - 1 ? ',' : '';
+      lines.push('      {label: ' + JSON.stringify(r.label) + ', answer: ' + r.answer + ', tolerance: ' + r.tolerance + unit + '}' + comma);
+    });
+    lines.push('    ],');
+  }
+
+  if (felder.categories) {
+    lines.push('    categories: [' + felder.categories.map(function(c) { return JSON.stringify(c); }).join(', ') + '],');
+  }
+
+  if (felder.items) {
+    lines.push('    items: [');
+    felder.items.forEach(function(item, i) {
+      var comma = i < felder.items.length - 1 ? ',' : '';
+      lines.push('      {t: ' + JSON.stringify(item.t) + ', cat: ' + item.cat + '}' + comma);
+    });
+    lines.push('    ],');
+  }
+
+  if (felder.sample) lines.push('    sample: ' + JSON.stringify(felder.sample) + ',');
+  if (felder.explain) lines.push('    explain: ' + JSON.stringify(felder.explain));
+
+  // Letztes Komma entfernen
+  var last = lines[lines.length - 1];
+  if (last.endsWith(',')) lines[lines.length - 1] = last.slice(0, -1);
+
+  lines.push('  }');
+  return lines.join('\n');
 }

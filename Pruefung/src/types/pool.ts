@@ -9,6 +9,8 @@ export interface PoolFrageSnapshot {
   erklaerung?: string
   musterlosung?: string
   spezifisch?: unknown
+  bloom?: string
+  schwierigkeit?: number
 }
 
 /** Pool-Meta aus POOL_META global */
