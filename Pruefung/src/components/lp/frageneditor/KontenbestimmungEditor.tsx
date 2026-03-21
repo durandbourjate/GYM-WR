@@ -239,7 +239,7 @@ export default function KontenbestimmungEditor({
                       <select
                         value={antwort.kategorie ?? ''}
                         onChange={(e) => updateAntwort(aIdx, eIdx, { kategorie: e.target.value as KontenAntwort['kategorie'] })}
-                        className="input-field w-28"
+                        className="input-field-narrow w-28"
                       >
                         <option value="">Kategorie</option>
                         <option value="aktiv">Aktiv</option>
@@ -252,7 +252,7 @@ export default function KontenbestimmungEditor({
                       <select
                         value={antwort.seite ?? ''}
                         onChange={(e) => updateAntwort(aIdx, eIdx, { seite: e.target.value as KontenAntwort['seite'] })}
-                        className="input-field w-24"
+                        className="input-field-narrow w-24"
                       >
                         <option value="">Seite</option>
                         <option value="soll">Soll</option>

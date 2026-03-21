@@ -45,6 +45,14 @@ html.dark {
   @apply border-slate-600 bg-slate-700 text-slate-100 placeholder-slate-500 focus:ring-slate-500;
 }
 
+/* input-field-narrow: wie input-field, aber ohne w-full (für schmale Felder mit eigener Breite) */
+.input-field-narrow {
+  @apply px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400;
+}
+.dark .input-field-narrow {
+  @apply border-slate-600 bg-slate-700 text-slate-100 placeholder-slate-500 focus:ring-slate-500;
+}
+
 /* line-clamp Utility */
 .line-clamp-2 {
   display: -webkit-box;

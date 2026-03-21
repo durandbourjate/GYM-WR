@@ -295,7 +295,7 @@ function KontoZeile({
         value={konto.betrag || ''}
         onChange={(e) => onChangeBetrag(parseFloat(e.target.value) || 0)}
         placeholder="Betrag (CHF)"
-        className="input-field w-36 text-right font-mono"
+        className="input-field-narrow w-36 text-right font-mono"
         min={0}
         step={0.01}
       />

@@ -61,7 +61,7 @@ export default function RichtigFalschEditor({ aussagen, setAussagen, titelRechts
               value={a.erklaerung ?? ''}
               onChange={(e) => updateAussage(i, { erklaerung: e.target.value || undefined })}
               placeholder="Erklärung (optional)"
-              className="input-field w-40"
+              className="input-field-narrow w-40"
             />
 
             {/* Entfernen */}

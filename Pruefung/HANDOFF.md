@@ -6,7 +6,17 @@
 
 ## Aktueller Stand
 
-**Phase 5g: FiBu-Fragetypen & Aufgabengruppe** (21.03.2026) — Alle FiBu-Fragetypen + Aufgabengruppe vollständig ✅
+**Phase 5g: FiBu UI-Fixes** (21.03.2026) — FiBu-Editor Design-Korrekturen ✅
+
+### Session 21.03.2026 — FiBu UI-Fixes
+
+#### Design-Korrekturen (3 Commits)
+- **KontenSelect Dropdown**: Highlight von Blau auf neutrales Slate geändert, Konten-Kategoriefarben (aktiv=amber, passiv=blau, aufwand=rot, ertrag=grün) als Zeilen-Hintergrund + Badge
+- **BilanzEREditor**: Aktiven-Seite amber-Hintergrund, Passiven-Seite blau-Hintergrund in Musterlösung; Bewertungsoptionen in Bewertungsraster integriert (kein separater Abschnitt)
+- **TKontoEditor**: Bewertungsoptionen in Bewertungsraster integriert via `extraContent`-Prop in BewertungsrasterEditor
+- **FragenEditor**: Musterlösung-Textfeld für FiBu-Typen ausgeblendet, KI-Buttons (`titelRechts`) an alle FiBu-Editoren, `overscroll-contain` auf Scroll-Container
+- **input-field-narrow CSS**: Neue Utility-Klasse ohne `w-full` — behebt Bug wo `input-field` mit `@apply w-full` explizite Breiten (`w-24`, `w-28`, `w-36`) überschrieb. Betroffen: KontenbestimmungEditor, TKontoEditor, BuchungssatzEditor, BerechnungEditor, RichtigFalschEditor, ConfigTab
+- **Alle focus-Ringe**: Von Blau auf Slate (neutrales Farbschema)
 
 ### Session 21.03.2026 — FiBu-Fragetypen & Aufgabengruppe
 

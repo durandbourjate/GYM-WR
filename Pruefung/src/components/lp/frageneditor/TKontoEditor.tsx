@@ -281,7 +281,7 @@ export default function TKontoEditor({
                       value={konto.anfangsbestand || ''}
                       onChange={(e) => updateKonto(kIdx, { anfangsbestand: parseFloat(e.target.value) || 0 })}
                       placeholder="Betrag"
-                      className="input-field w-28 text-right font-mono"
+                      className="input-field-narrow w-28 text-right font-mono"
                       min={0}
                       step={0.01}
                     />
@@ -309,7 +309,7 @@ export default function TKontoEditor({
                       <select
                         value={eintrag.seite}
                         onChange={(e) => updateEintrag(kIdx, eIdx, { seite: e.target.value as 'soll' | 'haben' })}
-                        className="input-field w-24"
+                        className="input-field-narrow w-24"
                       >
                         <option value="soll">Soll</option>
                         <option value="haben">Haben</option>
@@ -327,7 +327,7 @@ export default function TKontoEditor({
                         value={eintrag.betrag || ''}
                         onChange={(e) => updateEintrag(kIdx, eIdx, { betrag: parseFloat(e.target.value) || 0 })}
                         placeholder="Betrag"
-                        className="input-field w-28 text-right font-mono"
+                        className="input-field-narrow w-28 text-right font-mono"
                         min={0}
                         step={0.01}
                       />
@@ -359,14 +359,14 @@ export default function TKontoEditor({
                   value={konto.saldo.betrag || ''}
                   onChange={(e) => updateKonto(kIdx, { saldo: { ...konto.saldo, betrag: parseFloat(e.target.value) || 0 } })}
                   placeholder="Betrag"
-                  className="input-field w-28 text-right font-mono"
+                  className="input-field-narrow w-28 text-right font-mono"
                   min={0}
                   step={0.01}
                 />
                 <select
                   value={konto.saldo.seite}
                   onChange={(e) => updateKonto(kIdx, { saldo: { ...konto.saldo, seite: e.target.value as 'soll' | 'haben' } })}
-                  className="input-field w-24"
+                  className="input-field-narrow w-24"
                 >
                   <option value="soll">Soll</option>
                   <option value="haben">Haben</option>

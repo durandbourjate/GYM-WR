@@ -257,7 +257,7 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich 
               onChange={(e) => setNeueMinuten(parseInt(e.target.value) || 0)}
               min={1}
               max={120}
-              className="input-field w-20"
+              className="input-field-narrow w-20"
             />
           </Field>
           <button

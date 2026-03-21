@@ -73,7 +73,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
               value={erg.label}
               onChange={(e) => updateErgebnis(i, { label: e.target.value })}
               placeholder="z.B. Gewinn"
-              className="input-field w-36 shrink-0"
+              className="input-field-narrow w-36 shrink-0"
             />
             <input
               type="number"
@@ -97,7 +97,7 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
               value={erg.einheit ?? ''}
               onChange={(e) => updateErgebnis(i, { einheit: e.target.value || undefined })}
               placeholder="Einh."
-              className="input-field w-16 shrink-0"
+              className="input-field-narrow w-16 shrink-0"
               title="Einheit"
             />
             {ergebnisse.length > 1 && (
