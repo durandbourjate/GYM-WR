@@ -6,9 +6,38 @@
 
 ## Aktueller Stand
 
-**Phase 5f: T-Konto-Fragetyp** (21.03.2026) — Vollständige Integration des T-Konto-Fragetyps ✅
+**Phase 5g: FiBu-Fragetypen & Aufgabengruppe** (21.03.2026) — Alle FiBu-Fragetypen + Aufgabengruppe vollständig ✅
 
-### Letzte Änderungen (21.03.2026) — T-Konto-Fragetyp
+### Session 21.03.2026 — FiBu-Fragetypen & Aufgabengruppe
+
+#### Neue Fragetypen
+- **Buchungssatz**: Geschäftsfälle → Soll/Haben mit Konten-Dropdowns (KMU-Kontenrahmen), compound entries, Auto-Korrektur
+- **T-Konto**: T-Form-Layout, 5 Bewertungskriterien (Beschriftung, Kategorie, Zunahme/Abnahme, Buchungen, Saldo), Auto-Korrektur
+- **Kontenbestimmung**: Tabelle Geschäftsfall → Konto/Kategorie/Seite, 3 Modi (konto_bestimmen, kategorie_bestimmen, gemischt), Auto-Korrektur
+- **Bilanz/ER**: Zweispalten-Bilanz + mehrstufige Erfolgsrechnung, 8 Bewertungskriterien, Auto-Korrektur
+- **Aufgabengruppe** (generisch): Bündelt Teilaufgaben unter gemeinsamem Kontext, Rekursionsschutz, fächerübergreifend nutzbar
+
+#### Shared Infrastructure
+- `src/data/kontenrahmen-kmu.json`: 76 Konten des Schweizer KMU-Kontenrahmen
+- `src/utils/kontenrahmen.ts`: Such-, Filter-, Label-Funktionen
+- `src/components/shared/KontenSelect.tsx`: Wiederverwendbare Konto-Auswahl (eingeschränkt/voll)
+- `src/utils/fibuAutoKorrektur.ts`: Regelbasierte Auto-Korrektur für alle FiBu-Typen
+
+#### KI-Aktionen (7 neue)
+generiereKontenauswahl, generiereBuchungssaetze, pruefeBuchungssaetze, generiereTKonten, generiereKontenaufgaben, generiereBilanzStruktur, generiereFallbeispiel
+
+#### Integration
+Alle Typen integriert in: Layout.tsx, FragenEditor.tsx, VorschauTab.tsx, KorrekturSchuelerZeile.tsx, FragenBrowser.tsx, apps-script-code.js
+
+#### Musterlösung-Autogenerierung
+Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus den strukturierten Daten generiert (Schweizer Zahlenformat mit Apostroph). Vier Helper-Funktionen in FragenEditor.tsx: `generiereMuserloesungBuchungssatz`, `generiereMuserloesungTKonto`, `generiereMuserloesungKontenbestimmung`, `generiereMuserloesungBilanzER`.
+
+#### Hinweise
+- Nach Code-Änderungen in apps-script-code.js: In Apps Script Editor kopieren + neue Bereitstellung
+- FragenEditor.tsx ist auf ~1680 Zeilen gewachsen — Kandidat für Split bei nächstem Feature
+- KI-Buttons (KIFiBuButtons.tsx) sind erstellt, aber noch nicht in die Editor-Rendering-Blöcke eingebaut
+
+### Änderungen (21.03.2026) — T-Konto-Fragetyp
 
 **T-Konto-Fragetyp** (3 Tasks) — Neuer FiBu-Fragetyp für T-Konten-Buchungen:
 - **Task 7 — Student Component:** `TKontoFrage.tsx` mit T-Form-Layout (Soll/Haben), KontenSelect für Gegenkonten, optionale Beschriftungs-Dropdowns, Kontenkategorie-Dropdown, Anfangsbestand (vorgegeben oder editierbar), Saldo-Eingabe. Registriert in `Layout.tsx`.
@@ -198,7 +227,7 @@
 - **Sortierung:** Nur durch Lehrperson (Abschnitte in PruefungsConfig), SuS nicht
 
 ### Offene User-Wünsche (für spätere Iterationen)
-- Buchhaltungs-Fragetyp: Buchungsaufgaben wie bei eLoB (Soll/Haben, Kontenrahmen, T-Konten)
+- ~~Buchhaltungs-Fragetyp~~ ✅ (Session 21.03.2026 — 4 FiBu-Typen + Aufgabengruppe)
 - Tablet-/Smartphone-Optimierung: grundsätzlich responsive, aber noch nicht spezifisch getestet
 - Skalierung/Kollaboration: Apps für andere LP nutzbar machen (grösserer Umbau)
 
@@ -431,7 +460,7 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 - Pool-Rück-Sync End-to-End-Test (GITHUB_TOKEN konfiguriert, Live-Test ausstehend)
 - Pool-Rück-Sync Batch-Export (Button platziert, Logik noch nicht implementiert)
 - Prüfungs-Durchführung erweitern (Open-End-Modus, LP-kontrolliertes Beenden)
-- Buchhaltungs-Fragetyp (Soll/Haben, Kontenrahmen, T-Konten — wie bei eLoB)
+- ~~Buchhaltungs-Fragetyp~~ ✅ (4 FiBu-Typen + Aufgabengruppe implementiert)
 - Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung — Architektur-Klärung nötig)
 - Tablet/Smartphone-Optimierung (responsive by design, spezifische Tests ausstehend)
 

@@ -1,3 +1,7 @@
+// HINWEIS: Diese Datei hat ~1600 Zeilen (Grenzwert: 800).
+// Bekannte Ausnahme — Kandidat für Split beim nächsten grösseren Feature.
+// Siehe code-quality.md für Details.
+
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
@@ -32,12 +36,88 @@ import AnhangEditor from './AnhangEditor.tsx'
 import { useKIAssistent } from './KIAssistentPanel.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from './KIBausteine.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
+import { kontoLabel } from '../../../utils/kontenrahmen.ts'
 import type { Lernziel } from '../../../types/pool.ts'
 import FormattierungsToolbar from './FormattierungsToolbar.tsx'
 import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
 import RueckSyncDialog from '../RueckSyncDialog.tsx'
 
 
+
+// --- Musterlösung-Generierung für FiBu-Typen ---
+
+/** Schweizer Zahlenformat mit Apostroph (5'000) */
+function chf(betrag: number): string {
+  return betrag.toLocaleString('de-CH')
+}
+
+/** Buchungssatz → Musterlösung-Text */
+function generiereMuserloesungBuchungssatz(buchungen: SollHabenZeile[]): string {
+  return buchungen.map((b, i) => {
+    const sollTeile = b.sollKonten.map(k => `Soll ${kontoLabel(k.kontonummer)} CHF ${chf(k.betrag)}`)
+    const habenTeile = b.habenKonten.map(k => `Haben ${kontoLabel(k.kontonummer)} CHF ${chf(k.betrag)}`)
+    const prefix = buchungen.length > 1 ? `Buchung ${i + 1}: ` : ''
+    return prefix + [...sollTeile, ...habenTeile].join(', ')
+  }).join('\n')
+}
+
+/** T-Konto → Musterlösung-Text */
+function generiereMuserloesungTKonto(konten: TKontoDefinition[]): string {
+  return konten.map(k => {
+    const label = kontoLabel(k.kontonummer)
+    const sollSumme = (k.anfangsbestand && k.saldo.seite === 'soll' ? k.anfangsbestand : 0)
+      + k.eintraege.filter(e => e.seite === 'soll').reduce((s, e) => s + e.betrag, 0)
+    const habenSumme = (k.anfangsbestand && k.saldo.seite === 'haben' ? k.anfangsbestand : 0)
+      + k.eintraege.filter(e => e.seite === 'haben').reduce((s, e) => s + e.betrag, 0)
+    return `${label}: Soll ${chf(sollSumme)} / Haben ${chf(habenSumme)} → Saldo ${chf(k.saldo.betrag)} (${k.saldo.seite === 'soll' ? 'Soll' : 'Haben'})`
+  }).join('\n')
+}
+
+/** Kontenbestimmung → Musterlösung-Text */
+function generiereMuserloesungKontenbestimmung(aufgaben: Kontenaufgabe[]): string {
+  return aufgaben.map((a, i) => {
+    const antworten = a.erwarteteAntworten.map(ea => {
+      const teile: string[] = []
+      if (ea.kontonummer) teile.push(kontoLabel(ea.kontonummer))
+      if (ea.kategorie) teile.push(ea.kategorie)
+      if (ea.seite) teile.push(ea.seite === 'soll' ? 'Soll' : 'Haben')
+      return teile.join(', ')
+    }).join(' / ')
+    return `${i + 1}. ${a.text}: ${antworten}`
+  }).join('\n')
+}
+
+/** Bilanz/ER → Musterlösung-Text */
+function generiereMuserloesungBilanzER(loesung: BilanzERLoesung, kontenMitSaldi: KontoMitSaldo[]): string {
+  const teile: string[] = []
+
+  if (loesung.bilanz) {
+    const b = loesung.bilanz
+    const aktivTeile = b.aktivSeite.gruppen.map(g => {
+      const summe = g.konten.reduce((s, nr) => {
+        const km = kontenMitSaldi.find(k => k.kontonummer === nr)
+        return s + (km?.saldo ?? 0)
+      }, 0)
+      return `${g.label} ${chf(summe)}`
+    }).join(', ')
+    const passivTeile = b.passivSeite.gruppen.map(g => {
+      const summe = g.konten.reduce((s, nr) => {
+        const km = kontenMitSaldi.find(k => k.kontonummer === nr)
+        return s + (km?.saldo ?? 0)
+      }, 0)
+      return `${g.label} ${chf(summe)}`
+    }).join(', ')
+    teile.push(`Aktiven: ${aktivTeile} | Passiven: ${passivTeile} | Summe: ${chf(b.bilanzsumme)}`)
+  }
+
+  if (loesung.erfolgsrechnung) {
+    const er = loesung.erfolgsrechnung
+    const stufenText = er.stufen.map(s => `${s.label}: ${chf(s.zwischentotal)}`).join(', ')
+    teile.push(`ER: ${stufenText}`)
+  }
+
+  return teile.join('\n')
+}
 
 interface Props {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
@@ -481,6 +561,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           geschaeftsfall: geschaeftsfall.trim(),
           buchungen,
           kontenauswahl,
+          musterlosung: generiereMuserloesungBuchungssatz(buchungen),
         } as BuchungssatzFrage
         break
       case 'tkonto':
@@ -492,6 +573,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           konten: tkKonten,
           kontenauswahl,
           bewertungsoptionen: tkBewertungsoptionen,
+          musterlosung: generiereMuserloesungTKonto(tkKonten),
         } as TKontoFrage
         break
       case 'kontenbestimmung':
@@ -502,6 +584,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           modus: kbModus,
           aufgaben: kbAufgaben.filter(a => a.text.trim()),
           kontenauswahl: kbKontenauswahl,
+          musterlosung: generiereMuserloesungKontenbestimmung(kbAufgaben.filter(a => a.text.trim())),
         } as KontenbestimmungFrage
         break
       case 'bilanzstruktur':
@@ -513,6 +596,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           kontenMitSaldi: biKontenMitSaldi.filter(k => k.kontonummer),
           loesung: biLoesung,
           bewertungsoptionen: biBewertungsoptionen,
+          musterlosung: generiereMuserloesungBilanzER(biLoesung, biKontenMitSaldi),
         } as BilanzERFrage
         break
       case 'aufgabengruppe':
