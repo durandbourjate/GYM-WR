@@ -102,7 +102,7 @@ function jetzt(): string {
 }
 
 /** Konvertiert ein Pool-Bild zu einem FrageAnhang mit externeUrl */
-function konvertierePoolBild(img: { src: string; alt?: string }): FrageAnhang {
+export function konvertierePoolBild(img: { src: string; alt?: string }): FrageAnhang {
   const dateiname = img.src.split('/').pop() || 'bild.svg'
   const ext = dateiname.split('.').pop()?.toLowerCase() || 'svg'
   const mimeMap: Record<string, string> = { svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' }

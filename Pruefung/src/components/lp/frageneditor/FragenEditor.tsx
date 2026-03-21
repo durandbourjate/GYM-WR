@@ -371,6 +371,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
   }, [onAbbrechen])
 
   return (
+    <>
     <div className="fixed inset-0 z-[55] flex pointer-events-none">
       <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onAbbrechen} />
 
@@ -1346,19 +1347,21 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
         </div>
       </div>
 
-      {/* Pool-Rück-Sync Dialog */}
-      {frage && rueckSyncOffen && (
-        <RueckSyncDialog
-          frage={frage}
-          offen={rueckSyncOffen}
-          onSchliessen={() => setRueckSyncOffen(false)}
-          onErfolg={(updates) => {
-            const aktualisiert = { ...frage, ...updates, geaendertAm: new Date().toISOString() }
-            onSpeichern(aktualisiert as Frage)
-            setRueckSyncOffen(false)
-          }}
-        />
-      )}
     </div>
+
+    {/* Pool-Rück-Sync Dialog — ausserhalb des pointer-events-none Containers */}
+    {frage && rueckSyncOffen && (
+      <RueckSyncDialog
+        frage={frage}
+        offen={rueckSyncOffen}
+        onSchliessen={() => setRueckSyncOffen(false)}
+        onErfolg={(updates) => {
+          const aktualisiert = { ...frage, ...updates, geaendertAm: new Date().toISOString() }
+          onSpeichern(aktualisiert as Frage)
+          setRueckSyncOffen(false)
+        }}
+      />
+    )}
+    </>
   )
 }

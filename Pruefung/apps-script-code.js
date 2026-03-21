@@ -2378,6 +2378,7 @@ function berechnePoolContentHash(frage) {
   obj.categories = frage.categories;
   obj.items = frage.items;
   obj.sample = frage.sample;
+  obj.img = frage.img;
   var hashInput = JSON.stringify(obj);
   var rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, hashInput, Utilities.Charset.UTF_8);
   return rawHash.map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
@@ -2388,7 +2389,7 @@ function berechnePoolContentHash(frage) {
  */
 function extrahiereFrageFelder(objektText) {
   var felder = {};
-  var feldNamen = ['q', 'type', 'explain', 'options', 'correct', 'blanks', 'rows', 'categories', 'items', 'sample'];
+  var feldNamen = ['q', 'type', 'explain', 'options', 'correct', 'blanks', 'rows', 'categories', 'items', 'sample', 'img'];
   for (var i = 0; i < feldNamen.length; i++) {
     var name = feldNamen[i];
     var pattern = new RegExp(name + ':\\s*');

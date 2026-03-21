@@ -17,7 +17,7 @@ import type {
   ZuordnungFrage,
 } from '../types/fragen'
 import type { PoolFrageSnapshot } from '../types/pool'
-import { konvertierePoolFrage, erzeugeSnapshot } from '../utils/poolConverter'
+import { konvertierePoolFrage, erzeugeSnapshot, konvertierePoolBild } from '../utils/poolConverter'
 
 // === KONSTANTEN ===
 
@@ -114,6 +114,7 @@ export async function berechneContentHash(frage: PoolFrage): Promise<string> {
     categories: frage.categories,
     items: frage.items,
     sample: frage.sample,
+    img: frage.img,
   }
 
   const json = JSON.stringify(inhalt)
@@ -254,6 +255,17 @@ export async function berechneDelta(
           ...bestehendeFrageOpt,
           poolUpdateVerfuegbar: true,
           poolVersion: erzeugeSnapshot(poolFrage),
+          poolContentHash: hash,
+        }
+        // Pool-Bild als Anhang hinzufügen falls noch nicht vorhanden
+        if (poolFrage.img) {
+          const bestehendeAnhaenge = bestehendeFrageOpt.anhaenge ?? []
+          const bildSchonVorhanden = bestehendeAnhaenge.some(
+            (a) => a.externeUrl && a.externeUrl.endsWith(poolFrage.img!.src),
+          )
+          if (!bildSchonVorhanden) {
+            aktualisierteVersion.anhaenge = [...bestehendeAnhaenge, konvertierePoolBild(poolFrage.img)]
+          }
         }
         aktualisierteFragen.push(aktualisierteVersion)
         aktualisiert++
