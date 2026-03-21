@@ -878,7 +878,8 @@ function importierePoolFragen(body) {
             poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : 'false',
             poolVersion: JSON.stringify(frage.poolVersion || {}),
             poolGeprueft: frage.poolGeprueft ? 'true' : 'false',
-            poolContentHash: frage.poolContentHash || ''
+            poolContentHash: frage.poolContentHash || '',
+            anhaenge: JSON.stringify(frage.anhaenge || [])
           };
           for (var feld in syncFelder) {
             var colIdx = headers.indexOf(feld);

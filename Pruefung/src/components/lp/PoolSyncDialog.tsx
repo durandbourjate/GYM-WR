@@ -28,7 +28,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   const [updateAnzahl, setUpdateAnzahl] = useState(0)
   const [unveraendertAnzahl, setUnveraendertAnzahl] = useState(0)
   const [fehlerText, setFehlerText] = useState('')
-  const [importDaten, setImportDaten] = useState<{ neueFragen: Frage[]; lernziele: Lernziel[] } | null>(null)
+  const [importDaten, setImportDaten] = useState<{ neueFragen: Frage[]; aktualisierteFragen: Frage[]; lernziele: Lernziel[] } | null>(null)
   const [importiertBisher, setImportiertBisher] = useState(0)
 
   // AbortController für Abbruch
@@ -92,7 +92,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
       setNeuAnzahl(delta.neueFragen.length)
       setUpdateAnzahl(delta.aktualisierteFragen.length)
       setUnveraendertAnzahl(delta.unveraendert)
-      setImportDaten({ neueFragen: delta.neueFragen, lernziele: delta.lernziele })
+      setImportDaten({ neueFragen: delta.neueFragen, aktualisierteFragen: delta.aktualisierteFragen, lernziele: delta.lernziele })
 
       setPhase('vorschau')
     } catch (e) {
@@ -109,23 +109,25 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
     abbruchRef.current = false
 
     try {
-      const { neueFragen, lernziele } = importDaten
-      const totalBatches = Math.ceil(neueFragen.length / BATCH_GROESSE)
+      const { neueFragen, aktualisierteFragen, lernziele } = importDaten
+      // Neue + aktualisierte Fragen zusammen senden (Backend unterscheidet anhand poolId)
+      const alleFragen = [...neueFragen, ...aktualisierteFragen]
+      const totalBatches = Math.ceil(alleFragen.length / BATCH_GROESSE)
       let importiertGesamt = 0
+      let aktualisiertGesamt = 0
 
-      // Fragen in Batches importieren
       for (let batch = 0; batch < totalBatches; batch++) {
         if (abbruchRef.current) {
-          setFortschritt(`Abgebrochen nach ${importiertGesamt} von ${neueFragen.length} Fragen`)
+          setFortschritt(`Abgebrochen nach ${importiertGesamt + aktualisiertGesamt} von ${alleFragen.length} Fragen`)
           setPhase('abgebrochen')
           return
         }
 
         const start = batch * BATCH_GROESSE
-        const end = Math.min(start + BATCH_GROESSE, neueFragen.length)
-        const batchFragen = neueFragen.slice(start, end)
+        const end = Math.min(start + BATCH_GROESSE, alleFragen.length)
+        const batchFragen = alleFragen.slice(start, end)
 
-        setFortschritt(`Importiere Fragen ${start + 1}–${end} von ${neueFragen.length}...`)
+        setFortschritt(`Synchronisiere Fragen ${start + 1}–${end} von ${alleFragen.length}...`)
         setFortschrittProzent(Math.round(((batch + 1) / (totalBatches + 1)) * 100))
 
         const fragenResult = await apiService.importierePoolFragen(user.email, batchFragen)
@@ -133,11 +135,12 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
           throw new Error(`Batch ${batch + 1} fehlgeschlagen (Fragen ${start + 1}–${end})`)
         }
         importiertGesamt += fragenResult.importiert
-        setImportiertBisher(importiertGesamt)
+        aktualisiertGesamt += fragenResult.aktualisiert
+        setImportiertBisher(importiertGesamt + aktualisiertGesamt)
       }
 
       if (abbruchRef.current) {
-        setFortschritt(`Abgebrochen nach ${importiertGesamt} von ${neueFragen.length} Fragen`)
+        setFortschritt(`Abgebrochen nach ${importiertGesamt + aktualisiertGesamt} von ${alleFragen.length} Fragen`)
         setPhase('abgebrochen')
         return
       }
@@ -149,6 +152,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
 
       setFortschrittProzent(100)
       setNeuAnzahl(importiertGesamt)
+      setUpdateAnzahl(aktualisiertGesamt)
       setPhase('fertig')
       onImportAbgeschlossen()
     } catch (e) {
@@ -265,15 +269,19 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
             </details>
 
             <div className="flex gap-3">
-              {neuAnzahl > 0 && (
+              {(neuAnzahl > 0 || updateAnzahl > 0) && (
                 <button onClick={handleImport}
                   className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
-                  {neuAnzahl} Fragen importieren
+                  {neuAnzahl > 0 && updateAnzahl > 0
+                    ? `${neuAnzahl} importieren + ${updateAnzahl} aktualisieren`
+                    : neuAnzahl > 0
+                      ? `${neuAnzahl} Fragen importieren`
+                      : `${updateAnzahl} Updates übernehmen`}
                 </button>
               )}
               <button onClick={handleSchliessen}
                 className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer">
-                {neuAnzahl === 0 ? 'Schliessen' : 'Abbrechen'}
+                {neuAnzahl === 0 && updateAnzahl === 0 ? 'Schliessen' : 'Abbrechen'}
               </button>
             </div>
           </div>
@@ -284,7 +292,10 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
             <div className="text-4xl mb-3">✓</div>
             <p className="text-lg font-medium dark:text-white mb-2">Synchronisierung abgeschlossen</p>
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
-              {neuAnzahl} Fragen importiert, {updateAnzahl} Updates markiert
+              {neuAnzahl > 0 && `${neuAnzahl} Fragen importiert`}
+              {neuAnzahl > 0 && updateAnzahl > 0 && ', '}
+              {updateAnzahl > 0 && `${updateAnzahl} Fragen aktualisiert`}
+              {neuAnzahl === 0 && updateAnzahl === 0 && 'Keine Änderungen'}
             </p>
             <button onClick={handleSchliessen}
               className="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 dark:bg-slate-600 dark:hover:bg-slate-500 cursor-pointer">
