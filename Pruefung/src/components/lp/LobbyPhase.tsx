@@ -1,0 +1,110 @@
+import type { PruefungsConfig, Teilnehmer } from '../../types/pruefung'
+import type { SchuelerStatus } from '../../types/monitoring'
+
+interface Props {
+  config: PruefungsConfig
+  schuelerStatus: SchuelerStatus[]
+  onFreischalten: () => void
+  onZurueck: () => void
+  onAkzeptieren: (email: string, name: string) => void
+}
+
+export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren }: Props) {
+  const teilnehmer = config.teilnehmer ?? []
+  const teilnehmerEmails = new Set(teilnehmer.map((t) => t.email))
+
+  // Bereit = eingeloggt und in Teilnehmerliste
+  const bereite = schuelerStatus.filter(
+    (s) => s.status !== 'nicht-gestartet' && teilnehmerEmails.has(s.email),
+  )
+  // Unerwartete = eingeloggt aber nicht in Teilnehmerliste
+  const unerwartete = schuelerStatus.filter(
+    (s) => s.status !== 'nicht-gestartet' && !teilnehmerEmails.has(s.email),
+  )
+  // Ausstehend = in Teilnehmerliste aber nicht eingeloggt
+  const ausstehende = teilnehmer.filter(
+    (t) => !schuelerStatus.some((s) => s.email === t.email && s.status !== 'nicht-gestartet'),
+  )
+
+  const fortschritt = teilnehmer.length > 0
+    ? Math.round((bereite.length / teilnehmer.length) * 100)
+    : 0
+
+  return (
+    <div className="space-y-4">
+      {/* Fortschrittsbalken */}
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-600 dark:text-slate-300">
+            Bereit: <strong>{bereite.length}</strong> / {teilnehmer.length}
+          </span>
+          <span className="text-slate-500 dark:text-slate-400">{fortschritt}%</span>
+        </div>
+        <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-green-500 rounded-full transition-all duration-500"
+            style={{ width: `${fortschritt}%` }}
+          />
+        </div>
+      </div>
+
+      {/* SuS-Liste */}
+      <div className="max-h-80 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-lg divide-y divide-slate-100 dark:divide-slate-700">
+        {/* Bereite SuS */}
+        {bereite.map((s) => (
+          <div key={s.email} className="flex items-center gap-3 px-3 py-2">
+            <span className="text-green-500">🟢</span>
+            <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{s.name}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">{s.klasse ?? '—'}</span>
+            <span className="text-xs text-green-600 dark:text-green-400">bereit</span>
+          </div>
+        ))}
+
+        {/* Ausstehende SuS */}
+        {ausstehende.map((t) => (
+          <div key={t.email} className="flex items-center gap-3 px-3 py-2 opacity-60">
+            <span>⚪</span>
+            <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{t.name}, {t.vorname}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">{t.klasse}</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">ausstehend</span>
+          </div>
+        ))}
+
+        {/* Unerwartete SuS */}
+        {unerwartete.map((s) => (
+          <div key={s.email} className="flex items-center gap-3 px-3 py-2 bg-amber-50 dark:bg-amber-900/10">
+            <span>⚠️</span>
+            <span className="flex-1 text-sm text-amber-800 dark:text-amber-200">{s.name || s.email}</span>
+            <span className="text-xs text-amber-600 dark:text-amber-400">unerwartet</span>
+            <button
+              type="button"
+              onClick={() => onAkzeptieren(s.email, s.name)}
+              className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/50 cursor-pointer"
+            >
+              Akzeptieren
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Aktionen */}
+      <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+        <button
+          type="button"
+          onClick={onZurueck}
+          className="px-4 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
+        >
+          ← Zurück zur Vorbereitung
+        </button>
+
+        <button
+          type="button"
+          onClick={onFreischalten}
+          className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
+        >
+          ▶ Freischalten
+        </button>
+      </div>
+    </div>
+  )
+}
