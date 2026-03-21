@@ -164,7 +164,7 @@ export default function RueckSyncDialog({ frage, offen, onSchliessen, onErfolg }
   if (!offen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
       <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6">
 
         {/* Header */}

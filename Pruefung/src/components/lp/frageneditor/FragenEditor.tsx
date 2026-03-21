@@ -442,21 +442,19 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
                   Importiert aus Pool: <strong>{frage.quellReferenz || frage.poolId}</strong>
                 </span>
                 <div className="flex gap-2">
-                  {!frage.pruefungstauglich ? (
-                    <button
-                      onClick={() => {
-                        const aktualisiert = { ...frage, pruefungstauglich: true, geaendertAm: new Date().toISOString() }
-                        onSpeichern(aktualisiert)
-                      }}
-                      className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-                    >
-                      Prüfungstauglich ✓
-                    </button>
-                  ) : (
-                    <span className="px-3 py-1 text-sm bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded">
-                      ✓ Prüfungstauglich
-                    </span>
-                  )}
+                  <button
+                    onClick={() => {
+                      const aktualisiert = { ...frage, pruefungstauglich: !frage.pruefungstauglich, geaendertAm: new Date().toISOString() }
+                      onSpeichern(aktualisiert)
+                    }}
+                    className={frage.pruefungstauglich
+                      ? 'px-3 py-1 text-sm bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/70 cursor-pointer'
+                      : 'px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer'
+                    }
+                    title={frage.pruefungstauglich ? 'Klicken um Prüfungstauglichkeit aufzuheben' : 'Als prüfungstauglich markieren'}
+                  >
+                    {frage.pruefungstauglich ? '✓ Prüfungstauglich' : 'Prüfungstauglich ✓'}
+                  </button>
                 </div>
               </div>
 

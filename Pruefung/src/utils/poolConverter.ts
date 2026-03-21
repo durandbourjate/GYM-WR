@@ -4,6 +4,7 @@
 import type { PoolFrage, PoolMeta, PoolTopic, PoolFrageSnapshot } from '../types/pool'
 import type {
   Frage,
+  FrageAnhang,
   Fachbereich,
   BloomStufe,
   MCFrage,
@@ -13,6 +14,8 @@ import type {
   RichtigFalschFrage,
   BerechnungFrage,
 } from '../types/fragen'
+
+const POOL_IMG_BASE_URL = 'https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/'
 
 // === HILFSFUNKTIONEN ===
 
@@ -96,6 +99,22 @@ function genId(): string {
 /** Erstellt das ISO-Datum für jetzt */
 function jetzt(): string {
   return new Date().toISOString()
+}
+
+/** Konvertiert ein Pool-Bild zu einem FrageAnhang mit externeUrl */
+function konvertierePoolBild(img: { src: string; alt?: string }): FrageAnhang {
+  const dateiname = img.src.split('/').pop() || 'bild.svg'
+  const ext = dateiname.split('.').pop()?.toLowerCase() || 'svg'
+  const mimeMap: Record<string, string> = { svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif' }
+  return {
+    id: `pool-img-${genId().slice(0, 8)}`,
+    dateiname,
+    mimeType: mimeMap[ext] || 'image/svg+xml',
+    groesseBytes: 0,
+    driveFileId: '',
+    beschreibung: img.alt || '',
+    externeUrl: POOL_IMG_BASE_URL + img.src,
+  }
 }
 
 // === SNAPSHOT ===
@@ -189,6 +208,9 @@ export function konvertierePoolFrage(
     poolContentHash: '',
     poolUpdateVerfuegbar: false,
     lernzielIds,
+
+    // Pool-Bilder als Anhänge
+    ...(poolFrage.img ? { anhaenge: [konvertierePoolBild(poolFrage.img)] } : {}),
   }
 
   switch (poolFrage.type) {

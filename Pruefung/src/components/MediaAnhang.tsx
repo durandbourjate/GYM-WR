@@ -33,7 +33,7 @@ export default function MediaAnhang({ anhang, bildSz = 'w400', onLightbox }: Pro
 
   // Bild
   if (istBild(anhang.mimeType)) {
-    const thumbnailUrl = `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=${bildSz}`
+    const thumbnailUrl = anhang.externeUrl || `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=${bildSz}`
     return (
       <div className="group">
         <button

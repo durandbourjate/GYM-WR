@@ -47,6 +47,7 @@ export interface PoolFrage {
   categories?: string[]
   items?: { t: string; cat: number }[]
   sample?: string
+  img?: { src: string; alt?: string }
 }
 
 /** Geparstes Pool-Config-Ergebnis */
