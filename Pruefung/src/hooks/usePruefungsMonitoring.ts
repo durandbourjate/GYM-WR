@@ -96,7 +96,8 @@ export function usePruefungsMonitoring(): void {
     const intervallMs = (config.heartbeatIntervallSekunden || 10) * 1000
 
     const interval = setInterval(async () => {
-      const response = await apiService.heartbeat(config.id, user.email)
+      const aktuelleFrageIndex = usePruefungStore.getState().aktuelleFrageIndex
+      const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex)
       if (response.success) {
         incrementHeartbeats()
         // Beenden-Signal vom Backend?
