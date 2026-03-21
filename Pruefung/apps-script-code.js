@@ -415,6 +415,19 @@ function parseFrage(row, fachbereich) {
         buchungen: typDaten.buchungen || [],
         kontenauswahl: typDaten.kontenauswahl || { modus: 'voll' },
       };
+    case 'tkonto':
+      return {
+        ...base,
+        typ: 'tkonto',
+        aufgabentext: row.fragetext || '',
+        geschaeftsfaelle: typDaten.geschaeftsfaelle || [],
+        konten: typDaten.konten || [],
+        kontenauswahl: typDaten.kontenauswahl || { modus: 'voll' },
+        bewertungsoptionen: typDaten.bewertungsoptionen || {
+          beschriftungSollHaben: true, kontenkategorie: true,
+          zunahmeAbnahme: true, buchungenKorrekt: true, saldoKorrekt: true
+        },
+      };
     default:
       return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
   }
@@ -533,7 +546,7 @@ function speichereFrage(body) {
       punkte: String(frage.punkte || 0),
       musterlosung: frage.musterlosung || '',
       bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
-      fragetext: frage.fragetext || frage.geschaeftsfall || '',
+      fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || '',
       quelle: frage.quelle || 'manuell',
       anhaenge: JSON.stringify(frage.anhaenge || []),
       typDaten: JSON.stringify(getTypDaten(frage)),
@@ -577,6 +590,13 @@ function getTypDaten(frage) {
       return { ergebnisse: frage.ergebnisse, rechenwegErforderlich: frage.rechenwegErforderlich, hilfsmittel: frage.hilfsmittel };
     case 'buchungssatz':
       return { buchungen: frage.buchungen, kontenauswahl: frage.kontenauswahl };
+    case 'tkonto':
+      return {
+        geschaeftsfaelle: frage.geschaeftsfaelle,
+        konten: frage.konten,
+        kontenauswahl: frage.kontenauswahl,
+        bewertungsoptionen: frage.bewertungsoptionen,
+      };
     default:
       return {};
   }
@@ -915,7 +935,7 @@ function importierePoolFragen(body) {
             punkte: String(frage.punkte || 0),
             musterlosung: frage.musterlosung || '',
             bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
-            fragetext: frage.fragetext || frage.geschaeftsfall || '',
+            fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || '',
             quelle: frage.quelle || 'pool',
             anhaenge: JSON.stringify(frage.anhaenge || []),
             typDaten: JSON.stringify(getTypDaten(frage)),

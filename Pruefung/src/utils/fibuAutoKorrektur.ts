@@ -1,4 +1,6 @@
-import type { BuchungssatzFrage, SollHabenZeile, BuchungsKonto } from '../types/fragen'
+import type { BuchungssatzFrage, SollHabenZeile, BuchungsKonto, TKontoFrage, TKontoEintrag } from '../types/fragen'
+import type { Antwort } from '../types/antworten'
+import { findKonto } from './kontenrahmen'
 
 export interface KorrekturErgebnis {
   erreichtePunkte: number
@@ -121,4 +123,123 @@ function beschreibeFehler(
   if (!habenOk) teile.push('Haben-Seite fehlerhaft')
 
   return teile.join(', ')
+}
+
+// === T-KONTO AUTO-KORREKTUR ===
+
+/** Bewerte T-Konto-Einträge: Vergleich Musterlösung vs. Eingabe (reihenfolge-unabhängig) */
+function bewerteTKontoEintraege(
+  erwartet: TKontoEintrag[],
+  eingabe: {
+    eintraegeLinks: { gegenkonto: string; betrag: number }[]
+    eintraegeRechts: { gegenkonto: string; betrag: number }[]
+  }
+): number {
+  if (erwartet.length === 0) {
+    return (eingabe.eintraegeLinks.length === 0 && eingabe.eintraegeRechts.length === 0) ? 1 : 0
+  }
+
+  // Flache Liste aller Eingabe-Einträge mit Seite
+  const eingabeListe = [
+    ...eingabe.eintraegeLinks.map(e => ({ seite: 'links' as const, gegenkonto: e.gegenkonto, betrag: e.betrag })),
+    ...eingabe.eintraegeRechts.map(e => ({ seite: 'rechts' as const, gegenkonto: e.gegenkonto, betrag: e.betrag })),
+  ]
+
+  let treffer = 0
+  const verwendet = new Set<number>()
+
+  for (const ek of erwartet) {
+    const erwarteteSeite = ek.seite === 'soll' ? 'links' : 'rechts'
+    for (let j = 0; j < eingabeListe.length; j++) {
+      if (verwendet.has(j)) continue
+      const eg = eingabeListe[j]
+      if (eg.seite === erwarteteSeite && eg.gegenkonto === ek.gegenkonto && eg.betrag === ek.betrag) {
+        treffer++
+        verwendet.add(j)
+        break
+      }
+    }
+  }
+
+  return treffer / Math.max(erwartet.length, eingabeListe.length)
+}
+
+/** Auto-Korrektur für T-Konto-Fragen */
+export function korrigiereTKonto(
+  frage: TKontoFrage,
+  antwortKonten: Extract<Antwort, { typ: 'tkonto' }>['konten']
+): KorrekturErgebnis {
+  const details: KorrekturDetail[] = []
+  const opts = frage.bewertungsoptionen
+
+  // Aktive Kriterien zählen
+  const aktivKriterien = [opts.beschriftungSollHaben, opts.kontenkategorie,
+    opts.zunahmeAbnahme, opts.buchungenKorrekt, opts.saldoKorrekt].filter(Boolean).length
+  const punkteProKonto = frage.punkte / Math.max(1, frage.konten.length)
+  const punkteProKriterium = punkteProKonto / Math.max(1, aktivKriterien)
+
+  for (let i = 0; i < frage.konten.length; i++) {
+    const erwartet = frage.konten[i]
+    const eingabe = antwortKonten.find(k => k.id === erwartet.id)
+
+    if (!eingabe) {
+      details.push({ bezeichnung: `T-Konto ${i + 1}`, korrekt: false, erreicht: 0, max: punkteProKonto })
+      continue
+    }
+
+    // Beschriftung Soll/Haben
+    if (opts.beschriftungSollHaben) {
+      const korrekt = eingabe.beschriftungLinks === 'Soll' && eingabe.beschriftungRechts === 'Haben'
+      details.push({
+        bezeichnung: `T-Konto ${i + 1}: Beschriftung`,
+        korrekt,
+        erreicht: korrekt ? punkteProKriterium : 0,
+        max: punkteProKriterium,
+      })
+    }
+
+    // Kontenkategorie
+    if (opts.kontenkategorie) {
+      const expected = findKonto(erwartet.kontonummer)?.kategorie
+      const korrekt = eingabe.kontenkategorie === expected
+      details.push({
+        bezeichnung: `T-Konto ${i + 1}: Kontenkategorie`,
+        korrekt,
+        erreicht: korrekt ? punkteProKriterium : 0,
+        max: punkteProKriterium,
+      })
+    }
+
+    // Buchungen korrekt
+    if (opts.buchungenKorrekt) {
+      const score = bewerteTKontoEintraege(erwartet.eintraege, eingabe)
+      details.push({
+        bezeichnung: `T-Konto ${i + 1}: Buchungen`,
+        korrekt: score >= 0.99,
+        erreicht: score * punkteProKriterium,
+        max: punkteProKriterium,
+      })
+    }
+
+    // Saldo korrekt
+    if (opts.saldoKorrekt) {
+      const korrekt = eingabe.saldo
+        && eingabe.saldo.betrag === erwartet.saldo.betrag
+        && ((eingabe.saldo.seite === 'links' && erwartet.saldo.seite === 'soll')
+          || (eingabe.saldo.seite === 'rechts' && erwartet.saldo.seite === 'haben'))
+      details.push({
+        bezeichnung: `T-Konto ${i + 1}: Saldo`,
+        korrekt: !!korrekt,
+        erreicht: korrekt ? punkteProKriterium : 0,
+        max: punkteProKriterium,
+      })
+    }
+  }
+
+  const erreichtePunkte = details.reduce((s, d) => s + d.erreicht, 0)
+  return {
+    erreichtePunkte: Math.round(erreichtePunkte * 100) / 100,
+    maxPunkte: frage.punkte,
+    details,
+  }
 }

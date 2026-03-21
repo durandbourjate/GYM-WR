@@ -449,6 +449,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
               <option value="richtigfalsch">Richtig/Falsch ({stats.typen.get('richtigfalsch') ?? 0})</option>
               <option value="berechnung">Berechnung ({stats.typen.get('berechnung') ?? 0})</option>
               <option value="buchungssatz">Buchungssatz ({stats.typen.get('buchungssatz') ?? 0})</option>
+              <option value="tkonto">T-Konto ({stats.typen.get('tkonto') ?? 0})</option>
             </select>
             <select
               value={filterBloom}

@@ -82,6 +82,15 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
       }).join('; ')
     }
 
+    case 'tkonto': {
+      if (antwort.konten.length === 0) return '(keine T-Konten)'
+      return antwort.konten.map((k, i) => {
+        const left = k.eintraegeLinks.map(e => `${e.gegenkonto}: ${e.betrag}`).join(', ')
+        const right = k.eintraegeRechts.map(e => `${e.gegenkonto}: ${e.betrag}`).join(', ')
+        return `T-Konto ${i + 1}: Links [${left}] | Rechts [${right}]${k.saldo ? ` Saldo: ${k.saldo.betrag}` : ''}`
+      }).join('; ')
+    }
+
     default:
       return '(unbekannter Typ)'
   }

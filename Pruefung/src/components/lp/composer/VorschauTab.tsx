@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import type { PruefungsConfig } from '../../../types/pruefung.ts'
-import type { Frage, FrageAnhang, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage } from '../../../types/fragen.ts'
+import type { Frage, FrageAnhang, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage, TKontoFrage } from '../../../types/fragen.ts'
+import { kontoLabel } from '../../../utils/kontenrahmen.ts'
 import { formatDatum } from '../../../utils/zeit.ts'
 import { typLabel, fachbereichFarbe } from '../../../utils/fachbereich.ts'
 import MediaAnhang from '../../MediaAnhang.tsx'
@@ -161,6 +162,7 @@ function schaetzeZeitbedarf(frage: Frage): number {
     case 'zuordnung': return Math.max(1, frage.punkte)
     case 'berechnung': return Math.max(2, frage.punkte * 2)
     case 'buchungssatz': return Math.max(3, frage.punkte * 1.5)
+    case 'tkonto': return Math.max(5, frage.punkte * 2)
     default: return frage.punkte
   }
 }
@@ -195,7 +197,8 @@ function formatFragetext(text: string): ReactNode[] {
 
 /** Read-only Vorschau einer einzelnen Frage wie SuS sie sehen */
 function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
-  const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
+  const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext
+    : 'aufgabentext' in frage ? (frage as { aufgabentext: string }).aufgabentext : ''
   const zeitbedarf = frage.zeitbedarf ?? schaetzeZeitbedarf(frage)
 
   return (
@@ -243,6 +246,7 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
       {frage.typ === 'richtigfalsch' && <RichtigFalschVorschau frage={frage as RichtigFalschFrage} />}
       {frage.typ === 'berechnung' && <BerechnungVorschau frage={frage as BerechnungFrage} />}
       {frage.typ === 'buchungssatz' && <BuchungssatzVorschau frage={frage as BuchungssatzFrage} />}
+      {frage.typ === 'tkonto' && <TKontoVorschau frage={frage as TKontoFrage} />}
     </div>
   )
 }
@@ -423,6 +427,45 @@ function BuchungssatzVorschau({ frage }: { frage: BuchungssatzFrage }) {
           </tbody>
         </table>
       </div>
+    </div>
+  )
+}
+
+function TKontoVorschau({ frage }: { frage: TKontoFrage }) {
+  return (
+    <div className="space-y-3">
+      {/* Geschäftsfälle */}
+      {frage.geschaeftsfaelle && frage.geschaeftsfaelle.length > 0 && (
+        <ol className="list-decimal list-inside space-y-1 text-sm text-slate-700 dark:text-slate-200">
+          {frage.geschaeftsfaelle.map((gf, i) => (
+            <li key={i}>{gf}</li>
+          ))}
+        </ol>
+      )}
+      {/* Leere T-Konten */}
+      {frage.konten.map((konto) => (
+        <div key={konto.id} className="border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden">
+          <div className="px-3 py-2 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-600">
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{kontoLabel(konto.kontonummer)}</span>
+          </div>
+          <div className="grid grid-cols-2">
+            <div className="px-3 py-2 border-r border-slate-200 dark:border-slate-600 text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
+              Soll
+            </div>
+            <div className="px-3 py-2 text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
+              Haben
+            </div>
+          </div>
+          <div className="grid grid-cols-2 border-t border-slate-100 dark:border-slate-700">
+            <div className="px-3 py-4 border-r border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 text-sm">
+              ---
+            </div>
+            <div className="px-3 py-4 text-slate-400 dark:text-slate-500 text-sm">
+              ---
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
