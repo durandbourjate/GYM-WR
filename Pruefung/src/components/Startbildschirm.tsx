@@ -69,29 +69,23 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
         </div>
 
         <div className="max-w-lg w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
-          {/* Warte-Animation */}
+          {/* Warte-Animation mit Puls */}
           <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <svg
-                className="w-16 h-16 text-slate-400 dark:text-slate-500 animate-pulse"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-              </svg>
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <span className="text-3xl">🔒</span>
+              </div>
+              <div className="absolute inset-0 rounded-full bg-blue-200 dark:bg-blue-800/20 animate-ping opacity-30" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
               {config.titel}
             </h1>
-            <p className="text-lg text-slate-500 dark:text-slate-400 mb-1">
-              Warte auf Freigabe durch die Lehrperson...
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+              Die Lehrperson hat die Prüfung noch nicht freigegeben.
             </p>
-            {/* Spinning-Indikator */}
-            <div className="mt-4 flex justify-center">
-              <div className="w-6 h-6 border-2 border-slate-300 dark:border-slate-600 border-t-slate-600 dark:border-t-slate-300 rounded-full animate-spin" />
-            </div>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              Die Seite aktualisiert sich automatisch.
+            </p>
           </div>
 
           {/* Prüfungsinfos weiterhin sichtbar */}
