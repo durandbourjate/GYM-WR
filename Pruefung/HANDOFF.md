@@ -21,6 +21,21 @@
 - **Wichtig nach Push:** `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen
 - **Wichtig:** `GITHUB_TOKEN` muss als Script Property konfiguriert werden (Projekteinstellungen → Skripteigenschaften)
 
+### Änderungen (21.03.2026) — Bugfixes + Pool-Fragen-Korrekturen
+
+**3 Code-Bugfixes** (kritisch):
+- **RueckSyncDialog nicht klickbar:** Dialog war innerhalb des `pointer-events-none` Containers von FragenEditor gerendert → Buttons (Abbrechen, Senden) nicht klickbar. Fix: Dialog via React Fragment (`<>...</>`) ausserhalb des Containers gerendert (`FragenEditor.tsx`)
+- **Pool-Sync erkennt Bild-Änderungen nicht:** `img`-Feld fehlte im SHA-256 Content-Hash → Pools mit geänderten Bildern wurden als "up to date" angezeigt. Fix: `img` in `berechneContentHash` (poolSync.ts) + `berechnePoolContentHash` (apps-script-code.js) + `extrahiereFrageFelder` hinzugefügt
+- **144 Updates angezeigt aber kein Übernehmen-Button:** `PoolSyncDialog` speicherte nur `neueFragen`, nicht `aktualisierteFragen` → Button nur bei neuen Fragen sichtbar. Fix: `aktualisierteFragen` gespeichert + gesendet, Button zeigt bei neuen ODER aktualisierten Fragen, Backend schreibt `anhaenge` bei Updates
+
+**4 Pool-Fragen korrigiert** (SuS-Meldungen):
+- `vwl_sozialpolitik.js` s02: 3. Säule = "Individuelle Ergänzung" statt "Deckung des Komfortbedarfs"
+- `vwl_staatsverschuldung.js` a06: Prozentangaben aus MC-Optionen entfernt (veraltet)
+- `vwl_steuern.js` q13: "Staatseinnahmen (Fiskalquote)" statt "Steuereinnahmen", Erklärung präzisiert
+- `vwl_staatsverschuldung.js` e03: Kreuzakzeptanz für Einkommen/Vermögen-Lücken
+
+**Wichtig nach Push:** `apps-script-code.js` in Apps Script Editor kopieren + neue Bereitstellung erstellen (img-Hash + anhaenge-Sync)
+
 ### Änderungen (21.03.2026) — Bugfix Pool-Sync
 
 **Pool-Sync Bugfixes** (kritisch):
@@ -78,9 +93,10 @@
 - Auto-Submit-Bestätigung: Bottom-Banner durch prominenten Vollbild-Dialog ersetzt (wie AbgabeDialog-Erfolg, mit Checkmark-Icon)
 
 ### Offene Punkte (noch nicht umgesetzt)
-- **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
+- **Pool-Rück-Sync End-to-End-Test:** GitHub API-Calls noch nicht live getestet (GITHUB_TOKEN als Script Property konfiguriert, aber kein realer Rück-Sync durchgeführt)
 - **Pool-Rück-Sync Batch-Export:** Batch-Dialog für Export mehrerer Fragen (Button platziert, Logik Phase 2)
-- **Wichtig nach Code-Änderungen:** `apps-script-code.js` muss in Apps Script Editor kopiert + neue Bereitstellung erstellt werden
+- **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
+- **Apps Script Deployment nötig:** `apps-script-code.js` muss nach jedem Push in Apps Script Editor kopiert + neue Bereitstellung erstellt werden (aktuell: img-Hash + anhaenge-Sync ausstehend)
 
 ### Was funktioniert
 - **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
@@ -220,7 +236,8 @@ Pruefung/
 │   │   │   ├── LPStartseite.tsx         — LP-Startseite: Prüfungen verwalten + erstellen + duplizieren
 │   │   │   ├── PruefungsComposer.tsx    — 4-Tab-Editor (Einstellungen, Abschnitte, Vorschau, Analyse) + Autosave
 │   │   │   ├── FragenBrowser.tsx        — Slide-over: Fragenbank + Direktes Hinzufügen/Entfernen + Resize + Pool-Badges/Filter
-│   │   │   ├── PoolSyncDialog.tsx       — Sync-UI: Pools laden, Delta-Vorschau, Batch-Import
+│   │   │   ├── PoolSyncDialog.tsx       — Sync-UI: Pools laden, Delta-Vorschau, Batch-Import (neu + aktualisierte Fragen)
+│   │   │   ├── RueckSyncDialog.tsx     — Rück-Sync: Update bestehender Pool-Fragen / Export neuer Fragen via GitHub API
 │   │   │   ├── HilfeSeite.tsx           — In-App Hilfe mit Akkordeon-Sektionen + Resize
 │   │   │   ├── composer/
 │   │   │   │   ├── AbschnitteTab.tsx    — Abschnitte mit Fragen-Details (Badges, Bloom, Punkte, Zeit)
@@ -271,7 +288,8 @@ Pruefung/
 │   │       ├── RichtigFalschFrage.tsx  — Richtig/Falsch-Buttons pro Aussage
 │   │       └── BerechnungFrage.tsx     — Numerische Eingabe + Rechenweg
 │   └── utils/
-│       ├── poolConverter.ts            — Typ-Konvertierung Pool→Prüfungstool (7→6 Typen)
+│       ├── poolConverter.ts            — Typ-Konvertierung Pool→Prüfungstool (7→6 Typen) + konvertierePoolBild (exported)
+│       ├── poolExporter.ts            — Reverse Type Mapping Prüfungstool→Pool-Format (7 Typen) + Diff-Berechnung
 │       ├── abschnitte.ts               — findeAbschnitt(), berechneAbschnittFortschritt()
 │       ├── fachbereich.ts              — Shared: fachbereichFarbe(), typLabel(), bloomLabel()
 │       ├── korrekturUtils.ts          — berechneNote(), effektivePunkte(), Statistiken
@@ -400,7 +418,10 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | 66 | Materialien Audio/Video/Embed | ✅ | `videoEmbed` Typ, Audio/Video-Upload, YouTube/Vimeo/nanoo.tv Embed |
 | 67 | Bewertungsraster KI (Backend) | ✅ | 2 neue Cases in apps-script-code.js: bewertungsrasterGenerieren/Verbessern |
 
-### Offen
+### Offen (User-Wünsche für spätere Iterationen)
+- Pool-Rück-Sync End-to-End-Test (GITHUB_TOKEN konfiguriert, Live-Test ausstehend)
+- Pool-Rück-Sync Batch-Export (Button platziert, Logik noch nicht implementiert)
+- Prüfungs-Durchführung erweitern (Open-End-Modus, LP-kontrolliertes Beenden)
 - Buchhaltungs-Fragetyp (Soll/Haben, Kontenrahmen, T-Konten — wie bei eLoB)
 - Kollaboratives Korrigieren (mehrere LP korrigieren dieselbe Prüfung — Architektur-Klärung nötig)
 - Tablet/Smartphone-Optimierung (responsive by design, spezifische Tests ausstehend)
@@ -440,3 +461,8 @@ Ohne diese Variablen funktioniert die App im **Demo-Modus** (Schülercode + Demo
 | `cf8646b` | Overlays unter Header, Resize überall, Bilder in Vorschau |
 | `da76399` | Drive-Ordner für Anhänge + Materialien getrennt |
 | `ec44621` | SuS-Uploads Ordner-ID hinzugefügt |
+| `cc6b3e1` | Pool-Rück-Sync: Bidirektionaler Sync — Änderungen zurückschreiben + Export in Pools |
+| `274ad39` | Pool-Bilder + Bugfixes: externeUrl für Pool-SVGs, Prüfungstauglich-Toggle, z-index Fix |
+| `15b5121` | Fix: RueckSyncDialog aus pointer-events-none Container + img im Content-Hash |
+| `64585bb` | Fix: Pool-Sync Updates übernehmen — Button + Backend-Anhaenge |
+| `1119985` | Fix: 4 Pool-Fragen korrigiert (SuS-Meldungen) |
