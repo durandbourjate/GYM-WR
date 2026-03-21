@@ -45,6 +45,38 @@ function doGet(e) {
       return ladeKorrekturFortschritt(e.parameter.id, email);
     case 'ladeNachrichten':
       return ladeNachrichtenEndpoint(e.parameter.id, email);
+    case 'ladeKlassenlisten': {
+      // Nur LP darf Klassenlisten laden
+      if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+        return jsonResponse({ error: 'Nur LP kann Klassenlisten laden' });
+      }
+      try {
+        const ss = SpreadsheetApp.openById(KLASSENLISTEN_ID);
+        const sheets = ss.getSheets();
+        const result = [];
+        for (const sheet of sheets) {
+          const sheetName = sheet.getName();
+          // Überspringe Meta-Sheets
+          if (sheetName.startsWith('_') || sheetName === 'Template') continue;
+          const data = sheet.getDataRange().getValues();
+          if (data.length < 2) continue; // Nur Header, keine Daten
+          // Format: A=Klasse, B=Nachname, C=Vorname, D=E-Mail (Zeile 1 = Header)
+          for (let i = 1; i < data.length; i++) {
+            const row = data[i];
+            if (!row[3]) continue; // Kein E-Mail → überspringe
+            result.push({
+              klasse: String(row[0] || sheetName).trim(),
+              name: String(row[1] || '').trim(),
+              vorname: String(row[2] || '').trim(),
+              email: String(row[3]).trim().toLowerCase(),
+            });
+          }
+        }
+        return jsonResponse({ success: true, klassenlisten: result });
+      } catch (err) {
+        return jsonResponse({ error: 'Klassenlisten nicht ladbar: ' + String(err) });
+      }
+    }
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -101,6 +133,86 @@ function doPost(e) {
       return schreibePoolAenderung(body);
     case 'beendePruefung':
       return beendePruefungEndpoint(body);
+    case 'setzeTeilnehmer': {
+      const email = body.email;
+      if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+        return jsonResponse({ error: 'Nur LP darf Teilnehmer setzen' });
+      }
+      const pruefungId = body.pruefungId;
+      const teilnehmer = body.teilnehmer; // Array<Teilnehmer>
+      if (!pruefungId || !Array.isArray(teilnehmer)) {
+        return jsonResponse({ error: 'pruefungId und teilnehmer[] erforderlich' });
+      }
+      try {
+        const ss = SpreadsheetApp.openById(CONFIGS_ID);
+        const sheet = ss.getSheetByName('Configs');
+        if (!sheet) return jsonResponse({ error: 'Configs-Sheet nicht gefunden' });
+        const data = getSheetData(sheet);
+        const rowIndex = data.findIndex(r => r.id === pruefungId);
+        if (rowIndex < 0) return jsonResponse({ error: 'Prüfung nicht gefunden' });
+
+        // Teilnehmer-Spalte finden oder erstellen
+        const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+        let teilnehmerCol = headers.indexOf('teilnehmer');
+        if (teilnehmerCol < 0) {
+          teilnehmerCol = headers.length;
+          sheet.getRange(1, teilnehmerCol + 1).setValue('teilnehmer');
+        }
+
+        // Teilnehmer als JSON speichern
+        sheet.getRange(rowIndex + 2, teilnehmerCol + 1).setValue(JSON.stringify(teilnehmer));
+
+        // erlaubteEmails synchronisieren
+        const emailsCol = headers.indexOf('erlaubteEmails');
+        if (emailsCol >= 0) {
+          const emails = teilnehmer.map(t => t.email);
+          sheet.getRange(rowIndex + 2, emailsCol + 1).setValue(JSON.stringify(emails));
+        }
+
+        // erlaubteKlasse synchronisieren
+        const klasseCol = headers.indexOf('erlaubteKlasse');
+        if (klasseCol >= 0) {
+          const klassen = [...new Set(teilnehmer.map(t => t.klasse))];
+          sheet.getRange(rowIndex + 2, klasseCol + 1).setValue(klassen.length === 1 ? klassen[0] : '');
+        }
+
+        return jsonResponse({ success: true });
+      } catch (err) {
+        return jsonResponse({ error: 'Teilnehmer setzen fehlgeschlagen: ' + String(err) });
+      }
+    }
+    case 'sendeEinladungen': {
+      const email = body.email;
+      if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+        return jsonResponse({ error: 'Nur LP darf Einladungen senden' });
+      }
+      const { pruefungId, pruefungTitel, pruefungUrl, empfaenger } = body;
+      // empfaenger: Array<{ email: string, name: string, vorname: string }>
+      if (!pruefungId || !pruefungTitel || !pruefungUrl || !Array.isArray(empfaenger)) {
+        return jsonResponse({ error: 'Pflichtfelder fehlen' });
+      }
+      const ergebnisse = [];
+      for (const emp of empfaenger) {
+        try {
+          MailApp.sendEmail({
+            to: emp.email,
+            subject: `Prüfung: ${pruefungTitel}`,
+            htmlBody: `
+              <p>Hallo ${emp.vorname},</p>
+              <p>Du wurdest zur folgenden Prüfung eingeladen:</p>
+              <p><strong>${pruefungTitel}</strong></p>
+              <p>Öffne diesen Link wenn die Lehrperson die Prüfung freigibt:</p>
+              <p><a href="${pruefungUrl}">${pruefungUrl}</a></p>
+              <p>Viel Erfolg!</p>
+            `,
+          });
+          ergebnisse.push({ email: emp.email, erfolg: true });
+        } catch (err) {
+          ergebnisse.push({ email: emp.email, erfolg: false, fehler: String(err) });
+        }
+      }
+      return jsonResponse({ success: true, ergebnisse });
+    }
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -294,6 +406,8 @@ function ladePruefung(pruefungId, email) {
       zufallsreihenfolgeFragen: configRow.zufallsreihenfolgeFragen === 'true',
       freigeschaltet: configRow.freigeschaltet === 'true',
       zeitverlaengerungen: safeJsonParse(configRow.zeitverlaengerungen, {}),
+      teilnehmer: safeJsonParse(configRow.teilnehmer, []),
+      beendetUm: configRow.beendetUm || undefined,
       korrektur: { aktiviert: false, modus: 'batch' },
       feedback: { zeitpunkt: 'nach-review', format: 'pdf', detailgrad: 'vollstaendig' },
     };
@@ -535,6 +649,18 @@ function heartbeat(body) {
       if (countCol >= 0) {
         const current = Number(sheet.getRange(rowIndex, countCol + 1).getValue()) || 0;
         sheet.getRange(rowIndex, countCol + 1).setValue(current + 1);
+      }
+
+      // aktuelleFrage-Spalte aktualisieren (falls vom Client mitgesendet)
+      if (body.aktuelleFrage !== undefined) {
+        let aktFrageCol = headers.indexOf('aktuelleFrage');
+        if (aktFrageCol < 0) {
+          aktFrageCol = headers.length;
+          sheet.getRange(1, aktFrageCol + 1).setValue('aktuelleFrage');
+          // Update local headers array too
+          headers.push('aktuelleFrage');
+        }
+        sheet.getRange(rowIndex, aktFrageCol + 1).setValue(body.aktuelleFrage);
       }
 
       // Beenden-Signal prüfen (individuell → global)
@@ -850,6 +976,8 @@ function ladeAlleConfigs(email) {
       heartbeatIntervallSekunden: Number(row.heartbeatIntervallSekunden) || 10,
       freigeschaltet: row.freigeschaltet === 'true',
       zeitverlaengerungen: safeJsonParse(row.zeitverlaengerungen, {}),
+      teilnehmer: safeJsonParse(row.teilnehmer, []),
+      beendetUm: row.beendetUm || undefined,
       korrektur: { aktiviert: false, modus: 'batch' },
       feedback: { zeitpunkt: 'nach-review', format: 'pdf', detailgrad: 'vollstaendig' },
     }));
@@ -1018,12 +1146,23 @@ function ladeMonitoring(pruefungId, email) {
         schueler.push({
           email: row.email || '',
           name: row.name || row.email || '',
+          klasse: row.klasse || '',
           status: row.istAbgabe === 'true' ? 'abgegeben' : (row.letzterHeartbeat ? 'aktiv' : 'nicht-gestartet'),
           letzterSave: row.letzterSave || '',
           letzterHeartbeat: row.letzterHeartbeat || '',
           heartbeats: Number(row.heartbeats) || 0,
           version: Number(row.version) || 0,
           istAbgegeben: row.istAbgabe === 'true',
+          aktuelleFrage: row.aktuelleFrage !== undefined && row.aktuelleFrage !== ''
+            ? Number(row.aktuelleFrage)
+            : null,
+          beantworteteFragen: Number(row.beantworteteFragen) || 0,
+          gesamtFragen: Number(row.gesamtFragen) || 0,
+          abgabezeit: row.abgabezeit || null,
+          startzeit: row.startzeit || null,
+          netzwerkFehler: Number(row.netzwerkFehler) || 0,
+          autoSaveCount: Number(row.autoSaveCount) || 0,
+          unterbrechungen: safeJsonParse(row.unterbrechungen, []),
         });
       }
     }
