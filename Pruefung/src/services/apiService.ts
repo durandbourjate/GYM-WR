@@ -10,6 +10,7 @@ import { ladeKlassenlisten, setzeTeilnehmer, sendeEinladungen, validiereSchueler
 import { uploadMaterial, uploadAnhang, uploadAudioKommentar, kiAssistent } from './uploadApi'
 import { sendeNachricht, ladeNachrichten } from './nachrichtenApi'
 import { ladeMonitoring } from './monitoringApi'
+import { ladeTrackerDaten } from './api/trackerApi'
 
 export const apiService = {
   istKonfiguriert,
@@ -48,6 +49,7 @@ export const apiService = {
   ladeKlassenlisten,
   setzeTeilnehmer,
   sendeEinladungen,
+  ladeTrackerDaten,
 }
 
 // Typ-Re-Exports für Abwärtskompatibilität

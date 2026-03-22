@@ -152,6 +152,8 @@ function doPost(e) {
       return schreibePoolAenderung(body);
     case 'beendePruefung':
       return beendePruefungEndpoint(body);
+    case 'ladeTrackerDaten':
+      return ladeTrackerDatenEndpoint(body);
     case 'setzeTeilnehmer': {
       const email = body.email;
       if (!email || !email.endsWith('@' + LP_DOMAIN)) {
@@ -3090,4 +3092,178 @@ function serialisiereNeuePoolFrage(felder) {
 
   lines.push('  }');
   return lines.join('\n');
+}
+
+// ==========================================
+// Prüfungstracker — Aggregierte Übersicht
+// ==========================================
+
+/**
+ * Lädt aggregierte Tracker-Daten für alle Prüfungen einer LP.
+ * Pro Prüfung: Teilnahme-Counts, Korrektur-Status, Noten-Durchschnitt.
+ * Performance: Nur beendete Prüfungen werden tief gelesen (Antworten/Korrektur-Sheets).
+ */
+function ladeTrackerDatenEndpoint(body) {
+  try {
+    var email = body.email;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    // 1. Alle Configs laden
+    var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    var rows = getSheetData(configSheet);
+    var ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+
+    var pruefungen = [];
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var pruefungId = row.id;
+      if (!pruefungId) continue;
+
+      var teilnehmer = safeJsonParse(row.teilnehmer, []);
+      var beendetUm = row.beendetUm || null;
+      var freigeschaltet = row.freigeschaltet === 'true';
+
+      var summary = {
+        pruefungId: pruefungId,
+        titel: row.titel || pruefungId,
+        klasse: row.klasse || '',
+        gefaess: row.gefaess || '',
+        fachbereiche: (row.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+        semester: row.semester || '',
+        datum: row.datum || '',
+        typ: row.typ || 'summativ',
+        gesamtpunkte: Number(row.gesamtpunkte) || 0,
+        freigeschaltet: freigeschaltet,
+        beendetUm: beendetUm,
+        teilnehmerGesamt: teilnehmer.length,
+        eingereicht: 0,
+        nichtErschienen: [],
+        korrekturStatus: 'keine-daten',
+        korrigiertAnzahl: 0,
+        korrigiertGesamt: 0,
+        durchschnittNote: null,
+        bestandenRate: null
+      };
+
+      // 2. Nur für beendete Prüfungen: Antworten-Sheet lesen
+      if (beendetUm && teilnehmer.length > 0) {
+        try {
+          var antwortenName = 'Antworten_' + pruefungId;
+          var antwortenFiles = ordner.getFilesByName(antwortenName);
+          if (antwortenFiles.hasNext()) {
+            var antwortenSheet = SpreadsheetApp.open(antwortenFiles.next()).getSheets()[0];
+            var antwortenData = getSheetData(antwortenSheet);
+
+            // Emails die abgegeben haben
+            var abgegebeneEmails = {};
+            for (var j = 0; j < antwortenData.length; j++) {
+              var aRow = antwortenData[j];
+              if (aRow.email && aRow.istAbgabe === 'true') {
+                abgegebeneEmails[aRow.email.toLowerCase()] = true;
+              }
+            }
+            summary.eingereicht = Object.keys(abgegebeneEmails).length;
+
+            // Fehlende SuS ermitteln
+            var fehlende = [];
+            for (var k = 0; k < teilnehmer.length; k++) {
+              var tn = teilnehmer[k];
+              if (!abgegebeneEmails[tn.email.toLowerCase()]) {
+                fehlende.push({
+                  email: tn.email,
+                  name: (tn.vorname || '') + ' ' + (tn.name || ''),
+                  klasse: tn.klasse || ''
+                });
+              }
+            }
+            summary.nichtErschienen = fehlende;
+          }
+        } catch (e) {
+          // Antworten-Sheet nicht gefunden — normal für alte Prüfungen
+        }
+      }
+
+      // 3. Korrektur-Sheet lesen (nur wenn beendet)
+      if (beendetUm) {
+        try {
+          var korrekturName = 'Korrektur_' + pruefungId;
+          var korrekturFiles = ordner.getFilesByName(korrekturName);
+          if (korrekturFiles.hasNext()) {
+            var korrekturSheet = SpreadsheetApp.open(korrekturFiles.next()).getSheets()[0];
+
+            // Status aus Z1 lesen
+            var statusZelle = korrekturSheet.getRange('Z1').getValue();
+            var statusObj = safeJsonParse(statusZelle, {});
+
+            if (statusObj.status === 'fertig') {
+              summary.korrekturStatus = 'fertig';
+            } else if (statusObj.status === 'laeuft') {
+              summary.korrekturStatus = 'teilweise';
+            } else {
+              summary.korrekturStatus = 'offen';
+            }
+
+            // Korrektur-Daten lesen für Noten-Berechnung
+            var korrekturData = getSheetData(korrekturSheet);
+            if (korrekturData.length > 0) {
+              var korrigiertSet = {};
+              var notenSumme = 0;
+              var notenAnzahl = 0;
+              var bestandenCount = 0;
+
+              for (var m = 0; m < korrekturData.length; m++) {
+                var kRow = korrekturData[m];
+                if (!kRow.email) continue;
+                korrigiertSet[kRow.email] = true;
+
+                // Note berechnen wenn Punkte vorhanden
+                var punkte = Number(kRow.gesamtPunkte || kRow.lpPunkte || kRow.kiPunkte || 0);
+                var maxPkt = Number(kRow.maxPunkte || summary.gesamtpunkte || 1);
+                if (maxPkt > 0 && punkte >= 0) {
+                  var note = 1 + 5 * (punkte / maxPkt);
+                  note = Math.min(6, Math.max(1, note));
+                  // Auf 0.5 runden
+                  note = Math.round(note * 2) / 2;
+                  notenSumme += note;
+                  notenAnzahl++;
+                  if (note >= 4) bestandenCount++;
+                }
+              }
+
+              summary.korrigiertAnzahl = Object.keys(korrigiertSet).length;
+              summary.korrigiertGesamt = summary.teilnehmerGesamt || summary.korrigiertAnzahl;
+
+              if (summary.korrigiertAnzahl > 0 && summary.korrigiertGesamt > 0) {
+                if (summary.korrigiertAnzahl >= summary.korrigiertGesamt) {
+                  summary.korrekturStatus = 'fertig';
+                } else if (summary.korrekturStatus === 'keine-daten') {
+                  summary.korrekturStatus = 'teilweise';
+                }
+              }
+
+              if (notenAnzahl > 0) {
+                summary.durchschnittNote = Math.round((notenSumme / notenAnzahl) * 10) / 10;
+                summary.bestandenRate = Math.round((bestandenCount / notenAnzahl) * 100);
+              }
+            }
+          }
+        } catch (e) {
+          // Korrektur-Sheet nicht gefunden — normal
+        }
+      }
+
+      pruefungen.push(summary);
+    }
+
+    return jsonResponse({
+      pruefungen: pruefungen,
+      aktualisiert: new Date().toISOString()
+    });
+
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
 }

@@ -3,12 +3,15 @@ import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import type { PruefungsConfig } from '../../types/pruefung.ts'
 import type { Frage } from '../../types/fragen.ts'
+import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.ts'
 import { formatDatum } from '../../utils/zeit.ts'
+import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel, erstelleDemoTrackerDaten } from '../../utils/trackerUtils.ts'
 import LPHeader from './LPHeader.tsx'
 import PruefungsComposer from './PruefungsComposer.tsx'
 import FragenBrowser from './FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
 import PoolSyncDialog from './PoolSyncDialog.tsx'
+import TrackerSection from './TrackerSection.tsx'
 
 /** Startseite für Lehrpersonen: Prüfungen verwalten + erstellen */
 export default function LPStartseite() {
@@ -24,6 +27,8 @@ export default function LPStartseite() {
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigSyncDialog, setZeigSyncDialog] = useState(false)
   const [fragenbank, setFragenbank] = useState<Frage[]>([])
+  const [listenTab, setListenTab] = useState<'pruefungen' | 'tracker'>('pruefungen')
+  const [trackerDaten, setTrackerDaten] = useState<TrackerDaten | null>(null)
 
   // Such- und Filterstate
   const [suchtext, setSuchtext] = useState('')
@@ -77,7 +82,7 @@ export default function LPStartseite() {
     setFilterFach(prev => prev.includes(fach) ? prev.filter(f => f !== fach) : [...prev, fach])
   }
 
-  // Alle Prüfungs-Configs laden
+  // Alle Prüfungs-Configs + Tracker-Daten laden
   useEffect(() => {
     async function lade(): Promise<void> {
       if (!user) return
@@ -85,19 +90,30 @@ export default function LPStartseite() {
       if (istDemoModus || !apiService.istKonfiguriert()) {
         // Demo-Daten
         setConfigs(demoConfigs())
+        setTrackerDaten(erstelleDemoTrackerDaten())
         setLadeStatus('fertig')
         return
       }
 
-      const result = await apiService.ladeAlleConfigs(user.email)
-      if (result) {
-        setConfigs(result)
+      // Configs und Tracker-Daten parallel laden
+      const [configResult, trackerResult] = await Promise.all([
+        apiService.ladeAlleConfigs(user.email),
+        apiService.ladeTrackerDaten(user.email),
+      ])
+
+      if (configResult) {
+        setConfigs(configResult)
         setBackendFehler(false)
       } else {
         console.warn("[LP] Configs nicht ladbar — Composer bleibt nutzbar")
         setConfigs([])
         setBackendFehler(true)
       }
+
+      if (trackerResult) {
+        setTrackerDaten(trackerResult)
+      }
+
       setLadeStatus("fertig")
     }
     lade()
@@ -152,6 +168,12 @@ export default function LPStartseite() {
   // pruefungsUrl(id) wird von Durchführen-Link verwendet (→ DurchfuehrenDashboard)
   // const pruefungsUrl = (id: string) => `${window.location.origin}${window.location.pathname}?id=${id}`
 
+  // Tracker-Summary für eine Prüfung finden (nach ID matchen)
+  function findeTrackerSummary(pruefungId: string): TrackerPruefungSummary | undefined {
+    if (!trackerDaten) return undefined
+    return trackerDaten.pruefungen.find((p) => p.pruefungId === pruefungId)
+  }
+
   if (ansicht === 'composer') {
     return <PruefungsComposer config={editConfig} onZurueck={handleZurueck} onDuplizieren={handleDuplizieren} />
   }
@@ -181,6 +203,32 @@ export default function LPStartseite() {
         hilfeOffen={zeigHilfe}
       />
 
+      {/* Tab-Leiste */}
+      <div className="max-w-5xl mx-auto px-6 pt-4">
+        <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
+          <button
+            onClick={() => setListenTab('pruefungen')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
+              listenTab === 'pruefungen'
+                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+            }`}
+          >
+            Prüfungen
+          </button>
+          <button
+            onClick={() => setListenTab('tracker')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
+              listenTab === 'tracker'
+                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+            }`}
+          >
+            Tracker
+          </button>
+        </div>
+      </div>
+
       {/* Content */}
       <main className="max-w-5xl mx-auto p-6">
         {ladeStatus === 'laden' && (
@@ -196,7 +244,19 @@ export default function LPStartseite() {
           </div>
         )}
 
-        {ladeStatus === 'fertig' && configs.length === 0 && (
+        {/* Tracker-Ansicht */}
+        {ladeStatus === 'fertig' && listenTab === 'tracker' && (
+          trackerDaten ? (
+            <TrackerSection trackerDaten={trackerDaten} />
+          ) : (
+            <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-12">
+              Keine Tracker-Daten verfügbar.
+            </p>
+          )
+        )}
+
+        {/* Prüfungen-Ansicht */}
+        {listenTab === 'pruefungen' && ladeStatus === 'fertig' && configs.length === 0 && (
           <div className="text-center py-12">
             <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
               <span className="text-2xl">📝</span>
@@ -216,7 +276,7 @@ export default function LPStartseite() {
           </div>
         )}
 
-        {ladeStatus === 'fertig' && configs.length > 0 && (
+        {listenTab === 'pruefungen' && ladeStatus === 'fertig' && configs.length > 0 && (
           <div className="space-y-3">
             {/* Such- und Filterleiste */}
             <div className="space-y-2">
@@ -307,7 +367,7 @@ export default function LPStartseite() {
                   Zuletzt
                 </h3>
                 {letzteFuenf.map(c => (
-                  <PruefungsKarte key={`recent-${c.id}`} config={c} onBearbeiten={handleBearbeiten} />
+                  <PruefungsKarte key={`recent-${c.id}`} config={c} onBearbeiten={handleBearbeiten} trackerSummary={findeTrackerSummary(c.id)} />
                 ))}
                 <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
                 <h3 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide pt-1">
@@ -323,7 +383,7 @@ export default function LPStartseite() {
               </p>
             )}
             {gefilterteConfigs.map(c => (
-              <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} />
+              <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} trackerSummary={findeTrackerSummary(c.id)} />
             ))}
           </div>
         )}
@@ -359,9 +419,10 @@ export default function LPStartseite() {
 }
 
 /** Prüfungskarte — wiederverwendbar für Zuletzt-Sektion und Hauptliste */
-function PruefungsKarte({ config: c, onBearbeiten }: {
+function PruefungsKarte({ config: c, onBearbeiten, trackerSummary }: {
   config: PruefungsConfig
   onBearbeiten: (c: PruefungsConfig) => void
+  trackerSummary?: TrackerPruefungSummary
 }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 flex items-center justify-between gap-4">
@@ -391,6 +452,12 @@ function PruefungsKarte({ config: c, onBearbeiten }: {
             </span>
           ))}
         </div>
+        {/* Tracker-Badges */}
+        {trackerSummary && (
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <TrackerBadge summary={trackerSummary} />
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <a
@@ -408,6 +475,34 @@ function PruefungsKarte({ config: c, onBearbeiten }: {
         </button>
       </div>
     </div>
+  )
+}
+
+/** Tracker-Badges für eine Prüfungskarte: Teilnahme, Korrektur, Durchschnitt, Status */
+function TrackerBadge({ summary: s }: { summary: TrackerPruefungSummary }) {
+  const status = bestimmePruefungsStatus(s)
+  return (
+    <>
+      {/* Status-Punkt + Label */}
+      <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+        <span className={`w-2 h-2 rounded-full ${statusFarbe(status)}`} />
+        {statusLabel(status)}
+      </span>
+      {/* Teilnahme */}
+      <span className="text-xs text-slate-400 dark:text-slate-500">
+        {s.eingereicht}/{s.teilnehmerGesamt} eingereicht
+      </span>
+      {/* Korrektur */}
+      <span className="text-xs text-slate-400 dark:text-slate-500">
+        {korrekturLabel(s)}
+      </span>
+      {/* Durchschnitt */}
+      {s.durchschnittNote !== null && (
+        <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
+          &#216; {s.durchschnittNote.toFixed(1)}
+        </span>
+      )}
+    </>
   )
 }
 
