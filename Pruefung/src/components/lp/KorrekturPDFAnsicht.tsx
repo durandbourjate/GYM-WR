@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 import type { SchuelerKorrektur, SchuelerAbgabe, FragenBewertung } from '../../types/korrektur.ts'
-import type { Frage, MCFrage, LueckentextFrage, ZuordnungFrage } from '../../types/fragen.ts'
+import type { Frage, MCFrage } from '../../types/fragen.ts'
 import type { PruefungsKorrektur } from '../../types/korrektur.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
 import type { Antwort } from '../../types/antworten.ts'
