@@ -469,6 +469,15 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - Tablet-/Smartphone-Optimierung: grundsätzlich responsive, aber noch nicht spezifisch getestet
 - Skalierung/Kollaboration: Apps für andere LP nutzbar machen (→ Roadmap unten)
 
+### Nächste Features (vor Multi-LP umsetzbar)
+
+| Feature | Beschreibung | Status |
+|---------|-------------|--------|
+| **Ergebnis-Export (Excel)** | Tabelle wie Google Forms: Spalten pro Frage + Antwort + erreichte Punkte, eine Zeile pro SuS. Offline-Archiv der Prüfungsresultate. | 🔜 Geplant |
+| **Individuelle SuS-PDFs** | Pro SuS ein PDF mit Fragen, Antworten, Punkten, Kommentaren, Audio-Links. Für Zustellung an SuS oder Archivierung. | 🔜 Geplant |
+| **SuS-Korrektur-Einsicht (erweitert)** | SuS können ihre korrigierte Prüfung im System anschauen (schon implementiert). PDF-Download kommt erst später (z.B. nach Nachprüfungen). LP steuert Zeitpunkt der Freigabe. | Teilweise ✅ |
+| **Fragen-Statistiken** | Schwierigkeit (Lösungsquote), Trennschärfe, Analyse über mehrere Durchführungen derselben Frage. Kann schon vor Multi-LP umgesetzt werden. | 🔜 Geplant |
+
 ### Roadmap: Multi-LP / Skalierung (Sammlung)
 
 Ideen und Features für die Erweiterung auf mehrere Lehrpersonen. **Noch nicht umsetzen** — erst wenn DUY-Version stabil steht.
@@ -478,14 +487,24 @@ Ideen und Features für die Erweiterung auf mehrere Lehrpersonen. **Noch nicht u
 | **Auth** | Multi-LP-Zugang | Mehrere LP-E-Mails in Whitelist, nicht nur DUY. Aktuell hardcoded in `authStore.ts` | Hoch |
 | **Auth** | Rollenverwaltung | Admin-Rolle (kann alles) vs. LP-Rolle (eigene Fragen/Prüfungen). Aktuell: alle LP sind gleich | Mittel |
 | **Daten** | LP-eigene Fragenbanken | Jede LP sieht nur ihre eigenen Fragen, oder teilt explizit. Aktuell: eine gemeinsame Fragenbank | Hoch |
-| **Daten** | Cloud-Backend | Weg von localStorage → Datenbank (Supabase / Firebase / erweiterte Sheets-Struktur) | Hoch |
+| **Daten** | Cloud-Backend | Hauptdaten in Google Sheets (kein localStorage für Kerndaten). Bei Skalierung: Supabase / Firebase als Alternative prüfen | Mittel |
 | **Kurse** | LP-eigene Kursverwaltung | LP können eigene Kurse/Klassen anlegen, nicht nur die von DUY | Hoch |
+| **Kurse** | Fächer/Gefässe erweitern | Aktuell nur W&R (SF/EF/EWR/GF). Für Multi-LP braucht es beliebige Fächer und Gefässe | Hoch |
 | **Sharing** | Geteilte Fragenpools | Fragen zwischen LPs teilen (opt-in, mit Freigabe-Mechanismus) | Mittel |
-| **Export** | Ergebnis-Export erweitert | CSV/PDF-Export der Prüfungsresultate (Noten, Statistiken, Feedback) | Mittel |
-| **Statistik** | Fragen-Analyse | Schwierigkeit, Trennschärfe, Lösungsquoten über mehrere Durchführungen | Niedrig |
 | **UX** | Tablet/Smartphone | Gezieltes Testing + Optimierung für Touch-Geräte (SuS-Ansicht) | Mittel |
 | **Infra** | Multi-Tenant Sheets | Separate Sheets/Tabs pro LP oder zentrale Struktur mit LP-Kennung | Hoch |
 | **Demo** | Demo-Modus absichern | Demo-Modus für andere LP zum Testen: keine Daten speichern/löschen möglich | Mittel |
+
+### Synergie Unterrichtsplaner ↔ Prüfungstool
+
+Langfristige Idee: Daten zwischen den beiden Apps teilen.
+
+| Feature | Beschreibung |
+|---------|-------------|
+| **Einstellungen übernehmen** | Fächer, Gefässe, Klassen, Fachbereich-Farben aus dem Unterrichtsplaner importieren statt doppelt pflegen |
+| **Prüfungen im Planer tracken** | Durchgeführte Prüfungen automatisch in den Unterrichtsplaner eintragen (Datum, Titel, Noten-Durchschnitt) |
+| **Notenvorgaben** | Prüfungsergebnisse gegen die Notenvorgaben im Planer abgleichen (Anzahl Noten pro Semester, Gewichtung) |
+| **Shared Kurs-Daten** | Klassenlisten und Kurs-Zuordnungen nur einmal pflegen, in beiden Apps nutzen |
 
 ## Verzeichnisstruktur
 
