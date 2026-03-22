@@ -171,7 +171,10 @@ function HilfeEinstieg() {
         <strong>Prüfung durchführen</strong> — Klicken Sie auf &laquo;Durchführen&raquo; auf der Startseite. Der 4-Phasen-Workflow führt Sie durch: Teilnehmer auswählen (Vorbereitung) → Bereitschaft prüfen (Lobby) → Live-Monitoring → Ergebnisse.
       </Schritt>
       <Schritt nr={5}>
-        <strong>Korrigieren</strong> — Im Korrektur-Dashboard die Antworten KI-gestützt bewerten lassen und Feedback versenden.
+        <strong>Korrigieren</strong> — Im Korrektur-Dashboard die Antworten KI-gestützt bewerten lassen und Feedback versenden. Individuelle SuS-PDFs drucken.
+      </Schritt>
+      <Schritt nr={6}>
+        <strong>Nachverfolgen</strong> — Im Tracker-Tab sehen Sie: Wer hat gefehlt? Wie viele Noten gibt es pro Kurs? Fragen-Statistiken zeigen Lösungsquoten über alle Durchführungen.
       </Schritt>
 
       <Untertitel>Demo-Modus</Untertitel>
@@ -436,6 +439,14 @@ function HilfeKorrektur() {
       <Schritt nr={1}><strong>KI bewertet</strong> — Automatische Punktevergabe pro Frage und SuS.</Schritt>
       <Schritt nr={2}><strong>LP prüft</strong> — Sie können KI-Vorschläge bestätigen oder anpassen. Ihre Punkte haben immer Vorrang.</Schritt>
       <Schritt nr={3}><strong>Feedback senden</strong> — Generiert individuelles Feedback pro SuS und versendet es per E-Mail.</Schritt>
+
+      <Untertitel>SuS-PDFs & Export</Untertitel>
+      <Text>
+        Pro SuS kann ein druckbares PDF erstellt werden (📄-Button pro SuS oder &laquo;Korrektur-PDFs&raquo; im Header). Die PDF-Ansicht enthält alle Fragen, Antworten, Punkte und Kommentare. Über den Browser-Druckdialog können Sie &laquo;Als PDF speichern&raquo; wählen.
+      </Text>
+      <Text>
+        Der &laquo;Excel-Export (Detailliert)&raquo; erstellt eine CSV-Datei mit Antwort-Text und Punkten pro Frage/SuS — wie ein Google-Forms-Export. Ideal zur Archivierung.
+      </Text>
 
       <Hinweis>
         Die KI-Punkte sind Vorschläge. Sie entscheiden — Ihre manuellen Punkte überschreiben die KI-Bewertung immer.

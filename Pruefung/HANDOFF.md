@@ -417,22 +417,26 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - Auto-Save: LocalStorage (sofort) + IndexedDB (15s) + Remote via Apps Script (30s, konfigurierbar)
 - Light/Dark Mode: System-Erkennung + manueller Toggle
 - Abgabe-Dialog mit Bestätigung + Statusübersicht + Sende-Status + Retry
-- 10 Demo-Fragen (3 MC, 3 Freitext, 1 Lückentext, 1 Zuordnung, 1 Richtig/Falsch, 1 Berechnung) in 4 Abschnitten
+- **Musterprüfung:** 16 Demo-Fragen (alle 11 Typen inkl. FiBu + Aufgabengruppe), 5 Abschnitte, 50 P., 8 Testschüler
 - GitHub Actions Deploy (mit Env-Variablen für Backend)
 - Login-Screen (Google OAuth + Schülercode mit E-Mail + Demo-Modus)
 - Auth-Store (Session via sessionStorage, Rollen-Erkennung aus E-Mail-Domain)
 - API-Service (Apps Script Backend, CORS-sicher mit `text/plain`)
 - URL-basierte Prüfungs-ID (`?id=PRUEFUNGS_ID` → lädt Config vom Backend)
 - Monitoring-Hook (Auto-Save, Remote-Save, Heartbeat, Focus-Detection, Online/Offline)
-- SEB-Erkennung (User-Agent-Check + Warnbanner) + SEB-Konfigurationsvorlage (`seb/`)
+- **SEB komplett:** User-Agent-Erkennung + Warnbanner + harte Durchsetzung (Start blockiert) + LP-Ausnahme pro SuS + Auto-Config-Download (.seb-Datei) + SuS-Installationsanleitung
 - LP-Monitoring-Dashboard (Live-Übersicht aller SuS)
 - **LP-Startseite:** Prüfungen verwalten, Durchführen/Bearbeiten-Buttons, Filter/Suche
 - **Prüfungs-Composer:** 4-Tab-Editor (Einstellungen, Abschnitte & Fragen, Vorschau, Analyse) + Autosave
 - **DurchfuehrenDashboard:** Tab-basiert (Vorbereitung → Lobby → Live → Ergebnisse → Korrektur)
 - **4-Phasen-Workflow:** vorbereitung → lobby → aktiv → beendet (State-Machine, deterministische Ableitung)
 - **Kurs-basierte Teilnehmer-Auswahl:** Pro Kurs/Gefäss statt Klasse, Dedup bei Mehrfach-Kursen
-- **Fragenbank-Browser:** Slide-over mit Filtern (Fachbereich, Typ, Bloom, Freitext-Suche, Pool-Status)
-- **Fragenbank-Editor:** Alle 11 Fragetypen erstellen/bearbeiten + in Google Sheets speichern
+- **Fragenbank-Browser:** Slide-over mit Filtern (Fachbereich, Typ, Bloom, Freitext-Suche, Pool-Status, 📎 Anhang-Filter) + Fragen-Statistiken (📊 Lösungsquote, Verwendungen)
+- **Fragenbank-Editor:** Alle 11 Fragetypen erstellen/bearbeiten + in Google Sheets speichern + Statistik-Box (aufklappbar)
+- **Prüfungstracker:** Tab auf LP-Startseite — Fehlende SuS (gruppiert nach Prüfung), Noten-Stand pro Kurs (MiSDV), Status-Badges pro Prüfung
+- **SuS-Korrektur-PDFs:** Druckbare Vollbild-Ansicht pro SuS (KorrekturPDFAnsicht.tsx), PDF-Button pro SuS + im Dashboard
+- **Ergebnis-Export (detailliert):** CSV mit Antwort-Text + Punkten pro Frage/SuS (wie Google Forms)
+- **SuS-UX:** Navigation (Weiter/Zurück + Unsicher) über der Frage, Abgeben-Button grün, Übersichts-Icons farbig
 - Rollen-Routing (LP ohne `?id=` → LPStartseite/Composer, mit `?id=` → Monitoring)
 - Zuordnung, Abschnitt-Header, Fortschrittsbalken, FragenÜbersicht
 - Abgabe-Zusammenfassung (Read-only, druckbar)

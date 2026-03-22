@@ -21,12 +21,15 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 - KI-Korrektur: Automatische Bewertung mit manueller Übersteuerung + individuelles Feedback per E-Mail
 - Audio-Korrektur: Audio-Feedback pro Frage und gesamt
 - Live-Monitoring: Fortschritt, Heartbeat, Inaktivitäts-Warnstufen, SEB-Status aller SuS in Echtzeit
-- Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe, Pool-Status filtern
+- Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
+- Fragen-Statistiken: Lösungsquoten und Verwendungen pro Frage über alle Prüfungen (📊 Badges)
 - Pool-Brücke: Bidirektionaler Sync mit Übungspools (Import + Rück-Sync via GitHub API)
 - Open-End-Modus: Prüfung ohne Zeitlimit, LP beendet manuell (optional mit Restzeit)
+- Prüfungstracker: Fehlende SuS, Nachprüfungen, Noten-Stand pro Kurs (MiSDV)
+- Ergebnis-Export: Detaillierter CSV mit Antworten + Punkten (wie Google Forms) + individuelle SuS-PDFs
 - In-App Hilfe: Anleitung, FAQ und Tipps direkt in der Plattform
 - Zeitzuschläge (Nachteilsausgleich) pro SuS konfigurierbar
-- SEB-Integration: Safe Exam Browser Konfiguration mitgeliefert
+- SEB-Integration: Auto-Config-Download, harte Durchsetzung, LP-Ausnahmen, SuS-Anleitung
 
 **Backend**
 - Google Sheets als Datenbank (Fragenbank, Klassenlisten, Configs, Antworten)
