@@ -44,10 +44,12 @@ interface Props {
   frage: Frage | null
   onSpeichern: (frage: Frage) => void
   onAbbrechen: () => void
+  /** Aggregierte Performance-Daten für diese Frage (optional) */
+  performance?: import('../../../types/tracker.ts').FragenPerformance
 }
 
 /** Vollbild-Editor zum Erstellen und Bearbeiten von Prüfungsfragen */
-export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props) {
+export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performance }: Props) {
   const user = useAuthStore((s) => s.user)
 
   // Grunddaten
@@ -515,6 +517,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
             gefaesse={gefaesse} setGefaesse={setGefaesse}
             geteilt={geteilt} setGeteilt={setGeteilt}
             ki={ki}
+            performance={performance}
           />
 
           {/* Fragetext */}

@@ -27,6 +27,17 @@ export interface TrackerPruefungSummary {
   korrigiertGesamt: number
   durchschnittNote: number | null
   bestandenRate: number | null
+
+  // Per-Frage-Statistiken (nur bei korrigierten Prüfungen)
+  fragenStats?: Record<string, FrageStatEintrag>
+}
+
+/** Per-Frage-Statistiken aus einer einzelnen Prüfung */
+export interface FrageStatEintrag {
+  loesungsquote: number  // 0-100
+  durchschnittPunkte: number
+  maxPunkte: number
+  n: number  // Anzahl bewerteter SuS
 }
 
 /** Gesamtantwort des Tracker-Endpoints */
@@ -44,6 +55,15 @@ export interface FehlenderSchueler {
 
 /** Abgeleiteter Prüfungsstatus */
 export type PruefungsStatus = 'entwurf' | 'aktiv' | 'beendet' | 'korrigiert'
+
+/** Aggregierte Performance einer Frage über mehrere Prüfungen */
+export interface FragenPerformance {
+  frageId: string
+  anzahlVerwendungen: number
+  gesamtN: number
+  durchschnittLoesungsquote: number  // 0-100
+  verwendungen: { pruefungId: string; pruefungTitel: string; datum: string; loesungsquote: number; n: number }[]
+}
 
 /** Noten-Stand eines Kurses gegen MiSDV-Vorgaben */
 export interface NotenStandKurs {

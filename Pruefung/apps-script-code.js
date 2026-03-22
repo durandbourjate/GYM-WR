@@ -3218,7 +3218,8 @@ function ladeTrackerDatenEndpoint(body) {
         korrigiertAnzahl: 0,
         korrigiertGesamt: 0,
         durchschnittNote: null,
-        bestandenRate: null
+        bestandenRate: null,
+        fragenStats: {}
       };
 
       // 2. Nur für beendete Prüfungen: Antworten-Sheet lesen
@@ -3321,6 +3322,35 @@ function ladeTrackerDatenEndpoint(body) {
                 summary.durchschnittNote = Math.round((notenSumme / notenAnzahl) * 10) / 10;
                 summary.bestandenRate = Math.round((bestandenCount / notenAnzahl) * 100);
               }
+
+              // Per-Frage-Stats aus Korrektur-Daten berechnen
+              // Korrektur-Zeilen haben Spalten: frageId, maxPunkte, kiPunkte, lpPunkte
+              // Gruppiere nach frageId und berechne Lösungsquote
+              var fragenAgg = {};
+              for (var fs = 0; fs < korrekturData.length; fs++) {
+                var fsRow = korrekturData[fs];
+                var fId = fsRow.frageId;
+                if (!fId) continue;
+                var fPunkte = Number(fsRow.lpPunkte || fsRow.kiPunkte || 0);
+                var fMax = Number(fsRow.maxPunkte || 1);
+                if (!fragenAgg[fId]) {
+                  fragenAgg[fId] = { sumPunkte: 0, maxPunkte: fMax, n: 0 };
+                }
+                fragenAgg[fId].sumPunkte += fPunkte;
+                fragenAgg[fId].n++;
+              }
+              var fragenStatsObj = {};
+              for (var fKey in fragenAgg) {
+                var fa = fragenAgg[fKey];
+                var avgP = fa.n > 0 ? fa.sumPunkte / fa.n : 0;
+                fragenStatsObj[fKey] = {
+                  loesungsquote: fa.maxPunkte > 0 ? Math.round((avgP / fa.maxPunkte) * 100) : 0,
+                  durchschnittPunkte: Math.round(avgP * 10) / 10,
+                  maxPunkte: fa.maxPunkte,
+                  n: fa.n
+                };
+              }
+              summary.fragenStats = fragenStatsObj;
             }
           }
         } catch (e) {

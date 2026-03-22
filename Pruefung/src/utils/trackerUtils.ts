@@ -1,7 +1,7 @@
 /**
  * Client-seitige Berechnungen für den Prüfungstracker.
  */
-import type { TrackerPruefungSummary, TrackerDaten, PruefungsStatus, NotenStandKurs, FehlenderSchueler } from '../types/tracker.ts'
+import type { TrackerPruefungSummary, TrackerDaten, PruefungsStatus, NotenStandKurs, FehlenderSchueler, FragenPerformance } from '../types/tracker.ts'
 
 /** Leitet den Prüfungsstatus aus den Tracker-Daten ab */
 export function bestimmePruefungsStatus(s: TrackerPruefungSummary): PruefungsStatus {
@@ -117,6 +117,67 @@ export function berechneNotenStand(tracker: TrackerDaten): NotenStandKurs[] {
   return ergebnis
 }
 
+/**
+ * Aggregiert Fragen-Performance über alle Prüfungen.
+ * Berechnet pro frageId: ∅ Lösungsquote, Anzahl Verwendungen, Gesamt-N.
+ */
+export function aggregiereFragenPerformance(tracker: TrackerDaten): Map<string, FragenPerformance> {
+  const map = new Map<string, FragenPerformance>()
+
+  for (const p of tracker.pruefungen) {
+    if (!p.fragenStats) continue
+    for (const [frageId, stat] of Object.entries(p.fragenStats)) {
+      let perf = map.get(frageId)
+      if (!perf) {
+        perf = {
+          frageId,
+          anzahlVerwendungen: 0,
+          gesamtN: 0,
+          durchschnittLoesungsquote: 0,
+          verwendungen: [],
+        }
+        map.set(frageId, perf)
+      }
+      perf.anzahlVerwendungen++
+      perf.gesamtN += stat.n
+      perf.verwendungen.push({
+        pruefungId: p.pruefungId,
+        pruefungTitel: p.titel,
+        datum: p.datum,
+        loesungsquote: stat.loesungsquote,
+        n: stat.n,
+      })
+    }
+  }
+
+  // ∅ Lösungsquote berechnen (gewichtet nach n)
+  for (const perf of map.values()) {
+    if (perf.gesamtN > 0) {
+      let gewichteterWert = 0
+      for (const v of perf.verwendungen) {
+        gewichteterWert += v.loesungsquote * v.n
+      }
+      perf.durchschnittLoesungsquote = Math.round(gewichteterWert / perf.gesamtN)
+    }
+  }
+
+  return map
+}
+
+/** Farbe für Lösungsquote (Tailwind-Klassen) */
+export function loesungsquoteFarbe(quote: number): string {
+  if (quote >= 70) return 'text-green-600 dark:text-green-400'
+  if (quote >= 40) return 'text-amber-600 dark:text-amber-400'
+  return 'text-red-600 dark:text-red-400'
+}
+
+/** Hintergrundfarbe für Lösungsquote */
+export function loesungsquoteBgFarbe(quote: number): string {
+  if (quote >= 70) return 'bg-green-500'
+  if (quote >= 40) return 'bg-amber-500'
+  return 'bg-red-500'
+}
+
 /** Demo-Tracker-Daten für den Demo-Modus */
 export function erstelleDemoTrackerDaten(): TrackerDaten {
   return {
@@ -144,6 +205,12 @@ export function erstelleDemoTrackerDaten(): TrackerDaten {
         korrigiertGesamt: 22,
         durchschnittNote: 4.3,
         bestandenRate: 85,
+        fragenStats: {
+          'demo-mc-1': { loesungsquote: 82, durchschnittPunkte: 2.5, maxPunkte: 3, n: 22 },
+          'demo-ft-1': { loesungsquote: 65, durchschnittPunkte: 3.9, maxPunkte: 6, n: 22 },
+          'demo-lt-1': { loesungsquote: 91, durchschnittPunkte: 1.8, maxPunkte: 2, n: 22 },
+          'demo-zu-1': { loesungsquote: 45, durchschnittPunkte: 1.8, maxPunkte: 4, n: 22 },
+        },
       },
       {
         pruefungId: 'demo-2',

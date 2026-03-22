@@ -1,5 +1,7 @@
 import { fachbereichFarbe, typLabel } from '../../../utils/fachbereich.ts'
+import { loesungsquoteBgFarbe } from '../../../utils/trackerUtils.ts'
 import type { Frage } from '../../../types/fragen.ts'
+import type { FragenPerformance } from '../../../types/tracker.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import PoolBadges from './PoolBadges.tsx'
 
@@ -9,10 +11,11 @@ interface Props {
   onToggle: () => void
   onEdit: () => void
   zeigeGruppierung: Gruppierung
+  performance?: FragenPerformance
 }
 
 /** Kompakte Zeile für grosse Listen */
-export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, zeigeGruppierung }: Props) {
+export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, zeigeGruppierung, performance }: Props) {
   return (
     <div
       onClick={onEdit}
@@ -63,6 +66,12 @@ export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, z
         {frage.thema}{frage.unterthema ? ` \u203A ${frage.unterthema}` : ''}
       </span>
 
+      {performance && (
+        <span
+          className={`w-2.5 h-2.5 rounded-full shrink-0 ${loesungsquoteBgFarbe(performance.durchschnittLoesungsquote)}`}
+          title={`\u00D8 ${performance.durchschnittLoesungsquote}% L\u00F6sungsquote (${performance.anzahlVerwendungen} Pr\u00FCfungen)`}
+        />
+      )}
       {istInPruefung && (
         <span className="text-[10px] px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded shrink-0 font-medium">
           ✓ In Prüfung

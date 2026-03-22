@@ -6,7 +6,9 @@ import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
 import { typLabel } from '../../utils/fachbereich.ts'
+import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../utils/trackerUtils.ts'
 import type { Frage } from '../../types/fragen.ts'
+import type { FragenPerformance } from '../../types/tracker.ts'
 import { gruppenLabel, gruppenLabelFarbe } from './fragenbrowser/gruppenHelfer.ts'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import KompaktZeile from './fragenbrowser/KompaktZeile.tsx'
@@ -51,6 +53,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
+  const [fragenStats, setFragenStats] = useState<Map<string, FragenPerformance>>(new Map())
 
   // Set für schnellen Lookup der bereits verwendeten Fragen
   const bereitsVerwendetSet = useMemo(() => new Set(bereitsVerwendet), [bereitsVerwendet])
@@ -95,6 +98,23 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       setLadeStatus('fertig')
     }
     lade()
+  }, [user, istDemoModus])
+
+  // Tracker-Daten laden für Fragen-Statistiken
+  useEffect(() => {
+    async function ladeStats(): Promise<void> {
+      if (istDemoModus || !apiService.istKonfiguriert()) {
+        const demo = erstelleDemoTrackerDaten()
+        setFragenStats(aggregiereFragenPerformance(demo))
+        return
+      }
+      if (!user) return
+      const tracker = await apiService.ladeTrackerDaten(user.email)
+      if (tracker) {
+        setFragenStats(aggregiereFragenPerformance(tracker))
+      }
+    }
+    ladeStats()
   }, [user, istDemoModus])
 
   // Wenn initialEditFrageId gesetzt, Editor sofort öffnen sobald Fragen geladen
@@ -291,6 +311,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
                                 onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
                                 zeigeGruppierung={filter.gruppierung}
+                                performance={fragenStats.get(frage.id)}
                               />
                             : <DetailKarte
                                 key={frage.id}
@@ -299,6 +320,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
                                 onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
                                 onLoeschen={() => setLoeschKandidat(frage)}
+                                performance={fragenStats.get(frage.id)}
                               />
                         ))}
                       </div>
@@ -329,6 +351,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           frage={editFrage}
           onSpeichern={handleFrageGespeichert}
           onAbbrechen={() => { setZeigEditor(false); setEditFrage(null) }}
+          performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
         />
       )}
 

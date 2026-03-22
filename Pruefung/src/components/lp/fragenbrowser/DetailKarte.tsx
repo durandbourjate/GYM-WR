@@ -1,5 +1,7 @@
 import { fachbereichFarbe, typLabel } from '../../../utils/fachbereich.ts'
+import { loesungsquoteFarbe } from '../../../utils/trackerUtils.ts'
 import type { Frage } from '../../../types/fragen.ts'
+import type { FragenPerformance } from '../../../types/tracker.ts'
 import PoolBadges from './PoolBadges.tsx'
 
 interface Props {
@@ -8,10 +10,11 @@ interface Props {
   onToggle: () => void
   onEdit: () => void
   onLoeschen: () => void
+  performance?: FragenPerformance
 }
 
 /** Detaillierte Karte mit Fragetext-Vorschau */
-export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen }: Props) {
+export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen, performance }: Props) {
   const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
 
   return (
@@ -85,6 +88,15 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
               </span>
             )}
           </div>
+
+          {/* Fragen-Statistiken */}
+          {performance && (
+            <div className="mt-1">
+              <span className={`text-xs ${loesungsquoteFarbe(performance.durchschnittLoesungsquote)}`}>
+                {'\u{1F4CA}'} {performance.durchschnittLoesungsquote}% · {performance.anzahlVerwendungen}\u00D7 verwendet · {performance.gesamtN} SuS
+              </span>
+            </div>
+          )}
         </div>
         {/* Löschen-Button */}
         <button

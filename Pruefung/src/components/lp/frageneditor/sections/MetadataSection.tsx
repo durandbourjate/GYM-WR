@@ -2,9 +2,12 @@
  * Zuordnungs-Abschnitt: Fachbereich, Bloom, Thema, Unterthema, Tags, Zeitbedarf, Punkte, Semester, Gefässe, Sharing, KI-Klassifizierung.
  * Extrahiert aus FragenEditor.tsx.
  */
+import { useState } from 'react'
 import type { Fachbereich, BloomStufe, Gefaess } from '../../../../types/fragen.ts'
+import type { FragenPerformance } from '../../../../types/tracker.ts'
 import type { useKIAssistent } from '../useKIAssistent.ts'
 import { bloomLabel } from '../../../../utils/fachbereich.ts'
+import { loesungsquoteFarbe } from '../../../../utils/trackerUtils.ts'
 import { Abschnitt, Feld } from '../EditorBausteine.tsx'
 import { ErgebnisAnzeige } from '../KIBausteine.tsx'
 
@@ -34,6 +37,7 @@ interface MetadataSectionProps {
   geteilt: 'privat' | 'schule'
   setGeteilt: (v: 'privat' | 'schule') => void
   ki: ReturnType<typeof useKIAssistent>
+  performance?: FragenPerformance
 }
 
 export default function MetadataSection({
@@ -50,7 +54,10 @@ export default function MetadataSection({
   gefaesse, setGefaesse,
   geteilt, setGeteilt,
   ki,
+  performance,
 }: MetadataSectionProps) {
+  const [statsOffen, setStatsOffen] = useState(false)
+
   return (
     <Abschnitt
       titel="Zuordnung"
@@ -233,6 +240,47 @@ export default function MetadataSection({
           </p>
         </div>
       </div>
+
+      {/* Fragen-Statistiken (nur wenn Performance-Daten vorhanden) */}
+      {performance && (
+        <div className="mt-3 border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden">
+          <button
+            onClick={() => setStatsOffen(!statsOffen)}
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+          >
+            <span className="text-slate-500 dark:text-slate-400 w-3">
+              {statsOffen ? '\u25BC' : '\u25B6'}
+            </span>
+            <span className={loesungsquoteFarbe(performance.durchschnittLoesungsquote)}>
+              {'\u{1F4CA}'} Statistiken: \u00D8 {performance.durchschnittLoesungsquote}% L\u00F6sungsquote ({performance.anzahlVerwendungen} Pr\u00FCfungen, {performance.gesamtN} SuS)
+            </span>
+          </button>
+          {statsOffen && (
+            <div className="px-3 py-2">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-600">
+                    <th className="text-left py-1 font-medium">Pr\u00FCfung</th>
+                    <th className="text-left py-1 font-medium">Datum</th>
+                    <th className="text-right py-1 font-medium">L\u00F6sungsquote</th>
+                    <th className="text-right py-1 font-medium">SuS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {performance.verwendungen.map((v) => (
+                    <tr key={v.pruefungId} className="border-b border-slate-100 dark:border-slate-700 last:border-0">
+                      <td className="py-1 text-slate-700 dark:text-slate-200">{v.pruefungTitel}</td>
+                      <td className="py-1 text-slate-500 dark:text-slate-400">{v.datum}</td>
+                      <td className={`py-1 text-right font-medium ${loesungsquoteFarbe(v.loesungsquote)}`}>{v.loesungsquote}%</td>
+                      <td className="py-1 text-right text-slate-500 dark:text-slate-400">{v.n}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </Abschnitt>
   )
 }
