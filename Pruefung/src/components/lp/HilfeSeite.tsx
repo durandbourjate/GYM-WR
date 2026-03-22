@@ -339,10 +339,20 @@ function HilfeKI() {
               <td className="py-2 pr-4">Lückenstellen markieren</td>
               <td className="py-2">Fehlende Antwort-Varianten</td>
             </tr>
-            <tr>
+            <tr className="border-b border-slate-100 dark:border-slate-700/50">
               <td className="py-2 pr-4 font-medium">Berechnung</td>
               <td className="py-2 pr-4">Ergebnisse berechnen</td>
               <td className="py-2">Toleranzbereiche prüfen</td>
+            </tr>
+            <tr className="border-b border-slate-100 dark:border-slate-700/50">
+              <td className="py-2 pr-4 font-medium">FiBu (4 Typen)</td>
+              <td className="py-2 pr-4">Kontenauswahl, Buchungssätze, T-Konten, Kontenbestimmung, Bilanzstruktur, Fallbeispiele</td>
+              <td className="py-2">Buchungssätze prüfen</td>
+            </tr>
+            <tr>
+              <td className="py-2 pr-4 font-medium">Prüfungs-Analyse</td>
+              <td className="py-2 pr-4">—</td>
+              <td className="py-2">Gesamtanalyse mit Verbesserungsvorschlägen</td>
             </tr>
           </tbody>
         </table>
@@ -598,6 +608,22 @@ function HilfeFAQ() {
 
       <FAQItem frage="Wer kann meine Prüfungen sehen?">
         Nur Lehrpersonen mit @gymhofwil.ch-Login haben Zugriff auf den Composer, die Fragenbank und die Korrektur. SuS sehen nur die ihnen zugewiesene Prüfung.
+      </FAQItem>
+
+      <FAQItem frage="Was ist der Open-End-Modus?">
+        Im Open-End-Modus gibt es kein fixes Zeitlimit. Die Stoppuhr zählt aufwärts. Sie beenden die Prüfung manuell — entweder sofort oder mit einer Restzeit (z.B. noch 5 Minuten). SuS mit Nachteilsausgleich erhalten auch bei Restzeit automatisch Zusatzminuten.
+      </FAQItem>
+
+      <FAQItem frage="Wie funktioniert die Kurs-basierte Auswahl?">
+        Teilnehmer werden pro Kurs/Gefäss ausgewählt (z.B. SF WR 28bc29fs), nicht pro Stammklasse. Wenn ein SuS in mehreren Kursen vorkommt, wird er automatisch dedupliziert. Die Kursdaten werden aus dem Google Sheet «Klassenlisten» geladen.
+      </FAQItem>
+
+      <FAQItem frage="Kann ich Audio-Feedback geben?">
+        Ja. Im Korrektur-Dashboard können Sie pro Frage und als Gesamtkommentar Audio-Feedback aufnehmen (direkt im Browser). Die Audio-Dateien werden zu Google Drive hochgeladen und sind für die SuS in der Korrektur-Einsicht abspielbar.
+      </FAQItem>
+
+      <FAQItem frage="Was sind die Pool-Badges in der Fragenbank?">
+        Pool-Badges zeigen den Sync-Status von importierten Übungspool-Fragen: Rot = ungeprüft (aus Pool importiert, noch nicht reviewt), Gelb = Pool ✓ (reviewt), Grün = prüfungstauglich (von LP abgesegnet für Prüfungen), Blau pulsierend = Update verfügbar.
       </FAQItem>
     </div>
   )

@@ -480,7 +480,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen }: Props)
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['mc', 'freitext', 'lueckentext', 'zuordnung', 'richtigfalsch', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe'] as FrageTyp[]).map((t) => (
+              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}

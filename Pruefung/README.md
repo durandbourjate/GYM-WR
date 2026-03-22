@@ -5,19 +5,25 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 ## Features
 
 **Für Schülerinnen und Schüler**
-- 6 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung
+- 11 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe
 - Automatisches Speichern (lokal + remote) — kein Datenverlust
-- Timer mit Countdown, Fortschrittsanzeige pro Abschnitt
+- Timer mit Countdown oder Open-End (Stoppuhr), Fortschrittsanzeige pro Abschnitt
 - Offline-fähig (PWA): Antworten werden bei Reconnect nachgesendet
 - Light/Dark Mode
+- Korrektur-Einsicht: Freigegebene Bewertungen mit Punkten, Kommentaren und Audio-Feedback
 
 **Für Lehrpersonen**
 - Prüfungs-Composer: Prüfungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragenbank)
+- 4-Phasen-Workflow: Vorbereitung → Lobby → Live-Monitoring → Ergebnisse/Korrektur
+- Kurs-basierte Teilnehmer-Auswahl (pro Gefäss, mit Dedup bei Mehrfach-Kursen)
 - Prüfungs-Analyse: Taxonomie-Verteilung (K1-K6), Fragetypen-Mix, Zeitbedarf vs. Dauer, Themen-Abdeckung
-- KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken und Berechnungsergebnisse generieren oder prüfen lassen
+- KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken, Berechnungsergebnisse und FiBu-Aufgaben generieren oder prüfen lassen
 - KI-Korrektur: Automatische Bewertung mit manueller Übersteuerung + individuelles Feedback per E-Mail
-- Live-Monitoring: Fortschritt, Heartbeat, SEB-Status aller SuS in Echtzeit
-- Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe filtern
+- Audio-Korrektur: Audio-Feedback pro Frage und gesamt
+- Live-Monitoring: Fortschritt, Heartbeat, Inaktivitäts-Warnstufen, SEB-Status aller SuS in Echtzeit
+- Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe, Pool-Status filtern
+- Pool-Brücke: Bidirektionaler Sync mit Übungspools (Import + Rück-Sync via GitHub API)
+- Open-End-Modus: Prüfung ohne Zeitlimit, LP beendet manuell (optional mit Restzeit)
 - In-App Hilfe: Anleitung, FAQ und Tipps direkt in der Plattform
 - Zeitzuschläge (Nachteilsausgleich) pro SuS konfigurierbar
 - SEB-Integration: Safe Exam Browser Konfiguration mitgeliefert
@@ -114,7 +120,7 @@ Environment-Variablen werden über GitHub Secrets gesetzt:
 src/
 ├── components/
 │   ├── lp/                    LP-Komponenten (Composer, Monitoring)
-│   ├── fragetypen/            MC, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung
+│   ├── fragetypen/            11 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe
 │   └── ...                    Login, Layout, Timer, Abgabe, etc.
 ├── services/                  API, Auth, SEB, Auto-Save, Retry-Queue
 ├── store/                     Zustand Stores (Prüfung, Auth, Theme)

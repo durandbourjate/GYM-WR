@@ -6,6 +6,16 @@
 
 ## Aktueller Stand
 
+**Kleinere Fixes + Doku-Update** (22.03.2026) ✅
+
+### Session 22.03.2026 — Fixes + Dokumentation
+- **LP-E-Mail korrigiert:** `yannick.durand@gymhofwil.ch` statt alter E-Mail in `authStore.ts`
+- **Fragetyp-Reihenfolge:** Freitext → MC → R/F → Lückentext → Zuordnung → Berechnung → FiBu → Aufgabengruppe (Freitext als Standard)
+- **Dokumentation:** HANDOFF.md, README.md, HilfeSeite.tsx aktualisiert auf aktuellen Stand
+- **Roadmap Multi-LP:** Neue Sektion im HANDOFF mit Feature-Sammlung für Skalierung
+
+---
+
 **fragenMap-Sync + Build-Fixes + DurchfuehrenDashboard** (22.03.2026) ✅
 
 ### Session 22.03.2026 — fragenMap-Sync + Refactoring DurchfuehrenDashboard
@@ -457,7 +467,25 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - ~~Prüfungs-Workflow (4 Phasen)~~ ✅ (Session 21.03.2026 — Phase 5i)
 - ~~Kurs-basierte Teilnehmer-Auswahl~~ ✅ (Session 22.03.2026 — Phase 5j)
 - Tablet-/Smartphone-Optimierung: grundsätzlich responsive, aber noch nicht spezifisch getestet
-- Skalierung/Kollaboration: Apps für andere LP nutzbar machen (grösserer Umbau)
+- Skalierung/Kollaboration: Apps für andere LP nutzbar machen (→ Roadmap unten)
+
+### Roadmap: Multi-LP / Skalierung (Sammlung)
+
+Ideen und Features für die Erweiterung auf mehrere Lehrpersonen. **Noch nicht umsetzen** — erst wenn DUY-Version stabil steht.
+
+| Bereich | Feature | Beschreibung | Priorität |
+|---------|---------|-------------|-----------|
+| **Auth** | Multi-LP-Zugang | Mehrere LP-E-Mails in Whitelist, nicht nur DUY. Aktuell hardcoded in `authStore.ts` | Hoch |
+| **Auth** | Rollenverwaltung | Admin-Rolle (kann alles) vs. LP-Rolle (eigene Fragen/Prüfungen). Aktuell: alle LP sind gleich | Mittel |
+| **Daten** | LP-eigene Fragenbanken | Jede LP sieht nur ihre eigenen Fragen, oder teilt explizit. Aktuell: eine gemeinsame Fragenbank | Hoch |
+| **Daten** | Cloud-Backend | Weg von localStorage → Datenbank (Supabase / Firebase / erweiterte Sheets-Struktur) | Hoch |
+| **Kurse** | LP-eigene Kursverwaltung | LP können eigene Kurse/Klassen anlegen, nicht nur die von DUY | Hoch |
+| **Sharing** | Geteilte Fragenpools | Fragen zwischen LPs teilen (opt-in, mit Freigabe-Mechanismus) | Mittel |
+| **Export** | Ergebnis-Export erweitert | CSV/PDF-Export der Prüfungsresultate (Noten, Statistiken, Feedback) | Mittel |
+| **Statistik** | Fragen-Analyse | Schwierigkeit, Trennschärfe, Lösungsquoten über mehrere Durchführungen | Niedrig |
+| **UX** | Tablet/Smartphone | Gezieltes Testing + Optimierung für Touch-Geräte (SuS-Ansicht) | Mittel |
+| **Infra** | Multi-Tenant Sheets | Separate Sheets/Tabs pro LP oder zentrale Struktur mit LP-Kennung | Hoch |
+| **Demo** | Demo-Modus absichern | Demo-Modus für andere LP zum Testen: keine Daten speichern/löschen möglich | Mittel |
 
 ## Verzeichnisstruktur
 
