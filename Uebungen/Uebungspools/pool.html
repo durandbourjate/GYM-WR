@@ -455,6 +455,18 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
 .lz-topic-start:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .lz-topic-start .lz-start-icon{font-size:.9rem}
 html.dark .lz-topic-start{background:var(--c-primary)}
+.lz-mini-start{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 16px;border-radius:8px;background:var(--c-primary);color:#fff;border:none;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s;width:100%}
+.lz-mini-start:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.schnellstart-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px}
+.schnellstart-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 10px;border-radius:var(--radius);border:2px solid var(--c-border);background:var(--c-surface);cursor:pointer;transition:.2s;font-family:inherit;text-align:center}
+.schnellstart-btn:hover{border-color:var(--c-primary);background:color-mix(in srgb,var(--c-primary) 8%,transparent)}
+.schnellstart-btn .ss-icon{font-size:1.4rem}
+.schnellstart-btn .ss-label{font-size:.82rem;font-weight:600;color:var(--c-text)}
+.schnellstart-btn .ss-count{font-size:.7rem;color:var(--c-text-soft);font-family:'DM Mono',monospace}
+@media(max-width:600px){.schnellstart-row{grid-template-columns:1fr}}
+.tag-chips-section{margin-top:4px}
+.badge-tag{background:#f3e8ff;color:#7c3aed;font-size:.65rem;font-weight:500;padding:2px 7px;border-radius:10px}
+html.dark .badge-tag{background:#1a0f2e;color:#a78bfa}
 /* ═══ SUCHFELD + START — Nebeneinander ═══ */
 .start-top-row{display:flex;gap:12px;align-items:stretch}
 .start-search-col{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -572,6 +584,14 @@ html.dark .search-tag{background:var(--c-surface)}
 <button class="btn btn-primary start-btn-top" id="startBtn" onclick="startQuiz()" disabled>Übung starten</button>
 </div>
 <div class="filter-count" id="filterCount">0 Aufgaben verfügbar</div>
+</div>
+<div class="card" id="schnellstartCard">
+<h2 style="font-size:1.05rem;font-weight:700;margin-bottom:12px">🚀 Schnellstart</h2>
+<div class="schnellstart-row" id="schnellstartRow"></div>
+</div>
+<div class="card" id="tagFilterCard" style="display:none">
+<div class="filter-header"><h2>🏷️ Tags</h2><button class="toggle-all" onclick="toggleAll('tagChips','tags')">Alle ⇄</button></div>
+<div class="chips" id="tagChips"></div>
 </div>
 <div class="card">
 <div class="filter-header"><h2>📚 Unterthema</h2><button class="toggle-all" onclick="toggleAll('topicChips','topics')">Alle ⇄</button></div>
@@ -754,7 +774,7 @@ function showError(msg) {
 // ══════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════
-let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
+let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set(),tags:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
 let pickedSortItem=null;
 
 // ══════════════════════════════════════════
@@ -1081,11 +1101,77 @@ function init(){
   buildChips('topicChips',TOPICS,'topics',t=>TOPICS[t].short);
   buildChips('diffChips',DIFF_LABELS,'diffs',d=>DIFF_LABELS[d]);
   buildChips('typeChips',TYPE_LABELS,'types',t=>TYPE_LABELS[t]);
+  buildTagChips();
+  buildSchnellstart();
   setMode('mix');
   patchGetFiltered();
   initSearch();
   updateFilterCount();
   applyDeepLink();
+}
+
+// ══════════════════════════════════════════
+// TAG CHIPS — Filter auf Tags
+// ══════════════════════════════════════════
+function buildTagChips(){
+  var tagSet=new Set();
+  QUESTIONS.forEach(function(q){ if(q.tags) q.tags.forEach(function(t){
+    // Transversale Tags (bne:, idz:, dig:, pol:) werden schon als searchTags angezeigt
+    if(!t.match(/^(bne|idz|dig|pol):/)) tagSet.add(t);
+  }); });
+  var container=document.getElementById('tagChips');
+  var card=document.getElementById('tagFilterCard');
+  if(tagSet.size===0){ card.style.display='none'; return; }
+  card.style.display='';
+  var tags=Array.from(tagSet).sort();
+  container.innerHTML='';
+  tags.forEach(function(tag){
+    var count=QUESTIONS.filter(function(q){ return q.tags && q.tags.indexOf(tag)!==-1; }).length;
+    var ch=document.createElement('span'); ch.className='chip';
+    ch.dataset.key=tag;
+    ch.textContent=tag+' ('+count+')';
+    ch.onclick=function(){ toggleChip(ch,'tags',tag); };
+    container.appendChild(ch);
+  });
+}
+
+// ══════════════════════════════════════════
+// SCHNELLSTART — Direkte Schwierigkeits-Buttons
+// ══════════════════════════════════════════
+function buildSchnellstart(){
+  var row=document.getElementById('schnellstartRow');
+  var counts={1:0,2:0,3:0};
+  QUESTIONS.forEach(function(q){ if(counts[q.diff]!==undefined) counts[q.diff]++; });
+  var btns=[
+    {label:'Nur Einfache',icon:'⭐',diffs:['1'],count:counts[1]},
+    {label:'Mittel & Schwer',icon:'⭐⭐',diffs:['2','3'],count:counts[2]+counts[3]},
+    {label:'Alle Schwierigkeiten',icon:'🎯',diffs:[],count:QUESTIONS.length}
+  ];
+  row.innerHTML='';
+  btns.forEach(function(b){
+    var btn=document.createElement('button');
+    btn.className='schnellstart-btn';
+    btn.innerHTML='<span class="ss-icon">'+b.icon+'</span><span class="ss-label">'+b.label+'</span><span class="ss-count">'+b.count+' Fragen</span>';
+    btn.onclick=function(){ quickStart(b.diffs); };
+    if(b.count===0) btn.disabled=true;
+    row.appendChild(btn);
+  });
+}
+
+function quickStart(diffs){
+  setMode('mix');
+  // Wenn spezifische Schwierigkeiten gewählt: nur diese auswählen
+  if(diffs.length>0){
+    state.filters.diffs.clear();
+    document.querySelectorAll('#diffChips .chip').forEach(function(ch){ ch.classList.remove('active'); });
+    diffs.forEach(function(d){
+      state.filters.diffs.add(d);
+      var chip=document.querySelector('#diffChips .chip[data-key="'+d+'"]');
+      if(chip) chip.classList.add('active');
+    });
+  }
+  updateFilterCount();
+  if(getFiltered().length>0) startQuiz();
 }
 
 // ══════════════════════════════════════════
@@ -1130,6 +1216,16 @@ function applyDeepLink(){
       state.filters.types.add(t);
       const chip=document.querySelector('#typeChips .chip[data-key="'+t+'"]');
       if(chip)chip.classList.add('active');
+    });
+  }
+  const tagParam=params.get('tag');
+  if(tagParam){
+    state.filters.tags.clear();
+    document.querySelectorAll('#tagChips .chip').forEach(ch=>ch.classList.remove('active'));
+    tagParam.split(',').forEach(t=>{
+      state.filters.tags.add(t);
+      var chip=document.querySelector('#tagChips .chip[data-key="'+t+'"]');
+      if(chip) chip.classList.add('active');
     });
   }
   updateFilterCount();
@@ -1230,7 +1326,8 @@ function getFiltered(){
   return QUESTIONS.filter(q=>
     (state.filters.topics.size===0||state.filters.topics.has(q.topic))&&
     (state.filters.diffs.size===0||state.filters.diffs.has(String(q.diff)))&&
-    (state.filters.types.size===0||state.filters.types.has(q.type))
+    (state.filters.types.size===0||state.filters.types.has(q.type))&&
+    (state.filters.tags.size===0||( q.tags && q.tags.some(t=>state.filters.tags.has(t)) ))
   );
 }
 
@@ -1261,6 +1358,7 @@ function renderQuestion(){
   html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
   html+='<span class="badge badge-tax">'+q.tax+'</span>';
   html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+  html+=renderTagBadges(q);
   html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
   html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
   html+='</div>';
@@ -1293,6 +1391,7 @@ function renderQuestion(){
     html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
     html+='<span class="badge badge-tax">'+q.tax+'</span>';
     html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+    html+=renderTagBadges(q);
     html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
     html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
     html+='</div>';
@@ -1691,9 +1790,10 @@ function exportResults(){
 }
 
 function resetApp(){
-  state={mode:'mix',filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
+  state={mode:'mix',filters:{topics:new Set(),diffs:new Set(),types:new Set(),tags:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
   searchState.query=''; searchState.activeTags.clear();
   document.querySelectorAll('.search-tag').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('#tagChips .chip').forEach(c=>c.classList.remove('active'));
   var si=document.getElementById('searchInput'); if(si){si.value='';}
   document.getElementById('searchClear').style.display='none';
   document.getElementById('searchResults').classList.remove('active');
@@ -1708,6 +1808,21 @@ function showScreen(id){
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+function renderTagBadges(q){
+  if(!q.tags||!q.tags.length)return '';
+  var html='';
+  q.tags.forEach(function(t){
+    // Transversale Tags kurz darstellen
+    var label=t;
+    if(t.startsWith('bne:'))label='🌍 '+t.substring(4);
+    else if(t.startsWith('idz:'))label='🔗 '+t.substring(4);
+    else if(t.startsWith('dig:'))label='💻 '+t.substring(4);
+    else if(t.startsWith('pol:'))label='🏛️ '+t.substring(4);
+    html+='<span class="badge badge-tag">'+label+'</span>';
+  });
+  return html;
+}
 
 function renderContext(q){
   if(!q.context)return '';
@@ -1732,9 +1847,12 @@ function openMini(key) {
   var t = TOPICS[key];
   if (!t || !t.lernziele || !t.lernziele.length) return;
   document.getElementById('lzMiniTitle').textContent = t.label;
+  var count = QUESTIONS.filter(function(q) { return q.topic === key; }).length;
   var html = '<ul class="lz-list">';
   t.lernziele.forEach(function(lz) { html += '<li>' + formatLernziel(lz) + '</li>'; });
   html += '</ul>';
+  html += '<button class="lz-mini-start" onclick="startFromLZ(\'' + key + '\')">';
+  html += '▶ ' + count + ' Fragen zu «' + t.short + '» üben</button>';
   document.getElementById('lzMiniBody').innerHTML = html;
   document.getElementById('lzMiniOverlay').classList.add('active');
 }
