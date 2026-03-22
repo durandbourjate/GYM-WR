@@ -106,10 +106,13 @@ function EingeschraenktSelect({
       value={value}
       onChange={e => onChange(e.target.value)}
       disabled={disabled}
-      className={`min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-3 py-2
-        text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
-        focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400
-        disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`min-h-[44px] w-full rounded-md border px-3 py-2
+        text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+        disabled:cursor-not-allowed disabled:opacity-50
+        ${value
+          ? 'border-indigo-400 bg-indigo-50 text-slate-900 dark:border-indigo-500 dark:bg-indigo-900/15 dark:text-slate-100'
+          : 'border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+        } ${className}`}
     >
       <option value="">{placeholder}</option>
       {options.map(k => (
@@ -238,10 +241,13 @@ function VollAutocomplete({
         disabled={disabled}
         autoComplete="off"
         className={`${compact ? 'min-h-[28px] text-[11px] px-1.5 py-0.5' : 'min-h-[44px] text-sm px-3 py-2'}
-          w-full rounded-md border border-slate-300 bg-white
-          text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100
-          focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400
-          disabled:cursor-not-allowed disabled:opacity-50`}
+          w-full rounded-md border
+          focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+          disabled:cursor-not-allowed disabled:opacity-50
+          ${value && !open
+            ? 'border-indigo-400 bg-indigo-50 text-slate-900 dark:border-indigo-500 dark:bg-indigo-900/15 dark:text-slate-100'
+            : 'border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+          }`}
         role="combobox"
         aria-expanded={open}
         aria-autocomplete="list"

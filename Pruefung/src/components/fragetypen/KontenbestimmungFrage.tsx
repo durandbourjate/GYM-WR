@@ -143,10 +143,13 @@ export default function KontenbestimmungFrage({ frage }: Props) {
                           value={antwort.kategorie ?? ''}
                           onChange={(e) => aendereAntwort(aufgabe.id, aIdx, 'kategorie', e.target.value)}
                           disabled={readOnly}
-                          className="min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-2 py-2
-                            text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100
-                            focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
-                            disabled:cursor-not-allowed disabled:opacity-50"
+                          className={`min-h-[44px] w-full rounded-md border px-2 py-2
+                            text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+                            disabled:cursor-not-allowed disabled:opacity-50
+                            ${antwort.kategorie
+                              ? 'border-indigo-400 bg-indigo-50 text-slate-900 dark:border-indigo-500 dark:bg-indigo-900/15 dark:text-slate-100'
+                              : 'border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100'
+                            }`}
                         >
                           <option value="">--</option>
                           <option value="aktiv">Aktiv</option>
@@ -164,10 +167,13 @@ export default function KontenbestimmungFrage({ frage }: Props) {
                           value={antwort.seite ?? ''}
                           onChange={(e) => aendereAntwort(aufgabe.id, aIdx, 'seite', e.target.value)}
                           disabled={readOnly}
-                          className="min-h-[44px] w-full rounded-md border border-slate-300 bg-white px-2 py-2
-                            text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100
-                            focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
-                            disabled:cursor-not-allowed disabled:opacity-50"
+                          className={`min-h-[44px] w-full rounded-md border px-2 py-2
+                            text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+                            disabled:cursor-not-allowed disabled:opacity-50
+                            ${antwort.seite
+                              ? 'border-indigo-400 bg-indigo-50 text-slate-900 dark:border-indigo-500 dark:bg-indigo-900/15 dark:text-slate-100'
+                              : 'border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100'
+                            }`}
                         >
                           <option value="">--</option>
                           <option value="soll">Soll</option>
