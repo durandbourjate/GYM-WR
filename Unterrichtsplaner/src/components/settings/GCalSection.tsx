@@ -222,11 +222,11 @@ export function GCalSection() {
             value={editClientId}
             onChange={(e) => setEditClientId(e.target.value)}
             placeholder="xxxx.apps.googleusercontent.com"
-            className="w-full text-[11px] px-2 py-1 rounded outline-none focus:border-blue-500"
+            className="w-full text-[11px] px-2 py-1 rounded outline-none focus:border-indigo-500"
             style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
           />
           <p className="text-[8px] mt-0.5" style={{ color: 'var(--text-dim)' }}>
-            Erstelle eine OAuth Client ID in der <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" className="text-blue-400 hover:underline">Google Cloud Console</a>.
+            Erstelle eine OAuth Client ID in der <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" className="text-indigo-400 hover:underline">Google Cloud Console</a>.
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export function GCalSection() {
         <div className="flex gap-1">
           {!isAuth ? (
             <button onClick={handleLogin} disabled={loading}
-              className="flex-1 py-1.5 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              className="flex-1 py-1.5 rounded text-[11px] font-medium bg-indigo-700 hover:bg-indigo-600 text-white cursor-pointer transition-all disabled:opacity-50">
               {loading ? '⏳ Verbinde…' : '🔑 Mit Google anmelden'}
             </button>
           ) : (
@@ -259,7 +259,7 @@ export function GCalSection() {
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>Kalender</span>
               <button onClick={handleRefreshCalendars} disabled={loading}
-                className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer">
+                className="text-[9px] text-indigo-400 hover:text-indigo-300 cursor-pointer">
                 🔄 Aktualisieren
               </button>
             </div>
@@ -292,10 +292,10 @@ export function GCalSection() {
                       type="checkbox"
                       checked={readCalendarIds.includes(c.id)}
                       onChange={() => toggleReadCalendar(c.id)}
-                      className="accent-blue-500 w-3 h-3"
+                      className="accent-indigo-500 w-3 h-3"
                     />
                     <span className="truncate" style={{ color: 'var(--text-primary)' }}>{c.summary}</span>
-                    {c.primary && <span className="text-[8px] text-blue-400">Primär</span>}
+                    {c.primary && <span className="text-[8px] text-indigo-400">Primär</span>}
                   </label>
                 ))}
               </div>
@@ -321,7 +321,7 @@ export function GCalSection() {
               Erstellt/aktualisiert Google Calendar Events für alle Lektionen. Events werden mit einem <code>planer-managed</code>-Tag markiert.
             </p>
             <button onClick={handleSync} disabled={syncing}
-              className="w-full py-1.5 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+              className="w-full py-1.5 rounded text-[11px] font-medium bg-indigo-700 hover:bg-indigo-600 text-white cursor-pointer transition-all disabled:opacity-50">
               {syncing ? '⏳ Synchronisiere…' : '🔄 Jetzt synchronisieren'}
             </button>
 
@@ -329,7 +329,7 @@ export function GCalSection() {
             {syncing && syncProgress && (
               <div className="space-y-0.5">
                 <div className="w-full rounded-full h-1.5" style={{ background: 'var(--bg-hover)' }}>
-                  <div className="bg-blue-500 h-1.5 rounded-full transition-all"
+                  <div className="bg-indigo-500 h-1.5 rounded-full transition-all"
                     style={{ width: `${syncProgress.total > 0 ? (syncProgress.done / syncProgress.total * 100) : 0}%` }} />
                 </div>
                 <p className="text-[8px]" style={{ color: 'var(--text-dim)' }}>
@@ -399,7 +399,7 @@ export function GCalSection() {
                               else next.add(c.event.id);
                               return next;
                             })}
-                            className="accent-blue-500 w-3 h-3 mt-0.5"
+                            className="accent-indigo-500 w-3 h-3 mt-0.5"
                           />
                           <div>
                             <div style={{ color: 'var(--text-primary)' }}>{c.event.summary}</div>
@@ -414,7 +414,7 @@ export function GCalSection() {
                     </div>
                     <div className="flex gap-1">
                       <button onClick={handleConfirmImport} disabled={selectedImports.size === 0}
-                        className="flex-1 py-1 rounded text-[11px] font-medium bg-blue-700 hover:bg-blue-600 text-white cursor-pointer transition-all disabled:opacity-50">
+                        className="flex-1 py-1 rounded text-[11px] font-medium bg-indigo-700 hover:bg-indigo-600 text-white cursor-pointer transition-all disabled:opacity-50">
                         ✅ {selectedImports.size} importieren
                       </button>
                       <button onClick={() => { setImportCandidates(null); setSelectedImports(new Set()); }}

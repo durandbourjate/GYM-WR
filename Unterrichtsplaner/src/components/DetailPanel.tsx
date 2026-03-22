@@ -78,7 +78,7 @@ export function DetailPanel() {
     >
       {/* Resize handle */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-blue-500/30 active:bg-blue-500/50 z-10 transition-colors"
+        className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-500/30 active:bg-indigo-500/50 z-10 transition-colors"
         onMouseDown={() => { resizing.current = true; document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; }}
       />
       <div className="px-3 py-2 border-b border-slate-600 flex items-center justify-between shrink-0">
@@ -87,7 +87,7 @@ export function DetailPanel() {
             onClick={() => setSidePanelTab('details')}
             className={`px-2.5 py-1 rounded text-[13px] font-semibold border cursor-pointer transition-colors ${
               sidePanelTab === 'details'
-                ? 'bg-blue-500/15 border-blue-500/50'
+                ? 'bg-indigo-500/15 border-indigo-500/50'
                 : 'border-transparent'
             }`}
             style={{ color: sidePanelTab === 'details' ? 'var(--text-primary)' : 'var(--text-muted)' }}

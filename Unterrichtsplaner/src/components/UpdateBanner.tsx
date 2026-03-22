@@ -61,24 +61,24 @@ export function UpdateBanner() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] bg-blue-900/95 backdrop-blur border border-blue-500 rounded-lg px-4 py-2.5 flex items-center gap-3 shadow-xl shadow-black/40 no-print">
-      <span className="text-[13px] text-blue-100">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] bg-indigo-900/95 backdrop-blur border border-indigo-500 rounded-lg px-4 py-2.5 flex items-center gap-3 shadow-xl shadow-black/40 no-print">
+      <span className="text-[13px] text-indigo-100">
         Neue Version verfügbar!
       </span>
       <button
         onClick={handleUpdate}
-        className="px-3 py-1 rounded bg-blue-500 text-white text-[12px] font-semibold cursor-pointer hover:bg-blue-400 transition-colors"
+        className="px-3 py-1 rounded bg-indigo-500 text-white text-[12px] font-semibold cursor-pointer hover:bg-indigo-400 transition-colors"
       >
         Jetzt aktualisieren
       </button>
       <button
         onClick={() => setShowBanner(false)}
-        className="text-blue-300 hover:text-white text-[11px] cursor-pointer px-1"
+        className="text-indigo-300 hover:text-white text-[11px] cursor-pointer px-1"
         title="Später"
       >
         ✕
       </button>
-      <span className="text-[10px] text-blue-400/60">{APP_VERSION}</span>
+      <span className="text-[10px] text-indigo-400/60">{APP_VERSION}</span>
     </div>
   );
 }

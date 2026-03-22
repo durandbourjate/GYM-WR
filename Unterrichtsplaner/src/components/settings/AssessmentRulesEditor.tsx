@@ -73,7 +73,7 @@ export function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
             {r.semester === 'custom' ? (
               <input type="date" value={r.customDate || ''}
                 onChange={(e) => update(i, { customDate: e.target.value, deadline: e.target.value })}
-                className="rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
+                className="rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-indigo-400 cursor-pointer"
                 style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
             ) : (
               <SmallInput value={r.deadline} onChange={(v) => update(i, { deadline: v })}
@@ -83,7 +83,7 @@ export function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
           <div className="flex gap-1.5 items-center flex-wrap">
             <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Stufe:</span>
             <select value={r.stufe || ''} onChange={(e) => update(i, { stufe: e.target.value || undefined })}
-              className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
+              className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-indigo-400 cursor-pointer"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               {stufeOptions.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
             </select>
@@ -118,7 +118,7 @@ export function AssessmentRulesEditor({ rules, onChange, schoolLevel }: {
         </button>
         {rules.length === 0 && (
           <button onClick={() => onChange([...DEFAULT_GYM_RULES])}
-            className="py-1 px-2 rounded border border-blue-500/30 text-blue-400 text-[11px] cursor-pointer hover:bg-blue-500/10">
+            className="py-1 px-2 rounded border border-indigo-500/30 text-indigo-400 text-[11px] cursor-pointer hover:bg-indigo-500/10">
             📋 GYM-Standard laden
           </button>
         )}

@@ -191,6 +191,8 @@ export type Kontenkategorie = 'aktiv' | 'passiv' | 'aufwand' | 'ertrag'
 export interface KontenauswahlConfig {
   modus: 'eingeschraenkt' | 'voll'
   konten?: string[]
+  /** Kategorie-Farben in Konten-Dropdown anzeigen (Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün) */
+  zeigeKategoriefarben?: boolean
 }
 
 // === BUCHUNGSSATZ ===

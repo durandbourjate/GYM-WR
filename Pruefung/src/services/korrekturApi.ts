@@ -21,12 +21,38 @@ export interface KorrekturDetailBewertung {
   audioKommentarId: string | null
 }
 
+/** MC-Option in Korrektur-Ansicht */
+export interface KorrekturMCOption {
+  id: string
+  text: string
+}
+
+/** R/F-Aussage in Korrektur-Ansicht */
+export interface KorrekturRFAussage {
+  id: string
+  text: string
+  korrekt: boolean
+}
+
 export interface KorrekturDetailDaten {
   success: boolean
   titel: string
   datum: string
   klasse: string
-  fragen: Array<{ id: string; typ: string; fragetext?: string; anhaenge?: Array<{ id: string; dateiname: string; mimeType: string; groesseBytes: number; driveFileId: string; beschreibung?: string; url?: string }> }>
+  fragen: Array<{
+    id: string
+    typ: string
+    fragetext?: string
+    geschaeftsfall?: string
+    aufgabentext?: string
+    anhaenge?: Array<{ id: string; dateiname: string; mimeType: string; groesseBytes: number; driveFileId: string; beschreibung?: string; url?: string }>
+    // MC-spezifisch
+    optionen?: KorrekturMCOption[]
+    korrekteOptionen?: string[]
+    mehrfachauswahl?: boolean
+    // R/F-spezifisch
+    aussagen?: KorrekturRFAussage[]
+  }>
   antworten: Record<string, unknown>
   bewertungen: Record<string, KorrekturDetailBewertung>
   gesamtPunkte: number

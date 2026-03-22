@@ -244,7 +244,7 @@ export function PlannerTabs() {
           >
             {editingId === inst.id ? (
               <input
-                className="bg-transparent border-b border-blue-400 text-white outline-none w-24 text-[12px]"
+                className="bg-transparent border-b border-indigo-400 text-white outline-none w-24 text-[12px]"
                 value={editName}
                 onChange={e => setEditName(e.target.value)}
                 onBlur={commitRename}
@@ -339,7 +339,7 @@ export function PlannerTabs() {
               )}
               <div className="flex gap-2 justify-end pt-2">
                 <button className="px-3 py-1.5 text-slate-400 hover:text-white text-xs cursor-pointer" onClick={resetNewDialog}>Abbrechen</button>
-                <button className="px-4 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500 cursor-pointer font-medium" onClick={handleCreate}>
+                <button className="px-4 py-1.5 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-500 cursor-pointer font-medium" onClick={handleCreate}>
                   + Erstellen
                 </button>
               </div>
@@ -551,7 +551,7 @@ export function WelcomeScreen() {
 
       <div className="flex flex-col gap-4 w-full max-w-sm">
         <input
-          className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white text-center outline-none focus:border-blue-500"
+          className="bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white text-center outline-none focus:border-indigo-500"
           placeholder="Name (z.B. SJ 25/26)"
           value={name}
           onChange={e => setName(e.target.value)}
@@ -595,7 +595,7 @@ export function WelcomeScreen() {
         )}
 
         <button
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors cursor-pointer"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition-colors cursor-pointer"
           onClick={() => handleCreate()}
         >
           + Neuen Planer erstellen

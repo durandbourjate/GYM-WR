@@ -181,7 +181,7 @@ export function ZoomBlockView({ semester }: Props) {
         <thead className="sticky z-40" style={{ top: 0 }}>
           <tr>
             <th className="w-10 bg-gray-900 sticky left-0 z-50 py-0.5 border-b border-gray-800">
-              <span className={`font-bold ${semester === 1 ? 'text-blue-400' : 'text-amber-400'}`} style={{ fontSize: z(8) }}>
+              <span className={`font-bold ${semester === 1 ? 'text-indigo-400' : 'text-amber-400'}`} style={{ fontSize: z(8) }}>
                 {semester === 1 ? 'S1' : 'S2'}
               </span>
             </th>
@@ -205,7 +205,7 @@ export function ZoomBlockView({ semester }: Props) {
               return (
                 <th key={`${c.id}-info`} className="bg-gray-900 px-0.5 pb-0.5 border-b-2 border-gray-700 text-center"
                   style={{ borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}40` : 'none', width: COL_W, minWidth: COL_W, maxWidth: COL_W }}>
-                  <div className={`font-bold cursor-pointer transition-colors ${classFilter === c.cls ? 'text-blue-400' : 'text-gray-200 hover:text-blue-300'}`}
+                  <div className={`font-bold cursor-pointer transition-colors ${classFilter === c.cls ? 'text-indigo-400' : 'text-gray-200 hover:text-indigo-300'}`}
                     style={{ fontSize: z(9) }}
                     onClick={() => setClassFilter(classFilter === c.cls ? null : c.cls)}>
                     {c.cls}

@@ -37,7 +37,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
       {/* Day row */}
       <tr>
         <th className="w-12 bg-gray-900 sticky left-0 z-50 py-1 border-b border-gray-800">
-          <span className={`font-bold ${semester === 1 ? 'text-blue-400' : 'text-amber-400'}`} style={{ fontSize: z(9) }}>
+          <span className={`font-bold ${semester === 1 ? 'text-indigo-400' : 'text-amber-400'}`} style={{ fontSize: z(9) }}>
             {semester === 1 ? 'S1' : 'S2'}
           </span>
         </th>
@@ -75,7 +75,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
           return (
             <Fragment key={`${c.id}-info`}>
               <th
-                className={`bg-gray-900 px-0.5 pb-1 border-b-2 text-center ${courseFilter === `${c.cls}|${c.typ}` ? 'border-blue-500' : 'border-gray-700'}`}
+                className={`bg-gray-900 px-0.5 pb-1 border-b-2 text-center ${courseFilter === `${c.cls}|${c.typ}` ? 'border-indigo-500' : 'border-gray-700'}`}
                 style={{
                   borderLeft: newDay ? `2px solid ${DAY_COLORS[c.day]}40` : 'none',
                   ...(autoFitZoom ? {} : { width: colW, minWidth: colW, maxWidth: colW }),
@@ -85,7 +85,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                 <div className="flex items-center justify-center gap-0.5 overflow-hidden">
                   <div
                     className={`font-bold cursor-pointer transition-colors truncate ${
-                      classFilter === c.cls ? 'text-blue-400' : 'text-gray-200 hover:text-blue-300'
+                      classFilter === c.cls ? 'text-indigo-400' : 'text-gray-200 hover:text-indigo-300'
                     }`}
                     style={{ fontSize: Math.max(z(8), zoomCfg.fontSize - 1) }}
                     onClick={(e) => {
@@ -105,7 +105,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleNoteCol(c.id); }}
                     className={`px-1 py-0.5 rounded cursor-pointer transition-all ${
-                      expanded ? 'text-blue-400 bg-blue-900/40 border border-blue-700/50' : 'text-gray-500 hover:text-gray-300 bg-slate-800/60 hover:bg-slate-700/60'
+                      expanded ? 'text-indigo-400 bg-indigo-900/40 border border-indigo-700/50' : 'text-gray-500 hover:text-gray-300 bg-slate-800/60 hover:bg-slate-700/60'
                     }`}
                     style={{ fontSize: z(9) }}
                     title={expanded ? 'Notizen-Spalte ausblenden' : 'Notizen-Spalte einblenden'}
@@ -161,7 +161,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   <div className="text-gray-500" style={{ fontSize: z(8) }}>📝 Notizen</div>
                   {/* Resize handle */}
                   <div
-                    className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-blue-500/40 transition-colors"
+                    className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-500/40 transition-colors"
                     onMouseDown={handleResizeStart}
                   />
                 </th>

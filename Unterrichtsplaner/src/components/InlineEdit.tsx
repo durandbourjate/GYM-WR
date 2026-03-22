@@ -18,7 +18,7 @@ export function InlineEdit({ value, onSave, onCancel }: { value: string; onSave:
         if (e.key === 'Escape') onCancel();
       }}
       onBlur={() => onSave(text)}
-      className="w-full bg-slate-700 text-slate-100 border border-blue-400 rounded px-1 py-0.5 outline-none"
+      className="w-full bg-slate-700 text-slate-100 border border-indigo-400 rounded px-1 py-0.5 outline-none"
       style={{ fontSize: zs(9, ieZoom), minHeight: zs(20, ieZoom) }}
     />
   );

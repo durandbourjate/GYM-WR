@@ -84,7 +84,7 @@ export function DurationSelector({ value, onChange, baseDuration = 45, compact }
             }}
             onBlur={() => { if (customValue) { onChange(customValue); } setCustomMode(false); }}
             placeholder="z.B. 60 min"
-            className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400 w-20" />
+            className="bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-indigo-400 w-20" />
           {isCustom && (
             <button onClick={() => onChange(undefined)} className="text-[11px] text-gray-400 cursor-pointer hover:text-red-400">✕</button>
           )}
@@ -155,7 +155,7 @@ export function MaterialLinks({ links, onChange }: { links: string[]; onChange: 
       {links.map((link, i) => (
         <div key={i} className="flex items-center gap-1 group">
           <a href={link} target="_blank" rel="noopener noreferrer"
-            className="text-[11px] text-blue-400 hover:text-blue-300 truncate flex-1">
+            className="text-[11px] text-indigo-400 hover:text-indigo-300 truncate flex-1">
             {link.length > 50 ? link.slice(0, 50) + '…' : link}
           </a>
           <button onClick={() => onChange(links.filter((_, j) => j !== i))}
@@ -167,7 +167,7 @@ export function MaterialLinks({ links, onChange }: { links: string[]; onChange: 
           <input autoFocus value={newLink} onChange={(e) => setNewLink(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); if (e.key === 'Escape') setAdding(false); }}
             placeholder="URL eingeben…"
-            className="flex-1 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-blue-400" />
+            className="flex-1 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none focus:border-indigo-400" />
           <button onClick={handleAdd} className="text-[11px] text-green-400 cursor-pointer">✓</button>
           <button onClick={() => setAdding(false)} className="text-[11px] text-gray-400 cursor-pointer">✕</button>
         </div>
@@ -227,7 +227,7 @@ export function AddToSequenceButton({ week, course }: { week: string; course: Co
       {open && (
         <div ref={menuRef} className="absolute left-0 top-full mt-1 z-[90] bg-slate-800 border border-slate-600 rounded-lg shadow-xl py-1 w-52">
           <button onClick={handleNew}
-            className="w-full px-3 py-1.5 text-left text-[12px] text-blue-300 hover:bg-slate-700 cursor-pointer">
+            className="w-full px-3 py-1.5 text-left text-[12px] text-indigo-300 hover:bg-slate-700 cursor-pointer">
             ✨ Neue Sequenz erstellen
           </button>
           {matching.length > 0 && <hr className="border-slate-700 my-0.5" />}

@@ -264,10 +264,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               }}
               title="Doppelklick: Ferien hinzufügen"
             >
-              <div className={`font-mono ${isCurrent ? 'font-extrabold text-blue-400' : 'font-medium text-gray-500'}`} style={{ fontSize: z(9) }}>
+              <div className={`font-mono ${isCurrent ? 'font-extrabold text-indigo-400' : 'font-medium text-gray-500'}`} style={{ fontSize: z(9) }}>
                 {week.w}
               </div>
-              {isCurrent && <div className="w-1 h-1 rounded-full bg-blue-400 mx-auto mt-0.5 animate-pulse" />}
+              {isCurrent && <div className="w-1 h-1 rounded-full bg-indigo-400 mx-auto mt-0.5 animate-pulse" />}
               {eventInfo && (
                 <div className="text-amber-300 leading-tight mt-0.5 max-w-[48px] truncate font-medium" style={{ fontSize: z(6) }} title={eventInfo.label}>
                   📅 {eventInfo.label}
@@ -684,14 +684,14 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                           <button
                             onClick={(e) => { e.stopPropagation(); if (prevFree) { pushUndo(); usePlannerStore.getState().swapLessons(c.col, week.w, prevFree); } }}
                             disabled={!prevFree}
-                            className={`rounded bg-slate-700/90 flex items-center justify-center border border-slate-600 ${!prevFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            className={`rounded bg-slate-700/90 flex items-center justify-center border border-slate-600 ${!prevFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-indigo-600 hover:text-white'}`}
                             style={{ width: z(16), height: z(16), fontSize: z(8) }}
                             title="Nach oben verschieben (überspringt Ferien)"
                           >↑</button>
                           <button
                             onClick={(e) => { e.stopPropagation(); if (nextFree) { pushUndo(); usePlannerStore.getState().swapLessons(c.col, week.w, nextFree); } }}
                             disabled={!nextFree}
-                            className={`rounded bg-slate-700/90 flex items-center justify-center border border-slate-600 ${!nextFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-blue-600 hover:text-white'}`}
+                            className={`rounded bg-slate-700/90 flex items-center justify-center border border-slate-600 ${!nextFree ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 cursor-pointer hover:bg-indigo-600 hover:text-white'}`}
                             style={{ width: z(16), height: z(16), fontSize: z(8) }}
                             title="Nach unten verschieben (überspringt Ferien)"
                           >↓</button>
@@ -708,7 +708,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     </div>
                   ) : (
                     <div
-                      className={`cursor-pointer rounded mx-0.5 transition-all ${isSelected ? 'bg-blue-900/30 border border-blue-500/50 shadow-[0_0_0_1px_#3b82f640]' : 'hover:bg-slate-800/40'}`}
+                      className={`cursor-pointer rounded mx-0.5 transition-all ${isSelected ? 'bg-indigo-900/30 border border-indigo-500/50 shadow-[0_0_0_1px_#3b82f640]' : 'hover:bg-slate-800/40'}`}
                       style={{ minHeight: cellHeight }}
                       title="Doppelklick: Neue Unterrichtseinheit oder Sequenz"
                     />

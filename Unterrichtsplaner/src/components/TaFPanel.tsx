@@ -104,7 +104,7 @@ export function TaFSection() {
           <input type="file" accept=".json" className="hidden" onChange={handleImport} />
         </label>
         <button onClick={() => loadPreset(HOFWIL_PRESET)}
-          className="text-[11px] px-2 py-1 rounded border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 cursor-pointer">
+          className="text-[11px] px-2 py-1 rounded border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 cursor-pointer">
           🏫 SJ 25/26 Hofwil
         </button>
       </div>
@@ -113,7 +113,7 @@ export function TaFSection() {
         <div className="bg-slate-750 rounded-lg p-3 border border-slate-600 space-y-2">
           <input value={newName} onChange={(e) => setNewName(e.target.value)}
             placeholder="Phasenname…" autoFocus
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400"
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400"
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
           />
           <div className="flex gap-3">
@@ -143,7 +143,7 @@ export function TaFSection() {
           </div>
           <div className="flex gap-2 pt-1">
             <button onClick={handleAdd}
-              className="text-[11px] bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded cursor-pointer">
+              className="text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded cursor-pointer">
               Hinzufügen
             </button>
             <button onClick={() => setShowNew(false)}
@@ -154,7 +154,7 @@ export function TaFSection() {
         </div>
       ) : (
         <button onClick={() => setShowNew(true)}
-          className="text-[11px] text-blue-400 hover:text-blue-300 cursor-pointer">
+          className="text-[11px] text-indigo-400 hover:text-indigo-300 cursor-pointer">
           + Phase hinzufügen
         </button>
       )}
@@ -201,7 +201,7 @@ function PhaseRow({ phase, onUpdate, onDelete }: {
         {editing ? (
           <input value={phase.name} onChange={(e) => onUpdate({ name: e.target.value })}
             onBlur={() => setEditing(false)} autoFocus
-            className="flex-1 bg-slate-700 text-slate-200 border border-blue-400 rounded px-1.5 py-0.5 text-[12px] outline-none"
+            className="flex-1 bg-slate-700 text-slate-200 border border-indigo-400 rounded px-1.5 py-0.5 text-[12px] outline-none"
           />
         ) : (
           <span className="text-[12px] font-semibold text-gray-200 flex-1 cursor-pointer"

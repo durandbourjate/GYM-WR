@@ -39,7 +39,7 @@ export function SmallInput({ value, onChange, placeholder, className = '', type 
       onBlur={() => { if (local !== value) onChange(local); }}
       onKeyDown={(e) => { if (e.key === 'Enter') { (e.target as HTMLInputElement).blur(); } }}
       placeholder={placeholder} type={type}
-      className={`rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-blue-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`}
+      className={`rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-indigo-400 ${type === 'time' ? 'min-w-[5rem]' : ''} ${className}`}
       style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
   );
 }
@@ -49,7 +49,7 @@ export function SmallSelect<T extends string>({ value, onChange, options }: {
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value as T)}
-      className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
+      className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-indigo-400 cursor-pointer"
       style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
       {options.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
     </select>
@@ -98,12 +98,12 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
         <div className="space-y-2">
           {existing.length > 0 && (
             <div className="flex gap-2 text-[11px]">
-              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'replace' ? 'text-blue-300' : ''}`}
+              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'replace' ? 'text-indigo-300' : ''}`}
                 style={mode === 'replace' ? undefined : { color: 'var(--text-muted)' }}>
                 <input type="radio" checked={mode === 'replace'} onChange={() => setMode('replace')} className="cursor-pointer" />
                 Bestehende ersetzen
               </label>
-              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'new' ? 'text-blue-300' : ''}`}
+              <label className={`flex items-center gap-1 cursor-pointer ${mode === 'new' ? 'text-indigo-300' : ''}`}
                 style={mode === 'new' ? undefined : { color: 'var(--text-muted)' }}>
                 <input type="radio" checked={mode === 'new'} onChange={() => setMode('new')} className="cursor-pointer" />
                 Als neue speichern
@@ -122,12 +122,12 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
             <input value={newName} onChange={e => setNewName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
               placeholder="Name…" autoFocus
-              className="w-full rounded px-2 py-1.5 text-[12px] outline-none focus:border-blue-400"
+              className="w-full rounded px-2 py-1.5 text-[12px] outline-none focus:border-indigo-400"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
           )}
         </div>
         <div className="flex gap-1 mt-3">
-          <button onClick={handleSave} className="flex-1 py-1.5 rounded text-[11px] font-medium bg-blue-600 hover:bg-blue-500 text-white cursor-pointer">Speichern</button>
+          <button onClick={handleSave} className="flex-1 py-1.5 rounded text-[11px] font-medium bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer">Speichern</button>
           <button onClick={onClose} className="flex-1 py-1.5 rounded text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Abbrechen</button>
         </div>
       </div>
@@ -157,7 +157,7 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
               const isFullConfig = item.type === 'settings';
               return (
                 <button key={item.id} onClick={() => onLoad(item.settingsSnapshot!)}
-                  className="w-full text-left px-3 py-2 rounded hover:border-blue-500 cursor-pointer transition-all"
+                  className="w-full text-left px-3 py-2 rounded hover:border-indigo-500 cursor-pointer transition-all"
                   style={{ background: 'var(--bg-hover)', border: '1px solid var(--border-light)' }}>
                   <div className="text-[12px] font-semibold" style={{ color: 'var(--text-primary)' }}>{item.title}</div>
                   <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{isFullConfig ? '(Gesamtkonfiguration)' : label} · {dateStr}</div>

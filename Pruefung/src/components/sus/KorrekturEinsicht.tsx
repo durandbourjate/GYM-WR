@@ -118,6 +118,7 @@ export default function KorrekturEinsicht({ pruefungId, onZurueck }: Props) {
               index={idx + 1}
               frage={frage}
               bewertung={bewertung}
+              antwort={daten.antworten[frage.id]}
             />
           )
         })}
@@ -130,9 +131,10 @@ interface FrageKarteProps {
   index: number
   frage: KorrekturDetailDaten['fragen'][0]
   bewertung: KorrekturDetailBewertung
+  antwort: unknown
 }
 
-function FrageKarte({ index, frage, bewertung }: FrageKarteProps) {
+function FrageKarte({ index, frage, bewertung, antwort }: FrageKarteProps) {
   const symbol = bewertungsSymbol(bewertung.punkte, bewertung.maxPunkte)
   const symbolFarbe = bewertungsSymbolFarbe(bewertung.punkte, bewertung.maxPunkte)
 
@@ -150,8 +152,10 @@ function FrageKarte({ index, frage, bewertung }: FrageKarteProps) {
       </div>
 
       {/* Fragetext */}
-      {frage.fragetext && (
-        <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 whitespace-pre-wrap">{frage.fragetext}</p>
+      {(frage.fragetext || frage.aufgabentext || frage.geschaeftsfall) && (
+        <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 whitespace-pre-wrap">
+          {frage.fragetext || frage.aufgabentext || frage.geschaeftsfall}
+        </p>
       )}
 
       {/* Frage-Anhänge */}
@@ -161,6 +165,23 @@ function FrageKarte({ index, frage, bewertung }: FrageKarteProps) {
             <MediaAnhang key={a.id} anhang={a} />
           ))}
         </div>
+      )}
+
+      {/* MC-Optionen mit Korrektur-Icons */}
+      {frage.typ === 'mc' && frage.optionen && (
+        <MCKorrektur
+          optionen={frage.optionen}
+          korrekteOptionen={frage.korrekteOptionen ?? []}
+          gewaehlte={(antwort as { typ: 'mc'; gewaehlteOptionen: string[] } | null)?.gewaehlteOptionen ?? []}
+        />
+      )}
+
+      {/* R/F-Aussagen mit Korrektur-Icons */}
+      {frage.typ === 'richtigfalsch' && frage.aussagen && (
+        <RFKorrektur
+          aussagen={frage.aussagen}
+          antworten={(antwort as { typ: 'richtigfalsch'; antworten: Record<string, boolean> } | null)?.antworten ?? {}}
+        />
       )}
 
       {/* Kommentar LP */}
@@ -179,6 +200,104 @@ function FrageKarte({ index, frage, bewertung }: FrageKarteProps) {
           <AudioPlayer src={driveStreamUrl(bewertung.audioKommentarId)} kompakt />
         </div>
       )}
+    </div>
+  )
+}
+
+/** MC-Korrektur: Optionen mit ✓/✗ im Radio-Icon */
+function MCKorrektur({ optionen, korrekteOptionen, gewaehlte }: {
+  optionen: { id: string; text: string }[]
+  korrekteOptionen: string[]
+  gewaehlte: string[]
+}) {
+  return (
+    <div className="flex flex-col gap-2 mb-3">
+      {optionen.map((opt) => {
+        const istGewaehlt = gewaehlte.includes(opt.id)
+        const istKorrekt = korrekteOptionen.includes(opt.id)
+        // Status: gewählt+korrekt, gewählt+falsch, nicht gewählt+korrekt, nicht gewählt+falsch
+        const gewaehltKorrekt = istGewaehlt && istKorrekt
+        const gewaehltFalsch = istGewaehlt && !istKorrekt
+        const nichtGewaehltKorrekt = !istGewaehlt && istKorrekt
+
+        const borderClass = gewaehltKorrekt
+          ? 'border-green-500 bg-green-50 dark:bg-green-900/15'
+          : gewaehltFalsch
+            ? 'border-red-500 bg-red-50 dark:bg-red-900/15'
+            : nichtGewaehltKorrekt
+              ? 'border-green-300 bg-green-50/50 dark:bg-green-900/10 dark:border-green-700'
+              : 'border-slate-200 dark:border-slate-700'
+
+        const radioClass = gewaehltKorrekt
+          ? 'border-green-600 bg-green-600 dark:border-green-400 dark:bg-green-400'
+          : gewaehltFalsch
+            ? 'border-red-600 bg-red-600 dark:border-red-400 dark:bg-red-400'
+            : nichtGewaehltKorrekt
+              ? 'border-green-400 dark:border-green-500'
+              : 'border-slate-300 dark:border-slate-600'
+
+        return (
+          <div key={opt.id} className={`flex items-start gap-3 p-3 rounded-xl border-2 ${borderClass}`}>
+            <span className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs font-bold ${radioClass}`}>
+              {gewaehltKorrekt && <span className="text-white dark:text-slate-900">✓</span>}
+              {gewaehltFalsch && <span className="text-white dark:text-slate-900">✗</span>}
+              {nichtGewaehltKorrekt && <span className="text-green-600 dark:text-green-400">✓</span>}
+            </span>
+            <div className="flex-1">
+              <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">{opt.id.toUpperCase()})</span>
+              <span className="text-slate-800 dark:text-slate-100">{opt.text}</span>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+/** R/F-Korrektur: Aussagen mit farbigen R/F-Buttons */
+function RFKorrektur({ aussagen, antworten }: {
+  aussagen: { id: string; text: string; korrekt: boolean }[]
+  antworten: Record<string, boolean>
+}) {
+  return (
+    <div className="space-y-2 mb-3">
+      {aussagen.map((a) => {
+        const susAntwort = antworten[a.id]
+        const hatGeantwortet = susAntwort !== undefined
+        const istRichtig = hatGeantwortet && susAntwort === a.korrekt
+
+        return (
+          <div key={a.id} className="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+            <div className="flex-1 text-sm text-slate-700 dark:text-slate-200">{a.text}</div>
+            <div className="flex gap-1.5">
+              {/* R-Button */}
+              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 ${
+                hatGeantwortet && susAntwort === true
+                  ? istRichtig
+                    ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-500'
+                    : 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300 dark:border-red-500'
+                  : !hatGeantwortet && a.korrekt
+                    ? 'border-green-300 text-green-600 dark:border-green-600 dark:text-green-400'
+                    : 'border-slate-200 text-slate-400 dark:border-slate-600 dark:text-slate-500'
+              }`}>
+                R{hatGeantwortet && susAntwort === true && (istRichtig ? ' ✓' : ' ✗')}
+              </span>
+              {/* F-Button */}
+              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 ${
+                hatGeantwortet && susAntwort === false
+                  ? istRichtig
+                    ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-500'
+                    : 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300 dark:border-red-500'
+                  : !hatGeantwortet && !a.korrekt
+                    ? 'border-green-300 text-green-600 dark:border-green-600 dark:text-green-400'
+                    : 'border-slate-200 text-slate-400 dark:border-slate-600 dark:text-slate-500'
+              }`}>
+                F{hatGeantwortet && susAntwort === false && (istRichtig ? ' ✓' : ' ✗')}
+              </span>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

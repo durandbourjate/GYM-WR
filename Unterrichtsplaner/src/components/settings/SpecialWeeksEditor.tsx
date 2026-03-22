@@ -147,7 +147,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                 {entries.map((e, i) => (
                   <span key={e.id}>
                     {i > 0 && ', '}
-                    {e.gymLevel && <span className="text-[9px] font-semibold text-blue-400">{formatGymLevel(e.gymLevel)} </span>}
+                    {e.gymLevel && <span className="text-[9px] font-semibold text-indigo-400">{formatGymLevel(e.gymLevel)} </span>}
                     {e.label || '(unbenannt)'}
                   </span>
                 ))}
@@ -170,7 +170,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                           return (
                             <button key={opt.key} onClick={() => toggleGymLevel(w.id, opt.key)}
                               className={`px-1 py-px rounded text-[8px] cursor-pointer transition-colors ${
-                                active ? 'bg-blue-600/40 text-blue-200 border border-blue-500/60' : 'border border-transparent'
+                                active ? 'bg-indigo-600/40 text-indigo-200 border border-indigo-500/60' : 'border border-transparent'
                               }`}
                               style={active ? undefined : { background: 'var(--bg-hover)', color: 'var(--text-dim)' }}>{opt.label}</button>
                           );

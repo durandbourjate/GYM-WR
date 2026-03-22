@@ -19,6 +19,8 @@ interface KontenSelectProps {
   filterKonten?: string[]
   /** Kompakte Darstellung (kleinere Höhe, Text) für verschachtelte Editoren */
   compact?: boolean
+  /** Kategorie-Farben überschreiben (wenn nicht gesetzt, wird config.zeigeKategoriefarben verwendet) */
+  zeigeKategoriefarben?: boolean
 }
 
 const MAX_RESULTS = 80
@@ -48,7 +50,11 @@ export default function KontenSelect({
   className = '',
   filterKonten,
   compact = false,
+  zeigeKategoriefarben,
 }: KontenSelectProps) {
+  // Farben: explizites Prop > Config-Wert > default true
+  const farbenAktiv = zeigeKategoriefarben ?? config.zeigeKategoriefarben ?? true
+
   if (config.modus === 'eingeschraenkt') {
     return (
       <EingeschraenktSelect
@@ -71,6 +77,7 @@ export default function KontenSelect({
       className={className}
       filterKonten={filterKonten}
       compact={compact}
+      farbenAktiv={farbenAktiv}
     />
   )
 }
@@ -124,6 +131,7 @@ function VollAutocomplete({
   className,
   filterKonten,
   compact = false,
+  farbenAktiv = true,
 }: {
   value: string
   onChange: (n: string) => void
@@ -132,6 +140,7 @@ function VollAutocomplete({
   className: string
   filterKonten?: string[]
   compact?: boolean
+  farbenAktiv?: boolean
 }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -271,8 +280,8 @@ function VollAutocomplete({
             results.map((k, idx) => {
               const konto = findKonto(k.nummer)
               const isHighlighted = idx === highlightIdx
-              // Kategorie-Hintergrund für nicht-highlightete Zeilen
-              const zeileBg = konto && !isHighlighted ? kategorieZeile[konto.kategorie] : ''
+              // Kategorie-Hintergrund für nicht-highlightete Zeilen (nur wenn farbenAktiv)
+              const zeileBg = farbenAktiv && konto && !isHighlighted ? kategorieZeile[konto.kategorie] : ''
               return (
                 <li
                   key={k.nummer}
@@ -290,7 +299,7 @@ function VollAutocomplete({
                 >
                   <span className="font-mono font-medium">{k.nummer}</span>
                   <span className="flex-1 truncate">{k.name}</span>
-                  {konto && (
+                  {farbenAktiv && konto && (
                     <span className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-medium
                       ${kategorieBadge[konto.kategorie]}`}>
                       {konto.kategorie}

@@ -161,6 +161,18 @@ export default function BuchungssatzEditor({
             </div>
           </div>
         )}
+
+        {/* Kategoriefarben-Toggle */}
+        <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+          <input
+            type="checkbox"
+            checked={kontenauswahl.zeigeKategoriefarben !== false}
+            onChange={() => setKontenauswahl({ ...kontenauswahl, zeigeKategoriefarben: kontenauswahl.zeigeKategoriefarben === false ? true : false })}
+            className="rounded"
+          />
+          Konten-Kategoriefarben anzeigen
+          <span className="text-xs text-slate-400 dark:text-slate-500">(Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün)</span>
+        </label>
       </Abschnitt>
 
       {/* Musterlösung: Buchungen */}

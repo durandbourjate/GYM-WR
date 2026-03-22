@@ -506,7 +506,7 @@ export function ZoomMultiYearView() {
         <div className="flex gap-1">
           <button onClick={() => setMode('curriculum')}
             className={`px-2.5 py-1 rounded text-[11px] font-semibold border cursor-pointer transition-colors ${
-              mode === 'curriculum' ? 'bg-blue-500/20 border-blue-500 text-blue-300' : 'border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
+              mode === 'curriculum' ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300' : 'border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
             }`}>
             📋 Stoffverteilung
           </button>
@@ -533,7 +533,7 @@ export function ZoomMultiYearView() {
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Keine Stoffverteilung konfiguriert</p>
               <p className="text-[12px] mt-1" style={{ color: 'var(--text-dim)' }}>Importiere eine Stoffverteilung oder wähle eine Vorlage.</p>
               <div className="flex flex-wrap gap-2 justify-center mt-3">
-                <label className="px-3 py-1.5 rounded border border-blue-500/40 text-blue-300 text-[12px] cursor-pointer hover:bg-blue-500/10">
+                <label className="px-3 py-1.5 rounded border border-indigo-500/40 text-indigo-300 text-[12px] cursor-pointer hover:bg-indigo-500/10">
                   📂 Aus Datei (JSON)
                   <input ref={importRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
                 </label>

@@ -89,7 +89,7 @@ export function AppHeader() {
     <div ref={toolbarRef} className="border-b px-4 py-2 sticky top-0 z-[60] flex items-center gap-2 no-print overflow-hidden app-header" style={{ background: 'var(--toolbar-bg)', borderColor: 'var(--toolbar-border)' }}>
       <div className="flex items-baseline gap-2 flex-shrink-0">
         <span className="text-base font-bold text-gray-50">
-          <span className="text-blue-400">⊞</span> Planer
+          <span className="text-indigo-400">⊞</span> Planer
         </span>
         <span className="text-[12px] text-gray-500">{APP_VERSION}</span>
       </div>
@@ -104,7 +104,7 @@ export function AppHeader() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Escape') { setSearchQuery(''); (e.target as HTMLInputElement).blur(); } }}
           placeholder="🔍 Suche…"
-          className="w-full px-2 py-0.5 rounded text-[12px] bg-slate-800 border border-gray-700 text-gray-300 outline-none focus:border-blue-400 placeholder-gray-600"
+          className="w-full px-2 py-0.5 rounded text-[12px] bg-slate-800 border border-gray-700 text-gray-300 outline-none focus:border-indigo-400 placeholder-gray-600"
         />
         {searchQuery && (
           <button
@@ -126,7 +126,7 @@ export function AppHeader() {
           }}
           className={`px-2 py-0.5 rounded text-[12px] font-semibold border cursor-pointer transition-colors ${
             filter !== 'ALL' || classFilter
-              ? 'bg-blue-500/20 text-blue-300 border-blue-500'
+              ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500'
               : 'bg-transparent text-gray-400 border-gray-700 hover:border-gray-500 hover:text-gray-200'
           }`}
           title="Kursfilter"
@@ -139,7 +139,7 @@ export function AppHeader() {
           style={{ position: 'fixed', top: courseDropdownPos.top, left: courseDropdownPos.left, zIndex: 9999 }}>
           <button onClick={() => { setFilter('ALL'); setShowCourseMenu(false); }}
             className={`w-full px-3 py-1.5 text-left text-[12px] cursor-pointer flex items-center gap-2 ${
-              filter === 'ALL' ? 'text-blue-300 bg-blue-500/10' : 'text-gray-200 hover:bg-slate-700'
+              filter === 'ALL' ? 'text-indigo-300 bg-indigo-500/10' : 'text-gray-200 hover:bg-slate-700'
             }`}>
             {filter === 'ALL' ? '✓' : '\u2003'} Alle Kurse
           </button>
@@ -147,7 +147,7 @@ export function AppHeader() {
           {courseTypeFilters.map((typ) => (
             <button key={typ} onClick={() => { setFilter(typ); setShowCourseMenu(false); }}
               className={`w-full px-3 py-1.5 text-left text-[12px] cursor-pointer flex items-center gap-2 ${
-                filter === typ ? 'text-blue-300 bg-blue-500/10' : 'text-gray-200 hover:bg-slate-700'
+                filter === typ ? 'text-indigo-300 bg-indigo-500/10' : 'text-gray-200 hover:bg-slate-700'
               }`}>
               {filter === typ ? '✓' : '\u2003'} {typ}
             </button>
@@ -199,7 +199,7 @@ export function AppHeader() {
             setShowAddMenu(false);
           }}
             className="w-full px-3 py-1.5 text-left text-[12px] text-gray-200 hover:bg-slate-700 cursor-pointer flex items-center gap-2">
-            <span className="text-blue-400">📖</span> Neue UE
+            <span className="text-indigo-400">📖</span> Neue UE
           </button>
         </div>,
         document.body
@@ -314,7 +314,7 @@ export function AppHeader() {
             setSidePanelOpen(true);
             setSidePanelTab('settings');
           }}
-          className="px-2 py-0.5 rounded text-[12px] border border-gray-700 text-gray-500 cursor-pointer hover:text-blue-300 hover:border-blue-700"
+          className="px-2 py-0.5 rounded text-[12px] border border-gray-700 text-gray-500 cursor-pointer hover:text-indigo-300 hover:border-indigo-700"
           title="Einstellungen (Export/Import hier)"
         >
           ⚙️

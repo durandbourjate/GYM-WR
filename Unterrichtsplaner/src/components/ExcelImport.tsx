@@ -201,7 +201,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
               </p>
               <input ref={fileRef} type="file" accept=".xlsx,.xls"
                 onChange={handleFile}
-                className="block w-full text-[12px] text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[12px] file:font-medium file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-500"
+                className="block w-full text-[12px] text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[12px] file:font-medium file:bg-indigo-600 file:text-white file:cursor-pointer hover:file:bg-indigo-500"
               />
             </div>
           )}
@@ -291,7 +291,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
               <div className="flex gap-2">
                 <button onClick={generatePreview}
                   disabled={mappedCols === 0 || mappedRows === 0}
-                  className="text-[11px] bg-blue-600 hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-500 text-white px-3 py-1 rounded cursor-pointer disabled:cursor-not-allowed">
+                  className="text-[11px] bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-600 disabled:text-gray-500 text-white px-3 py-1 rounded cursor-pointer disabled:cursor-not-allowed">
                   Vorschau →
                 </button>
                 <button onClick={() => setStep('upload')}
@@ -369,7 +369,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                 Rückgängig mit Ctrl+Z
               </div>
               <button onClick={onClose}
-                className="text-[11px] bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded cursor-pointer">
+                className="text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded cursor-pointer">
                 Schliessen
               </button>
             </div>

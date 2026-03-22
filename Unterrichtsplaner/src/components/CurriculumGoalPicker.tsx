@@ -89,7 +89,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
       {/* Display / trigger area */}
       <div
         ref={triggerRef}
-        className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] cursor-pointer hover:border-blue-400 transition-colors min-h-[28px] flex items-start gap-1"
+        className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] cursor-pointer hover:border-indigo-400 transition-colors min-h-[28px] flex items-start gap-1"
         onClick={() => { setOpen(!open); setTimeout(() => inputRef.current?.focus(), 50); }}
       >
         {selectedGoal ? (
@@ -132,7 +132,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                 if (e.key === 'Enter' && filtered.length === 1) { handleSelect(filtered[0]); }
               }}
               placeholder="Suchen… (Thema, Inhalt, ID)"
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400"
+              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400"
             />
             <div className="flex gap-1 items-center">
               <span className="text-[9px] text-gray-500">Zyklus:</span>
@@ -142,7 +142,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                   onClick={() => setCycleFilter(c)}
                   className={`px-1.5 py-px rounded text-[9px] border cursor-pointer transition-colors ${
                     cycleFilter === c
-                      ? 'bg-blue-600/30 border-blue-500 text-blue-300'
+                      ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300'
                       : 'border-slate-600 text-gray-500 hover:text-gray-300'
                   }`}
                 >
@@ -166,7 +166,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                 {search.trim() && (
                   <button
                     onClick={() => { onChange(search.trim()); setOpen(false); setSearch(''); }}
-                    className="block mx-auto mt-1 text-blue-400 hover:text-blue-300 cursor-pointer">
+                    className="block mx-auto mt-1 text-indigo-400 hover:text-indigo-300 cursor-pointer">
                     «{search}» als Freitext übernehmen
                   </button>
                 )}
@@ -180,7 +180,7 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
                     onClick={() => handleSelect(goal)}
                     className={`p-1.5 rounded cursor-pointer transition-colors mb-0.5 ${
                       isSelected
-                        ? 'bg-blue-600/20 border border-blue-500/50'
+                        ? 'bg-indigo-600/20 border border-indigo-500/50'
                         : 'hover:bg-slate-700 border border-transparent'
                     }`}
                   >

@@ -233,7 +233,7 @@ export function SettingsPanel() {
           <div>
             <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-muted)' }}>Schulstufe</label>
             <select value={settings.schoolLevel || ''} onChange={(e) => updateSettings({ schoolLevel: (e.target.value || undefined) as SchoolLevel | undefined })}
-              className="rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-blue-400 cursor-pointer w-full"
+              className="rounded px-1.5 py-0.5 text-[12px] outline-none focus:border-indigo-400 cursor-pointer w-full"
               style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
               <option value="">-- Nicht gesetzt --</option>
               <option value="Grundstufe">Grundstufe (Primarstufe)</option>

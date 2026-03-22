@@ -240,7 +240,7 @@ export function ZoomYearView() {
                   className="bg-gray-900 px-0.5 py-1 border-b-2 border-gray-700 text-center"
                   style={{ width: totalW, minWidth: totalW }}>
                   <div className={`font-bold cursor-pointer transition-colors ${
-                    classFilter === g.cls ? 'text-blue-400' : 'text-gray-200 hover:text-blue-300'
+                    classFilter === g.cls ? 'text-indigo-400' : 'text-gray-200 hover:text-indigo-300'
                   }`} style={{ fontSize: z(11) }} onClick={() => setClassFilter(classFilter === g.cls ? null : g.cls)}>
                     {g.cls}
                   </div>

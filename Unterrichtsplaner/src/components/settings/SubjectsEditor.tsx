@@ -54,7 +54,7 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
                 ); })()}
               </div>
               <div className="flex gap-1 mt-1">
-                <button onClick={() => setEditingId(null)} className="text-[9px] text-blue-400 cursor-pointer">✓ Fertig</button>
+                <button onClick={() => setEditingId(null)} className="text-[9px] text-indigo-400 cursor-pointer">✓ Fertig</button>
                 <button onClick={() => remove(s.id)} className="text-[9px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
               </div>
             </div>

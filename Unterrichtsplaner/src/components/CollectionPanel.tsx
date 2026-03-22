@@ -46,7 +46,7 @@ function ImportDialog({ item, onClose }: { item: CollectionItem; onClose: () => 
           <div>
             <label className="text-[11px] text-gray-400">Zielkurs</label>
             <select value={targetCourseId} onChange={(e) => setTargetCourseId(e.target.value)}
-              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400">
+              className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400">
               {COURSES.map((c) => (
                 <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to}</option>
               ))}
@@ -74,7 +74,7 @@ function ImportDialog({ item, onClose }: { item: CollectionItem; onClose: () => 
               Abbrechen
             </button>
             <button onClick={handleImport} disabled={imported}
-              className={`px-2 py-1 rounded text-[11px] border cursor-pointer ${imported ? 'bg-green-700 border-green-600 text-green-200' : 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500'}`}>
+              className={`px-2 py-1 rounded text-[11px] border cursor-pointer ${imported ? 'bg-green-700 border-green-600 text-green-200' : 'bg-indigo-600 border-indigo-500 text-white hover:bg-indigo-500'}`}>
               {imported ? '✓ Importiert' : `Importieren (${item.units.length} UE)`}
             </button>
           </div>
@@ -128,7 +128,7 @@ function ArchiveDialog({ onClose }: { onClose: () => void }) {
         <div className="space-y-2">
           <div className="flex gap-1">
             <button onClick={() => setMode('schoolyear')}
-              className={`flex-1 px-2 py-1 rounded text-[11px] border cursor-pointer ${mode === 'schoolyear' ? 'bg-blue-500/20 border-blue-500 text-blue-300' : 'border-gray-600 text-gray-400'}`}>
+              className={`flex-1 px-2 py-1 rounded text-[11px] border cursor-pointer ${mode === 'schoolyear' ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300' : 'border-gray-600 text-gray-400'}`}>
               📅 Schuljahr
             </button>
             <button onClick={() => setMode('curriculum')}
@@ -265,14 +265,14 @@ function CollectionCard({ item, onImport }: { item: CollectionItem; onImport: (i
                 className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[11px] outline-none" />
               <div className="flex gap-1 justify-end">
                 <button onClick={() => setEditing(false)} className="text-[9px] text-gray-400 cursor-pointer">Abbrechen</button>
-                <button onClick={handleSave} className="text-[9px] text-blue-400 cursor-pointer">Speichern</button>
+                <button onClick={handleSave} className="text-[9px] text-indigo-400 cursor-pointer">Speichern</button>
               </div>
             </div>
           ) : (
             <div className="flex gap-1 justify-between items-center">
               <div className="flex gap-1">
                 {item.type !== 'settings' && (
-                  <button onClick={() => onImport(item)} className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer">↗ Importieren</button>
+                  <button onClick={() => onImport(item)} className="text-[9px] text-indigo-400 hover:text-indigo-300 cursor-pointer">↗ Importieren</button>
                 )}
                 {item.type === 'settings' && (
                   <span className="text-[9px] text-gray-500">Laden via Einstellungen-Tab</span>

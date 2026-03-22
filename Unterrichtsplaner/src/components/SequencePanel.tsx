@@ -66,18 +66,18 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
               {detail?.topicMain && !(entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE') && <span className="text-[8px] text-gray-400 ml-auto truncate max-w-20" title="Zugewiesenes Thema">📌{detail.topicMain}</span>}
             </div>
             {isExpanded && course && (
-              <div className="ml-5 mr-1 my-1 p-1.5 bg-slate-900/50 rounded space-y-1 border-l-2 border-blue-500/30">
+              <div className="ml-5 mr-1 my-1 p-1.5 bg-slate-900/50 rounded space-y-1 border-l-2 border-indigo-500/30">
                 <div>
                   <label className="text-[8px] text-gray-500">Thema</label>
                   <input value={detail?.topicMain || ''} onChange={(e) => updateLessonDetail(weekW, course.col, { topicMain: e.target.value || undefined })}
                     placeholder={block.topicMain || 'Thema…'}
-                    className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400" />
+                    className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-indigo-400" />
                 </div>
                 <div>
                   <label className="text-[8px] text-gray-500">Notizen</label>
                   <textarea value={detail?.notes || ''} onChange={(e) => updateLessonDetail(weekW, course.col, { notes: e.target.value || undefined })}
                     placeholder="Notizen…" rows={2}
-                    className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-blue-400 resize-y" />
+                    className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-indigo-400 resize-y" />
                 </div>
                 {!detail?.subjectArea && inheritSA && (
                   <div className="text-[8px] text-gray-500">Fachbereich: <span className="text-gray-400">{inheritSA}</span> <span className="text-gray-700">(geerbt)</span></div>
@@ -88,7 +88,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
                     store.setSelection({ week: weekW, courseId: course.id, title: entry?.title || '', course });
                     store.setSidePanelOpen(true);
                     store.setSidePanelTab('details');
-                  }} className="text-[8px] text-blue-400 cursor-pointer hover:text-blue-300">
+                  }} className="text-[8px] text-indigo-400 cursor-pointer hover:text-indigo-300">
                     Alle Details →
                   </button>
                 </div>
@@ -199,14 +199,14 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
         <div className="px-3 pb-3 pt-1 border-t border-slate-700/50 space-y-2" style={{ minHeight: '50vh' }}>
           {/* Quick actions + tab-style toggles */}
           <div className="flex gap-0.5 items-center">
-            <button onClick={navigateToBlock} className="text-[12px] text-blue-400 hover:text-blue-300 cursor-pointer px-2 py-1">↗ Im Planer</button>
+            <button onClick={navigateToBlock} className="text-[12px] text-indigo-400 hover:text-indigo-300 cursor-pointer px-2 py-1">↗ Im Planer</button>
             <span className="text-slate-700 mx-0.5">│</span>
             <button onClick={() => setShowFields(!showFields)}
-              className={`text-[12px] cursor-pointer px-2 py-1 rounded-t border-b-2 transition-colors ${showFields ? 'text-gray-200 bg-slate-800/50 border-blue-400 font-medium' : 'text-gray-400 hover:text-gray-300 border-transparent'}`}>
+              className={`text-[12px] cursor-pointer px-2 py-1 rounded-t border-b-2 transition-colors ${showFields ? 'text-gray-200 bg-slate-800/50 border-indigo-400 font-medium' : 'text-gray-400 hover:text-gray-300 border-transparent'}`}>
               Felder
             </button>
             <button onClick={() => setShowLessons(!showLessons)}
-              className={`text-[12px] cursor-pointer px-2 py-1 rounded-t border-b-2 transition-colors ${showLessons ? 'text-gray-200 bg-slate-800/50 border-blue-400 font-medium' : 'text-gray-400 hover:text-gray-300 border-transparent'}`}>
+              className={`text-[12px] cursor-pointer px-2 py-1 rounded-t border-b-2 transition-colors ${showLessons ? 'text-gray-200 bg-slate-800/50 border-indigo-400 font-medium' : 'text-gray-400 hover:text-gray-300 border-transparent'}`}>
               Lektionen ({block.weeks.length})
             </button>
             <button onClick={() => setShowSeriesFields(!showSeriesFields)}
@@ -220,7 +220,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
             <div className="space-y-2 p-2 bg-slate-800/30 rounded">
               {/* Hierarchy indicator (v3.78 #20: flache Struktur) */}
               <div className="flex items-center gap-1 text-[9px] text-gray-500 pb-0.5 border-b border-slate-700/50">
-                <span className="text-blue-400 font-medium">Sequenz</span>
+                <span className="text-indigo-400 font-medium">Sequenz</span>
                 <span>›</span>
                 <span className="text-gray-400">Unterrichtseinheit</span>
               </div>
@@ -251,7 +251,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   }
                 }}
                   placeholder={block.topicMain || `Block ${fb.blockIndex + 1}`}
-                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 placeholder:text-gray-500 placeholder:italic" />
+                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 placeholder:text-gray-500 placeholder:italic" />
                 <p className="text-[9px] text-gray-500 mt-0.5">Interner Name der Sequenz (z.B. für Sammlung und Navigation). Wird aus Oberthema übernommen falls leer.</p>
               </div>
               <div>
@@ -264,23 +264,23 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                     updateSequence(fb.seqId, { title: val });
                   }
                 }}
-                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400" />
+                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400" />
               </div>
               <div>
                 <label className="text-[12px] text-gray-400">Unterthema</label>
                 <input value={block.topicSub || ''} onChange={(e) => updateBlockInSequence(fb.seqId, fb.blockIndex, { topicSub: e.target.value || undefined })}
-                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400" />
+                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400" />
               </div>
               <div>
                 <label className="text-[12px] text-gray-400">Beschreibung</label>
                 <textarea value={block.description || ''} onChange={(e) => updateBlockInSequence(fb.seqId, fb.blockIndex, { description: e.target.value || undefined })}
-                  rows={2} className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
+                  rows={2} className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 resize-y" />
               </div>
               <div>
                 <label className="text-[11px] text-gray-500">Lehrplanziel</label>
                 <input value={block.curriculumGoal || ''} onChange={(e) => updateBlockInSequence(fb.seqId, fb.blockIndex, { curriculumGoal: e.target.value || undefined })}
                   placeholder="LP17-Ziel…"
-                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 text-gray-400" />
+                  className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 text-gray-400" />
               </div>
               <div>
                 <label className="text-[12px] text-gray-400">Materiallinks</label>
@@ -297,7 +297,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   </div>
                 ))}
                 <button onClick={() => updateBlockInSequence(fb.seqId, fb.blockIndex, { materialLinks: [...(block.materialLinks || []), ''] })}
-                  className="text-[12px] text-blue-400 cursor-pointer mt-0.5">+ Link</button>
+                  className="text-[12px] text-indigo-400 cursor-pointer mt-0.5">+ Link</button>
               </div>
               {/* Apply block fields to all lessons */}
               {block.weeks.length > 0 && (
@@ -320,7 +320,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                     store.updateLessonDetail(weekW, course.col, patch);
                   }
                 }}
-                  className="w-full py-1.5 rounded text-[12px] font-medium border border-dashed border-blue-500/40 text-blue-400 hover:bg-blue-900/20 cursor-pointer transition-all mt-1">
+                  className="w-full py-1.5 rounded text-[12px] font-medium border border-dashed border-indigo-500/40 text-indigo-400 hover:bg-indigo-900/20 cursor-pointer transition-all mt-1">
                   ↓ Auf alle {block.weeks.length} Lektionen anwenden
                 </button>
               )}
@@ -366,7 +366,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
               <div>
                 <label className="text-[12px] text-gray-400">Notizen (Reihe)</label>
                 <textarea value={parentSeq.notes || ''} onChange={(e) => updateSequence(fb.seqId, { notes: e.target.value || undefined })}
-                  rows={2} className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
+                  rows={2} className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 resize-y" />
               </div>
               {/* SOL auf Reihen-Ebene */}
               <div className="border-t border-slate-700 pt-1.5 mt-1">
@@ -673,12 +673,12 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
       {/* Class filter buttons */}
       <div className="px-3 py-1.5 border-b border-slate-700/50 flex gap-1 flex-wrap shrink-0">
         <button onClick={() => setFilterClass('ALL')}
-          className={`px-1.5 py-0.5 rounded text-[9px] border cursor-pointer ${filterClass === 'ALL' ? 'bg-blue-500/20 border-blue-500 text-blue-300' : 'border-gray-600 text-gray-400'}`}>
+          className={`px-1.5 py-0.5 rounded text-[9px] border cursor-pointer ${filterClass === 'ALL' ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300' : 'border-gray-600 text-gray-400'}`}>
           Alle
         </button>
         {uniqueClasses.map((cls) => (
           <button key={cls} onClick={() => setFilterClass(cls)}
-            className={`px-1.5 py-0.5 rounded text-[9px] border cursor-pointer ${filterClass === cls ? 'bg-blue-500/20 border-blue-500 text-blue-300' : 'border-gray-600 text-gray-400'}`}>
+            className={`px-1.5 py-0.5 rounded text-[9px] border cursor-pointer ${filterClass === cls ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300' : 'border-gray-600 text-gray-400'}`}>
             {cls}
           </button>
         ))}
@@ -704,13 +704,13 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
               <input autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleCreateSequence(); if (e.key === 'Escape') setShowNewForm(false); }}
                 placeholder="Titel der Sequenz…"
-                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-blue-400" />
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-indigo-400" />
               <select value={newCourseId} onChange={(e) => {
                   setNewCourseId(e.target.value);
                   const course = COURSES.find(c => c.id === e.target.value);
                   if (course && !newTitle.trim()) setNewTitle(`${course.cls} – `);
                 }}
-                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-blue-400">
+                className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-indigo-400">
                 {COURSES.map((c) => (
                   <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to} ({c.les}L)</option>
                 ))}

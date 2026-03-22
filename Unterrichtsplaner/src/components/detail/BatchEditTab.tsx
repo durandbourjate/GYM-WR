@@ -164,7 +164,7 @@ export function BatchEditTab() {
             const isActive = currentValues.blockCategory === cat.key;
             return (
               <button key={cat.key} onClick={() => applyToAll('blockCategory', cat.key)}
-                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
+                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-indigo-900/40 border-indigo-500 text-indigo-300 ring-1 ring-indigo-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
                 {cat.icon} {cat.label}
               </button>
             );
@@ -180,7 +180,7 @@ export function BatchEditTab() {
             const isActive = currentValues.duration === preset.key;
             return (
               <button key={preset.key} onClick={() => applyToAll('duration', preset.key)}
-                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-blue-900/40 border-blue-500 text-blue-300 ring-1 ring-blue-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
+                className={`px-2 py-0.5 rounded text-[11px] border cursor-pointer ${isActive ? 'bg-indigo-900/40 border-indigo-500 text-indigo-300 ring-1 ring-indigo-500/30' : 'border-gray-600 text-gray-300 hover:bg-slate-700'}`}>
                 {preset.label}
               </button>
             );
@@ -222,7 +222,7 @@ export function BatchEditTab() {
               {matchingSequences.length > 0 && (
                 <button
                   onClick={() => setShowSeqMenu(!showSeqMenu)}
-                  className="px-2 py-1 rounded text-[11px] font-medium border border-dashed border-blue-600 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
+                  className="px-2 py-1 rounded text-[11px] font-medium border border-dashed border-indigo-600 text-indigo-400 hover:bg-indigo-900/20 cursor-pointer"
                 >+ Zu bestehender ({matchingSequences.length})</button>
               )}
             </div>

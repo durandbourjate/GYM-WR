@@ -42,7 +42,7 @@ export function NoteCell({ weekW, col, cellHeight }: { weekW: string; col: numbe
               if (text !== notes) updateLessonDetail(weekW, col, { notes: text || undefined });
             }
           }}
-          className="w-full h-full bg-transparent text-slate-300 leading-tight p-1 outline-none resize-none border border-blue-500/50 rounded-sm"
+          className="w-full h-full bg-transparent text-slate-300 leading-tight p-1 outline-none resize-none border border-indigo-500/50 rounded-sm"
           style={{ fontSize: nz(8) }}
         />
       </td>

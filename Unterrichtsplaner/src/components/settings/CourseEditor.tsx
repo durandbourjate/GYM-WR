@@ -63,7 +63,7 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
       {presets.map(p => (
         <button key={p.min} onClick={() => { onChange(p.min); setCustomMode(false); }}
           className={`px-1.5 py-0.5 rounded text-[11px] font-medium border cursor-pointer transition-all ${
-            value === p.min ? 'bg-blue-600/30 border-blue-500' : ''
+            value === p.min ? 'bg-indigo-600/30 border-indigo-500' : ''
           }`}
           style={value === p.min ? { color: 'var(--text-primary)' } : { borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}>
           {p.label}
@@ -75,7 +75,7 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
             onChange={(e) => { const n = parseInt(e.target.value) || 0; setCustomVal(e.target.value); if (n > 0) onChange(n); }}
             onKeyDown={(e) => { if (e.key === 'Escape') setCustomMode(false); }}
             placeholder="min"
-            className="border border-blue-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-14"
+            className="border border-indigo-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-14"
             style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }} />
           <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>min</span>
         </div>
@@ -148,9 +148,9 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
     <div className="space-y-2">
       {grouped.map(({ stableKey, courses: group }) => (
         <div key={stableKey} ref={group.some(c => c.id === editingId) ? focusRef : undefined} className="rounded p-2 space-y-1" style={{ border: '1px solid var(--border)' }}>
-          <div className="text-[11px] font-semibold cursor-pointer hover:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}
+          <div className="text-[11px] font-semibold cursor-pointer hover:text-indigo-300 transition-colors" style={{ color: 'var(--text-secondary)' }}
             onClick={() => setEditingId(editingId === group[0].id ? null : group[0].id)}>
-            {group[0].cls || '(neu)'} <span className="text-blue-400">{group[0].typ}</span>
+            {group[0].cls || '(neu)'} <span className="text-indigo-400">{group[0].typ}</span>
             <span className="text-[8px] ml-1" style={{ color: 'var(--text-dim)' }}>({group.map(c => c.day).join(', ')})</span>
           </div>
           {group.map(c => (
@@ -165,7 +165,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                     }
                     {schoolLevel && (
                       <select value={c.stufe || ''} onChange={(e) => updateCourse(c.id, { stufe: e.target.value || undefined })}
-                        className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400 cursor-pointer"
+                        className="rounded px-1 py-0.5 text-[11px] outline-none focus:border-indigo-400 cursor-pointer"
                         style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}>
                         <option value="">Stufe…</option>
                         {STUFE_OPTIONS[schoolLevel].map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
@@ -179,7 +179,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                         const isChecked = isThisDay || !!sibling;
                         return (
                           <label key={d} className={`flex items-center gap-0 text-[9px] cursor-pointer select-none px-0.5 py-0.5 rounded ${
-                            isChecked ? 'text-blue-300 bg-blue-900/30' : ''
+                            isChecked ? 'text-indigo-300 bg-indigo-900/30' : ''
                           }`}
                             style={isChecked ? undefined : { color: 'var(--text-dim)' }}>
                             <input type="checkbox" checked={isChecked}
@@ -285,7 +285,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                   })()}
                   <SmallInput value={c.note || ''} onChange={(v) => updateCourse(c.id, { note: v || undefined })} placeholder="Bemerkung (optional)" className="w-full" />
                   <div className="flex gap-1 mt-1 flex-wrap">
-                    <button onClick={() => setEditingId(null)} className="text-[9px] text-blue-400 cursor-pointer">✓ Fertig</button>
+                    <button onClick={() => setEditingId(null)} className="text-[9px] text-indigo-400 cursor-pointer">✓ Fertig</button>
                     <button onClick={() => removeCourse(c.id)} className="text-[9px] text-red-400 cursor-pointer ml-auto">Entfernen</button>
                   </div>
                 </div>

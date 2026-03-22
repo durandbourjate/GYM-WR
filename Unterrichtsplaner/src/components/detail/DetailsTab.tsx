@@ -85,7 +85,7 @@ function SimpleTypeSelector({
             <input autoFocus value={customLabel} onChange={(e) => setCustomLabel(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleAddCustom(); if (e.key === 'Escape') setAddingCustom(false); }}
               placeholder="Neues Label…"
-              className="border border-blue-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-24"
+              className="border border-indigo-400 rounded px-1.5 py-0.5 text-[11px] outline-none w-24"
               style={{ background: 'var(--bg-input)', color: 'var(--text-primary)' }} />
             <button onClick={handleAddCustom} className="text-[11px] text-green-400 cursor-pointer">✓</button>
             <button onClick={() => setAddingCustom(false)} className="text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }}>✕</button>
@@ -152,7 +152,7 @@ function BadgeEditor({ badges, onChange }: { badges: import('../../types').CellB
       <div className="flex gap-1 items-center">
         <input value={customLabel} onChange={e => setCustomLabel(e.target.value.slice(0, 3))}
           placeholder="1-3 Z." maxLength={3}
-          className="w-12 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[11px] outline-none focus:border-blue-400" />
+          className="w-12 bg-slate-700 text-slate-200 border border-slate-600 rounded px-1 py-0.5 text-[11px] outline-none focus:border-indigo-400" />
         <input type="color" value={customColor} onChange={e => setCustomColor(e.target.value)}
           className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent" />
         <button onClick={() => { if (customLabel.trim()) { addBadge(customLabel.trim(), customColor); setCustomLabel(''); } }}
@@ -429,7 +429,7 @@ export function DetailsTab() {
                 usePlannerStore.getState().updateSequence(parentSeq.id, { title: detail.topicMain });
               }
             }}
-              className="text-[9px] px-1 py-px rounded border border-dashed border-blue-500/40 text-blue-400 hover:bg-blue-900/20 cursor-pointer"
+              className="text-[9px] px-1 py-px rounded border border-dashed border-indigo-500/40 text-indigo-400 hover:bg-indigo-900/20 cursor-pointer"
               title="UE-Felder (Fachbereich, Oberthema) auf den Sequenz-Block übertragen">
               ↑ Auf Sequenz
             </button>
@@ -457,7 +457,7 @@ export function DetailsTab() {
               </span>
               <button
                 onClick={() => updateField('subjectArea', subjectAreaMismatch.suggested)}
-                className="text-[9px] text-blue-400 hover:text-blue-300 cursor-pointer underline ml-1">
+                className="text-[9px] text-indigo-400 hover:text-indigo-300 cursor-pointer underline ml-1">
                 Korrigieren
               </button>
             </div>
@@ -477,14 +477,14 @@ export function DetailsTab() {
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Thema</label>
           {parentBlock?.topicMain && !detail.topicMain && (
-            <div className="text-[9px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.topicMain}</div>
+            <div className="text-[9px] text-indigo-400/60 mb-0.5">↳ Block: {parentBlock.topicMain}</div>
           )}
           <input value={detail.topicMain || ''} onChange={(e) => updateField('topicMain', e.target.value)}
             placeholder={effectiveDetail.topicMain || 'Hauptthema…'}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400" />
           <input value={detail.topicSub || ''} onChange={(e) => updateField('topicSub', e.target.value)}
             placeholder={effectiveDetail.topicSub || 'Unterthema (optional)…'}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 mt-1" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 mt-1" />
           {goalSuggestions.length > 0 && !detail.curriculumGoal && !effectiveDetail.curriculumGoal && (
             <div className="mt-1.5 space-y-0.5">
               <span className="text-[9px] text-amber-500/70">💡 Vorgeschlagene Lehrplanziele:</span>
@@ -508,12 +508,12 @@ export function DetailsTab() {
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Notizen</label>
           <textarea value={detail.notes || ''} onChange={(e) => updateField('notes', e.target.value)}
             placeholder="Notizen, Hinweise…" rows={3}
-            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-blue-400 resize-y" />
+            className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 resize-y" />
         </div>
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Lehrplanziel (LP17)</label>
           {parentBlock?.curriculumGoal && !detail.curriculumGoal && (
-            <div className="text-[9px] text-blue-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
+            <div className="text-[9px] text-indigo-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
           )}
           <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} subjectArea={effectiveDetail.subjectArea} goals={effectiveGoals} />
         </div>
@@ -565,7 +565,7 @@ export function DetailsTab() {
               💾 In Sammlung
             </button>
             <button onClick={() => setShowCollectionPicker(!showCollectionPicker)}
-              className="flex-1 px-2 py-1 rounded text-[11px] border border-blue-600/60 text-blue-300 hover:bg-blue-900/20 cursor-pointer transition-all">
+              className="flex-1 px-2 py-1 rounded text-[11px] border border-indigo-600/60 text-indigo-300 hover:bg-indigo-900/20 cursor-pointer transition-all">
               📥 Aus Sammlung
             </button>
           </div>
@@ -609,7 +609,7 @@ export function DetailsTab() {
                       setTimeout(() => setSavedMsg(null), 2500);
                     }}
                       className="w-full text-left px-2 py-1.5 rounded text-[11px] hover:bg-slate-700 cursor-pointer transition-all flex items-center gap-2">
-                      <span className={`px-1 py-px rounded text-[8px] ${item.subjectArea === area ? 'bg-blue-900/40 text-blue-300' : 'bg-slate-700 text-gray-400'}`}>
+                      <span className={`px-1 py-px rounded text-[8px] ${item.subjectArea === area ? 'bg-indigo-900/40 text-indigo-300' : 'bg-slate-700 text-gray-400'}`}>
                         {item.subjectArea || '—'}
                       </span>
                       <span className="text-gray-200 truncate flex-1">{item.title}</span>
