@@ -18,6 +18,7 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
   const pruefungStarten = usePruefungStore((s) => s.pruefungStarten)
   const setPhase = usePruefungStore((s) => s.setPhase)
   const user = useAuthStore((s) => s.user)
+  const abmelden = useAuthStore((s) => s.abmelden)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
   // Warteraum: Polling bis freigeschaltet === true
@@ -134,8 +135,17 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
-      {/* Theme-Toggle oben rechts */}
-      <div className="absolute top-4 right-4">
+      {/* Abmelden + Theme-Toggle oben rechts */}
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        {user && (
+          <button
+            onClick={abmelden}
+            title="Abmelden"
+            className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+          >
+            Abmelden
+          </button>
+        )}
         <ThemeToggle />
       </div>
 

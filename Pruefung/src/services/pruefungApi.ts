@@ -113,7 +113,7 @@ export async function sebAusnahmeErlauben(pruefungId: string, lpEmail: string, s
 
 /** Prüfung freischalten (Warteraum aufheben) */
 export async function schaltePruefungFrei(pruefungId: string, email: string): Promise<boolean> {
-  if (!APPS_SCRIPT_URL) return false
+  if (!APPS_SCRIPT_URL) return true // Demo-Modus: Freischaltung simulieren
 
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
@@ -143,7 +143,7 @@ export async function beendePruefung(payload: {
   restzeitMinuten?: number
   einzelneSuS?: string[]
 }): Promise<{ success: boolean; beendetUm?: string; error?: string }> {
-  if (!APPS_SCRIPT_URL) return { success: false, error: 'nicht_konfiguriert' }
+  if (!APPS_SCRIPT_URL) return { success: true, beendetUm: new Date().toISOString() } // Demo-Modus: Beenden simulieren
 
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
