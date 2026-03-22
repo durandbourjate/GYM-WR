@@ -502,6 +502,15 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           kontenauswahl={props.kontenauswahl}
           setKontenauswahl={props.setKontenauswahl}
           titelRechts={<KIBuchungssatzButtons ki={ki} geschaeftsfall={props.geschaeftsfall} />}
+          kontenauswahlTitelRechts={ki.verfuegbar && props.geschaeftsfall.trim() ? (
+            <InlineAktionButton
+              label="Konten vorschlagen"
+              tooltip="KI schlägt passende Konten für den Geschäftsfall vor"
+              disabled={ki.ladeAktion !== null}
+              ladend={ki.ladeAktion === 'generiereKontenauswahl'}
+              onClick={() => ki.ausfuehren('generiereKontenauswahl', { geschaeftsfall: props.geschaeftsfall })}
+            />
+          ) : undefined}
         />
       )}
 

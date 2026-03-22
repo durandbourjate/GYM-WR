@@ -139,6 +139,14 @@ html.dark {
   color: #94a3b8;
 }
 
+/* Textarea Touch-Resize: iOS Safari unterstützt kein CSS resize.
+   field-sizing: content lässt Textareas automatisch mitwachsen.
+   Fallback: min-height für ältere Browser. */
+textarea {
+  field-sizing: content;
+  min-height: 4rem;
+}
+
 /* Material-Panel Slide-In Animation */
 @keyframes slide-in-right {
   from { transform: translateX(100%); }

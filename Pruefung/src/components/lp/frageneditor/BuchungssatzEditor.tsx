@@ -12,6 +12,8 @@ interface BuchungssatzEditorProps {
   setKontenauswahl: (k: KontenauswahlConfig) => void
   /** Optionaler Inhalt rechts im Abschnitt-Header (z.B. KI-Buttons) */
   titelRechts?: React.ReactNode
+  /** Optionaler Inhalt rechts im Kontenauswahl-Header (z.B. KI-Button) */
+  kontenauswahlTitelRechts?: React.ReactNode
 }
 
 const MAX_BUCHUNGEN = 20
@@ -21,6 +23,7 @@ export default function BuchungssatzEditor({
   buchungen, setBuchungen,
   kontenauswahl, setKontenauswahl,
   titelRechts,
+  kontenauswahlTitelRechts,
 }: BuchungssatzEditorProps) {
 
   // --- Buchung CRUD ---
@@ -112,7 +115,7 @@ export default function BuchungssatzEditor({
       </Abschnitt>
 
       {/* Kontenauswahl */}
-      <Abschnitt titel="Kontenauswahl">
+      <Abschnitt titel="Kontenauswahl" titelRechts={kontenauswahlTitelRechts}>
         <div className="flex items-center gap-4 mb-3">
           <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
             <input
