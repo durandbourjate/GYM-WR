@@ -475,8 +475,18 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 |---------|-------------|--------|
 | **Ergebnis-Export (Excel)** | Tabelle wie Google Forms: Spalten pro Frage + Antwort + erreichte Punkte, eine Zeile pro SuS. Offline-Archiv der Prüfungsresultate. | 🔜 Geplant |
 | **Individuelle SuS-PDFs** | Pro SuS ein PDF mit Fragen, Antworten, Punkten, Kommentaren, Audio-Links. Für Zustellung an SuS oder Archivierung. | 🔜 Geplant |
-| **SuS-Korrektur-Einsicht (erweitert)** | SuS können ihre korrigierte Prüfung im System anschauen (schon implementiert). PDF-Download kommt erst später (z.B. nach Nachprüfungen). LP steuert Zeitpunkt der Freigabe. | Teilweise ✅ |
-| **Fragen-Statistiken** | Schwierigkeit (Lösungsquote), Trennschärfe, Analyse über mehrere Durchführungen derselben Frage. Kann schon vor Multi-LP umgesetzt werden. | 🔜 Geplant |
+| **SuS-Korrektur-Einsicht (erweitert)** | SuS können korrigierte Prüfung im System anschauen (✅). PDF-Download kommt später (z.B. nach Nachprüfungen). LP steuert Freigabe-Zeitpunkt. | Teilweise ✅ |
+| **Fragen-Statistiken** | Schwierigkeit (Lösungsquote), Trennschärfe, Analyse über mehrere Durchführungen. Pool-Statistiken (Fehlerquoten) als Hinweis im Editor anzeigen. | 🔜 Geplant |
+| **Prüfungstracker** | Übersicht: Welche SuS haben gefehlt? Wer braucht Nachprüfung? Erinnerungen. Noten-Stand pro Kurs/Semester vs. Vorgaben. Shared mit Planer. | 🔜 Geplant |
+| **SEB-Installation** | Safe Exam Browser Deployment vorbereiten (Konfiguration, Anleitung für IT, Testlauf) | 🔜 Geplant |
+| **Materialien-Filter** | In Fragenbank nach Fragen mit Anhängen (Bilder, Audio, Video) filtern können | 🔜 Geplant |
+
+### Übungspools: Geplante Verbesserungen
+
+| Feature | Beschreibung | Status |
+|---------|-------------|--------|
+| **"Unsicher"-Markierung** | SuS können bei Fragen markieren, dass sie unsicher waren → Frage kommt erneut (wie falsch beantwortete). Ergänzt bestehende Wiederholungslogik. | 🔜 Geplant |
+| **Pool-Sync aktuell halten** | Pools wachsen dynamisch durch Rück-Sync aus Prüfungstool. Beim Sync immer aktuelle Version holen. | Laufend |
 
 ### Roadmap: Multi-LP / Skalierung (Sammlung)
 
@@ -490,21 +500,85 @@ Ideen und Features für die Erweiterung auf mehrere Lehrpersonen. **Noch nicht u
 | **Daten** | Cloud-Backend | Hauptdaten in Google Sheets (kein localStorage für Kerndaten). Bei Skalierung: Supabase / Firebase als Alternative prüfen | Mittel |
 | **Kurse** | LP-eigene Kursverwaltung | LP können eigene Kurse/Klassen anlegen, nicht nur die von DUY | Hoch |
 | **Kurse** | Fächer/Gefässe erweitern | Aktuell nur W&R (SF/EF/EWR/GF). Für Multi-LP braucht es beliebige Fächer und Gefässe | Hoch |
+| **Kurse** | Evento-Integration | CLX.Evento (Kanton Bern) bietet REST API mit OAuth. Klassenlisten/SuS-Daten könnten automatisch synchronisiert werden statt manuell in Sheets gepflegt. Abklärung mit IT Hofwil nötig (API-Zugang, Berechtigungen). | Mittel |
 | **Sharing** | Geteilte Fragenpools | Fragen zwischen LPs teilen (opt-in, mit Freigabe-Mechanismus) | Mittel |
 | **UX** | Tablet/Smartphone | Gezieltes Testing + Optimierung für Touch-Geräte (SuS-Ansicht) | Mittel |
 | **Infra** | Multi-Tenant Sheets | Separate Sheets/Tabs pro LP oder zentrale Struktur mit LP-Kennung | Hoch |
 | **Demo** | Demo-Modus absichern | Demo-Modus für andere LP zum Testen: keine Daten speichern/löschen möglich | Mittel |
 
-### Synergie Unterrichtsplaner ↔ Prüfungstool
+### Synergie-Analyse: Übungspools ↔ Prüfungstool ↔ Unterrichtsplaner
 
-Langfristige Idee: Daten zwischen den beiden Apps teilen.
+#### Ist-Zustand
 
-| Feature | Beschreibung |
-|---------|-------------|
-| **Einstellungen übernehmen** | Fächer, Gefässe, Klassen, Fachbereich-Farben aus dem Unterrichtsplaner importieren statt doppelt pflegen |
-| **Prüfungen im Planer tracken** | Durchgeführte Prüfungen automatisch in den Unterrichtsplaner eintragen (Datum, Titel, Noten-Durchschnitt) |
-| **Notenvorgaben** | Prüfungsergebnisse gegen die Notenvorgaben im Planer abgleichen (Anzahl Noten pro Semester, Gewichtung) |
-| **Shared Kurs-Daten** | Klassenlisten und Kurs-Zuordnungen nur einmal pflegen, in beiden Apps nutzen |
+| Verbindung | Status |
+|-----------|--------|
+| Pools → Prüfungstool | ✅ Bidirektionaler Sync (Import + Rück-Export, Content-Hashing, Batch) |
+| Pools → Unterrichtsplaner | ❌ Keine Verbindung |
+| Prüfungstool → Unterrichtsplaner | ❌ Keine Verbindung |
+
+#### Gemeinsame Datenfelder (schon identisch, aber verschieden benannt)
+
+| Konzept | Übungspools | Prüfungstool | Unterrichtsplaner | Harmonisierung? |
+|---------|-------------|-------------|-------------------|----------------|
+| Fachbereich | `fach: "VWL"` | `fachbereich: "VWL"` | `subjectArea: "VWL"` | → `fachbereich` |
+| Bloom-Stufe | `tax: "K1"` | `bloom: "K1"` | (nur in Lehrplanzielen) | → `bloom` |
+| Thema | `topic` + `TOPICS.label` | `thema`, `unterthema` | `topicMain`, `topicSub` | → `thema` / `unterthema` |
+| Lernziele | `POOL_META.lernziele[]` | `lernzielIds[]` | `curriculumGoal` (String) | → zentrale DB |
+| Farben | `COLOR_SCHEMES` | `fachbereichFarbe()` | `generateColorVariants()` | ✅ Schon identisch |
+| Schwierigkeit | `diff: 1-3` | `schwierigkeit` | ❌ | → `schwierigkeit` |
+
+**Empfehlung Variablen-Harmonisierung:** Ja, langfristig sinnvoll. Bei nächstem Refactoring der Pools (`fach` → `fachbereich`, `tax` → `bloom`, `diff` → `schwierigkeit`) und des Planers (`subjectArea` → `fachbereich`, `topicMain` → `thema`). Pool-Format ist schwieriger zu ändern (26 Config-Dateien), daher Mapping im Converter beibehalten und schrittweise migrieren.
+
+#### Synergie 1: Gemeinsames Datenmodell Kurse/Klassen (Priorität: Hoch)
+
+Aktuell pflegt jedes Tool Kurse separat. Ziel: **eine Quelle, drei Konsumenten.**
+
+**Option A: Google Sheet "Kurse"** — Eine zentrale Sheets-Tab mit Kursen (ID, Label, Gefäss, Klassen, Fach, LP). Alle Tools lesen daraus.
+
+**Option B: Evento-Integration** — CLX.Evento (Schulverwaltung Kanton Bern) hat eine REST API mit OAuth. Klassenlisten und Kurs-Zuordnungen könnten automatisch synchronisiert werden. Abklärung nötig: Hat Gym Hofwil API-Zugang? Welche Daten sind verfügbar (SuS, Kurse, LP)?
+
+**Kurzfristig:** Shared Google Sheet als Brücke. **Langfristig:** Evento als Single Source of Truth.
+
+#### Synergie 2: Prüfungstracker + Notenvorgaben (Priorität: Hoch)
+
+Durchgeführte Prüfungen im Planer UND Prüfungstool tracken:
+
+- **Prüfungstool → Planer:** Nach Durchführung wird Prüfung automatisch in der entsprechenden Lektion eingetragen (Datum, Titel, ∅ Note, Notenverteilung). Neues Feld `pruefungId` in Planer-`LessonDetail`.
+- **Prüfungstracker im Prüfungstool:** Übersicht aller durchgeführten Prüfungen pro Kurs. Wer hat gefehlt? Wer braucht Nachprüfung? Erinnerungsfunktion für ausstehende Nachprüfungen.
+- **Noten-Stand (shared):** Planer hat `AssessmentRule` (min. Noten pro Semester). Prüfungstool kennt die Ergebnisse. Gemeinsame Ansicht: "Kurs SF 27a: 2/4 Noten gesetzt, noch 2 nötig bis KW 4". Sichtbar in BEIDEN Apps.
+- **Fehlende SuS:** Automatische Liste nach Prüfungsende. "3 SuS nicht erschienen → Nachprüfung organisieren?" mit Vorschlag für Datum.
+
+#### Synergie 3: Zentrale Lernziel-Datenbank (Priorität: Hoch)
+
+Lernziele existieren in allen drei Tools in verschiedenen Formaten. Ziel: **eine Datenbank, drei Konsumenten.**
+
+- Pools: `POOL_META.lernziele[]` → verlinken auf zentrale IDs
+- Prüfungstool: `lernzielIds[]` → schon da!
+- Planer: `curriculumGoal` (Freitext) → erweitern auf IDs
+- **Abdeckungs-Analyse:** "Lernziel X: 3× geübt (Pools), 2× geprüft, in Sequenz Y unterrichtet"
+- Planer zeigt auch ab, was **unterrichtet** wurde (nicht nur was geprüft wurde)
+
+#### Synergie 4: Pool- und Prüfungs-Statistiken verwerten (Priorität: Mittel)
+
+- Pool-Analytics (anonym): Fehlerquoten, Schwierigkeit, Reaktionszeiten → ins Prüfungstool einspeisen
+- Prüfungstool: Beim Hinzufügen einer Pool-Frage anzeigen: "⚠️ 68% Fehlerquote im Übungspool"
+- Prüfungstool-Statistiken (nach Korrektur): Lösungsquoten → zurück in Pools (Schwierigkeit anpassen)
+- Trennschärfe-Analyse über mehrere Durchführungen derselben Frage
+
+#### Synergie 5: Gemeinsame Materialien-Bibliothek (Priorität: Mittel)
+
+- Google Drive als zentrale Ablage für Bilder, Grafiken, PDFs
+- Validierte Visualisierungen können in Pools, Prüfungen und Unterricht wiederverwendet werden
+- Prüfungstool: Filter "Fragen mit Anhängen" in Fragenbank (noch zu implementieren)
+- Planer: `materialLinks[]` → gleiche Drive-Ordner referenzieren
+
+#### Synergie 6: Pools ↔ LearningView ↔ Prüfungstool (Priorität: Mittel)
+
+SuS nutzen den Planer nicht — sie arbeiten mit **LearningView**, wo Übungspools als Aktivitäten eingebettet sind. Daher:
+- Stoffverteilung → Pool-Empfehlung läuft über LearningView (nicht über Planer)
+- Wichtig: Pools beim Sync mit Prüfungstool aktuell halten → dynamisches Wachstum
+- Pools werden besser durch: neue Fragen aus Prüfungstool (Rück-Sync), Statistik-basierte Schwierigkeitsanpassung, LP-Review
+- xAPI-Scores fliessen von Pools → LearningView (schon implementiert)
 
 ## Verzeichnisstruktur
 
