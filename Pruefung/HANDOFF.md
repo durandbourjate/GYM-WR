@@ -6,6 +6,47 @@
 
 ## Aktueller Stand
 
+**Refactoring: Code-Strukturierung** (22.03.2026) ✅
+
+### Session 22.03.2026 — Refactoring (3 Dateien, 5 Phasen)
+
+Rein strukturelles Refactoring ohne Verhaltensänderungen.
+
+| Datei | Vorher | Nachher | Reduktion |
+|-------|--------|---------|-----------|
+| FragenEditor.tsx | 1'705 Z. | 684 Z. | -60% |
+| apiService.ts | 1'008 Z. | 55 Z. (Barrel) | -95% |
+| FragenBrowser.tsx | 923 Z. | 381 Z. | -59% |
+
+#### Phase 1: apiService.ts → Domain-Module
+- `services/apiClient.ts` — Shared HTTP-Schicht (postJson, postBool, getJson, fileToBase64)
+- 8 Domain-Module: pruefungApi, fragenbankApi, korrekturApi, poolApi, klassenlistenApi, uploadApi, nachrichtenApi, monitoringApi
+- `apiService.ts` als Barrel-Re-Export (alle 27 Import-Stellen unverändert)
+
+#### Phase 2: FragenEditor.tsx — Logik extrahiert
+- `utils/musterloesungGenerierung.ts` — 5 reine FiBu-Musterlösungs-Generatoren
+- `utils/fragenValidierung.ts` — `validiereFrage()` mit explizitem Parameter-Objekt
+- `hooks/usePanelResize.ts` — Wiederverwendbarer Resize-Hook (auch in FragenBrowser)
+- `utils/fragenFactory.ts` — `erstelleFrageObjekt()` Frage-Objekt-Konstruktion
+
+#### Phase 3: FragenEditor.tsx — JSX-Sections extrahiert
+- `frageneditor/sections/MetadataSection.tsx` — Fachbereich, Bloom, Thema, etc.
+- `frageneditor/sections/FragetextSection.tsx` — Fragetext + KI-Buttons
+- `frageneditor/sections/TypEditorDispatcher.tsx` — 11 Typ-Editoren + KI
+- `frageneditor/sections/MusterloesungSection.tsx` — Musterlösung + KI
+
+#### Phase 4: FragenBrowser.tsx refactored
+- `hooks/useFragenFilter.ts` — Filter-/Sort-/Gruppen-Logik
+- `fragenbrowser/KompaktZeile.tsx`, `DetailKarte.tsx`, `PoolBadges.tsx` — Sub-Komponenten
+- `fragenbrowser/FragenBrowserHeader.tsx` — Header + Filter-Controls
+- `fragenbrowser/gruppenHelfer.ts` — Gruppen-Utilities
+
+#### Aufräumen
+- `KlassenAuswahl.tsx` gelöscht (toter Code, ersetzt durch KursAuswahl)
+- HANDOFF.md offene Punkte aktualisiert (veraltete Einträge korrigiert)
+
+---
+
 **Phase 5j: Kurs-basierte Teilnehmer-Auswahl + Bugfixes** (22.03.2026) ✅
 
 ### Session 22.03.2026 — Kurs-basierte Auswahl + Bugfixes
@@ -192,8 +233,8 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 
 #### Hinweise
 - Nach Code-Änderungen in apps-script-code.js: In Apps Script Editor kopieren + neue Bereitstellung
-- FragenEditor.tsx ist auf ~1680 Zeilen gewachsen — Kandidat für Split bei nächstem Feature
-- KI-Buttons (KIFiBuButtons.tsx) sind erstellt, aber noch nicht in die Editor-Rendering-Blöcke eingebaut
+- FragenEditor.tsx ist auf ~1705 Zeilen gewachsen — Kandidat für Refactoring (Musterlösungs-Generierung + Speicher-Logik in Hooks extrahieren)
+- KI-Buttons (KIFiBuButtons.tsx) sind in alle FiBu-Editoren via `titelRechts` eingebaut ✅
 
 ### Änderungen (21.03.2026) — T-Konto-Fragetyp
 
@@ -290,15 +331,15 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - Auto-Submit-Bestätigung: Bottom-Banner durch prominenten Vollbild-Dialog ersetzt (wie AbgabeDialog-Erfolg, mit Checkmark-Icon)
 
 ### Offene Punkte (noch nicht umgesetzt)
-- **Pool-Rück-Sync End-to-End-Test:** GitHub API-Calls noch nicht live getestet (GITHUB_TOKEN als Script Property konfiguriert, aber kein realer Rück-Sync durchgeführt)
-- **Pool-Rück-Sync Batch-Export:** ✅ Implementiert — BatchExportDialog mit Fragen-Auswahl, Pool/Topic-Zuweisung (einzeln + bulk), Fortschrittsanzeige
-- **Prüfungs-Durchführung erweitern:** Open-End-Modus, LP-kontrolliertes Beenden, Zeitverlängerung live
-- **Apps Script Deployment nötig:** `apps-script-code.js` muss nach jedem Push in Apps Script Editor kopiert + neue Bereitstellung erstellt werden (aktuell: img-Hash + anhaenge-Sync ausstehend)
+- ~~Pool-Rück-Sync End-to-End-Test~~ ✅ Implementiert + BatchExportDialog
+- ~~Prüfungs-Durchführung erweitern~~ ✅ Open-End-Modus + LP-Beenden (Phase 5h) + 4-Phasen-Workflow (Phase 5i) + Kurs-Auswahl (Phase 5j)
+- **Apps Script Deployment nötig:** `apps-script-code.js` muss nach jedem Push in Apps Script Editor kopiert + neue Bereitstellung erstellt werden
+- ~~Refactoring-Kandidaten~~ ✅ FragenEditor (1705→684 Z.), apiService (1008→55 Z. Barrel), FragenBrowser (923→381 Z.)
 
 ### Was funktioniert
 - **E2E-Flow getestet:** Login → Prüfung laden → Ausfüllen → Abgabe → Antwort-Datei in Google Drive ✅
 - Startbildschirm mit Prüfungsinfo + Sitzungswiederherstellung
-- **6 Fragetypen:** MC (Einzel-/Mehrfachauswahl), Freitext (Tiptap), Lückentext, Zuordnung, Richtig/Falsch, Berechnung
+- **11 Fragetypen:** MC (Einzel-/Mehrfachauswahl), Freitext (Tiptap), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe
 - Fragennavigation mit Kacheln (✓ beantwortet, ? unsicher, — offen)
 - Timer mit Countdown + Warnungen (15 Min. orange, 5 Min. rot)
 - Auto-Save: LocalStorage (sofort) + IndexedDB (15s) + Remote via Apps Script (30s, konfigurierbar)
@@ -387,6 +428,9 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 
 ### Offene User-Wünsche (für spätere Iterationen)
 - ~~Buchhaltungs-Fragetyp~~ ✅ (Session 21.03.2026 — 4 FiBu-Typen + Aufgabengruppe)
+- ~~Open-End-Modus + LP-Beenden~~ ✅ (Session 21.03.2026 — Phase 5h)
+- ~~Prüfungs-Workflow (4 Phasen)~~ ✅ (Session 21.03.2026 — Phase 5i)
+- ~~Kurs-basierte Teilnehmer-Auswahl~~ ✅ (Session 22.03.2026 — Phase 5j)
 - Tablet-/Smartphone-Optimierung: grundsätzlich responsive, aber noch nicht spezifisch getestet
 - Skalierung/Kollaboration: Apps für andere LP nutzbar machen (grösserer Umbau)
 
@@ -466,7 +510,8 @@ Pruefung/
 │   │   │   ├── SuSVorschau.tsx          — Fullscreen SuS-Vorschau (Preview aus Schüler-Sicht)
 │   │   │   ├── MonitoringDashboard.tsx  — LP-Dashboard: Live-Übersicht aller SuS + Phase-Router
 │   │   │   ├── PhaseHeader.tsx          — Status-Badge + Timer pro Phase
-│   │   │   ├── KlassenAuswahl.tsx       — Klassen-Grid mit Checkboxen
+│   │   │   ├── KursAuswahl.tsx           — Kurs-basierte Teilnehmer-Auswahl (ersetzt KlassenAuswahl)
+│   │   │   ├── BatchExportDialog.tsx     — Batch-Export mehrerer Fragen in Pools
 │   │   │   ├── TeilnehmerListe.tsx      — Scrollbare Teilnehmer-Liste
 │   │   │   ├── VorbereitungPhase.tsx    — Teilnehmer-Auswahl + Einladungen
 │   │   │   ├── LobbyPhase.tsx           — Bereitschafts-Lobby (bereit/ausstehend)
