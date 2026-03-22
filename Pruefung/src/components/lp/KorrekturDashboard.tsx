@@ -6,7 +6,7 @@ import type { Frage } from '../../types/fragen.ts'
 import { berechneStatistiken, berechneFragenStatistiken, berechneNote } from '../../utils/korrekturUtils.ts'
 import type { FragenStatistik } from '../../utils/korrekturUtils.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
-import { exportiereAlsCSV, downloadCSV } from '../../utils/exportUtils.ts'
+import { exportiereAlsCSV, exportiereErgebnisseAlsCSV, downloadCSV } from '../../utils/exportUtils.ts'
 import { formatDatum } from '../../utils/zeit.ts'
 import LPHeader from './LPHeader.tsx'
 import FragenBrowser from './FragenBrowser.tsx'
@@ -246,11 +246,19 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     }
   }
 
-  // CSV-Export
+  // CSV-Export (nur Punkte)
   function handleCSVExport(): void {
     if (!korrektur) return
     const csv = exportiereAlsCSV(korrektur, fragen)
     const dateiname = `${korrektur.pruefungTitel.replace(/[^a-zA-Z0-9äöüÄÖÜ\-_ ]/g, '')}_Ergebnisse.csv`
+    downloadCSV(csv, dateiname)
+  }
+
+  // Detaillierter CSV-Export (Antworten + Punkte, Excel-tauglich)
+  function handleDetailExport(): void {
+    if (!korrektur) return
+    const csv = exportiereErgebnisseAlsCSV(korrektur, fragen, abgaben)
+    const dateiname = `${korrektur.pruefungTitel.replace(/[^a-zA-Z0-9äöüÄÖÜ\-_ ]/g, '')}_Detailliert.csv`
     downloadCSV(csv, dateiname)
   }
 
@@ -305,8 +313,13 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && (
-        <button onClick={handleCSVExport} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer" title="Ergebnisse als CSV exportieren">
+        <button onClick={handleCSVExport} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer" title="Ergebnisse als CSV exportieren (nur Punkte)">
           CSV Export
+        </button>
+      )}
+      {korrektur && korrektur.schueler.length > 0 && Object.keys(abgaben).length > 0 && (
+        <button onClick={handleDetailExport} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer" title="Detaillierter Export mit Antworten und Punkten pro Frage">
+          Excel-Export (Detailliert)
         </button>
       )}
     </>

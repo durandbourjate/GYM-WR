@@ -229,6 +229,18 @@ body{min-height:auto!important;background:#fff!important}
 .q-action-row .btn-skip{margin-left:auto}
 .btn-skip{background:transparent;border:2px solid var(--c-primary);color:var(--c-primary);font-size:.85rem;padding:10px 18px;min-height:44px;box-sizing:border-box}
 .btn-skip:hover{background:color-mix(in srgb,var(--c-primary) 10%,transparent)}
+.btn-unsicher{background:transparent;border:2px solid #d97706;color:#d97706;font-size:.85rem;padding:10px 18px;min-height:44px;box-sizing:border-box;border-radius:var(--radius);font-family:inherit;font-weight:600;cursor:pointer;transition:.2s;display:none;align-items:center;gap:6px}
+.btn-unsicher:hover{background:color-mix(in srgb,#d97706 10%,transparent)}
+html.dark .btn-unsicher{border-color:#f59e0b;color:#f59e0b}
+html.dark .btn-unsicher:hover{background:color-mix(in srgb,#f59e0b 10%,transparent)}
+.toast-repeat{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:.9rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:500;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast-repeat.show{opacity:1}
+html.dark .toast-repeat{background:#334155}
+.badge-unsicher{background:#fef3c7;color:#b45309}
+html.dark .badge-unsicher{background:#3d2e10;color:#f59e0b}
+.ri-unsicher{border-left:3px solid #d97706}
+.res-unsicher-stat{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.9rem;color:#b45309;font-weight:600;justify-content:center}
+html.dark .res-unsicher-stat{color:#f59e0b}
 .q-bottom-row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--c-border)}
 .btn-end{background:none;border:none;color:var(--c-text-soft);font-size:.78rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s;font-family:inherit}
 .btn-end:hover{background:var(--c-bg);color:var(--c-text)}
@@ -330,6 +342,8 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
   /* Zurück + Überspringen: nebeneinander, Reihe 2 */
   .q-action-row .btn-back{order:10;flex:1 1 calc(50% - 4px)}
   .q-action-row .btn-skip{order:11;flex:1 1 calc(50% - 4px);margin-left:0}
+  /* Unsicher-Button: eigene Zeile, volle Breite */
+  .q-action-row .btn-unsicher{order:12;flex:1 1 100%}
   /* Nächste Aufgabe: gleicher Platz wie Überspringen */
   .q-action-row .btn-accent{order:11;flex:1 1 calc(50% - 4px);margin-left:0}
 
@@ -585,6 +599,7 @@ html.dark .search-tag{background:var(--c-surface)}
 <div class="result-score">
 <div class="big" id="resPts">0/0</div>
 <div class="pct" id="resPct">0%</div>
+<div class="res-unsicher-stat" id="resUnsicher" style="display:none"></div>
 </div>
 </div>
 <div class="card"><h2>📊 Nach Unterthema</h2><div id="topicResults" class="topic-results"></div></div>
@@ -739,7 +754,7 @@ function showError(msg) {
 // ══════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════
-let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+let state={mode:null,filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
 let pickedSortItem=null;
 
 // ══════════════════════════════════════════
@@ -881,6 +896,7 @@ function restoreAnswerState(q,answer){
   fb.innerHTML='<div class="feedback-title">'+(answer.correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+q.explain+'</div>';
   document.getElementById('nextBtn').style.display='inline-flex';
   var skip=document.querySelector('.btn-skip');if(skip)skip.style.display='none';
+  var unsicherBtn=document.getElementById('unsicherBtn');if(unsicherBtn)unsicherBtn.style.display='none';
   var hints=document.getElementById('hintsBtn');if(hints)hints.style.display='none';
   document.querySelectorAll('#skipRow .btn-primary:not(#nextBtn)').forEach(b=>b.style.display='none');
 }
@@ -1230,7 +1246,7 @@ function updateFilterCount(){
 function startQuiz(){
   let q=getFiltered();
   shuffle(q);
-  state.queue=q;state.current=0;state.score=0;state.maxScore=0;state.answered=[];state.wrong=[];
+  state.queue=q;state.current=0;state.score=0;state.maxScore=0;state.answered=[];state.wrong=[];state.unsure=[];state.repeatQueue=[];
   _trackStart=Date.now();
   showScreen('quizScreen'); renderQuestion();
 }
@@ -1344,6 +1360,7 @@ function renderQuestion(){
     html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
   }
   html+='<button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button>';
+  html+='<button class="btn btn-unsicher" id="unsicherBtn" onclick="markUnsicher()">🔖 Unsicher — nochmal üben</button>';
   html+='<button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;margin-left:auto">Nächste Aufgabe →</button>';
   html+='</div>';
   html+='<div class="q-bottom-row" id="qBottomRow"><button class="btn-end" onclick="endQuiz()">🏁 Übung beenden</button><button class="btn-report" onclick="showReport(\''+q.id+'\')">⚠️ Problem melden</button></div>';
@@ -1505,15 +1522,68 @@ function finishAnswer(q,correct,explain,userAnswer){
   const fb=document.getElementById('feedback');
   fb.className='feedback show '+(correct?'correct':'wrong');
   fb.innerHTML='<div class="feedback-title">'+(correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+explain+'</div>';
+  // Falsche Antworten automatisch zur Wiederholung vormerken
+  if(!correct){
+    var alreadyQueued=state.repeatQueue.some(function(rq){return rq.id===q.id});
+    if(!alreadyQueued)state.repeatQueue.push(q);
+  }
   document.getElementById('nextBtn').style.display='inline-flex';
   document.getElementById('nextBtn').style.marginLeft='auto';
+  // Unsicher-Button anzeigen (nur wenn Frage nicht schon in repeatQueue)
+  var unsicherBtn=document.getElementById('unsicherBtn');
+  if(unsicherBtn){
+    var inRepeat=state.repeatQueue.some(function(rq){return rq.id===q.id});
+    unsicherBtn.style.display=inRepeat?'none':'inline-flex';
+  }
   var skip=document.querySelector('.btn-skip');if(skip)skip.style.display='none';
   var actionBtns=document.querySelectorAll('#skipRow .btn-primary:not(#nextBtn)');actionBtns.forEach(function(b){b.style.display='none'});
 }
 
+function markUnsicher(){
+  var q=state.queue[state.current];
+  state.unsure.push({q:q.q,topic:q.topic,id:q.id});
+  var alreadyQueued=state.repeatQueue.some(function(rq){return rq.id===q.id});
+  if(!alreadyQueued)state.repeatQueue.push(q);
+  var btn=document.getElementById('unsicherBtn');
+  if(btn){btn.style.display='none';}
+  // Kurzes visuelles Feedback
+  var fb=document.getElementById('feedback');
+  if(fb){
+    var marker=document.createElement('div');
+    marker.style.cssText='margin-top:8px;font-size:.85rem;color:#b45309;font-weight:600';
+    marker.textContent='🔖 Wird am Ende wiederholt';
+    fb.appendChild(marker);
+  }
+}
+
+function showRepeatToast(count){
+  var toast=document.getElementById('repeatToast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='repeatToast';
+    toast.className='toast-repeat';
+    document.body.appendChild(toast);
+  }
+  toast.textContent='🔄 '+count+' Frage'+(count>1?'n werden':' wird')+' wiederholt';
+  toast.classList.add('show');
+  setTimeout(function(){toast.classList.remove('show')},2000);
+}
+
 function nextQuestion(){
   state.current++;
-  if(state.current>=state.queue.length)return endQuiz();
+  if(state.current>=state.queue.length){
+    // Wenn Wiederholungsfragen vorhanden: an Queue anhängen
+    if(state.repeatQueue.length>0){
+      var count=state.repeatQueue.length;
+      shuffle(state.repeatQueue);
+      state.queue=state.queue.concat(state.repeatQueue);
+      state.repeatQueue=[];
+      showRepeatToast(count);
+      renderQuestion();
+      return;
+    }
+    return endQuiz();
+  }
   renderQuestion();
 }
 
@@ -1524,6 +1594,17 @@ function endQuiz(){
   trackSessionEnd();
   document.getElementById('resPts').textContent=state.score+' / '+state.maxScore;
   document.getElementById('resPct').textContent=pct+'%';
+
+  // Unsicher-Statistik anzeigen
+  var unsicherStat=document.getElementById('resUnsicher');
+  if(unsicherStat){
+    if(state.unsure.length>0){
+      unsicherStat.textContent='🔖 '+state.unsure.length+' Frage'+(state.unsure.length>1?'n':'')+ ' als unsicher markiert';
+      unsicherStat.style.display='flex';
+    } else {
+      unsicherStat.style.display='none';
+    }
+  }
 
   let topicData={};
   state.queue.forEach((q,i)=>{
@@ -1560,8 +1641,10 @@ function endQuiz(){
     }
     const cls=a.correct?'ri-correct':'ri-wrong';
     const icon=a.correct?'✅':'❌';
-    rHtml+='<div class="review-item '+cls+'">';
+    const isUnsicher=state.unsure.some(function(u){return u.id===q.id});
+    rHtml+='<div class="review-item '+cls+(isUnsicher?' ri-unsicher':'')+'">';
     rHtml+='<div class="ri-header"><span class="ri-num">#'+(i+1)+'</span><span class="ri-icon">'+icon+'</span>';
+    if(isUnsicher)rHtml+='<span class="badge badge-unsicher">🔖 Unsicher</span>';
     rHtml+='<span class="ri-topic">'+TOPICS[q.topic].short+'</span></div>';
     if(q.context)rHtml+='<div class="ri-context">'+q.context+'</div>';
     rHtml+='<div class="ri-question">'+getQuestionDisplay(q)+'</div>';
@@ -1608,7 +1691,7 @@ function exportResults(){
 }
 
 function resetApp(){
-  state={mode:'mix',filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[]};
+  state={mode:'mix',filters:{topics:new Set(),diffs:new Set(),types:new Set()},queue:[],current:0,score:0,maxScore:0,answered:[],wrong:[],unsure:[],repeatQueue:[]};
   searchState.query=''; searchState.activeTags.clear();
   document.querySelectorAll('.search-tag').forEach(c=>c.classList.remove('active'));
   var si=document.getElementById('searchInput'); if(si){si.value='';}
