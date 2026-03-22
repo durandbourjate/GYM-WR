@@ -82,6 +82,19 @@
   --color-gray-200: #1f2937;
   --color-gray-100: #111827;
   --color-gray-50:  #030712;
+
+  /* Indigo-Palette: invertiert für Light Mode (UI-Akzentfarbe) */
+  --color-indigo-950: #eef2ff;
+  --color-indigo-900: #e0e7ff;
+  --color-indigo-800: #c7d2fe;
+  --color-indigo-700: #a5b4fc;
+  --color-indigo-600: #818cf8;
+  --color-indigo-500: #6366f1;
+  --color-indigo-400: #4f46e5;
+  --color-indigo-300: #4338ca;
+  --color-indigo-200: #3730a3;
+  --color-indigo-100: #312e81;
+  --color-indigo-50:  #1e1b4b;
 }
 
 /* v3.90 M1-M3: text-white nutzt --color-white (nicht Palette) → explizit überschreiben */

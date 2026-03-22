@@ -271,11 +271,11 @@ function PlannerContent() {
       <InsertDialog />
 
       {courseFilter && (
-        <div className="flex items-center gap-2 px-4 py-1 bg-blue-900/40 border-b border-blue-800/50">
-          <span className="text-[10px] text-blue-300 font-semibold">🔍 Gefiltert: {courseFilter.replace('|', ' ')}</span>
+        <div className="flex items-center gap-2 px-4 py-1 bg-indigo-900/40 border-b border-indigo-800/50">
+          <span className="text-[10px] text-indigo-300 font-semibold">🔍 Gefiltert: {courseFilter.replace('|', ' ')}</span>
           <button
             onClick={() => setCourseFilter(null)}
-            className="text-[10px] text-blue-400 hover:text-white bg-blue-800/60 hover:bg-blue-700 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
+            className="text-[10px] text-indigo-400 hover:text-white bg-indigo-800/60 hover:bg-indigo-700 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
             title="Filter aufheben (Esc)"
           >✕</button>
         </div>
@@ -293,10 +293,10 @@ function PlannerContent() {
                 Lege im Einstellungen-Panel deine Kurse an (Klasse, Tag, Lektionen), um das Planungsraster zu erstellen.
               </p>
               {sidePanelOpen && sidePanelTab === 'settings' ? (
-                <p className="text-blue-400 text-sm">→ Kurse im geöffneten Einstellungs-Panel anlegen</p>
+                <p className="text-indigo-400 text-sm">→ Kurse im geöffneten Einstellungs-Panel anlegen</p>
               ) : (
                 <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-500 transition-colors cursor-pointer"
                   onClick={() => {
                     usePlannerStore.getState().setSidePanelOpen(true);
                     usePlannerStore.getState().setSidePanelTab('settings');
