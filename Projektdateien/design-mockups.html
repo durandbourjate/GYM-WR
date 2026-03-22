@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designkonzept — Farbsystem GYM-WR-DUY</title>
+<style>
+  :root {
+    /* Fachbereich-Farben (Schicht 1) */
+    --fb-vwl: #f97316;
+    --fb-bwl: #3b82f6;
+    --fb-recht: #22c55e;
+    --fb-in: #6b7280;
+
+    /* FiBu-Farben (Schicht 2) — Lehrmittel-Standard */
+    --fibu-aktiv: #eab308;
+    --fibu-passiv: #ef4444;
+    --fibu-aufwand: #3b82f6;
+    --fibu-ertrag: #22c55e;
+
+    /* UI-Funktionsfarben (Schicht 3) */
+    --ui-selected: #6366f1;    /* Indigo — ausgewählt/beantwortet */
+    --ui-correct: #22c55e;     /* Grün — korrekt */
+    --ui-wrong: #ef4444;       /* Rot — falsch */
+    --ui-unsicher: #f59e0b;    /* Amber — unsicher markiert */
+    --ui-focus: #6366f1;       /* Indigo — Input-Fokus */
+    --ui-neutral: #64748b;     /* Slate — neutrale UI */
+
+    /* Neutrale Basis */
+    --bg: #ffffff;
+    --bg-alt: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-soft: #64748b;
+    --text-muted: #94a3b8;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --bg-alt: #1e293b;
+    --surface: #1e293b;
+    --border: #334155;
+    --text: #f1f5f9;
+    --text-soft: #94a3b8;
+    --text-muted: #64748b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.25rem; font-weight: 700; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: var(--text-soft); }
+
+  .subtitle { color: var(--text-soft); margin-bottom: 2rem; }
+
+  .theme-toggle {
+    position: fixed; top: 1rem; right: 1rem;
+    padding: 0.5rem 1rem; border-radius: 0.5rem;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); cursor: pointer; font-size: 0.875rem;
+  }
+
+  /* === Farbpaletten === */
+  .palette { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+  .swatch {
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+  }
+  .swatch-color {
+    width: 60px; height: 60px; border-radius: 0.75rem;
+    border: 2px solid var(--border);
+  }
+  .swatch-label { font-size: 0.7rem; font-weight: 600; color: var(--text-soft); }
+  .swatch-hex { font-size: 0.65rem; font-family: monospace; color: var(--text-muted); }
+
+  /* === Mockup-Karten === */
+  .mockup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  .mockup-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 1rem;
+  }
+
+  /* === Badges === */
+  .badge {
+    display: inline-block; font-size: 0.75rem; font-weight: 600;
+    padding: 0.15rem 0.6rem; border-radius: 999px;
+  }
+  .badge-vwl { background: #fff7ed; color: #9a3412; }
+  .badge-bwl { background: #dbeafe; color: #1e40af; }
+  .badge-recht { background: #dcfce7; color: #166534; }
+  .badge-in { background: #f3f4f6; color: #4b5563; }
+  .badge-bloom { background: #f1f5f9; color: #475569; }
+
+  .dark .badge-vwl { background: rgba(249,115,22,0.15); color: #fdba74; }
+  .dark .badge-bwl { background: rgba(59,130,246,0.15); color: #93c5fd; }
+  .dark .badge-recht { background: rgba(34,197,94,0.15); color: #86efac; }
+  .dark .badge-in { background: rgba(107,114,128,0.15); color: #d1d5db; }
+  .dark .badge-bloom { background: #1e293b; color: #94a3b8; }
+
+  /* === MC-Optionen === */
+  .mc-option {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 1rem; border-radius: 0.75rem; border: 2px solid var(--border);
+    margin: 0.5rem 0; cursor: pointer; transition: all 0.15s;
+    background: var(--surface);
+  }
+  .mc-option:hover { border-color: #94a3b8; }
+
+  .mc-option.selected {
+    border-color: var(--ui-selected);
+    background: rgba(99,102,241,0.06);
+  }
+  .dark .mc-option.selected {
+    background: rgba(99,102,241,0.12);
+  }
+  .mc-option.correct {
+    border-color: var(--ui-correct);
+    background: rgba(34,197,94,0.06);
+  }
+  .mc-option.wrong {
+    border-color: var(--ui-wrong);
+    background: rgba(239,68,68,0.06);
+  }
+
+  .mc-radio {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+    flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center;
+  }
+  .mc-option.selected .mc-radio {
+    border-color: var(--ui-selected); background: var(--ui-selected);
+  }
+  .mc-option.correct .mc-radio {
+    border-color: var(--ui-correct); background: var(--ui-correct);
+    font-size: 0.75rem; color: white; font-weight: 700;
+  }
+  .mc-option.wrong .mc-radio {
+    border-color: var(--ui-wrong); background: var(--ui-wrong);
+    font-size: 0.75rem; color: white; font-weight: 700;
+  }
+  .mc-radio-dot { width: 8px; height: 8px; border-radius: 50%; background: white; display: none; }
+  .mc-option.selected .mc-radio-dot { display: block; }
+  /* Korrektur: Icon statt Dot */
+  .mc-option.correct .mc-radio-dot,
+  .mc-option.wrong .mc-radio-dot { display: none; }
+  .mc-option.correct .mc-radio-icon,
+  .mc-option.wrong .mc-radio-icon { display: flex; }
+
+  .mc-label { font-weight: 600; color: var(--text-soft); margin-right: 0.5rem; }
+
+  /* === R/F Buttons === */
+  .rf-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+  .rf-statement { flex: 1; }
+  .rf-buttons { display: flex; gap: 0.5rem; }
+  .rf-btn {
+    padding: 0.4rem 1rem; border-radius: 0.5rem; border: 2px solid var(--border);
+    font-size: 0.875rem; font-weight: 600; cursor: pointer; background: var(--surface);
+    color: var(--text-soft); transition: all 0.15s;
+  }
+  .rf-btn.selected-r { border-color: var(--ui-selected); background: rgba(99,102,241,0.06); color: var(--ui-selected); }
+  .rf-btn.selected-f { border-color: var(--ui-selected); background: rgba(99,102,241,0.06); color: var(--ui-selected); }
+  .rf-btn.correct { border-color: var(--ui-correct); background: rgba(34,197,94,0.06); color: var(--ui-correct); }
+  .rf-btn.wrong { border-color: var(--ui-wrong); background: rgba(239,68,68,0.06); color: var(--ui-wrong); }
+
+  /* === Zuordnung === */
+  .zuordnung-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem; border-radius: 0.75rem; border: 2px solid var(--border);
+    margin: 0.5rem 0; background: var(--surface);
+  }
+  .zuordnung-row.matched {
+    border-color: var(--ui-selected); background: rgba(99,102,241,0.06);
+  }
+  .zuordnung-num {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--bg-alt);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem; font-weight: 700; color: var(--text-soft); flex-shrink: 0;
+  }
+  .zuordnung-left { flex: 1; font-weight: 500; }
+  .zuordnung-arrow { color: var(--text-muted); font-size: 1.25rem; }
+  .zuordnung-select {
+    flex: 1; padding: 0.5rem 0.75rem; border-radius: 0.5rem;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); font-size: 0.875rem;
+  }
+  .zuordnung-row.matched .zuordnung-select { border-color: rgba(99,102,241,0.4); }
+
+  /* === Lückentext === */
+  .luecken-text { font-size: 1rem; line-height: 2.2; }
+  .luecken-input {
+    display: inline-block; width: 140px; border: none; border-bottom: 2px solid var(--border);
+    background: transparent; padding: 0.15rem 0.5rem; font-size: 1rem;
+    color: var(--text); outline: none; margin: 0 0.25rem;
+  }
+  .luecken-input.filled { border-color: var(--ui-selected); background: rgba(99,102,241,0.04); }
+  .luecken-input.correct { border-color: var(--ui-correct); background: rgba(34,197,94,0.04); }
+  .luecken-input.wrong { border-color: var(--ui-wrong); background: rgba(239,68,68,0.04); }
+  .luecken-input:focus { border-color: var(--ui-focus); }
+
+  /* === FiBu T-Konto === */
+  .tkonto {
+    border: 2px solid var(--border); border-radius: 0.75rem;
+    overflow: hidden; background: var(--surface);
+  }
+  .tkonto-header {
+    padding: 0.75rem 1rem; font-weight: 700; font-size: 0.875rem;
+    border-bottom: 1px solid var(--border); background: var(--bg-alt);
+  }
+  .tkonto-kategorie {
+    padding: 0.5rem 1rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;
+  }
+  .tkonto-kat-badge {
+    font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+  }
+  .kat-aktiv { background: rgba(234,179,8,0.12); color: #a16207; border: 1px solid rgba(234,179,8,0.3); }
+  .kat-passiv { background: rgba(239,68,68,0.08); color: #dc2626; border: 1px solid rgba(239,68,68,0.2); }
+  .kat-aufwand { background: rgba(59,130,246,0.08); color: #2563eb; border: 1px solid rgba(59,130,246,0.2); }
+  .kat-ertrag { background: rgba(34,197,94,0.08); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
+
+  .dark .kat-aktiv { background: rgba(234,179,8,0.15); color: #fbbf24; border-color: rgba(234,179,8,0.3); }
+  .dark .kat-passiv { background: rgba(239,68,68,0.12); color: #fca5a5; border-color: rgba(239,68,68,0.25); }
+  .dark .kat-aufwand { background: rgba(59,130,246,0.12); color: #93c5fd; border-color: rgba(59,130,246,0.25); }
+  .dark .kat-ertrag { background: rgba(34,197,94,0.12); color: #86efac; border-color: rgba(34,197,94,0.25); }
+
+  .tkonto-body { padding: 0.75rem; }
+  .tkonto-columns { display: grid; grid-template-columns: 1fr 1fr; }
+  .tkonto-col { padding: 0.5rem; }
+  .tkonto-col:first-child { border-right: 2px solid var(--text); }
+  .tkonto-col-header {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-soft); padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--text);
+  }
+  .tkonto-row {
+    display: flex; justify-content: space-between; padding: 0.35rem 0;
+    font-size: 0.875rem; border-bottom: 1px solid var(--border);
+  }
+  .tkonto-saldo { border-top: 2px solid var(--text); padding-top: 0.5rem; margin-top: 0.25rem; }
+
+  /* === Buchungssatz === */
+  .buchung-container {
+    border: 2px solid var(--border); border-radius: 0.75rem;
+    padding: 1rem; background: var(--surface); margin: 0.5rem 0;
+  }
+  .buchung-header { font-weight: 600; font-size: 0.875rem; color: var(--text-soft); margin-bottom: 0.75rem; }
+  .buchung-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .buchung-seite {
+    border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem;
+    background: var(--bg-alt);
+  }
+  .buchung-seite.hat-eingabe {
+    border-color: rgba(99,102,241,0.3);
+    background: rgba(99,102,241,0.03);
+  }
+  .buchung-seite-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-soft); margin-bottom: 0.5rem;
+  }
+  .buchung-input {
+    width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border);
+    border-radius: 0.375rem; background: var(--surface); color: var(--text);
+    font-size: 0.875rem; margin: 0.25rem 0;
+  }
+
+  /* === Bilanz === */
+  .bilanz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .bilanz-seite {
+    border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem;
+  }
+  .bilanz-neutral { background: var(--bg-alt); }
+  .bilanz-aktiv {
+    border-color: rgba(234,179,8,0.4); background: rgba(234,179,8,0.05);
+  }
+  .bilanz-passiv {
+    border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.04);
+  }
+  .dark .bilanz-aktiv { border-color: rgba(234,179,8,0.3); background: rgba(234,179,8,0.08); }
+  .dark .bilanz-passiv { border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.06); }
+
+  .bilanz-title { font-weight: 700; font-size: 0.875rem; margin-bottom: 0.75rem; }
+
+  /* === Navigation === */
+  .nav-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 0; margin-bottom: 1rem; gap: 0.5rem;
+  }
+  .nav-btn {
+    padding: 0.6rem 1rem; border-radius: 0.5rem; border: none;
+    background: var(--bg-alt); color: var(--text); font-size: 0.875rem;
+    font-weight: 500; cursor: pointer;
+  }
+  .nav-btn:disabled { opacity: 0.3; }
+  .nav-center { font-size: 0.875rem; font-weight: 600; color: var(--text-soft); }
+  .nav-right { display: flex; gap: 0.5rem; }
+  .btn-unsicher {
+    padding: 0.6rem 0.75rem; border-radius: 0.5rem;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-soft); font-size: 0.875rem; cursor: pointer;
+  }
+  .btn-unsicher.active {
+    border-color: var(--ui-unsicher); background: rgba(245,158,11,0.08);
+    color: #b45309; font-weight: 600;
+  }
+
+  /* === Material Button === */
+  .btn-material {
+    padding: 0.35rem 0.6rem; border-radius: 0.5rem;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-soft); font-size: 0.75rem; cursor: pointer;
+  }
+  .btn-material.active {
+    border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.06);
+    color: #16a34a;
+  }
+
+  /* === Übungspool-Mockup === */
+  .pool-header {
+    padding: 1rem 1.5rem; border-radius: 0.75rem 0.75rem 0 0;
+    color: white; font-weight: 700;
+  }
+  .pool-vwl { background: var(--fb-vwl); }
+  .pool-bwl { background: var(--fb-bwl); }
+  .pool-recht { background: var(--fb-recht); }
+  .pool-body {
+    padding: 1.5rem; border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 0.75rem 0.75rem;
+    background: var(--surface);
+  }
+
+  .pool-btn-skip {
+    padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600;
+    font-size: 0.875rem; cursor: pointer; background: transparent;
+  }
+  .pool-btn-skip.vwl { border: 2px solid var(--fb-vwl); color: var(--fb-vwl); }
+  .pool-btn-skip.bwl { border: 2px solid var(--fb-bwl); color: var(--fb-bwl); }
+  .pool-btn-skip.recht { border: 2px solid var(--fb-recht); color: var(--fb-recht); }
+
+  /* === Grid Layout === */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  .section-divider { margin: 3rem 0 2rem; border-top: 3px solid var(--border); }
+
+  /* Korrektur-Icons */
+  .icon-correct { color: var(--ui-correct); font-weight: 700; }
+  .icon-wrong { color: var(--ui-wrong); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="document.body.classList.toggle('dark')">🌓 Light/Dark</button>
+
+<h1>Designkonzept — Farbsystem</h1>
+<p class="subtitle">Konsistentes 3-Schichten-Modell für Prüfungstool, Übungspools & Unterrichtsplaner</p>
+
+<!-- ============================================ -->
+<h2>Schicht 1: Fachbereich-Farben</h2>
+<p style="color:var(--text-soft); margin-bottom:1rem;">Identisch in allen drei Tools. Nur für Fachbereich-Badges und Pool-Akzentfarben.</p>
+
+<div class="palette">
+  <div class="swatch">
+    <div class="swatch-color" style="background:#f97316"></div>
+    <span class="swatch-label">VWL</span>
+    <span class="swatch-hex">#f97316</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#3b82f6"></div>
+    <span class="swatch-label">BWL</span>
+    <span class="swatch-hex">#3b82f6</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#22c55e"></div>
+    <span class="swatch-label">Recht</span>
+    <span class="swatch-hex">#22c55e</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#6b7280"></div>
+    <span class="swatch-label">IN</span>
+    <span class="swatch-hex">#6b7280</span>
+  </div>
+</div>
+
+<div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem;">
+  <span class="badge badge-vwl">VWL</span>
+  <span class="badge badge-bwl">BWL</span>
+  <span class="badge badge-recht">Recht</span>
+  <span class="badge badge-in">IN</span>
+  <span class="badge badge-bloom">K2</span>
+  <span style="font-size:0.8rem; color:var(--text-soft)">← So erscheinen Badges im Prüfungstool</span>
+</div>
+
+<!-- ============================================ -->
+<h2>Schicht 2: FiBu-Farben (Lehrmittel-Standard)</h2>
+<p style="color:var(--text-soft); margin-bottom:1rem;">Nur in Buchhaltungs-Kontexten (T-Konto, Buchungssatz, Bilanz). Nie neben Fachbereich-Badges.</p>
+
+<div class="palette">
+  <div class="swatch">
+    <div class="swatch-color" style="background:#eab308"></div>
+    <span class="swatch-label">Aktiven</span>
+    <span class="swatch-hex">#eab308</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#ef4444"></div>
+    <span class="swatch-label">Passiven</span>
+    <span class="swatch-hex">#ef4444</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#3b82f6"></div>
+    <span class="swatch-label">Aufwand</span>
+    <span class="swatch-hex">#3b82f6</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#22c55e"></div>
+    <span class="swatch-label">Ertrag</span>
+    <span class="swatch-hex">#22c55e</span>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Schicht 3: UI-Funktionsfarben</h2>
+<p style="color:var(--text-soft); margin-bottom:1rem;">Für Interaktion und Feedback. <strong>Indigo</strong> statt Blau für «ausgewählt» — kollidiert mit keinem Fachbereich und keiner FiBu-Farbe.</p>
+
+<div class="palette">
+  <div class="swatch">
+    <div class="swatch-color" style="background:#6366f1"></div>
+    <span class="swatch-label">Ausgewählt</span>
+    <span class="swatch-hex">#6366f1</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#22c55e"></div>
+    <span class="swatch-label">Korrekt</span>
+    <span class="swatch-hex">#22c55e</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#ef4444"></div>
+    <span class="swatch-label">Falsch</span>
+    <span class="swatch-hex">#ef4444</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#f59e0b"></div>
+    <span class="swatch-label">Unsicher</span>
+    <span class="swatch-hex">#f59e0b</span>
+  </div>
+  <div class="swatch">
+    <div class="swatch-color" style="background:#64748b"></div>
+    <span class="swatch-label">Neutral</span>
+    <span class="swatch-hex">#64748b</span>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================ -->
+<h2>Mockup: MC-Frage (VWL) — Prüfung während des Ausfüllens</h2>
+
+<div class="mockup-card">
+  <div class="mockup-label">SuS-Ansicht · Prüfung läuft</div>
+
+  <div class="nav-bar">
+    <button class="nav-btn" disabled>← Zurück</button>
+    <span class="nav-center">Frage 1 von 13</span>
+    <div class="nav-right">
+      <button class="btn-unsicher">? Unsicher</button>
+      <button class="nav-btn">Weiter →</button>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+    <span class="badge badge-vwl">VWL</span>
+    <span class="badge badge-bloom">K2</span>
+    <span style="font-size:0.8rem; color:var(--text-soft)">1 Punkt</span>
+  </div>
+
+  <div style="background:var(--bg-alt); padding:1rem; border-radius:0.5rem; border:1px solid var(--border); margin-bottom:1rem;">
+    Welche Aussage beschreibt die <strong>Rezessionsphase</strong> korrekt?
+  </div>
+
+  <div class="mc-option selected">
+    <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+    <div><span class="mc-label">A)</span> Das reale BIP wächst stark, die Kapazitäten sind voll ausgelastet.</div>
+  </div>
+  <div class="mc-option">
+    <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+    <div><span class="mc-label">B)</span> Das reale BIP sinkt über mindestens zwei Quartale.</div>
+  </div>
+  <div class="mc-option">
+    <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+    <div><span class="mc-label">C)</span> Die Preise steigen stark bei gleichzeitig hoher Beschäftigung.</div>
+  </div>
+
+  <p style="margin-top:1rem; font-size:0.8rem; color:var(--text-muted);">
+    ↑ Indigo-Hervorhebung für gewählte Antwort — klar sichtbar, keine Verwechslung mit VWL-Orange
+  </p>
+</div>
+
+<!-- ============================================ -->
+<h2>Mockup: MC-Frage — Nach Korrektur</h2>
+
+<div class="two-col">
+  <div class="mockup-card">
+    <div class="mockup-label">Korrekt beantwortet ✓</div>
+    <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+      <span class="badge badge-bwl">BWL</span>
+      <span class="badge badge-bloom">K1</span>
+    </div>
+    <div class="mc-option correct">
+      <div class="mc-radio" style="font-size:0.8rem; color:white;">✓</div>
+      <div><span class="mc-label">B)</span> Die Bilanz zeigt die Vermögens- und Kapitalsituation.</div>
+    </div>
+    <div class="mc-option">
+      <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+      <div><span class="mc-label">C)</span> Die Bilanz zeigt den Gewinn eines Geschäftsjahrs.</div>
+    </div>
+  </div>
+
+  <div class="mockup-card">
+    <div class="mockup-label">Falsch beantwortet ✗</div>
+    <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+      <span class="badge badge-recht">Recht</span>
+      <span class="badge badge-bloom">K2</span>
+    </div>
+    <div class="mc-option wrong">
+      <div class="mc-radio" style="font-size:0.8rem; color:white;">✗</div>
+      <div><span class="mc-label">A)</span> ZGB Art. 1 regelt das Vertragsrecht.</div>
+    </div>
+    <div class="mc-option correct">
+      <div class="mc-radio" style="font-size:0.8rem; color:white;">✓</div>
+      <div><span class="mc-label">C)</span> ZGB Art. 1 regelt die Rechtsanwendung.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Mockup: Richtig/Falsch — Phasen</h2>
+
+<div class="two-col">
+  <div class="mockup-card">
+    <div class="mockup-label">Während Prüfung (ausgewählt = Indigo)</div>
+    <div class="rf-row">
+      <div class="rf-statement">Die SNB steuert die Geldmenge.</div>
+      <div class="rf-buttons">
+        <button class="rf-btn selected-r">R</button>
+        <button class="rf-btn">F</button>
+      </div>
+    </div>
+    <div class="rf-row">
+      <div class="rf-statement">Das BIP misst den Wohlstand.</div>
+      <div class="rf-buttons">
+        <button class="rf-btn">R</button>
+        <button class="rf-btn selected-f">F</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-card">
+    <div class="mockup-label">Nach Korrektur (grün/rot)</div>
+    <div class="rf-row">
+      <div class="rf-statement">Die SNB steuert die Geldmenge.</div>
+      <div class="rf-buttons">
+        <button class="rf-btn correct">R ✓</button>
+        <button class="rf-btn">F</button>
+      </div>
+    </div>
+    <div class="rf-row">
+      <div class="rf-statement">Das BIP misst den Wohlstand.</div>
+      <div class="rf-buttons">
+        <button class="rf-btn">R</button>
+        <button class="rf-btn wrong">F ✗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Mockup: Zuordnung & Lückentext</h2>
+
+<div class="two-col">
+  <div class="mockup-card">
+    <div class="mockup-label">Zuordnung — teilweise ausgefüllt</div>
+    <div class="zuordnung-row matched">
+      <div class="zuordnung-num">1</div>
+      <div class="zuordnung-left">Inflation</div>
+      <div class="zuordnung-arrow">→</div>
+      <select class="zuordnung-select"><option>Preissteigerung</option></select>
+    </div>
+    <div class="zuordnung-row">
+      <div class="zuordnung-num">2</div>
+      <div class="zuordnung-left">Deflation</div>
+      <div class="zuordnung-arrow">→</div>
+      <select class="zuordnung-select"><option>— auswählen —</option></select>
+    </div>
+  </div>
+
+  <div class="mockup-card">
+    <div class="mockup-label">Lückentext — teilweise ausgefüllt</div>
+    <div class="luecken-text">
+      Die Schweizerische Nationalbank (<input class="luecken-input filled" value="SNB">) steuert die
+      <input class="luecken-input" placeholder="Lücke 2"> durch Anpassung des
+      <input class="luecken-input filled" value="Leitzinses">.
+    </div>
+    <p style="margin-top:0.75rem; font-size:0.75rem; color:var(--text-muted);">
+      Ausgefüllte Lücken: Indigo-Unterstrich · Leere Lücken: grauer Unterstrich
+    </p>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================ -->
+<h2>Mockup: T-Konto mit FiBu-Farben</h2>
+<p style="color:var(--text-soft); margin-bottom:1rem;">Kontenkategorie-Badge erscheint nach SuS-Auswahl in der entsprechenden FiBu-Farbe.</p>
+
+<div class="two-col">
+  <div class="mockup-card">
+    <div class="mockup-label">Aktivkonto — nach Eingabe</div>
+    <div class="tkonto">
+      <div class="tkonto-header">1020 Bank</div>
+      <div class="tkonto-kategorie">
+        Kontenkategorie: <span class="tkonto-kat-badge kat-aktiv">Aktiv</span>
+      </div>
+      <div class="tkonto-body">
+        <div class="tkonto-columns">
+          <div class="tkonto-col">
+            <div class="tkonto-col-header">Soll</div>
+            <div class="tkonto-row"><span style="font-style:italic; font-size:0.8rem;">AB</span><span style="font-family:monospace">25'000</span></div>
+            <div class="tkonto-row"><span>1100 Debitoren</span><span style="font-family:monospace">12'000</span></div>
+          </div>
+          <div class="tkonto-col">
+            <div class="tkonto-col-header">Haben</div>
+            <div class="tkonto-row"><span>6000 Mietaufwand</span><span style="font-family:monospace">3'500</span></div>
+            <div class="tkonto-row"><span>5000 Lohnaufwand</span><span style="font-family:monospace">6'200</span></div>
+            <div class="tkonto-row tkonto-saldo"><span style="font-weight:700">Saldo</span><span style="font-family:monospace; font-weight:700">27'300</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-card">
+    <div class="mockup-label">Aufwandkonto — nach Eingabe</div>
+    <div class="tkonto">
+      <div class="tkonto-header">6000 Mietaufwand</div>
+      <div class="tkonto-kategorie">
+        Kontenkategorie: <span class="tkonto-kat-badge kat-aufwand">Aufwand</span>
+      </div>
+      <div class="tkonto-body">
+        <div class="tkonto-columns">
+          <div class="tkonto-col">
+            <div class="tkonto-col-header">Soll</div>
+            <div class="tkonto-row"><span>1020 Bank</span><span style="font-family:monospace">3'500</span></div>
+          </div>
+          <div class="tkonto-col">
+            <div class="tkonto-col-header">Haben</div>
+            <div class="tkonto-row" style="color:var(--text-muted); font-style:italic; font-size:0.8rem;">leer</div>
+            <div class="tkonto-row tkonto-saldo"><span style="font-weight:700">Saldo</span><span style="font-family:monospace; font-weight:700">3'500</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Mockup: Buchungssatz — neutral + nach Eingabe</h2>
+
+<div class="two-col">
+  <div class="mockup-card">
+    <div class="mockup-label">Leer — neutral</div>
+    <div class="buchung-container">
+      <div class="buchung-header">Buchungssatz 1</div>
+      <div class="buchung-grid">
+        <div class="buchung-seite">
+          <div class="buchung-seite-label">Soll</div>
+          <input class="buchung-input" placeholder="Konto..." disabled>
+          <input class="buchung-input" placeholder="CHF" style="width:100px" disabled>
+        </div>
+        <div class="buchung-seite">
+          <div class="buchung-seite-label">Haben</div>
+          <input class="buchung-input" placeholder="Konto..." disabled>
+          <input class="buchung-input" placeholder="CHF" style="width:100px" disabled>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">Kein Farbhinweis — SuS entscheidet selbst</p>
+  </div>
+
+  <div class="mockup-card">
+    <div class="mockup-label">Ausgefüllt — dezentes Indigo</div>
+    <div class="buchung-container">
+      <div class="buchung-header">Buchungssatz 1</div>
+      <div class="buchung-grid">
+        <div class="buchung-seite hat-eingabe">
+          <div class="buchung-seite-label">Soll</div>
+          <input class="buchung-input" value="6000 Mietaufwand" disabled>
+          <input class="buchung-input" value="3'500" style="width:100px; text-align:right" disabled>
+        </div>
+        <div class="buchung-seite hat-eingabe">
+          <div class="buchung-seite-label">Haben</div>
+          <input class="buchung-input" value="1020 Bank" disabled>
+          <input class="buchung-input" value="3'500" style="width:100px; text-align:right" disabled>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">Dezentes Indigo zeigt «beantwortet» — keine Kontenart-Farbe</p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Mockup: Bilanz — dynamische Farben</h2>
+
+<div class="mockup-card">
+  <div class="mockup-label">Nach SuS-Auswahl: Aktiven=gelb, Passiven=rot</div>
+  <div style="font-weight:700; margin-bottom:1rem;">Bilanz</div>
+  <div class="bilanz-grid">
+    <div class="bilanz-seite bilanz-aktiv">
+      <div class="bilanz-title" style="color:#a16207">Aktiven</div>
+      <div style="font-size:0.8rem; color:var(--text-soft); margin-bottom:0.5rem; font-weight:600;">Umlaufvermögen</div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding:0.25rem 0; border-bottom:1px solid rgba(234,179,8,0.2);">
+        <span>1020 Bank</span><span style="font-family:monospace">27'300</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding:0.25rem 0; border-bottom:1px solid rgba(234,179,8,0.2);">
+        <span>1100 Debitoren</span><span style="font-family:monospace">15'000</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding-top:0.5rem; margin-top:0.5rem; border-top:2px solid rgba(234,179,8,0.4); font-weight:700;">
+        <span>Bilanzsumme</span><span style="font-family:monospace">42'300</span>
+      </div>
+    </div>
+    <div class="bilanz-seite bilanz-passiv">
+      <div class="bilanz-title" style="color:#dc2626">Passiven</div>
+      <div style="font-size:0.8rem; color:var(--text-soft); margin-bottom:0.5rem; font-weight:600;">Fremdkapital</div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding:0.25rem 0; border-bottom:1px solid rgba(239,68,68,0.15);">
+        <span>2100 Bankschulden</span><span style="font-family:monospace">9'300</span>
+      </div>
+      <div style="font-size:0.8rem; color:var(--text-soft); margin-top:0.75rem; margin-bottom:0.5rem; font-weight:600;">Eigenkapital</div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding:0.25rem 0; border-bottom:1px solid rgba(239,68,68,0.15);">
+        <span>2800 Eigenkapital</span><span style="font-family:monospace">33'000</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding-top:0.5rem; margin-top:0.5rem; border-top:2px solid rgba(239,68,68,0.3); font-weight:700;">
+        <span>Bilanzsumme</span><span style="font-family:monospace">42'300</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================ -->
+<h2>Mockup: Übungspools — Fachbereich-Akzent</h2>
+<p style="color:var(--text-soft); margin-bottom:1rem;">Jeder Pool nutzt die Fachbereichsfarbe als Akzent. «Nicht sicher» folgt der Pool-Farbe (nicht orange).</p>
+
+<div class="two-col">
+  <div class="mockup-card" style="padding:0; overflow:hidden;">
+    <div class="pool-header pool-vwl">VWL — Konjunktur</div>
+    <div class="pool-body">
+      <div style="margin-bottom:1rem;">
+        <span class="badge badge-bloom">K2</span>
+        <span style="font-size:0.75rem; color:var(--text-soft); margin-left:0.5rem;">Schwierigkeit: ●●○</span>
+      </div>
+      <p style="margin-bottom:1rem;">Welche Phase folgt auf den Boom?</p>
+      <div class="mc-option selected">
+        <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+        <div>Rezession</div>
+      </div>
+      <div class="mc-option">
+        <div class="mc-radio"><div class="mc-radio-dot"></div></div>
+        <div>Expansion</div>
+      </div>
+      <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+        <button class="pool-btn-skip vwl">Nicht sicher</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-card" style="padding:0; overflow:hidden;">
+    <div class="pool-header pool-recht">Recht — OR Allgemeiner Teil</div>
+    <div class="pool-body">
+      <div style="margin-bottom:1rem;">
+        <span class="badge badge-bloom">K3</span>
+        <span style="font-size:0.75rem; color:var(--text-soft); margin-left:0.5rem;">Schwierigkeit: ●●●</span>
+      </div>
+      <p style="margin-bottom:1rem;">Wann liegt ein Vertrag vor?</p>
+      <div class="mc-option correct">
+        <div class="mc-radio" style="font-size:0.8rem; color:white;">✓</div>
+        <div>Bei übereinstimmender Willensäusserung</div>
+      </div>
+      <div class="mc-option wrong">
+        <div class="mc-radio" style="font-size:0.8rem; color:white;">✗</div>
+        <div>Bei einseitiger Erklärung</div>
+      </div>
+      <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+        <button class="pool-btn-skip recht">Nicht sicher</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================ -->
+<h2>Zusammenfassung: Farbregeln</h2>
+
+<div class="mockup-card">
+<table style="width:100%; border-collapse:collapse; font-size:0.875rem;">
+<thead>
+<tr style="border-bottom:2px solid var(--border); text-align:left;">
+  <th style="padding:0.5rem;">Kontext</th>
+  <th style="padding:0.5rem;">Farbe</th>
+  <th style="padding:0.5rem;">Wo</th>
+  <th style="padding:0.5rem;">Nie zusammen mit</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="badge badge-vwl">VWL</span></td>
+  <td style="padding:0.5rem;">Orange #f97316</td>
+  <td style="padding:0.5rem;">Badges, Pool-Akzent</td>
+  <td style="padding:0.5rem;">—</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="badge badge-bwl">BWL</span></td>
+  <td style="padding:0.5rem;">Blau #3b82f6</td>
+  <td style="padding:0.5rem;">Badges, Pool-Akzent</td>
+  <td style="padding:0.5rem;">FiBu-Aufwand (gleiche Farbe, aber anderer Kontext)</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="badge badge-recht">Recht</span></td>
+  <td style="padding:0.5rem;">Grün #22c55e</td>
+  <td style="padding:0.5rem;">Badges, Pool-Akzent</td>
+  <td style="padding:0.5rem;">FiBu-Ertrag (gleiche Farbe, anderer Kontext)</td>
+</tr>
+<tr style="border-bottom:2px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="badge badge-in">IN</span></td>
+  <td style="padding:0.5rem;">Grau #6b7280</td>
+  <td style="padding:0.5rem;">Badges, Pool-Akzent</td>
+  <td style="padding:0.5rem;">—</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="tkonto-kat-badge kat-aktiv">Aktiv</span></td>
+  <td style="padding:0.5rem;">Gelb #eab308</td>
+  <td style="padding:0.5rem;">Bilanz, T-Konto-Badge</td>
+  <td style="padding:0.5rem;">Nie neben Fachbereich-Badges</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="tkonto-kat-badge kat-passiv">Passiv</span></td>
+  <td style="padding:0.5rem;">Rot #ef4444</td>
+  <td style="padding:0.5rem;">Bilanz, T-Konto-Badge</td>
+  <td style="padding:0.5rem;">Nie neben «Falsch»-Feedback</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="tkonto-kat-badge kat-aufwand">Aufwand</span></td>
+  <td style="padding:0.5rem;">Blau #3b82f6</td>
+  <td style="padding:0.5rem;">T-Konto-Badge</td>
+  <td style="padding:0.5rem;">Nie neben BWL-Badge</td>
+</tr>
+<tr style="border-bottom:2px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="tkonto-kat-badge kat-ertrag">Ertrag</span></td>
+  <td style="padding:0.5rem;">Grün #22c55e</td>
+  <td style="padding:0.5rem;">T-Konto-Badge</td>
+  <td style="padding:0.5rem;">Nie neben «Korrekt»-Feedback</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><div style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#6366f1; vertical-align:middle;"></div> Ausgewählt</td>
+  <td style="padding:0.5rem;">Indigo #6366f1</td>
+  <td style="padding:0.5rem;">MC, R/F, Zuordnung, Lücken, Freitext</td>
+  <td style="padding:0.5rem;">Kollidiert mit nichts ✓</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="icon-correct">✓ Korrekt</span></td>
+  <td style="padding:0.5rem;">Grün #22c55e</td>
+  <td style="padding:0.5rem;">Korrektur-Ansicht</td>
+  <td style="padding:0.5rem;">Nie gleichzeitig mit FiBu-Ertrag</td>
+</tr>
+<tr style="border-bottom:1px solid var(--border);">
+  <td style="padding:0.5rem;"><span class="icon-wrong">✗ Falsch</span></td>
+  <td style="padding:0.5rem;">Rot #ef4444</td>
+  <td style="padding:0.5rem;">Korrektur-Ansicht</td>
+  <td style="padding:0.5rem;">Nie gleichzeitig mit FiBu-Passiv</td>
+</tr>
+<tr>
+  <td style="padding:0.5rem;"><div style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#f59e0b; vertical-align:middle;"></div> Unsicher</td>
+  <td style="padding:0.5rem;">Amber #f59e0b</td>
+  <td style="padding:0.5rem;">Markier-Button</td>
+  <td style="padding:0.5rem;">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div style="margin-top:3rem; padding:1.5rem; background:var(--bg-alt); border-radius:0.75rem; border:1px solid var(--border);">
+  <h3 style="margin-top:0; color:var(--text);">Kernprinzipien</h3>
+  <ol style="padding-left:1.5rem; color:var(--text-soft); font-size:0.9rem;">
+    <li style="margin-bottom:0.5rem;"><strong>Neutrale Basis:</strong> UI ist weiss/grau/schwarz. Farben nur wo sie Bedeutung tragen.</li>
+    <li style="margin-bottom:0.5rem;"><strong>Keine Doppelbelegung im gleichen View:</strong> FiBu-Farben und Fachbereich-Badges erscheinen nie nebeneinander. Korrekt/Falsch und FiBu-Passiv/Ertrag erscheinen nie gleichzeitig (Prüfung ≠ Korrektur).</li>
+    <li style="margin-bottom:0.5rem;"><strong>Indigo als UI-Farbe:</strong> «Ausgewählt/Beantwortet» = Indigo. Kollidiert mit keinem Fachbereich und keiner FiBu-Farbe.</li>
+    <li style="margin-bottom:0.5rem;"><strong>Übungspools:</strong> Fachbereich = Akzentfarbe des ganzen Pools. «Nicht sicher» folgt Pool-Farbe.</li>
+    <li style="margin-bottom:0.5rem;"><strong>FiBu-Farben nach Lehrmittel:</strong> Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün. Nur in Buchhaltungs-Kontexten.</li>
+  </ol>
+</div>
+
+</body>
+</html>

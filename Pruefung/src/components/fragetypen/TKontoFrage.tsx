@@ -18,6 +18,7 @@ interface EintragZeile {
   id: string
   gegenkonto: string
   betrag: string
+  gfNr: string // Geschäftsfall-Nummer
 }
 
 interface KontoEingabe {
@@ -34,7 +35,7 @@ interface KontoEingabe {
 }
 
 function leereZeile(): EintragZeile {
-  return { id: neueId(), gegenkonto: '', betrag: '' }
+  return { id: neueId(), gegenkonto: '', betrag: '', gfNr: '' }
 }
 
 function leereKontoEingabe(id: string): KontoEingabe {
@@ -64,10 +65,12 @@ function zuAntwort(konten: KontoEingabe[]) {
       eintraegeLinks: k.eintraegeLinks.map((e) => ({
         gegenkonto: e.gegenkonto,
         betrag: parseFloat(e.betrag) || 0,
+        gfNr: e.gfNr ? parseInt(e.gfNr) : undefined,
       })),
       eintraegeRechts: k.eintraegeRechts.map((e) => ({
         gegenkonto: e.gegenkonto,
         betrag: parseFloat(e.betrag) || 0,
+        gfNr: e.gfNr ? parseInt(e.gfNr) : undefined,
       })),
       saldo: k.saldoBetrag ? {
         betrag: parseFloat(k.saldoBetrag) || 0,
@@ -93,10 +96,10 @@ function vonAntwort(
       anfangsbestandLinks: '',
       anfangsbestandRechts: '',
       eintraegeLinks: eingabe.eintraegeLinks.length > 0
-        ? eingabe.eintraegeLinks.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '' }))
+        ? eingabe.eintraegeLinks.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '', gfNr: e.gfNr ? String(e.gfNr) : '' }))
         : [leereZeile()],
       eintraegeRechts: eingabe.eintraegeRechts.length > 0
-        ? eingabe.eintraegeRechts.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '' }))
+        ? eingabe.eintraegeRechts.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '', gfNr: e.gfNr ? String(e.gfNr) : '' }))
         : [leereZeile()],
       saldoBetrag: eingabe.saldo ? String(eingabe.saldo.betrag) : '',
       saldoSeite: eingabe.saldo?.seite ?? 'links',
@@ -139,7 +142,7 @@ export default function TKontoFrage({ frage }: Props) {
     }))
   }
 
-  function eintragAendern(kontoIdx: number, seite: 'links' | 'rechts', zeileIdx: number, feld: 'gegenkonto' | 'betrag', wert: string) {
+  function eintragAendern(kontoIdx: number, seite: 'links' | 'rechts', zeileIdx: number, feld: 'gegenkonto' | 'betrag' | 'gfNr', wert: string) {
     const kopie = deepCopy()
     const zeilen = seite === 'links' ? kopie[kontoIdx].eintraegeLinks : kopie[kontoIdx].eintraegeRechts
     zeilen[zeileIdx] = { ...zeilen[zeileIdx], [feld]: wert }
@@ -171,6 +174,7 @@ export default function TKontoFrage({ frage }: Props) {
 
   const readOnly = abgegeben
   const opts = frage.bewertungsoptionen
+  const hatGeschaeftsfaelle = frage.geschaeftsfaelle && frage.geschaeftsfaelle.length > 0
 
   return (
     <div className="flex flex-col gap-5">
@@ -337,6 +341,18 @@ export default function TKontoFrage({ frage }: Props) {
                   <div className="pr-2 border-r border-slate-800 dark:border-slate-300 py-2 space-y-1.5">
                     {konto.eintraegeLinks.map((z, zIdx) => (
                       <div key={z.id} className="flex items-center gap-1">
+                        {hatGeschaeftsfaelle && (
+                          <input
+                            type="number"
+                            value={z.gfNr}
+                            onChange={(e) => eintragAendern(kIdx, 'links', zIdx, 'gfNr', e.target.value)}
+                            disabled={readOnly}
+                            placeholder="#"
+                            min="1"
+                            className="min-h-[36px] w-10 rounded border border-slate-300 bg-white px-1 py-1 text-xs text-center text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            title="Geschäftsfall-Nr."
+                          />
+                        )}
                         <div className="flex-1 min-w-0">
                           <KontenSelect
                             value={z.gegenkonto}
@@ -381,6 +397,18 @@ export default function TKontoFrage({ frage }: Props) {
                   <div className="pl-2 py-2 space-y-1.5">
                     {konto.eintraegeRechts.map((z, zIdx) => (
                       <div key={z.id} className="flex items-center gap-1">
+                        {hatGeschaeftsfaelle && (
+                          <input
+                            type="number"
+                            value={z.gfNr}
+                            onChange={(e) => eintragAendern(kIdx, 'rechts', zIdx, 'gfNr', e.target.value)}
+                            disabled={readOnly}
+                            placeholder="#"
+                            min="1"
+                            className="min-h-[36px] w-10 rounded border border-slate-300 bg-white px-1 py-1 text-xs text-center text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            title="Geschäftsfall-Nr."
+                          />
+                        )}
                         <div className="flex-1 min-w-0">
                           <KontenSelect
                             value={z.gegenkonto}
