@@ -249,16 +249,19 @@ function HilfeFragen() {
 
       <Untertitel>Finanzbuchhaltung (FiBu)</Untertitel>
       <Text>
-        <strong>Buchungssatz</strong> — Geschäftsfälle mit Soll/Haben-Konten aus dem Schweizer KMU-Kontenrahmen. Compound Entries möglich.
+        <strong>Buchungssatz</strong> — Geschäftsfälle mit Soll/Haben-Konten aus dem Schweizer KMU-Kontenrahmen. Compound Entries möglich. Soll/Haben-Seiten sind farblich neutral (kein Hinweis auf Kontenart).
       </Text>
       <Text>
-        <strong>T-Konto</strong> — T-Konten-Form mit Soll/Haben-Buchungen, Gegenkonten und Saldo-Berechnung.
+        <strong>T-Konto</strong> — T-Konten-Form mit Soll/Haben-Buchungen, Gegenkonten, Geschäftsfall-Nummer und Saldo. Kontenkategorie-Badge in FiBu-Farben (Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün).
       </Text>
       <Text>
         <strong>Kontenbestimmung</strong> — Geschäftsfall → Konto/Kategorie/Seite bestimmen. 3 Modi verfügbar.
       </Text>
       <Text>
-        <strong>Bilanz/ER</strong> — Zweispalten-Bilanz und mehrstufige Erfolgsrechnung mit Kontenauswahl.
+        <strong>Bilanz/ER</strong> — Zweispalten-Bilanz und mehrstufige Erfolgsrechnung. Seiten starten neutral, färben sich nach Auswahl (Aktiven=gelb, Passiven=rot).
+      </Text>
+      <Text>
+        <strong>Konten-Kategoriefarben</strong> — Im Konto-Dropdown werden Konten farblich nach Kontenart hervorgehoben. Diese Farben können pro Frage deaktiviert werden (Checkbox in der Kontenauswahl-Sektion).
       </Text>
 
       <Untertitel>Weitere</Untertitel>

@@ -10,7 +10,8 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 - Timer mit Countdown oder Open-End (Stoppuhr), Fortschrittsanzeige pro Abschnitt
 - Offline-fähig (PWA): Antworten werden bei Reconnect nachgesendet
 - Light/Dark Mode
-- Korrektur-Einsicht: Freigegebene Bewertungen mit Punkten, Kommentaren und Audio-Feedback
+- Korrektur-Einsicht: MC-Optionen mit ✓/✗-Icons, R/F mit farbigen Buttons, Punkte, Kommentare und Audio-Feedback
+- FiBu-Farbsystem: Konten-Kategoriefarben nach Lehrmittel (Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün)
 
 **Für Lehrpersonen**
 - Prüfungs-Composer: Prüfungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragenbank)
@@ -62,7 +63,7 @@ npm run dev
 
 Öffne `http://localhost:5174/GYM-WR-DUY/Pruefung/`
 
-Ohne Backend-Konfiguration startet die App im **Demo-Modus** mit 10 Beispielfragen.
+Ohne Backend-Konfiguration startet die App im **Demo-Modus** mit 16 Beispielfragen (alle 11 Fragetypen).
 
 ### Mit Backend (Google Workspace)
 

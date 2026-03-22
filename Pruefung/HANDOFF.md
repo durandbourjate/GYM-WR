@@ -6,6 +6,40 @@
 
 ## Aktueller Stand
 
+**Farbkonzept + UX-Fixes** (22.03.2026, Abend-Session) ✅
+
+### Session 22.03.2026 Abend — Farbkonzept, FiBu-UX, Demo-Fixes (9 Commits)
+
+#### Farbkonzept (3-Schichten-Modell, verbindlich)
+- **Schicht 1 — Fachbereich:** VWL=#f97316, BWL=#3b82f6, Recht=#22c55e, IN=#6b7280
+- **Schicht 2 — FiBu (Lehrmittel):** Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün
+- **Schicht 3 — UI-Funktionsfarben:** Ausgewählt=**Indigo** (#6366f1), Korrekt=grün, Falsch=rot, Unsicher=amber
+- Mockups: `Projektdateien/design-mockups.html`
+- Memory: `design_farbkonzept.md`
+
+#### Prüfungstool
+- **Cursor-Bug T-Konto/Buchungssatz/Bilanz behoben:** useState statt Neuberechnung bei jedem Render
+- **Indigo statt Blau** für alle Auswahl-Highlights (MC, R/F, Zuordnung, Lückentext, Freitext, FiBu)
+- **FiBu-Farb-Badges:** Kontenkategorie im T-Konto (gelb/rot/blau/grün nach Lehrmittel)
+- **KontenSelect:** Kategorie-Farben an Lehrmittel angeglichen + LP-konfigurierbarer Toggle (`zeigeKategoriefarben`)
+- **Geschäftsfall-Nummer (#):** Eingabefeld neben T-Konto-Einträgen
+- **Buchungssatz/Bilanz neutral:** Soll/Haben grau (kein Farbhinweis), Bilanz nach SuS-Wahl (Aktiven=gelb, Passiven=rot)
+- **Material-Button grün** statt blau, Unsicher-Button neben Weiter
+- **Indigo-Hervorhebung** für alle ausgefüllten Felder (CSS :not(:placeholder-shown) + Komponenten-Level)
+- **Detaillierte KorrekturEinsicht:** MC-Optionen mit ✓/✗ im Radio-Icon, R/F mit farbigen Buttons
+- **3 Demo-Bugs gefixt:** LP Freischalten/Beenden simuliert, SuS Abmelden-Button auf Startbildschirm
+
+#### Übungspools
+- **COLOR_SCHEMES angeglichen:** Hex-Werte auf Design-System (#f97316, #3b82f6, #22c55e)
+- **Informatik (IN)** hinzugefügt: #6b7280
+
+#### Unterrichtsplaner
+- **130 blue→indigo Ersetzungen** in 28 Komponenten (Fokus, Selektion, Buttons)
+- **Indigo-Palette für Light Mode** in index.css (invertiert wie Slate/Gray)
+- **0 verbleibende blue-Klassen** in .tsx-Dateien
+
+---
+
 **Grosse Feature-Session** (22.03.2026) ✅
 
 ### Session 22.03.2026 — 15 Features/Fixes, ~3'400 Zeilen
