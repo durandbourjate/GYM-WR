@@ -69,10 +69,11 @@ export const demoPruefung: PruefungsConfig = {
   korrektur: {
     aktiviert: true,
     modus: 'batch',
+    freigegeben: false,
   },
 
   feedback: {
-    zeitpunkt: 'nach-review',
+    zeitpunkt: 'manuell',
     format: 'in-app-und-pdf',
     detailgrad: 'vollstaendig',
   },

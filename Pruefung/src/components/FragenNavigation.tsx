@@ -44,10 +44,10 @@ export default function FragenNavigation() {
                 bgClass = 'bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700'
                 statusIcon = '?'
               } else if (istBeantwortet) {
-                bgClass = 'bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600'
+                bgClass = 'bg-green-50 text-green-800 border border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700'
                 statusIcon = '\u2713'
               } else {
-                bgClass = 'bg-white text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600'
+                bgClass = 'bg-white text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-500'
               }
 
               return (

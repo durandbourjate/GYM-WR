@@ -6,6 +6,46 @@
 
 ## Aktueller Stand
 
+**Grosse Feature-Session** (22.03.2026) ✅
+
+### Session 22.03.2026 — 15 Features/Fixes, ~3'400 Zeilen
+
+#### Neue Features
+- **Prüfungstracker:** Tab auf LP-Startseite mit fehlenden SuS, Noten-Stand (MiSDV), Status-Badges pro Prüfung. Backend: `ladeTrackerDaten` Endpoint.
+- **SuS-Korrektur-PDFs:** Druckbare Vollbild-Ansicht pro SuS (KorrekturPDFAnsicht.tsx). PDF-Button pro SuS + "Korrektur-PDFs" im Dashboard.
+- **SEB-Vorbereitung:** SuS-Installationsanleitung, Auto-Config-Download (.seb-Datei mit Prüfungs-URL), harte Durchsetzung (Start blockiert, LP-Ausnahme pro SuS).
+- **Fragen-Statistiken:** Per-Frage Lösungsquoten über alle Prüfungen. Badges in DetailKarte/KompaktZeile, aufklappbare Statistik im Editor.
+- **Ergebnis-Export (detailliert):** CSV mit Antwort-Text + Punkten pro Frage/SuS (wie Google Forms).
+- **Pool "Unsicher"-Markierung:** SuS markieren unsichere Fragen → werden am Ende wiederholt.
+- **Pool: LZ-Filter + Schnellstart + Tags:** Lernziel-Filterung, 3 Schnellstart-Buttons (Einfach/Mittel+Schwer/Alle), Tag-Chips.
+- **Materialien-Filter (📎):** Toggle in Fragenbank für Fragen mit Anhängen.
+- **Musterprüfung:** Alle 11 Fragetypen, 16 Fragen, 50 Punkte, 8 Testschüler.
+- **SuS-UX-Verbesserungen:** Navigation über der Frage, farbige Übersichts-Icons, Abgeben-Button hervorgehoben.
+
+#### Bugfixes
+- LP-E-Mail korrigiert (`yannick.durand@gymhofwil.ch`)
+- Lernziele-Dropdown leer (fehlende email im API-Call)
+- Build-Fix (unbenutzte Imports ZuordnungFrage/LueckentextFrage)
+- Abschnitte-Klickbereich (ganze Kopfzeile klickbar)
+- Textarea Touch-Resize (field-sizing:content für iPad)
+- KI-Button für Kontenauswahl im Buchungssatz-Editor
+
+#### Dokumentation
+- HANDOFF, README, In-App Hilfe aktualisiert
+- Roadmap Multi-LP + Synergie-Analyse (3 Tools)
+- Variablen-Harmonisierung dokumentiert (Migrationsplan)
+- Evento REST API: Bestätigt vom Schulinformatiker (Abklärung Zugang nötig)
+
+#### iPad-Test-Feedback (22.03.2026)
+- ✅ Textfeld Auto-Resize funktioniert
+- ✅ Tastatur-Eingabe funktioniert
+- 🔜 SuS-Navigation über der Frage (implementiert)
+- 🔜 Übersichts-Icons farblich hervorgehoben
+- 🔜 Abgeben-Button grün hervorgehoben
+- 🔜 Unsicher-Button bei der Frage statt im Header
+
+---
+
 **Kleinere Fixes + Doku-Update** (22.03.2026) ✅
 
 ### Session 22.03.2026 — Fixes + Dokumentation
@@ -500,7 +540,7 @@ Ideen und Features für die Erweiterung auf mehrere Lehrpersonen. **Noch nicht u
 | **Daten** | Cloud-Backend | Hauptdaten in Google Sheets (kein localStorage für Kerndaten). Bei Skalierung: Supabase / Firebase als Alternative prüfen | Mittel |
 | **Kurse** | LP-eigene Kursverwaltung | LP können eigene Kurse/Klassen anlegen, nicht nur die von DUY | Hoch |
 | **Kurse** | Fächer/Gefässe erweitern | Aktuell nur W&R (SF/EF/EWR/GF). Für Multi-LP braucht es beliebige Fächer und Gefässe | Hoch |
-| **Kurse** | Evento-Integration | CLX.Evento (Kanton Bern) bietet REST API mit OAuth. Klassenlisten/SuS-Daten könnten automatisch synchronisiert werden statt manuell in Sheets gepflegt. Abklärung mit IT Hofwil nötig (API-Zugang, Berechtigungen). | Mittel |
+| **Kurse** | Evento-Integration | CLX.Evento (Kanton Bern) hat REST API mit OAuth. **Schulinformatiker bestätigt: Schnittstelle vorhanden (22.03.2026).** Nächster Schritt: API-Zugang beantragen, verfügbare Endpunkte testen (Klassenlisten, Kurse, SuS-Daten). | Mittel |
 | **Sharing** | Geteilte Fragenpools | Fragen zwischen LPs teilen (opt-in, mit Freigabe-Mechanismus) | Mittel |
 | **UX** | Tablet/Smartphone | Gezieltes Testing + Optimierung für Touch-Geräte (SuS-Ansicht) | Mittel |
 | **Infra** | Multi-Tenant Sheets | Separate Sheets/Tabs pro LP oder zentrale Struktur mit LP-Kennung | Hoch |

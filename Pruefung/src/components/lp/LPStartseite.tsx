@@ -12,6 +12,7 @@ import FragenBrowser from './FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
 import PoolSyncDialog from './PoolSyncDialog.tsx'
 import TrackerSection from './TrackerSection.tsx'
+import { demoPruefung } from '../../data/demoPruefung.ts'
 
 /** Startseite für Lehrpersonen: Prüfungen verwalten + erstellen */
 export default function LPStartseite() {
@@ -506,39 +507,7 @@ function TrackerBadge({ summary: s }: { summary: TrackerPruefungSummary }) {
   )
 }
 
-/** Demo-Konfigurationen für den Demo-Modus */
+/** Demo-Konfigurationen für den Demo-Modus — nutzt die Musterprüfung aus demoPruefung.ts */
 function demoConfigs(): PruefungsConfig[] {
-  return [
-    {
-      id: 'demo',
-      titel: 'Demo-Prüfung WR — Wirtschaft & Recht',
-      klasse: '28abcd WR',
-      gefaess: 'SF',
-      semester: 'S4',
-      fachbereiche: ['VWL', 'BWL', 'Recht'],
-      datum: '2026-03-16',
-      typ: 'summativ',
-      modus: 'pruefung',
-      dauerMinuten: 45,
-      zeitModus: 'countdown',
-      gesamtpunkte: 24,
-      erlaubteKlasse: '28abcd WR',
-      sebErforderlich: false,
-      abschnitte: [
-        { titel: 'Teil A: Multiple Choice', fragenIds: ['vwl-mc-001', 'bwl-mc-001', 'recht-mc-001'] },
-        { titel: 'Teil B: Freitext', fragenIds: ['bwl-ft-001', 'vwl-ft-001', 'recht-ft-001'] },
-        { titel: 'Teil C: Lückentext', fragenIds: ['recht-lt-001'] },
-        { titel: 'Teil D: Zuordnung', fragenIds: ['bwl-zu-001'] },
-      ],
-      zufallsreihenfolgeFragen: false,
-      zufallsreihenfolgeOptionen: false,
-      ruecknavigation: true,
-      zeitanzeigeTyp: 'countdown',
-      autoSaveIntervallSekunden: 30,
-      heartbeatIntervallSekunden: 10,
-      korrektur: { aktiviert: false, modus: 'batch' },
-      feedback: { zeitpunkt: 'nach-review', format: 'in-app-und-pdf', detailgrad: 'vollstaendig' },
-      freigeschaltet: true,
-    },
-  ]
+  return [demoPruefung]
 }
