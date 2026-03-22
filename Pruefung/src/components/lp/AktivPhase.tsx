@@ -3,6 +3,7 @@ import type { SchuelerStatus } from '../../types/monitoring'
 import type { PruefungsConfig } from '../../types/pruefung'
 import { inaktivitaetsStufe } from '../../utils/phase'
 import { useAuthStore } from '../../store/authStore'
+import { apiService } from '../../services/apiService'
 import ZusammenfassungsLeiste from './ZusammenfassungsLeiste'
 import SusDetailPanel from './SusDetailPanel'
 import BeendenDialog from './BeendenDialog'
@@ -22,6 +23,17 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden }: Props)
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('alle')
   const [detailSus, setDetailSus] = useState<string | null>(null)
   const [zeigBeendenDialog, setZeigBeendenDialog] = useState(false)
+  const [sebAusnahmenLokal, setSebAusnahmenLokal] = useState<Set<string>>(
+    new Set(config.sebAusnahmen ?? [])
+  )
+
+  async function handleSebAusnahme(email: string): Promise<void> {
+    if (!user) return
+    const erfolg = await apiService.sebAusnahmeErlauben(config.id, user.email, email)
+    if (erfolg) {
+      setSebAusnahmenLokal((prev) => new Set(prev).add(email))
+    }
+  }
 
   const gefilterteSchueler = useMemo(() => {
     let liste = [...schuelerStatus]
@@ -105,6 +117,7 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden }: Props)
               <th className="px-3 py-2">Frage</th>
               <th className="px-3 py-2">Fortschritt</th>
               <th className="px-3 py-2">Status</th>
+              {config.sebErforderlich && <th className="px-3 py-2">SEB</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -151,6 +164,26 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden }: Props)
                   <td className="px-3 py-2 text-xs">
                     {statusBadge(s.status)}
                   </td>
+                  {config.sebErforderlich && (
+                    <td className="px-3 py-2 text-xs">
+                      {s.sebVersion ? (
+                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">SEB</span>
+                      ) : sebAusnahmenLokal.has(s.email) ? (
+                        <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full">Ausnahme</span>
+                      ) : s.status !== 'nicht-gestartet' ? (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleSebAusnahme(s.email) }}
+                          className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer transition-colors"
+                          title="SEB-Ausnahme für diesen SuS erlauben"
+                        >
+                          Kein SEB — Ausnahme?
+                        </button>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-500">—</span>
+                      )}
+                    </td>
+                  )}
                 </tr>
               )
             })}

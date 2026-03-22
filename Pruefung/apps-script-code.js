@@ -152,6 +152,8 @@ function doPost(e) {
       return schreibePoolAenderung(body);
     case 'beendePruefung':
       return beendePruefungEndpoint(body);
+    case 'sebAusnahmeErlauben':
+      return sebAusnahmeErlauben(body);
     case 'ladeTrackerDaten':
       return ladeTrackerDatenEndpoint(body);
     case 'setzeTeilnehmer': {
@@ -427,6 +429,7 @@ function ladePruefung(pruefungId, email) {
       zufallsreihenfolgeFragen: configRow.zufallsreihenfolgeFragen === 'true',
       freigeschaltet: configRow.freigeschaltet === 'true',
       zeitverlaengerungen: safeJsonParse(configRow.zeitverlaengerungen, {}),
+      sebAusnahmen: safeJsonParse(configRow.sebAusnahmen, []),
       teilnehmer: safeJsonParse(configRow.teilnehmer, []),
       beendetUm: configRow.beendetUm || undefined,
       korrektur: { aktiviert: false, modus: 'batch' },
@@ -701,24 +704,49 @@ function heartbeat(body) {
         }
       }
 
-      // 2. Global (aus Configs-Sheet) falls kein individuelles
+      // 2. Global (aus Configs-Sheet) falls kein individuelles + SEB-Ausnahme prüfen
+      var sebAusnahme = false;
       if (!beendetUm) {
         const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
         if (configSheet) {
           const configHeaders = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
           const configBeendetCol = configHeaders.indexOf('beendetUm');
-          if (configBeendetCol >= 0) {
-            const configData = configSheet.getDataRange().getValues();
-            const configIdCol = configHeaders.indexOf('id');
-            for (var i = 1; i < configData.length; i++) {
-              if (configData[i][configIdCol] === pruefungId) {
-                if (configData[i][configBeendetCol]) {
-                  beendetUm = configData[i][configBeendetCol];
-                  const configRzmCol = configHeaders.indexOf('restzeitMinuten');
-                  if (configRzmCol >= 0) {
-                    restzeitMinutenWert = configData[i][configRzmCol] || null;
-                  }
+          const configData = configSheet.getDataRange().getValues();
+          const configIdCol = configHeaders.indexOf('id');
+          for (var i = 1; i < configData.length; i++) {
+            if (configData[i][configIdCol] === pruefungId) {
+              if (configBeendetCol >= 0 && configData[i][configBeendetCol]) {
+                beendetUm = configData[i][configBeendetCol];
+                const configRzmCol = configHeaders.indexOf('restzeitMinuten');
+                if (configRzmCol >= 0) {
+                  restzeitMinutenWert = configData[i][configRzmCol] || null;
                 }
+              }
+              // SEB-Ausnahme prüfen
+              const sebAusnahmenCol = configHeaders.indexOf('sebAusnahmen');
+              if (sebAusnahmenCol >= 0) {
+                var ausnahmen = safeJsonParse(configData[i][sebAusnahmenCol], []);
+                if (ausnahmen.indexOf(email) >= 0) {
+                  sebAusnahme = true;
+                }
+              }
+              break;
+            }
+          }
+        }
+      } else {
+        // beendetUm aus Antworten-Sheet gefunden, trotzdem SEB-Ausnahme prüfen
+        const configSheet2 = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+        if (configSheet2) {
+          const ch2 = configSheet2.getRange(1, 1, 1, configSheet2.getLastColumn()).getValues()[0];
+          const cd2 = configSheet2.getDataRange().getValues();
+          const ci2 = ch2.indexOf('id');
+          const sa2 = ch2.indexOf('sebAusnahmen');
+          if (sa2 >= 0) {
+            for (var j = 1; j < cd2.length; j++) {
+              if (cd2[j][ci2] === pruefungId) {
+                var ausn2 = safeJsonParse(cd2[j][sa2], []);
+                if (ausn2.indexOf(email) >= 0) sebAusnahme = true;
                 break;
               }
             }
@@ -728,11 +756,55 @@ function heartbeat(body) {
 
       return jsonResponse({
         success: true,
-        ...(beendetUm ? { beendetUm: beendetUm, restzeitMinuten: restzeitMinutenWert } : {})
+        ...(beendetUm ? { beendetUm: beendetUm, restzeitMinuten: restzeitMinutenWert } : {}),
+        ...(sebAusnahme ? { sebAusnahme: true } : {})
       });
     }
 
     return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === SEB-AUSNAHME ERLAUBEN (LP erteilt Ausnahme für einzelne SuS) ===
+
+function sebAusnahmeErlauben(body) {
+  try {
+    const { pruefungId, email, susEmail } = body;
+
+    // Auth: nur LP
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ success: false, error: 'nicht_autorisiert' });
+    }
+    if (!pruefungId || !susEmail) {
+      return jsonResponse({ success: false, error: 'Fehlende Parameter' });
+    }
+
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const headers = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
+    const data = configSheet.getDataRange().getValues();
+    const idCol = headers.indexOf('id');
+
+    // sebAusnahmen-Spalte finden oder erstellen
+    var ausnahmenCol = headers.indexOf('sebAusnahmen');
+    if (ausnahmenCol < 0) {
+      ausnahmenCol = headers.length;
+      configSheet.getRange(1, ausnahmenCol + 1).setValue('sebAusnahmen');
+    }
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][idCol] === pruefungId) {
+        var bestehende = safeJsonParse(data[i][ausnahmenCol], []);
+        if (bestehende.indexOf(susEmail) < 0) {
+          bestehende.push(susEmail);
+        }
+        configSheet.getRange(i + 1, ausnahmenCol + 1).setValue(JSON.stringify(bestehende));
+        return jsonResponse({ success: true });
+      }
+    }
+
+    return jsonResponse({ success: false, error: 'Prüfung nicht gefunden' });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
@@ -1084,6 +1156,7 @@ function speichereConfig(body) {
       heartbeatIntervallSekunden: String(config.heartbeatIntervallSekunden || 10),
       freigeschaltet: config.freigeschaltet ? 'true' : 'false',
       zeitverlaengerungen: JSON.stringify(config.zeitverlaengerungen || {}),
+      sebAusnahmen: JSON.stringify(config.sebAusnahmen || []),
     };
 
     const existingRow = data.findIndex(row => row.id === config.id);

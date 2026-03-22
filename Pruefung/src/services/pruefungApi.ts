@@ -78,12 +78,36 @@ export async function heartbeat(pruefungId: string, email: string, aktuelleFrage
         success: data.success === true,
         beendetUm: data.beendetUm || undefined,
         restzeitMinuten: data.restzeitMinuten != null ? Number(data.restzeitMinuten) : undefined,
+        sebAusnahme: data.sebAusnahme === true ? true : undefined,
       }
     } catch {
       return { success: response.ok }
     }
   } catch {
     return { success: false }
+  }
+}
+
+/** SEB-Ausnahme für einen SuS erlauben (LP-Aktion) */
+export async function sebAusnahmeErlauben(pruefungId: string, lpEmail: string, susEmail: string): Promise<boolean> {
+  if (!APPS_SCRIPT_URL) return false
+
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'sebAusnahmeErlauben', pruefungId, email: lpEmail, susEmail }),
+    })
+    if (!response.ok) return false
+
+    try {
+      const data = await response.json()
+      return data.success === true
+    } catch {
+      return false
+    }
+  } catch {
+    return false
   }
 }
 

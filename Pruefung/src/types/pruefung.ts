@@ -32,6 +32,7 @@ export interface PruefungsConfig {
   // SEB-Konfiguration
   sebErforderlich: boolean;
   sebCustomUserAgent?: string;
+  sebAusnahmen?: string[];  // E-Mails von SuS mit LP-Ausnahme (dürfen ohne SEB)
 
   // Fragen
   abschnitte: PruefungsAbschnitt[];

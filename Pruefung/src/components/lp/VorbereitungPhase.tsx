@@ -5,6 +5,7 @@ import type { PruefungsConfig, Teilnehmer } from '../../types/pruefung'
 import KursAuswahl from './KursAuswahl'
 import type { KursGruppe, KlassenlistenSuS } from './KursAuswahl'
 import TeilnehmerListe from './TeilnehmerListe'
+import { downloadSebDatei } from '../../utils/sebConfigGenerator'
 
 interface Props {
   config: PruefungsConfig
@@ -228,6 +229,16 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props
         >
           📋 Kopieren
         </button>
+        {config.sebErforderlich && (
+          <button
+            type="button"
+            onClick={() => downloadSebDatei(config.id, config.titel)}
+            className="text-xs px-2 py-1 bg-slate-200 dark:bg-slate-700 rounded hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
+            title="SEB-Konfigurationsdatei herunterladen"
+          >
+            📥 SEB-Datei
+          </button>
+        )}
       </div>
 
       {/* Einladungs-Fehler */}

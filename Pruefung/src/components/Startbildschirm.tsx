@@ -25,6 +25,9 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
     istDemoModus || config.freigeschaltet
   )
 
+  // SEB-Ausnahme: LP hat für diesen SuS eine Ausnahme erteilt
+  const [hatSebAusnahme, setHatSebAusnahme] = useState(false)
+
   useEffect(() => {
     // Kein Polling nötig wenn bereits freigeschaltet oder Demo-Modus
     if (istFreigeschaltet || istDemoModus) return
@@ -39,6 +42,27 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
 
     return () => clearInterval(interval)
   }, [istFreigeschaltet, istDemoModus, config.id, user])
+
+  // SEB-Ausnahme per Heartbeat-Polling prüfen
+  useEffect(() => {
+    if (!config.sebErforderlich || istImSEB() || hatSebAusnahme || istDemoModus || !user) return
+
+    // Initiale Prüfung: E-Mail bereits in sebAusnahmen?
+    if (config.sebAusnahmen?.includes(user.email)) {
+      setHatSebAusnahme(true)
+      return
+    }
+
+    const interval = setInterval(async () => {
+      if (!user) return
+      const response = await apiService.heartbeat(config.id, user.email)
+      if (response.sebAusnahme) {
+        setHatSebAusnahme(true)
+      }
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [config.sebErforderlich, config.id, config.sebAusnahmen, hatSebAusnahme, istDemoModus, user])
 
   function handleStart() {
     if (wiederhergestellt) {
@@ -58,7 +82,10 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
     }, 0)
   }
 
-  const sebErforderlich = config.sebErforderlich && !istImSEB()
+  // SEB-Blockierung: aktiv wenn SEB erforderlich, nicht im SEB und keine Ausnahme
+  const sebBlockiert = config.sebErforderlich && !istImSEB() && !hatSebAusnahme
+  // SEB-Warnung (gelb): Hat Ausnahme, aber nicht im SEB
+  const sebWarnung = config.sebErforderlich && !istImSEB() && hatSebAusnahme
 
   // Warteraum anzeigen wenn Prüfung noch nicht freigeschaltet
   if (!istFreigeschaltet) {
@@ -131,10 +158,18 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
           )}
         </div>
 
-        {/* SEB-Warnung */}
-        {sebErforderlich && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
-            Diese Prüfung erfordert den <strong>Safe Exam Browser (SEB)</strong>. Bitte starte die Prüfung über den SEB-Link.
+        {/* SEB-Blockierung (hard block) */}
+        {sebBlockiert && (
+          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300 space-y-1">
+            <p>Diese Prüfung erfordert den <strong>Safe Exam Browser (SEB)</strong>.</p>
+            <p>Bitte starte die Prüfung über die SEB-Datei deiner Lehrperson.</p>
+          </div>
+        )}
+
+        {/* SEB-Warnung (Ausnahme erteilt, aber nicht im SEB) */}
+        {sebWarnung && (
+          <div className="mb-6 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-700 dark:text-amber-300">
+            Die Lehrperson hat dir eine <strong>SEB-Ausnahme</strong> erteilt. Du kannst die Prüfung im normalen Browser starten.
           </div>
         )}
 
@@ -186,9 +221,9 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
         {/* Start-Button */}
         <button
           onClick={handleStart}
-          disabled={sebErforderlich}
+          disabled={sebBlockiert}
           className={`w-full py-3 text-lg font-semibold rounded-xl transition-colors
-            ${sebErforderlich
+            ${sebBlockiert
               ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
               : 'bg-slate-800 hover:bg-slate-900 dark:bg-slate-200 dark:hover:bg-slate-100 text-white dark:text-slate-800 cursor-pointer'
             }

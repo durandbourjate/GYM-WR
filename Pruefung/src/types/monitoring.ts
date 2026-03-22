@@ -62,6 +62,7 @@ export interface HeartbeatResponse {
   success: boolean
   beendetUm?: string        // ISO-Timestamp — LP hat Prüfung beendet
   restzeitMinuten?: number   // Original-Restzeit (für Nachteilsausgleich)
+  sebAusnahme?: boolean      // LP hat SEB-Ausnahme für diesen SuS erteilt
 }
 
 /** Nachricht von LP an SuS während einer Prüfung */

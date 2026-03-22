@@ -3,6 +3,7 @@ import type { PruefungsConfig, PruefungsMaterial } from '../../../types/pruefung
 import { Section, Field, Toggle } from './ComposerUI.tsx'
 import { apiService } from '../../../services/apiService.ts'
 import { parseVideoUrl } from '../../../utils/mediaUtils.ts'
+import { downloadSebDatei } from '../../../utils/sebConfigGenerator.ts'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -201,6 +202,16 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich 
             aktiv={pruefung.sebErforderlich}
             onChange={(v) => updatePruefung({ sebErforderlich: v })}
           />
+          {pruefung.sebErforderlich && (
+            <button
+              type="button"
+              onClick={() => downloadSebDatei(pruefung.id, pruefung.titel)}
+              className="ml-8 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+              title="SEB-Konfigurationsdatei herunterladen"
+            >
+              📥 SEB-Datei herunterladen
+            </button>
+          )}
           <Toggle
             label="Zufällige Fragenreihenfolge"
             beschreibung="Fragen innerhalb eines Abschnitts werden gemischt"
