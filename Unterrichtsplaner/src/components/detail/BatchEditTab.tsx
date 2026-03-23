@@ -17,10 +17,10 @@ export function BatchEditTab() {
 
   // Parse multi-selection keys to week-col pairs
   const cells = multiSelection.map(key => {
-    const [week, courseId] = key.split('-');
-    const course = COURSES.find(c => c.id === courseId);
-    return course ? { week, col: course.col, courseId } : null;
-  }).filter(Boolean) as { week: string; col: number; courseId: string }[];
+    const [week, kursId] = key.split('-');
+    const course = COURSES.find(c => c.id === kursId);
+    return course ? { week, col: course.col, kursId } : null;
+  }).filter(Boolean) as { week: string; col: number; kursId: string }[];
 
   // Close seq menu on outside click
   useEffect(() => {
@@ -33,8 +33,8 @@ export function BatchEditTab() {
   }, [showSeqMenu]);
 
   // Determine shared course for sequence creation
-  const sharedCourseId = useMemo(() => {
-    const ids = new Set(cells.map(c => c.courseId));
+  const sharedKursId = useMemo(() => {
+    const ids = new Set(cells.map(c => c.kursId));
     if (ids.size === 1) return [...ids][0];
     const courses = [...ids].map(id => COURSES.find(c => c.id === id)).filter(Boolean) as Course[];
     if (courses.length > 0 && courses.every(c => c.cls === courses[0].cls && c.typ === courses[0].typ)) {
@@ -44,11 +44,11 @@ export function BatchEditTab() {
   }, [cells, COURSES]);
 
   const matchingSequences = useMemo(() => {
-    if (!sharedCourseId) return [];
+    if (!sharedKursId) return [];
     return sequences.filter(s =>
-      s.courseId === sharedCourseId || (s.courseIds?.includes(sharedCourseId))
+      s.kursId === sharedKursId || (s.kursIds?.includes(sharedKursId))
     );
-  }, [sharedCourseId, sequences]);
+  }, [sharedKursId, sequences]);
 
   const selectedWeeks = useMemo(() => cells.map(c => c.week), [cells]);
 
@@ -60,13 +60,13 @@ export function BatchEditTab() {
     const sols = new Set<boolean>();
     for (const cell of cells) {
       const d = lessonDetails[`${cell.week}-${cell.col}`];
-      if (d?.subjectArea) areas.add(d.subjectArea);
+      if (d?.fachbereich) areas.add(d.fachbereich);
       if (d?.blockCategory) cats.add(d.blockCategory);
       if (d?.duration) durations.add(d.duration);
       sols.add(!!d?.sol?.enabled);
     }
     return {
-      subjectArea: areas.size === 1 ? [...areas][0] : null,
+      fachbereich: areas.size === 1 ? [...areas][0] : null,
       blockCategory: cats.size === 1 ? [...cats][0] : null,
       duration: durations.size === 1 ? [...durations][0] : null,
       sol: sols.size === 1 ? [...sols][0] : null,
@@ -78,15 +78,15 @@ export function BatchEditTab() {
   }, [cells, lessonDetails]);
 
   const handleNewSequence = () => {
-    if (!sharedCourseId) return;
-    const course = COURSES.find(c => c.id === sharedCourseId);
+    if (!sharedKursId) return;
+    const course = COURSES.find(c => c.id === sharedKursId);
     pushUndo();
-    const batchArea = currentValues.subjectArea as import('../../types').SubjectArea | null;
+    const batchArea = currentValues.fachbereich as import('../../types').Fachbereich | null;
     const seqId = addSequence({
-      courseId: sharedCourseId,
+      kursId: sharedKursId,
       title: `Neue Sequenz ${course?.cls || ''}`,
-      blocks: [{ weeks: selectedWeeks, label: '', ...(batchArea ? { subjectArea: batchArea } : {}) }],
-      ...(batchArea ? { subjectArea: batchArea } : {}),
+      blocks: [{ weeks: selectedWeeks, label: '', ...(batchArea ? { fachbereich: batchArea } : {}) }],
+      ...(batchArea ? { fachbereich: batchArea } : {}),
     });
     setEditingSequenceId(`${seqId}-0`);
     setSidePanelTab('sequences');
@@ -106,9 +106,9 @@ export function BatchEditTab() {
 
   // T10: Import from collection with selected weeks (T11)
   const handleImportFromCollection = (item: CollectionItem) => {
-    if (!sharedCourseId) return;
+    if (!sharedKursId) return;
     pushUndo();
-    const seqId = usePlannerStore.getState().importFromCollection(item.id, sharedCourseId, {
+    const seqId = usePlannerStore.getState().importFromCollection(item.id, sharedKursId, {
       includeNotes: true, includeMaterialLinks: true, targetWeeks: [...selectedWeeks].sort(),
     });
     if (seqId) {
@@ -117,7 +117,7 @@ export function BatchEditTab() {
     }
     setShowCollectionPicker(false);
   };
-  const sharedCourse = sharedCourseId ? COURSES.find(c => c.id === sharedCourseId) : undefined;
+  const sharedCourse = sharedKursId ? COURSES.find(c => c.id === sharedKursId) : undefined;
 
   const applyToAll = (field: keyof LessonDetail, value: unknown) => {
     pushUndo();
@@ -142,16 +142,16 @@ export function BatchEditTab() {
         <label className="text-[11px] text-gray-400 font-medium">Fachbereich setzen {currentValues.mixedArea && <span className="text-amber-400">(gemischt)</span>}</label>
         <div className="flex gap-1 flex-wrap">
           {categories.map(sa => {
-            const isActive = currentValues.subjectArea === sa.key;
+            const isActive = currentValues.fachbereich === sa.key;
             return (
-              <button key={sa.key} onClick={() => applyToAll('subjectArea', sa.key)}
+              <button key={sa.key} onClick={() => applyToAll('fachbereich', sa.key)}
                 className={`px-2 py-0.5 rounded text-[11px] font-medium border cursor-pointer hover:opacity-80 ${isActive ? 'ring-1 ring-offset-1 ring-offset-slate-800' : ''}`}
                 style={{ background: isActive ? sa.color + '40' : 'transparent', borderColor: isActive ? sa.color : '#4b5563', color: isActive ? sa.color : '#9ca3af' }}>
                 {sa.label}
               </button>
             );
           })}
-          <button onClick={() => applyToAll('subjectArea', undefined)}
+          <button onClick={() => applyToAll('fachbereich', undefined)}
             className="px-2 py-0.5 rounded text-[11px] border border-gray-600 text-gray-400 cursor-pointer hover:text-gray-300">✕</button>
         </div>
       </div>
@@ -206,7 +206,7 @@ export function BatchEditTab() {
       </div>
 
       {/* Sequence actions */}
-      {sharedCourseId && (
+      {sharedKursId && (
         <div className="space-y-1 pt-2 border-t border-slate-700">
           <label className="text-[11px] text-gray-400 font-medium">Sequenz</label>
           <div className="relative" ref={seqMenuRef}>
@@ -253,7 +253,7 @@ export function BatchEditTab() {
           </div>
         </div>
       )}
-      {!sharedCourseId && cells.length > 0 && (
+      {!sharedKursId && cells.length > 0 && (
         <div className="text-[9px] text-amber-400/70 pt-2 border-t border-slate-700">
           ⚠ Sequenzen nur innerhalb desselben Kurses erstellbar. Auswahl enthält verschiedene Kurse.
         </div>

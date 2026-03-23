@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import type { Course, SubjectArea, CollectionItem } from '../types';
+import type { Course, Fachbereich, CollectionItem } from '../types';
 import { usePlannerStore } from '../store/plannerStore';
 import { CollectionPickerList, useHasImportableItems } from './CollectionPicker';
 
@@ -30,7 +30,7 @@ export function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }
     updateLesson(week, course.col, { title: 'Neue UE', type: 1 });
     // Set defaults: blockCategory=LESSON, duration=90 min
     usePlannerStore.getState().updateLessonDetail(week, course.col, { blockCategory: 'LESSON', duration: '90 min' });
-    setSelection({ week, courseId: course.id, title: 'Neue UE', course });
+    setSelection({ week, kursId: course.id, title: 'Neue UE', course });
     setSidePanelOpen(true);
     setSidePanelTab('details');
     onClose();
@@ -39,18 +39,18 @@ export function EmptyCellMenu({ week, course, onClose, selectedWeeks, position }
   const handleNewSequence = () => {
     const weeks = selectedWeeks && selectedWeeks.length > 0 ? selectedWeeks : [week];
     pushUndo();
-    // v3.78 #19: Inherit subjectArea from first available fachbereich for the course type
+    // v3.78 #19: Inherit fachbereich from first available fachbereich for the course type
     const settings = usePlannerStore.getState().plannerSettings;
     const courseSubjects = settings?.subjects;
     const firstSA = courseSubjects?.length ? courseSubjects[0].id : undefined;
     const seqId = addSequence({
-      courseId: course.id,
+      kursId: course.id,
       title: `Neue Sequenz ${course.cls}`,
-      subjectArea: firstSA as SubjectArea | undefined,
-      blocks: [{ weeks, label: '', subjectArea: firstSA as SubjectArea | undefined }],
+      fachbereich: firstSA as Fachbereich | undefined,
+      blocks: [{ weeks, label: '', fachbereich: firstSA as Fachbereich | undefined }],
     });
     // Auto-create placeholder lessons for assigned weeks (v3.76 #9)
-    // v3.78 #19: Also set blockCategory + inherited subjectArea on lessonDetails
+    // v3.78 #19: Also set blockCategory + inherited fachbereich on lessonDetails
     for (const w of weeks) {
       const existing = usePlannerStore.getState().weekData.find(wd => wd.w === w)?.lessons[course.col];
       if (!existing?.title) {

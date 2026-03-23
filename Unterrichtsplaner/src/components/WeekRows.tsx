@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef } from 'react';
 import type { Course, Week } from '../types';
-import { LESSON_COLORS, SUBJECT_AREA_COLORS, DAY_COLORS, getSequenceInfoFromStore, isPastWeek } from '../utils/colors';
+import { LESSON_COLORS, FACHBEREICH_COLORS, DAY_COLORS, getSequenceInfoFromStore, isPastWeek } from '../utils/colors';
 import { CURRENT_WEEK } from '../data/weeks';
 import { usePlannerStore, ZOOM_LEVELS, zs } from '../store/plannerStore';
 import { useGCalStore } from '../store/gcalStore';
@@ -68,11 +68,11 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   // H2: Sonderwochen-Scope prüfen — bei aktivem Filter nur relevante Events anzeigen
   const validEventCols = React.useMemo(() => {
     if (filter === 'ALL' || !plannerSettings?.specialWeeks) return null;
-    const courseIdToCol = new Map<string, number>();
+    const kursIdToCol = new Map<string, number>();
     for (let i = 0; i < plannerSettings.courses.length; i++) {
       const c = plannerSettings.courses[i];
       const col = c.col ?? (100 + i);
-      courseIdToCol.set(c.id, col);
+      kursIdToCol.set(c.id, col);
     }
     const validMap = new Map<string, Set<number>>();
     for (const sw of plannerSettings.specialWeeks) {
@@ -85,7 +85,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
       const cols = new Set<number>();
       if (hasCourseFilter) {
         for (const id of sw.courseFilter!) {
-          const col = courseIdToCol.get(id);
+          const col = kursIdToCol.get(id);
           if (col !== undefined) cols.add(col);
         }
       }
@@ -145,8 +145,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
         setSidePanelTab('details');
       } else {
         clearMultiSelect();
-        const isSame = selection?.week === weekW && selection?.courseId === course.id;
-        setSelection(isSame ? null : { week: weekW, courseId: course.id, title, course });
+        const isSame = selection?.week === weekW && selection?.kursId === course.id;
+        setSelection(isSame ? null : { week: weekW, kursId: course.id, title, course });
         if (isSame) {
           setSidePanelOpen(false);
           usePlannerStore.getState().setEditingSequenceId(null);
@@ -159,7 +159,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   const handleDoubleClick = useCallback(
     (weekW: string, course: Course, title: string) => {
       if (!title) return;
-      setSelection({ week: weekW, courseId: course.id, title, course });
+      setSelection({ week: weekW, kursId: course.id, title, course });
       setSidePanelOpen(true);
       setSidePanelTab('details');
     },
@@ -285,7 +285,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               const title = entry?.title || '';
               const lessonType = entry?.type ?? -1;
               const colors = lessonType >= 0 ? LESSON_COLORS[lessonType as keyof typeof LESSON_COLORS] : null;
-              const isSelected = selection?.week === week.w && selection?.courseId === c.id;
+              const isSelected = selection?.week === week.w && selection?.kursId === c.id;
               const isMulti = multiSelection.includes(`${week.w}-${c.id}`);
               const isEditing = editing?.week === week.w && editing?.col === c.col;
               const seq = getSequenceInfoFromStore(c.id, week.w, sequences);
@@ -303,8 +303,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                 return parentSeq?.blocks.find(b => b.weeks.includes(week.w));
               })() : null;
 
-              const effectiveSubjectArea = cellDetail?.subjectArea || parentBlock?.subjectArea;
-              const saColors = effectiveSubjectArea ? SUBJECT_AREA_COLORS[effectiveSubjectArea] : null;
+              const effectiveFachbereich = cellDetail?.fachbereich || parentBlock?.fachbereich;
+              const saColors = effectiveFachbereich ? FACHBEREICH_COLORS[effectiveFachbereich] : null;
               const cellColors = saColors || colors;
 
               const editingParts = editingSequenceId?.match(/^(.+)-(\d+)$/);
@@ -312,16 +312,16 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
               const editingBlockIdx = editingParts ? parseInt(editingParts[2]) : null;
               const editingSeq = editingSeqId ? sequences.find(s => s.id === editingSeqId) : null;
               const editingSeqMatchesCourse = editingSeq && (
-                editingSeq.courseId === c.id ||
-                (editingSeq.courseIds && editingSeq.courseIds.includes(c.id))
+                editingSeq.kursId === c.id ||
+                (editingSeq.kursIds && editingSeq.kursIds.includes(c.id))
               );
               const editingBlock = editingSeq && editingBlockIdx !== null ? editingSeq.blocks[editingBlockIdx] : null;
               const isInEditingSeq = editingSeqMatchesCourse && (
                 editingBlock ? editingBlock.weeks.includes(week.w) : editingSeq?.blocks.some(b => b.weeks.includes(week.w))
               );
               const isSeqDimmed = editingSeqMatchesCourse && !isInEditingSeq && !!title;
-              const effectiveTopicMain = cellDetail?.topicMain || parentBlock?.topicMain;
-              const effectiveTopicSub = cellDetail?.topicSub || parentBlock?.topicSub;
+              const effectiveTopicMain = cellDetail?.thema || parentBlock?.thema;
+              const effectiveTopicSub = cellDetail?.unterthema || parentBlock?.unterthema;
               const displayTitle = effectiveTopicMain
                 ? (effectiveTopicSub ? `${effectiveTopicMain} › ${effectiveTopicSub}` : effectiveTopicMain)
                 : title;
@@ -385,7 +385,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       if (title) {
                         if (e.shiftKey) {
                           selectRange(`${week.w}-${c.id}`, allWeekKeys, courses, false);
-                          const linked = getLinkedCourseIds(c.id);
+                          const linked = getLinkedKursIds(c.id);
                           if (linked.length > 1) {
                             const otherIds = linked.filter(id => id !== c.id);
                             const currentMulti = usePlannerStore.getState().multiSelection;
@@ -394,7 +394,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                             );
                             if (!otherDayAlreadySelected) {
                               const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                              drag.setMultiDayPrompt({ weekW: week.w, courseId: c.id, position: { x: rect.left + rect.width / 2, y: rect.top } });
+                              drag.setMultiDayPrompt({ weekW: week.w, kursId: c.id, position: { x: rect.left + rect.width / 2, y: rect.top } });
                             }
                           }
                         } else {
@@ -410,7 +410,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       drag.dragSelectedWeeks.length = 0;
                     } else {
                       clearMultiSelect();
-                      setSelection({ week: week.w, courseId: c.id, title: '', course: c });
+                      setSelection({ week: week.w, kursId: c.id, title: '', course: c });
                       setEmptyCellMenu(null);
                       usePlannerStore.getState().setEditingSequenceId(null);
                       setSidePanelOpen(false);
@@ -435,10 +435,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                         top: seq.isFirst ? 3 : 0,
                         bottom: seq.isLast ? 3 : 0,
                         background: (() => {
-                          const seqBarSA = effectiveSubjectArea || (() => {
+                          const seqBarSA = effectiveFachbereich || (() => {
                             const parentSeq = sequences.find(s => s.id === seq.sequenceId);
                             const block = parentSeq?.blocks.find(b => b.weeks.includes(week.w));
-                            return block?.subjectArea || parentSeq?.subjectArea;
+                            return block?.fachbereich || parentSeq?.fachbereich;
                           })();
                           return seqBarSA ? getCatColor(seqBarSA) : (seq.color || '#16a34a');
                         })(),
@@ -468,10 +468,10 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                   {seq?.isFirst && !isFixed && (
                     <div className="absolute left-1.5 -top-0.5 font-bold z-10 px-0.5 rounded whitespace-nowrap cursor-pointer"
                       style={{ fontSize: z(6), background: 'var(--holiday-bg)', color: (() => {
-                        const seqLabelSA = effectiveSubjectArea || (() => {
+                        const seqLabelSA = effectiveFachbereich || (() => {
                           const parentSeq = sequences.find(s => s.id === seq.sequenceId);
                           const block = parentSeq?.blocks.find(b => b.weeks.includes(week.w));
-                          return block?.subjectArea || parentSeq?.subjectArea;
+                          return block?.fachbereich || parentSeq?.fachbereich;
                         })();
                         return seqLabelSA ? getCatBorder(seqLabelSA) : (seq.color || '#4ade80');
                       })() }}
@@ -643,7 +643,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                         onClick={(e) => {
                           if (e.metaKey || e.ctrlKey || e.shiftKey) return;
                           e.stopPropagation();
-                          setSelection({ week: week.w, courseId: c.id, title, course: c });
+                          setSelection({ week: week.w, kursId: c.id, title, course: c });
                           setSidePanelOpen(true);
                           setSidePanelTab('details');
                         }}
@@ -740,8 +740,8 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
 
       {/* Multi-day shift-click prompt */}
       {drag.multiDayPrompt && (() => {
-        const linked = getLinkedCourseIds(drag.multiDayPrompt.courseId);
-        const otherIds = linked.filter(id => id !== drag.multiDayPrompt!.courseId);
+        const linked = getLinkedKursIds(drag.multiDayPrompt.kursId);
+        const otherIds = linked.filter(id => id !== drag.multiDayPrompt!.kursId);
         const otherCourses = otherIds.map(id => COURSES_CACHE.find(cc => cc.id === id)).filter(Boolean);
         const otherDays = otherCourses.map(cc => cc!.day).join('/');
         return (
@@ -760,7 +760,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                       const parts = key.split('-');
                       const cid = parts[parts.length - 1];
                       const wk = parts.slice(0, parts.length - 1).join('-');
-                      const keyLinked = getLinkedCourseIds(cid);
+                      const keyLinked = getLinkedKursIds(cid);
                       if (keyLinked.length > 1) {
                         for (const otherId of keyLinked) {
                           if (otherId !== cid) {
@@ -802,4 +802,4 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
   );
 }
 
-import { COURSES as COURSES_CACHE, getLinkedCourseIds } from '../data/courses';
+import { COURSES as COURSES_CACHE, getLinkedKursIds } from '../data/courses';

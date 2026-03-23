@@ -1,7 +1,7 @@
 [
   {
     "id": "R-Z1-01",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "Einführung Recht",
     "goal": "Recht als ordnendes Gebilde für gesellschaftliches Zusammenleben erfassen",
@@ -15,7 +15,7 @@
   },
   {
     "id": "R-Z1-02",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "ZGB – Personenrecht",
     "goal": "Juristische und natürliche Personen unterscheiden; Grundzüge des Personenrechts anwenden",
@@ -28,7 +28,7 @@
   },
   {
     "id": "R-Z1-03",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "ZGB – Einleitungsartikel",
     "goal": "Bedeutung der Einleitungsartikel des ZGB für Sachverhaltsfeststellung und Rechtsfindung erfassen",
@@ -44,7 +44,7 @@
   },
   {
     "id": "R-Z1-04",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "ZGB – Personenrecht (vertieft)",
     "goal": "Verein als Beispiel für Privatautonomie verstehen; Persönlichkeitsschutz abschätzen",
@@ -56,7 +56,7 @@
   },
   {
     "id": "R-Z1-05",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "OR – Gesellschaftsrecht",
     "goal": "Verschiedene Unternehmensformen anhand einschlägiger Kriterien unterscheiden",
@@ -71,7 +71,7 @@
   },
   {
     "id": "R-Z1-06",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "ZGB – Sachenrecht",
     "goal": "Stellenwert des Eigentums erkennen und Beziehungen zu anderen Rechtsgebieten knüpfen",
@@ -85,7 +85,7 @@
   },
   {
     "id": "R-Z1-07",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 1,
     "topic": "OR – Mietrecht",
     "goal": "Bestimmungen des Mietrechts auf Alltagssituationen anwenden",
@@ -98,7 +98,7 @@
   },
   {
     "id": "R-Z2-01",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "OR – AT: Zustandekommen",
     "goal": "Zustandekommen von Obligationen beurteilen",
@@ -114,7 +114,7 @@
   },
   {
     "id": "R-Z2-02",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "OR – AT: Erfüllung",
     "goal": "Erfüllung von Obligationen überprüfen",
@@ -126,7 +126,7 @@
   },
   {
     "id": "R-Z2-03",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "OR – BT: Vertragsverhältnisse",
     "goal": "Bestimmungen der einzelnen Vertragsverhältnisse auf Alltagssituationen anwenden",
@@ -139,7 +139,7 @@
   },
   {
     "id": "R-Z2-04",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "Haftpflichtrecht",
     "goal": "Grundlagen des Haftpflichtrechts verstehen und anwenden",
@@ -152,7 +152,7 @@
   },
   {
     "id": "R-Z2-05",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "ZGB – Erbrecht",
     "goal": "Grundzüge des Erbrechts anwenden",
@@ -165,7 +165,7 @@
   },
   {
     "id": "R-Z2-06",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "ZGB – Eherecht",
     "goal": "Grundzüge des Eherechts kennen",
@@ -178,7 +178,7 @@
   },
   {
     "id": "R-Z2-07",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "OR – Arbeitsrecht",
     "goal": "Bestimmungen des Arbeitsrechts auf Sachverhalte anwenden",
@@ -192,7 +192,7 @@
   },
   {
     "id": "R-Z2-08",
-    "area": "RECHT",
+    "area": "Recht",
     "cycle": 2,
     "topic": "Öffentliches Recht / Strafrecht",
     "goal": "Mindestens einen Bereich des öffentlichen Rechts exemplarisch behandeln",

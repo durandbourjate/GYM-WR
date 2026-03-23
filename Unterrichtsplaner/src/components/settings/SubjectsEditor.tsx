@@ -29,7 +29,7 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
 
   return (
     <div className="space-y-2">
-      <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. INTERDISZ wird automatisch ergänzt.</p>
+      <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Fachbereiche definieren die Farben und Kategorien für die Unterrichtsplanung. Interdisziplinär wird automatisch ergänzt.</p>
       {subjects.length === 0 && (
         <p className="text-[11px] text-amber-400/80 bg-amber-900/20 border border-amber-700/30 rounded px-2 py-1.5">
           Keine Fachbereiche konfiguriert. Füge einen Fachbereich hinzu oder wähle eine Vorlage.

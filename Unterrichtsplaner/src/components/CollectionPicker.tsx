@@ -23,7 +23,7 @@ export function CollectionPickerList({ onSelect, courseType }: {
       <div className="truncate font-medium">{item.title}</div>
       <div className="text-[9px] text-gray-500">
         {item.units.reduce((n, u) => n + u.lessonTitles.length, 0)} Lektionen · {item.units.length} Block{item.units.length !== 1 ? 's' : ''}
-        {item.subjectArea ? ` · ${item.subjectArea}` : ''}
+        {item.fachbereich ? ` · ${item.fachbereich}` : ''}
       </div>
     </button>
   ))}</>);

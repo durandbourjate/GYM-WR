@@ -153,7 +153,7 @@ export function loadFromInstance(instanceId: string): void {
         searchQuery: '',
         courseFilter: null,
         classFilter: null,
-        settingsEditCourseId: null,
+        settingsEditKursId: null,
       });
     } catch (e) {
       console.error('Failed to load instance:', e);

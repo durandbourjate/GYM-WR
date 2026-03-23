@@ -1,13 +1,13 @@
 import type { StateCreator } from 'zustand';
 import type { PlannerState } from '../plannerStore';
 import type { FilterType, Course } from '../../types';
-import { getLinkedCourseIds } from '../../data/courses';
+import { getLinkedKursIds } from '../../data/courses';
 
 // === Helper interfaces (moved from plannerStore.ts) ===
 
 export interface Selection {
   week: string;
-  courseId: string;
+  kursId: string;
   title: string;
   course: Course;
 }
@@ -67,22 +67,22 @@ export interface UISlice {
   setPendingHolidayKw: (kw: string | null) => void;
   hoveredCell: { week: string; col: number } | null;
   setHoveredCell: (c: { week: string; col: number } | null) => void;
-  emptyCellAction: { week: string; courseId: string; course: Course; selectedWeeks?: string[] } | null;
-  setEmptyCellAction: (a: { week: string; courseId: string; course: Course; selectedWeeks?: string[] } | null) => void;
-  dragSelectAnchor: { week: string; col: number; courseId: string } | null;
+  emptyCellAction: { week: string; kursId: string; course: Course; selectedWeeks?: string[] } | null;
+  setEmptyCellAction: (a: { week: string; kursId: string; course: Course; selectedWeeks?: string[] } | null) => void;
+  dragSelectAnchor: { week: string; col: number; kursId: string } | null;
   dragSelectCurrent: { week: string; col: number } | null;
   dragSelectedKeys: string[]; // "week-col" keys
-  setDragSelectAnchor: (a: { week: string; col: number; courseId: string } | null) => void;
+  setDragSelectAnchor: (a: { week: string; col: number; kursId: string } | null) => void;
   setDragSelectCurrent: (c: { week: string; col: number } | null) => void;
   setDragSelectedKeys: (keys: string[]) => void;
   settingsOpen: boolean;
   setSettingsOpen: (v: boolean) => void;
-  settingsEditCourseId: string | null;
-  setSettingsEditCourseId: (id: string | null) => void;
+  settingsEditKursId: string | null;
+  setSettingsEditKursId: (id: string | null) => void;
   panelWidth: number;
   setPanelWidth: (w: number) => void;
   expandedNoteCols: Record<string, boolean>; // course IDs with expanded note columns
-  toggleNoteCol: (courseId: string) => void;
+  toggleNoteCol: (kursId: string) => void;
   noteColWidth: number; // shared width for all note columns
   setNoteColWidth: (w: number) => void;
 }
@@ -109,14 +109,14 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
   selection: null,
   setSelection: (s) => set({
     selection: s,
-    lastSelectedKey: s ? `${s.week}-${s.courseId}` : get().lastSelectedKey,
+    lastSelectedKey: s ? `${s.week}-${s.kursId}` : get().lastSelectedKey,
   }),
   multiSelection: [],
   lastSelectedKey: null,
   toggleMultiSelect: (key) =>
     set((state) => {
       // If this is the first Cmd+Click and there's a current selection, include it too
-      const currentKey = state.selection ? `${state.selection.week}-${state.selection.courseId}` : null;
+      const currentKey = state.selection ? `${state.selection.week}-${state.selection.kursId}` : null;
       const base = state.multiSelection.length === 0 && currentKey && currentKey !== key
         ? [currentKey]
         : state.multiSelection;
@@ -135,13 +135,13 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
       set({ multiSelection: [toKey], lastSelectedKey: toKey });
       return;
     }
-    const [fromWeek, fromCourseId] = fromKey.split('-');
-    const [toWeek, toCourseId] = toKey.split('-');
+    const [fromWeek, fromKursId] = fromKey.split('-');
+    const [toWeek, toKursId] = toKey.split('-');
 
     // Helper: check if a week+course is selectable (allow empty cells, skip holidays/events)
     const weekMap = new Map(state.weekData.map(w => [w.w, w]));
-    const isSelectableLesson = (wk: string, courseId: string): boolean => {
-      const course = courses.find(c => c.id === courseId);
+    const isSelectableLesson = (wk: string, kursId: string): boolean => {
+      const course = courses.find(c => c.id === kursId);
       if (!course) return false;
       const week = weekMap.get(wk);
       if (!week) return false;
@@ -152,11 +152,11 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
     };
 
     // Check if both courses belong to the same class+type (linked courses, e.g. Di+Do)
-    const fromCourse = courses.find(c => c.id === fromCourseId);
-    const toCourse = courses.find(c => c.id === toCourseId);
+    const fromCourse = courses.find(c => c.id === fromKursId);
+    const toCourse = courses.find(c => c.id === toKursId);
     const areLinked = fromCourse && toCourse &&
       fromCourse.cls === toCourse.cls && fromCourse.typ === toCourse.typ &&
-      fromCourseId !== toCourseId;
+      fromKursId !== toKursId;
 
     if (areLinked && crossDay !== false) {
       // Cross-day selection: select all weeks in range for BOTH course columns
@@ -167,8 +167,8 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
       const endIdx = Math.max(fromIdx, toIdx);
       const rangeKeys: string[] = [];
       for (let i = startIdx; i <= endIdx; i++) {
-        if (isSelectableLesson(allWeeks[i], fromCourseId)) rangeKeys.push(`${allWeeks[i]}-${fromCourseId}`);
-        if (isSelectableLesson(allWeeks[i], toCourseId)) rangeKeys.push(`${allWeeks[i]}-${toCourseId}`);
+        if (isSelectableLesson(allWeeks[i], fromKursId)) rangeKeys.push(`${allWeeks[i]}-${fromKursId}`);
+        if (isSelectableLesson(allWeeks[i], toKursId)) rangeKeys.push(`${allWeeks[i]}-${toKursId}`);
       }
       set((s) => ({
         multiSelection: Array.from(new Set([...s.multiSelection, ...rangeKeys])),
@@ -177,13 +177,13 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
       return;
     }
 
-    if (fromCourseId !== toCourseId && !(areLinked && crossDay === false)) {
+    if (fromKursId !== toKursId && !(areLinked && crossDay === false)) {
       // Different, unlinked courses — block range select (error-prone cross-course selection)
       // Only allow single-cell add via Cmd/Ctrl+Click, not Shift+Click range
       return;
     }
 
-    // Same column range selection (or linked course with crossDay=false → use fromCourseId column)
+    // Same column range selection (or linked course with crossDay=false → use fromKursId column)
     const fromIdx = allWeeks.indexOf(fromWeek);
     const toIdx = allWeeks.indexOf(toWeek);
     if (fromIdx < 0 || toIdx < 0) return;
@@ -191,18 +191,18 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
     const endIdx = Math.max(fromIdx, toIdx);
     const rangeKeys: string[] = [];
     for (let i = startIdx; i <= endIdx; i++) {
-      if (isSelectableLesson(allWeeks[i], fromCourseId)) rangeKeys.push(`${allWeeks[i]}-${fromCourseId}`);
+      if (isSelectableLesson(allWeeks[i], fromKursId)) rangeKeys.push(`${allWeeks[i]}-${fromKursId}`);
     }
 
     // Check if same-column range should also include linked day
     if (crossDay !== false) {
-      const linkedCourseIds = getLinkedCourseIds(fromCourseId);
-      if (linkedCourseIds.length > 1) {
+      const linkedKursIds = getLinkedKursIds(fromKursId);
+      if (linkedKursIds.length > 1) {
         // Automatically include linked day columns
-        for (const otherCourseId of linkedCourseIds) {
-          if (otherCourseId !== fromCourseId) {
+        for (const otherKursId of linkedKursIds) {
+          if (otherKursId !== fromKursId) {
             for (let i = startIdx; i <= endIdx; i++) {
-              if (isSelectableLesson(allWeeks[i], otherCourseId)) rangeKeys.push(`${allWeeks[i]}-${otherCourseId}`);
+              if (isSelectableLesson(allWeeks[i], otherKursId)) rangeKeys.push(`${allWeeks[i]}-${otherKursId}`);
             }
           }
         }
@@ -242,14 +242,14 @@ export const createUISlice: StateCreator<PlannerState, [], [], UISlice> = (set, 
   setDragSelectedKeys: (keys) => set({ dragSelectedKeys: keys }),
   settingsOpen: false,
   setSettingsOpen: (v) => set({ settingsOpen: v }),
-  settingsEditCourseId: null,
-  setSettingsEditCourseId: (id) => set({ settingsEditCourseId: id }),
+  settingsEditKursId: null,
+  setSettingsEditKursId: (id) => set({ settingsEditKursId: id }),
   panelWidth: 400,
   setPanelWidth: (w) => set({ panelWidth: w }),
   expandedNoteCols: {},
-  toggleNoteCol: (courseId) => set((s) => {
+  toggleNoteCol: (kursId) => set((s) => {
     const next = { ...s.expandedNoteCols };
-    if (next[courseId]) { delete next[courseId]; } else { next[courseId] = true; }
+    if (next[kursId]) { delete next[kursId]; } else { next[kursId] = true; }
     return { expandedNoteCols: next };
   }),
   noteColWidth: 200,

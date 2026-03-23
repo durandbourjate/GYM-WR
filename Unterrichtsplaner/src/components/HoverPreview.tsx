@@ -3,7 +3,7 @@ import type { Course } from '../types';
 import { getSequenceInfoFromStore } from '../utils/colors';
 import { usePlannerStore } from '../store/plannerStore';
 import { getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel, CATEGORIES } from './DetailPanel';
-import { SUBJECT_AREA_COLORS_PREVIEW } from './InlineEdit';
+import { FACHBEREICH_COLORS_PREVIEW } from './InlineEdit';
 
 export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: { week: string; col: number; courses: Course[]; courseIndex: number; totalCourses: number }) {
   const { lessonDetails, weekData, sequences } = usePlannerStore();
@@ -23,10 +23,10 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
   })() : null;
 
   // Inherited values
-  const effectiveSubjectArea = detail?.subjectArea || parentBlock?.subjectArea;
-  const effectiveTopicMain = detail?.topicMain || parentBlock?.topicMain;
-  const effectiveTopicSub = detail?.topicSub || parentBlock?.topicSub;
-  const accentColor = effectiveSubjectArea ? SUBJECT_AREA_COLORS_PREVIEW[effectiveSubjectArea] || '#64748b' : '#64748b';
+  const effectiveFachbereich = detail?.fachbereich || parentBlock?.fachbereich;
+  const effectiveTopicMain = detail?.thema || parentBlock?.thema;
+  const effectiveTopicSub = detail?.unterthema || parentBlock?.unterthema;
+  const accentColor = effectiveFachbereich ? FACHBEREICH_COLORS_PREVIEW[effectiveFachbereich] || '#64748b' : '#64748b';
 
   // Smart positioning: show left if course is in the right third of columns
   const showLeft = courseIndex > totalCourses * 0.6;
@@ -74,10 +74,10 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
       <div className="px-2.5 py-1.5">
         {/* Badges row */}
         <div className="flex flex-wrap gap-1 mb-1">
-          {effectiveSubjectArea && (
+          {effectiveFachbereich && (
             <span className="text-[9px] px-1 py-px rounded border text-gray-300 font-medium"
               style={{ borderColor: accentColor + '60', background: accentColor + '15' }}>
-              {effectiveSubjectArea}
+              {effectiveFachbereich}
             </span>
           )}
           {(() => {

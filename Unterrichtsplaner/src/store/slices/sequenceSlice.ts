@@ -22,7 +22,7 @@ export interface SequenceSlice {
   // T6: Remove block AND delete all associated weekData entries + lessonDetails
   removeBlockWithLessons: (seqId: string, blockIndex: number) => void;
   reorderBlocks: (seqId: string, fromIndex: number, toIndex: number) => void;
-  getAvailableWeeks: (courseId: string, startWeek: string, allWeekOrder: string[]) => string[];
+  getAvailableWeeks: (kursId: string, startWeek: string, allWeekOrder: string[]) => string[];
   autoPlaceSequence: (seqId: string, startWeek: string, allWeekOrder: string[]) => { placed: number; skipped: string[] };
   sequencePanelOpen: boolean;
   setSequencePanelOpen: (v: boolean) => void;
@@ -42,12 +42,12 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     if (state.sequencesMigrated) return;
     const now = new Date().toISOString();
     const migrated: ManagedSequence[] = [];
-    for (const [courseId, seqBlocks] of Object.entries(STATIC_SEQUENCES)) {
-      const course = COURSES.find(c => c.id === courseId);
-      const courseLabel = course ? `${course.cls} ${course.typ} ${course.day}` : courseId;
+    for (const [kursId, seqBlocks] of Object.entries(STATIC_SEQUENCES)) {
+      const course = COURSES.find(c => c.id === kursId);
+      const courseLabel = course ? `${course.cls} ${course.typ} ${course.day}` : kursId;
       migrated.push({
-        id: `seq-${courseId}-${Date.now()}`,
-        courseId,
+        id: `seq-${kursId}-${Date.now()}`,
+        kursId,
         title: `Sequenzen ${courseLabel}`,
         blocks: seqBlocks.map(b => ({ weeks: [...b.weeks], label: b.label })),
         createdAt: now,
@@ -62,7 +62,7 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     // Fix old "Sequenzen cXX" titles to use class+type+day
     const updated = state.sequences.map(seq => {
       if (/^Sequenzen c\d+$/.test(seq.title)) {
-        const course = COURSES.find(c => c.id === seq.courseId);
+        const course = COURSES.find(c => c.id === seq.kursId);
         if (course) {
           return { ...seq, title: `Sequenzen ${course.cls} ${course.typ} ${course.day}`, updatedAt: new Date().toISOString() };
         }
@@ -81,7 +81,7 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     let newWeekData = state.weekData;
     if (settings && seq.blocks && seq.blocks.length > 0) {
       const courses = configToCourses(settings.courses);
-      const course = courses.find(c => c.id === seq.courseId);
+      const course = courses.find(c => c.id === seq.kursId);
       if (course) {
         const allBlockWeeks = new Set(seq.blocks.flatMap(b => b.weeks));
         if (allBlockWeeks.size > 0) {
@@ -114,7 +114,7 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     const settings = state.plannerSettings || loadSettings();
     if (seq && block.weeks.length > 0 && settings) {
       const courses = configToCourses(settings.courses);
-      const course = courses.find(c => c.id === seq.courseId);
+      const course = courses.find(c => c.id === seq.kursId);
       if (course) {
         newWeekData = state.weekData.map(w => {
           if (!block.weeks.includes(w.w)) return w;
@@ -144,7 +144,7 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
       const newWeeks = updates.weeks.filter(w => !oldBlock?.weeks.includes(w));
       if (newWeeks.length > 0) {
         const courses = configToCourses(settings.courses);
-        const course = courses.find(c => c.id === seq.courseId);
+        const course = courses.find(c => c.id === seq.kursId);
         if (course) {
           newWeekData = state.weekData.map(w => {
             if (!newWeeks.includes(w.w)) return w;
@@ -187,10 +187,10 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     const block = seq.blocks[blockIndex];
     const weeksToDelete = new Set(block.weeks);
     // Find all columns for this sequence's courses
-    const allCourseIds = seq.courseIds && seq.courseIds.length > 0 ? seq.courseIds : [seq.courseId];
+    const allKursIds = seq.kursIds && seq.kursIds.length > 0 ? seq.kursIds : [seq.kursId];
     const settings = state.plannerSettings || loadSettings();
     const courses = settings ? configToCourses(settings.courses) : COURSES;
-    const cols = allCourseIds.map(cid => courses.find(c => c.id === cid)?.col).filter((c): c is number => c !== undefined);
+    const cols = allKursIds.map(cid => courses.find(c => c.id === cid)?.col).filter((c): c is number => c !== undefined);
     // Remove weekData entries for block weeks in sequence columns
     const newWeekData = state.weekData.map(w => {
       if (!weeksToDelete.has(w.w)) return w;
@@ -223,15 +223,15 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
       }),
     })),
   // Auto-placement: find free weeks for a course
-  getAvailableWeeks: (courseId, startWeek, allWeekOrder) => {
+  getAvailableWeeks: (kursId, startWeek, allWeekOrder) => {
     const state = get();
-    // Find sequence that matches this courseId (or has it in courseIds)
+    // Find sequence that matches this kursId (or has it in kursIds)
     const seq = state.sequences.find(s =>
-      s.courseId === courseId || (s.courseIds && s.courseIds.includes(courseId))
+      s.kursId === kursId || (s.kursIds && s.kursIds.includes(kursId))
     );
     // Get all cols to check: if multi-day, all linked cols must be free
-    const allCourseIds = seq?.courseIds && seq.courseIds.length > 1 ? seq.courseIds : [courseId];
-    const cols = allCourseIds.map(cid => {
+    const allKursIds = seq?.kursIds && seq.kursIds.length > 1 ? seq.kursIds : [kursId];
+    const cols = allKursIds.map(cid => {
       const course = COURSES.find(c => c.id === cid);
       return course ? course.col : parseInt(cid.replace('c', ''));
     }).filter(c => !isNaN(c));
@@ -269,17 +269,17 @@ export const createSequenceSlice: StateCreator<PlannerState, [], [], SequenceSli
     if (!seq) return { placed: 0, skipped: [] };
 
     // Get all columns to place into (multi-course support)
-    const allCourseIds = seq.courseIds && seq.courseIds.length > 0 ? seq.courseIds : [seq.courseId];
-    const cols = allCourseIds.map(cid => {
+    const allKursIds = seq.kursIds && seq.kursIds.length > 0 ? seq.kursIds : [seq.kursId];
+    const cols = allKursIds.map(cid => {
       const course = COURSES.find(c => c.id === cid);
       return course ? course.col : parseInt(cid.replace('c', ''));
     }).filter(c => !isNaN(c));
     if (cols.length === 0) return { placed: 0, skipped: [] };
 
     // Get available weeks based on primary column
-    const available = state.getAvailableWeeks(seq.courseId, startWeek, allWeekOrder);
+    const available = state.getAvailableWeeks(seq.kursId, startWeek, allWeekOrder);
 
-    // Determine LessonType from subjectArea (legacy mapping for grid rendering)
+    // Determine LessonType from fachbereich (legacy mapping for grid rendering)
     const lessonType: import('../../types').LessonType = 0; // Subject area is stored on the sequence, not the lesson type
 
     state.pushUndo();

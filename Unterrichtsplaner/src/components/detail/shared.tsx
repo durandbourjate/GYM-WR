@@ -197,11 +197,11 @@ export function AddToSequenceButton({ week, course }: { week: string; course: Co
 
   // Filter sequences that match this course
   const matching = sequences.filter(s =>
-    s.courseId === course.id || (s.courseIds && s.courseIds.includes(course.id))
+    s.kursId === course.id || (s.kursIds && s.kursIds.includes(course.id))
   );
 
   const handleNew = () => {
-    const seqId = addSequence({ courseId: course.id, title: `Neue Sequenz ${course.cls}`, blocks: [{ weeks: [week], label: '' }] });
+    const seqId = addSequence({ kursId: course.id, title: `Neue Sequenz ${course.cls}`, blocks: [{ weeks: [week], label: '' }] });
     setEditingSequenceId(`${seqId}-0`);
     setSidePanelTab('sequences');
     setOpen(false);

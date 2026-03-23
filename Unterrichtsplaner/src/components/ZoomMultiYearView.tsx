@@ -3,7 +3,7 @@ import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { type CurriculumGoal } from '../data/curriculumGoals';
 import { WR_CATEGORIES, WR_BLOCK_COLORS, DEFAULT_BLOCK_COLOR, type CategoryDefinition } from '../data/categories';
-import type { SubjectArea, ManagedSequence } from '../types';
+import type { Fachbereich, ManagedSequence } from '../types';
 import type { StoffverteilungEntry } from '../store/settingsStore';
 import { STOFFVERTEILUNG_PRESETS } from '../data/stoffverteilungPresets';
 
@@ -53,7 +53,7 @@ const FALLBACK_SC: { bg: string; text: string; border: string; light: string } =
 function sc(area: string): { bg: string; text: string; border: string; light: string } { return SUBJECT_COLORS[area] || FALLBACK_SC; }
 
 /** All subject areas from categories (dynamic, no hardcoded filter) */
-const ALL_AREAS = WR_CATEGORIES.map(c => c.key) as SubjectArea[];
+const ALL_AREAS = WR_CATEGORIES.map(c => c.key) as Fachbereich[];
 
 /** Row type for dynamic stoffverteilung data */
 type StoffRow = { semester: string; gym: string; weights: Record<string, number> };
@@ -82,7 +82,7 @@ function stufeToSemesters(stufe: string): string[] {
   return [`S${(num - 1) * 2 + 1}`, `S${num * 2}`];
 }
 
-function SubjectBar({ area, weight, total }: { area: SubjectArea; weight: number; total: number }) {
+function FachbereichBar({ area, weight, total }: { area: Fachbereich; weight: number; total: number }) {
   if (weight === 0) return null;
   const pct = (weight / total) * 100;
   const c = sc(area);
@@ -123,7 +123,7 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
   
   // Group goals by area
   const goalsByArea = useMemo(() => {
-    const grouped = emptyGoalRecord(WR_CATEGORIES) as Record<SubjectArea, CurriculumGoal[]>;
+    const grouped = emptyGoalRecord(WR_CATEGORIES) as Record<Fachbereich, CurriculumGoal[]>;
     for (const g of goals) grouped[g.area].push(g);
     return grouped;
   }, [goals]);
@@ -137,7 +137,7 @@ function SemesterCard({ sv, expanded, onToggle, allGoals }: {
         {/* Subject distribution bar */}
         <div className="flex-1 flex gap-px">
           {ALL_AREAS.map(area => (
-            <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(total, 1)} />
+            <FachbereichBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(total, 1)} />
           ))}
         </div>
         <span className="text-[9px] w-12 text-right" style={{ color: 'var(--text-dim)' }}>{goals.length} Ziele</span>
@@ -184,37 +184,37 @@ function ActualDataCard({ semester, gymYear, sfGroups }: { semester: string; gym
 
   // Find courses for this GYM year (SF courses matching the class)
   const sfGroup = sfGroups.find(g => g.semesters.includes(semester));
-  const courseIds = useMemo(() => {
+  const kursIds = useMemo(() => {
     if (!sfGroup) return new Set<string>();
     return new Set(plannerCourses.filter(c => c.cls === sfGroup.cls && c.typ === 'SF').map(c => c.id));
   }, [sfGroup, plannerCourses]);
 
   // Count actual planned lessons by subject area from sequences (filtered by semester weeks + courses)
   const stats = useMemo(() => {
-    const counts = emptyCountRecord(WR_CATEGORIES) as Record<SubjectArea, number>;
-    const topics = emptyArrayRecord(WR_CATEGORIES) as Record<SubjectArea, string[]>;
+    const counts = emptyCountRecord(WR_CATEGORIES) as Record<Fachbereich, number>;
+    const topics = emptyArrayRecord(WR_CATEGORIES) as Record<Fachbereich, string[]>;
     
     for (const seq of sequences) {
       // Check if sequence belongs to this class group
-      const seqCourseIds = seq.courseIds || [seq.courseId];
-      if (!seqCourseIds.some(cid => courseIds.has(cid))) continue;
+      const seqKursIds = seq.kursIds || [seq.kursId];
+      if (!seqKursIds.some(cid => kursIds.has(cid))) continue;
       
-      const area = seq.subjectArea;
+      const area = seq.fachbereich;
       if (!area) continue;
       for (const block of seq.blocks) {
         // Count only weeks that fall in the relevant semester
         const semesterWeekCount = block.weeks.filter(w => relevantWeeks.has(w)).length;
         if (semesterWeekCount === 0) continue;
-        const effectiveArea = block.subjectArea || area;
+        const effectiveArea = block.fachbereich || area;
         counts[effectiveArea] += semesterWeekCount;
-        if (block.topicMain && !topics[effectiveArea].includes(block.topicMain)) {
-          topics[effectiveArea].push(block.topicMain);
+        if (block.thema && !topics[effectiveArea].includes(block.thema)) {
+          topics[effectiveArea].push(block.thema);
         }
       }
     }
     
     return { counts, topics };
-  }, [sequences, courseIds, relevantWeeks]);
+  }, [sequences, kursIds, relevantWeeks]);
 
   const total = Object.values(stats.counts).reduce((a, b) => a + b, 0);
 
@@ -269,22 +269,22 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
   const { courses: plannerCourses } = usePlannerData();
   // Find sequences for this class group
   const classSequences = useMemo(() => {
-    const courseIds = plannerCourses.filter(c => c.cls === group.cls && c.typ === 'SF').map(c => c.id);
+    const kursIds = plannerCourses.filter(c => c.cls === group.cls && c.typ === 'SF').map(c => c.id);
     return sequences.filter(s =>
-      courseIds.includes(s.courseId) || (s.courseIds && s.courseIds.some(cid => courseIds.includes(cid)))
+      kursIds.includes(s.kursId) || (s.kursIds && s.kursIds.some(cid => kursIds.includes(cid)))
     );
   }, [group.cls, sequences, plannerCourses]);
 
   // Count weeks by subject area
   const stats = useMemo(() => {
-    const counts = emptyCountRecord(WR_CATEGORIES) as Record<SubjectArea, number>;
-    const blocks: { area: SubjectArea; label: string; weeks: number; topicMain?: string }[] = [];
+    const counts = emptyCountRecord(WR_CATEGORIES) as Record<Fachbereich, number>;
+    const blocks: { area: Fachbereich; label: string; weeks: number; thema?: string }[] = [];
     for (const seq of classSequences) {
       for (const block of seq.blocks) {
-        const area = block.subjectArea || seq.subjectArea;
+        const area = block.fachbereich || seq.fachbereich;
         if (!area) continue;
         counts[area] += block.weeks.length;
-        blocks.push({ area, label: block.label, weeks: block.weeks.length, topicMain: block.topicMain });
+        blocks.push({ area, label: block.label, weeks: block.weeks.length, thema: block.thema });
       }
     }
     return { counts, blocks };
@@ -333,7 +333,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
                 <span className="text-[8px] w-8 shrink-0" style={{ color: 'var(--text-dim)' }}>Soll</span>
                 <div className="flex-1 flex gap-px">
                   {ALL_AREAS.map(area => (
-                    <SubjectBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(svTotal, 1)} />
+                    <FachbereichBar key={area} area={area} weight={sv.weights[area] || 0} total={Math.max(svTotal, 1)} />
                   ))}
                 </div>
               </div>
@@ -380,7 +380,7 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
                       style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}>
                       {b.area}
                     </span>
-                    <span className="text-[9px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>{b.topicMain || b.label}</span>
+                    <span className="text-[9px] truncate flex-1" style={{ color: 'var(--text-secondary)' }}>{b.thema || b.label}</span>
                     <span className="text-[8px] shrink-0" style={{ color: 'var(--text-dim)' }}>{b.weeks}W</span>
                   </div>
                 );
@@ -393,13 +393,17 @@ function ClassViewCard({ group, sequences, stoffverteilung, allGoals }: { group:
   );
 }
 
+/** Legacy key migration map: old uppercase keys → new mixed-case Fachbereich keys. */
+const LEGACY_KEY_MAP: Record<string, string> = { RECHT: 'Recht', IN: 'Informatik', INTERDISZ: 'Interdisziplinaer' };
+
 /** Convert StoffverteilungEntry[] to StoffRow format for rendering.
- *  Normalizes weight keys to uppercase to match WR_CATEGORIES keys (z.B. 'Recht' → 'RECHT'). */
+ *  Normalizes weight keys to match WR_CATEGORIES keys (legacy uppercase → new mixed-case). */
 function entriesToRows(entries: StoffverteilungEntry[]): StoffRow[] {
   return entries.map(e => {
     const normalized: Record<string, number> = {};
     for (const [key, val] of Object.entries(e.weights)) {
-      normalized[key.toUpperCase()] = (normalized[key.toUpperCase()] || 0) + val;
+      const normKey = LEGACY_KEY_MAP[key] || key;
+      normalized[normKey] = (normalized[normKey] || 0) + val;
     }
     return { semester: e.semester, gym: e.gym, weights: normalized };
   });

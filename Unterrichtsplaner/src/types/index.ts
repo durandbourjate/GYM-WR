@@ -36,9 +36,9 @@ export interface SequenceBlock {
   weeks: string[];
   label: string;
   // Block-level details (inherited as defaults by contained tiles)
-  topicMain?: string;
-  topicSub?: string;
-  subjectArea?: SubjectArea;
+  thema?: string;
+  unterthema?: string;
+  fachbereich?: Fachbereich;
   curriculumGoal?: string;
   description?: string;
   materialLinks?: string[];
@@ -53,11 +53,11 @@ export interface Sequence {
 /** Managed sequence with CRUD capabilities */
 export interface ManagedSequence {
   id: string;
-  courseId: string;         // Primary course (backward compat)
-  courseIds?: string[];      // All linked courses (multi-day: e.g. ["c11","c31"] for 29c SF Di+Do)
+  kursId: string;         // Primary course (backward compat)
+  kursIds?: string[];      // All linked courses (multi-day: e.g. ["c11","c31"] for 29c SF Di+Do)
   multiDayMode?: 'alternating' | 'separate'; // alternating=Di-Do-Di-Do, separate=Di-Di-Di/Do-Do-Do
   title: string;
-  subjectArea?: SubjectArea;
+  fachbereich?: Fachbereich;
   blocks: SequenceBlock[];
   color?: string;
   links?: { label: string; url: string }[];
@@ -80,7 +80,7 @@ export interface SequenceInfo {
 export type FilterType = 'ALL' | CourseType;
 
 // Extended lesson detail fields (Phase 1)
-export type SubjectArea = 'VWL' | 'BWL' | 'RECHT' | 'IN' | 'INTERDISZ';
+export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik' | 'Interdisziplinaer';
 
 // === Block-Typ / Untertyp (zweistufig) ===
 export type BlockCategory = 'LESSON' | 'ASSESSMENT' | 'EVENT' | 'HOLIDAY';
@@ -108,9 +108,9 @@ export interface SolDetails {
 }
 
 export interface LessonDetail {
-  subjectArea?: SubjectArea;
-  topicMain?: string;
-  topicSub?: string;
+  fachbereich?: Fachbereich;
+  thema?: string;
+  unterthema?: string;
   curriculumGoal?: string;
   /** @deprecated Use blockCategory + blockSubtype instead */
   blockType?: BlockType;
@@ -146,7 +146,7 @@ export interface CollectionItem {
   id: string;
   type: CollectionItemType;
   title: string;
-  subjectArea?: SubjectArea;
+  fachbereich?: Fachbereich;
   courseType?: CourseType;         // SF, EWR, EF...
   cls?: string;                   // Original class (e.g. "29c", "27a28f")
   schoolYear?: string;            // e.g. "24/25", "25/26"

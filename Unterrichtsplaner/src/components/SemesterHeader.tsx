@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function SemesterHeader({ courses, semester, weeks }: Props) {
-  const { classFilter, setClassFilter, courseFilter, setCourseFilter, setFilter, expandedNoteCols, toggleNoteCol, noteColWidth, setNoteColWidth, setSidePanelOpen, setSidePanelTab, setSettingsEditCourseId, columnZoom, autoFitZoom } = usePlannerStore();
+  const { classFilter, setClassFilter, courseFilter, setCourseFilter, setFilter, expandedNoteCols, toggleNoteCol, noteColWidth, setNoteColWidth, setSidePanelOpen, setSidePanelTab, setSettingsEditKursId, columnZoom, autoFitZoom } = usePlannerStore();
   const ncw = noteColWidth;
   const zoomCfg = ZOOM_LEVELS[columnZoom] || ZOOM_LEVELS[2];
   const colW = zoomCfg.colWidth;
@@ -90,7 +90,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                     style={{ fontSize: Math.max(z(8), zoomCfg.fontSize - 1) }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSettingsEditCourseId(c.id);
+                      setSettingsEditKursId(c.id);
                       setSidePanelOpen(true);
                       setSidePanelTab('settings');
                     }}

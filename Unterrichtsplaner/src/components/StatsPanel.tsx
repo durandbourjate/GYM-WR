@@ -42,14 +42,14 @@ function computeStats(weekData: Week[], courses: Course[]): CourseStats[] {
   });
 }
 
-import { WR_CATEGORIES, inferSubjectAreaFromLessonType } from '../data/categories';
+import { WR_CATEGORIES, inferFachbereichFromLessonType } from '../data/categories';
 
 /** Legacy lessonType → label/color. Subject types (1,2,3) derived dynamically from categories. */
 function getTypeLabel(lt: number): { label: string; color: string } {
   if (lt === 4) return { label: 'Prüfung', color: '#ef4444' };
   if (lt === 5) return { label: 'Event', color: '#eab308' };
   if (lt === 6) return { label: 'Ferien', color: '#d4d4d8' };
-  const sa = inferSubjectAreaFromLessonType(lt);
+  const sa = inferFachbereichFromLessonType(lt);
   const cat = sa ? WR_CATEGORIES.find(c => c.key === sa) : undefined;
   if (cat) return { label: cat.label, color: cat.color };
   return { label: 'Andere', color: '#94a3b8' };

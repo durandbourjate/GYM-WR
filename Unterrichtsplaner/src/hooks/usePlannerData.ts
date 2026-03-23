@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { COURSES, getLinkedCourseIds as staticGetLinkedCourseIds } from '../data/courses';
+import { COURSES, getLinkedKursIds as staticGetLinkedKursIds } from '../data/courses';
 import { WEEKS, S2_START_INDEX } from '../data/weeks';
 import { configToCourses, loadSettings } from '../store/settingsStore';
 import { usePlannerStore } from '../store/plannerStore';
@@ -88,9 +88,9 @@ export function usePlannerData() {
   const categories: CategoryDefinition[] = useMemo(() => {
     if (settings?.subjects && settings.subjects.length > 0) {
       const converted = subjectConfigsToCategories(settings.subjects);
-      // Always ensure INTERDISZ is available (not stored in subjects but used as cross-cutting)
-      if (!converted.find(c => c.key === 'INTERDISZ')) {
-        converted.push(WR_CATEGORIES.find(c => c.key === 'INTERDISZ')!);
+      // Always ensure Interdisziplinaer is available (not stored in subjects but used as cross-cutting)
+      if (!converted.find(c => c.key === 'Interdisziplinaer')) {
+        converted.push(WR_CATEGORIES.find(c => c.key === 'Interdisziplinaer')!);
       }
       return converted;
     }
@@ -98,11 +98,11 @@ export function usePlannerData() {
   }, [settings, isLegacyPlanner]);
 
   // === Linked course IDs ===
-  const getLinkedCourseIds = useMemo(() => {
-    if (!hasCustomCourses) return staticGetLinkedCourseIds;
-    return (courseId: string): string[] => {
-      const course = courses.find(c => c.id === courseId);
-      if (!course) return [courseId];
+  const getLinkedKursIds = useMemo(() => {
+    if (!hasCustomCourses) return staticGetLinkedKursIds;
+    return (kursId: string): string[] => {
+      const course = courses.find(c => c.id === kursId);
+      if (!course) return [kursId];
       return courses
         .filter(c => c.cls === course.cls && c.typ === course.typ)
         .map(c => c.id);
@@ -117,5 +117,5 @@ export function usePlannerData() {
     [settings]
   );
 
-  return { courses, weeks, s2StartIndex, currentWeek, getLinkedCourseIds, hasCustomCourses, isLegacy: isLegacyPlanner, categories, schoolLevel, settings, effectiveGoals };
+  return { courses, weeks, s2StartIndex, currentWeek, getLinkedKursIds, hasCustomCourses, isLegacy: isLegacyPlanner, categories, schoolLevel, settings, effectiveGoals };
 }

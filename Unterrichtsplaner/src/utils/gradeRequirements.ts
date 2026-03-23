@@ -89,12 +89,12 @@ export interface GradeWarning {
 export function countAssessments(
   weekData: Week[],
   lessonDetails: Record<string, LessonDetail>,
-  courseIds: string[],
+  kursIds: string[],
   courses: Course[],
   semesterFilter: 1 | 2 | 'year' | 'custom',
   s2StartIndex: number
 ): number {
-  const courseCols = courseIds
+  const courseCols = kursIds
     .map(id => courses.find(c => c.id === id))
     .filter(Boolean)
     .map(c => c!.col);
@@ -134,7 +134,7 @@ export interface CourseGroupInfo {
   key: string; // "29c-SF"
   cls: string;
   typ: string;
-  courseIds: string[];
+  kursIds: string[];
   weeklyLessons: number; // total lessons per week across all days
   gymStufe: GymStufe;
 }
@@ -152,14 +152,14 @@ export function getCourseGroups(courses: Course[]): CourseGroupInfo[] {
         key,
         cls: c.cls,
         typ: c.typ,
-        courseIds: [],
+        kursIds: [],
         weeklyLessons: 0,
         gymStufe: getGymStufe(c.cls),
       });
     }
     const g = groups.get(key)!;
-    if (!g.courseIds.includes(c.id)) {
-      g.courseIds.push(c.id);
+    if (!g.kursIds.includes(c.id)) {
+      g.kursIds.push(c.id);
       g.weeklyLessons += c.les;
     }
   });
@@ -209,7 +209,7 @@ export function checkGradeRequirements(
 
     requirements.forEach(req => {
       const count = countAssessments(
-        weekData, lessonDetails, group.courseIds, courses,
+        weekData, lessonDetails, group.kursIds, courses,
         req.semester, s2StartIndex
       );
 

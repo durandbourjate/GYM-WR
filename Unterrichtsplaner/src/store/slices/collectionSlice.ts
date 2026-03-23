@@ -8,13 +8,13 @@ import { COURSES } from '../../data/courses';
 export interface CollectionSlice {
   collection: CollectionItem[];
   addCollectionItem: (item: Omit<CollectionItem, 'id' | 'createdAt'>) => string;
-  updateCollectionItem: (id: string, updates: Partial<Pick<CollectionItem, 'title' | 'tags' | 'notes' | 'subjectArea'>>) => void;
+  updateCollectionItem: (id: string, updates: Partial<Pick<CollectionItem, 'title' | 'tags' | 'notes' | 'fachbereich'>>) => void;
   deleteCollectionItem: (id: string) => void;
   archiveBlock: (seqId: string, blockIndex: number, schoolYear?: string) => string;
   archiveSequence: (seqId: string, schoolYear?: string) => string;
   archiveSchoolYear: (courseType: string, cls: string, schoolYear: string) => string;
   archiveCurriculum: (courseType: string, cls: string, schoolYear: string, gymYears: string) => string;
-  importFromCollection: (itemId: string, targetCourseId: string, options: { includeNotes: boolean; includeMaterialLinks: boolean; targetWeeks?: string[] }) => string | null;
+  importFromCollection: (itemId: string, targetKursId: string, options: { includeNotes: boolean; includeMaterialLinks: boolean; targetWeeks?: string[] }) => string | null;
 }
 
 // === CollectionSlice Implementation ===
@@ -47,7 +47,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     const seq = state.sequences.find((s) => s.id === seqId);
     if (!seq || !seq.blocks[blockIndex]) return '';
     const block = seq.blocks[blockIndex];
-    const course = COURSES.find((c) => c.id === seq.courseId);
+    const course = COURSES.find((c) => c.id === seq.kursId);
 
     // Snapshot lesson details for this block's weeks
     const lessonDetails: Record<string, LessonDetail> = {};
@@ -71,7 +71,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     return get().addCollectionItem({
       type: 'unit',
       title: block.label || seq.title,
-      subjectArea: block.subjectArea || seq.subjectArea,
+      fachbereich: block.fachbereich || seq.fachbereich,
       courseType: course?.typ,
       cls: course?.cls,
       schoolYear,
@@ -86,7 +86,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     const state = get();
     const seq = state.sequences.find((s) => s.id === seqId);
     if (!seq) return '';
-    const course = COURSES.find((c) => c.id === seq.courseId);
+    const course = COURSES.find((c) => c.id === seq.kursId);
 
     const units: CollectionUnit[] = seq.blocks.map((block) => {
       const lessonDetails: Record<string, LessonDetail> = {};
@@ -106,7 +106,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     return get().addCollectionItem({
       type: 'sequence',
       title: seq.title,
-      subjectArea: seq.subjectArea,
+      fachbereich: seq.fachbereich,
       courseType: course?.typ,
       cls: course?.cls,
       schoolYear,
@@ -120,14 +120,14 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
   archiveSchoolYear: (courseType, cls, schoolYear) => {
     const state = get();
     const matchingCourses = COURSES.filter((c) => c.typ === courseType && c.cls === cls);
-    const courseIds = new Set(matchingCourses.map((c) => c.id));
-    const matchingSeqs = state.sequences.filter((s) => courseIds.has(s.courseId));
+    const kursIds = new Set(matchingCourses.map((c) => c.id));
+    const matchingSeqs = state.sequences.filter((s) => kursIds.has(s.kursId));
 
     const units: CollectionUnit[] = [];
     let sa: string | undefined;
     matchingSeqs.forEach((seq) => {
-      if (seq.subjectArea && !sa) sa = seq.subjectArea;
-      const course = COURSES.find((c) => c.id === seq.courseId);
+      if (seq.fachbereich && !sa) sa = seq.fachbereich;
+      const course = COURSES.find((c) => c.id === seq.kursId);
       seq.blocks.forEach((block) => {
         const lessonDetails: Record<string, LessonDetail> = {};
         const lessonTitles: string[] = [];
@@ -159,12 +159,12 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     const state = get();
     // Same as schoolYear but with gymYears metadata
     const matchingCourses = COURSES.filter((c) => c.typ === courseType && c.cls === cls);
-    const courseIds = new Set(matchingCourses.map((c) => c.id));
-    const matchingSeqs = state.sequences.filter((s) => courseIds.has(s.courseId));
+    const kursIds = new Set(matchingCourses.map((c) => c.id));
+    const matchingSeqs = state.sequences.filter((s) => kursIds.has(s.kursId));
 
     const units: CollectionUnit[] = [];
     matchingSeqs.forEach((seq) => {
-      const course = COURSES.find((c) => c.id === seq.courseId);
+      const course = COURSES.find((c) => c.id === seq.kursId);
       seq.blocks.forEach((block) => {
         const lessonDetails: Record<string, LessonDetail> = {};
         const lessonTitles: string[] = [];
@@ -194,11 +194,11 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
 
   // Import from collection → create new sequence
   // T10/T11: targetWeeks = auto-assign these weeks to imported blocks
-  importFromCollection: (itemId, targetCourseId, options) => {
+  importFromCollection: (itemId, targetKursId, options) => {
     const state = get();
     const item = state.collection.find((c) => c.id === itemId);
     if (!item || item.units.length === 0) return null;
-    const course = COURSES.find((c) => c.id === targetCourseId);
+    const course = COURSES.find((c) => c.id === targetKursId);
     if (!course) return null;
 
     // T11: Distribute targetWeeks across blocks proportionally
@@ -227,9 +227,9 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
 
     // Create the sequence
     const seqId = get().addSequence({
-      courseId: targetCourseId,
+      kursId: targetKursId,
       title: item.title,
-      subjectArea: item.subjectArea,
+      fachbereich: item.fachbereich,
       blocks,
       color: item.sequenceColor,
     });

@@ -2,8 +2,8 @@ import { useMemo, useCallback } from 'react';
 import { usePlannerStore, ZOOM_LEVELS, zs } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
-import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
-import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types';
+import { inferFachbereichFromLessonType, getBlockColors } from '../data/categories';
+import type { Course, ManagedSequence, LessonType, Fachbereich } from '../types';
 
 const DAY_ORDER: Record<string, number> = { Mo: 0, Di: 1, Mi: 2, Do: 3, Fr: 4 };
 
@@ -16,8 +16,8 @@ interface BlockSpan {
   seq: ManagedSequence;
   blockIdx: number;
   label: string;
-  topicMain?: string;
-  subjectArea?: string;
+  thema?: string;
+  fachbereich?: string;
   curriculumGoal?: string;
   /** The consecutive semWeeks indices this block covers */
   startIdx: number;
@@ -26,7 +26,7 @@ interface BlockSpan {
   weeks: string[];
 }
 
-// inferSubjectArea + getBlockColors now imported from data/categories.ts
+// inferFachbereich + getBlockColors now imported from data/categories.ts
 
 /** Detect holiday/event from weekData for a specific course column */
 function getWeekType(weekW: string, weekData: any[], col: number): 'holiday' | 'event' | 'normal' {
@@ -82,12 +82,12 @@ export function ZoomBlockView({ semester }: Props) {
   // Build BlockSpans per course — contiguous runs of a block within the semester
   // Also build a skip set: cells covered by a rowSpan that shouldn't render a <td>
   const { spanMap, skipSet } = useMemo(() => {
-    const spanMap = new Map<string, BlockSpan>(); // key: "startIdx:courseId"
-    const skipSet = new Set<string>(); // keys: "weekIdx:courseId" for rows 2..n of a span
+    const spanMap = new Map<string, BlockSpan>(); // key: "startIdx:kursId"
+    const skipSet = new Set<string>(); // keys: "weekIdx:kursId" for rows 2..n of a span
 
     for (const course of courses) {
       const courseSeqs = sequences.filter(s =>
-        s.courseId === course.id || (s.courseIds?.includes(course.id))
+        s.kursId === course.id || (s.kursIds?.includes(course.id))
       );
       for (const seq of courseSeqs) {
         for (let bi = 0; bi < seq.blocks.length; bi++) {
@@ -116,13 +116,13 @@ export function ZoomBlockView({ semester }: Props) {
           }
           runs.push({ start: runStart, end: prev });
 
-          // Determine subjectArea: block → seq → infer from weekData
-          let area = block.subjectArea || seq.subjectArea;
+          // Determine fachbereich: block → seq → infer from weekData
+          let area = block.fachbereich || seq.fachbereich;
           if (!area) {
             const firstWeek = semWeeks[weekIndices[0]];
             const wd = effectiveWeeks.find(w => w.w === firstWeek);
             const entry = wd?.lessons[course.col];
-            if (entry) area = inferSubjectAreaFromLessonType(entry.type as LessonType) as SubjectArea | undefined;
+            if (entry) area = inferFachbereichFromLessonType(entry.type as LessonType) as Fachbereich | undefined;
           }
 
           for (const run of runs) {
@@ -132,8 +132,8 @@ export function ZoomBlockView({ semester }: Props) {
             spanMap.set(spanKey, {
               seq, blockIdx: bi,
               label: block.label,
-              topicMain: block.topicMain,
-              subjectArea: area,
+              thema: block.thema,
+              fachbereich: area,
               curriculumGoal: block.curriculumGoal,
               startIdx: run.start,
               spanLen,
@@ -161,7 +161,7 @@ export function ZoomBlockView({ semester }: Props) {
 
   const handleBlockDblClick = useCallback((weekW: string, course: Course, span: BlockSpan) => {
     setZoomLevel(3);
-    setSelection({ week: weekW, courseId: course.id, title: span.label, course });
+    setSelection({ week: weekW, kursId: course.id, title: span.label, course });
     setTimeout(() => {
       document.querySelector(`tr[data-week="${weekW}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
@@ -169,7 +169,7 @@ export function ZoomBlockView({ semester }: Props) {
 
   const handleEmptyClick = useCallback((weekW: string, course: Course) => {
     setZoomLevel(3);
-    setSelection({ week: weekW, courseId: course.id, title: '', course });
+    setSelection({ week: weekW, kursId: course.id, title: '', course });
     setTimeout(() => {
       document.querySelector(`tr[data-week="${weekW}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
@@ -309,19 +309,19 @@ export function ZoomBlockView({ semester }: Props) {
                     }
 
                     // Merged block span — rowSpan cell
-                    const colors = getBlockColors(span.subjectArea);
+                    const colors = getBlockColors(span.fachbereich);
                     const spanHeight = span.spanLen * ROW_H;
 
                     // Search
                     const blockSearchMatch = searchLower.length >= 2 && (
                       span.label.toLowerCase().includes(searchLower) ||
-                      (span.topicMain || '').toLowerCase().includes(searchLower) ||
+                      (span.thema || '').toLowerCase().includes(searchLower) ||
                       (span.curriculumGoal || '').toLowerCase().includes(searchLower) ||
                       span.seq.title.toLowerCase().includes(searchLower)
                     );
                     const blockSearchDimmed = searchLower.length >= 2 && !blockSearchMatch;
 
-                    const displayLabel = span.topicMain || span.label;
+                    const displayLabel = span.thema || span.label;
                     const kwRange = `KW ${span.weeks[0]}–${span.weeks[span.weeks.length - 1]}`;
 
                     return (
@@ -341,7 +341,7 @@ export function ZoomBlockView({ semester }: Props) {
                             borderLeft: `4px solid ${colors.border || colors.bg}`,
                             minHeight: spanHeight - 2,
                           }}
-                          title={`${span.seq.title} → ${span.label}${span.topicMain ? ' (' + span.topicMain + ')' : ''}\n${kwRange} (${span.spanLen}W)\nKlick: Sequenz öffnen · Doppelklick: Zur Wochenansicht`}
+                          title={`${span.seq.title} → ${span.label}${span.thema ? ' (' + span.thema + ')' : ''}\n${kwRange} (${span.spanLen}W)\nKlick: Sequenz öffnen · Doppelklick: Zur Wochenansicht`}
                           onClick={() => handleBlockClick(span)}
                           onDoubleClick={() => handleBlockDblClick(span.weeks[0], c, span)}
                         >

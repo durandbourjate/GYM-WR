@@ -63,7 +63,7 @@ export interface PlannerSettings {
 export interface StoffverteilungEntry {
   semester: string; // e.g. 'S1'
   gym: string;      // e.g. 'GYM1'
-  weights: Record<string, number>; // subjectKey -> weight, e.g. { BWL: 3, VWL: 0, RECHT: 1 }
+  weights: Record<string, number>; // subjectKey -> weight, e.g. { BWL: 3, VWL: 0, Recht: 1 }
 }
 
 export interface SubjectConfig {
@@ -104,7 +104,7 @@ export interface SpecialWeekConfig {
   week: string; // KW
   type: 'event' | 'holiday';
   gymLevel?: string | string[]; // 'GYM1'|'GYM2'|... | string[] — undefined = alle (J5: Mehrfachauswahl)
-  excludedCourseIds?: string[]; // courses NOT affected (default: all affected)
+  excludedKursIds?: string[]; // courses NOT affected (default: all affected)
   days?: number[]; // 1=Mo..5=Fr, undefined = all days
   courseFilter?: string[]; // v3.82 E7: Array von Kurs-IDs; undefined/leer = alle Kurse sichtbar
 }
@@ -356,11 +356,11 @@ export function applySettingsToWeekData(
     }
   }
 
-  // Build col → courseId mapping for exclusion checks (v3.86 I1-P1: use c.col)
-  const colToCourseId = new Map<number, string>();
+  // Build col → kursId mapping for exclusion checks (v3.86 I1-P1: use c.col)
+  const colToKursId = new Map<number, string>();
   for (let i = 0; i < settings.courses.length; i++) {
     const c = settings.courses[i];
-    colToCourseId.set(c.col ?? (100 + i), c.id);
+    colToKursId.set(c.col ?? (100 + i), c.id);
   }
 
   // Build col → CourseConfig lookup for gymLevel filtering (v3.86 I1-P1: use c.col)
@@ -374,7 +374,7 @@ export function applySettingsToWeekData(
   for (const special of settings.specialWeeks) {
     const weekEntry = result.find(w => w.w === special.week);
     if (!weekEntry) continue;
-    const excluded = new Set(special.excludedCourseIds || []);
+    const excluded = new Set(special.excludedKursIds || []);
     // v3.82 E7: courseFilter — nur für bestimmte Kurse sichtbar
     const courseFilterSet = special.courseFilter && special.courseFilter.length > 0
       ? new Set(special.courseFilter)
@@ -385,7 +385,7 @@ export function applySettingsToWeekData(
     const hasGymFilter = levels.length > 0 && !(levels.length === 1 && levels[0] === 'alle');
 
     for (const col of allCols) {
-      const courseId = colToCourseId.get(col);
+      const kursId = colToKursId.get(col);
       const course = colToCourse.get(col);
 
       // Filter 1: gymLevel — Stufe/TaF (v3.102: derive from cls, pure TaF only matches 'TaF')
@@ -404,10 +404,10 @@ export function applySettingsToWeekData(
       }
 
       // Filter 2: courseFilter — explizite Kursliste (v3.82 E7)
-      if (courseFilterSet && courseId && !courseFilterSet.has(courseId)) continue;
+      if (courseFilterSet && kursId && !courseFilterSet.has(kursId)) continue;
 
-      // Legacy: excludedCourseIds
-      if (courseId && excluded.has(courseId)) continue;
+      // Legacy: excludedKursIds
+      if (kursId && excluded.has(kursId)) continue;
 
       weekEntry.lessons[col] = {
         title: special.label,

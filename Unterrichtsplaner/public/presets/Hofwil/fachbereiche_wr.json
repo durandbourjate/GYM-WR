@@ -1,5 +1,5 @@
 [
   { "id": "VWL", "label": "Volkswirtschaftslehre", "shortLabel": "VWL", "color": "#f97316", "courseType": "SF" },
   { "id": "BWL", "label": "Betriebswirtschaftslehre", "shortLabel": "BWL", "color": "#3b82f6", "courseType": "SF" },
-  { "id": "RECHT", "label": "Recht", "shortLabel": "Recht", "color": "#22c55e", "courseType": "SF" }
+  { "id": "Recht", "label": "Recht", "shortLabel": "Recht", "color": "#22c55e", "courseType": "SF" }
 ]

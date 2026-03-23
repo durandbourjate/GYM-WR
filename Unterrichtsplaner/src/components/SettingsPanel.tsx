@@ -22,7 +22,7 @@ import { GCalSection } from './settings/GCalSection';
 export function SettingsPanel() {
   const storeSettings = usePlannerStore(s => s.plannerSettings);
   const setPlannerSettings = usePlannerStore(s => s.setPlannerSettings);
-  const settingsEditCourseId = usePlannerStore(s => s.settingsEditCourseId);
+  const settingsEditKursId = usePlannerStore(s => s.settingsEditKursId);
 
   const [settings, setSettings] = useState<PlannerSettings>(() => {
     if (storeSettings) return storeSettings;
@@ -272,7 +272,7 @@ export function SettingsPanel() {
           itemCount={settings.courses.length}
           onClearAll={() => { if (confirm(`Alle ${settings.courses.length} Kurse entfernen?`)) updateSettings({ courses: [] }); }} />
       }>
-        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} baseDuration={settings.school?.lessonDurationMin || 45} focusCourseId={settingsEditCourseId} subjects={settings.subjects || []} />
+        <CourseEditor courses={settings.courses} onChange={(c) => updateSettings({ courses: c })} schoolLevel={settings.schoolLevel} baseDuration={settings.school?.lessonDurationMin || 45} focusKursId={settingsEditKursId} subjects={settings.subjects || []} />
       </Section>
 
       {/* Special Weeks */}

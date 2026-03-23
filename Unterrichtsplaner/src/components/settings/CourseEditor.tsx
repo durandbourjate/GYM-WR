@@ -44,10 +44,10 @@ const WR_COURSE_TYPES: { key: CourseType; label: string }[] = [
 const GENERAL_COURSE_TYPES: { key: CourseType; label: string }[] = [
   { key: 'KS', label: 'KS' }, { key: 'IN', label: 'IN' },
 ];
-const WR_KEYS = new Set(['BWL', 'VWL', 'RECHT']);
+const WR_KEYS_UPPER = new Set(['BWL', 'VWL', 'RECHT']);
 
 function getCourseTypes(subjects: SubjectConfig[]): { key: CourseType; label: string }[] {
-  const hasWR = subjects.some(s => WR_KEYS.has(s.id?.toUpperCase() || '') || WR_KEYS.has(s.label?.toUpperCase() || ''));
+  const hasWR = subjects.some(s => WR_KEYS_UPPER.has(s.id?.toUpperCase() || '') || WR_KEYS_UPPER.has(s.label?.toUpperCase() || ''));
   return hasWR ? [...WR_COURSE_TYPES, ...GENERAL_COURSE_TYPES] : GENERAL_COURSE_TYPES;
 }
 
@@ -91,22 +91,22 @@ function CourseDurationPicker({ value, onChange, baseDuration = 45 }: { value: n
 }
 
 // === Course Editor ===
-export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focusCourseId, subjects = [] }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void; schoolLevel?: SchoolLevel; baseDuration?: number; focusCourseId?: string | null; subjects?: SubjectConfig[] }) {
+export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45, focusKursId, subjects = [] }: { courses: CourseConfig[]; onChange: (c: CourseConfig[]) => void; schoolLevel?: SchoolLevel; baseDuration?: number; focusKursId?: string | null; subjects?: SubjectConfig[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const focusRef = useRef<HTMLDivElement>(null);
 
   // Auto-expand and scroll to focused course
   useEffect(() => {
-    if (focusCourseId) {
-      const course = courses.find(c => c.id === focusCourseId);
+    if (focusKursId) {
+      const course = courses.find(c => c.id === focusKursId);
       if (course) {
         setEditingId(course.id);
         // Clear the focus request after handling
-        usePlannerStore.getState().setSettingsEditCourseId(null);
+        usePlannerStore.getState().setSettingsEditKursId(null);
         setTimeout(() => focusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
       }
     }
-  }, [focusCourseId]);
+  }, [focusKursId]);
 
   const addCourse = () => {
     const newCourse: CourseConfig = {

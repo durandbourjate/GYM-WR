@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { CURRICULUM_GOALS, searchGoals } from '../data/curriculumGoals';
 import type { CurriculumGoal } from '../data/curriculumGoals';
-import type { SubjectArea } from '../types';
+import type { Fachbereich } from '../types';
 import { WR_CATEGORIES } from '../data/categories';
 
 /** Dynamic color lookup — reads from WR_CATEGORIES instead of hardcoded map */
@@ -10,11 +10,11 @@ const AREA_COLORS: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map
 interface CurriculumGoalPickerProps {
   value: string | undefined;
   onChange: (value: string) => void;
-  subjectArea?: SubjectArea;
+  fachbereich?: Fachbereich;
   goals?: CurriculumGoal[];
 }
 
-export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: CurriculumGoalPickerProps) {
+export function CurriculumGoalPicker({ value, onChange, fachbereich, goals }: CurriculumGoalPickerProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [cycleFilter, setCycleFilter] = useState<1 | 2 | null>(null);
@@ -56,9 +56,9 @@ export function CurriculumGoalPicker({ value, onChange, subjectArea, goals }: Cu
   const filtered = (() => {
     let result: CurriculumGoal[];
     if (search.trim()) {
-      result = searchGoals(search, subjectArea, source);
-    } else if (subjectArea) {
-      result = source.filter((g) => g.area === subjectArea);
+      result = searchGoals(search, fachbereich, source);
+    } else if (fachbereich) {
+      result = source.filter((g) => g.area === fachbereich);
     } else {
       result = [...source];
     }

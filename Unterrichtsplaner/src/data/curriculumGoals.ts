@@ -1,8 +1,8 @@
-import type { SubjectArea } from '../types';
+import type { Fachbereich } from '../types';
 
 export interface CurriculumGoal {
   id: string;
-  area: SubjectArea;
+  area: Fachbereich;
   cycle: 1 | 2;          // Zyklus 1 (GYM1/2) or 2 (GYM3/4)
   topic: string;          // e.g. "Preistheorie", "OR – AT"
   goal: string;           // The Grobziel text
@@ -12,11 +12,11 @@ export interface CurriculumGoal {
 
 export const CURRICULUM_GOALS: CurriculumGoal[] = [
   // ============================================================
-  // RECHT – Zyklus 1 (GYM1/GYM2, S2–S4)
+  // Recht – Zyklus 1 (GYM1/GYM2, S2–S4)
   // ============================================================
   {
     id: 'R-Z1-01',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'Einführung Recht',
     goal: 'Recht als ordnendes Gebilde für gesellschaftliches Zusammenleben erfassen',
@@ -25,7 +25,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-02',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'ZGB – Personenrecht',
     goal: 'Juristische und natürliche Personen unterscheiden; Grundzüge des Personenrechts anwenden',
@@ -34,7 +34,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-03',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'ZGB – Einleitungsartikel',
     goal: 'Bedeutung der Einleitungsartikel des ZGB für Sachverhaltsfeststellung und Rechtsfindung erfassen',
@@ -43,7 +43,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-04',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'ZGB – Personenrecht (vertieft)',
     goal: 'Verein als Beispiel für Privatautonomie verstehen; Persönlichkeitsschutz abschätzen',
@@ -52,7 +52,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-05',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'OR – Gesellschaftsrecht',
     goal: 'Verschiedene Unternehmensformen anhand einschlägiger Kriterien unterscheiden',
@@ -61,7 +61,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-06',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'ZGB – Sachenrecht',
     goal: 'Stellenwert des Eigentums erkennen und Beziehungen zu anderen Rechtsgebieten knüpfen',
@@ -70,7 +70,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z1-07',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 1,
     topic: 'OR – Mietrecht',
     goal: 'Bestimmungen des Mietrechts auf Alltagssituationen anwenden',
@@ -79,11 +79,11 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
 
   // ============================================================
-  // RECHT – Zyklus 2 (GYM3/GYM4, S5–S8)
+  // Recht – Zyklus 2 (GYM3/GYM4, S5–S8)
   // ============================================================
   {
     id: 'R-Z2-01',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'OR – AT: Zustandekommen',
     goal: 'Zustandekommen von Obligationen beurteilen',
@@ -92,7 +92,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-02',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'OR – AT: Erfüllung',
     goal: 'Erfüllung von Obligationen überprüfen',
@@ -101,7 +101,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-03',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'OR – BT: Vertragsverhältnisse',
     goal: 'Bestimmungen der einzelnen Vertragsverhältnisse auf Alltagssituationen anwenden',
@@ -110,7 +110,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-04',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'Haftpflichtrecht',
     goal: 'Grundlagen des Haftpflichtrechts verstehen und anwenden',
@@ -119,7 +119,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-05',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'ZGB – Erbrecht',
     goal: 'Grundzüge des Erbrechts anwenden',
@@ -128,7 +128,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-06',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'ZGB – Eherecht',
     goal: 'Grundzüge des Eherechts kennen',
@@ -137,7 +137,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-07',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'OR – Arbeitsrecht',
     goal: 'Bestimmungen des Arbeitsrechts auf Sachverhalte anwenden',
@@ -146,7 +146,7 @@ export const CURRICULUM_GOALS: CurriculumGoal[] = [
   },
   {
     id: 'R-Z2-08',
-    area: 'RECHT',
+    area: 'Recht',
     cycle: 2,
     topic: 'Öffentliches Recht / Strafrecht',
     goal: 'Mindestens einen Bereich des öffentlichen Rechts exemplarisch behandeln',
@@ -405,7 +405,7 @@ export function getEffectiveGoals(settings?: { schoolLevel?: string; curriculumG
 }
 
 // Helper: get goals filtered by area and/or cycle
-export function getGoalsByArea(area: SubjectArea, cycle?: 1 | 2, goals?: CurriculumGoal[]): CurriculumGoal[] {
+export function getGoalsByArea(area: Fachbereich, cycle?: 1 | 2, goals?: CurriculumGoal[]): CurriculumGoal[] {
   const source = goals ?? CURRICULUM_GOALS;
   return source.filter(
     (g) => g.area === area && (cycle === undefined || g.cycle === cycle)
@@ -413,7 +413,7 @@ export function getGoalsByArea(area: SubjectArea, cycle?: 1 | 2, goals?: Curricu
 }
 
 // Helper: search goals by text
-export function searchGoals(query: string, area?: SubjectArea, goals?: CurriculumGoal[]): CurriculumGoal[] {
+export function searchGoals(query: string, area?: Fachbereich, goals?: CurriculumGoal[]): CurriculumGoal[] {
   const source = goals ?? CURRICULUM_GOALS;
   const q = query.toLowerCase();
   return source.filter((g) => {

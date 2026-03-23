@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Course, Week } from '../types';
 import { getSequenceInfoFromStore } from '../utils/colors';
 import { usePlannerStore } from '../store/plannerStore';
-import { getLinkedCourseIds } from '../data/courses';
+import { getLinkedKursIds } from '../data/courses';
 
 interface DragState {
   // Drag-selection for cells (empty and filled)
@@ -19,7 +19,7 @@ interface DragState {
   rhythmWarning: string | null;
 
   // Multi-day shift-click popup
-  multiDayPrompt: { weekW: string; courseId: string; position: { x: number; y: number } } | null;
+  multiDayPrompt: { weekW: string; kursId: string; position: { x: number; y: number } } | null;
 }
 
 interface DragHandlers {
@@ -61,7 +61,7 @@ export function useDragHandlers(
   const [rhythmWarning, setRhythmWarning] = useState<string | null>(null);
 
   const checkRhythmAfterPush = useCallback((course: Course) => {
-    const linked = getLinkedCourseIds(course.id);
+    const linked = getLinkedKursIds(course.id);
     if (linked.length <= 1) return;
     const linkedCourses = courses.filter(c => linked.includes(c.id));
     const hasDifferentDurations = new Set(linkedCourses.map(c => c.les)).size > 1;

@@ -471,39 +471,39 @@ export function MultiSelectToolbar() {
 
   if (multiSelection.length === 0) return null;
 
-  // Group selection by courseId and create sequence
+  // Group selection by kursId and create sequence
   const handleCreateSequence = () => {
     const parsed = multiSelection.map(key => {
       const parts = key.split('-');
-      const courseId = parts[parts.length - 1];
+      const kursId = parts[parts.length - 1];
       const week = parts.slice(0, parts.length - 1).join('-');
-      return { week, courseId };
+      return { week, kursId };
     });
 
     const byCourse = new Map<string, string[]>();
-    for (const { week, courseId } of parsed) {
-      if (!byCourse.has(courseId)) byCourse.set(courseId, []);
-      byCourse.get(courseId)!.push(week);
+    for (const { week, kursId } of parsed) {
+      if (!byCourse.has(kursId)) byCourse.set(kursId, []);
+      byCourse.get(kursId)!.push(week);
     }
 
-    const [courseId, weeks] = [...byCourse.entries()][0];
-    const course = plannerCoursesInner.find(c => c.id === courseId);
+    const [kursId, weeks] = [...byCourse.entries()][0];
+    const course = plannerCoursesInner.find(c => c.id === kursId);
     if (!course) return;
 
     const sortedWeeks = [...weeks].sort();
 
     const areas = new Set<string>();
-    for (const { week, courseId: cid } of parsed) {
+    for (const { week, kursId: cid } of parsed) {
       const d = lessonDetails[`${week}-${cid}`];
-      if (d?.subjectArea) areas.add(d.subjectArea);
+      if (d?.fachbereich) areas.add(d.fachbereich);
     }
-    const sharedArea = areas.size === 1 ? [...areas][0] as import('../types').SubjectArea : undefined;
+    const sharedArea = areas.size === 1 ? [...areas][0] as import('../types').Fachbereich : undefined;
 
     const seqId = addSequence({
-      courseId,
+      kursId,
       title: `Neue Sequenz ${course.cls}`,
-      blocks: [{ weeks: sortedWeeks, label: '', ...(sharedArea ? { subjectArea: sharedArea } : {}) }],
-      ...(sharedArea ? { subjectArea: sharedArea } : {}),
+      blocks: [{ weeks: sortedWeeks, label: '', ...(sharedArea ? { fachbereich: sharedArea } : {}) }],
+      ...(sharedArea ? { fachbereich: sharedArea } : {}),
     });
 
     setEditingSequenceId(`${seqId}-0`);
@@ -516,14 +516,14 @@ export function MultiSelectToolbar() {
   const handleImportFromCollection = (item: CollectionItem) => {
     const parsed = multiSelection.map(key => {
       const parts = key.split('-');
-      const courseId = parts[parts.length - 1];
+      const kursId = parts[parts.length - 1];
       const week = parts.slice(0, parts.length - 1).join('-');
-      return { week, courseId };
+      return { week, kursId };
     });
-    const [courseId] = [...new Set(parsed.map(p => p.courseId))];
+    const [kursId] = [...new Set(parsed.map(p => p.kursId))];
     const sortedWeeks = [...new Set(parsed.map(p => p.week))].sort();
     pushUndo();
-    const seqId = usePlannerStore.getState().importFromCollection(item.id, courseId, {
+    const seqId = usePlannerStore.getState().importFromCollection(item.id, kursId, {
       includeNotes: true, includeMaterialLinks: true, targetWeeks: sortedWeeks,
     });
     if (seqId) {
@@ -535,13 +535,13 @@ export function MultiSelectToolbar() {
     setShowCollection(false);
   };
 
-  const courseIds = new Set(multiSelection.map(key => {
+  const kursIds = new Set(multiSelection.map(key => {
     const parts = key.split('-');
     return parts[parts.length - 1];
   }));
-  const singleCourse = courseIds.size === 1;
-  const firstCourseId = singleCourse ? [...courseIds][0] : undefined;
-  const firstCourse = firstCourseId ? plannerCoursesInner.find(c => c.id === firstCourseId) : undefined;
+  const singleCourse = kursIds.size === 1;
+  const firstKursId = singleCourse ? [...kursIds][0] : undefined;
+  const firstCourse = firstKursId ? plannerCoursesInner.find(c => c.id === firstKursId) : undefined;
 
   // Mobile fallback: fixed bottom bar
   if (isMobile || !pos) {

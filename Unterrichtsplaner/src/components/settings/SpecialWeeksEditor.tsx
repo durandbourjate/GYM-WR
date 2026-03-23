@@ -32,7 +32,7 @@ function getCourseGymLevel(cls: string): string {
 }
 
 /**
- * J5: Compute excludedCourseIds based on gymLevel (string | string[]).
+ * J5: Compute excludedKursIds based on gymLevel (string | string[]).
  * All courses whose class does NOT match ANY gymLevel are excluded.
  */
 function computeExcludedCourses(gymLevel: string | string[] | undefined, courses: CourseConfig[]): string[] {
@@ -122,7 +122,7 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
     }
     const gymLevel = next.length === 0 ? undefined : next.length === 1 ? next[0] : next;
     const excluded = computeExcludedCourses(gymLevel, courses);
-    onChange(weeks.map(w => w.id === id ? { ...w, gymLevel, excludedCourseIds: excluded.length > 0 ? excluded : undefined } : w));
+    onChange(weeks.map(w => w.id === id ? { ...w, gymLevel, excludedKursIds: excluded.length > 0 ? excluded : undefined } : w));
   };
 
   const remove = (id: string) => {
@@ -211,12 +211,12 @@ export function SpecialWeeksEditor({ weeks, courses, onChange }: {
                       <div className="flex flex-wrap gap-1 items-center">
                         <span className="text-[8px]" style={{ color: 'var(--text-muted)' }} title="Kurse, die von dieser Sonderwoche NICHT betroffen sind (= normaler Unterricht)">Nicht betroffen:</span>
                         {courses.map(c => {
-                          const excluded = w.excludedCourseIds?.includes(c.id);
+                          const excluded = w.excludedKursIds?.includes(c.id);
                           return (
                             <button key={c.id} onClick={() => {
-                              const current = w.excludedCourseIds || [];
+                              const current = w.excludedKursIds || [];
                               update(w.id, {
-                                excludedCourseIds: excluded ? current.filter(x => x !== c.id) : [...current, c.id]
+                                excludedKursIds: excluded ? current.filter(x => x !== c.id) : [...current, c.id]
                               });
                             }}
                               title={excluded ? `${c.cls} ${c.typ} (${c.day}) hat normalen Unterricht` : `${c.cls} ${c.typ} (${c.day}) ist von Sonderwoche betroffen`}

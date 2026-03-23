@@ -58,9 +58,9 @@ export const ALL_COURSES = COURSES;
  * Find all courses with the same class + type (linked courses for multi-day sequences).
  * e.g. for 29c SF: returns c11 (Di) + c31 (Do)
  */
-export function getLinkedCourseIds(courseId: string): string[] {
-  const course = COURSES.find(c => c.id === courseId);
-  if (!course) return [courseId];
+export function getLinkedKursIds(kursId: string): string[] {
+  const course = COURSES.find(c => c.id === kursId);
+  if (!course) return [kursId];
   return COURSES
     .filter(c => c.cls === course.cls && c.typ === course.typ)
     .map(c => c.id);

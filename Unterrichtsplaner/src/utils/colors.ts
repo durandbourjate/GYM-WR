@@ -10,11 +10,11 @@ export const LESSON_COLORS: Record<LessonType, { bg: string; fg: string; border:
   6: { bg: '#ffffff', fg: '#a1a1aa', border: '#e4e4e7' }, // Holiday
 };
 
-// SubjectArea-based colors matching LearningView: VWL=orange, BWL=blau, Recht=grün, IN=grau
+// Fachbereich-based colors matching LearningView: VWL=orange, BWL=blau, Recht=grün, IN=grau
 // Legacy export — still used by WeekRows, HoverPreview etc. for static color lookup.
 // For dynamic (per-planner) colors, use usePlannerData().categories + getCategoryColors().
 import { WR_CATEGORIES, categoriesToColorMap } from '../data/categories';
-export const SUBJECT_AREA_COLORS: Record<string, { bg: string; fg: string; border: string }> = categoriesToColorMap(WR_CATEGORIES);
+export const FACHBEREICH_COLORS: Record<string, { bg: string; fg: string; border: string }> = categoriesToColorMap(WR_CATEGORIES);
 
 export const DAY_COLORS: Record<string, string> = {
   Mo: '#818cf8', Di: '#a78bfa', Mi: '#c084fc', Do: '#e879f9', Fr: '#f472b6',
@@ -36,14 +36,14 @@ export const SEQUENCE_COLORS = [
 ];
 
 export function getSequenceInfoFromStore(
-  courseId: string,
+  kursId: string,
   weekW: string,
   sequences: ManagedSequence[]
 ): SequenceInfo | null {
   for (const seq of sequences) {
-    // Match primary courseId OR any in courseIds array
-    const matchesCourse = seq.courseId === courseId ||
-      (seq.courseIds && seq.courseIds.includes(courseId));
+    // Match primary kursId OR any in kursIds array
+    const matchesCourse = seq.kursId === kursId ||
+      (seq.kursIds && seq.kursIds.includes(kursId));
     if (!matchesCourse) continue;
     for (const block of seq.blocks) {
       const idx = block.weeks.indexOf(weekW);

@@ -41,8 +41,8 @@ export function computeSeqSolTotal(
   courses: Course[],
 ): { count: number; totalMinutes: number; formatted: string } {
   // Find all course cols for this sequence
-  const courseIds = seq.courseIds?.length ? seq.courseIds : [seq.courseId];
-  const cols = courseIds.map(cid => courses.find(c => c.id === cid)?.col).filter((c): c is number => c != null);
+  const kursIds = seq.kursIds?.length ? seq.kursIds : [seq.kursId];
+  const cols = kursIds.map(cid => courses.find(c => c.id === cid)?.col).filter((c): c is number => c != null);
 
   let count = 0;
   let totalMinutes = 0;

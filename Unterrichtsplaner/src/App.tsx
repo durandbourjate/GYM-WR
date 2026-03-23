@@ -125,7 +125,7 @@ function PlannerContent() {
     let modified = false;
     let wd = weekData.map(w => ({ ...w, lessons: { ...w.lessons } }));
     for (const seq of store.sequences) {
-      const course = allCourses.find(c => c.id === seq.courseId);
+      const course = allCourses.find(c => c.id === seq.kursId);
       if (!course) continue;
       for (const block of seq.blocks) {
         for (const weekW of block.weeks) {
@@ -228,7 +228,7 @@ function PlannerContent() {
         if (!c) return;
         const weekEntry = state.weekData.find(w => w.w === nextWeek);
         const entry = weekEntry?.lessons[c.col];
-        state.setSelection({ week: nextWeek, courseId: c.id, title: entry?.title || '', course: c });
+        state.setSelection({ week: nextWeek, kursId: c.id, title: entry?.title || '', course: c });
         // Scroll into view
         const row = document.querySelector(`tr[data-week="${nextWeek}"]`);
         if (row) row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

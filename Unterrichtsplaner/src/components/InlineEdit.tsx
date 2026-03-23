@@ -25,7 +25,7 @@ export function InlineEdit({ value, onSave, onCancel }: { value: string; onSave:
 }
 
 /* Hover preview popover — enhanced v3.23 */
-export const SUBJECT_AREA_COLORS_PREVIEW: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
+export const FACHBEREICH_COLORS_PREVIEW: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
 /** Dynamic color lookup for sequence bars — reads from categories, falls back to WR_CATEGORIES */
 export function getCatColor(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.color || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }
 export function getCatBorder(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.border || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }

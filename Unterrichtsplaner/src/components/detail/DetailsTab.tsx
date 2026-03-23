@@ -3,9 +3,9 @@ import { usePlannerStore } from '../../store/plannerStore';
 import { usePlannerData } from '../../hooks/usePlannerData';
 import { TYPE_BADGES, getSequenceInfoFromStore } from '../../utils/colors';
 import { CurriculumGoalPicker } from '../CurriculumGoalPicker';
-import { suggestGoals, suggestSubjectArea } from '../../utils/autoSuggest';
-import { inferSubjectAreaFromLessonType } from '../../data/categories';
-import type { SubjectArea, BlockCategory, LessonDetail, SequenceBlock } from '../../types';
+import { suggestGoals, suggestFachbereich } from '../../utils/autoSuggest';
+import { inferFachbereichFromLessonType } from '../../data/categories';
+import type { Fachbereich, BlockCategory, LessonDetail, SequenceBlock } from '../../types';
 import { CATEGORIES, getSubtypesForCategory, getEffectiveCategorySubtype, loadCustomSubtypes, saveCustomSubtypes } from '../../data/blockCategories';
 import { PillSelect, DurationSelector, MaterialLinks, AddToSequenceButton } from './shared';
 
@@ -180,7 +180,7 @@ function NewUEButton() {
           // J4: Dauer-Default aus Kurs-Config
           const dur = course.les * (settings?.school?.lessonDurationMin || 45);
           updateLessonDetail(week.w, course.col, { blockCategory: 'LESSON', duration: `${dur} min` });
-          setSelection({ week: week.w, courseId: course.id, title: 'Neue UE', course });
+          setSelection({ week: week.w, kursId: course.id, title: 'Neue UE', course });
           setSidePanelOpen(true);
           setSidePanelTab('details');
           // Scroll the grid row into view
@@ -225,8 +225,8 @@ export function DetailsTab() {
   // Block inheritance: find parent block for this week and merge as defaults
   const parentBlock = selection && c ? (() => {
     for (const seq of sequences) {
-      const matchesCourse = seq.courseId === c.id ||
-        (seq.courseIds && seq.courseIds.includes(c.id));
+      const matchesCourse = seq.kursId === c.id ||
+        (seq.kursIds && seq.kursIds.includes(c.id));
       if (!matchesCourse) continue;
       for (const block of seq.blocks) {
         if (block.weeks.includes(selection.week)) return block;
@@ -240,9 +240,9 @@ export function DetailsTab() {
 
   // Effective detail = own detail with block defaults for empty fields
   const effectiveDetail: LessonDetail = {
-    topicMain: detail.topicMain || parentBlock?.topicMain,
-    topicSub: detail.topicSub || parentBlock?.topicSub,
-    subjectArea: detail.subjectArea || parentBlock?.subjectArea,
+    thema: detail.thema || parentBlock?.thema,
+    unterthema: detail.unterthema || parentBlock?.unterthema,
+    fachbereich: detail.fachbereich || parentBlock?.fachbereich,
     curriculumGoal: detail.curriculumGoal || parentBlock?.curriculumGoal,
     blockCategory: detail.blockCategory,
     blockSubtype: detail.blockSubtype,
@@ -297,41 +297,41 @@ export function DetailsTab() {
     updateLessonDetail(selection.week, c.col, patch);
   }, [selection?.week, c?.col, updateLessonDetail, effectiveCategory, detail.badges]);
 
-  // Auto-detect subjectArea from LessonType (unambiguous types only)
+  // Auto-detect fachbereich from LessonType (unambiguous types only)
   useEffect(() => {
-    if (!selection || !c || detail.subjectArea || !currentLesson) return;
-    const detected = inferSubjectAreaFromLessonType(currentLesson.type) as SubjectArea | undefined;
-    if (detected) updateLessonDetail(selection.week, c.col, { subjectArea: detected });
-  }, [selection?.week, c?.col, currentLesson?.type, detail.subjectArea]);
+    if (!selection || !c || detail.fachbereich || !currentLesson) return;
+    const detected = inferFachbereichFromLessonType(currentLesson.type) as Fachbereich | undefined;
+    if (detected) updateLessonDetail(selection.week, c.col, { fachbereich: detected });
+  }, [selection?.week, c?.col, currentLesson?.type, detail.fachbereich]);
 
-  // Auto-detect subjectArea from topicMain (for ambiguous lesson types: 0, 2)
+  // Auto-detect fachbereich from thema (for ambiguous lesson types: 0, 2)
   useEffect(() => {
-    if (!selection || !c || detail.subjectArea) return;
+    if (!selection || !c || detail.fachbereich) return;
     const lessonType = currentLesson?.type;
     if (lessonType !== undefined && lessonType !== 0 && lessonType !== 2) return;
-    const topic = detail.topicMain || effectiveDetail.topicMain;
+    const topic = detail.thema || effectiveDetail.thema;
     if (!topic || topic.length < 3) return;
-    const suggested = suggestSubjectArea(topic, effectiveGoals);
-    if (suggested) updateLessonDetail(selection.week, c.col, { subjectArea: suggested });
-  }, [selection?.week, c?.col, detail.topicMain, effectiveDetail.topicMain, detail.subjectArea, currentLesson?.type, effectiveGoals]);
+    const suggested = suggestFachbereich(topic, effectiveGoals);
+    if (suggested) updateLessonDetail(selection.week, c.col, { fachbereich: suggested });
+  }, [selection?.week, c?.col, detail.thema, effectiveDetail.thema, detail.fachbereich, currentLesson?.type, effectiveGoals]);
 
   // Auto-suggest curriculum goals
   const goalSuggestions = useMemo(() => {
-    const topic = detail.topicMain || effectiveDetail.topicMain;
+    const topic = detail.thema || effectiveDetail.thema;
     if (!topic || topic.length < 2) return [];
-    return suggestGoals(topic, effectiveDetail.subjectArea, 3, 0.2, effectiveGoals);
-  }, [detail.topicMain, effectiveDetail.topicMain, effectiveDetail.subjectArea, effectiveGoals]);
+    return suggestGoals(topic, effectiveDetail.fachbereich, 3, 0.2, effectiveGoals);
+  }, [detail.thema, effectiveDetail.thema, effectiveDetail.fachbereich, effectiveGoals]);
 
-  // Mismatch warning: inherited subjectArea doesn't match topic
-  const subjectAreaMismatch = useMemo(() => {
-    const effective = effectiveDetail.subjectArea;
+  // Mismatch warning: inherited fachbereich doesn't match topic
+  const fachbereichMismatch = useMemo(() => {
+    const effective = effectiveDetail.fachbereich;
     if (!effective) return null;
-    const topic = detail.topicMain || effectiveDetail.topicMain;
+    const topic = detail.thema || effectiveDetail.thema;
     if (!topic || topic.length < 3) return null;
-    const suggested = suggestSubjectArea(topic, effectiveGoals);
+    const suggested = suggestFachbereich(topic, effectiveGoals);
     if (!suggested || suggested === effective) return null;
-    return { current: effective, suggested, isInherited: !detail.subjectArea };
-  }, [effectiveDetail.subjectArea, detail.subjectArea, detail.topicMain, effectiveDetail.topicMain]);
+    return { current: effective, suggested, isInherited: !detail.fachbereich };
+  }, [effectiveDetail.fachbereich, detail.fachbereich, detail.thema, effectiveDetail.thema]);
 
   if (!selection || !c) {
     return (
@@ -361,14 +361,14 @@ export function DetailsTab() {
         <div className="text-sm text-gray-200">{selection.title}</div>
         {/* Tags */}
         <div className="flex gap-1 mt-1.5 flex-wrap">
-          {effectiveDetail.subjectArea && (() => {
-            const isInherited = !detail.subjectArea && parentBlock?.subjectArea;
-            const catColor = categories.find(s => s.key === effectiveDetail.subjectArea)?.color;
+          {effectiveDetail.fachbereich && (() => {
+            const isInherited = !detail.fachbereich && parentBlock?.fachbereich;
+            const catColor = categories.find(s => s.key === effectiveDetail.fachbereich)?.color;
             return (
               <span className={`text-[9px] px-1 py-px rounded border ${isInherited ? 'opacity-60 border-dashed' : ''}`}
                 style={{ borderColor: catColor, color: catColor }}
                 title={isInherited ? 'Vom Sequenz-Block geerbt' : 'Direkt gesetzt'}>
-                {isInherited && '↓ '}{effectiveDetail.subjectArea}
+                {isInherited && '↓ '}{effectiveDetail.fachbereich}
               </span>
             );
           })()}
@@ -414,19 +414,19 @@ export function DetailsTab() {
           {seqInfo && parentSeq && parentBlock && (
             <button onClick={() => {
               const fieldsToApply: string[] = [];
-              if (detail.subjectArea && detail.subjectArea !== parentBlock.subjectArea) fieldsToApply.push(`Fachbereich: ${detail.subjectArea}`);
-              if (detail.topicMain && detail.topicMain !== parentBlock.topicMain) fieldsToApply.push(`Oberthema: ${detail.topicMain}`);
+              if (detail.fachbereich && detail.fachbereich !== parentBlock.fachbereich) fieldsToApply.push(`Fachbereich: ${detail.fachbereich}`);
+              if (detail.thema && detail.thema !== parentBlock.thema) fieldsToApply.push(`Oberthema: ${detail.thema}`);
               if (detail.duration) fieldsToApply.push(`Dauer: ${detail.duration}`);
               if (fieldsToApply.length === 0) { alert('Keine UE-Felder gesetzt, die sich vom Block unterscheiden.'); return; }
               if (!confirm(`Folgende Felder auf den Sequenz-Block übertragen?\n\n${fieldsToApply.join('\n')}`)) return;
               const blockIdx = parentSeq.blocks.findIndex(b => b.weeks.includes(selection!.week));
               if (blockIdx < 0) return;
               const patch: Partial<SequenceBlock> = {};
-              if (detail.subjectArea) patch.subjectArea = detail.subjectArea;
-              if (detail.topicMain) patch.topicMain = detail.topicMain;
+              if (detail.fachbereich) patch.fachbereich = detail.fachbereich;
+              if (detail.thema) patch.thema = detail.thema;
               usePlannerStore.getState().updateBlockInSequence(parentSeq.id, blockIdx, patch);
-              if (detail.topicMain && (!parentSeq.title || parentSeq.title === parentBlock.topicMain || parentSeq.title === 'Neue Reihe')) {
-                usePlannerStore.getState().updateSequence(parentSeq.id, { title: detail.topicMain });
+              if (detail.thema && (!parentSeq.title || parentSeq.title === parentBlock.thema || parentSeq.title === 'Neue Reihe')) {
+                usePlannerStore.getState().updateSequence(parentSeq.id, { title: detail.thema });
               }
             }}
               className="text-[9px] px-1 py-px rounded border border-dashed border-indigo-500/40 text-indigo-400 hover:bg-indigo-900/20 cursor-pointer"
@@ -442,21 +442,21 @@ export function DetailsTab() {
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">
             Fachbereich
-            {!detail.subjectArea && effectiveDetail.subjectArea && (
+            {!detail.fachbereich && effectiveDetail.fachbereich && (
               <span className="text-[9px] text-gray-500 font-normal ml-1">(geerbt von Sequenz)</span>
             )}
           </label>
-          <PillSelect options={categories.map(s => s.key)} value={detail.subjectArea}
-            onChange={(v) => updateField('subjectArea', v as SubjectArea)}
+          <PillSelect options={categories.map(s => s.key)} value={detail.fachbereich}
+            onChange={(v) => updateField('fachbereich', v as Fachbereich)}
             renderOption={(v) => { const s = categories.find(x => x.key === v)!; return { label: s.label, color: s.color }; }} />
-          {subjectAreaMismatch && (
+          {fachbereichMismatch && (
             <div className="mt-1 flex items-center gap-1 text-[9px]">
               <span className="text-amber-400">⚠</span>
               <span className="text-amber-400/80">
-                Topic passt zu <strong>{subjectAreaMismatch.suggested}</strong>{subjectAreaMismatch.isInherited ? ' (geerbt: ' + subjectAreaMismatch.current + ')' : ''}
+                Topic passt zu <strong>{fachbereichMismatch.suggested}</strong>{fachbereichMismatch.isInherited ? ' (geerbt: ' + fachbereichMismatch.current + ')' : ''}
               </span>
               <button
-                onClick={() => updateField('subjectArea', subjectAreaMismatch.suggested)}
+                onClick={() => updateField('fachbereich', fachbereichMismatch.suggested)}
                 className="text-[9px] text-indigo-400 hover:text-indigo-300 cursor-pointer underline ml-1">
                 Korrigieren
               </button>
@@ -476,14 +476,14 @@ export function DetailsTab() {
         {/* v3.100 #3b: SOL-Section entfernt (wird jetzt pro Kurs in Einstellungen konfiguriert) */}
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Thema</label>
-          {parentBlock?.topicMain && !detail.topicMain && (
-            <div className="text-[9px] text-indigo-400/60 mb-0.5">↳ Block: {parentBlock.topicMain}</div>
+          {parentBlock?.thema && !detail.thema && (
+            <div className="text-[9px] text-indigo-400/60 mb-0.5">↳ Block: {parentBlock.thema}</div>
           )}
-          <input value={detail.topicMain || ''} onChange={(e) => updateField('topicMain', e.target.value)}
-            placeholder={effectiveDetail.topicMain || 'Hauptthema…'}
+          <input value={detail.thema || ''} onChange={(e) => updateField('thema', e.target.value)}
+            placeholder={effectiveDetail.thema || 'Hauptthema…'}
             className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400" />
-          <input value={detail.topicSub || ''} onChange={(e) => updateField('topicSub', e.target.value)}
-            placeholder={effectiveDetail.topicSub || 'Unterthema (optional)…'}
+          <input value={detail.unterthema || ''} onChange={(e) => updateField('unterthema', e.target.value)}
+            placeholder={effectiveDetail.unterthema || 'Unterthema (optional)…'}
             className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 mt-1" />
           {goalSuggestions.length > 0 && !detail.curriculumGoal && !effectiveDetail.curriculumGoal && (
             <div className="mt-1.5 space-y-0.5">
@@ -515,7 +515,7 @@ export function DetailsTab() {
           {parentBlock?.curriculumGoal && !detail.curriculumGoal && (
             <div className="text-[9px] text-indigo-400/60 mb-0.5">↳ Block: {parentBlock.curriculumGoal}</div>
           )}
-          <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} subjectArea={effectiveDetail.subjectArea} goals={effectiveGoals} />
+          <CurriculumGoalPicker value={detail.curriculumGoal || effectiveDetail.curriculumGoal} onChange={(v) => updateField('curriculumGoal', v)} fachbereich={effectiveDetail.fachbereich} goals={effectiveGoals} />
         </div>
         <div>
           <label className="text-[11px] text-gray-400 font-medium mb-1 block">Material</label>
@@ -545,15 +545,15 @@ export function DetailsTab() {
           <div className="flex gap-1.5">
             <button onClick={() => {
               if (!selection || !c) return;
-              const title = currentLesson?.title || effectiveDetail.topicMain || 'UE';
+              const title = currentLesson?.title || effectiveDetail.thema || 'UE';
               addCollectionItem({
                 type: 'unit',
                 title,
-                subjectArea: effectiveDetail.subjectArea,
+                fachbereich: effectiveDetail.fachbereich,
                 courseType: c.typ as any,
                 cls: c.cls,
                 units: [{
-                  block: { weeks: [], label: '', topicMain: effectiveDetail.topicMain, topicSub: effectiveDetail.topicSub, subjectArea: effectiveDetail.subjectArea, curriculumGoal: effectiveDetail.curriculumGoal, description: effectiveDetail.description, materialLinks: effectiveDetail.materialLinks },
+                  block: { weeks: [], label: '', thema: effectiveDetail.thema, unterthema: effectiveDetail.unterthema, fachbereich: effectiveDetail.fachbereich, curriculumGoal: effectiveDetail.curriculumGoal, description: effectiveDetail.description, materialLinks: effectiveDetail.materialLinks },
                   lessonDetails: { '0': { ...detail } },
                   lessonTitles: [currentLesson?.title || ''],
                 }],
@@ -571,11 +571,11 @@ export function DetailsTab() {
           </div>
           {savedMsg && <div className="text-[9px] text-green-400">{savedMsg}</div>}
           {showCollectionPicker && (() => {
-            const area = effectiveDetail.subjectArea;
+            const area = effectiveDetail.fachbereich;
             const unitItems = collection.filter(item => item.type === 'unit');
             const sorted = [...unitItems].sort((a, b) => {
-              const aMatch = a.subjectArea === area ? 0 : 1;
-              const bMatch = b.subjectArea === area ? 0 : 1;
+              const aMatch = a.fachbereich === area ? 0 : 1;
+              const bMatch = b.fachbereich === area ? 0 : 1;
               if (aMatch !== bMatch) return aMatch - bMatch;
               return (b.createdAt || '').localeCompare(a.createdAt || '');
             });
@@ -591,9 +591,9 @@ export function DetailsTab() {
                       pushUndo();
                       const srcDetail = unit.lessonDetails['0'] || {};
                       const patch: Partial<LessonDetail> = {};
-                      if (srcDetail.subjectArea) patch.subjectArea = srcDetail.subjectArea;
-                      if (srcDetail.topicMain) patch.topicMain = srcDetail.topicMain;
-                      if (srcDetail.topicSub) patch.topicSub = srcDetail.topicSub;
+                      if (srcDetail.fachbereich) patch.fachbereich = srcDetail.fachbereich;
+                      if (srcDetail.thema) patch.thema = srcDetail.thema;
+                      if (srcDetail.unterthema) patch.unterthema = srcDetail.unterthema;
                       if (srcDetail.curriculumGoal) patch.curriculumGoal = srcDetail.curriculumGoal;
                       if (srcDetail.description) patch.description = srcDetail.description;
                       if (srcDetail.materialLinks?.length) patch.materialLinks = srcDetail.materialLinks;
@@ -609,8 +609,8 @@ export function DetailsTab() {
                       setTimeout(() => setSavedMsg(null), 2500);
                     }}
                       className="w-full text-left px-2 py-1.5 rounded text-[11px] hover:bg-slate-700 cursor-pointer transition-all flex items-center gap-2">
-                      <span className={`px-1 py-px rounded text-[8px] ${item.subjectArea === area ? 'bg-indigo-900/40 text-indigo-300' : 'bg-slate-700 text-gray-400'}`}>
-                        {item.subjectArea || '—'}
+                      <span className={`px-1 py-px rounded text-[8px] ${item.fachbereich === area ? 'bg-indigo-900/40 text-indigo-300' : 'bg-slate-700 text-gray-400'}`}>
+                        {item.fachbereich || '—'}
                       </span>
                       <span className="text-gray-200 truncate flex-1">{item.title}</span>
                       {item.cls && <span className="text-[8px] text-gray-500">{item.cls}</span>}

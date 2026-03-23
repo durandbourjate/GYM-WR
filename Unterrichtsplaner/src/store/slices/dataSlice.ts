@@ -38,7 +38,7 @@ export interface DataSlice {
   batchInsertBefore: (keys: string[], allWeeks: string[], courses: Course[]) => void;
   moveGroup: (col: number, fromWeeks: string[], toWeek: string, allWeeks: string[]) => void;
   // T5: Sequence block drag — move ALL weeks of a sequence block together
-  moveSequenceBlock: (col: number, fromWeek: string, toWeek: string, allWeekOrder: string[], courseId: string) => void;
+  moveSequenceBlock: (col: number, fromWeek: string, toWeek: string, allWeekOrder: string[], kursId: string) => void;
   // Undo
   undoStack: Week[][];
   pushUndo: () => void;
@@ -183,19 +183,19 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
         // Prüfe ob Migration nötig (importierte cols != aktuelle cols)
         const needsMigration = [...importedColIds].some(c => !currentColIds.has(c) && c !== 0);
         if (needsMigration) {
-          // Baue Map: courseId → aktuelle col
-          const courseIdToNewCol = new Map<string, number>();
-          for (const c of currentCourses) courseIdToNewCol.set(c.id, c.col);
-          // Baue Map: alte col → courseId (aus COURSES legacy-Tabelle)
-          const oldColToCourseId = new Map<number, string>();
-          for (const c of COURSES) oldColToCourseId.set(c.col, c.id);
+          // Baue Map: kursId → aktuelle col
+          const kursIdToNewCol = new Map<string, number>();
+          for (const c of currentCourses) kursIdToNewCol.set(c.id, c.col);
+          // Baue Map: alte col → kursId (aus COURSES legacy-Tabelle)
+          const oldColToKursId = new Map<number, string>();
+          for (const c of COURSES) oldColToKursId.set(c.col, c.id);
           // Migrations-Map: oldCol → newCol
           const colMap = new Map<number, number>();
           for (const oldCol of importedColIds) {
             if (currentColIds.has(oldCol)) continue; // schon korrekt
-            const courseId = oldColToCourseId.get(oldCol);
-            if (courseId) {
-              const newCol = courseIdToNewCol.get(courseId);
+            const kursId = oldColToKursId.get(oldCol);
+            if (kursId) {
+              const newCol = kursIdToNewCol.get(kursId);
               if (newCol !== undefined) colMap.set(oldCol, newCol);
             }
           }
@@ -250,9 +250,9 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
     state.pushUndo();
 
     // Update sequences: swap weekA↔weekB in blocks belonging to courses with this col
-    const courseId = COURSES.find(c => c.col === col)?.id;
+    const kursId = COURSES.find(c => c.col === col)?.id;
     const updatedSeqs = state.sequences.map(seq => {
-      if (courseId && seq.courseId !== courseId && !(seq.courseIds && seq.courseIds.includes(courseId))) return seq;
+      if (kursId && seq.kursId !== kursId && !(seq.kursIds && seq.kursIds.includes(kursId))) return seq;
       let changed = false;
       const newBlocks = seq.blocks.map(b => {
         const hasA = b.weeks.includes(weekA);
@@ -294,9 +294,9 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
     state.pushUndo();
 
     // Update sequences: replace fromWeek→toWeek in blocks
-    const courseId = COURSES.find(c => c.col === col)?.id;
+    const kursId = COURSES.find(c => c.col === col)?.id;
     const updatedSeqs = state.sequences.map(seq => {
-      if (courseId && seq.courseId !== courseId && !(seq.courseIds && seq.courseIds.includes(courseId))) return seq;
+      if (kursId && seq.kursId !== kursId && !(seq.kursIds && seq.kursIds.includes(kursId))) return seq;
       let changed = false;
       const newBlocks = seq.blocks.map(b => {
         if (!b.weeks.includes(fromWeek)) return b;
@@ -338,11 +338,11 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
       newDetails[newDetailKey] = detail;
       delete newDetails[detailKey];
     }
-    // Update sequences: remap courseId + week for matching blocks
-    const fromCourseId = COURSES.find(c => c.col === fromCol)?.id;
-    const toCourseId = COURSES.find(c => c.col === toCol)?.id;
+    // Update sequences: remap kursId + week for matching blocks
+    const fromKursId = COURSES.find(c => c.col === fromCol)?.id;
+    const toKursId = COURSES.find(c => c.col === toCol)?.id;
     const updatedSeqs = state.sequences.map(seq => {
-      if (!fromCourseId || (seq.courseId !== fromCourseId && !(seq.courseIds && seq.courseIds.includes(fromCourseId)))) return seq;
+      if (!fromKursId || (seq.kursId !== fromKursId && !(seq.kursIds && seq.kursIds.includes(fromKursId)))) return seq;
       let changed = false;
       const newBlocks = seq.blocks.map(b => {
         if (!b.weeks.includes(fromWeek)) return b;
@@ -351,11 +351,11 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
       });
       if (!changed) return seq;
       const newSeq = { ...seq, blocks: newBlocks, updatedAt: new Date().toISOString() };
-      // Update courseId if moving to different course
-      if (toCourseId && fromCourseId !== toCourseId) {
-        newSeq.courseId = toCourseId;
-        if (newSeq.courseIds) {
-          newSeq.courseIds = newSeq.courseIds.map(id => id === fromCourseId ? toCourseId : id);
+      // Update kursId if moving to different course
+      if (toKursId && fromKursId !== toKursId) {
+        newSeq.kursId = toKursId;
+        if (newSeq.kursIds) {
+          newSeq.kursIds = newSeq.kursIds.map(id => id === fromKursId ? toKursId : id);
         }
       }
       return newSeq;
@@ -425,8 +425,8 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
     const state = get();
     state.pushUndo();
     const parsed = keys.map(k => {
-      const [weekW, courseId] = k.split('-');
-      const course = courses.find(c => c.id === courseId);
+      const [weekW, kursId] = k.split('-');
+      const course = courses.find(c => c.id === kursId);
       return course ? { weekW, col: course.col } : null;
     }).filter(Boolean) as { weekW: string; col: number }[];
     const byCols = new Map<number, string[]>();
@@ -537,9 +537,9 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
     }
 
     // Update sequences: remap weeks for blocks in this column
-    const courseId = COURSES.find(c => c.col === col)?.id;
+    const kursId = COURSES.find(c => c.col === col)?.id;
     const updatedSeqs = state.sequences.map(seq => {
-      if (courseId && seq.courseId !== courseId && !(seq.courseIds && seq.courseIds.includes(courseId))) return seq;
+      if (kursId && seq.kursId !== kursId && !(seq.kursIds && seq.kursIds.includes(kursId))) return seq;
       // Rebuild week mapping based on new positions
       let changed = false;
       const newBlocks = seq.blocks.map(b => {
@@ -556,7 +556,7 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
   },
 
   // T5: Move entire sequence block together
-  moveSequenceBlock: (col, fromWeek, toWeek, allWeekOrder, courseId) => {
+  moveSequenceBlock: (col, fromWeek, toWeek, allWeekOrder, kursId) => {
     if (fromWeek === toWeek) return;
     const state = get();
 
@@ -566,8 +566,8 @@ export const createDataSlice: StateCreator<PlannerState, [], [], DataSlice> = (s
     let blockWeeks: string[] = [];
 
     for (const seq of state.sequences) {
-      const matchesCourse = seq.courseId === courseId ||
-        (seq.courseIds && seq.courseIds.includes(courseId));
+      const matchesCourse = seq.kursId === kursId ||
+        (seq.kursIds && seq.kursIds.includes(kursId));
       if (!matchesCourse) continue;
       for (let bi = 0; bi < seq.blocks.length; bi++) {
         if (seq.blocks[bi].weeks.includes(fromWeek)) {

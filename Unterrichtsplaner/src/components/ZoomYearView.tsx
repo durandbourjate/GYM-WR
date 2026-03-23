@@ -2,12 +2,12 @@ import { useMemo, useCallback } from 'react';
 import { usePlannerStore, ZOOM_LEVELS, zs } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
-import { inferSubjectAreaFromLessonType, getBlockColors } from '../data/categories';
-import type { Course, ManagedSequence, LessonType, SubjectArea } from '../types';
+import { inferFachbereichFromLessonType, getBlockColors } from '../data/categories';
+import type { Course, ManagedSequence, LessonType, Fachbereich } from '../types';
 
 // Block colors are now in data/categories.ts (getBlockColors)
 
-// inferSubjectArea is now inferSubjectAreaFromLessonType in data/categories.ts
+// inferFachbereich is now inferFachbereichFromLessonType in data/categories.ts
 
 /** Group courses by cls+typ. Each group has 1+ courses (1 per day). */
 interface CourseGroup {
@@ -23,12 +23,12 @@ interface YearSpan {
   seq: ManagedSequence;
   blockIdx: number;
   label: string;
-  topicMain?: string;
-  subjectArea?: string;
+  thema?: string;
+  fachbereich?: string;
   startIdx: number;
   spanLen: number;
   weeks: string[];
-  courseId: string;    // specific course within group
+  kursId: string;    // specific course within group
   isShared: boolean;   // true if seq covers all courses in group (→ wide bar)
   isLoose?: boolean;   // true for lessons not in any sequence
 }
@@ -88,12 +88,12 @@ export function ZoomYearView() {
     for (const group of groups) {
       for (const course of group.courses) {
         const courseSeqs = sequences.filter(s =>
-          s.courseId === course.id || (s.courseIds?.includes(course.id))
+          s.kursId === course.id || (s.kursIds?.includes(course.id))
         );
         for (const seq of courseSeqs) {
           // Check if this seq is shared across all courses in group
           const isShared = group.isMultiDay && group.courses.every(gc =>
-            seq.courseId === gc.id || seq.courseIds?.includes(gc.id)
+            seq.kursId === gc.id || seq.kursIds?.includes(gc.id)
           );
 
           for (let bi = 0; bi < seq.blocks.length; bi++) {
@@ -106,13 +106,13 @@ export function ZoomYearView() {
             if (weekIndices.length === 0) continue;
             weekIndices.sort((a, b) => a - b);
 
-            // Determine subjectArea
-            let area = block.subjectArea || seq.subjectArea;
+            // Determine fachbereich
+            let area = block.fachbereich || seq.fachbereich;
             if (!area) {
               const firstWeek = allWeekKeys[weekIndices[0]];
               const wd = effectiveWeeks.find(w => w.w === firstWeek);
               const entry = wd?.lessons[course.col];
-              if (entry) area = inferSubjectAreaFromLessonType(entry.type as LessonType) as SubjectArea | undefined;
+              if (entry) area = inferFachbereichFromLessonType(entry.type as LessonType) as Fachbereich | undefined;
             }
 
             // Group into contiguous runs
@@ -129,16 +129,16 @@ export function ZoomYearView() {
               const spanLen = run.end - run.start + 1;
               const spanWeeks = allWeekKeys.slice(run.start, run.end + 1);
               // For shared seqs, only create span for first course in group to avoid duplicates
-              const spanCourseId = isShared ? group.courses[0].id : course.id;
-              const spanKey = `${run.start}:${spanCourseId}:${isShared ? 'shared' : course.id}`;
+              const spanKursId = isShared ? group.courses[0].id : course.id;
+              const spanKey = `${run.start}:${spanKursId}:${isShared ? 'shared' : course.id}`;
               if (spanMap.has(spanKey)) continue; // avoid duplicate shared spans
               spanMap.set(spanKey, {
-                seq, blockIdx: bi, label: block.label, topicMain: block.topicMain,
-                subjectArea: area, startIdx: run.start, spanLen, weeks: spanWeeks,
-                courseId: spanCourseId, isShared,
+                seq, blockIdx: bi, label: block.label, thema: block.thema,
+                fachbereich: area, startIdx: run.start, spanLen, weeks: spanWeeks,
+                kursId: spanKursId, isShared,
               });
               for (let r = run.start + 1; r <= run.end; r++) {
-                skipSet.add(`${r}:${spanCourseId}:${isShared ? 'shared' : course.id}`);
+                skipSet.add(`${r}:${spanKursId}:${isShared ? 'shared' : course.id}`);
               }
             }
           }
@@ -147,14 +147,14 @@ export function ZoomYearView() {
     }
 
     // Second pass: find loose lessons (not covered by any sequence)
-    const coveredSet = new Set<string>(); // "weekIdx:courseId"
+    const coveredSet = new Set<string>(); // "weekIdx:kursId"
     for (const [, span] of spanMap) {
       for (let i = span.startIdx; i < span.startIdx + span.spanLen; i++) {
         if (span.isShared) {
-          const g = groups.find(g2 => g2.courses.some(c => c.id === span.courseId));
+          const g = groups.find(g2 => g2.courses.some(c => c.id === span.kursId));
           if (g) g.courses.forEach(c => coveredSet.add(`${i}:${c.id}`));
         } else {
-          coveredSet.add(`${i}:${span.courseId}`);
+          coveredSet.add(`${i}:${span.kursId}`);
         }
       }
     }
@@ -171,15 +171,15 @@ export function ZoomYearView() {
           if (entry.type === 5 || entry.type === 6) continue;
           // This week has a lesson but no sequence → loose lesson
           const detail = lessonDetails[`${weekW}-${course.col}`];
-          const area = (detail?.subjectArea || inferSubjectAreaFromLessonType(entry.type as LessonType)) as SubjectArea | undefined;
+          const area = (detail?.fachbereich || inferFachbereichFromLessonType(entry.type as LessonType)) as Fachbereich | undefined;
           const looseKey = `${wi}:${course.id}:loose`;
           if (spanMap.has(looseKey)) continue;
           // Create a dummy seq for type compatibility
-          const dummySeq = { id: '__loose__', title: '', courseId: course.id, blocks: [], createdAt: '', updatedAt: '' } as ManagedSequence;
+          const dummySeq = { id: '__loose__', title: '', kursId: course.id, blocks: [], createdAt: '', updatedAt: '' } as ManagedSequence;
           spanMap.set(looseKey, {
-            seq: dummySeq, blockIdx: 0, label: entry.title, topicMain: detail?.topicMain || entry.title,
-            subjectArea: area, startIdx: wi, spanLen: 1, weeks: [weekW],
-            courseId: course.id, isShared: false, isLoose: true,
+            seq: dummySeq, blockIdx: 0, label: entry.title, thema: detail?.thema || entry.title,
+            fachbereich: area, startIdx: wi, spanLen: 1, weeks: [weekW],
+            kursId: course.id, isShared: false, isLoose: true,
           });
         }
       }
@@ -194,9 +194,9 @@ export function ZoomYearView() {
   const handleBlockClick = useCallback((span: YearSpan) => {
     if (span.isLoose) {
       // Loose lesson: open DetailPanel
-      const course = allCourses.find(c => c.id === span.courseId);
+      const course = allCourses.find(c => c.id === span.kursId);
       if (course) {
-        setSelection({ week: span.weeks[0], courseId: course.id, title: span.label, course });
+        setSelection({ week: span.weeks[0], kursId: course.id, title: span.label, course });
         setSidePanelOpen(true);
         setSidePanelTab('details');
       }
@@ -209,7 +209,7 @@ export function ZoomYearView() {
 
   const handleBlockDblClick = useCallback((weekW: string, course: Course, span: YearSpan) => {
     setZoomLevel(3);
-    setSelection({ week: weekW, courseId: course.id, title: span.label, course });
+    setSelection({ week: weekW, kursId: course.id, title: span.label, course });
     setTimeout(() => {
       document.querySelector(`tr[data-week="${weekW}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
@@ -217,7 +217,7 @@ export function ZoomYearView() {
 
   const handleEmptyClick = useCallback((weekW: string, course: Course) => {
     setZoomLevel(3);
-    setSelection({ week: weekW, courseId: course.id, title: '', course });
+    setSelection({ week: weekW, kursId: course.id, title: '', course });
   }, [setZoomLevel, setSelection]);
 
   // Semester break line index
@@ -335,12 +335,12 @@ export function ZoomYearView() {
 
                       if (sharedSpan) {
                         // Wide bar spanning all sub-columns
-                        const colors = getBlockColors(sharedSpan.subjectArea);
+                        const colors = getBlockColors(sharedSpan.fachbereich);
                         const spanHeight = sharedSpan.spanLen * ROW_H;
-                        const displayLabel = sharedSpan.topicMain || sharedSpan.label;
+                        const displayLabel = sharedSpan.thema || sharedSpan.label;
                         const blockSearchMatch = searchLower.length >= 2 && (
                           sharedSpan.label.toLowerCase().includes(searchLower) ||
-                          (sharedSpan.topicMain || '').toLowerCase().includes(searchLower) ||
+                          (sharedSpan.thema || '').toLowerCase().includes(searchLower) ||
                           sharedSpan.seq.title.toLowerCase().includes(searchLower)
                         );
                         return (
@@ -394,12 +394,12 @@ export function ZoomYearView() {
                           );
                         }
 
-                        const colors = getBlockColors(daySpan.subjectArea);
+                        const colors = getBlockColors(daySpan.fachbereich);
                         const spanHeight = daySpan.spanLen * ROW_H;
-                        const displayLabel = daySpan.topicMain || daySpan.label;
+                        const displayLabel = daySpan.thema || daySpan.label;
                         const blockSearchMatch = searchLower.length >= 2 && (
                           daySpan.label.toLowerCase().includes(searchLower) ||
-                          (daySpan.topicMain || '').toLowerCase().includes(searchLower) ||
+                          (daySpan.thema || '').toLowerCase().includes(searchLower) ||
                           daySpan.seq.title.toLowerCase().includes(searchLower)
                         );
                         return (
@@ -452,12 +452,12 @@ export function ZoomYearView() {
                         );
                       }
 
-                      const colors = getBlockColors(span.subjectArea);
+                      const colors = getBlockColors(span.fachbereich);
                       const spanHeight = span.spanLen * ROW_H;
-                      const displayLabel = span.topicMain || span.label;
+                      const displayLabel = span.thema || span.label;
                       const blockSearchMatch = searchLower.length >= 2 && (
                         span.label.toLowerCase().includes(searchLower) ||
-                        (span.topicMain || '').toLowerCase().includes(searchLower) ||
+                        (span.thema || '').toLowerCase().includes(searchLower) ||
                         (span.isLoose ? false : span.seq.title.toLowerCase().includes(searchLower))
                       );
                       return (

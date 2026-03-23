@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
-import { SUBJECT_AREA_COLORS } from '../utils/colors';
-import type { CollectionItem, CollectionItemType, SubjectArea, CourseType } from '../types';
+import { FACHBEREICH_COLORS } from '../utils/colors';
+import type { CollectionItem, CollectionItemType, Fachbereich, CourseType } from '../types';
 
 const TYPE_LABELS: Record<CollectionItemType, { label: string; icon: string }> = {
   unit: { label: 'Unterrichtseinheit', icon: '📄' },
@@ -23,13 +23,13 @@ const TYPE_LABELS: Record<CollectionItemType, { label: string; icon: string }> =
 function ImportDialog({ item, onClose }: { item: CollectionItem; onClose: () => void }) {
   const { courses: COURSES } = usePlannerData();
   const { importFromCollection } = usePlannerStore();
-  const [targetCourseId, setTargetCourseId] = useState(COURSES[0]?.id || '');
+  const [targetKursId, setTargetKursId] = useState(COURSES[0]?.id || '');
   const [includeNotes, setIncludeNotes] = useState(false);
   const [includeMaterialLinks, setIncludeMaterialLinks] = useState(true);
   const [imported, setImported] = useState(false);
 
   const handleImport = () => {
-    const seqId = importFromCollection(item.id, targetCourseId, { includeNotes, includeMaterialLinks });
+    const seqId = importFromCollection(item.id, targetKursId, { includeNotes, includeMaterialLinks });
     if (seqId) {
       setImported(true);
       setTimeout(onClose, 1200);
@@ -45,7 +45,7 @@ function ImportDialog({ item, onClose }: { item: CollectionItem; onClose: () => 
         <div className="space-y-2">
           <div>
             <label className="text-[11px] text-gray-400">Zielkurs</label>
-            <select value={targetCourseId} onChange={(e) => setTargetCourseId(e.target.value)}
+            <select value={targetKursId} onChange={(e) => setTargetKursId(e.target.value)}
               className="w-full bg-slate-700 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400">
               {COURSES.map((c) => (
                 <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to}</option>
@@ -97,7 +97,7 @@ function ArchiveDialog({ onClose }: { onClose: () => void }) {
 
   // Get unique class+type combos that have sequences
   const combos = Array.from(new Set(sequences.map((s) => {
-    const c = COURSES.find((co) => co.id === s.courseId);
+    const c = COURSES.find((co) => co.id === s.kursId);
     return c ? `${c.typ}|${c.cls}` : null;
   }).filter(Boolean) as string[])).map((combo) => {
     const [typ, cls] = combo.split('|');
@@ -180,7 +180,7 @@ function CollectionCard({ item, onImport }: { item: CollectionItem; onImport: (i
   const [editTags, setEditTags] = useState(item.tags?.join(', ') || '');
 
   const typeInfo = TYPE_LABELS[item.type];
-  const saColor = item.subjectArea ? SUBJECT_AREA_COLORS[item.subjectArea] : null;
+  const saColor = item.fachbereich ? FACHBEREICH_COLORS[item.fachbereich] : null;
   const dateStr = new Date(item.createdAt).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
   const handleSave = () => {
@@ -234,11 +234,11 @@ function CollectionCard({ item, onImport }: { item: CollectionItem; onImport: (i
                 <div key={i} className="flex items-center gap-1 text-[9px] px-1 py-0.5 rounded hover:bg-slate-700/30">
                   <span className="text-gray-600">{i + 1}.</span>
                   <span className="text-gray-300 truncate">{u.block.label || '(ohne Titel)'}</span>
-                  {u.block.subjectArea && (
+                  {u.block.fachbereich && (
                     <span className="ml-auto text-[8px] px-1 rounded" style={{
-                      color: SUBJECT_AREA_COLORS[u.block.subjectArea]?.fg,
-                      background: SUBJECT_AREA_COLORS[u.block.subjectArea]?.bg + '20',
-                    }}>{u.block.subjectArea}</span>
+                      color: FACHBEREICH_COLORS[u.block.fachbereich]?.fg,
+                      background: FACHBEREICH_COLORS[u.block.fachbereich]?.bg + '20',
+                    }}>{u.block.fachbereich}</span>
                   )}
                   <span className="text-gray-600">{u.lessonTitles.filter(Boolean).length}L</span>
                 </div>
@@ -294,7 +294,7 @@ export function CollectionPanel() {
   const { collection } = usePlannerStore();
   const { categories } = usePlannerData();
   const [filterType, setFilterType] = useState<CollectionItemType | 'ALL'>('ALL');
-  const [filterSA, setFilterSA] = useState<SubjectArea | 'ALL'>('ALL');
+  const [filterSA, setFilterSA] = useState<Fachbereich | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [importItem, setImportItem] = useState<CollectionItem | null>(null);
   const [showArchive, setShowArchive] = useState(false);
@@ -302,7 +302,7 @@ export function CollectionPanel() {
   // Filter collection
   const filtered = collection.filter((item) => {
     if (filterType !== 'ALL' && item.type !== filterType) return false;
-    if (filterSA !== 'ALL' && item.subjectArea !== filterSA) return false;
+    if (filterSA !== 'ALL' && item.fachbereich !== filterSA) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const inTitle = item.title.toLowerCase().includes(q);
@@ -337,7 +337,7 @@ export function CollectionPanel() {
             Alle FB
           </button>
           {categories.map((sa) => (
-            <button key={sa.key} onClick={() => setFilterSA(filterSA === sa.key ? 'ALL' : sa.key as SubjectArea)}
+            <button key={sa.key} onClick={() => setFilterSA(filterSA === sa.key ? 'ALL' : sa.key as Fachbereich)}
               className={`px-1.5 py-0.5 rounded text-[9px] border cursor-pointer ${filterSA === sa.key ? 'bg-opacity-20 border-current' : 'border-gray-700'}`}
               style={{ color: filterSA === sa.key ? sa.color : '#6b7280', borderColor: filterSA === sa.key ? sa.color : undefined }}>
               {sa.label}

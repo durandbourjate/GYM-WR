@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
-import { SUBJECT_AREA_COLORS } from '../utils/colors';
+import { FACHBEREICH_COLORS } from '../utils/colors';
 import { computeSeqSolTotal } from '../utils/solTotal';
-import type { Course, SubjectArea, SequenceBlock, CollectionItem } from '../types';
+import type { Course, Fachbereich, SequenceBlock, CollectionItem } from '../types';
 import { CollectionPickerList } from './CollectionPicker';
 
 
@@ -15,7 +15,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
   return (
     <div className="space-y-0.5 p-1.5 bg-slate-800/30 rounded max-h-64 overflow-y-auto">
       {block.weeks.map((weekW, wi) => {
-        const course = courses.find(c => c.id === fb.courseId);
+        const course = courses.find(c => c.id === fb.kursId);
         const weekData = usePlannerStore.getState().weekData.find(w => w.w === weekW);
         const entry = course && weekData?.lessons[course.col];
 
@@ -33,7 +33,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
         const isExpanded = expandedWeek === weekW;
         const key = course ? `${weekW}-${course.col}` : '';
         const detail = key ? lessonDetails[key] : undefined;
-        const inheritSA = block.subjectArea || fb.seqSubjectArea;
+        const inheritSA = block.fachbereich || fb.seqFachbereich;
 
         return (
           <div key={wi}>
@@ -46,13 +46,13 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
                 // Select cell
                 if (course) {
                   const store = usePlannerStore.getState();
-                  store.setSelection({ week: weekW, courseId: course.id, title: entry?.title || '', course });
+                  store.setSelection({ week: weekW, kursId: course.id, title: entry?.title || '', course });
                 }
               }}
               onDoubleClick={() => {
                 if (!course) return;
                 const store = usePlannerStore.getState();
-                store.setSelection({ week: weekW, courseId: course.id, title: entry?.title || '', course });
+                store.setSelection({ week: weekW, kursId: course.id, title: entry?.title || '', course });
                 store.setSidePanelOpen(true);
                 store.setSidePanelTab('details');
               }}>
@@ -60,17 +60,17 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
               <span className="text-gray-400 font-mono w-8">KW{weekW}</span>
               <span className={`truncate ${entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE' ? 'text-gray-300' : 'text-gray-500 italic'}`}>{(() => {
                 const isPlaceholder = !entry?.title || entry.title === 'UE' || entry.title === 'Neue UE';
-                const thematic = detail?.topicMain || detail?.topicSub || block.topicSub || block.topicMain;
+                const thematic = detail?.thema || detail?.unterthema || block.unterthema || block.thema;
                 return isPlaceholder ? (thematic || entry?.title || '—') : entry.title;
               })()}</span>
-              {detail?.topicMain && !(entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE') && <span className="text-[8px] text-gray-400 ml-auto truncate max-w-20" title="Zugewiesenes Thema">📌{detail.topicMain}</span>}
+              {detail?.thema && !(entry?.title && entry.title !== 'UE' && entry.title !== 'Neue UE') && <span className="text-[8px] text-gray-400 ml-auto truncate max-w-20" title="Zugewiesenes Thema">📌{detail.thema}</span>}
             </div>
             {isExpanded && course && (
               <div className="ml-5 mr-1 my-1 p-1.5 bg-slate-900/50 rounded space-y-1 border-l-2 border-indigo-500/30">
                 <div>
                   <label className="text-[8px] text-gray-500">Thema</label>
-                  <input value={detail?.topicMain || ''} onChange={(e) => updateLessonDetail(weekW, course.col, { topicMain: e.target.value || undefined })}
-                    placeholder={block.topicMain || 'Thema…'}
+                  <input value={detail?.thema || ''} onChange={(e) => updateLessonDetail(weekW, course.col, { thema: e.target.value || undefined })}
+                    placeholder={block.thema || 'Thema…'}
                     className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-indigo-400" />
                 </div>
                 <div>
@@ -79,13 +79,13 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
                     placeholder="Notizen…" rows={2}
                     className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-1.5 py-0.5 text-[9px] outline-none focus:border-indigo-400 resize-y" />
                 </div>
-                {!detail?.subjectArea && inheritSA && (
+                {!detail?.fachbereich && inheritSA && (
                   <div className="text-[8px] text-gray-500">Fachbereich: <span className="text-gray-400">{inheritSA}</span> <span className="text-gray-500">(geerbt)</span></div>
                 )}
                 <div className="flex justify-end">
                   <button onClick={() => {
                     const store = usePlannerStore.getState();
-                    store.setSelection({ week: weekW, courseId: course.id, title: entry?.title || '', course });
+                    store.setSelection({ week: weekW, kursId: course.id, title: entry?.title || '', course });
                     store.setSidePanelOpen(true);
                     store.setSidePanelTab('details');
                   }} className="text-[8px] text-indigo-400 cursor-pointer hover:text-indigo-300">
@@ -107,12 +107,12 @@ type FlatBlockInfo = {
   seqId: string;
   seqTitle: string;
   seqColor?: string;
-  seqSubjectArea?: SubjectArea;
+  seqFachbereich?: Fachbereich;
   block: SequenceBlock;
   blockIndex: number;
   totalBlocks: number;
-  courseId: string;
-  courseIds?: string[];
+  kursId: string;
+  kursIds?: string[];
   cls: string;
   typ: string;
 };
@@ -146,8 +146,8 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
   }, [isActive]);
 
   const block = fb.block;
-  const sa = block.subjectArea || fb.seqSubjectArea;
-  const blockColor = sa ? SUBJECT_AREA_COLORS[sa]?.bg : fb.seqColor;
+  const sa = block.fachbereich || fb.seqFachbereich;
+  const blockColor = sa ? FACHBEREICH_COLORS[sa]?.bg : fb.seqColor;
   const kwRange = block.weeks.length > 0
     ? `KW ${block.weeks[0]}–${block.weeks[block.weeks.length - 1]}`
     : '—';
@@ -155,12 +155,12 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
   // Navigate to first lesson in planner
   const navigateToBlock = () => {
     if (block.weeks.length === 0) return;
-    const course = COURSES.find(c => c.id === fb.courseId);
+    const course = COURSES.find(c => c.id === fb.kursId);
     if (!course) return;
     const row = document.querySelector(`tr[data-week="${block.weeks[0]}"]`);
     if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
     usePlannerStore.getState().setSelection({
-      week: block.weeks[0], courseId: course.id, title: block.label, course,
+      week: block.weeks[0], kursId: course.id, title: block.label, course,
     });
   };
 
@@ -182,11 +182,11 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
         }}>
         <div className="w-1 h-6 rounded-full shrink-0" style={{ background: blockColor || fb.seqColor || '#16a34a' }} />
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-semibold text-gray-200 truncate">{block.label || block.topicMain || <span className="text-gray-500 italic font-normal">Block {fb.blockIndex + 1}</span>}</div>
+          <div className="text-[13px] font-semibold text-gray-200 truncate">{block.label || block.thema || <span className="text-gray-500 italic font-normal">Block {fb.blockIndex + 1}</span>}</div>
           <div className="text-[12px] text-gray-400 flex items-center gap-1.5">
             <span className="font-mono">{kwRange}</span>
             <span>· {block.weeks.length}W</span>
-            {sa && <span style={{ color: SUBJECT_AREA_COLORS[sa]?.fg }}>{sa}</span>}
+            {sa && <span style={{ color: FACHBEREICH_COLORS[sa]?.fg }}>{sa}</span>}
             {parentSeq?.sol?.enabled && <span className="text-emerald-500" title={`SOL: ${parentSeq.sol.topic || 'aktiv'}${parentSeq.sol.duration ? ' (' + parentSeq.sol.duration + ')' : ''}`}>📚</span>}
             <span className="text-gray-500">· {fb.seqTitle}</span>
           </div>
@@ -228,12 +228,12 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 <span className="text-[12px] text-gray-400 w-full">Fachbereich:</span>
                 {categories.map((s) => (
                   <button key={s.key} onClick={() => updateBlockInSequence(fb.seqId, fb.blockIndex, {
-                    subjectArea: block.subjectArea === s.key ? undefined : s.key as SubjectArea
+                    fachbereich: block.fachbereich === s.key ? undefined : s.key as Fachbereich
                   })}
-                    className={`px-2 py-1 rounded text-[12px] font-medium border cursor-pointer ${block.subjectArea === s.key ? 'text-gray-200' : 'text-gray-500 border-gray-700'}`}
+                    className={`px-2 py-1 rounded text-[12px] font-medium border cursor-pointer ${block.fachbereich === s.key ? 'text-gray-200' : 'text-gray-500 border-gray-700'}`}
                     style={{
-                      background: block.subjectArea === s.key ? s.color + '30' : 'transparent',
-                      ...(block.subjectArea === s.key ? { borderColor: s.color } : {}),
+                      background: block.fachbereich === s.key ? s.color + '30' : 'transparent',
+                      ...(block.fachbereich === s.key ? { borderColor: s.color } : {}),
                     }}>
                     {s.label}
                   </button>
@@ -244,23 +244,23 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 <input value={block.label || ''} onChange={(e) => {
                   const val = e.target.value;
                   // Sync: wenn Oberthema leer ist oder noch dem alten Label entspricht (= nicht manuell editiert)
-                  if (!block.topicMain || block.topicMain === block.label) {
-                    updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val, topicMain: val });
+                  if (!block.thema || block.thema === block.label) {
+                    updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val, thema: val });
                   } else {
                     updateBlockInSequence(fb.seqId, fb.blockIndex, { label: val });
                   }
                 }}
-                  placeholder={block.topicMain || `Block ${fb.blockIndex + 1}`}
+                  placeholder={block.thema || `Block ${fb.blockIndex + 1}`}
                   className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400 placeholder:text-gray-500 placeholder:italic" />
                 <p className="text-[9px] text-gray-500 mt-0.5">Interner Name der Sequenz (z.B. für Sammlung und Navigation). Wird aus Oberthema übernommen falls leer.</p>
               </div>
               <div>
                 <label className="text-[12px] text-gray-400">Oberthema</label>
-                <input value={block.topicMain || ''} onChange={(e) => {
+                <input value={block.thema || ''} onChange={(e) => {
                   const val = e.target.value || undefined;
-                  updateBlockInSequence(fb.seqId, fb.blockIndex, { topicMain: val });
+                  updateBlockInSequence(fb.seqId, fb.blockIndex, { thema: val });
                   // Sync: Sequenz-/Reihen-Titel = Oberthema (wenn Titel leer oder gleich dem alten Oberthema)
-                  if (parentSeq && val && (!parentSeq.title || parentSeq.title === block.topicMain || parentSeq.title === 'Neue Reihe')) {
+                  if (parentSeq && val && (!parentSeq.title || parentSeq.title === block.thema || parentSeq.title === 'Neue Reihe')) {
                     updateSequence(fb.seqId, { title: val });
                   }
                 }}
@@ -268,7 +268,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
               </div>
               <div>
                 <label className="text-[12px] text-gray-400">Unterthema</label>
-                <input value={block.topicSub || ''} onChange={(e) => updateBlockInSequence(fb.seqId, fb.blockIndex, { topicSub: e.target.value || undefined })}
+                <input value={block.unterthema || ''} onChange={(e) => updateBlockInSequence(fb.seqId, fb.blockIndex, { unterthema: e.target.value || undefined })}
                   className="w-full bg-slate-700/50 text-slate-200 border border-slate-600 rounded px-2 py-1 text-[12px] outline-none focus:border-indigo-400" />
               </div>
               <div>
@@ -302,11 +302,11 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
               {/* Apply block fields to all lessons */}
               {block.weeks.length > 0 && (
                 <button onClick={() => {
-                  const course = COURSES.find(c => c.id === fb.courseId);
+                  const course = COURSES.find(c => c.id === fb.kursId);
                   if (!course) return;
                   const fieldsToApply: string[] = [];
                   if (sa) fieldsToApply.push(`Fachbereich: ${sa}`);
-                  if (block.topicMain) fieldsToApply.push(`Oberthema: ${block.topicMain}`);
+                  if (block.thema) fieldsToApply.push(`Oberthema: ${block.thema}`);
                   if (fieldsToApply.length === 0) { alert('Keine Sequenz-Felder gesetzt, die übertragen werden können.'); return; }
                   if (!confirm(`Folgende Felder auf alle ${block.weeks.length} Lektionen übertragen?\n\n${fieldsToApply.join('\n')}\n\nBestehende Werte werden überschrieben.`)) return;
                   const store = usePlannerStore.getState();
@@ -315,8 +315,8 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                     const entry = weekData?.lessons[course.col];
                     if (!entry || (entry as any).type === 6) continue; // skip holidays
                     const patch: Record<string, any> = {};
-                    if (sa) patch.subjectArea = sa;
-                    if (block.topicMain) patch.topicMain = block.topicMain;
+                    if (sa) patch.fachbereich = sa;
+                    if (block.thema) patch.thema = block.thema;
                     store.updateLessonDetail(weekW, course.col, patch);
                   }
                 }}
@@ -352,12 +352,12 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                 <span className="text-[12px] text-gray-400 w-full">Fachbereich (Reihe):</span>
                 {categories.map((s) => (
                   <button key={s.key} onClick={() => updateSequence(fb.seqId, {
-                    subjectArea: parentSeq.subjectArea === s.key ? undefined : s.key as SubjectArea
+                    fachbereich: parentSeq.fachbereich === s.key ? undefined : s.key as Fachbereich
                   })}
-                    className={`px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer ${parentSeq.subjectArea === s.key ? 'text-gray-200' : 'text-gray-500 border-gray-700'}`}
+                    className={`px-1.5 py-0.5 rounded text-[9px] font-medium border cursor-pointer ${parentSeq.fachbereich === s.key ? 'text-gray-200' : 'text-gray-500 border-gray-700'}`}
                     style={{
-                      background: parentSeq.subjectArea === s.key ? s.color + '30' : 'transparent',
-                      ...(parentSeq.subjectArea === s.key ? { borderColor: s.color } : {}),
+                      background: parentSeq.fachbereich === s.key ? s.color + '30' : 'transparent',
+                      ...(parentSeq.fachbereich === s.key ? { borderColor: s.color } : {}),
                     }}>
                     {s.label}
                   </button>
@@ -442,12 +442,12 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
               )}
             </div>
             <button onClick={() => {
-              if (confirm(`Sequenz "${block.label || block.topicMain || `Block ${fb.blockIndex + 1}`}" auflösen? (UEs bleiben erhalten)`)) {
+              if (confirm(`Sequenz "${block.label || block.thema || `Block ${fb.blockIndex + 1}`}" auflösen? (UEs bleiben erhalten)`)) {
                 removeBlockFromSequence(fb.seqId, fb.blockIndex);
               }
             }} className="text-[12px] text-amber-400 hover:text-amber-300 cursor-pointer px-1" title="Gruppierung entfernen, UEs behalten">🔗 Auflösen</button>
             <button onClick={() => {
-              if (confirm(`Sequenz "${block.label || block.topicMain || `Block ${fb.blockIndex + 1}`}" + alle UEs komplett löschen?`)) {
+              if (confirm(`Sequenz "${block.label || block.thema || `Block ${fb.blockIndex + 1}`}" + alle UEs komplett löschen?`)) {
                 usePlannerStore.getState().removeBlockWithLessons(fb.seqId, fb.blockIndex);
               }
             }} className="text-[12px] text-red-400 hover:text-red-300 cursor-pointer px-1" title="Sequenz + alle UEs löschen">🗑 Komplett entfernen</button>
@@ -470,7 +470,7 @@ function getUniqueClasses(courses: Course[]): string[] {
 }
 
 // Get course types for a class
-function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; courseIds: string[] }[] {
+function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; kursIds: string[] }[] {
   const typMap = new Map<string, string[]>();
   for (const c of courses) {
     if (c.cls !== cls) continue;
@@ -478,7 +478,7 @@ function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; 
     if (!typMap.has(key)) typMap.set(key, []);
     typMap.get(key)!.push(c.id);
   }
-  return [...typMap.entries()].map(([typ, courseIds]) => ({ typ, courseIds }));
+  return [...typMap.entries()].map(([typ, kursIds]) => ({ typ, kursIds }));
 }
 
 export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
@@ -486,17 +486,17 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     sequences, sequencePanelOpen, setSequencePanelOpen,
     addSequence, addBlockToSequence, editingSequenceId, setEditingSequenceId,
   } = usePlannerStore();
-  const { courses: COURSES, getLinkedCourseIds, categories } = usePlannerData();
+  const { courses: COURSES, getLinkedKursIds, categories } = usePlannerData();
 
   const [filterClass, setFilterClass] = useState<string>('ALL');
   const [showNewForm, setShowNewForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
-  const [newCourseId, setNewCourseId] = useState(COURSES[0]?.id || '');
+  const [newKursId, setNewKursId] = useState(COURSES[0]?.id || '');
   // T10: Collection import state
   const [showCollectionImport, setShowCollectionImport] = useState(false);
   const [pendingImportItem, setPendingImportItem] = useState<CollectionItem | null>(null);
   const [importStartWeek, setImportStartWeek] = useState('');
-  const [importCourseId, setImportCourseId] = useState(COURSES[0]?.id || '');
+  const [importKursId, setImportKursId] = useState(COURSES[0]?.id || '');
 
   if (!embedded && !sequencePanelOpen) return null;
 
@@ -506,22 +506,22 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
 
 
   // Subject area color helper
-  const saColor = (sa?: SubjectArea) => sa ? (SUBJECT_AREA_COLORS[sa] || {}).bg || 'var(--bg-secondary)' : 'var(--bg-secondary)';
-  const saFg = (sa?: SubjectArea) => sa ? (SUBJECT_AREA_COLORS[sa] || {}).fg || 'var(--text-muted)' : 'var(--text-muted)';
+  const saColor = (sa?: Fachbereich) => sa ? (FACHBEREICH_COLORS[sa] || {}).bg || 'var(--bg-secondary)' : 'var(--bg-secondary)';
+  const saFg = (sa?: Fachbereich) => sa ? (FACHBEREICH_COLORS[sa] || {}).fg || 'var(--text-muted)' : 'var(--text-muted)';
 
   const handleCreateSequence = () => {
-    if (!newTitle.trim() || !newCourseId) return;
-    const course = COURSES.find(c => c.id === newCourseId);
+    if (!newTitle.trim() || !newKursId) return;
+    const course = COURSES.find(c => c.id === newKursId);
     const autoColor: Record<string, string> = { SF: '#16a34a', EWR: '#d97706', IN: '#0ea5e9', KS: '#7c3aed', EF: '#ec4899' };
-    const linkedIds = getLinkedCourseIds(newCourseId);
+    const linkedIds = getLinkedKursIds(newKursId);
     // Use multi-selection weeks if they match the course (v3.76 #9)
     const store = usePlannerStore.getState();
     const selWeeks = store.multiSelection
-      .filter(k => k.endsWith(`-${newCourseId}`))
+      .filter(k => k.endsWith(`-${newKursId}`))
       .map(k => k.split('-').slice(0, -1).join('-'));
     const seqId = addSequence({
-      courseId: newCourseId,
-      courseIds: linkedIds.length > 1 ? linkedIds : undefined,
+      kursId: newKursId,
+      kursIds: linkedIds.length > 1 ? linkedIds : undefined,
       title: newTitle.trim(),
       blocks: [],
       color: course ? autoColor[course.typ] || '#16a34a' : '#16a34a',
@@ -544,17 +544,17 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
 
   // T10: Handle import from collection with start-KW auto-place (T11)
   const handleCollectionImport = () => {
-    if (!pendingImportItem || !importStartWeek || !importCourseId) return;
+    if (!pendingImportItem || !importStartWeek || !importKursId) return;
     const store = usePlannerStore.getState();
     const allWeekOrder = store.weekData.map(w => w.w);
     // Total weeks needed from collection item
     const totalNeeded = pendingImportItem.units.reduce((n, u) => n + Math.max(u.lessonTitles.length, 1), 0);
     // Find available weeks from start KW
-    const available = store.getAvailableWeeks(importCourseId, importStartWeek, allWeekOrder);
+    const available = store.getAvailableWeeks(importKursId, importStartWeek, allWeekOrder);
     const targetWeeks = available.slice(0, totalNeeded);
     if (targetWeeks.length === 0) { alert('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
     store.pushUndo();
-    const seqId = store.importFromCollection(pendingImportItem.id, importCourseId, {
+    const seqId = store.importFromCollection(pendingImportItem.id, importKursId, {
       includeNotes: true, includeMaterialLinks: true, targetWeeks,
     });
     if (seqId) {
@@ -571,19 +571,19 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     seqId: string;
     seqTitle: string;
     seqColor?: string;
-    seqSubjectArea?: SubjectArea;
+    seqFachbereich?: Fachbereich;
     block: SequenceBlock;
     blockIndex: number;
     totalBlocks: number;
-    courseId: string;
-    courseIds?: string[];
+    kursId: string;
+    kursIds?: string[];
     cls: string;
     typ: string;
   };
 
   const flatBlocks: FlatBlock[] = [];
   for (const seq of sequences) {
-    const course = COURSES.find(c => c.id === seq.courseId);
+    const course = COURSES.find(c => c.id === seq.kursId);
     if (!course) continue;
     // Apply class filter
     if (filterClass !== 'ALL' && course.cls !== filterClass) continue;
@@ -592,12 +592,12 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
         seqId: seq.id,
         seqTitle: seq.title,
         seqColor: seq.color,
-        seqSubjectArea: seq.subjectArea,
+        seqFachbereich: seq.fachbereich,
         block: seq.blocks[i],
         blockIndex: i,
         totalBlocks: seq.blocks.length,
-        courseId: seq.courseId,
-        courseIds: seq.courseIds,
+        kursId: seq.kursId,
+        kursIds: seq.kursIds,
         cls: course.cls,
         typ: course.typ,
       });
@@ -607,7 +607,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
   // Group by class → subject area
   const groupedByClass = new Map<string, Map<string, FlatBlock[]>>();
   for (const fb of flatBlocks) {
-    const sa = fb.block.subjectArea || fb.seqSubjectArea || 'ANDERE';
+    const sa = fb.block.fachbereich || fb.seqFachbereich || 'ANDERE';
     if (!groupedByClass.has(fb.cls)) groupedByClass.set(fb.cls, new Map());
     const saMap = groupedByClass.get(fb.cls)!;
     if (!saMap.has(sa)) saMap.set(sa, []);
@@ -632,10 +632,10 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
           <div className="text-[12px] font-bold text-gray-300 px-1 flex items-center gap-2">
             <span>{cls}</span>
             {getCourseTypesForClass(cls, COURSES).map(ct => {
-              const course = COURSES.find(c => c.id === ct.courseIds[0]);
+              const course = COURSES.find(c => c.id === ct.kursIds[0]);
               return (
                 <span key={ct.typ} className="text-[9px] px-1 py-px rounded bg-slate-800/80 text-gray-400 font-normal">
-                  {ct.typ} {course?.day}{ct.courseIds.length > 1 ? `+${COURSES.find(c => c.id === ct.courseIds[1])?.day}` : ''}
+                  {ct.typ} {course?.day}{ct.kursIds.length > 1 ? `+${COURSES.find(c => c.id === ct.kursIds[1])?.day}` : ''}
                 </span>
               );
             })}
@@ -650,8 +650,8 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
             <div key={sa} className="ml-1">
               {sa !== 'ANDERE' && (
                 <div className="text-[9px] font-medium px-1 py-0.5 mb-1 rounded flex items-center gap-1"
-                  style={{ color: saFg(sa as SubjectArea), background: saColor(sa as SubjectArea) + '15' }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: saFg(sa as SubjectArea) }} />
+                  style={{ color: saFg(sa as Fachbereich), background: saColor(sa as Fachbereich) + '15' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: saFg(sa as Fachbereich) }} />
                   {categories.find(s => s.key === sa)?.label || sa}
                 </div>
               )}
@@ -705,8 +705,8 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
                 onKeyDown={(e) => { if (e.key === 'Enter') handleCreateSequence(); if (e.key === 'Escape') setShowNewForm(false); }}
                 placeholder="Titel der Sequenz…"
                 className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-indigo-400" />
-              <select value={newCourseId} onChange={(e) => {
-                  setNewCourseId(e.target.value);
+              <select value={newKursId} onChange={(e) => {
+                  setNewKursId(e.target.value);
                   const course = COURSES.find(c => c.id === e.target.value);
                   if (course && !newTitle.trim()) setNewTitle(`${course.cls} – `);
                 }}
@@ -736,7 +736,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
                   <CollectionPickerList
                     onSelect={(item) => {
                       setPendingImportItem(item);
-                      setImportCourseId(COURSES[0]?.id || '');
+                      setImportKursId(COURSES[0]?.id || '');
                       // Default start week: first available in weekData
                       const firstWeek = usePlannerStore.getState().weekData[0]?.w || '';
                       setImportStartWeek(firstWeek);
@@ -754,7 +754,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
                   </div>
                   <div>
                     <label className="text-[9px] text-gray-400">Kurs</label>
-                    <select value={importCourseId} onChange={(e) => setImportCourseId(e.target.value)}
+                    <select value={importKursId} onChange={(e) => setImportKursId(e.target.value)}
                       className="w-full bg-slate-800 text-slate-200 border border-slate-600 rounded px-2 py-1.5 text-[12px] outline-none focus:border-amber-400">
                       {COURSES.map((c) => (
                         <option key={c.id} value={c.id}>{c.cls} – {c.typ} {c.day} {c.from}–{c.to}</option>

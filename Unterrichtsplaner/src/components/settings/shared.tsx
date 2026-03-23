@@ -80,7 +80,7 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
       const item = existing.find(e => e.id === selectedId);
       if (item) {
         // Update the existing collection item's snapshot
-        // We need to reach into the store directly since updateCollectionItem only updates title/tags/notes/subjectArea
+        // We need to reach into the store directly since updateCollectionItem only updates title/tags/notes/fachbereich
         const store = usePlannerStore.getState();
         const updated = store.collection.map(c => c.id === selectedId ? { ...c, settingsSnapshot: snapshot, title: c.title } : c);
         usePlannerStore.setState({ collection: updated });

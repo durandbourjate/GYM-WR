@@ -1,10 +1,10 @@
 import { CURRICULUM_GOALS, type CurriculumGoal } from '../data/curriculumGoals';
-import type { SubjectArea } from '../types';
+import type { Fachbereich } from '../types';
 
 /**
  * Phase 4: Auto-Suggest Lehrplanziele
  * 
- * Fuzzy-matches a topicMain string against curriculum goals,
+ * Fuzzy-matches a thema string against curriculum goals,
  * returning scored suggestions ordered by relevance.
  */
 
@@ -29,7 +29,7 @@ function tokenize(s: string): string[] {
 }
 
 // Score how well a query matches a goal
-function scoreGoal(queryTokens: string[], goal: CurriculumGoal, subjectArea?: SubjectArea): { score: number; reason: string } {
+function scoreGoal(queryTokens: string[], goal: CurriculumGoal, fachbereich?: Fachbereich): { score: number; reason: string } {
   if (queryTokens.length === 0) return { score: 0, reason: '' };
 
   let bestScore = 0;
@@ -77,7 +77,7 @@ function scoreGoal(queryTokens: string[], goal: CurriculumGoal, subjectArea?: Su
   }
 
   // 5. Subject area bonus
-  if (subjectArea && goal.area === subjectArea) {
+  if (fachbereich && goal.area === fachbereich) {
     bestScore *= 1.2; // 20% boost for matching subject area
   }
 
@@ -89,19 +89,19 @@ function scoreGoal(queryTokens: string[], goal: CurriculumGoal, subjectArea?: Su
  * Returns top N matches with score > threshold.
  */
 export function suggestGoals(
-  topicMain: string,
-  subjectArea?: SubjectArea,
+  thema: string,
+  fachbereich?: Fachbereich,
   maxResults = 3,
   threshold = 0.2,
   goals?: CurriculumGoal[]
 ): SuggestResult[] {
-  const queryTokens = tokenize(topicMain);
+  const queryTokens = tokenize(thema);
   if (queryTokens.length === 0) return [];
 
   const source = goals ?? CURRICULUM_GOALS;
   const scored = source
     .map(goal => {
-      const { score, reason } = scoreGoal(queryTokens, goal, subjectArea);
+      const { score, reason } = scoreGoal(queryTokens, goal, fachbereich);
       return { goal, score, matchReason: reason };
     })
     .filter(r => r.score >= threshold)
@@ -116,13 +116,13 @@ export function suggestGoals(
  * curriculum goal and returning its area. Returns undefined if no
  * confident match is found (score < 0.35).
  */
-export function suggestSubjectArea(topicMain: string, goals?: CurriculumGoal[]): SubjectArea | undefined {
-  const queryTokens = tokenize(topicMain);
+export function suggestFachbereich(thema: string, goals?: CurriculumGoal[]): Fachbereich | undefined {
+  const queryTokens = tokenize(thema);
   if (queryTokens.length === 0) return undefined;
 
   const source = goals ?? CURRICULUM_GOALS;
   let bestScore = 0;
-  let bestArea: SubjectArea | undefined;
+  let bestArea: Fachbereich | undefined;
 
   for (const goal of source) {
     // Score without subject area bonus to get unbiased match
