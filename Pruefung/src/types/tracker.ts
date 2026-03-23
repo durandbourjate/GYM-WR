@@ -45,6 +45,7 @@ export interface FrageStatEintrag {
 export interface TrackerDaten {
   pruefungen: TrackerPruefungSummary[]
   aktualisiert: string
+  notenStand?: NotenStandKurs[]
 }
 
 /** SuS die bei einer Prüfung gefehlt haben */
@@ -69,6 +70,7 @@ export interface FragenPerformance {
 
 /** Noten-Stand eines Kurses gegen MiSDV-Vorgaben */
 export interface NotenStandKurs {
+  kursId: string
   kurs: string
   gefaess: string
   semester: string

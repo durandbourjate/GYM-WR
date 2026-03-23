@@ -156,6 +156,8 @@ function doPost(e) {
       return importierePoolFragen(body);
     case 'importiereLernziele':
       return importiereLernziele(body);
+    case 'importiereLehrplanziele':
+      return importiereLehrplanzieleEndpoint(body);
     case 'ladeLernziele':
       return ladeLernziele(body);
     case 'schreibePoolAenderung':
@@ -1602,6 +1604,52 @@ function importiereLernziele(body) {
   }
 }
 
+function importiereLehrplanzieleEndpoint(body) {
+  try {
+    var email = body.email;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var ziele = body.lehrplanziele || [];
+    if (ziele.length === 0) return jsonResponse({ error: 'Keine Lernziele übergeben' });
+
+    var ss = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
+    var sheet = ss.getSheetByName('Lehrplanziele');
+    if (!sheet) {
+      sheet = ss.insertSheet('Lehrplanziele');
+      sheet.getRange(1, 1, 1, 9).setValues([['id', 'ebene', 'parentId', 'fach', 'gefaess', 'semester', 'thema', 'text', 'bloom']]);
+    }
+
+    var existing = getSheetData(sheet);
+    var existingIds = {};
+    for (var ei = 0; ei < existing.length; ei++) {
+      existingIds[existing[ei].id] = ei;
+    }
+    var neu = 0, aktualisiert = 0;
+
+    for (var i = 0; i < ziele.length; i++) {
+      var z = ziele[i];
+      if (!z.id) continue;
+      var rowValues = [[z.id, z.ebene || 'fein', z.parentId || '', z.fach || '', z.gefaess || '', z.semester || '', z.thema || '', z.text || '', z.bloom || '']];
+
+      if (existingIds[z.id] !== undefined) {
+        // Update: Zeile finden und überschreiben
+        var rowIdx = existingIds[z.id];
+        sheet.getRange(rowIdx + 2, 1, 1, 9).setValues(rowValues);
+        aktualisiert++;
+      } else {
+        sheet.appendRow(rowValues[0]);
+        existingIds[z.id] = existing.length + neu;
+        neu++;
+      }
+    }
+
+    return jsonResponse({ erfolg: true, neu: neu, aktualisiert: aktualisiert });
+  } catch (e) {
+    return jsonResponse({ error: e.message });
+  }
+}
+
 function ladeLernziele(body) {
   try {
     var email = body.email;
@@ -1611,6 +1659,33 @@ function ladeLernziele(body) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
+    // Zuerst: Zentrale Lehrplan-DB versuchen (bevorzugt)
+    try {
+      var lehrplanSheet = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID).getSheetByName('Lehrplanziele');
+      if (lehrplanSheet) {
+        var lpData = getSheetData(lehrplanSheet);
+        if (lpData.length > 0) {
+          var lernziele = [];
+          for (var li = 0; li < lpData.length; li++) {
+            var lpRow = lpData[li];
+            if (fachFilter && lpRow.fach !== fachFilter) continue;
+            lernziele.push({
+              id: lpRow.id,
+              fach: lpRow.fach || '',
+              poolId: '',
+              thema: lpRow.thema || '',
+              text: lpRow.text || '',
+              bloom: lpRow.bloom || '',
+              ebene: lpRow.ebene || '',
+              aktiv: true
+            });
+          }
+          return jsonResponse({ lernziele: lernziele });
+        }
+      }
+    } catch (e) { /* Lehrplan-Sheet nicht konfiguriert — Fallback auf Pool-Lernziele */ }
+
+    // Fallback: Pool-Lernziele aus Fragenbank (bisherige Logik)
     var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
     var sheet = fragenbank.getSheetByName(LERNZIELE_TAB);
 
@@ -3512,8 +3587,50 @@ function ladeTrackerDatenEndpoint(body) {
       pruefungen.push(summary);
     }
 
+    // 4. Noten-Stand: Beurteilungsregeln aus Lehrplan-Sheet laden
+    var notenStand = [];
+    try {
+      var lehrplanSS = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
+      var regelSheet = lehrplanSS.getSheetByName('Beurteilungsregeln');
+      if (regelSheet) {
+        var regelData = getSheetData(regelSheet);
+        for (var r = 0; r < regelData.length; r++) {
+          var regel = regelData[r];
+          if (!regel.gefaess || !regel.semester) continue;
+          var minNoten = Number(regel.minNoten) || 0;
+
+          // Zähle summative Prüfungen mit Noten für dieses Gefäss+Semester
+          var vorhandene = 0;
+          for (var p = 0; p < pruefungen.length; p++) {
+            var pr = pruefungen[p];
+            if (pr.gefaess === regel.gefaess && pr.semester === regel.semester &&
+                pr.typ === 'summativ' && pr.durchschnittNote !== null) {
+              vorhandene++;
+            }
+          }
+
+          var diff = vorhandene - minNoten;
+          var status = diff >= 0 ? 'ok' : (diff === -1 ? 'warning' : 'critical');
+
+          notenStand.push({
+            kursId: (regel.gefaess + '-' + regel.semester).toLowerCase(),
+            kurs: regel.gefaess + ' ' + regel.semester,
+            gefaess: regel.gefaess,
+            semester: regel.semester,
+            vorhandeneNoten: vorhandene,
+            erforderlicheNoten: minNoten,
+            status: status,
+            naechsterTermin: regel.bemerkung || ''
+          });
+        }
+      }
+    } catch (e) {
+      // Lehrplan-Sheet existiert noch nicht oder Beurteilungsregeln-Tab fehlt — ignorieren
+    }
+
     return jsonResponse({
       pruefungen: pruefungen,
+      notenStand: notenStand,
       aktualisiert: new Date().toISOString()
     });
 

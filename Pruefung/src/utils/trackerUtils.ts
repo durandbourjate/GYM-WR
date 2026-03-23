@@ -98,6 +98,7 @@ export function berechneNotenStand(tracker: TrackerDaten): NotenStandKurs[] {
     else status = 'critical'
 
     ergebnis.push({
+      kursId: kurs.toLowerCase().replace(/\s+/g, '-'),
       kurs,
       gefaess: data.gefaess,
       semester: 'SJ',
