@@ -32,6 +32,7 @@ export interface Schueler {
   email: string
   klasse: string
   schuelerId: string
+  geschlecht: string
 }
 
 export interface TafPhase {

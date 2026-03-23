@@ -8,7 +8,6 @@
 
 // === KONFIGURATION ===
 const FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
-const KLASSENLISTEN_ID = '1tCLVobfVPXIu52aP_xsziCLKuVfZ7cNwp77g1yKCtCM';
 const CONFIGS_ID = '1QpcC44Ly7BUTLgUkVQtdqjTUDXmgdWdVD8ajjzsd7tE';
 const ANTWORTEN_ORDNER_ID = '1PAF1SUnR7nQ175muXn4iQERdQLJ-UnQQ';
 const ANHAENGE_ORDNER_ID = '1Ql4XuKmxyNW9ZIGsn4getcaB4FhLbjtm';       // LP-Anhänge bei Fragen (Bilder, PDFs)
@@ -57,43 +56,26 @@ function doGet(e) {
         return jsonResponse({ error: 'Nur LP kann Klassenlisten laden' });
       }
       try {
-        const ss = SpreadsheetApp.openById(KLASSENLISTEN_ID);
+        const ss = SpreadsheetApp.openById(KURSE_SHEET_ID);
         const sheets = ss.getSheets();
         const result = [];
         for (const sheet of sheets) {
           const sheetName = sheet.getName();
-          // Überspringe Meta-Sheets
-          if (sheetName.startsWith('_') || sheetName === 'Template') continue;
-          const data = sheet.getDataRange().getValues();
-          if (data.length < 2) continue; // Nur Header, keine Daten
-          // Format: A=Klasse, B=Nachname, C=Vorname, D=E-Mail (Zeile 1 = Header)
-          // Spaltenreihenfolge automatisch erkennen anhand Header
-          const header = data[0].map(h => String(h).trim().toLowerCase());
-          let colKlasse = header.indexOf('klasse');
-          let colName = header.indexOf('nachname');
-          if (colName === -1) colName = header.indexOf('name');
-          let colVorname = header.indexOf('vorname');
-          let colEmail = header.indexOf('e-mail');
-          if (colEmail === -1) colEmail = header.indexOf('email');
-          if (colEmail === -1) colEmail = header.indexOf('mail');
-          // Fallback: alte Reihenfolge (A=Klasse, B=Name, C=Vorname, D=Email)
-          if (colEmail === -1) { colKlasse = 0; colName = 1; colVorname = 2; colEmail = 3; }
-          if (colName === -1) colName = 1;
-          if (colVorname === -1) colVorname = 2;
-
-          for (let i = 1; i < data.length; i++) {
-            const row = data[i];
-            const emailVal = colEmail >= 0 ? String(row[colEmail] || '').trim().toLowerCase() : '';
+          // Überspringe Meta-Tab "Kurse" und versteckte/Template-Tabs
+          if (sheetName === 'Kurse' || sheetName.startsWith('_') || sheetName === 'Template') continue;
+          const data = getSheetData(sheet);
+          if (!data || data.length === 0) continue;
+          // SuS-Tabs: Spalten name, vorname, email, klasse, schuelerID, geschlecht
+          for (const row of data) {
+            const emailVal = String(row.email || '').trim().toLowerCase();
             if (!emailVal || !emailVal.includes('@')) continue;
-            // Klasse: aus Spalte lesen, aber falls Wert wie E-Mail aussieht → Sheet-Name nutzen
-            let klasseVal = colKlasse >= 0 ? String(row[colKlasse] || '').trim() : '';
-            if (!klasseVal || klasseVal.includes('@')) klasseVal = sheetName;
             result.push({
-              klasse: klasseVal,
+              klasse: String(row.klasse || '').trim(),
               kurs: sheetName,
-              name: String(row[colName] || '').trim(),
-              vorname: colVorname >= 0 ? String(row[colVorname] || '').trim() : '',
+              name: String(row.name || '').trim(),
+              vorname: String(row.vorname || '').trim(),
               email: emailVal,
+              geschlecht: String(row.geschlecht || '').trim(),
             });
           }
         }
@@ -518,9 +500,22 @@ function ladePruefung(pruefungId, email) {
 
     const istLP = email.endsWith('@' + LP_DOMAIN);
     if (!istLP) {
-      const klassenSheet = SpreadsheetApp.openById(KLASSENLISTEN_ID).getSheetByName(configRow.erlaubteKlasse);
+      // erlaubteKlasse enthält eine Klasse (z.B. "29c") — wir müssen den passenden Kurs-Tab finden
+      const kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+      const kurseMetaSheet = kurseSS.getSheetByName('Kurse');
+      const kurseData = kurseMetaSheet ? getSheetData(kurseMetaSheet) : [];
+      // Suche Kurs, dessen klassen-Feld die erlaubteKlasse enthält
+      const erlaubteKlasse = configRow.erlaubteKlasse || '';
+      const passenderKurs = kurseData.find(k => {
+        const klassen = String(k.klassen || '').split(',').map(s => s.trim());
+        return klassen.includes(erlaubteKlasse);
+      });
+      if (!passenderKurs) {
+        return jsonResponse({ error: 'Klassenliste nicht gefunden (kein Kurs für Klasse ' + erlaubteKlasse + ')' });
+      }
+      const klassenSheet = kurseSS.getSheetByName(passenderKurs.label);
       if (!klassenSheet) {
-        return jsonResponse({ error: 'Klassenliste nicht gefunden' });
+        return jsonResponse({ error: 'SuS-Tab nicht gefunden: ' + passenderKurs.label });
       }
       const klassenData = getSheetData(klassenSheet);
       const susEintrag = klassenData.find(row => row.email === email);
@@ -2636,18 +2631,21 @@ function validiereSchuelercode(body) {
     const { email, code } = body;
     if (!email || !code) return jsonResponse({ success: false, error: 'E-Mail und Code erforderlich' });
 
-    const klassenlisten = SpreadsheetApp.openById(KLASSENLISTEN_ID);
-    const sheets = klassenlisten.getSheets();
+    const kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+    const sheets = kurseSS.getSheets();
 
     for (const sheet of sheets) {
+      const sheetName = sheet.getName();
+      // Überspringe Meta-Tab "Kurse"
+      if (sheetName === 'Kurse' || sheetName.startsWith('_') || sheetName === 'Template') continue;
       const data = getSheetData(sheet);
-      const eintrag = data.find(r => r.email === email && String(r.schuelerCode) === String(code));
+      const eintrag = data.find(r => r.email === email && String(r.schuelerCode || r.schuelerID || '') === String(code));
       if (eintrag) {
         return jsonResponse({
           success: true,
           name: eintrag.name || '',
           vorname: eintrag.vorname || '',
-          klasse: eintrag.klasse || sheet.getName(),
+          klasse: eintrag.klasse || sheetName,
         });
       }
     }
