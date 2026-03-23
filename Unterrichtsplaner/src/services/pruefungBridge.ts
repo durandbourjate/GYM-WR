@@ -1,8 +1,8 @@
 // Prüfung-Bridge: Lädt Prüfungs-Metadaten via Apps Script ladeTrackerDaten + cached in localStorage
 // Teilt APPS_SCRIPT_URL und LP_EMAIL mit synergyService.ts (gleiche Konstanten-Konvention)
 
-const APPS_SCRIPT_URL = ''
-const LP_EMAIL = ''
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcRXYgyVpfLSicZMxWzVIAs4gtqKPQzz0djQSnPiFUYz_h2dDZ6IMBXcYr5ubbGPSUPA/exec'
+const LP_EMAIL = 'yannick.durand@gymhofwil.ch'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 const CACHE_KEY_PRUEFUNGEN = 'synergy-pruefungen'
 const CACHE_KEY_NOTENSTAND = 'synergy-notenstand'

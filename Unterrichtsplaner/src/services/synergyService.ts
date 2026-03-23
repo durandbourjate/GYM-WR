@@ -1,10 +1,10 @@
 // Synergy-Service: Lädt zentrale Daten via Apps Script + cached in localStorage
 
 // PLACEHOLDER: User muss die Apps Script Web-App-URL einsetzen (gleiche wie Prüfungstool)
-const APPS_SCRIPT_URL = ''
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcRXYgyVpfLSicZMxWzVIAs4gtqKPQzz0djQSnPiFUYz_h2dDZ6IMBXcYr5ubbGPSUPA/exec'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 // LP-E-Mail muss konfiguriert werden bevor der Service funktioniert
-const LP_EMAIL = ''
+const LP_EMAIL = 'yannick.durand@gymhofwil.ch'
 
 interface CacheEntry<T> {
   data: T
