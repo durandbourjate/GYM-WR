@@ -3341,16 +3341,52 @@ function ladeTrackerDatenEndpoint(body) {
                 fragenAgg[fId].sumPunkte += fPunkte;
                 fragenAgg[fId].n++;
               }
+              // Trennschärfe: Punkt-biseriale Korrelation (Part-Whole) pro Frage
+              // Schritt 1: Gesamtpunkte pro SuS berechnen
+              var susScores = {}; // email → {gesamt, fragen: {frageId: punkte}}
+              for (var fs2 = 0; fs2 < korrekturData.length; fs2++) {
+                var r2 = korrekturData[fs2];
+                if (!r2.frageId || !r2.email) continue;
+                if (!susScores[r2.email]) susScores[r2.email] = { gesamt: 0, fragen: {} };
+                var p2 = Number(r2.lpPunkte || r2.kiPunkte || 0);
+                susScores[r2.email].fragen[r2.frageId] = p2;
+                susScores[r2.email].gesamt += p2;
+              }
+              var susEmails = Object.keys(susScores);
+
               var fragenStatsObj = {};
               for (var fKey in fragenAgg) {
                 var fa = fragenAgg[fKey];
                 var avgP = fa.n > 0 ? fa.sumPunkte / fa.n : 0;
-                fragenStatsObj[fKey] = {
+                var stat = {
                   loesungsquote: fa.maxPunkte > 0 ? Math.round((avgP / fa.maxPunkte) * 100) : 0,
                   durchschnittPunkte: Math.round(avgP * 10) / 10,
                   maxPunkte: fa.maxPunkte,
-                  n: fa.n
+                  n: fa.n,
+                  trennschaerfe: null
                 };
+                // Trennschärfe nur bei >= 5 SuS berechnen
+                if (susEmails.length >= 5) {
+                  var paare = [];
+                  for (var se = 0; se < susEmails.length; se++) {
+                    var sd = susScores[susEmails[se]];
+                    if (sd.fragen[fKey] === undefined) continue;
+                    paare.push({ x: sd.fragen[fKey], y: sd.gesamt - sd.fragen[fKey] });
+                  }
+                  if (paare.length >= 5) {
+                    var n_ = paare.length, sX = 0, sY = 0, sXY = 0, sX2 = 0, sY2 = 0;
+                    for (var pi = 0; pi < n_; pi++) {
+                      sX += paare[pi].x; sY += paare[pi].y;
+                      sXY += paare[pi].x * paare[pi].y;
+                      sX2 += paare[pi].x * paare[pi].x; sY2 += paare[pi].y * paare[pi].y;
+                    }
+                    var denom = Math.sqrt((n_ * sX2 - sX * sX) * (n_ * sY2 - sY * sY));
+                    if (denom > 0) {
+                      stat.trennschaerfe = Math.round(((n_ * sXY - sX * sY) / denom) * 100) / 100;
+                    }
+                  }
+                }
+                fragenStatsObj[fKey] = stat;
               }
               summary.fragenStats = fragenStatsObj;
             }

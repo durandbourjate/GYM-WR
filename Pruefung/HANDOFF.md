@@ -34,6 +34,12 @@
   - `utils/korrekturUtils.ts`: `berechneTrennschaerfe()`, erweitertes `FragenStatistik`-Interface
   - `components/lp/KorrekturDashboard.tsx`: Trennschärfe-Spalte mit Sortierung
 
+#### Prüfungsplattform — Trennschärfe über mehrere Durchführungen
+- **Backend (apps-script-code.js):** `ladeTrackerDaten` berechnet jetzt Trennschärfe pro Frage pro Prüfung (Pearson Part-Whole). Gespeichert als `trennschaerfe` in `fragenStats`.
+- **Aggregation (trackerUtils.ts):** `aggregiereFragenPerformance()` berechnet gewichteten ∅ Trennschärfe über alle Prüfungen. Neues Feld `durchschnittTrennschaerfe` in `FragenPerformance`.
+- **MetadataSection:** Zeigt ∅ Trennschärfe in der Zusammenfassung + pro Prüfung in der Detail-Tabelle (Spalte "TS").
+- **Geänderte Dateien:** `apps-script-code.js`, `types/tracker.ts`, `utils/trackerUtils.ts`, `components/lp/frageneditor/sections/MetadataSection.tsx`
+
 #### Übungspools — Mini-Fix
 - **Pool.html Zeile 1673:** `explain` → `highlightKonten(explain)` — fehlende Konten-Highlighting in einem Feedback-Pfad
 
@@ -642,7 +648,7 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 |---|---------|---------|
 | 2 | Prüfungstool | **Tablet/Smartphone-Tests** — responsive gebaut, spezifisch noch nicht getestet |
 | 3 | Prüfungstool | **Evento REST-Zugang** beantragen → Klassenlisten-Sync (Schulinformatiker hat bestätigt, 22.03.) |
-| 4 | Prüfungstool | **Fragen-Statistiken: Analyse über mehrere Durchführungen** — Pool-Fehlerquoten im Editor anzeigen |
+| 4 | Prüfungstool | **Pool-Fehlerquoten explizit filtern** — Sortier-/Filteroptionen in FragenBrowser nach Performance-Daten |
 
 #### 🟢 Längerfristig (Roadmap)
 
@@ -671,6 +677,7 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - ~~2-stufige Korrektur-Freigabe~~ ✅ Einsicht + PDF getrennt, zurücknehmbar (23.03.)
 - ~~Trennschärfe~~ ✅ Punkt-biseriale Korrelation mit Part-Whole-Correction (23.03.)
 - ~~Unterrichtsplaner-Bugs L1–L7~~ ✅ Alle bereits in v3.90–v3.102 behoben (verifiziert 23.03.)
+- ~~Trennschärfe über mehrere Durchführungen~~ ✅ Backend + Aggregation + MetadataSection (23.03.)
 
 ### Roadmap: Multi-LP / Skalierung (Sammlung)
 

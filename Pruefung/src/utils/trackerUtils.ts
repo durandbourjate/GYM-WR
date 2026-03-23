@@ -134,6 +134,7 @@ export function aggregiereFragenPerformance(tracker: TrackerDaten): Map<string, 
           anzahlVerwendungen: 0,
           gesamtN: 0,
           durchschnittLoesungsquote: 0,
+          durchschnittTrennschaerfe: null,
           verwendungen: [],
         }
         map.set(frageId, perf)
@@ -146,18 +147,26 @@ export function aggregiereFragenPerformance(tracker: TrackerDaten): Map<string, 
         datum: p.datum,
         loesungsquote: stat.loesungsquote,
         n: stat.n,
+        trennschaerfe: stat.trennschaerfe ?? null,
       })
     }
   }
 
-  // ∅ Lösungsquote berechnen (gewichtet nach n)
+  // ∅ Lösungsquote + ∅ Trennschärfe berechnen (gewichtet nach n)
   for (const perf of map.values()) {
     if (perf.gesamtN > 0) {
-      let gewichteterWert = 0
+      let gewLQ = 0
+      let gewTS = 0
+      let tsN = 0
       for (const v of perf.verwendungen) {
-        gewichteterWert += v.loesungsquote * v.n
+        gewLQ += v.loesungsquote * v.n
+        if (v.trennschaerfe != null) {
+          gewTS += v.trennschaerfe * v.n
+          tsN += v.n
+        }
       }
-      perf.durchschnittLoesungsquote = Math.round(gewichteterWert / perf.gesamtN)
+      perf.durchschnittLoesungsquote = Math.round(gewLQ / perf.gesamtN)
+      perf.durchschnittTrennschaerfe = tsN > 0 ? Math.round((gewTS / tsN) * 100) / 100 : null
     }
   }
 

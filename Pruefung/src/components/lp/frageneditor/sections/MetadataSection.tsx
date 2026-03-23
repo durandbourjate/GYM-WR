@@ -252,7 +252,9 @@ export default function MetadataSection({
               {statsOffen ? '\u25BC' : '\u25B6'}
             </span>
             <span className={loesungsquoteFarbe(performance.durchschnittLoesungsquote)}>
-              {'\u{1F4CA}'} Statistiken: \u00D8 {performance.durchschnittLoesungsquote}% L\u00F6sungsquote ({performance.anzahlVerwendungen} Pr\u00FCfungen, {performance.gesamtN} SuS)
+              {'\u{1F4CA}'} Statistiken: \u00D8 {performance.durchschnittLoesungsquote}% L\u00F6sungsquote
+              {performance.durchschnittTrennschaerfe != null && ` · TS ${performance.durchschnittTrennschaerfe.toFixed(2)}`}
+              {' '}({performance.anzahlVerwendungen} Pr\u00FCfungen, {performance.gesamtN} SuS)
             </span>
           </button>
           {statsOffen && (
@@ -263,6 +265,7 @@ export default function MetadataSection({
                     <th className="text-left py-1 font-medium">Pr\u00FCfung</th>
                     <th className="text-left py-1 font-medium">Datum</th>
                     <th className="text-right py-1 font-medium">L\u00F6sungsquote</th>
+                    <th className="text-right py-1 font-medium">TS</th>
                     <th className="text-right py-1 font-medium">SuS</th>
                   </tr>
                 </thead>
@@ -272,6 +275,7 @@ export default function MetadataSection({
                       <td className="py-1 text-slate-700 dark:text-slate-200">{v.pruefungTitel}</td>
                       <td className="py-1 text-slate-500 dark:text-slate-400">{v.datum}</td>
                       <td className={`py-1 text-right font-medium ${loesungsquoteFarbe(v.loesungsquote)}`}>{v.loesungsquote}%</td>
+                      <td className="py-1 text-right text-slate-500 dark:text-slate-400">{v.trennschaerfe != null ? v.trennschaerfe.toFixed(2) : '—'}</td>
                       <td className="py-1 text-right text-slate-500 dark:text-slate-400">{v.n}</td>
                     </tr>
                   ))}

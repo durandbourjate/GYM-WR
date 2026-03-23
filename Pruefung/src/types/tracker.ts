@@ -38,6 +38,7 @@ export interface FrageStatEintrag {
   durchschnittPunkte: number
   maxPunkte: number
   n: number  // Anzahl bewerteter SuS
+  trennschaerfe?: number | null  // Punkt-biseriale Korrelation (-1 bis +1)
 }
 
 /** Gesamtantwort des Tracker-Endpoints */
@@ -62,7 +63,8 @@ export interface FragenPerformance {
   anzahlVerwendungen: number
   gesamtN: number
   durchschnittLoesungsquote: number  // 0-100
-  verwendungen: { pruefungId: string; pruefungTitel: string; datum: string; loesungsquote: number; n: number }[]
+  durchschnittTrennschaerfe: number | null  // Gewichteter Durchschnitt über Prüfungen
+  verwendungen: { pruefungId: string; pruefungTitel: string; datum: string; loesungsquote: number; n: number; trennschaerfe?: number | null }[]
 }
 
 /** Noten-Stand eines Kurses gegen MiSDV-Vorgaben */
