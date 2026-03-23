@@ -25,7 +25,7 @@ Neues Google Sheet erstellen. Tab "Kurse" mit Spalten:
 
 Beispielzeile:
 ```
-sf-wr-28bc29fs-2526 | SF WR 28bc29fs | WR | SF | yannick.durand@gymhofwil.ch | 28bc,29fs | true
+sf-wr-28bc29fs | SF WR 28bc29fs | WR | SF | yannick.durand@gymhofwil.ch | 28bc,29fs | true
 ```
 
 Pro Kurs einen weiteren Tab erstellen (Tab-Name = label, z.B. "SF WR 28bc29fs") mit Spalten: `name | email | klasse`
@@ -37,8 +37,8 @@ Neues Sheet oder Tab in Sheet 1. Spalten:
 
 Beispielzeilen:
 ```
-sf-wr-28bc29fs-2526 | Mi | 2 | 10:25-11:55 | B204
-sf-wr-28bc29fs-2526 | Do | 1 | 08:25-09:10 | B204
+sf-wr-28bc29fs | Mi | 2 | 10:25-11:55 | B204
+sf-wr-28bc29fs | Do | 1 | 08:25-09:10 | B204
 ```
 
 - [ ] **Step 3: Sheet 3 "Schuljahr" erstellen**

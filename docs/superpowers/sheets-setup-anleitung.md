@@ -24,21 +24,22 @@ Jedes Sheet ist ein eigenstaendiges Google Spreadsheet (eigene URL, eigene Sheet
 Zentraler Primaerschluessel ueber alle Sheets:
 
 ```
-{gefaess}-{fach}-{klassen}-{schuljahr}
+{gefaess}-{fach}-{klassen}     (wenn gefaess ≠ fach, z.B. sf-wr-29c, ewr-29fs)
+{gefaess}-{klassen}            (wenn gefaess = fach, z.B. in-28c, ks-27a)
 ```
 
-Alle Buchstaben klein, keine Leerzeichen.
+Alle Buchstaben klein, keine Leerzeichen, kein Schuljahr-Suffix.
 
 | Kurs | kursId |
 |------|--------|
-| SF WR GYM1 (29c) | `sf-wr-29c-2526` |
-| SF WR GYM2 (28bc29fs) | `sf-wr-28bc29fs-2526` |
-| SF WR GYM3 (27a28f) | `sf-wr-27a28f-2526` |
-| IN 28c | `in-in-28c-2526` |
-| IN 29f | `in-in-29f-2526` |
-| IN 30s | `in-in-30s-2526` |
-| KS 27a | `ks-ks-27a-2526` |
-| EWR 29fs | `ewr-wr-29fs-2526` |
+| SF WR GYM1 (29c) | `sf-wr-29c` |
+| SF WR GYM2 (28bc29fs) | `sf-wr-28bc29fs` |
+| SF WR GYM3 (27a28f) | `sf-wr-27a28f` |
+| IN 28c | `in-28c` |
+| IN 29f | `in-29f` |
+| IN 30s | `in-30s` |
+| KS 27a | `ks-27a` |
+| EWR 29fs | `ewr-29fs` |
 
 ---
 
@@ -54,14 +55,14 @@ Dieser Tab listet alle Kurse auf. Spalten:
 
 | kursId | label | fach | gefaess | lpEmail | klassen | aktiv |
 |--------|-------|------|---------|---------|---------|-------|
-| sf-wr-29c-2526 | SF WR 29c | WR | SF | yannick.durand@gymhofwil.ch | 29c | TRUE |
-| sf-wr-28bc29fs-2526 | SF WR 28bc29fs | WR | SF | yannick.durand@gymhofwil.ch | 28bc,29fs | TRUE |
-| sf-wr-27a28f-2526 | SF WR 27a28f | WR | SF | yannick.durand@gymhofwil.ch | 27a,28f | TRUE |
-| in-in-28c-2526 | IN 28c | IN | IN | yannick.durand@gymhofwil.ch | 28c | TRUE |
-| in-in-29f-2526 | IN 29f | IN | IN | yannick.durand@gymhofwil.ch | 29f | TRUE |
-| in-in-30s-2526 | IN 30s | IN | IN | yannick.durand@gymhofwil.ch | 30s | TRUE |
-| ks-ks-27a-2526 | KS 27a | KS | KS | yannick.durand@gymhofwil.ch | 27a | TRUE |
-| ewr-wr-29fs-2526 | EWR WR 29fs | WR | EWR | yannick.durand@gymhofwil.ch | 29fs | TRUE |
+| sf-wr-29c | SF WR 29c | WR | SF | yannick.durand@gymhofwil.ch | 29c | TRUE |
+| sf-wr-28bc29fs | SF WR 28bc29fs | WR | SF | yannick.durand@gymhofwil.ch | 28bc,29fs | TRUE |
+| sf-wr-27a28f | SF WR 27a28f | WR | SF | yannick.durand@gymhofwil.ch | 27a,28f | TRUE |
+| in-28c | IN 28c | IN | IN | yannick.durand@gymhofwil.ch | 28c | TRUE |
+| in-29f | IN 29f | IN | IN | yannick.durand@gymhofwil.ch | 29f | TRUE |
+| in-30s | IN 30s | IN | IN | yannick.durand@gymhofwil.ch | 30s | TRUE |
+| ks-27a | KS 27a | KS | KS | yannick.durand@gymhofwil.ch | 27a | TRUE |
+| ewr-29fs | EWR 29fs | WR | EWR | yannick.durand@gymhofwil.ch | 29fs | TRUE |
 
 **Hinweise:**
 - `klassen`: kommasepariert, wenn mehrere Klassen im selben Kurs
@@ -80,7 +81,7 @@ Tab-Namen:
 5. `IN 29f`
 6. `IN 30s`
 7. `KS 27a`
-8. `EWR WR 29fs`
+8. `EWR 29fs`
 
 Jeder SuS-Tab hat folgende Spaltenstruktur:
 
@@ -109,22 +110,22 @@ Ein Kurs kann mehrere Zeilen haben (z.B. SF WR 29c hat Dienstag 1L und Donnersta
 
 | kursId | wochentag | lektionen | zeit | raum | halbklasse | semester | bemerkung |
 |--------|-----------|-----------|------|------|------------|----------|-----------|
-| sf-wr-29c-2526 | Di | 1 | 09:00-09:45 | | FALSE | 1,2 | |
-| sf-wr-29c-2526 | Do | 2 | 10:05-11:45 | | FALSE | 1,2 | |
-| sf-wr-28bc29fs-2526 | Di | 2 | 15:35-17:10 | | FALSE | 1,2 | |
-| sf-wr-28bc29fs-2526 | Do | 1 | 09:00-09:45 | | FALSE | 1,2 | |
-| sf-wr-27a28f-2526 | Di | 2 | 13:40-15:20 | | FALSE | 1,2 | |
-| sf-wr-27a28f-2526 | Do | 2 | 13:40-15:20 | | FALSE | 1,2 | |
-| in-in-28c-2526 | Di | 1 | 13:40-14:25 | | FALSE | 1 | |
-| in-in-28c-2526 | Di | 2 | 10:05-11:45 | | TRUE | 1 | Praktikum |
-| in-in-28c-2526 | Mo | 2 | 10:05-11:45 | | TRUE | 2 | |
-| in-in-29f-2526 | Di | 2 | 14:35-16:20 | | TRUE | 1 | Praktikum |
-| in-in-29f-2526 | Di | 1 | 13:40-14:25 | | FALSE | 2 | |
-| in-in-30s-2526 | Mi | 2 | 08:05-09:45 | | FALSE | 1,2 | Phasenunterricht |
-| ks-ks-27a-2526 | Mo | 1 | 10:05-10:50 | | FALSE | 1 | |
-| ks-ks-27a-2526 | Do | 1 | 16:25-17:10 | | FALSE | 2 | |
-| ewr-wr-29fs-2526 | Di | 1 | 12:50-13:35 | | FALSE | 1 | +1L Auftrag |
-| ewr-wr-29fs-2526 | Do | 1 | 12:50-13:35 | | FALSE | 2 | |
+| sf-wr-29c | Di | 1 | 09:00-09:45 | | FALSE | 1,2 | |
+| sf-wr-29c | Do | 2 | 10:05-11:45 | | FALSE | 1,2 | |
+| sf-wr-28bc29fs | Di | 2 | 15:35-17:10 | | FALSE | 1,2 | |
+| sf-wr-28bc29fs | Do | 1 | 09:00-09:45 | | FALSE | 1,2 | |
+| sf-wr-27a28f | Di | 2 | 13:40-15:20 | | FALSE | 1,2 | |
+| sf-wr-27a28f | Do | 2 | 13:40-15:20 | | FALSE | 1,2 | |
+| in-28c | Di | 1 | 13:40-14:25 | | FALSE | 1 | |
+| in-28c | Di | 2 | 10:05-11:45 | | TRUE | 1 | Praktikum |
+| in-28c | Mo | 2 | 10:05-11:45 | | TRUE | 2 | |
+| in-29f | Di | 2 | 14:35-16:20 | | TRUE | 1 | Praktikum |
+| in-29f | Di | 1 | 13:40-14:25 | | FALSE | 2 | |
+| in-30s | Mi | 2 | 08:05-09:45 | | FALSE | 1,2 | Phasenunterricht |
+| ks-27a | Mo | 1 | 10:05-10:50 | | FALSE | 1 | |
+| ks-27a | Do | 1 | 16:25-17:10 | | FALSE | 2 | |
+| ewr-29fs | Di | 1 | 12:50-13:35 | | FALSE | 1 | +1L Auftrag |
+| ewr-29fs | Do | 1 | 12:50-13:35 | | FALSE | 2 | |
 
 **Hinweise:**
 - `raum`: Spalte leer lassen, selbst eintragen
@@ -146,22 +147,22 @@ Zuordnung der Kurse zu den SF-Semestern (S1-S8). Basiert auf der Stoffverteilung
 
 | kursId | semester | startKW | endKW | schuljahr | faecher |
 |--------|----------|---------|-------|-----------|---------|
-| sf-wr-29c-2526 | S1 | 33 | 3 | 2526 | BWL 3 |
-| sf-wr-29c-2526 | S2 | 7 | 27 | 2526 | Recht 1, BWL 2 |
-| sf-wr-28bc29fs-2526 | S3 | 33 | 3 | 2526 | Recht 2, BWL 1, VWL 2 |
-| sf-wr-28bc29fs-2526 | S4 | 7 | 27 | 2526 | Recht 3, VWL 2 |
-| sf-wr-27a28f-2526 | S5 | 33 | 3 | 2526 | Recht 2, VWL 2 |
-| sf-wr-27a28f-2526 | S6 | 7 | 27 | 2526 | BWL 2, VWL 2 |
-| in-in-28c-2526 | S1 | 33 | 3 | 2526 | IN |
-| in-in-28c-2526 | S2 | 7 | 27 | 2526 | IN |
-| in-in-29f-2526 | S1 | 33 | 3 | 2526 | IN |
-| in-in-29f-2526 | S2 | 7 | 27 | 2526 | IN |
-| in-in-30s-2526 | S1 | 33 | 3 | 2526 | IN |
-| in-in-30s-2526 | S2 | 7 | 27 | 2526 | IN |
-| ks-ks-27a-2526 | S1 | 33 | 3 | 2526 | KS |
-| ks-ks-27a-2526 | S2 | 7 | 27 | 2526 | KS |
-| ewr-wr-29fs-2526 | S1 | 33 | 3 | 2526 | WR |
-| ewr-wr-29fs-2526 | S2 | 7 | 27 | 2526 | WR |
+| sf-wr-29c | S1 | 33 | 3 | 2526 | BWL 3 |
+| sf-wr-29c | S2 | 7 | 27 | 2526 | Recht 1, BWL 2 |
+| sf-wr-28bc29fs | S3 | 33 | 3 | 2526 | Recht 2, BWL 1, VWL 2 |
+| sf-wr-28bc29fs | S4 | 7 | 27 | 2526 | Recht 3, VWL 2 |
+| sf-wr-27a28f | S5 | 33 | 3 | 2526 | Recht 2, VWL 2 |
+| sf-wr-27a28f | S6 | 7 | 27 | 2526 | BWL 2, VWL 2 |
+| in-28c | S1 | 33 | 3 | 2526 | IN |
+| in-28c | S2 | 7 | 27 | 2526 | IN |
+| in-29f | S1 | 33 | 3 | 2526 | IN |
+| in-29f | S2 | 7 | 27 | 2526 | IN |
+| in-30s | S1 | 33 | 3 | 2526 | IN |
+| in-30s | S2 | 7 | 27 | 2526 | IN |
+| ks-27a | S1 | 33 | 3 | 2526 | KS |
+| ks-27a | S2 | 7 | 27 | 2526 | KS |
+| ewr-29fs | S1 | 33 | 3 | 2526 | WR |
+| ewr-29fs | S2 | 7 | 27 | 2526 | WR |
 
 **Hinweise:**
 - `startKW`/`endKW`: Wenn endKW < startKW, bedeutet das Jahreswechsel (z.B. KW 33 bis KW 3 = August bis Januar)

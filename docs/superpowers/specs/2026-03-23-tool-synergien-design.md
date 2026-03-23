@@ -83,8 +83,8 @@ Bestehende Preset-JSONs (`ferien_hofwil_2526.json`, `sonderwochen_hofwil_2526.js
 
 ### kursId-Format
 
-Zentraler Primärschlüssel über alle Sheets: **`{gefaess}-{fach}-{klassen}-{schuljahr}`**
-Beispiele: `sf-wr-28bc29fs-2526`, `ef-wr-27a-2526`, `in-in-28c-2526`, `ks-ks-27a-2526`
+Zentraler Primärschlüssel über alle Sheets: **`{gefaess}-{fach}-{klassen}`** (wenn gefaess != fach) bzw. **`{gefaess}-{klassen}`** (wenn gefaess = fach). Kein Schuljahr-Suffix.
+Beispiele: `sf-wr-28bc29fs`, `ef-wr-27a`, `in-28c`, `ks-27a`, `ewr-29fs`
 
 **Migration:**
 - Planer: Grid-Layout-IDs (`c11`, `c31`) bleiben client-seitig für die Darstellung. `kursId` wird als neues Feld in CourseConfig ergänzt, das auf die zentrale ID verweist.
@@ -94,7 +94,7 @@ Beispiele: `sf-wr-28bc29fs-2526`, `ef-wr-27a-2526`, `in-in-28c-2526`, `ks-ks-27a
 
 | Konzept | Planer (EN) | Prüfungstool (DE) | Zentrale Sheet (DE) |
 |---------|-------------|-------------------|---------------------|
-| Kurs-ID | `id` (c11, c31) | `klasse` (String) | `kursId` (sf-wr-28bc29fs-2526) |
+| Kurs-ID | `id` (c11, c31) | `klasse` (String) | `kursId` (sf-wr-28bc29fs) |
 | Fachbereich | `subjectArea` | `fachbereich` | `fach` |
 | Gefäss | `typ` (SF/EF/EWR/KS/IN) | `gefaess` (SF/EF/EWR/GF) | `gefaess` (SF/EF/EWR/GF/KS/IN) |
 | Spalte/Layout | `col` | — | — (bleibt client-seitig) |
