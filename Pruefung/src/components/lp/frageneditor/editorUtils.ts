@@ -1,6 +1,6 @@
 import type { LueckentextFrage } from '../../../types/fragen.ts'
 
-export type FrageTyp = 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'buchungssatz' | 'tkonto' | 'kontenbestimmung' | 'bilanzstruktur' | 'aufgabengruppe'
+export type FrageTyp = 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'buchungssatz' | 'tkonto' | 'kontenbestimmung' | 'bilanzstruktur' | 'aufgabengruppe' | 'visualisierung'
 
 export function generiereFrageId(fachbereich: string, typ: string): string {
   const fb = fachbereich.toLowerCase()
@@ -8,7 +8,7 @@ export function generiereFrageId(fachbereich: string, typ: string): string {
     mc: 'mc', freitext: 'ft', lueckentext: 'lt', zuordnung: 'zu',
     richtigfalsch: 'rf', berechnung: 'be',
     buchungssatz: 'bs', tkonto: 'tk', kontenbestimmung: 'kb',
-    bilanzstruktur: 'bi', aufgabengruppe: 'ag',
+    bilanzstruktur: 'bi', aufgabengruppe: 'ag', visualisierung: 'vi',
   }
   const typKurz = typKuerzel[typ] ?? typ.slice(0, 2)
   const rand = Math.random().toString(36).slice(2, 6)

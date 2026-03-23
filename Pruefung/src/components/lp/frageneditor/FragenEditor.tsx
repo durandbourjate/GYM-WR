@@ -17,6 +17,7 @@ import type {
   SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
   AufgabengruppeFrage,
+  VisualisierungFrage, CanvasConfig,
 } from '../../../types/fragen.ts'
 import type { FrageTyp } from './editorUtils.ts'
 import { generiereFrageId } from './editorUtils.ts'
@@ -214,6 +215,24 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     frage?.typ === 'aufgabengruppe' ? (frage as AufgabengruppeFrage).teilaufgabenIds : []
   )
 
+  // Visualisierung/Zeichnen-spezifisch
+  const [canvasConfig, setCanvasConfig] = useState<CanvasConfig>(
+    frage?.typ === 'visualisierung' ? ((frage as VisualisierungFrage).canvasConfig ?? {
+      breite: 800, hoehe: 600, koordinatensystem: false,
+      werkzeuge: ['stift', 'linie', 'pfeil', 'rechteck', 'text'],
+      groessePreset: 'mittel', radierer: true,
+      farben: ['#000000', '#ef4444', '#3b82f6', '#22c55e'],
+    }) : {
+      breite: 800, hoehe: 600, koordinatensystem: false,
+      werkzeuge: ['stift', 'linie', 'pfeil', 'rechteck', 'text'],
+      groessePreset: 'mittel', radierer: true,
+      farben: ['#000000', '#ef4444', '#3b82f6', '#22c55e'],
+    }
+  )
+  const [musterloesungBild, setMusterloesungBild] = useState<string | undefined>(
+    frage?.typ === 'visualisierung' ? (frage as VisualisierungFrage).musterloesungBild : undefined
+  )
+
   // Zeitbedarf
   const [zeitbedarf, setZeitbedarf] = useState<number>(
     frage?.zeitbedarf ?? berechneZeitbedarf(
@@ -354,6 +373,8 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
         typDaten = { typ: 'bilanzstruktur', aufgabentext: biAufgabentext, modus: biModus, kontenMitSaldi: biKontenMitSaldi, loesung: biLoesung, bewertungsoptionen: biBewertungsoptionen }; break
       case 'aufgabengruppe':
         typDaten = { typ: 'aufgabengruppe', kontext: agKontext, teilaufgabenIds: agTeilaufgabenIds }; break
+      case 'visualisierung':
+        typDaten = { typ: 'visualisierung', fragetext, canvasConfig, musterloesungBild }; break
       default:
         setSpeicherLaeuft(false)
         return
@@ -482,7 +503,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe'] as FrageTyp[]).map((t) => (
+              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe', 'visualisierung'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -575,6 +596,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             biLoesung={biLoesung} setBiLoesung={setBiLoesung}
             agKontext={agKontext} setAgKontext={setAgKontext}
             agTeilaufgabenIds={agTeilaufgabenIds} setAgTeilaufgabenIds={setAgTeilaufgabenIds}
+            canvasConfig={canvasConfig} setCanvasConfig={setCanvasConfig}
+            musterloesungBild={musterloesungBild} setMusterloesungBild={setMusterloesungBild}
+            email={user?.email ?? ''}
           />
 
           {/* Musterlösung */}

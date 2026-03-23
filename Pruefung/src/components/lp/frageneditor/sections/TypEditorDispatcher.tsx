@@ -1,5 +1,5 @@
 /**
- * Typ-spezifische Editor-Abschnitte für alle 11 Fragetypen.
+ * Typ-spezifische Editor-Abschnitte für alle 12 Fragetypen.
  * Extrahiert aus FragenEditor.tsx.
  */
 import type {
@@ -8,6 +8,7 @@ import type {
   TKontoDefinition,
   KontenbestimmungFrage, Kontenaufgabe,
   BilanzERFrage, KontoMitSaldo, BilanzERLoesung,
+  CanvasConfig,
 } from '../../../../types/fragen.ts'
 import type { FrageTyp } from '../editorUtils.ts'
 import type { useKIAssistent } from '../useKIAssistent.ts'
@@ -21,6 +22,7 @@ import TKontoEditor from '../TKontoEditor.tsx'
 import KontenbestimmungEditor from '../KontenbestimmungEditor.tsx'
 import BilanzEREditor from '../BilanzEREditor.tsx'
 import AufgabengruppeEditor from '../AufgabengruppeEditor.tsx'
+import ZeichnenEditor from '../ZeichnenEditor.tsx'
 import { KIBuchungssatzButtons, KITKontoButtons, KIKontenbestimmungButtons, KIBilanzERButtons } from '../KIFiBuButtons.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from '../KIBausteine.tsx'
 
@@ -100,6 +102,13 @@ interface TypEditorDispatcherProps {
   setAgKontext: (v: string) => void
   agTeilaufgabenIds: string[]
   setAgTeilaufgabenIds: React.Dispatch<React.SetStateAction<string[]>>
+
+  // Visualisierung/Zeichnen
+  canvasConfig: CanvasConfig
+  setCanvasConfig: (config: CanvasConfig) => void
+  musterloesungBild?: string
+  setMusterloesungBild: (bild: string | undefined) => void
+  email: string
 }
 
 export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
@@ -562,6 +571,16 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setKontext={props.setAgKontext}
           teilaufgabenIds={props.agTeilaufgabenIds}
           setTeilaufgabenIds={props.setAgTeilaufgabenIds}
+        />
+      )}
+
+      {typ === 'visualisierung' && (
+        <ZeichnenEditor
+          canvasConfig={props.canvasConfig}
+          onCanvasConfigChange={props.setCanvasConfig}
+          musterloesungBild={props.musterloesungBild}
+          onMusterloesungBildChange={props.setMusterloesungBild}
+          email={props.email}
         />
       )}
     </>

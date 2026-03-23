@@ -12,6 +12,7 @@ import type {
   SollHabenZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
   AufgabengruppeFrage,
+  VisualisierungFrage, CanvasConfig,
 } from '../types/fragen.ts'
 import { parseLuecken } from '../components/lp/frageneditor/editorUtils.ts'
 import {
@@ -58,6 +59,7 @@ export type TypSpezifischeDaten =
   | { typ: 'kontenbestimmung'; aufgabentext: string; modus: KontenbestimmungFrage['modus']; aufgaben: Kontenaufgabe[]; kontenauswahl: KontenauswahlConfig }
   | { typ: 'bilanzstruktur'; aufgabentext: string; modus: BilanzERFrage['modus']; kontenMitSaldi: KontoMitSaldo[]; loesung: BilanzERLoesung; bewertungsoptionen: BilanzERBewertung }
   | { typ: 'aufgabengruppe'; kontext: string; teilaufgabenIds: string[] }
+  | { typ: 'visualisierung'; untertyp?: VisualisierungFrage['untertyp']; fragetext?: string; canvasConfig?: CanvasConfig; musterloesungBild?: string }
 
 /** Erstellt ein vollständiges Frage-Objekt aus Basisdaten + typ-spezifischen Daten */
 export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeDaten): Frage {
@@ -172,5 +174,15 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         kontext: typDaten.kontext.trim(),
         teilaufgabenIds: typDaten.teilaufgabenIds,
       } as AufgabengruppeFrage
+
+    case 'visualisierung':
+      return {
+        ...basis,
+        typ: 'visualisierung',
+        untertyp: typDaten.untertyp || 'zeichnen',
+        fragetext: typDaten.fragetext?.trim() || '',
+        canvasConfig: typDaten.canvasConfig,
+        musterloesungBild: typDaten.musterloesungBild,
+      } as VisualisierungFrage
   }
 }

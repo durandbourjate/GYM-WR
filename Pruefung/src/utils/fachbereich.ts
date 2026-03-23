@@ -22,6 +22,7 @@ export function typLabel(typ: string): string {
     case 'kontenbestimmung': return 'Kontenbestimmung'
     case 'bilanzstruktur': return 'Bilanz/ER'
     case 'aufgabengruppe': return 'Aufgabengruppe'
+    case 'visualisierung': return 'Zeichnen'
     default: return typ
   }
 }
