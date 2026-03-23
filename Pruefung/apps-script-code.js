@@ -2072,6 +2072,44 @@ function kiAssistentEndpoint(body) {
         result = rufeClaudeAuf(systemPrompt, userPrompt, 2048);
         return jsonResponse({ success: true, ergebnis: result });
 
+      case 'korrigiereZeichnung': {
+        var bild = daten.bild;           // base64 PNG (without data:image/png;base64, prefix)
+        var fragetext = daten.fragetext;
+        var musterloesungBild = daten.musterloesungBild || null;
+        var maxPunkte = daten.maxPunkte || 1;
+
+        var sysPrompt = 'Du bist ein erfahrener Prüfungskorrektor an einem Schweizer Gymnasium. ' +
+          'Bewerte die folgende Zeichnung/Beschriftung eines Schülers. ' +
+          'Antworte ausschliesslich als JSON: { "punkte": number, "begruendung": string }';
+
+        var userPrompt = 'Frage: ' + fragetext + '\n' +
+          'Maximale Punkte: ' + maxPunkte + '\n' +
+          (musterloesungBild ? 'Eine Musterlösung ist als zweites Bild beigefügt.\n' : '') +
+          'Bewerte Vollständigkeit, Korrektheit und Qualität.';
+
+        // Build messages with image content blocks
+        var content = [
+          { type: 'text', text: userPrompt },
+          { type: 'image', source: { type: 'base64', media_type: 'image/png', data: bild } }
+        ];
+        if (musterloesungBild) {
+          content.push({ type: 'image', source: { type: 'base64', media_type: 'image/png', data: musterloesungBild } });
+        }
+
+        var ergebnis = rufeClaudeAufMitBild(sysPrompt, [{ role: 'user', content: content }]);
+
+        // Clamp points to [0, maxPunkte]
+        if (ergebnis && typeof ergebnis.punkte === 'number') {
+          ergebnis.punkte = Math.max(0, Math.min(maxPunkte, ergebnis.punkte));
+        }
+        // Truncate reasoning to 500 chars
+        if (ergebnis && ergebnis.begruendung && ergebnis.begruendung.length > 500) {
+          ergebnis.begruendung = ergebnis.begruendung.substring(0, 497) + '...';
+        }
+
+        return jsonResponse({ success: true, ergebnis: ergebnis || { punkte: 0, begruendung: 'KI-Vorschlag konnte nicht generiert werden.' } });
+      }
+
       default:
         return jsonResponse({ error: 'Unbekannte KI-Aktion: ' + aktion });
     }
@@ -2113,6 +2151,55 @@ function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens) {
   const text = result.content[0].text;
   const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   return JSON.parse(cleaned);
+}
+
+function rufeClaudeAufMitBild(systemPrompt, messages) {
+  var apiKey = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  if (!apiKey) {
+    Logger.log('ANTHROPIC_API_KEY nicht gesetzt');
+    return null;
+  }
+
+  var payload = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1024,
+    system: systemPrompt,
+    messages: messages
+  };
+
+  try {
+    var response = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+    var json = JSON.parse(response.getContentText());
+    if (json.error) {
+      Logger.log('Claude API Fehler: ' + JSON.stringify(json.error));
+      return null;
+    }
+
+    var textContent = json.content.find(function(c) { return c.type === 'text'; });
+    if (!textContent) return null;
+
+    // Extract JSON from response (Claude sometimes wraps in markdown code blocks)
+    var cleaned = textContent.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (e) {
+      Logger.log('JSON-Parse-Fehler bei KI-Antwort: ' + cleaned);
+      return { punkte: 0, begruendung: 'KI-Vorschlag konnte nicht generiert werden.' };
+    }
+  } catch (e) {
+    Logger.log('API-Aufruf fehlgeschlagen: ' + e.message);
+    return null;
+  }
 }
 
 // === AUTO-KORREKTUR (deterministische Fragetypen) ===
