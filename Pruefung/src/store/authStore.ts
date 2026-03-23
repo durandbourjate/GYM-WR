@@ -137,6 +137,7 @@ function restoreDemoFlag(): boolean {
 function clearSession(): void {
   try {
     sessionStorage.removeItem('pruefung-auth')
+    sessionStorage.removeItem('pruefung-demo')
   } catch {
     // ignore
   }

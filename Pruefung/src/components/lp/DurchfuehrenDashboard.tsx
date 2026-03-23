@@ -99,7 +99,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
   // Nachrichten laden
   const ladeNachrichten = useCallback(async () => {
-    if (!user || istDemoModus || !apiService.istKonfiguriert() || !pruefungId) return
+    if (!user || istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') return
     const result = await apiService.ladeNachrichten(pruefungId, user.email)
     setNachrichten(result)
   }, [user, istDemoModus, pruefungId])
@@ -113,7 +113,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // Daten laden
   const ladeDaten = useCallback(async () => {
     if (!user) return
-    if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId) {
+    if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
       setDaten(erstelleDemoMonitoring())
       setLadeStatus('fertig')
       return
@@ -162,7 +162,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   useEffect(() => {
     if (abgabenGeladen.current || !user) return
     async function ladeAbgabenUndFragen() {
-      if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId) {
+      if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
         setFragen(demoFragen.slice(0, 7))
         abgabenGeladen.current = true
         return
@@ -182,7 +182,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   useEffect(() => {
     if (!user || !pruefungId) return
     // Demo-Modus: Demo-Config direkt setzen
-    if (istDemoModus) {
+    if (istDemoModus || pruefungId === 'demo') {
       setConfig({
         id: 'demo',
         titel: 'Demo-Prüfung WR — Wirtschaft & Recht',
