@@ -62,7 +62,9 @@ export interface PruefungsConfig {
     aktiviert: boolean;
     modus: 'sofort' | 'batch';
     systemPrompt?: string;
-    freigegeben?: boolean;  // Korrektur für SuS sichtbar (Default: false)
+    freigegeben?: boolean;  // Legacy (Rückwärtskompatibilität)
+    einsichtFreigegeben?: boolean;  // SuS können Korrektur im Tool ansehen
+    pdfFreigegeben?: boolean;       // SuS können Korrektur-PDF herunterladen
   };
 
   // Feedback

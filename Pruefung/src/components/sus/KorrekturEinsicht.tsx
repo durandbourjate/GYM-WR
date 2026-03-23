@@ -93,6 +93,15 @@ export default function KorrekturEinsicht({ pruefungId, onZurueck }: Props) {
               </span>
               <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({prozent}%)</span>
             </div>
+            {daten.pdfFreigegeben && (
+              <button
+                onClick={() => window.print()}
+                className="px-3 py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                title="Korrektur als PDF drucken/speichern"
+              >
+                PDF
+              </button>
+            )}
             <ThemeToggle />
           </div>
         </div>

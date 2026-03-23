@@ -6,6 +6,42 @@
 
 ## Aktueller Stand
 
+**Light Mode Kontrast + 2-stufige Korrektur-Freigabe + Trennschärfe** (23.03.2026, Nacht) ✅
+
+### Session 23.03.2026 Nacht — Kontrast, Korrektur-Freigabe, Trennschärfe
+
+#### Prüfungsplattform — Light Mode Kontrast
+- **CSS-Variable-Override:** `html:not(.dark)` überschreibt `--color-slate-400` und `--color-slate-500` für WCAG AA/AAA Kontrast (7.1:1 bzw. 9.7:1 auf weiss). Gezielt nur 400/500 — rest bleibt unverändert (Prüfungsplattform nutzt `dark:`-Prefixes, Vollinversion würde das System brechen).
+
+#### Prüfungsplattform — 2-stufige Korrektur-Freigabe
+- **Stufe 1 — Einsicht:** LP gibt Tool-Einsicht frei → SuS sehen Korrektur im Tool
+- **Stufe 2 — PDF:** LP gibt PDF-Download separat frei → SuS sehen PDF-Button
+- **Zurücknehmbar:** Beide Stufen einzeln an/aus. Einsicht sperren → PDF wird automatisch gesperrt.
+- **Geänderte Dateien:**
+  - `types/pruefung.ts`: `einsichtFreigegeben` + `pdfFreigegeben` Felder
+  - `services/korrekturApi.ts`: `typ`-Parameter ('einsicht' | 'pdf')
+  - `components/lp/KorrekturDashboard.tsx`: 2 separate Toggle-Buttons
+  - `components/sus/KorrekturEinsicht.tsx`: PDF-Button nur wenn `pdfFreigegeben`
+  - `apps-script-code.js`: `korrekturPdfFreigegeben` Spalte + `pdfFreigegeben` im Response
+- **Wichtig:** Apps Script Code muss manuell in den Editor kopiert + neue Bereitstellung erstellt werden!
+
+#### Prüfungsplattform — Fragen-Statistiken: Trennschärfe
+- **Punkt-biseriale Korrelation** (Part-Whole-Correction): Pearson-Korrelation zwischen Item-Score und Rest-Score (Gesamtscore ohne das Item)
+- **Mindestens 5 SuS** nötig für sinnvolle Berechnung
+- **Interpretation:** <0.2 schlecht (rot), 0.2-0.3 akzeptabel (amber), 0.3-0.4 gut (blau), ≥0.4 sehr gut (grün)
+- **UI:** Farbiger Badge in der Fragen-Analyse-Tabelle, sortierbar
+- **Geänderte Dateien:**
+  - `utils/korrekturUtils.ts`: `berechneTrennschaerfe()`, erweitertes `FragenStatistik`-Interface
+  - `components/lp/KorrekturDashboard.tsx`: Trennschärfe-Spalte mit Sortierung
+
+#### Übungspools — Mini-Fix
+- **Pool.html Zeile 1673:** `explain` → `highlightKonten(explain)` — fehlende Konten-Highlighting in einem Feedback-Pfad
+
+#### Unterrichtsplaner-Bugs L1–L7 (v3.89)
+- **Alle bereits behoben** in früheren Sessions (v3.90–v3.102): L1 z-index ✓, L2 scroll ✓, L3 Sonderwochen ✓, L4 Ferien ✓, L5 Kontextmenü ✓, L6 Pfeil-Verschieben ✓, L7 Light/Dark Toggle ✓
+
+---
+
 **Demo-Modus Fixes + Übungspool UX** (23.03.2026, Abend) ✅
 
 ### Session 23.03.2026 Abend — Demo-Modus + Übungspool-Fixes
@@ -592,24 +628,21 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - **Hoher Kontrast:** Besonders wichtig bei Prüfungen (Lesbarkeit)
 - **Sortierung:** Nur durch Lehrperson (Abschnitte in PruefungsConfig), SuS nicht
 
-### Offene Aufgaben — Konsolidiert (Stand 23.03.2026)
+### Offene Aufgaben — Konsolidiert (Stand 23.03.2026 Nacht)
 
 #### 🔴 Kurzfristig (nächste Sessions)
 
 | # | Projekt | Aufgabe | Aufwand |
 |---|---------|---------|--------|
-| 1 | Übungspools | **Konten-Highlighting im Fragetext** — `highlightKonten()` in `renderQuestion()` einbauen (CSS-Klassen + Funktion sind bereit) | Klein |
-| 2 | Unterrichtsplaner | **Light Mode Kontrast (gross)** — Gray/Slate-Palette in ~20 Komponenten (text-gray-400/500, border-slate-700, Hover-States). Kontrast-Check-Report existiert. | Mittel |
-| 3 | Prüfungstool | **Pool-Rück-Sync Live-Test** — GITHUB_TOKEN konfiguriert, End-to-End-Test noch offen | Klein |
+| 1 | Prüfungstool | **Pool-Rück-Sync Live-Test** — GITHUB_TOKEN konfiguriert, End-to-End-Test noch offen | Klein |
 
 #### 🟡 Mittelfristig (vor produktivem Einsatz)
 
 | # | Projekt | Aufgabe |
 |---|---------|---------|
-| 4 | Prüfungstool | **Tablet/Smartphone-Tests** — responsive gebaut, spezifisch noch nicht getestet |
-| 5 | Prüfungstool | **Evento REST-Zugang** beantragen → Klassenlisten-Sync (Schulinformatiker hat bestätigt, 22.03.) |
-| 6 | Prüfungstool | **SuS-Korrektur-Einsicht erweitern** — PDF-Download (nach Nachprüfungen), LP steuert Freigabe ✅ |
-| 7 | Prüfungstool | **Fragen-Statistiken erweitern** — Trennschärfe, Analyse über mehrere Durchführungen, Pool-Fehlerquoten im Editor |
+| 2 | Prüfungstool | **Tablet/Smartphone-Tests** — responsive gebaut, spezifisch noch nicht getestet |
+| 3 | Prüfungstool | **Evento REST-Zugang** beantragen → Klassenlisten-Sync (Schulinformatiker hat bestätigt, 22.03.) |
+| 4 | Prüfungstool | **Fragen-Statistiken: Analyse über mehrere Durchführungen** — Pool-Fehlerquoten im Editor anzeigen |
 
 #### 🟢 Längerfristig (Roadmap)
 
@@ -633,6 +666,11 @@ Beim Speichern von FiBu-Fragen wird das `musterlosung`-Textfeld automatisch aus 
 - ~~Unsicher-Button~~ ✅ implementiert + UX verbessert (23.03.)
 - ~~Materialien-Filter (📎 Toggle)~~ ✅ (22.03.)
 - ~~SEB komplett~~ ✅ Auto-Config, harte Durchsetzung, LP-Ausnahme (22.03.)
+- ~~Konten-Highlighting im Fragetext~~ ✅ war bereits integriert + Mini-Fix Zeile 1673 (23.03.)
+- ~~Light Mode Kontrast (UP + Prüfung)~~ ✅ UP war bereits via CSS-Vars geschützt, Prüfung: 400/500-Override (23.03.)
+- ~~2-stufige Korrektur-Freigabe~~ ✅ Einsicht + PDF getrennt, zurücknehmbar (23.03.)
+- ~~Trennschärfe~~ ✅ Punkt-biseriale Korrelation mit Part-Whole-Correction (23.03.)
+- ~~Unterrichtsplaner-Bugs L1–L7~~ ✅ Alle bereits in v3.90–v3.102 behoben (verifiziert 23.03.)
 
 ### Roadmap: Multi-LP / Skalierung (Sammlung)
 

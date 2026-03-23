@@ -34,11 +34,12 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   const [feedbackStatus, setFeedbackStatus] = useState<'idle' | 'senden' | 'fertig'>('idle')
   const [feedbackErgebnis, setFeedbackErgebnis] = useState<{ erfolg: string[]; fehler: string[] } | null>(null)
   const [analyseOffen, setAnalyseOffen] = useState(false)
-  const [analyseSortierung, setAnalyseSortierung] = useState<'frageId' | 'loesungsquote' | 'durchschnitt'>('frageId')
+  const [analyseSortierung, setAnalyseSortierung] = useState<'frageId' | 'loesungsquote' | 'durchschnitt' | 'trennschaerfe'>('frageId')
   const [analyseSortierungAsc, setAnalyseSortierungAsc] = useState(true)
   const [notenConfigOffen, setNotenConfigOffen] = useState(false)
   const [notenConfig, setNotenConfig] = useState<NotenConfig>({ punkteFuerSechs: 0, rundung: 0.5 })
-  const [korrekturFreigegeben, setKorrekturFreigegeben] = useState(false)
+  const [einsichtFreigegeben, setEinsichtFreigegeben] = useState(false)
+  const [pdfFreigegeben, setPdfFreigegeben] = useState(false)
   const [zeigFragenbank, setZeigFragenbank] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [pdfSchuelerEmail, setPdfSchuelerEmail] = useState<string | null>(null)
@@ -235,11 +236,12 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       case 'frageId': cmp = a.frageId.localeCompare(b.frageId); break
       case 'loesungsquote': cmp = a.loesungsquote - b.loesungsquote; break
       case 'durchschnitt': cmp = a.durchschnittPunkte - b.durchschnittPunkte; break
+      case 'trennschaerfe': cmp = (a.trennschaerfe ?? -2) - (b.trennschaerfe ?? -2); break
     }
     return analyseSortierungAsc ? cmp : -cmp
   })
 
-  function handleAnalyseSortierung(spalte: 'frageId' | 'loesungsquote' | 'durchschnitt'): void {
+  function handleAnalyseSortierung(spalte: 'frageId' | 'loesungsquote' | 'durchschnitt' | 'trennschaerfe'): void {
     if (analyseSortierung === spalte) {
       setAnalyseSortierungAsc((prev) => !prev)
     } else {
@@ -300,18 +302,44 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
           type="button"
           onClick={async () => {
             if (!user) return
-            const neuerWert = !korrekturFreigegeben
-            const ok = await apiService.korrekturFreigeben(pruefungId, neuerWert, user.email)
-            if (ok) setKorrekturFreigegeben(neuerWert)
+            const neuerWert = !einsichtFreigegeben
+            const ok = await apiService.korrekturFreigeben(pruefungId, neuerWert, user.email, 'einsicht')
+            if (ok) {
+              setEinsichtFreigegeben(neuerWert)
+              // PDF-Freigabe zurücknehmen wenn Einsicht gesperrt wird
+              if (!neuerWert && pdfFreigegeben) {
+                await apiService.korrekturFreigeben(pruefungId, false, user.email, 'pdf')
+                setPdfFreigegeben(false)
+              }
+            }
           }}
           className={`text-sm px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-            korrekturFreigegeben
+            einsichtFreigegeben
               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
               : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
           }`}
-          title={korrekturFreigegeben ? 'Korrektur für SuS sperren' : 'Korrektur für SuS freigeben'}
+          title={einsichtFreigegeben ? 'Einsicht für SuS sperren' : 'Einsicht für SuS freigeben'}
         >
-          {korrekturFreigegeben ? '✓ Freigegeben' : 'Freigeben'}
+          {einsichtFreigegeben ? '✓ Einsicht' : 'Einsicht freigeben'}
+        </button>
+      )}
+      {korrektur && einsichtFreigegeben && (
+        <button
+          type="button"
+          onClick={async () => {
+            if (!user) return
+            const neuerWert = !pdfFreigegeben
+            const ok = await apiService.korrekturFreigeben(pruefungId, neuerWert, user.email, 'pdf')
+            if (ok) setPdfFreigegeben(neuerWert)
+          }}
+          className={`text-sm px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+            pdfFreigegeben
+              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+              : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+          }`}
+          title={pdfFreigegeben ? 'PDF-Download für SuS sperren' : 'PDF-Download für SuS freigeben'}
+        >
+          {pdfFreigegeben ? '✓ PDF-Download' : 'PDF freigeben'}
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && (
@@ -502,7 +530,13 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
                         className="px-4 py-2 text-slate-500 dark:text-slate-400 font-medium cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none"
                         onClick={() => handleAnalyseSortierung('loesungsquote')}
                       >
-                        Losungsquote {analyseSortierung === 'loesungsquote' && (analyseSortierungAsc ? '↑' : '↓')}
+                        Lösungsquote {analyseSortierung === 'loesungsquote' && (analyseSortierungAsc ? '↑' : '↓')}
+                      </th>
+                      <th
+                        className="px-4 py-2 text-slate-500 dark:text-slate-400 font-medium cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none text-right"
+                        onClick={() => handleAnalyseSortierung('trennschaerfe')}
+                      >
+                        Trennschärfe {analyseSortierung === 'trennschaerfe' && (analyseSortierungAsc ? '↑' : '↓')}
                       </th>
                     </tr>
                   </thead>
@@ -537,6 +571,20 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
                                 {stat.loesungsquote}%
                               </span>
                             </div>
+                          </td>
+                          <td className="px-4 py-2 text-right">
+                            {stat.trennschaerfe !== null ? (
+                              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                                stat.trennschaerfe >= 0.4 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
+                                stat.trennschaerfe >= 0.3 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                                stat.trennschaerfe >= 0.2 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                                'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                              }`} title={`Trennschärfe: ${stat.trennschaerfeLabel}`}>
+                                {stat.trennschaerfe.toFixed(2)}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                            )}
                           </td>
                         </tr>
                       )

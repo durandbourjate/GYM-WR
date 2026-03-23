@@ -135,11 +135,65 @@ export interface FragenStatistik {
   durchschnittPunkte: number
   loesungsquote: number  // 0-100%
   anzahlBewertet: number
+  trennschaerfe: number | null       // Punkt-biseriale Korrelation (-1 bis +1)
+  trennschaerfeLabel: string | null  // 'schlecht' | 'akzeptabel' | 'gut' | 'sehr gut'
+}
+
+/**
+ * Punkt-biseriale Korrelation: Misst den Zusammenhang zwischen
+ * Item-Score (Punkte auf einer Frage) und Gesamtscore (Total aller Fragen).
+ *
+ * r_pb = (M_1 - M_0) / S_t * sqrt(p * q)
+ * Für polytome Items (Teilpunkte): Pearson-Korrelation zwischen Item-Score und Gesamtscore.
+ *
+ * Interpretation: <0.2 schlecht, 0.2-0.3 akzeptabel, 0.3-0.4 gut, >0.4 sehr gut
+ */
+function berechneTrennschaerfe(
+  frageId: string,
+  korrektur: PruefungsKorrektur
+): { wert: number | null; label: string | null } {
+  // Gesamtpunkte pro SuS berechnen (ohne diese Frage = part-whole-correction)
+  const paare: Array<{ itemScore: number; restScore: number }> = []
+
+  for (const s of korrektur.schueler) {
+    const bewertung = s.bewertungen[frageId]
+    if (!bewertung) continue
+
+    const itemScore = effektivePunkte(bewertung)
+    let restScore = 0
+    for (const [fId, b] of Object.entries(s.bewertungen)) {
+      if (fId !== frageId) restScore += effektivePunkte(b)
+    }
+    paare.push({ itemScore, restScore })
+  }
+
+  // Mindestens 5 SuS nötig für sinnvolle Korrelation
+  if (paare.length < 5) return { wert: null, label: null }
+
+  // Pearson-Korrelation berechnen
+  const n = paare.length
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0
+  for (const { itemScore: x, restScore: y } of paare) {
+    sumX += x; sumY += y; sumXY += x * y; sumX2 += x * x; sumY2 += y * y
+  }
+  const denom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2))
+  if (denom === 0) return { wert: 0, label: 'schlecht' }
+
+  const r = (n * sumXY - sumX * sumY) / denom
+  const wert = Math.round(r * 100) / 100
+
+  let label: string
+  if (wert >= 0.4) label = 'sehr gut'
+  else if (wert >= 0.3) label = 'gut'
+  else if (wert >= 0.2) label = 'akzeptabel'
+  else label = 'schlecht'
+
+  return { wert, label }
 }
 
 /**
  * Berechnet Statistiken pro Frage über alle SuS.
- * Für jede eindeutige frageId: Durchschnitt, Lösungsquote, Anzahl bewerteter SuS.
+ * Für jede eindeutige frageId: Durchschnitt, Lösungsquote, Trennschärfe, Anzahl bewerteter SuS.
  */
 export function berechneFragenStatistiken(korrektur: PruefungsKorrektur): FragenStatistik[] {
   // Alle Frage-IDs sammeln
@@ -178,6 +232,8 @@ export function berechneFragenStatistiken(korrektur: PruefungsKorrektur): Fragen
       ? Math.round((durchschnitt / daten.maxPunkte) * 1000) / 10
       : 0
 
+    const ts = berechneTrennschaerfe(frageId, korrektur)
+
     statistiken.push({
       frageId,
       fragenTyp: daten.typ,
@@ -185,6 +241,8 @@ export function berechneFragenStatistiken(korrektur: PruefungsKorrektur): Fragen
       durchschnittPunkte: durchschnitt,
       loesungsquote,
       anzahlBewertet: daten.anzahl,
+      trennschaerfe: ts.wert,
+      trennschaerfeLabel: ts.label,
     })
   }
 

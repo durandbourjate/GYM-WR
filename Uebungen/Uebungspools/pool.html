@@ -1670,7 +1670,7 @@ function finishAnswer(q,correct,explain,userAnswer){
   sendScoreToLV();
   const fb=document.getElementById('feedback');
   fb.className='feedback show '+(correct?'correct':'wrong');
-  fb.innerHTML='<div class="feedback-title">'+(correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+explain+'</div>';
+  fb.innerHTML='<div class="feedback-title">'+(correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+highlightKonten(explain)+'</div>';
   // Falsche Antworten automatisch zur Wiederholung vormerken
   if(!correct){
     var alreadyQueued=state.repeatQueue.some(function(rq){return rq.id===q.id});

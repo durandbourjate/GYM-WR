@@ -2579,7 +2579,7 @@ function ladeNachrichtenEndpoint(pruefungId, email) {
 
 function korrekturFreigebenEndpoint(body) {
   try {
-    const { email, pruefungId, freigegeben } = body;
+    const { email, pruefungId, freigegeben, typ } = body;
     if (!email || !email.endsWith('@' + LP_DOMAIN)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
@@ -2591,11 +2591,12 @@ function korrekturFreigebenEndpoint(body) {
     const rowIndex = data.findIndex(r => r.id === pruefungId);
     if (rowIndex < 0) return jsonResponse({ error: 'Prüfung nicht gefunden' });
 
-    // korrekturFreigegeben-Spalte suchen oder anlegen
-    let col = headers.indexOf('korrekturFreigegeben');
+    // 2-stufige Freigabe: typ = 'einsicht' (default) oder 'pdf'
+    const spaltenName = typ === 'pdf' ? 'korrekturPdfFreigegeben' : 'korrekturFreigegeben';
+    let col = headers.indexOf(spaltenName);
     if (col < 0) {
       col = headers.length;
-      configSheet.getRange(1, col + 1).setValue('korrekturFreigegeben');
+      configSheet.getRange(1, col + 1).setValue(spaltenName);
     }
     configSheet.getRange(rowIndex + 2, col + 1).setValue(freigegeben ? 'true' : 'false');
 
@@ -2746,6 +2747,7 @@ function ladeKorrekturDetailEndpoint(body) {
       gesamtPunkte,
       maxPunkte,
       audioGesamtkommentarId,
+      pdfFreigegeben: configRow.korrekturPdfFreigegeben === 'true',
     });
   } catch (error) {
     return jsonResponse({ error: error.message });

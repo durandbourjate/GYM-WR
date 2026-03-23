@@ -26,6 +26,14 @@ html.dark {
   --color-slate-900: #171717;
 }
 
+/* Light Mode: Nur mittlere Grautöne (400/500) dunkler machen für WCAG AA Kontrast.
+   Die Prüfungsplattform nutzt dark:-Prefixes → Vollinversion würde diese brechen.
+   Daher gezielt nur die Low-Contrast-Stufen anpassen: text-slate-400/500 → dunkler auf weiss. */
+html:not(.dark) {
+  --color-slate-400: #525252;   /* war #a3a3a3 → jetzt 7.1:1 auf weiss (WCAG AA) */
+  --color-slate-500: #404040;   /* war #737373 → jetzt 9.7:1 auf weiss (WCAG AAA) */
+}
+
 /* Fachbereich-Farben (dezent, nur für Badges) */
 :root {
   --c-vwl: #f97316;

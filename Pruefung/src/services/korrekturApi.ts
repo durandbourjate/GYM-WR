@@ -58,6 +58,7 @@ export interface KorrekturDetailDaten {
   gesamtPunkte: number
   maxPunkte: number
   audioGesamtkommentarId: string | null
+  pdfFreigegeben?: boolean  // LP hat PDF-Download für SuS freigegeben
 }
 
 /** Korrektur-Daten einer Prüfung laden (alle SuS + Bewertungen) */
@@ -110,9 +111,9 @@ export async function generiereUndSendeFeedback(payload: FeedbackVersandPayload,
   return postJson<FeedbackVersandErgebnis>('generiereUndSendeFeedback', { email, ...payload })
 }
 
-/** Korrektur für SuS freigeben/sperren */
-export async function korrekturFreigeben(pruefungId: string, freigegeben: boolean, email: string): Promise<boolean> {
-  return postBool('korrekturFreigeben', { email, pruefungId, freigegeben })
+/** Korrektur für SuS freigeben/sperren (typ: 'einsicht' | 'pdf') */
+export async function korrekturFreigeben(pruefungId: string, freigegeben: boolean, email: string, typ: 'einsicht' | 'pdf' = 'einsicht'): Promise<boolean> {
+  return postBool('korrekturFreigeben', { email, pruefungId, freigegeben, typ })
 }
 
 /** Freigegebene Korrekturen für SuS laden */
