@@ -3,8 +3,10 @@ import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
+import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../utils/trackerUtils.ts'
 import type { Frage } from '../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../types/pruefung.ts'
+import type { FragenPerformance } from '../../types/tracker.ts'
 
 import LPHeader from './LPHeader.tsx'
 import FragenBrowser from './FragenBrowser.tsx'
@@ -96,6 +98,23 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
     }
     ladeFragen()
   }, [istDemoModus, user])
+
+  // Tracker-Daten laden für Fragen-Statistiken
+  const [fragenStats, setFragenStats] = useState<Map<string, FragenPerformance>>(new Map())
+  useEffect(() => {
+    async function ladeStats(): Promise<void> {
+      if (istDemoModus || !apiService.istKonfiguriert()) {
+        setFragenStats(aggregiereFragenPerformance(erstelleDemoTrackerDaten()))
+        return
+      }
+      if (!user) return
+      const tracker = await apiService.ladeTrackerDaten(user.email)
+      if (tracker) {
+        setFragenStats(aggregiereFragenPerformance(tracker))
+      }
+    }
+    ladeStats()
+  }, [user, istDemoModus])
 
   // Autosave-Effekt: 3 Sekunden Debounce
   useEffect(() => {
@@ -354,6 +373,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
           <AbschnitteTab
             pruefung={pruefung}
             fragenMap={fragenMap}
+            fragenStats={fragenStats}
             onAddAbschnitt={addAbschnitt}
             onRemoveAbschnitt={removeAbschnitt}
             onMoveAbschnitt={moveAbschnitt}

@@ -1,12 +1,14 @@
 import type { Frage } from '../../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefung.ts'
 import type { BloomStufe } from '../../../types/fragen.ts'
+import type { FragenPerformance } from '../../../types/tracker.ts'
 import { fachbereichFarbe, typLabel } from '../../../utils/fachbereich.ts'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 
 interface Props {
   pruefung: PruefungsConfig
   fragenMap: Record<string, Frage>
+  fragenStats?: Map<string, FragenPerformance>
   onAddAbschnitt: () => void
   onRemoveAbschnitt: (index: number) => void
   onMoveAbschnitt: (index: number, richtung: 'hoch' | 'runter') => void
@@ -20,6 +22,7 @@ interface Props {
 export default function AbschnitteTab({
   pruefung,
   fragenMap,
+  fragenStats,
   onAddAbschnitt,
   onRemoveAbschnitt,
   onMoveAbschnitt,
@@ -147,6 +150,24 @@ export default function AbschnitteTab({
                           ~{zeit} Min.
                         </span>
                       )}
+                      {frage && fragenStats?.get(frage.id) && (() => {
+                        const perf = fragenStats.get(frage.id)!
+                        const lq = perf.durchschnittLoesungsquote
+                        const farbe = lq > 70 ? 'text-green-600 dark:text-green-400'
+                          : lq >= 40 ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-red-600 dark:text-red-400'
+                        return (
+                          <span className="inline-flex items-center gap-1">
+                            <span className={`text-[10px] font-medium ${farbe}`} title={`${perf.anzahlVerwendungen}× verwendet, ${perf.gesamtN} SuS`}>
+                              ∅ {Math.round(lq)}%
+                              {perf.durchschnittTrennschaerfe != null && ` · TS ${perf.durchschnittTrennschaerfe.toFixed(2)}`}
+                            </span>
+                            {lq > 90 && <span className="text-[10px] text-amber-500 dark:text-amber-400" title="Fast alle SuS lösen diese Frage richtig">⚠ Sehr leicht</span>}
+                            {lq < 20 && <span className="text-[10px] text-red-500 dark:text-red-400" title="Wenige SuS lösen diese Frage">⚠ Sehr schwer</span>}
+                            {perf.durchschnittTrennschaerfe != null && perf.durchschnittTrennschaerfe < 0.2 && <span className="text-[10px] text-red-500 dark:text-red-400" title="Frage trennt nicht zwischen starken und schwachen SuS">⚠ Schlechte TS</span>}
+                          </span>
+                        )
+                      })()}
                       {!frage && (
                         <span className="font-mono text-xs text-red-400 dark:text-red-500 italic">{frageId} (nicht gefunden)</span>
                       )}
