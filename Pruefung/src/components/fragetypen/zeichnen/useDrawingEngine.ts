@@ -21,6 +21,7 @@ interface UseDrawingEngineReturn {
   allesLoeschen: () => void;
   selektiere: (id: CommandId | null) => void;
   loescheSelektierten: () => void;
+  loescheById: (id: CommandId) => void;
   verschiebeSelektierten: (dx: number, dy: number) => void;
   render: (ctx: CanvasRenderingContext2D) => void;
   serialisiere: () => string;
