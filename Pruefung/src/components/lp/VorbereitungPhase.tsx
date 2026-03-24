@@ -10,9 +10,10 @@ import { downloadSebDatei } from '../../utils/sebConfigGenerator'
 interface Props {
   config: PruefungsConfig
   onTeilnehmerGesetzt: (teilnehmer: Teilnehmer[]) => void
+  onWeiterZurLobby?: () => void
 }
 
-export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props) {
+export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeiterZurLobby }: Props) {
   const user = useAuthStore((s) => s.user)
   const [rohDaten, setRohDaten] = useState<KlassenlistenSuS[]>([])
   const [ladeStatus, setLadeStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
@@ -140,6 +141,7 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt }: Props
       const erfolg = await apiService.setzeTeilnehmer(user.email, config.id, effektiveTeilnehmer)
       if (erfolg) {
         onTeilnehmerGesetzt(effektiveTeilnehmer)
+        onWeiterZurLobby?.()
       } else {
         setLobbyFehler('Teilnehmer konnten nicht gespeichert werden. Bitte erneut versuchen.')
       }

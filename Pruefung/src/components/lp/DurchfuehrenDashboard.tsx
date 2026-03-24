@@ -385,6 +385,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
               onTeilnehmerGesetzt={(teilnehmer) => {
                 setConfig({ ...config, teilnehmer })
               }}
+              onWeiterZurLobby={() => wechsleTab('lobby')}
             />
           )}
 
@@ -394,8 +395,10 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
               schuelerStatus={daten.schueler}
               onFreischalten={async () => {
                 if (user) {
-                  await apiService.schaltePruefungFrei(config.id, user.email)
-                  setConfig({ ...config, freigeschaltet: true })
+                  const erfolg = await apiService.schaltePruefungFrei(config.id, user.email)
+                  if (erfolg) {
+                    setConfig({ ...config, freigeschaltet: true })
+                  }
                 }
               }}
               onZurueck={async () => {
@@ -409,6 +412,13 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                   ...(config.teilnehmer ?? []),
                   { email, name, vorname: '', klasse: '—', quelle: 'manuell' as const },
                 ]
+                if (user) {
+                  await apiService.setzeTeilnehmer(user.email, config.id, neueTeilnehmer)
+                  setConfig({ ...config, teilnehmer: neueTeilnehmer })
+                }
+              }}
+              onEntfernen={async (email) => {
+                const neueTeilnehmer = (config.teilnehmer ?? []).filter((t) => t.email !== email)
                 if (user) {
                   await apiService.setzeTeilnehmer(user.email, config.id, neueTeilnehmer)
                   setConfig({ ...config, teilnehmer: neueTeilnehmer })

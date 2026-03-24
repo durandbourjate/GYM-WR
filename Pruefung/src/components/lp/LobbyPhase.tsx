@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { PruefungsConfig } from '../../types/pruefung'
 import type { SchuelerStatus } from '../../types/monitoring'
 
@@ -7,9 +8,11 @@ interface Props {
   onFreischalten: () => void
   onZurueck: () => void
   onAkzeptieren: (email: string, name: string) => void
+  onEntfernen: (email: string) => void
 }
 
-export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren }: Props) {
+export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren, onEntfernen }: Props) {
+  const [bestaetigung, setBestaetigung] = useState(false)
   const teilnehmer = config.teilnehmer ?? []
   const teilnehmerEmails = new Set(teilnehmer.map((t) => t.email))
 
@@ -57,6 +60,14 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{s.name}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">{s.klasse ?? '—'}</span>
             <span className="text-xs text-green-600 dark:text-green-400">bereit</span>
+            <button
+              type="button"
+              onClick={() => onEntfernen(s.email)}
+              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer"
+              title="Aus Lobby entfernen"
+            >
+              ✕
+            </button>
           </div>
         ))}
 
@@ -67,6 +78,14 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{t.name}, {t.vorname}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">{t.klasse}</span>
             <span className="text-xs text-slate-400 dark:text-slate-500">ausstehend</span>
+            <button
+              type="button"
+              onClick={() => onEntfernen(t.email)}
+              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer"
+              title="Aus Lobby entfernen"
+            >
+              ✕
+            </button>
           </div>
         ))}
 
@@ -85,6 +104,13 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
             </button>
           </div>
         ))}
+
+        {/* Leere Lobby */}
+        {bereite.length === 0 && ausstehende.length === 0 && unerwartete.length === 0 && (
+          <div className="px-3 py-6 text-center text-sm text-slate-400 dark:text-slate-500">
+            Noch keine Teilnehmer in der Lobby.
+          </div>
+        )}
       </div>
 
       {/* Aktionen */}
@@ -97,13 +123,33 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
           ← Zurück zur Vorbereitung
         </button>
 
-        <button
-          type="button"
-          onClick={onFreischalten}
-          className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
-        >
-          ▶ Freischalten
-        </button>
+        {!bestaetigung ? (
+          <button
+            type="button"
+            onClick={() => setBestaetigung(true)}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
+          >
+            ▶ Freischalten
+          </button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-slate-600 dark:text-slate-300">Prüfung wirklich freischalten?</span>
+            <button
+              type="button"
+              onClick={() => { onFreischalten(); setBestaetigung(false) }}
+              className="px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
+            >
+              Ja, freischalten
+            </button>
+            <button
+              type="button"
+              onClick={() => setBestaetigung(false)}
+              className="px-3 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
+            >
+              Abbrechen
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

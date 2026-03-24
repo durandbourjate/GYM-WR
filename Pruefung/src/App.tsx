@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePruefungStore } from './store/pruefungStore.ts'
 import { useAuthStore } from './store/authStore.ts'
-import { demoPruefung } from './data/demoPruefung.ts'
-import { demoFragen } from './data/demoFragen.ts'
 import { einrichtungsPruefung } from './data/einrichtungsPruefung.ts'
 import { einrichtungsFragen } from './data/einrichtungsFragen.ts'
 import { apiService } from './services/apiService.ts'
@@ -90,9 +88,9 @@ export default function App() {
         }
       }
 
-      // Fallback: Demo-Prüfung
-      const resolvedConfig = demoPruefung
-      const resolvedFragen = resolveFragenFuerPruefung(resolvedConfig, demoFragen)
+      // Fallback: Im Demo-Modus die Einrichtungsprüfung laden (statt alte demoPruefung)
+      const resolvedConfig = { ...einrichtungsPruefung, freigeschaltet: true }
+      const resolvedFragen = resolveFragenFuerPruefung(resolvedConfig, einrichtungsFragen)
       setPruefungsConfig(resolvedConfig)
       setPruefungsFragen(resolvedFragen)
 
