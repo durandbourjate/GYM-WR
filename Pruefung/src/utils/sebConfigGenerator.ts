@@ -31,11 +31,15 @@ export function generiereSebConfig(pruefungId: string, _pruefungTitel: string): 
     <key>browserWindowAllowReload</key>
     <true/>
 
+    <!-- 0=block, 1=same window, 2=new window -->
     <key>newBrowserWindowByLinkPolicy</key>
-    <integer>0</integer>
+    <integer>1</integer>
 
     <key>newBrowserWindowByScriptPolicy</key>
-    <integer>0</integer>
+    <integer>2</integer>
+
+    <key>newBrowserWindowByLinkBlockForeign</key>
+    <false/>
 
     <key>enableJavaScript</key>
     <true/>
@@ -173,6 +177,36 @@ export function generiereSebConfig(pruefungId: string, _pruefungTitel: string): 
             <true/>
             <key>expression</key>
             <string>fonts.gstatic.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>ssl.gstatic.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>lh3.googleusercontent.com/*</string>
+            <key>regex</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>action</key>
+            <integer>1</integer>
+            <key>active</key>
+            <true/>
+            <key>expression</key>
+            <string>*.googleusercontent.com/*</string>
             <key>regex</key>
             <false/>
         </dict>
