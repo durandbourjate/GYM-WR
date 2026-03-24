@@ -400,8 +400,9 @@ export type PDFAnnotation =
 export interface PDFFrage extends FrageBase {
   typ: 'pdf'
   fragetext: string
-  pdfDriveFileId: string
+  pdfDriveFileId?: string
   pdfBase64?: string
+  pdfUrl?: string
   pdfDateiname: string
   seitenAnzahl: number
   kategorien?: PDFKategorie[]

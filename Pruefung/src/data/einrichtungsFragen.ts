@@ -345,7 +345,7 @@ export const einrichtungsFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'In dieser Aufgabe arbeiten Sie mit einem **PDF-Dokument** (Amtliche Witzsammlung der Schweiz).\n\n**Aufträge:**\n1. Blättern Sie durch das Dokument (mind. 2 Seiten)\n2. Suchen Sie Ihren **Lieblingswitz** und markieren Sie ihn mit dem **Textmarker** (gelbe Farbe)\n3. Fügen Sie einen **Kommentar** hinzu, in dem Sie kurz schreiben, warum Sie diesen Witz lustig finden\n\n💡 **Tipp:** Wählen Sie oben das Werkzeug «Textmarker» und dann die gelbe Farbe. Für einen Kommentar nutzen Sie das Kommentar-Werkzeug.',
-    pdfDriveFileId: 'einrichtung-witzsammlung-dummy',
+    pdfUrl: './materialien/witzsammlung.pdf',
     pdfDateiname: 'witzsammlung.pdf',
     seitenAnzahl: 5,
     kategorien: [

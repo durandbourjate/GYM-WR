@@ -59,8 +59,10 @@ export default function PDFFrage({ frage }: Props) {
   useEffect(() => {
     if (frage.pdfBase64) {
       renderer.ladePDF({ base64: frage.pdfBase64 })
+    } else if (frage.pdfUrl) {
+      renderer.ladePDF({ url: frage.pdfUrl })
     } else if (frage.pdfDriveFileId) {
-      // Drive files would be loaded via a URL; for now use a placeholder path
+      // Drive files loaded via backend API
       renderer.ladePDF({ url: `/api/drive/${frage.pdfDriveFileId}` })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
