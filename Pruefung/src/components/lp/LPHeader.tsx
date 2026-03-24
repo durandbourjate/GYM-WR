@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
+import { APP_VERSION } from '../../version'
 
 interface Props {
   titel: string
@@ -40,7 +41,10 @@ export default function LPHeader({ titel, untertitel, zurueck, statusText, ansic
             </button>
           )}
           <div>
-            <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">{titel}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">{titel}</h1>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">{APP_VERSION}</span>
+            </div>
             {untertitel && (
               <p className="text-sm text-slate-500 dark:text-slate-400">{untertitel}</p>
             )}

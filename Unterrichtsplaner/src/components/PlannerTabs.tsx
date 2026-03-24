@@ -225,11 +225,18 @@ export function PlannerTabs() {
     return () => window.removeEventListener('keydown', handler);
   }, [showNew]);
 
+  // Click-Outside schliesst Context-Menu
+  useEffect(() => {
+    if (!contextMenu) return;
+    const handler = () => setContextMenu(null);
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
+  }, [contextMenu]);
+
   return (
     <>
       {/* Inline tabs für die Toolbar */}
-      <div className="flex items-center gap-0.5 overflow-x-auto max-w-[30vw] flex-shrink"
-           onClick={() => setContextMenu(null)}>
+      <div className="flex items-center gap-0.5 overflow-x-auto max-w-[30vw] flex-shrink">
         {instances.map(inst => (
           <button
             key={inst.id}
@@ -354,19 +361,18 @@ export function PlannerTabs() {
         <div
           className="fixed z-[9999] bg-slate-800 border border-slate-600 rounded shadow-lg py-1 text-sm"
           style={{ left: contextMenu.x, top: contextMenu.y }}
-          onClick={() => setContextMenu(null)}
         >
           <button className="w-full px-4 py-1.5 text-left text-slate-200 hover:bg-slate-700 cursor-pointer"
-                  onClick={() => handleRename(contextMenu.id)}>
+                  onClick={(e) => { e.stopPropagation(); handleRename(contextMenu.id); }}>
             ✏️ Umbenennen
           </button>
           <button className="w-full px-4 py-1.5 text-left text-slate-200 hover:bg-slate-700 cursor-pointer"
-                  onClick={() => handleExport(contextMenu.id)}>
+                  onClick={(e) => { e.stopPropagation(); handleExport(contextMenu.id); }}>
             📤 Exportieren
           </button>
           <hr className="border-slate-700 my-1" />
-          <button className="w-full px-4 py-1.5 text-left text-red-400 hover:bg-slate-700 cursor-pointer"
-                  onClick={() => handleDelete(contextMenu.id)}
+          <button className={`w-full px-4 py-1.5 text-left cursor-pointer ${instances.length <= 1 ? 'text-slate-600 cursor-not-allowed' : 'text-red-400 hover:bg-slate-700'}`}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(contextMenu.id); }}
                   disabled={instances.length <= 1}>
             🗑️ Löschen
           </button>
