@@ -6,6 +6,51 @@
 
 ## Aktueller Stand
 
+**PDF-Annotation — Neuer Fragetyp** (24.03.2026) ✅
+
+### Session 24.03.2026 — PDF-Fragetyp (13 Tasks)
+
+Neuer Fragetyp `pdf` mit PDF.js-Rendering, 4 Annotationswerkzeugen (Highlighter, Kommentar, Freihand, Label), LP-Kategorien, globalem Undo/Redo und KI-Korrektur.
+
+**Spec:** `docs/superpowers/specs/2026-03-24-pdf-fragetyp-design.md`
+**Plan:** `docs/superpowers/plans/2026-03-24-pdf-fragetyp.md`
+
+#### Neue Dateien
+- `src/components/fragetypen/pdf/PDFTypes.ts` — Re-Export + lokale Types (PDFRenderState, PDFSeitenInfo, ZoomStufe)
+- `src/components/fragetypen/pdf/usePDFRenderer.ts` — PDF.js Lazy-Loading, Seiten-Rendering, Text-Extraktion
+- `src/components/fragetypen/pdf/usePDFAnnotations.ts` — Annotation CRUD, globaler Undo/Redo Stack (50 Schritte)
+- `src/components/fragetypen/pdf/PDFToolbar.tsx` — Werkzeugleiste (Highlighter, Kommentar, Freihand, Label, Radierer, Zoom)
+- `src/components/fragetypen/pdf/PDFSeite.tsx` — Einzelseite: 4 Layer (PDF Canvas, Text-Layer, SVG-Overlay, Freihand-Canvas)
+- `src/components/fragetypen/pdf/PDFKommentarPopover.tsx` — Kommentar-Eingabe-Popover
+- `src/components/fragetypen/pdf/PDFKategorieChooser.tsx` — Label-Kategorien-Dropdown
+- `src/components/fragetypen/pdf/PDFViewer.tsx` — Scroll-Container mit Lazy-Rendering (IntersectionObserver)
+- `src/components/fragetypen/PDFFrage.tsx` — SuS-Ansicht mit Auto-Save
+- `src/components/lp/frageneditor/PDFEditor.tsx` — LP-Editor (PDF-Upload, Werkzeuge, Kategorien, Vorlagen)
+- `src/components/lp/PDFKorrektur.tsx` — Korrektur-Ansicht (Read-only PDF + Bewertung + KI-Vorschlag)
+
+#### Geänderte Dateien
+- `src/types/fragen.ts` — PDFFrage, PDFAnnotation (Discriminated Union), PDFKategorie, PDFAnnotationsWerkzeug + Frage-Union
+- `src/types/antworten.ts` — Neuer Antwort-Typ `pdf`
+- `src/components/lp/frageneditor/editorUtils.ts` — FrageTyp + typKuerzel
+- `src/utils/fachbereich.ts` — typLabel 'PDF-Annotation'
+- `src/utils/fragenFactory.ts` — Factory-Case + TypSpezifischeDaten
+- `src/utils/fragenValidierung.ts` — PDF-Validierung (PDF, Fragetext, Werkzeuge)
+- `src/utils/exportUtils.ts` — Export-Text für PDF-Antworten
+- `src/components/Layout.tsx` — `case 'pdf'` Routing
+- `src/components/lp/frageneditor/sections/TypEditorDispatcher.tsx` — PDF-Editor Integration
+- `src/components/lp/frageneditor/FragenEditor.tsx` — State + Typ-Button + handleSpeichern
+- `src/components/lp/KorrekturSchuelerZeile.tsx` — PDF-Korrektur Routing + antwortAlsText
+- `src/components/lp/KorrekturPDFAnsicht.tsx` — PDF-Annotationen in Druck-Ansicht
+- `apps-script-code.js` — `korrigierePDFAnnotation()` Endpoint + doPost-Routing
+
+#### Wichtig
+- **Apps Script:** Code manuell in Apps Script Editor kopieren + neue Bereitstellung!
+- **Neue Dependency:** `pdfjs-dist` (PDF.js, ~500KB, lazy-loaded)
+- **Max. 2 PDF-Fragen pro Prüfung** (IndexedDB-Quota-Schutz)
+- **Google Drive Upload:** Aktuell nur Base64-Fallback implementiert, Drive-Upload als TODO
+
+---
+
 **Zeichnen/Stifteingabe — Neuer Fragetyp** (23.03.2026) ✅
 
 ### Session 23.03.2026 — Zeichnen-Fragetyp (10 Tasks)
@@ -42,7 +87,7 @@ Neuer Fragetyp `visualisierung` (Untertyp `zeichnen`) mit HTML5 Canvas, 7 Werkze
 #### Wichtig
 - **Apps Script:** Code manuell in Apps Script Editor kopieren + neue Bereitstellung!
 - **Keine neuen Dependencies** — alles native HTML5 Canvas
-- **v2 Ausblick:** PDF-Annotationstyp (Text-Highlighting) für Sprachfächer
+- **v2 Ausblick:** ~~PDF-Annotationstyp~~ ✅ (24.03.2026)
 
 ---
 

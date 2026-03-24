@@ -227,7 +227,7 @@ function HilfeFragen() {
         Die Fragenbank ist der zentrale Ort für alle Prüfungsfragen. Fragen können in mehreren Prüfungen wiederverwendet werden.
       </Text>
 
-      <Untertitel>11 Fragetypen</Untertitel>
+      <Untertitel>12 Fragetypen</Untertitel>
       <Text>
         <strong>Multiple Choice</strong> — Einfach- oder Mehrfachauswahl. Optionen werden bei der Prüfung automatisch gemischt.
       </Text>
@@ -267,6 +267,9 @@ function HilfeFragen() {
       <Untertitel>Weitere</Untertitel>
       <Text>
         <strong>Aufgabengruppe</strong> — Bündelt mehrere Teilaufgaben unter einem gemeinsamen Kontext/Fallbeispiel. Fächerübergreifend nutzbar.
+      </Text>
+      <Text>
+        <strong>PDF-Annotation</strong> — LP lädt ein PDF hoch (z.B. Zeitungsartikel, Gesetzestext). SuS annotieren direkt auf dem PDF mit 4 Werkzeugen: Text-Highlighter, Kommentar, Freihand-Zeichnung und Label-Zuordnung. LP kann vordefinierte Kategorien festlegen (z.B. Stilmittel, Argumentationstypen). Korrektur mit optionalem KI-Vorschlag.
       </Text>
 
       <Untertitel>Metadaten pro Frage</Untertitel>

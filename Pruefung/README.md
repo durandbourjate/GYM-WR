@@ -5,7 +5,7 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 ## Features
 
 **Für Schülerinnen und Schüler**
-- 11 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe
+- 12 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, PDF-Annotation
 - Automatisches Speichern (lokal + remote) — kein Datenverlust
 - Timer mit Countdown oder Open-End (Stoppuhr), Fortschrittsanzeige pro Abschnitt
 - Offline-fähig (PWA): Antworten werden bei Reconnect nachgesendet
@@ -124,7 +124,7 @@ Environment-Variablen werden über GitHub Secrets gesetzt:
 src/
 ├── components/
 │   ├── lp/                    LP-Komponenten (Composer, Monitoring)
-│   ├── fragetypen/            11 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe
+│   ├── fragetypen/            12 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe + PDF-Annotation
 │   └── ...                    Login, Layout, Timer, Abgabe, etc.
 ├── services/                  API, Auth, SEB, Auto-Save, Retry-Queue
 ├── store/                     Zustand Stores (Prüfung, Auth, Theme)
