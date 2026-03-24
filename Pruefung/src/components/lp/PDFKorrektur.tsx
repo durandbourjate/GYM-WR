@@ -43,7 +43,7 @@ function zaehleAnnotationen(annotationen: PDFAnnotation[]): Record<string, numbe
 export default function PDFKorrektur({
   pruefungId,
   frageId,
-  fragetext,
+  fragetext: _fragetext,
   maxPunkte,
   frage,
   annotationen,
@@ -103,8 +103,8 @@ export default function PDFKorrektur({
   // KI-Vorschlag (placeholder)
   const [kiLaedt, setKiLaedt] = useState(false)
   const [kiVorschlagGeladen, setKiVorschlagGeladen] = useState(false)
-  const [kiPunkte, setKiPunkte] = useState<number | null>(null)
-  const [kiBegruendung, setKiBegruendung] = useState<string | null>(null)
+  const [kiPunkte, _setKiPunkte] = useState<number | null>(null)
+  const [kiBegruendung, _setKiBegruendung] = useState<string | null>(null)
   const [kiFehler, setKiFehler] = useState(false)
 
   async function handleKiVorschlag(): Promise<void> {

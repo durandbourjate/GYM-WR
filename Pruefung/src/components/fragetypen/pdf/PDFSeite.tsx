@@ -4,7 +4,7 @@ import type {
   PDFFreihandAnnotation, PDFLabelAnnotation, PDFKategorie,
   PDFToolbarWerkzeug, PDFTextRange,
 } from './PDFTypes.ts'
-import type { PDFSeitenInfo, PDFTextItem, ZoomStufe } from './PDFTypes.ts'
+import type { PDFSeitenInfo, ZoomStufe } from './PDFTypes.ts'
 import type { usePDFRenderer } from './usePDFRenderer.ts'
 import { PDFKommentarPopover } from './PDFKommentarPopover.tsx'
 import { PDFKategorieChooser } from './PDFKategorieChooser.tsx'
@@ -61,7 +61,6 @@ function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
   for (const span of spans) {
     const so = Number(span.dataset.offset)
     const content = span.textContent ?? ''
-    const eo = so + content.length
     if (!range.intersectsNode(span)) continue
 
     // Compute overlap within this span
@@ -93,7 +92,7 @@ function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
 
 export function PDFSeite({
   seitenNr, zoom, renderer, annotationen, aktivesWerkzeug, aktiveFarbe,
-  kategorien, aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen, readOnly,
+  kategorien, aktiveKategorieId: _aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null)

@@ -54,7 +54,7 @@ export function usePDFRenderer() {
     canvas.style.height = `${viewport.height / window.devicePixelRatio}px`
 
     const ctx = canvas.getContext('2d')!
-    await page.render({ canvasContext: ctx, viewport }).promise
+    await page.render({ canvasContext: ctx, viewport, canvas }).promise
 
     const textContent = await page.getTextContent()
     let offset = 0

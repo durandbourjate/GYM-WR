@@ -76,7 +76,7 @@ function erzeugeId(): string {
 
 export default function PDFEditor({
   pdfBase64, setPdfBase64,
-  pdfDriveFileId, setPdfDriveFileId,
+  pdfDriveFileId: _pdfDriveFileId, setPdfDriveFileId,
   pdfDateiname, setPdfDateiname,
   seitenAnzahl, setSeitenAnzahl,
   kategorien, setKategorien,
