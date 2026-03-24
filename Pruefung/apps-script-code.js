@@ -573,6 +573,7 @@ function ladeFragen(fragenIds) {
   const tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
   const alleFragen = [];
 
+  // Erste Runde: Direkte Fragen laden
   for (const tab of tabs) {
     const sheet = fragenbank.getSheetByName(tab);
     if (!sheet) continue;
@@ -583,6 +584,32 @@ function ladeFragen(fragenIds) {
       }
     }
   }
+
+  // Zweite Runde: Teilaufgaben aus Aufgabengruppen nachladen
+  const teilaufgabenIds = [];
+  for (const frage of alleFragen) {
+    if (frage.typ === 'aufgabengruppe' && frage.teilaufgabenIds) {
+      for (const tid of frage.teilaufgabenIds) {
+        if (!alleFragen.some(f => f.id === tid) && !teilaufgabenIds.includes(tid)) {
+          teilaufgabenIds.push(tid);
+        }
+      }
+    }
+  }
+
+  if (teilaufgabenIds.length > 0) {
+    for (const tab of tabs) {
+      const sheet = fragenbank.getSheetByName(tab);
+      if (!sheet) continue;
+      const data = getSheetData(sheet);
+      for (const row of data) {
+        if (teilaufgabenIds.includes(row.id)) {
+          alleFragen.push(parseFrage(row, tab));
+        }
+      }
+    }
+  }
+
   return alleFragen;
 }
 
@@ -1280,6 +1307,24 @@ function getTypDaten(frage) {
       };
     case 'aufgabengruppe':
       return { teilaufgabenIds: frage.teilaufgabenIds, kontextAnhaenge: frage.kontextAnhaenge };
+    case 'pdf':
+      return {
+        pdfDriveFileId: frage.pdfDriveFileId,
+        pdfUrl: frage.pdfUrl,
+        pdfDateiname: frage.pdfDateiname,
+        seitenAnzahl: frage.seitenAnzahl,
+        kategorien: frage.kategorien,
+        erlaubteWerkzeuge: frage.erlaubteWerkzeuge,
+      };
+    case 'visualisierung':
+      return {
+        untertyp: frage.untertyp,
+        breite: frage.breite || (frage.canvasConfig && frage.canvasConfig.breite),
+        hoehe: frage.hoehe || (frage.canvasConfig && frage.canvasConfig.hoehe),
+        hintergrundBild: frage.hintergrundBild || (frage.canvasConfig && frage.canvasConfig.hintergrundbild),
+        werkzeuge: frage.werkzeuge || (frage.canvasConfig && frage.canvasConfig.werkzeuge),
+        radierer: frage.radierer !== undefined ? frage.radierer : (frage.canvasConfig && frage.canvasConfig.radierer),
+      };
     default:
       return {};
   }
