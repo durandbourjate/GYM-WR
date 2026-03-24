@@ -92,6 +92,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   abmelden: () => {
     clearSession()
     usePruefungStore.getState().zuruecksetzen()
+    // Persistierten Prüfungszustand löschen (dynamischer Key mit pruefungId)
+    const pruefungId = new URLSearchParams(window.location.search).get('id') || 'default'
+    try { localStorage.removeItem(`pruefung-state-${pruefungId}`) } catch { /* ignore */ }
     set({ user: null, istDemoModus: false, ladeStatus: 'idle', fehler: null })
   },
 
