@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import type { SchuelerKorrektur, SchuelerAbgabe } from '../../types/korrektur.ts'
-import type { Frage, PDFAnnotation } from '../../types/fragen.ts'
+import type { Frage, PDFAnnotation, PDFFrage } from '../../types/fragen.ts'
 import type { Antwort } from '../../types/antworten.ts'
 import { effektivePunkte, berechneNote, statusLabel, statusFarbe } from '../../utils/korrekturUtils.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
 import KorrekturFrageZeile from './KorrekturFrageZeile.tsx'
 import ZeichnenKorrektur from './ZeichnenKorrektur.tsx'
+import PDFKorrektur from './PDFKorrektur.tsx'
 import AudioRecorder from '../AudioRecorder.tsx'
 
 interface Props {
@@ -287,6 +288,47 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
                     maxPunkte={bewertung.maxPunkte}
                     bildLink={antwort.bildLink}
                     daten={antwort.daten}
+                    bewertung={bewertung}
+                    schuelerEmail={schueler.email}
+                    onUpdate={(updates) => onBewertungUpdate(schueler.email, frage.id, updates)}
+                    onAudioUpload={(frageId, blob) => onAudioUpload(schueler.email, frageId, blob)}
+                  />
+                </div>
+              )
+            }
+
+            // PDF: spezielle PDF-Korrektur mit Annotation-Ansicht
+            if (frage.typ === 'pdf' && antwort?.typ === 'pdf') {
+              const pdfAntwort = antwort as { typ: 'pdf'; annotationen: PDFAnnotation[] }
+              return (
+                <div
+                  key={frage.id}
+                  className={`rounded-lg border p-4 transition-colors ${
+                    bewertung.geprueft
+                      ? 'border-green-200 bg-green-50/30 dark:border-green-800/40 dark:bg-green-900/10'
+                      : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                  }`}
+                >
+                  {/* Frage-Header */}
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="font-mono text-xs text-slate-400 dark:text-slate-500">{frage.id}</span>
+                    <span className="inline-block px-1.5 py-0.5 text-xs rounded font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                      pdf
+                    </span>
+                    <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 tabular-nums">
+                      max. {bewertung.maxPunkte} Pkt.
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 truncate" title={(frage as PDFFrage).fragetext}>
+                    {(frage as PDFFrage).fragetext ?? frage.id}
+                  </p>
+                  <PDFKorrektur
+                    pruefungId={pruefungId}
+                    frageId={frage.id}
+                    fragetext={(frage as PDFFrage).fragetext ?? frage.id}
+                    maxPunkte={bewertung.maxPunkte}
+                    frage={frage as PDFFrage}
+                    annotationen={pdfAntwort.annotationen ?? []}
                     bewertung={bewertung}
                     schuelerEmail={schueler.email}
                     onUpdate={(updates) => onBewertungUpdate(schueler.email, frage.id, updates)}
