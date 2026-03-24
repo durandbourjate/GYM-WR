@@ -8,13 +8,24 @@
 
 ## Offene Punkte
 
-| # | Beschreibung | Priorität |
-|---|-------------|-----------|
-| PT-1 | **Export nach Durchführung als Backup.** Direkt nach Prüfungsdurchführung: individuelle Schüler-PDFs + Excel mit allen Fragen/Antworten. Dasselbe nach Korrektur (mit Bewertungen). | mittel |
+Keine offenen Punkte.
 
 ---
 
 ## Letzte Sessions
+
+### 24.03.2026 (Session 2) — Backup-Export als Excel (v1.1, PT-1)
+
+Neuer "Backup exportieren"-Button in BeendetPhase + KorrekturDashboard. Generiert `.xlsx` mit:
+- **Tab "Übersicht":** Name, E-Mail, Klasse, Total, Max, Note, dann pro Frage: Punkte + Kommentar
+- **Tab pro SuS:** Frage, Typ, Antwort, Punkte, Max, Kommentar
+- Effektive Bewertung: `lpPunkte ?? kiPunkte`, `lpKommentar ?? kiFeedback`
+
+**Neue Dateien:** `src/utils/backupExport.ts`, `src/version.ts`
+**Neue Dependency:** `xlsx` (SheetJS, lazy-loaded)
+**Geänderte Dateien:** BeendetPhase.tsx (Props erweitert + Button), DurchfuehrenDashboard.tsx (fragen/abgaben durchreichen), KorrekturDashboard.tsx (Button), LPHeader.tsx (Versionsticker)
+
+**Spec:** `docs/superpowers/specs/2026-03-24-backup-export-design.md`
 
 ### 24.03.2026 — PDF-Annotation (Neuer Fragetyp)
 
@@ -77,6 +88,7 @@ Neuer Fragetyp `visualisierung` (Untertyp `zeichnen`) mit HTML5 Canvas, 7 Werkze
 | 32+ | FiBu-Fragetypen (5 Typen), Aufgabengruppen, Pool-Sync, RückSync | 20–21.03. |
 | 33+ | Farbkonzept, Trennschärfe, Korrektur-Freigabe, Tool-Synergien | 22–24.03. |
 | 34+ | Zeichnen-Fragetyp, PDF-Annotation | 23–24.03. |
+| 35 | Backup-Export als Excel (Übersicht + SuS-Tabs) | 24.03. |
 
 ---
 

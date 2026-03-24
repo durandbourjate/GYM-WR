@@ -451,7 +451,10 @@ function HilfeKorrektur() {
         Pro SuS kann ein druckbares PDF erstellt werden (📄-Button pro SuS oder &laquo;Korrektur-PDFs&raquo; im Header). Die PDF-Ansicht enthält alle Fragen, Antworten, Punkte und Kommentare. Über den Browser-Druckdialog können Sie &laquo;Als PDF speichern&raquo; wählen.
       </Text>
       <Text>
-        Der &laquo;Excel-Export (Detailliert)&raquo; erstellt eine CSV-Datei mit Antwort-Text und Punkten pro Frage/SuS — wie ein Google-Forms-Export. Ideal zur Archivierung.
+        Der &laquo;Excel-Export (Detailliert)&raquo; erstellt eine CSV-Datei mit Antwort-Text und Punkten pro Frage/SuS — wie ein Google-Forms-Export.
+      </Text>
+      <Text>
+        Der &laquo;Backup exportieren&raquo;-Button (blau) erstellt ein vollständiges Excel-Backup (.xlsx) mit einem Übersichts-Tab (Noten, Punkte pro Frage) und einem eigenen Tab pro SuS (Fragen, Antworten, Punkte, Kommentare). Verfügbar im &laquo;Ergebnisse&raquo;-Tab (nach Durchführung, ohne Bewertungen) und im &laquo;Korrektur&raquo;-Tab (mit Bewertungen). Ideal zur Archivierung.
       </Text>
 
       <Hinweis>

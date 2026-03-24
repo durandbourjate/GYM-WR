@@ -17,14 +17,18 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 | # | Beschreibung | Priorität |
 |---|-------------|-----------|
-| UP-1 | **Rechtsklick Kurs löschen reagiert nicht.** Kontextmenü auf Kursname-Tab → "Kurs löschen" funktioniert nicht. | hoch |
-| UP-2 | **Versionsticker aktualisiert nicht.** Zeigt v3.102 statt v3.104. Mechanismus prüfen. | hoch |
-| UP-3 | **Versionsticker für alle Tools einführen.** Einheitlicher Versionsanzeiger über alle Projekte. | mittel |
 | UP-4 | **Design vereinfachen.** Farben massiv reduzieren, konsistentes Farbkonzept. An andere Tools angleichen. | mittel |
 
 ---
 
 ## Letzte Sessions
+
+### 24.03.2026 — Bugfixes + Versionsticker
+
+- **UP-1 behoben:** PlannerTabs Kontextmenü "Löschen" reagierte nicht — Event-Bubbling-Bug (stopPropagation + Click-Outside-Handler), Disabled-Styling
+- **UP-2 behoben:** Versionsticker zeigte v3.102 statt v3.104 — `src/version.ts` aktualisiert
+- **UP-3 erledigt:** Versionsticker für alle Tools eingeführt (Prüfungstool v1.0, Übungspools v2.0)
+- HANDOFFs getrimmt (Unterrichtsplaner 1736→85 Zeilen, Prüfung 1319→130 Zeilen)
 
 ### v3.104 — Tool-Synergien UI-Integration (23.03.2026)
 
@@ -64,6 +68,7 @@ Tabs in Kopfzeile, Kursfilter als Dropdown, TaF nach Settings, Legend→HelpBar.
 
 | Version | Datum | Beschreibung |
 |---------|-------|-------------|
+| v3.104+ | 24.03.2026 | Bugfixes (Kontextmenü, Versionsticker), HANDOFF-Trim |
 | v3.104 | 23.03.2026 | Tool-Synergien UI (Badges, Import, Notenstand) |
 | v3.103 | 24.03.2026 | Synergy-Backend, Variablen-Harmonisierung |
 | v3.100 | 23.03.2026 | UI-Fixes, Light-Mode, SOL-Config |
