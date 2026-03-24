@@ -57,8 +57,18 @@ export default function KorrekturListe({ onWaehle }: Props) {
         )}
 
         {!laden && !fehler && korrekturen.length === 0 && (
-          <div className="text-center py-12 text-slate-400 dark:text-slate-500">
-            Keine freigegebenen Korrekturen vorhanden.
+          <div className="text-center py-12 space-y-4">
+            <p className="text-slate-400 dark:text-slate-500">
+              Keine freigegebenen Korrekturen vorhanden.
+            </p>
+            <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-6 max-w-sm mx-auto space-y-3">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Wenn Sie eine Prüfung ablegen möchten, verwenden Sie den <strong>Prüfungslink</strong> Ihrer Lehrperson.
+              </p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">
+                Korrigierte Prüfungen erscheinen hier automatisch, sobald die Lehrperson die Einsicht freigibt.
+              </p>
+            </div>
           </div>
         )}
 
