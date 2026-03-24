@@ -62,8 +62,8 @@ export default function PDFFrage({ frage }: Props) {
     } else if (frage.pdfUrl) {
       renderer.ladePDF({ url: frage.pdfUrl })
     } else if (frage.pdfDriveFileId) {
-      // Drive files loaded via backend API
-      renderer.ladePDF({ url: `/api/drive/${frage.pdfDriveFileId}` })
+      // Google Drive direkt-Download (Datei muss "Jeder mit Link" freigegeben sein)
+      renderer.ladePDF({ url: `https://drive.google.com/uc?export=download&id=${frage.pdfDriveFileId}` })
     } else if (frage.pdfDateiname) {
       // Fallback: lokale Datei im materialien-Ordner
       renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
