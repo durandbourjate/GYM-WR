@@ -72,7 +72,7 @@ export async function exportiereBackupXlsx(input: BackupExportInput): Promise<vo
   // === Tab 1: Übersicht ===
   const headerRow: (string | number)[] = [
     'Name', 'E-Mail', 'Klasse', 'Total', 'Max', 'Note',
-    ...fragen.flatMap((f, i) => [`F${i + 1} Pkt`, `F${i + 1} Kommentar`])
+    ...fragen.flatMap((_f, i) => [`F${i + 1} Pkt`, `F${i + 1} Kommentar`])
   ]
   const uebersichtDaten: (string | number)[][] = [headerRow]
 
