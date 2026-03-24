@@ -64,6 +64,9 @@ export default function PDFFrage({ frage }: Props) {
     } else if (frage.pdfDriveFileId) {
       // Drive files loaded via backend API
       renderer.ladePDF({ url: `/api/drive/${frage.pdfDriveFileId}` })
+    } else if (frage.pdfDateiname) {
+      // Fallback: lokale Datei im materialien-Ordner
+      renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frage.id])
