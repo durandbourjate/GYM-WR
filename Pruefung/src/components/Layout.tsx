@@ -26,7 +26,8 @@ import KontenbestimmungFrageComponent from './fragetypen/KontenbestimmungFrage.t
 import BilanzERFrageComponent from './fragetypen/BilanzERFrage.tsx'
 import AufgabengruppeFrageComponent from './fragetypen/AufgabengruppeFrage.tsx'
 import ZeichnenFrage from './fragetypen/ZeichnenFrage.tsx'
-import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType, BilanzERFrage as BilanzERFrageType, AufgabengruppeFrage as AufgabengruppeFrageType, VisualisierungFrage as VisualisierungFrageType } from '../types/fragen.ts'
+import PDFFrage from './fragetypen/PDFFrage.tsx'
+import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType, BilanzERFrage as BilanzERFrageType, AufgabengruppeFrage as AufgabengruppeFrageType, VisualisierungFrage as VisualisierungFrageType, PDFFrage as PDFFrageTyp } from '../types/fragen.ts'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 
 export default function Layout() {
@@ -432,6 +433,8 @@ function renderFrage(frage: Frage) {
           Visualisierungs-Untertyp «{(frage as VisualisierungFrageType).untertyp}» wird in einer späteren Phase implementiert.
         </div>
       )
+    case 'pdf':
+      return <PDFFrage frage={frage as PDFFrageTyp} />
     default:
       return (
         <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">

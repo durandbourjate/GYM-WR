@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 import type { SchuelerKorrektur, SchuelerAbgabe, FragenBewertung } from '../../types/korrektur.ts'
-import type { Frage, MCFrage } from '../../types/fragen.ts'
+import type { Frage, MCFrage, PDFAnnotation } from '../../types/fragen.ts'
 import type { PruefungsKorrektur } from '../../types/korrektur.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
 import type { Antwort } from '../../types/antworten.ts'
@@ -110,6 +110,11 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
 
     case 'freitext':
       return antwort.text || '(leer)'
+
+    case 'pdf': {
+      const pdfA = antwort as { typ: 'pdf'; annotationen: PDFAnnotation[] }
+      return `${pdfA.annotationen?.length ?? 0} PDF-Annotationen`
+    }
 
     default:
       return '(unbekannter Typ)'

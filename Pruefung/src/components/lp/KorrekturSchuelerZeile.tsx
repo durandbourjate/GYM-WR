@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { SchuelerKorrektur, SchuelerAbgabe } from '../../types/korrektur.ts'
-import type { Frage } from '../../types/fragen.ts'
+import type { Frage, PDFAnnotation } from '../../types/fragen.ts'
 import type { Antwort } from '../../types/antworten.ts'
 import { effektivePunkte, berechneNote, statusLabel, statusFarbe } from '../../utils/korrekturUtils.ts'
 import type { NotenConfig } from '../../types/pruefung.ts'
@@ -114,6 +114,12 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
         parts.push(`ER: ${stufen} Stufen`)
       }
       return parts.length > 0 ? parts.join(', ') : '(leer)'
+    }
+
+    case 'pdf': {
+      const pdfA = antwort as { typ: 'pdf'; annotationen: PDFAnnotation[] }
+      const count = pdfA.annotationen?.length ?? 0
+      return count > 0 ? `${count} Annotationen` : '(keine)'
     }
 
     default:
