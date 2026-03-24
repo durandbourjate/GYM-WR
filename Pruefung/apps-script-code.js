@@ -552,6 +552,7 @@ function ladePruefung(pruefungId, email) {
       zeitverlaengerungen: safeJsonParse(configRow.zeitverlaengerungen, {}),
       sebAusnahmen: safeJsonParse(configRow.sebAusnahmen, []),
       teilnehmer: safeJsonParse(configRow.teilnehmer, []),
+      materialien: safeJsonParse(configRow.materialien, []),
       beendetUm: configRow.beendetUm || undefined,
       korrektur: { aktiviert: false, modus: 'batch' },
       feedback: { zeitpunkt: 'nach-review', format: 'pdf', detailgrad: 'vollstaendig' },
@@ -732,6 +733,19 @@ function parseFrage(row, fachbereich) {
         hoehe: typDaten.hoehe || 400,
         hintergrundBild: typDaten.hintergrundBild || '',
         werkzeuge: typDaten.werkzeuge || ['stift', 'linie', 'text', 'radierer'],
+      };
+    case 'pdf':
+      return {
+        ...base,
+        typ: 'pdf',
+        fragetext: row.fragetext || '',
+        pdfDriveFileId: typDaten.pdfDriveFileId || row.pdfDriveFileId || '',
+        pdfUrl: typDaten.pdfUrl || row.pdfUrl || '',
+        pdfBase64: typDaten.pdfBase64 || '',
+        pdfDateiname: typDaten.pdfDateiname || row.pdfDateiname || '',
+        seitenAnzahl: typDaten.seitenAnzahl || Number(row.seitenAnzahl) || 0,
+        kategorien: typDaten.kategorien || [],
+        erlaubteWerkzeuge: typDaten.erlaubteWerkzeuge || ['highlighter', 'kommentar', 'freihand'],
       };
     default:
       return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
