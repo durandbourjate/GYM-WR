@@ -35,7 +35,17 @@ export default function ZeichnenFrage({ frage }: Props) {
   const setAntwort = usePruefungStore((s) => s.setAntwort)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
 
-  const canvasConfig = frage.canvasConfig ?? defaultConfig
+  // canvasConfig kann als verschachteltes Objekt oder als flache Felder auf der Frage kommen
+  const rawFrage = frage as unknown as Record<string, unknown>
+  const canvasConfig: CanvasConfig = frage.canvasConfig ?? {
+    breite: (rawFrage.breite as number) || defaultConfig.breite,
+    hoehe: (rawFrage.hoehe as number) || defaultConfig.hoehe,
+    koordinatensystem: (rawFrage.koordinatensystem as boolean) ?? defaultConfig.koordinatensystem,
+    werkzeuge: (rawFrage.werkzeuge as CanvasConfig['werkzeuge']) || defaultConfig.werkzeuge,
+    hintergrundbild: (rawFrage.hintergrundBild as string) || undefined,
+    radierer: (rawFrage.radierer as boolean) ?? defaultConfig.radierer,
+    farben: (rawFrage.farben as string[]) || defaultConfig.farben,
+  }
   const verfuegbareFarben = canvasConfig.farben ?? STANDARD_FARBEN
 
   // Aktives Werkzeug
@@ -52,9 +62,8 @@ export default function ZeichnenFrage({ frage }: Props) {
     } catch {
       // localStorage nicht verfügbar
     }
-    return typeof window !== 'undefined' && window.innerWidth / window.innerHeight > 1.2
-      ? 'horizontal'
-      : 'vertikal'
+    // Standard: immer horizontal (vertikal nur auf expliziten Wunsch)
+    return 'horizontal'
   })
 
   // Aktuell geladene Daten aus Store (beim Fragewechsel synchronisieren)
