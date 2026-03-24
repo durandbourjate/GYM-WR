@@ -18,6 +18,7 @@ import type {
   MCOption, Bewertungskriterium,
   AufgabengruppeFrage,
   VisualisierungFrage, CanvasConfig,
+  PDFFrage, PDFKategorie, PDFAnnotationsWerkzeug, PDFAnnotation,
 } from '../../../types/fragen.ts'
 import type { FrageTyp } from './editorUtils.ts'
 import { generiereFrageId } from './editorUtils.ts'
@@ -233,6 +234,29 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     frage?.typ === 'visualisierung' ? (frage as VisualisierungFrage).musterloesungBild : undefined
   )
 
+  // PDF-spezifisch
+  const [pdfBase64, setPdfBase64] = useState(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfBase64 ?? '' : ''
+  )
+  const [pdfDriveFileId, setPdfDriveFileId] = useState(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDriveFileId : ''
+  )
+  const [pdfDateiname, setPdfDateiname] = useState(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDateiname : ''
+  )
+  const [pdfSeitenAnzahl, setPdfSeitenAnzahl] = useState(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).seitenAnzahl : 0
+  )
+  const [pdfKategorien, setPdfKategorien] = useState<PDFKategorie[]>(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).kategorien ?? [] : []
+  )
+  const [pdfErlaubteWerkzeuge, setPdfErlaubteWerkzeuge] = useState<PDFAnnotationsWerkzeug[]>(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).erlaubteWerkzeuge : ['highlighter', 'kommentar', 'freihand', 'label']
+  )
+  const [pdfMusterloesungAnnotationen, setPdfMusterloesungAnnotationen] = useState<PDFAnnotation[]>(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).musterloesungAnnotationen ?? [] : []
+  )
+
   // Zeitbedarf
   const [zeitbedarf, setZeitbedarf] = useState<number>(
     frage?.zeitbedarf ?? berechneZeitbedarf(
@@ -375,6 +399,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
         typDaten = { typ: 'aufgabengruppe', kontext: agKontext, teilaufgabenIds: agTeilaufgabenIds }; break
       case 'visualisierung':
         typDaten = { typ: 'visualisierung', fragetext, canvasConfig, musterloesungBild }; break
+      case 'pdf':
+        typDaten = {
+          typ: 'pdf', fragetext, pdfDriveFileId, pdfBase64: pdfBase64 || undefined,
+          pdfDateiname, seitenAnzahl: pdfSeitenAnzahl,
+          kategorien: pdfKategorien.length > 0 ? pdfKategorien : undefined,
+          erlaubteWerkzeuge: pdfErlaubteWerkzeuge,
+          musterloesungAnnotationen: pdfMusterloesungAnnotationen.length > 0 ? pdfMusterloesungAnnotationen : undefined,
+        }; break
       default:
         setSpeicherLaeuft(false)
         return
@@ -503,7 +535,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe', 'visualisierung'] as FrageTyp[]).map((t) => (
+              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe', 'visualisierung', 'pdf'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -599,6 +631,13 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             canvasConfig={canvasConfig} setCanvasConfig={setCanvasConfig}
             musterloesungBild={musterloesungBild} setMusterloesungBild={setMusterloesungBild}
             email={user?.email ?? ''}
+            pdfBase64={pdfBase64} setPdfBase64={setPdfBase64}
+            pdfDriveFileId={pdfDriveFileId} setPdfDriveFileId={setPdfDriveFileId}
+            pdfDateiname={pdfDateiname} setPdfDateiname={setPdfDateiname}
+            pdfSeitenAnzahl={pdfSeitenAnzahl} setPdfSeitenAnzahl={setPdfSeitenAnzahl}
+            pdfKategorien={pdfKategorien} setPdfKategorien={setPdfKategorien}
+            pdfErlaubteWerkzeuge={pdfErlaubteWerkzeuge} setPdfErlaubteWerkzeuge={setPdfErlaubteWerkzeuge}
+            pdfMusterloesungAnnotationen={pdfMusterloesungAnnotationen} setPdfMusterloesungAnnotationen={setPdfMusterloesungAnnotationen}
           />
 
           {/* Musterlösung */}

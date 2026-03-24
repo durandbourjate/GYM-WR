@@ -9,6 +9,7 @@ import type {
   KontenbestimmungFrage, Kontenaufgabe,
   BilanzERFrage, KontoMitSaldo, BilanzERLoesung,
   CanvasConfig,
+  PDFKategorie, PDFAnnotationsWerkzeug, PDFAnnotation,
 } from '../../../../types/fragen.ts'
 import type { FrageTyp } from '../editorUtils.ts'
 import type { useKIAssistent } from '../useKIAssistent.ts'
@@ -23,6 +24,7 @@ import KontenbestimmungEditor from '../KontenbestimmungEditor.tsx'
 import BilanzEREditor from '../BilanzEREditor.tsx'
 import AufgabengruppeEditor from '../AufgabengruppeEditor.tsx'
 import ZeichnenEditor from '../ZeichnenEditor.tsx'
+import PDFEditor from '../PDFEditor.tsx'
 import { KIBuchungssatzButtons, KITKontoButtons, KIKontenbestimmungButtons, KIBilanzERButtons } from '../KIFiBuButtons.tsx'
 import { InlineAktionButton, ErgebnisAnzeige } from '../KIBausteine.tsx'
 
@@ -109,6 +111,22 @@ interface TypEditorDispatcherProps {
   musterloesungBild?: string
   setMusterloesungBild: (bild: string | undefined) => void
   email: string
+
+  // PDF
+  pdfBase64: string
+  setPdfBase64: (v: string) => void
+  pdfDriveFileId: string
+  setPdfDriveFileId: (v: string) => void
+  pdfDateiname: string
+  setPdfDateiname: (v: string) => void
+  pdfSeitenAnzahl: number
+  setPdfSeitenAnzahl: (v: number) => void
+  pdfKategorien: PDFKategorie[]
+  setPdfKategorien: React.Dispatch<React.SetStateAction<PDFKategorie[]>>
+  pdfErlaubteWerkzeuge: PDFAnnotationsWerkzeug[]
+  setPdfErlaubteWerkzeuge: React.Dispatch<React.SetStateAction<PDFAnnotationsWerkzeug[]>>
+  pdfMusterloesungAnnotationen: PDFAnnotation[]
+  setPdfMusterloesungAnnotationen: React.Dispatch<React.SetStateAction<PDFAnnotation[]>>
 }
 
 export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
@@ -581,6 +599,25 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           musterloesungBild={props.musterloesungBild}
           onMusterloesungBildChange={props.setMusterloesungBild}
           email={props.email}
+        />
+      )}
+
+      {typ === 'pdf' && (
+        <PDFEditor
+          pdfBase64={props.pdfBase64}
+          setPdfBase64={props.setPdfBase64}
+          pdfDriveFileId={props.pdfDriveFileId}
+          setPdfDriveFileId={props.setPdfDriveFileId}
+          pdfDateiname={props.pdfDateiname}
+          setPdfDateiname={props.setPdfDateiname}
+          seitenAnzahl={props.pdfSeitenAnzahl}
+          setSeitenAnzahl={props.setPdfSeitenAnzahl}
+          kategorien={props.pdfKategorien}
+          setKategorien={props.setPdfKategorien}
+          erlaubteWerkzeuge={props.pdfErlaubteWerkzeuge}
+          setErlaubteWerkzeuge={props.setPdfErlaubteWerkzeuge}
+          musterloesungAnnotationen={props.pdfMusterloesungAnnotationen}
+          setMusterloesungAnnotationen={props.setPdfMusterloesungAnnotationen}
         />
       )}
     </>
