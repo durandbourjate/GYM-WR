@@ -100,7 +100,16 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
   if (!istFreigeschaltet) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center gap-3">
+          {user && (
+            <button
+              onClick={abmelden}
+              title="Abmelden"
+              className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+            >
+              Abmelden
+            </button>
+          )}
           <ThemeToggle />
         </div>
 
