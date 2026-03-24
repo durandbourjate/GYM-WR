@@ -28,6 +28,8 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
 
   // SEB-Ausnahme: LP hat für diesen SuS eine Ausnahme erteilt
   const [hatSebAusnahme, setHatSebAusnahme] = useState(false)
+  // SuS hat Ausnahme bei LP angefragt
+  const [ausnahmeAngefragt, setAusnahmeAngefragt] = useState(false)
 
   // Warteraum-Polling: Heartbeat senden (damit LP den SuS in der Lobby sieht)
   // + Freischaltung prüfen + SEB-Ausnahme prüfen — alles in einem Intervall
@@ -186,11 +188,24 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt }: P
           )}
         </div>
 
-        {/* SEB-Blockierung (hard block) */}
+        {/* SEB-Blockierung (hard block) + Ausnahme-Anfrage */}
         {sebBlockiert && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300 space-y-1">
+          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300 space-y-2">
             <p>Diese Prüfung erfordert den <strong>Safe Exam Browser (SEB)</strong>.</p>
-            <p>Bitte starte die Prüfung über die SEB-Datei deiner Lehrperson.</p>
+            <p>Bitte starten Sie die Prüfung über die SEB-Datei Ihrer Lehrperson.</p>
+            {ausnahmeAngefragt ? (
+              <div className="flex items-center gap-2 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded text-amber-700 dark:text-amber-300">
+                <span>⏳</span>
+                <span>Ausnahme angefragt — warten Sie auf die Freigabe durch die Lehrperson.</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAusnahmeAngefragt(true)}
+                className="w-full mt-1 px-3 py-2 text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors cursor-pointer"
+              >
+                🙋 SEB-Ausnahme bei Lehrperson anfragen
+              </button>
+            )}
           </div>
         )}
 
