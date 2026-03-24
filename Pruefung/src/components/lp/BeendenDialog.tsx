@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { apiService } from '../../services/apiService.ts'
 
 interface Props {

@@ -63,7 +63,7 @@ export function istVollstaendigBeantwortet(frage: Frage, antwort: Antwort | unde
       // Mindestens ein Konto mit einem Eintrag
       if (!antwort.konten || antwort.konten.length === 0) return false
       return antwort.konten.some(k =>
-        (k.eintraege && k.eintraege.length > 0) || k.saldo != null
+        (k.eintraegeLinks?.length > 0 || k.eintraegeRechts?.length > 0) || k.saldo != null
       )
     }
 
@@ -71,15 +71,15 @@ export function istVollstaendigBeantwortet(frage: Frage, antwort: Antwort | unde
       if (frage.typ !== 'kontenbestimmung') return true
       // Alle Aufgaben müssen eine Antwort haben
       const anzahlAufgaben = frage.aufgaben.length
-      const beantwortet = Object.keys(antwort.antworten ?? {}).length
+      const beantwortet = Object.keys(antwort.aufgaben ?? {}).length
       return beantwortet >= anzahlAufgaben
     }
 
     case 'bilanzstruktur': {
       // Mindestens ein Konto muss zugeordnet sein
-      const hatAktiven = (antwort.bilanz?.aktivSeite?.gruppen ?? []).some(g => g.konten?.length > 0)
-      const hatPassiven = (antwort.bilanz?.passivSeite?.gruppen ?? []).some(g => g.konten?.length > 0)
-      return hatAktiven || hatPassiven
+      const hatLinks = (antwort.bilanz?.linkeSeite?.gruppen ?? []).some((g: { konten: unknown[] }) => g.konten?.length > 0)
+      const hatRechts = (antwort.bilanz?.rechteSeite?.gruppen ?? []).some((g: { konten: unknown[] }) => g.konten?.length > 0)
+      return hatLinks || hatRechts
     }
 
     case 'visualisierung':
