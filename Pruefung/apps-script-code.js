@@ -340,7 +340,7 @@ function findOrCreateAntwortenSheet(sheetName, pruefungId) {
 
   const ss = SpreadsheetApp.create(sheetName);
   const sheet = ss.getSheets()[0];
-  const headers = ['email', 'name', 'version', 'antworten', 'letzterSave', 'istAbgabe', 'letzterHeartbeat', 'heartbeats'];
+  const headers = ['email', 'name', 'version', 'antworten', 'letzterSave', 'istAbgabe', 'letzterHeartbeat', 'heartbeats', 'beantworteteFragen', 'gesamtFragen'];
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
 
@@ -501,13 +501,15 @@ function ladePruefung(pruefungId, email) {
     }
 
     const istLP = email.endsWith('@' + LP_DOMAIN);
-    if (!istLP) {
+    const erlaubteKlasse = configRow.erlaubteKlasse || '';
+    const klasseGesetzt = erlaubteKlasse && erlaubteKlasse !== '—' && erlaubteKlasse !== '-';
+
+    if (!istLP && klasseGesetzt) {
       // erlaubteKlasse enthält eine Klasse (z.B. "29c") — wir müssen den passenden Kurs-Tab finden
       const kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
       const kurseMetaSheet = kurseSS.getSheetByName('Kurse');
       const kurseData = kurseMetaSheet ? getSheetData(kurseMetaSheet) : [];
       // Suche Kurs, dessen klassen-Feld die erlaubteKlasse enthält
-      const erlaubteKlasse = configRow.erlaubteKlasse || '';
       const passenderKurs = kurseData.find(k => {
         const klassen = String(k.klassen || '').split(',').map(s => s.trim());
         return klassen.includes(erlaubteKlasse);
@@ -720,6 +722,17 @@ function parseFrage(row, fachbereich) {
         teilaufgabenIds: typDaten.teilaufgabenIds || [],
         kontextAnhaenge: typDaten.kontextAnhaenge || [],
       };
+    case 'visualisierung':
+      return {
+        ...base,
+        typ: 'visualisierung',
+        fragetext: row.fragetext || '',
+        untertyp: typDaten.untertyp || row.untertyp || 'zeichnen',
+        breite: typDaten.breite || 800,
+        hoehe: typDaten.hoehe || 400,
+        hintergrundBild: typDaten.hintergrundBild || '',
+        werkzeuge: typDaten.werkzeuge || ['stift', 'linie', 'text', 'radierer'],
+      };
     default:
       return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
   }
@@ -729,13 +742,37 @@ function parseFrage(row, fachbereich) {
 
 function speichereAntworten(body) {
   try {
-    const { pruefungId, email, antworten, version, istAbgabe } = body;
+    const { pruefungId, email, antworten, version, istAbgabe, gesamtFragen } = body;
     if (!pruefungId || !email || !antworten) {
       return jsonResponse({ error: 'Fehlende Daten' });
     }
 
+    // Beantwortete Fragen zählen
+    var beantwortetCount = 0;
+    if (typeof antworten === 'object') {
+      var keys = Object.keys(antworten);
+      for (var i = 0; i < keys.length; i++) {
+        var val = antworten[keys[i]];
+        if (val !== null && val !== undefined && val !== '') {
+          beantwortetCount++;
+        }
+      }
+    }
+
     const sheetName = 'Antworten_' + pruefungId;
     let sheet = findOrCreateAntwortenSheet(sheetName, pruefungId);
+
+    // Spalten-Migration: beantworteteFragen/gesamtFragen hinzufügen falls fehlend
+    const aktuelleHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    if (!aktuelleHeaders.includes('beantworteteFragen')) {
+      sheet.getRange(1, aktuelleHeaders.length + 1).setValue('beantworteteFragen').setFontWeight('bold');
+      aktuelleHeaders.push('beantworteteFragen');
+    }
+    if (!aktuelleHeaders.includes('gesamtFragen')) {
+      sheet.getRange(1, aktuelleHeaders.length + 1).setValue('gesamtFragen').setFontWeight('bold');
+      aktuelleHeaders.push('gesamtFragen');
+    }
+
     const data = getSheetData(sheet);
     const existingRow = data.findIndex(row => row.email === email);
 
@@ -745,6 +782,8 @@ function speichereAntworten(body) {
       antworten: JSON.stringify(antworten),
       letzterSave: new Date().toISOString(),
       istAbgabe: istAbgabe ? 'true' : 'false',
+      beantworteteFragen: beantwortetCount,
+      gesamtFragen: gesamtFragen || 0,
     };
 
     if (existingRow >= 0) {
@@ -779,7 +818,26 @@ function heartbeat(body) {
     const sheetName = 'Antworten_' + pruefungId;
     const sheet = findOrCreateAntwortenSheet(sheetName, pruefungId);
     const data = getSheetData(sheet);
-    const existingRow = data.findIndex(row => row.email === email);
+    let existingRow = data.findIndex(row => row.email === email);
+
+    // Neue Zeile anlegen falls SuS noch nicht im Sheet (Warteraum-Heartbeat)
+    if (existingRow < 0) {
+      const hdrs = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      const newRow = hdrs.map(h => {
+        switch (h) {
+          case 'email': return email;
+          case 'name': return body.name || email;
+          case 'letzterHeartbeat': return timestamp || new Date().toISOString();
+          case 'heartbeats': return 1;
+          case 'version': return 0;
+          case 'istAbgabe': return 'false';
+          default: return '';
+        }
+      });
+      sheet.appendRow(newRow);
+      // Zeile wurde angelegt → success zurückgeben
+      return jsonResponse({ success: true });
+    }
 
     if (existingRow >= 0) {
       const rowIndex = existingRow + 2;

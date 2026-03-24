@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { apiService } from '../../services/apiService.ts'
 
 interface Props {
@@ -68,6 +68,14 @@ export default function BeendenDialog({
   const zielText = einzelnerSuS
     ? `Prüfung für ${einzelnerSuS.name} beenden?`
     : `Prüfung für alle ${anzahlAktiv} aktiven SuS beenden?`
+
+  // Bei 0 aktiven SuS (und kein Einzel-SuS): direkt beenden, keine Bestätigung nötig
+  useEffect(() => {
+    if (anzahlAktiv === 0 && !einzelnerSuS) {
+      handleBeenden()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70] p-4">

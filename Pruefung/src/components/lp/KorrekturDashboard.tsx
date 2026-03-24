@@ -58,14 +58,52 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
         apiService.ladePruefung(pruefungId, user!.email),
       ])
 
-      if (korrekturResult) {
-        setKorrektur(korrekturResult)
-      }
       if (abgabenResult) {
         setAbgaben(abgabenResult)
       }
       if (pruefungResult) {
         setFragen(pruefungResult.fragen)
+      }
+
+      // Korrektur-Daten setzen — wenn leer, aus Abgaben synthetisieren
+      if (korrekturResult && korrekturResult.schueler.length > 0) {
+        setKorrektur(korrekturResult)
+      } else if (abgabenResult && Object.keys(abgabenResult).length > 0) {
+        // Kein Korrektur-Sheet vorhanden, aber Abgaben da → Platzhalter erzeugen
+        const gesamtPunkte = pruefungResult?.config?.gesamtpunkte || 0
+        const synthetisiert: PruefungsKorrektur = {
+          pruefungId,
+          pruefungTitel: pruefungResult?.config?.titel || pruefungId,
+          datum: pruefungResult?.config?.datum || '',
+          klasse: pruefungResult?.config?.klasse || '',
+          schueler: Object.values(abgabenResult).map((abgabe) => ({
+            email: abgabe.email,
+            name: abgabe.name,
+            klasse: '',
+            bewertungen: Object.fromEntries(
+              (pruefungResult?.fragen || []).map((f) => [f.id, {
+                frageId: f.id,
+                fragenTyp: f.typ,
+                maxPunkte: f.punkte,
+                kiPunkte: null,
+                lpPunkte: null,
+                kiBegruendung: null,
+                kiFeedback: null,
+                lpKommentar: null,
+                quelle: 'manuell' as const,
+                geprueft: false,
+              }])
+            ),
+            gesamtPunkte: 0,
+            maxPunkte: gesamtPunkte,
+            korrekturStatus: 'offen' as const,
+          })),
+          batchStatus: 'idle',
+          letzteAktualisierung: new Date().toISOString(),
+        }
+        setKorrektur(synthetisiert)
+      } else if (korrekturResult) {
+        setKorrektur(korrekturResult)
       }
       setLadeStatus(korrekturResult || abgabenResult ? 'fertig' : 'fehler')
     }

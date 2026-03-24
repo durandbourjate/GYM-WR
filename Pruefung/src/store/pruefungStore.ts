@@ -161,7 +161,7 @@ export const usePruefungStore = create<PruefungState>()(
       zuruecksetzen: () => set(initialState),
     }),
     {
-      name: 'pruefung-state',
+      name: 'pruefung-state-' + (new URLSearchParams(window.location.search).get('id') || 'default'),
       version: 3,
       migrate: (persisted, version) => {
         const state = persisted as Record<string, unknown>

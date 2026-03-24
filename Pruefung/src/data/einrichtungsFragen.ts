@@ -674,7 +674,7 @@ export const einrichtungsFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: '**Letzte Aufgabe — Feature-Check!** Probieren Sie die folgenden Funktionen aus und kreuzen Sie an, welche **funktioniert** haben:\n\n- **Dark Mode**: Klicken Sie auf das Mond/Sonnen-Symbol oben\n- **Frage markieren**: Klicken Sie auf das Stern- oder Flaggen-Symbol bei einer Frage\n- **Tastaturkürzel**: Drücken Sie Ctrl+Enter, um zur nächsten Frage zu springen\n- **Material-Panel**: Klicken Sie auf das Dokument-Symbol oben rechts\n\nKreuzen Sie **alle** an, die funktioniert haben:',
+    fragetext: '**Letzte Aufgabe — Feature-Check!** Probieren Sie die folgenden Funktionen aus und kreuzen Sie an, welche **funktioniert** haben:\n\n- **Dark Mode**: Klicken Sie auf das Mond/Sonnen-Symbol oben\n- **Frage markieren**: Klicken Sie auf den «?»-Button (Unsicher) bei einer Frage\n- **Tastaturkürzel**: Drücken Sie Cmd+Enter (Mac) oder Ctrl+Enter (Windows), um zur nächsten Frage zu springen\n- **Material-Panel**: Klicken Sie auf das Dokument-Symbol oben rechts\n\nKreuzen Sie **alle** an, die funktioniert haben:',
     optionen: [
       { id: 'a', text: 'Dark Mode umschalten hat funktioniert', korrekt: true },
       { id: 'b', text: 'Frage markieren hat funktioniert', korrekt: true },

@@ -49,20 +49,31 @@ export default function App() {
     if (!user) return
 
     async function ladePruefung(): Promise<void> {
+      // Session-Recovery: Store hat bereits config + Fragen → nicht neu laden
+      if (config && config.id === pruefungIdAusUrl && phase !== 'start' && fragen && fragen.length > 0) {
+        setWiederhergestellt(true)
+        usePruefungStore.getState().setPhase('start')
+        return
+      }
+
       // Backend konfiguriert + Prüfungs-ID vorhanden + kein Demo → vom Backend laden
       if (apiService.istKonfiguriert() && pruefungIdAusUrl && !istDemoModus) {
-        const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
-        if (result) {
-          const resolvedFragen = resolveFragenFuerPruefung(result.config, result.fragen)
-          setPruefungsConfig(result.config)
-          setPruefungsFragen(resolvedFragen)
+        try {
+          const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
+          if (result) {
+            const resolvedFragen = resolveFragenFuerPruefung(result.config, result.fragen)
+            setPruefungsConfig(result.config)
+            setPruefungsFragen(resolvedFragen)
 
-          if (config && config.id === result.config.id && phase !== 'start') {
-            setWiederhergestellt(true)
-            // Immer zum Startbildschirm zurück, damit User entscheiden kann
-            usePruefungStore.getState().setPhase('start')
+            if (config && config.id === result.config.id && phase !== 'start') {
+              setWiederhergestellt(true)
+              usePruefungStore.getState().setPhase('start')
+            }
+            return
           }
-          return
+        } catch (error) {
+          console.error('[App] Backend-Fehler beim Laden:', error)
+          // Nicht crashen — Fallback auf eingebaute Prüfungen
         }
         // Fallback: Eingebaute Prüfungen (z.B. Einrichtungsprüfung)
         const eingebaut = ladeEingebautePruefung(pruefungIdAusUrl)

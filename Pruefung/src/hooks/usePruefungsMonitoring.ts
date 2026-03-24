@@ -13,6 +13,7 @@ import type { Antwort } from '../types/antworten.ts'
  */
 export function usePruefungsMonitoring(): void {
   const config = usePruefungStore((s) => s.config)
+  const fragen = usePruefungStore((s) => s.fragen)
   const antworten = usePruefungStore((s) => s.antworten)
   const startzeit = usePruefungStore((s) => s.startzeit)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
@@ -57,32 +58,39 @@ export function usePruefungsMonitoring(): void {
     const intervallMs = (config.autoSaveIntervallSekunden || 30) * 1000
 
     const interval = setInterval(async () => {
-      setVerbindungsstatus('syncing')
-      incrementRemoteSaveVersion()
+      try {
+        setVerbindungsstatus('syncing')
+        incrementRemoteSaveVersion()
 
-      const erfolg = await apiService.speichereAntworten({
-        pruefungId: config.id,
-        email: user.email,
-        antworten: antwortenRef.current as Record<string, Antwort>,
-        version: remoteSaveVersionRef.current + 1,
-        istAbgabe: false,
-      })
-
-      if (erfolg) {
-        setVerbindungsstatus('online')
-        setLetzterSave(new Date().toISOString())
-        incrementAutoSaveCount()
-      } else {
-        setVerbindungsstatus('offline')
-        incrementNetzwerkFehler()
-        // In Retry-Queue einfügen
-        enqueue({
+        const erfolg = await apiService.speichereAntworten({
           pruefungId: config.id,
           email: user.email,
           antworten: antwortenRef.current as Record<string, Antwort>,
           version: remoteSaveVersionRef.current + 1,
           istAbgabe: false,
+          gesamtFragen: fragen?.length || 0,
         })
+
+        if (erfolg) {
+          setVerbindungsstatus('online')
+          setLetzterSave(new Date().toISOString())
+          incrementAutoSaveCount()
+        } else {
+          setVerbindungsstatus('offline')
+          incrementNetzwerkFehler()
+          // In Retry-Queue einfügen
+          enqueue({
+            pruefungId: config.id,
+            email: user.email,
+            antworten: antwortenRef.current as Record<string, Antwort>,
+            version: remoteSaveVersionRef.current + 1,
+            istAbgabe: false,
+          })
+        }
+      } catch {
+        // Netzwerkfehler: nie werfen, nur Status setzen
+        setVerbindungsstatus('offline')
+        incrementNetzwerkFehler()
       }
     }, intervallMs)
 
@@ -96,20 +104,27 @@ export function usePruefungsMonitoring(): void {
     const intervallMs = (config.heartbeatIntervallSekunden || 10) * 1000
 
     const interval = setInterval(async () => {
-      const aktuelleFrageIndex = usePruefungStore.getState().aktuelleFrageIndex
-      const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex)
-      if (response.success) {
-        incrementHeartbeats()
-        // Beenden-Signal vom Backend?
-        if (response.beendetUm && !abgegeben) {
-          setBeendetUm(response.beendetUm, response.restzeitMinuten)
+      try {
+        const aktuelleFrageIndex = usePruefungStore.getState().aktuelleFrageIndex
+        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex)
+        if (response.success) {
+          incrementHeartbeats()
+          setVerbindungsstatus('online')
+          // Beenden-Signal vom Backend?
+          if (response.beendetUm && !abgegeben) {
+            setBeendetUm(response.beendetUm, response.restzeitMinuten)
+          }
+        } else {
+          addUnterbrechung({
+            zeitpunkt: new Date().toISOString(),
+            dauer_sekunden: 0,
+            typ: 'heartbeat-ausfall',
+          })
         }
-      } else {
-        addUnterbrechung({
-          zeitpunkt: new Date().toISOString(),
-          dauer_sekunden: 0,
-          typ: 'heartbeat-ausfall',
-        })
+      } catch {
+        // Netzwerkfehler: nie werfen, nur Status setzen
+        setVerbindungsstatus('offline')
+        incrementNetzwerkFehler()
       }
     }, intervallMs)
 

@@ -35,6 +35,7 @@ export async function speichereAntworten(payload: {
   antworten: Record<string, Antwort>
   version: number
   istAbgabe: boolean
+  gesamtFragen?: number
 }): Promise<boolean> {
   if (!APPS_SCRIPT_URL) return false
 

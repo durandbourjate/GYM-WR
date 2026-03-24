@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { PruefungsConfig } from '../../types/pruefung'
 import type { SchuelerStatus } from '../../types/monitoring'
 
@@ -12,7 +11,6 @@ interface Props {
 }
 
 export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren, onEntfernen }: Props) {
-  const [bestaetigung, setBestaetigung] = useState(false)
   const teilnehmer = config.teilnehmer ?? []
   const teilnehmerEmails = new Set(teilnehmer.map((t) => t.email))
 
@@ -123,33 +121,13 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
           ← Zurück zur Vorbereitung
         </button>
 
-        {!bestaetigung ? (
-          <button
-            type="button"
-            onClick={() => setBestaetigung(true)}
-            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
-          >
-            ▶ Freischalten
-          </button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-slate-600 dark:text-slate-300">Prüfung wirklich freischalten?</span>
-            <button
-              type="button"
-              onClick={() => { onFreischalten(); setBestaetigung(false) }}
-              className="px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
-            >
-              Ja, freischalten
-            </button>
-            <button
-              type="button"
-              onClick={() => setBestaetigung(false)}
-              className="px-3 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
-            >
-              Abbrechen
-            </button>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={onFreischalten}
+          className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer font-medium"
+        >
+          ▶ Freischalten
+        </button>
       </div>
     </div>
   )

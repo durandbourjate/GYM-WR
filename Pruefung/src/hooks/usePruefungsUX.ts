@@ -54,6 +54,13 @@ export function usePruefungsUX(callbacks: {
         return
       }
 
+      // Ctrl/Cmd + Enter → nächste Frage (auch in Editoren)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        naechsteFrage()
+        return
+      }
+
       // Escape schliesst Dialog
       if (e.key === 'Escape') {
         callbacks.onAbgabeDialogSchliessen()
