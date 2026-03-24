@@ -50,7 +50,8 @@ export default function App() {
 
     async function ladePruefung(): Promise<void> {
       // Session-Recovery: Store hat bereits config + Fragen → nicht neu laden
-      if (config && config.id === pruefungIdAusUrl && phase !== 'start' && fragen && fragen.length > 0) {
+      const storeFragen = usePruefungStore.getState().fragen
+      if (config && config.id === pruefungIdAusUrl && phase !== 'start' && storeFragen && storeFragen.length > 0) {
         setWiederhergestellt(true)
         usePruefungStore.getState().setPhase('start')
         return
