@@ -67,7 +67,7 @@ export const einrichtungsPruefung: PruefungsConfig = {
   ruecknavigation: true,
   zeitanzeigeTyp: 'verstricheneZeit',
 
-  freigeschaltet: true,
+  freigeschaltet: false,
   autoSaveIntervallSekunden: 30,
   heartbeatIntervallSekunden: 10,
 
