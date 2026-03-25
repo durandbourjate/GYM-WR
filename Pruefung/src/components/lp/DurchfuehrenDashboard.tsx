@@ -101,6 +101,10 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // AbortController für Monitoring-Polling (Overlap-Schutz)
   const monitoringAbortRef = useRef<AbortController | null>(null)
 
+  // Verbindungsfehler-Tracking (Ref statt State → kein useCallback-Rebuild)
+  const fehlerCountRef = useRef(0)
+  const [zeigeVerbindungsBanner, setZeigeVerbindungsBanner] = useState(false)
+
   // Timer für aktive Phase
   const [startTimestamp] = useState(() => Date.now())
   const [dauer, setDauer] = useState('')
@@ -133,6 +137,17 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const result = await apiService.ladeMonitoring(pruefungId, user.email, { signal: controller.signal })
     // Abgebrochene Requests ignorieren (nicht als Fehler werten)
     if (controller.signal.aborted) return
+    // Verbindungsfehler erkennen: result ist null bei Timeout/Netzwerkfehler
+    if (!result && !istDemoModus) {
+      fehlerCountRef.current++
+      if (fehlerCountRef.current >= 3) {
+        setZeigeVerbindungsBanner(true)
+      }
+      return // Bestehende Daten sichtbar lassen, nicht mit leeren überschreiben
+    }
+    // Erfolg → Fehlerzähler zurücksetzen
+    fehlerCountRef.current = 0
+    if (zeigeVerbindungsBanner) setZeigeVerbindungsBanner(false)
     // result kann null sein wenn noch kein Antworten-Sheet existiert (Vorbereitungsphase)
     // → Leere Monitoring-Daten statt Fehler, damit die LP normal weiterarbeiten kann
     const effectiveResult = result || { pruefungTitel: '', schueler: [], gesamtSus: 0 }
@@ -350,6 +365,14 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         fragebankOffen={zeigFragenbank}
         hilfeOffen={zeigHilfe}
       />
+
+      {/* === Verbindungsfehler-Banner === */}
+      {zeigeVerbindungsBanner && (
+        <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-700 px-4 py-2 text-sm text-amber-700 dark:text-amber-300 flex items-center gap-2">
+          <span>⚠️</span>
+          <span>Verbindung unterbrochen — wird automatisch erneut versucht...</span>
+        </div>
+      )}
 
       {/* === Tab-Leiste === */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
