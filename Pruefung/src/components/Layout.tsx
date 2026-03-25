@@ -55,14 +55,37 @@ export default function Layout() {
   // Tab-Konflikterkennung
   const tabKonflikt = useTabKonflikt(config?.id ?? null)
 
-  // Monitoring: Auto-Save (lokal + remote), Heartbeat, Focus-Detection, Online/Offline
-  usePruefungsMonitoring()
-
   // Lockdown: Copy/Paste, Vollbild, DevTools, Verstoss-Zähler
   const kontrollStufe = ((config?.kontrollStufe as KontrollStufe) || 'standard') as KontrollStufe
   const lockdown = useLockdown({
     kontrollStufe,
     aktiv: !!config && !abgegeben,
+  })
+
+  // Monitoring: Auto-Save (lokal + remote), Heartbeat, Focus-Detection, Online/Offline
+  // Lockdown-Daten werden im Heartbeat mitgesendet, Tab-Wechsel als Verstoss registriert
+  usePruefungsMonitoring({
+    getLockdownMeta: () => {
+      if (!config || abgegeben) return undefined
+      return {
+        geraet: lockdown.geraet,
+        vollbild: lockdown.vollbildAktiv,
+        kontrollStufe: lockdown.effektiveKontrollStufe,
+        verstossZaehler: lockdown.verstossZaehler,
+        gesperrt: lockdown.gesperrt,
+        neusteVerstoesse: lockdown.neueVerstoesseSeitLetztemSync(),
+      }
+    },
+    onTabWechsel: (dauerSekunden) => {
+      lockdown.registriereVerstoss('tab-wechsel', dauerSekunden)
+    },
+    onEntsperrt: () => {
+      lockdown.entsperre()
+    },
+    onKontrollStufeOverride: (_stufe) => {
+      // Kontrollstufe wird beim nächsten Heartbeat-Cycle über config aktualisiert
+      // Hier könnte man eine lokale State-Aktualisierung machen
+    },
   })
 
   // Verstoss-Overlay State

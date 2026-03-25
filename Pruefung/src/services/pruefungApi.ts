@@ -56,8 +56,24 @@ export async function speichereAntworten(payload: {
   }
 }
 
+/** Lockdown-Metadaten für Heartbeat */
+export interface LockdownMeta {
+  geraet: string
+  vollbild: boolean
+  kontrollStufe: string
+  verstossZaehler: number
+  gesperrt: boolean
+  neusteVerstoesse: Array<{ zeitpunkt: string; typ: string; dauer_sekunden?: number }>
+}
+
 /** Heartbeat senden (Monitoring durch LP) — gibt Beenden-Signal zurück */
-export async function heartbeat(pruefungId: string, email: string, aktuelleFrage?: number, beantworteteFragen?: number): Promise<HeartbeatResponse> {
+export async function heartbeat(
+  pruefungId: string,
+  email: string,
+  aktuelleFrage?: number,
+  beantworteteFragen?: number,
+  lockdownMeta?: LockdownMeta,
+): Promise<HeartbeatResponse> {
   if (!APPS_SCRIPT_URL) return { success: false }
 
   try {
@@ -71,6 +87,7 @@ export async function heartbeat(pruefungId: string, email: string, aktuelleFrage
         timestamp: new Date().toISOString(),
         ...(aktuelleFrage !== undefined ? { aktuelleFrage } : {}),
         ...(beantworteteFragen !== undefined ? { beantworteteFragen } : {}),
+        ...(lockdownMeta ? { lockdownMeta } : {}),
       }),
     })
     if (!response.ok) return { success: false }
@@ -82,12 +99,60 @@ export async function heartbeat(pruefungId: string, email: string, aktuelleFrage
         beendetUm: data.beendetUm || undefined,
         restzeitMinuten: data.restzeitMinuten != null ? Number(data.restzeitMinuten) : undefined,
         sebAusnahme: data.sebAusnahme === true ? true : undefined,
+        kontrollStufeOverride: data.kontrollStufeOverride || undefined,
+        entsperrt: data.entsperrt === true ? true : undefined,
       }
     } catch {
       return { success: response.ok }
     }
   } catch {
     return { success: false }
+  }
+}
+
+/** SuS entsperren (LP-Aktion) */
+export async function entsperreSuS(pruefungId: string, lpEmail: string, schuelerEmail: string): Promise<boolean> {
+  if (!APPS_SCRIPT_URL) return false
+
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'entsperreSuS', pruefungId, email: lpEmail, schuelerEmail }),
+    })
+    if (!response.ok) return false
+
+    try {
+      const data = await response.json()
+      return data.success === true
+    } catch {
+      return false
+    }
+  } catch {
+    return false
+  }
+}
+
+/** Kontrollstufe für einzelnen SuS ändern (LP-Aktion) */
+export async function setzeKontrollStufe(pruefungId: string, lpEmail: string, schuelerEmail: string, stufe: string): Promise<boolean> {
+  if (!APPS_SCRIPT_URL) return false
+
+  try {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'setzeKontrollStufe', pruefungId, email: lpEmail, schuelerEmail, stufe }),
+    })
+    if (!response.ok) return false
+
+    try {
+      const data = await response.json()
+      return data.success === true
+    } catch {
+      return false
+    }
+  } catch {
+    return false
   }
 }
 

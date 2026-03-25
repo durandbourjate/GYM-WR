@@ -6,6 +6,8 @@ import KursAuswahl from './KursAuswahl'
 import type { KursGruppe, KlassenlistenSuS } from './KursAuswahl'
 import TeilnehmerListe, { type AlleSuS } from './TeilnehmerListe'
 import { downloadSebDatei } from '../../utils/sebConfigGenerator'
+import { KontrollStufeSelect } from './KontrollStufeSelect'
+import type { KontrollStufe } from '../../types/lockdown'
 
 interface Props {
   config: PruefungsConfig
@@ -27,6 +29,7 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeite
   const [lobbySpeichern, setLobbySpeichern] = useState(false)
   const [lobbyFehler, setLobbyFehler] = useState('')
   const [zeitverlaengerungen, setZeitverlaengerungen] = useState<Record<string, number>>(config.zeitverlaengerungen ?? {})
+  const [kontrollStufe, setKontrollStufe] = useState<KontrollStufe>((config.kontrollStufe as KontrollStufe) || 'standard')
 
   // Klassenlisten laden
   const ladeKlassenlisten = useCallback(async () => {
@@ -285,6 +288,15 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeite
           </button>
         )}
       </div>
+
+      {/* Kontrollstufe (Soft-Lockdown) */}
+      <KontrollStufeSelect
+        value={kontrollStufe}
+        onChange={(stufe) => {
+          setKontrollStufe(stufe)
+          onConfigUpdate?.({ kontrollStufe: stufe })
+        }}
+      />
 
       {/* Einladungs-Fehler */}
       {einladungFehler.length > 0 && (

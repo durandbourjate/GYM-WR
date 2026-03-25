@@ -6,16 +6,16 @@
 
 ---
 
-## Session 25.03.2026 (10) — Multi-Prüfung + Soft-Lockdown (Beginn)
+## Session 25.03.2026 (10) — Multi-Prüfung + Soft-Lockdown (komplett)
 
-### Status: IN ARBEIT (Tasks 1-5 von 12 erledigt)
+### Status: ERLEDIGT (alle 12 Tasks)
 
 **Spec:** `docs/superpowers/specs/2026-03-25-multi-pruefung-soft-lockdown-design.md`
 **Plan:** `docs/superpowers/plans/2026-03-25-multi-pruefung-soft-lockdown.md`
 
 ### Zwei Features
 
-1. **Multi-Prüfungs-Dashboard:** LP kann mehrere Prüfungen parallel in einem Tab überwachen (Use-Case: Nachprüfungstermin). URL: `?ids=pruefung-a,pruefung-b`. Vorbereitung/Korrektur pro Prüfung, Live-Monitoring zusammengefasst.
+1. **Multi-Prüfungs-Dashboard:** LP kann mehrere Prüfungen parallel in einem Tab überwachen (Use-Case: Nachprüfungstermin). URL: `?ids=pruefung-a,pruefung-b`. Live-Zusammenfassung + Einzelansicht pro Prüfung.
 
 2. **Soft-Lockdown (3 Stufen):** SEB-unabhängige Sicherheit mit automatischer Geräteerkennung.
    - 🟢 **Locker:** Nur Logging + Warnung (Übungen)
@@ -24,35 +24,33 @@
    - iPad: automatisches Downgrade (kein Vollbild möglich)
    - SuS sieht Warnung mit Zähler bei jedem Verstoss
    - LP muss bei Sperre entsperren
+   - LP sieht Verstösse, Gerät, Kontrolle live im Monitoring
 
-### Erledigt (Tasks 1-5)
+### Alle 12 Tasks erledigt
 
 - **Task 1:** `src/types/lockdown.ts` + `src/hooks/useGeraetErkennung.ts` — Types + Geräteerkennung
 - **Task 2:** `src/hooks/useLockdown.ts` — Zentral-Hook (Copy/Paste, Vollbild, DevTools, Verstoss-Zähler, Split-View)
 - **Task 3:** `src/components/VerstossOverlay.tsx` + `src/components/SperreOverlay.tsx` — SuS-Overlays
 - **Task 4:** `src/components/Layout.tsx` + `src/components/Startbildschirm.tsx` — Lockdown-Integration + Vollbild beim Start
 - **Task 5:** Types erweitert: `PruefungsConfig.kontrollStufe`, `SchuelerStatus` Lockdown-Felder, `HeartbeatResponse` Override-Felder, `Unterbrechung.typ` erweitert
-
-### Offen (Tasks 6-12)
-
-| Task | Beschreibung |
-|------|-------------|
-| 6 | Heartbeat + API erweitern (Lockdown-Daten mitsenden) |
-| 7 | Apps Script Backend (neue Felder + 2 Endpoints: entsperreSuS, setzeKontrollStufe) |
-| 8 | KontrollStufeSelect-Komponente + VorbereitungPhase-Integration |
-| 9 | LP-Monitoring: Verstoss-Spalte, Gerät, Kontrollgrad, Entsperren-Button, Tooltip |
-| 10 | MultiDurchfuehrenDashboard + `?ids=` URL-Parameter |
-| 11 | visibilitychange → Lockdown-Verstoss verbinden |
-| 12 | Build, HANDOFF, Commit + Push |
+- **Task 6:** `src/services/pruefungApi.ts` — Heartbeat mit lockdownMeta, 2 neue API-Funktionen (entsperreSuS, setzeKontrollStufe)
+- **Task 7:** `apps-script-code.js` — Heartbeat speichert Lockdown-Daten, ladeMonitoring gibt Lockdown-Felder zurück, 2 neue Endpoints (entsperreSuS, setzeKontrollStufe), speichereConfig mit kontrollStufe
+- **Task 8:** `src/components/lp/KontrollStufeSelect.tsx` + VorbereitungPhase-Integration — Segmented Control (Locker/Standard/Streng) in LP-Vorbereitung
+- **Task 9:** `src/components/lp/AktivPhase.tsx` — Verstoss-Spalte mit Zähler/Tooltip, Entsperren-Button, Kontrollstufe-Anzeige, Geräteerkennung
+- **Task 10:** `src/components/lp/MultiDurchfuehrenDashboard.tsx` + App.tsx `?ids=` — Multi-Prüfungs-Übersicht mit Live-Zusammenfassung + Einzelansicht
+- **Task 11:** `src/hooks/usePruefungsMonitoring.ts` — visibilitychange → Lockdown-Verstoss, Heartbeat sendet Lockdown-Daten, LP-Entsperrung/Override via Heartbeat-Response
+- **Task 12:** Build + HANDOFF + Commit + Push
 
 ### Neue Dateien
 
 ```
-src/types/lockdown.ts                    — KontrollStufe, GeraetTyp, Verstoss, LockdownState
-src/hooks/useGeraetErkennung.ts          — Geräteerkennung (Laptop/Tablet) + Fullscreen-Check
-src/hooks/useLockdown.ts                 — Zentral-Hook (Copy/Paste, Vollbild, DevTools, Zähler, Sperre)
-src/components/VerstossOverlay.tsx       — SuS-Warnung bei Verstoss
-src/components/SperreOverlay.tsx         — SuS-Sperre bei max Verstössen
+src/types/lockdown.ts                              — KontrollStufe, GeraetTyp, Verstoss, LockdownState
+src/hooks/useGeraetErkennung.ts                    — Geräteerkennung (Laptop/Tablet) + Fullscreen-Check
+src/hooks/useLockdown.ts                           — Zentral-Hook (Copy/Paste, Vollbild, DevTools, Zähler, Sperre)
+src/components/VerstossOverlay.tsx                 — SuS-Warnung bei Verstoss
+src/components/SperreOverlay.tsx                   — SuS-Sperre bei max Verstössen
+src/components/lp/KontrollStufeSelect.tsx          — Segmented Control für Kontrollstufe
+src/components/lp/MultiDurchfuehrenDashboard.tsx   — Multi-Prüfungs-Dashboard
 docs/superpowers/specs/2026-03-25-multi-pruefung-soft-lockdown-design.md
 docs/superpowers/plans/2026-03-25-multi-pruefung-soft-lockdown.md
 ```
@@ -60,12 +58,26 @@ docs/superpowers/plans/2026-03-25-multi-pruefung-soft-lockdown.md
 ### Geänderte Dateien
 
 ```
-src/types/pruefung.ts     — kontrollStufe Feld
-src/types/monitoring.ts   — SchuelerStatus Lockdown-Felder + HeartbeatResponse Override
-src/types/antworten.ts    — Unterbrechung.typ erweitert
-src/components/Layout.tsx — useLockdown Hook + Overlays
-src/components/Startbildschirm.tsx — Vollbild beim Prüfungsstart
+src/types/pruefung.ts                  — kontrollStufe Feld
+src/types/monitoring.ts                — SchuelerStatus Lockdown-Felder + HeartbeatResponse Override
+src/types/antworten.ts                 — Unterbrechung.typ erweitert
+src/components/Layout.tsx              — useLockdown Hook + Overlays + Lockdown-Callbacks an Monitoring
+src/components/Startbildschirm.tsx     — Vollbild beim Prüfungsstart
+src/services/pruefungApi.ts            — heartbeat mit lockdownMeta, entsperreSuS, setzeKontrollStufe
+src/services/apiService.ts             — neue Funktionen exportiert
+src/hooks/usePruefungsMonitoring.ts    — Lockdown-Callbacks, Heartbeat mit Lockdown-Daten, Tab-Wechsel
+src/components/lp/VorbereitungPhase.tsx — KontrollStufeSelect eingebaut
+src/components/lp/AktivPhase.tsx       — Verstoss-Spalte, Gerät, Kontrolle, Entsperren
+src/App.tsx                            — ?ids= Multi-Dashboard-Routing
+apps-script-code.js                    — Lockdown-Daten in Heartbeat, ladeMonitoring, 2 Endpoints, Config
 ```
+
+### Apps Script manuell aktualisieren!
+
+`apps-script-code.js` wurde erweitert. Bitte:
+1. Code in den Apps Script Editor kopieren
+2. Bereitstellungen verwalten → bestehende Version aktualisieren (Stift-Icon)
+3. **NICHT** "Neue Bereitstellung" (ändert URL)
 
 ---
 

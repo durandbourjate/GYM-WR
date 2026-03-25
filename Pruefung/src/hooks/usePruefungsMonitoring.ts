@@ -5,13 +5,26 @@ import { apiService } from '../services/apiService.ts'
 import { saveToIndexedDB } from '../services/autoSave.ts'
 import { enqueue, processQueue } from '../services/retryQueue.ts'
 import type { Antwort } from '../types/antworten.ts'
+import type { LockdownMeta } from '../services/pruefungApi.ts'
+
+/** Optionale Callbacks für Lockdown-Integration */
+export interface MonitoringLockdownCallbacks {
+  /** Gibt aktuelle Lockdown-Metadaten für Heartbeat zurück */
+  getLockdownMeta?: () => LockdownMeta | undefined
+  /** Wird bei Tab-Wechsel (visibilitychange) aufgerufen */
+  onTabWechsel?: (dauerSekunden: number) => void
+  /** Wird aufgerufen wenn Backend eine Entsperrung signalisiert */
+  onEntsperrt?: () => void
+  /** Wird aufgerufen wenn Backend eine Kontrollstufen-Änderung signalisiert */
+  onKontrollStufeOverride?: (stufe: string) => void
+}
 
 /**
  * Zentraler Monitoring-Hook für die Prüfungsphase.
  * Verwaltet: Auto-Save (lokal + remote), Heartbeat, Focus-Detection.
  * Wird in Layout.tsx eingebunden.
  */
-export function usePruefungsMonitoring(): void {
+export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCallbacks): void {
   const config = usePruefungStore((s) => s.config)
   const fragen = usePruefungStore((s) => s.fragen)
   const antworten = usePruefungStore((s) => s.antworten)
@@ -35,6 +48,10 @@ export function usePruefungsMonitoring(): void {
   antwortenRef.current = antworten
   const remoteSaveVersionRef = useRef(remoteSaveVersion)
   remoteSaveVersionRef.current = remoteSaveVersion
+
+  // Refs für Lockdown-Callbacks (stale-closure Schutz)
+  const lockdownCallbacksRef = useRef(lockdownCallbacks)
+  lockdownCallbacksRef.current = lockdownCallbacks
 
   const backendVerfuegbar = apiService.istKonfiguriert() && !istDemoModus && !!user?.email
 
@@ -112,13 +129,22 @@ export function usePruefungsMonitoring(): void {
         const state = usePruefungStore.getState()
         const aktuelleFrageIndex = state.aktuelleFrageIndex
         const beantworteteFragen = Object.keys(state.antworten).length
-        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex, beantworteteFragen)
+        const lockdownMeta = lockdownCallbacksRef.current?.getLockdownMeta?.()
+        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex, beantworteteFragen, lockdownMeta)
         if (response.success) {
           incrementHeartbeats()
           setVerbindungsstatus('online')
           // Beenden-Signal vom Backend?
           if (response.beendetUm && !abgegeben) {
             setBeendetUm(response.beendetUm, response.restzeitMinuten)
+          }
+          // LP-Entsperrung via Heartbeat
+          if (response.entsperrt) {
+            lockdownCallbacksRef.current?.onEntsperrt?.()
+          }
+          // LP-Kontrollstufen-Override via Heartbeat
+          if (response.kontrollStufeOverride) {
+            lockdownCallbacksRef.current?.onKontrollStufeOverride?.(response.kontrollStufeOverride)
           }
         } else {
           addUnterbrechung({
@@ -157,6 +183,8 @@ export function usePruefungsMonitoring(): void {
             dauer_sekunden: dauerSekunden,
             typ: 'focus-verloren',
           })
+          // Lockdown-Verstoss registrieren wenn aktiv
+          lockdownCallbacksRef.current?.onTabWechsel?.(dauerSekunden)
         }
       }
     }

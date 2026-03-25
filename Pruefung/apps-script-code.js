@@ -165,6 +165,10 @@ function doPost(e) {
       return resetPruefungEndpoint(body);
     case 'sebAusnahmeErlauben':
       return sebAusnahmeErlauben(body);
+    case 'entsperreSuS':
+      return entsperreSuSEndpoint(body);
+    case 'setzeKontrollStufe':
+      return setzeKontrollStufeEndpoint(body);
     case 'ladeTrackerDaten':
       return ladeTrackerDatenEndpoint(body);
     case 'setzeTeilnehmer': {
@@ -958,6 +962,58 @@ function heartbeat(body) {
         sheet.getRange(rowIndex, beantwortetCol + 1).setValue(body.beantworteteFragen);
       }
 
+      // Lockdown-Metadaten speichern (falls vom Client mitgesendet)
+      if (body.lockdownMeta) {
+        var lockdownFelder = {
+          geraet: body.lockdownMeta.geraet || '',
+          vollbild: String(body.lockdownMeta.vollbild),
+          kontrollStufe: body.lockdownMeta.kontrollStufe || '',
+          verstossZaehler: body.lockdownMeta.verstossZaehler || 0,
+          gesperrt: String(body.lockdownMeta.gesperrt)
+        };
+        // Fehlende Spalten automatisch hinzufügen
+        headers = ensureColumns(sheet, headers, lockdownFelder);
+        var lockdownKeys = Object.keys(lockdownFelder);
+        for (var lk = 0; lk < lockdownKeys.length; lk++) {
+          var col = headers.indexOf(lockdownKeys[lk]);
+          if (col >= 0) {
+            sheet.getRange(rowIndex, col + 1).setValue(lockdownFelder[lockdownKeys[lk]]);
+          }
+        }
+        // Verstoesse append (nicht überschreiben)
+        if (body.lockdownMeta.neusteVerstoesse && body.lockdownMeta.neusteVerstoesse.length > 0) {
+          var verstCol = headers.indexOf('verstoesse');
+          if (verstCol < 0) {
+            verstCol = headers.length;
+            sheet.getRange(1, verstCol + 1).setValue('verstoesse').setFontWeight('bold');
+            headers.push('verstoesse');
+          }
+          var bestehende = safeJsonParse(sheet.getRange(rowIndex, verstCol + 1).getValue(), []);
+          var alle = bestehende.concat(body.lockdownMeta.neusteVerstoesse);
+          sheet.getRange(rowIndex, verstCol + 1).setValue(JSON.stringify(alle));
+        }
+      }
+
+      // Entsperrt-Flag prüfen und zurücksetzen (LP hat SuS entsperrt)
+      var entsperrt = false;
+      var entsperrtCol = headers.indexOf('entsperrt');
+      if (entsperrtCol >= 0) {
+        if (sheet.getRange(rowIndex, entsperrtCol + 1).getValue() === 'true') {
+          entsperrt = true;
+          sheet.getRange(rowIndex, entsperrtCol + 1).setValue('');
+        }
+      }
+
+      // KontrollStufe-Override prüfen
+      var kontrollStufeOverride = null;
+      var ksoCol = headers.indexOf('kontrollStufeOverride');
+      if (ksoCol >= 0) {
+        var ksoVal = sheet.getRange(rowIndex, ksoCol + 1).getValue();
+        if (ksoVal) {
+          kontrollStufeOverride = String(ksoVal);
+        }
+      }
+
       // Beenden-Signal prüfen (individuell → global)
       var beendetUm = null;
       var restzeitMinutenWert = null;
@@ -1028,7 +1084,9 @@ function heartbeat(body) {
       return jsonResponse({
         success: true,
         ...(beendetUm ? { beendetUm: beendetUm, restzeitMinuten: restzeitMinutenWert } : {}),
-        ...(sebAusnahme ? { sebAusnahme: true } : {})
+        ...(sebAusnahme ? { sebAusnahme: true } : {}),
+        ...(kontrollStufeOverride ? { kontrollStufeOverride: kontrollStufeOverride } : {}),
+        ...(entsperrt ? { entsperrt: true } : {})
       });
     }
 
@@ -1523,6 +1581,7 @@ function speichereConfig(body) {
       // materialien nur schreiben wenn explizit vorhanden (verhindert Überschreiben mit [])
       ...(config.materialien !== undefined ? { materialien: JSON.stringify(config.materialien) } : {}),
       zeitModus: config.zeitModus || 'countdown',
+      kontrollStufe: config.kontrollStufe || 'standard',
     };
 
     // Fehlende Spalten automatisch hinzufügen
@@ -1569,6 +1628,89 @@ function loeschePruefung(body) {
 
     // Zeile löschen (rowIndex + 2 wegen Header-Zeile und 1-basiertem Index)
     configSheet.deleteRow(rowIndex + 2);
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === ENTSPERRE SUS (LP-Aktion) ===
+
+function entsperreSuSEndpoint(body) {
+  try {
+    var email = body.email;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var pruefungId = body.pruefungId;
+    var schuelerEmail = body.schuelerEmail;
+    if (!pruefungId || !schuelerEmail) {
+      return jsonResponse({ error: 'pruefungId und schuelerEmail erforderlich' });
+    }
+
+    var sheetName = 'Antworten_' + pruefungId;
+    var ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    var files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ error: 'Antworten-Sheet nicht gefunden' });
+
+    var sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    var data = getSheetData(sheet);
+    var rowIdx = data.findIndex(function(r) { return r.email === schuelerEmail; });
+    if (rowIdx < 0) return jsonResponse({ error: 'SuS nicht gefunden' });
+
+    var rowIndex = rowIdx + 2;
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    // entsperrt-Flag setzen (wird im nächsten Heartbeat gelesen und zurückgesetzt)
+    headers = ensureColumns(sheet, headers, { entsperrt: 'true', gesperrt: 'false', verstossZaehler: '0' });
+    var entsperrtCol = headers.indexOf('entsperrt');
+    if (entsperrtCol >= 0) sheet.getRange(rowIndex, entsperrtCol + 1).setValue('true');
+    var gesperrtCol = headers.indexOf('gesperrt');
+    if (gesperrtCol >= 0) sheet.getRange(rowIndex, gesperrtCol + 1).setValue('false');
+    var vzCol = headers.indexOf('verstossZaehler');
+    if (vzCol >= 0) sheet.getRange(rowIndex, vzCol + 1).setValue(0);
+
+    return jsonResponse({ success: true });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === SETZE KONTROLLSTUFE (LP-Aktion) ===
+
+function setzeKontrollStufeEndpoint(body) {
+  try {
+    var email = body.email;
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var pruefungId = body.pruefungId;
+    var schuelerEmail = body.schuelerEmail;
+    var stufe = body.stufe;
+    if (!pruefungId || !schuelerEmail || !stufe) {
+      return jsonResponse({ error: 'pruefungId, schuelerEmail und stufe erforderlich' });
+    }
+    if (['locker', 'standard', 'streng'].indexOf(stufe) < 0) {
+      return jsonResponse({ error: 'Ungültige Kontrollstufe: ' + stufe });
+    }
+
+    var sheetName = 'Antworten_' + pruefungId;
+    var ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    var files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) return jsonResponse({ error: 'Antworten-Sheet nicht gefunden' });
+
+    var sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    var data = getSheetData(sheet);
+    var rowIdx = data.findIndex(function(r) { return r.email === schuelerEmail; });
+    if (rowIdx < 0) return jsonResponse({ error: 'SuS nicht gefunden' });
+
+    var rowIndex = rowIdx + 2;
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    headers = ensureColumns(sheet, headers, { kontrollStufeOverride: stufe });
+    var ksoCol = headers.indexOf('kontrollStufeOverride');
+    if (ksoCol >= 0) sheet.getRange(rowIndex, ksoCol + 1).setValue(stufe);
 
     return jsonResponse({ success: true });
   } catch (error) {
@@ -1623,6 +1765,13 @@ function ladeMonitoring(pruefungId, email) {
           netzwerkFehler: Number(row.netzwerkFehler) || 0,
           autoSaveCount: Number(row.autoSaveCount) || 0,
           unterbrechungen: safeJsonParse(row.unterbrechungen, []),
+          // Lockdown-Felder
+          geraet: row.geraet || 'unbekannt',
+          vollbild: row.vollbild === 'true',
+          kontrollStufe: row.kontrollStufe || '',
+          verstossZaehler: Number(row.verstossZaehler) || 0,
+          gesperrt: row.gesperrt === 'true',
+          verstoesse: safeJsonParse(row.verstoesse, []),
         });
       }
     }

@@ -39,6 +39,13 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
     }
   }
 
+  async function handleEntsperren(schuelerEmail: string): Promise<void> {
+    if (!user) return
+    await apiService.entsperreSuS(config.id, user.email, schuelerEmail)
+  }
+
+  const maxVerstoesse = 3
+
   const gefilterteSchueler = useMemo(() => {
     let liste = [...schuelerStatus]
 
@@ -117,10 +124,12 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
           <thead className="bg-slate-50 dark:bg-slate-800/50">
             <tr className="text-left text-xs text-slate-500 dark:text-slate-400 uppercase">
               <th className="px-3 py-2">Name</th>
-              <th className="px-3 py-2">Klasse</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Verstösse</th>
+              <th className="px-3 py-2">Kontrolle</th>
+              <th className="px-3 py-2">Gerät</th>
               <th className="px-3 py-2">Frage</th>
               <th className="px-3 py-2">Fortschritt</th>
-              <th className="px-3 py-2">Status</th>
               {config.sebErforderlich && <th className="px-3 py-2">SEB</th>}
             </tr>
           </thead>
@@ -142,13 +151,60 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
                 >
                   <td className="px-3 py-2 text-slate-700 dark:text-slate-200 font-medium">
                     {s.name || s.email}
+                    {s.klasse && <span className="ml-1 text-xs text-slate-400">({s.klasse})</span>}
                     {stufe && (
                       <span className="ml-1 text-xs" title={`Inaktiv seit >${{ gelb: '1', orange: '3', rot: '5' }[stufe]} Min.`}>
                         {{ gelb: '\uD83D\uDFE1', orange: '\uD83D\uDFE0', rot: '\uD83D\uDD34' }[stufe]}
                       </span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-slate-500 dark:text-slate-400">{s.klasse ?? '\u2014'}</td>
+                  <td className="px-3 py-2 text-xs">
+                    {statusBadge(s.status)}
+                  </td>
+                  {/* Verstösse */}
+                  <td className="px-3 py-2">
+                    {s.gesperrt ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-red-600 font-bold cursor-help text-xs" title={verstossTooltip(s)}>
+                          🔒 {s.verstossZaehler ?? 0}/{maxVerstoesse}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleEntsperren(s.email) }}
+                          className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded font-semibold cursor-pointer hover:bg-blue-700"
+                        >
+                          Entsperren
+                        </button>
+                      </div>
+                    ) : (s.verstossZaehler ?? 0) > 0 ? (
+                      <span
+                        className={`font-semibold cursor-help text-xs ${(s.verstossZaehler ?? 0) >= 2 ? 'text-red-600' : 'text-amber-600'}`}
+                        title={verstossTooltip(s)}
+                      >
+                        ⚠️ {s.verstossZaehler}/{maxVerstoesse}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 text-xs">—</span>
+                    )}
+                  </td>
+                  {/* Kontrolle */}
+                  <td className="px-3 py-2 text-xs">
+                    {s.kontrollStufe ? (
+                      s.kontrollStufe === config.kontrollStufe ? (
+                        <span>{stufeIcon(s.kontrollStufe)} {s.kontrollStufe}</span>
+                      ) : (
+                        <span className="text-amber-700 dark:text-amber-400" title="Automatisch angepasst (Gerät)">
+                          {stufeIcon(config.kontrollStufe as string)}→{stufeIcon(s.kontrollStufe)} auto
+                        </span>
+                      )
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </td>
+                  {/* Gerät */}
+                  <td className="px-3 py-2 text-sm">
+                    {s.geraet === 'tablet' ? '📱' : s.geraet === 'laptop' ? '💻' : '—'}
+                  </td>
                   <td className="px-3 py-2 text-slate-600 dark:text-slate-300">
                     {s.aktuelleFrage !== null && s.aktuelleFrage !== undefined
                       ? `${s.aktuelleFrage + 1}/${s.gesamtFragen}`
@@ -164,9 +220,6 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
                       </div>
                       <span className="text-xs text-slate-500 dark:text-slate-400 w-8 text-right">{fortschrittProzent}%</span>
                     </div>
-                  </td>
-                  <td className="px-3 py-2 text-xs">
-                    {statusBadge(s.status)}
                   </td>
                   {config.sebErforderlich && (
                     <td className="px-3 py-2 text-xs">
@@ -300,6 +353,17 @@ function filterLabel(f: QuickFilter): string {
     case 'abgegeben': return 'Abgegeben'
     case 'nicht-erschienen': return 'Nicht erschienen'
   }
+}
+
+function verstossTooltip(s: SchuelerStatus): string {
+  if (!s.verstoesse?.length) return 'Keine Verstösse'
+  return s.verstoesse.map(v =>
+    `${new Date(v.zeitpunkt).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })} — ${v.typ}${v.dauer_sekunden ? ` (${v.dauer_sekunden}s)` : ''}`
+  ).join('\n')
+}
+
+function stufeIcon(stufe?: string): string {
+  return stufe === 'locker' ? '🟢' : stufe === 'streng' ? '🔴' : '🟡'
 }
 
 function statusBadge(status: SchuelerStatus['status']): React.JSX.Element {

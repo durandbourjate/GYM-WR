@@ -2,7 +2,7 @@
 // Alle bestehenden Imports `import { apiService } from '../services/apiService'` bleiben funktional
 
 import { istKonfiguriert, getJson } from './apiClient'
-import { ladePruefung, speichereAntworten, heartbeat, schaltePruefungFrei, beendePruefung, resetPruefung, sebAusnahmeErlauben } from './pruefungApi'
+import { ladePruefung, speichereAntworten, heartbeat, schaltePruefungFrei, beendePruefung, resetPruefung, sebAusnahmeErlauben, entsperreSuS, setzeKontrollStufe } from './pruefungApi'
 import { ladeAlleConfigs, ladeFragenbank, speichereConfig, loeschePruefung, speichereFrage, loescheFrage } from './fragenbankApi'
 import { ladeKorrektur, ladeAbgaben, starteKorrektur, ladeKorrekturFortschritt, ladeKorrekturStatus, speichereKorrekturZeile, generiereUndSendeFeedback, korrekturFreigeben, ladeKorrekturenFuerSuS, ladeKorrekturDetail } from './korrekturApi'
 import { importierePoolFragen, importiereLernziele, schreibePoolAenderung, ladeLernziele } from './poolApi'
@@ -54,6 +54,8 @@ export const apiService = {
   sendeEinladungen,
   ladeTrackerDaten,
   sebAusnahmeErlauben,
+  entsperreSuS,
+  setzeKontrollStufe,
   ladeDriveFile: (fileId: string, email: string) =>
     getJson<{ base64: string; mimeType: string; name: string }>('ladeDriveFile', { fileId, email }),
   ladeKurse,
