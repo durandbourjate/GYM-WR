@@ -13,6 +13,7 @@ Bei neuen Features: Prüfe ob eine bestehende Datei über 800 Zeilen wächst. Fa
 
 ## TypeScript-Strenge
 
+- **Build-Check VOR jedem Commit: `npx tsc -b` (NICHT `tsc --noEmit`!)** — `tsc -b` entspricht dem CI. `tsc --noEmit` ist weniger streng und findet nicht alle Fehler. Gilt für Pruefung UND Unterrichtsplaner.
 - Kein neues `as any` einführen (aktuell 58 Stellen — nicht erhöhen)
 - Neue Funktionen: explizite Parameter- und Return-Types
 - `JSON.parse()` immer in try/catch wrappen und Rückgabetyp validieren
