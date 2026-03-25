@@ -55,7 +55,7 @@ Uhr-Icon statt Schloss, "WARTERAUM"-Label, blauer Rahmen, "Warte auf Freischaltu
 
 ### Feature-Wünsche
 - ✅ **Einzelne SuS an-/abwählen** — Checkboxen + "Alle/Keine"-Toggle existieren in TeilnehmerListe (25.03.2026)
-- **Mehrere Prüfungen gleichzeitig** durchführen
+- ✅ **Mehrere Prüfungen gleichzeitig** — Architektur unterstützt das bereits (State per pruefungId, sessionStorage tab-gebunden, APIs parametrisiert). Bestätigt durch Code-Audit 25.03.2026.
 
 ---
 
@@ -95,10 +95,8 @@ Jeder API-Call braucht 1-3 Sekunden (Cold Starts, Google-Infrastruktur). Optimis
 - **Phase 3.1 — Material-Panel:** Debug-Logging am Fallback (Typ/URL/DriveId in Console + UI)
 - **Phase 3.2 — Warteraum:** Uhr-Icon, "WARTERAUM"-Label, blauer Rahmen
 
-### Gesamtplan (noch offen)
-- **Phase 4:** Feature — Einzelne SuS an-/abwählen
-- **Phase 5:** Feature — Mehrere Prüfungen gleichzeitig
-- Plan-Dokument: `.claude/plans/humming-dancing-waffle.md`
+### Gesamtplan — KOMPLETT (25.03.2026)
+Alle 6 Phasen des Production-Readiness-Plans abgeschlossen. Plan: `.claude/plans/humming-dancing-waffle.md`
 
 ---
 
