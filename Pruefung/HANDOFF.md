@@ -72,6 +72,32 @@ Jeder API-Call braucht 1-3 Sekunden (Cold Starts, Google-Infrastruktur). Optimis
 
 ---
 
+## Session 25.03.2026 (3) — F1-F15 LP-Live-Test-Feedback
+
+### Erledigt (12 Commits, 14 Tasks in 4 Clustern)
+- **Cluster 1 — Korrektur:** Auto-Korrektur-Engine (9 Fragetypen), Vollansicht (Frage wie SuS + Musterlösung + Richtig/Falsch), PDF-Drive-Fallback, KI-ensureColumns
+- **Cluster 2 — Resilienz:** Error-Banner bei Verbindungsverlust (statt Crash), Korrektur-Autosave (Debounce 3s + IndexedDB 10s)
+- **Cluster 3 — Quick-Wins:** Lobby-Feedback, Polling 2s, Highlighter-Icon, PDF-min-height, Tab-Link nur LP, Beenden 1-Klick
+- **Cluster 4 — Investigation:** Aufgabengruppe-beantwortet-Fix, Heartbeat mit beantworteteFragen, Korrektur-Status im Tracker
+
+### Neue Dateien
+```
+src/utils/autoKorrektur.ts            — Auto-Korrektur für MC/RF/Lückentext/Zuordnung/Berechnung + FiBu-Delegation
+src/hooks/useKorrekturAutoSave.ts     — Debounced Autosave + IndexedDB-Backup für Korrekturen
+src/components/lp/KorrekturFrageVollansicht.tsx — Vollansicht: Frage + Antwort + Musterlösung + Auto-Korrektur
+```
+
+### Apps Script Änderungen (manuell kopieren!)
+- `batchKorrektur`: `ensureColumns` für KI-Spalten
+- `heartbeat`: schreibt `beantworteteFragen` ins Antworten-Sheet
+- Neuer Endpoint: `ladeKorrekturStatus` (korrigiert/offen/gesamt)
+
+### Spec + Plan
+- `docs/superpowers/specs/2026-03-25-f1-f15-lp-live-test-feedback-design.md`
+- `docs/superpowers/plans/2026-03-25-f1-f15-implementation.md`
+
+---
+
 ## Session 25.03.2026 (2) — Production-Readiness Phase 0+1
 
 ### Erledigt
@@ -100,36 +126,34 @@ Alle 6 Phasen des Production-Readiness-Plans abgeschlossen.
 
 ---
 
-## Erster LP-Live-Test — Feedback (25.03.2026)
-
-**Nächste Session: Systematisches Audit + Plan für alle 15 Punkte. NICHT reaktiv fixen!**
+## Erster LP-Live-Test — Feedback (25.03.2026) — ✅ ALLE ERLEDIGT
 
 ### Kritisch (Datenverlust / Blocking)
 | # | Problem | Status |
 |---|---------|--------|
-| F1 | **Verbindungsverlust LP** — "Daten konnten nicht geladen werden" während aktiver Prüfung UND Korrektur. Monitoring-Polling crasht bei temporären Timeouts. | OFFEN |
-| F2 | **Korrektur-Autosave fehlt** — LP-Korrekturen gehen bei Verbindungsverlust verloren. Kein lokaler Zwischenspeicher. | OFFEN |
+| F1 | **Verbindungsverlust LP** — Error-Banner statt Crash, bestehende Daten bleiben sichtbar | ✅ 25.03 |
+| F2 | **Korrektur-Autosave** — Debounced (3s) + IndexedDB-Backup (10s) | ✅ 25.03 |
 
-### Korrektur-Modus (grundsätzlich funktional, aber nicht brauchbar)
+### Korrektur-Modus
 | # | Problem | Status |
 |---|---------|--------|
-| F3 | **Keine Musterlösungen** — LP sieht nur SuS-Antwort ohne Kontext (z.B. "Lücke 1: sadf") | OFFEN |
-| F4 | **Frage nicht sichtbar** — LP braucht gleiche Ansicht wie SuS + Musterlösung daneben | OFFEN |
-| F5 | **Keine KI-vorgeschlagenen Punkte** — Beurteilungsfelder sind leer | OFFEN |
-| F6 | **"Kein PDF vorhanden"** bei Witzsammlung-Aufgabe in Korrektur | OFFEN |
+| F3 | **Musterlösungen** — Vollansicht mit Musterlösung (Text, Bild, FiBu-Struktur) | ✅ 25.03 |
+| F4 | **Frage sichtbar** — Gleiche Ansicht wie SuS + Auto-Korrektur + Richtig/Falsch-Markierung | ✅ 25.03 |
+| F5 | **KI-Punkte** — ensureColumns für KI-Spalten im Backend | ✅ 25.03 |
+| F6 | **PDF in Korrektur** — Drive-Fallback wenn Base64 fehlt | ✅ 25.03 |
 
 ### UX-Verbesserungen
 | # | Problem | Status |
 |---|---------|--------|
-| F7 | **Lobby-Erkennung SuS** — Kein Unterschied zwischen "URL eingegeben" und "Lobby erkannt" | OFFEN |
-| F8 | **10s Verzögerung** bis SuS Freischaltung merkt | OFFEN |
-| F9 | **30s bis LP-Fortschritt** angezeigt wird (Monitoring-Intervall) | OFFEN |
-| F10 | **Frage 10: falsches Icon** — Leuchtstift zeigt Wachskreidestift-Symbol | OFFEN |
-| F11 | **Material-PDF nur 4cm hoch** im Split-Modus, erst bei Vollbild korrekt | OFFEN |
-| F12 | **"In neuem Tab öffnen"** sollte nicht sichtbar sein (SEB blockiert Tabs) | OFFEN |
-| F13 | **Frage 15: Wann beantwortet?** — Unklar welche Bedingung zur Markierung führt | OFFEN |
-| F14 | **Beenden ohne Bestätigung** wenn alle SuS bereits abgegeben haben | OFFEN |
-| F15 | **Prüfungsübersicht: Korrektur-Status** — Anzeige ob korrigiert + ausstehende + Link zu Nachprüfungen | OFFEN |
+| F7 | **Lobby-Feedback** — "Verbunden" mit grünem Status nach Heartbeat | ✅ 25.03 |
+| F8 | **Schnellere Freischaltung** — Polling von 3s auf 2s | ✅ 25.03 |
+| F9 | **LP-Fortschritt** — beantworteteFragen via Heartbeat (10s statt 30s) | ✅ 25.03 |
+| F10 | **Highlighter-Icon** — Gelber Balken statt Kreide-Emoji | ✅ 25.03 |
+| F11 | **PDF-Höhe** — min-h-[200px]/[300px] + responsive | ✅ 25.03 |
+| F12 | **Tab-Link** — Nur für LP sichtbar (Rolle-Check) | ✅ 25.03 |
+| F13 | **Aufgabengruppe beantwortet** — istVollstaendigBeantwortet prüft jetzt Teilaufgaben | ✅ 25.03 |
+| F14 | **Beenden 1-Klick** — Vereinfachter Dialog wenn alle SuS abgegeben | ✅ 25.03 |
+| F15 | **Korrektur-Status** — "X von Y korrigiert" im Tracker | ✅ 25.03 |
 
 ### Noch offene Feature-Wünsche (aus früherer Diskussion)
 - **Zeitzuschlag (Nachteilsausgleich)** bei SuS in Durchführung definieren, nicht im Composer
