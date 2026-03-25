@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
+import { useKorrekturAutoSave } from '../../hooks/useKorrekturAutoSave.ts'
 import type { PruefungsKorrektur, SchuelerAbgabe } from '../../types/korrektur.ts'
 import type { Frage } from '../../types/fragen.ts'
 import { berechneStatistiken, berechneFragenStatistiken, berechneNote } from '../../utils/korrekturUtils.ts'
@@ -26,6 +27,13 @@ type Sortierung = 'name' | 'punkte' | 'status'
 
 export default function KorrekturDashboard({ pruefungId, eingebettet = false }: Props) {
   const user = useAuthStore((s) => s.user)
+  const istDemoModus = useAuthStore((s) => s.istDemoModus)
+
+  const { queueSave, updateKorrekturRef } = useKorrekturAutoSave({
+    pruefungId,
+    email: user?.email ?? '',
+    enabled: !istDemoModus && !!user,
+  })
 
   const [korrektur, setKorrektur] = useState<PruefungsKorrektur | null>(null)
   const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
@@ -47,6 +55,9 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [pdfSchuelerEmail, setPdfSchuelerEmail] = useState<string | null>(null)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Korrektur-Daten für IndexedDB-Backup aktuell halten
+  useEffect(() => { updateKorrekturRef(korrektur) }, [korrektur, updateKorrekturRef])
 
   // Auto-Korrektur für alle SuS × Fragen berechnen
   const autoErgebnisseAlle = useMemo<Record<string, Record<string, KorrekturErgebnis | null>>>(() => {
@@ -168,16 +179,14 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       }
     })
 
-    // Ans Backend senden
-    if (user) {
-      apiService.speichereKorrekturZeile({
-        pruefungId,
-        schuelerEmail,
-        frageId: '__note_override__',
-        lpPunkte: noteOverride,
-      }, user.email)
-    }
-  }, [pruefungId, user])
+    // Ans Backend senden (debounced)
+    queueSave({
+      pruefungId,
+      schuelerEmail,
+      frageId: '__note_override__',
+      lpPunkte: noteOverride,
+    })
+  }, [pruefungId, queueSave])
 
   // Bewertung aktualisieren (einzelne Frage eines SuS)
   const handleBewertungUpdate = useCallback((schuelerEmail: string, frageId: string, updates: {
@@ -205,16 +214,14 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       }
     })
 
-    // Ans Backend senden (fire-and-forget, kein await nötig)
-    if (user) {
-      apiService.speichereKorrekturZeile({
-        pruefungId,
-        schuelerEmail,
-        frageId,
-        ...updates,
-      }, user.email)
-    }
-  }, [pruefungId, user])
+    // Ans Backend senden (debounced)
+    queueSave({
+      pruefungId,
+      schuelerEmail,
+      frageId,
+      ...updates,
+    })
+  }, [pruefungId, queueSave])
 
   // Audio-Kommentar hochladen
   const handleAudioUpload = useCallback(async (schuelerEmail: string, frageId: string, blob: Blob): Promise<string | null> => {
@@ -233,15 +240,13 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
         ),
       }
     })
-    // Ans Backend senden
-    if (user) {
-      apiService.speichereKorrekturZeile({
-        pruefungId,
-        schuelerEmail: email,
-        frageId: '_gesamt',
-        audioKommentarId: audioId,
-      }, user.email)
-    }
+    // Ans Backend senden (debounced)
+    queueSave({
+      pruefungId,
+      schuelerEmail: email,
+      frageId: '_gesamt',
+      audioKommentarId: audioId,
+    })
   }, [pruefungId, user])
 
   // KI-Korrektur starten

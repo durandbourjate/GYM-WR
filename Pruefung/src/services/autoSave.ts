@@ -2,7 +2,8 @@ import type { Antwort } from '../types/antworten.ts'
 
 const IDB_NAME = 'pruefung-backup'
 const IDB_STORE = 'antworten'
-const IDB_VERSION = 1
+const IDB_KORREKTUR_STORE = 'korrektur'
+const IDB_VERSION = 2
 
 // === IndexedDB Helpers ===
 
@@ -13,6 +14,9 @@ function openDB(): Promise<IDBDatabase> {
       const db = request.result
       if (!db.objectStoreNames.contains(IDB_STORE)) {
         db.createObjectStore(IDB_STORE)
+      }
+      if (!db.objectStoreNames.contains(IDB_KORREKTUR_STORE)) {
+        db.createObjectStore(IDB_KORREKTUR_STORE)
       }
     }
     request.onsuccess = () => resolve(request.result)
@@ -72,5 +76,60 @@ export async function clearIndexedDB(pruefungId: string): Promise<void> {
     store.delete(pruefungId)
   } catch (e) {
     console.warn('IndexedDB Clear fehlgeschlagen:', e)
+  }
+}
+
+// === Korrektur-Backup (IndexedDB) ===
+
+export async function saveKorrekturToIndexedDB(
+  pruefungId: string,
+  data: unknown
+): Promise<void> {
+  try {
+    const db = await openDB()
+    const tx = db.transaction(IDB_KORREKTUR_STORE, 'readwrite')
+    const store = tx.objectStore(IDB_KORREKTUR_STORE)
+    store.put(
+      {
+        data,
+        timestamp: new Date().toISOString(),
+      },
+      pruefungId
+    )
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch (e) {
+    console.warn('IndexedDB Korrektur-Save fehlgeschlagen:', e)
+  }
+}
+
+export async function loadKorrekturFromIndexedDB(
+  pruefungId: string
+): Promise<{ data: unknown; timestamp: string } | null> {
+  try {
+    const db = await openDB()
+    const tx = db.transaction(IDB_KORREKTUR_STORE, 'readonly')
+    const store = tx.objectStore(IDB_KORREKTUR_STORE)
+    const request = store.get(pruefungId)
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result ?? null)
+      request.onerror = () => reject(request.error)
+    })
+  } catch (e) {
+    console.warn('IndexedDB Korrektur-Load fehlgeschlagen:', e)
+    return null
+  }
+}
+
+export async function clearKorrekturIndexedDB(pruefungId: string): Promise<void> {
+  try {
+    const db = await openDB()
+    const tx = db.transaction(IDB_KORREKTUR_STORE, 'readwrite')
+    const store = tx.objectStore(IDB_KORREKTUR_STORE)
+    store.delete(pruefungId)
+  } catch (e) {
+    console.warn('IndexedDB Korrektur-Clear fehlgeschlagen:', e)
   }
 }
