@@ -31,8 +31,18 @@ export interface CanvasState {
 // Toolbar-Orientierung
 export type ToolbarLayout = 'horizontal' | 'vertikal';
 
-// Standard-Farben
-export const STANDARD_FARBEN = ['#000000', '#ef4444', '#3b82f6', '#22c55e'];
+// Standard-Farben: kräftige Farben für Text/Linien + Pastell-Farben zum Markieren
+export const STANDARD_FARBEN = [
+  '#000000', // Schwarz (Default)
+  '#DC2626', // Rot kräftig
+  '#2563EB', // Blau kräftig
+  '#16A34A', // Grün kräftig
+  '#F59E0B', // Orange/Amber
+  '#FEF08A', // Gelb Pastell
+  '#FBCFE8', // Rosa Pastell
+  '#BAE6FD', // Hellblau Pastell
+  '#BBF7D0', // Hellgrün Pastell
+];
 
 // Grössen-Presets
 export const GROESSE_PRESETS: Record<string, { breite: number; hoehe: number }> = {
