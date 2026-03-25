@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { usePruefungStore } from './store/pruefungStore.ts'
 import { useAuthStore } from './store/authStore.ts'
-import { demoPruefung } from './data/demoPruefung.ts'
+import { einrichtungsPruefung } from './data/einrichtungsPruefung.ts'
 import { demoFragen } from './data/demoFragen.ts'
 import { apiService } from './services/apiService.ts'
 import { clearIndexedDB } from './services/autoSave.ts'
@@ -25,7 +25,7 @@ import './store/themeStore.ts'
 
 // Hinweis: Eingebaute Prüfungen (EINGEBAUTE_PRUEFUNGEN) wurden entfernt.
 // Alle Prüfungen laufen jetzt über den normalen Backend-Datenfluss (Google Sheets).
-// Im Demo-Modus wird die demoPruefung aus data/demoPruefung.ts verwendet.
+// Im Demo-Modus wird die einrichtungsPruefung aus data/einrichtungsPruefung.ts verwendet.
 
 export default function App() {
   // Build-Timestamp für Versions-Verifikation
@@ -136,7 +136,7 @@ export default function App() {
       }
 
       // Fallback: Im Demo-Modus die Demo-Prüfung laden
-      const resolvedConfig = { ...demoPruefung, freigeschaltet: true }
+      const resolvedConfig = { ...einrichtungsPruefung, freigeschaltet: true }
       const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(resolvedConfig, demoFragen)
       setPruefungsConfig(resolvedConfig)
       setPruefungsFragen(navigationsFragen)

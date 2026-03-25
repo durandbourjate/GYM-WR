@@ -12,7 +12,7 @@ import FragenBrowser from './FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
 import PoolSyncDialog from './PoolSyncDialog.tsx'
 import TrackerSection from './TrackerSection.tsx'
-import { demoPruefung } from '../../data/demoPruefung.ts'
+// demoPruefung entfernt — nur noch Einrichtungsprüfung im Demo-Modus
 import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
 
 /** Startseite für Lehrpersonen: Prüfungen verwalten + erstellen */
@@ -508,7 +508,7 @@ function TrackerBadge({ summary: s }: { summary: TrackerPruefungSummary }) {
   )
 }
 
-/** Demo-Konfigurationen für den Demo-Modus — nutzt die Musterprüfung aus demoPruefung.ts */
+/** Demo-Konfigurationen für den Demo-Modus — nur Einrichtungsprüfung */
 function demoConfigs(): PruefungsConfig[] {
-  return [einrichtungsPruefung, demoPruefung]
+  return [einrichtungsPruefung]
 }
