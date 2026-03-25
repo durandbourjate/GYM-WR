@@ -36,7 +36,7 @@ export default function PDFFrage({ frage }: Props) {
   // Annotations hook
   const {
     annotationen, setAnnotationen,
-    hinzufuegen, loeschen,
+    hinzufuegen, loeschen, editieren,
     undo, redo, kannUndo, kannRedo,
     fuerSeite: _fuerSeite,
   } = usePDFAnnotations(gespeicherteAnnotationen)
@@ -124,6 +124,10 @@ export default function PDFFrage({ frage }: Props) {
   const handleAnnotationLoeschen = useCallback((id: string) => {
     loeschen(id)
   }, [loeschen])
+
+  const handleAnnotationEditieren = useCallback((id: string, updates: Partial<PDFAnnotation>) => {
+    editieren(id, updates)
+  }, [editieren])
 
   // Determine page count: use renderer state if ready, otherwise frage metadata
   const seitenAnzahl = renderer.state.status === 'ready'
@@ -230,6 +234,7 @@ export default function PDFFrage({ frage }: Props) {
         aktiveKategorieId={aktiveKategorieId}
         onAnnotationHinzufuegen={handleAnnotationHinzufuegen}
         onAnnotationLoeschen={handleAnnotationLoeschen}
+        onAnnotationEditieren={handleAnnotationEditieren}
         readOnly={abgegeben}
       />
 

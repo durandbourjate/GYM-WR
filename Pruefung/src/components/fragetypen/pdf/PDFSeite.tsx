@@ -20,6 +20,7 @@ interface Props {
   aktiveKategorieId?: string
   onAnnotationHinzufuegen: (a: PDFAnnotation) => void
   onAnnotationLoeschen: (id: string) => void
+  onAnnotationEditieren?: (id: string, updates: Partial<PDFAnnotation>) => void
   readOnly?: boolean
 }
 
@@ -92,7 +93,8 @@ function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
 
 export function PDFSeite({
   seitenNr, zoom, renderer, annotationen, aktivesWerkzeug, aktiveFarbe,
-  kategorien, aktiveKategorieId: _aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen, readOnly,
+  kategorien, aktiveKategorieId: _aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen,
+  onAnnotationEditieren, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -107,6 +109,11 @@ export function PDFSeite({
     sichtbar: boolean; relX: number; relY: number; cssX: number; cssY: number; text: string
   }>({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
   const textInputRef = useRef<HTMLInputElement>(null)
+  // Edit state for existing text annotations (double-click to edit)
+  const [editierendeAnnotation, setEditierendeAnnotation] = useState<{
+    id: string; text: string; cssX: number; cssY: number; farbe: string; groesse: number
+  } | null>(null)
+  const textEditInputRef = useRef<HTMLInputElement>(null)
   const [kategorieChooser, setKategorieChooser] = useState<{
     x: number; y: number; textRange: PDFTextRange
   } | null>(null)
@@ -282,6 +289,43 @@ export function PDFSeite({
     setTextOverlay({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
   }, [textOverlay, seitenNr, aktiveFarbe, onAnnotationHinzufuegen])
 
+  // --- Doppelklick: Text-Annotation editieren ---
+  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
+    if (readOnly || !onAnnotationEditieren || !seitenInfo) return
+    const target = e.target as HTMLElement
+    const annotId = target.closest('[data-annotation-id]')?.getAttribute('data-annotation-id')
+    if (!annotId) return
+
+    const ann = annotationen.find(a => a.id === annotId)
+    if (!ann || ann.werkzeug !== 'text') return
+
+    e.stopPropagation()
+    const containerRect = containerRef.current?.getBoundingClientRect()
+    if (!containerRect) return
+
+    const cssX = ann.position.x * seitenInfo.breite
+    const cssY = ann.position.y * seitenInfo.hoehe
+
+    setEditierendeAnnotation({
+      id: ann.id,
+      text: ann.text,
+      cssX,
+      cssY,
+      farbe: ann.farbe,
+      groesse: ann.groesse || 16,
+    })
+    setTimeout(() => textEditInputRef.current?.focus(), 30)
+  }, [readOnly, onAnnotationEditieren, seitenInfo, annotationen])
+
+  const handleTextEditSave = useCallback(() => {
+    if (!editierendeAnnotation || !onAnnotationEditieren) return
+    const text = editierendeAnnotation.text.trim()
+    if (text) {
+      onAnnotationEditieren(editierendeAnnotation.id, { text })
+    }
+    setEditierendeAnnotation(null)
+  }, [editierendeAnnotation, onAnnotationEditieren])
+
   // --- Freehand drawing ---
   const handleDrawStart = useCallback((e: React.MouseEvent) => {
     if (readOnly || aktivesWerkzeug !== 'freihand' || !seitenInfo) return
@@ -365,6 +409,7 @@ export function PDFSeite({
       className="relative mx-auto border border-slate-200 dark:border-slate-700 shadow-sm bg-white"
       style={{ width: breite, height: hoehe, cursor }}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp}
       onMouseDown={handleDrawStart}
       onMouseMove={handleDrawMove}
@@ -432,6 +477,42 @@ export function PDFSeite({
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
           }}
           placeholder="Text eingeben..."
+        />
+      )}
+
+      {/* Text-Annotation bearbeiten (Doppelklick) */}
+      {editierendeAnnotation && (
+        <input
+          ref={textEditInputRef}
+          type="text"
+          inputMode="text"
+          autoComplete="off"
+          value={editierendeAnnotation.text}
+          onChange={(e) => setEditierendeAnnotation(prev => prev ? { ...prev, text: e.target.value } : null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextEditSave() }
+            if (e.key === 'Escape') { e.preventDefault(); setEditierendeAnnotation(null) }
+            e.stopPropagation()
+          }}
+          onBlur={() => setTimeout(handleTextEditSave, 150)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'absolute',
+            left: editierendeAnnotation.cssX,
+            top: editierendeAnnotation.cssY - editierendeAnnotation.groesse,
+            fontSize: `${editierendeAnnotation.groesse}px`,
+            fontFamily: 'sans-serif',
+            color: editierendeAnnotation.farbe,
+            background: 'rgba(255,255,255,0.9)',
+            border: '2px solid #f59e0b',
+            borderRadius: '4px',
+            padding: '2px 6px',
+            minWidth: '120px',
+            outline: 'none',
+            zIndex: 20,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          }}
         />
       )}
 

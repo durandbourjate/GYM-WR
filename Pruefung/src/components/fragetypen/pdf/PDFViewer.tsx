@@ -14,6 +14,7 @@ interface Props {
   aktiveKategorieId?: string
   onAnnotationHinzufuegen: (a: PDFAnnotation) => void
   onAnnotationLoeschen: (id: string) => void
+  onAnnotationEditieren?: (id: string, updates: Partial<PDFAnnotation>) => void
   readOnly?: boolean
 }
 
@@ -23,7 +24,8 @@ const A4_HOEHE = 842
 
 export function PDFViewer({
   renderer, seitenAnzahl, zoom, annotationen, aktivesWerkzeug, aktiveFarbe,
-  kategorien, aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen, readOnly,
+  kategorien, aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen,
+  onAnnotationEditieren, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [sichtbareSeiten, setSichtbareSeiten] = useState<Set<number>>(new Set([0]))
@@ -114,6 +116,7 @@ export function PDFViewer({
                   aktiveKategorieId={aktiveKategorieId}
                   onAnnotationHinzufuegen={onAnnotationHinzufuegen}
                   onAnnotationLoeschen={onAnnotationLoeschen}
+                  onAnnotationEditieren={onAnnotationEditieren}
                   readOnly={readOnly}
                 />
               ) : (
