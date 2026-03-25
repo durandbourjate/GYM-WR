@@ -6,6 +6,46 @@
 
 ---
 
+## Offene Punkte (nächste Session)
+
+### Bekannte Bugs
+| ID | Beschreibung | Priorität |
+|----|-------------|-----------|
+| B24 | Zeichnen Text-Tool: Textfeld erscheint nur ~0.5s (wiederholt — B10-Fix evtl. regressiert) | Hoch |
+| B25 | PDF Text-Annotationen: Bestehende nicht editierbar (wiederholt — B11-Fix prüfen) | Hoch |
+| B26 | Zeichnen Toolbar vertikal spinnt beim Bild (wiederholt — B12 evtl. regressiert) | Hoch |
+| B27 | PDF Spiegelung: Doppelt gespiegelt + rausgezoomt (Touch/Transform-Bug, Undo ging) | Mittel |
+| B28 | SuS zeigt grün im Wartebildschirm vor Lobby-Phase (B14/B17-Fix unvollständig?) | Mittel |
+| B29 | Material PDF halbe Höhe (wiederholt — B18-Fix evtl. regressiert) | Mittel |
+| B30 | Fragen-Navigation buggy: Frage 16 zeigt Inhalt von 15a, Fragen 17+18 fehlen (evtl. B6/B16-Regression) | Hoch |
+
+### UX-Verbesserungen ausstehend
+| ID | Beschreibung | Priorität |
+|----|-------------|-----------|
+| U12 | Kurs-Auswahl: Direkt einzelne SuS anklicken (nicht erst Kurs), Indeterminate-Checkbox | Hoch |
+| U13 | Ergebnisse + Korrektur zusammenlegen (Accordion-Style, 4→3 Tabs) | Mittel |
+| U14 | Zeitzuschlag inline im Live-Monitoring: Countdown bei Überzeit, "+5 Min" Quick-Button | Hoch |
+| U15 | Farbpalette Zeichnen/PDF: Schwarz + kräftige Farben für Text, Pastell nur für Highlighting | Mittel |
+| U16 | Monitoring-Infos (Verbindung, Gerät) bereits in Lobby anzeigen | Mittel |
+| U17 | Demo-Prüfung an aktuelle Version anpassen (neue Fragetypen) | Niedrig |
+| U18 | Zeitzuschlag im Dashboard/Auswertung sichtbar (aktuell unsichtbar bei erzwungener Abgabe) | Hoch |
+| U19 | MC/Auto-Korrektur: Automatisch korrigierbare Fragen nicht mehr bestätigen müssen (vorgewählt) | Mittel |
+| U20 | Kurs-Auswahl einklappbar in Vorbereitung | Mittel |
+
+### Performance
+| ID | Beschreibung | Priorität |
+|----|-------------|-----------|
+| P1 | Ladezeit >1 Minute reduzieren (Apps Script + Frontend Optimierung) | Hoch (für breiten Einsatz) |
+
+### Kontext aus Tests (25.03.2026)
+- Toolbar vertikal beim Bild-Fragetyp weiterhin buggy (Screenshot vorhanden)
+- Nachteilsausgleich sollte in Lobby angezeigt werden, nicht nur Vorbereitung
+- SuS-Checkboxen sollten auch bei nicht-angewähltem Kurs sichtbar sein
+- Bei gesperrtem SuS mit Zeitzuschlag: "Erzwungen 0" nach Beenden, Zeitzuschlag nicht in Auswertung sichtbar
+- Gewisse Monitoring-Infos wären schon in Lobby nützlich
+
+---
+
 ## Session 25.03.2026 (12) — Bugfixes + UX aus Live-Tests
 
 ### Status: ERLEDIGT (11 Tasks)

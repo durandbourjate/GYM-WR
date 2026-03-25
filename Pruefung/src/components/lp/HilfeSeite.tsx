@@ -159,7 +159,7 @@ function HilfeEinstieg() {
 
       <Untertitel>Überblick: Ihr Workflow</Untertitel>
       <Schritt nr={1}>
-        <strong>Fragen erstellen</strong> — In der Fragenbank Fragen mit 11 verschiedenen Typen anlegen (MC, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe).
+        <strong>Fragen erstellen</strong> — In der Fragenbank Fragen mit 13 verschiedenen Typen anlegen (MC, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, Zeichnen, PDF-Annotation).
       </Schritt>
       <Schritt nr={2}>
         <strong>Prüfung zusammenstellen</strong> — Im Composer eine neue Prüfung erstellen: Einstellungen festlegen, Abschnitte bilden, Fragen aus der Fragenbank zuordnen.
@@ -227,7 +227,7 @@ function HilfeFragen() {
         Die Fragenbank ist der zentrale Ort für alle Prüfungsfragen. Fragen können in mehreren Prüfungen wiederverwendet werden.
       </Text>
 
-      <Untertitel>12 Fragetypen</Untertitel>
+      <Untertitel>13 Fragetypen</Untertitel>
       <Text>
         <strong>Multiple Choice</strong> — Einfach- oder Mehrfachauswahl. Optionen werden bei der Prüfung automatisch gemischt.
       </Text>
@@ -393,7 +393,7 @@ function HilfeDurchfuehrung() {
 
       <Untertitel>Phase 2: Lobby</Untertitel>
       <Text>
-        Hier sehen Sie, welche SuS bereit sind (eingeloggt und wartend). Ein Fortschrittsbalken zeigt bereit/ausstehend an. Unerwartete SuS (nicht auf der Teilnehmerliste) werden separat angezeigt.
+        Hier sehen Sie, welche SuS bereit sind (eingeloggt und wartend). Ein Fortschrittsbalken zeigt bereit/ausstehend an. Unerwartete SuS (nicht auf der Teilnehmerliste) werden separat angezeigt. Gerät, Kontrollstufe und SEB-Status sind pro SuS sichtbar. Der Nachteilsausgleich (Zeitzuschlag) kann hier ebenfalls eingesehen und angepasst werden.
       </Text>
 
       <Untertitel>Phase 3: Live-Monitoring</Untertitel>
@@ -404,7 +404,7 @@ function HilfeDurchfuehrung() {
         <strong>Soft-Lockdown:</strong> Die Verstoss-Spalte zeigt den Zähler (z.B. ⚠️ 2/3). Bei Hover sehen Sie Details (Zeitpunkt, Typ). Wird ein SuS gesperrt (max. Verstösse erreicht), erscheint ein 🔒-Symbol mit &laquo;Entsperren&raquo;-Button. Die Kontrollstufe zeigt an, ob ein automatisches Downgrade stattgefunden hat (z.B. bei iPads).
       </Text>
       <Text>
-        Sie können die Prüfung jederzeit beenden — sofort oder mit Restzeit (z.B. noch 5 Minuten). Auch einzelne SuS können individuell beendet werden.
+        Sie können die Prüfung jederzeit beenden — sofort oder mit Restzeit (z.B. noch 5 Minuten). Über den ✕-Button in der Schülerzeile können auch einzelne SuS individuell beendet werden (z.B. bei Spickverdacht). Bei SuS mit Nachteilsausgleich wird der verbleibende Zeitzuschlag als Countdown angezeigt.
       </Text>
       <Text>
         Antworten werden alle 30 Sekunden automatisch gespeichert. Bei Verbindungsabbruch werden sie lokal zwischengespeichert und bei Reconnect nachgesendet.
@@ -453,7 +453,7 @@ function HilfeKorrektur() {
       </Text>
 
       <Untertitel>Review-Workflow</Untertitel>
-      <Schritt nr={1}><strong>Auto-Korrektur</strong> — MC, R/F, Lückentext, Zuordnung und Berechnung werden sofort automatisch bewertet. Punkte erscheinen direkt.</Schritt>
+      <Schritt nr={1}><strong>Auto-Korrektur</strong> — MC, R/F, Lückentext, Zuordnung und Berechnung werden sofort automatisch bewertet. Punkte erscheinen direkt. Diese Fragen werden automatisch als «Geprüft» markiert.</Schritt>
       <Schritt nr={2}><strong>KI-Korrektur</strong> — Für komplexe Fragetypen (Freitext, FiBu, Zeichnen) kann die KI-Korrektur gestartet werden.</Schritt>
       <Schritt nr={3}><strong>LP prüft</strong> — Punkte ändern, Kommentar schreiben oder Audio aufnehmen markiert die Frage automatisch als &laquo;Geprüft&raquo;. Wenn alle Fragen eines SuS geprüft sind, wechselt der Status auf &laquo;Review fertig&raquo;.</Schritt>
       <Schritt nr={4}><strong>Ergebnisse freigeben</strong> — Wenn alle SuS korrigiert sind, erscheint ein grünes Banner. Mit einem Klick wird die Einsicht für SuS freigeschaltet. SuS erhalten eine E-Mail mit Link.</Schritt>
@@ -655,7 +655,7 @@ function HilfeFAQ() {
       </FAQItem>
 
       <FAQItem frage="Wie funktioniert die Kurs-basierte Auswahl?">
-        Teilnehmer werden pro Kurs/Gefäss ausgewählt (z.B. SF WR 28bc29fs), nicht pro Stammklasse. Wenn ein SuS in mehreren Kursen vorkommt, wird er automatisch dedupliziert. Die Kursdaten werden aus dem Google Sheet «Klassenlisten» geladen.
+        Teilnehmer werden pro Kurs/Gefäss ausgewählt (z.B. SF WR 28bc29fs), nicht pro Stammklasse. Sie können ganze Kurse an-/abwählen oder einzelne SuS direkt per Checkbox auswählen. Die Kurs-Checkbox zeigt einen Teilauswahl-Status wenn nur einige SuS ausgewählt sind. Duplikate (SuS in mehreren Kursen) werden automatisch erkannt. Die Kurs-Auswahl ist einklappbar um Platz zu sparen.
       </FAQItem>
 
       <FAQItem frage="Kann ich Audio-Feedback geben?">

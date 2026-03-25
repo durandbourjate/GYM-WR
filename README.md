@@ -32,13 +32,14 @@ Digitale Prüfungsplattform für summative und formative Prüfungen.
 - React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 + Tiptap (PWA)
 - **13 Fragetypen:** Multiple Choice, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, Zeichnen, PDF-Annotation
 - **4-Phasen-Workflow:** Vorbereitung → Lobby → Aktiv → Beendet
-- Kurs-basierte Teilnehmer-Auswahl (pro Gefäss/Kurs)
+- Kurs-basierte Teilnehmer-Auswahl mit Indeterminate-Checkboxen (pro Gefäss/Kurs, Direktauswahl einzelner SuS)
 - Prüfungs-Composer mit Analyse-Tab (Taxonomie, Zeitbedarf, KI-Analyse)
 - KI-Assistent: Fragen generieren/verbessern, Musterlösung, KI-Korrektur
 - Fragenbank mit Pool-Sync (bidirektional, 27 Übungspools)
-- Live-Monitoring mit Inaktivitäts-Warnung + LP-Beenden
-- Open-End- und Countdown-Modus + individuelle Zeitzuschläge
-- SEB-Integration (Safe Exam Browser)
+- Live-Monitoring mit Inaktivitäts-Warnung, Inline-Zeitzuschlag + individuelles Beenden
+- Soft-Lockdown (3 Stufen: Locker/Standard/Streng) + SEB-Integration
+- Multi-Prüfungs-Dashboard (parallele Überwachung mehrerer Prüfungen)
+- Open-End- und Countdown-Modus + individuelle Zeitzuschläge (Nachteilsausgleich)
 - Backup-Export als Excel (.xlsx) mit Übersicht + Tab pro SuS
 - Light/Dark Mode, Audio/Video-Anhänge, SuS-Korrektur-Einsicht
 - Backend: Google Apps Script + Google Sheets + Google Drive
