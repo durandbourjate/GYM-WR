@@ -80,11 +80,29 @@ export default function TeilnehmerListe({ teilnehmer, onToggle, onManuellHinzufu
 
   return (
     <div className="space-y-3">
-      {/* Zähler + Suchfeld */}
+      {/* Zähler + Alle/Keine + Suchfeld */}
       <div className="flex items-center gap-3">
         <p className="text-sm text-slate-600 dark:text-slate-400">
           Ausgewählt: <strong>{teilnehmer.filter((t) => !abgewaehlte.has(t.email)).length}</strong> von {teilnehmer.length} SuS
         </p>
+        {teilnehmer.length > 0 && (
+          <div className="flex gap-1">
+            <button
+              type="button"
+              onClick={() => { for (const t of teilnehmer) { if (abgewaehlte.has(t.email)) onToggle(t.email) } }}
+              className="text-xs px-2 py-0.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded cursor-pointer"
+            >
+              Alle
+            </button>
+            <button
+              type="button"
+              onClick={() => { for (const t of teilnehmer) { if (!abgewaehlte.has(t.email)) onToggle(t.email) } }}
+              className="text-xs px-2 py-0.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded cursor-pointer"
+            >
+              Keine
+            </button>
+          </div>
+        )}
         <input
           type="text"
           value={suchText}

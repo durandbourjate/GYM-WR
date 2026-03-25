@@ -54,7 +54,7 @@ Uhr-Icon statt Schloss, "WARTERAUM"-Label, blauer Rahmen, "Warte auf Freischaltu
 - **Empfehlung:** SEB vorerst deaktiviert lassen (`sebErforderlich: false`)
 
 ### Feature-Wünsche
-- **Einzelne SuS an-/abwählen** im Vorbereitungsscreen (für Nachprüfungen)
+- ✅ **Einzelne SuS an-/abwählen** — Checkboxen + "Alle/Keine"-Toggle existieren in TeilnehmerListe (25.03.2026)
 - **Mehrere Prüfungen gleichzeitig** durchführen
 
 ---
