@@ -19,14 +19,13 @@ import AktivPhase from './AktivPhase'
 import BeendetPhase from './BeendetPhase'
 import KorrekturDashboard from './KorrekturDashboard'
 
-type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'ergebnisse' | 'korrektur'
+type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'auswertung'
 
 const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
   { key: 'vorbereitung', label: 'Vorbereitung', icon: '⚙️' },
   { key: 'lobby', label: 'Lobby', icon: '🟡' },
   { key: 'live', label: 'Live', icon: '🟢' },
-  { key: 'ergebnisse', label: 'Ergebnisse', icon: '⏹' },
-  { key: 'korrektur', label: 'Korrektur', icon: '✏️' },
+  { key: 'auswertung', label: 'Auswertung', icon: '✏️' },
 ]
 
 // Phase → Tab Mapping
@@ -35,12 +34,12 @@ function phaseZuTab(phase: PruefungsPhase): DurchfuehrenTab {
     case 'vorbereitung': return 'vorbereitung'
     case 'lobby': return 'lobby'
     case 'aktiv': return 'live'
-    case 'beendet': return 'ergebnisse'
+    case 'beendet': return 'auswertung'
   }
 }
 
 // Tab-Reihenfolge für Vergleich
-const TAB_REIHENFOLGE: DurchfuehrenTab[] = ['vorbereitung', 'lobby', 'live', 'ergebnisse', 'korrektur']
+const TAB_REIHENFOLGE: DurchfuehrenTab[] = ['vorbereitung', 'lobby', 'live', 'auswertung']
 
 function tabIndex(tab: DurchfuehrenTab): number {
   return TAB_REIHENFOLGE.indexOf(tab)
@@ -50,11 +49,17 @@ function tabIndex(tab: DurchfuehrenTab): number {
 function istTabVerfuegbar(tab: DurchfuehrenTab, phase: PruefungsPhase): boolean {
   const aktuellerTabIndex = tabIndex(phaseZuTab(phase))
   const zielIndex = tabIndex(tab)
-  // Korrektur immer verfügbar (auch wenn Prüfung noch läuft — LP muss jederzeit korrigieren können)
-  if (tab === 'korrektur') return true
-  // Ergebnisse verfügbar sobald beendet ODER aktiv (LP kann während Prüfung reinschauen)
-  if (tab === 'ergebnisse') return phase === 'beendet' || phase === 'aktiv'
+  // Auswertung immer verfügbar (LP muss jederzeit korrigieren können)
+  if (tab === 'auswertung') return true
   return zielIndex <= aktuellerTabIndex
+}
+
+// URL-Fallback: Alte Tab-Namen auf neuen Namen mappen
+function normalisiereUrlTab(raw: string | null): DurchfuehrenTab | null {
+  if (!raw) return null
+  if (raw === 'ergebnisse' || raw === 'korrektur') return 'auswertung'
+  if (TAB_REIHENFOLGE.includes(raw as DurchfuehrenTab)) return raw as DurchfuehrenTab
+  return null
 }
 
 function formatDauer(ms: number): string {
@@ -72,9 +77,9 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
-  // Tab-State
-  const urlTab = new URLSearchParams(window.location.search).get('tab') as DurchfuehrenTab | null
-  const [activeTab, setActiveTab] = useState<DurchfuehrenTab>(urlTab && TAB_REIHENFOLGE.includes(urlTab) ? urlTab : 'vorbereitung')
+  // Tab-State (mit Fallback für alte URL-Parameter ?tab=ergebnisse / ?tab=korrektur)
+  const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
+  const [activeTab, setActiveTab] = useState<DurchfuehrenTab>(urlTab ?? 'vorbereitung')
   const letztePhaseRef = useRef<PruefungsPhase>('vorbereitung')
 
   // Data-State (aus MonitoringDashboard)
@@ -91,6 +96,9 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
   // Nachrichten (LP → SuS)
   const [_nachrichten, setNachrichten] = useState<PruefungsNachricht[]>([])
+
+  // Auswertung: Ergebnis-Übersicht Accordion (offen wenn keine Korrektur gestartet)
+  const [ergebnisOffen, setErgebnisOffen] = useState(true)
 
   // Config der Prüfung
   const [config, setConfig] = useState<PruefungsConfig | null>(null)
@@ -483,6 +491,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
             <AktivPhase
               config={config}
               schuelerStatus={daten.schueler}
+              startTimestamp={startTimestamp}
               onConfigUpdate={async (updates) => {
                 const neueConfig = { ...config, ...updates }
                 setConfig(neueConfig)
@@ -500,35 +509,54 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
             />
           )}
 
-          {activeTab === 'ergebnisse' && daten && (
-            <BeendetPhase
-              config={config}
-              schuelerStatus={daten.schueler}
-              fragen={fragen}
-              abgaben={abgaben}
-              onWeiterZurKorrektur={() => wechsleTab('korrektur')}
-              onExportieren={() => {
-                const csv = exportiereTeilnahmeCSV(config, daten.schueler)
-                if (csv) {
-                  const dateiname = `${config.titel || config.id}_Teilnahme_${new Date().toISOString().slice(0, 10)}.csv`
-                  downloadCSV(csv, dateiname)
-                }
-              }}
-              onNeueDurchfuehrung={async () => {
-                if (!user) return
-                const erfolg = await apiService.resetPruefung(config.id, user.email)
-                if (erfolg) {
-                  // Lokalen State zurücksetzen → springt zu Vorbereitung
-                  setConfig({ ...config, freigeschaltet: false, beendetUm: undefined, teilnehmer: [], sebAusnahmen: [] })
-                  setActiveTab('vorbereitung')
-                  ladeDaten()
-                }
-              }}
-            />
-          )}
+          {activeTab === 'auswertung' && daten && pruefungId && (
+            <div className="space-y-4">
+              {/* Ergebnis-Übersicht (Accordion) */}
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setErgebnisOffen(!ergebnisOffen)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <span>⏹</span>
+                    <span>Ergebnis-Übersicht</span>
+                  </span>
+                  <span className={`text-slate-400 dark:text-slate-500 transition-transform duration-200 ${ergebnisOffen ? 'rotate-180' : ''}`}>
+                    ▼
+                  </span>
+                </button>
+                {ergebnisOffen && (
+                  <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">
+                    <BeendetPhase
+                      config={config}
+                      schuelerStatus={daten.schueler}
+                      fragen={fragen}
+                      abgaben={abgaben}
+                      onExportieren={() => {
+                        const csv = exportiereTeilnahmeCSV(config, daten.schueler)
+                        if (csv) {
+                          const dateiname = `${config.titel || config.id}_Teilnahme_${new Date().toISOString().slice(0, 10)}.csv`
+                          downloadCSV(csv, dateiname)
+                        }
+                      }}
+                      onNeueDurchfuehrung={async () => {
+                        if (!user) return
+                        const erfolg = await apiService.resetPruefung(config.id, user.email)
+                        if (erfolg) {
+                          setConfig({ ...config, freigeschaltet: false, beendetUm: undefined, teilnehmer: [], sebAusnahmen: [] })
+                          setActiveTab('vorbereitung')
+                          ladeDaten()
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
 
-          {activeTab === 'korrektur' && pruefungId && (
-            <KorrekturDashboard pruefungId={pruefungId} eingebettet />
+              {/* Korrektur-Dashboard (immer sichtbar) */}
+              <KorrekturDashboard pruefungId={pruefungId} eingebettet />
+            </div>
           )}
         </div>
       )}

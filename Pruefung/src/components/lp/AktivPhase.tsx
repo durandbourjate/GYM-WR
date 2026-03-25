@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { SchuelerStatus } from '../../types/monitoring'
 import type { PruefungsConfig } from '../../types/pruefung'
 import { inaktivitaetsStufe } from '../../utils/phase'
@@ -7,7 +7,6 @@ import { apiService } from '../../services/apiService'
 import ZusammenfassungsLeiste from './ZusammenfassungsLeiste'
 import SusDetailPanel from './SusDetailPanel'
 import BeendenDialog from './BeendenDialog'
-import ZeitzuschlagEditor from './ZeitzuschlagEditor'
 
 type Sortierung = 'name' | 'klasse' | 'fortschritt' | 'status'
 type QuickFilter = 'alle' | 'aktiv' | 'abgegeben' | 'nicht-erschienen'
@@ -15,21 +14,58 @@ type QuickFilter = 'alle' | 'aktiv' | 'abgegeben' | 'nicht-erschienen'
 interface Props {
   config: PruefungsConfig
   schuelerStatus: SchuelerStatus[]
+  startTimestamp: number
   onBeenden: () => void
   onConfigUpdate?: (updates: Partial<PruefungsConfig>) => void
 }
 
-export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfigUpdate }: Props) {
+export default function AktivPhase({ config, schuelerStatus, startTimestamp, onBeenden, onConfigUpdate }: Props) {
   const user = useAuthStore((s) => s.user)
   const [sortierung, setSortierung] = useState<Sortierung>('name')
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('alle')
   const [detailSus, setDetailSus] = useState<string | null>(null)
   const [zeigBeendenDialog, setZeigBeendenDialog] = useState(false)
   const [beendenLaeuft, setBeendenLaeuft] = useState(false)
-  const [zeigZeitzuschlag, setZeigZeitzuschlag] = useState(false)
   const [sebAusnahmenLokal, setSebAusnahmenLokal] = useState<Set<string>>(
     new Set(config.sebAusnahmen ?? [])
   )
+  const [jetzt, setJetzt] = useState(Date.now())
+
+  // Reguläres Ende der Prüfung (Start + Dauer)
+  const basisEndeMs = startTimestamp + config.dauerMinuten * 60 * 1000
+
+  // Tick-Interval: 1s wenn jemand in Overtime ist, sonst kein Tick nötig
+  const zeitverlaengerungen = config.zeitverlaengerungen ?? {}
+  const hatOvertimeSuS = useMemo(() => {
+    if (Object.keys(zeitverlaengerungen).length === 0) return false
+    const now = jetzt
+    // Prüfe ob das Basis-Ende überschritten ist UND noch jemand aktiv + Zuschlag hat
+    if (now < basisEndeMs) return false
+    return Object.entries(zeitverlaengerungen).some(([email, minuten]) => {
+      const schueler = schuelerStatus.find((s) => s.email === email)
+      if (!schueler || schueler.status === 'abgegeben' || schueler.status === 'beendet-lp') return false
+      const persoenlichesEnde = basisEndeMs + minuten * 60 * 1000
+      return now < persoenlichesEnde
+    })
+  }, [zeitverlaengerungen, schuelerStatus, jetzt, basisEndeMs])
+
+  useEffect(() => {
+    if (!hatOvertimeSuS) return
+    const interval = setInterval(() => setJetzt(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [hatOvertimeSuS])
+
+  // Zeitzuschlag inline hinzufuegen/aendern
+  const handleZeitzuschlag = useCallback((email: string, minuten: number) => {
+    const aktuell = config.zeitverlaengerungen ?? {}
+    if (minuten <= 0) {
+      const kopie = { ...aktuell }
+      delete kopie[email]
+      onConfigUpdate?.({ zeitverlaengerungen: kopie })
+    } else {
+      onConfigUpdate?.({ zeitverlaengerungen: { ...aktuell, [email]: minuten } })
+    }
+  }, [config.zeitverlaengerungen, onConfigUpdate])
 
   async function handleSebAusnahme(email: string): Promise<void> {
     if (!user) return
@@ -130,6 +166,7 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
               <th className="px-3 py-2">Gerät</th>
               <th className="px-3 py-2">Frage</th>
               <th className="px-3 py-2">Fortschritt</th>
+              <th className="px-2 py-2" title="Zeitzuschlag (Nachteilsausgleich)">⏱ Zeit+</th>
               {config.sebErforderlich && <th className="px-3 py-2">SEB</th>}
             </tr>
           </thead>
@@ -139,6 +176,7 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
               const fortschrittProzent = s.gesamtFragen > 0
                 ? Math.round((s.beantworteteFragen / s.gesamtFragen) * 100)
                 : 0
+              const zuschlagMin = zeitverlaengerungen[s.email] ?? 0
               return (
                 <tr
                   key={s.email}
@@ -221,6 +259,17 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
                       <span className="text-xs text-slate-500 dark:text-slate-400 w-8 text-right">{fortschrittProzent}%</span>
                     </div>
                   </td>
+                  {/* Zeitzuschlag inline */}
+                  <td className="px-2 py-2" onClick={(e) => e.stopPropagation()}>
+                    <ZeitzuschlagInline
+                      email={s.email}
+                      zuschlagMin={zuschlagMin}
+                      basisEndeMs={basisEndeMs}
+                      jetzt={jetzt}
+                      istAktiv={s.status === 'aktiv' || s.status === 'inaktiv'}
+                      onAendern={handleZeitzuschlag}
+                    />
+                  </td>
                   {config.sebErforderlich && (
                     <td className="px-3 py-2 text-xs">
                       {s.sebVersion ? (
@@ -252,37 +301,6 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
       <p className="text-sm text-slate-500 dark:text-slate-400">
         Abgegeben: {schuelerStatus.filter((s) => s.status === 'abgegeben').length} / {config.teilnehmer?.length ?? schuelerStatus.length}
       </p>
-
-      {/* Zeitzuschlag (klappbar) */}
-      <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setZeigZeitzuschlag(!zeigZeitzuschlag)}
-          className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
-        >
-          <span className="flex items-center gap-2">
-            <span>⏱ Zeitzuschläge</span>
-            {Object.keys(config.zeitverlaengerungen ?? {}).length > 0 && (
-              <span className="text-xs px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded">
-                {Object.keys(config.zeitverlaengerungen ?? {}).length}
-              </span>
-            )}
-          </span>
-          <span className="text-xs text-slate-400">{zeigZeitzuschlag ? '▲' : '▼'}</span>
-        </button>
-        {zeigZeitzuschlag && (
-          <div className="px-4 pb-3 border-t border-slate-100 dark:border-slate-700">
-            <div className="pt-3">
-              <ZeitzuschlagEditor
-                zeitverlaengerungen={config.zeitverlaengerungen ?? {}}
-                teilnehmer={config.teilnehmer}
-                onChange={(neueZV) => onConfigUpdate?.({ zeitverlaengerungen: neueZV })}
-                kompakt
-              />
-            </div>
-          </div>
-        )}
-      </div>
 
       {/* Beenden-Button */}
       <div className="flex justify-center pt-2 border-t border-slate-200 dark:border-slate-700">
@@ -334,6 +352,122 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
     </div>
   )
 }
+
+// --- Inline-Zeitzuschlag-Komponente ---
+
+interface ZeitzuschlagInlineProps {
+  email: string
+  zuschlagMin: number
+  basisEndeMs: number
+  jetzt: number
+  istAktiv: boolean
+  onAendern: (email: string, minuten: number) => void
+}
+
+function ZeitzuschlagInline({ email, zuschlagMin, basisEndeMs, jetzt, istAktiv, onAendern }: ZeitzuschlagInlineProps) {
+  const [zeigEditor, setZeigEditor] = useState(false)
+  const [editWert, setEditWert] = useState(zuschlagMin)
+
+  // Sync wenn von aussen geaendert
+  useEffect(() => {
+    setEditWert(zuschlagMin)
+  }, [zuschlagMin])
+
+  // Kein Zuschlag: Kleiner "+5" Button
+  if (zuschlagMin === 0) {
+    return (
+      <button
+        type="button"
+        onClick={() => onAendern(email, 5)}
+        className="text-xs px-1.5 py-0.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-900/20 rounded cursor-pointer transition-colors"
+        title="5 Min. Zeitzuschlag hinzufügen"
+      >
+        +5
+      </button>
+    )
+  }
+
+  // Berechne ob dieser SuS in Overtime ist (Basis-Ende überschritten, aber persoenliches Ende noch nicht)
+  const persoenlichesEndeMs = basisEndeMs + zuschlagMin * 60 * 1000
+  const istInOvertime = istAktiv && jetzt >= basisEndeMs && jetzt < persoenlichesEndeMs
+  const restSekunden = istInOvertime ? Math.ceil((persoenlichesEndeMs - jetzt) / 1000) : 0
+
+  // Mini-Editor (Popup)
+  if (zeigEditor) {
+    return (
+      <div className="flex items-center gap-1">
+        <input
+          type="number"
+          value={editWert}
+          onChange={(e) => setEditWert(parseInt(e.target.value) || 0)}
+          min={0}
+          max={120}
+          className="w-12 px-1 py-0.5 text-xs text-center border border-blue-300 dark:border-blue-600 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onAendern(email, editWert)
+              setZeigEditor(false)
+            } else if (e.key === 'Escape') {
+              setEditWert(zuschlagMin)
+              setZeigEditor(false)
+            }
+          }}
+          onBlur={() => {
+            onAendern(email, editWert)
+            setZeigEditor(false)
+          }}
+        />
+        <span className="text-xs text-slate-400">′</span>
+      </div>
+    )
+  }
+
+  // Overtime-Countdown
+  if (istInOvertime) {
+    const min = Math.floor(restSekunden / 60)
+    const sek = restSekunden % 60
+    return (
+      <div className="flex items-center gap-1">
+        <span className="text-xs font-mono text-amber-600 dark:text-amber-400" title={`+${zuschlagMin} Min. Zuschlag — Restzeit`}>
+          ⏱ {min}:{sek.toString().padStart(2, '0')}
+        </span>
+        <button
+          type="button"
+          onClick={() => onAendern(email, zuschlagMin + 5)}
+          className="text-xs px-1 py-0.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-900/20 rounded cursor-pointer transition-colors"
+          title="+5 Min. hinzufügen"
+        >
+          +5
+        </button>
+      </div>
+    )
+  }
+
+  // Zuschlag gesetzt, aber noch nicht in Overtime
+  return (
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={() => setZeigEditor(true)}
+        className="text-xs px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded cursor-pointer hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+        title={`+${zuschlagMin} Min. Zeitzuschlag — klicken zum Bearbeiten`}
+      >
+        +{zuschlagMin}′
+      </button>
+      <button
+        type="button"
+        onClick={() => onAendern(email, zuschlagMin + 5)}
+        className="text-xs px-1 py-0.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-900/20 rounded cursor-pointer transition-colors"
+        title="+5 Min. hinzufügen"
+      >
+        +5
+      </button>
+    </div>
+  )
+}
+
+// --- Hilfsfunktionen ---
 
 function statusReihenfolge(status: SchuelerStatus['status']): number {
   switch (status) {
