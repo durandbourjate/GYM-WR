@@ -117,27 +117,32 @@ export default function Startbildschirm({ config, fragen, wiederhergestellt, wur
           <ThemeToggle />
         </div>
 
-        <div className="max-w-lg w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
-          {/* Warte-Animation mit Puls */}
+        <div className="max-w-lg w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-blue-200 dark:border-blue-800 p-8">
+          {/* Warteraum-Header */}
           <div className="text-center mb-8">
             <div className="relative w-20 h-20 mx-auto mb-6">
               <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <span className="text-3xl">🔒</span>
+                <svg className="w-10 h-10 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <div className="absolute inset-0 rounded-full bg-blue-200 dark:bg-blue-800/20 animate-ping opacity-30" />
+              <div className="absolute inset-0 rounded-full bg-blue-200 dark:bg-blue-800/20 animate-ping opacity-20" />
             </div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">
+              Warteraum
+            </p>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
               {config.titel}
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
-              Die Lehrperson hat die Prüfung noch nicht freigegeben.
+              Warte auf Freischaltung durch die Lehrperson ...
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">
               Die Seite aktualisiert sich automatisch.
             </p>
           </div>
 
-          {/* Prüfungsinfos weiterhin sichtbar */}
+          {/* Prüfungsinfos */}
           <div className="grid grid-cols-3 gap-3 mb-4">
             <InfoCard label="Klasse" wert={config.klasse} />
             <InfoCard label="Dauer" wert={config.zeitModus === 'open-end' ? 'Open-End' : `${config.dauerMinuten} Min.`} />

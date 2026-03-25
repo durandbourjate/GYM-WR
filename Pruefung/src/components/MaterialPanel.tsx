@@ -302,9 +302,24 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
     )
   }
 
+  // Debug: Warum konnte kein Inhalt angezeigt werden?
+  console.warn('[MaterialPanel] Kein Inhalt für Material:', {
+    id: material.id,
+    titel: material.titel,
+    typ: material.typ,
+    url: material.url,
+    driveFileId: material.driveFileId,
+    inhalt: material.inhalt ? '(vorhanden)' : undefined,
+    embedUrl: material.embedUrl,
+    mimeType: material.mimeType,
+  })
+
   return (
     <div className="p-6 text-center text-slate-500 dark:text-slate-400">
-      Kein Inhalt verfügbar.
+      <p>Kein Inhalt verfügbar.</p>
+      <p className="text-xs mt-2 text-slate-400 dark:text-slate-500">
+        Typ: {material.typ} · {material.url ? 'URL vorhanden' : material.driveFileId ? 'Drive-ID vorhanden' : 'Keine Quelle'}
+      </p>
     </div>
   )
 }

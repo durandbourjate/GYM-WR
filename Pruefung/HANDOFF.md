@@ -24,8 +24,8 @@ PDF wird via Apps Script Proxy (`ladeDriveFile` → Base64) geladen. SW-Problem 
 
 - `materialien`-Spalte existiert jetzt im Configs-Sheet
 - Config importiert mit korrekten Daten (Witzsammlung PDF mit driveFileId)
-- Material-Button ist sichtbar, aber Inhalt zeigt "Kein Inhalt verfügbar" bei manchen Tests
-- MaterialPanel.tsx unterstützt jetzt `driveFileId` → Google Drive Embed-URL
+- MaterialPanel.tsx unterstützt `driveFileId` → Google Drive Embed-URL
+- **Debug-Logging am Fallback** (25.03): Wenn "Kein Inhalt" erscheint, zeigt Console + UI jetzt Typ/URL/DriveId an
 
 ### 🟡 Korrektur
 
@@ -34,9 +34,9 @@ PDF wird via Apps Script Proxy (`ladeDriveFile` → Base64) geladen. SW-Problem 
 - KorrekturDashboard synthetisiert Schüler aus Abgaben wenn kein Korrektur-Sheet vorhanden
 - **Manuelle Punktevergabe noch nicht getestet**
 
-### 🟡 SuS-Warteraum
+### ✅ SuS-Warteraum — VERBESSERT (25.03.2026)
 
-SuS sehen keinen visuellen Unterschied zwischen "Lobby" und "Warteraum". Der Screen ändert erst bei Freischaltung. SuS sollten sehen, dass sie in der Lobby sind und auf die LP warten.
+Uhr-Icon statt Schloss, "WARTERAUM"-Label, blauer Rahmen, "Warte auf Freischaltung..."-Text. Klar unterscheidbar von Fehler- und SEB-Screens.
 
 ### ✅ SuS-Storage nach Prüfungsreset — GELÖST (25.03.2026)
 
@@ -92,8 +92,10 @@ Jeder API-Call braucht 1-3 Sekunden (Cold Starts, Google-Infrastruktur). Optimis
 - `resetPruefungEndpoint`: generiert `durchfuehrungId` (UUID)
 - `ladePruefung`: gibt `durchfuehrungId` zurück
 
+- **Phase 3.1 — Material-Panel:** Debug-Logging am Fallback (Typ/URL/DriveId in Console + UI)
+- **Phase 3.2 — Warteraum:** Uhr-Icon, "WARTERAUM"-Label, blauer Rahmen
+
 ### Gesamtplan (noch offen)
-- **Phase 3:** UI/UX (Material-Panel, Warteraum, Korrektur-Test)
 - **Phase 4:** Feature — Einzelne SuS an-/abwählen
 - **Phase 5:** Feature — Mehrere Prüfungen gleichzeitig
 - Plan-Dokument: `.claude/plans/humming-dancing-waffle.md`
