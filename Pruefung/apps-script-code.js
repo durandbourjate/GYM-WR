@@ -48,6 +48,8 @@ function doGet(e) {
       return ladeAbgaben(e.parameter.id, email);
     case 'korrekturFortschritt':
       return ladeKorrekturFortschritt(e.parameter.id, email);
+    case 'ladeKorrekturStatus':
+      return ladeKorrekturStatusEndpoint(e.parameter.id || e.parameter.pruefungId, email);
     case 'ladeNachrichten':
       return ladeNachrichtenEndpoint(e.parameter.id, email);
     case 'ladeDriveFile': {
@@ -940,10 +942,20 @@ function heartbeat(body) {
         if (aktFrageCol < 0) {
           aktFrageCol = headers.length;
           sheet.getRange(1, aktFrageCol + 1).setValue('aktuelleFrage');
-          // Update local headers array too
           headers.push('aktuelleFrage');
         }
         sheet.getRange(rowIndex, aktFrageCol + 1).setValue(body.aktuelleFrage);
+      }
+
+      // beantworteteFragen-Spalte aktualisieren (falls vom Client mitgesendet)
+      if (body.beantworteteFragen !== undefined) {
+        let beantwortetCol = headers.indexOf('beantworteteFragen');
+        if (beantwortetCol < 0) {
+          beantwortetCol = headers.length;
+          sheet.getRange(1, beantwortetCol + 1).setValue('beantworteteFragen');
+          headers.push('beantworteteFragen');
+        }
+        sheet.getRange(rowIndex, beantwortetCol + 1).setValue(body.beantworteteFragen);
       }
 
       // Beenden-Signal prüfen (individuell → global)
@@ -2634,9 +2646,14 @@ function batchKorrektur(pruefungId, lpEmail, korrekturSheet) {
     }
   }
 
-  const headers = ['email', 'name', 'frageId', 'fragenTyp', 'maxPunkte', 'kiPunkte', 'lpPunkte', 'kiBegruendung', 'kiFeedback', 'lpKommentar', 'quelle', 'geprueft', 'status'];
+  var headers = ['email', 'name', 'frageId', 'fragenTyp', 'maxPunkte', 'kiPunkte', 'lpPunkte', 'kiBegruendung', 'kiFeedback', 'lpKommentar', 'quelle', 'geprueft', 'status'];
   korrekturSheet.clear();
   korrekturSheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+
+  // ensureColumns für Zukunftssicherheit: Falls korrekturZeilen zusätzliche Schlüssel enthalten
+  if (korrekturZeilen.length > 0) {
+    headers = ensureColumns(korrekturSheet, headers, korrekturZeilen[0]);
+  }
 
   if (korrekturZeilen.length > 0) {
     const rows = korrekturZeilen.map(z => headers.map(h => z[h] || ''));
@@ -2809,6 +2826,43 @@ function ladeKorrekturFortschritt(pruefungId, email) {
       status: statusJson.status,
       fortschritt: { erledigt: statusJson.erledigt || 0, gesamt: statusJson.gesamt || 0 },
     });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Korrektur-Status einer Prüfung laden: Wie viele Zeilen sind geprüft vs. offen?
+ * Gibt { korrigiert, offen, gesamt } zurück.
+ */
+function ladeKorrekturStatusEndpoint(pruefungId, email) {
+  try {
+    if (!email || !email.endsWith('@' + LP_DOMAIN)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!pruefungId) {
+      return jsonResponse({ error: 'Keine Prüfungs-ID angegeben' });
+    }
+
+    const sheetName = 'Korrektur_' + pruefungId;
+    const ordner = DriveApp.getFolderById(ANTWORTEN_ORDNER_ID);
+    const files = ordner.getFilesByName(sheetName);
+    if (!files.hasNext()) {
+      return jsonResponse({ korrigiert: 0, offen: 0, gesamt: 0 });
+    }
+
+    const sheet = SpreadsheetApp.open(files.next()).getSheets()[0];
+    const data = getSheetData(sheet);
+    var korrigiert = 0;
+    var offen = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].geprueft === 'true' || data[i].geprueft === true) {
+        korrigiert++;
+      } else {
+        offen++;
+      }
+    }
+    return jsonResponse({ korrigiert: korrigiert, offen: offen, gesamt: data.length });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

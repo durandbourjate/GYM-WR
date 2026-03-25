@@ -30,6 +30,19 @@ export default function TrackerSection({ trackerDaten }: Props) {
   const anzahlBeendet = trackerDaten.pruefungen.filter((p) => p.beendetUm).length
   const anzahlKorrigiert = trackerDaten.pruefungen.filter((p) => p.korrekturStatus === 'fertig').length
 
+  // Aggregierte Korrektur-Fortschrittszahlen (Fragen-Ebene)
+  const korrekturFortschritt = useMemo(() => {
+    let korrigiert = 0
+    let gesamt = 0
+    for (const p of trackerDaten.pruefungen) {
+      if (p.beendetUm && p.korrigiertGesamt > 0) {
+        korrigiert += p.korrigiertAnzahl
+        gesamt += p.korrigiertGesamt
+      }
+    }
+    return { korrigiert, gesamt }
+  }, [trackerDaten])
+
   return (
     <div className="space-y-4">
       {/* Zusammenfassung */}
@@ -37,10 +50,16 @@ export default function TrackerSection({ trackerDaten }: Props) {
         <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide mb-3">
           Tracker-Zusammenfassung
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           <KennzahlBox label="Prüfungen" wert={anzahlPruefungen} />
           <KennzahlBox label="Beendet" wert={anzahlBeendet} />
           <KennzahlBox label="Korrigiert" wert={anzahlKorrigiert} />
+          <KennzahlBox
+            label="Korrektur-Fortschritt"
+            wert={korrekturFortschritt.korrigiert}
+            suffix={korrekturFortschritt.gesamt > 0 ? ` von ${korrekturFortschritt.gesamt}` : undefined}
+            akzent={korrekturFortschritt.gesamt > 0 && korrekturFortschritt.korrigiert < korrekturFortschritt.gesamt}
+          />
           <KennzahlBox label="Fehlende SuS" wert={fehlendeSuS.length} akzent={fehlendeSuS.length > 0} />
         </div>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">
@@ -74,11 +93,11 @@ export default function TrackerSection({ trackerDaten }: Props) {
 }
 
 /** Einzelne Kennzahl-Box in der Zusammenfassung */
-function KennzahlBox({ label, wert, akzent }: { label: string; wert: number; akzent?: boolean }) {
+function KennzahlBox({ label, wert, suffix, akzent }: { label: string; wert: number; suffix?: string; akzent?: boolean }) {
   return (
     <div className="text-center">
       <p className={`text-2xl font-bold ${akzent ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-100'}`}>
-        {wert}
+        {wert}{suffix && <span className="text-base font-normal text-slate-500 dark:text-slate-400">{suffix}</span>}
       </p>
       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{label}</p>
     </div>

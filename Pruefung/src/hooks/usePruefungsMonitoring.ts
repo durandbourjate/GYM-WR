@@ -109,8 +109,10 @@ export function usePruefungsMonitoring(): void {
 
     const interval = setInterval(async () => {
       try {
-        const aktuelleFrageIndex = usePruefungStore.getState().aktuelleFrageIndex
-        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex)
+        const state = usePruefungStore.getState()
+        const aktuelleFrageIndex = state.aktuelleFrageIndex
+        const beantworteteFragen = Object.keys(state.antworten).length
+        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex, beantworteteFragen)
         if (response.success) {
           incrementHeartbeats()
           setVerbindungsstatus('online')

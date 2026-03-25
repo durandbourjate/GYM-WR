@@ -61,6 +61,17 @@ export interface KorrekturDetailDaten {
   pdfFreigegeben?: boolean  // LP hat PDF-Download für SuS freigegeben
 }
 
+/** Korrektur-Status: Wie viele Zeilen geprüft vs. offen? */
+export interface KorrekturStatus {
+  korrigiert: number
+  offen: number
+  gesamt: number
+}
+
+export async function ladeKorrekturStatus(pruefungId: string, email: string): Promise<KorrekturStatus | null> {
+  return getJson<KorrekturStatus>('ladeKorrekturStatus', { id: pruefungId, email })
+}
+
 /** Korrektur-Daten einer Prüfung laden (alle SuS + Bewertungen) */
 export async function ladeKorrektur(pruefungId: string, email: string): Promise<PruefungsKorrektur | null> {
   return getJson<PruefungsKorrektur>('ladeKorrektur', { id: pruefungId, email })

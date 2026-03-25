@@ -57,7 +57,7 @@ export async function speichereAntworten(payload: {
 }
 
 /** Heartbeat senden (Monitoring durch LP) — gibt Beenden-Signal zurück */
-export async function heartbeat(pruefungId: string, email: string, aktuelleFrage?: number): Promise<HeartbeatResponse> {
+export async function heartbeat(pruefungId: string, email: string, aktuelleFrage?: number, beantworteteFragen?: number): Promise<HeartbeatResponse> {
   if (!APPS_SCRIPT_URL) return { success: false }
 
   try {
@@ -70,6 +70,7 @@ export async function heartbeat(pruefungId: string, email: string, aktuelleFrage
         email,
         timestamp: new Date().toISOString(),
         ...(aktuelleFrage !== undefined ? { aktuelleFrage } : {}),
+        ...(beantworteteFragen !== undefined ? { beantworteteFragen } : {}),
       }),
     })
     if (!response.ok) return { success: false }
