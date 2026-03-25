@@ -251,7 +251,7 @@ export default function TKontoFrage({ frage }: Props) {
                     value={konto.kontenkategorie}
                     onChange={(e) => feldAendern(kIdx, 'kontenkategorie', e.target.value)}
                     disabled={readOnly}
-                    className="mt-1 min-h-[44px] rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                    className={`mt-1 min-h-[44px] rounded-md border bg-white px-3 py-2 text-sm text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 ${brd(konto.kontenkategorie, readOnly)}`}
                   >
                     <option value="">-- wählen --</option>
                     <option value="aktiv">Aktiv</option>

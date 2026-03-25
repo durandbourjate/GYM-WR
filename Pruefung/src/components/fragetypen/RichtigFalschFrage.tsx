@@ -91,7 +91,7 @@ export default function RichtigFalschFrage({ frage }: Props) {
                     ${abgegeben ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  <span className={gewaehlt === true ? 'text-green-600 dark:text-green-400' : ''}>✓</span> Richtig
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 mr-1 text-xs ${gewaehlt === true ? 'border-green-600 bg-green-600 text-white dark:border-green-400 dark:bg-green-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === true ? '✓' : ''}</span> Richtig
                 </button>
                 <button
                   onClick={() => handleKlick(aussage.id, false)}
@@ -104,7 +104,7 @@ export default function RichtigFalschFrage({ frage }: Props) {
                     ${abgegeben ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  <span className={gewaehlt === false ? 'text-red-600 dark:text-red-400' : ''}>✗</span> Falsch
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 mr-1 text-xs ${gewaehlt === false ? 'border-red-600 bg-red-600 text-white dark:border-red-400 dark:bg-red-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === false ? '✗' : ''}</span> Falsch
                 </button>
               </div>
             </div>

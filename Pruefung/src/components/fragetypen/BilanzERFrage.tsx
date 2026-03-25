@@ -221,7 +221,7 @@ function BilanzSeiteUI({ seite, bilanzsumme, readOnly, konten, onUpdate, onBsCha
   return (
     <div className={`rounded-lg border p-3 min-w-0 overflow-hidden ${farbe}`}>
       <select value={seite.label} onChange={e => onUpdate(s => { s.label = e.target.value })} disabled={readOnly}
-        className={`${inputSm} w-full font-bold mb-3`}>
+        className={`${inputSm} w-full font-bold mb-3 ${!readOnly && !seite.label ? 'border-violet-400 dark:border-violet-500' : ''}`}>
         <option value="">-- Seite wählen --</option>
         <option value="Aktiven">Aktiven</option>
         <option value="Passiven">Passiven</option>
@@ -232,7 +232,7 @@ function BilanzSeiteUI({ seite, bilanzsumme, readOnly, konten, onUpdate, onBsCha
           <div key={gruppe.id} className="rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 p-2">
             <div className="flex items-center gap-1 mb-2">
               <input type="text" value={gruppe.label} onChange={e => onUpdate(s => { s.gruppen[gi].label = e.target.value })} disabled={readOnly}
-                placeholder="Kontenhauptgruppe" className={`${inputSm} flex-1 font-medium placeholder:text-slate-400`} />
+                placeholder="Kontenhauptgruppe" className={`${inputSm} flex-1 font-medium placeholder:text-slate-400 ${!readOnly && !gruppe.label ? 'border-violet-400 dark:border-violet-500' : ''}`} />
               {!readOnly && (
                 <>
                   <button type="button" onClick={() => onUpdate(s => { if (gi > 0) [s.gruppen[gi], s.gruppen[gi-1]] = [s.gruppen[gi-1], s.gruppen[gi]] })} disabled={gi === 0}
@@ -264,7 +264,7 @@ function BilanzSeiteUI({ seite, bilanzsumme, readOnly, konten, onUpdate, onBsCha
       <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center gap-2">
         <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Bilanzsumme:</span>
         <input type="number" value={bilanzsumme} onChange={e => onBsChange(e.target.value)} disabled={readOnly}
-          placeholder="CHF" min="0" step="0.01" className={`${numInput} w-32 font-bold`} />
+          placeholder="CHF" min="0" step="0.01" className={`${numInput} w-32 font-bold ${!readOnly && !bilanzsumme ? 'border-violet-400 dark:border-violet-500' : ''}`} />
       </div>
     </div>
   )

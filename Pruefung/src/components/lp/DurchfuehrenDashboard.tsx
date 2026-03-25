@@ -245,6 +245,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         gesamtpunkte: 47,
         erlaubteKlasse: '28abcd WR',
         sebErforderlich: false,
+        kontrollStufe: 'keine',
         abschnitte: [
           {
             titel: 'Teil A: Multiple Choice & Richtig/Falsch',
