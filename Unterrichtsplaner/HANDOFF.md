@@ -17,7 +17,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 | # | Beschreibung | Priorität |
 |---|-------------|-----------|
-| UP-4 | **Design vereinfachen.** Farben massiv reduzieren, konsistentes Farbkonzept. An andere Tools angleichen. | mittel |
+| UP-4 | **Design vereinfachen.** ~~gray→slate~~ ✅ + ~~Farbduplikate~~ ✅ (v3.105). Noch offen: CSS-Variable-Overrides aufräumen. | mittel |
 
 ---
 
