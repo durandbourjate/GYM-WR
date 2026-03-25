@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import type { PDFFrage, PDFAnnotation } from '../../types/fragen.ts'
 import type { FragenBewertung } from '../../types/korrektur.ts'
 import { effektivePunkte } from '../../utils/korrekturUtils.ts'
+import { apiService } from '../../services/apiService.ts'
 import { usePDFRenderer } from '../fragetypen/pdf/usePDFRenderer.ts'
 import { PDFViewer } from '../fragetypen/pdf/PDFViewer.tsx'
 import AudioRecorder from '../AudioRecorder.tsx'
@@ -54,12 +55,27 @@ export default function PDFKorrektur({
 }: Props) {
   // PDF laden
   const renderer = usePDFRenderer()
+  const [geladenesPdf, setGeladenesPdf] = useState<string | null>(null)
+
+  // PDF aus Drive nachladen wenn Base64 fehlt
+  useEffect(() => {
+    const driveId = frage.pdfDriveFileId || frage.anhaenge?.find(a => a.mimeType === 'application/pdf')?.driveFileId
+    if (!frage.pdfBase64 && driveId && apiService.istKonfiguriert()) {
+      apiService.ladeDriveFile(driveId, schuelerEmail).then((result) => {
+        if (result?.base64) {
+          setGeladenesPdf(result.base64)
+        }
+      })
+    }
+  }, [frage.pdfDriveFileId, frage.pdfBase64, frage.anhaenge, schuelerEmail])
+
+  const effectivePdf = frage.pdfBase64 || geladenesPdf
 
   useEffect(() => {
-    if (frage.pdfBase64) {
-      renderer.ladePDF({ base64: frage.pdfBase64 })
+    if (effectivePdf) {
+      renderer.ladePDF({ base64: effectivePdf })
     }
-  }, [frage.pdfBase64, renderer.ladePDF])
+  }, [effectivePdf, renderer.ladePDF])
 
   // Annotation counts
   const counts = zaehleAnnotationen(annotationen)
@@ -168,7 +184,7 @@ export default function PDFKorrektur({
               readOnly
             />
           )}
-          {renderer.state.status === 'idle' && !frage.pdfBase64 && (
+          {renderer.state.status === 'idle' && !effectivePdf && (
             <div className="rounded border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50 px-4 py-6 text-center">
               <p className="text-sm text-slate-400 dark:text-slate-500 italic">
                 Kein PDF vorhanden
