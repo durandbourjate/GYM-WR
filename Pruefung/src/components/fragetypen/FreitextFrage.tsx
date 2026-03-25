@@ -206,7 +206,7 @@ export default function FreitextFrage({ frage }: Props) {
           ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
           : zeichenAnzahl > 0
             ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
-            : 'border-violet-400 dark:border-violet-500 focus-within:border-slate-500 dark:focus-within:border-slate-400 bg-white dark:bg-slate-900'
+            : 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-900'
         }`}
       >
         <EditorContent editor={editor} />

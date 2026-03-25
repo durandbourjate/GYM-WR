@@ -85,26 +85,26 @@ export default function RichtigFalschFrage({ frage }: Props) {
                   disabled={abgegeben}
                   className={`flex-1 py-2 text-sm font-medium rounded-lg border-2 transition-all cursor-pointer
                     ${gewaehlt === true
-                      ? 'bg-green-50 border-green-500 text-green-700 dark:bg-green-900/30 dark:border-green-500 dark:text-green-300'
-                      : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-green-300 dark:hover:border-green-600'
+                      ? 'border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                      : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500'
                     }
                     ${abgegeben ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  ✓ Richtig
+                  <span className={gewaehlt === true ? 'text-green-600 dark:text-green-400' : ''}>✓</span> Richtig
                 </button>
                 <button
                   onClick={() => handleKlick(aussage.id, false)}
                   disabled={abgegeben}
                   className={`flex-1 py-2 text-sm font-medium rounded-lg border-2 transition-all cursor-pointer
                     ${gewaehlt === false
-                      ? 'bg-red-50 border-red-500 text-red-700 dark:bg-red-900/30 dark:border-red-500 dark:text-red-300'
-                      : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-red-300 dark:hover:border-red-600'
+                      ? 'border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                      : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500'
                     }
                     ${abgegeben ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  ✗ Falsch
+                  <span className={gewaehlt === false ? 'text-red-600 dark:text-red-400' : ''}>✗</span> Falsch
                 </button>
               </div>
             </div>

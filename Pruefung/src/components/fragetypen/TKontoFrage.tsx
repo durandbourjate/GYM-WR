@@ -10,6 +10,12 @@ interface Props {
   frage: TKontoFrageType
 }
 
+/** Border-Klasse: violett wenn leer + nicht readOnly, sonst neutral */
+function brd(wert: string, ro: boolean): string {
+  if (ro) return 'border-slate-300 dark:border-slate-600'
+  return !wert ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'
+}
+
 
 function neueId(): string {
   return crypto.randomUUID()
@@ -312,7 +318,7 @@ export default function TKontoFrage({ frage }: Props) {
                             onChange={(e) => feldAendern(kIdx, 'anfangsbestandLinks', e.target.value)}
                             disabled={readOnly}
                             placeholder="0"
-                            className="min-h-[36px] flex-1 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            className={`min-h-[36px] flex-1 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(konto.anfangsbestandLinks, readOnly)}`}
                           />
                         </div>
                       )}
@@ -327,7 +333,7 @@ export default function TKontoFrage({ frage }: Props) {
                             onChange={(e) => feldAendern(kIdx, 'anfangsbestandRechts', e.target.value)}
                             disabled={readOnly}
                             placeholder="0"
-                            className="min-h-[36px] flex-1 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            className={`min-h-[36px] flex-1 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(konto.anfangsbestandRechts, readOnly)}`}
                           />
                         </div>
                       )}
@@ -349,7 +355,7 @@ export default function TKontoFrage({ frage }: Props) {
                             disabled={readOnly}
                             placeholder="#"
                             min="1"
-                            className="min-h-[36px] w-10 rounded border border-slate-300 bg-white px-1 py-1 text-xs text-center text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            className={`min-h-[36px] w-10 rounded border bg-white px-1 py-1 text-xs text-center text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.gfNr, readOnly)}`}
                             title="Geschäftsfall-Nr."
                           />
                         )}
@@ -370,7 +376,7 @@ export default function TKontoFrage({ frage }: Props) {
                           placeholder="CHF"
                           min="0"
                           step="0.01"
-                          className="min-h-[36px] w-24 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                          className={`min-h-[36px] w-24 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.betrag, readOnly)}`}
                         />
                         {!readOnly && konto.eintraegeLinks.length > 1 && (
                           <button type="button" onClick={() => zeileEntfernen(kIdx, 'links', zIdx)}
@@ -405,7 +411,7 @@ export default function TKontoFrage({ frage }: Props) {
                             disabled={readOnly}
                             placeholder="#"
                             min="1"
-                            className="min-h-[36px] w-10 rounded border border-slate-300 bg-white px-1 py-1 text-xs text-center text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                            className={`min-h-[36px] w-10 rounded border bg-white px-1 py-1 text-xs text-center text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.gfNr, readOnly)}`}
                             title="Geschäftsfall-Nr."
                           />
                         )}
@@ -426,7 +432,7 @@ export default function TKontoFrage({ frage }: Props) {
                           placeholder="CHF"
                           min="0"
                           step="0.01"
-                          className="min-h-[36px] w-24 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                          className={`min-h-[36px] w-24 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.betrag, readOnly)}`}
                         />
                         {!readOnly && konto.eintraegeRechts.length > 1 && (
                           <button type="button" onClick={() => zeileEntfernen(kIdx, 'rechts', zIdx)}
@@ -466,13 +472,13 @@ export default function TKontoFrage({ frage }: Props) {
                     placeholder="Betrag"
                     min="0"
                     step="0.01"
-                    className="min-h-[36px] w-28 rounded border border-slate-300 bg-white px-2 py-1 text-sm text-right text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+                    className={`min-h-[36px] w-28 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(konto.saldoBetrag, readOnly)}`}
                   />
                   <select
                     value={konto.saldoSeite}
                     onChange={(e) => feldAendern(kIdx, 'saldoSeite', e.target.value)}
                     disabled={readOnly}
-                    className="min-h-[36px] rounded border border-slate-300 bg-white px-2 py-1 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 focus:border-indigo-500 focus:outline-none disabled:opacity-50"
+                    className={`min-h-[36px] rounded border bg-white px-2 py-1 text-sm text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 ${brd(konto.saldoSeite, readOnly)}`}
                   >
                     <option value="links">Links (Soll)</option>
                     <option value="rechts">Rechts (Haben)</option>

@@ -67,7 +67,7 @@ export default function MCFrage({ frage }: Props) {
               disabled={abgegeben}
               className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all cursor-pointer
                 ${istGewaehlt
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-400'
+                  ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
                   : 'border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-slate-800'
                 }
                 ${abgegeben ? 'opacity-75 cursor-not-allowed' : ''}
