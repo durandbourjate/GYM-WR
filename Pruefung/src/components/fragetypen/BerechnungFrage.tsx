@@ -73,7 +73,7 @@ export default function BerechnungFrage({ frage }: Props) {
                 onChange={(e) => handleErgebnis(erg.id, e.target.value)}
                 disabled={abgegeben}
                 placeholder="Ergebnis eingeben..."
-                className="flex-1 px-3 py-2 text-base bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 font-mono disabled:opacity-60"
+                className={`flex-1 px-3 py-2 text-base bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 font-mono disabled:opacity-60 ${!abgegeben && !(ergebnisse[erg.id]) ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
               />
               {erg.einheit && (
                 <span className="text-sm font-medium text-slate-500 dark:text-slate-400 shrink-0">
@@ -102,7 +102,7 @@ export default function BerechnungFrage({ frage }: Props) {
             disabled={abgegeben}
             rows={6}
             placeholder="Zeigen Sie Ihren Rechenweg hier..."
-            className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 resize-y disabled:opacity-60"
+            className={`w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 resize-y disabled:opacity-60 ${!abgegeben && !rechenweg ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
           />
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
             Beschreiben Sie Ihren Lösungsweg — auch Teilresultate zählen.

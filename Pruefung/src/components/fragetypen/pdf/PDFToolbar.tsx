@@ -139,7 +139,7 @@ export function PDFToolbar({
         <div
           role="group"
           aria-label="Farben"
-          className="flex gap-1 items-center"
+          className={`flex gap-1 ${isHorizontal ? 'items-center' : 'flex-col items-center'}`}
         >
           {STANDARD_HIGHLIGHT_FARBEN.map((farbe) => (
             <button

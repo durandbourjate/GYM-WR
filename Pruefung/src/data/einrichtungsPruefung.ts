@@ -19,6 +19,7 @@ export const einrichtungsPruefung: PruefungsConfig = {
   erlaubteKlasse: 'sf-wr-27a28f',
 
   sebErforderlich: false,
+  kontrollStufe: 'keine',
 
   abschnitte: [
     {

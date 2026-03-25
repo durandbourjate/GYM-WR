@@ -63,7 +63,9 @@ export default function RichtigFalschFrage({ frage }: Props) {
               className={`p-4 rounded-xl border-2 transition-all
                 ${gewaehlt !== undefined
                   ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700/30'
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
+                  : !abgegeben
+                    ? 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-800'
+                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
                 }
                 ${abgegeben ? 'opacity-75' : ''}
               `}

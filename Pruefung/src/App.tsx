@@ -12,7 +12,6 @@ import LoginScreen from './components/LoginScreen.tsx'
 import Startbildschirm from './components/Startbildschirm.tsx'
 import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
-import AbgabeZusammenfassung from './components/AbgabeZusammenfassung.tsx'
 import DurchfuehrenDashboard from './components/lp/DurchfuehrenDashboard.tsx'
 import { MultiDurchfuehrenDashboard } from './components/lp/MultiDurchfuehrenDashboard.tsx'
 import LPStartseite from './components/lp/LPStartseite.tsx'
@@ -274,13 +273,6 @@ function resolveFragenFuerPruefung(config: PruefungsConfig, apiFragen: Frage[]):
 function AbgabeBestaetigung() {
   const user = useAuthStore((s) => s.user)
   const abmelden = useAuthStore((s) => s.abmelden)
-  const istDemoModus = useAuthStore((s) => s.istDemoModus)
-  const [zeigeZusammenfassung, setZeigeZusammenfassung] = useState(false)
-
-  if (zeigeZusammenfassung) {
-    return <AbgabeZusammenfassung onZurueck={() => setZeigeZusammenfassung(false)} />
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
       <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -312,15 +304,7 @@ function AbgabeBestaetigung() {
         <p className="text-slate-500 dark:text-slate-400 mb-6">
           Ihre Antworten wurden gespeichert. Sie können das Fenster schliessen.
         </p>
-        {/* Antworten nur im Demo-Modus sofort einsehbar — im echten Betrieb entscheidet die LP über Korrektur-Einsicht */}
-        {istDemoModus && (
-          <button
-            onClick={() => setZeigeZusammenfassung(true)}
-            className="px-5 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer mb-4"
-          >
-            Meine Antworten ansehen
-          </button>
-        )}
+        {/* Antworten-Einsicht im Demo-Modus entfernt — SuS-Tester sollen realistischen Ablauf erleben */}
         <p className="text-xs text-slate-400 dark:text-slate-500">
           Bei Fragen wenden Sie sich an Ihre Lehrperson.
         </p>
