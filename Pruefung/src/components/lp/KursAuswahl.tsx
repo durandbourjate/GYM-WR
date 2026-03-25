@@ -45,7 +45,7 @@ function KursCheckbox({ checked, indeterminate }: { checked: boolean; indetermin
   )
 }
 
-export default function KursAuswahl({ kursGruppen, ausgewaehlteSuS, onToggleKurs, onToggleSuS, onAlleAuswaehlen, onKeineAuswaehlen }: Props) {
+export default function KursAuswahl({ kursGruppen, ausgewaehlteSuS = new Set<string>(), onToggleKurs, onToggleSuS, onAlleAuswaehlen, onKeineAuswaehlen }: Props) {
   const [zugeklappt, setZugeklappt] = useState<Set<string>>(new Set())
 
   const toggleDetails = (kurs: string) => {
