@@ -95,8 +95,45 @@ Jeder API-Call braucht 1-3 Sekunden (Cold Starts, Google-Infrastruktur). Optimis
 - **Phase 3.1 — Material-Panel:** Debug-Logging am Fallback (Typ/URL/DriveId in Console + UI)
 - **Phase 3.2 — Warteraum:** Uhr-Icon, "WARTERAUM"-Label, blauer Rahmen
 
-### Gesamtplan — KOMPLETT (25.03.2026)
-Alle 6 Phasen des Production-Readiness-Plans abgeschlossen. Plan: `.claude/plans/humming-dancing-waffle.md`
+### Gesamtplan Phase 0-5 — KOMPLETT (25.03.2026)
+Alle 6 Phasen des Production-Readiness-Plans abgeschlossen.
+
+---
+
+## Erster LP-Live-Test — Feedback (25.03.2026)
+
+**Nächste Session: Systematisches Audit + Plan für alle 15 Punkte. NICHT reaktiv fixen!**
+
+### Kritisch (Datenverlust / Blocking)
+| # | Problem | Status |
+|---|---------|--------|
+| F1 | **Verbindungsverlust LP** — "Daten konnten nicht geladen werden" während aktiver Prüfung UND Korrektur. Monitoring-Polling crasht bei temporären Timeouts. | OFFEN |
+| F2 | **Korrektur-Autosave fehlt** — LP-Korrekturen gehen bei Verbindungsverlust verloren. Kein lokaler Zwischenspeicher. | OFFEN |
+
+### Korrektur-Modus (grundsätzlich funktional, aber nicht brauchbar)
+| # | Problem | Status |
+|---|---------|--------|
+| F3 | **Keine Musterlösungen** — LP sieht nur SuS-Antwort ohne Kontext (z.B. "Lücke 1: sadf") | OFFEN |
+| F4 | **Frage nicht sichtbar** — LP braucht gleiche Ansicht wie SuS + Musterlösung daneben | OFFEN |
+| F5 | **Keine KI-vorgeschlagenen Punkte** — Beurteilungsfelder sind leer | OFFEN |
+| F6 | **"Kein PDF vorhanden"** bei Witzsammlung-Aufgabe in Korrektur | OFFEN |
+
+### UX-Verbesserungen
+| # | Problem | Status |
+|---|---------|--------|
+| F7 | **Lobby-Erkennung SuS** — Kein Unterschied zwischen "URL eingegeben" und "Lobby erkannt" | OFFEN |
+| F8 | **10s Verzögerung** bis SuS Freischaltung merkt | OFFEN |
+| F9 | **30s bis LP-Fortschritt** angezeigt wird (Monitoring-Intervall) | OFFEN |
+| F10 | **Frage 10: falsches Icon** — Leuchtstift zeigt Wachskreidestift-Symbol | OFFEN |
+| F11 | **Material-PDF nur 4cm hoch** im Split-Modus, erst bei Vollbild korrekt | OFFEN |
+| F12 | **"In neuem Tab öffnen"** sollte nicht sichtbar sein (SEB blockiert Tabs) | OFFEN |
+| F13 | **Frage 15: Wann beantwortet?** — Unklar welche Bedingung zur Markierung führt | OFFEN |
+| F14 | **Beenden ohne Bestätigung** wenn alle SuS bereits abgegeben haben | OFFEN |
+| F15 | **Prüfungsübersicht: Korrektur-Status** — Anzeige ob korrigiert + ausstehende + Link zu Nachprüfungen | OFFEN |
+
+### Noch offene Feature-Wünsche (aus früherer Diskussion)
+- **Zeitzuschlag (Nachteilsausgleich)** bei SuS in Durchführung definieren, nicht im Composer
+- **SEB-Lösung** — Effektiv zum Laufen bringen + Fallback für Geräte wo SEB nicht funktioniert
 
 ---
 
