@@ -188,27 +188,26 @@ export default function TeilnehmerListe({ teilnehmer, onToggle, onManuellHinzufu
                       {t.quelle === 'manuell' && (
                         <span className="text-xs px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-slate-500 dark:text-slate-400">manuell</span>
                       )}
-                      {/* Zeitzuschlag inline */}
+                      {/* Zeitzuschlag inline — editierbares Feld */}
                       {onZeitzuschlagChange && !abgewaehlte.has(t.email) && (
                         <div className="flex items-center gap-1 ml-auto shrink-0" onClick={(e) => e.preventDefault()}>
-                          {zeitverlaengerungen[t.email] ? (
-                            <>
-                              <span className="text-xs text-blue-600 dark:text-blue-400">+{zeitverlaengerungen[t.email]}′</span>
-                              <button
-                                type="button"
-                                onClick={(e) => { e.preventDefault(); onZeitzuschlagChange(t.email, null) }}
-                                className="text-xs text-slate-400 hover:text-red-500 cursor-pointer"
-                                title="Zeitzuschlag entfernen"
-                              >✕</button>
-                            </>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={(e) => { e.preventDefault(); onZeitzuschlagChange(t.email, 15) }}
-                              className="text-[10px] px-1.5 py-0.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded cursor-pointer"
-                              title="Zeitzuschlag hinzufügen (+15 Min.)"
-                            >⏱</button>
-                          )}
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500">+</span>
+                          <input
+                            type="number"
+                            min={0}
+                            max={120}
+                            step={5}
+                            value={zeitverlaengerungen[t.email] ?? ''}
+                            placeholder="0"
+                            onChange={(e) => {
+                              const val = e.target.value === '' ? null : parseInt(e.target.value)
+                              onZeitzuschlagChange(t.email, val && val > 0 ? val : null)
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-12 px-1 py-0.5 text-xs text-right rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-400 tabular-nums"
+                            title="Zusatzzeit in Minuten (leer = keine)"
+                          />
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500">Min.</span>
                         </div>
                       )}
                     </label>

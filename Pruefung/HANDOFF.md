@@ -6,6 +6,35 @@
 
 ---
 
+## Session 25.03.2026 (9) — LP-Test-Feedback Runde 4
+
+### Erledigt (6 Fixes)
+- **B1: Zeichnen Text-Tool:** `onBlur` komplett entfernt (verursachte Focus-Verlust auf Touch). Stattdessen ✓/✕ Buttons neben dem Input. Wrapper-Div mit `stopPropagation` verhindert Canvas-Interaktion.
+- **B2: Zeitzuschlag editierbar:** Fix 15min → Input-Feld (0-120 Min., Schritt 5). Leer = keine Zusatzzeit.
+- **B3: Auto-Punktevergabe:** `setKorrektur` im Effect nutzt jetzt `setState`-Callback statt Closure-Variable → behebt Race Condition wenn `korrektur` nach `autoErgebnisseAlle` lädt.
+- **B4: SuS-Checkboxen in Kursauswahl:** Individuelle Checkboxen neben jedem Schülernamen in der Kursübersicht. Abgewählte SuS werden transparent dargestellt.
+- **B5: Material-Panel volle Höhe:** `overflow-auto` → `min-h-0` im Content-Container, damit `flex-1` auf iframe/PDF korrekt wirkt.
+- **B9: Korrektur-Button:** "Weiter zur Korrektur →" in die Aktions-Zeile verschoben (nicht mehr auf eigener Zeile).
+
+### Noch offen (späterer Pass)
+- **B6: MC nicht als gelöst angezeigt** — Aufgabengruppe/Teilfragen-Zählung prüfen
+- **B7: Abgabe-Count Mismatch** — Navigation vs. Abgabe-Dialog zählen unterschiedlich
+- **B8: Button-Feedback SuS-Seite** — Freischalten, Material-Toggle, etc.
+- **Material-Icon Referenz** — Frage referenziert 📋-Icon, Prüfung zeigt es nicht
+
+### Geänderte Dateien
+```
+src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx  — Text-Overlay mit Buttons statt onBlur
+src/components/lp/TeilnehmerListe.tsx                  — Zeitzuschlag Input-Feld
+src/components/lp/KorrekturDashboard.tsx               — Auto-Korrektur setState-Callback
+src/components/lp/KursAuswahl.tsx                      — SuS-Checkboxen + abgewaehlte/onToggleSuS Props
+src/components/lp/VorbereitungPhase.tsx                — abgewaehlte/onToggleSuS an KursAuswahl
+src/components/MaterialPanel.tsx                       — Split-Inhalt min-h-0
+src/components/lp/BeendetPhase.tsx                     — Korrektur-Button in Aktions-Zeile
+```
+
+---
+
 ## Session 25.03.2026 (8) — Auto-Korrektur Fix + Button-Loading
 
 ### Erledigt

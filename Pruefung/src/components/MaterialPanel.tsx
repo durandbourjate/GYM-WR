@@ -80,10 +80,12 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
           </div>
         )}
 
-        {/* Inhalt */}
-        <div className="flex-1 overflow-auto">
+        {/* Inhalt — overflow-hidden damit iframe/PDF volle Höhe nutzt */}
+        <div className="flex-1 min-h-0">
           {!aktivesMaterial ? (
-            <MaterialAuswahl materialien={materialien} onWaehlen={setAktivesId} />
+            <div className="overflow-auto h-full">
+              <MaterialAuswahl materialien={materialien} onWaehlen={setAktivesId} />
+            </div>
           ) : (
             <MaterialInhalt material={aktivesMaterial} />
           )}

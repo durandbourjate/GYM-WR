@@ -556,59 +556,89 @@ export function ZeichnenCanvas({
         aria-label="Zeichenfläche"
       />
 
-      {/* Text-Eingabe-Overlay */}
+      {/* Text-Eingabe-Overlay — kein onBlur (Touch-Geräte verlieren sonst Focus) */}
       {textOverlay.sichtbar && (
-        <input
-          ref={textInputRef}
-          type="text"
-          inputMode="text"
-          autoComplete="off"
-          autoCapitalize="sentences"
-          value={textOverlay.text}
-          onChange={e =>
-            setTextOverlay(prev => ({ ...prev, text: e.target.value }))
-          }
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              textAbschliessen(false);
-            } else if (e.key === 'Escape') {
-              e.preventDefault();
-              textAbschliessen(true);
-            }
-            // Verhindern, dass Tastatur-Shortcuts (Delete/Backspace) vom Canvas-Handler abgefangen werden
-            e.stopPropagation();
-          }}
-          onBlur={() => {
-            // Nur speichern wenn das Overlay schon länger als 500ms offen war
-            // (verhindert sofortiges Schliessen bei Focus-Raub durch Canvas)
-            setTimeout(() => {
-              // Prüfe ob das Overlay noch sichtbar ist (User könnte schon Enter gedrückt haben)
-              textAbschliessen(false);
-            }, 300);
-          }}
-          onPointerDown={e => {
-            // Klick auf das Text-Input soll NICHT vom Canvas abgefangen werden
-            e.stopPropagation();
-          }}
+        <div
           style={{
             position: 'absolute',
             left: `${textOverlay.cssLeft}%`,
             top: `${textOverlay.cssTop}%`,
-            fontSize: '18px',
-            fontFamily: 'sans-serif',
-            color: aktiveFarbe,
-            background: 'rgba(255,255,255,0.9)',
-            border: '2px solid #3b82f6',
-            borderRadius: '4px',
-            padding: '4px 8px',
-            minWidth: '120px',
-            outline: 'none',
             zIndex: 20,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            display: 'flex',
+            gap: '4px',
+            alignItems: 'center',
           }}
-          placeholder="Text eingeben…"
-        />
+          onPointerDown={e => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
+        >
+          <input
+            ref={textInputRef}
+            type="text"
+            inputMode="text"
+            autoComplete="off"
+            autoCapitalize="sentences"
+            value={textOverlay.text}
+            onChange={e =>
+              setTextOverlay(prev => ({ ...prev, text: e.target.value }))
+            }
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                textAbschliessen(false);
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                textAbschliessen(true);
+              }
+              e.stopPropagation();
+            }}
+            style={{
+              fontSize: '18px',
+              fontFamily: 'sans-serif',
+              color: aktiveFarbe,
+              background: 'rgba(255,255,255,0.95)',
+              border: '2px solid #3b82f6',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              minWidth: '140px',
+              outline: 'none',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            }}
+            placeholder="Text eingeben…"
+          />
+          <button
+            type="button"
+            onClick={() => textAbschliessen(false)}
+            style={{
+              background: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 10px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              fontWeight: 600,
+              minHeight: '32px',
+            }}
+          >
+            ✓
+          </button>
+          <button
+            type="button"
+            onClick={() => textAbschliessen(true)}
+            style={{
+              background: '#94a3b8',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              minHeight: '32px',
+            }}
+          >
+            ✕
+          </button>
+        </div>
       )}
     </div>
   );

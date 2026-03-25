@@ -220,6 +220,8 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeite
             kursGruppen={kursGruppen}
             ausgewaehlteKurse={ausgewaehlteKurse}
             onToggleKurs={handleToggleKurs}
+            abgewaehlte={abgewaehlte}
+            onToggleSuS={handleToggleEinzelne}
           />
         )}
       </div>

@@ -19,9 +19,13 @@ interface Props {
   kursGruppen: KursGruppe[]
   ausgewaehlteKurse: Set<string>
   onToggleKurs: (kurs: string) => void
+  /** Individuell abgewählte SuS (Email-Set) */
+  abgewaehlte?: Set<string>
+  /** Callback für individuelle SuS-Auswahl */
+  onToggleSuS?: (email: string) => void
 }
 
-export default function KursAuswahl({ kursGruppen, ausgewaehlteKurse, onToggleKurs }: Props) {
+export default function KursAuswahl({ kursGruppen, ausgewaehlteKurse, onToggleKurs, abgewaehlte, onToggleSuS }: Props) {
   const [zugeklappt, setZugeklappt] = useState<Set<string>>(new Set())
 
   const toggleDetails = (kurs: string) => {
@@ -131,11 +135,30 @@ export default function KursAuswahl({ kursGruppen, ausgewaehlteKurse, onToggleKu
                           <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-0.5">
                             {kl} ({susInKlasse.length})
                           </div>
-                          {susInKlasse.map((s) => (
-                            <div key={s.email} className="text-xs text-slate-600 dark:text-slate-300 pl-2">
-                              {s.name} {s.vorname}
-                            </div>
-                          ))}
+                          {susInKlasse.map((s) => {
+                            const istAbgewaehlt = abgewaehlte?.has(s.email) ?? false
+                            return (
+                              <label
+                                key={s.email}
+                                className={`flex items-center gap-1.5 pl-2 py-0.5 cursor-pointer text-xs transition-opacity ${
+                                  istAbgewaehlt ? 'opacity-40' : ''
+                                }`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {onToggleSuS && ausgewaehlt && (
+                                  <input
+                                    type="checkbox"
+                                    checked={!istAbgewaehlt}
+                                    onChange={() => onToggleSuS(s.email)}
+                                    className="w-3 h-3 shrink-0 accent-green-600 cursor-pointer"
+                                  />
+                                )}
+                                <span className="text-slate-600 dark:text-slate-300">
+                                  {s.name} {s.vorname}
+                                </span>
+                              </label>
+                            )
+                          })}
                         </div>
                       )
                     })}

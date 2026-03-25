@@ -76,41 +76,42 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   }, [fragen, abgaben])
 
   // Auto-Korrektur-Ergebnisse in Bewertungen übernehmen (wenn kiPunkte noch null)
+  // Nutzt setState-Callback um Race Conditions zu vermeiden
   useEffect(() => {
-    if (!korrektur || Object.keys(autoErgebnisseAlle).length === 0) return
+    if (Object.keys(autoErgebnisseAlle).length === 0) return
 
-    let hatAenderungen = false
-    const aktualisierteSchueler = korrektur.schueler.map((s) => {
-      const autoErgebnisse = autoErgebnisseAlle[s.email]
-      if (!autoErgebnisse) return s
+    setKorrektur((prev) => {
+      if (!prev) return prev
 
-      let schuelerGeaendert = false
-      const neueBewertungen = { ...s.bewertungen }
+      let hatAenderungen = false
+      const aktualisierteSchueler = prev.schueler.map((s) => {
+        const autoErgebnisse = autoErgebnisseAlle[s.email]
+        if (!autoErgebnisse) return s
 
-      for (const [frageId, ergebnis] of Object.entries(autoErgebnisse)) {
-        if (!ergebnis) continue
-        const bew = neueBewertungen[frageId]
-        if (!bew) continue
-        // Nur übernehmen wenn noch keine Punkte vergeben (weder KI noch LP)
-        if (bew.kiPunkte === null && bew.lpPunkte === null) {
-          neueBewertungen[frageId] = {
-            ...bew,
-            kiPunkte: ergebnis.erreichtePunkte,
-            quelle: 'auto' as const,
+        let schuelerGeaendert = false
+        const neueBewertungen = { ...s.bewertungen }
+
+        for (const [frageId, ergebnis] of Object.entries(autoErgebnisse)) {
+          if (!ergebnis) continue
+          const bew = neueBewertungen[frageId]
+          if (!bew) continue
+          // Nur übernehmen wenn noch keine Punkte vergeben (weder KI noch LP)
+          if (bew.kiPunkte === null && bew.lpPunkte === null) {
+            neueBewertungen[frageId] = {
+              ...bew,
+              kiPunkte: ergebnis.erreichtePunkte,
+              quelle: 'auto' as const,
+            }
+            schuelerGeaendert = true
+            hatAenderungen = true
           }
-          schuelerGeaendert = true
-          hatAenderungen = true
         }
-      }
 
-      return schuelerGeaendert ? { ...s, bewertungen: neueBewertungen } : s
+        return schuelerGeaendert ? { ...s, bewertungen: neueBewertungen } : s
+      })
+
+      return hatAenderungen ? { ...prev, schueler: aktualisierteSchueler } : prev
     })
-
-    if (hatAenderungen) {
-      setKorrektur((prev) => prev ? { ...prev, schueler: aktualisierteSchueler } : prev)
-    }
-  // Nur einmal nach dem ersten Laden ausführen
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoErgebnisseAlle])
 
   // Daten laden
