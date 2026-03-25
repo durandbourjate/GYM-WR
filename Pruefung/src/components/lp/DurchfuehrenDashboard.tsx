@@ -133,34 +133,33 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const result = await apiService.ladeMonitoring(pruefungId, user.email, { signal: controller.signal })
     // Abgebrochene Requests ignorieren (nicht als Fehler werten)
     if (controller.signal.aborted) return
-    if (result) {
-      const mappedResult = {
-        ...result,
-        gesamtSus: result.gesamtSus ?? result.schueler?.length ?? 0,
-        schueler: ((result.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
-          email: s.email || '',
-          name: s.name || s.email || '',
-          status: s.status || (s.istAbgegeben === 'true' || s.istAbgegeben === true ? 'abgegeben' : 'nicht-gestartet'),
-          letzterHeartbeat: s.letzterHeartbeat || null,
-          letzterSave: s.letzterSave || null,
-          beantworteteFragen: Number(s.beantworteteFragen) || 0,
-          gesamtFragen: Number(s.gesamtFragen) || 0,
-          abgabezeit: s.abgabezeit || null,
-          startzeit: s.startzeit || null,
-          heartbeats: Number(s.heartbeats) || 0,
-          netzwerkFehler: Number(s.netzwerkFehler) || 0,
-          autoSaveCount: Number(s.autoSaveCount) || 0,
-          unterbrechungen: Array.isArray(s.unterbrechungen) ? s.unterbrechungen : [],
-          sebVersion: s.sebVersion || undefined,
-          browserInfo: s.browserInfo || undefined,
-          aktuelleFrage: typeof s.aktuelleFrage === 'number' ? s.aktuelleFrage : (s.aktuelleFrage != null && s.aktuelleFrage !== '' ? Number(s.aktuelleFrage) : null),
-        })),
-      }
-      setDaten(mappedResult as MonitoringDaten)
-      setLadeStatus('fertig')
-    } else {
-      setLadeStatus('fehler')
+    // result kann null sein wenn noch kein Antworten-Sheet existiert (Vorbereitungsphase)
+    // → Leere Monitoring-Daten statt Fehler, damit die LP normal weiterarbeiten kann
+    const effectiveResult = result || { pruefungTitel: '', schueler: [], gesamtSus: 0 }
+    const mappedResult = {
+      ...effectiveResult,
+      gesamtSus: effectiveResult.gesamtSus ?? (effectiveResult.schueler as unknown[])?.length ?? 0,
+      schueler: (((effectiveResult.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
+        email: s.email || '',
+        name: s.name || s.email || '',
+        status: s.status || (s.istAbgegeben === 'true' || s.istAbgegeben === true ? 'abgegeben' : 'nicht-gestartet'),
+        letzterHeartbeat: s.letzterHeartbeat || null,
+        letzterSave: s.letzterSave || null,
+        beantworteteFragen: Number(s.beantworteteFragen) || 0,
+        gesamtFragen: Number(s.gesamtFragen) || 0,
+        abgabezeit: s.abgabezeit || null,
+        startzeit: s.startzeit || null,
+        heartbeats: Number(s.heartbeats) || 0,
+        netzwerkFehler: Number(s.netzwerkFehler) || 0,
+        autoSaveCount: Number(s.autoSaveCount) || 0,
+        unterbrechungen: Array.isArray(s.unterbrechungen) ? s.unterbrechungen : [],
+        sebVersion: s.sebVersion || undefined,
+        browserInfo: s.browserInfo || undefined,
+        aktuelleFrage: typeof s.aktuelleFrage === 'number' ? s.aktuelleFrage : (s.aktuelleFrage != null && s.aktuelleFrage !== '' ? Number(s.aktuelleFrage) : null),
+      }))),
     }
+    setDaten(mappedResult as MonitoringDaten)
+    setLadeStatus('fertig')
   }, [user, istDemoModus, pruefungId])
 
   useEffect(() => { ladeDaten() }, [ladeDaten])
