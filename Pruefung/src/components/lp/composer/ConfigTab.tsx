@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { PruefungsConfig, PruefungsMaterial } from '../../../types/pruefung.ts'
 import { Section, Field, Toggle } from './ComposerUI.tsx'
 import { apiService } from '../../../services/apiService.ts'
