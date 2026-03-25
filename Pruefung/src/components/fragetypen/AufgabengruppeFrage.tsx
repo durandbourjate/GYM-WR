@@ -26,6 +26,7 @@ import TKontoFrageComponent from './TKontoFrage.tsx'
 import KontenbestimmungFrageComponent from './KontenbestimmungFrage.tsx'
 import BilanzERFrageComponent from './BilanzERFrage.tsx'
 import MediaAnhang from '../MediaAnhang.tsx'
+import FrageAnhaenge from '../FrageAnhaenge.tsx'
 
 interface Props {
   frage: AufgabengruppeFrageType
@@ -116,6 +117,7 @@ export default function AufgabengruppeFrage({ frage }: Props) {
                 </span>
               </div>
               {renderTeilaufgabe(tf)}
+              <FrageAnhaenge anhaenge={tf.anhaenge ?? []} />
             </div>
           )
         })}

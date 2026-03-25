@@ -34,6 +34,7 @@ import PDFFrage from './fragetypen/PDFFrage.tsx'
 import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType, BilanzERFrage as BilanzERFrageType, AufgabengruppeFrage as AufgabengruppeFrageType, VisualisierungFrage as VisualisierungFrageType, PDFFrage as PDFFrageTyp } from '../types/fragen.ts'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
+import FrageAnhaenge from './FrageAnhaenge.tsx'
 
 export default function Layout() {
   const user = useAuthStore((s) => s.user)
@@ -378,7 +379,12 @@ export default function Layout() {
                 </div>
               )}
 
-              {aktuelleFrage && <div key={aktuelleFrage.id}>{renderFrage(aktuelleFrage)}</div>}
+              {aktuelleFrage && (
+                <div key={aktuelleFrage.id}>
+                  {renderFrage(aktuelleFrage)}
+                  <FrageAnhaenge anhaenge={aktuelleFrage.anhaenge ?? []} />
+                </div>
+              )}
 
               {/* Mobile Navigation (Kacheln) */}
               <div className="md:hidden mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
