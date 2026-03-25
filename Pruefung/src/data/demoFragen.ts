@@ -664,6 +664,88 @@ export const demoFragen: Frage[] = [
     kontext: '**Fallbeispiel: Gründung einer GmbH**\n\nDrei Absolventinnen der Fachhochschule — Lea, Mia und Nina — planen, gemeinsam ein Start-up im Bereich nachhaltige Verpackungen zu gründen. Sie entscheiden sich für die Rechtsform einer **GmbH** mit einem Stammkapital von CHF 30 000. Die Gründungskosten (Notar, Handelsregistereintrag) belaufen sich auf CHF 4 500.\n\nBeantworten Sie die folgenden Teilaufgaben zum Fallbeispiel.',
     teilaufgabenIds: ['demo-ag-gmbh-mc', 'demo-ag-gmbh-freitext', 'demo-ag-gmbh-berechnung'],
   },
+  // ═══════════════════════════════════════════════════════
+  // 14. PDF-Frage — VWL: Gesetzestext annotieren (Platzhalter)
+  // ═══════════════════════════════════════════════════════
+  {
+    id: 'demo-pdf-or-kaufvertrag',
+    typ: 'pdf',
+    version: 1,
+    erstelltAm: jetzt,
+    geaendertAm: jetzt,
+    fachbereich: 'Recht',
+    thema: 'OR BT Kaufvertrag',
+    unterthema: 'Gewährleistung',
+    bloom: 'K3',
+    semester: ['S3', 'S4'],
+    gefaesse: ['SF'],
+    tags: ['OR', 'Kaufvertrag', 'Gewährleistung', 'Annotieren', 'PDF'],
+    punkte: 3,
+    zeitbedarf: 5,
+    musterlosung: 'Art. 197 OR (Haftung für Mängel) markieren; Art. 201 OR (Prüfungs- und Rügepflicht) kommentieren; Art. 205 OR (Wandlung und Minderung) hervorheben.',
+    bewertungsraster: [
+      { beschreibung: 'Korrekte Artikel markiert (Art. 197, 201, 205)', punkte: 2 },
+      { beschreibung: 'Sinnvolle Kommentare zu den Artikeln', punkte: 1 },
+    ],
+    verwendungen: [],
+    quelle: 'manuell',
+    autor: 'yannick.durand@gymhofwil.ch',
+    fragetext: '**Aufgabe:** Lesen Sie den Ausschnitt aus dem Obligationenrecht (OR) zum Kaufvertrag.\n\n1. **Markieren** Sie (gelb) die Artikel, die die Haftung des Verkäufers für Sachmängel regeln.\n2. **Kommentieren** Sie Art. 201 OR: Was muss der Käufer tun, um seine Ansprüche zu wahren?\n3. **Markieren** Sie (blau) den Artikel, der die Rechte des Käufers bei Mängeln auflistet.',
+    pdfDateiname: 'OR_Kaufvertrag_Auszug.pdf',
+    seitenAnzahl: 1,
+    erlaubteWerkzeuge: ['highlighter', 'kommentar'],
+    kategorien: [
+      { id: 'haftung', label: 'Haftungsartikel', farbe: '#fbbf24', beschreibung: 'Artikel zur Verkäuferhaftung' },
+      { id: 'rechte', label: 'Käuferrechte', farbe: '#3b82f6', beschreibung: 'Artikel zu Käuferrechten' },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // 15. Zeichnen/Visualisierung — VWL: Angebot-Nachfrage-Diagramm
+  // ═══════════════════════════════════════════════════════
+  {
+    id: 'demo-vis-angebotsnachfrage',
+    typ: 'visualisierung',
+    untertyp: 'zeichnen',
+    version: 1,
+    erstelltAm: jetzt,
+    geaendertAm: jetzt,
+    fachbereich: 'VWL',
+    thema: 'Märkte und Preise',
+    unterthema: 'Angebot und Nachfrage',
+    bloom: 'K3',
+    semester: ['S5', 'S6'],
+    gefaesse: ['SF'],
+    tags: ['Angebot', 'Nachfrage', 'Gleichgewicht', 'Diagramm', 'Zeichnen'],
+    punkte: 4,
+    zeitbedarf: 6,
+    musterlosung: 'Eine nach oben verlaufende Angebotskurve (A) und eine nach unten verlaufende Nachfragekurve (N) schneiden sich im Gleichgewichtspunkt (P*; M*). Bei einer Preiserhöhung über P* entsteht ein Angebotsüberschuss (sichtbar im Diagramm).',
+    bewertungsraster: [
+      { beschreibung: 'Nachfragekurve korrekt eingezeichnet (fallend)', punkte: 1 },
+      { beschreibung: 'Angebotskurve korrekt eingezeichnet (steigend)', punkte: 1 },
+      { beschreibung: 'Gleichgewichtspunkt markiert und beschriftet', punkte: 1 },
+      { beschreibung: 'Diagramm korrekt beschriftet (Achsen, Kurven)', punkte: 1 },
+    ],
+    verwendungen: [],
+    quelle: 'manuell',
+    autor: 'yannick.durand@gymhofwil.ch',
+    fragetext: 'Zeichnen Sie ein **Angebot-Nachfrage-Diagramm** für einen beliebigen Markt.\n\n1. Zeichnen Sie die **Nachfragekurve** (fallend, beschriftet mit «N»).\n2. Zeichnen Sie die **Angebotskurve** (steigend, beschriftet mit «A»).\n3. Markieren Sie den **Gleichgewichtspunkt** und bezeichnen Sie den Gleichgewichtspreis (P*) und die Gleichgewichtsmenge (M*) auf den Achsen.',
+    canvasConfig: {
+      breite: 500,
+      hoehe: 400,
+      koordinatensystem: true,
+      achsenBeschriftung: { x: 'Menge (M)', y: 'Preis (P)' },
+      werkzeuge: ['stift', 'linie', 'pfeil', 'text'],
+      groessePreset: 'mittel',
+      radierer: true,
+      farben: ['#000000', '#2563eb', '#dc2626', '#16a34a'],
+    },
+    ausgangsdiagramm: {
+      typ: 'angebot-nachfrage',
+      achsen: { x: 'Menge (M)', y: 'Preis (P)' },
+    },
+  },
+
   // Einrichtungsfragen für Einrichtungsprüfung (alle Fragetypen testen)
   ...einrichtungsFragen,
 ]

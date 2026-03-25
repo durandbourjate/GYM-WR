@@ -202,7 +202,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     if (abgabenGeladen.current || !user) return
     async function ladeAbgabenUndFragen() {
       if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
-        setFragen(demoFragen.slice(0, 7))
+        // Alle Demo-Fragen ausser einrichtungsFragen (erkennbar am Prefix 'einr-')
+        setFragen(demoFragen.filter((f) => !f.id.startsWith('einr-')))
         abgabenGeladen.current = true
         return
       }
@@ -234,14 +235,34 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         modus: 'pruefung',
         dauerMinuten: 45,
         zeitModus: 'countdown',
-        gesamtpunkte: 24,
+        gesamtpunkte: 47,
         erlaubteKlasse: '28abcd WR',
         sebErforderlich: false,
         abschnitte: [
-          { titel: 'Teil A: Multiple Choice', fragenIds: ['vwl-mc-001', 'bwl-mc-001', 'recht-mc-001'] },
-          { titel: 'Teil B: Freitext', fragenIds: ['bwl-ft-001', 'vwl-ft-001', 'recht-ft-001'] },
-          { titel: 'Teil C: Lückentext', fragenIds: ['recht-lt-001'] },
-          { titel: 'Teil D: Zuordnung', fragenIds: ['bwl-zu-001'] },
+          {
+            titel: 'Teil A: Multiple Choice & Richtig/Falsch',
+            fragenIds: ['demo-mc-konjunktur', 'demo-mc-vertrag', 'demo-rf-geldpolitik'],
+          },
+          {
+            titel: 'Teil B: Freitext',
+            fragenIds: ['demo-ft-bip', 'demo-ft-kaufvertrag'],
+          },
+          {
+            titel: 'Teil C: Lückentext, Zuordnung & Berechnung',
+            fragenIds: ['demo-lt-normenhierarchie', 'demo-zu-rechtsformen', 'demo-be-erfolgsrechnung'],
+          },
+          {
+            titel: 'Teil D: Zeichnen & PDF-Annotation',
+            fragenIds: ['demo-vis-angebotsnachfrage', 'demo-pdf-or-kaufvertrag'],
+          },
+          {
+            titel: 'Teil E: Finanzbuchhaltung',
+            fragenIds: ['demo-bs-geschaeftsfaelle', 'demo-tk-bank', 'demo-kb-gemischt', 'demo-bilanz-einfach'],
+          },
+          {
+            titel: 'Teil F: Aufgabengruppe',
+            fragenIds: ['demo-ag-gmbh'],
+          },
         ],
         zufallsreihenfolgeFragen: false,
         zufallsreihenfolgeOptionen: false,
