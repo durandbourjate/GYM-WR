@@ -72,6 +72,33 @@ Jeder API-Call braucht 1-3 Sekunden (Cold Starts, Google-Infrastruktur). Optimis
 
 ---
 
+## Session 25.03.2026 (4) — Zeitzuschlag-Refactoring
+
+### Erledigt
+- **Zeitzuschlag von Composer → Durchführung verschoben:**
+  - Neue `ZeitzuschlagEditor.tsx`-Komponente (wiederverwendbar, SuS-Dropdown statt E-Mail-Eingabe)
+  - VorbereitungPhase: Zeitzuschlag nach Teilnehmer-Auswahl (mit SuS-Dropdown)
+  - AktivPhase: Klappbarer "⏱ Zeitzuschläge"-Bereich, live editierbar während Prüfung
+  - ConfigTab (Composer): Zeitzuschlag-Sektion entfernt
+  - Speicherung via `speichereConfig()` bei jeder Änderung
+- **Code-Quality-Rule:** `tsc -b` (statt `tsc --noEmit`) als Build-Check vor Commits verankert
+
+### Neue/Geänderte Dateien
+```
+src/components/lp/ZeitzuschlagEditor.tsx  — NEU: Wiederverwendbarer Editor (Dropdown, kompakter Modus)
+src/components/lp/VorbereitungPhase.tsx   — +onConfigUpdate Prop, ZeitzuschlagEditor eingebaut
+src/components/lp/AktivPhase.tsx          — +onConfigUpdate Prop, klappbarer Zeitzuschlag-Bereich
+src/components/lp/DurchfuehrenDashboard.tsx — onConfigUpdate verdrahtet (speichereConfig)
+src/components/lp/composer/ConfigTab.tsx  — Zeitzuschlag-Sektion entfernt
+.claude/rules/code-quality.md            — tsc -b Rule
+```
+
+### Offen
+- **SEB nochmal testen** nach Login-Fixes, dann gezielt debuggen
+- **F1-F15 Fixes live testen** (User testet nach Deploy)
+
+---
+
 ## Session 25.03.2026 (3) — F1-F15 LP-Live-Test-Feedback
 
 ### Erledigt (12 Commits, 14 Tasks in 4 Clustern)
@@ -156,8 +183,8 @@ Alle 6 Phasen des Production-Readiness-Plans abgeschlossen.
 | F15 | **Korrektur-Status** — "X von Y korrigiert" im Tracker | ✅ 25.03 |
 
 ### Noch offene Feature-Wünsche (aus früherer Diskussion)
-- **Zeitzuschlag (Nachteilsausgleich)** bei SuS in Durchführung definieren, nicht im Composer
-- **SEB-Lösung** — Effektiv zum Laufen bringen + Fallback für Geräte wo SEB nicht funktioniert
+- ✅ **Zeitzuschlag (Nachteilsausgleich)** — Von Composer in Durchführung verschoben (25.03.2026)
+- **SEB-Lösung** — Nach Login-Fixes nochmal testen, dann gezielt debuggen (nicht blind fixen)
 
 ---
 
