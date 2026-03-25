@@ -132,12 +132,28 @@ export default function PDFFrage({ frage }: Props) {
 
   // --- Render ---
 
-  // Loading state
-  if (renderer.state.status === 'loading') {
+  // Loading state — sofort Spinner zeigen (kein weisses leeres Feld)
+  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && (frage.pdfBase64 || frage.pdfUrl || frage.pdfDriveFileId || frage.pdfDateiname))) {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-center p-12 text-slate-500 dark:text-slate-400">
-          <span className="animate-pulse">PDF wird geladen...</span>
+        {/* Badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
+            {frage.fachbereich}
+          </span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            PDF
+          </span>
+        </div>
+        {/* Fragetext */}
+        <div
+          className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
+        />
+        {/* Lade-Platzhalter */}
+        <div className="flex items-center justify-center gap-2 p-8 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50">
+          <span className="inline-block w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm text-slate-500 dark:text-slate-400">PDF wird geladen...</span>
         </div>
       </div>
     )

@@ -1,7 +1,7 @@
 // Re-export shared types from canonical location
 export type {
   PDFFrage, PDFAnnotation, PDFHighlightAnnotation, PDFKommentarAnnotation,
-  PDFFreihandAnnotation, PDFLabelAnnotation, PDFKategorie,
+  PDFFreihandAnnotation, PDFLabelAnnotation, PDFTextAnnotation, PDFKategorie,
   PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFTextRange,
 } from '../../../types/fragen.ts'
 

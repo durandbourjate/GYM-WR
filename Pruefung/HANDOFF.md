@@ -6,6 +6,52 @@
 
 ---
 
+## Session 25.03.2026 (5) — LP-Test-Feedback Runde 2
+
+### Erledigt (10 Tasks in 3 Clustern)
+
+**Cluster 1 — Quick-Fixes:**
+- **Beenden ohne Popup (0 aktive SuS):** Kein Dialog mehr. AktivPhase ruft API direkt auf.
+- **Beenden-Dialog vereinfacht:** 2-Schritt-Bestätigung → 1 Schritt (Modus wählen + direkt beenden).
+- **Auto-Geprüft:** Punkte ändern, Kommentar schreiben, Audio aufnehmen → Frage automatisch als geprüft markiert.
+- **Konsistentes Korrektur-Layout:** Alle 3 Fragetypen (Standard/Zeichnen/PDF) haben identische Bewertungszeile: `[Punkte] [= X Pkt.] [🎤 Audio] [☑ Geprüft]`
+- **Korrektur-Status auto-update:** `korrekturStatus` wechselt automatisch zu `review-fertig` wenn alle Fragen geprüft. Wechselt zurück wenn Geprüft entfernt wird.
+- **Freigabe-Banner:** Grünes Banner erscheint wenn alle SuS korrigiert sind, mit prominentem "Ergebnisse freigeben"-Button.
+
+**Cluster 2 — Material-Panel & PDF:**
+- **Material-Panel grösser:** Split-Modus von 45% auf 55% Breite, min-w 400px.
+- **PDF-Ladeindikator:** Spinner + Text sofort sichtbar (kein weisses Feld mehr). Fragetext wird während Laden bereits angezeigt.
+- **Zeichnen Text-Tool:** Robusterer Focus (Doppel-Versuch für iOS), `stopPropagation` auf Input, höherer z-Index, besserer visueller Kontrast.
+
+**Cluster 3 — PDF-Textannotation:**
+- **Neuer Annotationstyp `text`:** Klick auf PDF → Textfeld an Klickposition → Text direkt auf PDF sichtbar (SVG `<text>`-Element).
+- Text-Werkzeug in PDFToolbar hinzugefügt, Farbpicker für Text-Farbe.
+- `PDFTextAnnotation`-Typ in `types/fragen.ts` (position, text, farbe, groesse, fett).
+
+### Neue/Geänderte Dateien
+```
+src/components/lp/AktivPhase.tsx            — Beenden-Bypass bei 0 SuS
+src/components/lp/BeendenDialog.tsx          — 1-Schritt-Dialog (komplett neu geschrieben)
+src/components/lp/KorrekturFrageZeile.tsx    — Auto-Geprüft + Layout (Audio neben Geprüft)
+src/components/lp/ZeichnenKorrektur.tsx      — Auto-Geprüft + Layout
+src/components/lp/PDFKorrektur.tsx           — Auto-Geprüft + Layout + text-Zähler
+src/components/lp/KorrekturDashboard.tsx     — Status-Auto-Update + Freigabe-Banner
+src/components/MaterialPanel.tsx             — 55% Breite
+src/components/fragetypen/PDFFrage.tsx        — Spinner statt weisses Feld
+src/components/fragetypen/pdf/PDFSeite.tsx    — Text-Overlay + renderTextAnnotation
+src/components/fragetypen/pdf/PDFToolbar.tsx  — Text-Werkzeug + Farbpicker
+src/components/fragetypen/pdf/PDFTypes.ts     — PDFTextAnnotation Export
+src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx — Robusterer Text-Focus
+src/types/fragen.ts                          — PDFTextAnnotation Typ
+```
+
+### Noch offen
+- **PDF zeigt kein PDF:** Muss live getestet werden — evtl. DriveFileId nicht korrekt importiert oder Apps Script gibt kein Base64 zurück
+- **Text-Formatierung erweitert:** Grössenauswahl (S/M/L/XL), Fett-Toggle, Rotation — Grundstruktur vorhanden, UI noch nicht in Toolbar
+- **SEB testen** — nach diesen Fixes nochmal gezielt
+
+---
+
 ## Offene Punkte
 
 ### ✅ Service Worker Cache — GELÖST (25.03.2026)

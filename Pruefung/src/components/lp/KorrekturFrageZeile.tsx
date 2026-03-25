@@ -106,8 +106,23 @@ export default function KorrekturFrageZeile({
         </div>
       )}
 
-      {/* LP-Override */}
-      <div className="flex flex-wrap items-start gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+      {/* Kommentar */}
+      <div className="mt-2">
+        <textarea
+          rows={2}
+          value={bewertung.lpKommentar ?? ''}
+          placeholder="Kommentar für SuS..."
+          onChange={(e) => {
+            const wert = e.target.value || null
+            // Auto-Geprüft wenn Kommentar geschrieben wird
+            onUpdate({ lpKommentar: wert, ...(wert ? { geprueft: true } : {}) })
+          }}
+          className="w-full rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500 resize-none"
+        />
+      </div>
+
+      {/* Bewertungszeile: Punkte | = X Pkt. | 🎤 Audio | ☑ Geprüft */}
+      <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
         {/* Punkte-Eingabe */}
         <div className="flex items-center gap-1.5">
           <label htmlFor={`punkte-${frageId}`} className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
@@ -127,7 +142,8 @@ export default function KorrekturFrageZeile({
               } else {
                 const val = parseFloat(raw)
                 if (!isNaN(val) && val >= 0 && val <= bewertung.maxPunkte) {
-                  onUpdate({ lpPunkte: val })
+                  // Auto-Geprüft bei Punkte-Änderung
+                  onUpdate({ lpPunkte: val, geprueft: true })
                 }
               }
             }}
@@ -152,41 +168,29 @@ export default function KorrekturFrageZeile({
           </span>
         </div>
 
-        {/* Geprüft-Checkbox */}
-        <label className="flex items-center gap-1.5 ml-auto cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={bewertung.geprueft}
-            onChange={(e) => onUpdate({ geprueft: e.target.checked })}
-            className="rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 dark:bg-slate-700 cursor-pointer"
+        {/* Audio + Geprüft (rechts, zusammen) */}
+        <div className="flex items-center gap-2 ml-auto">
+          <AudioRecorder
+            bestehendeAudioId={bewertung.audioKommentarId}
+            kompakt
+            onSpeichern={async (blob) => {
+              const driveId = await onAudioUpload(frageId, blob)
+              if (driveId) {
+                // Auto-Geprüft bei Audio-Kommentar
+                onUpdate({ audioKommentarId: driveId, geprueft: true })
+              }
+            }}
           />
-          <span className="text-xs text-slate-600 dark:text-slate-300">Geprüft</span>
-        </label>
-      </div>
-
-      {/* Kommentar */}
-      <div className="mt-2">
-        <textarea
-          rows={2}
-          value={bewertung.lpKommentar ?? ''}
-          placeholder="Kommentar für SuS..."
-          onChange={(e) => onUpdate({ lpKommentar: e.target.value || null })}
-          className="w-full rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500 resize-none"
-        />
-      </div>
-
-      {/* Audio-Kommentar */}
-      <div className="mt-2">
-        <AudioRecorder
-          bestehendeAudioId={bewertung.audioKommentarId}
-          kompakt
-          onSpeichern={async (blob) => {
-            const driveId = await onAudioUpload(frageId, blob)
-            if (driveId) {
-              onUpdate({ audioKommentarId: driveId })
-            }
-          }}
-        />
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={bewertung.geprueft}
+              onChange={(e) => onUpdate({ geprueft: e.target.checked })}
+              className="rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 dark:bg-slate-700 cursor-pointer"
+            />
+            <span className="text-xs text-slate-600 dark:text-slate-300">Geprüft</span>
+          </label>
+        </div>
       </div>
     </div>
   )

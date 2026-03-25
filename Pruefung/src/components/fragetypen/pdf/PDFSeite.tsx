@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import type {
   PDFAnnotation, PDFHighlightAnnotation, PDFKommentarAnnotation,
-  PDFFreihandAnnotation, PDFLabelAnnotation, PDFKategorie,
+  PDFFreihandAnnotation, PDFLabelAnnotation, PDFTextAnnotation, PDFKategorie,
   PDFToolbarWerkzeug, PDFTextRange,
 } from './PDFTypes.ts'
 import type { PDFSeitenInfo, ZoomStufe } from './PDFTypes.ts'
@@ -102,6 +102,11 @@ export function PDFSeite({
 
   // Popover state
   const [kommentarPopover, setKommentarPopover] = useState<{ x: number; y: number } | null>(null)
+  // Text-Annotation Overlay
+  const [textOverlay, setTextOverlay] = useState<{
+    sichtbar: boolean; relX: number; relY: number; cssX: number; cssY: number; text: string
+  }>({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
+  const textInputRef = useRef<HTMLInputElement>(null)
   const [kategorieChooser, setKategorieChooser] = useState<{
     x: number; y: number; textRange: PDFTextRange
   } | null>(null)
@@ -210,7 +215,23 @@ export function PDFSeite({
       return
     }
 
-    if (aktivesWerkzeug !== 'kommentar' || !seitenInfo) return
+    if (!seitenInfo) return
+
+    // Text-Werkzeug: Input-Overlay an Klickposition
+    if (aktivesWerkzeug === 'text') {
+      const containerRect = containerRef.current?.getBoundingClientRect()
+      if (!containerRect) return
+      const relX = (e.clientX - containerRect.left) / seitenInfo.breite
+      const relY = (e.clientY - containerRect.top) / seitenInfo.hoehe
+      const cssX = e.clientX - containerRect.left
+      const cssY = e.clientY - containerRect.top
+      setTextOverlay({ sichtbar: true, relX, relY, cssX, cssY, text: '' })
+      // Focus nach kurzer Verzögerung (DOM muss erst rendern)
+      setTimeout(() => textInputRef.current?.focus(), 30)
+      return
+    }
+
+    if (aktivesWerkzeug !== 'kommentar') return
     const containerRect = containerRef.current?.getBoundingClientRect()
     if (!containerRect) return
 
@@ -239,6 +260,27 @@ export function PDFSeite({
     setKommentarPopover(null)
     containerRef.current?.removeAttribute('data-kommentar-rel')
   }, [seitenNr, onAnnotationHinzufuegen])
+
+  // Text-Annotation speichern
+  const handleTextSave = useCallback(() => {
+    if (!textOverlay.sichtbar || !textOverlay.text.trim()) {
+      setTextOverlay(prev => ({ ...prev, sichtbar: false }))
+      return
+    }
+    const annotation: PDFTextAnnotation = {
+      id: erzeugeId(),
+      seite: seitenNr,
+      zeitstempel: new Date().toISOString(),
+      werkzeug: 'text',
+      position: { x: textOverlay.relX, y: textOverlay.relY },
+      text: textOverlay.text.trim(),
+      farbe: aktiveFarbe,
+      groesse: 16,
+      fett: false,
+    }
+    onAnnotationHinzufuegen(annotation)
+    setTextOverlay({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
+  }, [textOverlay, seitenNr, aktiveFarbe, onAnnotationHinzufuegen])
 
   // --- Freehand drawing ---
   const handleDrawStart = useCallback((e: React.MouseEvent) => {
@@ -311,6 +353,7 @@ export function PDFSeite({
   // Cursor based on active tool
   const cursor = readOnly ? 'default'
     : aktivesWerkzeug === 'highlighter' || aktivesWerkzeug === 'label' ? 'text'
+    : aktivesWerkzeug === 'text' ? 'text'
     : aktivesWerkzeug === 'kommentar' ? 'crosshair'
     : aktivesWerkzeug === 'freihand' ? 'crosshair'
     : aktivesWerkzeug === 'radierer' ? 'pointer'
@@ -354,6 +397,43 @@ export function PDFSeite({
         style={{ pointerEvents: aktivesWerkzeug === 'freihand' ? 'auto' : 'none' }}
         onMouseUp={handleDrawEnd}
       />
+
+      {/* Text-Eingabe-Overlay */}
+      {textOverlay.sichtbar && (
+        <input
+          ref={textInputRef}
+          type="text"
+          inputMode="text"
+          autoComplete="off"
+          value={textOverlay.text}
+          onChange={(e) => setTextOverlay(prev => ({ ...prev, text: e.target.value }))}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') { e.preventDefault(); handleTextSave() }
+            if (e.key === 'Escape') { e.preventDefault(); setTextOverlay(prev => ({ ...prev, sichtbar: false })) }
+            e.stopPropagation()
+          }}
+          onBlur={() => setTimeout(handleTextSave, 150)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'absolute',
+            left: textOverlay.cssX,
+            top: textOverlay.cssY,
+            fontSize: '16px',
+            fontFamily: 'sans-serif',
+            color: aktiveFarbe,
+            background: 'rgba(255,255,255,0.9)',
+            border: '2px solid #3b82f6',
+            borderRadius: '4px',
+            padding: '4px 8px',
+            minWidth: '120px',
+            outline: 'none',
+            zIndex: 20,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          }}
+          placeholder="Text eingeben..."
+        />
+      )}
 
       {/* Popover: comment */}
       {kommentarPopover && (
@@ -403,6 +483,9 @@ function renderSVGOverlay(
         break
       case 'freihand':
         elements.push(renderFreihand(ann, seitenInfo))
+        break
+      case 'text':
+        elements.push(renderTextAnnotation(ann, seitenInfo))
         break
     }
   }
@@ -523,6 +606,32 @@ function renderFreihand(
       strokeLinejoin="round"
       className="pointer-events-auto cursor-pointer"
     />
+  )
+}
+
+function renderTextAnnotation(
+  ann: PDFTextAnnotation,
+  seitenInfo: PDFSeitenInfo,
+): React.ReactNode {
+  const px = ann.position.x * seitenInfo.breite
+  const py = ann.position.y * seitenInfo.hoehe
+  const fontSize = ann.groesse || 16
+
+  return (
+    <text
+      key={`txt-${ann.id}`}
+      data-annotation-id={ann.id}
+      x={px}
+      y={py}
+      fill={ann.farbe}
+      fontSize={fontSize}
+      fontFamily="sans-serif"
+      fontWeight={ann.fett ? 'bold' : 'normal'}
+      className="pointer-events-auto cursor-pointer"
+      style={{ userSelect: 'none' }}
+    >
+      {ann.text}
+    </text>
   )
 }
 

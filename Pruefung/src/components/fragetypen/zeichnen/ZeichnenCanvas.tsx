@@ -235,9 +235,16 @@ export function ZeichnenCanvas({
   );
 
   // Text-Input Auto-Focus wenn Overlay erscheint
+  // Mehrfacher Versuch wegen iOS/Tablet-Einschränkungen bei programmatischem Focus
   useEffect(() => {
     if (textOverlay.sichtbar && textInputRef.current) {
+      // Sofort versuchen
       textInputRef.current.focus();
+      // Fallback nach kurzer Verzögerung (iOS braucht manchmal einen Frame)
+      const timer = setTimeout(() => {
+        textInputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [textOverlay.sichtbar]);
 
@@ -554,6 +561,9 @@ export function ZeichnenCanvas({
         <input
           ref={textInputRef}
           type="text"
+          inputMode="text"
+          autoComplete="off"
+          autoCapitalize="sentences"
           value={textOverlay.text}
           onChange={e =>
             setTextOverlay(prev => ({ ...prev, text: e.target.value }))
@@ -566,10 +576,16 @@ export function ZeichnenCanvas({
               e.preventDefault();
               textAbschliessen(true);
             }
+            // Verhindern, dass Tastatur-Shortcuts (Delete/Backspace) vom Canvas-Handler abgefangen werden
+            e.stopPropagation();
           }}
           onBlur={() => {
             // Kleiner Delay damit der Blur nicht sofort beim Focus-Wechsel feuert
-            setTimeout(() => textAbschliessen(false), 100);
+            setTimeout(() => textAbschliessen(false), 150);
+          }}
+          onPointerDown={e => {
+            // Klick auf das Text-Input soll NICHT vom Canvas abgefangen werden
+            e.stopPropagation();
           }}
           style={{
             position: 'absolute',
@@ -578,13 +594,14 @@ export function ZeichnenCanvas({
             fontSize: '18px',
             fontFamily: 'sans-serif',
             color: aktiveFarbe,
-            background: 'rgba(255,255,255,0.85)',
-            border: '1px solid #3b82f6',
-            borderRadius: '3px',
-            padding: '1px 4px',
-            minWidth: '80px',
+            background: 'rgba(255,255,255,0.9)',
+            border: '2px solid #3b82f6',
+            borderRadius: '4px',
+            padding: '4px 8px',
+            minWidth: '120px',
             outline: 'none',
-            zIndex: 10,
+            zIndex: 20,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
           }}
           placeholder="Text eingeben…"
         />

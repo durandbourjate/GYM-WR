@@ -344,7 +344,7 @@ export interface AufgabengruppeFrage extends FrageBase {
 
 // === PDF-ANNOTATION ===
 
-export type PDFAnnotationsWerkzeug = 'highlighter' | 'kommentar' | 'freihand' | 'label'
+export type PDFAnnotationsWerkzeug = 'highlighter' | 'kommentar' | 'freihand' | 'label' | 'text'
 export type PDFToolbarWerkzeug = PDFAnnotationsWerkzeug | 'radierer' | 'auswahl'
 
 export interface PDFKategorie {
@@ -391,11 +391,21 @@ export interface PDFLabelAnnotation extends PDFAnnotationBase {
   farbe: string
 }
 
+export interface PDFTextAnnotation extends PDFAnnotationBase {
+  werkzeug: 'text'
+  position: { x: number; y: number }
+  text: string
+  farbe: string
+  groesse: number // Font-Grösse in px
+  fett: boolean
+}
+
 export type PDFAnnotation =
   | PDFHighlightAnnotation
   | PDFKommentarAnnotation
   | PDFFreihandAnnotation
   | PDFLabelAnnotation
+  | PDFTextAnnotation
 
 export interface PDFFrage extends FrageBase {
   typ: 'pdf'

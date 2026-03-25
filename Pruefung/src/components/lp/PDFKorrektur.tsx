@@ -32,6 +32,7 @@ function zaehleAnnotationen(annotationen: PDFAnnotation[]): Record<string, numbe
     label: 0,
     kommentar: 0,
     freihand: 0,
+    text: 0,
   }
   for (const a of annotationen) {
     if (a.werkzeug in counts) {
@@ -254,26 +255,17 @@ export default function PDFKorrektur({
               rows={3}
               value={kommentar}
               placeholder="Kommentar zur PDF-Bearbeitung..."
-              onChange={(e) => handleKommentarChange(e.target.value)}
+              onChange={(e) => {
+            handleKommentarChange(e.target.value)
+            // Auto-Geprüft bei Kommentar
+            if (e.target.value.trim()) onUpdate({ geprueft: true })
+          }}
               className="w-full rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500 resize-none"
             />
           </div>
 
-          {/* Audio + KI-Buttons */}
+          {/* KI-Button */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex-1 min-w-0">
-              <AudioRecorder
-                bestehendeAudioId={bewertung.audioKommentarId}
-                kompakt
-                onSpeichern={async (blob) => {
-                  const driveId = await onAudioUpload(frageId, blob)
-                  if (driveId) {
-                    onUpdate({ audioKommentarId: driveId })
-                  }
-                }}
-              />
-            </div>
-
             <button
               onClick={handleKiVorschlag}
               disabled={kiLaedt || kiVorschlagGeladen}
@@ -334,7 +326,7 @@ export default function PDFKorrektur({
         </div>
       </div>
 
-      {/* Punktefeld (volle Breite) */}
+      {/* Bewertungszeile: Punkte | = X Pkt. | 🎤 Audio | ☑ Geprüft */}
       <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
         <div className="flex items-center gap-1.5">
           <label htmlFor={`pk-punkte-${frageId}`} className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
@@ -354,7 +346,8 @@ export default function PDFKorrektur({
               } else {
                 const val = parseFloat(raw)
                 if (!isNaN(val) && val >= 0 && val <= maxPunkte) {
-                  onUpdate({ lpPunkte: val })
+                  // Auto-Geprüft bei Punkte-Änderung
+                  onUpdate({ lpPunkte: val, geprueft: true })
                 }
               }
             }}
@@ -378,15 +371,29 @@ export default function PDFKorrektur({
           </span>
         </div>
 
-        <label className="flex items-center gap-1.5 ml-auto cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={bewertung.geprueft}
-            onChange={(e) => onUpdate({ geprueft: e.target.checked })}
-            className="rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 dark:bg-slate-700 cursor-pointer"
+        {/* Audio + Geprüft (rechts, zusammen) */}
+        <div className="flex items-center gap-2 ml-auto">
+          <AudioRecorder
+            bestehendeAudioId={bewertung.audioKommentarId}
+            kompakt
+            onSpeichern={async (blob) => {
+              const driveId = await onAudioUpload(frageId, blob)
+              if (driveId) {
+                // Auto-Geprüft bei Audio-Kommentar
+                onUpdate({ audioKommentarId: driveId, geprueft: true })
+              }
+            }}
           />
-          <span className="text-xs text-slate-600 dark:text-slate-300">Geprüft</span>
-        </label>
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={bewertung.geprueft}
+              onChange={(e) => onUpdate({ geprueft: e.target.checked })}
+              className="rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 dark:bg-slate-700 cursor-pointer"
+            />
+            <span className="text-xs text-slate-600 dark:text-slate-300">Geprüft</span>
+          </label>
+        </div>
       </div>
     </div>
   )

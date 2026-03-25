@@ -29,7 +29,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
   // Split-Modus: Seitliches Panel ohne Backdrop
   if (modus === 'split') {
     return (
-      <div className="w-[45%] min-w-[320px] bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col h-full">
+      <div className="w-[55%] min-w-[400px] bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col h-full">
         {/* Header — kompakt im Split-Modus */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-slate-700 shrink-0">
           <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-200">

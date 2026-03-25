@@ -234,7 +234,21 @@ export default function AktivPhase({ config, schuelerStatus, onBeenden, onConfig
       <div className="flex justify-center pt-2 border-t border-slate-200 dark:border-slate-700">
         <button
           type="button"
-          onClick={() => setZeigBeendenDialog(true)}
+          onClick={() => {
+            // Bei 0 aktiven SuS: direkt beenden ohne Dialog
+            const aktive = schuelerStatus.filter((s) => s.status === 'aktiv').length
+            if (aktive === 0) {
+              apiService.beendePruefung({
+                pruefungId: config.id,
+                email: user?.email ?? '',
+                modus: 'sofort',
+              }).then((result) => {
+                if (result.success) onBeenden()
+              })
+              return
+            }
+            setZeigBeendenDialog(true)
+          }}
           className="px-6 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer font-medium"
         >
           Prüfung beenden

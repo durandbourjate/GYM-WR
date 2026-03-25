@@ -23,6 +23,7 @@ interface Props {
 
 const WERKZEUG_DEFS: { id: PDFAnnotationsWerkzeug; icon: string | ReactNode; label: string }[] = [
   { id: 'highlighter', icon: <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />, label: 'Markieren' },
+  { id: 'text', icon: 'T', label: 'Text einfügen' },
   { id: 'kommentar', icon: '💬', label: 'Kommentar' },
   { id: 'freihand', icon: '✏️', label: 'Freihand' },
   { id: 'label', icon: '🏷', label: 'Kategorie zuweisen' },
@@ -56,7 +57,7 @@ export function PDFToolbar({
 
   const zeigeFarbPicker =
     farbPickerOffen &&
-    (aktivesWerkzeug === 'highlighter' || aktivesWerkzeug === 'freihand')
+    (aktivesWerkzeug === 'highlighter' || aktivesWerkzeug === 'freihand' || aktivesWerkzeug === 'text')
 
   const zeigeKategorieSelect =
     aktivesWerkzeug === 'label' && kategorien && kategorien.length > 0
@@ -97,7 +98,7 @@ export function PDFToolbar({
           title={def.label}
           onClick={() => {
             onWerkzeugWechsel(def.id)
-            if (def.id === 'highlighter' || def.id === 'freihand') {
+            if (def.id === 'highlighter' || def.id === 'freihand' || def.id === 'text') {
               setFarbPickerOffen(true)
             } else {
               setFarbPickerOffen(false)

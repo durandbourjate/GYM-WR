@@ -194,7 +194,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     lpKommentar?: string | null
     geprueft?: boolean
   }) => {
-    // Lokal sofort aktualisieren
+    // Lokal sofort aktualisieren + Status automatisch berechnen
     setKorrektur((prev) => {
       if (!prev) return prev
       return {
@@ -203,12 +203,17 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
           if (s.email !== schuelerEmail) return s
           const bewertung = s.bewertungen[frageId]
           if (!bewertung) return s
+          const neueBewertungen = {
+            ...s.bewertungen,
+            [frageId]: { ...bewertung, ...updates },
+          }
+          // Status automatisch auf 'review-fertig' setzen wenn alle geprüft
+          const alleGeprueft = Object.values(neueBewertungen).every((b) => b.geprueft)
+          const neuerStatus = alleGeprueft ? 'review-fertig' as const : s.korrekturStatus === 'review-fertig' ? 'offen' as const : s.korrekturStatus
           return {
             ...s,
-            bewertungen: {
-              ...s.bewertungen,
-              [frageId]: { ...bewertung, ...updates },
-            },
+            bewertungen: neueBewertungen,
+            korrekturStatus: neuerStatus,
           }
         }),
       }
@@ -678,6 +683,32 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Freigabe-Hinweis wenn alle Korrekturen abgeschlossen */}
+        {korrektur && korrektur.schueler.length > 0 && !einsichtFreigegeben && korrektur.schueler.every((s) =>
+          Object.values(s.bewertungen).every((b) => b.geprueft)
+        ) && (
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                Alle Korrekturen abgeschlossen
+              </p>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-0.5">
+                {korrektur.schueler.length} SuS korrigiert. Ergebnisse können jetzt freigegeben werden.
+              </p>
+            </div>
+            <button
+              onClick={async () => {
+                if (!user) return
+                const ok = await apiService.korrekturFreigeben(pruefungId, true, user.email, 'einsicht')
+                if (ok) setEinsichtFreigegeben(true)
+              }}
+              className="shrink-0 px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors cursor-pointer"
+            >
+              Ergebnisse freigeben
+            </button>
           </div>
         )}
 
