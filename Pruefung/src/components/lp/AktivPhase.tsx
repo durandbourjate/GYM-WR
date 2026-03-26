@@ -238,17 +238,19 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                   </td>
                   {/* Kontrolle */}
                   <td className="px-3 py-2 text-xs">
-                    {s.kontrollStufe ? (
-                      s.kontrollStufe === config.kontrollStufe ? (
-                        <span>{stufeIcon(s.kontrollStufe)} {s.kontrollStufe}</span>
-                      ) : (
-                        <span className="text-amber-700 dark:text-amber-400" title="Automatisch angepasst (Gerät)">
-                          {stufeIcon(config.kontrollStufe as string)}→{stufeIcon(s.kontrollStufe)} auto
+                    {(() => {
+                      const lpStufe = (config.kontrollStufe as string) || 'keine'
+                      const susStufe = s.kontrollStufe || lpStufe
+                      if (susStufe === lpStufe) {
+                        return <span>{stufeIcon(susStufe)} {susStufe}</span>
+                      }
+                      // Nur "auto" anzeigen wenn Tablet-Downgrade (streng→standard)
+                      return (
+                        <span className="text-amber-700 dark:text-amber-400" title="Automatisch angepasst (Tablet)">
+                          {stufeIcon(lpStufe)}→{stufeIcon(susStufe)} auto
                         </span>
                       )
-                    ) : (
-                      <span className="text-slate-400">—</span>
-                    )}
+                    })()}
                   </td>
                   {/* Gerät */}
                   <td className="px-3 py-2 text-sm">
@@ -326,7 +328,7 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
 
       {/* Abgabe-Zähler */}
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Abgegeben: {schuelerStatus.filter((s) => s.status === 'abgegeben').length} / {config.teilnehmer?.length ?? schuelerStatus.length}
+        Abgegeben: {schuelerStatus.filter((s) => s.status === 'abgegeben' || s.status === 'beendet-lp').length} / {config.teilnehmer?.length ?? schuelerStatus.length}
       </p>
 
       {/* Beenden-Button */}

@@ -28,7 +28,7 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
   // Verstoss registrieren
   const registriereVerstoss = useCallback((typ: Verstoss['typ'], dauer?: number) => {
     if (!aktiv || gesperrt) return
-    if (effektiv === 'keine' || effektiv === 'locker') return // keine/locker: nur Warnungen, keine Sperre
+    if (effektiv === 'keine') return // keine: komplett deaktiviert
     if (Date.now() < schonfristBisRef.current) return // Schonfrist nach LP-Entsperrung
 
     const verstoss: Verstoss = {
@@ -38,7 +38,10 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
     }
     setVerstoesse(prev => [...prev, verstoss])
 
-    // Nur Tab-Wechsel, Vollbild-Verlust, Split-View zählen
+    // Locker: Verstösse loggen, aber kein Zähler und keine Sperre
+    if (effektiv === 'locker') return
+
+    // Standard/Streng: Tab-Wechsel, Vollbild-Verlust, Split-View zählen für Sperre
     const zaehlt = typ === 'tab-wechsel' || typ === 'vollbild-verlassen' || typ === 'split-view'
     if (zaehlt) {
       setVerstossZaehler(prev => {

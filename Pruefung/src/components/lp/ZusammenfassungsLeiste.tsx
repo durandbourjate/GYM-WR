@@ -7,7 +7,7 @@ interface Props {
 
 export default function ZusammenfassungsLeiste({ schueler, gesamtTeilnehmer }: Props) {
   const aktiv = schueler.filter((s) => s.status === 'aktiv').length
-  const abgegeben = schueler.filter((s) => s.status === 'abgegeben').length
+  const abgegeben = schueler.filter((s) => s.status === 'abgegeben' || s.status === 'beendet-lp').length
   const ausstehend = gesamtTeilnehmer - schueler.filter((s) => s.status !== 'nicht-gestartet').length
 
   return (

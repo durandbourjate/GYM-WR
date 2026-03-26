@@ -1849,7 +1849,9 @@ function ladeMonitoring(pruefungId, email) {
           email: row.email || '',
           name: row.name || row.email || '',
           klasse: row.klasse || '',
-          status: susBeendetUm ? 'beendet-lp' : (row.istAbgabe === 'true' ? 'abgegeben' : (row.letzterHeartbeat ? 'aktiv' : 'nicht-gestartet')),
+          status: row.istAbgabe === 'true'
+            ? (susBeendetUm && row.abgabezeit && new Date(row.abgabezeit) >= new Date(susBeendetUm) ? 'beendet-lp' : 'abgegeben')
+            : (susBeendetUm ? 'beendet-lp' : (row.letzterHeartbeat ? 'aktiv' : 'nicht-gestartet')),
           letzterSave: row.letzterSave || '',
           letzterHeartbeat: row.letzterHeartbeat || '',
           heartbeats: Number(row.heartbeats) || 0,
