@@ -257,7 +257,7 @@ export default function Layout() {
   const istSplitModus = materialModus === 'split'
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+    <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       {/* SEB-Warnung */}
       {/* SEB-Warnung — absichtlich nicht schliessbar */}
       {config.sebErforderlich && !istImSEB() && (

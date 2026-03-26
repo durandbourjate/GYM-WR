@@ -234,15 +234,13 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1 relative min-h-0">
-          <iframe
-            src={material.embedUrl}
-            className="absolute inset-0 w-full h-full border-0"
-            title={material.titel}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
+        <iframe
+          src={material.embedUrl}
+          className="flex-1 min-h-0 w-full border-0"
+          title={material.titel}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
       </div>
     )
   }
@@ -257,13 +255,11 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1 relative min-h-0">
-          <iframe
-            src={embedUrl}
-            className="absolute inset-0 w-full h-full border-0"
-            title={material.titel}
-          />
-        </div>
+        <iframe
+          src={embedUrl}
+          className="flex-1 min-h-0 w-full border-0"
+          title={material.titel}
+        />
       </div>
     )
   }
@@ -287,14 +283,12 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1 relative min-h-0">
-          <iframe
-            src={material.url}
-            className="absolute inset-0 w-full h-full border-0"
-            title={material.titel}
-            sandbox="allow-scripts allow-same-origin"
-          />
-        </div>
+        <iframe
+          src={material.url}
+          className="flex-1 min-h-0 w-full border-0"
+          title={material.titel}
+          sandbox="allow-scripts allow-same-origin"
+        />
       </div>
     )
   }
