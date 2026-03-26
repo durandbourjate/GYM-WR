@@ -29,6 +29,7 @@ interface Props {
   onTextGroesseChange?: (g: number) => void
   textFett?: boolean
   onTextFettChange?: (f: boolean) => void
+  hatSelektierteTextAnnotation?: boolean
 }
 
 const WERKZEUG_DEFS: { id: PDFAnnotationsWerkzeug; icon: string | ReactNode; label: string }[] = [
@@ -64,6 +65,7 @@ export function PDFToolbar({
   onTextGroesseChange,
   textFett = false,
   onTextFettChange,
+  hatSelektierteTextAnnotation = false,
 }: Props) {
   const isHorizontal = layout === 'horizontal'
   const [farbPickerOffen, setFarbPickerOffen] = useState(false)
@@ -199,8 +201,8 @@ export function PDFToolbar({
         </div>
       )}
 
-      {/* Text-Optionen (nur bei Text-Werkzeug) */}
-      {aktivesWerkzeug === 'text' && (
+      {/* Text-Optionen (bei Text-Werkzeug oder selektierter Text-Annotation) */}
+      {(aktivesWerkzeug === 'text' || hatSelektierteTextAnnotation) && (
         <>
           {/* Schriftgrösse S/M/L/XL */}
           {onTextGroesseChange && (

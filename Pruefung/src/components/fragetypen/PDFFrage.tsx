@@ -69,6 +69,7 @@ export default function PDFFrage({ frage }: Props) {
   const [textFett, setTextFett] = useState(false)
   const [toolbarLayout, setToolbarLayout] = useState<'horizontal' | 'vertikal'>('horizontal')
   const [ladeFehler, setLadeFehler] = useState<string | null>(null)
+  const [selectedAnnotation, setSelectedAnnotation] = useState<string | null>(null)
 
   // Refs for stale-closure safety
   const frageIdRef = useRef(frage.id)
@@ -304,12 +305,37 @@ export default function PDFFrage({ frage }: Props) {
               readOnly={abgegeben}
               layout={toolbarLayout}
               onLayoutToggle={() => setToolbarLayout(l => l === 'horizontal' ? 'vertikal' : 'horizontal')}
-              textRotation={textRotation}
-              onTextRotationChange={setTextRotation}
-              textGroesse={textGroesse}
-              onTextGroesseChange={setTextGroesse}
-              textFett={textFett}
-              onTextFettChange={setTextFett}
+              textRotation={selectedAnnotation
+                ? ((annotationen.find(a => a.id === selectedAnnotation) as { rotation?: number } | undefined)?.rotation ?? 0) as 0 | 90 | 180 | 270
+                : textRotation}
+              onTextRotationChange={(r) => {
+                if (selectedAnnotation) {
+                  handleAnnotationEditieren(selectedAnnotation, { rotation: r || undefined })
+                } else {
+                  setTextRotation(r)
+                }
+              }}
+              textGroesse={selectedAnnotation
+                ? ((annotationen.find(a => a.id === selectedAnnotation) as { groesse?: number } | undefined)?.groesse ?? 18)
+                : textGroesse}
+              onTextGroesseChange={(g) => {
+                if (selectedAnnotation) {
+                  handleAnnotationEditieren(selectedAnnotation, { groesse: g })
+                } else {
+                  setTextGroesse(g)
+                }
+              }}
+              textFett={selectedAnnotation
+                ? ((annotationen.find(a => a.id === selectedAnnotation) as { fett?: boolean } | undefined)?.fett ?? false)
+                : textFett}
+              onTextFettChange={(f) => {
+                if (selectedAnnotation) {
+                  handleAnnotationEditieren(selectedAnnotation, { fett: f })
+                } else {
+                  setTextFett(f)
+                }
+              }}
+              hatSelektierteTextAnnotation={!!selectedAnnotation && annotationen.some(a => a.id === selectedAnnotation && a.werkzeug === 'text')}
             />
           </div>
         )}
@@ -328,6 +354,8 @@ export default function PDFFrage({ frage }: Props) {
         textRotation={textRotation}
         textGroesse={textGroesse}
         textFett={textFett}
+        selectedAnnotation={selectedAnnotation}
+        onSelectedAnnotationChange={setSelectedAnnotation}
         onAnnotationHinzufuegen={handleAnnotationHinzufuegen}
         onAnnotationLoeschen={handleAnnotationLoeschen}
         onAnnotationEditieren={handleAnnotationEditieren}

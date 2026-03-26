@@ -18,6 +18,8 @@ interface Props {
   textRotation?: 0 | 90 | 180 | 270
   textGroesse?: number
   textFett?: boolean
+  selectedAnnotation?: string | null
+  onSelectedAnnotationChange?: (id: string | null) => void
   readOnly?: boolean
 }
 
@@ -27,7 +29,9 @@ const A4_HOEHE = 842
 
 export function PDFViewer({
   renderer, seitenAnzahl, zoom, annotationen, aktivesWerkzeug, aktiveFarbe,
-  kategorien, aktiveKategorieId, textRotation, textGroesse, textFett, onAnnotationHinzufuegen, onAnnotationLoeschen,
+  kategorien, aktiveKategorieId, textRotation, textGroesse, textFett,
+  selectedAnnotation: selectedAnnotationProp, onSelectedAnnotationChange,
+  onAnnotationHinzufuegen, onAnnotationLoeschen,
   onAnnotationEditieren, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -120,6 +124,8 @@ export function PDFViewer({
                   textRotation={textRotation}
                   textGroesse={textGroesse}
                   textFett={textFett}
+                  selectedAnnotation={selectedAnnotationProp}
+                  onSelectedAnnotationChange={onSelectedAnnotationChange}
                   onAnnotationHinzufuegen={onAnnotationHinzufuegen}
                   onAnnotationLoeschen={onAnnotationLoeschen}
                   onAnnotationEditieren={onAnnotationEditieren}

@@ -24,6 +24,8 @@ interface Props {
   textRotation?: 0 | 90 | 180 | 270
   textGroesse?: number
   textFett?: boolean
+  selectedAnnotation?: string | null
+  onSelectedAnnotationChange?: (id: string | null) => void
   readOnly?: boolean
 }
 
@@ -97,7 +99,8 @@ function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
 export function PDFSeite({
   seitenNr, zoom, renderer, annotationen, aktivesWerkzeug, aktiveFarbe,
   kategorien, aktiveKategorieId: _aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen,
-  onAnnotationEditieren, textRotation = 0, textGroesse = 18, textFett = false, readOnly,
+  onAnnotationEditieren, textRotation = 0, textGroesse = 18, textFett = false,
+  selectedAnnotation: selectedAnnotationProp, onSelectedAnnotationChange, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -112,8 +115,11 @@ export function PDFSeite({
     sichtbar: boolean; relX: number; relY: number; cssX: number; cssY: number; text: string
   }>({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
   const textInputRef = useRef<HTMLInputElement>(null)
-  // Auswahl-State für Text-Annotationen
-  const [selectedAnnotation, setSelectedAnnotation] = useState<string | null>(null)
+  // Auswahl: vom Parent gesteuert
+  const selectedAnnotation = selectedAnnotationProp ?? null
+  const setSelectedAnnotation = onSelectedAnnotationChange ?? (() => {})
+  // Drag-State für Verschieben von Text-Annotationen
+  const dragRef = useRef<{ annotId: string; startRelX: number; startRelY: number; origX: number; origY: number } | null>(null)
   // Edit state for existing text annotations (double-click to edit)
   const [editierendeAnnotation, setEditierendeAnnotation] = useState<{
     id: string; text: string; cssX: number; cssY: number; farbe: string; groesse: number
@@ -241,7 +247,11 @@ export function PDFSeite({
         if (annotId) break
         node = node.parentElement
       }
-      setSelectedAnnotation(annotId === selectedAnnotation ? null : (annotId ?? null))
+      if (annotId) {
+        setSelectedAnnotation(annotId === selectedAnnotation ? null : annotId)
+      } else {
+        setSelectedAnnotation(null)
+      }
       return
     }
 
@@ -359,6 +369,33 @@ export function PDFSeite({
 
   // --- Freehand drawing ---
   const handleDrawStart = useCallback((e: React.PointerEvent) => {
+    // Drag: Selektierte Text-Annotation verschieben
+    if (!readOnly && aktivesWerkzeug === 'auswahl' && selectedAnnotation && seitenInfo) {
+      let node: Element | null = e.target as Element
+      let annotId: string | null = null
+      while (node && node !== e.currentTarget) {
+        annotId = node.getAttribute('data-annotation-id')
+        if (annotId) break
+        node = node.parentElement
+      }
+      if (annotId === selectedAnnotation) {
+        const ann = annotationen.find(a => a.id === selectedAnnotation)
+        if (ann?.werkzeug === 'text') {
+          const containerRect = containerRef.current?.getBoundingClientRect()
+          if (containerRect) {
+            dragRef.current = {
+              annotId: selectedAnnotation,
+              startRelX: (e.clientX - containerRect.left) / seitenInfo.breite,
+              startRelY: (e.clientY - containerRect.top) / seitenInfo.hoehe,
+              origX: (ann as PDFTextAnnotation).position.x,
+              origY: (ann as PDFTextAnnotation).position.y,
+            }
+            e.preventDefault()
+            return
+          }
+        }
+      }
+    }
     if (readOnly || aktivesWerkzeug !== 'freihand' || !seitenInfo) return
     istZeichnung.current = true
     const rect = zeichenCanvasRef.current?.getBoundingClientRect()
@@ -377,9 +414,22 @@ export function PDFSeite({
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.moveTo((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr)
-  }, [readOnly, aktivesWerkzeug, seitenInfo, aktiveFarbe])
+  }, [readOnly, aktivesWerkzeug, seitenInfo, aktiveFarbe, selectedAnnotation, annotationen])
 
   const handleDrawMove = useCallback((e: React.PointerEvent) => {
+    // Drag: Annotation verschieben
+    if (dragRef.current && seitenInfo) {
+      const containerRect = containerRef.current?.getBoundingClientRect()
+      if (!containerRect) return
+      const relX = (e.clientX - containerRect.left) / seitenInfo.breite
+      const relY = (e.clientY - containerRect.top) / seitenInfo.hoehe
+      const dx = relX - dragRef.current.startRelX
+      const dy = relY - dragRef.current.startRelY
+      onAnnotationEditieren?.(dragRef.current.annotId, {
+        position: { x: dragRef.current.origX + dx, y: dragRef.current.origY + dy },
+      } as Partial<PDFAnnotation>)
+      return
+    }
     if (!istZeichnung.current || !seitenInfo) return
     const rect = zeichenCanvasRef.current?.getBoundingClientRect()
     if (!rect) return
@@ -393,9 +443,14 @@ export function PDFSeite({
     const dpr = window.devicePixelRatio
     ctx.lineTo((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr)
     ctx.stroke()
-  }, [seitenInfo])
+  }, [seitenInfo, onAnnotationEditieren])
 
   const handleDrawEnd = useCallback(() => {
+    // Drag-Ende
+    if (dragRef.current) {
+      dragRef.current = null
+      return
+    }
     if (!istZeichnung.current || zeichnungsPfad.current.length < 2) {
       istZeichnung.current = false
       return
@@ -548,41 +603,26 @@ export function PDFSeite({
         />
       )}
 
-      {/* Aktionsleiste für selektierte Text-Annotation */}
+      {/* Löschen-Button für selektierte Text-Annotation */}
       {selectedAnnotation && (() => {
         const ann = annotationen.find(a => a.id === selectedAnnotation && a.werkzeug === 'text') as PDFTextAnnotation | undefined
         if (!ann || !seitenInfo) return null
         const px = ann.position.x * seitenInfo.breite
         const py = ann.position.y * seitenInfo.hoehe
         return (
-          <div
-            style={{ position: 'absolute', left: px, top: py + 8, zIndex: 25 }}
-            className="flex gap-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg shadow-lg p-1"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            type="button"
+            style={{ position: 'absolute', left: px - 8, top: py - (ann.groesse || 16) - 24, zIndex: 25 }}
+            className="px-2 py-1 text-xs text-red-600 bg-white dark:bg-slate-800 border border-red-300 dark:border-red-700 rounded shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30"
+            title="Löschen"
+            onClick={(e) => {
+              e.stopPropagation()
+              onAnnotationLoeschen(ann.id)
+              setSelectedAnnotation(null)
+            }}
           >
-            <button
-              type="button"
-              className="px-2 py-1 text-xs hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
-              title="Rotation ändern"
-              onClick={() => {
-                const neueRotation = (((ann.rotation || 0) + 90) % 360) as 0 | 90 | 180 | 270
-                onAnnotationEditieren?.(ann.id, { rotation: neueRotation || undefined } as Partial<PDFAnnotation>)
-              }}
-            >
-              ⟳ {ann.rotation || 0}°
-            </button>
-            <button
-              type="button"
-              className="px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded"
-              title="Löschen"
-              onClick={() => {
-                onAnnotationLoeschen(ann.id)
-                setSelectedAnnotation(null)
-              }}
-            >
-              ✕
-            </button>
-          </div>
+            ✕ Löschen
+          </button>
         )
       })()}
 
