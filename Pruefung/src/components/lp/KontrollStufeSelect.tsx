@@ -7,21 +7,63 @@ interface Props {
   disabled?: boolean
 }
 
-const STUFEN: { key: KontrollStufe; label: string; icon: string; beschreibung: string }[] = [
-  { key: 'keine', label: 'Keine', icon: '⚪', beschreibung: 'Keine Einschränkungen (für Übungen)' },
-  { key: 'locker', label: 'Locker', icon: '🟢', beschreibung: 'Nur Logging + Warnung' },
-  { key: 'standard', label: 'Standard', icon: '🟡', beschreibung: 'Copy/Paste-Block, Vollbild, 3 Verstösse → Sperre' },
-  { key: 'streng', label: 'Streng', icon: '🔴', beschreibung: 'Sofort-Pause bei Verstoss, SEB empfohlen' },
+const STUFEN: {
+  key: KontrollStufe
+  label: string
+  icon: string
+  beschreibung: string
+  details: string[]
+}[] = [
+  {
+    key: 'keine',
+    label: 'Keine',
+    icon: '⚪',
+    beschreibung: 'Für Übungen',
+    details: ['Kein Logging', 'Keine Einschränkungen', 'Kein Vollbild'],
+  },
+  {
+    key: 'locker',
+    label: 'Locker',
+    icon: '🟢',
+    beschreibung: 'Nur Logging',
+    details: ['Verstösse geloggt', 'Warnung angezeigt', 'Kein Block'],
+  },
+  {
+    key: 'standard',
+    label: 'Standard',
+    icon: '🟡',
+    beschreibung: 'Vollbild + Block',
+    details: ['Copy/Paste blockiert', 'Vollbild erzwungen', 'Tab-Wechsel erkannt', '3 Verstösse → Sperre'],
+  },
+  {
+    key: 'streng',
+    label: 'Streng',
+    icon: '🔴',
+    beschreibung: 'Sofort-Pause',
+    details: ['Sofortige Pause', 'SEB empfohlen', 'Kein Tab-Wechsel'],
+  },
 ]
 
 export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
   const [detailsOffen, setDetailsOffen] = useState(false)
   return (
     <div>
-      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
-        Kontrollstufe
-      </label>
-      <div className="flex border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden">
+      {/* Titel — klickbar zum Ein-/Ausklappen */}
+      <button
+        type="button"
+        onClick={() => setDetailsOffen(!detailsOffen)}
+        className="flex items-center gap-1.5 mb-1 cursor-pointer group"
+      >
+        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          Kontrollstufe
+        </span>
+        <span className={`text-xs text-slate-400 dark:text-slate-500 transition-transform ${detailsOffen ? 'rotate-180' : ''}`}>
+          ▼
+        </span>
+      </button>
+
+      {/* Stufen-Buttons */}
+      <div className="grid grid-cols-4 border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden">
         {STUFEN.map((s) => {
           const istAktiv = value === s.key
           return (
@@ -30,7 +72,7 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
               type="button"
               onClick={() => !disabled && onChange(s.key)}
               disabled={disabled}
-              className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
                 istAktiv
                   ? 'bg-blue-600 text-white'
                   : disabled
@@ -43,35 +85,39 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
           )
         })}
       </div>
-      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-        {STUFEN.find(s => s.key === value)?.beschreibung}
-      </p>
-      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-        Auf iPads wird die Stufe automatisch angepasst (kein Vollbild möglich).
-      </p>
-      <button
-        type="button"
-        onClick={() => setDetailsOffen(!detailsOffen)}
-        className="text-xs text-blue-600 dark:text-blue-400 hover:underline cursor-pointer mt-1"
-      >
-        {detailsOffen ? 'Details ausblenden ▲' : 'Details anzeigen ▼'}
-      </button>
 
+      {/* Details als Spalten unter den Buttons */}
       {detailsOffen && (
-        <div className="mt-2 text-xs text-slate-600 dark:text-slate-400 space-y-2 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div>
-            <span className="font-medium">⚪ Keine:</span> Kein Logging, keine Einschränkungen. Für Übungen.
-          </div>
-          <div>
-            <span className="font-medium">🟢 Locker:</span> Verstösse werden geloggt und als Warnung angezeigt. Kein automatischer Block.
-          </div>
-          <div>
-            <span className="font-medium">🟡 Standard:</span> Copy/Paste blockiert, Vollbild erzwungen, Tab-Wechsel erkannt. Nach 3 Verstössen wird der SuS gesperrt (LP kann entsperren).
-          </div>
-          <div>
-            <span className="font-medium">🔴 Streng:</span> Sofortige Pause bei erstem Verstoss. SEB (Safe Exam Browser) empfohlen. Kein Tab-Wechsel möglich.
+        <div className="grid grid-cols-4 gap-0 border border-t-0 border-slate-200 dark:border-slate-700 rounded-b-lg overflow-hidden bg-slate-50 dark:bg-slate-800/50">
+          {STUFEN.map((s) => (
+            <div
+              key={s.key}
+              className={`px-2 py-2 text-xs text-slate-600 dark:text-slate-400 ${
+                s.key !== 'keine' ? 'border-l border-slate-200 dark:border-slate-700' : ''
+              }`}
+            >
+              <ul className="space-y-0.5">
+                {s.details.map((d, i) => (
+                  <li key={i} className="flex items-start gap-1">
+                    <span className="text-slate-400 dark:text-slate-500 shrink-0">•</span>
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {/* iPad-Hinweis über volle Breite */}
+          <div className="col-span-4 px-3 py-1.5 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-400 dark:text-slate-500">
+            Auf iPads wird die Stufe automatisch angepasst (kein Vollbild möglich).
           </div>
         </div>
+      )}
+
+      {/* Kurzbeschreibung der aktiven Stufe (nur wenn zugeklappt) */}
+      {!detailsOffen && (
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          {STUFEN.find(s => s.key === value)?.beschreibung}
+        </p>
       )}
     </div>
   )

@@ -66,6 +66,7 @@ export default function PDFFrage({ frage }: Props) {
   const [zoom, setZoom] = useState<ZoomStufe>(1)
   const [textRotation, setTextRotation] = useState<0 | 90 | 180 | 270>(0)
   const [toolbarLayout, setToolbarLayout] = useState<'horizontal' | 'vertikal'>('horizontal')
+  const [ladeFehler, setLadeFehler] = useState<string | null>(null)
 
   // Refs for stale-closure safety
   const frageIdRef = useRef(frage.id)
@@ -77,27 +78,67 @@ export default function PDFFrage({ frage }: Props) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // --- Load PDF ---
+  // Sequentielle Fallback-Kette: Drive → URL → Dateiname → Base64
+  // Wenn eine Quelle fehlschlägt, wird die nächste versucht (kein stummer Abbruch)
   useEffect(() => {
     let abgebrochen = false
 
     async function ladePDFAsync() {
-      try {
-        if (frage.pdfBase64) {
+      setLadeFehler(null)
+
+      // 1. Base64 direkt (kein Netzwerk nötig)
+      if (frage.pdfBase64) {
+        try {
           await renderer.ladePDF({ base64: frage.pdfBase64 })
-        } else if (frage.pdfDriveFileId && apiService.istKonfiguriert()) {
-          // PDF aus Google Drive via Apps Script Proxy laden (vermeidet CORS)
-          const result = await apiService.ladeDriveFile(frage.pdfDriveFileId, user?.email ?? '')
-          if (!abgebrochen && result?.base64) {
-            await renderer.ladePDF({ base64: result.base64 })
-          }
-        } else if (frage.pdfUrl) {
-          await renderer.ladePDF({ url: frage.pdfUrl })
-        } else if (frage.pdfDateiname) {
-          // Fallback: lokale Datei im materialien-Ordner
-          await renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
+          return
+        } catch (err) {
+          console.warn('[PDFFrage] Base64-Load fehlgeschlagen:', err)
         }
-      } catch (err) {
-        console.error('[PDFFrage] PDF laden fehlgeschlagen:', err)
+      }
+
+      // 2. Google Drive via Apps Script Proxy (CORS-sicher)
+      if (frage.pdfDriveFileId && apiService.istKonfiguriert()) {
+        try {
+          const result = await apiService.ladeDriveFile(frage.pdfDriveFileId, user?.email ?? '')
+          if (abgebrochen) return
+          if (result?.base64) {
+            await renderer.ladePDF({ base64: result.base64 })
+            return
+          }
+          console.warn('[PDFFrage] Drive-Load lieferte kein base64, versuche Fallback...')
+        } catch (err) {
+          if (abgebrochen) return
+          console.warn('[PDFFrage] Drive-Load fehlgeschlagen, versuche Fallback:', err)
+        }
+      }
+
+      // 3. Direkte URL (funktioniert nur bei same-origin oder CORS-erlaubten URLs)
+      if (frage.pdfUrl) {
+        try {
+          if (abgebrochen) return
+          await renderer.ladePDF({ url: frage.pdfUrl })
+          return
+        } catch (err) {
+          if (abgebrochen) return
+          console.warn('[PDFFrage] URL-Load fehlgeschlagen, versuche Fallback:', err)
+        }
+      }
+
+      // 4. Lokale Datei im materialien-Ordner
+      if (frage.pdfDateiname) {
+        try {
+          if (abgebrochen) return
+          await renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
+          return
+        } catch (err) {
+          console.error('[PDFFrage] Alle PDF-Quellen fehlgeschlagen:', err)
+        }
+      }
+
+      // Keine Quelle verfügbar oder alle fehlgeschlagen → Fehlerzustand
+      if (!abgebrochen) {
+        console.error('[PDFFrage] Kein PDF geladen — keine Quelle verfügbar')
+        setLadeFehler('Alle PDF-Quellen fehlgeschlagen. Bitte Lehrperson informieren.')
       }
     }
 
@@ -164,8 +205,19 @@ export default function PDFFrage({ frage }: Props) {
 
   // --- Render ---
 
+  // Lade-Fehler (alle Quellen fehlgeschlagen)
+  if (ladeFehler) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
+          {ladeFehler}
+        </div>
+      </div>
+    )
+  }
+
   // Loading state — sofort Spinner zeigen (kein weisses leeres Feld)
-  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && (frage.pdfBase64 || frage.pdfUrl || frage.pdfDriveFileId || frage.pdfDateiname))) {
+  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && !ladeFehler && (frage.pdfBase64 || frage.pdfUrl || frage.pdfDriveFileId || frage.pdfDateiname))) {
     return (
       <div className="flex flex-col gap-4">
         {/* Badges */}

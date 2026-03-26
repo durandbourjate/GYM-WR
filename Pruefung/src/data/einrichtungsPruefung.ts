@@ -59,7 +59,7 @@ export const einrichtungsPruefung: PruefungsConfig = {
       id: 'mat-witzsammlung',
       titel: 'Amtliche Witzsammlung der Schweiz (Ausgabe 2026)',
       typ: 'pdf',
-      dateiname: 'witzsammlung.pdf',
+      url: './materialien/witzsammlung.pdf',
     },
   ],
 

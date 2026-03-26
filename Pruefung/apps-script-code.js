@@ -1188,32 +1188,38 @@ function beendePruefungEndpoint(body) {
       : new Date().toISOString();
 
     if (einzelneSuS && einzelneSuS.length > 0) {
-      // Individuelles Beenden: in Antworten-Sheet pro SuS
+      // Individuelles Beenden: in Antworten-Sheet pro SuS (Batch-Write)
       const sheet = getOrCreateAntwortenSheet(pruefungId);
       if (!sheet) return jsonResponse({ success: false, error: 'pruefung_nicht_gefunden' });
 
       // Spalten-Migration: beendetUm + restzeitMinuten hinzufügen falls fehlend
       var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      var beendetUmCol = headers.indexOf('beendetUm') + 1;
-      var restzeitCol = headers.indexOf('restzeitMinuten') + 1;
-      if (beendetUmCol === 0) {
-        beendetUmCol = headers.length + 1;
-        sheet.getRange(1, beendetUmCol).setValue('beendetUm');
+      var beendetUmCol = headers.indexOf('beendetUm');
+      var restzeitCol = headers.indexOf('restzeitMinuten');
+      if (beendetUmCol < 0) {
+        beendetUmCol = headers.length;
+        sheet.getRange(1, beendetUmCol + 1).setValue('beendetUm');
       }
-      if (restzeitCol === 0) {
-        restzeitCol = (beendetUmCol === headers.length + 1 ? headers.length + 2 : headers.length + 1);
-        sheet.getRange(1, restzeitCol).setValue('restzeitMinuten');
+      if (restzeitCol < 0) {
+        restzeitCol = (beendetUmCol === headers.length ? headers.length + 1 : headers.length);
+        sheet.getRange(1, restzeitCol + 1).setValue('restzeitMinuten');
       }
 
-      var emailCol = headers.indexOf('email') + 1;
+      var emailColIdx = headers.indexOf('email');
       var data = sheet.getDataRange().getValues();
+      var hatAenderungen = false;
       for (var i = 1; i < data.length; i++) {
-        if (einzelneSuS.includes(data[i][emailCol - 1])) {
-          sheet.getRange(i + 1, beendetUmCol).setValue(beendetUm);
+        if (einzelneSuS.includes(data[i][emailColIdx])) {
+          data[i][beendetUmCol] = beendetUm;
           if (modus === 'restzeit') {
-            sheet.getRange(i + 1, restzeitCol).setValue(restzeitMinuten);
+            data[i][restzeitCol] = restzeitMinuten;
           }
+          hatAenderungen = true;
         }
+      }
+      // Ein einziger setValues-Call statt N einzelne setValue-Calls
+      if (hatAenderungen) {
+        sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
       }
     } else {
       // Globales Beenden: in Configs-Sheet
@@ -1247,54 +1253,10 @@ function beendePruefungEndpoint(body) {
       }
     }
 
-    // Server-seitiges Safety-Net: Bei Modus "sofort" alle aktiven SuS als abgegeben markieren
-    // Deduplication: Pro Email nur die Row mit den meisten Heartbeats markieren
-    if (modus === 'sofort') {
-      try {
-        var antSheet = getOrCreateAntwortenSheet(pruefungId);
-        if (antSheet) {
-          var antHeaders = antSheet.getRange(1, 1, 1, antSheet.getLastColumn()).getValues()[0];
-          var istAbgabeCol = antHeaders.indexOf('istAbgabe');
-          var abgabezeitCol = antHeaders.indexOf('abgabezeit');
-          var emailColIdx = antHeaders.indexOf('email');
-          var heartbeatsCol = antHeaders.indexOf('heartbeats');
-          if (istAbgabeCol >= 0 && emailColIdx >= 0) {
-            var antData = antSheet.getDataRange().getValues();
-            // Finde die beste Row pro Email (höchste Heartbeats)
-            var bestRowPerEmail = {};
-            for (var j = 1; j < antData.length; j++) {
-              var em = String(antData[j][emailColIdx] || '').toLowerCase();
-              if (!em) continue;
-              var hb = heartbeatsCol >= 0 ? (Number(antData[j][heartbeatsCol]) || 0) : 0;
-              if (!bestRowPerEmail[em] || hb > bestRowPerEmail[em].hb) {
-                bestRowPerEmail[em] = { row: j, hb: hb };
-              }
-            }
-            // Batch-Write: Werte in antData aktualisieren, dann gesamtes Sheet einmal schreiben
-            // (statt einzelne setValue pro SuS → 2×N API-Calls → Timeout bei 25+ SuS)
-            var hatAenderungen = false;
-            for (var em in bestRowPerEmail) {
-              var rowIdx = bestRowPerEmail[em].row;
-              if (antData[rowIdx][istAbgabeCol] !== 'true') {
-                antData[rowIdx][istAbgabeCol] = 'true';
-                if (abgabezeitCol >= 0) {
-                  antData[rowIdx][abgabezeitCol] = beendetUm;
-                }
-                hatAenderungen = true;
-              }
-            }
-            // Ein einziger setValues-Call für alle Zeilen (1 API-Call statt 50+)
-            if (hatAenderungen) {
-              antSheet.getRange(1, 1, antData.length, antData[0].length).setValues(antData);
-            }
-          }
-        }
-      } catch (e) {
-        // Safety-Net Fehler nicht blockierend — Hauptoperation war erfolgreich
-        console.log('Safety-Net Markierung fehlgeschlagen: ' + e.message);
-      }
-    }
-
+    // Response sofort zurück — nicht auf Safety-Net warten!
+    // Die Heartbeats der SuS erkennen beendetUm im Config und lösen Abgabe clientseitig aus.
+    // Das Safety-Net (Antworten-Sheet markieren) blockierte wegen gleichzeitiger Heartbeat-Schreibzugriffe
+    // und verursachte Timeouts bei 25+ SuS. Entfernt zugunsten von client-seitiger Abgabe via Heartbeat.
     return jsonResponse({ success: true, beendetUm: beendetUm });
   } catch (error) {
     return jsonResponse({ success: false, error: error.message });

@@ -6,21 +6,36 @@
 
 ---
 
-## Offene Punkte (nächste Session) — PRIORITÄT
+## Offene Punkte (nächste Session)
 
-### 3 ungelöste Bugs aus Klassentest (systematisch debuggt, Root Causes identifiziert)
+- **Manuelle Punktevergabe** — Korrektur-Tab noch nicht live getestet
+- **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
+- **Zeichnen Text-Werkzeug** — Grundfunktion live testen (Rotation, Grösse, Fett)
+- **Apps Script Code aktualisieren** — Session 19 Änderungen (Safety-Net entfernt, Individual-Beenden Batch-Write) in apps-script-code.js. User muss Code kopieren und neu bereitstellen.
 
-| Bug | Problem | Root Cause (verifiziert) | Fix |
-|-----|---------|------------------------|-----|
-| B39a | **Material-PDF lädt nicht im Split-Modus** (Overlay/Vollbild geht) | `Layout.tsx` Z.260: `min-h-screen` statt `h-screen`. Der flex-Container bekommt keine explizite Höhe → `h-full` auf MaterialPanel löst zu 0px auf → iframe unsichtbar. | `min-h-screen` → `h-screen` auf dem Root-Container, ODER den Main-Container (Z.371) mit expliziter Höhe versehen. CSS-Kette komplett durchverifizieren. |
-| B39b | **PDF in Frage 10 lädt nicht** | `PDFFrage.tsx` Z.87-91: Wenn `pdfDriveFileId` gesetzt ist aber `ladeDriveFile()` null zurückgibt (API-Fehler), wird `renderer.ladePDF()` nie aufgerufen. State bleibt `idle` → **endloser Ladebildschirm**. Kein Fallback auf `pdfUrl`/`pdfDateiname`, kein Error-State. | Fallthrough: Nach Drive-API-Fehler auf `pdfUrl`/`pdfDateiname` zurückfallen. Minimum: Error-State setzen statt endlos laden. |
-| B38 | **"Beenden" hängt immer noch** | `pruefungApi.ts` Z.228-244: `beendePruefung()` nutzt raw `fetch()` OHNE `fetchMitTimeout`-Wrapper (alle anderen API-Funktionen nutzen ihn). Kein AbortController → fetch hängt endlos wenn Apps Script langsam antwortet. **Zusätzlich:** Apps Script `beendePruefungEndpoint` macht mehrere `SpreadsheetApp.openById()` + `getDataRange()` Calls (15-30s+). User muss auch sicherstellen dass eine **neue Bereitstellung** (nicht nur Code-Speicherung) erstellt wurde. | (a) `fetchMitTimeout` in `beendePruefung` verwenden. (b) Apps Script: Sheets-Zugriffe reduzieren (nicht 2× öffnen). (c) Prüfen ob User tatsächlich neue Bereitstellung (neue Version, nicht "Speichern") erstellt hat. |
+### Session 19 — 4 Bugfixes + 1 UX (26.03.2026 Abend)
 
-### UX-Wünsche
+| Task | Beschreibung | Root Cause | Fix | Dateien |
+|------|-------------|------------|-----|---------|
+| B39a | **Material-PDF nicht volle Höhe im Split-Modus** | `MaterialInhalt` nutzte `h-full` (percentage height), aber Parent hatte Höhe via Flex, nicht explizit → `h-full` löste zu 0px auf. 5× vorher gefixt (B29, B36, B38, T4) — immer am Symptom. | Durchgehende Flex-Kette: Content-Wrapper → `flex flex-col`, alle Kind-Container `flex-1 min-h-0` statt `h-full`. Layout.tsx Breiten-Fix (war 55%+55%=110%). | MaterialPanel.tsx, Layout.tsx |
+| B39b | **PDF in Frage 10 lädt nicht (endloser Spinner)** | `PDFFrage.tsx` `if-else if` Kette: Wenn `ladeDriveFile()` fehlschlug, kein Fallback auf `pdfUrl`/`pdfDateiname`. Renderer blieb `idle` → Spinner endlos. | Sequentielle Fallback-Kette: Base64 → Drive → URL → Dateiname. Neuer `ladeFehler`-State verhindert endlosen Spinner. | PDFFrage.tsx |
+| B38 | **"Beenden" hängt** (LP-seitig, trotz Batch-Write) | Safety-Net in `beendePruefungEndpoint` blockierte Response: Las+schrieb Antworten-Sheet NACH Config-Update, aber gleichzeitige Heartbeat-Schreibzugriffe (25+ SuS) blockierten via implizitem Spreadsheet-Lock. | Safety-Net komplett entfernt. Response sofort nach Config-Update. Heartbeats der SuS erkennen `beendetUm` und lösen Abgabe clientseitig aus. + Individual-Beenden auf Batch-Write umgestellt. | apps-script-code.js |
+| U33 | **KontrollStufe Toggle kaum sichtbar** | iPad-Hinweis + Toggle hatten identisches Styling (`text-xs text-blue-600`). Toggle sah aus wie Info-Text. | Titel "Kontrollstufe ▼" klickbar. Details als 4-Spalten-Grid unter den Stufen-Buttons mit Bullet Points. iPad-Hinweis nur im aufgeklappten Zustand. | KontrollStufeSelect.tsx |
+| Fix | **Einrichtungsprüfung Material-URL fehlte** | Material hatte `dateiname` aber kein `url` → MaterialPanel konnte nichts laden. | `url: './materialien/witzsammlung.pdf'` hinzugefügt. | einrichtungsPruefung.ts |
 
-| ID | Beschreibung |
-|----|-------------|
-| U33 | **KontrollStufeSelect**: Details nicht als Toggle-Button, sondern mit Klick auf Titel "Kontrollstufe" ein-/ausblenden. Details als Spalten unter den Stufen-Buttons. iPad-Hinweis nur wenn ausgeklappt. |
+### Geänderte Dateien (6 Dateien, Session 19)
+
+```
+src/components/lp/KontrollStufeSelect.tsx           — U33 (Spalten-Layout)
+src/components/MaterialPanel.tsx                     — B39a (Flex-Kette)
+src/components/Layout.tsx                            — B39a (Breiten-Fix)
+src/components/fragetypen/PDFFrage.tsx                — B39b (Fallback-Kette + ladeFehler)
+src/data/einrichtungsPruefung.ts                     — Fix (Material-URL)
+apps-script-code.js                                  — B38 (Safety-Net entfernt, Individual Batch-Write)
+```
+
+### Hinweis
+**Apps Script aktualisieren:** Code in Editor einfügen → Bereitstellen → Bereitstellungen verwalten → Stift-Icon → "Neue Version" → Bereitstellen. URL bleibt gleich.
 
 ### Weiteres (niedrigere Priorität)
 

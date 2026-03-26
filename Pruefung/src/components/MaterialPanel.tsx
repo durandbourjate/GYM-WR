@@ -79,10 +79,10 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
           </div>
         )}
 
-        {/* Inhalt — overflow-hidden damit iframe/PDF volle Höhe nutzt */}
-        <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        {/* Inhalt — flex flex-col durchgehend damit Höhe via flex-1 fliesst (nicht h-full/percentage) */}
+        <div className="flex-1 overflow-hidden flex flex-col min-h-0">
           {!aktivesMaterial ? (
-            <div className="overflow-auto h-full">
+            <div className="overflow-auto flex-1 min-h-0">
               <MaterialAuswahl materialien={materialien} onWaehlen={setAktivesId} />
             </div>
           ) : (
@@ -154,8 +154,8 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
           </div>
         )}
 
-        {/* Inhalt */}
-        <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        {/* Inhalt — flex flex-col durchgehend */}
+        <div className="flex-1 overflow-hidden flex flex-col min-h-0">
           {!aktivesMaterial ? (
             <MaterialAuswahl materialien={materialien} onWaehlen={setAktivesId} />
           ) : (
@@ -210,11 +210,11 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
   // Video-Dateien (Upload)
   if (material.typ === 'dateiUpload' && material.mimeType?.startsWith('video/') && material.url) {
     return (
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1 flex items-center justify-center p-4" style={{ minHeight: 0 }}>
+        <div className="flex-1 min-h-0 flex items-center justify-center p-4">
           <video
             src={material.url}
             controls
@@ -230,7 +230,7 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
   // Video-Embed (YouTube, Vimeo, nanoo.tv)
   if (material.typ === 'videoEmbed' && material.embedUrl) {
     return (
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
@@ -253,7 +253,7 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
     const embedUrl = convertToEmbedUrl(materialUrl)
 
     return (
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
@@ -284,7 +284,7 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
 
   if (material.typ === 'link' && material.url) {
     return (
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
