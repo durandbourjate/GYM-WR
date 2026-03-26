@@ -47,7 +47,7 @@
 | T5 | Bild Undo/Clear: Engine-Aktionen über `onEngineActions`-Callback exponiert | ZeichnenCanvas.tsx, ZeichnenFrage.tsx |
 | T6 | iPad PDF-Annotation: Mouse→Pointer Events + `touch-action:none` | PDFSeite.tsx |
 | T7 | iPad Tastatur bei Freitext: `user-select:text` Override in `.ProseMirror` (Lockdown setzt `user-select:none` auf body) | index.css |
-| T8 | Offline/Monitoring: Kein Code-Bug — Backend prüft `freigeschaltet` nicht bei Heartbeat/Save. Problem war transient (initiale Duplikat-Probleme). Braucht Live-Diagnose beim nächsten Test. |
+| T8 | Offline/Monitoring: **Root Cause gefunden** — `findOrCreateAntwortenSheet` braucht `https://www.googleapis.com/auth/drive` Scope. Ohne den Scope kann kein `Antworten_`-Sheet erstellt werden → Heartbeat schlägt fehl → SuS "Offline" + LP sieht 0 SuS. Fix: `appsscript.json` mit Drive-Scope ins Repo gelegt + im Apps Script Editor deployen. |
 
 ### Block 1: Bugfixes (4 Tasks)
 
