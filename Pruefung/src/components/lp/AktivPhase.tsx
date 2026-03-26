@@ -346,6 +346,8 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
               }).then((result) => {
                 if (result.success) onBeenden()
                 else setBeendenLaeuft(false)
+              }).catch(() => {
+                setBeendenLaeuft(false)
               })
               return
             }

@@ -34,6 +34,8 @@ export function usePDFRenderer() {
       setState({ status: 'ready', seitenAnzahl: doc.numPages })
     } catch (e) {
       setState({ status: 'error', seitenAnzahl: 0, fehler: String(e) })
+      // Re-throw damit die Fallback-Kette in PDFFrage weitergeht
+      throw e
     }
   }, [])
 

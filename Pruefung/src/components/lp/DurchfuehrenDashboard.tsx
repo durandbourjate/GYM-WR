@@ -3,6 +3,7 @@ import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import { erstelleDemoMonitoring } from '../../data/demoMonitoring.ts'
 import { demoFragen } from '../../data/demoFragen.ts'
+import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
 import type { MonitoringDaten, PruefungsNachricht } from '../../types/monitoring.ts'
 import type { SchuelerAbgabe } from '../../types/korrektur.ts'
 import type { Frage } from '../../types/fragen.ts'
@@ -233,62 +234,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     ladeAbgabenUndFragen()
   }, [user, istDemoModus, pruefungId])
 
-  // Config: Demo-Modus direkt setzen
+  // Config: Demo-Modus — Einrichtungsprüfung verwenden (kein hardcodiertes Demo-Config)
   useEffect(() => {
     if (!user || !pruefungId) return
     if (istDemoModus || pruefungId === 'demo') {
-      setConfig({
-        id: 'demo',
-        titel: 'Demo-Prüfung WR — Wirtschaft & Recht',
-        klasse: '28abcd WR',
-        gefaess: 'SF',
-        semester: 'S4',
-        fachbereiche: ['VWL', 'BWL', 'Recht'],
-        datum: '2026-03-16',
-        typ: 'summativ',
-        modus: 'pruefung',
-        dauerMinuten: 45,
-        zeitModus: 'countdown',
-        gesamtpunkte: 47,
-        erlaubteKlasse: '28abcd WR',
-        sebErforderlich: false,
-        kontrollStufe: 'keine',
-        abschnitte: [
-          {
-            titel: 'Teil A: Multiple Choice & Richtig/Falsch',
-            fragenIds: ['demo-mc-konjunktur', 'demo-mc-vertrag', 'demo-rf-geldpolitik'],
-          },
-          {
-            titel: 'Teil B: Freitext',
-            fragenIds: ['demo-ft-bip', 'demo-ft-kaufvertrag'],
-          },
-          {
-            titel: 'Teil C: Lückentext, Zuordnung & Berechnung',
-            fragenIds: ['demo-lt-normenhierarchie', 'demo-zu-rechtsformen', 'demo-be-erfolgsrechnung'],
-          },
-          {
-            titel: 'Teil D: Zeichnen & PDF-Annotation',
-            fragenIds: ['demo-vis-angebotsnachfrage', 'demo-pdf-or-kaufvertrag'],
-          },
-          {
-            titel: 'Teil E: Finanzbuchhaltung',
-            fragenIds: ['demo-bs-geschaeftsfaelle', 'demo-tk-bank', 'demo-kb-gemischt', 'demo-bilanz-einfach'],
-          },
-          {
-            titel: 'Teil F: Aufgabengruppe',
-            fragenIds: ['demo-ag-gmbh'],
-          },
-        ],
-        zufallsreihenfolgeFragen: false,
-        zufallsreihenfolgeOptionen: false,
-        ruecknavigation: true,
-        zeitanzeigeTyp: 'countdown',
-        autoSaveIntervallSekunden: 30,
-        heartbeatIntervallSekunden: 10,
-        korrektur: { aktiviert: false, modus: 'batch' },
-        feedback: { zeitpunkt: 'nach-review', format: 'in-app-und-pdf', detailgrad: 'vollstaendig' },
-        freigeschaltet: true,
-      })
+      setConfig({ ...einrichtungsPruefung, freigeschaltet: true })
     }
   }, [user, pruefungId, istDemoModus])
 

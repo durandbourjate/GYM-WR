@@ -13,36 +13,40 @@
 - **Zeichnen Text-Werkzeug** — Grundfunktion live testen (Rotation, Grösse, Fett)
 - **Apps Script Code aktualisieren** — Session 19 Änderungen (Safety-Net entfernt, Individual-Beenden Batch-Write) in apps-script-code.js. User muss Code kopieren und neu bereitstellen.
 
-### Session 19 — 4 Bugfixes + 1 UX (26.03.2026 Abend)
+### Session 20 — 4 Root-Cause-Fixes (26.03.2026 Abend, 2. Runde)
 
 | Task | Beschreibung | Root Cause | Fix | Dateien |
 |------|-------------|------------|-----|---------|
-| B39a | **Material-PDF nicht volle Höhe im Split-Modus** | `MaterialInhalt` nutzte `h-full` (percentage height), aber Parent hatte Höhe via Flex, nicht explizit → `h-full` löste zu 0px auf. 5× vorher gefixt (B29, B36, B38, T4) — immer am Symptom. | Durchgehende Flex-Kette: Content-Wrapper → `flex flex-col`, alle Kind-Container `flex-1 min-h-0` statt `h-full`. Layout.tsx Breiten-Fix (war 55%+55%=110%). | MaterialPanel.tsx, Layout.tsx |
-| B39b | **PDF in Frage 10 lädt nicht (endloser Spinner)** | `PDFFrage.tsx` `if-else if` Kette: Wenn `ladeDriveFile()` fehlschlug, kein Fallback auf `pdfUrl`/`pdfDateiname`. Renderer blieb `idle` → Spinner endlos. | Sequentielle Fallback-Kette: Base64 → Drive → URL → Dateiname. Neuer `ladeFehler`-State verhindert endlosen Spinner. | PDFFrage.tsx |
-| B38 | **"Beenden" hängt** (LP-seitig, trotz Batch-Write) | Safety-Net in `beendePruefungEndpoint` blockierte Response: Las+schrieb Antworten-Sheet NACH Config-Update, aber gleichzeitige Heartbeat-Schreibzugriffe (25+ SuS) blockierten via implizitem Spreadsheet-Lock. | Safety-Net komplett entfernt. Response sofort nach Config-Update. Heartbeats der SuS erkennen `beendetUm` und lösen Abgabe clientseitig aus. + Individual-Beenden auf Batch-Write umgestellt. | apps-script-code.js |
-| U33 | **KontrollStufe Toggle kaum sichtbar** | iPad-Hinweis + Toggle hatten identisches Styling (`text-xs text-blue-600`). Toggle sah aus wie Info-Text. | Titel "Kontrollstufe ▼" klickbar. Details als 4-Spalten-Grid unter den Stufen-Buttons mit Bullet Points. iPad-Hinweis nur im aufgeklappten Zustand. | KontrollStufeSelect.tsx |
-| Fix | **Einrichtungsprüfung Material-URL fehlte** | Material hatte `dateiname` aber kein `url` → MaterialPanel konnte nichts laden. | `url: './materialien/witzsammlung.pdf'` hinzugefügt. | einrichtungsPruefung.ts |
+| B39b | **PDF Frage 10: Endloser Spinner** | `usePDFRenderer.ladePDF()` fing Fehler intern ab (setState 'error'), warf sie aber NICHT weiter. Dadurch war die gesamte Fallback-Kette in `PDFFrage.tsx` kaputt — Code dachte jeder Ladeversuch sei erfolgreich. Demo-PDF nutzte CORS-blockierte fedlex-URL. | `ladePDF()`: `throw e` nach `setState('error')` → Fallback-Kette funktioniert. Demo-Frage: base64-PDF statt externer URL. | usePDFRenderer.ts, demoFragen.ts |
+| B39a | **Material-PDF lädt nicht** (Split + Overlay) | `sandbox="allow-scripts allow-same-origin"` auf dem iframe blockierte den Browser-PDF-Viewer. Das sandbox-Attribut verhindert die Initialisierung des Chrome PDF-Plugins. | `sandbox` entfernt — PDFs sind entweder same-origin (lokal) oder Google Drive Preview (eigene Security). | MaterialPanel.tsx |
+| B38 | **"Beenden" hängt** (Frontend, 0 aktive SuS) | Fehlender `.catch()` auf Promise-Chain in AktivPhase.tsx: Wenn `beendePruefung()` rejekte, blieb `beendenLaeuft=true` dauerhaft → Button permanent disabled, kein Error-Feedback. | `.catch(() => setBeendenLaeuft(false))` hinzugefügt. | AktivPhase.tsx |
+| B40 | **"Demo-Prüfung WR" erscheint wieder** | `DurchfuehrenDashboard.tsx` hatte hardcodierten Demo-Config (id='demo', 'Demo-Prüfung WR') der IMMER im Demo-Modus geladen wurde — egal welche Prüfung offen war. LPStartseite zeigte korrekt nur Einrichtungsprüfung, aber Dashboard überschrieb. | Hardcodierten Config durch `einrichtungsPruefung` ersetzt. | DurchfuehrenDashboard.tsx |
+| U33 | **KontrollStufe: Beschreibung unter aktivem Button** | Beschreibung (z.B. "Vollbild + Block") war vorher als separater Text unter dem Grid — optisch getrennt. | Beschreibungszeile als 2. Row im Grid, positioniert unter dem jeweiligen aktiven Button. | KontrollStufeSelect.tsx |
 
-### Geänderte Dateien (6 Dateien, Session 19)
+### Geänderte Dateien (6 Dateien, Session 20)
 
 ```
-src/components/lp/KontrollStufeSelect.tsx           — U33 (Spalten-Layout)
-src/components/MaterialPanel.tsx                     — B39a (Flex-Kette)
-src/components/Layout.tsx                            — B39a (Breiten-Fix)
-src/components/fragetypen/PDFFrage.tsx                — B39b (Fallback-Kette + ladeFehler)
-src/data/einrichtungsPruefung.ts                     — Fix (Material-URL)
-apps-script-code.js                                  — B38 (Safety-Net entfernt, Individual Batch-Write)
+src/components/fragetypen/pdf/usePDFRenderer.ts      — B39b (re-throw nach error)
+src/data/demoFragen.ts                               — B39b (base64 PDF statt CORS-URL)
+src/components/MaterialPanel.tsx                      — B39a (sandbox entfernt)
+src/components/lp/AktivPhase.tsx                      — B38 (.catch hinzugefügt)
+src/components/lp/DurchfuehrenDashboard.tsx           — B40 (einrichtungsPruefung statt hardcoded)
+src/components/lp/KontrollStufeSelect.tsx             — U33 (Beschreibung unter Button)
 ```
 
-### Hinweis
-**Apps Script aktualisieren:** Code in Editor einfügen → Bereitstellen → Bereitstellungen verwalten → Stift-Icon → "Neue Version" → Bereitstellen. URL bleibt gleich.
+### Session 19 — 4 Bugfixes + 1 UX (26.03.2026 Abend, 1. Runde)
+
+⚠️ Session 19 Fixes waren teilweise Symptom-Behandlungen. Session 20 hat die Root Causes gefunden:
+- B39b: S19 fixte die if-else-Kette, aber der eigentliche Bug war in usePDFRenderer (schluckte Fehler)
+- B39a: S19 fixte CSS-Ketten, aber der eigentliche Bug war das sandbox-Attribut
+- B38: S19 fixte Backend (Safety-Net), aber Frontend hatte auch fehlenden .catch
 
 ### Weiteres (niedrigere Priorität)
 
 - **Manuelle Punktevergabe** — Korrektur-Tab noch nicht live getestet
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
 - **Zeichnen Text-Werkzeug** — Grundfunktion live testen (Rotation, Grösse, Fett)
-- **Apps Script Code aktualisieren** — B36 (Entsperrung Race) + B38 (Batch-Write) bereitgestellt? User muss **neue Bereitstellung** erstellen (nicht nur speichern).
+- **Apps Script Code aktualisieren** — User muss **neue Bereitstellung** erstellen (nicht nur speichern).
 
 ### Session 18 — 5 Bugfixes aus Klassentest (26.03.2026 Nachmittag)
 

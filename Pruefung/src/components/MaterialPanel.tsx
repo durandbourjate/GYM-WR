@@ -262,7 +262,6 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
             src={embedUrl}
             className="absolute inset-0 w-full h-full border-0"
             title={material.titel}
-            sandbox="allow-scripts allow-same-origin"
           />
         </div>
       </div>
