@@ -1631,34 +1631,46 @@ function speichereConfig(body) {
     const data = getSheetData(configSheet);
     var headers = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
 
-    const rowData = {
-      id: config.id,
-      titel: config.titel,
-      klasse: config.klasse || '',
-      gefaess: config.gefaess || 'SF',
-      semester: config.semester || '',
-      fachbereiche: (config.fachbereiche || []).join(','),
-      datum: config.datum || '',
-      typ: config.typ || 'summativ',
-      modus: config.modus || 'pruefung',
-      dauerMinuten: String(config.dauerMinuten || 45),
-      gesamtpunkte: String(config.gesamtpunkte || 0),
-      erlaubteKlasse: config.erlaubteKlasse || config.klasse || '',
-      sebErforderlich: config.sebErforderlich ? 'true' : 'false',
-      abschnitte: JSON.stringify(config.abschnitte || []),
-      zeitanzeigeTyp: config.zeitanzeigeTyp || 'countdown',
-      ruecknavigation: config.ruecknavigation !== false ? 'true' : 'false',
-      zufallsreihenfolgeFragen: config.zufallsreihenfolgeFragen ? 'true' : 'false',
-      autoSaveIntervallSekunden: String(config.autoSaveIntervallSekunden || 30),
-      heartbeatIntervallSekunden: String(config.heartbeatIntervallSekunden || 10),
-      freigeschaltet: config.freigeschaltet ? 'true' : 'false',
-      zeitverlaengerungen: JSON.stringify(config.zeitverlaengerungen || {}),
-      sebAusnahmen: JSON.stringify(config.sebAusnahmen || []),
-      // materialien nur schreiben wenn explizit vorhanden (verhindert Überschreiben mit [])
-      ...(config.materialien !== undefined ? { materialien: JSON.stringify(config.materialien) } : {}),
-      zeitModus: config.zeitModus || 'countdown',
-      kontrollStufe: config.kontrollStufe || 'standard',
+    // rowData nur mit Feldern befüllen, die in config vorhanden sind.
+    // Verhindert, dass ein partielles Update bestehende Daten überschreibt.
+    var rowData = { id: config.id, titel: config.titel };
+
+    // Feld-Mapping: config-Key → Serialisierung
+    var feldMapping = {
+      klasse:                     function(v) { return v || ''; },
+      gefaess:                    function(v) { return v || 'SF'; },
+      semester:                   function(v) { return v || ''; },
+      fachbereiche:               function(v) { return (v || []).join(','); },
+      datum:                      function(v) { return v || ''; },
+      typ:                        function(v) { return v || 'summativ'; },
+      modus:                      function(v) { return v || 'pruefung'; },
+      dauerMinuten:               function(v) { return String(v || 45); },
+      gesamtpunkte:               function(v) { return String(v || 0); },
+      erlaubteKlasse:             function(v) { return v || config.klasse || ''; },
+      sebErforderlich:            function(v) { return v ? 'true' : 'false'; },
+      abschnitte:                 function(v) { return JSON.stringify(v || []); },
+      zeitanzeigeTyp:             function(v) { return v || 'countdown'; },
+      ruecknavigation:            function(v) { return v !== false ? 'true' : 'false'; },
+      zufallsreihenfolgeFragen:   function(v) { return v ? 'true' : 'false'; },
+      autoSaveIntervallSekunden:  function(v) { return String(v || 30); },
+      heartbeatIntervallSekunden: function(v) { return String(v || 10); },
+      freigeschaltet:             function(v) { return v ? 'true' : 'false'; },
+      zeitverlaengerungen:        function(v) { return JSON.stringify(v || {}); },
+      sebAusnahmen:               function(v) { return JSON.stringify(v || []); },
+      materialien:                function(v) { return JSON.stringify(v); },
+      zeitModus:                  function(v) { return v || 'countdown'; },
+      kontrollStufe:              function(v) { return v || 'standard'; },
+      teilnehmer:                 function(v) { return JSON.stringify(v || []); },
+      beendetUm:                  function(v) { return v || ''; },
+      durchfuehrungId:            function(v) { return v || ''; },
+      zufallsreihenfolgeOptionen: function(v) { return v ? 'true' : 'false'; },
     };
+
+    for (var key in feldMapping) {
+      if (config[key] !== undefined) {
+        rowData[key] = feldMapping[key](config[key]);
+      }
+    }
 
     // Fehlende Spalten automatisch hinzufügen
     headers = ensureColumns(configSheet, headers, rowData);
