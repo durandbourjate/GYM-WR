@@ -8,7 +8,9 @@
 
 ## Offene Punkte (nächste Session)
 
-Keine kritischen offenen Punkte.
+- **Manuelle Punktevergabe** — Korrektur-Tab noch nicht live getestet
+- **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
+- **Zeichnen Text-Werkzeug** — Grundfunktion live testen (Rotation, Grösse, Fett)
 
 ### Erledigt (26.03.2026)
 - ~~K1~~ `.env.local` + GitHub Secret korrekt ✅
@@ -22,6 +24,39 @@ Keine kritischen offenen Punkte.
 - ~~U34~~ Tab-öffnen Button entfernt ✅
 - ~~U35~~ Vollbild nach Abgabe verlassen ✅
 - ~~Cleanup~~ Fallback-Code + Alias-Funktionen entfernt ✅
+- ~~Material-Link~~ Blauer Link entfernt + Button-Touch-Target ✅
+- ~~Material-Höhe~~ CSS-Kette überarbeitet (h-full+overflow-hidden) ✅
+- ~~PDF-Laden~~ pdfDriveFileId vor pdfUrl priorisiert ✅
+- ~~Text-Rotation~~ Selektierte Texte rotierbar via UPDATE_COMMAND ✅
+- ~~Text-Formatierung~~ S/M/L/XL + Bold in Toolbar ✅
+
+---
+
+## Session 26.03.2026 (17) — Material + Zeichnen Text-Formatierung
+
+### Status: ERLEDIGT (6 Tasks)
+
+| Task | Beschreibung | Datei(en) |
+|------|-------------|-----------|
+| U36 | **Blauer Material-Link entfernt**: Duplizierte den Header-Button. Material-Button Touch-Target auf 44px vergrössert. | Layout.tsx |
+| B38 | **Material-Panel Höhe**: CSS-Kette überarbeitet — `h-full` + `overflow-hidden` + `style.minHeight:0` auf allen Ebenen. Alle Inhalt-Container (PDF, Video, Link) auf `h-full flex flex-col overflow-hidden` vereinheitlicht. | MaterialPanel.tsx |
+| B39 | **PDF in Frage**: `pdfDriveFileId` wird jetzt VOR `pdfUrl` geprüft (CORS-Vermeidung via Apps Script Proxy). Async/await mit Cleanup. | PDFFrage.tsx |
+| U37 | **Text-Rotation selektiert**: Neuer Reducer-Action `UPDATE_COMMAND` im Drawing Engine. Selektierte Texte können direkt rotiert werden. | useDrawingEngine.ts, ZeichnenCanvas.tsx, ZeichnenFrage.tsx |
+| U38 | **Text-Grösse UI**: S/M/L/XL Buttons (14/18/24/32px) in Toolbar. Wirkt auf neue und selektierte Texte. | ZeichnenToolbar.tsx, ZeichnenFrage.tsx, ZeichnenCanvas.tsx |
+| U39 | **Text Bold**: Fett-Toggle (B-Button) in Toolbar. `fett`-Attribut auf DrawCommand, `font: bold Npx sans-serif`. | ZeichnenTypes.ts, useDrawingEngine.ts, ZeichnenToolbar.tsx |
+
+### Geänderte Dateien (8 Dateien, diese Session)
+
+```
+src/components/Layout.tsx                          — U36 (Link entfernt, Button-Touch)
+src/components/MaterialPanel.tsx                   — B38 (Höhe-Fix)
+src/components/fragetypen/PDFFrage.tsx              — B39 (DriveFileId-Priorität)
+src/components/fragetypen/ZeichnenFrage.tsx         — U37-U39 (State + Handler)
+src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx — U37-U39 (Props + Engine)
+src/components/fragetypen/zeichnen/ZeichnenToolbar.tsx — U38-U39 (UI-Buttons)
+src/components/fragetypen/zeichnen/ZeichnenTypes.ts — U39 (fett-Attribut)
+src/components/fragetypen/zeichnen/useDrawingEngine.ts — U37+U39 (UPDATE_COMMAND + fett)
+```
 
 ---
 
