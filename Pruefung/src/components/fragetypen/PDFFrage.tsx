@@ -274,7 +274,7 @@ export default function PDFFrage({ frage }: Props) {
 
       {/* Fragetext (sticky) */}
       <div
-        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700 sticky top-0 z-10"
+        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
@@ -282,7 +282,7 @@ export default function PDFFrage({ frage }: Props) {
       <div className={toolbarLayout === 'vertikal' ? 'flex flex-row gap-2' : 'flex flex-col gap-4'}>
         {/* Toolbar (hidden when submitted) */}
         {!abgegeben && (
-          <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start sticky top-0' : ''}`}>
+          <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start' : ''}`}>
             <PDFToolbar
               aktivesWerkzeug={aktivesWerkzeug}
               onWerkzeugWechsel={setAktivesWerkzeug}

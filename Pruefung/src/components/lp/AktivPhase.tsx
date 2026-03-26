@@ -339,14 +339,23 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
             const aktive = schuelerStatus.filter((s) => s.status === 'aktiv').length
             if (aktive === 0) {
               setBeendenLaeuft(true)
+              const timeoutId = setTimeout(() => {
+                setBeendenLaeuft(false)
+              }, 30000)
               apiService.beendePruefung({
                 pruefungId: config.id,
                 email: user?.email ?? '',
                 modus: 'sofort',
               }).then((result) => {
-                if (result.success) onBeenden()
-                else setBeendenLaeuft(false)
+                clearTimeout(timeoutId)
+                if (result.success) {
+                  setBeendenLaeuft(false)
+                  onBeenden()
+                } else {
+                  setBeendenLaeuft(false)
+                }
               }).catch(() => {
+                clearTimeout(timeoutId)
                 setBeendenLaeuft(false)
               })
               return

@@ -13,6 +13,31 @@
 - **Zeichnen Text-Werkzeug** — Grundfunktion live testen (Rotation, Grösse, Fett)
 - **Apps Script Code aktualisieren** — Session 19 Änderungen (Safety-Net entfernt, Individual-Beenden Batch-Write) in apps-script-code.js. User muss Code kopieren und neu bereitstellen.
 
+### Session 21 — Scroll-Bug + Beenden-Button (26.03.2026 Nacht)
+
+| Task | Beschreibung | Root Cause | Fix | Dateien |
+|------|-------------|------------|-----|---------|
+| B41 | **Fragetext überlappt Antwortbereich** beim Scrollen (Bilanz, PDF, alle Fragetypen) | `sticky top-0 z-10` auf dem Aufgabentext-Div innerhalb von `<main className="overflow-auto">` — sticky berechnet `top:0` relativ zum Scroll-Container, was bei langen Fragen zur Überlappung führt. | `sticky top-0 z-10` aus allen 11 Fragetypen entfernt + `sticky top-0` aus PDF/Zeichnen-Toolbars. Fragetext scrollt jetzt normal mit. | BilanzERFrage, PDFFrage, MCFrage, FreitextFrage, BerechnungFrage, BuchungssatzFrage, KontenbestimmungFrage, TKontoFrage, RichtigFalschFrage, LueckentextFrage, ZuordnungFrage, ZeichnenFrage (13 Stellen in 12 Dateien) |
+| B38b | **Beenden-Button hängt** (nach Prüfung mit 0 aktiven SuS) | `beendenLaeuft=true` wurde bei `result.success` nie zurückgesetzt — nur `onBeenden()` aufgerufen. Kein Timeout. | `setBeendenLaeuft(false)` vor `onBeenden()` + 30s Timeout (wie BeendenDialog). `clearTimeout` in .then/.catch. | AktivPhase.tsx |
+
+### Geänderte Dateien (13 Dateien, Session 21)
+
+```
+src/components/fragetypen/BilanzERFrage.tsx        — B41 (sticky entfernt)
+src/components/fragetypen/BerechnungFrage.tsx       — B41 (sticky entfernt)
+src/components/fragetypen/BuchungssatzFrage.tsx     — B41 (sticky entfernt)
+src/components/fragetypen/FreitextFrage.tsx         — B41 (sticky entfernt)
+src/components/fragetypen/KontenbestimmungFrage.tsx — B41 (sticky entfernt)
+src/components/fragetypen/LueckentextFrage.tsx      — B41 (sticky entfernt)
+src/components/fragetypen/MCFrage.tsx               — B41 (sticky entfernt)
+src/components/fragetypen/PDFFrage.tsx              — B41 (sticky entfernt, Toolbar-sticky entfernt)
+src/components/fragetypen/RichtigFalschFrage.tsx    — B41 (sticky entfernt)
+src/components/fragetypen/TKontoFrage.tsx           — B41 (sticky entfernt)
+src/components/fragetypen/ZeichnenFrage.tsx         — B41 (Toolbar-sticky entfernt)
+src/components/fragetypen/ZuordnungFrage.tsx        — B41 (sticky entfernt)
+src/components/lp/AktivPhase.tsx                    — B38b (Timeout + State-Reset)
+```
+
 ### Session 20 — 4 Root-Cause-Fixes (26.03.2026 Abend, 2. Runde)
 
 | Task | Beschreibung | Root Cause | Fix | Dateien |

@@ -273,7 +273,7 @@ export default function ZeichnenFrage({ frage }: Props) {
       <div className={toolbarLayout === 'vertikal' ? 'flex flex-row gap-2' : 'flex flex-col gap-4'}>
         {/* Toolbar (nur wenn nicht abgegeben) */}
         {!abgegeben && (
-          <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start sticky top-0' : ''}`}>
+          <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start' : ''}`}>
             <ZeichnenToolbar
               aktivesTool={aktivesTool}
               onToolChange={setAktivesTool}

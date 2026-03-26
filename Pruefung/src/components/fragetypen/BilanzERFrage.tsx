@@ -102,7 +102,7 @@ export default function BilanzERFrage({ frage }: Props) {
         <span className="text-xs text-slate-500 dark:text-slate-400">{frage.punkte} {frage.punkte === 1 ? 'Punkt' : 'Punkte'}</span>
         <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">Bilanz/ER</span>
       </div>
-      <div className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700 sticky top-0 z-10" dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.aufgabentext) }} />
+      <div className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.aufgabentext) }} />
       <KontenTabelle konten={frage.kontenMitSaldi} />
       {zeigeBilanz && bilanz && <BilanzUI bilanz={bilanz} onChange={b => speichern(b, er)} readOnly={readOnly} konten={verfuegbar} />}
       {zeigeER && er && <ERUI er={er} onChange={e => speichern(bilanz, e)} readOnly={readOnly} konten={verfuegbar} />}
