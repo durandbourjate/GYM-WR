@@ -37,6 +37,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         navigateFallback: 'index.html',
         navigateFallbackAllowlist: [/^\/GYM-WR-DUY\/Pruefung(\/|$)/],
+        // Statische Dateien (PDFs, Bilder, Audio/Video) NICHT durch SPA-Fallback ersetzen
+        navigateFallbackDenylist: [/\.pdf$/i, /\.png$/i, /\.jpg$/i, /\.jpeg$/i, /\.gif$/i, /\.svg$/i, /\.mp3$/i, /\.mp4$/i, /\.webm$/i, /\/materialien\//],
       },
     }),
   ],
