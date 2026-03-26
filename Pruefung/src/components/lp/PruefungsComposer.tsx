@@ -134,7 +134,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
       if (!pruefung.titel.trim()) return
 
       await handleSpeichernIntern()
-      vorherigePruefungRef.current = JSON.stringify(pruefung)
+      // vorherigePruefungRef wird bereits in handleSpeichernIntern aktualisiert
       setAutoSaveStatus('gespeichert')
       setTimeout(() => setAutoSaveStatus('idle'), 2000)
     }, 3000)
@@ -247,21 +247,31 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
     if (istDemoModus || !apiService.istKonfiguriert()) {
       await new Promise((r) => setTimeout(r, 300))
       setPruefung(zuSpeichern)
+      // Ref aktualisieren damit Autosave keinen Phantom-Change sieht
+      vorherigePruefungRef.current = JSON.stringify(zuSpeichern)
       return true
     }
 
     const ok = await apiService.speichereConfig(user!.email, zuSpeichern)
     if (ok) {
       setPruefung(zuSpeichern)
+      // Ref aktualisieren damit Autosave keinen Phantom-Change sieht
+      // (zuSpeichern enthält die generierte ID — pruefung aus dem Closure noch nicht)
+      vorherigePruefungRef.current = JSON.stringify(zuSpeichern)
     }
     return ok
   }
 
   async function handleSpeichern(): Promise<void> {
+    // Autosave-Timer abbrechen — manuelles Speichern hat Vorrang
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current)
+      autoSaveTimerRef.current = null
+    }
     setSpeicherStatus('speichern')
     const ok = await handleSpeichernIntern()
     if (ok) {
-      vorherigePruefungRef.current = JSON.stringify(pruefung)
+      // vorherigePruefungRef wird bereits in handleSpeichernIntern aktualisiert
       setSpeicherStatus('erfolg')
       setTimeout(() => setSpeicherStatus('idle'), 2000)
     } else {
