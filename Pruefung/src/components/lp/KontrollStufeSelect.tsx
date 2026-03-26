@@ -62,8 +62,8 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
         </span>
       </button>
 
-      {/* Stufen-Buttons */}
-      <div className="grid grid-cols-4 border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden">
+      {/* Stufen-Buttons + Beschreibung unter aktivem Button */}
+      <div className={`grid grid-cols-4 border border-slate-300 dark:border-slate-600 ${detailsOffen ? 'rounded-t-lg' : 'rounded-lg'} overflow-hidden`}>
         {STUFEN.map((s) => {
           const istAktiv = value === s.key
           return (
@@ -84,6 +84,17 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
             </button>
           )
         })}
+        {/* Beschreibung unter dem aktiven Button */}
+        {STUFEN.map((s) => (
+          <div
+            key={s.key}
+            className={`px-2 py-1 text-xs border-t border-slate-200 dark:border-slate-700 ${
+              s.key !== 'keine' ? 'border-l border-slate-200 dark:border-slate-700' : ''
+            } ${value === s.key ? 'text-slate-600 dark:text-slate-300' : 'text-transparent'}`}
+          >
+            {s.beschreibung}
+          </div>
+        ))}
       </div>
 
       {/* Details als Spalten unter den Buttons */}
@@ -111,13 +122,6 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
             Auf iPads wird die Stufe automatisch angepasst (kein Vollbild möglich).
           </div>
         </div>
-      )}
-
-      {/* Kurzbeschreibung der aktiven Stufe (nur wenn zugeklappt) */}
-      {!detailsOffen && (
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          {STUFEN.find(s => s.key === value)?.beschreibung}
-        </p>
       )}
     </div>
   )
