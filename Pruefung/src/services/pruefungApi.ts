@@ -74,6 +74,7 @@ export async function heartbeat(
   beantworteteFragen?: number,
   lockdownMeta?: LockdownMeta,
   autoSaveCount?: number,
+  tabSessionId?: string,
 ): Promise<HeartbeatResponse> {
   if (!APPS_SCRIPT_URL) return { success: false }
 
@@ -90,6 +91,7 @@ export async function heartbeat(
         ...(beantworteteFragen !== undefined ? { beantworteteFragen } : {}),
         ...(lockdownMeta ? { lockdownMeta } : {}),
         ...(autoSaveCount !== undefined ? { autoSaveCount } : {}),
+        ...(tabSessionId ? { tabSessionId } : {}),
       }),
     })
     if (!response.ok) return { success: false }
@@ -104,6 +106,7 @@ export async function heartbeat(
         kontrollStufeOverride: data.kontrollStufeOverride || undefined,
         entsperrt: data.entsperrt === true ? true : undefined,
         phase: data.phase || undefined,
+        tabSessionUngueltig: data.tabSessionUngueltig === true ? true : undefined,
       }
     } catch {
       return { success: response.ok }

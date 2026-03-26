@@ -25,10 +25,11 @@ interface Props {
   onAudioUpload: (schuelerEmail: string, frageId: string, blob: Blob) => Promise<string | null>
   onGesamtAudioUpdate: (email: string, audioId: string) => void
   onPDF?: () => void
+  defaultOffen?: boolean
 }
 
-export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, fragen, autoErgebnisse, notenConfig, onBewertungUpdate, onNoteOverride, onAudioUpload, onGesamtAudioUpdate, onPDF }: Props) {
-  const [offen, setOffen] = useState(false)
+export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, fragen, autoErgebnisse, notenConfig, onBewertungUpdate, onNoteOverride, onAudioUpload, onGesamtAudioUpdate, onPDF, defaultOffen = false }: Props) {
+  const [offen, setOffen] = useState(defaultOffen)
   const [noteEditModus, setNoteEditModus] = useState(false)
   const [noteInput, setNoteInput] = useState('')
 

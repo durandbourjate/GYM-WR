@@ -925,127 +925,120 @@ function heartbeat(body) {
 
     // Neue Zeile anlegen falls SuS noch nicht im Sheet (Warteraum-Heartbeat)
     if (existingRow < 0) {
-      const hdrs = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      const newRow = hdrs.map(h => {
-        switch (h) {
-          case 'email': return email;
-          case 'name': return body.name || email;
-          case 'letzterHeartbeat': return timestamp || new Date().toISOString();
-          case 'heartbeats': return 1;
-          case 'version': return 0;
-          case 'istAbgabe': return 'false';
-          case 'gesperrt': return 'false';
-          case 'verstossZaehler': return 0;
-          case 'verstoesse': return '[]';
-          case 'geraet': return '';
-          case 'vollbild': return 'false';
-          case 'kontrollStufe': return '';
-          case 'autoSaveCount': return 0;
-          default: return '';
-        }
-      });
-      sheet.appendRow(newRow);
-      // Zeile wurde angelegt → success zurückgeben
-      return jsonResponse({ success: true });
+      // Lock gegen Race-Condition (Multi-Tab): Sheet nochmal frisch lesen
+      var lockCheck = getSheetData(sheet);
+      var doppelt = lockCheck.findIndex(function(r) { return r.email === email; });
+      if (doppelt >= 0) {
+        // Zeile wurde inzwischen von einem anderen Request erstellt → updaten statt neu anlegen
+        existingRow = doppelt;
+      } else {
+        const hdrs = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+        const newRow = hdrs.map(h => {
+          switch (h) {
+            case 'email': return email;
+            case 'name': return body.name || email;
+            case 'letzterHeartbeat': return timestamp || new Date().toISOString();
+            case 'heartbeats': return 1;
+            case 'version': return 0;
+            case 'istAbgabe': return 'false';
+            case 'gesperrt': return 'false';
+            case 'verstossZaehler': return 0;
+            case 'verstoesse': return '[]';
+            case 'geraet': return '';
+            case 'vollbild': return 'false';
+            case 'kontrollStufe': return '';
+            case 'autoSaveCount': return 0;
+            default: return '';
+          }
+        });
+        sheet.appendRow(newRow);
+        // Zeile wurde angelegt → success zurückgeben
+        return jsonResponse({ success: true });
+      }
     }
 
     if (existingRow >= 0) {
       const rowIndex = existingRow + 2;
       let headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      const heartbeatCol = headers.indexOf('letzterHeartbeat');
-      const countCol = headers.indexOf('heartbeats');
-      if (heartbeatCol >= 0) {
-        sheet.getRange(rowIndex, heartbeatCol + 1).setValue(timestamp);
-      }
-      if (countCol >= 0) {
-        const current = Number(sheet.getRange(rowIndex, countCol + 1).getValue()) || 0;
-        sheet.getRange(rowIndex, countCol + 1).setValue(current + 1);
-      }
 
-      // aktuelleFrage-Spalte aktualisieren (falls vom Client mitgesendet)
-      if (body.aktuelleFrage !== undefined) {
-        let aktFrageCol = headers.indexOf('aktuelleFrage');
-        if (aktFrageCol < 0) {
-          aktFrageCol = headers.length;
-          sheet.getRange(1, aktFrageCol + 1).setValue('aktuelleFrage');
-          headers.push('aktuelleFrage');
-        }
-        sheet.getRange(rowIndex, aktFrageCol + 1).setValue(body.aktuelleFrage);
-      }
-
-      // beantworteteFragen-Spalte aktualisieren (falls vom Client mitgesendet)
-      if (body.beantworteteFragen !== undefined) {
-        let beantwortetCol = headers.indexOf('beantworteteFragen');
-        if (beantwortetCol < 0) {
-          beantwortetCol = headers.length;
-          sheet.getRange(1, beantwortetCol + 1).setValue('beantworteteFragen');
-          headers.push('beantworteteFragen');
-        }
-        sheet.getRange(rowIndex, beantwortetCol + 1).setValue(body.beantworteteFragen);
-      }
-
-      // autoSaveCount-Spalte aktualisieren (falls vom Client mitgesendet)
-      if (body.autoSaveCount !== undefined) {
-        let asCCol = headers.indexOf('autoSaveCount');
-        if (asCCol < 0) {
-          asCCol = headers.length;
-          sheet.getRange(1, asCCol + 1).setValue('autoSaveCount');
-          headers.push('autoSaveCount');
-        }
-        sheet.getRange(rowIndex, asCCol + 1).setValue(body.autoSaveCount);
-      }
-
-      // Lockdown-Metadaten speichern (falls vom Client mitgesendet)
+      // Fehlende Spalten vorab anlegen (aktuelleFrage, beantworteteFragen, autoSaveCount, Lockdown, tabSessionId)
+      var neededCols = {};
+      if (body.aktuelleFrage !== undefined) neededCols.aktuelleFrage = '';
+      if (body.beantworteteFragen !== undefined) neededCols.beantworteteFragen = '';
+      if (body.autoSaveCount !== undefined) neededCols.autoSaveCount = '';
+      if (body.tabSessionId) neededCols.tabSessionId = '';
       if (body.lockdownMeta) {
-        var lockdownFelder = {
-          geraet: body.lockdownMeta.geraet || '',
-          vollbild: String(body.lockdownMeta.vollbild),
-          kontrollStufe: body.lockdownMeta.kontrollStufe || '',
-          verstossZaehler: body.lockdownMeta.verstossZaehler || 0,
-          gesperrt: String(body.lockdownMeta.gesperrt)
-        };
-        // Fehlende Spalten automatisch hinzufügen
-        headers = ensureColumns(sheet, headers, lockdownFelder);
-        var lockdownKeys = Object.keys(lockdownFelder);
-        for (var lk = 0; lk < lockdownKeys.length; lk++) {
-          var col = headers.indexOf(lockdownKeys[lk]);
-          if (col >= 0) {
-            sheet.getRange(rowIndex, col + 1).setValue(lockdownFelder[lockdownKeys[lk]]);
-          }
-        }
-        // Verstoesse append (nicht überschreiben)
+        neededCols.geraet = ''; neededCols.vollbild = ''; neededCols.kontrollStufe = '';
+        neededCols.verstossZaehler = ''; neededCols.gesperrt = '';
         if (body.lockdownMeta.neusteVerstoesse && body.lockdownMeta.neusteVerstoesse.length > 0) {
-          var verstCol = headers.indexOf('verstoesse');
-          if (verstCol < 0) {
-            verstCol = headers.length;
-            sheet.getRange(1, verstCol + 1).setValue('verstoesse').setFontWeight('bold');
-            headers.push('verstoesse');
-          }
-          var bestehende = safeJsonParse(sheet.getRange(rowIndex, verstCol + 1).getValue(), []);
+          neededCols.verstoesse = '';
+        }
+      }
+      headers = ensureColumns(sheet, headers, neededCols);
+
+      // Batch-Read: Gesamte Zeile einmal lesen
+      var rowRange = sheet.getRange(rowIndex, 1, 1, headers.length);
+      var rowValues = rowRange.getValues()[0];
+
+      // Helper: Spaltenindex finden und Wert setzen (in-memory)
+      function setCol(name, value) {
+        var idx = headers.indexOf(name);
+        if (idx >= 0) rowValues[idx] = value;
+      }
+      function getCol(name) {
+        var idx = headers.indexOf(name);
+        return idx >= 0 ? rowValues[idx] : '';
+      }
+
+      // Heartbeat-Felder
+      setCol('letzterHeartbeat', timestamp);
+      setCol('heartbeats', (Number(getCol('heartbeats')) || 0) + 1);
+
+      if (body.aktuelleFrage !== undefined) setCol('aktuelleFrage', body.aktuelleFrage);
+      if (body.beantworteteFragen !== undefined) setCol('beantworteteFragen', body.beantworteteFragen);
+      if (body.autoSaveCount !== undefined) setCol('autoSaveCount', body.autoSaveCount);
+
+      // Lockdown-Metadaten
+      if (body.lockdownMeta) {
+        setCol('geraet', body.lockdownMeta.geraet || '');
+        setCol('vollbild', String(body.lockdownMeta.vollbild));
+        setCol('kontrollStufe', body.lockdownMeta.kontrollStufe || '');
+        setCol('verstossZaehler', body.lockdownMeta.verstossZaehler || 0);
+        setCol('gesperrt', String(body.lockdownMeta.gesperrt));
+        // Verstoesse append
+        if (body.lockdownMeta.neusteVerstoesse && body.lockdownMeta.neusteVerstoesse.length > 0) {
+          var bestehende = safeJsonParse(getCol('verstoesse'), []);
           var alle = bestehende.concat(body.lockdownMeta.neusteVerstoesse);
-          sheet.getRange(rowIndex, verstCol + 1).setValue(JSON.stringify(alle));
+          setCol('verstoesse', JSON.stringify(alle));
         }
       }
 
-      // Entsperrt-Flag prüfen und zurücksetzen (LP hat SuS entsperrt)
+      // Multi-Tab-Schutz: tabSessionId prüfen
+      var tabSessionUngueltig = false;
+      if (body.tabSessionId) {
+        var gespeicherteSession = getCol('tabSessionId');
+        if (gespeicherteSession && gespeicherteSession !== body.tabSessionId) {
+          // Anderer Tab ist bereits aktiv → Warnung an diesen Tab
+          tabSessionUngueltig = true;
+        } else {
+          setCol('tabSessionId', body.tabSessionId);
+        }
+      }
+
+      // Entsperrt-Flag lesen und zurücksetzen
       var entsperrt = false;
-      var entsperrtCol = headers.indexOf('entsperrt');
-      if (entsperrtCol >= 0) {
-        if (sheet.getRange(rowIndex, entsperrtCol + 1).getValue() === 'true') {
-          entsperrt = true;
-          sheet.getRange(rowIndex, entsperrtCol + 1).setValue('');
-        }
+      if (getCol('entsperrt') === 'true') {
+        entsperrt = true;
+        setCol('entsperrt', '');
       }
 
-      // KontrollStufe-Override prüfen
+      // KontrollStufe-Override lesen
       var kontrollStufeOverride = null;
-      var ksoCol = headers.indexOf('kontrollStufeOverride');
-      if (ksoCol >= 0) {
-        var ksoVal = sheet.getRange(rowIndex, ksoCol + 1).getValue();
-        if (ksoVal) {
-          kontrollStufeOverride = String(ksoVal);
-        }
-      }
+      var ksoVal = getCol('kontrollStufeOverride');
+      if (ksoVal) kontrollStufeOverride = String(ksoVal);
+
+      // Batch-Write: Gesamte Zeile einmal schreiben (statt ~15 einzelne setValue)
+      rowRange.setValues([rowValues]);
 
       // Beenden-Signal prüfen (individuell → global)
       var beendetUm = null;
@@ -1132,6 +1125,7 @@ function heartbeat(body) {
         ...(sebAusnahme ? { sebAusnahme: true } : {}),
         ...(kontrollStufeOverride ? { kontrollStufeOverride: kontrollStufeOverride } : {}),
         ...(entsperrt ? { entsperrt: true } : {}),
+        ...(tabSessionUngueltig ? { tabSessionUngueltig: true } : {}),
         ...(pruefungFreigeschaltet ? { phase: 'lobby' } : { phase: 'vorbereitung' })
       });
     }
@@ -1261,6 +1255,7 @@ function beendePruefungEndpoint(body) {
     }
 
     // Server-seitiges Safety-Net: Bei Modus "sofort" alle aktiven SuS als abgegeben markieren
+    // Deduplication: Pro Email nur die Row mit den meisten Heartbeats markieren
     if (modus === 'sofort') {
       try {
         var antSheet = getOrCreateAntwortenSheet(pruefungId);
@@ -1268,15 +1263,27 @@ function beendePruefungEndpoint(body) {
           var antHeaders = antSheet.getRange(1, 1, 1, antSheet.getLastColumn()).getValues()[0];
           var istAbgabeCol = antHeaders.indexOf('istAbgabe');
           var abgabezeitCol = antHeaders.indexOf('abgabezeit');
-          if (istAbgabeCol >= 0) {
+          var emailColIdx = antHeaders.indexOf('email');
+          var heartbeatsCol = antHeaders.indexOf('heartbeats');
+          if (istAbgabeCol >= 0 && emailColIdx >= 0) {
             var antData = antSheet.getDataRange().getValues();
+            // Finde die beste Row pro Email (höchste Heartbeats)
+            var bestRowPerEmail = {};
             for (var j = 1; j < antData.length; j++) {
-              // Nur aktive SuS markieren (die noch nicht abgegeben haben)
-              if (antData[j][istAbgabeCol] !== 'true') {
-                sheet = antSheet; // Referenz für getRange
-                antSheet.getRange(j + 1, istAbgabeCol + 1).setValue('true');
+              var em = String(antData[j][emailColIdx] || '').toLowerCase();
+              if (!em) continue;
+              var hb = heartbeatsCol >= 0 ? (Number(antData[j][heartbeatsCol]) || 0) : 0;
+              if (!bestRowPerEmail[em] || hb > bestRowPerEmail[em].hb) {
+                bestRowPerEmail[em] = { row: j, hb: hb };
+              }
+            }
+            // Nur die beste Row pro Email markieren
+            for (var em in bestRowPerEmail) {
+              var rowIdx = bestRowPerEmail[em].row;
+              if (antData[rowIdx][istAbgabeCol] !== 'true') {
+                antSheet.getRange(rowIdx + 1, istAbgabeCol + 1).setValue('true');
                 if (abgabezeitCol >= 0) {
-                  antSheet.getRange(j + 1, abgabezeitCol + 1).setValue(beendetUm);
+                  antSheet.getRange(rowIdx + 1, abgabezeitCol + 1).setValue(beendetUm);
                 }
               }
             }
@@ -1826,7 +1833,22 @@ function ladeMonitoring(pruefungId, email) {
 
     if (sheet) {
       const data = getSheetData(sheet);
-      for (const row of data) {
+      // Deduplication: Bei mehreren Rows pro Email (Race-Condition Multi-Tab)
+      // → nur die Row mit dem höchsten Heartbeat-Count behalten
+      var emailMap = {};
+      for (var idx = 0; idx < data.length; idx++) {
+        var row = data[idx];
+        var rowEmail = (row.email || '').toLowerCase();
+        if (!rowEmail) continue;
+        var existing = emailMap[rowEmail];
+        if (!existing || (Number(row.heartbeats) || 0) > (Number(existing.heartbeats) || 0)) {
+          emailMap[rowEmail] = row;
+        }
+      }
+      var dedupedRows = Object.keys(emailMap).map(function(e) { return emailMap[e]; });
+
+      for (var di = 0; di < dedupedRows.length; di++) {
+        var row = dedupedRows[di];
         // Status: abgegeben > beendet-lp (individuell oder global) > aktiv > nicht-gestartet
         var susBeendetUm = row.beendetUm || globalBeendetUm;
         schueler.push({

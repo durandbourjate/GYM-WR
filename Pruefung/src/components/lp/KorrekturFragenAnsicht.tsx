@@ -149,6 +149,7 @@ export default function KorrekturFragenAnsicht({
   onBewertungUpdate,
 }: Props) {
   const [aktiverFrageIndex, setAktiverFrageIndex] = useState(0)
+  const [aktiverSchuelerIndex, setAktiverSchuelerIndex] = useState(0)
 
   // Aufgabengruppen-Fragen ausfiltern (nur Teilfragen zeigen)
   const sichtbareFragen = fragen.filter((f) => f.typ !== 'aufgabengruppe')
@@ -247,46 +248,69 @@ export default function KorrekturFragenAnsicht({
         </div>
       )}
 
-      {/* Schüler-Karten */}
-      <div className="space-y-2">
-        {sortierteSchueler.map((schueler) => {
-          const bewertung = schueler.bewertungen[aktiveFrage.id]
-          const antwort = abgaben[schueler.email]?.antworten[aktiveFrage.id]
+      {/* Aktuelle SuS-Karte (eine pro Seite, MS Forms-Stil) */}
+      {sortierteSchueler.length > 0 && (() => {
+        const schueler = sortierteSchueler[aktiverSchuelerIndex]
+        const bewertung = schueler?.bewertungen[aktiveFrage.id]
+        const antwort = abgaben[schueler?.email]?.antworten[aktiveFrage.id]
 
-          if (!bewertung) return null
+        return (
+          <div className="space-y-3">
+            {/* SuS-Navigation */}
+            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => setAktiverSchuelerIndex((i) => Math.max(0, i - 1))}
+                disabled={aktiverSchuelerIndex === 0}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+              >
+                ← Vorherige/r
+              </button>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                {schueler?.name} <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">({aktiverSchuelerIndex + 1}/{sortierteSchueler.length})</span>
+              </span>
+              <button
+                onClick={() => setAktiverSchuelerIndex((i) => Math.min(sortierteSchueler.length - 1, i + 1))}
+                disabled={aktiverSchuelerIndex === sortierteSchueler.length - 1}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+              >
+                Nächste/r →
+              </button>
+            </div>
 
-          return (
-            <SchuelerAntwortKarte
-              key={schueler.email}
-              name={schueler.name}
-              email={schueler.email}
-              antwort={antwort}
-              frage={aktiveFrage}
-              bewertung={bewertung}
-              onUpdate={(updates) => onBewertungUpdate(schueler.email, aktiveFrage.id, updates)}
-            />
-          )
-        })}
-      </div>
+            {/* Antwort-Karte (gross, einzeln) */}
+            {schueler && bewertung && (
+              <SchuelerAntwortKarte
+                key={schueler.email}
+                name={schueler.name}
+                email={schueler.email}
+                antwort={antwort}
+                frage={aktiveFrage}
+                bewertung={bewertung}
+                onUpdate={(updates) => onBewertungUpdate(schueler.email, aktiveFrage.id, updates)}
+              />
+            )}
+          </div>
+        )
+      })()}
 
-      {/* Navigation unten */}
+      {/* Fragen-Navigation unten */}
       <div className="flex items-center justify-between pt-2">
         <button
-          onClick={() => setAktiverFrageIndex((i) => Math.max(0, i - 1))}
+          onClick={() => { setAktiverFrageIndex((i) => Math.max(0, i - 1)); setAktiverSchuelerIndex(0) }}
           disabled={aktiverFrageIndex === 0}
           className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
         >
-          Vorherige Frage
+          ← Vorherige Frage
         </button>
         <span className="text-xs text-slate-400 dark:text-slate-500">
-          {aktiverFrageIndex + 1} / {sichtbareFragen.length}
+          Frage {aktiverFrageIndex + 1} / {sichtbareFragen.length}
         </span>
         <button
-          onClick={() => setAktiverFrageIndex((i) => Math.min(sichtbareFragen.length - 1, i + 1))}
+          onClick={() => { setAktiverFrageIndex((i) => Math.min(sichtbareFragen.length - 1, i + 1)); setAktiverSchuelerIndex(0) }}
           disabled={aktiverFrageIndex === sichtbareFragen.length - 1}
           className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
         >
-          Nächste Frage
+          Nächste Frage →
         </button>
       </div>
     </div>

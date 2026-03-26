@@ -76,9 +76,17 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
     }
   }
 
+  // Loading-States für async Aktionen (Button-Feedback)
+  const [ladendButtons, setLadendButtons] = useState<Record<string, boolean>>({})
+
   async function handleEntsperren(schuelerEmail: string): Promise<void> {
     if (!user) return
-    await apiService.entsperreSuS(config.id, user.email, schuelerEmail)
+    setLadendButtons((prev) => ({ ...prev, [`entsperren-${schuelerEmail}`]: true }))
+    try {
+      await apiService.entsperreSuS(config.id, user.email, schuelerEmail)
+    } finally {
+      setLadendButtons((prev) => ({ ...prev, [`entsperren-${schuelerEmail}`]: false }))
+    }
   }
 
   const maxVerstoesse = 3
@@ -211,9 +219,10 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); handleEntsperren(s.email) }}
-                          className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded font-semibold cursor-pointer hover:bg-blue-700"
+                          disabled={ladendButtons[`entsperren-${s.email}`]}
+                          className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded font-semibold cursor-pointer hover:bg-blue-700 disabled:opacity-60 disabled:cursor-wait"
                         >
-                          Entsperren
+                          {ladendButtons[`entsperren-${s.email}`] ? 'Wird entsperrt…' : 'Entsperren'}
                         </button>
                       </div>
                     ) : (s.verstossZaehler ?? 0) > 0 ? (

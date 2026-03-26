@@ -53,6 +53,18 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
   const lockdownCallbacksRef = useRef(lockdownCallbacks)
   lockdownCallbacksRef.current = lockdownCallbacks
 
+  // Multi-Tab-Schutz: Session-ID pro Tab (sessionStorage = tab-spezifisch)
+  const tabSessionIdRef = useRef<string>('')
+  if (!tabSessionIdRef.current) {
+    const key = `pruefung-tab-session-${config?.id || ''}`
+    let existing = sessionStorage.getItem(key)
+    if (!existing) {
+      existing = crypto.randomUUID()
+      sessionStorage.setItem(key, existing)
+    }
+    tabSessionIdRef.current = existing
+  }
+
   const backendVerfuegbar = apiService.istKonfiguriert() && !istDemoModus && !!user?.email
 
   // === 1. IndexedDB Auto-Save (alle 15s) ===
@@ -131,10 +143,14 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
         const beantworteteFragen = Object.keys(state.antworten).length
         const lockdownMeta = lockdownCallbacksRef.current?.getLockdownMeta?.()
         const currentAutoSaveCount = state.autoSaveCount
-        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex, beantworteteFragen, lockdownMeta, currentAutoSaveCount)
+        const response = await apiService.heartbeat(config.id, user.email, aktuelleFrageIndex, beantworteteFragen, lockdownMeta, currentAutoSaveCount, tabSessionIdRef.current)
         if (response.success) {
           incrementHeartbeats()
           setVerbindungsstatus('online')
+          // Multi-Tab-Schutz: Wenn dieser Tab nicht mehr die aktive Session ist
+          if (response.tabSessionUngueltig) {
+            usePruefungStore.getState().setMultiTabWarnung(true)
+          }
           // Beenden-Signal vom Backend?
           if (response.beendetUm && !abgegeben) {
             setBeendetUm(response.beendetUm, response.restzeitMinuten)

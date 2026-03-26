@@ -41,6 +41,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   const [fragen, setFragen] = useState<Frage[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
   const [korrekturModus, setKorrekturModus] = useState<'schueler' | 'frage'>('schueler')
+  const [susNavIndex, setSusNavIndex] = useState(0)
   const [sortierung, setSortierung] = useState<Sortierung>('name')
   const [batchLaeuft, setBatchLaeuft] = useState(false)
   const [feedbackDialog, setFeedbackDialog] = useState(false)
@@ -181,22 +182,29 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   }, [user, pruefungId])
 
   // Auto-korrigierbare Fragen als geprüft markieren (U30)
-  // Wenn Korrektur-Daten geladen und auto-korrigierbare Fragen bereits Punkte haben → geprueft = true
+  // Für alle auto-korrigierbaren Fragetypen (MC, R/F, Lückentext, Buchungssätze etc.)
+  // → geprueft = true setzen, auch wenn noch keine Punkte vorhanden (Bewertung ggf. erst erstellen)
   const autoGeprueftGesetzt = useRef(false)
   useEffect(() => {
     if (!korrektur || fragen.length === 0 || autoGeprueftGesetzt.current) return
+
+    const autoFragen = fragen.filter((f) => istAutoKorrigierbar(f.typ))
+    if (autoFragen.length === 0) { autoGeprueftGesetzt.current = true; return }
 
     const aenderungen: Array<{ schuelerEmail: string; frageId: string }> = []
     const aktualisierteSchueler = korrektur.schueler.map((schueler) => {
       let schuelerGeaendert = false
       const neueBewertungen = { ...schueler.bewertungen }
-      for (const [frageId, bewertung] of Object.entries(neueBewertungen)) {
-        const frage = fragen.find((f) => f.id === frageId)
-        if (frage && istAutoKorrigierbar(frage.typ) && !bewertung.geprueft && (bewertung.kiPunkte !== null || bewertung.lpPunkte !== null)) {
-          neueBewertungen[frageId] = { ...bewertung, geprueft: true }
-          schuelerGeaendert = true
-          aenderungen.push({ schuelerEmail: schueler.email, frageId })
+      for (const frage of autoFragen) {
+        const bewertung = neueBewertungen[frage.id]
+        if (bewertung && bewertung.geprueft) continue // Bereits geprüft
+        // Bewertung existiert → nur geprueft setzen; existiert nicht → neue Bewertung anlegen
+        neueBewertungen[frage.id] = {
+          ...(bewertung || { kiPunkte: null, lpPunkte: null, kommentar: '' }),
+          geprueft: true,
         }
+        schuelerGeaendert = true
+        aenderungen.push({ schuelerEmail: schueler.email, frageId: frage.id })
       }
       return schuelerGeaendert ? { ...schueler, bewertungen: neueBewertungen } : schueler
     })
@@ -204,7 +212,6 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     autoGeprueftGesetzt.current = true
     if (aenderungen.length > 0) {
       setKorrektur({ ...korrektur, schueler: aktualisierteSchueler })
-      // Jede Änderung einzeln speichern (queueSave erwartet KorrekturZeileUpdate)
       for (const { schuelerEmail, frageId } of aenderungen) {
         queueSave({ pruefungId, schuelerEmail, frageId, geprueft: true })
       }
@@ -851,23 +858,45 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
 
         {/* Korrektur-Inhalt: SuS-Ansicht oder Fragen-Ansicht */}
         {korrekturModus === 'schueler' ? (
-          <div className="space-y-2">
-            {sortierteSchueler.map((schueler) => (
+          <div className="space-y-3">
+            {/* SuS-Navigation (Vor/Zurück) */}
+            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => setSusNavIndex((i) => Math.max(0, i - 1))}
+                disabled={susNavIndex === 0}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+              >
+                ← Vorherige/r
+              </button>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                {sortierteSchueler[susNavIndex]?.name} <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">({susNavIndex + 1}/{sortierteSchueler.length})</span>
+              </span>
+              <button
+                onClick={() => setSusNavIndex((i) => Math.min(sortierteSchueler.length - 1, i + 1))}
+                disabled={susNavIndex === sortierteSchueler.length - 1}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-default"
+              >
+                Nächste/r →
+              </button>
+            </div>
+            {/* Einzelner SuS (aufgeklappt) */}
+            {sortierteSchueler[susNavIndex] && (
               <KorrekturSchuelerZeile
-                key={schueler.email}
+                key={sortierteSchueler[susNavIndex].email}
                 pruefungId={pruefungId}
-                schueler={schueler}
-                abgabe={abgaben[schueler.email]}
+                schueler={sortierteSchueler[susNavIndex]}
+                abgabe={abgaben[sortierteSchueler[susNavIndex].email]}
                 fragen={fragen}
-                autoErgebnisse={autoErgebnisseAlle[schueler.email] ?? {}}
+                autoErgebnisse={autoErgebnisseAlle[sortierteSchueler[susNavIndex].email] ?? {}}
                 notenConfig={notenConfig}
                 onBewertungUpdate={handleBewertungUpdate}
                 onNoteOverride={handleNoteOverride}
                 onAudioUpload={handleAudioUpload}
                 onGesamtAudioUpdate={handleGesamtAudioUpdate}
-                onPDF={() => setPdfSchuelerEmail(schueler.email)}
+                onPDF={() => setPdfSchuelerEmail(sortierteSchueler[susNavIndex].email)}
+                defaultOffen={true}
               />
-            ))}
+            )}
           </div>
         ) : korrektur ? (
           <KorrekturFragenAnsicht

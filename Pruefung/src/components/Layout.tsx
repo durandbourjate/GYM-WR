@@ -54,9 +54,11 @@ export default function Layout() {
   const [zeitAbgelaufen, setZeitAbgelaufen] = useState(false)
   const beendetUm = usePruefungStore((s) => s.beendetUm)
   const restzeitMinuten = usePruefungStore((s) => s.restzeitMinuten)
+  const multiTabWarnung = usePruefungStore((s) => s.multiTabWarnung)
 
-  // Tab-Konflikterkennung
+  // Tab-Konflikterkennung (client-seitig + server-seitig)
   const tabKonflikt = useTabKonflikt(config?.id ?? null)
+  const istTabKonflikt = tabKonflikt || multiTabWarnung
 
   // Lockdown: Copy/Paste, Vollbild, DevTools, Verstoss-Zähler
   const kontrollStufe = ((config?.kontrollStufe as KontrollStufe) || 'standard') as KontrollStufe
@@ -196,11 +198,13 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Tab-Konflikt-Warnung */}
-      {tabKonflikt && !tabKonfliktGeschlossen && (
+      {/* Tab-Konflikt-Warnung (client-seitig oder server-seitig) */}
+      {istTabKonflikt && !tabKonfliktGeschlossen && (
         <div className="bg-red-50 dark:bg-red-900/30 border-b border-red-300 dark:border-red-700 px-4 py-2 flex items-center justify-between">
           <p className="text-sm text-red-800 dark:text-red-200">
-            <strong>Achtung:</strong> Diese Prüfung ist in einem anderen Tab geöffnet. Bitte nur in einem Tab arbeiten.
+            <strong>Achtung:</strong> {multiTabWarnung
+              ? 'Diese Prüfung wurde in einem neueren Tab geöffnet. Ihr Fortschritt wurde dort übernommen. Bitte dort weiterarbeiten.'
+              : 'Diese Prüfung ist in einem anderen Tab geöffnet. Bitte nur in einem Tab arbeiten.'}
           </p>
           <button
             onClick={() => setTabKonfliktGeschlossen(true)}
@@ -377,6 +381,23 @@ export default function Layout() {
                 <div className="mb-3 text-xs text-slate-400 dark:text-slate-500">
                   {abschnittInfo.abschnitt.titel} · Frage {abschnittInfo.positionImAbschnitt + 1} von {abschnittInfo.abschnitt.fragenIds.length}
                 </div>
+              )}
+
+              {/* Material-Hinweis (prominent, wenn Materialien vorhanden + Panel nicht offen) */}
+              {config.materialien && config.materialien.length > 0 && materialModus === 'aus' && (
+                <button
+                  type="button"
+                  onClick={() => setMaterialModus('overlay')}
+                  className="w-full mb-3 px-3 py-2 text-sm text-left bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <span>📎</span>
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">
+                    {config.materialien.length === 1
+                      ? `Material: ${config.materialien[0].titel}`
+                      : `${config.materialien.length} Materialien verfügbar`}
+                  </span>
+                  <span className="text-blue-400 dark:text-blue-500 text-xs ml-auto">Öffnen</span>
+                </button>
               )}
 
               {aktuelleFrage && (

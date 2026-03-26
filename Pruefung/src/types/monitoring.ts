@@ -74,6 +74,7 @@ export interface HeartbeatResponse {
   kontrollStufeOverride?: 'keine' | 'locker' | 'standard' | 'streng'  // LP hat Kontrollstufe geändert
   entsperrt?: boolean        // LP hat SuS entsperrt
   phase?: 'vorbereitung' | 'lobby' | 'aktiv' | 'live'  // Aktuelle Phase (für Warteraum-Anzeige + Freischaltungserkennung)
+  tabSessionUngueltig?: boolean  // Multi-Tab-Schutz: Dieser Tab ist nicht die aktive Session
 }
 
 /** Nachricht von LP an SuS während einer Prüfung */

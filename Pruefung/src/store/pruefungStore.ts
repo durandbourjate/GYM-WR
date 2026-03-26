@@ -40,6 +40,9 @@ interface PruefungState {
   // Durchführungs-ID (erkennt Reset durch LP)
   durchfuehrungId: string | null
 
+  // Multi-Tab-Schutz
+  multiTabWarnung: boolean
+
   // Actions
   setAntwort: (frageId: string, antwort: Antwort) => void
   toggleMarkierung: (frageId: string) => void
@@ -58,6 +61,7 @@ interface PruefungState {
   addUnterbrechung: (unterbrechung: Unterbrechung) => void
   setBeendetUm: (beendetUm: string, restzeitMinuten?: number) => void
   setDurchfuehrungId: (id: string | null) => void
+  setMultiTabWarnung: (warnung: boolean) => void
   zuruecksetzen: () => void
 }
 
@@ -81,6 +85,7 @@ const initialState = {
   beendetUm: null,
   restzeitMinuten: null,
   durchfuehrungId: null,
+  multiTabWarnung: false,
 }
 
 export const usePruefungStore = create<PruefungState>()(
@@ -167,6 +172,8 @@ export const usePruefungStore = create<PruefungState>()(
         set({ beendetUm, restzeitMinuten: restzeitMinuten ?? null }),
 
       setDurchfuehrungId: (id) => set({ durchfuehrungId: id }),
+
+      setMultiTabWarnung: (warnung) => set({ multiTabWarnung: warnung }),
 
       zuruecksetzen: () => set(initialState),
     }),

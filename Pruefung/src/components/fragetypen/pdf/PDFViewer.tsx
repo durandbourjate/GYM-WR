@@ -91,7 +91,7 @@ export function PDFViewer({
     <div
       ref={containerRef}
       className="overflow-auto bg-slate-200 dark:bg-slate-900 rounded-lg"
-      style={{ maxHeight: '70vh', touchAction: 'pan-x pan-y' }}
+      style={{ maxHeight: '85vh', touchAction: 'pan-x pan-y' }}
     >
       <div className="flex flex-col items-center gap-4 p-4">
         {seiten.map((seitenNr) => {

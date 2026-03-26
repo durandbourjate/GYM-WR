@@ -39,12 +39,19 @@ export default function LPStartseite() {
   const [filterTyp, setFilterTyp] = useState<string | null>(null)
   const [filterGefaess, setFilterGefaess] = useState<string | null>(null)
   const [sortierung, setSortierung] = useState<'datum' | 'titel' | 'klasse'>('datum')
+  const [filterStatus, setFilterStatus] = useState<'alle' | 'aktiv' | 'archiviert'>('aktiv')
 
-  const hatAktiveFilter = suchtext.length > 0 || filterFach.length > 0 || filterTyp !== null || filterGefaess !== null
+  const hatAktiveFilter = suchtext.length > 0 || filterFach.length > 0 || filterTyp !== null || filterGefaess !== null || filterStatus !== 'aktiv'
 
   // Gefilterte und sortierte Prüfungen
   const gefilterteConfigs = useMemo(() => {
     let result = [...configs]
+    // Status-Filter (Archiv)
+    if (filterStatus === 'aktiv') {
+      result = result.filter(c => !c.beendetUm)
+    } else if (filterStatus === 'archiviert') {
+      result = result.filter(c => !!c.beendetUm)
+    }
     // Suche
     if (suchtext) {
       const q = suchtext.toLowerCase()
@@ -73,7 +80,7 @@ export default function LPStartseite() {
       return a.klasse.localeCompare(b.klasse)
     })
     return result
-  }, [configs, suchtext, filterFach, filterTyp, filterGefaess, sortierung])
+  }, [configs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus])
 
   // Letzte 5 (nach Datum, nur ohne aktive Filter)
   const letzteFuenf = useMemo(() => {
@@ -352,9 +359,23 @@ export default function LPStartseite() {
                     {g}
                   </button>
                 ))}
+                <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
+                {(['aktiv', 'archiviert', 'alle'] as const).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => setFilterStatus(s)}
+                    className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
+                      filterStatus === s
+                        ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
+                    }`}
+                  >
+                    {s === 'aktiv' ? 'Aktiv' : s === 'archiviert' ? 'Archiviert' : 'Alle'}
+                  </button>
+                ))}
                 {hatAktiveFilter && (
                   <button
-                    onClick={() => { setSuchtext(''); setFilterFach([]); setFilterTyp(null); setFilterGefaess(null) }}
+                    onClick={() => { setSuchtext(''); setFilterFach([]); setFilterTyp(null); setFilterGefaess(null); setFilterStatus('aktiv') }}
                     className="px-2 py-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
                   >
                     Zurücksetzen
@@ -473,9 +494,9 @@ function PruefungsKarte({ config: c, onBearbeiten, trackerSummary }: {
         <a
           href={`${window.location.pathname}?id=${c.id}`}
           className="px-4 py-2 text-xs font-medium text-white dark:text-slate-800 bg-slate-800 dark:bg-slate-200 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
-          title="Prüfung durchführen"
+          title={c.beendetUm ? 'Prüfung auswerten' : 'Prüfung durchführen'}
         >
-          Durchführen
+          {c.beendetUm ? 'Auswerten' : 'Durchführen'}
         </a>
         <button
           onClick={() => onBearbeiten(c)}

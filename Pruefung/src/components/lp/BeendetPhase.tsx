@@ -11,11 +11,11 @@ interface Props {
   fragen: Frage[]
   abgaben: Record<string, SchuelerAbgabe>
   korrektur?: PruefungsKorrektur
-  onExportieren: () => void
+  onExportieren?: () => void
   onNeueDurchfuehrung?: () => void
 }
 
-export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, korrektur, onExportieren, onNeueDurchfuehrung }: Props) {
+export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, korrektur, onNeueDurchfuehrung }: Props) {
   const [backupLaden, setBackupLaden] = useState(false)
   const [resetBestaetigung, setResetBestaetigung] = useState(false)
   const abgegeben = schuelerStatus.filter((s) => s.status === 'abgegeben')
@@ -76,13 +76,6 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
 
       {/* Aktionen */}
       <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
-        <button
-          type="button"
-          onClick={onExportieren}
-          className="px-4 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
-        >
-          Ergebnisse exportieren
-        </button>
         {fragen.length > 0 && (
           <button
             type="button"
@@ -92,15 +85,15 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
               try {
                 await exportiereBackupXlsx({ config, fragen, abgaben, korrektur })
               } catch (e) {
-                console.error('[Backup] Export fehlgeschlagen:', e)
-                alert('Backup-Export fehlgeschlagen. Bitte erneut versuchen.')
+                console.error('[Export] Fehlgeschlagen:', e)
+                alert('Export fehlgeschlagen. Bitte erneut versuchen.')
               } finally {
                 setBackupLaden(false)
               }
             }}
             className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
           >
-            {backupLaden ? 'Exportiert…' : '📥 Backup exportieren'}
+            {backupLaden ? 'Exportiert…' : '📥 Excel Export'}
           </button>
         )}
 
