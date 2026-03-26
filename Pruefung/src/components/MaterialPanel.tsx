@@ -28,7 +28,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
   // Split-Modus: Seitliches Panel ohne Backdrop
   if (modus === 'split') {
     return (
-      <div className="w-[55%] min-w-[400px] bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden" style={{ height: '100%', minHeight: 0 }}>
+      <div className="w-[55%] min-w-[400px] h-full min-h-0 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
         {/* Header — kompakt im Split-Modus */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-slate-700 shrink-0">
           <h2 className="text-xs font-semibold text-slate-700 dark:text-slate-200">
@@ -234,10 +234,10 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1" style={{ minHeight: 0 }}>
+        <div className="flex-1 relative min-h-0">
           <iframe
             src={material.embedUrl}
-            className="w-full h-full border-0"
+            className="absolute inset-0 w-full h-full border-0"
             title={material.titel}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -257,10 +257,10 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1" style={{ minHeight: 0 }}>
+        <div className="flex-1 relative min-h-0">
           <iframe
             src={embedUrl}
-            className="w-full h-full border-0"
+            className="absolute inset-0 w-full h-full border-0"
             title={material.titel}
             sandbox="allow-scripts allow-same-origin"
           />
@@ -288,10 +288,10 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           {material.titel}
         </div>
-        <div className="flex-1" style={{ minHeight: 0 }}>
+        <div className="flex-1 relative min-h-0">
           <iframe
             src={material.url}
-            className="w-full h-full border-0"
+            className="absolute inset-0 w-full h-full border-0"
             title={material.titel}
             sandbox="allow-scripts allow-same-origin"
           />
