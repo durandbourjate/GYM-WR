@@ -10,12 +10,13 @@ import type { NotenConfig } from '../../types/pruefung.ts'
 import { exportiereAlsCSV, exportiereErgebnisseAlsCSV, downloadCSV } from '../../utils/exportUtils.ts'
 import { exportiereBackupXlsx } from '../../utils/backupExport.ts'
 import { formatDatum } from '../../utils/zeit.ts'
-import { autoKorrigiere } from '../../utils/autoKorrektur.ts'
+import { autoKorrigiere, istAutoKorrigierbar } from '../../utils/autoKorrektur.ts'
 import type { KorrekturErgebnis } from '../../utils/autoKorrektur.ts'
 import LPHeader from './LPHeader.tsx'
 import FragenBrowser from './FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
 import KorrekturSchuelerZeile from './KorrekturSchuelerZeile.tsx'
+import KorrekturFragenAnsicht from './KorrekturFragenAnsicht.tsx'
 import KorrekturPDFAnsicht from './KorrekturPDFAnsicht.tsx'
 
 interface Props {
@@ -39,6 +40,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
   const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
   const [fragen, setFragen] = useState<Frage[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
+  const [korrekturModus, setKorrekturModus] = useState<'schueler' | 'frage'>('schueler')
   const [sortierung, setSortierung] = useState<Sortierung>('name')
   const [batchLaeuft, setBatchLaeuft] = useState(false)
   const [feedbackDialog, setFeedbackDialog] = useState(false)
@@ -177,6 +179,37 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     }
     lade()
   }, [user, pruefungId])
+
+  // Auto-korrigierbare Fragen als geprüft markieren (U30)
+  // Wenn Korrektur-Daten geladen und auto-korrigierbare Fragen bereits Punkte haben → geprueft = true
+  const autoGeprueftGesetzt = useRef(false)
+  useEffect(() => {
+    if (!korrektur || fragen.length === 0 || autoGeprueftGesetzt.current) return
+
+    const aenderungen: Array<{ schuelerEmail: string; frageId: string }> = []
+    const aktualisierteSchueler = korrektur.schueler.map((schueler) => {
+      let schuelerGeaendert = false
+      const neueBewertungen = { ...schueler.bewertungen }
+      for (const [frageId, bewertung] of Object.entries(neueBewertungen)) {
+        const frage = fragen.find((f) => f.id === frageId)
+        if (frage && istAutoKorrigierbar(frage.typ) && !bewertung.geprueft && (bewertung.kiPunkte !== null || bewertung.lpPunkte !== null)) {
+          neueBewertungen[frageId] = { ...bewertung, geprueft: true }
+          schuelerGeaendert = true
+          aenderungen.push({ schuelerEmail: schueler.email, frageId })
+        }
+      }
+      return schuelerGeaendert ? { ...schueler, bewertungen: neueBewertungen } : schueler
+    })
+
+    autoGeprueftGesetzt.current = true
+    if (aenderungen.length > 0) {
+      setKorrektur({ ...korrektur, schueler: aktualisierteSchueler })
+      // Jede Änderung einzeln speichern (queueSave erwartet KorrekturZeileUpdate)
+      for (const { schuelerEmail, frageId } of aenderungen) {
+        queueSave({ pruefungId, schuelerEmail, frageId, geprueft: true })
+      }
+    }
+  }, [korrektur, fragen, pruefungId, queueSave])
 
   // Polling für Batch-Fortschritt
   useEffect(() => {
@@ -761,23 +794,47 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
           </div>
         )}
 
-        {/* Sortierung */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs text-slate-500 dark:text-slate-400">Sortierung:</span>
-          {(['name', 'punkte', 'status'] as Sortierung[]).map((s) => (
+        {/* Modus-Toggle + Sortierung */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
             <button
-              key={s}
-              onClick={() => setSortierung(s)}
-              className={`text-xs px-2 py-1 rounded-lg border transition-colors cursor-pointer
-                ${sortierung === s
-                  ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
-                  : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-                }
-              `}
+              onClick={() => setKorrekturModus('schueler')}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer border-r border-slate-300 dark:border-slate-600
+                ${korrekturModus === 'schueler'
+                  ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
             >
-              {s === 'name' ? 'Name' : s === 'punkte' ? 'Punkte ↓' : 'Status'}
+              SuS-Ansicht
             </button>
-          ))}
+            <button
+              onClick={() => setKorrekturModus('frage')}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer
+                ${korrekturModus === 'frage'
+                  ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+            >
+              Fragen-Ansicht
+            </button>
+          </div>
+          {korrekturModus === 'schueler' && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 dark:text-slate-400">Sortierung:</span>
+              {(['name', 'punkte', 'status'] as Sortierung[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSortierung(s)}
+                  className={`text-xs px-2 py-1 rounded-lg border transition-colors cursor-pointer
+                    ${sortierung === s
+                      ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
+                      : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    }
+                  `}
+                >
+                  {s === 'name' ? 'Name' : s === 'punkte' ? 'Punkte ↓' : 'Status'}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Kein Daten-Hinweis */}
@@ -792,25 +849,35 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
           </div>
         )}
 
-        {/* Schüler-Liste */}
-        <div className="space-y-2">
-          {sortierteSchueler.map((schueler) => (
-            <KorrekturSchuelerZeile
-              key={schueler.email}
-              pruefungId={pruefungId}
-              schueler={schueler}
-              abgabe={abgaben[schueler.email]}
-              fragen={fragen}
-              autoErgebnisse={autoErgebnisseAlle[schueler.email] ?? {}}
-              notenConfig={notenConfig}
-              onBewertungUpdate={handleBewertungUpdate}
-              onNoteOverride={handleNoteOverride}
-              onAudioUpload={handleAudioUpload}
-              onGesamtAudioUpdate={handleGesamtAudioUpdate}
-              onPDF={() => setPdfSchuelerEmail(schueler.email)}
-            />
-          ))}
-        </div>
+        {/* Korrektur-Inhalt: SuS-Ansicht oder Fragen-Ansicht */}
+        {korrekturModus === 'schueler' ? (
+          <div className="space-y-2">
+            {sortierteSchueler.map((schueler) => (
+              <KorrekturSchuelerZeile
+                key={schueler.email}
+                pruefungId={pruefungId}
+                schueler={schueler}
+                abgabe={abgaben[schueler.email]}
+                fragen={fragen}
+                autoErgebnisse={autoErgebnisseAlle[schueler.email] ?? {}}
+                notenConfig={notenConfig}
+                onBewertungUpdate={handleBewertungUpdate}
+                onNoteOverride={handleNoteOverride}
+                onAudioUpload={handleAudioUpload}
+                onGesamtAudioUpdate={handleGesamtAudioUpdate}
+                onPDF={() => setPdfSchuelerEmail(schueler.email)}
+              />
+            ))}
+          </div>
+        ) : korrektur ? (
+          <KorrekturFragenAnsicht
+            fragen={fragen}
+            korrektur={korrektur}
+            abgaben={abgaben}
+            notenConfig={notenConfig}
+            onBewertungUpdate={handleBewertungUpdate}
+          />
+        ) : null}
       </main>
 
       {/* Feedback-Dialog */}

@@ -44,10 +44,27 @@ export default function PDFFrage({ frage }: Props) {
   // Toolbar state
   const [aktivesWerkzeug, setAktivesWerkzeug] = useState<PDFToolbarWerkzeug>('auswahl')
   const [aktiveFarbe, setAktiveFarbe] = useState<string>(STANDARD_HIGHLIGHT_FARBEN[0])
+
+  // Werkzeug-abhängige Standardfarbe: Pastell für Highlight, Schwarz für Stift/Text
+  useEffect(() => {
+    if (aktivesWerkzeug === 'freihand' || aktivesWerkzeug === 'text') {
+      setAktiveFarbe(prev => {
+        const pastell = ['#FEF08A', '#FBCFE8', '#BAE6FD', '#BBF7D0']
+        return pastell.includes(prev) ? '#000000' : prev
+      })
+    } else if (aktivesWerkzeug === 'highlighter') {
+      setAktiveFarbe(prev => {
+        const kraeftig = ['#000000', '#DC2626', '#2563EB', '#16A34A', '#F59E0B']
+        return kraeftig.includes(prev) ? '#FEF08A' : prev
+      })
+    }
+  }, [aktivesWerkzeug])
+
   const [aktiveKategorieId, setAktiveKategorieId] = useState<string | undefined>(
     frage.kategorien?.[0]?.id,
   )
   const [zoom, setZoom] = useState<ZoomStufe>(1)
+  const [textRotation, setTextRotation] = useState<0 | 90 | 180 | 270>(0)
   const [toolbarLayout, setToolbarLayout] = useState<'horizontal' | 'vertikal'>('horizontal')
 
   // Refs for stale-closure safety
@@ -223,6 +240,8 @@ export default function PDFFrage({ frage }: Props) {
               readOnly={abgegeben}
               layout={toolbarLayout}
               onLayoutToggle={() => setToolbarLayout(l => l === 'horizontal' ? 'vertikal' : 'horizontal')}
+              textRotation={textRotation}
+              onTextRotationChange={setTextRotation}
             />
           </div>
         )}
@@ -238,6 +257,7 @@ export default function PDFFrage({ frage }: Props) {
         aktiveFarbe={aktiveFarbe}
         kategorien={frage.kategorien}
         aktiveKategorieId={aktiveKategorieId}
+        textRotation={textRotation}
         onAnnotationHinzufuegen={handleAnnotationHinzufuegen}
         onAnnotationLoeschen={handleAnnotationLoeschen}
         onAnnotationEditieren={handleAnnotationEditieren}

@@ -16,6 +16,8 @@ interface ZeichnenToolbarProps {
   kannUndo: boolean;
   kannRedo: boolean;
   disabled: boolean;
+  textRotation?: 0 | 90 | 180 | 270;
+  onTextRotationChange?: (r: 0 | 90 | 180 | 270) => void;
 }
 
 const TOOL_DEFS: { id: Tool; icon: string; label: string; configKey?: string }[] = [
@@ -44,6 +46,8 @@ export function ZeichnenToolbar({
   kannUndo,
   kannRedo,
   disabled,
+  textRotation = 0,
+  onTextRotationChange,
 }: ZeichnenToolbarProps) {
   const isHorizontal = layout === 'horizontal';
 
@@ -134,6 +138,18 @@ export function ZeichnenToolbar({
           );
         })}
       </div>
+
+      {/* Text-Rotation (nur bei Text-Werkzeug) */}
+      {aktivesTool === 'text' && onTextRotationChange && (
+        <button
+          type="button"
+          onClick={() => onTextRotationChange(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600"
+          title={`Rotation: ${textRotation}°`}
+        >
+          ⟳{textRotation > 0 ? ` ${textRotation}°` : ''}
+        </button>
+      )}
 
       {/* Trennlinie */}
       <div className={separatorKlassen} aria-hidden="true" />

@@ -73,7 +73,7 @@ export interface HeartbeatResponse {
   sebAusnahme?: boolean      // LP hat SEB-Ausnahme für diesen SuS erteilt
   kontrollStufeOverride?: 'keine' | 'locker' | 'standard' | 'streng'  // LP hat Kontrollstufe geändert
   entsperrt?: boolean        // LP hat SuS entsperrt
-  phase?: 'vorbereitung' | 'lobby'  // Aktuelle Phase (für Warteraum-Anzeige)
+  phase?: 'vorbereitung' | 'lobby' | 'aktiv' | 'live'  // Aktuelle Phase (für Warteraum-Anzeige + Freischaltungserkennung)
 }
 
 /** Nachricht von LP an SuS während einer Prüfung */

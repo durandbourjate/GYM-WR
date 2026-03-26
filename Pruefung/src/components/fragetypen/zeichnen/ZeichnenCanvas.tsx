@@ -14,6 +14,7 @@ interface ZeichnenCanvasProps {
   aktivesTool: Tool;
   aktiveFarbe: string;
   stiftBreite?: number;
+  textRotation?: 0 | 90 | 180 | 270;
   initialDaten?: string;
   onDatenChange: (daten: string) => void;
   onPNGExport: (png: string) => void;
@@ -93,6 +94,7 @@ export function ZeichnenCanvas({
   aktivesTool,
   aktiveFarbe,
   stiftBreite = 2,
+  textRotation = 0,
   initialDaten,
   onDatenChange,
   onPNGExport,
@@ -232,13 +234,14 @@ export function ZeichnenCanvas({
             text: prev.text.trim(),
             farbe: aktiveFarbe,
             groesse: 18,
+            rotation: textRotation || undefined,
           } as Omit<DrawCommand, 'id'>);
         }
 
         return TEXT_OVERLAY_LEER;
       });
     },
-    [aktiveFarbe, engine]
+    [aktiveFarbe, textRotation, engine]
   );
 
   // Text-Input Auto-Focus wenn Overlay erscheint
@@ -588,7 +591,7 @@ export function ZeichnenCanvas({
         aria-label="Zeichenfläche"
       />
 
-      {/* Text-Eingabe-Overlay — kein onBlur (Touch-Geräte verlieren sonst Focus) */}
+      {/* Text-Eingabe-Overlay — Enter/Escape/Blur statt Buttons */}
       {textOverlay.sichtbar && (
         <div
           style={{
@@ -596,9 +599,6 @@ export function ZeichnenCanvas({
             left: `${textOverlay.cssLeft}%`,
             top: `${textOverlay.cssTop}%`,
             zIndex: 20,
-            display: 'flex',
-            gap: '4px',
-            alignItems: 'center',
           }}
           onPointerDown={e => e.stopPropagation()}
           onMouseDown={e => e.stopPropagation()}
@@ -628,6 +628,7 @@ export function ZeichnenCanvas({
               }
               e.stopPropagation();
             }}
+            onBlur={() => setTimeout(() => textAbschliessen(false), 150)}
             style={{
               fontSize: '18px',
               fontFamily: 'sans-serif',
@@ -640,41 +641,8 @@ export function ZeichnenCanvas({
               outline: 'none',
               boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             }}
-            placeholder="Text eingeben…"
+            placeholder="Text eingeben..."
           />
-          <button
-            type="button"
-            onClick={() => textAbschliessen(false)}
-            style={{
-              background: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '4px 10px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              fontWeight: 600,
-              minHeight: '32px',
-            }}
-          >
-            ✓
-          </button>
-          <button
-            type="button"
-            onClick={() => textAbschliessen(true)}
-            style={{
-              background: '#94a3b8',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              minHeight: '32px',
-            }}
-          >
-            ✕
-          </button>
         </div>
       )}
     </div>

@@ -47,7 +47,11 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
     if (apiService.istKonfiguriert()) {
       apiService.heartbeat(config.id, user.email).then((response) => {
         setHeartbeatErfolgreich(true)
-        if (response.phase === 'lobby') setLobbyOffen(true)
+        const phase = response.phase
+        if (phase === 'lobby') setLobbyOffen(true)
+        if (phase === 'aktiv' || phase === 'live') {
+          setIstFreigeschaltet(true)
+        }
         if (response.sebAusnahme) setHatSebAusnahme(true)
       }).catch(() => {})
     }
@@ -66,12 +70,16 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
       // SEB-Ausnahme + Phase aus Heartbeat prüfen
       if (heartbeatResult.status === 'fulfilled' && heartbeatResult.value) {
         setHeartbeatErfolgreich(true)
-        if (heartbeatResult.value.phase === 'lobby') setLobbyOffen(true)
+        const phase = heartbeatResult.value.phase
+        if (phase === 'lobby') setLobbyOffen(true)
+        if (phase === 'aktiv' || phase === 'live') {
+          setIstFreigeschaltet(true)
+        }
         if (heartbeatResult.value.sebAusnahme) setHatSebAusnahme(true)
       }
 
       // Freischaltung prüfen
-      if (pruefungResult.status === 'fulfilled' && pruefungResult.value?.config.freigeschaltet) {
+      if (pruefungResult.status === 'fulfilled' && pruefungResult.value?.config?.freigeschaltet) {
         setIstFreigeschaltet(true)
       }
     }, 2000)

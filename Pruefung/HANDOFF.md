@@ -8,12 +8,6 @@
 
 ## Offene Punkte (nächste Session)
 
-### Bekannte Bugs
-| ID | Beschreibung | Priorität |
-|----|-------------|-----------|
-| B25 | PDF Text-Annotationen: Bestehende nicht editierbar (wiederholt — B11-Fix prüfen) | Hoch |
-| B29 | Material PDF halbe Höhe (wiederholt — B18-Fix evtl. regressiert) | Mittel |
-
 ### UX-Verbesserungen ausstehend
 | ID | Beschreibung | Priorität |
 |----|-------------|-----------|
@@ -23,6 +17,64 @@
 | ID | Beschreibung | Priorität |
 |----|-------------|-----------|
 | P1 | Ladezeit >1 Minute reduzieren (Apps Script + Frontend Optimierung) | Hoch (für breiten Einsatz) |
+
+---
+
+## Session 26.03.2026 (14) — Bugfixes + UX aus Live-Tests (Runde 3)
+
+### Status: ERLEDIGT (11 Tasks)
+
+**Plan:** `docs/superpowers/plans/2026-03-26-session14-bugfixes-ux.md`
+
+### Block 1: Bugfixes (4 Tasks)
+
+| Bug | Beschreibung | Fix |
+|-----|-------------|-----|
+| B33 | Demo-Prüfung sperrt nach 3 Verstössen | Guard `if (effektiv === 'keine') return` in `registriereVerstoss` (useLockdown.ts) |
+| B34 | SuS-Startbildschirm erkennt Freischaltung nicht | Heartbeat-Phase `'aktiv'`/`'live'` löst Freischaltung aus + HeartbeatResponse-Type erweitert |
+| B29 | Material PDF halbe Höhe (wiederholt) | iframe `min-h-0` statt `min-h-[200px]` — flex-1 kann jetzt korrekt füllen |
+| B25 | PDF Text-Annotationen nicht editierbar via Doppelklick | `closest()` → manuelle DOM-Traversierung für SVG/HTML-Kompatibilität |
+
+### Block 2: UX-Verbesserungen (7 Tasks)
+
+| Feature | Beschreibung |
+|---------|-------------|
+| U25 Markieren Standardfarbe Gelb | STANDARD_HIGHLIGHT_FARBEN umgeordnet: Pastell zuerst (Gelb Default). Auto-Wechsel Schwarz/Gelb bei Werkzeug-Change |
+| U27 Textfeld 90°-Rotation | Neues `rotation?` Feld auf DrawCommand + PDFTextAnnotation. ⟳-Toggle in beiden Toolbars, 0→90→180→270 |
+| U28 Textfeld-Icons vereinheitlicht | Bild: ✓/✕ Buttons entfernt → Enter/Escape/Blur wie PDF |
+| U29 ZeitzuschlagEditor entfernt | Aus LobbyPhase entfernt (Inline-Badge im Live-Tab reicht) |
+| U30 Auto-geprüft | Auto-korrigierbare Fragetypen (MC, R/F, Lückentext, Buchungssätze, etc.) als `geprueft: true` nach Laden |
+| U31 Frage-für-Frage Korrektur | Neuer Toggle SuS-Ansicht ↔ Fragen-Ansicht. Neue Komponente `KorrekturFragenAnsicht.tsx` |
+| U32 Multi-Prüfungs-Auswertung | Auswertung-Tab im MultiDurchfuehrenDashboard mit Tabs pro Prüfung/Kurs |
+
+### Geschlossen (aus Tests bestätigt)
+- ~~B25~~ PDF Text editierbar ✅ | ~~B29~~ Material PDF Höhe ✅ | ~~B33~~ Demo keine Sperre ✅ | ~~B34~~ Freischaltung ✅
+- ~~U25~~ Gelb Default ✅ | ~~U27~~ Rotation ✅ | ~~U28~~ Textfeld ✅ | ~~U29~~ Zeitzuschlag ✅ | ~~U30~~ Auto-geprüft ✅ | ~~U31~~ Fragen-Korrektur ✅ | ~~U32~~ Multi-Tabs ✅
+
+### Geänderte Dateien (18 Dateien)
+
+```
+src/hooks/useLockdown.ts                               — B33 (effektiv==='keine' Guard)
+src/types/monitoring.ts                                — B34 (HeartbeatResponse Phase erweitert)
+src/components/Startbildschirm.tsx                     — B34 (Phase-basierte Freischaltung)
+src/components/MaterialPanel.tsx                       — B29 (min-h-0 statt min-h-[200px])
+src/components/fragetypen/pdf/PDFSeite.tsx             — B25 (DOM-Traversierung statt closest) + U27 (Rotation)
+src/components/fragetypen/pdf/PDFTypes.ts              — U25 (Farben umgeordnet)
+src/components/fragetypen/pdf/PDFToolbar.tsx           — U27 (Rotation-Toggle)
+src/components/fragetypen/pdf/PDFViewer.tsx            — U27 (textRotation Prop)
+src/components/fragetypen/PDFFrage.tsx                 — U25 (Auto-Farbwechsel) + U27 (Rotation)
+src/components/fragetypen/zeichnen/ZeichnenTypes.ts   — U27 (rotation auf DrawCommand)
+src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx  — U28 (Buttons entfernt) + U27 (Rotation)
+src/components/fragetypen/zeichnen/ZeichnenToolbar.tsx — U27 (Rotation-Toggle)
+src/components/fragetypen/zeichnen/useDrawingEngine.ts — U27 (Canvas Rotation)
+src/components/fragetypen/ZeichnenFrage.tsx            — U27 (textRotation State)
+src/types/fragen.ts                                    — U27 (PDFTextAnnotation rotation)
+src/components/lp/LobbyPhase.tsx                       — U29 (ZeitzuschlagEditor entfernt)
+src/components/lp/DurchfuehrenDashboard.tsx            — U29 (onConfigUpdate Prop entfernt)
+src/components/lp/KorrekturDashboard.tsx               — U30 (Auto-geprüft) + U31 (Modus-Toggle)
+src/components/lp/KorrekturFragenAnsicht.tsx           — U31 (NEU: Frage-für-Frage Komponente)
+src/components/lp/MultiDurchfuehrenDashboard.tsx       — U32 (Auswertung-Tab mit Prüfungs-Tabs)
+```
 
 ---
 

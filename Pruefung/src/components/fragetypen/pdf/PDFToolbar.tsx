@@ -23,6 +23,8 @@ interface Props {
   readOnly?: boolean
   layout?: ToolbarLayout
   onLayoutToggle?: () => void
+  textRotation?: 0 | 90 | 180 | 270
+  onTextRotationChange?: (r: 0 | 90 | 180 | 270) => void
 }
 
 const WERKZEUG_DEFS: { id: PDFAnnotationsWerkzeug; icon: string | ReactNode; label: string }[] = [
@@ -52,6 +54,8 @@ export function PDFToolbar({
   readOnly,
   layout = 'horizontal',
   onLayoutToggle,
+  textRotation = 0,
+  onTextRotationChange,
 }: Props) {
   const isHorizontal = layout === 'horizontal'
   const [farbPickerOffen, setFarbPickerOffen] = useState(false)
@@ -185,6 +189,21 @@ export function PDFToolbar({
           </select>
           <div className={isHorizontal ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1' : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'} aria-hidden="true" />
         </div>
+      )}
+
+      {/* Text-Rotation (nur bei Text-Werkzeug) */}
+      {aktivesWerkzeug === 'text' && onTextRotationChange && (
+        <button
+          type="button"
+          onClick={() => onTextRotationChange(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+          className={[
+            btnKlassen(false),
+            'border border-slate-300 dark:border-slate-600',
+          ].join(' ')}
+          title={`Rotation: ${textRotation}°`}
+        >
+          ⟳{textRotation > 0 ? ` ${textRotation}°` : ''}
+        </button>
       )}
 
       {/* Undo / Redo */}

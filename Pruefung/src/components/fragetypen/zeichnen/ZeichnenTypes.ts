@@ -14,7 +14,7 @@ export type DrawCommand =
   | { id: CommandId; typ: 'linie'; von: Point; bis: Point; farbe: string; breite: number }
   | { id: CommandId; typ: 'pfeil'; von: Point; bis: Point; farbe: string; breite: number }
   | { id: CommandId; typ: 'rechteck'; von: Point; bis: Point; farbe: string; breite: number; gefuellt: boolean }
-  | { id: CommandId; typ: 'text'; position: Point; text: string; farbe: string; groesse: number }
+  | { id: CommandId; typ: 'text'; position: Point; text: string; farbe: string; groesse: number; rotation?: 0 | 90 | 180 | 270 }
   | { id: CommandId; typ: 'radierer'; punkte: Point[]; breite: number };
 
 // Aktives Werkzeug

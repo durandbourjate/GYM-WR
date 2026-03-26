@@ -398,6 +398,7 @@ export interface PDFTextAnnotation extends PDFAnnotationBase {
   farbe: string
   groesse: number // Font-Grösse in px
   fett: boolean
+  rotation?: 0 | 90 | 180 | 270
 }
 
 export type PDFAnnotation =

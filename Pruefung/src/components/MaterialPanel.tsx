@@ -261,7 +261,7 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         </div>
         <iframe
           src={embedUrl}
-          className="flex-1 w-full border-0 min-h-[200px] md:min-h-[300px]"
+          className="flex-1 w-full border-0 min-h-0"
           title={material.titel}
           sandbox="allow-scripts allow-same-origin"
         />
@@ -300,7 +300,7 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
         </div>
         <iframe
           src={material.url}
-          className="flex-1 w-full border-0 min-h-[200px] md:min-h-[300px]"
+          className="flex-1 w-full border-0 min-h-0"
           title={material.titel}
           sandbox="allow-scripts allow-same-origin"
         />

@@ -3,13 +3,14 @@ import { useAuthStore } from '../../store/authStore'
 import { apiService } from '../../services/apiService'
 import type { MonitoringDaten, SchuelerStatus } from '../../types/monitoring'
 import DurchfuehrenDashboard from './DurchfuehrenDashboard'
+import KorrekturDashboard from './KorrekturDashboard'
 import ThemeToggle from '../ThemeToggle'
 
 interface Props {
   pruefungIds: string[]
 }
 
-type MultiTab = 'live' | 'einzeln'
+type MultiTab = 'live' | 'einzeln' | 'auswertung'
 
 export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
   const user = useAuthStore((s) => s.user)
@@ -17,6 +18,7 @@ export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
   const [selectedPruefung, setSelectedPruefung] = useState<string>(pruefungIds[0])
   const [monitoringDaten, setMonitoringDaten] = useState<Map<string, MonitoringDaten>>(new Map())
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
+  const [auswertungPruefung, setAuswertungPruefung] = useState<string>(pruefungIds[0])
 
   // Paralleles Polling für Live-Monitoring
   const ladeAlleDaten = useCallback(async () => {
@@ -54,6 +56,43 @@ export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
       if (s.gesperrt) zusammenfassung.gesperrt++
     })
   })
+
+  if (activeTab === 'auswertung') {
+    return (
+      <div>
+        {/* Tab-Leiste */}
+        <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setActiveTab('live')}
+            className="text-sm px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+          >
+            ← Multi-Übersicht
+          </button>
+          <div className="flex gap-1">
+            {pruefungIds.map((id) => {
+              const daten = monitoringDaten.get(id)
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setAuswertungPruefung(id)}
+                  className={`text-xs px-2.5 py-1 rounded-full cursor-pointer transition-colors ${
+                    auswertungPruefung === id
+                      ? 'bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900'
+                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                  }`}
+                >
+                  {daten?.pruefungTitel || id}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+        <KorrekturDashboard pruefungId={auswertungPruefung} eingebettet />
+      </div>
+    )
+  }
 
   if (activeTab === 'einzeln') {
     return (
@@ -114,6 +153,13 @@ export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
             className="text-sm px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer text-slate-700 dark:text-slate-200"
           >
             Einzelansicht →
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('auswertung')}
+            className="text-sm px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer text-slate-700 dark:text-slate-200"
+          >
+            Auswertung →
           </button>
           <ThemeToggle />
         </div>

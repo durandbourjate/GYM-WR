@@ -27,6 +27,7 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
   // Verstoss registrieren
   const registriereVerstoss = useCallback((typ: Verstoss['typ'], dauer?: number) => {
     if (!aktiv || gesperrt) return
+    if (effektiv === 'keine') return // Demo-Prüfung: nur Warnungen, keine Sperre
 
     const verstoss: Verstoss = {
       zeitpunkt: new Date().toISOString(),
@@ -44,7 +45,7 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
         return neu
       })
     }
-  }, [aktiv, gesperrt, maxVerstoesse])
+  }, [aktiv, gesperrt, effektiv, maxVerstoesse])
 
   // LP-Entsperrung
   const entsperre = useCallback(() => {

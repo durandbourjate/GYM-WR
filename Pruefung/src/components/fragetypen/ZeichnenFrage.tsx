@@ -54,6 +54,9 @@ export default function ZeichnenFrage({ frage }: Props) {
   // Aktive Farbe (erste aus Konfiguration)
   const [aktiveFarbe, setAktiveFarbe] = useState<string>(verfuegbareFarben[0] ?? '#000000')
 
+  // Text-Rotation (0°, 90°, 180°, 270°)
+  const [textRotation, setTextRotation] = useState<0 | 90 | 180 | 270>(0)
+
   // Toolbar-Layout: aus localStorage laden (Standard: horizontal)
   const [toolbarLayout, setToolbarLayout] = useState<ToolbarLayout>(() => {
     try {
@@ -226,6 +229,8 @@ export default function ZeichnenFrage({ frage }: Props) {
               kannUndo={kannUndoRef.current}
               kannRedo={kannRedoRef.current}
               disabled={abgegeben}
+              textRotation={textRotation}
+              onTextRotationChange={setTextRotation}
             />
           </div>
         )}
@@ -246,6 +251,7 @@ export default function ZeichnenFrage({ frage }: Props) {
             canvasConfig={canvasConfig}
             aktivesTool={aktivesTool}
             aktiveFarbe={aktiveFarbe}
+            textRotation={textRotation}
             initialDaten={gespeicherteDaten}
             onDatenChange={handleDatenChange}
             onPNGExport={handlePNGExport}

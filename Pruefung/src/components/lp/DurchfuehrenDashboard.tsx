@@ -478,13 +478,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
               config={config}
               schuelerStatus={daten.schueler}
               freischaltenLaedt={freischaltenLaedt}
-              onConfigUpdate={async (updates) => {
-                const neueConfig = { ...config, ...updates }
-                setConfig(neueConfig)
-                if (user) {
-                  await apiService.speichereConfig(user.email, neueConfig)
-                }
-              }}
               onFreischalten={async () => {
                 if (!user || freischaltenLaedt) return
                 // Optimistic UI: sofort freigeschaltet anzeigen

@@ -412,7 +412,15 @@ function zeichneCommand(ctx: CanvasRenderingContext2D, cmd: DrawCommand): void {
       ctx.fillStyle = cmd.farbe;
       ctx.font = `${cmd.groesse}px sans-serif`;
       ctx.textBaseline = 'alphabetic';
-      ctx.fillText(cmd.text, cmd.position.x, cmd.position.y);
+      if (cmd.rotation) {
+        ctx.save();
+        ctx.translate(cmd.position.x, cmd.position.y);
+        ctx.rotate((cmd.rotation * Math.PI) / 180);
+        ctx.fillText(cmd.text, 0, 0);
+        ctx.restore();
+      } else {
+        ctx.fillText(cmd.text, cmd.position.x, cmd.position.y);
+      }
       break;
     }
 

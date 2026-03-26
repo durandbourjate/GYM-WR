@@ -21,6 +21,7 @@ interface Props {
   onAnnotationHinzufuegen: (a: PDFAnnotation) => void
   onAnnotationLoeschen: (id: string) => void
   onAnnotationEditieren?: (id: string, updates: Partial<PDFAnnotation>) => void
+  textRotation?: 0 | 90 | 180 | 270
   readOnly?: boolean
 }
 
@@ -94,7 +95,7 @@ function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
 export function PDFSeite({
   seitenNr, zoom, renderer, annotationen, aktivesWerkzeug, aktiveFarbe,
   kategorien, aktiveKategorieId: _aktiveKategorieId, onAnnotationHinzufuegen, onAnnotationLoeschen,
-  onAnnotationEditieren, readOnly,
+  onAnnotationEditieren, textRotation = 0, readOnly,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -216,8 +217,13 @@ export function PDFSeite({
 
     // Radierer: check if clicked on an annotation element
     if (aktivesWerkzeug === 'radierer') {
-      const target = e.target as HTMLElement
-      const annotId = target.closest('[data-annotation-id]')?.getAttribute('data-annotation-id')
+      let node: Element | null = e.target as Element
+      let annotId: string | null = null
+      while (node && node !== e.currentTarget) {
+        annotId = node.getAttribute('data-annotation-id')
+        if (annotId) break
+        node = node.parentElement
+      }
       if (annotId) onAnnotationLoeschen(annotId)
       return
     }
@@ -284,16 +290,24 @@ export function PDFSeite({
       farbe: aktiveFarbe,
       groesse: 16,
       fett: false,
+      rotation: textRotation || undefined,
     }
     onAnnotationHinzufuegen(annotation)
     setTextOverlay({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
-  }, [textOverlay, seitenNr, aktiveFarbe, onAnnotationHinzufuegen])
+  }, [textOverlay, seitenNr, aktiveFarbe, textRotation, onAnnotationHinzufuegen])
 
   // --- Doppelklick: Text-Annotation editieren ---
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     if (readOnly || !onAnnotationEditieren || !seitenInfo) return
-    const target = e.target as HTMLElement
-    const annotId = target.closest('[data-annotation-id]')?.getAttribute('data-annotation-id')
+    // closest() kann bei SVG-Elementen browserübergreifend unzuverlässig sein,
+    // daher manuell das DOM hoch traversieren (SVG → HTML Grenze beachten)
+    let node: Element | null = e.target as Element
+    let annotId: string | null = null
+    while (node && node !== e.currentTarget) {
+      annotId = node.getAttribute('data-annotation-id')
+      if (annotId) break
+      node = node.parentElement
+    }
     if (!annotId) return
 
     const ann = annotationen.find(a => a.id === annotId)
@@ -710,6 +724,7 @@ function renderTextAnnotation(
       fontWeight={ann.fett ? 'bold' : 'normal'}
       className="pointer-events-auto cursor-pointer"
       style={{ userSelect: 'none' }}
+      transform={ann.rotation ? `rotate(${ann.rotation}, ${px}, ${py})` : undefined}
     >
       {ann.text}
     </text>

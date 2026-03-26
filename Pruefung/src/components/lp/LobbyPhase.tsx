@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import type { PruefungsConfig } from '../../types/pruefung'
 import type { SchuelerStatus } from '../../types/monitoring'
-import ZeitzuschlagEditor from './ZeitzuschlagEditor'
 
 interface Props {
   config: PruefungsConfig
@@ -11,11 +9,9 @@ interface Props {
   onAkzeptieren: (email: string, name: string) => void
   onEntfernen: (email: string) => void
   freischaltenLaedt?: boolean
-  onConfigUpdate?: (updates: Partial<PruefungsConfig>) => void
 }
 
-export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren, onEntfernen, freischaltenLaedt, onConfigUpdate }: Props) {
-  const [zeitzuschlagOffen, setZeitzuschlagOffen] = useState(false)
+export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZurueck, onAkzeptieren, onEntfernen, freischaltenLaedt }: Props) {
   const teilnehmer = config.teilnehmer ?? []
   const teilnehmerEmails = new Set(teilnehmer.map((t) => t.email))
 
@@ -137,40 +133,6 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
         {bereite.length === 0 && ausstehende.length === 0 && unerwartete.length === 0 && (
           <div className="px-3 py-6 text-center text-sm text-slate-400 dark:text-slate-500">
             Noch keine Teilnehmer in der Lobby.
-          </div>
-        )}
-      </div>
-
-      {/* Nachteilsausgleich (Zeitzuschlag) — Collapsible */}
-      <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setZeitzuschlagOffen(!zeitzuschlagOffen)}
-          className="w-full flex items-center justify-between px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-        >
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
-            <span>⏱</span>
-            <span>Nachteilsausgleich (Zeitzuschlag)</span>
-            {Object.keys(config.zeitverlaengerungen ?? {}).length > 0 && (
-              <span className="text-xs px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full font-medium">
-                {Object.keys(config.zeitverlaengerungen ?? {}).length}
-              </span>
-            )}
-          </span>
-          <span className={`text-slate-400 dark:text-slate-500 transition-transform duration-200 ${zeitzuschlagOffen ? 'rotate-180' : ''}`}>
-            ▼
-          </span>
-        </button>
-        {zeitzuschlagOffen && (
-          <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700">
-            <ZeitzuschlagEditor
-              kompakt
-              zeitverlaengerungen={config.zeitverlaengerungen ?? {}}
-              teilnehmer={config.teilnehmer ?? []}
-              onChange={(neueZV) => {
-                onConfigUpdate?.({ zeitverlaengerungen: neueZV })
-              }}
-            />
           </div>
         )}
       </div>
