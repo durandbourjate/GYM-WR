@@ -30,7 +30,7 @@ function fetchMitTimeout(
 export async function postJson<T>(
   action: string,
   payload: Record<string, unknown>,
-  options?: { signal?: AbortSignal }
+  options?: { signal?: AbortSignal; timeoutMs?: number }
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
   try {
@@ -39,7 +39,7 @@ export async function postJson<T>(
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action, ...payload }),
       signal: options?.signal,
-    })
+    }, options?.timeoutMs)
     if (!response.ok) return null
     const text = await response.text()
     try {

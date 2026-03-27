@@ -1776,14 +1776,18 @@ function ladeAlleConfigs(email) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
+    // LP-Info einmal vorladen (statt pro Config 2× getLPInfo aufzurufen)
+    var lpInfo = getLPInfo(email);
+    var istAdmin = lpInfo && lpInfo.rolle === 'admin';
+
     const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
     const data = getSheetData(configSheet);
 
     const configs = data.map(mapConfigRow);
 
-    // Rechte-System: istSichtbar() prüft Eigentum, Admin, Berechtigungen, Legacy
-    const gefilterteConfigs = configs.filter(c => istSichtbar(email, c)).map(c => {
-      c._recht = ermittleRecht(email, c);
+    // Rechte-System mit vorgeladener LP-Info (Performance-Optimierung)
+    const gefilterteConfigs = configs.filter(c => istSichtbarMitLP(email, c, lpInfo, istAdmin)).map(c => {
+      c._recht = ermittleRechtMitLP(email, c, lpInfo, istAdmin);
       return c;
     });
 

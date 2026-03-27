@@ -2,9 +2,9 @@ import type { Frage } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import { APPS_SCRIPT_URL, getJson, postBool } from './apiClient'
 
-/** Alle Prüfungs-Configs laden (für LP-Dashboard) */
+/** Alle Prüfungs-Configs laden (für LP-Dashboard) — 60s Timeout wegen Rechte-Prüfung pro Config */
 export async function ladeAlleConfigs(email: string): Promise<PruefungsConfig[] | null> {
-  const data = await getJson<{ configs: PruefungsConfig[] }>('ladeAlleConfigs', { email })
+  const data = await getJson<{ configs: PruefungsConfig[] }>('ladeAlleConfigs', { email }, { timeoutMs: 60_000 })
   if (!data) return null
   return data.configs ?? []
 }
