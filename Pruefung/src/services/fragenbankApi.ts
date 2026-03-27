@@ -9,9 +9,9 @@ export async function ladeAlleConfigs(email: string): Promise<PruefungsConfig[] 
   return data.configs ?? []
 }
 
-/** Fragenbank laden (alle Fragen für Composer) */
+/** Fragenbank laden (alle Fragen für Composer) — 60s Timeout wegen grosser Fragenbank */
 export async function ladeFragenbank(email: string): Promise<Frage[] | null> {
-  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email })
+  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email }, { timeoutMs: 60_000 })
   if (!data) return null
   return data.fragen ?? []
 }

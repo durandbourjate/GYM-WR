@@ -95,7 +95,7 @@ export async function postBool(
 export async function getJson<T>(
   action: string,
   params: Record<string, string> = {},
-  options?: { signal?: AbortSignal }
+  options?: { signal?: AbortSignal; timeoutMs?: number }
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
   try {
@@ -103,7 +103,7 @@ export async function getJson<T>(
       .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
       .join('&')
     const url = `${APPS_SCRIPT_URL}?action=${action}${queryParams ? '&' + queryParams : ''}`
-    const response = await fetchMitTimeout(url, { signal: options?.signal })
+    const response = await fetchMitTimeout(url, { signal: options?.signal }, options?.timeoutMs)
     if (!response.ok) return null
     const text = await response.text()
     try {

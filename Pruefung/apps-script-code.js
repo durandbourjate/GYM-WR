@@ -211,6 +211,76 @@ function ermittleRecht(email, item) {
   return 'betrachter';
 }
 
+/**
+ * Optimierte Variante von istSichtbar — bekommt lpInfo als Parameter statt es pro Frage zu laden.
+ * Wird von ladeFragenbank verwendet (Performance: LP-Info nur 1× laden statt pro Frage).
+ */
+function istSichtbarMitLP(email, item, lpInfo, istAdmin) {
+  var inhaber = item.autor || item.erstelltVon;
+  if (!inhaber || inhaber === email) return true;
+  if (istAdmin) return true;
+  if (item.quelle === 'pool') return true;
+
+  var berechtigungen = parseBerechtigungen(item.berechtigungen);
+  if (berechtigungen.length > 0) {
+    return hatRechtMitLP(email, berechtigungen, 'betrachter', lpInfo);
+  }
+
+  if (item.geteilt === 'schule') return true;
+  if (item.geteilt === 'fachschaft' && lpInfo) {
+    var fachbereiche = fachschaftZuFachbereiche(lpInfo.fachschaft);
+    if (fachbereiche.indexOf(item.fachbereich) >= 0) return true;
+  }
+
+  return false;
+}
+
+/**
+ * Optimierte Variante von ermittleRecht — bekommt lpInfo als Parameter.
+ */
+function ermittleRechtMitLP(email, item, lpInfo, istAdmin) {
+  var inhaber = item.autor || item.erstelltVon;
+  if (!inhaber || inhaber === email) return 'inhaber';
+  if (istAdmin) return 'inhaber';
+
+  var berechtigungen = parseBerechtigungen(item.berechtigungen);
+  if (hatRechtMitLP(email, berechtigungen, 'bearbeiter', lpInfo)) return 'bearbeiter';
+  return 'betrachter';
+}
+
+/**
+ * Optimierte Variante von hatRecht — bekommt lpInfo als Parameter.
+ */
+function hatRechtMitLP(email, berechtigungen, mindestRecht, lpInfo) {
+  if (!berechtigungen || berechtigungen.length === 0) return false;
+
+  var rechteStufen = { 'betrachter': 1, 'bearbeiter': 2 };
+  var minStufe = rechteStufen[mindestRecht] || 1;
+
+  for (var i = 0; i < berechtigungen.length; i++) {
+    var b = berechtigungen[i];
+    var stufe = rechteStufen[b.recht] || 1;
+    if (stufe < minStufe) continue;
+    if (b.email === email || b.email === email.toLowerCase()) return true;
+    if (b.email === '*') return true;
+    if (b.email.indexOf('fachschaft:') === 0 && lpInfo) {
+      var fs = b.email.split(':')[1];
+      if (lpInfo.fachschaft === fs) return true;
+    }
+  }
+  return false;
+}
+
+/** Berechtigungen-String einmal parsen (vermeidet doppeltes JSON.parse) */
+function parseBerechtigungen(berechtigungen) {
+  if (!berechtigungen) return [];
+  if (Array.isArray(berechtigungen)) return berechtigungen;
+  if (typeof berechtigungen === 'string') {
+    try { return JSON.parse(berechtigungen); } catch(e) { return []; }
+  }
+  return [];
+}
+
 // Zentrale Daten-Sheets (Synergien)
 const KURSE_SHEET_ID = '1inmEds_g48-lTFCqo9NUqAcxhDxF2mFSoBM5fO6uJng';       // User muss ID einsetzen
 const STUNDENPLAN_SHEET_ID = '1mesBOmPuLewvnY5iNb4iD2zNDUn8-ruK5HE0DsKwUSs';
@@ -1840,6 +1910,10 @@ function ladeFragenbank(email) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
+    // LP-Info einmal am Anfang laden (statt pro Frage in istSichtbar/ermittleRecht)
+    var lpInfo = getLPInfo(email);
+    var istAdmin = lpInfo && lpInfo.rolle === 'admin';
+
     const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
     const tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     const alleFragen = [];
@@ -1851,10 +1925,8 @@ function ladeFragenbank(email) {
       for (const row of data) {
         if (row.id) {
           const frage = parseFrage(row, tab);
-          if (istSichtbar(email, frage)) {
-            // Recht ermitteln für Frontend-UI
-            frage._recht = ermittleRecht(email, frage);
-            // Bei geteilten Fragen den Autor-Namen anzeigen
+          if (istSichtbarMitLP(email, frage, lpInfo, istAdmin)) {
+            frage._recht = ermittleRechtMitLP(email, frage, lpInfo, istAdmin);
             if (frage.autor && frage.autor !== email) {
               frage.geteiltVon = frage.autor.split('@')[0];
             }

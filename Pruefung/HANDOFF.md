@@ -8,7 +8,20 @@
 ## Offene Punkte
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
-- **🔴 Fragenbank im Composer "nicht gefunden"** — Einrichtungsfragen existieren im Fragenbank-Sheet (bestätigt: `einr-mc-orientierung` etc.), aber der PruefungsComposer zeigt sie als "nicht gefunden" an. Das Problem trat erst nach Multi-Teacher-Einbau auf. Vermutliche Ursache: `ladeFragenbank()` im Backend gibt die Fragen nicht korrekt zurück (evtl. `istSichtbar`-Filter, Timeout, oder Parsing-Problem). **Nächster Schritt:** Backend-Response von `ladeFragenbank` direkt testen (curl/Postman statt Browser — der Browser-Call läuft ins Timeout). Prüfen ob `istSichtbar` für Admin korrekt `true` gibt und ob `parseFrage` die `einr-*` IDs korrekt parst.
+- **🟡 Fragenbank im Composer "nicht gefunden"** — Fix deployed (Session 28), muss im Browser verifiziert werden. Root-Cause: `ladeFragenbank()` Timeout nach Multi-Teacher-Einbau (LP-Info wurde pro Frage 3× geladen). Fix: LP-Info einmal vorladen + Frontend-Timeout 30s→60s. **Nach Deploy:** Im Browser testen ob Einrichtungsfragen im Composer erscheinen.
+
+---
+
+## Session 28 — Fragenbank-Performance-Fix (27.03.2026)
+
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | **ladeFragenbank Performance** | LP-Info wird einmal am Anfang geladen statt pro Frage 3× (`istSichtbar` + `ermittleRecht` + `hatRecht`). Neue optimierte Funktionen: `istSichtbarMitLP()`, `ermittleRechtMitLP()`, `hatRechtMitLP()`, `parseBerechtigungen()` |
+| 2 | **Frontend-Timeout** | `getJson()` akzeptiert optionalen `timeoutMs`-Parameter. `ladeFragenbank()` nutzt 60s statt Standard-30s |
+
+**Dateien geändert:** `apps-script-code.js` (4 neue Funktionen + ladeFragenbank optimiert), `src/services/apiClient.ts` (timeoutMs), `src/services/fragenbankApi.ts` (60s Timeout)
+
+**Wichtig:** Apps Script muss neu deployed werden.
 
 ---
 
