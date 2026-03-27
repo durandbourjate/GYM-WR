@@ -15,6 +15,12 @@ interface Props {
   daten?: string
   /** Musterlösung als Base64-PNG (optional für KI) */
   musterloesungBild?: string
+  /** Bloom-Stufe (z.B. 'K2') für KI-Korrektur */
+  bloom?: string
+  /** Bewertungsraster für KI-Korrektur */
+  bewertungsraster?: unknown
+  /** Lernziel für KI-Korrektur */
+  lernziel?: string
   bewertung: FragenBewertung
   schuelerEmail: string
   onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null }) => void
@@ -145,6 +151,9 @@ export default function ZeichnenKorrektur({
   bildLink,
   daten,
   musterloesungBild,
+  bloom,
+  bewertungsraster,
+  lernziel,
   bewertung,
   schuelerEmail,
   onUpdate,
@@ -215,6 +224,9 @@ export default function ZeichnenKorrektur({
       fragetext,
       musterloesungBild: musterloesungBild ?? '',
       maxPunkte,
+      bloom: bloom || undefined,
+      bewertungsraster: bewertungsraster || undefined,
+      lernziel: lernziel || undefined,
     })
 
     setKiLaedt(false)

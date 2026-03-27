@@ -188,6 +188,9 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
                     maxPunkte={bewertung.maxPunkte}
                     bildLink={antwort.bildLink}
                     daten={antwort.daten}
+                    bloom={frage.bloom}
+                    bewertungsraster={(frage as unknown as Record<string, unknown>).bewertungsraster}
+                    lernziel={(frage as unknown as Record<string, unknown>).lernziel as string}
                     bewertung={bewertung}
                     schuelerEmail={schueler.email}
                     onUpdate={(updates) => onBewertungUpdate(schueler.email, frage.id, updates)}

@@ -7,11 +7,28 @@
 
 ## Offene Punkte
 
-- **B42: Text-Tool PDF** — Schriftgrösse/Fett hardcodiert (16px, nicht fett). `textGroesse`/`textFett` durch PDFFrage→PDFViewer→PDFSeite schleusen + Auswahl-Modus implementieren.
-- **Manuelle Punktevergabe** — Korrektur-Tab noch nicht live getestet
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
-- **Apps Script aktualisieren** — Session 19 Änderungen (Safety-Net, Individual-Beenden Batch-Write) noch nicht deployed. Code kopieren → Apps Script Editor → Bereitstellen → Bereitstellungen verwalten → Stift → "Neue Version".
-- **Phase 3 (optional):** `useKorrekturDaten` + `useKorrekturActions` Hooks — KorrekturDashboard von 579 → ~250 Z.
+- **Apps Script aktualisieren** — Session 25 KI-Prompt-Verbesserungen noch nicht deployed. Code kopieren → Apps Script Editor → Bereitstellen → Bereitstellungen verwalten → Stift → "Neue Version".
+- **Phase 3 (optional):** `useKorrekturDaten` + `useKorrekturActions` Hooks — KorrekturDashboard von 612 → ~250 Z.
+
+---
+
+## Session 25 — 8 UI-Fixes + KI-Prompt-Verbesserung (27.03.2026)
+
+| # | Task | Fix |
+|---|------|-----|
+| B42 | PDF Text-Tool Fallback 16px | `\|\| 16` → `\|\| 18` (konsistent mit Default) |
+| R/F | Richtig/Falsch Alignment | Buttons: `flex items-center justify-center gap-2` statt inline |
+| FiBu | Bilanzsumme zu breit | `w-32` → `w-24` (gleich wie KontoRow) |
+| FiBu | Bilanz Seite-Dropdown | 4 Optionen: Aktiven, Passiven, Aufwand, Ertrag |
+| FiBu | Kontenhauptgruppe Freitext | Dropdown mit 11 KMU-Kontenhauptgruppen |
+| FiBu | T-Konto Titel | Zentriert + Soll/Haben + (+)Zunahme/(−)Abnahme Dropdowns |
+| iPad | PDF Stifteingabe | `touchAction: 'none'` auf Container bei Freihand |
+| iPad | Auto-Tastatur | `requestAnimationFrame` statt `setTimeout` für iOS Focus |
+| UX | Material Side-Panel | Drag-Resize am linken Rand (300px–80vw) |
+| KI | Korrektur-Prompts | Gemeinsamer System-Prompt: 0.5-Schritte, Bloom-Stufe, Bewertungsraster, sachliche Begründung |
+
+**KI-Prompt-Architektur:** Neuer `korrekturSystemPrompt()` (gemeinsam für Zeichnung + PDF). Frontend schickt `bloom`, `bewertungsraster`, `lernziel` an beide Endpoints. Apps Script muss neu deployed werden.
 
 ---
 

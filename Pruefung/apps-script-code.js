@@ -2580,13 +2580,17 @@ function kiAssistentEndpoint(body) {
         var fragetext = daten.fragetext;
         var musterloesungBild = daten.musterloesungBild || null;
         var maxPunkte = daten.maxPunkte || 1;
+        var bloom = daten.bloom || '';
+        var bewertungsraster = daten.bewertungsraster || null;
+        var lernziel = daten.lernziel || '';
 
-        var sysPrompt = 'Du bist ein erfahrener Prüfungskorrektor an einem Schweizer Gymnasium. ' +
-          'Bewerte die folgende Zeichnung/Beschriftung eines Schülers. ' +
-          'Antworte ausschliesslich als JSON: { "punkte": number, "begruendung": string }';
+        var sysPrompt = korrekturSystemPrompt();
 
         var userPrompt = 'Frage: ' + fragetext + '\n' +
           'Maximale Punkte: ' + maxPunkte + '\n' +
+          (bloom ? 'Taxonomie-Stufe: ' + bloom + '\n' : '') +
+          (lernziel ? 'Lernziel: ' + lernziel + '\n' : '') +
+          (bewertungsraster ? 'Bewertungsraster:\n' + JSON.stringify(bewertungsraster) + '\n' : '') +
           (musterloesungBild ? 'Eine Musterlösung ist als zweites Bild beigefügt.\n' : '') +
           'Bewerte Vollständigkeit, Korrektheit und Qualität.';
 
@@ -2659,12 +2663,26 @@ function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens) {
   return JSON.parse(cleaned);
 }
 
+/** Gemeinsamer System-Prompt für alle KI-Korrekturen */
+function korrekturSystemPrompt() {
+  return 'Du bist Prüfungskorrektor am Gymnasium Hofwil (Schweiz).\n\n' +
+    'Bewertungsregeln:\n' +
+    '- Punkte in 0.5-Schritten vergeben (0, 0.5, 1, 1.5, ...)\n' +
+    '- Begründung: 1–2 Sätze, sachlich, mit Bezug auf die korrekte Lösung. Keine Lob-Floskeln.\n' +
+    '- Bloom-Stufen beachten: K1–K2 = streng faktisch (Wissen/Verstehen), K3–K4 = Anwendung/Analyse bewerten, K5–K6 = Argumentation/Kreativität würdigen\n' +
+    '- Bei Teilleistungen: Teilpunkte vergeben, nicht alles-oder-nichts\n\n' +
+    'Antworte ausschliesslich als JSON: { "punkte": number, "begruendung": string }';
+}
+
 function korrigierePDFAnnotation(params) {
   const { pdfBilder, annotationen, musterloesungAnnotationen, bewertungsraster, maxPunkte } = params;
+  const fragetext = params.fragetext || '';
+  const bloom = params.bloom || '';
+  const lernziel = params.lernziel || '';
 
-  const prompt = `Du bist Korrektur-Assistent für eine Prüfung am Gymnasium Hofwil.
+  const prompt = `Bewerte die PDF-Annotationen eines Schülers.
 
-Aufgabe: Bewerte die PDF-Annotationen eines Schülers.
+${fragetext ? 'Aufgabenstellung: ' + fragetext + '\n' : ''}${bloom ? 'Taxonomie-Stufe: ' + bloom + '\n' : ''}${lernziel ? 'Lernziel: ' + lernziel + '\n' : ''}Maximale Punktzahl: ${maxPunkte}
 
 Bewertungsraster:
 ${JSON.stringify(bewertungsraster)}
@@ -2673,11 +2691,7 @@ Musterlösung (Annotationen):
 ${JSON.stringify(musterloesungAnnotationen)}
 
 Schüler-Annotationen:
-${JSON.stringify(annotationen)}
-
-Maximale Punktzahl: ${maxPunkte}
-
-Antworte mit JSON: { "punkte": <number>, "begruendung": "<text>" }`;
+${JSON.stringify(annotationen)}`;
 
   const messages = [{
     role: 'user',
@@ -2690,10 +2704,7 @@ Antworte mit JSON: { "punkte": <number>, "begruendung": "<text>" }`;
     ]
   }];
 
-  const sysPrompt = 'Du bist ein erfahrener Prüfungskorrektor an einem Schweizer Gymnasium. ' +
-    'Antworte ausschliesslich als JSON: { "punkte": number, "begruendung": string }';
-
-  return rufeClaudeAufMitBild(sysPrompt, messages);
+  return rufeClaudeAufMitBild(korrekturSystemPrompt(), messages);
 }
 
 function rufeClaudeAufMitBild(systemPrompt, messages) {
