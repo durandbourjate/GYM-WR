@@ -18,10 +18,10 @@ const demoLPs: LPInfo[] = [
 ]
 
 /** Lädt LP-Liste vom Backend (gecacht pro Session). Kann von Komponenten importiert werden. */
-export async function ladeUndCacheLPs(): Promise<LPInfo[]> {
+export async function ladeUndCacheLPs(callerEmail?: string): Promise<LPInfo[]> {
   if (lpCache) return lpCache
   try {
-    lpCache = await ladeLehrpersonen()
+    lpCache = await ladeLehrpersonen(callerEmail)
     // Im Demo-Modus (kein Backend) Demo-LPs zurückgeben
     return lpCache && lpCache.length > 0 ? lpCache : demoLPs
   } catch {
@@ -88,8 +88,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   anmelden: async (credential: GoogleCredential) => {
     set({ ladeStatus: 'laden' })
-    // LP-Liste vom Backend laden (gecached pro Session)
-    const lps = await ladeUndCacheLPs()
+    // LP-Liste vom Backend laden mit echter E-Mail (gecached pro Session)
+    const lps = await ladeUndCacheLPs(credential.email)
     const rolle = rolleAusDomain(credential.email, lps)
     const lpInfo = lps.find(lp => lp.email === credential.email.toLowerCase())
     const user: AuthUser = {
