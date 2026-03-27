@@ -90,6 +90,75 @@ function getLPInfo(email) {
   return lpMap[emailLower] || null;
 }
 
+// === CACHE-SYSTEM (Performance-Optimierung) ===
+// Globaler Cache für Configs, Fragenbank, Tracker.
+// Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
+// Versions-Counter invalidiert alle Caches bei Schreiboperationen.
+
+var CACHE_TTL = 300; // 5 Minuten
+var CACHE_MAX_CHUNK = 90000; // 90KB pro CacheService-Key (Limit: 100KB)
+
+/** Liest gecachte Daten (mit Chunking-Support für grosse Datensätze) */
+function cacheGet_(schluessel) {
+  var cache = CacheService.getScriptCache();
+  var version = cache.get('cache_version') || '0';
+  var key = schluessel + '_v' + version;
+
+  // Erst den Haupt-Key prüfen
+  var data = cache.get(key);
+  if (!data) return null;
+
+  try {
+    var parsed = JSON.parse(data);
+    // Wenn chunked: alle Chunks laden und zusammensetzen
+    if (parsed.__chunked) {
+      var chunks = [parsed.data];
+      for (var i = 1; i < parsed.__chunked; i++) {
+        var chunk = cache.get(key + '_' + i);
+        if (!chunk) return null; // Chunk fehlt → Cache ungültig
+        chunks.push(chunk);
+      }
+      return JSON.parse(chunks.join(''));
+    }
+    return parsed;
+  } catch(e) { return null; }
+}
+
+/** Schreibt Daten in den Cache (mit auto-Chunking wenn >90KB) */
+function cachePut_(schluessel, daten) {
+  try {
+    var cache = CacheService.getScriptCache();
+    var version = cache.get('cache_version') || '0';
+    var key = schluessel + '_v' + version;
+    var json = JSON.stringify(daten);
+
+    if (json.length <= CACHE_MAX_CHUNK) {
+      // Passt in einen Key
+      cache.put(key, json, CACHE_TTL);
+    } else {
+      // Chunking: Hauptkey speichert erstes Stück + Chunk-Anzahl
+      var chunks = [];
+      for (var i = 0; i < json.length; i += CACHE_MAX_CHUNK) {
+        chunks.push(json.substring(i, i + CACHE_MAX_CHUNK));
+      }
+      // Haupt-Key: Metadaten + erster Chunk
+      cache.put(key, JSON.stringify({ __chunked: chunks.length, data: chunks[0] }), CACHE_TTL);
+      for (var c = 1; c < chunks.length; c++) {
+        cache.put(key + '_' + c, chunks[c], CACHE_TTL);
+      }
+    }
+  } catch(e) { /* Cache voll oder Fehler — kein Problem, nächstes Mal frisch laden */ }
+}
+
+/** Invalidiert ALLE Caches (nach Schreiboperationen) */
+function cacheInvalidieren_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var version = Number(cache.get('cache_version') || '0') + 1;
+    cache.put('cache_version', String(version), 21600); // 6h TTL für Version
+  } catch(e) { /* ignorieren */ }
+}
+
 /**
  * Mapping Fachschaft → Fachbereiche in der Fragenbank
  */
@@ -379,6 +448,18 @@ function doGet(e) {
 function doPost(e) {
   const body = JSON.parse(e.postData.contents);
   const action = body.action;
+
+  // Schreibende Aktionen invalidieren den Cache (Configs, Fragenbank, Tracker)
+  var SCHREIBENDE_AKTIONEN = [
+    'speichereConfig', 'speichereFrage', 'loescheFrage', 'loeschePruefung',
+    'beendePruefung', 'speichereKorrekturZeile', 'schalteFrei',
+    'importierePoolFragen', 'schreibePoolAenderung', 'setzeBerechtigungen',
+    'dupliziereFrage', 'duplizierePruefung', 'korrekturFreigeben', 'resetPruefung',
+    'speichereAntworten',
+  ];
+  if (SCHREIBENDE_AKTIONEN.indexOf(action) >= 0) {
+    cacheInvalidieren_();
+  }
 
   switch (action) {
     case 'speichereAntworten':
@@ -1776,17 +1857,20 @@ function ladeAlleConfigs(email) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
-    // LP-Info einmal vorladen (statt pro Config 2× getLPInfo aufzurufen)
     var lpInfo = getLPInfo(email);
     var istAdmin = lpInfo && lpInfo.rolle === 'admin';
 
-    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
-    const data = getSheetData(configSheet);
+    // Cache prüfen (globaler Cache, LP-Filter danach)
+    var alleConfigs = cacheGet_('alle_configs');
+    if (!alleConfigs) {
+      var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+      var data = getSheetData(configSheet);
+      alleConfigs = data.map(mapConfigRow);
+      cachePut_('alle_configs', alleConfigs);
+    }
 
-    const configs = data.map(mapConfigRow);
-
-    // Rechte-System mit vorgeladener LP-Info (Performance-Optimierung)
-    const gefilterteConfigs = configs.filter(c => istSichtbarMitLP(email, c, lpInfo, istAdmin)).map(c => {
+    // Sichtbarkeits-Filter pro LP (auf gecachten Daten)
+    var gefilterteConfigs = alleConfigs.filter(function(c) { return istSichtbarMitLP(email, c, lpInfo, istAdmin); }).map(function(c) {
       c._recht = ermittleRechtMitLP(email, c, lpInfo, istAdmin);
       return c;
     });
@@ -1914,29 +1998,36 @@ function ladeFragenbank(email) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
-    // LP-Info einmal am Anfang laden (statt pro Frage in istSichtbar/ermittleRecht)
     var lpInfo = getLPInfo(email);
     var istAdmin = lpInfo && lpInfo.rolle === 'admin';
 
-    const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    const tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
-    const alleFragen = [];
-
-    for (const tab of tabs) {
-      const sheet = fragenbank.getSheetByName(tab);
-      if (!sheet) continue;
-      const data = getSheetData(sheet);
-      for (const row of data) {
-        if (row.id) {
-          const frage = parseFrage(row, tab);
-          if (istSichtbarMitLP(email, frage, lpInfo, istAdmin)) {
-            frage._recht = ermittleRechtMitLP(email, frage, lpInfo, istAdmin);
-            if (frage.autor && frage.autor !== email) {
-              frage.geteiltVon = frage.autor.split('@')[0];
-            }
-            alleFragen.push(frage);
-          }
+    // Cache prüfen (globaler Cache aller geparsten Fragen, LP-Filter danach)
+    var alleParsed = cacheGet_('alle_fragen');
+    if (!alleParsed) {
+      alleParsed = [];
+      var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+      var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+      for (var t = 0; t < tabs.length; t++) {
+        var sheet = fragenbank.getSheetByName(tabs[t]);
+        if (!sheet) continue;
+        var data = getSheetData(sheet);
+        for (var r = 0; r < data.length; r++) {
+          if (data[r].id) alleParsed.push(parseFrage(data[r], tabs[t]));
         }
+      }
+      cachePut_('alle_fragen', alleParsed);
+    }
+
+    // Sichtbarkeits-Filter pro LP (auf gecachten Daten)
+    var alleFragen = [];
+    for (var i = 0; i < alleParsed.length; i++) {
+      var frage = alleParsed[i];
+      if (istSichtbarMitLP(email, frage, lpInfo, istAdmin)) {
+        frage._recht = ermittleRechtMitLP(email, frage, lpInfo, istAdmin);
+        if (frage.autor && frage.autor !== email) {
+          frage.geteiltVon = frage.autor.split('@')[0];
+        }
+        alleFragen.push(frage);
       }
     }
 
@@ -4586,6 +4677,12 @@ function ladeTrackerDatenEndpoint(body) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
+    // Cache prüfen (globaler Tracker-Cache)
+    var cachedResult = cacheGet_('tracker_daten');
+    if (cachedResult) {
+      return jsonResponse(cachedResult);
+    }
+
     // 1. Alle Configs laden
     var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
     var rows = getSheetData(configSheet);
@@ -4837,11 +4934,13 @@ function ladeTrackerDatenEndpoint(body) {
       // Lehrplan-Sheet existiert noch nicht oder Beurteilungsregeln-Tab fehlt — ignorieren
     }
 
-    return jsonResponse({
+    var ergebnis = {
       pruefungen: pruefungen,
       notenStand: notenStand,
       aktualisiert: new Date().toISOString()
-    });
+    };
+    cachePut_('tracker_daten', ergebnis);
+    return jsonResponse(ergebnis);
 
   } catch (error) {
     return jsonResponse({ error: error.message });

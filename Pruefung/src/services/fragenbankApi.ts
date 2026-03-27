@@ -2,16 +2,16 @@ import type { Frage } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import { APPS_SCRIPT_URL, getJson, postBool } from './apiClient'
 
-/** Alle Prüfungs-Configs laden (für LP-Dashboard) — 60s Timeout wegen Rechte-Prüfung pro Config */
+/** Alle Prüfungs-Configs laden (für LP-Dashboard) */
 export async function ladeAlleConfigs(email: string): Promise<PruefungsConfig[] | null> {
-  const data = await getJson<{ configs: PruefungsConfig[] }>('ladeAlleConfigs', { email }, { timeoutMs: 60_000 })
+  const data = await getJson<{ configs: PruefungsConfig[] }>('ladeAlleConfigs', { email })
   if (!data) return null
   return data.configs ?? []
 }
 
-/** Fragenbank laden (alle Fragen für Composer) — 60s Timeout wegen grosser Fragenbank */
+/** Fragenbank laden (alle Fragen für Composer) */
 export async function ladeFragenbank(email: string): Promise<Frage[] | null> {
-  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email }, { timeoutMs: 60_000 })
+  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email })
   if (!data) return null
   return data.fragen ?? []
 }

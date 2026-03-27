@@ -8,20 +8,25 @@
 ## Offene Punkte
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
-- **🟡 Fragenbank im Composer "nicht gefunden"** — Fix deployed (Session 28), muss im Browser verifiziert werden. Root-Cause: `ladeFragenbank()` Timeout nach Multi-Teacher-Einbau (LP-Info wurde pro Frage 3× geladen). Fix: LP-Info einmal vorladen + Frontend-Timeout 30s→60s. **Nach Deploy:** Im Browser testen ob Einrichtungsfragen im Composer erscheinen.
+- ~~Fragenbank im Composer "nicht gefunden"~~ ✅ 27.03.2026 — War Timing-Problem: Fragenbank lud langsam, Composer zeigte "nicht gefunden" statt "laden...". Fixes: fragenbankStore (einmal laden, überall nutzen), "laden..." statt "nicht gefunden", Backend CacheService.
 
 ---
 
-## Session 28 — Fragenbank-Performance-Fix (27.03.2026)
+## Session 28 — Backend-Performance + Fragenbank-Store (27.03.2026)
 
 | # | Feature | Details |
 |---|---------|---------|
-| 1 | **ladeFragenbank Performance** | LP-Info wird einmal am Anfang geladen statt pro Frage 3× (`istSichtbar` + `ermittleRecht` + `hatRecht`). Neue optimierte Funktionen: `istSichtbarMitLP()`, `ermittleRechtMitLP()`, `hatRechtMitLP()`, `parseBerechtigungen()` |
-| 2 | **Frontend-Timeout** | `getJson()` akzeptiert optionalen `timeoutMs`-Parameter. `ladeFragenbank()` nutzt 60s statt Standard-30s |
+| 1 | **Backend CacheService** | Globaler Cache für Configs, Fragenbank, Tracker (TTL 5 Min). Versions-Counter invalidiert bei Writes. Auto-Chunking für >90KB Daten. Sichtbarkeits-Filter NACH Cache-Lesen. |
+| 2 | **Cache-Invalidierung** | `doPost` invalidiert Cache bei allen schreibenden Aktionen (speichereConfig, speichereFrage, beendePruefung, etc.) |
+| 3 | **fragenbankStore.ts** | Zustand-Store: Fragenbank 1× beim Login laden, von Composer + FragenBrowser + Dashboard geteilt. Kein 3-facher API-Call mehr. |
+| 4 | **"laden..." statt "nicht gefunden"** | AbschnitteTab + VorschauTab zeigen Lade-Status während Fragenbank noch lädt |
+| 5 | **LP-Info Optimierung** | `ladeAlleConfigs` + `ladeFragenbank` nutzen `istSichtbarMitLP`/`ermittleRechtMitLP` (LP-Info 1× vorladen) |
+| 6 | **Timeouts zurückgesetzt** | 60s→30s (Standard) für alle API-Calls — mit Cache nicht mehr nötig |
 
-**Dateien geändert:** `apps-script-code.js` (4 neue Funktionen + ladeFragenbank optimiert), `src/services/apiClient.ts` (timeoutMs), `src/services/fragenbankApi.ts` (60s Timeout)
+**Backend-Dateien:** `apps-script-code.js` (Cache-System: `cacheGet_`, `cachePut_`, `cacheInvalidieren_` + optimierte Endpoints)
+**Frontend-Dateien:** `fragenbankStore.ts` (neu), `LPStartseite.tsx`, `PruefungsComposer.tsx`, `FragenBrowser.tsx`, `AbschnitteTab.tsx`, `VorschauTab.tsx`, `fragenbankApi.ts`, `trackerApi.ts`, `apiClient.ts`
 
-**Wichtig:** Apps Script muss neu deployed werden.
+**Wichtig:** Apps Script muss neu deployed werden. Erster Login nach Deploy = Cold Cache (langsam wie bisher). Ab zweitem Login/Reload = Cache-Hit (<5s).
 
 ---
 
