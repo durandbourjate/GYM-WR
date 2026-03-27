@@ -100,7 +100,6 @@ export default function FragenNavigation() {
         </span>
       </div>
 
-      {/* U5: Fachbereich-Badge entfernt (redundant, da in Übersicht jede Frage ein Badge hat) */}
     </div>
   )
 }

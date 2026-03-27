@@ -38,15 +38,13 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
     }
     setVerstoesse(prev => [...prev, verstoss])
 
-    // Locker: Verstösse loggen, aber kein Zähler und keine Sperre
-    if (effektiv === 'locker') return
-
-    // Standard/Streng: Tab-Wechsel, Vollbild-Verlust, Split-View zählen für Sperre
+    // B55: Relevante Verstösse zählen (Tab-Wechsel, Vollbild-Verlust, Split-View)
     const zaehlt = typ === 'tab-wechsel' || typ === 'vollbild-verlassen' || typ === 'split-view'
     if (zaehlt) {
       setVerstossZaehler(prev => {
         const neu = prev + 1
-        if (neu >= maxVerstoesse) setGesperrt(true)
+        // Locker: Zähler hochzählen (für Logging), aber KEINE Sperre
+        if (effektiv !== 'locker' && neu >= maxVerstoesse) setGesperrt(true)
         return neu
       })
     }

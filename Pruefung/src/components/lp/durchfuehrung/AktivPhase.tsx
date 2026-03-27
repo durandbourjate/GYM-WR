@@ -183,13 +183,9 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
             {gefilterteSchueler.map((s) => {
               const stufe = inaktivitaetsStufe(s)
-              // B51: Abgegebene SuS immer 100% anzeigen (Heartbeat stoppt nach Abgabe)
-              const istAbgegeben = s.status === 'abgegeben' || s.status === 'beendet-lp'
-              const fortschrittProzent = istAbgegeben
-                ? 100
-                : s.gesamtFragen > 0
-                  ? Math.round((s.beantworteteFragen / s.gesamtFragen) * 100)
-                  : 0
+              const fortschrittProzent = s.gesamtFragen > 0
+                ? Math.round((s.beantworteteFragen / s.gesamtFragen) * 100)
+                : 0
               const zuschlagMin = zeitverlaengerungen[s.email] ?? 0
               return (
                 <tr

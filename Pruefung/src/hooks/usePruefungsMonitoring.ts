@@ -187,6 +187,19 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
     return () => clearInterval(interval)
   }, [config, abgegeben, backendVerfuegbar, user, incrementHeartbeats, addUnterbrechung, setBeendetUm])
 
+  // === 3b. Finaler Heartbeat bei Abgabe (B51: letzte %-Werte ans Backend) ===
+  const hatFinalenHeartbeatGesendet = useRef(false)
+  useEffect(() => {
+    if (!abgegeben || !config || !user || !backendVerfuegbar || hatFinalenHeartbeatGesendet.current) return
+    hatFinalenHeartbeatGesendet.current = true
+    const state = usePruefungStore.getState()
+    const beantworteteFragen = state.fragen.filter((f) =>
+      istVollstaendigBeantwortet(f, state.antworten[f.id], state.alleFragen, state.antworten)
+    ).length
+    apiService.heartbeat(config.id, user.email, state.aktuelleFrageIndex, beantworteteFragen, undefined, undefined, tabSessionIdRef.current, state.fragen.length)
+      .catch(() => {}) // Fire-and-forget
+  }, [abgegeben, config, user, backendVerfuegbar])
+
   // === 4. Focus-Detection (visibilitychange) ===
   useEffect(() => {
     if (!config || abgegeben) return

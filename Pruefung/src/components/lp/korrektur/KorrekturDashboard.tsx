@@ -336,6 +336,18 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     }
   })
 
+  // U7: Bewertungen ohne Punkte zählen (für Freigabe-/Export-Sperre)
+  const bewertungenOhnePunkte = useMemo(() => {
+    if (!korrektur) return 0
+    let count = 0
+    for (const s of korrektur.schueler) {
+      for (const b of Object.values(s.bewertungen)) {
+        if (b.lpPunkte === null && b.kiPunkte === null) count++
+      }
+    }
+    return count
+  }, [korrektur])
+
   const stats = korrektur ? berechneStatistiken(korrektur.schueler, notenConfig) : null
   const fragenStats = korrektur ? berechneFragenStatistiken(korrektur) : []
   const maxPunkte = korrektur?.schueler[0]?.maxPunkte || 0
@@ -370,6 +382,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       onCSVExport={handleCSVExport}
       onDetailExport={handleDetailExport}
       onBackupExport={handleBackupExport}
+      bewertungenOhnePunkte={bewertungenOhnePunkte}
       onPDFOeffnen={() => {
         if (!korrektur) return
         const sorted = [...korrektur.schueler].sort((a, b) => a.name.localeCompare(b.name))

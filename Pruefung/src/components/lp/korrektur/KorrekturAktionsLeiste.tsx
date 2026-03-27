@@ -22,6 +22,8 @@ interface Props {
   onDetailExport: () => void
   onBackupExport: () => void
   onPDFOeffnen: () => void
+  /** U7: Anzahl Bewertungen ohne Punkte (geprüft aber lpPunkte+kiPunkte null) */
+  bewertungenOhnePunkte?: number
 }
 
 export default function KorrekturAktionsLeiste({
@@ -31,7 +33,11 @@ export default function KorrekturAktionsLeiste({
   pdfFreigegeben, setPdfFreigegeben,
   backupLaden,
   onStarteKorrektur, onFeedbackOeffnen, onCSVExport, onDetailExport, onBackupExport, onPDFOeffnen,
+  bewertungenOhnePunkte = 0,
 }: Props) {
+  // U7: Prüfe ob alle Bewertungen vollständig bepunktet sind
+  const hatFehlendePunkte = bewertungenOhnePunkte > 0
+  const punkteWarnung = hatFehlendePunkte ? `⚠ ${bewertungenOhnePunkte} Bewertungen ohne Punkte` : ''
   return (
     <>
       {(korrektur?.batchStatus === 'laeuft' || batchLaeuft) && (
@@ -45,15 +51,24 @@ export default function KorrekturAktionsLeiste({
         </button>
       )}
       {korrektur?.batchStatus === 'fertig' && (
-        <button onClick={onFeedbackOeffnen} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer">
+        <button
+          onClick={() => {
+            if (hatFehlendePunkte && !window.confirm(`${punkteWarnung}. Trotzdem Feedback senden?`)) return
+            onFeedbackOeffnen()
+          }}
+          className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+          title={hatFehlendePunkte ? punkteWarnung : undefined}
+        >
           Feedback senden
         </button>
       )}
       {korrektur && (
         <button
           type="button"
-          disabled={aktionLaeuft === 'einsicht'}
+          disabled={aktionLaeuft === 'einsicht' || (hatFehlendePunkte && !einsichtFreigegeben)}
           onClick={async () => {
+            // U7: Warnung wenn Punkte fehlen und Freigabe versucht wird
+            if (hatFehlendePunkte && !einsichtFreigegeben) return
             setAktionLaeuft('einsicht')
             const neuerWert = !einsichtFreigegeben
             const ok = await apiService.korrekturFreigeben(pruefungId, neuerWert, userEmail, 'einsicht')
@@ -71,7 +86,7 @@ export default function KorrekturAktionsLeiste({
               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
               : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
           }`}
-          title={einsichtFreigegeben ? 'Einsicht für SuS sperren' : 'Einsicht für SuS freigeben'}
+          title={hatFehlendePunkte && !einsichtFreigegeben ? punkteWarnung : einsichtFreigegeben ? 'Einsicht für SuS sperren' : 'Einsicht für SuS freigeben'}
         >
           {aktionLaeuft === 'einsicht' ? 'Wird gespeichert...' : einsichtFreigegeben ? '✓ Einsicht' : 'Einsicht freigeben'}
         </button>
@@ -98,12 +113,26 @@ export default function KorrekturAktionsLeiste({
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && (
-        <button onClick={onCSVExport} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer" title="Ergebnisse als CSV exportieren (nur Punkte)">
+        <button
+          onClick={() => {
+            if (hatFehlendePunkte && !window.confirm(`${punkteWarnung}. Trotzdem exportieren?`)) return
+            onCSVExport()
+          }}
+          className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+          title={hatFehlendePunkte ? punkteWarnung : 'Ergebnisse als CSV exportieren (nur Punkte)'}
+        >
           CSV Export
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && Object.keys(abgaben).length > 0 && (
-        <button onClick={onDetailExport} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer" title="Detaillierter Export mit Antworten und Punkten pro Frage">
+        <button
+          onClick={() => {
+            if (hatFehlendePunkte && !window.confirm(`${punkteWarnung}. Trotzdem exportieren?`)) return
+            onDetailExport()
+          }}
+          className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+          title={hatFehlendePunkte ? punkteWarnung : 'Detaillierter Export mit Antworten und Punkten pro Frage'}
+        >
           Excel-Export (Detailliert)
         </button>
       )}
