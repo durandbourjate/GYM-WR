@@ -8,6 +8,21 @@
 ## Offene Punkte
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
+- **🔴 Fragenbank im Composer "nicht gefunden"** — Einrichtungsfragen existieren im Fragenbank-Sheet (bestätigt: `einr-mc-orientierung` etc.), aber der PruefungsComposer zeigt sie als "nicht gefunden" an. Das Problem trat erst nach Multi-Teacher-Einbau auf. Vermutliche Ursache: `ladeFragenbank()` im Backend gibt die Fragen nicht korrekt zurück (evtl. `istSichtbar`-Filter, Timeout, oder Parsing-Problem). **Nächster Schritt:** Backend-Response von `ladeFragenbank` direkt testen (curl/Postman statt Browser — der Browser-Call läuft ins Timeout). Prüfen ob `istSichtbar` für Admin korrekt `true` gibt und ob `parseFrage` die `einr-*` IDs korrekt parst.
+
+---
+
+## Session 27 — Demo-Daten, Auth-Bugfix, Code-Hygiene (27.03.2026)
+
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | **LP-Auth-Bugfix** | `ladeLehrpersonen()` nutzte Dummy-Email `check@gymhofwil.ch` → Backend blockierte mit "Nicht autorisiert". Fix: Echte User-Email durchreichen von `anmelden()` → `ladeUndCacheLPs(email)` → `ladeLehrpersonen(email)` |
+| 2 | **Demo-Korrekturdaten** | Neue `demoKorrektur.ts`: Beispiel Beat (35/40, korrigiert, Note 5.5) + Brunner Hans (abgegeben, offen). KorrekturDashboard zeigt im Demo-Modus realistische Auswertung |
+| 3 | **Demo-Lockdown-Verstösse** | Keller David: 3/3 gesperrt mit Entsperren-Button. Weber Felix: 1/3 amber Warnung. Einrichtungsprüfung: `kontrollStufe: 'standard'` |
+| 4 | **Code-Hygiene** | Dummy-Email-Fallback entfernt (lpApi.ts). pruefungApi.ts: `return false` statt stille `true`-Simulation. Persönliche Email aus demoLPs entfernt. PDFKorrektur: TODO-Placeholder → echter `kiAssistent('korrigierePDF')`-Call |
+| 5 | **Collapsible-Harmonisierung** | ▼ rechtsbündig für grosse Sections (Ergebnis-Übersicht, Aufgabengruppe, SchülerZeile). ▶ links für Inline-Toggles (Notenskala, Fragen-Analyse, Teilnehmer, KontrollStufe) |
+
+**Dateien geändert:** `demoKorrektur.ts` (neu), `demoMonitoring.ts`, `einrichtungsPruefung.ts`, `authStore.ts`, `lpApi.ts`, `pruefungApi.ts`, `useKorrekturDaten.ts`, `PDFKorrektur.tsx`, `PDFEditor.tsx`, 4 Collapsible-Komponenten
 
 ---
 
