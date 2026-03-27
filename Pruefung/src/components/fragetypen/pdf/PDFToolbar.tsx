@@ -258,7 +258,7 @@ export function PDFToolbar({
         label="Farbe"
         horizontal={isHorizontal}
       >
-        <div className="flex flex-wrap gap-1 max-w-[140px]">
+        <div className="grid grid-cols-3 gap-1">
           {STANDARD_HIGHLIGHT_FARBEN.map((farbe) => (
             <button
               key={farbe}
@@ -266,7 +266,7 @@ export function PDFToolbar({
               title={farbe}
               onClick={() => onFarbeWechsel(farbe)}
               className={[
-                'min-w-[36px] min-h-[36px] flex items-center justify-center rounded transition-all',
+                'w-[34px] h-[34px] flex items-center justify-center rounded transition-all',
                 aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-1' : 'hover:scale-110',
               ].join(' ')}
             >
