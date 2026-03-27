@@ -218,11 +218,45 @@ export function ZeichnenToolbar({
         </ToolbarDropdown>
       )}
 
-      {/* Text */}
+      {/* Text-Menü (Grösse, Fett, Rotation — alles im Dropdown) */}
       {hatText && (
-        <button type="button" title="Text" onClick={() => onToolChange('text')} className={btnKlassen(aktivesTool === 'text')}>
-          T
-        </button>
+        <ToolbarDropdown
+          icon="T"
+          label="Text"
+          aktiv={aktivesTool === 'text' || istTextSelektiert}
+          horizontal={isHorizontal}
+        >
+          <div className="flex flex-col gap-1 min-w-[120px]" onClick={(e) => e.stopPropagation()}>
+            {/* Tool aktivieren */}
+            <button
+              type="button"
+              onClick={() => onToolChange('text')}
+              className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${aktivesTool === 'text' ? 'bg-slate-200 dark:bg-slate-600 font-medium' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+            >
+              Text einfügen
+            </button>
+            <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
+            {/* Grösse */}
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Grösse</span>
+            <div className="flex gap-0.5 px-1">
+              {([{ label: 'S', wert: 14 }, { label: 'M', wert: 18 }, { label: 'L', wert: 24 }, { label: 'XL', wert: 32 }] as const).map(({ label, wert }) => (
+                <button key={label} type="button" onClick={() => onTextGroesseChange?.(wert)}
+                  className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === wert ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                  title={`${wert}px`}>{label}</button>
+              ))}
+            </div>
+            <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
+            {/* Fett + Rotation */}
+            <div className="flex gap-1 px-1">
+              <button type="button" onClick={() => onTextFettChange?.(!textFett)}
+                className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
+              <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+                className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+                title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
+            </div>
+          </div>
+        </ToolbarDropdown>
       )}
 
       {/* Radierer */}
@@ -257,69 +291,6 @@ export function ZeichnenToolbar({
           ))}
         </div>
       </ToolbarDropdown>
-
-      {/* Text-Kontrollen (bei Text-Werkzeug oder selektiertem Text) */}
-      {(aktivesTool === 'text' || istTextSelektiert) && (
-        <>
-          <div className={separatorKlassen} aria-hidden="true" />
-          <div
-            role="group"
-            aria-label="Text-Formatierung"
-            className={`flex gap-0.5 items-center ${isHorizontal ? 'flex-row' : 'flex-col'}`}
-          >
-            {onTextGroesseChange && (
-              <>
-                {([
-                  { label: 'S', wert: 14 },
-                  { label: 'M', wert: 18 },
-                  { label: 'L', wert: 24 },
-                  { label: 'XL', wert: 32 },
-                ] as const).map(({ label, wert }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => onTextGroesseChange(wert)}
-                    className={[
-                      'min-w-[36px] min-h-[36px] flex items-center justify-center rounded text-xs font-medium transition-colors',
-                      textGroesse === wert
-                        ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100'
-                        : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
-                    ].join(' ')}
-                    title={`Textgrösse ${label} (${wert}px)`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </>
-            )}
-            {onTextFettChange && (
-              <button
-                type="button"
-                onClick={() => onTextFettChange(!textFett)}
-                className={[
-                  'min-w-[36px] min-h-[36px] flex items-center justify-center rounded text-sm transition-colors',
-                  textFett
-                    ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100 font-bold'
-                    : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
-                ].join(' ')}
-                title={textFett ? 'Fett aus' : 'Fett ein'}
-              >
-                B
-              </button>
-            )}
-            {onTextRotationChange && (
-              <button
-                type="button"
-                onClick={() => onTextRotationChange(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
-                className="min-w-[36px] min-h-[36px] flex items-center justify-center rounded text-sm font-medium transition-colors hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300"
-                title={`Rotation: ${textRotation}°`}
-              >
-                ⟳{textRotation > 0 ? `${textRotation}°` : ''}
-              </button>
-            )}
-          </div>
-        </>
-      )}
 
       <div className={separatorKlassen} aria-hidden="true" />
 

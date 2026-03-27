@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import type { PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFKategorie, ZoomStufe } from './PDFTypes.ts'
 import { ZOOM_STUFEN, STANDARD_HIGHLIGHT_FARBEN } from './PDFTypes.ts'
 import ToolbarDropdown from '../../shared/ToolbarDropdown.tsx'
@@ -55,12 +55,7 @@ interface Props {
   hatSelektierteTextAnnotation?: boolean
 }
 
-const WERKZEUG_DEFS: { id: PDFAnnotationsWerkzeug; icon: string | ReactNode; label: string }[] = [
-  { id: 'highlighter', icon: <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />, label: 'Markieren' },
-  { id: 'text', icon: 'T', label: 'Text einfügen' },
-  { id: 'kommentar', icon: '💬', label: 'Kommentar' },
-  { id: 'label', icon: '🏷', label: 'Kategorie zuweisen' },
-]
+// Werkzeug-Definitionen werden jetzt einzeln inline gerendert
 
 export function PDFToolbar({
   aktivesWerkzeug,
@@ -99,10 +94,6 @@ export function PDFToolbar({
 
   if (readOnly) return null
 
-  // Nicht-Freihand-Werkzeuge (Freihand wird als Stift-Menü angezeigt)
-  const sichtbareWerkzeuge = WERKZEUG_DEFS.filter((def) =>
-    def.id === 'text' || (erlaubteWerkzeuge || []).includes(def.id),
-  )
   const hatFreihand = (erlaubteWerkzeuge || []).includes('freihand')
 
   const zeigeKategorieSelect =
@@ -150,19 +141,54 @@ export function PDFToolbar({
         ↖
       </button>
 
-      {/* Annotations-Werkzeuge (ohne Freihand — das wird als Menü angezeigt) */}
-      {sichtbareWerkzeuge.map((def) => (
-        <button
-          key={def.id}
-          type="button"
-          aria-pressed={aktivesWerkzeug === def.id}
-          title={def.label}
-          onClick={() => onWerkzeugWechsel(def.id)}
-          className={btnKlassen(aktivesWerkzeug === def.id)}
-        >
-          {def.icon}
+      {/* Markieren */}
+      {(erlaubteWerkzeuge || []).includes('highlighter') && (
+        <button type="button" aria-pressed={aktivesWerkzeug === 'highlighter'} title="Markieren"
+          onClick={() => onWerkzeugWechsel('highlighter')} className={btnKlassen(aktivesWerkzeug === 'highlighter')}>
+          <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />
         </button>
-      ))}
+      )}
+
+      {/* Text-Menü (Grösse, Fett, Rotation — alles im Dropdown) */}
+      <ToolbarDropdown
+        icon="T"
+        label="Text"
+        aktiv={aktivesWerkzeug === 'text' || hatSelektierteTextAnnotation}
+        horizontal={isHorizontal}
+      >
+        <div className="flex flex-col gap-1 min-w-[120px]" onClick={(e) => e.stopPropagation()}>
+          <button type="button" onClick={() => onWerkzeugWechsel('text')}
+            className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${aktivesWerkzeug === 'text' ? 'bg-slate-200 dark:bg-slate-600 font-medium' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+            Text einfügen
+          </button>
+          <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Grösse</span>
+          <div className="flex gap-0.5 px-1">
+            {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
+              <button key={label} type="button" onClick={() => onTextGroesseChange?.(px)}
+                className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                title={`${px}px`}>{label}</button>
+            ))}
+          </div>
+          <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
+          <div className="flex gap-1 px-1">
+            <button type="button" onClick={() => onTextFettChange?.(!textFett)}
+              className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+              title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
+            <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+              className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+              title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? ` ${textRotation}°` : ''}</button>
+          </div>
+        </div>
+      </ToolbarDropdown>
+
+      {/* Kommentar */}
+      {(erlaubteWerkzeuge || []).includes('kommentar') && (
+        <button type="button" aria-pressed={aktivesWerkzeug === 'kommentar'} title="Kommentar"
+          onClick={() => onWerkzeugWechsel('kommentar')} className={btnKlassen(aktivesWerkzeug === 'kommentar')}>
+          💬
+        </button>
+      )}
 
       {/* Freihand als Stift-Menü (Stärke + Gestrichelt) */}
       {hatFreihand && (
@@ -265,44 +291,6 @@ export function PDFToolbar({
               <option key={kat.id} value={kat.id}>{kat.label}</option>
             ))}
           </select>
-        </>
-      )}
-
-      {/* Text-Optionen (bei Text-Werkzeug oder selektierter Text-Annotation) */}
-      {(aktivesWerkzeug === 'text' || hatSelektierteTextAnnotation) && (
-        <>
-          <div className={separatorKlassen} aria-hidden="true" />
-          {onTextGroesseChange && (
-            <div role="group" aria-label="Schriftgrösse" className={`flex gap-0.5 ${isHorizontal ? '' : 'flex-col'}`}>
-              {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => onTextGroesseChange(px)}
-                  className={btnKlassen(textGroesse === px)}
-                  title={`Schriftgrösse ${label} (${px}px)`}
-                  style={{ fontSize: Math.max(11, px * 0.6) }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-          {onTextFettChange && (
-            <button type="button" onClick={() => onTextFettChange(!textFett)} className={btnKlassen(textFett)} title={textFett ? 'Fett (aktiv)' : 'Fett'}>
-              <span style={{ fontWeight: 'bold' }}>B</span>
-            </button>
-          )}
-          {onTextRotationChange && (
-            <button
-              type="button"
-              onClick={() => onTextRotationChange(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
-              className={btnKlassen(false)}
-              title={`Rotation: ${textRotation}°`}
-            >
-              ⟳{textRotation > 0 ? ` ${textRotation}°` : ''}
-            </button>
-          )}
         </>
       )}
 

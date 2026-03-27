@@ -16,10 +16,10 @@ interface Props {
 }
 
 /**
- * Toolbar-Button mit inline expandierendem Panel.
- * Vertikal: Panel öffnet rechts neben dem Button (Toolbar wird breiter).
- * Horizontal: Panel öffnet unter dem Button.
- * Klick auf eine Option oder ausserhalb schliesst das Panel.
+ * Toolbar-Button mit Modal-Dropdown.
+ * Panel schwebt über dem Canvas (absolute + z-index).
+ * Vertikal: öffnet nach rechts. Horizontal: öffnet nach unten.
+ * Toolbar-Breite bleibt unverändert.
  */
 export default function ToolbarDropdown({
   icon,
@@ -45,13 +45,13 @@ export default function ToolbarDropdown({
   }, [offen])
 
   return (
-    <div ref={containerRef} className={horizontal ? '' : 'flex flex-row items-start'}>
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         title={label}
         onClick={() => setOffen(!offen)}
         className={[
-          'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors shrink-0',
+          'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors',
           aktiv
             ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100'
             : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
@@ -63,12 +63,13 @@ export default function ToolbarDropdown({
         <span className="text-[8px] ml-0.5 opacity-50">▾</span>
       </button>
 
-      {/* Inline Panel — erweitert die Toolbar-Breite natürlich */}
       {offen && (
         <div
           className={[
-            'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-sm p-1.5',
-            horizontal ? 'mt-1' : 'ml-1',
+            'absolute z-[60] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl p-1.5',
+            horizontal
+              ? 'top-full left-0 mt-1'
+              : 'left-full top-0 ml-1',
           ].join(' ')}
           onClick={() => setOffen(false)}
         >
