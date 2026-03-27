@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react'
+import { useState, useRef, useEffect, type ReactNode } from 'react'
 
 interface Props {
   /** Icon im Button (ReactNode oder string) */
@@ -16,10 +16,10 @@ interface Props {
 }
 
 /**
- * Toolbar-Button mit Dropdown-Panel.
- * Panel wird mit fixed-Position gerendert (nicht vom overflow: hidden abgeschnitten).
- * - Horizontal: Panel öffnet nach unten
- * - Vertikal: Panel öffnet nach rechts
+ * Toolbar-Button mit inline expandierendem Panel.
+ * Vertikal: Panel öffnet rechts neben dem Button (Toolbar wird breiter).
+ * Horizontal: Panel öffnet unter dem Button.
+ * Klick auf eine Option oder ausserhalb schliesst das Panel.
  */
 export default function ToolbarDropdown({
   icon,
@@ -30,30 +30,13 @@ export default function ToolbarDropdown({
   className,
 }: Props) {
   const [offen, setOffen] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const panelRef = useRef<HTMLDivElement>(null)
-  const [panelPos, setPanelPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
-
-  // Panel-Position beim Öffnen berechnen
-  const berechnePanelPosition = useCallback(() => {
-    if (!buttonRef.current) return
-    const rect = buttonRef.current.getBoundingClientRect()
-    if (horizontal) {
-      setPanelPos({ top: rect.bottom + 4, left: rect.left })
-    } else {
-      setPanelPos({ top: rect.top, left: rect.right + 4 })
-    }
-  }, [horizontal])
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Klick ausserhalb schliesst Dropdown
   useEffect(() => {
     if (!offen) return
     function handleClickOutside(e: MouseEvent) {
-      const target = e.target as Node
-      if (
-        buttonRef.current && !buttonRef.current.contains(target) &&
-        panelRef.current && !panelRef.current.contains(target)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOffen(false)
       }
     }
@@ -62,17 +45,13 @@ export default function ToolbarDropdown({
   }, [offen])
 
   return (
-    <>
+    <div ref={containerRef} className={horizontal ? '' : 'flex flex-row items-start'}>
       <button
-        ref={buttonRef}
         type="button"
         title={label}
-        onClick={() => {
-          if (!offen) berechnePanelPosition()
-          setOffen(!offen)
-        }}
+        onClick={() => setOffen(!offen)}
         className={[
-          'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors',
+          'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors shrink-0',
           aktiv
             ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100'
             : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
@@ -84,16 +63,18 @@ export default function ToolbarDropdown({
         <span className="text-[8px] ml-0.5 opacity-50">▾</span>
       </button>
 
+      {/* Inline Panel — erweitert die Toolbar-Breite natürlich */}
       {offen && (
         <div
-          ref={panelRef}
-          className="fixed z-[60] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg p-1.5"
-          style={{ top: panelPos.top, left: panelPos.left }}
+          className={[
+            'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-sm p-1.5',
+            horizontal ? 'mt-1' : 'ml-1',
+          ].join(' ')}
           onClick={() => setOffen(false)}
         >
           {children}
         </div>
       )}
-    </>
+    </div>
   )
 }

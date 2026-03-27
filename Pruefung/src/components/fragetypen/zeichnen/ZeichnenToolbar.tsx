@@ -101,7 +101,7 @@ export function ZeichnenToolbar({
 
   const containerKlassen = [
     'flex items-center gap-1.5 p-1',
-    isHorizontal ? 'flex-row flex-wrap' : 'flex-col max-h-full overflow-y-auto',
+    isHorizontal ? 'flex-row flex-wrap' : 'flex-col',
     disabled ? 'pointer-events-none opacity-50' : '',
   ].filter(Boolean).join(' ');
 

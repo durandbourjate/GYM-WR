@@ -125,7 +125,7 @@ export function PDFToolbar({
       role="toolbar"
       aria-label="PDF-Werkzeuge"
       aria-orientation={isHorizontal ? 'horizontal' : 'vertical'}
-      className={`flex gap-1 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg ${isHorizontal ? 'flex-wrap items-center' : 'flex-col items-center max-h-full overflow-y-auto'}`}
+      className={`flex gap-1 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg ${isHorizontal ? 'flex-wrap items-center' : 'flex-col items-center'}`}
     >
       {/* Layout-Toggle (erstes Element) */}
       {onLayoutToggle && (
