@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import type { PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFKategorie, ZoomStufe } from './PDFTypes.ts'
 import { ZOOM_STUFEN, STANDARD_HIGHLIGHT_FARBEN } from './PDFTypes.ts'
+import ToolbarDropdown from '../../shared/ToolbarDropdown.tsx'
 
 /** Inline SVG Radierer-Icon (identisch mit ZeichnenToolbar) */
 function RadiererIcon() {
@@ -11,6 +12,13 @@ function RadiererIcon() {
     </svg>
   );
 }
+
+/** Stift-Stärken (wie ZeichnenToolbar) */
+const STIFT_STAERKEN = [
+  { label: 'Dünn', wert: 1 },
+  { label: 'Mittel', wert: 2 },
+  { label: 'Dick', wert: 4 },
+] as const;
 
 type ToolbarLayout = 'horizontal' | 'vertikal'
 
@@ -34,6 +42,10 @@ interface Props {
   layout?: ToolbarLayout
   onLayoutToggle?: () => void
   onAllesLoeschen?: () => void
+  stiftBreite?: number
+  onStiftBreiteChange?: (b: number) => void
+  stiftGestrichelt?: boolean
+  onStiftGestricheltChange?: (g: boolean) => void
   textRotation?: 0 | 90 | 180 | 270
   onTextRotationChange?: (r: 0 | 90 | 180 | 270) => void
   textGroesse?: number
@@ -47,7 +59,6 @@ const WERKZEUG_DEFS: { id: PDFAnnotationsWerkzeug; icon: string | ReactNode; lab
   { id: 'highlighter', icon: <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />, label: 'Markieren' },
   { id: 'text', icon: 'T', label: 'Text einfügen' },
   { id: 'kommentar', icon: '💬', label: 'Kommentar' },
-  { id: 'freihand', icon: '✏️', label: 'Freihand' },
   { id: 'label', icon: '🏷', label: 'Kategorie zuweisen' },
 ]
 
@@ -71,6 +82,10 @@ export function PDFToolbar({
   layout,
   onLayoutToggle,
   onAllesLoeschen,
+  stiftBreite = 2,
+  onStiftBreiteChange,
+  stiftGestrichelt = false,
+  onStiftGestricheltChange,
   textRotation = 0,
   onTextRotationChange,
   textGroesse = 18,
@@ -80,19 +95,15 @@ export function PDFToolbar({
   hatSelektierteTextAnnotation = false,
 }: Props) {
   const isHorizontal = (layout ?? 'vertikal') === 'horizontal'
-  const [farbPickerOffen, setFarbPickerOffen] = useState(false)
   const [zeigeLoeschenDialog, setZeigeLoeschenDialog] = useState(false)
 
   if (readOnly) return null
 
+  // Nicht-Freihand-Werkzeuge (Freihand wird als Stift-Menü angezeigt)
   const sichtbareWerkzeuge = WERKZEUG_DEFS.filter((def) =>
-    // 'text' ist immer verfügbar (wie auswahl/radierer), andere nur wenn erlaubt
     def.id === 'text' || (erlaubteWerkzeuge || []).includes(def.id),
   )
-
-  const zeigeFarbPicker =
-    farbPickerOffen &&
-    (aktivesWerkzeug === 'highlighter' || aktivesWerkzeug === 'freihand' || aktivesWerkzeug === 'text')
+  const hatFreihand = (erlaubteWerkzeuge || []).includes('freihand')
 
   const zeigeKategorieSelect =
     aktivesWerkzeug === 'label' && kategorien && kategorien.length > 0
@@ -105,6 +116,10 @@ export function PDFToolbar({
         : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300',
     ].join(' ')
 
+  const separatorKlassen = isHorizontal
+    ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1'
+    : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'
+
   return (
     <div
       role="toolbar"
@@ -115,6 +130,7 @@ export function PDFToolbar({
       {/* Layout-Toggle (erstes Element) */}
       {onLayoutToggle && (
         <button
+          type="button"
           title={isHorizontal ? 'Vertikal anordnen' : 'Horizontal anordnen'}
           onClick={onLayoutToggle}
           className={btnKlassen(false)}
@@ -123,112 +139,139 @@ export function PDFToolbar({
         </button>
       )}
 
-      {/* Auswahl (immer sichtbar) */}
+      {/* Auswahl */}
       <button
+        type="button"
         aria-pressed={aktivesWerkzeug === 'auswahl'}
         title="Auswahl"
-        onClick={() => {
-          onWerkzeugWechsel('auswahl')
-          setFarbPickerOffen(false)
-        }}
+        onClick={() => onWerkzeugWechsel('auswahl')}
         className={btnKlassen(aktivesWerkzeug === 'auswahl')}
       >
         ↖
       </button>
 
-      {/* Annotations-Werkzeuge */}
+      {/* Annotations-Werkzeuge (ohne Freihand — das wird als Menü angezeigt) */}
       {sichtbareWerkzeuge.map((def) => (
         <button
           key={def.id}
+          type="button"
           aria-pressed={aktivesWerkzeug === def.id}
           title={def.label}
-          onClick={() => {
-            onWerkzeugWechsel(def.id)
-            if (def.id === 'highlighter' || def.id === 'freihand' || def.id === 'text') {
-              setFarbPickerOffen(true)
-            } else {
-              setFarbPickerOffen(false)
-            }
-          }}
+          onClick={() => onWerkzeugWechsel(def.id)}
           className={btnKlassen(aktivesWerkzeug === def.id)}
         >
           {def.icon}
         </button>
       ))}
 
-      {/* Radierer (immer sichtbar) */}
+      {/* Freihand als Stift-Menü (Stärke + Gestrichelt) */}
+      {hatFreihand && (
+        <ToolbarDropdown
+          icon={<span style={{ fontSize: stiftBreite > 2 ? 18 : 14 }}>✏️</span>}
+          label="Freihand"
+          aktiv={aktivesWerkzeug === 'freihand'}
+          horizontal={isHorizontal}
+        >
+          <div className="flex flex-col gap-1 min-w-[120px]">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Stärke</span>
+            {STIFT_STAERKEN.map(({ label, wert }) => (
+              <button
+                key={wert}
+                type="button"
+                onClick={() => {
+                  onStiftBreiteChange?.(wert);
+                  onWerkzeugWechsel('freihand');
+                }}
+                className={[
+                  'flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors',
+                  stiftBreite === wert && aktivesWerkzeug === 'freihand'
+                    ? 'bg-slate-200 dark:bg-slate-600 font-medium'
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-700',
+                ].join(' ')}
+              >
+                <span className="inline-block rounded-full bg-current" style={{ width: wert * 3, height: wert * 3 }} />
+                {label}
+              </button>
+            ))}
+            <div className="h-px bg-slate-200 dark:bg-slate-600 my-1" />
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Stil</span>
+            <button
+              type="button"
+              onClick={() => { onStiftGestricheltChange?.(false); onWerkzeugWechsel('freihand'); }}
+              className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${!stiftGestrichelt ? 'bg-slate-200 dark:bg-slate-600 font-medium' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+            >
+              <span className="inline-block w-6 h-0.5 bg-current" /> Durchgehend
+            </button>
+            <button
+              type="button"
+              onClick={() => { onStiftGestricheltChange?.(true); onWerkzeugWechsel('freihand'); }}
+              className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${stiftGestrichelt ? 'bg-slate-200 dark:bg-slate-600 font-medium' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+            >
+              <span className="inline-block w-6 border-t-2 border-dashed border-current" /> Gestrichelt
+            </button>
+          </div>
+        </ToolbarDropdown>
+      )}
+
+      {/* Radierer */}
       <button
+        type="button"
         aria-pressed={aktivesWerkzeug === 'radierer'}
         title="Radierer"
-        onClick={() => {
-          onWerkzeugWechsel('radierer')
-          setFarbPickerOffen(false)
-        }}
+        onClick={() => onWerkzeugWechsel('radierer')}
         className={btnKlassen(aktivesWerkzeug === 'radierer')}
       >
         <RadiererIcon />
       </button>
 
-      {/* Separator */}
-      <div className={isHorizontal ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1' : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'} aria-hidden="true" />
+      <div className={separatorKlassen} aria-hidden="true" />
 
-      {/* Farbpicker-Dropdown */}
-      {zeigeFarbPicker && (
-        <div
-          role="group"
-          aria-label="Farben"
-          className={`flex gap-1 ${isHorizontal ? 'items-center' : 'flex-col items-center'}`}
-        >
+      {/* Farben-Menü (Dropdown) */}
+      <ToolbarDropdown
+        icon={<span className="block rounded-full" style={{ width: 18, height: 18, backgroundColor: aktiveFarbe }} />}
+        label="Farbe"
+        horizontal={isHorizontal}
+      >
+        <div className="flex flex-wrap gap-1 max-w-[140px]">
           {STANDARD_HIGHLIGHT_FARBEN.map((farbe) => (
             <button
               key={farbe}
-              aria-pressed={aktiveFarbe === farbe}
-              aria-label={`Farbe ${farbe}`}
+              type="button"
               title={farbe}
               onClick={() => onFarbeWechsel(farbe)}
               className={[
-                'min-w-[44px] min-h-[44px] flex items-center justify-center rounded transition-all',
-                aktiveFarbe === farbe
-                  ? 'ring-2 ring-blue-500 ring-offset-1'
-                  : 'hover:scale-110',
+                'min-w-[36px] min-h-[36px] flex items-center justify-center rounded transition-all',
+                aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-1' : 'hover:scale-110',
               ].join(' ')}
             >
-              <span
-                className="block rounded-full"
-                style={{ width: 22, height: 22, backgroundColor: farbe }}
-              />
+              <span className="block rounded-full" style={{ width: 20, height: 20, backgroundColor: farbe }} />
             </button>
           ))}
-          <div className={isHorizontal ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1' : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'} aria-hidden="true" />
         </div>
-      )}
+      </ToolbarDropdown>
 
       {/* Kategorie-Select */}
       {zeigeKategorieSelect && onKategorieWechsel && (
-        <div role="group" aria-label="Kategorie" className="flex items-center">
+        <>
+          <div className={separatorKlassen} aria-hidden="true" />
           <select
             value={aktiveKategorieId ?? ''}
             onChange={(e) => onKategorieWechsel(e.target.value)}
             className="min-h-[44px] rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm px-2"
             aria-label="Kategorie wählen"
           >
-            <option value="" disabled>
-              Kategorie...
-            </option>
+            <option value="" disabled>Kategorie...</option>
             {kategorien!.map((kat) => (
-              <option key={kat.id} value={kat.id}>
-                {kat.label}
-              </option>
+              <option key={kat.id} value={kat.id}>{kat.label}</option>
             ))}
           </select>
-          <div className={isHorizontal ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1' : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'} aria-hidden="true" />
-        </div>
+        </>
       )}
 
       {/* Text-Optionen (bei Text-Werkzeug oder selektierter Text-Annotation) */}
       {(aktivesWerkzeug === 'text' || hatSelektierteTextAnnotation) && (
         <>
-          {/* Schriftgrösse S/M/L/XL */}
+          <div className={separatorKlassen} aria-hidden="true" />
           {onTextGroesseChange && (
             <div role="group" aria-label="Schriftgrösse" className={`flex gap-0.5 ${isHorizontal ? '' : 'flex-col'}`}>
               {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
@@ -245,26 +288,16 @@ export function PDFToolbar({
               ))}
             </div>
           )}
-          {/* Fett-Toggle */}
           {onTextFettChange && (
-            <button
-              type="button"
-              onClick={() => onTextFettChange(!textFett)}
-              className={btnKlassen(textFett)}
-              title={textFett ? 'Fett (aktiv)' : 'Fett'}
-            >
+            <button type="button" onClick={() => onTextFettChange(!textFett)} className={btnKlassen(textFett)} title={textFett ? 'Fett (aktiv)' : 'Fett'}>
               <span style={{ fontWeight: 'bold' }}>B</span>
             </button>
           )}
-          {/* Rotation */}
           {onTextRotationChange && (
             <button
               type="button"
               onClick={() => onTextRotationChange(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
-              className={[
-                btnKlassen(false),
-                'border border-slate-300 dark:border-slate-600',
-              ].join(' ')}
+              className={btnKlassen(false)}
               title={`Rotation: ${textRotation}°`}
             >
               ⟳{textRotation > 0 ? ` ${textRotation}°` : ''}
@@ -273,57 +306,36 @@ export function PDFToolbar({
         </>
       )}
 
+      <div className={separatorKlassen} aria-hidden="true" />
+
       {/* Undo / Redo */}
-      <div role="group" aria-label="Verlauf" className="flex gap-0.5">
-        <button
-          title="Rückgängig"
-          onClick={onUndo}
-          disabled={!kannUndo}
-          className={[
-            btnKlassen(false),
-            !kannUndo ? 'opacity-40 cursor-not-allowed' : '',
-          ].join(' ')}
-        >
-          ↩
-        </button>
-        <button
-          title="Wiederherstellen"
-          onClick={onRedo}
-          disabled={!kannRedo}
-          className={[
-            btnKlassen(false),
-            !kannRedo ? 'opacity-40 cursor-not-allowed' : '',
-          ].join(' ')}
-        >
-          ↪
-        </button>
+      <div role="group" aria-label="Verlauf" className={`flex gap-0.5 ${isHorizontal ? '' : 'flex-col'}`}>
+        <button type="button" title="Rückgängig" onClick={onUndo} disabled={!kannUndo}
+          className={`${btnKlassen(false)} ${!kannUndo ? 'opacity-40 cursor-not-allowed' : ''}`}>↩</button>
+        <button type="button" title="Wiederherstellen" onClick={onRedo} disabled={!kannRedo}
+          className={`${btnKlassen(false)} ${!kannRedo ? 'opacity-40 cursor-not-allowed' : ''}`}>↪</button>
       </div>
 
-      {/* Separator */}
-      <div className={isHorizontal ? 'w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1' : 'h-px w-6 bg-slate-300 dark:bg-slate-600 my-1'} aria-hidden="true" />
+      <div className={separatorKlassen} aria-hidden="true" />
 
-      {/* Zoom-Dropdown */}
-      <div role="group" aria-label="Zoom" className="flex items-center">
-        <select
-          value={zoom}
-          onChange={(e) => onZoomWechsel(Number(e.target.value) as ZoomStufe)}
-          className="min-h-[44px] rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm px-2"
-          aria-label="Zoom-Stufe"
-        >
-          {ZOOM_STUFEN.map((stufe) => (
-            <option key={stufe} value={stufe}>
-              {Math.round(stufe * 100)}%
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Zoom */}
+      <select
+        value={zoom}
+        onChange={(e) => onZoomWechsel(Number(e.target.value) as ZoomStufe)}
+        className="min-h-[44px] rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm px-2"
+        aria-label="Zoom-Stufe"
+      >
+        {ZOOM_STUFEN.map((stufe) => (
+          <option key={stufe} value={stufe}>{Math.round(stufe * 100)}%</option>
+        ))}
+      </select>
 
-      {/* Spacer (nur horizontal) */}
       {isHorizontal && <div className="flex-1" aria-hidden="true" />}
 
       {/* Alles löschen */}
       {onAllesLoeschen && (
         <button
+          type="button"
           title="Alles löschen"
           onClick={() => setZeigeLoeschenDialog(true)}
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
@@ -333,32 +345,23 @@ export function PDFToolbar({
       )}
 
       {/* Annotation-Zähler */}
-      <span
-        className="text-xs text-slate-500 dark:text-slate-400 tabular-nums"
-        aria-label={`${annotationCount} Annotationen`}
-      >
+      <span className="text-xs text-slate-500 dark:text-slate-400 tabular-nums" aria-label={`${annotationCount} Annotationen`}>
         {annotationCount} {annotationCount === 1 ? 'Annotation' : 'Annotationen'}
       </span>
 
-      {/* Bestätigungsdialog (kein window.confirm — bleibt im Fullscreen) */}
+      {/* Bestätigungsdialog */}
       {zeigeLoeschenDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setZeigeLoeschenDialog(false)}>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">Alle Annotationen löschen?</h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">Alle Annotationen werden unwiderruflich entfernt.</p>
             <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setZeigeLoeschenDialog(false)}
-                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              >
+              <button type="button" onClick={() => setZeigeLoeschenDialog(false)}
+                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
                 Abbrechen
               </button>
-              <button
-                type="button"
-                onClick={() => { onAllesLoeschen!(); setZeigeLoeschenDialog(false) }}
-                className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer"
-              >
+              <button type="button" onClick={() => { onAllesLoeschen!(); setZeigeLoeschenDialog(false) }}
+                className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer">
                 Löschen
               </button>
             </div>

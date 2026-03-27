@@ -61,6 +61,10 @@ export default function PDFFrage({ frage }: Props) {
     }
   }, [aktivesWerkzeug])
 
+  // Stift-Stärke + Stil (für Freihand-Annotationen)
+  const [stiftBreite, setStiftBreite] = useState<number>(2)
+  const [stiftGestrichelt, setStiftGestrichelt] = useState<boolean>(false)
+
   const [aktiveKategorieId, setAktiveKategorieId] = useState<string | undefined>(
     frage.kategorien?.[0]?.id,
   )
@@ -317,6 +321,10 @@ export default function PDFFrage({ frage }: Props) {
                 return neu
               })}
               onAllesLoeschen={allesLoeschen}
+              stiftBreite={stiftBreite}
+              onStiftBreiteChange={setStiftBreite}
+              stiftGestrichelt={stiftGestrichelt}
+              onStiftGestricheltChange={setStiftGestrichelt}
               textRotation={selectedAnnotation
                 ? ((annotationen.find(a => a.id === selectedAnnotation) as { rotation?: number } | undefined)?.rotation ?? 0) as 0 | 90 | 180 | 270
                 : textRotation}
