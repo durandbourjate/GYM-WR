@@ -2,12 +2,12 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
-import { resolveFragenFuerPruefung } from '../App.tsx'
-import type { PruefungsNachricht } from '../types/monitoring.ts'
+import { resolveFragenFuerPruefung } from '../utils/fragenResolver.ts'
 import { usePruefungsMonitoring } from '../hooks/usePruefungsMonitoring.ts'
 import { usePruefungsUX } from '../hooks/usePruefungsUX.ts'
 import { useTabKonflikt } from '../hooks/useTabKonflikt.ts'
 import { useLockdown } from '../hooks/useLockdown.ts'
+import { useLPNachrichten } from '../hooks/useLPNachrichten.ts'
 import { VerstossOverlay } from './VerstossOverlay.tsx'
 import { SperreOverlay } from './SperreOverlay.tsx'
 import { istImSEB } from '../services/sebService.ts'
@@ -19,20 +19,7 @@ import FragenNavigation from './FragenNavigation.tsx'
 import AbgabeDialog from './AbgabeDialog.tsx'
 import ThemeToggle from './ThemeToggle.tsx'
 import MaterialPanel, { type MaterialModus } from './MaterialPanel.tsx'
-import MCFrage from './fragetypen/MCFrage.tsx'
-import FreitextFrage from './fragetypen/FreitextFrage.tsx'
-import LueckentextFrage from './fragetypen/LueckentextFrage.tsx'
-import ZuordnungFrage from './fragetypen/ZuordnungFrage.tsx'
-import RichtigFalschFrage from './fragetypen/RichtigFalschFrage.tsx'
-import BerechnungFrage from './fragetypen/BerechnungFrage.tsx'
-import BuchungssatzFrage from './fragetypen/BuchungssatzFrage.tsx'
-import TKontoFrageComponent from './fragetypen/TKontoFrage.tsx'
-import KontenbestimmungFrageComponent from './fragetypen/KontenbestimmungFrage.tsx'
-import BilanzERFrageComponent from './fragetypen/BilanzERFrage.tsx'
-import AufgabengruppeFrageComponent from './fragetypen/AufgabengruppeFrage.tsx'
-import ZeichnenFrage from './fragetypen/ZeichnenFrage.tsx'
-import PDFFrage from './fragetypen/PDFFrage.tsx'
-import type { Frage, MCFrage as MCFrageType, FreitextFrage as FreitextFrageType, LueckentextFrage as LueckentextFrageType, ZuordnungFrage as ZuordnungFrageType, RichtigFalschFrage as RichtigFalschFrageType, BerechnungFrage as BerechnungFrageType, BuchungssatzFrage as BuchungssatzFrageType, TKontoFrage as TKontoFrageType, KontenbestimmungFrage as KontenbestimmungFrageType, BilanzERFrage as BilanzERFrageType, AufgabengruppeFrage as AufgabengruppeFrageType, VisualisierungFrage as VisualisierungFrageType, PDFFrage as PDFFrageTyp } from '../types/fragen.ts'
+import FrageRenderer from './FrageRenderer.tsx'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
 import FrageAnhaenge from './FrageAnhaenge.tsx'
@@ -124,27 +111,11 @@ export default function Layout() {
   })
 
   // LP-Nachrichten für SuS
-  const [lpNachrichten, setLpNachrichten] = useState<PruefungsNachricht[]>([])
-  const [geschlosseneNachrichten, setGeschlosseneNachrichten] = useState<Set<string>>(new Set())
-  useEffect(() => {
-    if (!user || !config || abgegeben) return
-
-    const pruefungId = config.id
-    const email = user.email
-
-    async function pollNachrichten() {
-      const result = await apiService.ladeNachrichten(pruefungId, email)
-      if (result.length > 0) {
-        setLpNachrichten(result)
-      }
-    }
-
-    pollNachrichten()
-    const interval = setInterval(pollNachrichten, 10000)
-    return () => clearInterval(interval)
-  }, [user, config, abgegeben])
-
-  const ungelesenNachrichten = lpNachrichten.filter((n) => !geschlosseneNachrichten.has(n.id))
+  const { ungelesenNachrichten, schliesseNachricht } = useLPNachrichten({
+    pruefungId: config?.id,
+    email: user?.email,
+    enabled: !!user && !!config && !abgegeben,
+  })
 
   // Prüfungs-ID aus URL für Recovery
   const pruefungIdAusUrl = useMemo(() => new URLSearchParams(window.location.search).get('id'), [])
@@ -299,7 +270,7 @@ export default function Layout() {
                 </span>
               </div>
               <button
-                onClick={() => setGeschlosseneNachrichten((prev) => new Set(prev).add(n.id))}
+                onClick={() => schliesseNachricht(n.id)}
                 className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 text-lg leading-none flex-shrink-0 cursor-pointer"
                 title="Nachricht schliessen"
               >
@@ -455,7 +426,7 @@ export default function Layout() {
 
               {aktuelleFrage && (
                 <div key={aktuelleFrage.id}>
-                  {renderFrage(aktuelleFrage)}
+                  <FrageRenderer frage={aktuelleFrage} />
                   <FrageAnhaenge anhaenge={aktuelleFrage.anhaenge ?? []} />
                 </div>
               )}
@@ -541,48 +512,4 @@ export default function Layout() {
       )}
     </div>
   )
-}
-
-function renderFrage(frage: Frage) {
-  switch (frage.typ) {
-    case 'mc':
-      return <MCFrage frage={frage as MCFrageType} />
-    case 'freitext':
-      return <FreitextFrage frage={frage as FreitextFrageType} />
-    case 'lueckentext':
-      return <LueckentextFrage frage={frage as LueckentextFrageType} />
-    case 'zuordnung':
-      return <ZuordnungFrage frage={frage as ZuordnungFrageType} />
-    case 'richtigfalsch':
-      return <RichtigFalschFrage frage={frage as RichtigFalschFrageType} />
-    case 'berechnung':
-      return <BerechnungFrage frage={frage as BerechnungFrageType} />
-    case 'buchungssatz':
-      return <BuchungssatzFrage frage={frage as BuchungssatzFrageType} />
-    case 'tkonto':
-      return <TKontoFrageComponent frage={frage as TKontoFrageType} />
-    case 'kontenbestimmung':
-      return <KontenbestimmungFrageComponent frage={frage as KontenbestimmungFrageType} />
-    case 'bilanzstruktur':
-      return <BilanzERFrageComponent frage={frage as BilanzERFrageType} />
-    case 'aufgabengruppe':
-      return <AufgabengruppeFrageComponent frage={frage as AufgabengruppeFrageType} />
-    case 'visualisierung':
-      if ((frage as VisualisierungFrageType).untertyp === 'zeichnen') {
-        return <ZeichnenFrage frage={frage as VisualisierungFrageType} />
-      }
-      return (
-        <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">
-          Visualisierungs-Untertyp «{(frage as VisualisierungFrageType).untertyp}» wird in einer späteren Phase implementiert.
-        </div>
-      )
-    case 'pdf':
-      return <PDFFrage frage={frage as PDFFrageTyp} />
-    default:
-      return (
-        <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">
-          Fragetyp «{(frage as { typ: string }).typ}» wird in einer späteren Phase implementiert.
-        </div>
-      )
-  }
 }

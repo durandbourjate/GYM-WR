@@ -32,7 +32,7 @@ import { InlineAktionButton, ErgebnisAnzeige } from './KIBausteine.tsx'
 import { berechneZeitbedarf } from '../../../utils/zeitbedarf.ts'
 import type { Lernziel } from '../../../types/pool.ts'
 import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
-import RueckSyncDialog from '../RueckSyncDialog.tsx'
+import RueckSyncDialog from '../fragenbank/RueckSyncDialog.tsx'
 
 // Extrahierte Sections
 import MetadataSection from './sections/MetadataSection.tsx'

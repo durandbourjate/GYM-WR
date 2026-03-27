@@ -6,14 +6,16 @@ import { demoFragen } from './data/demoFragen.ts'
 import { apiService } from './services/apiService.ts'
 import { clearIndexedDB } from './services/autoSave.ts'
 import { clearQueue } from './services/retryQueue.ts'
+import { resolveFragenFuerPruefung } from './utils/fragenResolver.ts'
 import type { Frage } from './types/fragen.ts'
 import type { PruefungsConfig } from './types/pruefung.ts'
 import LoginScreen from './components/LoginScreen.tsx'
 import Startbildschirm from './components/Startbildschirm.tsx'
 import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
-import DurchfuehrenDashboard from './components/lp/DurchfuehrenDashboard.tsx'
-import { MultiDurchfuehrenDashboard } from './components/lp/MultiDurchfuehrenDashboard.tsx'
+import AbgabeBestaetigung from './components/AbgabeBestaetigung.tsx'
+import DurchfuehrenDashboard from './components/lp/durchfuehrung/DurchfuehrenDashboard.tsx'
+import { MultiDurchfuehrenDashboard } from './components/lp/durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
 import KorrekturListe from './components/sus/KorrekturListe.tsx'
@@ -258,83 +260,4 @@ export default function App() {
     default:
       return null
   }
-}
-
-/** Löst die Fragen-IDs aus den Abschnitten auf */
-/**
- * Löst Fragen für eine Prüfung auf.
- * Gibt zwei Arrays zurück:
- * - navigationsFragen: Nur die Top-Level-Fragen (1:1 mit fragenIds in abschnitte), für Navigation/Index
- * - alleFragen: Inkl. Teilaufgaben von Aufgabengruppen (für Lookup in AufgabengruppeFrage)
- */
-export function resolveFragenFuerPruefung(config: PruefungsConfig, apiFragen: Frage[]): { navigationsFragen: Frage[]; alleFragen: Frage[] } {
-  const fragenMap = new Map(apiFragen.map((f) => [f.id, f]))
-  const navigationsFragen: Frage[] = []
-  const alleFragen: Frage[] = []
-  const hinzugefuegt = new Set<string>()
-
-  for (const abschnitt of config.abschnitte) {
-    for (const id of abschnitt.fragenIds) {
-      const frage = fragenMap.get(id)
-      if (frage && !hinzugefuegt.has(id)) {
-        navigationsFragen.push(frage)
-        alleFragen.push(frage)
-        hinzugefuegt.add(id)
-        // Aufgabengruppen: Teilaufgaben nur in alleFragen (nicht in Navigation)
-        if (frage.typ === 'aufgabengruppe' && 'teilaufgabenIds' in frage) {
-          for (const tid of (frage as { teilaufgabenIds: string[] }).teilaufgabenIds) {
-            const teilfrage = fragenMap.get(tid)
-            if (teilfrage && !hinzugefuegt.has(tid)) {
-              alleFragen.push(teilfrage)
-              hinzugefuegt.add(tid)
-            }
-          }
-        }
-      }
-    }
-  }
-  return { navigationsFragen, alleFragen }
-}
-
-function AbgabeBestaetigung() {
-  const user = useAuthStore((s) => s.user)
-  const abmelden = useAuthStore((s) => s.abmelden)
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <ThemeToggle />
-        {user && (
-          <button
-            onClick={abmelden}
-            title="Abmelden"
-            className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
-          >
-            Abmelden
-          </button>
-        )}
-      </div>
-      <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-          Prüfung abgegeben
-        </h1>
-        {user && (
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
-            {user.name} {user.email && user.email !== 'demo@example.com' ? `(${user.email})` : ''}
-          </p>
-        )}
-        <p className="text-slate-500 dark:text-slate-400 mb-6">
-          Ihre Antworten wurden gespeichert. Sie können das Fenster schliessen.
-        </p>
-        {/* Antworten-Einsicht im Demo-Modus entfernt — SuS-Tester sollen realistischen Ablauf erleben */}
-        <p className="text-xs text-slate-400 dark:text-slate-500">
-          Bei Fragen wenden Sie sich an Ihre Lehrperson.
-        </p>
-      </div>
-    </div>
-  )
 }

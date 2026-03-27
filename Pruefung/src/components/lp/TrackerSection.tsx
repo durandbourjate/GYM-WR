@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import type { TrackerDaten } from '../../types/tracker.ts'
 import { berechneFehlendeSuS, berechneNotenStand } from '../../utils/trackerUtils.ts'
-import FehlendeSuSPanel from './FehlendeSuSPanel.tsx'
-import NotenStandPanel from './NotenStandPanel.tsx'
+import FehlendeSuSPanel from './durchfuehrung/FehlendeSuSPanel.tsx'
+import NotenStandPanel from './durchfuehrung/NotenStandPanel.tsx'
 
 interface Props {
   trackerDaten: TrackerDaten

@@ -3,8 +3,8 @@
  * Extrahiert aus FragenBrowser.tsx.
  */
 import { useState, useMemo, useEffect } from 'react'
-import { gruppenKey } from '../components/lp/fragenbrowser/gruppenHelfer.ts'
-import type { Gruppierung } from '../components/lp/fragenbrowser/gruppenHelfer.ts'
+import { gruppenKey } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
+import type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../types/fragen.ts'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'

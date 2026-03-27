@@ -7,10 +7,10 @@ import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.t
 import { formatDatum } from '../../utils/zeit.ts'
 import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel, erstelleDemoTrackerDaten } from '../../utils/trackerUtils.ts'
 import LPHeader from './LPHeader.tsx'
-import PruefungsComposer from './PruefungsComposer.tsx'
-import FragenBrowser from './FragenBrowser.tsx'
+import PruefungsComposer from './vorbereitung/PruefungsComposer.tsx'
+import FragenBrowser from './fragenbank/FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
-import PoolSyncDialog from './PoolSyncDialog.tsx'
+import PoolSyncDialog from './fragenbank/PoolSyncDialog.tsx'
 import TrackerSection from './TrackerSection.tsx'
 // demoPruefung entfernt — nur noch Einrichtungsprüfung im Demo-Modus
 import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
