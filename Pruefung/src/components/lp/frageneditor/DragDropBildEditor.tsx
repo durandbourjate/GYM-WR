@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { DragDropBildZielzone } from '../../../types/fragen.ts'
+import BildUpload from './BildUpload.tsx'
 
 interface Props {
   bildUrl: string
@@ -63,17 +64,8 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
         Drag & Drop auf Bild
       </h4>
 
-      {/* Bild-URL */}
-      <div>
-        <label className="text-xs text-slate-500 dark:text-slate-400">Bild-URL</label>
-        <input
-          type="url"
-          value={bildUrl}
-          onChange={(e) => setBildUrl(e.target.value)}
-          placeholder="https://..."
-          className="w-full mt-1 px-3 py-2 text-sm border rounded-lg bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white"
-        />
-      </div>
+      {/* Bild (Upload oder URL) */}
+      <BildUpload bildUrl={bildUrl} setBildUrl={setBildUrl} />
 
       {/* Bild mit Zielzonen-Editor */}
       {bildUrl && (

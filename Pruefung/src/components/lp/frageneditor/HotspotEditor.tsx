@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { HotspotBereich } from '../../../types/fragen.ts'
+import BildUpload from './BildUpload.tsx'
 
 interface Props {
   bildUrl: string
@@ -54,19 +55,8 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
 
   return (
     <div className="space-y-4">
-      {/* Bild-URL */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
-          Bild-URL
-        </label>
-        <input
-          type="text"
-          value={bildUrl}
-          onChange={(e) => setBildUrl(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-          placeholder="https://..."
-        />
-      </div>
+      {/* Bild (Upload oder URL) */}
+      <BildUpload bildUrl={bildUrl} setBildUrl={setBildUrl} />
 
       {/* Bild mit Bereichen */}
       {bildUrl && (
