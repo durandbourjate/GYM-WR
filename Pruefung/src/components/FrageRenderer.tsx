@@ -14,6 +14,9 @@ import PDFFrage from './fragetypen/PDFFrage.tsx'
 import SortierungFrageComponent from './fragetypen/SortierungFrage.tsx'
 import HotspotFrageComponent from './fragetypen/HotspotFrage.tsx'
 import BildbeschriftungFrageComponent from './fragetypen/BildbeschriftungFrage.tsx'
+import AudioFrageComponent from './fragetypen/AudioFrage.tsx'
+import DragDropBildFrageComponent from './fragetypen/DragDropBildFrage.tsx'
+import MedienPlayer from './shared/MedienPlayer.tsx'
 import type {
   Frage,
   MCFrage as MCFrageType,
@@ -32,6 +35,8 @@ import type {
   SortierungFrage as SortierungFrageType,
   HotspotFrage as HotspotFrageType,
   BildbeschriftungFrage as BildbeschriftungFrageType,
+  AudioFrage as AudioFrageType,
+  DragDropBildFrage as DragDropBildFrageType,
 } from '../types/fragen.ts'
 
 interface FrageRendererProps {
@@ -40,6 +45,9 @@ interface FrageRendererProps {
 
 /** Rendert die passende Fragetyp-Komponente basierend auf frage.typ */
 export default function FrageRenderer({ frage }: FrageRendererProps) {
+  const medienEinbettung = frage.medienEinbettung
+
+  const fragInhalt = (() => {
   switch (frage.typ) {
     case 'mc':
       return <MCFrage frage={frage as MCFrageType} />
@@ -80,6 +88,10 @@ export default function FrageRenderer({ frage }: FrageRendererProps) {
       return <HotspotFrageComponent frage={frage as HotspotFrageType} />
     case 'bildbeschriftung':
       return <BildbeschriftungFrageComponent frage={frage as BildbeschriftungFrageType} />
+    case 'audio':
+      return <AudioFrageComponent frage={frage as AudioFrageType} />
+    case 'dragdrop_bild':
+      return <DragDropBildFrageComponent frage={frage as DragDropBildFrageType} />
     default:
       return (
         <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 text-center">
@@ -87,4 +99,22 @@ export default function FrageRenderer({ frage }: FrageRendererProps) {
         </div>
       )
   }
+  })()
+
+  // Medien-Einbettung vor dem Frageinhalt rendern
+  if (medienEinbettung) {
+    return (
+      <div className="flex flex-col gap-4">
+        <MedienPlayer
+          url={medienEinbettung.url}
+          typ={medienEinbettung.typ}
+          maxAbspielungen={medienEinbettung.maxAbspielungen}
+          autoplay={medienEinbettung.autoplay}
+        />
+        {fragInhalt}
+      </div>
+    )
+  }
+
+  return fragInhalt
 }

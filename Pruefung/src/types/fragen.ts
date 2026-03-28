@@ -43,7 +43,15 @@ export interface FrageBase {
   verwendungen: Verwendung[];
 
   // Anhänge (Bilder, PDFs)
-  anhaenge?: FrageAnhang[];
+  anhaenge?: FrageAnhang[]
+
+  // Medien-Einbettung (Audio/Video direkt in der Frage)
+  medienEinbettung?: {
+    url: string              // Drive URL oder direkte URL
+    typ: 'audio' | 'video'
+    maxAbspielungen?: number  // undefined = unbegrenzt
+    autoplay?: boolean
+  };
 
   // Zeitbedarf
   /** Geschätzter Zeitbedarf in Minuten (vorausgefüllt, editierbar) */
@@ -478,4 +486,28 @@ export interface BildbeschriftungFrage extends FrageBase {
   beschriftungen: BildbeschriftungLabel[]
 }
 
-export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage | VisualisierungFrage | RichtigFalschFrage | BerechnungFrage | BuchungssatzFrage | TKontoFrage | KontenbestimmungFrage | BilanzERFrage | AufgabengruppeFrage | PDFFrage | SortierungFrage | HotspotFrage | BildbeschriftungFrage;
+// === AUDIO-AUFNAHME ===
+
+export interface AudioFrage extends FrageBase {
+  typ: 'audio'
+  fragetext: string
+  maxDauerSekunden?: number  // optionales Aufnahme-Zeitlimit
+}
+
+// === DRAG & DROP AUF BILDER ===
+
+export interface DragDropBildZielzone {
+  id: string
+  position: { x: number; y: number; breite: number; hoehe: number }  // Prozent 0-100
+  korrektesLabel: string
+}
+
+export interface DragDropBildFrage extends FrageBase {
+  typ: 'dragdrop_bild'
+  fragetext: string
+  bildUrl: string
+  zielzonen: DragDropBildZielzone[]
+  labels: string[]  // Pool von Labels (kann Distraktoren enthalten)
+}
+
+export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage | VisualisierungFrage | RichtigFalschFrage | BerechnungFrage | BuchungssatzFrage | TKontoFrage | KontenbestimmungFrage | BilanzERFrage | AufgabengruppeFrage | PDFFrage | SortierungFrage | HotspotFrage | BildbeschriftungFrage | AudioFrage | DragDropBildFrage;
