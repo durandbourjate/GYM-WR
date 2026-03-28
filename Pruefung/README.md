@@ -1,11 +1,11 @@
 # Prüfungsplattform — Gymnasium Hofwil
 
-Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium Hofwil (Münchenbuchsee BE). Ermöglicht das Erstellen, Durchführen und Auswerten von Prüfungen — vollständig im Browser.
+Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil (Münchenbuchsee BE). Ermöglicht das Erstellen, Durchführen und Auswerten von Prüfungen — vollständig im Browser.
 
 ## Features
 
 **Für Schülerinnen und Schüler**
-- 13 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, PDF-Annotation, Zeichnen/Visualisierung
+- 20 Fragetypen: Multiple Choice, Freitext (Rich Text), Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, PDF-Annotation, Zeichnen/Visualisierung, Sortierung, Hotspot, Bildbeschriftung, Audio-Aufnahme, Drag & Drop (Bild), Code-Editor, Formel (LaTeX)
 - Automatisches Speichern (lokal + remote) — kein Datenverlust
 - Timer mit Countdown oder Open-End (Stoppuhr), Fortschrittsanzeige pro Abschnitt
 - Offline-fähig (PWA): Antworten werden bei Reconnect nachgesendet
@@ -13,6 +13,9 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 - Korrektur-Einsicht: MC-Optionen mit ✓/✗-Icons, R/F mit farbigen Kreisen, Punkte, Kommentare und Audio-Feedback
 - Visuelles Leitsystem: Leere Felder violett umrahmt (Handlungsbedarf), ausgefüllte neutral, Auswahl-Entscheidungen mit grünem/rotem Kreis-Icon
 - FiBu-Farbsystem: Konten-Kategoriefarben nach Lehrmittel (Aktiv=gelb, Passiv=rot, Aufwand=blau, Ertrag=grün)
+- Audio/Video-Player mit Abspiel-Limit: LP kann festlegen, wie oft Materialien abgespielt werden dürfen
+- Formel-Editor mit Live-Vorschau: Eingabe von LaTeX-Formeln mit sofortiger visueller Rückmeldung, Symbolleiste für häufige Zeichen
+- Code-Editor mit Syntax-Highlighting: 7 Sprachen (Python, JavaScript, SQL, HTML, CSS, Java, TypeScript), Zeilennummern
 
 **Für Lehrpersonen**
 - Prüfungs-Composer: Prüfungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragenbank)
@@ -23,7 +26,7 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 - KI-Korrektur: Automatische Bewertung mit manueller Übersteuerung + individuelles Feedback per E-Mail
 - Audio-Korrektur: Audio-Feedback pro Frage und gesamt
 - Live-Monitoring: Fortschritt, Heartbeat, Inaktivitäts-Warnstufen, SEB-Status, Lockdown-Verstösse, Geräteerkennung, Entsperren-Button — alles in Echtzeit
-- Fragenbank: Fragen nach Fachbereich, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
+- Fragenbank: Fragen nach Fach + Tags, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
 - Fragen-Statistiken: Lösungsquoten und Verwendungen pro Frage über alle Prüfungen (📊 Badges)
 - Pool-Brücke: Bidirektionaler Sync mit Übungspools (Import + Rück-Sync via GitHub API)
 - Open-End-Modus: Prüfung ohne Zeitlimit, LP beendet manuell (optional mit Restzeit)
@@ -31,13 +34,21 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 - Ergebnis-Export: Detaillierter CSV mit Antworten + Punkten (wie Google Forms) + individuelle SuS-PDFs
 - In-App Hilfe: Anleitung, FAQ und Tipps direkt in der Plattform
 - Zeitzuschläge (Nachteilsausgleich) pro SuS mit frei wählbarer Minutenzahl
-- Auto-Korrektur: MC, R/F, Lückentext, Zuordnung, Berechnung werden sofort automatisch bewertet
+- Auto-Korrektur: MC, R/F, Lückentext, Zuordnung, Berechnung, Sortierung, Hotspot, Bildbeschriftung, Drag & Drop (Bild), Formel (LaTeX) werden sofort automatisch bewertet
 - Korrektur-Workflow: Auto-Geprüft bei LP-Aktion, Status-Tracking, Freigabe-Banner, Schutz vor Freigabe bei fehlenden Punkten
-- Material-Panel: Split-Screen (55%) oder Overlay, unterstützt PDF, Video, Audio, Links
+- Material-Panel: Split-Screen (55%) oder Overlay, unterstützt PDF, Video, Audio, Links, Rich-Text
 - SEB-Integration: Auto-Config-Download, harte Durchsetzung, LP-Ausnahmen, SuS-Anleitung
 - Zeichnen-Toolbar: 6 Werkzeuge (Stift, Linie, Pfeil, Rechteck, Ellipse, Text) mit Dropdown-Menüs (Stärke, Stil gestrichelt/durchgehend, Farben 3×3 Grid). Selektierte Elemente nachträglich bearbeitbar (Farbe, Grösse, Rotation).
 - Soft-Lockdown (4 Stufen): SEB-unabhängige Sicherheit — Keine (für Übungen), Locker (Logging mit Verstoss-Zähler, ohne Sperre), Standard (Copy/Paste-Block, Vollbild, 3 Verstösse = Sperre), Streng (Sofort-Pause). Automatische iPad-Erkennung mit Downgrade.
 - Multi-Prüfungs-Dashboard: Mehrere Prüfungen parallel in einem Tab überwachen (`?ids=a,b`). Live-Zusammenfassung + Einzelansicht.
+- Wörterzähler: Min/Max-Wortlimit für Freitext-Fragen konfigurierbar, Warnung bei Unter-/Überschreitung
+- Inline-Choice: Pro Lücke im Lückentext können Dropdown-Optionen definiert werden (SuS wählen statt tippen)
+- Rechtschreibprüfung steuerbar: Browser-Spellcheck pro Prüfung aktivierbar/deaktivierbar
+- Rich-Text-Panel: Materialien als formatierter Rich-Text direkt in der Plattform pflegen
+- Medien-Einbettung: Bilder und Videos direkt in Fragetexte einbetten
+- Audio-Aufnahme als Fragetyp: SuS nehmen Audio auf (Aussprache, mündliche Erklärung)
+- LaTeX in Aufgaben: Formeln im Fragentext mit `$...$` (inline) und `$$...$$` (Block) — automatisches Rendering
+- Code-Blöcke in Aufgaben: Syntax-Highlighting im Fragentext (7 Sprachen: Python, JavaScript, SQL, HTML, CSS, Java, TypeScript)
 
 **Backend**
 - Google Sheets als Datenbank (Fragenbank, Klassenlisten, Configs, Antworten)
@@ -53,6 +64,8 @@ Digitale Prüfungsplattform für den Wirtschaft-&-Recht-Unterricht am Gymnasium 
 | State | Zustand (mit Persist) |
 | Styling | Tailwind CSS v4 |
 | Rich Text | Tiptap |
+| Formeln | KaTeX (LaTeX) |
+| Code | CodeMirror 6 |
 | Tests | Vitest + @testing-library/react |
 | Backend | Google Apps Script |
 | Daten | Google Sheets + Drive |
@@ -71,7 +84,7 @@ npm run dev
 
 Öffne `http://localhost:5174/GYM-WR-DUY/Pruefung/`
 
-Ohne Backend-Konfiguration startet die App im **Demo-Modus** mit der Einrichtungsprüfung (16 Fragen, alle 13 Fragetypen inkl. Zeichnen + PDF). Kontrollstufe ist auf "Keine" gesetzt (kein Lockdown).
+Ohne Backend-Konfiguration startet die App im **Demo-Modus** mit der Einrichtungsprüfung (alle 20 Fragetypen inkl. Zeichnen + PDF). Kontrollstufe ist auf "Keine" gesetzt (kein Lockdown).
 
 ### Mit Backend (Google Workspace)
 
@@ -139,7 +152,7 @@ src/
 │   │   ├── fragenbank/        FragenBrowser, FragenImport, Pool-Sync + fragenbrowser/
 │   │   ├── frageneditor/      Fragen-Editor mit allen Typen
 │   │   └── ...                LPStartseite, LPHeader, HilfeSeite, TrackerSection
-│   ├── fragetypen/            13 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe + PDF + Zeichnen
+│   ├── fragetypen/            20 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe + PDF + Zeichnen + Sortierung + Hotspot + Bildbeschriftung + Audio + Drag&Drop + Code + LaTeX
 │   └── ...                    Login, Layout, FrageRenderer, AbgabeBestaetigung, etc.
 ├── services/                  API, Auth, SEB, Auto-Save, Retry-Queue
 ├── store/                     Zustand Stores (Prüfung, Auth, Theme)

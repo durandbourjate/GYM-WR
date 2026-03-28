@@ -148,7 +148,7 @@ function HilfeEinstieg() {
     <div>
       <Titel>Willkommen zur Prüfungsplattform</Titel>
       <Text>
-        Die Prüfungsplattform ermöglicht digitale Prüfungen direkt im Browser. Sie erstellen Prüfungen im Composer, die Schülerinnen und Schüler bearbeiten sie online, und die Korrektur kann KI-unterstützt erfolgen.
+        Die Prüfungsplattform ermöglicht digitale Prüfungen direkt im Browser — für alle Fachschaften am Gymnasium Hofwil. Sie erstellen Prüfungen im Composer, die Schülerinnen und Schüler bearbeiten sie online, und die Korrektur kann KI-unterstützt erfolgen.
       </Text>
 
       <Untertitel>Anmeldung</Untertitel>
@@ -161,7 +161,7 @@ function HilfeEinstieg() {
 
       <Untertitel>Überblick: Ihr Workflow</Untertitel>
       <Schritt nr={1}>
-        <strong>Fragen erstellen</strong> — In der Fragenbank Fragen mit 13 verschiedenen Typen anlegen (MC, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, Zeichnen, PDF-Annotation).
+        <strong>Fragen erstellen</strong> — In der Fragenbank Fragen mit 20 verschiedenen Typen anlegen (MC, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, Zeichnen, PDF-Annotation, Sortierung, Hotspot, Bildbeschriftung, Audio-Aufnahme, Drag & Drop (Bild), Code-Editor, Formel (LaTeX)).
       </Schritt>
       <Schritt nr={2}>
         <strong>Prüfung zusammenstellen</strong> — Im Composer eine neue Prüfung erstellen: Einstellungen festlegen, Abschnitte bilden, Fragen aus der Fragenbank zuordnen.
@@ -197,7 +197,7 @@ function HilfePruefung() {
 
       <Untertitel>1. Einstellungen</Untertitel>
       <Text>
-        Titel, Klasse, Datum, Gefäss (SF/EF/EWR), Fachbereiche, Dauer und Prüfungstyp (summativ/formativ) festlegen. Optionen wie SEB-Pflicht, Rücknavigation und Zeitanzeige konfigurieren.
+        Titel, Klasse, Datum, Gefäss (SF/EF/EWR/GF/FF), Fach, Tags, Dauer und Prüfungstyp (summativ/formativ) festlegen. Optionen wie SEB-Pflicht, Rücknavigation, Zeitanzeige und Rechtschreibprüfung konfigurieren.
       </Text>
       <Text>
         Zeitzuschläge (Nachteilsausgleich) können pro SuS individuell vergeben werden — die zusätzlichen Minuten werden automatisch zur Prüfungsdauer addiert.
@@ -229,15 +229,15 @@ function HilfeFragen() {
         Die Fragenbank ist der zentrale Ort für alle Prüfungsfragen. Fragen können in mehreren Prüfungen wiederverwendet werden.
       </Text>
 
-      <Untertitel>13 Fragetypen</Untertitel>
+      <Untertitel>20 Fragetypen</Untertitel>
       <Text>
         <strong>Multiple Choice</strong> — Einfach- oder Mehrfachauswahl. Optionen werden bei der Prüfung automatisch gemischt.
       </Text>
       <Text>
-        <strong>Freitext</strong> — Kurz, mittel oder lang. SuS können mit Fettschrift und Überschriften formatieren.
+        <strong>Freitext</strong> — Kurz, mittel oder lang. SuS können mit Fettschrift und Überschriften formatieren. Optional: Min/Max-Wortlimit konfigurierbar — Warnung bei Unter-/Überschreitung.
       </Text>
       <Text>
-        <strong>Lückentext</strong> — Text mit Platzhaltern (z.B. {`{{1}}`}, {`{{2}}`}). Pro Lücke können mehrere akzeptierte Antworten definiert werden.
+        <strong>Lückentext</strong> — Text mit Platzhaltern (z.B. {`{{1}}`}, {`{{2}}`}). Pro Lücke können mehrere akzeptierte Antworten definiert werden. Optional: Pro Lücke können Dropdown-Optionen definiert werden (Inline-Choice) — SuS wählen dann aus vorgegebenen Antworten statt frei zu tippen.
       </Text>
       <Text>
         <strong>Zuordnung</strong> — Paare von Begriffen und Definitionen. SuS ordnen per Dropdown zu.
@@ -277,9 +277,34 @@ function HilfeFragen() {
         <strong>PDF-Annotation</strong> — LP lädt ein PDF hoch (z.B. Zeitungsartikel, Gesetzestext). SuS annotieren direkt auf dem PDF mit Werkzeugen: Text-Highlighter, Kommentar, Freihand-Zeichnung (3 Stärken + gestrichelt) und Label-Zuordnung. LP kann vordefinierte Kategorien festlegen (z.B. Stilmittel, Argumentationstypen). Korrektur mit optionalem KI-Vorschlag.
       </Text>
 
+      <Untertitel>Interaktive Fragetypen</Untertitel>
+      <Text>
+        <strong>Sortierung</strong> — Elemente in die richtige Reihenfolge bringen (Drag & Drop). Auto-Korrektur mit optionalen Teilpunkten.
+      </Text>
+      <Text>
+        <strong>Hotspot</strong> — Klickbereiche auf einem Bild markieren. LP definiert Rechteck-/Kreis-Bereiche, SuS klickt die richtigen Stellen. Auto-Korrektur.
+      </Text>
+      <Text>
+        <strong>Bildbeschriftung</strong> — Labels an vordefinierten Positionen auf einem Bild eintragen. Mehrere akzeptierte Antworten pro Position möglich. Auto-Korrektur.
+      </Text>
+      <Text>
+        <strong>Drag & Drop (Bild)</strong> — Labels aus einem Pool auf Zielzonen im Bild ziehen. Kann Distraktoren enthalten. Auto-Korrektur.
+      </Text>
+
+      <Untertitel>MINT & Code</Untertitel>
+      <Text>
+        <strong>Code-Editor</strong> — SuS schreiben Code mit Syntax-Highlighting. 7 Sprachen: Python, JavaScript, SQL, HTML, CSS, Java, TypeScript. Manuelle oder KI-gestützte Korrektur.
+      </Text>
+      <Text>
+        <strong>Formel (LaTeX)</strong> — SuS geben mathematische Formeln als LaTeX ein mit Live-Vorschau. Symbolleiste für häufige Zeichen. Auto-Korrektur mit normalisiertem Vergleich.
+      </Text>
+      <Text>
+        <strong>Audio-Aufnahme</strong> — SuS nehmen Audio auf (z.B. Aussprache, mündliche Erklärung). Manuelle Korrektur durch LP. Audio wird zu Google Drive hochgeladen.
+      </Text>
+
       <Untertitel>Metadaten pro Frage</Untertitel>
       <Text>
-        Jede Frage hat: Fachbereich (VWL/BWL/Recht), Bloom-Stufe (K1-K6), Thema/Unterthema, Punkte, geschätzter Zeitbedarf, Musterlösung und optionales Bewertungsraster. Diese Metadaten werden im Analyse-Tab für die Prüfungsanalyse verwendet.
+        Jede Frage hat: Fach, Tags (frei konfigurierbar pro Fachschaft), Bloom-Stufe (K1-K6), Thema/Unterthema, Punkte, geschätzter Zeitbedarf, Musterlösung und optionales Bewertungsraster. Diese Metadaten werden im Analyse-Tab für die Prüfungsanalyse verwendet.
       </Text>
 
       <Untertitel>Zeitbedarf</Untertitel>
@@ -715,6 +740,18 @@ function HilfeFAQ() {
 
       <FAQItem frage="Was sind die Pool-Badges in der Fragenbank?">
         Pool-Badges zeigen den Sync-Status von importierten Übungspool-Fragen: Rot = ungeprüft (aus Pool importiert, noch nicht reviewt), Gelb = Pool ✓ (reviewt), Grün = prüfungstauglich (von LP abgesegnet für Prüfungen), Blau pulsierend = Update verfügbar.
+      </FAQItem>
+
+      <FAQItem frage="Kann ich mathematische Formeln in Fragetexten verwenden?">
+        Ja. LaTeX-Formeln können direkt im Fragentext eingefügt werden: <code className="text-xs bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">$x^2$</code> für Inline-Formeln und <code className="text-xs bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">$$\sum_&#123;i=1&#125;^n$$</code> für Block-Formeln. Die Formeln werden automatisch mit KaTeX gerendert. Als eigenständiger Fragetyp ermöglicht der «Formel (LaTeX)»-Typ den SuS die Eingabe von Formeln mit Live-Vorschau.
+      </FAQItem>
+
+      <FAQItem frage="Kann ich Code-Snippets in Fragetexten einfügen?">
+        Ja. Code-Blöcke mit Syntax-Highlighting können im Fragentext eingefügt werden (7 Sprachen: Python, JavaScript, SQL, HTML, CSS, Java, TypeScript). Als eigenständiger Fragetyp bietet der «Code-Editor» den SuS eine vollwertige Code-Eingabe mit Syntax-Highlighting und Zeilennummern.
+      </FAQItem>
+
+      <FAQItem frage="Welche Materialtypen unterstützt das Material-Panel?">
+        Das Material-Panel (Split-Screen 55% oder Overlay) unterstützt: PDF, Video, Audio, Links und Rich-Text. Rich-Text-Materialien können direkt in der Plattform als formatierter Text gepflegt werden — ohne externe Dateien.
       </FAQItem>
     </div>
   )
