@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
-import { fachbereichFarbe, typLabel, bloomLabel } from '../../../utils/fachbereich.ts'
+import { fachbereichFarbe, typLabel, bloomLabel } from '../../../utils/fachUtils.ts'
 import type { Frage, Fachbereich, BloomStufe } from '../../../types/fragen.ts'
 import { generiereFrageId } from '../frageneditor/editorUtils.ts'
 
@@ -112,9 +112,10 @@ export default function FragenImport({ onImportiert, onSchliessen }: Props) {
         erstelltAm: jetzt,
         geaendertAm: jetzt,
         fachbereich,
+        fach: fachbereich,
         thema: thema || 'Importiert',
         semester: [],
-        gefaesse: ['SF' as const],
+        gefaesse: ['SF'],
         bloom,
         tags: ['import'],
         punkte: ef.punkte || 1,

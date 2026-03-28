@@ -7,6 +7,7 @@ export interface LPInfo {
   name: string
   kuerzel: string
   fachschaft: string
+  fachschaften?: string[]
   rolle: 'admin' | 'lp'
 }
 

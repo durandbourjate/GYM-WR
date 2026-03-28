@@ -1,4 +1,4 @@
-import { fachbereichFarbe, typLabel } from '../../../../utils/fachbereich.ts'
+import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteFarbe } from '../../../../utils/trackerUtils.ts'
 import type { Frage, FrageBase } from '../../../../types/fragen.ts'
 import type { EffektivesRecht } from '../../../../types/auth.ts'
@@ -82,14 +82,17 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
             <span className="text-xs text-slate-400 dark:text-slate-500">
               {frage.thema}{frage.unterthema ? ` \u203A ${frage.unterthema}` : ''}
             </span>
-            {frage.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="text-[10px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded"
-              >
-                {tag}
-              </span>
-            ))}
+            {frage.tags.slice(0, 3).map((tag) => {
+              const tagName = typeof tag === 'string' ? tag : tag.name
+              return (
+                <span
+                  key={tagName}
+                  className="text-[10px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded"
+                >
+                  {tagName}
+                </span>
+              )
+            })}
             {frage.geteilt === 'schule' && (
               <span className="text-[10px] px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded">
                 Geteilt{frage.geteiltVon ? ` \u00B7 ${frage.geteiltVon}` : ''}

@@ -3,7 +3,7 @@ import type { PruefungsConfig } from '../../../../types/pruefung.ts'
 import type { Frage, FrageAnhang, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, AufgabengruppeFrage } from '../../../../types/fragen.ts'
 import { kontoLabel } from '../../../../utils/kontenrahmen.ts'
 import { formatDatum } from '../../../../utils/zeit.ts'
-import { typLabel, fachbereichFarbe } from '../../../../utils/fachbereich.ts'
+import { typLabel, fachbereichFarbe } from '../../../../utils/fachUtils.ts'
 import MediaAnhang from '../../../MediaAnhang.tsx'
 
 interface Props {

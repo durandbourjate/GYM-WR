@@ -41,6 +41,7 @@ function makeFrage(id: string, typ = 'mc'): Frage {
     erstelltAm: '2026-01-01',
     geaendertAm: '2026-01-01',
     fachbereich: 'VWL',
+    fach: 'Wirtschaft & Recht',
     thema: 'Test',
     semester: ['S3'],
     gefaesse: ['SF'],

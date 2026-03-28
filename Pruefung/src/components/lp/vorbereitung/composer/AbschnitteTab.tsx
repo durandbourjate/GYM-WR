@@ -2,7 +2,7 @@ import type { Frage } from '../../../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../../types/pruefung.ts'
 import type { BloomStufe } from '../../../../types/fragen.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
-import { fachbereichFarbe, typLabel } from '../../../../utils/fachbereich.ts'
+import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { berechneZeitbedarf } from '../../../../utils/zeitbedarf.ts'
 
 interface Props {
@@ -209,9 +209,10 @@ export default function AbschnitteTab({
                         </span>
                         {frage.tags && frage.tags.length > 0 && (
                           <>
-                            {frage.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tag}</span>
-                            ))}
+                            {frage.tags.slice(0, 3).map((tag) => {
+                              const tagName = typeof tag === 'string' ? tag : tag.name
+                              return <span key={tagName} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tagName}</span>
+                            })}
                           </>
                         )}
                       </div>

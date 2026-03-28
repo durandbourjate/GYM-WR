@@ -3,7 +3,7 @@
  * Extrahiert aus FragenEditor.tsx — handleSpeichern switch-Statement.
  */
 import type {
-  Frage, Fachbereich, BloomStufe, Gefaess, FrageAnhang,
+  Frage, Fachbereich, BloomStufe, FrageAnhang,
   MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage,
   RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage,
   TKontoFrage, TKontoDefinition, TKontoBewertung,
@@ -30,12 +30,13 @@ export interface FrageBasis {
   erstelltAm: string
   geaendertAm: string
   fachbereich: Fachbereich
+  fach: string
   thema: string
   unterthema?: string
   semester: string[]
-  gefaesse: Gefaess[]
+  gefaesse: string[]
   bloom: BloomStufe
-  tags: string[]
+  tags: (string | import('../types/tags').Tag)[]
   punkte: number
   musterlosung: string
   bewertungsraster: Bewertungskriterium[]

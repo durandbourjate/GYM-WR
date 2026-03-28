@@ -1,4 +1,4 @@
-import { typLabel } from '../../../../utils/fachbereich.ts'
+import { typLabel } from '../../../../utils/fachUtils.ts'
 import type { Frage } from '../../../../types/fragen.ts'
 
 export type Gruppierung = 'keine' | 'fachbereich' | 'thema' | 'typ' | 'bloom'

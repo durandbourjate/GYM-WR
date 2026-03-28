@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { BuchungssatzFrage as BuchungssatzFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import KontenSelect from '../shared/KontenSelect.tsx'
 
 interface Props {

@@ -1,7 +1,7 @@
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { LueckentextFrage as LueckentextFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 
 interface Props {
   frage: LueckentextFrageType

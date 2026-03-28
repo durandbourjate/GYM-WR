@@ -5,7 +5,8 @@ import type { PruefungsKorrektur } from '../../../types/korrektur.ts'
 import type { NotenConfig } from '../../../types/pruefung.ts'
 import type { Antwort } from '../../../types/antworten.ts'
 import { effektivePunkte, berechneNote } from '../../../utils/korrekturUtils.ts'
-import { fachbereichFarbe } from '../../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../../utils/fachUtils.ts'
+import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 
 interface Props {
   schueler: SchuelerKorrektur
@@ -215,6 +216,7 @@ function PDFFrageBlock({ idx, frage, bewertung, antwort }: {
 }
 
 export default function KorrekturPDFAnsicht({ schueler, abgabe, fragen, korrektur, notenConfig, onSchliessen }: Props) {
+  const { config } = useSchulConfig()
   // Punkte und Note berechnen
   const bewertungenListe = Object.values(schueler.bewertungen)
   const totalPunkte = bewertungenListe.reduce((s, b) => s + effektivePunkte(b), 0)
@@ -253,7 +255,7 @@ export default function KorrekturPDFAnsicht({ schueler, abgabe, fragen, korrektu
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs text-slate-500 print:text-slate-600 tracking-wider uppercase mb-1">
-                Gymnasium Hofwil
+                {config.schulName}
               </p>
               <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 print:text-black mb-1">
                 {korrektur.pruefungTitel}

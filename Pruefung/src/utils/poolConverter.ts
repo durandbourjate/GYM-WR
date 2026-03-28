@@ -177,9 +177,10 @@ export function konvertierePoolFrage(
     geaendertAm: now,
 
     fachbereich: mapFachbereich(poolMeta.fach),
+    fach: poolMeta.fach || 'Allgemein',
     thema,
     semester: [] as string[],
-    gefaesse: [] as import('../types/fragen').Gefaess[],
+    gefaesse: [] as string[],
 
     bloom: mapBloom(poolFrage.tax),
     tags: [poolFrage.topic, `diff:${poolFrage.diff}`],

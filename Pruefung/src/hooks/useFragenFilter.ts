@@ -133,7 +133,7 @@ export function useFragenFilter(
           f.thema.toLowerCase().includes(text) ||
           fragetext.toLowerCase().includes(text) ||
           (f.unterthema || '').toLowerCase().includes(text) ||
-          f.tags.some((t) => t.toLowerCase().includes(text))
+          f.tags.some((t) => (typeof t === 'string' ? t : t.name).toLowerCase().includes(text))
         )
       }
       return true

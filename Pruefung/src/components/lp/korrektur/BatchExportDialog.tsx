@@ -7,7 +7,7 @@ import { ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
 import { konvertiereZuPoolFormat } from '../../../utils/poolExporter'
 import { apiService } from '../../../services/apiService'
 import { useAuthStore } from '../../../store/authStore'
-import { fachbereichFarbe, typLabel } from '../../../utils/fachbereich'
+import { fachbereichFarbe, typLabel } from '../../../utils/fachUtils'
 
 interface Props {
   fragen: Frage[]

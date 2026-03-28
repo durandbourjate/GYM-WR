@@ -1,4 +1,4 @@
-import { fachbereichFarbe, typLabel } from '../../../../utils/fachbereich.ts'
+import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteBgFarbe } from '../../../../utils/trackerUtils.ts'
 import type { Frage, FrageBase } from '../../../../types/fragen.ts'
 import type { EffektivesRecht } from '../../../../types/auth.ts'

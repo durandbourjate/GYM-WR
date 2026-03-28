@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
-import { fachbereichFarbe } from '../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../utils/fachUtils.ts'
 import { berechneAbschnittFortschritt } from '../utils/abschnitte.ts'
 import type { Frage, MCFrage, LueckentextFrage, ZuordnungFrage } from '../types/fragen.ts'
 import type { Antwort } from '../types/antworten.ts'

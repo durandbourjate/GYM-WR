@@ -49,7 +49,7 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich 
           <Field label="Gefäss">
             <select
               value={pruefung.gefaess}
-              onChange={(e) => updatePruefung({ gefaess: e.target.value as 'SF' | 'EF' | 'EWR' | 'GF' })}
+              onChange={(e) => updatePruefung({ gefaess: e.target.value })}
               className="input-field"
             >
               <option value="SF">SF (Schwerpunktfach)</option>

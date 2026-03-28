@@ -1,5 +1,5 @@
 import { usePruefungStore } from '../store/pruefungStore.ts'
-import { fachbereichFarbe } from '../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../utils/fachUtils.ts'
 import { berechneAbschnittFortschritt } from '../utils/abschnitte.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
 

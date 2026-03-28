@@ -1,22 +1,24 @@
 /** Generiert eine SEB-Konfigurationsdatei (XML/plist) für eine Prüfung */
+import { DEFAULT_SCHUL_CONFIG } from '../types/schulConfig'
 
 const BASE_URL = 'https://durandbourjate.github.io/GYM-WR-DUY/Pruefung/'
 
-export function generiereSebConfig(pruefungId: string, _pruefungTitel: string): string {
+export function generiereSebConfig(pruefungId: string, _pruefungTitel: string, schulName?: string): string {
+  const schule = schulName ?? DEFAULT_SCHUL_CONFIG.schulName
   const startURL = `${BASE_URL}?id=${encodeURIComponent(pruefungId)}`
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- SEB-Konfiguration: Gymnasium Hofwil — automatisch generiert -->
+    <!-- SEB-Konfiguration: ${schule} — automatisch generiert -->
 
     <!-- === GENERAL === -->
     <key>startURL</key>
     <string>${startURL}</string>
 
     <key>browserWindowTitleSuffix</key>
-    <string>Gymnasium Hofwil — Prüfung</string>
+    <string>${schule} — Prüfung</string>
 
     <key>browserViewMode</key>
     <integer>1</integer>

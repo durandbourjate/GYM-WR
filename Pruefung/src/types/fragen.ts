@@ -21,15 +21,16 @@ export interface FrageBase {
 
   // Inhaltliche Zuordnung
   fachbereich: Fachbereich;
+  fach: string;
   thema: string;
   unterthema?: string;
   lehrplanziel?: string;
   semester: string[];
-  gefaesse: Gefaess[];
+  gefaesse: string[];
 
   // Taxonomie
   bloom: BloomStufe;
-  tags: string[];
+  tags: (string | import('../types/tags').Tag)[];
 
   // Bewertung
   punkte: number;

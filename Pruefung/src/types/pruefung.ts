@@ -13,9 +13,11 @@ export interface PruefungsConfig {
 
   // Zuordnung
   klasse: string;
-  gefaess: 'SF' | 'EF' | 'EWR' | 'GF';
+  gefaess: string;
   semester: string;
   fachbereiche: string[];
+  fach?: string;
+  klassenTyp?: 'regel' | 'taf';
   datum: string;
 
   // Prüfungsparameter

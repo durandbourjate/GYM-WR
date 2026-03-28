@@ -3,8 +3,10 @@ import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
 import { initializeGoogleAuth, renderGoogleButton, CLIENT_ID } from '../services/authService.ts'
 import ThemeToggle from './ThemeToggle.tsx'
+import { useSchulConfig } from '../store/schulConfigStore.ts'
 
 export default function LoginScreen() {
+  const { config } = useSchulConfig()
   const anmelden = useAuthStore((s) => s.anmelden)
   const anmeldenMitCode = useAuthStore((s) => s.anmeldenMitCode)
   const demoStarten = useAuthStore((s) => s.demoStarten)
@@ -31,8 +33,8 @@ export default function LoginScreen() {
         initializeGoogleAuth(
           (payload) => {
             const domain = payload.email.split('@')[1]
-            if (domain !== 'stud.gymhofwil.ch' && domain !== 'gymhofwil.ch') {
-              setFehler('Bitte verwenden Sie Ihre Schul-E-Mail (@stud.gymhofwil.ch oder @gymhofwil.ch).')
+            if (domain !== config.susDomain && domain !== config.lpDomain) {
+              setFehler(`Bitte verwenden Sie Ihre Schul-E-Mail (@${config.susDomain} oder @${config.lpDomain}).`)
               return
             }
             anmelden(payload)
@@ -81,10 +83,10 @@ export default function LoginScreen() {
     // E-Mail normalisieren: wenn nur Vorname eingegeben → @stud.gymhofwil.ch anhängen
     let volleEmail = email.trim().toLowerCase()
     if (!volleEmail.includes('@')) {
-      volleEmail = `${volleEmail}@stud.gymhofwil.ch`
+      volleEmail = `${volleEmail}@${config.susDomain}`
     }
-    if (!volleEmail.endsWith('@stud.gymhofwil.ch') && !volleEmail.endsWith('@gymhofwil.ch')) {
-      setFehler('Bitte verwenden Sie Ihre Schul-E-Mail (@stud.gymhofwil.ch).')
+    if (!volleEmail.endsWith(`@${config.susDomain}`) && !volleEmail.endsWith(`@${config.lpDomain}`)) {
+      setFehler(`Bitte verwenden Sie Ihre Schul-E-Mail (@${config.susDomain}).`)
       return
     }
 
@@ -127,13 +129,13 @@ export default function LoginScreen() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-800 dark:bg-slate-200 rounded-2xl flex items-center justify-center">
-            <span className="text-white dark:text-slate-800 text-2xl font-bold">WR</span>
+            <span className="text-white dark:text-slate-800 text-2xl font-bold">{config.schulKuerzel}</span>
           </div>
           <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
             Prüfungsplattform
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Gymnasium Hofwil
+            {config.schulName}
           </p>
         </div>
 
@@ -190,7 +192,7 @@ export default function LoginScreen() {
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="vorname.nachname@stud.gymhofwil.ch"
+                placeholder={`vorname.nachname@${config.susDomain}`}
                 className="w-full px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500"
               />
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">

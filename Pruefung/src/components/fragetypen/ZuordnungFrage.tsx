@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { ZuordnungFrage as ZuordnungFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 
 interface Props {
   frage: ZuordnungFrageType

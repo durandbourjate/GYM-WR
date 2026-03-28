@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import type {
   AufgabengruppeFrage as AufgabengruppeFrageType,
   Frage,

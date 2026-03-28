@@ -4,12 +4,12 @@ import type { LPInfo } from '../../../services/lpApi.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { usePanelResize } from '../../../hooks/usePanelResize.ts'
-import { typLabel, defaultFachbereich } from '../../../utils/fachbereich.ts'
+import { typLabel, defaultFachbereich } from '../../../utils/fachUtils.ts'
 import { validiereFrage } from '../../../utils/fragenValidierung.ts'
 import { erstelleFrageObjekt } from '../../../utils/fragenFactory.ts'
 import type { FrageBasis, TypSpezifischeDaten } from '../../../utils/fragenFactory.ts'
 import type {
-  Frage, Fachbereich, BloomStufe, Gefaess, FrageAnhang,
+  Frage, Fachbereich, BloomStufe, FrageAnhang,
   MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage,
   RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage,
   TKontoFrage, TKontoDefinition, TKontoBewertung,
@@ -63,14 +63,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
 
   // Grunddaten
   const [typ, setTyp] = useState<FrageTyp>(frage?.typ as FrageTyp ?? 'mc')
-  const [fachbereich, setFachbereich] = useState<Fachbereich>(frage?.fachbereich ?? defaultFachbereich(user?.fachschaft))
+  const [fachbereich, setFachbereich] = useState<Fachbereich>(frage?.fachbereich ?? defaultFachbereich(user?.fachschaft) as Fachbereich)
   const [thema, setThema] = useState(frage?.thema ?? '')
   const [unterthema, setUnterthema] = useState(frage?.unterthema ?? '')
   const [bloom, setBloom] = useState<BloomStufe>(frage?.bloom ?? 'K2')
   const [punkte, setPunkte] = useState(frage?.punkte ?? 1)
   const [tags, setTags] = useState(frage?.tags.join(', ') ?? '')
   const [semester, setSemester] = useState<string[]>(frage?.semester ?? [])
-  const [gefaesse, setGefaesse] = useState<Gefaess[]>(frage?.gefaesse ?? ['SF'])
+  const [gefaesse, setGefaesse] = useState<string[]>(frage?.gefaesse ?? ['SF'])
 
   // Gemeinsam
   const [fragetext, setFragetext] = useState(
@@ -359,6 +359,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
       erstelltAm: frage?.erstelltAm ?? jetzt,
       geaendertAm: jetzt,
       fachbereich,
+      fach: frage?.fach ?? fachbereich,
       thema: thema.trim(),
       unterthema: unterthema.trim() || undefined,
       semester,

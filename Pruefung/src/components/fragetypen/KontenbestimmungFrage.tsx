@@ -1,7 +1,7 @@
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { KontenbestimmungFrage as KontenbestimmungFrageType, Kontenaufgabe } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import KontenSelect from '../shared/KontenSelect.tsx'
 
 interface Props {

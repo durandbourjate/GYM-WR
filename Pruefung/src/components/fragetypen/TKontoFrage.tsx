@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { TKontoFrage as TKontoFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { kontoLabel } from '../../utils/kontenrahmen.ts'
 import KontenSelect from '../shared/KontenSelect.tsx'
 

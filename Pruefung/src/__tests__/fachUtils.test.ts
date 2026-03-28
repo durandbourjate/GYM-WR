@@ -1,7 +1,84 @@
 import { describe, it, expect } from 'vitest'
-import { fachbereichFarbe, typLabel, bloomLabel, istWRFachschaft, defaultFachbereich, zeigeFachbereichBadge } from './fachbereich'
+import {
+  tagBadgeKlassen,
+  istFachschaftMitFiBu,
+  defaultFach,
+  typLabel,
+  bloomLabel,
+  FIBU_TYPEN,
+  fachbereichFarbe,
+  istWRFachschaft,
+  defaultFachbereich,
+  zeigeFachbereichBadge,
+} from '../utils/fachUtils'
+import type { Tag } from '../types/tags'
 
-describe('fachbereichFarbe', () => {
+// === Neue Funktionen ===
+
+describe('tagBadgeKlassen', () => {
+  it('gibt orange Klassen für #f97316', () => {
+    const tag: Tag = { name: 'VWL', farbe: '#f97316', ebene: 'fachschaft' }
+    expect(tagBadgeKlassen(tag)).toContain('orange')
+  })
+
+  it('gibt blaue Klassen für #3b82f6', () => {
+    const tag: Tag = { name: 'BWL', farbe: '#3b82f6', ebene: 'fachschaft' }
+    expect(tagBadgeKlassen(tag)).toContain('blue')
+  })
+
+  it('gibt slate Klassen für unbekannte Farben', () => {
+    const tag: Tag = { name: 'Custom', farbe: '#aabbcc', ebene: 'persoenlich' }
+    expect(tagBadgeKlassen(tag)).toContain('slate')
+  })
+})
+
+describe('istFachschaftMitFiBu', () => {
+  it('gibt true wenn WR enthalten', () => {
+    expect(istFachschaftMitFiBu(['WR'])).toBe(true)
+    expect(istFachschaftMitFiBu(['IN', 'WR'])).toBe(true)
+  })
+
+  it('gibt false wenn WR nicht enthalten', () => {
+    expect(istFachschaftMitFiBu(['IN'])).toBe(false)
+    expect(istFachschaftMitFiBu([])).toBe(false)
+  })
+})
+
+describe('defaultFach', () => {
+  it('gibt Wirtschaft & Recht für WR', () => {
+    expect(defaultFach(['WR'])).toBe('Wirtschaft & Recht')
+  })
+
+  it('gibt Informatik für IN', () => {
+    expect(defaultFach(['IN'])).toBe('Informatik')
+  })
+
+  it('nimmt erste passende Fachschaft', () => {
+    expect(defaultFach(['DE', 'WR'])).toBe('Deutsch')
+  })
+
+  it('gibt Allgemein für leere Liste', () => {
+    expect(defaultFach([])).toBe('Allgemein')
+  })
+})
+
+describe('FIBU_TYPEN', () => {
+  it('enthält alle FiBu-Fragetypen', () => {
+    expect(FIBU_TYPEN.has('buchungssatz')).toBe(true)
+    expect(FIBU_TYPEN.has('tkonto')).toBe(true)
+    expect(FIBU_TYPEN.has('kontenbestimmung')).toBe(true)
+    expect(FIBU_TYPEN.has('bilanzstruktur')).toBe(true)
+  })
+
+  it('enthält keine nicht-FiBu-Typen', () => {
+    expect(FIBU_TYPEN.has('mc')).toBe(false)
+    expect(FIBU_TYPEN.has('freitext')).toBe(false)
+  })
+})
+
+// === Backward-Compat Funktionen (Tests migriert von fachbereich.test.ts) ===
+
+describe('fachbereichFarbe (compat)', () => {
   it('gibt orange Klassen für VWL', () => {
     expect(fachbereichFarbe('VWL')).toContain('orange')
   })
@@ -24,7 +101,7 @@ describe('fachbereichFarbe', () => {
   })
 })
 
-describe('zeigeFachbereichBadge', () => {
+describe('zeigeFachbereichBadge (compat)', () => {
   it('gibt true für WR-Fachbereiche', () => {
     expect(zeigeFachbereichBadge('VWL')).toBe(true)
     expect(zeigeFachbereichBadge('BWL')).toBe(true)
@@ -38,7 +115,7 @@ describe('zeigeFachbereichBadge', () => {
   })
 })
 
-describe('istWRFachschaft', () => {
+describe('istWRFachschaft (compat)', () => {
   it('gibt true für WR', () => {
     expect(istWRFachschaft('WR')).toBe(true)
   })
@@ -50,7 +127,7 @@ describe('istWRFachschaft', () => {
   })
 })
 
-describe('defaultFachbereich', () => {
+describe('defaultFachbereich (compat)', () => {
   it('gibt VWL für WR', () => {
     expect(defaultFachbereich('WR')).toBe('VWL')
   })

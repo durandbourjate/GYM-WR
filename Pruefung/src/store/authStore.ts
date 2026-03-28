@@ -14,10 +14,10 @@ let lpCache: LPInfo[] | null = null
  * Keine echten E-Mail-Adressen hier — nur generische Demo-Accounts.
  */
 const demoLPs: LPInfo[] = [
-  { email: 'demo-lp@gymhofwil.ch', name: 'Demo-Lehrperson', kuerzel: 'DEM', fachschaft: 'WR', rolle: 'admin' },
-  { email: 'kollegin@gymhofwil.ch', name: 'Maria Muster', kuerzel: 'MUM', fachschaft: 'WR', rolle: 'lp' },
-  { email: 'hans.meier@gymhofwil.ch', name: 'Hans Meier', kuerzel: 'MEH', fachschaft: 'WR', rolle: 'lp' },
-  { email: 'anna.keller@gymhofwil.ch', name: 'Anna Keller', kuerzel: 'KEA', fachschaft: 'IN', rolle: 'lp' },
+  { email: 'demo-lp@gymhofwil.ch', name: 'Demo-Lehrperson', kuerzel: 'DEM', fachschaft: 'WR', fachschaften: ['WR'], rolle: 'admin' },
+  { email: 'kollegin@gymhofwil.ch', name: 'Maria Muster', kuerzel: 'MUM', fachschaft: 'WR', fachschaften: ['WR'], rolle: 'lp' },
+  { email: 'hans.meier@gymhofwil.ch', name: 'Hans Meier', kuerzel: 'MEH', fachschaft: 'WR', fachschaften: ['WR'], rolle: 'lp' },
+  { email: 'anna.keller@gymhofwil.ch', name: 'Anna Keller', kuerzel: 'KEA', fachschaft: 'IN', fachschaften: ['IN'], rolle: 'lp' },
 ]
 
 /** Lädt LP-Liste vom Backend (gecacht pro Session). Kann von Komponenten importiert werden. */
@@ -103,6 +103,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       bild: credential.picture,
       rolle,
       fachschaft: lpInfo?.fachschaft,
+      fachschaften: lpInfo?.fachschaften ?? (lpInfo?.fachschaft ? [lpInfo.fachschaft] : []),
       adminRolle: lpInfo?.rolle === 'admin',
     }
     // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)

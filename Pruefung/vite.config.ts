@@ -15,9 +15,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Prüfungsplattform WR — Gymnasium Hofwil',
-        short_name: 'Prüfung WR',
-        description: 'Digitale Prüfungsplattform für Wirtschaft & Recht',
+        name: 'Prüfungsplattform — Gymnasium Hofwil',
+        short_name: 'Prüfung',
+        description: 'Digitale Prüfungsplattform',
         theme_color: '#1e40af',
         background_color: '#f8fafc',
         display: 'standalone',

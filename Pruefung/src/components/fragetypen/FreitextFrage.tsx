@@ -7,7 +7,7 @@ import { Extension } from '@tiptap/core'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { FreitextFrage as FreitextFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
-import { fachbereichFarbe } from '../../utils/fachbereich.ts'
+import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 
 interface Props {
   frage: FreitextFrageType

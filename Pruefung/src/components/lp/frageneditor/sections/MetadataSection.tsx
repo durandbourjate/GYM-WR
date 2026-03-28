@@ -3,12 +3,13 @@
  * Extrahiert aus FragenEditor.tsx.
  */
 import { useState } from 'react'
-import type { Fachbereich, BloomStufe, Gefaess } from '../../../../types/fragen.ts'
+import type { Fachbereich, BloomStufe } from '../../../../types/fragen.ts'
+import { useSchulConfig } from '../../../../store/schulConfigStore.ts'
 import type { Berechtigung } from '../../../../types/auth.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import type { useKIAssistent } from '../useKIAssistent.ts'
 import type { LPInfo } from '../../../../services/lpApi.ts'
-import { bloomLabel, istWRFachschaft } from '../../../../utils/fachbereich.ts'
+import { bloomLabel, istWRFachschaft } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteFarbe } from '../../../../utils/trackerUtils.ts'
 import BerechtigungenEditor from '../../../shared/BerechtigungenEditor.tsx'
 import { Abschnitt, Feld } from '../EditorBausteine.tsx'
@@ -35,8 +36,8 @@ interface MetadataSectionProps {
   setPunkte: (v: number) => void
   semester: string[]
   setSemester: React.Dispatch<React.SetStateAction<string[]>>
-  gefaesse: Gefaess[]
-  setGefaesse: React.Dispatch<React.SetStateAction<Gefaess[]>>
+  gefaesse: string[]
+  setGefaesse: React.Dispatch<React.SetStateAction<string[]>>
   geteilt: 'privat' | 'fachschaft' | 'schule'
   setGeteilt: (v: 'privat' | 'fachschaft' | 'schule') => void
   berechtigungen: Berechtigung[]
@@ -66,6 +67,7 @@ export default function MetadataSection({
   performance,
 }: MetadataSectionProps) {
   const [statsOffen, setStatsOffen] = useState(false)
+  const { config } = useSchulConfig()
 
   return (
     <Abschnitt
@@ -211,7 +213,7 @@ export default function MetadataSection({
         <div>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Gefäss</label>
           <div className="flex gap-1">
-            {(['SF', 'EF', 'EWR', 'GF'] as Gefaess[]).map((g) => (
+            {config.gefaesse.map((g) => (
               <button
                 key={g}
                 onClick={() => setGefaesse((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g])}
