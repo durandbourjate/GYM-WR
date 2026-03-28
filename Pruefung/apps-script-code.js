@@ -103,11 +103,13 @@ function getLPInfo(email) {
     var row = data[i];
     var e = String(row[emailIdx] || '').toLowerCase().trim();
     if (!e) continue;
+    var fachschaftRaw = fachschaftIdx >= 0 ? String(row[fachschaftIdx] || '') : '';
     lpMap[e] = {
       email: e,
       name: nameIdx >= 0 ? String(row[nameIdx] || '') : '',
       kuerzel: kuerzelIdx >= 0 ? String(row[kuerzelIdx] || '') : '',
-      fachschaft: fachschaftIdx >= 0 ? String(row[fachschaftIdx] || '') : '',
+      fachschaft: fachschaftRaw,
+      fachschaften: fachschaftRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean),
       rolle: rolleIdx >= 0 ? String(row[rolleIdx] || 'lp') : 'lp',
       apiKey: apiKeyIdx >= 0 ? String(row[apiKeyIdx] || '') : '',
       aktiv: aktivIdx >= 0 ? String(row[aktivIdx]).toLowerCase() !== 'false' : true,
@@ -392,11 +394,18 @@ function doGet(e) {
   const action = e.parameter.action;
   const email = e.parameter.email;
 
+  // Öffentliche Endpunkte ohne Auth (vor dem Auth-Check)
+  if (action === 'ladeSchulConfig') {
+    return jsonResponse(ladeSchulConfig_());
+  }
+
   if (!email || (!istZugelasseneLP(email) && !email.endsWith('@' + SUS_DOMAIN))) {
     return jsonResponse({ error: 'Nicht autorisiert' });
   }
 
   switch (action) {
+    case 'ladeSchulConfig':
+      return jsonResponse(ladeSchulConfig_());
     case 'ladeLehrpersonen':
       return ladeLehrpersonenEndpoint(email);
     case 'ladePruefung':
@@ -556,6 +565,8 @@ function doPost(e) {
       return setzeKontrollStufeEndpoint(body);
     case 'ladeTrackerDaten':
       return ladeTrackerDatenEndpoint(body);
+    case 'migriereFachbereich':
+      return jsonResponse(migriereFachbereich_());
     case 'setzeTeilnehmer': {
       const email = body.email;
       if (!email || !istZugelasseneLP(email)) {
@@ -1079,6 +1090,7 @@ function parseFrage(row, fachbereich) {
     poolUpdateVerfuegbar: row.poolUpdateVerfuegbar === 'true',
     poolVersion: safeJsonParse(row.poolVersion, undefined),
     lernzielIds: (row.lernzielIds || '').split(',').filter(Boolean),
+    fach: row.fach || fachschaftZuFach_(fachbereich) || 'Allgemein',
   };
 
   // Typ-spezifische Felder aus typDaten-Spalte laden (falls vorhanden)
@@ -1773,6 +1785,7 @@ function speichereFrage(body) {
       autor: frage.autor || email,
       geteilt: frage.geteilt || 'privat',
       geteiltVon: frage.geteiltVon || '',
+      fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
     };
 
     // Fehlende Spalten automatisch hinzufügen
@@ -1954,11 +1967,13 @@ function ladeLehrpersonenEndpoint(email) {
       if (!e) continue;
       var aktiv = aktivIdx >= 0 ? String(row[aktivIdx]).toLowerCase() !== 'false' : true;
       if (!aktiv) continue; // Nur aktive LPs zurückgeben
+      var fachschaftStr = fachschaftIdx >= 0 ? String(row[fachschaftIdx] || '') : '';
       lps.push({
         email: e.toLowerCase(),
         name: nameIdx >= 0 ? String(row[nameIdx] || '') : '',
         kuerzel: kuerzelIdx >= 0 ? String(row[kuerzelIdx] || '') : '',
-        fachschaft: fachschaftIdx >= 0 ? String(row[fachschaftIdx] || '') : '',
+        fachschaft: fachschaftStr,
+        fachschaften: fachschaftStr.split(',').map(function(s) { return s.trim(); }).filter(Boolean),
         rolle: rolleIdx >= 0 ? String(row[rolleIdx] || 'lp') : 'lp',
       });
     }
@@ -2003,6 +2018,7 @@ function mapConfigRow(row) {
     durchfuehrungId: row.durchfuehrungId || undefined,
     erstelltVon: row.erstelltVon || '',
     berechtigungen: row.berechtigungen || '',
+    fach: row.fach || '',
     korrektur: { aktiviert: false, modus: 'batch' },
     feedback: { zeitpunkt: 'nach-review', format: 'pdf', detailgrad: 'vollstaendig' },
   };
@@ -2129,6 +2145,7 @@ function speichereConfig(body) {
       zufallsreihenfolgeOptionen: function(v) { return v ? 'true' : 'false'; },
       erstelltVon:                function(v) { return v || ''; },
       berechtigungen:             function(v) { return typeof v === 'string' ? v : JSON.stringify(v || []); },
+      fach:                       function(v) { return v || ''; },
     };
 
     for (var key in feldMapping) {
@@ -5043,3 +5060,139 @@ function ladeTrackerDatenEndpoint(body) {
 }
 
 // autorisiereBerechtigungen entfernt — DriveApp-Write-Permissions nicht mehr nötig
+
+// === SCHUL-KONFIGURATION (öffentlicher Endpunkt) ===
+
+/**
+ * Liefert die schulweite Konfiguration (Fächer, Gefässe, Tags, Semestermodell).
+ * Kein Auth erforderlich — öffentliche Konfiguration.
+ * Phase 1: hardcodierte Default-Werte. Später aus Sheet lesen.
+ */
+function ladeSchulConfig_() {
+  var cache = CacheService.getScriptCache();
+  var cacheKey = 'schulConfig_static';
+  var cached = cache.get(cacheKey);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* Cache ungültig, neu laden */ }
+  }
+
+  var config = {
+    schulName: 'Gymnasium Hofwil',
+    schulKuerzel: 'GH',
+    logoUrl: '',
+    lpDomain: 'gymhofwil.ch',
+    susDomain: 'stud.gymhofwil.ch',
+    faecher: [
+      'Deutsch', 'Französisch', 'Englisch', 'Italienisch', 'Spanisch', 'Latein',
+      'Mathematik', 'Biologie', 'Chemie', 'Physik',
+      'Geschichte', 'Geografie',
+      'Wirtschaft & Recht', 'Informatik',
+      'Bildnerisches Gestalten', 'Musik', 'Sport',
+      'Philosophie', 'Pädagogik/Psychologie', 'Religionslehre'
+    ],
+    gefaesse: ['SF', 'EF', 'EWR', 'GF', 'FF'],
+    querschnittsTags: [
+      { name: 'BNE', farbe: '#10b981' },
+      { name: 'Digitalität', farbe: '#6366f1' },
+      { name: 'Transversalität', farbe: '#8b5cf6' },
+      { name: 'Interdisziplinär', farbe: '#ec4899' }
+    ],
+    semesterModell: {
+      regel: { anzahl: 8, label: 'S1–S8' },
+      taf: { anzahl: 10, label: 'S1–S10' }
+    },
+    fachschaftsTags: {
+      'WR': [
+        { name: 'VWL', farbe: '#f97316' },
+        { name: 'BWL', farbe: '#3b82f6' },
+        { name: 'Recht', farbe: '#22c55e' }
+      ]
+    }
+  };
+
+  try { cache.put(cacheKey, JSON.stringify(config), 3600); } catch (e) { /* ignorieren */ }
+  return config;
+}
+
+// === FACH-MAPPING HELPER ===
+
+/**
+ * Leitet aus einem Fachbereich (z.B. 'VWL', 'BWL') das übergeordnete Schulfach ab.
+ * Wird als Fallback verwendet wenn kein explizites fach-Feld vorhanden ist.
+ */
+function fachschaftZuFach_(fachbereich) {
+  var mapping = {
+    'VWL': 'Wirtschaft & Recht',
+    'BWL': 'Wirtschaft & Recht',
+    'Recht': 'Wirtschaft & Recht',
+    'Informatik': 'Informatik'
+  };
+  return mapping[fachbereich] || null;
+}
+
+// === MIGRATION: fachbereich → fach ===
+
+/**
+ * Migrationsfunktion: Befüllt das fach-Feld für bestehende Fragen und Configs.
+ * Kann manuell einmalig in Apps Script ausgeführt werden.
+ * Schreibt nur wenn fach leer ist (idempotent).
+ */
+function migriereFachbereich_() {
+  var migriertFragen = 0;
+  var migriertConfigs = 0;
+
+  try {
+    // Fragenbank-Tabs migrieren
+    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = fragenbank.getSheetByName(tabs[t]);
+      if (!sheet) continue;
+      var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      var fachIdx = headers.indexOf('fach');
+      if (fachIdx < 0) {
+        // Spalte 'fach' noch nicht vorhanden — überspringen
+        continue;
+      }
+      var data = sheet.getDataRange().getValues();
+      for (var r = 1; r < data.length; r++) {
+        var row = data[r];
+        var aktuellesFach = String(row[fachIdx] || '').trim();
+        if (aktuellesFach) continue; // Bereits befüllt
+        var abgeleitesFach = fachschaftZuFach_(tabs[t]);
+        if (abgeleitesFach) {
+          sheet.getRange(r + 1, fachIdx + 1).setValue(abgeleitesFach);
+          migriertFragen++;
+        }
+      }
+    }
+
+    // Configs migrieren
+    var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    if (configSheet) {
+      var cHeaders = configSheet.getRange(1, 1, 1, configSheet.getLastColumn()).getValues()[0];
+      var cFachIdx = cHeaders.indexOf('fach');
+      var cFachbereicheIdx = cHeaders.indexOf('fachbereiche');
+      if (cFachIdx >= 0 && cFachbereicheIdx >= 0) {
+        var cData = configSheet.getDataRange().getValues();
+        for (var cr = 1; cr < cData.length; cr++) {
+          var cRow = cData[cr];
+          var aktuellesConfigFach = String(cRow[cFachIdx] || '').trim();
+          if (aktuellesConfigFach) continue; // Bereits befüllt
+          var fachbereicheStr = String(cRow[cFachbereicheIdx] || '');
+          var ersterFachbereich = fachbereicheStr.split(',')[0].trim();
+          var abgeleitesConfigFach = fachschaftZuFach_(ersterFachbereich);
+          if (abgeleitesConfigFach) {
+            configSheet.getRange(cr + 1, cFachIdx + 1).setValue(abgeleitesConfigFach);
+            migriertConfigs++;
+          }
+        }
+      }
+    }
+
+    cacheInvalidieren_();
+    return { success: true, migriertFragen: migriertFragen, migriertConfigs: migriertConfigs };
+  } catch (error) {
+    return { success: false, error: error.message, migriertFragen: migriertFragen, migriertConfigs: migriertConfigs };
+  }
+}
