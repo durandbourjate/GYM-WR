@@ -794,92 +794,98 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             formelVergleichsModus={formelVergleichsModus} setFormelVergleichsModus={setFormelVergleichsModus}
           />
 
-          {/* Musterlösung */}
-          <MusterloesungSection
-            typ={typ}
-            fragetext={fragetext}
-            fachbereich={fachbereich}
-            bloom={bloom}
-            musterlosung={musterlosung}
-            setMusterlosung={setMusterlosung}
-            musterloeRef={musterloeRef}
-            ki={ki}
-          />
-
-          {/* Bewertungsraster */}
-          <BewertungsrasterEditor
-            bewertungsraster={bewertungsraster}
-            setBewertungsraster={setBewertungsraster}
-            extraContent={
-              typ === 'tkonto' ? (
-                <TKontoBewertungsoptionen
-                  bewertungsoptionen={tkBewertungsoptionen}
-                  setBewertungsoptionen={setTkBewertungsoptionen}
-                />
-              ) : typ === 'bilanzstruktur' ? (
-                <BilanzERBewertungsoptionen
-                  bewertungsoptionen={biBewertungsoptionen}
-                  setBewertungsoptionen={setBiBewertungsoptionen}
-                  modus={biModus}
-                />
-              ) : undefined
-            }
-            kiButtons={ki.verfuegbar ? (
-              <>
-                <InlineAktionButton
-                  label="KI generieren"
-                  tooltip="Bewertungsraster basierend auf Frage generieren"
-                  disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'bewertungsrasterGenerieren'}
-                  onClick={() => ki.ausfuehren('bewertungsrasterGenerieren', {
-                    fragetext, typ, fachbereich, bloom, punkte, musterlosung
-                  })}
-                />
-                <InlineAktionButton
-                  label="KI verbessern"
-                  tooltip="Bestehendes Bewertungsraster prüfen und verbessern"
-                  disabled={bewertungsraster.filter(k => k.beschreibung.trim()).length === 0 || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'bewertungsrasterVerbessern'}
-                  onClick={() => ki.ausfuehren('bewertungsrasterVerbessern', {
-                    fragetext, typ, fachbereich, bloom, punkte, musterlosung,
-                    bewertungsraster: bewertungsraster.filter(k => k.beschreibung.trim())
-                  })}
-                />
-              </>
-            ) : undefined}
-          />
-          {ki.ergebnisse.bewertungsrasterGenerieren && (
-            <div className="mt-2">
-              <ErgebnisAnzeige
-                ergebnis={ki.ergebnisse.bewertungsrasterGenerieren}
-                vorschauKey="kriterien"
-                onUebernehmen={() => {
-                  const d = ki.ergebnisse.bewertungsrasterGenerieren?.daten
-                  if (d && Array.isArray(d.kriterien)) {
-                    setBewertungsraster(d.kriterien as Bewertungskriterium[])
-                  }
-                  ki.verwerfen('bewertungsrasterGenerieren')
-                }}
-                onVerwerfen={() => ki.verwerfen('bewertungsrasterGenerieren')}
-              />
-            </div>
+          {/* Musterlösung (nicht bei Aufgabengruppe — dort pro Teilaufgabe) */}
+          {typ !== 'aufgabengruppe' && (
+            <MusterloesungSection
+              typ={typ}
+              fragetext={fragetext}
+              fachbereich={fachbereich}
+              bloom={bloom}
+              musterlosung={musterlosung}
+              setMusterlosung={setMusterlosung}
+              musterloeRef={musterloeRef}
+              ki={ki}
+            />
           )}
-          {ki.ergebnisse.bewertungsrasterVerbessern && (
-            <div className="mt-2">
-              <ErgebnisAnzeige
-                ergebnis={ki.ergebnisse.bewertungsrasterVerbessern}
-                vorschauKey="bewertung"
-                zusatzKey="verbesserteKriterien"
-                onUebernehmen={() => {
-                  const d = ki.ergebnisse.bewertungsrasterVerbessern?.daten
-                  if (d && Array.isArray(d.verbesserteKriterien)) {
-                    setBewertungsraster(d.verbesserteKriterien as Bewertungskriterium[])
-                  }
-                  ki.verwerfen('bewertungsrasterVerbessern')
-                }}
-                onVerwerfen={() => ki.verwerfen('bewertungsrasterVerbessern')}
+
+          {/* Bewertungsraster (nicht bei Aufgabengruppe — dort pro Teilaufgabe) */}
+          {typ !== 'aufgabengruppe' && (
+            <>
+              <BewertungsrasterEditor
+                bewertungsraster={bewertungsraster}
+                setBewertungsraster={setBewertungsraster}
+                extraContent={
+                  typ === 'tkonto' ? (
+                    <TKontoBewertungsoptionen
+                      bewertungsoptionen={tkBewertungsoptionen}
+                      setBewertungsoptionen={setTkBewertungsoptionen}
+                    />
+                  ) : typ === 'bilanzstruktur' ? (
+                    <BilanzERBewertungsoptionen
+                      bewertungsoptionen={biBewertungsoptionen}
+                      setBewertungsoptionen={setBiBewertungsoptionen}
+                      modus={biModus}
+                    />
+                  ) : undefined
+                }
+                kiButtons={ki.verfuegbar ? (
+                  <>
+                    <InlineAktionButton
+                      label="KI generieren"
+                      tooltip="Bewertungsraster basierend auf Frage generieren"
+                      disabled={!fragetext.trim() || ki.ladeAktion !== null}
+                      ladend={ki.ladeAktion === 'bewertungsrasterGenerieren'}
+                      onClick={() => ki.ausfuehren('bewertungsrasterGenerieren', {
+                        fragetext, typ, fachbereich, bloom, punkte, musterlosung
+                      })}
+                    />
+                    <InlineAktionButton
+                      label="KI verbessern"
+                      tooltip="Bestehendes Bewertungsraster prüfen und verbessern"
+                      disabled={bewertungsraster.filter(k => k.beschreibung.trim()).length === 0 || ki.ladeAktion !== null}
+                      ladend={ki.ladeAktion === 'bewertungsrasterVerbessern'}
+                      onClick={() => ki.ausfuehren('bewertungsrasterVerbessern', {
+                        fragetext, typ, fachbereich, bloom, punkte, musterlosung,
+                        bewertungsraster: bewertungsraster.filter(k => k.beschreibung.trim())
+                      })}
+                    />
+                  </>
+                ) : undefined}
               />
-            </div>
+              {ki.ergebnisse.bewertungsrasterGenerieren && (
+                <div className="mt-2">
+                  <ErgebnisAnzeige
+                    ergebnis={ki.ergebnisse.bewertungsrasterGenerieren}
+                    vorschauKey="kriterien"
+                    onUebernehmen={() => {
+                      const d = ki.ergebnisse.bewertungsrasterGenerieren?.daten
+                      if (d && Array.isArray(d.kriterien)) {
+                        setBewertungsraster(d.kriterien as Bewertungskriterium[])
+                      }
+                      ki.verwerfen('bewertungsrasterGenerieren')
+                    }}
+                    onVerwerfen={() => ki.verwerfen('bewertungsrasterGenerieren')}
+                  />
+                </div>
+              )}
+              {ki.ergebnisse.bewertungsrasterVerbessern && (
+                <div className="mt-2">
+                  <ErgebnisAnzeige
+                    ergebnis={ki.ergebnisse.bewertungsrasterVerbessern}
+                    vorschauKey="bewertung"
+                    zusatzKey="verbesserteKriterien"
+                    onUebernehmen={() => {
+                      const d = ki.ergebnisse.bewertungsrasterVerbessern?.daten
+                      if (d && Array.isArray(d.verbesserteKriterien)) {
+                        setBewertungsraster(d.verbesserteKriterien as Bewertungskriterium[])
+                      }
+                      ki.verwerfen('bewertungsrasterVerbessern')
+                    }}
+                    onVerwerfen={() => ki.verwerfen('bewertungsrasterVerbessern')}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
