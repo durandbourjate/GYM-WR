@@ -14,7 +14,7 @@ export const einrichtungsPruefung: PruefungsConfig = {
   modus: 'uebung',
   dauerMinuten: 30,
   zeitModus: 'open-end',
-  gesamtpunkte: 40,
+  gesamtpunkte: 61,
 
   erlaubteKlasse: 'sf-wr-27a28f',
 
@@ -51,6 +51,11 @@ export const einrichtungsPruefung: PruefungsConfig = {
       titel: 'Teil F: Material & Features',
       beschreibung: 'Zum Abschluss: Nutzen Sie das Materialpanel und entdecken Sie versteckte Features des Tools!',
       fragenIds: ['einr-ag-material', 'einr-mc-features'],
+    },
+    {
+      titel: 'Teil G: Neue Fragetypen',
+      beschreibung: 'Testen Sie die 7 neusten Fragetypen: Sortierung, Hotspot, Bildbeschriftung, Audio-Aufnahme, Drag & Drop auf Bilder, Code-Editor und Formel-Editor.',
+      fragenIds: ['einr-sort-planeten', 'einr-hs-europa', 'einr-bb-zelle', 'einr-audio-vorstellen', 'einr-dd-kontinente', 'einr-code-python', 'einr-formel-pythagoras'],
     },
   ],
 
