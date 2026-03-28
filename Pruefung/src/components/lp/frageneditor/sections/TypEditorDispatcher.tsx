@@ -13,6 +13,7 @@ import type {
   LueckentextFrage,
   HotspotBereich, BildbeschriftungLabel,
   DragDropBildZielzone,
+  InlineTeilaufgabe,
 } from '../../../../types/fragen.ts'
 import type { FrageTyp } from '../editorUtils.ts'
 import type { useKIAssistent } from '../useKIAssistent.ts'
@@ -127,6 +128,8 @@ interface TypEditorDispatcherProps {
   setAgKontext: (v: string) => void
   agTeilaufgabenIds: string[]
   setAgTeilaufgabenIds: React.Dispatch<React.SetStateAction<string[]>>
+  agTeilaufgaben: InlineTeilaufgabe[]
+  setAgTeilaufgaben: (t: InlineTeilaufgabe[]) => void
 
   // Visualisierung/Zeichnen
   canvasConfig: CanvasConfig
@@ -673,6 +676,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
         <AufgabengruppeEditor
           kontext={props.agKontext}
           setKontext={props.setAgKontext}
+          teilaufgaben={props.agTeilaufgaben}
+          setTeilaufgaben={props.setAgTeilaufgaben}
           teilaufgabenIds={props.agTeilaufgabenIds}
           setTeilaufgabenIds={props.setAgTeilaufgabenIds}
         />

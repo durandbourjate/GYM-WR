@@ -39,7 +39,11 @@ export default function AufgabengruppeFrage({ frage }: Props) {
   const abgegeben = usePruefungStore((s) => s.abgegeben)
   const [kontextOffen, setKontextOffen] = useState(true)
 
-  const teilaufgaben = frage.teilaufgabenIds
+  // Inline-Teilaufgaben (neues Format) ODER Legacy-ID-Auflösung
+  const teilaufgabenIds = frage.teilaufgaben
+    ? frage.teilaufgaben.map(ta => ta.id)
+    : (frage.teilaufgabenIds ?? [])
+  const teilaufgaben = teilaufgabenIds
     .map((id) => alleFragen.find((f) => f.id === id))
     .filter((f): f is Frage => f != null)
 

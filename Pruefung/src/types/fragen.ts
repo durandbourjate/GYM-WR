@@ -364,11 +364,40 @@ export interface BilanzERFrage extends FrageBase {
 
 // === AUFGABENGRUPPE ===
 
+/** Inline-Teilaufgabe innerhalb einer Aufgabengruppe (abgespeckte Frage) */
+export interface InlineTeilaufgabe {
+  id: string                    // z.B. "{parentId}_a"
+  typ: string                   // mc, freitext, richtigfalsch, lueckentext, zuordnung, berechnung, sortierung
+  fragetext: string
+  punkte: number
+  // MC
+  optionen?: MCOption[]
+  mehrfachauswahl?: boolean
+  // Richtig/Falsch
+  aussagen?: { id: string; text: string; korrekt: boolean; erklaerung?: string }[]
+  // Freitext
+  laenge?: 'kurz' | 'mittel' | 'lang'
+  // Lückentext
+  textMitLuecken?: string
+  luecken?: LueckentextFrage['luecken']
+  // Zuordnung
+  paare?: { links: string; rechts: string }[]
+  // Berechnung
+  ergebnisse?: BerechnungFrage['ergebnisse']
+  rechenwegErforderlich?: boolean
+  // Sortierung
+  elemente?: string[]
+  teilpunkte?: boolean
+}
+
 export interface AufgabengruppeFrage extends FrageBase {
   typ: 'aufgabengruppe'
   kontext: string
   kontextAnhaenge?: FrageAnhang[]
-  teilaufgabenIds: string[]
+  /** Inline-Teilaufgaben (neues Format) */
+  teilaufgaben?: InlineTeilaufgabe[]
+  /** Legacy: Referenzen auf externe Frage-IDs (altes Format) */
+  teilaufgabenIds?: string[]
 }
 
 // === PDF-ANNOTATION ===

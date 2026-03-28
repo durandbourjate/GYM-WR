@@ -11,7 +11,7 @@ import type {
   BilanzERFrage, KontoMitSaldo, BilanzERLoesung, BilanzERBewertung,
   BuchungssatzZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
-  AufgabengruppeFrage,
+  AufgabengruppeFrage, InlineTeilaufgabe,
   VisualisierungFrage, CanvasConfig,
   PDFFrage, PDFKategorie, PDFAnnotationsWerkzeug, PDFAnnotation,
   SortierungFrage, HotspotFrage, HotspotBereich,
@@ -65,7 +65,7 @@ export type TypSpezifischeDaten =
   | { typ: 'tkonto'; aufgabentext: string; geschaeftsfaelle: string[]; konten: TKontoDefinition[]; kontenauswahl: KontenauswahlConfig; bewertungsoptionen: TKontoBewertung }
   | { typ: 'kontenbestimmung'; aufgabentext: string; modus: KontenbestimmungFrage['modus']; aufgaben: Kontenaufgabe[]; kontenauswahl: KontenauswahlConfig }
   | { typ: 'bilanzstruktur'; aufgabentext: string; modus: BilanzERFrage['modus']; kontenMitSaldi: KontoMitSaldo[]; loesung: BilanzERLoesung; bewertungsoptionen: BilanzERBewertung }
-  | { typ: 'aufgabengruppe'; kontext: string; teilaufgabenIds: string[] }
+  | { typ: 'aufgabengruppe'; kontext: string; teilaufgabenIds: string[]; teilaufgaben?: InlineTeilaufgabe[] }
   | { typ: 'visualisierung'; untertyp?: VisualisierungFrage['untertyp']; fragetext?: string; canvasConfig?: CanvasConfig; musterloesungBild?: string }
   | { typ: 'pdf'; fragetext: string; pdfDriveFileId?: string; pdfBase64?: string; pdfUrl?: string; pdfDateiname: string; seitenAnzahl: number; kategorien?: PDFKategorie[]; erlaubteWerkzeuge: PDFAnnotationsWerkzeug[]; musterloesungAnnotationen?: PDFAnnotation[] }
   | { typ: 'sortierung'; fragetext: string; elemente: string[]; teilpunkte: boolean }
@@ -191,7 +191,12 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         ...basis,
         typ: 'aufgabengruppe',
         kontext: typDaten.kontext.trim(),
-        teilaufgabenIds: typDaten.teilaufgabenIds,
+        ...(typDaten.teilaufgaben && typDaten.teilaufgaben.length > 0
+          ? { teilaufgaben: typDaten.teilaufgaben }
+          : {}),
+        ...(typDaten.teilaufgabenIds && typDaten.teilaufgabenIds.length > 0
+          ? { teilaufgabenIds: typDaten.teilaufgabenIds }
+          : {}),
       } as AufgabengruppeFrage
 
     case 'visualisierung':

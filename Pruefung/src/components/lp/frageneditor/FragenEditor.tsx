@@ -17,7 +17,7 @@ import type {
   BilanzERFrage, KontoMitSaldo, BilanzERLoesung, BilanzERBewertung,
   BuchungssatzZeile, KontenauswahlConfig,
   MCOption, Bewertungskriterium,
-  AufgabengruppeFrage,
+  AufgabengruppeFrage, InlineTeilaufgabe,
   VisualisierungFrage, CanvasConfig,
   PDFFrage, PDFKategorie, PDFAnnotationsWerkzeug, PDFAnnotation,
   SortierungFrage, HotspotFrage, HotspotBereich, BildbeschriftungFrage, BildbeschriftungLabel,
@@ -276,7 +276,10 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     frage?.typ === 'aufgabengruppe' ? (frage as AufgabengruppeFrage).kontext : ''
   )
   const [agTeilaufgabenIds, setAgTeilaufgabenIds] = useState<string[]>(
-    frage?.typ === 'aufgabengruppe' ? (frage as AufgabengruppeFrage).teilaufgabenIds : []
+    frage?.typ === 'aufgabengruppe' ? ((frage as AufgabengruppeFrage).teilaufgabenIds ?? []) : []
+  )
+  const [agTeilaufgaben, setAgTeilaufgaben] = useState<InlineTeilaufgabe[]>(
+    frage?.typ === 'aufgabengruppe' ? ((frage as AufgabengruppeFrage).teilaufgaben ?? []) : []
   )
 
   // Visualisierung/Zeichnen-spezifisch
@@ -525,7 +528,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
       case 'bilanzstruktur':
         typDaten = { typ: 'bilanzstruktur', aufgabentext: biAufgabentext, modus: biModus, kontenMitSaldi: biKontenMitSaldi, loesung: biLoesung, bewertungsoptionen: biBewertungsoptionen }; break
       case 'aufgabengruppe':
-        typDaten = { typ: 'aufgabengruppe', kontext: agKontext, teilaufgabenIds: agTeilaufgabenIds }; break
+        typDaten = { typ: 'aufgabengruppe', kontext: agKontext, teilaufgabenIds: agTeilaufgabenIds, teilaufgaben: agTeilaufgaben }; break
       case 'visualisierung':
         typDaten = { typ: 'visualisierung', fragetext, canvasConfig, musterloesungBild }; break
       case 'pdf':
@@ -762,6 +765,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             biLoesung={biLoesung} setBiLoesung={setBiLoesung}
             agKontext={agKontext} setAgKontext={setAgKontext}
             agTeilaufgabenIds={agTeilaufgabenIds} setAgTeilaufgabenIds={setAgTeilaufgabenIds}
+            agTeilaufgaben={agTeilaufgaben} setAgTeilaufgaben={setAgTeilaufgaben}
             canvasConfig={canvasConfig} setCanvasConfig={setCanvasConfig}
             musterloesungBild={musterloesungBild} setMusterloesungBild={setMusterloesungBild}
             email={user?.email ?? ''}

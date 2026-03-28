@@ -16,12 +16,22 @@ export function istVollstaendigBeantwortet(
   // Aufgabengruppe: Prüfe ob ALLE Teilaufgaben beantwortet sind
   if (frage.typ === 'aufgabengruppe') {
     const gruppe = frage as AufgabengruppeFrage
-    if (!gruppe.teilaufgabenIds || gruppe.teilaufgabenIds.length === 0) return true
     if (!alleAntworten || !alleFragen) return false
 
+    // Neues Format: Inline-Teilaufgaben
+    if (gruppe.teilaufgaben && gruppe.teilaufgaben.length > 0) {
+      return gruppe.teilaufgaben.every(ta => {
+        const teilFrage = alleFragen.find(f => f.id === ta.id)
+        if (!teilFrage) return true
+        return istVollstaendigBeantwortet(teilFrage, alleAntworten[ta.id])
+      })
+    }
+
+    // Legacy-Format: ID-Referenzen
+    if (!gruppe.teilaufgabenIds || gruppe.teilaufgabenIds.length === 0) return true
     return gruppe.teilaufgabenIds.every(teilId => {
       const teilFrage = alleFragen.find(f => f.id === teilId)
-      if (!teilFrage) return true // Frage nicht geladen → nicht blockieren
+      if (!teilFrage) return true
       return istVollstaendigBeantwortet(teilFrage, alleAntworten[teilId])
     })
   }
