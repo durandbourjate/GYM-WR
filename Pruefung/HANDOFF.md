@@ -17,6 +17,27 @@
 
 ---
 
+## Session 31 — 12 Demo-Prüfungs-Bugs (28.03.2026)
+
+Bugfixes aus dem ersten Demo-Test aller neuen Fragetypen.
+
+| # | Bug | Fix |
+|---|-----|-----|
+| 1 | PDF Text-Tool: Extra "Text Einfügen"-Klick | ToolbarDropdown: onIconClick aktiviert Werkzeug direkt, ▾ nur für Optionen |
+| 2 | PDF Farben überlappen, kein Farbwechsel selektierter Elemente | Farbkreise 28px + Rand, onFarbeWechsel aktualisiert selektierte Annotation |
+| 3 | PDF Doppelklick-Deselect hängt | editierendeAnnotation bei Klick ausserhalb beendet |
+| 4 | Navigation-Leiste scrollt weg | sticky top-0 mit eigenem Container + Schatten |
+| 5 | Demo: Sperre bei Verstössen | istDemoModus-Flag in useLockdown — nur Warnung, keine Sperre |
+| 6 | Frage 16 "Letzte Aufgabe" | Text zu "Feature-Check!" geändert |
+| 7 | Sortierung nur Pfeile | HTML5 Drag&Drop + Drag-Handle (⠿) + visuelles Feedback |
+| 8 | Hotspot/Bildbeschriftung/DragDrop: Bilder nicht geladen | Wikipedia-URLs → lokale SVG-Bilder in public/demo-bilder/ |
+| 9 | Audio-Aufnahme verlässt Vollbild + Verstoss | Schonfrist-Event (8s) vor getUserMedia + Vollbild-Wiederherstellung |
+| 10 | Code-Editor: Tab wechselt Button | indentWithTab aus @codemirror/commands |
+
+**Dateien:** 10 geändert, 3 neue SVGs (`public/demo-bilder/`). 161 Tests grün.
+
+---
+
 ## Session 30 — Plattform-Öffnung für alle Fachschaften (28.03.2026)
 
 Grosse Architektur-Generalisierung + 10 neue Features/Fragetypen. 5 Pläne umgesetzt.
