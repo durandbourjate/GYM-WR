@@ -179,7 +179,9 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     ]
   )
   const [erklaerungSichtbar, setErklaerungSichtbar] = useState(
-    frage?.typ === 'richtigfalsch' ? (frage as RichtigFalschFrage).erklaerungSichtbar ?? false : false
+    frage?.typ === 'richtigfalsch' ? (frage as RichtigFalschFrage).erklaerungSichtbar ?? false
+    : frage?.typ === 'mc' ? ((frage as MCFrage).erklaerungSichtbar ?? false)
+    : false
   )
 
   // Berechnung-spezifisch
@@ -503,7 +505,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     let typDaten: TypSpezifischeDaten
     switch (typ) {
       case 'mc':
-        typDaten = { typ: 'mc', fragetext, optionen, mehrfachauswahl }; break
+        typDaten = { typ: 'mc', fragetext, optionen, mehrfachauswahl, erklaerungSichtbar }; break
       case 'freitext':
         typDaten = { typ: 'freitext', fragetext, laenge, placeholder, minWoerter, maxWoerter }; break
       case 'lueckentext':

@@ -223,6 +223,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setOptionen={props.setOptionen}
             mehrfachauswahl={props.mehrfachauswahl}
             setMehrfachauswahl={props.setMehrfachauswahl}
+            erklaerungSichtbar={props.erklaerungSichtbar}
+            setErklaerungSichtbar={props.setErklaerungSichtbar}
             titelRechts={ki.verfuegbar ? (
               <InlineAktionButton
                 label="Optionen generieren"

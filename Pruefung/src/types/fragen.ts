@@ -105,6 +105,8 @@ export interface MCFrage extends FrageBase {
   optionen: MCOption[];
   mehrfachauswahl: boolean;
   zufallsreihenfolge: boolean;
+  /** Erklärungen in der Korrektur-Einsicht den SuS zeigen (Default: false = nur LP) */
+  erklaerungSichtbar?: boolean;
 }
 
 export interface MCOption {
@@ -112,6 +114,8 @@ export interface MCOption {
   text: string;
   korrekt: boolean;
   feedback?: string;
+  /** Erklärung warum diese Option richtig/falsch ist (für LP + optional SuS) */
+  erklaerung?: string;
 }
 
 export interface FreitextFrage extends FrageBase {

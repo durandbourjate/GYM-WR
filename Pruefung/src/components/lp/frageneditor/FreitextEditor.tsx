@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Abschnitt, Feld } from './EditorBausteine.tsx'
 
 interface FreitextEditorProps {
@@ -12,6 +13,8 @@ interface FreitextEditorProps {
 }
 
 export default function FreitextEditor({ laenge, setLaenge, placeholder, setPlaceholder, minWoerter, setMinWoerter, maxWoerter, setMaxWoerter }: FreitextEditorProps) {
+  const [zeigeAutokorrekturInfo, setZeigeAutokorrekturInfo] = useState(false)
+
   return (
     <Abschnitt titel="Freitext-Optionen">
       <div className="grid grid-cols-2 gap-3">
@@ -27,10 +30,36 @@ export default function FreitextEditor({ laenge, setLaenge, placeholder, setPlac
             placeholder="Hinweis für SuS..." className="input-field" />
         </Feld>
       </div>
-      {/* Hinweis Rechtschreibprüfung */}
-      <div className="mt-3 p-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-xs text-blue-700 dark:text-blue-300">
-        💡 <strong>Rechtschreibprüfung:</strong> Die Browser-Autokorrektur kann pro Prüfung deaktiviert werden (z.B. für Diktate). Einstellung unter: Prüfung bearbeiten → Konfiguration → Rechtschreibprüfung.
+      {/* Autokorrektur-Hinweis (kompakt) */}
+      <div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+        <button
+          type="button"
+          onClick={() => setZeigeAutokorrekturInfo(true)}
+          className="underline hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer"
+        >
+          Autokorrektur ausschalten?
+        </button>
       </div>
+      {zeigeAutokorrekturInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setZeigeAutokorrekturInfo(false)}>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-2">Autokorrektur deaktivieren</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              Die Browser-Autokorrektur (Rechtschreibprüfung, rote Unterstriche) kann pro Prüfung deaktiviert werden — z.B. für Diktate oder Sprachprüfungen.
+            </p>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              Einstellung unter: <strong>Prüfung bearbeiten → Konfiguration → Rechtschreibprüfung</strong>
+            </p>
+            <button
+              type="button"
+              onClick={() => setZeigeAutokorrekturInfo(false)}
+              className="px-4 py-2 text-sm rounded-lg bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              Verstanden
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-3 mt-3">
         <Feld label="Min. Wörter (optional)">

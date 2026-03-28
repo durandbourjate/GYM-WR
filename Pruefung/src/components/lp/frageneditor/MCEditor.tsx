@@ -8,9 +8,12 @@ interface MCEditorProps {
   setMehrfachauswahl: (v: boolean) => void
   /** Optionaler Inhalt rechts im Abschnitt-Header (z.B. KI-Buttons) */
   titelRechts?: React.ReactNode
+  /** Erklärungen den SuS in der Korrektur-Einsicht zeigen */
+  erklaerungSichtbar?: boolean
+  setErklaerungSichtbar?: (v: boolean) => void
 }
 
-export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMehrfachauswahl, titelRechts }: MCEditorProps) {
+export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMehrfachauswahl, titelRechts, erklaerungSichtbar, setErklaerungSichtbar }: MCEditorProps) {
   function updateOption(index: number, partial: Partial<MCOption>): void {
     const neu = [...optionen]
     neu[index] = { ...neu[index], ...partial }
@@ -71,6 +74,15 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
               className="input-field flex-1"
             />
 
+            {/* Erklärung (optional) */}
+            <input
+              type="text"
+              value={opt.erklaerung ?? ''}
+              onChange={(e) => updateOption(i, { erklaerung: e.target.value || undefined })}
+              placeholder="Erklärung (optional)"
+              className="input-field-narrow w-40"
+            />
+
             {/* Entfernen */}
             {optionen.length > 2 && (
               <button
@@ -89,6 +101,19 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
         >
           + Option hinzufügen
         </button>
+      )}
+
+      {/* Erklärung-Sichtbarkeit Toggle */}
+      {setErklaerungSichtbar && (
+        <label className="mt-3 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={erklaerungSichtbar ?? false}
+            onChange={(e) => setErklaerungSichtbar(e.target.checked)}
+            className="rounded border-slate-300 dark:border-slate-600"
+          />
+          Erklärungen den SuS in der Korrektur-Einsicht zeigen
+        </label>
       )}
     </Abschnitt>
   )

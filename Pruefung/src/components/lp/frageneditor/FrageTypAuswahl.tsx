@@ -54,8 +54,9 @@ interface Props {
 export default function FrageTypAuswahl({ typ, setTyp, gesperrt }: Props) {
   const [suchtext, setSuchtext] = useState('')
   const user = useAuthStore((s) => s.user)
+  const istDemoModus = useAuthStore((s) => s.istDemoModus)
   const fachschaften = user?.fachschaften ?? []
-  const hatFiBu = istFachschaftMitFiBu(fachschaften)
+  const hatFiBu = istDemoModus || istFachschaftMitFiBu(fachschaften)
 
   const suche = suchtext.trim().toLowerCase()
 
