@@ -2,71 +2,67 @@ import { useState } from 'react'
 import type { InlineTeilaufgabe, MCOption } from '../../../types/fragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
 import { Abschnitt } from './EditorBausteine.tsx'
+import MCEditor from './MCEditor.tsx'
+import FreitextEditor from './FreitextEditor.tsx'
+import RichtigFalschEditor from './RichtigFalschEditor.tsx'
+import BewertungsrasterEditor from './BewertungsrasterEditor.tsx'
+import type { FrageTyp } from './editorUtils.ts'
 
-/** Erlaubte Typen für Teilaufgaben (kein Aufgabengruppe, kein PDF, kein Zeichnen) */
-const TEILAUFGABE_TYPEN = [
-  'mc', 'freitext', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'sortierung',
-] as const
-type TeilaufgabeTyp = typeof TEILAUFGABE_TYPEN[number]
+/** Alle Typen ausser aufgabengruppe (kein rekursives Verschachteln) */
+const TEILAUFGABE_TYPEN: FrageTyp[] = [
+  'freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung',
+  'sortierung', 'hotspot', 'bildbeschriftung', 'dragdrop_bild',
+  'code', 'formel', 'audio',
+  'visualisierung', 'pdf',
+  'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur',
+]
 
 interface Props {
   kontext: string
   setKontext: (v: string) => void
   teilaufgaben: InlineTeilaufgabe[]
   setTeilaufgaben: (t: InlineTeilaufgabe[]) => void
-  /** Legacy: für alte Fragen mit ID-Verknüpfung */
   teilaufgabenIds?: string[]
   setTeilaufgabenIds?: (ids: string[]) => void
   titelRechts?: React.ReactNode
   parentId?: string
 }
 
-/** Erstellt eine leere Teilaufgabe mit Defaults */
-function neueTeilaufgabe(typ: TeilaufgabeTyp, parentId: string, index: number): InlineTeilaufgabe {
-  const buchstabe = String.fromCharCode(97 + index) // a, b, c, ...
+function neueTeilaufgabe(typ: string, parentId: string, index: number): InlineTeilaufgabe {
+  const buchstabe = String.fromCharCode(97 + index)
   const id = `${parentId}_${buchstabe}`
-  const basis: InlineTeilaufgabe = { id, typ, fragetext: '', punkte: 1 }
+  const basis: InlineTeilaufgabe = { id, typ, fragetext: '', punkte: 1, bewertungsraster: [{ beschreibung: '', punkte: 1 }] }
 
   switch (typ) {
-    case 'mc':
-      return { ...basis, punkte: 2, optionen: [
-        { id: 'a', text: '', korrekt: true },
-        { id: 'b', text: '', korrekt: false },
-        { id: 'c', text: '', korrekt: false },
-      ], mehrfachauswahl: false }
-    case 'richtigfalsch':
-      return { ...basis, aussagen: [
-        { id: '1', text: '', korrekt: true },
-        { id: '2', text: '', korrekt: false },
-      ]}
-    case 'freitext':
-      return { ...basis, punkte: 3, laenge: 'mittel' }
-    case 'lueckentext':
-      return { ...basis, punkte: 2, textMitLuecken: '', luecken: [] }
-    case 'zuordnung':
-      return { ...basis, punkte: 2, paare: [{ links: '', rechts: '' }] }
-    case 'berechnung':
-      return { ...basis, punkte: 2, ergebnisse: [{ id: '1', label: 'Ergebnis', korrekt: 0, toleranz: 0 }], rechenwegErforderlich: false }
-    case 'sortierung':
-      return { ...basis, punkte: 2, elemente: ['', ''], teilpunkte: true }
-    default:
-      return basis
+    case 'mc': return { ...basis, punkte: 2, optionen: [
+      { id: 'a', text: '', korrekt: true }, { id: 'b', text: '', korrekt: false }, { id: 'c', text: '', korrekt: false },
+    ], mehrfachauswahl: false }
+    case 'richtigfalsch': return { ...basis, aussagen: [
+      { id: '1', text: '', korrekt: true }, { id: '2', text: '', korrekt: false },
+    ]}
+    case 'freitext': return { ...basis, punkte: 3, laenge: 'mittel' as const }
+    case 'berechnung': return { ...basis, punkte: 2, ergebnisse: [{ id: '1', label: 'Ergebnis', korrekt: 0, toleranz: 0 }] }
+    case 'sortierung': return { ...basis, punkte: 2, elemente: ['', ''], teilpunkte: true }
+    case 'code': return { ...basis, punkte: 3, sprache: 'python', starterCode: '' }
+    default: return basis
   }
 }
 
 export default function AufgabengruppeEditor({
   kontext, setKontext,
   teilaufgaben, setTeilaufgaben,
-  teilaufgabenIds, setTeilaufgabenIds: _setTeilaufgabenIds,
+  teilaufgabenIds,
   titelRechts, parentId = 'ag',
 }: Props) {
   const [offenIndex, setOffenIndex] = useState<number | null>(null)
+  const [typFilter, setTypFilter] = useState('')
   const istLegacy = (!teilaufgaben || teilaufgaben.length === 0) && teilaufgabenIds && teilaufgabenIds.length > 0
 
-  function handleHinzufuegen(typ: TeilaufgabeTyp) {
+  function handleHinzufuegen(typ: string) {
     const ta = neueTeilaufgabe(typ, parentId, teilaufgaben.length)
     setTeilaufgaben([...teilaufgaben, ta])
     setOffenIndex(teilaufgaben.length)
+    setTypFilter('')
   }
 
   function handleEntfernen(index: number) {
@@ -75,7 +71,7 @@ export default function AufgabengruppeEditor({
     else if (offenIndex !== null && offenIndex > index) setOffenIndex(offenIndex - 1)
   }
 
-  function handleAktualisieren(index: number, updates: Partial<InlineTeilaufgabe>) {
+  function handleUpdate(index: number, updates: Partial<InlineTeilaufgabe>) {
     const neu = [...teilaufgaben]
     neu[index] = { ...neu[index], ...updates }
     setTeilaufgaben(neu)
@@ -86,11 +82,16 @@ export default function AufgabengruppeEditor({
     if (ziel < 0 || ziel >= teilaufgaben.length) return
     const neu = [...teilaufgaben]
     ;[neu[index], neu[ziel]] = [neu[ziel], neu[index]]
-    // IDs aktualisieren (Buchstaben)
     neu.forEach((ta, i) => { ta.id = `${parentId}_${String.fromCharCode(97 + i)}` })
     setTeilaufgaben(neu)
     setOffenIndex(ziel)
   }
+
+  // Gefilterte Typen für den Hinzufügen-Dialog
+  const filterText = typFilter.toLowerCase()
+  const gefilterteTypen = filterText
+    ? TEILAUFGABE_TYPEN.filter(t => typLabel(t).toLowerCase().includes(filterText))
+    : TEILAUFGABE_TYPEN
 
   return (
     <>
@@ -105,84 +106,51 @@ export default function AufgabengruppeEditor({
         />
       </Abschnitt>
 
-      {/* Legacy-Hinweis */}
       {istLegacy && (
         <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-xs text-amber-700 dark:text-amber-300">
-          Diese Aufgabengruppe verwendet das alte ID-Format ({teilaufgabenIds?.length} verknüpfte Fragen). Fügen Sie inline Teilaufgaben hinzu, um zum neuen Format zu wechseln.
+          Diese Aufgabengruppe verwendet das alte ID-Format ({teilaufgabenIds?.length} verknüpfte Fragen).
         </div>
       )}
 
       {/* Teilaufgaben */}
       <Abschnitt titel={`Teilaufgaben (${teilaufgaben.length})`}>
         {teilaufgaben.length === 0 && !istLegacy && (
-          <p className="text-xs text-amber-600 dark:text-amber-400 mb-3">
-            Fügen Sie mindestens eine Teilaufgabe hinzu.
-          </p>
+          <p className="text-xs text-amber-600 dark:text-amber-400 mb-3">Fügen Sie mindestens eine Teilaufgabe hinzu.</p>
         )}
 
-        {/* Teilaufgaben-Liste */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {teilaufgaben.map((ta, i) => (
             <div key={ta.id} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-              {/* Header (immer sichtbar) */}
+              {/* Collapsed Header */}
               <div
-                className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/60 cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/60 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/50"
                 onClick={() => setOffenIndex(offenIndex === i ? null : i)}
               >
-                <span className="text-sm font-bold text-slate-600 dark:text-slate-300 w-6">
-                  {String.fromCharCode(97 + i)})
-                </span>
-                <span className="text-xs px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                  {typLabel(ta.typ)}
-                </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex-1 truncate">
-                  {ta.fragetext || '(kein Text)'}
-                </span>
+                <span className="text-sm font-bold text-slate-600 dark:text-slate-300 w-6">{String.fromCharCode(97 + i)})</span>
+                <span className="text-xs px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">{typLabel(ta.typ)}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 flex-1 truncate">{ta.fragetext || '(kein Text)'}</span>
                 <span className="text-xs text-slate-400">{ta.punkte} P.</span>
                 <span className="text-xs text-slate-400">{offenIndex === i ? '▲' : '▼'}</span>
               </div>
 
-              {/* Inhalt (einklappbar) */}
+              {/* Expanded Content */}
               {offenIndex === i && (
-                <div className="p-3 space-y-3 border-t border-slate-200 dark:border-slate-700">
-                  {/* Fragetext */}
-                  <div>
-                    <label className="text-xs text-slate-500 dark:text-slate-400">Fragetext</label>
-                    <textarea
-                      value={ta.fragetext}
-                      onChange={(e) => handleAktualisieren(i, { fragetext: e.target.value })}
-                      rows={2}
-                      placeholder="Fragetext..."
-                      className="w-full mt-1 px-2 py-1.5 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 resize-y"
-                    />
-                  </div>
+                <div className="p-4 space-y-4 border-t border-slate-200 dark:border-slate-700">
+                  <TeilaufgabeInlineEditor
+                    ta={ta}
+                    onUpdate={(u) => handleUpdate(i, u)}
+                  />
 
-                  {/* Punkte */}
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs text-slate-500 dark:text-slate-400">Punkte:</label>
-                    <input
-                      type="number"
-                      min={0.5}
-                      step={0.5}
-                      value={ta.punkte}
-                      onChange={(e) => handleAktualisieren(i, { punkte: Number(e.target.value) || 1 })}
-                      className="w-20 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100"
-                    />
-                  </div>
-
-                  {/* Typ-spezifischer Mini-Editor */}
-                  <TeilaufgabeTypEditor teilaufgabe={ta} onUpdate={(u) => handleAktualisieren(i, u)} />
-
-                  {/* Aktions-Buttons */}
-                  <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-700">
+                  {/* Verschieben / Löschen */}
+                  <div className="flex items-center gap-1.5 pt-3 border-t border-slate-100 dark:border-slate-700">
                     <button onClick={() => handleVerschieben(i, 'hoch')} disabled={i === 0}
-                      className="px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed">↑</button>
+                      className="px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed">↑</button>
                     <button onClick={() => handleVerschieben(i, 'runter')} disabled={i === teilaufgaben.length - 1}
-                      className="px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed">↓</button>
+                      className="px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed">↓</button>
                     <div className="flex-1" />
                     <button onClick={() => handleEntfernen(i)}
                       className="px-2 py-1 text-xs rounded bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 cursor-pointer">
-                      Entfernen
+                      Teilaufgabe entfernen
                     </button>
                   </div>
                 </div>
@@ -191,24 +159,31 @@ export default function AufgabengruppeEditor({
           ))}
         </div>
 
-        {/* Neue Teilaufgabe hinzufügen */}
-        <div className="mt-3 flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400">+ Teilaufgabe:</span>
-          {TEILAUFGABE_TYPEN.map((typ) => (
-            <button
-              key={typ}
-              onClick={() => handleHinzufuegen(typ)}
-              className="px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
-            >
-              {typLabel(typ)}
-            </button>
-          ))}
+        {/* Neue Teilaufgabe */}
+        <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg border border-dashed border-slate-300 dark:border-slate-600">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">+ Teilaufgabe hinzufügen:</span>
+            <input
+              type="text"
+              value={typFilter}
+              onChange={(e) => setTypFilter(e.target.value)}
+              placeholder="Typ suchen..."
+              className="flex-1 px-2 py-1 text-xs border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            {gefilterteTypen.map((typ) => (
+              <button key={typ} onClick={() => handleHinzufuegen(typ)}
+                className="px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer">
+                {typLabel(typ)}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Gesamtpunkte */}
         {teilaufgaben.length > 0 && (
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            Gesamtpunkte: <strong>{teilaufgaben.reduce((sum, ta) => sum + ta.punkte, 0)}</strong>
+            Gesamtpunkte: <strong>{teilaufgaben.reduce((sum, ta) => sum + (ta.punkte ?? 0), 0)}</strong>
           </p>
         )}
       </Abschnitt>
@@ -216,202 +191,253 @@ export default function AufgabengruppeEditor({
   )
 }
 
-// ============ Mini-Editoren für Teilaufgaben-Typen ============
+// ========== Vollständiger Inline-Editor pro Teilaufgabe ==========
 
-interface TeilaufgabeTypEditorProps {
-  teilaufgabe: InlineTeilaufgabe
+interface TeilaufgabeInlineEditorProps {
+  ta: InlineTeilaufgabe
   onUpdate: (updates: Partial<InlineTeilaufgabe>) => void
 }
 
-function TeilaufgabeTypEditor({ teilaufgabe: ta, onUpdate }: TeilaufgabeTypEditorProps) {
+function TeilaufgabeInlineEditor({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  return (
+    <div className="space-y-4">
+      {/* Fragetext */}
+      <div>
+        <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Fragetext *</label>
+        <textarea
+          value={ta.fragetext}
+          onChange={(e) => onUpdate({ fragetext: e.target.value })}
+          rows={3}
+          placeholder="Fragetext (Markdown unterstützt)..."
+          className="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 resize-y"
+        />
+      </div>
+
+      {/* Punkte */}
+      <div className="flex items-center gap-3">
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Punkte:</label>
+        <input type="number" min={0.5} step={0.5} value={ta.punkte}
+          onChange={(e) => onUpdate({ punkte: Number(e.target.value) || 1 })}
+          className="w-20 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+      </div>
+
+      {/* Typ-spezifischer Editor */}
+      <TypSpezifischerEditor ta={ta} onUpdate={onUpdate} />
+
+      {/* Musterlösung */}
+      <div>
+        <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Musterlösung</label>
+        <textarea
+          value={ta.musterlosung ?? ''}
+          onChange={(e) => onUpdate({ musterlosung: e.target.value || undefined })}
+          rows={2}
+          placeholder="Erwartete Lösung..."
+          className="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 resize-y"
+        />
+      </div>
+
+      {/* Bewertungsraster */}
+      <BewertungsrasterEditor
+        bewertungsraster={ta.bewertungsraster ?? [{ beschreibung: '', punkte: 1 }]}
+        setBewertungsraster={(r) => onUpdate({ bewertungsraster: r })}
+      />
+    </div>
+  )
+}
+
+// ========== Typ-spezifische Editoren (nutzen bestehende Komponenten) ==========
+
+function TypSpezifischerEditor({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
   switch (ta.typ) {
-    case 'mc': return <MCMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'richtigfalsch': return <RFMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'freitext': return <FreitextMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'zuordnung': return <ZuordnungMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'berechnung': return <BerechnungMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'sortierung': return <SortierungMiniEditor ta={ta} onUpdate={onUpdate} />
-    case 'lueckentext': return <LueckentextMiniEditor ta={ta} onUpdate={onUpdate} />
-    default: return <p className="text-xs text-slate-400">Keine weiteren Optionen für diesen Typ.</p>
+    case 'mc':
+      return (
+        <MCEditor
+          optionen={ta.optionen ?? []}
+          setOptionen={(o) => onUpdate({ optionen: o as MCOption[] })}
+          mehrfachauswahl={ta.mehrfachauswahl ?? false}
+          setMehrfachauswahl={(v) => onUpdate({ mehrfachauswahl: v })}
+          erklaerungSichtbar={ta.erklaerungSichtbar}
+          setErklaerungSichtbar={(v) => onUpdate({ erklaerungSichtbar: v })}
+        />
+      )
+
+    case 'richtigfalsch':
+      return (
+        <RichtigFalschEditor
+          aussagen={ta.aussagen ?? [{ id: '1', text: '', korrekt: true }, { id: '2', text: '', korrekt: false }]}
+          setAussagen={(a) => onUpdate({ aussagen: a })}
+          erklaerungSichtbar={ta.erklaerungSichtbar}
+          setErklaerungSichtbar={(v) => onUpdate({ erklaerungSichtbar: v })}
+        />
+      )
+
+    case 'freitext':
+      return (
+        <FreitextEditor
+          laenge={(ta.laenge ?? 'mittel') as 'kurz' | 'mittel' | 'lang'}
+          setLaenge={(v) => onUpdate({ laenge: v })}
+          placeholder={ta.hilfstextPlaceholder ?? ''}
+          setPlaceholder={(v) => onUpdate({ hilfstextPlaceholder: v || undefined })}
+          minWoerter={ta.minWoerter}
+          setMinWoerter={(v) => onUpdate({ minWoerter: v })}
+          maxWoerter={ta.maxWoerter}
+          setMaxWoerter={(v) => onUpdate({ maxWoerter: v })}
+        />
+      )
+
+    case 'zuordnung':
+      return <ZuordnungMini ta={ta} onUpdate={onUpdate} />
+    case 'berechnung':
+      return <BerechnungMini ta={ta} onUpdate={onUpdate} />
+    case 'sortierung':
+      return <SortierungMini ta={ta} onUpdate={onUpdate} />
+    case 'lueckentext':
+      return <LueckentextMini ta={ta} onUpdate={onUpdate} />
+    case 'code':
+      return <CodeMini ta={ta} onUpdate={onUpdate} />
+    case 'formel':
+      return <FormelMini ta={ta} onUpdate={onUpdate} />
+    case 'audio':
+      return <AudioMini ta={ta} onUpdate={onUpdate} />
+    case 'hotspot':
+    case 'bildbeschriftung':
+    case 'dragdrop_bild':
+      return <BildMini ta={ta} onUpdate={onUpdate} />
+    case 'visualisierung':
+    case 'pdf':
+      return <HinweisMini text={`${typLabel(ta.typ)}-Editor: Für komplexe Konfiguration (Bild-Upload, PDF-Upload, Zeichenwerkzeuge) erstellen Sie diese Frage als eigenständige Frage und verlinken Sie sie per ID.`} />
+    default:
+      return <HinweisMini text={`Typ "${typLabel(ta.typ)}": Grundlegende Optionen werden über Fragetext und Musterlösung konfiguriert.`} />
   }
 }
 
-// --- MC Mini-Editor ---
-function MCMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  const optionen = ta.optionen ?? []
-  function updateOpt(i: number, part: Partial<MCOption>) {
-    const neu = [...optionen]
-    neu[i] = { ...neu[i], ...part }
-    onUpdate({ optionen: neu })
-  }
+// ========== Kompakte Mini-Editoren für Typen ohne eigene Komponente ==========
+
+function ZuordnungMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  const paare = (ta.paare ?? []) as { links: string; rechts: string }[]
   return (
     <div className="space-y-2">
-      <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer">
-        <input type="checkbox" checked={ta.mehrfachauswahl ?? false} onChange={(e) => onUpdate({ mehrfachauswahl: e.target.checked })} className="rounded" />
-        Mehrfachauswahl
-      </label>
-      {optionen.map((opt, i) => (
-        <div key={opt.id} className="flex items-center gap-2">
-          <button onClick={() => updateOpt(i, { korrekt: !opt.korrekt })}
-            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 cursor-pointer text-xs
-              ${opt.korrekt ? 'bg-green-500 border-green-500 text-white' : 'border-slate-400'}`}>
-            {opt.korrekt ? '✓' : ''}
-          </button>
-          <input type="text" value={opt.text} onChange={(e) => updateOpt(i, { text: e.target.value })}
-            placeholder={`Option ${opt.id}`} className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          {optionen.length > 2 && (
-            <button onClick={() => onUpdate({ optionen: optionen.filter((_, j) => j !== i) })}
-              className="text-red-400 hover:text-red-600 cursor-pointer text-xs">×</button>
-          )}
-        </div>
-      ))}
-      {optionen.length < 6 && (
-        <button onClick={() => onUpdate({ optionen: [...optionen, { id: String.fromCharCode(97 + optionen.length), text: '', korrekt: false }] })}
-          className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Option</button>
-      )}
-    </div>
-  )
-}
-
-// --- R/F Mini-Editor ---
-function RFMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  const aussagen = ta.aussagen ?? []
-  function updateA(i: number, part: Partial<typeof aussagen[0]>) {
-    const neu = [...aussagen]
-    neu[i] = { ...neu[i], ...part }
-    onUpdate({ aussagen: neu })
-  }
-  return (
-    <div className="space-y-2">
-      {aussagen.map((a, i) => (
-        <div key={a.id} className="flex items-center gap-2">
-          <button onClick={() => updateA(i, { korrekt: !a.korrekt })}
-            className={`px-1.5 py-0.5 text-xs rounded-full border-2 font-bold shrink-0 cursor-pointer
-              ${a.korrekt ? 'bg-green-50 border-green-500 text-green-700' : 'bg-red-50 border-red-500 text-red-700'}`}>
-            {a.korrekt ? 'R' : 'F'}
-          </button>
-          <input type="text" value={a.text} onChange={(e) => updateA(i, { text: e.target.value })}
-            placeholder={`Aussage ${i + 1}`} className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          {aussagen.length > 2 && (
-            <button onClick={() => onUpdate({ aussagen: aussagen.filter((_, j) => j !== i) })}
-              className="text-red-400 hover:text-red-600 cursor-pointer text-xs">×</button>
-          )}
-        </div>
-      ))}
-      {aussagen.length < 8 && (
-        <button onClick={() => onUpdate({ aussagen: [...aussagen, { id: String(aussagen.length + 1), text: '', korrekt: true }] })}
-          className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Aussage</button>
-      )}
-    </div>
-  )
-}
-
-// --- Freitext Mini-Editor ---
-function FreitextMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  return (
-    <div>
-      <label className="text-xs text-slate-500 dark:text-slate-400">Erwartete Länge</label>
-      <select value={ta.laenge ?? 'mittel'} onChange={(e) => onUpdate({ laenge: e.target.value as 'kurz' | 'mittel' | 'lang' })}
-        className="mt-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
-        <option value="kurz">Kurz (1-3 Sätze)</option>
-        <option value="mittel">Mittel (1 Absatz)</option>
-        <option value="lang">Lang (mehrere Absätze)</option>
-      </select>
-    </div>
-  )
-}
-
-// --- Zuordnung Mini-Editor ---
-function ZuordnungMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  const paare = ta.paare ?? []
-  function updatePaar(i: number, feld: 'links' | 'rechts', wert: string) {
-    const neu = [...paare]
-    neu[i] = { ...neu[i], [feld]: wert }
-    onUpdate({ paare: neu })
-  }
-  return (
-    <div className="space-y-2">
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Zuordnungspaare:</label>
       {paare.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
-          <input type="text" value={p.links} onChange={(e) => updatePaar(i, 'links', e.target.value)}
+          <input type="text" value={p.links} onChange={(e) => { const n = [...paare]; n[i] = { ...n[i], links: e.target.value }; onUpdate({ paare: n }) }}
             placeholder="Links" className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
           <span className="text-xs text-slate-400">→</span>
-          <input type="text" value={p.rechts} onChange={(e) => updatePaar(i, 'rechts', e.target.value)}
+          <input type="text" value={p.rechts} onChange={(e) => { const n = [...paare]; n[i] = { ...n[i], rechts: e.target.value }; onUpdate({ paare: n }) }}
             placeholder="Rechts" className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          {paare.length > 1 && (
-            <button onClick={() => onUpdate({ paare: paare.filter((_, j) => j !== i) })}
-              className="text-red-400 hover:text-red-600 cursor-pointer text-xs">×</button>
-          )}
+          {paare.length > 1 && <button onClick={() => onUpdate({ paare: paare.filter((_, j) => j !== i) })} className="text-red-400 hover:text-red-600 cursor-pointer text-xs">×</button>}
         </div>
       ))}
-      <button onClick={() => onUpdate({ paare: [...paare, { links: '', rechts: '' }] })}
-        className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Paar</button>
+      <button onClick={() => onUpdate({ paare: [...paare, { links: '', rechts: '' }] })} className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Paar</button>
     </div>
   )
 }
 
-// --- Berechnung Mini-Editor ---
-function BerechnungMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  const ergebnisse = ta.ergebnisse ?? []
+function BerechnungMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  const ergebnisse = (ta.ergebnisse ?? []) as { id: string; label: string; korrekt: number; toleranz: number }[]
   return (
     <div className="space-y-2">
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Erwartete Ergebnisse:</label>
       {ergebnisse.map((erg, i) => (
         <div key={erg.id} className="flex items-center gap-2">
-          <input type="text" value={erg.label} onChange={(e) => {
-            const neu = [...ergebnisse]; neu[i] = { ...neu[i], label: e.target.value }; onUpdate({ ergebnisse: neu })
-          }} placeholder="Label" className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          <input type="number" value={erg.korrekt} onChange={(e) => {
-            const neu = [...ergebnisse]; neu[i] = { ...neu[i], korrekt: Number(e.target.value) }; onUpdate({ ergebnisse: neu })
-          }} placeholder="Korrekt" className="w-24 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          <input type="number" value={erg.toleranz} onChange={(e) => {
-            const neu = [...ergebnisse]; neu[i] = { ...neu[i], toleranz: Number(e.target.value) }; onUpdate({ ergebnisse: neu })
-          }} placeholder="±" className="w-16 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" title="Toleranz" />
+          <input type="text" value={erg.label} onChange={(e) => { const n = [...ergebnisse]; n[i] = { ...n[i], label: e.target.value }; onUpdate({ ergebnisse: n }) }}
+            placeholder="Label" className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+          <input type="number" value={erg.korrekt} onChange={(e) => { const n = [...ergebnisse]; n[i] = { ...n[i], korrekt: Number(e.target.value) }; onUpdate({ ergebnisse: n }) }}
+            className="w-24 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" placeholder="Korrekt" />
+          <input type="number" value={erg.toleranz} onChange={(e) => { const n = [...ergebnisse]; n[i] = { ...n[i], toleranz: Number(e.target.value) }; onUpdate({ ergebnisse: n }) }}
+            className="w-16 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" placeholder="±" title="Toleranz" />
         </div>
       ))}
       <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer">
-        <input type="checkbox" checked={ta.rechenwegErforderlich ?? false} onChange={(e) => onUpdate({ rechenwegErforderlich: e.target.checked })} className="rounded" />
+        <input type="checkbox" checked={!!ta.rechenwegErforderlich} onChange={(e) => onUpdate({ rechenwegErforderlich: e.target.checked })} className="rounded" />
         Rechenweg erforderlich
       </label>
     </div>
   )
 }
 
-// --- Sortierung Mini-Editor ---
-function SortierungMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
-  const elemente = ta.elemente ?? []
+function SortierungMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  const elemente = (ta.elemente ?? []) as string[]
   return (
     <div className="space-y-2">
-      <label className="text-xs text-slate-500 dark:text-slate-400">Elemente in korrekter Reihenfolge:</label>
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Elemente in korrekter Reihenfolge:</label>
       {elemente.map((el, i) => (
         <div key={i} className="flex items-center gap-2">
           <span className="text-xs text-slate-400 w-4">{i + 1}.</span>
-          <input type="text" value={el} onChange={(e) => {
-            const neu = [...elemente]; neu[i] = e.target.value; onUpdate({ elemente: neu })
-          }} placeholder={`Element ${i + 1}`} className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
-          {elemente.length > 2 && (
-            <button onClick={() => onUpdate({ elemente: elemente.filter((_, j) => j !== i) })}
-              className="text-red-400 hover:text-red-600 cursor-pointer text-xs">×</button>
-          )}
+          <input type="text" value={el} onChange={(e) => { const n = [...elemente]; n[i] = e.target.value; onUpdate({ elemente: n }) }}
+            className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+          {elemente.length > 2 && <button onClick={() => onUpdate({ elemente: elemente.filter((_, j) => j !== i) })} className="text-red-400 cursor-pointer text-xs">×</button>}
         </div>
       ))}
-      <button onClick={() => onUpdate({ elemente: [...elemente, ''] })}
-        className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Element</button>
+      <button onClick={() => onUpdate({ elemente: [...elemente, ''] })} className="text-xs text-slate-500 hover:text-slate-700 cursor-pointer">+ Element</button>
     </div>
   )
 }
 
-// --- Lückentext Mini-Editor ---
-function LueckentextMiniEditor({ ta, onUpdate }: { ta: InlineTeilaufgabe; onUpdate: (u: Partial<InlineTeilaufgabe>) => void }) {
+function LueckentextMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
   return (
     <div>
-      <label className="text-xs text-slate-500 dark:text-slate-400">Text mit Lücken (geschweifte Klammern um Lösungswort)</label>
-      <textarea
-        value={ta.textMitLuecken ?? ''}
-        onChange={(e) => onUpdate({ textMitLuecken: e.target.value })}
-        rows={3}
-        placeholder="Der [Bundesrat] ist die [Exekutive] der Schweiz."
-        className="w-full mt-1 px-2 py-1.5 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 resize-y"
-      />
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Text mit Lücken (geschweifte Klammern um Lösungswort)</label>
+      <textarea value={ta.textMitLuecken as string ?? ''} onChange={(e) => onUpdate({ textMitLuecken: e.target.value })}
+        rows={3} placeholder="Der [Bundesrat] ist die [Exekutive] der Schweiz."
+        className="w-full mt-1 px-2 py-1.5 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 resize-y" />
     </div>
   )
+}
+
+function CodeMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Sprache:</label>
+        <select value={ta.sprache as string ?? 'python'} onChange={(e) => onUpdate({ sprache: e.target.value })}
+          className="px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
+          {['python', 'javascript', 'typescript', 'sql', 'html', 'css', 'java'].map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+      </div>
+      <div>
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Starter-Code (optional):</label>
+        <textarea value={ta.starterCode as string ?? ''} onChange={(e) => onUpdate({ starterCode: e.target.value })}
+          rows={3} className="w-full mt-1 px-2 py-1.5 text-sm font-mono border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 resize-y" />
+      </div>
+    </div>
+  )
+}
+
+function FormelMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  return (
+    <div className="space-y-2">
+      <div>
+        <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Korrekte Formel (LaTeX):</label>
+        <input type="text" value={ta.korrekteFormel as string ?? ''} onChange={(e) => onUpdate({ korrekteFormel: e.target.value })}
+          placeholder="z.B. a^2 + b^2 = c^2" className="w-full mt-1 px-2 py-1.5 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+      </div>
+    </div>
+  )
+}
+
+function AudioMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  return (
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Max. Dauer (Sek.):</label>
+      <input type="number" min={10} max={600} step={10} value={ta.maxDauerSekunden as number ?? ''} placeholder="unbegrenzt"
+        onChange={(e) => onUpdate({ maxDauerSekunden: e.target.value ? Number(e.target.value) : undefined })}
+        className="w-28 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+    </div>
+  )
+}
+
+function BildMini({ ta, onUpdate }: TeilaufgabeInlineEditorProps) {
+  return (
+    <div>
+      <label className="text-xs font-medium text-slate-600 dark:text-slate-300">Bild-URL:</label>
+      <input type="text" value={ta.bildUrl as string ?? ''} onChange={(e) => onUpdate({ bildUrl: e.target.value })}
+        placeholder="https://..." className="w-full mt-1 px-2 py-1.5 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600" />
+      <p className="text-xs text-slate-400 mt-1">Für Bild-Upload: erstellen Sie diese Frage als eigenständige Frage mit dem Bild-Upload-Tool.</p>
+    </div>
+  )
+}
+
+function HinweisMini({ text }: { text: string }) {
+  return <p className="text-xs text-slate-500 dark:text-slate-400 italic p-2 bg-slate-50 dark:bg-slate-800/40 rounded">{text}</p>
 }

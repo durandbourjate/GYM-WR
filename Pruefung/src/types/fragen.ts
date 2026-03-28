@@ -364,19 +364,29 @@ export interface BilanzERFrage extends FrageBase {
 
 // === AUFGABENGRUPPE ===
 
-/** Inline-Teilaufgabe innerhalb einer Aufgabengruppe (abgespeckte Frage) */
+/** Inline-Teilaufgabe innerhalb einer Aufgabengruppe — vollständige Frage minus Metadaten */
 export interface InlineTeilaufgabe {
   id: string                    // z.B. "{parentId}_a"
-  typ: string                   // mc, freitext, richtigfalsch, lueckentext, zuordnung, berechnung, sortierung
+  typ: string                   // alle Fragetypen ausser 'aufgabengruppe'
   fragetext: string
   punkte: number
+  musterlosung?: string
+  bewertungsraster?: Bewertungskriterium[]
+  anhaenge?: FrageAnhang[]
+
   // MC
   optionen?: MCOption[]
   mehrfachauswahl?: boolean
+  zufallsreihenfolge?: boolean
+  erklaerungSichtbar?: boolean
   // Richtig/Falsch
   aussagen?: { id: string; text: string; korrekt: boolean; erklaerung?: string }[]
   // Freitext
   laenge?: 'kurz' | 'mittel' | 'lang'
+  maxZeichen?: number
+  minWoerter?: number
+  maxWoerter?: number
+  hilfstextPlaceholder?: string
   // Lückentext
   textMitLuecken?: string
   luecken?: LueckentextFrage['luecken']
@@ -385,9 +395,42 @@ export interface InlineTeilaufgabe {
   // Berechnung
   ergebnisse?: BerechnungFrage['ergebnisse']
   rechenwegErforderlich?: boolean
+  hilfsmittel?: string
   // Sortierung
   elemente?: string[]
   teilpunkte?: boolean
+  // Hotspot
+  bildUrl?: string
+  bereiche?: HotspotBereich[]
+  // Bildbeschriftung
+  beschriftungen?: BildbeschriftungLabel[]
+  // DragDrop Bild
+  zielzonen?: DragDropBildZielzone[]
+  labels?: string[]
+  // Code
+  sprache?: string
+  starterCode?: string
+  musterLoesung?: string
+  // Formel
+  korrekteFormel?: string
+  vergleichsModus?: string
+  // Audio
+  maxDauerSekunden?: number
+  // PDF
+  pdfBase64?: string
+  pdfDriveFileId?: string
+  pdfUrl?: string
+  pdfDateiname?: string
+  seitenAnzahl?: number
+  kategorien?: PDFKategorie[]
+  erlaubteWerkzeuge?: PDFAnnotationsWerkzeug[]
+  // Visualisierung/Zeichnen
+  untertyp?: string
+  canvasConfig?: CanvasConfig
+  musterloesungBild?: string
+  // FiBu (Buchungssatz, TKonto, etc.) — typ-spezifische Felder als generisches Objekt
+  // Wird bei Bedarf erweitert
+  [key: string]: unknown
 }
 
 export interface AufgabengruppeFrage extends FrageBase {
