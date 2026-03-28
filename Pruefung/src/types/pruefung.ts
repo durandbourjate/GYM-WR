@@ -90,6 +90,10 @@ export interface PruefungsConfig {
   // Soft-Lockdown: Kontrollstufe (Default: 'standard')
   kontrollStufe?: 'keine' | 'locker' | 'standard' | 'streng';
 
+  // Rechtschreibprüfung (Default: true — Browser-Verhalten)
+  rechtschreibpruefung?: boolean;
+  rechtschreibSprache?: 'de' | 'fr' | 'en' | 'it';
+
   // Multi-Teacher: Ersteller der Prüfung
   erstelltVon?: string;
   berechtigungen?: import('./auth').Berechtigung[];
@@ -106,7 +110,7 @@ export interface NotenConfig {
 export interface PruefungsMaterial {
   id: string;
   titel: string;
-  typ: 'pdf' | 'text' | 'link' | 'dateiUpload' | 'videoEmbed';
+  typ: 'pdf' | 'text' | 'richtext' | 'link' | 'dateiUpload' | 'videoEmbed';
   /** URL für PDF oder Link */
   url?: string;
   /** Inline-Inhalt für Typ 'text' */

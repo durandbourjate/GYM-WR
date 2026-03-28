@@ -51,6 +51,9 @@ export default function FreitextFrage({ frage }: Props) {
   const antworten = usePruefungStore((s) => s.antworten)
   const setAntwort = usePruefungStore((s) => s.setAntwort)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const config = usePruefungStore((s) => s.config)
+  const rechtschreibpruefungAktiv = config?.rechtschreibpruefung !== false
+  const rechtschreibSprache = config?.rechtschreibSprache ?? 'de'
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
   // Ref für aktuelle frage.id — verhindert stale closure im onUpdate-Callback
   const frageIdRef = useRef(frage.id)
@@ -76,6 +79,8 @@ export default function FreitextFrage({ frage }: Props) {
     editorProps: {
       attributes: {
         class: 'prose prose-slate dark:prose-invert max-w-none focus:outline-none',
+        spellcheck: rechtschreibpruefungAktiv ? 'true' : 'false',
+        lang: rechtschreibSprache,
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -203,13 +208,16 @@ export default function FreitextFrage({ frage }: Props) {
       )}
 
       {/* Editor — volle Breite, auto-grow */}
-      <div className={`tiptap-editor w-full border-2 rounded-xl
-        ${abgegeben
-          ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
-          : zeichenAnzahl > 0
-            ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
-            : 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-900'
-        }`}
+      <div
+        className={`tiptap-editor w-full border-2 rounded-xl
+          ${abgegeben
+            ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
+            : zeichenAnzahl > 0
+              ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
+              : 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-900'
+          }`}
+        spellCheck={rechtschreibpruefungAktiv}
+        lang={rechtschreibSprache}
       >
         <EditorContent editor={editor} />
       </div>

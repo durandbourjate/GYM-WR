@@ -221,6 +221,35 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich 
         )}
       </Section>
 
+      {/* Rechtschreibprüfung */}
+      <Section titel="Rechtschreibprüfung">
+        <div className="space-y-3">
+          <Toggle
+            label="Rechtschreibprüfung aktiviert"
+            beschreibung="Browser-Rechtschreibkorrektur für Freitext-Eingaben (für Diktate deaktivieren)"
+            aktiv={pruefung.rechtschreibpruefung !== false}
+            onChange={(v) => updatePruefung({ rechtschreibpruefung: v })}
+          />
+          {pruefung.rechtschreibpruefung !== false && (
+            <div className="ml-8">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">
+                Sprache
+              </label>
+              <select
+                value={pruefung.rechtschreibSprache ?? 'de'}
+                onChange={(e) => updatePruefung({ rechtschreibSprache: e.target.value as 'de' | 'fr' | 'en' | 'it' })}
+                className="input-field w-48"
+              >
+                <option value="de">Deutsch (de)</option>
+                <option value="fr">Français (fr)</option>
+                <option value="en">English (en)</option>
+                <option value="it">Italiano (it)</option>
+              </select>
+            </div>
+          )}
+        </div>
+      </Section>
+
       {/* Materialien (Gesetze, PDFs, Hilfsmittel) */}
       <MaterialienSection
         materialien={pruefung.materialien ?? []}
@@ -273,7 +302,7 @@ function MaterialienSection({ materialien, setMaterialien }: {
     const titel = neuerTitel.trim()
     if (!titel) return
     if ((neuerTyp === 'pdf' || neuerTyp === 'link') && !neueUrl.trim()) return
-    if (neuerTyp === 'text' && !neuerInhalt.trim()) return
+    if ((neuerTyp === 'text' || neuerTyp === 'richtext') && !neuerInhalt.trim()) return
     if (neuerTyp === 'videoEmbed') {
       const info = parseVideoUrl(neueUrl.trim())
       if (!info) {
@@ -296,8 +325,8 @@ function MaterialienSection({ materialien, setMaterialien }: {
       id: crypto.randomUUID(),
       titel,
       typ: neuerTyp,
-      ...(neuerTyp !== 'text' ? { url: neueUrl.trim() } : {}),
-      ...(neuerTyp === 'text' ? { inhalt: neuerInhalt.trim() } : {}),
+      ...(neuerTyp !== 'text' && neuerTyp !== 'richtext' ? { url: neueUrl.trim() } : {}),
+      ...(neuerTyp === 'text' || neuerTyp === 'richtext' ? { inhalt: neuerInhalt.trim() } : {}),
     }
     setMaterialien([...materialien, neu])
     resetForm()
@@ -398,6 +427,7 @@ function MaterialienSection({ materialien, setMaterialien }: {
   const typLabel: Record<PruefungsMaterial['typ'], string> = {
     pdf: 'PDF',
     text: 'Text',
+    richtext: 'Rich-Text',
     link: 'Link',
     dateiUpload: 'Datei',
     videoEmbed: 'Video',
@@ -406,6 +436,7 @@ function MaterialienSection({ materialien, setMaterialien }: {
   const typIcon: Record<PruefungsMaterial['typ'], string> = {
     pdf: '📄',
     text: '📝',
+    richtext: '🖹',
     link: '🔗',
     dateiUpload: '📎',
     videoEmbed: '🎬',
@@ -455,6 +486,15 @@ function MaterialienSection({ materialien, setMaterialien }: {
                     className="input-field text-xs"
                     rows={3}
                     placeholder="Textinhalt..."
+                  />
+                )}
+                {mat.typ === 'richtext' && (
+                  <textarea
+                    value={mat.inhalt ?? ''}
+                    onChange={(e) => updateMaterial(mat.id, { inhalt: e.target.value })}
+                    className="input-field text-xs font-mono"
+                    rows={4}
+                    placeholder="<p>HTML-Inhalt...</p>"
                   />
                 )}
                 {mat.typ === 'dateiUpload' && mat.dateiname && (
@@ -514,7 +554,8 @@ function MaterialienSection({ materialien, setMaterialien }: {
                 <option value="pdf">PDF-Link (eingebettet)</option>
                 <option value="dateiUpload">Datei hochladen (PDF/Bild/Audio/Video)</option>
                 <option value="videoEmbed">Video einbetten (YouTube/Vimeo/nanoo.tv)</option>
-                <option value="text">Text (inline)</option>
+                <option value="richtext">Rich-Text (formatierter Inhalt)</option>
+                <option value="text">Text (inline, unformatiert)</option>
                 <option value="link">Link (extern)</option>
               </select>
             </Field>
@@ -556,6 +597,21 @@ function MaterialienSection({ materialien, setMaterialien }: {
                 className="input-field"
                 rows={5}
               />
+            </Field>
+          )}
+
+          {neuerTyp === 'richtext' && (
+            <Field label="Rich-Text Inhalt (HTML)">
+              <textarea
+                value={neuerInhalt}
+                onChange={(e) => setNeuerInhalt(e.target.value)}
+                placeholder="<p>Formatierter <strong>HTML</strong>-Inhalt...</p>"
+                className="input-field font-mono text-xs"
+                rows={8}
+              />
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                HTML-Inhalt wird beim Anzeigen bereinigt und als formatierter Text dargestellt.
+              </p>
             </Field>
           )}
 
@@ -652,7 +708,7 @@ function MaterialienSection({ materialien, setMaterialien }: {
             ) : (
               <button
                 onClick={addMaterial}
-                disabled={!neuerTitel.trim() || ((neuerTyp === 'pdf' || neuerTyp === 'link' || neuerTyp === 'videoEmbed') && !neueUrl.trim()) || (neuerTyp === 'text' && !neuerInhalt.trim())}
+                disabled={!neuerTitel.trim() || ((neuerTyp === 'pdf' || neuerTyp === 'link' || neuerTyp === 'videoEmbed') && !neueUrl.trim()) || ((neuerTyp === 'text' || neuerTyp === 'richtext') && !neuerInhalt.trim())}
                 className="px-3 py-1.5 text-sm font-medium text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 Hinzufügen

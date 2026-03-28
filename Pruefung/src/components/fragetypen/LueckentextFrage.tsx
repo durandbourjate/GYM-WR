@@ -24,6 +24,9 @@ export default function LueckentextFrage({ frage }: Props) {
   const antworten = usePruefungStore((s) => s.antworten)
   const setAntwort = usePruefungStore((s) => s.setAntwort)
   const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const config = usePruefungStore((s) => s.config)
+  const rechtschreibpruefungAktiv = config?.rechtschreibpruefung !== false
+  const rechtschreibSprache = config?.rechtschreibSprache ?? 'de'
 
   const aktuelleAntwort = antworten[frage.id]
   const eintraege: Record<string, string> =
@@ -113,6 +116,8 @@ export default function LueckentextFrage({ frage }: Props) {
                 onChange={(e) => handleChange(lueckenId, e.target.value)}
                 disabled={abgegeben}
                 placeholder={`Lücke ${lueckenId}`}
+                spellCheck={rechtschreibpruefungAktiv}
+                lang={rechtschreibSprache}
                 className={`inline-block mx-1 px-3 py-1 w-48 text-base border-b-2 outline-none transition-colors text-slate-800 dark:text-slate-100
                   ${abgegeben
                     ? 'border-slate-300 dark:border-slate-600 bg-transparent opacity-75'
