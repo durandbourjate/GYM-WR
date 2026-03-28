@@ -13,15 +13,15 @@ interface Props {
   children: ReactNode
   /** Optionale zusätzliche CSS-Klassen für den Button */
   className?: string
-  /** Wenn gesetzt: Klick auf Icon ruft diese Funktion auf, nur ▾ öffnet Dropdown */
-  onIconClick?: () => void
+  /** Wird beim Öffnen des Dropdowns aufgerufen (z.B. Werkzeug aktivieren) */
+  onOpen?: () => void
 }
 
 /**
  * Toolbar-Button mit Modal-Dropdown.
+ * Klick auf den Button öffnet das Dropdown UND ruft onOpen auf (z.B. Werkzeug aktivieren).
  * Panel schwebt über dem Canvas (absolute + z-index).
  * Vertikal: öffnet nach rechts. Horizontal: öffnet nach unten.
- * Toolbar-Breite bleibt unverändert.
  */
 export default function ToolbarDropdown({
   icon,
@@ -30,7 +30,7 @@ export default function ToolbarDropdown({
   horizontal = false,
   children,
   className,
-  onIconClick,
+  onOpen,
 }: Props) {
   const [offen, setOffen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -43,57 +43,42 @@ export default function ToolbarDropdown({
         setOffen(false)
       }
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    document.addEventListener('pointerdown', handleClickOutside)
+    return () => document.removeEventListener('pointerdown', handleClickOutside)
   }, [offen])
 
-  const btnKlassen = [
-    'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors',
-    aktiv
-      ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100'
-      : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
-    offen ? 'ring-1 ring-slate-400 dark:ring-slate-500' : '',
-    className ?? '',
-  ].join(' ')
+  function handleButtonClick() {
+    const wirdGeoeffnet = !offen
+    setOffen(wirdGeoeffnet)
+    // Werkzeug aktivieren beim Öffnen
+    if (wirdGeoeffnet && onOpen) {
+      onOpen()
+    }
+  }
 
   return (
     <div ref={containerRef} className="relative">
-      {onIconClick ? (
-        // Zwei-Teil-Button: Icon aktiviert Werkzeug, ▾ öffnet Dropdown
-        <div className={`flex items-center ${btnKlassen}`}>
-          <button
-            type="button"
-            title={label}
-            onClick={() => { onIconClick(); setOffen(false) }}
-            className="flex-1 flex items-center justify-center min-h-[44px] cursor-pointer"
-          >
-            {icon}
-          </button>
-          <button
-            type="button"
-            title={`${label}-Optionen`}
-            onClick={() => setOffen(!offen)}
-            className="px-0.5 flex items-center justify-center min-h-[44px] cursor-pointer opacity-50 hover:opacity-100"
-          >
-            <span className="text-[8px]">▾</span>
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          title={label}
-          onClick={() => setOffen(!offen)}
-          className={btnKlassen}
-        >
-          {icon}
-          <span className="text-[8px] ml-0.5 opacity-50">▾</span>
-        </button>
-      )}
+      <button
+        type="button"
+        title={label}
+        onClick={handleButtonClick}
+        className={[
+          'min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium transition-colors',
+          aktiv
+            ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-slate-100'
+            : 'bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300',
+          offen ? 'ring-1 ring-slate-400 dark:ring-slate-500' : '',
+          className ?? '',
+        ].join(' ')}
+      >
+        {icon}
+        <span className="text-[8px] ml-0.5 opacity-50">▾</span>
+      </button>
 
       {offen && (
         <div
           className={[
-            'absolute z-[60] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl p-1.5',
+            'absolute z-[60] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-xl p-2',
             horizontal
               ? 'top-full left-0 mt-1'
               : 'left-full top-0 ml-1',

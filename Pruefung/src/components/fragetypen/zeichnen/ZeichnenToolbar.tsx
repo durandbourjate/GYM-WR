@@ -140,13 +140,14 @@ export function ZeichnenToolbar({
         ↖
       </button>
 
-      {/* Stift-Menü (Stärke + Stil) */}
+      {/* Stift-Menü (Stärke + Stil) — Klick aktiviert Stift + öffnet Optionen */}
       {hatStift && (
         <ToolbarDropdown
           icon={<span style={{ fontSize: stiftBreite > 2 ? 18 : 14 }}>✏️</span>}
           label="Freihand"
           aktiv={aktivesTool === 'stift'}
           horizontal={isHorizontal}
+          onOpen={() => onToolChange('stift')}
         >
           <div className="flex flex-col gap-1 min-w-[120px]">
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Stärke</span>
@@ -196,6 +197,7 @@ export function ZeichnenToolbar({
           label="Formen"
           aktiv={istFormenAktiv}
           horizontal={isHorizontal}
+          onOpen={() => { if (!istFormenAktiv) onToolChange('rechteck') }}
         >
           <div className="flex flex-col gap-0.5 min-w-[100px]">
             {verfuegbareFormen.map((formTool) => (
@@ -218,24 +220,16 @@ export function ZeichnenToolbar({
         </ToolbarDropdown>
       )}
 
-      {/* Text-Menü (Grösse, Fett, Rotation — alles im Dropdown) */}
+      {/* Text-Menü (Klick aktiviert Text-Werkzeug + öffnet Optionen) */}
       {hatText && (
         <ToolbarDropdown
           icon="T"
           label="Text"
           aktiv={aktivesTool === 'text' || istTextSelektiert}
           horizontal={isHorizontal}
+          onOpen={() => onToolChange('text')}
         >
           <div className="flex flex-col gap-1 min-w-[120px]" onClick={(e) => e.stopPropagation()}>
-            {/* Tool aktivieren */}
-            <button
-              type="button"
-              onClick={() => onToolChange('text')}
-              className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${aktivesTool === 'text' ? 'bg-slate-200 dark:bg-slate-600 font-medium' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-            >
-              Text einfügen
-            </button>
-            <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
             {/* Grösse */}
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Grösse</span>
             <div className="flex gap-0.5 px-1">
@@ -274,7 +268,7 @@ export function ZeichnenToolbar({
         label="Farbe"
         horizontal={isHorizontal}
       >
-        <div className="grid grid-cols-3 gap-1">
+        <div className="grid grid-cols-3 gap-2" style={{ minWidth: 156 }}>
           {verfuegbareFarben.map((farbe) => (
             <button
               key={farbe}
@@ -282,11 +276,11 @@ export function ZeichnenToolbar({
               title={farbe}
               onClick={() => onFarbeChange(farbe)}
               className={[
-                'w-[34px] h-[34px] flex items-center justify-center rounded transition-all',
-                aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-1' : 'hover:scale-110',
+                'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
+                aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',
               ].join(' ')}
             >
-              <span className="block rounded-full" style={{ width: 20, height: 20, backgroundColor: farbe }} />
+              <span className="block rounded-full border border-slate-300 dark:border-slate-500" style={{ width: 30, height: 30, backgroundColor: farbe }} />
             </button>
           ))}
         </div>
