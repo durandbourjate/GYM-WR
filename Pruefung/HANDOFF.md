@@ -1,7 +1,7 @@
 # HANDOFF.md — Prüfungsplattform
 
-> Digitale Prüfungsplattform für Wirtschaft & Recht am Gymnasium Hofwil.
-> Stack: React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 + Tiptap + Vitest
+> Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil.
+> Stack: React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 + Tiptap + KaTeX + CodeMirror 6 + Vitest
 
 ---
 
@@ -9,7 +9,61 @@
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
 - ~~Fragenbank im Composer "nicht gefunden"~~ ✅ 27.03.2026
-- **Apps Script Deploy nötig** — Session 29 enthält Backend-Änderungen (Rate-Limiting, Session-Tokens, KI-Freitext-Endpoint, DATENSCHUTZ-Guards)
+- **Apps Script Deploy nötig** — Session 29 + 30 enthalten Backend-Änderungen
+- **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
+- **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
+- **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
+- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht
+
+---
+
+## Session 30 — Plattform-Öffnung für alle Fachschaften (28.03.2026)
+
+Grosse Architektur-Generalisierung + 10 neue Features/Fragetypen. 5 Pläne umgesetzt.
+
+### Strang 1: Architektur-Generalisierung
+
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | **SchulConfig** | Zentrale Config (Schulname, Domains, Fächer, Gefässe, Tags) als Zustand-Store. Hardcodierte Fallback-Werte. Backend-Endpoint `ladeSchulConfig`. |
+| 2 | **fachbereich → fach + tags** | `Fachbereich`-Enum entfernt. Neues `fach: string` + `tags: Tag[]` (3 Ebenen: Fachschaft, Querschnitt, Persönlich). ~45 Dateien migriert. |
+| 3 | **fachschaft → fachschaften** | LP kann mehrere Fachschaften haben (`string[]`). AuthUser, LPInfo, authStore angepasst. |
+| 4 | **Branding konfigurierbar** | Login-Logo, Schulname, Domains, PDF-Header, SEB-Titel aus schulConfig statt hardcodiert. |
+| 5 | **Gefässe erweiterbar** | `Gefaess`-Enum → `string` mit Validierung gegen Config. FF (Freifach) hinzugefügt. |
+| 6 | **Fragetypen-Sichtbarkeit** | LP kann Fragetypen ein-/ausblenden (localStorage). FiBu-Typen nur für WR-Fachschaft. |
+| 7 | **Punkte ↔ Bewertungsraster** | Gesamtpunkte automatisch aus Raster-Summe berechnet. Punkte-Feld read-only bei Raster. |
+| 8 | **klassenTyp** | `'regel' | 'taf'` Feld auf PruefungsConfig (UI für Phasen-Auswahl später). |
+| 9 | **Backend-Migration** | `migriereFachbereich_()` Endpoint, `fachschaftZuFach_()`, fach-Feld in allen Endpoints. |
+
+### Strang 2: Neue Features
+
+| # | Feature | Typ | Details |
+|---|---------|-----|---------|
+| A1 | **Wörterzähler** | Erweiterung | Min/Max-Wortlimit für Freitext. Amber/Rot-Warnung bei Unter-/Überschreitung. |
+| A2 | **Inline-Choice** | Erweiterung | Lückentext mit Dropdown-Optionen. `dropdownOptionen?: string[]` pro Lücke. Auto-Korrektur unverändert. |
+| A3 | **Rechtschreibprüfung** | Erweiterung | LP deaktiviert pro Prüfung. Sprach-Dropdown (de/fr/en/it). `spellCheck`+`lang` Attribute. |
+| A4 | **Rich-Text-Panel** | Erweiterung | `typ: 'richtext'` im Material-System. DOMPurify-Sanitierung, prose-Styling. |
+| A5 | **LaTeX in Aufgaben** | LP-Tool | `$...$` / `$$...$$` in Fragentext. KaTeX lazy-loaded (259KB separater Chunk). LatexText-Komponente. |
+| A6 | **Code in Aufgaben** | LP-Tool | CodeMirror read-only Blöcke. 7 Sprachen. Light/Dark Theme. Lazy-loaded. |
+| B1 | **Sortierung** | Neuer Fragetyp | Reihenfolge per ↑/↓-Buttons. Auto-Korrektur mit Teilpunkten. |
+| B2 | **Hotspot** | Neuer Fragetyp | Klickbereiche auf Bild (Rechteck/Kreis). %-basierte Koordinaten. Auto-Korrektur. |
+| B3 | **Bildbeschriftung** | Neuer Fragetyp | Textfelder auf Bild positioniert. Case-insensitiv mit Alternativen. Auto-Korrektur. |
+| C1 | **Medien-Einbettung** | Feature | Audio/Video direkt in Fragen. MedienPlayer mit Abspiel-Limit. |
+| C2 | **Audio-Aufnahme** | Neuer Fragetyp | MediaRecorder API. WebM/Opus. Base64-Speicherung. Manuelle Korrektur. |
+| C4 | **Drag & Drop Bild** | Neuer Fragetyp | Labels auf Bildzonen ziehen. HTML5 Drag API. Distraktoren. Auto-Korrektur. |
+| D1 | **Code-Editor** | Neuer Fragetyp | CodeMirror editable. 7 Sprachen. Starter-Code. Manuelle + KI-Korrektur. |
+| D2 | **Formel-Editor** | Neuer Fragetyp | LaTeX-Eingabe + KaTeX-Vorschau. Symbolleiste. Auto-Korrektur (normalisiert). |
+
+**Fragetypen total:** 13 → 20 (7 neue: sortierung, hotspot, bildbeschriftung, audio, dragdrop_bild, code, formel)
+
+**Dependencies neu:** KaTeX (~259KB, lazy), CodeMirror 6 (~150KB, lazy)
+
+**Tests:** 161 (von 131 auf 161, +30 neue Tests)
+
+**Spec:** `docs/superpowers/specs/2026-03-28-oeffnung-plattform-design.md`
+**Pläne:** `docs/superpowers/plans/2026-03-28-architektur-generalisierung.md`, `docs/superpowers/plans/2026-03-28-quick-wins-a1-a4.md`
+
+**Wichtig:** Apps Script muss neu deployed werden für schulConfig-Endpoint + fach-Feld + Migration.
 
 ---
 

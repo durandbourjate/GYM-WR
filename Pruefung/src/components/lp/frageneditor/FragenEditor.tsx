@@ -22,6 +22,7 @@ import type {
   PDFFrage, PDFKategorie, PDFAnnotationsWerkzeug, PDFAnnotation,
   SortierungFrage, HotspotFrage, HotspotBereich, BildbeschriftungFrage, BildbeschriftungLabel,
   AudioFrage, DragDropBildFrage, DragDropBildZielzone,
+  CodeFrage, FormelFrage,
 } from '../../../types/fragen.ts'
 import type { FrageTyp } from './editorUtils.ts'
 import { generiereFrageId } from './editorUtils.ts'
@@ -326,6 +327,25 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
     frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).labels : []
   )
 
+  // Code-spezifisch
+  const [codeSprache, setCodeSprache] = useState(
+    frage?.typ === 'code' ? (frage as CodeFrage).sprache : 'python'
+  )
+  const [codeStarterCode, setCodeStarterCode] = useState(
+    frage?.typ === 'code' ? (frage as CodeFrage).starterCode ?? '' : ''
+  )
+  const [codeMusterLoesungCode, setCodeMusterLoesungCode] = useState(
+    frage?.typ === 'code' ? (frage as CodeFrage).musterLoesung ?? '' : ''
+  )
+
+  // Formel-spezifisch
+  const [formelKorrekteFormel, setFormelKorrekteFormel] = useState(
+    frage?.typ === 'formel' ? (frage as FormelFrage).korrekteFormel : ''
+  )
+  const [formelVergleichsModus, setFormelVergleichsModus] = useState<'exakt'>(
+    'exakt'
+  )
+
   // Zeitbedarf
   const [zeitbedarf, setZeitbedarf] = useState<number>(
     frage?.zeitbedarf ?? berechneZeitbedarf(
@@ -384,6 +404,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
       kbAufgabentext, kbAufgaben,
       biAufgabentext, biKontenMitSaldi,
       agKontext: agKontext, agTeilaufgabenIds,
+      korrekteFormel: formelKorrekteFormel,
     })
     if (errs.length > 0) {
       setFehler(errs)
@@ -489,6 +510,10 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
         typDaten = { typ: 'audio', fragetext, maxDauerSekunden: audioMaxDauer }; break
       case 'dragdrop_bild':
         typDaten = { typ: 'dragdrop_bild', fragetext, bildUrl: ddBildUrl, zielzonen: ddZielzonen, labels: ddLabels }; break
+      case 'code':
+        typDaten = { typ: 'code', fragetext, sprache: codeSprache, starterCode: codeStarterCode, musterLoesungCode: codeMusterLoesungCode }; break
+      case 'formel':
+        typDaten = { typ: 'formel', fragetext, korrekteFormel: formelKorrekteFormel, vergleichsModus: formelVergleichsModus }; break
       default:
         setSpeicherLaeuft(false)
         return
@@ -617,7 +642,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
           {/* Fragetyp wählen */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <div className="flex gap-2 flex-wrap">
-              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe', 'visualisierung', 'pdf'] as FrageTyp[]).map((t) => (
+              {(['freitext', 'mc', 'richtigfalsch', 'lueckentext', 'zuordnung', 'berechnung', 'sortierung', 'hotspot', 'bildbeschriftung', 'dragdrop_bild', 'code', 'formel', 'audio', 'buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur', 'aufgabengruppe', 'visualisierung', 'pdf'] as FrageTyp[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTyp(t)}
@@ -738,6 +763,11 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             ddBildUrl={ddBildUrl} setDdBildUrl={setDdBildUrl}
             ddZielzonen={ddZielzonen} setDdZielzonen={setDdZielzonen}
             ddLabels={ddLabels} setDdLabels={setDdLabels}
+            codeSprache={codeSprache} setCodeSprache={setCodeSprache}
+            codeStarterCode={codeStarterCode} setCodeStarterCode={setCodeStarterCode}
+            codeMusterLoesungCode={codeMusterLoesungCode} setCodeMusterLoesungCode={setCodeMusterLoesungCode}
+            formelKorrekteFormel={formelKorrekteFormel} setFormelKorrekteFormel={setFormelKorrekteFormel}
+            formelVergleichsModus={formelVergleichsModus} setFormelVergleichsModus={setFormelVergleichsModus}
           />
 
           {/* Musterlösung */}
