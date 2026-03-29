@@ -107,6 +107,49 @@ export default function Layout() {
     }
   }, [abgegeben])
 
+  // Sidebar-Breite: Resizable per Drag, persistiert in localStorage
+  const SIDEBAR_KEY = 'pruefung-sidebar-breite'
+  const DEFAULT_SIDEBAR = 224 // w-56 = 14rem = 224px
+  const MIN_SIDEBAR = 140
+  const MAX_SIDEBAR = 320
+  const [sidebarBreite, setSidebarBreite] = useState<number>(() => {
+    try { const v = localStorage.getItem(SIDEBAR_KEY); return v ? Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, Number(v))) : DEFAULT_SIDEBAR } catch { return DEFAULT_SIDEBAR }
+  })
+  const sidebarResizingRef = useRef(false)
+  const sidebarStartXRef = useRef(0)
+  const sidebarStartBreiteRef = useRef(0)
+
+  const handleSidebarResizeStart = useCallback((e: React.PointerEvent) => {
+    e.preventDefault()
+    sidebarResizingRef.current = true
+    sidebarStartXRef.current = e.clientX
+    sidebarStartBreiteRef.current = sidebarBreite
+
+    const handleMove = (ev: PointerEvent) => {
+      if (!sidebarResizingRef.current) return
+      const diff = ev.clientX - sidebarStartXRef.current
+      const neueBreite = Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, sidebarStartBreiteRef.current + diff))
+      setSidebarBreite(neueBreite)
+    }
+    const handleUp = () => {
+      sidebarResizingRef.current = false
+      document.removeEventListener('pointermove', handleMove)
+      document.removeEventListener('pointerup', handleUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+      try { localStorage.setItem(SIDEBAR_KEY, String(sidebarBreite)) } catch { /* ignore */ }
+    }
+    document.addEventListener('pointermove', handleMove)
+    document.addEventListener('pointerup', handleUp)
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }, [sidebarBreite])
+
+  // Sidebar-Breite in localStorage speichern (bei Änderung)
+  useEffect(() => {
+    try { localStorage.setItem(SIDEBAR_KEY, String(sidebarBreite)) } catch { /* ignore */ }
+  }, [sidebarBreite])
+
   // UX: beforeunload-Warnung, Tastaturnavigation, Escape
   const handleAbgabeDialogSchliessen = useCallback(() => setZeigAbgabeDialog(false), [])
   const handleAbgabeDialogOeffnen = useCallback(() => setZeigAbgabeDialog(true), [])
@@ -292,7 +335,7 @@ export default function Layout() {
           {/* === LINKS: Timer (über Sidebar-Breite) + Zurück (neben Sidebar) === */}
           <div className="flex items-center gap-1.5 flex-1 min-w-0">
             {/* Timer-Bereich: gleiche Breite wie Sidebar */}
-            <div className={`hidden md:flex items-center gap-1.5 shrink-0 ${istSplitModus ? 'w-44' : 'w-56'} pr-4`}>
+            <div className="hidden md:flex items-center gap-1.5 shrink-0 pr-4" style={{ width: istSplitModus ? Math.min(sidebarBreite, 176) : sidebarBreite }}>
               <AutoSaveIndikator />
               <Timer onZeitAbgelaufen={() => setZeitAbgelaufen(true)} />
             </div>
@@ -373,7 +416,10 @@ export default function Layout() {
         {/* Linke Seite: Sidebar + Fragenbereich */}
         <div className="flex min-w-0 flex-1 transition-all duration-200">
           {/* Sidebar Navigation */}
-          <aside className={`hidden md:flex md:flex-col bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-4 ${istSplitModus ? 'w-44' : 'w-56'} shrink-0`}>
+          <aside
+            className="hidden md:flex md:flex-col bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-4 shrink-0 relative"
+            style={{ width: istSplitModus ? Math.min(sidebarBreite, 176) : sidebarBreite }}
+          >
             {/* Material-Button zuoberst */}
             {config.materialien && config.materialien.length > 0 && (
               <button
@@ -411,6 +457,13 @@ export default function Layout() {
               <SuSHilfeButton />
               <ThemeToggle />
             </div>
+
+            {/* Resize-Handle am rechten Rand */}
+            <div
+              onPointerDown={handleSidebarResizeStart}
+              className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-500/30 active:bg-indigo-500/50 z-10 transition-colors"
+              title="Sidebar-Breite anpassen"
+            />
           </aside>
 
           {/* Fragenbereich — volle Breite nutzen */}
