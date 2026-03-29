@@ -66,13 +66,13 @@ export default function HotspotFrage({ frage }: Props) {
       {/* Bild mit Klickbereichen */}
       <div className={`relative inline-block ${!abgegeben && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div
-          className={`relative ${abgegeben ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
+          className={`relative overflow-hidden w-fit max-w-full ${abgegeben ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
           onClick={handleKlick}
         >
           <img
             src={frage.bildUrl}
             alt="Hotspot-Bild"
-            className="max-w-full rounded-lg select-none"
+            className="block max-w-full rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />

@@ -50,11 +50,11 @@ export default function BildbeschriftungFrage({ frage }: Props) {
 
       {/* Bild mit Labels */}
       <div className={`relative inline-block ${!abgegeben && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden w-fit max-w-full">
           <img
             src={frage.bildUrl}
             alt="Bildbeschriftung"
-            className="max-w-full rounded-lg select-none"
+            className="block max-w-full rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />
