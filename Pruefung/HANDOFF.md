@@ -26,6 +26,62 @@
 
 ---
 
+## Session 37 — Browser-Test + Bugfixes + iPad-Fixes (30.03.2026)
+
+Systematischer Browser-Test (LP + SuS) der Einrichtungsprüfung + iPad-Test durch User.
+
+### Strang 1: Auto-Korrektur + Monitoring-Bugs
+
+| # | Fix | Details |
+|---|-----|---------|
+| 1 | **effektivePunkte() leere Strings** | Backend schreibt `lpPunkte: ''` (leerer String). `??`-Operator behandelt '' nicht als null → Punkte zeigten 0. Neue `istPunkteGesetzt()`-Hilfsfunktion. |
+| 2 | **useEffect Auto-Korrektur robuster** | `useKorrekturDaten.ts`: Prüft jetzt auch leere Strings als "nicht gesetzt". |
+| 3 | **Abgabe-Status 'erzwungen'** | `apps-script-code.js`: `istAbgabe === 'true'` → Status immer `'abgegeben'`. Alte Logik verglich Zeitstempel falsch bei wiederholten Testläufen. |
+| 4 | **gesamtFragen bei Abgabe** | `AbgabeDialog.tsx` + `Timer.tsx`: `gesamtFragen: fragen.length` bei Abgabe mitsenden → Monitoring zeigt korrekten Fortschritt. |
+| 5 | **Fortschritt nach Abgabe** | `SchuelerZeile.tsx`: Zeigt 100%/✓ statt 0%/9/0 wenn `gesamtFragen = 0` aber abgegeben. |
+
+### Strang 2: Korrektur-Vollansicht mit Bildern/PDFs
+
+| # | Fix | Details |
+|---|-----|---------|
+| 6 | **HotspotAnzeige** | Bild + korrekte Bereiche (gestrichelt grün) + SuS-Klicks (rot). |
+| 7 | **BildbeschriftungAnzeige** | Bild + Labels an Positionen mit ✓/✗ Farbcodierung + Textliste. |
+| 8 | **DragDropBildAnzeige** | Bild + Zonen mit platzierten Labels (grün=korrekt, rot=falsch). |
+| 9 | **PDFAnnotationAnzeige** | PDF als iframe/MediaAnhang + Annotationsinfo. |
+
+### Strang 3: iPad-spezifische Fixes
+
+| # | Fix | Details |
+|---|-----|---------|
+| 10 | **Audio iOS** | `AudioFrage.tsx`: WebM/Opus → MP4/AAC Fallback via `MediaRecorder.isTypeSupported()`. |
+| 11 | **DragDrop Touch** | `DragDropBildFrage.tsx`: `touchAction: 'manipulation'` auf Container. Tap-to-select war implementiert, Touch-Events wurden aber vom Browser als Scroll interpretiert. |
+| 12 | **Stifteingabe** | `useDrawingEngine.ts`: RDP-Vereinfachung 1.5 → 0.8 (weniger Buchstaben-Sprünge). |
+| 13 | **Sticky Header** | `Layout.tsx`: `overflow-hidden` vom äusseren Container entfernt (bricht `position: sticky` auf iOS). |
+| 14 | **Material-PDFs** | `index.html`: `*.googleusercontent.com` zu CSP `frame-src` hinzugefügt. |
+
+### Strang 4: Tests + Dokumentation
+
+| # | Feature | Details |
+|---|---------|---------|
+| 15 | **6 neue Tests** | `korrekturUtils.test.ts`: Edge Cases für `effektivePunkte()` (leere Strings, 0, undefined). |
+| 16 | **E2E-Smoke-Checklist** | `docs/e2e-smoke-test.md`: 50+ manuelle Prüfpunkte für Regressionstests. |
+
+### Offen (iPad — User-Verifikation nötig nach Deploy)
+
+| # | Problem | Status |
+|---|---------|--------|
+| — | PDF-Annotation auf iPad | Fixes deployed (CSP + touchAction), muss am iPad verifiziert werden |
+| — | Stifteingabe Qualität | RDP-Toleranz reduziert, muss am iPad verifiziert werden |
+| — | Freitext/Code Auto-Focus | iOS-Limitation (nur bei User-Geste), nicht fixbar ohne SEB |
+
+**Dateien geändert:** `korrekturUtils.ts`, `korrekturUtils.test.ts`, `useKorrekturDaten.ts`, `KorrekturFrageVollansicht.tsx`, `SchuelerZeile.tsx`, `AbgabeDialog.tsx`, `Timer.tsx`, `apps-script-code.js`, `AudioFrage.tsx`, `DragDropBildFrage.tsx`, `useDrawingEngine.ts`, `Layout.tsx`, `index.html`, `docs/e2e-smoke-test.md` (neu)
+
+**Tests:** 167 grün (+6 neue). `tsc -b` sauber.
+
+**Wichtig:** Apps Script muss neu deployed werden für den Status-Fix (#3).
+
+---
+
 ## Session 36 — iPad-Test Bugfixes (30.03.2026)
 
 Systematische Behebung aller Probleme aus dem iPad-Test (Demo-SuS + LP/SuS-Login).
