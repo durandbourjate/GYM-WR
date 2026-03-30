@@ -2646,6 +2646,488 @@ window.QUESTIONS = [
       }
     ],
     explain: "Erfolgswirksame Geschäftsfälle (Aufwand/Ertrag) verändern die Bilanzsumme und das Eigenkapital. Reine Bilanzbuchungen sind erfolgsneutral."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Erfolgsrechnung
+  // ══════════════════════════════════════════
+  {
+    id: "bs07", topic: "erfolgsrechnung", type: "buchungssatz", diff: 1, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Lohnzahlung per Bank CHF 4'500.–",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "6000", name: "Mietaufwand"}, {nr: "6500", name: "Lohnaufwand"},
+      {nr: "3200", name: "Warenertrag"}, {nr: "6800", name: "Zinsaufwand"}
+    ],
+    correct: [{soll: "6500", haben: "1020", betrag: 4500}],
+    explain: "Lohnzahlung: Lohnaufwand (Aufwandskonto) nimmt zu → Soll. Bank (Aktivkonto) nimmt ab → Haben."
+  },
+  {
+    id: "bs08", topic: "erfolgsrechnung", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Zinsgutschrift der Bank CHF 120.–",
+    konten: [
+      {nr: "1020", name: "Bank"}, {nr: "3400", name: "Zinsertrag"},
+      {nr: "6800", name: "Zinsaufwand"}, {nr: "6500", name: "Lohnaufwand"},
+      {nr: "1000", name: "Kasse"}, {nr: "2800", name: "Eigenkapital"}
+    ],
+    correct: [{soll: "1020", haben: "3400", betrag: 120}],
+    explain: "Zinsgutschrift: Bank nimmt zu → Soll. Zinsertrag (Ertragskonto) nimmt zu → Haben."
+  },
+  {
+    id: "bs09", topic: "erfolgsrechnung", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Barzahlung der Stromrechnung CHF 350.–",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "6200", name: "Energieaufwand"}, {nr: "6000", name: "Mietaufwand"},
+      {nr: "2000", name: "Kreditoren"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    correct: [{soll: "6200", haben: "1000", betrag: 350}],
+    explain: "Stromrechnung bar: Energieaufwand nimmt zu → Soll. Kasse nimmt ab → Haben."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Warenkonten
+  // ══════════════════════════════════════════
+  {
+    id: "bs10", topic: "warenkonten", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Warenverkauf auf Rechnung CHF 6'000.–",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "1100", name: "Debitoren"}, {nr: "2000", name: "Kreditoren"},
+      {nr: "3200", name: "Warenertrag"}, {nr: "4200", name: "Warenaufwand"}
+    ],
+    correct: [{soll: "1100", haben: "3200", betrag: 6000}],
+    explain: "Verkauf auf Rechnung: Debitoren (Aktivkonto) nehmen zu → Soll. Warenertrag nimmt zu → Haben."
+  },
+  {
+    id: "bs11", topic: "warenkonten", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Wareneinkauf per Banküberweisung CHF 3'800.–",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "1100", name: "Debitoren"}, {nr: "2000", name: "Kreditoren"},
+      {nr: "3200", name: "Warenertrag"}, {nr: "4200", name: "Warenaufwand"}
+    ],
+    correct: [{soll: "4200", haben: "1020", betrag: 3800}],
+    explain: "Wareneinkauf per Bank: Warenaufwand nimmt zu → Soll. Bank nimmt ab → Haben."
+  },
+  {
+    id: "bs12", topic: "warenkonten", type: "buchungssatz", diff: 3, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Warenrücksendung an Lieferant (Gutschrift) CHF 500.–",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "1100", name: "Debitoren"}, {nr: "2000", name: "Kreditoren"},
+      {nr: "3200", name: "Warenertrag"}, {nr: "4200", name: "Warenaufwand"}
+    ],
+    correct: [{soll: "2000", haben: "4200", betrag: 500}],
+    explain: "Warenrücksendung: Kreditoren (Passivkonto) nehmen ab → Soll. Warenaufwand wird korrigiert (nimmt ab) → Haben."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Eigentümer
+  // ══════════════════════════════════════════
+  {
+    id: "bs13", topic: "eigentuemer", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Der Eigentümer entnimmt CHF 2'000.– bar für private Zwecke.",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1020", name: "Bank"},
+      {nr: "2800", name: "Eigenkapital"}, {nr: "2850", name: "Privat"},
+      {nr: "3200", name: "Warenertrag"}, {nr: "6500", name: "Lohnaufwand"}
+    ],
+    correct: [{soll: "2850", haben: "1000", betrag: 2000}],
+    explain: "Privatbezug: Privat (Unterkonto EK) nimmt zu → Soll. Kasse nimmt ab → Haben."
+  },
+  {
+    id: "bs14", topic: "eigentuemer", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Der Eigentümer bringt sein privates Fahrzeug (Wert CHF 15'000.–) in die Firma ein.",
+    konten: [
+      {nr: "1000", name: "Kasse"}, {nr: "1500", name: "Fahrzeuge"},
+      {nr: "2800", name: "Eigenkapital"}, {nr: "2850", name: "Privat"},
+      {nr: "1020", name: "Bank"}, {nr: "2400", name: "Bankdarlehen"}
+    ],
+    correct: [{soll: "1500", haben: "2800", betrag: 15000}],
+    explain: "Sacheinlage: Fahrzeuge (Aktivkonto) nimmt zu → Soll. Eigenkapital nimmt zu → Haben."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Wertberichtigungen
+  // ══════════════════════════════════════════
+  {
+    id: "bs15", topic: "wertberichtigungen", type: "buchungssatz", diff: 2, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Abschreibung auf Maschinen CHF 4'000.– (direkte Methode).",
+    konten: [
+      {nr: "1500", name: "Maschinen"}, {nr: "1510", name: "WB Maschinen"},
+      {nr: "6800", name: "Abschreibungen"}, {nr: "1020", name: "Bank"},
+      {nr: "2800", name: "Eigenkapital"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    correct: [{soll: "6800", haben: "1500", betrag: 4000}],
+    explain: "Direkte Abschreibung: Abschreibungen (Aufwand) nimmt zu → Soll. Maschinen (Aktiven) nimmt ab → Haben."
+  },
+  {
+    id: "bs16", topic: "wertberichtigungen", type: "buchungssatz", diff: 3, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Abschreibung auf Mobiliar CHF 2'500.– (indirekte Methode).",
+    konten: [
+      {nr: "1520", name: "Mobiliar"}, {nr: "1521", name: "WB Mobiliar"},
+      {nr: "6800", name: "Abschreibungen"}, {nr: "1020", name: "Bank"},
+      {nr: "2800", name: "Eigenkapital"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    correct: [{soll: "6800", haben: "1521", betrag: 2500}],
+    explain: "Indirekte Abschreibung: Abschreibungen (Aufwand) → Soll. Wertberichtigung Mobiliar (Minusaktivkonto) nimmt zu → Haben. Das Mobiliar-Konto bleibt unverändert."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Abgrenzungen
+  // ══════════════════════════════════════════
+  {
+    id: "bs17", topic: "abgrenzungen", type: "buchungssatz", diff: 3, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Am 31.12. sind CHF 3'000.– Miete für Januar–März des Folgejahres vorausbezahlt. Bilden Sie die Transitorische Aktive.",
+    konten: [
+      {nr: "1300", name: "Trans. Aktiven"}, {nr: "2300", name: "Trans. Passiven"},
+      {nr: "6000", name: "Mietaufwand"}, {nr: "1020", name: "Bank"},
+      {nr: "2800", name: "Eigenkapital"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    correct: [{soll: "1300", haben: "6000", betrag: 3000}],
+    explain: "Vorausbezahlte Miete: Transitorische Aktiven (Aktivkonto) nimmt zu → Soll. Mietaufwand wird korrigiert (nimmt ab) → Haben."
+  },
+  {
+    id: "bs18", topic: "abgrenzungen", type: "buchungssatz", diff: 3, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Am 31.12. sind CHF 1'800.– Zinsen auf dem Bankdarlehen aufgelaufen, aber noch nicht bezahlt. Bilden Sie die Transitorische Passive.",
+    konten: [
+      {nr: "1300", name: "Trans. Aktiven"}, {nr: "2300", name: "Trans. Passiven"},
+      {nr: "6800", name: "Zinsaufwand"}, {nr: "1020", name: "Bank"},
+      {nr: "2400", name: "Bankdarlehen"}, {nr: "3400", name: "Zinsertrag"}
+    ],
+    correct: [{soll: "6800", haben: "2300", betrag: 1800}],
+    explain: "Aufgelaufene Zinsen: Zinsaufwand nimmt zu → Soll. Transitorische Passiven (Passivkonto) nimmt zu → Haben."
+  },
+
+  // ══════════════════════════════════════════
+  // BUCHUNGSSÄTZE — Zusammengesetzte (schwer)
+  // ══════════════════════════════════════════
+  {
+    id: "bs19", topic: "buchungssatz", type: "buchungssatz", diff: 3, tax: "K3", reviewed: false,
+    q: "Buchen Sie: Verkauf einer alten Maschine (Buchwert CHF 8'000) für CHF 6'000.– auf Rechnung. Buchen Sie den Verlust separat.",
+    konten: [
+      {nr: "1100", name: "Debitoren"}, {nr: "1500", name: "Maschinen"},
+      {nr: "3800", name: "Ausserord. Ertrag"}, {nr: "6900", name: "Ausserord. Aufwand"},
+      {nr: "1020", name: "Bank"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    correct: [
+      {soll: "1100", haben: "1500", betrag: 6000},
+      {soll: "6900", haben: "1500", betrag: 2000}
+    ],
+    explain: "Verkauf unter Buchwert: 1) Debitoren/Maschinen 6'000 (Verkaufserlös). 2) Ausserordentlicher Aufwand/Maschinen 2'000 (Buchverlust = 8'000 − 6'000)."
+  },
+
+  // ══════════════════════════════════════════
+  // KONTENBESTIMMUNG — weitere
+  // ══════════════════════════════════════════
+  {
+    id: "kb03", topic: "kontentypen", type: "kontenbestimmung", diff: 1, tax: "K2", reviewed: false,
+    q: "Welches Konto wird belastet (Soll) und welches wird erkannt (Haben)?",
+    konten: [
+      {nr: "1000", name: "Kasse", kategorie: "aktiv"},
+      {nr: "1020", name: "Bank", kategorie: "aktiv"},
+      {nr: "1100", name: "Debitoren", kategorie: "aktiv"},
+      {nr: "2000", name: "Kreditoren", kategorie: "passiv"},
+      {nr: "2800", name: "Eigenkapital", kategorie: "passiv"},
+      {nr: "6500", name: "Lohnaufwand", kategorie: "aufwand"},
+      {nr: "3200", name: "Warenertrag", kategorie: "ertrag"}
+    ],
+    aufgaben: [
+      {text: "Lohnzahlung per Bank CHF 5'000", correct: [
+        {konto: "6500", seite: "soll"},
+        {konto: "1020", seite: "haben"}
+      ]},
+      {text: "Bareinzahlung auf das Bankkonto CHF 2'000", correct: [
+        {konto: "1020", seite: "soll"},
+        {konto: "1000", seite: "haben"}
+      ]},
+      {text: "Warenverkauf bar CHF 900", correct: [
+        {konto: "1000", seite: "soll"},
+        {konto: "3200", seite: "haben"}
+      ]}
+    ],
+    explain: "Lohn: Aufwand/Bank. Bareinzahlung: Aktivtausch Bank/Kasse. Warenverkauf: Kasse/Warenertrag."
+  },
+  {
+    id: "kb04", topic: "kontentypen", type: "kontenbestimmung", diff: 2, tax: "K3", reviewed: false,
+    q: "Bestimmen Sie Konto und Buchungsseite für diese Geschäftsfälle.",
+    konten: [
+      {nr: "1020", name: "Bank", kategorie: "aktiv"},
+      {nr: "1500", name: "Maschinen", kategorie: "aktiv"},
+      {nr: "2000", name: "Kreditoren", kategorie: "passiv"},
+      {nr: "2400", name: "Bankdarlehen", kategorie: "passiv"},
+      {nr: "6800", name: "Abschreibungen", kategorie: "aufwand"},
+      {nr: "3400", name: "Zinsertrag", kategorie: "ertrag"}
+    ],
+    aufgaben: [
+      {text: "Kauf einer Maschine auf Kredit CHF 12'000", correct: [
+        {konto: "1500", seite: "soll"},
+        {konto: "2000", seite: "haben"}
+      ]},
+      {text: "Abschreibung auf Maschinen CHF 3'000 (direkt)", correct: [
+        {konto: "6800", seite: "soll"},
+        {konto: "1500", seite: "haben"}
+      ]},
+      {text: "Rückzahlung Bankdarlehen per Bank CHF 10'000", correct: [
+        {konto: "2400", seite: "soll"},
+        {konto: "1020", seite: "haben"}
+      ]}
+    ],
+    explain: "Maschinenkauf: Aktiv nimmt zu / Passiv nimmt zu. Abschreibung: Aufwand / Aktiv nimmt ab. Darlehensrückzahlung: Passiv nimmt ab / Aktiv nimmt ab."
+  },
+  {
+    id: "kb05", topic: "erfolgsrechnung", type: "kontenbestimmung", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordnen Sie den Geschäftsfällen das korrekte Konto und die Buchungsseite zu.",
+    konten: [
+      {nr: "1000", name: "Kasse", kategorie: "aktiv"},
+      {nr: "1020", name: "Bank", kategorie: "aktiv"},
+      {nr: "2000", name: "Kreditoren", kategorie: "passiv"},
+      {nr: "6000", name: "Mietaufwand", kategorie: "aufwand"},
+      {nr: "6200", name: "Energieaufwand", kategorie: "aufwand"},
+      {nr: "6500", name: "Lohnaufwand", kategorie: "aufwand"},
+      {nr: "3200", name: "Warenertrag", kategorie: "ertrag"},
+      {nr: "3600", name: "Dienstleistungsertrag", kategorie: "ertrag"}
+    ],
+    aufgaben: [
+      {text: "Barverkauf einer Dienstleistung CHF 800", correct: [
+        {konto: "1000", seite: "soll"},
+        {konto: "3600", seite: "haben"}
+      ]},
+      {text: "Stromrechnung auf Kredit CHF 450", correct: [
+        {konto: "6200", seite: "soll"},
+        {konto: "2000", seite: "haben"}
+      ]}
+    ],
+    explain: "Barverkauf DL: Kasse/DL-Ertrag. Stromrechnung: Energieaufwand/Kreditoren."
+  },
+
+  // ══════════════════════════════════════════
+  // T-KONTEN — weitere
+  // ══════════════════════════════════════════
+  {
+    id: "tk03", topic: "buchungssatz", type: "tkonto", diff: 2, tax: "K3", reviewed: false,
+    q: "Führen Sie das T-Konto «Kreditoren» und bestimmen Sie den Saldo.",
+    geschaeftsfaelle: [
+      "Wareneinkauf auf Kredit CHF 4'000",
+      "Zahlung an Lieferant per Bank CHF 2'500",
+      "Warenrücksendung (Gutschrift) CHF 300"
+    ],
+    konten: [{
+      nr: "2000", name: "Kreditoren", ab: 6000,
+      correctSoll: [
+        {gegen: "1020", betrag: 2500, gf: 2},
+        {gegen: "4200", betrag: 300, gf: 3}
+      ],
+      correctHaben: [
+        {gegen: "4200", betrag: 4000, gf: 1}
+      ],
+      correctSaldo: {seite: "haben", betrag: 7200}
+    }],
+    gegenkonten: [
+      {nr: "1020", name: "Bank"}, {nr: "4200", name: "Warenaufwand"},
+      {nr: "1000", name: "Kasse"}, {nr: "3200", name: "Warenertrag"},
+      {nr: "1100", name: "Debitoren"}
+    ],
+    explain: "AB 6'000 (Haben) + 4'000 (Wareneinkauf, Haben) = 10'000. Abzüglich 2'500 (Zahlung, Soll) + 300 (Rücksendung, Soll) = Saldo 7'200 Haben."
+  },
+  {
+    id: "tk04", topic: "buchungssatz", type: "tkonto", diff: 3, tax: "K3", reviewed: false,
+    q: "Führen Sie das T-Konto «Debitoren» und bestimmen Sie den Saldo.",
+    geschaeftsfaelle: [
+      "Warenverkauf auf Rechnung CHF 8'000",
+      "Kunde bezahlt per Bank CHF 5'500",
+      "Debitorenverlust (uneinbringliche Forderung) CHF 500"
+    ],
+    konten: [{
+      nr: "1100", name: "Debitoren", ab: 3000,
+      correctSoll: [
+        {gegen: "3200", betrag: 8000, gf: 1}
+      ],
+      correctHaben: [
+        {gegen: "1020", betrag: 5500, gf: 2},
+        {gegen: "6700", betrag: 500, gf: 3}
+      ],
+      correctSaldo: {seite: "soll", betrag: 5000}
+    }],
+    gegenkonten: [
+      {nr: "3200", name: "Warenertrag"}, {nr: "1020", name: "Bank"},
+      {nr: "6700", name: "Debitorenverluste"}, {nr: "1000", name: "Kasse"},
+      {nr: "2000", name: "Kreditoren"}
+    ],
+    explain: "AB 3'000 + 8'000 (Verkauf) = 11'000 Soll. Abzüglich 5'500 (Zahlung) + 500 (Verlust) = Saldo 5'000 Soll."
+  },
+  {
+    id: "tk05", topic: "erfolgsrechnung", type: "tkonto", diff: 2, tax: "K3", reviewed: false,
+    q: "Führen Sie das T-Konto «Warenaufwand» und bestimmen Sie den Saldo.",
+    geschaeftsfaelle: [
+      "Wareneinkauf bar CHF 1'200",
+      "Wareneinkauf auf Kredit CHF 3'500",
+      "Warenrücksendung an Lieferant CHF 400"
+    ],
+    konten: [{
+      nr: "4200", name: "Warenaufwand",
+      correctSoll: [
+        {gegen: "1000", betrag: 1200, gf: 1},
+        {gegen: "2000", betrag: 3500, gf: 2}
+      ],
+      correctHaben: [
+        {gegen: "2000", betrag: 400, gf: 3}
+      ],
+      correctSaldo: {seite: "soll", betrag: 4300}
+    }],
+    gegenkonten: [
+      {nr: "1000", name: "Kasse"}, {nr: "2000", name: "Kreditoren"},
+      {nr: "1020", name: "Bank"}, {nr: "3200", name: "Warenertrag"}
+    ],
+    explain: "Einkauf bar 1'200 + Einkauf Kredit 3'500 = 4'700 Soll. Abzüglich Rücksendung 400 = Saldo 4'300 Soll."
+  },
+
+  // ══════════════════════════════════════════
+  // BILANZ — weitere
+  // ══════════════════════════════════════════
+  {
+    id: "bi03", topic: "bilanz", type: "bilanz", diff: 2, tax: "K3", reviewed: false,
+    q: "Erstellen Sie die Schlussbilanz und berechnen Sie die Bilanzsumme.",
+    modus: "bilanz",
+    kontenMitSaldi: [
+      {nr: "1000", name: "Kasse", saldo: 2000},
+      {nr: "1020", name: "Bank", saldo: 18000},
+      {nr: "1100", name: "Debitoren", saldo: 5000},
+      {nr: "1500", name: "Maschinen", saldo: 40000},
+      {nr: "2000", name: "Kreditoren", saldo: 15000},
+      {nr: "2400", name: "Bankdarlehen", saldo: 25000},
+      {nr: "2800", name: "Eigenkapital", saldo: 25000}
+    ],
+    correct: {
+      aktiven: ["1000", "1020", "1100", "1500"],
+      passiven: ["2000", "2400", "2800"],
+      bilanzsumme: 65000
+    },
+    explain: "Aktiven: Kasse 2'000 + Bank 18'000 + Debitoren 5'000 + Maschinen 40'000 = 65'000. Passiven: Kreditoren 15'000 + Bankdarlehen 25'000 + EK 25'000 = 65'000."
+  },
+  {
+    id: "bi04", topic: "bilanz", type: "bilanz", diff: 3, tax: "K3", reviewed: false,
+    q: "Erstellen Sie die Schlussbilanz. Achtung: Es sind auch Wertberichtigungskonten dabei!",
+    modus: "bilanz",
+    kontenMitSaldi: [
+      {nr: "1020", name: "Bank", saldo: 12000},
+      {nr: "1100", name: "Debitoren", saldo: 8000},
+      {nr: "1500", name: "Maschinen", saldo: 50000},
+      {nr: "1510", name: "WB Maschinen", saldo: -10000},
+      {nr: "2000", name: "Kreditoren", saldo: 18000},
+      {nr: "2800", name: "Eigenkapital", saldo: 42000}
+    ],
+    correct: {
+      aktiven: ["1020", "1100", "1500", "1510"],
+      passiven: ["2000", "2800"],
+      bilanzsumme: 60000
+    },
+    explain: "Aktiven: Bank 12'000 + Debitoren 8'000 + Maschinen 50'000 − WB Maschinen 10'000 = 60'000. Passiven: Kreditoren 18'000 + EK 42'000 = 60'000. Die WB ist ein Minusaktivkonto und steht auf der Aktivseite (mit negativem Betrag)."
+  },
+
+  // ══════════════════════════════════════════
+  // AUFGABENGRUPPEN — weitere
+  // ══════════════════════════════════════════
+  {
+    id: "ag03", topic: "warenkonten", type: "gruppe", diff: 2, tax: "K3", reviewed: false,
+    q: "Die Gärtnerei Blüm hat im März folgende Geschäftsfälle:",
+    context: "Anfangsbestand Warenvorrat: CHF 12'000. Bank: CHF 30'000.",
+    teil: [
+      {
+        sub: "a", type: "buchungssatz",
+        q: "Buchen Sie: Wareneinkauf auf Kredit CHF 5'000.",
+        konten: [
+          {nr: "4200", name: "Warenaufwand"}, {nr: "2000", name: "Kreditoren"},
+          {nr: "1020", name: "Bank"}, {nr: "3200", name: "Warenertrag"}
+        ],
+        correct: [{soll: "4200", haben: "2000", betrag: 5000}],
+        explain: "Warenaufwand/Kreditoren 5'000."
+      },
+      {
+        sub: "b", type: "buchungssatz",
+        q: "Buchen Sie: Warenverkauf bar CHF 8'500.",
+        konten: [
+          {nr: "1000", name: "Kasse"}, {nr: "1100", name: "Debitoren"},
+          {nr: "3200", name: "Warenertrag"}, {nr: "4200", name: "Warenaufwand"}
+        ],
+        correct: [{soll: "1000", haben: "3200", betrag: 8500}],
+        explain: "Kasse/Warenertrag 8'500."
+      },
+      {
+        sub: "c", type: "calc",
+        q: "Berechnen Sie den Bruttogewinn (Warenertrag − Warenaufwand).",
+        rows: [{label: "Bruttogewinn", answer: 3500, tolerance: 0, unit: "CHF"}],
+        explain: "8'500 (Ertrag) − 5'000 (Aufwand) = 3'500 CHF Bruttogewinn."
+      }
+    ],
+    explain: "Der Bruttogewinn ist die Differenz zwischen Warenertrag und Warenaufwand — die erste Stufe der dreistufigen Erfolgsrechnung."
+  },
+  {
+    id: "ag04", topic: "wertberichtigungen", type: "gruppe", diff: 3, tax: "K3", reviewed: false,
+    q: "Zum Jahresabschluss sind folgende Abschreibungen zu verbuchen:",
+    context: "Maschinen: Anschaffungswert CHF 60'000, bisherige Abschreibungen CHF 20'000. Abschreibungssatz: 20% linear vom Anschaffungswert.",
+    teil: [
+      {
+        sub: "a", type: "calc",
+        q: "Berechnen Sie den Buchwert der Maschinen vor der Abschreibung.",
+        rows: [{label: "Buchwert", answer: 40000, tolerance: 0, unit: "CHF"}],
+        explain: "60'000 − 20'000 = 40'000 CHF."
+      },
+      {
+        sub: "b", type: "calc",
+        q: "Berechnen Sie den Abschreibungsbetrag (20% vom Anschaffungswert).",
+        rows: [{label: "Abschreibung", answer: 12000, tolerance: 0, unit: "CHF"}],
+        explain: "60'000 × 20% = 12'000 CHF."
+      },
+      {
+        sub: "c", type: "buchungssatz",
+        q: "Buchen Sie die Abschreibung (direkte Methode).",
+        konten: [
+          {nr: "6800", name: "Abschreibungen"}, {nr: "1500", name: "Maschinen"},
+          {nr: "1510", name: "WB Maschinen"}, {nr: "1020", name: "Bank"}
+        ],
+        correct: [{soll: "6800", haben: "1500", betrag: 12000}],
+        explain: "Direkte Abschreibung: Abschreibungen/Maschinen 12'000."
+      },
+      {
+        sub: "d", type: "calc",
+        q: "Wie hoch ist der Buchwert nach der Abschreibung?",
+        rows: [{label: "Neuer Buchwert", answer: 28000, tolerance: 0, unit: "CHF"}],
+        explain: "40'000 − 12'000 = 28'000 CHF."
+      }
+    ],
+    explain: "Lineare Abschreibung: Jedes Jahr wird ein fester Prozentsatz des Anschaffungswerts abgeschrieben. Nach dieser Abschreibung beträgt der Buchwert noch CHF 28'000."
+  },
+  {
+    id: "ag05", topic: "abgrenzungen", type: "gruppe", diff: 3, tax: "K3", reviewed: false,
+    q: "Am 31. Dezember sind folgende Abgrenzungen vorzunehmen:",
+    context: "Am 1. Oktober wurde die Jahresversicherung von CHF 6'000 bezahlt (bereits verbucht als Versicherungsaufwand/Bank).",
+    teil: [
+      {
+        sub: "a", type: "calc",
+        q: "Welcher Anteil der Versicherung betrifft das Folgejahr (Jan–Sep)?",
+        rows: [{label: "Anteil Folgejahr", answer: 4500, tolerance: 0, unit: "CHF"}],
+        explain: "9/12 × 6'000 = 4'500 CHF (Jan–Sep)."
+      },
+      {
+        sub: "b", type: "buchungssatz",
+        q: "Buchen Sie die Transitorische Aktive per 31.12.",
+        konten: [
+          {nr: "1300", name: "Trans. Aktiven"}, {nr: "2300", name: "Trans. Passiven"},
+          {nr: "6100", name: "Versicherungsaufwand"}, {nr: "1020", name: "Bank"}
+        ],
+        correct: [{soll: "1300", haben: "6100", betrag: 4500}],
+        explain: "Transitorische Aktiven/Versicherungsaufwand 4'500."
+      },
+      {
+        sub: "c", type: "tf",
+        q: "Im neuen Jahr wird die TA aufgelöst: Versicherungsaufwand an Transitorische Aktiven.",
+        correct: true,
+        explain: "Richtig. Im Folgejahr wird die TA aufgelöst und der Aufwand dem neuen Jahr belastet."
+      }
+    ],
+    explain: "Vorausbezahlte Aufwände müssen periodengerecht abgegrenzt werden. Der Anteil für das Folgejahr wird als Transitorische Aktive erfasst."
   }
 
 ];
