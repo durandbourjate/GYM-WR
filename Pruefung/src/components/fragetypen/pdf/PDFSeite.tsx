@@ -537,7 +537,7 @@ export function PDFSeite({
     <div
       ref={containerRef}
       className="relative mx-auto border border-slate-200 dark:border-slate-700 shadow-sm bg-white"
-      style={{ width: breite, height: hoehe, cursor, touchAction: aktivesWerkzeug === 'freihand' ? 'none' : undefined }}
+      style={{ width: breite, height: hoehe, cursor, touchAction: readOnly || aktivesWerkzeug === 'auswahl' ? undefined : 'none' }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onMouseUp={handleMouseUp}

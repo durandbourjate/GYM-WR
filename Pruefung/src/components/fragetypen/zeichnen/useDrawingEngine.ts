@@ -260,7 +260,9 @@ function punktAbstandZuSegment(p: Point, a: Point, b: Point): number {
 }
 
 function findeCommandBeiPunkt(commands: DrawCommand[], punkt: Point): CommandId | null {
-  const TOLERANZ_PX = 8;
+  // Grössere Toleranz für Touch-Geräte (Finger vs. Maus)
+  const istTouch = 'ontouchstart' in window
+  const TOLERANZ_PX = istTouch ? 16 : 8;
 
   for (let i = commands.length - 1; i >= 0; i--) {
     const cmd = commands[i];

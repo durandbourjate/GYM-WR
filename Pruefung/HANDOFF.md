@@ -60,18 +60,23 @@ Systematische Behebung aller Probleme aus dem iPad-Test (Demo-SuS + LP/SuS-Login
 | C1 | **Formel Operatoren + Undo** | `FormelFrageComponent.tsx`: Neue Gruppen (Klammern, `<>`, `=`, `→`). Undo-Stack (max 20 Schritte) + ↩ Button. |
 | C2 | **Audio AirPlay** | `AudioFrage.tsx`: `controlsList="nodownload noplaybackrate"` auf `<audio>` Element. |
 
+### Strang B/C Fortsetzung (2. Commit)
+
+| # | Fix | Details |
+|---|-----|---------|
+| B6 | **Zeichnen Touch-Toleranz** | `useDrawingEngine.ts`: Hit-Test Toleranz von 8px auf 16px für Touch-Geräte (Finger vs. Maus). |
+| B7+ | **PDF touchAction für alle Werkzeuge** | `PDFSeite.tsx`: `touchAction: 'none'` für alle aktiven Werkzeuge (nicht nur Freihand). Verhindert, dass Highlight/Text/Kommentar das PDF verschieben statt zu annotieren. |
+| C6 | **Restore-Bug (andere Prüfung im Store)** | `App.tsx`: Bei Recovery prüft `storePruefungId === pruefungIdAusUrl`. Bei Mismatch wird alter State gelöscht. |
+
 ### Offen (Browser-Verifikation am iPad nötig)
 
 | # | Problem | Status |
 |---|---------|--------|
-| B4-B5 | Freitext/Code Auto-Focus Tastatur | iOS erlaubt Keyboard nur bei direkter User-Geste — Workaround nötig |
-| B6 | Zeichnen Rendering-Performance + Selection-Timeout | Muss am echten iPad debuggt werden |
-| B7 Rest | PDF Highlight-Tool schiebt PDF statt zu markieren | Touch-Event-Konflikt, iPad-Debugging nötig |
+| B4-B5 | Freitext/Code Auto-Focus Tastatur | iOS erlaubt Keyboard nur bei direkter User-Geste — programmatischer Focus reicht nicht |
 | C4 | Dictation deaktivieren | iOS-System-Feature, nur via SEB/MDM möglich |
-| C5 | Status bleibt "aktiv" nach Abgabe → "erzwungen" nach LP-Beenden | Backend-Fix in apps-script-code.js nötig |
-| C6 | SuS lädt Prüfung vor LP-Freigabe (Restore-Bug) | pruefungId-Vergleich bei Restore nötig |
+| C5 | Status "aktiv" nach Abgabe | Backend-Logik ist korrekt (`istAbgabe`-Feld wird geprüft). Vermutlich Timing/Demo-Artefakt — bei echtem Test verifizieren |
 
-**Dateien geändert:** `KorrekturFrageVollansicht.tsx`, `Layout.tsx`, `SortierungFrage.tsx`, `DragDropBildFrage.tsx`, `PDFTypes.ts`, `PDFFrage.tsx`, `index.html`, `FormelFrageComponent.tsx`, `AudioFrage.tsx`
+**Dateien geändert (gesamt):** `KorrekturFrageVollansicht.tsx`, `Layout.tsx`, `SortierungFrage.tsx`, `DragDropBildFrage.tsx`, `PDFTypes.ts`, `PDFFrage.tsx`, `index.html`, `FormelFrageComponent.tsx`, `AudioFrage.tsx`, `PDFSeite.tsx`, `useDrawingEngine.ts`, `App.tsx`
 
 **Tests:** 161 grün. `tsc -b` sauber.
 

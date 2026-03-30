@@ -96,7 +96,9 @@ export default function App() {
 
       // Recovery nach Reload: phase ist 'pruefung' aber config fehlt (nicht persistiert)
       // → config+fragen vom Backend laden OHNE antworten zurückzusetzen
-      if (!config && phase === 'pruefung' && Object.keys(storeAntworten).length > 0 && pruefungIdAusUrl && apiService.istKonfiguriert() && !istDemoModus) {
+      // Wichtig: Nur Recovery wenn gespeicherte pruefungId zur URL passt
+      const storePruefungId = usePruefungStore.getState().config?.id
+      if (!config && phase === 'pruefung' && Object.keys(storeAntworten).length > 0 && pruefungIdAusUrl && apiService.istKonfiguriert() && !istDemoModus && (!storePruefungId || storePruefungId === pruefungIdAusUrl)) {
         try {
           const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
           if (result) {
@@ -144,6 +146,12 @@ export default function App() {
             // durchfuehrungId im Store speichern für zukünftige Vergleiche
             if (backendDfId) {
               usePruefungStore.getState().setDurchfuehrungId(backendDfId)
+            }
+
+            // Wenn Store noch State einer ANDEREN Prüfung hat (z.B. Demo → echte Prüfung), aufräumen
+            if (config && config.id !== result.config.id) {
+              console.log('[App] Andere Prüfung im Store als URL — State wird gelöscht.')
+              usePruefungStore.getState().zuruecksetzen()
             }
 
             if (config && config.id === result.config.id && phase !== 'start' && !wurdeZurueckgesetzt) {
