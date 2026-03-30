@@ -434,6 +434,14 @@ function doGet(e) {
       if (!fileId) return jsonResponse({ error: 'fileId fehlt' });
       try {
         const file = DriveApp.getFileById(fileId);
+        // SICHERHEIT: Nur Dateien aus erlaubten Ordnern (Anhänge, Materialien, SuS-Uploads)
+        const erlaubteOrdner = [ANHAENGE_ORDNER_ID, MATERIALIEN_ORDNER_ID, SUS_UPLOADS_ORDNER_ID];
+        const parents = file.getParents();
+        var fileErlaubt = false;
+        while (parents.hasNext()) {
+          if (erlaubteOrdner.indexOf(parents.next().getId()) >= 0) { fileErlaubt = true; break; }
+        }
+        if (!fileErlaubt) return jsonResponse({ error: 'Zugriff verweigert' });
         const blob = file.getBlob();
         const base64 = Utilities.base64Encode(blob.getBytes());
         return jsonResponse({ base64: base64, mimeType: blob.getContentType(), name: file.getName() });
@@ -488,14 +496,31 @@ function doPost(e) {
   const body = JSON.parse(e.postData.contents);
   const action = body.action;
 
-  // Schreibende Aktionen invalidieren den Cache (Configs, Fragenbank, Tracker)
-  var SCHREIBENDE_AKTIONEN = [
+  // SICHERHEIT: Zentrale Auth-Prüfung für LP-only Aktionen
+  var LP_AKTIONEN = [
     'speichereConfig', 'speichereFrage', 'loescheFrage', 'loeschePruefung',
     'beendePruefung', 'speichereKorrekturZeile', 'schalteFrei',
     'importierePoolFragen', 'schreibePoolAenderung', 'setzeBerechtigungen',
     'dupliziereFrage', 'duplizierePruefung', 'korrekturFreigeben', 'resetPruefung',
-    'speichereAntworten',
+    'uploadAnhang', 'uploadMaterial',
   ];
+  if (LP_AKTIONEN.indexOf(action) >= 0) {
+    if (!body.email || !istZugelasseneLP(body.email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+  }
+
+  // SICHERHEIT: SuS-Aktionen brauchen gültige E-Mail-Domain
+  var SUS_AKTIONEN = ['speichereAntworten', 'heartbeat', 'ladeKorrekturenFuerSuS', 'ladeKorrekturDetail'];
+  if (SUS_AKTIONEN.indexOf(action) >= 0) {
+    var susEmail = body.email;
+    if (!susEmail || (!istZugelasseneLP(susEmail) && !susEmail.endsWith('@' + SUS_DOMAIN))) {
+      return jsonResponse({ error: 'Nicht autorisiert' });
+    }
+  }
+
+  // Schreibende Aktionen invalidieren den Cache (Configs, Fragenbank, Tracker)
+  var SCHREIBENDE_AKTIONEN = LP_AKTIONEN.concat(['speichereAntworten']);
   if (SCHREIBENDE_AKTIONEN.indexOf(action) >= 0) {
     cacheInvalidieren_();
   }
@@ -654,6 +679,18 @@ function doPost(e) {
 
 // === ANHANG UPLOAD ===
 
+// SICHERHEIT: Erlaubte Dateitypen für Uploads
+var ERLAUBTE_UPLOAD_MIME_TYPES = [
+  'image/png', 'image/jpeg', 'image/gif', 'image/svg+xml', 'image/webp',
+  'application/pdf',
+  'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/mp4',
+  'video/mp4', 'video/webm',
+  'text/plain', 'text/csv',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+];
+
 function uploadAnhang(body) {
   try {
     var email = body.email;
@@ -671,6 +708,10 @@ function uploadAnhang(body) {
     }
     if (groesseBytes > 5 * 1024 * 1024) {
       return jsonResponse({ error: 'Datei zu gross (max. 5 MB)' });
+    }
+    // SICHERHEIT: MIME-Type prüfen
+    if (mimeType && ERLAUBTE_UPLOAD_MIME_TYPES.indexOf(mimeType) < 0) {
+      return jsonResponse({ error: 'Dateityp nicht erlaubt: ' + mimeType });
     }
 
     // Base64 dekodieren und als Blob erstellen
@@ -716,6 +757,10 @@ function uploadMaterial(body) {
     }
     if (groesseBytes > 10 * 1024 * 1024) {
       return jsonResponse({ error: 'Datei zu gross (max. 10 MB)' });
+    }
+    // SICHERHEIT: MIME-Type prüfen
+    if (mimeType && ERLAUBTE_UPLOAD_MIME_TYPES.indexOf(mimeType) < 0) {
+      return jsonResponse({ error: 'Dateityp nicht erlaubt: ' + mimeType });
     }
 
     // Base64 dekodieren und als Blob erstellen
@@ -1009,8 +1054,10 @@ function ladePruefung(pruefungId, email) {
     const fragenIds = config.abschnitte.flatMap(a => a.fragenIds);
     const fragen = ladeFragen(fragenIds);
 
-    // Sicherheit: Lösungsdaten für SuS entfernen (LP bekommt alles)
-    const sichereFragen = istLP ? fragen : fragen.map(bereinigeFrageFuerSuS_);
+    // Sicherheit: Lösungsdaten NUR für authentifizierte LPs (nicht SuS-Domain)
+    // Verhindert dass SuS mit LP-E-Mail in URL Lösungen abrufen
+    const gibLPDaten = istLP && !email.endsWith('@' + SUS_DOMAIN);
+    const sichereFragen = gibLPDaten ? fragen : fragen.map(bereinigeFrageFuerSuS_);
 
     return jsonResponse({ config, fragen: sichereFragen });
   } catch (error) {
@@ -1333,9 +1380,19 @@ function speichereAntworten(body) {
       return jsonResponse({ error: 'Fehlende Daten' });
     }
 
-    // SICHERHEIT: Session-Token prüfen (verhindert E-Mail-Spoofing)
-    if (sessionToken && !validiereSessionToken_(sessionToken, email)) {
-      return jsonResponse({ error: 'Ungültiges Session-Token. Bitte neu anmelden.' });
+    // SICHERHEIT: Session-Token mandatory (verhindert E-Mail-Spoofing)
+    // LPs authentifizieren sich via Google OAuth, SuS brauchen Session-Token
+    if (!istZugelasseneLP(email)) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
+        return jsonResponse({ error: 'Nicht autorisiert. Bitte neu anmelden.' });
+      }
+    }
+
+    // SICHERHEIT: Prüfungsstatus prüfen — keine Änderungen nach Beendigung
+    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
+    if (configRow && configRow.status === 'beendet' && !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Prüfung ist beendet — keine Änderungen mehr möglich' });
     }
 
     // Beantwortete Fragen zählen
@@ -1355,6 +1412,11 @@ function speichereAntworten(body) {
     var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     const data = getSheetData(sheet);
     const existingRow = data.findIndex(row => row.email === email);
+
+    // SICHERHEIT: Bereits abgegeben → keine weiteren Änderungen (ausser erneute Abgabe durch LP)
+    if (existingRow >= 0 && data[existingRow].istAbgabe === 'true' && !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Bereits abgegeben — keine Änderungen mehr möglich' });
+    }
 
     // Idempotenz-Check: Gleiche requestId = bereits verarbeitet
     if (requestId && existingRow >= 0 && data[existingRow].letzteRequestId === requestId) {
@@ -1403,9 +1465,11 @@ function heartbeat(body) {
   try {
     const { pruefungId, email, timestamp, sessionToken } = body;
 
-    // SICHERHEIT: Session-Token prüfen wenn vorhanden
-    if (sessionToken && !validiereSessionToken_(sessionToken, email)) {
-      return jsonResponse({ error: 'Ungültiges Session-Token' });
+    // SICHERHEIT: Session-Token mandatory für SuS
+    if (!istZugelasseneLP(email)) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
+        return jsonResponse({ error: 'Nicht autorisiert' });
+      }
     }
 
     const sheet = getOrCreateAntwortenSheet(pruefungId);
@@ -2604,6 +2668,14 @@ function ladeMonitoring(pruefungId, email) {
     const configRow = configData.find(row => row.id === pruefungId);
     if (!configRow) {
       return jsonResponse({ error: 'Prüfung nicht gefunden' });
+    }
+
+    // SICHERHEIT: LP muss Ersteller sein oder Berechtigung haben
+    if (configRow.erstelltVon && configRow.erstelltVon !== email) {
+      const berechtigungen = safeJsonParse(configRow.berechtigungen, []);
+      if (!Array.isArray(berechtigungen) || !berechtigungen.some(function(b) { return b.email === email; })) {
+        return jsonResponse({ error: 'Kein Zugriff auf diese Prüfung' });
+      }
     }
 
     // Globales beendetUm aus Configs-Sheet prüfen
@@ -4343,8 +4415,13 @@ function korrekturFreigebenEndpoint(body) {
 
 function ladeKorrekturenFuerSuSEndpoint(body) {
   try {
-    const { email: schuelerEmail } = body;
+    const { email: schuelerEmail, sessionToken } = body;
     if (!schuelerEmail) return jsonResponse({ error: 'E-Mail fehlt' });
+
+    // SICHERHEIT: Session-Token MUSS zur angefragten E-Mail passen (IDOR-Schutz)
+    if (!sessionToken || !validiereSessionToken_(sessionToken, schuelerEmail)) {
+      return jsonResponse({ error: 'Nicht autorisiert' });
+    }
 
     const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
     const configs = getSheetData(configSheet);
@@ -4392,8 +4469,13 @@ function ladeKorrekturenFuerSuSEndpoint(body) {
 
 function ladeKorrekturDetailEndpoint(body) {
   try {
-    const { email: schuelerEmail, pruefungId } = body;
+    const { email: schuelerEmail, pruefungId, sessionToken } = body;
     if (!schuelerEmail || !pruefungId) return jsonResponse({ error: 'Parameter fehlen' });
+
+    // SICHERHEIT: Session-Token MUSS zur angefragten E-Mail passen (IDOR-Schutz)
+    if (!sessionToken || !validiereSessionToken_(sessionToken, schuelerEmail)) {
+      return jsonResponse({ error: 'Nicht autorisiert' });
+    }
 
     // Prüfen ob Korrektur freigegeben
     const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');

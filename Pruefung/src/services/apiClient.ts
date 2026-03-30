@@ -116,7 +116,10 @@ export async function getJson<T>(
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
   try {
-    const queryParams = Object.entries(params)
+    // Session-Token auch bei GET-Requests mitsenden (SuS-Authentifizierung)
+    const sessionToken = getSessionToken()
+    const allParams = { ...params, ...(sessionToken ? { sessionToken } : {}) }
+    const queryParams = Object.entries(allParams)
       .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
       .join('&')
     const url = `${APPS_SCRIPT_URL}?action=${action}${queryParams ? '&' + queryParams : ''}`

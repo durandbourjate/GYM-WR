@@ -213,9 +213,8 @@ export const usePruefungStore = create<PruefungState>()(
         letzterSave: state.letzterSave,
         autoSaveCount: state.autoSaveCount,
         remoteSaveVersion: state.remoteSaveVersion,
-        heartbeats: state.heartbeats,
-        netzwerkFehler: state.netzwerkFehler,
-        unterbrechungen: state.unterbrechungen,
+        // heartbeats, netzwerkFehler, unterbrechungen: NICHT persistieren
+        // (verhindert Manipulation via DevTools, Werte werden vom Server getrackt)
         beendetUm: state.beendetUm,
         restzeitMinuten: state.restzeitMinuten,
         durchfuehrungId: state.durchfuehrungId,
