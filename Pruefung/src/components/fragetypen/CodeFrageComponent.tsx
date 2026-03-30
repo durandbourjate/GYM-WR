@@ -151,13 +151,19 @@ export default function CodeFrageComponent({ frage }: Props) {
         </label>
         <div
           ref={containerRef}
-          className={`rounded-lg border-2 overflow-hidden ${
+          className={`rounded-lg border-2 overflow-hidden min-h-[200px] ${
             abgegeben
               ? 'border-slate-200 dark:border-slate-700 opacity-75'
               : aktuellerCode.trim()
                 ? 'border-slate-300 dark:border-slate-600'
                 : 'border-violet-400 dark:border-violet-500'
           }`}
+          onClick={() => {
+            // iOS: Focus auf CodeMirror via direkte User-Geste (Keyboard öffnet sich)
+            if (viewRef.current && !abgegeben) {
+              viewRef.current.focus()
+            }
+          }}
         >
           {!geladen && (
             <pre className="p-3 text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 min-h-[200px]">

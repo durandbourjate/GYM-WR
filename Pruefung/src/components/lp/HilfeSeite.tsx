@@ -336,6 +336,11 @@ function HilfeFragen() {
       <Text>
         Die Browser-Autokorrektur kann pro Prüfung deaktiviert werden — z.B. für Diktate oder Sprachprüfungen. Einstellung unter: Prüfung bearbeiten → Konfiguration → Rechtschreibprüfung. Im Freitext-Editor erscheint ein Hinweis-Link dazu.
       </Text>
+
+      <Untertitel>iPad Diktierfunktion</Untertitel>
+      <Text>
+        Die iOS-Diktierfunktion (Mikrofon-Symbol auf der Tastatur) kann <strong>nicht</strong> per Webseite deaktiviert werden — es ist ein Systemfeature. Mögliche Massnahmen: (1) <strong>SEB</strong> (Safe Exam Browser) kann die Diktierfunktion unterbinden. (2) Über <strong>MDM-Profile</strong> (z.B. Jamf, Zuludesk) kann Dictation auf verwalteten iPads systemweit deaktiviert werden (Einschränkungsprofil → Siri → Diktierfunktion deaktivieren). Sprechen Sie bei Bedarf die Schulinformatik an.
+      </Text>
     </div>
   )
 }

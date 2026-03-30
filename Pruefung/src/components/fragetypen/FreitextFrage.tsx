@@ -207,9 +207,9 @@ export default function FreitextFrage({ frage }: Props) {
         </div>
       )}
 
-      {/* Editor — volle Breite, auto-grow */}
+      {/* Editor — volle Breite, auto-grow, min-height für leichtes Antippen auf iPad */}
       <div
-        className={`tiptap-editor w-full border-2 rounded-xl
+        className={`tiptap-editor w-full border-2 rounded-xl min-h-[120px]
           ${abgegeben
             ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
             : zeichenAnzahl > 0
@@ -218,6 +218,13 @@ export default function FreitextFrage({ frage }: Props) {
           }`}
         spellCheck={rechtschreibpruefungAktiv}
         lang={rechtschreibSprache}
+        onClick={() => {
+          // iOS: programmatischer Focus funktioniert nicht ohne User-Geste.
+          // Dieser onClick ist eine direkte User-Geste → iOS erlaubt Keyboard-Öffnung.
+          if (editor && !editor.isDestroyed && !abgegeben && !editor.isFocused) {
+            editor.commands.focus('end')
+          }
+        }}
       >
         <EditorContent editor={editor} />
       </div>
