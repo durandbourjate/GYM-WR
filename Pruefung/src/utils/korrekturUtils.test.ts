@@ -61,6 +61,30 @@ describe('effektivePunkte', () => {
   it('gibt 0 ohne Bewertung', () => {
     expect(effektivePunkte({ maxPunkte: 5 } as FragenBewertung)).toBe(0)
   })
+
+  it('behandelt lpPunkte = 0 korrekt (nicht als "leer")', () => {
+    expect(effektivePunkte({ lpPunkte: 0, kiPunkte: 3, maxPunkte: 5 } as FragenBewertung)).toBe(0)
+  })
+
+  it('behandelt kiPunkte = 0 korrekt', () => {
+    expect(effektivePunkte({ kiPunkte: 0, maxPunkte: 5 } as FragenBewertung)).toBe(0)
+  })
+
+  it('behandelt leeren String vom Backend als null (lpPunkte)', () => {
+    expect(effektivePunkte({ lpPunkte: '' as unknown as number, kiPunkte: 3, maxPunkte: 5 } as FragenBewertung)).toBe(3)
+  })
+
+  it('behandelt leeren String vom Backend als null (kiPunkte)', () => {
+    expect(effektivePunkte({ lpPunkte: null, kiPunkte: '' as unknown as number, maxPunkte: 5 } as FragenBewertung)).toBe(0)
+  })
+
+  it('behandelt beide leere Strings als 0', () => {
+    expect(effektivePunkte({ lpPunkte: '' as unknown as number, kiPunkte: '' as unknown as number, maxPunkte: 5 } as FragenBewertung)).toBe(0)
+  })
+
+  it('behandelt undefined als null', () => {
+    expect(effektivePunkte({ lpPunkte: undefined as unknown as number, kiPunkte: 4, maxPunkte: 5 } as FragenBewertung)).toBe(4)
+  })
 })
 
 describe('berechneGesamtpunkte', () => {

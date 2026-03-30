@@ -66,7 +66,10 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
           if (!ergebnis) continue
           const bew = neueBewertungen[frageId]
           if (!bew) continue
-          if (bew.kiPunkte === null && bew.lpPunkte === null) {
+          // Backend schreibt leere Strings statt null — beides als "nicht gesetzt" behandeln
+          const kiLeer = bew.kiPunkte == null || bew.kiPunkte === ('' as unknown as number)
+          const lpLeer = bew.lpPunkte == null || bew.lpPunkte === ('' as unknown as number)
+          if (kiLeer && lpLeer) {
             neueBewertungen[frageId] = {
               ...bew,
               kiPunkte: ergebnis.erreichtePunkte,

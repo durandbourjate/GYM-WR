@@ -14,9 +14,16 @@ function rundeNote(note: number, rundung: NotenConfig['rundung']): number {
   return Math.round(gerundet * 100) / 100
 }
 
+/** Prüft ob ein Punktewert gesetzt ist (nicht null, undefined oder leerer String vom Backend) */
+function istPunkteGesetzt(wert: number | null | undefined): wert is number {
+  return wert != null && wert !== ('' as unknown as number)
+}
+
 /** Effektive Punkte: LP-Anpassung wenn vorhanden, sonst KI-Vorschlag, sonst 0 */
 export function effektivePunkte(bewertung: FragenBewertung): number {
-  return bewertung.lpPunkte ?? bewertung.kiPunkte ?? 0
+  if (istPunkteGesetzt(bewertung.lpPunkte)) return bewertung.lpPunkte
+  if (istPunkteGesetzt(bewertung.kiPunkte)) return bewertung.kiPunkte
+  return 0
 }
 
 /** Gesamtpunkte eines SuS aus Bewertungen berechnen */

@@ -21,9 +21,11 @@ interface Props {
 export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitverlaengerung, antworten, fragen, pruefungId, lpEmail, nachrichten, onNachrichtGesendet }: Props) {
   const [zeigBeendenDialog, setZeigBeendenDialog] = useState(false)
 
+  // Fortschritt: Bei abgegebenen SuS ohne gesamtFragen (Backend-Lücke) als abgeschlossen zeigen
+  const istAbgegeben = schueler.status === 'abgegeben'
   const fortschrittProzent = schueler.gesamtFragen > 0
     ? Math.round((schueler.beantworteteFragen / schueler.gesamtFragen) * 100)
-    : 0
+    : istAbgegeben ? 100 : 0
 
   const hatProbleme = schueler.unterbrechungen.length > 0 || schueler.netzwerkFehler > 2
 
@@ -87,7 +89,7 @@ export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitver
             />
           </div>
           <span className="text-xs text-slate-500 dark:text-slate-400 tabular-nums min-w-[3rem]">
-            {schueler.beantworteteFragen}/{schueler.gesamtFragen}
+            {schueler.gesamtFragen > 0 ? `${schueler.beantworteteFragen}/${schueler.gesamtFragen}` : istAbgegeben ? '✓' : '—'}
           </span>
         </div>
 
@@ -105,7 +107,7 @@ export default function SchuelerZeile({ schueler, aufgeklappt, onToggle, zeitver
         <div className="md:hidden flex items-center gap-2">
           <StatusBadge status={schueler.status} />
           <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">
-            {schueler.beantworteteFragen}/{schueler.gesamtFragen}
+            {schueler.gesamtFragen > 0 ? `${schueler.beantworteteFragen}/${schueler.gesamtFragen}` : istAbgegeben ? '✓' : '—'}
           </span>
         </div>
 
