@@ -27,6 +27,17 @@ export async function ladePruefung(pruefungId: string, email: string): Promise<{
       console.error('[API] Fehler:', data.error)
       return null
     }
+    // SICHERHEIT: Session-Token aus Backend-Response speichern (für Google OAuth SuS)
+    if (data.sessionToken) {
+      try {
+        const raw = sessionStorage.getItem('pruefung-auth')
+        if (raw) {
+          const auth = JSON.parse(raw)
+          auth.sessionToken = data.sessionToken
+          sessionStorage.setItem('pruefung-auth', JSON.stringify(auth))
+        }
+      } catch { /* sessionStorage nicht verfügbar */ }
+    }
     return data
   } catch (error) {
     console.error('[API] Netzwerkfehler:', error)

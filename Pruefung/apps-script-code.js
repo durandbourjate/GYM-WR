@@ -1059,7 +1059,14 @@ function ladePruefung(pruefungId, email) {
     // Verhindert dass SuS mit LP-E-Mail in URL Lösungen abrufen können
     const sichereFragen = fragen.map(bereinigeFrageFuerSuS_);
 
-    return jsonResponse({ config, fragen: sichereFragen });
+    // SICHERHEIT: Session-Token für SuS generieren (auch Google OAuth SuS)
+    // Ermöglicht authentifizierte API-Calls für speichereAntworten/heartbeat
+    var sessionToken = undefined;
+    if (!istLP && email.endsWith('@' + SUS_DOMAIN)) {
+      sessionToken = generiereSessionToken_(email, config.id);
+    }
+
+    return jsonResponse({ config, fragen: sichereFragen, sessionToken: sessionToken });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
