@@ -20,6 +20,8 @@ export function usePDFRenderer() {
   const [state, setState] = useState<PDFRenderState>({ status: 'idle', seitenAnzahl: 0 })
   const docRef = useRef<PDFDocumentProxy | null>(null)
   const seitenInfoCache = useRef<Map<number, PDFSeitenInfo>>(new Map())
+  // Laufende Render-Tasks pro Canvas tracken, um Race Conditions zu vermeiden
+  const renderTasksRef = useRef<WeakMap<HTMLCanvasElement, { cancel: () => void }>>(new WeakMap())
 
   const ladePDF = useCallback(async (quelle: { base64?: string; url?: string }) => {
     setState({ status: 'loading', seitenAnzahl: 0 })
@@ -58,7 +60,25 @@ export function usePDFRenderer() {
     canvas.style.height = `${viewport.height / window.devicePixelRatio}px`
 
     const ctx = canvas.getContext('2d')!
-    await page.render({ canvasContext: ctx, viewport, canvas }).promise
+    // Vorherigen Render-Task auf diesem Canvas abbrechen (verhindert "Cannot use the same canvas" Error)
+    const vorherigerTask = renderTasksRef.current.get(canvas)
+    if (vorherigerTask) {
+      vorherigerTask.cancel()
+    }
+    const renderTask = page.render({ canvasContext: ctx, viewport, canvas })
+    renderTasksRef.current.set(canvas, renderTask)
+    try {
+      await renderTask.promise
+    } catch (e: unknown) {
+      // RenderingCancelled ist erwartet wenn ein neuer Render gestartet wurde
+      if (e && typeof e === 'object' && 'name' in e && (e as { name: string }).name === 'RenderingCancelledException') return null
+      throw e
+    } finally {
+      // Nur aufräumen wenn dies noch der aktuelle Task ist
+      if (renderTasksRef.current.get(canvas) === renderTask) {
+        renderTasksRef.current.delete(canvas)
+      }
+    }
 
     const textContent = await page.getTextContent()
     let offset = 0

@@ -165,6 +165,22 @@ export default function Layout() {
     enabled: !!user && !!config && !abgegeben,
   })
 
+  /** Header-Button: aus → split (Desktop) / overlay (Mobile), split/overlay → aus */
+  const handleMaterialToggle = useCallback(() => {
+    if (materialModus === 'aus') {
+      // Mobile (< 768px) immer Overlay, Desktop startet im Split-Modus
+      const istMobile = window.innerWidth < 768
+      setMaterialModus(istMobile ? 'overlay' : 'split')
+    } else {
+      setMaterialModus('aus')
+    }
+  }, [materialModus])
+
+  /** Moduswechsel innerhalb des Panels (Split ↔ Overlay) */
+  const handleMaterialModusWechsel = useCallback((neuerModus: MaterialModus) => {
+    setMaterialModus(neuerModus)
+  }, [])
+
   // Prüfungs-ID aus URL für Recovery
   const pruefungIdAusUrl = useMemo(() => new URLSearchParams(window.location.search).get('id'), [])
 
@@ -255,22 +271,6 @@ export default function Layout() {
   // Fortschritt: Anzahl beantworteter Fragen (mit korrekter Aufgabengruppen-Prüfung)
   const beantwortetAnzahl = fragen.filter((f) => istVollstaendigBeantwortet(f, antworten[f.id], alleFragen, antworten)).length
   const fortschrittProzent = fragen.length > 0 ? (beantwortetAnzahl / fragen.length) * 100 : 0
-
-  /** Header-Button: aus → split (Desktop) / overlay (Mobile), split/overlay → aus */
-  const handleMaterialToggle = useCallback(() => {
-    if (materialModus === 'aus') {
-      // Mobile (< 768px) immer Overlay, Desktop startet im Split-Modus
-      const istMobile = window.innerWidth < 768
-      setMaterialModus(istMobile ? 'overlay' : 'split')
-    } else {
-      setMaterialModus('aus')
-    }
-  }, [materialModus])
-
-  /** Moduswechsel innerhalb des Panels (Split ↔ Overlay) */
-  const handleMaterialModusWechsel = useCallback((neuerModus: MaterialModus) => {
-    setMaterialModus(neuerModus)
-  }, [])
 
   const materialOffen = materialModus !== 'aus'
   const istSplitModus = materialModus === 'split'

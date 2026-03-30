@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import type {
   AufgabengruppeFrage as AufgabengruppeFrageType,
@@ -80,9 +81,10 @@ export default function AufgabengruppeFrage({ frage }: Props) {
         </button>
         {kontextOffen && (
           <div className="px-4 pb-4">
-            <div className="text-base leading-relaxed text-slate-800 dark:text-slate-100 whitespace-pre-wrap">
-              {frage.kontext}
-            </div>
+            <div
+              className="text-base leading-relaxed text-slate-800 dark:text-slate-100 whitespace-pre-wrap"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.kontext || '') }}
+            />
             {frage.kontextAnhaenge && frage.kontextAnhaenge.length > 0 && (
               <div className="mt-3 space-y-2">
                 {frage.kontextAnhaenge.map((a) => (

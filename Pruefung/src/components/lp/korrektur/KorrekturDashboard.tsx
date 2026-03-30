@@ -143,7 +143,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
             <StatKarte label="∅ Note" wert={stats.durchschnittNote.toFixed(1)} />
             <StatKarte label="Median Note" wert={stats.medianNote.toFixed(1)} />
             <StatKarte label="Median" wert={`${stats.median} Pkt.`} />
-            <StatKarte label="Bestanden" wert={`${stats.bestanden}/${korrektur.schueler.length}`} />
+            <StatKarte label="Bestanden" wert={`${stats.bestanden}/${stats.bestanden + stats.durchgefallen}`} />
             <StatKarte label="Durchgefallen" wert={String(stats.durchgefallen)} highlight={stats.durchgefallen > 0} />
           </div>
         )}

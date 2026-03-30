@@ -163,12 +163,13 @@ export default function ZeichnenKorrektur({
   const [gerendertesBild] = useState<string | null>(() => {
     if (bildLink) return bildLink
     if (daten) {
-      console.log(`[ZeichnenKorrektur] ${frageId}: Rendere aus daten (${daten.length} Zeichen)`)
+      // Leere Zeichnung ("[]") ergibt kein Bild — kein Warning nötig
+      const trimmed = daten.trim()
+      if (trimmed === '[]' || trimmed === '') return null
       const bild = datenAlsBildLink(daten)
       if (!bild) console.warn(`[ZeichnenKorrektur] ${frageId}: datenAlsBildLink gab null zurück`, daten.slice(0, 200))
       return bild
     }
-    console.warn(`[ZeichnenKorrektur] ${frageId}: Weder bildLink noch daten vorhanden`)
     return null
   })
 

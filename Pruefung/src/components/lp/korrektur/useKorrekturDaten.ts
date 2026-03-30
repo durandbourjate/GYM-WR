@@ -209,7 +209,11 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
     return count
   }, [korrektur])
 
-  const stats = korrektur ? berechneStatistiken(korrektur.schueler, notenConfig) : null
+  // Statistiken nur für abgegebene SuS berechnen (aktive SuS haben 0 Punkte und verfälschen Noten)
+  const abgegebeneSchueler = korrektur
+    ? korrektur.schueler.filter(s => abgaben[s.email])
+    : []
+  const stats = abgegebeneSchueler.length > 0 ? berechneStatistiken(abgegebeneSchueler, notenConfig) : null
   const fragenStats = korrektur ? berechneFragenStatistiken(korrektur) : []
   const maxPunkte = korrektur?.schueler[0]?.maxPunkte || 0
 

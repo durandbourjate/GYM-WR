@@ -100,7 +100,7 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
           antworten: antwortenRef.current as Record<string, Antwort>,
           version: neueVersion,
           istAbgabe: false,
-          gesamtFragen: alleFragen?.length || fragen?.length || 0,
+          gesamtFragen: fragen?.length || 0,
           requestId,
         })
 
