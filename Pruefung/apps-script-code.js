@@ -1296,14 +1296,30 @@ function parseFrage(row, fachbereich) {
       };
     default: {
       // Alle übrigen Typen (sortierung, hotspot, bildbeschriftung, dragdrop_bild, audio, code, formel, etc.)
-      // Primär: json/daten-Spalte (vollständige Frage als JSON), Fallback: typDaten + Einzel-Spalten
+      // 1. Primär: json/daten-Spalte (vollständige Frage als JSON)
       var vollstaendig = safeJsonParse(row.json || row.daten, null);
-      if (vollstaendig && typeof vollstaendig === 'object') {
-        // json-Spalte hat die komplette Frage — base-Felder überschreiben damit Metadaten konsistent sind
+      if (vollstaendig && typeof vollstaendig === 'object' && Object.keys(vollstaendig).length > 3) {
         return { ...vollstaendig, ...base, typ: vollstaendig.typ || row.typ };
       }
-      // Fallback: typDaten + fragetext
-      return { ...base, typ: row.typ, fragetext: row.fragetext || '', ...typDaten };
+      // 2. Fallback: typDaten (wenn vorhanden)
+      if (typDaten && Object.keys(typDaten).length > 0) {
+        return { ...base, typ: row.typ, fragetext: row.fragetext || '', ...typDaten };
+      }
+      // 3. Letzter Fallback: Alle nicht-base Spalten aus der Row übernehmen
+      var baseKeys = ['id','typ','version','erstelltAm','geaendertAm','fachbereich','thema','unterthema',
+        'semester','gefaesse','bloom','tags','punkte','musterlosung','bewertungsraster','fragetext',
+        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
+        'pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion','lernzielIds',
+        'zeitbedarf','verwendungen','maxZeichen','typDaten'];
+      var extra = {};
+      Object.keys(row).forEach(function(k) {
+        if (!baseKeys.includes(k) && row[k] !== '' && row[k] !== undefined) {
+          // Versuche JSON zu parsen (Arrays/Objekte in Spalten)
+          var parsed = safeJsonParse(row[k], null);
+          extra[k] = parsed !== null ? parsed : row[k];
+        }
+      });
+      return { ...base, typ: row.typ, fragetext: row.fragetext || '', ...extra };
     }
   }
 }
@@ -1980,8 +1996,30 @@ function getTypDaten(frage) {
         werkzeuge: frage.werkzeuge || (frage.canvasConfig && frage.canvasConfig.werkzeuge),
         radierer: frage.radierer !== undefined ? frage.radierer : (frage.canvasConfig && frage.canvasConfig.radierer),
       };
+    case 'sortierung':
+      return { elemente: frage.elemente, teilpunkte: frage.teilpunkte };
+    case 'hotspot':
+      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, hotspots: frage.hotspots, hotspotRadius: frage.hotspotRadius, maxKlicks: frage.maxKlicks };
+    case 'bildbeschriftung':
+      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, beschriftungen: frage.beschriftungen };
+    case 'dragdrop_bild':
+      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, labels: frage.labels, zielzonen: frage.zielzonen };
+    case 'audio':
+      return { maxDauerSekunden: frage.maxDauerSekunden, sprachhinweis: frage.sprachhinweis };
+    case 'code':
+      return { sprache: frage.sprache, vorlageCode: frage.vorlageCode, testcases: frage.testcases };
+    case 'formel':
+      return { formelTyp: frage.formelTyp, variablen: frage.variablen };
     default:
-      return {};
+      // Fallback: alle Felder ausser Base-Felder als typDaten speichern
+      var baseKeys = ['id','typ','version','erstelltAm','geaendertAm','fachbereich','thema','unterthema',
+        'semester','gefaesse','bloom','tags','punkte','musterlosung','bewertungsraster','fragetext',
+        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
+        'pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion','lernzielIds',
+        'zeitbedarf','verwendungen','maxZeichen'];
+      var extra = {};
+      Object.keys(frage).forEach(function(k) { if (!baseKeys.includes(k)) extra[k] = frage[k]; });
+      return extra;
   }
 }
 
