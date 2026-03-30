@@ -1054,10 +1054,9 @@ function ladePruefung(pruefungId, email) {
     const fragenIds = config.abschnitte.flatMap(a => a.fragenIds);
     const fragen = ladeFragen(fragenIds);
 
-    // Sicherheit: Lösungsdaten IMMER entfernen in ladePruefung()
-    // LP braucht Lösungen hier nicht (Fragenbank + Korrektur laden separat mit eigenem Auth)
-    // Verhindert dass SuS mit LP-E-Mail in URL Lösungen abrufen können
-    const sichereFragen = fragen.map(bereinigeFrageFuerSuS_);
+    // Sicherheit: Lösungsdaten für SuS entfernen, LP bekommt volle Daten
+    // LP braucht korrekt-Felder für Auto-Korrektur + Korrektur-Ansicht
+    const sichereFragen = istLP ? fragen : fragen.map(bereinigeFrageFuerSuS_);
 
     // SICHERHEIT: Session-Token für SuS generieren (auch Google OAuth SuS)
     // Ermöglicht authentifizierte API-Calls für speichereAntworten/heartbeat
@@ -1525,6 +1524,7 @@ function heartbeat(body) {
       var neededCols = {};
       if (body.aktuelleFrage !== undefined) neededCols.aktuelleFrage = '';
       if (body.beantworteteFragen !== undefined) neededCols.beantworteteFragen = '';
+      if (body.gesamtFragen !== undefined) neededCols.gesamtFragen = '';
       if (body.autoSaveCount !== undefined) neededCols.autoSaveCount = '';
       if (body.tabSessionId) neededCols.tabSessionId = '';
       if (body.lockdownMeta) {
@@ -1556,6 +1556,7 @@ function heartbeat(body) {
 
       if (body.aktuelleFrage !== undefined) setCol('aktuelleFrage', body.aktuelleFrage);
       if (body.beantworteteFragen !== undefined) setCol('beantworteteFragen', body.beantworteteFragen);
+      if (body.gesamtFragen !== undefined) setCol('gesamtFragen', body.gesamtFragen);
       if (body.autoSaveCount !== undefined) setCol('autoSaveCount', body.autoSaveCount);
 
       // Lockdown-Metadaten

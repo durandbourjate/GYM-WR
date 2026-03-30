@@ -49,13 +49,9 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
 
   // Auto-Korrektur-Ergebnisse in Bewertungen übernehmen (wenn kiPunkte noch leer)
   // Abhängig von korrektur UND autoErgebnisse — weil korrektur async geladen wird
-  const autoAppliedRef = useRef(false)
   useEffect(() => {
     if (Object.keys(autoErgebnisseAlle).length === 0) return
     if (!korrektur) return // Korrektur noch nicht geladen — warten
-
-    // Prüfen ob bereits angewendet (verhindert Endlos-Loop)
-    if (autoAppliedRef.current) return
 
     let hatAenderungen = false
     const aktualisierteSchueler = korrektur.schueler.map((s) => {
@@ -87,8 +83,9 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
       return schuelerGeaendert ? { ...s, bewertungen: neueBewertungen } : s
     })
 
+    // Nur setKorrektur aufrufen wenn wirklich Änderungen → kein Endlos-Loop
+    // (kiLeer/lpLeer ist beim nächsten Durchlauf false → hatAenderungen bleibt false)
     if (hatAenderungen) {
-      autoAppliedRef.current = true
       setKorrektur({ ...korrektur, schueler: aktualisierteSchueler })
     }
   }, [autoErgebnisseAlle, korrektur])
