@@ -1008,10 +1008,81 @@ function ladePruefung(pruefungId, email) {
 
     const fragenIds = config.abschnitte.flatMap(a => a.fragenIds);
     const fragen = ladeFragen(fragenIds);
-    return jsonResponse({ config, fragen });
+
+    // Sicherheit: Lösungsdaten für SuS entfernen (LP bekommt alles)
+    const sichereFragen = istLP ? fragen : fragen.map(bereinigeFrageFuerSuS_);
+
+    return jsonResponse({ config, fragen: sichereFragen });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
+}
+
+// === SICHERHEIT: Lösungsdaten für SuS entfernen ===
+
+function bereinigeFrageFuerSuS_(frage) {
+  var f = JSON.parse(JSON.stringify(frage)); // Deep Copy
+
+  // Musterlösung + Bewertungsraster entfernen
+  delete f.musterlosung;
+  delete f.bewertungsraster;
+
+  // MC: korrekt-Feld aus Optionen entfernen
+  if (f.optionen && Array.isArray(f.optionen)) {
+    f.optionen = f.optionen.map(function(o) {
+      var cleaned = Object.assign({}, o);
+      delete cleaned.korrekt;
+      return cleaned;
+    });
+  }
+
+  // R/F: korrekt-Feld aus Aussagen entfernen
+  if (f.aussagen && Array.isArray(f.aussagen)) {
+    f.aussagen = f.aussagen.map(function(a) {
+      var cleaned = Object.assign({}, a);
+      delete cleaned.korrekt;
+      delete cleaned.erklaerung;
+      return cleaned;
+    });
+  }
+
+  // Lückentext: korrekteAntworten + korrekt aus Lücken entfernen
+  if (f.luecken && Array.isArray(f.luecken)) {
+    f.luecken = f.luecken.map(function(l) {
+      var cleaned = Object.assign({}, l);
+      delete cleaned.korrekteAntworten;
+      delete cleaned.korrekt;
+      // Dropdown-Optionen behalten (SuS braucht sie zur Auswahl), aber nicht die korrekte markieren
+      return cleaned;
+    });
+  }
+
+  // Berechnung: korrekt-Wert + toleranz aus Ergebnissen entfernen
+  if (f.ergebnisse && Array.isArray(f.ergebnisse)) {
+    f.ergebnisse = f.ergebnisse.map(function(e) {
+      var cleaned = Object.assign({}, e);
+      delete cleaned.korrekt;
+      delete cleaned.toleranz;
+      return cleaned;
+    });
+  }
+
+  // Zuordnung: korrekte Paarung verschleiern (rechts-Zuordnung nicht vorgeben)
+  // Paare bleiben — die Zuordnung ergibt sich aus der Reihenfolge, die gemischt wird
+
+  // Sortierung: korrekte Reihenfolge ist implizit in elemente[] — wird client-seitig gemischt
+
+  // Aufgabengruppe: Teilaufgaben rekursiv bereinigen
+  if (f.teilaufgaben && Array.isArray(f.teilaufgaben)) {
+    f.teilaufgaben = f.teilaufgaben.map(function(ta) {
+      return bereinigeFrageFuerSuS_(ta);
+    });
+  }
+
+  // FiBu-Typen: Kontenauswahl bereinigen (Konto-Kategorien können Hinweise geben)
+  // Kontenauswahl bleibt — SuS braucht sie zum Auswählen. Kategorien sind Lernstoff, kein Geheimnis.
+
+  return f;
 }
 
 // === FRAGEN LADEN ===
