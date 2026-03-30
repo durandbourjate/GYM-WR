@@ -1295,7 +1295,9 @@ function parseFrage(row, fachbereich) {
         erlaubteWerkzeuge: typDaten.erlaubteWerkzeuge || ['highlighter', 'kommentar', 'freihand'],
       };
     default:
-      return { ...base, typ: row.typ, fragetext: row.fragetext || '' };
+      // Alle übrigen Typen (sortierung, hotspot, bildbeschriftung, dragdrop_bild, audio, code, formel, etc.)
+      // → typDaten komplett übernehmen, damit keine Felder verloren gehen
+      return { ...base, typ: row.typ, fragetext: row.fragetext || '', ...typDaten };
   }
 }
 
