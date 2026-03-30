@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
+import FeedbackButton from '../shared/FeedbackButton.tsx'
 import { APP_VERSION } from '../../version'
 
 interface Props {
@@ -64,6 +65,10 @@ export default function LPHeader({ titel, untertitel, zurueck, statusText, ansic
           {onHilfe && (
             <button onClick={onHilfe} className={buttonClass}>Hilfe</button>
           )}
+          <FeedbackButton
+            variant="icon"
+            context={{ rolle: 'lp', ort: 'lp-allgemein' }}
+          />
           <ThemeToggle />
           <button
             onClick={abmelden}

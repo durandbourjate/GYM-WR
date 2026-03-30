@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import FeedbackButton from '../../shared/FeedbackButton.tsx'
 import type { Frage } from '../../../types/fragen.ts'
 import type { PruefungsKorrektur, SchuelerAbgabe, FragenBewertung } from '../../../types/korrektur.ts'
 import type { NotenConfig } from '../../../types/pruefung.ts'
@@ -236,6 +237,18 @@ export default function KorrekturFragenAnsicht({
         <p className="text-sm text-slate-700 dark:text-slate-300 line-clamp-3">
           {fragetext}
         </p>
+        <div className="mt-2">
+          <FeedbackButton
+            variant="link"
+            label="Problem melden"
+            context={{
+              rolle: 'lp',
+              ort: 'korrektur-frage',
+              frageId: aktiveFrage.id,
+              frageText: fragetext,
+            }}
+          />
+        </div>
       </div>
 
       {/* Alle bestätigen */}

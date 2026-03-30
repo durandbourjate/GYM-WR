@@ -4,6 +4,7 @@ import { apiService } from '../../services/apiService.ts'
 import type { KorrekturDetailDaten, KorrekturDetailBewertung } from '../../services/apiService.ts'
 import AudioPlayer from '../AudioPlayer.tsx'
 import MediaAnhang from '../MediaAnhang.tsx'
+import FeedbackButton from '../shared/FeedbackButton.tsx'
 import { formatDatum } from '../../utils/zeit.ts'
 import { driveStreamUrl } from '../../utils/mediaUtils.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
@@ -102,6 +103,10 @@ export default function KorrekturEinsicht({ pruefungId, onZurueck }: Props) {
                 PDF
               </button>
             )}
+            <FeedbackButton
+              variant="icon"
+              context={{ rolle: 'sus', ort: 'einsicht-allgemein', pruefungId }}
+            />
             <ThemeToggle />
           </div>
         </div>
@@ -209,6 +214,20 @@ function FrageKarte({ index, frage, bewertung, antwort }: FrageKarteProps) {
           <AudioPlayer src={driveStreamUrl(bewertung.audioKommentarId)} kompakt />
         </div>
       )}
+
+      {/* Feedback-Link */}
+      <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+        <FeedbackButton
+          variant="link"
+          label="Rückmeldung zu dieser Frage"
+          context={{
+            rolle: 'sus',
+            ort: 'einsicht-frage',
+            frageId: frage.id,
+            frageText: frage.fragetext || frage.aufgabentext || frage.geschaeftsfall || '',
+          }}
+        />
+      </div>
     </div>
   )
 }

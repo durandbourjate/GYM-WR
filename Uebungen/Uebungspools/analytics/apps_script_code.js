@@ -10,6 +10,7 @@
 const SHEET_EVENTS = 'Events';
 const SHEET_SESSIONS = 'Sessions';
 const SHEET_REPORTS = 'Problemmeldungen';
+const SHEET_PRUEFUNG_FEEDBACK = 'Pruefung-Feedback';
 
 /**
  * Einmalig ausführen: Erstellt die Analytics-Blätter im bestehenden Sheet.
@@ -110,7 +111,30 @@ function doGet(e) {
     const ts = Utilities.formatDate(now, 'Europe/Zurich', 'yyyy-MM-dd HH:mm:ss');
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-    if (params.pool && params.qid && (params.cat || params.category)) {
+    if (params.source === 'pruefung') {
+      // Prüfungstool-Feedback → eigener Tab
+      let sheet = ss.getSheetByName(SHEET_PRUEFUNG_FEEDBACK);
+      if (!sheet) {
+        sheet = ss.insertSheet(SHEET_PRUEFUNG_FEEDBACK);
+        sheet.appendRow(['Zeitstempel', 'Rolle', 'Ort', 'Typ', 'Kategorie', 'Kommentar', 'Prüfung-ID', 'Frage-ID', 'Fragetext', 'E-Mail', 'Zusatzinfo']);
+        sheet.setFrozenRows(1);
+        sheet.getRange(1, 1, 1, 11).setFontWeight('bold');
+      }
+      sheet.appendRow([
+        ts,
+        params.rolle || '',
+        params.ort || '',
+        params.typ || '',
+        params.category || '',
+        params.comment || '',
+        params.pruefungId || '',
+        params.frageId || '',
+        params.frageText || '',
+        params.email || '',
+        params.zusatzinfo || ''
+      ]);
+    } else if (params.pool && params.qid && (params.cat || params.category)) {
+      // Übungspool-Problemmeldungen → bestehender Tab
       const sheet = ss.getSheetByName(SHEET_REPORTS);
       if (sheet) {
         sheet.appendRow([
