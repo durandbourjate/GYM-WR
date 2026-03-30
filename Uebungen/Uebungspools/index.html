@@ -234,6 +234,7 @@ const POOLS = [
   { id: "vwl_staatsverschuldung", fach: "VWL", title: "Staatsverschuldung", meta: "SF GYM3" },
   { id: "vwl_sozialpolitik", fach: "VWL", title: "Sozialpolitik und Sozialversicherungen", meta: "SF GYM3" },
   { id: "vwl_markteffizienz", fach: "VWL", title: "Markteffizienz", meta: "SF GYM2/GYM3" },
+  { id: "vwl_konjunktur", fach: "VWL", title: "Konjunktur und Konjunkturpolitik", meta: "SF GYM3–GYM4" },
   { id: "vwl_geld", fach: "VWL", title: "Geld, Geldpolitik und Finanzmärkte", meta: "SF GYM3–GYM4" },
   // ── BWL ──
   { id: "bwl_fibu", fach: "BWL", title: "Finanzbuchhaltung (FIBU)", meta: "SF GYM1–GYM2" },
@@ -269,8 +270,9 @@ async function loadPoolCounts() {
       var resp = await fetch('config/' + p.id + '.js');
       if (!resp.ok) return { id: p.id, questions: 0, topics: 0 };
       var code = await resp.text();
-      // QUESTIONS-Array zählen: Einträge mit id: "..."
-      var qMatches = code.match(/\n\s*\{\s*\n?\s*id:\s*"/g);
+      // QUESTIONS-Array zählen (nach window.QUESTIONS), beide Formate: {id: und {"id":
+      var qsPart = code.split('window.QUESTIONS')[1] || '';
+      var qMatches = qsPart.match(/\{\s*(?:\n\s*)?(?:"id"|id)\s*:\s*"/g);
       var questions = qMatches ? qMatches.length : 0;
       // TOPICS-Objekt zählen: Keys in window.TOPICS = { ... }
       var topicsBlock = code.match(/window\.TOPICS\s*=\s*\{([\s\S]*?)\n\};/);
