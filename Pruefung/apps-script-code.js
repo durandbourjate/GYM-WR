@@ -46,19 +46,39 @@ function generiereSessionToken_(email, pruefungId) {
 }
 
 /**
- * Validiert ein SuS-Session-Token. Prüft ob Token existiert und E-Mail übereinstimmt.
+ * Validiert ein SuS-Session-Token. Prüft ob Token existiert, E-Mail übereinstimmt,
+ * und (optional) ob das Token für die angegebene Prüfung ausgestellt wurde.
  */
-function validiereSessionToken_(token, email) {
+function validiereSessionToken_(token, email, pruefungId) {
   if (!token || !email) return false;
   var cache = CacheService.getScriptCache();
   var raw = cache.get('sus_session_' + token);
   if (!raw) return false;
   try {
     var daten = JSON.parse(raw);
-    return daten.email === email.toLowerCase();
+    if (daten.email !== email.toLowerCase()) return false;
+    // SICHERHEIT: Token an Prüfung binden (Cross-Exam Token Reuse verhindern)
+    if (pruefungId && daten.pruefungId && daten.pruefungId !== pruefungId) return false;
+    return true;
   } catch (e) {
     return false;
   }
+}
+
+/**
+ * Rate Limiting für SuS-Endpoints. Gibt { blocked: true, error: '...' } zurück wenn Limit erreicht.
+ * Verwendet CacheService mit TTL-basiertem Counter (gleiches Pattern wie validiereSchuelercode).
+ */
+function rateLimitCheck_(aktion, email, maxProFenster, fensterSekunden) {
+  if (!email) return { blocked: false };
+  var cache = CacheService.getScriptCache();
+  var key = 'rl_' + aktion + '_' + email.toLowerCase();
+  var count = Number(cache.get(key)) || 0;
+  if (count >= maxProFenster) {
+    return { blocked: true, error: 'Zu viele Anfragen (' + aktion + '). Bitte ' + Math.ceil(fensterSekunden / 60) + ' Min. warten.' };
+  }
+  cache.put(key, String(count + 1), fensterSekunden);
+  return { blocked: false };
 }
 
 /**
@@ -982,6 +1002,12 @@ function jsonResponse(data) {
 
 function ladePruefung(pruefungId, email) {
   try {
+    // Rate Limiting für SuS: max 10 Lade-Requests pro Minute
+    if (!istZugelasseneLP(email)) {
+      var rl = rateLimitCheck_('load', email, 10, 60);
+      if (rl.blocked) return jsonResponse({ error: rl.error });
+    }
+
     const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
     const configData = getSheetData(configSheet);
     const configRow = configData.find(row => row.id === pruefungId);
@@ -1386,12 +1412,15 @@ function speichereAntworten(body) {
       return jsonResponse({ error: 'Fehlende Daten' });
     }
 
-    // SICHERHEIT: Session-Token mandatory (verhindert E-Mail-Spoofing)
+    // SICHERHEIT: Session-Token mandatory (verhindert E-Mail-Spoofing + Cross-Exam Reuse)
     // LPs authentifizieren sich via Google OAuth, SuS brauchen Session-Token
     if (!istZugelasseneLP(email)) {
-      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email, pruefungId)) {
         return jsonResponse({ error: 'Nicht autorisiert. Bitte neu anmelden.' });
       }
+      // Rate Limiting: max 10 Saves pro Minute
+      var rl = rateLimitCheck_('save', email, 10, 60);
+      if (rl.blocked) return jsonResponse({ error: rl.error });
     }
 
     // SICHERHEIT: Prüfungsstatus prüfen — keine Änderungen nach Beendigung
@@ -1429,6 +1458,34 @@ function speichereAntworten(body) {
       return jsonResponse({ success: true, message: 'Bereits verarbeitet (idempotent)' });
     }
 
+    // SICHERHEIT: Server-seitige Timer-Validierung bei Abgabe
+    // Prüft ob SuS die erlaubte Prüfungszeit überschritten hat (Manipulation von startzeit in localStorage).
+    // Abgabe wird NICHT blockiert (Datenverlust-Risiko), aber Überschreitung wird geloggt.
+    var zeitUeberschritten = false;
+    if (istAbgabe && !istZugelasseneLP(email) && configRow) {
+      var dauerMin = Number(configRow.dauerMinuten) || 0;
+      var zeitModus = configRow.zeitModus || 'countdown';
+      if (zeitModus !== 'open-end' && dauerMin > 0 && existingRow >= 0) {
+        var ersterHeartbeat = data[existingRow].letzterHeartbeat; // Erster bekannter Timestamp
+        if (ersterHeartbeat) {
+          var startMs = new Date(ersterHeartbeat).getTime();
+          // Nachteilsausgleich aus Zeitzuschlag (falls vorhanden)
+          var zuschlagMin = 0;
+          var zuschlagHeaders = headers.indexOf ? headers : [];
+          if (data[existingRow].restzeitMinuten) {
+            zuschlagMin = Number(data[existingRow].restzeitMinuten) || 0;
+          }
+          var erlaubtMs = (dauerMin + zuschlagMin + 2) * 60000; // +2 Min. Puffer für Netzwerk
+          var jetztMs = Date.now();
+          if (jetztMs - startMs > erlaubtMs) {
+            zeitUeberschritten = true;
+            console.log('[SECURITY] Timer-Überschreitung: ' + email + ' bei ' + pruefungId +
+              ' (' + Math.round((jetztMs - startMs) / 60000) + ' Min. statt max. ' + (dauerMin + zuschlagMin) + ' Min.)');
+          }
+        }
+      }
+    }
+
     const rowData = {
       email: email,
       version: version,
@@ -1438,6 +1495,7 @@ function speichereAntworten(body) {
       beantworteteFragen: beantwortetCount,
       gesamtFragen: gesamtFragen || 0,
       letzteRequestId: requestId || '',
+      zeitUeberschritten: zeitUeberschritten ? 'true' : '',
     };
 
     // Fehlende Spalten automatisch hinzufügen
@@ -1471,11 +1529,14 @@ function heartbeat(body) {
   try {
     const { pruefungId, email, timestamp, sessionToken } = body;
 
-    // SICHERHEIT: Session-Token mandatory für SuS
+    // SICHERHEIT: Session-Token mandatory für SuS (+ Prüfungs-Binding)
     if (!istZugelasseneLP(email)) {
-      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email, pruefungId)) {
         return jsonResponse({ error: 'Nicht autorisiert' });
       }
+      // Rate Limiting: max 15 Heartbeats pro Minute (normal: 6/min bei 10s-Intervall)
+      var rl = rateLimitCheck_('hb', email, 15, 60);
+      if (rl.blocked) return jsonResponse({ error: rl.error });
     }
 
     const sheet = getOrCreateAntwortenSheet(pruefungId);
@@ -4441,9 +4502,13 @@ function ladeKorrekturenFuerSuSEndpoint(body) {
     if (!schuelerEmail) return jsonResponse({ error: 'E-Mail fehlt' });
 
     // SICHERHEIT: Session-Token MUSS zur angefragten E-Mail passen (IDOR-Schutz)
+    // Kein pruefungId-Binding hier, da Endpoint über ALLE Prüfungen iteriert
     if (!sessionToken || !validiereSessionToken_(sessionToken, schuelerEmail)) {
       return jsonResponse({ error: 'Nicht autorisiert' });
     }
+    // Rate Limiting: max 10 Korrektur-Abfragen pro Minute
+    var rl = rateLimitCheck_('korr', schuelerEmail, 10, 60);
+    if (rl.blocked) return jsonResponse({ error: rl.error });
 
     const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
     const configs = getSheetData(configSheet);
@@ -4494,8 +4559,8 @@ function ladeKorrekturDetailEndpoint(body) {
     const { email: schuelerEmail, pruefungId, sessionToken } = body;
     if (!schuelerEmail || !pruefungId) return jsonResponse({ error: 'Parameter fehlen' });
 
-    // SICHERHEIT: Session-Token MUSS zur angefragten E-Mail passen (IDOR-Schutz)
-    if (!sessionToken || !validiereSessionToken_(sessionToken, schuelerEmail)) {
+    // SICHERHEIT: Session-Token MUSS zur angefragten E-Mail + Prüfung passen (IDOR-Schutz)
+    if (!sessionToken || !validiereSessionToken_(sessionToken, schuelerEmail, pruefungId)) {
       return jsonResponse({ error: 'Nicht autorisiert' });
     }
 

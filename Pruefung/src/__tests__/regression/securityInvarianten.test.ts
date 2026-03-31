@@ -260,3 +260,58 @@ describe('Security: Session-Token Validierung', () => {
     expect(getSessionToken()).toBeUndefined()
   })
 })
+
+describe('Security: pruefungId wird bei allen SuS-API-Calls mitgesendet', () => {
+  it('speichereAntworten sendet pruefungId im Body', async () => {
+    sessionStorageMock.setItem('pruefung-auth', JSON.stringify({
+      email: 'sus@stud.gymhofwil.ch',
+      sessionToken: 'token-123',
+    }))
+
+    const { speichereAntworten } = await import('../../services/pruefungApi.ts')
+    // Mock fetch
+    const originalFetch = globalThis.fetch
+    let capturedBody: Record<string, unknown> | null = null
+    globalThis.fetch = vi.fn(async (_url: string, options: RequestInit) => {
+      capturedBody = JSON.parse(options.body as string)
+      return new Response(JSON.stringify({ success: true }), { status: 200 })
+    }) as typeof fetch
+
+    await speichereAntworten({
+      pruefungId: 'test-pruefung-42',
+      email: 'sus@stud.gymhofwil.ch',
+      antworten: {},
+      version: 1,
+      istAbgabe: false,
+    })
+
+    expect(capturedBody).not.toBeNull()
+    expect(capturedBody!.pruefungId).toBe('test-pruefung-42')
+    expect(capturedBody!.sessionToken).toBe('token-123')
+
+    globalThis.fetch = originalFetch
+  })
+
+  it('heartbeat sendet pruefungId im Body', async () => {
+    sessionStorageMock.setItem('pruefung-auth', JSON.stringify({
+      email: 'sus@stud.gymhofwil.ch',
+      sessionToken: 'token-456',
+    }))
+
+    const { heartbeat } = await import('../../services/pruefungApi.ts')
+    const originalFetch = globalThis.fetch
+    let capturedBody: Record<string, unknown> | null = null
+    globalThis.fetch = vi.fn(async (_url: string, options: RequestInit) => {
+      capturedBody = JSON.parse(options.body as string)
+      return new Response(JSON.stringify({ success: true }), { status: 200 })
+    }) as typeof fetch
+
+    await heartbeat('test-pruefung-42', 'sus@stud.gymhofwil.ch')
+
+    expect(capturedBody).not.toBeNull()
+    expect(capturedBody!.pruefungId).toBe('test-pruefung-42')
+    expect(capturedBody!.sessionToken).toBe('token-456')
+
+    globalThis.fetch = originalFetch
+  })
+})
