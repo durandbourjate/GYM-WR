@@ -27,6 +27,32 @@
 
 ---
 
+## Session 39 — Workflow-Umstellung (31.03.2026)
+
+Kein Code geändert. Neuer 5-Phasen-Arbeitsworkflow eingeführt gegen wiederkehrende Regressionen.
+
+### Neuer Pflichtworkflow (`.claude/rules/regression-prevention.md`)
+
+1. **Analyse & Planung** — Bug/Feature definieren, Impact-Analyse, Security-Check. Keine zu breiten Sicherheitslösungen die Kernfunktionen blockieren.
+2. **Feature Branch** — Nie direkt auf `main`. `tsc -b` + `vitest run` + `npm run build` grün.
+3. **E2E-Browser-Test** — Chrome-in-Chrome, Kontrollstufe Locker, LP (wr.test@gymhofwil.ch) + SuS (wr.test@stud.gymhofwil.ch). Test-Prüfung: "Einrichtungsprüfung". Betroffene + verwandte Fragetypen testen. Übliche Verdächtige besonders gründlich (PDF, Audio, Sortierung, DragDrop, Material, Zeichnen, Code, Formel).
+4. **Security-Verifikation** — Checkliste (Lösungsdaten, Token, Rollen, IDOR, Rate Limiting, Fraud).
+5. **LP-Review vor Merge** — Claude meldet "bereit für Test", LP testet selbst, erst nach Freigabe Merge auf main.
+
+### Offen aus Session 38 (nächste Session verifizieren)
+
+| # | Problem | Status |
+|---|---------|--------|
+| — | Code-Editor (F17) kann nicht tippen | Nicht reproduzierbar |
+| — | Heartbeat v3 + Security Fixes | ⚠️ **Apps Script Deploy nötig** |
+| — | Material-PDF CSP Fix | ⚠️ **GitHub Pages Build nötig** (auto nach Push) |
+
+### Tests
+
+192 grün. `tsc -b` sauber. Build OK.
+
+---
+
 ## Session 38 — E2E-Tests + Security Hardening + Bug-Fixes (31.03.2026)
 
 Umfassende E2E-Tests mit LP + SuS (Chrome-in-Chrome). Kritische Bugs gefunden und gefixt. Security-Audit + 3 Härtungen. Mehrere Runden Testing.
