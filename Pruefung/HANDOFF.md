@@ -9,7 +9,7 @@
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
 - ~~Fragenbank im Composer "nicht gefunden"~~ ✅ 27.03.2026
-- ~~Apps Script Deploy nötig~~ ✅ 30.03.2026 — Session 33 + 34 deployed
+- ~~Apps Script Deploy nötig~~ ✅ 31.03.2026 — Session 38 + 40 deployed (Heartbeat v3, Security, Ownership-Fix)
 - **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
 - **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
@@ -24,6 +24,59 @@
   - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
   - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
+
+---
+
+## Session 40 — Ownership-Fix + E2E-Test (31.03.2026)
+
+Kritischer Bug gefunden und gefixt: LP mit Admin-Rolle hatte keinen Monitoring-Zugriff auf fremde Prüfungen. Zusätzlich alle Email-Vergleiche in Ownership-Checks case-insensitive gemacht.
+
+### Bug: ladeMonitoring — "Kein Zugriff auf diese Prüfung"
+
+`ladeMonitoring()` prüfte nur `erstelltVon === email` und explizite Berechtigungen, aber **nicht die Admin-Rolle**. Das war eine duplizierte Ownership-Logik die nicht über die zentrale `ermittleRecht()`-Funktion lief.
+
+**Root Cause:** wr.test@gymhofwil.ch (Admin) hatte keinen Zugriff auf Prüfungen von yannick.durand@gymhofwil.ch.
+
+### Fixes
+
+| # | Fix | Details |
+|---|-----|---------|
+| 1 | **ladeMonitoring → ermittleRecht()** | Duplizierte Ownership-Logik durch zentrale `ermittleRecht()` ersetzt → Admin + Bearbeiter haben Monitoring-Zugriff |
+| 2 | **Email-Vergleiche case-insensitive** | 4 Helper-Funktionen (istSichtbar, ermittleRecht, + MitLP-Varianten) normalisieren jetzt mit `toLowerCase()` |
+| 3 | **hatRecht() case-insensitive** | Berechtigungs-Email-Vergleich auf `toLowerCase()` umgestellt (beide Varianten) |
+| 4 | **speichereConfig() vereinfacht** | Redundanten Guard vor `ermittleRecht()` entfernt |
+| 5 | **loeschePruefung() vereinfacht** | Manueller Check durch `ermittleRecht()` ersetzt → Admin kann auch löschen |
+
+### E2E-Test Ergebnis (Chrome-in-Chrome, Kontrollstufe Locker)
+
+| Test | Ergebnis |
+|------|----------|
+| LP Dashboard + Prüfung laden | ✅ |
+| SuS Warteraum → Prüfung starten | ✅ |
+| Frage 1 MC beantworten + Auto-Save "Gespeichert ✓" | ✅ |
+| LP Monitoring: SuS sichtbar, Status, Frage, Fortschritt | ✅ (nach Deploy) |
+| SuS Abgabe-Dialog (1/23 beantwortet, 22 Warnung) | ✅ |
+| Bestätigungsseite (Name + E-Mail) | ✅ |
+| LP Monitoring: Status "Abgegeben" | ✅ |
+| LP Auswertung: Auto-Korrektur, Statistik, Export-Buttons | ✅ |
+| Konsole: keine neuen Errors nach Fix | ✅ |
+
+### Offen
+
+| # | Problem | Status |
+|---|---------|--------|
+| — | Code-Editor (F17) kann nicht tippen | Nicht reproduzierbar |
+| — | Heartbeat v3 + Security Fixes | ✅ Apps Script deployed |
+| — | Material-PDF CSP Fix | ⚠️ **GitHub Pages Build nötig** (auto nach Push) |
+
+### Setup für künftige Tests
+
+- wr.test@gymhofwil.ch hat Rolle `admin` in Lehrpersonen-Tab → Zugriff auf alle Prüfungen
+- wr.test@stud.gymhofwil.ch als SuS manuell in Vorbereitung hinzufügen
+
+**Dateien geändert:** `apps-script-code.js` (7 Ownership-Checks refactored)
+
+**Tests:** 192 grün. `tsc -b` sauber. Build OK. **Apps Script Deploy nötig (erledigt).**
 
 ---
 
