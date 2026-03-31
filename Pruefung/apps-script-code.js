@@ -1668,17 +1668,19 @@ function heartbeat(body) {
       // heartbeat schreibt die gesamte Zeile. Ohne Schutz überschreibt heartbeat
       // die von speichereAntworten geschriebenen Werte mit veralteten Daten.
       // → Vor dem Batch-Write die Antwort-Spalten frisch nachlesen.
-      var geschuetzteSpalten = ['antworten', 'version', 'letzterSave', 'istAbgabe', 'letzteRequestId'];
-      var frischeZeile = sheet.getRange(rowIndex, 1, 1, headers.length).getValues()[0];
-      for (var sc = 0; sc < geschuetzteSpalten.length; sc++) {
-        var scIdx = headers.indexOf(geschuetzteSpalten[sc]);
-        if (scIdx >= 0) {
-          rowValues[scIdx] = frischeZeile[scIdx];
+      // RACE-CONDITION-SCHUTZ v3: Heartbeat schreibt NUR seine eigenen Spalten einzeln.
+      // Kein Batch-Write der gesamten Zeile mehr — dadurch werden speichereAntworten-Spalten
+      // (antworten, version, letzterSave, istAbgabe, letzteRequestId, zeitUeberschritten)
+      // NIEMALS von heartbeat überschrieben, egal ob concurrent oder nicht.
+      var heartbeatSpalten = ['letzterHeartbeat', 'heartbeats', 'aktuelleFrage', 'beantworteteFragen',
+        'gesamtFragen', 'autoSaveCount', 'tabSessionId', 'geraet', 'vollbild', 'kontrollStufe',
+        'verstossZaehler', 'gesperrt', 'verstoesse', 'entsperrt'];
+      for (var hc = 0; hc < heartbeatSpalten.length; hc++) {
+        var hcIdx = headers.indexOf(heartbeatSpalten[hc]);
+        if (hcIdx >= 0) {
+          sheet.getRange(rowIndex, hcIdx + 1).setValue(rowValues[hcIdx]);
         }
       }
-
-      // Batch-Write: Gesamte Zeile einmal schreiben (statt ~15 einzelne setValue)
-      rowRange.setValues([rowValues]);
 
       // Beenden-Signal prüfen (individuell → global)
       var beendetUm = null;
