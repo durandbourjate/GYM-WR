@@ -38,6 +38,13 @@ Vollständiger E2E-Test mit LP + SuS (Chrome-in-Chrome). Alle 23 Fragetypen gere
 - Frontend meldete "Gespeichert ✓" (Backend gab `success: true`), aber Heartbeat löschte die Daten sofort wieder
 - **Fix:** Vor Batch-Write im Heartbeat die geschützten Spalten (`antworten`, `version`, `letzterSave`, `istAbgabe`, `letzteRequestId`) frisch nachlesen
 
+### Fix 2: Audio-Aufnahme "enthält keine Daten"
+
+`recorder.start(1000)` mit timeslice produzierte leere Chunks → `blob.size === 0`. Zusätzlich: Permission-Dialog verzögert `getUserMedia`, User klickt nochmals → zweiter Recorder überschreibt `chunksRef`.
+
+- **Fix:** `recorder.start()` ohne timeslice + Doppelklick-Guard + sofortiges `setStatus('recording')`
+- **Verifiziert:** Audio-Player erscheint nach Stopp, Aufnahme abspielbar ✅
+
 ### Weitere Fixes
 
 | # | Fix | Details |
@@ -118,7 +125,7 @@ Systematischer Browser-Test (LP + SuS) + iPad-Test. Zwei kritische Root Causes g
 
 | # | Problem | Status |
 |---|---------|--------|
-| — | Audio-Aufnahme iOS | Codec-Fallback deployed, muss verifiziert werden |
+| ~~Audio-Aufnahme~~ | ~~Codec-Fallback deployed~~ ✅ 31.03.2026 — timeslice-Bug + Doppelklick-Guard gefixt, Desktop verifiziert |
 | — | PDF-Annotation iPad | Touch-Probleme, nicht gefixt |
 | — | Stifteingabe iPad | Toleranz reduziert, muss verifiziert werden |
 | — | Material-PDFs | Google Drive Freigabe prüfen + Fallback-Link vorhanden |
