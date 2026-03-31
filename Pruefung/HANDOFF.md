@@ -26,6 +26,44 @@
 
 ---
 
+## Session 38 — E2E-Test + KRITISCHER Bug-Fix (31.03.2026)
+
+Vollständiger E2E-Test mit LP + SuS (Chrome-in-Chrome). Alle 23 Fragetypen gerendert ✅. Kritischer Datenverlust-Bug entdeckt und gefixt.
+
+### KRITISCH: Race Condition — Heartbeat überschreibt Antworten
+
+`heartbeat()` las die gesamte Sheet-Zeile (`getValues`), modifizierte nur Monitoring-Felder und schrieb die gesamte Zeile zurück (`setValues`). `speichereAntworten()` schrieb dazwischen Zelle-für-Zelle. Heartbeat überschrieb dabei die `antworten`-Spalte mit dem veralteten leeren Wert.
+
+- Heartbeat: alle 10s, Auto-Save: alle 30s → min. 2 Heartbeats zwischen jedem Save
+- Frontend meldete "Gespeichert ✓" (Backend gab `success: true`), aber Heartbeat löschte die Daten sofort wieder
+- **Fix:** Vor Batch-Write im Heartbeat die geschützten Spalten (`antworten`, `version`, `letzterSave`, `istAbgabe`, `letzteRequestId`) frisch nachlesen
+
+### Weitere Fixes
+
+| # | Fix | Details |
+|---|-----|---------|
+| 1 | **TypeScript Build-Fehler** | `global` → `globalThis` in 2 Test-Dateien (3 Stellen), Type-Assertion für `result.optionen` |
+
+### E2E-Test Ergebnis
+
+| Test | Status |
+|------|--------|
+| LP Dashboard + Kurs-Auswahl | ✅ |
+| Lobby → Live → SuS Warteraum | ✅ |
+| Alle 23 Fragetypen rendern korrekt | ✅ |
+| Navigation (Sidebar + Weiter/Zurück) | ✅ |
+| Timer + Auto-Save Indikator | ✅ |
+| Abgabe-Dialog (beantwortet/unbeantwortet) | ✅ |
+| Bestätigungsseite (Name + E-Mail) | ✅ |
+| LP Live-Monitoring (Status, Frage, %) | ✅ |
+| LP Auswertung + Auto-Korrektur | ✅ |
+| Musterlösung + Korrektur-Vollansicht | ✅ |
+| **Antworten im Backend** | 🔴→✅ (nach Fix) |
+
+### Apps Script Deploy nötig ✅ 31.03.2026
+
+---
+
 ## Session 37 — ROOT CAUSE Fixes + Browser-Test + iPad (30–31.03.2026)
 
 Systematischer Browser-Test (LP + SuS) + iPad-Test. Zwei kritische Root Causes gefunden und gefixt.
