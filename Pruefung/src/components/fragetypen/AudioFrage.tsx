@@ -38,8 +38,15 @@ export default function AudioFrage({ frage }: Props) {
   }, [])
 
   const startRecording = useCallback(async () => {
+    // Guard: Doppelklick verhindern (Permission-Dialog kann getUserMedia verzögern,
+    // User klickt erneut → zwei Recorder parallel → Chunks gehen verloren)
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      return
+    }
+
     try {
       setFehler(null)
+      setStatus('recording') // Sofort Status setzen → Button verschwindet → kein Doppelklick
       // getUserMedia kann den Vollbild-Modus unterbrechen (Browser-Permission-Dialog)
       // → Schonfrist setzen, damit kein Verstoss registriert wird
       window.dispatchEvent(new CustomEvent('lockdown-schonfrist', { detail: { ms: 8000 } }))
@@ -55,7 +62,8 @@ export default function AudioFrage({ frage }: Props) {
       chunksRef.current = []
 
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data)
+        // Auch leere Chunks akzeptieren — manche Browser senden size=0 zwischen echten Chunks
+        chunksRef.current.push(e.data)
       }
 
       recorder.onstop = () => {
@@ -88,10 +96,11 @@ export default function AudioFrage({ frage }: Props) {
         reader.readAsDataURL(blob)
       }
 
-      recorder.start(1000) // Chunks alle 1s
+      // start() OHNE timeslice: ondataavailable feuert einmal bei stop().
+      // timeslice (z.B. 1000ms) produziert auf manchen Browsern leere Chunks → blob.size === 0.
+      recorder.start()
       startZeitRef.current = Date.now()
       setDauer(0)
-      setStatus('recording')
 
       // Vollbild wiederherstellen falls nötig (getUserMedia kann es beenden)
       if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
@@ -111,8 +120,9 @@ export default function AudioFrage({ frage }: Props) {
       }, 250)
     } catch (err) {
       console.error('[AudioFrage] getUserMedia fehlgeschlagen:', err)
-      setFehler('Mikrofon-Zugriff verweigert oder nicht verfuegbar.')
+      setFehler('Mikrofon-Zugriff verweigert oder nicht verfügbar.')
       setStatus('idle')
+      mediaRecorderRef.current = null
     }
   }, [frage.id, frage.maxDauerSekunden, setAntwort])
 
