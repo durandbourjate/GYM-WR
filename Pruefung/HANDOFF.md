@@ -16,11 +16,12 @@
 - **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
-- **Verbleibende Security-Themen (nicht kritisch):**
+- **Verbleibende Security-Themen:**
   - ~~Rollen-Bypass via sessionStorage~~ ✅ 30.03.2026 — restoreSession() validiert Rolle aus E-Mail-Domain
-  - Timer-Manipulation via localStorage (startzeit änderbar, aber Backend trackt Heartbeats)
+  - ~~Timer-Manipulation via localStorage~~ ✅ 31.03.2026 — Server-seitige Validierung bei Abgabe (Logging, nicht Blockierung)
+  - ~~Rate Limiting auf API-Endpoints fehlt~~ ✅ 31.03.2026 — 4 SuS-Endpoints limitiert (10-15/min)
+  - ~~Session-Token nicht an Prüfung gebunden~~ ✅ 31.03.2026 — Cross-Exam Token Reuse verhindert
   - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
-  - Rate Limiting auf API-Endpoints fehlt (DoS-Schutz)
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
   - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
 
