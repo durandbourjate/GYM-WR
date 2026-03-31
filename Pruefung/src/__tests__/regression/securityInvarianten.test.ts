@@ -17,7 +17,7 @@ const sessionStorageMock = (() => {
     clear: vi.fn(() => { store = {} }),
   }
 })()
-Object.defineProperty(global, 'sessionStorage', { value: sessionStorageMock })
+Object.defineProperty(globalThis, 'sessionStorage', { value: sessionStorageMock })
 
 describe('Security: Rollen-Validierung', () => {
   beforeEach(() => {
@@ -227,7 +227,7 @@ describe('Security: bereinigeFrageFuerSuS_ (Backend-Logik)', () => {
 
     expect(result.musterlosung).toBe('Die Antwort ist A')
     expect(result.bewertungsraster).toBeDefined()
-    expect(result.optionen[0].korrekt).toBe(true)
+    expect((result.optionen as Array<{ text: string; korrekt: boolean }>)[0].korrekt).toBe(true)
   })
 })
 

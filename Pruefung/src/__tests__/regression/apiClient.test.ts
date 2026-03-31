@@ -18,11 +18,11 @@ const sessionStorageMock = (() => {
   }
 })()
 
-Object.defineProperty(global, 'sessionStorage', { value: sessionStorageMock })
+Object.defineProperty(globalThis, 'sessionStorage', { value: sessionStorageMock })
 
 // Mock fetch
 const fetchMock = vi.fn()
-Object.defineProperty(global, 'fetch', { value: fetchMock, writable: true })
+Object.defineProperty(globalThis, 'fetch', { value: fetchMock, writable: true })
 
 // Mock import.meta.env
 vi.stubEnv('VITE_APPS_SCRIPT_URL', 'https://script.google.com/test')
