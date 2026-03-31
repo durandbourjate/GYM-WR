@@ -65,10 +65,10 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
     pdfFreigegeben, setPdfFreigegeben, sortierung, setSortierung,
     bewertungenOhnePunkte, stats, fragenStats, maxPunkte } = daten
 
-  const { batchLaeuft, aktionLaeuft, setAktionLaeuft, backupLaden,
+  const { batchLaeuft, aktionLaeuft, setAktionLaeuft,
     feedbackDialog, setFeedbackDialog, feedbackStatus, setFeedbackStatus, feedbackErgebnis,
     handleBewertungUpdate, handleNoteOverride, handleAudioUpload, handleGesamtAudioUpdate,
-    handleStarteKorrektur, handleFeedbackSenden, handleCSVExport, handleDetailExport, handleBackupExport } = actions
+    handleStarteKorrektur, handleFeedbackSenden, handleCSVExport, handleDetailExport } = actions
 
   // === Render ===
 
@@ -86,7 +86,6 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       userEmail={user?.email ?? ''}
       korrektur={korrektur}
       abgaben={abgaben}
-      fragen={fragen}
       batchLaeuft={batchLaeuft}
       aktionLaeuft={aktionLaeuft}
       setAktionLaeuft={setAktionLaeuft}
@@ -94,12 +93,10 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false }: 
       setEinsichtFreigegeben={setEinsichtFreigegeben}
       pdfFreigegeben={pdfFreigegeben}
       setPdfFreigegeben={setPdfFreigegeben}
-      backupLaden={backupLaden}
       onStarteKorrektur={handleStarteKorrektur}
       onFeedbackOeffnen={() => setFeedbackDialog(true)}
       onCSVExport={handleCSVExport}
       onDetailExport={handleDetailExport}
-      onBackupExport={handleBackupExport}
       bewertungenOhnePunkte={bewertungenOhnePunkte}
       onPDFOeffnen={() => {
         if (!korrektur) return

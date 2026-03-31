@@ -16,7 +16,7 @@ function rundeNote(note: number, rundung: NotenConfig['rundung']): number {
 
 /** Prüft ob ein Punktewert gesetzt ist (nicht null, undefined oder leerer String vom Backend) */
 function istPunkteGesetzt(wert: number | null | undefined): wert is number {
-  return wert != null && wert !== ('' as unknown as number)
+  return wert != null && wert !== ('' as unknown as number) && Number.isFinite(wert as number)
 }
 
 /** Effektive Punkte: LP-Anpassung wenn vorhanden, sonst KI-Vorschlag, sonst 0 */
@@ -54,7 +54,8 @@ export function berechneNote(punkte: number, maxPunkte: number, config?: Partial
     : maxPunkte
   const rundung = config?.rundung ?? 0.5
 
-  if (punkteFuerSechs === 0) return 1
+  // NaN-Schutz: Fehlende/ungültige Punkte → Note 1
+  if (punkteFuerSechs === 0 || !Number.isFinite(punkte) || !Number.isFinite(punkteFuerSechs)) return 1
   const note = 1 + 5 * (punkte / punkteFuerSechs)
   const begrenzt = Math.min(6, Math.max(1, note)) // Auf 1-6 begrenzen
   return rundeNote(begrenzt, rundung)
@@ -73,7 +74,7 @@ export function berechneStatistiken(schueler: SchuelerKorrektur[], notenConfig?:
     return { durchschnitt: 0, median: 0, bestanden: 0, durchgefallen: 0, durchschnittNote: 1, medianNote: 1 }
   }
 
-  const punkte = schueler.map((s) => s.gesamtPunkte)
+  const punkte = schueler.map((s) => Number.isFinite(s.gesamtPunkte) ? s.gesamtPunkte : 0)
   const maxPunkte = schueler[0]?.maxPunkte || 1
   const rundung = notenConfig?.rundung ?? 0.5
   const noten = punkte.map((p) => berechneNote(p, maxPunkte, notenConfig))

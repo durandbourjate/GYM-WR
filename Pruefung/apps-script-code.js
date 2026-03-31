@@ -1095,7 +1095,27 @@ function ladePruefung(pruefungId, email) {
       sessionToken = generiereSessionToken_(email, config.id);
     }
 
-    return jsonResponse({ config, fragen: sichereFragen, sessionToken: sessionToken });
+    // SICHERHEIT: Abgabe-Status prüfen — verhindert Datenverlust bei Reload nach Abgabe
+    // Wenn SuS bereits abgegeben hat, wird istAbgegeben=true mitgeliefert,
+    // damit das Frontend die Prüfung nicht erneut starten lässt
+    var istAbgegeben = false;
+    if (!istLP) {
+      try {
+        var antwortenSheet = getOrCreateAntwortenSheet(pruefungId);
+        if (antwortenSheet) {
+          var antwortenData = getSheetData(antwortenSheet);
+          var susRow = antwortenData.find(function(row) { return row.email === email; });
+          if (susRow && susRow.istAbgabe === 'true') {
+            istAbgegeben = true;
+          }
+        }
+      } catch (e) {
+        // Fehler beim Prüfen ignorieren — im Zweifel Prüfung laden lassen
+        console.log('[ladePruefung] Abgabe-Check Fehler: ' + e.message);
+      }
+    }
+
+    return jsonResponse({ config, fragen: sichereFragen, sessionToken: sessionToken, istAbgegeben: istAbgegeben });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

@@ -1,13 +1,10 @@
 import { apiService } from '../../../services/apiService.ts'
 import type { PruefungsKorrektur, SchuelerAbgabe } from '../../../types/korrektur.ts'
-import type { Frage } from '../../../types/fragen.ts'
-
 interface Props {
   pruefungId: string
   userEmail: string
   korrektur: PruefungsKorrektur | null
   abgaben: Record<string, SchuelerAbgabe>
-  fragen: Frage[]
   batchLaeuft: boolean
   aktionLaeuft: string | null
   setAktionLaeuft: (v: string | null) => void
@@ -15,24 +12,21 @@ interface Props {
   setEinsichtFreigegeben: (v: boolean) => void
   pdfFreigegeben: boolean
   setPdfFreigegeben: (v: boolean) => void
-  backupLaden: boolean
   onStarteKorrektur: () => void
   onFeedbackOeffnen: () => void
   onCSVExport: () => void
   onDetailExport: () => void
-  onBackupExport: () => void
   onPDFOeffnen: () => void
   /** U7: Anzahl Bewertungen ohne Punkte (geprüft aber lpPunkte+kiPunkte null) */
   bewertungenOhnePunkte?: number
 }
 
 export default function KorrekturAktionsLeiste({
-  pruefungId, userEmail, korrektur, abgaben, fragen,
+  pruefungId, userEmail, korrektur, abgaben,
   batchLaeuft, aktionLaeuft, setAktionLaeuft,
   einsichtFreigegeben, setEinsichtFreigegeben,
   pdfFreigegeben, setPdfFreigegeben,
-  backupLaden,
-  onStarteKorrektur, onFeedbackOeffnen, onCSVExport, onDetailExport, onBackupExport, onPDFOeffnen,
+  onStarteKorrektur, onFeedbackOeffnen, onCSVExport, onDetailExport, onPDFOeffnen,
   bewertungenOhnePunkte = 0,
 }: Props) {
   // U7: Prüfe ob alle Bewertungen vollständig bepunktet sind
@@ -134,11 +128,6 @@ export default function KorrekturAktionsLeiste({
           title={hatFehlendePunkte ? punkteWarnung : 'Detaillierter Export mit Antworten und Punkten pro Frage'}
         >
           Excel-Export (Detailliert)
-        </button>
-      )}
-      {korrektur && fragen.length > 0 && (
-        <button onClick={onBackupExport} disabled={backupLaden} className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 disabled:opacity-50 transition-colors cursor-pointer" title="Vollständiges Backup als Excel (Übersicht + Tab pro SuS)">
-          {backupLaden ? 'Exportiert…' : '📥 Backup (.xlsx)'}
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && (

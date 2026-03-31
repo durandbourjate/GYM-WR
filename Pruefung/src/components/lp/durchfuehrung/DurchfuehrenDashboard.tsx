@@ -174,7 +174,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       schueler: (((effectiveResult.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
         email: s.email || '',
         name: s.name || s.email || '',
-        status: s.status || (s.istAbgegeben === 'true' || s.istAbgegeben === true ? 'abgegeben' : 'nicht-gestartet'),
+        status: (s.abgabezeit || s.istAbgabe === 'true' || s.istAbgegeben === 'true' || s.istAbgegeben === true) ? 'abgegeben' : (s.status || 'nicht-gestartet'),
         letzterHeartbeat: s.letzterHeartbeat || null,
         letzterSave: s.letzterSave || null,
         beantworteteFragen: Number(s.beantworteteFragen) || 0,
@@ -228,7 +228,13 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       if (abgabenResult) setAbgaben(abgabenResult)
       if (pruefungResult?.fragen) setFragen(pruefungResult.fragen)
       // Config aus ladePruefung übernehmen (spart separaten ladeAlleConfigs-Call)
-      if (pruefungResult?.config) setConfig(pruefungResult.config)
+      if (pruefungResult?.config) {
+        setConfig(pruefungResult.config)
+        // Beendete Prüfung → direkt Auswertung-Tab anzeigen (statt Vorbereitung)
+        if (pruefungResult.config.beendetUm && !urlTab) {
+          setActiveTab('auswertung')
+        }
+      }
       abgabenGeladen.current = true
     }
     ladeAbgabenUndFragen()

@@ -14,6 +14,7 @@ export async function ladeEinzelConfig(pruefungId: string, email: string): Promi
 export async function ladePruefung(pruefungId: string, email: string): Promise<{
   config: PruefungsConfig
   fragen: Frage[]
+  istAbgegeben?: boolean
 } | null> {
   if (!APPS_SCRIPT_URL) return null
 

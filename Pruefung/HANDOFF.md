@@ -27,6 +27,30 @@
 
 ---
 
+## Session 42 — 8 Bugfixes (31.03.2026)
+
+Kritische und mittlere Bugs gefixt. Branch: `fix/bugfixes-2026-03-31`.
+
+| # | Bug | Fix | Dateien |
+|---|-----|-----|---------|
+| 1 | **🔴 SuS kann nach Abgabe Prüfung neu laden → Datenverlust** | Backend `ladePruefung()` liefert jetzt `istAbgegeben`-Flag. Frontend prüft bei jedem Load ob bereits abgegeben und zeigt Abgabe-Screen. | apps-script-code.js, App.tsx, pruefungApi.ts |
+| 2 | **🔴 Abgegebene SuS im Live-Tab noch aktiv** | Status-Mapping prüft jetzt `abgabezeit` und `istAbgabe` vor Backend-Status → abgegebene SuS immer als 'abgegeben' angezeigt. | DurchfuehrenDashboard.tsx |
+| 3 | **🟠 NaN-Note** | `istPunkteGesetzt()` prüft jetzt `Number.isFinite()`. `berechneNote()` und `berechneStatistiken()` sind NaN-sicher. | korrekturUtils.ts |
+| 4 | **🟠 Login flackert** | Doppelklick-Guard (`loginInProgress`) in `authStore.anmelden()`. Lade-Indikator im LoginScreen. | authStore.ts, LoginScreen.tsx |
+| 5 | **🟡 Beendete Prüfung → Vorbereitung-Tab** | Beim initialen Config-Load: wenn `beendetUm` gesetzt → direkt `'auswertung'`-Tab. | DurchfuehrenDashboard.tsx |
+| 6 | **🟡 PDF-Korrektur Zurück-Button** | Button-Text von "Schliessen" zu "← Zurück" geändert. | KorrekturPDFAnsicht.tsx |
+| 7 | **🟡 Excel-Export Backup-Button** | Backup-Button aus KorrekturAktionsLeiste entfernt (inkl. Props-Bereinigung). | KorrekturAktionsLeiste.tsx, KorrekturDashboard.tsx |
+| 8 | **🟢 PDF-Scroll neben Viewer** | `overflow-auto` → `overflow-y-auto overflow-x-hidden` im PDFViewer-Container. | PDFViewer.tsx |
+
+### Noch auf separatem Branch (nicht mergen vor Test)
+- **KaTeX Doppel-Anzeige** — auf `main`, noch zu verifizieren
+- **PDF Annotation Toolswitch** — auf `fix/pdf-auswahl-toolswitch`, noch zu verifizieren
+
+### Apps Script Deploy nötig
+Bug 1 (Datenverlust-Schutz) erfordert ein neues Backend-Deploy: `ladePruefung()` wurde erweitert um `istAbgegeben`-Flag.
+
+---
+
 ## Session 40 — Ownership-Fix + E2E-Test (31.03.2026)
 
 Kritischer Bug gefunden und gefixt: LP mit Admin-Rolle hatte keinen Monitoring-Zugriff auf fremde Prüfungen. Zusätzlich alle Email-Vergleiche in Ownership-Checks case-insensitive gemacht.

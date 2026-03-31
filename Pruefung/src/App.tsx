@@ -102,6 +102,12 @@ export default function App() {
         try {
           const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
           if (result) {
+            // SICHERHEIT: Bereits abgegeben → Abgabe-Screen zeigen, NICHT Prüfung laden
+            if (result.istAbgegeben) {
+              console.log('[App] Prüfung bereits abgegeben (Backend bestätigt) — Abgabe-Screen anzeigen')
+              usePruefungStore.getState().pruefungAbgeben()
+              return
+            }
             const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(result.config, result.fragen)
             // setConfigUndFragen statt pruefungStarten — behält antworten bei
             usePruefungStore.getState().setConfigUndFragen(result.config, navigationsFragen, alleFragen)
@@ -126,6 +132,14 @@ export default function App() {
         try {
           const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
           if (result) {
+            // SICHERHEIT: Bereits abgegeben → Abgabe-Screen zeigen, NICHT Prüfung laden
+            // Verhindert Datenverlust wenn SuS nach Abgabe die Seite neu lädt
+            if (result.istAbgegeben && user!.rolle !== 'lp') {
+              console.log('[App] Prüfung bereits abgegeben (Backend bestätigt) — Abgabe-Screen anzeigen')
+              usePruefungStore.getState().pruefungAbgeben()
+              return
+            }
+
             // durchfuehrungId-Check: Wenn LP die Prüfung zurückgesetzt hat, stale State löschen
             const storeDfId = usePruefungStore.getState().durchfuehrungId
             const backendDfId = result.config.durchfuehrungId

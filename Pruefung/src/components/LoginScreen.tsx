@@ -12,6 +12,7 @@ export default function LoginScreen() {
   const demoStarten = useAuthStore((s) => s.demoStarten)
   const fehler = useAuthStore((s) => s.fehler)
   const setFehler = useAuthStore((s) => s.setFehler)
+  const ladeStatus = useAuthStore((s) => s.ladeStatus)
 
   const googleButtonRef = useRef<HTMLDivElement>(null)
   const [zeigeFallback, setZeigeFallback] = useState(false)
@@ -138,6 +139,13 @@ export default function LoginScreen() {
             {config.schulName}
           </p>
         </div>
+
+        {/* Lade-Indikator während Login (verhindert Flackern) */}
+        {ladeStatus === 'laden' && (
+          <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-600 dark:text-slate-300 text-center">
+            Anmeldung läuft...
+          </div>
+        )}
 
         {/* Fehlermeldung */}
         {fehler && (

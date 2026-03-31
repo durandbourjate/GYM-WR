@@ -234,7 +234,7 @@ export default function KorrekturPDFAnsicht({ schueler, abgabe, fragen, korrektu
             onClick={onSchliessen}
             className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
           >
-            Schliessen
+            ← Zurück
           </button>
           <span className="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline">
             {schueler.name} — Korrektur-PDF

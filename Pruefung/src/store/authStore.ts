@@ -8,6 +8,9 @@ import { ladeLehrpersonen, type LPInfo } from '../services/lpApi.ts'
 // Cache für LP-Liste (pro Session geladen)
 let lpCache: LPInfo[] | null = null
 
+// Guard gegen Doppelklick-Login (verhindert Race Condition bei Google GIS Callback)
+let loginInProgress = false
+
 /**
  * Demo-LP-Liste — nur für den expliziten Demo-Modus (ohne Backend).
  * Echte LP-Logins laufen über ladeLehrpersonen() → Backend.
@@ -90,26 +93,33 @@ export const useAuthStore = create<AuthStore>((set) => ({
   fehler: null,
 
   anmelden: async (credential: GoogleCredential) => {
+    // Guard gegen Doppelklick / doppeltes GIS-Callback
+    if (loginInProgress) return
+    loginInProgress = true
     set({ ladeStatus: 'laden' })
-    // LP-Liste vom Backend laden mit echter E-Mail (gecached pro Session)
-    const lps = await ladeUndCacheLPs(credential.email)
-    const rolle = rolleAusDomain(credential.email, lps)
-    const lpInfo = lps.find(lp => lp.email === credential.email.toLowerCase())
-    const user: AuthUser = {
-      email: credential.email,
-      name: credential.name,
-      vorname: credential.given_name || credential.name.split(' ')[0] || '',
-      nachname: credential.family_name || credential.name.split(' ').slice(1).join(' ') || '',
-      bild: credential.picture,
-      rolle,
-      fachschaft: lpInfo?.fachschaft,
-      fachschaften: lpInfo?.fachschaften ?? (lpInfo?.fachschaft ? [lpInfo.fachschaft] : []),
-      adminRolle: lpInfo?.rolle === 'admin',
+    try {
+      // LP-Liste vom Backend laden mit echter E-Mail (gecached pro Session)
+      const lps = await ladeUndCacheLPs(credential.email)
+      const rolle = rolleAusDomain(credential.email, lps)
+      const lpInfo = lps.find(lp => lp.email === credential.email.toLowerCase())
+      const user: AuthUser = {
+        email: credential.email,
+        name: credential.name,
+        vorname: credential.given_name || credential.name.split(' ')[0] || '',
+        nachname: credential.family_name || credential.name.split(' ').slice(1).join(' ') || '',
+        bild: credential.picture,
+        rolle,
+        fachschaft: lpInfo?.fachschaft,
+        fachschaften: lpInfo?.fachschaften ?? (lpInfo?.fachschaft ? [lpInfo.fachschaft] : []),
+        adminRolle: lpInfo?.rolle === 'admin',
+      }
+      // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
+      resetPruefungState()
+      saveSession(user, false)
+      set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
+    } finally {
+      loginInProgress = false
     }
-    // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
-    resetPruefungState()
-    saveSession(user, false)
-    set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
   },
 
   anmeldenMitCode: (schuelerId: string, name: string, email: string, sessionToken?: string) => {
