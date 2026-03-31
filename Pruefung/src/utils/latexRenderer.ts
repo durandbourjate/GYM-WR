@@ -8,13 +8,14 @@ let katexModule: typeof import('katex') | null = null
 let katexPromise: Promise<typeof import('katex')> | null = null
 let cssInjected = false
 
-/** Lazy-Load KaTeX und CSS */
+/** Lazy-Load KaTeX und CSS (CSS wird sofort injiziert, nicht erst nach JS-Load) */
 async function ladeKatex(): Promise<typeof import('katex')> {
   if (katexModule) return katexModule
   if (!katexPromise) {
+    // CSS sofort laden, parallel zum JS — verhindert kurzes Doppel-Rendering
+    injiziereKatexCSS()
     katexPromise = import('katex').then(mod => {
       katexModule = mod
-      injiziereKatexCSS()
       return mod
     })
   }

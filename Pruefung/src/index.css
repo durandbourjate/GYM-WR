@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* KaTeX: MathML-Fallback verstecken (bevor CDN-CSS geladen ist) */
+.katex-mathml {
+  display: none !important;
+}
+
 /* Tailwind v4: Class-basiertes Dark Mode statt Media Query */
 @custom-variant dark (&:where(.dark, .dark *));
 
