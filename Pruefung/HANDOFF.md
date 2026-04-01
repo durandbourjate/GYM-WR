@@ -13,7 +13,10 @@
 - **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
 - **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
-- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht
+- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
+- **Übungspools: 9 neue Fragetypen** — sortierung, hotspot, bildbeschriftung, dragdrop_bild, code, formel, audio, zeichnen, pdf. Spec: `docs/superpowers/specs/2026-04-01-session48-improvements-design.md` AP-E. Inkl. TYPE_HANDLERS Refactoring. Sessions 49–51.
+- **Zeichnen Input-Verlust** — React Re-Renders verschlucken pointerdown. Refactoring-Plan in Spec AP-F. Eigene Session.
+- **Monitoring-Verzögerung ~28s** — Abwarten, aktuell akzeptabel
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
 - **Verbleibende Security-Themen:**
@@ -21,16 +24,17 @@
   - ~~Timer-Manipulation via localStorage~~ ✅ 31.03.2026 — Server-seitige Validierung bei Abgabe (Logging, nicht Blockierung)
   - ~~Rate Limiting auf API-Endpoints fehlt~~ ✅ 31.03.2026 — 4 SuS-Endpoints limitiert (10-15/min)
   - ~~Session-Token nicht an Prüfung gebunden~~ ✅ 31.03.2026 — Cross-Exam Token Reuse verhindert
-  - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
-  - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
-  - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
+  - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 01.04.2026 — sessionStorage-Flag entfernt, istDemoModus nur in-memory
+  - ~~Prompt Injection bei KI-Assistent~~ ✅ 01.04.2026 — wrapUserData() XML-Tag-Wrapping für alle 27 Aktionen
+  - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 01.04.2026 — cleanupNachAbgabe() für alle 3 Abgabe-Pfade
 
 ---
 
 ## Session 48 — Security, Cleanup, Demo-Update, Reset (01.04.2026)
 
 ### Stand
-Branch `feature/session48-improvements`. **Noch NICHT auf main.** Apps Script Deploy ausstehend.
+Branch `feature/session48-improvements` → merged auf `preview`. Apps Script deployed (01.04.2026).
+**Noch NICHT auf main** — Browser-Test ausstehend.
 
 ### Erledigte Änderungen
 
@@ -46,7 +50,7 @@ Branch `feature/session48-improvements`. **Noch NICHT auf main.** Apps Script De
 
 | Prio | Thema | Beschreibung |
 |------|-------|-------------|
-| 🟠 | **Apps Script Deploy** | apps-script-code.js (AP-A2 + AP-D) muss in Apps Script Editor kopiert + neue Bereitstellung erstellt werden. |
+| ~~🟠~~ | ~~**Apps Script Deploy**~~ | ✅ 01.04.2026 deployed |
 | 🟡 | **Browser-Test** | Alle 5 APs im Browser testen (Demo SuS+LP, Lockdown, Reset, Cleanup). |
 | 🟡 | **Übungspools: 9 neue Fragetypen** | sortierung, hotspot, bildbeschriftung, dragdrop_bild, code, formel, audio, zeichnen, pdf. Spec: `docs/superpowers/specs/2026-04-01-session48-improvements-design.md` AP-E. Sessions 49–51. |
 | 🟡 | **Zeichnen Input-Verlust (Refactoring)** | React Re-Renders verschlucken pointerdown bei schnellem Zeichnen. Fix: Events imperativ binden (useEffect+addEventListener), Stroke-Daten in useRef sammeln, Batch-Commit nach pointerup. Betroffene Dateien: usePointerEvents.ts, ZeichnenCanvas.tsx, useDrawingEngine.ts. Eigene Session mit Browser-Test (Stift/Touch). |
