@@ -3,6 +3,7 @@ import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
 import { sebVersion, browserInfo } from '../services/sebService.ts'
+import { cleanupNachAbgabe } from '../utils/cleanupNachAbgabe.ts'
 import { berechneRestzeit, formatZeit, berechneVerstricheneZeit, formatVerstricheneZeit } from '../utils/zeit.ts'
 
 interface Props {
@@ -95,7 +96,10 @@ export default function Timer({ onZeitAbgelaufen }: Props) {
         version: -1,
         istAbgabe: true,
         gesamtFragen: fragen.length,
-      })
+      }).then(() => cleanupNachAbgabe(config!.id))
+    } else {
+      // Demo oder kein Backend — sofort aufräumen
+      cleanupNachAbgabe(config!.id)
     }
   }
 
