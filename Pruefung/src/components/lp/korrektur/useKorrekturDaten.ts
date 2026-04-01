@@ -104,8 +104,7 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
 
     // Demo-Modus: Lokale Demo-Daten verwenden
     if (istDemoModus || !apiService.istKonfiguriert()) {
-      const demoFragen = einrichtungsFragen.filter((f) => f.typ !== 'aufgabengruppe')
-      setFragen(demoFragen)
+      setFragen(einrichtungsFragen)
       setAbgaben(erstelleDemoAbgaben())
       setKorrektur(erstelleDemoKorrektur())
       setLadeStatus('fertig')
