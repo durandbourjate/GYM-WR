@@ -90,6 +90,9 @@ export function usePointerEvents({
 
       istAmZeichnenRef.current = false;
 
+      // Pointer-Capture freigeben — verhindert dass naechster pointerdown verschluckt wird
+      try { canvas!.releasePointerCapture(event.pointerId); } catch { /* bereits freigegeben */ }
+
       const punkt = konvertiereKoordinaten(event);
       onEnd(punkt, event.pointerType);
     }
@@ -98,6 +101,8 @@ export function usePointerEvents({
       if (!istAmZeichnenRef.current) return;
 
       istAmZeichnenRef.current = false;
+
+      try { canvas!.releasePointerCapture(event.pointerId); } catch { /* bereits freigegeben */ }
 
       const punkt = konvertiereKoordinaten(event);
       onEnd(punkt, event.pointerType);

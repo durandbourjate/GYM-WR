@@ -1095,6 +1095,12 @@ function ladePruefung(pruefungId, email) {
       sessionToken = generiereSessionToken_(email, config.id);
     }
 
+    // SICHERHEIT: Beendet-Check — SuS darf beendete Prüfung nicht neu laden
+    var istBeendet = false;
+    if (!istLP && configRow.beendetUm) {
+      istBeendet = true;
+    }
+
     // SICHERHEIT: Abgabe-Status prüfen — verhindert Datenverlust bei Reload nach Abgabe
     // Wenn SuS bereits abgegeben hat, wird istAbgegeben=true mitgeliefert,
     // damit das Frontend die Prüfung nicht erneut starten lässt
@@ -1115,7 +1121,7 @@ function ladePruefung(pruefungId, email) {
       }
     }
 
-    return jsonResponse({ config, fragen: sichereFragen, sessionToken: sessionToken, istAbgegeben: istAbgegeben });
+    return jsonResponse({ config, fragen: sichereFragen, sessionToken: sessionToken, istAbgegeben: istAbgegeben, istBeendet: istBeendet });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

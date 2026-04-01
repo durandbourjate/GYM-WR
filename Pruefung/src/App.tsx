@@ -102,9 +102,9 @@ export default function App() {
         try {
           const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
           if (result) {
-            // SICHERHEIT: Bereits abgegeben → Abgabe-Screen zeigen, NICHT Prüfung laden
-            if (result.istAbgegeben) {
-              console.log('[App] Prüfung bereits abgegeben (Backend bestätigt) — Abgabe-Screen anzeigen')
+            // SICHERHEIT: Prüfung beendet oder bereits abgegeben → Abgabe-Screen zeigen
+            if (result.istAbgegeben || result.istBeendet) {
+              console.log(`[App] Prüfung ${result.istBeendet ? 'beendet' : 'abgegeben'} (Backend) — Abgabe-Screen anzeigen`)
               usePruefungStore.getState().pruefungAbgeben()
               return
             }
@@ -132,10 +132,9 @@ export default function App() {
         try {
           const result = await apiService.ladePruefung(pruefungIdAusUrl, user!.email)
           if (result) {
-            // SICHERHEIT: Bereits abgegeben → Abgabe-Screen zeigen, NICHT Prüfung laden
-            // Verhindert Datenverlust wenn SuS nach Abgabe die Seite neu lädt
-            if (result.istAbgegeben && user!.rolle !== 'lp') {
-              console.log('[App] Prüfung bereits abgegeben (Backend bestätigt) — Abgabe-Screen anzeigen')
+            // SICHERHEIT: Prüfung beendet oder bereits abgegeben → Abgabe-Screen zeigen
+            if ((result.istAbgegeben || result.istBeendet) && user!.rolle !== 'lp') {
+              console.log(`[App] Prüfung ${result.istBeendet ? 'beendet' : 'abgegeben'} (Backend) — Abgabe-Screen anzeigen`)
               usePruefungStore.getState().pruefungAbgeben()
               return
             }

@@ -501,7 +501,7 @@ export function ZeichnenCanvas({
             punkte: [...aktiver.punkte, punkt],
           };
           engine.addCommand(mitEndpunkt as Omit<DrawCommand, 'id'>);
-          engine.updateAktiverCommand(null);
+          // updateAktiverCommand(null) nicht noetig — ADD_COMMAND setzt aktiverCommand auf null
           break;
         }
 
@@ -513,7 +513,6 @@ export function ZeichnenCanvas({
           const aktiver = engine.state.aktiverCommand;
           if (!aktiver || aktiver.typ !== 'linie') break;
           engine.addCommand({ ...aktiver, bis: punkt } as Omit<DrawCommand, 'id'>);
-          engine.updateAktiverCommand(null);
           break;
         }
 
@@ -521,7 +520,6 @@ export function ZeichnenCanvas({
           const aktiver = engine.state.aktiverCommand;
           if (!aktiver || aktiver.typ !== 'pfeil') break;
           engine.addCommand({ ...aktiver, bis: punkt } as Omit<DrawCommand, 'id'>);
-          engine.updateAktiverCommand(null);
           break;
         }
 
@@ -531,7 +529,6 @@ export function ZeichnenCanvas({
           if (!aktiver || (aktiver.typ !== 'rechteck' && aktiver.typ !== 'ellipse')) break;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           engine.addCommand({ ...aktiver, bis: punkt } as any);
-          engine.updateAktiverCommand(null);
           break;
         }
 

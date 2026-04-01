@@ -35,10 +35,16 @@ export function useAudioRecorder(): AudioRecorderState {
     }
   }, [audioUrl])
 
+  // Guard gegen Doppelklick waehrend Permission-Popup offen ist
+  const isStartingRef = useRef(false)
+
   const startRecording = useCallback(async () => {
+    if (isStartingRef.current) return // Bereits am Starten (z.B. Permission-Popup offen)
+    isStartingRef.current = true
     try {
       setFehler(null)
       chunksRef.current = []
+      setStatus('recording') // Sofort Status setzen → Button verschwindet
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
@@ -67,9 +73,8 @@ export function useAudioRecorder(): AudioRecorderState {
         streamRef.current = null
       }
 
-      recorder.start(1000) // Chunks alle 1s
+      recorder.start() // Ohne timeslice — ondataavailable feuert einmal bei stop
       startZeitRef.current = Date.now()
-      setStatus('recording')
 
       // Timer für Dauer-Anzeige
       timerRef.current = setInterval(() => {
@@ -81,6 +86,8 @@ export function useAudioRecorder(): AudioRecorderState {
         : 'Mikrofon konnte nicht gestartet werden.'
       setFehler(msg)
       setStatus('fehler')
+    } finally {
+      isStartingRef.current = false
     }
   }, [])
 

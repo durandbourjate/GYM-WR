@@ -83,14 +83,22 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
 
     // An Backend senden (nur wenn konfiguriert und kein Demo-Modus)
     if (apiService.istKonfiguriert() && !istDemoModus) {
-      const erfolg = await apiService.speichereAntworten({
+      // Abgabe mit mehreren Retries — Datenverlust verhindern
+      const abgabePayload = {
         pruefungId: abgabe.pruefungId,
         email: abgabe.email,
         antworten: abgabe.antworten,
         version: -1, // -1 = finale Abgabe
         istAbgabe: true,
         gesamtFragen: fragen.length,
-      })
+      }
+      const backoffs = [0, 2000, 5000, 10000] // sofort, 2s, 5s, 10s
+      let erfolg = false
+      for (const wartezeit of backoffs) {
+        if (wartezeit > 0) await new Promise(r => setTimeout(r, wartezeit))
+        erfolg = await apiService.speichereAntworten(abgabePayload)
+        if (erfolg) break
+      }
 
       if (erfolg) {
         setStatus('erfolg')

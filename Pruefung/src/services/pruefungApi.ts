@@ -2,7 +2,7 @@ import type { Frage } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import type { Antwort } from '../types/antworten.ts'
 import type { HeartbeatResponse } from '../types/monitoring.ts'
-import { APPS_SCRIPT_URL, getJson, getSessionToken } from './apiClient'
+import { APPS_SCRIPT_URL, getJson, getSessionToken, postBool } from './apiClient'
 
 /** Einzelne Prüfungs-Config laden (leichtgewichtig, für Polling) */
 export async function ladeEinzelConfig(pruefungId: string, email: string): Promise<PruefungsConfig | null> {
@@ -15,6 +15,7 @@ export async function ladePruefung(pruefungId: string, email: string): Promise<{
   config: PruefungsConfig
   fragen: Frage[]
   istAbgegeben?: boolean
+  istBeendet?: boolean
 } | null> {
   if (!APPS_SCRIPT_URL) return null
 
@@ -46,7 +47,7 @@ export async function ladePruefung(pruefungId: string, email: string): Promise<{
   }
 }
 
-/** Antworten speichern (Auto-Save + Abgabe) */
+/** Antworten speichern (Auto-Save + Abgabe) — mit Timeout + automatischem Retry */
 export async function speichereAntworten(payload: {
   pruefungId: string
   email: string
@@ -58,20 +59,19 @@ export async function speichereAntworten(payload: {
 }): Promise<boolean> {
   if (!APPS_SCRIPT_URL) return false
 
-  try {
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'speichereAntworten', sessionToken: getSessionToken(), ...payload }),
-    })
-    if (!response.ok) return false
-
-    const data = await response.json()
-    return data.success === true
-  } catch (error) {
-    console.error('[API] Save-Fehler:', error)
-    return false
+  // Payload-Groesse warnen (> 500KB kann bei Apps Script Probleme machen)
+  const payloadStr = JSON.stringify(payload)
+  if (payloadStr.length > 500_000) {
+    console.warn(`[API] Save-Payload gross: ${Math.round(payloadStr.length / 1024)} KB`)
   }
+
+  // Erster Versuch
+  const erfolg = await postBool('speichereAntworten', payload)
+  if (erfolg) return true
+
+  // Retry nach 3s (einmal) — verhindert Datenverlust bei transienten Netzwerkfehlern
+  await new Promise(r => setTimeout(r, 3000))
+  return postBool('speichereAntworten', payload)
 }
 
 /** Lockdown-Metadaten für Heartbeat */
