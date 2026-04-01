@@ -13,7 +13,8 @@
 - **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
 - **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
-- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht
+- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
+- ~~**Zeichnen Input-Verlust (Prüfungstool)**~~ ✅ 01.04.2026 — Ref-basierter Stift-Buffer + rAF-Rendering. Browser-Test mit Stift/Touch ausstehend.
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
 - **Verbleibende Security-Themen:**
@@ -24,6 +25,42 @@
   - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
   - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
+
+---
+
+## Session 50 — Zeichnen Input-Verlust Refactoring (01.04.2026)
+
+### Stand
+Branch `feature/zeichnen-refactoring` — **pushed auf GitHub.** Noch NICHT auf main — Browser-Test mit Stift/Touch ausstehend.
+`tsc -b` ✅ | 192 Tests ✅ | Build ✅
+
+### Problem
+React Re-Renders verschluckten `pointerdown`-Events bei schnellem Zeichnen (60–240 Events/sec). Jeder Stift-Punkt löste ein State-Update + Re-Render aus, währenddessen neue Pointer-Events verloren gingen.
+
+### Lösung (3 Dateien, +162 / -33 Zeilen)
+
+| Datei | Änderung |
+|-------|----------|
+| `usePointerEvents.ts` | Alle Callbacks + Laufzeitwerte in Refs. useEffect bindet Listener nur 1x bei Canvas-Wechsel. |
+| `useDrawingEngine.ts` | Neue `renderMitPreview(ctx, previewCommand)` Methode für Echtzeit-Rendering ohne React-State. |
+| `ZeichnenCanvas.tsx` | Stift-Punkte in useRef-Buffer. rAF-Loop während Zeichnen. Batch-Commit bei pointerup. |
+
+### Offene Punkte
+
+| Prio | Thema | Beschreibung |
+|------|-------|-------------|
+| 🔴 | **Browser-Test Zeichnen** | Alle Werkzeuge testen, besonders Stift: schnelles Zeichnen, Drucksensitivität, keine verlorenen Striche. |
+| 🟡 | **Session 48 Browser-Test** | APs A–D auf `feature/session48-improvements` noch nicht getestet. |
+| 🟡 | **Pool-Fragetypen Browser-Test** | 8 neue Typen auf `feature/uebungspools-neue-typen` noch nicht getestet. |
+
+### Branch-Status
+
+| Branch | Inhalt | Status |
+|--------|--------|--------|
+| `feature/zeichnen-refactoring` | Stift-Buffer + rAF | Pushed, nicht auf main |
+| `feature/uebungspools-neue-typen` | Pool-Typen E0–E3 | Pushed, nicht auf main |
+| `feature/session48-improvements` | Security/Cleanup | Pushed, nicht auf main |
+| `main` | Production | Unverändert seit Session 47 |
 
 ---
 
