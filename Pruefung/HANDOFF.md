@@ -27,7 +27,58 @@
 
 ---
 
-## Session 44 — Bugfixes + Prozess-Verbesserungen (01.04.2026) ⚠️ KRITISCHE BUGS OFFEN
+## Session 45 — Batch-Writes, Request-Queue, 4 Bugfixes (01.04.2026) ⚠️ TEST AUSSTEHEND
+
+### Stand
+Branch `fix/warteraum-polling-rate-limit` + `preview`. **Noch NICHT auf main.** Apps Script Deploy ausstehend.
+
+### Erledigte Fixes (auf Branch, nicht auf main)
+
+| Fix | Beschreibung | Datei(en) |
+|-----|-------------|-----------|
+| **Backend Batch-Writes** | `speichereAntworten`: 9 einzelne `setValue()` → 1 `setValues()` Batch. `heartbeat`: 14 einzelne `setValue()` → 1 `setValues()` Batch + 2 `getValue()` → `getCol()`. | apps-script-code.js |
+| **Write-Queue (Frontend)** | SuS-Writes (postBool: heartbeat + speichereAntworten) serialisiert — max 1 gleichzeitig. GETs (LP-Monitoring, Nachrichten) bleiben parallel. | apiClient.ts |
+| **Heartbeat-Intervall** | Default 10s → 15s (Backend + Frontend-Fallback) | apps-script-code.js, usePruefungsMonitoring.ts |
+| **Loading-Screen hing** | Bei istBeendet/istAbgegeben wurde `pruefungAbgeben()` aufgerufen OHNE Config zu setzen → ewiger Loading-Screen. Jetzt: Config + Fragen setzen BEVOR pruefungAbgeben(). | App.tsx |
+| **Abgabe-Retry fehlte pruefungAbgeben()** | `handleRetry()` rief bei Erfolg nicht `pruefungAbgeben()` auf → Store blieb auf phase='pruefung'. | AbgabeDialog.tsx |
+| **Neue Durchführung → Auswertung-Tab** | `letztePhaseRef`, `abgabenGeladen`, `abgaben` wurden beim Reset nicht zurückgesetzt → Tab sprang zu Auswertung. | DurchfuehrenDashboard.tsx |
+| **Teilnehmer-Check** | `ladePruefung` prüft jetzt die `teilnehmer`-Liste: nur eingetragene SuS haben Zugang. Vorher konnte jeder SuS mit @stud.gymhofwil.ch ohne Teilnehmer-Eintrag die Prüfung laden. | apps-script-code.js |
+
+### Browser-Test-Ergebnisse (Session 45, teilweise)
+
+| Test | Ergebnis |
+|------|----------|
+| SuS Saves kommen durch (kein Failed to fetch in Konsole) | ✅ |
+| Re-Entry nach Abgabe blockiert | ✅ (SuS sieht Abgabe-Screen statt neue Prüfung) |
+| Abgabe-POST | ⚠️ 503 vom Backend (altes Script, Batch-Writes noch nicht deployed) |
+| LP Monitoring Timeouts | ✅ Behoben (GETs nicht mehr in Queue) |
+| Teilnehmer-Check | Noch nicht getestet (Apps Script Deploy nötig) |
+| Warteraum Freischaltung ohne Reload | Noch nicht gezielt getestet |
+| Neue Durchführung → Tab Vorbereitung | Noch nicht getestet |
+
+### Naechste Session: Apps Script Deploy + Test
+
+1. **Apps Script aktualisieren** — `apps-script-code.js` in Editor kopieren + **neue Bereitstellung erstellen**
+2. **Hard-Reload** auf Staging (beide Tabs)
+3. **Test-Plan:**
+   - SuS (wr.test@stud.gymhofwil.ch): Warteraum → Freischaltung ohne Reload → Fragen → Abgabe → Bestätigung
+   - SuS (info.test@stud.gymhofwil.ch): Zugang verweigert (nicht als Teilnehmer)
+   - SuS: Re-Login nach Abgabe → Abgabe-Screen (kein Re-Entry)
+   - LP: Monitoring ohne Timeouts, Abgabe-Status sichtbar
+   - LP: Neue Durchführung → Tab = Vorbereitung
+4. **Nach erfolgreichen Tests:** LP gibt Freigabe → merge auf main
+
+### Branch-Status
+
+| Branch | Inhalt | Status |
+|--------|--------|--------|
+| `fix/warteraum-polling-rate-limit` | Alle Session 44+45 Fixes | Auf GitHub |
+| `preview` | = fix/warteraum-polling-rate-limit | Staging deployed (Frontend) |
+| `main` | Production | Unveraendert seit Session 43 |
+
+---
+
+## Session 44 — Bugfixes + Prozess-Verbesserungen (01.04.2026)
 
 ### Stand
 Branch `fix/warteraum-polling-rate-limit` auf Staging deployed. 7 Commits mit diversen Fixes. **Aber: fundamentales Problem nicht geloest.**
