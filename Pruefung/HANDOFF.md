@@ -49,6 +49,9 @@ Kritische und mittlere Bugs gefixt. Branch: `fix/bugfixes-2026-03-31`.
 ### Apps Script Deploy nötig
 Bug 1 (Datenverlust-Schutz) erfordert ein neues Backend-Deploy: `ladePruefung()` wurde erweitert um `istAbgegeben`-Flag.
 
+### PDF Annotation Toolswitch (Session 41, gemergt)
+T-Dropdown wechselte Tool von 'auswahl' zu 'text' → Properties jetzt INLINE wenn Annotation selektiert (kein Tool-Switch). | PDFToolbar.tsx
+
 ---
 
 ## Session 40 — Ownership-Fix + E2E-Test (31.03.2026)

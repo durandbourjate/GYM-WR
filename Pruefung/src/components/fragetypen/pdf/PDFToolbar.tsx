@@ -149,34 +149,68 @@ export function PDFToolbar({
         </button>
       )}
 
-      {/* Text-Werkzeug (Klick öffnet Modal UND aktiviert Text-Werkzeug) */}
-      <ToolbarDropdown
-        icon="T"
-        label="Text"
-        aktiv={aktivesWerkzeug === 'text' || hatSelektierteTextAnnotation}
-        horizontal={isHorizontal}
-        onOpen={() => onWerkzeugWechsel('text')}
-      >
-        <div className="flex flex-col gap-1 min-w-[120px]" onClick={(e) => e.stopPropagation()}>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Grösse</span>
-          <div className="flex gap-0.5 px-1">
-            {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
-              <button key={label} type="button" onClick={() => onTextGroesseChange?.(px)}
-                className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                title={`${px}px`}>{label}</button>
-            ))}
-          </div>
-          <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
-          <div className="flex gap-1 px-1">
-            <button type="button" onClick={() => onTextFettChange?.(!textFett)}
-              className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-              title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
-            <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
-              className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
-              title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? ` ${textRotation}°` : ''}</button>
-          </div>
+      {/* Text-Werkzeug:
+          - Annotation ausgewählt → Properties INLINE (kein Dropdown → kein Tool-Switch, kein Deselektions-Bug)
+          - Nichts ausgewählt → Dropdown öffnet + aktiviert 'text'-Werkzeug */}
+      {hatSelektierteTextAnnotation ? (
+        // Inline-Properties für selektierte Text-Annotation
+        <div className={`flex ${isHorizontal ? 'flex-row items-center' : 'flex-col items-center'} gap-0.5`}>
+          {/* T-Label (visueller Indikator, kein Tool-Switch) */}
+          <span
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400"
+            title="Selektierte Textannotation"
+          >T</span>
+          {/* Grösse */}
+          {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
+            <button key={label} type="button"
+              title={`Grösse ${px}px`}
+              onClick={() => onTextGroesseChange?.(px)}
+              className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+            >{label}</button>
+          ))}
+          {/* Fett */}
+          <button type="button"
+            title={textFett ? 'Fett aus' : 'Fett ein'}
+            onClick={() => onTextFettChange?.(!textFett)}
+            className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm font-bold transition-colors ${textFett ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+          >B</button>
+          {/* Rotation */}
+          <button type="button"
+            title={`Rotation: ${textRotation}° (klicken zum Drehen)`}
+            onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-xs transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+          >⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
         </div>
-      </ToolbarDropdown>
+      ) : (
+        // Kein Text ausgewählt: Dropdown zum Konfigurieren + Aktivieren des Text-Werkzeugs
+        <ToolbarDropdown
+          icon="T"
+          label="Text"
+          aktiv={aktivesWerkzeug === 'text'}
+          horizontal={isHorizontal}
+          onOpen={() => onWerkzeugWechsel('text')}
+        >
+          <div className="flex flex-col gap-1 min-w-[120px]" onClick={(e) => e.stopPropagation()}>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium px-1">Grösse</span>
+            <div className="flex gap-0.5 px-1">
+              {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
+                <button key={label} type="button" onClick={() => onTextGroesseChange?.(px)}
+                  className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                  title={`${px}px`}>{label}</button>
+              ))}
+            </div>
+            <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
+            <div className="flex gap-1 px-1">
+              <button type="button" onClick={() => onTextFettChange?.(!textFett)}
+                className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
+              <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+                className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+                title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? ` ${textRotation}°` : ''}</button>
+            </div>
+          </div>
+        </ToolbarDropdown>
+      )}
 
       {/* Kommentar */}
       {(erlaubteWerkzeuge || []).includes('kommentar') && (
