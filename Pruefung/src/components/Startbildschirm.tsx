@@ -56,33 +56,27 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
       }).catch(() => {})
     }
 
+    // Nur Heartbeat für Warteraum-Polling — enthält Phase + SEB-Ausnahme
+    // KEIN ladePruefung (schwer, Rate Limit 10/min → Endlos-Retry-Schleife)
+    // KEIN ladeEinzelConfig (nur für LP, nicht für SuS)
     const interval = setInterval(async () => {
-      if (!user) return
+      if (!user || !apiService.istKonfiguriert()) return
 
-      // Heartbeat + Freischaltung parallel statt sequenziell (spart ~1-2s pro Zyklus)
-      const [heartbeatResult, pruefungResult] = await Promise.allSettled([
-        apiService.istKonfiguriert()
-          ? apiService.heartbeat(config.id, user.email)
-          : Promise.resolve(null),
-        apiService.ladePruefung(config.id, user.email),
-      ])
-
-      // SEB-Ausnahme + Phase aus Heartbeat prüfen
-      if (heartbeatResult.status === 'fulfilled' && heartbeatResult.value) {
-        setHeartbeatErfolgreich(true)
-        const phase = heartbeatResult.value.phase
-        if (phase === 'lobby') setLobbyOffen(true)
-        if (phase === 'aktiv' || phase === 'live') {
-          setIstFreigeschaltet(true)
+      try {
+        const response = await apiService.heartbeat(config.id, user.email)
+        if (response) {
+          setHeartbeatErfolgreich(true)
+          const phase = response.phase
+          if (phase === 'lobby') setLobbyOffen(true)
+          if (phase === 'aktiv' || phase === 'live') {
+            setIstFreigeschaltet(true)
+          }
+          if (response.sebAusnahme) setHatSebAusnahme(true)
         }
-        if (heartbeatResult.value.sebAusnahme) setHatSebAusnahme(true)
+      } catch {
+        // Netzwerkfehler — nächster Poll versucht es erneut
       }
-
-      // Freischaltung prüfen
-      if (pruefungResult.status === 'fulfilled' && pruefungResult.value?.config?.freigeschaltet) {
-        setIstFreigeschaltet(true)
-      }
-    }, 2000)
+    }, 5000)
 
     return () => clearInterval(interval)
   }, [istFreigeschaltet, istDemoModus, config.id, user])
