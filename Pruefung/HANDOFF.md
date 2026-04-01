@@ -30,6 +30,67 @@
 
 ---
 
+## Session 49 — Übungspools: TYPE_HANDLERS + 8 neue Fragetypen (01.04.2026)
+
+### Stand
+Branch `feature/uebungspools-neue-typen` → **pushed auf GitHub.** Noch NICHT auf main — Browser-Test ausstehend.
+Betrifft nur `Uebungen/Uebungspools/pool.html` und `Uebungen/Uebungspools/CLAUDE.md`. Kein Prüfungstool-Code geändert.
+
+### Erledigte Änderungen
+
+| Commit | Beschreibung | Umfang |
+|--------|-------------|--------|
+| **E0: TYPE_HANDLERS** | Monolithische if-else-Ketten (renderQuestion, restoreAnswerState, getCorrectAnswer, Buttons) refactored zu polymorphem `TYPE_HANDLERS`-Objekt. Jeder Typ: `{render, buttons, restore, correctAnswer}`. | -302/+406 Zeilen |
+| **E1: sortierung + formel** | `sortierung`: Pick-to-Order (Klick-Auswahl, Undo, visuelles Feedback). `formel`: LaTeX-Eingabe + KaTeX Live-Preview, normalisierter Vergleich + Toleranz. KaTeX CDN eingebunden. | +189 Zeilen |
+| **E2: hotspot + bildbeschriftung + dragdrop_bild** | Alle Bild-basiert, Prozent-Koordinaten, Touch-kompatibel (Tap-to-Place). Pulse-Animationen für aktive Targets. | +284 Zeilen |
+| **E3: code + zeichnen + pdf** | `code`: CodeMirror 5 CDN + Syntax-Highlighting + Selbstbewertung. `zeichnen`: Canvas mit Stift/Radierer/Farbe/Undo. `pdf`: Native iframe + Freitext/MC. | +262 Zeilen |
+
+### Pool-Config-Format für neue Typen
+
+```javascript
+// sortierung — items[] + correct[] (Index-Reihenfolge)
+{ type:'sortierung', items:['A','B','C'], correct:[0,2,1] }
+// formel — LaTeX correct + toleranz[]
+{ type:'formel', correct:'E = mc^2', toleranz:['E=mc^2'] }
+// hotspot — img + hotspots[] (x,y,r in Prozent)
+{ type:'hotspot', img:{src,alt}, hotspots:[{x:47,y:55,r:5,label:'Schweiz'}] }
+// bildbeschriftung — img + labels[] (id,text,x,y)
+{ type:'bildbeschriftung', img:{src,alt}, labels:[{id:'l1',text:'Kern',x:50,y:40}] }
+// dragdrop_bild — img + zones[] + labels[] (mit zone-Zuordnung)
+{ type:'dragdrop_bild', img:{src,alt}, zones:[{id,x,y,w,h}], labels:[{id,text,zone}] }
+// code — sprache + starterCode + sample
+{ type:'code', sprache:'python', starterCode:'def f():\n  ', sample:'def f():\n  return 42' }
+// zeichnen — sample als Bild
+{ type:'zeichnen', sample:{src:'bild.svg',alt:'Lösung'} }
+// pdf — pdfUrl + antwortTyp + sample
+{ type:'pdf', pdfUrl:'materialien/doc.pdf', antwortTyp:'freitext', sample:'...' }
+```
+
+### CDN-Dependencies (neu)
+
+| Library | Für | Einbindung |
+|---------|-----|-----------|
+| KaTeX 0.16.11 | Formel-Live-Preview | CSS + JS (defer) |
+| CodeMirror 5.65.18 | Code-Syntax-Highlighting | CSS + JS + 5 Mode-Files (defer) |
+
+### Offene Punkte (nächste Session)
+
+| Prio | Thema | Beschreibung |
+|------|-------|-------------|
+| 🟡 | **Browser-Test** | Alle 8 neuen Typen im Browser testen. Braucht Pool-Config mit je 1 Testfrage pro Typ. |
+| 🟡 | **Session 48 Browser-Test** | APs A–D (Security, Cleanup, Demo, Reset) auf `feature/session48-improvements` noch nicht getestet. |
+| 🟡 | **Zeichnen Input-Verlust (Prüfungstool)** | React Re-Renders verschlucken pointerdown. Spec AP-F. Eigene Session mit Browser-Test (Stift/Touch). |
+
+### Branch-Status
+
+| Branch | Inhalt | Status |
+|--------|--------|--------|
+| `feature/uebungspools-neue-typen` | E0–E3 + Docs | Pushed, nicht auf main |
+| `feature/session48-improvements` | Session 48 Security/Cleanup | Pushed, nicht auf main |
+| `main` | Production | Unverändert seit Session 47 |
+
+---
+
 ## Session 47 — 6 Bugfixes verifiziert, Merge auf main (01.04.2026)
 
 ### Stand
