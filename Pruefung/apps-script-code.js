@@ -1082,7 +1082,7 @@ function ladePruefung(pruefungId, email) {
       autoSaveIntervallSekunden: Number(configRow.autoSaveIntervallSekunden) || 30,
       heartbeatIntervallSekunden: Number(configRow.heartbeatIntervallSekunden) || 15,
       zufallsreihenfolgeFragen: configRow.zufallsreihenfolgeFragen === 'true',
-      freigeschaltet: configRow.freigeschaltet === 'true',
+      freigeschaltet: configRow.freigeschaltet === 'true' || configRow.freigeschaltet === true,
       zeitverlaengerungen: safeJsonParse(configRow.zeitverlaengerungen, {}),
       sebAusnahmen: safeJsonParse(configRow.sebAusnahmen, []),
       teilnehmer: safeJsonParse(configRow.teilnehmer, []),
@@ -1644,7 +1644,7 @@ function heartbeat(body) {
             var cfgFreiCol = cfgHeaders.indexOf('freigeschaltet');
             for (var ci = 1; ci < cfgData.length; ci++) {
               if (cfgData[ci][cfgIdCol] === pruefungId) {
-                if (cfgFreiCol >= 0 && cfgData[ci][cfgFreiCol] === 'true') phaseNeu = 'lobby';
+                if (cfgFreiCol >= 0 && (cfgData[ci][cfgFreiCol] === 'true' || cfgData[ci][cfgFreiCol] === true)) phaseNeu = 'lobby';
                 break;
               }
             }
@@ -1792,7 +1792,7 @@ function heartbeat(body) {
               }
               // Freischaltung prüfen (für Phase-Info an SuS)
               const freiCol = configHeaders.indexOf('freigeschaltet');
-              if (freiCol >= 0 && configData[i][freiCol] === 'true') {
+              if (freiCol >= 0 && (configData[i][freiCol] === 'true' || configData[i][freiCol] === true)) {
                 pruefungFreigeschaltet = true;
               }
               break;
@@ -1815,7 +1815,7 @@ function heartbeat(body) {
                   var ausn2 = safeJsonParse(cd2[j][sa2], []);
                   if (ausn2.indexOf(email) >= 0) sebAusnahme = true;
                 }
-                if (fr2 >= 0 && cd2[j][fr2] === 'true') {
+                if (fr2 >= 0 && (cd2[j][fr2] === 'true' || cd2[j][fr2] === true)) {
                   pruefungFreigeschaltet = true;
                 }
                 break;
@@ -2340,7 +2340,7 @@ function mapConfigRow(row) {
     zufallsreihenfolgeFragen: row.zufallsreihenfolgeFragen === 'true',
     autoSaveIntervallSekunden: Number(row.autoSaveIntervallSekunden) || 30,
     heartbeatIntervallSekunden: Number(row.heartbeatIntervallSekunden) || 10,
-    freigeschaltet: row.freigeschaltet === 'true',
+    freigeschaltet: row.freigeschaltet === 'true' || row.freigeschaltet === true,
     zeitverlaengerungen: safeJsonParse(row.zeitverlaengerungen, {}),
     teilnehmer: safeJsonParse(row.teilnehmer, []),
     materialien: safeJsonParse(row.materialien, []),
@@ -5163,7 +5163,7 @@ function ladeTrackerDatenEndpoint(body) {
 
       var teilnehmer = safeJsonParse(row.teilnehmer, []);
       var beendetUm = row.beendetUm || null;
-      var freigeschaltet = row.freigeschaltet === 'true';
+      var freigeschaltet = row.freigeschaltet === 'true' || row.freigeschaltet === true;
 
       var summary = {
         pruefungId: pruefungId,
