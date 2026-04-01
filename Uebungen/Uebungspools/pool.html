@@ -141,6 +141,47 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .formel-preview{min-height:48px;padding:16px;background:var(--c-hover);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.2rem;overflow-x:auto}
 .formel-placeholder{color:var(--c-text-muted);font-size:.85rem;font-style:italic}
 .formel-correction{color:var(--c-error);font-weight:600;font-size:.85rem;margin-right:8px}
+/* ── Hotspot ── */
+.hotspot-container{display:flex;flex-direction:column;gap:8px}
+.hotspot-img-wrap{position:relative;display:inline-block;max-width:100%;cursor:crosshair;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.hotspot-img{display:block;max-width:100%;height:auto}
+.hotspot-marker{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--c-primary);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);transform:translate(-50%,-50%);pointer-events:none;z-index:5}
+.hotspot-marker.correct{background:var(--c-success)}.hotspot-marker.wrong{background:var(--c-error)}
+.hotspot-zone{position:absolute;border-radius:50%;border:3px dashed var(--c-success);pointer-events:none;z-index:3;opacity:0;transition:opacity .3s}
+.hotspot-zone.show,.hotspot-zone.correct{opacity:1}
+.hotspot-zone.correct{background:rgba(34,197,94,.15)}
+.hotspot-status{font-size:.85rem;color:var(--c-text-muted)}
+/* ── Bildbeschriftung ── */
+.beschriftung-container{display:flex;flex-direction:column;gap:12px}
+.beschriftung-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.beschriftung-img{display:block;max-width:100%;height:auto}
+.beschriftung-spot{position:absolute;width:28px;height:28px;border-radius:50%;background:var(--c-primary);color:#fff;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);cursor:pointer;font-size:.75rem;font-weight:700;z-index:5;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.beschriftung-spot.awaiting{animation:pulse-spot 1s ease-in-out infinite;box-shadow:0 0 0 4px rgba(var(--c-primary-rgb,59,130,246),.3)}
+@keyframes pulse-spot{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.beschriftung-spot.correct{background:var(--c-success)}.beschriftung-spot.wrong{background:var(--c-error)}
+.beschriftung-spot-text{position:absolute;left:calc(100% + 6px);white-space:nowrap;font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 6px;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.beschriftung-correction{position:absolute;left:calc(100% + 6px);top:calc(100% + 2px);white-space:nowrap;font-size:.7rem;color:var(--c-error);font-weight:600}
+.beschriftung-bank{display:flex;flex-wrap:wrap;gap:8px}
+.beschriftung-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
+.beschriftung-label:hover:not(.placed){border-color:var(--c-primary)}
+.beschriftung-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.beschriftung-label.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.beschriftung-status{font-size:.85rem;color:var(--c-text-muted)}
+/* ── DragDrop Bild ── */
+.dd-bild-container{display:flex;flex-direction:column;gap:12px}
+.dd-bild-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.dd-bild-img{display:block;max-width:100%;height:auto}
+.dd-zone{position:absolute;border:2px dashed var(--c-border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.15);z-index:3}
+.dd-zone.awaiting{border-color:var(--c-primary);background:rgba(var(--c-primary-rgb,59,130,246),.1);animation:pulse-zone .8s ease-in-out infinite}
+@keyframes pulse-zone{0%,100%{opacity:.7}50%{opacity:1}}
+.dd-zone.correct{border-color:var(--c-success);background:rgba(34,197,94,.15)}.dd-zone.wrong{border-color:var(--c-error);background:rgba(239,68,68,.15)}
+.dd-zone-label{font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 8px;border-radius:4px;max-width:90%;text-align:center;word-break:break-word}
+.dd-label-bank{display:flex;flex-wrap:wrap;gap:8px}
+.dd-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
+.dd-label:hover:not(.placed){border-color:var(--c-primary)}
+.dd-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.dd-label.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.dd-status{font-size:.85rem;color:var(--c-text-muted)}
 .feedback{margin-top:16px;padding:16px;border-radius:var(--radius);font-size:.9rem;line-height:1.6;display:none}
 .feedback.show{display:block}
 .feedback.correct{background:var(--c-success-bg);border-left:4px solid var(--c-success)}
@@ -846,7 +887,7 @@ const COLOR_SCHEMES = {
 
 // Labels (shared across all pools)
 const DIFF_LABELS = {1:"⭐ Einfach",2:"⭐⭐ Mittel",3:"⭐⭐⭐ Schwer"};
-const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage",buchungssatz:"📒 Buchungssatz",tkonto:"📊 T-Konto",bilanz:"📋 Bilanz/ER",kontenbestimmung:"🏷️ Kontenbestimmung",gruppe:"📦 Aufgabengruppe",sortierung:"↕️ Reihenfolge",formel:"∑ Formel"};
+const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage",buchungssatz:"📒 Buchungssatz",tkonto:"📊 T-Konto",bilanz:"📋 Bilanz/ER",kontenbestimmung:"🏷️ Kontenbestimmung",gruppe:"📦 Aufgabengruppe",sortierung:"↕️ Reihenfolge",formel:"∑ Formel",hotspot:"🎯 Hotspot",bildbeschriftung:"🏷️ Bildbeschriftung",dragdrop_bild:"🖱️ Drag & Drop"};
 
 // ══════════════════════════════════════════
 // TYPE_HANDLERS Registry — polymorphes Dispatch pro Fragetyp
@@ -1287,6 +1328,97 @@ const TYPE_HANDLERS = {
       }
     },
     correctAnswer(q) { return q.correct; }
+  },
+  // ── HOTSPOT (auf Bild-Region klicken) ──
+  // Config: { img: {src,alt}, hotspots: [{x,y,r,label}] } — Koordinaten in Prozent
+  hotspot: {
+    render(q) {
+      let h='<div class="hotspot-container" id="hotspotContainer">';
+      h+='<div class="hotspot-img-wrap" id="hotspotWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="hotspot-img" id="hotspotImg" onclick="placeHotspotMarker(event)">';
+      h+='</div>';
+      h+='<div class="hotspot-status" id="hotspotStatus">Klicke auf die richtige Stelle im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerHotspot(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      var wrap=document.getElementById('hotspotWrap');
+      if(wrap)wrap.style.pointerEvents='none';
+    },
+    correctAnswer(q) {
+      return q.hotspots.map(function(h){return h.label}).join(', ');
+    }
+  },
+  // ── BILDBESCHRIFTUNG (Labels auf Bild platzieren via Tap) ──
+  // Config: { img: {src,alt}, labels: [{id,text,x,y}] } — x,y in Prozent
+  bildbeschriftung: {
+    render(q) {
+      let h='<div class="beschriftung-container" id="beschriftungContainer">';
+      h+='<div class="beschriftung-img-wrap" id="beschriftungWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="beschriftung-img" id="beschriftungImg">';
+      // Marker-Spots (Zielzonen, sichtbar als Kreise)
+      q.labels.forEach(function(lbl){
+        h+='<div class="beschriftung-spot" data-lid="'+lbl.id+'" style="left:'+lbl.x+'%;top:'+lbl.y+'%">';
+        h+='<span class="beschriftung-spot-num">'+(q.labels.indexOf(lbl)+1)+'</span></div>';
+      });
+      h+='</div>';
+      // Label-Bank (zum Auswählen)
+      var shuffled=[...q.labels];shuffle(shuffled);
+      h+='<div class="beschriftung-bank" id="beschriftungBank">';
+      shuffled.forEach(function(lbl){
+        h+='<div class="beschriftung-label" data-lid="'+lbl.id+'" onclick="pickBeschriftungLabel(this)">'+highlightKonten(lbl.text)+'</div>';
+      });
+      h+='</div>';
+      h+='<div class="beschriftung-status" id="beschriftungStatus">Wähle ein Label, dann klicke auf den passenden Punkt im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerBildbeschriftung(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.beschriftung-label,.beschriftung-spot').forEach(function(el){el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) {
+      return q.labels.map(function(l,i){return (i+1)+': '+l.text}).join(', ');
+    }
+  },
+  // ── DRAGDROP_BILD (Labels auf Zonen ziehen/tippen) ──
+  // Config: { img: {src,alt}, zones: [{id,x,y,w,h}], labels: [{id,text,zone}] }
+  dragdrop_bild: {
+    render(q) {
+      let h='<div class="dd-bild-container" id="ddBildContainer">';
+      h+='<div class="dd-bild-img-wrap" id="ddBildWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="dd-bild-img" id="ddBildImg">';
+      // Drop-Zonen
+      q.zones.forEach(function(z){
+        h+='<div class="dd-zone" data-zid="'+z.id+'" style="left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%" onclick="placeDdLabel(this)">';
+        h+='<span class="dd-zone-label" id="ddZoneLabel_'+z.id+'"></span></div>';
+      });
+      h+='</div>';
+      // Label-Bank
+      var shuffled=[...q.labels];shuffle(shuffled);
+      h+='<div class="dd-label-bank" id="ddLabelBank">';
+      shuffled.forEach(function(lbl){
+        h+='<div class="dd-label" data-lid="'+lbl.id+'" data-zone="'+lbl.zone+'" onclick="pickDdLabel(this)">'+highlightKonten(lbl.text)+'</div>';
+      });
+      h+='</div>';
+      h+='<div class="dd-status" id="ddStatus">Wähle ein Label, dann klicke auf die passende Zone im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerDragDropBild(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) {
+      return q.labels.map(function(l){return l.text+' → '+l.zone}).join(', ');
+    }
   }
 };
 
@@ -2013,6 +2145,9 @@ function renderQuestion(){
   document.getElementById('questionCard').innerHTML=html;
   pickedSortItem=null;
   _sortierungOrder=[];
+  _hotspotMarker=null;
+  _beschriftungPicked=null;_beschriftungAssignments={};
+  _ddPicked=null;_ddAssignments={};
   // Restore state if navigating back to an already-answered question
   var prevAns=state.answered[state.current];
   if(prevAns&&!prevAns.skipped){restoreAnswerState(q,prevAns)}
@@ -2651,6 +2786,154 @@ function answerFormel(qid){
     }
   }
   finishAnswer(q,ok,q.explain,userVal);
+}
+
+// ── HOTSPOT: Marker platzieren + prüfen ──
+var _hotspotMarker=null; // {x,y} in Prozent
+function placeHotspotMarker(e){
+  var wrap=document.getElementById('hotspotWrap');
+  var img=document.getElementById('hotspotImg');
+  if(!wrap||!img)return;
+  var rect=img.getBoundingClientRect();
+  var x=((e.clientX-rect.left)/rect.width)*100;
+  var y=((e.clientY-rect.top)/rect.height)*100;
+  _hotspotMarker={x:x,y:y};
+  // Bestehenden Marker entfernen
+  var old=wrap.querySelector('.hotspot-marker');if(old)old.remove();
+  var marker=document.createElement('div');
+  marker.className='hotspot-marker';
+  marker.style.left=x+'%';marker.style.top=y+'%';
+  wrap.appendChild(marker);
+  document.getElementById('hotspotStatus').textContent='Marker gesetzt. Klicke erneut zum Verschieben oder prüfe deine Antwort.';
+}
+function answerHotspot(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  if(!_hotspotMarker){
+    document.getElementById('hotspotStatus').textContent='⚠️ Klicke zuerst auf eine Stelle im Bild!';
+    document.getElementById('hotspotStatus').style.color='var(--c-error)';
+    return;
+  }
+  var wrap=document.getElementById('hotspotWrap');
+  var allCorrect=false;
+  // Prüfe ob Marker in einem Hotspot liegt
+  q.hotspots.forEach(function(hs){
+    var dist=Math.sqrt(Math.pow(_hotspotMarker.x-hs.x,2)+Math.pow(_hotspotMarker.y-hs.y,2));
+    if(dist<=hs.r)allCorrect=true;
+    // Korrekte Zone anzeigen
+    var zone=document.createElement('div');
+    zone.className='hotspot-zone'+(dist<=hs.r?' correct':' show');
+    zone.style.left=hs.x+'%';zone.style.top=hs.y+'%';
+    zone.style.width=(hs.r*2)+'%';zone.style.height=(hs.r*2)+'%';
+    zone.style.marginLeft='-'+hs.r+'%';zone.style.marginTop='-'+hs.r+'%';
+    if(wrap)wrap.appendChild(zone);
+  });
+  var marker=wrap?wrap.querySelector('.hotspot-marker'):null;
+  if(marker)marker.classList.add(allCorrect?'correct':'wrong');
+  if(wrap)wrap.style.pointerEvents='none';
+  finishAnswer(q,allCorrect,q.explain);
+  _hotspotMarker=null;
+}
+
+// ── BILDBESCHRIFTUNG: Label-zu-Spot Zuordnung ──
+var _beschriftungPicked=null;
+var _beschriftungAssignments={}; // spotLid → labelLid
+function pickBeschriftungLabel(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.beschriftung-label').forEach(function(l){l.classList.remove('picked')});
+  el.classList.add('picked');
+  _beschriftungPicked=el;
+  document.getElementById('beschriftungStatus').textContent='Klicke jetzt auf den passenden Punkt (Nummer) im Bild.';
+  // Spots als Klick-Targets aktivieren
+  document.querySelectorAll('.beschriftung-spot').forEach(function(s){
+    s.onclick=function(){assignBeschriftung(this)};
+    s.classList.add('awaiting');
+  });
+}
+function assignBeschriftung(spot){
+  if(!_beschriftungPicked)return;
+  var lid=_beschriftungPicked.dataset.lid;
+  var spotLid=spot.dataset.lid;
+  // Falls Spot schon belegt, altes Label freigeben
+  if(_beschriftungAssignments[spotLid]){
+    var oldLid=_beschriftungAssignments[spotLid];
+    var oldLabel=document.querySelector('.beschriftung-label[data-lid="'+oldLid+'"]');
+    if(oldLabel)oldLabel.classList.remove('placed');
+  }
+  _beschriftungAssignments[spotLid]=lid;
+  spot.innerHTML='<span class="beschriftung-spot-num">'+(spot.querySelector('.beschriftung-spot-num')?spot.querySelector('.beschriftung-spot-num').textContent:'')+'</span><span class="beschriftung-spot-text">'+_beschriftungPicked.textContent+'</span>';
+  _beschriftungPicked.classList.remove('picked');
+  _beschriftungPicked.classList.add('placed');
+  _beschriftungPicked=null;
+  document.querySelectorAll('.beschriftung-spot').forEach(function(s){s.classList.remove('awaiting')});
+  document.getElementById('beschriftungStatus').textContent='Label zugewiesen. Wähle das nächste Label oder prüfe deine Antwort.';
+}
+function answerBildbeschriftung(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var allCorrect=true;
+  q.labels.forEach(function(lbl){
+    var spot=document.querySelector('.beschriftung-spot[data-lid="'+lbl.id+'"]');
+    var assigned=_beschriftungAssignments[lbl.id];
+    var ok=assigned===lbl.id;
+    if(spot){
+      spot.classList.add(ok?'correct':'wrong');
+      if(!ok)spot.innerHTML+='<span class="beschriftung-correction">→ '+lbl.text+'</span>';
+    }
+    if(!ok)allCorrect=false;
+  });
+  document.querySelectorAll('.beschriftung-label,.beschriftung-spot').forEach(function(el){el.style.pointerEvents='none'});
+  finishAnswer(q,allCorrect,q.explain);
+  _beschriftungPicked=null;_beschriftungAssignments={};
+}
+
+// ── DRAGDROP_BILD: Label-zu-Zone Zuordnung ──
+var _ddPicked=null;
+var _ddAssignments={}; // zoneId → labelId
+function pickDdLabel(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.dd-label').forEach(function(l){l.classList.remove('picked')});
+  el.classList.add('picked');
+  _ddPicked=el;
+  document.getElementById('ddStatus').textContent='Klicke jetzt auf die passende Zone im Bild.';
+  document.querySelectorAll('.dd-zone').forEach(function(z){z.classList.add('awaiting')});
+}
+function placeDdLabel(zone){
+  if(!_ddPicked)return;
+  var lid=_ddPicked.dataset.lid;
+  var zid=zone.dataset.zid;
+  // Falls Zone schon belegt, altes Label freigeben
+  if(_ddAssignments[zid]){
+    var oldLid=_ddAssignments[zid];
+    var oldLabel=document.querySelector('.dd-label[data-lid="'+oldLid+'"]');
+    if(oldLabel)oldLabel.classList.remove('placed');
+  }
+  _ddAssignments[zid]=lid;
+  var zoneLabel=document.getElementById('ddZoneLabel_'+zid);
+  if(zoneLabel)zoneLabel.textContent=_ddPicked.textContent;
+  _ddPicked.classList.remove('picked');
+  _ddPicked.classList.add('placed');
+  _ddPicked=null;
+  document.querySelectorAll('.dd-zone').forEach(function(z){z.classList.remove('awaiting')});
+  document.getElementById('ddStatus').textContent='Label platziert. Wähle das nächste oder prüfe deine Antwort.';
+}
+function answerDragDropBild(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var allCorrect=true;
+  q.labels.forEach(function(lbl){
+    var assigned=_ddAssignments[lbl.zone];
+    var ok=assigned===lbl.id;
+    var zone=document.querySelector('.dd-zone[data-zid="'+lbl.zone+'"]');
+    if(zone){
+      zone.classList.add(ok?'correct':'wrong');
+      if(!ok){
+        var zoneLabel=document.getElementById('ddZoneLabel_'+lbl.zone);
+        if(zoneLabel)zoneLabel.textContent=(zoneLabel.textContent?zoneLabel.textContent+' → ':'')+lbl.text;
+      }
+    }
+    if(!ok)allCorrect=false;
+  });
+  document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
+  finishAnswer(q,allCorrect,q.explain);
+  _ddPicked=null;_ddAssignments={};
 }
 
 function finishAnswer(q,correct,explain,userAnswer){
