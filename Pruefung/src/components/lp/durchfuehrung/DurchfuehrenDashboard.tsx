@@ -537,7 +537,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                         if (!user) return
                         const erfolg = await apiService.resetPruefung(config.id, user.email)
                         if (erfolg) {
+                          // Phase-Tracking zurücksetzen damit Tab nicht auf 'auswertung' springt
+                          letztePhaseRef.current = 'vorbereitung'
+                          abgabenGeladen.current = false
                           setConfig({ ...config, freigeschaltet: false, beendetUm: undefined, teilnehmer: [], sebAusnahmen: [] })
+                          setAbgaben({})
                           setActiveTab('vorbereitung')
                           ladeDaten()
                         }

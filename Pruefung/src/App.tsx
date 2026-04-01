@@ -139,6 +139,11 @@ export default function App() {
             // SICHERHEIT: Prüfung beendet oder bereits abgegeben → Abgabe-Screen zeigen
             if ((result.istAbgegeben || result.istBeendet) && user!.rolle !== 'lp') {
               console.log(`[App] Prüfung ${result.istBeendet ? 'beendet' : 'abgegeben'} (Backend) — Abgabe-Screen anzeigen`)
+              // Config setzen damit AbgabeBestaetigung rendern kann (ohne Config → ewiger Loading-Screen)
+              const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(result.config, result.fragen)
+              setPruefungsConfig(result.config)
+              setPruefungsFragen(navigationsFragen)
+              setPruefungsAlleFragen(alleFragen)
               usePruefungStore.getState().pruefungAbgeben()
               return
             }

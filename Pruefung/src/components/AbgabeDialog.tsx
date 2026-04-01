@@ -134,6 +134,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
     })
 
     if (erfolg) {
+      pruefungAbgeben()
       setStatus('erfolg')
       clearIndexedDB(config?.id ?? 'demo')
     } else {
