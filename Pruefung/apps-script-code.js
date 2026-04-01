@@ -1478,8 +1478,9 @@ function speichereAntworten(body) {
     const data = getSheetData(sheet);
     const existingRow = data.findIndex(row => row.email === email);
 
-    // SICHERHEIT: Bereits abgegeben → keine weiteren Änderungen (ausser erneute Abgabe durch LP)
-    if (existingRow >= 0 && data[existingRow].istAbgabe === 'true' && !istZugelasseneLP(email)) {
+    // SICHERHEIT: Bereits abgegeben → keine normalen Saves mehr, aber erneute Abgabe erlauben
+    // (SuS-Frontend kann Abgabe wiederholen wenn der erste Save fehlschlug)
+    if (existingRow >= 0 && data[existingRow].istAbgabe === 'true' && !istAbgabe && !istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Bereits abgegeben — keine Änderungen mehr möglich' });
     }
 

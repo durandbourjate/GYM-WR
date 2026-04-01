@@ -83,12 +83,16 @@ export default function App() {
     if (!user) return
 
     async function ladePruefung(): Promise<void> {
-      // Session-Recovery: Store hat bereits config + Fragen → nicht neu laden
-      // Aber NICHT bei abgegebenen Prüfungen — dort muss neu geladen werden
       const storeFragen = usePruefungStore.getState().fragen
       const storeAbgegeben = usePruefungStore.getState().abgegeben
       const storeAntworten = usePruefungStore.getState().antworten
-      if (config && config.id === pruefungIdAusUrl && phase !== 'start' && !storeAbgegeben && storeFragen && storeFragen.length > 0) {
+
+      // SICHERHEIT: Wenn Backend verfuegbar → IMMER Backend-Check bei Reload
+      // Verhindert dass localStorage-State ohne Backend-Bestaetigung vertraut wird
+      // (z.B. SuS hat abgegeben aber Backend-Save schlug fehl → muss nochmal abgeben koennen)
+      // Session-Recovery NUR wenn kein Backend oder Demo-Modus
+      if (config && config.id === pruefungIdAusUrl && phase !== 'start' && !storeAbgegeben && storeFragen && storeFragen.length > 0
+          && (!apiService.istKonfiguriert() || istDemoModus)) {
         setWiederhergestellt(true)
         usePruefungStore.getState().setPhase('start')
         return

@@ -231,7 +231,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       if (pruefungResult?.config) {
         setConfig(pruefungResult.config)
         // Beendete Prüfung → direkt Auswertung-Tab anzeigen (statt Vorbereitung)
-        if (pruefungResult.config.beendetUm && !urlTab) {
+        // Nur wenn beendetUm gesetzt UND freigeschaltet (= nicht zurueckgesetzt fuer neue Durchfuehrung)
+        if (pruefungResult.config.beendetUm && pruefungResult.config.freigeschaltet && !urlTab) {
           setActiveTab('auswertung')
         }
       }
