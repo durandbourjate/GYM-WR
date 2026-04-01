@@ -27,10 +27,11 @@
 
 ---
 
-## Session 46 — Re-Entry-Schutz, Teilnehmer-Filter, Heartbeat-Fixes (01.04.2026) ✅ GETESTET
+## Session 46 — Re-Entry-Schutz, Teilnehmer-Filter, Heartbeat-Fixes (01.04.2026)
 
 ### Stand
 Branch `fix/warteraum-polling-rate-limit` + `preview`. **Noch NICHT auf main.** Apps Script deployed.
+Re-Entry-Schutz + Teilnehmer-Filter verifiziert ✅. Weitere Bugs offen (nächste Session).
 
 ### Erledigte Fixes (getestet + verifiziert)
 
@@ -62,8 +63,11 @@ Branch `fix/warteraum-polling-rate-limit` + `preview`. **Noch NICHT auf main.** 
 
 | Prio | Bug | Beschreibung |
 |------|-----|-------------|
-| 🟠 | **Warteraum-Freischaltung** | SuS muss nach LP-Freischaltung manuell reloaden. Heartbeat-Phase-Check funktioniert im Backend, aber Frontend reagiert nicht. |
-| 🟠 | **Neue Durchführung → Auswertung** | Nach "Neue Durchführung" springt Tab auf Auswertung statt Vorbereitung. |
+| 🟠 | **Warteraum-Freischaltung** | SuS muss nach LP-Freischaltung manuell reloaden. Backend gibt `phase` zurück, aber SuS-Frontend reagiert nicht. Debug-Logging in Startbildschirm.tsx eingefügt (nächste Session: Konsole beobachten). Rate-Limit auf 15/min erhöht (war 8, Polling=12/min). |
+| 🟠 | **Neue Durchführung → Auswertung** | `?tab=auswertung` URL-Parameter bleibt nach Reset. Config-Load (useEffect) setzt Tab auf Auswertung wenn `beendetUm` gesetzt. Fix-Ansatz: `urlTab` ignorieren wenn Config nicht beendet. |
+| 🟠 | **Neue Durchführung crasht** | `TypeError: t.some is not a function` — vermutlich weil Komponente `daten.schueler` als Array erwartet, aber nach Reset `null` oder falsch typisiert ist. Versuchter Fix (`setDaten(null)`) wurde revertiert. Braucht saubere Analyse. |
+| 🟠 | **Warteraum-SuS als "Aktiv" im Live-Tab** | SuS im Warteraum (noch nicht gestartet) wird als "Aktiv" im Live-Monitoring angezeigt. Irreführend — sollte erst nach Prüfungsstart erscheinen oder als "Im Warteraum" markiert werden. |
+| 🟡 | **Durchschnitt 6 Pkt. bei 1 Frage** | Nur 1 Frage beantwortet, aber Durchschnitt=6 Pkt. Auto-Korrektur bewertet alle MC/RF-Fragen automatisch. Muss analysiert werden ob "Geprüft" + 0 Pkt. oder tatsächlich Punkte vergeben. |
 | 🟡 | **Monitoring-Verzögerung ~10s** | Erster Heartbeat-Zyklus + Apps Script Latenz. Akzeptabel für 1 Klasse. |
 
 ### Branch-Status

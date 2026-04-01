@@ -46,30 +46,34 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
     // Sofort einen initialen Heartbeat senden
     if (apiService.istKonfiguriert()) {
       apiService.heartbeat(config.id, user.email).then((response) => {
+        console.log('[Warteraum] Heartbeat-Response:', JSON.stringify({ success: response.success, phase: response.phase }))
         setHeartbeatErfolgreich(true)
         const phase = response.phase
         // Backend gibt 'lobby' wenn freigeschaltet, 'vorbereitung' wenn nicht
         if (phase === 'lobby' || phase === 'aktiv' || phase === 'live') {
+          console.log('[Warteraum] Freischaltung erkannt! Phase:', phase)
           setLobbyOffen(true)
           setIstFreigeschaltet(true)
         }
         if (response.sebAusnahme) setHatSebAusnahme(true)
-      }).catch(() => {})
+      }).catch((err) => {
+        console.warn('[Warteraum] Heartbeat-Fehler:', err?.message || err)
+      })
     }
 
     // Nur Heartbeat für Warteraum-Polling — enthält Phase + SEB-Ausnahme
-    // KEIN ladePruefung (schwer, Rate Limit 10/min → Endlos-Retry-Schleife)
-    // KEIN ladeEinzelConfig (nur für LP, nicht für SuS)
     const interval = setInterval(async () => {
       if (!user || !apiService.istKonfiguriert()) return
 
       try {
         const response = await apiService.heartbeat(config.id, user.email)
         if (response) {
+          console.log('[Warteraum] Poll-Response:', JSON.stringify({ success: response.success, phase: response.phase }))
           setHeartbeatErfolgreich(true)
           const phase = response.phase
           // Backend gibt 'lobby' wenn freigeschaltet, 'vorbereitung' wenn nicht
           if (phase === 'lobby' || phase === 'aktiv' || phase === 'live') {
+            console.log('[Warteraum] Freischaltung erkannt! Phase:', phase)
             setLobbyOffen(true)
             setIstFreigeschaltet(true)
           }
