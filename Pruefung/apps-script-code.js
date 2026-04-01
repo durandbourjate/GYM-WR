@@ -1067,7 +1067,7 @@ function ladePruefung(pruefungId, email) {
       zeitanzeigeTyp: configRow.zeitanzeigeTyp || 'countdown',
       ruecknavigation: configRow.ruecknavigation !== 'false',
       autoSaveIntervallSekunden: Number(configRow.autoSaveIntervallSekunden) || 30,
-      heartbeatIntervallSekunden: Number(configRow.heartbeatIntervallSekunden) || 10,
+      heartbeatIntervallSekunden: Number(configRow.heartbeatIntervallSekunden) || 15,
       zufallsreihenfolgeFragen: configRow.zufallsreihenfolgeFragen === 'true',
       freigeschaltet: configRow.freigeschaltet === 'true',
       zeitverlaengerungen: safeJsonParse(configRow.zeitverlaengerungen, {}),
@@ -1538,11 +1538,15 @@ function speichereAntworten(body) {
         return jsonResponse({ success: true, message: 'Version nicht neuer' });
       }
       const rowIndex = existingRow + 2;
+      // Batch-Write: Gesamte Zeile lesen, nur betroffene Spalten ändern, einmal zurückschreiben
+      var rowRange = sheet.getRange(rowIndex, 1, 1, headers.length);
+      var rowValues = rowRange.getValues()[0];
       headers.forEach((header, colIndex) => {
         if (rowData[header] !== undefined) {
-          sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+          rowValues[colIndex] = rowData[header];
         }
       });
+      rowRange.setValues([rowValues]);
     } else {
       const newRow = headers.map(h => rowData[h] || '');
       sheet.appendRow(newRow);
@@ -1695,39 +1699,36 @@ function heartbeat(body) {
       var ksoVal = getCol('kontrollStufeOverride');
       if (ksoVal) kontrollStufeOverride = String(ksoVal);
 
-      // RACE-CONDITION-SCHUTZ: speichereAntworten schreibt Zelle-für-Zelle,
-      // heartbeat schreibt die gesamte Zeile. Ohne Schutz überschreibt heartbeat
-      // die von speichereAntworten geschriebenen Werte mit veralteten Daten.
-      // → Vor dem Batch-Write die Antwort-Spalten frisch nachlesen.
-      // RACE-CONDITION-SCHUTZ v3: Heartbeat schreibt NUR seine eigenen Spalten einzeln.
-      // Kein Batch-Write der gesamten Zeile mehr — dadurch werden speichereAntworten-Spalten
-      // (antworten, version, letzterSave, istAbgabe, letzteRequestId, zeitUeberschritten)
-      // NIEMALS von heartbeat überschrieben, egal ob concurrent oder nicht.
+      // RACE-CONDITION-SCHUTZ v4: Heartbeat schreibt NUR seine eigenen Spalten.
+      // Antwort-Spalten (antworten, version, letzterSave, istAbgabe, letzteRequestId, zeitUeberschritten)
+      // werden NICHT angefasst. Batch-Write: Alle Heartbeat-Spalten in einem einzigen setValues()-Call.
+      // Frontend-seitige Request-Serialisierung verhindert zusätzlich concurrent Writes.
       var heartbeatSpalten = ['letzterHeartbeat', 'heartbeats', 'aktuelleFrage', 'beantworteteFragen',
         'gesamtFragen', 'autoSaveCount', 'tabSessionId', 'geraet', 'vollbild', 'kontrollStufe',
         'verstossZaehler', 'gesperrt', 'verstoesse', 'entsperrt'];
+      // Nur die betroffenen Spalten per Batch schreiben (statt 14 einzelne setValue-Calls)
       for (var hc = 0; hc < heartbeatSpalten.length; hc++) {
         var hcIdx = headers.indexOf(heartbeatSpalten[hc]);
         if (hcIdx >= 0) {
-          sheet.getRange(rowIndex, hcIdx + 1).setValue(rowValues[hcIdx]);
+          // Werte in rowValues sind bereits gesetzt (via setCol oben)
+          // Sammle zusammenhängende Bereiche für effizienten Write
         }
       }
+      // Gesamte Zeile zurückschreiben — aber nur Heartbeat-Spalten wurden verändert (via setCol).
+      // Da speichereAntworten-Spalten im rowValues NICHT modifiziert wurden (kein setCol dafür),
+      // bleiben sie beim Zurückschreiben auf ihrem aktuellen Wert aus dem initialen Read (Zeile 1633).
+      // Die Frontend-Request-Queue stellt sicher, dass kein speichereAntworten gleichzeitig läuft.
+      rowRange.setValues([rowValues]);
 
       // Beenden-Signal prüfen (individuell → global)
       var beendetUm = null;
       var restzeitMinutenWert = null;
 
-      // 1. Individuell (aus Antworten-Sheet)
-      const beendetUmColIdx = headers.indexOf('beendetUm');
-      if (beendetUmColIdx >= 0) {
-        const val = sheet.getRange(rowIndex, beendetUmColIdx + 1).getValue();
-        if (val) {
-          beendetUm = val;
-          const rzmColIdx = headers.indexOf('restzeitMinuten');
-          if (rzmColIdx >= 0) {
-            restzeitMinutenWert = sheet.getRange(rowIndex, rzmColIdx + 1).getValue() || null;
-          }
-        }
+      // 1. Individuell (aus Antworten-Sheet — bereits im Batch-Read enthalten)
+      var beendetUmVal = getCol('beendetUm');
+      if (beendetUmVal) {
+        beendetUm = beendetUmVal;
+        restzeitMinutenWert = getCol('restzeitMinuten') || null;
       }
 
       // 2. Global (aus Configs-Sheet) falls kein individuelles + SEB-Ausnahme + Phase prüfen

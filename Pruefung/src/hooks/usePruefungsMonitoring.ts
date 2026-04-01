@@ -136,7 +136,7 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
   useEffect(() => {
     if (!config || abgegeben || !backendVerfuegbar || !user) return
 
-    const basisIntervallMs = (config.heartbeatIntervallSekunden || 10) * 1000
+    const basisIntervallMs = (config.heartbeatIntervallSekunden || 15) * 1000
     let fehlerZaehler = 0
     let timeoutId: ReturnType<typeof setTimeout> | null = null
 
