@@ -1048,6 +1048,19 @@ function ladePruefung(pruefungId, email) {
       }
     }
 
+    // Teilnehmer-Check: Wenn LP Teilnehmer manuell gesetzt hat, nur diese zulassen
+    if (!istLP) {
+      var teilnehmerListe = safeJsonParse(configRow.teilnehmer, []);
+      if (teilnehmerListe.length > 0) {
+        var istTeilnehmer = teilnehmerListe.some(function(t) {
+          return (t.email || '').toLowerCase() === email.toLowerCase();
+        });
+        if (!istTeilnehmer) {
+          return jsonResponse({ error: 'Kein Zugang — Sie sind nicht als Teilnehmer/in eingetragen' });
+        }
+      }
+    }
+
     const config = {
       id: configRow.id,
       titel: configRow.titel,
