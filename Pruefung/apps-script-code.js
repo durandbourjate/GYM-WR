@@ -1633,8 +1633,24 @@ function heartbeat(body) {
           }
         });
         sheet.appendRow(newRow);
-        // Zeile wurde angelegt → success zurückgeben
-        return jsonResponse({ success: true });
+        // Zeile angelegt — trotzdem Phase prüfen (damit Warteraum Freischaltung erkennt)
+        var phaseNeu = 'vorbereitung';
+        try {
+          var cfgSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+          if (cfgSheet) {
+            var cfgHeaders = cfgSheet.getRange(1, 1, 1, cfgSheet.getLastColumn()).getValues()[0];
+            var cfgData = cfgSheet.getDataRange().getValues();
+            var cfgIdCol = cfgHeaders.indexOf('id');
+            var cfgFreiCol = cfgHeaders.indexOf('freigeschaltet');
+            for (var ci = 1; ci < cfgData.length; ci++) {
+              if (cfgData[ci][cfgIdCol] === pruefungId) {
+                if (cfgFreiCol >= 0 && cfgData[ci][cfgFreiCol] === 'true') phaseNeu = 'lobby';
+                break;
+              }
+            }
+          }
+        } catch (e) { /* Phase-Check fehlgeschlagen → vorbereitung */ }
+        return jsonResponse({ success: true, phase: phaseNeu });
       }
     }
 
@@ -1725,19 +1741,16 @@ function heartbeat(body) {
       var ksoVal = getCol('kontrollStufeOverride');
       if (ksoVal) kontrollStufeOverride = String(ksoVal);
 
-      // RACE-CONDITION-SCHUTZ v5: Heartbeat schreibt NUR seine eigenen Spalten
-      // via einzelne setValue()-Calls. NIEMALS die ganze Zeile zurückschreiben!
-      // Grund: Zwischen Batch-Read und Write könnte speichereAntworten istAbgabe=true
-      // gesetzt haben — ein setValues() der ganzen Zeile würde das überschreiben.
-      var heartbeatSpalten = ['letzterHeartbeat', 'heartbeats', 'aktuelleFrage', 'beantworteteFragen',
-        'gesamtFragen', 'autoSaveCount', 'tabSessionId', 'geraet', 'vollbild', 'kontrollStufe',
-        'verstossZaehler', 'gesperrt', 'verstoesse', 'entsperrt'];
-      for (var hc = 0; hc < heartbeatSpalten.length; hc++) {
-        var hcIdx = headers.indexOf(heartbeatSpalten[hc]);
-        if (hcIdx >= 0) {
-          sheet.getRange(rowIndex, hcIdx + 1).setValue(rowValues[hcIdx]);
-        }
+      // RACE-CONDITION-SCHUTZ v5: Batch-Write der ganzen Zeile (performant, 1 API-Call),
+      // aber istAbgabe vor dem Schreiben frisch lesen um Überschreibung zu verhindern.
+      // Grund: Zwischen initialem Read und Write könnte speichereAntworten
+      // istAbgabe=true gesetzt haben — das darf nicht mit 'false' überschrieben werden.
+      var istAbgabeIdx = headers.indexOf('istAbgabe');
+      if (istAbgabeIdx >= 0) {
+        var frischesIstAbgabe = sheet.getRange(rowIndex, istAbgabeIdx + 1).getValue();
+        rowValues[istAbgabeIdx] = frischesIstAbgabe;
       }
+      rowRange.setValues([rowValues]);
 
       // Beenden-Signal prüfen (individuell → global)
       var beendetUm = null;

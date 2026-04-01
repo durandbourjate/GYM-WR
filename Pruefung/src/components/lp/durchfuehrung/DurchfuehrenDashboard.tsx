@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
@@ -108,6 +108,17 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const phase: PruefungsPhase = config && daten
     ? bestimmePhase(config, daten.schueler)
     : 'vorbereitung'
+
+  // Zentral: Nur Teilnehmer aus dem Monitoring anzeigen (nicht-eingeladene SuS ausfiltern)
+  const teilnehmerEmails = useMemo(() => {
+    if (!config?.teilnehmer?.length) return null // null = kein Filter (Kompatibilität)
+    return new Set(config.teilnehmer.map((t) => t.email.toLowerCase()))
+  }, [config?.teilnehmer])
+  const gefilterteSchueler = useMemo(() => {
+    if (!daten) return []
+    if (!teilnehmerEmails) return daten.schueler
+    return daten.schueler.filter((s) => teilnehmerEmails.has(s.email.toLowerCase()))
+  }, [daten, teilnehmerEmails])
 
   // Loading-State für Freischalten-Button
   const [freischaltenLaedt, setFreischaltenLaedt] = useState(false)
@@ -480,13 +491,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
             />
           )}
 
-          {activeTab === 'live' && daten && (() => {
-            // Nur Teilnehmer im Live-Tab anzeigen (nicht-eingeladene SuS ausfiltern)
-            const teilnehmerEmails = new Set((config.teilnehmer ?? []).map((t) => t.email.toLowerCase()))
-            const gefilterteSchueler = teilnehmerEmails.size > 0
-              ? daten.schueler.filter((s) => teilnehmerEmails.has(s.email.toLowerCase()))
-              : daten.schueler
-            return <AktivPhase
+          {activeTab === 'live' && daten && (
+            <AktivPhase
               config={config}
               schuelerStatus={gefilterteSchueler}
               startTimestamp={startTimestamp}
@@ -505,7 +511,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                 ladeDaten()
               }}
             />
-          })()}
+          )}
 
           {activeTab === 'auswertung' && daten && pruefungId && (
             <div className="space-y-4">
@@ -528,11 +534,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                   <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">
                     <BeendetPhase
                       config={config}
-                      schuelerStatus={daten.schueler}
+                      schuelerStatus={gefilterteSchueler}
                       fragen={fragen}
                       abgaben={abgaben}
                       onExportieren={() => {
-                        const csv = exportiereTeilnahmeCSV(config, daten.schueler)
+                        const csv = exportiereTeilnahmeCSV(config, gefilterteSchueler)
                         if (csv) {
                           const dateiname = `${config.titel || config.id}_Teilnahme_${new Date().toISOString().slice(0, 10)}.csv`
                           downloadCSV(csv, dateiname)
