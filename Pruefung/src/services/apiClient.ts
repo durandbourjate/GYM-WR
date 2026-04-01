@@ -9,16 +9,16 @@ export function istKonfiguriert(): boolean {
 /** Standard-Timeout für API-Calls (30s — Apps Script kann langsam sein) */
 const DEFAULT_TIMEOUT_MS = 30_000
 
-// === Request-Serialisierung ===
-// Google Apps Script hat begrenzte Concurrent Execution Slots.
-// Diese Queue stellt sicher, dass pro Client maximal 1 Request gleichzeitig läuft.
-// Verhindert "Failed to fetch" durch Überlastung.
-let requestQueue: Promise<unknown> = Promise.resolve()
+// === Write-Serialisierung (nur SuS-Writes) ===
+// Heartbeat und speichereAntworten (beide via postBool) dürfen nicht parallel laufen,
+// weil sie in dieselbe Sheet-Zeile schreiben → Race Condition.
+// LP-GETs (Monitoring, Nachrichten, Config) bleiben parallel — keine Queue.
+let writeQueue: Promise<unknown> = Promise.resolve()
 
-/** Reiht einen Request in die serielle Queue ein. Wartet auf vorherige Requests. */
-function enqueueRequest<T>(fn: () => Promise<T>): Promise<T> {
-  const queued = requestQueue.then(fn, fn) // Auch nach Fehler weiter
-  requestQueue = queued.then(() => {}, () => {}) // Fehler nicht propagieren in Queue
+/** Reiht einen SuS-Write in die serielle Queue ein. Wartet auf vorherigen Write. */
+function enqueueWrite<T>(fn: () => Promise<T>): Promise<T> {
+  const queued = writeQueue.then(fn, fn) // Auch nach Fehler weiter
+  writeQueue = queued.then(() => {}, () => {}) // Fehler nicht propagieren in Queue
   return queued
 }
 
@@ -58,49 +58,48 @@ export async function postJson<T>(
   options?: { signal?: AbortSignal; timeoutMs?: number }
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
-  return enqueueRequest(async () => {
+  try {
+    // Session-Token automatisch mitsenden wenn vorhanden (SuS-Authentifizierung)
+    const sessionToken = getSessionToken()
+    const body = sessionToken ? { action, sessionToken, ...payload } : { action, ...payload }
+    const response = await fetchMitTimeout(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body),
+      signal: options?.signal,
+    }, options?.timeoutMs)
+    if (!response.ok) return null
+    const text = await response.text()
     try {
-      // Session-Token automatisch mitsenden wenn vorhanden (SuS-Authentifizierung)
-      const sessionToken = getSessionToken()
-      const body = sessionToken ? { action, sessionToken, ...payload } : { action, ...payload }
-      const response = await fetchMitTimeout(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(body),
-        signal: options?.signal,
-      }, options?.timeoutMs)
-      if (!response.ok) return null
-      const text = await response.text()
-      try {
-        const data = JSON.parse(text)
-        if (data.error) {
-          console.error(`[API] ${action}:`, data.error)
-          return null
-        }
-        return data as T
-      } catch {
-        console.error(`[API] ${action}: Antwort ist kein JSON`)
+      const data = JSON.parse(text)
+      if (data.error) {
+        console.error(`[API] ${action}:`, data.error)
         return null
       }
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        console.warn(`[API] ${action}: Timeout oder abgebrochen`)
-        return null
-      }
-      console.error(`[API] ${action}: Netzwerkfehler:`, error)
+      return data as T
+    } catch {
+      console.error(`[API] ${action}: Antwort ist kein JSON`)
       return null
     }
-  })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.warn(`[API] ${action}: Timeout oder abgebrochen`)
+      return null
+    }
+    console.error(`[API] ${action}: Netzwerkfehler:`, error)
+    return null
+  }
 }
 
-/** POST-Request der boolean zurückgibt (success-Feld) */
+/** POST-Request der boolean zurückgibt (success-Feld).
+ *  Läuft durch Write-Queue (serialisiert heartbeat + speichereAntworten). */
 export async function postBool(
   action: string,
   payload: Record<string, unknown>,
   options?: { signal?: AbortSignal }
 ): Promise<boolean> {
   if (!APPS_SCRIPT_URL) return false
-  return enqueueRequest(async () => {
+  return enqueueWrite(async () => {
     try {
       const sessionToken = getSessionToken()
       const body = sessionToken ? { action, sessionToken, ...payload } : { action, ...payload }
@@ -125,45 +124,43 @@ export async function postBool(
   })
 }
 
-/** GET-Request an Apps Script */
+/** GET-Request an Apps Script (ohne Queue — GETs dürfen parallel laufen) */
 export async function getJson<T>(
   action: string,
   params: Record<string, string> = {},
   options?: { signal?: AbortSignal; timeoutMs?: number }
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
-  return enqueueRequest(async () => {
+  try {
+    // Session-Token auch bei GET-Requests mitsenden (SuS-Authentifizierung)
+    const sessionToken = getSessionToken()
+    const allParams = { ...params, ...(sessionToken ? { sessionToken } : {}) }
+    const queryParams = Object.entries(allParams)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&')
+    const url = `${APPS_SCRIPT_URL}?action=${action}${queryParams ? '&' + queryParams : ''}`
+    const response = await fetchMitTimeout(url, { signal: options?.signal }, options?.timeoutMs)
+    if (!response.ok) return null
+    const text = await response.text()
     try {
-      // Session-Token auch bei GET-Requests mitsenden (SuS-Authentifizierung)
-      const sessionToken = getSessionToken()
-      const allParams = { ...params, ...(sessionToken ? { sessionToken } : {}) }
-      const queryParams = Object.entries(allParams)
-        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-        .join('&')
-      const url = `${APPS_SCRIPT_URL}?action=${action}${queryParams ? '&' + queryParams : ''}`
-      const response = await fetchMitTimeout(url, { signal: options?.signal }, options?.timeoutMs)
-      if (!response.ok) return null
-      const text = await response.text()
-      try {
-        const data = JSON.parse(text)
-        if (data.error) {
-          console.error(`[API] ${action}:`, data.error)
-          return null
-        }
-        return data as T
-      } catch {
-        console.error(`[API] ${action}: Antwort ist kein JSON`)
+      const data = JSON.parse(text)
+      if (data.error) {
+        console.error(`[API] ${action}:`, data.error)
         return null
       }
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        console.warn(`[API] ${action}: Timeout oder abgebrochen`)
-        return null
-      }
-      console.error(`[API] ${action}: Netzwerkfehler:`, error)
+      return data as T
+    } catch {
+      console.error(`[API] ${action}: Antwort ist kein JSON`)
       return null
     }
-  })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.warn(`[API] ${action}: Timeout oder abgebrochen`)
+      return null
+    }
+    console.error(`[API] ${action}: Netzwerkfehler:`, error)
+    return null
+  }
 }
 
 /** File/Blob zu Base64 konvertieren */
