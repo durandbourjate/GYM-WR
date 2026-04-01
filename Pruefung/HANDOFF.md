@@ -13,7 +13,10 @@
 - **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
 - **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
-- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht
+- **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
+- ~~**Übungspools: 8 neue Fragetypen**~~ ✅ 01.04.2026 — sortierung, formel, hotspot, bildbeschriftung, dragdrop_bild, code, zeichnen, pdf. Inkl. TYPE_HANDLERS Refactoring. Audio weggelassen (kein Backend in Pools).
+- **Zeichnen Input-Verlust (Prüfungstool)** — React Re-Renders verschlucken pointerdown. Refactoring-Plan in Spec AP-F. Eigene Session.
+- **Monitoring-Verzögerung ~28s** — Abwarten, aktuell akzeptabel
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
 - **Verbleibende Security-Themen:**

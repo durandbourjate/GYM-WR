@@ -20,9 +20,19 @@ analytics/             ← Dashboard + Apps Script für Auswertung
 - BWL (5): Einführung, Unternehmensmodell, Strategie/Führung, Marketing, Fibu
 - Informatik (1): Kryptographie
 
-## Fragetypen
+## Fragetypen (21 Typen, TYPE_HANDLERS Registry)
 
-Multiple-Choice, Lückentext, Zuordnung (Drag&Drop), Reihenfolge, Wahr/Falsch, Kurzantwort (Regex)
+**Basis:** mc, multi, tf, fill, calc, sort, open
+**FiBu:** buchungssatz, tkonto, bilanz, kontenbestimmung
+**Gruppe:** gruppe (verschachtelte Teilfragen)
+**Reihenfolge:** sortierung (Pick-to-Order)
+**Formel:** formel (LaTeX/KaTeX Live-Preview)
+**Bild-interaktiv:** hotspot, bildbeschriftung, dragdrop_bild
+**Komplex:** code (CodeMirror 5), zeichnen (Canvas), pdf (iframe + Freitext/MC)
+
+Neue Typen hinzufügen: Handler-Objekt `{ render, buttons, restore, correctAnswer }` in `TYPE_HANDLERS` registrieren + TYPE_LABELS erweitern.
+
+**CDN-Dependencies:** KaTeX (Formel), CodeMirror 5 (Code-Editor)
 
 ## LearningView-Integration
 
