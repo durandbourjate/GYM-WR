@@ -27,6 +27,89 @@
 
 ---
 
+## Session 44 — Bugfixes + Prozess-Verbesserungen (01.04.2026) ⚠️ KRITISCHE BUGS OFFEN
+
+### Stand
+Branch `fix/warteraum-polling-rate-limit` auf Staging deployed. 7 Commits mit diversen Fixes. **Aber: fundamentales Problem nicht geloest.**
+
+### KRITISCH: `Failed to fetch` bei speichereAntworten
+
+**Das ist die Root Cause fuer fast alle anderen Bugs.** Alle `speichereAntworten`-Calls schlagen ab einem bestimmten Punkt mit `TypeError: Failed to fetch` fehl. Dadurch:
+- Antworten gehen verloren (nur erste ~8 von 23 kommen durch)
+- Abgabe-Status wird nie auf `istAbgabe: true` gesetzt im Backend
+- LP sieht "Aktiv" statt "Abgegeben"
+- SuS kann nach Abgabe erneut einloggen und Daten ueberschreiben
+
+**Vermutete Ursache:** Google Apps Script wird ueberlastet durch parallele Requests (Heartbeat + Monitoring + Auto-Save + ladeNachrichten). Nicht Rate-Limiting (das waere ein anderer Error), sondern Google-seitige 503/Connection-Limits. Die `Failed to fetch` Errors beginnen nach ~5 Min Pruefungsdauer.
+
+**Naechste Session muss ZUERST dieses Problem loesen.** Alles andere ist Symptombehandlung.
+
+### Erledigte Fixes (auf Branch, nicht auf main)
+
+| Fix | Beschreibung | Status |
+|-----|-------------|--------|
+| Warteraum-Polling | `ladePruefung` aus Polling entfernt, nur Heartbeat (5s statt 2s) | ✅ Deployed, Rate-Limit-Errors weg |
+| Warteraum phase='lobby' | Heartbeat-Phase 'lobby' wird als freigeschaltet erkannt | ✅ Deployed, aber SuS erkennt Freischaltung trotzdem nicht zuverlaessig |
+| PDF Toolswitch | Text-Properties inline wenn Annotation selektiert | ✅ Deployed |
+| speichereAntworten robust | `postBool` mit Timeout statt raw `fetch`, 1x Retry | ✅ Deployed, aber `Failed to fetch` besteht weiterhin |
+| Abgabe-Retry | 4 Versuche mit exponential backoff | ✅ Deployed |
+| Abgabe Backend-First | `pruefungAbgeben()` erst NACH Backend-Erfolg | ✅ Deployed |
+| Re-Entry-Schutz | `ladePruefung` prueft `beendetUm`, Frontend prueft `istBeendet` | ✅ Deployed, aber ohne funktionierenden Save greift er nicht |
+| Backend Abgabe-Wiederholung | `istAbgabe:true` Saves duerfen bei bereits abgegebenen durch | ✅ Deployed |
+| Tab-Sprung Fix | Nur bei `beendetUm + freigeschaltet` auf Auswertung springen | ✅ Deployed, aber "Neue Durchfuehrung" springt trotzdem zu Auswertung |
+| Audio Doppelklick-Guard | `isStartingRef` + `recorder.start()` ohne timeslice | ✅ Deployed |
+| Zeichnen releasePointerCapture | `releasePointerCapture` in pointerup + redundante Dispatches entfernt | ✅ Deployed, aber reicht nicht — braucht groesseren Refactor |
+| regression-prevention.md | Hard-Stops, Test-Plan-Pflicht, Session-Protokoll, echte Logins | ✅ Deployed |
+
+### Offene Bugs (naechste Session)
+
+| Prio | Bug | Root Cause |
+|------|-----|-----------|
+| 🔴 | **Failed to fetch bei speichereAntworten** | Google Apps Script ueberlastet durch parallele Requests |
+| 🔴 | **Datenverlust: Nur ~8/23 Antworten gespeichert** | Folge von Failed to fetch |
+| 🔴 | **SuS kann nach Abgabe erneut einloggen + ueberschreiben** | Folge von Failed to fetch (Backend weiss nichts von Abgabe) |
+| 🔴 | **LP Live-View zeigt "Aktiv" statt "Abgegeben"** | Folge von Failed to fetch |
+| 🟠 | **Warteraum erkennt Freischaltung nicht (Reload noetig)** | Heartbeat-Response kommt moeglicherweise nicht durch (503) |
+| 🟠 | **"Pruefung wird geladen" haengt** | Backend sagt istBeendet → pruefungAbgeben() ohne Config → kein Render |
+| 🟠 | **Neue Durchfuehrung springt zu Auswertung** | beendetUm wird nicht korrekt zurueckgesetzt |
+| 🟠 | **Zeichnen: Striche gehen bei schneller Eingabe verloren** | React Re-Render verschluckt pointerdown (groesserer Refactor noetig) |
+| 🟡 | **KaTeX inline statt formatiert** | Einrichtungspruefung nutzt Unicode statt LaTeX |
+| 🟡 | **Audio 1. Versuch nur 1s** | Chrome Permission-Popup Timing |
+| 🟡 | **NaN Punkte in Korrektur** | Gesamtpunkte-Berechnung bei Aufgabengruppen |
+| 🟡 | **Material redundante Links** | Moeglicherweise kein Bug (Tabs + Inhalt im selben Panel) |
+
+### Ansatz fuer naechste Session
+
+1. **ZUERST `Failed to fetch` Root Cause loesen** — Request-Parallelitaet reduzieren, Connection-Pooling, oder Requests sequentialisieren
+2. Dann alle Folge-Bugs verifizieren (viele loesen sich automatisch wenn Saves durchkommen)
+3. Warteraum-Bug separat debuggen
+4. Zeichnen-Refactor als eigenes Projekt
+
+### Branch-Status
+
+| Branch | Inhalt | Status |
+|--------|--------|--------|
+| `fix/warteraum-polling-rate-limit` | Alle Session-44-Fixes | Auf Staging, NICHT auf main |
+| `preview` | Staging-Build | Deployed |
+| `main` | Production | Unveraendert seit Session 43 |
+
+### Prozess-Verbesserungen (Session 44)
+
+- `regression-prevention.md` erweitert: Phase 0 (Session-Start), Hard-Stops, Test-Plan-Pflicht, Chrome-in-Chrome Tab-Gruppe mit echten Logins
+- Memory-Eintraege erstellt: `feedback_sorgfalt.md`, `feedback_regressionsprevention.md`, `feedback_staging_workflow.md`
+- Staging-Workflow dokumentiert: Alle Bugs gebuendelt fixen → Staging → User testet → Freigabe → main
+
+---
+
+## Session 43 — Staging-Umgebung + ausstehende Tests (31.03.2026)
+
+### Stand
+- 8 Bugfixes aus Session 42 sind auf `main` deployed (Production + Staging)
+- Staging unter: `https://durandbourjate.github.io/GYM-WR-DUY/staging/`
+- **Apps Script Deploy noch ausstehend** für Bug 1 (istAbgegeben-Flag in ladePruefung)
+
+---
+
 ## Session 42 — 8 Bugfixes (31.03.2026)
 
 Kritische und mittlere Bugs gefixt. Branch: `fix/bugfixes-2026-03-31`.
