@@ -1587,8 +1587,8 @@ function heartbeat(body) {
     // nicht den authentifizierten hb-Bucket füllen und sich selbst rate-limiten
     if (!istZugelasseneLP(email) && email.endsWith('@stud.gymhofwil.ch') && body.aktuelleFrage === undefined) {
       istWarteraumHeartbeat = true;
-      // Rate Limiting für Warteraum-Heartbeats (pollt alle 5s = 12/min)
-      var rlWr = rateLimitCheck_('hb-wr', email, 15, 60);
+      // Rate Limiting für Warteraum-Heartbeats (pollt alle 5s = 12/min, Puffer für Bursts bei Reload)
+      var rlWr = rateLimitCheck_('hb-wr', email, 25, 60);
       if (rlWr.blocked) return jsonResponse({ error: rlWr.error });
     } else if (!istZugelasseneLP(email)) {
       if (!sessionToken || !validiereSessionToken_(sessionToken, email, pruefungId)) {
