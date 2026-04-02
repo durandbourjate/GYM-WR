@@ -553,31 +553,34 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                           setDaten({ pruefungId: config.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
                           setAbgaben({})
                           setFragen([])
-                          // Config sofort lokal zurücksetzen (verhindert phase='beendet')
+                          // Config zurücksetzen: lokal + Backend
+                          // Kontrollstufe abhängig vom Prüfungstyp
+                          const defaultKontrollStufe = config.typ === 'formativ' ? 'locker' as const : 'standard' as const
                           const resetConfig = {
-                          ...config,
-                          freigeschaltet: false,
-                          beendetUm: undefined,
-                          teilnehmer: [],
-                          sebAusnahmen: [],
-                          zeitverlaengerungen: {},
-                          kontrollStufe: 'standard' as const,
-                          durchfuehrungId: crypto.randomUUID(),
-                        }
+                            ...config,
+                            freigeschaltet: false,
+                            beendetUm: undefined,
+                            teilnehmer: [],
+                            sebAusnahmen: [],
+                            zeitverlaengerungen: {},
+                            kontrollStufe: defaultKontrollStufe,
+                            durchfuehrungId: crypto.randomUUID(),
+                          }
                           setConfig(resetConfig)
                           // URL-Parameter ?tab=... löschen (verhindert Tab-Sprung zu Auswertung)
                           const url = new URL(window.location.href)
                           url.searchParams.delete('tab')
                           window.history.replaceState({}, '', url.toString())
                           setActiveTab('vorbereitung')
-                          // Frische Config vom Backend laden (nach kurzer Wartezeit für Backend-Verarbeitung)
-                          setTimeout(async () => {
-                            try {
-                              const frisch = await apiService.ladeEinzelConfig(config.id, user!.email)
-                              if (frisch) setConfig(frisch)
-                            } catch { /* ignore */ }
-                            ladeDaten()
-                          }, 1000)
+                          // Reset ans Backend senden, dann frische Config laden
+                          try {
+                            await apiService.speichereConfig(user!.email, resetConfig)
+                          } catch { /* ignore — lokaler Reset greift trotzdem */ }
+                          try {
+                            const frisch = await apiService.ladeEinzelConfig(config.id, user!.email)
+                            if (frisch) setConfig(frisch)
+                          } catch { /* ignore */ }
+                          ladeDaten()
                         }
                       }}
                     />
