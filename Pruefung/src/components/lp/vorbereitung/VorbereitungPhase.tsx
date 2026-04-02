@@ -69,6 +69,17 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeite
   useEffect(() => { ladeKlassenlisten() }, [ladeKlassenlisten])
   useEffect(() => { ladeUndCacheLPs().then(setLpListe) }, [])
 
+  // Bei neuer Durchführung (durchfuehrungId ändert sich): lokale States zurücksetzen
+  useEffect(() => {
+    setAusgewaehlteSuS(new Set((config.teilnehmer ?? []).map((t) => t.email)))
+    setManuelleTeilnehmer([])
+    setZeitverlaengerungen(config.zeitverlaengerungen ?? {})
+    setKontrollStufe((config.kontrollStufe as KontrollStufe) || 'standard')
+    setEinladungGesendetMap(new Set((config.teilnehmer ?? []).filter((t) => t.einladungGesendet).map((t) => t.email)))
+    setEinladungStatus('idle')
+    setLobbyFehler('')
+  }, [config.durchfuehrungId])
+
   // Nach Kurs gruppieren (Sheet-Name)
   const kursGruppen = useMemo((): KursGruppe[] => {
     const map = new Map<string, KlassenlistenSuS[]>()

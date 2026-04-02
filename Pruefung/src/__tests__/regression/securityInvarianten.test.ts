@@ -261,6 +261,24 @@ describe('Security: Session-Token Validierung', () => {
   })
 })
 
+describe('Security: Demo-Modus Bypass', () => {
+  beforeEach(() => {
+    vi.resetModules()
+    sessionStorageMock.clear()
+  })
+
+  it('sessionStorage pruefung-demo darf Lockdown NICHT deaktivieren', async () => {
+    // Simuliere Angriff: SuS setzt Demo-Flag in sessionStorage
+    sessionStorageMock.setItem('pruefung-demo', '1')
+
+    // restoreDemoFlag() darf NICHT mehr aus sessionStorage lesen
+    // istDemoModus ist nur über demoStarten() setzbar (in-memory)
+    const { useAuthStore } = await import('../../store/authStore.ts')
+    const state = useAuthStore.getState()
+    expect(state.istDemoModus).toBe(false)
+  })
+})
+
 describe('Security: pruefungId wird bei allen SuS-API-Calls mitgesendet', () => {
   it('speichereAntworten sendet pruefungId im Body', async () => {
     sessionStorageMock.setItem('pruefung-auth', JSON.stringify({

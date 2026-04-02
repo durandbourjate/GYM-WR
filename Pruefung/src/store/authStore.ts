@@ -99,7 +99,7 @@ function resetPruefungState(): void {
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: restoreSession(),
-  istDemoModus: restoreDemoFlag(),
+  istDemoModus: false,
   ladeStatus: 'idle',
   fehler: null,
 
@@ -126,7 +126,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       }
       // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
       resetPruefungState()
-      saveSession(user, false)
+      saveSession(user)
       set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
     } finally {
       loginInProgress = false
@@ -145,7 +145,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
     // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
     resetPruefungState()
-    saveSession(user, false)
+    saveSession(user)
     set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
   },
 
@@ -165,7 +165,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       nachname: 'Nutzer',
       rolle: 'sus',
     }
-    saveSession(user, true)
+    saveSession(user)
     set({ user, istDemoModus: true, ladeStatus: 'fertig', fehler: null })
   },
 
@@ -179,14 +179,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
 }))
 
 // Session via sessionStorage (Tab-gebunden, überlebt Reload aber nicht Tab-Schliessung)
-function saveSession(user: AuthUser, demo = false): void {
+function saveSession(user: AuthUser): void {
   try {
     sessionStorage.setItem('pruefung-auth', JSON.stringify(user))
-    if (demo) {
-      sessionStorage.setItem('pruefung-demo', '1')
-    } else {
-      sessionStorage.removeItem('pruefung-demo')
-    }
+    // Demo-Flag wird NICHT in sessionStorage geschrieben (Security: verhindert Bypass via DevTools)
   } catch {
     // sessionStorage nicht verfügbar
   }
@@ -213,14 +209,6 @@ function restoreSession(): AuthUser | null {
     return null
   } catch {
     return null
-  }
-}
-
-function restoreDemoFlag(): boolean {
-  try {
-    return sessionStorage.getItem('pruefung-demo') === '1'
-  } catch {
-    return false
   }
 }
 

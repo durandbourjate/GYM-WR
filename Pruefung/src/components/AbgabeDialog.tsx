@@ -3,7 +3,7 @@ import { useFocusTrap } from '../hooks/useFocusTrap.ts'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
-import { clearIndexedDB } from '../services/autoSave.ts'
+import { cleanupNachAbgabe } from '../utils/cleanupNachAbgabe.ts'
 import { sebVersion, browserInfo } from '../services/sebService.ts'
 import { formatUhrzeit } from '../utils/zeit.ts'
 import type { PruefungsAbgabe } from '../types/antworten.ts'
@@ -63,6 +63,9 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
     }
   }
 
+  // Store-Key konsistent mit pruefungStore: URL-Param 'id' oder 'default'
+  const storeKey = new URLSearchParams(window.location.search).get('id') || 'default'
+
   async function handleAbgabe() {
     setStatus('senden')
     const abgabe = erstelleAbgabeObjekt()
@@ -101,13 +104,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
         // ERST NACH Backend-Erfolg als abgegeben markieren — verhindert false-positive
         pruefungAbgeben()
         setStatus('erfolg')
-        // IndexedDB-Backup nach erfolgreicher Abgabe leeren
-        clearIndexedDB(abgabe.pruefungId)
-        // localStorage-Daten aufräumen (Datenschutz: personenbezogene Daten entfernen)
-        try {
-          localStorage.removeItem(`pruefung-abgabe-${abgabe.pruefungId}`)
-          localStorage.removeItem(`pruefung-state-${abgabe.pruefungId}`)
-        } catch { /* ignorieren */ }
+        cleanupNachAbgabe(storeKey)
       } else {
         // Backend-Save fehlgeschlagen — phase bleibt 'pruefung', SuS kann retry
         setStatus('fehler')
@@ -116,7 +113,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
       // Demo-Modus oder kein Backend → direkt Erfolg
       pruefungAbgeben()
       setStatus('erfolg')
-      clearIndexedDB(abgabe.pruefungId)
+      cleanupNachAbgabe(storeKey)
     }
   }
 
@@ -136,7 +133,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
     if (erfolg) {
       pruefungAbgeben()
       setStatus('erfolg')
-      clearIndexedDB(config?.id ?? 'demo')
+      cleanupNachAbgabe(storeKey)
     } else {
       setStatus('fehler')
     }
