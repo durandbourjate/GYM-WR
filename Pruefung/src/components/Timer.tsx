@@ -96,10 +96,10 @@ export default function Timer({ onZeitAbgelaufen }: Props) {
         version: -1,
         istAbgabe: true,
         gesamtFragen: fragen.length,
-      }).then(() => cleanupNachAbgabe(config!.id))
+      }).then(() => cleanupNachAbgabe(new URLSearchParams(window.location.search).get('id') || 'default'))
     } else {
       // Demo oder kein Backend — sofort aufräumen
-      cleanupNachAbgabe(config!.id)
+      cleanupNachAbgabe(new URLSearchParams(window.location.search).get('id') || 'default')
     }
   }
 
