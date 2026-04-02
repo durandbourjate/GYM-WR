@@ -580,3 +580,160 @@ Kein bestehendes Tool kombiniert: LP21-konforme Inhalte + echte Gamification + a
 - Geteilte Fragenbank mit Prüfungstool (Gym-Kontext)
 - Feinmaschiges Eltern-Dashboard mit Fehleranalyse
 - Zwei Kontexte (Schule + Familie) in einer App
+
+---
+
+## 17. Offline-Handling
+
+### Problem
+Kinder üben zu Hause oder unterwegs — Netzwerkausfälle sind zu erwarten. Verlorene Antworten zerstören das Vertrauen ins Mastery-System.
+
+### Lösung: Offline-Queue
+
+```
+Antwort gegeben
+    ↓
+In localStorage-Queue schreiben (immer, auch online)
+    ↓
+Sync-Versuch zum Backend
+    ├─ Erfolg → aus Queue entfernen
+    └─ Fehlschlag → Queue behalten, bei nächster Gelegenheit retry
+```
+
+- **Queue:** `lernplattform-queue-{email}` in localStorage (Array von Antworten)
+- **Sync:** Bei App-Start + nach jedem Block + bei `online`-Event
+- **Konflikte:** Last-Write-Wins auf `FragenFortschritt` (Antwort-Timestamp entscheidet). Antworten-Log ist append-only (kein Konflikt).
+- **UI:** Offline-Indikator ("Offline — Antworten werden gespeichert"). Kein Blocker — Kind kann weiterüben.
+- **Limit:** Max. 500 Antworten in Queue. Danach Warnung "Bitte verbinden um Fortschritt zu sichern."
+
+### Fragen-Cache
+Beim ersten Laden eines Themas werden die Fragen in localStorage gecacht. Kind kann offline weiterüben mit gecachten Fragen. Mastery-Updates lokal berechnen, bei Reconnect mit Backend abgleichen.
+
+---
+
+## 18. Auth-Sicherheit
+
+### Session-Tokens
+Wie beim Prüfungstool: Apps Script generiert Session-Token bei Login. Jeder API-Call sendet Token im Header. Token validierung serverseitig.
+
+```
+Login (OAuth/Code)
+    ↓
+Apps Script: validiereLogin → generiereSessionToken_(email)
+    ↓
+Token an Client → localStorage
+    ↓
+Jeder API-Call: { token, email, action, ... }
+    ↓
+Apps Script: validiereSessionToken_(token, email) → erlaubt/blockiert
+```
+
+Token-TTL: 24 Stunden (länger als Prüfungstool, da keine Prüfungsbindung).
+
+### Code-Login Sicherheit
+- **6-stellig alphanumerisch** (36^6 ≈ 2 Mrd. Kombinationen statt 10^6)
+- **Rate Limiting:** Max. 5 Versuche pro Minute pro IP/Fingerprint
+- **Rotation:** Admin kann Code jederzeit rotieren. Empfehlung: alle 90 Tage.
+
+### IDOR-Schutz
+- Jeder API-Call validiert: Token-E-Mail muss zur angefragten E-Mail passen
+- Admin-Calls: Token-E-Mail muss Admin der angefragten Gruppe sein
+- Kind kann nur eigene Daten lesen/schreiben
+
+---
+
+## 19. Sheets-Skalierung
+
+### Problem
+Antworten-Log wächst schnell: 2 Kinder × 30 Fragen/Tag × 365 = ~22'000 Zeilen/Jahr. Schulklasse: ~260'000/Jahr. Apps Script wird ab ~50'000 Zeilen langsam.
+
+### Strategie
+
+**Antworten-Tab:** Quartalsweise archivieren.
+- Aktiver Tab: `Antworten` (aktuelles Quartal)
+- Archiv-Tabs: `Antworten_2026_Q1`, `Antworten_2026_Q2`, ...
+- Apps Script schreibt immer in aktiven Tab, liest Archiv nur für Trend-Berechnungen
+
+**Fortschritt-Tab:** Bleibt kompakt (1 Zeile pro Frage × Lernende/r). Max. ~5'000 Zeilen pro Gruppe. Kein Skalierungsproblem.
+
+**Dauerbaustellen + Typische Fehler:** Vorberechnet und gecacht.
+- Apps Script berechnet bei Session-Ende (nicht bei jedem Aufruf)
+- Ergebnis in Cache-Tab `_Aggregationen` (1 Zeile pro Lernende/r × Thema)
+- Dashboard liest nur den Cache-Tab
+
+### Export/Backup
+- Admin kann jederzeit Excel-Export aller Daten pro Kind auslösen
+- Sheets haben eingebaute Versionshistorie (Google Drive)
+
+---
+
+## 20. Geteilte Fragenbank — Klarstellung
+
+### Schule: Shared Sheet (gleiche Instanz)
+
+Das Schul-Fragenbank-Sheet ist **dasselbe Sheet** wie im Prüfungstool. Kein Kopieren, kein Sync. Die `fragebankSheetId` in der Gruppen-Registry zeigt auf die bestehende Fragenbank.
+
+**Concurrent Writes:** Kein Problem — Prüfungstool und Lernplattform schreiben beide über Apps Script (serialisiert via Lock Service). Apps Script garantiert atomare Schreiboperationen pro Aufruf.
+
+### Familie: Eigenes Sheet
+
+Das Familien-Fragenbank-Sheet ist unabhängig. Keine Verbindung zum Schulkontext.
+
+### Flags
+
+| Flag | Default | Beschreibung |
+|------|---------|-------------|
+| `uebung` | `true` | In Lernplattform sichtbar |
+| `pruefungstauglich` | `false` | In Prüfungstool verwendbar (LP muss explizit freigeben) |
+
+---
+
+## 21. Weitere Klarstellungen
+
+### sort vs. sortierung
+- `sort`: Elemente in **Kategorien** einordnen (z.B. "Ordne zu: Arbeit / Boden / Kapital")
+- `sortierung`: Elemente in **Reihenfolge** bringen (Pick-to-Order, z.B. "Sortiere chronologisch")
+
+### Session-Definition
+Eine Session = ein Übungsblock (max. 10 Fragen). Start: Kind klickt "Üben". Ende: Block abgeschlossen oder abgebrochen. Jede Session erhält eine ID: `s_{timestamp}_{random}`.
+
+### Streak-Definition
+Streak zählt Sessions (nicht Tage). Bricht ab wenn **14 Tage** ohne Session vergehen. Zwei Sessions am selben Tag zählen als 2.
+
+### Gruppen-Kontext im Routing
+Aktive Gruppe wird im Zustand-Store gehalten (nach Login/Auswahl). Routes brauchen keinen `gruppeId`-Parameter — der Store liefert den Kontext. Bei Gruppenwechsel: zurück zum Dashboard.
+
+### Mitglied-Interface
+
+```typescript
+interface Mitglied {
+  email: string
+  name: string
+  rolle: 'admin' | 'lernend'
+  code?: string                 // Nur bei Kindern (privat)
+  beigetreten: string           // ISO-Datum
+}
+```
+
+### Diktat-Fallback
+Browser-TTS (`SpeechSynthesis`) als Standard. Wenn keine passende Stimme verfügbar: Frage wird als normaler Lückentext angezeigt mit Hinweis "Audio nicht verfügbar". Langfristig: optionale Audio-Dateien in Google Drive als Alternative zu TTS.
+
+### Datenschutz
+- Kinder-Daten (3.–6. Klasse): Nur mit elterlicher Einwilligung
+- Schul-Daten: Gemäss ICT-Nutzungsreglement Gymnasium Hofwil
+- Daten-Retention: Antworten-Archiv nach 2 Jahren löschbar
+- Export: Admin kann alle Daten pro Kind als Excel exportieren
+- Löschung: Admin kann Kind-Profil + alle zugehörigen Daten löschen
+
+### Gruppen-Erstellung Fehlerbehandlung
+`erstelleGruppe` erstellt Sheets transaktional:
+1. Fragenbank-Sheet erstellen
+2. Analytik-Sheet erstellen
+3. Registry-Eintrag schreiben
+Bei Fehler in Schritt 2/3: bereits erstellte Sheets aufräumen. Retry-Button im UI bei Fehlschlag.
+
+### Block-Komposition Edge Cases
+- Weniger als 7 Fragen im Thema → Block schrumpft (min. 3 Fragen)
+- Keine "gemeistert"-Fragen → Slot entfällt, Block hat 9 Fragen
+- Keine Dauerbaustellen/Lücken → Slots werden mit Thema-Fragen aufgefüllt
+- Komplett neuer User (alles "neu") → Block = 10 neue Fragen, kein Routing
