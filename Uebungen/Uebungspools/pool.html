@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Übungspool laden…</title>
+<!-- KaTeX für Formel-Rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<!-- CodeMirror 5 für Code-Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/lib/codemirror.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/mode/python/python.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/mode/javascript/javascript.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/mode/htmlmixed/htmlmixed.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/mode/css/css.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/codemirror@5.65.18/mode/xml/xml.min.js" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
 :root{
@@ -117,6 +128,89 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .sort-cat-item{padding:6px 12px;border-radius:6px;font-size:.82rem;font-weight:500;cursor:pointer;background:var(--c-primary);color:#fff;transition:.15s}
 .sort-cat-item:hover{opacity:.85}
 .sort-cat-item.correct-item{background:var(--c-success)}.sort-cat-item.wrong-item{background:var(--c-error)}
+/* ── Sortierung (Reihenfolge) ── */
+.sortierung-hint{font-size:.85rem;color:var(--c-text-muted);margin-bottom:8px}
+.sortierung-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.sortierung-item{padding:10px 16px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.9rem;font-weight:500;transition:all .15s;user-select:none}
+.sortierung-item:hover:not(.placed){border-color:var(--c-primary);background:var(--c-hover)}
+.sortierung-item.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.sortierung-result{margin-top:8px}
+.sortierung-result-title{font-size:.8rem;color:var(--c-text-muted);margin-bottom:6px;font-weight:600}
+.sortierung-slots{display:flex;flex-direction:column;gap:4px}
+.sortierung-slot{padding:8px 14px;background:var(--c-primary);color:#fff;border-radius:var(--radius);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .15s}
+.sortierung-slot:last-child:hover{opacity:.8}
+.sortierung-slot.correct{background:var(--c-success)}.sortierung-slot.wrong{background:var(--c-error)}
+/* ── Formel (LaTeX) ── */
+.formel-container{display:flex;flex-direction:column;gap:12px}
+.formel-input{width:100%;padding:12px 14px;font-family:'DM Mono',monospace;font-size:1rem;border:2px solid var(--c-border);border-radius:var(--radius);background:var(--c-card);color:var(--c-text);transition:border-color .15s}
+.formel-input:focus{outline:none;border-color:var(--c-primary)}
+.formel-input.correct{border-color:var(--c-success);background:var(--c-success-bg)}
+.formel-input.wrong{border-color:var(--c-error);background:var(--c-error-bg)}
+.formel-preview{min-height:48px;padding:16px;background:var(--c-hover);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.2rem;overflow-x:auto}
+.formel-placeholder{color:var(--c-text-muted);font-size:.85rem;font-style:italic}
+.formel-correction{color:var(--c-error);font-weight:600;font-size:.85rem;margin-right:8px}
+/* ── Hotspot ── */
+.hotspot-container{display:flex;flex-direction:column;gap:8px}
+.hotspot-img-wrap{position:relative;display:inline-block;max-width:100%;cursor:crosshair;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.hotspot-img{display:block;max-width:100%;height:auto}
+.hotspot-marker{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--c-primary);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);transform:translate(-50%,-50%);pointer-events:none;z-index:5}
+.hotspot-marker.correct{background:var(--c-success)}.hotspot-marker.wrong{background:var(--c-error)}
+.hotspot-zone{position:absolute;border-radius:50%;border:3px dashed var(--c-success);pointer-events:none;z-index:3;opacity:0;transition:opacity .3s}
+.hotspot-zone.show,.hotspot-zone.correct{opacity:1}
+.hotspot-zone.correct{background:rgba(34,197,94,.15)}
+.hotspot-status{font-size:.85rem;color:var(--c-text-muted)}
+/* ── Bildbeschriftung ── */
+.beschriftung-container{display:flex;flex-direction:column;gap:12px}
+.beschriftung-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.beschriftung-img{display:block;max-width:100%;height:auto}
+.beschriftung-spot{position:absolute;width:28px;height:28px;border-radius:50%;background:var(--c-primary);color:#fff;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);cursor:pointer;font-size:.75rem;font-weight:700;z-index:5;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.beschriftung-spot.awaiting{animation:pulse-spot 1s ease-in-out infinite;box-shadow:0 0 0 4px rgba(var(--c-primary-rgb,59,130,246),.3)}
+@keyframes pulse-spot{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.beschriftung-spot.correct{background:var(--c-success)}.beschriftung-spot.wrong{background:var(--c-error)}
+.beschriftung-spot-text{position:absolute;left:calc(100% + 6px);white-space:nowrap;font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 6px;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.beschriftung-correction{position:absolute;left:calc(100% + 6px);top:calc(100% + 2px);white-space:nowrap;font-size:.7rem;color:var(--c-error);font-weight:600}
+.beschriftung-bank{display:flex;flex-wrap:wrap;gap:8px}
+.beschriftung-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
+.beschriftung-label:hover:not(.placed){border-color:var(--c-primary)}
+.beschriftung-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.beschriftung-label.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.beschriftung-status{font-size:.85rem;color:var(--c-text-muted)}
+/* ── DragDrop Bild ── */
+.dd-bild-container{display:flex;flex-direction:column;gap:12px}
+.dd-bild-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.dd-bild-img{display:block;max-width:100%;height:auto}
+.dd-zone{position:absolute;border:2px dashed var(--c-border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:rgba(255,255,255,.15);z-index:3}
+.dd-zone.awaiting{border-color:var(--c-primary);background:rgba(var(--c-primary-rgb,59,130,246),.1);animation:pulse-zone .8s ease-in-out infinite}
+@keyframes pulse-zone{0%,100%{opacity:.7}50%{opacity:1}}
+.dd-zone.correct{border-color:var(--c-success);background:rgba(34,197,94,.15)}.dd-zone.wrong{border-color:var(--c-error);background:rgba(239,68,68,.15)}
+.dd-zone-label{font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 8px;border-radius:4px;max-width:90%;text-align:center;word-break:break-word}
+.dd-label-bank{display:flex;flex-wrap:wrap;gap:8px}
+.dd-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
+.dd-label:hover:not(.placed){border-color:var(--c-primary)}
+.dd-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.dd-label.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.dd-status{font-size:.85rem;color:var(--c-text-muted)}
+/* ── Code-Editor ── */
+.code-container{display:flex;flex-direction:column;gap:8px}
+.code-lang-badge{display:inline-block;padding:2px 10px;background:var(--c-hover);border-radius:4px;font-size:.75rem;font-weight:700;font-family:'DM Mono',monospace;color:var(--c-text-muted);align-self:flex-start}
+.code-editor{width:100%;min-height:200px;padding:12px;font-family:'DM Mono',monospace;font-size:.9rem;border:2px solid var(--c-border);border-radius:var(--radius);background:var(--c-card);color:var(--c-text);resize:vertical;tab-size:4}
+.CodeMirror{border:2px solid var(--c-border);border-radius:var(--radius);font-size:.9rem;min-height:200px}
+.code-sample{padding:16px;background:var(--c-hover);border-radius:var(--radius);border-left:4px solid var(--c-success)}
+.code-sample-title{font-weight:700;font-size:.85rem;margin-bottom:8px;color:var(--c-success)}
+.code-sample-pre{font-family:'DM Mono',monospace;font-size:.85rem;white-space:pre-wrap;margin:0;line-height:1.5}
+/* ── Zeichnen (Canvas) ── */
+.zeichnen-container{display:flex;flex-direction:column;gap:8px}
+.zeichnen-toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;background:var(--c-hover);border-radius:var(--radius)}
+.zt-btn{padding:6px 12px;border:1px solid var(--c-border);border-radius:6px;background:var(--c-card);cursor:pointer;font-size:.8rem;transition:all .15s}
+.zt-btn:hover{border-color:var(--c-primary)}.zt-btn.active{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+.zt-color{width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:0}
+.zt-size{padding:4px 8px;border:1px solid var(--c-border);border-radius:6px;font-size:.8rem;background:var(--c-card)}
+.zeichnen-canvas{border:2px solid var(--c-border);border-radius:var(--radius);cursor:crosshair;max-width:100%;background:#fff}
+.zeichnen-sample{margin-top:12px;padding:16px;background:var(--c-hover);border-radius:var(--radius);border-left:4px solid var(--c-success)}
+/* ── PDF-Aufgabe ── */
+.pdf-container{display:flex;flex-direction:column;gap:16px}
+.pdf-iframe{width:100%;height:500px;border:2px solid var(--c-border);border-radius:var(--radius)}
+.pdf-answer{display:flex;flex-direction:column;gap:8px}
 .feedback{margin-top:16px;padding:16px;border-radius:var(--radius);font-size:.9rem;line-height:1.6;display:none}
 .feedback.show{display:block}
 .feedback.correct{background:var(--c-success-bg);border-left:4px solid var(--c-success)}
@@ -435,6 +529,10 @@ html.dark .mode-card.active{background:var(--c-info-bg)}
   .sort-pool{padding:10px;gap:6px}
   .sort-item{padding:7px 12px;font-size:.82rem}
   .sort-cat-item{padding:5px 10px;font-size:.8rem}
+  .sortierung-item{padding:8px 12px;font-size:.85rem}
+  .sortierung-slot{padding:6px 12px;font-size:.82rem}
+  .formel-input{font-size:.9rem;padding:10px 12px}
+  .formel-preview{font-size:1rem;padding:12px}
 
   /* ── Aktions-Buttons: Flexbox mit Wrap ── */
   .q-action-row{
@@ -818,7 +916,640 @@ const COLOR_SCHEMES = {
 
 // Labels (shared across all pools)
 const DIFF_LABELS = {1:"⭐ Einfach",2:"⭐⭐ Mittel",3:"⭐⭐⭐ Schwer"};
-const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage",buchungssatz:"📒 Buchungssatz",tkonto:"📊 T-Konto",bilanz:"📋 Bilanz/ER",kontenbestimmung:"🏷️ Kontenbestimmung",gruppe:"📦 Aufgabengruppe"};
+const TYPE_LABELS = {mc:"📝 Einzelauswahl",multi:"☑️ Mehrfachauswahl",tf:"✓✗ Richtig/Falsch",fill:"📖 Lückentext",calc:"🔢 Berechnung",sort:"🔀 Zuordnung",open:"✏️ Offene Frage",buchungssatz:"📒 Buchungssatz",tkonto:"📊 T-Konto",bilanz:"📋 Bilanz/ER",kontenbestimmung:"🏷️ Kontenbestimmung",gruppe:"📦 Aufgabengruppe",sortierung:"↕️ Reihenfolge",formel:"∑ Formel",hotspot:"🎯 Hotspot",bildbeschriftung:"🏷️ Bildbeschriftung",dragdrop_bild:"🖱️ Drag & Drop",code:"💻 Code",zeichnen:"🎨 Zeichnen",pdf:"📄 PDF-Aufgabe"};
+
+// ══════════════════════════════════════════
+// TYPE_HANDLERS Registry — polymorphes Dispatch pro Fragetyp
+// Jeder Handler: { render(q), buttons(q), restore(q,answer), check(qid), correctAnswer(q) }
+// render() gibt den typ-spezifischen HTML-Body zurück (ohne Header/Badges)
+// buttons() gibt die Action-Buttons zurück (Tipps, Überprüfen etc.)
+// restore() stellt den Zustand bei Zurück-Navigation wieder her
+// check() wird nicht direkt verwendet — die bestehenden answerXxx()-Funktionen bleiben
+// correctAnswer() gibt die Musterlösung als String zurück (für Review-Screen)
+// ══════════════════════════════════════════
+const TYPE_HANDLERS = {
+  mc: {
+    render(q) {
+      let h='<div class="mc-options">';
+      q.options.forEach(o=>{
+        h+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
+        h+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+highlightKonten(o.t)+'</span></div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      return h;
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.mc-opt').forEach(o=>{
+        o.style.pointerEvents='none';
+        if(o.dataset.val===q.correct)o.classList.add('correct');
+      });
+    },
+    correctAnswer(q) {
+      const opt=q.options.find(o=>o.v===q.correct); return q.correct+') '+(opt?opt.t:'');
+    }
+  },
+  multi: {
+    render(q) {
+      let h='<div class="multi-hint">☑️ Mehrere Antworten können richtig sein.</div>';
+      h+='<div class="mc-options" id="multiOpts">';
+      q.options.forEach(o=>{
+        h+='<div class="mc-opt" data-val="'+o.v+'" onclick="toggleMulti(this)">';
+        h+='<span class="opt-check"></span><span class="opt-letter">'+o.v+'</span><span class="opt-text">'+highlightKonten(o.t)+'</span></div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="answerMulti(\''+q.id+'\')">🔍 Überprüfen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      const cs=new Set(q.correct);
+      document.querySelectorAll('#multiOpts .mc-opt').forEach(o=>{
+        o.style.pointerEvents='none';
+        if(cs.has(o.dataset.val)){o.classList.add('correct');o.querySelector('.opt-check').textContent='✓'}
+        else o.classList.add('multi-neutral');
+      });
+    },
+    correctAnswer(q) {
+      return q.correct.map(function(v){ const opt=q.options.find(o=>o.v===v); return v+') '+(opt?opt.t:''); }).join(' · ');
+    }
+  },
+  tf: {
+    render(q) {
+      return '<div class="tf-btns"><div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',true)">✅ Richtig</div>'+
+        '<div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',false)">❌ Falsch</div></div>';
+    },
+    buttons(q) { return ''; },
+    restore(q,answer) {
+      document.querySelectorAll('.tf-btn').forEach(b=>{
+        b.style.pointerEvents='none';
+        const isTrue=b.textContent.includes('Richtig');
+        if((isTrue&&q.correct)||(!isTrue&&!q.correct))b.classList.add('correct');
+      });
+    },
+    correctAnswer(q) { return q.correct?'Richtig':'Falsch'; }
+  },
+  fill: {
+    render(q, pctProgress, total) {
+      // Fill überschreibt den Header wegen Split-Logik
+      let h='<div class="q-progress-bg"></div><div class="q-progress-bar" style="width:'+pctProgress+'%"></div>';
+      h+='<div class="q-badges">';
+      h+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
+      h+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
+      h+='<span class="badge badge-tax">'+q.tax+'</span>';
+      h+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
+      h+=renderTagBadges(q);
+      h+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
+      h+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
+      h+='</div>';
+      h+=renderContext(q);
+      let parts=q.q.split(/\{(\d+)\}/g);
+      h+='<div class="q-text">';
+      let bIdx=0;
+      for(let i=0;i<parts.length;i++){
+        if(i%2===0)h+=highlightKonten(parts[i]);
+        else h+='<input class="fill-input" data-bidx="'+bIdx+'" placeholder="…" autocomplete="off" autocapitalize="off">';
+        if(i%2===1)bIdx++;
+      }
+      h+='</div>';
+      h+=renderImg(q);
+      return h;
+    },
+    fullHeader: true, // Signal: render() liefert eigenen Header
+    buttons(q) {
+      return '<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>'+
+        '<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.fill-input').forEach(inp=>{
+        const bi=parseInt(inp.dataset.bidx);inp.value=q.blanks[bi].answer;
+        inp.classList.add('correct');inp.disabled=true;
+      });
+    },
+    correctAnswer(q) {
+      return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · ');
+    }
+  },
+  calc: {
+    render(q) {
+      let h='<div class="calc-rows">';
+      q.rows.forEach((r,i)=>{
+        h+='<div class="calc-row"><label>'+r.label+'</label><input type="number" step="any" data-ridx="'+i+'" placeholder="?"><span class="unit">'+r.unit+'</span></div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">🔍 Überprüfen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.calc-row input').forEach(inp=>{
+        const ri=parseInt(inp.dataset.ridx);inp.value=q.rows[ri].answer;
+        inp.classList.add('correct');inp.disabled=true;
+      });
+    },
+    correctAnswer(q) {
+      return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · ');
+    }
+  },
+  sort: {
+    render(q) {
+      let h='<div class="sort-pool" id="sortPool">';
+      let items=[...q.items];shuffle(items);
+      items.forEach((it,i)=>{
+        h+='<span class="sort-item" data-oidx="'+q.items.indexOf(it)+'" onclick="pickSortItem(this)">'+highlightKonten(it.t)+'</span>';
+      });
+      h+='</div><div class="sort-cats" id="sortCats" style="grid-template-columns:repeat('+q.categories.length+',1fr)">';
+      q.categories.forEach((cat,ci)=>{
+        h+='<div class="sort-cat" data-cidx="'+ci+'" onclick="placeSortItem(this,'+ci+')"><div class="sort-cat-title">'+highlightKonten(cat)+'</div><div class="sort-cat-items" id="sortCat'+ci+'"></div></div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.sort-item,.sort-cat').forEach(el=>el.style.pointerEvents='none');
+    },
+    correctAnswer(q) {
+      return q.categories.map(function(cat,ci){
+        const items=q.items.filter(function(it){return it.cat===ci}).map(function(it){return it.t});
+        return '<strong>'+cat+':</strong> '+items.join(', ');
+      }).join(' · ');
+    }
+  },
+  open: {
+    render(q) {
+      let h='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier…"></textarea>';
+      h+='<div class="open-sample" id="openSample"><div class="open-sample-title">Lösungsvorschlag:</div><div id="openSampleText"></div></div>';
+      h+='<div class="open-self" id="openSelf">';
+      h+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">✅ Gewusst</button>';
+      h+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">❌ Nicht gewusst</button>';
+      return h+'</div>';
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      var ta=document.getElementById('openAnswer');if(ta)ta.disabled=true;
+      var sample=document.getElementById('openSample');if(sample){document.getElementById('openSampleText').textContent=q.sample||'';sample.classList.add('show')}
+    },
+    correctAnswer(q) { return q.sample||'Siehe Lösungsvorschlag'; }
+  },
+  buchungssatz: {
+    render(q) {
+      _bsCount=q.correct.length;
+      let h='<div class="bs-header"><span class="bs-entry-label">Soll</span><span></span><span class="bs-entry-label">Haben</span><span class="bs-entry-label">Betrag</span></div>';
+      h+='<div class="bs-entries" id="bsEntries">';
+      for(var bi=0;bi<q.correct.length;bi++){
+        h+='<div class="bs-entry" id="bsEntry'+(bi+1)+'">';
+        h+=renderKontenSelect(q.konten,'bsSoll'+(bi+1),'Soll-Konto');
+        h+='<span class="an-label">an</span>';
+        h+=renderKontenSelect(q.konten,'bsHaben'+(bi+1),'Haben-Konto');
+        h+='<div style="display:flex;align-items:center;gap:4px"><input type="number" class="bs-amount" id="bsBetrag'+(bi+1)+'" min="0" step="0.01" placeholder="CHF"></div>';
+        h+='</div>';
+      }
+      h+='</div>';
+      h+='<div class="bs-add" onclick="addBsEntry(\''+q.id+'\')">+ Buchungssatz hinzufügen</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerBuchungssatz(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.konto-select,.bs-amount').forEach(function(el){el.disabled=true;el.classList.add('correct')});
+      var addBtn=document.querySelector('.bs-add');if(addBtn)addBtn.style.display='none';
+    },
+    correctAnswer(q) {
+      return q.correct.map(function(c){
+        var sN=q.konten.find(function(k){return k.nr===c.soll});
+        var hN=q.konten.find(function(k){return k.nr===c.haben});
+        return (sN?sN.name:c.soll)+' / '+(hN?hN.name:c.haben)+' CHF '+c.betrag.toLocaleString('de-CH');
+      }).join(' · ');
+    }
+  },
+  tkonto: {
+    render(q) {
+      let h='';
+      if(q.geschaeftsfaelle&&q.geschaeftsfaelle.length){
+        h+='<div class="tk-gf-list"><strong>Geschäftsfälle:</strong><ol>';
+        q.geschaeftsfaelle.forEach(function(gf){h+='<li>'+highlightKonten(gf)+'</li>'});
+        h+='</ol></div>';
+      }
+      h+='<div class="tk-container">';
+      q.konten.forEach(function(konto,ki){
+        var totalSoll=(konto.correctSoll||[]).length;
+        var totalHaben=(konto.correctHaben||[]).length;
+        var rowsSoll=Math.max(totalSoll,1);
+        var rowsHaben=Math.max(totalHaben,1);
+        h+='<div class="tk-card" data-ki="'+ki+'">';
+        h+='<div class="tk-title">'+konto.nr+' '+konto.name+'</div>';
+        h+='<div class="tk-table">';
+        h+='<div class="tk-side" id="tkSoll'+ki+'">';
+        h+='<div class="tk-side-header">Soll</div>';
+        if(typeof konto.ab==='number')h+='<div class="tk-ab">AB: '+konto.ab.toLocaleString('de-CH')+' CHF</div>';
+        for(var si=0;si<rowsSoll;si++){
+          h+='<div class="tk-row">';
+          if(q.geschaeftsfaelle)h+='<span class="tk-gf">Gf</span>';
+          h+=renderKontenSelect(q.konten.concat(q.gegenkonten||[]),'tkSollKonto'+ki+'_'+si,'Gegenkonto');
+          h+='<input type="number" step="any" id="tkSollBetrag'+ki+'_'+si+'" placeholder="CHF">';
+          h+='</div>';
+        }
+        h+='<button class="tk-add-row" onclick="addTkRow('+ki+',\'soll\')">+ Zeile</button>';
+        h+='</div>';
+        h+='<div class="tk-side" id="tkHaben'+ki+'" style="border-left:2px solid var(--c-border)">';
+        h+='<div class="tk-side-header">Haben</div>';
+        if(typeof konto.ab==='number')h+='<div class="tk-ab" style="visibility:hidden">AB</div>';
+        for(var hi=0;hi<rowsHaben;hi++){
+          h+='<div class="tk-row">';
+          if(q.geschaeftsfaelle)h+='<span class="tk-gf">Gf</span>';
+          h+=renderKontenSelect(q.konten.concat(q.gegenkonten||[]),'tkHabenKonto'+ki+'_'+hi,'Gegenkonto');
+          h+='<input type="number" step="any" id="tkHabenBetrag'+ki+'_'+hi+'" placeholder="CHF">';
+          h+='</div>';
+        }
+        h+='<button class="tk-add-row" onclick="addTkRow('+ki+',\'haben\')">+ Zeile</button>';
+        h+='</div>';
+        h+='</div>';
+        h+='<div class="tk-saldo">';
+        h+='<div class="tk-saldo-side"><label>Saldo Soll</label><input type="number" step="any" id="tkSaldoSoll'+ki+'" placeholder="0"></div>';
+        h+='<div class="tk-saldo-side" style="border-left:2px solid var(--c-border)"><label>Saldo Haben</label><input type="number" step="any" id="tkSaldoHaben'+ki+'" placeholder="0"></div>';
+        h+='</div>';
+        h+='</div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerTKonto(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.tk-card .konto-select,.tk-card input[type="number"]').forEach(function(el){el.disabled=true;el.classList.add('correct')});
+      document.querySelectorAll('.tk-add-row').forEach(function(b){b.style.display='none'});
+    },
+    correctAnswer(q) {
+      return q.konten.map(function(k){
+        var s=(k.correctSoll||[]).map(function(e){return e.gegen+' '+e.betrag}).join(', ');
+        var h=(k.correctHaben||[]).map(function(e){return e.gegen+' '+e.betrag}).join(', ');
+        return '<strong>'+k.name+':</strong> Soll ['+s+'] Haben ['+h+']'+(k.correctSaldo?' Saldo: '+k.correctSaldo.betrag+' ('+k.correctSaldo.seite+')':'');
+      }).join(' · ');
+    }
+  },
+  bilanz: {
+    render(q) {
+      let h='<div class="bilanz-ref"><table><tr><th>Nr.</th><th>Konto</th><th>Saldo (CHF)</th></tr>';
+      var shuffledKonten=[...q.kontenMitSaldi];shuffle(shuffledKonten);
+      shuffledKonten.forEach(function(k){
+        h+='<tr><td class="ref-nr">'+k.nr+'</td><td>'+k.name+'</td><td class="ref-saldo">'+k.saldo.toLocaleString('de-CH')+'</td></tr>';
+      });
+      h+='</table></div>';
+      var leftTitle=q.modus==='erfolgsrechnung'?'Aufwand':'Aktiven';
+      var rightTitle=q.modus==='erfolgsrechnung'?'Ertrag':'Passiven';
+      var rowCount=q.kontenMitSaldi.length;
+      var leftRows=Math.ceil(rowCount/2);var rightRows=rowCount-leftRows;
+      h+='<div class="bilanz-layout">';
+      h+='<div class="bilanz-seite" id="bilanzLinks">';
+      h+='<div class="bilanz-seite-title">'+leftTitle+'</div>';
+      for(var li=0;li<leftRows;li++){
+        h+='<div class="bilanz-row">'+renderKontenSelect(q.kontenMitSaldi,'bilanzL'+li,'Konto wählen');
+        h+='<input type="number" step="any" id="bilanzLBetrag'+li+'" placeholder="CHF"></div>';
+      }
+      h+='<div class="bilanz-summe"><span>Summe '+leftTitle+'</span><input type="number" step="any" id="bilanzSummeL" placeholder="CHF"></div>';
+      h+='</div>';
+      h+='<div class="bilanz-seite" id="bilanzRechts">';
+      h+='<div class="bilanz-seite-title">'+rightTitle+'</div>';
+      for(var ri=0;ri<rightRows;ri++){
+        h+='<div class="bilanz-row">'+renderKontenSelect(q.kontenMitSaldi,'bilanzR'+ri,'Konto wählen');
+        h+='<input type="number" step="any" id="bilanzRBetrag'+ri+'" placeholder="CHF"></div>';
+      }
+      h+='<div class="bilanz-summe"><span>Summe '+rightTitle+'</span><input type="number" step="any" id="bilanzSummeR" placeholder="CHF"></div>';
+      h+='</div>';
+      return h+'</div>';
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerBilanz(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.bilanz-layout .konto-select,.bilanz-layout input[type="number"],.bilanz-summe input').forEach(function(el){el.disabled=true;el.classList.add('correct')});
+    },
+    correctAnswer(q) {
+      var left=(q.correct.aktiven||q.correct.aufwand||[]).map(function(nr){var k=q.kontenMitSaldi.find(function(x){return x.nr===nr});return k?k.name+' '+k.saldo.toLocaleString('de-CH'):nr}).join(', ');
+      var right=(q.correct.passiven||q.correct.ertrag||[]).map(function(nr){var k=q.kontenMitSaldi.find(function(x){return x.nr===nr});return k?k.name+' '+k.saldo.toLocaleString('de-CH'):nr}).join(', ');
+      return '<strong>Links:</strong> '+left+' · <strong>Rechts:</strong> '+right+' · Summe: '+q.correct.bilanzsumme.toLocaleString('de-CH');
+    }
+  },
+  kontenbestimmung: {
+    render(q) {
+      let h='<div style="overflow-x:auto"><table class="kb-table"><tr><th class="kb-nr">#</th><th class="kb-gf">Geschäftsfall</th><th>Konto</th><th>Seite</th></tr>';
+      q.aufgaben.forEach(function(a,ai){
+        var rows=a.correct.length;
+        for(var ri=0;ri<rows;ri++){
+          h+='<tr>';
+          if(ri===0)h+='<td class="kb-nr" rowspan="'+rows+'">'+(ai+1)+'</td><td class="kb-gf" rowspan="'+rows+'">'+highlightKonten(a.text)+'</td>';
+          h+='<td>'+renderKontenSelect(q.konten,'kbKonto'+ai+'_'+ri,'Konto')+'</td>';
+          h+='<td><select class="kb-seite-select" id="kbSeite'+ai+'_'+ri+'"><option value="">–</option><option value="soll">Soll</option><option value="haben">Haben</option></select></td>';
+          h+='</tr>';
+        }
+      });
+      return h+'</table></div>';
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerKontenbestimmung(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.kb-table .konto-select,.kb-seite-select').forEach(function(el){el.disabled=true;el.classList.add('correct')});
+    },
+    correctAnswer(q) {
+      return q.aufgaben.map(function(a,i){
+        return (i+1)+') '+a.correct.map(function(c){var k=q.konten.find(function(x){return x.nr===c.konto});return (k?k.name:c.konto)+' ('+c.seite+')'}).join(', ');
+      }).join(' · ');
+    }
+  },
+  gruppe: {
+    render(q) {
+      let h='<div class="gruppe-container" id="gruppeContainer">';
+      q.teil.forEach(function(t,ti){
+        h+='<div class="gruppe-teil" id="gruppeTeil'+ti+'" data-ti="'+ti+'">';
+        h+='<div class="gruppe-teil-header"><span class="gruppe-teil-nr">'+t.sub+'</span>';
+        h+='<span class="gruppe-teil-type">'+TYPE_LABELS[t.type]+'</span></div>';
+        h+='<div class="q-text">'+highlightKonten(t.q)+'</div>';
+        h+=renderGruppeTeilInner(q,t,ti);
+        h+='<div class="feedback" id="gruppeFb'+ti+'"></div>';
+        h+='</div>';
+      });
+      return h+'</div>';
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerGruppe(\''+q.id+'\')">🔍 Alle prüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.gruppe-teil .konto-select,.gruppe-teil .bs-amount,.gruppe-teil input,.gruppe-teil .mc-opt,.gruppe-teil .tf-btn,.gruppe-teil select').forEach(function(el){
+        el.disabled=true;if(el.style)el.style.pointerEvents='none';
+      });
+    },
+    correctAnswer(q) {
+      return q.teil.map(function(t){return t.sub+') '+getCorrectAnswer(t)}).join(' · ');
+    }
+  },
+  // ── SORTIERUNG (Reihenfolge) ──
+  // Config: { items: ['A','B','C'], correct: [0,2,1] }
+  // correct[i] = Index des Items das an Position i stehen soll
+  sortierung: {
+    render(q) {
+      let items=q.items.map(function(it,i){return {text:it,origIdx:i}});
+      shuffle(items);
+      let h='<div class="sortierung-hint">Klicke die Elemente in der richtigen Reihenfolge an:</div>';
+      h+='<div class="sortierung-pool" id="sortierungPool">';
+      items.forEach(function(it){
+        h+='<div class="sortierung-item" data-idx="'+it.origIdx+'" onclick="pickSortierungItem(this)">'+highlightKonten(it.text)+'</div>';
+      });
+      h+='</div>';
+      h+='<div class="sortierung-result" id="sortierungResult">';
+      h+='<div class="sortierung-result-title">Gewählte Reihenfolge:</div>';
+      h+='<div class="sortierung-slots" id="sortierungSlots"></div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-outline" id="sortierungUndoBtn" onclick="undoSortierung()" style="display:none">↩️ Rückgängig</button>'+
+        '<button class="btn btn-primary" onclick="answerSortierung(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.sortierung-item,.sortierung-slot').forEach(function(el){el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) {
+      return q.correct.map(function(idx){return q.items[idx]}).join(' → ');
+    }
+  },
+  // ── FORMEL (LaTeX) ──
+  // Config: { correct: 'E = mc^2', toleranz: ['E=mc^2','E = m \\cdot c^2'] }
+  formel: {
+    render(q) {
+      let h='<div class="formel-container">';
+      h+='<div class="formel-input-row">';
+      h+='<input type="text" class="formel-input" id="formelInput" placeholder="LaTeX-Formel eingeben, z.B. E = mc^2" autocomplete="off" autocapitalize="off" oninput="updateFormelPreview()">';
+      h+='</div>';
+      h+='<div class="formel-preview" id="formelPreview"><span class="formel-placeholder">Vorschau erscheint hier…</span></div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="answerFormel(\''+q.id+'\')">🔍 Überprüfen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      var inp=document.getElementById('formelInput');
+      if(inp){inp.value=q.correct;inp.disabled=true;inp.classList.add('correct')}
+      var preview=document.getElementById('formelPreview');
+      if(preview&&typeof katex!=='undefined'){
+        try{katex.render(q.correct,preview,{throwOnError:false})}catch(e){preview.textContent=q.correct}
+      }
+    },
+    correctAnswer(q) { return q.correct; }
+  },
+  // ── HOTSPOT (auf Bild-Region klicken) ──
+  // Config: { img: {src,alt}, hotspots: [{x,y,r,label}] } — Koordinaten in Prozent
+  hotspot: {
+    render(q) {
+      let h='<div class="hotspot-container" id="hotspotContainer">';
+      h+='<div class="hotspot-img-wrap" id="hotspotWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="hotspot-img" id="hotspotImg" onclick="placeHotspotMarker(event)">';
+      h+='</div>';
+      h+='<div class="hotspot-status" id="hotspotStatus">Klicke auf die richtige Stelle im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerHotspot(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      var wrap=document.getElementById('hotspotWrap');
+      if(wrap)wrap.style.pointerEvents='none';
+    },
+    correctAnswer(q) {
+      return q.hotspots.map(function(h){return h.label}).join(', ');
+    }
+  },
+  // ── BILDBESCHRIFTUNG (Labels auf Bild platzieren via Tap) ──
+  // Config: { img: {src,alt}, labels: [{id,text,x,y}] } — x,y in Prozent
+  bildbeschriftung: {
+    render(q) {
+      let h='<div class="beschriftung-container" id="beschriftungContainer">';
+      h+='<div class="beschriftung-img-wrap" id="beschriftungWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="beschriftung-img" id="beschriftungImg">';
+      // Marker-Spots (Zielzonen, sichtbar als Kreise)
+      q.labels.forEach(function(lbl){
+        h+='<div class="beschriftung-spot" data-lid="'+lbl.id+'" style="left:'+lbl.x+'%;top:'+lbl.y+'%">';
+        h+='<span class="beschriftung-spot-num">'+(q.labels.indexOf(lbl)+1)+'</span></div>';
+      });
+      h+='</div>';
+      // Label-Bank (zum Auswählen)
+      var shuffled=[...q.labels];shuffle(shuffled);
+      h+='<div class="beschriftung-bank" id="beschriftungBank">';
+      shuffled.forEach(function(lbl){
+        h+='<div class="beschriftung-label" data-lid="'+lbl.id+'" onclick="pickBeschriftungLabel(this)">'+highlightKonten(lbl.text)+'</div>';
+      });
+      h+='</div>';
+      h+='<div class="beschriftung-status" id="beschriftungStatus">Wähle ein Label, dann klicke auf den passenden Punkt im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerBildbeschriftung(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.beschriftung-label,.beschriftung-spot').forEach(function(el){el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) {
+      return q.labels.map(function(l,i){return (i+1)+': '+l.text}).join(', ');
+    }
+  },
+  // ── DRAGDROP_BILD (Labels auf Zonen ziehen/tippen) ──
+  // Config: { img: {src,alt}, zones: [{id,x,y,w,h}], labels: [{id,text,zone}] }
+  dragdrop_bild: {
+    render(q) {
+      let h='<div class="dd-bild-container" id="ddBildContainer">';
+      h+='<div class="dd-bild-img-wrap" id="ddBildWrap">';
+      h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="dd-bild-img" id="ddBildImg">';
+      // Drop-Zonen
+      q.zones.forEach(function(z){
+        h+='<div class="dd-zone" data-zid="'+z.id+'" style="left:'+z.x+'%;top:'+z.y+'%;width:'+z.w+'%;height:'+z.h+'%" onclick="placeDdLabel(this)">';
+        h+='<span class="dd-zone-label" id="ddZoneLabel_'+z.id+'"></span></div>';
+      });
+      h+='</div>';
+      // Label-Bank
+      var shuffled=[...q.labels];shuffle(shuffled);
+      h+='<div class="dd-label-bank" id="ddLabelBank">';
+      shuffled.forEach(function(lbl){
+        h+='<div class="dd-label" data-lid="'+lbl.id+'" data-zone="'+lbl.zone+'" onclick="pickDdLabel(this)">'+highlightKonten(lbl.text)+'</div>';
+      });
+      h+='</div>';
+      h+='<div class="dd-status" id="ddStatus">Wähle ein Label, dann klicke auf die passende Zone im Bild.</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="answerDragDropBild(\''+q.id+'\')">🔍 Überprüfen</button>';
+    },
+    restore(q,answer) {
+      document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) {
+      return q.labels.map(function(l){return l.text+' → '+l.zone}).join(', ');
+    }
+  },
+  // ── CODE (Code-Editor mit Syntax-Highlighting) ──
+  // Config: { sprache: 'python', starterCode: 'def foo():\n    ', sample: 'def foo():\n    return 42' }
+  code: {
+    render(q) {
+      let h='<div class="code-container">';
+      h+='<div class="code-lang-badge">'+((q.sprache||'text').toUpperCase())+'</div>';
+      h+='<textarea class="code-editor" id="codeEditor">'+(q.starterCode||'')+'</textarea>';
+      h+='<div class="code-sample" id="codeSample" style="display:none">';
+      h+='<div class="code-sample-title">Musterlösung:</div>';
+      h+='<pre class="code-sample-pre" id="codeSamplePre"></pre>';
+      h+='</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="showCodeSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      var editor=document.getElementById('codeEditor');if(editor){editor.value=q.sample||'';editor.disabled=true}
+      var sample=document.getElementById('codeSample');if(sample)sample.style.display='block';
+      var pre=document.getElementById('codeSamplePre');if(pre)pre.textContent=q.sample||'';
+      // CodeMirror readonly setzen
+      if(window._poolCodeMirror)window._poolCodeMirror.setOption('readOnly',true);
+    },
+    correctAnswer(q) { return q.sample||'Siehe Musterlösung'; }
+  },
+  // ── ZEICHNEN (Canvas, vereinfacht) ──
+  // Config: { sample: {src,alt} } — Musterlösung als Bild
+  zeichnen: {
+    render(q) {
+      let h='<div class="zeichnen-container">';
+      h+='<div class="zeichnen-toolbar" id="zeichnenToolbar">';
+      h+='<button class="zt-btn active" data-tool="stift" onclick="setZeichnenTool(this,\'stift\')">✏️ Stift</button>';
+      h+='<button class="zt-btn" data-tool="radierer" onclick="setZeichnenTool(this,\'radierer\')">🧹 Radierer</button>';
+      h+='<input type="color" class="zt-color" id="zeichnenFarbe" value="#000000" title="Farbe">';
+      h+='<select class="zt-size" id="zeichnenGroesse" title="Strichstärke"><option value="2">Dünn</option><option value="4" selected>Normal</option><option value="8">Dick</option></select>';
+      h+='<button class="zt-btn" onclick="zeichnenUndo()">↩️</button>';
+      h+='<button class="zt-btn" onclick="zeichnenClear()">🗑️</button>';
+      h+='</div>';
+      h+='<canvas class="zeichnen-canvas" id="zeichnenCanvas" width="800" height="500"></canvas>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      return '<button class="btn btn-primary" onclick="showZeichnenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
+    },
+    restore(q,answer) {
+      var canvas=document.getElementById('zeichnenCanvas');if(canvas)canvas.style.pointerEvents='none';
+      document.querySelectorAll('.zt-btn,.zt-color,.zt-size').forEach(function(el){el.disabled=true;el.style.pointerEvents='none'});
+    },
+    correctAnswer(q) { return q.sample?'Siehe Musterlösung (Bild)':'Selbstbewertung'; }
+  },
+  // ── PDF (PDF anzeigen + Freitext-Frage) ──
+  // Config: { pdfUrl: 'materialien/datei.pdf', antwortTyp: 'freitext', sample: '...' }
+  pdf: {
+    render(q) {
+      let h='<div class="pdf-container">';
+      h+='<iframe class="pdf-iframe" src="'+q.pdfUrl+'" title="PDF-Dokument"></iframe>';
+      h+='<div class="pdf-answer">';
+      if(q.antwortTyp==='mc'&&q.options){
+        h+='<div class="mc-options">';
+        q.options.forEach(function(o){
+          h+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
+          h+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+highlightKonten(o.t)+'</span></div>';
+        });
+        h+='</div>';
+      } else {
+        h+='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier…"></textarea>';
+        h+='<div class="open-sample" id="openSample"><div class="open-sample-title">Lösungsvorschlag:</div><div id="openSampleText"></div></div>';
+        h+='<div class="open-self" id="openSelf">';
+        h+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">✅ Gewusst</button>';
+        h+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">❌ Nicht gewusst</button>';
+        h+='</div>';
+      }
+      h+='</div>';
+      h+='</div>';
+      return h;
+    },
+    buttons(q) {
+      if(q.antwortTyp==='mc') return '';
+      let h='';
+      if(q.hints&&q.hints.length)h+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
+      h+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
+      return h;
+    },
+    restore(q,answer) {
+      if(q.antwortTyp==='mc'){
+        TYPE_HANDLERS.mc.restore(q,answer);
+      } else {
+        TYPE_HANDLERS.open.restore(q,answer);
+      }
+    },
+    correctAnswer(q) {
+      if(q.antwortTyp==='mc')return TYPE_HANDLERS.mc.correctAnswer(q);
+      return q.sample||'Siehe Lösungsvorschlag';
+    }
+  }
+};
 
 // ══════════════════════════════════════════
 // FiBu Konten-Highlighting (Lehrmittel-Farben)
@@ -1046,55 +1777,9 @@ function showHints(qid){
 // RESTORE ANSWER STATE — for back navigation
 // ══════════════════════════════════════════
 function restoreAnswerState(q,answer){
-  if(q.type==='mc'){
-    document.querySelectorAll('.mc-opt').forEach(o=>{
-      o.style.pointerEvents='none';
-      if(o.dataset.val===q.correct)o.classList.add('correct');
-    });
-  } else if(q.type==='multi'){
-    const cs=new Set(q.correct);
-    document.querySelectorAll('#multiOpts .mc-opt').forEach(o=>{
-      o.style.pointerEvents='none';
-      if(cs.has(o.dataset.val)){o.classList.add('correct');o.querySelector('.opt-check').textContent='✓'}
-      else o.classList.add('multi-neutral');
-    });
-  } else if(q.type==='tf'){
-    document.querySelectorAll('.tf-btn').forEach(b=>{
-      b.style.pointerEvents='none';
-      const isTrue=b.textContent.includes('Richtig');
-      if((isTrue&&q.correct)||(!isTrue&&!q.correct))b.classList.add('correct');
-    });
-  } else if(q.type==='fill'){
-    document.querySelectorAll('.fill-input').forEach(inp=>{
-      const bi=parseInt(inp.dataset.bidx);inp.value=q.blanks[bi].answer;
-      inp.classList.add('correct');inp.disabled=true;
-    });
-  } else if(q.type==='calc'){
-    document.querySelectorAll('.calc-row input').forEach(inp=>{
-      const ri=parseInt(inp.dataset.ridx);inp.value=q.rows[ri].answer;
-      inp.classList.add('correct');inp.disabled=true;
-    });
-  } else if(q.type==='sort'){
-    document.querySelectorAll('.sort-item,.sort-cat').forEach(el=>el.style.pointerEvents='none');
-  } else if(q.type==='open'){
-    var ta=document.getElementById('openAnswer');if(ta)ta.disabled=true;
-    var sample=document.getElementById('openSample');if(sample){document.getElementById('openSampleText').textContent=q.sample||'';sample.classList.add('show')}
-  } else if(q.type==='buchungssatz'){
-    document.querySelectorAll('.konto-select,.bs-amount').forEach(function(el){el.disabled=true;el.classList.add('correct')});
-    var addBtn=document.querySelector('.bs-add');if(addBtn)addBtn.style.display='none';
-  } else if(q.type==='tkonto'){
-    document.querySelectorAll('.tk-card .konto-select,.tk-card input[type="number"]').forEach(function(el){el.disabled=true;el.classList.add('correct')});
-    document.querySelectorAll('.tk-add-row').forEach(function(b){b.style.display='none'});
-  } else if(q.type==='bilanz'){
-    document.querySelectorAll('.bilanz-layout .konto-select,.bilanz-layout input[type="number"],.bilanz-summe input').forEach(function(el){el.disabled=true;el.classList.add('correct')});
-  } else if(q.type==='kontenbestimmung'){
-    document.querySelectorAll('.kb-table .konto-select,.kb-seite-select').forEach(function(el){el.disabled=true;el.classList.add('correct')});
-  } else if(q.type==='gruppe'){
-    // Disable all inputs in group
-    document.querySelectorAll('.gruppe-teil .konto-select,.gruppe-teil .bs-amount,.gruppe-teil input,.gruppe-teil .mc-opt,.gruppe-teil .tf-btn,.gruppe-teil select').forEach(function(el){
-      el.disabled=true;if(el.style)el.style.pointerEvents='none';
-    });
-  }
+  // Typ-spezifische Wiederherstellung via TYPE_HANDLERS
+  const handler=TYPE_HANDLERS[q.type];
+  if(handler&&handler.restore)handler.restore(q,answer);
   const fb=document.getElementById('feedback');
   fb.className='feedback show '+(answer.correct?'correct':'wrong');
   fb.innerHTML='<div class="feedback-title">'+(answer.correct?'✅ Richtig!':'❌ Leider falsch')+'</div><div>'+highlightKonten(q.explain)+'</div>';
@@ -1553,239 +2238,34 @@ function renderQuestion(){
   html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
   html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
   html+='</div>';
-  html+=renderContext(q);
-  html+='<div class="q-text">'+highlightKonten(q.q)+'</div>';
-  html+=renderImg(q);
-  if(q.type==='mc'){
-    html+='<div class="mc-options">';
-    q.options.forEach(o=>{
-      html+='<div class="mc-opt" data-val="'+o.v+'" onclick="answerMC(this,\''+q.id+'\',\''+o.v+'\')">';
-      html+='<span class="opt-letter">'+o.v+'</span><span class="opt-text">'+highlightKonten(o.t)+'</span></div>';
-    });
-    html+='</div>';
-  } else if(q.type==='multi'){
-    html+='<div class="multi-hint">☑️ Mehrere Antworten können richtig sein.</div>';
-    html+='<div class="mc-options" id="multiOpts">';
-    q.options.forEach(o=>{
-      html+='<div class="mc-opt" data-val="'+o.v+'" onclick="toggleMulti(this)">';
-      html+='<span class="opt-check"></span><span class="opt-letter">'+o.v+'</span><span class="opt-text">'+highlightKonten(o.t)+'</span></div>';
-    });
-    html+='</div>';
-  } else if(q.type==='tf'){
-    html+='<div class="tf-btns"><div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',true)">✅ Richtig</div>';
-    html+='<div class="tf-btn" onclick="answerTF(this,\''+q.id+'\',false)">❌ Falsch</div></div>';
-  } else if(q.type==='fill'){
-    let parts=q.q.split(/\{(\d+)\}/g);
-    html='<div class="q-progress-bg"></div><div class="q-progress-bar" style="width:'+pctProgress+'%"></div>';
-    html+='<div class="q-badges">';
-    html+='<span class="badge badge-topic">'+TOPICS[q.topic].short+'</span>';
-    html+='<span class="badge badge-diff'+q.diff+'">'+DIFF_LABELS[q.diff]+'</span>';
-    html+='<span class="badge badge-tax">'+q.tax+'</span>';
-    html+='<span class="badge badge-type">'+TYPE_LABELS[q.type]+'</span>';
-    html+=renderTagBadges(q);
-    html+='<span class="badge badge-progress">'+(state.current+1)+' / '+total+'</span>';
-    html+='<span class="badge badge-score">'+state.score+' Pkt.</span>';
-    html+='</div>';
+  // ── Typ-spezifischer Body via TYPE_HANDLERS ──
+  const handler=TYPE_HANDLERS[q.type];
+  if(handler){
+    if(handler.fullHeader){
+      // Fill etc. liefern eigenen Header (wegen Split-Logik)
+      html=handler.render(q, pctProgress, total);
+    } else {
+      html+=renderContext(q);
+      html+='<div class="q-text">'+highlightKonten(q.q)+'</div>';
+      html+=renderImg(q);
+      html+=handler.render(q, pctProgress, total);
+    }
+  } else {
+    // Fallback für unbekannte Typen
     html+=renderContext(q);
-    html+='<div class="q-text">';
-    let bIdx=0;
-    for(let i=0;i<parts.length;i++){
-      if(i%2===0)html+=highlightKonten(parts[i]);
-      else html+='<input class="fill-input" data-bidx="'+bIdx+'" placeholder="…" autocomplete="off" autocapitalize="off">';
-      if(i%2===1)bIdx++;
-    }
-    html+='</div>';
+    html+='<div class="q-text">'+highlightKonten(q.q)+'</div>';
     html+=renderImg(q);
-  } else if(q.type==='calc'){
-    html+='<div class="calc-rows">';
-    q.rows.forEach((r,i)=>{
-      html+='<div class="calc-row"><label>'+r.label+'</label><input type="number" step="any" data-ridx="'+i+'" placeholder="?"><span class="unit">'+r.unit+'</span></div>';
-    });
-    html+='</div>';
-  } else if(q.type==='sort'){
-    html+='<div class="sort-pool" id="sortPool">';
-    let items=[...q.items];shuffle(items);
-    items.forEach((it,i)=>{
-      html+='<span class="sort-item" data-oidx="'+q.items.indexOf(it)+'" onclick="pickSortItem(this)">'+highlightKonten(it.t)+'</span>';
-    });
-    html+='</div><div class="sort-cats" id="sortCats" style="grid-template-columns:repeat('+q.categories.length+',1fr)">';
-    q.categories.forEach((cat,ci)=>{
-      html+='<div class="sort-cat" data-cidx="'+ci+'" onclick="placeSortItem(this,'+ci+')"><div class="sort-cat-title">'+highlightKonten(cat)+'</div><div class="sort-cat-items" id="sortCat'+ci+'"></div></div>';
-    });
-    html+='</div>';
-  } else if(q.type==='open'){
-    html+='<textarea class="open-answer" id="openAnswer" placeholder="Schreiben Sie Ihre Antwort hier…"></textarea>';
-    html+='<div class="open-sample" id="openSample"><div class="open-sample-title">Lösungsvorschlag:</div><div id="openSampleText"></div></div>';
-    html+='<div class="open-self" id="openSelf">';
-    html+='<button class="btn btn-primary" onclick="answerOpen(\''+q.id+'\',true)">✅ Gewusst</button>';
-    html+='<button class="btn btn-outline" onclick="answerOpen(\''+q.id+'\',false)">❌ Nicht gewusst</button>';
-    html+='</div>';
-  }
-  // ── BUCHUNGSSATZ ──
-  else if(q.type==='buchungssatz'){
-    _bsCount=q.correct.length;
-    html+='<div class="bs-header"><span class="bs-entry-label">Soll</span><span></span><span class="bs-entry-label">Haben</span><span class="bs-entry-label">Betrag</span></div>';
-    html+='<div class="bs-entries" id="bsEntries">';
-    for(var bi=0;bi<q.correct.length;bi++){
-      html+='<div class="bs-entry" id="bsEntry'+(bi+1)+'">';
-      html+=renderKontenSelect(q.konten,'bsSoll'+(bi+1),'Soll-Konto');
-      html+='<span class="an-label">an</span>';
-      html+=renderKontenSelect(q.konten,'bsHaben'+(bi+1),'Haben-Konto');
-      html+='<div style="display:flex;align-items:center;gap:4px"><input type="number" class="bs-amount" id="bsBetrag'+(bi+1)+'" min="0" step="0.01" placeholder="CHF"></div>';
-      html+='</div>';
-    }
-    html+='</div>';
-    html+='<div class="bs-add" onclick="addBsEntry(\''+q.id+'\')">+ Buchungssatz hinzufügen</div>';
-  }
-  // ── T-KONTO ──
-  else if(q.type==='tkonto'){
-    if(q.geschaeftsfaelle&&q.geschaeftsfaelle.length){
-      html+='<div class="tk-gf-list"><strong>Geschäftsfälle:</strong><ol>';
-      q.geschaeftsfaelle.forEach(function(gf){html+='<li>'+highlightKonten(gf)+'</li>'});
-      html+='</ol></div>';
-    }
-    html+='<div class="tk-container">';
-    q.konten.forEach(function(konto,ki){
-      var totalSoll=(konto.correctSoll||[]).length;
-      var totalHaben=(konto.correctHaben||[]).length;
-      var rowsSoll=Math.max(totalSoll,1);
-      var rowsHaben=Math.max(totalHaben,1);
-      html+='<div class="tk-card" data-ki="'+ki+'">';
-      html+='<div class="tk-title">'+konto.nr+' '+konto.name+'</div>';
-      html+='<div class="tk-table">';
-      // Soll-Seite
-      html+='<div class="tk-side" id="tkSoll'+ki+'">';
-      html+='<div class="tk-side-header">Soll</div>';
-      if(typeof konto.ab==='number')html+='<div class="tk-ab">AB: '+konto.ab.toLocaleString('de-CH')+' CHF</div>';
-      for(var si=0;si<rowsSoll;si++){
-        html+='<div class="tk-row">';
-        if(q.geschaeftsfaelle)html+='<span class="tk-gf">Gf</span>';
-        html+=renderKontenSelect(q.konten.concat(q.gegenkonten||[]),'tkSollKonto'+ki+'_'+si,'Gegenkonto');
-        html+='<input type="number" step="any" id="tkSollBetrag'+ki+'_'+si+'" placeholder="CHF">';
-        html+='</div>';
-      }
-      html+='<button class="tk-add-row" onclick="addTkRow('+ki+',\'soll\')">+ Zeile</button>';
-      html+='</div>';
-      // Haben-Seite
-      html+='<div class="tk-side" id="tkHaben'+ki+'" style="border-left:2px solid var(--c-border)">';
-      html+='<div class="tk-side-header">Haben</div>';
-      if(typeof konto.ab==='number')html+='<div class="tk-ab" style="visibility:hidden">AB</div>';
-      for(var hi=0;hi<rowsHaben;hi++){
-        html+='<div class="tk-row">';
-        if(q.geschaeftsfaelle)html+='<span class="tk-gf">Gf</span>';
-        html+=renderKontenSelect(q.konten.concat(q.gegenkonten||[]),'tkHabenKonto'+ki+'_'+hi,'Gegenkonto');
-        html+='<input type="number" step="any" id="tkHabenBetrag'+ki+'_'+hi+'" placeholder="CHF">';
-        html+='</div>';
-      }
-      html+='<button class="tk-add-row" onclick="addTkRow('+ki+',\'haben\')">+ Zeile</button>';
-      html+='</div>';
-      html+='</div>'; // tk-table
-      // Saldo
-      html+='<div class="tk-saldo">';
-      html+='<div class="tk-saldo-side"><label>Saldo Soll</label><input type="number" step="any" id="tkSaldoSoll'+ki+'" placeholder="0"></div>';
-      html+='<div class="tk-saldo-side" style="border-left:2px solid var(--c-border)"><label>Saldo Haben</label><input type="number" step="any" id="tkSaldoHaben'+ki+'" placeholder="0"></div>';
-      html+='</div>';
-      html+='</div>'; // tk-card
-    });
-    html+='</div>';
-  }
-  // ── BILANZ ──
-  else if(q.type==='bilanz'){
-    // Referenztabelle
-    html+='<div class="bilanz-ref"><table><tr><th>Nr.</th><th>Konto</th><th>Saldo (CHF)</th></tr>';
-    var shuffledKonten=[...q.kontenMitSaldi];shuffle(shuffledKonten);
-    shuffledKonten.forEach(function(k){
-      html+='<tr><td class="ref-nr">'+k.nr+'</td><td>'+k.name+'</td><td class="ref-saldo">'+k.saldo.toLocaleString('de-CH')+'</td></tr>';
-    });
-    html+='</table></div>';
-    // Bilanz-Layout
-    var leftTitle=q.modus==='erfolgsrechnung'?'Aufwand':'Aktiven';
-    var rightTitle=q.modus==='erfolgsrechnung'?'Ertrag':'Passiven';
-    var rowCount=q.kontenMitSaldi.length;
-    var leftRows=Math.ceil(rowCount/2);var rightRows=rowCount-leftRows;
-    html+='<div class="bilanz-layout">';
-    // Linke Seite
-    html+='<div class="bilanz-seite" id="bilanzLinks">';
-    html+='<div class="bilanz-seite-title">'+leftTitle+'</div>';
-    for(var li=0;li<leftRows;li++){
-      html+='<div class="bilanz-row">'+renderKontenSelect(q.kontenMitSaldi,'bilanzL'+li,'Konto wählen');
-      html+='<input type="number" step="any" id="bilanzLBetrag'+li+'" placeholder="CHF"></div>';
-    }
-    html+='<div class="bilanz-summe"><span>Summe '+leftTitle+'</span><input type="number" step="any" id="bilanzSummeL" placeholder="CHF"></div>';
-    html+='</div>';
-    // Rechte Seite
-    html+='<div class="bilanz-seite" id="bilanzRechts">';
-    html+='<div class="bilanz-seite-title">'+rightTitle+'</div>';
-    for(var ri=0;ri<rightRows;ri++){
-      html+='<div class="bilanz-row">'+renderKontenSelect(q.kontenMitSaldi,'bilanzR'+ri,'Konto wählen');
-      html+='<input type="number" step="any" id="bilanzRBetrag'+ri+'" placeholder="CHF"></div>';
-    }
-    html+='<div class="bilanz-summe"><span>Summe '+rightTitle+'</span><input type="number" step="any" id="bilanzSummeR" placeholder="CHF"></div>';
-    html+='</div>';
-    html+='</div>';
-  }
-  // ── KONTENBESTIMMUNG ──
-  else if(q.type==='kontenbestimmung'){
-    html+='<div style="overflow-x:auto"><table class="kb-table"><tr><th class="kb-nr">#</th><th class="kb-gf">Geschäftsfall</th><th>Konto</th><th>Seite</th></tr>';
-    q.aufgaben.forEach(function(a,ai){
-      var rows=a.correct.length;
-      for(var ri=0;ri<rows;ri++){
-        html+='<tr>';
-        if(ri===0)html+='<td class="kb-nr" rowspan="'+rows+'">'+(ai+1)+'</td><td class="kb-gf" rowspan="'+rows+'">'+highlightKonten(a.text)+'</td>';
-        html+='<td>'+renderKontenSelect(q.konten,'kbKonto'+ai+'_'+ri,'Konto')+'</td>';
-        html+='<td><select class="kb-seite-select" id="kbSeite'+ai+'_'+ri+'"><option value="">–</option><option value="soll">Soll</option><option value="haben">Haben</option></select></td>';
-        html+='</tr>';
-      }
-    });
-    html+='</table></div>';
-  }
-  // ── AUFGABENGRUPPE ──
-  else if(q.type==='gruppe'){
-    html+='<div class="gruppe-container" id="gruppeContainer">';
-    q.teil.forEach(function(t,ti){
-      html+='<div class="gruppe-teil" id="gruppeTeil'+ti+'" data-ti="'+ti+'">';
-      html+='<div class="gruppe-teil-header"><span class="gruppe-teil-nr">'+t.sub+'</span>';
-      html+='<span class="gruppe-teil-type">'+TYPE_LABELS[t.type]+'</span></div>';
-      html+='<div class="q-text">'+highlightKonten(t.q)+'</div>';
-      html+=renderGruppeTeilInner(q,t,ti);
-      html+='<div class="feedback" id="gruppeFb'+ti+'"></div>';
-      html+='</div>';
-    });
-    html+='</div>';
   }
   // Unified action row: type-specific button + skip (same line)
   html+='<div class="feedback" id="feedback"></div>';
   // Hints container for all types that support hints
-  if((q.type==='fill')||(q.type==='mc'&&q.hints&&q.hints.length)||(q.type==='multi'&&q.hints&&q.hints.length)||(q.type==='open'&&q.hints&&q.hints.length)||(q.type==='calc'&&q.hints&&q.hints.length)){
+  if((q.type==='fill')||(q.hints&&q.hints.length&&['mc','multi','open','calc','formel'].includes(q.type))){
     html+='<div class="hints-container" id="hintsContainer" style="display:none"></div>';
   }
   html+='<div class="q-action-row" id="skipRow">';
   if(state.current>0)html+='<button class="btn btn-back" onclick="prevQuestion()">← Zurück</button>';
-  if(q.type==='fill'){
-    html+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
-    html+='<button class="btn btn-primary" onclick="answerFill(\''+q.id+'\')">🔍 Überprüfen</button>';
-  }
-  else if(q.type==='mc'){
-    if(q.hints&&q.hints.length)html+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
-  }
-  else if(q.type==='multi'){
-    if(q.hints&&q.hints.length)html+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
-    html+='<button class="btn btn-primary" onclick="answerMulti(\''+q.id+'\')">🔍 Überprüfen</button>';
-  }
-  else if(q.type==='calc'){
-    if(q.hints&&q.hints.length)html+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
-    html+='<button class="btn btn-primary" onclick="answerCalc(\''+q.id+'\')">🔍 Überprüfen</button>';
-  }
-  else if(q.type==='sort') html+='<button class="btn btn-primary" onclick="answerSort(\''+q.id+'\')">🔍 Überprüfen</button>';
-  else if(q.type==='open'){
-    if(q.hints&&q.hints.length)html+='<button class="btn btn-outline" id="hintsBtn" onclick="showHints(\''+q.id+'\')">💡 Tipps</button>';
-    html+='<button class="btn btn-primary" onclick="showOpenSample(\''+q.id+'\')">💡 Lösung anzeigen</button>';
-  }
-  else if(q.type==='buchungssatz') html+='<button class="btn btn-primary" onclick="answerBuchungssatz(\''+q.id+'\')">🔍 Überprüfen</button>';
-  else if(q.type==='tkonto') html+='<button class="btn btn-primary" onclick="answerTKonto(\''+q.id+'\')">🔍 Überprüfen</button>';
-  else if(q.type==='bilanz') html+='<button class="btn btn-primary" onclick="answerBilanz(\''+q.id+'\')">🔍 Überprüfen</button>';
-  else if(q.type==='kontenbestimmung') html+='<button class="btn btn-primary" onclick="answerKontenbestimmung(\''+q.id+'\')">🔍 Überprüfen</button>';
-  else if(q.type==='gruppe') html+='<button class="btn btn-primary" onclick="answerGruppe(\''+q.id+'\')">🔍 Alle prüfen</button>';
+  // Typ-spezifische Buttons via Handler
+  if(handler)html+=handler.buttons(q);
   html+='<button class="btn btn-skip" onclick="skipQuestion()">⏭️ Überspringen</button>';
   html+='<button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;margin-left:auto">Nächste Aufgabe →</button>';
   html+='</div>';
@@ -1793,6 +2273,15 @@ function renderQuestion(){
   html+='<div class="kbd-hint">Tastatur: <kbd>←</kbd> Zurück · <kbd>→</kbd> Weiter/Überspringen · <kbd>1</kbd>–<kbd>4</kbd> Antwort · <kbd>Enter</kbd> Prüfen</div>';
   document.getElementById('questionCard').innerHTML=html;
   pickedSortItem=null;
+  _sortierungOrder=[];
+  _hotspotMarker=null;
+  _beschriftungPicked=null;_beschriftungAssignments={};
+  _ddPicked=null;_ddAssignments={};
+  _zeichnenStrokes=[];_zeichnenCurrentStroke=null;_zeichnenTool='stift';
+  window._poolCodeMirror=null;
+  // Lazy-Init für komplexe Typen (nach DOM-Insert)
+  if(q.type==='code')setTimeout(initCodeEditor,50);
+  if(q.type==='zeichnen')setTimeout(_initZeichnenCanvas,50);
   // Restore state if navigating back to an already-answered question
   var prevAns=state.answered[state.current];
   if(prevAns&&!prevAns.skipped){restoreAnswerState(q,prevAns)}
@@ -2333,6 +2822,380 @@ function answerGruppeTF(el,ti,val){
   if(!ok)teil.querySelectorAll('.tf-btn').forEach(function(b){if(b!==el)b.classList.add('correct')});
 }
 
+// ── SORTIERUNG: Pick-to-Order ──
+var _sortierungOrder=[];
+function pickSortierungItem(el){
+  if(el.classList.contains('placed'))return;
+  el.classList.add('placed');
+  _sortierungOrder.push(parseInt(el.dataset.idx));
+  var slots=document.getElementById('sortierungSlots');
+  var slot=document.createElement('div');
+  slot.className='sortierung-slot';
+  slot.textContent=(_sortierungOrder.length)+'. '+el.textContent;
+  slot.dataset.idx=el.dataset.idx;
+  slot.onclick=function(){
+    // Klick auf Slot entfernt ihn (nur letzten erlauben)
+    if(this!==slots.lastElementChild)return;
+    _sortierungOrder.pop();
+    this.remove();
+    el.classList.remove('placed');
+    var undoBtn=document.getElementById('sortierungUndoBtn');
+    if(undoBtn)undoBtn.style.display=_sortierungOrder.length>0?'':'none';
+  };
+  slots.appendChild(slot);
+  var undoBtn=document.getElementById('sortierungUndoBtn');
+  if(undoBtn)undoBtn.style.display='';
+}
+function undoSortierung(){
+  var slots=document.getElementById('sortierungSlots');
+  if(!slots||!slots.lastElementChild)return;
+  var last=slots.lastElementChild;
+  var idx=parseInt(last.dataset.idx);
+  _sortierungOrder.pop();
+  last.remove();
+  var item=document.querySelector('.sortierung-item[data-idx="'+idx+'"]');
+  if(item)item.classList.remove('placed');
+  var undoBtn=document.getElementById('sortierungUndoBtn');
+  if(undoBtn)undoBtn.style.display=_sortierungOrder.length>0?'':'none';
+}
+function answerSortierung(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var allCorrect=true;
+  var slots=document.querySelectorAll('.sortierung-slot');
+  // Prüfe ob alle Items platziert wurden
+  if(_sortierungOrder.length!==q.correct.length){allCorrect=false}
+  slots.forEach(function(slot,pos){
+    var idx=parseInt(slot.dataset.idx);
+    var ok=pos<q.correct.length&&idx===q.correct[pos];
+    slot.classList.add(ok?'correct':'wrong');
+    if(!ok){
+      allCorrect=false;
+      slot.textContent+=' → '+(pos<q.correct.length?q.items[q.correct[pos]]:'');
+    }
+    slot.style.pointerEvents='none';
+  });
+  document.querySelectorAll('.sortierung-item').forEach(function(el){el.style.pointerEvents='none'});
+  var undoBtn=document.getElementById('sortierungUndoBtn');if(undoBtn)undoBtn.style.display='none';
+  finishAnswer(q,allCorrect,q.explain,_sortierungOrder.join(','));
+}
+
+// ── FORMEL: LaTeX-Eingabe + KaTeX-Preview ──
+function updateFormelPreview(){
+  var inp=document.getElementById('formelInput');
+  var preview=document.getElementById('formelPreview');
+  if(!inp||!preview)return;
+  var val=inp.value.trim();
+  if(!val){preview.innerHTML='<span class="formel-placeholder">Vorschau erscheint hier…</span>';return}
+  if(typeof katex!=='undefined'){
+    try{katex.render(val,preview,{throwOnError:false,displayMode:true})}
+    catch(e){preview.textContent=val}
+  } else {
+    preview.textContent=val;
+  }
+}
+function answerFormel(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var inp=document.getElementById('formelInput');
+  if(!inp)return;
+  var userVal=inp.value.trim();
+  // Normalisiere: Leerzeichen entfernen für Vergleich
+  var normalize=function(s){return s.replace(/\s+/g,'').toLowerCase()};
+  var ok=normalize(userVal)===normalize(q.correct);
+  if(!ok&&q.toleranz&&q.toleranz.length){
+    ok=q.toleranz.some(function(t){return normalize(userVal)===normalize(t)});
+  }
+  inp.disabled=true;
+  inp.classList.add(ok?'correct':'wrong');
+  if(!ok){
+    // Zeige korrekte Formel in Preview
+    var preview=document.getElementById('formelPreview');
+    if(preview){
+      preview.innerHTML='<div class="formel-correction">Korrekt: </div>';
+      var corrEl=document.createElement('span');
+      if(typeof katex!=='undefined'){
+        try{katex.render(q.correct,corrEl,{throwOnError:false,displayMode:true})}
+        catch(e){corrEl.textContent=q.correct}
+      } else {corrEl.textContent=q.correct}
+      preview.appendChild(corrEl);
+    }
+  }
+  finishAnswer(q,ok,q.explain,userVal);
+}
+
+// ── HOTSPOT: Marker platzieren + prüfen ──
+var _hotspotMarker=null; // {x,y} in Prozent
+function placeHotspotMarker(e){
+  var wrap=document.getElementById('hotspotWrap');
+  var img=document.getElementById('hotspotImg');
+  if(!wrap||!img)return;
+  var rect=img.getBoundingClientRect();
+  var x=((e.clientX-rect.left)/rect.width)*100;
+  var y=((e.clientY-rect.top)/rect.height)*100;
+  _hotspotMarker={x:x,y:y};
+  // Bestehenden Marker entfernen
+  var old=wrap.querySelector('.hotspot-marker');if(old)old.remove();
+  var marker=document.createElement('div');
+  marker.className='hotspot-marker';
+  marker.style.left=x+'%';marker.style.top=y+'%';
+  wrap.appendChild(marker);
+  document.getElementById('hotspotStatus').textContent='Marker gesetzt. Klicke erneut zum Verschieben oder prüfe deine Antwort.';
+}
+function answerHotspot(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  if(!_hotspotMarker){
+    document.getElementById('hotspotStatus').textContent='⚠️ Klicke zuerst auf eine Stelle im Bild!';
+    document.getElementById('hotspotStatus').style.color='var(--c-error)';
+    return;
+  }
+  var wrap=document.getElementById('hotspotWrap');
+  var allCorrect=false;
+  // Prüfe ob Marker in einem Hotspot liegt
+  q.hotspots.forEach(function(hs){
+    var dist=Math.sqrt(Math.pow(_hotspotMarker.x-hs.x,2)+Math.pow(_hotspotMarker.y-hs.y,2));
+    if(dist<=hs.r)allCorrect=true;
+    // Korrekte Zone anzeigen
+    var zone=document.createElement('div');
+    zone.className='hotspot-zone'+(dist<=hs.r?' correct':' show');
+    zone.style.left=hs.x+'%';zone.style.top=hs.y+'%';
+    zone.style.width=(hs.r*2)+'%';zone.style.height=(hs.r*2)+'%';
+    zone.style.marginLeft='-'+hs.r+'%';zone.style.marginTop='-'+hs.r+'%';
+    if(wrap)wrap.appendChild(zone);
+  });
+  var marker=wrap?wrap.querySelector('.hotspot-marker'):null;
+  if(marker)marker.classList.add(allCorrect?'correct':'wrong');
+  if(wrap)wrap.style.pointerEvents='none';
+  finishAnswer(q,allCorrect,q.explain);
+  _hotspotMarker=null;
+}
+
+// ── BILDBESCHRIFTUNG: Label-zu-Spot Zuordnung ──
+var _beschriftungPicked=null;
+var _beschriftungAssignments={}; // spotLid → labelLid
+function pickBeschriftungLabel(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.beschriftung-label').forEach(function(l){l.classList.remove('picked')});
+  el.classList.add('picked');
+  _beschriftungPicked=el;
+  document.getElementById('beschriftungStatus').textContent='Klicke jetzt auf den passenden Punkt (Nummer) im Bild.';
+  // Spots als Klick-Targets aktivieren
+  document.querySelectorAll('.beschriftung-spot').forEach(function(s){
+    s.onclick=function(){assignBeschriftung(this)};
+    s.classList.add('awaiting');
+  });
+}
+function assignBeschriftung(spot){
+  if(!_beschriftungPicked)return;
+  var lid=_beschriftungPicked.dataset.lid;
+  var spotLid=spot.dataset.lid;
+  // Falls Spot schon belegt, altes Label freigeben
+  if(_beschriftungAssignments[spotLid]){
+    var oldLid=_beschriftungAssignments[spotLid];
+    var oldLabel=document.querySelector('.beschriftung-label[data-lid="'+oldLid+'"]');
+    if(oldLabel)oldLabel.classList.remove('placed');
+  }
+  _beschriftungAssignments[spotLid]=lid;
+  spot.innerHTML='<span class="beschriftung-spot-num">'+(spot.querySelector('.beschriftung-spot-num')?spot.querySelector('.beschriftung-spot-num').textContent:'')+'</span><span class="beschriftung-spot-text">'+_beschriftungPicked.textContent+'</span>';
+  _beschriftungPicked.classList.remove('picked');
+  _beschriftungPicked.classList.add('placed');
+  _beschriftungPicked=null;
+  document.querySelectorAll('.beschriftung-spot').forEach(function(s){s.classList.remove('awaiting')});
+  document.getElementById('beschriftungStatus').textContent='Label zugewiesen. Wähle das nächste Label oder prüfe deine Antwort.';
+}
+function answerBildbeschriftung(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var allCorrect=true;
+  q.labels.forEach(function(lbl){
+    var spot=document.querySelector('.beschriftung-spot[data-lid="'+lbl.id+'"]');
+    var assigned=_beschriftungAssignments[lbl.id];
+    var ok=assigned===lbl.id;
+    if(spot){
+      spot.classList.add(ok?'correct':'wrong');
+      if(!ok)spot.innerHTML+='<span class="beschriftung-correction">→ '+lbl.text+'</span>';
+    }
+    if(!ok)allCorrect=false;
+  });
+  document.querySelectorAll('.beschriftung-label,.beschriftung-spot').forEach(function(el){el.style.pointerEvents='none'});
+  finishAnswer(q,allCorrect,q.explain);
+  _beschriftungPicked=null;_beschriftungAssignments={};
+}
+
+// ── DRAGDROP_BILD: Label-zu-Zone Zuordnung ──
+var _ddPicked=null;
+var _ddAssignments={}; // zoneId → labelId
+function pickDdLabel(el){
+  if(el.classList.contains('placed'))return;
+  document.querySelectorAll('.dd-label').forEach(function(l){l.classList.remove('picked')});
+  el.classList.add('picked');
+  _ddPicked=el;
+  document.getElementById('ddStatus').textContent='Klicke jetzt auf die passende Zone im Bild.';
+  document.querySelectorAll('.dd-zone').forEach(function(z){z.classList.add('awaiting')});
+}
+function placeDdLabel(zone){
+  if(!_ddPicked)return;
+  var lid=_ddPicked.dataset.lid;
+  var zid=zone.dataset.zid;
+  // Falls Zone schon belegt, altes Label freigeben
+  if(_ddAssignments[zid]){
+    var oldLid=_ddAssignments[zid];
+    var oldLabel=document.querySelector('.dd-label[data-lid="'+oldLid+'"]');
+    if(oldLabel)oldLabel.classList.remove('placed');
+  }
+  _ddAssignments[zid]=lid;
+  var zoneLabel=document.getElementById('ddZoneLabel_'+zid);
+  if(zoneLabel)zoneLabel.textContent=_ddPicked.textContent;
+  _ddPicked.classList.remove('picked');
+  _ddPicked.classList.add('placed');
+  _ddPicked=null;
+  document.querySelectorAll('.dd-zone').forEach(function(z){z.classList.remove('awaiting')});
+  document.getElementById('ddStatus').textContent='Label platziert. Wähle das nächste oder prüfe deine Antwort.';
+}
+function answerDragDropBild(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var allCorrect=true;
+  q.labels.forEach(function(lbl){
+    var assigned=_ddAssignments[lbl.zone];
+    var ok=assigned===lbl.id;
+    var zone=document.querySelector('.dd-zone[data-zid="'+lbl.zone+'"]');
+    if(zone){
+      zone.classList.add(ok?'correct':'wrong');
+      if(!ok){
+        var zoneLabel=document.getElementById('ddZoneLabel_'+lbl.zone);
+        if(zoneLabel)zoneLabel.textContent=(zoneLabel.textContent?zoneLabel.textContent+' → ':'')+lbl.text;
+      }
+    }
+    if(!ok)allCorrect=false;
+  });
+  document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
+  finishAnswer(q,allCorrect,q.explain);
+  _ddPicked=null;_ddAssignments={};
+}
+
+// ── CODE: CodeMirror initialisieren + Musterlösung anzeigen ──
+window._poolCodeMirror=null;
+function initCodeEditor(){
+  var ta=document.getElementById('codeEditor');
+  if(!ta||window._poolCodeMirror)return;
+  if(typeof CodeMirror==='undefined')return;
+  var q=state.queue[state.current];
+  var modeMap={python:'python',javascript:'javascript',js:'javascript',html:'htmlmixed',css:'css',xml:'xml'};
+  var mode=modeMap[(q.sprache||'').toLowerCase()]||'text';
+  window._poolCodeMirror=CodeMirror.fromTextArea(ta,{
+    mode:mode,lineNumbers:true,theme:'default',indentUnit:4,tabSize:4,
+    lineWrapping:true,viewportMargin:Infinity
+  });
+  window._poolCodeMirror.setSize('100%','auto');
+}
+function showCodeSample(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var sample=document.getElementById('codeSample');
+  var pre=document.getElementById('codeSamplePre');
+  if(pre)pre.textContent=q.sample||'';
+  if(sample)sample.style.display='block';
+  document.querySelectorAll('#skipRow .btn-primary:not(#nextBtn)').forEach(function(b){if(b.textContent.includes('Lösung'))b.style.display='none'});
+  var skipRow=document.getElementById('skipRow');
+  if(skipRow){
+    var selfDiv=document.createElement('div');
+    selfDiv.className='open-self show';selfDiv.style.display='flex';selfDiv.style.gap='8px';
+    selfDiv.innerHTML='<button class="btn btn-primary" onclick="answerOpen(\''+qid+'\',true)">✅ Gewusst</button>'+
+      '<button class="btn btn-outline" onclick="answerOpen(\''+qid+'\',false)">❌ Nicht gewusst</button>';
+    skipRow.insertBefore(selfDiv,skipRow.querySelector('.btn-skip'));
+  }
+  var skip=document.querySelector('.btn-skip');if(skip)skip.style.display='none';
+}
+
+// ── ZEICHNEN: Canvas-Logik (vereinfacht) ──
+var _zeichnenStrokes=[];
+var _zeichnenCurrentStroke=null;
+var _zeichnenTool='stift';
+function setZeichnenTool(btn,tool){
+  _zeichnenTool=tool;
+  document.querySelectorAll('.zt-btn[data-tool]').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+}
+function _initZeichnenCanvas(){
+  var canvas=document.getElementById('zeichnenCanvas');
+  if(!canvas||canvas._initialized)return;
+  canvas._initialized=true;
+  var ctx=canvas.getContext('2d');
+  var wrap=canvas.parentElement;
+  if(wrap){
+    var w=Math.min(wrap.clientWidth-4,800);
+    canvas.style.width=w+'px';
+    canvas.style.height=Math.round(w*0.625)+'px';
+  }
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  canvas.addEventListener('pointerdown',function(e){
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    var rect=canvas.getBoundingClientRect();
+    var scaleX=canvas.width/rect.width;var scaleY=canvas.height/rect.height;
+    var x=(e.clientX-rect.left)*scaleX;var y=(e.clientY-rect.top)*scaleY;
+    var color=document.getElementById('zeichnenFarbe').value;
+    var width=parseInt(document.getElementById('zeichnenGroesse').value);
+    _zeichnenCurrentStroke={points:[{x:x,y:y}],color:color,width:width,tool:_zeichnenTool};
+  });
+  canvas.addEventListener('pointermove',function(e){
+    if(!_zeichnenCurrentStroke)return;
+    e.preventDefault();
+    var rect=canvas.getBoundingClientRect();
+    var scaleX=canvas.width/rect.width;var scaleY=canvas.height/rect.height;
+    _zeichnenCurrentStroke.points.push({x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY});
+    _redrawZeichnen(ctx,canvas);
+  });
+  canvas.addEventListener('pointerup',function(){
+    if(_zeichnenCurrentStroke){_zeichnenStrokes.push(_zeichnenCurrentStroke);_zeichnenCurrentStroke=null}
+  });
+  canvas.addEventListener('pointercancel',function(){_zeichnenCurrentStroke=null});
+  canvas.style.touchAction='none';
+}
+function _redrawZeichnen(ctx,canvas){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  var allStrokes=_zeichnenStrokes.concat(_zeichnenCurrentStroke?[_zeichnenCurrentStroke]:[]);
+  allStrokes.forEach(function(stroke){
+    if(stroke.tool==='radierer'){
+      ctx.globalCompositeOperation='destination-out';ctx.strokeStyle='rgba(0,0,0,1)';
+    } else {
+      ctx.globalCompositeOperation='source-over';ctx.strokeStyle=stroke.color;
+    }
+    ctx.lineWidth=stroke.width;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();
+    stroke.points.forEach(function(p,i){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)});
+    ctx.stroke();
+    ctx.globalCompositeOperation='source-over';
+  });
+}
+function zeichnenUndo(){
+  _zeichnenStrokes.pop();
+  var canvas=document.getElementById('zeichnenCanvas');
+  if(canvas)_redrawZeichnen(canvas.getContext('2d'),canvas);
+}
+function zeichnenClear(){
+  _zeichnenStrokes=[];
+  var canvas=document.getElementById('zeichnenCanvas');
+  if(canvas){var ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height)}
+}
+function showZeichnenSample(qid){
+  var q=QUESTIONS.find(function(x){return x.id===qid});
+  var container=document.querySelector('.zeichnen-container');
+  if(container&&q.sample&&q.sample.src){
+    var sampleDiv=document.createElement('div');
+    sampleDiv.className='zeichnen-sample';
+    sampleDiv.innerHTML='<div class="open-sample-title">Musterlösung:</div><img src="'+q.sample.src+'" alt="'+(q.sample.alt||'Musterlösung')+'" style="max-width:100%;border-radius:8px">';
+    container.appendChild(sampleDiv);
+  }
+  document.querySelectorAll('#skipRow .btn-primary:not(#nextBtn)').forEach(function(b){if(b.textContent.includes('Lösung'))b.style.display='none'});
+  var skipRow=document.getElementById('skipRow');
+  if(skipRow){
+    var selfDiv=document.createElement('div');
+    selfDiv.className='open-self show';selfDiv.style.display='flex';selfDiv.style.gap='8px';
+    selfDiv.innerHTML='<button class="btn btn-primary" onclick="answerOpen(\''+qid+'\',true)">✅ Gewusst</button>'+
+      '<button class="btn btn-outline" onclick="answerOpen(\''+qid+'\',false)">❌ Nicht gewusst</button>';
+    skipRow.insertBefore(selfDiv,skipRow.querySelector('.btn-skip'));
+  }
+  var skip=document.querySelector('.btn-skip');if(skip)skip.style.display='none';
+}
+
 function finishAnswer(q,correct,explain,userAnswer){
   // Check if re-answering a previously skipped question
   const wasSkipped=state.answered[state.current]&&state.answered[state.current].skipped;
@@ -2489,37 +3352,8 @@ function getQuestionDisplay(q){
 }
 
 function getCorrectAnswer(q){
-  if(q.type==='mc'){ const opt=q.options.find(o=>o.v===q.correct); return q.correct+') '+(opt?opt.t:''); }
-  if(q.type==='multi'){ return q.correct.map(function(v){ const opt=q.options.find(o=>o.v===v); return v+') '+(opt?opt.t:''); }).join(' · '); }
-  if(q.type==='tf'){ return q.correct?'Richtig':'Falsch'; }
-  if(q.type==='fill'){ return q.blanks.map(function(b,i){return 'Lücke '+(i+1)+': '+b.answer}).join(' · '); }
-  if(q.type==='calc'){ return q.rows.map(function(r){return r.label+' '+r.answer+' '+r.unit}).join(' · '); }
-  if(q.type==='sort'){
-    return q.categories.map(function(cat,ci){
-      const items=q.items.filter(function(it){return it.cat===ci}).map(function(it){return it.t});
-      return '<strong>'+cat+':</strong> '+items.join(', ');
-    }).join(' · ');
-  }
-  if(q.type==='open'){ return q.sample||'Siehe Lösungsvorschlag'; }
-  if(q.type==='buchungssatz'){ return q.correct.map(function(c){
-    var sN=q.konten.find(function(k){return k.nr===c.soll});
-    var hN=q.konten.find(function(k){return k.nr===c.haben});
-    return (sN?sN.name:c.soll)+' / '+(hN?hN.name:c.haben)+' CHF '+c.betrag.toLocaleString('de-CH');
-  }).join(' · '); }
-  if(q.type==='tkonto'){ return q.konten.map(function(k){
-    var s=(k.correctSoll||[]).map(function(e){return e.gegen+' '+e.betrag}).join(', ');
-    var h=(k.correctHaben||[]).map(function(e){return e.gegen+' '+e.betrag}).join(', ');
-    return '<strong>'+k.name+':</strong> Soll ['+s+'] Haben ['+h+']'+(k.correctSaldo?' Saldo: '+k.correctSaldo.betrag+' ('+k.correctSaldo.seite+')':'');
-  }).join(' · '); }
-  if(q.type==='bilanz'){
-    var left=(q.correct.aktiven||q.correct.aufwand||[]).map(function(nr){var k=q.kontenMitSaldi.find(function(x){return x.nr===nr});return k?k.name+' '+k.saldo.toLocaleString('de-CH'):nr}).join(', ');
-    var right=(q.correct.passiven||q.correct.ertrag||[]).map(function(nr){var k=q.kontenMitSaldi.find(function(x){return x.nr===nr});return k?k.name+' '+k.saldo.toLocaleString('de-CH'):nr}).join(', ');
-    return '<strong>Links:</strong> '+left+' · <strong>Rechts:</strong> '+right+' · Summe: '+q.correct.bilanzsumme.toLocaleString('de-CH');
-  }
-  if(q.type==='kontenbestimmung'){ return q.aufgaben.map(function(a,i){
-    return (i+1)+') '+a.correct.map(function(c){var k=q.konten.find(function(x){return x.nr===c.konto});return (k?k.name:c.konto)+' ('+c.seite+')'}).join(', ');
-  }).join(' · '); }
-  if(q.type==='gruppe'){ return q.teil.map(function(t){return t.sub+') '+getCorrectAnswer(t)}).join(' · '); }
+  const handler=TYPE_HANDLERS[q.type];
+  if(handler&&handler.correctAnswer)return handler.correctAnswer(q);
   return '';
 }
 

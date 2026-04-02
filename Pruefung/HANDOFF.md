@@ -14,8 +14,8 @@
 - **Übungspools ↔ Prüfungstool** — Lern-Analytik, Login, KI-Empfehlungen (eigenes Designprojekt)
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
 - **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
-- **Übungspools: 9 neue Fragetypen** — sortierung, hotspot, bildbeschriftung, dragdrop_bild, code, formel, audio, zeichnen, pdf. Spec: `docs/superpowers/specs/2026-04-01-session48-improvements-design.md` AP-E. Inkl. TYPE_HANDLERS Refactoring. Sessions 49–51.
-- **Zeichnen Input-Verlust** — React Re-Renders verschlucken pointerdown. Refactoring-Plan in Spec AP-F. Eigene Session.
+- ~~**Übungspools: 8 neue Fragetypen**~~ ✅ 01.04.2026 — sortierung, formel, hotspot, bildbeschriftung, dragdrop_bild, code, zeichnen, pdf. Inkl. TYPE_HANDLERS Refactoring. Audio weggelassen (kein Backend in Pools).
+- **Zeichnen Input-Verlust (Prüfungstool)** — React Re-Renders verschlucken pointerdown. Refactoring-Plan in Spec AP-F. Eigene Session.
 - **Monitoring-Verzögerung ~28s** — Abwarten, aktuell akzeptabel
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
@@ -24,44 +24,70 @@
   - ~~Timer-Manipulation via localStorage~~ ✅ 31.03.2026 — Server-seitige Validierung bei Abgabe (Logging, nicht Blockierung)
   - ~~Rate Limiting auf API-Endpoints fehlt~~ ✅ 31.03.2026 — 4 SuS-Endpoints limitiert (10-15/min)
   - ~~Session-Token nicht an Prüfung gebunden~~ ✅ 31.03.2026 — Cross-Exam Token Reuse verhindert
-  - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 01.04.2026 — sessionStorage-Flag entfernt, istDemoModus nur in-memory
-  - ~~Prompt Injection bei KI-Assistent~~ ✅ 01.04.2026 — wrapUserData() XML-Tag-Wrapping für alle 27 Aktionen
-  - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 01.04.2026 — cleanupNachAbgabe() für alle 3 Abgabe-Pfade
+  - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
+  - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
+  - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
 
 ---
 
-## Session 48 — Security, Cleanup, Demo-Update, Reset (01.04.2026)
+## Session 49 — Übungspools: TYPE_HANDLERS + 8 neue Fragetypen (01.04.2026)
 
 ### Stand
-Branch `feature/session48-improvements` → merged auf `preview`. Apps Script deployed (01.04.2026).
-**Noch NICHT auf main** — Browser-Test ausstehend.
+Branch `feature/uebungspools-neue-typen` → **pushed auf GitHub.** Noch NICHT auf main — Browser-Test ausstehend.
+Betrifft nur `Uebungen/Uebungspools/pool.html` und `Uebungen/Uebungspools/CLAUDE.md`. Kein Prüfungstool-Code geändert.
 
 ### Erledigte Änderungen
 
-| AP | Beschreibung | Datei(en) |
-|----|-------------|-----------|
-| **A1: sessionStorage Demo-Bypass** | `istDemoModus` nur noch via `demoStarten()` setzbar (in-memory). `restoreDemoFlag()` entfernt. Verhindert Lockdown-Umgehung via DevTools. | authStore.ts, securityInvarianten.test.ts |
-| **A2: Prompt Injection** | `wrapUserData()` Helper wrappt alle User-Inputs in `<user_data>`-Tags. System-Prompt gehärtet. 27 KI-Aktionen refactored. | apps-script-code.js |
-| **B: localStorage Cleanup** | `cleanupNachAbgabe()` shared Helper für 3 Abgabe-Pfade: freiwillig, Demo, LP-Beenden. Löscht pruefung-state-*, pruefung-abgabe-*, IndexedDB. | cleanupNachAbgabe.ts (neu), AbgabeDialog.tsx, Timer.tsx |
-| **C: Demo = Einführungsprüfung** | demoFragen.ts = Re-Export der einrichtungsFragen (~890 Zeilen entfernt). demoMonitoring auf 23 Fragen umgestellt. Aufgabengruppen-Filter entfernt. | demoFragen.ts, demoMonitoring.ts, useKorrekturDaten.ts |
-| **D: Neue Durchführung Reset** | zeitverlaengerungen → {} und kontrollStufe → 'standard' bei Reset. Backend + Frontend. | apps-script-code.js, DurchfuehrenDashboard.tsx |
+| Commit | Beschreibung | Umfang |
+|--------|-------------|--------|
+| **E0: TYPE_HANDLERS** | Monolithische if-else-Ketten (renderQuestion, restoreAnswerState, getCorrectAnswer, Buttons) refactored zu polymorphem `TYPE_HANDLERS`-Objekt. Jeder Typ: `{render, buttons, restore, correctAnswer}`. | -302/+406 Zeilen |
+| **E1: sortierung + formel** | `sortierung`: Pick-to-Order (Klick-Auswahl, Undo, visuelles Feedback). `formel`: LaTeX-Eingabe + KaTeX Live-Preview, normalisierter Vergleich + Toleranz. KaTeX CDN eingebunden. | +189 Zeilen |
+| **E2: hotspot + bildbeschriftung + dragdrop_bild** | Alle Bild-basiert, Prozent-Koordinaten, Touch-kompatibel (Tap-to-Place). Pulse-Animationen für aktive Targets. | +284 Zeilen |
+| **E3: code + zeichnen + pdf** | `code`: CodeMirror 5 CDN + Syntax-Highlighting + Selbstbewertung. `zeichnen`: Canvas mit Stift/Radierer/Farbe/Undo. `pdf`: Native iframe + Freitext/MC. | +262 Zeilen |
 
-### Offene Punkte (nächste Sessions)
+### Pool-Config-Format für neue Typen
+
+```javascript
+// sortierung — items[] + correct[] (Index-Reihenfolge)
+{ type:'sortierung', items:['A','B','C'], correct:[0,2,1] }
+// formel — LaTeX correct + toleranz[]
+{ type:'formel', correct:'E = mc^2', toleranz:['E=mc^2'] }
+// hotspot — img + hotspots[] (x,y,r in Prozent)
+{ type:'hotspot', img:{src,alt}, hotspots:[{x:47,y:55,r:5,label:'Schweiz'}] }
+// bildbeschriftung — img + labels[] (id,text,x,y)
+{ type:'bildbeschriftung', img:{src,alt}, labels:[{id:'l1',text:'Kern',x:50,y:40}] }
+// dragdrop_bild — img + zones[] + labels[] (mit zone-Zuordnung)
+{ type:'dragdrop_bild', img:{src,alt}, zones:[{id,x,y,w,h}], labels:[{id,text,zone}] }
+// code — sprache + starterCode + sample
+{ type:'code', sprache:'python', starterCode:'def f():\n  ', sample:'def f():\n  return 42' }
+// zeichnen — sample als Bild
+{ type:'zeichnen', sample:{src:'bild.svg',alt:'Lösung'} }
+// pdf — pdfUrl + antwortTyp + sample
+{ type:'pdf', pdfUrl:'materialien/doc.pdf', antwortTyp:'freitext', sample:'...' }
+```
+
+### CDN-Dependencies (neu)
+
+| Library | Für | Einbindung |
+|---------|-----|-----------|
+| KaTeX 0.16.11 | Formel-Live-Preview | CSS + JS (defer) |
+| CodeMirror 5.65.18 | Code-Syntax-Highlighting | CSS + JS + 5 Mode-Files (defer) |
+
+### Offene Punkte (nächste Session)
 
 | Prio | Thema | Beschreibung |
 |------|-------|-------------|
-| ~~🟠~~ | ~~**Apps Script Deploy**~~ | ✅ 01.04.2026 deployed |
-| 🟡 | **Browser-Test** | Alle 5 APs im Browser testen (Demo SuS+LP, Lockdown, Reset, Cleanup). |
-| 🟡 | **Übungspools: 9 neue Fragetypen** | sortierung, hotspot, bildbeschriftung, dragdrop_bild, code, formel, audio, zeichnen, pdf. Spec: `docs/superpowers/specs/2026-04-01-session48-improvements-design.md` AP-E. Sessions 49–51. |
-| 🟡 | **Zeichnen Input-Verlust (Refactoring)** | React Re-Renders verschlucken pointerdown bei schnellem Zeichnen. Fix: Events imperativ binden (useEffect+addEventListener), Stroke-Daten in useRef sammeln, Batch-Commit nach pointerup. Betroffene Dateien: usePointerEvents.ts, ZeichnenCanvas.tsx, useDrawingEngine.ts. Eigene Session mit Browser-Test (Stift/Touch). |
+| 🟡 | **Browser-Test** | Alle 8 neuen Typen im Browser testen. Braucht Pool-Config mit je 1 Testfrage pro Typ. |
+| 🟡 | **Session 48 Browser-Test** | APs A–D (Security, Cleanup, Demo, Reset) auf `feature/session48-improvements` noch nicht getestet. |
+| 🟡 | **Zeichnen Input-Verlust (Prüfungstool)** | React Re-Renders verschlucken pointerdown. Spec AP-F. Eigene Session mit Browser-Test (Stift/Touch). |
 
 ### Branch-Status
 
 | Branch | Inhalt | Status |
 |--------|--------|--------|
-| `feature/session48-improvements` | Alle Session 48 Änderungen | Auf GitHub |
-| `preview` | Staging | Noch nicht aktualisiert |
-| `main` | Production | Unverändert |
+| `feature/uebungspools-neue-typen` | E0–E3 + Docs | Pushed, nicht auf main |
+| `feature/session48-improvements` | Session 48 Security/Cleanup | Pushed, nicht auf main |
+| `main` | Production | Unverändert seit Session 47 |
 
 ---
 
