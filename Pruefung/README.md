@@ -22,8 +22,8 @@ Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil (München
 - 4-Phasen-Workflow: Vorbereitung → Lobby → Live-Monitoring → Ergebnisse/Korrektur
 - Kurs-basierte Teilnehmer-Auswahl (pro Gefäss, mit Dedup bei Mehrfach-Kursen)
 - Prüfungs-Analyse: Taxonomie-Verteilung (K1-K6), Fragetypen-Mix, Zeitbedarf vs. Dauer, Themen-Abdeckung
-- KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken, Berechnungsergebnisse und FiBu-Aufgaben generieren oder prüfen lassen
-- KI-Korrektur: Automatische Bewertung mit manueller Übersteuerung + individuelles Feedback per E-Mail
+- KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken, Berechnungsergebnisse, FiBu-Aufgaben und Bewertungsraster (mit Niveaustufen) generieren oder prüfen lassen
+- KI-Korrektur: Kriterienbasierte Bewertung (pro Kriterium Punkte + Kurzkommentar) mit manueller Übersteuerung + individuelles Feedback per E-Mail
 - Audio-Korrektur: Audio-Feedback pro Frage und gesamt
 - Live-Monitoring: Fortschritt, Heartbeat, Inaktivitäts-Warnstufen, SEB-Status, Lockdown-Verstösse, Geräteerkennung, Entsperren-Button — alles in Echtzeit
 - Fragenbank: Fragen nach Fach + Tags, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
@@ -52,7 +52,7 @@ Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil (München
 - Fragetypen-Menü kategorisiert: 6 Kategorien (Text & Sprache, Auswahl, Bilder & Medien, MINT, Buchhaltung, Struktur) + Suchfeld
 - Bild-Upload: Für Hotspot, Bildbeschriftung und Drag & Drop (Bild) — Drag & Drop Upload oder URL, max 5 MB
 - Aufgabengruppe mit Inline-Teilaufgaben: Teilaufgaben direkt im Editor erstellen (alle Fragetypen wählbar), mit eigenem Fragetext, Punkten, Musterlösung und Bewertungsraster
-- Standard-Bewertungsraster: Sinnvolle Defaults pro Fragetyp (MC: Korrekte Antwort 1P, Freitext: Inhalt + Argumentation + Sprache)
+- Bewertungsraster mit Niveaustufen: 12 Standard-Vorlagen (5 fachübergreifend + 4 WR + 3 andere Fachschaften), Fachbereich-Filter, aufklappbare Niveaustufen pro Kriterium, Punkte-Skalierung, eigene Vorlagen speicherbar
 - Erklärung-Sichtbarkeit: R/F + MC-Optionen mit Erklärungsfeld + Toggle ob SuS diese in der Korrektur-Einsicht sehen
 - Sortierung mit Drag & Drop: Elemente per Drag & Drop oder Pfeil-Buttons sortieren
 - PDF-Freihand selektierbar: Freihand-Zeichnungen in PDF-Annotation mit Auswahl-Tool verschieben und Farbe ändern

@@ -322,9 +322,15 @@ function HilfeFragen() {
         Für Hotspot, Bildbeschriftung und Drag &amp; Drop (Bild) können Bilder per <strong>Drag &amp; Drop</strong> oder Klick hochgeladen werden (max. 5 MB). Alternativ kann eine URL eingefügt werden. Im Demo-Modus werden Bilder als Data-URL gespeichert.
       </Text>
 
-      <Untertitel>Standard-Bewertungsraster</Untertitel>
+      <Untertitel>Bewertungsraster mit Niveaustufen</Untertitel>
       <Text>
-        Beim Erstellen einer neuen Frage wird automatisch ein sinnvolles Bewertungsraster vorgeschlagen (z.B. MC: &laquo;Korrekte Antwort, 1 P.&raquo;, Freitext: &laquo;Inhalt, Argumentation, Sprache&raquo;). Das Raster kann jederzeit angepasst werden.
+        Jede Frage kann ein Bewertungsraster mit Kriterien und optionalen <strong>Niveaustufen</strong> haben. Niveaustufen beschreiben, was für die jeweilige Punktzahl erwartet wird (z.B. 2P: &laquo;Schlüssige Argumentation mit Belegen&raquo;, 1P: &laquo;Nachvollziehbar, aber lückenhaft&raquo;, 0P: &laquo;Keine Argumentation&raquo;).
+      </Text>
+      <Text>
+        <strong>12 Standard-Vorlagen</strong> stehen zur Verfügung, gefiltert nach Fachbereich: 5 fachübergreifende (Freitext Kurz/Lang, Analyse, Berechnung, Grafik), 4 WR-spezifische (Rechtsfallanalyse, VWL-Modellanalyse, BWL Entscheidung, FiBu) und 3 für andere Fachschaften (Textproduktion, Quellenanalyse, Experiment). Vorlagen werden automatisch auf die Fragepunkte skaliert. Eigene Vorlagen können gespeichert werden.
+      </Text>
+      <Text>
+        Per <strong>KI generieren</strong> wird ein massgeschneidertes Raster inkl. Niveaustufen erstellt. Per <strong>KI verbessern</strong> wird ein bestehendes Raster auf Trennschärfe geprüft. Die KI-Korrektur bewertet bei vorhandenen Niveaustufen jedes Kriterium einzeln.
       </Text>
 
       <Untertitel>Erklärungen (R/F &amp; MC)</Untertitel>
@@ -555,7 +561,7 @@ function HilfeKorrektur() {
 
       <Untertitel>Autokorrektur</Untertitel>
       <Text>
-        Mit &laquo;Autokorrektur starten&raquo; werden alle Antworten automatisch bewertet. Deterministische Fragetypen (MC, R/F, Lückentext, Zuordnung, Berechnung, FiBu) werden algorithmisch korrigiert. Für komplexe Fragetypen (Freitext, Zeichnen, PDF) können Sie pro Frage einen KI-Vorschlag via Claude API anfordern. Sie können jeden Wert manuell überschreiben.
+        Mit &laquo;Autokorrektur starten&raquo; werden alle Antworten automatisch bewertet. Deterministische Fragetypen (MC, R/F, Lückentext, Zuordnung, Berechnung, FiBu) werden algorithmisch korrigiert. Für komplexe Fragetypen (Freitext, Zeichnen, PDF) können Sie pro Frage einen KI-Vorschlag via Claude API anfordern. Bei Fragen mit Bewertungsraster und Niveaustufen bewertet die KI jedes Kriterium einzeln — Sie sehen Punkte und Kurzkommentar pro Kriterium. Alle Werte können manuell überschrieben werden.
       </Text>
 
       <Untertitel>Review-Workflow</Untertitel>
@@ -808,8 +814,8 @@ function HilfeFAQ() {
         Ja. In allen drei Bild-Fragetypen können Sie Bilder per Drag &amp; Drop oder Klick hochladen (max. 5 MB). Alternativ können Sie eine URL einfügen. Im Demo-Modus werden Bilder lokal gespeichert.
       </FAQItem>
 
-      <FAQItem frage="Was sind die Standard-Bewertungsraster?">
-        Beim Erstellen einer neuen Frage wird automatisch ein sinnvolles Bewertungsraster vorgeschlagen (abhängig vom Fragetyp). Sie können es jederzeit anpassen. Eigene Raster-Vorlagen können gespeichert und wiederverwendet werden.
+      <FAQItem frage="Wie funktionieren die Bewertungsraster mit Niveaustufen?">
+        12 Standard-Vorlagen (nach Fachbereich gefiltert) stehen als Ausgangspunkt bereit — z.B. Rechtsfallanalyse, VWL-Modellanalyse oder Textproduktion. Jedes Kriterium kann optionale Niveaustufen haben, die beschreiben was für welche Punktzahl erwartet wird. Vorlagen werden automatisch auf die Fragepunkte skaliert. Per KI können Raster generiert oder auf Trennschärfe geprüft werden. Eigene Vorlagen lassen sich speichern.
       </FAQItem>
 
       <FAQItem frage="Wie kann ich ein Problem oder einen Wunsch melden?">
