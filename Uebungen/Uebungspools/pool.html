@@ -21,7 +21,7 @@
 --c-bg:#f0f2f5;--c-surface:#fff;--c-primary:#f97316;--c-primary-light:#fb923c;
 --c-accent:#e8a838;--c-accent-light:#fef3c7;--c-success:#16a34a;--c-success-bg:#f0fdf4;
 --c-error:#dc2626;--c-error-bg:#fef2f2;--c-info:#2563eb;--c-info-bg:#eff6ff;
---c-text:#1e293b;--c-text-soft:#64748b;--c-border:#e2e8f0;--radius:10px;
+--c-text:#1e293b;--c-text-soft:#64748b;--c-text-muted:#94a3b8;--c-border:#e2e8f0;--c-card:#fff;--radius:10px;
 --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -256,7 +256,7 @@ html.dark{
 --c-bg:#0f1117;--c-surface:#1a1d27;--c-primary:#f89907;--c-primary-light:#ffb74d;
 --c-accent:#e8a838;--c-accent-light:#3d2e10;--c-success:#22c55e;--c-success-bg:#0a2618;
 --c-error:#ef4444;--c-error-bg:#2a0f0f;--c-info:#60a5fa;--c-info-bg:#0f1d3a;
---c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-border:#2d3348;
+--c-text:#e2e8f0;--c-text-soft:#94a3b8;--c-text-muted:#94a3b8;--c-border:#2d3348;--c-card:#1a1d27;
 --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.4);
 }
 html.dark .app-header{box-shadow:0 2px 12px rgba(0,0,0,.4)}
@@ -2421,8 +2421,16 @@ function showOpenSample(qid){
 
 function answerOpen(qid,correct){
   const q=QUESTIONS.find(x=>x.id===qid);
-  document.getElementById('openSelf').style.display='none';
-  document.getElementById('openAnswer').disabled=true;
+  var selfEl=document.getElementById('openSelf');
+  if(selfEl)selfEl.style.display='none';
+  // Auch dynamisch erstellte open-self Elemente ausblenden (z.B. Zeichnen, PDF)
+  document.querySelectorAll('.open-self').forEach(function(el){el.style.display='none'});
+  var answer=document.getElementById('openAnswer');
+  if(answer)answer.disabled=true;
+  // Zeichnen: Canvas deaktivieren
+  var canvas=document.getElementById('zeichnenCanvas');
+  if(canvas)canvas.style.pointerEvents='none';
+  document.querySelectorAll('.zt-btn,.zt-color,.zt-size').forEach(function(el){el.disabled=true;el.style.pointerEvents='none'});
   finishAnswer(q,correct,q.explain);
 }
 
@@ -2834,11 +2842,23 @@ function pickSortierungItem(el){
   slot.textContent=(_sortierungOrder.length)+'. '+el.textContent;
   slot.dataset.idx=el.dataset.idx;
   slot.onclick=function(){
-    // Klick auf Slot entfernt ihn (nur letzten erlauben)
-    if(this!==slots.lastElementChild)return;
-    _sortierungOrder.pop();
-    this.remove();
-    el.classList.remove('placed');
+    // Klick auf Slot entfernt ihn und alle nachfolgenden
+    var allSlots=Array.from(slots.children);
+    var clickedIdx=allSlots.indexOf(this);
+    if(clickedIdx<0)return;
+    // Alle Slots ab dem angeklickten entfernen (rückwärts)
+    for(var i=allSlots.length-1;i>=clickedIdx;i--){
+      var s=allSlots[i];
+      var origIdx=parseInt(s.dataset.idx);
+      _sortierungOrder.pop();
+      var origItem=document.querySelector('.sortierung-item[data-idx="'+origIdx+'"]');
+      if(origItem)origItem.classList.remove('placed');
+      s.remove();
+    }
+    // Verbleibende Slots neu nummerieren
+    document.querySelectorAll('.sortierung-slot').forEach(function(s,i){
+      s.textContent=(i+1)+'. '+s.textContent.replace(/^\d+\.\s*/,'');
+    });
     var undoBtn=document.getElementById('sortierungUndoBtn');
     if(undoBtn)undoBtn.style.display=_sortierungOrder.length>0?'':'none';
   };
@@ -3019,30 +3039,48 @@ function answerBildbeschriftung(qid){
   _beschriftungPicked=null;_beschriftungAssignments={};
 }
 
-// ── DRAGDROP_BILD: Label-zu-Zone Zuordnung ──
+// ── DRAGDROP_BILD: Label-zu-Zone Zuordnung (mehrere Labels pro Zone) ──
 var _ddPicked=null;
-var _ddAssignments={}; // zoneId → labelId
+var _ddAssignments={}; // zoneId → [labelId, ...]
 function pickDdLabel(el){
-  if(el.classList.contains('placed'))return;
+  if(el.classList.contains('placed')){
+    // Bereits platziertes Label: aus Zone entfernen (Undo)
+    var lid=el.dataset.lid;
+    for(var zid in _ddAssignments){
+      var idx=_ddAssignments[zid].indexOf(lid);
+      if(idx>=0){
+        _ddAssignments[zid].splice(idx,1);
+        updateDdZoneDisplay(zid);
+        break;
+      }
+    }
+    el.classList.remove('placed');
+    document.getElementById('ddStatus').textContent='Label entfernt. Wähle ein Label und klicke auf die passende Zone.';
+    return;
+  }
   document.querySelectorAll('.dd-label').forEach(function(l){l.classList.remove('picked')});
   el.classList.add('picked');
   _ddPicked=el;
   document.getElementById('ddStatus').textContent='Klicke jetzt auf die passende Zone im Bild.';
   document.querySelectorAll('.dd-zone').forEach(function(z){z.classList.add('awaiting')});
 }
+function updateDdZoneDisplay(zid){
+  var zoneLabel=document.getElementById('ddZoneLabel_'+zid);
+  if(!zoneLabel)return;
+  var lids=_ddAssignments[zid]||[];
+  var texts=lids.map(function(lid){
+    var el=document.querySelector('.dd-label[data-lid="'+lid+'"]');
+    return el?el.textContent:'';
+  }).filter(Boolean);
+  zoneLabel.innerHTML=texts.join('<br>');
+}
 function placeDdLabel(zone){
   if(!_ddPicked)return;
   var lid=_ddPicked.dataset.lid;
   var zid=zone.dataset.zid;
-  // Falls Zone schon belegt, altes Label freigeben
-  if(_ddAssignments[zid]){
-    var oldLid=_ddAssignments[zid];
-    var oldLabel=document.querySelector('.dd-label[data-lid="'+oldLid+'"]');
-    if(oldLabel)oldLabel.classList.remove('placed');
-  }
-  _ddAssignments[zid]=lid;
-  var zoneLabel=document.getElementById('ddZoneLabel_'+zid);
-  if(zoneLabel)zoneLabel.textContent=_ddPicked.textContent;
+  if(!_ddAssignments[zid])_ddAssignments[zid]=[];
+  _ddAssignments[zid].push(lid);
+  updateDdZoneDisplay(zid);
   _ddPicked.classList.remove('picked');
   _ddPicked.classList.add('placed');
   _ddPicked=null;
@@ -3053,17 +3091,26 @@ function answerDragDropBild(qid){
   var q=QUESTIONS.find(function(x){return x.id===qid});
   var allCorrect=true;
   q.labels.forEach(function(lbl){
-    var assigned=_ddAssignments[lbl.zone];
-    var ok=assigned===lbl.id;
-    var zone=document.querySelector('.dd-zone[data-zid="'+lbl.zone+'"]');
-    if(zone){
-      zone.classList.add(ok?'correct':'wrong');
-      if(!ok){
-        var zoneLabel=document.getElementById('ddZoneLabel_'+lbl.zone);
-        if(zoneLabel)zoneLabel.textContent=(zoneLabel.textContent?zoneLabel.textContent+' → ':'')+lbl.text;
+    // Prüfe ob dieses Label in der richtigen Zone liegt
+    var assignedLabels=_ddAssignments[lbl.zone]||[];
+    var ok=assignedLabels.indexOf(lbl.id)>=0;
+    if(!ok)allCorrect=false;
+  });
+  // Zonen markieren
+  q.zones.forEach(function(z){
+    var zone=document.querySelector('.dd-zone[data-zid="'+z.id+'"]');
+    if(!zone)return;
+    var expectedLabels=q.labels.filter(function(l){return l.zone===z.id});
+    var assignedLabels=_ddAssignments[z.id]||[];
+    var zoneOk=expectedLabels.every(function(l){return assignedLabels.indexOf(l.id)>=0}) && assignedLabels.length===expectedLabels.length;
+    zone.classList.add(zoneOk?'correct':'wrong');
+    if(!zoneOk){
+      var zoneLabel=document.getElementById('ddZoneLabel_'+z.id);
+      if(zoneLabel){
+        var correctTexts=expectedLabels.map(function(l){return l.text});
+        zoneLabel.innerHTML='<span style="text-decoration:line-through">'+zoneLabel.innerHTML+'</span><br>→ '+correctTexts.join(', ');
       }
     }
-    if(!ok)allCorrect=false;
   });
   document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
   finishAnswer(q,allCorrect,q.explain);
@@ -3437,6 +3484,8 @@ function renderContext(q){
 
 function renderImg(q){
   if(!q.img)return '';
+  // Bild-interaktive Typen rendern das Bild selbst — nicht doppelt anzeigen
+  if(['hotspot','bildbeschriftung','dragdrop_bild'].includes(q.type))return '';
   let h='<figure class="q-img">';
   h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" onclick="toggleZoom(this)" loading="lazy">';
   if(q.img.alt)h+='<figcaption>'+q.img.alt+'</figcaption>';
