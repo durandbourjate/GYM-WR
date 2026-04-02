@@ -1,4 +1,5 @@
 import { clearIndexedDB } from '../services/autoSave'
+import { usePruefungStore } from '../store/pruefungStore'
 
 /**
  * Räumt localStorage und IndexedDB nach erfolgreicher Prüfungsabgabe auf.
@@ -8,11 +9,12 @@ import { clearIndexedDB } from '../services/autoSave'
  * - Demo-Abgabe (AbgabeDialog, Demo-Pfad)
  * - LP-erzwungenes Beenden (Timer autoAbgabe)
  */
-export function cleanupNachAbgabe(pruefungId: string): void {
-  clearIndexedDB(pruefungId).catch(() => {})
+export function cleanupNachAbgabe(storeKey: string): void {
+  clearIndexedDB(storeKey).catch(() => {})
+  // Zustand persist-Storage leeren (verhindert dass persist den Key sofort wieder schreibt)
+  usePruefungStore.persist.clearStorage()
   try {
-    localStorage.removeItem(`pruefung-abgabe-${pruefungId}`)
-    localStorage.removeItem(`pruefung-state-${pruefungId}`)
+    localStorage.removeItem(`pruefung-abgabe-${storeKey}`)
   } catch {
     // ignorieren — localStorage könnte in SEB eingeschränkt sein
   }
