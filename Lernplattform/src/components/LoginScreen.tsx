@@ -73,6 +73,25 @@ export default function LoginScreen() {
         {fehler && (
           <p className="mt-4 text-red-500 text-sm">{fehler}</p>
         )}
+
+        {/* Demo-Links */}
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center mb-2">Demo ohne Login starten</p>
+          <div className="flex gap-2">
+            <a
+              href="?demo=kind"
+              className="flex-1 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-center"
+            >
+              Als Kind
+            </a>
+            <a
+              href="?demo=eltern"
+              className="flex-1 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-center"
+            >
+              Als Elternteil
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   )
