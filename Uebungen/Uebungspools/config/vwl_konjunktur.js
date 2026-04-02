@@ -984,10 +984,10 @@ window.QUESTIONS = [
       alt: "Konjunkturzyklus mit vier markierten Punkten (A–D)"
     },
     hotspots: [
-      {x: 20, y: 77, r: 20, label: "A: Talsohle"},
-      {x: 37.5, y: 41, r: 20, label: "B: Boom"},
-      {x: 48.75, y: 52, r: 20, label: "C: Abschwung"},
-      {x: 29.4, y: 60, r: 20, label: "D: Aufschwung"}
+      {x: 20, y: 77, r: 8, label: "A: Talsohle"},
+      {x: 37.5, y: 41, r: 8, label: "B: Boom"},
+      {x: 48.75, y: 52, r: 8, label: "C: Abschwung"},
+      {x: 29.4, y: 60, r: 8, label: "D: Aufschwung"}
     ],
     correct: [0],
     explain: "Die Arbeitslosigkeit ist an der Talsohle (Punkt A) am höchsten. In der Rezession sinkt die Produktion, Unternehmen entlassen Arbeitskräfte. Da der Arbeitsmarkt ein Spätindikator ist, erreicht die Arbeitslosigkeit ihren Höchststand erst am Tiefpunkt des Konjunkturzyklus."

@@ -161,14 +161,16 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .hotspot-status{font-size:.85rem;color:var(--c-text-muted)}
 /* ── Bildbeschriftung ── */
 .beschriftung-container{display:flex;flex-direction:column;gap:12px}
-.beschriftung-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:hidden;border:2px solid var(--c-border)}
+.beschriftung-img-wrap{position:relative;display:inline-block;max-width:100%;border-radius:var(--radius);overflow:visible;border:2px solid var(--c-border)}
 .beschriftung-img{display:block;max-width:100%;height:auto}
 .beschriftung-spot{position:absolute;width:28px;height:28px;border-radius:50%;background:var(--c-primary);color:#fff;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);cursor:pointer;font-size:.75rem;font-weight:700;z-index:5;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 .beschriftung-spot.awaiting{animation:pulse-spot 1s ease-in-out infinite;box-shadow:0 0 0 4px rgba(var(--c-primary-rgb,59,130,246),.3)}
 @keyframes pulse-spot{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
 .beschriftung-spot.correct{background:var(--c-success)}.beschriftung-spot.wrong{background:var(--c-error)}
 .beschriftung-spot-text{position:absolute;left:calc(100% + 6px);white-space:nowrap;font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 6px;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.beschriftung-spot.spot-left .beschriftung-spot-text{left:auto;right:calc(100% + 6px)}
 .beschriftung-correction{position:absolute;left:calc(100% + 6px);top:calc(100% + 2px);white-space:nowrap;font-size:.7rem;color:var(--c-error);font-weight:600}
+.beschriftung-spot.spot-left .beschriftung-correction{left:auto;right:calc(100% + 6px)}
 .beschriftung-bank{display:flex;flex-wrap:wrap;gap:8px}
 .beschriftung-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
 .beschriftung-label:hover:not(.placed){border-color:var(--c-primary)}
@@ -183,12 +185,14 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .dd-zone.awaiting{border-color:var(--c-primary);background:rgba(var(--c-primary-rgb,59,130,246),.1);animation:pulse-zone .8s ease-in-out infinite}
 @keyframes pulse-zone{0%,100%{opacity:.7}50%{opacity:1}}
 .dd-zone.correct{border-color:var(--c-success);background:rgba(34,197,94,.15)}.dd-zone.wrong{border-color:var(--c-error);background:rgba(239,68,68,.15)}
-.dd-zone-label{font-size:.75rem;font-weight:600;color:var(--c-text);background:var(--c-card);padding:2px 8px;border-radius:4px;max-width:90%;text-align:center;word-break:break-word}
+.dd-zone-label{font-size:.72rem;font-weight:500;color:var(--c-text);max-width:95%;text-align:center;word-break:break-word;display:flex;flex-direction:column;gap:3px;align-items:center}
+.dd-zone-label .dd-placed-tag{display:inline-block;padding:2px 8px;background:var(--c-primary);color:#fff;border-radius:4px;font-size:.7rem;font-weight:600;white-space:nowrap}
+.dd-zone-label .dd-placed-tag.dd-correct{background:var(--c-success)}.dd-zone-label .dd-placed-tag.dd-wrong{background:var(--c-error)}
 .dd-label-bank{display:flex;flex-wrap:wrap;gap:8px}
 .dd-label{padding:8px 14px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none}
 .dd-label:hover:not(.placed){border-color:var(--c-primary)}
 .dd-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
-.dd-label.placed{opacity:.35;pointer-events:none;border-style:dashed}
+.dd-label.placed{opacity:.5;cursor:pointer;border-style:dashed;border-color:var(--c-primary)}
 .dd-status{font-size:.85rem;color:var(--c-text-muted)}
 /* ── Code-Editor ── */
 .code-container{display:flex;flex-direction:column;gap:8px}
@@ -1390,7 +1394,8 @@ const TYPE_HANDLERS = {
       h+='<img src="'+q.img.src+'" alt="'+(q.img.alt||'')+'" class="beschriftung-img" id="beschriftungImg">';
       // Marker-Spots (Zielzonen, sichtbar als Kreise)
       q.labels.forEach(function(lbl){
-        h+='<div class="beschriftung-spot" data-lid="'+lbl.id+'" style="left:'+lbl.x+'%;top:'+lbl.y+'%">';
+        var spotClass='beschriftung-spot'+(lbl.x>65?' spot-left':'');
+        h+='<div class="'+spotClass+'" data-lid="'+lbl.id+'" style="left:'+lbl.x+'%;top:'+lbl.y+'%">';
         h+='<span class="beschriftung-spot-num">'+(q.labels.indexOf(lbl)+1)+'</span></div>';
       });
       h+='</div>';
@@ -3068,11 +3073,11 @@ function updateDdZoneDisplay(zid){
   var zoneLabel=document.getElementById('ddZoneLabel_'+zid);
   if(!zoneLabel)return;
   var lids=_ddAssignments[zid]||[];
-  var texts=lids.map(function(lid){
+  var tags=lids.map(function(lid){
     var el=document.querySelector('.dd-label[data-lid="'+lid+'"]');
-    return el?el.textContent:'';
+    return el?'<span class="dd-placed-tag">'+el.textContent+'</span>':'';
   }).filter(Boolean);
-  zoneLabel.innerHTML=texts.join('<br>');
+  zoneLabel.innerHTML=tags.join('');
 }
 function placeDdLabel(zone){
   if(!_ddPicked)return;
@@ -3096,20 +3101,32 @@ function answerDragDropBild(qid){
     var ok=assignedLabels.indexOf(lbl.id)>=0;
     if(!ok)allCorrect=false;
   });
-  // Zonen markieren
+  // Zonen markieren mit ✅/❌ pro Label
   q.zones.forEach(function(z){
     var zone=document.querySelector('.dd-zone[data-zid="'+z.id+'"]');
     if(!zone)return;
     var expectedLabels=q.labels.filter(function(l){return l.zone===z.id});
-    var assignedLabels=_ddAssignments[z.id]||[];
-    var zoneOk=expectedLabels.every(function(l){return assignedLabels.indexOf(l.id)>=0}) && assignedLabels.length===expectedLabels.length;
+    var assignedLids=_ddAssignments[z.id]||[];
+    var expectedLids=expectedLabels.map(function(l){return l.id});
+    var zoneOk=expectedLabels.every(function(l){return assignedLids.indexOf(l.id)>=0}) && assignedLids.length===expectedLabels.length;
     zone.classList.add(zoneOk?'correct':'wrong');
-    if(!zoneOk){
-      var zoneLabel=document.getElementById('ddZoneLabel_'+z.id);
-      if(zoneLabel){
-        var correctTexts=expectedLabels.map(function(l){return l.text});
-        zoneLabel.innerHTML='<span style="text-decoration:line-through">'+zoneLabel.innerHTML+'</span><br>→ '+correctTexts.join(', ');
-      }
+    var zoneLabel=document.getElementById('ddZoneLabel_'+z.id);
+    if(zoneLabel){
+      var html='';
+      // Zugeordnete Labels bewerten
+      assignedLids.forEach(function(lid){
+        var el=document.querySelector('.dd-label[data-lid="'+lid+'"]');
+        var text=el?el.textContent:'?';
+        var isCorrect=expectedLids.indexOf(lid)>=0;
+        html+='<span class="dd-placed-tag '+(isCorrect?'dd-correct':'dd-wrong')+'">'+(isCorrect?'✅ ':'❌ ')+text+'</span>';
+      });
+      // Fehlende Labels anzeigen
+      expectedLabels.forEach(function(l){
+        if(assignedLids.indexOf(l.id)<0){
+          html+='<span class="dd-placed-tag dd-wrong">→ '+l.text+'</span>';
+        }
+      });
+      zoneLabel.innerHTML=html;
     }
   });
   document.querySelectorAll('.dd-label,.dd-zone').forEach(function(el){el.style.pointerEvents='none'});
