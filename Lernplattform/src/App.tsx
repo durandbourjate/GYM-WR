@@ -1,27 +1,28 @@
 import { useEffect } from 'react'
 import { useAuthStore } from './store/authStore'
 import { useGruppenStore } from './store/gruppenStore'
+import { useUebungsStore } from './store/uebungsStore'
 import LoginScreen from './components/LoginScreen'
 import GruppenAuswahl from './components/GruppenAuswahl'
 import Dashboard from './components/Dashboard'
+import UebungsScreen from './components/UebungsScreen'
+import Zusammenfassung from './components/Zusammenfassung'
 
 export default function App() {
   const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useAuthStore()
   const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useGruppenStore()
+  const { session, starteSession } = useUebungsStore()
 
-  // Session wiederherstellen beim Start
   useEffect(() => {
     sessionWiederherstellen()
   }, [sessionWiederherstellen])
 
-  // Gruppen laden nach Login
   useEffect(() => {
     if (istAngemeldet && user?.email) {
       ladeGruppen(user.email)
     }
   }, [istAngemeldet, user?.email, ladeGruppen])
 
-  // Rolle aktualisieren basierend auf Gruppen-Daten
   useEffect(() => {
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
@@ -33,7 +34,7 @@ export default function App() {
     }
   }, [aktiveGruppe, user?.email, user?.rolle])
 
-  // Laden...
+  // Laden
   if (authStatus === 'laden') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -43,11 +44,9 @@ export default function App() {
   }
 
   // Nicht eingeloggt
-  if (!istAngemeldet) {
-    return <LoginScreen />
-  }
+  if (!istAngemeldet) return <LoginScreen />
 
-  // Gruppen werden geladen
+  // Gruppen laden
   if (gruppenStatus === 'laden') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -63,12 +62,9 @@ export default function App() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
           <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
           <p className="text-gray-500 dark:text-gray-400 mb-4">
-            Du bist noch keiner Gruppe zugeordnet. Bitte wende dich an deinen Lehrer oder Elternteil.
+            Du bist noch keiner Gruppe zugeordnet.
           </p>
-          <button
-            onClick={() => useAuthStore.getState().abmelden()}
-            className="text-sm text-gray-400 hover:text-gray-600"
-          >
+          <button onClick={() => useAuthStore.getState().abmelden()} className="text-sm text-gray-400 hover:text-gray-600">
             Abmelden
           </button>
         </div>
@@ -76,11 +72,26 @@ export default function App() {
     )
   }
 
-  // Mehrere Gruppen → Auswahl
-  if (!aktiveGruppe) {
-    return <GruppenAuswahl />
+  // Gruppen-Auswahl
+  if (!aktiveGruppe) return <GruppenAuswahl />
+
+  // Uebungs-Session aktiv
+  if (session) {
+    if (session.beendet) {
+      return (
+        <Zusammenfassung
+          onZurueck={() => useUebungsStore.setState({ session: null })}
+          onNochmal={() => {
+            if (aktiveGruppe && user) {
+              starteSession(aktiveGruppe.id, user.email, session.fach, session.thema)
+            }
+          }}
+        />
+      )
+    }
+    return <UebungsScreen />
   }
 
-  // Hauptansicht
+  // Dashboard
   return <Dashboard />
 }
