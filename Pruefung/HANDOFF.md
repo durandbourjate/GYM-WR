@@ -15,7 +15,7 @@
 - **Bewertungsraster-Vertiefung** — Überfachliche Kriterien, kriterienbasiertes KI-Feedback
 - **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
 - ~~**Übungspools: 8 neue Fragetypen**~~ ✅ 01.04.2026 — sortierung, formel, hotspot, bildbeschriftung, dragdrop_bild, code, zeichnen, pdf. Inkl. TYPE_HANDLERS Refactoring. Audio weggelassen (kein Backend in Pools).
-- **Zeichnen Input-Verlust (Prüfungstool)** — React Re-Renders verschlucken pointerdown. Refactoring-Plan in Spec AP-F. Eigene Session.
+- ~~**Zeichnen Input-Verlust (Prüfungstool)**~~ ✅ 02.04.2026 — Ref-basierter Stift-Buffer + rAF-Rendering. Browser-verifiziert.
 - **Monitoring-Verzögerung ~28s** — Abwarten, aktuell akzeptabel
 - ~~Bild-Upload für Hotspot/Bildbeschriftung/DragDrop~~ ✅ 28.03.2026
 - ~~Aufgabengruppe Inline-Teilaufgaben~~ ✅ 28.03.2026
@@ -24,9 +24,67 @@
   - ~~Timer-Manipulation via localStorage~~ ✅ 31.03.2026 — Server-seitige Validierung bei Abgabe (Logging, nicht Blockierung)
   - ~~Rate Limiting auf API-Endpoints fehlt~~ ✅ 31.03.2026 — 4 SuS-Endpoints limitiert (10-15/min)
   - ~~Session-Token nicht an Prüfung gebunden~~ ✅ 31.03.2026 — Cross-Exam Token Reuse verhindert
-  - Demo-Modus Bypass via sessionStorage (Lockdown deaktivierbar, nur relevant bei Kontrolle)
+  - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 02.04.2026 — istDemoModus nur in React-State, nicht manipulierbar
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
-  - `pruefung-state-*` in localStorage bleibt nach Abgabe (Zustand persist schreibt neu; wird bei Re-Login aufgeräumt)
+  - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 02.04.2026 — persist.clearStorage() nach Abgabe
+
+---
+
+## Session 51 — Browser-Tests + Bugfixes + 75 neue Pool-Fragen (02.04.2026)
+
+### Stand
+Alle 3 Feature-Branches (`zeichnen-refactoring`, `session48-improvements`, `uebungspools-neue-typen`) getestet und auf `main` gemergt.
+
+### Browser-Tests (verifiziert)
+
+| Test | Ergebnis |
+|------|----------|
+| Zeichnen: Stifteingabe ohne Verzögerungen | ✅ |
+| Zeichnen: PDF-Annotation | ✅ |
+| Demo: Einführungsprüfung laden | ✅ |
+| Demo: localStorage-Cleanup nach Abgabe | ✅ (persist.clearStorage) |
+| Demo-Bypass Security (sessionStorage) | ✅ (by design) |
+| Kontrollstufe-Reset (formativ→locker, summativ→standard) | ✅ |
+| Teilnehmer + Zeitverlängerungen bei neuer Durchführung zurückgesetzt | ✅ |
+| Abgabe-Erkennung LP-Monitoring | ✅ (schneller als vorher) |
+| Pool: Sortierung, Formel, Zeichnen, Hotspot, Bildbeschriftung, DragDrop, PDF | ✅ (mit Bugfixes) |
+
+### Bugfixes (Session 51)
+
+| Fix | Dateien |
+|-----|---------|
+| Neue Durchführung: Reset ans Backend + Kontrollstufe nach Typ | DurchfuehrenDashboard.tsx |
+| VorbereitungPhase-State bei neuer Durchführung zurücksetzen | VorbereitungPhase.tsx |
+| localStorage-Cleanup: korrekter Store-Key + persist.clearStorage() | AbgabeDialog.tsx, Timer.tsx, cleanupNachAbgabe.ts |
+| Pool: Doppeltes Bild bei Bild-Typen | pool.html (renderImg) |
+| Pool: --c-card CSS-Variable definiert | pool.html |
+| Pool: Sortierung Undo (beliebiger Slot) | pool.html |
+| Pool: Zeichnen Weiter-Button nach Beantwortung | pool.html (answerOpen) |
+| Pool: DragDrop mehrere Labels pro Zone + Undo | pool.html |
+| Pool: Hotspot prüft nur korrekte Hotspots | pool.html (answerHotspot) |
+| Pool: Fachbereich-Farbkonzept für alle interaktiven Elemente | pool.html |
+
+### Neue Pool-Inhalte
+
+| Typ | Anzahl | Pools |
+|-----|--------|-------|
+| Sortierung | 67 | 24 Pools (VWL 30, BWL 12, Recht 25) |
+| Zeichnen + SVGs | 8 | VWL 4, BWL 2, Recht 2 |
+| Konjunktur-Spezial (9 Typen) | 9 | VWL Konjunktur |
+| **Total** | **84** | |
+
+### Offene Pool-Fragetypen (nächste Session)
+
+Hotspot, Bildbeschriftung, DragDrop brauchen je eigene SVGs — aktuell nur in VWL Konjunktur. Für weitere Pools in nächster Session erstellen.
+
+### Branch-Status
+
+| Branch | Status |
+|--------|--------|
+| `feature/zeichnen-refactoring` | ✅ Merged auf main |
+| `feature/session48-improvements` | ✅ Merged auf main |
+| `feature/uebungspools-neue-typen` | ✅ Merged auf main |
+| `main` | Production, aktuell |
 
 ---
 
