@@ -756,6 +756,61 @@ window.QUESTIONS = [
     ],
     correct: [0, 1, 2, 3],
     explain: "Das SECO zählt nur beim RAV registrierte Arbeitslose. Personen in Beschäftigungsprogrammen gelten oft nicht als arbeitslos (je nach Programm). Ausgesteuerte und entmutigte Personen tauchen in der offiziellen Statistik gar nicht auf – sie gehören zur sogenannten «versteckten Arbeitslosigkeit». Die ILO-Statistik (BFS/SAKE) erfasst einen breiteren Kreis."
-  }
+  },
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Hotspot: Beveridge-Kurve ---
+{
+  id: "hotspot01", topic: "beveridge", type: "hotspot", diff: 2, tax: "K2", reviewed: false,
+  q: "Klicke auf den Punkt der Beveridge-Kurve, der eine Rezession mit hoher Arbeitslosigkeit und wenigen offenen Stellen zeigt.",
+  img: { src: "img/vwl/arbeitslosigkeit/arbeitslosigkeit_beveridge_hotspot.svg", alt: "Beveridge-Kurve mit vier markierten Punkten (A–D)" },
+  hotspots: [
+    {x: 25, y: 30, r: 8, label: "A: Boom (tiefe AL, viele Stellen)"},
+    {x: 69.3, y: 75, r: 8, label: "B: Rezession (hohe AL, wenig Stellen)"},
+    {x: 46.1, y: 52.6, r: 8, label: "C: Strukturelle Arbeitslosigkeit"},
+    {x: 69.3, y: 30.5, r: 8, label: "D: Ausserhalb der Kurve"}
+  ],
+  correct: [1],
+  explain: "In einer Rezession bewegt sich die Wirtschaft entlang der Beveridge-Kurve nach rechts unten: Die Arbeitslosigkeit steigt, während gleichzeitig weniger offene Stellen angeboten werden."
+},
+// --- Bildbeschriftung: Arbeitsmarkt-Diagramm ---
+{
+  id: "beschriftung01", topic: "arbeitsmarkt", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die sechs markierten Elemente im Arbeitsmarktdiagramm.",
+  img: { src: "img/vwl/arbeitslosigkeit/arbeitslosigkeit_arbeitsmarkt_beschriftung.svg", alt: "Arbeitsmarkt-Diagramm mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Arbeitsangebot (Ls)", x: 80, y: 25},
+    {id: "l2", text: "Arbeitsnachfrage (Ld)", x: 80, y: 72},
+    {id: "l3", text: "Gleichgewichtslohn", x: 10, y: 42},
+    {id: "l4", text: "Mindestlohn (Lohnrigidität)", x: 10, y: 28},
+    {id: "l5", text: "Arbeitslosigkeit", x: 50, y: 88},
+    {id: "l6", text: "Gleichgewichtsmenge", x: 50, y: 50}
+  ],
+  explain: "Der Arbeitsmarkt im Gleichgewicht: Arbeitsangebot (Ls, steigend) trifft Arbeitsnachfrage (Ld, fallend). Liegt der Lohn über dem Gleichgewicht (z.B. durch Mindestlohn), entsteht Arbeitslosigkeit."
+},
+// --- DragDrop: Merkmale den AL-Typen zuordnen ---
+{
+  id: "dragdrop01", topic: "typen", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Merkmale dem richtigen Arbeitslosigkeitstyp zu.",
+  img: { src: "img/vwl/arbeitslosigkeit/arbeitslosigkeit_typen_dragdrop.svg", alt: "Drei Spalten: Friktionelle, Strukturelle, Konjunkturelle Arbeitslosigkeit" },
+  zones: [
+    {id: "friktionell", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "strukturell", x: 34, y: 14, w: 30, h: 82},
+    {id: "konjunkturell", x: 65.5, y: 14, w: 32, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Stellenwechsel und Suchphase", zone: "friktionell"},
+    {id: "m2", text: "Freiwillig und kurzfristig", zone: "friktionell"},
+    {id: "m3", text: "Auch in Boomphasen vorhanden", zone: "friktionell"},
+    {id: "m4", text: "Mismatch von Qualifikationen", zone: "strukturell"},
+    {id: "m5", text: "Regionale Disparitäten", zone: "strukturell"},
+    {id: "m6", text: "Technologischer Wandel", zone: "strukturell"},
+    {id: "m7", text: "Nachfragerückgang in der Rezession", zone: "konjunkturell"},
+    {id: "m8", text: "Betrifft viele Branchen gleichzeitig", zone: "konjunkturell"},
+    {id: "m9", text: "Durch expansive Fiskalpolitik bekämpfbar", zone: "konjunkturell"}
+  ],
+  explain: "Friktionelle AL: Normal, kurzfristig (Stellenwechsel). Strukturelle AL: Mismatch (Qualifikation, Region, Technologie). Konjunkturelle AL: Durch Rezession verursacht, kann durch Konjunkturpolitik bekämpft werden."
+}
 
 ];

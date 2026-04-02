@@ -42,27 +42,12 @@
 
   <!-- Red numbered circles -->
   <!-- 1: Tatbestandsmässigkeit -->
-  <line x1="60" y1="78" x2="36" y2="64" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="24" cy="57" r="14" fill="#ef4444"/>
-  <text x="24" y="62" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Objektiver TB -->
-  <line x1="80" y1="120" x2="54" y2="118" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="42" cy="118" r="14" fill="#ef4444"/>
-  <text x="42" y="123" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Subjektiver TB -->
-  <line x1="720" y1="120" x2="746" y2="118" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="758" cy="118" r="14" fill="#ef4444"/>
-  <text x="758" y="123" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Rechtswidrigkeit -->
-  <line x1="60" y1="255" x2="36" y2="255" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="24" cy="255" r="14" fill="#ef4444"/>
-  <text x="24" y="260" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: Schuld -->
-  <line x1="60" y1="370" x2="36" y2="370" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="24" cy="370" r="14" fill="#ef4444"/>
-  <text x="24" y="375" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 </svg>

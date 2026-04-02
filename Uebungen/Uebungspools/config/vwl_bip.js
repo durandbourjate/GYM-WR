@@ -574,6 +574,46 @@ window.QUESTIONS = [
     hints: ["Die vier Komponenten sind: Konsum (C), Investitionen (I), Staatsausgaben (G) und Nettoexporte (NX).", "Der private Konsum macht in der Schweiz über die Hälfte aus.", "Die Formel lautet: Y = C + I + G + NX."],
     sample: { src: "img/vwl/bip/bip_verwendungsseite_zeichnen.svg", alt: "Musterlösung: BIP-Verwendungsseite" },
     explain: "Das BIP nach Verwendungsseite: Y = C + I + G + NX. In der Schweiz: Konsum ca. 55%, Investitionen ca. 25%, Staatsausgaben ca. 12%, Nettoexporte ca. 8%. Die Aufteilung zeigt, dass der private Konsum die wichtigste Nachfragekomponente ist."
-  }
+  },
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Bildbeschriftung: BIP nach Verwendungsseite ---
+{
+  id: "beschriftung01", topic: "dreiseiten", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die vier Komponenten des BIP nach Verwendungsseite und die Formel.",
+  img: { src: "img/vwl/bip/bip_verwendung_beschriftung.svg", alt: "BIP-Verwendungskomponenten mit fünf nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Privater Konsum (C)", x: 30, y: 40},
+    {id: "l2", text: "Staatlicher Konsum (G)", x: 70, y: 35},
+    {id: "l3", text: "Investitionen (I)", x: 70, y: 65},
+    {id: "l4", text: "Nettoexporte (NX = X − M)", x: 30, y: 75},
+    {id: "l5", text: "Y = C + I + G + NX", x: 50, y: 10}
+  ],
+  explain: "Das BIP nach Verwendungsseite: Y = C + I + G + NX. Privater Konsum (C, ca. 52%), Staatlicher Konsum (G, ca. 12%), Investitionen (I, ca. 25%), Nettoexporte (NX, ca. 11% in der Schweiz)."
+},
+// --- DragDrop: BIP-Berechnungsmethoden ---
+{
+  id: "dragdrop01", topic: "dreiseiten", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Begriffe der richtigen BIP-Berechnungsseite zu.",
+  img: { src: "img/vwl/bip/bip_dreiseiten_dragdrop.svg", alt: "Drei Spalten: Entstehungsseite, Verwendungsseite, Verteilungsseite" },
+  zones: [
+    {id: "entstehung", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "verwendung", x: 34, y: 14, w: 30, h: 82},
+    {id: "verteilung", x: 65.5, y: 14, w: 32, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Wertschöpfung der Branchen", zone: "entstehung"},
+    {id: "m2", text: "Bruttoproduktionswert − Vorleistungen", zone: "entstehung"},
+    {id: "m3", text: "Primär-/Sekundär-/Tertiärsektor", zone: "entstehung"},
+    {id: "m4", text: "Privater Konsum (C)", zone: "verwendung"},
+    {id: "m5", text: "Investitionen (I)", zone: "verwendung"},
+    {id: "m6", text: "Nettoexporte (NX)", zone: "verwendung"},
+    {id: "m7", text: "Arbeitnehmerentgelt", zone: "verteilung"},
+    {id: "m8", text: "Unternehmensgewinne", zone: "verteilung"},
+    {id: "m9", text: "Vermögenseinkommen", zone: "verteilung"}
+  ],
+  explain: "Das BIP kann auf drei Arten berechnet werden: Entstehungsseite (Wertschöpfung der Sektoren), Verwendungsseite (Y=C+I+G+NX), Verteilungsseite (Löhne + Gewinne + Vermögenseinkommen). Alle drei ergeben dasselbe BIP."
+}
 
 ];

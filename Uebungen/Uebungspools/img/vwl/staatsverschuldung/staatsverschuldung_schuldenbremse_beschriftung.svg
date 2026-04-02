@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Schuldenbremse — Beschrifte die Elemente</text>
+
+  <!-- Konjunkturfaktor (obere Box) -->
+  <rect x="275" y="55" width="250" height="45" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Verbindung nach unten -->
+  <line x1="400" y1="100" x2="400" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="395,128 405,128 400,138" fill="#94a3b8"/>
+
+  <!-- Formel-Box (Mitte) -->
+  <rect x="200" y="140" width="400" height="50" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+
+  <!-- Verbindungen zu links/rechts -->
+  <line x1="200" y1="165" x2="120" y2="240" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="600" y1="165" x2="680" y2="240" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Boom-Box (links) -->
+  <rect x="40" y="240" width="220" height="60" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="150" y="255" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="20" fill="#16a34a">&#8599;</text>
+
+  <!-- Rezession-Box (rechts) -->
+  <rect x="540" y="240" width="220" height="60" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="650" y="255" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="20" fill="#dc2626">&#8600;</text>
+
+  <!-- Ausgleichskonto (unten) -->
+  <line x1="150" y1="300" x2="400" y2="350" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="650" y1="300" x2="400" y2="350" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="250" y="340" width="300" height="50" rx="6" fill="#fefce8" stroke="#fde047" stroke-width="1.5"/>
+
+  <!-- Nummerierte rote Kreise -->
+  <!-- 1: Konjunkturfaktor -->
+
+  <!-- 2: Formel -->
+
+  <!-- 3: Boom -->
+
+  <!-- 4: Rezession -->
+
+  <!-- 5: Ausgleichskonto -->
+</svg>

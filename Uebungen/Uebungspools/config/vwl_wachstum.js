@@ -742,6 +742,47 @@ window.QUESTIONS = [
  ],
  correct: [0, 1, 2, 3],
  explain: "Konjunkturprogramme wirken kurzfristig (Monate bis 1–2 Jahre). Steuersenkungen wirken mittelfristig (fördern Investitionen über mehrere Jahre). Infrastruktur hat eine mittelfristige Bauphase, aber langfristigen Nutzen (Jahrzehnte). Bildung und Forschung wirken am langfristigsten – die Erträge zeigen sich erst nach Jahren bis Jahrzehnten, sind aber für nachhaltiges Wachstum am wichtigsten."
+},
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Bildbeschriftung: Drei-Ebenen-Modell ---
+{
+  id: "beschriftung01", topic: "definition", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+  q: "Beschrifte die drei Ebenen des Wachstumsmodells und ihre Hauptkomponenten.",
+  img: { src: "img/vwl/wachstum/wachstum_drei_ebenen_beschriftung.svg", alt: "Drei-Ebenen-Modell des Wirtschaftswachstums mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Ebene 1: Unmittelbare Ursachen", x: 50, y: 18},
+    {id: "l2", text: "Arbeit und Kapital (Produktionsfaktoren)", x: 25, y: 32},
+    {id: "l3", text: "Ebene 2: Tiefere Ursachen", x: 50, y: 46},
+    {id: "l4", text: "Technologie, Bildung, Infrastruktur", x: 75, y: 58},
+    {id: "l5", text: "Ebene 3: Fundamentale Ursachen", x: 50, y: 72},
+    {id: "l6", text: "Institutionen, Geographie, Kultur", x: 25, y: 85}
+  ],
+  explain: "Ebene 1 (direkt): Produktionsfaktoren Arbeit und Kapital. Ebene 2 (tiefer): Technologie, Humankapital, Infrastruktur steigern die Produktivität. Ebene 3 (fundamental): Institutionen, Geographie und Kultur bestimmen, ob investiert und innoviert wird."
+},
+// --- DragDrop: Wachstumsfaktoren den Ebenen zuordnen ---
+{
+  id: "dragdrop01", topic: "ebene1", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Wachstumsfaktoren der richtigen Ebene zu.",
+  img: { src: "img/vwl/wachstum/wachstum_faktoren_dragdrop.svg", alt: "Drei Spalten: Ebene 1 Unmittelbar, Ebene 2 Tiefer, Ebene 3 Fundamental" },
+  zones: [
+    {id: "ebene1", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "ebene2", x: 34, y: 14, w: 30, h: 82},
+    {id: "ebene3", x: 65.5, y: 14, w: 32, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Zunahme des Kapitalstocks", zone: "ebene1"},
+    {id: "m2", text: "Wachstum der Erwerbsbevölkerung", zone: "ebene1"},
+    {id: "m3", text: "Technologischer Fortschritt", zone: "ebene2"},
+    {id: "m4", text: "Investitionen in Bildung", zone: "ebene2"},
+    {id: "m5", text: "Forschung und Entwicklung", zone: "ebene2"},
+    {id: "m6", text: "Eigentumsrechte und Rechtsstaat", zone: "ebene3"},
+    {id: "m7", text: "Geographische Lage", zone: "ebene3"},
+    {id: "m8", text: "Politische Stabilität", zone: "ebene3"},
+    {id: "m9", text: "Offenheit für Handel", zone: "ebene3"}
+  ],
+  explain: "Ebene 1: Mehr Arbeit und Kapital → mehr Output. Ebene 2: Technologie, Bildung und F&E steigern die Produktivität. Ebene 3: Institutionen, Geographie und Handelsoffenheit bestimmen, ob ein Land investieren und innovieren kann."
 }
 
 ];

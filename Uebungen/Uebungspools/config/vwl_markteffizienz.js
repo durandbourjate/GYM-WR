@@ -1537,6 +1537,59 @@ window.QUESTIONS = [
     hints: ["Die x-Achse zeigt die Menge, die y-Achse den Preis.", "Die Angebotskurve steigt von links unten nach rechts oben.", "Die Nachfragekurve fällt von links oben nach rechts unten."],
     sample: { src: "img/vwl/markteffizienz/markteffizienz_angebot_nachfrage_zeichnen.svg", alt: "Musterlösung: Angebot-Nachfrage-Diagramm" },
     explain: "Das Marktgleichgewicht entsteht dort, wo sich Angebots- und Nachfragekurve schneiden. Beim Gleichgewichtspreis P* entspricht die angebotene Menge genau der nachgefragten Menge M*. Bei höheren Preisen entsteht ein Angebotsüberschuss, bei niedrigeren ein Nachfrageüberschuss."
-  }
+  },
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Hotspot: Gleichgewichtspunkt ---
+{
+  id: "hotspot01", topic: "gleichgewicht", type: "hotspot", diff: 1, tax: "K2", reviewed: false,
+  q: "Klicke auf den Punkt, der das Marktgleichgewicht darstellt — dort, wo Angebot und Nachfrage übereinstimmen.",
+  img: { src: "img/vwl/markteffizienz/markteffizienz_gleichgewicht_hotspot.svg", alt: "Angebot-Nachfrage-Diagramm mit vier markierten Punkten (A–D)" },
+  hotspots: [
+    {x: 50, y: 52.4, r: 8, label: "A: Gleichgewicht"},
+    {x: 65, y: 39.3, r: 8, label: "B: Angebotsüberschuss"},
+    {x: 30, y: 35.9, r: 8, label: "C: Nachfrageüberschuss"},
+    {x: 70, y: 70.2, r: 8, label: "D: Kein Schnittpunkt"}
+  ],
+  correct: [0],
+  explain: "Das Marktgleichgewicht liegt dort, wo sich Angebots- und Nachfragekurve schneiden. Bei diesem Preis stimmen angebotene und nachgefragte Menge überein."
+},
+// --- Bildbeschriftung: Angebot/Nachfrage-Diagramm ---
+{
+  id: "beschriftung01", topic: "angebot_nachfrage", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die sechs markierten Elemente im Marktdiagramm.",
+  img: { src: "img/vwl/markteffizienz/markteffizienz_an_beschriftung.svg", alt: "Angebot-Nachfrage-Diagramm mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Angebotskurve (S)", x: 80, y: 25},
+    {id: "l2", text: "Nachfragekurve (D)", x: 80, y: 75},
+    {id: "l3", text: "Gleichgewichtspunkt", x: 50, y: 42},
+    {id: "l4", text: "Preis (P)", x: 7, y: 15},
+    {id: "l5", text: "Menge (Q)", x: 90, y: 90},
+    {id: "l6", text: "Konsumentenrente", x: 32, y: 25}
+  ],
+  explain: "Das Marktdiagramm zeigt: Angebotskurve (S, steigend), Nachfragekurve (D, fallend), Gleichgewichtspunkt (Schnittpunkt). Preis (P) auf der y-Achse, Menge (Q) auf der x-Achse. Die Konsumentenrente ist das Dreieck zwischen Nachfragekurve und Gleichgewichtspreis."
+},
+// --- DragDrop: Verschiebungsfaktoren ---
+{
+  id: "dragdrop01", topic: "verschiebungen", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Faktoren der richtigen Kurvenverschiebung zu.",
+  img: { src: "img/vwl/markteffizienz/markteffizienz_verschiebungen_dragdrop.svg", alt: "Zwei Spalten: Nachfrageverschiebung und Angebotsverschiebung" },
+  zones: [
+    {id: "nachfrage", x: 2.5, y: 14, w: 46, h: 82},
+    {id: "angebot", x: 51.5, y: 14, w: 46, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Einkommensveränderung", zone: "nachfrage"},
+    {id: "m2", text: "Veränderte Präferenzen", zone: "nachfrage"},
+    {id: "m3", text: "Bevölkerungswachstum", zone: "nachfrage"},
+    {id: "m4", text: "Preis von Substituten ändert sich", zone: "nachfrage"},
+    {id: "m5", text: "Technologischer Fortschritt", zone: "angebot"},
+    {id: "m6", text: "Inputpreise (Rohstoffe)", zone: "angebot"},
+    {id: "m7", text: "Neue Marktteilnehmer", zone: "angebot"},
+    {id: "m8", text: "Staatliche Regulierung", zone: "angebot"}
+  ],
+  explain: "Nachfrageverschiebungen: Einkommen, Präferenzen, Bevölkerung, Substitutpreise. Angebotsverschiebungen: Technologie, Inputpreise, neue Anbieter, Regulierung."
+}
 
 ];

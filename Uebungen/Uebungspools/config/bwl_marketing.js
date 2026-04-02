@@ -836,6 +836,55 @@ window.QUESTIONS = [
     hints: ["Die 4P stehen für: Product, Price, Place, Promotion.", "Auf Deutsch: Produkt, Preis, Distribution, Kommunikation.", "Jedes P umfasst verschiedene Teilentscheidungen."],
     sample: { src: "img/bwl/marketing/marketing_4p_zeichnen.svg", alt: "Musterlösung: Marketing-Mix 4P" },
     explain: "Der Marketing-Mix (McCarthy, 1960) umfasst vier Instrumente: Product (Sortiment, Qualität, Design), Price (Preisgestaltung, Rabatte, Konditionen), Place (Vertriebskanäle, Logistik, Standort), Promotion (Werbung, PR, Verkaufsförderung). Alle vier müssen aufeinander abgestimmt sein."
+  },
+
+  // ===== INTERAKTIVE FRAGETYPEN =====
+  {
+    id: "hotspot01", topic: "bcg", type: "hotspot", diff: 2, tax: "K2", reviewed: false,
+    q: "Klicke auf den Quadranten, in dem sich Produkte befinden, die hohe Gewinne abwerfen und wenig Investition brauchen (hoher Marktanteil, niedriges Wachstum).",
+    img: { src: "img/bwl/marketing/marketing_bcg_hotspot.svg", alt: "BCG-Portfolio-Matrix mit vier Quadranten A–D" },
+    hotspots: [
+      { x: 25, y: 32.6, r: 8, label: "A: Stars" },
+      { x: 77.5, y: 32.6, r: 8, label: "B: Question Marks" },
+      { x: 25, y: 71.9, r: 8, label: "C: Cash Cows" },
+      { x: 77.5, y: 71.9, r: 8, label: "D: Dogs" }
+    ],
+    correct: [2],
+    explain: "Cash Cows (C): Hoher Marktanteil, niedriges Marktwachstum — diese Produkte generieren stabile Gewinne bei geringen Investitionen. Sie finanzieren Stars und Question Marks."
+  },
+  {
+    id: "beschriftung01", topic: "marketing", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+    q: "Beschrifte die vier Elemente des Marketing-Mix (4P).",
+    img: { src: "img/bwl/marketing/marketing_4p_beschriftung.svg", alt: "Marketing-Mix 4P ohne Labels" },
+    labels: [
+      { id: "l1", text: "Product (Produktpolitik)", x: 25, y: 30 },
+      { id: "l2", text: "Price (Preispolitik)", x: 75, y: 30 },
+      { id: "l3", text: "Place (Distributionspolitik)", x: 25, y: 70 },
+      { id: "l4", text: "Promotion (Kommunikationspolitik)", x: 75, y: 70 }
+    ],
+    explain: "Die 4P: Product (Was? Sortiment, Qualität, Design), Price (Wie teuer? Strategie, Rabatte), Place (Wo? Vertriebskanäle, Logistik), Promotion (Wie bekannt machen? Werbung, PR, Verkaufsförderung)."
+  },
+  {
+    id: "dragdrop01", topic: "plz", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die folgenden Marketing-Massnahmen dem richtigen P zu.",
+    img: { src: "img/bwl/marketing/marketing_4p_dragdrop.svg", alt: "Vier Spalten: Product, Price, Place, Promotion" },
+    zones: [
+      { id: "product", x: 2.5, y: 14, w: 22, h: 82 },
+      { id: "price", x: 26, y: 14, w: 22, h: 82 },
+      { id: "place", x: 49.5, y: 14, w: 22, h: 82 },
+      { id: "promotion", x: 73, y: 14, w: 25, h: 82 }
+    ],
+    labels: [
+      { id: "lb1", text: "Verpackungsdesign", zone: "product" },
+      { id: "lb2", text: "Sortimentserweiterung", zone: "product" },
+      { id: "lb3", text: "Rabattaktion", zone: "price" },
+      { id: "lb4", text: "Skimming-Strategie", zone: "price" },
+      { id: "lb5", text: "Online-Shop eröffnen", zone: "place" },
+      { id: "lb6", text: "Filialstandort wählen", zone: "place" },
+      { id: "lb7", text: "TV-Werbespot", zone: "promotion" },
+      { id: "lb8", text: "Influencer-Kampagne", zone: "promotion" }
+    ],
+    explain: "Product: Sortiment, Design, Qualität. Price: Preisstrategie, Rabatte. Place: Vertriebskanäle, Standorte. Promotion: Werbung, PR, Social Media."
   }
 
 ];

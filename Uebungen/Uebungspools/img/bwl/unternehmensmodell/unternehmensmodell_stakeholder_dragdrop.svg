@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Umweltsphären — Ordne die Themen zu</text>
+
+  <!-- Spalte 1: Technologisch (violett) -->
+  <rect x="20" y="55" width="176" height="328" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="108" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#7c3aed">Technologisch</text>
+  <line x1="38" y1="90" x2="178" y2="90" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="108" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#7c3aed">Innovationen, Digitalisierung</text>
+  <rect x="33" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="33" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="33" y="206" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Spalte 2: Ökonomisch (blau) -->
+  <rect x="208" y="55" width="176" height="328" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="296" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1d4ed8">Ökonomisch</text>
+  <line x1="226" y1="90" x2="366" y2="90" stroke="#93c5fd" stroke-width="1"/>
+  <text x="296" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#1d4ed8">Konjunktur, Märkte</text>
+  <rect x="221" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="221" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="221" y="206" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Spalte 3: Sozial (grün) -->
+  <rect x="396" y="55" width="176" height="328" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="484" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#16a34a">Sozial</text>
+  <line x1="414" y1="90" x2="554" y2="90" stroke="#86efac" stroke-width="1"/>
+  <text x="484" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#16a34a">Demografie, Gesetze, Werte</text>
+  <rect x="409" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="409" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="409" y="206" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Spalte 4: Ökologisch (orange) -->
+  <rect x="584" y="55" width="196" height="328" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text x="682" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#c2410c">Ökologisch</text>
+  <line x1="602" y1="90" x2="762" y2="90" stroke="#fdba74" stroke-width="1"/>
+  <text x="682" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#c2410c">Klima, Ressourcen</text>
+  <rect x="597" y="118" width="170" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="597" y="162" width="170" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="597" y="206" width="170" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Hint -->
+  <text x="400" y="392" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Themen in die passende Umweltsphäre</text>
+</svg>

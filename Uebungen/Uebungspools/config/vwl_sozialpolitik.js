@@ -1050,6 +1050,47 @@ window.QUESTIONS = [
  ],
  correct: [0, 1, 2],
  explain: "Leistungsgerechtigkeit erfordert kaum staatliche Umverteilung – der Markt belohnt Leistung. Chancengerechtigkeit erfordert staatliche Investitionen (z.B. kostenlose Bildung, Stipendien). Bedarfsgerechtigkeit erfordert die stärkste Umverteilung – der Staat muss aktiv Ressourcen von Bessergestellten zu Bedürftigen transferieren. In der Schweiz werden alle drei Prinzipien kombiniert."
+},
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Bildbeschriftung: Drei-Säulen-System ---
+{
+  id: "beschriftung01", topic: "sozialversicherungen", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die drei Säulen der Schweizer Altersvorsorge und ihre Merkmale.",
+  img: { src: "img/vwl/sozialpolitik/sozialpolitik_drei_saeulen_beschriftung.svg", alt: "Drei-Säulen-System der Schweizer Altersvorsorge mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "1. Säule: AHV/IV (staatlich)", x: 20, y: 40},
+    {id: "l2", text: "Existenzsicherung", x: 20, y: 65},
+    {id: "l3", text: "2. Säule: BVG (beruflich)", x: 50, y: 40},
+    {id: "l4", text: "Gewohnten Lebensstandard sichern", x: 50, y: 65},
+    {id: "l5", text: "3. Säule: Private Vorsorge", x: 80, y: 40},
+    {id: "l6", text: "Individuelle Ergänzung (3a/3b)", x: 80, y: 65}
+  ],
+  explain: "1. Säule (AHV/IV): Staatlich, Umlageverfahren, Existenzsicherung. 2. Säule (BVG): Beruflich, Kapitaldeckung, zusammen mit 1. Säule ca. 60% des Lohns. 3. Säule: Freiwillig, privat (3a steuerbegünstigt)."
+},
+// --- DragDrop: Sozialversicherungen den Säulen zuordnen ---
+{
+  id: "dragdrop01", topic: "sozialversicherungen", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Versicherungen und Merkmale der richtigen Säule zu.",
+  img: { src: "img/vwl/sozialpolitik/sozialpolitik_saeulen_dragdrop.svg", alt: "Drei Spalten: 1. Säule Staat, 2. Säule Beruf, 3. Säule Privat" },
+  zones: [
+    {id: "saule1", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "saule2", x: 35, y: 14, w: 30, h: 82},
+    {id: "saule3", x: 67.5, y: 14, w: 30, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "AHV (Alters-/Hinterlassenenvers.)", zone: "saule1"},
+    {id: "m2", text: "IV (Invalidenversicherung)", zone: "saule1"},
+    {id: "m3", text: "Umlageverfahren", zone: "saule1"},
+    {id: "m4", text: "BVG (Pensionskasse)", zone: "saule2"},
+    {id: "m5", text: "UVG (Unfallversicherung)", zone: "saule2"},
+    {id: "m6", text: "Kapitaldeckungsverfahren", zone: "saule2"},
+    {id: "m7", text: "Gebundene Vorsorge (Säule 3a)", zone: "saule3"},
+    {id: "m8", text: "Freie Vorsorge (Säule 3b)", zone: "saule3"},
+    {id: "m9", text: "Freiwillig und steuerlich begünstigt", zone: "saule3"}
+  ],
+  explain: "1. Säule: AHV, IV, EO — Umlageverfahren. 2. Säule: BVG, UVG — Kapitaldeckung. 3. Säule: 3a (gebunden, steuerbegünstigt) und 3b (frei)."
 }
 
 ];

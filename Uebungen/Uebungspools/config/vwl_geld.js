@@ -2557,6 +2557,59 @@ window.QUESTIONS = [
     hints: ["Starte mit einer Einlage von 1000 CHF bei Bank A.", "Bank A behält 10% (100 CHF) als Reserve und verleiht 900 CHF.", "Die 900 CHF werden bei Bank B eingelegt, die wieder 10% behält und den Rest verleiht."],
     sample: { src: "img/vwl/geld/geld_geldschoepfung_zeichnen.svg", alt: "Musterlösung: Multiple Geldschöpfung" },
     explain: "Bei einem Mindestreservesatz von 10% beträgt der Geldschöpfungsmultiplikator m = 1/0.1 = 10. Aus einer Einlage von 1000 CHF kann theoretisch bis zu 10'000 CHF Buchgeld entstehen. In der Praxis ist der Multiplikator kleiner, da Banken freiwillige Reserven halten und nicht alle Kredite als Einlagen zurückkehren."
-  }
+  },
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Hotspot: Geldmarkt-Gleichgewicht ---
+{
+  id: "hotspot01", topic: "geldnachfrage", type: "hotspot", diff: 1, tax: "K2", reviewed: false,
+  q: "Klicke auf den Punkt, der das Geldmarktgleichgewicht darstellt — dort wo Geldangebot und Geldnachfrage übereinstimmen.",
+  img: { src: "img/vwl/geld/geld_geldmarkt_hotspot.svg", alt: "Geldmarkt-Diagramm mit vier markierten Punkten (A–D)" },
+  hotspots: [
+    {x: 50, y: 51.2, r: 8, label: "A: Gleichgewicht"},
+    {x: 50, y: 28.6, r: 8, label: "B: Überschüssiges Geldangebot"},
+    {x: 30, y: 36.9, r: 8, label: "C: Geldknappheit"},
+    {x: 70, y: 71.4, r: 8, label: "D: Kein Schnittpunkt"}
+  ],
+  correct: [0],
+  explain: "Das Geldmarktgleichgewicht liegt dort, wo das (von der Zentralbank fixierte) Geldangebot auf die Geldnachfrage trifft. Der Gleichgewichtszinssatz stellt sich so ein, dass die Wirtschaftssubjekte genau die vorhandene Geldmenge halten wollen."
+},
+// --- Bildbeschriftung: Geldmengen M0–M3 ---
+{
+  id: "beschriftung01", topic: "geldmengen", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die vier Geldmengenaggregate und ihre Bestandteile.",
+  img: { src: "img/vwl/geld/geld_geldmengen_beschriftung.svg", alt: "Geldmengenaggregate M0–M3 als konzentrische Schichten mit vier nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "M0: Notenbankgeld (Bargeld + Giroguthaben bei SNB)", x: 50, y: 55},
+    {id: "l2", text: "M1: Bargeld + Sichteinlagen", x: 50, y: 42},
+    {id: "l3", text: "M2: M1 + Spareinlagen", x: 50, y: 28},
+    {id: "l4", text: "M3: M2 + Termineinlagen", x: 50, y: 15}
+  ],
+  explain: "Die Geldmengenaggregate sind ineinander geschachtelt: M0 (monetäre Basis) → M1 (Transaktionsgeld) → M2 (+ Spareinlagen) → M3 (+ Termineinlagen). Je weiter aussen, desto weniger liquide."
+},
+// --- DragDrop: Geldarten den Kategorien zuordnen ---
+{
+  id: "dragdrop01", topic: "geldarten", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Beispiele der richtigen Geldart zu.",
+  img: { src: "img/vwl/geld/geld_geldarten_dragdrop.svg", alt: "Drei Spalten: Warengeld, Kreditgeld, Digitales Geld" },
+  zones: [
+    {id: "waren", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "kredit", x: 34, y: 14, w: 30, h: 82},
+    {id: "digital", x: 65.5, y: 14, w: 32, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Goldmünzen", zone: "waren"},
+    {id: "m2", text: "Salz als Zahlungsmittel", zone: "waren"},
+    {id: "m3", text: "Kaurimuscheln", zone: "waren"},
+    {id: "m4", text: "Lohnüberweisung auf Bankkonto", zone: "kredit"},
+    {id: "m5", text: "Hypothekarkredit", zone: "kredit"},
+    {id: "m6", text: "Sichteinlage bei der UBS", zone: "kredit"},
+    {id: "m7", text: "Bitcoin", zone: "digital"},
+    {id: "m8", text: "TWINT-Zahlung", zone: "digital"},
+    {id: "m9", text: "CBDC (digitales Zentralbankgeld)", zone: "digital"}
+  ],
+  explain: "Warengeld hat inneren Wert (Gold, Salz, Muscheln). Kreditgeld entsteht durch Bankenschöpfung (Kontoguthaben). Digitales Geld umfasst Kryptowährungen (Bitcoin), mobile Zahlungssysteme (TWINT) und potenziell CBDC."
+}
 
 ];

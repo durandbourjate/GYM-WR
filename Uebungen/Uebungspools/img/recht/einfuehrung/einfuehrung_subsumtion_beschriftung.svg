@@ -38,22 +38,10 @@
 
   <!-- Beschriftungs-Kreise (rot, nummeriert) -->
   <!-- 1: Obersatz -->
-  <line x1="60" y1="100" x2="38" y2="82" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="28" cy="72" r="14" fill="#ef4444"/>
-  <text x="28" y="77" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Untersatz -->
-  <line x1="60" y1="210" x2="38" y2="192" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="28" cy="182" r="14" fill="#ef4444"/>
-  <text x="28" y="187" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Subsumtion -->
-  <line x1="60" y1="320" x2="38" y2="302" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="28" cy="292" r="14" fill="#ef4444"/>
-  <text x="28" y="297" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Schlussfolgerung -->
-  <line x1="60" y1="415" x2="38" y2="415" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="28" cy="415" r="14" fill="#ef4444"/>
-  <text x="28" y="420" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 </svg>

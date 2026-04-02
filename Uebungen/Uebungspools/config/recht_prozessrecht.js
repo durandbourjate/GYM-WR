@@ -819,10 +819,10 @@ window.QUESTIONS = [
     q: "Klicke auf die Instanz, die als letztes innerstaatliches Gericht über einen Fall entscheidet.",
     img: { src: "img/recht/prozessrecht/prozessrecht_instanzenzug_hotspot.svg", alt: "Instanzenzug-Diagramm mit Buchstaben-Markern A bis D" },
     hotspots: [
-      { x: 20, y: 79, r: 8, label: "A: Bezirksgericht (1. Instanz)" },
-      { x: 52, y: 57, r: 8, label: "B: Obergericht (2. Instanz)" },
-      { x: 83, y: 35, r: 8, label: "C: Bundesgericht (letzte Instanz)" },
-      { x: 83, y: 9,  r: 8, label: "D: EGMR Strassburg" }
+      { x: 20, y: 78.6, r: 8, label: "A: Bezirksgericht (1. Instanz)" },
+      { x: 52.5, y: 57.1, r: 8, label: "B: Obergericht (2. Instanz)" },
+      { x: 83.8, y: 35.2, r: 8, label: "C: Bundesgericht (letzte Instanz)" },
+      { x: 83.8, y: 9.3, r: 8, label: "D: EGMR Strassburg" }
     ],
     correct: [2],
     explain: "Das Bundesgericht (C) in Lausanne ist die letzte innerstaatliche Instanz der Schweiz. Es prüft primär Rechtsfragen, nicht den Sachverhalt. Danach kann nur noch der EGMR in Strassburg angerufen werden — aber nur bei Verletzungen der Europäischen Menschenrechtskonvention (EMRK)."

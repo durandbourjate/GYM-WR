@@ -456,6 +456,45 @@ window.QUESTIONS = [
  ],
  correct: [0, 1, 2, 3, 4, 5],
  explain: "Traditionell stehen Preisstabilität und Vollbeschäftigung im Zentrum der Wirtschaftspolitik. Wachstum und Aussenhandelsgleichgewicht folgen. Verteilung und Nachhaltigkeit wurden historisch erst später als gleichwertige Ziele anerkannt. Alle sechs Ziele stehen in vielfältigen Wechselbeziehungen – daher «magisch»: Alle gleichzeitig zu erreichen ist kaum möglich."
+},
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Bildbeschriftung: Gefangenendilemma-Matrix ---
+{
+  id: "beschriftung01", topic: "spieltheorie", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+  q: "Beschrifte die Elemente des Gefangenendilemmas.",
+  img: { src: "img/vwl/menschenbild/menschenbild_payoff_beschriftung.svg", alt: "Gefangenendilemma-Matrix mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Beide gestehen: 5/5 Jahre", x: 37, y: 45},
+    {id: "l2", text: "A gesteht, B schweigt: 0/10 Jahre", x: 68, y: 45},
+    {id: "l3", text: "A schweigt, B gesteht: 10/0 Jahre", x: 37, y: 72},
+    {id: "l4", text: "Beide schweigen: 1/1 Jahr", x: 68, y: 72},
+    {id: "l5", text: "Spieler A (Strategien)", x: 8, y: 58},
+    {id: "l6", text: "Spieler B (Strategien)", x: 52, y: 18}
+  ],
+  explain: "Im Gefangenendilemma hat jeder Spieler die dominante Strategie zu gestehen, obwohl beidseitiges Schweigen (1/1) das kollektiv bessere Ergebnis wäre. Das Nash-Gleichgewicht liegt bei «beide gestehen» (5/5)."
+},
+// --- DragDrop: Homo oeconomicus vs. Behavioral Economics ---
+{
+  id: "dragdrop01", topic: "homo", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Annahmen dem passenden Menschenbild zu.",
+  img: { src: "img/vwl/menschenbild/menschenbild_modelle_dragdrop.svg", alt: "Zwei Spalten: Homo oeconomicus und Behavioral Economics" },
+  zones: [
+    {id: "homo", x: 2.5, y: 14, w: 46, h: 82},
+    {id: "behavioral", x: 51.5, y: 14, w: 46, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Vollständige Information", zone: "homo"},
+    {id: "m2", text: "Rationale Nutzenmaximierung", zone: "homo"},
+    {id: "m3", text: "Stabile Präferenzen", zone: "homo"},
+    {id: "m4", text: "Eigeninteresse als Antrieb", zone: "homo"},
+    {id: "m5", text: "Begrenzte Rationalität", zone: "behavioral"},
+    {id: "m6", text: "Verlustaversion", zone: "behavioral"},
+    {id: "m7", text: "Heuristiken und Biases", zone: "behavioral"},
+    {id: "m8", text: "Soziale Präferenzen (Fairness)", zone: "behavioral"}
+  ],
+  explain: "Der Homo oeconomicus geht von rationalem, eigeninteressiertem Verhalten bei vollständiger Information aus. Behavioral Economics zeigt, dass Menschen begrenzt rational sind, Verluste stärker gewichten, Heuristiken nutzen und soziale Präferenzen haben."
 }
 
 ];

@@ -921,5 +921,59 @@ window.QUESTIONS = [
     hints: ["Das Unternehmen steht im Zentrum.", "Es gibt vier Umweltsphären: Gesellschaft, Natur, Technologie, Wirtschaft.", "Anspruchsgruppen (Stakeholder) stehen zwischen Unternehmen und Umwelt."],
     sample: { src: "img/bwl/unternehmensmodell/unternehmensmodell_umweltsphaeren_zeichnen.svg", alt: "Musterlösung: St. Galler Unternehmensmodell" },
     explain: "Das St. Galler Management-Modell zeigt das Unternehmen eingebettet in Umweltsphären (Gesellschaft, Natur, Technologie, Wirtschaft). Anspruchsgruppen (Eigentümer, Mitarbeitende, Kunden, Lieferanten, Staat, Öffentlichkeit, NGOs) stehen an der Schnittstelle und haben unterschiedliche Interessen."
+  },
+
+  // ===== INTERAKTIVE FRAGETYPEN =====
+  {
+    id: "hotspot01", topic: "umweltsphaeren", type: "hotspot", diff: 2, tax: "K2", reviewed: false,
+    q: "Klicke auf die Umweltsphäre, die Gesetze, gesellschaftliche Normen und demografische Entwicklungen umfasst.",
+    img: { src: "img/bwl/unternehmensmodell/unternehmensmodell_umweltsphaeren_hotspot.svg", alt: "St. Galler Unternehmensmodell mit Umweltsphären A–D" },
+    hotspots: [
+      { x: 50, y: 41, r: 8, label: "A: Technologische Sphäre" },
+      { x: 61, y: 52.4, r: 8, label: "B: Ökonomische Sphäre" },
+      { x: 50, y: 81.9, r: 8, label: "C: Soziale Sphäre" },
+      { x: 29.8, y: 52.4, r: 8, label: "D: Ökologische Sphäre" }
+    ],
+    correct: [2],
+    explain: "Die soziale Sphäre umfasst gesellschaftliche Rahmenbedingungen: Gesetze, Normen, Werte, Demografie, Bildung. Die technologische Sphäre betrifft Innovationen/Digitalisierung, die ökonomische Sphäre Konjunktur/Märkte, die ökologische Sphäre Umwelt/Ressourcen."
+  },
+  {
+    id: "beschriftung01", topic: "modelle", type: "bildbeschriftung", diff: 3, tax: "K2", reviewed: false,
+    q: "Beschrifte die sechs Elemente des St. Galler Unternehmensmodells.",
+    img: { src: "img/bwl/unternehmensmodell/unternehmensmodell_beschriftung.svg", alt: "St. Galler Unternehmensmodell mit leeren Bereichen" },
+    labels: [
+      { id: "l1", text: "Unternehmen (Kern)", x: 50, y: 50 },
+      { id: "l2", text: "Anspruchsgruppen (Stakeholder)", x: 50, y: 25 },
+      { id: "l3", text: "Umweltsphären", x: 85, y: 50 },
+      { id: "l4", text: "Interaktionsthemen", x: 50, y: 75 },
+      { id: "l5", text: "Ordnungsmomente (Strategie, Struktur, Kultur)", x: 15, y: 35 },
+      { id: "l6", text: "Prozesse (Management-, Geschäfts-, Unterstützungsproz.)", x: 15, y: 65 }
+    ],
+    explain: "Das St. Galler Modell zeigt: Unternehmen im Zentrum, umgeben von Anspruchsgruppen (Kunden, MA, Aktionäre...), eingebettet in Umweltsphären. Ordnungsmomente (Strategie, Struktur, Kultur) steuern die Prozesse."
+  },
+  {
+    id: "dragdrop01", topic: "umweltsphaeren", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die folgenden Themen der richtigen Umweltsphäre zu.",
+    img: { src: "img/bwl/unternehmensmodell/unternehmensmodell_stakeholder_dragdrop.svg", alt: "Vier Umweltsphären: Technologisch, Ökonomisch, Sozial, Ökologisch" },
+    zones: [
+      { id: "tech", x: 2.5, y: 14, w: 22, h: 82 },
+      { id: "oeko", x: 26, y: 14, w: 22, h: 82 },
+      { id: "sozial", x: 49.5, y: 14, w: 22, h: 82 },
+      { id: "oekol", x: 73, y: 14, w: 25, h: 82 }
+    ],
+    labels: [
+      { id: "lb1", text: "Digitalisierung", zone: "tech" },
+      { id: "lb2", text: "Künstliche Intelligenz", zone: "tech" },
+      { id: "lb3", text: "Konjunkturlage", zone: "oeko" },
+      { id: "lb4", text: "Wechselkurse", zone: "oeko" },
+      { id: "lb5", text: "Arbeitsmarkt", zone: "oeko" },
+      { id: "lb6", text: "Demografischer Wandel", zone: "sozial" },
+      { id: "lb7", text: "Gesetzgebung", zone: "sozial" },
+      { id: "lb8", text: "Wertewandel", zone: "sozial" },
+      { id: "lb9", text: "Klimawandel", zone: "oekol" },
+      { id: "lb10", text: "Ressourcenknappheit", zone: "oekol" },
+      { id: "lb11", text: "Umweltregulierung", zone: "oekol" }
+    ],
+    explain: "Technologisch: Digitalisierung, KI, Automatisierung. Ökonomisch: Konjunktur, Wechselkurse, Arbeitsmarkt. Sozial: Demografie, Gesetze, Werte. Ökologisch: Klima, Ressourcen, Umweltauflagen."
   }
 ];

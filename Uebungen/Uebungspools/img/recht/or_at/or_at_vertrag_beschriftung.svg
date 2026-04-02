@@ -59,27 +59,12 @@
 
   <!-- Red numbered circles -->
   <!-- 1: Antrag -->
-  <line x1="60" y1="78" x2="36" y2="62" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="24" cy="55" r="14" fill="#ef4444"/>
-  <text x="24" y="60" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Annahme -->
-  <line x1="740" y1="78" x2="764" y2="62" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="776" cy="55" r="14" fill="#ef4444"/>
-  <text x="776" y="60" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Konsens -->
-  <line x1="250" y1="210" x2="220" y2="195" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="208" cy="188" r="14" fill="#ef4444"/>
-  <text x="208" y="193" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Handlungsfähigkeit -->
-  <line x1="60" y1="308" x2="36" y2="308" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="24" cy="308" r="14" fill="#ef4444"/>
-  <text x="24" y="313" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: Kein Form/Inhaltsmangel -->
-  <line x1="740" y1="308" x2="764" y2="308" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="776" cy="308" r="14" fill="#ef4444"/>
-  <text x="776" y="313" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 </svg>

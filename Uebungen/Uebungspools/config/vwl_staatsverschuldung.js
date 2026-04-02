@@ -834,6 +834,44 @@ window.QUESTIONS = [
  ],
  correct: [0, 1, 2, 3],
  explain: "Die Schweiz hat dank der Schuldenbremse eine der tiefsten Schuldenquoten weltweit. Deutschland liegt im EU-Mittelfeld (Maastricht-Kriterium: max. 60%). Die USA haben ihre Verschuldung seit der Finanzkrise und COVID massiv erhöht. Japan hat die höchste Schuldenquote aller Industrieländer – finanziert aber den Grossteil im Inland."
+},
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Bildbeschriftung: Schuldenbremse ---
+{
+  id: "beschriftung01", topic: "richtlinien", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+  q: "Beschrifte die Elemente der Schweizer Schuldenbremse.",
+  img: { src: "img/vwl/staatsverschuldung/staatsverschuldung_schuldenbremse_beschriftung.svg", alt: "Schuldenbremse-Mechanismus mit fünf nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Konjunkturfaktor (k)", x: 77, y: 12},
+    {id: "l2", text: "Ausgabenplafond = Einnahmen × k", x: 87, y: 30},
+    {id: "l3", text: "Boom: k < 1 → Pflicht zu Überschüssen", x: 5, y: 76},
+    {id: "l4", text: "Rezession: k > 1 → Defizite erlaubt", x: 95, y: 76},
+    {id: "l5", text: "Ausgleichskonto: Kontrolle über Zyklen", x: 50, y: 96}
+  ],
+  explain: "Schweizer Schuldenbremse (seit 2003): Der Konjunkturfaktor k steuert die erlaubten Ausgaben. Im Boom (k<1) Überschüsse, in der Rezession (k>1) Defizite. Das Ausgleichskonto überwacht den Ausgleich über den Zyklus."
+},
+// --- DragDrop: Fiskalpolitische Massnahmen ---
+{
+  id: "dragdrop01", topic: "defizite", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden fiskalpolitischen Massnahmen der richtigen Ausrichtung zu.",
+  img: { src: "img/vwl/staatsverschuldung/staatsverschuldung_fiskalpolitik_dragdrop.svg", alt: "Zwei Spalten: Expansive und Restriktive Fiskalpolitik" },
+  zones: [
+    {id: "expansiv", x: 2.5, y: 14, w: 46, h: 82},
+    {id: "restriktiv", x: 51.5, y: 14, w: 46, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Erhöhung der Staatsausgaben", zone: "expansiv"},
+    {id: "m2", text: "Steuersenkungen", zone: "expansiv"},
+    {id: "m3", text: "Konjunkturprogramme", zone: "expansiv"},
+    {id: "m4", text: "Subventionen erhöhen", zone: "expansiv"},
+    {id: "m5", text: "Kürzung der Staatsausgaben", zone: "restriktiv"},
+    {id: "m6", text: "Steuererhöhungen", zone: "restriktiv"},
+    {id: "m7", text: "Sparprogramme", zone: "restriktiv"},
+    {id: "m8", text: "Abbau von Subventionen", zone: "restriktiv"}
+  ],
+  explain: "Expansiv (Rezession): Mehr Ausgaben, weniger Steuern → stimuliert Nachfrage. Restriktiv (Überhitzung/Schuldenabbau): Weniger Ausgaben, mehr Steuern → bremst Nachfrage."
 }
 
 ];

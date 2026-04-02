@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <rect width="800" height="420" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">St. Galler Unternehmensmodell — Klicke auf die richtige Umweltsphäre</text>
+
+  <!-- Ring 4: Ökologische Sphäre (grösster Ring) -->
+  <circle cx="400" cy="220" r="175" fill="#f0fdf4" stroke="#86efac" stroke-width="2.5"/>
+  <text x="400" y="58" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#16a34a" font-weight="600">Ökologische Sphäre</text>
+
+  <!-- Ring 3: Soziale Sphäre -->
+  <circle cx="400" cy="220" r="138" fill="#eff6ff" stroke="#93c5fd" stroke-width="2.5"/>
+  <text x="400" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1d4ed8" font-weight="600">Soziale Sphäre</text>
+
+  <!-- Ring 2: Ökonomische Sphäre -->
+  <circle cx="400" cy="220" r="100" fill="#fefce8" stroke="#fde047" stroke-width="2.5"/>
+  <text x="400" y="133" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#a16207" font-weight="600">Ökonomische Sphäre</text>
+
+  <!-- Ring 1: Technologische Sphäre -->
+  <circle cx="400" cy="220" r="62" fill="#fff7ed" stroke="#fdba74" stroke-width="2.5"/>
+  <text x="400" y="170" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#c2410c" font-weight="600">Technol.</text>
+
+  <!-- Zentrum: Unternehmen -->
+  <circle cx="400" cy="220" r="36" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="400" y="216" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#ffffff">Unter-</text>
+  <text x="400" y="230" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#ffffff">nehmen</text>
+
+  <!-- Marker A: Technologische Sphäre (oben, im Ring 1) -->
+  <circle cx="400" cy="172" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="400" y="177" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">A</text>
+
+  <!-- Marker B: Ökonomische Sphäre (rechts, im Ring 2) -->
+  <circle cx="488" cy="220" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="488" y="225" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">B</text>
+
+  <!-- Marker C: Soziale Sphäre (unten, im Ring 3) -->
+  <circle cx="400" cy="344" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="400" y="349" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">C</text>
+
+  <!-- Marker D: Ökologische Sphäre (links, im Ring 4) -->
+  <circle cx="238" cy="220" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="238" y="225" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">D</text>
+
+  <!-- Legend -->
+  <text x="600" y="310" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">A = Technologisch</text>
+  <text x="600" y="328" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">B = Ökonomisch</text>
+  <text x="600" y="346" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">C = Sozial</text>
+  <text x="600" y="364" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">D = Ökologisch</text>
+</svg>

@@ -838,5 +838,54 @@ window.QUESTIONS = [
     ],
     correct: [0, 1, 2, 3],
     explain: "Die SO-Strategie ist die beste Ausgangslage – das Unternehmen kann offensiv agieren. WO bedeutet: Chancen existieren, aber das Unternehmen muss zuerst seine Schwächen beheben. ST erfordert eine defensive Strategie – die eigenen Stärken schützen vor Gefahren. WT ist die schwierigste Lage: Schwächen treffen auf Gefahren – hier geht es oft ums Überleben."
+  },
+
+  // ===== INTERAKTIVE FRAGETYPEN =====
+  {
+    id: "hotspot01", topic: "strategie", type: "hotspot", diff: 2, tax: "K2", reviewed: false,
+    q: "Klicke auf das Feld, das die Strategie beschreibt, bei der ein Unternehmen auf dem Gesamtmarkt den niedrigsten Preis anbietet.",
+    img: { src: "img/bwl/stratfuehrung/stratfuehrung_porter_hotspot.svg", alt: "Porter-Strategiematrix mit vier Feldern A–D" },
+    hotspots: [
+      { x: 25, y: 32.6, r: 8, label: "A: Kostenführerschaft" },
+      { x: 77.5, y: 32.6, r: 8, label: "B: Differenzierung" },
+      { x: 25, y: 71.9, r: 8, label: "C: Kostenfokus (Nische)" },
+      { x: 77.5, y: 71.9, r: 8, label: "D: Differenzierungsfokus" }
+    ],
+    correct: [0],
+    explain: "Kostenführerschaft (A): Gesamtmarkt + Kostenvorteil — das Unternehmen produziert günstiger als alle Konkurrenten."
+  },
+  {
+    id: "beschriftung01", topic: "konzept", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+    q: "Beschrifte die vier Wachstumsstrategien der Ansoff-Matrix.",
+    img: { src: "img/bwl/stratfuehrung/stratfuehrung_ansoff_beschriftung.svg", alt: "Ansoff-Matrix ohne Strategienamen" },
+    labels: [
+      { id: "l1", text: "Marktdurchdringung", x: 30, y: 38 },
+      { id: "l2", text: "Produktentwicklung", x: 72, y: 38 },
+      { id: "l3", text: "Marktentwicklung", x: 30, y: 72 },
+      { id: "l4", text: "Diversifikation", x: 72, y: 72 }
+    ],
+    explain: "Die Ansoff-Matrix: Marktdurchdringung (bestehendes Produkt, bestehender Markt), Produktentwicklung (neues Produkt, bestehender Markt), Marktentwicklung (bestehendes Produkt, neuer Markt), Diversifikation (neues Produkt, neuer Markt)."
+  },
+  {
+    id: "dragdrop01", topic: "swot", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die folgenden Beispiele dem richtigen SWOT-Feld zu.",
+    img: { src: "img/bwl/stratfuehrung/stratfuehrung_swot_dragdrop.svg", alt: "SWOT-Analyse: Stärken, Schwächen, Chancen, Risiken" },
+    zones: [
+      { id: "s", x: 2.5, y: 14, w: 22, h: 82 },
+      { id: "w", x: 26, y: 14, w: 22, h: 82 },
+      { id: "o", x: 49.5, y: 14, w: 22, h: 82 },
+      { id: "t", x: 73, y: 14, w: 25, h: 82 }
+    ],
+    labels: [
+      { id: "lb1", text: "Starke Marke", zone: "s" },
+      { id: "lb2", text: "Erfahrenes Team", zone: "s" },
+      { id: "lb3", text: "Hohe Fixkosten", zone: "w" },
+      { id: "lb4", text: "Veraltete IT-Systeme", zone: "w" },
+      { id: "lb5", text: "Wachsender Markt", zone: "o" },
+      { id: "lb6", text: "Technologischer Wandel als Chance", zone: "o" },
+      { id: "lb7", text: "Neue Konkurrenten", zone: "t" },
+      { id: "lb8", text: "Regulierungsverschärfung", zone: "t" }
+    ],
+    explain: "SWOT: Stärken/Schwächen = interne Analyse (was kann das Unternehmen gut/schlecht?). Chancen/Risiken = externe Analyse (was bietet/bedroht die Umwelt?)."
   }
 ];

@@ -32,27 +32,12 @@
 
   <!-- Red numbered circles with dashed lines pointing into layers -->
   <!-- 1: BV (top) -->
-  <line x1="390" y1="118" x2="100" y2="55" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="48" r="14" fill="#ef4444"/>
-  <text x="88" y="53" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Bundesgesetze -->
-  <line x1="330" y1="195" x2="100" y2="170" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="163" r="14" fill="#ef4444"/>
-  <text x="88" y="168" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Verordnungen -->
-  <line x1="290" y1="255" x2="100" y2="255" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="255" r="14" fill="#ef4444"/>
-  <text x="88" y="260" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Kantonales Recht -->
-  <line x1="230" y1="318" x2="100" y2="335" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="342" r="14" fill="#ef4444"/>
-  <text x="88" y="347" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: Gemeinderecht -->
-  <line x1="200" y1="390" x2="100" y2="415" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="423" r="14" fill="#ef4444"/>
-  <text x="88" y="428" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 </svg>

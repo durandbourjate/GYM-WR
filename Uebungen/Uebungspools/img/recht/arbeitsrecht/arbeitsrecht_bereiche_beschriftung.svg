@@ -39,27 +39,12 @@
 
   <!-- Red numbered circles -->
   <!-- 1: EAV -->
-  <line x1="140" y1="207" x2="100" y2="192" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="88" cy="185" r="14" fill="#ef4444"/>
-  <text x="88" y="190" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: GAV -->
-  <line x1="80" y1="142" x2="50" y2="132" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="38" cy="126" r="14" fill="#ef4444"/>
-  <text x="38" y="131" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: NAV -->
-  <line x1="80" y1="168" x2="50" y2="175" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="38" cy="182" r="14" fill="#ef4444"/>
-  <text x="38" y="187" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: ArG -->
-  <line x1="30" y1="82" x2="14" y2="70" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="14" cy="57" r="14" fill="#ef4444"/>
-  <text x="14" y="62" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: UVG -->
-  <line x1="30" y1="100" x2="14" y2="115" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="14" cy="125" r="14" fill="#ef4444"/>
-  <text x="14" y="130" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 </svg>

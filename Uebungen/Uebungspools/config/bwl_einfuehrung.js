@@ -879,5 +879,42 @@ window.QUESTIONS = [
     ],
     correct: [0, 1, 2, 3, 4],
     explain: "Bei Einzelunternehmung und Kollektivgesellschaft haften die Eigentümer unbeschränkt mit ihrem Privatvermögen. Die Kommanditgesellschaft ist eine Mischform. GmbH und AG sind Kapitalgesellschaften mit beschränkter Haftung – das Risiko ist auf das eingebrachte Kapital begrenzt. Deshalb ist die AG die beliebteste Form für grössere Unternehmen."
+  },
+
+  // ===== INTERAKTIVE FRAGETYPEN =====
+  {
+    id: "beschriftung01", topic: "standort", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+    q: "Beschrifte die fünf Elemente einer Nutzwertanalyse.",
+    img: { src: "img/bwl/einfuehrung/einfuehrung_nwa_beschriftung.svg", alt: "Nutzwertanalyse-Tabelle" },
+    labels: [
+      { id: "l1", text: "Bewertungskriterien", x: 12, y: 30 },
+      { id: "l2", text: "Gewichtung (in %)", x: 28, y: 30 },
+      { id: "l3", text: "Punktbewertung (1–5)", x: 50, y: 30 },
+      { id: "l4", text: "Gewichtete Punkte", x: 72, y: 30 },
+      { id: "l5", text: "Gesamtnutzwert (Summe)", x: 50, y: 88 }
+    ],
+    explain: "Die NWA bewertet Alternativen systematisch: Kriterien festlegen, gewichten (Summe = 100%), Punkte vergeben, gewichtete Punkte berechnen, Gesamtnutzwert vergleichen."
+  },
+  {
+    id: "dragdrop01", topic: "gueter", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die folgenden Beispiele der richtigen Güterkategorie zu.",
+    img: { src: "img/bwl/einfuehrung/einfuehrung_gueterarten_dragdrop.svg", alt: "Güterarten: Freie, Wirtschaftliche und Öffentliche Güter" },
+    zones: [
+      { id: "frei", x: 2.5, y: 14, w: 30, h: 82 },
+      { id: "wirtschaftlich", x: 34, y: 14, w: 30, h: 82 },
+      { id: "oeffentlich", x: 65.5, y: 14, w: 32, h: 82 }
+    ],
+    labels: [
+      { id: "lb1", text: "Sonnenlicht", zone: "frei" },
+      { id: "lb2", text: "Luft (normalerweise)", zone: "frei" },
+      { id: "lb3", text: "Regenwasser", zone: "frei" },
+      { id: "lb4", text: "Smartphone", zone: "wirtschaftlich" },
+      { id: "lb5", text: "Wohnung", zone: "wirtschaftlich" },
+      { id: "lb6", text: "Lebensmittel", zone: "wirtschaftlich" },
+      { id: "lb7", text: "Strassenbeleuchtung", zone: "oeffentlich" },
+      { id: "lb8", text: "Landesverteidigung", zone: "oeffentlich" },
+      { id: "lb9", text: "Öffentlicher Park", zone: "oeffentlich" }
+    ],
+    explain: "Freie Güter sind unbegrenzt verfügbar (Sonnenlicht, Luft). Wirtschaftliche Güter sind knapp und haben einen Preis. Öffentliche Güter sind nicht-rivalisierend und nicht-ausschliessbar (vom Staat bereitgestellt)."
   }
 ];

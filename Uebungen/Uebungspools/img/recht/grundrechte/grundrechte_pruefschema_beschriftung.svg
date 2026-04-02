@@ -44,32 +44,14 @@
 
   <!-- Red numbered circles -->
   <!-- 1: Schutzbereich -->
-  <line x1="230" y1="70" x2="188" y2="52" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="176" cy="46" r="14" fill="#ef4444"/>
-  <text x="176" y="51" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Eingriff -->
-  <line x1="230" y1="162" x2="188" y2="155" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="176" cy="155" r="14" fill="#ef4444"/>
-  <text x="176" y="160" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Gesetzliche Grundlage -->
-  <line x1="75" y1="264" x2="50" y2="252" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="38" cy="246" r="14" fill="#ef4444"/>
-  <text x="38" y="251" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Öffentliches Interesse -->
-  <line x1="400" y1="255" x2="400" y2="228" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="400" cy="216" r="14" fill="#ef4444"/>
-  <text x="400" y="221" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: Verhältnismässigkeit -->
-  <line x1="723" y1="264" x2="748" y2="252" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="760" cy="246" r="14" fill="#ef4444"/>
-  <text x="760" y="251" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 
   <!-- 6: Kerngehalt -->
-  <line x1="180" y1="345" x2="150" y2="390" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="140" cy="400" r="14" fill="#ef4444"/>
-  <text x="140" y="405" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">6</text>
 </svg>

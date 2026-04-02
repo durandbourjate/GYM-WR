@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Güterarten — Ordne die Beispiele zu</text>
+
+  <!-- Spalte 1: Freie Güter (grün) -->
+  <rect x="20" y="55" width="240" height="328" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="140" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#16a34a">Freie Güter</text>
+  <line x1="40" y1="92" x2="240" y2="92" stroke="#86efac" stroke-width="1"/>
+  <text x="140" y="113" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#16a34a">unbegrenzt verfügbar</text>
+  <!-- Drop slots -->
+  <rect x="35" y="125" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="35" y="173" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="35" y="221" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Spalte 2: Wirtschaftliche Güter (blau) -->
+  <rect x="272" y="55" width="240" height="328" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="392" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#1d4ed8">Wirtschaftliche Güter</text>
+  <line x1="292" y1="92" x2="492" y2="92" stroke="#93c5fd" stroke-width="1"/>
+  <text x="392" y="113" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1d4ed8">knapp, haben einen Preis</text>
+  <!-- Drop slots -->
+  <rect x="287" y="125" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="287" y="173" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="287" y="221" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Spalte 3: Öffentliche Güter (orange) -->
+  <rect x="524" y="55" width="256" height="328" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text x="652" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#c2410c">Öffentliche Güter</text>
+  <line x1="544" y1="92" x2="760" y2="92" stroke="#fdba74" stroke-width="1"/>
+  <text x="652" y="113" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#c2410c">nicht-rivalisierend, vom Staat</text>
+  <!-- Drop slots -->
+  <rect x="539" y="125" width="226" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="539" y="173" width="226" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="539" y="221" width="226" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Hint -->
+  <text x="400" y="392" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Güterbeispiele in die passende Kategorie</text>
+</svg>

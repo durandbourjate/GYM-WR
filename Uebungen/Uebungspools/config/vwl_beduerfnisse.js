@@ -507,6 +507,66 @@ window.QUESTIONS = [
     hints: ["Die Pyramide hat 5 Stufen, von unten nach oben.", "Die untersten 4 Stufen sind Defizitbedürfnisse.", "Ganz oben steht die Selbstverwirklichung."],
     sample: { src: "img/vwl/beduerfnisse/beduerfnisse_maslow_zeichnen.svg", alt: "Musterlösung: Maslow-Pyramide mit 5 Stufen" },
     explain: "Die Bedürfnispyramide nach Maslow (1943) ordnet menschliche Bedürfnisse hierarchisch: Grundbedürfnisse → Sicherheit → Soziale Bedürfnisse → Wertschätzung → Selbstverwirklichung. Die unteren vier sind Defizitbedürfnisse (Mangel motiviert), die oberste ist ein Wachstumsbedürfnis."
-  }
+  },
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Hotspot: Bedürfnispyramide ---
+{
+  id: "hotspot01", topic: "beduerfnisse", type: "hotspot", diff: 1, tax: "K2", reviewed: false,
+  q: "Klicke auf die Stufe der Bedürfnispyramide, die den Wunsch nach Freundschaft und sozialer Zugehörigkeit umfasst.",
+  img: { src: "img/vwl/beduerfnisse/beduerfnisse_pyramide_hotspot.svg", alt: "Maslow-Bedürfnispyramide mit fünf Stufen, markiert A (unten) bis E (oben)" },
+  hotspots: [
+    {x: 50, y: 85.7, r: 8, label: "A: Grundbedürfnisse"},
+    {x: 50, y: 71.4, r: 8, label: "B: Sicherheitsbedürfnisse"},
+    {x: 50, y: 57.1, r: 8, label: "C: Soziale Bedürfnisse"},
+    {x: 50, y: 42.9, r: 8, label: "D: Wertschätzung"},
+    {x: 50, y: 26.2, r: 8, label: "E: Selbstverwirklichung"}
+  ],
+  correct: [2],
+  explain: "Soziale Bedürfnisse (3. Stufe nach Maslow) umfassen den Wunsch nach Zugehörigkeit, Freundschaft, Liebe und Gemeinschaft. Sie werden relevant, wenn Grund- und Sicherheitsbedürfnisse befriedigt sind."
+},
+
+// --- Bildbeschriftung: Bedürfnispyramide beschriften ---
+{
+  id: "beschriftung01", topic: "beduerfnisse", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die fünf Stufen der Bedürfnispyramide nach Maslow.",
+  img: { src: "img/vwl/beduerfnisse/beduerfnisse_pyramide_beschriftung.svg", alt: "Maslow-Pyramide mit fünf Stufen und nummerierten roten Kreisen (1–5)" },
+  labels: [
+    {id: "l1", text: "Grundbedürfnisse (physiologisch)", x: 15, y: 82},
+    {id: "l2", text: "Sicherheitsbedürfnisse",           x: 15, y: 66},
+    {id: "l3", text: "Soziale Bedürfnisse",              x: 15, y: 50},
+    {id: "l4", text: "Wertschätzung / Anerkennung",      x: 15, y: 34},
+    {id: "l5", text: "Selbstverwirklichung",             x: 15, y: 19}
+  ],
+  explain: "Die fünf Stufen nach Maslow (1943): 1) Grundbedürfnisse (Nahrung, Schlaf), 2) Sicherheit (Wohnung, Gesundheit), 3) Soziale Bedürfnisse (Zugehörigkeit, Liebe), 4) Wertschätzung (Anerkennung, Status), 5) Selbstverwirklichung (persönliches Wachstum)."
+},
+
+// --- DragDrop: Beispiele den Bedürfnisstufen zuordnen ---
+{
+  id: "dragdrop01", topic: "beduerfnisse", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Beispiele der passenden Stufe der Bedürfnispyramide zu.",
+  img: { src: "img/vwl/beduerfnisse/beduerfnisse_stufen_dragdrop.svg", alt: "Fünf Spalten: Grundbedürfnisse, Sicherheit, Sozial, Wertschätzung, Selbstverwirklichung" },
+  zones: [
+    {id: "grund",           x: 2.5,  y: 14, w: 17.5, h: 82},
+    {id: "sicherheit",      x: 21,   y: 14, w: 17.5, h: 82},
+    {id: "sozial",          x: 39.5, y: 14, w: 17.5, h: 82},
+    {id: "wertschaetzung",  x: 58,   y: 14, w: 17.5, h: 82},
+    {id: "selbst",          x: 76.5, y: 14, w: 21,   h: 82}
+  ],
+  labels: [
+    {id: "m1",  text: "Nahrung und Wasser",        zone: "grund"},
+    {id: "m2",  text: "Wohnung und Kleidung",       zone: "grund"},
+    {id: "m3",  text: "Krankenversicherung",         zone: "sicherheit"},
+    {id: "m4",  text: "Stabiler Arbeitsplatz",       zone: "sicherheit"},
+    {id: "m5",  text: "Freundschaft und Liebe",      zone: "sozial"},
+    {id: "m6",  text: "Familienzugehörigkeit",       zone: "sozial"},
+    {id: "m7",  text: "Beruflicher Erfolg",          zone: "wertschaetzung"},
+    {id: "m8",  text: "Respekt und Anerkennung",     zone: "wertschaetzung"},
+    {id: "m9",  text: "Kreative Entfaltung",         zone: "selbst"},
+    {id: "m10", text: "Persönliches Wachstum",       zone: "selbst"}
+  ],
+  explain: "Maslow ordnet Bedürfnisse hierarchisch: Grundbedürfnisse (Nahrung, Kleidung) → Sicherheit (Versicherung, Arbeitsplatz) → Soziales (Freundschaft, Familie) → Wertschätzung (Erfolg, Anerkennung) → Selbstverwirklichung (Kreativität, Wachstum)."
+}
 
 ];

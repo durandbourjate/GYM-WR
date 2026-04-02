@@ -289,6 +289,61 @@ window.QUESTIONS = [
  ],
  correct: [0, 1, 2, 3],
  explain: "Die internationale Steuerkooperation hat sich schrittweise verschärft: Von bilateralen Abkommen gegen Doppelbesteuerung über den Druck auf das Schweizer Bankgeheimnis (nach dem UBS-Skandal) zum automatischen Informationsaustausch (über 100 Länder) bis zur globalen Mindeststeuer von 15% für Unternehmen mit über 750 Mio. EUR Umsatz."
+},
+
+// ===== INTERAKTIVE FRAGETYPEN (Hotspot, Bildbeschriftung, DragDrop) =====
+
+// --- Hotspot: Laffer-Kurve Optimum ---
+{
+  id: "hotspot01", topic: "quoten", type: "hotspot", diff: 1, tax: "K2", reviewed: false,
+  q: "Klicke auf den Punkt der Laffer-Kurve, bei dem die Steuereinnahmen maximal sind.",
+  img: { src: "img/vwl/steuern/steuern_laffer_hotspot.svg", alt: "Laffer-Kurve mit vier markierten Punkten (A–D)" },
+  hotspots: [
+    {x: 50, y: 21.4, r: 8, label: "A: Optimaler Steuersatz"},
+    {x: 25, y: 54.8, r: 8, label: "B: Tiefer Steuersatz"},
+    {x: 75, y: 54.8, r: 8, label: "C: Hoher Steuersatz"},
+    {x: 91.9, y: 84.5, r: 8, label: "D: 100% Steuersatz"}
+  ],
+  correct: [0],
+  explain: "Die Laffer-Kurve zeigt: Bei 0% und 100% Steuersatz sind die Einnahmen null. Am Scheitelpunkt (A) sind sie maximal. Steigt der Satz über das Optimum, sinken die Einnahmen durch weniger Arbeit und Steuerflucht."
+},
+// --- Bildbeschriftung: Steuersystem Schweiz ---
+{
+  id: "beschriftung01", topic: "steuerarten", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+  q: "Beschrifte die Ebenen und wichtigsten Steuerarten des Schweizer Steuersystems.",
+  img: { src: "img/vwl/steuern/steuern_system_beschriftung.svg", alt: "Steuersystem der Schweiz mit sechs nummerierten Beschriftungspunkten" },
+  labels: [
+    {id: "l1", text: "Bundesebene", x: 5, y: 67},
+    {id: "l2", text: "Direkte Bundessteuer + MWST", x: 5, y: 79},
+    {id: "l3", text: "Kantonsebene", x: 50, y: 67},
+    {id: "l4", text: "Einkommens- und Vermögenssteuer", x: 50, y: 79},
+    {id: "l5", text: "Gemeindeebene", x: 95, y: 67},
+    {id: "l6", text: "Gemeindesteuerzuschlag", x: 95, y: 79}
+  ],
+  explain: "Dreistufiges System: Bund (direkte Bundessteuer + MWST), Kantone (Einkommens-/Vermögenssteuer mit unterschiedlichen Steuerfüssen = Steuerwettbewerb), Gemeinden (Zuschlag auf Kantonssteuern)."
+},
+// --- DragDrop: Steuerarten den Ebenen zuordnen ---
+{
+  id: "dragdrop01", topic: "steuerarten", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+  q: "Ordne die folgenden Steuerarten der richtigen staatlichen Ebene zu.",
+  img: { src: "img/vwl/steuern/steuern_ebenen_dragdrop.svg", alt: "Drei Spalten: Bund, Kanton, Gemeinde" },
+  zones: [
+    {id: "bund", x: 2.5, y: 14, w: 30, h: 82},
+    {id: "kanton", x: 35, y: 14, w: 30, h: 82},
+    {id: "gemeinde", x: 67.5, y: 14, w: 30, h: 82}
+  ],
+  labels: [
+    {id: "m1", text: "Mehrwertsteuer (MWST)", zone: "bund"},
+    {id: "m2", text: "Direkte Bundessteuer", zone: "bund"},
+    {id: "m3", text: "Verrechnungssteuer", zone: "bund"},
+    {id: "m4", text: "Einkommenssteuer (kantonaler Tarif)", zone: "kanton"},
+    {id: "m5", text: "Vermögenssteuer", zone: "kanton"},
+    {id: "m6", text: "Motorfahrzeugsteuer", zone: "kanton"},
+    {id: "m7", text: "Gemeindesteuerfuss (Zuschlag)", zone: "gemeinde"},
+    {id: "m8", text: "Liegenschaftssteuer", zone: "gemeinde"},
+    {id: "m9", text: "Hundesteuer und Gebühren", zone: "gemeinde"}
+  ],
+  explain: "Bund: MWST, direkte Bundessteuer, Verrechnungssteuer. Kantone: Einkommens-/Vermögenssteuer (Steuerwettbewerb!), Motorfahrzeugsteuer. Gemeinden: Zuschlag auf Kantonssteuer, Liegenschaftssteuer, diverse Abgaben."
 }
 
 ];

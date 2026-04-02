@@ -3128,6 +3128,47 @@ window.QUESTIONS = [
       }
     ],
     explain: "Vorausbezahlte Aufwände müssen periodengerecht abgegrenzt werden. Der Anteil für das Folgejahr wird als Transitorische Aktive erfasst."
+  },
+
+  // ===== INTERAKTIVE FRAGETYPEN =====
+  {
+    id: "beschriftung01", topic: "bilanz", type: "bildbeschriftung", diff: 2, tax: "K2", reviewed: false,
+    q: "Beschrifte die sechs Bereiche der Bilanz.",
+    img: { src: "img/bwl/fibu/fibu_bilanz_beschriftung.svg", alt: "T-förmige Bilanzstruktur ohne Beschriftungen" },
+    labels: [
+      { id: "l1", text: "Umlaufvermögen (UV)", x: 20, y: 30 },
+      { id: "l2", text: "Anlagevermögen (AV)", x: 20, y: 65 },
+      { id: "l3", text: "Fremdkapital kurzfristig (FKk)", x: 80, y: 25 },
+      { id: "l4", text: "Fremdkapital langfristig (FKl)", x: 80, y: 45 },
+      { id: "l5", text: "Eigenkapital (EK)", x: 80, y: 72 },
+      { id: "l6", text: "Bilanzsumme = Aktiven = Passiven", x: 50, y: 92 }
+    ],
+    explain: "Bilanz: Links Aktiven (UV oben, AV unten), rechts Passiven (FK oben, EK unten). UV = Kasse, Bank, Debitoren, Vorräte. AV = Maschinen, Gebäude, Fahrzeuge. FKk = Kreditoren, kurzfr. Darlehen. FKl = Hypothek. EK = Eigenkapital, Gewinnvortrag."
+  },
+  {
+    id: "dragdrop01", topic: "bilanz", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die folgenden Konten der richtigen Bilanzseite zu.",
+    img: { src: "img/bwl/fibu/fibu_konten_dragdrop.svg", alt: "Vier Bilanzpositionen: Umlaufverm., Anlageverm., Fremdkapital, Eigenkapital" },
+    zones: [
+      { id: "uv", x: 2.5, y: 14, w: 22, h: 82 },
+      { id: "av", x: 26, y: 14, w: 22, h: 82 },
+      { id: "fk", x: 49.5, y: 14, w: 22, h: 82 },
+      { id: "ek", x: 73, y: 14, w: 25, h: 82 }
+    ],
+    labels: [
+      { id: "lb1", text: "Kasse", zone: "uv" },
+      { id: "lb2", text: "Bank", zone: "uv" },
+      { id: "lb3", text: "Debitoren", zone: "uv" },
+      { id: "lb4", text: "Maschinen", zone: "av" },
+      { id: "lb5", text: "Fahrzeuge", zone: "av" },
+      { id: "lb6", text: "Mobiliar", zone: "av" },
+      { id: "lb7", text: "Kreditoren", zone: "fk" },
+      { id: "lb8", text: "Hypothek", zone: "fk" },
+      { id: "lb9", text: "Darlehen (langfristig)", zone: "fk" },
+      { id: "lb10", text: "Eigenkapital", zone: "ek" },
+      { id: "lb11", text: "Gewinnvortrag", zone: "ek" }
+    ],
+    explain: "UV: Liquide Mittel + kurzfr. Forderungen (Kasse, Bank, Debitoren). AV: Langfr. Vermögenswerte (Maschinen, Fahrzeuge, Mobiliar). FK: Schulden (Kreditoren kurz, Hypothek/Darlehen lang). EK: Eigenkapital + Gewinnvortrag."
   }
 
 ];

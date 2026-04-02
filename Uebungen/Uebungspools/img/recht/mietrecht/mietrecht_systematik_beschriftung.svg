@@ -45,27 +45,12 @@
 
   <!-- Red numbered circles -->
   <!-- 1: Mietvertrag -->
-  <line x1="270" y1="70" x2="240" y2="55" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="228" cy="48" r="14" fill="#ef4444"/>
-  <text x="228" y="53" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">1</text>
 
   <!-- 2: Vermieter -->
-  <line x1="60" y1="178" x2="34" y2="162" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="22" cy="155" r="14" fill="#ef4444"/>
-  <text x="22" y="160" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">2</text>
 
   <!-- 3: Mieter -->
-  <line x1="740" y1="178" x2="766" y2="162" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="778" cy="155" r="14" fill="#ef4444"/>
-  <text x="778" y="160" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">3</text>
 
   <!-- 4: Mängelrecht -->
-  <line x1="270" y1="272" x2="240" y2="265" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="228" cy="262" r="14" fill="#ef4444"/>
-  <text x="228" y="267" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">4</text>
 
   <!-- 5: Kündigung -->
-  <line x1="270" y1="368" x2="240" y2="368" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
-  <circle cx="228" cy="368" r="14" fill="#ef4444"/>
-  <text x="228" y="373" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
 </svg>
