@@ -2,7 +2,7 @@
 // Übungspool: Konjunktur und Konjunkturpolitik
 // Fachbereich: VWL
 // Kapitel: Eisenhut K.5 (Konjunkturphänomen) & K.6 (Konjunkturpolitik)
-// Anzahl Fragen: 74
+// Anzahl Fragen: 83 (74 klassisch + 9 neue interaktive Typen)
 // Stufe: SF GYM3–GYM4
 // Erstellt: 2026-02-20
 // ============================================================
@@ -910,5 +910,146 @@ window.QUESTIONS = [
     ],
     correct: "D",
     explain: "Die antizyklische Erhöhung der Staatsausgaben (C) ist das Kerninstrument der keynesianischen Konzeption, nicht der angebotsorientierten. Angebotsökonomen setzen stattdessen auf Deregulierung (A), Steuersenkungen (B) und flexible Arbeitsmärkte (D), um die Rahmenbedingungen für Unternehmen langfristig zu verbessern."
+  },
+
+  // ════════════════════════════════════════════════════════════
+  //  NEUE FRAGETYPEN — Interaktive Aufgaben
+  // ════════════════════════════════════════════════════════════
+
+  // --- Sortierung: Konjunkturphasen in Reihenfolge ---
+  {
+    id: "neu01", topic: "zyklus", type: "sortierung", diff: 1, tax: "K2", reviewed: false,
+    q: "Bringe die vier Konjunkturphasen in die richtige Reihenfolge (beginnend beim Tiefpunkt).",
+    items: [
+      "Aufschwung (Erholung)",
+      "Hochkonjunktur (Boom)",
+      "Abschwung (Rezession beginnt)",
+      "Talsohle (Depression)"
+    ],
+    correct: [0, 1, 2, 3],
+    explain: "Der Konjunkturzyklus beginnt am Tiefpunkt (Talsohle) mit dem Aufschwung, erreicht die Hochkonjunktur (Boom), geht in den Abschwung über und endet wieder an der Talsohle. Dann beginnt der Zyklus erneut."
+  },
+
+  // --- Sortierung: Expansive Geldpolitik ---
+  {
+    id: "neu02", topic: "keynes", type: "sortierung", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die Schritte der expansiven Geldpolitik in die korrekte Wirkungskette.",
+    items: [
+      "SNB senkt den Leitzins",
+      "Geschäftsbanken vergeben günstigere Kredite",
+      "Unternehmen und Haushalte investieren und konsumieren mehr",
+      "Die gesamtwirtschaftliche Nachfrage steigt",
+      "Produktion und Beschäftigung nehmen zu"
+    ],
+    correct: [0, 1, 2, 3, 4],
+    explain: "Die Wirkungskette der expansiven Geldpolitik: Die SNB senkt den Leitzins → Kredite werden günstiger → Investitionen und Konsum steigen → gesamtwirtschaftliche Nachfrage nimmt zu → Produktion und Beschäftigung wachsen. Dies entspricht dem keynesianischen Transmissionsmechanismus."
+  },
+
+  // --- Formel: BIP-Wachstumsrate ---
+  {
+    id: "neu03", topic: "indikatoren", type: "formel", diff: 2, tax: "K2", reviewed: false,
+    q: "Gib die Formel für die BIP-Wachstumsrate ein (in Prozent). Verwende BIP_t für das aktuelle und BIP_{t-1} für das Vorjahres-BIP.",
+    hints: ["Die Wachstumsrate misst die prozentuale Veränderung gegenüber dem Vorjahr.", "Grundstruktur: Veränderung geteilt durch Ausgangswert, mal 100."],
+    correct: "\\frac{BIP_t - BIP_{t-1}}{BIP_{t-1}} \\times 100",
+    explain: "Die BIP-Wachstumsrate berechnet sich als: (BIP_t − BIP_{t−1}) / BIP_{t−1} × 100. Sie gibt an, um wie viel Prozent das reale BIP gegenüber dem Vorjahr gewachsen (oder geschrumpft) ist. Eine negative Wachstumsrate über zwei aufeinanderfolgende Quartale gilt als technische Rezession."
+  },
+
+  // --- Formel: Reales BIP ---
+  {
+    id: "neu04", topic: "indikatoren", type: "formel", diff: 2, tax: "K2", reviewed: false,
+    q: "Gib die Formel zur Berechnung des realen BIP ein. Verwende die Variablen «nominales BIP» und «Preisindex».",
+    hints: ["Das reale BIP bereinigt das nominale BIP um Preisveränderungen.", "Der Preisindex wird als Prozentwert angegeben (z.B. 105 für 5 % Inflation)."],
+    correct: "\\frac{\\text{nominales BIP}}{\\text{Preisindex}} \\times 100",
+    explain: "Reales BIP = nominales BIP / Preisindex × 100. Damit werden Preisveränderungen (Inflation/Deflation) herausgerechnet. Nur das reale BIP erlaubt einen aussagekräftigen Vergleich der Wirtschaftsleistung über die Zeit, da es die tatsächliche Mengenentwicklung abbildet."
+  },
+
+  // --- Zeichnen: Konjunkturzyklus ---
+  {
+    id: "neu05", topic: "zyklus", type: "zeichnen", diff: 2, tax: "K3", reviewed: false,
+    q: "Zeichne einen Konjunkturzyklus über ca. 2 vollständige Zyklen. Zeichne auch die Trendlinie (Produktionspotenzial) ein und beschrifte die vier Phasen.",
+    hints: ["Die x-Achse zeigt die Zeit, die y-Achse das reale BIP.", "Die Trendlinie steigt langfristig an (Wirtschaftswachstum).", "Die Konjunkturkurve schwankt um den Trend herum."],
+    sample: {
+      src: "img/vwl/konjunktur/konjunktur_zyklus_01.svg",
+      alt: "Musterlösung: Konjunkturzyklus mit Trend und beschrifteten Phasen"
+    },
+    explain: "Ein korrekter Konjunkturzyklus zeigt: (1) eine steigende Trendlinie für das Produktionspotenzial, (2) eine wellenförmige Kurve des tatsächlichen BIP, die um den Trend schwankt, (3) vier klar erkennbare Phasen: Aufschwung, Hochkonjunktur/Boom, Abschwung und Rezession/Talsohle."
+  },
+
+  // --- Hotspot: Phase mit höchster Arbeitslosigkeit ---
+  {
+    id: "neu06", topic: "zyklus", type: "hotspot", diff: 1, tax: "K2", reviewed: false,
+    q: "Klicke auf den Punkt im Konjunkturzyklus, an dem die Arbeitslosigkeit typischerweise am höchsten ist.",
+    img: {
+      src: "img/vwl/konjunktur/konjunktur_zyklus_hotspot.svg",
+      alt: "Konjunkturzyklus mit vier markierten Punkten (A–D)"
+    },
+    hotspots: [
+      {x: 20, y: 77, r: 20, label: "A: Talsohle"},
+      {x: 37.5, y: 41, r: 20, label: "B: Boom"},
+      {x: 48.75, y: 52, r: 20, label: "C: Abschwung"},
+      {x: 29.4, y: 60, r: 20, label: "D: Aufschwung"}
+    ],
+    correct: [0],
+    explain: "Die Arbeitslosigkeit ist an der Talsohle (Punkt A) am höchsten. In der Rezession sinkt die Produktion, Unternehmen entlassen Arbeitskräfte. Da der Arbeitsmarkt ein Spätindikator ist, erreicht die Arbeitslosigkeit ihren Höchststand erst am Tiefpunkt des Konjunkturzyklus."
+  },
+
+  // --- Bildbeschriftung: Konjunkturzyklus beschriften ---
+  {
+    id: "neu07", topic: "zyklus", type: "bildbeschriftung", diff: 1, tax: "K2", reviewed: false,
+    q: "Beschrifte die fünf markierten Stellen im Konjunkturzyklus-Diagramm.",
+    img: {
+      src: "img/vwl/konjunktur/konjunktur_zyklus_beschriftung.svg",
+      alt: "Konjunkturzyklus mit fünf nummerierten Beschriftungspunkten"
+    },
+    labels: [
+      {id: "l1", text: "Trend (Produktionspotenzial)", x: 82.5, y: 25},
+      {id: "l2", text: "Aufschwung", x: 28.75, y: 20},
+      {id: "l3", text: "Hochkonjunktur (Boom)", x: 41.9, y: 18},
+      {id: "l4", text: "Abschwung", x: 54.4, y: 25},
+      {id: "l5", text: "Rezession (Talsohle)", x: 63.5, y: 78}
+    ],
+    explain: "Die fünf Elemente: (1) Die gestrichelte Trendlinie zeigt das Produktionspotenzial — die langfristige Wachstumskapazität. (2) Aufschwung: BIP steigt zum Trend. (3) Hochkonjunktur/Boom: BIP liegt über dem Trend (positive Outputlücke). (4) Abschwung: BIP fällt zurück. (5) Rezession/Talsohle: BIP liegt unter dem Trend (negative Outputlücke)."
+  },
+
+  // --- DragDrop: Merkmale den Phasen zuordnen ---
+  {
+    id: "neu08", topic: "zyklus", type: "dragdrop_bild", diff: 2, tax: "K3", reviewed: false,
+    q: "Ordne die konjunkturellen Merkmale der richtigen Phase zu.",
+    img: {
+      src: "img/vwl/konjunktur/konjunktur_phasen_dragdrop.svg",
+      alt: "Vier Konjunkturphasen mit Drop-Zonen"
+    },
+    zones: [
+      {id: "aufschwung", x: 2.5, y: 14, w: 22.5, h: 82.5},
+      {id: "boom", x: 26.25, y: 14, w: 22.5, h: 82.5},
+      {id: "abschwung", x: 50, y: 14, w: 22.5, h: 82.5},
+      {id: "rezession", x: 73.75, y: 14, w: 23.75, h: 82.5}
+    ],
+    labels: [
+      {id: "m1", text: "Investitionen steigen", zone: "aufschwung"},
+      {id: "m2", text: "Arbeitslosigkeit sinkt", zone: "aufschwung"},
+      {id: "m3", text: "Optimistische Erwartungen", zone: "aufschwung"},
+      {id: "m4", text: "Vollbeschäftigung", zone: "boom"},
+      {id: "m5", text: "Preisniveau steigt stark", zone: "boom"},
+      {id: "m6", text: "Kapazitäten ausgelastet", zone: "boom"},
+      {id: "m7", text: "Aufträge gehen zurück", zone: "abschwung"},
+      {id: "m8", text: "Gewinne sinken", zone: "abschwung"},
+      {id: "m9", text: "Pessimistische Erwartungen", zone: "abschwung"},
+      {id: "m10", text: "Hohe Arbeitslosigkeit", zone: "rezession"},
+      {id: "m11", text: "Tiefe Kapazitätsauslastung", zone: "rezession"},
+      {id: "m12", text: "Preisniveau stagniert/sinkt", zone: "rezession"}
+    ],
+    explain: "Jede Konjunkturphase hat typische Merkmale: Im Aufschwung steigen Investitionen und die Arbeitslosigkeit sinkt. Im Boom herrscht Vollbeschäftigung bei steigendem Preisniveau. Im Abschwung gehen Aufträge und Gewinne zurück. In der Rezession ist die Arbeitslosigkeit hoch und die Kapazitäten sind unterausgelastet."
+  },
+
+  // --- PDF: Lagebericht analysieren ---
+  {
+    id: "neu09", topic: "indikatoren", type: "pdf", diff: 3, tax: "K4", reviewed: false,
+    q: "Lies den fiktiven Konjunktur-Lagebericht und beantworte: In welcher Konjunkturphase befindet sich die Schweiz gemäss den beschriebenen Indikatoren? Begründe deine Einschätzung mit mindestens drei Indikatoren aus dem Text.",
+    pdfUrl: "img/vwl/konjunktur/konjunktur_lagebericht.pdf",
+    antwortTyp: "freitext",
+    hints: ["Achte auf die Entwicklung von BIP, Arbeitsmarkt, Preisen und Stimmungsindikatoren.", "Vergleiche die beschriebenen Werte mit den typischen Merkmalen der vier Konjunkturphasen.", "Eine Wachstumsrate von 1,8 % ist moderat — liegt die Wirtschaft über oder unter dem Potenzial?"],
+    sample: "Die Schweiz befindet sich gemäss dem Lagebericht in einem Aufschwung, der sich der Hochkonjunktur nähert. Drei Belege: (1) Das BIP wächst mit 1,8 % solide — die Erholung setzt sich fort. (2) Die Arbeitslosenquote ist mit 2,1 % tief und weiter sinkend, bei gleichzeitig steigenden offenen Stellen. (3) Die Stimmungsindikatoren (KOF 102,5, PMI 51,3) liegen über der Wachstumsschwelle und steigen. Die moderate Inflation von 1,4 % spricht gegen einen Boom, da in der Hochkonjunktur typischerweise stärkerer Preisdruck herrscht.",
+    explain: "Die Indikatoren im Lagebericht deuten auf einen Aufschwung hin: positives BIP-Wachstum, sinkende Arbeitslosigkeit, steigende Exporte und positive Stimmungsindikatoren. Die Inflation ist noch moderat (1,4 %), was gegen eine Überhitzung (Boom) spricht. Die SNB hält den Leitzins stabil — typisch für eine Phase, in der die Erholung sich festigt, aber noch keine Überhitzungsgefahr besteht."
   }
 ];
