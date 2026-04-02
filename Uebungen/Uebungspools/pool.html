@@ -131,8 +131,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 /* ── Sortierung (Reihenfolge) ── */
 .sortierung-hint{font-size:.85rem;color:var(--c-text-muted);margin-bottom:8px}
 .sortierung-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.sortierung-item{padding:10px 16px;background:var(--c-card);border:2px solid var(--c-border);border-radius:var(--radius);cursor:pointer;font-size:.9rem;font-weight:500;transition:all .15s;user-select:none}
-.sortierung-item:hover:not(.placed){border-color:var(--c-primary);background:var(--c-hover)}
+.sortierung-item{padding:10px 16px;background:var(--c-primary);color:#fff;border:2px solid var(--c-primary);border-radius:var(--radius);cursor:pointer;font-size:.9rem;font-weight:600;transition:all .15s;user-select:none}
+.sortierung-item:hover:not(.placed){opacity:.85;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .sortierung-item.placed{opacity:.35;pointer-events:none;border-style:dashed}
 .sortierung-result{margin-top:8px}
 .sortierung-result-title{font-size:.8rem;color:var(--c-text-muted);margin-bottom:6px;font-weight:600}
@@ -174,10 +174,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .beschriftung-correction{position:absolute;left:calc(100% + 6px);top:calc(100% + 2px);white-space:nowrap;font-size:.7rem;color:var(--c-error);font-weight:600}
 .beschriftung-spot.spot-left .beschriftung-correction{left:auto;right:calc(100% + 6px)}
 .beschriftung-bank{display:flex;flex-wrap:wrap;gap:8px}
-.beschriftung-label{padding:8px 14px;background:var(--c-surface);border:2px solid var(--c-primary);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;color:var(--c-text);transition:all .15s;user-select:none}
-.beschriftung-label:hover:not(.placed){background:var(--c-primary);color:#fff}
-.beschriftung-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary);box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.beschriftung-label.placed{opacity:.4;cursor:default;border-style:dashed}
+.beschriftung-label{padding:8px 14px;background:var(--c-primary);color:#fff;border:2px solid var(--c-primary);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:600;transition:all .15s;user-select:none}
+.beschriftung-label:hover:not(.placed){opacity:.85;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.beschriftung-label.picked{box-shadow:0 0 0 3px rgba(255,255,255,.5),0 2px 8px rgba(0,0,0,.3);transform:scale(1.05)}
+.beschriftung-label.placed{opacity:.35;cursor:default;border-style:dashed}
 .beschriftung-status{font-size:.85rem;color:var(--c-text-muted)}
 /* ── DragDrop Bild ── */
 .dd-bild-container{display:flex;flex-direction:column;gap:12px}
@@ -191,10 +191,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--c-bg);color:var
 .dd-zone-label .dd-placed-tag{display:inline-block;padding:2px 8px;background:var(--c-primary);color:#fff;border-radius:4px;font-size:.7rem;font-weight:600;white-space:nowrap}
 .dd-zone-label .dd-placed-tag.dd-correct{background:var(--c-success)}.dd-zone-label .dd-placed-tag.dd-wrong{background:var(--c-error)}
 .dd-label-bank{display:flex;flex-wrap:wrap;gap:8px}
-.dd-label{padding:8px 14px;background:var(--c-surface);border:2px solid var(--c-primary);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:500;color:var(--c-text);transition:all .15s;user-select:none}
-.dd-label:hover:not(.placed){background:var(--c-primary);color:#fff}
-.dd-label.picked{background:var(--c-primary);color:#fff;border-color:var(--c-primary);box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.dd-label.placed{opacity:.5;cursor:pointer;border-style:dashed;border-color:var(--c-primary)}
+.dd-label{padding:8px 14px;background:var(--c-primary);color:#fff;border:2px solid var(--c-primary);border-radius:var(--radius);cursor:pointer;font-size:.85rem;font-weight:600;transition:all .15s;user-select:none}
+.dd-label:hover:not(.placed){opacity:.85;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.dd-label.picked{box-shadow:0 0 0 3px rgba(255,255,255,.5),0 2px 8px rgba(0,0,0,.3);transform:scale(1.05)}
+.dd-label.placed{opacity:.4;cursor:pointer;border-style:dashed}
 .dd-status{font-size:.85rem;color:var(--c-text-muted)}
 /* ── Code-Editor ── */
 .code-container{display:flex;flex-direction:column;gap:8px}
