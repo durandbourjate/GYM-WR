@@ -1,5 +1,6 @@
 import type { GooglePayload, CodeLoginResponse } from '../types/auth'
 import type { Gruppe, Mitglied } from '../types/gruppen'
+import type { Frage, FragenFilter } from '../types/fragen'
 
 export interface AuthServiceInterface {
   initializeGoogleAuth(onSuccess: (payload: GooglePayload) => void, onError: (error: string) => void): void
@@ -21,4 +22,9 @@ export interface GruppenService {
 export interface SessionService {
   generiereSessionToken(email: string): Promise<string>
   validiereSessionToken(token: string, email: string): Promise<boolean>
+}
+
+export interface FragenService {
+  ladeFragen(gruppeId: string, filter?: FragenFilter): Promise<Frage[]>
+  ladeThemen(gruppeId: string, fach?: string): Promise<string[]>
 }

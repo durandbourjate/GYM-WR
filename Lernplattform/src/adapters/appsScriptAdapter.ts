@@ -87,3 +87,28 @@ class AppsScriptGruppenAdapter implements GruppenService {
 }
 
 export const gruppenAdapter = new AppsScriptGruppenAdapter()
+
+// --- Fragen-Adapter (Mock fuer Phase 2 — Backend kommt spaeter) ---
+
+import type { Frage, FragenFilter } from '../types/fragen'
+import type { FragenService } from '../services/interfaces'
+import { MOCK_FRAGEN } from './mockDaten'
+
+class MockFragenAdapter implements FragenService {
+  async ladeFragen(_gruppeId: string, filter?: FragenFilter): Promise<Frage[]> {
+    let fragen = [...MOCK_FRAGEN]
+    if (filter?.fach) fragen = fragen.filter(f => f.fach === filter.fach)
+    if (filter?.thema) fragen = fragen.filter(f => f.thema === filter.thema)
+    if (filter?.schwierigkeit) fragen = fragen.filter(f => f.schwierigkeit === filter.schwierigkeit)
+    if (filter?.nurUebung) fragen = fragen.filter(f => f.uebung)
+    return fragen
+  }
+
+  async ladeThemen(_gruppeId: string, fach?: string): Promise<string[]> {
+    let fragen: Frage[] = MOCK_FRAGEN
+    if (fach) fragen = fragen.filter(f => f.fach === fach)
+    return [...new Set(fragen.map(f => f.thema))]
+  }
+}
+
+export const fragenAdapter = new MockFragenAdapter()
