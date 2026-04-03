@@ -1,9 +1,14 @@
+import { useLernKontext } from '../../hooks/useLernKontext'
+import { t } from '../../utils/anrede'
+
 interface Props {
   korrekt: boolean
   erklaerung?: string
 }
 
 export default function FeedbackPanel({ korrekt, erklaerung }: Props) {
+  const { anrede } = useLernKontext()
+
   return (
     <div className={`rounded-xl p-4 border-l-4 ${
       korrekt
@@ -12,9 +17,9 @@ export default function FeedbackPanel({ korrekt, erklaerung }: Props) {
     }`}>
       <div className="font-medium mb-1">
         {korrekt ? (
-          <span className="text-green-700 dark:text-green-300">&#10003; Richtig!</span>
+          <span className="text-green-700 dark:text-green-300">&#10003; {t('richtig', anrede)}</span>
         ) : (
-          <span className="text-red-700 dark:text-red-300">&#10007; Leider falsch</span>
+          <span className="text-red-700 dark:text-red-300">&#10007; {t('falsch', anrede)}</span>
         )}
       </div>
       {erklaerung && (

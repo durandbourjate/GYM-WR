@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useUebungsStore } from '../store/uebungsStore'
 import { berechneSterne, sterneText } from '../utils/gamification'
+import { useLernKontext } from '../hooks/useLernKontext'
+import { t } from '../utils/anrede'
 
 interface Props {
   onZurueck: () => void
@@ -9,6 +11,7 @@ interface Props {
 
 export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
   const { session, berechneErgebnis } = useUebungsStore()
+  const { anrede } = useLernKontext()
   const [reviewOffen, setReviewOffen] = useState(false)
 
   if (!session) return null
@@ -126,7 +129,7 @@ export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
           onClick={onNochmal}
           className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px] text-base"
         >
-          Nochmal ueben
+          {t('nochmal', anrede)}
         </button>
         <button
           onClick={onZurueck}

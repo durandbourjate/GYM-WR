@@ -3,6 +3,8 @@ import { useAuthStore } from '../../store/authStore'
 import { useGruppenStore } from '../../store/gruppenStore'
 import { useNavigationStore } from '../../store/navigationStore'
 import { useTheme } from '../../hooks/useTheme'
+import { useLernKontext } from '../../hooks/useLernKontext'
+import { t } from '../../utils/anrede'
 
 interface Props {
   children: ReactNode
@@ -13,6 +15,7 @@ export default function AppShell({ children }: Props) {
   const { aktiveGruppe } = useGruppenStore()
   const { aktuellerScreen, zurueck, kannZurueck, navigiere } = useNavigationStore()
   const { istDark, toggleTheme } = useTheme()
+  const { anrede } = useLernKontext()
 
   const istAngemeldet = !!user
   const istAdmin = user?.rolle === 'admin'
@@ -78,7 +81,7 @@ export default function AppShell({ children }: Props) {
             onClick={abmelden}
             className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
-            Abmelden
+            {t('abmelden', anrede)}
           </button>
         </div>
       </header>

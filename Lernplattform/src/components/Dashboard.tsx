@@ -11,13 +11,8 @@ import type { Frage, FrageTyp } from '../types/fragen'
 import type { ThemenFortschritt } from '../types/fortschritt'
 import type { Empfehlung } from '../types/auftrag'
 import { berechneSterne, sterneText } from '../utils/gamification'
-
-// Fachbereich-Farben (konsistent mit Design-System)
-const FACH_FARBEN: Record<string, { bg: string; text: string; border: string }> = {
-  VWL: { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-800' },
-  BWL: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800' },
-  Recht: { bg: 'bg-green-50 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800' },
-}
+import { useLernKontext } from '../hooks/useLernKontext'
+import { getFachFarbe } from '../utils/fachFarben'
 
 // Schwierigkeits-Labels
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
@@ -46,6 +41,7 @@ export default function Dashboard() {
   const { ladeFortschritt, getThemenFortschritt, fortschritte } = useFortschrittStore()
   const { ladeAuftraege, auftraege } = useAuftragStore()
   const { navigiere } = useNavigationStore()
+  const { sichtbareFaecher, sichtbareThemen, fachFarben } = useLernKontext()
   const [themenInfo, setThemenInfo] = useState<Record<string, ThemenInfo[]>>({})
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
@@ -111,9 +107,16 @@ export default function Dashboard() {
     const result: Record<string, ThemenInfo[]> = {}
 
     for (const [fach, themen] of Object.entries(themenInfo)) {
+      // Kontext-Filter: nur sichtbare Fächer anzeigen (wenn gesetzt)
+      if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
+      // Benutzer-Filter: Fach-Filter aus der Filter-Leiste
       if (fachFilter && fach !== fachFilter) continue
 
+      const sichtbareThemenFuerFach = sichtbareThemen[fach] ?? []
+
       const gefiltert = themen.filter(t => {
+        // Kontext-Filter: nur sichtbare Themen anzeigen (wenn gesetzt)
+        if (sichtbareThemenFuerFach.length > 0 && !sichtbareThemenFuerFach.includes(t.thema)) return false
         let fragen = t.fragen
         if (schwierigkeitFilter) fragen = fragen.filter(f => f.schwierigkeit === schwierigkeitFilter)
         if (typFilter) fragen = fragen.filter(f => f.typ === typFilter)
@@ -133,7 +136,7 @@ export default function Dashboard() {
     }
 
     return result
-  }, [themenInfo, fachFilter, schwierigkeitFilter, typFilter, getThemenFortschritt])
+  }, [themenInfo, fachFilter, schwierigkeitFilter, typFilter, getThemenFortschritt, sichtbareFaecher, sichtbareThemen])
 
   // Anzahl gefilterter Fragen
   const gefilterteAnzahl = useMemo(() =>
@@ -218,19 +221,22 @@ export default function Dashboard() {
 
             {/* Fach-Filter */}
             <div className="flex flex-wrap gap-1.5">
-              {verfuegbareFaecher.map(fach => (
-                <button
-                  key={fach}
-                  onClick={() => setFachFilter(fachFilter === fach ? null : fach)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors
-                    ${fachFilter === fach
-                      ? `${FACH_FARBEN[fach]?.bg || 'bg-gray-100 dark:bg-gray-700'} ${FACH_FARBEN[fach]?.text || 'text-gray-700'} ${FACH_FARBEN[fach]?.border || 'border-gray-300'} ring-1 ring-current`
-                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-gray-400'}
-                  `}
-                >
-                  {fach}
-                </button>
-              ))}
+              {verfuegbareFaecher.map(fach => {
+                const farbe = getFachFarbe(fach, fachFarben)
+                return (
+                  <button
+                    key={fach}
+                    onClick={() => setFachFilter(fachFilter === fach ? null : fach)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors"
+                    style={fachFilter === fach
+                      ? { backgroundColor: farbe + '1a', color: farbe, borderColor: farbe + '4d', outline: `1px solid ${farbe}` }
+                      : undefined
+                    }
+                  >
+                    {fach}
+                  </button>
+                )
+              })}
             </div>
 
             {/* Schwierigkeits-Filter */}
@@ -279,19 +285,18 @@ export default function Dashboard() {
           <div className="space-y-4">
             {Object.entries(gefilterteThemen).map(([fach, themen]) => {
               const istEingeklappt = eingeklappteF?.has(fach) ?? true
-              const fachFarbe = FACH_FARBEN[fach]
+              const farbe = getFachFarbe(fach, fachFarben)
 
               return (
                 <div key={fach}>
                   {/* Fach-Header (klickbar zum Ein-/Ausklappen) */}
                   <button
                     onClick={() => toggleFach(fach)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl mb-2 min-h-[48px] border transition-colors
-                      ${fachFarbe ? `${fachFarbe.bg} ${fachFarbe.border}` : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-600'}
-                    `}
+                    className="w-full flex items-center justify-between p-3 rounded-xl mb-2 min-h-[48px] border transition-colors"
+                    style={{ backgroundColor: farbe + '1a', borderColor: farbe + '4d' }}
                   >
                     <div className="flex items-center gap-2">
-                      <span className={`text-lg font-semibold ${fachFarbe?.text || 'dark:text-white'}`}>
+                      <span className="text-lg font-semibold" style={{ color: farbe }}>
                         {fach}
                       </span>
                       <span className="text-xs text-gray-400">
