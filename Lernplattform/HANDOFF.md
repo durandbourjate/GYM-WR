@@ -2,146 +2,109 @@
 
 ## Aktueller Stand
 
-**Branch:** `main` (Feature-Branch gemergt)
-**Phase:** 7a–7f abgeschlossen + Backend deployed + 7 Gruppen erstellt
-**Status:** Alle 22 Fragetypen, 2360 Fragen live, Backend deployed, Google OAuth Fix deployed
+**Branch:** `fix/lernplattform-bugs` (NICHT auf main gemergt — User muss zuerst testen + freigeben)
+**Phase:** 1+3+4 abgeschlossen, Phase 5-7 offen
+**Status:** Bug-Fixes + Navigation/AppShell + Quiz-Screen Umbau
 
-### Verifikation (03.04.2026)
+### Was in dieser Session gemacht wurde (03.04.2026, Abend-Session)
+
+| Commit | Beschreibung |
+|--------|-------------|
+| c6b6038 | Fix Sort/Sortierung/Bilder/Fill-Platzhalter + 148 Duplikate |
+| 86eb144 | NavigationStore + AppShell + Theme-Toggle + Faecher collapsed |
+| 8c70674 | Quiz-Screen Umbau (pool.html-Features) + Ergebnis-Review |
+
+### Verifikation
 
 | Check | Status |
 |-------|--------|
 | `npx tsc -b` | OK |
-| `npx vitest run` | 82 Tests gruen (10 Testdateien) |
-| `npm run build` | OK (dist/ 300 KB JS) |
-| Pruefungstool Regression | 193 Tests gruen, tsc OK |
-| Pool-Konvertierung | 26/26 Pools, 2360 Fragen, 0 fehlende Bilder |
-| Pool-Daten live | Lazy-Loading via PoolFragenAdapter, Browser-verifiziert |
-| Apps Script Backend | 14 Endpoints, deployed + getestet (doGet OK, Gruppen erstellt) |
-| Dashboard-Filter | Fach/Schwierigkeit/Typ + einklappbare Sektionen, Browser-verifiziert |
-| Google OAuth | Timing-Fix (warteAufGSI polling), Gruppen-Typ gym/familie |
-| GitHub Actions | Separates Secret VITE_LERNPLATTFORM_APPS_SCRIPT_URL |
+| `npx vitest run` | 82 Tests gruen |
+| `npm run build` | OK (313 KB JS) |
+| SortFrage | 76 Fragen mit Text + Kategorien (vorher leer) |
+| SortierungFrage | 69 Fragen mit Texten (vorher nur Zahlen) |
+| Bilder | 206 Bilder laden korrekt (resolveAssetUrl + BASE_URL) |
+| Fill-Platzhalter | {0} durch ___ ersetzt |
+| Navigation | Stack-basiert, Zurueck ueberall, keine Sackgassen |
+| AppShell Header | Home, Admin-Button, Theme-Toggle, Abmelden |
+| Faecher | Default collapsed im Dashboard |
+| Quiz-Screen | Badges, Zurueck, Ueberspringen, Unsicher, Keyboard-Shortcuts |
+| Ergebnis-Screen | Score, Badges, aufklappbarer Review, Nochmal-ueben |
+| Browser-Test | Demo-Modus verifiziert (Kind + Elternteil) |
 
 ---
 
-## Phasen-Uebersicht
+## Offener Plan (Phasen 5-7)
 
-| Phase | Datum | Beschreibung | Komponenten |
-|-------|-------|-------------|------------|
-| 1 | 02.04 | Scaffolding + Auth + Gruppen | — |
-| 2 | 03.04 | 8 Fragetypen + Uebungs-Engine | 8 |
-| 3 | 03.04 | Mastery-System + Fortschritt | — |
-| 4 | 03.04 | Admin-Dashboard (3-Ebenen) | — |
-| 5 | 03.04 | Auftraege + Empfehlungen | — |
-| 6 | 03.04 | Gamification + Kinder-UX | — |
-| **7a** | **03.04** | **Typen + Pool-Konvertierung** | **+12 Typen** |
-| **7b** | **03.04** | **FiBu-Fragetypen** | **+4** |
-| **7c** | **03.04** | **open + formel + pdf + audio/code** | **+3** |
-| **7d** | **03.04** | **Bild-interaktive Typen** | **+3** |
-| **7e** | **03.04** | **Gruppe + Zeichnen + Audio + Code** | **+4** |
-| **—** | **03.04** | **Pool-Daten live + Dashboard-Filter** | **—** |
-| **7f** | **03.04** | **Apps Script Backend deployed, 7 Gruppen** | **—** |
+Vollstaendiger Plan: `~/.claude/plans/enumerated-shimmying-kurzweil.md`
 
-## Backend-Status (deployed 03.04.2026)
+### Phase 5: Kontext-Trennung Gym vs. Familie [L]
+- LernKontextProvider (React Context): typ, anrede (du/Sie), feedbackStil
+- Anrede-System: Textbausteine mit Sie/Du-Varianten
+- Themen-Filterung pro Gruppe (sichtbare Faecher)
+- Unterschiedliches Feedback (sachlich vs. ermutigend)
 
-### Apps Script URL
-```
-VITE_APPS_SCRIPT_URL in Lernplattform/.env.local (nicht im Repo)
-```
+### Phase 6: Admin-Settings-Panel [L]
+- GruppenEinstellungen Interface (Faecher, Farben, Anrede, Fragetypen)
+- Settings-UI im Admin-Dashboard (Allgemein, Faecher, Farben, Mitglieder)
+- Dynamische Fachbereich-Farben (nicht hardcoded)
+- Backend: lernplattformLadeEinstellungen/SpeichereEinstellungen
 
-### Gruppen in der Registry
+### Phase 7: Backend-Persistenz [L]
+- FortschrittStore: localStorage → Apps Script
+- AuftragStore: localStorage → Apps Script
+- SettingsStore: localStorage → Apps Script
+- Offline-Queue fuer fehlgeschlagene Writes
 
-| ID | Name | Typ | Kontext |
-|----|------|-----|---------|
-| familie | Familie | familie | Kinder (privat), Eltern als Admin |
-| sf-wr-29c | SF WR 29c | gym | GYM1 |
-| sf-wr-28bc29fs | SF WR 28bc29fs | gym | GYM2 |
-| sf-wr-27a28f | SF WR 27a28f | gym | GYM3 |
-| in-28c | IN 28c | gym | Informatik |
-| in-29f | IN 29f | gym | Informatik |
-| in-30s | IN 30s | gym | Informatik |
-
-### Sheets-Struktur (Google Drive)
-```
-Lernplattform/ (Ordner in Google Drive)
-├── Gruppen-Registry (Tab "Gruppen": 7 Eintraege)
-├── Lernplattform: Familie          (5 Tabs)
-├── Lernplattform: SF WR 29c       (5 Tabs)
-├── Lernplattform: SF WR 28bc29fs  (5 Tabs)
-├── Lernplattform: SF WR 27a28f    (5 Tabs)
-├── Lernplattform: IN 28c          (5 Tabs)
-├── Lernplattform: IN 29f          (5 Tabs)
-└── Lernplattform: IN 30s          (5 Tabs)
-```
-
-Pro Sheet: Tabs Fragen, Mitglieder, Auftraege, Fortschritt, Sessions.
-
-### Mitglieder eintragen (manuell im Sheet)
-
-**Familie:** Tab "Mitglieder" in "Lernplattform: Familie":
-- Eltern: rolle=admin, mit E-Mail
-- Kinder: rolle=mitglied, mit E-Mail (Code-Login als Fallback fuer unterwegs)
-- Private E-Mails verwenden (nicht Schul-Email)
-- LP kann zusaetzlich mit Schul-Email als admin eingetragen werden (sieht Gruppe bei beiden Logins)
-
-**Gym-Klassen:** SuS-Emails aus Evento/Kurse-Sheet. Noch nicht eingetragen.
+### Noch nicht begonnen: Shared Library (Phase 2)
+- packages/shared/ mit FrageText, KontenSelect, Utils, Types
+- TypeScript Path Alias in beiden Projekten
+- User will Code-Sharing zwischen Pruefungstool + Lernplattform
 
 ---
 
-## Alle 22 Fragetypen (komplett)
+## User-Feedback aus Test-Session (03.04.2026)
 
-| Typ | Komponente | Korrektur | Fragen |
-|-----|-----------|-----------|--------|
-| mc | MCFrage | Auto (String-Vergleich) | 1019 |
-| tf | TFFrage | Auto (Boolean-Array) | 450 |
-| fill | FillFrage | Auto (case-insensitive) | 251 |
-| multi | MultiFrage | Auto (Set-Vergleich) | 234 |
-| open | OpenFrage | Selbstbewertung | 93 |
-| sort | SortFrage | Auto (Kategorie-Match) | 76 |
-| sortierung | SortierungFrage | Auto (Reihenfolge) | 69 |
-| calc | CalcFrage | Auto (Toleranz) | 56 |
-| bildbeschriftung | BildbeschriftungFrage | Auto (Text-Match) | 26 |
-| dragdrop_bild | DragDropBildFrage | Auto (Zone-Match) | 26 |
-| buchungssatz | BuchungssatzFrage | Auto (Soll/Haben/Betrag) | 19 |
-| hotspot | HotspotFrage | Auto (Radius-Match) | 10 |
-| zeichnen | ZeichnenFrage | Selbstbewertung | 9 |
-| kontenbestimmung | KontenbestimmungFrage | Auto (Konto+Seite) | 5 |
-| tkonto | TKontoFrage | Auto (Eintraege+Saldo) | 5 |
-| gruppe | GruppeFrage | Rekursiv (Teil-Korrektur) | 5 |
-| bilanz | BilanzFrage | Auto (Seiten+Summe) | 4 |
-| formel | FormelFrage | Auto (LaTeX-Vergleich) | 2 |
-| pdf | PdfFrage | Selbstbewertung | 1 |
-| zuordnung | ZuordnungFrage | Auto (Paar-Match) | 0* |
-| audio | AudioFrage | Selbstbewertung | 0** |
-| code | CodeFrage | Selbstbewertung | 0** |
+### Fundamentale Anforderungen (noch offen):
+1. **Gym-Seite soll wie pool.html funktionieren** — Alle Features: Suche, Lernziele, Hilfe, Problem melden, Schnellstart. Aktuell: Grundstruktur da (Header, Nav, Feedback), aber noch NICHT alle pool.html-Features.
+2. **Familie-Seite** — Ermutigenderes Feedback, Du-Anrede, einfachere Typen. Noch NICHT implementiert.
+3. **Admin-Settings** — Faecher, Farben, Mitglieder im Tool konfigurieren. Noch NICHT implementiert.
+4. **Fachbereich-Farben konfigurierbar** — Nicht hardcoded wie in pool.html. LP waehlt Farbe. Noch NICHT implementiert.
+5. **Pool.html Features noch fehlend:** Suchfeld, Lernziele-Modal, Hilfe-Modal, Problem-melden-Modal, Schnellstart-Karten, Filter-Chips (Tags), Keyboard 1-4 fuer MC
+
+### Architektur-Entscheide (vom User bestaetigt):
+- Shared Library erstellen (nicht pragmatisch kopieren)
+- Gleiche Funktionen wie pool.html reichen (nicht pixel-genau)
+- Settings-Speicher: Ich entscheide (JSON in Gruppen-Registry geplant)
 
 ---
 
-## Was fehlt (naechste Schritte)
+## Neue Dateien in dieser Session
 
-### Offener Bug: Google Login-Button fehlt auf deployed Seite
-- Konsole zeigt: "Google Identity Services nicht geladen"
-- Timing-Fix (warteAufGSI) ist deployed, aber GSI-Script laedt evtl. nicht
-- Prüfen: Wird das Script https://accounts.google.com/gsi/client geladen? CSP-Blockade?
-- Prüfen: VITE_GOOGLE_CLIENT_ID Secret vorhanden + korrekt?
-- Workaround: Code-Login funktioniert
+```
+src/store/navigationStore.ts          — Stack-basierte Screen-Navigation
+src/hooks/useTheme.ts                 — Dark/Light Mode Toggle
+src/components/layout/AppShell.tsx     — Zentraler Header-Wrapper
+src/components/uebung/QuizHeader.tsx   — Fortschritt + Badges
+src/components/uebung/QuizNavigation.tsx — Zurueck/Skip/Weiter
+src/components/uebung/QuizActions.tsx  — Beenden + Unsicher
+src/components/uebung/FeedbackPanel.tsx — Richtig/Falsch Feedback
+src/utils/assetUrl.ts                 — resolveAssetUrl() fuer Bilder
+src/utils/fragetext.ts                — bereinigePlatzhalter()
+```
 
-### Naechste Session: E2E-Test im Browser
-- Google Login fixen (GSI-Script pruefen)
-- Login mit Google OAuth → Gruppen-Auswahl → echte Fragen ueben
-- Fortschritt speichern (Backend) statt localStorage
-- Alle Fragetypen visuell pruefen
+## Geaenderte Dateien
 
-### Frontend-Adapter umstellen
-- FortschrittStore: localStorage → Backend-Persistenz
-- AuftragStore: localStorage → Backend-Persistenz
-
-### Bekannte UX-Themen
-- Fill-Fragen: {0}-Platzhalter im Text sichtbar (kosmetisch, Luecken sind als separate Felder)
-- Dashboard-Filter funktionieren (Fach/Schwierigkeit/Typ + einklappbar)
-
-### Spaetere Verbesserungen
-- SuS-Import aus Evento/Kurse-Sheet (Klassenlisten-Sync)
-- Streak-Anzeige im Dashboard
-- Offline-Queue
-- Diktat-Typ (Browser-TTS)
-- CodeMirror 6 / KaTeX als npm-Dependency statt CDN
+```
+scripts/convertPools.mjs     — Sort/Sortierung/Bild-Pfad Fixes
+src/App.tsx                   — NavigationStore + AppShell
+src/components/Dashboard.tsx  — Faecher collapsed, Header entfernt
+src/components/UebungsScreen.tsx — Komplett umgebaut (Unterkomponenten)
+src/components/Zusammenfassung.tsx — Review + Unsicher/Uebersprungen
+src/components/admin/AdminDashboard.tsx — Redundanter Header entfernt
+src/store/uebungsStore.ts    — Zurueck, Skip, Unsicher, Score
+src/types/uebung.ts          — unsicher, uebersprungen, score Felder
+src/components/fragetypen/shared/BildContainer.tsx — resolveAssetUrl
+src/components/fragetypen/ZeichnenFrage.tsx — resolveAssetUrl
+src/components/fragetypen/PdfFrage.tsx — resolveAssetUrl
+```
