@@ -100,10 +100,19 @@ function convertQuestion(q, poolMeta, topics) {
       break
 
     case 'tf':
-      base.aussagen = (q.aussagen || []).map(a => ({
-        text: a.text,
-        korrekt: a.korrekt
-      }))
+      if (q.aussagen && q.aussagen.length > 0) {
+        // Multi-Aussagen TF (mehrere Statements)
+        base.aussagen = q.aussagen.map(a => ({
+          text: a.text,
+          korrekt: a.korrekt
+        }))
+      } else {
+        // Einfaches TF: Die Frage selbst ist die Aussage, correct = true/false
+        base.aussagen = [{
+          text: q.q,
+          korrekt: q.correct === true || q.correct === 'true'
+        }]
+      }
       break
 
     case 'fill':

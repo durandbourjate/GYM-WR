@@ -88,11 +88,12 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
 export const gruppenAdapter = new AppsScriptGruppenAdapter()
 
-// --- Fragen-Adapter (Mock fuer Phase 2 — Backend kommt spaeter) ---
+// --- Fragen-Adapter: Pool-Daten für Gym, Mock für Kinder ---
 
 import type { Frage, FragenFilter } from '../types/fragen'
 import type { FragenService } from '../services/interfaces'
 import { MOCK_FRAGEN } from './mockDaten'
+import { PoolFragenAdapter } from './poolDaten'
 
 class MockFragenAdapter implements FragenService {
   async ladeFragen(_gruppeId: string, filter?: FragenFilter): Promise<Frage[]> {
@@ -111,4 +112,30 @@ class MockFragenAdapter implements FragenService {
   }
 }
 
-export const fragenAdapter = new MockFragenAdapter()
+// Kombinations-Adapter: nutzt Pool-Daten + Mock-Kinder-Fragen
+class KombinierterFragenAdapter implements FragenService {
+  private poolAdapter = new PoolFragenAdapter()
+  private mockAdapter = new MockFragenAdapter()
+
+  async ladeFragen(gruppeId: string, filter?: FragenFilter): Promise<Frage[]> {
+    // Pool-Fragen laden (Gym-SuS: VWL, BWL, Recht)
+    const poolFragen = await this.poolAdapter.ladeFragen(gruppeId, filter)
+    // Falls kein Fach-Filter oder Fach nicht in Pools → Mock dazu
+    if (!filter?.fach || !['VWL', 'BWL', 'Recht'].includes(filter.fach)) {
+      const mockFragen = await this.mockAdapter.ladeFragen(gruppeId, filter)
+      return [...poolFragen, ...mockFragen]
+    }
+    return poolFragen
+  }
+
+  async ladeThemen(gruppeId: string, fach?: string): Promise<string[]> {
+    const poolThemen = await this.poolAdapter.ladeThemen(gruppeId, fach)
+    if (!fach || !['VWL', 'BWL', 'Recht'].includes(fach)) {
+      const mockThemen = await this.mockAdapter.ladeThemen(gruppeId, fach)
+      return [...new Set([...poolThemen, ...mockThemen])]
+    }
+    return poolThemen
+  }
+}
+
+export const fragenAdapter: FragenService = new KombinierterFragenAdapter()

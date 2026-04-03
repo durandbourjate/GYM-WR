@@ -85,7 +85,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Dem Menschen gelingt es, alle seine Bedürfnisse vollständig zu befriedigen, wenn er genug Geld verdient.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-w05",
@@ -184,7 +189,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Maslow'sche Bedürfnispyramide impliziert, dass höhere Bedürfnisse erst dann relevant werden, wenn die darunterliegenden vollständig befriedigt sind. Dieses Modell bildet die Realität exakt ab.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-w10",
@@ -264,7 +274,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Dienstleistungen zählen zu den immateriellen Gütern.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-g04",
@@ -411,7 +426,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Produkte und Dienstleistungen bilden zusammen die Marktleistungen eines Unternehmens.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-g11",
@@ -501,7 +521,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Schweiz arbeiten heute über 75% der Erwerbstätigen im 3. Sektor (Dienstleistungen).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-s04",
@@ -619,7 +644,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Tatsache, dass der Frauenanteil im Baugewerbe bei nur 11,7% liegt, kann als Indiz für bestehende Geschlechterstereotypen bei der Berufswahl interpretiert werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-u01",
@@ -747,7 +777,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Swisscom ist ein Beispiel für ein gemischtwirtschaftliches Unternehmen, weil sowohl der Staat als auch Private am Unternehmen beteiligt sind.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-u07",
@@ -801,7 +836,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Kollektivgesellschaft haften die Gesellschafter primär mit dem Gesellschaftsvermögen. Reicht dieses nicht aus, haften sie subsidiär, unbeschränkt und solidarisch mit ihrem persönlichen Vermögen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-u10",
@@ -958,7 +998,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Strategische Ziele sind langfristige Unternehmensziele mit einem Zeithorizont von über 3 Jahren.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-z07",
@@ -1176,7 +1221,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Produktivität wird in Mengeneinheiten gemessen, Wirtschaftlichkeit in Geldeinheiten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-k09",
@@ -1325,7 +1375,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Nutzwertanalyse muss die Summe aller Gewichtungen 100% ergeben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-t06",
@@ -1427,7 +1482,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Den idealen Standort gibt es in der Regel nicht – Unternehmen müssen Kompromisse eingehen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_einfuehrung-neu_sort_01",
@@ -1701,7 +1761,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Juristische Personen (z.B. eine AG oder GmbH) sind unabhängig vom Umsatz immer buchführungspflichtig.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-g05",
@@ -1891,7 +1956,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Kontenrahmen ist für jedes Unternehmen verbindlich und darf nicht angepasst werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_fibu-b01",
@@ -2054,7 +2124,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Debitoren sind Schulden des Unternehmens gegenüber Lieferanten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_fibu-b08",
@@ -2108,7 +2183,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Bilanzsumme der Aktivseite muss immer gleich gross sein wie die Bilanzsumme der Passivseite.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-b11",
@@ -2334,7 +2414,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Aufwandkonten verhalten sich bezüglich Soll und Haben gleich wie Aktivkonten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-k06",
@@ -2348,7 +2433,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ertragskonten verhalten sich bezüglich Soll und Haben gleich wie Passivkonten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-k07",
@@ -2762,7 +2852,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Konto «Wareneinkauf» ist ein Aktivkonto, weil Waren zum Vermögen gehören.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_fibu-k26",
@@ -2776,7 +2871,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Konto «Darlehen» (Bankdarlehen, das das Unternehmen aufgenommen hat) ist ein Passivkonto.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-k27",
@@ -2996,7 +3096,12 @@
       "src": "/pool-bilder/bwl/fibu/fibu_kontentypen_02.svg",
       "alt": "Vier leere T-Konten mit Fragezeichen statt Plus/Minus"
     },
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Aufwandskonten und Ertragskonten haben keinen Anfangsbestand – sie starten jedes Jahr bei null.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-k37",
@@ -4573,7 +4678,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ertragskonten nehmen auf der Habenseite (rechts) zu und auf der Sollseite (links) ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-e16",
@@ -4727,7 +4837,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Jahresgewinn wird direkt auf das Privatkonto verbucht.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_fibu-p07",
@@ -5164,7 +5279,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Konto Warenvorrat ist ein Aktivkonto (Bestandeskonto) und zeigt den Lagerwert der Waren am Bilanzstichtag.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-w15",
@@ -5562,7 +5682,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der indirekten Abschreibung kann der ursprüngliche Anschaffungswert eines Aktivums jederzeit in der Bilanz abgelesen werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-a01",
@@ -5816,7 +5941,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Transitorische Buchungen werden nur am Jahresende vorgenommen und im Folgejahr wieder aufgelöst.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_fibu-a13",
@@ -8304,7 +8434,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Marketing ist das Bindeglied zwischen Unternehmen und Markt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-e02",
@@ -8404,7 +8539,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Marketingkonzept wird unabhängig von der Unternehmensstrategie entwickelt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_marketing-e07",
@@ -8458,7 +8598,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Unternehmen, das seit Jahrzehnten erfolgreich am Markt ist, kann auf die Markt- und Leistungsanalyse verzichten, da es den Markt bereits gut kennt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_marketing-g01",
@@ -8516,7 +8661,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Marktvolumen gibt die effektiv verkaufte Menge einer Leistung pro Jahr an.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-g04",
@@ -8618,7 +8768,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein tiefer Sättigungsgrad deutet auf einen wachsenden Markt hin, der für Unternehmen besonders attraktiv ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-g09",
@@ -8740,7 +8895,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der relative Marktanteil setzt den eigenen Marktanteil ins Verhältnis zum Marktanteil des stärksten Konkurrenten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-s04",
@@ -8820,7 +8980,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein relativer Marktanteil von genau 1,0 bedeutet, dass das Unternehmen und sein stärkster Konkurrent gleich grosse Marktanteile haben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-s08",
@@ -9057,7 +9222,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Zur Beantwortung von Fragen über die Konkurrenz genügt es in der Regel, das Verhalten der Konkurrenz zu beobachten und Unternehmensinformationen auszuwerten (Sekundärmarktforschung).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-z09",
@@ -9225,7 +9395,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Cash Cows erwirtschaften hohe und stabile Gewinne bei niedrigen Ausgaben, weil sie keine nennenswerten Investitionen mehr erfordern.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-b08",
@@ -9327,7 +9502,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein ausgewogenes BCG-Portfolio enthält Leistungen in allen vier Quadranten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_marketing-p01",
@@ -9386,7 +9566,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Einführungsphase wird in der Regel noch kaum Gewinn realisiert, obwohl der Umsatz bereits steigt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-p04",
@@ -9484,7 +9669,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Reifephase richten sich Marketingaktivitäten vor allem gegen die Mitkonkurrenten, um Marktanteile zu gewinnen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_marketing-p09",
@@ -9558,7 +9748,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Modell des Produktlebenszyklus lässt sich nutzen, um den exakten Zeitpunkt vorherzusagen, an dem ein Produkt in die Rückgangsphase eintritt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_marketing-neu_sort_01",
@@ -9851,7 +10046,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die strategische Unternehmensführung ist den betrieblichen Funktionen wie Marketing oder Produktion übergeordnet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-e03",
@@ -9935,7 +10135,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Prozess der strategischen Planung ist linear und wird nur einmal durchlaufen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-e07",
@@ -9989,7 +10194,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Unternehmen ohne ausformulierte Strategie kann langfristig trotzdem erfolgreich sein, weil die Unternehmensleitung intuitiv richtig entscheidet.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-g01",
@@ -10045,7 +10255,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Corporate Social Responsibility (CSR) bedeutet, dass Unternehmen Verantwortung gegenüber Gesellschaft und Umwelt wahrnehmen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-g04",
@@ -10147,7 +10362,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "CSR dient ausschliesslich der Verbesserung der Welt und hat keinen wirtschaftlichen Nutzen für das Unternehmen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-g09",
@@ -10223,7 +10443,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Fähigkeitsanalyse vergleicht ein Unternehmen seine Leistungen mit denen eines Hauptkonkurrenten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-i04",
@@ -10285,7 +10510,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Erfolgspotenzial wird erst dann zum echten Wettbewerbsvorteil, wenn es durch nachgelagerte Funktionen wie Leistungserstellung oder Marketing gewinnbringend umgesetzt wird.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-i07",
@@ -10450,7 +10680,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Je stärker der Konkurrenzkampf in einem Markt, desto attraktiver ist dieser Markt für Unternehmen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-x07",
@@ -10504,7 +10739,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Hohe Eintrittsbarrieren in einem Markt schützen bestehende Unternehmen, weil die Gefahr potenzieller neuer Konkurrenten dadurch sinkt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-s01",
@@ -10582,7 +10822,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die SWOT-Analyse kombiniert die interne und die externe Sicht auf ein Unternehmen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-s04",
@@ -10679,7 +10924,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine SWOT-Analyse ist nur dann sinnvoll, wenn sie auf einer fundierten Unternehmens- und Umweltanalyse basiert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-s09",
@@ -10929,7 +11179,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Nischenstrategie kann auch ein kleines Unternehmen gegen grosse Konzerne bestehen, wenn es sich auf einen spezifischen Teilmarkt spezialisiert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-k01",
@@ -11074,7 +11329,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Umsetzung der Strategie genügt es, wenn nur die obere Führungsebene die Strategie kennt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-k08",
@@ -11128,7 +11388,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Evaluation findet erst statt, wenn die gesamte Strategie vollständig umgesetzt wurde.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_stratfuehrung-neu_sort_01",
@@ -11399,7 +11664,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Buchhaltung eines Unternehmens ist ein Beispiel für ein Beschreibungsmodell.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-m03",
@@ -11498,7 +11768,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Erklärungsmodell könnte die Hypothese aufstellen, dass mit zunehmender Produktionsmenge die Stückkosten sinken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-m08",
@@ -11532,7 +11807,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Grenzen des Modelldenkens zu erkennen gehört laut Lehrplan zu den Kompetenzen, die Schülerinnen und Schüler im Fach Wirtschaft und Recht erwerben sollen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-a01",
@@ -11678,7 +11958,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Konkurrenz ist keine Anspruchsgruppe, weil sie dem Unternehmen feindlich gesinnt ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-a08",
@@ -11712,7 +11997,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Institutionen wie Gewerkschaften, Umweltverbände und Parteien gehören ebenfalls zu den Anspruchsgruppen eines Unternehmens.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-a10",
@@ -11924,7 +12214,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Zielneutralität bedeutet, dass sich zwei Ziele gegenseitig nicht beeinflussen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-z07",
@@ -11958,7 +12253,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Shareholder-Value-Ansatz kann langfristige Unternehmensziele gefährden, z.B. durch verminderte Reinvestitionen des Gewinns.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-z09",
@@ -12172,7 +12472,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Einführung des Rauchverbots im Kanton Bern, das grosse Auswirkungen auf Gastronomiebetriebe hatte, ist ein Beispiel für die rechtliche Umweltsphäre.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-u08",
@@ -12234,7 +12539,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Abgaswerte, Werbeverbote für Tabak und gesetzlich geregelte Ladenöffnungszeiten sind Beispiele für die rechtliche Umweltsphäre.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-u11",
@@ -12268,7 +12578,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Unternehmen können ihre Umweltsphären aktiv steuern und kontrollieren.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-w02",
@@ -12370,7 +12685,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Umweltsphären sind immer eindeutig voneinander abzugrenzen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-w07",
@@ -12431,7 +12751,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die vollständige Darstellung des Unternehmensmodells zeigt, dass zwischen allen Elementen (Unternehmen, Anspruchsgruppen, Umweltsphären) vielfältige Beziehungen und Wechselwirkungen bestehen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-v01",
@@ -12532,7 +12857,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Unternehmen, das als erstes in seiner Branche eine KI-gestützte Kundenbetreuerung einführt, zeigt die Verhaltensweise der Aktion.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-v06",
@@ -12586,7 +12916,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Reaktion bedeutet, dass ein Unternehmen auf Veränderungen in der Umwelt antwortet, anstatt sie selbst auszulösen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-f01",
@@ -12705,7 +13040,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Shell entschied sich letztlich für den vollständigen Abbau der Brent Spar an Land.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-f07",
@@ -12783,7 +13123,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Fall Brent Spar hatte Greenpeace mit einer falschen Zahl argumentiert (5'500 statt 130 Tonnen Öl an Bord). Dies zeigt, dass auch Anspruchsgruppen nicht immer korrekte Informationen liefern.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "bwl_unternehmensmodell-f11",
@@ -13103,7 +13448,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Arbeitsrecht enthält viele zwingende Vorschriften, die den schwächeren Vertragspartner (Arbeitnehmer) schützen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-g02",
@@ -13204,7 +13554,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das öffentlich-rechtliche Arbeitsrecht wird durch Staat und Behörden geprägt und enthält Schutzvorschriften für Arbeitnehmer wie Höchstarbeitszeiten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-g07",
@@ -13311,7 +13666,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das öffentlich-rechtliche Arbeitsrecht gilt für Leitende Angestellte und Betriebe mit weniger als 5 Arbeitnehmern in gleicher Weise wie für andere Betriebe.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-g12",
@@ -13345,7 +13705,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitsvertrag wird charakterisiert durch eine untergeordnete Stellung des Arbeiters gegenüber dem Arbeitgeber.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-v02",
@@ -13432,7 +13797,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitsvertrag entsteht auch, wenn die Parteien nicht ausdrücklich zustimmen, sondern nur konkludent (durch das Verhalten) übereinstimmen, z.B. wenn ein Arbeitnehmer seine Stelle antritt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-v06",
@@ -13532,7 +13902,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Unternehmer schliesst mit einem Designer einen Vertrag ab, der die Gestaltung eines neuen Logos vorsieht. Der Designer ist zeitlich flexibel und unterliegt keinen Weisungen. Dies ist zweifellos ein Arbeitsvertrag nach OR 319.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-v11",
@@ -13566,7 +13941,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Arbeitnehmer muss seine Arbeit selbst verrichten und kann sie nicht einfach auf eine andere Person übertragen (Persönliche Arbeitspflicht).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-a02",
@@ -13643,7 +14023,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Arbeitnehmer fahrlässig arbeitet und dadurch Schaden am Betrieb verursacht, haftet er nicht, da der Arbeitgeber diese Risiken tragen muss.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-a06",
@@ -13773,7 +14158,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitnehmerin wird schwanger und möchte nach der Geburt weiterarbeiten. Ein strenges Konkurrenzverbot im Arbeitsvertrag verbietet ihr, für Konkurrenten zu arbeiten. Nach Beendigung des Arbeitsverhältnisses kann die Konkurrenzklausel vollständig durchgesetzt werden, wenn dies im Vertrag stand.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-b01",
@@ -13787,7 +14177,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Lohnzahlung ist die Hauptpflicht des Arbeitgebers nach dem Arbeitsrecht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-b02",
@@ -13865,7 +14260,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Arbeitgeber muss dem Arbeitnehmer bei unverschuldeter Verhinderung (z.B. Krankheit) den Lohn noch für eine bestimmte Dauer weiterzahlen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-b06",
@@ -13995,7 +14395,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitgeber muss für alle Arbeitsunfälle die vollständige Heilungskosten ersetzen, unabhängig davon, wie der Unfall geschah.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-b12",
@@ -14029,7 +14434,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitsvertrag mit Ablauf einer vereinbarten Frist endet automatisch nach Ablauf der Zeit, ohne dass eine Kündigung nötig ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-k02",
@@ -14118,7 +14528,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Kündigung ist nur gültig, wenn sie schriftlich erfolgt und von beiden Parteien unterschrieben ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-k06",
@@ -14227,7 +14642,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Arbeitnehmer wegen Leistungsmängeln ausserordentlich gekündigt wird und vor Gericht gewinnt, hat er Anspruch auf Schadensersatz, aber nicht auf Lohnfortzahlung.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-k11",
@@ -14261,7 +14681,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine missbräuchliche Kündigung kann dem Arbeitnehmer eine Entschädigung durch das Arbeitsgericht bringen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-s02",
@@ -14345,7 +14770,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Arbeitnehmer während einer Sperrfrist (z.B. Krankheit) gekündigt wird, ist diese Kündigung nichtig und hat keine Wirkung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-s06",
@@ -14454,7 +14884,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitgeber kann eine missbräuchliche Kündigung durch Zahlung von Entschädigung ersetzen und muss den Arbeitnehmer nicht wieder in sein Amt einsetzen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-s11",
@@ -14488,7 +14923,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Arbeitsgesetz (ArG) gilt grundsätzlich für alle Betriebe in der Schweiz.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-o02",
@@ -14564,7 +15004,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Überzeit (Stunden über die Höchstarbeitszeit hinaus) darf pro Jahr maximal 170 Stunden betragen und muss durch Freizeit oder Lohnzuschlag kompensiert werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-o06",
@@ -14664,7 +15109,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Arbeitsgesetz (ArG) ist absolut zwingendes Recht und jede Abweichung, auch zu Gunsten der Arbeitnehmer, ist ungültig.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-o11",
@@ -14698,7 +15148,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitgeber kann von einem Arbeitnehmer in einem Elektrobetrieb verlangen, 15 Stunden pro Woche Überzeit zu leisten, ohne diese durch Freizeit oder Zuschlag zu kompensieren, da dies notwendig ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-c01",
@@ -14712,7 +15167,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Gesamtarbeitsvertrag (GAV) ist eine Vereinbarung zwischen einer Arbeitnehmerverbaenden/Gewerkschaft und einem Arbeitgeberverband.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-c02",
@@ -14796,7 +15256,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Arbeitgeber, der nicht Mitglied eines Arbeitgeberverbands ist, ist nicht an einen GAV gebunden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-c06",
@@ -14905,7 +15370,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Gleichstellungsgesetz (GlG) verlangt von Arbeitgebern automatisch, dass sie Männer und Frauen gleich bezahlen, auch wenn ein GAV tiefere Frauenlöhne zulässt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_arbeitsrecht-c11",
@@ -15141,7 +15611,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Sitte ist ein äusseres, nicht erzwingbares, aber im Allgemeinen erwartetes Verhalten von Menschen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-m03",
@@ -15263,7 +15738,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Abgrenzung zwischen Recht und Nichtrecht (Sitte) ist immer klar und eindeutig.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-m09",
@@ -15318,7 +15798,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Frühzeit der Menschheit war das Recht eng mit Magie und Religion verbunden – die Zehn Gebote sind ein Beispiel für ein göttliches Recht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-o01",
@@ -15374,7 +15859,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Rechtskraft bedeutet, dass ein Gerichtsentscheid definitiv gilt und nicht mehr abgeändert werden kann.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-o04",
@@ -15493,7 +15983,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Grundsatz der Rechtskraft gilt ausnahmslos – ein rechtskräftiger Entscheid kann unter keinen Umständen aufgehoben werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-o10",
@@ -15594,7 +16089,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Grundrechte sind in der Bundesverfassung in den Artikeln 7–36 verankert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-s05",
@@ -15672,7 +16172,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Schutz der Grundrechte bedeutet, dass die Grundrechte unter keinen Umständen eingeschränkt werden dürfen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-s09",
@@ -15911,7 +16416,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Rechtsnormen des öffentlichen Rechts sind immer zwingender Natur.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-p09",
@@ -15990,7 +16500,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Man kann freiwillig auf ein Grundrecht verzichten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-r01",
@@ -16079,7 +16594,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Rechtsanwendung muss zuerst die Rechtsfolge bestimmt werden, bevor der Sachverhalt geprüft wird.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einfuehrung-r05",
@@ -16547,7 +17067,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Verordnungen werden von der Regierung (Bundesrat) erlassen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-r04",
@@ -16625,7 +17150,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gesetzesänderungen können nur mit Zustimmung des Volkes in Kraft treten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-r08",
@@ -16772,7 +17302,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Gebot von Treu und Glauben bedeutet, dass allgemeine Werte der Sittlichkeit und Moral über Art. 2 ZGB Eingang ins Recht finden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-t04",
@@ -16830,7 +17365,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wer berechtigtes Vertrauen in die Anständigkeit anderer gesetzt hat, soll gemäss dem Grundsatz von Treu und Glauben nicht enttäuscht werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-t07",
@@ -16884,7 +17424,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Grundsatz von Treu und Glauben kann auch dazu führen, dass ein Vertragspartner auf die Gegenleistung ganz oder teilweise verzichten muss, wenn sich die Umstände grundlegend und unvorhersehbar verändert haben (clausula rebus sic stantibus).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-m01",
@@ -16940,7 +17485,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Rechtsmissbrauchsverbot schützt denjenigen, der sich formell auf ein Recht beruft, dieses aber zweckwidrig einsetzt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-m04",
@@ -16998,7 +17548,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Nutzlose Rechtsausübung aus Rache, Schikane oder Schadenfreude gilt als Rechtsmissbrauch.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-m07",
@@ -17052,7 +17607,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss Art. 141 Abs. 1 OR kann auf die Einrede der Verjährung im Voraus verzichtet werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-g01",
@@ -17086,7 +17646,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der gute Glaube wird gemäss Art. 3 Abs. 1 ZGB vermutet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-g03",
@@ -17173,7 +17738,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Art. 3 ZGB stellt einen allgemeinen Grundsatz auf, der auf alle Rechtsverhältnisse anwendbar ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-g07",
@@ -17289,7 +17859,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Zivilprozess gilt grundsätzlich die Verhandlungsmaxime: Der Richter befasst sich nur mit Tatsachen, die von einer Partei behauptet und bewiesen worden sind.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-b04",
@@ -17347,7 +17922,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Recht haben und Recht bekommen ist dasselbe.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-b07",
@@ -17401,7 +17981,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei Offizialdelikten im Strafrecht gilt der Grundsatz «Wo kein Kläger ist, da ist auch kein Richter» nicht, da die Polizei von Amtes wegen ein Ermittlungsverfahren einleitet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-w01",
@@ -17457,7 +18042,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Grundsatz «Unwissenheit schützt vor Strafe nicht» (Error iuris nocet) bedeutet, dass im Strafrecht die Unkenntnis des Gesetzes in jedem Fall zur vollen Bestrafung führt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-w04",
@@ -17515,7 +18105,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Grundsatz «Wo kein Kläger, da kein Richter» gilt im Strafprozess bei Offizialdelikten nicht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_einleitungsartikel-w07",
@@ -17785,7 +18380,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Allgemeine Erklärung der Menschenrechte ist für alle UNO-Mitgliedstaaten rechtlich verbindlich.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-m03",
@@ -17848,7 +18448,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Menschenrechte stehen nur Staatsbürgern des jeweiligen Landes zu.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-m06",
@@ -17993,7 +18598,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Argument des Kulturrelativismus — wonach Menschenrechte keine universelle Geltung beanspruchen können, da sie kulturell bedingt seien — wird in der AEMR selbst durch Art. 30 entkräftet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-g01",
@@ -18057,7 +18667,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Menschenwürde ist in Art. 7 BV verankert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-g04",
@@ -18135,7 +18750,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Grundrechte gelten in der Schweiz absolut und dürfen unter keinen Umständen eingeschränkt werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-g08",
@@ -18213,7 +18833,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Bundesverfassung unterscheidet zwischen Grundrechten, die allen Menschen zustehen, und Bürgerrechten, die nur Schweizer Staatsangehörigen zukommen (z.B. politische Rechte gemäss Art. 34 BV).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-e01",
@@ -18270,7 +18895,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Kerngehalt eines Grundrechts darf unter keinen Umständen angetastet werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-e04",
@@ -18372,7 +19002,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die aktuelle Meinung der Bevölkerung stellt ein legitimes öffentliches Interesse dar, das eine Grundrechtseinschränkung rechtfertigen kann.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-e09",
@@ -18453,7 +19088,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Prüfung von Grundrechtseinschränkungen muss als Erstes geprüft werden, ob überhaupt ein Grundrecht betroffen ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-f01",
@@ -18487,7 +19127,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Wegweisungsfall beurteilte das Bundesgericht den Wegweisungsartikel als grundsätzlich verfassungskonform.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-f03",
@@ -18657,7 +19302,12 @@
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
     "kontext": "Im Berner Wegweisungsfall argumentierte der Anwalt der Betroffenen, die Wegweisungen seien eine «ästhetische Säuberung» und diskriminierten die Betroffenen aufgrund ihres Aussehens und ihrer Lebensform.",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Bundesgericht stellte fest, dass die Betroffenen nicht wegen eines personenspezifischen Merkmals, sondern allein wegen ihres Verhaltens weggewiesen wurden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-f11",
@@ -18795,7 +19445,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Berner Wegweisungsfall ging es um Personen, die aus dem Berner Bahnhof weggewiesen wurden, weil sie in erheblichem Mass Alkohol konsumiert und die öffentliche Ordnung gestört hatten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-e14",
@@ -18849,7 +19504,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2 / EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Art. 5 AEMR verbietet Folter und grausame, unmenschliche oder erniedrigende Behandlung oder Strafe — dieses Recht gilt absolut und darf nicht eingeschränkt werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_grundrechte-f13",
@@ -19079,7 +19739,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Mietvertrag muss zwingend schriftlich abgeschlossen werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-g03",
@@ -19245,7 +19910,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Mietvertrag kann sowohl auf bestimmte als auch auf unbestimmte Zeit abgeschlossen werden (Art. 255 OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-m01",
@@ -19279,7 +19949,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Nebenkosten sind automatisch im Mietzins inbegriffen, wenn nichts anderes vereinbart ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-m03",
@@ -19421,7 +20096,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wer nicht genügend Geld für das Mietzinsdepot aufbringen kann, hat die Möglichkeit, eine Mietkautionsversicherung abzuschliessen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-k01",
@@ -19562,7 +20242,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Kündigungsfristen können vertraglich verlängert, aber nicht verkürzt werden (Art. 266a Abs. 1 OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-k08",
@@ -19638,7 +20323,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Kündigung der Familienwohnung durch den Vermieter ist nur rechtskräftig, wenn sie beiden Ehepartnern separat zugestellt wird — selbst wenn nur ein Ehepartner den Mietvertrag unterschrieben hat (Art. 266n/266m OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-r01",
@@ -19672,7 +20362,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Kleine Mängel, die durch gewöhnlichen Unterhalt behoben werden können (z.B. eine Glühbirne wechseln), muss der Mieter auf eigene Kosten beheben (Art. 259 OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-r03",
@@ -19774,7 +20469,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Mieter darf den Mangel auch selbst beheben lassen und die Kosten dem Vermieter in Rechnung stellen, wenn dieser trotz Fristsetzung nicht handelt (Art. 259b OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-r08",
@@ -19829,7 +20529,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Zwischen dem Vermieter und dem Untermieter besteht eine direkte Rechtsbeziehung.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-u03",
@@ -19843,7 +20548,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Mieter benötigt grundsätzlich die Zustimmung des Vermieters, bevor er untervermieten darf.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-u04",
@@ -19991,7 +20701,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ohne Antrittsprotokoll wird bei einem späteren Auszug angenommen, dass alle Schäden vom Mieter verursacht wurden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-a03",
@@ -20131,7 +20846,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn der Vermieter sich weigert, Mängel ins Antrittsprotokoll aufzunehmen, sollte der Mieter ihm stattdessen eine eigene Mängelliste per Einschreiben schicken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-z01",
@@ -20165,7 +20885,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Meerschweinchen, Hamster und Wellensittiche dürfen auch ohne Einwilligung des Vermieters in der Mietwohnung gehalten werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-z03",
@@ -20320,7 +21045,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Betreibungsauszug gibt Auskunft über die Zahlungsmoral einer Person und ist für Vermieter ein wichtiges Dokument bei der Mieterauswahl.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-z10",
@@ -20649,7 +21379,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Koppelungsgeschäft liegt vor, wenn der Vermieter den Abschluss des Mietvertrags davon abhängig macht, dass der Mieter gleichzeitig einen Parkplatz mietet, den er gar nicht braucht (Art. 254 OR).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-s14",
@@ -20684,7 +21419,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Referenzzinssatz ist ein vom Bundesamt für Wohnungswesen vierteljährlich publizierter Durchschnittszinssatz, der als Grundlage für Mietzinsanpassungen dient.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_mietrecht-s16",
@@ -20907,7 +21647,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Obligation kann nur aus einem Vertrag entstehen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-e03",
@@ -21034,7 +21779,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Vertragliche Schäden werden mittels OR 41 ff. (unerlaubte Handlung) abgegolten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-e09",
@@ -21144,7 +21894,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Dauerschuld (z.B. Miete) ist eine einmalige Leistungspflicht, die in Raten erfüllt wird.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-u01",
@@ -21178,7 +21933,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Kausalhaftung muss der Geschädigte ein Verschulden des Haftpflichtigen beweisen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-u03",
@@ -21299,7 +22059,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Verschuldenshaftung muss der Geschädigte alle vier Haftungsvoraussetzungen beweisen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-u09",
@@ -21384,7 +22149,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wer in berechtigter Notwehr einen Angreifer verletzt, muss dem Angreifer Schadenersatz leisten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-u13",
@@ -21463,7 +22233,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Bereicherungsanspruch verjährt in 3 Jahren nach Kenntnisnahme, spätestens aber nach 10 Jahren.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-b03",
@@ -21540,7 +22315,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der bösgläubig Bereicherte muss nur den Teil der Bereicherung zurückgeben, um den er noch bereichert ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-b07",
@@ -21600,7 +22380,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Rückforderung einer freiwillig bezahlten Nichtschuld setzt voraus, dass ein Irrtum in der Schuldpflicht vorlag (OR 63).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-b10",
@@ -21706,7 +22491,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Formfreiheit ist der Grundsatz im schweizerischen Vertragsrecht (OR 11).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-v03",
@@ -21848,7 +22638,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Parteien können vertraglich eine strengere Form vereinbaren, als das Gesetz vorschreibt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-v10",
@@ -21971,7 +22766,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Vertrag mit einem Willensmangel ist ab initio nichtig.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-w03",
@@ -22088,7 +22888,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Furchterregung (OR 29) liegt vor, wenn jemand durch Drohung mit einem Übel zum Vertragsabschluss bewegt wird.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-w09",
@@ -22168,7 +22973,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein blosser Motivirrtum (z.B. ich kaufe ein Geschenk, aber die Feier findet nicht statt) berechtigt zur Anfechtung des Vertrags.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-w13",
@@ -22253,7 +23063,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Geldschulden sind Bringschulden – sie sind am Wohnsitz des Gläubigers zu erfüllen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-f03",
@@ -22375,7 +23190,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Gattungsschuld hat der Schuldner grundsätzlich die Auswahl, welche Sache aus der Gattung er liefert (OR 71).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-f09",
@@ -22485,7 +23305,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Speziesschuld kann der Schuldner eine gleichwertige Ersatzsache liefern, wenn die geschuldete Sache beschädigt wird.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-s01",
@@ -22519,7 +23344,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Konventionalstrafe ist eine Schadenersatzzahlung.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-s03",
@@ -22659,7 +23489,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Eigentumsvorbehalt wirkt auch gegenüber gutgläubigen Dritten, ohne dass er im Register eingetragen sein muss.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-s10",
@@ -22766,7 +23601,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Gläubiger kann bei der Konventionalstrafe sowohl die Erfüllung als auch die Konventionalstrafe verlangen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-l01",
@@ -22800,7 +23640,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verjährung einer Forderung bedeutet, dass die Forderung nicht mehr existiert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-l03",
@@ -22917,7 +23762,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verjährungsfrist kann durch Anerkennung der Schuld durch den Schuldner unterbrochen werden (OR 135).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-l09",
@@ -23017,7 +23867,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wer eine verjährte Forderung freiwillig bezahlt, kann das Geleistete als ungerechtfertigte Bereicherung zurückfordern.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_or_at-l14",
@@ -23102,7 +23957,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Schuldnerverzug ist grundsätzlich eine Mahnung erforderlich (OR 102 Abs. 1).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-t03",
@@ -23268,7 +24128,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Gläubigerverzug kann der Schuldner die Sachleistung auf Gefahr und Kosten des Gläubigers hinterlegen (OR 92).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_or_at-t11",
@@ -23644,7 +24509,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Hund ist ein Rechtssubjekt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-r03",
@@ -23688,7 +24558,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Auto ist ein Rechtsobjekt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-r05",
@@ -23828,7 +24703,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Rechtsfähigkeit einer natürlichen Person beginnt mit der Geburt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-f04",
@@ -23842,7 +24722,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Rechtsfähigkeit einer natürlichen Person endet mit dem Tod.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-f05",
@@ -23940,7 +24825,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Auch eine Person, die wegen Geistesschwäche unter umfassender Beistandschaft steht, ist rechtsfähig.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-h01",
@@ -24027,7 +24917,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Urteilsfähigkeit bedeutet, dass man das 18. Lebensjahr erreicht hat.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-h05",
@@ -24109,7 +25004,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Urteilsfähigkeit ist ein absoluter Zustand: Man ist entweder für alles urteilsfähig oder für nichts.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-h09",
@@ -24226,7 +25126,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beschränkt Handlungsunfähige brauchen grundsätzlich die Zustimmung ihres gesetzlichen Vertreters, um Rechte und Pflichten zu begründen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-b03",
@@ -24440,7 +25345,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beschränkt Handlungsunfähige können durch unerlaubte Handlungen schadenersatzpflichtig werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-p01",
@@ -24474,7 +25384,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Jede Verletzung der Persönlichkeit ist gemäss Art. 28 ZGB widerrechtlich.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-p03",
@@ -24599,7 +25514,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Journalist darf den Namen eines verurteilten Straftäters in der Zeitung veröffentlichen, weil ein überwiegendes öffentliches Interesse vorliegt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-p08",
@@ -24655,7 +25575,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn jemand in die Veröffentlichung eines Fotos einwilligt, kann er später trotzdem eine Persönlichkeitsverletzung geltend machen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_personenrecht-p11",
@@ -24887,7 +25812,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Zivilprozess klagt der Staat gegen eine Privatperson.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-g03",
@@ -25015,7 +25945,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Strafprozess kann das Opfer die Strafverfolgung jederzeit stoppen, indem es die Anzeige zurückzieht.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-g09",
@@ -25113,7 +26048,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Grundsätzlich ist dasjenige Gericht örtlich zuständig, das sich am Wohnsitz des Beklagten befindet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-z04",
@@ -25192,7 +26132,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einem Streit um CHF 50'000 ist das vereinfachte Verfahren anwendbar.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-z08",
@@ -25293,7 +26238,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Bundesgericht in Lausanne ist die höchste richterliche Instanz der Schweiz.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-i04",
@@ -25351,7 +26301,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Man kann im Zivilprozess jedes Urteil der ersten Instanz direkt beim Bundesgericht anfechten, ohne den Weg über die zweite Instanz zu gehen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-i07",
@@ -25462,7 +26417,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Urkunden (z.B. Verträge, Quittungen) sind ein anerkanntes Beweismittel im Zivilprozess.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-b03",
@@ -25575,7 +26535,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Zivilprozess muss der Beklagte immer beweisen, dass er unschuldig ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-b08",
@@ -25630,7 +26595,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Zeugenaussage ist im Zivilprozess das zuverlässigste Beweismittel.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-s01",
@@ -25664,7 +26634,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Schweiz muss vor der Einreichung einer Zivilklage grundsätzlich ein Schlichtungsverfahren durchgeführt werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-s03",
@@ -25764,7 +26739,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer Mediation entscheidet der Mediator verbindlich über den Ausgang des Streits.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-s08",
@@ -25892,7 +26872,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Staatsanwaltschaft erhebt im Strafverfahren die Anklage gegen den Beschuldigten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-v04",
@@ -25990,7 +26975,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Strafverfahren ist die Staatsanwaltschaft verpflichtet, auch entlastende Umstände zu ermitteln.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_prozessrecht-v09",
@@ -26314,7 +27304,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Obligatorische Rechte wirken gegenüber jedermann.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-e03",
@@ -26442,7 +27437,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Tiere gelten im schweizerischen Recht als Sachen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-e09",
@@ -26547,7 +27547,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Besitzer einer Sache ist immer auch deren Eigentümer.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-b05",
@@ -26671,7 +27676,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Eigentümer eines Gartengrills darf jeden Abend auf dem Balkon grillieren, da er ja Eigentümer des Grills ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-f01",
@@ -26821,7 +27831,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Gesamteigentum kann jeder einzelne Gesamteigentümer über seinen rechnerischen Anteil frei verfügen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-f08",
@@ -26885,7 +27900,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Stockwerkeigentum wird die Mehrheit für Beschlüsse von der Anzahl der anwesenden Stimmberechtigten berechnet.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-w01",
@@ -26919,7 +27939,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Kauf einer beweglichen Sache wird der Käufer erst Eigentümer, wenn er den Kaufpreis vollständig bezahlt hat.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-w03",
@@ -27074,7 +28099,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wer seinen alten Bürostuhl mit einem Zettel «zum Mitnehmen» an den Strassenrand stellt, gibt damit sein Eigentum auf (Dereliktion).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-w10",
@@ -27130,7 +28160,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss Art. 930 ZGB wird vermutet, dass der Besitzer einer Sache auch deren Eigentümer ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-g02",
@@ -27250,7 +28285,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein bösgläubiger Erwerber — d.h. jemand, der wusste oder hätte wissen müssen, dass es sich um Diebesgut handelt — ist gemäss Art. 936 ZGB in seinem Eigentumserwerb nicht geschützt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-g08",
@@ -27477,7 +28517,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Grunddienstbarkeiten sind an die Grundstücke gebunden und gelten auch für spätere Eigentümer.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-d09",
@@ -27583,7 +28628,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Verfallklausel — die Vereinbarung, dass die Pfandsache bei Nichterfüllung ins Eigentum des Gläubigers falle — ist gemäss Art. 894 ZGB nichtig.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-p05",
@@ -27702,7 +28752,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Grundbuch hat eine negative Rechtskraft: Fehlt ein Eintrag, besteht kein dingliches Recht an einem Grundstück.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_sachenrecht-p11",
@@ -27920,7 +28975,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Grundsatz «Keine Strafe ohne ausdrückliches Gesetz» gehört zu den Grundsätzen der Strafprozessordnung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-z03",
@@ -28069,7 +29129,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Spezialprävention umfasst die individuelle Abschreckung, die Resozialisierung und die Sicherung der Allgemeinheit.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-z10",
@@ -28083,7 +29148,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Niedrige direkte Kosten einer Strafe (z.B. Gefängniskosten) führen immer auch zu den niedrigsten Gesamtkosten für die Gesellschaft.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-s01",
@@ -28276,7 +29346,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemeinnützige Arbeit kann nur mit Zustimmung des Täters angeordnet werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-s10",
@@ -28324,7 +29399,12 @@
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
     "kontext": "Sachbeschädigung (Art. 144 StGB) wird mit Freiheitsstrafe bis zu drei Jahren oder Geldstrafe bestraft.",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Sachbeschädigung ist ein Vergehen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-v01",
@@ -28382,7 +29462,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die inhaftierte Person ist während des Strafvollzugs zur Arbeit verpflichtet (Art. 81 Abs. 1 StGB).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-v04",
@@ -28502,7 +29587,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bussen sind immer unbedingt — sie können nicht bedingt ausgesprochen werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-v10",
@@ -28537,7 +29627,12 @@
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
     "kontext": "Maria wird bedingt aus dem Strafvollzug entlassen. Während der Probezeit begeht sie erneut ein Vergehen.",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Maria muss in den Strafvollzug zurückkehren und die restliche Strafe absitzen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-m01",
@@ -28575,7 +29670,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei Massnahmen korreliert die Dauer mit dem Verschulden des Täters — je schwerer das Verschulden, desto länger die Massnahme.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-m03",
@@ -28678,7 +29778,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Massnahme kann länger dauern als die Freiheitsstrafe, die für dasselbe Delikt verhängt worden wäre, weil sich ihre Dauer am Gesundheitszustand und am Sicherheitsbedürfnis orientiert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-m08",
@@ -28766,7 +29871,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Für eine Bestrafung ist mindestens Vorsatz oder Fahrlässigkeit nötig — bei Zufall bleibt der Täter straffrei.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-t04",
@@ -28887,7 +29997,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Für Vorsatz ist es zwingend nötig, dass die Tat im Voraus geplant wurde.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-p01",
@@ -28921,7 +30036,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Offizialdelikte werden von Amtes wegen verfolgt, unabhängig davon, ob das Opfer eine Bestrafung wünscht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-p03",
@@ -29018,7 +30138,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Es gibt Straftaten, die gemäss Art. 101 StGB nie verjähren.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-p08",
@@ -29053,7 +30178,12 @@
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
     "kontext": "Ein Delikt, das mit maximal 3 Jahren Freiheitsstrafe bedroht ist, hat laut StGB 97 eine Verfolgungsverjährungsfrist von 10 Jahren.",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn jemand für dieses Delikt tatsächlich nur zu 6 Monaten verurteilt wird, beträgt die Verjährungsfrist trotzdem 10 Jahre.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-r01",
@@ -29087,7 +30217,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Notwehr (Art. 15 StGB) bedeutet, dass man einen rechtswidrigen Angriff in angemessener Weise abwehren darf.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-r03",
@@ -29259,7 +30394,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB) führt zu einer milderen Bestrafung, nicht zu vollständiger Straffreiheit.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-r11",
@@ -29317,7 +30457,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gehilfen werden gleich bestraft wie der Haupttäter.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-a03",
@@ -29443,7 +30588,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Anstifter (Art. 24 StGB) wird gleich bestraft wie der Haupttäter.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-u01",
@@ -29477,7 +30627,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Strafmindernde Faktoren bei der Strafzumessung sind in Art. 47 und Art. 48 StGB geregelt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-u03",
@@ -29622,7 +30777,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Übertretungen werden grundsätzlich ins Strafregister eingetragen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-j01",
@@ -29656,7 +30816,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Freiheitsentzug im Jugendstrafrecht ist erst ab einem Alter von 15 Jahren möglich.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-j03",
@@ -29748,7 +30913,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ordnungsbussen (z.B. für geringfügige Verkehrsübertretungen) werden ins Strafregister eingetragen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-j07",
@@ -29803,7 +30973,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Führerausweisentzug ist eine Strafe im strafrechtlichen Sinne.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "recht_strafrecht-j10",
@@ -30043,7 +31218,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Nachfrage nach Arbeitskräften ist eine abgeleitete Nachfrage, weil sie von der Nachfrage nach Gütern und Dienstleistungen abhängt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-a03",
@@ -30122,7 +31302,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im klassischen Modell des Arbeitsmarktes gibt es bei flexiblen Löhnen keine unfreiwillige Arbeitslosigkeit.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-a07",
@@ -30274,7 +31459,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Schweizer Nominallohnindex ist in den über 78 Jahren, seit er besteht, noch nie gesunken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-l04",
@@ -30334,7 +31524,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Lohnunterschiede zwischen Branchen lassen sich vor allem durch Unterschiede in der Arbeitsproduktivität erklären.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-l07",
@@ -30509,7 +31704,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die strukturelle Arbeitslosigkeit kann losgelöst vom Konjunkturzyklus betrachtet werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-t05",
@@ -30577,7 +31777,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die friktionelle Arbeitslosigkeit ist kurzfristiger Natur und für die Wirtschaftspolitik unproblematisch.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-t09",
@@ -30675,7 +31880,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In einer Hochkonjunktur liegt der Punkt auf der Beveridge-Kurve typischerweise links oben (mehr offene Stellen als Arbeitslose).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-b04",
@@ -30748,7 +31958,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Auf der Winkelhalbierenden der Beveridge-Kurve entspricht die Zahl der offenen Stellen der Zahl der Arbeitslosen – dies bildet die Sockelarbeitslosigkeit ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-b08",
@@ -30899,7 +32114,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Arbeitszeitverkürzungen sind ein einfaches und risikoloses Mittel gegen Arbeitslosigkeit.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-k04",
@@ -30967,7 +32187,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ausländische Arbeitskräfte sind grundsätzlich nur als Konkurrenz für einheimische Arbeitnehmer zu sehen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-k08",
@@ -31037,7 +32262,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Kurzarbeit ist ein Instrument, das Entlassungen bei vorübergehenden Arbeitsausfällen vermeiden soll.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-s01",
@@ -31116,7 +32346,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Stellensuchende und Arbeitslose bezeichnen dieselbe Personengruppe.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-s05",
@@ -31238,7 +32473,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Arbeitslosenquote von 0% wäre in einer dynamischen Marktwirtschaft ein erstrebenswertes Ziel.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-r01",
@@ -31272,7 +32512,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Existenz von Sozialversicherungen lässt sich unter anderem mit Marktversagen begründen: Ohne staatliche Eingriffe würden sich viele Menschen nicht ausreichend gegen Risiken wie Alter, Krankheit oder Arbeitslosigkeit absichern.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-r03",
@@ -31340,7 +32585,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Schweiz gibt es keine Armut, weil das Land eines der höchsten Pro-Kopf-Einkommen der Welt hat.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-r07",
@@ -31462,7 +32712,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Sozialhilfe in der Schweiz ist eine Sozialversicherung, die durch Beiträge der Versicherten finanziert wird.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_arbeitslosigkeit-r12",
@@ -31800,7 +33055,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Knappheit bedeutet, dass ein Gut selten ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-k03",
@@ -31883,7 +33143,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Volkswirtschaftslehre gehört zu den Sozialwissenschaften.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-k07",
@@ -31960,7 +33225,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn die Schweiz ihren Wohlstand verdoppeln würde, wäre das Knappheitsproblem gelöst.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-b01",
@@ -31994,7 +33264,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss der VWL sind die Bedürfnisse der Menschen grundsätzlich unbegrenzt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-b03",
@@ -32117,7 +33392,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss Maslow befriedigen Menschen immer zuerst alle Grundbedürfnisse, bevor sie sich höheren Bedürfnissen zuwenden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-b08",
@@ -32273,7 +33553,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Luft ist immer ein freies Gut.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-g04",
@@ -32383,7 +33668,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Lastwagen ist immer ein Investitionsgut.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-g09",
@@ -32542,7 +33832,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Humankapital (Wissen, Können, Fähigkeiten) gilt als eigenständiger Produktionsfaktor.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-p05",
@@ -32590,7 +33885,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Bäckermeister, der seine langjährige Erfahrung im Brotbacken einsetzt, nutzt dabei nur den Produktionsfaktor Arbeit.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-p08",
@@ -32667,7 +33967,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Geldkapital (z.B. Bankguthaben eines Unternehmens) ist ein Produktionsfaktor.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-o01",
@@ -32785,7 +34090,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Unternehmen 1'000 Hemden mit möglichst geringen Kosten produzieren will, handelt es nach dem Maximumprinzip.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-o06",
@@ -32856,7 +34166,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das ökonomische Prinzip gilt nur für Unternehmen und den Staat, nicht für private Entscheidungen im Alltag.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-a01",
@@ -32890,7 +34205,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Arbeitsteilung setzt eine Bereitschaft zum Tausch voraus.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-a03",
@@ -33000,7 +34320,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In einer modernen Volkswirtschaft produzieren die meisten Menschen den Grossteil der Güter, die sie täglich konsumieren, selbst.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-a08",
@@ -33126,7 +34451,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Schweiz ist heute eine Dienstleistungsgesellschaft – der tertiäre Sektor ist der grösste.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-s05",
@@ -33243,7 +34573,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Rückgang des primären Sektors in der Schweiz bedeutet, dass die Landwirtschaft weniger produziert als früher.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_beduerfnisse-neu_sort_01",
@@ -33565,7 +34900,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Vorleistungen werden beim BIP abgezogen, um Doppelzählungen zu vermeiden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-d03",
@@ -33679,7 +35019,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Wertschöpfung eines Unternehmens berechnet sich als Produktionswert minus Vorleistungen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-d08",
@@ -33742,7 +35087,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das BIP pro Kopf ist ein geeignetes Mass für die Lebensqualität einer Bevölkerung.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-d11",
@@ -33819,7 +35169,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Jahrhunderthochwasser Milliardenschäden verursacht, sinkt das BIP.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-m03",
@@ -33853,7 +35208,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Seit 2014 werden in der Schweiz auch Schätzungen zu Drogenhandel und Prostitution ins BIP eingerechnet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-m05",
@@ -33928,7 +35288,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Umweltschäden durch die Produktion werden im BIP als negative Position verbucht.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-m09",
@@ -34140,7 +35505,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Produktionsansatz und der Einkommensansatz müssen immer denselben Wert ergeben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-s06",
@@ -34241,7 +35611,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn die Schweiz mehr importiert als exportiert, ist der Beitrag der Nettoexporte zum BIP negativ – das BIP sinkt dadurch zwingend.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-n01",
@@ -34275,7 +35650,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn das nominale BIP steigt, bedeutet das immer, dass die Wirtschaft gewachsen ist.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-n03",
@@ -34378,7 +35758,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim BIP-Vergleich mit Kaufkraftparitäten (PPP) rutscht die Schweiz in der Rangliste tendenziell nach unten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-n07",
@@ -34445,7 +35830,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Kaufkraftparitäten (PPP) korrigieren für Wechselkursschwankungen, nicht für Preisunterschiede zwischen Ländern.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-k01",
@@ -34524,7 +35914,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Wirtschaftskreislauf steht jedem Geldstrom ein Güterstrom (oder Faktorstrom) gegenüber.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-k05",
@@ -34610,7 +36005,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im erweiterten Kreislauf fliessen Zahlungen für Importe von den Haushalten ans Ausland.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-k09",
@@ -34779,7 +36179,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss aktueller Forschung ist Frühförderung das effizienteste Mittel gegen Ungleichheit.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-v06",
@@ -34818,7 +36223,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Vermögensverteilung in der Schweiz ist deutlich ungleicher als die Einkommensverteilung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-v08",
@@ -34913,7 +36323,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Gini-Koeffizient von 0 bedeutet, dass alle Personen exakt das gleiche Einkommen haben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-w01",
@@ -35029,7 +36444,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Lenkungsabgaben sollen dem Staat primär höhere Einnahmen verschaffen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-w06",
@@ -35063,7 +36483,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wirtschaftswachstum und Nachhaltigkeit schliessen sich gegenseitig aus.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_bip-w08",
@@ -35140,7 +36565,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die drei Dimensionen der Nachhaltigkeit sind Ökologie, Ökonomie und Gesellschaft (Soziales).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_bip-w12",
@@ -35409,7 +36839,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In einer reinen Tauschwirtschaft muss jeder Tauschpartner genau das Gut besitzen, das der andere haben möchte – man spricht von der «doppelten Koinzidenz der Bedürfnisse».",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-t03",
@@ -35467,7 +36902,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Spiel BOB findet eine Entwicklung von der Autarkie (Selbstversorgung) über eine Tauschwirtschaft hin zu einer Geldwirtschaft statt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-t06",
@@ -35655,7 +37095,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Spiel BOB übernimmt X neben der Funktion als Tauschmittel auch die Funktion als Wertaufbewahrungsmittel, da X im Gegensatz zu anderen Buchstaben zwischen den Runden behalten werden darf.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-f06",
@@ -35709,7 +37154,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Recheneinheit-Funktion des Geldes ermöglicht es, den Wert unterschiedlicher Güter in einer gemeinsamen Einheit (z.B. Schweizer Franken) auszudrücken und somit Preise einfach zu vergleichen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-e01",
@@ -35767,7 +37217,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Spiel BOB eignet sich X besonders gut als Tauschmittel, weil es in keinem Wort des vorgegebenen Satzes vorkommt und deshalb von allen als «neutrale Tauschware» akzeptiert wird.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-e04",
@@ -35846,7 +37301,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Geld muss zwingend einen eigenen materiellen Wert haben (z.B. aus Gold oder Silber bestehen), um als Zahlungsmittel funktionieren zu können.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-e08",
@@ -36001,7 +37461,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Produktion einer Schweizer 100-Franken-Banknote kostet rund 40 Rappen. Banknoten sind deshalb ein Beispiel für Warengeld.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-ga06",
@@ -36035,7 +37500,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Als Erfinder des Papiergeldes gelten die Chinesen. Erste Formen von Papiergeld kamen in China im 7. Jahrhundert auf.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-ga08",
@@ -36113,7 +37583,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Geldmonopol liegt in der Schweiz beim Staat beziehungsweise bei der Schweizerischen Nationalbank.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-v04",
@@ -36167,7 +37642,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Tatsache, dass Papiergeld keinen materiellen Eigenwert hat, macht Vertrauen zu einer noch wichtigeren Voraussetzung als bei Warengeld.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-v07",
@@ -36320,7 +37800,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn sich alle absoluten Preise in einer Volkswirtschaft verdoppeln, ändern sich auch die relativen Preise.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-p06",
@@ -36442,7 +37927,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Kreditkarte (z.B. Visa) ist selbst kein Geld, sondern dient lediglich als Mittel, um Buchgeld von einem Konto auf ein anderes zu übertragen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-g04",
@@ -36526,7 +38016,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Buchgeld (Bankguthaben) ist sicherer als Bargeld, da es durch die Zentralbank garantiert wird.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-k01",
@@ -36560,7 +38055,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Je höher das Preisniveau, desto geringer ist die Kaufkraft des Geldes.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-k03",
@@ -36625,7 +38125,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn sich nur der Benzinpreis deutlich verteuert, alle anderen Preise aber stabil bleiben, herrscht Inflation.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-k06",
@@ -36682,7 +38187,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn das reale BIP einer Volkswirtschaft zunimmt, steigt in der Regel auch die Geldnachfrage.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-n03",
@@ -36716,7 +38226,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Steigen die Zinsen auf Sparkonten, nehmen die Opportunitätskosten der Bargeldhaltung zu, und das Publikum hält weniger Bargeld.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-n05",
@@ -36867,7 +38382,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Kreditnehmer seinen Kredit zurückzahlt (Tilgung), wird zuvor geschaffenes Geld wieder vernichtet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-a05",
@@ -36901,7 +38421,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Geldangebotskurve verläuft senkrecht, weil das Geldangebot von der Zentralbank festgelegt wird.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-a07",
@@ -37063,7 +38588,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Geldschöpfungsmultiplikator ist ein fester, unveränderlicher Wert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-m07",
@@ -37077,7 +38607,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Münzen gehören nicht zur Notenbankgeldmenge M0, da sie Verpflichtungen des Bundes (nicht der SNB) darstellen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-z01",
@@ -37188,7 +38723,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Inflationserwartungen können zu einer «sich selbst erfüllenden Prophezeiung» werden: Bereits die blosse Erwartung einer Geldentwertung kann tatsächlich zur Geldentwertung führen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-z06",
@@ -37294,7 +38834,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Negativzins der SNB (eingeführt im Januar 2015) zielte darauf ab, Anlagen in Franken weniger attraktiv zu machen und so den Aufwertungsdruck auf den Franken zu begrenzen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-u05",
@@ -37372,7 +38917,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Negativzins wirkt sich nachteilig auf die Profitabilität der Geschäftsbanken aus, da diese den Negativzins nur ungern an ihre Sparkunden weitergeben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_geld-k07",
@@ -37426,7 +38976,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Aufwertung des Schweizer Frankens wirkt sich immer inflationär auf das Preisniveau in der Schweiz aus.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_geld-n08",
@@ -37757,7 +39312,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Während einer Hochkonjunktur liegt die tatsächliche Wirtschaftsleistung über dem Produktionspotenzial bei Normalauslastung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-z04",
@@ -37771,7 +39331,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Rezession wird in der Regel definiert als zwei aufeinanderfolgende Quartale mit negativem BIP-Wachstum.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-z05",
@@ -37887,7 +39452,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Stagnationsphase des Konjunkturzyklus hat die Wirtschaft ihren Höhepunkt erreicht und das Wachstum verlangsamt sich.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-z10",
@@ -37989,7 +39559,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Arbeitslosenquote ist ein typischer Frühindikator der Konjunktur.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-i05",
@@ -38074,7 +39649,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das KOF-Konjunkturbarometer der ETH Zürich ist ein Beispiel für einen Frühindikator der Schweizer Konjunktur.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-i09",
@@ -38220,7 +39800,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die politische Konjunkturtheorie besagt, dass Regierungen vor Wahlen die Staatsausgaben erhöhen, um die Konjunktur anzukurbeln.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-u06",
@@ -38321,7 +39906,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Psychologische Faktoren wie Pessimismus und Unsicherheit können als konjunkturelle Verstärker wirken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-u10",
@@ -38402,7 +39992,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss dem Sayschen Theorem («Saysches Gesetz») schafft sich jedes Angebot seine eigene Nachfrage.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-k03",
@@ -38436,7 +40031,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Klassiker befürworten eine aktive staatliche Konjunkturpolitik, um Rezessionen zu bekämpfen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-k05",
@@ -38543,7 +40143,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss der klassischen Konzeption kann es auf Dauer keine unfreiwillige Arbeitslosigkeit geben, weil flexible Löhne den Arbeitsmarkt ins Gleichgewicht bringen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-k10",
@@ -38637,7 +40242,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Keynes hielt es für notwendig, dass der Staat in der Rezession Budgetdefizite in Kauf nimmt, um die Nachfrage zu stützen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-j05",
@@ -38722,7 +40332,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die «Liquiditätsfalle» beschreibt eine Situation, in der die Geldpolitik wirkungslos wird, weil die Zinsen bereits bei oder nahe null liegen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-j09",
@@ -38846,7 +40461,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Monetaristen lehnen eine aktive staatliche Fiskalpolitik zur Konjunktursteuerung ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-m04",
@@ -38941,7 +40561,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Modern Monetary Theory (MMT) argumentiert ähnlich wie der Monetarismus, dass die Geldmenge strikt begrenzt werden muss.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-m08",
@@ -39018,7 +40643,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Milton Friedman, der bekannteste Vertreter des Monetarismus, forderte eine regelgebundene Geldpolitik, bei der die Geldmenge stetig und moderat wachsen soll.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-a01",
@@ -39076,7 +40706,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Angebotsökonomen vertrauen grundsätzlich auf die Selbstheilungskräfte des Marktes und lehnen kurzfristige staatliche Konjunkturmassnahmen ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-a04",
@@ -39229,7 +40864,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3–GYM4",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Corona-Krise 2020 war ein klassischer Konjunkturzyklus und konnte mit den üblichen konjunkturpolitischen Instrumenten bekämpft werden.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_konjunktur-a11",
@@ -39629,7 +41269,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Angebotskurve verläuft typischerweise steigend, weil bei höheren Preisen mehr Unternehmen bereit sind zu produzieren und bestehende Unternehmen ihre Menge ausweiten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-a04",
@@ -39643,7 +41288,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Nachfragekurve entspricht gleichzeitig der Grenzkostenkurve der Konsumenten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-a05",
@@ -39803,7 +41453,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn der Preis eines Komplementärgutes (z.B. Benzin) steigt, verschiebt sich die Nachfragekurve nach dem Hauptgut (z.B. SUVs) nach rechts.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-a12",
@@ -39880,7 +41535,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Markt im ökonomischen Sinne erfordert immer einen physischen Ort, an dem sich Käufer und Verkäufer treffen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-a16",
@@ -39938,7 +41598,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Gleichgewichtspreis gibt es weder einen Angebotsüberschuss noch einen Nachfrageüberschuss.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-g03",
@@ -40086,7 +41751,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Modell der vollkommenen Konkurrenz ist jeder Marktteilnehmer ein Preisnehmer — kein einzelner Anbieter oder Nachfrager kann den Marktpreis beeinflussen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-g10",
@@ -40158,7 +41828,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Homogenität bedeutet, dass die angebotenen Güter aus Sicht der Nachfrager identisch und austauschbar sind.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-g14",
@@ -40484,7 +42159,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Je mehr Substitutionsmöglichkeiten für ein Gut bestehen, desto unelastischer ist die Nachfrage.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-v10",
@@ -40542,7 +42222,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn die Angebotskurve nach rechts verschoben wird (z.B. durch Technologiefortschritt) und die Nachfrage gleich bleibt, sinkt der Gleichgewichtspreis und die Gleichgewichtsmenge steigt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-v13",
@@ -40685,7 +42370,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Marktgleichgewicht bei vollkommener Konkurrenz ist die Gesamtwohlfahrt (Summe aus KR und PR) maximal.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-w05",
@@ -40743,7 +42433,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Pareto-Effizienz bedeutet, dass die Ressourcen gerecht verteilt sind.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-w08",
@@ -40771,7 +42466,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Preisdifferenzierung (z.B. unterschiedliche Preise für Studierende, Seniorinnen und Erwerbstätige) ist immer wohlfahrtsschädigend.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-w10",
@@ -41034,7 +42734,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein öffentliches Gut zeichnet sich dadurch aus, dass es nicht rivalisierend und nicht ausschliessbar ist.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-t04",
@@ -41119,7 +42824,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Gut kann seine Klassifikation im Laufe der Zeit ändern — z.B. kann eine bisher frei zugängliche Ressource durch Regulierung zu einem Klubgut werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-t08",
@@ -41212,7 +42922,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Monopolist hat einen Anreiz, die Produktionsmenge zu beschränken und den Preis über die Grenzkosten zu setzen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-b03",
@@ -41290,7 +43005,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Normen und Standards können den Wettbewerb einschränken, auch wenn sie ursprünglich dem Konsumentenschutz dienen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-b07",
@@ -41338,7 +43058,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein natürliches Monopol entsteht, wenn die Fixkosten so hoch sind, dass ein einziger Anbieter den Markt günstiger bedienen kann als mehrere Anbieter.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-b10",
@@ -41401,7 +43126,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Strassenbeleuchtung ist ein gutes Beispiel für ein öffentliches Gut, weil sie privat kaum finanzierbar wäre.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-o03",
@@ -41493,7 +43223,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Fischteich-Spiel verdoppelt sich der Fischbestand nach jeder Runde (bis zum Anfangsbestand). Die optimale kollektive Strategie ist, pro Runde maximal die Hälfte des Bestandes zu fischen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-o08",
@@ -41585,7 +43320,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Tragödie der Allmende entsteht, weil die Kosten der Übernutzung auf alle Nutzer verteilt werden, der Nutzen aber beim Einzelnen bleibt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-l03",
@@ -41662,7 +43402,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Elinor Ostrom erhielt den Nobelpreis für Wirtschaftswissenschaften, weil sie zeigte, dass die Tragödie der Allmende nur durch Privatisierung oder Verstaatlichung gelöst werden kann.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-l07",
@@ -41872,7 +43617,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Positive externe Effekte (z.B. Bildung) führen dazu, dass der Markt zu viel des Gutes bereitstellt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-e07",
@@ -41920,7 +43670,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Emissionshandel legt der Staat den Preis für Emissionsrechte fest.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-e10",
@@ -42145,7 +43900,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im «Market for Lemons»-Modell von Akerlof bricht der Gebrauchtwagenmarkt zusammen, weil Käufer nicht zwischen guten und schlechten Autos unterscheiden können.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-i05",
@@ -42234,7 +43994,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Garantien und Zertifikate sind private Lösungsansätze gegen asymmetrische Information.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-i09",
@@ -42326,7 +44091,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer sehr steilen (unelastischen) Nachfragekurve wird eine Steuer grösstenteils auf die Konsumenten überwälzt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-s04",
@@ -42340,7 +44110,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einer flachen (elastischen) Nachfragekurve können Produzenten die Steuer grösstenteils auf die Konsumenten überwälzen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-s05",
@@ -42469,7 +44244,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Je elastischer Angebot und Nachfrage sind, desto grösser ist der Wohlfahrtsverlust einer Steuer.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-s11",
@@ -42555,7 +44335,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Steuer auf Benzin (unelastische Nachfrage) wird grösstenteils von den Produzenten getragen, weil diese die Steuer formell abführen müssen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-s15",
@@ -42651,7 +44436,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Staatsversagen bedeutet, dass der Staat grundsätzlich nie in die Wirtschaft eingreifen sollte.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-p05",
@@ -42730,7 +44520,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Staatliche Unternehmen arbeiten tendenziell weniger effizient als private Unternehmen, weil der Konkurrenzdruck fehlt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-n01",
@@ -42839,7 +44634,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Modell «Green Growth» setzt auf den Markt- und Preismechanismus als Hauptinstrument für den ökologischen Wandel.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-n06",
@@ -42867,7 +44667,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM2/GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das «Beyond Growth»-Modell der OECD will das Wirtschaftswachstum nicht abschaffen, sondern durch neue Ziele ergänzen: Nachhaltigkeit, Wohlbefinden, Gerechtigkeit und Resilienz.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_markteffizienz-n08",
@@ -43177,7 +44982,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Homo oeconomicus beschreibt, wie sich ein einzelner Mensch tatsächlich verhält.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-h03",
@@ -43287,7 +45097,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eigennütziges Handeln bedeutet gemäss dem Modell des Homo oeconomicus, dass der Mensch immer nur an sich selbst denkt und anderen bewusst schadet.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-h08",
@@ -43379,7 +45194,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Herbert Simon stellte 1957 fest, dass die Rationalität der Menschen begrenzt ist, weil sie nicht alle Informationen verarbeiten können.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-r03",
@@ -43493,7 +45313,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Trotz der Kritik verwenden viele Ökonomen das Modell des Homo oeconomicus weiterhin, besonders zur Erklärung des Verhaltens von Unternehmen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-r08",
@@ -43527,7 +45352,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verhaltensökonomie (Behavioral Economics) ist ein Teilgebiet der VWL, das psychologische Erkenntnisse in die ökonomische Analyse einbezieht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-r10",
@@ -43595,7 +45425,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn jemand sagt «Ich habe keine Zeit», meint er eigentlich «Die Opportunitätskosten sind mir zu hoch».",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-o04",
@@ -43661,7 +45496,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Warum sind Opportunitätskosten von gut bezahlten Managern besonders hoch? Weil ihr Zeitwert hoch ist – jede Stunde Freizeit bedeutet hohen entgangenen Verdienst.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-o07",
@@ -43798,7 +45638,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn Kehrichtsackgebühren eingeführt werden, reduziert sich die Abfallmenge ohne Nebenwirkungen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-a05",
@@ -43924,7 +45769,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Nudging ist ethisch unproblematisch, weil die Wahlfreiheit erhalten bleibt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-g01",
@@ -44078,7 +45928,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Gefangenendilemma kommt es zu einem schlechten Ergebnis, weil sich die Beteiligten irrational verhalten.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-g08",
@@ -44092,7 +45947,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Im Gefangenendilemma hängt das Ergebnis nicht nur vom eigenen, sondern auch vom Verhalten der anderen Beteiligten ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-g09",
@@ -44253,7 +46113,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Prognosen in der VWL sind einfach, weil die Zusammenhänge klar sind.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-v05",
@@ -44363,7 +46228,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Sechseck heisst «magisch», weil es schwierig ist, alle sechs Ziele gleichzeitig zu erreichen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_menschenbild-z03",
@@ -44733,7 +46603,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ein Gini-Koeffizient von 0 bedeutet, dass alle Einkommen vollständig gleich verteilt sind (Einheitslohn).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-v03",
@@ -44924,7 +46799,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Vermögensverteilung in der Schweiz ist deutlich ungleicher als die Einkommensverteilung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-v12",
@@ -45054,7 +46934,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss dem naturrechtlichen Liberalismus (Nozick) ist Besteuerung eine Form von Diebstahl.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-g03",
@@ -45149,7 +47034,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Utilitarismus strebt eine Gleichverteilung aller Güter an.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-g07",
@@ -45241,7 +47131,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss dem Utilitarismus ist bei abnehmendem Grenznutzen des Einkommens eine gewisse Umverteilung von Reich zu Arm wohlfahrtssteigernd.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-g12",
@@ -45394,7 +47289,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Krankenversicherung (Grundversicherung) bietet für alle Versicherten pro Kasse und Region die gleichen Prämien für Erwachsene.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-s04",
@@ -45468,7 +47368,12 @@
       "src": "/pool-bilder/vwl/sozialpolitik/sozialversicherungen_anteile.svg",
       "alt": "Sozialversicherungseinnahmen nach Zweig (2017)"
     },
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Berufliche Vorsorge (2. Säule), die AHV und die Krankenversicherung vereinigen zusammen rund 80% der Sozialversicherungseinnahmen auf sich.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-s07",
@@ -45565,7 +47470,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Unfallversicherung (UV) für Arbeitnehmer wird vollständig vom Arbeitgeber finanziert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-s12",
@@ -45721,7 +47631,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei der Beruflichen Vorsorge (2. Säule) werden individuelle Beiträge auf einem persönlichen Konto angespart und verzinst (Kapitaldeckungsverfahren).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-f03",
@@ -45872,7 +47787,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Kapitaldeckungsverfahren (2. Säule) können die angesammelten Gelder durch eine Finanzkrise erheblich an Wert verlieren.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-f10",
@@ -45986,7 +47906,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Selbstständige müssen den vollen AHV-Beitragssatz alleine bezahlen, da sie keinen Arbeitgeber haben, der die Hälfte übernimmt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-f15",
@@ -46123,7 +48048,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Ersparnisse auf einem Bankkonto können bei kleinen Schäden (z.B. Glasbruch) eine sinnvolle Alternative zu einer Versicherung sein.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-i07",
@@ -46195,7 +48125,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Asymmetrische Information bedeutet, dass die Versicherung mehr über das Risiko des Versicherten weiss als der Versicherte selbst.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-i11",
@@ -46423,7 +48358,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Arbeitnehmerschutz kann als unbeabsichtigte Nebenwirkung zu mehr Arbeitslosigkeit führen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-e06",
@@ -46495,7 +48435,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die «Armutsfalle» entsteht, wenn Sozialhilfeempfänger bei Aufnahme einer Arbeit kaum mehr Geld zur Verfügung haben als ohne Arbeit.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-e10",
@@ -46642,7 +48587,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Am 5. Juni 2016 hat das Schweizer Stimmvolk die Initiative für ein bedingungsloses Grundeinkommen abgelehnt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-h03",
@@ -46759,7 +48709,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die negative Einkommenssteuer würde das Problem der Armutsfalle lösen, weil die Transfers mit steigendem Einkommen nur teilweise und nicht vollständig gekürzt werden.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_sozialpolitik-h09",
@@ -47163,7 +49118,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Staatsquote der Schweiz liegt im internationalen Vergleich auf einem tiefen Niveau.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-s04",
@@ -47177,7 +49137,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss dem 'Gesetz der wachsenden Ausdehnung der Staatstätigkeit' von Adolf Wagner wachsen die Staatsausgaben langfristig proportional zum Wirtschaftswachstum.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-s05",
@@ -47278,7 +49243,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Mit steigendem Einkommen steigt die Nachfrage nach Staatsleistungen überproportional an.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-a01",
@@ -47312,7 +49282,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Bundeshaushalt der Schweiz wird als 'Transferhaushalt' bezeichnet, weil der Bund zwei Drittel seiner Mittel als Übertragungen an Dritte weitergibt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-a03",
@@ -47422,7 +49397,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Dem Bund verbleibt der grössere Teil seiner Mittel für eigene Zwecke wie Verwaltung und Landesverteidigung.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-a08",
@@ -47535,7 +49515,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Nirgendwo in Europa ist der Anteil der direkten Steuern so hoch wie in der Schweiz.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-e05",
@@ -47569,7 +49554,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verrechnungssteuer ist eine direkte Steuer auf Kapitalerträge.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-e07",
@@ -47686,7 +49676,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Konjunkturelle Defizite sind unproblematisch, weil sie als automatische Stabilisatoren wirken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-d05",
@@ -47745,7 +49740,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bestimmte Bundesausgaben wie Personalausgaben und Renten sind indexgebunden und reagieren daher verzögert auf Konjunktureinbrüche.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-d08",
@@ -47793,7 +49793,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Schweiz gehört im internationalen Vergleich zu den am stärksten verschuldeten Ländern.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-i03",
@@ -47879,7 +49884,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Staatsverschuldung ist ausschliesslich ein Problem der Industrieländer.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-i07",
@@ -47958,7 +49968,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn der Staat seine Defizite durch Kreditaufnahme bei der Nationalbank finanziert, vergrössert sich die Geldmenge.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-g04",
@@ -48041,7 +50056,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Für die Schweiz hat das Crowding-out-Argument grosse Relevanz.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-g08",
@@ -48160,7 +50180,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss der Schuldenbremse sind Staatsdefizite in einer Rezession erlaubt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-r04",
@@ -48194,7 +50219,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die dritte Richtlinie für die Staatsverschuldung besagt, dass die Ausgaben im Gleichschritt mit dem Wirtschaftswachstum zunehmen sollten. Die Schweiz hält diese Regel ein.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-r06",
@@ -48346,7 +50376,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Direkte Demokratien wie die Schweiz tendieren gemäss ökonomischer Analyse eher zu langfristiger Rationalität in der Finanzpolitik.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-q04",
@@ -48444,7 +50479,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Fiskalquote der Schweiz ist höher als der OECD-Durchschnitt.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-a09",
@@ -48458,7 +50498,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Subventionen machen den grössten Anteil an den Bundesausgaben aus.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-a10",
@@ -48561,7 +50606,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verrechnungssteuer wird bei korrekter Deklaration in der Steuererklärung zurückerstattet.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-d09",
@@ -48638,7 +50688,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "In der Schweiz haben die privaten Haushalte einen grösseren Schuldenanteil als der Staat.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-i09",
@@ -48700,7 +50755,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Beim Crowding-out verdrängt der Staat als Kreditnehmer private Investoren vom Kapitalmarkt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-g12",
@@ -48758,7 +50818,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Schweizer Schuldenbremse ist in der Bundesverfassung verankert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_staatsverschuldung-r12",
@@ -49080,7 +51145,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die CO₂-Abgabe ist ein Beispiel für eine Steuer mit Lenkungszweck.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-z05",
@@ -49094,7 +51164,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Steuer kann gleichzeitig mehrere Zwecke verfolgen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-z06",
@@ -49167,7 +51242,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Fiskalzweck ist der Hauptzweck der meisten Steuern in der Schweiz.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-z10",
@@ -49261,7 +51341,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Steuervergünstigungen für den Kauf von Elektroautos verfolgen denselben Steuerzweck wie die Tabaksteuer, nur mit umgekehrtem Vorzeichen.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-z14",
@@ -49315,7 +51400,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Direkte Steuern berücksichtigen persönliche Merkmale der steuerpflichtigen Person.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-f03",
@@ -49329,7 +51419,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Mehrwertsteuer ist eine direkte Steuer.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-f04",
@@ -49461,7 +51556,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Quellensteuern werden direkt an der Einkunftsquelle abgeschöpft, bevor das Geld beim Empfänger ankommt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-f10",
@@ -49537,7 +51637,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Kopfsteuer (jede Person bezahlt denselben Betrag) wäre die einzige Steuer, die keinerlei Verzerrung verursacht.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-f14",
@@ -49665,7 +51770,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Verrechnungssteuer in der Schweiz beträgt 35% und wird auf Kapitalerträge erhoben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-s06",
@@ -49729,7 +51839,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Lebensmittel unterliegen in der Schweiz dem reduzierten Mehrwertsteuersatz, was ein Umverteilungselement darstellt.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-s09",
@@ -49864,7 +51979,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Flat Tax (proportionaler Steuersatz) auf das Einkommen belastet alle Steuerpflichtigen gleichmässig.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-q01",
@@ -49968,7 +52088,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Gemäss der Laffer-Kurve führt eine Erhöhung des Steuersatzes immer zu höheren Steuereinnahmen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-q06",
@@ -49996,7 +52121,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Bei einem Steuersatz von 100% beträgt die Steuereinnahme gemäss Laffer-Kurve null.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-q08",
@@ -50202,7 +52332,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Das Rezept der Steueroasen funktioniert immer: Steuern senken → reiche Neuzuzüger → Steuerausfälle werden kompensiert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w04",
@@ -50256,7 +52391,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn ein Kanton dank Steuersenkungen an Wirtschaftskraft gewinnt, erhält er automatisch mehr aus dem NFA.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w07",
@@ -50309,7 +52449,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die OECD-Mindeststeuer von 15% auf Unternehmensgewinne zielt darauf ab, den internationalen Steuerwettbewerb einzuschränken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w10",
@@ -50418,7 +52563,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die OECD-Mindeststeuer von 15% macht den Steuerwettbewerb zwischen den Schweizer Kantonen überflüssig.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w15",
@@ -50486,7 +52636,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Cayman Islands, Bermuda und die Kanalinseln (Jersey, Guernsey) gelten als klassische Steuerparadiese.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w18",
@@ -50591,7 +52746,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Automatische Informationsaustausch (AIA) verpflichtet teilnehmende Länder, Bankdaten ausländischer Kontoinhaberinnen und -inhaber automatisch an deren Heimatstaaten weiterzuleiten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w23",
@@ -50680,7 +52840,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Kleine Länder und Inselstaaten haben einen strategischen Vorteil beim Betreiben eines Steuerparadieses, weil schon wenige zugezogene Firmen ihre Staatskasse füllen können.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-w28",
@@ -50757,7 +52922,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Steuern führen praktisch immer zu Wohlfahrtsverlusten, da sie die relativen Preise verzerren.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-e04",
@@ -50825,7 +52995,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Es spielt keine Rolle, auf welcher Marktseite eine Steuer formal erhoben wird – die tatsächliche Lastverteilung hängt allein von den Elastizitäten ab.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-e08",
@@ -50879,7 +53054,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Eine Steuer auf ein Gut mit völlig unelastischem Angebot verursacht keinen Wohlfahrtsverlust.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_steuern-e11",
@@ -50991,7 +53171,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Steuerinzidenz zeigt, wer eine Steuer formal an den Staat abliefert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_steuern-neu_sort_01",
@@ -51269,7 +53454,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wenn das reale BIP eines Landes um 3 % wächst und die Bevölkerung ebenfalls um 3 % zunimmt, steigt der Wohlstand pro Kopf.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-d03",
@@ -51394,7 +53584,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "«Immer mehr» und «immer besser» bedeuten beim Wirtschaftswachstum dasselbe.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-d09",
@@ -51557,7 +53752,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Wohlstandszuwachs in der Schweiz seit dem Jahr 2000 ist hauptsächlich auf eine Erhöhung der Arbeitsstunden zurückzuführen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-e03",
@@ -51658,7 +53858,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die durchschnittliche Wochenarbeitszeit hat sich in den letzten 150 Jahren mehr als halbiert.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-e08",
@@ -51884,7 +54089,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Laut der neuen Wachstumstheorie sind Bildungsausgaben als Investitionen zu betrachten, nicht als Konsum.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-i05",
@@ -51977,7 +54187,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Natürliche Ressourcen sind eine notwendige Bedingung für ein hohes BIP pro Kopf.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-i10",
@@ -52221,7 +54436,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Wirtschaftlich offene Länder wachsen nachweisbar stärker als Länder, die sich von Auslandsmärkten abschotten.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-r08",
@@ -52255,7 +54475,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Der Nachtwächterstaat beschränkt sich auf Rechtsordnung, Ausbildung, Verkehrsinfrastruktur und Landesverteidigung.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-r10",
@@ -52317,7 +54542,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die soziale Marktwirtschaft unterscheidet sich von der neoliberalen Ordnung vor allem dadurch, dass der Staat zusätzlich Verteilungsaufgaben übernimmt (z. B. Bekämpfung von Arbeitslosigkeit und Armut).",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-v01",
@@ -52408,7 +54638,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Elefantengrafik zeigt, dass die allerreichsten 5 % der Weltbevölkerung absolut gesehen fast die Hälfte des Wohlstandsgewinns erhalten haben.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-v06",
@@ -52456,7 +54691,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die allerärmsten Menschen der Welt (ca. 5. Perzentil) haben gemäss der Elefantengrafik stark vom Wirtschaftswachstum profitiert.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-v09",
@@ -52757,7 +54997,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Lenkungsabgaben sollen dem Staat höhere Einnahmen verschaffen.",
+        "korrekt": false
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-n09",
@@ -52829,7 +55074,12 @@
     "uebung": true,
     "pruefungstauglich": false,
     "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
-    "aussagen": []
+    "aussagen": [
+      {
+        "text": "Die Entkopplung (Decoupling) von Wirtschaftswachstum und CO₂-Emissionen ist in einigen Industrieländern bereits gelungen: Das reale BIP stieg, während die territorialen CO₂-Emissionen sanken.",
+        "korrekt": true
+      }
+    ]
   },
   {
     "id": "vwl_wachstum-n13",
