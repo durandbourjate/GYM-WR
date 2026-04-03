@@ -24,7 +24,7 @@ export default function GruppenAuswahl() {
             >
               <div className="font-medium dark:text-white">{gruppe.name}</div>
               <div className="text-sm text-gray-500">
-                {gruppe.typ === 'privat' ? 'Privat' : 'Schule'}
+                {gruppe.typ === 'gym' ? 'Schule' : 'Familie'}
               </div>
             </button>
           ))}
