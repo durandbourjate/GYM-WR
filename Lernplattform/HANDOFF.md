@@ -2,9 +2,10 @@
 
 ## Aktueller Stand
 
-**Branch:** `feature/lernplattform-phase5-6` (NICHT auf main gemergt — User muss zuerst testen + freigeben)
+**Branch:** `main` (gemergt + gepusht)
 **Phase:** 5+6 abgeschlossen (Shared Types, Kontext-Trennung, Admin-Settings, Fragenbank-Migration, Offline-PWA)
 **Status:** 93 Tests gruen, Build OK (322 KB JS + PWA)
+**Apps Script:** GRUPPEN_REGISTRY_ID eingetragen, Backend muss neu bereitgestellt werden
 
 ### Commits auf dem Feature-Branch
 
@@ -98,18 +99,14 @@ Lernplattform/src/adapters/mockMitgliederDaten.ts
 
 ---
 
-## Vor dem Merge: User muss
+## Naechste Schritte (naechste Session)
 
-1. **Apps Script Backend neu deployen:**
-   - `lernplattform-backend.js` in Apps Script Editor kopieren
-   - Neue Bereitstellung erstellen (NICHT "HEAD" verwenden)
-   - 3 neue Endpoints: lernplattformLadeEinstellungen, lernplattformSpeichereEinstellungen, lernplattformLadeFragen (ueberarbeitet)
-
-2. **Gruppen-Registry Sheet:** `einstellungen`-Spalte wird automatisch erstellt beim ersten Speichern
-
-3. **Familie-Gruppe:** Eigenes `fragebankSheetId` in der Gruppen-Registry eintragen (Datentrennung)
-
-4. **Testen:** `cd Lernplattform && npm run preview` → Im Browser verifizieren
+1. **Apps Script Backend neu deployen** — Code aus `lernplattform-backend.js` in Editor kopieren + neue Bereitstellung
+2. **Gruppen im Registry-Sheet anlegen** — Tab "Gruppen" mit Spalten: id, name, typ, adminEmail, fragebankSheetId, analytikSheetId
+3. **Gym-Gruppen:** fragebankSheetId = Pruefungstool-Fragenbank (geteilt)
+4. **Familie-Gruppe:** Eigenes fragebankSheetId (Datentrennung)
+5. **Im Browser testen** — Login, Gruppen-Auswahl, Dashboard, Settings-Panel
+6. **Dann:** Pool.html-Features nachrüsten (Suchfeld, Lernziele-Modal, etc.)
 
 ---
 
