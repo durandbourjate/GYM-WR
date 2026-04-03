@@ -15,6 +15,9 @@ import BuchungssatzFrage from './BuchungssatzFrage'
 import TKontoFrage from './TKontoFrage'
 import BilanzFrage from './BilanzFrage'
 import KontenbestimmungFrage from './KontenbestimmungFrage'
+import HotspotFrage from './HotspotFrage'
+import BildbeschriftungFrage from './BildbeschriftungFrage'
+import DragDropBildFrage from './DragDropBildFrage'
 
 export interface FrageKomponenteProps {
   frage: Frage
@@ -40,4 +43,7 @@ export const FRAGETYP_KOMPONENTEN: Record<string, ComponentType<FrageKomponenteP
   tkonto: TKontoFrage,
   bilanz: BilanzFrage,
   kontenbestimmung: KontenbestimmungFrage,
+  hotspot: HotspotFrage,
+  bildbeschriftung: BildbeschriftungFrage,
+  dragdrop_bild: DragDropBildFrage,
 }

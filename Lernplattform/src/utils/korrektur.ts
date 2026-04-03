@@ -116,6 +116,30 @@ export function pruefeAntwort(frage: Frage, antwort: AntwortTyp): boolean {
       })
     }
 
+    // Bild-Typen
+    case 'hotspot': {
+      const hotspots = frage.hotspots || []
+      const korrektIdx = (frage.korrekt as number[]) || []
+      const korrektHotspots = korrektIdx.map(i => hotspots[i]).filter(Boolean)
+      // Jeder Klick muss einen korrekten Hotspot treffen (innerhalb Radius)
+      return korrektHotspots.length === antwort.klicks.length &&
+        korrektHotspots.every(hs =>
+          antwort.klicks.some(k => Math.hypot(hs.x - k.x, hs.y - k.y) < hs.r)
+        )
+    }
+
+    case 'bildbeschriftung': {
+      const labels = frage.labels || []
+      return labels.every(l =>
+        (antwort.texte[l.id] || '').trim().toLowerCase() === l.text.trim().toLowerCase()
+      )
+    }
+
+    case 'dragdrop_bild': {
+      const dragLabels = frage.dragLabels || []
+      return dragLabels.every(l => antwort.zuordnungen[l.id] === l.zone)
+    }
+
     // Selbstbewertete Typen: Ergebnis basiert auf Nutzer-Eingabe
     case 'open':
       return antwort.selbstbewertung === 'korrekt'
