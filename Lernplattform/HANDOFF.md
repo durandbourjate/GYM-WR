@@ -2,9 +2,9 @@
 
 ## Aktueller Stand
 
-**Branch:** `feature/lernplattform-phase7a`
+**Branch:** `main` (Feature-Branch gemergt)
 **Phase:** 7a–7f abgeschlossen + Backend deployed + 7 Gruppen erstellt
-**Status:** Alle 22 Fragetypen, 2360 Fragen live, Backend deployed, bereit fuer E2E-Test
+**Status:** Alle 22 Fragetypen, 2360 Fragen live, Backend deployed, Google OAuth Fix deployed
 
 ### Verifikation (03.04.2026)
 
@@ -18,6 +18,8 @@
 | Pool-Daten live | Lazy-Loading via PoolFragenAdapter, Browser-verifiziert |
 | Apps Script Backend | 14 Endpoints, deployed + getestet (doGet OK, Gruppen erstellt) |
 | Dashboard-Filter | Fach/Schwierigkeit/Typ + einklappbare Sektionen, Browser-verifiziert |
+| Google OAuth | Timing-Fix (warteAufGSI polling), Gruppen-Typ gym/familie |
+| GitHub Actions | Separates Secret VITE_LERNPLATTFORM_APPS_SCRIPT_URL |
 
 ---
 
@@ -116,20 +118,26 @@ Pro Sheet: Tabs Fragen, Mitglieder, Auftraege, Fortschritt, Sessions.
 
 ## Was fehlt (naechste Schritte)
 
+### Offener Bug: Google Login-Button fehlt auf deployed Seite
+- Konsole zeigt: "Google Identity Services nicht geladen"
+- Timing-Fix (warteAufGSI) ist deployed, aber GSI-Script laedt evtl. nicht
+- Prüfen: Wird das Script https://accounts.google.com/gsi/client geladen? CSP-Blockade?
+- Prüfen: VITE_GOOGLE_CLIENT_ID Secret vorhanden + korrekt?
+- Workaround: Code-Login funktioniert
+
 ### Naechste Session: E2E-Test im Browser
+- Google Login fixen (GSI-Script pruefen)
 - Login mit Google OAuth → Gruppen-Auswahl → echte Fragen ueben
 - Fortschritt speichern (Backend) statt localStorage
 - Alle Fragetypen visuell pruefen
-- Dashboard-Filter testen
 
 ### Frontend-Adapter umstellen
-- Mock → echtes Backend (Toggle via VITE_APPS_SCRIPT_URL vorhanden/leer)
 - FortschrittStore: localStorage → Backend-Persistenz
 - AuftragStore: localStorage → Backend-Persistenz
 
 ### Bekannte UX-Themen
 - Fill-Fragen: {0}-Platzhalter im Text sichtbar (kosmetisch, Luecken sind als separate Felder)
-- Dashboard: Sehr viele Themen (~85 VWL, ~67 Recht, ~36 BWL) — Filter helfen, evtl. Suche ergaenzen
+- Dashboard-Filter funktionieren (Fach/Schwierigkeit/Typ + einklappbar)
 
 ### Spaetere Verbesserungen
 - SuS-Import aus Evento/Kurse-Sheet (Klassenlisten-Sync)
