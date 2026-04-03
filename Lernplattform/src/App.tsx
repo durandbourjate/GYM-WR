@@ -50,7 +50,7 @@ export default function App() {
       const gruppe = {
         id: 'demo-gruppe',
         name: 'Demo-Familie',
-        typ: 'privat' as const,
+        typ: 'familie' as const,
         adminEmail: 'eltern@demo.ch',
         fragebankSheetId: 'demo',
         analytikSheetId: 'demo',

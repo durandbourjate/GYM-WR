@@ -16,20 +16,40 @@ declare global {
   }
 }
 
-export function initializeGoogleAuth(
+/** Wartet bis Google Identity Services geladen ist (max 5 Sekunden) */
+function warteAufGSI(): Promise<boolean> {
+  if (window.google?.accounts?.id) return Promise.resolve(true)
+  return new Promise((resolve) => {
+    let versuche = 0
+    const interval = setInterval(() => {
+      versuche++
+      if (window.google?.accounts?.id) {
+        clearInterval(interval)
+        resolve(true)
+      } else if (versuche > 50) { // 50 × 100ms = 5s
+        clearInterval(interval)
+        resolve(false)
+      }
+    }, 100)
+  })
+}
+
+export async function initializeGoogleAuth(
   onSuccess: (payload: GooglePayload) => void,
   onError: (error: string) => void
-): void {
-  if (!window.google?.accounts?.id) {
-    onError('Google Identity Services nicht geladen')
-    return
-  }
+): Promise<void> {
   if (!CLIENT_ID) {
     onError('VITE_GOOGLE_CLIENT_ID nicht konfiguriert')
     return
   }
 
-  window.google.accounts.id.initialize({
+  const geladen = await warteAufGSI()
+  if (!geladen) {
+    onError('Google Identity Services nicht geladen')
+    return
+  }
+
+  window.google!.accounts.id.initialize({
     client_id: CLIENT_ID,
     callback: (response: { credential?: string }) => {
       if (!response.credential) {
@@ -48,10 +68,11 @@ export function initializeGoogleAuth(
   })
 }
 
-export function renderGoogleButton(element: HTMLElement): void {
+export async function renderGoogleButton(element: HTMLElement): Promise<void> {
+  await warteAufGSI()
   if (!window.google?.accounts?.id) return
 
-  window.google.accounts.id.renderButton(element, {
+  window.google?.accounts.id.renderButton(element, {
     type: 'standard',
     theme: 'outline',
     size: 'large',

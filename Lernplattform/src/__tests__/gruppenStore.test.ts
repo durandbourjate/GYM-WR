@@ -17,7 +17,7 @@ import type { Gruppe } from '../types/gruppen'
 const testGruppe: Gruppe = {
   id: 'familie-test',
   name: 'Familie Test',
-  typ: 'privat',
+  typ: 'familie',
   adminEmail: 'papa@gmail.com',
   fragebankSheetId: 'sheet-1',
   analytikSheetId: 'sheet-2',

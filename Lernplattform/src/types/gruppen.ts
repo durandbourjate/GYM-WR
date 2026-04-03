@@ -1,7 +1,7 @@
 export interface Gruppe {
   id: string
   name: string
-  typ: 'privat' | 'schule'
+  typ: 'gym' | 'familie'
   adminEmail: string
   fragebankSheetId: string
   analytikSheetId: string
