@@ -3,8 +3,8 @@
 ## Aktueller Stand
 
 **Branch:** `feature/lernplattform-phase7a`
-**Phase:** 7a–7e abgeschlossen (Typen + Konvertierung + alle 22 Komponenten)
-**Status:** Alle Fragetypen implementiert, 82 Tests gruen, Build gruen
+**Phase:** 7a–7f abgeschlossen (Typen + Komponenten + Pool-Anbindung + Backend)
+**Status:** Alle 22 Fragetypen, 2360 Fragen live, Apps Script Backend ready
 
 ### Verifikation (03.04.2026)
 
@@ -15,6 +15,8 @@
 | `npm run build` | OK (dist/ 299 KB JS) |
 | Pruefungstool Regression | 193 Tests gruen, tsc OK |
 | Pool-Konvertierung | 26/26 Pools, 2360 Fragen, 0 fehlende Bilder |
+| Pool-Daten live | Lazy-Loading via PoolFragenAdapter, Browser-verifiziert |
+| Apps Script Backend | 14 Endpoints, Setup-Anleitung in apps-script/SETUP.md |
 
 ---
 
@@ -33,6 +35,8 @@
 | **7c** | **03.04** | **open + formel + pdf** | **+3** |
 | **7d** | **03.04** | **Bild-interaktive Typen** | **+3** |
 | **7e** | **03.04** | **Gruppe + Zeichnen + Audio + Code** | **+4** |
+| **—** | **03.04** | **Pool-Daten als Fragen-Quelle angebunden** | **—** |
+| **7f** | **03.04** | **Apps Script Backend (14 Endpoints)** | **—** |
 
 ## Alle 22 Fragetypen (komplett)
 
@@ -83,17 +87,18 @@ Lernplattform/src/components/fragetypen/
 
 ---
 
-## Was fehlt (naechste Phasen)
+## Was fehlt (naechste Schritte)
 
-### Phase 7f: Apps Script Backend
-- 11 Endpoints (Login, Gruppen, Fragen, Fortschritt, Auftraege)
-- Sheets-Struktur (Registry + Fragenbank + Analytik)
-- Aktuell: localStorage-only (Mock-Adapter)
+### Apps Script Deployment
+- GRUPPEN_REGISTRY_ID Sheet erstellen + ID eintragen
+- Backend in Apps Script deployen (Anleitung: apps-script/SETUP.md)
+- VITE_APPS_SCRIPT_URL in .env setzen
+- Frontend-Adapter auf echtes Backend umstellen (Mock → AppsScript Toggle)
 
 ### Phase 7g: Sheet-Import + E2E
-- Upload-Script fuer konvertierte Fragen
-- Default-Gruppe anlegen
-- End-to-End-Verifikation im Browser
+- Upload-Script fuer konvertierte Pool-Fragen in Sheets
+- Default-Gruppe anlegen (SF WR 29c, Familie etc.)
+- End-to-End: Login → Gruppe → echte Fragen → Fortschritt gespeichert
 
 ### Spaetere Verbesserungen
 - Streak-Anzeige im Dashboard (UI vorhanden, Daten fehlen ohne Backend)
