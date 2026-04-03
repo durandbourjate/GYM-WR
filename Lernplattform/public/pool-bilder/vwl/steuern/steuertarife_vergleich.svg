@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      text { fill: #1e293b; }
+      @media (prefers-color-scheme: dark) {
+        text { fill: #e2e8f0; }
+        .axis { stroke: #94a3b8; }
+        .bg { fill: #1a1d27; }
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="500" height="350" fill="#fff" rx="8"/>
+  
+  <!-- Title -->
+  <text x="250" y="30" text-anchor="middle" font-size="15" font-weight="700">Drei Steuertarife im Vergleich</text>
+  
+  <!-- Axes -->
+  <line class="axis" x1="80" y1="280" x2="440" y2="280" stroke="#1e293b" stroke-width="2"/>
+  <line class="axis" x1="80" y1="280" x2="80" y2="50" stroke="#1e293b" stroke-width="2"/>
+  <polygon points="440,275 440,285 450,280" fill="#1e293b"/>
+  <polygon points="75,50 85,50 80,40" fill="#1e293b"/>
+  
+  <!-- Tarif A: progressive (rising curve) -->
+  <path d="M 80,240 Q 200,230 300,180 Q 380,140 430,90" fill="none" stroke="#f89907" stroke-width="2.5"/>
+  <text x="435" y="85" font-size="13" font-weight="700" fill="#f89907">A</text>
+  
+  <!-- Tarif B: proportional (straight line) -->
+  <path d="M 80,190 L 430,190" fill="none" stroke="#01a9f4" stroke-width="2.5"/>
+  <text x="435" y="186" font-size="13" font-weight="700" fill="#01a9f4">B</text>
+  
+  <!-- Tarif C: degressive (falling curve) -->
+  <path d="M 80,100 Q 200,130 300,170 Q 380,200 430,230" fill="none" stroke="#73ab2c" stroke-width="2.5"/>
+  <text x="435" y="235" font-size="13" font-weight="700" fill="#73ab2c">C</text>
+  
+  <!-- Axis labels -->
+  <text x="260" y="310" text-anchor="middle" font-size="12" font-weight="500">Steuerbares Einkommen (CHF)</text>
+  <text x="30" y="170" text-anchor="middle" font-size="12" font-weight="500" transform="rotate(-90, 30, 170)">Steuersatz (%)</text>
+  
+  <!-- Grid reference lines -->
+  <line x1="80" y1="190" x2="430" y2="190" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="4,4" opacity="0.5"/>
+</svg>

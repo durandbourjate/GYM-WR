@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Bedürfnispyramide — Beschrifte die markierten Stufen</text>
+
+  <!-- Stufe 1: Grundbedürfnisse (unten, grün) -->
+  <polygon points="150,415 650,415 605,355 195,355" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+
+  <!-- Stufe 2: Sicherheitsbedürfnisse (blau) -->
+  <polygon points="195,355 605,355 560,295 240,295" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/>
+
+  <!-- Stufe 3: Soziale Bedürfnisse (gelb) -->
+  <polygon points="240,295 560,295 515,235 285,235" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+
+  <!-- Stufe 4: Wertschätzung (orange) -->
+  <polygon points="285,235 515,235 470,175 330,175" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+
+  <!-- Stufe 5: Selbstverwirklichung (violett, Spitze) -->
+  <polygon points="330,175 470,175 400,90" fill="#e9d5ff" stroke="#7c3aed" stroke-width="2"/>
+
+  <!-- Kreis 1 → Stufe 1 (Grundbedürfnisse, unten) -->
+
+  <!-- Kreis 2 → Stufe 2 (Sicherheit) -->
+
+  <!-- Kreis 3 → Stufe 3 (Sozial) -->
+
+  <!-- Kreis 4 → Stufe 4 (Wertschätzung) -->
+
+  <!-- Kreis 5 → Stufe 5 (Selbstverwirklichung, Spitze) -->
+
+  <!-- Hinweis -->
+  <text x="400" y="442" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Gib die Bezeichnung jeder Stufe ein (1 = unterste Stufe)</text>
+</svg>

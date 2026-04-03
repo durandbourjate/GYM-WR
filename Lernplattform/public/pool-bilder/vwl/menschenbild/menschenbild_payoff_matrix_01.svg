@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 340" font-family="'DM Sans',system-ui,sans-serif">
+  <style>
+    .title{font-size:15px;font-weight:700;fill:#1e293b;text-anchor:middle}
+    .header{font-size:13px;font-weight:700;fill:#fff;text-anchor:middle}
+    .cell-text{font-size:12.5px;fill:#1e293b;text-anchor:middle}
+    .cell-bold{font-size:13px;font-weight:700;fill:#1e293b;text-anchor:middle}
+    .player{font-size:13px;font-weight:700;fill:#f89907;text-anchor:middle}
+    .note{font-size:10px;fill:#64748b;text-anchor:middle;font-style:italic}
+    @media(prefers-color-scheme:dark){
+      .title{fill:#e2e8f0}.cell-text{fill:#e2e8f0}.cell-bold{fill:#e2e8f0}
+      .note{fill:#94a3b8}
+    }
+  </style>
+  <!-- Titel -->
+  <text x="250" y="24" class="title">Gefangenendilemma – Auszahlungsmatrix</text>
+  <!-- Spieler-Labels -->
+  <text x="315" y="56" class="player">Spieler B</text>
+  <text x="108" y="128" class="player" transform="rotate(-90,42,155)">Spieler A</text>
+  <!-- Header-Zeile: Spalten für B -->
+  <rect x="210" y="64" width="120" height="36" rx="6" fill="#f89907"/>
+  <text x="270" y="87" class="header">Schweigen</text>
+  <rect x="335" y="64" width="120" height="36" rx="6" fill="#f89907"/>
+  <text x="395" y="87" class="header">Verraten</text>
+  <!-- Header-Spalte: Zeilen für A -->
+  <rect x="70" y="105" width="135" height="50" rx="6" fill="#f89907"/>
+  <text x="137" y="135" class="header">Schweigen</text>
+  <rect x="70" y="160" width="135" height="50" rx="6" fill="#f89907"/>
+  <text x="137" y="190" class="header">Verraten</text>
+  <!-- Zellen -->
+  <!-- A schweigt, B schweigt -->
+  <rect x="210" y="105" width="120" height="50" rx="4" fill="#f0fdf4" stroke="#e2e8f0"/>
+  <text x="270" y="126" class="cell-bold">A: 1 Jahr</text>
+  <text x="270" y="144" class="cell-bold">B: 1 Jahr</text>
+  <!-- A schweigt, B verrät -->
+  <rect x="335" y="105" width="120" height="50" rx="4" fill="#fef2f2" stroke="#e2e8f0"/>
+  <text x="395" y="126" class="cell-text">A: lebenslänglich</text>
+  <text x="395" y="144" class="cell-text">B: frei</text>
+  <!-- A verrät, B schweigt -->
+  <rect x="210" y="160" width="120" height="50" rx="4" fill="#fef2f2" stroke="#e2e8f0"/>
+  <text x="270" y="181" class="cell-text">A: frei</text>
+  <text x="270" y="199" class="cell-text">B: lebenslänglich</text>
+  <!-- A verrät, B verrät (Nash-Gleichgewicht) -->
+  <rect x="335" y="160" width="120" height="50" rx="4" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+  <text x="395" y="181" class="cell-bold">A: 10 Jahre</text>
+  <text x="395" y="199" class="cell-bold">B: 10 Jahre</text>
+  <!-- Legende -->
+  <rect x="100" y="235" width="14" height="14" rx="3" fill="#f0fdf4" stroke="#e2e8f0"/>
+  <text x="122" y="247" class="cell-text" text-anchor="start" font-size="11">Kooperatives Optimum (beide schweigen)</text>
+  <rect x="100" y="257" width="14" height="14" rx="3" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="122" y="269" class="cell-text" text-anchor="start" font-size="11">Nash-Gleichgewicht (beide verraten)</text>
+  <text x="250" y="300" class="note">Verraten ist für beide die dominante Strategie →</text>
+  <text x="250" y="315" class="note">individuell rational, aber kollektiv suboptimal</text>
+</svg>

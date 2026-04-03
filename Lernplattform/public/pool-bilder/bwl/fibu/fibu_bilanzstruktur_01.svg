@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="420" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Aufbau der Bilanz</text>
+
+  <!-- Linke Seite: Aktiven -->
+  <rect x="30" y="55" width="310" height="340" rx="8" fill="#e8f7fe" stroke="#01a9f4" stroke-width="2"/>
+  <text x="185" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="#01a9f4">AKTIVEN (Vermögen)</text>
+
+  <!-- Umlaufvermögen -->
+  <rect x="45" y="95" width="280" height="130" rx="6" fill="#ffffff" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="55" y="116" font-size="12" font-weight="600" fill="#0277bd">Umlaufvermögen</text>
+  <text x="55" y="116" font-size="10" fill="#64748b" dy="16">(innert 1 Jahr in Geld umwandelbar)</text>
+  <text x="65" y="150" font-size="11" fill="#1e293b">Kasse</text>
+  <text x="65" y="167" font-size="11" fill="#1e293b">Bank</text>
+  <text x="65" y="184" font-size="11" fill="#1e293b">Debitoren</text>
+  <text x="65" y="201" font-size="11" fill="#1e293b">Warenvorrat</text>
+  <text x="200" y="150" font-size="10" fill="#64748b">← am flüssigsten</text>
+
+  <!-- Anlagevermögen -->
+  <rect x="45" y="235" width="280" height="130" rx="6" fill="#ffffff" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="55" y="256" font-size="12" font-weight="600" fill="#0277bd">Anlagevermögen</text>
+  <text x="55" y="256" font-size="10" fill="#64748b" dy="16">(länger als 1 Jahr im Unternehmen)</text>
+  <text x="65" y="290" font-size="11" fill="#1e293b">Mobilien</text>
+  <text x="65" y="307" font-size="11" fill="#1e293b">Fahrzeuge</text>
+  <text x="65" y="324" font-size="11" fill="#1e293b">Maschinen</text>
+  <text x="65" y="341" font-size="11" fill="#1e293b">Immobilien</text>
+  <text x="200" y="341" font-size="10" fill="#64748b">← am wenigsten flüssig</text>
+
+  <!-- Pfeil Liquiditätsprinzip -->
+  <line x1="37" y1="100" x2="37" y2="380" stroke="#01a9f4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="25" y="240" text-anchor="middle" font-size="9" fill="#01a9f4" transform="rotate(-90 25 240)">Liquiditätsprinzip</text>
+
+  <!-- Rechte Seite: Passiven -->
+  <rect x="360" y="55" width="310" height="340" rx="8" fill="#fff8eb" stroke="#f89907" stroke-width="2"/>
+  <text x="515" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="#f89907">PASSIVEN (Finanzierung)</text>
+
+  <!-- Kurzfristiges FK -->
+  <rect x="375" y="95" width="280" height="80" rx="6" fill="#ffffff" stroke="#ffb74d" stroke-width="1.5"/>
+  <text x="385" y="116" font-size="12" font-weight="600" fill="#e65100">Kurzfristiges Fremdkapital</text>
+  <text x="385" y="116" font-size="10" fill="#64748b" dy="16">(Rückzahlung innert 1 Jahr)</text>
+  <text x="395" y="150" font-size="11" fill="#1e293b">Kreditoren</text>
+  <text x="395" y="167" font-size="11" fill="#1e293b">Bankschuld</text>
+
+  <!-- Langfristiges FK -->
+  <rect x="375" y="185" width="280" height="80" rx="6" fill="#ffffff" stroke="#ffb74d" stroke-width="1.5"/>
+  <text x="385" y="206" font-size="12" font-weight="600" fill="#e65100">Langfristiges Fremdkapital</text>
+  <text x="385" y="206" font-size="10" fill="#64748b" dy="16">(Rückzahlung nach 1 Jahr)</text>
+  <text x="395" y="240" font-size="11" fill="#1e293b">Darlehen</text>
+  <text x="395" y="257" font-size="11" fill="#1e293b">Hypotheken</text>
+
+  <!-- Eigenkapital -->
+  <rect x="375" y="275" width="280" height="90" rx="6" fill="#ffffff" stroke="#ffb74d" stroke-width="1.5"/>
+  <text x="385" y="296" font-size="12" font-weight="600" fill="#e65100">Eigenkapital</text>
+  <text x="385" y="296" font-size="10" fill="#64748b" dy="16">(Schuld gegenüber Eigentümer)</text>
+  <text x="395" y="330" font-size="11" fill="#1e293b">Eigenkapital</text>
+  <text x="395" y="347" font-size="11" fill="#1e293b">(inkl. Gewinn/Verlust)</text>
+
+  <!-- Pfeil Fälligkeitsprinzip -->
+  <line x1="667" y1="100" x2="667" y2="380" stroke="#f89907" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="679" y="240" text-anchor="middle" font-size="9" fill="#f89907" transform="rotate(90 679 240)">Fälligkeitsprinzip</text>
+
+  <!-- Bilanzgleichung -->
+  <rect x="150" y="400" width="400" height="18" rx="4" fill="#f0f2f5"/>
+  <text x="350" y="414" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Bilanzsumme Aktiven = Bilanzsumme Passiven</text>
+
+  <!-- Pfeildefinitionen -->
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#01a9f4"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#f89907"/>
+    </marker>
+  </defs>
+</svg>

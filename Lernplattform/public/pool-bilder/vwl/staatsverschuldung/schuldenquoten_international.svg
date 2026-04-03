@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+  <rect width="620" height="340" fill="#fff" rx="6"/>
+  <text x="310" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Schuldenquoten ausgewählter Länder (Bruttoschulden in % des BIP)</text>
+  <!-- Y axis -->
+  <line x1="80" y1="50" x2="80" y2="280" stroke="#94a3b8" stroke-width="1"/>
+  <!-- Grid lines and labels -->
+  <line x1="80" y1="280" x2="590" y2="280" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="284" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">0%</text>
+  <line x1="80" y1="234" x2="590" y2="234" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="238" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">50%</text>
+  <line x1="80" y1="188" x2="590" y2="188" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="192" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">100%</text>
+  <line x1="80" y1="142" x2="590" y2="142" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="146" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">150%</text>
+  <line x1="80" y1="96" x2="590" y2="96" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="100" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">200%</text>
+  <line x1="80" y1="50" x2="590" y2="50" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="72" y="54" text-anchor="end" font-family="Arial,sans-serif" font-size="10" fill="#64748b">250%</text>
+  <!-- Bars (scaled: 0%=280, 250%=50, so 1%=0.92px) -->
+  <!-- Japan 263% -->
+  <rect x="100" y="38" width="50" height="242" fill="#ef4444" rx="3"/>
+  <text x="125" y="33" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#ef4444">263%</text>
+  <text x="125" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#1e293b">Japan</text>
+  <!-- Griechenland 177% -->
+  <rect x="170" y="117" width="50" height="163" fill="#f97316" rx="3"/>
+  <text x="195" y="112" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#f97316">177%</text>
+  <text x="195" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">Griechen-</text>
+  <text x="195" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">land</text>
+  <!-- Italien 144% -->
+  <rect x="240" y="147" width="50" height="133" fill="#f97316" rx="3"/>
+  <text x="265" y="142" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#f97316">144%</text>
+  <text x="265" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#1e293b">Italien</text>
+  <!-- USA 123% -->
+  <rect x="310" y="167" width="50" height="113" fill="#eab308" rx="3"/>
+  <text x="335" y="162" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#eab308">123%</text>
+  <text x="335" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#1e293b">USA</text>
+  <!-- Frankreich 112% -->
+  <rect x="380" y="177" width="50" height="103" fill="#eab308" rx="3"/>
+  <text x="405" y="172" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#eab308">112%</text>
+  <text x="405" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">Frank-</text>
+  <text x="405" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">reich</text>
+  <!-- Deutschland 64% -->
+  <rect x="450" y="221" width="50" height="59" fill="#22c55e" rx="3"/>
+  <text x="475" y="216" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#22c55e">64%</text>
+  <text x="475" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">Deutsch-</text>
+  <text x="475" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1e293b">land</text>
+  <!-- Schweiz 27% -->
+  <rect x="520" y="255" width="50" height="25" fill="#3b82f6" rx="3"/>
+  <text x="545" y="250" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">27%</text>
+  <text x="545" y="298" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#1e293b">Schweiz</text>
+  <!-- 90% threshold line -->
+  <line x1="80" y1="197" x2="590" y2="197" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="588" y="193" text-anchor="end" font-family="Arial,sans-serif" font-size="9" fill="#ef4444">Schwelle 90% (Rogoff/Reinhart)</text>
+  <!-- Source -->
+  <text x="310" y="332" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#94a3b8">Quelle: IWF, gerundete Richtwerte</text>
+</svg>

@@ -1,0 +1,1870 @@
+[
+  {
+    "id": "vwl_konjunktur-z01",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was beschreibt der Begriff «Konjunktur» in der Volkswirtschaftslehre?",
+    "erklaerung": "Konjunktur bezeichnet die kurzfristigen Schwankungen der gesamtwirtschaftlichen Aktivität (gemessen am realen BIP) um den langfristigen Wachstumstrend (Produktionspotenzial). Im Gegensatz dazu beschreibt «Wachstum» die langfristige Zunahme der Wirtschaftsleistung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die langfristige Zunahme der Wirtschaftsleistung eines Landes",
+      "Die kurzfristigen Schwankungen der wirtschaftlichen Aktivität um das Produktionspotenzial",
+      "Die Verteilung des Volkseinkommens auf verschiedene Bevölkerungsgruppen",
+      "Die Veränderung der Bevölkerungszahl über die Zeit"
+    ],
+    "korrekt": "Die kurzfristigen Schwankungen der wirtschaftlichen Aktivität um das Produktionspotenzial"
+  },
+  {
+    "id": "vwl_konjunktur-z02",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Reihenfolge der Konjunkturphasen ist korrekt?",
+    "erklaerung": "Der modellhafte Konjunkturzyklus verläuft: Rezession (Talsohle) → Erholung/Aufschwung → Hochkonjunktur/Boom → Stagnation → Abschwung/Rezession. Die wirtschaftliche Aktivität schwankt dabei um das Produktionspotenzial bei Normalauslastung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Aufschwung → Rezession → Boom → Depression → Stagnation",
+      "Boom → Stagnation → Erholung → Depression → Rezession",
+      "Erholung → Stagnation → Rezession → Boom → Abschwung",
+      "Rezession → Erholung/Aufschwung → Hochkonjunktur/Boom → Stagnation → Abschwung"
+    ],
+    "korrekt": "Rezession → Erholung/Aufschwung → Hochkonjunktur/Boom → Stagnation → Abschwung"
+  },
+  {
+    "id": "vwl_konjunktur-z03",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Während einer Hochkonjunktur liegt die tatsächliche Wirtschaftsleistung über dem Produktionspotenzial bei Normalauslastung.",
+    "erklaerung": "In der Hochkonjunktur (Boom) wird das Produktionspotenzial überdurchschnittlich stark ausgelastet. Die tatsächliche Wirtschaftsleistung liegt über der Normalauslastung. Dies führt typischerweise zu steigenden Preisen (Inflation) und sinkender Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-z04",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine Rezession wird in der Regel definiert als zwei aufeinanderfolgende Quartale mit negativem BIP-Wachstum.",
+    "erklaerung": "Die technische Definition einer Rezession lautet: mindestens zwei aufeinanderfolgende Quartale mit negativem Wachstum des realen BIP (also einem Rückgang der Wirtschaftsleistung gegenüber dem Vorquartal).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-z05",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet «Wachstum» von «Konjunktur» in der Volkswirtschaftslehre?",
+    "erklaerung": "Wachstum fragt: «Weshalb wächst eine Volkswirtschaft langfristig?» — es geht um den Trend. Konjunktur fragt: «Wie wächst eine Volkswirtschaft in der kurzen Frist?» — es geht um die Schwankungen um diesen Trend. Das reale BIP wächst langfristig, aber nicht gleichförmig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Wachstum betrachtet die langfristige Entwicklung, Konjunktur die kurzfristigen Schwankungen",
+      "Wachstum misst nur die Exporte, Konjunktur den Binnenmarkt",
+      "Wachstum betrifft nur die Industrie, Konjunktur alle Sektoren",
+      "Wachstum ist immer positiv, Konjunktur immer negativ"
+    ],
+    "korrekt": "Wachstum betrachtet die langfristige Entwicklung, Konjunktur die kurzfristigen Schwankungen"
+  },
+  {
+    "id": "vwl_konjunktur-z06",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss Art. 100 der Bundesverfassung trifft der Bund Massnahmen für eine ausgeglichene {0} Entwicklung, insbesondere zur Verhütung und Bekämpfung von {1} und {2}.",
+    "erklaerung": "Art. 100 BV gibt dem Bund den Auftrag, für eine ausgeglichene konjunkturelle Entwicklung zu sorgen. Die beiden negativen Hauptfolgen von Konjunkturschwankungen sind: Arbeitslosigkeit (in der Rezession) und Teuerung/Inflation (in der Hochkonjunktur).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "konjunkturelle",
+        "optionen": [
+          "konjunkturellen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Arbeitslosigkeit",
+        "optionen": []
+      },
+      {
+        "id": "2",
+        "korrekt": "Teuerung",
+        "optionen": [
+          "Inflation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-z07",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu Konjunkturschwankungen treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, B und D sind korrekt: Rezessionen führen zu Arbeitslosigkeit, Hochkonjunkturen zu Inflation, und die Schwankungen verlaufen um das Produktionspotenzial. C ist falsch: Konjunkturzyklen haben keine feste Dauer — sie variieren stark je nach Ursachen und wirtschaftlichen Bedingungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_zyklus_01.svg",
+      "alt": "Modellhafter Konjunkturverlauf mit Phasen"
+    },
+    "optionen": [
+      "In der Rezession steigt typischerweise die Arbeitslosigkeit.",
+      "In der Hochkonjunktur ist die Inflationsgefahr besonders gross.",
+      "Konjunkturzyklen dauern immer exakt 7 Jahre.",
+      "Die Schwankungen verlaufen um das langfristige Produktionspotenzial."
+    ],
+    "korrekt": [
+      "In der Rezession steigt typischerweise die Arbeitslosigkeit.",
+      "In der Hochkonjunktur ist die Inflationsgefahr besonders gross.",
+      "Die Schwankungen verlaufen um das langfristige Produktionspotenzial."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-z08",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Grafik der Schweizer BIP-Entwicklung seit 1955 zeigt sich ein markanter Einbruch Mitte der 1970er-Jahre. Welches Ereignis war die Hauptursache?",
+    "erklaerung": "Die Ölkrise 1973/74 war ein klassischer realer Angebotsschock: Die OPEC-Länder drosselten die Ölproduktion, was zu einem massiven Preisanstieg bei Erdöl führte. Dies traf die Schweizer Wirtschaft besonders hart und verursachte einen der stärksten Einbrüche seit dem Zweiten Weltkrieg.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Einführung der Mehrwertsteuer in der Schweiz",
+      "Die Ölkrise von 1973/74, die zu einem massiven Angebotsschock führte",
+      "Der Zusammenbruch des Bretton-Woods-Systems 1944",
+      "Der Beitritt der Schweiz zur UNO"
+    ],
+    "korrekt": "Die Ölkrise von 1973/74, die zu einem massiven Angebotsschock führte"
+  },
+  {
+    "id": "vwl_konjunktur-z09",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In der Stagnationsphase des Konjunkturzyklus hat die Wirtschaft ihren Höhepunkt erreicht und das Wachstum verlangsamt sich.",
+    "erklaerung": "Die Stagnation ist die Phase zwischen Hochkonjunktur und Abschwung. Die Wirtschaft hat ihren Höhepunkt erreicht, die Wachstumsraten nehmen ab, aber die Wirtschaftsleistung ist noch hoch. Es ist der Wendepunkt vom Boom zum Abschwung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-z10",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Betrachtet man die BIP-Entwicklung verschiedener Länder (Schweiz, Euroraum, USA, UK, Japan) von 2012 bis 2021: Was fällt beim Einbruch 2020 (Corona-Pandemie) besonders auf?",
+    "erklaerung": "Die BIP-Entwicklung zeigt, dass das Vereinigte Königreich 2020 den stärksten Einbruch der dargestellten Länder erlitt, während die Schweiz vergleichsweise mild betroffen war. Die Unterschiede erklären sich durch die unterschiedliche Wirtschaftsstruktur, die Strenge der Lockdowns und die Wirksamkeit der Stützungsmassnahmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Japan war als einziges Land nicht betroffen.",
+      "Die USA erholten sich langsamer als alle europäischen Länder.",
+      "Die Schweiz hatte den stärksten Einbruch aller dargestellten Länder.",
+      "Das Vereinigte Königreich erlitt den stärksten Einbruch, die Schweiz einen vergleichsweise milden."
+    ],
+    "korrekt": "Das Vereinigte Königreich erlitt den stärksten Einbruch, die Schweiz einen vergleichsweise milden."
+  },
+  {
+    "id": "vwl_konjunktur-i01",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind Konjunkturindikatoren?",
+    "erklaerung": "Konjunkturindikatoren sind wirtschaftliche Kennzahlen, die Auskunft über den aktuellen Stand der Konjunktur geben oder Hinweise auf die zukünftige Entwicklung liefern. Sie helfen bei der Einschätzung, in welcher Phase des Konjunkturzyklus sich eine Volkswirtschaft befindet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Instrumente der Nationalbank zur Geldmengensteuerung",
+      "Politische Massnahmen zur Steuerung der Konjunktur",
+      "Wirtschaftliche Kennzahlen, die den aktuellen Stand oder die künftige Entwicklung der Konjunktur anzeigen",
+      "Gesetze, die das Wirtschaftswachstum regulieren"
+    ],
+    "korrekt": "Wirtschaftliche Kennzahlen, die den aktuellen Stand oder die künftige Entwicklung der Konjunktur anzeigen"
+  },
+  {
+    "id": "vwl_konjunktur-i02",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Frühindikatoren von Spätindikatoren?",
+    "erklaerung": "Frühindikatoren (vorlaufende Indikatoren) verändern sich vor dem Konjunkturverlauf und ermöglichen Prognosen. Spätindikatoren (nachlaufende Indikatoren) reagieren erst mit Verzögerung auf die Konjunkturentwicklung. So zeigt etwa die Arbeitslosenquote als Spätindikator den Abschwung erst an, wenn er bereits eingesetzt hat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Frühindikatoren zeigen die Konjunkturentwicklung vor dem BIP an, Spätindikatoren reagieren erst nach dem BIP.",
+      "Frühindikatoren messen den Konsum, Spätindikatoren die Investitionen.",
+      "Frühindikatoren gelten nur für die Schweiz, Spätindikatoren für das Ausland.",
+      "Frühindikatoren sind genauer als Spätindikatoren."
+    ],
+    "korrekt": "Frühindikatoren zeigen die Konjunkturentwicklung vor dem BIP an, Spätindikatoren reagieren erst nach dem BIP."
+  },
+  {
+    "id": "vwl_konjunktur-i03",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Grössen gelten als Frühindikatoren der Konjunktur? (Mehrere Antworten möglich.)",
+    "erklaerung": "Auftragseingänge (A), Geschäftsklimaindizes (B) und die Konsumentenstimmung (D) sind Frühindikatoren: Sie verändern sich vor dem tatsächlichen Konjunkturverlauf. Die Arbeitslosenquote (C) ist dagegen ein klassischer Spätindikator, da der Arbeitsmarkt erst mit Verzögerung auf Konjunkturveränderungen reagiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_indikatoren_01.svg",
+      "alt": "Konjunkturindikatoren: Zeitliche Einordnung"
+    },
+    "optionen": [
+      "Auftragseingänge in der Industrie",
+      "Geschäftsklimaindex (z.B. KOF-Konjunkturbarometer)",
+      "Arbeitslosenquote",
+      "Konsumentenstimmung"
+    ],
+    "korrekt": [
+      "Auftragseingänge in der Industrie",
+      "Geschäftsklimaindex (z.B. KOF-Konjunkturbarometer)",
+      "Konsumentenstimmung"
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-i04",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Arbeitslosenquote ist ein typischer Frühindikator der Konjunktur.",
+    "erklaerung": "Falsch. Die Arbeitslosenquote ist ein Spätindikator. Der Arbeitsmarkt reagiert erfahrungsgemäss mit mehrmonatiger Verzögerung auf die allgemeine Konjunkturentwicklung. Unternehmen passen ihren Personalbestand erst an, wenn sich die wirtschaftliche Lage bereits verändert hat (z.B. durch Kurzarbeit als Puffer).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-i05",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Expertengruppe des Bundes prognostizierte im März 2022 für das Jahr 2022 ein BIP-Wachstum von 2.8% (sporteventbereinigt). Wie ist diese Prognose einzuordnen?",
+    "erklaerung": "Nach dem BIP-Einbruch von –2.6% (2020) und der kräftigen Erholung von 3.6% (2021) zeigte die Prognose von 2.8% für 2022 eine Fortsetzung der Erholung, allerdings mit nachlassender Dynamik. Die vorherige Prognose lag noch bei 3.0%, was die leichte Abschwächung bestätigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Wirtschaft befindet sich in einer Depression.",
+      "Dies signalisiert eine schwere Rezession.",
+      "Dies ist ein historisch einmalig hohes Wachstum.",
+      "Es handelt sich um eine Erholungsphase nach dem Corona-Einbruch 2020 mit nachlassender Dynamik."
+    ],
+    "korrekt": "Es handelt sich um eine Erholungsphase nach dem Corona-Einbruch 2020 mit nachlassender Dynamik."
+  },
+  {
+    "id": "vwl_konjunktur-i06",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Konjunkturindikatoren, die sich vor dem BIP verändern und Prognosen ermöglichen, heissen {0}. Indikatoren, die dem BIP hinterherhinken, heissen {1}.",
+    "erklaerung": "Frühindikatoren (vorlaufend) zeigen die Konjunkturentwicklung im Voraus an (z.B. Auftragseingänge, Geschäftsklima). Spätindikatoren (nachlaufend) reagieren erst mit Verzögerung (z.B. Arbeitslosenquote, Steuereinnahmen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Frühindikatoren",
+        "optionen": [
+          "vorlaufende Indikatoren",
+          "Fruhindikatoren"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Spätindikatoren",
+        "optionen": [
+          "nachlaufende Indikatoren",
+          "Spatindikatoren"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-i07",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum sind Konjunkturprognosen grundsätzlich mit Unsicherheit behaftet?",
+    "erklaerung": "Konjunkturprognosen sind unsicher, weil die Wirtschaft ein komplexes System ist: Unvorhergesehene Ereignisse (Kriege, Pandemien, Finanzkrisen), psychologische Faktoren (Stimmungsumschwünge) und politische Entscheide können die Entwicklung jederzeit verändern. Prognosemodelle bilden die Realität nur vereinfacht ab.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil Ökonomen absichtlich falsche Prognosen erstellen.",
+      "Weil nur das BIP gemessen wird und keine anderen Grössen.",
+      "Weil Konjunkturprognosen nur für grosse Volkswirtschaften erstellt werden können.",
+      "Weil die Wirtschaft von vielen unvorhersehbaren Faktoren beeinflusst wird und Prognosemodelle die Realität nur vereinfacht abbilden."
+    ],
+    "korrekt": "Weil die Wirtschaft von vielen unvorhersehbaren Faktoren beeinflusst wird und Prognosemodelle die Realität nur vereinfacht abbilden."
+  },
+  {
+    "id": "vwl_konjunktur-i08",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Das KOF-Konjunkturbarometer der ETH Zürich ist ein Beispiel für einen Frühindikator der Schweizer Konjunktur.",
+    "erklaerung": "Richtig. Das KOF-Konjunkturbarometer wird von der Konjunkturforschungsstelle der ETH Zürich erstellt und basiert auf Umfragen bei Unternehmen. Es gilt als einer der wichtigsten Frühindikatoren für die Schweizer Konjunktur und soll die Entwicklung des BIP vorhersagen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-i09",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Aussagen zur Inflationsentwicklung verschiedener Länder (2008–2022) treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Die Schweiz hatte dank der starken Währung und der SNB-Politik durchgehend tiefere Inflationsraten. B ist korrekt: Ab 2021 stiegen die Raten aufgrund von Lieferkettenproblemen, Energiepreisen und Nachholeffekten nach Corona stark an. C ist korrekt: Die Schweiz erlebte mehrfach negative Teuerungsraten (z.B. 2015–2016). D ist falsch: Die Verläufe unterscheiden sich deutlich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Schweiz hatte durchgehend die tiefsten Inflationsraten im Vergleich zu Euroraum, USA und UK.",
+      "Ab 2021 stiegen die Inflationsraten in allen dargestellten Ländern stark an.",
+      "Die Schweiz erlebte in mehreren Jahren eine negative Teuerung (Deflation).",
+      "Die Inflationsraten aller Länder verlaufen immer identisch."
+    ],
+    "korrekt": [
+      "Die Schweiz hatte durchgehend die tiefsten Inflationsraten im Vergleich zu Euroraum, USA und UK.",
+      "Ab 2021 stiegen die Inflationsraten in allen dargestellten Ländern stark an.",
+      "Die Schweiz erlebte in mehreren Jahren eine negative Teuerung (Deflation)."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-i10",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum wird die Arbeitslosenquote als Spätindikator der Konjunktur bezeichnet?",
+    "erklaerung": "Der Arbeitsmarkt folgt dem allgemeinen Konjunkturtrend mit mehrmonatiger Verzögerung. Unternehmen setzen zuerst Instrumente wie Kurzarbeit, Überstundenabbau oder Einstellungsstopps ein, bevor sie Entlassungen vornehmen. Umgekehrt werden im Aufschwung zuerst bestehende Mitarbeitende mehr beschäftigt, bevor neue eingestellt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil die Arbeitslosenquote nur einmal jährlich erhoben wird.",
+      "Weil die Arbeitslosenquote von der Nationalbank berechnet wird.",
+      "Weil der Arbeitsmarkt erst mit Verzögerung auf Konjunkturveränderungen reagiert, z.B. durch Kurzarbeit als Puffer.",
+      "Weil die Arbeitslosenquote nur die Jugendarbeitslosigkeit misst."
+    ],
+    "korrekt": "Weil der Arbeitsmarkt erst mit Verzögerung auf Konjunkturveränderungen reagiert, z.B. durch Kurzarbeit als Puffer."
+  },
+  {
+    "id": "vwl_konjunktur-u01",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was besagt die Theorie der realen Schocks als Ursache von Konjunkturschwankungen?",
+    "erklaerung": "Die Theorie realer Schocks erklärt Konjunkturschwankungen als Folge von unerwarteten realen Störungen und Veränderungen. Beispiele sind Katastrophen (Ölknappheit, Überschwemmungen, Kriege) oder technologische Innovationen (Dampfmaschine, Computer, Penicillin).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Konjunkturschwankungen entstehen durch unerwartete reale Störungen wie Katastrophen oder technologische Durchbrüche.",
+      "Konjunkturschwankungen werden ausschliesslich durch die Geldpolitik verursacht.",
+      "Konjunkturschwankungen sind rein zufällig und haben keine Ursachen.",
+      "Konjunkturschwankungen entstehen nur durch politische Wahlen."
+    ],
+    "korrekt": "Konjunkturschwankungen entstehen durch unerwartete reale Störungen wie Katastrophen oder technologische Durchbrüche."
+  },
+  {
+    "id": "vwl_konjunktur-u02",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was besagt die Überinvestitionstheorie?",
+    "erklaerung": "Die Überinvestitionstheorie besagt: Wenn die Kreditzinsen niedriger sind als die erwartete Rendite der Investitionen, bauen Unternehmen ihre Produktionskapazitäten zu stark aus. Es entsteht ein Überangebot, das anschliessend zu einem Einbruch und damit zu einer Rezession führt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Wenn der Staat zu viel investiert, verdrängt er private Investitionen.",
+      "Wenn die Zentralbank die Zinsen zu hoch setzt, bricht die Investitionstätigkeit ein.",
+      "Wenn Konsumenten zu viel sparen, fehlen Investitionen.",
+      "Wenn die Kreditzinsen unter der erwarteten Rendite liegen, bauen Unternehmen ihre Produktionskapazitäten zu stark aus."
+    ],
+    "korrekt": "Wenn die Kreditzinsen unter der erwarteten Rendite liegen, bauen Unternehmen ihre Produktionskapazitäten zu stark aus."
+  },
+  {
+    "id": "vwl_konjunktur-u03",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was besagt die Unterkonsumtionstheorie?",
+    "erklaerung": "Die Unterkonsumtionstheorie sieht die Ursache für Rezessionen in einem zu geringen Konsum: Niedriges Lohnwachstum und eine niedrige Konsumneigung (hohe Sparquote) führen dazu, dass die Nachfrage im Aufschwung nicht mit dem wachsenden Angebot mithalten kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Konsumenten kaufen zu viel, was zu Inflation führt.",
+      "Hohe Löhne führen zu Überkonsum und damit zu Konjunkturschwankungen.",
+      "Der Staat konsumiert zu wenig und bremst damit die Wirtschaft.",
+      "Durch niedriges Lohnwachstum und niedrige Konsumneigung wächst die Nachfrage im Aufschwung zu langsam."
+    ],
+    "korrekt": "Durch niedriges Lohnwachstum und niedrige Konsumneigung wächst die Nachfrage im Aufschwung zu langsam."
+  },
+  {
+    "id": "vwl_konjunktur-u04",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Beispiele sind «reale Schocks», die Konjunkturschwankungen auslösen können? (Mehrere Antworten möglich.)",
+    "erklaerung": "Reale Schocks sind unerwartete Störungen in der realen Wirtschaft: Ölknappheit (A), technologische Innovationen wie der Computer (C) und Naturkatastrophen wie Überschwemmungen (D). Eine Zinssenkung (B) ist dagegen ein geldpolitisches Instrument und damit ein monetärer, kein realer Schock.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_ursachen_01.svg",
+      "alt": "Ursachen von Konjunkturschwankungen"
+    },
+    "optionen": [
+      "Eine Ölknappheit durch einen Krieg im Nahen Osten",
+      "Eine Zinssenkung durch die Nationalbank",
+      "Die Erfindung des Computers",
+      "Eine verheerende Überschwemmung"
+    ],
+    "korrekt": [
+      "Eine Ölknappheit durch einen Krieg im Nahen Osten",
+      "Die Erfindung des Computers",
+      "Eine verheerende Überschwemmung"
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-u05",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die politische Konjunkturtheorie besagt, dass Regierungen vor Wahlen die Staatsausgaben erhöhen, um die Konjunktur anzukurbeln.",
+    "erklaerung": "Richtig. Die politische Konjunkturtheorie geht davon aus, dass Politiker ein Interesse haben, vor Wahlen die Wirtschaft zu stimulieren (z.B. durch höhere Staatsausgaben), um wiedergewählt zu werden. Nach den Wahlen wird dann gespart, was die Konjunktur dämpft. Der Grundgedanke: Wähler haben ein kurzes Gedächtnis.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-u06",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was besagt die monetäre Konjunkturtheorie?",
+    "erklaerung": "Die monetäre Konjunkturtheorie basiert auf der Quantitätsgleichung MV = PY (Geldmenge × Umlaufgeschwindigkeit = Preisniveau × reales BIP). Wenn sich M ändert und V/P kurzfristig konstant sind, ändert sich auch Y (das reale BIP). Mittel- bis langfristig beeinflusst die Geldpolitik allerdings nur das Preisniveau.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Veränderungen der Geldmenge können kurzfristig die Realwirtschaft beeinflussen, gemäss der Quantitätsgleichung MV = PY.",
+      "Geld hat keinen Einfluss auf die Wirtschaft.",
+      "Die Geldmenge muss jedes Jahr gleich stark wachsen wie das BIP.",
+      "Nur die Fiskalpolitik kann die Konjunktur beeinflussen, nicht die Geldpolitik."
+    ],
+    "korrekt": "Veränderungen der Geldmenge können kurzfristig die Realwirtschaft beeinflussen, gemäss der Quantitätsgleichung MV = PY."
+  },
+  {
+    "id": "vwl_konjunktur-u07",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In der Quantitätsgleichung MV = PY steht M für {0}, V für {1}, P für {2} und Y für {3}.",
+    "erklaerung": "Die Quantitätsgleichung MV = PY beschreibt den Zusammenhang zwischen Geldmenge (M), Umlaufgeschwindigkeit des Geldes (V), Preisniveau (P) und realem BIP (Y). Sie ist zentral für die monetäre Konjunkturtheorie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Geldmenge",
+        "optionen": [
+          "die Geldmenge"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Umlaufgeschwindigkeit",
+        "optionen": [
+          "die Umlaufgeschwindigkeit",
+          "Geldumlaufgeschwindigkeit"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Preisniveau",
+        "optionen": [
+          "Preise",
+          "das Preisniveau"
+        ]
+      },
+      {
+        "id": "3",
+        "korrekt": "reales BIP",
+        "optionen": [
+          "BIP",
+          "Bruttoinlandprodukt",
+          "reale Wirtschaftsleistung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-u08",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Über welche Kanäle wirkte die Corona-Pandemie 2020 auf die Konjunktur?",
+    "erklaerung": "Die Corona-Pandemie war einzigartig, weil sie gleichzeitig als Angebots- und Nachfrageschock wirkte. Angebotsseite: Lockdowns legten die Produktion lahm, Lieferketten brachen ein. Nachfrageseite: Konsumenten konnten und wollten weniger kaufen (geschlossene Geschäfte, Unsicherheit). Zusätzlich kam es zu internationalen Verwerfungen im Handel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ausschliesslich als Nachfrageschock, weil die Menschen weniger konsumierten.",
+      "Gleichzeitig als Angebots- und Nachfrageschock: Lockdowns reduzierten Produktion und Konsum, internationale Lieferketten brachen ein.",
+      "Ausschliesslich als Angebotsschock, weil die Produktion einbrach.",
+      "Die Corona-Pandemie hatte keine messbaren Auswirkungen auf die Konjunktur."
+    ],
+    "korrekt": "Gleichzeitig als Angebots- und Nachfrageschock: Lockdowns reduzierten Produktion und Konsum, internationale Lieferketten brachen ein."
+  },
+  {
+    "id": "vwl_konjunktur-u09",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Psychologische Faktoren wie Pessimismus und Unsicherheit können als konjunkturelle Verstärker wirken.",
+    "erklaerung": "Richtig. Psychologische Verstärker spielen eine wichtige Rolle bei Konjunkturschwankungen. Unsicherheit über die Zukunft kann zu Pessimismus führen: Konsumenten verschieben Käufe, Unternehmen verschieben Investitionen. Dies verstärkt einen bereits eingesetzten Abschwung. Umgekehrt kann Optimismus einen Aufschwung verstärken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-u10",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Konjunkturtheorien erklären Schwankungen primär durch nachfrageseitige Faktoren? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Unterkonsumtionstheorie (A) sieht zu geringe Nachfrage (Konsum) als Ursache. Psychologische Theorien (C) betonen die Rolle von Konsumenten- und Investorenstimmung. Die Theorie realer Schocks (B) umfasst sowohl Angebots- als auch Nachfragefaktoren. Die Überinvestitionstheorie (D) erklärt Schwankungen primär angebotsseitig (zu viele Produktionskapazitäten).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Unterkonsumtionstheorie",
+      "Theorie realer Schocks",
+      "Psychologische Theorien (Pessimismus der Konsumenten)",
+      "Überinvestitionstheorie"
+    ],
+    "korrekt": [
+      "Unterkonsumtionstheorie",
+      "Psychologische Theorien (Pessimismus der Konsumenten)"
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-u11",
+    "fach": "VWL",
+    "thema": "Ursachen für Konjunkturschwankungen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie nennt man unerwartete Ereignisse wie Ölkrisen, Naturkatastrophen oder Pandemien, die die Konjunktur stark beeinflussen?",
+    "erklaerung": "Reale Schocks sind unerwartete, einmalige Ereignisse, die das Angebot und/oder die Nachfrage plötzlich und stark verändern. Beispiele sind die Ölkrise (1973), Naturkatastrophen oder die Corona-Pandemie (2020). Sie gelten als eine der Hauptursachen für Konjunkturschwankungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_ursachen_01.svg",
+      "alt": "Ursachen von Konjunkturschwankungen"
+    },
+    "optionen": [
+      "Reale Schocks",
+      "Monetäre Impulse",
+      "Strukturelle Anpassungen",
+      "Konjunkturelle Normalschwankungen"
+    ],
+    "korrekt": "Reale Schocks"
+  },
+  {
+    "id": "vwl_konjunktur-k01",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Kerngedanke der klassischen Konjunkturpolitik?",
+    "erklaerung": "Die Klassiker (z.B. Adam Smith, Jean-Baptiste Say) vertrauen auf die Selbstheilungskräfte des Marktes. Über den Preismechanismus (flexible Preise, Löhne, Zinsen) gleichen sich Angebot und Nachfrage von selbst aus. Staatliche Eingriffe in die Konjunktur sind demnach unnötig oder sogar schädlich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Staat muss aktiv die Nachfrage steuern.",
+      "Die Zentralbank soll die Geldmenge stetig erhöhen.",
+      "Märkte regulieren sich selbst, der Staat soll nicht in die Konjunktur eingreifen.",
+      "Konjunkturschwankungen existieren in einer freien Marktwirtschaft nicht."
+    ],
+    "korrekt": "Märkte regulieren sich selbst, der Staat soll nicht in die Konjunktur eingreifen."
+  },
+  {
+    "id": "vwl_konjunktur-k02",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss dem Sayschen Theorem («Saysches Gesetz») schafft sich jedes Angebot seine eigene Nachfrage.",
+    "erklaerung": "Richtig. Das Saysche Theorem (nach Jean-Baptiste Say) besagt: Jede Produktion erzeugt in gleicher Höhe Einkommen, das wieder für den Kauf von Gütern verwendet wird. Damit kann es gemäss den Klassikern keine dauerhafte Überproduktion geben — der Markt tendiert zum Gleichgewicht bei Vollbeschäftigung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-k03",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Rolle spielen flexible Preise in der klassischen Konzeption?",
+    "erklaerung": "In der klassischen Konzeption sind flexible Preise der zentrale Anpassungsmechanismus: Bei Überangebot sinken die Preise, bei Übernachfrage steigen sie. Flexible Löhne sorgen für Gleichgewicht am Arbeitsmarkt, flexible Zinsen gleichen Sparen und Investieren aus. So kehrt die Wirtschaft immer zum Gleichgewicht bei Vollbeschäftigung zurück.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Flexible Preise führen zwangsläufig zu Inflation.",
+      "Preisflexibilität ist in der klassischen Theorie irrelevant.",
+      "Flexible Preise, Löhne und Zinsen sorgen dafür, dass sich der Markt selbst ins Gleichgewicht bringt.",
+      "Preise müssen vom Staat festgelegt werden, um Konjunkturschwankungen zu vermeiden."
+    ],
+    "korrekt": "Flexible Preise, Löhne und Zinsen sorgen dafür, dass sich der Markt selbst ins Gleichgewicht bringt."
+  },
+  {
+    "id": "vwl_konjunktur-k04",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Klassiker befürworten eine aktive staatliche Konjunkturpolitik, um Rezessionen zu bekämpfen.",
+    "erklaerung": "Falsch. Die Klassiker lehnen aktive staatliche Konjunkturpolitik ab. Sie vertrauen auf die Selbstheilungskräfte des Marktes: Durch flexible Preise, Löhne und Zinsen gleicht sich der Markt von selbst aus. Staatliche Eingriffe würden diesen Anpassungsprozess nur stören und verzögern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-k05",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Welche Kritik wird häufig an der klassischen Konzeption geübt?",
+    "erklaerung": "Die Hauptkritik an der klassischen Konzeption (besonders von Keynes): In der Realität sind Preise und Löhne nach unten starr (Lohnrigidität, Tarifverträge, Mindestlöhne). Der Selbstheilungsprozess kann daher sehr lange dauern und ist mit hoher Arbeitslosigkeit und sozialem Leid verbunden. Die Grosse Depression der 1930er-Jahre zeigte die Grenzen des klassischen Ansatzes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Theorie berücksichtigt die Inflation zu stark.",
+      "Die Klassiker fordern zu viel staatliche Regulierung.",
+      "In der Realität sind Preise und Löhne nicht vollständig flexibel, weshalb Anpassungen lange dauern und mit hoher Arbeitslosigkeit verbunden sein können.",
+      "Der Markt reagiert zu schnell, sodass die Wirtschaft nie zur Ruhe kommt."
+    ],
+    "korrekt": "In der Realität sind Preise und Löhne nicht vollständig flexibel, weshalb Anpassungen lange dauern und mit hoher Arbeitslosigkeit verbunden sein können."
+  },
+  {
+    "id": "vwl_konjunktur-k06",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss dem Sayschen Theorem schafft sich jedes {0} seine eigene {1}.",
+    "erklaerung": "Das Saysche Theorem (nach Jean-Baptiste Say) besagt, dass jede Produktion (Angebot) in gleicher Höhe Einkommen schafft, das dann wieder für den Kauf von Gütern (Nachfrage) verwendet wird. Daher kann es gemäss den Klassikern keine dauerhafte Überproduktion geben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Angebot",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Nachfrage",
+        "optionen": []
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-k07",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Anpassungsmechanismen sorgen gemäss der klassischen Konzeption für ein Gleichgewicht? (Mehrere Antworten möglich.)",
+    "erklaerung": "In der klassischen Konzeption sind drei Flexibilitäten zentral: Flexible Güterpreise (A) für den Gütermarkt, flexible Löhne (B) für den Arbeitsmarkt und flexible Zinsen (D) für den Kapitalmarkt. Staatliche Preiskontrollen (C) lehnen die Klassiker ab, da sie die Anpassungsmechanismen stören.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_klassiker_01.svg",
+      "alt": "Klassische Konzeption: Selbstheilungskräfte"
+    },
+    "optionen": [
+      "Flexible Güterpreise gleichen Angebot und Nachfrage auf dem Gütermarkt aus.",
+      "Flexible Löhne sorgen für Gleichgewicht auf dem Arbeitsmarkt.",
+      "Staatliche Preiskontrollen verhindern Marktschwankungen.",
+      "Flexible Zinsen gleichen Sparen und Investieren aus."
+    ],
+    "korrekt": [
+      "Flexible Güterpreise gleichen Angebot und Nachfrage auf dem Gütermarkt aus.",
+      "Flexible Löhne sorgen für Gleichgewicht auf dem Arbeitsmarkt.",
+      "Flexible Zinsen gleichen Sparen und Investieren aus."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-k08",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Grosse Depression der 1930er-Jahre stellte die klassische Konzeption vor ein grosses Problem. Warum?",
+    "erklaerung": "Die Grosse Depression zeigte die Grenzen der klassischen Theorie: Obwohl Preise und Löhne fielen, stellte sich kein neues Gleichgewicht ein. Die Arbeitslosigkeit blieb über Jahre extrem hoch (in den USA über 25%). Dies widersprach der Annahme, dass flexible Preise automatisch für Vollbeschäftigung sorgen — und war der Anstoss für Keynes' neue Theorie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Preise stiegen während der Depression stark an.",
+      "Der Staat hatte bereits massiv in die Wirtschaft eingegriffen.",
+      "Die Geldmenge war zu hoch und verursachte Inflation.",
+      "Trotz fallender Preise und Löhne kehrte die Wirtschaft nicht zum Gleichgewicht zurück — die Arbeitslosigkeit blieb jahrelang extrem hoch."
+    ],
+    "korrekt": "Trotz fallender Preise und Löhne kehrte die Wirtschaft nicht zum Gleichgewicht zurück — die Arbeitslosigkeit blieb jahrelang extrem hoch."
+  },
+  {
+    "id": "vwl_konjunktur-k09",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gemäss der klassischen Konzeption kann es auf Dauer keine unfreiwillige Arbeitslosigkeit geben, weil flexible Löhne den Arbeitsmarkt ins Gleichgewicht bringen.",
+    "erklaerung": "Richtig. In der klassischen Theorie gleichen flexible Löhne Angebot und Nachfrage auf dem Arbeitsmarkt aus: Bei Arbeitslosigkeit sinken die Löhne, Arbeit wird billiger, Unternehmen stellen mehr Leute ein. Im Gleichgewicht gibt es nur freiwillige Arbeitslosigkeit (wer zum Marktlohn nicht arbeiten will). Die Annahme vollständig flexibler Löhne ist jedoch die zentrale Schwachstelle dieser Theorie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-k10",
+    "fach": "VWL",
+    "thema": "Klassische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein zentraler Kritikpunkt an der klassischen Theorie lautet, dass Löhne «nach unten starr» sind. Was bedeutet das konkret?",
+    "erklaerung": "Lohnrigidität (Starrheit nach unten) bedeutet: In der Praxis können Löhne nicht einfach gesenkt werden. Gesamtarbeitsverträge, Mindestlöhne, soziale Normen und die Angst vor Motivationsverlust bei Arbeitnehmenden verhindern Lohnsenkungen. Deshalb funktioniert der klassische Anpassungsmechanismus in der Realität oft nicht — bei fehlender Nachfrage kommt es zu Entlassungen statt Lohnsenkungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Arbeitgeber dürfen Löhne rechtlich nie senken.",
+      "Löhne lassen sich in der Praxis nur schwer senken, z.B. wegen Gesamtarbeitsverträgen, Mindestlöhnen und sozialen Normen.",
+      "Löhne sind immer gleich hoch, unabhängig von der Konjunktur.",
+      "Löhne steigen in der Praxis nie."
+    ],
+    "korrekt": "Löhne lassen sich in der Praxis nur schwer senken, z.B. wegen Gesamtarbeitsverträgen, Mindestlöhnen und sozialen Normen."
+  },
+  {
+    "id": "vwl_konjunktur-j01",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der zentrale Ansatz der keynesianischen Konjunkturpolitik?",
+    "erklaerung": "John Maynard Keynes argumentierte, dass der Staat in Krisenzeiten für die fehlende private Nachfrage einspringen muss. Durch höhere Staatsausgaben und tiefere Steuern wird die Gesamtnachfrage gestützt, um die Wirtschaft zu stabilisieren und Arbeitslosigkeit zu bekämpfen (nachfrageorientierte/antizyklische Fiskalpolitik).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Staat soll in der Rezession die Ausgaben kürzen und Schulden abbauen.",
+      "Der Staat soll in der Rezession die Nachfrage durch höhere Ausgaben und tiefere Steuern stützen.",
+      "Der Staat soll die Wirtschaft vollständig deregulieren.",
+      "Die Zentralbank soll in der Rezession die Geldmenge einschränken."
+    ],
+    "korrekt": "Der Staat soll in der Rezession die Nachfrage durch höhere Ausgaben und tiefere Steuern stützen."
+  },
+  {
+    "id": "vwl_konjunktur-j02",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter «antizyklischer Fiskalpolitik»?",
+    "erklaerung": "Antizyklische Fiskalpolitik bedeutet «gegen den Zyklus»: In der Rezession erhöht der Staat die Ausgaben und senkt die Steuern (expansive Fiskalpolitik, akzeptiert Defizite). In der Hochkonjunktur senkt er die Ausgaben und erhöht ggf. die Steuern (restriktive Fiskalpolitik, erzielt Überschüsse). Ziel: Glättung der Konjunkturschwankungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Staat hält seine Ausgaben unabhängig von der Konjunkturlage konstant.",
+      "Der Staat greift nur in die Geldpolitik ein, nicht in die Fiskalpolitik.",
+      "Der Staat spart in der Rezession und gibt in der Hochkonjunktur mehr aus.",
+      "Der Staat gibt in der Rezession mehr aus und spart in der Hochkonjunktur, um die Konjunktur zu glätten."
+    ],
+    "korrekt": "Der Staat gibt in der Rezession mehr aus und spart in der Hochkonjunktur, um die Konjunktur zu glätten."
+  },
+  {
+    "id": "vwl_konjunktur-j03",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der keynesianische Multiplikator?",
+    "erklaerung": "Der keynesianische Multiplikator beschreibt, wie eine anfängliche Ausgabe (z.B. Staatsausgabe) durch mehrfache Einkommens- und Ausgabenrunden das BIP um ein Vielfaches erhöht. Beispiel: Eine Ausgabe von 1 Mrd. CHF kann das BIP um 1.5–2 Mrd. CHF steigern, weil die Empfänger einen Teil des Geldes wieder ausgeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ein Indikator, der die Inflationsrate misst.",
+      "Die Rate, mit der die Geldmenge jährlich wächst.",
+      "Der Anteil der Exporte am BIP.",
+      "Ein Mechanismus, der bewirkt, dass eine zusätzliche Staatsausgabe das BIP um ein Vielfaches dieser Ausgabe erhöht."
+    ],
+    "korrekt": "Ein Mechanismus, der bewirkt, dass eine zusätzliche Staatsausgabe das BIP um ein Vielfaches dieser Ausgabe erhöht."
+  },
+  {
+    "id": "vwl_konjunktur-j04",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Keynes hielt es für notwendig, dass der Staat in der Rezession Budgetdefizite in Kauf nimmt, um die Nachfrage zu stützen.",
+    "erklaerung": "Richtig. Keynes argumentierte, dass der Staat in der Rezession die Ausgaben erhöhen und Steuern senken muss, auch wenn dies zu einem Budgetdefizit führt. Die Defizite sollten dann in der Hochkonjunktur durch Budgetüberschüsse wieder ausgeglichen werden. Dieses Prinzip ist der Kern der antizyklischen Fiskalpolitik.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-j05",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss der keynesianischen Konzeption bestimmt die gesamtwirtschaftliche {0} den Grad der Beschäftigung und die Wirtschaftsleistung.",
+    "erklaerung": "In der keynesianischen Konzeption ist die gesamtwirtschaftliche Nachfrage (Konsum + Investitionen + Staatsausgaben + Nettoexporte) die bestimmende Grösse für Produktion und Beschäftigung. Bei einem Nachfragedefizit kommt es zu Unterauslastung und Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Nachfrage",
+        "optionen": [
+          "Gesamtnachfrage",
+          "Nachfrageseite"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-j06",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Massnahmen empfiehlt die keynesianische Konzeption in einer Rezession? (Mehrere Antworten möglich.)",
+    "erklaerung": "In einer Rezession empfiehlt die keynesianische Konzeption expansive Fiskalpolitik: höhere Staatsausgaben (A), tiefere Steuern (B) und die Akzeptanz von Budgetdefiziten (D). Die Kürzung von Sozialleistungen (C) wäre kontraproduktiv, da sie die Nachfrage weiter senken würde (prozyklisch statt antizyklisch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_keynes_01.svg",
+      "alt": "Keynesianische Konzeption: Antizyklische Fiskalpolitik"
+    },
+    "optionen": [
+      "Erhöhung der Staatsausgaben (z.B. Infrastrukturprojekte)",
+      "Senkung der Steuern, um den Konsum anzukurbeln",
+      "Kürzung der Sozialleistungen, um den Staatshaushalt zu sanieren",
+      "Budgetdefizite akzeptieren, um die Nachfrage zu stützen"
+    ],
+    "korrekt": [
+      "Erhöhung der Staatsausgaben (z.B. Infrastrukturprojekte)",
+      "Senkung der Steuern, um den Konsum anzukurbeln",
+      "Budgetdefizite akzeptieren, um die Nachfrage zu stützen"
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-j07",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum wird die keynesianische Konjunkturpolitik in der Praxis oft kritisiert?",
+    "erklaerung": "Die Hauptkritik: In der Praxis funktioniert die «Symmetrie» der antizyklischen Politik oft nicht — Regierungen geben in der Rezession mehr aus, sparen aber in der Hochkonjunktur nicht (Defizitbias). Zudem kommen Massnahmen oft zu spät (time lags), sind schwer dosierbar und werden von politischen statt ökonomischen Motiven geleitet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil Keynes grundsätzlich gegen jede Form von Staatsausgaben war.",
+      "Weil der Multiplikator in der Praxis nie funktioniert.",
+      "Weil Regierungen in guten Zeiten oft nicht sparen (Defizitbias), Massnahmen zu spät greifen und politische Entscheidungen nicht rein ökonomisch motiviert sind.",
+      "Weil die Theorie nur für kleine Volkswirtschaften gilt."
+    ],
+    "korrekt": "Weil Regierungen in guten Zeiten oft nicht sparen (Defizitbias), Massnahmen zu spät greifen und politische Entscheidungen nicht rein ökonomisch motiviert sind."
+  },
+  {
+    "id": "vwl_konjunktur-j08",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die «Liquiditätsfalle» beschreibt eine Situation, in der die Geldpolitik wirkungslos wird, weil die Zinsen bereits bei oder nahe null liegen.",
+    "erklaerung": "Richtig. In einer Liquiditätsfalle sind die Zinsen so tief (bei/nahe null), dass weitere Zinssenkungen nicht möglich oder wirkungslos sind. Menschen und Unternehmen horten Geld statt es auszugeben oder zu investieren. In dieser Situation empfahl Keynes, dass die Fiskalpolitik (Staatsausgaben) die Rolle der Konjunktursteuerung übernehmen muss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-j09",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Situation bildete den historischen Hintergrund für die Entstehung der keynesianischen Theorie?",
+    "erklaerung": "Die keynesianische Theorie entstand als Reaktion auf die Grosse Depression der 1930er-Jahre. Die Massenarbeitslosigkeit und der lang anhaltende Wirtschaftseinbruch zeigten, dass die klassische Theorie der Selbstregulierung in dieser Krise nicht funktionierte. Keynes' «General Theory» (1936) lieferte eine Erklärung und politische Handlungsempfehlungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Ölkrise der 1970er-Jahre",
+      "Die Finanzkrise 2008/09",
+      "Die Grosse Depression der 1930er-Jahre, in der die klassische Selbstregulierung versagte",
+      "Die Dotcom-Blase der 2000er-Jahre"
+    ],
+    "korrekt": "Die Grosse Depression der 1930er-Jahre, in der die klassische Selbstregulierung versagte"
+  },
+  {
+    "id": "vwl_konjunktur-j10",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Der Bundesrat lancierte 2008/09 ein stufenweises Stabilisierungsprogramm gegen die Finanzkrise. Welcher konjunkturpolitische Ansatz stand dabei im Vordergrund?",
+    "erklaerung": "Das Stabilisierungsprogramm des Bundesrates (Stufe 1: 900 Mio., Stufe 2: 700 Mio.) war primär keynesianisch orientiert: Vorziehen öffentlicher Investitionen (Strasse, Schiene, Hochwasserschutz), Aufhebung von Kreditsperren, steuerliche Entlastungen. Ziel war die Stützung der Gesamtnachfrage in der Rezession.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Monetaristisch: Erhöhung der Geldmenge durch die SNB",
+      "Klassisch: Abwarten und auf die Selbstheilungskräfte des Marktes vertrauen",
+      "Angebotsorientiert: Deregulierung und Steuersenkungen für Unternehmen",
+      "Keynesianisch: Erhöhung der Staatsausgaben und Vorziehen von Investitionen zur Stützung der Nachfrage"
+    ],
+    "korrekt": "Keynesianisch: Erhöhung der Staatsausgaben und Vorziehen von Investitionen zur Stützung der Nachfrage"
+  },
+  {
+    "id": "vwl_konjunktur-j11",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "John Maynard Keynes forderte, dass der Staat in einer Rezession die {0} erhöhen soll, um die fehlende private Nachfrage zu ersetzen. Diese Politik wird als {1} Fiskalpolitik bezeichnet.",
+    "erklaerung": "Keynes argumentierte, dass in einer Rezession die private Nachfrage einbricht und der Staat durch erhöhte Staatsausgaben (z.B. Infrastrukturprojekte) einspringen muss. Diese Politik heisst «antizyklisch», weil der Staat gegen den Konjunkturzyklus handelt: In der Rezession mehr ausgeben, im Boom sparen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Staatsausgaben",
+        "optionen": [
+          "Ausgaben",
+          "öffentlichen Ausgaben"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "antizyklische",
+        "optionen": [
+          "antizyklisch"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-m01",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der zentrale Ansatz der monetaristischen Konjunkturpolitik?",
+    "erklaerung": "Die Monetaristen (v.a. Milton Friedman) betonen die zentrale Rolle der Geldpolitik. Sie argumentieren, dass Schwankungen der Geldmenge die Hauptursache von Konjunkturschwankungen sind. Die Zentralbank soll für eine stetige, voraussagbare Geldmengenentwicklung sorgen, statt aktive Fiskalpolitik zu betreiben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Geldpolitik der Zentralbank ist das wichtigste Instrument zur Beeinflussung der Konjunktur.",
+      "Der Markt soll vollständig dereguliert werden.",
+      "Der Staat soll die Nachfrage durch Fiskalpolitik steuern.",
+      "Die Geldmenge spielt keine Rolle für die Konjunktur."
+    ],
+    "korrekt": "Die Geldpolitik der Zentralbank ist das wichtigste Instrument zur Beeinflussung der Konjunktur."
+  },
+  {
+    "id": "vwl_konjunktur-m02",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was empfehlen Monetaristen als geldpolitische Strategie?",
+    "erklaerung": "Monetaristen empfehlen eine regelgebundene Geldpolitik: Die Geldmenge soll stetig und voraussagbar wachsen, orientiert am langfristigen Wirtschaftswachstum. Diskretionäre (fallweise) geldpolitische Eingriffe führen gemäss Monetaristen eher zu Instabilität als zu Stabilität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Eine jährliche Verdopplung der Geldmenge.",
+      "Die Abschaffung der Zentralbank und eine vollständige Liberalisierung des Geldmarktes.",
+      "Eine starke Erhöhung der Geldmenge in jeder Rezession.",
+      "Eine stetige, regelgebundene Geldmengenausweitung, die dem langfristigen Wachstum der Wirtschaft entspricht."
+    ],
+    "korrekt": "Eine stetige, regelgebundene Geldmengenausweitung, die dem langfristigen Wachstum der Wirtschaft entspricht."
+  },
+  {
+    "id": "vwl_konjunktur-m03",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Monetaristen lehnen eine aktive staatliche Fiskalpolitik zur Konjunktursteuerung ab.",
+    "erklaerung": "Richtig. Monetaristen sind skeptisch gegenüber aktiver Fiskalpolitik. Sie argumentieren, dass staatliche Konjunkturprogramme oft zu spät wirken (time lags), schwer dosierbar sind, zu Staatsverschuldung führen und private Investitionen verdrängen können (Crowding-Out-Effekt). Stattdessen setzen sie auf stetige Geldpolitik.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-m04",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter dem «Crowding-Out-Effekt», auf den Monetaristen häufig verweisen?",
+    "erklaerung": "Der Crowding-Out-Effekt beschreibt die Verdrängung privater Investitionen durch staatliche Kreditaufnahme. Wenn der Staat sich am Kapitalmarkt verschuldet, steigen die Zinsen. Höhere Zinsen machen private Investitionen teurer und unattraktiver — die staatliche Nachfrage «verdrängt» so teilweise die private Nachfrage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_crowding_out_01.svg",
+      "alt": "Wirkungskette einer staatlichen Kreditaufnahme"
+    },
+    "optionen": [
+      "Ausländische Investoren verdrängen inländische Anleger.",
+      "Staatliche Kreditaufnahme verdrängt private Investitionen, weil sie die Zinsen in die Höhe treibt.",
+      "Private Unternehmen verdrängen den Staat aus dem Markt.",
+      "Grosse Unternehmen verdrängen kleine Unternehmen."
+    ],
+    "korrekt": "Staatliche Kreditaufnahme verdrängt private Investitionen, weil sie die Zinsen in die Höhe treibt."
+  },
+  {
+    "id": "vwl_konjunktur-m05",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Der wichtigste Vertreter des Monetarismus ist der Ökonom {0}, der an der Universität {1} lehrte.",
+    "erklaerung": "Milton Friedman (1912–2006) ist der bekannteste Vertreter des Monetarismus. Er lehrte an der University of Chicago (daher auch «Chicago School»). Er erhielt 1976 den Nobelpreis für Wirtschaftswissenschaften und prägte die Wirtschaftspolitik in den 1980er-Jahren massgeblich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Milton Friedman",
+        "optionen": [
+          "Friedman"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Chicago",
+        "optionen": [
+          "University of Chicago"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-m06",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Argumente bringen Monetaristen gegen keynesianische Konjunkturprogramme vor? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, B und D sind klassische monetaristische Kritikpunkte an Konjunkturprogrammen: Time lags (Massnahmen wirken erst, wenn die Krise vorbei ist), Crowding-Out (Verdrängung privater Investitionen) und politische Irreversibilität (einmal eingeführte Ausgabenprogramme werden selten zurückgefahren). C ist falsch — Monetaristen halten Geldpolitik gerade für sehr wirksam.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_monetaristen_01.svg",
+      "alt": "Monetaristische Konzeption: Quantitätsgleichung"
+    },
+    "optionen": [
+      "Konjunkturprogramme kommen oft zu spät (time lags).",
+      "Staatliche Verschuldung verdrängt private Investitionen (Crowding-Out).",
+      "Geldpolitik ist grundsätzlich wirkungslos.",
+      "Konjunkturmassnahmen lassen sich politisch oft nicht mehr rückgängig machen."
+    ],
+    "korrekt": [
+      "Konjunkturprogramme kommen oft zu spät (time lags).",
+      "Staatliche Verschuldung verdrängt private Investitionen (Crowding-Out).",
+      "Konjunkturmassnahmen lassen sich politisch oft nicht mehr rückgängig machen."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-m07",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Modern Monetary Theory (MMT) argumentiert ähnlich wie der Monetarismus, dass die Geldmenge strikt begrenzt werden muss.",
+    "erklaerung": "Falsch. Die MMT argumentiert gerade das Gegenteil des Monetarismus: Ein Staat, der seine eigene Währung kontrolliert, kann sich grundsätzlich unbegrenzt verschulden und sollte die Staatsausgaben stark erhöhen. Die einzige Grenze sei die Inflation. Der Monetarismus dagegen warnt vor unkontrollierter Geldmengenausweitung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-m08",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "In welcher historischen Phase gewann der Monetarismus besonders an Einfluss?",
+    "erklaerung": "In den 1970er-Jahren erlebten viele Länder eine Stagflation (gleichzeitige Stagnation und Inflation) — ein Phänomen, das die keynesianische Theorie nicht gut erklären konnte. Die Monetaristen (v.a. Friedman) boten eine alternative Erklärung (übermässige Geldmengenausweitung als Ursache) und gewannen massiv an Einfluss (u.a. in der Politik von Thatcher und Reagan).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Während der Grossen Depression der 1930er-Jahre.",
+      "In den 1970er-/80er-Jahren, als die Stagflation die Grenzen der keynesianischen Politik zeigte.",
+      "Während des Ersten Weltkriegs.",
+      "Erst in der Corona-Pandemie 2020."
+    ],
+    "korrekt": "In den 1970er-/80er-Jahren, als die Stagflation die Grenzen der keynesianischen Politik zeigte."
+  },
+  {
+    "id": "vwl_konjunktur-m09",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was ist der Kernunterschied zwischen Monetaristen und Keynesianern?",
+    "erklaerung": "Der Kernunterschied: Monetaristen betonen die Geldpolitik als wichtigstes Instrument und bevorzugen feste Regeln (stetige Geldmengenausweitung). Keynesianer betonen die Fiskalpolitik (Staatsausgaben, Steuern) und befürworten diskretionäre (situationsabhängige) Eingriffe. Beide erkennen Konjunkturschwankungen an, unterscheiden sich aber fundamental in der Therapie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Monetaristen lehnen jede Form von Wirtschaftspolitik ab, Keynesianer auch.",
+      "Monetaristen fokussieren auf den Arbeitsmarkt, Keynesianer auf den Gütermarkt.",
+      "Monetaristen setzen auf Geldpolitik und regelgebundenes Handeln, Keynesianer auf Fiskalpolitik und diskretionäre Eingriffe.",
+      "Es gibt keinen Unterschied, beide Schulen empfehlen das Gleiche."
+    ],
+    "korrekt": "Monetaristen setzen auf Geldpolitik und regelgebundenes Handeln, Keynesianer auf Fiskalpolitik und diskretionäre Eingriffe."
+  },
+  {
+    "id": "vwl_konjunktur-m10",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Effekt, bei dem staatliche Kreditaufnahme private Investitionen verdrängt, weil die Zinsen steigen, wird als {0}-Effekt bezeichnet.",
+    "erklaerung": "Der Crowding-Out-Effekt (Verdrängungseffekt) beschreibt, wie staatliche Kreditaufnahme am Kapitalmarkt die Zinsen erhöht und dadurch private Investitionen verdrängt. Monetaristen verwenden dieses Argument, um zu zeigen, dass keynesianische Fiskalpolitik teilweise wirkungslos ist, weil sie private Nachfrage durch staatliche Nachfrage ersetzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Crowding-Out",
+        "optionen": [
+          "Crowding Out",
+          "Verdrängungs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-m11",
+    "fach": "VWL",
+    "thema": "Monetaristische Konzeption",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Milton Friedman, der bekannteste Vertreter des Monetarismus, forderte eine regelgebundene Geldpolitik, bei der die Geldmenge stetig und moderat wachsen soll.",
+    "erklaerung": "Richtig. Friedman misstraute diskretionärer (= fallweiser) Geldpolitik, weil deren Wirkung verzögert und schwer dosierbar sei. Stattdessen forderte er eine Geldmengenregel: Die Notenbank soll die Geldmenge im Gleichschritt mit dem langfristigen Wirtschaftswachstum ausweiten — nicht mehr, nicht weniger.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-a01",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Grundgedanke der angebotsorientierten Wirtschaftspolitik?",
+    "erklaerung": "Die angebotsorientierte Konzeption (Neoklassik) betont die Verbesserung der wirtschaftlichen Rahmenbedingungen: tiefere Steuern, weniger Regulierung, flexible Arbeitsmärkte, gute Infrastruktur, Bildung und Innovation. Durch attraktive Standortbedingungen werden Investitionen und langfristiges Wachstum gefördert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Geldmenge soll stetig wachsen.",
+      "Der Staat soll die Nachfrage kurzfristig steigern.",
+      "Der Staat soll alle Preise festlegen.",
+      "Die langfristige Verbesserung der wirtschaftlichen Rahmenbedingungen für Unternehmen steht im Vordergrund."
+    ],
+    "korrekt": "Die langfristige Verbesserung der wirtschaftlichen Rahmenbedingungen für Unternehmen steht im Vordergrund."
+  },
+  {
+    "id": "vwl_konjunktur-a02",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Massnahmen empfiehlt die angebotsorientierte Konzeption? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die angebotsorientierte Politik setzt auf Steuersenkungen (A), Deregulierung (B) und Arbeitsmarktflexibilisierung (D), um die Standortattraktivität und Investitionsanreize zu verbessern. Die Erhöhung der Staatsausgaben in der Rezession (C) ist dagegen ein keynesianisches Instrument, das Angebotsökonomen ablehnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Senkung der Unternehmenssteuern",
+      "Deregulierung und Abbau von Bürokratie",
+      "Erhöhung der Staatsausgaben in der Rezession",
+      "Flexibilisierung des Arbeitsmarktes"
+    ],
+    "korrekt": [
+      "Senkung der Unternehmenssteuern",
+      "Deregulierung und Abbau von Bürokratie",
+      "Flexibilisierung des Arbeitsmarktes"
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-a03",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Angebotsökonomen vertrauen grundsätzlich auf die Selbstheilungskräfte des Marktes und lehnen kurzfristige staatliche Konjunkturmassnahmen ab.",
+    "erklaerung": "Richtig. Ähnlich wie die Klassiker setzen Angebotsökonomen auf die Selbstheilungskräfte des Marktes. Kurzfristige Konjunkturmassnahmen haben ihrer Meinung nach keinen nachhaltigen Effekt und verlangsamen notwendige Anpassungen. Stattdessen sollen gute Rahmenbedingungen langfristig für Wachstum und Beschäftigung sorgen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-a04",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Kritikpunkte bringen Angebotsökonomen gegen staatliche Konjunkturprogramme vor?",
+    "erklaerung": "Angebotsökonomen nennen vier Hauptprobleme von Konjunkturprogrammen: (1) Sie kommen meist zu spät (time lags), (2) sie sind einseitig auf bestimmte Branchen ausgerichtet, (3) sie lassen sich nicht richtig dosieren und (4) sie führen zu hoher Staatsverschuldung, da sich viele Massnahmen nachher nicht mehr rückgängig machen lassen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Sie wirken nur bei kleinen Volkswirtschaften.",
+      "Sie sind zu billig und haben keinen messbaren Effekt.",
+      "Sie kommen zu spät, sind einseitig auf bestimmte Branchen ausgerichtet, nicht richtig dosierbar und führen zu hoher Staatsverschuldung.",
+      "Sie sind nur in der Hochkonjunktur sinnvoll."
+    ],
+    "korrekt": "Sie kommen zu spät, sind einseitig auf bestimmte Branchen ausgerichtet, nicht richtig dosierbar und führen zu hoher Staatsverschuldung."
+  },
+  {
+    "id": "vwl_konjunktur-a05",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Wie lautet die Synthese der verschiedenen Konjunkturtheorien gemäss dem Eisenhut-Lehrbuch: «Wer hat recht?»",
+    "erklaerung": "Die Synthese im Eisenhut lautet: Kurzfristig hat eher Keynes recht — in einer akuten Krise kann staatliche Nachfragestimulierung helfen, die Wirtschaft zu stabilisieren. Langfristig sind eher die Angebotsökonomen im Recht — nachhaltiges Wachstum erfordert gute Rahmenbedingungen, Investitionsanreize und Strukturreformen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Kurzfristig hat eher Keynes recht (Nachfragestimulierung kann helfen), langfristig eher die Angebotsökonomen (Rahmenbedingungen entscheiden).",
+      "Keine der Theorien hat einen praktischen Nutzen.",
+      "Nur die Klassiker haben recht, staatliche Eingriffe sind immer schädlich.",
+      "Nur die Monetaristen haben recht, alle anderen Ansätze sind überholt."
+    ],
+    "korrekt": "Kurzfristig hat eher Keynes recht (Nachfragestimulierung kann helfen), langfristig eher die Angebotsökonomen (Rahmenbedingungen entscheiden)."
+  },
+  {
+    "id": "vwl_konjunktur-a06",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Welche Aussagen zur Beurteilung der verschiedenen konjunkturpolitischen Konzeptionen treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Keynesianische Massnahmen sind in schweren Krisen besonders wirksam, wenn die Nachfrage stark einbricht. B ist korrekt: Strukturelle Verbesserungen der Rahmenbedingungen wirken erst mittel- bis langfristig. C ist falsch: Die Konzeptionen unterscheiden sich fundamental. D ist korrekt: In der Praxis verfolgen die meisten Länder einen pragmatischen Mix aus verschiedenen Ansätzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_konzeptionen_01.svg",
+      "alt": "Konjunkturpolitische Konzeptionen im Vergleich"
+    },
+    "optionen": [
+      "Die keynesianische Politik ist in akuten Krisen wirksamer als in normalen Abschwüngen.",
+      "Die angebotsorientierte Politik braucht mehr Zeit, um Wirkung zu zeigen.",
+      "Alle Konzeptionen kommen zum gleichen Ergebnis.",
+      "In der Praxis kombinieren die meisten Länder Elemente verschiedener Konzeptionen."
+    ],
+    "korrekt": [
+      "Die keynesianische Politik ist in akuten Krisen wirksamer als in normalen Abschwüngen.",
+      "Die angebotsorientierte Politik braucht mehr Zeit, um Wirkung zu zeigen.",
+      "In der Praxis kombinieren die meisten Länder Elemente verschiedener Konzeptionen."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-a07",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Finanzkrise 2008/09 und die Corona-Krise 2020 zeigten, dass auch traditionell eher marktliberal orientierte Regierungen massive Konjunkturprogramme lancierten. Wie lässt sich das erklären?",
+    "erklaerung": "Beide Krisen zeigten, dass in schweren Ausnahmesituationen auch marktliberale Regierungen auf keynesianische Instrumente (Konjunkturprogramme, Rettungsschirme, Kurzarbeit) zurückgreifen. Die Corona-Krise war besonders: Sie war sowohl Angebots- als auch Nachfrageschock und erforderte massive, schnelle staatliche Intervention, um einen wirtschaftlichen Kollaps zu verhindern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Regierungen haben ihre marktwirtschaftliche Überzeugung dauerhaft aufgegeben.",
+      "Die Konjunkturprogramme waren rein angebotsökonornisch motiviert.",
+      "Es gab keine nennenswerten Konjunkturprogramme in diesen Krisen.",
+      "In akuten, schweren Krisen setzen auch marktliberal orientierte Regierungen auf keynesianische Instrumente, weil die Selbstheilungskräfte des Marktes zu langsam wirken."
+    ],
+    "korrekt": "In akuten, schweren Krisen setzen auch marktliberal orientierte Regierungen auf keynesianische Instrumente, weil die Selbstheilungskräfte des Marktes zu langsam wirken."
+  },
+  {
+    "id": "vwl_konjunktur-a08",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die keynesianische Konzeption ist {0}orientiert und betont die Rolle der Gesamtnachfrage. Die neoklassische Konzeption ist {1}orientiert und betont die wirtschaftlichen Rahmenbedingungen.",
+    "erklaerung": "Die keynesianische Konzeption ist nachfrageorientiert: In Krisen muss der Staat die fehlende Nachfrage ersetzen. Die angebotsorientierte (neoklassische) Konzeption betont dagegen die Angebotsseite: Gute Rahmenbedingungen (tiefe Steuern, wenig Regulierung) schaffen Investitionsanreize und langfristiges Wachstum.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "nachfrage",
+        "optionen": [
+          "nachfrageorientiert",
+          "Nachfrage"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "angebots",
+        "optionen": [
+          "angebotsorientiert",
+          "Angebots"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-a09",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Stabilisierungsmassnahmen des Bundesrates 2008/09 umfassten u.a. die Aufhebung der Kreditsperre (205 Mio.) und Investitionen in Infrastruktur (390 Mio.). Wie würde ein Angebotsökonom diese Massnahmen beurteilen?",
+    "erklaerung": "Angebotsökonomen würden diese Massnahmen kritisch beurteilen: Sie kommen zu spät (die Kreditsperre wird erst aufgehoben, wenn die Krise schon da ist), verzerren den Markt (bestimmte Branchen profitieren), und die Verschuldung lässt sich politisch schwer zurückfahren. Angebotsökonomen würden stattdessen auf Steuersenkungen und Deregulierung setzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Positiv, weil sie die Nachfrage effektiv stützen.",
+      "Neutral, weil Angebotsökonomen keine Meinung zu Fiskalpolitik haben.",
+      "Positiv, sofern die Massnahmen durch Steuererhöhungen finanziert werden.",
+      "Kritisch, weil solche Massnahmen den Markt verzerren, zu spät wirken und langfristig zu Verschuldung führen."
+    ],
+    "korrekt": "Kritisch, weil solche Massnahmen den Markt verzerren, zu spät wirken und langfristig zu Verschuldung führen."
+  },
+  {
+    "id": "vwl_konjunktur-a10",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Corona-Krise 2020 war ein klassischer Konjunkturzyklus und konnte mit den üblichen konjunkturpolitischen Instrumenten bekämpft werden.",
+    "erklaerung": "Falsch. Die Corona-Krise war kein gewöhnlicher Konjunkturzyklus, sondern ein beispielloser gleichzeitiger Angebots- und Nachfrageschock, ausgelöst durch eine Gesundheitskrise und staatlich verordnete Lockdowns. Die Massnahmen (Kurzarbeit, Überbrückungskredite, direkte Unterstützungszahlungen) waren daher anders als klassische Konjunkturprogramme — sie zielten primär auf die Überbrückung eines temporären Stillstands, nicht auf die Ankurbelung der Nachfrage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_konjunktur-a11",
+    "fach": "VWL",
+    "thema": "Angebotsorientierte Konzeption & Synthese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welches Instrument steht bei der angebotsorientierten Wirtschaftspolitik NICHT im Vordergrund?",
+    "erklaerung": "Die antizyklische Erhöhung der Staatsausgaben (C) ist das Kerninstrument der keynesianischen Konzeption, nicht der angebotsorientierten. Angebotsökonomen setzen stattdessen auf Deregulierung (A), Steuersenkungen (B) und flexible Arbeitsmärkte (D), um die Rahmenbedingungen für Unternehmen langfristig zu verbessern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Senkung der Unternehmenssteuern",
+      "Flexibilisierung des Arbeitsmarktes",
+      "Deregulierung (Abbau von Bürokratie und Vorschriften)",
+      "Antizyklische Erhöhung der Staatsausgaben in der Rezession"
+    ],
+    "korrekt": "Antizyklische Erhöhung der Staatsausgaben in der Rezession"
+  },
+  {
+    "id": "vwl_konjunktur-neu01",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "sortierung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Bringe die vier Konjunkturphasen in die richtige Reihenfolge (beginnend beim Tiefpunkt).",
+    "erklaerung": "Der Konjunkturzyklus beginnt am Tiefpunkt (Talsohle) mit dem Aufschwung, erreicht die Hochkonjunktur (Boom), geht in den Abschwung über und endet wieder an der Talsohle. Dann beginnt der Zyklus erneut.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu02",
+    "fach": "VWL",
+    "thema": "Keynesianische Konzeption",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die Schritte der expansiven Geldpolitik in die korrekte Wirkungskette.",
+    "erklaerung": "Die Wirkungskette der expansiven Geldpolitik: Die SNB senkt den Leitzins → Kredite werden günstiger → Investitionen und Konsum steigen → gesamtwirtschaftliche Nachfrage nimmt zu → Produktion und Beschäftigung wachsen. Dies entspricht dem keynesianischen Transmissionsmechanismus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu03",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "formel",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gib die Formel für die BIP-Wachstumsrate ein (in Prozent). Verwende BIP_t für das aktuelle und BIP_{t-1} für das Vorjahres-BIP.",
+    "erklaerung": "Die BIP-Wachstumsrate berechnet sich als: (BIP_t − BIP_{t−1}) / BIP_{t−1} × 100. Sie gibt an, um wie viel Prozent das reale BIP gegenüber dem Vorjahr gewachsen (oder geschrumpft) ist. Eine negative Wachstumsrate über zwei aufeinanderfolgende Quartale gilt als technische Rezession.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "korrekt": "\\frac{BIP_t - BIP_{t-1}}{BIP_{t-1}} \\times 100",
+    "hinweise": [
+      "Die Wachstumsrate misst die prozentuale Veränderung gegenüber dem Vorjahr.",
+      "Grundstruktur: Veränderung geteilt durch Ausgangswert, mal 100."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu04",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "formel",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gib die Formel zur Berechnung des realen BIP ein. Verwende die Variablen «nominales BIP» und «Preisindex».",
+    "erklaerung": "Reales BIP = nominales BIP / Preisindex × 100. Damit werden Preisveränderungen (Inflation/Deflation) herausgerechnet. Nur das reale BIP erlaubt einen aussagekräftigen Vergleich der Wirtschaftsleistung über die Zeit, da es die tatsächliche Mengenentwicklung abbildet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "korrekt": "\\frac{\\text{nominales BIP}}{\\text{Preisindex}} \\times 100",
+    "hinweise": [
+      "Das reale BIP bereinigt das nominale BIP um Preisveränderungen.",
+      "Der Preisindex wird als Prozentwert angegeben (z.B. 105 für 5 % Inflation)."
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu05",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "zeichnen",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Zeichne einen Konjunkturzyklus über ca. 2 vollständige Zyklen. Zeichne auch die Trendlinie (Produktionspotenzial) ein und beschrifte die vier Phasen.",
+    "erklaerung": "Ein korrekter Konjunkturzyklus zeigt: (1) eine steigende Trendlinie für das Produktionspotenzial, (2) eine wellenförmige Kurve des tatsächlichen BIP, die um den Trend schwankt, (3) vier klar erkennbare Phasen: Aufschwung, Hochkonjunktur/Boom, Abschwung und Rezession/Talsohle.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "hinweise": [
+      "Die x-Achse zeigt die Zeit, die y-Achse das reale BIP.",
+      "Die Trendlinie steigt langfristig an (Wirtschaftswachstum).",
+      "Die Konjunkturkurve schwankt um den Trend herum."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_zyklus_01.svg",
+      "alt": "Musterlösung: Konjunkturzyklus mit Trend und beschrifteten Phasen"
+    }
+  },
+  {
+    "id": "vwl_konjunktur-neu06",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "hotspot",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Klicke auf den Punkt im Konjunkturzyklus, an dem die Arbeitslosigkeit typischerweise am höchsten ist.",
+    "erklaerung": "Die Arbeitslosigkeit ist an der Talsohle (Punkt A) am höchsten. In der Rezession sinkt die Produktion, Unternehmen entlassen Arbeitskräfte. Da der Arbeitsmarkt ein Spätindikator ist, erreicht die Arbeitslosigkeit ihren Höchststand erst am Tiefpunkt des Konjunkturzyklus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_zyklus_hotspot.svg",
+      "alt": "Konjunkturzyklus mit vier markierten Punkten (A–D)"
+    },
+    "hotspots": [
+      {
+        "x": 20,
+        "y": 77,
+        "r": 8,
+        "label": "A: Talsohle"
+      },
+      {
+        "x": 37.5,
+        "y": 41,
+        "r": 8,
+        "label": "B: Boom"
+      },
+      {
+        "x": 48.75,
+        "y": 52,
+        "r": 8,
+        "label": "C: Abschwung"
+      },
+      {
+        "x": 29.4,
+        "y": 60,
+        "r": 8,
+        "label": "D: Aufschwung"
+      }
+    ],
+    "korrekt": [
+      0
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu07",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die fünf markierten Stellen im Konjunkturzyklus-Diagramm.",
+    "erklaerung": "Die fünf Elemente: (1) Die gestrichelte Trendlinie zeigt das Produktionspotenzial — die langfristige Wachstumskapazität. (2) Aufschwung: BIP steigt zum Trend. (3) Hochkonjunktur/Boom: BIP liegt über dem Trend (positive Outputlücke). (4) Abschwung: BIP fällt zurück. (5) Rezession/Talsohle: BIP liegt unter dem Trend (negative Outputlücke).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_zyklus_beschriftung.svg",
+      "alt": "Konjunkturzyklus mit fünf nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Trend (Produktionspotenzial)",
+        "x": 88.75,
+        "y": 34
+      },
+      {
+        "id": "l2",
+        "text": "Aufschwung",
+        "x": 31,
+        "y": 56
+      },
+      {
+        "id": "l3",
+        "text": "Hochkonjunktur (Boom)",
+        "x": 37.5,
+        "y": 42
+      },
+      {
+        "id": "l4",
+        "text": "Abschwung",
+        "x": 53,
+        "y": 58
+      },
+      {
+        "id": "l5",
+        "text": "Rezession (Talsohle)",
+        "x": 54,
+        "y": 67
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu08",
+    "fach": "VWL",
+    "thema": "Konjunkturzyklus & Phasen",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die konjunkturellen Merkmale der richtigen Phase zu.",
+    "erklaerung": "Jede Konjunkturphase hat typische Merkmale: Im Aufschwung steigen Investitionen und die Arbeitslosigkeit sinkt. Im Boom herrscht Vollbeschäftigung bei steigendem Preisniveau. Im Abschwung gehen Aufträge und Gewinne zurück. In der Rezession ist die Arbeitslosigkeit hoch und die Kapazitäten sind unterausgelastet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/vwl/konjunktur/konjunktur_phasen_dragdrop.svg",
+      "alt": "Vier Konjunkturphasen mit Drop-Zonen"
+    },
+    "zones": [
+      {
+        "id": "aufschwung",
+        "x": 2.5,
+        "y": 14,
+        "w": 22.5,
+        "h": 82.5
+      },
+      {
+        "id": "boom",
+        "x": 26.25,
+        "y": 14,
+        "w": 22.5,
+        "h": 82.5
+      },
+      {
+        "id": "abschwung",
+        "x": 50,
+        "y": 14,
+        "w": 22.5,
+        "h": 82.5
+      },
+      {
+        "id": "rezession",
+        "x": 73.75,
+        "y": 14,
+        "w": 23.75,
+        "h": 82.5
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Investitionen steigen",
+        "zone": "aufschwung"
+      },
+      {
+        "id": "m2",
+        "text": "Arbeitslosigkeit sinkt",
+        "zone": "aufschwung"
+      },
+      {
+        "id": "m3",
+        "text": "Optimistische Erwartungen",
+        "zone": "aufschwung"
+      },
+      {
+        "id": "m4",
+        "text": "Vollbeschäftigung",
+        "zone": "boom"
+      },
+      {
+        "id": "m5",
+        "text": "Preisniveau steigt stark",
+        "zone": "boom"
+      },
+      {
+        "id": "m6",
+        "text": "Kapazitäten ausgelastet",
+        "zone": "boom"
+      },
+      {
+        "id": "m7",
+        "text": "Aufträge gehen zurück",
+        "zone": "abschwung"
+      },
+      {
+        "id": "m8",
+        "text": "Gewinne sinken",
+        "zone": "abschwung"
+      },
+      {
+        "id": "m9",
+        "text": "Pessimistische Erwartungen",
+        "zone": "abschwung"
+      },
+      {
+        "id": "m10",
+        "text": "Hohe Arbeitslosigkeit",
+        "zone": "rezession"
+      },
+      {
+        "id": "m11",
+        "text": "Tiefe Kapazitätsauslastung",
+        "zone": "rezession"
+      },
+      {
+        "id": "m12",
+        "text": "Preisniveau stagniert/sinkt",
+        "zone": "rezession"
+      }
+    ]
+  },
+  {
+    "id": "vwl_konjunktur-neu09",
+    "fach": "VWL",
+    "thema": "Konjunkturindikatoren",
+    "typ": "pdf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Lies den fiktiven Konjunktur-Lagebericht und beantworte: In welcher Konjunkturphase befindet sich die Schweiz gemäss den beschriebenen Indikatoren? Begründe deine Einschätzung mit mindestens drei Indikatoren aus dem Text.",
+    "erklaerung": "Die Indikatoren im Lagebericht deuten auf einen Aufschwung hin: positives BIP-Wachstum, sinkende Arbeitslosigkeit, steigende Exporte und positive Stimmungsindikatoren. Die Inflation ist noch moderat (1,4 %), was gegen eine Überhitzung (Boom) spricht. Die SNB hält den Leitzins stabil — typisch für eine Phase, in der die Erholung sich festigt, aber noch keine Überhitzungsgefahr besteht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "pdfUrl": "/pool-bilder/vwl/konjunktur/konjunktur_lagebericht.pdf",
+    "antwortTyp": "freitext",
+    "musterantwort": "Die Schweiz befindet sich gemäss dem Lagebericht in einem Aufschwung, der sich der Hochkonjunktur nähert. Drei Belege: (1) Das BIP wächst mit 1,8 % solide — die Erholung setzt sich fort. (2) Die Arbeitslosenquote ist mit 2,1 % tief und weiter sinkend, bei gleichzeitig steigenden offenen Stellen. (3) Die Stimmungsindikatoren (KOF 102,5, PMI 51,3) liegen über der Wachstumsschwelle und steigen. Die moderate Inflation von 1,4 % spricht gegen einen Boom, da in der Hochkonjunktur typischerweise stärkerer Preisdruck herrscht.",
+    "hinweise": [
+      "Achte auf die Entwicklung von BIP, Arbeitsmarkt, Preisen und Stimmungsindikatoren.",
+      "Vergleiche die beschriebenen Werte mit den typischen Merkmalen der vier Konjunkturphasen.",
+      "Eine Wachstumsrate von 1,8 % ist moderat — liegt die Wirtschaft über oder unter dem Potenzial?"
+    ]
+  }
+]

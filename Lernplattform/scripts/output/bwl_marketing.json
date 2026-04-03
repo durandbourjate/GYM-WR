@@ -1,0 +1,1529 @@
+[
+  {
+    "id": "bwl_marketing-e01",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Marketing ist das Bindeglied zwischen Unternehmen und Markt.",
+    "erklaerung": "Marketing stellt tatsächlich das Bindeglied zwischen Unternehmen und Markt dar. Es umfasst die Aufgaben, Kundenbedürfnisse zu erkennen und zu befriedigen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-e02",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist die Hauptaufgabe des Marketings?",
+    "erklaerung": "Marketing nimmt die Aufgaben wahr, Kundenbedürfnisse zu erkennen und zu befriedigen. Es schliesst die Denkhaltung mit ein, dass das Unternehmen immer mit Blick auf den Markt geführt werden sollte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Möglichst günstige Rohstoffe einkaufen",
+      "Kundenbedürfnisse erkennen und befriedigen",
+      "Mitarbeitende rekrutieren und schulen",
+      "Die Buchhaltung des Unternehmens führen"
+    ],
+    "korrekt": "Kundenbedürfnisse erkennen und befriedigen"
+  },
+  {
+    "id": "bwl_marketing-e03",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein {0} wird entwickelt, um Produkte und Dienstleistungen bei einem breiten Publikum bekannt zu machen und den Absatz optimal zu gestalten.",
+    "erklaerung": "Die Unternehmensleitung entwickelt ein Marketingkonzept in Abstimmung mit der Unternehmensstrategie, um Produkte und Dienstleistungen bekannt zu machen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Marketingkonzept",
+        "optionen": [
+          "Marketing-Konzept"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-e04",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In welcher Reihenfolge werden die vier Schritte eines Marketingkonzepts durchlaufen?",
+    "erklaerung": "Das Marketingkonzept umfasst vier Schritte in dieser Reihenfolge: 1. Markt- und Leistungsanalyse, 2. Marktforschung, 3. Produkt- und Marktziele, 4. Marketing-Mix.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Produkt- und Marktziele → Markt- und Leistungsanalyse → Marketing-Mix → Marktforschung",
+      "Marktforschung → Marketing-Mix → Markt- und Leistungsanalyse → Produkt- und Marktziele",
+      "Markt- und Leistungsanalyse → Marktforschung → Produkt- und Marktziele → Marketing-Mix",
+      "Marketing-Mix → Marktforschung → Produkt- und Marktziele → Markt- und Leistungsanalyse"
+    ],
+    "korrekt": "Markt- und Leistungsanalyse → Marktforschung → Produkt- und Marktziele → Marketing-Mix"
+  },
+  {
+    "id": "bwl_marketing-e05",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Elemente gehören zu den vier Schritten eines Marketingkonzepts? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die vier Schritte des Marketingkonzepts sind: 1. Markt- und Leistungsanalyse, 2. Marktforschung, 3. Produkt- und Marktziele, 4. Marketing-Mix. Personalplanung gehört nicht dazu.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Marktforschung",
+      "Personalplanung",
+      "Marketing-Mix",
+      "Markt- und Leistungsanalyse"
+    ],
+    "korrekt": [
+      "Marktforschung",
+      "Marketing-Mix",
+      "Markt- und Leistungsanalyse"
+    ]
+  },
+  {
+    "id": "bwl_marketing-e06",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Das Marketingkonzept wird unabhängig von der Unternehmensstrategie entwickelt.",
+    "erklaerung": "Das Marketingkonzept wird in Abstimmung mit der Unternehmensstrategie entwickelt, nicht unabhängig davon.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-e07",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum muss die Markt- und Leistungsanalyse vor der Formulierung der Produkt- und Marktziele durchgeführt werden?",
+    "erklaerung": "Die Markt- und Leistungsanalyse liefert die Grundlage für realistische Zielsetzungen. Ohne Kenntnis der Marktgrösse, der Konkurrenz und der eigenen Leistungsposition wären die Ziele nicht fundiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Weil die Analyse gesetzlich vorgeschrieben ist",
+      "Weil erst die Analyse zeigt, welche Ziele realistisch und sinnvoll sind",
+      "Weil die Produkt- und Marktziele nur intern relevant sind",
+      "Weil die Markt- und Leistungsanalyse die günstigste Methode ist"
+    ],
+    "korrekt": "Weil erst die Analyse zeigt, welche Ziele realistisch und sinnvoll sind"
+  },
+  {
+    "id": "bwl_marketing-e08",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Start-up plant den Markteintritt mit einem neuartigen Produkt. Es hat wenig Budget und kennt den Markt kaum. Welcher Schritt des Marketingkonzepts ist für dieses Unternehmen besonders kritisch?",
+    "erklaerung": "Für ein Start-up, das den Markt noch nicht kennt, ist die Markt- und Leistungsanalyse besonders kritisch. Ohne dieses Wissen besteht die Gefahr, am Markt vorbei zu produzieren und knappe Ressourcen falsch einzusetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Produkt- und Marktziele, weil jedes Unternehmen Ziele braucht",
+      "Marketing-Mix, weil die Werbung entscheidend ist",
+      "Alle vier Schritte sind gleich wichtig",
+      "Markt- und Leistungsanalyse, weil das Unternehmen den Markt zuerst verstehen muss"
+    ],
+    "korrekt": "Markt- und Leistungsanalyse, weil das Unternehmen den Markt zuerst verstehen muss"
+  },
+  {
+    "id": "bwl_marketing-e09",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen, das seit Jahrzehnten erfolgreich am Markt ist, kann auf die Markt- und Leistungsanalyse verzichten, da es den Markt bereits gut kennt.",
+    "erklaerung": "Auch etablierte Unternehmen müssen regelmässig die Markt- und Leistungsanalyse durchführen, da sich Märkte laufend verändern (neue Konkurrenten, veränderte Kundenbedürfnisse, technologischer Wandel). Unterlässt man dies, riskiert man, Marktveränderungen zu verpassen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-g01",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Kennzahlen werden zur Analyse der Marktgrösse verwendet?",
+    "erklaerung": "Für die Analyse der Marktgrösse werden drei Kennzahlen verwendet: das Marktpotenzial, das Marktvolumen und der Sättigungsgrad.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Angebot, Nachfrage und Gleichgewichtspreis",
+      "Marktpotenzial, Marktvolumen und Sättigungsgrad",
+      "Marktanteil, Rendite und Produktivität",
+      "Umsatz, Gewinn und Cashflow"
+    ],
+    "korrekt": "Marktpotenzial, Marktvolumen und Sättigungsgrad"
+  },
+  {
+    "id": "bwl_marketing-g02",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das {0} beschreibt die theoretisch höchstmögliche Absatzmenge einer Leistung im Markt.",
+    "erklaerung": "Das Marktpotenzial beschreibt die theoretisch höchstmögliche Absatzmenge einer Leistung im Markt. Es handelt sich um eine Abschätzung der Aufnahmefähigkeit eines Marktes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Marktpotenzial",
+        "optionen": [
+          "Markt-Potenzial",
+          "Marktpotential",
+          "Markt-Potential"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-g03",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Marktvolumen gibt die effektiv verkaufte Menge einer Leistung pro Jahr an.",
+    "erklaerung": "Das Marktvolumen gibt die effektiv verkaufte Menge einer Leistung pro Jahr an. Berücksichtigt werden dabei die Umsatzzahlen aller Anbieter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-g04",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was zeigt der Sättigungsgrad eines Marktes an?",
+    "erklaerung": "Der Sättigungsgrad ergibt sich aus dem Vergleich von Marktpotenzial und Marktvolumen: Sättigungsgrad in % = (Marktvolumen / Marktpotenzial) × 100.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Das Verhältnis von Marktvolumen zu Marktpotenzial",
+      "Das Verhältnis von Umsatz zu Kosten",
+      "Den Gewinn des grössten Anbieters",
+      "Die Anzahl der Anbieter auf dem Markt"
+    ],
+    "korrekt": "Das Verhältnis von Marktvolumen zu Marktpotenzial"
+  },
+  {
+    "id": "bwl_marketing-g05",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Das Marktpotenzial für Elektrofahrräder in der Schweiz wird auf CHF 800 Mio. geschätzt. Das aktuelle Marktvolumen beträgt CHF 520 Mio. Berechnen Sie den Sättigungsgrad.",
+    "erklaerung": "Sättigungsgrad = (Marktvolumen / Marktpotenzial) × 100 = (520 / 800) × 100 = 65 %. Der Markt hat noch Wachstumspotenzial von rund 35 %.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "calcZeilen": [
+      {
+        "label": "Sättigungsgrad in %",
+        "answer": 65,
+        "tolerance": 0.5,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "65",
+    "toleranz": 0.5,
+    "einheit": "%"
+  },
+  {
+    "id": "bwl_marketing-g06",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet ein hoher Sättigungsgrad für Unternehmen auf dem Markt?",
+    "erklaerung": "Ist der Sättigungsgrad hoch, kann der Markt kaum noch wachsen. Eine Umsatzsteigerung ist dann nur noch auf Kosten der Konkurrenz möglich – es findet ein Verdrängungskampf statt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Umsatzsteigerung ist nur noch auf Kosten der Konkurrenz möglich (Verdrängungskampf)",
+      "Neue Unternehmen können problemlos eintreten",
+      "Die Preise werden automatisch steigen",
+      "Der Markt bietet besonders gute Wachstumschancen"
+    ],
+    "korrekt": "Umsatzsteigerung ist nur noch auf Kosten der Konkurrenz möglich (Verdrängungskampf)"
+  },
+  {
+    "id": "bwl_marketing-g07",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zum Marktpotenzial sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das Marktpotenzial ist die theoretisch höchstmögliche Absatzmenge (A), wird als Umsatzzahl angegeben (B) und basiert auf einer Abschätzung (D). Der tatsächlich erzielte Umsatz aller Anbieter ist das Marktvolumen, nicht das Marktpotenzial (C ist falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Es beschreibt die theoretisch höchstmögliche Absatzmenge",
+      "Es wird als Umsatzzahl oder Absatzmenge angegeben",
+      "Es entspricht dem tatsächlich erzielten Umsatz aller Anbieter",
+      "Es basiert auf einer Abschätzung der Aufnahmefähigkeit des Marktes"
+    ],
+    "korrekt": [
+      "Es beschreibt die theoretisch höchstmögliche Absatzmenge",
+      "Es wird als Umsatzzahl oder Absatzmenge angegeben",
+      "Es basiert auf einer Abschätzung der Aufnahmefähigkeit des Marktes"
+    ]
+  },
+  {
+    "id": "bwl_marketing-g08",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein tiefer Sättigungsgrad deutet auf einen wachsenden Markt hin, der für Unternehmen besonders attraktiv ist.",
+    "erklaerung": "Ist der Sättigungsgrad tief, befindet sich der Markt in einer Wachstumsphase – was für Unternehmen besonders attraktiv ist, da Umsatzsteigerungen leichter zu erzielen sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-g09",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Der Schweizer Markt für Bio-Lebensmittel hat ein geschätztes Marktpotenzial von CHF 6 Mrd. und einen Sättigungsgrad von 58 %. Berechnen Sie das aktuelle Marktvolumen.",
+    "erklaerung": "Sättigungsgrad = Marktvolumen / Marktpotenzial × 100. Umgestellt: Marktvolumen = Sättigungsgrad × Marktpotenzial / 100 = 58 % × 6 Mrd. / 100 = 3.48 Mrd. CHF.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "calcZeilen": [
+      {
+        "label": "Marktvolumen in Mrd. CHF",
+        "answer": 3.48,
+        "tolerance": 0.05,
+        "unit": "Mrd. CHF"
+      }
+    ],
+    "korrekt": "3.48",
+    "toleranz": 0.05,
+    "einheit": "Mrd. CHF"
+  },
+  {
+    "id": "bwl_marketing-g10",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Markt für Streaming-Dienste in der Schweiz hat einen Sättigungsgrad von 92 %. Welche strategische Konsequenz ergibt sich daraus am ehesten für einen neuen Anbieter?",
+    "erklaerung": "Bei einem Sättigungsgrad von 92 % ist der Markt nahezu gesättigt. Neukunden zu gewinnen ist schwierig, und Wachstum ist fast nur über die Verdrängung bestehender Anbieter möglich. Ein Markteintritt ist daher sehr riskant und erfordert ein klares Differenzierungsmerkmal.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Es lohnt sich, möglichst viel in Produktionskapazitäten zu investieren",
+      "Der Eintritt ist riskant, da Wachstum nur durch Verdrängung bestehender Anbieter möglich ist",
+      "Der hohe Sättigungsgrad garantiert einen grossen Kundenstamm",
+      "Die Preise können frei gesetzt werden, da der Markt ausgereift ist"
+    ],
+    "korrekt": "Der Eintritt ist riskant, da Wachstum nur durch Verdrängung bestehender Anbieter möglich ist"
+  },
+  {
+    "id": "bwl_marketing-g11",
+    "fach": "BWL",
+    "thema": "Marktgrösse: Potenzial, Volumen, Sättigung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist das Marktpotenzial immer nur eine Schätzung und kein exakter Wert?",
+    "erklaerung": "Das Marktpotenzial ist eine theoretische Grösse, die auf Annahmen basiert (z.B. wie viele Konsumenten das Produkt maximal nutzen würden). Diese Annahmen können sich durch gesellschaftliche Trends, technologischen Wandel oder neue Bedürfnisse verändern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Weil es auf Annahmen über die maximale Aufnahmefähigkeit des Marktes basiert, die sich verändern können",
+      "Weil das Marktvolumen immer grösser ist als das Marktpotenzial",
+      "Weil die Unternehmen ihre Umsatzzahlen geheim halten",
+      "Weil es nur für neue Märkte berechnet werden kann"
+    ],
+    "korrekt": "Weil es auf Annahmen über die maximale Aufnahmefähigkeit des Marktes basiert, die sich verändern können"
+  },
+  {
+    "id": "bwl_marketing-s01",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der {0} entspricht dem Anteil in Prozent am Marktvolumen, welchen ein Unternehmen erwirtschaftet hat.",
+    "erklaerung": "Der Marktanteil entspricht dem Anteil in Prozent am Marktvolumen (bzw. vom Gesamtumsatz), welchen ein Unternehmen erwirtschaftet hat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Marktanteil",
+        "optionen": [
+          "Markt-Anteil",
+          "absolute Marktanteil",
+          "absoluter Marktanteil"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-s02",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie wird das Unternehmen mit dem höchsten Marktanteil bezeichnet?",
+    "erklaerung": "Das Unternehmen mit dem höchsten Marktanteil wird als Marktführer (bzw. Marktleader) bezeichnet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Marktführer",
+      "Cash Cow",
+      "Monopolist",
+      "Marktpionier"
+    ],
+    "korrekt": "Marktführer"
+  },
+  {
+    "id": "bwl_marketing-s03",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der relative Marktanteil setzt den eigenen Marktanteil ins Verhältnis zum Marktanteil des stärksten Konkurrenten.",
+    "erklaerung": "Der relative Marktanteil entspricht dem Marktanteil des eigenen Unternehmens im Verhältnis zu dem des stärksten Konkurrenten: Relativer Marktanteil = Eigener Marktanteil / Marktanteil des grössten Konkurrenten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-s04",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Das Marktvolumen für Sportschuhe in der Schweiz beträgt CHF 450 Mio. Ein Unternehmen erzielt einen Umsatz von CHF 72 Mio. Berechnen Sie den Marktanteil des Unternehmens.",
+    "erklaerung": "Marktanteil = (Umsatz des Unternehmens / Marktvolumen) × 100 = (72 / 450) × 100 = 16 %.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "calcZeilen": [
+      {
+        "label": "Marktanteil in %",
+        "answer": 16,
+        "tolerance": 0.1,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "16",
+    "toleranz": 0.1,
+    "einheit": "%"
+  },
+  {
+    "id": "bwl_marketing-s05",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Unternehmen A hat einen Marktanteil von 8 %. Der Marktführer (Unternehmen B) hat einen Marktanteil von 20 %. Berechnen Sie den relativen Marktanteil von Unternehmen A.",
+    "erklaerung": "Relativer Marktanteil = Eigener Marktanteil / Marktanteil des grössten Konkurrenten = 8 % / 20 % = 0,4. Ein Wert unter 1 bedeutet, dass das Unternehmen nicht Marktführer ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "calcZeilen": [
+      {
+        "label": "Relativer Marktanteil",
+        "answer": 0.4,
+        "tolerance": 0.01
+      }
+    ],
+    "korrekt": "0.4",
+    "toleranz": 0.01
+  },
+  {
+    "id": "bwl_marketing-s06",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum kann ein hoher Marktanteil für ein Unternehmen vorteilhaft sein?",
+    "erklaerung": "Ein hoher Marktanteil (Marktführerschaft) kann es dem Unternehmen ermöglichen, den Markt nach seinen Bedingungen zu gestalten, z.B. bei der Preissetzung oder bei Produktstandards.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Er senkt automatisch die Produktionskosten auf null",
+      "Er bedeutet, dass das Unternehmen keine Werbung mehr braucht",
+      "Er garantiert, dass keine neuen Konkurrenten eintreten",
+      "Er ermöglicht es dem Unternehmen, den Markt nach seinen Bedingungen zu gestalten"
+    ],
+    "korrekt": "Er ermöglicht es dem Unternehmen, den Markt nach seinen Bedingungen zu gestalten"
+  },
+  {
+    "id": "bwl_marketing-s07",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein relativer Marktanteil von genau 1,0 bedeutet, dass das Unternehmen und sein stärkster Konkurrent gleich grosse Marktanteile haben.",
+    "erklaerung": "Bei einem relativen Marktanteil von 1,0 ist der eigene Marktanteil genau gleich gross wie der des grössten Konkurrenten. Ein Wert über 1,0 bedeutet Marktführerschaft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-s08",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Der Pharma-Markt hat ein Marktvolumen von USD 1162 Mrd. Roche erzielt einen Umsatz von USD 62,1 Mrd. und Sinopharm (Marktführer) USD 66,3 Mrd. Berechnen Sie den Marktanteil von Roche und den relativen Marktanteil von Roche.",
+    "erklaerung": "Marktanteil Roche = (62,1 / 1162) × 100 = 5,3 %. Relativer Marktanteil Roche = 5,3 % / 5,7 % = 0,93. Obwohl Roche nicht Marktführer ist, liegt der relative Marktanteil nahe bei 1, was auf einen stark umkämpften Markt ohne klaren Dominanten hindeutet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "calcZeilen": [
+      {
+        "label": "Marktanteil Roche in %",
+        "answer": 5.3,
+        "tolerance": 0.1,
+        "unit": "%"
+      },
+      {
+        "label": "Relativer Marktanteil Roche",
+        "answer": 0.93,
+        "tolerance": 0.02
+      }
+    ],
+    "korrekt": "5.3",
+    "toleranz": 0.1,
+    "einheit": "%"
+  },
+  {
+    "id": "bwl_marketing-s09",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der relative Marktanteil von Roche im Pharma-Markt beträgt 0,93. Was lässt sich daraus über die Marktstruktur ableiten?",
+    "erklaerung": "Ein relativer Marktanteil von 0,93 liegt sehr nahe bei 1,0. Das bedeutet, dass Roche und der Marktführer fast gleich grosse Marktanteile haben. Der Pharma-Markt ist stark umkämpft mit mehreren grossen Anbietern, ohne dass ein einzelner dominiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Der Markt ist stark umkämpft – es gibt keinen klar dominierenden Marktführer",
+      "Der absolute Marktanteil von Roche ist sehr hoch",
+      "Der Markt ist ein Monopol",
+      "Roche ist klarer Marktführer mit grossem Vorsprung"
+    ],
+    "korrekt": "Der Markt ist stark umkämpft – es gibt keinen klar dominierenden Marktführer"
+  },
+  {
+    "id": "bwl_marketing-s10",
+    "fach": "BWL",
+    "thema": "Marktstellung & Marktanteil",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wann ist der relative Marktanteil aussagekräftiger als der absolute Marktanteil? (Mehrere Antworten möglich.)",
+    "erklaerung": "Der relative Marktanteil ist besonders sinnvoll, wenn der absolute Marktanteil wenig aussagt (D), z.B. weil viele Unternehmen kleine Anteile haben (A). Er zeigt die Wettbewerbsposition im direkten Vergleich zum stärksten Konkurrenten (B). Bei einem Monopol (C) wäre der relative Marktanteil nicht sinnvoll berechenbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Wenn viele Unternehmen mit vergleichsweise kleinen Marktanteilen am Markt sind",
+      "Wenn man die tatsächliche Wettbewerbsposition im Vergleich zum stärksten Konkurrenten wissen möchte",
+      "Wenn nur ein einziges Unternehmen auf dem Markt tätig ist",
+      "Wenn der absolute Marktanteil wenig über den Einfluss eines Unternehmens aussagt"
+    ],
+    "korrekt": [
+      "Wenn viele Unternehmen mit vergleichsweise kleinen Marktanteilen am Markt sind",
+      "Wenn man die tatsächliche Wettbewerbsposition im Vergleich zum stärksten Konkurrenten wissen möchte",
+      "Wenn der absolute Marktanteil wenig über den Einfluss eines Unternehmens aussagt"
+    ]
+  },
+  {
+    "id": "bwl_marketing-z01",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter Marktsegmentierung?",
+    "erklaerung": "Marktsegmentierung bedeutet, den Gesamtmarkt in Teilmärkte (Marktsegmente) aufzuteilen. Die Segmente bestehen aus Konsumenten, die sich anhand bestimmter Kriterien gruppieren lassen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Die Aufteilung des Gewinns auf die Abteilungen",
+      "Die geografische Expansion in neue Länder",
+      "Die Aufteilung des Gesamtmarktes in Teilmärkte (Segmente) nach bestimmten Kriterien",
+      "Die Berechnung des Marktanteils für jedes Produkt"
+    ],
+    "korrekt": "Die Aufteilung des Gesamtmarktes in Teilmärkte (Segmente) nach bestimmten Kriterien"
+  },
+  {
+    "id": "bwl_marketing-z02",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden sind Kriterien zur Marktsegmentierung? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die vier Hauptkriterien der Marktsegmentierung sind: Geografie, Demografie, Kundenverhalten und Psychografie. Die Eigenkapitalquote ist eine interne Finanzkennzahl und kein Segmentierungskriterium.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Geografie (z.B. Land, Region, städtisch/ländlich)",
+      "Demografie (z.B. Alter, Geschlecht, Einkommen)",
+      "Eigenkapitalquote des Unternehmens",
+      "Psychografie (z.B. Lebensstil, Einstellungen)"
+    ],
+    "korrekt": [
+      "Geografie (z.B. Land, Region, städtisch/ländlich)",
+      "Demografie (z.B. Alter, Geschlecht, Einkommen)",
+      "Psychografie (z.B. Lebensstil, Einstellungen)"
+    ]
+  },
+  {
+    "id": "bwl_marketing-z03",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Unternehmen wählt aus den verschiedenen Marktsegmenten seine {0} aus.",
+    "erklaerung": "Das Unternehmen entscheidet sich, welches Marktsegment am besten geeignet ist, und wählt daraus seine Zielgruppe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Zielgruppe",
+        "optionen": [
+          "Zielgruppen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-z04",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welches Segmentierungskriterium wird angewendet, wenn ein Reiseanbieter seine Angebote nach «Familien mit Kindern», «Abenteuerreisende» und «Senioren» unterteilt?",
+    "erklaerung": "Die Unterteilung nach Familien, Abenteuerreisenden und Senioren basiert primär auf demografischen Kriterien wie Alter und Familienstand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Psychografie",
+      "Kundenverhalten",
+      "Demografie (Alter, Familienstand)",
+      "Geografie"
+    ],
+    "korrekt": "Demografie (Alter, Familienstand)"
+  },
+  {
+    "id": "bwl_marketing-z05",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Kosmetikunternehmen beschreibt seine Zielgruppe als «Frauen um die 30, die Karriere machen, Wert auf ein gepflegtes Äusseres legen und in etablierten Parfümerieketten einkaufen». Welche Segmentierungskriterien werden hier kombiniert?",
+    "erklaerung": "Hier werden mehrere Kriterien kombiniert: Demografie (Frauen um 30, Beruf), Psychografie (Wert auf gepflegtes Äusseres) und Kundenverhalten (Einkauf in Parfümerieketten). In der Praxis werden Marktsegmente meist anhand einer Kombination von Kriterien gebildet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Nur Demografie",
+      "Nur Kundenverhalten",
+      "Geografie und Demografie",
+      "Demografie und Psychografie und Kundenverhalten"
+    ],
+    "korrekt": "Demografie und Psychografie und Kundenverhalten"
+  },
+  {
+    "id": "bwl_marketing-z06",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bei der Konkurrenzanalyse interessieren vor allem folgende Punkte: (Mehrere Antworten möglich.)",
+    "erklaerung": "Bei der Konkurrenzanalyse werden die wichtigsten Konkurrenten bestimmt und analysiert: ihre Merkmale und Marketinginstrumente (A), ihre Stärken und Schwächen im Vergleich (B) sowie mögliche neue Konkurrenten (D).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Charakteristische Merkmale der Konkurrenten und ihrer Marketinginstrumente",
+      "Stärken und Schwächen der Konkurrenz im Vergleich zum eigenen Unternehmen",
+      "Das Privatleben der Geschäftsführer der Konkurrenz",
+      "Die Identifikation möglicher neuer Konkurrenten"
+    ],
+    "korrekt": [
+      "Charakteristische Merkmale der Konkurrenten und ihrer Marketinginstrumente",
+      "Stärken und Schwächen der Konkurrenz im Vergleich zum eigenen Unternehmen",
+      "Die Identifikation möglicher neuer Konkurrenten"
+    ]
+  },
+  {
+    "id": "bwl_marketing-z07",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Schweizer Bio-Getränkehersteller will seine Zielgruppe definieren. Er segmentiert nach Geografie (Deutschschweiz), Demografie (25–45 Jahre, mittleres bis hohes Einkommen), Psychografie (umweltbewusst) und Kundenverhalten (kauft regelmässig im Bio-Fachhandel). Welcher Vorteil ergibt sich aus dieser Kombination?",
+    "erklaerung": "Je präziser die Zielgruppe definiert ist, desto gezielter können Marketingmassnahmen auf deren Bedürfnisse abgestimmt werden (Produktgestaltung, Kommunikation, Vertriebskanäle). Allerdings wird die Zielgruppe kleiner (nicht grösser), was eine bewusste strategische Entscheidung ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Das Unternehmen kann seine Marketingmassnahmen sehr gezielt auf die Bedürfnisse dieser Gruppe ausrichten",
+      "Die Zielgruppe wird grösser, je mehr Kriterien verwendet werden",
+      "Die Segmentierung wird überflüssig, weil die Zielgruppe zu klein ist",
+      "Das Unternehmen spart Geld, weil weniger Kunden angesprochen werden"
+    ],
+    "korrekt": "Das Unternehmen kann seine Marketingmassnahmen sehr gezielt auf die Bedürfnisse dieser Gruppe ausrichten"
+  },
+  {
+    "id": "bwl_marketing-z08",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Zur Beantwortung von Fragen über die Konkurrenz genügt es in der Regel, das Verhalten der Konkurrenz zu beobachten und Unternehmensinformationen auszuwerten (Sekundärmarktforschung).",
+    "erklaerung": "Das Lehrbuch bestätigt: Zur Beantwortung von Fragen über die Konkurrenz genügt es in der Regel, die Konkurrenz zu beobachten und Unternehmensinformationen (Sekundärmarktforschung) auszuwerten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-z09",
+    "fach": "BWL",
+    "thema": "Marktsegmentierung & Konkurrenz",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Unternehmen stellt fest, dass seine Konkurrenten zunehmend in Online-Marketing investieren, während es selbst nur klassische Printwerbung einsetzt. Welche Schlussfolgerung ist am sinnvollsten?",
+    "erklaerung": "Die Konkurrenzanalyse dient dazu, Stärken und Schwächen der Konkurrenz zu erkennen und daraus Schlüsse für die eigene Strategie zu ziehen. Wenn die Konkurrenz Online-Marketing nutzt und die Zielgruppe dort erreichbar ist, sollte das Unternehmen prüfen, ob eine Anpassung nötig ist. Blindes Kopieren (D) oder stures Festhalten (B) sind keine strategisch fundierten Reaktionen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Die Konkurrenzanalyse hat keinen Einfluss auf eigene Marketingentscheide",
+      "Das Unternehmen sollte noch mehr in Printwerbung investieren, um sich zu differenzieren",
+      "Das Unternehmen sollte die gleiche Online-Strategie wie die Konkurrenz 1:1 kopieren",
+      "Das Unternehmen sollte prüfen, ob es seine Kommunikationsstrategie anpassen muss, um wettbewerbsfähig zu bleiben"
+    ],
+    "korrekt": "Das Unternehmen sollte prüfen, ob es seine Kommunikationsstrategie anpassen muss, um wettbewerbsfähig zu bleiben"
+  },
+  {
+    "id": "bwl_marketing-b01",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Von wem wurde die BCG-Portfolio-Methode entwickelt?",
+    "erklaerung": "Die BCG-Portfolio-Methode wurde von der Boston Consulting Group (BCG) entwickelt, einem weltweit tätigen Managementberatungs-Unternehmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Boston Consulting Group",
+      "Harvard Business School",
+      "Schweizerische Nationalbank",
+      "McKinsey & Company"
+    ],
+    "korrekt": "Boston Consulting Group"
+  },
+  {
+    "id": "bwl_marketing-b02",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die BCG-Portfolio-Methode beurteilt Leistungen anhand von zwei Grössen: dem {0} und dem {1}.",
+    "erklaerung": "Das BCG-Portfolio beurteilt Leistungen nach zwei Grössen: dem Marktwachstum (y-Achse) und dem relativen Marktanteil (x-Achse).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Marktwachstum",
+        "optionen": [
+          "Markt-Wachstum"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "relativen Marktanteil",
+        "optionen": [
+          "Marktanteil",
+          "rel. Marktanteil"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-b03",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden sind Quadranten des BCG-Portfolios? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die vier Quadranten des BCG-Portfolios sind: Poor Dogs, Question Marks, Stars und Cash Cows. «Rising Stars» existiert im BCG-Modell nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Stars",
+      "Cash Cows",
+      "Rising Stars",
+      "Poor Dogs"
+    ],
+    "korrekt": [
+      "Stars",
+      "Cash Cows",
+      "Poor Dogs"
+    ]
+  },
+  {
+    "id": "bwl_marketing-b04",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Leistungen zeichnen sich durch einen hohen Marktanteil und niedrige Marktwachstumsraten aus?",
+    "erklaerung": "Cash Cows haben einen hohen Marktanteil bei niedrigen Marktwachstumsraten. Sie waren in der Regel vorher Stars, deren Marktwachstum zurückgegangen ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Question Marks",
+      "Poor Dogs",
+      "Cash Cows",
+      "Stars"
+    ],
+    "korrekt": "Cash Cows"
+  },
+  {
+    "id": "bwl_marketing-b05",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist die Normstrategie für Poor Dogs?",
+    "erklaerung": "Poor Dogs haben einen kleinen Marktanteil und niedrige Marktwachstumsraten. Die Normstrategie ist der Ausstieg: Abbau dieser Leistungen und Einsatz der frei werdenden Ressourcen für besser positionierte Marktleistungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Position halten und ausbauen",
+      "Ausstieg – Abbau der Leistungen und Einsatz der Ressourcen für besser positionierte Produkte",
+      "Keine nennenswerten Investitionen mehr tätigen",
+      "Intensive Marktbearbeitung durch hohe Werbeinvestitionen"
+    ],
+    "korrekt": "Ausstieg – Abbau der Leistungen und Einsatz der Ressourcen für besser positionierte Produkte"
+  },
+  {
+    "id": "bwl_marketing-b06",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum sind Stars trotz ihres Erfolgs kostenintensiv?",
+    "erklaerung": "Stars haben einen hohen Marktanteil in wachsenden Märkten. Um diese Position zu halten oder auszubauen, sind hohe Investitionen in Werbung und Marktbearbeitung nötig – Stars sind daher werbe- und kostenintensiv.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Weil sie keinen Umsatz generieren",
+      "Weil sie in einem schrumpfenden Markt operieren",
+      "Weil sie hohe Investitionen in Werbung und Marktbearbeitung erfordern, um die Position zu halten",
+      "Weil sie nur für den internen Gebrauch bestimmt sind"
+    ],
+    "korrekt": "Weil sie hohe Investitionen in Werbung und Marktbearbeitung erfordern, um die Position zu halten"
+  },
+  {
+    "id": "bwl_marketing-b07",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Cash Cows erwirtschaften hohe und stabile Gewinne bei niedrigen Ausgaben, weil sie keine nennenswerten Investitionen mehr erfordern.",
+    "erklaerung": "Da Cash Cows ihre Leistung früher oder später verlieren werden, wird kaum noch investiert. Trotzdem erzielen sie einen beachtlichen Umsatz bei kaum noch Ausgaben, weshalb sie hohe und stabile Gewinne abwerfen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-b08",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu Question Marks sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "Question Marks haben einen kleinen Marktanteil bei hohen Wachstumsraten (A), ihre Zukunft ist unsicher (B), und die Normstrategie ist intensive Marktbearbeitung, um sie zu Stars zu machen (D). Dies erfordert allerdings grosse finanzielle Investitionen (C ist falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Sie haben einen kleinen Marktanteil, aber hohe Marktwachstumsraten",
+      "Ihre Zukunftsaussichten sind fraglich – sie können Stars oder Poor Dogs werden",
+      "Sie erfordern keine finanziellen Investitionen",
+      "Die Normstrategie ist intensive Marktbearbeitung (z.B. Werbung)"
+    ],
+    "korrekt": [
+      "Sie haben einen kleinen Marktanteil, aber hohe Marktwachstumsraten",
+      "Ihre Zukunftsaussichten sind fraglich – sie können Stars oder Poor Dogs werden",
+      "Die Normstrategie ist intensive Marktbearbeitung (z.B. Werbung)"
+    ]
+  },
+  {
+    "id": "bwl_marketing-b09",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen hat folgendes Portfolio: Leistung A (Poor Dog, CHF 200'000), Leistung B (Star, CHF 425'000), Leistung C (Cash Cow / Star-Grenze, CHF 800'000), Leistung D (Cash Cow, CHF 950'000). Warum ist dieses Portfolio problematisch?",
+    "erklaerung": "Obwohl das Portfolio viele umsatzstarke Leistungen hat, fehlen Question Marks als Nachfolgeprodukte. Wenn die Cash Cows und Stars ihre Marktposition verlieren, hat das Unternehmen keine Nachfolger – es wird mittel- bis langfristig Probleme bekommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "bild": {
+      "src": "/pool-bilder/bwl/marketing/bcg_portfolio_01.svg",
+      "alt": "BCG-Portfolio mit vier Leistungen eines Unternehmens"
+    },
+    "optionen": [
+      "Das Unternehmen hat zu wenig Poor Dogs",
+      "Die Cash Cows sind zu profitabel",
+      "Es hat zu viele Stars",
+      "Es fehlt an Nachfolgeprodukten (Question Marks), die langfristig Stars werden könnten"
+    ],
+    "korrekt": "Es fehlt an Nachfolgeprodukten (Question Marks), die langfristig Stars werden könnten"
+  },
+  {
+    "id": "bwl_marketing-b10",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Unternehmen hat drei Cash Cows und ein Question Mark. Wie sollte es seine finanziellen Mittel strategisch einsetzen?",
+    "erklaerung": "Die Cash Cows generieren hohe Gewinne bei niedrigen Investitionskosten. Diese Mittel sollten strategisch eingesetzt werden, um das Question Mark durch intensive Marktbearbeitung zum Star zu entwickeln – das sichert die Zukunft des Unternehmens.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Alle Mittel in die Cash Cows investieren, um deren Position zu sichern",
+      "Gewinne der Cash Cows nutzen, um das Question Mark durch intensive Marktbearbeitung zum Star zu entwickeln",
+      "Das Question Mark sofort aufgeben, da es noch keinen Gewinn erwirtschaftet",
+      "Die Cash Cows sofort abbauen und nur noch das Question Mark betreiben"
+    ],
+    "korrekt": "Gewinne der Cash Cows nutzen, um das Question Mark durch intensive Marktbearbeitung zum Star zu entwickeln"
+  },
+  {
+    "id": "bwl_marketing-b11",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welcher Zusammenhang besteht zwischen dem BCG-Portfolio und dem Produktlebenszyklus?",
+    "erklaerung": "Es besteht ein typischer Zusammenhang: Neue Produkte starten oft als Question Marks (Einführungsphase), werden bei Erfolg zu Stars (Wachstumsphase), dann zu Cash Cows (Reife-/Sättigungsphase) und schliesslich zu Poor Dogs (Rückgangsphase).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Cash Cows sind immer in der Einführungsphase des Produktlebenszyklus",
+      "Stars befinden sich immer in der Rückgangsphase",
+      "Das BCG-Portfolio und der Produktlebenszyklus haben nichts miteinander zu tun",
+      "Produkte durchlaufen typischerweise die Phasen Question Mark → Star → Cash Cow → Poor Dog"
+    ],
+    "korrekt": "Produkte durchlaufen typischerweise die Phasen Question Mark → Star → Cash Cow → Poor Dog"
+  },
+  {
+    "id": "bwl_marketing-b12",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein ausgewogenes BCG-Portfolio enthält Leistungen in allen vier Quadranten.",
+    "erklaerung": "Ein ausgewogenes Portfolio muss nicht zwingend Leistungen in allen vier Quadranten haben – idealerweise hat ein Unternehmen möglichst wenige Poor Dogs. Wichtig ist, dass genügend Cash Cows vorhanden sind, um Question Marks und Stars zu finanzieren, und dass es genügend Nachfolgeprodukte (Question Marks/Stars) gibt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-p01",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche fünf Phasen umfasst der Produktlebenszyklus?",
+    "erklaerung": "Der Produktlebenszyklus umfasst fünf Phasen: Einführung, Wachstum, Reife, Sättigung und Rückgang. Diese beschreiben den Verlauf von Umsatz und Gewinn über die Zeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Start, Aufstieg, Höhepunkt, Abstieg und Ende",
+      "Forschung, Entwicklung, Test, Markt und Auslauf",
+      "Planung, Produktion, Verkauf, Service und Entsorgung",
+      "Einführung, Wachstum, Reife, Sättigung und Rückgang"
+    ],
+    "korrekt": "Einführung, Wachstum, Reife, Sättigung und Rückgang"
+  },
+  {
+    "id": "bwl_marketing-p02",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Punkt, an dem die Umsatzkurve die Gewinnschwelle erreicht, heisst {0}.",
+    "erklaerung": "Die Gewinnschwelle (Break-even) ist der Punkt, an dem der Umsatz erstmals die Kosten deckt und das Produkt beginnt, Gewinn zu erzielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Break-even",
+        "optionen": [
+          "Break-Even",
+          "Breakeven",
+          "Gewinnschwelle",
+          "Break even"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-p03",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In der Einführungsphase wird in der Regel noch kaum Gewinn realisiert, obwohl der Umsatz bereits steigt.",
+    "erklaerung": "In der Einführungsphase sind die Kosten sehr hoch (Anfangsinvestitionen, Bekanntmachung), sodass bei steigendem Umsatz noch kaum Gewinn realisiert wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-p04",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In welcher Phase des Produktlebenszyklus erreichen Umsatz und Gewinnkurve ihren Höhepunkt?",
+    "erklaerung": "In der Reifephase weist der Markt ein hohes Volumen auf. Die Gewinnkurve und die Absatzmenge erreichen ihren Höhepunkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Wachstumsphase",
+      "Einführungsphase",
+      "Sättigungsphase",
+      "Reifephase"
+    ],
+    "korrekt": "Reifephase"
+  },
+  {
+    "id": "bwl_marketing-p05",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum besteht in der Einführungsphase ein hohes Risiko für das Produkt?",
+    "erklaerung": "In der Einführungsphase entscheidet sich, ob die Leistung am Markt Fuss fassen kann. Falls nicht, wird sie aus dem Sortiment genommen. Das Risiko des Scheiterns ist hier am höchsten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Weil sich entscheidet, ob sich die Leistung am Markt durchsetzen kann – falls nicht, wird sie sofort aus dem Sortiment genommen",
+      "Weil die Konkurrenz in dieser Phase am stärksten ist",
+      "Weil die Produktionskapazitäten nicht ausreichen",
+      "Weil der Gewinn am höchsten ist und viel Steuern anfallen"
+    ],
+    "korrekt": "Weil sich entscheidet, ob sich die Leistung am Markt durchsetzen kann – falls nicht, wird sie sofort aus dem Sortiment genommen"
+  },
+  {
+    "id": "bwl_marketing-p06",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Merkmale kennzeichnen die Sättigungsphase? (Mehrere Antworten möglich.)",
+    "erklaerung": "In der Sättigungsphase ist der Markt gesättigt, der Preiskampf intensiv (A), die Umsatzkurve flacht ab und der Gewinn sinkt (B). Um den Ausstieg hinauszuzögern, werden oft Varianten der Leistung lanciert (C). Die Anstrengungen für Marketing werden eher reduziert, da kaum noch Neukunden zu erreichen sind (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Der Markt ist gesättigt und der Preiskampf erreicht seinen Höhepunkt",
+      "Die Umsatzkurve flacht ab und der Gewinn wird kleiner",
+      "Häufig entstehen Varianten zur ursprünglichen Marktleistung",
+      "Es werden grosse Investitionen in Neukundengewinnung getätigt"
+    ],
+    "korrekt": [
+      "Der Markt ist gesättigt und der Preiskampf erreicht seinen Höhepunkt",
+      "Die Umsatzkurve flacht ab und der Gewinn wird kleiner",
+      "Häufig entstehen Varianten zur ursprünglichen Marktleistung"
+    ]
+  },
+  {
+    "id": "bwl_marketing-p07",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was geschieht typischerweise in der Rückgangsphase eines Produkts?",
+    "erklaerung": "In der Rückgangsphase wenden sich Kunden neuen, innovativeren Produkten zu. Der Umsatz bricht ein, der Gewinn tendiert gegen null oder es entstehen sogar Verluste. Das Unternehmen ersetzt die Leistung durch neue Produkte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Die Konkurrenz zieht sich vom Markt zurück und der Gewinn steigt",
+      "Der Umsatz steigt noch einmal leicht an",
+      "Das Unternehmen investiert stark in Werbung",
+      "Der Umsatz bricht ein, der Gewinn tendiert gegen null oder es resultieren Verluste"
+    ],
+    "korrekt": "Der Umsatz bricht ein, der Gewinn tendiert gegen null oder es resultieren Verluste"
+  },
+  {
+    "id": "bwl_marketing-p08",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In der Reifephase richten sich Marketingaktivitäten vor allem gegen die Mitkonkurrenten, um Marktanteile zu gewinnen.",
+    "erklaerung": "In der Reifephase können Marktanteilsgewinne beinahe nur noch auf Kosten der Konkurrenz erreicht werden. Die Marketingaktivitäten richten sich daher gegen die Mitkonkurrenten, z.B. durch Betonung des Markenprestiges.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-p09",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Coca-Cola (seit 1886) und das iPhone (seit 2007) durchlaufen beide den Produktlebenszyklus. Was erklärt den Unterschied in der Dauer der Sättigungsphase?",
+    "erklaerung": "Die Dauer der einzelnen Phasen, insbesondere der Sättigungsphase, variiert stark je nach Produktart. Produkte wie Coca-Cola halten sich seit über 100 Jahren, während Technologieprodukte wie Handys und Computer innerhalb kurzer Zeit veralten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Der Produktlebenszyklus gilt nur für technische Produkte",
+      "Coca-Cola hat die Sättigungsphase übersprungen",
+      "Das iPhone befindet sich noch in der Einführungsphase",
+      "Die Sättigungsphase variiert stark je nach Produkt – bei Konsumgütern des täglichen Bedarfs kann sie sehr lang sein, bei Technologieprodukten deutlich kürzer"
+    ],
+    "korrekt": "Die Sättigungsphase variiert stark je nach Produkt – bei Konsumgütern des täglichen Bedarfs kann sie sehr lang sein, bei Technologieprodukten deutlich kürzer"
+  },
+  {
+    "id": "bwl_marketing-p10",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist es für ein Unternehmen wichtig, dass sich seine verschiedenen Marktleistungen nicht alle in derselben Phase des Produktlebenszyklus befinden?",
+    "erklaerung": "Es ist entscheidend, dass sich die Produkte in verschiedenen Phasen befinden, damit die Geldflüsse die Waage halten: Cash Cows (Reife/Sättigung) finanzieren neue Produkte in der Einführungs- und Wachstumsphase. So steht das Unternehmen nicht plötzlich ohne einzige verkaufbare Leistung da.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "Weil die Steuerbehörde eine Streuung der Produkte verlangt",
+      "Weil die Kunden Abwechslung im Sortiment erwarten",
+      "Weil der Produktlebenszyklus vorschreibt, dass maximal ein Produkt pro Phase erlaubt ist",
+      "Weil die Geldflüsse (Investitionen, Umsatz, Gewinne) sich gegenseitig ausgleichen müssen, damit das Unternehmen nicht plötzlich ohne verkaufbare Leistung dasteht"
+    ],
+    "korrekt": "Weil die Geldflüsse (Investitionen, Umsatz, Gewinne) sich gegenseitig ausgleichen müssen, damit das Unternehmen nicht plötzlich ohne verkaufbare Leistung dasteht"
+  },
+  {
+    "id": "bwl_marketing-p11",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Swiffer lancierte nach Swiffer Dry auch Swiffer Wet, und Rivella erweiterte sein Sortiment über die Jahre um neue Geschmacksrichtungen. In welcher Phase des Produktlebenszyklus treten solche Varianten typischerweise auf?",
+    "erklaerung": "In der Sättigungsphase werden häufig Varianten zur ursprünglichen Marktleistung lanciert, um den Ausstieg hinauszuzögern. Die Beispiele Swiffer (Dry → Wet) und Rivella (neue Geschmacksrichtungen) illustrieren diese Strategie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "optionen": [
+      "In der Einführungsphase, um den Markt zu testen",
+      "In der Sättigungsphase, um den Ausstieg hinauszuzögern",
+      "In der Wachstumsphase, um schnell Marktanteile zu gewinnen",
+      "In der Rückgangsphase, als letzter Rettungsversuch"
+    ],
+    "korrekt": "In der Sättigungsphase, um den Ausstieg hinauszuzögern"
+  },
+  {
+    "id": "bwl_marketing-p12",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Das Modell des Produktlebenszyklus lässt sich nutzen, um den exakten Zeitpunkt vorherzusagen, an dem ein Produkt in die Rückgangsphase eintritt.",
+    "erklaerung": "Der Produktlebenszyklus ist ein vereinfachtes Modell, das typische Muster beschreibt. Er kann nicht exakte Zeitpunkte vorhersagen. Die Dauer der Phasen ist von Produkt zu Produkt sehr unterschiedlich und hängt von vielen Faktoren ab (technologischer Wandel, Konsumverhalten, Konkurrenz). Um festzustellen, in welcher Phase sich ein Produkt befindet, wird Marktforschung betrieben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_marketing-neu_sort_01",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Phasen des Produktlebenszyklus in die korrekte Reihenfolge.",
+    "erklaerung": "Der PLZ beschreibt den idealtypischen Verlauf eines Produkts am Markt. In der Einführung entstehen hohe Kosten (Werbung, Distribution). Im Wachstum steigt der Umsatz stark. In der Reife erreicht der Umsatz sein Maximum. In der Sättigung stagniert der Markt. In der Degeneration sinkt die Nachfrage – das Produkt wird oft durch ein Nachfolgeprodukt ersetzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_marketing-neu_sort_02",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Schritte eines Marketingkonzepts in die logische Reihenfolge.",
+    "erklaerung": "Ein Marketingkonzept wird systematisch entwickelt: Zuerst wird der Markt analysiert (Wo stehen wir?), dann werden Ziele definiert (Wo wollen wir hin?), eine Strategie gewählt (Wie kommen wir dahin?) und der Marketing-Mix ausgestaltet (konkrete Massnahmen). Abschliessend folgen Umsetzung und Kontrolle.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_marketing-neu_sort_03",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die BCG-Kategorien in die typische Reihenfolge, die ein erfolgreiches Produkt im Laufe seines Lebenszyklus durchläuft.",
+    "erklaerung": "Der idealtypische Weg: Ein neues Produkt startet als Question Mark (ungewisser Erfolg). Bei Erfolg wird es zum Star (Marktführer im Wachstumsmarkt). Wenn das Marktwachstum nachlässt, wird es zur Cash Cow (sichere Gewinne). Am Ende kann es zum Poor Dog werden, wenn der Marktanteil sinkt. Nicht alle Produkte durchlaufen alle Phasen – manche bleiben Question Marks und scheitern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "bwl_marketing-neu_zeichnen_01",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "zeichnen",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Zeichne das Marketing-Mix-Modell (4P). Stelle die vier Instrumente dar und nenne jeweils 2–3 konkrete Massnahmen.",
+    "erklaerung": "Der Marketing-Mix (McCarthy, 1960) umfasst vier Instrumente: Product (Sortiment, Qualität, Design), Price (Preisgestaltung, Rabatte, Konditionen), Place (Vertriebskanäle, Logistik, Standort), Promotion (Werbung, PR, Verkaufsförderung). Alle vier müssen aufeinander abgestimmt sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "hinweise": [
+      "Die 4P stehen für: Product, Price, Place, Promotion.",
+      "Auf Deutsch: Produkt, Preis, Distribution, Kommunikation.",
+      "Jedes P umfasst verschiedene Teilentscheidungen."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/bwl/marketing/marketing_4p_zeichnen.svg",
+      "alt": "Musterlösung: Marketing-Mix 4P"
+    }
+  },
+  {
+    "id": "bwl_marketing-hotspot01",
+    "fach": "BWL",
+    "thema": "BCG-Portfolio",
+    "typ": "hotspot",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Klicke auf den Quadranten, in dem sich Produkte befinden, die hohe Gewinne abwerfen und wenig Investition brauchen (hoher Marktanteil, niedriges Wachstum).",
+    "erklaerung": "Cash Cows (C): Hoher Marktanteil, niedriges Marktwachstum — diese Produkte generieren stabile Gewinne bei geringen Investitionen. Sie finanzieren Stars und Question Marks.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "bild": {
+      "src": "/pool-bilder/bwl/marketing/marketing_bcg_hotspot.svg",
+      "alt": "BCG-Portfolio-Matrix mit vier Quadranten A–D"
+    },
+    "hotspots": [
+      {
+        "x": 19.4,
+        "y": 23.8,
+        "r": 8,
+        "label": "A: Stars"
+      },
+      {
+        "x": 83.1,
+        "y": 23.8,
+        "r": 8,
+        "label": "B: Question Marks"
+      },
+      {
+        "x": 19.4,
+        "y": 83.3,
+        "r": 8,
+        "label": "C: Cash Cows"
+      },
+      {
+        "x": 83.1,
+        "y": 83.3,
+        "r": 8,
+        "label": "D: Dogs"
+      }
+    ],
+    "korrekt": [
+      2
+    ]
+  },
+  {
+    "id": "bwl_marketing-beschriftung01",
+    "fach": "BWL",
+    "thema": "Marketing & Marketingkonzept",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die vier Elemente des Marketing-Mix (4P).",
+    "erklaerung": "Die 4P: Product (Was? Sortiment, Qualität, Design), Price (Wie teuer? Strategie, Rabatte), Place (Wo? Vertriebskanäle, Logistik), Promotion (Wie bekannt machen? Werbung, PR, Verkaufsförderung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "bild": {
+      "src": "/pool-bilder/bwl/marketing/marketing_4p_beschriftung.svg",
+      "alt": "Marketing-Mix 4P ohne Labels"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Product (Produktpolitik)",
+        "x": 23,
+        "y": 32
+      },
+      {
+        "id": "l2",
+        "text": "Price (Preispolitik)",
+        "x": 77,
+        "y": 32
+      },
+      {
+        "id": "l3",
+        "text": "Place (Distributionspolitik)",
+        "x": 23,
+        "y": 81
+      },
+      {
+        "id": "l4",
+        "text": "Promotion (Kommunikationspolitik)",
+        "x": 77,
+        "y": 81
+      }
+    ]
+  },
+  {
+    "id": "bwl_marketing-dragdrop01",
+    "fach": "BWL",
+    "thema": "Produktlebenszyklus",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Marketing-Massnahmen dem richtigen P zu.",
+    "erklaerung": "Product: Sortiment, Design, Qualität. Price: Preisstrategie, Rabatte. Place: Vertriebskanäle, Standorte. Promotion: Werbung, PR, Social Media.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3",
+    "bild": {
+      "src": "/pool-bilder/bwl/marketing/marketing_4p_dragdrop.svg",
+      "alt": "Vier Spalten: Product, Price, Place, Promotion"
+    },
+    "zones": [
+      {
+        "id": "product",
+        "x": 2.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "price",
+        "x": 26,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "place",
+        "x": 49.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "promotion",
+        "x": 73,
+        "y": 14,
+        "w": 25,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "lb1",
+        "text": "Verpackungsdesign",
+        "zone": "product"
+      },
+      {
+        "id": "lb2",
+        "text": "Sortimentserweiterung",
+        "zone": "product"
+      },
+      {
+        "id": "lb3",
+        "text": "Rabattaktion",
+        "zone": "price"
+      },
+      {
+        "id": "lb4",
+        "text": "Skimming-Strategie",
+        "zone": "price"
+      },
+      {
+        "id": "lb5",
+        "text": "Online-Shop eröffnen",
+        "zone": "place"
+      },
+      {
+        "id": "lb6",
+        "text": "Filialstandort wählen",
+        "zone": "place"
+      },
+      {
+        "id": "lb7",
+        "text": "TV-Werbespot",
+        "zone": "promotion"
+      },
+      {
+        "id": "lb8",
+        "text": "Influencer-Kampagne",
+        "zone": "promotion"
+      }
+    ]
+  }
+]

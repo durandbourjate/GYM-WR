@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Drei-Säulen-System — Beschrifte die markierten Stellen</text>
+
+  <!-- Dach -->
+  <polygon points="60,115 400,55 740,115" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="400" y="95" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#475569">Vorsorgesystem Schweiz</text>
+
+  <!-- Fundament -->
+  <rect x="60" y="360" width="680" height="40" rx="4" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="400" y="385" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Gemeinsames Fundament: Existenz- und Lebensstandard-Sicherung</text>
+
+  <!-- Säule 1 (breit, staatlich, blau) -->
+  <rect x="80" y="115" width="200" height="245" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="180" y="145" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">1. Säule</text>
+
+  <!-- Säule 2 (mittel, beruflich, grün) -->
+  <rect x="300" y="135" width="200" height="225" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="400" y="163" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">2. Säule</text>
+
+  <!-- Säule 3 (schmal, privat, orange) -->
+  <rect x="520" y="155" width="200" height="205" rx="4" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text x="620" y="183" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">3. Säule</text>
+
+  <!-- Marker 1: Säule 1 Titel (oben in Säule 1) -->
+
+  <!-- Marker 2: Zweck Säule 1 (Mitte Säule 1) -->
+
+  <!-- Marker 3: Säule 2 Titel (oben in Säule 2) -->
+
+  <!-- Marker 4: Zweck Säule 2 (Mitte Säule 2) -->
+
+  <!-- Marker 5: Säule 3 Titel (oben in Säule 3) -->
+
+  <!-- Marker 6: Zweck Säule 3 (Mitte Säule 3) -->
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 420">
+  <rect width="520" height="420" fill="#fff"/>
+  <!-- Axes -->
+  <line x1="60" y1="360" x2="480" y2="360" stroke="#333" stroke-width="2"/>
+  <line x1="60" y1="360" x2="60" y2="30" stroke="#333" stroke-width="2"/>
+  <!-- Grid lines -->
+  <line x1="60" y1="195" x2="480" y2="195" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="270" y1="360" x2="270" y2="30" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,4"/>
+  <!-- 45° line (perfect equality) -->
+  <line x1="60" y1="360" x2="480" y2="30" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <text x="280" y="160" font-family="sans-serif" font-size="12" fill="#555" transform="rotate(-38,280,160)">Gleichverteilung</text>
+  <!-- Lorenzkurve Land A (more equal, Gini ~0.28) -->
+  <path d="M60,360 Q150,350 220,320 Q300,270 380,170 Q430,100 480,30" fill="none" stroke="#2196F3" stroke-width="2.5"/>
+  <text x="200" y="305" font-family="sans-serif" font-size="13" font-weight="bold" fill="#2196F3">Land A</text>
+  <!-- Lorenzkurve Land B (more unequal, Gini ~0.45) -->
+  <path d="M60,360 Q180,358 280,340 Q370,300 420,220 Q455,140 480,30" fill="none" stroke="#E65100" stroke-width="2.5"/>
+  <text x="330" y="330" font-family="sans-serif" font-size="13" font-weight="bold" fill="#E65100">Land B</text>
+  <!-- Axis labels -->
+  <text x="270" y="395" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#333">Kumulierter Anteil der Bevölkerung (%)</text>
+  <text x="18" y="195" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#333" transform="rotate(-90,18,195)">Kumulierter Anteil am Einkommen (%)</text>
+  <!-- Tick marks and values -->
+  <text x="60" y="378" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#555">0</text>
+  <text x="270" y="378" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#555">50</text>
+  <text x="480" y="378" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#555">100</text>
+  <text x="52" y="364" font-family="sans-serif" font-size="10" text-anchor="end" fill="#555">0</text>
+  <text x="52" y="199" font-family="sans-serif" font-size="10" text-anchor="end" fill="#555">50</text>
+  <text x="52" y="37" font-family="sans-serif" font-size="10" text-anchor="end" fill="#555">100</text>
+</svg>

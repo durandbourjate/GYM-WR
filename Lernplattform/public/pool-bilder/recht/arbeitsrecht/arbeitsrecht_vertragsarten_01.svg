@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="700" height="380" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Verträge auf Arbeitsleistung</text>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#94a3b8">Übersicht der drei Vertragstypen</text>
+
+  <!-- Gemeinsamer Oberbegriff -->
+  <rect x="230" y="70" width="240" height="40" rx="8" fill="#73ab2c" opacity="0.15" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="350" y="95" text-anchor="middle" font-size="13" font-weight="600" fill="#2e7d32">Verträge auf Arbeitsleistung</text>
+
+  <!-- Verbindungslinien -->
+  <line x1="270" y1="110" x2="120" y2="150" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="350" y1="110" x2="350" y2="150" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="430" y1="110" x2="580" y2="150" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Arbeitsvertrag -->
+  <rect x="20" y="150" width="200" height="200" rx="10" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="120" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#2e7d32">Arbeitsvertrag</text>
+  <text x="120" y="196" text-anchor="middle" font-size="11" font-weight="500" fill="#73ab2c">OR 319–362</text>
+  <line x1="45" y1="208" x2="195" y2="208" stroke="#a5d6a7" stroke-width="1"/>
+  <text x="120" y="230" text-anchor="middle" font-size="10" fill="#1e293b">• Nach Weisung des AG</text>
+  <text x="120" y="248" text-anchor="middle" font-size="10" fill="#1e293b">• Untergeordnet</text>
+  <text x="120" y="266" text-anchor="middle" font-size="10" fill="#1e293b">• Unselbstständig</text>
+  <text x="120" y="284" text-anchor="middle" font-size="10" fill="#1e293b">• Entgeltlich</text>
+  <rect x="45" y="300" width="150" height="30" rx="6" fill="#ffffff" stroke="#c8e6c9" stroke-width="1"/>
+  <text x="120" y="320" text-anchor="middle" font-size="10" fill="#64748b">Was ist geschuldet? →</text>
+  <text x="120" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#2e7d32">?</text>
+
+  <!-- Werkvertrag -->
+  <rect x="250" y="150" width="200" height="200" rx="10" fill="#e3f2fd" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="350" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#1565c0">Werkvertrag</text>
+  <text x="350" y="196" text-anchor="middle" font-size="11" font-weight="500" fill="#2563eb">OR 363–379</text>
+  <line x1="275" y1="208" x2="425" y2="208" stroke="#90caf9" stroke-width="1"/>
+  <text x="350" y="230" text-anchor="middle" font-size="10" fill="#1e293b">• Herstellung eines Werkes</text>
+  <text x="350" y="248" text-anchor="middle" font-size="10" fill="#1e293b">• Arbeitsresultat</text>
+  <text x="350" y="266" text-anchor="middle" font-size="10" fill="#1e293b">  geschuldet</text>
+  <rect x="275" y="300" width="150" height="30" rx="6" fill="#ffffff" stroke="#bbdefb" stroke-width="1"/>
+  <text x="350" y="320" text-anchor="middle" font-size="10" fill="#64748b">Beispiel:</text>
+  <text x="350" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#1565c0">?</text>
+
+  <!-- Auftrag -->
+  <rect x="480" y="150" width="200" height="200" rx="10" fill="#fff3e0" stroke="#f89907" stroke-width="1.5"/>
+  <text x="580" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#e65100">Auftrag</text>
+  <text x="580" y="196" text-anchor="middle" font-size="11" font-weight="500" fill="#f89907">OR 394–418v</text>
+  <line x1="505" y1="208" x2="655" y2="208" stroke="#ffcc80" stroke-width="1"/>
+  <text x="580" y="230" text-anchor="middle" font-size="10" fill="#1e293b">• Nur sorgfältige</text>
+  <text x="580" y="248" text-anchor="middle" font-size="10" fill="#1e293b">  Ausführung geschuldet</text>
+  <text x="580" y="266" text-anchor="middle" font-size="10" fill="#1e293b">• Kein Resultat</text>
+  <rect x="505" y="300" width="150" height="30" rx="6" fill="#ffffff" stroke="#ffe0b2" stroke-width="1"/>
+  <text x="580" y="320" text-anchor="middle" font-size="10" fill="#64748b">Beispiel:</text>
+  <text x="580" y="335" text-anchor="middle" font-size="11" font-weight="600" fill="#e65100">?</text>
+
+  <!-- Fussnote -->
+  <text x="350" y="372" text-anchor="middle" font-size="10" fill="#94a3b8">Ordne die Beispiele den Vertragstypen zu</text>
+</svg>

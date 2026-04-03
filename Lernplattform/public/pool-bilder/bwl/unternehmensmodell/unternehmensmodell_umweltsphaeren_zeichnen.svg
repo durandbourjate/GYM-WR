@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">St. Galler Unternehmensmodell -- Umweltsphaeren</text>
+  <!-- Outer ring: Umweltsphären -->
+  <circle cx="400" cy="245" r="185" fill="none" stroke="#dbeafe" stroke-width="40" opacity="0.5"/>
+  <!-- Gesellschaft (top) -->
+  <rect x="330" y="48" width="140" height="36" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="400" y="72" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Gesellschaft</text>
+  <!-- Natur (top-right) -->
+  <rect x="590" y="108" width="120" height="36" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="650" y="132" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Natur</text>
+  <!-- Technologie (bottom-right) -->
+  <rect x="590" y="320" width="120" height="36" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="650" y="344" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Technologie</text>
+  <!-- Wirtschaft (bottom) -->
+  <rect x="330" y="405" width="140" height="36" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="400" y="429" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Wirtschaft</text>
+  <!-- Middle ring: Anspruchsgruppen -->
+  <circle cx="400" cy="245" r="130" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <!-- Anspruchsgruppen labels around the ring -->
+  <text x="400" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Staat</text>
+  <text x="540" y="165" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Lieferanten</text>
+  <text x="560" y="290" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Kunden</text>
+  <text x="400" y="390" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Kapitalgeber</text>
+  <text x="240" y="290" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Konkurrenz</text>
+  <text x="255" y="165" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">Mitarbeitende</text>
+  <text x="150" y="230" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#3b82f6">NGOs</text>
+  <!-- Arrows from Anspruchsgruppen to center -->
+  <line x1="400" y1="115" x2="400" y2="190" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="520" y1="168" x2="465" y2="210" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="535" y1="285" x2="465" y2="270" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="400" y1="378" x2="400" y2="300" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="265" y1="285" x2="335" y2="270" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="280" y1="168" x2="340" y2="210" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <line x1="175" y1="235" x2="335" y2="245" stroke="#93c5fd" stroke-width="1" marker-end="url(#arrowBlue)"/>
+  <defs>
+    <marker id="arrowBlue" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#93c5fd"/>
+    </marker>
+  </defs>
+  <!-- Center: Unternehmen -->
+  <circle cx="400" cy="245" r="65" fill="#eff6ff" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="400" y="240" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="15" font-weight="700" fill="#1e293b">Unter-</text>
+  <text x="400" y="258" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="15" font-weight="700" fill="#1e293b">nehmen</text>
+  <!-- Inner labels -->
+  <text x="400" y="215" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="9" fill="#64748b">Strategie</text>
+  <text x="400" y="278" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="9" fill="#64748b">Prozesse | Strukturen</text>
+  <!-- Legend at bottom-left -->
+  <rect x="70" y="398" width="12" height="12" rx="2" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="88" y="409" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Umweltsphaeren</text>
+  <circle cx="196" cy="404" r="4" fill="none" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="206" y="409" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Anspruchsgruppen</text>
+</svg>

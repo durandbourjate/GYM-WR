@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="800" height="520" fill="#ffffff"/>
+  
+  <!-- Titel -->
+  <text x="400" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Mietrecht – Systematik OR 253–274</text>
+  
+  <!-- Hauptbox oben -->
+  <rect x="260" y="55" width="280" height="42" rx="8" fill="#73ab2c" stroke="#5a8a22" stroke-width="1.5"/>
+  <text x="400" y="82" text-anchor="middle" font-size="14" font-weight="600" fill="#ffffff">Mietvertrag (OR 253)</text>
+  
+  <!-- Verbindungslinie nach unten -->
+  <line x1="400" y1="97" x2="400" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  
+  <!-- Zweite Ebene: 4 Kategorien -->
+  <!-- Abschluss -->
+  <line x1="400" y1="120" x2="120" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="120" y1="120" x2="120" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="30" y="140" width="180" height="36" rx="6" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1"/>
+  <text x="120" y="163" text-anchor="middle" font-size="12" font-weight="600" fill="#2e7d32">Vertragsabschluss</text>
+  
+  <!-- Während der Miete -->
+  <line x1="400" y1="120" x2="310" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="310" y1="120" x2="310" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="220" y="140" width="180" height="36" rx="6" fill="#e3f2fd" stroke="#2563eb" stroke-width="1"/>
+  <text x="310" y="163" text-anchor="middle" font-size="12" font-weight="600" fill="#1565c0">Phase ?</text>
+  
+  <!-- Kündigung -->
+  <line x1="400" y1="120" x2="500" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="500" y1="120" x2="500" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="410" y="140" width="180" height="36" rx="6" fill="#fff3e0" stroke="#f57c00" stroke-width="1"/>
+  <text x="500" y="163" text-anchor="middle" font-size="12" font-weight="600" fill="#e65100">Kündigung</text>
+  
+  <!-- Schutz -->
+  <line x1="400" y1="120" x2="690" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="690" y1="120" x2="690" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="600" y="140" width="180" height="36" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1"/>
+  <text x="690" y="163" text-anchor="middle" font-size="12" font-weight="600" fill="#b71c1c">Mieterschutz</text>
+  
+  <!-- === Dritte Ebene: Unterthemen === -->
+  
+  <!-- Vertragsabschluss Details -->
+  <line x1="120" y1="176" x2="120" y2="200" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="25" y="200" width="190" height="120" rx="5" fill="#f8faf8" stroke="#c8e6c9" stroke-width="1"/>
+  <text x="120" y="220" text-anchor="middle" font-size="10.5" fill="#37474f">• Formfreiheit</text>
+  <text x="120" y="238" text-anchor="middle" font-size="10.5" fill="#37474f">• Bestimmte / unbestimmte</text>
+  <text x="120" y="253" text-anchor="middle" font-size="10.5" fill="#37474f">  Dauer (OR 255)</text>
+  <text x="120" y="271" text-anchor="middle" font-size="10.5" fill="#37474f">• Koppelungsverbot</text>
+  <text x="120" y="286" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 254)</text>
+  <text x="120" y="304" text-anchor="middle" font-size="10.5" fill="#37474f">• Zwingende Vorschriften</text>
+  
+  <!-- Während der Miete Details -->
+  <line x1="310" y1="176" x2="310" y2="200" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="215" y="200" width="190" height="120" rx="5" fill="#f5f9ff" stroke="#bbdefb" stroke-width="1"/>
+  <text x="310" y="220" text-anchor="middle" font-size="10.5" fill="#37474f">• ? Vermieter</text>
+  <text x="310" y="238" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 256 ff.)</text>
+  <text x="310" y="256" text-anchor="middle" font-size="10.5" fill="#37474f">• ? Mieter</text>
+  <text x="310" y="274" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 257 ff.)</text>
+  <text x="310" y="292" text-anchor="middle" font-size="10.5" fill="#37474f">• ? (OR 259 ff.)</text>
+  <text x="310" y="310" text-anchor="middle" font-size="10.5" fill="#37474f">• Untermiete (OR 262)</text>
+  
+  <!-- Kündigung Details -->
+  <line x1="500" y1="176" x2="500" y2="200" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="405" y="200" width="190" height="120" rx="5" fill="#fffbf0" stroke="#ffe0b2" stroke-width="1"/>
+  <text x="500" y="220" text-anchor="middle" font-size="10.5" fill="#37474f">• Ordentlich (OR 266 ff.)</text>
+  <text x="500" y="238" text-anchor="middle" font-size="10.5" fill="#37474f">• Ausserordentlich</text>
+  <text x="500" y="253" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 266g)</text>
+  <text x="500" y="271" text-anchor="middle" font-size="10.5" fill="#37474f">• Nachmieter (OR 264)</text>
+  <text x="500" y="289" text-anchor="middle" font-size="10.5" fill="#37474f">• Form: schriftlich</text>
+  <text x="500" y="304" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 266l)</text>
+  
+  <!-- Mieterschutz Details -->
+  <line x1="690" y1="176" x2="690" y2="200" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="595" y="200" width="190" height="120" rx="5" fill="#fef5f7" stroke="#ffcdd2" stroke-width="1"/>
+  <text x="690" y="220" text-anchor="middle" font-size="10.5" fill="#37474f">• Missbräuchlicher Zins</text>
+  <text x="690" y="238" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 269 ff.)</text>
+  <text x="690" y="256" text-anchor="middle" font-size="10.5" fill="#37474f">• Erstreckung</text>
+  <text x="690" y="274" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 272 ff.)</text>
+  <text x="690" y="292" text-anchor="middle" font-size="10.5" fill="#37474f">• Mietzinshinterlegung</text>
+  <text x="690" y="310" text-anchor="middle" font-size="10.5" fill="#37474f">  (OR 259g–h)</text>
+  
+  <!-- Untere Infobox: Merkmale -->
+  <rect x="30" y="350" width="740" height="85" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="400" y="375" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">Merkmale des Mietvertrags</text>
+  <text x="110" y="400" text-anchor="middle" font-size="11" fill="#475569">📋 Gebrauchsüberlassung</text>
+  <text x="310" y="400" text-anchor="middle" font-size="11" fill="#475569">🔓 Grundsätzlich formlos</text>
+  <text x="510" y="400" text-anchor="middle" font-size="11" fill="#475569">⚖️ Zwingende Vorschriften</text>
+  <text x="690" y="400" text-anchor="middle" font-size="11" fill="#475569">🛡️ Mieterschutz</text>
+  <text x="400" y="425" text-anchor="middle" font-size="10" fill="#64748b">(Abweichungen zu Gunsten des Mieters sind zulässig — zu seinen Ungunsten nicht)</text>
+  
+  <!-- Untere Leiste: Artikelhinweis -->
+  <text x="400" y="470" text-anchor="middle" font-size="11" fill="#94a3b8">Obligationenrecht (OR), 8. Titel: Die Miete — Art. 253 bis 274</text>
+  
+  <!-- Legende -->
+  <rect x="30" y="488" width="12" height="12" rx="2" fill="#e8f5e9" stroke="#73ab2c" stroke-width="0.5"/>
+  <text x="48" y="499" font-size="9" fill="#64748b">Abschluss</text>
+  <rect x="110" y="488" width="12" height="12" rx="2" fill="#e3f2fd" stroke="#2563eb" stroke-width="0.5"/>
+  <text x="128" y="499" font-size="9" fill="#64748b">Phase ?</text>
+  <rect x="180" y="488" width="12" height="12" rx="2" fill="#fff3e0" stroke="#f57c00" stroke-width="0.5"/>
+  <text x="198" y="499" font-size="9" fill="#64748b">Kündigung</text>
+  <rect x="270" y="488" width="12" height="12" rx="2" fill="#fce4ec" stroke="#c62828" stroke-width="0.5"/>
+  <text x="288" y="499" font-size="9" fill="#64748b">Schutz</text>
+</svg>

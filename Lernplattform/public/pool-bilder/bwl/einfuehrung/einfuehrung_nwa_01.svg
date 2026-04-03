@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 350" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="650" height="350" fill="#ffffff"/>
+  
+  <title>Schema einer Nutzwertanalyse mit Gewichtung und Bewertung</title>
+  
+  <!-- Titel -->
+  <text x="325" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Nutzwertanalyse (NWA) – Schema</text>
+  
+  <!-- Tabellenkopf -->
+  <rect x="20" y="50" width="130" height="35" rx="4" fill="#01a9f4" opacity="0.2" stroke="#0284c7" stroke-width="1"/>
+  <text x="85" y="72" text-anchor="middle" font-size="11" font-weight="600" fill="#0284c7">Kriterium</text>
+  
+  <rect x="150" y="50" width="50" height="35" rx="4" fill="#01a9f4" opacity="0.2" stroke="#0284c7" stroke-width="1"/>
+  <text x="175" y="65" text-anchor="middle" font-size="10" font-weight="600" fill="#0284c7">G</text>
+  <text x="175" y="78" text-anchor="middle" font-size="8" fill="#64748b">(Gew.)</text>
+  
+  <!-- Standort A -->
+  <rect x="200" y="50" width="130" height="35" rx="4" fill="#2563eb" opacity="0.12" stroke="#2563eb" stroke-width="1"/>
+  <text x="265" y="65" text-anchor="middle" font-size="11" font-weight="600" fill="#2563eb">Standort A</text>
+  <text x="230" y="78" text-anchor="middle" font-size="8" fill="#64748b">B</text>
+  <text x="300" y="78" text-anchor="middle" font-size="8" fill="#64748b">N</text>
+  
+  <!-- Standort B -->
+  <rect x="340" y="50" width="130" height="35" rx="4" fill="#7c3aed" opacity="0.12" stroke="#7c3aed" stroke-width="1"/>
+  <text x="405" y="65" text-anchor="middle" font-size="11" font-weight="600" fill="#7c3aed">Standort B</text>
+  <text x="370" y="78" text-anchor="middle" font-size="8" fill="#64748b">B</text>
+  <text x="440" y="78" text-anchor="middle" font-size="8" fill="#64748b">N</text>
+  
+  <!-- Standort C -->
+  <rect x="480" y="50" width="130" height="35" rx="4" fill="#16a34a" opacity="0.12" stroke="#16a34a" stroke-width="1"/>
+  <text x="545" y="65" text-anchor="middle" font-size="11" font-weight="600" fill="#16a34a">Standort C</text>
+  <text x="510" y="78" text-anchor="middle" font-size="8" fill="#64748b">B</text>
+  <text x="580" y="78" text-anchor="middle" font-size="8" fill="#64748b">N</text>
+  
+  <!-- Zeile 1 -->
+  <rect x="20" y="90" width="130" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="85" y="110" text-anchor="middle" font-size="10" fill="#475569">Kriterium 1</text>
+  <rect x="150" y="90" width="50" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="175" y="110" text-anchor="middle" font-size="10" fill="#475569">40</text>
+  
+  <rect x="200" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="265" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="340" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="405" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="480" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="545" y="90" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Zeile 2 -->
+  <rect x="20" y="125" width="130" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="85" y="145" text-anchor="middle" font-size="10" fill="#475569">Kriterium 2</text>
+  <rect x="150" y="125" width="50" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="175" y="145" text-anchor="middle" font-size="10" fill="#475569">25</text>
+  
+  <rect x="200" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="265" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="340" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="405" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="480" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="545" y="125" width="65" height="30" rx="2" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Zeile 3 -->
+  <rect x="20" y="160" width="130" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="85" y="180" text-anchor="middle" font-size="10" fill="#475569">...</text>
+  <rect x="150" y="160" width="50" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="175" y="180" text-anchor="middle" font-size="10" fill="#475569">...</text>
+  
+  <rect x="200" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="265" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="340" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="405" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="480" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="545" y="160" width="65" height="30" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Summenzeile -->
+  <rect x="20" y="200" width="130" height="30" rx="2" fill="#01a9f4" opacity="0.08" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="85" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#0284c7">Total</text>
+  <rect x="150" y="200" width="50" height="30" rx="2" fill="#01a9f4" opacity="0.08" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="175" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#0284c7">100</text>
+  
+  <rect x="265" y="200" width="65" height="30" rx="2" fill="#2563eb" opacity="0.1" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="298" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">Σ N</text>
+  <rect x="405" y="200" width="65" height="30" rx="2" fill="#7c3aed" opacity="0.1" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="438" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">Σ N</text>
+  <rect x="545" y="200" width="65" height="30" rx="2" fill="#16a34a" opacity="0.1" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="578" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#16a34a">Σ N</text>
+  
+  <!-- Legende -->
+  <text x="35" y="260" font-size="11" font-weight="600" fill="#1e293b">Legende:</text>
+  <text x="35" y="278" font-size="10" fill="#475569">G = Gewichtung (total 100)</text>
+  <text x="35" y="294" font-size="10" fill="#475569">B = Bewertung (1 = sehr schlecht … 6 = sehr gut)</text>
+  <text x="35" y="310" font-size="10" fill="#475569">N = Nutzen = G × B</text>
+  
+  <!-- Formel-Box -->
+  <rect x="350" y="252" width="270" height="68" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="485" y="272" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Entscheidungsregel:</text>
+  <text x="485" y="292" text-anchor="middle" font-size="10" fill="#475569">Der Standort mit der höchsten</text>
+  <text x="485" y="308" text-anchor="middle" font-size="10" fill="#475569">Gesamtpunktzahl (Σ N) erhält den Zuschlag.</text>
+  
+  <!-- Hinweis -->
+  <text x="325" y="342" text-anchor="middle" font-size="9" fill="#94a3b8">Schema einer Nutzwertanalyse – die konkreten Werte werden je Situation eingesetzt.</text>
+</svg>

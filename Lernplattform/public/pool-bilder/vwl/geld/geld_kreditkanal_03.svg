@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 200" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="200" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="350" y="25" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Kreditkanal: Inflationsbekämpfung durch Zinserhöhung</text>
+  
+  <!-- Box 1: SNB-Leitzins -->
+  <rect x="15" y="55" width="110" height="55" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="70" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">SNB-Leitzins</text>
+  <text x="70" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">?</text>
+
+  <!-- Arrow 1 -->
+  <line x1="125" y1="82" x2="150" y2="82" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Box 2: SARON -->
+  <rect x="150" y="55" width="100" height="55" rx="8" fill="#3b82f6" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="200" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">SARON</text>
+  <text x="200" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">?</text>
+
+  <!-- Arrow 2 -->
+  <line x1="250" y1="82" x2="275" y2="82" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Box 3: Kreditzinsen -->
+  <rect x="275" y="55" width="100" height="55" rx="8" fill="#7c3aed" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="325" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Kreditzinsen</text>
+  <text x="325" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">?</text>
+
+  <!-- Arrow 3 -->
+  <line x1="375" y1="82" x2="400" y2="82" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Box 4: Nachfrage -->
+  <rect x="400" y="55" width="110" height="55" rx="8" fill="#dc2626" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="455" y="73" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Nachfrage nach</text>
+  <text x="455" y="88" text-anchor="middle" font-size="10" font-weight="600" fill="#fff">Waren &amp; DL</text>
+  <text x="455" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">?</text>
+
+  <!-- Arrow 4 -->
+  <line x1="510" y1="82" x2="535" y2="82" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Box 5: Preisniveau -->
+  <rect x="535" y="55" width="110" height="55" rx="8" fill="#16a34a" stroke="#15803d" stroke-width="1.5"/>
+  <text x="590" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Preisniveau</text>
+  <text x="590" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">?</text>
+
+  <!-- Result label -->
+  <rect x="520" y="130" width="155" height="35" rx="6" fill="#f5f5f5" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="597" y="152" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">→ Wirkung?</text>
+
+  <!-- Connecting line to result -->
+  <line x1="590" y1="110" x2="590" y2="130" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
+  
+  <!-- Bottom note -->
+  <text x="350" y="185" text-anchor="middle" font-size="10" fill="#94a3b8">DL = Dienstleistungen</text>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+</svg>

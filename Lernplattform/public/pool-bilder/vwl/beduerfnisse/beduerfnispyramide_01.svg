@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" font-family="DM Sans, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f89907" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#f89907" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="320" fill="none"/>
+  <!-- Pyramide von unten nach oben -->
+  <!-- Stufe 1 (unten, breiteste) -->
+  <polygon points="40,280 360,280 310,225 90,225" fill="#f89907" opacity="0.9"/>
+  <text x="200" y="258" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">Stufe 1</text>
+  <!-- Stufe 2 -->
+  <polygon points="90,220 310,220 270,165 130,165" fill="#ffa726" opacity="0.9"/>
+  <text x="200" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">Stufe 2</text>
+  <!-- Stufe 3 -->
+  <polygon points="130,160 270,160 235,105 165,105" fill="#ffb74d" opacity="0.9"/>
+  <text x="200" y="138" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">Stufe 3</text>
+  <!-- Stufe 4 (oben, schmalste) -->
+  <polygon points="165,100 235,100 200,50" fill="#ffcc80" opacity="0.9"/>
+  <text x="200" y="83" text-anchor="middle" font-size="12" font-weight="600" fill="#7c4a00">Stufe 4</text>
+  <!-- Fragezeichen statt Beschriftungen -->
+  <text x="200" y="30" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Bedürfnispyramide nach Maslow</text>
+  <!-- Pfeile links -->
+  <line x1="30" y1="280" x2="30" y2="50" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+  <text x="18" y="165" text-anchor="middle" font-size="10" fill="#64748b" transform="rotate(-90,18,165)">Höhere Bedürfnisse</text>
+  <!-- Beschriftung rechts mit Fragezeichen -->
+  <text x="370" y="258" text-anchor="start" font-size="11" fill="#64748b">?</text>
+  <text x="370" y="198" text-anchor="start" font-size="11" fill="#64748b">?</text>
+  <text x="370" y="138" text-anchor="start" font-size="11" fill="#64748b">?</text>
+  <text x="370" y="83" text-anchor="start" font-size="11" fill="#64748b">?</text>
+  <!-- Hinweistext -->
+  <text x="200" y="308" text-anchor="middle" font-size="10" fill="#94a3b8" font-style="italic">Ordnen Sie die Stufen korrekt zu.</text>
+</svg>

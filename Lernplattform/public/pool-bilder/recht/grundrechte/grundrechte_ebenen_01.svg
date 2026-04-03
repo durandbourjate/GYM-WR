@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="500" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="350" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Menschenrechtsschutz: Vom Internationalen zum Nationalen</text>
+  
+  <!-- Level 1: AEMR (International - widest) -->
+  <rect x="30" y="55" width="640" height="80" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="55" y="78" font-size="13" font-weight="700" fill="#1e40af">🌍 International: AEMR (1948)</text>
+  <text x="55" y="96" font-size="11" fill="#475569">Allgemeine Erklärung der Menschenrechte – 30 Artikel</text>
+  <text x="55" y="112" font-size="11" fill="#475569">Charakter: ?</text>
+  <text x="55" y="128" font-size="10" fill="#94a3b8" font-style="italic">UNO-Generalversammlung, Resolution 217 A (III)</text>
+  
+  <!-- Arrow -->
+  <line x1="350" y1="135" x2="350" y2="155" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="344,151 350,161 356,151" fill="#64748b"/>
+  <text x="365" y="152" font-size="9" fill="#64748b">konkretisiert in</text>
+  
+  <!-- Level 2: EMRK (European) -->
+  <rect x="70" y="161" width="560" height="80" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+  <text x="95" y="184" font-size="13" font-weight="700" fill="#065f46">🇪🇺 Europäisch: EMRK (1950)</text>
+  <text x="95" y="202" font-size="11" fill="#475569">Charakter: ?</text>
+  <text x="95" y="218" font-size="11" fill="#475569">Durchsetzung: ?</text>
+  <text x="95" y="234" font-size="10" fill="#94a3b8" font-style="italic">Europarat – Individualbeschwerde möglich</text>
+  
+  <!-- Arrow -->
+  <line x1="350" y1="241" x2="350" y2="261" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="344,257 350,267 356,257" fill="#64748b"/>
+  <text x="365" y="258" font-size="9" fill="#64748b">umgesetzt in</text>
+  
+  <!-- Level 3: BV (National) -->
+  <rect x="110" y="267" width="480" height="80" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="135" y="290" font-size="13" font-weight="700" fill="#713f12">🇨🇭 National: Bundesverfassung (BV)</text>
+  <text x="135" y="308" font-size="11" fill="#475569">Grundrechte Art. 7–36 BV – direkt anwendbar und einklagbar</text>
+  <text x="135" y="324" font-size="11" fill="#475569">Einschränkungsvoraussetzungen: Art. 36 BV (5-Punkte-Schema)</text>
+  <text x="135" y="340" font-size="10" fill="#94a3b8" font-style="italic">Durchsetzung: Bundesgericht (als letzte Instanz)</text>
+  
+  <!-- Comparison boxes at bottom -->
+  <rect x="30" y="370" width="200" height="120" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="130" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Menschenrechte</text>
+  <text x="40" y="412" font-size="10" fill="#475569">• Stehen allen Menschen zu</text>
+  <text x="40" y="428" font-size="10" fill="#475569">• Angeboren und unveräusserlich</text>
+  <text x="40" y="444" font-size="10" fill="#475569">• Universell (weltweit)</text>
+  <text x="40" y="460" font-size="10" fill="#475569">• Moral. &amp; polit. Verpflichtung</text>
+  <text x="40" y="476" font-size="10" fill="#475569">• Bsp: AEMR, UNO-Pakte</text>
+  
+  <rect x="250" y="370" width="200" height="120" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="350" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Grundrechte</text>
+  <text x="260" y="412" font-size="10" fill="#475569">• In der Verfassung verankert</text>
+  <text x="260" y="428" font-size="10" fill="#475569">• Vor Gericht einklagbar</text>
+  <text x="260" y="444" font-size="10" fill="#475569">• National (CH: Art. 7–34 BV)</text>
+  <text x="260" y="460" font-size="10" fill="#475569">• Rechtlich verbindlich</text>
+  <text x="260" y="476" font-size="10" fill="#475569">• Einschränkbar (Art. 36 BV)</text>
+  
+  <rect x="470" y="370" width="200" height="120" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="570" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Bürgerrechte</text>
+  <text x="480" y="412" font-size="10" fill="#475569">• Nur für Staatsangehörige</text>
+  <text x="480" y="428" font-size="10" fill="#475569">• An Staatsbürgerschaft</text>
+  <text x="480" y="444" font-size="10" fill="#475569">  geknüpft</text>
+  <text x="480" y="460" font-size="10" fill="#475569">• Bsp: Stimm- &amp; Wahlrecht</text>
+  <text x="480" y="476" font-size="10" fill="#475569">  (Art. 34 BV)</text>
+</svg>

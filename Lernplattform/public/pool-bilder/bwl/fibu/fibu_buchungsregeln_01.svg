@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="380" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Buchungsregeln – T-Konten</text>
+
+  <!-- Aktivkonto -->
+  <rect x="30" y="50" width="300" height="150" rx="8" fill="#e8f7fe" stroke="#01a9f4" stroke-width="2"/>
+  <text x="180" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="#01a9f4">Aktivkonto</text>
+
+  <!-- T-Form Aktiv -->
+  <line x1="50" y1="82" x2="310" y2="82" stroke="#1e293b" stroke-width="1.5"/>
+  <line x1="180" y1="82" x2="180" y2="190" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="115" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Soll</text>
+  <text x="245" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Haben</text>
+
+  <text x="60" y="102" font-size="10" fill="#16a34a" font-weight="600">?</text>
+  <text x="60" y="120" font-size="10" fill="#16a34a" font-weight="600">?</text>
+  <text x="190" y="102" font-size="10" fill="#dc2626" font-weight="600">?</text>
+  <text x="190" y="140" font-size="10" fill="#7c3aed" font-weight="600">= Saldo</text>
+  <text x="190" y="156" font-size="9" fill="#64748b">(Endbestand)</text>
+
+  <!-- Beispiel Aktiv -->
+  <text x="180" y="185" text-anchor="middle" font-size="9" fill="#64748b">z.B. Kasse, Bank, Debitoren</text>
+
+  <!-- Passivkonto -->
+  <rect x="370" y="50" width="300" height="150" rx="8" fill="#fff8eb" stroke="#f89907" stroke-width="2"/>
+  <text x="520" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="#f89907">Passivkonto</text>
+
+  <!-- T-Form Passiv -->
+  <line x1="390" y1="82" x2="650" y2="82" stroke="#1e293b" stroke-width="1.5"/>
+  <line x1="520" y1="82" x2="520" y2="190" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="455" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Soll</text>
+  <text x="585" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Haben</text>
+
+  <text x="400" y="102" font-size="10" fill="#dc2626" font-weight="600">?</text>
+  <text x="400" y="140" font-size="10" fill="#7c3aed" font-weight="600">= Saldo</text>
+  <text x="400" y="156" font-size="9" fill="#64748b">(Endbestand)</text>
+  <text x="530" y="102" font-size="10" fill="#16a34a" font-weight="600">?</text>
+  <text x="530" y="120" font-size="10" fill="#16a34a" font-weight="600">?</text>
+
+  <text x="520" y="185" text-anchor="middle" font-size="9" fill="#64748b">z.B. Kreditoren, Hypothek, EK</text>
+
+  <!-- Aufwandkonto -->
+  <rect x="30" y="215" width="300" height="150" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="180" y="237" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">Aufwandkonto</text>
+
+  <line x1="50" y1="247" x2="310" y2="247" stroke="#1e293b" stroke-width="1.5"/>
+  <line x1="180" y1="247" x2="180" y2="355" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="115" y="243" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Soll</text>
+  <text x="245" y="243" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Haben</text>
+
+  <text x="60" y="268" font-size="10" fill="#16a34a" font-weight="600">?</text>
+  <text x="190" y="268" font-size="10" fill="#dc2626" font-weight="600">?</text>
+  <text x="190" y="305" font-size="10" fill="#7c3aed" font-weight="600">= Saldo</text>
+  <text x="60" y="289" font-size="9" fill="#64748b">(kein Anfangsbestand!)</text>
+
+  <text x="180" y="350" text-anchor="middle" font-size="9" fill="#64748b">z.B. Lohnaufwand, Mietaufwand</text>
+
+  <!-- Ertragskonto -->
+  <rect x="370" y="215" width="300" height="150" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="520" y="237" text-anchor="middle" font-size="14" font-weight="700" fill="#16a34a">Ertragskonto</text>
+
+  <line x1="390" y1="247" x2="650" y2="247" stroke="#1e293b" stroke-width="1.5"/>
+  <line x1="520" y1="247" x2="520" y2="355" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="455" y="243" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Soll</text>
+  <text x="585" y="243" text-anchor="middle" font-size="11" font-weight="600" fill="#1e293b">Haben</text>
+
+  <text x="400" y="268" font-size="10" fill="#dc2626" font-weight="600">?</text>
+  <text x="400" y="305" font-size="10" fill="#7c3aed" font-weight="600">= Saldo</text>
+  <text x="530" y="268" font-size="10" fill="#16a34a" font-weight="600">?</text>
+  <text x="530" y="289" font-size="9" fill="#64748b">(kein Anfangsbestand!)</text>
+
+  <text x="520" y="350" text-anchor="middle" font-size="9" fill="#64748b">z.B. Warenverkauf, Honorarertrag</text>
+</svg>

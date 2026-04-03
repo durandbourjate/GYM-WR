@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      text { fill: #1e293b; }
+      @media (prefers-color-scheme: dark) {
+        text { fill: #e2e8f0; }
+        .bg { fill: #1a1d27; }
+        .legend-bg { fill: #2d3348; }
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="500" height="320" fill="#fff" rx="8"/>
+  
+  <!-- Title -->
+  <text x="250" y="28" text-anchor="middle" font-size="14" font-weight="700">Staatseinnahmen der Schweiz nach Kategorie</text>
+  <text x="250" y="44" text-anchor="middle" font-size="10" fill="#94a3b8">(alle Staatsebenen, approximative Anteile)</text>
+  
+  <!-- Pie chart center at 190, 175, radius 110 -->
+  <!-- Direkte Steuern: ~60% = 216° (from 0°) -->
+  <!-- Startwinkel 0° = 12 Uhr, im Uhrzeigersinn -->
+  
+  <!-- Segment 1: Direkte Steuern 60% - Orange -->
+  <path d="M 190,175 L 190,65 A 110,110 0 1,1 94.72,230.28 Z" fill="#f89907" opacity="0.85"/>
+  
+  <!-- Segment 2: Indirekte Steuern 25% = 90° -->
+  <path d="M 190,175 L 94.72,230.28 A 110,110 0 0,1 112.18,86.55 Z" fill="#01a9f4" opacity="0.85"/>
+  
+  <!-- Segment 3: Gebuehren und uebrige 15% = 54° -->
+  <path d="M 190,175 L 112.18,86.55 A 110,110 0 0,1 190,65 Z" fill="#73ab2c" opacity="0.85"/>
+  
+  <!-- Percentage labels on pie -->
+  <text x="230" y="145" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">60%</text>
+  <text x="115" y="195" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">25%</text>
+  <text x="148" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">15%</text>
+  
+  <!-- Legend -->
+  <g transform="translate(330, 90)">
+    <rect class="legend-bg" x="-10" y="-15" width="165" height="130" rx="6" fill="#f8f9fa" stroke="#e2e8f0" stroke-width="1"/>
+    
+    <rect x="0" y="0" width="14" height="14" rx="3" fill="#f89907" opacity="0.85"/>
+    <text x="20" y="12" font-size="11" font-weight="500">Direkte Steuern</text>
+    <text x="20" y="24" font-size="9" fill="#94a3b8">(Einkommens-, Vermögens-,</text>
+    <text x="20" y="34" font-size="9" fill="#94a3b8">Gewinnsteuer)</text>
+    
+    <rect x="0" y="48" width="14" height="14" rx="3" fill="#01a9f4" opacity="0.85"/>
+    <text x="20" y="60" font-size="11" font-weight="500">Indirekte Steuern</text>
+    <text x="20" y="72" font-size="9" fill="#94a3b8">(MwSt, Verrechnungs-,</text>
+    <text x="20" y="82" font-size="9" fill="#94a3b8">Stempelsteuer)</text>
+    
+    <rect x="0" y="96" width="14" height="14" rx="3" fill="#73ab2c" opacity="0.85"/>
+    <text x="20" y="108" font-size="11" font-weight="500">Gebühren &amp; übrige</text>
+  </g>
+</svg>

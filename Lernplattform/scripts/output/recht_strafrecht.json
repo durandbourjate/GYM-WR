@@ -1,0 +1,2125 @@
+[
+  {
+    "id": "recht_strafrecht-z01",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Zwecke soll die Strafe gemäss schweizerischem Strafrecht erfüllen?",
+    "erklaerung": "Das Strafrecht dient sowohl der Vergeltung als auch der Prävention. Die drei Zwecke sind: 1) Vergeltung (vergangenheitsorientiert, Art. 47 Abs. 1 StGB), 2) Spezialprävention (Wirkung auf Täter*in: individuelle Abschreckung, Resozialisierung, Sicherung) und 3) Generalprävention (Wirkung auf die Gesellschaft: Abschreckung durch Strafandrohung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Bestrafung, Erziehung und Entschädigung",
+      "Vergeltung, Spezialprävention und Generalprävention",
+      "Sühne, Resozialisierung und Opferschutz",
+      "Rache, Abschreckung und Wiedergutmachung"
+    ],
+    "korrekt": "Vergeltung, Spezialprävention und Generalprävention"
+  },
+  {
+    "id": "recht_strafrecht-z02",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Grundsatz «Keine Strafe ohne ausdrückliches Gesetz» gehört zu den Grundsätzen der Strafprozessordnung.",
+    "erklaerung": "Das sogenannte Legalitätsprinzip (nulla poena sine lege) ist ein zentraler Grundsatz: Eine Person darf nur bestraft werden, wenn ihr Verhalten zum Zeitpunkt der Tat ausdrücklich unter Strafe stand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-z03",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} ist vergangenheitsorientiert, während die {1} zukunftsorientiert ist.",
+    "erklaerung": "Die Vergeltung bezieht sich auf die begangene Tat (vergangenheitsorientiert) und entspricht dem Bedürfnis nach Gerechtigkeit. Die Prävention (Spezial- und Generalprävention) ist zukunftsorientiert: Weder der Täter noch andere sollen künftig Delikte begehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Vergeltung",
+        "optionen": [
+          "Vergeltungsfunktion"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Prävention",
+        "optionen": [
+          "Präventionsfunktion",
+          "Praevention"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-z04",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welchen Zweck verfolgt die Generalprävention?",
+    "erklaerung": "Die Generalprävention wirkt auf die Gesellschaft als Ganzes. Durch die Strafandrohungen in den Gesetzen sollen alle Gesellschaftsmitglieder von strafbaren Handlungen abgehalten werden, und die gesellschaftlichen Normen sollen bekräftigt werden. Die Spezialprävention (Antwort A) dagegen wirkt nur auf den konkreten Täter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der konkrete Täter soll durch die Strafe davon abgehalten werden, erneut straffällig zu werden.",
+      "Die ganze Gesellschaft soll durch Strafandrohungen von strafbaren Handlungen abgehalten werden.",
+      "Der Täter soll durch die Strafe finanziell geschädigt werden, um ihn abzuschrecken.",
+      "Das Opfer soll durch die Bestrafung des Täters Genugtuung erhalten."
+    ],
+    "korrekt": "Die ganze Gesellschaft soll durch Strafandrohungen von strafbaren Handlungen abgehalten werden."
+  },
+  {
+    "id": "recht_strafrecht-z05",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu den Grundsätzen der Strafprozessordnung treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Korrekt sind A (Verbot der Doppelbestrafung, ne bis in idem) und C (Verschuldensprinzip). B ist falsch: Der Grundsatz lautet «Im Zweifelsfalle für den Angeklagten» (in dubio pro reo), nicht für das Opfer. D ist ebenfalls falsch: «Unkenntnis des Gesetzes schützt nicht vor Strafe» — das Gegenteil trifft zu.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Niemand darf für dieselbe Tat zweimal bestraft werden.",
+      "Im Zweifelsfalle wird zugunsten des Opfers entschieden.",
+      "Das Strafmass richtet sich nach der Schwere des Verschuldens.",
+      "Unkenntnis des Gesetzes schützt vor Strafe."
+    ],
+    "korrekt": [
+      "Niemand darf für dieselbe Tat zweimal bestraft werden.",
+      "Das Strafmass richtet sich nach der Schwere des Verschuldens."
+    ]
+  },
+  {
+    "id": "recht_strafrecht-z06",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was kostet ein Jahr Normalvollzug (365 Tage) ungefähr?",
+    "erklaerung": "301 CHF × 365 Tage = CHF 109'865.–, also rund CHF 110'000.– pro Jahr. Dies zeigt, dass Freiheitsstrafen für die Gesellschaft mit erheblichen Kosten verbunden sind, weshalb das StGB auch Alternativen wie den bedingten Strafvollzug oder die elektronische Überwachung vorsieht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Im Kanton Bern kostet ein Tag Normalvollzug im Gefängnis CHF 301.–.",
+    "optionen": [
+      "Ca. CHF 55'000.–",
+      "Ca. CHF 80'000.–",
+      "Ca. CHF 110'000.–",
+      "Ca. CHF 150'000.–"
+    ],
+    "korrekt": "Ca. CHF 110'000.–"
+  },
+  {
+    "id": "recht_strafrecht-z07",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Auf welches Argument stützt sich Professor Niggli hauptsächlich?",
+    "erklaerung": "Niggli argumentiert, dass harte Strafen allein Menschen nicht vor Gesetzesverstössen abhalten. Mehr Sicherheit gäbe es nur durch erhöhte Kontrolle, also höhere Polizeipräsenz — was aber teuer sei. Sein Argument richtet sich gegen die Annahme, dass Abschreckung durch härtere Strafen automatisch zu weniger Kriminalität führt. Die Gesellschaft sei primär daran interessiert, Mittel zu ergreifen, die Straffällige vor weiteren Untaten abhalten — die Perspektive der Gesellschaft sei insofern wichtiger als jene der Opfer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Strafrechtsprofessor Marcel Niggli bezweifelt den langfristigen Nutzen von harten Erziehungsmassnahmen, welche den Willen und die Subjektivität der Jugendlichen ignorieren. Er argumentiert, dass selbst harte Strafen die Menschen nicht vor Gesetzesbrüchen abhalten.",
+    "optionen": [
+      "Die Generalprävention funktioniert nicht, weil Menschen sich rational verhalten.",
+      "Die Vergeltungsfunktion der Strafe ist wichtiger als die Prävention.",
+      "Das schweizerische System ist grundsätzlich falsch und sollte durch ein Drill-Lager-System ersetzt werden.",
+      "Harte Strafen haben nur begrenzte Wirkung als Spezialprävention; mehr Sicherheit erfordert mehr Kontrolle (Polizeipräsenz)."
+    ],
+    "korrekt": "Harte Strafen haben nur begrenzte Wirkung als Spezialprävention; mehr Sicherheit erfordert mehr Kontrolle (Polizeipräsenz)."
+  },
+  {
+    "id": "recht_strafrecht-z08",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Weshalb sieht das StGB verschiedene Formen des Strafvollzugs vor (z.B. Halbgefangenschaft, elektronische Überwachung), statt immer eine reguläre Freiheitsstrafe zu verhängen?",
+    "erklaerung": "Das StGB berücksichtigt, dass Freiheitsstrafen immer auch negative Effekte für die Täter und ihr Umfeld haben. Durch die Bestrafung soll nicht unnötig Leid verursacht werden. Falls ein Beharren auf eine effektive Durchführung einer Freiheitsstrafe nicht sinnvoll erscheint, soll darauf verzichtet werden. Die hohen Kosten (z.B. CHF 301.–/Tag im Normalvollzug) spielen ebenfalls eine Rolle. Es ist nicht offensichtlich, dass niedrige direkte Kosten auch den niedrigsten ganzheitlich betrachteten Kosten entsprechen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil das Strafrecht eine Kosten/Nutzen-Abwägung vornimmt: Freiheitsstrafen haben negative Effekte und hohe Kosten, und es soll nicht unnötig Leid verursacht werden.",
+      "Weil die Bundesverfassung Freiheitsstrafen grundsätzlich verbietet.",
+      "Weil die Schweiz keine Freiheitsstrafen über 5 Jahre kennt.",
+      "Weil alle Gefängnisse in der Schweiz überfüllt sind und es nicht genügend Plätze gibt."
+    ],
+    "korrekt": "Weil das Strafrecht eine Kosten/Nutzen-Abwägung vornimmt: Freiheitsstrafen haben negative Effekte und hohe Kosten, und es soll nicht unnötig Leid verursacht werden."
+  },
+  {
+    "id": "recht_strafrecht-z09",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Spezialprävention umfasst die individuelle Abschreckung, die Resozialisierung und die Sicherung der Allgemeinheit.",
+    "erklaerung": "Die Spezialprävention wirkt auf den konkreten Täter oder die konkrete Täterin und umfasst drei Aspekte: 1) Individuelle Abschreckung (Täter soll von erneuten Straftaten abgehalten werden), 2) Resozialisierung (Wiedereingliederung in die Gesellschaft) und 3) Sicherung der Allgemeinheit (Schutz vor dem Täter).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-z10",
+    "fach": "Recht",
+    "thema": "Zweck & Grundsätze des Strafrechts",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Niedrige direkte Kosten einer Strafe (z.B. Gefängniskosten) führen immer auch zu den niedrigsten Gesamtkosten für die Gesellschaft.",
+    "erklaerung": "Dies ist gemäss Unterrichtsmaterial ausdrücklich nicht der Fall. In die ganzheitliche Kosten/Nutzen-Rechnung fliessen viele Aspekte ein: Rückfallrisiko und dadurch entstehende Kosten und Leid, Ausgaben für die Strafverfolgung, sowie positive Beiträge an die Gesellschaft durch rechtsbürgerliches Verhalten. Eine günstigere, aber weniger wirksame Strafe kann langfristig teurer sein als eine teurere Massnahme mit besserer Resozialisierung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-s01",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Strafe wird gemäss Art. 10 BV in der Schweiz ausdrücklich verboten?",
+    "erklaerung": "Laut Bundesverfassung (Art. 10 BV) sind in der Schweiz die Todesstrafe sowie körperliche Strafen wie Folter und Prügelstrafe verboten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die lebenslange Freiheitsstrafe",
+      "Die Todesstrafe",
+      "Die Geldstrafe",
+      "Die Busse"
+    ],
+    "korrekt": "Die Todesstrafe"
+  },
+  {
+    "id": "recht_strafrecht-s02",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Eine Freiheitsstrafe dauert mindestens {0} Tage und höchstens {1} Jahre (Art. 40 StGB).",
+    "erklaerung": "Gemäss Art. 40 StGB beträgt die Mindestdauer einer Freiheitsstrafe 3 Tage und die Höchstdauer 20 Jahre, sofern das Gesetz nicht ausdrücklich eine lebenslange Freiheitsstrafe vorsieht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "3",
+        "optionen": [
+          "drei"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "20",
+        "optionen": [
+          "zwanzig"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-s03",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Strafe wird bei Übertretungen verhängt?",
+    "erklaerung": "Übertretungen werden gemäss Art. 103 StGB mit einer Busse bestraft. Die Busse beträgt CHF 1 bis CHF 10'000 (Art. 106 Abs. 1 StGB). Eine Ersatzfreiheitsstrafe von 1 Tag bis 3 Monaten ist möglich (Art. 106 Abs. 2 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_deliktsarten_01.svg",
+      "alt": "Übersicht der drei Deliktsarten nach Schweregrad"
+    },
+    "optionen": [
+      "Freiheitsstrafe von mindestens 6 Monaten",
+      "Busse (Art. 103 und Art. 106 ff. StGB)",
+      "Gemeinnützige Arbeit von mindestens 720 Stunden",
+      "Geldstrafe (Tagessätze)"
+    ],
+    "korrekt": "Busse (Art. 103 und Art. 106 ff. StGB)"
+  },
+  {
+    "id": "recht_strafrecht-s04",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet eine Geldstrafe von einer Busse?",
+    "erklaerung": "Die Geldstrafe (Art. 34 StGB) wird in Tagessätzen (1–180 Tagessätze, CHF 30 bis CHF 3'000 pro Tagessatz) bemessen und kommt bei Vergehen zum Einsatz. Die Höhe des Tagessatzes richtet sich nach den persönlichen und wirtschaftlichen Verhältnissen des Täters (Gleichheitsprinzip). Die Busse (Art. 103 / Art. 106 ff. StGB) ist ein fixer Betrag (max. CHF 10'000) und wird bei Übertretungen verhängt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Geldstrafe wird in Tagessätzen bemessen und betrifft schwerere Delikte (Vergehen); die Busse ist ein fixer Betrag und betrifft Übertretungen.",
+      "Es gibt keinen Unterschied — beide Begriffe bezeichnen dasselbe.",
+      "Die Geldstrafe wird nur bei Verbrechen verhängt; die Busse bei Vergehen und Übertretungen.",
+      "Die Busse wird in Tagessätzen bemessen; die Geldstrafe ist ein fixer Betrag."
+    ],
+    "korrekt": "Die Geldstrafe wird in Tagessätzen bemessen und betrifft schwerere Delikte (Vergehen); die Busse ist ein fixer Betrag und betrifft Übertretungen."
+  },
+  {
+    "id": "recht_strafrecht-s05",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu den Deliktsarten treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Verbrechen sind Taten, die mit mehr als 3 Jahren Freiheitsstrafe bedroht sind (Art. 10 Abs. 2 StGB). B ist korrekt: Vergehen sind mit bis zu 3 Jahren Freiheitsstrafe oder Geldstrafe bedroht (Art. 10 Abs. 3 StGB). C ist falsch: Übertretungen werden mit einer Busse bestraft (Art. 103 StGB), nicht mit einer Freiheitsstrafe von bis zu 1 Jahr. D ist korrekt: Bei Vergehen kann gemeinnützige Arbeit bis 720 Stunden angeordnet werden, allerdings nur mit Zustimmung des Täters (Art. 37 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Verbrechen sind mit Freiheitsstrafe von mehr als 3 Jahren bedroht (Art. 10 Abs. 2 StGB).",
+      "Vergehen sind mit Freiheitsstrafe bis zu 3 Jahren oder Geldstrafe bedroht (Art. 10 Abs. 3 StGB).",
+      "Übertretungen können mit einer Freiheitsstrafe bis zu 1 Jahr bestraft werden.",
+      "Bei Vergehen ist eine gemeinnützige Arbeit von höchstens 720 Stunden möglich (Art. 37 StGB)."
+    ],
+    "korrekt": [
+      "Verbrechen sind mit Freiheitsstrafe von mehr als 3 Jahren bedroht (Art. 10 Abs. 2 StGB).",
+      "Vergehen sind mit Freiheitsstrafe bis zu 3 Jahren oder Geldstrafe bedroht (Art. 10 Abs. 3 StGB).",
+      "Bei Vergehen ist eine gemeinnützige Arbeit von höchstens 720 Stunden möglich (Art. 37 StGB)."
+    ]
+  },
+  {
+    "id": "recht_strafrecht-s06",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Weshalb wird die Geldstrafe in Tagessätzen bemessen und nicht als fixer Betrag?",
+    "erklaerung": "Das Tagessatzsystem (Art. 34 StGB) trennt die Bemessung in zwei Schritte: 1) Die Anzahl Tagessätze (1–180) richtet sich nach dem Verschulden des Täters. 2) Die Höhe des einzelnen Tagessatzes (CHF 30 bis CHF 3'000) richtet sich nach den persönlichen und wirtschaftlichen Verhältnissen. So trifft die gleiche Strafe (z.B. 30 Tagessätze) eine wohlhabende Person genauso hart wie eine Person mit geringem Einkommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil das Tagessatzsystem die Gleichheit gewährleistet: Die gleiche Strafe soll für alle Täter gleich belastend sein, unabhängig von ihrer finanziellen Situation.",
+      "Weil das Gericht so mehr Spielraum hat.",
+      "Weil die Schweiz das System von der EU übernommen hat.",
+      "Weil die Berechnung so einfacher ist als bei einem fixen Betrag."
+    ],
+    "korrekt": "Weil das Tagessatzsystem die Gleichheit gewährleistet: Die gleiche Strafe soll für alle Täter gleich belastend sein, unabhängig von ihrer finanziellen Situation."
+  },
+  {
+    "id": "recht_strafrecht-s07",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Welche Geldstrafe muss Max ungefähr bezahlen, wenn ein Tagessatz seinem Tageseinkommen entspricht?",
+    "erklaerung": "Tagessatz = Monatseinkommen / 30 = CHF 7'500 / 30 = CHF 250.–. Geldstrafe = 60 Tagessätze × CHF 250 = CHF 15'000.–. Gemäss Art. 34 StGB beträgt ein Tagessatz zwischen CHF 30 und CHF 3'000 und orientiert sich an den wirtschaftlichen Verhältnissen des Täters.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Max wird wegen eines Vergehens zu einer Geldstrafe von 60 Tagessätzen verurteilt. Max verdient als Informatiker CHF 7'500 netto pro Monat.",
+    "optionen": [
+      "CHF 7'500.–",
+      "CHF 15'000.–",
+      "CHF 60'000.–",
+      "CHF 180'000.–"
+    ],
+    "korrekt": "CHF 15'000.–"
+  },
+  {
+    "id": "recht_strafrecht-s08",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Handelt es sich beim Diebstahl um ein Verbrechen, ein Vergehen oder eine Übertretung?",
+    "erklaerung": "Die Einteilung richtet sich nach der angedrohten Höchststrafe. Verbrechen sind Taten, die mit Freiheitsstrafe von mehr als 3 Jahren bedroht sind (Art. 10 Abs. 2 StGB). Da Diebstahl (Art. 139 Abs. 1 StGB) mit Freiheitsstrafe bis zu 5 Jahren bedroht ist, handelt es sich um ein Verbrechen. Dass alternativ auch eine Geldstrafe möglich ist, ändert daran nichts — massgebend ist die angedrohte Höchststrafe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Diebstahl (Art. 139 Abs. 1 StGB) wird mit Freiheitsstrafe bis zu fünf Jahren oder Geldstrafe bestraft.",
+    "optionen": [
+      "Vergehen, weil auch eine Geldstrafe möglich ist (Art. 10 Abs. 3 StGB).",
+      "Verbrechen, weil Diebstahl ein schweres Delikt ist.",
+      "Übertretung, weil es sich um eine alltägliche Straftat handelt.",
+      "Verbrechen, weil Freiheitsstrafe bis zu 5 Jahren möglich ist."
+    ],
+    "korrekt": "Verbrechen, weil Freiheitsstrafe bis zu 5 Jahren möglich ist."
+  },
+  {
+    "id": "recht_strafrecht-s09",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemeinnützige Arbeit kann nur mit Zustimmung des Täters angeordnet werden.",
+    "erklaerung": "Gemäss Art. 37 StGB kann gemeinnützige Arbeit nur mit Zustimmung des Täters angeordnet werden. Sie beträgt bei Vergehen höchstens 720 Stunden (Art. 37 StGB) und bei Übertretungen höchstens 360 Stunden (Art. 107 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-s10",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Das StGB besteht aus dem {0} Teil (Art. 1–110) und dem {1} Teil (Art. 111–332).",
+    "erklaerung": "Der allgemeine Teil des StGB (Art. 1–110) enthält die für alle Straftatbestände geltenden Regeln (z.B. Schuldfähigkeit, Strafarten, Verjährung). Der besondere Teil (Art. 111–332) ist eine Auflistung aller unter Strafe stehenden Handlungen (z.B. Diebstahl, Körperverletzung, Mord).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "allgemeinen",
+        "optionen": [
+          "Allgemeinen",
+          "allgemein",
+          "AT"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "besonderen",
+        "optionen": [
+          "Besonderen",
+          "besonder",
+          "BT"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-s11",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Sachbeschädigung ist ein Vergehen.",
+    "erklaerung": "Vergehen sind Taten, die mit Freiheitsstrafe bis zu 3 Jahren oder Geldstrafe bedroht sind (Art. 10 Abs. 3 StGB). Da Art. 144 StGB eine Freiheitsstrafe bis zu drei Jahren vorsieht (also nicht mehr als 3 Jahre), handelt es sich um ein Vergehen, nicht um ein Verbrechen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Sachbeschädigung (Art. 144 StGB) wird mit Freiheitsstrafe bis zu drei Jahren oder Geldstrafe bestraft.",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-v01",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Grundsatz gilt beim Vollzug einer Freiheitsstrafe (Art. 74 StGB)?",
+    "erklaerung": "Gemäss Art. 74 StGB ist beim Vollzug einer Freiheitsstrafe die Menschenwürde zu achten. Die Rechte der inhaftierten Person dürfen nur so weit beschränkt werden, als der Freiheitsentzug und das Zusammenleben in der Vollzugseinrichtung es erfordern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die inhaftierte Person soll möglichst hart bestraft werden.",
+      "Der Strafvollzug soll primär der Vergeltung dienen.",
+      "Die Menschenwürde ist zu achten; Rechte dürfen nur so weit beschränkt werden, als der Freiheitsentzug es erfordert.",
+      "Die inhaftierte Person verliert sämtliche Grundrechte."
+    ],
+    "korrekt": "Die Menschenwürde ist zu achten; Rechte dürfen nur so weit beschränkt werden, als der Freiheitsentzug es erfordert."
+  },
+  {
+    "id": "recht_strafrecht-v02",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Vollzugsformen sieht das StGB vor? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das StGB sieht vier Vollzugsformen vor: Normalvollzug (Art. 77 StGB), Arbeitsexternat (Art. 77a StGB), Halbgefangenschaft (Art. 77b StGB) und elektronische Überwachung (Art. 79 Abs. 1 StGB). «Hausarrest ohne Kontrolle» gibt es nicht als Vollzugsform.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Normalvollzug (Art. 77 StGB)",
+      "Halbgefangenschaft (Art. 77b StGB)",
+      "Elektronische Überwachung (Art. 79 Abs. 1 StGB)",
+      "Hausarrest ohne Kontrolle"
+    ],
+    "korrekt": [
+      "Normalvollzug (Art. 77 StGB)",
+      "Halbgefangenschaft (Art. 77b StGB)",
+      "Elektronische Überwachung (Art. 79 Abs. 1 StGB)"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-v03",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die inhaftierte Person ist während des Strafvollzugs zur Arbeit verpflichtet (Art. 81 Abs. 1 StGB).",
+    "erklaerung": "Gemäss Art. 81 Abs. 1 und Art. 83 Abs. 1 StGB ist die inhaftierte Person zur Arbeit verpflichtet und erhält dafür ein leistungsabhängiges Entgelt. Ein Teil des Entgelts kann frei verfügt werden; aus dem anderen wird eine Rücklage für die Zeit nach der Entlassung gebildet (Art. 83 Abs. 2 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-v04",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet «Halbgefangenschaft» (Art. 77b StGB)?",
+    "erklaerung": "Bei der Halbgefangenschaft (Art. 77b StGB) setzt die verurteilte Person ihre bisherige Arbeit oder Ausbildung während des Vollzugs fort und verbringt nur die Ruhe- und Freizeit in der Anstalt. Sie ist vorgesehen für Freiheitsstrafen von 6 Monaten bis zu 1 Jahr, wenn keine Flucht- oder Wiederholungsgefahr besteht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Person setzt ihre Arbeit oder Ausbildung tagsüber fort und verbringt nur die Ruhe- und Freizeit in der Anstalt.",
+      "Die Person verbüsst die Hälfte der Strafe im Gefängnis und die andere Hälfte zu Hause.",
+      "Die Person erhält die halbe Strafe, die eigentlich vorgesehen wäre.",
+      "Die Person wird nur jede zweite Woche eingesperrt."
+    ],
+    "korrekt": "Die Person setzt ihre Arbeit oder Ausbildung tagsüber fort und verbringt nur die Ruhe- und Freizeit in der Anstalt."
+  },
+  {
+    "id": "recht_strafrecht-v05",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Hat eine inhaftierte Person {0} der Strafe verbüsst (mindestens aber 3 Monate), ist sie bedingt zu entlassen, sofern das Verhalten im Strafvollzug dies rechtfertigt (Art. 86 Abs. 1 StGB).",
+    "erklaerung": "Gemäss Art. 86 Abs. 1 StGB ist eine inhaftierte Person bedingt zu entlassen, wenn sie 2/3 der Strafe (mindestens 3 Monate) verbüsst hat, sofern das Verhalten im Strafvollzug dies rechtfertigt und nicht anzunehmen ist, dass weitere Straftaten begangen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "2/3",
+        "optionen": [
+          "zwei Drittel",
+          "zwei drittel",
+          "⅔"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-v06",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wann ist der bedingte Strafvollzug möglich (Art. 42 Abs. 1 StGB)?",
+    "erklaerung": "Gemäss Art. 42 Abs. 1 StGB können Freiheitsstrafen von weniger als 2 Jahren (also bis 24 Monate) sowie Geldstrafen und gemeinnützige Arbeit bedingt ausgesprochen werden, wenn eine unbedingte Strafe nicht notwendig erscheint, um den Täter von weiteren Straftaten abzuhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Bei allen Strafen, unabhängig von der Dauer.",
+      "Bei Freiheitsstrafen von weniger als 2 Jahren, sowie bei Geldstrafen und gemeinnütziger Arbeit.",
+      "Nur bei Geldstrafen und Bussen.",
+      "Bei Freiheitsstrafen von weniger als 5 Jahren."
+    ],
+    "korrekt": "Bei Freiheitsstrafen von weniger als 2 Jahren, sowie bei Geldstrafen und gemeinnütziger Arbeit."
+  },
+  {
+    "id": "recht_strafrecht-v07",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Kommt für Peter ein bedingter oder ein teilbedingter Strafvollzug in Frage?",
+    "erklaerung": "Obersatz: Es ist zu prüfen, ob ein bedingter oder teilbedingter Strafvollzug möglich ist. Voraussetzungen: Der bedingte Vollzug (Art. 42 StGB) gilt nur für Freiheitsstrafen unter 24 Monaten — Peters Strafe von 30 Monaten übersteigt diese Grenze. Der teilbedingte Vollzug (Art. 43 StGB) ist bei Freiheitsstrafen von mehr als 12 und weniger als 36 Monaten möglich. Subsumtion: Peters Strafe von 30 Monaten liegt im Bereich von Art. 43 StGB. Schlussfolgerung: Ein teilbedingter Vollzug kommt in Frage, bei dem ein unbedingter Teil (mind. 6 Monate, max. Hälfte der Gesamtstrafe) verbüsst werden muss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Peter wird zu einer Freiheitsstrafe von 30 Monaten verurteilt. Er hat sich bisher nichts zuschulden kommen lassen.",
+    "optionen": [
+      "Weder noch — bei 30 Monaten muss die Strafe vollständig verbüsst werden.",
+      "Bedingter Vollzug, weil die Strafe unter 36 Monaten liegt.",
+      "Teilbedingter Vollzug (Art. 43 StGB), weil die Strafe zwischen 12 und 36 Monaten liegt.",
+      "Bedingter Vollzug, weil Peter unbescholten ist."
+    ],
+    "korrekt": "Teilbedingter Vollzug (Art. 43 StGB), weil die Strafe zwischen 12 und 36 Monaten liegt."
+  },
+  {
+    "id": "recht_strafrecht-v08",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Nach wie vielen Jahren kann Claudia frühestens bedingt entlassen werden?",
+    "erklaerung": "Gemäss Art. 86 Abs. 1 StGB ist eine bedingte Entlassung möglich, wenn 2/3 der Strafe verbüsst wurden (mindestens 3 Monate). 2/3 von 6 Jahren = 4 Jahre. Voraussetzung ist, dass das Verhalten im Strafvollzug dies rechtfertigt und nicht anzunehmen ist, dass weitere Straftaten begangen werden. Da Claudia sich vorbildlich verhalten hat, kann sie nach 4 Jahren bedingt entlassen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Claudia wurde zu einer Freiheitsstrafe von 6 Jahren verurteilt. Sie hat sich im Strafvollzug vorbildlich verhalten.",
+    "optionen": [
+      "Nach 4 Jahren (2/3 der Strafe, Art. 86 Abs. 1 StGB).",
+      "Nach 5 Jahren.",
+      "Nach 3 Jahren (Hälfte der Strafe).",
+      "Gar nicht — bei Strafen über 5 Jahre ist keine bedingte Entlassung möglich."
+    ],
+    "korrekt": "Nach 4 Jahren (2/3 der Strafe, Art. 86 Abs. 1 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-v09",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bussen sind immer unbedingt — sie können nicht bedingt ausgesprochen werden.",
+    "erklaerung": "Gemäss Art. 42 StGB können Freiheitsstrafen (unter 24 Monaten), Geldstrafen und gemeinnützige Arbeit bedingt ausgesprochen werden. Bussen hingegen sind immer unbedingt. Eine bedingte Strafe kann aber mit einer unbedingten Geldstrafe oder Busse verbunden werden (Art. 42 Abs. 4 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-v10",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Für welche Freiheitsstrafen ist die elektronische Überwachung (z.B. Fussfessel) vorgesehen?",
+    "erklaerung": "Die elektronische Überwachung (Art. 79 Abs. 1 StGB) ist bei Freiheitsstrafen von 20 Tagen bis 12 Monaten möglich. Die Person wird ausserhalb des Gefängnisses elektronisch überwacht (z.B. mittels Fussfessel). Sie kann auch für 3 bis 12 Monate in der letzten Phase einer langen Gefängnisstrafe angeordnet werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur lebenslange Freiheitsstrafen.",
+      "Freiheitsstrafen von 1 bis 5 Jahren.",
+      "Freiheitsstrafen von 20 Tagen bis 12 Monaten (Art. 79 Abs. 1 StGB).",
+      "Alle Freiheitsstrafen bis 20 Jahre."
+    ],
+    "korrekt": "Freiheitsstrafen von 20 Tagen bis 12 Monaten (Art. 79 Abs. 1 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-v11",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Maria muss in den Strafvollzug zurückkehren und die restliche Strafe absitzen.",
+    "erklaerung": "Gemäss Art. 89 Abs. 1 StGB wird die bedingt entlassene Person, die während der Probezeit ein Verbrechen oder Vergehen begeht, in den Strafvollzug zurückgebracht und muss die restliche Strafe verbüssen. Die bedingte Entlassung (Art. 86 StGB) steht also unter der Bedingung, dass sich die Person bewährt. Bewährt sie sich, ist sie endgültig entlassen (Art. 88 StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Maria wird bedingt aus dem Strafvollzug entlassen. Während der Probezeit begeht sie erneut ein Vergehen.",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-m01",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist die Grundvoraussetzung für eine Massnahme statt einer Freiheitsstrafe (Art. 61 StGB)?",
+    "erklaerung": "Eine Massnahme (z.B. Art. 59, 60, 61 StGB) kommt in Frage, wenn die Strafe für den Täter ungeeignet ist und er behandlungsbedürftig und -fähig ist (z.B. psychische Störung, Suchtkrankheit). Anders als bei der Freiheitsstrafe orientiert sich die Dauer der Massnahme nicht am Verschulden, sondern am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_sanktionen_01.svg",
+      "alt": "Strafrechtliche Sanktionen: Strafen und Massnahmen"
+    },
+    "optionen": [
+      "Die Strafe ist für den Täter ungeeignet und er ist behandlungsbedürftig und -fähig.",
+      "Der Täter ist minderjährig.",
+      "Der Täter hat ein besonders schweres Verbrechen begangen.",
+      "Das Opfer wünscht eine mildere Bestrafung."
+    ],
+    "korrekt": "Die Strafe ist für den Täter ungeeignet und er ist behandlungsbedürftig und -fähig."
+  },
+  {
+    "id": "recht_strafrecht-m02",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Bei Massnahmen korreliert die Dauer mit dem Verschulden des Täters — je schwerer das Verschulden, desto länger die Massnahme.",
+    "erklaerung": "Im Gegensatz zu Freiheitsstrafen korreliert bei Massnahmen die Dauer nicht mit dem Verschulden (Art. 59 Abs. 4 und Art. 60 Abs. 4 StGB). Vielmehr orientiert sie sich am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit. Eine Massnahme kann daher auch länger dauern als eine Freiheitsstrafe für dasselbe Delikt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-m03",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Bei einer Verwahrung muss eine allfällige Entlassung jeweils {0} überprüft werden (Art. 64b StGB).",
+    "erklaerung": "Gemäss Art. 64b StGB muss bei einer Verwahrung die Möglichkeit einer Entlassung jährlich psychiatrisch überprüft werden. Die Verwahrung kann bei bestimmten schweren Straftaten im Anschluss an die Freiheitsstrafe angeordnet werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "jährlich",
+        "optionen": [
+          "jaehrlich",
+          "jedes Jahr",
+          "einmal pro Jahr"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-m04",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was geschieht bei einer Verwahrung?",
+    "erklaerung": "Bei einer Verwahrung bleibt der Täter nach Verbüssung der Freiheitsstrafe in einer geschlossenen (psychiatrischen) Einrichtung eingesperrt. Dies ist bei bestimmten schweren Straftaten möglich, wenn vom Täter weiterhin eine erhebliche Gefahr ausgeht. Die Möglichkeit einer Entlassung muss jährlich psychiatrisch überprüft werden (Art. 64b StGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Täter bleibt nach Verbüssung der Freiheitsstrafe in einer geschlossenen Einrichtung eingesperrt, mit jährlicher psychiatrischer Überprüfung (Art. 64b StGB).",
+      "Die Freiheitsstrafe wird halbiert und durch eine Geldstrafe ersetzt.",
+      "Der Täter wird in ein anderes Land ausgewiesen.",
+      "Der Täter wird nach Verbüssung der Freiheitsstrafe sofort entlassen."
+    ],
+    "korrekt": "Der Täter bleibt nach Verbüssung der Freiheitsstrafe in einer geschlossenen Einrichtung eingesperrt, mit jährlicher psychiatrischer Überprüfung (Art. 64b StGB)."
+  },
+  {
+    "id": "recht_strafrecht-m05",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden sind «andere Massnahmen» im Sinne des StGB? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das StGB sieht neben dem Massnahmevollzug (Art. 59–61 StGB) und der Verwahrung (Art. 64 StGB) weitere Massnahmen vor: Berufsverbot (Art. 67 StGB), Fahrverbot (Art. 67b StGB) und das Entziehen von Gegenständen (z.B. Waffen, Drogen). Eine Steuererhöhung ist keine strafrechtliche Massnahme.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Berufsverbot (Art. 67 StGB)",
+      "Fahrverbot (Art. 67b StGB)",
+      "Gegenstände entziehen (z.B. Waffen, Drogen)",
+      "Erhöhung der Steuern des Täters"
+    ],
+    "korrekt": [
+      "Berufsverbot (Art. 67 StGB)",
+      "Fahrverbot (Art. 67b StGB)",
+      "Gegenstände entziehen (z.B. Waffen, Drogen)"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-m06",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Weshalb kann eine Massnahme für einen jungen Erwachsenen sinnvoller sein als eine Freiheitsstrafe?",
+    "erklaerung": "Bei jungen Erwachsenen (Art. 61 StGB) kann eine Massnahme sinnvoller sein, weil sie sich nicht am Verschulden, sondern am Behandlungsbedarf orientiert. Ziel ist die Vermittlung von Fähigkeiten für ein selbstverantwortliches und straffreies Leben. Eine reine Freiheitsstrafe adressiert die zugrunde liegenden Probleme (z.B. gestörte Persönlichkeitsentwicklung) möglicherweise nicht. A ist falsch: Eine Massnahme kann sogar länger dauern als eine Freiheitsstrafe. D ist falsch: Massnahmen sind oft teurer als Gefängnisstrafen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Im Fall «Carlos» wurde die Freiheitsstrafe eines jungen Erwachsenen in eine Massnahme umgewandelt.",
+    "optionen": [
+      "Weil Massnahmen für den Staat günstiger sind als Freiheitsstrafen.",
+      "Weil der Täter in einer Massnahme keinen Regeln unterworfen ist.",
+      "Weil eine Massnahme immer kürzer dauert als eine Freiheitsstrafe.",
+      "Weil die Massnahme sich am Behandlungsbedarf orientiert und auf Resozialisierung abzielt, was langfristig die Rückfallgefahr senken kann."
+    ],
+    "korrekt": "Weil die Massnahme sich am Behandlungsbedarf orientiert und auf Resozialisierung abzielt, was langfristig die Rückfallgefahr senken kann."
+  },
+  {
+    "id": "recht_strafrecht-m07",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Massnahme kann länger dauern als die Freiheitsstrafe, die für dasselbe Delikt verhängt worden wäre, weil sich ihre Dauer am Gesundheitszustand und am Sicherheitsbedürfnis orientiert.",
+    "erklaerung": "Da die Dauer einer Massnahme nicht am Verschulden, sondern am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit orientiert ist (Art. 59 Abs. 4 / Art. 60 Abs. 4 StGB), kann sie tatsächlich länger dauern als eine verschuldensbasierte Freiheitsstrafe. Die Massnahme dauert in der Regel weniger als 5 Jahre, kann aber verlängert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-m08",
+    "fach": "Recht",
+    "thema": "Massnahmen & Verwahrung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Woran orientiert sich die Dauer einer Massnahme im Unterschied zur Freiheitsstrafe?",
+    "erklaerung": "Anders als bei Freiheitsstrafen, wo das Strafmass sich nach dem Verschulden des Täters richtet (Art. 47 StGB), orientiert sich die Dauer einer Massnahme am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit (Art. 59 Abs. 4 / Art. 60 Abs. 4 StGB). Die Massnahme endet, wenn der Behandlungszweck erreicht ist oder keine Gefahr mehr besteht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Am Wunsch des Opfers.",
+      "Am Verschulden des Täters, genau wie bei der Freiheitsstrafe.",
+      "An den finanziellen Mitteln des Staates.",
+      "Am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit."
+    ],
+    "korrekt": "Am Gesundheitszustand des Täters und dem Sicherheitsbedürfnis der Allgemeinheit."
+  },
+  {
+    "id": "recht_strafrecht-t01",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was prüft die objektive Tatbestandsmässigkeit?",
+    "erklaerung": "Bei der objektiven Tatbestandsmässigkeit wird geprüft, ob der Sachverhalt die Tatbestandsmerkmale (TBM) eines Straftatbestandes im besonderen Teil des StGB erfüllt. Es wird also festgestellt, ob ein Unrecht vorliegt — unabhängig von der inneren Einstellung des Täters.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_pruefschema_01.svg",
+      "alt": "Dreistufiges Prüfschema der Strafbarkeit"
+    },
+    "optionen": [
+      "Ob dem Täter die Tat vorgeworfen werden kann (Schuldfähigkeit).",
+      "Ob der Sachverhalt die Tatbestandsmerkmale eines Artikels im besonderen Teil des StGB erfüllt.",
+      "Ob ein Rechtfertigungsgrund vorliegt.",
+      "Ob der Täter vorsätzlich oder fahrlässig gehandelt hat."
+    ],
+    "korrekt": "Ob der Sachverhalt die Tatbestandsmerkmale eines Artikels im besonderen Teil des StGB erfüllt."
+  },
+  {
+    "id": "recht_strafrecht-t02",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die subjektive Tatbestandsmässigkeit unterscheidet drei Varianten: {0}, {1} und Zufall.",
+    "erklaerung": "Die subjektive Tatbestandsmässigkeit befasst sich mit der inneren Einstellung des Täters. Es gibt drei Varianten: 1) Vorsatz (Art. 12 Abs. 2 StGB): Der Täter handelt mit Wissen und Willen. 2) Fahrlässigkeit (Art. 12 Abs. 3 StGB): Der Täter verletzt eine Sorgfaltspflicht. 3) Zufall: Dem Täter kann kein Vorwurf gemacht werden. Nur bei Vorsatz und Fahrlässigkeit ist eine Bestrafung möglich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Vorsatz",
+        "optionen": [
+          "vorsatz"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Fahrlässigkeit",
+        "optionen": [
+          "fahrlässigkeit",
+          "Fahrlaessigkeit"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-t03",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Für eine Bestrafung ist mindestens Vorsatz oder Fahrlässigkeit nötig — bei Zufall bleibt der Täter straffrei.",
+    "erklaerung": "Gemäss Art. 12 Abs. 1 i.V.m. Abs. 3 StGB ist für eine Bestrafung mindestens Fahrlässigkeit erforderlich. Wenn dem Täter kein Vorwurf gemacht werden kann (Zufall), bleibt er straffrei. Weder Wissen und Willen (Vorsatz) noch eine Sorgfaltspflichtverletzung (Fahrlässigkeit) liegen vor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-t04",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Vorsatz von Fahrlässigkeit?",
+    "erklaerung": "Vorsatz (Art. 12 Abs. 2 StGB): Der Täter führt die Handlung mit Wissen und Willen aus — er will, dass der Taterfolg eintritt. Wichtig: Für Vorsatz ist keine Planung erforderlich. Fahrlässigkeit (Art. 12 Abs. 3 StGB): Der Täter verletzt eine Sorgfaltspflicht — er hätte nach Treu und Glauben vorsichtiger sein müssen. A ist falsch, weil Vorsatz keine Planung voraussetzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Vorsatz liegt nur bei Verbrechen vor; Fahrlässigkeit nur bei Vergehen.",
+      "Vorsatz: Der Täter handelt mit Wissen und Willen (Art. 12 Abs. 2 StGB). Fahrlässigkeit: Der Täter verletzt eine Sorgfaltspflicht (Art. 12 Abs. 3 StGB).",
+      "Fahrlässigkeit ist immer strafbar; Vorsatz nur bei schweren Delikten.",
+      "Vorsatz bedeutet, dass die Tat geplant war; Fahrlässigkeit bedeutet, dass sie spontan geschah."
+    ],
+    "korrekt": "Vorsatz: Der Täter handelt mit Wissen und Willen (Art. 12 Abs. 2 StGB). Fahrlässigkeit: Der Täter verletzt eine Sorgfaltspflicht (Art. 12 Abs. 3 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-t05",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Wie ist Tims Handlung aus subjektiver Sicht einzuordnen?",
+    "erklaerung": "Tim handelte fahrlässig (Art. 12 Abs. 3 StGB). Er wollte nie jemanden treffen (kein Vorsatz), hätte aber nach Treu und Glauben damit rechnen müssen, dass im Wald Menschen spazieren, die getroffen werden könnten. Es liegt eine Sorgfaltspflichtverletzung vor. Es handelt sich nicht um Zufall, da ein vernünftiger Mensch diese Gefahr hätte erkennen können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Tim wirft Steine in den Wald. Dabei trifft er eine Spaziergängerin und verletzt sie.",
+    "optionen": [
+      "Notwehr — Tim wollte sich verteidigen.",
+      "Fahrlässigkeit — Tim hätte damit rechnen müssen, dass im Wald Personen spazieren (Art. 12 Abs. 3 StGB).",
+      "Vorsatz — Tim hat absichtlich auf die Spaziergängerin geworfen.",
+      "Zufall — Tim konnte nicht wissen, dass jemand im Wald ist."
+    ],
+    "korrekt": "Fahrlässigkeit — Tim hätte damit rechnen müssen, dass im Wald Personen spazieren (Art. 12 Abs. 3 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-t06",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Schritte gehören zum Falllösungsschema im Strafrecht (Voraussetzungen der Strafbarkeit)? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das Falllösungsschema im Strafrecht prüft: 1) Tatbestandsmässigkeit (objektiv: TBM erfüllt? / subjektiv: Vorsatz oder Fahrlässigkeit?), 2) Strafantrag (Art. 30 StGB) bei Antragsdelikten, 3) Verjährung (Art. 97 StGB), 4) Rechtfertigungsgründe (Notwehr, Notstand, Einwilligung, gesetzlich erlaubte Handlung), 5) Schuldausschliessungsgründe (Schuldunfähigkeit, Notwehrexzess, Zwang). Die Zivilhaftung (C) ist keine strafrechtliche Frage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Tatbestandsmässigkeit (objektiv und subjektiv)",
+      "Prüfung von Rechtfertigungsgründen",
+      "Feststellung der Zivilhaftung des Täters",
+      "Prüfung von Schuldausschliessungsgründen"
+    ],
+    "korrekt": [
+      "Tatbestandsmässigkeit (objektiv und subjektiv)",
+      "Prüfung von Rechtfertigungsgründen",
+      "Prüfung von Schuldausschliessungsgründen"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-t07",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Wie ist die Handlung aus subjektiver Sicht einzuordnen (Art. 12 StGB)?",
+    "erklaerung": "Es handelt sich um Zufall (Art. 12 Abs. 1 i.V.m. Abs. 3 StGB). Der Taterfolg tritt ein, ohne dass dem Täter ein Vorwurf gemacht werden könnte: Er handelte nicht absichtlich (kein Vorsatz), und es kann ihm nach Treu und Glauben auch keine Sorgfaltspflichtverletzung vorgeworfen werden, da auf einer übersichtlichen Wiese nicht damit zu rechnen ist, dass plötzlich eine Drohne vorbeifliegt. Die Folge: Straffreiheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Beim Steinewerfen auf einer übersichtlichen Wiese trifft ein Stein plötzlich eine vorbeifliegende Drohne und zerstört diese.",
+    "optionen": [
+      "Zufall — dem Täter kann kein Vorwurf gemacht werden, da auf einer übersichtlichen Wiese nicht mit plötzlich auftauchenden Drohnen zu rechnen ist.",
+      "Fahrlässigkeit — der Täter hätte mit Drohnen rechnen müssen.",
+      "Vorsatz — der Täter hat bewusst in die Luft geworfen.",
+      "Fahrlässigkeit — wer Steine wirft, muss immer mit unerwarteten Schäden rechnen."
+    ],
+    "korrekt": "Zufall — dem Täter kann kein Vorwurf gemacht werden, da auf einer übersichtlichen Wiese nicht mit plötzlich auftauchenden Drohnen zu rechnen ist."
+  },
+  {
+    "id": "recht_strafrecht-t08",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Welchen objektiven und subjektiven Tatbestand erfüllt Lisas Handlung?",
+    "erklaerung": "Objektiv erfüllt Lisa den Tatbestand des Diebstahls (Art. 139 Abs. 1 StGB): Sie hat eine fremde, bewegliche Sache (Kopfhörer) einem anderen weggenommen, um sich damit unrechtmässig zu bereichern. Subjektiv liegt Vorsatz vor (Art. 12 Abs. 2 StGB): Sie hat die Kopfhörer absichtlich eingesteckt und den Laden verlassen — sie handelte mit Wissen und Willen. Dass Lisa 16 Jahre alt ist, betrifft nicht die Tatbestandsmässigkeit, sondern ist relevant für das Jugendstrafrecht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Lisa (16) entwendet aus einem Laden ein Paar Kopfhörer im Wert von CHF 80.–. Sie steckt die Kopfhörer absichtlich in ihre Tasche und verlässt den Laden, ohne zu bezahlen.",
+    "optionen": [
+      "Objektiv: Diebstahl (Art. 139 Abs. 1 StGB), da sie eine bewegliche Sache weggenommen hat. Subjektiv: Vorsatz (Art. 12 Abs. 2 StGB), da sie absichtlich gehandelt hat.",
+      "Objektiv: Diebstahl. Subjektiv: Fahrlässigkeit, weil sie jung ist.",
+      "Objektiv: Sachbeschädigung (Art. 144 StGB). Subjektiv: Fahrlässigkeit.",
+      "Objektiv: Betrug (Art. 146 StGB). Subjektiv: Vorsatz."
+    ],
+    "korrekt": "Objektiv: Diebstahl (Art. 139 Abs. 1 StGB), da sie eine bewegliche Sache weggenommen hat. Subjektiv: Vorsatz (Art. 12 Abs. 2 StGB), da sie absichtlich gehandelt hat."
+  },
+  {
+    "id": "recht_strafrecht-t09",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Für Vorsatz ist es zwingend nötig, dass die Tat im Voraus geplant wurde.",
+    "erklaerung": "Nein. Gemäss Art. 12 Abs. 2 StGB handelt vorsätzlich, wer die Tat mit Wissen und Willen ausführt. Für den Vorsatz ist nicht nötig, dass die Handlung geplant wurde. Auch eine spontane, aber bewusste Tat kann vorsätzlich sein — entscheidend ist, dass der Täter den Taterfolg will.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-p01",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Antragsdelikt (Art. 30 StGB)?",
+    "erklaerung": "Antragsdelikte (Art. 30 StGB) sind Delikte, die nur verfolgt werden können, wenn das Opfer einen Strafantrag stellt. Es handelt sich typischerweise um weniger schwere Delikte. Erkennbar sind sie daran, dass im Text des Straftatbestandes der Wortlaut «wird auf Antrag bestraft» vorkommt. Wünscht das Opfer keine Bestrafung, bleibt der Täter straffrei.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ein Delikt, das immer von Amtes wegen verfolgt wird.",
+      "Ein Delikt, das nur auf Antrag des Opfers verfolgt wird.",
+      "Ein Delikt, das nur bei Jugendlichen verfolgt wird.",
+      "Ein Delikt, bei dem der Täter einen Antrag auf milde Bestrafung stellen kann."
+    ],
+    "korrekt": "Ein Delikt, das nur auf Antrag des Opfers verfolgt wird."
+  },
+  {
+    "id": "recht_strafrecht-p02",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Offizialdelikte werden von Amtes wegen verfolgt, unabhängig davon, ob das Opfer eine Bestrafung wünscht.",
+    "erklaerung": "Offizialdelikte werden von Amtes wegen (durch die Strafverfolgungsbehörden) verfolgt, d.h. es spielt keine Rolle, ob das Opfer die Bestrafung des Täters wünscht. Die meisten Straftatbestände sind Offizialdelikte. Offizialdelikte sind per Ausschluss identifizierbar: Alle Tatbestände, bei denen nicht ausdrücklich erwähnt ist, dass es sich um Antragsdelikte handelt, sind Offizialdelikte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-p03",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Verjährungsfristen für Straftaten sind in Art. {0} StGB geregelt.",
+    "erklaerung": "Art. 97 StGB definiert die Verjährungsfristen in Abhängigkeit der maximalen Strafe, die für einen Straftatbestand möglich ist. Die Verjährung misst sich also am möglichen Strafrahmen, nicht am effektiven Urteil. Art. 101 StGB listet die Straftaten auf, die nie verjähren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "97",
+        "optionen": [
+          "97 StGB"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-p04",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Woran erkennt man im Gesetzestext, ob es sich um ein Antragsdelikt handelt?",
+    "erklaerung": "Antragsdelikte sind daran erkennbar, dass im Text des Straftatbestandes im besonderen Teil des StGB der Wortlaut «wird auf Antrag bestraft» vorkommt. Fehlt dieser Hinweis, handelt es sich um ein Offizialdelikt. A ist falsch: «Von Amtes wegen» wird nicht ausdrücklich erwähnt, da dies der Normalfall ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Am Wortlaut «wird von Amtes wegen bestraft» im Straftatbestand.",
+      "Am Wortlaut «wird auf Antrag bestraft» im Straftatbestand (Art. 30 StGB).",
+      "An einem speziellen Hinweis im allgemeinen Teil des StGB.",
+      "An der Höhe der angedrohten Strafe — Antragsdelikte sind immer Übertretungen."
+    ],
+    "korrekt": "Am Wortlaut «wird auf Antrag bestraft» im Straftatbestand (Art. 30 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-p05",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Woran orientiert sich die Verjährungsfrist eines Delikts?",
+    "erklaerung": "Die Verjährungsfrist (Art. 97 StGB) richtet sich nach der maximalen Strafe, die im Straftatbestand des besonderen Teils des StGB angedroht wird — nicht nach dem effektiven Urteil. Je schwerer das mögliche Strafmass, desto länger die Verjährungsfrist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "An der maximalen Strafe, die der Straftatbestand im besonderen Teil des StGB vorsieht.",
+      "Am Alter des Täters zum Zeitpunkt der Tat.",
+      "Am effektiven Urteil, das im konkreten Fall ausgesprochen wurde.",
+      "Am Wunsch des Opfers."
+    ],
+    "korrekt": "An der maximalen Strafe, die der Straftatbestand im besonderen Teil des StGB vorsieht."
+  },
+  {
+    "id": "recht_strafrecht-p06",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Was passiert, wenn die Mutter keinen Strafantrag stellt?",
+    "erklaerung": "Der geringfügige Diebstahl unter Angehörigen ist ein Antragsdelikt. Gemäss Art. 30 StGB werden Antragsdelikte nur verfolgt, wenn das Opfer einen Strafantrag stellt. Da die Mutter keinen Strafantrag stellt, bleibt Hansli straffrei. Dies entspricht dem Gedanken, dass bei leichteren Delikten im familiären Umfeld das Opfer selbst entscheiden soll, ob eine Strafverfolgung gewünscht ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Hansli (14) stiehlt seiner Mutter 20 Franken aus dem Portemonnaie. Diebstahl ist gemäss Art. 139 Abs. 1 StGB grundsätzlich ein Offizialdelikt. Der geringfügige Diebstahl unter Angehörigen (Art. 139 Abs. 4 i.V.m. Art. 172ter StGB) ist jedoch ein Antragsdelikt.",
+    "optionen": [
+      "Hansli wird trotzdem bestraft, weil Diebstahl immer von Amtes wegen verfolgt wird.",
+      "Die Polizei entscheidet selbst, ob sie den Fall verfolgt.",
+      "Hansli wird bestraft, aber mit einer milderen Strafe.",
+      "Hansli bleibt straffrei, weil es sich bei geringfügigem Diebstahl unter Angehörigen um ein Antragsdelikt handelt und kein Strafantrag vorliegt."
+    ],
+    "korrekt": "Hansli bleibt straffrei, weil es sich bei geringfügigem Diebstahl unter Angehörigen um ein Antragsdelikt handelt und kein Strafantrag vorliegt."
+  },
+  {
+    "id": "recht_strafrecht-p07",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Es gibt Straftaten, die gemäss Art. 101 StGB nie verjähren.",
+    "erklaerung": "Art. 101 StGB listet bestimmte besonders schwere Straftaten auf, die nicht verjähren (unverjährbar). Der Grundsatz der Verjährung (Art. 97 StGB) wird hier also durchbrochen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-p08",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Bei Delikten an Minderjährigen beginnt die Verjährung frühestens mit dem 25. Altersjahr des Opfers (Art. 97 Abs. 2 StGB). Weshalb gibt es diese Sonderregelung?",
+    "erklaerung": "Die Sonderregelung in Art. 97 Abs. 2 StGB trägt dem Umstand Rechnung, dass Minderjährige weniger selbstständig sind als Erwachsene und für Delikte an Minderjährigen regelmässig nahestehende Personen verantwortlich sind. Eine emotionale und materielle Emanzipation ist unter Umständen nötig, bevor ein Opfer in der Lage ist, Anzeige zu erstatten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil Minderjährige weniger selbstständig sind und die Täter häufig nahestehende Personen sind — eine emotionale und materielle Emanzipation kann nötig sein, bevor eine Anzeige möglich ist.",
+      "Weil Minderjährige automatisch von der Polizei überwacht werden.",
+      "Weil Minderjährige noch nicht in der Lage sind, Straftaten zu erkennen.",
+      "Weil das Gericht bei Minderjährigen mehr Zeit für die Untersuchung braucht."
+    ],
+    "korrekt": "Weil Minderjährige weniger selbstständig sind und die Täter häufig nahestehende Personen sind — eine emotionale und materielle Emanzipation kann nötig sein, bevor eine Anzeige möglich ist."
+  },
+  {
+    "id": "recht_strafrecht-p09",
+    "fach": "Recht",
+    "thema": "Strafantrag, Offizialdelikt & Verjährung",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wenn jemand für dieses Delikt tatsächlich nur zu 6 Monaten verurteilt wird, beträgt die Verjährungsfrist trotzdem 10 Jahre.",
+    "erklaerung": "Die Verjährungsfrist misst sich an der im Gesetz angedrohten Höchststrafe, nicht am effektiven Urteil. Da das Delikt mit maximal 3 Jahren Freiheitsstrafe bedroht ist, beträgt die Verjährungsfrist gemäss Art. 97 StGB 10 Jahre — unabhängig davon, wie hoch die tatsächliche Strafe ausfällt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Delikt, das mit maximal 3 Jahren Freiheitsstrafe bedroht ist, hat laut StGB 97 eine Verfolgungsverjährungsfrist von 10 Jahren.",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-r01",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Rechtfertigungsgründe kennt das schweizerische Strafrecht?",
+    "erklaerung": "Das Strafrecht kennt vier Rechtfertigungsgründe: 1) Einwilligung (z.B. Zustimmung zu einer Operation), 2) Gesetzlich erlaubte Handlung (Art. 14 StGB, z.B. polizeiliches Handeln), 3) Notwehr (Art. 15 StGB) und 4) Notstand (Art. 17/18 StGB). Liegt ein Rechtfertigungsgrund vor, ist die an sich strafbare Handlung ausnahmsweise gerechtfertigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur Einwilligung und Notwehr.",
+      "Selbsthilfe und Notwehr.",
+      "Nur Notwehr (Art. 15 StGB).",
+      "Einwilligung, gesetzlich erlaubte Handlung (Art. 14 StGB), Notwehr (Art. 15 StGB) und Notstand (Art. 17/18 StGB)."
+    ],
+    "korrekt": "Einwilligung, gesetzlich erlaubte Handlung (Art. 14 StGB), Notwehr (Art. 15 StGB) und Notstand (Art. 17/18 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-r02",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Notwehr (Art. 15 StGB) bedeutet, dass man einen rechtswidrigen Angriff in angemessener Weise abwehren darf.",
+    "erklaerung": "Gemäss Art. 15 StGB ist derjenige, der ohne Recht angegriffen oder unmittelbar mit einem Angriff bedroht wird, berechtigt, den Angriff in einer den Umständen angemessenen Weise abzuwehren. Die Folge ist Straffreiheit. Wichtig: Die Abwehr muss verhältnismässig sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-r03",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Schuldunfähigkeit ist in Art. {0} StGB geregelt. Vollständige Schuldunfähigkeit führt zu {1}.",
+    "erklaerung": "Art. 19 StGB regelt die Schuldunfähigkeit. Vollständige Schuldunfähigkeit (Art. 19 Abs. 1 StGB) führt zu Straffreiheit — dem Täter kann das Unrecht nicht vorgeworfen werden. Verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB) führt zu einer milderen Bestrafung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "19",
+        "optionen": [
+          "19 StGB"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Straffreiheit",
+        "optionen": [
+          "straffreiheit",
+          "Freispruch"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-r04",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Unterschied zwischen rechtfertigender Notwehr (Art. 15 StGB) und entschuldbarer Notwehr (Art. 16 StGB)?",
+    "erklaerung": "Rechtfertigende Notwehr (Art. 15 StGB): Die Abwehr ist den Umständen angemessen → Straffreiheit. Entschuldbare Notwehr (Art. 16 StGB): Die Grenzen der Notwehr werden überschritten. Nach Art. 16 Abs. 1 StGB wird die Strafe gemildert. Nach Art. 16 Abs. 2 StGB handelt der Abwehrende nicht schuldhaft, wenn er die Grenzen in entschuldbarer Aufregung oder Bestürzung über den Angriff überschreitet → dann ebenfalls Straffreiheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Rechtfertigende Notwehr muss beantragt werden; entschuldbare Notwehr wird von Amtes wegen geprüft.",
+      "Rechtfertigende Notwehr gilt nur bei Angriffen auf die Person; entschuldbare Notwehr bei Angriffen auf Eigentum.",
+      "Es gibt keinen Unterschied — beide führen immer zu Straffreiheit.",
+      "Rechtfertigende Notwehr: Angemessene Abwehr → Straffreiheit. Entschuldbare Notwehr: Überschreitung der Notwehrgrenzen → mildere Strafe oder Straffreiheit bei Aufregung."
+    ],
+    "korrekt": "Rechtfertigende Notwehr: Angemessene Abwehr → Straffreiheit. Entschuldbare Notwehr: Überschreitung der Notwehrgrenzen → mildere Strafe oder Straffreiheit bei Aufregung."
+  },
+  {
+    "id": "recht_strafrecht-r05",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Liegt hier ein Notstand vor, der das Einschlagen des Fensters (Sachbeschädigung) rechtfertigt?",
+    "erklaerung": "Es liegt ein rechtfertigender Notstand (Art. 17 StGB) vor. Die beiden betroffenen Rechtsgüter sind «Leib und Leben der Nachbarn» und «Eigentum der Nachbarn (Fenster)». Leib und Leben sind immer höherwertig als Eigentum. Zur Rettung eines höherwertigen Rechtsguts darf ein geringerwertiges Rechtsgut straffrei geschädigt werden. Die Sachbeschädigung ist somit gerechtfertigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Sie wollen Ihre Nachbarn aus dem brennenden Haus retten. Dafür müssen Sie ein Fenster einschlagen, um ins Haus zu gelangen.",
+    "optionen": [
+      "Ja, aber nur wenn die Nachbarn Sie darum gebeten haben.",
+      "Nein, denn es liegt keine Notwehr vor (kein Angriff einer Person).",
+      "Ja, denn Leib und Leben der Nachbarn sind ein höherwertiges Rechtsgut als das Eigentum am Fenster (Art. 17 StGB).",
+      "Nein, Sachbeschädigung ist nie gerechtfertigt."
+    ],
+    "korrekt": "Ja, denn Leib und Leben der Nachbarn sind ein höherwertiges Rechtsgut als das Eigentum am Fenster (Art. 17 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-r06",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Schuldausschliessungsgründe kennt das StGB? (Mehrere Antworten möglich.)",
+    "erklaerung": "Schuldausschliessungsgründe sind: Schuldunfähigkeit (Art. 19 Abs. 1 StGB → Straffreiheit), verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB → mildere Strafe) und Notwehrexzess in entschuldbarer Aufregung (Art. 16 Abs. 2 StGB → keine Schuld). Unkenntnis des Gesetzes (D) ist kein Schuldausschliessungsgrund: «Unkenntnis des Gesetzes schützt nicht vor Strafe.»",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Schuldunfähigkeit (Art. 19 Abs. 1 StGB)",
+      "Verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB)",
+      "Notwehrexzess in entschuldbarer Aufregung (Art. 16 Abs. 2 StGB)",
+      "Unkenntnis des Gesetzes"
+    ],
+    "korrekt": [
+      "Schuldunfähigkeit (Art. 19 Abs. 1 StGB)",
+      "Verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB)",
+      "Notwehrexzess in entschuldbarer Aufregung (Art. 16 Abs. 2 StGB)"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-r07",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Wie ist Leas Handlung strafrechtlich zu beurteilen?",
+    "erklaerung": "Obersatz: Es ist zu prüfen, ob Leas Handlung durch Notwehr gerechtfertigt ist. Voraussetzungen (Art. 15 StGB): 1) Rechtswidriger Angriff oder unmittelbare Bedrohung, 2) Abwehr in angemessener Weise. Subsumtion: Lea wird mit einem Messer bedroht — ein rechtswidriger Angriff liegt vor. Die Abwehr mit einem Stock gegen einen Messerangriff ist den Umständen angemessen, da ein Messer eine potenziell tödliche Waffe ist. Schlussfolgerung: Rechtfertigende Notwehr (Art. 15 StGB) liegt vor → Straffreiheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Lea wird auf offener Strasse mit einem Messer bedroht. In Panik greift sie zu einem herumliegenden Stock und schlägt dem Angreifer so heftig auf den Arm, dass dieser bricht.",
+    "optionen": [
+      "Straffreiheit wegen rechtfertigender Notwehr (Art. 15 StGB), da der Angriff mit einem Messer eine angemessene Abwehr mit einem Stock rechtfertigt.",
+      "Strafbar wegen schwerer Körperverletzung — die Reaktion war übertrieben.",
+      "Straffreiheit wegen Notstand (Art. 17 StGB).",
+      "Strafbar, aber mildere Strafe wegen Notwehrexzess (Art. 16 Abs. 1 StGB)."
+    ],
+    "korrekt": "Straffreiheit wegen rechtfertigender Notwehr (Art. 15 StGB), da der Angriff mit einem Messer eine angemessene Abwehr mit einem Stock rechtfertigt."
+  },
+  {
+    "id": "recht_strafrecht-r08",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Verdächtige zeigt den Polizisten wegen Körperverletzung an. Wie ist die Situation rechtlich zu beurteilen?",
+    "erklaerung": "Die Handlung des Polizisten ist durch den Rechtfertigungsgrund der gesetzlich erlaubten Handlung (Art. 14 StGB) gedeckt. Die Polizei darf gemäss Polizeigesetz bestimmte Handlungen durchführen, die im StGB unter Strafe stehen würden (z.B. Freiheitsbeschränkung, angemessene Gewaltanwendung bei einer Verhaftung). Es handelt sich nicht um Notwehr, da kein rechtswidriger Angriff vorliegt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Polizist verhaftet einen Verdächtigen, wobei er ihn kurz am Arm festhält und auf den Boden drückt.",
+    "optionen": [
+      "Der Polizist ist nur straffrei, wenn der Verdächtige einwilligt.",
+      "Der Polizist macht sich strafbar, weil jede Gewaltanwendung verboten ist.",
+      "Der Polizist beruft sich auf Notwehr (Art. 15 StGB).",
+      "Der Polizist handelt im Rahmen einer gesetzlich erlaubten Handlung (Art. 14 StGB) — die Polizei darf gemäss Polizeigesetz bestimmte Handlungen vornehmen."
+    ],
+    "korrekt": "Der Polizist handelt im Rahmen einer gesetzlich erlaubten Handlung (Art. 14 StGB) — die Polizei darf gemäss Polizeigesetz bestimmte Handlungen vornehmen."
+  },
+  {
+    "id": "recht_strafrecht-r09",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Kann Marco sich erfolgreich auf Schuldunfähigkeit berufen?",
+    "erklaerung": "Art. 19 Abs. 4 StGB regelt die Situation, in der der Täter die temporäre Schuldunfähigkeit selbst zu verantworten hat (actio libera in causa). Da Marco sich absichtlich stark betrunken hat und dann gefahren ist, hat er die Schuldunfähigkeit selbst herbeigeführt. In solchen Fällen ist Art. 19 StGB nicht anwendbar und der Täter ist zu bestrafen. D ist falsch: Art. 19 StGB umfasst auch Drogen und Alkohol, nicht nur psychische Störungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Marco betrinkt sich absichtlich stark und verursacht danach betrunken einen schweren Autounfall, bei dem ein Fussgänger verletzt wird. Vor Gericht beruft sich Marco auf Schuldunfähigkeit (Art. 19 StGB) aufgrund seiner Trunkenheit.",
+    "optionen": [
+      "Ja, denn er war zum Tatzeitpunkt tatsächlich nicht schuldfähig.",
+      "Nein, denn Art. 19 StGB gilt nur bei psychischen Störungen, nicht bei Alkohol.",
+      "Ja, denn Trunkenheit ist immer ein Schuldausschliessungsgrund.",
+      "Nein, denn gemäss Art. 19 Abs. 4 StGB ist Art. 19 nicht anwendbar, wenn der Täter die Schuldunfähigkeit selbst zu verantworten hat."
+    ],
+    "korrekt": "Nein, denn gemäss Art. 19 Abs. 4 StGB ist Art. 19 nicht anwendbar, wenn der Täter die Schuldunfähigkeit selbst zu verantworten hat."
+  },
+  {
+    "id": "recht_strafrecht-r10",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Verminderte Schuldfähigkeit (Art. 19 Abs. 2 StGB) führt zu einer milderen Bestrafung, nicht zu vollständiger Straffreiheit.",
+    "erklaerung": "Gemäss Art. 19 Abs. 2 StGB wird bei verminderter Schuldfähigkeit die Strafe gemildert. Vollständige Straffreiheit tritt nur bei vollständiger Schuldunfähigkeit ein (Art. 19 Abs. 1 StGB). Bei verminderter Schuldfähigkeit kann dem Täter das Unrecht zwar teilweise, aber nicht vollständig vorgeworfen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-r11",
+    "fach": "Recht",
+    "thema": "Rechtfertigungs- & Schuldausschliessungsgründe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welches Beispiel illustriert den Rechtfertigungsgrund der Einwilligung?",
+    "erklaerung": "Die Einwilligung als Rechtfertigungsgrund bedeutet, dass man einer eigentlich unter Strafe stehenden Handlung zustimmen kann. Bei einer Operation würde der objektive und subjektive Straftatbestand der Körperverletzung grundsätzlich erfüllt sein. Da die Patientin aber der Operation zugestimmt hat, liegt eine Einwilligung vor und die Chirurgin macht sich nicht strafbar. A = gesetzlich erlaubte Handlung, C = Notstand, D = Notwehr.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ein Polizist nimmt bei einer Verhaftung den Verdächtigen am Arm.",
+      "Jemand wehrt sich mit einem Stock gegen einen Messerangriff.",
+      "Eine Patientin lässt sich im Spital den Blinddarm operieren — sie stimmt der Operation zu.",
+      "Jemand schlägt ein Fenster ein, um Nachbarn aus einem brennenden Haus zu retten."
+    ],
+    "korrekt": "Eine Patientin lässt sich im Spital den Blinddarm operieren — sie stimmt der Operation zu."
+  },
+  {
+    "id": "recht_strafrecht-a01",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche vier Formen der Tatbegehung durch mehrere Personen unterscheidet das Strafrecht?",
+    "erklaerung": "Das Strafrecht unterscheidet vier Formen der Tatbegehung durch mehrere Personen: 1) Mittäterschaft (gemeinsame Begehung), 2) Mittelbare Täterschaft (eine Person als «Werkzeug» benutzt), 3) Anstiftung (Art. 24 StGB: zur Tat überreden) und 4) Gehilfenschaft (Art. 25 StGB: Hilfeleistung bei der Tat).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_beteiligungsformen_01.svg",
+      "alt": "Übersicht der Beteiligungsformen bei mehreren Tatbeteiligten"
+    },
+    "optionen": [
+      "Planung, Durchführung, Unterstützung und Beobachtung",
+      "Haupttäter, Nebentäter, Helfer und Zuschauer",
+      "Mittäterschaft, mittelbare Täterschaft, Anstiftung und Gehilfenschaft",
+      "Anstiftung, Planung, Ausführung und Deckung"
+    ],
+    "korrekt": "Mittäterschaft, mittelbare Täterschaft, Anstiftung und Gehilfenschaft"
+  },
+  {
+    "id": "recht_strafrecht-a02",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Gehilfen werden gleich bestraft wie der Haupttäter.",
+    "erklaerung": "Gehilfen (Art. 25 StGB) werden milder bestraft als der Haupttäter. Da die Strafzumessung individuell geschieht und das Helfen als weniger schlimm beurteilt wird als das effektive Durchführen von Straftaten, soll die Strafe für Gehilfen gemildert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-a03",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Anstiftung ist in Art. {0} StGB geregelt, die Gehilfenschaft in Art. {1} StGB.",
+    "erklaerung": "Art. 24 StGB regelt die Anstiftung: Wer jemanden vorsätzlich zu einem Verbrechen oder Vergehen bestimmt hat, wird nach der Strafandrohung bestraft, die auf den Täter Anwendung findet. Art. 25 StGB regelt die Gehilfenschaft: Wer zu einem Verbrechen oder Vergehen vorsätzlich Hilfe leistet, wird milder bestraft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "24",
+        "optionen": [
+          "24 StGB"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "25",
+        "optionen": [
+          "25 StGB"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-a04",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet den Anstifter vom Gehilfen?",
+    "erklaerung": "Der Anstifter (Art. 24 StGB) wirkt so stark auf eine Person ein (via Bitte, Belohnung, Überredung), dass diese beschliesst, eine strafbare Handlung zu begehen. Der Anstifter wird gleich bestraft wie der Haupttäter. Der Gehilfe (Art. 25 StGB) leistet bei einer Straftat vorsätzlich Hilfe in untergeordneter Rolle (z.B. Schmiere stehen, Fluchtfahrzeug fahren). Der Gehilfe wird milder bestraft als der Haupttäter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Anstifter plant die Tat; der Gehilfe führt sie allein aus.",
+      "Der Anstifter ist immer der Haupttäter; der Gehilfe ist der Mittäter.",
+      "Der Anstifter bestimmt eine andere Person zur Tat (via Bitte, Belohnung, Überredung); der Gehilfe leistet bei einer Straftat Hilfe in untergeordneter Rolle.",
+      "Es gibt keinen Unterschied — beide werden gleich bestraft."
+    ],
+    "korrekt": "Der Anstifter bestimmt eine andere Person zur Tat (via Bitte, Belohnung, Überredung); der Gehilfe leistet bei einer Straftat Hilfe in untergeordneter Rolle."
+  },
+  {
+    "id": "recht_strafrecht-a05",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Rolle hat der Geliebte im strafrechtlichen Sinne?",
+    "erklaerung": "Der Geliebte ist Anstifter gemäss Art. 24 StGB. Er hat durch wiederholtes Einreden (Überredung) so stark auf die Frau eingewirkt, dass diese beschlossen hat, eine strafbare Handlung zu begehen. Der Anstifter wird gleich bestraft wie der Haupttäter, wobei die Strafzumessung individuell erfolgt. D ist falsch: Dank Art. 24 StGB können auch Personen bestraft werden, die eine Straftat nicht selbst ausgeführt haben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Der Geliebte einer Frau redet immer wieder auf diese ein, sie solle ihren Ehemann vergiften. Die Frau führt die Tat schliesslich aus.",
+    "optionen": [
+      "Er ist straffrei, da er die Tat nicht selbst ausgeführt hat.",
+      "Anstifter (Art. 24 StGB) — er hat durch Überredung den Tatentschluss bei der Frau geweckt.",
+      "Gehilfe (Art. 25 StGB) — er hat bei der Durchführung geholfen.",
+      "Mittäter — er hat bei der Planung mitgewirkt."
+    ],
+    "korrekt": "Anstifter (Art. 24 StGB) — er hat durch Überredung den Tatentschluss bei der Frau geweckt."
+  },
+  {
+    "id": "recht_strafrecht-a06",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Wie ist die Rolle der Frau strafrechtlich einzuordnen?",
+    "erklaerung": "Die Frau ist mittelbare Täterin. Bei der mittelbaren Täterschaft hat die Person die Tat nicht direkt, sondern indirekt begangen, indem sie eine andere Person als «Werkzeug» benutzt hat. Der geisteskranke Bruder versteht die Tragweite seines Handelns nicht und kann daher als «Werkzeug» instrumentalisiert werden. Die mittelbare Täterin wird so bestraft, als hätte sie die Tat selbst ausgeführt. Der Unterschied zur Anstiftung: Bei der Anstiftung fasst die ausführende Person selbst den Tatentschluss; bei der mittelbaren Täterschaft fehlt dieser eigene Entschluss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Eine Frau befiehlt ihrem geisteskranken Bruder, er soll ihren Ehemann töten. Der Bruder führt die Tat aus, ohne die Tragweite seines Handelns zu verstehen.",
+    "optionen": [
+      "Sie ist straffrei, weil sie die Tat nicht selbst ausgeführt hat.",
+      "Gehilfin (Art. 25 StGB), weil sie nur geholfen hat.",
+      "Mittelbare Täterin, weil sie ihren geisteskranken Bruder als «Werkzeug» benutzt hat.",
+      "Anstifterin (Art. 24 StGB), weil sie den Bruder zur Tat bestimmt hat."
+    ],
+    "korrekt": "Mittelbare Täterin, weil sie ihren geisteskranken Bruder als «Werkzeug» benutzt hat."
+  },
+  {
+    "id": "recht_strafrecht-a07",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Welche Rolle hat Karl im strafrechtlichen Sinne?",
+    "erklaerung": "Karl ist Gehilfe gemäss Art. 25 StGB. Er leistet bei der Straftat vorsätzlich Hilfe, indem er «Schmiere steht». Seine Unterstützung spielt eine eher untergeordnete Rolle. Er erfüllt selbst keinen Straftatbestand des besonderen Teils des StGB (er hat weder geraubt noch gedroht), doch die Gehilfenschaft ermöglicht seine Bestrafung. Karl wird milder bestraft als Peter (der Haupttäter). Alternative Argumentation: Falls Karl bei Entschliessung und Planung aktiv mitgewirkt hat, könnte auch Mittäterschaft in Frage kommen — dies hängt vom konkreten Sachverhalt ab.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Bei einem Bankraub steht Karl draussen vor der Bank «Schmiere» und beobachtet, ob die Polizei kommt, während Peter drinnen das Geld fordert.",
+    "optionen": [
+      "Karl ist straffrei, weil er die Bank nicht betreten hat.",
+      "Anstifter (Art. 24 StGB), weil er den Bankraub geplant hat.",
+      "Mittäter, weil er bei der Ausführung des Bankraubs aktiv mitwirkt.",
+      "Gehilfe (Art. 25 StGB), weil er durch das Schmirestehen Hilfe in untergeordneter Rolle leistet."
+    ],
+    "korrekt": "Gehilfe (Art. 25 StGB), weil er durch das Schmirestehen Hilfe in untergeordneter Rolle leistet."
+  },
+  {
+    "id": "recht_strafrecht-a08",
+    "fach": "Recht",
+    "thema": "Mehrere Täter*innen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Anstifter (Art. 24 StGB) wird gleich bestraft wie der Haupttäter.",
+    "erklaerung": "Gemäss Art. 24 StGB wird der Anstifter nach der gleichen Strafandrohung bestraft, die auf den Täter Anwendung findet. Die Strafzumessung erfolgt jedoch individuell — Täter und Anstifter können also durchaus unterschiedliche Urteile erhalten, auch wenn der Strafrahmen derselbe ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-u01",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was gibt der Straftatbestand im besonderen Teil des StGB bezüglich der Strafe vor?",
+    "erklaerung": "Der Straftatbestand im besonderen Teil des StGB definiert den Strafrahmen. Die im Gesetz angegebene Strafe ist die höchstmögliche Strafe für die schlimmstmögliche Variante dieses Delikts. Das Gericht muss bei der Strafzumessung begründen, wo innerhalb des Strafrahmens sich das Urteil befindet, basierend auf den individuellen Umständen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur die Strafart, aber keine Angabe zur Höhe.",
+      "Den Strafrahmen (die maximale Strafe), innerhalb dessen das Gericht die Strafe bemisst.",
+      "Die Mindeststrafe, die in jedem Fall verhängt werden muss.",
+      "Das exakte Strafmass, das verhängt werden muss."
+    ],
+    "korrekt": "Den Strafrahmen (die maximale Strafe), innerhalb dessen das Gericht die Strafe bemisst."
+  },
+  {
+    "id": "recht_strafrecht-u02",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Strafmindernde Faktoren bei der Strafzumessung sind in Art. 47 und Art. 48 StGB geregelt.",
+    "erklaerung": "Art. 47 StGB regelt die allgemeinen Strafzumessungsfaktoren (Verschulden des Täters, Beweggründe, Vorleben, persönliche Verhältnisse). Art. 48 StGB listet weitere strafmindernde Gründe auf (z.B. schwere Bedrängnis, Gehorsam, heftige Gemütsbewegung, aufrichtige Reue).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-u03",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Einträge im Strafregister sind in Art. {0} StGB geregelt.",
+    "erklaerung": "Art. 366 StGB regelt, welche Verurteilungen ins Strafregister eingetragen werden: alle Verurteilungen wegen Verbrechen und Vergehen (sofern eine Strafe oder Massnahme ausgesprochen wurde), bestimmte Übertretungen, ausländische Verurteilungen und Verurteilungen von Jugendlichen zu Freiheitsentzug.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "366",
+        "optionen": [
+          "366 StGB"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-u04",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Faktoren beeinflussen die Strafzumessung gemäss Art. 47 StGB? (Mehrere Antworten möglich.)",
+    "erklaerung": "Art. 47 StGB nennt als Strafzumessungsfaktoren: das Ausmass der Rechtsgutsverletzung (A), die Beweggründe (B) und das Vorleben sowie die persönlichen Verhältnisse des Täters (C). Das Vermögen des Opfers (D) ist kein Faktor der Strafzumessung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ausmass der Rechtsgutsverletzung",
+      "Beweggründe des Täters",
+      "Vorleben und persönliche Verhältnisse des Täters",
+      "Vermögen des Opfers"
+    ],
+    "korrekt": [
+      "Ausmass der Rechtsgutsverletzung",
+      "Beweggründe des Täters",
+      "Vorleben und persönliche Verhältnisse des Täters"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-u05",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie regelt Art. 49 StGB die Strafschärfung bei mehreren gleichzeitig begangenen Straftaten?",
+    "erklaerung": "Gemäss Art. 49 StGB (Strafschärfung bei Konkurrenz) kann das Gericht den Strafrahmen der schwersten Straftat um maximal 50% erhöhen, wenn mehrere Straftaten gleichzeitig begangen werden (z.B. Einbruchdiebstahl = Diebstahl + Hausfriedensbruch + Sachbeschädigung). Die gesetzliche Höchststrafe von 20 Jahren (Art. 40 StGB) bleibt dabei bestehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Es wird nur das schwerste Delikt bestraft; alle anderen werden fallengelassen.",
+      "Das Gericht kann den Strafrahmen der schwersten Straftat um maximal 50% erhöhen, unter Einhaltung der gesetzlichen Höchststrafe (Art. 40 StGB).",
+      "Jedes Delikt wird einzeln verurteilt und die Strafen werden nacheinander vollzogen.",
+      "Die Strafrahmen aller Einzeldelikte werden addiert."
+    ],
+    "korrekt": "Das Gericht kann den Strafrahmen der schwersten Straftat um maximal 50% erhöhen, unter Einhaltung der gesetzlichen Höchststrafe (Art. 40 StGB)."
+  },
+  {
+    "id": "recht_strafrecht-u06",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wann wird ein Eintrag im Strafregister entfernt, wenn jemand zu einer Freiheitsstrafe unter einem Jahr verurteilt wurde (Art. 369 Abs. 1 StGB)?",
+    "erklaerung": "Gemäss Art. 369 Abs. 1 StGB werden Urteile mit Freiheitsstrafen unter einem Jahr nach 10 Jahren von Amtes wegen aus dem Strafregister entfernt. Die Frist beginnt nach Ablauf der gerichtlich zugemessenen Strafdauer. Bei Strafen von 1–5 Jahren sind es 15 Jahre, bei Strafen ab 5 Jahren 20 Jahre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Eintrag wird nie entfernt.",
+      "15 Jahre nach Verbüssung der Strafe.",
+      "10 Jahre nach Ablauf der gerichtlich zugemessenen Strafdauer.",
+      "5 Jahre nach Verbüssung der Strafe."
+    ],
+    "korrekt": "10 Jahre nach Ablauf der gerichtlich zugemessenen Strafdauer."
+  },
+  {
+    "id": "recht_strafrecht-u07",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ist die Anhebung der Strafe von 7 auf 9 Monate mit dieser Begründung zulässig?",
+    "erklaerung": "Obersatz: Es ist zu prüfen, ob die Straferhöhung über das individuelle Verschulden hinaus aus generalpräventiven Gründen zulässig ist. Voraussetzungen: Art. 47 Abs. 1 StGB bestimmt, dass das Gericht die Strafe nach dem Verschulden des Täters bemisst. Das Strafmass richtet sich nach der Schwere des individuellen Verschuldens. Subsumtion: Das Gericht hat selbst festgestellt, dass die Tatschuld von M nur eine Strafe von 7 Monaten rechtfertigt. Die Erhöhung auf 9 Monate erfolgte nicht aufgrund persönlicher Umstände von M, sondern zur Abschreckung anderer (Generalprävention). Dies überschreitet das individuelle Verschulden. Schlussfolgerung: Die Anhebung ist unzulässig. Die Strafe darf das Mass des individuellen Verschuldens nicht übersteigen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Anwalt Aeppli regt sich auf: Sein Mandant Moser (M), ein unbescholtener 19-jähriger Gymnasiast, wurde wegen Diebstahls einer Kiste Weinflaschen (Warenwert CHF 320) zu 9 Monaten bedingter Freiheitsstrafe verurteilt. Das Gericht begründete: Die Tatschuld rechtfertige zwar nur 7 Monate, aber wegen häufiger Straftaten in der Aarbergergasse müsse ein Zeichen gesetzt werden.",
+    "optionen": [
+      "Ja, weil die Sicherheit der Anwohner Vorrang hat.",
+      "Nein, denn das Strafmass muss sich nach dem individuellen Verschulden des Täters richten (Art. 47 StGB) — eine Erhöhung aus Gründen der Generalprävention über das Verschulden hinaus ist unzulässig.",
+      "Nein, weil Diebstahl von CHF 320 gar nicht mit Freiheitsstrafe bestraft werden darf.",
+      "Ja, das Gericht kann zur Abschreckung potentieller Nachahmer die Strafe erhöhen."
+    ],
+    "korrekt": "Nein, denn das Strafmass muss sich nach dem individuellen Verschulden des Täters richten (Art. 47 StGB) — eine Erhöhung aus Gründen der Generalprävention über das Verschulden hinaus ist unzulässig."
+  },
+  {
+    "id": "recht_strafrecht-u08",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden sind strafmindernde Gründe gemäss Art. 48 StGB? (Mehrere Antworten möglich.)",
+    "erklaerung": "Art. 48 StGB listet strafmindernde Gründe auf: schwere Bedrängnis oder Drohung (A), aufrichtige Reue und Schadenersatz (B) sowie lang zurückliegende Tat mit Wohlverhalten (C). Die finanzielle Situation des Täters (D) ist kein strafmindernder Grund nach Art. 48 StGB.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Handeln aus schwerer Bedrängnis oder unter Drohung",
+      "Aufrichtige Reue und Schadenersatz durch den Täter",
+      "Die Tat ist lange her und der Täter hat sich seither wohl verhalten",
+      "Der Täter hat viel Geld und kann hohe Anwaltskosten tragen"
+    ],
+    "korrekt": [
+      "Handeln aus schwerer Bedrängnis oder unter Drohung",
+      "Aufrichtige Reue und Schadenersatz durch den Täter",
+      "Die Tat ist lange her und der Täter hat sich seither wohl verhalten"
+    ]
+  },
+  {
+    "id": "recht_strafrecht-u09",
+    "fach": "Recht",
+    "thema": "Strafzumessung & Strafregister",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Übertretungen werden grundsätzlich ins Strafregister eingetragen.",
+    "erklaerung": "Gemäss Art. 366 StGB werden grundsätzlich alle Verurteilungen wegen Verbrechen und Vergehen eingetragen, nicht aber alle Übertretungen. Nur die durch Verordnung des Bundesrates bezeichneten Übertretungen werden eingetragen. Die meisten Übertretungen (z.B. Ordnungsbussen) erscheinen nicht im Strafregister.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-j01",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Bestrafungsmöglichkeiten sieht das Jugendstrafgesetz (JStG) vor?",
+    "erklaerung": "Das JStG sieht vier Bestrafungsmöglichkeiten vor: 1) Verweis (JStG 22): förmliche Missbilligung der Tat, 2) Persönliche Leistung (JStG 23): gemeinnützige Arbeit oder Kurse, 3) Busse (JStG 24): bis CHF 2'000, 4) Freiheitsentzug (JStG 25): ab 15 Jahren, Einweisung in eine Anstalt. Die Strafrahmen für Erwachsene gelten nicht für Jugendliche.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Dieselben Strafen wie für Erwachsene.",
+      "Nur Freiheitsstrafe und Geldstrafe.",
+      "Verweis (JStG 22), persönliche Leistung (JStG 23), Busse (JStG 24) und Freiheitsentzug (JStG 25).",
+      "Nur Verweis und Busse."
+    ],
+    "korrekt": "Verweis (JStG 22), persönliche Leistung (JStG 23), Busse (JStG 24) und Freiheitsentzug (JStG 25)."
+  },
+  {
+    "id": "recht_strafrecht-j02",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Freiheitsentzug im Jugendstrafrecht ist erst ab einem Alter von 15 Jahren möglich.",
+    "erklaerung": "Gemäss JStG 25 kann Freiheitsentzug für Jugendliche ab 15 Jahren angeordnet werden. Der Jugendliche wird in eine Anstalt eingewiesen, die eine Mischung aus Familie, Schule, Arbeitsort und Gefängnis darstellt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-j03",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Verweis (JStG 22) ist eine {0} der Tat und kann mit einer Probezeit von {1} bis {2} Jahren verbunden werden.",
+    "erklaerung": "Ein Verweis (JStG 22) ist eine förmliche Missbilligung der Tat — ein Brief des Richters, der dem Jugendlichen erklärt, dass sein Verhalten verboten ist. Ein Verweis kann mit einer Probezeit von 6 Monaten bis 2 Jahren verbunden werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "förmliche Missbilligung",
+        "optionen": [
+          "formelle Missbilligung",
+          "Missbilligung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "6 Monaten",
+        "optionen": [
+          "6",
+          "sechs Monaten"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "2",
+        "optionen": [
+          "zwei"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-j04",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Unter welchen Voraussetzungen kann ein junger Erwachsener (18–25 Jahre) in eine spezielle Einrichtung eingewiesen werden (Art. 61 StGB)?",
+    "erklaerung": "Gemäss Art. 61 StGB kann ein junger Erwachsener (18–25 Jahre) in eine spezielle Einrichtung eingewiesen werden, wenn: 1) Er in seiner Persönlichkeitsentwicklung erheblich gestört ist, 2) die Straftat mit dieser Störung in Zusammenhang steht, und 3) eine Chance besteht, dass er danach keine weiteren Straftaten mehr begeht. Ziel ist es, dem jungen Erwachsenen die Fähigkeiten für ein selbstverantwortliches und straffreies Leben zu vermitteln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Wenn der junge Erwachsene dies selbst beantragt.",
+      "Bei jedem Vergehen, unabhängig von der Persönlichkeitsentwicklung.",
+      "Nur bei Verbrechen, die mit mehr als 10 Jahren Freiheitsstrafe bedroht sind.",
+      "Wenn er in seiner Persönlichkeitsentwicklung erheblich gestört ist, die Tat damit zusammenhängt und eine Chance besteht, dass er künftig straffrei lebt."
+    ],
+    "korrekt": "Wenn er in seiner Persönlichkeitsentwicklung erheblich gestört ist, die Tat damit zusammenhängt und eine Chance besteht, dass er künftig straffrei lebt."
+  },
+  {
+    "id": "recht_strafrecht-j05",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ab welcher Blutalkoholkonzentration gilt Fahrunfähigkeit wegen Alkoholeinwirkung (Angetrunkenheit) gemäss SVG als erwiesen?",
+    "erklaerung": "Gemäss der Verordnung über Blutalkoholgrenzwerte im Strassenverkehr gilt Fahrunfähigkeit wegen Angetrunkenheit in jedem Fall als erwiesen bei einer Blutalkoholkonzentration von 0,5 oder mehr Gewichtspromille. Ab 0,8 Promille gilt die Trunkenheit als qualifiziert und wird als Vergehen im Strafregister eingetragen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ab 0,8 Promille.",
+      "Ab 0,0 Promille.",
+      "Ab 0,5 Promille.",
+      "Ab 1,0 Promille."
+    ],
+    "korrekt": "Ab 0,5 Promille."
+  },
+  {
+    "id": "recht_strafrecht-j06",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnungsbussen (z.B. für geringfügige Verkehrsübertretungen) werden ins Strafregister eingetragen.",
+    "erklaerung": "Ordnungsbussen werden nicht ins Strafregister eingetragen. Im Ordnungsbussenverfahren kann die Polizei bei geringfügigen Übertretungen an Ort und Stelle eine Busse erheben (Höchstgrenze CHF 300). Der Täter kann die vereinfachte Erledigung ablehnen und die Beurteilung im ordentlichen Verfahren verlangen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-j07",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Wie hoch ist seine ungefähre Blutalkoholkonzentration (nach der Faustregel) und welche rechtlichen Konsequenzen hat dies?",
+    "erklaerung": "Faustregel: 1 Glas (3 dl Bier) bewirkt bei einem 70 kg schweren Mann ca. 0,25 Promille. 4 Gläser × 0,25 = ca. 1,0 Promille. Dies übersteigt den Grenzwert von 0,5 Promille (Fahrunfähigkeit) und auch den Grenzwert von 0,8 Promille (qualifizierte Trunkenheit). Ab 0,8 Promille wird die Trunkenheit als Vergehen gewertet und im Strafregister eingetragen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein 70 kg schwerer Mann trinkt an einem Abend 4 Gläser Bier (je 3 dl) und fährt danach Auto.",
+    "optionen": [
+      "Ca. 0,5 Promille — Grenzwert gerade erreicht, Ordnungsbusse möglich.",
+      "Ca. 2,0 Promille — strafrechtliche Verfolgung wegen Trunkenheit am Steuer.",
+      "Ca. 1,0 Promille — qualifizierte Trunkenheit (Vergehen), Eintrag im Strafregister.",
+      "Ca. 0,25 Promille — unter dem Grenzwert, keine Konsequenzen."
+    ],
+    "korrekt": "Ca. 1,0 Promille — qualifizierte Trunkenheit (Vergehen), Eintrag im Strafregister."
+  },
+  {
+    "id": "recht_strafrecht-j08",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Weshalb gelten für Jugendliche andere Strafrahmen als für Erwachsene?",
+    "erklaerung": "Das Jugendstrafrecht berücksichtigt, dass Jugendliche sich noch in der Entwicklung befinden. Es ist stärker auf Erziehung und Resozialisierung ausgerichtet als auf Vergeltung. Die Strafrahmen für Erwachsene gelten nicht — stattdessen sieht das JStG eigene, jugendgerechte Sanktionen vor (Verweis, persönliche Leistung, Busse, Freiheitsentzug). D ist falsch: Das StGB gilt grundsätzlich auch für Jugendliche, wird aber durch das JStG ergänzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Weil Jugendliche generell weniger intelligent sind und die Konsequenzen nicht verstehen.",
+      "Weil Jugendliche kein Einkommen haben und keine Geldstrafen zahlen können.",
+      "Weil das StGB auf Jugendliche generell nicht anwendbar ist.",
+      "Weil das Jugendstrafrecht stärker auf Erziehung und Resozialisierung ausgerichtet ist und berücksichtigt, dass Jugendliche sich noch in der Entwicklung befinden."
+    ],
+    "korrekt": "Weil das Jugendstrafrecht stärker auf Erziehung und Resozialisierung ausgerichtet ist und berücksichtigt, dass Jugendliche sich noch in der Entwicklung befinden."
+  },
+  {
+    "id": "recht_strafrecht-j09",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Führerausweisentzug ist eine Strafe im strafrechtlichen Sinne.",
+    "erklaerung": "Der Führerausweisentzug ist eine verwaltungsrechtliche Massnahme und gilt nicht als Strafe, auch wenn er von den Betroffenen als solche empfunden wird. Er wird von der Verwaltungsbehörde (Strassenverkehrsamt) und nicht vom Strafgericht angeordnet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_strafrecht-j10",
+    "fach": "Recht",
+    "thema": "Jugendstrafrecht & SVG",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet «persönliche Leistung» im Jugendstrafrecht (JStG 23)?",
+    "erklaerung": "Persönliche Leistung (JStG 23) bedeutet, dass der Jugendliche arbeiten muss, um sein Unrecht wiedergutzumachen — z.B. Strassen putzen. Es kann auch bedeuten, dass der Jugendliche verpflichtet wird, einen Kurs zu besuchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Jugendliche muss eine finanzielle Entschädigung an das Opfer zahlen.",
+      "Der Jugendliche muss gemeinnützige Arbeit verrichten oder einen Kurs besuchen, um sein Unrecht wiedergutzumachen.",
+      "Der Jugendliche muss sich öffentlich beim Opfer entschuldigen.",
+      "Der Jugendliche muss einen Aufsatz über sein Fehlverhalten schreiben."
+    ],
+    "korrekt": "Der Jugendliche muss gemeinnützige Arbeit verrichten oder einen Kurs besuchen, um sein Unrecht wiedergutzumachen."
+  },
+  {
+    "id": "recht_strafrecht-neu_sort_01",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die drei Prüfungsebenen der Strafbarkeit in die korrekte Reihenfolge.",
+    "erklaerung": "Die dreistufige Deliktsprüfung ist das Fundament des Strafrechts: Erst wird geprüft, ob ein Tatbestand erfüllt ist (z.B. «Wer einen Menschen tötet» – Art. 111 StGB). Dann wird geprüft, ob ein Rechtfertigungsgrund vorliegt (z.B. Notwehr nach Art. 15 StGB). Zuletzt wird die persönliche Schuld geprüft (Schuldfähigkeit, Vorsatz/Fahrlässigkeit). Nur wenn alle drei Stufen bejaht werden, ist die Tat strafbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "recht_strafrecht-neu_sort_02",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Deliktsarten nach der Schwere der angedrohten Strafe – von der leichtesten zur schwersten.",
+    "erklaerung": "Das StGB unterscheidet drei Deliktsarten nach der Schwere: Übertretungen (nur Busse, Art. 103 StGB), Vergehen (bis 3 Jahre Freiheitsstrafe oder Geldstrafe, Art. 10 Abs. 3 StGB) und Verbrechen (über 3 Jahre Freiheitsstrafe, Art. 10 Abs. 2 StGB). Die Einteilung hat praktische Folgen: z.B. für die Verjährung, die Zuständigkeit und die Möglichkeit des bedingten Vollzugs.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "recht_strafrecht-neu_sort_03",
+    "fach": "Recht",
+    "thema": "Strafvollzug & bedingter Vollzug",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Formen des Strafvollzugs nach der Strenge – von der mildesten zur härtesten.",
+    "erklaerung": "Bedingter Vollzug (Art. 42 StGB) ist die mildeste Form – der Verurteilte muss nicht ins Gefängnis, wenn er sich während der Probezeit bewährt. Teilbedingter Vollzug (Art. 43 StGB) kombiniert Strafe und Bewährung. Unbedingter Vollzug bedeutet tatsächlichen Freiheitsentzug. Verwahrung (Art. 64 StGB) ist die schärfste Massnahme – sie ist zeitlich unbefristet und kann lebenslänglich dauern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_strafrecht-beschriftung01",
+    "fach": "Recht",
+    "thema": "Tatbestandsmässigkeit",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die drei Stufen des strafrechtlichen Prüfschemas und ihre Unterelemente.",
+    "erklaerung": "Strafrechtliches Prüfschema: 1) Tatbestandsmässigkeit: objektiv (Handlung, Erfolg, Kausalität) + subjektiv (Vorsatz oder Fahrlässigkeit, Art. 12 StGB). 2) Rechtswidrigkeit: keine Notwehr (Art. 15), kein Notstand (Art. 17) etc. 3) Schuld: zurechnungsfähig (Art. 19) und keine Entschuldigung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_pruefschema_beschriftung.svg",
+      "alt": "Dreigliedriges Prüfschema: Tatbestandsmässigkeit, Rechtswidrigkeit, Schuld"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Tatbestandsmässigkeit",
+        "x": 50,
+        "y": 15
+      },
+      {
+        "id": "l2",
+        "text": "Objektiver Tatbestand (Tat, Erfolg, Kausalität)",
+        "x": 28,
+        "y": 30
+      },
+      {
+        "id": "l3",
+        "text": "Subjektiver Tatbestand (Vorsatz/Fahrlässigkeit)",
+        "x": 72,
+        "y": 30
+      },
+      {
+        "id": "l4",
+        "text": "Rechtswidrigkeit (keine Rechtfertigungsgründe)",
+        "x": 50,
+        "y": 57
+      },
+      {
+        "id": "l5",
+        "text": "Schuld (Schuldfähigkeit, keine Entschuldigung)",
+        "x": 50,
+        "y": 84
+      }
+    ]
+  },
+  {
+    "id": "recht_strafrecht-dragdrop01",
+    "fach": "Recht",
+    "thema": "Strafarten & Deliktsarten",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordne die strafrechtlichen Sanktionen der richtigen Kategorie zu.",
+    "erklaerung": "Strafen (vergeltend): Freiheitsstrafe, Geldstrafe (Tagessätze), Gemeinnützige Arbeit. Massnahmen (sichernd/therapeutisch): therapeutisch, Verwahrung (zeitlich unbefristet!), ambulant. Nebenfolgen: Berufsverbot, Landesverweisung (Art. 66a StGB — obligatorisch bei Katalogtaten).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/strafrecht/strafrecht_sanktionen_dragdrop.svg",
+      "alt": "Drei Spalten: Strafen, Massnahmen, Nebenfolgen"
+    },
+    "zones": [
+      {
+        "id": "strafen",
+        "x": 2.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      },
+      {
+        "id": "massnahmen",
+        "x": 35,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      },
+      {
+        "id": "nebenfolgen",
+        "x": 67.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "freiheitsstrafe",
+        "text": "Freiheitsstrafe (Art. 40 StGB)",
+        "zone": "strafen"
+      },
+      {
+        "id": "geldstrafe",
+        "text": "Geldstrafe (Art. 34 StGB)",
+        "zone": "strafen"
+      },
+      {
+        "id": "gemeinnuetzig",
+        "text": "Gemeinnützige Arbeit (Art. 37)",
+        "zone": "strafen"
+      },
+      {
+        "id": "therapeutisch",
+        "text": "Therapeutische Massnahme (Art. 59)",
+        "zone": "massnahmen"
+      },
+      {
+        "id": "verwahrung",
+        "text": "Verwahrung (Art. 64 StGB)",
+        "zone": "massnahmen"
+      },
+      {
+        "id": "ambulant",
+        "text": "Ambulante Behandlung (Art. 63)",
+        "zone": "massnahmen"
+      },
+      {
+        "id": "berufsverbot",
+        "text": "Berufsverbot (Art. 67 StGB)",
+        "zone": "nebenfolgen"
+      },
+      {
+        "id": "landesverweisung",
+        "text": "Landesverweisung (Art. 66a)",
+        "zone": "nebenfolgen"
+      }
+    ]
+  }
+]

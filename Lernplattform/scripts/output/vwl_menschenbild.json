@@ -1,0 +1,1554 @@
+[
+  {
+    "id": "vwl_menschenbild-h01",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter dem «Homo oeconomicus»?",
+    "erklaerung": "Der Homo oeconomicus ist ein vereinfachtes Modell: Er bewertet vernünftig alle Fakten und trifft Entscheidungen, die seinen persönlichen Nutzen maximieren. Es ist ein Durchschnittsmodell, keine Beschreibung einzelner Menschen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Modell des rational handelnden Menschen, der unter Abwägung von Kosten und Nutzen seinen persönlichen Nutzen maximiert.",
+      "Einen perfekten Konsumenten ohne Emotionen.",
+      "Ein historisches Menschenbild aus der Antike.",
+      "Einen Menschen, der nur an Geld interessiert ist."
+    ],
+    "korrekt": "Ein Modell des rational handelnden Menschen, der unter Abwägung von Kosten und Nutzen seinen persönlichen Nutzen maximiert."
+  },
+  {
+    "id": "vwl_menschenbild-h02",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Der Homo oeconomicus beschreibt, wie sich ein einzelner Mensch tatsächlich verhält.",
+    "erklaerung": "Falsch. Der Homo oeconomicus erklärt kein Individualverhalten, sondern soll ein Durchschnittsverhalten widerspiegeln. Eisenhut: «Wie alle anderen Wissenschaften ist auch die VWL auf Abstraktionen und Verallgemeinerungen angewiesen, um die Komplexität in den Griff zu bekommen.» Das Modell ist gezielt vereinfacht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-h03",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Homo oeconomicus handelt {0} – er wählt unter den verschiedenen Möglichkeiten diejenige, die seinen {1} maximiert. Dabei wägt er {2} und Nutzen sorgfältig ab.",
+    "erklaerung": "Die drei Kernmerkmale: (1) Rationales Handeln, (2) Nutzenmaximierung, (3) Kosten-Nutzen-Abwägung. Adam Smith formulierte 1776 die Grundidee: Nicht das Wohlwollen des Metzgers und Bäckers verschafft uns das Essen, sondern deren Eigeninteresse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "rational",
+        "optionen": [
+          "ökonomisch rational",
+          "vernünftig"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Nutzen",
+        "optionen": [
+          "persönlichen Nutzen"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Kosten",
+        "optionen": []
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-h04",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie zu: Welche Eigenschaften gehören zum Homo oeconomicus und welche nicht?",
+    "erklaerung": "Der Homo oeconomicus: rational, nutzenmaximierend, eigennützig, auf Anreize reagierend. NICHT: allwissend (das ist eine Karikatur), rein altruistisch, rein emotional. Eigennützig ≠ egoistisch: Er kann auch soziale Ziele verfolgen, wenn es seinem Nutzen dient.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Eigenschaft des Homo oeconomicus",
+      "Gehört NICHT zum Modell"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-h05",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "«Nicht vom Wohlwollen des Metzgers, Brauers und Bäckers erwarten wir das, was wir zum Essen brauchen, sondern davon, dass sie ihre eigenen Interessen wahrnehmen.» Von wem stammt dieses Zitat?",
+    "erklaerung": "Dieses berühmte Zitat stammt aus Adam Smiths Werk «Der Wohlstand der Nationen» (1776). Es beschreibt das Eigeninteresse als Triebkraft wirtschaftlichen Handelns – der Bäcker bäckt gutes Brot nicht aus Nächstenliebe, sondern um Geld zu verdienen. Davon profitieren beide Seiten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Adam Smith (1776)",
+      "Karl Marx (1867)",
+      "John M. Keynes (1936)",
+      "Milton Friedman (1962)"
+    ],
+    "korrekt": "Adam Smith (1776)"
+  },
+  {
+    "id": "vwl_menschenbild-h06",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Erklären Sie anhand eines Alltagsbeispiels, wie ein Homo oeconomicus bei einer Entscheidung vorgeht.",
+    "erklaerung": "In der Realität entscheiden wir selten so rational: Markenpräferenzen, Gruppendruck, Impulskäufe spielen eine Rolle. Das Modell vereinfacht, aber es erfasst das Durchschnittsverhalten oft erstaunlich gut.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beispiel Handykauf: Der Homo oeconomicus vergleicht verschiedene Modelle (Kosten, Funktionen, Bewertungen), wägt Preis gegen Nutzen ab, berücksichtigt sein Budget und wählt das Modell mit dem besten Preis-Leistungs-Verhältnis für seine Bedürfnisse. Er lässt sich nicht von Werbung oder Emotionen leiten, sondern entscheidet aufgrund objektiver Kriterien rational."
+  },
+  {
+    "id": "vwl_menschenbild-h07",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eigennütziges Handeln bedeutet gemäss dem Modell des Homo oeconomicus, dass der Mensch immer nur an sich selbst denkt und anderen bewusst schadet.",
+    "erklaerung": "Falsch. Eigennutz ≠ Egoismus. Eisenhut: «Die Menschen sind – von Ausnahmen abgesehen – weder Heilige noch Verbrecher. Eigennütziges Handeln bedeutet, dass der Mensch sich in der Regel nach seinen eigenen Interessen orientiert.» Er kann auch Vertrauen, Solidarität und Gerechtigkeit in seinen Nutzen einbeziehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-h08",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer hat die Idee des eigennützigen, rationalen Wirtschaftsmenschen als Erster formuliert?",
+    "erklaerung": "Adam Smith gilt als Begründer. John Stuart Mill entwickelte die Idee im 19. Jh. weiter. Herbert Simon (1957) kritisierte die Annahme vollständiger Rationalität. Gary Becker (Nobelpreis 1992) wandte das Modell auf Bereiche wie Kriminalität und Familie an.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "John Stuart Mill im 19. Jahrhundert.",
+      "Adam Smith in «Der Wohlstand der Nationen» (1776).",
+      "Gary Becker in seiner Nobelpreisrede (1992).",
+      "Herbert Simon mit der «begrenzten Rationalität» (1957)."
+    ],
+    "korrekt": "Adam Smith in «Der Wohlstand der Nationen» (1776)."
+  },
+  {
+    "id": "vwl_menschenbild-h09",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen beschreiben den Homo oeconomicus korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, C und D sind korrekt: Der Homo oeconomicus reagiert auf Anreize (A), überdenkt Entscheide bei Veränderungen (C) und maximiert seinen Nutzen (D). B ist falsch – vollständige Information ist eine Karikatur des Modells. Bereits Herbert Simon zeigte 1957, dass Rationalität immer begrenzt ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Er reagiert auf veränderte Rahmenbedingungen und Anreize.",
+      "Er verfügt über vollständige Information über alle Alternativen.",
+      "Er stellt seinen Entscheid bei veränderten Bedingungen jederzeit zur Disposition.",
+      "Er wägt Kosten und Nutzen ab und maximiert seinen persönlichen Nutzen."
+    ],
+    "korrekt": [
+      "Er reagiert auf veränderte Rahmenbedingungen und Anreize.",
+      "Er stellt seinen Entscheid bei veränderten Bedingungen jederzeit zur Disposition.",
+      "Er wägt Kosten und Nutzen ab und maximiert seinen persönlichen Nutzen."
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-h10",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Eisenhut vergleicht das Modell des Homo oeconomicus mit einer Karikatur: «Ein Karikaturist zeichnet nur die wesentlichen Merkmale, übertreibt diese aber bewusst.» Beurteilen Sie, inwiefern dieser Vergleich treffend ist und wo er an seine Grenzen stösst.",
+    "erklaerung": "Der Karikaturvergleich betont: Vereinfachung ist kein Fehler, sondern eine bewusste Methode. Problematisch wird es, wenn das Modell nicht als Vereinfachung, sondern als Realität behandelt wird – dann werden seine blinden Flecken gefährlich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Treffend: Wie eine Karikatur erfasst das Modell die Kernmerkmale menschlichen Wirtschaftsverhaltens (Eigeninteresse, Reaktion auf Anreize) in überspitzter Form. Es will nicht realistisch sein, sondern erkennbar. Grenzen: Eine Karikatur zeigt immer noch eine bestimmte Person, der Homo oeconomicus ist ein Durchschnitt. Zudem kann die Vereinfachung systematische Verzerrungen erzeugen, die in der Karikatur nicht auftreten – etwa wenn ganze Politikbereiche auf Basis falscher Verhaltensannahmen gestaltet werden (z.B. Annahme vollständiger Rationalität bei Finanzmärkten vor 2008)."
+  },
+  {
+    "id": "vwl_menschenbild-r01",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Hauptkritikpunkt am Modell des Homo oeconomicus?",
+    "erklaerung": "Die Verhaltensökonomie zeigt: Menschen handeln oft voreilig, unlogisch, impulsiv, emotional oder kurzsichtig. Die Finanzkrise 2008 verstärkte die Kritik – kaum ein Ökonom hatte sie vorhergesagt, was die Grenzen des rationalen Modells aufzeigte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Menschen handeln oft nicht rational, sondern emotional, impulsiv, kurzsichtig oder nach sozialen Normen.",
+      "Das Modell ist zu alt und daher veraltet.",
+      "Das Modell berücksichtigt nur Geld als Nutzen.",
+      "Menschen wollen nie ihren Nutzen maximieren."
+    ],
+    "korrekt": "Menschen handeln oft nicht rational, sondern emotional, impulsiv, kurzsichtig oder nach sozialen Normen."
+  },
+  {
+    "id": "vwl_menschenbild-r02",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Herbert Simon stellte 1957 fest, dass die Rationalität der Menschen begrenzt ist, weil sie nicht alle Informationen verarbeiten können.",
+    "erklaerung": "Richtig. Herbert Simon prägte den Begriff der «bounded rationality» (begrenzte Rationalität): Menschen können nicht alle relevanten Informationen sammeln und verarbeiten. Die Welt ist zu komplex. Stattdessen nutzen sie Faustregeln und Erfahrungswerte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-r03",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie zu: Spricht das Beispiel für oder gegen das Modell des Homo oeconomicus?",
+    "erklaerung": "Für das Modell: Preisvergleich, Lieferantenwahl, Studiengangwahl = rationale Kosten-Nutzen-Abwägung. Gegen das Modell: Impulskäufe (irrational), Doping (kurzfristig rational, langfristig irrational), anonyme Spenden (altruistisch, kein Eigennutz).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Spricht FÜR das Modell",
+      "Spricht GEGEN das Modell"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-r04",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter einem «Nudge» in der Verhaltensökonomie?",
+    "erklaerung": "Nudging = «Stupsen»: Subtile Beeinflussung ohne Zwang. Beispiele: Grüne Fussabdrücke auf dem Boden, die zum Mülleimer führen (Abfall –40%), Widerspruchslösung bei der Organspende (Opt-out statt Opt-in). Weltweit setzen Regierungen «Nudge Units» ein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_nudging_01.svg",
+      "alt": "Vergleich zweier Ansätze zur Verhaltenssteuerung"
+    },
+    "optionen": [
+      "Eine finanzielle Belohnung für richtiges Verhalten.",
+      "Einen sanften Stoss – man versucht, das Verhalten von Menschen über psychologisch subtile Methoden zu steuern, ohne Verbote oder Gebote.",
+      "Ein striktes Verbot unerwünschten Verhaltens.",
+      "Eine wissenschaftliche Theorie von Adam Smith."
+    ],
+    "korrekt": "Einen sanften Stoss – man versucht, das Verhalten von Menschen über psychologisch subtile Methoden zu steuern, ohne Verbote oder Gebote."
+  },
+  {
+    "id": "vwl_menschenbild-r05",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "«Der Homo oeconomicus ist unrealistisch und daher nutzlos.» Nehmen Sie kritisch Stellung zu dieser Aussage.",
+    "erklaerung": "Eisenhut: «Es wäre zu einfach, den Homo oeconomicus als vollständig rationalen Egoisten zu begreifen.» Das Modell wird ständig erweitert. Es ist keine Aussage darüber, wie Menschen sein sollen, sondern eine Arbeitshypothese.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Zu vereinfacht. Pro Modell: Es erklärt Durchschnittsverhalten gut, besonders bei Firmen (Gewinnmaximierung). Es ermöglicht Vorhersagen über Reaktionen auf Anreize (z.B. Preisänderungen). Karikaturvergleich: So wie ein Karikaturist wesentliche Merkmale übertreibt, vereinfacht das Modell gezielt. Contra: Individuelle Entscheidungen oft irrational, emotional, sozial beeinflusst. Grenzen bei Finanzblasen, Panik, Sucht. Fazit: Nützliches Werkzeug, aber kein vollständiges Abbild der Realität. Die VWL ergänzt es laufend durch Erkenntnisse der Verhaltensökonomie."
+  },
+  {
+    "id": "vwl_menschenbild-r06",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Die {0} erweitert die Standardtheorie um psychologische Aspekte. Sie zeigt, dass Menschen nicht immer {1} handeln. Eine praktische Anwendung ist das sogenannte {2}, bei dem Verhalten subtil beeinflusst wird.",
+    "erklaerung": "Die Verhaltensökonomie (Behavioral Economics) untersucht, wie und warum Menschen von rationalem Verhalten abweichen. Nudging nutzt diese Erkenntnisse, um Verhalten zu steuern, ohne Freiheiten einzuschränken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Verhaltensökonomie",
+        "optionen": [
+          "Verhaltensökonomik",
+          "Behavioral Economics"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "rational",
+        "optionen": [
+          "vernünftig"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Nudging",
+        "optionen": [
+          "Nudge"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-r07",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Trotz der Kritik verwenden viele Ökonomen das Modell des Homo oeconomicus weiterhin, besonders zur Erklärung des Verhaltens von Unternehmen.",
+    "erklaerung": "Richtig. Auch wenn das Modell individuelles Verhalten nicht perfekt erklärt, ist es für die Analyse von Unternehmensverhalten (Gewinnmaximierung) weiterhin sehr nützlich. Die VWL bemüht sich aber laufend, das Menschenbild zu erweitern und realitätsnaher zu gestalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-r08",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gary Becker (Nobelpreis 1992) wandte das ökonomische Kosten-Nutzen-Prinzip auf ungewöhnliche Bereiche an. Welchen?",
+    "erklaerung": "Becker zeigte, dass ökonomische Prinzipien auch ausserhalb der traditionellen Wirtschaft gelten: Ein Räuber wägt Nutzen (Beute) gegen Kosten (Gefahr, Strafe) ab. Eltern investieren in Kinder als «Humankapital». Heirat ist ein «Markt» mit Kosten-Nutzen-Überlegungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur auf den Aktienmarkt und die Banken.",
+      "Ausschliesslich auf internationale Handelsabkommen.",
+      "Auf Naturwissenschaften und Physik.",
+      "Diskriminierung, Kriminalität, Humankapital und Familienökonomie."
+    ],
+    "korrekt": "Diskriminierung, Kriminalität, Humankapital und Familienökonomie."
+  },
+  {
+    "id": "vwl_menschenbild-r09",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Verhaltensökonomie (Behavioral Economics) ist ein Teilgebiet der VWL, das psychologische Erkenntnisse in die ökonomische Analyse einbezieht.",
+    "erklaerung": "Richtig. Die Verhaltensökonomie untersucht, wie Menschen tatsächlich Entscheidungen treffen – im Gegensatz zum idealisierten Homo oeconomicus. Wichtige Vertreter sind Daniel Kahneman (Nobelpreis 2002) und Richard Thaler (Nobelpreis 2017). Beide zeigten systematische Abweichungen vom rationalen Verhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-r10",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter «begrenzter Rationalität» (bounded rationality)?",
+    "erklaerung": "Herbert Simon (1957) prägte diesen Begriff: Die Welt ist zu komplex, als dass wir alle Informationen sammeln und verarbeiten könnten. Deshalb nutzen wir Heuristiken (Faustregeln), die meistens gut funktionieren, aber manchmal zu systematischen Fehlern führen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Rationalität funktioniert nur in begrenzten Situationen wie beim Einkaufen.",
+      "Menschen handeln immer irrational.",
+      "Menschen können nicht alle Informationen verarbeiten und nutzen deshalb vereinfachte Faustregeln für ihre Entscheidungen.",
+      "Nur intelligente Menschen sind rational."
+    ],
+    "korrekt": "Menschen können nicht alle Informationen verarbeiten und nutzen deshalb vereinfachte Faustregeln für ihre Entscheidungen."
+  },
+  {
+    "id": "vwl_menschenbild-o01",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind Opportunitätskosten?",
+    "erklaerung": "Jede Entscheidung ist gleichzeitig ein Verzicht auf andere Möglichkeiten. Die Opportunitätskosten sind der Nutzen der besten nicht gewählten Alternative. Eisenhut: «Die wichtigste Erkenntnis aus dem Opportunitätskostenprinzip ist, dass nichts gratis ist.»",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der entgangene Nutzen der besten nicht gewählten Alternative.",
+      "Die Kosten, die beim Einkaufen anfallen.",
+      "Die Kosten für eine zweite Meinung.",
+      "Die Gebühren für eine verpasste Gelegenheit."
+    ],
+    "korrekt": "Der entgangene Nutzen der besten nicht gewählten Alternative."
+  },
+  {
+    "id": "vwl_menschenbild-o02",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Sie werden zum Nachtessen eingeladen. Warum ist dieses Essen nicht gratis, obwohl Sie nichts bezahlen? Verwenden Sie den Begriff «Opportunitätskosten».",
+    "erklaerung": "Eisenhut: «Auch ein geschenktes Nachtessen ist eben nicht gratis, weil dafür mindestens Zeit aufgewendet und damit auf eine andere Aktivität verzichtet werden muss.» Opportunitätskosten sind allgegenwärtig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Obwohl das Essen kostenlos ist, gibt es Opportunitätskosten: Ich verwende meine Zeit für das Nachtessen und verzichte damit auf andere Aktivitäten (z.B. Lernen, Freunde treffen, Sport). Der Nutzen der besten nicht gewählten Alternative ist der Preis, den ich «bezahle». Auch ein geschenktes Essen ist nie gratis, weil mindestens Zeit aufgewendet wird."
+  },
+  {
+    "id": "vwl_menschenbild-o03",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Wenn jemand sagt «Ich habe keine Zeit», meint er eigentlich «Die Opportunitätskosten sind mir zu hoch».",
+    "erklaerung": "Richtig. Eisenhut formuliert es genau so: «Tut mir leid, die Opportunitätskosten sind mir zu hoch!» – das wäre die ehrliche ökonomische Antwort. Man hat immer 24 Stunden, aber andere Aktivitäten bringen mehr Nutzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-o04",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Sie überlegen sich, am Samstagabend ins Kino zu gehen (Freude: Note 8/10). Alternativ könnten Sie lernen (Freude: 3/10), Freunde treffen (Freude: 9/10) oder ein Buch lesen (Freude: 6/10). Wie hoch sind die Opportunitätskosten des Kinobesuchs?",
+    "erklaerung": "Opportunitätskosten = Nutzen der BESTEN nicht gewählten Alternative. Nicht die Summe aller Alternativen! Hier: Freunde treffen (9/10) > Buch (6/10) > Lernen (3/10). Also Opportunitätskosten = 9/10. Ökonomisch betrachtet lohnt sich das Kino nicht, weil 8 < 9.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "3/10 – die schlechteste Alternative.",
+      "9/10 – das ist der Nutzen der besten nicht gewählten Alternative (Freunde treffen).",
+      "8/10 – der Nutzen des Kinobesuchs selbst.",
+      "18/10 – die Summe aller nicht gewählten Alternativen."
+    ],
+    "korrekt": "9/10 – das ist der Nutzen der besten nicht gewählten Alternative (Freunde treffen)."
+  },
+  {
+    "id": "vwl_menschenbild-o05",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Jede Entscheidung beinhaltet einen Verzicht. Diesen Verzicht nennt man {0}. Austauschbeziehungen zwischen verschiedenen Zielen nennt man in der Fachsprache {1}.",
+    "erklaerung": "Jeder Entscheid hat Opportunitätskosten. Trade-offs sind Austauschbeziehungen: z.B. mehr Freizeit = weniger Einkommen, mehr Butter = weniger Kanonen, mehr Wachstum = möglicherweise weniger Umweltqualität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Opportunitätskosten",
+        "optionen": [
+          "Opportunitätskosten",
+          "Verzichtskosten"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Trade-offs",
+        "optionen": [
+          "Trade-off",
+          "Tradeoffs",
+          "Tradeoff"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-o06",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum sind Opportunitätskosten von gut bezahlten Managern besonders hoch? Weil ihr Zeitwert hoch ist – jede Stunde Freizeit bedeutet hohen entgangenen Verdienst.",
+    "erklaerung": "Eisenhut: «Warum sind gut bezahlte Manager gehetzt und chronisch übermüdet? Bei ihnen sind die Opportunitätskosten einer alternativen Zeitverwendung besonders hoch.» Wer CHF 500/Stunde verdient, verzichtet bei einer Stunde Freizeit auf CHF 500.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-o07",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Nennen Sie ein konkretes Beispiel aus Ihrem Schulalltag, bei dem Trade-offs und Opportunitätskosten eine Rolle spielen.",
+    "erklaerung": "Trade-offs und Opportunitätskosten sind allgegenwärtig: Schule vs. Freizeit, ein Fach vs. ein anderes, Geld ausgeben vs. sparen. Der Homo oeconomicus wägt diese Kosten systematisch ab.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beispiel: Ich kann am Abend entweder für die Matheprüfung lernen oder für die VWL-Prüfung. Wenn ich Mathe wähle, sind die Opportunitätskosten die möglicherweise bessere VWL-Note. Es gibt einen Trade-off: mehr Zeit für Mathe = weniger Zeit für VWL. Ähnlich beim Entscheid zwischen Sporttraining und Lernen."
+  },
+  {
+    "id": "vwl_menschenbild-o08",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen über Opportunitätskosten sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Knappheit erzwingt Entscheidungen, die Verzicht bedeuten. C ist korrekt: Eisenhut betont, dass nichts gratis ist – mindestens Zeit hat Opportunitätskosten. D ist korrekt: Ein Manager hat höhere Zeitopportunitätskosten als eine Studentin. B ist falsch: Nur die BESTE nicht gewählte Alternative zählt, nicht die Summe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Opportunitätskosten entstehen, weil Ressourcen knapp sind.",
+      "Opportunitätskosten entsprechen der Summe aller entgangenen Alternativen.",
+      "Auch ein «kostenloses» Angebot hat Opportunitätskosten, weil man mindestens Zeit aufwendet.",
+      "Opportunitätskosten können je nach Person unterschiedlich hoch sein."
+    ],
+    "korrekt": [
+      "Opportunitätskosten entstehen, weil Ressourcen knapp sind.",
+      "Auch ein «kostenloses» Angebot hat Opportunitätskosten, weil man mindestens Zeit aufwendet.",
+      "Opportunitätskosten können je nach Person unterschiedlich hoch sein."
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-o09",
+    "fach": "VWL",
+    "thema": "Opportunitätskosten & Trade-offs",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Schweiz hat einen hohen Lebensstandard und gleichzeitig eine hohe Teilzeitquote – besonders bei gut qualifizierten Frauen. Wie lässt sich dieses Phänomen mit dem Konzept der Opportunitätskosten erklären?",
+    "erklaerung": "Zwei gegenläufige Effekte: (1) Substitutionseffekt: Hohe Löhne machen Freizeit «teuer» → Anreiz, mehr zu arbeiten. (2) Einkommenseffekt: Wer gut verdient, kann sich Freizeit leisten → Anreiz, weniger zu arbeiten. In der Schweiz überwiegt offenbar der Einkommenseffekt – besonders bei Familien, die Kinderbetreuung und Einkommen abwägen müssen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Schweizerinnen sind weniger motiviert als Frauen in anderen Ländern.",
+      "Opportunitätskosten spielen bei der Arbeitszeitwahl keine Rolle.",
+      "Ein hoher Stundenlohn erhöht die Opportunitätskosten der Freizeit – gleichzeitig ermöglicht er aber, mit weniger Arbeitsstunden den gewünschten Lebensstandard zu finanzieren.",
+      "Der Staat zwingt die Menschen zur Teilzeitarbeit."
+    ],
+    "korrekt": "Ein hoher Stundenlohn erhöht die Opportunitätskosten der Freizeit – gleichzeitig ermöglicht er aber, mit weniger Arbeitsstunden den gewünschten Lebensstandard zu finanzieren."
+  },
+  {
+    "id": "vwl_menschenbild-a01",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Warum sind Anreize in der Ökonomie so wichtig?",
+    "erklaerung": "Anreize sind zentral: Der Homo oeconomicus stellt seinen Entscheid jederzeit zur Disposition. Veränderungen (höhere Gebühren, mehr Steuern, bessere Löhne) können eine Revision des Entscheids bewirken, wenn die Veränderung genügend gross ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil Anreize nur in der Wirtschaft eine Rolle spielen.",
+      "Weil der Homo oeconomicus auf Anreize reagiert – Verhaltensänderungen werden durch Veränderungen der Rahmenbedingungen ausgelöst.",
+      "Weil Anreize immer zum gewünschten Ergebnis führen.",
+      "Weil alle Menschen genau gleich auf Anreize reagieren."
+    ],
+    "korrekt": "Weil der Homo oeconomicus auf Anreize reagiert – Verhaltensänderungen werden durch Veränderungen der Rahmenbedingungen ausgelöst."
+  },
+  {
+    "id": "vwl_menschenbild-a02",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was beschreibt der «Kobra-Effekt»?",
+    "erklaerung": "Der Kobra-Effekt: In Indien setzte die Kolonialregierung eine Prämie pro Kobra-Kopf aus, um die Plage zu bekämpfen. Ergebnis: Die Inder züchteten Kobras, um die Prämie zu kassieren. Die Plage wurde schlimmer. Das zeigt: Menschen reagieren auf Anreize, aber nicht immer wie erwartet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wenn Anreize besonders effektiv sind.",
+      "Wenn der Staat zu viele Anreize setzt.",
+      "Wenn ein Anreizsystem so wirkt, dass genau das Gegenteil des gewünschten Ergebnisses eintritt.",
+      "Wenn Menschen irrational auf Anreize reagieren."
+    ],
+    "korrekt": "Wenn ein Anreizsystem so wirkt, dass genau das Gegenteil des gewünschten Ergebnisses eintritt."
+  },
+  {
+    "id": "vwl_menschenbild-a03",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie zu: Welche Reaktion ist ein erwünschter und welche ein unerwünschter Nebeneffekt des Anreizsystems?",
+    "erklaerung": "Anreize wirken – aber oft mit unerwünschten Nebenwirkungen. Eisenhut: «Eine Politik, die den Menschen als simple Reiz-Reaktions-Maschine auffasst, ist zum Scheitern verurteilt.» Menschen suchen kreativ nach Wegen, Anreize zu ihrem Vorteil auszunutzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Erwünschte Wirkung",
+      "Unerwünschter Nebeneffekt"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-a04",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn Kehrichtsackgebühren eingeführt werden, reduziert sich die Abfallmenge ohne Nebenwirkungen.",
+    "erklaerung": "Falsch. Eisenhut berichtet: Die Anzahl Säcke nahm zwar ab, dafür stieg das Gewicht pro Sack, es entstanden wilde Deponien und Abfalltransporte in Nachbargemeinden. Anreize haben fast immer Nebenwirkungen, weil Menschen kreativ reagieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-a05",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Im Schweizer Notensystem besteht man das Gymnasium mit einem Schnitt von 4.0. Analysieren Sie, welche Anreize dieses System für Schülerinnen und Schüler setzt. Gibt es auch unerwünschte Nebeneffekte?",
+    "erklaerung": "Das Notensystem ist ein Anreizsystem. Der Homo oeconomicus reagiert darauf rational – aber nicht immer im Sinne des Bildungsziels. Dies ist ein gutes Beispiel für den Unterschied zwischen individueller Rationalität und gesellschaftlicher Optimalität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Erwünschte Anreize: SuS lernen regelmässig, um die Bestehensnormen zu erfüllen. Leistung wird belohnt. Unerwünschte Nebeneffekte: Einige SuS lernen strategisch nur so viel, dass sie knapp bestehen (Minimumprinzip). Es gibt Anreize, einfache Fächer zu wählen statt anspruchsvoller. Manche SuS optimieren für Prüfungen statt für nachhaltiges Lernen (Bulimie-Lernen). Das System belohnt Anpassung, nicht immer Kreativität."
+  },
+  {
+    "id": "vwl_menschenbild-a06",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der sogenannte {0} beschreibt das Phänomen, dass eine gut gemeinte Massnahme genau das Gegenteil des gewünschten Ergebnisses bewirkt. Dieses Beispiel zeigt, dass {1} fast immer von ungewissen Nebenfolgen begleitet sind.",
+    "erklaerung": "Benannt nach dem Kobra-Beispiel aus Indien. Weitere Beispiele: Alkoholprohibition → Schwarzmarkt. Kehrichtsackgebühren → wilde Deponien. Der Mensch ist keine «Reiz-Reaktions-Maschine».",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Kobra-Effekt",
+        "optionen": [
+          "Kobraeffekt"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Anreize",
+        "optionen": [
+          "Anreizsysteme",
+          "regulatorische Eingriffe"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-a07",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Nudging von traditioneller Regulierung?",
+    "erklaerung": "Traditionelle Regulierung: Verbote, Gebote, Strafen (z.B. Rauchverbot). Nudging: Sanfte Stupser, die das Verhalten lenken, ohne die Wahlfreiheit einzuschränken (z.B. Fussabdrücke zum Mülleimer, gesundes Essen in Augenhöhe in der Kantine).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_nudging_01.svg",
+      "alt": "Vergleich zweier Ansätze zur Verhaltenssteuerung"
+    },
+    "optionen": [
+      "Nudging beeinflusst Verhalten über psychologisch subtile Methoden, ohne Verbote oder Gebote zu erlassen.",
+      "Nudging ist teurer als Regulierung.",
+      "Es gibt keinen Unterschied.",
+      "Nudging funktioniert nur bei irrationalen Menschen."
+    ],
+    "korrekt": "Nudging beeinflusst Verhalten über psychologisch subtile Methoden, ohne Verbote oder Gebote zu erlassen."
+  },
+  {
+    "id": "vwl_menschenbild-a08",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen über Anreize sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, C und D sind korrekt. Anreize wirken in beide Richtungen (A). Der Kobra-Effekt zeigt unerwünschte Nebenwirkungen (C). Der Homo oeconomicus passt sein Verhalten an veränderte Rahmenbedingungen an (D). B ist falsch – Menschen reagieren kreativ und oft unerwartet auf Anreize.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Anreize können sowohl positiv (Belohnungen) als auch negativ (Strafen) wirken.",
+      "Menschen reagieren immer exakt so auf Anreize, wie der Gesetzgeber es plant.",
+      "Anreize können unerwünschte Nebeneffekte haben (Kobra-Effekt).",
+      "Der Homo oeconomicus stellt seinen Entscheid bei veränderten Anreizen jederzeit zur Disposition."
+    ],
+    "korrekt": [
+      "Anreize können sowohl positiv (Belohnungen) als auch negativ (Strafen) wirken.",
+      "Anreize können unerwünschte Nebeneffekte haben (Kobra-Effekt).",
+      "Der Homo oeconomicus stellt seinen Entscheid bei veränderten Anreizen jederzeit zur Disposition."
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-a09",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Schweiz wird die Invalidenversicherung (IV) immer wieder reformiert, um Fehlanreize zu reduzieren. Welcher der folgenden Mechanismen beschreibt einen typischen Fehlanreiz bei Sozialversicherungen?",
+    "erklaerung": "Klassisches Anreizproblem: Wenn Sozialleistungen den Lohn annähernd ersetzen, reduziert sich der finanzielle Anreiz zur Arbeitsaufnahme (sog. «Armutsfalle»). Das ist aus Sicht des Homo oeconomicus rational, aber gesellschaftlich unerwünscht. Deshalb arbeiten viele Reformvorschläge mit gestuften Anreizen (z.B. Eingliederung vor Rente).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die IV-Rente ist zu tief, deshalb arbeiten alle IV-Bezüger sofort wieder.",
+      "Arbeitgeber stellen bevorzugt IV-Bezüger ein, weil sie billiger sind.",
+      "Wenn die IV-Rente nahe am bisherigen Lohn liegt, sinkt der Anreiz, eine neue Arbeitsstelle zu suchen – individuelle Rationalität führt zu gesellschaftlich unerwünschtem Verhalten.",
+      "Die IV verursacht keine Fehlanreize, weil sie streng kontrolliert wird."
+    ],
+    "korrekt": "Wenn die IV-Rente nahe am bisherigen Lohn liegt, sinkt der Anreiz, eine neue Arbeitsstelle zu suchen – individuelle Rationalität führt zu gesellschaftlich unerwünschtem Verhalten."
+  },
+  {
+    "id": "vwl_menschenbild-a10",
+    "fach": "VWL",
+    "thema": "Anreize und ihre Wirkung",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Nudging ist ethisch unproblematisch, weil die Wahlfreiheit erhalten bleibt.",
+    "erklaerung": "Falsch. Auch wenn Nudging die Wahlfreiheit formal nicht einschränkt, gibt es ethische Bedenken: Wer bestimmt, was das «richtige» Verhalten ist? Ist subtile Manipulation durch den Staat legitim? Kritiker sprechen von «libertärem Paternalismus» – der Staat weiss angeblich besser, was gut für die Bürger ist. Die Debatte zeigt: Auch «sanfte» Steuerung ist nicht wertfrei.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-g01",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Womit beschäftigt sich die Spieltheorie?",
+    "erklaerung": "Eine Situation ist «strategisch», wenn jeder bei seiner Entscheidung berücksichtigen muss, wie andere darauf reagieren. Die Spieltheorie analysiert solche Situationen systematisch. Das berühmteste Beispiel ist das Gefangenendilemma.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Mit der Entwicklung optimaler Brettspielstrategien.",
+      "Mit der Psychologie von Spielsüchtigen.",
+      "Mit der Analyse menschlichen Verhaltens in strategischen Situationen – also wenn das eigene Ergebnis auch vom Verhalten anderer abhängt.",
+      "Mit der Analyse von Computerspielen."
+    ],
+    "korrekt": "Mit der Analyse menschlichen Verhaltens in strategischen Situationen – also wenn das eigene Ergebnis auch vom Verhalten anderer abhängt."
+  },
+  {
+    "id": "vwl_menschenbild-g02",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Beim Gefangenendilemma hat jeder Beteiligte einen individuellen Anreiz, nicht zu {0}. Dies führt zu einem schlechteren Ergebnis für alle, obwohl {1} für die Gruppe besser wäre. Die Strategie, die individuell immer besser abschneidet, nennt man {2} Strategie.",
+    "erklaerung": "Das Dilemma: Kooperation wäre für alle besser, aber jeder einzelne hat den Anreiz, nicht zu kooperieren (dominante Strategie). Ergebnis: Alle stehen schlechter da, als wenn alle kooperiert hätten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "kooperieren",
+        "optionen": [
+          "Kooperation"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Kooperation",
+        "optionen": [
+          "kooperieren",
+          "Zusammenarbeit"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "dominante",
+        "optionen": [
+          "dominant"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-g03",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Bonnie und Clyde werden getrennt verhört. Beide schweigen → je 1 Jahr Haft. Beide verraten → je 10 Jahre. Einer verrät, einer schweigt → Verräter frei, Schweiger lebenslänglich. Was ist die dominante Strategie?",
+    "erklaerung": "Wenn der andere schweigt: Verraten → frei (besser als 1 Jahr). Wenn der andere verrät: Verraten → 10 Jahre (besser als lebenslänglich). Verraten ist IMMER besser, egal was der andere tut = dominante Strategie. Aber: Wenn beide verraten, bekommen beide 10 Jahre statt nur 1 Jahr bei Kooperation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_payoff_matrix_01.svg",
+      "alt": "Auszahlungsmatrix des Gefangenendilemmas"
+    },
+    "optionen": [
+      "Schweigen – man riskiert weniger.",
+      "Abwechselnd verraten und schweigen.",
+      "Verraten – unabhängig davon, was der andere tut, ist man durch Verraten immer besser gestellt.",
+      "Es gibt keine dominante Strategie."
+    ],
+    "korrekt": "Verraten – unabhängig davon, was der andere tut, ist man durch Verraten immer besser gestellt."
+  },
+  {
+    "id": "vwl_menschenbild-g04",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie zu: Welche Alltagssituationen sind Beispiele für ein Gefangenendilemma?",
+    "erklaerung": "Gefangenendilemma-Situationen: Kooperation wäre besser, aber individuelle Anreize verhindern sie. Doping, exzessive Werbung, Überfischung, Wettrüsten – alle haben dieselbe Struktur. Einkauf/Sprint: Keine gegenseitige Abhängigkeit der Strategie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Gefangenendilemma-Situation",
+      "KEIN Gefangenendilemma"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-g05",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie am Beispiel Doping im Radsport, warum die Situation ein Gefangenendilemma darstellt. Warum ist Doping gleichzeitig «absurd und rational»?",
+    "erklaerung": "Eisenhut: «Jeder Rennfahrer gewinnt lieber mit Doping, als ohne Doping zu verlieren. Denken alle so rational, dopen eben auch alle, und dies zum Schaden aller.»",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Absurd: Wenn niemand dopen würde, wäre niemand benachteiligt – die Rennen wären genauso spannend. Rational: Wenn ich annehme, dass andere dopen, MUSS ich auch dopen, um konkurrenzfähig zu bleiben. Wenn andere NICHT dopen, lohnt sich Doping erst recht, um zu gewinnen. Nicht-Dopen ist nie die beste individuelle Strategie → Doping ist dominant. Ergebnis: Alle dopen, keiner hat einen Vorteil, aber alle riskieren ihre Gesundheit. Das Dilemma: Individuelle Rationalität führt zu kollektiver Irrationalität."
+  },
+  {
+    "id": "vwl_menschenbild-g06",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche drei Wege können helfen, das Gefangenendilemma zu überwinden?",
+    "erklaerung": "Drei Lösungsansätze: (1) Kommunikation – Absprachen ermöglichen. (2) Sanktionen – Vertragsbruch bestrafen (z.B. Omertà bei der Mafia). (3) Wiederholung – bei langfristigen Beziehungen ist Kooperation attraktiver, weil Vergeltung droht. Im Veritasium-Video werden 4 Eigenschaften erfolgreicher Strategien genannt: nett, vergeltend, verzeihend, klar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Das Dilemma kann grundsätzlich nicht überwunden werden.",
+      "Nur strenge Gesetze können das Problem lösen.",
+      "Mehr Geld, weniger Regeln und schnellere Entscheidungen.",
+      "Kommunikation (Absprachen), Sanktionen (Strafen bei Abweichung) und wiederholte Interaktion (langfristige Beziehungen)."
+    ],
+    "korrekt": "Kommunikation (Absprachen), Sanktionen (Strafen bei Abweichung) und wiederholte Interaktion (langfristige Beziehungen)."
+  },
+  {
+    "id": "vwl_menschenbild-g07",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im Gefangenendilemma kommt es zu einem schlechten Ergebnis, weil sich die Beteiligten irrational verhalten.",
+    "erklaerung": "Falsch. Das Dilemma entsteht gerade WEIL die Beteiligten rational (eigennützig) handeln. Nicht-Kooperation ist die individuell rationale (dominante) Strategie. Das Problem: Individuelle Rationalität führt zu kollektiver Irrationalität. Das Dilemma entsteht durch die Struktur der Situation, nicht durch Irrationalität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-g08",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im Gefangenendilemma hängt das Ergebnis nicht nur vom eigenen, sondern auch vom Verhalten der anderen Beteiligten ab.",
+    "erklaerung": "Richtig. Das macht die Situation «strategisch»: Mein Ergebnis hängt von meiner UND der Entscheidung des anderen ab. Genau diese gegenseitige Abhängigkeit macht das Gefangenendilemma so faszinierend und relevant für viele Lebensbereiche.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-g09",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche Merkmale kennzeichnen ein Gefangenendilemma? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, B und D sind korrekt: Kooperation wäre optimal (A), aber jeder hat individuell einen Anreiz zur Nicht-Kooperation (B), was zu einem kollektiv schlechteren Ergebnis führt (D). C ist falsch – das Dilemma entsteht gerade, WEIL Absprachen nicht möglich oder nicht durchsetzbar sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Kooperation wäre für alle Beteiligten das beste Ergebnis.",
+      "Jeder Einzelne hat einen Anreiz, nicht zu kooperieren (dominante Strategie).",
+      "Die Beteiligten können sich frei absprechen und Abmachungen durchsetzen.",
+      "Individuelle Rationalität führt zu einem kollektiv schlechteren Ergebnis."
+    ],
+    "korrekt": [
+      "Kooperation wäre für alle Beteiligten das beste Ergebnis.",
+      "Jeder Einzelne hat einen Anreiz, nicht zu kooperieren (dominante Strategie).",
+      "Individuelle Rationalität führt zu einem kollektiv schlechteren Ergebnis."
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-g10",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Betrachten Sie die Auszahlungsmatrix: Spieler A und B können je «kooperieren» oder «nicht kooperieren». Bei gegenseitiger Kooperation erhalten beide je 3 Punkte. Bei gegenseitiger Nicht-Kooperation je 1 Punkt. Kooperiert nur einer, erhält der Nicht-Kooperierende 5 Punkte, der Kooperierende 0. Welches Ergebnis stellt sich ein?",
+    "erklaerung": "Nicht-Kooperation ist die dominante Strategie: Egal was der andere tut, Nicht-Kooperation bringt individuell immer mehr (5 > 3 oder 1 > 0). Ergebnis: Beide wählen rational Nicht-Kooperation → je 1 Punkt, obwohl gegenseitige Kooperation je 3 Punkte gebracht hätte. Das ist das Nash-Gleichgewicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Beide kooperieren und erhalten je 3 Punkte.",
+      "Beide kooperieren nicht und erhalten je 1 Punkt – obwohl bei gegenseitiger Kooperation je 3 Punkte möglich wären.",
+      "Es gibt kein vorhersagbares Ergebnis.",
+      "Einer kooperiert, der andere nicht."
+    ],
+    "korrekt": "Beide kooperieren nicht und erhalten je 1 Punkt – obwohl bei gegenseitiger Kooperation je 3 Punkte möglich wären."
+  },
+  {
+    "id": "vwl_menschenbild-g11",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Internationale Klimaverhandlungen werden oft als Gefangenendilemma beschrieben. Erklären Sie, warum, und beurteilen Sie, welche Lösungsmechanismen aus der Spieltheorie hier helfen könnten.",
+    "erklaerung": "Das Klimaproblem ist ein Gefangenendilemma auf globaler Ebene. Es zeigt, warum freiwillige Kooperation so schwierig ist und warum internationale Abkommen (wie das Pariser Abkommen) institutionelle Rahmen schaffen müssen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Gefangenendilemma: Klimaschutz wäre für alle Staaten besser (Kooperation). Aber jeder einzelne Staat profitiert, wenn er selbst wenig tut, während andere die Kosten tragen (Trittbrettfahren = dominante Strategie). Ergebnis: Zu wenig Klimaschutz. Lösungsmechanismen: (1) Wiederholte Interaktion – jährliche Klimagipfel schaffen langfristige Beziehungen. (2) Sanktionen – Handelssanktionen gegen Nicht-Teilnehmer (z.B. CO₂-Grenzausgleich der EU). (3) Kommunikation – Transparenz über Emissionen. Grenzen: Anders als im klassischen Dilemma sind die Akteure sehr ungleich (grosse vs. kleine Staaten), und die Auswirkungen sind zeitlich verzögert."
+  },
+  {
+    "id": "vwl_menschenbild-v01",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind die Aufgaben der Volkswirtschaftslehre?",
+    "erklaerung": "Die VWL hat vier Aufgaben: (1) Beschreiben (Was passiert?), (2) Erklären (Warum passiert es?), (3) Prognostizieren (Was wird passieren?), (4) Beeinflussen (Was soll getan werden?). Beispiel: (1) Die Arbeitslosigkeit steigt. (2) Weil die Nachfrage sinkt. (3) Sie wird weiter steigen. (4) Der Staat sollte Beschäftigungsprogramme lancieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur Statistiken erstellen.",
+      "Gesetze erlassen und Steuern festlegen.",
+      "Unternehmen beraten und Gewinne maximieren.",
+      "Wirtschaftliche Vorgänge beschreiben und erklären, Entwicklungen prognostizieren, wirtschaftspolitische Beeinflussung aufzeigen."
+    ],
+    "korrekt": "Wirtschaftliche Vorgänge beschreiben und erklären, Entwicklungen prognostizieren, wirtschaftspolitische Beeinflussung aufzeigen."
+  },
+  {
+    "id": "vwl_menschenbild-v02",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele der korrekten Aufgabe der VWL zu.",
+    "erklaerung": "Beschreiben = Fakten darstellen (Quoten, Zahlen). Erklären = Ursachen analysieren (warum?). Prognostizieren = Zukunft vorhersagen. Beeinflussen = wirtschaftspolitische Massnahmen empfehlen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Beschreiben",
+      "Erklären",
+      "Prognostizieren",
+      "Beeinflussen"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-v03",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die VWL hat vier Aufgaben: wirtschaftliche Vorgänge zu {0}, zu {1}, Entwicklungen zu {2} und die Wirtschaft zielgerichtet zu {3}.",
+    "erklaerung": "Eisenhut: «Die VWL hat die Aufgabe, wirtschaftliche Vorgänge zu beschreiben, zu erklären, zu prognostizieren und zielgerichtet zu beeinflussen.» Dabei sollen nicht nur kurzfristige, sondern auch langfristige Auswirkungen berücksichtigt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "beschreiben",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "erklären",
+        "optionen": [
+          "erklaeren"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "prognostizieren",
+        "optionen": [
+          "vorhersagen",
+          "voraussagen"
+        ]
+      },
+      {
+        "id": "3",
+        "korrekt": "beeinflussen",
+        "optionen": [
+          "steuern"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-v04",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Prognosen in der VWL sind einfach, weil die Zusammenhänge klar sind.",
+    "erklaerung": "Falsch. Prognosen sind schwierig, weil: (1) Die Ursachen selbst wieder erklärungsbedürftig sind (Kausalitätsketten). (2) Viele Einflussfaktoren geschätzt werden müssen (Nachfrage, Löhne, technischer Fortschritt). (3) Menschen unvorhersehbar auf Anreize reagieren. Deshalb sind ökonomische Prognosen oft ungenau.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-v05",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Wählen Sie eine aktuelle Wirtschaftsmeldung (z.B. steigende Mieten) und zeigen Sie, wie die VWL ihre vier Aufgaben darauf anwendet.",
+    "erklaerung": "Dieses Vorgehen zeigt, wie die VWL systematisch an Probleme herangeht: Von der Beobachtung über die Ursachenanalyse zur Prognose und schliesslich zu Handlungsempfehlungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Meldung: «Die Mieten in Schweizer Städten steigen.» (1) Beschreiben: Die Mieten sind im letzten Jahr um 3% gestiegen. (2) Erklären: Zuwanderung erhöht Nachfrage, wenig Neubau begrenzt Angebot. (3) Prognostizieren: Mieten werden weiter steigen, wenn nicht mehr gebaut wird. (4) Beeinflussen: Lockerung der Bauvorschriften, Förderung des gemeinnützigen Wohnungsbaus, Mietpreisregulierung."
+  },
+  {
+    "id": "vwl_menschenbild-v06",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Ökonom sagt: «Die Inflation wird nächstes Jahr bei 2.5% liegen, deshalb sollte die SNB die Leitzinsen erhöhen.» Welche Aufgaben der VWL vereint er in dieser Aussage – und warum ist das problematisch?",
+    "erklaerung": "Die Trennung von positiver Analyse (beschreiben, erklären, prognostizieren – Was ist?) und normativer Analyse (beeinflussen – Was soll sein?) ist zentral. Prognosen enthalten Unsicherheit. Handlungsempfehlungen enthalten zusätzlich Werturteile (z.B. «Preisstabilität ist wichtiger als Beschäftigung»). Beides zu vermischen suggeriert falsche Objektivität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Er vermischt Prognostizieren (2.5% Inflation) und Beeinflussen (Leitzins erhöhen). Problematisch, weil die Prognose unsicher ist und die Handlungsempfehlung von Wertvorstellungen abhängt.",
+      "Er verwechselt Mikro- und Makroökonomie.",
+      "Er prognostiziert korrekt und seine Empfehlung folgt logisch daraus.",
+      "Er beschreibt und erklärt gleichzeitig, was unzulässig ist."
+    ],
+    "korrekt": "Er vermischt Prognostizieren (2.5% Inflation) und Beeinflussen (Leitzins erhöhen). Problematisch, weil die Prognose unsicher ist und die Handlungsempfehlung von Wertvorstellungen abhängt."
+  },
+  {
+    "id": "vwl_menschenbild-v07",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden Aussagen zählen zu den Aufgaben der VWL? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, C und D sind die drei der vier Aufgaben der VWL: Beschreiben (A), Erklären (C), Beeinflussen (D). Die vierte Aufgabe – Prognostizieren – ist hier nicht aufgeführt. B ist falsch: Gesetze erlassen ist Aufgabe des Parlaments, nicht der VWL. Die VWL kann aber Empfehlungen abgeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wirtschaftliche Vorgänge beschreiben (z.B. Arbeitslosenquote erheben).",
+      "Gesetze für Unternehmen erlassen.",
+      "Wirtschaftliche Zusammenhänge erklären (z.B. warum die Preise steigen).",
+      "Handlungsempfehlungen für die Wirtschaftspolitik formulieren."
+    ],
+    "korrekt": [
+      "Wirtschaftliche Vorgänge beschreiben (z.B. Arbeitslosenquote erheben).",
+      "Wirtschaftliche Zusammenhänge erklären (z.B. warum die Preise steigen).",
+      "Handlungsempfehlungen für die Wirtschaftspolitik formulieren."
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-v08",
+    "fach": "VWL",
+    "thema": "Aufgaben der VWL",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum wird die VWL manchmal als «die dismal science» (düstere Wissenschaft) bezeichnet? Nehmen Sie Stellung dazu, ob diese Bezeichnung gerechtfertigt ist.",
+    "erklaerung": "Die Bezeichnung «dismal science» wird oft missverstanden. Die VWL ist nicht pessimistisch, sondern sie nimmt Knappheit und Trade-offs ernst. Gerade dadurch hilft sie, bessere Entscheidungen zu treffen – auf individueller und gesellschaftlicher Ebene.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die Bezeichnung stammt von Thomas Carlyle (19. Jh.) und bezieht sich darauf, dass die VWL oft unangenehme Wahrheiten aufzeigt: Ressourcen sind knapp, es gibt Trade-offs, kostenlose Mittagessen existieren nicht. Pro: Die VWL zeigt Grenzen auf und warnt vor zu optimistischen Versprechen. Contra: Die VWL kann auch aufzeigen, wie Wohlstand entsteht, wie Armut bekämpft wird und wie kluge Anreize das Zusammenleben verbessern. Sie ist nicht düster, sondern realistisch – und genau das macht sie nützlich."
+  },
+  {
+    "id": "vwl_menschenbild-z01",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche sechs Ziele umfasst das «magische Sechseck» der Wirtschaftspolitik?",
+    "erklaerung": "Das magische Sechseck: (1) Vollbeschäftigung, (2) Preisstabilität, (3) Wirtschaftswachstum, (4) Aussenwirtschaftliches Gleichgewicht, (5) Sozialer Ausgleich (Verteilung), (6) Umweltqualität. Ursprünglich nur ein Dreieck (1-3), im Laufe der Zeit erweitert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_sechseck_01.svg",
+      "alt": "Sechseck mit sechs wirtschaftspolitischen Zielen"
+    },
+    "optionen": [
+      "Hohe Exporte, tiefe Steuern, hohe Gewinne, viel Konsum, wenig Staat, tiefe Inflation.",
+      "BIP, Gini-Koeffizient, Lorenzkurve, Handelsbilanz, Zinssatz, Wechselkurs.",
+      "Vollbeschäftigung, Preisstabilität, Wirtschaftswachstum, aussenwirtschaftliches Gleichgewicht, sozialer Ausgleich, Umweltqualität.",
+      "Freiheit, Gleichheit, Brüderlichkeit, Demokratie, Wohlstand, Sicherheit."
+    ],
+    "korrekt": "Vollbeschäftigung, Preisstabilität, Wirtschaftswachstum, aussenwirtschaftliches Gleichgewicht, sozialer Ausgleich, Umweltqualität."
+  },
+  {
+    "id": "vwl_menschenbild-z02",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Das Sechseck heisst «magisch», weil es schwierig ist, alle sechs Ziele gleichzeitig zu erreichen.",
+    "erklaerung": "Richtig. Die Ziele stehen teilweise in Konkurrenz zueinander (Zielkonflikte). Beispiel: Wirtschaftswachstum kann die Umweltqualität beeinträchtigen. Preisstabilität und Vollbeschäftigung können kurzfristig in Konkurrenz stehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_menschenbild-z03",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele der korrekten Zielbeziehung zu.",
+    "erklaerung": "Zielharmonie: Das Erreichen eines Ziels fördert ein anderes. Zielkonkurrenz: Ein Ziel zu verfolgen behindert ein anderes. Zielneutralität (selten): Ziele beeinflussen sich nicht gegenseitig. Beispiel für den klassischen Trade-off: «Butter und Kanonen».",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Zielharmonie",
+      "Zielkonkurrenz"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-z04",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Wenn das Anstreben eines Ziels ein anderes fördert, spricht man von {0}. Wenn ein Ziel ein anderes behindert, spricht man von {1}. In der Fachsprache heissen solche Austauschbeziehungen {2}.",
+    "erklaerung": "Drei Zielbeziehungen: Zielharmonie, Zielneutralität, Zielkonkurrenz. Trade-offs = Austauschbeziehungen, z.B. «ein bisschen weniger Arbeitslose gegen ein bisschen weniger Preisstabilität» (Eisenhut).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Zielharmonie",
+        "optionen": [
+          "Ziel-Harmonie"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Zielkonkurrenz",
+        "optionen": [
+          "Ziel-Konkurrenz",
+          "Zielkonflikt"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Trade-offs",
+        "optionen": [
+          "Trade-off",
+          "Tradeoffs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-z05",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist der klassische Trade-off «Butter und Kanonen» ein gutes Beispiel für wirtschaftspolitische Zielkonflikte?",
+    "erklaerung": "Das «Butter-und-Kanonen»-Beispiel illustriert den grundlegenden Trade-off: Knappe Ressourcen (Geld, Arbeit, Material) können entweder für Rüstung oder für zivile Güter eingesetzt werden – nicht für beides gleichzeitig. Dies zeigt die Opportunitätskosten jeder Entscheidung auf gesamtwirtschaftlicher Ebene.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die Armee kein Geld benötigt.",
+      "Weil es in der Wirtschaft immer nur um Waffen geht.",
+      "Weil Butter und Kanonen aus denselben Rohstoffen hergestellt werden.",
+      "Weil mehr Ausgaben für die Armee (Kanonen) weniger Mittel für zivile Güter (Butter) bedeuten – die Ressourcen sind knapp."
+    ],
+    "korrekt": "Weil mehr Ausgaben für die Armee (Kanonen) weniger Mittel für zivile Güter (Butter) bedeuten – die Ressourcen sind knapp."
+  },
+  {
+    "id": "vwl_menschenbild-z06",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Stehen die Ziele «Wirtschaftswachstum» und «Umweltqualität» in Harmonie oder in Konkurrenz? Begründen Sie Ihre Einschätzung.",
+    "erklaerung": "Eisenhut fragt: «Brauchen wir Wachstum, um unsere Umwelt zu retten?» Die Antwort ist nicht eindeutig. Entscheidend ist die Unterscheidung zwischen quantitativem und qualitativem Wachstum.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beides ist möglich. Zielkonkurrenz: Mehr Produktion bedeutet oft mehr Ressourcenverbrauch und Emissionen (quantitatives Wachstum). Zielharmonie: Qualitatives Wachstum (effizientere Technologien, erneuerbare Energien, Kreislaufwirtschaft) kann Wachstum und Umweltschutz verbinden. Zudem braucht es wirtschaftliche Mittel, um in Umwelttechnologien zu investieren. Fazit: Die Zielbeziehung ist nicht eindeutig – sie hängt von der Art des Wachstums ab."
+  },
+  {
+    "id": "vwl_menschenbild-z07",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Ziele gehören zum «magischen Sechseck» der Wirtschaftspolitik? (Mehrere Antworten möglich.)",
+    "erklaerung": "A (Preisstabilität), C (Umweltqualität) und D (Vollbeschäftigung) gehören zum magischen Sechseck. B (Maximierung der Unternehmensgewinne) ist kein wirtschaftspolitisches Ziel des Sechsecks – Unternehmensgewinne sind ein betriebswirtschaftliches Ziel, nicht ein gesamtwirtschaftliches.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_sechseck_01.svg",
+      "alt": "Sechseck mit sechs wirtschaftspolitischen Zielen"
+    },
+    "optionen": [
+      "Preisstabilität",
+      "Maximierung der Unternehmensgewinne",
+      "Umweltqualität",
+      "Vollbeschäftigung"
+    ],
+    "korrekt": [
+      "Preisstabilität",
+      "Umweltqualität",
+      "Vollbeschäftigung"
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-z08",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Schweiz hat eine tiefe Arbeitslosenquote (≈2%), aber hohe Mieten und Lebenshaltungskosten. Welche Zielbeziehung im magischen Sechseck wird hier sichtbar?",
+    "erklaerung": "Konkret: Vollbeschäftigung und wirtschaftliche Dynamik ziehen Arbeitskräfte an (Zuwanderung), was die Nachfrage nach Wohnraum erhöht und die Mieten steigen lässt. Das Ziel «sozialer Ausgleich» (bezahlbares Wohnen für alle) wird dadurch erschwert. Ein typisches Beispiel für die Zielkonflikte, die das Sechseck «magisch» machen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Zielharmonie: Tiefe Arbeitslosigkeit und hohe Mieten ergänzen sich optimal.",
+      "Es handelt sich um kein wirtschaftspolitisches Thema.",
+      "Zielneutralität: Die Arbeitslosenquote hat keinen Einfluss auf die Mietpreise.",
+      "Zielkonkurrenz: Hohe Beschäftigung und Zuwanderung treiben die Nachfrage nach Wohnraum, was den sozialen Ausgleich (bezahlbares Wohnen) erschwert."
+    ],
+    "korrekt": "Zielkonkurrenz: Hohe Beschäftigung und Zuwanderung treiben die Nachfrage nach Wohnraum, was den sozialen Ausgleich (bezahlbares Wohnen) erschwert."
+  },
+  {
+    "id": "vwl_menschenbild-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Annahmen des Homo Oeconomicus nach ihrer zunehmenden Realitätsferne – von der «noch einigermassen realistischen» zur «am stärksten vereinfachenden» Annahme.",
+    "erklaerung": "Eigeninteresse ist die realistischste Annahme – Menschen handeln tatsächlich oft eigennützig. Nutzenmaximierung ist schon vereinfacht (Verhaltensökonomie zeigt Heuristiken). Stabile Präferenzen sind empirisch widerlegt (Gewohnheiten, Moden). Vollständige Information ist die unrealistischste Annahme – sie ist in der Realität praktisch nie gegeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Kritik & Verhaltensökonomie",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden ökonomischen Denkschulen chronologisch – von der ältesten zur jüngsten.",
+    "erklaerung": "Adam Smith (1776, Wealth of Nations) begründete die klassische Ökonomie. Die Neoklassik (ab ca. 1870) formalisierte das Modell des rationalen Akteurs. Keynes (1936) kritisierte die Selbstheilungskräfte des Marktes. Die Verhaltensökonomie (ab ca. 1980, Nobelpreis Kahneman 2002, Thaler 2017) zeigt systematische Abweichungen vom Homo Oeconomicus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Ziele der Wirtschaftspolitik",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die sechs Ziele des «magischen Sechsecks» der Schweizer Wirtschaftspolitik in der Reihenfolge, wie sie im Bundesverfassungsartikel 94–100 BV typischerweise priorisiert werden.",
+    "erklaerung": "Traditionell stehen Preisstabilität und Vollbeschäftigung im Zentrum der Wirtschaftspolitik. Wachstum und Aussenhandelsgleichgewicht folgen. Verteilung und Nachhaltigkeit wurden historisch erst später als gleichwertige Ziele anerkannt. Alle sechs Ziele stehen in vielfältigen Wechselbeziehungen – daher «magisch»: Alle gleichzeitig zu erreichen ist kaum möglich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-beschriftung01",
+    "fach": "VWL",
+    "thema": "Gefangenendilemma & Spieltheorie",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die Elemente des Gefangenendilemmas.",
+    "erklaerung": "Im Gefangenendilemma hat jeder Spieler die dominante Strategie zu gestehen, obwohl beidseitiges Schweigen (1/1) das kollektiv bessere Ergebnis wäre. Das Nash-Gleichgewicht liegt bei «beide gestehen» (5/5).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_payoff_beschriftung.svg",
+      "alt": "Gefangenendilemma-Matrix mit sechs nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Beide gestehen: 5/5 Jahre",
+        "x": 52,
+        "y": 44
+      },
+      {
+        "id": "l2",
+        "text": "A gesteht, B schweigt: 0/10 Jahre",
+        "x": 73,
+        "y": 44
+      },
+      {
+        "id": "l3",
+        "text": "A schweigt, B gesteht: 10/0 Jahre",
+        "x": 52,
+        "y": 72
+      },
+      {
+        "id": "l4",
+        "text": "Beide schweigen: 1/1 Jahr",
+        "x": 73,
+        "y": 72
+      },
+      {
+        "id": "l5",
+        "text": "Spieler A (Strategien)",
+        "x": 33,
+        "y": 58
+      },
+      {
+        "id": "l6",
+        "text": "Spieler B (Strategien)",
+        "x": 63,
+        "y": 24
+      }
+    ]
+  },
+  {
+    "id": "vwl_menschenbild-dragdrop01",
+    "fach": "VWL",
+    "thema": "Homo Oeconomicus",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Annahmen dem passenden Menschenbild zu.",
+    "erklaerung": "Der Homo oeconomicus geht von rationalem, eigeninteressiertem Verhalten bei vollständiger Information aus. Behavioral Economics zeigt, dass Menschen begrenzt rational sind, Verluste stärker gewichten, Heuristiken nutzen und soziale Präferenzen haben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/menschenbild/menschenbild_modelle_dragdrop.svg",
+      "alt": "Zwei Spalten: Homo oeconomicus und Behavioral Economics"
+    },
+    "zones": [
+      {
+        "id": "homo",
+        "x": 2.5,
+        "y": 14,
+        "w": 46,
+        "h": 82
+      },
+      {
+        "id": "behavioral",
+        "x": 51.5,
+        "y": 14,
+        "w": 46,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Vollständige Information",
+        "zone": "homo"
+      },
+      {
+        "id": "m2",
+        "text": "Rationale Nutzenmaximierung",
+        "zone": "homo"
+      },
+      {
+        "id": "m3",
+        "text": "Stabile Präferenzen",
+        "zone": "homo"
+      },
+      {
+        "id": "m4",
+        "text": "Eigeninteresse als Antrieb",
+        "zone": "homo"
+      },
+      {
+        "id": "m5",
+        "text": "Begrenzte Rationalität",
+        "zone": "behavioral"
+      },
+      {
+        "id": "m6",
+        "text": "Verlustaversion",
+        "zone": "behavioral"
+      },
+      {
+        "id": "m7",
+        "text": "Heuristiken und Biases",
+        "zone": "behavioral"
+      },
+      {
+        "id": "m8",
+        "text": "Soziale Präferenzen (Fairness)",
+        "zone": "behavioral"
+      }
+    ]
+  }
+]

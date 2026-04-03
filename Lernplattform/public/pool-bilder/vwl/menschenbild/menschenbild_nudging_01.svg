@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300" font-family="'DM Sans',system-ui,sans-serif">
+  <style>
+    .title{font-size:15px;font-weight:700;fill:#1e293b;text-anchor:middle}
+    .col-head{font-size:13px;font-weight:700;fill:#fff;text-anchor:middle}
+    .item{font-size:11.5px;fill:#1e293b}
+    .icon{font-size:14px}
+    .divider{stroke:#e2e8f0;stroke-width:1.5}
+    .vs{font-size:20px;font-weight:800;fill:#f89907;text-anchor:middle}
+    @media(prefers-color-scheme:dark){
+      .title{fill:#e2e8f0}.item{fill:#e2e8f0}.divider{stroke:#2d3348}
+    }
+  </style>
+  <text x="250" y="26" class="title">Verhaltenssteuerung: Zwei Ansätze im Vergleich</text>
+  <!-- Linke Spalte: Traditionelle Regulierung -->
+  <rect x="20" y="44" width="210" height="36" rx="8" fill="#64748b"/>
+  <text x="125" y="67" class="col-head">Ansatz A</text>
+  <rect x="20" y="84" width="210" height="200" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="36" y="110" class="item"><tspan class="icon">🚫</tspan> ?</text>
+  <text x="36" y="134" class="item"><tspan class="icon">💰</tspan> ?</text>
+  <text x="36" y="158" class="item"><tspan class="icon">⚖️</tspan> ?</text>
+  <text x="36" y="182" class="item"><tspan class="icon">📋</tspan> ?</text>
+  <line x1="36" y1="198" x2="214" y2="198" class="divider"/>
+  <text x="36" y="218" class="item" font-style="italic" fill="#64748b">Beispiel: Rauchverbot in</text>
+  <text x="36" y="236" class="item" font-style="italic" fill="#64748b">Restaurants, Bussen bis</text>
+  <text x="36" y="254" class="item" font-style="italic" fill="#64748b">CHF 200 bei Verstoss</text>
+  <text x="125" y="276" class="item" font-weight="700" text-anchor="middle">→ Einschränkung der Freiheit</text>
+  <!-- VS -->
+  <text x="250" y="170" class="vs">VS</text>
+  <!-- Rechte Spalte: Nudging -->
+  <rect x="270" y="44" width="210" height="36" rx="8" fill="#f89907"/>
+  <text x="375" y="67" class="col-head">Ansatz B</text>
+  <rect x="270" y="84" width="210" height="200" rx="8" fill="#fff8eb" stroke="#e2e8f0"/>
+  <text x="286" y="110" class="item"><tspan class="icon">👣</tspan> ?</text>
+  <text x="286" y="134" class="item"><tspan class="icon">📐</tspan> ?</text>
+  <text x="286" y="158" class="item"><tspan class="icon">✅</tspan> ?</text>
+  <text x="286" y="182" class="item"><tspan class="icon">🍎</tspan> ?</text>
+  <line x1="286" y1="198" x2="464" y2="198" class="divider"/>
+  <text x="286" y="218" class="item" font-style="italic" fill="#64748b">Beispiel: Grüne Fussabdrücke</text>
+  <text x="286" y="236" class="item" font-style="italic" fill="#64748b">zum Mülleimer → Abfall</text>
+  <text x="286" y="254" class="item" font-style="italic" fill="#64748b">auf Strassen –40 %</text>
+  <text x="375" y="276" class="item" font-weight="700" text-anchor="middle">→ Wahlfreiheit bleibt erhalten</text>
+</svg>

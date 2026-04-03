@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="600" height="400" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="300" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Dreistufige Erfolgsrechnung</text>
+
+  <!-- Stufe 1 -->
+  <rect x="40" y="50" width="520" height="95" rx="8" fill="#e8f7fe" stroke="#01a9f4" stroke-width="2"/>
+  <text x="55" y="72" font-size="12" font-weight="700" fill="#01a9f4">1. Stufe</text>
+
+  <rect x="60" y="82" width="200" height="28" rx="4" fill="#ffffff" stroke="#4fc3f7" stroke-width="1"/>
+  <text x="160" y="101" text-anchor="middle" font-size="11" fill="#1e293b">Warenverkauf (Nettoumsatz)</text>
+
+  <text x="280" y="101" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">–</text>
+
+  <rect x="300" y="82" width="200" height="28" rx="4" fill="#ffffff" stroke="#4fc3f7" stroke-width="1"/>
+  <text x="400" y="101" text-anchor="middle" font-size="11" fill="#1e293b">Warenaufwand</text>
+
+  <text x="270" y="136" text-anchor="middle" font-size="11" fill="#1e293b">=</text>
+  <rect x="290" y="120" width="200" height="22" rx="4" fill="#01a9f4"/>
+  <text x="390" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">?</text>
+  <text x="520" y="136" font-size="10" fill="#64748b">(Stufe 1)</text>
+
+  <!-- Pfeil -->
+  <!-- Stufe 1 Berechnung: y=145 nach y=165 -->
+  <line x1="390" y1="145" x2="390" y2="168" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+  <!-- Stufe 2 -->
+  <rect x="40" y="155" width="520" height="95" rx="8" fill="#fff8eb" stroke="#f89907" stroke-width="2"/>
+  <text x="55" y="177" font-size="12" font-weight="700" fill="#f89907">2. Stufe</text>
+
+  <rect x="60" y="187" width="200" height="28" rx="4" fill="#ffffff" stroke="#ffb74d" stroke-width="1"/>
+  <text x="160" y="206" text-anchor="middle" font-size="11" fill="#1e293b">Ergebnis Stufe 1</text>
+
+  <text x="280" y="206" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">–</text>
+
+  <rect x="300" y="187" width="200" height="28" rx="4" fill="#ffffff" stroke="#ffb74d" stroke-width="1"/>
+  <text x="400" y="206" text-anchor="middle" font-size="11" fill="#1e293b">Betriebsnotw. Aufwände</text>
+
+  <text x="270" y="241" text-anchor="middle" font-size="11" fill="#1e293b">=</text>
+  <rect x="290" y="225" width="200" height="22" rx="4" fill="#f89907"/>
+  <text x="390" y="241" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">?</text>
+  <text x="520" y="241" font-size="10" fill="#64748b">(Stufe 2)</text>
+
+  <!-- Pfeil -->
+  <line x1="390" y1="250" x2="390" y2="273" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4"/>
+
+  <!-- Stufe 3 -->
+  <rect x="40" y="260" width="520" height="105" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="55" y="282" font-size="12" font-weight="700" fill="#16a34a">3. Stufe</text>
+
+  <rect x="60" y="292" width="140" height="28" rx="4" fill="#ffffff" stroke="#8bc34a" stroke-width="1"/>
+  <text x="130" y="311" text-anchor="middle" font-size="11" fill="#1e293b">Ergebnis Stufe 2</text>
+
+  <text x="218" y="311" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">+</text>
+
+  <rect x="236" y="292" width="140" height="28" rx="4" fill="#ffffff" stroke="#8bc34a" stroke-width="1"/>
+  <text x="306" y="311" text-anchor="middle" font-size="11" fill="#1e293b">a.o. Erträge</text>
+
+  <text x="394" y="311" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">–</text>
+
+  <rect x="412" y="292" width="130" height="28" rx="4" fill="#ffffff" stroke="#8bc34a" stroke-width="1"/>
+  <text x="477" y="311" text-anchor="middle" font-size="11" fill="#1e293b">a.o. Aufwände</text>
+
+  <text x="270" y="351" text-anchor="middle" font-size="11" fill="#1e293b">=</text>
+  <rect x="290" y="335" width="200" height="22" rx="4" fill="#16a34a"/>
+  <text x="390" y="351" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">?</text>
+  <text x="520" y="351" font-size="10" fill="#64748b">(Stufe 3)</text>
+
+  <!-- Hinweis -->
+  <text x="300" y="390" text-anchor="middle" font-size="10" fill="#64748b">Die Ergebnisse der drei Stufen müssen berechnet werden.</text>
+</svg>

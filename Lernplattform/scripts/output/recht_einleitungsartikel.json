@@ -1,0 +1,1281 @@
+[
+  {
+    "id": "recht_einleitungsartikel-r01",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Artikel des ZGB nennt die Rechtsquellen, auf die sich ein Gericht stützt?",
+    "erklaerung": "Art. 1 ZGB ist der zentrale Einleitungsartikel, der die Rechtsquellen aufzählt: geschriebenes Recht, Gewohnheitsrecht und – bei Lücken – die richterliche Rechtsfindung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Art. 3 ZGB",
+      "Art. 1 ZGB",
+      "Art. 8 ZGB",
+      "Art. 2 ZGB"
+    ],
+    "korrekt": "Art. 1 ZGB"
+  },
+  {
+    "id": "recht_einleitungsartikel-r02",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das geschriebene Recht umfasst drei hierarchische Stufen: {0}, {1} und {2}.",
+    "erklaerung": "Die drei Stufen des geschriebenen Rechts sind hierarchisch geordnet: Die Verfassung steht zuoberst, darunter folgen die Gesetze und zuunterst die Verordnungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einleitungsartikel/einleitungsartikel_normenpyramide_01.svg",
+      "alt": "Normenpyramide mit drei Stufen des geschriebenen Rechts"
+    },
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Verfassung",
+        "optionen": [
+          "Bundesverfassung",
+          "BV"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Gesetz",
+        "optionen": [
+          "Gesetze"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Verordnung",
+        "optionen": [
+          "Verordnungen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-r03",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Verordnungen werden von der Regierung (Bundesrat) erlassen.",
+    "erklaerung": "Verordnungen werden in der Regel von der Regierung (Exekutive) erlassen, also auf Bundesebene vom Bundesrat. Sie können jederzeit – ohne Mitwirkung des Parlaments oder des Volkes – erlassen, abgeändert oder aufgehoben werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-r04",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer muss einer Änderung der Bundesverfassung zustimmen?",
+    "erklaerung": "Verfassungsänderungen unterliegen dem obligatorischen Referendum und benötigen die Zustimmung der Mehrheit des Volkes und der Stände (Kantone).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Das Bundesgericht",
+      "Volk und Stände (Kantone)",
+      "Das Parlament allein",
+      "Der Bundesrat allein"
+    ],
+    "korrekt": "Volk und Stände (Kantone)"
+  },
+  {
+    "id": "recht_einleitungsartikel-r05",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter Gewohnheitsrecht?",
+    "erklaerung": "Gewohnheitsrecht beruht auf althergebrachten, lang geübten Bräuchen, die als allgemein verpflichtend anerkannt werden. Beispiele sind Orts- und Handelsbräuche (Handelsusanzen), wie die Berechnung eines Monats mit 30 Tagen bei Banken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Althergebrachte, lang geübte Bräuche, die als allgemein verbindlich anerkannt werden",
+      "Gerichtsentscheide, die zur Gewohnheit geworden sind",
+      "Gesetze, die schon sehr alt sind",
+      "Regeln, die vom Bundesrat gewohnheitsmässig erlassen werden"
+    ],
+    "korrekt": "Althergebrachte, lang geübte Bräuche, die als allgemein verbindlich anerkannt werden"
+  },
+  {
+    "id": "recht_einleitungsartikel-r06",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zum ungeschriebenen Recht sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist richtig: Die Regelungsdichte des geschriebenen Rechts hat das Gewohnheitsrecht weitgehend verdrängt. B ist richtig: Präjudizien sind wegweisend, aber das Bundesgericht kann seine Rechtsprechung ändern. C ist falsch: Der Richter muss nach bewährter Lehre und Überlieferung entscheiden, wie wenn er Gesetzgeber wäre (Art. 1 Abs. 2 ZGB). D ist richtig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Gewohnheitsrecht hat heute praktisch keine Bedeutung mehr, da das geschriebene Recht es weitgehend verdrängt hat.",
+      "Gerichtspraxis (Präjudizien) sind wegweisend, aber nicht absolut verbindlich.",
+      "Bei Gesetzeslücken darf der Richter frei nach seinem persönlichen Empfinden entscheiden.",
+      "Unter bewährter Lehre versteht man die Meinung von Rechtsgelehrten in Kommentaren und Dissertationen."
+    ],
+    "korrekt": [
+      "Gewohnheitsrecht hat heute praktisch keine Bedeutung mehr, da das geschriebene Recht es weitgehend verdrängt hat.",
+      "Gerichtspraxis (Präjudizien) sind wegweisend, aber nicht absolut verbindlich.",
+      "Unter bewährter Lehre versteht man die Meinung von Rechtsgelehrten in Kommentaren und Dissertationen."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-r07",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gesetzesänderungen können nur mit Zustimmung des Volkes in Kraft treten.",
+    "erklaerung": "Gesetze werden vom Parlament verabschiedet. Das Volk kann mit dem fakultativen Referendum (50'000 Unterschriften) eine Abstimmung über ein Gesetz verlangen, muss dies aber nicht. Ohne Referendum treten Gesetze ohne Volksabstimmung in Kraft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-r08",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum benötigen Verordnungen eine ausdrückliche Grundlage in einem Gesetz?",
+    "erklaerung": "Verordnungen enthalten detaillierte Bestimmungen darüber, wie ein Gesetz konkret angewendet werden soll. Sie benötigen deshalb eine ausdrückliche gesetzliche Grundlage – ohne Gesetz kann keine Verordnung erlassen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Weil der Bundesrat sonst nicht weiss, worüber er eine Verordnung erlassen soll",
+      "Weil es die Verfassung ausdrücklich so vorschreibt",
+      "Weil die Verordnung die detaillierten Ausführungsbestimmungen zu einem Gesetz enthält und sich darauf stützen muss",
+      "Weil das Parlament jede Verordnung genehmigen muss"
+    ],
+    "korrekt": "Weil die Verordnung die detaillierten Ausführungsbestimmungen zu einem Gesetz enthält und sich darauf stützen muss"
+  },
+  {
+    "id": "recht_einleitungsartikel-r09",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Autohändler verkauft einem Kunden ein Fahrzeug. Im Vertrag steht: «Gerichtsstand ist Zürich.» Welche Rechtsquelle liegt dieser Klausel zugrunde?",
+    "erklaerung": "Art. 30 Abs. 2 BV gibt jeder Person Anspruch darauf, dass die Sache vom Gericht an ihrem Wohnsitz beurteilt wird. Auf diese Garantie kann aber vertraglich verzichtet werden, sofern dies in einer ausdrücklichen Erklärung geschieht. Die Gerichtsstandsklausel stützt sich somit auf geschriebenes Recht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Gewohnheitsrecht, weil es handelsüblich ist",
+      "Die Bundesverfassung, weil sie alle Verträge regelt",
+      "Richterliche Rechtsfindung, weil kein Gesetz den Gerichtsstand regelt",
+      "Geschriebenes Recht: Der Grundsatz des Gerichtsstands am Wohnsitz kann vertraglich abgeändert werden (Art. 30 Abs. 2 BV)"
+    ],
+    "korrekt": "Geschriebenes Recht: Der Grundsatz des Gerichtsstands am Wohnsitz kann vertraglich abgeändert werden (Art. 30 Abs. 2 BV)"
+  },
+  {
+    "id": "recht_einleitungsartikel-r10",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In welchen der folgenden Fälle stützt sich die Entscheidungsgrundlage auf ungeschriebenes Recht? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist geschriebenes Recht (Gesetz). B stützt sich auf Gerichtspraxis (Präjudizien). C beruht auf Gewohnheitsrecht (Handelsusanz). D beruht auf richterlichem Ermessen (gerichtliche Rechtsfindung), da die konkrete Höhe der Unterhaltszahlungen vom Richter nach den Umständen bestimmt wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Die Bundesversammlung erlässt ein Gesetz über die Mutterschaftsversicherung.",
+      "Einem Automobilisten, der in angetrunkenem Zustand einen Verkehrsunfall verursacht hat, wird der Führerausweis gemäss Praxis des Bundesgerichtes während 6 Monaten entzogen.",
+      "Schweizerische Banken berechnen den Zins auf Sparkonten mit 360 Tagen pro Jahr und 30 Tagen pro Monat.",
+      "In einem Scheidungsprozess werden die Unterhaltszahlungen von der Amtsgerichtspräsidentin festgesetzt."
+    ],
+    "korrekt": [
+      "Einem Automobilisten, der in angetrunkenem Zustand einen Verkehrsunfall verursacht hat, wird der Führerausweis gemäss Praxis des Bundesgerichtes während 6 Monaten entzogen.",
+      "Schweizerische Banken berechnen den Zins auf Sparkonten mit 360 Tagen pro Jahr und 30 Tagen pro Monat.",
+      "In einem Scheidungsprozess werden die Unterhaltszahlungen von der Amtsgerichtspräsidentin festgesetzt."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-r11",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum gibt es in der Schweiz keine Verfassungsgerichtsbarkeit für Bundesgesetze?",
+    "erklaerung": "In der Schweiz darf das Bundesgericht Bundesgesetze nicht auf ihre Verfassungsmässigkeit überprüfen. Praktisch gehen Gesetze der Verfassung deshalb nicht vor, aber sie können auch nicht für ungültig erklärt werden. Bei Verordnungen hingegen prüft das Bundesgericht indirekt die Verfassungsmässigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Weil die Schweiz kein Verfassungsgericht hat",
+      "Weil alle Gesetze automatisch verfassungskonform sind",
+      "Weil das Bundesgericht Bundesgesetze nicht auf ihre Verfassungsmässigkeit überprüfen darf, der Grundsatz «übergeordnetes Recht geht vor» auf Bundesebene also nur eingeschränkt gilt",
+      "Weil kantonale Gerichte diese Aufgabe übernehmen"
+    ],
+    "korrekt": "Weil das Bundesgericht Bundesgesetze nicht auf ihre Verfassungsmässigkeit überprüfen darf, der Grundsatz «übergeordnetes Recht geht vor» auf Bundesebene also nur eingeschränkt gilt"
+  },
+  {
+    "id": "recht_einleitungsartikel-t01",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Art. 2 Abs. 1 ZGB lautet: «Jedermann hat in der Ausübung seiner Rechte und in der Erfüllung seiner Pflichten nach {0} und {1} zu handeln.»",
+    "erklaerung": "Art. 2 Abs. 1 ZGB enthält das Gebot des Handelns nach Treu und Glauben. Es verlangt von den Rechtssubjekten, sich anständig und korrekt zu verhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Treu",
+        "optionen": [
+          "treu"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Glauben",
+        "optionen": [
+          "glauben"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-t02",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "An wen richtet sich das Gebot des Handelns nach Treu und Glauben gemäss Art. 2 Abs. 1 ZGB?",
+    "erklaerung": "Art. 2 Abs. 1 ZGB richtet sich an alle Rechtssubjekte – also an alle natürlichen und juristischen Personen. Es verlangt, dass jeder in der Rechtsausübung als anständiger und korrekter Mensch handelt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Nur an Vertragsparteien",
+      "Nur an juristische Personen",
+      "Nur an Richterinnen und Richter",
+      "An alle Rechtssubjekte"
+    ],
+    "korrekt": "An alle Rechtssubjekte"
+  },
+  {
+    "id": "recht_einleitungsartikel-t03",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Gebot von Treu und Glauben bedeutet, dass allgemeine Werte der Sittlichkeit und Moral über Art. 2 ZGB Eingang ins Recht finden.",
+    "erklaerung": "Art. 2 Abs. 1 ZGB verlangt von den Rechtssubjekten, sich als anständige und korrekte Menschen zu verhalten. Auf diese Weise finden allgemeine Werte der Sittlichkeit und Moral Eingang ins Recht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-t04",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Herr Wagner verspricht einem Interessenten seinen BMW für Fr. 10'000.–. Die briefliche Annahmeerklärung soll bis Freitag, 18. Juli, eintreffen. Am 18. Juli erhält Wagner einen Brief, dessen Umschlag aber leer ist. Wagner verkauft den Wagen daraufhin an eine andere Person. Ist das Verhalten von Herrn Wagner korrekt?",
+    "erklaerung": "Da zwischen Wagner und dem Interessenten ein Rechtsverhältnis bestand (Vertragsverhandlung), gebieten es Treu und Glauben (Art. 2 Abs. 1 ZGB), dass Wagner den Absender sofort benachrichtigt, wenn der Briefumschlag leer war. Berechtigtes Vertrauen soll nicht enttäuscht werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Nein, weil der Kaufvertrag bereits zustande gekommen war",
+      "Nein, weil er gemäss Art. 2 Abs. 1 ZGB nach Treu und Glauben den Absender hätte benachrichtigen müssen, dass der Briefumschlag leer war",
+      "Ja, weil keine Annahmeerklärung vorlag",
+      "Ja, weil der Interessent selbst schuld ist"
+    ],
+    "korrekt": "Nein, weil er gemäss Art. 2 Abs. 1 ZGB nach Treu und Glauben den Absender hätte benachrichtigen müssen, dass der Briefumschlag leer war"
+  },
+  {
+    "id": "recht_einleitungsartikel-t05",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In welchen der folgenden Fälle wird gegen Treu und Glauben verstossen? (Mehrere Antworten möglich.)",
+    "erklaerung": "A: Verstoss – der Hauseigentümer handelt treuwidrig, indem er den Maklervertrag umgeht. B: Kein Verstoss – fristgerechte Zahlung ist vertragskonform. C: Verstoss – wer einem Beschluss zugestimmt hat, handelt widersprüchlich, wenn er ihn anficht. D: Verstoss – die Brüder haben den Enterbten absichtlich hingehalten, um die Klagefrist verstreichen zu lassen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Ein Hauseigentümer lehnt alle vom Makler vermittelten Interessenten ab, schliesst dann aber nach Ablauf des Maklervertrags direkt mit einem dieser Interessenten den Kaufvertrag ab, um die Provision zu sparen.",
+      "Ein Käufer bezahlt den vereinbarten Kaufpreis fristgerecht.",
+      "Ein Aktionär ficht einen Beschluss der Generalversammlung an, dem er selbst zugestimmt hat.",
+      "Zwei Brüder versprechen dem Enterbten, ihm seinen Pflichtteil auszuzahlen. Nach Ablauf der Klagefrist erklären sie, er erhalte nichts, da er die Frist verpasst habe."
+    ],
+    "korrekt": [
+      "Ein Hauseigentümer lehnt alle vom Makler vermittelten Interessenten ab, schliesst dann aber nach Ablauf des Maklervertrags direkt mit einem dieser Interessenten den Kaufvertrag ab, um die Provision zu sparen.",
+      "Ein Aktionär ficht einen Beschluss der Generalversammlung an, dem er selbst zugestimmt hat.",
+      "Zwei Brüder versprechen dem Enterbten, ihm seinen Pflichtteil auszuzahlen. Nach Ablauf der Klagefrist erklären sie, er erhalte nichts, da er die Frist verpasst habe."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-t06",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wer berechtigtes Vertrauen in die Anständigkeit anderer gesetzt hat, soll gemäss dem Grundsatz von Treu und Glauben nicht enttäuscht werden.",
+    "erklaerung": "Der Grundsatz von Treu und Glauben schützt das berechtigte Vertrauen. Wer in die Anständigkeit anderer – meistens des Vertragspartners – vertraut hat, soll in diesem Vertrauen nicht enttäuscht werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-t07",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Während eines Lockdowns muss ein Mieter sein Restaurant mehrere Monate geschlossen halten und erzielt keine Einnahmen. Er klagt auf Mietzinsreduktion. Welcher Rechtsgrundsatz wird hier angerufen?",
+    "erklaerung": "Es handelt sich um die clausula rebus sic stantibus: Obwohl Verträge grundsätzlich einzuhalten sind, kann es infolge grundlegend und unvorhersehbar veränderter Umstände (hier: Lockdown) nach dem Grundsatz von Treu und Glauben (Art. 2 Abs. 1 ZGB) dazu kommen, dass der Vertragspartner auf die Gegenleistung ganz oder teilweise verzichten muss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+      "Beweislast (Art. 8 ZGB)",
+      "Der gute Glaube (Art. 3 ZGB)",
+      "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB) – clausula rebus sic stantibus"
+    ],
+    "korrekt": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB) – clausula rebus sic stantibus"
+  },
+  {
+    "id": "recht_einleitungsartikel-t08",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "A erhält von einem Gericht einen Entscheid mit der Rechtsmittelbelehrung, dass innerhalb von 30 Tagen Beschwerde geführt werden könne. A reicht nach 26 Tagen eine Beschwerde ein. Die obere Instanz erklärt, die Frist betrage gemäss ZPO nur 10 Tage. Wie entscheidet die obere Instanz?",
+    "erklaerung": "A durfte auf die Richtigkeit der Rechtsmittelbelehrung des unteren Gerichts vertrauen. Dieses berechtigte Vertrauen wird durch den Grundsatz von Treu und Glauben (Art. 2 Abs. 1 ZGB) geschützt. Die obere Instanz muss deshalb trotz verspäteter Eingabe auf die Beschwerde eintreten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Die Beschwerde wird abgewiesen, da die Frist abgelaufen ist.",
+      "Die Beschwerde wird zugelassen, weil A gutgläubig war (Art. 3 ZGB).",
+      "Die Beschwerde wird abgewiesen, weil Rechtsunkenntnis schadet.",
+      "Die Beschwerde wird zugelassen, weil A auf die Rechtsmittelbelehrung des unteren Gerichts vertrauen durfte (Art. 2 Abs. 1 ZGB)."
+    ],
+    "korrekt": "Die Beschwerde wird zugelassen, weil A auf die Rechtsmittelbelehrung des unteren Gerichts vertrauen durfte (Art. 2 Abs. 1 ZGB)."
+  },
+  {
+    "id": "recht_einleitungsartikel-t09",
+    "fach": "Recht",
+    "thema": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Grundsatz von Treu und Glauben kann auch dazu führen, dass ein Vertragspartner auf die Gegenleistung ganz oder teilweise verzichten muss, wenn sich die Umstände grundlegend und unvorhersehbar verändert haben (clausula rebus sic stantibus).",
+    "erklaerung": "Die clausula rebus sic stantibus ist eine Ausnahme vom Grundsatz pacta sunt servanda (Verträge sind einzuhalten). Bei grundlegend und unvorhersehbar veränderten Umständen kann gestützt auf Art. 2 Abs. 1 ZGB eine Anpassung des Vertrags verlangt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-m01",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Art. 2 Abs. 2 ZGB: «Der offenbare Missbrauch eines Rechtes findet keinen {0}.»",
+    "erklaerung": "Art. 2 Abs. 2 ZGB enthält das Rechtsmissbrauchsverbot: Wer ein Recht offenbar missbräuchlich ausübt, wird vom Richter nicht geschützt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Rechtsschutz",
+        "optionen": [
+          "rechtsschutz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-m02",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wann liegt gemäss Art. 2 Abs. 2 ZGB ein Rechtsmissbrauch vor?",
+    "erklaerung": "Es liegt nicht schon dann Rechtsmissbrauch vor, wenn die Ausübung eines Rechts den anderen hart trifft. Erst ein krass stossendes Verhalten ist rechtsmissbräuchlich im Sinne von Art. 2 Abs. 2 ZGB.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Wenn ein Recht formell korrekt, aber für einen fragwürdigen Zweck ausgeübt wird",
+      "Immer wenn die Ausübung eines Rechts den anderen hart trifft",
+      "Erst wenn ein krass stossendes Verhalten vorliegt",
+      "Wenn jemand sein Recht nicht sofort ausübt"
+    ],
+    "korrekt": "Erst wenn ein krass stossendes Verhalten vorliegt"
+  },
+  {
+    "id": "recht_einleitungsartikel-m03",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Das Rechtsmissbrauchsverbot schützt denjenigen, der sich formell auf ein Recht beruft, dieses aber zweckwidrig einsetzt.",
+    "erklaerung": "Genau das Gegenteil ist der Fall: Art. 2 Abs. 2 ZGB weist den Richter an, den offenbaren Missbrauch eines Rechts nicht zu schützen. Wer ein Recht missbräuchlich ausübt, verliert den Rechtsschutz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-m04",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Eine geschiedene Person zieht mit ihrem neuen Lebenspartner zusammen, heiratet aber nicht, um den Rentenanspruch gegenüber dem Ex-Ehepartner nicht zu verlieren. Wie ist dieses Verhalten rechtlich einzuordnen?",
+    "erklaerung": "Gemäss bundesgerichtlicher Rechtsprechung handelt es sich um Rechtsmissbrauch (Art. 2 Abs. 2 ZGB), wenn die rentenberechtigte Person in einem stabilen Konkubinat lebt, das eine eheähnliche Lebensgemeinschaft darstellt, und nur nicht heiratet, um den Rentenanspruch nicht zu verlieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Verstoss gegen Treu und Glauben, aber kein Rechtsmissbrauch",
+      "Rechtsmissbräuchlich, weil das formelle Beharren auf dem Recht missbräuchlich erscheint",
+      "Zulässig, weil das Gesetz das Zusammenleben ohne Heirat erlaubt",
+      "Irrelevant, da der Rentenanspruch automatisch entfällt"
+    ],
+    "korrekt": "Rechtsmissbräuchlich, weil das formelle Beharren auf dem Recht missbräuchlich erscheint"
+  },
+  {
+    "id": "recht_einleitungsartikel-m05",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In welchen Fällen liegt Rechtsmissbrauch vor? (Mehrere Antworten möglich.)",
+    "erklaerung": "A: Rechtsmissbrauch – nutzlose Rechtsausübung aus Schikane. B: Kein Rechtsmissbrauch, sondern Vertragsverletzung. C: Rechtsmissbrauch – Durchgriffshaftung («Piercing the corporate veil»). D: Rechtsmissbrauch – widersprüchliches Verhalten, da der Schuldner zuvor auf die Einrede verzichtet hatte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Ein Vermieter beharrt beim Auszug des Mieters auf einer Reinigung der Wohnung, obwohl das Haus nach dem Auszug abgebrochen wird.",
+      "Ein Mieter zahlt die vertraglich vereinbarte Miete nicht.",
+      "Eine AG wird nur gegründet, um das Privatvermögen des Aktionärs vor Gläubigern zu schützen, obwohl die Gesellschaft nie lebensfähig war.",
+      "Ein Schuldner erhebt die Einrede der Verjährung, nachdem er dem Gläubiger versprochen hatte, dies nicht zu tun."
+    ],
+    "korrekt": [
+      "Ein Vermieter beharrt beim Auszug des Mieters auf einer Reinigung der Wohnung, obwohl das Haus nach dem Auszug abgebrochen wird.",
+      "Eine AG wird nur gegründet, um das Privatvermögen des Aktionärs vor Gläubigern zu schützen, obwohl die Gesellschaft nie lebensfähig war.",
+      "Ein Schuldner erhebt die Einrede der Verjährung, nachdem er dem Gläubiger versprochen hatte, dies nicht zu tun."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-m06",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Nutzlose Rechtsausübung aus Rache, Schikane oder Schadenfreude gilt als Rechtsmissbrauch.",
+    "erklaerung": "Ein Rechtsmissbrauch liegt auch bei nutzloser Rechtsausübung vor, d.h. wenn die Rechtsausübung aus Rache, Schikane oder Schadenfreude erfolgt. Das Recht wird dabei zweckwidrig eingesetzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-m07",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "F10: Im BGE 116 II 431ff. spielte Art. 2 ZGB eine entscheidende Rolle. Ein Autohändler verkaufte 1981 einen Fiat 131 CL Panorama als «fabrikneu». Der Wagen wurde aber bereits 1978 in die Schweiz eingeführt. Es handelte sich um ein dreijähriges Modell, das nicht mehr hergestellt wurde. Welcher Rechtsgrundsatz spielte die entscheidende Rolle?",
+    "erklaerung": "Es handelt sich um einen Verstoss gegen das Gebot des Handelns nach Treu und Glauben (Art. 2 Abs. 1 ZGB). Der Autohändler hat den Käufer durch Verschweigen eines wesentlichen Umstandes (Alter des Fahrzeugs) getäuscht. Anständige und korrekte Menschen verschweigen solche Tatsachen nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Das Gebot des Handelns nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+      "Das Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+      "Der gute Glaube (Art. 3 ZGB)",
+      "Die Beweislast (Art. 8 ZGB)"
+    ],
+    "korrekt": "Das Gebot des Handelns nach Treu und Glauben (Art. 2 Abs. 1 ZGB)"
+  },
+  {
+    "id": "recht_einleitungsartikel-m08",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Für die Verpflichtungen einer AG haftet grundsätzlich nur deren Vermögen, nicht das Privatvermögen der Aktionäre. In welchem Fall können die Gerichte trotzdem auf den Aktionär durchgreifen?",
+    "erklaerung": "Wenn die AG-Struktur rechtsmissbräuchlich eingesetzt wird (Art. 2 Abs. 2 ZGB), können die Gerichte «den Schleier der juristischen Person» durchdringen und direkt auf den Aktionär greifen (Durchgriffshaftung / Piercing the corporate veil).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Wenn die AG Verluste macht",
+      "Wenn der Aktionär Geschäftsführer ist",
+      "Wenn die AG weniger als 3 Aktionäre hat",
+      "Wenn die AG von Anfang an so konzipiert war, dass sie nicht lebensfähig sein kann oder infolge Vermögensentzug durch die kleinste Schwierigkeit zu Fall kommt (Rechtsmissbrauch)"
+    ],
+    "korrekt": "Wenn die AG von Anfang an so konzipiert war, dass sie nicht lebensfähig sein kann oder infolge Vermögensentzug durch die kleinste Schwierigkeit zu Fall kommt (Rechtsmissbrauch)"
+  },
+  {
+    "id": "recht_einleitungsartikel-m09",
+    "fach": "Recht",
+    "thema": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Gemäss Art. 141 Abs. 1 OR kann auf die Einrede der Verjährung im Voraus verzichtet werden.",
+    "erklaerung": "Gemäss Art. 141 Abs. 1 OR kann auf die Einrede der Verjährung nicht im Voraus verzichtet werden. Ein solcher Verzicht ist unwirksam. Trotzdem kann es in der Praxis vorkommen, dass ein Schuldner verspricht, die Einrede nicht zu erheben. Erhebt er sie dann trotzdem, kann ihm Rechtsmissbrauch vorgeworfen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-g01",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was regelt Art. 3 ZGB?",
+    "erklaerung": "Art. 3 ZGB regelt den guten Glauben: Wo das Gesetz eine Rechtswirkung an den guten Glauben einer Person knüpft, ist dessen Dasein zu vermuten (Abs. 1). Wer bösgläubig sein musste, kann sich nicht auf den guten Glauben berufen (Abs. 2).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Das Gebot des Handelns nach Treu und Glauben",
+      "Die Beweislast",
+      "Den guten Glauben und seine Vermutung",
+      "Das Rechtsmissbrauchsverbot"
+    ],
+    "korrekt": "Den guten Glauben und seine Vermutung"
+  },
+  {
+    "id": "recht_einleitungsartikel-g02",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der gute Glaube wird gemäss Art. 3 Abs. 1 ZGB vermutet.",
+    "erklaerung": "Art. 3 Abs. 1 ZGB stellt eine Vermutung auf: Wo das Gesetz eine Rechtswirkung an den guten Glauben knüpft, ist dessen Dasein zu vermuten. Jeder Mensch gilt von Gesetzes wegen als gutgläubig, bis das Gegenteil bewiesen ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-g03",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Gesetz geht von der {0} der Menschen aus. Bis zum Beweis der Bösgläubigkeit gilt jeder Mensch von Gesetzes wegen als {1}.",
+    "erklaerung": "Das Gesetz geht von der Anständigkeit der Menschen aus. Bis zum Beweis der Bösgläubigkeit gilt jeder Mensch von Gesetzes wegen als gutgläubig. Dies führt zu einer Umkehr der Beweislast.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Anständigkeit",
+        "optionen": [
+          "anständigkeit"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "gutgläubig",
+        "optionen": [
+          "Gutgläubig"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-g04",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum führt Art. 3 ZGB zu einer Umkehr der Beweislast?",
+    "erklaerung": "Gemäss Art. 8 ZGB muss normalerweise derjenige eine Tatsache beweisen, der aus ihr Rechte ableitet. Bei Art. 3 ZGB wird der gute Glaube aber vermutet. Wer behauptet, der andere sei gutgläubig gewesen, muss dies nicht beweisen. Umgekehrt muss die Gegenpartei die Bösgläubigkeit beweisen – daher die Beweislastumkehr.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Weil der gute Glaube nie bewiesen werden kann",
+      "Weil der Richter immer zugunsten des Gutgläubigen entscheidet",
+      "Weil Art. 8 ZGB bei Art. 3 ZGB nicht gilt",
+      "Weil der gute Glaube vermutet wird und somit nicht bewiesen werden muss – die Gegenpartei muss die Bösgläubigkeit beweisen"
+    ],
+    "korrekt": "Weil der gute Glaube vermutet wird und somit nicht bewiesen werden muss – die Gegenpartei muss die Bösgläubigkeit beweisen"
+  },
+  {
+    "id": "recht_einleitungsartikel-g05",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In welchen der folgenden Fälle kann sich eine Person NICHT auf den guten Glauben berufen? (Mehrere Antworten möglich.)",
+    "erklaerung": "A: Bösgläubig – der Hehler weiss, dass es Diebesgut ist. B: Bösgläubig – aufgrund der Umstände (Drogenszene, Schleuderpreis) musste die Person annehmen, dass es sich um Diebesgut handelt. C: Gutgläubig – keine verdächtigen Umstände. D: Bösgläubig – der Occasionshändler hat es an der nach den Umständen gebotenen Aufmerksamkeit fehlen lassen (BGE 113 II 397ff.).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Ein Hehler kauft wissentlich Diebesgut.",
+      "Eine Person kauft ein Mountain-Bike von jemandem aus der Drogenszene zu einem Schleuderpreis.",
+      "Eine Person kauft ein Buch in einer regulären Buchhandlung.",
+      "Ein Occasionshändler kauft einen gestohlenen Ferrari, ohne die Fahrzeugpapiere genauer zu überprüfen, wie es nach den Umständen angemessen gewesen wäre."
+    ],
+    "korrekt": [
+      "Ein Hehler kauft wissentlich Diebesgut.",
+      "Eine Person kauft ein Mountain-Bike von jemandem aus der Drogenszene zu einem Schleuderpreis.",
+      "Ein Occasionshändler kauft einen gestohlenen Ferrari, ohne die Fahrzeugpapiere genauer zu überprüfen, wie es nach den Umständen angemessen gewesen wäre."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-g06",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Art. 3 ZGB stellt einen allgemeinen Grundsatz auf, der auf alle Rechtsverhältnisse anwendbar ist.",
+    "erklaerung": "Art. 3 ZGB findet nur auf die Fälle Anwendung, wo das Gesetz eine Rechtsfolge davon abhängig macht, ob jemand gutgläubig oder bösgläubig war. Es gibt im schweizerischen Recht keinen umfassenden Gutglaubensschutz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-g07",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "F12: Der Prokurist Franz Renggli wird fristlos entlassen und verpflichtet noch vor der Publikation des Prokuraentzugs im SHAB eine Rockgruppe. Der Agent der Rockgruppe behauptet, vom Entzug der Prokura nichts gewusst zu haben. Muss er seine Gutgläubigkeit beweisen?",
+    "erklaerung": "Gemäss Art. 3 Abs. 1 ZGB wird der gute Glaube vermutet. Der Agent muss seine Gutgläubigkeit nicht beweisen. Die Arbeitgeberin müsste beweisen, dass der Agent bösgläubig war, d.h. vom Prokuraentzug Kenntnis hatte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Nein, weil der Prokuraentzug noch nicht im SHAB publiziert war",
+      "Ja, weil bei Handelsregistereintragungen besondere Regeln gelten",
+      "Ja, weil er als Kläger die Beweislast trägt",
+      "Nein, weil der gute Glaube gemäss Art. 3 Abs. 1 ZGB vermutet wird"
+    ],
+    "korrekt": "Nein, weil der gute Glaube gemäss Art. 3 Abs. 1 ZGB vermutet wird"
+  },
+  {
+    "id": "recht_einleitungsartikel-g08",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Gemäss BGE 107 II 41 wurde einem Garagisten die Berufung auf den guten Glauben verwehrt, weil er einen Wagen im Wert von Fr. 19'250.– für Fr. 13'000.– kaufte, ohne das Eigentumsvorbehaltsregister zu prüfen. Welcher Absatz von Art. 3 ZGB kommt hier zum Tragen?",
+    "erklaerung": "Art. 3 Abs. 2 ZGB: Wer bei der Aufmerksamkeit, wie sie nach den Umständen von ihm verlangt werden darf, nicht gutgläubig sein konnte, ist nicht berechtigt, sich auf den guten Glauben zu berufen. Der Garagist hätte bei einem so verdächtig tiefen Preis das Eigentumsvorbehaltsregister prüfen müssen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Keiner, es handelt sich um Gewohnheitsrecht",
+      "Art. 3 Abs. 1 und 2 ZGB gleichermassen",
+      "Art. 3 Abs. 1 ZGB – die Vermutung des guten Glaubens",
+      "Art. 3 Abs. 2 ZGB – wer bei der gebotenen Aufmerksamkeit nicht gutgläubig sein konnte, ist nicht berechtigt, sich auf den guten Glauben zu berufen"
+    ],
+    "korrekt": "Art. 3 Abs. 2 ZGB – wer bei der gebotenen Aufmerksamkeit nicht gutgläubig sein konnte, ist nicht berechtigt, sich auf den guten Glauben zu berufen"
+  },
+  {
+    "id": "recht_einleitungsartikel-g09",
+    "fach": "Recht",
+    "thema": "Der gute Glaube (Art. 3 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Peter kauft von einem fliegenden Händler an einer Autobahnraststätte 2 Stangen Marlboro-Zigaretten für je Fr. 36.–. Welcher Einleitungsartikel des ZGB ist hier relevant?",
+    "erklaerung": "Art. 3 ZGB (guter Glaube): Peter kauft zu einem auffällig tiefen Preis von einem fliegenden Händler an der Raststätte. Aufgrund dieser Umstände musste er annehmen, dass die Zigaretten nicht regulär beschafft wurden. Er kann sich nicht auf den guten Glauben berufen (Art. 3 Abs. 2 ZGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Art. 2 Abs. 1 ZGB (Treu und Glauben)",
+      "Art. 8 ZGB (Beweislast)",
+      "Art. 3 ZGB (Der gute Glaube)",
+      "Art. 1 ZGB (Rechtsquellen)"
+    ],
+    "korrekt": "Art. 3 ZGB (Der gute Glaube)"
+  },
+  {
+    "id": "recht_einleitungsartikel-b01",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Art. 8 ZGB: «Wo das Gesetz es nicht anders bestimmt, hat derjenige das Vorhandensein einer behaupteten Tatsache zu {0}, der aus ihr Rechte ableitet.»",
+    "erklaerung": "Art. 8 ZGB enthält die Grundregel der Beweislast: Wer aus einer Tatsache Rechte ableiten will, muss das Vorhandensein dieser Tatsache beweisen. Gelingt der Beweis nicht, trägt er die Folgen der Beweislosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "beweisen",
+        "optionen": [
+          "Beweisen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-b02",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was gilt im Strafprozessrecht hinsichtlich der Sachverhaltsabklärung?",
+    "erklaerung": "Im Strafprozessrecht gilt die Untersuchungsmaxime: Der Sachverhalt muss von Amtes wegen abgeklärt werden. Es ist Aufgabe der Strafverfolgungsbehörden, die Wahrheit zu ermitteln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Der Richter entscheidet nach Gutdünken",
+      "Die Untersuchungsmaxime – der Sachverhalt wird von Amtes wegen abgeklärt",
+      "Die Behauptungslast",
+      "Die Verhandlungsmaxime"
+    ],
+    "korrekt": "Die Untersuchungsmaxime – der Sachverhalt wird von Amtes wegen abgeklärt"
+  },
+  {
+    "id": "recht_einleitungsartikel-b03",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Im Zivilprozess gilt grundsätzlich die Verhandlungsmaxime: Der Richter befasst sich nur mit Tatsachen, die von einer Partei behauptet und bewiesen worden sind.",
+    "erklaerung": "Im Zivilprozess gilt – von Ausnahmen abgesehen – die Verhandlungsmaxime. Der Richter klärt den Sachverhalt nicht von Amtes wegen ab. Die Parteien müssen die für sie wesentlichen Tatsachen behaupten (Behauptungslast) und beweisen (Beweislast).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-b04",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Aus der Geschäftskasse sind während der letzten Wochen einige Hundert Franken gestohlen worden. Der Arbeitgeber verdächtigt die Putzfrau und entlässt sie fristlos. Die Putzfrau bestreitet den Diebstahl. Wer trägt die Beweislast?",
+    "erklaerung": "Gemäss Art. 8 ZGB muss derjenige das Vorhandensein einer Tatsache beweisen, der aus ihr Rechte ableitet. Der Arbeitgeber leitet aus dem behaupteten Diebstahl das Recht ab, die Putzfrau fristlos entlassen zu dürfen. Daher muss er beweisen, dass sie die Täterin war.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Beide Parteien tragen die Beweislast zu gleichen Teilen",
+      "Der Arbeitgeber muss beweisen, dass die Putzfrau die Täterin war, weil er aus dieser Tatsache das Recht zur fristlosen Entlassung ableitet",
+      "Die Putzfrau muss beweisen, dass sie unschuldig ist",
+      "Niemand, der Richter klärt von Amtes wegen ab"
+    ],
+    "korrekt": "Der Arbeitgeber muss beweisen, dass die Putzfrau die Täterin war, weil er aus dieser Tatsache das Recht zur fristlosen Entlassung ableitet"
+  },
+  {
+    "id": "recht_einleitungsartikel-b05",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In welchen der folgenden Fälle trägt der Kläger/die Klägerin die Beweislast? (Mehrere Antworten möglich.)",
+    "erklaerung": "Gemäss Art. 8 ZGB muss jeweils diejenige Partei beweisen, die aus einer Tatsache Rechte ableitet. A: Der Käufer will die Ware zurückgeben → er muss die rechtzeitige Mängelrüge beweisen. B: Der Ehegatte will Eigengut geltend machen → er muss die Herkunft beweisen. C: Bei Verschulden kehrt Art. 97 OR die Beweislast um – der Schuldner muss beweisen, dass ihn kein Verschulden trifft. D: Die Arbeitgeberin will fristlos kündigen → sie muss den wichtigen Grund beweisen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Der Käufer behauptet, er habe einen offensichtlichen Mangel rechtzeitig gerügt, und möchte die Ware zurückgeben.",
+      "Der Ehegatte behauptet, er habe einen Vermögenswert aus Mitteln einer Erbschaft gekauft und somit falle er in sein Eigengut.",
+      "Der Schuldner behauptet, er habe den Vertrag nicht erfüllen können, weil höhere Gewalt vorlag.",
+      "Die Arbeitgeberin behauptet, die Mitarbeiterin habe einen wichtigen Grund für eine fristlose Kündigung geliefert."
+    ],
+    "korrekt": [
+      "Der Käufer behauptet, er habe einen offensichtlichen Mangel rechtzeitig gerügt, und möchte die Ware zurückgeben.",
+      "Der Ehegatte behauptet, er habe einen Vermögenswert aus Mitteln einer Erbschaft gekauft und somit falle er in sein Eigengut.",
+      "Die Arbeitgeberin behauptet, die Mitarbeiterin habe einen wichtigen Grund für eine fristlose Kündigung geliefert."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-b06",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Recht haben und Recht bekommen ist dasselbe.",
+    "erklaerung": "Recht haben und Recht bekommen ist nicht dasselbe. Nicht selten unterliegt eine Partei in einem Prozess nicht deshalb, weil sie nicht im Recht ist, sondern weil sie nicht in der Lage ist, die notwendigen Beweise zu erbringen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-b07",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Art. 97 OR regelt die Haftung bei Nichterfüllung eines Vertrags. Der Schuldner wird ersatzpflichtig, sofern er nicht beweist, dass ihn kein Verschulden trifft. Wie verhält sich dies zur Grundregel von Art. 8 ZGB?",
+    "erklaerung": "Art. 97 OR kehrt die Beweislast um: Es wird vermutet, dass der Schuldner schuldhaft gehandelt hat. Der Gläubiger muss das Verschulden nicht beweisen. Stattdessen muss der Schuldner beweisen, dass ihn kein Verschulden trifft. Dies ist eine gesetzliche Ausnahme zu Art. 8 ZGB.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Art. 97 OR hebt Art. 8 ZGB für alle Vertragsverhältnisse auf",
+      "Es handelt sich um eine Ausnahme: Die Beweislast wird umgekehrt – nicht der Gläubiger muss das Verschulden beweisen, sondern der Schuldner muss beweisen, dass ihn keines trifft",
+      "Es ist die gleiche Regel wie Art. 8 ZGB",
+      "Art. 97 OR gilt nur im Strafrecht"
+    ],
+    "korrekt": "Es handelt sich um eine Ausnahme: Die Beweislast wird umgekehrt – nicht der Gläubiger muss das Verschulden beweisen, sondern der Schuldner muss beweisen, dass ihn keines trifft"
+  },
+  {
+    "id": "recht_einleitungsartikel-b08",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Richter klärt im Zivilprozess den Sachverhalt nicht von Amtes wegen ab. Was geschieht, wenn sich die Prozessparteien über wesentliche Tatsachen einig sind?",
+    "erklaerung": "Da im Zivilprozess die Verhandlungsmaxime gilt, befasst sich der Richter nur mit den von den Parteien behaupteten und bewiesenen Tatsachen. Sind sich die Parteien einig, können sie dem Richter Tatsachen vorenthalten. Der Richter darf von sich aus einzig notorische Tatsachen (jedermann bekannte Tatsachen) berücksichtigen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Die Parteien können dem Richter wesentliche Tatsachen vorenthalten, und der Richter darf einzig notorische Tatsachen von sich aus berücksichtigen",
+      "Der Prozess wird eingestellt",
+      "Der Richter muss trotzdem Beweise erheben",
+      "Der Richter muss einen Sachverständigen beiziehen"
+    ],
+    "korrekt": "Die Parteien können dem Richter wesentliche Tatsachen vorenthalten, und der Richter darf einzig notorische Tatsachen von sich aus berücksichtigen"
+  },
+  {
+    "id": "recht_einleitungsartikel-b09",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Bei Offizialdelikten im Strafrecht gilt der Grundsatz «Wo kein Kläger ist, da ist auch kein Richter» nicht, da die Polizei von Amtes wegen ein Ermittlungsverfahren einleitet.",
+    "erklaerung": "Der Grundsatz «Wo kein Kläger, da kein Richter» gilt im Strafprozess nur für Antragsdelikte. Bei Offizialdelikten führt die Strafverfolgungsbehörde ein Ermittlungsverfahren von Amtes wegen durch, auch wenn niemand Strafanzeige eingereicht hat. Ergibt sich ein hinreichender Anfangsverdacht, erhebt die Untersuchungsbehörde Anklage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-w01",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was bedeutet der lateinische Grundsatz «Lex posterior derogat legi priori»?",
+    "erklaerung": "«Lex posterior derogat legi priori» bedeutet: Das jüngere (neuere) Recht geht dem älteren Recht vor. Beim Erlass eines neuen Gesetzes ist der Gesetzgeber bemüht, widersprechende ältere Erlasse formell aufzuheben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Das übergeordnete Recht geht dem untergeordneten Recht vor",
+      "Bundesrecht bricht kantonales Recht",
+      "Das jüngere Recht geht dem älteren Recht vor",
+      "Das spezielle Recht geht dem allgemeinen Recht vor"
+    ],
+    "korrekt": "Das jüngere Recht geht dem älteren Recht vor"
+  },
+  {
+    "id": "recht_einleitungsartikel-w02",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Grundsatz «{0} derogat legi generali» besagt, dass das spezielle Recht dem allgemeinen Recht vorgeht.",
+    "erklaerung": "«Lex specialis derogat legi generali» ist ein grundlegender Rechtsgrundsatz: Wenn ein spezielles Gesetz (z.B. Versicherungsvertragsgesetz) eine Frage anders regelt als ein allgemeines Gesetz (z.B. OR), geht die spezielle Regelung vor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Lex specialis",
+        "optionen": [
+          "lex specialis"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-w03",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Grundsatz «Unwissenheit schützt vor Strafe nicht» (Error iuris nocet) bedeutet, dass im Strafrecht die Unkenntnis des Gesetzes in jedem Fall zur vollen Bestrafung führt.",
+    "erklaerung": "Die Verallgemeinerung stimmt so nicht. Im Strafrecht sieht Art. 21 StGB vor, dass der Täter straffrei ausgeht, wenn er bei der Begehung der Tat nicht wissen konnte, dass er sich rechtswidrig verhält. Bei fahrlässigem Rechtsirrtum kann die Strafe gemildert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-w04",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zu den Rechtsgrundsätzen sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A: Korrekt – im Zivilprozess herrscht die Verhandlungsmaxime. B: Korrekt – Art. 49 BV. C: Korrekt – «Ignorantia iuris nocet». D: Falsch – die Schweiz kennt keine Verfassungsgerichtsbarkeit für Bundesgesetze; das Bundesgericht darf Bundesgesetze nicht auf ihre Verfassungsmässigkeit überprüfen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Der Grundsatz «Wo kein Kläger, da kein Richter» gilt im Privatrecht (Zivilprozess) – es gilt die Verhandlungsmaxime.",
+      "Bundesrecht bricht kantonales Recht (Art. 49 BV).",
+      "Rechtsunkenntnis schadet: Wer seine Rechte nicht kennt, kann daraus keine Vorteile ableiten.",
+      "Das übergeordnete Recht geht dem untergeordneten Recht vor – deshalb kann das Bundesgericht jedes Bundesgesetz für verfassungswidrig erklären."
+    ],
+    "korrekt": [
+      "Der Grundsatz «Wo kein Kläger, da kein Richter» gilt im Privatrecht (Zivilprozess) – es gilt die Verhandlungsmaxime.",
+      "Bundesrecht bricht kantonales Recht (Art. 49 BV).",
+      "Rechtsunkenntnis schadet: Wer seine Rechte nicht kennt, kann daraus keine Vorteile ableiten."
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-w05",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Käufer weiss nicht, dass er mangelhafte Ware gemäss Art. 201 Abs. 2 OR sofort rügen muss. Die Ware gilt als genehmigt. Welcher Rechtsgrundsatz wird hier angewendet?",
+    "erklaerung": "Rechtsunkenntnis schadet (Ignorantia iuris nocet): Wer nicht weiss, welche Rechtshandlungen er vornehmen muss, kann aus seiner Unkenntnis nichts zu seinen Gunsten ableiten. Der Käufer hat die Rechtsfolge seiner Unkenntnis selber zu tragen – die Ware gilt als genehmigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Wo kein Kläger, da kein Richter",
+      "Rechtsunkenntnis schadet (Ignorantia iuris nocet)",
+      "Unwissenheit schützt vor Strafe nicht (Error iuris nocet)",
+      "Das jüngere Recht geht dem älteren Recht vor"
+    ],
+    "korrekt": "Rechtsunkenntnis schadet (Ignorantia iuris nocet)"
+  },
+  {
+    "id": "recht_einleitungsartikel-w06",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Grundsatz «Wo kein Kläger, da kein Richter» gilt im Strafprozess bei Offizialdelikten nicht.",
+    "erklaerung": "Bei Offizialdelikten leitet die Strafverfolgungsbehörde ein Ermittlungsverfahren von Amtes wegen ein, auch wenn niemand eine Strafanzeige eingereicht hat. Bei Antragsdelikten hingegen dürfen die Behörden erst einschreiten, wenn ein Strafantrag vorliegt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einleitungsartikel-w07",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das Versicherungsvertragsgesetz (VVG) regelt, dass ein Versicherer, der beim Vertragsabschluss über eine erhebliche Gefahrstatsache getäuscht wurde, innerhalb von 4 Wochen vom Vertrag zurücktreten kann. Das OR (allgemeines Recht) sieht bei Täuschung eine Anfechtungsfrist von 1 Jahr vor. Welche Frist gilt?",
+    "erklaerung": "Es gilt der Grundsatz «Lex specialis derogat legi generali»: Das Versicherungsvertragsgesetz als Spezialgesetz geht dem OR als allgemeinem Recht vor. Die Frist von 4 Wochen gemäss VVG gilt daher anstelle der 1-Jahres-Frist des OR.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "4 Wochen gemäss VVG, weil das spezielle Recht dem allgemeinen Recht vorgeht (lex specialis derogat legi generali)",
+      "1 Jahr gemäss OR, weil das OR das ältere Gesetz ist",
+      "Die kürzere Frist, weil im Zweifel die kürzere Frist gilt",
+      "Beide Fristen gleichzeitig"
+    ],
+    "korrekt": "4 Wochen gemäss VVG, weil das spezielle Recht dem allgemeinen Recht vorgeht (lex specialis derogat legi generali)"
+  },
+  {
+    "id": "recht_einleitungsartikel-w08",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Kanton erlaubt es dem Vermieter, Liegenschaftensteuern und Gebäudeversicherungsprämien als Nebenkosten auf den Mieter zu überwälzen. Art. 257a OR bestimmt jedoch, dass nur solche Kosten als Nebenkosten gelten, die mit dem Gebrauch der Sache im Zusammenhang stehen. Was gilt?",
+    "erklaerung": "Gemäss Art. 49 BV bricht Bundesrecht kantonales Recht. Wenn der Bund in einem Rechtsgebiet allein zuständig ist, dürfen die Kantone keine widersprechenden Gesetze erlassen. Die kantonale Bestimmung ist wegen der derogatorischen Kraft des Bundesrechts nichtig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "optionen": [
+      "Es kommt auf die Vereinbarung im Mietvertrag an",
+      "Beide Regelungen gelten gleichzeitig",
+      "Das Bundesrecht (OR), weil Bundesrecht kantonales Recht bricht (Art. 49 BV)",
+      "Das kantonale Recht, weil es für den Kanton spezifisch ist"
+    ],
+    "korrekt": "Das Bundesrecht (OR), weil Bundesrecht kantonales Recht bricht (Art. 49 BV)"
+  },
+  {
+    "id": "recht_einleitungsartikel-w09",
+    "fach": "Recht",
+    "thema": "Weitere Rechtsgrundsätze",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ordnen Sie die folgenden Rechtsgrundsätze korrekt zu. Welche sind NICHT im ZGB verankert? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist im ZGB verankert (Art. 2 Abs. 1 ZGB). B ist in der Bundesverfassung verankert (Art. 49 BV). C stammt aus dem Strafgesetzbuch (Art. 21 StGB). D ist ein allgemeiner, ungeschriebener Rechtsgrundsatz, der in keinem spezifischen Gesetz steht, sondern sich aus der Rechtslogik ergibt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einleitungsartikel/einleitungsartikel_ueberblick_01.svg",
+      "alt": "Übersichtsdiagramm der ZGB-Einleitungsartikel mit Zuordnungsaufgabe"
+    },
+    "optionen": [
+      "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+      "Bundesrecht bricht kantonales Recht (Art. 49 BV)",
+      "Unwissenheit schützt vor Strafe nicht (Art. 21 StGB)",
+      "Lex posterior derogat legi priori (allgemeiner Rechtsgrundsatz)"
+    ],
+    "korrekt": [
+      "Bundesrecht bricht kantonales Recht (Art. 49 BV)",
+      "Unwissenheit schützt vor Strafe nicht (Art. 21 StGB)",
+      "Lex posterior derogat legi priori (allgemeiner Rechtsgrundsatz)"
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-neu_sort_01",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Rechtsquellen gemäss Art. 1 ZGB in die Reihenfolge, in der ein Richter sie anwenden muss.",
+    "erklaerung": "Art. 1 ZGB legt die Hierarchie der Rechtsquellen fest: Zuerst ist das geschriebene Gesetz anzuwenden (Wortlaut, Sinn). Fehlt eine Bestimmung, greift der Richter auf Gewohnheitsrecht zurück. Erst wenn auch dieses fehlt, soll der Richter nach der Regel entscheiden, die er als Gesetzgeber aufstellen würde – dabei folgt er bewährter Lehre und Überlieferung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "reihenfolge": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-neu_sort_02",
+    "fach": "Recht",
+    "thema": "Die Beweislast (Art. 8 ZGB)",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Schritte der Beweisführung in einem Zivilprozess in die korrekte Reihenfolge.",
+    "erklaerung": "Zuerst wird geklärt, wer die Beweislast trägt (Grundsatz Art. 8 ZGB: Wer ein Recht geltend macht, muss die entsprechenden Tatsachen beweisen). Dann werden Beweismittel eingereicht. Das Gericht würdigt die Beweise frei (keine gesetzlichen Beweisregeln). Am Ende steht fest, ob die Tatsache bewiesen ist – gelingt der Beweis nicht, geht dies zulasten der beweisbelasteten Partei.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-beschriftung01",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die fünf Stufen der Normenpyramide von oben (höchste Norm) nach unten.",
+    "erklaerung": "Die Normenpyramide zeigt die Hierarchie: Bundesverfassung (oberste Norm) → Bundesgesetze → Verordnungen → kantonales Recht → Gemeinderecht. Untere Normen dürfen oberen nicht widersprechen (lex superior).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einleitungsartikel/einleitungsartikel_pyramide_beschriftung.svg",
+      "alt": "Normenpyramide mit fünf Stufen und roten nummerierten Kreisen"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Bundesverfassung (BV)",
+        "x": 50,
+        "y": 29
+      },
+      {
+        "id": "l2",
+        "text": "Bundesgesetze (z.B. OR, StGB)",
+        "x": 50,
+        "y": 44
+      },
+      {
+        "id": "l3",
+        "text": "Verordnungen (Bundesrat)",
+        "x": 50,
+        "y": 58
+      },
+      {
+        "id": "l4",
+        "text": "Kantonales Recht",
+        "x": 50,
+        "y": 71
+      },
+      {
+        "id": "l5",
+        "text": "Gemeinderecht / Reglemente",
+        "x": 50,
+        "y": 84
+      }
+    ]
+  },
+  {
+    "id": "recht_einleitungsartikel-dragdrop01",
+    "fach": "Recht",
+    "thema": "Rechtsquellen (Art. 1 ZGB)",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordne die Rechtsnormen der richtigen Stufe der Normenpyramide zu.",
+    "erklaerung": "Verfassungsstufe: Bundesverfassung (Art. 8, 10 BV). Gesetzesstufe: OR, StGB, ZGB (vom Parlament erlassen). Verordnungsstufe: vom Bundesrat erlassen, müssen Gesetzen entsprechen (z.B. COVID-VO, Lebensmittel-VO, SVV).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einleitungsartikel/einleitungsartikel_normen_dragdrop.svg",
+      "alt": "Drei Spalten: Verfassungsstufe, Gesetzesstufe, Verordnungsstufe"
+    },
+    "zones": [
+      {
+        "id": "verfassung",
+        "x": 2.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      },
+      {
+        "id": "gesetz",
+        "x": 35,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      },
+      {
+        "id": "verordnung",
+        "x": 67.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 82.5
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "art8bv",
+        "text": "Art. 8 BV (Rechtsgleichheit)",
+        "zone": "verfassung"
+      },
+      {
+        "id": "art10bv",
+        "text": "Art. 10 BV (Recht auf Leben)",
+        "zone": "verfassung"
+      },
+      {
+        "id": "or",
+        "text": "OR (Vertragsrecht)",
+        "zone": "gesetz"
+      },
+      {
+        "id": "stgb",
+        "text": "StGB (Strafrecht)",
+        "zone": "gesetz"
+      },
+      {
+        "id": "zgb",
+        "text": "ZGB (Zivilrecht)",
+        "zone": "gesetz"
+      },
+      {
+        "id": "covid_vo",
+        "text": "COVID-Verordnung",
+        "zone": "verordnung"
+      },
+      {
+        "id": "lmvo",
+        "text": "Lebensmittelverordnung",
+        "zone": "verordnung"
+      },
+      {
+        "id": "svgvo",
+        "text": "Strassenverkehrsverordnung",
+        "zone": "verordnung"
+      }
+    ]
+  }
+]

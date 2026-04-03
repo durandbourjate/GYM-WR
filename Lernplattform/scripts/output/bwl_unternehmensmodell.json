@@ -1,0 +1,1726 @@
+[
+  {
+    "id": "bwl_unternehmensmodell-m01",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Modell in der Betriebswirtschaftslehre?",
+    "erklaerung": "Modelle sind Abbildungen einer bestimmten Wirklichkeit, die einen Ausschnitt daraus vereinfacht darstellen. Sie helfen, komplexe Zusammenhänge zu ordnen und zu verstehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Eine Anweisung der Geschäftsleitung",
+      "Eine exakte Kopie der Realität",
+      "Ein Gesetz, das immer gilt",
+      "Eine vereinfachte Darstellung der Wirklichkeit"
+    ],
+    "korrekt": "Eine vereinfachte Darstellung der Wirklichkeit"
+  },
+  {
+    "id": "bwl_unternehmensmodell-m02",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Buchhaltung eines Unternehmens ist ein Beispiel für ein Beschreibungsmodell.",
+    "erklaerung": "In einer Buchhaltung werden sämtliche Geschäftsfälle im Zeitablauf erfasst und dargestellt – also beschrieben, ohne Ursachen zu erklären oder Handlungsempfehlungen abzugeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-m03",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Modell, das Ursachen von betrieblichen Prozessabläufen erklären soll, wird als {0} bezeichnet.",
+    "erklaerung": "Erklärungsmodelle dienen dazu, Hypothesen über Gesetzmässigkeiten aufzustellen, z.B. die Annahme, dass mit zunehmender Produktionsmenge die Stückkosten sinken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Erklärungsmodell",
+        "optionen": [
+          "Erklaerungsmodell"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-m04",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welches Modell wird aufgestellt, um optimale Handlungsmöglichkeiten für die Zukunft zu bestimmen?",
+    "erklaerung": "Entscheidungsmodelle werden aufgestellt, um die Bestimmung optimaler Handlungsmöglichkeiten zu erleichtern. Sie enthalten Aussagen, die auf die Zukunft gerichtet sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Beschreibungsmodell",
+      "Entscheidungsmodell",
+      "Erklärungsmodell",
+      "Prognosemodell"
+    ],
+    "korrekt": "Entscheidungsmodell"
+  },
+  {
+    "id": "bwl_unternehmensmodell-m05",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zu Modellen treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Modelle sind vereinfachte Darstellungen (A korrekt) und helfen bei der Ordnung von Faktoren (C korrekt). Das St. Galler Unternehmensmodell ist ein Erklärungs- und Beschreibungsmodell, kein Entscheidungsmodell (B falsch). Kein Modell kann die gesamte Wirklichkeit exakt abbilden (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Modelle stellen komplexe reale Zustände vereinfacht dar.",
+      "Das St. Galler Unternehmensmodell ist ein Entscheidungsmodell.",
+      "Modelle helfen, Entscheidungsfaktoren zu ordnen und zu gewichten.",
+      "Ein einzelnes Modell kann die gesamte Wirklichkeit exakt abbilden."
+    ],
+    "korrekt": [
+      "Modelle stellen komplexe reale Zustände vereinfacht dar.",
+      "Modelle helfen, Entscheidungsfaktoren zu ordnen und zu gewichten."
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-m06",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen nutzt historische Verkaufsdaten, um den Umsatz der nächsten Quartale vorherzusagen. Welche Modellarten kommen dabei zum Einsatz?",
+    "erklaerung": "Zuerst werden die historischen Daten beschrieben (Beschreibungsmodell), dann werden Muster und Ursachen identifiziert (Erklärungsmodell, z.B. saisonale Schwankungen), und schliesslich wird daraus eine Prognose für Entscheidungen abgeleitet (Entscheidungsmodell).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nur ein Beschreibungsmodell",
+      "Beschreibungsmodell → Erklärungsmodell → Entscheidungsmodell",
+      "Erst ein Beschreibungsmodell, dann ein Erklärungsmodell",
+      "Nur ein Entscheidungsmodell"
+    ],
+    "korrekt": "Beschreibungsmodell → Erklärungsmodell → Entscheidungsmodell"
+  },
+  {
+    "id": "bwl_unternehmensmodell-m07",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Erklärungsmodell könnte die Hypothese aufstellen, dass mit zunehmender Produktionsmenge die Stückkosten sinken.",
+    "erklaerung": "Genau so funktionieren Erklärungsmodelle: Sie stellen Hypothesen über Gesetzmässigkeiten auf. Die Annahme sinkender Stückkosten bei steigender Produktion (Skaleneffekte) ist ein klassisches Beispiel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-m08",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist es problematisch, unternehmerische Entscheidungen ausschliesslich auf ein einziges Modell zu stützen?",
+    "erklaerung": "Modelle sind bewusste Vereinfachungen. Sie zeigen nur einen Ausschnitt der Realität. Wer sich auf ein einziges Modell verlässt, riskiert, wichtige Faktoren zu übersehen. Deshalb ist es sinnvoll, verschiedene Modelle und Perspektiven zu kombinieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Jedes Modell vereinfacht die Realität und blendet bestimmte Aspekte aus.",
+      "Modelle können nur die Vergangenheit abbilden.",
+      "Modelle sind nur für grosse Unternehmen geeignet.",
+      "Modelle sind immer falsch und daher nutzlos."
+    ],
+    "korrekt": "Jedes Modell vereinfacht die Realität und blendet bestimmte Aspekte aus."
+  },
+  {
+    "id": "bwl_unternehmensmodell-m09",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Grenzen des Modelldenkens zu erkennen gehört laut Lehrplan zu den Kompetenzen, die Schülerinnen und Schüler im Fach Wirtschaft und Recht erwerben sollen.",
+    "erklaerung": "Der Lehrplan fordert explizit, dass SuS Modelle anwenden und zur Lösung konkreter Probleme beiziehen, aber auch die Grenzen des Modelldenkens erkennen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-a01",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind Anspruchsgruppen (Stakeholder)?",
+    "erklaerung": "Anspruchsgruppen (Stakeholder) sind organisierte oder nicht organisierte Gruppen von Unternehmen, Menschen oder Institutionen, die Ansprüche an ein Unternehmen stellen. Dazu gehören z.B. Kunden, Mitarbeitende, Lieferanten, Staat, Kapitalgeber, Konkurrenz und die Öffentlichkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Organisierte oder nicht organisierte Gruppen, die Ansprüche an ein Unternehmen stellen",
+      "Die Geschäftsleitung eines Unternehmens",
+      "Nur die Aktionäre eines Unternehmens",
+      "Staatliche Behörden, die Unternehmen kontrollieren"
+    ],
+    "korrekt": "Organisierte oder nicht organisierte Gruppen, die Ansprüche an ein Unternehmen stellen"
+  },
+  {
+    "id": "bwl_unternehmensmodell-a02",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden gehören zu den typischen Anspruchsgruppen eines Unternehmens? (Mehrere Antworten möglich.)",
+    "erklaerung": "Kunden, Mitarbeitende und Eigenkapitalgeber sind Anspruchsgruppen (A, B, C korrekt). Umweltsphären sind keine Anspruchsgruppen, sondern bilden das Umfeld, in dem Unternehmen und Anspruchsgruppen agieren (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Kundinnen und Kunden",
+      "Mitarbeitende",
+      "Eigenkapitalgeber",
+      "Umweltsphären"
+    ],
+    "korrekt": [
+      "Kundinnen und Kunden",
+      "Mitarbeitende",
+      "Eigenkapitalgeber"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-a03",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Anspruchsgruppe, die ein gutes Preis-Leistungs-Verhältnis, Zusatzleistungen und guten Service erwartet, sind die {0}.",
+    "erklaerung": "Kundinnen und Kunden erwarten ein gutes Preis-Leistungs-Verhältnis, Zusatzleistungen und guten Service vom Unternehmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Kunden",
+        "optionen": [
+          "Kundinnen und Kunden",
+          "Kundinnen",
+          "Kundschaft"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-a04",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welchen Anspruch haben Fremdkapitalgeber (z.B. Banken) typischerweise an ein Unternehmen?",
+    "erklaerung": "Fremdkapitalgeber wie Banken erwarten einen möglichst hohen Zins für ihr ausgeliehenes Kapital, pünktliche Rückzahlung sowie Sicherheiten, damit ihr Risiko begrenzt bleibt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Möglichst hoher Zins, pünktliche Rückzahlung und Sicherheiten",
+      "Tiefe Preise und guter Service",
+      "Hohe Steuereinnahmen und Arbeitsplätze",
+      "Fairer Lohn und Arbeitsplatzsicherheit"
+    ],
+    "korrekt": "Möglichst hoher Zins, pünktliche Rückzahlung und Sicherheiten"
+  },
+  {
+    "id": "bwl_unternehmensmodell-a05",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was erwarten Mitarbeitende typischerweise von einem Unternehmen?",
+    "erklaerung": "Mitarbeitende erwarten einen fairen Lohn, Weiterbildungs- und Mitwirkungsmöglichkeiten, Arbeitsplatzsicherheit sowie gute Arbeitsbedingungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Wertsteigerung der Anteile und hohe Dividende",
+      "Finanzielle Unterstützung bei Projekten (Sponsoring)",
+      "Langfristige Lieferbeziehungen und hohe Preise",
+      "Fairen Lohn, gute Arbeitsbedingungen und Weiterbildungsmöglichkeiten"
+    ],
+    "korrekt": "Fairen Lohn, gute Arbeitsbedingungen und Weiterbildungsmöglichkeiten"
+  },
+  {
+    "id": "bwl_unternehmensmodell-a06",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Ansprüche hat der Staat (Gemeinde, Kanton, Bund) an ein Unternehmen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Der Staat erwartet hohe Steuereinnahmen (A), die Schaffung und Erhaltung zukunftsorientierter Arbeitsplätze (B) sowie gesellschaftlich verantwortliches Handeln und das Einhalten von Gesetzen (C). Dividenden sind ein Anspruch der Eigenkapitalgeber, nicht des Staates (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Hohe Steuereinnahmen",
+      "Schaffung und Erhaltung von Arbeitsplätzen",
+      "Einhalten von Gesetzen",
+      "Möglichst hohe Dividende"
+    ],
+    "korrekt": [
+      "Hohe Steuereinnahmen",
+      "Schaffung und Erhaltung von Arbeitsplätzen",
+      "Einhalten von Gesetzen"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-a07",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Konkurrenz ist keine Anspruchsgruppe, weil sie dem Unternehmen feindlich gesinnt ist.",
+    "erklaerung": "Die Konkurrenz ist durchaus eine Anspruchsgruppe. Sie erwartet faires Verhalten im Wettbewerb (z.B. kein Preisdumping) und Mitwirkung in Branchenverbänden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-a08",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Technologieunternehmen plant, die Produktion ins Ausland zu verlagern. Welche Anspruchsgruppen sind davon am stärksten betroffen?",
+    "erklaerung": "Eine Produktionsverlagerung betrifft vor allem Mitarbeitende (drohendem Arbeitsplatzverlust), den Staat (Rückgang von Steuereinnahmen und Arbeitsplätzen) und Lieferanten (Verlust von Aufträgen). Natürlich können auch andere Gruppen betroffen sein, aber diese drei spüren die Auswirkungen am direktesten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nur die Konkurrenz, da sie einen Vorteil erhält",
+      "Nur die Aktionäre, da der Aktienkurs schwanken könnte",
+      "Nur die Kunden, da die Qualität sinken könnte",
+      "Mitarbeitende (Arbeitsplatzverlust), Staat (Steuereinnahmen), Lieferanten (Auftragsverlust)"
+    ],
+    "korrekt": "Mitarbeitende (Arbeitsplatzverlust), Staat (Steuereinnahmen), Lieferanten (Auftragsverlust)"
+  },
+  {
+    "id": "bwl_unternehmensmodell-a09",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Institutionen wie Gewerkschaften, Umweltverbände und Parteien gehören ebenfalls zu den Anspruchsgruppen eines Unternehmens.",
+    "erklaerung": "Institutionen (z.B. Verbände, Presse, Parteien, Vereine) bilden eine eigene Anspruchsgruppe. Sie erwarten z.B. finanzielle Unterstützung bei Projekten (Sponsoring) und achten auf die Einhaltung ökologischer und sozialer Standards.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-a10",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum agiert ein Unternehmen laut dem Unternehmensmodell nicht isoliert?",
+    "erklaerung": "Das Unternehmensmodell zeigt, dass Unternehmen in dauernder Wechselbeziehung mit ihrem Umfeld stehen – mit Anspruchsgruppen und den Umweltsphären. Diese Beziehungen sind vielfältig und komplex und beeinflussen die Ziele und Entscheide des Unternehmens massgeblich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Weil Unternehmen keinen Selbstzweck haben",
+      "Weil es in dauernder Wechselbeziehung mit seinem Umfeld, anderen Unternehmen und verschiedenen Personengruppen steht",
+      "Weil es vom Staat dazu gezwungen wird",
+      "Weil es nur so Gewinne erzielen kann"
+    ],
+    "korrekt": "Weil es in dauernder Wechselbeziehung mit seinem Umfeld, anderen Unternehmen und verschiedenen Personengruppen steht"
+  },
+  {
+    "id": "bwl_unternehmensmodell-a11",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Eigenkapitalgeber erwarten vom Unternehmen eine {0} der Anteile (Shareholder-Value), eine hohe {1} und Sicherheit für das eingesetzte Kapital.",
+    "erklaerung": "Eigenkapitalgeber (Eigentümer, Aktionäre) erwarten eine Wertsteigerung der Anteile (Shareholder-Value), eine möglichst hohe Rentabilität (Rendite/Dividende) und Sicherheit für das eingesetzte Kapital.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Wertsteigerung",
+        "optionen": [
+          "Werterhöhung",
+          "Wertzunahme"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Rentabilität",
+        "optionen": [
+          "Rendite",
+          "Dividende"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-a12",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Das Diagramm zeigt das Unternehmensmodell mit acht Anspruchsgruppen (als ‹?› dargestellt). Welche der folgenden Gruppen gehören zu den typischen acht Anspruchsgruppen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die acht typischen Anspruchsgruppen sind: Kunden, Mitarbeitende, Lieferanten, Konkurrenz, Staat, Eigenkapitalgeber, Fremdkapitalgeber und Öffentlichkeit/Institutionen (Medien, Verbände, Parteien). NGOs, UNO und Weltbank (C) gehören nicht zu den typischen acht, obwohl sie als Teil der Öffentlichkeit/Institutionen Einfluss nehmen können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_vollstaendig_01.svg",
+      "alt": "Unternehmensmodell mit Unternehmen im Zentrum, umgeben von acht Ellipsen mit Fragezeichen und fünf farbigen Umweltsphären-Segmenten"
+    },
+    "optionen": [
+      "Kunden, Mitarbeitende, Lieferanten",
+      "Konkurrenz, Staat, Kapitalgeber",
+      "NGOs, UNO, Weltbank",
+      "Öffentlichkeit/Institutionen wie Medien und Verbände"
+    ],
+    "korrekt": [
+      "Kunden, Mitarbeitende, Lieferanten",
+      "Konkurrenz, Staat, Kapitalgeber",
+      "Öffentlichkeit/Institutionen wie Medien und Verbände"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-z01",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was bedeutet «Zielharmonie» zwischen zwei Anspruchsgruppen?",
+    "erklaerung": "Bei einer Zielharmonie (komplementäre Ziele) fördert das Erreichen des einen Ziels gleichzeitig das andere Ziel. Beide Seiten profitieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Beide Ziele können nie gleichzeitig erreicht werden.",
+      "Die beiden Ziele beeinflussen sich gegenseitig nicht.",
+      "Die Erfüllung des einen Ziels führt zu einer Minderung des anderen Ziels.",
+      "Durch das Erreichen des einen Ziels wird die Erfüllung des anderen Ziels gesteigert."
+    ],
+    "korrekt": "Durch das Erreichen des einen Ziels wird die Erfüllung des anderen Ziels gesteigert."
+  },
+  {
+    "id": "bwl_unternehmensmodell-z02",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Man unterscheidet drei Arten von Zielbeziehungen: {0}, Neutralität und {1}.",
+    "erklaerung": "Die drei Zielbeziehungen sind: Harmonie (Ziele fördern sich gegenseitig), Neutralität (Ziele beeinflussen sich nicht) und Konkurrenz/Konflikt (Ziele behindern sich gegenseitig).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Harmonie",
+        "optionen": [
+          "Zielharmonie"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Konkurrenz",
+        "optionen": [
+          "Konflikt",
+          "Zielkonflikt",
+          "Zielkonkurrenz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-z03",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Mitarbeitenden fordern höhere Löhne, gleichzeitig möchte das Unternehmen die Kosten senken. Welche Zielbeziehung liegt vor?",
+    "erklaerung": "Höhere Löhne bedeuten höhere Kosten für das Unternehmen. Das Ziel der Mitarbeitenden (höherer Lohn) und das Unternehmensziel (Kostensenkung) stehen in Konkurrenz zueinander – ein klassischer Zielkonflikt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zielkonflikt (Konkurrenz)",
+      "Zielidentität",
+      "Zielneutralität",
+      "Zielharmonie"
+    ],
+    "korrekt": "Zielkonflikt (Konkurrenz)"
+  },
+  {
+    "id": "bwl_unternehmensmodell-z04",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie das Diagramm. Welche Begriffe gehören zu Ansatz A und Ansatz B?",
+    "erklaerung": "Ansatz A zeigt den Shareholder-Value-Ansatz: Fokus auf nur eine Gruppe (Eigentümer/Aktionäre) mit dem Ziel der Gewinnmaximierung und kurzfristiger Perspektive. Ansatz B zeigt den Stakeholder-Value-Ansatz: Alle Anspruchsgruppen werden berücksichtigt, mit dem Ziel der Ausgewogenheit und langfristiger Perspektive.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/shareholder_stakeholder_vergleich_01.svg",
+      "alt": "Vergleich zweier Ansätze: Ansatz A mit Fokus auf eine Gruppe und Gewinnmaximierung, Ansatz B mit Fokus auf alle Gruppen und Ausgewogenheit"
+    },
+    "optionen": [
+      "A = Stakeholder-Value, B = Shareholder-Value",
+      "A = Unternehmensmodell, B = Umweltmodell",
+      "A = Shareholder-Value, B = Stakeholder-Value",
+      "A = Kostenführerschaft, B = Differenzierungsstrategie"
+    ],
+    "korrekt": "A = Shareholder-Value, B = Stakeholder-Value"
+  },
+  {
+    "id": "bwl_unternehmensmodell-z05",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zum Stakeholder-Value-Ansatz treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Der Stakeholder-Value-Ansatz setzt auf das Bewusstsein, dass ein Unternehmen mehreren Anspruchsgruppen gerecht werden muss (A), insbesondere Kunden und Mitarbeitenden. Die langfristig ausgewogene Berücksichtigung aller Gruppen soll letztlich auch den Shareholder-Value steigern (B). Höhere Mitarbeitermotivation führt zu besseren Ergebnissen (D). Es zählen nicht nur die Kunden (C falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Unternehmen muss mehreren Anspruchsgruppen gerecht werden.",
+      "Die langfristig ausgewogene Berücksichtigung aller Anspruchsgruppen soll den Shareholder-Value maximieren.",
+      "Nur die Interessen der Kunden zählen.",
+      "Eine höhere Motivation der Mitarbeitenden führt zu besseren Leistungsergebnissen."
+    ],
+    "korrekt": [
+      "Das Unternehmen muss mehreren Anspruchsgruppen gerecht werden.",
+      "Die langfristig ausgewogene Berücksichtigung aller Anspruchsgruppen soll den Shareholder-Value maximieren.",
+      "Eine höhere Motivation der Mitarbeitenden führt zu besseren Leistungsergebnissen."
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-z06",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Zielneutralität bedeutet, dass sich zwei Ziele gegenseitig nicht beeinflussen.",
+    "erklaerung": "Bei neutralen Zielbeziehungen hat die Erfüllung des einen Ziels keinen Einfluss auf die Erfüllung des anderen Ziels. Die beiden Ziele existieren unabhängig voneinander.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-z07",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen investiert in bessere Arbeitsbedingungen. Die Mitarbeitenden sind zufriedener und produktiver, was zu höheren Gewinnen führt. Welche Zielbeziehung besteht hier zwischen den Ansprüchen der Mitarbeitenden und der Eigenkapitalgeber?",
+    "erklaerung": "Obwohl kurzfristig Kosten entstehen, profitieren langfristig sowohl Mitarbeitende (bessere Bedingungen) als auch Eigenkapitalgeber (höhere Gewinne durch Produktivitätssteigerung). Das ist ein Beispiel für Zielharmonie im Sinne des Stakeholder-Value-Ansatzes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zielkonflikt, weil die Investition kurzfristig Kosten verursacht",
+      "Die Beziehung lässt sich nicht bestimmen",
+      "Zielharmonie, weil beide Seiten langfristig profitieren",
+      "Zielneutralität, weil die Bereiche nichts miteinander zu tun haben"
+    ],
+    "korrekt": "Zielharmonie, weil beide Seiten langfristig profitieren"
+  },
+  {
+    "id": "bwl_unternehmensmodell-z08",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Der Shareholder-Value-Ansatz kann langfristige Unternehmensziele gefährden, z.B. durch verminderte Reinvestitionen des Gewinns.",
+    "erklaerung": "Wenn ein Unternehmen konsequent nur die kurzfristige Gewinnmaximierung verfolgt, kann es langfristige Investitionen (z.B. in Forschung, Mitarbeitende, Nachhaltigkeit) vernachlässigen. Das gefährdet die langfristigen Unternehmensziele.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-z09",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Zwischen den Forderungen der Eigenkapitalgeber und den Forderungen der Fremdkapitalgeber besteht meistens:",
+    "erklaerung": "Eigen- und Fremdkapitalgeber stehen in weitgehender Zielharmonie zueinander: Beide möchten eine hohe Rendite erzielen bzw. ihre Kapitaleinlage gesichert wissen. Die Förderung des einen Anspruchs (z.B. Wertsteigerung) fördert auch das Vertrauen der anderen Gruppe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Keine Beziehung",
+      "Zielneutralität",
+      "Ein starker Zielkonflikt",
+      "Weitgehende Zielharmonie"
+    ],
+    "korrekt": "Weitgehende Zielharmonie"
+  },
+  {
+    "id": "bwl_unternehmensmodell-z10",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen will die Preise senken, um mehr Kunden zu gewinnen. Welche Zielkonflikte können dadurch entstehen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Preissenkungen können zu Konflikten mit Eigenkapitalgebern führen, die höhere Gewinne erwarten (A), und mit Lieferanten, deren hohe Preise bei tieferen Verkaufspreisen nicht mehr tragbar sind (B). Der Effekt auf den Staat (C) ist indirekt und nicht zwangsläufig ein Hauptkonflikt. Die Konkurrenz hat durch Preissenkungen eher einen Nachteil, keine Harmonie (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Konflikt mit Eigenkapitalgebern wegen tieferer Gewinnmargen",
+      "Konflikt mit Lieferanten, die höhere Preise fordern",
+      "Konflikt mit dem Staat wegen tieferer Steuereinnahmen",
+      "Harmonie mit der Konkurrenz, die ebenfalls von tieferen Preisen profitiert"
+    ],
+    "korrekt": [
+      "Konflikt mit Eigenkapitalgebern wegen tieferer Gewinnmargen",
+      "Konflikt mit Lieferanten, die höhere Preise fordern"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-z11",
+    "fach": "BWL",
+    "thema": "Zielbeziehungen & Wertansätze",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie das Diagramm. Welche Bezeichnungen passen zu den drei Typen A, B und C?",
+    "erklaerung": "Typ A zeigt Zielharmonie: Beide Ziele steigen gemeinsam — die Erreichung des einen Ziels fördert das andere. Typ B zeigt Zielneutralität: Die Ziele beeinflussen sich gegenseitig nicht. Typ C zeigt Zielkonkurrenz (Zielkonflikt): Ein Ziel steigt, das andere sinkt — die Erreichung des einen Ziels beeinträchtigt das andere.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/zielbeziehungen_schema_01.svg",
+      "alt": "Drei Typen von Zielbeziehungen: Typ A mit zwei steigenden Zielen, Typ B mit unabhängigen Zielen, Typ C mit gegenläufigen Zielen"
+    },
+    "optionen": [
+      "A = Zielneutralität, B = Zielkonkurrenz, C = Zielharmonie",
+      "A = Zielharmonie, B = Zielkonkurrenz, C = Zielneutralität",
+      "A = Zielkonkurrenz, B = Zielharmonie, C = Zielneutralität",
+      "A = Zielharmonie, B = Zielneutralität, C = Zielkonkurrenz"
+    ],
+    "korrekt": "A = Zielharmonie, B = Zielneutralität, C = Zielkonkurrenz"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u01",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In wie viele Umweltsphären wird die Unternehmensumwelt im St. Galler Unternehmensmodell unterteilt?",
+    "erklaerung": "Die Unternehmensumwelt wird in fünf Umweltsphären unterteilt: die ökonomische, technologische, ökologische, soziale und rechtliche Umweltsphäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Sechs",
+      "Vier",
+      "Fünf",
+      "Drei"
+    ],
+    "korrekt": "Fünf"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u02",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die fünf Umweltsphären sind: ökonomische, {0}, ökologische, soziale und {1} Umweltsphäre.",
+    "erklaerung": "Die fünf Umweltsphären sind: ökonomisch, technologisch, ökologisch, sozial und rechtlich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "technologische",
+        "optionen": [
+          "Technologische"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "rechtliche",
+        "optionen": [
+          "Rechtliche"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-u03",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Konjunktur, Inflationsrate und Wechselkurse sind Grössen welcher Umweltsphäre?",
+    "erklaerung": "Konjunktur, Inflationsrate und Wechselkurse sind gesamtwirtschaftliche Rahmenbedingungen und gehören zur ökonomischen Umweltsphäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ökonomische Umweltsphäre",
+      "Rechtliche Umweltsphäre",
+      "Soziale Umweltsphäre",
+      "Technologische Umweltsphäre"
+    ],
+    "korrekt": "Ökonomische Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u04",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bodenknappheit, Rohstoffvorkommen und Klimaerwärmung sind Einflüsse welcher Umweltsphäre?",
+    "erklaerung": "Natürliche Gegebenheiten wie Bodenknappheit, Rohstoffvorkommen und Klimaerwärmung gehören zur ökologischen Umweltsphäre. Diese Umweltsphäre umfasst alle Einflüsse aus der natürlichen Umgebung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ökologische Umweltsphäre",
+      "Soziale Umweltsphäre",
+      "Technologische Umweltsphäre",
+      "Ökonomische Umweltsphäre"
+    ],
+    "korrekt": "Ökologische Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u05",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Entwicklungen gehören zur technologischen Umweltsphäre? (Mehrere Antworten möglich.)",
+    "erklaerung": "Neue Produktionstechniken, Roboter, Digitalisierung, Internet und daraus entstehende neue Plattformen gehören zur technologischen Umweltsphäre (A, B, D korrekt). Die demografische Entwicklung (Bevölkerungsstruktur) gehört zur sozialen Umweltsphäre (C falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Neue Produktionsverfahren und Roboter",
+      "Digitalisierung und Internet",
+      "Demografische Entwicklung",
+      "Neue Werbe- und Verkaufsplattformen durch das Internet"
+    ],
+    "korrekt": [
+      "Neue Produktionsverfahren und Roboter",
+      "Digitalisierung und Internet",
+      "Neue Werbe- und Verkaufsplattformen durch das Internet"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-u06",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Einstellungen und Werthaltungen der Menschen in einer Gesellschaft, z.B. zu Themen wie Sonntagsverkauf oder fremde Kulturen, gehören zu welcher Umweltsphäre?",
+    "erklaerung": "In der sozialen Umweltsphäre betrachten wir Einflüsse aus dem Zusammenleben und den Werthaltungen der Menschen: z.B. Themen wie Sonntagsverkauf, Gleichstellung, Kindertagesstätten oder Offenheit gegenüber anderen Ländern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Soziale Umweltsphäre",
+      "Ökonomische Umweltsphäre",
+      "Rechtliche Umweltsphäre",
+      "Ökologische Umweltsphäre"
+    ],
+    "korrekt": "Soziale Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u07",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Einführung des Rauchverbots im Kanton Bern, das grosse Auswirkungen auf Gastronomiebetriebe hatte, ist ein Beispiel für die rechtliche Umweltsphäre.",
+    "erklaerung": "Gesetze und Verordnungen wie das Rauchverbot gehören zur rechtlichen Umweltsphäre. Das Beispiel zeigt, wie ein neues Gesetz direkte Auswirkungen auf Unternehmen haben kann (Umbauten, veränderte Kundenströme).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-u08",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Winterferienort unter 1200 m ü.M. hat wegen des Klimawandels kaum noch Schnee und muss in Beschneiungsanlagen investieren. Welche Umweltsphäre wirkt hier primär auf das Unternehmen?",
+    "erklaerung": "Der Klimawandel ist ein Phänomen der ökologischen Umweltsphäre. Er führt zu weniger Schnee in tieferen Lagen, was die Tourismusunternehmen direkt betrifft und zu Investitionen in Beschneiungsanlagen oder alternative Angebote zwingt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Rechtliche Umweltsphäre",
+      "Ökologische Umweltsphäre",
+      "Soziale Umweltsphäre",
+      "Ökonomische Umweltsphäre"
+    ],
+    "korrekt": "Ökologische Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-u09",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche ökologischen Zielbereiche unterscheidet man im Zusammenhang mit der ökologischen Umweltsphäre? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die drei ökologischen Zielbereiche sind: Ressourcenschutz (A), Emissionsbegrenzung (B) und Risikobegrenzung (C). Ein «Gewinnziel» ist kein ökologischer Zielbereich (D falsch) — das gehört eher zur ökonomischen Sphäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_oekologische_zielbereiche_01.svg",
+      "alt": "Diagramm: Drei ökologische Zielbereiche mit ihren Teilzielen"
+    },
+    "optionen": [
+      "Ressourcenziel: knappe Ressourcen erhalten und schonen",
+      "Emissionsziel: Emissionen vermeiden, vermindern, verwerten, entsorgen",
+      "Risikoziel: potentielle Gefahren vermindern, verhindern, begrenzen",
+      "Gewinnziel: ökologische Massnahmen gewinnbringend umsetzen"
+    ],
+    "korrekt": [
+      "Ressourcenziel: knappe Ressourcen erhalten und schonen",
+      "Emissionsziel: Emissionen vermeiden, vermindern, verwerten, entsorgen",
+      "Risikoziel: potentielle Gefahren vermindern, verhindern, begrenzen"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-u10",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Abgaswerte, Werbeverbote für Tabak und gesetzlich geregelte Ladenöffnungszeiten sind Beispiele für die rechtliche Umweltsphäre.",
+    "erklaerung": "All diese Beispiele betreffen gesetzliche Regelungen und Verordnungen, die zur rechtlichen Umweltsphäre gehören und das Handeln von Unternehmen direkt beeinflussen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-u11",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein neues Gesetz zur CO₂-Bepreisung betrifft ein Industrieunternehmen. Welche Umweltsphären sind hier verknüpft?",
+    "erklaerung": "Ein CO₂-Gesetz ist ein rechtlicher Rahmen (rechtlich), der auf ein ökologisches Problem reagiert (ökologisch) und finanzielle Auswirkungen auf das Unternehmen hat (ökonomisch). Die Umweltsphären sind nicht immer eindeutig voneinander abzugrenzen — ein CO₂-Gesetz kann gleichzeitig der rechtlichen und der ökologischen Sphäre zugeordnet werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die rechtliche, ökologische und ökonomische Umweltsphäre",
+      "Nur die rechtliche Umweltsphäre",
+      "Alle fünf Umweltsphären gleichermassen",
+      "Die rechtliche und die ökologische Umweltsphäre"
+    ],
+    "korrekt": "Die rechtliche, ökologische und ökonomische Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-w01",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Unternehmen können ihre Umweltsphären aktiv steuern und kontrollieren.",
+    "erklaerung": "Die Umweltsphären sind durch das Unternehmen weder steuerbar noch kontrollierbar. Es bestehen zwar Wechselwirkungen (das Unternehmen beeinflusst die Umwelt und umgekehrt), aber die Umweltsphären entwickeln sich nach eigenen Gesetzmässigkeiten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-w02",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Das Diagramm zeigt drei Arten von Wechselwirkungen. Welche Aussage beschreibt alle drei korrekt?",
+    "erklaerung": "Im Unternehmensmodell gibt es drei Arten von Wechselwirkungen: zwischen Sphären untereinander, von Sphären auf das Unternehmen und vom Unternehmen auf die Sphären. Alle Richtungen sind möglich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/umweltsphaeren_wechselwirkung_01.svg",
+      "alt": "Diagramm mit Unternehmen und Umweltsphären, drei nummerierte Pfeile zeigen verschiedene Wechselwirkungen"
+    },
+    "optionen": [
+      "Nur: Unternehmen → Anspruchsgruppen",
+      "Sphäre ↔ Sphäre, Sphäre ↔ Unternehmen, Unternehmen ↔ Sphäre",
+      "Nur zwischen Anspruchsgruppen untereinander",
+      "Nur: Umweltsphäre → Unternehmen"
+    ],
+    "korrekt": "Sphäre ↔ Sphäre, Sphäre ↔ Unternehmen, Unternehmen ↔ Sphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-w03",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen baut eine neue Fabrik und schafft 200 Arbeitsplätze in einer Region. Welche Wechselwirkung findet statt?",
+    "erklaerung": "Das Unternehmen beeinflusst aktiv seine Umwelt: Es schafft Arbeitsplätze (soziale Wirkung) und stärkt die regionale Wirtschaft (ökonomische Wirkung). Das ist eine Wechselwirkung vom Unternehmen auf die Umweltsphären.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Umweltsphäre → Unternehmen (ökonomisch)",
+      "Unternehmen → Umweltsphäre (ökonomisch und sozial)",
+      "Anspruchsgruppe → Unternehmen (Staat fordert Arbeitsplätze)",
+      "Sphäre → Sphäre (sozial → ökonomisch)"
+    ],
+    "korrekt": "Unternehmen → Umweltsphäre (ökonomisch und sozial)"
+  },
+  {
+    "id": "bwl_unternehmensmodell-w04",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Inwiefern beeinflusst eine Rezession (Konjunkturabschwung) ein Unternehmen? (Mehrere Antworten möglich.)",
+    "erklaerung": "In einer Rezession sinken Umsätze (A) und Nachfrage (B), weshalb Unternehmen ihre Strategie anpassen müssen (D). Die technologische Entwicklung wird nicht zwangsläufig durch eine Rezession beschleunigt (C falsch) — eher im Gegenteil, da Investitionen in F&E oft gekürzt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Der Umsatz vieler Güter sinkt.",
+      "Die Nachfrage nach Produkten geht zurück.",
+      "Die technologische Entwicklung wird beschleunigt.",
+      "Das Unternehmen muss seine Strategie anpassen."
+    ],
+    "korrekt": [
+      "Der Umsatz vieler Güter sinkt.",
+      "Die Nachfrage nach Produkten geht zurück.",
+      "Das Unternehmen muss seine Strategie anpassen."
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-w05",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum ist die Analyse der Umwelt und die Prognose kommender Entwicklungen eine vordringliche Aufgabe der Unternehmensführung?",
+    "erklaerung": "Die Umweltvoraussetzungen sind für Unternehmen einer Branche in derselben Region oft ähnlich. Wenn es einem Unternehmen gelingt, ein optimales Miteinander mit seiner Umwelt zu schaffen, ist das ein wesentlicher Wettbewerbsvorteil.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Weil die Konkurrenz es auch macht",
+      "Weil die Anspruchsgruppen es verlangen",
+      "Weil es gesetzlich vorgeschrieben ist",
+      "Weil ein optimales Miteinander von Unternehmen und Umwelt ein wesentlicher Wettbewerbsvorteil ist"
+    ],
+    "korrekt": "Weil ein optimales Miteinander von Unternehmen und Umwelt ein wesentlicher Wettbewerbsvorteil ist"
+  },
+  {
+    "id": "bwl_unternehmensmodell-w06",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Umweltsphären sind immer eindeutig voneinander abzugrenzen.",
+    "erklaerung": "Die Umweltsphären sind nicht immer eindeutig voneinander abzugrenzen. So kann z.B. die Einhaltung von Umweltverordnungen sowohl zur ökologischen als auch zur rechtlichen Umweltsphäre gezählt werden. Die Sphären überlappen sich in der Praxis häufig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-w07",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Unternehmen stösst grosse Mengen CO₂ aus. Die Regierung erlässt daraufhin strengere Emissionsgesetze. Welche Wechselwirkungskette liegt vor?",
+    "erklaerung": "Das Unternehmen belastet die Umwelt (Unternehmen → ökologische Sphäre), was zu gesellschaftlichem und politischem Druck führt und in neue Gesetze mündet (ökologische → rechtliche Sphäre). Diese Gesetze wirken wiederum auf das Unternehmen zurück (rechtliche Sphäre → Unternehmen). Ein Beispiel für eine Wechselwirkungskette über mehrere Sphären.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_wechselwirkungen_01.svg",
+      "alt": "Diagramm: Wechselwirkungskette zwischen Unternehmen und Umweltsphären"
+    },
+    "optionen": [
+      "Rechtliche Sphäre → Unternehmen → soziale Sphäre",
+      "Soziale Sphäre → Unternehmen → ökonomische Sphäre",
+      "Unternehmen → ökologische Sphäre → rechtliche Sphäre → Unternehmen",
+      "Ökonomische Sphäre → Unternehmen → technologische Sphäre"
+    ],
+    "korrekt": "Unternehmen → ökologische Sphäre → rechtliche Sphäre → Unternehmen"
+  },
+  {
+    "id": "bwl_unternehmensmodell-w08",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Entwicklungstrends aus der Umwelt müssen vom Unternehmen laufend {0} werden.",
+    "erklaerung": "Unternehmen können ihre Umwelt nicht steuern, aber sie müssen die Entwicklungstrends laufend analysieren, um rechtzeitig reagieren oder proaktiv handeln zu können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "analysiert",
+        "optionen": [
+          "beobachtet",
+          "untersucht"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-w09",
+    "fach": "BWL",
+    "thema": "Wechselwirkungen Unternehmen & Umwelt",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die vollständige Darstellung des Unternehmensmodells zeigt, dass zwischen allen Elementen (Unternehmen, Anspruchsgruppen, Umweltsphären) vielfältige Beziehungen und Wechselwirkungen bestehen.",
+    "erklaerung": "Im vollständigen Modell werden Unternehmen, Anspruchsgruppen und Umweltsphären zusammengefügt. Zwischen allen Elementen bestehen vielfältige Beziehungen und Wechselwirkungen, die das Unternehmen laufend analysieren und berücksichtigen muss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-v01",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei grundsätzlichen Verhaltensweisen kann ein Unternehmen gegenüber seiner Umwelt einnehmen?",
+    "erklaerung": "Die drei grundsätzlichen Verhaltensweisen sind: Beharren (am Bestehenden festhalten), Reaktion (auf Veränderungen reagieren) und Aktion (proaktiv Veränderungen vorantreiben).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Innovation, Imitation und Fusion",
+      "Wachstum, Stagnation und Schrumpfung",
+      "Beharren, Reaktion und Aktion",
+      "Analyse, Planung und Kontrolle"
+    ],
+    "korrekt": "Beharren, Reaktion und Aktion"
+  },
+  {
+    "id": "bwl_unternehmensmodell-v02",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Unternehmen, das vorausschauend handelt und Veränderungen aktiv vorantreibt, zeigt die Verhaltensweise der {0}.",
+    "erklaerung": "Aktion bedeutet, dass das Unternehmen proaktiv handelt, Trends erkennt und vorausschauend neue Wege geht, bevor es durch die Umwelt dazu gezwungen wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Aktion",
+        "optionen": [
+          "Proaktion",
+          "aktiven Gestaltung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-v03",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Detailhändler führt erst einen Online-Shop ein, nachdem die meisten Konkurrenten dies bereits getan haben und die Umsätze im stationären Handel stark gesunken sind. Welche Verhaltensweise zeigt das Unternehmen?",
+    "erklaerung": "Das Unternehmen reagiert erst auf den Druck der Umwelt (sinkende Umsätze, Konkurrenz online). Es handelt nicht vorausschauend (das wäre Aktion), aber auch nicht untätig (das wäre Beharren). Es reagiert – allerdings spät.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Reaktion",
+      "Aktion",
+      "Innovation",
+      "Beharren"
+    ],
+    "korrekt": "Reaktion"
+  },
+  {
+    "id": "bwl_unternehmensmodell-v04",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zur Verhaltensweise «Beharren» treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Beharren bedeutet, am Bestehenden festzuhalten (A). Das kann kurzfristig Stabilität bieten (B), birgt aber langfristig das Risiko, den Anschluss an Entwicklungen zu verlieren (D). Es ist nicht immer die beste Strategie (C falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Unternehmen hält an bestehenden Strategien und Prozessen fest.",
+      "Beharren kann kurzfristig Stabilität bieten.",
+      "Langfristiges Beharren ist immer die beste Strategie.",
+      "Beharren kann dazu führen, dass das Unternehmen den Anschluss verliert."
+    ],
+    "korrekt": [
+      "Das Unternehmen hält an bestehenden Strategien und Prozessen fest.",
+      "Beharren kann kurzfristig Stabilität bieten.",
+      "Beharren kann dazu führen, dass das Unternehmen den Anschluss verliert."
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-v05",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen, das als erstes in seiner Branche eine KI-gestützte Kundenbetreuerung einführt, zeigt die Verhaltensweise der Aktion.",
+    "erklaerung": "Das Unternehmen handelt proaktiv und geht einen neuen Weg, bevor die Konkurrenz dies tut. Es reagiert nicht auf einen bestehenden Druck, sondern gestaltet aktiv die Zukunft. Das ist Aktion.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-v06",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Welche Verhaltensweise wäre für ein Unternehmen in einem sich schnell wandelnden technologischen Umfeld langfristig am riskantesten?",
+    "erklaerung": "In einem sich schnell wandelnden technologischen Umfeld ist Beharren am riskantesten, weil das Unternehmen wichtige Entwicklungen verpasst und den Anschluss an den Markt verlieren kann. Beispiele dafür gibt es viele (z.B. Kodak und die Digitalfotografie).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Aktion – weil sie teuer ist",
+      "Reaktion – weil sie immer zu spät kommt",
+      "Alle drei sind gleich riskant",
+      "Beharren – weil das Unternehmen technologische Entwicklungen verpasst"
+    ],
+    "korrekt": "Beharren – weil das Unternehmen technologische Entwicklungen verpasst"
+  },
+  {
+    "id": "bwl_unternehmensmodell-v07",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein traditioneller Buchladen beobachtet den Aufstieg von E-Books und Online-Händlern. Er entscheidet sich, neben dem Buchverkauf auch Lesungen, Autorentreffen und ein Café anzubieten. Welche Verhaltensweise zeigt er?",
+    "erklaerung": "Der Buchladen reagiert auf den Druck durch Online-Händler (Reaktion), geht aber gleichzeitig kreativ neue Wege, indem er sein Geschäftsmodell um Erlebnisangebote erweitert (Aktion). In der Praxis sind die Verhaltensweisen oft nicht trennscharf – hier zeigt das Unternehmen Elemente von Reaktion und Aktion.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Sowohl Reaktion als auch Aktion",
+      "Reaktion, weil er erst auf den Druck des Marktes reagiert",
+      "Aktion, weil er kreativ neue Wege geht",
+      "Beharren, weil er weiterhin Bücher verkauft"
+    ],
+    "korrekt": "Sowohl Reaktion als auch Aktion"
+  },
+  {
+    "id": "bwl_unternehmensmodell-v08",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Reaktion bedeutet, dass ein Unternehmen auf Veränderungen in der Umwelt antwortet, anstatt sie selbst auszulösen.",
+    "erklaerung": "Bei der Reaktion wartet das Unternehmen, bis Veränderungen eintreten, und passt sich dann daran an. Im Gegensatz zur Aktion, bei der das Unternehmen selbst Veränderungen vorantreibt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-f01",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was war die Brent Spar?",
+    "erklaerung": "Die Brent Spar war ein schwimmender Speichertank (Öl-Lagerplattform), der 1975/76 in Norwegen montiert wurde, um Rohöl anderer Bohrinseln zwischenzulagern. Sie war 137 Meter hoch und 14'500 Tonnen schwer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ein Öltanker der Shell AG",
+      "Ein Umweltschutzprojekt von Greenpeace",
+      "Ein schwimmender Speichertank (Ölplattform) von Shell in der Nordsee",
+      "Eine Raffinerie an der britischen Küste"
+    ],
+    "korrekt": "Ein schwimmender Speichertank (Ölplattform) von Shell in der Nordsee"
+  },
+  {
+    "id": "bwl_unternehmensmodell-f02",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche zwei Entsorgungsvarianten standen bei der Brent Spar zur Diskussion?",
+    "erklaerung": "Die zwei Hauptvarianten waren: Variante 1 – Versenken in einem tiefen atlantischen Graben (ca. 2'375 m Tiefe), und Variante 2 – Vollständiger Abbau an Land (Plattform an Land schleppen und auseinandernehmen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Stehen lassen oder verschrotten",
+      "Sprengung vor Ort oder Transport nach Afrika",
+      "Verkauf an eine andere Firma oder Umbau zu einem Hotel",
+      "Versenken in tiefer See oder vollständiger Abbau an Land"
+    ],
+    "korrekt": "Versenken in tiefer See oder vollständiger Abbau an Land"
+  },
+  {
+    "id": "bwl_unternehmensmodell-f03",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Anspruchsgruppen spielten im Fall Brent Spar eine wichtige Rolle? (Mehrere Antworten möglich.)",
+    "erklaerung": "Alle genannten Anspruchsgruppen spielten eine zentrale Rolle: Kunden drohten mit Boykott (A), die Öffentlichkeit und Medien übten enormen Druck aus (B), die britische Regierung und die Nordsee-Anrainerstaaten waren regulatorisch beteiligt (C), und die Entscheidung hatte Vorbildcharakter für die gesamte Ölbranche mit ca. 418 weiteren zu entsorgenden Plattformen (D).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Kunden (Boykott der Shell-Tankstellen)",
+      "Öffentlichkeit und Medien (öffentlicher Druck)",
+      "Staat (britische Regierung, Nordsee-Anrainerstaaten)",
+      "Konkurrenz (Vorbildwirkung für die gesamte Branche)"
+    ],
+    "korrekt": [
+      "Kunden (Boykott der Shell-Tankstellen)",
+      "Öffentlichkeit und Medien (öffentlicher Druck)",
+      "Staat (britische Regierung, Nordsee-Anrainerstaaten)",
+      "Konkurrenz (Vorbildwirkung für die gesamte Branche)"
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-f04",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Im Fall Brent Spar argumentierte die Ökonomin Elke Reeding, dass die Versenkungskosten bei ca. 24 Mio. Franken liegen, der Landabbau aber bei ca. 94 Mio. Franken. Welche Umweltsphäre steht bei ihrem Bericht im Vordergrund?",
+    "erklaerung": "Die Ökonomin analysiert primär die Kosten und finanziellen Konsequenzen der Entsorgungsvarianten. Ihr Bericht fokussiert auf die ökonomische Umweltsphäre: Kosten, Gewinnwirkung, Steuereffekte, Wettbewerbsvorteile.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Technologische Umweltsphäre",
+      "Ökonomische Umweltsphäre",
+      "Soziale Umweltsphäre",
+      "Ökologische Umweltsphäre"
+    ],
+    "korrekt": "Ökonomische Umweltsphäre"
+  },
+  {
+    "id": "bwl_unternehmensmodell-f05",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Kommunikationsspezialist Aldo Müller empfahl im Fall Brent Spar den Landabbau, obwohl dieser viermal teurer war. Was war sein Hauptargument?",
+    "erklaerung": "Aldo Müller argumentierte aus der sozialen Perspektive: Ein möglicher Boykott und der damit verbundene Imageverlust wären katastrophal teuer. Umgekehrt könnte Shell sich durch den Landabbau als Vorreiterin im Umweltschutz positionieren und langfristig Marktanteile gewinnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Mitarbeitenden hätten sich geweigert, die Versenkung durchzuführen.",
+      "Die technischen Risiken der Versenkung seien zu hoch.",
+      "Ein Imagegewinn als umweltbewusstes Unternehmen sei langfristig wertvoller als die Kostenersparnis.",
+      "Die britische Regierung hätte die Versenkung ohnehin verboten."
+    ],
+    "korrekt": "Ein Imagegewinn als umweltbewusstes Unternehmen sei langfristig wertvoller als die Kostenersparnis."
+  },
+  {
+    "id": "bwl_unternehmensmodell-f06",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Shell entschied sich letztlich für den vollständigen Abbau der Brent Spar an Land.",
+    "erklaerung": "Am 20. Juni 1995 beschloss Shell unter dem enormen öffentlichen Druck, die Brent Spar an Land zu entsorgen. Ein Grossteil der gereinigten Aussenhülle wurde als Fundament für einen Hafen verwendet, der Rest verschrottet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-f07",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Was war die langfristig bedeutendste Folge des Brent-Spar-Falls?",
+    "erklaerung": "Die bedeutendste Folge war das 1998 von den 15 Anrainerstaaten einstimmig beschlossene Plattform-Versenkungsverbot im Nordostatlantik. Der Fall gilt als einer der ersten grossen Erfolge von Konsumenten gegen einen Grosskonzern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Shell ging bankrott.",
+      "Alle Ölplattformen in der Nordsee wurden sofort abgebaut.",
+      "Die 15 Nordsee-Anrainerstaaten beschlossen 1998 ein Versenkungsverbot für Ölplattformen.",
+      "Greenpeace wurde verboten."
+    ],
+    "korrekt": "Die 15 Nordsee-Anrainerstaaten beschlossen 1998 ein Versenkungsverbot für Ölplattformen."
+  },
+  {
+    "id": "bwl_unternehmensmodell-f08",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Lehren lassen sich aus dem Fall Brent Spar für das Unternehmensmodell ziehen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Der Fall zeigt, dass Unternehmen alle Stakeholder berücksichtigen müssen (A), die öffentliche Meinung massiven Druck aufbauen kann (C) und komplexe Zielkonflikte sorgfältig abgewogen werden müssen (D). Die billigste Lösung ist nicht immer die beste (B falsch) — Shell hätte bei der Versenkung zwar kurzfristig gespart, aber langfristig durch Boykott und Imageschaden viel mehr verloren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Unternehmen müssen die Ansprüche aller Stakeholder ernst nehmen, nicht nur die ökonomischen.",
+      "Die billigste Lösung ist immer die beste.",
+      "Die öffentliche Meinung und Medien können enormen Druck auf Unternehmen ausüben.",
+      "Ökologische, ökonomische und soziale Zielkonflikte erfordern eine sorgfältige Abwägung."
+    ],
+    "korrekt": [
+      "Unternehmen müssen die Ansprüche aller Stakeholder ernst nehmen, nicht nur die ökonomischen.",
+      "Die öffentliche Meinung und Medien können enormen Druck auf Unternehmen ausüben.",
+      "Ökologische, ökonomische und soziale Zielkonflikte erfordern eine sorgfältige Abwägung."
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-f09",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welches Modell wird durch den Fall Brent Spar besonders gut illustriert?",
+    "erklaerung": "Der Fall Brent Spar illustriert perfekt das Unternehmensmodell: Er zeigt die verschiedenen Anspruchsgruppen (Kunden, Staat, Öffentlichkeit, Mitarbeitende, Aktionäre), die Umweltsphären (ökonomisch, ökologisch, technologisch, sozial, rechtlich) und die komplexen Wechselwirkungen und Zielkonflikte zwischen ihnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Unternehmensmodell mit Anspruchsgruppen und Umweltsphären",
+      "Das Modell der doppelten Buchhaltung",
+      "Das Modell der Preisbildung auf dem Markt",
+      "Das Konjunkturmodell"
+    ],
+    "korrekt": "Das Unternehmensmodell mit Anspruchsgruppen und Umweltsphären"
+  },
+  {
+    "id": "bwl_unternehmensmodell-f10",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Im Fall Brent Spar hatte Greenpeace mit einer falschen Zahl argumentiert (5'500 statt 130 Tonnen Öl an Bord). Dies zeigt, dass auch Anspruchsgruppen nicht immer korrekte Informationen liefern.",
+    "erklaerung": "Greenpeace hatte die Menge an Öl auf der Brent Spar massiv überschätzt (5'500 statt tatsächlich 130 Tonnen). Dies zeigt eine wichtige Lektion: Auch Anspruchsgruppen wie NGOs können mit unkorrekten Daten arbeiten. Unternehmen und Öffentlichkeit müssen Informationen kritisch hinterfragen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_unternehmensmodell-f11",
+    "fach": "BWL",
+    "thema": "Anwendung & Fallbeispiele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Alti Moschti Mühlethurnen ist eine Kulturgenossenschaft in einer Berner Gemeinde. Welche Anspruchsgruppe ist für sie am wichtigsten?",
+    "erklaerung": "Gemäss dem Lehrbuch-Beispiel ist die wichtigste Anspruchsgruppe der Alti Moschti die Kundschaft, die qualitativ hochstehende Konzerte und Veranstaltungen in einer angenehmen und speziellen Atmosphäre geniessen möchte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Der Staat, der hohe Steuereinnahmen erwartet",
+      "Die Eigenkapitalgeber, da sie hohe Rendite erwarten",
+      "Die Kundschaft, die qualitativ hochstehende Veranstaltungen in angenehmer Atmosphäre erwartet",
+      "Die Konkurrenz, da sie den gleichen Markt bedient"
+    ],
+    "korrekt": "Die Kundschaft, die qualitativ hochstehende Veranstaltungen in angenehmer Atmosphäre erwartet"
+  },
+  {
+    "id": "bwl_unternehmensmodell-neu_sort_01",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die fünf Umweltsphären nach dem Grad des direkten Einflusses auf die täglichen operativen Entscheide eines Unternehmens – vom direktesten zum indireksten Einfluss.",
+    "erklaerung": "Die ökonomische Umwelt beeinflusst Unternehmen am direktesten (Preise, Nachfrage, Zinsen wirken täglich). Technologie verändert Prozesse und Geschäftsmodelle. Rechtliche Rahmenbedingungen setzen Grenzen. Soziale Veränderungen wirken längerfristig. Ökologische Faktoren werden zunehmend wichtiger, wirken aber oft indirekt über Regulierung oder veränderte Kundenpräferenzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-neu_sort_02",
+    "fach": "BWL",
+    "thema": "Verhaltensweisen von Unternehmen",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Verhaltensweisen von Unternehmen gegenüber ihrer Umwelt nach dem Grad der Eigeninitiative – von der passivsten zur aktivsten.",
+    "erklaerung": "Reaktive Unternehmen warten ab (riskant). Aktive Unternehmen beobachten und passen sich an. Proaktive Unternehmen handeln vorausschauend (z.B. nachhaltige Produktion bevor Gesetze kommen). Interaktive Unternehmen gestalten ihre Umwelt mit – durch Innovation, Branchenstandards oder politische Einflussnahme.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-neu_sort_03",
+    "fach": "BWL",
+    "thema": "Anspruchsgruppen & ihre Ansprüche",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Anspruchsgruppen nach der Direktheit ihrer Beziehung zum Unternehmen – von den engsten (internen) zu den weitesten (externen) Stakeholdern.",
+    "erklaerung": "Mitarbeitende sind die engsten Stakeholder (intern, tägliche Interaktion). Eigentümer sind ebenfalls intern, aber oft weniger operativ involviert. Kunden und Lieferanten haben direkte vertragliche Beziehungen. Staat und Behörden setzen die rechtlichen Rahmenbedingungen. Die breite Öffentlichkeit und NGOs haben den indireksten, aber durch Social Media zunehmend spürbaren Einfluss.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-neu_zeichnen_01",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "zeichnen",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Zeichne das St. Galler Unternehmensmodell (vereinfacht): Unternehmen im Zentrum, umgeben von Umweltsphären und Anspruchsgruppen. Beschrifte die wichtigsten Elemente.",
+    "erklaerung": "Das St. Galler Management-Modell zeigt das Unternehmen eingebettet in Umweltsphären (Gesellschaft, Natur, Technologie, Wirtschaft). Anspruchsgruppen (Eigentümer, Mitarbeitende, Kunden, Lieferanten, Staat, Öffentlichkeit, NGOs) stehen an der Schnittstelle und haben unterschiedliche Interessen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "hinweise": [
+      "Das Unternehmen steht im Zentrum.",
+      "Es gibt vier Umweltsphären: Gesellschaft, Natur, Technologie, Wirtschaft.",
+      "Anspruchsgruppen (Stakeholder) stehen zwischen Unternehmen und Umwelt."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_umweltsphaeren_zeichnen.svg",
+      "alt": "Musterlösung: St. Galler Unternehmensmodell"
+    }
+  },
+  {
+    "id": "bwl_unternehmensmodell-hotspot01",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "hotspot",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Klicke auf die Umweltsphäre, die Gesetze, gesellschaftliche Normen und demografische Entwicklungen umfasst.",
+    "erklaerung": "Die soziale Sphäre umfasst gesellschaftliche Rahmenbedingungen: Gesetze, Normen, Werte, Demografie, Bildung. Die technologische Sphäre betrifft Innovationen/Digitalisierung, die ökonomische Sphäre Konjunktur/Märkte, die ökologische Sphäre Umwelt/Ressourcen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_umweltsphaeren_hotspot.svg",
+      "alt": "St. Galler Unternehmensmodell mit Umweltsphären A–D"
+    },
+    "hotspots": [
+      {
+        "x": 58.8,
+        "y": 35.7,
+        "r": 8,
+        "label": "A: Technologische Sphäre"
+      },
+      {
+        "x": 61,
+        "y": 52.4,
+        "r": 8,
+        "label": "B: Ökonomische Sphäre"
+      },
+      {
+        "x": 50,
+        "y": 81.9,
+        "r": 8,
+        "label": "C: Soziale Sphäre"
+      },
+      {
+        "x": 29.8,
+        "y": 52.4,
+        "r": 8,
+        "label": "D: Ökologische Sphäre"
+      }
+    ],
+    "korrekt": [
+      2
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-beschriftung01",
+    "fach": "BWL",
+    "thema": "Modelle in der BWL",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 3,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die sechs Elemente des St. Galler Unternehmensmodells.",
+    "erklaerung": "Das St. Galler Modell zeigt: Unternehmen im Zentrum, umgeben von Anspruchsgruppen (Kunden, MA, Aktionäre...), eingebettet in Umweltsphären. Ordnungsmomente (Strategie, Struktur, Kultur) steuern die Prozesse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_beschriftung.svg",
+      "alt": "St. Galler Unternehmensmodell mit leeren Bereichen"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Unternehmen (Kern)",
+        "x": 50,
+        "y": 53
+      },
+      {
+        "id": "l2",
+        "text": "Anspruchsgruppen (Stakeholder)",
+        "x": 50,
+        "y": 25
+      },
+      {
+        "id": "l3",
+        "text": "Umweltsphären",
+        "x": 85,
+        "y": 53
+      },
+      {
+        "id": "l4",
+        "text": "Interaktionsthemen",
+        "x": 50,
+        "y": 87
+      },
+      {
+        "id": "l5",
+        "text": "Ordnungsmomente (Strategie, Struktur, Kultur)",
+        "x": 41,
+        "y": 44
+      },
+      {
+        "id": "l6",
+        "text": "Prozesse (Management-, Geschäfts-, Unterstützungsproz.)",
+        "x": 41,
+        "y": 62
+      }
+    ]
+  },
+  {
+    "id": "bwl_unternehmensmodell-dragdrop01",
+    "fach": "BWL",
+    "thema": "Die fünf Umweltsphären",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Themen der richtigen Umweltsphäre zu.",
+    "erklaerung": "Technologisch: Digitalisierung, KI, Automatisierung. Ökonomisch: Konjunktur, Wechselkurse, Arbeitsmarkt. Sozial: Demografie, Gesetze, Werte. Ökologisch: Klima, Ressourcen, Umweltauflagen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/unternehmensmodell/unternehmensmodell_stakeholder_dragdrop.svg",
+      "alt": "Vier Umweltsphären: Technologisch, Ökonomisch, Sozial, Ökologisch"
+    },
+    "zones": [
+      {
+        "id": "tech",
+        "x": 2.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "oeko",
+        "x": 26,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "sozial",
+        "x": 49.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "oekol",
+        "x": 73,
+        "y": 14,
+        "w": 25,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "lb1",
+        "text": "Digitalisierung",
+        "zone": "tech"
+      },
+      {
+        "id": "lb2",
+        "text": "Künstliche Intelligenz",
+        "zone": "tech"
+      },
+      {
+        "id": "lb3",
+        "text": "Konjunkturlage",
+        "zone": "oeko"
+      },
+      {
+        "id": "lb4",
+        "text": "Wechselkurse",
+        "zone": "oeko"
+      },
+      {
+        "id": "lb5",
+        "text": "Arbeitsmarkt",
+        "zone": "oeko"
+      },
+      {
+        "id": "lb6",
+        "text": "Demografischer Wandel",
+        "zone": "sozial"
+      },
+      {
+        "id": "lb7",
+        "text": "Gesetzgebung",
+        "zone": "sozial"
+      },
+      {
+        "id": "lb8",
+        "text": "Wertewandel",
+        "zone": "sozial"
+      },
+      {
+        "id": "lb9",
+        "text": "Klimawandel",
+        "zone": "oekol"
+      },
+      {
+        "id": "lb10",
+        "text": "Ressourcenknappheit",
+        "zone": "oekol"
+      },
+      {
+        "id": "lb11",
+        "text": "Umweltregulierung",
+        "zone": "oekol"
+      }
+    ]
+  }
+]

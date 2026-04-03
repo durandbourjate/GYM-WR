@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Strafrechtliches Prüfschema — Beschrifte die Stufen</text>
+
+  <!-- Block 1: Tatbestandsmässigkeit -->
+  <rect x="60" y="52" width="680" height="130" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">I. Tatbestandsmässigkeit</text>
+  <line x1="80" y1="88" x2="720" y2="88" stroke="#86efac" stroke-width="1"/>
+  <!-- Sub: objektiv -->
+  <rect x="80" y="96" width="290" height="75" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="225" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#166534">Objektiver Tatbestand</text>
+  <text x="225" y="136" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Handlung / Unterlassung</text>
+  <text x="225" y="153" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Erfolg + Kausalzusammenhang</text>
+  <!-- Sub: subjektiv -->
+  <rect x="430" y="96" width="290" height="75" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="575" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#166534">Subjektiver Tatbestand</text>
+  <text x="575" y="136" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Vorsatz (Art. 12 Abs. 2 StGB)</text>
+  <text x="575" y="153" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">oder Fahrlässigkeit (Art. 12 Abs. 3)</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="400" y1="182" x2="400" y2="207" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="393,204 407,204 400,217" fill="#94a3b8"/>
+
+  <!-- Block 2: Rechtswidrigkeit -->
+  <rect x="60" y="217" width="680" height="80" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="243" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">II. Rechtswidrigkeit</text>
+  <text x="400" y="264" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Keine Rechtfertigungsgründe (Notwehr Art. 15, Notstand Art. 17, Einwilligung)</text>
+  <text x="400" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">→ Fehlt Rechtswidrigkeit: kein strafbares Verhalten trotz Tatbestand</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="400" y1="297" x2="400" y2="322" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="393,319 407,319 400,332" fill="#94a3b8"/>
+
+  <!-- Block 3: Schuld -->
+  <rect x="60" y="332" width="680" height="90" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="358" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">III. Schuld</text>
+  <text x="400" y="378" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Schuldfähigkeit (Zurechnungsfähigkeit, Art. 19 StGB)</text>
+  <text x="400" y="397" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Keine Schuldausschlussgründe (Unzurechnungsfähigkeit, entschuldbarer Notstand)</text>
+  <text x="400" y="414" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">→ Alle 3 Stufen erfüllt: Strafbarkeit</text>
+
+  <!-- Red numbered circles -->
+  <!-- 1: Tatbestandsmässigkeit -->
+
+  <!-- 2: Objektiver TB -->
+
+  <!-- 3: Subjektiver TB -->
+
+  <!-- 4: Rechtswidrigkeit -->
+
+  <!-- 5: Schuld -->
+</svg>

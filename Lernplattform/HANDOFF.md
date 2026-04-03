@@ -2,8 +2,8 @@
 
 ## Aktueller Stand
 
-**Branch:** `main`
-**Phase:** 6 von 7 (Gamification + Kinder-UX)
+**Branch:** `feature/lernplattform-phase7a`
+**Phase:** 7a von 7 (Typen-Erweiterung + Pool-Konvertierung)
 **Status:** Implementation abgeschlossen, 82 Tests gruen, Build gruen
 
 ### Verifikation (03.04.2026)
@@ -12,8 +12,9 @@
 |-------|--------|
 | `npx tsc -b` | OK |
 | `npx vitest run` | 82 Tests gruen (10 Testdateien) |
-| `npm run build` | OK (dist/ erstellt, 256 KB JS) |
+| `npm run build` | OK (dist/ erstellt, 257 KB JS) |
 | Pruefungstool Regression | 193 Tests gruen, tsc OK |
+| Pool-Konvertierung | 26/26 Pools, 2360 Fragen, 0 fehlende Bilder |
 
 ---
 
@@ -27,64 +28,103 @@
 | 4 | 03.04 | Admin-Dashboard (3-Ebenen) | 64 |
 | 5 | 03.04 | Auftraege + Empfehlungen | 69 |
 | 6 | 03.04 | Gamification + Kinder-UX | 82 |
+| **7a** | **03.04** | **Typen-Erweiterung + Pool-Konvertierung** | **82** |
 
-## Phase 6 (03.04.2026) — Gamification + Kinder-UX
+## Phase 7a (03.04.2026) — Typen-Erweiterung + Pool-Konvertierung
+
+### Was wurde gemacht
 
 | Task | Beschreibung |
 |------|-------------|
-| 1 | Gamification-Utils: berechneSterne, berechneStreak, sterneText (13 Tests) |
-| 2 | FeedbackBox-Komponente: variierende Lob-/Trost-Texte |
-| 3 | Alle 8 Fragetypen nutzen FeedbackBox statt hardkodierter Texte |
-| 4 | Zusammenfassung: Sterne (0-3), Motivationstext |
-| 5 | Dashboard: Sterne pro Thema neben Mastery-Badges |
+| 1 | FrageTyp um 12 neue Typen erweitert (20 total, kein "code" — existiert nicht in Pools) |
+| 2 | 12 neue AntwortTyp-Interfaces + FiBu/Bild/Gruppe-Hilfstypen |
+| 3 | Konvertierungs-Script (`scripts/convertPools.mjs`) — vm.runInNewContext, Feld-Mapping |
+| 4 | Syntax-Fix fuer fehlende Kommas in 9 Recht-Pools (Kommentar-Bloecke im Array) |
+| 5 | 194 Pool-Bilder nach `public/pool-bilder/` kopiert (SVG + PDF) |
+| 6 | Validierung: Keine Duplikat-IDs, alle Bild-Pfade aufgeloest |
 
-### Gamification-Features
+### Pool-Konvertierung — Statistik
 
-| Feature | Details |
-|---------|---------|
-| **Sterne** | 0-3 pro Thema: 0 (<20%), 1 (20-49%), 2 (50-74%), 3 (>=75%) |
-| **Streaks** | Sessions in Folge, Timeout nach 14 Tagen Pause |
-| **Feedback** | 10 Lob-Varianten ("Super!", "Genau!", "Stark!"), 5 Trost-Varianten |
-| **Zusammenfassung** | Sterne-Anzeige, Motivationstext nach Ergebnis-Quote |
+| Fach | Pools | Fragen |
+|------|-------|--------|
+| VWL | 11 | 1058 |
+| Recht | 10 | 786 |
+| BWL | 5 | 516 |
+| **Total** | **26** | **2360** |
 
-### Kinder-UX
+### Fragetypen-Verteilung (konvertiert)
 
-- Min. 48px Touch-Targets (alle Buttons)
-- Text-Basis 16px (Tailwind default), Fragentext 18px (text-lg)
-- FeedbackBox mit variierendem Text (nicht immer "Richtig!"/"Falsch!")
-- Sterne visuell prominent in Dashboard + Zusammenfassung
+| Typ | Anzahl | Komponente vorhanden? |
+|-----|--------|----------------------|
+| mc | 1019 | Ja |
+| tf | 450 | Ja |
+| fill | 251 | Ja |
+| multi | 234 | Ja |
+| open | 93 | **Nein** (Phase 7c) |
+| sort | 76 | Ja |
+| sortierung | 69 | Ja |
+| calc | 56 | Ja |
+| bildbeschriftung | 26 | **Nein** (Phase 7d) |
+| dragdrop_bild | 26 | **Nein** (Phase 7d) |
+| buchungssatz | 19 | **Nein** (Phase 7b) |
+| hotspot | 10 | **Nein** (Phase 7d) |
+| zeichnen | 9 | **Nein** (Phase 7e) |
+| kontenbestimmung | 5 | **Nein** (Phase 7b) |
+| tkonto | 5 | **Nein** (Phase 7b) |
+| gruppe | 5 | **Nein** (Phase 7e) |
+| bilanz | 4 | **Nein** (Phase 7b) |
+| formel | 2 | **Nein** (Phase 7c) |
+| pdf | 1 | **Nein** (Phase 7c) |
 
-### Architektur (nach Phase 6)
+### Neue Dateien
+
+- `Lernplattform/scripts/convertPools.mjs` — Pool-Konverter (Node.js)
+- `Lernplattform/scripts/output/*.json` — Konvertierte Fragen (26 Einzel-JSONs + alle-fragen.json + statistik.json)
+- `Lernplattform/public/pool-bilder/` — 194 Bilder (bwl/, recht/, vwl/)
+
+### Architektur (nach Phase 7a)
 
 ```
-Lernplattform/src/
-├── types/           # auth, gruppen, fragen, uebung, fortschritt, auftrag
-├── services/        # interfaces, apiClient, authService
-├── adapters/        # appsScriptAdapter, mockDaten, mockMitgliederDaten
-├── store/           # authStore, gruppenStore, uebungsStore, fortschrittStore, auftragStore
-├── utils/           # korrektur, blockBuilder, shuffle, mastery, empfehlungen, gamification
-├── components/
-│   ├── fragetypen/  # 8 Komponenten + Registry + FeedbackBox
-│   ├── admin/       # AdminDashboard, Uebersicht, KindDetail, ThemaDetail, Auftraege
-│   ├── LoginScreen, GruppenAuswahl, Dashboard (Empfehlungen + Sterne)
-│   └── UebungsScreen, Zusammenfassung (Sterne + Motivation)
-├── App.tsx
-└── __tests__/       # 10 Testdateien, 82 Tests
+Lernplattform/
+├── src/
+│   ├── types/fragen.ts     # 20 FrageTypen, 20 AntwortTypen, FiBu/Bild/Gruppe-Hilfstypen
+│   └── ...                 # Alles andere unveraendert
+├── scripts/
+│   ├── convertPools.mjs    # Pool → Lernplattform-JSON Konverter
+│   └── output/             # 2360 konvertierte Fragen
+├── public/
+│   └── pool-bilder/        # 194 SVG/PDF aus Uebungspools
 ```
 
 ---
 
-## Was fehlt
+## Was fehlt (naechste Phasen)
 
-### Phase 7: Gym-Pool-Migration
-- Bestehende 27 Pools in Sheets migrieren
-- Pool-Fragen in Lernplattform-Format konvertieren
+### Phase 7b: FiBu-Fragetypen (4 Komponenten, 33 Fragen)
+- BuchungssatzFrage, TKontoFrage, BilanzFrage, KontenbestimmungFrage
+- Shared KontenSelect-Dropdown
+- Korrektur-Logik fuer alle 4 Typen
 
-### Apps Script Backend
-- Alle `lernplattform*` Endpoints
-- Gruppen-Registry + Sheets Setup
-- Fortschritt + Analytik + Auftraege server-seitig persistieren
-- Aktuell: localStorage-only (funktioniert fuer Demo/Test)
+### Phase 7c: open + formel + pdf (96 Fragen)
+- OpenFrage (Selbstbewertung + Musterantwort)
+- FormelFrage (KaTeX, code-split)
+- PdfFrage (iframe + Freitext/MC)
+
+### Phase 7d: Bild-interaktive Typen (62 Fragen)
+- HotspotFrage, BildbeschriftungFrage, DragDropBildFrage
+- Shared BildContainer
+- Touch: Tap-to-Select/Tap-to-Place (kein HTML5 DnD)
+
+### Phase 7e: Gruppe + Zeichnen (14 Fragen)
+- GruppeFrage (rekursive Sub-Fragen)
+- ZeichnenFrage (Canvas, Pointer Events)
+
+### Phase 7f: Apps Script Backend
+- 11 Endpoints (Login, Gruppen, Fragen, Fortschritt, Auftraege)
+- Sheets-Struktur (Registry + Fragenbank + Analytik)
+
+### Phase 7g: Sheet-Import + E2E
+- Upload-Script, Default-Gruppe, End-to-End-Verifikation
 
 ### Spaetere Verbesserungen
 - Streak-Anzeige im Dashboard (UI vorhanden, Daten fehlen ohne Backend)

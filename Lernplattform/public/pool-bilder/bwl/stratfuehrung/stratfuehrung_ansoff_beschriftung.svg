@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Ansoff-Matrix — Beschrifte die vier Wachstumsstrategien</text>
+
+  <!-- Matrix container -->
+  <rect x="120" y="60" width="620" height="340" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- X-Achse: Produkt -->
+  <text x="430" y="55" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#64748b">Produkt</text>
+  <text x="248" y="76" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Bestehend</text>
+  <text x="572" y="76" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Neu</text>
+
+  <!-- Y-Achse: Markt -->
+  <text x="60" y="235" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#64748b" transform="rotate(-90,60,235)">Markt</text>
+  <text x="112" y="178" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Bestehend</text>
+  <text x="112" y="342" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Neu</text>
+
+  <!-- Trennlinien -->
+  <line x1="430" y1="60" x2="430" y2="400" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="120" y1="230" x2="740" y2="230" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Feld 1: oben links (bestehend/bestehend) — Marktdurchdringung -->
+  <rect x="120" y="60" width="310" height="170" rx="0" fill="#dbeafe"/>
+  <!-- Leeres Feld, nur schwaches Symbol -->
+  <text x="275" y="148" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="36" fill="#bfdbfe">↗</text>
+
+  <!-- Feld 2: oben rechts (neu/bestehend) — Produktentwicklung -->
+  <rect x="430" y="60" width="310" height="170" rx="0" fill="#fefce8"/>
+  <text x="585" y="148" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="36" fill="#fef08a">★</text>
+
+  <!-- Feld 3: unten links (bestehend/neu) — Marktentwicklung -->
+  <rect x="120" y="230" width="310" height="170" rx="0" fill="#f0fdf4"/>
+  <text x="275" y="318" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="36" fill="#bbf7d0">→</text>
+
+  <!-- Feld 4: unten rechts (neu/neu) — Diversifikation -->
+  <rect x="430" y="230" width="310" height="170" rx="0" fill="#faf5ff"/>
+  <text x="585" y="318" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="36" fill="#e9d5ff">✦</text>
+
+  <!-- Rahmen overlay -->
+  <rect x="120" y="60" width="620" height="340" rx="6" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Marker 1: Feld oben links -->
+
+  <!-- Marker 2: Feld oben rechts -->
+
+  <!-- Marker 3: Feld unten links -->
+
+  <!-- Marker 4: Feld unten rechts -->
+</svg>

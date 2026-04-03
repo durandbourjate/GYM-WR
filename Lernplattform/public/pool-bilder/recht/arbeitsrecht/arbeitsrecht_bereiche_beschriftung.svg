@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Arbeitsrecht — Beschrifte die drei Bereiche</text>
+
+  <!-- Outer layer: Öffentliches Arbeitsrecht -->
+  <rect x="30" y="55" width="740" height="370" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">3. ?</text>
+  <text x="400" y="100" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
+
+  <!-- Middle layer: Kollektives Arbeitsrecht -->
+  <rect x="80" y="115" width="640" height="245" rx="10" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="142" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">2. ?</text>
+  <text x="400" y="160" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
+
+  <!-- Inner layer: Individualarbeitsrecht -->
+  <rect x="140" y="180" width="520" height="155" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="207" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">1. ?</text>
+  <text x="400" y="226" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
+
+  <!-- Inner content placeholders -->
+  <rect x="165" y="240" width="220" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="275" y="260" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 1</text>
+  <rect x="415" y="240" width="220" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="525" y="260" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 2</text>
+
+  <!-- Collective content placeholders -->
+  <rect x="100" y="285" width="280" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="240" y="305" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 3</text>
+  <rect x="420" y="285" width="280" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="560" y="305" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 4</text>
+
+  <!-- Public content placeholders -->
+  <rect x="50" y="350" width="310" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="205" y="370" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 5</text>
+  <rect x="440" y="350" width="310" height="30" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="595" y="370" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Slot 6</text>
+
+  <!-- Red numbered circles -->
+  <!-- 1: EAV -->
+
+  <!-- 2: GAV -->
+
+  <!-- 3: NAV -->
+
+  <!-- 4: ArG -->
+
+  <!-- 5: UVG -->
+</svg>

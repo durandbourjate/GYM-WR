@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <rect width="800" height="420" fill="#ffffff" rx="8"/>
+  
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Modellhafter Konjunkturverlauf</text>
+  
+  <!-- Axes -->
+  <line x1="80" y1="360" x2="740" y2="360" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="80" y1="60" x2="80" y2="360" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Arrow tips -->
+  <polygon points="740,355 740,365 755,360" fill="#94a3b8"/>
+  <polygon points="75,60 85,60 80,45" fill="#94a3b8"/>
+  
+  <!-- Axis labels -->
+  <text x="400" y="395" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b">Zeit</text>
+  <text x="30" y="210" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b" transform="rotate(-90,30,210)">Reales BIP</text>
+  
+  <!-- Trend line (Produktionspotenzial) -->
+  <line x1="100" y1="310" x2="720" y2="140" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8,5"/>
+  <text x="725" y="138" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8" text-anchor="end">Trend</text>
+  
+  <!-- Konjunkturkurve -->
+  <path d="M100,310 C140,310 160,330 200,290 C240,250 260,200 300,180 C340,160 350,170 380,210 C410,250 430,290 460,280 C490,270 500,230 530,190 C560,150 580,130 610,155 C640,180 660,200 700,185" 
+        stroke="#2563eb" stroke-width="3" fill="none"/>
+  
+  <!-- Phase labels with colored backgrounds -->
+  <!-- Rezession -->
+  <rect x="105" y="320" width="80" height="22" rx="4" fill="#fee2e2"/>
+  <text x="145" y="335" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#dc2626">Rezession</text>
+  
+  <!-- Erholung -->
+  <rect x="195" y="255" width="80" height="22" rx="4" fill="#dcfce7"/>
+  <text x="235" y="270" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#16a34a">Erholung</text>
+  
+  <!-- Boom -->
+  <rect x="275" y="140" width="50" height="22" rx="4" fill="#fef9c3"/>
+  <text x="300" y="155" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#ca8a04">Boom</text>
+  
+  <!-- Abschwung -->
+  <rect x="355" y="175" width="85" height="22" rx="4" fill="#ffedd5"/>
+  <text x="397" y="190" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#ea580c">Abschwung</text>
+  
+  <!-- Rezession 2 -->
+  <rect x="430" y="275" width="80" height="22" rx="4" fill="#fee2e2"/>
+  <text x="470" y="290" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#dc2626">Rezession</text>
+  
+  <!-- Erholung 2 -->
+  <rect x="510" y="200" width="80" height="22" rx="4" fill="#dcfce7"/>
+  <text x="550" y="215" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#16a34a">Erholung</text>
+  
+  <!-- Boom 2 -->
+  <rect x="585" y="108" width="50" height="22" rx="4" fill="#fef9c3"/>
+  <text x="610" y="123" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#ca8a04">Boom</text>
+  
+  <!-- Annotations -->
+  <!-- Positive output gap -->
+  <line x1="300" y1="180" x2="300" y2="222" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="320" y="205" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#dc2626">positive</text>
+  <text x="320" y="217" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#dc2626">Lücke</text>
+  
+  <!-- Negative output gap -->
+  <line x1="460" y1="280" x2="460" y2="249" stroke="#2563eb" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="480" y="268" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#2563eb">negative</text>
+  <text x="480" y="280" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#2563eb">Lücke</text>
+  
+  <!-- Legend -->
+  <line x1="100" y1="80" x2="130" y2="80" stroke="#2563eb" stroke-width="3"/>
+  <text x="137" y="84" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Tatsächliches BIP</text>
+  <line x1="260" y1="80" x2="290" y2="80" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8,5"/>
+  <text x="297" y="84" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Produktionspotenzial (Trend)</text>
+</svg>

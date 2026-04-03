@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="800" height="600" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="400" y="35" text-anchor="middle" font-size="20" font-weight="700" fill="#1e293b">Wechselwirkungen im Unternehmensmodell</text>
+  <text x="400" y="58" text-anchor="middle" font-size="12" fill="#64748b">Drei Arten von Wechselwirkungen</text>
+
+  <!-- Pfeilmarker -->
+  <defs>
+    <marker id="aw" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="awB" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="awG" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="awO" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <!-- Unternehmen (Zentrum) -->
+  <rect x="330" y="265" width="140" height="70" rx="10" fill="#1e293b"/>
+  <text x="400" y="295" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Unternehmen</text>
+  <text x="400" y="315" text-anchor="middle" font-size="11" fill="#94a3b8">🏭</text>
+
+  <!-- 5 Umweltsphären als Rechtecke um das Unternehmen -->
+  <!-- Oben -->
+  <rect x="310" y="90" width="180" height="55" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="400" y="123" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Sphäre 1</text>
+
+  <!-- Rechts oben -->
+  <rect x="580" y="170" width="180" height="55" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="670" y="203" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">Sphäre 2</text>
+
+  <!-- Rechts unten -->
+  <rect x="580" y="375" width="180" height="55" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="670" y="408" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">Sphäre 3</text>
+
+  <!-- Links unten -->
+  <rect x="40" y="375" width="180" height="55" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="130" y="408" text-anchor="middle" font-size="14" font-weight="600" fill="#9d174d">Sphäre 4</text>
+
+  <!-- Links oben -->
+  <rect x="40" y="170" width="180" height="55" rx="8" fill="#f3e8ff" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="130" y="203" text-anchor="middle" font-size="14" font-weight="600" fill="#6b21a8">Sphäre 5</text>
+
+  <!-- Wechselwirkung 1: Sphäre → Unternehmen (blau) -->
+  <!-- Sphäre 1 → Unternehmen -->
+  <line x1="380" y1="145" x2="380" y2="260" stroke="#2563eb" stroke-width="2.5" marker-end="url(#awB)"/>
+  <text x="365" y="210" text-anchor="end" font-size="11" font-weight="600" fill="#2563eb">①</text>
+
+  <!-- Wechselwirkung 2: Unternehmen → Sphäre (grün) -->
+  <!-- Unternehmen → Sphäre 3 -->
+  <line x1="470" y1="320" x2="580" y2="390" stroke="#16a34a" stroke-width="2.5" marker-end="url(#awG)"/>
+  <text x="545" y="345" text-anchor="middle" font-size="11" font-weight="600" fill="#16a34a">②</text>
+
+  <!-- Wechselwirkung 3: Sphäre → Sphäre (orange) -->
+  <!-- Sphäre 2 → Sphäre 3 -->
+  <line x1="670" y1="230" x2="670" y2="370" stroke="#ea580c" stroke-width="2.5" marker-end="url(#awO)"/>
+  <text x="690" y="305" font-size="11" font-weight="600" fill="#ea580c">③</text>
+
+  <!-- Weitere dezente Verbindungen -->
+  <line x1="220" y1="210" x2="330" y2="280" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#aw)"/>
+  <line x1="420" y1="145" x2="580" y2="190" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#aw)"/>
+  <line x1="330" y1="310" x2="220" y2="385" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#aw)"/>
+
+  <!-- Legende unten -->
+  <rect x="130" y="480" width="540" height="95" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="400" y="505" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">Drei Arten von Wechselwirkungen</text>
+
+  <!-- Legende 1 -->
+  <line x1="160" y1="530" x2="200" y2="530" stroke="#2563eb" stroke-width="2.5" marker-end="url(#awB)"/>
+  <text x="215" y="534" font-size="12" fill="#1e40af" font-weight="600">① Sphäre → Unternehmen</text>
+
+  <!-- Legende 2 -->
+  <line x1="160" y1="555" x2="200" y2="555" stroke="#16a34a" stroke-width="2.5" marker-end="url(#awG)"/>
+  <text x="215" y="559" font-size="12" fill="#166534" font-weight="600">② Unternehmen → Sphäre</text>
+
+  <!-- Legende 3 -->
+  <line x1="460" y1="530" x2="500" y2="530" stroke="#ea580c" stroke-width="2.5" marker-end="url(#awO)"/>
+  <text x="515" y="534" font-size="12" fill="#9a3412" font-weight="600">③ Sphäre → Sphäre</text>
+</svg>

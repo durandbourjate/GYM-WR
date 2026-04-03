@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Angebot und Nachfrage im Marktgleichgewicht</text>
+  <!-- Axes -->
+  <line x1="120" y1="380" x2="700" y2="380" stroke="#1e293b" stroke-width="2"/>
+  <line x1="120" y1="380" x2="120" y2="60" stroke="#1e293b" stroke-width="2"/>
+  <!-- Axis arrows -->
+  <polygon points="700,380 690,375 690,385" fill="#1e293b"/>
+  <polygon points="120,60 115,70 125,70" fill="#1e293b"/>
+  <!-- Axis labels -->
+  <text x="410" y="415" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="600" fill="#1e293b">Menge (M)</text>
+  <text x="60" y="220" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="600" fill="#1e293b" transform="rotate(-90,60,220)">Preis (P)</text>
+  <!-- Supply curve (Angebot) - upward sloping -->
+  <line x1="160" y1="350" x2="650" y2="100" stroke="#f97316" stroke-width="2.5"/>
+  <text x="660" y="95" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#f97316">Angebot (S)</text>
+  <!-- Demand curve (Nachfrage) - downward sloping -->
+  <line x1="160" y1="100" x2="650" y2="350" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="660" y="355" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#3b82f6">Nachfrage (D)</text>
+  <!-- Equilibrium point -->
+  <circle cx="405" cy="225" r="6" fill="#ef4444" stroke="#ffffff" stroke-width="2"/>
+  <!-- Dashed lines to axes -->
+  <line x1="120" y1="225" x2="405" y2="225" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="405" y1="225" x2="405" y2="380" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <!-- P* and M* labels -->
+  <text x="108" y="230" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#ef4444">P*</text>
+  <text x="405" y="400" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#ef4444">M*</text>
+  <!-- Equilibrium label -->
+  <text x="440" y="210" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Gleichgewicht</text>
+  <text x="440" y="225" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">(P*, M*)</text>
+  <!-- Surplus / Shortage annotations -->
+  <text x="300" y="140" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Konsumentenrente</text>
+  <text x="300" y="320" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Produzentenrente</text>
+</svg>

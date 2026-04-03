@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- White background for dark mode -->
+  <rect width="600" height="500" fill="#ffffff"/>
+  
+  <text x="300" y="35" font-size="16" font-weight="700" fill="#0284c7" text-anchor="middle">Prozess der strategischen Planung</text>
+  
+  <!-- Central circle with values -->
+  <circle cx="300" cy="260" r="65" fill="#4ade80" opacity="0.3" stroke="#16a34a" stroke-width="2"/>
+  <text x="300" y="250" font-size="13" fill="#15803d" text-anchor="middle" font-weight="600">Werte,</text>
+  <text x="300" y="268" font-size="13" fill="#15803d" text-anchor="middle" font-weight="600">Vision,</text>
+  <text x="300" y="286" font-size="13" fill="#15803d" text-anchor="middle" font-weight="600">Leitbild</text>
+  
+  <!-- Outer ring segments (4 phases) with question marks -->
+  <!-- Phase markers as colored boxes around the circle -->
+  
+  <!-- Phase 1 (top-right) -->
+  <rect x="380" y="110" width="160" height="55" rx="10" fill="#0ea5e9" opacity="0.15" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="460" y="135" font-size="13" fill="#0284c7" text-anchor="middle" font-weight="600">Phase 1</text>
+  <text x="460" y="153" font-size="11" fill="#64748b" text-anchor="middle">?</text>
+  
+  <!-- Arrow from Phase 1 to Phase 2 -->
+  <path d="M 520 170 Q 540 220 520 270" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  
+  <!-- Phase 2 (bottom-right) -->
+  <rect x="380" y="310" width="160" height="55" rx="10" fill="#0ea5e9" opacity="0.15" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="460" y="335" font-size="13" fill="#0284c7" text-anchor="middle" font-weight="600">Phase 2</text>
+  <text x="460" y="353" font-size="11" fill="#64748b" text-anchor="middle">?</text>
+  
+  <!-- Arrow from Phase 2 to Phase 3 -->
+  <path d="M 380 370 Q 310 410 230 370" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  
+  <!-- Phase 3 (bottom-left) -->
+  <rect x="60" y="310" width="160" height="55" rx="10" fill="#0ea5e9" opacity="0.15" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="140" y="335" font-size="13" fill="#0284c7" text-anchor="middle" font-weight="600">Phase 3</text>
+  <text x="140" y="353" font-size="11" fill="#64748b" text-anchor="middle">?</text>
+  
+  <!-- Arrow from Phase 3 to Phase 4 -->
+  <path d="M 80 305 Q 60 260 80 210" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  
+  <!-- Phase 4 (top-left) -->
+  <rect x="60" y="110" width="160" height="55" rx="10" fill="#0ea5e9" opacity="0.15" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="140" y="135" font-size="13" fill="#0284c7" text-anchor="middle" font-weight="600">Phase 4</text>
+  <text x="140" y="153" font-size="11" fill="#64748b" text-anchor="middle">?</text>
+  
+  <!-- Arrow from Phase 4 back to Phase 1 (cycle) -->
+  <path d="M 225 115 Q 300 80 375 115" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowGray)"/>
+  
+  <!-- Cycle arrow indicator -->
+  <text x="300" y="80" font-size="11" fill="#94a3b8" text-anchor="middle" font-style="italic">Zyklischer Prozess</text>
+  
+  <!-- Connecting lines to center -->
+  <line x1="220" y1="165" x2="250" y2="220" stroke="#16a34a" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+  <line x1="380" y1="165" x2="350" y2="220" stroke="#16a34a" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+  <line x1="220" y1="310" x2="250" y2="295" stroke="#16a34a" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+  <line x1="380" y1="310" x2="350" y2="295" stroke="#16a34a" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+  
+  <!-- Legend -->
+  <text x="300" y="440" font-size="11" fill="#64748b" text-anchor="middle">Ordnen Sie die vier Phasen der strategischen Planung zu.</text>
+  <text x="300" y="460" font-size="10" fill="#94a3b8" text-anchor="middle" font-style="italic">Werte, Vision und Leitbild stehen im Zentrum des Prozesses.</text>
+  
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M 0 0 L 8 3 L 0 6 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>

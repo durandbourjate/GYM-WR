@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" width="800" height="440">
+  <rect width="800" height="440" fill="#ffffff" rx="8"/>
+  
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Konjunkturpolitische Konzeptionen im Vergleich</text>
+  
+  <!-- Column headers -->
+  <rect x="140" y="45" width="150" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="215" y="65" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Klassiker</text>
+  
+  <rect x="300" y="45" width="150" height="30" rx="6" fill="#dbeafe"/>
+  <text x="375" y="65" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#2563eb">Keynesianer</text>
+  
+  <rect x="460" y="45" width="150" height="30" rx="6" fill="#ede9fe"/>
+  <text x="535" y="65" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#7c3aed">Monetaristen</text>
+  
+  <rect x="620" y="45" width="150" height="30" rx="6" fill="#dcfce7"/>
+  <text x="695" y="65" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#16a34a">Angebotsökonomen</text>
+  
+  <!-- Row labels -->
+  <text x="75" y="110" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Ursache der</text>
+  <text x="75" y="124" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Krise</text>
+  
+  <text x="75" y="185" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Rolle des</text>
+  <text x="75" y="199" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Staates</text>
+  
+  <text x="75" y="270" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Haupt-</text>
+  <text x="75" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">instrument</text>
+  
+  <text x="75" y="355" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Fokus</text>
+  
+  <text x="75" y="415" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Hauptvertreter</text>
+  
+  <!-- Grid lines -->
+  <line x1="135" y1="80" x2="135" y2="430" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="295" y1="80" x2="295" y2="430" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="455" y1="80" x2="455" y2="430" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="615" y1="80" x2="615" y2="430" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <line x1="20" y1="150" x2="780" y2="150" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="20" y1="230" x2="780" y2="230" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="20" y1="315" x2="780" y2="315" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="20" y1="385" x2="780" y2="385" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Row 1: Ursache -->
+  <text x="215" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Störung nur</text>
+  <text x="215" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">vorübergehend;</text>
+  <text x="215" y="131" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Markt heilt sich selbst</text>
+  
+  <text x="375" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Nachfragemangel;</text>
+  <text x="375" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Markt versagt bei</text>
+  <text x="375" y="131" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Selbstkorrektur</text>
+  
+  <text x="535" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Falsche Geldpolitik;</text>
+  <text x="535" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">zu viel/wenig Geld</text>
+  <text x="535" y="131" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">im Umlauf</text>
+  
+  <text x="695" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Schlechte Rahmen-</text>
+  <text x="695" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">bedingungen;</text>
+  <text x="695" y="131" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">zu viel Regulierung</text>
+  
+  <!-- Row 2: Rolle -->
+  <text x="215" y="180" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Passiv</text>
+  <text x="215" y="193" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Laissez-faire)</text>
+  
+  <text x="375" y="173" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Aktiv</text>
+  <text x="375" y="186" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Antizyklische</text>
+  <text x="375" y="199" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Nachfragesteuerung)</text>
+  
+  <text x="535" y="173" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Begrenzt</text>
+  <text x="535" y="186" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Nur Notenbank;</text>
+  <text x="535" y="199" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">regelgebunden)</text>
+  
+  <text x="695" y="173" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Strukturell</text>
+  <text x="695" y="186" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Rahmen verbessern,</text>
+  <text x="695" y="199" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">nicht steuern)</text>
+  
+  <!-- Row 3: Instrument -->
+  <text x="215" y="265" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Keines</text>
+  <text x="215" y="278" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Marktmechanismus)</text>
+  
+  <text x="375" y="258" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Fiskalpolitik</text>
+  <text x="375" y="271" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Staatsausgaben,</text>
+  <text x="375" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Steuern)</text>
+  
+  <text x="535" y="258" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Geldpolitik</text>
+  <text x="535" y="271" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Stetige Geldmengen-</text>
+  <text x="535" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">ausweitung)</text>
+  
+  <text x="695" y="258" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Strukturreformen</text>
+  <text x="695" y="271" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">(Deregulierung,</text>
+  <text x="695" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Steuersenkung)</text>
+  
+  <!-- Row 4: Fokus -->
+  <text x="215" y="348" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#475569">Angebot</text>
+  
+  <text x="375" y="348" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#2563eb">Nachfrage</text>
+  
+  <text x="535" y="348" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#7c3aed">Geld</text>
+  
+  <text x="695" y="348" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#16a34a">Angebot</text>
+  
+  <!-- Row 5: Vertreter -->
+  <text x="215" y="412" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">A. Smith, J.-B. Say</text>
+  
+  <text x="375" y="412" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">J.M. Keynes</text>
+  
+  <text x="535" y="412" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">M. Friedman</text>
+  
+  <text x="695" y="412" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#475569">Div. (z.B. Hayek)</text>
+</svg>

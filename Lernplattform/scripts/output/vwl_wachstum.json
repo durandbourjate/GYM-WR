@@ -1,0 +1,1818 @@
+[
+  {
+    "id": "vwl_wachstum-d01",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter wirtschaftlichem Wachstum?",
+    "erklaerung": "Wirtschaftliches Wachstum bezeichnet die langfristige Entwicklung des realen BIP pro Kopf. Es geht um den Trend über Jahre und Jahrzehnte, nicht um kurzfristige Konjunkturschwankungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Zunahme der Bevölkerung eines Landes.",
+      "Die kurzfristige Schwankung des nominalen BIP.",
+      "Die langfristige Entwicklung des realen BIP pro Kopf.",
+      "Den Anstieg der Konsumentenpreise über mehrere Jahre."
+    ],
+    "korrekt": "Die langfristige Entwicklung des realen BIP pro Kopf."
+  },
+  {
+    "id": "vwl_wachstum-d02",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wenn das reale BIP eines Landes um 3 % wächst und die Bevölkerung ebenfalls um 3 % zunimmt, steigt der Wohlstand pro Kopf.",
+    "erklaerung": "Falsch. Wenn BIP und Bevölkerung gleich stark wachsen, bleibt das BIP pro Kopf konstant. Der einzelne Einwohner kann sich nicht mehr Güter leisten als zuvor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-d03",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Worin unterscheiden sich «Konjunktur» und «Wachstum» als volkswirtschaftliche Konzepte?",
+    "erklaerung": "Konjunktur beschäftigt sich mit dem Auf und Ab des BIP in kurzer Frist (Quartale, 1–2 Jahre). Wachstum hingegen betrachtet die langfristige Entwicklung des realen BIP pro Kopf über Jahre und Jahrzehnte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es gibt keinen wesentlichen Unterschied.",
+      "Konjunktur betrifft nur die Industrie, Wachstum die gesamte Volkswirtschaft.",
+      "Konjunktur misst nominale Grössen, Wachstum reale Grössen.",
+      "Konjunktur betrachtet kurzfristige BIP-Schwankungen, Wachstum den langfristigen Trend des BIP pro Kopf."
+    ],
+    "korrekt": "Konjunktur betrachtet kurzfristige BIP-Schwankungen, Wachstum den langfristigen Trend des BIP pro Kopf."
+  },
+  {
+    "id": "vwl_wachstum-d04",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Land hat eine jährliche Wachstumsrate des BIP pro Kopf von 2 %. Berechnen Sie mit der 70er-Regel:",
+    "erklaerung": "Die 70er-Regel besagt: Verdopplungszeit ≈ 70 / Wachstumsrate. Also 70 / 2 = 35 Jahre. Bei 2 % jährlichem Wachstum verdoppelt sich das BIP pro Kopf in ca. 35 Jahren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/wachstumsvergleich.svg",
+      "alt": "Exponentielles Wachstum bei unterschiedlichen Wachstumsraten"
+    },
+    "calcZeilen": [
+      {
+        "label": "Anzahl Jahre bis zur Verdopplung des BIP pro Kopf",
+        "answer": 35,
+        "tolerance": 0.5,
+        "unit": "Jahre"
+      }
+    ],
+    "korrekt": "35",
+    "toleranz": 0.5,
+    "einheit": "Jahre"
+  },
+  {
+    "id": "vwl_wachstum-d05",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "China wuchs zwischen 2012 und 2019 mit einer Rate von 6,5 % pro Jahr (BIP pro Kopf). In wie vielen Jahren verdoppelt sich bei dieser Rate das BIP pro Kopf?",
+    "erklaerung": "70 / 6,5 ≈ 10,8 Jahre. Bei einer Wachstumsrate von 6,5 % verdoppelt sich das BIP pro Kopf in knapp 11 Jahren – das erklärt Chinas rasanten Wohlstandszuwachs.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Verdopplungszeit (gerundet)",
+        "answer": 10.8,
+        "tolerance": 0.5,
+        "unit": "Jahre"
+      }
+    ],
+    "korrekt": "10.8",
+    "toleranz": 0.5,
+    "einheit": "Jahre"
+  },
+  {
+    "id": "vwl_wachstum-d06",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Aspekte den Kategorien «Vorteil des Wirtschaftswachstums» oder «Nachteil/Herausforderung» zu.",
+    "erklaerung": "Wirtschaftswachstum bietet zahlreiche Vorteile (Bedürfnisbefriedigung, Beschäftigung, Sozialpolitik, Freizeit), bringt aber auch Herausforderungen wie Umweltbelastung und Ressourcenverbrauch mit sich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Vorteil des Wachstums",
+      "Nachteil / Herausforderung"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-d07",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie, weshalb Wirtschaftswachstum kein Selbstzweck ist, aber dennoch als notwendig betrachtet wird.",
+    "erklaerung": "Wachstum ermöglicht es, steigende Ansprüche zu erfüllen, ohne anderen etwas wegnehmen zu müssen. Es ist die Grundlage für die Finanzierung der Sozialwerke und des Staates.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Wachstum ist kein Selbstzweck, sondern entsteht, weil Menschen unbefriedigte Bedürfnisse haben – z.B. nach besserer Bildung, Gesundheitsversorgung oder intakterer Umwelt. Ohne Wachstum wäre Umverteilung ein Nullsummenspiel: Was einer Gruppe gegeben wird, müsste einer anderen weggenommen werden. Zudem sind unsere Sozialsysteme (AHV, IV etc.) auf Wachstum angewiesen."
+  },
+  {
+    "id": "vwl_wachstum-d08",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "«Immer mehr» und «immer besser» bedeuten beim Wirtschaftswachstum dasselbe.",
+    "erklaerung": "Falsch. Wachstum wandelt sich zunehmend vom «immer mehr» zum «immer besser»: effizientere Geräte, bessere Qualität, sparsamere Technologien. Das BIP misst den Wert (Wertschöpfung), nicht die Menge der produzierten Güter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-d09",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Unter wirtschaftlichem Wachstum versteht man die langfristige Entwicklung des {0} BIP pro {1}.",
+    "erklaerung": "Die Definition betont zwei wichtige Aspekte: «real» (also preisbereinigt, ohne Inflationseffekte) und «pro Kopf» (um das Bevölkerungswachstum herauszurechnen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "realen",
+        "optionen": [
+          "reelles"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Kopf",
+        "optionen": [
+          "Einwohner"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-d10",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Weshalb ist Nullwachstum gemäss Eisenhut eine «wirtschaftspolitische Illusion»?",
+    "erklaerung": "Bei Nullwachstum könnte niemand materiell reicher werden, ohne dass jemand anderes ärmer wird. Zudem sind die Sozialwerke so konzipiert, dass ihre Finanzierung ohne Wachstum stark gefährdet wäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil technischer Fortschritt verboten werden müsste.",
+      "Weil Umverteilung ohne Wachstum ein Nullsummenspiel wäre und die Sozialwerke auf Wachstum angewiesen sind.",
+      "Weil Nullwachstum automatisch zu Inflation führt.",
+      "Weil die Bevölkerung immer schrumpft."
+    ],
+    "korrekt": "Weil Umverteilung ohne Wachstum ein Nullsummenspiel wäre und die Sozialwerke auf Wachstum angewiesen sind."
+  },
+  {
+    "id": "vwl_wachstum-d11",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen treffen auf das Konzept «Wirtschaftswachstum» zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Wachstum ist langfristig (A), real gemessen (B) und pro Kopf betrachtet (D). Aussage C ist falsch: Das BIP misst den Wert der Güter, nicht nur die Menge. Qualitätsverbesserungen («immer besser» statt «immer mehr») fliessen in die Wertschöpfung ein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es bezieht sich auf die langfristige Entwicklung, nicht auf kurzfristige Schwankungen.",
+      "Es wird anhand des realen (preisbereinigten) BIP gemessen.",
+      "Es berücksichtigt nur die Menge der produzierten Güter, nicht deren Qualität.",
+      "Es wird pro Kopf betrachtet, um das Bevölkerungswachstum herauszurechnen."
+    ],
+    "korrekt": [
+      "Es bezieht sich auf die langfristige Entwicklung, nicht auf kurzfristige Schwankungen.",
+      "Es wird anhand des realen (preisbereinigten) BIP gemessen.",
+      "Es wird pro Kopf betrachtet, um das Bevölkerungswachstum herauszurechnen."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-d12",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Land A und Land B hatten im Jahr 2000 beide ein BIP pro Kopf von CHF 40'000. Land A wächst seither mit 1 %, Land B mit 3 %. Welche Aussage ist nach 25 Jahren am zutreffendsten?",
+    "erklaerung": "Nach 25 Jahren: Land A ≈ 40'000 × 1,01²⁵ ≈ 51'300. Land B ≈ 40'000 × 1,03²⁵ ≈ 83'800. Land B hat sein BIP also mehr als verdoppelt, Land A liegt weit zurück. Der Unterschied beträgt über CHF 32'000 – die Kraft des Zinseszinses.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Beide Länder haben ihr BIP pro Kopf ungefähr verdoppelt.",
+      "Land B hat sein BIP pro Kopf ungefähr verdoppelt, Land A liegt noch deutlich darunter.",
+      "Der Unterschied zwischen den Ländern beträgt weniger als CHF 10'000.",
+      "Land A hat Land B inzwischen überholt."
+    ],
+    "korrekt": "Land B hat sein BIP pro Kopf ungefähr verdoppelt, Land A liegt noch deutlich darunter."
+  },
+  {
+    "id": "vwl_wachstum-d13",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Land X hat ein BIP pro Kopf von CHF 20'000 und wächst mit 5 % pro Jahr. Land Y hat ein BIP pro Kopf von CHF 60'000 und wächst mit 1 % pro Jahr.",
+    "erklaerung": "Land X: 70/5 = 14 Jahre, Land Y: 70/1 = 70 Jahre. Nach 28 Jahren hat sich das BIP von Land X zweimal verdoppelt: 20'000 → 40'000 → 80'000. Land Y hat in dieser Zeit kaum aufgeholt (≈ 79'000). Die Konvergenz zeigt: Hohe Wachstumsraten in ärmeren Ländern können den Abstand zu reichen Ländern schliessen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Verdopplungszeit Land X (70er-Regel)",
+        "answer": 14,
+        "tolerance": 0.5,
+        "unit": "Jahre"
+      },
+      {
+        "label": "Verdopplungszeit Land Y (70er-Regel)",
+        "answer": 70,
+        "tolerance": 1,
+        "unit": "Jahre"
+      },
+      {
+        "label": "Ungefähres BIP pro Kopf Land X nach 28 Jahren",
+        "answer": 80000,
+        "tolerance": 5000,
+        "unit": "CHF"
+      }
+    ],
+    "korrekt": "14",
+    "toleranz": 0.5,
+    "einheit": "Jahre"
+  },
+  {
+    "id": "vwl_wachstum-e01",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Auf welche zwei grundsätzlichen Arten kann eine Volkswirtschaft wachsen?",
+    "erklaerung": "Grundsätzlich kann das BIP pro Kopf nur steigen, wenn entweder mehr Arbeitsstunden geleistet werden oder die Produktivität (Output pro Arbeitsstunde) zunimmt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Mehr exportieren oder weniger importieren.",
+      "Mehr Arbeitsstunden leisten oder die Arbeitsproduktivität erhöhen.",
+      "Mehr Geld drucken oder die Steuern senken.",
+      "Mehr Rohstoffe abbauen oder mehr Arbeitskräfte einstellen."
+    ],
+    "korrekt": "Mehr Arbeitsstunden leisten oder die Arbeitsproduktivität erhöhen."
+  },
+  {
+    "id": "vwl_wachstum-e02",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Wohlstandszuwachs in der Schweiz seit dem Jahr 2000 ist hauptsächlich auf eine Erhöhung der Arbeitsstunden zurückzuführen.",
+    "erklaerung": "Falsch. Der Arbeitseinsatz pro Einwohner ist in der Schweiz seit 2000 sogar um ca. 7 % gesunken. Der Wohlstandszuwachs ist ausschliesslich dem Produktivitätswachstum zu verdanken (ca. +25 % von 2000–2018).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-e03",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter der Erwerbsquote?",
+    "erklaerung": "Die Erwerbsquote gibt an, wie gross der Anteil der Bevölkerung im erwerbsfähigen Alter ist, der tatsächlich am Arbeitsmarkt teilnimmt (erwerbstätig oder arbeitssuchend).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Anteil der Arbeitslosen an der Gesamtbevölkerung.",
+      "Die durchschnittliche Anzahl Arbeitsstunden pro Woche.",
+      "Das Verhältnis der Erwerbspersonen zur Bevölkerung im Alter von 15–64 Jahren.",
+      "Das Verhältnis von Teilzeit- zu Vollzeitbeschäftigten."
+    ],
+    "korrekt": "Das Verhältnis der Erwerbspersonen zur Bevölkerung im Alter von 15–64 Jahren."
+  },
+  {
+    "id": "vwl_wachstum-e04",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Massnahmen zu: Führen sie zu «mehr Arbeitsstunden» oder zu «höherer Produktivität»?",
+    "erklaerung": "Die Ansatzpunkte für Wachstum lassen sich klar in zwei Kategorien teilen: Massnahmen zur Erhöhung der Arbeitsstunden (Erwerbsquote, Zuwanderung, Pensionierungsalter) und Massnahmen zur Produktivitätssteigerung (Bildung, Technologie, Investitionen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Mehr Arbeitsstunden",
+      "Höhere Produktivität"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-e05",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In der Schweiz stieg die Produktivität pro Arbeitsstunde von 2000 bis 2018 um 25 %, der Arbeitseinsatz pro Einwohner sank um 7 %. Berechnen Sie das BIP-Wachstum pro Einwohner:",
+    "erklaerung": "BIP pro Einwohner = Arbeitseinsatz × Produktivität. Also: (1 + 0,25) × (1 − 0,07) = 1,25 × 0,93 = 1,1625 → ca. +16 %. Der gesamte Wohlstandszuwachs stammt aus der Produktivitätssteigerung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "BIP-Wachstum pro Einwohner (in %)",
+        "answer": 16.25,
+        "tolerance": 1,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "16.25",
+    "toleranz": 1,
+    "einheit": "%"
+  },
+  {
+    "id": "vwl_wachstum-e06",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie anhand der Formel «BIP pro Einwohner = Arbeitseinsatz pro Einwohner × Arbeitsproduktivität», weshalb die Produktivität für den Wohlstand in der Schweiz entscheidend ist.",
+    "erklaerung": "Mehr Arbeitsstunden sind begrenzt (max. 24h/Tag, Erwerbsquote bereits hoch in der Schweiz). Daher ist Produktivitätswachstum der einzig nachhaltige Weg zu mehr Wohlstand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/bip_formel.svg",
+      "alt": "Zerlegung des BIP pro Einwohner"
+    },
+    "musterantwort": "Da der Arbeitseinsatz pro Einwohner in der Schweiz seit Jahren sinkt (weniger Wochenstunden, alternde Bevölkerung), kann das BIP pro Kopf nur steigen, wenn die Produktivität überproportional wächst. Tatsächlich ist der gesamte Wohlstandszuwachs der Schweiz der letzten Jahrzehnte auf Produktivitätssteigerungen zurückzuführen."
+  },
+  {
+    "id": "vwl_wachstum-e07",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die durchschnittliche Wochenarbeitszeit hat sich in den letzten 150 Jahren mehr als halbiert.",
+    "erklaerung": "Richtig. Um 1850 betrug die Wochenarbeitszeit in Europa ca. 80+ Stunden (7-Tage-Woche). Heute liegt sie bei ca. 35–42 Stunden (5-Tage-Woche). Trotzdem ist der Wohlstand massiv gestiegen – dank Produktivitätssteigerungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-e08",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Weshalb kann «mehr Arbeiten» allein kein stetiges Wirtschaftswachstum ermöglichen?",
+    "erklaerung": "Die Arbeitsmenge hat eine natürliche Obergrenze (Niveaueffekt): Niemand kann mehr als 24 Stunden pro Tag arbeiten, und die Erwerbsquote kann nicht über 100 % steigen. Zudem zeigen Studien, dass übermässig viel Arbeit die Produktivität pro Stunde senkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil der Arbeitseinsatz durch die maximale Tageszeit (24h) und die Erwerbsquote begrenzt ist (Niveaueffekt).",
+      "Weil es nicht genügend Arbeitsplätze gibt.",
+      "Weil die Bevölkerung immer kleiner wird.",
+      "Weil Arbeiten gesundheitsschädlich ist."
+    ],
+    "korrekt": "Weil der Arbeitseinsatz durch die maximale Tageszeit (24h) und die Erwerbsquote begrenzt ist (Niveaueffekt)."
+  },
+  {
+    "id": "vwl_wachstum-e09",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Massnahmen steigern die Arbeitsproduktivität? (Mehrere Antworten möglich.)",
+    "erklaerung": "A, C und D steigern die Produktivität (mehr Output pro Stunde): besseres Sachkapital (A), besseres Humankapital (C), technischer Fortschritt (D). Die Erhöhung des Rentenalters (B) erhöht den Arbeitseinsatz, nicht die Produktivität pro Stunde.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Investitionen in bessere Maschinen und Anlagen.",
+      "Erhöhung des Rentenalters von 65 auf 67.",
+      "Weiterbildungsprogramme für Arbeitnehmende.",
+      "Einführung neuer Software zur Automatisierung von Routinetätigkeiten."
+    ],
+    "korrekt": [
+      "Investitionen in bessere Maschinen und Anlagen.",
+      "Weiterbildungsprogramme für Arbeitnehmende.",
+      "Einführung neuer Software zur Automatisierung von Routinetätigkeiten."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-e10",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das BIP pro Einwohner lässt sich zerlegen in: {0} pro Einwohner multipliziert mit der {1}.",
+    "erklaerung": "Die fundamentale Wachstumsgleichung: BIP/Einwohner = Arbeitseinsatz/Einwohner × Arbeitsproduktivität. Sie zeigt die zwei grundsätzlichen Hebel für mehr Wohlstand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Arbeitseinsatz",
+        "optionen": [
+          "Arbeitsstunden",
+          "Arbeitsvolumen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Arbeitsproduktivität",
+        "optionen": [
+          "Produktivität"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-e11",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Schweiz hat eine der höchsten Erwerbsquoten Europas. Die durchschnittliche Wochenarbeitszeit sinkt aber seit Jahrzehnten. Welche Schlussfolgerung ist am überzeugendsten?",
+    "erklaerung": "Da der Arbeitseinsatz kaum noch steigerbar ist (hohe Erwerbsquote, sinkende Wochenstunden), bleibt die Produktivitätssteigerung der einzige nachhaltige Wachstumsmotor. Die Schweiz zeigt: Weniger Arbeitsstunden bei gleichzeitig höherem Wohlstand – dank Produktivität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/bip_formel.svg",
+      "alt": "Zerlegung des BIP pro Einwohner"
+    },
+    "optionen": [
+      "Die Schweiz muss ihre Produktivität stetig steigern, da kaum noch Potenzial bei der Arbeitsmenge besteht.",
+      "Die Schweiz sollte die Arbeitszeit wieder erhöhen, um weiter zu wachsen.",
+      "Sinkende Arbeitszeit führt automatisch zu sinkendem Wohlstand.",
+      "Die Erwerbsquote ist für das Wachstum irrelevant."
+    ],
+    "korrekt": "Die Schweiz muss ihre Produktivität stetig steigern, da kaum noch Potenzial bei der Arbeitsmenge besteht."
+  },
+  {
+    "id": "vwl_wachstum-e12",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Land A hat 5 Mio. Einwohner. Die Erwerbsquote beträgt 70 %, jede Erwerbsperson arbeitet im Schnitt 1'600 Stunden pro Jahr. Die Produktivität beträgt CHF 80 pro Stunde.",
+    "erklaerung": "Erwerbspersonen: 5 Mio. × 0,70 = 3,5 Mio. Total Arbeitsstunden: 3,5 Mio. × 1'600 = 5'600 Mio. h. BIP = 5'600 Mio. h × CHF 80 = CHF 448 Mrd. BIP pro Kopf = 448 Mrd. / 5 Mio. = CHF 89'600.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Total Arbeitsstunden pro Jahr (in Mio.)",
+        "answer": 5600,
+        "tolerance": 50,
+        "unit": "Mio. h"
+      },
+      {
+        "label": "BIP total (in Mrd. CHF)",
+        "answer": 448,
+        "tolerance": 5,
+        "unit": "Mrd. CHF"
+      },
+      {
+        "label": "BIP pro Kopf (in CHF)",
+        "answer": 89600,
+        "tolerance": 500,
+        "unit": "CHF"
+      }
+    ],
+    "korrekt": "5600",
+    "toleranz": 50,
+    "einheit": "Mio. h"
+  },
+  {
+    "id": "vwl_wachstum-i01",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Produktionsfaktor ist gemäss Eisenhut hauptverantwortlich für stetiges wirtschaftliches Wachstum?",
+    "erklaerung": "Der Produktionsfaktor Wissen (Humankapital + technischer Fortschritt) ist der einzige Faktor, der unlimitiert ist und stetiges Wachstum ermöglicht. Alle anderen Faktoren stossen an natürliche Grenzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wissen (Humankapital und technischer Fortschritt).",
+      "Natürliche Ressourcen.",
+      "Arbeit.",
+      "Realkapital."
+    ],
+    "korrekt": "Wissen (Humankapital und technischer Fortschritt)."
+  },
+  {
+    "id": "vwl_wachstum-i02",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} misst den Output pro Zeiteinheit. Sie kann durch Investitionen in {1} und {2} gesteigert werden.",
+    "erklaerung": "Produktivität = Output pro Zeiteinheit. Sie wird bestimmt durch die Ausstattung mit Sachkapital, Humankapital (Bildung) und die eingesetzte Technologie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Produktivität",
+        "optionen": [
+          "Arbeitsproduktivität"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Sachkapital",
+        "optionen": [
+          "Realkapital",
+          "Kapital"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Humankapital",
+        "optionen": [
+          "Bildung",
+          "Ausbildung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-i03",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist eine hohe Investitionsquote (Investitionen in % des BIP) wichtig für das Wirtschaftswachstum?",
+    "erklaerung": "Empirische Daten zeigen eine enge Korrelation: China (Investitionsquote 44 %, Wachstum 6,5 %) vs. USA (15,7 %, Wachstum 1,7 %). Mehr Kapital pro Arbeitnehmer bedeutet höhere Produktivität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil Investitionen den Kapitalstock vergrössern und die Produktivität steigern.",
+      "Weil hohe Investitionen automatisch zu Vollbeschäftigung führen.",
+      "Weil Investitionen den Konsum ersetzen.",
+      "Weil nur Länder mit hohen Investitionen handeln dürfen."
+    ],
+    "korrekt": "Weil Investitionen den Kapitalstock vergrössern und die Produktivität steigern."
+  },
+  {
+    "id": "vwl_wachstum-i04",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Laut der neuen Wachstumstheorie sind Bildungsausgaben als Investitionen zu betrachten, nicht als Konsum.",
+    "erklaerung": "Richtig. Die neue Wachstumstheorie betont, dass Bildungsausgaben Investitionen in Humankapital sind: Man investiert Zeit und Geld, um in Zukunft ein höheres Einkommen zu erzielen. Zudem erzeugt Bildung positive externe Effekte für die ganze Volkswirtschaft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-i05",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Hans Rosling zeigt im TED-Talk, wie die Waschmaschine den Wohlstand beeinflusst hat. Erläutern Sie den Zusammenhang zwischen Waschmaschine und den Begriffen Produktivität, Opportunitätskosten und Rolle der Frauen.",
+    "erklaerung": "Das Beispiel zeigt, wie eine einzelne Innovation (Waschmaschine) über mehrere Kanäle wirkt: Produktivitätssteigerung, Senkung der Opportunitätskosten, Bildungszugang und höhere Erwerbsbeteiligung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die Waschmaschine hat die zeitintensive Handarbeit des Wäschewaschens ersetzt (höhere Produktivität durch technischen Fortschritt). Dadurch sanken die Opportunitätskosten der Erwerbstätigkeit für Frauen: Die Zeit, die zuvor fürs Waschen aufgewendet wurde, konnte nun für Bildung und Erwerbsarbeit genutzt werden. Dies führte zu höherer Erwerbsquote, besserem Humankapital und letztlich zu mehr Wirtschaftswachstum."
+  },
+  {
+    "id": "vwl_wachstum-i06",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Beispiele den Innovationstypen «Produktinnovation» oder «Prozessinnovation» zu.",
+    "erklaerung": "Produktinnovationen schaffen neue oder verbesserte Güter (Smartphone, Medikament, Elektroauto). Prozessinnovationen verbessern die Herstellungsverfahren und steigern so die Produktivität (Fliessbandarbeit, Roboter, 3D-Druck).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Produktinnovation",
+      "Prozessinnovation"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-i07",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen beschreibt das Patent-Paradox korrekt?",
+    "erklaerung": "Das Patent-Paradox beschreibt den Zielkonflikt: Vorher bietet das Patent einen Anreiz zur Innovation (Belohnung für Forschungsaufwand). Nachher entsteht Ineffizienz, weil der Patenthalter Monopolmacht hat (höhere Preise, weniger Zugang, potenziell weniger Folgeinnovationen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Patente sind immer schlecht für die Innovation.",
+      "Patente verhindern, dass Erfindungen gemacht werden.",
+      "Patente schaffen Anreize für Innovation, führen aber nachher zu Ineffizienz durch Monopolmacht des Patenthalters.",
+      "Patente funktionieren nur in der Landwirtschaft."
+    ],
+    "korrekt": "Patente schaffen Anreize für Innovation, führen aber nachher zu Ineffizienz durch Monopolmacht des Patenthalters."
+  },
+  {
+    "id": "vwl_wachstum-i08",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Strukturwandel hat in der Schweiz seit 1800 stattgefunden?",
+    "erklaerung": "Die Schweiz entwickelte sich von einem Agrarland (1800, 1. Sektor dominant) über ein Industrieland (1900, 2. Sektor dominant) zur heutigen Dienstleistungsgesellschaft (3. Sektor mit über 70 % der Beschäftigten).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Vom Industrieland zum Agrarland.",
+      "Von der Dienstleistungsgesellschaft zum Industrieland.",
+      "Vom Agrarland über das Industrieland zur Dienstleistungsgesellschaft.",
+      "Es hat kein wesentlicher Strukturwandel stattgefunden."
+    ],
+    "korrekt": "Vom Agrarland über das Industrieland zur Dienstleistungsgesellschaft."
+  },
+  {
+    "id": "vwl_wachstum-i09",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Natürliche Ressourcen sind eine notwendige Bedingung für ein hohes BIP pro Kopf.",
+    "erklaerung": "Falsch. Japan und die Schweiz gehören zu den wohlhabendsten Ländern der Welt, verfügen aber über wenige natürliche Ressourcen. Entscheidend sind vielmehr Humankapital, technischer Fortschritt und gute Institutionen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-i10",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Analysieren Sie, weshalb Länder, die reich an natürlichen Ressourcen sind (z.B. Erdöl), nicht automatisch zu den wohlhabendsten Nationen gehören. Nennen Sie mögliche Erklärungen.",
+    "erklaerung": "Der sogenannte «Ressourcenfluch» zeigt, dass Rohstoffreichtum ohne gute Institutionen, Bildung und Diversifikation sogar schaden kann. Entscheidend sind die gestaltbaren Rahmenbedingungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Ressourcenreichtum kann sogar zum Fluch werden (Resource Curse / Dutch Disease): Die Einnahmen aus Rohstoffen können zu Korruption, mangelnder Diversifikation der Wirtschaft und Vernachlässigung von Bildung und Innovation führen. Zudem steigt oft die Währung, was andere Exporte verteuert. Länder wie die Schweiz oder Japan zeigen, dass Investitionen in Humankapital und Innovation wichtiger sind als natürliche Ressourcen."
+  },
+  {
+    "id": "vwl_wachstum-i11",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Beispiele sind Investitionen in Humankapital? (Mehrere Antworten möglich.)",
+    "erklaerung": "Humankapital umfasst Wissen, Fähigkeiten und Erfahrung von Menschen. Sprachkurse (A) und ein Studium (C) sind Investitionen in Humankapital. Eine Autobahnbrücke (B) ist Infrastruktur (Sachkapital), CNC-Maschinen (D) sind Investitionen in Sachkapital/Realkapital.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Unternehmen finanziert Sprachkurse für seine Angestellten.",
+      "Der Staat baut eine neue Autobahnbrücke.",
+      "Eine Studentin absolviert ein Masterstudium in Informatik.",
+      "Ein Betrieb kauft neue CNC-Fräsmaschinen."
+    ],
+    "korrekt": [
+      "Ein Unternehmen finanziert Sprachkurse für seine Angestellten.",
+      "Eine Studentin absolviert ein Masterstudium in Informatik."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-i12",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Land A investiert 15 % seines BIP von 500 Mrd. CHF. Land B investiert 40 % seines BIP von 200 Mrd. CHF.",
+    "erklaerung": "Land A: 500 × 0,15 = 75 Mrd. CHF. Land B: 200 × 0,40 = 80 Mrd. CHF. Obwohl Land B ein viel kleineres BIP hat, investiert es absolut mehr. Die hohe Investitionsquote erklärt, weshalb solche Länder (z. B. China) schnell wachsen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Investitionsvolumen Land A (in Mrd. CHF)",
+        "answer": 75,
+        "tolerance": 0.5,
+        "unit": "Mrd. CHF"
+      },
+      {
+        "label": "Investitionsvolumen Land B (in Mrd. CHF)",
+        "answer": 80,
+        "tolerance": 0.5,
+        "unit": "Mrd. CHF"
+      }
+    ],
+    "korrekt": "75",
+    "toleranz": 0.5,
+    "einheit": "Mrd. CHF"
+  },
+  {
+    "id": "vwl_wachstum-i13",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Grafik zeigt den Strukturwandel der Schweiz. Was ist die wahrscheinlichste Erklärung dafür, dass der 3. Sektor heute dominiert?",
+    "erklaerung": "Der Strukturwandel wird primär durch Produktivitätssteigerungen getrieben: Dank Mechanisierung braucht die Landwirtschaft weniger Arbeitskräfte für denselben Output. Dank Automatisierung gilt Ähnliches für die Industrie. Die freigesetzten Arbeitskräfte wandern in den Dienstleistungssektor, wo die Nachfrage mit steigendem Einkommen überproportional wächst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/strukturwandel_ch.svg",
+      "alt": "Strukturwandel der Schweiz: Beschäftigungsanteile nach Sektoren"
+    },
+    "optionen": [
+      "Produktivitätssteigerungen in Landwirtschaft und Industrie haben Arbeitskräfte freigesetzt, die in den Dienstleistungssektor gewechselt sind.",
+      "Die Nachfrage nach Agrarprodukten ist auf null gesunken.",
+      "Die Schweiz hat Landwirtschaft und Industrie verboten.",
+      "Der 3. Sektor wächst automatisch mit der Bevölkerung."
+    ],
+    "korrekt": "Produktivitätssteigerungen in Landwirtschaft und Industrie haben Arbeitskräfte freigesetzt, die in den Dienstleistungssektor gewechselt sind."
+  },
+  {
+    "id": "vwl_wachstum-r01",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Wirtschaftsordnungen chronologisch ihrer historischen Entwicklung zu.",
+    "erklaerung": "Die Entwicklung der Wirtschaftsordnungen verläuft von der Laissez-faire-Marktwirtschaft (Staat nur für Recht, Verteidigung, Infrastruktur) über die neoliberale Ordnung (aktive Monopolbekämpfung) zur sozialen Marktwirtschaft (Umverteilung, Bekämpfung von Arbeitslosigkeit).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "1. Zuerst",
+      "2. Dann",
+      "3. Zuletzt"
+    ],
+    "elemente": [
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-r02",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aufgabe hat der Staat NICHT im Kontext der Wachstumsförderung?",
+    "erklaerung": "Der Staat soll Spielregeln setzen, Voraussetzungen schaffen und Marktversagen verhindern – aber nicht die Preise aller Güter staatlich festlegen. Preise sollen sich grundsätzlich über den Markt bilden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Öffentliche Güter bereitstellen.",
+      "Die Preise aller Güter staatlich festlegen.",
+      "Bei externen Effekten eingreifen.",
+      "Voraussetzungen für die Marktwirtschaft schaffen (Privateigentum, Vertragsfreiheit)."
+    ],
+    "korrekt": "Die Preise aller Güter staatlich festlegen."
+  },
+  {
+    "id": "vwl_wachstum-r03",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Güter der korrekten Güterart zu.",
+    "erklaerung": "Die Güterarten unterscheiden sich nach Rivalität und Ausschliessbarkeit im Konsum. Private Güter (rival + ausschliessbar), Klubgüter (nicht-rival + ausschliessbar), Allmendegüter (rival + nicht-ausschliessbar), Öffentliche Güter (nicht-rival + nicht-ausschliessbar).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/gueterarten_matrix.svg",
+      "alt": "Güterarten nach Rivalität und Ausschliessbarkeit"
+    },
+    "kategorien": [
+      "Privates Gut",
+      "Klubgut",
+      "Allmendegut",
+      "Öffentliches Gut"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-r04",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Öffentliche Güter zeichnen sich durch {0} im Konsum und {1} vom Konsum aus.",
+    "erklaerung": "Nichtausschliessbarkeit bedeutet, dass niemand vom Konsum ausgeschlossen werden kann. Nichtrivalität bedeutet, dass der Konsum einer Person den Konsum anderer nicht einschränkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Nichtrivalität",
+        "optionen": [
+          "keine Rivalität",
+          "Nicht-Rivalität"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Nichtausschliessbarkeit",
+        "optionen": [
+          "keine Ausschliessbarkeit",
+          "Nicht-Ausschliessbarkeit"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-r05",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche fünf wirtschaftspolitischen Bereiche beeinflussen gemäss Eisenhut das Wachstumspotenzial wesentlich?",
+    "erklaerung": "Die fünf Bereiche sind: 1) Wettbewerbspolitik (Effizienz, Innovationsanreize), 2) Aussenwirtschaftspolitik (offene Märkte), 3) Bildungspolitik (Humankapital), 4) Innovationspolitik (Forschung & Technologietransfer), 5) Finanzpolitik (Staatsfinanzen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Steuer-, Zoll-, Subventions-, Preis- und Lohnpolitik.",
+      "Geld-, Fiskal-, Handels-, Umwelt- und Sozialpolitik.",
+      "Wettbewerbs-, Aussenwirtschafts-, Bildungs-, Innovations- und Finanzpolitik.",
+      "Agrar-, Industrie-, Dienstleistungs-, Digital- und Verteidigungspolitik."
+    ],
+    "korrekt": "Wettbewerbs-, Aussenwirtschafts-, Bildungs-, Innovations- und Finanzpolitik."
+  },
+  {
+    "id": "vwl_wachstum-r06",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "John Rawls' «Schleier des Nichtwissens»: Welche Gesellschaftsordnung würden Sie wählen, wenn Sie nicht wüssten, welche Stellung Sie in der Gesellschaft einnehmen würden? Begründen Sie Ihre Wahl.",
+    "erklaerung": "Rawls argumentiert, dass rationale Menschen hinter dem Schleier des Nichtwissens Institutionen wählen würden, die die Situation der am schlechtesten Gestellten maximieren (Maximin-Prinzip). Dies führt typischerweise zu einer Form der sozialen Marktwirtschaft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Hinter dem Schleier des Nichtwissens würde ich eine soziale Marktwirtschaft wählen: Sie bietet einerseits Anreize für Leistung und Innovation (Marktwirtschaft), schützt aber andererseits die Schwächsten durch soziale Sicherungsnetze (Umverteilung). Da ich nicht wissen würde, ob ich arm oder reich, gesund oder krank, begabt oder benachteiligt bin, würde ich ein System bevorzugen, das allen ein Mindestmass an Wohlstand und Chancen garantiert."
+  },
+  {
+    "id": "vwl_wachstum-r07",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wirtschaftlich offene Länder wachsen nachweisbar stärker als Länder, die sich von Auslandsmärkten abschotten.",
+    "erklaerung": "Richtig. Empirische Studien bestätigen dies. Offene Märkte fördern den Wettbewerb, ermöglichen Spezialisierung nach komparativen Vorteilen und erleichtern den Technologietransfer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-r08",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welches sind gestaltbare Rahmenbedingungen für Wirtschaftswachstum?",
+    "erklaerung": "Gestaltbare Determinanten sind solche, die durch Politik beeinflusst werden können: Rechtssicherheit, politische Stabilität, Bildungs- und Forschungspolitik, Infrastruktur, Arbeitsmarktpolitik. Nicht gestaltbar sind z.B. Geografie, Klima, Rohstoffvorkommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Bevölkerungsgrösse und Landfläche.",
+      "Geografische Lage, Klima, Rohstoffvorkommen.",
+      "Nähe zu starken Volkswirtschaften und Meeresanbindung.",
+      "Politische Stabilität, Rechtssicherheit, Bildungspolitik, Infrastruktur."
+    ],
+    "korrekt": "Politische Stabilität, Rechtssicherheit, Bildungspolitik, Infrastruktur."
+  },
+  {
+    "id": "vwl_wachstum-r09",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Nachtwächterstaat beschränkt sich auf Rechtsordnung, Ausbildung, Verkehrsinfrastruktur und Landesverteidigung.",
+    "erklaerung": "Richtig. Im Konzept der Laissez-faire-Marktwirtschaft übernimmt der Staat nur minimale Aufgaben (Nachtwächterstaat): Rechtsordnung, Ausbildung, Verkehrsinfrastruktur und Landesverteidigung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-r10",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Elemente gehören zu den gestaltbaren Rahmenbedingungen für Wirtschaftswachstum? (Mehrere Antworten möglich.)",
+    "erklaerung": "Gestaltbar sind Faktoren, die durch politische Entscheide beeinflusst werden können: Bildung (A), Rechtssicherheit (C), Handelspolitik (D). Die geografische Lage (B) ist ein nicht gestaltbarer Faktor – ein Land kann seinen Standort nicht wählen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Bildungspolitik und Investitionen in Forschung.",
+      "Geografische Lage des Landes.",
+      "Rechtssicherheit und Schutz des Eigentums.",
+      "Offene Aussenwirtschaftspolitik."
+    ],
+    "korrekt": [
+      "Bildungspolitik und Investitionen in Forschung.",
+      "Rechtssicherheit und Schutz des Eigentums.",
+      "Offene Aussenwirtschaftspolitik."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-r11",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Im Drei-Ebenen-Modell beeinflusst die tief liegende Ebene (Institutionen) die beiden oberen Ebenen. Welches Beispiel illustriert diesen Zusammenhang am besten?",
+    "erklaerung": "Das Drei-Ebenen-Modell zeigt: Schlechte Institutionen (tief liegende Ebene) → weniger Investitionen in Sach- und Humankapital (Zwischenebene) → geringere Produktivität und weniger Arbeitsstunden (unmittelbare Ebene) → tieferes BIP pro Kopf. Die Kausalität verläuft von unten nach oben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/drei_ebenen_modell.svg",
+      "alt": "Drei-Ebenen-Modell des Wirtschaftswachstums"
+    },
+    "optionen": [
+      "Ein Land mit schwacher Rechtsstaatlichkeit hat wenig ausländische Investitionen, was die Produktivität bremst und das BIP pro Kopf niedrig hält.",
+      "Institutionen haben keinen Einfluss auf die unmittelbare Ebene.",
+      "Ein Land mit vielen natürlichen Ressourcen hat automatisch hohe Produktivität.",
+      "Ein Land mit hohem BIP pro Kopf hat automatisch gute Institutionen."
+    ],
+    "korrekt": "Ein Land mit schwacher Rechtsstaatlichkeit hat wenig ausländische Investitionen, was die Produktivität bremst und das BIP pro Kopf niedrig hält."
+  },
+  {
+    "id": "vwl_wachstum-r12",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die soziale Marktwirtschaft unterscheidet sich von der neoliberalen Ordnung vor allem dadurch, dass der Staat zusätzlich Verteilungsaufgaben übernimmt (z. B. Bekämpfung von Arbeitslosigkeit und Armut).",
+    "erklaerung": "Richtig. In der neoliberalen Ordnung sichert der Staat primär den Wettbewerb (Kartellbekämpfung). Die soziale Marktwirtschaft geht weiter: Der Staat greift auch bei der Einkommensverteilung ein (Sozialversicherungen, Arbeitslosenversicherung, Sozialhilfe) – allerdings ohne den Leistungsanreiz zu zerstören.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-v01",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was zeigt die Elefantengrafik von Branko Milanovic?",
+    "erklaerung": "Die Elefantengrafik zeigt auf der x-Achse die Perzentile der globalen Einkommensverteilung und auf der y-Achse die prozentuale Veränderung der Realeinkommen von 1988 bis 2008. Ihre Form ähnelt einem Elefanten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die prozentuale Veränderung der Realeinkommen verschiedener Einkommensgruppen weltweit zwischen 1988 und 2008.",
+      "Die Entwicklung der Börsenkurse seit 1988.",
+      "Den Anteil verschiedener Branchen am Welt-BIP.",
+      "Die absolute Höhe der Einkommen in verschiedenen Ländern."
+    ],
+    "korrekt": "Die prozentuale Veränderung der Realeinkommen verschiedener Einkommensgruppen weltweit zwischen 1988 und 2008."
+  },
+  {
+    "id": "vwl_wachstum-v02",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wer befindet sich gemäss der Elefantengrafik im «Knick des Rüssels» (ca. 75.–85. Perzentil)?",
+    "erklaerung": "Im Knick des Rüssels (ca. 75.–85. Perzentil) befinden sich Menschen der westlichen Mittelschicht, deren Realeinkommen in den 20 Jahren kaum gestiegen oder sogar leicht gesunken ist. Sie haben nicht von Globalisierung und technischem Fortschritt profitiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die aufstrebende Mittelschicht in Schwellenländern.",
+      "Die reichsten 1 % der Weltbevölkerung.",
+      "Die untere Mittelschicht der westlichen Industrieländer, deren Realeinkommen stagniert hat.",
+      "Die ärmsten Menschen der Welt."
+    ],
+    "korrekt": "Die untere Mittelschicht der westlichen Industrieländer, deren Realeinkommen stagniert hat."
+  },
+  {
+    "id": "vwl_wachstum-v03",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Gruppen den Bereichen der Elefantengrafik zu.",
+    "erklaerung": "Der Rücken des Elefanten zeigt den Einkommenszuwachs der globalen Mittelschicht (v.a. Asien). Der Knick zeigt die stagnierende westliche Mittelschicht. Die Rüsselspitze zeigt den starken Anstieg bei den Reichsten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Rücken des Elefanten (starker Anstieg)",
+      "Knick des Rüssels (Stagnation)",
+      "Spitze des Rüssels (starker Anstieg)"
+    ],
+    "elemente": [
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-v04",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie anhand der Elefantengrafik, weshalb die westliche untere Mittelschicht (ca. 80. Perzentil) nicht vom Wirtschaftswachstum profitiert hat. Gehen Sie auf die Rolle von Globalisierung und Automatisierung ein.",
+    "erklaerung": "Die Elefantengrafik zeigt die Konkurrenz der Produktionsfaktoren Arbeit und Kapital: Wenn ein Unternehmen durch Einsatz von mehr Kapital (Maschinen, Roboter, Software) produktiver werden kann, wird es dies tun – besonders wenn die Arbeit teuer ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die westliche untere Mittelschicht verrichtet oft relativ einfache, aber im globalen Vergleich teure Arbeit. Durch die Globalisierung wurden viele dieser Tätigkeiten in Schwellenländer mit niedrigeren Löhnen verlagert (Konkurrenz aus dem Ausland). Gleichzeitig konnten durch Automatisierung (Roboter, Software) viele dieser Arbeitsplätze durch Maschinen ersetzt werden, weil die Automatisierung sich bei den hohen westlichen Löhnen besonders gelohnt hat. Dadurch stagnierte die Nachfrage nach dieser Art von Arbeit und mit ihr die Einkommen."
+  },
+  {
+    "id": "vwl_wachstum-v05",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Elefantengrafik zeigt, dass die allerreichsten 5 % der Weltbevölkerung absolut gesehen fast die Hälfte des Wohlstandsgewinns erhalten haben.",
+    "erklaerung": "Richtig. Die Grafik zeigt prozentuale Veränderungen. In absoluten Zahlen ist eine 60 %-Erhöhung eines Tageseinkommens von 2'000 US$ natürlich viel mehr als eine 60 %-Erhöhung bei 2 US$/Tag. Fast die Hälfte des absoluten Wohlstandsgewinns kam den reichsten 5 % zugute.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-v06",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Grafik «Produktivität vs. Reallöhne» zeigt, dass sich seit ca. 1970 eine Kluft aufgetan hat. Was bedeutet das?",
+    "erklaerung": "Seit ca. 1970 hat sich die Produktivität in den USA mehr als verdoppelt, während die Reallöhne der Güter produzierenden Arbeiter praktisch stagnierten. Der Produktivitätsgewinn floss also nicht mehr proportional in die Löhne, sondern verstärkt in Kapitalerträge.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Produktivität ist weiter gestiegen, aber die Reallöhne der Güter produzierenden Arbeiter haben stagniert.",
+      "Sowohl Produktivität als auch Löhne sind gesunken.",
+      "Die Löhne sind stärker gestiegen als die Produktivität.",
+      "Produktivität und Löhne haben sich parallel entwickelt."
+    ],
+    "korrekt": "Die Produktivität ist weiter gestiegen, aber die Reallöhne der Güter produzierenden Arbeiter haben stagniert."
+  },
+  {
+    "id": "vwl_wachstum-v07",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Inwiefern hängt die Auseinanderentwicklung von Produktivität und Reallöhnen (seit ca. 1970) mit der Elefantengrafik zusammen?",
+    "erklaerung": "Die Elefantengrafik zeigt das Phänomen global, die Produktivitäts-Lohn-Schere zeigt es für ein einzelnes Land: In beiden Fällen profitieren Kapitalbesitzer und Hochqualifizierte überproportional vom Wachstum.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beide Phänomene zeigen dieselbe Grunddynamik: Der technische Fortschritt und die Globalisierung steigern die Gesamtproduktivität, aber die Gewinne verteilen sich ungleich. Die Produktivitätsgewinne fliessen zunehmend an Kapitalbesitzer und hochqualifizierte Arbeitskräfte (Rüsselspitze), während einfachere Arbeit durch Automatisierung und Verlagerung unter Druck gerät (Knick des Rüssels). Die Kluft zwischen Produktivität und Löhnen ist somit die inneramerikanische Variante des globalen Phänomens, das die Elefantengrafik zeigt."
+  },
+  {
+    "id": "vwl_wachstum-v08",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die allerärmsten Menschen der Welt (ca. 5. Perzentil) haben gemäss der Elefantengrafik stark vom Wirtschaftswachstum profitiert.",
+    "erklaerung": "Falsch. Die allerärmsten Menschen der Welt haben kaum vom weltweiten Wirtschaftswachstum profitiert. Ihr Einkommenszuwachs war nahe null – sie befinden sich ganz links in der Grafik auf einem sehr tiefen Niveau.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-v09",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Elefantengrafik wird manchmal herangezogen, um politische Phänomene wie Brexit oder den Aufstieg populistischer Bewegungen zu erklären. Welche Argumentation steckt dahinter?",
+    "erklaerung": "Die westliche Mittelschicht – im Knick des Rüssels – sieht, wie andere (Schwellenländer, Superreiche) reicher werden, während ihr eigenes Einkommen stagniert. Diese gefühlte Ungerechtigkeit schafft Nährboden für populistische Bewegungen, die Wandel versprechen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es gibt keinen Zusammenhang zwischen Einkommensverteilung und politischen Bewegungen.",
+      "Die stagnierende westliche Mittelschicht fühlt sich von der Elite im Stich gelassen und drückt ihren Wunsch nach Wandel in Wahlen aus.",
+      "Die ärmsten Länder der Welt haben sich gegen die Globalisierung gewehrt.",
+      "Die reichsten 1 % haben die Wahlen direkt manipuliert."
+    ],
+    "korrekt": "Die stagnierende westliche Mittelschicht fühlt sich von der Elite im Stich gelassen und drückt ihren Wunsch nach Wandel in Wahlen aus."
+  },
+  {
+    "id": "vwl_wachstum-v10",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Elefantengrafik zeigt auf der x-Achse die {0} der globalen Einkommensverteilung und auf der y-Achse die prozentuale Veränderung der {1} von 1988 bis 2008.",
+    "erklaerung": "Die Elefantengrafik ordnet alle Menschen der Welt nach ihrem Einkommen (x-Achse: Perzentile, 0 = ärmste, 100 = reichste) und zeigt, wie stark sich ihr Realeinkommen in 20 Jahren verändert hat (y-Achse).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Perzentile",
+        "optionen": [
+          "Einkommensperzentile",
+          "Einkommensgruppen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Realeinkommen",
+        "optionen": [
+          "realen Einkommen",
+          "Einkommen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-v11",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Gruppen haben gemäss der Elefantengrafik besonders stark vom globalen Wirtschaftswachstum (1988–2008) profitiert? (Mehrere Antworten möglich.)",
+    "erklaerung": "Stark profitiert haben die globale Mittelschicht in Schwellenländern (Rücken des Elefanten, ca. 20.–60. Perzentil) und die reichsten 1 % (Rüsselspitze). Die westliche Mittelschicht (B, Knick) und die Allerärmsten (D) haben kaum profitiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die aufstrebende Mittelschicht in Schwellenländern wie China und Indien.",
+      "Die untere Mittelschicht in westlichen Industrieländern.",
+      "Die globalen Superreichen (Top 1 %).",
+      "Die allerärmsten Menschen der Welt (ca. 5. Perzentil)."
+    ],
+    "korrekt": [
+      "Die aufstrebende Mittelschicht in Schwellenländern wie China und Indien.",
+      "Die globalen Superreichen (Top 1 %)."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-v12",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Arbeiter in den USA verdiente 1970 real ca. USD 25'000. Die Produktivität hat sich seither verdoppelt (× 2). Der Reallohn stagnierte aber bei ca. USD 27'000.",
+    "erklaerung": "Bei proportionalem Anstieg: 25'000 × 2 = USD 50'000. Tatsächlicher Lohn: USD 27'000. Lohnlücke: 50'000 − 27'000 = USD 23'000. Diese Differenz floss in Kapitalerträge, Managergehälter und Unternehmensgewinne – die Produktivitäts-Lohn-Schere.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Wie hoch wäre der Lohn, wenn er proportional zur Produktivität gestiegen wäre? (in USD)",
+        "answer": 50000,
+        "tolerance": 500,
+        "unit": "USD"
+      },
+      {
+        "label": "Wie gross ist die «Lohnlücke» (Differenz Ist vs. Soll)? (in USD)",
+        "answer": 23000,
+        "tolerance": 500,
+        "unit": "USD"
+      }
+    ],
+    "korrekt": "50000",
+    "toleranz": 500,
+    "einheit": "USD"
+  },
+  {
+    "id": "vwl_wachstum-v13",
+    "fach": "VWL",
+    "thema": "Wachstum & Verteilung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Grafik. Der Bereich B zeigt einen deutlichen Knick nach unten. Welche Bevölkerungsgruppe ist hier betroffen und warum?",
+    "erklaerung": "Bereich B (ca. 75.–85. Perzentil) zeigt die westliche untere Mittelschicht, deren Realeinkommen kaum stiegen. Durch Globalisierung (Verlagerung ins Ausland) und Automatisierung (Maschinen ersetzen Routinearbeit) gerieten ihre Arbeitsplätze und Löhne unter Druck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/elefantengrafik.svg",
+      "alt": "Globale Einkommensentwicklung 1988–2008 (vereinfacht)"
+    },
+    "optionen": [
+      "Die Superreichen – ihre Vermögen sind durch die Finanzkrise geschrumpft.",
+      "Die ärmsten Menschen Afrikas – sie haben keinen Zugang zu Bildung.",
+      "Die Mittelschicht in China – sie wurde durch die Kulturrevolution gebremst.",
+      "Die westliche untere Mittelschicht – ihre Einkommen stagnierten, weil einfache Arbeit durch Globalisierung und Automatisierung unter Druck geriet."
+    ],
+    "korrekt": "Die westliche untere Mittelschicht – ihre Einkommen stagnierten, weil einfache Arbeit durch Globalisierung und Automatisierung unter Druck geriet."
+  },
+  {
+    "id": "vwl_wachstum-n01",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Nachhaltige Entwicklung ist die Entwicklung, die die Bedürfnisse der {0} befriedigt, ohne zu riskieren, dass {1} Generationen ihre eigenen Bedürfnisse nicht befriedigen können.",
+    "erklaerung": "Diese Definition stammt aus dem Brundtland-Bericht (1987) der UNO-Weltkommission für Umwelt und Entwicklung. Sie betont die intergenerationelle Gerechtigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Gegenwart",
+        "optionen": [
+          "heutigen Generation",
+          "jetzigen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "künftige",
+        "optionen": [
+          "zukünftige",
+          "kommende",
+          "nachfolgende"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-n02",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was misst der ökologische Fussabdruck?",
+    "erklaerung": "Der ökologische Fussabdruck misst den Flächenbedarf für Produktion und Abfallentsorgung. Die Schweiz hat einen Fussabdruck von ca. 5 Hektaren pro Person – lebten alle so, bräuchte es ca. 2,8 Planeten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die CO₂-Emissionen pro Kopf.",
+      "Die Biodiversität eines Landes.",
+      "Den Wasserverbrauch pro Einwohner.",
+      "Wie viel produktives Gebiet nötig ist, um das zu produzieren, was eine Bevölkerung konsumiert und deren Abfall zu entsorgen."
+    ],
+    "korrekt": "Wie viel produktives Gebiet nötig ist, um das zu produzieren, was eine Bevölkerung konsumiert und deren Abfall zu entsorgen."
+  },
+  {
+    "id": "vwl_wachstum-n03",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Der ökologische Fussabdruck der Schweiz beträgt ca. 5 Hektaren pro Einwohner, das Ideal für einen Planeten wäre ca. 1,8 Hektaren. Wie viele Planeten bräuchte es, wenn alle so lebten wie die Schweizer?",
+    "erklaerung": "5 / 1,8 ≈ 2,8 Planeten. Der Schweizer Lebensstil ist also nicht global nachhaltig – es bräuchte fast 3 Erden, wenn alle Menschen so leben würden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/oekologischer_fussabdruck.svg",
+      "alt": "Ökologischer Fussabdruck im Ländervergleich"
+    },
+    "calcZeilen": [
+      {
+        "label": "Anzahl Planeten (gerundet auf 1 Dezimalstelle)",
+        "answer": 2.8,
+        "tolerance": 0.2,
+        "unit": "Planeten"
+      }
+    ],
+    "korrekt": "2.8",
+    "toleranz": 0.2,
+    "einheit": "Planeten"
+  },
+  {
+    "id": "vwl_wachstum-n04",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Instrumente der Umweltpolitik der korrekten Kategorie zu.",
+    "erklaerung": "Gebote/Verbote sind direkte staatliche Regulierungen (Grenzwerte, Verbote, Prüfungen). Marktbasierte Instrumente nutzen Preismechanismen, um Anreize für umweltgerechtes Verhalten zu schaffen (Lenkungsabgaben, Zertifikate, Steuern).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Gebote und Verbote",
+      "Marktbasierte Instrumente"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_wachstum-n05",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist das Prinzip der Internalisierung externer Kosten?",
+    "erklaerung": "Bei der Internalisierung externer Kosten werden die Umweltkosten, die bisher von der Allgemeinheit getragen wurden, dem Verursacher zugerechnet. So entsteht ein Anreiz, die Umweltbelastung zu reduzieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Umweltschäden werden aus dem BIP herausgerechnet.",
+      "Unternehmen müssen ihre Produktion ins Inland verlagern.",
+      "Der Staat übernimmt alle Umweltkosten.",
+      "Die Verursacher von Umweltschäden müssen für die von ihnen verursachten Kosten aufkommen."
+    ],
+    "korrekt": "Die Verursacher von Umweltschäden müssen für die von ihnen verursachten Kosten aufkommen."
+  },
+  {
+    "id": "vwl_wachstum-n06",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie den Zielkonflikt zwischen Wirtschaftswachstum und Umweltschutz. Gehen Sie dabei auch auf das Konzept des «Decoupling» ein.",
+    "erklaerung": "Das Decoupling zeigt, dass Wirtschaftswachstum nicht zwangsläufig zu mehr Umweltbelastung führen muss – vorausgesetzt, der technische Fortschritt und die Politik schaffen die richtigen Rahmenbedingungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Wirtschaftswachstum war historisch eng mit steigendem Energieverbrauch und Umweltbelastung verbunden (mehr Produktion = mehr Ressourcenverbrauch = mehr Emissionen). Allerdings zeigen neuere Daten, dass ein «Decoupling» (Entkopplung) möglich ist: Einige Länder (z.B. Schweiz, Schweden, Deutschland) konnten ihr Einkommen steigern und gleichzeitig die CO₂-Emissionen pro Kopf senken. Dies gelingt durch Effizienzsteigerungen, erneuerbare Energien und Strukturwandel hin zu weniger energieintensiven Wirtschaftszweigen."
+  },
+  {
+    "id": "vwl_wachstum-n07",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie funktionieren Emissionszertifikate als Instrument der Umweltpolitik?",
+    "erklaerung": "Bei Emissionszertifikaten schafft der Staat Nutzungsrechte an der Natur. Wer die Umwelt belasten will, muss Zertifikate kaufen. Wer Umweltschutzmassnahmen ergreift, kann überschüssige Zertifikate verkaufen. So wird die Gesamtemission begrenzt und die Reduktion dort vorgenommen, wo sie am günstigsten ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Unternehmen müssen eine Umweltversicherung abschliessen.",
+      "Unternehmen erhalten Geld für jede Tonne CO₂, die sie ausstossen.",
+      "Der Staat legt eine Gesamtmenge an zulässigen Emissionen fest und verteilt handelbare Verschmutzungsrechte.",
+      "Umweltverschmutzung wird komplett verboten."
+    ],
+    "korrekt": "Der Staat legt eine Gesamtmenge an zulässigen Emissionen fest und verteilt handelbare Verschmutzungsrechte."
+  },
+  {
+    "id": "vwl_wachstum-n08",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Lenkungsabgaben sollen dem Staat höhere Einnahmen verschaffen.",
+    "erklaerung": "Falsch. Lenkungsabgaben sollen die Wirtschaft in eine umweltfreundlichere Richtung lenken, nicht dem Staat höhere Einnahmen bringen. Sie sollen daher vollumfänglich an die Wirtschaftssubjekte zurückbezahlt werden (z.B. via Krankenkassenprämien-Reduktion).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-n09",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Hans Rosling zeigt, dass Wirtschaftswachstum und steigender Energieverbrauch zusammenhängen: Bis 2050 könnten 22 Milliarden Einheiten Energie verbraucht werden (statt 12 im Jahr 2010). Beurteilen Sie, wie dieses Dilemma zwischen Entwicklung und Nachhaltigkeit gelöst werden könnte.",
+    "erklaerung": "Roslings Botschaft ist: Wir können den Menschen in Entwicklungsländern den Wohlstand nicht verwehren, müssen aber sicherstellen, dass der zusätzliche Energiebedarf aus nachhaltigen Quellen gedeckt wird. Technischer Fortschritt ist der Schlüssel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Das Dilemma ist real: Milliarden Menschen streben zu Recht nach mehr Wohlstand (z.B. einer Waschmaschine), was den Energieverbrauch steigert. Lösungsansätze: 1) Massive Investitionen in erneuerbare Energien (Solar, Wind), damit der zusätzliche Energiebedarf klimaneutral gedeckt werden kann. 2) Technologische Effizienzsteigerungen (weniger Energie pro Waschgang). 3) Internalisierung externer Kosten (CO₂-Preise), damit fossile Energie teurer und erneuerbare wettbewerbsfähiger wird. 4) Technologietransfer in Entwicklungsländer, damit diese nicht denselben emissionsintensiven Weg gehen müssen wie die Industrieländer."
+  },
+  {
+    "id": "vwl_wachstum-n10",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Instrumente gelten als marktbasierte Instrumente der Umweltpolitik? (Mehrere Antworten möglich.)",
+    "erklaerung": "Marktbasierte Instrumente nutzen Preissignale: Emissionszertifikate (A), Lenkungsabgaben (C) und Subventionen (D) verändern die relativen Preise und schaffen Anreize für umweltfreundliches Verhalten. Ein Verbot (B) ist ein ordnungsrechtliches Instrument (Gebot/Verbot).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Handelbare Emissionszertifikate.",
+      "Verbot von Einwegplastik.",
+      "CO₂-Lenkungsabgabe mit Rückverteilung.",
+      "Subventionen für erneuerbare Energien."
+    ],
+    "korrekt": [
+      "Handelbare Emissionszertifikate.",
+      "CO₂-Lenkungsabgabe mit Rückverteilung.",
+      "Subventionen für erneuerbare Energien."
+    ]
+  },
+  {
+    "id": "vwl_wachstum-n11",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Kritiker argumentiert: «Emissionszertifikate sind ungerecht, weil reiche Unternehmen sich das Recht erkaufen können, die Umwelt zu verschmutzen.» Wie lässt sich diese Kritik am besten einordnen?",
+    "erklaerung": "Das Cap-and-Trade-System setzt eine Obergrenze (Cap) für die Gesamtemissionen. Innerhalb dieser Grenze werden die Reduktionen dort vorgenommen, wo sie am günstigsten sind (Effizienz). Ein reiches Unternehmen, das Zertifikate kauft, finanziert damit indirekt die Emissionsreduktion bei einem anderen Unternehmen. Die Gesamtmenge bleibt gleich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Einwand verkennt, dass die Gesamtemissionen durch die fixe Obergrenze (Cap) begrenzt sind – wer mehr kauft, bedeutet, dass ein anderer weniger emittiert.",
+      "Emissionszertifikate funktionieren nur, wenn alle Unternehmen gleich reich sind.",
+      "Die Kritik betrifft nur Lenkungsabgaben, nicht Zertifikate.",
+      "Die Kritik ist vollständig berechtigt – Emissionszertifikate sollten abgeschafft werden."
+    ],
+    "korrekt": "Der Einwand verkennt, dass die Gesamtemissionen durch die fixe Obergrenze (Cap) begrenzt sind – wer mehr kauft, bedeutet, dass ein anderer weniger emittiert."
+  },
+  {
+    "id": "vwl_wachstum-n12",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Entkopplung (Decoupling) von Wirtschaftswachstum und CO₂-Emissionen ist in einigen Industrieländern bereits gelungen: Das reale BIP stieg, während die territorialen CO₂-Emissionen sanken.",
+    "erklaerung": "Richtig. Länder wie die Schweiz, Schweden und Grossbritannien haben in den letzten Jahrzehnten ihr reales BIP gesteigert und gleichzeitig ihre CO₂-Emissionen pro Kopf gesenkt. Allerdings muss man beachten, dass ein Teil der Emissionen ins Ausland «exportiert» wurde (importierte Güter), weshalb die Bilanz bei konsumbasierten Emissionen weniger eindeutig ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_wachstum-n13",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Die Grafik zeigt den ökologischen Fussabdruck verschiedener Länder. Was bedeutet es, wenn der Fussabdruck eines Landes über der gestrichelten Linie (1,8 Hektaren) liegt?",
+    "erklaerung": "Die 1,8-Hektaren-Linie zeigt die global verfügbare Biokapazität pro Person. Liegt ein Land darüber, verbraucht es mehr, als die Erde langfristig regenerieren kann. Würden alle so leben, bräuchte es mehrere Planeten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/oekologischer_fussabdruck.svg",
+      "alt": "Ökologischer Fussabdruck im Ländervergleich"
+    },
+    "optionen": [
+      "Das Land importiert mehr als es exportiert.",
+      "Das Land verbraucht mehr Ressourcen, als die Erde pro Person dauerhaft bereitstellen kann.",
+      "Das Land hat ein höheres BIP pro Kopf als der Durchschnitt.",
+      "Das Land hat mehr Einwohner als Hektaren Fläche."
+    ],
+    "korrekt": "Das Land verbraucht mehr Ressourcen, als die Erde pro Person dauerhaft bereitstellen kann."
+  },
+  {
+    "id": "vwl_wachstum-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Faktoren nach ihrem Einfluss auf langfristiges Wirtschaftswachstum – von den unmittelbaren (proximaten) zu den tieferliegenden (fundamentalen) Ursachen.",
+    "erklaerung": "Die Wachstumstheorie unterscheidet Ebenen: Kapital und Technologie sind unmittelbare Wachstumstreiber. Bildung ermöglicht Innovation und effiziente Kapitalnutzung. Institutionen sind die fundamentalste Ebene – sie schaffen die Rahmenbedingungen, unter denen Kapital, Technologie und Bildung überhaupt gedeihen können. Länder mit schwachen Institutionen können trotz Kapital kaum wachsen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_wachstum-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden wachstumskritischen Positionen nach der Radikalität ihrer Forderungen – von der moderatesten zur radikalsten.",
+    "erklaerung": "Green Growth akzeptiert Wachstum grundsätzlich, fordert aber Entkopplung von Ressourcenverbrauch. Beyond Growth relativiert das Wachstumsziel und betont alternative Wohlstandsmasse (z.B. HDI, BLI). Degrowth fordert aktive Schrumpfung der Wirtschaft in Industrieländern – die radikalste Position, die das bestehende Wirtschaftssystem grundlegend in Frage stellt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "vwl_wachstum-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Zwischenebene: Investitionen & Innovation",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden wirtschaftspolitischen Massnahmen zur Förderung des Wirtschaftswachstums nach ihrer typischen Wirkungsdauer – von der kurzfristigsten zur langfristigsten.",
+    "erklaerung": "Konjunkturprogramme wirken kurzfristig (Monate bis 1–2 Jahre). Steuersenkungen wirken mittelfristig (fördern Investitionen über mehrere Jahre). Infrastruktur hat eine mittelfristige Bauphase, aber langfristigen Nutzen (Jahrzehnte). Bildung und Forschung wirken am langfristigsten – die Erträge zeigen sich erst nach Jahren bis Jahrzehnten, sind aber für nachhaltiges Wachstum am wichtigsten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_wachstum-beschriftung01",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die drei Ebenen des Wachstumsmodells und ihre Hauptkomponenten.",
+    "erklaerung": "Ebene 1 (direkt): Produktionsfaktoren Arbeit und Kapital. Ebene 2 (tiefer): Technologie, Humankapital, Infrastruktur steigern die Produktivität. Ebene 3 (fundamental): Institutionen, Geographie und Kultur bestimmen, ob investiert und innoviert wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/wachstum_drei_ebenen_beschriftung.svg",
+      "alt": "Drei-Ebenen-Modell des Wirtschaftswachstums mit sechs nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Ebene 1: Unmittelbare Ursachen",
+        "x": 39,
+        "y": 17
+      },
+      {
+        "id": "l2",
+        "text": "Arbeit und Kapital (Produktionsfaktoren)",
+        "x": 36,
+        "y": 27
+      },
+      {
+        "id": "l3",
+        "text": "Ebene 2: Tiefere Ursachen",
+        "x": 39,
+        "y": 39
+      },
+      {
+        "id": "l4",
+        "text": "Technologie, Bildung, Infrastruktur",
+        "x": 37,
+        "y": 50
+      },
+      {
+        "id": "l5",
+        "text": "Ebene 3: Fundamentale Ursachen",
+        "x": 39,
+        "y": 64
+      },
+      {
+        "id": "l6",
+        "text": "Institutionen, Geographie, Kultur",
+        "x": 39,
+        "y": 76
+      }
+    ]
+  },
+  {
+    "id": "vwl_wachstum-dragdrop01",
+    "fach": "VWL",
+    "thema": "Unmittelbare Ebene: Einkommen & Produktion",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Wachstumsfaktoren der richtigen Ebene zu.",
+    "erklaerung": "Ebene 1: Mehr Arbeit und Kapital → mehr Output. Ebene 2: Technologie, Bildung und F&E steigern die Produktivität. Ebene 3: Institutionen, Geographie und Handelsoffenheit bestimmen, ob ein Land investieren und innovieren kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/wachstum/wachstum_faktoren_dragdrop.svg",
+      "alt": "Drei Spalten: Ebene 1 Unmittelbar, Ebene 2 Tiefer, Ebene 3 Fundamental"
+    },
+    "zones": [
+      {
+        "id": "ebene1",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "ebene2",
+        "x": 34,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "ebene3",
+        "x": 65.5,
+        "y": 14,
+        "w": 32,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Zunahme des Kapitalstocks",
+        "zone": "ebene1"
+      },
+      {
+        "id": "m2",
+        "text": "Wachstum der Erwerbsbevölkerung",
+        "zone": "ebene1"
+      },
+      {
+        "id": "m3",
+        "text": "Technologischer Fortschritt",
+        "zone": "ebene2"
+      },
+      {
+        "id": "m4",
+        "text": "Investitionen in Bildung",
+        "zone": "ebene2"
+      },
+      {
+        "id": "m5",
+        "text": "Forschung und Entwicklung",
+        "zone": "ebene2"
+      },
+      {
+        "id": "m6",
+        "text": "Eigentumsrechte und Rechtsstaat",
+        "zone": "ebene3"
+      },
+      {
+        "id": "m7",
+        "text": "Geographische Lage",
+        "zone": "ebene3"
+      },
+      {
+        "id": "m8",
+        "text": "Politische Stabilität",
+        "zone": "ebene3"
+      },
+      {
+        "id": "m9",
+        "text": "Offenheit für Handel",
+        "zone": "ebene3"
+      }
+    ]
+  }
+]

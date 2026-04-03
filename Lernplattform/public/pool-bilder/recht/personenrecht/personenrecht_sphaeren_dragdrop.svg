@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Persönlichkeitssphären — Ordne den Schutzbereichen zu</text>
+
+  <!-- Column 1: Geheimsphäre (stärkster Schutz) -->
+  <rect x="20" y="55" width="240" height="330" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="140" y="79" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Geheimsphäre</text>
+  <text x="140" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Stärkster Schutz — absolut privat</text>
+  <line x1="35" y1="104" x2="245" y2="104" stroke="#86efac" stroke-width="1"/>
+  <rect x="35" y="114" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="35" y="160" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="35" y="206" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Column 2: Privatsphäre -->
+  <rect x="280" y="55" width="240" height="330" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="79" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Privatsphäre</text>
+  <text x="400" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Mittlerer Schutz — persönl. Umfeld</text>
+  <line x1="295" y1="104" x2="505" y2="104" stroke="#86efac" stroke-width="1"/>
+  <rect x="295" y="114" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="295" y="160" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="295" y="206" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Column 3: Öffentliche Sphäre -->
+  <rect x="540" y="55" width="240" height="330" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"/>
+  <text x="660" y="79" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Öffentliche Sphäre</text>
+  <text x="660" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Geringster Schutz — öffentl. sichtbar</text>
+  <line x1="555" y1="104" x2="765" y2="104" stroke="#86efac" stroke-width="1"/>
+  <rect x="555" y="114" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="555" y="160" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Hint -->
+  <text x="400" y="392" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Lebensbereiche in die passende Sphäre</text>
+</svg>

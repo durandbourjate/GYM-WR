@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Normenhierarchie -- Rechtsquellen der Schweiz</text>
+  <!-- Level 1 - Top: Bundesverfassung -->
+  <polygon points="400,55 490,130 310,130" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#1e293b">Bundes-</text>
+  <text x="400" y="123" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#1e293b">verfassung (BV)</text>
+  <!-- Level 2: Bundesgesetze -->
+  <polygon points="310,130 490,130 560,210 240,210" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="400" y="162" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">Bundesgesetze</text>
+  <text x="400" y="180" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">OR, ZGB, StGB, SchKG, ...</text>
+  <text x="400" y="196" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">(formelle Gesetze)</text>
+  <!-- Level 3: Verordnungen -->
+  <polygon points="240,210 560,210 630,290 170,290" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="400" y="245" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">Verordnungen</text>
+  <text x="400" y="263" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">des Bundesrats und der Departemente</text>
+  <text x="400" y="279" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">(materielle Gesetze)</text>
+  <!-- Level 4: Gewohnheitsrecht -->
+  <polygon points="170,290 630,290 700,370 100,370" fill="#fafff8" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="400" y="325" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">Gewohnheitsrecht / Richterrecht</text>
+  <text x="400" y="343" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Langjaehrige Praxis, Bundesgerichtsentscheide</text>
+  <text x="400" y="359" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">(ungeschriebenes Recht, ZGB 1 II/III)</text>
+  <!-- Side annotations -->
+  <!-- Arrow showing hierarchy direction -->
+  <line x1="710" y1="100" x2="710" y2="350" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="710,350 705,340 715,340" fill="#94a3b8"/>
+  <polygon points="710,100 705,110 715,110" fill="#94a3b8"/>
+  <text x="740" y="170" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8" transform="rotate(90,740,170)">hoeherrangig</text>
+  <text x="740" y="300" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8" transform="rotate(90,740,300)">niederrangig</text>
+  <!-- Lex superior principle -->
+  <rect x="100" y="390" width="600" height="45" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1"/>
+  <text x="400" y="410" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">Grundsatz: Lex superior derogat legi inferiori</text>
+  <text x="400" y="428" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Hoeheres Recht geht niederem Recht vor -- niedere Normen duerfen nicht widersprechen</text>
+  <!-- Left: Kantonal note -->
+  <text x="65" y="240" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="9" fill="#94a3b8" transform="rotate(-90,65,240)">+ Kantonales Recht (subsidiear)</text>
+</svg>

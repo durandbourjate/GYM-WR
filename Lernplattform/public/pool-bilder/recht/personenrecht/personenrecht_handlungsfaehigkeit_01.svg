@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="700" height="520" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#333">Prüfungsschema: Handlungsfähigkeit</text>
+  <text x="350" y="56" text-anchor="middle" font-size="13" fill="#666">Art. 12 &amp; 13 ZGB</text>
+
+  <!-- Start -->
+  <rect x="250" y="75" width="200" height="42" rx="21" fill="#73ab2c" stroke="#5a8a1f" stroke-width="1.5"/>
+  <text x="350" y="101" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">Person</text>
+
+  <!-- Pfeil nach unten -->
+  <line x1="350" y1="117" x2="350" y2="145" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Frage 1: Urteilsfähig? -->
+  <rect x="225" y="145" width="250" height="45" rx="8" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="350" y="163" text-anchor="middle" font-size="13" font-weight="600" fill="#333">Urteilsfähig?</text>
+  <text x="350" y="180" text-anchor="middle" font-size="11" fill="#666">Art. 16 ZGB: vernunftgemässes Handeln</text>
+
+  <!-- Nein-Pfeil nach links -->
+  <line x1="225" y1="167" x2="120" y2="167" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="175" y="160" text-anchor="middle" font-size="11" font-weight="600" fill="#dc2626">Nein</text>
+
+  <!-- Ergebnis: Handlungsunfähig -->
+  <rect x="10" y="148" width="110" height="40" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="65" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#dc2626">?</text>
+  <text x="65" y="180" text-anchor="middle" font-size="10" fill="#dc2626">Art. 18 ZGB</text>
+
+  <!-- Ja-Pfeil nach unten -->
+  <line x1="350" y1="190" x2="350" y2="225" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="365" y="212" font-size="11" font-weight="600" fill="#16a34a">Ja</text>
+
+  <!-- Frage 2: Mündig? -->
+  <rect x="225" y="225" width="250" height="45" rx="8" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="350" y="243" text-anchor="middle" font-size="13" font-weight="600" fill="#333">Mündig?</text>
+  <text x="350" y="260" text-anchor="middle" font-size="11" fill="#666">Art. 14 ZGB: 18. Lebensjahr</text>
+
+  <!-- Nein-Pfeil nach links -->
+  <line x1="225" y1="247" x2="120" y2="247" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="175" y="240" text-anchor="middle" font-size="11" font-weight="600" fill="#dc2626">Nein</text>
+
+  <!-- Ergebnis: Beschränkt HU -->
+  <rect x="10" y="228" width="110" height="40" rx="6" fill="#fef9c4" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="65" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="#ca8a04">?</text>
+  <text x="65" y="260" text-anchor="middle" font-size="10" fill="#ca8a04">Art. 19 ZGB</text>
+
+  <!-- Ja-Pfeil nach unten -->
+  <line x1="350" y1="270" x2="350" y2="305" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="365" y="292" font-size="11" font-weight="600" fill="#16a34a">Ja</text>
+
+  <!-- Ergebnis: Handlungsfähig -->
+  <rect x="275" y="305" width="150" height="42" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="350" y="322" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">?</text>
+  <text x="350" y="338" text-anchor="middle" font-size="10" fill="#16a34a">Art. 12 &amp; 13 ZGB</text>
+
+  <!-- Zusatzinfo-Box: Juristische Personen -->
+  <rect x="480" y="145" width="200" height="65" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="580" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#7c3aed">Juristische Personen</text>
+  <text x="580" y="182" text-anchor="middle" font-size="11" fill="#666">Organe bestellt?</text>
+  <text x="580" y="199" text-anchor="middle" font-size="11" fill="#666">Art. 54 ZGB</text>
+
+  <!-- Legende -->
+  <rect x="30" y="380" width="640" height="125" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+  <text x="50" y="405" font-size="13" font-weight="600" fill="#333">Legende</text>
+
+  <rect x="50" y="418" width="16" height="16" rx="3" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
+  <text x="76" y="431" font-size="11" fill="#555">= Prüfungsfrage (Voraussetzung)</text>
+
+  <rect x="50" y="442" width="16" height="16" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="76" y="455" font-size="11" fill="#555">= Ergebnis bei «Nein»</text>
+
+  <rect x="50" y="466" width="16" height="16" rx="3" fill="#fef9c4" stroke="#ca8a04" stroke-width="1"/>
+  <text x="76" y="479" font-size="11" fill="#555">= Sonderfall (urteilsfähig, aber unmündig)</text>
+
+  <text x="350" y="431" font-size="11" fill="#555">Die «?» stehen für die <tspan font-weight="600">Ergebnisse</tspan>, die Sie</text>
+  <text x="350" y="448" font-size="11" fill="#555">im Schema selbst bestimmen müssen.</text>
+
+  <text x="350" y="479" font-size="11" fill="#888">Merkhilfe: Rechtsfähigkeit = «haben» | Handlungsfähigkeit = «begründen»</text>
+
+  <!-- Pfeilmarker -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+</svg>

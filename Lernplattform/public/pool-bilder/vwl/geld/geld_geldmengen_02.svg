@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 340" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="340" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="350" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">Geldmengen der SNB: M0, M1, M2, M3</text>
+  
+  <!-- M3 rectangle (outermost) -->
+  <rect x="30" y="50" width="640" height="240" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="650" y="72" text-anchor="end" font-size="14" font-weight="700" fill="#b45309">M3</text>
+  
+  <!-- M2 rectangle -->
+  <rect x="50" y="70" width="510" height="200" rx="10" fill="#fde68a" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="540" y="92" text-anchor="end" font-size="14" font-weight="700" fill="#b45309">M2</text>
+  
+  <!-- M1 rectangle -->
+  <rect x="70" y="90" width="370" height="160" rx="8" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" opacity="0.7"/>
+  <text x="420" y="112" text-anchor="end" font-size="14" font-weight="700" fill="#92400e">M1</text>
+  
+  <!-- M0 rectangle (innermost) -->
+  <rect x="90" y="110" width="160" height="120" rx="6" fill="#f89907" stroke="#c2410c" stroke-width="1.5" opacity="0.8"/>
+  <text x="170" y="135" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">M0</text>
+  
+  <!-- M0 contents -->
+  <text x="170" y="175" text-anchor="middle" font-size="14" fill="#fff" font-weight="600">?</text>
+
+  <!-- M1 additional contents -->
+  <text x="320" y="170" text-anchor="middle" font-size="14" fill="#92400e" font-weight="600">+ ?</text>
+
+  <!-- M2 additional contents -->
+  <text x="490" y="170" text-anchor="middle" font-size="14" fill="#b45309" font-weight="600">+ ?</text>
+
+  <!-- M3 additional contents -->
+  <text x="610" y="175" text-anchor="middle" font-size="14" fill="#b45309" font-weight="600">+ ?</text>
+  
+  <!-- Bottom labels -->
+  <line x1="170" y1="290" x2="170" y2="305" stroke="#64748b" stroke-width="1"/>
+  <text x="170" y="320" text-anchor="middle" font-size="11" fill="#64748b" font-weight="600">Notenbankgeld</text>
+  
+  <line x1="450" y1="290" x2="450" y2="305" stroke="#64748b" stroke-width="1"/>
+  <text x="450" y="320" text-anchor="middle" font-size="11" fill="#64748b" font-weight="600">Breitere Geldaggregate</text>
+</svg>

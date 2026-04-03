@@ -1,0 +1,2016 @@
+[
+  {
+    "id": "recht_arbeitsrecht-g01",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Arbeitsrecht enthält viele zwingende Vorschriften, die den schwächeren Vertragspartner (Arbeitnehmer) schützen.",
+    "erklaerung": "Korrekt. Das Arbeitsrecht ist geprägt durch zwingende Vorschriften zum Schutz des Arbeitnehmers als strukturell schwächerer Vertragspartei. Abweichungen sind nur zu Gunsten des Arbeitnehmers möglich (OR 319-362).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-g02",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In wie viele Bereiche wird das Arbeitsrecht typischerweise eingeteilt?",
+    "erklaerung": "Das Arbeitsrecht wird klassischerweise in drei Bereiche eingeteilt: (1) Öffentliches Arbeitsrecht (Staat schützt und kontrolliert), (2) Kollektives Arbeitsrecht (Gewerkschaften und Arbeitgeberverbände), (3) Individualarbeitsrecht (direktes Verhältnis zwischen AN und AG).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/arbeitsrecht/arbeitsrecht_bereiche_01.svg",
+      "alt": "Diagramm: Bereiche des Arbeitsrechts mit Fragezeichen"
+    },
+    "optionen": [
+      "Privaterecht und Öffentliches Recht",
+      "Arbeitsvertrag, Lohn, Kündigung und Schutzvorschriften",
+      "Bundesebene, Kantonal- und Gemeindebene plus Privatrecht",
+      "Öffentliches, Kollektives und Individualarbeitsrecht"
+    ],
+    "korrekt": "Öffentliches, Kollektives und Individualarbeitsrecht"
+  },
+  {
+    "id": "recht_arbeitsrecht-g03",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Arbeitsrecht ist grundsätzlich ________, d.h. es bedarf keiner bestimmten Form für den Abschluss eines Arbeitsvertrags.",
+    "erklaerung": "Das Arbeitsrecht kennt grundsätzlich Formfreiheit (OR 320 Abs. 1). Ein Arbeitsvertrag kann mündlich oder schriftlich abgeschlossen werden. Ausnahmen: OR 330b (Informationspflicht) und OR 344 ff. (Lehrvertrag).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "formfrei",
+        "optionen": [
+          "Form frei",
+          "formlos"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-g04",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche Aussage zur Abänderung zwingender Arbeitsrechtsvorschriften ist korrekt?",
+    "erklaerung": "Nach dem Prinzip der relativen Zwingendheit können zwingende Arbeitsrechtsvorschriften nur zu Gunsten des Arbeitnehmers abgeändert werden. Eine Verschlechterung der AN-Position durch Vertrag ist nicht zulässig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Abänderungen sind zu Gunsten des Arbeitnehmers zulässig",
+      "Abänderungen sind nur schriftlich gültig",
+      "Abänderungen sind nur mit Zustimmung der Arbeitgeberverbände erlaubt",
+      "Abänderungen sind unabhängig von der Richtung nicht erlaubt"
+    ],
+    "korrekt": "Abänderungen sind zu Gunsten des Arbeitnehmers zulässig"
+  },
+  {
+    "id": "recht_arbeitsrecht-g05",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitgeber und sein neuer Arbeitnehmer besprechen die Arbeitsbedingungen mündlich über Kaffee und einigen sich auf alle wesentlichen Punkte. Hat sich ein Arbeitsvertrag gebildet?",
+    "erklaerung": "Arbeitsverträge entstehen durch übereinstimmende Willenserklärung (OR 1 Abs. 1) und können auch konkludent gebildet werden (OR 320 Abs. 2). Formfreiheit ist die Regel. Allerdings muss der AG die Bedingungen nach OR 330b schriftlich mitteilen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ja, auch mündliche Vereinbarungen können Arbeitsverträge bilden",
+      "Nur wenn schriftliche Bestätigung innerhalb von 7 Tagen erfolgt",
+      "Nein, weil die Informationspflicht gemäss OR 330b nicht erfüllt ist",
+      "Nein, weil Arbeitsverträge immer schriftlich sein müssen"
+    ],
+    "korrekt": "Ja, auch mündliche Vereinbarungen können Arbeitsverträge bilden"
+  },
+  {
+    "id": "recht_arbeitsrecht-g06",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Das öffentlich-rechtliche Arbeitsrecht wird durch Staat und Behörden geprägt und enthält Schutzvorschriften für Arbeitnehmer wie Höchstarbeitszeiten.",
+    "erklaerung": "Korrekt. Das öffentliche Arbeitsrecht (z.B. ArG) wird durch staatliche und behördliche Regelung geprägt und enthält Schutzbestimmungen wie Arbeitszeiten (ArG 9), Pausen (ArG 15) und Nachtarbeitszuschläge.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-g07",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Arbeitgeber muss die wesentlichen Bedingungen des Arbeitsverhältnisses gemäss OR 330b ________ und ________ mitteilen.",
+    "erklaerung": "OR 330b verlangt, dass der Arbeitgeber dem Arbeitnehmer die wesentlichen Vertragsbedingungen schriftlich und rechtzeitig (vor oder bei Antritt der Stelle) mitteilt. Dies ist eine Ausnahme von der Formfreiheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "schriftlich",
+        "optionen": [
+          "schriftlich mitteilen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "rechtzeitig",
+        "optionen": [
+          "vor Arbeitsbeginn",
+          "zeitgerecht"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-g08",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Aussage zur Funktion des kollektiven Arbeitsrechts ist richtig?",
+    "erklaerung": "Das kollektive Arbeitsrecht regelt das Verhältnis zwischen Gruppen (Gewerkschaften/AN-Verbände und AG-Verbände) und schafft kollektive Vereinbarungen wie GAV und NAV. Es ist nicht individualrechtlich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Es ist bindend für alle Branchen in der Schweiz",
+      "Es wird ausschliesslich von Kantonen erlassen",
+      "Es regelt das Verhältnis zwischen einzelnem Arbeitnehmer und Arbeitgeber",
+      "Es koordiniert zwischen Arbeitnehmerverbaenden/Gewerkschaften und Arbeitgebern/Verband"
+    ],
+    "korrekt": "Es koordiniert zwischen Arbeitnehmerverbaenden/Gewerkschaften und Arbeitgebern/Verband"
+  },
+  {
+    "id": "recht_arbeitsrecht-g09",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Merkmale gelten für das Arbeitsrecht? (Mehrfachauswahl)",
+    "erklaerung": "Das Arbeitsrecht ist relativ zwingend (Abweichungen nur zu Gunsten des AN möglich) und dient dem Schutz der schwächeren Vertragspartei (des Arbeitnehmers). Volle Vertragsfreiheit wäre unzutreffend.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Absolut zwingendes Recht mit keinen Ausnahmen",
+      "Relativ zwingendes Recht mit Abweichungen zu Gunsten des AN",
+      "Schutz der strukturell schwächeren Vertragspartei",
+      "Maximale Vertragsfreiheit für beide Parteien"
+    ],
+    "korrekt": [
+      "Relativ zwingendes Recht mit Abweichungen zu Gunsten des AN",
+      "Schutz der strukturell schwächeren Vertragspartei"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-g10",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Arbeitnehmer möchte wissen, ob eine Vereinbarung, die seinen Urlaubsanspruch unter das gesetzliche Minimum senkt, gültig ist. Auf welches Prinzip des Arbeitsrechts ist hinzuweisen?",
+    "erklaerung": "Das Arbeitsrecht folgt dem Prinzip der relativen Zwingendheit: Abweichungen von gesetzlichen Minimalstandards sind ungültig, wenn sie zu Lasten des Arbeitnehmers gehen. Eine Reduktion des Urlaubs unter das Mindestmass ist daher nichtig und der gesetzliche Standard bleibt gültig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Absolute Zwingendheit – die Vereinbarung ist ungültig",
+      "Öffentliche Ordnung – die Vereinbarung bedarf behördlicher Genehmigung",
+      "Vertragsfreiheit – die Vereinbarung ist gültig, wenn beide zustimmen",
+      "Relative Zwingendheit – die Vereinbarung ist nur zu Gunsten des AN gültig"
+    ],
+    "korrekt": "Relative Zwingendheit – die Vereinbarung ist nur zu Gunsten des AN gültig"
+  },
+  {
+    "id": "recht_arbeitsrecht-g11",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das öffentlich-rechtliche Arbeitsrecht gilt für Leitende Angestellte und Betriebe mit weniger als 5 Arbeitnehmern in gleicher Weise wie für andere Betriebe.",
+    "erklaerung": "Falsch. Das ArG kennt Ausnahmen: Es gilt nicht für leitende Angestellte, für staatliche Verwaltungen, landwirtschaftliche Betriebe, wissenschaftliche und künstlerische Tätigkeiten. Zudem gelten für kleine Betriebe teilweise reduzierte Anforderungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-g12",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie diese Aussage: 'Das Arbeitsrecht bietet umfassenden Schutz für Arbeitnehmer, weshalb zusätzliche kollektive Vereinbarungen (GAV) überflüssig sind.' Ist dies zutreffend?",
+    "erklaerung": "Das Arbeitsrecht setzt Mindeststandards, aber GAV und NAV können weitergehende Schutzbestimmungen vorsehen (z.B. höhere Mindestlöhne, bessere Kündigungsfristen). Sie sind für Branchen mit besonderem Schutzbedarf oder um Mindestlöhne zu sichern, wichtig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ja, GAV sind rechtlich überflüssig und nur symbolisch",
+      "Nein, GAV können höhere Standards setzen und sind wichtig für Branchen",
+      "Ja, das Arbeitsrecht bietet vollständigen Schutz",
+      "Nein, aber GAV sind nur in Grossbetrieben nötig"
+    ],
+    "korrekt": "Nein, GAV können höhere Standards setzen und sind wichtig für Branchen"
+  },
+  {
+    "id": "recht_arbeitsrecht-v01",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Arbeitsvertrag wird charakterisiert durch eine untergeordnete Stellung des Arbeiters gegenüber dem Arbeitgeber.",
+    "erklaerung": "Korrekt. Nach OR 319 Abs. 1 ist das charakteristische Merkmal eines Arbeitsvertrags, dass der Arbeitnehmer der Weisung des Arbeitgebers untergeordnet ist (Unterordnungsverhältnis), die Arbeit unselbstständig verrichten muss und sie entgeltlich erfolgt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-v02",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist das Kernmerkmal eines Arbeitsvertrags nach OR 319?",
+    "erklaerung": "Das Kernmerkmal eines Arbeitsvertrags ist die Unterordnung unter die Weisung und Kontrolle des Arbeitgebers (OR 319 Abs. 1). Der Arbeitnehmer erbringt unselbstständige, entgeltliche Arbeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/arbeitsrecht/arbeitsrecht_vertragsarten_01.svg",
+      "alt": "Übersicht: Drei Vertragstypen auf Arbeitsleistung mit Fragezeichen"
+    },
+    "optionen": [
+      "Arbeitnehmer bestimmt seine Arbeitszeiten selbst",
+      "Arbeitnehmer trägt allein das Unternehmensrisiko",
+      "Arbeitnehmer unterordnet sich den Weisungen des Arbeitgebers",
+      "Arbeitnehmer arbeitet völlig selbstständig"
+    ],
+    "korrekt": "Arbeitnehmer unterordnet sich den Weisungen des Arbeitgebers"
+  },
+  {
+    "id": "recht_arbeitsrecht-v03",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Probezeit bei Arbeitsverträgen beträgt maximal ________ Monate, wobei das Minimum ________ Tag(e) ist.",
+    "erklaerung": "Nach OR 335b beträgt die Probezeit mindestens 7 Tage und maximal 3 Monate. Sie ist die einzige Zeit, in der Fristen sehr kurz sind und gegenseitig gekündigt werden kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "3",
+        "optionen": [
+          "drei"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "7",
+        "optionen": [
+          "sieben"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-v04",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Unterschied zwischen einem Arbeitsvertrag und einem Werkvertrag?",
+    "erklaerung": "Beim Werkvertrag (OR 363-379) schuldet der Unternehmer ein bestimmtes Arbeitsresultat, während beim Arbeitsvertrag (OR 319-362) nur sorgfältige, untergeordnete Tätigkeit geschuldet ist. Der Arbeitnehmer ist untergeordnet, beim Werkvertrag ist der Unternehmer selbstständig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Werkvertrag ist immer mündlich, der Arbeitsvertrag schriftlich",
+      "Beim Werkvertrag schuldet der Unternehmer das Arbeitsresultat, beim Arbeitsvertrag nur die sorgfältige Arbeit",
+      "Beide sind gleich, nur mit unterschiedlichen Namen",
+      "Der Werkvertrag gilt nur für Baugewerbe"
+    ],
+    "korrekt": "Beim Werkvertrag schuldet der Unternehmer das Arbeitsresultat, beim Arbeitsvertrag nur die sorgfältige Arbeit"
+  },
+  {
+    "id": "recht_arbeitsrecht-v05",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitsvertrag entsteht auch, wenn die Parteien nicht ausdrücklich zustimmen, sondern nur konkludent (durch das Verhalten) übereinstimmen, z.B. wenn ein Arbeitnehmer seine Stelle antritt.",
+    "erklaerung": "Korrekt. Nach OR 320 Abs. 2 kann sich ein Arbeitsvertrag auch konkludent bilden. Der Arbeitnehmer, der mit Zustimmung des AG die Arbeit aufnimmt, kann dadurch konkludent ein Arbeitsvertrag entstanden sein lassen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-v06",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Lehrvertrag ist eine besondere Form des Arbeitsvertrags. Welche zusätzliche Besonderheit schreibt OR 344 ff. vor?",
+    "erklaerung": "Lehrverträge (OR 344-355) müssen schriftlich abgeschlossen werden – eine Ausnahme von der Formfreiheit des Arbeitsrechts. Dies schützt den Lehrling und sichert Klarheit über Ausbildungsinhalte und -dauer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Eine Genehmigung durch das Arbeitsamt ist erforderlich",
+      "Die Schriftlichkeit ist zwingend vorgeschrieben",
+      "Nur der Arbeitgeber muss unterschreiben",
+      "Schriftlichkeit ist nicht erforderlich"
+    ],
+    "korrekt": "Die Schriftlichkeit ist zwingend vorgeschrieben"
+  },
+  {
+    "id": "recht_arbeitsrecht-v07",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Priorisierung von Vertragsarten unterscheidet zwischen Verträgen auf Arbeitsleistung und Verträgen auf ________. Der Arbeitsvertrag gehört zu den Verträgen auf Arbeitsleistung.",
+    "erklaerung": "Verträge auf Arbeitsleistung (Arbeitsvertrag nach OR 319) unterscheiden sich von Verträgen auf Arbeitsresultat (Werkvertrag nach OR 363). Bei letzteren wird ein bestimmtes Ergebnis geschuldet, nicht nur die Tätigkeit selbst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Arbeitsresultat",
+        "optionen": [
+          "ein Resultat",
+          "ein Werk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-v08",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Einzelunternehmer wird beauftragt, eine komplexe Steuerberatung durchzuführen, ohne dass er dabei Weisungen des Auftraggebers unterliegt und völlig eigenverantwortlich arbeitet. Welcher Vertragstyp liegt vor?",
+    "erklaerung": "Beim Auftrag (OR 394-418v) schuldet der Beauftragte nur sorgfältige Ausführung einer Tätigkeit. Es gibt keine Unterordnung und Weisungsgebundenheit wie beim Arbeitsvertrag. Der Beauftragte ist selbstständig tätig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Dienstverhältnis gemäss BV",
+      "Werkvertrag gemäss OR 363",
+      "Arbeitsvertrag gemäss OR 319",
+      "Auftrag gemäss OR 394-418v"
+    ],
+    "korrekt": "Auftrag gemäss OR 394-418v"
+  },
+  {
+    "id": "recht_arbeitsrecht-v09",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen über Besondere Arbeitsverträge sind richtig? (Mehrfachauswahl)",
+    "erklaerung": "Lehrverträge, Handelsreisendenverträge und Heimarbeitsverträge sind alle besondere Arbeitsverträge (untergeordnet, entgeltlich). GAV und NAV sind kollektive Vereinbarungen, keine Arbeitsverträge. Die Kündigungsfristen variieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Lehrverträge müssen schriftlich abgeschlossen werden",
+      "Handelsreisendenverträge und Heimarbeitsverträge sind Formen des Arbeitsvertrags",
+      "GAV und NAV sind Formen von Arbeitsverträgen",
+      "Alle besonderen Arbeitsverträge haben längere Kündigungsfristen"
+    ],
+    "korrekt": [
+      "Lehrverträge müssen schriftlich abgeschlossen werden",
+      "Handelsreisendenverträge und Heimarbeitsverträge sind Formen des Arbeitsvertrags"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-v10",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmer schliesst mit einem Designer einen Vertrag ab, der die Gestaltung eines neuen Logos vorsieht. Der Designer ist zeitlich flexibel und unterliegt keinen Weisungen. Dies ist zweifellos ein Arbeitsvertrag nach OR 319.",
+    "erklaerung": "Falsch. Dies ist eher ein Werkvertrag (OR 363) oder Auftrag (OR 394), da der Designer selbstständig tätig ist und kein Unterordnungsverhältnis besteht. Das Fehlen der Weisungsgebundenheit und die Selbstständigkeit schliessen einen Arbeitsvertrag aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-v11",
+    "fach": "Recht",
+    "thema": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Eine Arbeitgeberin und ein Arbeitnehmer vereinbaren zunächst mündlich einen Arbeitsvertrag. Welche Rechtsfolgen hat das Fehlen schriftlicher Dokumentation nach OR 330b?",
+    "erklaerung": "OR 330b verpflichtet den AG, die wesentlichen Vertragsbedingungen schriftlich mitzuteilen. Das Fehlen dieser Mitteilung macht den Vertrag nicht ungültig, sondern die AG hat diese Pflicht zu erfüllen. Die Nichterfüllung kann zu Strafe oder Schaden führen, hebt aber den Vertrag nicht auf.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Vertrag ist ungültig, bis schriftliche Genehmigung erfolgt",
+      "Der Vertrag existiert, aber der AG hat die Bedingungen nachträglich schriftlich mitzuteilen",
+      "Der Vertrag ist nichtig und existiert nicht",
+      "Der Arbeitnehmer kann beliebig kündigen, bis schriftlich dokumentiert ist"
+    ],
+    "korrekt": "Der Vertrag existiert, aber der AG hat die Bedingungen nachträglich schriftlich mitzuteilen"
+  },
+  {
+    "id": "recht_arbeitsrecht-a01",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Arbeitnehmer muss seine Arbeit selbst verrichten und kann sie nicht einfach auf eine andere Person übertragen (Persönliche Arbeitspflicht).",
+    "erklaerung": "Korrekt. Nach OR 321 muss der Arbeitnehmer die Arbeit persönlich ausführen. Dies ist wegen der persönlichen Vertrauensbeziehung nicht delegierbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-a02",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Pflicht ist nach OR 321a für einen Arbeitnehmer zentral?",
+    "erklaerung": "Nach OR 321a muss der Arbeitnehmer mit der Sorgfalt eines gewissenhaften Arbeiters arbeiten und sich treu verhalten. Diese Sorgfaltspflicht ist zentral und kann zu Haftung führen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Kostenloses Überstundenarbeiten",
+      "Tägliche Arbeit ohne Pausen leisten",
+      "Sorgfalt und Treue bei der Arbeit",
+      "Maximale Produktivität erzielen"
+    ],
+    "korrekt": "Sorgfalt und Treue bei der Arbeit"
+  },
+  {
+    "id": "recht_arbeitsrecht-a03",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Arbeitnehmer muss nach OR 321a Abs. 4 auch nach Beendigung des Arbeitsverhältnisses ________ des Arbeitgebers schützen.",
+    "erklaerung": "Nach OR 321a Abs. 4 ist der Arbeitnehmer verpflichtet, die Geschäftsgeheimnisse des Arbeitgebers auch nach Beendigung des Arbeitsverhältnisses zu bewahren. Dies schützt die wirtschaftlichen Interessen des AG.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Geschäftsgeheimnisse",
+        "optionen": [
+          "die Geheimnisse",
+          "Betriebsgeheimnisse"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-a04",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitnehmer wird aufgefordert, Überstundenarbeit zu leisten. Muss er dies akzeptieren?",
+    "erklaerung": "Nach OR 321c muss der Arbeitnehmer Überstundenarbeit leisten, wenn dies notwendig und zumutbar ist. Dies ist dispositive Recht, kann also im Vertrag anders geregelt werden. Die Vergütung erfolgt durch Freizeit oder Lohnzuschlag.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ja, er muss immer Überstunden leisten",
+      "Nein, Überstunden sind immer freiwillig",
+      "Ja, wenn es notwendig und zumutbar ist (OR 321c)",
+      "Nur, wenn er schriftlich zustimmt"
+    ],
+    "korrekt": "Ja, wenn es notwendig und zumutbar ist (OR 321c)"
+  },
+  {
+    "id": "recht_arbeitsrecht-a05",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Arbeitnehmer fahrlässig arbeitet und dadurch Schaden am Betrieb verursacht, haftet er nicht, da der Arbeitgeber diese Risiken tragen muss.",
+    "erklaerung": "Falsch. Nach OR 321e haftet der Arbeitnehmer für Schäden, die er durch unsorgfältige oder untreue Ausführung seiner Arbeit verursacht. Allerdings ist die Haftung begrenzt und reduziert, wenn der AN nur leicht fahrlässig war.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-a06",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitnehmer wird von seinem Arbeitgeber angewiesen, bei einer Kundenbeschwerde unwahrheitsgemäss vorzugehen. Darf der Arbeitnehmer diese Weisung ablehnen?",
+    "erklaerung": "Nach OR 321d muss der Arbeitnehmer die Weisungen des Arbeitgebers befolgen. Dies gilt aber nicht für sittenwidrige oder gesetzwidrige Weisungen. Der Schutz der Persönlichkeit und der öffentlichen Ordnung geht vor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nein, er muss alle Weisungen des AG befolgen",
+      "Nein, Weisungen sind absolut bindend",
+      "Nur, wenn er schriftlich protestiert",
+      "Ja, wenn die Weisung sittenwidrig oder gesetzwidrig ist"
+    ],
+    "korrekt": "Ja, wenn die Weisung sittenwidrig oder gesetzwidrig ist"
+  },
+  {
+    "id": "recht_arbeitsrecht-a07",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Nach OR 321b muss der Arbeitnehmer den Arbeitgeber über alles informieren, was dieser braucht, und ist zur ________ und ________ verpflichtet.",
+    "erklaerung": "Nach OR 321b ist der AN zur Rechenschafts- und Herausgabepflicht verpflichtet. Er muss den AG über alle Geschäftsvorgänge informieren und erhaltene Geldmittel oder Gegenstände zurückgeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Rechenschafts",
+        "optionen": [
+          "Rechenschaft",
+          "Rechnungslegung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Herausgabepflicht",
+        "optionen": [
+          "Herausgabe",
+          "Rückgabe"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-a08",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Arbeitnehmer erfährt von einer geplanten Geschäftsexpansion seines Arbeitgebers und teilt diese Information seinem Bruder mit, der in der Konkurrenzfirma arbeitet. Welche Pflicht verletzt der Arbeitnehmer damit primär?",
+    "erklaerung": "Der Arbeitnehmer verletzt hier die Pflicht nach OR 321a Abs. 4, Geschäftsgeheimnisse zu schützen. Die Weitergabe von vertraulichen Geschäftsinformationen an Konkurrenten ist eine schwerwiegende Verletzung und kann zur Kündigung oder Schadensersatzpflicht führen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Persönliche Arbeitspflicht (OR 321)",
+      "Sorgfaltspflicht (OR 321a)",
+      "Befolgung von Anordnungen (OR 321d)",
+      "Schutz von Geschäftsgeheimnissen (OR 321a Abs. 4)"
+    ],
+    "korrekt": "Schutz von Geschäftsgeheimnissen (OR 321a Abs. 4)"
+  },
+  {
+    "id": "recht_arbeitsrecht-a09",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen über Arbeitnehmerpflichten sind richtig? (Mehrfachauswahl)",
+    "erklaerung": "Richtig sind: persönliche Arbeitspflicht (A), Sorgfalts- und Treuepflicht (C), und Haftung für Schäden (D). Weisungen müssen befolgt werden, aber nicht, wenn sie sittenwidrig oder gesetzwidrig sind (B ist falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der AN muss die Arbeit persönlich verrichten",
+      "Der AN kann jede Weisung des AG ignorieren, wenn sie unbequem ist",
+      "Der AN muss mit Sorgfalt arbeiten und sich treu verhalten",
+      "Der AN haftet für Schäden durch fahrlässiges Arbeiten"
+    ],
+    "korrekt": [
+      "Der AN muss die Arbeit persönlich verrichten",
+      "Der AN muss mit Sorgfalt arbeiten und sich treu verhalten",
+      "Der AN haftet für Schäden durch fahrlässiges Arbeiten"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-a10",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Kann sich der Arbeitnehmer rechtlich auf seine Verweigerung berufen?",
+    "erklaerung": "Obwohl OR 321d die Befolgung von Weisungen vorsieht, gilt dies nicht für sittenwidrige oder gesetzwidrige Weisungen. Der Verkauf ohne Verordnung verstösst gegen Heilmittelgesetze und Sicherheitsvorschriften. Der Arbeitnehmer kann und sollte diese Weisung ablehnen. Obersatz: Muss der AN die Weisung befolgen? → Voraussetzungen: Ist die Weisung legal und sittengerecht? → Subsumtion: Nein, sie ist gesetzwidrig. → Schluss: Der AN darf die Weisung ablehnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Arbeitnehmer in einer Apotheke wird angewiesen, ein bestimmtes Medikament einem Kunden zu verkaufen, ohne die vorgeschriebene ärztliche Verordnung zu prüfen. Der Arbeitnehmer weigert sich.",
+    "optionen": [
+      "Nein, er muss alle Weisungen des Arbeitgebers befolgen",
+      "Ja, aber nur wenn er schriftlich widerspricht",
+      "Ja, weil die Weisung gesetzwidrig ist und gegen Heilmittelvorschriften verstösst",
+      "Nein, der Arbeitgeber trägt die volle Verantwortung"
+    ],
+    "korrekt": "Ja, weil die Weisung gesetzwidrig ist und gegen Heilmittelvorschriften verstösst"
+  },
+  {
+    "id": "recht_arbeitsrecht-a11",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitnehmers",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Arbeitnehmerin wird schwanger und möchte nach der Geburt weiterarbeiten. Ein strenges Konkurrenzverbot im Arbeitsvertrag verbietet ihr, für Konkurrenten zu arbeiten. Nach Beendigung des Arbeitsverhältnisses kann die Konkurrenzklausel vollständig durchgesetzt werden, wenn dies im Vertrag stand.",
+    "erklaerung": "Falsch. Konkurrenzbeschränkungen nach Beendigung (sogenannte 'non-compete'-Klauseln) unterliegen höheren Anforderungen als solche während des Arbeitsverhältnisses. Sie müssen zeitlich und räumlich angemessen sein und dürfen nicht unangemessen restriktiv wirken. Zudem können Schutzgesetze für Mütter relevant sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-b01",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Lohnzahlung ist die Hauptpflicht des Arbeitgebers nach dem Arbeitsrecht.",
+    "erklaerung": "Korrekt. Nach OR 322 ff. ist die Lohnzahlung die zentrale Gegenleistung des Arbeitgebers für die erbrachte Arbeit. Dies ist die Hauptpflicht des AG.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-b02",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Aus welchen Bestandteilen setzt sich ein Bruttolohn typischerweise zusammen?",
+    "erklaerung": "Der Bruttolohn setzt sich aus dem vereinbarten Lohn, Zuschlägen (z.B. Überstunden, Nacht), dem 13. Monatslohn und Gratifikationen zusammen. Von diesem werden dann Sozialabzüge, Steuern und Versicherungen abgezogen, um zum Nettolohn zu gelangen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Vereinbarter Lohn + Zuschläge + 13. Monatslohn + Gratifikation",
+      "Nur die ausbezahlte Summe auf dem Bankkonto",
+      "Nur der vereinbarte Grundlohn",
+      "Nettolohn minus Steuern"
+    ],
+    "korrekt": "Vereinbarter Lohn + Zuschläge + 13. Monatslohn + Gratifikation"
+  },
+  {
+    "id": "recht_arbeitsrecht-b03",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Arbeitgeber muss dem Arbeitnehmer bei jedem Lohnzahlungstermin eine ________ mit allen wesentlichen Angaben aushändigen.",
+    "erklaerung": "Nach OR 322 muss der AG dem AN eine schriftliche Lohnabrechnung ausstellen, auf der die Bruttolöhne, Abzüge und der Nettolohn ersichtlich sind. Dies dokumentiert die korrekte Lohnzahlung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Lohnabrechnung",
+        "optionen": [
+          "schriftliche Abrechnung",
+          "Lohnzettel",
+          "Lohnbeleg"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-b04",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Muss der Arbeitgeber dem Arbeitnehmer Arbeitsgeräte und Material zur Verfügung stellen?",
+    "erklaerung": "Nach OR 327 ist der Arbeitgeber verpflichtet, dem Arbeitnehmer die notwendigen Werkzeuge und Materialien zur Verfügung zu stellen, damit dieser seine Arbeit ausführen kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur wenn der Arbeitnehmer dies fordert",
+      "Ja, nach OR 327 muss der AG die notwendigen Werkzeuge bereitstellen",
+      "Nein, der Arbeitnehmer muss sich selbst ausstatten",
+      "Nur für Büroarbeit"
+    ],
+    "korrekt": "Ja, nach OR 327 muss der AG die notwendigen Werkzeuge bereitstellen"
+  },
+  {
+    "id": "recht_arbeitsrecht-b05",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Arbeitgeber muss dem Arbeitnehmer bei unverschuldeter Verhinderung (z.B. Krankheit) den Lohn noch für eine bestimmte Dauer weiterzahlen.",
+    "erklaerung": "Korrekt. Nach OR 324a muss der AG bei unverschuldeter Verhinderung des AN (Krankheit, Unfall) den Lohn fortsetzen. Die Dauer ist gestaffelt nach Dienstjahren (Berner Skala: 1 DJ = 3 Wochen, bis 20+ DJ = 26 Wochen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-b06",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitnehmer mit 3 Jahren Dienstzeit wird krank und kann nicht arbeiten. Wie lange muss der Arbeitgeber nach der Berner Skala (OR 324a) den Lohn weiterzahlen?",
+    "erklaerung": "Nach der Berner Skala (OR 324a) sind die Lohnfortzahlungsfristen gestaffelt: 1 Dienstjahr = 3 Wochen, 2 Dienstjahre = 4 Wochen, 3-4 Dienstjahre = 9 Wochen. Drei Jahre Dienstzeit = 9 Wochen Lohnfortzahlung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "13 Wochen",
+      "9 Wochen",
+      "4 Wochen",
+      "3 Wochen"
+    ],
+    "korrekt": "9 Wochen"
+  },
+  {
+    "id": "recht_arbeitsrecht-b07",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Arbeitgeber muss die Persönlichkeit des Arbeiters schützen, einschliesslich seiner ________ und ________ (OR 328 ff.).",
+    "erklaerung": "Nach OR 328 ff. muss der AG die Persönlichkeit des AN schützen, insbesondere Gesundheit, Würde und Integrität. Dies umfasst Mobbing-Schutz, Diskriminierungsschutz und sichere Arbeitsbedingungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Gesundheit",
+        "optionen": [
+          "körperliche Gesundheit",
+          "physische Gesundheit"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Würde",
+        "optionen": [
+          "Ehre",
+          "Ruf"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-b08",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Arbeiter möchte von seinem Arbeitgeber ein Arbeitszeugnis erhalten. Was muss dieses nach OR 330a enthalten?",
+    "erklaerung": "Nach OR 330a muss ein Arbeitszeugnis wahr, klar und vollständig sein. Es muss in wohlwollender (schonender) Form formuliert sein, darf also nicht böswillig schlecht sein, aber auch nicht falsch positiv.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Wahr, klar, vollständig und in wohlwollender Form",
+      "Nur Positives über den Arbeitnehmer",
+      "Nur die Tätigkeiten und Arbeitsdaten",
+      "Alle Fehlverhalten und Konflikte"
+    ],
+    "korrekt": "Wahr, klar, vollständig und in wohlwollender Form"
+  },
+  {
+    "id": "recht_arbeitsrecht-b09",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen über Arbeitgeberpflichten sind korrekt? (Mehrfachauswahl)",
+    "erklaerung": "Korrekt sind A, B und D. Unbegrenzte Überstunden darf der AG nicht anordnen – diese müssen notwendig und zumutbar sein (OR 321c) und sind entgeltlich zu vergüten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der AG muss den Lohn zahlen und dokumentieren",
+      "Der AG muss Werkzeuge und Material bereitstellen",
+      "Der AG darf Überstunden immer unbegrenzt anordnen",
+      "Der AG muss bei Krankheit für eine bestimmte Dauer Lohn weiterzahlen"
+    ],
+    "korrekt": [
+      "Der AG muss den Lohn zahlen und dokumentieren",
+      "Der AG muss Werkzeuge und Material bereitstellen",
+      "Der AG muss bei Krankheit für eine bestimmte Dauer Lohn weiterzahlen"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-b10",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Kann der Arbeitnehmer sich auf eine Verletzung seiner Persönlichkeitsrechte nach OR 328 berufen?",
+    "erklaerung": "Nach OR 328 muss der AG die Persönlichkeit schützen. Ein generales Verbot von religiösen Symbolen könnte eine unverhältnismässige Einschränkung darstellen. Ein Verbot ist nur zulässig, wenn ein legitimer Grund besteht (z.B. Sicherheit, Kundenschutz). Dies erfordert eine Verhältnismässigkeitsprüfung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Arbeitgeber verbietet einem Arbeitnehmer, während der Arbeit ein religiöses Symbol zu tragen. Der Arbeitnehmer sieht darin eine Verletzung seiner Persönlichkeit.",
+    "optionen": [
+      "Ja, wenn die Regelung unverhältnismässig eingreift, ohne legitimen Grund",
+      "Nein, der Arbeitgeber darf jede Kleiderordnung festlegen",
+      "Nein, Persönlichkeitsschutz gilt nur ausserhalb der Arbeit",
+      "Ja, automatisch, jedes Symbol ist geschützt"
+    ],
+    "korrekt": "Ja, wenn die Regelung unverhältnismässig eingreift, ohne legitimen Grund"
+  },
+  {
+    "id": "recht_arbeitsrecht-b11",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Arbeitgeber muss für alle Arbeitsunfälle die vollständige Heilungskosten ersetzen, unabhängig davon, wie der Unfall geschah.",
+    "erklaerung": "Falsch. Der AG trägt Lohnfortzahlung bei Unfall (OR 324a), aber die Heilungskosten werden durch Unfallversicherung gedeckt (UVG). Der AG muss jedoch sichere Arbeitsbedingungen gewährleisten und Schutzvorschriften einhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-b12",
+    "fach": "Recht",
+    "thema": "Pflichten des Arbeitgebers",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Arbeitgeber zahlt seinem Angestellten immer Bargeld ohne schriftliche Lohnabrechnung aus. Welche Konsequenzen hat dies rechtlich?",
+    "erklaerung": "Nach OR 322 ist die schriftliche Lohnabrechnung eine zwingende Pflicht des Arbeitgebers. Dies schützt den Arbeitnehmer, dokumentiert Sozialversicherungsbeiträge und Steuern. Der Verstoss kann zu Bussen und Schadensersatz führen. Ein Verzicht durch AN-Zustimmung ist nicht möglich (zwingende Vorschrift).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Arbeitnehmer kann keinen Lohn fordern",
+      "Das ist zulässig, wenn der Arbeitnehmer zustimmt",
+      "Verstoss gegen OR 322, die schriftliche Abrechnung ist Pflicht",
+      "Das ist nur bei Teilzeitarbeit zulässig"
+    ],
+    "korrekt": "Verstoss gegen OR 322, die schriftliche Abrechnung ist Pflicht"
+  },
+  {
+    "id": "recht_arbeitsrecht-k01",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Arbeitsvertrag mit Ablauf einer vereinbarten Frist endet automatisch nach Ablauf der Zeit, ohne dass eine Kündigung nötig ist.",
+    "erklaerung": "Korrekt. Nach OR 334 endet ein befristeter Arbeitsvertrag durch Zeitablauf. Dies ist eine Form der Beendigung, die keine Kündigung erfordert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-k02",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie lange beträgt die Kündigungsfrist während der Probezeit nach OR 335b?",
+    "erklaerung": "Nach OR 335b beträgt die Kündigungsfrist während der Probezeit (maximal 3 Monate) 7 Tage für beide Parteien. Dies ermöglicht eine schnelle Beendigung, wenn sich die Zusammenarbeit nicht bewährt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/arbeitsrecht/arbeitsrecht_kuendigungsfristen_01.svg",
+      "alt": "Zeitleiste: Kündigungsfristen nach Dienstjahren mit Fragezeichen"
+    },
+    "optionen": [
+      "1 Tag",
+      "1 Monat",
+      "7 Tage",
+      "3 Monate"
+    ],
+    "korrekt": "7 Tage"
+  },
+  {
+    "id": "recht_arbeitsrecht-k03",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Kündigungsfrist nach dem ersten Dienstjahr beträgt nach OR 335c ________ Monat(e), und das Kündigungstermin ist das Ende des folgenden ________.",
+    "erklaerung": "Nach OR 335c beträgt die ordentliche Kündigungsfrist im 1. Dienstjahr 1 Monat, mit Termin auf Ende eines folgenden Kalendermonats. Z.B. Kündigung am 15.6. wirkt auf 31.7.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "1",
+        "optionen": [
+          "einen",
+          "ein"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Monats",
+        "optionen": [
+          "Kalendermonats",
+          "Monates"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-k04",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der wesentliche Unterschied zwischen ordentlicher und ausserordentlicher Kündigung?",
+    "erklaerung": "Ordentliche Kündigung (OR 335 ff.) erfordert Fristen (7 Tage in Probezeit, 1 Monat im 1. Jahr, 2 Monate ab 2. Jahr, 3 Monate ab 10. Jahr). Ausserordentliche/fristlose Kündigung (OR 337) ist sofort möglich, erfordert aber einen wichtigen Grund.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Es gibt keinen Unterschied",
+      "Ordentlich hat Kündigungsfristen, ausserordentlich ist sofort",
+      "Ordentlich bedarf eines wichtigen Grundes, ausserordentlich nicht",
+      "Ordentlich ist schriftlich, ausserordentlich mündlich"
+    ],
+    "korrekt": "Ordentlich hat Kündigungsfristen, ausserordentlich ist sofort"
+  },
+  {
+    "id": "recht_arbeitsrecht-k05",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine Kündigung ist nur gültig, wenn sie schriftlich erfolgt und von beiden Parteien unterschrieben ist.",
+    "erklaerung": "Falsch. Nach OR 335 ist eine schriftliche Kündigung erforderlich, aber nur von der kündigenden Partei zu unterzeichnen. Eine Unterschrift der anderen Partei ist nicht nötig. Die Mitteilung muss nur der AG/AN erhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-k06",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitnehmer mit 8 Jahren Dienstzeit kündigt am 10. März. Welches ist das früheste Kündigungsdatum?",
+    "erklaerung": "Nach 8 Dienstjahren (2.-9. Jahr) beträgt die Kündigungsfrist 2 Monate auf Ende eines Monats (OR 335c). Kündigung am 10. März läuft: Frist beginnt am 10. März, endet 2 Monate später am 10. Mai → nächster Monatswechsel = 31. Mai.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "10. April",
+      "30. Juni",
+      "30. April",
+      "31. Mai"
+    ],
+    "korrekt": "31. Mai"
+  },
+  {
+    "id": "recht_arbeitsrecht-k07",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine ausserordentliche Kündigung nach OR 337 ist sofort wirksam, wenn ein ________ Grund besteht und die Fortführung dem Kündigenden ________ ist.",
+    "erklaerung": "Nach OR 337 ist eine fristlose Kündigung zulässig, wenn ein wichtiger Grund besteht und die Fortführung des Arbeitsverhältnisses dem Kündigenden unzumutbar ist. Beispiele: Zahlungsunfähigkeit, Diebstahl, schwere Mobbingsituationen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "wichtiger",
+        "optionen": [
+          "schwerwiegender",
+          "triftiger"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "unzumutbar",
+        "optionen": [
+          "unmöglich",
+          "unzumutbar geworden"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-k08",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zum Arbeitszeugnis nach Beendigung sind richtig? (Mehrfachauswahl)",
+    "erklaerung": "Der AN hat Anspruch auf ein Zeugnis (OR 330a), das wahr, klar und vollständig sein muss. Negative Inhalte sind zulässig, wenn sie wahr sind, müssen aber wohlwollend formuliert sein. Der AG kann das Zeugnis nicht verweigern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Arbeitnehmer hat Anspruch auf ein Arbeitszeugnis",
+      "Das Zeugnis muss wahr, klar und vollständig sein",
+      "Negative Inhalte sind immer verboten",
+      "Der Arbeitgeber kann das Zeugnis verweigern"
+    ],
+    "korrekt": [
+      "Der Arbeitnehmer hat Anspruch auf ein Arbeitszeugnis",
+      "Das Zeugnis muss wahr, klar und vollständig sein"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-k09",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Hat der Arbeitnehmer Recht?",
+    "erklaerung": "Mangelnde Kompetenz oder sachliche Fehler sind normalerweise kein wichtiger Grund für ausserordentliche Kündigung (OR 337). Für Leistungsmängel ist eine ordentliche Kündigung mit Frist angemessen. Nur schwerwiegende Verstösse oder Treuebruch rechtfertigen fristlose Entlassung. Obersatz: Liegt ein wichtiger Grund vor? → Voraussetzungen: Muss erheblich und unzumutbar sein. → Subsumtion: Mangelnde Sachkunde ist nicht erheblich genug. → Schluss: Kein wichtiger Grund.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Arbeitgeber kündigt einem treuen Mitarbeiter ausserordentlich/fristlos. Als Grund gibt er an, dass der Mitarbeiter mit dem falschen Lohn-System nicht umgehen kann. Der Mitarbeiter behauptet, dass dies kein wichtiger Grund ist.",
+    "optionen": [
+      "Nein, der Arbeitgeber kann jederzeit kündigen",
+      "Ja, wichtige Gründe sind nur persönliches Fehlverhalten",
+      "Ja, mangelnde Kompetenz ist kein wichtiger Grund",
+      "Es kommt auf die Schwere der Sachkunde an"
+    ],
+    "korrekt": "Ja, mangelnde Kompetenz ist kein wichtiger Grund"
+  },
+  {
+    "id": "recht_arbeitsrecht-k10",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wenn ein Arbeitnehmer wegen Leistungsmängeln ausserordentlich gekündigt wird und vor Gericht gewinnt, hat er Anspruch auf Schadensersatz, aber nicht auf Lohnfortzahlung.",
+    "erklaerung": "Falsch. Nach OR 337b und 337c hat ein Arbeitnehmer, dessen unrechtmässige Kündigung festgestellt wird, Anspruch sowohl auf Wiedereinstellung als auch auf Schadensersatz und Lohnfortzahlung für die Zeit ohne Arbeit. Die volle Reparation ist das Ziel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-k11",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Arbeitgeber teilt einem langjährigen Arbeitnehmer am 01. März per Telefon mit, dass das Arbeitsverhältnis 'per sofort' endet. Welche rechtswidrigen Aspekte liegen vor?",
+    "erklaerung": "Es liegen zwei Mängel vor: (1) Formverletzung – Kündigung muss schriftlich erfolgen (OR 335), und (2) fehlender wichtiger Grund – eine Telefonkündigung per sofort ist nur zulässig mit erheblichem Grund (OR 337). Ohne Grund ist eine ordentliche Kündigung mit Frist erforderlich. Beiden Mängel zusammen machen die Kündigung rechtswidrig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Keine Rechtsverletzung, die Kündigung ist gültig",
+      "Formlosigkeit UND vermutlich fehlender wichtiger Grund",
+      "Nur der fehlende wichtige Grund",
+      "Nur die Formlosigkeit (nicht schriftlich)"
+    ],
+    "korrekt": "Formlosigkeit UND vermutlich fehlender wichtiger Grund"
+  },
+  {
+    "id": "recht_arbeitsrecht-s01",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Eine missbräuchliche Kündigung kann dem Arbeitnehmer eine Entschädigung durch das Arbeitsgericht bringen.",
+    "erklaerung": "Korrekt. Nach OR 336-336d kann eine missbräuchliche Kündigung stattgefunden haben. Der Arbeitnehmer kann Entschädigung erhalten (1-6 Monatslöhne nach OR 336a).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-s02",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Beispiel für missbräuchliche Kündigung nach OR 336?",
+    "erklaerung": "Kündigung wegen Gewerkschaftsmitgliedschaft oder Beteiligung an Streik ist missbräuchlich (OR 336 Abs. 1, Buchstabe a). Dies schützt die Koalitionsfreiheit. Leistungsmängel, Probezeit und geschäftliche Gründe sind keine Missbräuche.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Kündigung aus Personalmangel",
+      "Kündigung wegen mangelnder Leistung",
+      "Kündigung während der Probezeit",
+      "Kündigung wegen Mitgliedschaft in einer Gewerkschaft"
+    ],
+    "korrekt": "Kündigung wegen Mitgliedschaft in einer Gewerkschaft"
+  },
+  {
+    "id": "recht_arbeitsrecht-s03",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Entschädigung für eine missbräuchliche Kündigung beträgt nach OR 336a mindestens ________ und höchstens ________ Monatslöhne.",
+    "erklaerung": "Nach OR 336a wird bei missbräuchlicher Kündigung Entschädigung in Höhe von mindestens 1 bis maximal 6 Monatslöhnen gewährt. Das Gericht berücksichtigt die Schwere des Missbrauchs.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "1",
+        "optionen": [
+          "einen",
+          "ein"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "6",
+        "optionen": [
+          "sechs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-s04",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In welchem Fall darf ein Arbeitgeber eine Arbeitnehmerin nicht kündigen?",
+    "erklaerung": "Nach OR 336c ist eine Kündigung während der Schwangerschaft und 16 Wochen nach der Niederkunft nicht zulässig. Dies ist absoluter Schutz der Mutter und des Kindes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Während ihrer Schwangerschaft und 16 Wochen nach der Geburt",
+      "Es gibt keinen Kündigungsschutz während Schwangerschaft",
+      "Nur in den ersten 3 Monaten der Schwangerschaft",
+      "Während ihrer Schwangerschaft, aber danach unbegrenzt"
+    ],
+    "korrekt": "Während ihrer Schwangerschaft und 16 Wochen nach der Geburt"
+  },
+  {
+    "id": "recht_arbeitsrecht-s05",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Arbeitnehmer während einer Sperrfrist (z.B. Krankheit) gekündigt wird, ist diese Kündigung nichtig und hat keine Wirkung.",
+    "erklaerung": "Korrekt. Nach OR 336c ist eine Kündigung während einer Sperrfrist nichtig. Dies schützt Arbeitnehmer in vulnerablen Situationen (Krankheit, Schwangerschaft, Wehrdienst). Die Kündigung ist unwirksam.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-s06",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitnehmer wird krank. Die Sperrfrist beginnt mit dem ersten Tag der Krankheit. Der Arbeitgeber versucht, am Tag 1 der Krankheit zu kündigen. Welche Sperrfristdauer schützt den Arbeitnehmer?",
+    "erklaerung": "Nach OR 336c ist eine Kündigung während Krankheit nicht zulässig. Die Sperrfrist dauert während der ganzen Arbeitsunfähigkeit, mindestens aber so lange, wie die Lohnfortzahlung andauert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "30 Tage ab Krankheitsbeginn",
+      "Die Sperrfrist dauert die ganze Krankheitsdauer",
+      "So lange wie Lohnfortzahlung läuft (Berner Skala)",
+      "Keine, die Kündigung ist sofort wirksam"
+    ],
+    "korrekt": "Die Sperrfrist dauert die ganze Krankheitsdauer"
+  },
+  {
+    "id": "recht_arbeitsrecht-s07",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine Kündigung vor einer Sperrfrist ist rechtlich wirksam, aber die ________ wird unterbrochen und läuft nach Ablauf der Sperrfrist ________, bis der Kündigungstermin erreicht ist.",
+    "erklaerung": "Nach OR 336c Abs. 2: Wird eine Kündigung vor einer Sperrfrist ausgesprochen, wird die Kündigungsfrist unterbrochen und läuft nach Ablauf der Sperrfrist weiter. Dies schützt den AN durch Verlängerung der Betriebszugehörigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Kündigungsfrist",
+        "optionen": [
+          "Frist"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "weiter",
+        "optionen": [
+          "erneut",
+          "wieder"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-s08",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Situationen begründen nach OR 336c Kündigungssperrfristen? (Mehrfachauswahl)",
+    "erklaerung": "Nach OR 336c und 336d bestehen Kündigungssperrfristen bei (A) Schwangerschaft, (B) Wehrdienst, (C) Krankheit/Unfall und (D) ist eher ein Grund für missbräuchliche Kündigung, nicht für Sperrfrist. Die Sperrfristen schützen Arbeitnehmer in vulnerablen Lebenssituationen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Schwangerschaft und 16 Wochen nach Niederkunft",
+      "Militär- oder Zivildienst",
+      "Krankheit oder Unfall",
+      "Beteiligung an gewerkschaftlichen Aktionen"
+    ],
+    "korrekt": [
+      "Schwangerschaft und 16 Wochen nach Niederkunft",
+      "Militär- oder Zivildienst",
+      "Krankheit oder Unfall"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-s09",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Hat der Arbeitnehmer Recht, dass die Kündigung nichtig ist?",
+    "erklaerung": "Nach OR 336c ist eine Kündigung während der Schwangerschaft und 16 Wochen nach der Niederkunft absolut nichtig, unabhängig vom Kündigungsgrund. Eine Kündigung, die während der Schwangerschaft erfolgt, ist formell nichtig und hat keine Wirkung. Die Sperrfrist ist absolut. Obersatz: Ist die Kündigung während einer Sperrfrist zulässig? → Voraussetzungen: Liegt eine Sperrfristsituation vor? → Subsumtion: Ja, Schwangerschaft ist eine Sperrfristsituation. → Schluss: Kündigung ist nichtig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Arbeitnehmer teilt seinem Arbeitgeber am 05. März mit, dass er schwanger ist. Am 20. März erhält er eine ordentliche Kündigung mit 2 Monaten Frist (Kündigungstermin 31. Mai). Der Arbeitnehmer behauptet, die Kündigung sei wegen der Schwangerschaft erfolgt und somit nichtig.",
+    "optionen": [
+      "Ja, aber nur wenn der Grund der Schwangerschaft ist",
+      "Nein, eine schriftliche Kündigung mit Frist ist immer wirksam",
+      "Ja, jede Kündigung während Schwangerschaft ist absolut nichtig",
+      "Nein, die Kündigung kann auch vor Mitteilung ausgesprochen sein"
+    ],
+    "korrekt": "Ja, jede Kündigung während Schwangerschaft ist absolut nichtig"
+  },
+  {
+    "id": "recht_arbeitsrecht-s10",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Arbeitgeber kann eine missbräuchliche Kündigung durch Zahlung von Entschädigung ersetzen und muss den Arbeitnehmer nicht wieder in sein Amt einsetzen.",
+    "erklaerung": "Falsch. Nach OR 336a kann der Arbeitnehmer zwischen Wiedereinstellung und Entschädigung wählen. Der Arbeitgeber hat grundsätzlich nur dann die Wahl auf Entschädigung, wenn die Wiedereinstellung unmöglich oder unzumutbar ist. Ansonsten muss der AN wieder angestellt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-s11",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie diese Situation: Ein Arbeitnehmer wird am 15. Juni gekündigt, sein Arbeitgeber merkt dabei, dass der Arbeitnehmer schwanger ist. Der Arbeitgeber möchte die Kündigung zurückziehen, aber es ist nun zu spät. Was folgt aus dem Arbeitsrecht?",
+    "erklaerung": "Nach OR 336c ist eine Kündigung während der Schwangerschaft absolut nichtig. Es spielt keine Rolle, ob der Arbeitgeber von der Schwangerschaft wusste oder nicht – die formale Sperrfrist ist absolut. Der Rückzugsversuch ändert nichts an der Nichtigkeit. Der Arbeitnehmer besteht auf Wiedereinstellung, es sei denn, die Verhältnisse sind unzumutbar geworden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Die Kündigung ist nichtig, weil während Schwangerschaft gekündigt wurde",
+      "Der Arbeitnehmer kann sich zwischen Wiedereinstellung und Entschädigung wählen",
+      "Der Arbeitnehmer hat keinen Schutz, weil der AG nicht von der Schwangerschaft wusste",
+      "Die Kündigung ist gültig, da sie schriftlich erfolgte"
+    ],
+    "korrekt": "Die Kündigung ist nichtig, weil während Schwangerschaft gekündigt wurde"
+  },
+  {
+    "id": "recht_arbeitsrecht-o01",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Arbeitsgesetz (ArG) gilt grundsätzlich für alle Betriebe in der Schweiz.",
+    "erklaerung": "Korrekt. Das ArG hat generelle Geltung, allerdings mit Ausnahmen wie staatliche Verwaltungen, landwirtschaftliche Betriebe, leitende Angestellte, und wissenschaftliche/künstlerische Tätigkeiten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-o02",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche maximale Höchstarbeitszeit schreibt das Arbeitsgesetz (ArG 9) für industrielle Betriebe vor?",
+    "erklaerung": "Nach ArG 9 beträgt die maximale Wochenarbeitszeit für industrielle, Büro- und Verkaufsbetriebe 45 Stunden pro Woche. Für andere Betriebe sind es 50 Stunden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "45 Stunden pro Woche",
+      "44 Stunden pro Woche",
+      "40 Stunden pro Woche",
+      "50 Stunden pro Woche"
+    ],
+    "korrekt": "45 Stunden pro Woche"
+  },
+  {
+    "id": "recht_arbeitsrecht-o03",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Nach dem ArG 9 beträgt die Höchstarbeitszeit für übrige Betriebe (z.B. Landwirtschaft, Gaststättenbetriebe) ________ Stunden pro Woche.",
+    "erklaerung": "Nach ArG 9 Abs. 1 beträgt die maximale Wochenarbeitszeit für nicht spezifisch aufgeführte Betriebe 50 Stunden. Dies schützt die Gesundheit der Arbeitnehmer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "50",
+        "optionen": [
+          "fünfzig"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-o04",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Darf ein Arbeitgeber ein Nachtschicht-Arbeiter (23:00–06:00 Uhr) ohne zusätzliche Vergütung einsetzen?",
+    "erklaerung": "Nach ArG 16-20 erfordert Nachtarbeit (23:00-06:00 Uhr) einen Lohnzuschlag von mindestens 25%, bei Sonntagen 50%. Dies ist Schutz vor Überbelastung und Gesundheitsrisiken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Ja, aber nur mit schriftlicher Zustimmung",
+      "Nein, Nachtarbeit ist generell verboten",
+      "Nein, Nachtarbeit erfordert einen Lohnzuschlag von 25% oder 50%",
+      "Ja, die normale Arbeitszeit gilt auch nachts"
+    ],
+    "korrekt": "Nein, Nachtarbeit erfordert einen Lohnzuschlag von 25% oder 50%"
+  },
+  {
+    "id": "recht_arbeitsrecht-o05",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Überzeit (Stunden über die Höchstarbeitszeit hinaus) darf pro Jahr maximal 170 Stunden betragen und muss durch Freizeit oder Lohnzuschlag kompensiert werden.",
+    "erklaerung": "Korrekt. Nach ArG 12-13 ist Überzeit auf max. 170 Stunden pro Jahr begrenzt (140 Std. in bestimmten Branchen). Die Vergütung erfolgt durch gleichwertige Freizeit oder Lohnzuschlag.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-o06",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitgeber lässt einen Arbeitnehmer an einem Tag 10 Stunden arbeiten, obwohl seine normale Arbeitszeit 8 Stunden pro Tag beträgt. Ist dies zulässig?",
+    "erklaerung": "Das ArG limitiert nicht die tägliche Arbeitszeit auf 8 Stunden, sondern die Wochenarbeitszeit (45 oder 50 Stunden). Solange die Wochenarbeitszeit nicht überschritten wird und Pausen eingehalten werden, ist ein längerer Tag zulässig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nein, nie mehr als 8 Stunden pro Tag",
+      "Ja, unbegrenzt, wenn notwendig",
+      "Ja, wenn die Wochenarbeitszeit nicht überschritten wird",
+      "Nein, höchstens 9 Stunden pro Tag erlaubt"
+    ],
+    "korrekt": "Ja, wenn die Wochenarbeitszeit nicht überschritten wird"
+  },
+  {
+    "id": "recht_arbeitsrecht-o07",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Nach ArG 15 hat ein Arbeitnehmer bei einer Arbeitszeit über 7 Stunden Anspruch auf mindestens ________ Minuten Pause.",
+    "erklaerung": "Nach ArG 15 variiert die Pausendauer: über 5,5 h = 15 Min., über 7 h = 30 Min., über 9 h = 60 Min. Dies schützt die Erholung und Gesundheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "30",
+        "optionen": [
+          "dreissig"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-o08",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zum öffentlich-rechtlichen Arbeitsrecht (ArG) sind korrekt? (Mehrfachauswahl)",
+    "erklaerung": "A und C sind richtig. Das ArG ist relativ zwingendes Recht mit Schutzvorschriften für Arbeitszeiten und schwangere/stillende Frauen. Leitende Angestellte sind ausgenommen (B falsch), und Nachtarbeit ist mit Zuschlag zulässig (D falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Das ArG regelt Höchstarbeitszeiten und Pausenregelungen",
+      "Das ArG gilt absolut für leitende Angestellte",
+      "Das ArG schützt mit Schutzmassnahmen schwangere Frauen",
+      "Das ArG verbietet jede Form von Nachtarbeit"
+    ],
+    "korrekt": [
+      "Das ArG regelt Höchstarbeitszeiten und Pausenregelungen",
+      "Das ArG schützt mit Schutzmassnahmen schwangere Frauen"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-o09",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Kann der Arbeitgeber diese Regelung durchsetzen?",
+    "erklaerung": "Das ArG gilt für Betriebe aller Grössen und auch kleine Betriebe unterliegen den Schutzbestimmungen. Nachtarbeit (23:00-06:00) erfordert nach ArG 16-20 einen Lohnzuschlag von mindestens 25%. Eine Zustimmung der Arbeitnehmer macht diese zwingende Vorschrift nicht hinfällig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Arbeitgeber beschäftigt 6 ständig angestellte Arbeitnehmer in einem Elektrobetrieb. Er möchte sie regelmässig in Nachtschichten arbeiten lassen ohne Lohnzuschlag, um Kosten zu sparen. Ein Arbeitnehmer wehrt sich.",
+    "optionen": [
+      "Ja, kleine Betriebe sind vom ArG befreit",
+      "Nein, Nachtarbeit ist ganz verboten",
+      "Nein, Nachtarbeit erfordert Zuschlag nach ArG 16-20",
+      "Ja, wenn alle Arbeitnehmer zustimmen"
+    ],
+    "korrekt": "Nein, Nachtarbeit erfordert Zuschlag nach ArG 16-20"
+  },
+  {
+    "id": "recht_arbeitsrecht-o10",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das Arbeitsgesetz (ArG) ist absolut zwingendes Recht und jede Abweichung, auch zu Gunsten der Arbeitnehmer, ist ungültig.",
+    "erklaerung": "Falsch. Das ArG ist relativ zwingendes Recht. Abweichungen sind zulässig, wenn sie zu Gunsten der Arbeitnehmer erfolgen (z.B. bessere Arbeitszeiten, höhere Zuschläge). Abweichungen zu Lasten des AN sind ungültig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-o11",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Eine schwangere Arbeitnehmerin soll während der Nacht (23:00–06:00) arbeiten. Welche Schutzbestimmungen des ArG sind relevant?",
+    "erklaerung": "Nach ArG 35-36 sind schwangere und stillende Frauen geschützt durch besondere Regelungen: Nachtarbeit ist verboten (ausser unter strengen Bedingungen), und Ruhezeiten sind geschützt. Dies geht über normale Nachtarbeitsbedingungen hinaus und schützt Mutter und Kind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur die allgemeinen Arbeitszeit-Limits (ArG 9)",
+      "Keine besonderen Schutzbestimmungen",
+      "Nur der Lohnzuschlag für Nachtarbeit (ArG 16)",
+      "ArG 35-36: Spezielle Schutzregelungen für schwangere und stillende Frauen"
+    ],
+    "korrekt": "ArG 35-36: Spezielle Schutzregelungen für schwangere und stillende Frauen"
+  },
+  {
+    "id": "recht_arbeitsrecht-o12",
+    "fach": "Recht",
+    "thema": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Arbeitgeber kann von einem Arbeitnehmer in einem Elektrobetrieb verlangen, 15 Stunden pro Woche Überzeit zu leisten, ohne diese durch Freizeit oder Zuschlag zu kompensieren, da dies notwendig ist.",
+    "erklaerung": "Falsch. Überzeit ist begrenzt auf max. 170 Stunden pro Jahr und muss durch gleichwertige Freizeit oder Lohnzuschlag kompensiert werden (ArG 12-13). ‹Notwendigkeit› ändert nicht die zwingende Kompensationspflicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-c01",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Gesamtarbeitsvertrag (GAV) ist eine Vereinbarung zwischen einer Arbeitnehmerverbaenden/Gewerkschaft und einem Arbeitgeberverband.",
+    "erklaerung": "Korrekt. Ein GAV (OR 356-358) wird zwischen Arbeitnehmerverbaenden/Gewerkschaften und Arbeitgeberverbänden oder einzelnen AG abgeschlossen. Er regelt kollektive Bedingungen für ganze Branchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-c02",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was regelt ein Gesamtarbeitsvertrag (GAV) typischerweise?",
+    "erklaerung": "Ein GAV (OR 356-358) regelt umfassend: Mindestlöhne, Urlaub, Krankheit, Kündigungsfristen, Zuschläge, Arbeitssicherheit und weitere Schutzbestimmungen. Dies schafft Branchenstandards.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur Arbeitgeberrechte",
+      "Nur die Pausenzeiten",
+      "Nichts, GAVs sind unverbindlich",
+      "Mindestlöhne, Ferien, Krankheit, Kündigungsfristen, weitere Bedingungen"
+    ],
+    "korrekt": "Mindestlöhne, Ferien, Krankheit, Kündigungsfristen, weitere Bedingungen"
+  },
+  {
+    "id": "recht_arbeitsrecht-c03",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die ________ nach OR 357a verpflichtet die Parteien eines GAV, während der Laufzeit keine ________ oder Streiks durchzuführen.",
+    "erklaerung": "Nach OR 357a (Friedenspflicht) verpflichten sich die GAV-Parteien, während der Vertragslaufzeit keine Streiks, Boykotte oder Aussperrungen durchzuführen. Dies sichert Arbeitsfrieden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Friedenspflicht",
+        "optionen": [
+          "Friedensplicht"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Kampfmassnahmen",
+        "optionen": [
+          "Streiks",
+          "Arbeitskampfmassnahmen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-c04",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer kann die Allgemeinverbindlichkeit eines GAV erklären?",
+    "erklaerung": "Der Bundesrat kann die Allgemeinverbindlichkeit eines GAV erklären. Dies macht die GAV-Bestimmungen auch auf nicht-organisierte Arbeitnehmer und Arbeitgeber derselben Branche bindend (OR 356 Abs. 3).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Der Bundesrat",
+      "Das Arbeitsgericht",
+      "Die beteiligten Verbände einstimmig",
+      "Der Kantonrat"
+    ],
+    "korrekt": "Der Bundesrat"
+  },
+  {
+    "id": "recht_arbeitsrecht-c05",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Arbeitgeber, der nicht Mitglied eines Arbeitgeberverbands ist, ist nicht an einen GAV gebunden.",
+    "erklaerung": "Falsch. Ist ein GAV für allgemeinverbindlich erklärt worden, bindet es alle Arbeitgeber und Arbeitnehmer der betreffenden Branche/Region, unabhängig von Verbandsmitgliedschaft. Dies schützt Branchenstandards.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-c06",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein GAV sieht einen Mindestlohn von CHF 4'500.– vor, aber ein Arbeitgeber zahlt nur CHF 4'000.–. Was folgt?",
+    "erklaerung": "Ein GAV ist bindend (oder allgemeinverbindlich erklärt). Unterschreitungen der GAV-Standards sind nicht zulässig. Der Arbeitnehmer kann die ausstehende Lohndifferenz klagen und ggf. Schadensersatz erhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Das ist zulässig, da Arbeitsrecht Formfreiheit kennt",
+      "Das GAV wird ungültig",
+      "Der Arbeitnehmer hat keinen Anspruch",
+      "Der Arbeitnehmer kann die Differenz einklagen"
+    ],
+    "korrekt": "Der Arbeitnehmer kann die Differenz einklagen"
+  },
+  {
+    "id": "recht_arbeitsrecht-c07",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine Normalarbeitsverordnung (NAV) wird von ________ erlassen und regelt Arbeitsbedingungen in Branchen, wo AN ________ gefährdet oder das Lohnniveau sehr tief ist.",
+    "erklaerung": "Nach OR 359-360 wird eine NAV von Kantons- oder Bundesbehörden erlassen und gilt für Branchen mit besonderem Gefährdungspotenzial oder tiefem Lohnniveau (z.B. Gastgewerbe, Landwirtschaft). Sie hat in der Schweiz untergeordnete Rolle.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Behörden",
+        "optionen": [
+          "der Behörde",
+          "Kantons- oder Bundesbehörden"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "besonders",
+        "optionen": [
+          "intensiv",
+          "stark"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-c08",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu kollektiven Arbeitsverträgen (GAV/NAV) sind richtig? (Mehrfachauswahl)",
+    "erklaerung": "A und C sind richtig. GAVs regeln kollektiv für Branchen; durch Allgemeinverbindlichkeit gelten sie auch für nicht-Mitglieder. B ist falsch (nicht nur Mitglieder), D ist falsch (Abweichungen zu Gunsten AN möglich).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Sie regeln Bedingungen für ganze Branchen oder Regionen",
+      "Sie sind nur bindend für Verbandsmitglieder",
+      "Durch Allgemeinverbindlichkeit können sie für alle gelten",
+      "Sie sind absolut zwingendes Recht ohne Abweichungsmöglichkeit"
+    ],
+    "korrekt": [
+      "Sie regeln Bedingungen für ganze Branchen oder Regionen",
+      "Durch Allgemeinverbindlichkeit können sie für alle gelten"
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-c09",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Können die Arbeitnehmer trotz GAV streiken?",
+    "erklaerung": "Nach OR 357a ist eine Friedenspflicht im GAV vereinbart: Während der Laufzeit sind Kampfmassnahmen (Streiks, Boykotte) nicht zulässig. Dies ist ein zentraler Bestandteil des Arbeitsfriedens. Die Arbeitnehmerverbände sind verpflichtet, Streiks zu unterbinden. Obersatz: Darf während GAV-Laufzeit gestreikt werden? → Voraussetzungen: Besteht eine Friedenspflicht? → Subsumtion: Ja, OR 357a verpflichtet die Parteien. → Schluss: Streiks sind verboten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "kontext": "Ein Verband von Bäckerei-Arbeitnehmern und ein Verband von Bäckerei-Arbeitgebern schliessen einen GAV. Sie vereinbaren u.a. Mindestlöhne und dass während 2 Jahren keine Streiks durchgeführt werden. Die Bäckerei-Arbeitnehmer erfahren von besseren Bedingungen bei konkurrierenden Bäckereien.",
+    "optionen": [
+      "Nur wenn die Bedingungen sich verschlechtern",
+      "Nur mit Zustimmung der AG",
+      "Ja, Streikrecht ist nicht aufgebbar",
+      "Nein, die Friedenspflicht (OR 357a) verbietet Streiks während GAV-Laufzeit"
+    ],
+    "korrekt": "Nein, die Friedenspflicht (OR 357a) verbietet Streiks während GAV-Laufzeit"
+  },
+  {
+    "id": "recht_arbeitsrecht-c10",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das Gleichstellungsgesetz (GlG) verlangt von Arbeitgebern automatisch, dass sie Männer und Frauen gleich bezahlen, auch wenn ein GAV tiefere Frauenlöhne zulässt.",
+    "erklaerung": "Korrekt. Nach BV 8 Abs. 3 und GlG 3 gilt das Diskriminierungsverbot für Geschlechter. Ein GAV, der Frauen systematisch geringer bezahlt, verstösst gegen GlG. Gleiche Arbeit = gleicher Lohn ist bindend.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "aussagen": []
+  },
+  {
+    "id": "recht_arbeitsrecht-c11",
+    "fach": "Recht",
+    "thema": "Kollektives Arbeitsrecht (GAV, NAV, GlG)",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein GAV wird für allgemeinverbindlich erklärt. Danach wird eine kleine, nicht verbandseigene Bäckerei eröffnet, die GAV-Standard unterschreitet. Kann die Bäckerei berechtigt gegen das GAV argumentieren?",
+    "erklaerung": "Die Allgemeinverbindlichkeit eines GAV (erklär durch Bundesrat nach OR 356) bindet alle Betriebe und Arbeitnehmer der betreffenden Branche/Region, unabhängig von Verbandsmitgliedschaft oder Betriebsgrösse. Dies schützt faire Wettbewerbsbedingungen und verhindert ‹Lohndumping› durch Neu-/Kleinbetriebe. Die Bäckerei muss die GAV-Bestimmungen einhalten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "optionen": [
+      "Nur wenn die Betriebszahl gross ist",
+      "Ja, kleine Betriebe sind vom GAV befreit",
+      "Nein, die Allgemeinverbindlichkeit bindet alle Betriebe der Branche",
+      "Ja, die Allgemeinverbindlichkeit ist verfassungswidrig"
+    ],
+    "korrekt": "Nein, die Allgemeinverbindlichkeit bindet alle Betriebe der Branche"
+  },
+  {
+    "id": "recht_arbeitsrecht-neu_sort_01",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die gesetzlichen Kündigungsfristen nach OR 335c in die korrekte Reihenfolge – von der kürzesten zur längsten.",
+    "erklaerung": "Die gesetzlichen Kündigungsfristen nach OR 335c staffeln sich nach Dienstjahren: In der Probezeit nur 7 Tage, dann 1 Monat im 1. Dienstjahr, 2 Monate im 2.–9. Dienstjahr und 3 Monate ab dem 10. Dienstjahr. Die Kündigung erfolgt jeweils auf Ende eines Monats (ausser in der Probezeit). GAV oder Einzelverträge können längere Fristen vorsehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-neu_sort_02",
+    "fach": "Recht",
+    "thema": "Kündigungsschutz & Sperrfristen",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Schritte, die ein Arbeitnehmer nach einer vermutlich missbräuchlichen Kündigung unternehmen muss, in die korrekte Reihenfolge.",
+    "erklaerung": "Bei einer missbräuchlichen Kündigung muss der Arbeitnehmer zuerst schriftlich Einspruch erheben (Frist: vor Ende der Kündigungsfrist). Dann wird eine gütliche Einigung versucht. Scheitert dies, folgt ein obligatorisches Schlichtungsverfahren. Erst danach kann beim Arbeitsgericht geklagt werden – innerhalb von 180 Tagen nach Beendigung des Arbeitsverhältnisses.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-neu_sort_03",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Rechtsquellen des Arbeitsrechts nach ihrer Rangordnung – von der höchsten zur tiefsten Normebene.",
+    "erklaerung": "Im Arbeitsrecht gilt eine klare Normenhierarchie: Die BV steht zuoberst (Grundrechte). Dann folgen die Bundesgesetze (OR für den Arbeitsvertrag, ArG für den Arbeitsschutz). GAV-Bestimmungen gehen dem Einzelvertrag vor, dürfen aber nicht gegen zwingendes Gesetzesrecht verstossen. Der Einzelvertrag darf nur zugunsten des Arbeitnehmers vom GAV abweichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-beschriftung01",
+    "fach": "Recht",
+    "thema": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die drei Schichten des Arbeitsrechts und ordne die Rechtsinstrumente den Ebenen zu.",
+    "erklaerung": "3 Ebenen des Arbeitsrechts: 1) Individual (Einzelarbeitsvertrag, OR 319 ff.), 2) Kollektiv (GAV zwischen Gewerkschaft + Arbeitgeberverband; NAV = staatlich festgelegter Mindestvertrag), 3) Öffentlich (ArG: Arbeitszeiten, Gesundheitsschutz; UVG: Unfallversicherung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/arbeitsrecht/arbeitsrecht_bereiche_beschriftung.svg",
+      "alt": "Drei-Schichten-Diagramm des Arbeitsrechts: individual, kollektiv, öffentlich"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Einzelarbeitsvertrag (OR 319 ff.)",
+        "x": 50,
+        "y": 45
+      },
+      {
+        "id": "l2",
+        "text": "GAV (Gesamtarbeitsvertrag)",
+        "x": 50,
+        "y": 33
+      },
+      {
+        "id": "l3",
+        "text": "Normalarbeitsvertrag (NAV)",
+        "x": 25,
+        "y": 33
+      },
+      {
+        "id": "l4",
+        "text": "Arbeitsgesetz (ArG)",
+        "x": 25,
+        "y": 86
+      },
+      {
+        "id": "l5",
+        "text": "UVG (Unfallversicherung)",
+        "x": 75,
+        "y": 86
+      }
+    ]
+  },
+  {
+    "id": "recht_arbeitsrecht-dragdrop01",
+    "fach": "Recht",
+    "thema": "Beendigung des Arbeitsverhältnisses & Kündigung",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordne die Kündigungsregelungen der richtigen Zeitspanne im Arbeitsverhältnis zu (OR 335b/c).",
+    "erklaerung": "Probezeit (max. 3 Monate, OR 335b): 7 Tage Frist, jederzeit. 1. Dienstjahr: 1 Monat auf Monatsende. Ab 2. DJ: 2 Monate. Ab 10. DJ: 3 Monate (OR 335c). Vertraglich können längere Fristen vereinbart werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4",
+    "bild": {
+      "src": "/pool-bilder/recht/arbeitsrecht/arbeitsrecht_fristen_dragdrop.svg",
+      "alt": "Drei Spalten: Probezeit, 1. Dienstjahr, Ab 2. Dienstjahr"
+    },
+    "zones": [
+      {
+        "id": "probezeit",
+        "x": 2.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 70
+      },
+      {
+        "id": "jahr1",
+        "x": 35,
+        "y": 13.75,
+        "w": 30,
+        "h": 70
+      },
+      {
+        "id": "ab2",
+        "x": 67.5,
+        "y": 13.75,
+        "w": 30,
+        "h": 70
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "7tage",
+        "text": "7 Tage Frist (OR 335b I)",
+        "zone": "probezeit"
+      },
+      {
+        "id": "jederzeit",
+        "text": "Jederzeit kündbar",
+        "zone": "probezeit"
+      },
+      {
+        "id": "1monat",
+        "text": "1 Monat auf Monatsende",
+        "zone": "jahr1"
+      },
+      {
+        "id": "kein_schutz",
+        "text": "Kein besonderer Schutz",
+        "zone": "jahr1"
+      },
+      {
+        "id": "2monate",
+        "text": "2 Monate auf Monatsende (2.–9. DJ)",
+        "zone": "ab2"
+      },
+      {
+        "id": "3monate",
+        "text": "3 Monate auf Monatsende (ab 10. DJ)",
+        "zone": "ab2"
+      }
+    ]
+  }
+]

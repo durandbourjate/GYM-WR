@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="420" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Voraussetzungen eines gültigen Vertrags</text>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#94a3b8">Vier kumulative Bedingungen nach OR</text>
+
+  <!-- Zentrale Box -->
+  <rect x="250" y="70" width="200" height="36" rx="8" fill="#73ab2c" opacity="0.15" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="350" y="93" text-anchor="middle" font-size="13" font-weight="600" fill="#2e7d32">Gültiger Vertrag</text>
+
+  <!-- Verbindungslinien -->
+  <line x1="280" y1="106" x2="120" y2="140" stroke="#94a3b8" stroke-width="1.2"/>
+  <line x1="320" y1="106" x2="290" y2="140" stroke="#94a3b8" stroke-width="1.2"/>
+  <line x1="380" y1="106" x2="410" y2="140" stroke="#94a3b8" stroke-width="1.2"/>
+  <line x1="420" y1="106" x2="580" y2="140" stroke="#94a3b8" stroke-width="1.2"/>
+
+  <!-- 1) Handlungsfähige Parteien -->
+  <rect x="20" y="140" width="200" height="130" rx="10" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="120" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#2e7d32">1. Parteien</text>
+  <line x1="45" y1="175" x2="195" y2="175" stroke="#a5d6a7" stroke-width="1"/>
+  <text x="120" y="195" text-anchor="middle" font-size="10" fill="#1e293b">Handlungsfähigkeit</text>
+  <text x="120" y="212" text-anchor="middle" font-size="10" fill="#1e293b">• Urteilsfähigkeit (ZGB 16)</text>
+  <text x="120" y="229" text-anchor="middle" font-size="10" fill="#1e293b">• Mündigkeit (ZGB 14)</text>
+  <text x="120" y="246" text-anchor="middle" font-size="10" fill="#1e293b">→ Handlungsfähig (ZGB 13)</text>
+
+  <!-- 2) Willensäusserung -->
+  <rect x="190" y="140" width="200" height="130" rx="10" fill="#e3f2fd" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="290" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#1565c0">2. Willensäusserung</text>
+  <line x1="215" y1="175" x2="365" y2="175" stroke="#90caf9" stroke-width="1"/>
+  <text x="290" y="195" text-anchor="middle" font-size="10" fill="#1e293b">Übereinstimmend (Konsens)</text>
+  <text x="290" y="212" text-anchor="middle" font-size="10" fill="#1e293b">• Antrag (OR 3)</text>
+  <text x="290" y="229" text-anchor="middle" font-size="10" fill="#1e293b">• Annahme (OR 10)</text>
+  <text x="290" y="246" text-anchor="middle" font-size="10" fill="#1e293b">• Kein Willensmangel</text>
+
+  <!-- 3) Inhalt -->
+  <rect x="360" y="140" width="150" height="130" rx="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="1.5"/>
+  <text x="435" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#6a1b9a">3. Inhalt</text>
+  <line x1="380" y1="175" x2="490" y2="175" stroke="#ce93d8" stroke-width="1"/>
+  <text x="435" y="195" text-anchor="middle" font-size="10" fill="#1e293b">• Möglich</text>
+  <text x="435" y="212" text-anchor="middle" font-size="10" fill="#1e293b">• Erlaubt</text>
+  <text x="435" y="229" text-anchor="middle" font-size="10" fill="#1e293b">• Sittlich (OR 20)</text>
+  <text x="435" y="246" text-anchor="middle" font-size="10" fill="#1e293b">• Bestimmt/bestimmbar</text>
+
+  <!-- 4) Form -->
+  <rect x="480" y="140" width="200" height="130" rx="10" fill="#fff3e0" stroke="#f89907" stroke-width="1.5"/>
+  <text x="580" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#e65100">4. Form</text>
+  <line x1="505" y1="175" x2="655" y2="175" stroke="#ffcc80" stroke-width="1"/>
+  <text x="580" y="195" text-anchor="middle" font-size="10" fill="#1e293b">Grundsatz: Formfreiheit</text>
+  <text x="580" y="212" text-anchor="middle" font-size="10" fill="#1e293b">(OR 11 I)</text>
+  <text x="580" y="232" text-anchor="middle" font-size="10" fill="#1e293b">Ausnahmen:</text>
+  <text x="580" y="249" text-anchor="middle" font-size="10" fill="#1e293b">• Einfache Schriftlichkeit</text>
+  <text x="580" y="264" text-anchor="middle" font-size="10" fill="#1e293b">• Öffentliche Beurkundung</text>
+
+  <!-- Ergebnis-Box unten -->
+  <rect x="100" y="295" width="500" height="50" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="350" y="318" text-anchor="middle" font-size="12" font-weight="600" fill="#1e293b">Fehlt eine Voraussetzung → Vertrag nichtig oder anfechtbar</text>
+  <text x="350" y="336" text-anchor="middle" font-size="10" fill="#64748b">Nichtigkeit (OR 20) vs. Anfechtbarkeit (OR 23 ff.)</text>
+
+  <!-- Pfeile von 4 Boxen zur Ergebnis-Box -->
+  <line x1="120" y1="270" x2="200" y2="295" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="290" y1="270" x2="300" y2="295" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="435" y1="270" x2="400" y2="295" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="580" y1="270" x2="500" y2="295" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <text x="350" y="410" text-anchor="middle" font-size="10" fill="#94a3b8">Alle vier Voraussetzungen müssen kumulativ erfüllt sein</text>
+</svg>

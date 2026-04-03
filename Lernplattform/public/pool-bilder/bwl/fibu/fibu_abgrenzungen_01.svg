@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="320" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Transitorische Buchungen – Übersicht</text>
+
+  <!-- Zeitachse -->
+  <line x1="50" y1="60" x2="650" y2="60" stroke="#1e293b" stroke-width="2"/>
+  <line x1="350" y1="50" x2="350" y2="70" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="350" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">31.12. Bilanzstichtag</text>
+  <text x="200" y="48" text-anchor="middle" font-size="11" fill="#64748b">Altes Jahr</text>
+  <text x="500" y="48" text-anchor="middle" font-size="11" fill="#64748b">Neues Jahr</text>
+
+  <!-- TA Box -->
+  <rect x="30" y="100" width="310" height="95" rx="8" fill="#e8f7fe" stroke="#01a9f4" stroke-width="2"/>
+  <text x="185" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#01a9f4">Transitorische Aktiven (TA)</text>
+  <text x="185" y="142" text-anchor="middle" font-size="10" fill="#64748b">= Aktivkonto (Bilanz, links)</text>
+
+  <text x="45" y="163" font-size="11" fill="#1e293b" font-weight="600">1. Vorausbezahlter Aufwand</text>
+  <text x="55" y="180" font-size="10" fill="#64748b">Zahlung im alten Jahr, Aufwand gehört ins neue</text>
+
+  <!-- TP Box -->
+  <rect x="360" y="100" width="310" height="95" rx="8" fill="#fff8eb" stroke="#f89907" stroke-width="2"/>
+  <text x="515" y="122" text-anchor="middle" font-size="14" font-weight="700" fill="#f89907">Transitorische Passiven (TP)</text>
+  <text x="515" y="142" text-anchor="middle" font-size="10" fill="#64748b">= Passivkonto (Bilanz, rechts)</text>
+
+  <text x="375" y="163" font-size="11" fill="#1e293b" font-weight="600">1. Noch nicht bezahlter Aufwand</text>
+  <text x="385" y="180" font-size="10" fill="#64748b">Aufwand im alten Jahr, Zahlung erst im neuen</text>
+
+  <!-- TA Beispiel -->
+  <rect x="30" y="205" width="310" height="50" rx="6" fill="#f0f9ff" stroke="#01a9f4" stroke-width="1"/>
+  <text x="45" y="225" font-size="11" fill="#1e293b" font-weight="600">2. Noch nicht erhaltener Ertrag</text>
+  <text x="55" y="242" font-size="10" fill="#64748b">Ertrag im alten Jahr verdient, Zahlung im neuen</text>
+
+  <!-- TP Beispiel -->
+  <rect x="360" y="205" width="310" height="50" rx="6" fill="#fffbeb" stroke="#f89907" stroke-width="1"/>
+  <text x="375" y="225" font-size="11" fill="#1e293b" font-weight="600">2. Vorauserhaltener Ertrag</text>
+  <text x="385" y="242" font-size="10" fill="#64748b">Ertrag im alten Jahr erhalten, gehört ins neue</text>
+
+  <!-- Rückstellungen -->
+  <rect x="30" y="265" width="640" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="350" y="287" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">Rückstellungen</text>
+  <text x="350" y="303" text-anchor="middle" font-size="10" fill="#64748b">Wie TP, aber Betrag und/oder Fälligkeit sind unsicher (z.B. Rechtsstreit, Garantie)</text>
+</svg>

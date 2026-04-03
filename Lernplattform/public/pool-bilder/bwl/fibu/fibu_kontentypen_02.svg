@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 340" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="340" fill="#ffffff"/>
+  
+  <text x="350" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">Welche Seite ist (+) und welche (–)?</text>
+
+  <!-- Aktivkonto -->
+  <text x="85" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">S</text>
+  <text x="245" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">H</text>
+  <rect x="20" y="68" width="230" height="30" fill="#ffe600" rx="2"/>
+  <text x="135" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Aktivkonto</text>
+  <rect x="20" y="98" width="230" height="120" fill="none" stroke="#334155" stroke-width="2.5"/>
+  <line x1="135" y1="98" x2="135" y2="218" stroke="#334155" stroke-width="2.5"/>
+  <text x="78" y="155" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+  <text x="190" y="155" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+
+  <!-- Passivkonto -->
+  <text x="455" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">S</text>
+  <text x="615" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">H</text>
+  <rect x="390" y="68" width="230" height="30" fill="#00e5ff" rx="2"/>
+  <text x="505" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Passivkonto</text>
+  <rect x="390" y="98" width="230" height="120" fill="none" stroke="#334155" stroke-width="2.5"/>
+  <line x1="505" y1="98" x2="505" y2="218" stroke="#334155" stroke-width="2.5"/>
+  <text x="448" y="155" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+  <text x="560" y="155" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+
+  <!-- Aufwandskonto -->
+  <text x="85" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">S</text>
+  <text x="245" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">H</text>
+  <rect x="20" y="248" width="230" height="30" fill="#ff00ff" rx="2"/>
+  <text x="135" y="268" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Aufwandskonto</text>
+  <rect x="20" y="278" width="230" height="55" fill="none" stroke="#334155" stroke-width="2.5"/>
+  <line x1="135" y1="278" x2="135" y2="333" stroke="#334155" stroke-width="2.5"/>
+  <text x="78" y="312" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+  <text x="190" y="312" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+
+  <!-- Ertragskonto -->
+  <text x="455" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">S</text>
+  <text x="615" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">H</text>
+  <rect x="390" y="248" width="230" height="30" fill="#00ff00" rx="2"/>
+  <text x="505" y="268" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Ertragskonto</text>
+  <rect x="390" y="278" width="230" height="55" fill="none" stroke="#334155" stroke-width="2.5"/>
+  <line x1="505" y1="278" x2="505" y2="333" stroke="#334155" stroke-width="2.5"/>
+  <text x="448" y="312" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+  <text x="560" y="312" text-anchor="middle" font-size="28" font-weight="700" fill="#94a3b8">?</text>
+</svg>

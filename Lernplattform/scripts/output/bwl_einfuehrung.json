@@ -1,0 +1,1628 @@
+[
+  {
+    "id": "bwl_einfuehrung-w01",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Bedürfnis?",
+    "erklaerung": "Ein Bedürfnis ist gemäss Definition der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern. Bedürfnisse sind der Ausgangspunkt wirtschaftlicher Aktivitäten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Eine Dienstleistung, die von Unternehmen angeboten wird",
+      "Ein Gut, das man im Laden kaufen kann",
+      "Die Menge an Geld, die man zur Verfügung hat",
+      "Der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern"
+    ],
+    "korrekt": "Der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern"
+  },
+  {
+    "id": "bwl_einfuehrung-w02",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Stufe der Maslow'schen Bedürfnispyramide bildet die Basis?",
+    "erklaerung": "Die physiologischen Bedürfnisse (z.B. Nahrung, Schlaf, Wärme) bilden die unterste Stufe der Pyramide. Sie müssen zuerst befriedigt werden, bevor höhere Bedürfnisse relevant werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/einfuehrung/einfuehrung_beduerfnispyramide_01.svg",
+      "alt": "Pyramide mit vier Stufen, Beschriftungen durch Fragezeichen ersetzt"
+    },
+    "optionen": [
+      "Physiologische Bedürfnisse",
+      "Soziale Bedürfnisse",
+      "Sicherheitsbedürfnisse",
+      "Selbstverwirklichung"
+    ],
+    "korrekt": "Physiologische Bedürfnisse"
+  },
+  {
+    "id": "bwl_einfuehrung-w03",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Bedürfnisse der Menschen sind der Ausgangspunkt der {0}. Diese ungelösten Probleme bieten die Möglichkeit für das Anbieten von Lösungen, für welche eine {1} bestehen kann.",
+    "erklaerung": "Bedürfnisse sind der Motor der Wirtschaft. Wenn Menschen bereit sind, für die Lösung eines Problems zu bezahlen, entsteht ein Markt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Wirtschaft",
+        "optionen": [
+          "wirtschaftlichen Aktivitäten",
+          "wirtschaftlichen Tätigkeit"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Zahlungsbereitschaft",
+        "optionen": [
+          "Nachfrage"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-w04",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Dem Menschen gelingt es, alle seine Bedürfnisse vollständig zu befriedigen, wenn er genug Geld verdient.",
+    "erklaerung": "Falsch. Dem Menschen gelingt es nie, alle seine Bedürfnisse zu befriedigen. Sein Budget ist beschränkt und die zur Verfügung stehenden Ressourcen und Güter sind knapp. Auch mit viel Geld bleiben Bedürfnisse unerfüllt (z.B. Zeit, Gesundheit).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-w05",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen beschreibt den Zusammenhang zwischen Bedürfnissen und Knappheit korrekt?",
+    "erklaerung": "Das Grundproblem der Wirtschaft ist, dass die menschlichen Bedürfnisse praktisch unbegrenzt sind, während die Ressourcen (Geld, Rohstoffe, Zeit) zur Befriedigung begrenzt sind. Dieses Spannungsfeld zwischen Bedarf und Deckungsmöglichkeit ist die Ursache der Knappheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Knappheit entsteht durch staatliche Regulierung",
+      "Knappheit entsteht, weil die Bedürfnisse unbegrenzt, die Mittel zur Befriedigung aber begrenzt sind",
+      "Knappheit existiert nur in Entwicklungsländern",
+      "Knappheit entsteht, weil Bedürfnisse begrenzt, aber Ressourcen unbegrenzt sind"
+    ],
+    "korrekt": "Knappheit entsteht, weil die Bedürfnisse unbegrenzt, die Mittel zur Befriedigung aber begrenzt sind"
+  },
+  {
+    "id": "bwl_einfuehrung-w06",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In welchen Rollen sind Menschen mit der Wirtschaft verknüpft? (Mehrere Antworten möglich.)",
+    "erklaerung": "Alle Menschen sind auf vielfältige Weise mit der Wirtschaft verknüpft: als Arbeitnehmende (Einkommen erzielen), als Konsumierende (Bedürfnisse befriedigen), als Produzierende (Güter herstellen, Gewinn erzielen) und als Sparende (Zinsen erwirtschaften).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Als Arbeitnehmende bei einem Unternehmen",
+      "Als Konsumentinnen und Konsumenten beim täglichen Einkauf",
+      "Als Produzierende von Gütern und Dienstleistungen",
+      "Als Sparerinnen und Sparer, um Zinsen zu erwirtschaften"
+    ],
+    "korrekt": [
+      "Als Arbeitnehmende bei einem Unternehmen",
+      "Als Konsumentinnen und Konsumenten beim täglichen Einkauf",
+      "Als Produzierende von Gütern und Dienstleistungen",
+      "Als Sparerinnen und Sparer, um Zinsen zu erwirtschaften"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-w07",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Frau Wepfer schliesst eine Privathaftpflichtversicherung ab. Welcher Kategorie der Maslow'schen Bedürfnispyramide entspricht dieses Bedürfnis?",
+    "erklaerung": "Eine Privathaftpflichtversicherung dient der Absicherung gegen finanzielle Risiken. Dies entspricht einem Sicherheitsbedürfnis (Schutz vor Gefahren, festes Einkommen, Absicherung, Unterkunft).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Soziales Bedürfnis",
+      "Physiologisches Bedürfnis",
+      "Sicherheitsbedürfnis",
+      "Bedürfnis nach Selbstverwirklichung"
+    ],
+    "korrekt": "Sicherheitsbedürfnis"
+  },
+  {
+    "id": "bwl_einfuehrung-w08",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Herr Sommer kauft sich einen Porsche. Welche Bedürfniskategorie(n) könnten hier zutreffen?",
+    "erklaerung": "Ein Porsche geht weit über das Grundbedürfnis nach Mobilität hinaus. Der Kauf eines Luxusautos befriedigt primär das Bedürfnis nach Anerkennung und Prestige (Achtung). Je nach Motivation kann auch Selbstverwirklichung eine Rolle spielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nur soziales Bedürfnis, da man mit dem Auto Freunde besuchen kann",
+      "Nur Sicherheitsbedürfnis, da ein Auto Schutz bietet",
+      "Primär Bedürfnis nach Anerkennung (Prestige), eventuell auch Selbstverwirklichung",
+      "Nur physiologisches Bedürfnis, da ein Auto der Fortbewegung dient"
+    ],
+    "korrekt": "Primär Bedürfnis nach Anerkennung (Prestige), eventuell auch Selbstverwirklichung"
+  },
+  {
+    "id": "bwl_einfuehrung-w09",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Maslow'sche Bedürfnispyramide impliziert, dass höhere Bedürfnisse erst dann relevant werden, wenn die darunterliegenden vollständig befriedigt sind. Dieses Modell bildet die Realität exakt ab.",
+    "erklaerung": "Falsch. Die Maslow'sche Bedürfnispyramide ist ein vereinfachtes Modell. In der Realität können Menschen durchaus höhere Bedürfnisse verfolgen, obwohl niedrigere noch nicht vollständig befriedigt sind (z.B. Künstler, die trotz finanzieller Not kreativ arbeiten). Die starre Hierarchie ist eine Kritik am Modell.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-w10",
+    "fach": "BWL",
+    "thema": "Wirtschaft, Bedürfnisse & Knappheit",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "{0} bedeutet eine möglichst effiziente Umwandlung von Inputs hin zu Outputs, also die Vermeidung von Verschwendung.",
+    "erklaerung": "Wirtschaften bedeutet, mit knappen Ressourcen (Inputs) einen möglichst grossen Nutzen (Output) zu erzielen. Die zentrale Aufgabe ist die Vermeidung von Verschwendung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Wirtschaften",
+        "optionen": [
+          "Das Wirtschaften"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-g01",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie werden Güter genannt, die durch die Wirtschaft bereitgestellt werden und der Bedürfnisbefriedigung dienen?",
+    "erklaerung": "Wirtschaftsgüter sind Güter, die knapp sind und bewirtschaftet werden müssen. Im Gegensatz dazu sind freie Güter (wie Luft) in ausreichender Menge vorhanden und werden von der BWL nicht näher betrachtet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Wirtschaftsgüter",
+      "Freie Güter",
+      "Naturgüter",
+      "Luxusgüter"
+    ],
+    "korrekt": "Wirtschaftsgüter"
+  },
+  {
+    "id": "bwl_einfuehrung-g02",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welches der folgenden Beispiele ist ein Verbrauchsgut?",
+    "erklaerung": "Lebensmittel sind Verbrauchsgüter, weil sie mit dem Konsum verbraucht werden. Fernseher, Bücher und Kletterseile können wiederholt benutzt werden und sind somit Gebrauchsgüter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/einfuehrung/einfuehrung_gueterarten_01.svg",
+      "alt": "Übersicht der Güterarten als Baumdiagramm mit leeren Feldern"
+    },
+    "optionen": [
+      "Ein Lebensmittel",
+      "Ein Kletterseil",
+      "Ein Fernseher",
+      "Ein Buch"
+    ],
+    "korrekt": "Ein Lebensmittel"
+  },
+  {
+    "id": "bwl_einfuehrung-g03",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Dienstleistungen zählen zu den immateriellen Gütern.",
+    "erklaerung": "Richtig. Immaterielle Güter umfassen Dienstleistungen aller Art, Patente, Rechte und Lizenzen. Im Gegensatz dazu sind materielle Güter (Sachgüter) physisch greifbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-g04",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Materielle Güter lassen sich in {0} und {1} unterteilen.",
+    "erklaerung": "Materielle Güter (Sachgüter) werden in Konsumgüter (für den privaten Verbrauch) und Investitionsgüter (für die Erstellung von Konsumgütern, z.B. Maschinen) unterteilt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Konsumgüter",
+        "optionen": [
+          "Konsumgueter"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Investitionsgüter",
+        "optionen": [
+          "Investitionsgueter"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-g05",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Investitionsgüter von Konsumgütern?",
+    "erklaerung": "Investitionsgüter (z.B. Maschinen, Fahrzeuge) werden für die Erstellung von Konsumgütern verwendet. Sie tragen somit indirekt zur Bedürfnisbefriedigung bei, während Konsumgüter direkt dem privaten Verbrauch dienen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Konsumgüter können nur einmal verwendet werden",
+      "Investitionsgüter werden ausschliesslich vom Staat gekauft",
+      "Investitionsgüter dienen der Erstellung von Konsumgütern und tragen indirekt zur Bedürfnisbefriedigung bei",
+      "Investitionsgüter sind immer teurer als Konsumgüter"
+    ],
+    "korrekt": "Investitionsgüter dienen der Erstellung von Konsumgütern und tragen indirekt zur Bedürfnisbefriedigung bei"
+  },
+  {
+    "id": "bwl_einfuehrung-g06",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zum ökonomischen Prinzip treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das ökonomische Prinzip kennt drei Varianten: Maximumprinzip (gegebener Input → maximaler Output), Minimumprinzip (vorgegebener Output → minimaler Input) und Optimumprinzip (Input und Output optimal abstimmen). Ein «Gewinnprinzip» gibt es in dieser Form nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Maximumprinzip: Mit gegebenem Input den grösstmöglichen Output erzielen",
+      "Das Minimumprinzip: Einen vorgegebenen Output mit minimalem Input erreichen",
+      "Das Optimumprinzip: Input und Output optimal aufeinander abstimmen",
+      "Das Gewinnprinzip: Immer den maximalen Gewinn anstreben"
+    ],
+    "korrekt": [
+      "Das Maximumprinzip: Mit gegebenem Input den grösstmöglichen Output erzielen",
+      "Das Minimumprinzip: Einen vorgegebenen Output mit minimalem Input erreichen",
+      "Das Optimumprinzip: Input und Output optimal aufeinander abstimmen"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-g07",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen will aus 125 Holzlatten möglichst viele Tischplatten herstellen. Welches ökonomische Prinzip wird hier angewendet?",
+    "erklaerung": "Hier ist der Input (125 Holzlatten) gegeben und der Output (Anzahl Tischplatten) soll maximiert werden. Das entspricht dem Maximumprinzip (auch Ergiebigkeitsprinzip genannt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Maximumprinzip",
+      "Minimumprinzip",
+      "Optimumprinzip",
+      "Sparsamkeitsprinzip"
+    ],
+    "korrekt": "Maximumprinzip"
+  },
+  {
+    "id": "bwl_einfuehrung-g08",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Sechs Tischplatten sollen aus möglichst wenigen Holzlatten fabriziert werden. Welches ökonomische Prinzip wird angewendet?",
+    "erklaerung": "Hier ist der Output (sechs Tischplatten) vorgegeben und der Input (Holzlatten) soll minimiert werden. Das entspricht dem Minimumprinzip (auch Sparsamkeitsprinzip genannt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Maximumprinzip",
+      "Ergiebigkeitsprinzip",
+      "Optimumprinzip",
+      "Minimumprinzip"
+    ],
+    "korrekt": "Minimumprinzip"
+  },
+  {
+    "id": "bwl_einfuehrung-g09",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ein Flughafen soll mit vertretbaren Kosten so ausgebaut werden, dass damit mehr Passagiere befördert werden können. Welches ökonomische Prinzip wird hier angewendet?",
+    "erklaerung": "Weder der zu erreichende Output (Passagierzahl) noch der verfügbare Input (Budget) sind genau vorgegeben. Es wird nach dem Optimumprinzip vorgegangen: eine Abwägung zwischen Kosten und Nutzen, um eine optimale Relation zu finden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Keines der ökonomischen Prinzipien",
+      "Minimumprinzip, weil die Kosten «vertretbar» sein sollen",
+      "Maximumprinzip, weil mehr Passagiere befördert werden sollen",
+      "Optimumprinzip, weil weder Input noch Output genau vorgegeben sind"
+    ],
+    "korrekt": "Optimumprinzip, weil weder Input noch Output genau vorgegeben sind"
+  },
+  {
+    "id": "bwl_einfuehrung-g10",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Produkte und Dienstleistungen bilden zusammen die Marktleistungen eines Unternehmens.",
+    "erklaerung": "Richtig. Konsum- und Investitionsgüter werden unter dem Begriff «Produkte» zusammengefasst und von den Dienstleistungen unterschieden. Produkte und Dienstleistungen bilden zusammen die Marktleistungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-g11",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Maschine in einer Fabrik wird als Investitionsgut klassifiziert. Welcher Untertyp trifft zu?",
+    "erklaerung": "Investitionsgüter werden in Repetierfaktoren (gehen im Produktionsprozess auf, z.B. Rohstoffe, Betriebsmittel) und Potenzialfaktoren (werden langfristig genutzt, z.B. Maschinen, Gebäude) unterteilt. Eine Maschine ist ein Potenzialfaktor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Repetierfaktor, weil die Maschine immer wieder dieselbe Aufgabe ausführt",
+      "Potenzialfaktor, weil die Maschine über längere Zeit genutzt wird und nicht im Produktionsprozess verbraucht wird",
+      "Verbrauchsgut, weil die Maschine irgendwann ersetzt werden muss",
+      "Konsumgut, weil sie dem Unternehmen dient"
+    ],
+    "korrekt": "Potenzialfaktor, weil die Maschine über längere Zeit genutzt wird und nicht im Produktionsprozess verbraucht wird"
+  },
+  {
+    "id": "bwl_einfuehrung-s01",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Sektor umfasst die Land- und Forstwirtschaft, den Gartenbau und die Fischerei?",
+    "erklaerung": "Der 1. Sektor (Primärsektor) umfasst die Land- und Forstwirtschaft, den Gartenbau und die Fischerei.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "2. Sektor",
+      "1. Sektor",
+      "4. Sektor",
+      "3. Sektor"
+    ],
+    "korrekt": "1. Sektor"
+  },
+  {
+    "id": "bwl_einfuehrung-s02",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der 2. Sektor umfasst {0} und {1}. Der 3. Sektor umfasst die {2}.",
+    "erklaerung": "Die drei Wirtschaftssektoren: 1. Sektor = Land-/Forstwirtschaft; 2. Sektor = Industrie und Gewerbe; 3. Sektor = Dienstleistungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Industrie",
+        "optionen": [
+          "die Industrie"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Gewerbe",
+        "optionen": [
+          "das Gewerbe"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Dienstleistungen",
+        "optionen": [
+          "Dienstleistungsbranche"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-s03",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "In der Schweiz arbeiten heute über 75% der Erwerbstätigen im 3. Sektor (Dienstleistungen).",
+    "erklaerung": "Richtig. Gemäss der Statistik arbeiten rund 76,7% der Erwerbstätigen im 3. Sektor. Die Schweiz ist eine typische Dienstleistungsgesellschaft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-s04",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie hat sich die Verteilung der Erwerbstätigen auf die drei Sektoren in der Schweiz seit 1850 verändert?",
+    "erklaerung": "Seit 1850 hat ein massiver Strukturwandel stattgefunden: Der 1. Sektor (Landwirtschaft) ist von über 50% auf ca. 2,6% geschrumpft. Der 3. Sektor (Dienstleistungen) ist auf ca. 76,7% gewachsen. Der 2. Sektor (Industrie) lag zwischenzeitlich hoch und liegt heute bei ca. 20,7%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nur der 2. Sektor hat sich verändert",
+      "Der 1. Sektor ist gewachsen, der 3. Sektor geschrumpft",
+      "Der 1. Sektor ist stark geschrumpft, der 3. Sektor stark gewachsen",
+      "Alle drei Sektoren sind etwa gleich geblieben"
+    ],
+    "korrekt": "Der 1. Sektor ist stark geschrumpft, der 3. Sektor stark gewachsen"
+  },
+  {
+    "id": "bwl_einfuehrung-s05",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Branche hat in der Schweiz den höchsten monatlichen Medianlohn (Bruttolohn)?",
+    "erklaerung": "Gemäss der Schweizerischen Lohnstrukturerhebung hat das Finanz- und Versicherungsgewerbe mit CHF 9'630 den höchsten Medianlohn, gefolgt von IT und Kommunikation (CHF 8'724) sowie Erziehung und Unterricht (CHF 8'494).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Gesundheits- und Sozialwesen",
+      "Finanz- und Versicherungsgewerbe",
+      "IT und Kommunikation",
+      "Erziehung und Unterricht"
+    ],
+    "korrekt": "Finanz- und Versicherungsgewerbe"
+  },
+  {
+    "id": "bwl_einfuehrung-s06",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zur Unternehmensstruktur der Schweiz sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "99,7% der marktwirtschaftlichen Unternehmen sind KMU (bis 249 Vollzeitstellen). Grossunternehmen (ca. 1'706) beschäftigen mit ca. 1,5 Mio. Personen knapp ein Drittel aller Erwerbstätigen. Die Schweiz hat rund 617'700 Arbeitsstätten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Über 99% der Unternehmen sind KMU (Mikro-, Klein- und Mittelunternehmen)",
+      "Grossunternehmen beschäftigen knapp ein Drittel der Erwerbstätigen",
+      "Es gibt in der Schweiz rund 617'700 Arbeitsstätten",
+      "Die meisten Unternehmen sind Grossunternehmen mit über 250 Mitarbeitenden"
+    ],
+    "korrekt": [
+      "Über 99% der Unternehmen sind KMU (Mikro-, Klein- und Mittelunternehmen)",
+      "Grossunternehmen beschäftigen knapp ein Drittel der Erwerbstätigen",
+      "Es gibt in der Schweiz rund 617'700 Arbeitsstätten"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-s07",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Mammut Sports Group AG produziert Outdoor-Bekleidung und Sportgeräte. Welchem Sektor gehört das Unternehmen an?",
+    "erklaerung": "Die Mammut Sports Group AG ist dem 2. Sektor (Verarbeitung und Fabrikation) zuzuordnen. Obwohl das Unternehmen auch Produkte verkauft, ist die Herstellung von Bekleidung und Sportgeräten das Kerngeschäft, was der Branche «Herstellung von Bekleidung und Sportgeräten» entspricht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "3. Sektor, weil die Produkte an Konsumenten verkauft werden",
+      "2. Sektor, weil Produkte hergestellt werden (Verarbeitung und Fabrikation)",
+      "1. Sektor, weil Rohstoffe verwendet werden",
+      "Allen drei Sektoren gleichzeitig"
+    ],
+    "korrekt": "2. Sektor, weil Produkte hergestellt werden (Verarbeitung und Fabrikation)"
+  },
+  {
+    "id": "bwl_einfuehrung-s08",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In welcher Grossregion der Schweiz gibt es am meisten Unternehmen?",
+    "erklaerung": "Der Espace Mittelland hat mit 120'971 Unternehmen die meisten Unternehmen, knapp vor der Genferseeregion (115'242) und Zürich (105'835). Dies ist auch durch die grosse Fläche und Bevölkerung dieser Region bedingt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zürich",
+      "Espace Mittelland",
+      "Nordwestschweiz",
+      "Genferseeregion"
+    ],
+    "korrekt": "Espace Mittelland"
+  },
+  {
+    "id": "bwl_einfuehrung-s09",
+    "fach": "BWL",
+    "thema": "Struktur der Schweizer Wirtschaft",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Tatsache, dass der Frauenanteil im Baugewerbe bei nur 11,7% liegt, kann als Indiz für bestehende Geschlechterstereotypen bei der Berufswahl interpretiert werden.",
+    "erklaerung": "Richtig. Der sehr niedrige Frauenanteil in Branchen wie Baugewerbe (11,7%) und Maschinenbau (17,3%) sowie der hohe Anteil in Pflege und Erziehung (über 60%) weisen auf geschlechterspezifische Berufswahlmuster hin, die durch gesellschaftliche Normen und Stereotypen mitgeprägt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-u01",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ab wie vielen Vollzeitstellen gilt ein Unternehmen in der Schweiz als Grossunternehmen?",
+    "erklaerung": "Die Grössenklassen: Mikrounternehmen (0–9), Kleinunternehmen (10–49), Mittelunternehmen (50–249), Grossunternehmen (250 und mehr Vollzeitstellen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ab 50 Vollzeitstellen",
+      "Ab 500 Vollzeitstellen",
+      "Ab 250 Vollzeitstellen",
+      "Ab 100 Vollzeitstellen"
+    ],
+    "korrekt": "Ab 250 Vollzeitstellen"
+  },
+  {
+    "id": "bwl_einfuehrung-u02",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Unternehmen mit 0 bis 9 Vollzeitstellen werden als {0} bezeichnet. Zusammen mit Klein- und Mittelunternehmen bilden sie die Gruppe der {1}.",
+    "erklaerung": "Mikrounternehmen (0–9 Vollzeitstellen), Kleinunternehmen (10–49) und Mittelunternehmen (50–249) bilden zusammen die KMU (Klein- und Mittelunternehmen). Sie machen 99,7% aller Unternehmen in der Schweiz aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Mikrounternehmen",
+        "optionen": [
+          "Mikro-Unternehmen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "KMU",
+        "optionen": [
+          "Klein- und Mittelunternehmen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-u03",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche Rechtsform ist in der Schweiz am häufigsten?",
+    "erklaerung": "Die Einzelunternehmung ist mit 166'658 Firmen die in der Schweiz am häufigsten vorkommende Rechtsform, noch vor der GmbH (231'250) und der AG (229'736) (Stand 2022). Hinweis: Die Zahlen zeigen, dass es sich knapp um die Einzelunternehmung handelt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Aktiengesellschaft (AG)",
+      "Kollektivgesellschaft",
+      "GmbH",
+      "Einzelunternehmung"
+    ],
+    "korrekt": "Einzelunternehmung"
+  },
+  {
+    "id": "bwl_einfuehrung-u04",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Nach welchen Kriterien können Unternehmen unterschieden werden? (Mehrere Antworten möglich.)",
+    "erklaerung": "Unternehmen lassen sich nach allen genannten Kriterien unterscheiden: Sektor/Branche (Tätigkeitsgebiet), Eigentumsverhältnisse (privat/öffentlich/gemischt), Gewinnorientierung (gewinnorientiert/NPO), Grösse (Mikro bis Gross), Reichweite (lokal bis international) und Rechtsform.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Sektor und Branche",
+      "Eigentumsverhältnisse und Gewinnorientierung",
+      "Grösse und Reichweite der Tätigkeit",
+      "Rechtsform"
+    ],
+    "korrekt": [
+      "Sektor und Branche",
+      "Eigentumsverhältnisse und Gewinnorientierung",
+      "Grösse und Reichweite der Tätigkeit",
+      "Rechtsform"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-u05",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was kennzeichnet eine Non-Profit-Organisation (NPO)?",
+    "erklaerung": "Bei NPOs steht nicht die Gewinnerzielung im Vordergrund, sondern gemeinnützige, soziale, kulturelle oder wissenschaftliche Ziele. Beispiele sind die Schweizerische Rettungsflugwacht Rega oder die Krebsliga Schweiz. NPOs können durchaus Umsatz und Überschüsse erzielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Sie macht grundsätzlich keinen Umsatz",
+      "Die Gewinnerzielung steht nicht im Vordergrund, sondern spezielle Bedürfnisbefriedigung",
+      "Sie gehört immer dem Staat",
+      "Sie darf kein Personal anstellen"
+    ],
+    "korrekt": "Die Gewinnerzielung steht nicht im Vordergrund, sondern spezielle Bedürfnisbefriedigung"
+  },
+  {
+    "id": "bwl_einfuehrung-u06",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Swisscom ist ein Beispiel für ein gemischtwirtschaftliches Unternehmen, weil sowohl der Staat als auch Private am Unternehmen beteiligt sind.",
+    "erklaerung": "Richtig. Bei gemischtwirtschaftlichen Unternehmen sind sowohl der Staat als auch Private beteiligt. Die Swisscom ist ein typisches Beispiel: Der Bund hält eine Mehrheitsbeteiligung, aber auch private Aktionäre sind beteiligt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-u07",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen, das in mehreren Ländern produziert und seine Produkte weltweit vertreibt, hat welche Reichweite?",
+    "erklaerung": "Ein Unternehmen mit Produktion und Vertrieb in mehreren Ländern hat eine internationale Tätigkeit. Beispiele sind Nestlé oder die Mammut Sports Group AG.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nationale Tätigkeit",
+      "Regionale Tätigkeit",
+      "Internationale Tätigkeit",
+      "Lokale Tätigkeit"
+    ],
+    "korrekt": "Internationale Tätigkeit"
+  },
+  {
+    "id": "bwl_einfuehrung-u08",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Drei Freundinnen haben einen Impfstoff entwickelt und wollen ein Unternehmen gründen. Sie wünschen sich beschränkte Haftung, geringes Mindestkapital und aktive Mitarbeit aller Gesellschafterinnen. Welche Rechtsform passt am besten?",
+    "erklaerung": "Die GmbH bietet beschränkte Haftung (nur Gesellschaftsvermögen haftet), erfordert geringes Mindestkapital (CHF 20'000) und ist besonders geeignet für kleinere, personenbezogene Unternehmen mit aktiver Mitarbeit der Gesellschafterinnen. Eine Einzelunternehmung scheidet aus (3 Personen), eine KollG hat unbeschränkte Haftung, und eine AG erfordert höheres Kapital (CHF 100'000).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Aktiengesellschaft (AG)",
+      "Kollektivgesellschaft",
+      "Gesellschaft mit beschränkter Haftung (GmbH)",
+      "Einzelunternehmung"
+    ],
+    "korrekt": "Gesellschaft mit beschränkter Haftung (GmbH)"
+  },
+  {
+    "id": "bwl_einfuehrung-u09",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Bei einer Kollektivgesellschaft haften die Gesellschafter primär mit dem Gesellschaftsvermögen. Reicht dieses nicht aus, haften sie subsidiär, unbeschränkt und solidarisch mit ihrem persönlichen Vermögen.",
+    "erklaerung": "Richtig. Bei der Kollektivgesellschaft haftet primär das Gesellschaftsvermögen. Subsidiär (ergänzend) haften die Gesellschafter unbeschränkt und solidarisch mit ihrem gesamten persönlichen Vermögen – ein wesentlicher Nachteil dieser Rechtsform.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-u10",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Vorteile bietet die Aktiengesellschaft (AG)? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die AG bietet beschränkte Haftung (nur das Gesellschaftsvermögen haftet), einfache Anteilsübertragung (Aktien können verkauft werden) und Anonymität der Aktionäre. Allerdings fallen bei der Gründung Kosten an und das Mindestkapital beträgt CHF 100'000.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Beschränkte Haftung auf das Gesellschaftsvermögen",
+      "Einfache Übertragung von Anteilen",
+      "Anonymität der Aktionäre",
+      "Keine Gründungskosten"
+    ],
+    "korrekt": [
+      "Beschränkte Haftung auf das Gesellschaftsvermögen",
+      "Einfache Übertragung von Anteilen",
+      "Anonymität der Aktionäre"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-z01",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist das Kernziel, das ein Unternehmen langfristig verfolgen muss, um am Markt zu bestehen?",
+    "erklaerung": "Das Kernziel eines Unternehmens ist die Erwirtschaftung einer nachhaltigen und marktgerechten Rentabilität. Nur wenn der Ertrag langfristig grösser ist als der Aufwand, kann ein Unternehmen bestehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Eine nachhaltige und marktgerechte Rentabilität erwirtschaften",
+      "Den Umsatz jedes Jahr verdoppeln",
+      "Möglichst viele Mitarbeitende anstellen",
+      "Möglichst viele Produkte herstellen"
+    ],
+    "korrekt": "Eine nachhaltige und marktgerechte Rentabilität erwirtschaften"
+  },
+  {
+    "id": "bwl_einfuehrung-z02",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "SMART steht für: {0}, Measurable, {1}, Relevant, {2}.",
+    "erklaerung": "SMART ist eine Systematik zur Zielformulierung: Specific (spezifisch), Measurable (messbar), Achievable (erreichbar), Relevant (sachbezogen), Time-bound (terminiert).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Specific",
+        "optionen": [
+          "Spezifisch"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Achievable",
+        "optionen": [
+          "Erreichbar",
+          "Attainable"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Time-bound",
+        "optionen": [
+          "Terminiert",
+          "Time bound",
+          "Timebound"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-z03",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet das «M» in der SMART-Systematik?",
+    "erklaerung": "Das «M» steht für Measurable (messbar). Ziele müssen so formuliert sein, dass ihre Erreichung überprüft werden kann – z.B. durch Kennzahlen, Mengen oder Zeitangaben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ziele müssen messbar sein",
+      "Ziele müssen mehrheitsfähig sein",
+      "Ziele müssen motivierend sein",
+      "Ziele müssen minimal sein"
+    ],
+    "korrekt": "Ziele müssen messbar sein"
+  },
+  {
+    "id": "bwl_einfuehrung-z04",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen will seinen Ausschuss senken und gleichzeitig die Kosten reduzieren. Durch die Reduktion des Ausschusses werden automatisch auch Kosten gesenkt. Welche Zielbeziehung liegt vor?",
+    "erklaerung": "Es liegt Zielharmonie vor: Das Erreichen des einen Ziels (Ausschuss senken) fördert automatisch das andere Ziel (Kosten senken), da weniger fehlerhafte Produkte auch weniger Kosten verursachen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zielindifferenz",
+      "Zielharmonie",
+      "Zielkonkurrenz",
+      "Zielneutralität"
+    ],
+    "korrekt": "Zielharmonie"
+  },
+  {
+    "id": "bwl_einfuehrung-z05",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen will eine hohe Lieferbereitschaft garantieren, aber gleichzeitig die Lagerhaltungskosten senken. Welche Zielbeziehung besteht?",
+    "erklaerung": "Es liegt Zielkonkurrenz vor: Um schnell liefern zu können, muss das Unternehmen grosse Lagerbestände halten. Grosse Lagerbestände bedeuten aber hohe Lagerhaltungskosten. Die beiden Ziele stehen in einem Spannungsverhältnis.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zielharmonie",
+      "Zielidentität",
+      "Zielneutralität",
+      "Zielkonkurrenz"
+    ],
+    "korrekt": "Zielkonkurrenz"
+  },
+  {
+    "id": "bwl_einfuehrung-z06",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Strategische Ziele sind langfristige Unternehmensziele mit einem Zeithorizont von über 3 Jahren.",
+    "erklaerung": "Richtig. Strategische Ziele haben einen Zeithorizont von über 3 Jahren (z.B. neue Märkte erschliessen). Mittelfristige Ziele umfassen 1–3 Jahre, operative Ziele weniger als 1 Jahr (z.B. Quartalsziele).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-z07",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Welches der folgenden Ziele ist SMART formuliert? (Mehrere Antworten möglich.)",
+    "erklaerung": "Ziel A ist SMART: spezifisch (Umsatz), messbar (10%), erreichbar, relevant, terminiert (Ende 2026). Ziel C ebenso: spezifisch (Kundenzufriedenheit), messbar (7,5→8,5), terminiert (Q2 2026). Ziele B und D sind zu vage formuliert – sie sind weder spezifisch noch messbar oder terminiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Wir wollen den Umsatz bis Ende 2026 um 10% steigern",
+      "Wir wollen besser werden",
+      "Die Kundenzufriedenheit soll bis Q2 2026 von 7,5 auf 8,5 (auf einer Skala von 10) steigen",
+      "Wir sollten irgendwann mehr Gewinn machen"
+    ],
+    "korrekt": [
+      "Wir wollen den Umsatz bis Ende 2026 um 10% steigern",
+      "Die Kundenzufriedenheit soll bis Q2 2026 von 7,5 auf 8,5 (auf einer Skala von 10) steigen"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-z08",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Unternehmen erneuert seine alte Lastwagenflotte aus Umweltschutzgründen und will gleichzeitig eine hohe Produktqualität sicherstellen. Die Erneuerung der Flotte hat keinen Einfluss auf die Produktqualität. Welche Zielbeziehung liegt vor?",
+    "erklaerung": "Es liegt Zielneutralität vor: Das Erreichen des einen Ziels (Erneuerung der Lastwagenflotte) hat keinen Einfluss auf das andere Ziel (Produktqualität). Die beiden Ziele berühren sich nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Zielkonkurrenz",
+      "Zielkomplementarität",
+      "Zielneutralität",
+      "Zielharmonie"
+    ],
+    "korrekt": "Zielneutralität"
+  },
+  {
+    "id": "bwl_einfuehrung-k01",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Produktivität = {0} (Menge) / {1} (Menge)",
+    "erklaerung": "Produktivität bezeichnet das Verhältnis zwischen produzierten Gütern (Output) und den dafür eingesetzten Produktionsfaktoren (Input), jeweils in Mengeneinheiten gemessen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Output",
+        "optionen": [
+          "Ausbringungsmenge",
+          "Ertrag"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Input",
+        "optionen": [
+          "Einsatzmenge",
+          "Aufwand"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-k02",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Kennzahl setzt den Gewinn ins Verhältnis zum eingesetzten Kapital?",
+    "erklaerung": "Die Rentabilität setzt den Gewinn ins Verhältnis zum eingesetzten Kapital (Rentabilität = Gewinn / Kapital × 100). Sie zeigt, wie effizient das Kapital eingesetzt wurde.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Liquidität",
+      "Wirtschaftlichkeit",
+      "Produktivität",
+      "Rentabilität"
+    ],
+    "korrekt": "Rentabilität"
+  },
+  {
+    "id": "bwl_einfuehrung-k03",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie ergibt sich die Wirtschaftlichkeit aus der Produktivität?",
+    "erklaerung": "Die Wirtschaftlichkeit ergibt sich, indem die Outputmenge mit dem Verkaufspreis und die Inputmenge mit dem Einkaufspreis multipliziert wird: (Output × Verkaufspreis) / (Input × Einkaufspreis) = Ertrag / Aufwand. So werden verschiedene Produktivitäten monetär vergleichbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Gewinn / Gesamtkapital × 100",
+      "Outputmenge / Inputmenge × Steuersatz",
+      "Umsatz / Anzahl Mitarbeitende",
+      "Outputmenge × Verkaufspreis / Inputmenge × Einkaufspreis"
+    ],
+    "korrekt": "Outputmenge × Verkaufspreis / Inputmenge × Einkaufspreis"
+  },
+  {
+    "id": "bwl_einfuehrung-k04",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Möbelschreiner stellt in 8 Stunden 4 Stühle her. Wie hoch ist seine Arbeitsproduktivität (in Stühle pro Stunde)?",
+    "erklaerung": "Arbeitsproduktivität = Output / Input = 4 Stühle / 8 Stunden = 0,5 Stühle pro Stunde.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "calcZeilen": [
+      {
+        "label": "Arbeitsproduktivität",
+        "answer": 0.5,
+        "tolerance": 0.01,
+        "unit": "Stühle/h"
+      }
+    ],
+    "korrekt": "0.5",
+    "toleranz": 0.01,
+    "einheit": "Stühle/h"
+  },
+  {
+    "id": "bwl_einfuehrung-k05",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen erzielt einen Gewinn von CHF 150'000 bei einem Eigenkapital von CHF 1'000'000. Wie hoch ist die Eigenkapitalrentabilität (in %)?",
+    "erklaerung": "Eigenkapitalrentabilität = Gewinn / Eigenkapital × 100 = 150'000 / 1'000'000 × 100 = 15%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "calcZeilen": [
+      {
+        "label": "Eigenkapitalrentabilität",
+        "answer": 15,
+        "tolerance": 0.5,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "15",
+    "toleranz": 0.5,
+    "einheit": "%"
+  },
+  {
+    "id": "bwl_einfuehrung-k06",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen hat einen Ertrag von CHF 800'000 und einen Aufwand von CHF 600'000. Wie hoch ist die Wirtschaftlichkeit?",
+    "erklaerung": "Wirtschaftlichkeit = Ertrag / Aufwand = 800'000 / 600'000 = 1,33. Ein Wert über 1 bedeutet, dass das Unternehmen wirtschaftlich arbeitet (mehr einnimmt als ausgibt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "calcZeilen": [
+      {
+        "label": "Wirtschaftlichkeit",
+        "answer": 1.33,
+        "tolerance": 0.02
+      }
+    ],
+    "korrekt": "1.33",
+    "toleranz": 0.02
+  },
+  {
+    "id": "bwl_einfuehrung-k07",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen hat eine Wirtschaftlichkeit von 0,85. Was bedeutet das?",
+    "erklaerung": "Eine Wirtschaftlichkeit unter 1 (hier 0,85) bedeutet, dass der Aufwand grösser ist als der Ertrag – das Unternehmen arbeitet also mit Verlust. Wirtschaftlichkeit = Ertrag / Aufwand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Unternehmen arbeitet mit Verlust, da der Aufwand grösser ist als der Ertrag",
+      "Das Unternehmen ist sehr produktiv",
+      "Das Unternehmen hat eine hohe Rentabilität",
+      "Das Unternehmen arbeitet mit Gewinn"
+    ],
+    "korrekt": "Das Unternehmen arbeitet mit Verlust, da der Aufwand grösser ist als der Ertrag"
+  },
+  {
+    "id": "bwl_einfuehrung-k08",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Produktivität wird in Mengeneinheiten gemessen, Wirtschaftlichkeit in Geldeinheiten.",
+    "erklaerung": "Richtig. Produktivität setzt Mengen ins Verhältnis (z.B. Stühle pro Arbeitsstunde), während die Wirtschaftlichkeit die monetäre Bewertung darstellt (Ertrag in CHF / Aufwand in CHF).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-k09",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen erzielt einen Gewinn von CHF 200'000 und zahlt CHF 50'000 an Fremdkapitalzinsen. Das Gesamtkapital beträgt CHF 2'500'000. Wie hoch ist die Gesamtkapitalrentabilität (in %)?",
+    "erklaerung": "Gesamtkapitalrentabilität = (Gewinn + Zinsen) / Gesamtkapital × 100 = (200'000 + 50'000) / 2'500'000 × 100 = 250'000 / 2'500'000 × 100 = 10%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "calcZeilen": [
+      {
+        "label": "Gesamtkapitalrentabilität",
+        "answer": 10,
+        "tolerance": 0.5,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "10",
+    "toleranz": 0.5,
+    "einheit": "%"
+  },
+  {
+    "id": "bwl_einfuehrung-k10",
+    "fach": "BWL",
+    "thema": "Kennzahlen",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Aussagen zur Beziehung zwischen Produktivität, Wirtschaftlichkeit und Rentabilität sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Wirtschaftlichkeit (Ertrag > Aufwand) schafft die Basis für Rentabilität. B ist korrekt: Produktivität ist ein Mengenverhältnis – erst durch Multiplikation mit Preisen ergibt sich die monetäre Wirtschaftlichkeit. C ist falsch: Die Kennzahlen sind nicht direkt vergleichbar. D ist falsch: Sie messen verschiedene Aspekte der Unternehmensleistung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Eine hohe Wirtschaftlichkeit ist eine wichtige Voraussetzung für eine gute Rentabilität",
+      "Produktivität allein sagt noch nichts über die Wirtschaftlichkeit aus, weil die Preise fehlen",
+      "Die Rentabilität ist immer höher als die Wirtschaftlichkeit",
+      "Alle drei Kennzahlen messen dasselbe, nur in unterschiedlichen Einheiten"
+    ],
+    "korrekt": [
+      "Eine hohe Wirtschaftlichkeit ist eine wichtige Voraussetzung für eine gute Rentabilität",
+      "Produktivität allein sagt noch nichts über die Wirtschaftlichkeit aus, weil die Preise fehlen"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-t01",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter einem Standortfaktor?",
+    "erklaerung": "Ein Standortfaktor ist ein Kriterium, das bei der Wahl des Unternehmensstandorts eine Rolle spielt. Je nach Unternehmensart können unterschiedliche Standortfaktoren ausschlaggebend sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ein Kriterium, das die Standortwahl eines Unternehmens beeinflusst",
+      "Die Rechtsform des Unternehmens",
+      "Den Gewinn eines Unternehmens am Standort",
+      "Die Anzahl Mitarbeitende an einem Standort"
+    ],
+    "korrekt": "Ein Kriterium, das die Standortwahl eines Unternehmens beeinflusst"
+  },
+  {
+    "id": "bwl_einfuehrung-t02",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden sind Standortfaktoren? (Mehrere Antworten möglich.)",
+    "erklaerung": "Absatzorientierte, verkehrsorientierte und infrastrukturorientierte Faktoren sind anerkannte Standortfaktoren. Persönliche Vorlieben wie eine Lieblingsfarbe sind keine Standortfaktoren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Absatzorientierte Faktoren (Nähe zur Kundschaft)",
+      "Verkehrsorientierte Faktoren (Verkehrsanbindung)",
+      "Die Lieblingsfarbe des Geschäftsführers",
+      "Infrastrukturorientierte Faktoren (Strassennetz, Stromversorgung)"
+    ],
+    "korrekt": [
+      "Absatzorientierte Faktoren (Nähe zur Kundschaft)",
+      "Verkehrsorientierte Faktoren (Verkehrsanbindung)",
+      "Infrastrukturorientierte Faktoren (Strassennetz, Stromversorgung)"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-t03",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Für welchen Unternehmenstyp sind absatzorientierte Standortfaktoren (Nähe zur Kundschaft) besonders wichtig?",
+    "erklaerung": "Für Detailhandelsgeschäfte, Restaurants, Hotels und ähnliche Betriebe ist die Nähe zur Kundschaft entscheidend. Banken, Hotels und Handwerkerbetriebe sind weitere Beispiele, bei denen absatzorientierte Standortfaktoren im Vordergrund stehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Bergbauunternehmen",
+      "Fabrik für Grossmaschinen",
+      "Softwareentwickler mit Home-Office",
+      "Detailhandelsgeschäft oder Restaurant"
+    ],
+    "korrekt": "Detailhandelsgeschäft oder Restaurant"
+  },
+  {
+    "id": "bwl_einfuehrung-t04",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter einer Nutzwertanalyse (NWA)?",
+    "erklaerung": "Die Nutzwertanalyse ist ein Entscheidungsinstrument, bei dem gemeinsame Faktoren definiert, gewichtet (total 100%) und je Standort bewertet (z.B. 1–6) werden. Der Standort mit der höchsten Punktzahl erhält den Zuschlag.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/einfuehrung/einfuehrung_nwa_01.svg",
+      "alt": "Schematische Darstellung einer Nutzwertanalyse mit Kriterien, Gewichtung und Bewertung"
+    },
+    "optionen": [
+      "Eine Analyse der Kundennachfrage am Standort",
+      "Ein Instrument, bei dem Standorte anhand gewichteter Kriterien bewertet und verglichen werden",
+      "Ein Verfahren zur Berechnung der Mietkosten",
+      "Eine Methode, um den Gewinn verschiedener Standorte zu berechnen"
+    ],
+    "korrekt": "Ein Instrument, bei dem Standorte anhand gewichteter Kriterien bewertet und verglichen werden"
+  },
+  {
+    "id": "bwl_einfuehrung-t05",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bei einer Nutzwertanalyse muss die Summe aller Gewichtungen 100% ergeben.",
+    "erklaerung": "Richtig. Die Gewichtungen der Kriterien müssen in der Summe genau 100% (bzw. 100 Punkte) ergeben. So wird sichergestellt, dass die Kriterien im Verhältnis zueinander stehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-t06",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum werden bei arbeitsintensiver Produktion die Arbeitskosten als besonders wichtiger Standortfaktor betrachtet?",
+    "erklaerung": "Bei arbeitsintensiver Produktion mit wenig Know-how-Anforderung (z.B. Bekleidungsindustrie) sind die Arbeitskosten der ausschlaggebende Standortfaktor. Da die Schweiz hohe Lohn- und Lohnnebenkosten hat, werden Produktionsstätten häufig ins Ausland verlagert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Weil die Schweiz keine Arbeitskräfte hat",
+      "Weil bei wenig Know-how-Anforderung die Kosten der Arbeitskräfte ein ausschlaggebender Faktor sind und günstigere Standorte im Ausland attraktiv werden",
+      "Weil der Staat die Löhne festlegt",
+      "Weil Maschinen immer günstiger sind als Menschen"
+    ],
+    "korrekt": "Weil bei wenig Know-how-Anforderung die Kosten der Arbeitskräfte ein ausschlaggebender Faktor sind und günstigere Standorte im Ausland attraktiv werden"
+  },
+  {
+    "id": "bwl_einfuehrung-t07",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "In einer Nutzwertanalyse wird das Kriterium «Kundenfrequenz» mit 40% gewichtet und der Standort «Bahnhof» erhält die Bewertung 5 (von 6). Wie viele Nutzwertpunkte ergibt das für dieses Kriterium?",
+    "erklaerung": "Nutzwert = Gewichtung × Bewertung = 40 × 5 = 200 Punkte. Die Gewichtung wird als ganze Zahl (40 statt 0,4) mit der Bewertung multipliziert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "calcZeilen": [
+      {
+        "label": "Nutzwertpunkte",
+        "answer": 200,
+        "tolerance": 1,
+        "unit": "Punkte"
+      }
+    ],
+    "korrekt": "200",
+    "toleranz": 1,
+    "einheit": "Punkte"
+  },
+  {
+    "id": "bwl_einfuehrung-t08",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Schwächen hat die Nutzwertanalyse? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die NWA hat mehrere Schwächen: Die Bewertung ist subjektiv (persönliche Vorlieben), die Vergleichbarkeit ist nicht immer gegeben, und die Einigung auf Gewichtungen kann bei mehreren Personen schwierig sein. Trotzdem ist sie ein wertvolles Instrument – sie liefert nicht grundsätzlich falsche Ergebnisse, sondern hilft, den Entscheid zu objektivieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Bewertung hängt stark vom Entscheidungsträger und seinen persönlichen Vorlieben ab",
+      "Die Vergleichbarkeit der Standorte ist nicht in jedem Fall gegeben",
+      "Bei mehreren Entscheidungsträgern kann die Einigung auf Gewichtungen schwierig sein",
+      "Sie liefert grundsätzlich falsche Ergebnisse"
+    ],
+    "korrekt": [
+      "Die Bewertung hängt stark vom Entscheidungsträger und seinen persönlichen Vorlieben ab",
+      "Die Vergleichbarkeit der Standorte ist nicht in jedem Fall gegeben",
+      "Bei mehreren Entscheidungsträgern kann die Einigung auf Gewichtungen schwierig sein"
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-t09",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Standortfaktoren stehen bei einem Chemieunternehmen im Vordergrund?",
+    "erklaerung": "Für ein Chemieunternehmen sind umweltorientierte Faktoren (strenge Umweltauflagen für Abgaswerte, Abwasser) und material-/rohstofforientierte Faktoren (Zugang zu Rohstoffen, Transportkosten) besonders relevant. Auch verkehrsorientierte und infrastrukturorientierte Faktoren spielen eine Rolle.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ausschliesslich interkantonale Steuerfaktoren",
+      "Nur grundstückorientierte Faktoren",
+      "Absatzorientierte Faktoren und Standortimage",
+      "Umweltorientierte und material-/rohstofforientierte Faktoren"
+    ],
+    "korrekt": "Umweltorientierte und material-/rohstofforientierte Faktoren"
+  },
+  {
+    "id": "bwl_einfuehrung-t10",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Den idealen Standort gibt es in der Regel nicht – Unternehmen müssen Kompromisse eingehen.",
+    "erklaerung": "Richtig. Kein Standort erfüllt alle Kriterien perfekt. Unternehmen müssen abwägen, welche Standortfaktoren für sie am wichtigsten sind, und entsprechende Kompromisse eingehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_einfuehrung-neu_sort_01",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Schritte einer Nutzwertanalyse (NWA) für die Standortwahl in die korrekte Reihenfolge.",
+    "erklaerung": "Die NWA ist ein strukturiertes Entscheidungsinstrument: Zuerst werden die Kriterien definiert, dann gewichtet (nicht alle gleich wichtig). Danach werden die Alternativen bewertet und die gewichteten Punkte berechnet. Der Standort mit der höchsten Gesamtpunktzahl ist rechnerisch der beste – das Ergebnis muss aber kritisch reflektiert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-neu_sort_02",
+    "fach": "BWL",
+    "thema": "Unternehmensziele & Zielbeziehungen",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Schritte des betrieblichen Zielsetzungsprozesses in die logische Reihenfolge.",
+    "erklaerung": "Der Zielsetzungsprozess verläuft vom Allgemeinen zum Konkreten: Erst die Vision (Wohin?), dann die Formalziele (Welche finanziellen Ergebnisse?), dann die Sachziele (Was produzieren/anbieten?). Anschliessend werden Zielkonflikte identifiziert (z.B. Gewinn vs. Nachhaltigkeit), bevor operative Massnahmen geplant werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-neu_sort_03",
+    "fach": "BWL",
+    "thema": "Kriterien zur Unterscheidung von Unternehmen",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Unternehmensformen nach der Haftung der Eigentümer – von der umfassendsten zur beschränktesten Haftung.",
+    "erklaerung": "Bei Einzelunternehmung und Kollektivgesellschaft haften die Eigentümer unbeschränkt mit ihrem Privatvermögen. Die Kommanditgesellschaft ist eine Mischform. GmbH und AG sind Kapitalgesellschaften mit beschränkter Haftung – das Risiko ist auf das eingebrachte Kapital begrenzt. Deshalb ist die AG die beliebteste Form für grössere Unternehmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-beschriftung01",
+    "fach": "BWL",
+    "thema": "Standortfaktoren & Nutzwertanalyse",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die fünf Elemente einer Nutzwertanalyse.",
+    "erklaerung": "Die NWA bewertet Alternativen systematisch: Kriterien festlegen, gewichten (Summe = 100%), Punkte vergeben, gewichtete Punkte berechnen, Gesamtnutzwert vergleichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/einfuehrung/einfuehrung_nwa_beschriftung.svg",
+      "alt": "Nutzwertanalyse-Tabelle"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Bewertungskriterien",
+        "x": 15,
+        "y": 41
+      },
+      {
+        "id": "l2",
+        "text": "Gewichtung (in %)",
+        "x": 30,
+        "y": 41
+      },
+      {
+        "id": "l3",
+        "text": "Punktbewertung (1–5)",
+        "x": 39,
+        "y": 41
+      },
+      {
+        "id": "l4",
+        "text": "Gewichtete Punkte",
+        "x": 50,
+        "y": 41
+      },
+      {
+        "id": "l5",
+        "text": "Gesamtnutzwert (Summe)",
+        "x": 50,
+        "y": 79
+      }
+    ]
+  },
+  {
+    "id": "bwl_einfuehrung-dragdrop01",
+    "fach": "BWL",
+    "thema": "Güterarten & ökonomisches Prinzip",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Beispiele der richtigen Güterkategorie zu.",
+    "erklaerung": "Freie Güter sind unbegrenzt verfügbar (Sonnenlicht, Luft). Wirtschaftliche Güter sind knapp und haben einen Preis. Öffentliche Güter sind nicht-rivalisierend und nicht-ausschliessbar (vom Staat bereitgestellt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/einfuehrung/einfuehrung_gueterarten_dragdrop.svg",
+      "alt": "Güterarten: Freie, Wirtschaftliche und Öffentliche Güter"
+    },
+    "zones": [
+      {
+        "id": "frei",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "wirtschaftlich",
+        "x": 34,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "oeffentlich",
+        "x": 65.5,
+        "y": 14,
+        "w": 32,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "lb1",
+        "text": "Sonnenlicht",
+        "zone": "frei"
+      },
+      {
+        "id": "lb2",
+        "text": "Luft (normalerweise)",
+        "zone": "frei"
+      },
+      {
+        "id": "lb3",
+        "text": "Regenwasser",
+        "zone": "frei"
+      },
+      {
+        "id": "lb4",
+        "text": "Smartphone",
+        "zone": "wirtschaftlich"
+      },
+      {
+        "id": "lb5",
+        "text": "Wohnung",
+        "zone": "wirtschaftlich"
+      },
+      {
+        "id": "lb6",
+        "text": "Lebensmittel",
+        "zone": "wirtschaftlich"
+      },
+      {
+        "id": "lb7",
+        "text": "Strassenbeleuchtung",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "lb8",
+        "text": "Landesverteidigung",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "lb9",
+        "text": "Öffentlicher Park",
+        "zone": "oeffentlich"
+      }
+    ]
+  }
+]

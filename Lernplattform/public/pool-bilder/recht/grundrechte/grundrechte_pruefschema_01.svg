@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 680" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="720" height="680" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="360" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Prüfschema: Einschränkung von Grundrechten (Art. 36 BV)</text>
+  
+  <!-- Step 1: Grundrecht betroffen? -->
+  <rect x="200" y="55" width="320" height="48" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="360" y="75" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">1. Ist ein Grundrecht betroffen?</text>
+  <text x="360" y="93" text-anchor="middle" font-size="11" fill="#475569">(Art. 7–34 BV durchsuchen)</text>
+  
+  <!-- Arrow down -->
+  <line x1="360" y1="103" x2="360" y2="130" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="354,126 360,136 366,126" fill="#64748b"/>
+  <text x="375" y="120" font-size="10" fill="#16a34a" font-weight="600">Ja</text>
+  
+  <!-- Nein branch right -->
+  <line x1="520" y1="79" x2="610" y2="79" stroke="#dc2626" stroke-width="1.5"/>
+  <polygon points="606,73 616,79 606,85" fill="#dc2626"/>
+  <text x="555" y="72" font-size="10" fill="#dc2626" font-weight="600">Nein</text>
+  <rect x="620" y="62" width="90" height="34" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="665" y="83" text-anchor="middle" font-size="10" fill="#991b1b">Prüfung</text>
+  <text x="665" y="93" text-anchor="middle" font-size="10" fill="#991b1b">beendet</text>
+  
+  <!-- Step 2: Gesetzliche Grundlage? -->
+  <rect x="200" y="136" width="320" height="48" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="360" y="156" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">2. Gesetzliche Grundlage?</text>
+  <text x="360" y="174" text-anchor="middle" font-size="11" fill="#475569">(Art. 36 Abs. 1 BV)</text>
+  
+  <!-- Arrow down -->
+  <line x1="360" y1="184" x2="360" y2="211" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="354,207 360,217 366,207" fill="#64748b"/>
+  <text x="375" y="201" font-size="10" fill="#16a34a" font-weight="600">Ja</text>
+  
+  <!-- Nein branch right -->
+  <line x1="520" y1="160" x2="610" y2="160" stroke="#dc2626" stroke-width="1.5"/>
+  <polygon points="606,154 616,160 606,166" fill="#dc2626"/>
+  <text x="555" y="153" font-size="10" fill="#dc2626" font-weight="600">Nein*</text>
+  <rect x="620" y="143" width="90" height="34" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="665" y="160" text-anchor="middle" font-size="10" fill="#991b1b">Grundrechts-</text>
+  <text x="665" y="172" text-anchor="middle" font-size="10" fill="#991b1b">verletzung</text>
+  
+  <!-- Step 3: Öffentliches Interesse? -->
+  <rect x="200" y="217" width="320" height="48" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="360" y="237" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">3. Öffentliches Interesse / Schutz Dritter?</text>
+  <text x="360" y="255" text-anchor="middle" font-size="11" fill="#475569">(Art. 36 Abs. 2 BV)</text>
+  
+  <!-- Arrow down -->
+  <line x1="360" y1="265" x2="360" y2="292" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="354,288 360,298 366,288" fill="#64748b"/>
+  <text x="375" y="282" font-size="10" fill="#16a34a" font-weight="600">Ja</text>
+  
+  <!-- Nein branch right -->
+  <line x1="520" y1="241" x2="610" y2="241" stroke="#dc2626" stroke-width="1.5"/>
+  <polygon points="606,235 616,241 606,247" fill="#dc2626"/>
+  <text x="555" y="234" font-size="10" fill="#dc2626" font-weight="600">Nein</text>
+  <rect x="620" y="224" width="90" height="34" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="665" y="241" text-anchor="middle" font-size="10" fill="#991b1b">Grundrechts-</text>
+  <text x="665" y="253" text-anchor="middle" font-size="10" fill="#991b1b">verletzung</text>
+  
+  <!-- Step 4: Verhältnismässig? -->
+  <rect x="200" y="298" width="320" height="48" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="360" y="318" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">4. Verhältnismässig?</text>
+  <text x="360" y="336" text-anchor="middle" font-size="11" fill="#475569">(Art. 36 Abs. 3 BV)</text>
+  
+  <!-- Arrow down -->
+  <line x1="360" y1="346" x2="360" y2="373" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="354,369 360,379 366,369" fill="#64748b"/>
+  <text x="375" y="363" font-size="10" fill="#16a34a" font-weight="600">Ja</text>
+  
+  <!-- Nein branch right -->
+  <line x1="520" y1="322" x2="610" y2="322" stroke="#dc2626" stroke-width="1.5"/>
+  <polygon points="606,316 616,322 606,328" fill="#dc2626"/>
+  <text x="555" y="315" font-size="10" fill="#dc2626" font-weight="600">Nein</text>
+  <rect x="620" y="305" width="90" height="34" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="665" y="322" text-anchor="middle" font-size="10" fill="#991b1b">Grundrechts-</text>
+  <text x="665" y="334" text-anchor="middle" font-size="10" fill="#991b1b">verletzung</text>
+  
+  <!-- Step 5: Kerngehalt unangetastet? -->
+  <rect x="200" y="379" width="320" height="48" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="360" y="399" text-anchor="middle" font-size="13" font-weight="600" fill="#0c4a6e">5. Kerngehalt unangetastet?</text>
+  <text x="360" y="417" text-anchor="middle" font-size="11" fill="#475569">(Art. 36 Abs. 4 BV)</text>
+  
+  <!-- Nein branch right -->
+  <line x1="520" y1="403" x2="610" y2="403" stroke="#dc2626" stroke-width="1.5"/>
+  <polygon points="606,397 616,403 606,409" fill="#dc2626"/>
+  <text x="555" y="396" font-size="10" fill="#dc2626" font-weight="600">Nein</text>
+  <rect x="620" y="386" width="90" height="34" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+  <text x="665" y="403" text-anchor="middle" font-size="10" fill="#991b1b">Grundrechts-</text>
+  <text x="665" y="415" text-anchor="middle" font-size="10" fill="#991b1b">verletzung</text>
+  
+  <!-- Arrow down to result -->
+  <line x1="360" y1="427" x2="360" y2="454" stroke="#64748b" stroke-width="1.5"/>
+  <polygon points="354,450 360,460 366,450" fill="#64748b"/>
+  <text x="375" y="444" font-size="10" fill="#16a34a" font-weight="600">Ja</text>
+  
+  <!-- Result: Einschränkung zulässig -->
+  <rect x="230" y="460" width="260" height="42" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="360" y="478" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">✓ Einschränkung zulässig</text>
+  <text x="360" y="494" text-anchor="middle" font-size="11" fill="#166534">(alle 5 Punkte erfüllt)</text>
+  
+  <!-- Footnote -->
+  <text x="10" y="540" font-size="10" fill="#94a3b8">* Ausnahme: Polizeiliche Generalklausel bei ernster, unmittelbarer und nicht anders abwendbarer Gefahr</text>
+  
+  <!-- Info box: Polizeigüter -->
+  <rect x="15" y="560" width="330" height="110" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+  <text x="25" y="580" font-size="11" font-weight="600" fill="#713f12">Öffentliches Interesse (Beispiele):</text>
+  <text x="25" y="598" font-size="10" fill="#78716c">• Öffentliche Sicherheit und Ordnung</text>
+  <text x="25" y="614" font-size="10" fill="#78716c">• Gesundheitsschutz</text>
+  <text x="25" y="630" font-size="10" fill="#78716c">• Sittlichkeit, öffentliche Ruhe</text>
+  <text x="25" y="646" font-size="10" fill="#78716c">• Soziale, kulturelle, ökologische Werte</text>
+  <text x="25" y="662" font-size="10" fill="#dc2626">✗ Nicht: aktuelle Meinung der Bevölkerung</text>
+  
+  <!-- Info box: Verhältnismässigkeit -->
+  <rect x="375" y="560" width="330" height="110" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+  <text x="385" y="580" font-size="11" font-weight="600" fill="#713f12">Verhältnismässigkeit (Teilaspekte):</text>
+  <text x="385" y="598" font-size="10" fill="#78716c">• Eignung: Massnahme erreicht das Ziel</text>
+  <text x="385" y="614" font-size="10" fill="#78716c">• Erforderlichkeit: kein milderes Mittel</text>
+  <text x="385" y="630" font-size="10" fill="#78716c">• Zumutbarkeit: Zweck-Mittel-Relation</text>
+  <text x="385" y="650" font-size="10" fill="#78716c" font-style="italic">Bsp: Nicht mehr Land enteignen als für</text>
+  <text x="385" y="664" font-size="10" fill="#78716c" font-style="italic">den Autobahnbau benötigt</text>
+</svg>

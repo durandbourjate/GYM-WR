@@ -1,0 +1,1550 @@
+[
+  {
+    "id": "bwl_stratfuehrung-e01",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist die zentrale Aufgabe der strategischen Unternehmensführung?",
+    "erklaerung": "Die strategische Unternehmensführung ist für die Gesamtkoordination und -steuerung verantwortlich. Sie denkt langfristig und sichert den Erfolg auf lange Sicht. Die anderen Optionen beschreiben operative Aufgaben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die täglichen Arbeitsabläufe der Mitarbeitenden organisieren",
+      "Langfristig denken und handeln, um den Erfolg des Unternehmens zu sichern",
+      "Die Löhne der Mitarbeitenden festlegen",
+      "Die Buchhaltung des Unternehmens führen"
+    ],
+    "korrekt": "Langfristig denken und handeln, um den Erfolg des Unternehmens zu sichern"
+  },
+  {
+    "id": "bwl_stratfuehrung-e02",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die strategische Unternehmensführung ist den betrieblichen Funktionen wie Marketing oder Produktion übergeordnet.",
+    "erklaerung": "Die strategische Unternehmensführung bestimmt die längerfristigen (strategischen) Ziele und koordiniert die verschiedenen Funktionsbereiche auf diese Ziele hin.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-e03",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die strategische Planung erfolgt als Prozess in {0} aufeinanderfolgenden Schritten.",
+    "erklaerung": "Die strategische Planung umfasst vier Schritte: 1. Analyse der Ausgangslage, 2. Entwicklung der Unternehmensstrategie, 3. Umsetzung der Strategie, 4. Evaluation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "vier",
+        "optionen": [
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-e04",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Reihenfolge beschreibt den Prozess der strategischen Planung korrekt?",
+    "erklaerung": "Der Prozess beginnt mit der Analyse der Ausgangslage (intern und extern), darauf folgt die Entwicklung der Strategie, dann deren Umsetzung und schliesslich die Evaluation. Werte, Vision und Leitbild bilden den Mittelpunkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_planungsprozess_01.svg",
+      "alt": "Kreisdiagramm: Prozess der strategischen Planung mit vier Phasen"
+    },
+    "optionen": [
+      "Strategieentwicklung → Analyse → Evaluation → Umsetzung",
+      "Evaluation → Analyse → Umsetzung → Strategieentwicklung",
+      "Analyse → Strategieentwicklung → Umsetzung → Evaluation",
+      "Umsetzung → Evaluation → Analyse → Strategieentwicklung"
+    ],
+    "korrekt": "Analyse → Strategieentwicklung → Umsetzung → Evaluation"
+  },
+  {
+    "id": "bwl_stratfuehrung-e05",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zur strategischen Unternehmensführung treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die strategische Planung ist langfristig und wiederholt sich. Werte, Vision und Leitbild bilden den Orientierungspunkt. Sie befasst sich gerade nicht mit dem Tagesgeschäft (C ist falsch), sondern mit der langfristigen Ausrichtung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Sie ist ein langfristiger, sich wiederholender Vorgang",
+      "Die Zukunft ist unsicher, deshalb muss man Entwicklungen einschätzen",
+      "Sie befasst sich nur mit dem Tagesgeschäft",
+      "Werte, Vision und Leitbild bilden den Mittelpunkt des Prozesses"
+    ],
+    "korrekt": [
+      "Sie ist ein langfristiger, sich wiederholender Vorgang",
+      "Die Zukunft ist unsicher, deshalb muss man Entwicklungen einschätzen",
+      "Werte, Vision und Leitbild bilden den Mittelpunkt des Prozesses"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-e06",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Prozess der strategischen Planung ist linear und wird nur einmal durchlaufen.",
+    "erklaerung": "Die strategische Planung ist ein zyklischer Prozess. Die Resultate der Evaluation fliessen wieder in den Prozess ein, wenn die strategische Planung von Neuem beginnt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-e07",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter «digitaler Transformation» im Kontext der strategischen Unternehmensführung?",
+    "erklaerung": "Digitale Transformation geht über einzelne IT-Massnahmen hinaus. Sie umfasst die grundlegende Veränderung von Organisation und Geschäftsmodell aufgrund der Digitalisierung — z.B. neue Produkte, neue Geschäftsfelder, neue Formen der Marktbearbeitung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Anschaffung neuer Computer für die Mitarbeitenden",
+      "Die Einführung eines neuen Buchhaltungsprogramms",
+      "Die Erstellung einer Website für das Unternehmen",
+      "Die grundlegende Veränderung von Organisation und Geschäftsmodell durch Digitalisierung"
+    ],
+    "korrekt": "Die grundlegende Veränderung von Organisation und Geschäftsmodell durch Digitalisierung"
+  },
+  {
+    "id": "bwl_stratfuehrung-e08",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Schule stellt ihre Notenverwaltung auf ein Online-System um und bietet Prüfungen via Webshop auch externen Personen an. Welche Stufe der Digitalisierung wird damit erreicht?",
+    "erklaerung": "Die Notenverwaltung online ist eine digitale Vernetzung bestehender Prozesse. Aber der Verkauf von Prüfungen an externe Personen über einen Webshop eröffnet ein völlig neues Geschäftsfeld — das entspricht der digitalen Transformation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Keine Digitalisierung, da es sich um eine Schule handelt",
+      "Nur Einführung digitaler Hilfsmittel in bestehende Prozesse",
+      "Digitale Vernetzung von Prozessen, aber kein neues Geschäftsmodell",
+      "Digitale Transformation: Neue Produkte und Geschäftsfelder werden erschlossen"
+    ],
+    "korrekt": "Digitale Transformation: Neue Produkte und Geschäftsfelder werden erschlossen"
+  },
+  {
+    "id": "bwl_stratfuehrung-e09",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Unternehmen ohne ausformulierte Strategie kann langfristig trotzdem erfolgreich sein, weil die Unternehmensleitung intuitiv richtig entscheidet.",
+    "erklaerung": "Zwar kann ein Unternehmen kurzfristig auch ohne formelle Strategie Erfolg haben. Langfristig ist dies jedoch riskant: Erst mit einer ausformulierten Strategie wird die Entwicklungsrichtung schriftlich festgelegt, für alle nachvollziehbar und systematisch überprüfbar. Viele Unternehmen scheitern gerade daran, dass sie keine oder keine realistische Strategie haben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-g01",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was beschreibt eine Unternehmensvision?",
+    "erklaerung": "Die Vision beschreibt das gewünschte Zukunftsbild des Unternehmens — wohin es sich langfristig entwickeln will. Sie dient als Orientierung für alle strategischen Entscheidungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Organisationsstruktur des Unternehmens",
+      "Die Liste aller Produkte und Dienstleistungen",
+      "Das gewünschte Zukunftsbild des Unternehmens",
+      "Den aktuellen Jahresabschluss"
+    ],
+    "korrekt": "Das gewünschte Zukunftsbild des Unternehmens"
+  },
+  {
+    "id": "bwl_stratfuehrung-g02",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein {0} enthält die Grundwerte und -prinzipien eines Unternehmens und dient als Orientierungshilfe für alle Beteiligten.",
+    "erklaerung": "Das Leitbild (auch Unternehmensleitbild) formuliert die Grundwerte und -prinzipien eines Unternehmens. Es dient intern und extern als Orientierung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Leitbild",
+        "optionen": [
+          "Unternehmensleitbild"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-g03",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Corporate Social Responsibility (CSR) bedeutet, dass Unternehmen Verantwortung gegenüber Gesellschaft und Umwelt wahrnehmen.",
+    "erklaerung": "CSR umfasst die freiwillige Übernahme gesellschaftlicher und ökologischer Verantwortung durch Unternehmen — über die gesetzlichen Pflichten hinaus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-g04",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aspekte gehören zur Corporate Social Responsibility? (Mehrere Antworten möglich.)",
+    "erklaerung": "CSR umfasst faire Arbeitsbedingungen, Menschenrechte, Umweltschutz, fairen Wettbewerb, Transparenz und Konsumenteninteressen. Die reine Profitmaximierung ohne Rücksicht auf diese Aspekte widerspricht dem CSR-Gedanken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Faire Arbeitsbedingungen und Einhaltung der Menschenrechte",
+      "Maximierung des Aktienkurses um jeden Preis",
+      "Schonung der Umwelt und fairer Umgang mit der Konkurrenz",
+      "Transparenz und Berücksichtigung der Konsumenteninteressen"
+    ],
+    "korrekt": [
+      "Faire Arbeitsbedingungen und Einhaltung der Menschenrechte",
+      "Schonung der Umwelt und fairer Umgang mit der Konkurrenz",
+      "Transparenz und Berücksichtigung der Konsumenteninteressen"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-g05",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welches Instrument wird eingesetzt, wenn ein Unternehmen einen verbindlichen Verhaltenskodex für alle Führungsstufen einführt?",
+    "erklaerung": "Ein Code of Conduct (Verhaltenskodex) legt Handlungsrichtlinien für alle Ebenen fest. Er wird im Rahmen der Führung und in Mitarbeitergesprächen verankert und überprüft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Produkt-Markt-Matrix",
+      "Fähigkeitsanalyse",
+      "SWOT-Analyse",
+      "Code of Conduct"
+    ],
+    "korrekt": "Code of Conduct"
+  },
+  {
+    "id": "bwl_stratfuehrung-g06",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Instrumente dienen der Umsetzung von CSR-Zielen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Gütesiegel, Sponsoring und Nachhaltigkeitsberichte sind typische CSR-Instrumente. Eine aggressive Preisstrategie ist eine Wettbewerbsstrategie, die nichts mit CSR zu tun hat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nutzung von Gütesiegeln (z.B. Fairtrade, ASC)",
+      "Sponsoring von kulturellen oder sozialen Projekten",
+      "Erstellung eines Nachhaltigkeitsberichts",
+      "Einführung einer aggressiven Preisstrategie"
+    ],
+    "korrekt": [
+      "Nutzung von Gütesiegeln (z.B. Fairtrade, ASC)",
+      "Sponsoring von kulturellen oder sozialen Projekten",
+      "Erstellung eines Nachhaltigkeitsberichts"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-g07",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Ölkonzern veröffentlicht einen aufwendigen Nachhaltigkeitsbericht, investiert aber gleichzeitig Milliarden in neue Ölfelder. Wie ist dieses Verhalten aus CSR-Perspektive zu bewerten?",
+    "erklaerung": "CSR wird kritisch diskutiert, wenn Unternehmen es primär zur Verbesserung des Images oder zur Verhinderung neuer staatlicher Regulierungen einsetzen. Wenn die Kernstrategie den CSR-Zielen widerspricht, spricht man von Greenwashing.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Positiv, weil jedes CSR-Engagement besser ist als gar keines",
+      "Kritisch, weil CSR möglicherweise nur zur Imagepflege eingesetzt wird (Greenwashing)",
+      "Vorbildliche CSR, weil der Bericht Transparenz schafft",
+      "Unproblematisch, weil CSR freiwillig ist"
+    ],
+    "korrekt": "Kritisch, weil CSR möglicherweise nur zur Imagepflege eingesetzt wird (Greenwashing)"
+  },
+  {
+    "id": "bwl_stratfuehrung-g08",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "CSR dient ausschliesslich der Verbesserung der Welt und hat keinen wirtschaftlichen Nutzen für das Unternehmen.",
+    "erklaerung": "CSR kann sich auch wirtschaftlich auszahlen: Durch verantwortungsvolles Handeln steigt das Ansehen bei Konsumenten, Investoren und Medien. Negative Berichte können sich via soziale Medien schnell verbreiten und dem Unternehmen schaden. CSR ist also auch ökonomisch sinnvoll.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-g09",
+    "fach": "BWL",
+    "thema": "Vision, Werte, Leitbild & CSR",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Anspruchsgruppen haben gemäss Lehrbuch beim Thema CSR unterschiedliche Interessen?",
+    "erklaerung": "Verschiedene Anspruchsgruppen haben unterschiedliche CSR-Interessen: Gesellschaft/NGOs fordern faire Arbeitsbedingungen, Investoren fordern Transparenz, Konsumenten wollen nachhaltige Produkte, Medien decken Missstände auf, der Staat vermittelt, und das Unternehmen will seine Strategie umsetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Nur die Konsumenten und der Staat",
+      "Nur die Aktionäre und die Unternehmensleitung",
+      "Nur die Mitarbeitenden und die Lieferanten",
+      "Gesellschaft/NGOs, Investoren, Konsumenten, Medien, Staat und das Unternehmen selbst"
+    ],
+    "korrekt": "Gesellschaft/NGOs, Investoren, Konsumenten, Medien, Staat und das Unternehmen selbst"
+  },
+  {
+    "id": "bwl_stratfuehrung-i01",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist das Ziel der Unternehmensanalyse?",
+    "erklaerung": "Die Unternehmensanalyse durchleuchtet die internen Rahmenbedingungen. Ziel ist es, die Fähigkeiten zu bestimmen, die das Unternehmen von anderen abheben — sogenannte strategische Erfolgspotenziale.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Einen Businessplan für die Bank erstellen",
+      "Die internen Stärken und Schwächen des Unternehmens erkennen",
+      "Die Konkurrenz ausspionieren",
+      "Neue Mitarbeitende rekrutieren"
+    ],
+    "korrekt": "Die internen Stärken und Schwächen des Unternehmens erkennen"
+  },
+  {
+    "id": "bwl_stratfuehrung-i02",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Fähigkeiten und Kompetenzen, die es einem Unternehmen erlauben, im Vergleich zur Konkurrenz dauerhaft vorhandene Stärken aufzubauen, nennt man strategische {0}.",
+    "erklaerung": "Strategische Erfolgspotenziale sind Fähigkeiten und Kompetenzen, die dauerhaft Wettbewerbsvorteile gegenüber der Konkurrenz ermöglichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Erfolgspotenziale",
+        "optionen": [
+          "Erfolgspotentiale"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-i03",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Bei der Fähigkeitsanalyse vergleicht ein Unternehmen seine Leistungen mit denen eines Hauptkonkurrenten.",
+    "erklaerung": "Die Fähigkeitsanalyse zeigt auf, in welchen Bereichen das Unternehmen gegenüber einem Hauptkonkurrenten Stärken besitzt und wo es Schwächen hat. Die Einschätzungen sollten möglichst mit objektiven Daten gestützt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-i04",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Bereiche werden in einer Fähigkeitsanalyse typischerweise untersucht? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Fähigkeitsanalyse untersucht interne Bereiche: Marketing, Produktion, F&E, Finanzen, Personal, Führung, Innovationsfähigkeit, Know-how und Synergien. Politische Rahmenbedingungen (C) gehören zur externen Umweltanalyse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_faehigkeitsanalyse_01.svg",
+      "alt": "Raster einer Fähigkeitsanalyse mit verschiedenen Unternehmensbereichen"
+    },
+    "optionen": [
+      "Marketing, Produktion, Forschung & Entwicklung",
+      "Finanzen, Personal, Führung/Organisation",
+      "Politische Rahmenbedingungen und Gesetzgebung",
+      "Innovationsfähigkeit, Know-how, Synergien"
+    ],
+    "korrekt": [
+      "Marketing, Produktion, Forschung & Entwicklung",
+      "Finanzen, Personal, Führung/Organisation",
+      "Innovationsfähigkeit, Know-how, Synergien"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-i05",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Unternehmen stellt fest, dass seine Produktionsanlagen moderner sind als die des Hauptkonkurrenten, aber der Kundenservice schlechter bewertet wird. Was zeigt die Fähigkeitsanalyse?",
+    "erklaerung": "Die Fähigkeitsanalyse vergleicht mit dem Hauptkonkurrenten: Moderne Anlagen = Stärke bei Produktion, schlechterer Kundenservice = Schwäche im Bereich Marketing/Service. Chancen und Gefahren (C, D) gehören zur Umweltanalyse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Stärke bei Produktion, Schwäche beim Marketing/Kundenservice",
+      "Bedrohung durch Ersatzprodukte",
+      "Stärke bei Personal, Schwäche bei Finanzen",
+      "Chance im Marktumfeld, Gefahr durch Konkurrenz"
+    ],
+    "korrekt": "Stärke bei Produktion, Schwäche beim Marketing/Kundenservice"
+  },
+  {
+    "id": "bwl_stratfuehrung-i06",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Erfolgspotenzial wird erst dann zum echten Wettbewerbsvorteil, wenn es durch nachgelagerte Funktionen wie Leistungserstellung oder Marketing gewinnbringend umgesetzt wird.",
+    "erklaerung": "Ein Erfolgspotenzial allein genügt nicht. Es muss durch die nachgelagerten betrieblichen Funktionen (Produktion, Marketing, Vertrieb) in einen tatsächlichen Wettbewerbsvorteil am Markt umgesetzt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-i07",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Softwareunternehmen hat hervorragende Programmierer (Know-how), aber eine veraltete Website und kaum Social-Media-Präsenz. Welche strategische Schlussfolgerung lässt die Fähigkeitsanalyse zu?",
+    "erklaerung": "Die Fähigkeitsanalyse zeigt eine klare Stärke (Know-how bei F&E) und eine klare Schwäche (Marketing). Das Potenzial wird nicht voll genutzt, weil die nachgelagerte Funktion Marketing das Produkt nicht ausreichend am Markt positioniert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Unternehmen hat keine Stärken",
+      "Die Schwäche im Marketing ist irrelevant, solange die Produkte gut sind",
+      "Das Know-how ist ein Erfolgspotenzial, das aber durch schwaches Marketing nicht in einen Wettbewerbsvorteil umgesetzt wird",
+      "Das Unternehmen sollte die Programmierer entlassen"
+    ],
+    "korrekt": "Das Know-how ist ein Erfolgspotenzial, das aber durch schwaches Marketing nicht in einen Wettbewerbsvorteil umgesetzt wird"
+  },
+  {
+    "id": "bwl_stratfuehrung-i08",
+    "fach": "BWL",
+    "thema": "Unternehmensanalyse & Fähigkeitsanalyse",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum sollten die Einschätzungen einer Fähigkeitsanalyse möglichst mit objektiven Daten gestützt werden?",
+    "erklaerung": "Ohne objektive Daten besteht die Gefahr, die eigenen Stärken zu überschätzen oder Schwächen zu übersehen. Statistiken, Marktforschungsstudien und Publikationen helfen, ein realistisches Bild zu zeichnen und fundierte strategische Entscheidungen zu treffen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Damit das Dokument für die Bank vorzeigbar ist",
+      "Weil die Konkurrenz die Analyse einsehen kann",
+      "Weil es gesetzlich vorgeschrieben ist",
+      "Weil subjektive Einschätzungen zu Fehlentscheidungen führen können"
+    ],
+    "korrekt": "Weil subjektive Einschätzungen zu Fehlentscheidungen führen können"
+  },
+  {
+    "id": "bwl_stratfuehrung-x01",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer hat das Fünf-Kräfte-Modell zur Analyse der Wettbewerbsintensität entwickelt?",
+    "erklaerung": "Michael Porter entwickelte das Fünf-Kräfte-Modell (Five Forces), mit dem die Wettbewerbsintensität eines Marktes analysiert wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Adam Smith",
+      "Peter Drucker",
+      "Michael Porter",
+      "Harry Ansoff"
+    ],
+    "korrekt": "Michael Porter"
+  },
+  {
+    "id": "bwl_stratfuehrung-x02",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Umweltanalyse untersucht die {0} Rahmenbedingungen eines Unternehmens.",
+    "erklaerung": "Im Gegensatz zur Unternehmensanalyse (intern) untersucht die Umweltanalyse die externen Rahmenbedingungen — also alles ausserhalb des Unternehmens: Markt, Konkurrenz, Trends, gesetzliche Entwicklungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "externen",
+        "optionen": [
+          "äusseren",
+          "ausseren"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-x03",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden gehören zu den fünf Wettbewerbskräften nach Porter? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die fünf Kräfte sind: 1. Bestehende Rivalität, 2. Verhandlungsmacht der Kunden, 3. Verhandlungsmacht der Lieferanten, 4. Gefahr potenzieller neuer Konkurrenten, 5. Gefahr durch Ersatzprodukte. Die technologische Umweltsphäre (C) gehört zum Unternehmensmodell, nicht zu Porter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_porter_01.svg",
+      "alt": "Diagramm: Fünf-Kräfte-Modell nach Porter mit fünf Wettbewerbskräften"
+    },
+    "optionen": [
+      "Bestehende Rivalität im Markt",
+      "Verhandlungsmacht der Kunden",
+      "Technologische Umweltsphäre",
+      "Gefahr durch Ersatzprodukte"
+    ],
+    "korrekt": [
+      "Bestehende Rivalität im Markt",
+      "Verhandlungsmacht der Kunden",
+      "Gefahr durch Ersatzprodukte"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-x04",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was misst die «Verhandlungsmacht der Kunden» im Fünf-Kräfte-Modell?",
+    "erklaerung": "Die Verhandlungsmacht der Kunden beschreibt, ob Kunden Preisdruck ausüben können und wie leicht sie zur Konkurrenz wechseln können. Je höher die Verhandlungsmacht, desto schwieriger ist es für das Unternehmen, hohe Preise durchzusetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Ob Kunden über eine grosse Einkaufsmacht verfügen und leicht zur Konkurrenz wechseln können",
+      "Ob die Kunden genug Geld haben, um das Produkt zu kaufen",
+      "Wie viele Kunden das Unternehmen hat",
+      "Wie zufrieden die Kunden mit dem Produkt sind"
+    ],
+    "korrekt": "Ob Kunden über eine grosse Einkaufsmacht verfügen und leicht zur Konkurrenz wechseln können"
+  },
+  {
+    "id": "bwl_stratfuehrung-x05",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In einem Markt mit vielen Anbietern standardisierter Produkte und niedrigen Eintrittsbarrieren — welche Wettbewerbskraft ist besonders hoch?",
+    "erklaerung": "Viele Anbieter mit ähnlichen Produkten führen zu hoher Rivalität. Zudem erleichtern niedrige Eintrittsbarrieren den Markteintritt neuer Konkurrenten, was die Intensität weiter steigert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Gefahr durch Ersatzprodukte, aber nicht durch neue Konkurrenten",
+      "Bestehende Rivalität im Markt",
+      "Verhandlungsmacht der Kunden, aber nicht die Rivalität",
+      "Verhandlungsmacht der Lieferanten"
+    ],
+    "korrekt": "Bestehende Rivalität im Markt"
+  },
+  {
+    "id": "bwl_stratfuehrung-x06",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Je stärker der Konkurrenzkampf in einem Markt, desto attraktiver ist dieser Markt für Unternehmen.",
+    "erklaerung": "Es ist umgekehrt: Je stärker der Konkurrenzkampf, desto grösser ist der Preisdruck und desto weniger attraktiv ist der Markt. Ein intensiver Wettbewerb drückt die Margen und erschwert es, Gewinne zu erzielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-x07",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Migros steht im Schweizer Detailhandel im Wettbewerb mit Coop, Aldi, Lidl und Onlineanbietern. Warum ist die Verhandlungsmacht der Lieferanten gegenüber der Migros eher gering?",
+    "erklaerung": "Die Migros ist eine der grössten Abnehmerin im Schweizer Detailhandel. Ihre Grösse gibt ihr starke Verhandlungsposition gegenüber den Lieferanten — sie kann Preise und Konditionen mitbestimmen. Dies führt teilweise zu Protesten (z.B. Bauernproteste).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Weil die Lieferanten immer den besten Preis erhalten",
+      "Weil die Migros keine Lieferanten hat",
+      "Weil es gesetzlich so vorgeschrieben ist",
+      "Weil die Migros als einer der grössten Abnehmer selbst Druck auf die Lieferanten ausüben kann"
+    ],
+    "korrekt": "Weil die Migros als einer der grössten Abnehmer selbst Druck auf die Lieferanten ausüben kann"
+  },
+  {
+    "id": "bwl_stratfuehrung-x08",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Netflix war ursprünglich ein DVD-Verleih per Post. Welche der fünf Kräfte nach Porter beschreibt die Bedrohung, die Netflix für traditionelle Videotheken darstellte?",
+    "erklaerung": "Netflix als Online-Streaming-Dienst war ein Ersatzprodukt für den klassischen Videoverleih. Es ersetzte die bestehende Dienstleistung durch eine technologisch neue Lösung — genau das beschreibt die «Gefahr durch Ersatzprodukte» im Porter-Modell.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Bestehende Rivalität im Markt",
+      "Verhandlungsmacht der Kunden",
+      "Verhandlungsmacht der Lieferanten",
+      "Gefahr durch Ersatzprodukte"
+    ],
+    "korrekt": "Gefahr durch Ersatzprodukte"
+  },
+  {
+    "id": "bwl_stratfuehrung-x09",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Hohe Eintrittsbarrieren in einem Markt schützen bestehende Unternehmen, weil die Gefahr potenzieller neuer Konkurrenten dadurch sinkt.",
+    "erklaerung": "Hohe Eintrittsbarrieren (z.B. hoher Kapitalbedarf, starke Marken, Patente, knappe Verkaufsstandorte) erschweren den Markteintritt neuer Wettbewerber. Dies schützt die bestehenden Unternehmen vor zusätzlichem Konkurrenzdruck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-s01",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "SWOT steht für: S = {0}, W = {1}, O = {2}, T = {3}.",
+    "erklaerung": "SWOT steht für Strengths (Stärken), Weaknesses (Schwächen), Opportunities (Chancen) und Threats (Gefahren). Stärken und Schwächen betreffen das Unternehmen selbst, Chancen und Gefahren das Umfeld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Strengths",
+        "optionen": [
+          "Stärken"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Weaknesses",
+        "optionen": [
+          "Schwächen"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Opportunities",
+        "optionen": [
+          "Chancen"
+        ]
+      },
+      {
+        "id": "3",
+        "korrekt": "Threats",
+        "optionen": [
+          "Gefahren",
+          "Risiken"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-s02",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welcher Teil der SWOT-Analyse bezieht sich auf das Unternehmen selbst (intern)?",
+    "erklaerung": "Stärken (Strengths) und Schwächen (Weaknesses) beziehen sich auf das Unternehmen selbst — sie stammen aus der Unternehmensanalyse. Chancen und Gefahren stammen aus dem Marktumfeld (Umweltanalyse).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Stärken und Chancen",
+      "Stärken und Schwächen",
+      "Chancen und Gefahren",
+      "Schwächen und Gefahren"
+    ],
+    "korrekt": "Stärken und Schwächen"
+  },
+  {
+    "id": "bwl_stratfuehrung-s03",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Die SWOT-Analyse kombiniert die interne und die externe Sicht auf ein Unternehmen.",
+    "erklaerung": "Die SWOT-Analyse ist eine strategische Analyse, die die Ergebnisse der Unternehmensanalyse (Stärken/Schwächen) und der Umweltanalyse (Chancen/Gefahren) zusammenführt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-s04",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist das Ziel der Kombination «Stärken treffen auf Chancen» in der SWOT-Matrix?",
+    "erklaerung": "Wenn Stärken auf Chancen treffen, ist das der Idealfall: Das Unternehmen kann seine vorhandenen Stärken nutzen, um die sich bietenden Chancen optimal auszuschöpfen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Eigene Stärken nutzen, um Chancen im Umfeld optimal auszuschöpfen",
+      "Schwächen abbauen, um Gefahren zu minimieren",
+      "Gefahren durch Stärken abwehren",
+      "Schwächen in Stärken umwandeln"
+    ],
+    "korrekt": "Eigene Stärken nutzen, um Chancen im Umfeld optimal auszuschöpfen"
+  },
+  {
+    "id": "bwl_stratfuehrung-s05",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Kombination in der SWOT-Matrix ist die gefährlichste für ein Unternehmen?",
+    "erklaerung": "Wenn Schwächen auf Gefahren treffen, ist das die gefährlichste Kombination. Das Unternehmen muss gleichzeitig Schwächen abbauen und Gefahren verringern — sonst drohen ernsthafte Probleme.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Schwächen treffen auf Chancen",
+      "Schwächen treffen auf Gefahren",
+      "Stärken treffen auf Chancen",
+      "Stärken treffen auf Gefahren"
+    ],
+    "korrekt": "Schwächen treffen auf Gefahren"
+  },
+  {
+    "id": "bwl_stratfuehrung-s06",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Softdrinkhersteller hat einen guten Zugang zu Cafés und Tankstellen (Stärke) und ein qualitativ gutes Produkt (Stärke), aber hohe Produktionskosten (Schwäche) und schwaches Marketing (Schwäche). Welche sind Schwächen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Hohe Produktionskosten (und dadurch hoher Preis) sowie schwaches Marketing sind interne Schwächen. Der gute Zugang zu Verkaufsstellen und die Produktqualität sind hingegen Stärken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Guter Zugang zu Cafés und Tankstellen",
+      "Hohe Produktionskosten und dadurch hoher Produktpreis",
+      "Qualitativ gutes Produkt",
+      "Schwaches Marketing"
+    ],
+    "korrekt": [
+      "Hohe Produktionskosten und dadurch hoher Produktpreis",
+      "Schwaches Marketing"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-s07",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Softdrinkhersteller hat die Schwäche «hohe Produktionskosten» und die Chance «Konsumenten kaufen vermehrt unterwegs ein». Welche strategische Handlung empfiehlt die SWOT-Logik?",
+    "erklaerung": "Bei der Kombination «Schwächen treffen auf Chancen» sollen Schwächen abgebaut oder in Stärken verwandelt werden, um die Chancen nutzen zu können. Hier: Produktionskosten senken, um vom Trend «Einkauf unterwegs» profitieren zu können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Das Produkt vom Markt nehmen",
+      "Nichts tun, weil sich Schwäche und Chance aufheben",
+      "Die Schwäche abbauen (Kosten senken) oder in eine Stärke umwandeln, um die Chance zu nutzen",
+      "Die Chance ignorieren und sich auf Gefahren konzentrieren"
+    ],
+    "korrekt": "Die Schwäche abbauen (Kosten senken) oder in eine Stärke umwandeln, um die Chance zu nutzen"
+  },
+  {
+    "id": "bwl_stratfuehrung-s08",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Eine SWOT-Analyse ist nur dann sinnvoll, wenn sie auf einer fundierten Unternehmens- und Umweltanalyse basiert.",
+    "erklaerung": "Die SWOT-Analyse ist eine Zusammenführung der Ergebnisse aus der internen und externen Analyse. Ohne fundierte Datengrundlage (z.B. Fähigkeitsanalyse, Fünf-Kräfte-Modell) wäre die SWOT nur oberflächlich und könnte zu Fehlentscheidungen führen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-s09",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Auf der Basis der SWOT-Analyse wird die Unternehmensstrategie entwickelt. Was sollte die Strategie idealerweise bewirken?",
+    "erklaerung": "Die Unternehmensstrategie sollte die Stärken und Chancen maximieren und gleichzeitig Schwächen abbauen sowie Gefahren minimieren. Nur so kann das Unternehmen langfristig erfolgreich sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Stärken abbauen, um flexibler zu werden",
+      "Stärken und Chancen maximieren, Schwächen und Gefahren minimieren",
+      "Alle Schwächen akzeptieren und nur auf Stärken setzen",
+      "Alle Gefahren ignorieren und nur Chancen verfolgen"
+    ],
+    "korrekt": "Stärken und Chancen maximieren, Schwächen und Gefahren minimieren"
+  },
+  {
+    "id": "bwl_stratfuehrung-t01",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Unternehmensziele lassen sich in drei Kategorien einteilen. Welche? (Mehrere Antworten möglich.)",
+    "erklaerung": "Unternehmensziele werden in drei Kategorien gegliedert: leistungswirtschaftlich (Marktanteil, Produkte), finanzwirtschaftlich (Gewinn, Rendite, Liquidität) und sozial/ökologisch (Mitarbeitende, Umwelt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Leistungswirtschaftliche Ziele",
+      "Finanzwirtschaftliche Ziele",
+      "Soziale und ökologische Ziele",
+      "Politische Ziele"
+    ],
+    "korrekt": [
+      "Leistungswirtschaftliche Ziele",
+      "Finanzwirtschaftliche Ziele",
+      "Soziale und ökologische Ziele"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-t02",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Von wem stammt die Produkt-Markt-Matrix?",
+    "erklaerung": "Die Produkt-Markt-Matrix wurde von Harry Ansoff entwickelt. Sie zeigt vier Strategiemöglichkeiten, je nachdem ob bestehende oder neue Produkte auf bestehenden oder neuen Märkten angeboten werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Harry Ansoff",
+      "Michael Porter",
+      "Peter Drucker",
+      "Philip Kotler"
+    ],
+    "korrekt": "Harry Ansoff"
+  },
+  {
+    "id": "bwl_stratfuehrung-t03",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Bei der {0} werden bestehende Märkte mit bisherigen Produkten intensiver bearbeitet, z.B. durch verstärktes Marketing.",
+    "erklaerung": "Marktdurchdringung (Ansoff) bedeutet: Bestehende Produkte auf bestehenden Märkten intensiver verkaufen — z.B. durch mehr Werbung, Aktionen oder besseren Service, um Marktanteile zu gewinnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Marktdurchdringung",
+        "optionen": [
+          "Marktpenetration"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-t04",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Unternehmen bringt ein völlig neues Produkt auf einen Markt, den es noch nicht bearbeitet hat. Welche Ansoff-Strategie verfolgt es?",
+    "erklaerung": "Diversifikation = neues Produkt + neuer Markt. Die riskanteste Strategie nach Ansoff, da weder Produkt- noch Markterfahrung vorhanden ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_ansoff_01.svg",
+      "alt": "Produkt-Markt-Matrix nach Ansoff mit vier Strategiefeldern"
+    },
+    "optionen": [
+      "Marktdurchdringung",
+      "Marktentwicklung",
+      "Produktentwicklung",
+      "Diversifikation"
+    ],
+    "korrekt": "Diversifikation"
+  },
+  {
+    "id": "bwl_stratfuehrung-t05",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche drei Formen der Diversifikation werden unterschieden? (Mehrere Antworten möglich.)",
+    "erklaerung": "Es werden drei Formen unterschieden: Horizontal (neue Produkte im Zusammenhang mit bisherigen), vertikal (Übernahme von vor-/nachgelagerten Stufen) und lateral (völlig neues Geschäftsfeld ohne Zusammenhang). Diagonale Diversifikation (D) gibt es als Fachbegriff nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Horizontale Diversifikation",
+      "Vertikale Diversifikation",
+      "Laterale Diversifikation",
+      "Diagonale Diversifikation"
+    ],
+    "korrekt": [
+      "Horizontale Diversifikation",
+      "Vertikale Diversifikation",
+      "Laterale Diversifikation"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-t06",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Victorinox stellt neben Messern neu auch Uhren, Reisegepäck und Parfüms her. Welche Form der Diversifikation liegt vor?",
+    "erklaerung": "Victorinox erweitert sein Sortiment mit Produkten, die thematisch im Zusammenhang mit der Marke stehen (Swiss Quality, Lifestyle). Es handelt sich um horizontale Diversifikation, da Synergien mit dem bisherigen Markenimage genutzt werden können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Horizontale Diversifikation",
+      "Vertikale Diversifikation",
+      "Laterale Diversifikation",
+      "Marktdurchdringung"
+    ],
+    "korrekt": "Horizontale Diversifikation"
+  },
+  {
+    "id": "bwl_stratfuehrung-t07",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter einer Differenzierungsstrategie nach Porter?",
+    "erklaerung": "Bei der Differenzierungsstrategie versucht ein Unternehmen, sich durch einzigartige Produkteigenschaften (USP) oder einzigartige Kommunikation (UAP) von der Konkurrenz abzuheben und so dem Preiswettbewerb zu entkommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Preise unter die der Konkurrenz senken",
+      "Neue Märkte erschliessen",
+      "Sich durch Qualität, Service oder Image von der Konkurrenz abheben",
+      "Sich auf eine kleine Nische konzentrieren"
+    ],
+    "korrekt": "Sich durch Qualität, Service oder Image von der Konkurrenz abheben"
+  },
+  {
+    "id": "bwl_stratfuehrung-t08",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "USP steht für {0} und beschreibt ein einmaliges Verkaufsargument basierend auf Produkteigenschaften.",
+    "erklaerung": "USP (Unique Selling Proposition) = einmaliges Verkaufsargument. Es basiert auf herausragenden Eigenschaften des Produkts oder der Dienstleistung (z.B. besonderes Design, lange Lebensdauer, besonderer Service).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Unique Selling Proposition",
+        "optionen": [
+          "unique selling proposition"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-t09",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Red Bull differenziert sich nicht primär über Produkteigenschaften, sondern über seine Verbindung mit Extremsport-Events. Welche Art der Differenzierung liegt vor?",
+    "erklaerung": "Red Bull setzt auf eine UAP (Unique Advertising Proposition) — ein einmaliges Kommunikationsargument. Die Verbindung mit Extremsport schafft ein emotionales Image, das sich von der Konkurrenz abhebt, obwohl das Produkt (Energydrink) an sich austauschbar wäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "UAP — Differenzierung über Kommunikation und Image",
+      "Aggressive Preisstrategie",
+      "USP — Differenzierung über Produkteigenschaften",
+      "Nischenstrategie"
+    ],
+    "korrekt": "UAP — Differenzierung über Kommunikation und Image"
+  },
+  {
+    "id": "bwl_stratfuehrung-t10",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Aldi, Denner und Lidl verfolgen eine aggressive Preisstrategie. Welche Voraussetzung ist dafür zwingend nötig?",
+    "erklaerung": "Eine aggressive Preisstrategie (Kostenführerschaft) kann nur von Unternehmen verfolgt werden, die ihre Kosten dauerhaft tief halten können. Sonst verkauft man unter den Herstellkosten und macht Verlust. Discounter erreichen dies durch Standardisierung, hohe Stückzahlen und schlanke Prozesse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Fähigkeit, die Kosten dauerhaft tief zu halten",
+      "Ein besonders innovatives Produktsortiment",
+      "Ein starkes Markenimage bei Premiumkunden",
+      "Möglichst wenige Filialen, um Kosten zu sparen"
+    ],
+    "korrekt": "Die Fähigkeit, die Kosten dauerhaft tief zu halten"
+  },
+  {
+    "id": "bwl_stratfuehrung-t11",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Bei einer Nischenstrategie kann auch ein kleines Unternehmen gegen grosse Konzerne bestehen, wenn es sich auf einen spezifischen Teilmarkt spezialisiert.",
+    "erklaerung": "Die Nischenstrategie ermöglicht es auch kleineren Unternehmen, attraktive Gewinne zu erzielen. In einer Nische stellen die Kunden spezifische Ansprüche, die von den grossen Gesamtmarktanbietern nicht bedient werden. Spezialisierte Kompetenz schirmt die Nische ab.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-k01",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was beschreibt ein Unternehmenskonzept?",
+    "erklaerung": "Das Unternehmenskonzept formuliert die Unternehmensstrategie aus. Es beschreibt die konkreten Ziele und gibt den Mitarbeitenden Auskunft über die Mittel und die Methoden, wie die Strategie umgesetzt werden soll.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Die Vision und das Leitbild des Unternehmens",
+      "Die Buchhaltung des Unternehmens",
+      "Die konkreten Ziele, Mittel und Methoden zur Umsetzung der Strategie",
+      "Die SWOT-Analyse des Unternehmens"
+    ],
+    "korrekt": "Die konkreten Ziele, Mittel und Methoden zur Umsetzung der Strategie"
+  },
+  {
+    "id": "bwl_stratfuehrung-k02",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das Unternehmenskonzept umfasst Ziele, Mittel und Methoden in drei Bereichen. Welche? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das Unternehmenskonzept gliedert sich in drei Bereiche: leistungswirtschaftlich (Produkte, Märkte, Produktion), finanzwirtschaftlich (Gewinn, Kapital, Wirtschaftlichkeit) und sozial/ökologisch (Mitarbeitende, Gesellschaft, Umwelt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Leistungswirtschaftlicher Bereich",
+      "Finanzwirtschaftlicher Bereich",
+      "Sozialer und ökologischer Bereich",
+      "Politischer Bereich"
+    ],
+    "korrekt": [
+      "Leistungswirtschaftlicher Bereich",
+      "Finanzwirtschaftlicher Bereich",
+      "Sozialer und ökologischer Bereich"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-k03",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Evaluation bildet den {0} im Prozess der strategischen Planung.",
+    "erklaerung": "Die Evaluation ist der vierte und letzte Schritt der strategischen Planung. Sie überprüft, ob die Umsetzung erfolgreich war und die gesteckten Ziele erreicht wurden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Abschluss",
+        "optionen": [
+          "letzten Schritt",
+          "Schluss"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-k04",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was gehört zum leistungswirtschaftlichen Bereich eines Unternehmenskonzepts?",
+    "erklaerung": "Der leistungswirtschaftliche Bereich umfasst Ziele zu Produkten, Märkten und Image. Gewinn und Kapital gehören zum finanzwirtschaftlichen Bereich, Mitarbeitende und Umwelt zum sozialen Bereich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Mitarbeiterbezogene Ziele und Umweltschutz",
+      "Steuerstrategie und Dividendenpolitik",
+      "Gewinnziele und Kapitalstruktur",
+      "Marktziele, Produktziele und Imageziele"
+    ],
+    "korrekt": "Marktziele, Produktziele und Imageziele"
+  },
+  {
+    "id": "bwl_stratfuehrung-k05",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Auf welchen drei Ebenen erfolgt die Strategiekontrolle bei der Evaluation? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Strategiekontrolle erfolgt auf drei Ebenen: 1. Stimmen die anfänglichen Annahmen noch? 2. Gibt es Widerstände oder Schwierigkeiten bei der Umsetzung? 3. Wurden die Ziele erreicht (Soll-Ist-Vergleich)? Die Mitarbeiterleistung wird im operativen Controlling beurteilt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Kontrolle der zugrunde liegenden Annahmen",
+      "Kontrolle der Umsetzung",
+      "Kontrolle der Wirksamkeit (Soll-Ist-Vergleich)",
+      "Kontrolle der Mitarbeiterleistung"
+    ],
+    "korrekt": [
+      "Kontrolle der zugrunde liegenden Annahmen",
+      "Kontrolle der Umsetzung",
+      "Kontrolle der Wirksamkeit (Soll-Ist-Vergleich)"
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-k06",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Cupcake-Startup definiert als Ziel: «Wir wollen im ersten Jahr 100'000 CHF Umsatz erzielen.» In welchen Bereich des Unternehmenskonzepts gehört dieses Ziel?",
+    "erklaerung": "Ein Umsatzziel ist ein finanzwirtschaftliches Ziel. Es gehört in den finanzwirtschaftlichen Bereich des Unternehmenskonzepts, zusammen mit Gewinn-, Kapital- und Wirtschaftlichkeitszielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Finanzwirtschaftlicher Bereich",
+      "Leistungswirtschaftlicher Bereich",
+      "Sozialer Bereich",
+      "Keiner — Umsatz gehört nicht ins Konzept"
+    ],
+    "korrekt": "Finanzwirtschaftlicher Bereich"
+  },
+  {
+    "id": "bwl_stratfuehrung-k07",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bei der Umsetzung der Strategie genügt es, wenn nur die obere Führungsebene die Strategie kennt.",
+    "erklaerung": "Die Vision, Ziele und Strategie müssen allen Mitarbeitenden nachvollziehbar und stufengerecht kommuniziert werden. Nur wenn alle die gleiche Richtung kennen, können sie auch bei Schwierigkeiten an der Strategie arbeiten. Es muss ein gemeinsames Verständnis geschaffen werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-k08",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das Cupcake-Startup stellt nach 6 Monaten fest, dass die Nachfrage nach veganen Cupcakes viel höher ist als erwartet, aber das ursprüngliche Sortiment kaum vegane Optionen enthält. Welche Ebene der Evaluation ist betroffen?",
+    "erklaerung": "Die anfängliche Annahme über die Nachfrage (wenig Bedarf an veganen Cupcakes) hat sich als falsch erwiesen. Dies fällt unter die «Kontrolle der zugrunde liegenden Annahmen». Die Strategie muss entsprechend angepasst werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Kontrolle der zugrunde liegenden Annahmen — die Markteinschätzung war falsch",
+      "Keine Ebene — alles läuft planmässig",
+      "Kontrolle der Umsetzung — die Produktion funktioniert nicht",
+      "Kontrolle der Wirksamkeit — der Umsatz stimmt nicht"
+    ],
+    "korrekt": "Kontrolle der zugrunde liegenden Annahmen — die Markteinschätzung war falsch"
+  },
+  {
+    "id": "bwl_stratfuehrung-k09",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist es wichtig, dass ein Unternehmenskonzept nicht nur die Ziele, sondern auch die Mittel und Verfahren enthält?",
+    "erklaerung": "Ein abstraktes Strategiedokument nützt wenig, wenn nicht klar ist, wie die Ziele konkret erreicht werden sollen. Mittel (Ressourcen) und Verfahren (Methoden) machen die Strategie operationalisierbar — sie zeigen den Mitarbeitenden, was zu tun ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "optionen": [
+      "Weil nur so die Konkurrenz eingeschüchtert werden kann",
+      "Weil es gesetzlich vorgeschrieben ist",
+      "Weil die Bank es für den Kredit verlangt",
+      "Weil Ziele ohne konkrete Mittel und Verfahren abstrakt bleiben und nicht umgesetzt werden können"
+    ],
+    "korrekt": "Weil Ziele ohne konkrete Mittel und Verfahren abstrakt bleiben und nicht umgesetzt werden können"
+  },
+  {
+    "id": "bwl_stratfuehrung-k10",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Evaluation findet erst statt, wenn die gesamte Strategie vollständig umgesetzt wurde.",
+    "erklaerung": "Die Evaluation findet nicht nur am Schluss statt. Vielmehr finden Umsetzung, Evaluation und Kontrolle zeitlich parallel statt. So können korrigierende Rückkopplungen frühzeitig vorgenommen werden, statt erst am Ende festzustellen, dass etwas schiefgelaufen ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "aussagen": []
+  },
+  {
+    "id": "bwl_stratfuehrung-neu_sort_01",
+    "fach": "BWL",
+    "thema": "Einführung & strategische Planung",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Schritte des strategischen Planungsprozesses in die korrekte Reihenfolge.",
+    "erklaerung": "Der strategische Planungsprozess beginnt mit den normativen Grundlagen (Wofür stehen wir?), geht über die Analyse des Ist-Zustands (intern: Stärken/Schwächen, extern: Chancen/Gefahren), die Synthese in der SWOT-Matrix bis zur Strategieformulierung und Umsetzung. Evaluation und Kontrolle begleiten den gesamten Prozess.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-neu_sort_02",
+    "fach": "BWL",
+    "thema": "Umweltanalyse & 5-Kräfte-Modell",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die fünf Wettbewerbskräfte nach Porter typischerweise nach ihrer Bedrohlichkeit für ein etabliertes Schweizer KMU – von der grössten zur geringsten Bedrohung.",
+    "erklaerung": "Für KMU ist die direkte Rivalität oft die grösste Bedrohung (enger Markt, Preisdruck). Kundenverhandlungsmacht ist hoch, wenn wenige Grosskunden dominieren. Neue Konkurrenten sind je nach Branche eine reale Gefahr. Lieferantenmacht und Substitutionsbedrohung variieren stark. Porter's Modell hilft, die Branchenattraktivität systematisch zu analysieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-neu_sort_03",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die vier SWOT-Strategien nach dem Grad der Bedrohungslage – von der günstigsten zur ungünstigsten Ausgangslage für das Unternehmen.",
+    "erklaerung": "Die SO-Strategie ist die beste Ausgangslage – das Unternehmen kann offensiv agieren. WO bedeutet: Chancen existieren, aber das Unternehmen muss zuerst seine Schwächen beheben. ST erfordert eine defensive Strategie – die eigenen Stärken schützen vor Gefahren. WT ist die schwierigste Lage: Schwächen treffen auf Gefahren – hier geht es oft ums Überleben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-hotspot01",
+    "fach": "BWL",
+    "thema": "Strategien & Unternehmensziele",
+    "typ": "hotspot",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Klicke auf das Feld, das die Strategie beschreibt, bei der ein Unternehmen auf dem Gesamtmarkt den niedrigsten Preis anbietet.",
+    "erklaerung": "Kostenführerschaft (A): Gesamtmarkt + Kostenvorteil — das Unternehmen produziert günstiger als alle Konkurrenten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_porter_hotspot.svg",
+      "alt": "Porter-Strategiematrix mit vier Feldern A–D"
+    },
+    "hotspots": [
+      {
+        "x": 19.4,
+        "y": 40.5,
+        "r": 8,
+        "label": "A: Kostenführerschaft"
+      },
+      {
+        "x": 83.1,
+        "y": 40.5,
+        "r": 8,
+        "label": "B: Differenzierung"
+      },
+      {
+        "x": 19.4,
+        "y": 79.8,
+        "r": 8,
+        "label": "C: Kostenfokus (Nische)"
+      },
+      {
+        "x": 83.1,
+        "y": 79.8,
+        "r": 8,
+        "label": "D: Differenzierungsfokus"
+      }
+    ],
+    "korrekt": [
+      0
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-beschriftung01",
+    "fach": "BWL",
+    "thema": "Unternehmenskonzept & Evaluation",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die vier Wachstumsstrategien der Ansoff-Matrix.",
+    "erklaerung": "Die Ansoff-Matrix: Marktdurchdringung (bestehendes Produkt, bestehender Markt), Produktentwicklung (neues Produkt, bestehender Markt), Marktentwicklung (bestehendes Produkt, neuer Markt), Diversifikation (neues Produkt, neuer Markt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_ansoff_beschriftung.svg",
+      "alt": "Ansoff-Matrix ohne Strategienamen"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Marktdurchdringung",
+        "x": 34,
+        "y": 32
+      },
+      {
+        "id": "l2",
+        "text": "Produktentwicklung",
+        "x": 73,
+        "y": 32
+      },
+      {
+        "id": "l3",
+        "text": "Marktentwicklung",
+        "x": 34,
+        "y": 70
+      },
+      {
+        "id": "l4",
+        "text": "Diversifikation",
+        "x": 73,
+        "y": 70
+      }
+    ]
+  },
+  {
+    "id": "bwl_stratfuehrung-dragdrop01",
+    "fach": "BWL",
+    "thema": "SWOT-Analyse",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Beispiele dem richtigen SWOT-Feld zu.",
+    "erklaerung": "SWOT: Stärken/Schwächen = interne Analyse (was kann das Unternehmen gut/schlecht?). Chancen/Risiken = externe Analyse (was bietet/bedroht die Umwelt?).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1",
+    "bild": {
+      "src": "/pool-bilder/bwl/stratfuehrung/stratfuehrung_swot_dragdrop.svg",
+      "alt": "SWOT-Analyse: Stärken, Schwächen, Chancen, Risiken"
+    },
+    "zones": [
+      {
+        "id": "s",
+        "x": 2.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "w",
+        "x": 26,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "o",
+        "x": 49.5,
+        "y": 14,
+        "w": 22,
+        "h": 82
+      },
+      {
+        "id": "t",
+        "x": 73,
+        "y": 14,
+        "w": 25,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "lb1",
+        "text": "Starke Marke",
+        "zone": "s"
+      },
+      {
+        "id": "lb2",
+        "text": "Erfahrenes Team",
+        "zone": "s"
+      },
+      {
+        "id": "lb3",
+        "text": "Hohe Fixkosten",
+        "zone": "w"
+      },
+      {
+        "id": "lb4",
+        "text": "Veraltete IT-Systeme",
+        "zone": "w"
+      },
+      {
+        "id": "lb5",
+        "text": "Wachsender Markt",
+        "zone": "o"
+      },
+      {
+        "id": "lb6",
+        "text": "Technologischer Wandel als Chance",
+        "zone": "o"
+      },
+      {
+        "id": "lb7",
+        "text": "Neue Konkurrenten",
+        "zone": "t"
+      },
+      {
+        "id": "lb8",
+        "text": "Regulierungsverschärfung",
+        "zone": "t"
+      }
+    ]
+  }
+]

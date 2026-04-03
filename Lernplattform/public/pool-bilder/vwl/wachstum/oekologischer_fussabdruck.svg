@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 310" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 13px; font-weight: 700; fill: #1e293b; }
+      .bar-label { font-size: 10px; fill: #1e293b; font-weight: 600; }
+      .bar-val { font-size: 9.5px; fill: #fff; font-weight: 700; }
+      .axis { stroke: #334155; stroke-width: 1; }
+      .tick { font-size: 9px; fill: #94a3b8; }
+      .limit-text { font-size: 9.5px; fill: #dc2626; font-weight: 600; }
+    </style>
+  </defs>
+  <text x="260" y="22" text-anchor="middle" class="title">Ökologischer Fussabdruck (Hektaren pro Person)</text>
+  <!-- Axis -->
+  <line x1="130" y1="40" x2="130" y2="258" class="axis"/>
+  <line x1="130" y1="258" x2="500" y2="258" class="axis"/>
+  <!-- Scale -->
+  <text x="125" y="258" text-anchor="end" class="tick">0</text>
+  <text x="125" y="215" text-anchor="end" class="tick">2</text>
+  <text x="125" y="172" text-anchor="end" class="tick">4</text>
+  <text x="125" y="129" text-anchor="end" class="tick">6</text>
+  <text x="125" y="86" text-anchor="end" class="tick">8</text>
+  <text x="125" y="43" text-anchor="end" class="tick">10</text>
+  <line x1="130" y1="215" x2="500" y2="215" stroke="#e2e8f0" stroke-width="0.5"/>
+  <line x1="130" y1="172" x2="500" y2="172" stroke="#e2e8f0" stroke-width="0.5"/>
+  <line x1="130" y1="129" x2="500" y2="129" stroke="#e2e8f0" stroke-width="0.5"/>
+  <line x1="130" y1="86" x2="500" y2="86" stroke="#e2e8f0" stroke-width="0.5"/>
+  <!-- Biokapazitäts-Grenze (1.8 ha) -->
+  <line x1="130" y1="219" x2="500" y2="219" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="502" y="222" class="limit-text">← 1,8 ha (1 Planet)</text>
+  <!-- Bars -->
+  <!-- USA: 8.1 -->
+  <rect x="145" y="82" width="48" height="176" rx="4" fill="#dc2626"/>
+  <text x="169" y="104" text-anchor="middle" class="bar-val">8,1</text>
+  <text x="169" y="278" text-anchor="middle" class="bar-label">USA</text>
+  <!-- Schweiz: 4.9 -->
+  <rect x="205" y="151" width="48" height="107" rx="4" fill="#f89907"/>
+  <text x="229" y="173" text-anchor="middle" class="bar-val">4,9</text>
+  <text x="229" y="278" text-anchor="middle" class="bar-label">CH</text>
+  <!-- Deutschland: 4.7 -->
+  <rect x="265" y="156" width="48" height="102" rx="4" fill="#f89907"/>
+  <text x="289" y="178" text-anchor="middle" class="bar-val">4,7</text>
+  <text x="289" y="278" text-anchor="middle" class="bar-label">DE</text>
+  <!-- China: 3.7 -->
+  <rect x="325" y="178" width="48" height="80" rx="4" fill="#7c3aed"/>
+  <text x="349" y="200" text-anchor="middle" class="bar-val">3,7</text>
+  <text x="349" y="278" text-anchor="middle" class="bar-label">CN</text>
+  <!-- Brasilien: 2.8 -->
+  <rect x="385" y="197" width="48" height="61" rx="4" fill="#2563eb"/>
+  <text x="409" y="219" text-anchor="middle" class="bar-val">2,8</text>
+  <text x="409" y="278" text-anchor="middle" class="bar-label">BR</text>
+  <!-- Indien: 1.2 -->
+  <rect x="445" y="232" width="48" height="26" rx="4" fill="#16a34a"/>
+  <text x="469" y="249" text-anchor="middle" class="bar-val">1,2</text>
+  <text x="469" y="278" text-anchor="middle" class="bar-label">IN</text>
+  <!-- Source -->
+  <text x="315" y="305" text-anchor="middle" font-size="9" fill="#94a3b8" font-style="italic">Daten: Global Footprint Network (gerundete Werte)</text>
+</svg>

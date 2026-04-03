@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Maslowsche Bedürfnispyramide</text>
+  <!-- Level 5 - Top: Selbstverwirklichung -->
+  <polygon points="400,60 480,130 320,130" fill="#fdba74" stroke="#f97316" stroke-width="1.5"/>
+  <text x="400" y="115" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#1e293b">Selbst-</text>
+  <text x="400" y="127" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#1e293b">verwirklichung</text>
+  <!-- Level 4: Wertschätzung -->
+  <polygon points="320,130 480,130 540,200 260,200" fill="#fed7aa" stroke="#f97316" stroke-width="1.5"/>
+  <text x="400" y="172" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#1e293b">Wertschätzung</text>
+  <!-- Level 3: Soziale Bedürfnisse -->
+  <polygon points="260,200 540,200 600,270 200,270" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
+  <text x="400" y="242" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#1e293b">Soziale Bedürfnisse</text>
+  <!-- Level 2: Sicherheit -->
+  <polygon points="200,270 600,270 660,340 140,340" fill="#fff7ed" stroke="#f97316" stroke-width="1.5"/>
+  <text x="400" y="312" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#1e293b">Sicherheitsbedürfnisse</text>
+  <!-- Level 1 - Base: Grundbedürfnisse -->
+  <polygon points="140,340 660,340 720,410 80,410" fill="#fff1e6" stroke="#f97316" stroke-width="1.5"/>
+  <text x="400" y="382" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="600" fill="#1e293b">Grundbedürfnisse (physiologisch)</text>
+  <!-- Side labels -->
+  <text x="730" y="100" text-anchor="start" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Wachstums-</text>
+  <text x="730" y="112" text-anchor="start" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">bedürfnisse</text>
+  <line x1="720" y1="80" x2="720" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="730" y="290" text-anchor="start" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">Defizit-</text>
+  <text x="730" y="302" text-anchor="start" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#64748b">bedürfnisse</text>
+  <line x1="720" y1="210" x2="720" y2="410" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Examples -->
+  <text x="400" y="435" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#94a3b8">Nahrung, Schlaf | Wohnung, Arbeit | Freundschaft, Liebe | Anerkennung | Kreativität, Potenzial</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      text { fill: #1e293b; }
+      @media (prefers-color-scheme: dark) {
+        text { fill: #e2e8f0; }
+        .axis { stroke: #94a3b8; }
+        .grid { stroke: #2d3348; }
+        .bg { fill: #1a1d27; }
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="500" height="350" fill="#fff" rx="8"/>
+  
+  <!-- Title -->
+  <text x="250" y="30" text-anchor="middle" font-size="15" font-weight="700">Laffer-Kurve</text>
+  
+  <!-- Grid lines -->
+  <line class="grid" x1="80" y1="280" x2="460" y2="280" stroke="#e2e8f0" stroke-width="1"/>
+  <line class="grid" x1="80" y1="60" x2="80" y2="280" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Axes -->
+  <line class="axis" x1="80" y1="280" x2="460" y2="280" stroke="#1e293b" stroke-width="2"/>
+  <line class="axis" x1="80" y1="280" x2="80" y2="50" stroke="#1e293b" stroke-width="2"/>
+  
+  <!-- Arrow heads -->
+  <polygon points="460,275 460,285 470,280" fill="#1e293b" class="axis"/>
+  <polygon points="75,50 85,50 80,40" fill="#1e293b" class="axis"/>
+  
+  <!-- Laffer curve -->
+  <path d="M 80,280 Q 180,70 270,80 Q 360,90 460,280" fill="none" stroke="#f89907" stroke-width="3"/>
+  
+  <!-- Dashed line at maximum -->
+  <line x1="270" y1="80" x2="270" y2="280" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+  <line x1="80" y1="80" x2="270" y2="80" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+  
+  <!-- Maximum point -->
+  <circle cx="270" cy="80" r="5" fill="#f89907"/>
+  <text x="270" y="68" text-anchor="middle" font-size="11" font-weight="600" fill="#f89907">Maximum</text>
+  
+  <!-- Axis labels -->
+  <text x="270" y="310" text-anchor="middle" font-size="12" font-weight="500">Steuersatz</text>
+  <text x="30" y="170" text-anchor="middle" font-size="12" font-weight="500" transform="rotate(-90, 30, 170)">Steuereinnahmen</text>
+  
+  <!-- Axis ticks -->
+  <text x="80" y="298" text-anchor="middle" font-size="10">0%</text>
+  <text x="460" y="298" text-anchor="middle" font-size="10">100%</text>
+  <text x="270" y="298" text-anchor="middle" font-size="10" fill="#94a3b8">t*</text>
+  
+  <!-- 0,0 labels -->
+  <text x="72" y="280" text-anchor="end" font-size="10">0</text>
+</svg>

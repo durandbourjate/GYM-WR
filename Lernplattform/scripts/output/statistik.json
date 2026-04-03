@@ -1,0 +1,474 @@
+{
+  "pools": [
+    {
+      "id": "bwl_einfuehrung",
+      "fach": "BWL",
+      "titel": "Einführung BWL – Grundlagen der Betriebswirtschaftslehre",
+      "fragen": 73,
+      "typen": {
+        "mc": 35,
+        "fill": 7,
+        "tf": 12,
+        "multi": 9,
+        "calc": 5,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "bwl_fibu",
+      "fach": "BWL",
+      "titel": "Finanzbuchhaltung (FIBU)",
+      "fragen": 224,
+      "typen": {
+        "mc": 102,
+        "multi": 21,
+        "tf": 14,
+        "fill": 30,
+        "calc": 17,
+        "buchungssatz": 19,
+        "kontenbestimmung": 5,
+        "tkonto": 5,
+        "bilanz": 4,
+        "gruppe": 5,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "bwl_marketing",
+      "fach": "BWL",
+      "titel": "Markt- und Leistungsanalyse",
+      "fragen": 70,
+      "typen": {
+        "tf": 13,
+        "mc": 31,
+        "fill": 6,
+        "multi": 8,
+        "calc": 5,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "bwl_stratfuehrung",
+      "fach": "BWL",
+      "titel": "Strategische Unternehmensführung",
+      "fragen": 71,
+      "typen": {
+        "mc": 33,
+        "tf": 14,
+        "fill": 8,
+        "multi": 10,
+        "sortierung": 3,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "bwl_unternehmensmodell",
+      "fach": "BWL",
+      "titel": "Unternehmensmodell – Umweltsphären & Anspruchsgruppen",
+      "fragen": 78,
+      "typen": {
+        "mc": 36,
+        "tf": 16,
+        "fill": 7,
+        "multi": 12,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_arbeitsrecht",
+      "fach": "Recht",
+      "titel": "Arbeitsrecht",
+      "fragen": 96,
+      "typen": {
+        "tf": 25,
+        "mc": 42,
+        "fill": 16,
+        "multi": 8,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_einfuehrung",
+      "fach": "Recht",
+      "titel": "Einführung Recht – Grundsätze der Rechtsordnung",
+      "fragen": 62,
+      "typen": {
+        "mc": 33,
+        "tf": 10,
+        "fill": 7,
+        "multi": 6,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_einleitungsartikel",
+      "fach": "Recht",
+      "titel": "Rechtsquellen und Rechtsgrundsätze – ZGB Einleitungsartikel",
+      "fragen": 60,
+      "typen": {
+        "mc": 27,
+        "fill": 6,
+        "tf": 15,
+        "multi": 8,
+        "sortierung": 2,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_grundrechte",
+      "fach": "Recht",
+      "titel": "Menschenrechte und Grundrechte",
+      "fragen": 59,
+      "typen": {
+        "mc": 28,
+        "tf": 13,
+        "fill": 6,
+        "multi": 8,
+        "sortierung": 2,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_mietrecht",
+      "fach": "Recht",
+      "titel": "Mietrecht – OR 253 bis 274",
+      "fragen": 84,
+      "typen": {
+        "mc": 44,
+        "tf": 16,
+        "fill": 6,
+        "multi": 11,
+        "calc": 3,
+        "sortierung": 2,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_or_at",
+      "fach": "Recht",
+      "titel": "OR AT – Vertragslehre",
+      "fragen": 130,
+      "typen": {
+        "mc": 64,
+        "tf": 25,
+        "fill": 20,
+        "multi": 15,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_personenrecht",
+      "fach": "Recht",
+      "titel": "Personenrecht – ZGB 11 bis 28",
+      "fragen": 56,
+      "typen": {
+        "mc": 29,
+        "tf": 12,
+        "fill": 5,
+        "multi": 6,
+        "sortierung": 2,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_prozessrecht",
+      "fach": "Recht",
+      "titel": "Prozessrecht – Zivilprozess und Strafverfahren",
+      "fragen": 65,
+      "typen": {
+        "mc": 33,
+        "tf": 13,
+        "fill": 7,
+        "multi": 6,
+        "sortierung": 3,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_sachenrecht",
+      "fach": "Recht",
+      "titel": "Sachenrecht – Eigentum, Besitz und dingliche Rechte",
+      "fragen": 73,
+      "typen": {
+        "mc": 40,
+        "tf": 13,
+        "fill": 8,
+        "multi": 8,
+        "sortierung": 2,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "recht_strafrecht",
+      "fach": "Recht",
+      "titel": "Strafrecht – Grundlagen, Strafbarkeit und Strafzumessung",
+      "fragen": 101,
+      "typen": {
+        "mc": 53,
+        "tf": 24,
+        "fill": 11,
+        "multi": 8,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_arbeitslosigkeit",
+      "fach": "VWL",
+      "titel": "Übungspool: Arbeitslosigkeit & Armut",
+      "fragen": 80,
+      "typen": {
+        "mc": 29,
+        "tf": 16,
+        "sort": 7,
+        "open": 8,
+        "multi": 8,
+        "fill": 6,
+        "sortierung": 3,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_beduerfnisse",
+      "fach": "VWL",
+      "titel": "Übungspool: Bedürfnisse, Knappheit & Produktionsfaktoren",
+      "fragen": 77,
+      "typen": {
+        "mc": 24,
+        "tf": 16,
+        "fill": 7,
+        "open": 8,
+        "multi": 7,
+        "sort": 8,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_bip",
+      "fach": "VWL",
+      "titel": "Übungspool: Bruttoinlandprodukt (BIP)",
+      "fragen": 84,
+      "typen": {
+        "mc": 26,
+        "tf": 19,
+        "fill": 7,
+        "open": 8,
+        "calc": 4,
+        "sort": 7,
+        "multi": 7,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_geld",
+      "fach": "VWL",
+      "titel": "Übungspool: Geld, Geldpolitik und Finanzmärkte",
+      "fragen": 107,
+      "typen": {
+        "mc": 47,
+        "tf": 25,
+        "multi": 14,
+        "fill": 12,
+        "calc": 2,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_konjunktur",
+      "fach": "VWL",
+      "titel": "Konjunktur und Konjunkturpolitik",
+      "fragen": 83,
+      "typen": {
+        "mc": 38,
+        "tf": 17,
+        "fill": 9,
+        "multi": 10,
+        "sortierung": 2,
+        "formel": 2,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1,
+        "pdf": 1
+      }
+    },
+    {
+      "id": "vwl_markteffizienz",
+      "fach": "VWL",
+      "titel": "Übungspool: Markteffizienz",
+      "fragen": 169,
+      "typen": {
+        "mc": 69,
+        "tf": 33,
+        "fill": 16,
+        "sort": 14,
+        "open": 20,
+        "calc": 5,
+        "multi": 5,
+        "sortierung": 3,
+        "zeichnen": 1,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_menschenbild",
+      "fach": "VWL",
+      "titel": "Übungspool: Ökonomisches Menschenbild",
+      "fragen": 71,
+      "typen": {
+        "mc": 23,
+        "tf": 13,
+        "fill": 7,
+        "sort": 6,
+        "open": 11,
+        "multi": 6,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_sozialpolitik",
+      "fach": "VWL",
+      "titel": "Übungspool: Sozialpolitik und Sozialversicherungen",
+      "fragen": 110,
+      "typen": {
+        "mc": 30,
+        "tf": 17,
+        "fill": 12,
+        "sort": 15,
+        "open": 13,
+        "multi": 15,
+        "calc": 3,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_staatsverschuldung",
+      "fach": "VWL",
+      "titel": "Übungspool: Staatsverschuldung",
+      "fragen": 92,
+      "typen": {
+        "mc": 34,
+        "tf": 22,
+        "sort": 7,
+        "fill": 11,
+        "open": 9,
+        "multi": 4,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_steuern",
+      "fach": "VWL",
+      "titel": "Übungspool: Steuern und Staatseinnahmen",
+      "fragen": 104,
+      "typen": {
+        "mc": 42,
+        "tf": 24,
+        "sort": 5,
+        "open": 7,
+        "multi": 8,
+        "fill": 8,
+        "calc": 4,
+        "sortierung": 3,
+        "hotspot": 1,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    },
+    {
+      "id": "vwl_wachstum",
+      "fach": "VWL",
+      "titel": "Übungspool: Wirtschaftswachstum – Triebkräfte und Effekte",
+      "fragen": 81,
+      "typen": {
+        "mc": 27,
+        "tf": 13,
+        "calc": 8,
+        "sort": 7,
+        "open": 9,
+        "fill": 6,
+        "multi": 6,
+        "sortierung": 3,
+        "bildbeschriftung": 1,
+        "dragdrop_bild": 1
+      }
+    }
+  ],
+  "total": 2360,
+  "typen": {
+    "mc": 1019,
+    "fill": 251,
+    "tf": 450,
+    "multi": 234,
+    "calc": 56,
+    "sortierung": 69,
+    "bildbeschriftung": 26,
+    "dragdrop_bild": 26,
+    "buchungssatz": 19,
+    "kontenbestimmung": 5,
+    "tkonto": 5,
+    "bilanz": 4,
+    "gruppe": 5,
+    "zeichnen": 9,
+    "hotspot": 10,
+    "sort": 76,
+    "open": 93,
+    "formel": 2,
+    "pdf": 1
+  },
+  "faecher": {
+    "BWL": 516,
+    "Recht": 786,
+    "VWL": 1058
+  }
+}

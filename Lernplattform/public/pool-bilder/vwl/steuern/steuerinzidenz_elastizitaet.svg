@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" font-family="'DM Sans', system-ui, sans-serif">
+  <defs>
+    <style>
+      text { fill: #1e293b; }
+      @media (prefers-color-scheme: dark) {
+        text { fill: #e2e8f0; }
+        .axis { stroke: #94a3b8; }
+        .bg { fill: #1a1d27; }
+        .label-bg { fill: #2d3348; }
+      }
+    </style>
+  </defs>
+  <rect class="bg" width="600" height="320" fill="#fff" rx="8"/>
+  
+  <!-- Left market: Elastic demand -->
+  <g transform="translate(10,0)">
+    <!-- Label -->
+    <rect class="label-bg" x="60" y="12" width="200" height="24" rx="4" fill="#f0f2f5"/>
+    <text x="160" y="29" text-anchor="middle" font-size="12" font-weight="700">Markt 1: Elastische Nachfrage</text>
+    
+    <!-- Axes -->
+    <line class="axis" x1="60" y1="260" x2="260" y2="260" stroke="#1e293b" stroke-width="1.5"/>
+    <line class="axis" x1="60" y1="260" x2="60" y2="45" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="160" y="285" text-anchor="middle" font-size="10">Menge</text>
+    <text x="28" y="155" text-anchor="middle" font-size="10" transform="rotate(-90, 28, 155)">Preis</text>
+    
+    <!-- Supply (S) -->
+    <line x1="70" y1="240" x2="250" y2="80" stroke="#73ab2c" stroke-width="2"/>
+    <text x="253" y="76" font-size="11" font-weight="600" fill="#73ab2c">S</text>
+    
+    <!-- Demand elastic (D) - flacher -->
+    <line x1="70" y1="120" x2="250" y2="200" stroke="#01a9f4" stroke-width="2"/>
+    <text x="253" y="204" font-size="11" font-weight="600" fill="#01a9f4">D</text>
+    
+    <!-- Supply with tax (S+t) -->
+    <line x1="70" y1="200" x2="250" y2="40" stroke="#73ab2c" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="253" y="36" font-size="9" fill="#73ab2c">S + t</text>
+    
+    <!-- Tax wedge arrows -->
+    <line x1="142" y1="163" x2="142" y2="123" stroke="#f89907" stroke-width="2"/>
+    <text x="128" y="148" font-size="9" font-weight="600" fill="#f89907">t</text>
+    
+    <!-- Equilibrium dots -->
+    <circle cx="160" cy="160" r="3" fill="#1e293b"/>
+    <circle cx="142" cy="163" r="3" fill="#f89907"/>
+    
+    <!-- Quantity labels -->
+    <line x1="160" y1="160" x2="160" y2="260" stroke="#94a3b8" stroke-width="0.7" stroke-dasharray="3,3"/>
+    <text x="160" y="272" text-anchor="middle" font-size="9" fill="#94a3b8">Q*</text>
+    <line x1="142" y1="163" x2="142" y2="260" stroke="#f89907" stroke-width="0.7" stroke-dasharray="3,3"/>
+    <text x="142" y="272" text-anchor="middle" font-size="9" fill="#f89907">Q'</text>
+  </g>
+  
+  <!-- Right market: Inelastic demand -->
+  <g transform="translate(300,0)">
+    <!-- Label -->
+    <rect class="label-bg" x="60" y="12" width="220" height="24" rx="4" fill="#f0f2f5"/>
+    <text x="170" y="29" text-anchor="middle" font-size="12" font-weight="700">Markt 2: Unelastische Nachfrage</text>
+    
+    <!-- Axes -->
+    <line class="axis" x1="60" y1="260" x2="260" y2="260" stroke="#1e293b" stroke-width="1.5"/>
+    <line class="axis" x1="60" y1="260" x2="60" y2="45" stroke="#1e293b" stroke-width="1.5"/>
+    <text x="160" y="285" text-anchor="middle" font-size="10">Menge</text>
+    <text x="28" y="155" text-anchor="middle" font-size="10" transform="rotate(-90, 28, 155)">Preis</text>
+    
+    <!-- Supply (S) -->
+    <line x1="70" y1="240" x2="250" y2="80" stroke="#73ab2c" stroke-width="2"/>
+    <text x="253" y="76" font-size="11" font-weight="600" fill="#73ab2c">S</text>
+    
+    <!-- Demand inelastic (D) - steiler -->
+    <line x1="140" y1="60" x2="180" y2="250" stroke="#01a9f4" stroke-width="2"/>
+    <text x="183" y="254" font-size="11" font-weight="600" fill="#01a9f4">D</text>
+    
+    <!-- Supply with tax (S+t) -->
+    <line x1="70" y1="200" x2="250" y2="40" stroke="#73ab2c" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="253" y="36" font-size="9" fill="#73ab2c">S + t</text>
+    
+    <!-- Tax wedge -->
+    <line x1="155" y1="170" x2="155" y2="118" stroke="#f89907" stroke-width="2"/>
+    <text x="141" y="148" font-size="9" font-weight="600" fill="#f89907">t</text>
+    
+    <!-- Equilibrium dots -->
+    <circle cx="160" cy="160" r="3" fill="#1e293b"/>
+    <circle cx="155" cy="170" r="3" fill="#f89907"/>
+    
+    <!-- Quantity labels -->
+    <line x1="160" y1="160" x2="160" y2="260" stroke="#94a3b8" stroke-width="0.7" stroke-dasharray="3,3"/>
+    <text x="160" y="272" text-anchor="middle" font-size="9" fill="#94a3b8">Q*</text>
+    <line x1="155" y1="170" x2="155" y2="260" stroke="#f89907" stroke-width="0.7" stroke-dasharray="3,3"/>
+    <text x="155" y="272" text-anchor="middle" font-size="9" fill="#f89907">Q'</text>
+  </g>
+  
+  <!-- Note -->
+  <text x="300" y="308" text-anchor="middle" font-size="9" fill="#94a3b8">t = Steuerbetrag pro Einheit (identisch in beiden Märkten)</text>
+</svg>

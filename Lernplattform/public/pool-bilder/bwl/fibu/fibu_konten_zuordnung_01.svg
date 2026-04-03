@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="300" fill="#ffffff"/>
+  
+  <text x="350" y="25" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">Konten zuordnen: Welches Konto gehört zu welchem Typ?</text>
+
+  <!-- Vier Kategorien -->
+  <rect x="20" y="50" width="155" height="30" fill="#ffe600" rx="4"/>
+  <text x="98" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Aktivkonto</text>
+  
+  <rect x="190" y="50" width="155" height="30" fill="#00e5ff" rx="4"/>
+  <text x="268" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Passivkonto</text>
+  
+  <rect x="360" y="50" width="155" height="30" fill="#ff00ff" rx="4"/>
+  <text x="438" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Aufwandskonto</text>
+  
+  <rect x="530" y="50" width="155" height="30" fill="#00ff00" rx="4"/>
+  <text x="608" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">Ertragskonto</text>
+
+  <!-- Konten zum Zuordnen -->
+  <rect x="40" y="110" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="105" y="131" text-anchor="middle" font-size="12" fill="#334155">Kasse</text>
+
+  <rect x="190" y="110" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="255" y="131" text-anchor="middle" font-size="12" fill="#334155">Hypothek</text>
+
+  <rect x="340" y="110" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="405" y="131" text-anchor="middle" font-size="12" fill="#334155">Lohnaufwand</text>
+
+  <rect x="490" y="110" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="555" y="131" text-anchor="middle" font-size="12" fill="#334155">Warenverkauf</text>
+
+  <rect x="40" y="158" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="105" y="179" text-anchor="middle" font-size="12" fill="#334155">Kreditoren</text>
+
+  <rect x="190" y="158" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="255" y="179" text-anchor="middle" font-size="12" fill="#334155">Debitoren</text>
+
+  <rect x="340" y="158" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="405" y="179" text-anchor="middle" font-size="12" fill="#334155">Mietaufwand</text>
+
+  <rect x="490" y="158" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="555" y="179" text-anchor="middle" font-size="12" fill="#334155">Eigenkapital</text>
+
+  <rect x="40" y="206" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="105" y="227" text-anchor="middle" font-size="12" fill="#334155">Fahrzeuge</text>
+
+  <rect x="190" y="206" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="255" y="227" text-anchor="middle" font-size="12" fill="#334155">Finanzertrag</text>
+
+  <rect x="340" y="206" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="405" y="227" text-anchor="middle" font-size="12" fill="#334155">Wareneinkauf</text>
+
+  <rect x="490" y="206" width="130" height="32" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" rx="6"/>
+  <text x="555" y="227" text-anchor="middle" font-size="12" fill="#334155">Darlehen</text>
+
+  <!-- Fragezeichen-Pfeile -->
+  <text x="350" y="270" text-anchor="middle" font-size="22" font-weight="700" fill="#94a3b8">? → ? → ? → ?</text>
+  <text x="350" y="292" text-anchor="middle" font-size="11" fill="#94a3b8">Ordne jedes Konto dem richtigen Typ zu.</text>
+</svg>

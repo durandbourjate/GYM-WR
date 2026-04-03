@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="800" height="460" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="400" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Kündigungsfristen im Mietrecht</text>
+
+  <!-- Tabelle: 3 Zeilen -->
+  <!-- Header -->
+  <rect x="30" y="55" width="740" height="34" rx="6" fill="#334155"/>
+  <text x="160" y="77" text-anchor="middle" font-size="12" font-weight="600" fill="#ffffff">Mietobjekt</text>
+  <text x="390" y="77" text-anchor="middle" font-size="12" font-weight="600" fill="#ffffff">Kündigungsfrist</text>
+  <text x="620" y="77" text-anchor="middle" font-size="12" font-weight="600" fill="#ffffff">Gesetzliche Grundlage</text>
+
+  <!-- Zeile 1: Wohnungen -->
+  <rect x="30" y="89" width="740" height="40" rx="0" fill="#e8f5e9" stroke="#c8e6c9" stroke-width="0.5"/>
+  <text x="160" y="114" text-anchor="middle" font-size="12" font-weight="500" fill="#1e293b">Wohnungen</text>
+  <text x="390" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#2e7d32">3 Monate</text>
+  <text x="620" y="114" text-anchor="middle" font-size="11" fill="#475569">Art. 266c OR</text>
+
+  <!-- Zeile 2: Geschäftsräume -->
+  <rect x="30" y="129" width="740" height="40" rx="0" fill="#e3f2fd" stroke="#bbdefb" stroke-width="0.5"/>
+  <text x="160" y="154" text-anchor="middle" font-size="12" font-weight="500" fill="#1e293b">Geschäftsräume</text>
+  <text x="390" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#1565c0">6 Monate</text>
+  <text x="620" y="154" text-anchor="middle" font-size="11" fill="#475569">Art. 266d OR</text>
+
+  <!-- Zeile 3: Möblierte Zimmer / Parkplätze -->
+  <rect x="30" y="169" width="740" height="40" rx="0" fill="#fff3e0" stroke="#ffe0b2" stroke-width="0.5"/>
+  <text x="160" y="194" text-anchor="middle" font-size="12" font-weight="500" fill="#1e293b">Möblierte Zimmer / Parkplätze</text>
+  <text x="390" y="194" text-anchor="middle" font-size="13" font-weight="700" fill="#e65100">2 Wochen</text>
+  <text x="620" y="194" text-anchor="middle" font-size="11" fill="#475569">Art. 266e OR</text>
+
+  <!-- Zeitleiste: Beispiel Wohnung -->
+  <text x="400" y="245" text-anchor="middle" font-size="14" font-weight="600" fill="#334155">Beispiel: Kündigung einer Wohnung (Region Bern)</text>
+
+  <!-- Timeline -->
+  <line x1="60" y1="290" x2="740" y2="290" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Tick: Kündigung eingegangen -->
+  <!-- Positionen: 60=Jan, 173=April, 287=Juli, 400=Oktober, 513=Jan, 627=April, 740=Juli -->
+  <!-- Formel: x = 60 + (monat-1) * (740-60)/6 -->
+  <line x1="60" y1="280" x2="60" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="60" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">31. Jan.</text>
+
+  <line x1="173" y1="280" x2="173" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="173" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">30. Apr.</text>
+
+  <line x1="287" y1="280" x2="287" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="287" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">31. Juli</text>
+
+  <line x1="400" y1="280" x2="400" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="400" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">31. Okt.</text>
+
+  <line x1="513" y1="280" x2="513" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="513" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">31. Jan.</text>
+
+  <line x1="627" y1="280" x2="627" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="627" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">30. Apr.</text>
+
+  <line x1="740" y1="280" x2="740" y2="300" stroke="#334155" stroke-width="2"/>
+  <text x="740" y="315" text-anchor="middle" font-size="9.5" fill="#64748b">31. Juli</text>
+
+  <!-- Szenario A: Kündigung am 15. Jan → Termin 30. April -->
+  <!-- Kündigung eingegangen bei 15.Jan ≈ x=49 (etwas vor 31. Jan) -->
+  <!-- Kündigung muss bis 31. Jan eingehen für 30. Apr -->
+  <circle cx="49" cy="270" r="5" fill="#2e7d32"/>
+  <text x="49" y="260" text-anchor="middle" font-size="9" font-weight="600" fill="#2e7d32">15. Jan.</text>
+
+  <!-- Pfeil von 49 zu 173 -->
+  <line x1="54" y1="270" x2="168" y2="270" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="168,267 173,270 168,273" fill="#2e7d32"/>
+  <text x="111" y="258" text-anchor="middle" font-size="9" fill="#2e7d32">3 Monate ✓</text>
+
+  <!-- Szenario B: Kündigung am 15. Feb → verpasst! nächster Termin 31. Okt -->
+  <circle cx="92" cy="340" r="5" fill="#c62828"/>
+  <text x="92" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#c62828">15. Feb.</text>
+
+  <!-- Kreuz bei April -->
+  <text x="173" y="340" text-anchor="middle" font-size="14" fill="#c62828">✗</text>
+  <text x="173" y="358" text-anchor="middle" font-size="8" fill="#c62828">verpasst</text>
+
+  <!-- Pfeil zu Oktober -->
+  <line x1="97" y1="340" x2="395" y2="340" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="395,337 400,340 395,343" fill="#c62828"/>
+  <text x="290" y="365" text-anchor="middle" font-size="9" fill="#c62828">Nächster Termin: 31. Okt.</text>
+
+  <!-- Hinweisboxen unten -->
+  <rect x="30" y="390" width="355" height="55" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="207" y="410" text-anchor="middle" font-size="10.5" font-weight="600" fill="#334155">📋 Formvorschriften</text>
+  <text x="207" y="426" text-anchor="middle" font-size="10" fill="#475569">Schriftlich (Art. 266l OR)</text>
+  <text x="207" y="439" text-anchor="middle" font-size="10" fill="#475569">Vermieter: amtliches Formular</text>
+
+  <rect x="415" y="390" width="355" height="55" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="592" y="410" text-anchor="middle" font-size="10.5" font-weight="600" fill="#334155">⚠️ Wichtig</text>
+  <text x="592" y="426" text-anchor="middle" font-size="10" fill="#475569">Verspätete Kündigung → nächster Termin</text>
+  <text x="592" y="439" text-anchor="middle" font-size="10" fill="#475569">(Art. 266a OR)</text>
+</svg>

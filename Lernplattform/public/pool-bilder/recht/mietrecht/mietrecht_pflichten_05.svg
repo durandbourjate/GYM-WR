@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="800" height="440" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="400" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Pflichten im Mietverhältnis</text>
+
+  <!-- Zwei Spalten -->
+  <!-- Vermieter-Spalte -->
+  <rect x="30" y="55" width="360" height="38" rx="8" fill="#2563eb"/>
+  <text x="210" y="79" text-anchor="middle" font-size="14" font-weight="600" fill="#ffffff">Vermieter</text>
+
+  <rect x="30" y="100" width="360" height="310" rx="8" fill="#f5f9ff" stroke="#bbdefb" stroke-width="1"/>
+
+  <!-- Vermieter-Pflichten -->
+  <text x="50" y="125" font-size="12" font-weight="600" fill="#1565c0">Übergabepflicht (Art. 256 OR)</text>
+  <text x="50" y="142" font-size="10.5" fill="#475569">Sache in tauglichem Zustand übergeben</text>
+
+  <line x1="50" y1="155" x2="370" y2="155" stroke="#e0e7ff" stroke-width="0.5"/>
+
+  <text x="50" y="175" font-size="12" font-weight="600" fill="#1565c0">Unterhaltspflicht (Art. 256 OR)</text>
+  <text x="50" y="192" font-size="10.5" fill="#475569">Sache in tauglichem Zustand erhalten</text>
+
+  <line x1="50" y1="205" x2="370" y2="205" stroke="#e0e7ff" stroke-width="0.5"/>
+
+  <text x="50" y="225" font-size="12" font-weight="600" fill="#1565c0">Mängelbeseitigung (Art. 259a OR)</text>
+  <text x="50" y="242" font-size="10.5" fill="#475569">Grössere Mängel beheben</text>
+
+  <line x1="50" y1="255" x2="370" y2="255" stroke="#e0e7ff" stroke-width="0.5"/>
+
+  <text x="50" y="275" font-size="12" font-weight="600" fill="#1565c0">Nebenkosten (Art. 257b OR)</text>
+  <text x="50" y="292" font-size="10.5" fill="#475569">Jährliche Abrechnung (Akonto)</text>
+
+  <line x1="50" y1="305" x2="370" y2="305" stroke="#e0e7ff" stroke-width="0.5"/>
+
+  <text x="50" y="325" font-size="12" font-weight="600" fill="#1565c0">Depot (Art. 257e OR)</text>
+  <text x="50" y="342" font-size="10.5" fill="#475569">Max. 3 Monatsmieten, Sperrkonto</text>
+
+  <line x1="50" y1="355" x2="370" y2="355" stroke="#e0e7ff" stroke-width="0.5"/>
+
+  <text x="50" y="375" font-size="12" font-weight="600" fill="#1565c0">Kündigung (Art. 266l OR)</text>
+  <text x="50" y="392" font-size="10.5" fill="#475569">Schriftlich, amtliches Formular</text>
+
+  <!-- Mieter-Spalte -->
+  <rect x="410" y="55" width="360" height="38" rx="8" fill="#73ab2c"/>
+  <text x="590" y="79" text-anchor="middle" font-size="14" font-weight="600" fill="#ffffff">Mieter</text>
+
+  <rect x="410" y="100" width="360" height="310" rx="8" fill="#f8faf8" stroke="#c8e6c9" stroke-width="1"/>
+
+  <!-- Mieter-Pflichten -->
+  <text x="430" y="125" font-size="12" font-weight="600" fill="#2e7d32">Mietzins zahlen (Art. 257 OR)</text>
+  <text x="430" y="142" font-size="10.5" fill="#475569">Pünktlich, vollständig</text>
+
+  <line x1="430" y1="155" x2="750" y2="155" stroke="#e8f5e9" stroke-width="0.5"/>
+
+  <text x="430" y="175" font-size="12" font-weight="600" fill="#2e7d32">Sorgfaltspflicht (Art. 257f OR)</text>
+  <text x="430" y="192" font-size="10.5" fill="#475569">Sorgfältig mit Sache umgehen</text>
+
+  <line x1="430" y1="205" x2="750" y2="205" stroke="#e8f5e9" stroke-width="0.5"/>
+
+  <text x="430" y="225" font-size="12" font-weight="600" fill="#2e7d32">Kleiner Unterhalt (Art. 259 OR)</text>
+  <text x="430" y="242" font-size="10.5" fill="#475569">Einfache Reparaturen selbst beheben</text>
+
+  <line x1="430" y1="255" x2="750" y2="255" stroke="#e8f5e9" stroke-width="0.5"/>
+
+  <text x="430" y="275" font-size="12" font-weight="600" fill="#2e7d32">Meldepflicht (Art. 257g OR)</text>
+  <text x="430" y="292" font-size="10.5" fill="#475569">Mängel und Schäden melden</text>
+
+  <line x1="430" y1="305" x2="750" y2="305" stroke="#e8f5e9" stroke-width="0.5"/>
+
+  <text x="430" y="325" font-size="12" font-weight="600" fill="#2e7d32">Rücksichtnahme (Art. 257f OR)</text>
+  <text x="430" y="342" font-size="10.5" fill="#475569">Auf Hausbewohner/Nachbarn achten</text>
+
+  <line x1="430" y1="355" x2="750" y2="355" stroke="#e8f5e9" stroke-width="0.5"/>
+
+  <text x="430" y="375" font-size="12" font-weight="600" fill="#2e7d32">Rückgabe (Art. 267 OR)</text>
+  <text x="430" y="392" font-size="10.5" fill="#475569">In ordnungsgemässem Zustand</text>
+
+  <!-- Verbindungspfeile (Gegenseitigkeit) -->
+  <text x="400" y="420" text-anchor="middle" font-size="10" fill="#94a3b8">⟵ Synallagmatischer Vertrag: ? gegen ? ⟶</text>
+</svg>

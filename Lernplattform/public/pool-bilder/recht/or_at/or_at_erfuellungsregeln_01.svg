@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="700" height="400" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Vertragserfüllung – Wer? Was? Wo? Wann?</text>
+  <text x="350" y="55" text-anchor="middle" font-size="12" fill="#94a3b8">Die vier W-Fragen der Erfüllung (OR 68–96)</text>
+
+  <!-- Wer? -->
+  <rect x="25" y="80" width="150" height="270" rx="10" fill="#e8f5e9" stroke="#73ab2c" stroke-width="1.5"/>
+  <text x="100" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#2e7d32">Wer?</text>
+  <text x="100" y="126" text-anchor="middle" font-size="10" font-weight="500" fill="#73ab2c">OR 68</text>
+  <line x1="45" y1="136" x2="155" y2="136" stroke="#a5d6a7" stroke-width="1"/>
+  <text x="100" y="158" text-anchor="middle" font-size="10" fill="#1e293b">Grundsatz:</text>
+  <text x="100" y="175" text-anchor="middle" font-size="10" font-weight="600" fill="#1e293b">Schuldner persönlich</text>
+  <text x="100" y="200" text-anchor="middle" font-size="10" fill="#1e293b">Ausnahmen:</text>
+  <text x="100" y="218" text-anchor="middle" font-size="10" fill="#1e293b">• Dritter kann</text>
+  <text x="100" y="233" text-anchor="middle" font-size="10" fill="#1e293b">  erfüllen</text>
+  <text x="100" y="253" text-anchor="middle" font-size="10" fill="#1e293b">• Ausser bei</text>
+  <text x="100" y="268" text-anchor="middle" font-size="10" fill="#1e293b">  höchstpersönlicher</text>
+  <text x="100" y="283" text-anchor="middle" font-size="10" fill="#1e293b">  Leistung</text>
+  <rect x="40" y="300" width="120" height="34" rx="6" fill="#ffffff" stroke="#c8e6c9" stroke-width="1"/>
+  <text x="100" y="321" text-anchor="middle" font-size="9" fill="#64748b">Bsp: Porträt malen</text>
+
+  <!-- Was? -->
+  <rect x="195" y="80" width="150" height="270" rx="10" fill="#e3f2fd" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="270" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#1565c0">Was?</text>
+  <text x="270" y="126" text-anchor="middle" font-size="10" font-weight="500" fill="#2563eb">OR 69–73</text>
+  <line x1="215" y1="136" x2="325" y2="136" stroke="#90caf9" stroke-width="1"/>
+  <text x="270" y="158" text-anchor="middle" font-size="10" fill="#1e293b">Geschuldete</text>
+  <text x="270" y="175" text-anchor="middle" font-size="10" font-weight="600" fill="#1e293b">Leistung genau</text>
+  <text x="270" y="200" text-anchor="middle" font-size="10" fill="#1e293b">• Teilleistung nur</text>
+  <text x="270" y="215" text-anchor="middle" font-size="10" fill="#1e293b">  mit Zustimmung</text>
+  <text x="270" y="238" text-anchor="middle" font-size="10" fill="#1e293b">• Gattungsschuld:</text>
+  <text x="270" y="253" text-anchor="middle" font-size="10" fill="#1e293b">  mittlere Qualität</text>
+  <text x="270" y="275" text-anchor="middle" font-size="10" fill="#1e293b">• Stückschuld:</text>
+  <text x="270" y="290" text-anchor="middle" font-size="10" fill="#1e293b">  genau die Sache</text>
+
+  <!-- Wo? -->
+  <rect x="365" y="80" width="150" height="270" rx="10" fill="#f3e5f5" stroke="#9c27b0" stroke-width="1.5"/>
+  <text x="440" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#6a1b9a">Wo?</text>
+  <text x="440" y="126" text-anchor="middle" font-size="10" font-weight="500" fill="#9c27b0">OR 74</text>
+  <line x1="385" y1="136" x2="495" y2="136" stroke="#ce93d8" stroke-width="1"/>
+  <text x="440" y="158" text-anchor="middle" font-size="10" fill="#1e293b">Erfüllungsort:</text>
+  <rect x="380" y="170" width="120" height="28" rx="5" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
+  <text x="440" y="189" text-anchor="middle" font-size="9" font-weight="600" fill="#6a1b9a">Geldschuld</text>
+  <text x="440" y="210" text-anchor="middle" font-size="10" fill="#1e293b">→ Wohnsitz Gläubiger</text>
+  <rect x="380" y="225" width="120" height="28" rx="5" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
+  <text x="440" y="244" text-anchor="middle" font-size="9" font-weight="600" fill="#6a1b9a">Speziesschuld</text>
+  <text x="440" y="265" text-anchor="middle" font-size="10" fill="#1e293b">→ Wo die Sache war</text>
+  <rect x="380" y="280" width="120" height="28" rx="5" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
+  <text x="440" y="299" text-anchor="middle" font-size="9" font-weight="600" fill="#6a1b9a">Übrige</text>
+  <text x="440" y="320" text-anchor="middle" font-size="10" fill="#1e293b">→ Wohnsitz Schuldner</text>
+
+  <!-- Wann? -->
+  <rect x="535" y="80" width="150" height="270" rx="10" fill="#fff3e0" stroke="#f89907" stroke-width="1.5"/>
+  <text x="610" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#e65100">Wann?</text>
+  <text x="610" y="126" text-anchor="middle" font-size="10" font-weight="500" fill="#f89907">OR 75–83</text>
+  <line x1="555" y1="136" x2="665" y2="136" stroke="#ffcc80" stroke-width="1"/>
+  <text x="610" y="158" text-anchor="middle" font-size="10" fill="#1e293b">Erfüllungszeit:</text>
+  <text x="610" y="180" text-anchor="middle" font-size="10" fill="#1e293b">• Sofort, wenn</text>
+  <text x="610" y="195" text-anchor="middle" font-size="10" fill="#1e293b">  nichts vereinbart</text>
+  <text x="610" y="218" text-anchor="middle" font-size="10" fill="#1e293b">• Verfalltag</text>
+  <text x="610" y="233" text-anchor="middle" font-size="10" fill="#1e293b">  (Fixgeschäft)</text>
+  <text x="610" y="258" text-anchor="middle" font-size="10" fill="#1e293b">• Vorzeitige</text>
+  <text x="610" y="273" text-anchor="middle" font-size="10" fill="#1e293b">  Erfüllung:</text>
+  <text x="610" y="290" text-anchor="middle" font-size="10" fill="#1e293b">  grundsätzlich</text>
+  <text x="610" y="305" text-anchor="middle" font-size="10" fill="#1e293b">  möglich (OR 81)</text>
+
+  <text x="350" y="390" text-anchor="middle" font-size="10" fill="#94a3b8">Die vier W-Fragen bestimmen, wie ein Vertrag korrekt erfüllt wird</text>
+</svg>

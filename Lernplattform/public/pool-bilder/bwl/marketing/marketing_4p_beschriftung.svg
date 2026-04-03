@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Marketing-Mix (4P) — Beschrifte die vier Elemente</text>
+
+  <!-- Zentrum: Marketing Mix -->
+  <circle cx="400" cy="235" r="52" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2.5"/>
+  <text x="400" y="229" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#ffffff">Marketing</text>
+  <text x="400" y="245" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#ffffff">Mix</text>
+
+  <!-- Verbindungslinien vom Zentrum zu den 4 Feldern -->
+  <line x1="353" y1="200" x2="260" y2="150" stroke="#93c5fd" stroke-width="2"/>
+  <line x1="447" y1="200" x2="540" y2="150" stroke="#93c5fd" stroke-width="2"/>
+  <line x1="353" y1="270" x2="260" y2="320" stroke="#93c5fd" stroke-width="2"/>
+  <line x1="447" y1="270" x2="540" y2="320" stroke="#93c5fd" stroke-width="2"/>
+
+  <!-- Box 1: oben links (Product) -->
+  <rect x="70" y="80" width="230" height="130" rx="10" fill="#dbeafe" stroke="#93c5fd" stroke-width="2"/>
+  <!-- Leer — zum Beschriften -->
+  <text x="185" y="138" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="32" fill="#bfdbfe">📦</text>
+
+  <!-- Box 2: oben rechts (Price) -->
+  <rect x="500" y="80" width="230" height="130" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+  <text x="615" y="138" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="32" fill="#bbf7d0">💰</text>
+
+  <!-- Box 3: unten links (Place) -->
+  <rect x="70" y="300" width="230" height="130" rx="10" fill="#fefce8" stroke="#fde047" stroke-width="2"/>
+  <text x="185" y="358" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="32" fill="#fef08a">🚚</text>
+
+  <!-- Box 4: unten rechts (Promotion) -->
+  <rect x="500" y="300" width="230" height="130" rx="10" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="615" y="358" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="32" fill="#e9d5ff">📢</text>
+
+  <!-- Marker 1: Box oben links -->
+
+  <!-- Marker 2: Box oben rechts -->
+
+  <!-- Marker 3: Box unten links -->
+
+  <!-- Marker 4: Box unten rechts -->
+</svg>

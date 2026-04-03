@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">BIP-Verwendungsseite: Y = C + I + G + NX</text>
+  <!-- Stacked bar chart -->
+  <!-- Total bar background -->
+  <rect x="100" y="60" width="200" height="340" fill="none" stroke="#94a3b8" stroke-width="1.5" rx="4"/>
+  <!-- Konsum C ~55% = 187px -->
+  <rect x="100" y="213" width="200" height="187" fill="#fdba74" stroke="#f97316" stroke-width="1" rx="0"/>
+  <text x="200" y="315" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#1e293b">Konsum (C)</text>
+  <text x="200" y="335" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">~55%</text>
+  <!-- Investitionen I ~25% = 85px -->
+  <rect x="100" y="128" width="200" height="85" fill="#fed7aa" stroke="#f97316" stroke-width="1"/>
+  <text x="200" y="175" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">Investitionen (I)</text>
+  <text x="200" y="192" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">~25%</text>
+  <!-- Staatsausgaben G ~12% = 41px -->
+  <rect x="100" y="87" width="200" height="41" fill="#ffedd5" stroke="#f97316" stroke-width="1"/>
+  <text x="200" y="112" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="700" fill="#1e293b">Staat (G) ~12%</text>
+  <!-- Nettoexporte NX ~8% = 27px -->
+  <rect x="100" y="60" width="200" height="27" fill="#fff7ed" stroke="#f97316" stroke-width="1" rx="4"/>
+  <text x="200" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" font-weight="700" fill="#1e293b">NX ~8%</text>
+  <!-- Right side: detailed breakdown -->
+  <!-- Konsum -->
+  <line x1="300" y1="310" x2="370" y2="310" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="380" y="280" width="380" height="80" fill="#fff7ed" stroke="#f97316" stroke-width="1" rx="6"/>
+  <text x="570" y="302" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#f97316">Konsum (C) -- Privater Konsum</text>
+  <text x="570" y="320" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Nahrung, Kleidung, Wohnen, Freizeit, Gesundheit</text>
+  <text x="570" y="338" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Groesster Anteil am BIP</text>
+  <!-- Investitionen -->
+  <line x1="300" y1="170" x2="370" y2="170" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="380" y="145" width="380" height="60" fill="#fff7ed" stroke="#f97316" stroke-width="1" rx="6"/>
+  <text x="570" y="167" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#f97316">Investitionen (I)</text>
+  <text x="570" y="185" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Maschinen, Bauten, Vorraete, Ausruestung</text>
+  <!-- Staat -->
+  <line x1="300" y1="107" x2="370" y2="85" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="380" y="60" width="380" height="50" fill="#fff7ed" stroke="#f97316" stroke-width="1" rx="6"/>
+  <text x="570" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#f97316">Staatsausgaben (G)</text>
+  <text x="570" y="98" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Bildung, Verteidigung, Infrastruktur</text>
+  <!-- Nettoexporte -->
+  <line x1="300" y1="73" x2="370" y2="395" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="380" y="375" width="380" height="50" fill="#fff7ed" stroke="#f97316" stroke-width="1" rx="6"/>
+  <text x="570" y="397" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#f97316">Nettoexporte (NX = X - M)</text>
+  <text x="570" y="413" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Exporte minus Importe</text>
+  <!-- Y label -->
+  <text x="200" y="430" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#1e293b">BIP (Y) = 100%</text>
+</svg>

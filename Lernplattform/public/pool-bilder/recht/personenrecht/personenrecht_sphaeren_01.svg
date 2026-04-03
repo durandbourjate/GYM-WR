@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="700" height="480" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="350" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#333">Persönlichkeitsschutz — Sphärenmodell</text>
+  <text x="350" y="56" text-anchor="middle" font-size="13" fill="#666">Art. 28 ZGB</text>
+
+  <!-- Äusserer Kreis: Gemeinsphäre -->
+  <circle cx="260" cy="250" r="170" fill="#e8f5e9" stroke="#73ab2c" stroke-width="2"/>
+  <text x="260" y="100" text-anchor="middle" font-size="14" font-weight="600" fill="#2d6a0e">Gemeinsphäre</text>
+
+  <!-- Mittlerer Kreis: Privatsphäre -->
+  <circle cx="260" cy="250" r="115" fill="#c8e6c9" stroke="#4caf50" stroke-width="2"/>
+  <text x="260" y="157" text-anchor="middle" font-size="14" font-weight="600" fill="#1b5e20">Privatsphäre</text>
+
+  <!-- Innerer Kreis: Intimsphäre -->
+  <circle cx="260" cy="250" r="55" fill="#a5d6a7" stroke="#388e3c" stroke-width="2"/>
+  <text x="260" y="247" text-anchor="middle" font-size="13" font-weight="600" fill="#1b5e20">Intim-</text>
+  <text x="260" y="263" text-anchor="middle" font-size="13" font-weight="600" fill="#1b5e20">sphäre</text>
+
+  <!-- Schutzpfeil links -->
+  <!-- Linie von aussen nach innen mit "Schutz nimmt zu" -->
+  <line x1="55" y1="380" x2="55" y2="140" stroke="#73ab2c" stroke-width="2" marker-end="url(#arrowG)"/>
+  <text x="40" y="260" text-anchor="middle" font-size="11" font-weight="600" fill="#73ab2c" transform="rotate(-90,40,260)">Schutz nimmt zu →</text>
+
+  <!-- Rechte Seite: Rechtfertigungsgründe -->
+  <rect x="465" y="80" width="215" height="165" rx="8" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5"/>
+  <text x="572" y="105" text-anchor="middle" font-size="14" font-weight="700" fill="#e65100">Rechtfertigungsgründe</text>
+
+  <circle cx="490" cy="130" r="8" fill="#f9a825"/>
+  <text x="505" y="135" font-size="12" fill="#333">Einwilligung</text>
+  <text x="505" y="149" font-size="11" fill="#666">des Verletzten</text>
+
+  <circle cx="490" cy="175" r="8" fill="#f9a825"/>
+  <text x="505" y="180" font-size="12" fill="#333">Überwiegendes</text>
+  <text x="505" y="194" font-size="11" fill="#666">Interesse</text>
+
+  <circle cx="490" cy="220" r="8" fill="#f9a825"/>
+  <text x="505" y="225" font-size="12" fill="#333">Gesetz</text>
+
+  <!-- Rechte Seite: Rechtsfolgen -->
+  <rect x="465" y="265" width="215" height="170" rx="8" fill="#fce4ec" stroke="#e53935" stroke-width="1.5"/>
+  <text x="572" y="290" text-anchor="middle" font-size="14" font-weight="700" fill="#c62828">Rechtsfolgen</text>
+
+  <text x="490" y="315" font-size="12" fill="#333">• Schadenersatz</text>
+  <text x="490" y="338" font-size="12" fill="#333">• Genugtuung</text>
+  <text x="490" y="361" font-size="12" fill="#333">• Beseitigung der</text>
+  <text x="500" y="377" font-size="12" fill="#333">Verletzung</text>
+  <text x="490" y="400" font-size="12" fill="#333">• Verbot der drohenden</text>
+  <text x="500" y="416" font-size="12" fill="#333">Verletzung</text>
+
+  <!-- Grundsatz -->
+  <rect x="80" y="440" width="540" height="30" rx="6" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="350" y="460" text-anchor="middle" font-size="12" font-weight="600" fill="#555">Grundsatz: Jede Verletzung der Persönlichkeit ist widerrechtlich (Art. 28 ZGB)</text>
+
+  <!-- Pfeilmarker -->
+  <defs>
+    <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#73ab2c"/>
+    </marker>
+  </defs>
+</svg>

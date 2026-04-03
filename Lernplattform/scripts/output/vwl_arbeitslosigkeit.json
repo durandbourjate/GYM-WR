@@ -1,0 +1,1759 @@
+[
+  {
+    "id": "vwl_arbeitslosigkeit-a01",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer bildet auf dem Arbeitsmarkt die Arbeitsnachfrage?",
+    "erklaerung": "Unternehmen und der Staat fragen Arbeitskräfte nach (Arbeitsnachfrage). Arbeitnehmerinnen und Arbeitnehmer bieten ihre Arbeitskraft an (Arbeitsangebot).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Arbeitslosenversicherung",
+      "Unternehmen und der Staat",
+      "Die Arbeitnehmerinnen und Arbeitnehmer",
+      "Die Gewerkschaften"
+    ],
+    "korrekt": "Unternehmen und der Staat"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a02",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Nachfrage nach Arbeitskräften ist eine abgeleitete Nachfrage, weil sie von der Nachfrage nach Gütern und Dienstleistungen abhängt.",
+    "erklaerung": "Korrekt. Unternehmen stellen Arbeitskräfte ein, um Güter und Dienstleistungen zu produzieren. Sinkt die Güternachfrage, sinkt auch die Arbeitsnachfrage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a03",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Weshalb ist der Arbeitsmarkt kein Markt wie jeder andere?",
+    "erklaerung": "Der Arbeitsmarkt zeichnet sich durch mehrere Besonderheiten aus: Das Angebot ist extrem heterogen (jede Arbeitskraft ist ein Individuum), die Teilnahme ist für die meisten überlebenswichtig, und der Markt ist stark reguliert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil das Angebot homogen ist – alle Arbeitskräfte sind austauschbar",
+      "Weil es auf dem Arbeitsmarkt keine Preise gibt",
+      "Weil die Teilnahme für die meisten Arbeitnehmer überlebenswichtig ist und das Angebot extrem heterogen ist",
+      "Weil der Staat den Arbeitsmarkt vollständig kontrolliert"
+    ],
+    "korrekt": "Weil die Teilnahme für die meisten Arbeitnehmer überlebenswichtig ist und das Angebot extrem heterogen ist"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a04",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Begriffe der richtigen Marktseite zu.",
+    "erklaerung": "Arbeitsangebot = Menschen, die ihre Arbeitskraft anbieten. Arbeitsnachfrage = Unternehmen und Staat, die Arbeitskräfte suchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Arbeitsangebot",
+      "Arbeitsnachfrage"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a05",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im klassischen Arbeitsmarktmodell: Was passiert, wenn die Löhne bei einem Nachfragerückgang unflexibel bleiben?",
+    "erklaerung": "Wenn die Löhne trotz sinkender Nachfrage nicht sinken, fragen Unternehmen weniger Arbeitskräfte nach als angeboten werden. Es entsteht unfreiwillige Arbeitslosigkeit – Menschen wollen zum herrschenden Lohn arbeiten, finden aber keine Stelle.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Löhne steigen automatisch",
+      "Die Arbeitslosigkeit sinkt",
+      "Es entsteht unfreiwillige Arbeitslosigkeit",
+      "Es entsteht freiwillige Arbeitslosigkeit"
+    ],
+    "korrekt": "Es entsteht unfreiwillige Arbeitslosigkeit"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a06",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im klassischen Modell des Arbeitsmarktes gibt es bei flexiblen Löhnen keine unfreiwillige Arbeitslosigkeit.",
+    "erklaerung": "Korrekt. Bei flexiblen Löhnen passen sich diese so an, dass Angebot und Nachfrage übereinstimmen. Wer zum Marktlohn nicht arbeiten will, ist gemäss dem Modell «freiwillig» arbeitslos.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a07",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie den Unterschied zwischen dem klassischen und dem keynesianischen Modell des Arbeitsmarktes hinsichtlich der Ursachen von Arbeitslosigkeit.",
+    "erklaerung": "Zentraler Unterschied: Klassik → Löhne müssen flexibler werden. Keynesianismus → Die gesamtwirtschaftliche Nachfrage muss gestärkt werden, denn Lohnkürzungen verschärfen die Krise.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Das klassische Modell sieht Arbeitslosigkeit als Folge unflexibler Löhne: Würden die Löhne sinken, entstünde ein neues Gleichgewicht. Das keynesianische Modell interpretiert Arbeitslosigkeit als Folge mangelnder Güternachfrage. Lohnkürzungen verschlimmern das Problem sogar, weil sie die Kaufkraft und damit die Konsumnachfrage senken."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a08",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gemäss der keynesianischen Theorie: Warum können Lohnkürzungen Arbeitslosigkeit sogar verschärfen?",
+    "erklaerung": "Löhne sind nicht nur Kosten, sondern auch Einkommen. Sinken die Löhne aller Arbeitnehmer, sinkt die Konsumnachfrage. Wird dieser Rückgang nicht kompensiert (z.B. durch Exporte oder Staatsnachfrage), kann eine Rezession folgen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil tiefere Löhne die Produktivität senken",
+      "Weil die Gewerkschaften dagegen streiken",
+      "Weil Unternehmen dann noch mehr Arbeitskräfte einstellen",
+      "Weil tiefere Löhne die Kaufkraft und damit die Konsumnachfrage reduzieren"
+    ],
+    "korrekt": "Weil tiefere Löhne die Kaufkraft und damit die Konsumnachfrage reduzieren"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a09",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen über den Arbeitsmarkt sind korrekt?",
+    "erklaerung": "Die Arbeitsnachfrage hängt von der Güternachfrage ab (abgeleitet). Die Teilnahme ist existenziell, da der Lohn die Haupteinkommensquelle darstellt. Das Arbeitsangebot ist hingegen extrem heterogen (nicht homogen), und der Arbeitsmarkt ist stark reguliert (GAV, Kündigungsschutz, Sozialversicherungen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Arbeitsnachfrage ist eine abgeleitete Nachfrage",
+      "Das Arbeitsangebot ist homogen – alle Arbeitskräfte sind austauschbar",
+      "Die Teilnahme am Arbeitsmarkt ist für die meisten Menschen existenziell",
+      "Der Arbeitsmarkt ist weitgehend frei von staatlichen Regulierungen"
+    ],
+    "korrekt": [
+      "Die Arbeitsnachfrage ist eine abgeleitete Nachfrage",
+      "Die Teilnahme am Arbeitsmarkt ist für die meisten Menschen existenziell"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-a10",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Das Diagramm zeigt den Arbeitsmarkt mit einem starren Lohn w̄ oberhalb des Gleichgewichtslohns w*. Die Punkte Q und P markieren die nachgefragte bzw. angebotene Arbeitsmenge bei w̄. Welche Aussage ist korrekt?",
+    "erklaerung": "Bei w̄ > w* liegt die angebotene Arbeitsmenge (P auf Lₛ) über der nachgefragten (Q auf Lᴅ). Die Differenz ist das Überangebot an Arbeit = unfreiwillige Arbeitslosigkeit. Im Gleichgewicht (w*) wären Angebot und Nachfrage ausgeglichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/arbeitsmarkt_lohnrigid.svg",
+      "alt": "Arbeitsmarktdiagramm mit Angebots- und Nachfragekurve"
+    },
+    "optionen": [
+      "Im Punkt Q wird mehr Arbeit nachgefragt als in P angeboten",
+      "Der starre Lohn w̄ führt dazu, dass alle Arbeitswilligen eine Stelle finden",
+      "Die Strecke von Q nach P zeigt ein Überangebot an Arbeit – es gibt unfreiwillige Arbeitslosigkeit",
+      "Im Gleichgewichtspunkt würden weniger Menschen arbeiten als bei w̄"
+    ],
+    "korrekt": "Die Strecke von Q nach P zeigt ein Überangebot an Arbeit – es gibt unfreiwillige Arbeitslosigkeit"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l01",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was besagt die Effizienzlohntheorie?",
+    "erklaerung": "Die Effizienzlohntheorie besagt, dass die Produktivität positiv vom Lohn abhängt. Höhere Löhne steigern Zufriedenheit, Identifikation mit der Firma und Leistungsbereitschaft. Zudem erhält das Unternehmen mehr Bewerbungen und kann die Besten auswählen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Löhne spielen für die Arbeitsproduktivität keine Rolle",
+      "Hohe Löhne steigern die Produktivität und Motivation der Beschäftigten",
+      "Löhne sollten staatlich festgelegt werden",
+      "Nur der niedrigste Lohn ist effizient"
+    ],
+    "korrekt": "Hohe Löhne steigern die Produktivität und Motivation der Beschäftigten"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l02",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss dem {0}-Modell setzen die «Arbeitsplatzbesitzer» (vertreten durch die {1}) Lohnerhöhungen für sich selbst durch, anstatt den {2} eine Chance auf einen Arbeitsplatz zu eröffnen.",
+    "erklaerung": "Im Insider-Outsider-Modell nutzen die Insider (Beschäftigte) ihre Verhandlungsmacht für höhere Löhne, statt durch Lohnverzicht den Outsidern (Arbeitslosen) eine Chance zu geben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Insider-Outsider",
+        "optionen": [
+          "Insider Outsider"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Gewerkschaft",
+        "optionen": [
+          "Gewerkschaften"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Outsidern",
+        "optionen": [
+          "Outsider",
+          "Arbeitslosen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l03",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Schweizer Nominallohnindex ist in den über 78 Jahren, seit er besteht, noch nie gesunken.",
+    "erklaerung": "Korrekt. Die Nominallöhne in der Schweiz sind nach unten starr – ein empirischer Befund, der die Theorie der Lohnrigidität stützt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l04",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Erklärungen für Lohnrigiditäten dem richtigen Konzept zu.",
+    "erklaerung": "Es gibt drei zentrale Erklärungen für Lohnrigiditäten: 1) Institutionelle Faktoren (Gesetze, GAV), 2) Insider-Outsider-Modell (Machtasymmetrie), 3) Effizienzlohntheorie (Produktivitätseffekte höherer Löhne).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Institutionelle Faktoren",
+      "Insider-Outsider-Modell",
+      "Effizienzlohntheorie"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l05",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist ein Gesamtarbeitsvertrag (GAV)?",
+    "erklaerung": "Ein GAV wird kollektiv zwischen den Sozialpartnern (Gewerkschaften und Arbeitgeberverbände) ausgehandelt. Er enthält Bestimmungen zu Mindestlöhnen, Arbeitszeit, Ferien, Kündigungsfristen u.a. Während der Laufzeit gilt eine Friedenspflicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Vertrag zwischen verschiedenen Gewerkschaften",
+      "Ein kollektiver Vertrag zwischen Sozialpartnern mit Bestimmungen zu Löhnen, Arbeitszeit und Kündigungsfristen",
+      "Ein staatliches Gesetz zur Regulierung aller Löhne",
+      "Ein individueller Arbeitsvertrag zwischen Arbeitgeber und Arbeitnehmer"
+    ],
+    "korrekt": "Ein kollektiver Vertrag zwischen Sozialpartnern mit Bestimmungen zu Löhnen, Arbeitszeit und Kündigungsfristen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l06",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Lohnunterschiede zwischen Branchen lassen sich vor allem durch Unterschiede in der Arbeitsproduktivität erklären.",
+    "erklaerung": "Korrekt. Branchen mit höherer Arbeitsproduktivität (z.B. Pharma, Versicherungen) zahlen deutlich höhere Löhne als Branchen mit tieferer Produktivität (z.B. Gastgewerbe). Die Produktivitätsunterschiede sind ein zentraler Erklärungsfaktor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l07",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie, warum es aus Sicht der Effizienzlohntheorie für ein Unternehmen rational sein kann, höhere Löhne als den Marktlohn zu bezahlen.",
+    "erklaerung": "Kerngedanke: Löhne sind nicht nur Kostenfaktor, sondern auch Investition in Produktivität. Der «Effizienzlohn» liegt dort, wo der Produktivitätsgewinn die Mehrkosten gerade noch übersteigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Höhere Löhne haben einen doppelten Effekt: Einerseits steigen die Kosten, andererseits steigt die Produktivität. Hohe Löhne sorgen für Zufriedenheit und Identifikation mit der Firma, was die Leistungsbereitschaft erhöht. Zudem erhält das Unternehmen mehr Bewerbungen, kann die Qualifiziertesten auswählen und muss weniger Kündigungen hinnehmen, was Such- und Ausbildungskosten spart."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l08",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was passiert, wenn ein GAV allgemeinverbindlich erklärt wird?",
+    "erklaerung": "Bei einer Allgemeinverbindlichkeitserklärung wird der GAV auf die ganze Branche ausgeweitet. Dies schützt die sozialvertraglichen Vereinbarungen vor Niedriglohnkonkurrenz und verhindert, dass Aussenseiter benachteiligt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Er gilt nur für die Mitglieder der beteiligten Gewerkschaft",
+      "Er gilt nur noch für die grössten Unternehmen",
+      "Er wird ungültig und durch ein Gesetz ersetzt",
+      "Er wird auf die ganze Branche ausgeweitet, auch auf Nichtmitglieder"
+    ],
+    "korrekt": "Er wird auf die ganze Branche ausgeweitet, auch auf Nichtmitglieder"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l09",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Mechanismen erklären, warum die Löhne nach unten starr sind (Lohnrigidität)?",
+    "erklaerung": "Drei Erklärungen für Lohnrigidität: Institutionelle Faktoren (GAV, Mindestlöhne), Effizienzlohntheorie (bewusst hohe Löhne für Produktivität) und Insider-Outsider-Modell (Machtasymmetrie der Beschäftigten). Die Inflation verhindert keine Lohnanpassungen – im Gegenteil, sie kann reale Lohnsenkungen bei konstanten Nominallöhnen ermöglichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Gesamtarbeitsverträge legen Mindestlöhne fest",
+      "Unternehmen zahlen bewusst über Marktlohn, um die Produktivität zu steigern",
+      "Die Inflation verhindert generell jede Lohnanpassung",
+      "Insider (Beschäftigte) setzen über Gewerkschaften höhere Löhne durch"
+    ],
+    "korrekt": [
+      "Gesamtarbeitsverträge legen Mindestlöhne fest",
+      "Unternehmen zahlen bewusst über Marktlohn, um die Produktivität zu steigern",
+      "Insider (Beschäftigte) setzen über Gewerkschaften höhere Löhne durch"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-l10",
+    "fach": "VWL",
+    "thema": "Löhne & Lohnrigiditäten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Unterschied zwischen Nominal- und Reallohn?",
+    "erklaerung": "Der Nominallohn ist der Betrag auf dem Lohnausweis. Der Reallohn gibt an, was man sich davon kaufen kann – er ist um die Teuerung bereinigt. Bei Inflation steigt der Nominallohn oft, während der Reallohn stagnieren oder sogar sinken kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Reallohn ist immer höher als der Nominallohn",
+      "Der Nominallohn berücksichtigt die Teuerung, der Reallohn nicht",
+      "Der Nominallohn ist der tatsächlich ausbezahlte Geldbetrag, der Reallohn berücksichtigt die Kaufkraft (inflationsbereinigt)",
+      "Es gibt keinen inhaltlichen Unterschied"
+    ],
+    "korrekt": "Der Nominallohn ist der tatsächlich ausbezahlte Geldbetrag, der Reallohn berücksichtigt die Kaufkraft (inflationsbereinigt)"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t01",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Typ von Arbeitslosigkeit entsteht durch jahreszeitliche Schwankungen oder Stellenwechsel?",
+    "erklaerung": "Die friktionelle Arbeitslosigkeit hat ihre Ursache in jahreszeitlichen Nachfrageschwankungen (z.B. Tourismus, Landwirtschaft) oder in Stellenwechseln und damit verbundenen Suchprozessen. Sie ist für die Wirtschaftspolitik unproblematisch.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Friktionelle Arbeitslosigkeit",
+      "Konjunkturelle Arbeitslosigkeit",
+      "Sockelarbeitslosigkeit",
+      "Strukturelle Arbeitslosigkeit"
+    ],
+    "korrekt": "Friktionelle Arbeitslosigkeit"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t02",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele dem richtigen Typ von Arbeitslosigkeit zu.",
+    "erklaerung": "Friktionell = kurzfristig, Suchprozesse/saisonal. Konjunkturell = Nachfragerückgang in einer Rezession. Strukturell = langfristige Veränderungen der Wirtschaftsstruktur (Technologie, Branchenwandel).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Friktionelle AL",
+      "Konjunkturelle AL",
+      "Strukturelle AL"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t03",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} setzt sich aus der {1} und der {2} Arbeitslosigkeit zusammen. Sie ist das Niveau der Arbeitslosigkeit, das in konjunkturneutralen Phasen bestehen bleibt.",
+    "erklaerung": "Die Sockelarbeitslosigkeit (auch natürliche oder gleichgewichtige Arbeitslosigkeit) ist das Niveau, das auch in Boomphasen nicht verschwindet. Sie besteht aus friktioneller und struktureller Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Sockelarbeitslosigkeit",
+        "optionen": [
+          "natürliche Arbeitslosigkeit",
+          "gleichgewichtige Arbeitslosigkeit"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "friktionellen",
+        "optionen": [
+          "friktionelle"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "strukturellen",
+        "optionen": [
+          "strukturelle"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t04",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die strukturelle Arbeitslosigkeit kann losgelöst vom Konjunkturzyklus betrachtet werden.",
+    "erklaerung": "Falsch. Strukturelle Arbeitslosigkeit tritt oft erst bei einem Konjunktureinbruch offen zutage, und eine gute Konjunktur lindert auch die strukturelle Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t05",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist die konjunkturelle Arbeitslosigkeit problematischer als die friktionelle?",
+    "erklaerung": "Die friktionelle Arbeitslosigkeit ist kurzfristiger Natur (Suchprozesse, saisonale Schwankungen). Die konjunkturelle Arbeitslosigkeit dauert länger an und betrifft oft viele Arbeitnehmer gleichzeitig, weshalb man ihr «nicht tatenlos zusehen will».",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil sie durch den Staat verursacht wird",
+      "Weil sie nicht messbar ist",
+      "Weil sie nur Geringqualifizierte betrifft",
+      "Weil sie ein grösseres zeitliches Ausmass annimmt"
+    ],
+    "korrekt": "Weil sie ein grösseres zeitliches Ausmass annimmt"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t06",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie, warum Arbeitslosigkeit und gleichzeitiger Fachkräftemangel gemeinsam auftreten können.",
+    "erklaerung": "Schlüsselbegriff: Mismatch-Arbeitslosigkeit. Das Anforderungsprofil der Arbeitgeber wird von den Bewerbern nicht erfüllt. Dies zeigt sich in der Verschiebung der Beveridge-Kurve nach aussen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Dies ist ein Hinweis auf strukturelle Arbeitslosigkeit: Die Qualifikationen der Arbeitslosen passen nicht zu den Anforderungen der offenen Stellen (Mismatch). Durch den raschen Strukturwandel (z.B. Digitalisierung) werden einfache Arbeitsplätze abgebaut, während gleichzeitig hochqualifizierte Fachkräfte fehlen. Die Arbeitslosen können die offenen Stellen nicht besetzen, weil ihnen die nötigen Kompetenzen fehlen."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t07",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussage zur strukturellen Arbeitslosigkeit ist korrekt?",
+    "erklaerung": "Die strukturelle Arbeitslosigkeit hat einen längerfristigen Charakter und zeigt sich in regionalen, branchenmässigen, qualifikationsspezifischen, geschlechts- oder altersspezifischen Unterschieden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie wird durch saisonale Schwankungen verursacht",
+      "Sie zeigt sich in regional-, branchen- und qualifikationsspezifischen Unterschieden",
+      "Sie betrifft ausschliesslich den Industriesektor",
+      "Sie ist kurzfristiger Natur und verschwindet schnell"
+    ],
+    "korrekt": "Sie zeigt sich in regional-, branchen- und qualifikationsspezifischen Unterschieden"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t08",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die friktionelle Arbeitslosigkeit ist kurzfristiger Natur und für die Wirtschaftspolitik unproblematisch.",
+    "erklaerung": "Korrekt. Friktionelle Arbeitslosigkeit entsteht z.B. durch Stellenwechsel oder saisonale Schwankungen und löst sich in der Regel von selbst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t09",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Phänomene sind typische Ursachen für strukturelle Arbeitslosigkeit?",
+    "erklaerung": "Strukturelle Arbeitslosigkeit entsteht durch langfristige Veränderungen: Technologie (Automatisierung), Standortverlagerung (Globalisierung), Branchenwandel. Ein vorübergehender Auftragsrückgang führt hingegen zu konjunktureller Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Technologischer Wandel (z.B. Automatisierung, Digitalisierung)",
+      "Vorübergehender Auftragsrückgang in einer Rezession",
+      "Verlagerung von Produktionsstandorten ins Ausland",
+      "Veränderung der Nachfrage (z.B. Rückgang einer Branche)"
+    ],
+    "korrekt": [
+      "Technologischer Wandel (z.B. Automatisierung, Digitalisierung)",
+      "Verlagerung von Produktionsstandorten ins Ausland",
+      "Veränderung der Nachfrage (z.B. Rückgang einer Branche)"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-t10",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Schweiz steigt nach der COVID-19-Pandemie die Arbeitslosigkeit im Gastgewerbe stark an, erholt sich aber nach 18 Monaten weitgehend. Gleichzeitig bleiben in der IT-Branche dauerhaft viele Stellen unbesetzt. Welche Aussage trifft am besten zu?",
+    "erklaerung": "Der vorübergehende Anstieg im Gastgewerbe ist konjunkturell (exogener Schock, der nach der Erholung verschwindet). Der dauerhafte Fachkräftemangel in der IT hingegen ist strukturell: Es fehlen Personen mit den passenden Qualifikationen (Mismatch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Arbeitslosigkeit im Gastgewerbe ist konjunktureller, der Fachkräftemangel in der IT struktureller Natur",
+      "Beide Phänomene sind ausschliesslich konjunktureller Natur",
+      "Beide Phänomene sind Beispiele für strukturelle Arbeitslosigkeit",
+      "Es handelt sich in beiden Fällen um friktionelle Arbeitslosigkeit"
+    ],
+    "korrekt": "Die Arbeitslosigkeit im Gastgewerbe ist konjunktureller, der Fachkräftemangel in der IT struktureller Natur"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b01",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was stellt die Beveridge-Kurve dar?",
+    "erklaerung": "Die Beveridge-Kurve zeigt den Zusammenhang zwischen der Anzahl offener Stellen (Ordinate) und der Anzahl Arbeitslosen (Abszisse) im Konjunkturverlauf.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Zusammenhang zwischen Inflation und Arbeitslosigkeit",
+      "Den Zusammenhang zwischen offenen Stellen und Arbeitslosen",
+      "Den Zusammenhang zwischen BIP und Arbeitslosigkeit",
+      "Den Zusammenhang zwischen Löhnen und Beschäftigung"
+    ],
+    "korrekt": "Den Zusammenhang zwischen offenen Stellen und Arbeitslosen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b02",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet eine Verschiebung der Beveridge-Kurve nach aussen (vom Ursprung weg)?",
+    "erklaerung": "Eine Verschiebung nach aussen bedeutet, dass bei gleicher Konjunkturlage mehr Arbeitslose und gleichzeitig mehr offene Stellen existieren. Das ist ein Zeichen dafür, dass die strukturelle bzw. die Sockelarbeitslosigkeit zugenommen hat (Mismatch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die konjunkturelle Arbeitslosigkeit sinkt",
+      "Die Sockelarbeitslosigkeit hat zugenommen",
+      "Die Arbeitslosen finden schneller eine Stelle",
+      "Es herrscht Vollbeschäftigung"
+    ],
+    "korrekt": "Die Sockelarbeitslosigkeit hat zugenommen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b03",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In einer Hochkonjunktur liegt der Punkt auf der Beveridge-Kurve typischerweise links oben (mehr offene Stellen als Arbeitslose).",
+    "erklaerung": "Korrekt. In Boomphasen ist die Zahl der Arbeitslosen klein und die Zahl der offenen Stellen hoch. Der Punkt liegt links der Winkelhalbierenden (Stellenüberhang).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b04",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beschreibungen der richtigen konjunkturellen Situation auf der Beveridge-Kurve zu.",
+    "erklaerung": "Hochkonjunktur = links oben auf der Beveridge-Kurve (Stellenüberhang). Rezession = rechts unten (Stellenmangel, viele Arbeitslose).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Hochkonjunktur (links oben)",
+      "Rezession (rechts unten)"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b05",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welcher Faktor kann zu einer Zunahme der Sockelarbeitslosigkeit führen?",
+    "erklaerung": "Ein rascher Strukturwandel (z.B. Digitalisierung) führt dazu, dass Arbeitsplätze für Unqualifizierte wegfallen und diese keine neue Beschäftigung finden. Das erhöht die Sockelarbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Eine Lockerung des Kündigungsschutzes",
+      "Ein rasanter Strukturwandel, der Arbeitsplätze für Unqualifizierte vernichtet",
+      "Eine kurzfristige Konjunkturschwankung",
+      "Eine Senkung der Arbeitslosenunterstützung"
+    ],
+    "korrekt": "Ein rasanter Strukturwandel, der Arbeitsplätze für Unqualifizierte vernichtet"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b06",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie, warum Regulierungen des Arbeitsmarktes (z.B. Kündigungsschutz, Mindestlöhne, Arbeitslosenunterstützung) trotz guter Absichten die Sockelarbeitslosigkeit erhöhen können.",
+    "erklaerung": "Kernprinzip: «Gut gemeint ist nicht gleich gut gemacht.» Eingriffe in Märkte können das Gegenteil von dem bewirken, was man erreichen wollte (unbeabsichtigte Folgen, Fehlanreize).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Regulierungen haben oft unbeabsichtigte Nebeneffekte: Erhöhte Mindestlöhne können dazu führen, dass Arbeitgeber weniger Personen einstellen. Ein starker Kündigungsschutz hemmt Neuanstellungen, weil Unternehmen bei schlechter Auftragslage kaum entlassen können. Grosszügige Arbeitslosenunterstützung reduziert den Anreiz für Arbeitslose, sich intensiv um eine neue Stelle zu bemühen, und erleichtert Arbeitgebern Entlassungen. Es entsteht ein Zielkonflikt: Schutz der Arbeitnehmer vs. Funktionsfähigkeit des Arbeitsmarktes."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b07",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Auf der Winkelhalbierenden der Beveridge-Kurve entspricht die Zahl der offenen Stellen der Zahl der Arbeitslosen – dies bildet die Sockelarbeitslosigkeit ab.",
+    "erklaerung": "Korrekt. Alle Punkte auf der 45°-Linie (Winkelhalbierenden) bilden die gleichgewichtige bzw. die Sockelarbeitslosigkeit ab. Hier gibt es für jeden Arbeitslosen theoretisch eine offene Stelle – die Arbeitslosigkeit ist «nur» friktionell und strukturell.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b08",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Abbildung zeigt eine Beveridge-Kurve mit drei Punkten A, B und C. In welchem Punkt befindet sich die Wirtschaft in einer Rezession?",
+    "erklaerung": "In einer Rezession gibt es viele Arbeitslose und wenige offene Stellen → der Punkt liegt rechts unten auf der Beveridge-Kurve (Punkt B). Punkt A (links oben) zeigt eine Hochkonjunktur, Punkt C liegt auf der Winkelhalbierenden (Sockelarbeitslosigkeit).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/beveridge_kurve.svg",
+      "alt": "Beveridge-Kurve mit drei markierten Konjunkturpunkten"
+    },
+    "optionen": [
+      "Punkt C (auf der Winkelhalbierenden)",
+      "Punkt A (links oben)",
+      "Punkt B (rechts unten)",
+      "Die Konjunkturlage lässt sich aus der Beveridge-Kurve nicht ablesen"
+    ],
+    "korrekt": "Punkt B (rechts unten)"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b09",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Abbildung zeigt eine Verschiebung der Beveridge-Kurve von BC₁ nach BC₂. Die Punkte SA₁ und SA₂ markieren die jeweilige Sockelarbeitslosigkeit. Welche Ursachen können diese Verschiebung erklären?",
+    "erklaerung": "Die Beveridge-Kurve verschiebt sich nach aussen, wenn bei gleicher Konjunktur mehr Arbeitslose UND mehr offene Stellen bestehen. Ursachen: Mismatch (A), hemmende Regulierungen (C) und Fehlanreize durch grosszügige Unterstützung (D). Ein konjunktureller Aufschwung verschiebt den Punkt auf der bestehenden Kurve, nicht die Kurve selbst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/beveridge_verschiebung.svg",
+      "alt": "Verschiebung der Beveridge-Kurve nach aussen"
+    },
+    "optionen": [
+      "Zunahme des Mismatch zwischen Qualifikationen der Arbeitslosen und Anforderungen der offenen Stellen",
+      "Ein konjunktureller Aufschwung",
+      "Verschärfung von Arbeitsmarktregulierungen (z.B. höherer Kündigungsschutz)",
+      "Grosszügigere Arbeitslosenunterstützung, die die Suchintensität senkt"
+    ],
+    "korrekt": [
+      "Zunahme des Mismatch zwischen Qualifikationen der Arbeitslosen und Anforderungen der offenen Stellen",
+      "Verschärfung von Arbeitsmarktregulierungen (z.B. höherer Kündigungsschutz)",
+      "Grosszügigere Arbeitslosenunterstützung, die die Suchintensität senkt"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-b10",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Beveridge-Kurve zeigt den Zusammenhang zwischen {0} (auf der Y-Achse) und {1} (auf der X-Achse). Die {2} verbindet alle Punkte, an denen die Zahl der offenen Stellen der Zahl der Arbeitslosen entspricht.",
+    "erklaerung": "Die Y-Achse zeigt die offenen Stellen, die X-Achse die Arbeitslosen. Die 45°-Linie (Winkelhalbierend) markiert die Sockelarbeitslosigkeit, wo offene Stellen und Arbeitslose gleich gross sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "offenen Stellen",
+        "optionen": [
+          "Vakanzen",
+          "offene Stellen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Arbeitslosen",
+        "optionen": [
+          "Arbeitslose",
+          "Arbeitslosenzahl"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Winkelhalbierenden",
+        "optionen": [
+          "Winkelhalbierende",
+          "45-Grad-Linie",
+          "45°-Linie"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k01",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Massnahmen zur Bekämpfung der Arbeitslosigkeit dem Ansatzpunkt zu.",
+    "erklaerung": "Gütermarkt-Ansatz: Indirekt über mehr Nachfrage nach Gütern (Wettbewerb, Standort, Innovation, Beschäftigungsprogramme). Arbeitsmarkt-Ansatz: Direkt am Arbeitsmarkt (Kurzarbeit, Bildung, Flexibilität, Ausländerpolitik).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Ansatz am Gütermarkt",
+      "Ansatz am Arbeitsmarkt"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k02",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist Kurzarbeit?",
+    "erklaerung": "Bei Kurzarbeit wird die Arbeitszeit vorübergehend reduziert oder eingestellt. Die ALV deckt 80% des Verdienstausfalls während max. 12 Monaten. Ziel: Kündigungen vermeiden bei kurzfristigen Arbeitsausfällen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein dauerhafter Abbau von Arbeitsplätzen",
+      "Die vorübergehende Reduzierung oder Einstellung der Arbeit, wobei die ALV den Verdienstausfall teilweise deckt",
+      "Eine Verlängerung der Arbeitszeit bei gleicher Bezahlung",
+      "Eine Form der Selbständigkeit"
+    ],
+    "korrekt": "Die vorübergehende Reduzierung oder Einstellung der Arbeit, wobei die ALV den Verdienstausfall teilweise deckt"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k03",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Arbeitszeitverkürzungen sind ein einfaches und risikoloses Mittel gegen Arbeitslosigkeit.",
+    "erklaerung": "Falsch. Wenn die Arbeitszeitverkürzung nicht kostenneutral erfolgt, steigen die Lohnstückkosten, die Wettbewerbsfähigkeit sinkt und Arbeitsplätze gehen verloren. Das Arbeitsvolumen ist kein Kuchen, der einfach umverteilt werden kann. Statistiken zeigen sogar, dass Länder mit hoher Arbeitszeit tiefere Arbeitslosenquoten haben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k04",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum wird «lebenslanges Lernen» als immer wichtiger für die Bekämpfung von Arbeitslosigkeit angesehen?",
+    "erklaerung": "Durch Globalisierung und Digitalisierung fallen Arbeitsplätze für Unqualifizierte kontinuierlich weg. Um den zukünftigen Anforderungen gewachsen zu sein, braucht es permanente Weiterbildung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil Arbeitgeber nur noch Akademiker einstellen",
+      "Weil im Zuge der Globalisierung und des technologischen Wandels Arbeitsplätze für Unqualifizierte wegfallen",
+      "Weil Arbeitnehmer sonst keine Sozialleistungen erhalten",
+      "Weil es gesetzlich vorgeschrieben ist"
+    ],
+    "korrekt": "Weil im Zuge der Globalisierung und des technologischen Wandels Arbeitsplätze für Unqualifizierte wegfallen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k05",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie die Forderung «Mehr Markt für den Arbeitsmarkt» (Lohnflexibilität, liberale Entlassungsbedingungen, leistungsbasierte Löhne): Welche Vor- und Nachteile sehen Sie?",
+    "erklaerung": "Es gibt kein allgemein gültiges Rezept. Je nach ökonomischer Denkschule (klassisch vs. keynesianisch) und Wertvorstellungen fällt die Beurteilung unterschiedlich aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Vorteile: Flexiblere Löhne ermöglichen schnellere Anpassung an Marktveränderungen, Unternehmen stellen eher ein, wenn sie bei schlechter Auftragslage auch entlassen können, leistungsbasierte Löhne belohnen Produktivität. Nachteile: Arbeitnehmer verlieren soziale Absicherung, tiefere Löhne können Kaufkraft und damit die Gesamtnachfrage senken (keynesianisches Argument), prekäre Arbeitsverhältnisse und Unsicherheit nehmen zu. Es braucht eine Balance zwischen Flexibilität und Schutz."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k06",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Kritik wird an staatlichen Beschäftigungsprogrammen (keynesianischer Ansatz) geübt?",
+    "erklaerung": "Kritiker bemängeln, dass Beschäftigungsprogramme prozyklisch wirken können (zu spät, zu viel) und Strukturen konservieren statt den nötigen Strukturwandel zu ermöglichen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie kosten nichts und sind daher wirkungslos",
+      "Sie können prozyklisch wirken und bestehende Strukturen konservieren statt anpassen",
+      "Sie senken automatisch die Staatsschulden",
+      "Sie führen immer zu Vollbeschäftigung"
+    ],
+    "korrekt": "Sie können prozyklisch wirken und bestehende Strukturen konservieren statt anpassen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k07",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ausländische Arbeitskräfte sind grundsätzlich nur als Konkurrenz für einheimische Arbeitnehmer zu sehen.",
+    "erklaerung": "Falsch. Arbeitskräftewanderungen sind Bestandteil einer marktwirtschaftlichen Ordnung. Sind die Zuwanderer Komplemente (ergänzende Qualifikationen), steigern sie die Produktivität und Entlohnung der Einheimischen. Nur wenn sie Substitute sind, entsteht Konkurrenz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k08",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Bekämpfung der Arbeitslosigkeit kann direkt auf dem {0} oder indirekt auf dem {1} ansetzen. Weil der Arbeitsmarkt ein {2} Markt ist, beeinflusst eine stärkere Güternachfrage auch die Nachfrage nach Arbeitskräften.",
+    "erklaerung": "Der Arbeitsmarkt ist ein abgeleiteter Markt: Die Nachfrage nach Arbeitskräften hängt von der Güternachfrage ab. Darum kann man Arbeitslosigkeit auch über den Gütermarkt bekämpfen (Wettbewerbskraft, Standortattraktivität, Innovation).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Arbeitsmarkt",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Gütermarkt",
+        "optionen": []
+      },
+      {
+        "id": "2",
+        "korrekt": "abgeleiteter",
+        "optionen": [
+          "abgeleiteten"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k09",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Massnahmen sind geeignet, um strukturelle Arbeitslosigkeit zu bekämpfen?",
+    "erklaerung": "Strukturelle Arbeitslosigkeit erfordert langfristige Massnahmen: Bildung (A), Mobilität (C), Innovation (D). Konjunkturprogramme (B) wirken primär gegen konjunkturelle Arbeitslosigkeit und können bei strukturellen Problemen sogar kontraproduktiv sein (Strukturen konservieren).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Investitionen in Aus- und Weiterbildung",
+      "Konjunkturprogramme zur kurzfristigen Nachfragesteigerung",
+      "Förderung der beruflichen Mobilität (Umschulungen, Arbeitsvermittlung)",
+      "Stärkung des Innovationsstandorts und der Forschung"
+    ],
+    "korrekt": [
+      "Investitionen in Aus- und Weiterbildung",
+      "Förderung der beruflichen Mobilität (Umschulungen, Arbeitsvermittlung)",
+      "Stärkung des Innovationsstandorts und der Forschung"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-k10",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Kurzarbeit ist ein Instrument, das Entlassungen bei vorübergehenden Arbeitsausfällen vermeiden soll.",
+    "erklaerung": "Korrekt. Kurzarbeit überbrückt vorübergehende Nachfragerückgänge. Die ALV übernimmt 80% des Verdienstausfalls. So bleiben die Arbeitsverhältnisse bestehen und die Unternehmen müssen bei der Erholung kein neues Personal suchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s01",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was misst die Arbeitslosenquote?",
+    "erklaerung": "Arbeitslosenquote = Registrierte Arbeitslose in % der Erwerbspersonen. Sie wird vom SECO monatlich anhand der gemeldeten Arbeitslosen erfasst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Arbeitslosen in % der Gesamtbevölkerung",
+      "Die Erwerbslosen in % der Erwerbstätigen",
+      "Die beim Arbeitsamt registrierten Arbeitslosen in % der Erwerbspersonen",
+      "Die Stellensuchenden in % der Bevölkerung"
+    ],
+    "korrekt": "Die beim Arbeitsamt registrierten Arbeitslosen in % der Erwerbspersonen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s02",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist die Arbeitslosenquote für internationale Vergleiche ungeeignet?",
+    "erklaerung": "Die Arbeitslosenquote basiert auf den beim Arbeitsamt registrierten Arbeitslosen. Da die Registrierungskriterien und Bezugsberechtigungen international variieren, ist sie für Vergleiche ungeeignet. Dafür nutzt man die Erwerbslosenquote (ILO-Standard).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil nur die Schweiz eine Arbeitslosenquote berechnet",
+      "Weil sie zu kompliziert zu berechnen ist",
+      "Weil die Kriterien für die Bezugsberechtigung von Arbeitslosengeld in verschiedenen Ländern unterschiedlich sind",
+      "Weil sie die Inflation nicht berücksichtigt"
+    ],
+    "korrekt": "Weil die Kriterien für die Bezugsberechtigung von Arbeitslosengeld in verschiedenen Ländern unterschiedlich sind"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s03",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Merkmale der richtigen Kennzahl zu.",
+    "erklaerung": "Die Arbeitslosenquote (SECO) erfasst nur registrierte Arbeitslose. Die Erwerbslosenquote (BFS/ILO) umfasst auch Ausgesteuerte und Langzeitarbeitslose und ist daher in der Regel höher – aber international vergleichbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Arbeitslosenquote (SECO)",
+      "Erwerbslosenquote (BFS/ILO)"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s04",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Stellensuchende und Arbeitslose bezeichnen dieselbe Personengruppe.",
+    "erklaerung": "Falsch. Stellensuchende umfassen neben den registrierten Arbeitslosen auch Personen, die nicht sofort vermittelbar sind oder die in Beschäftigungsprogrammen, Umschulungen oder Zwischenverdiensten engagiert sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s05",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} gibt an, wie gross der Anteil der Bevölkerung ist, der entweder erwerbstätig ist oder eine Arbeitsstelle sucht. Sie wird üblicherweise in Prozent der Bevölkerung im Alter von {1} bis {2} Jahren berechnet.",
+    "erklaerung": "Erwerbsquote = Erwerbspersonen in % der Bevölkerung (15–64 Jahre). Eine hohe Erwerbsquote zeigt, dass ein grosser Teil der Bevölkerung am Arbeitsmarkt teilnimmt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Erwerbsquote",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "15",
+        "optionen": []
+      },
+      {
+        "id": "2",
+        "korrekt": "64",
+        "optionen": []
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s06",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Hauptunterschied zwischen der Erwerbstätigenstatistik und der Beschäftigungsstatistik?",
+    "erklaerung": "Die Erwerbstätigenstatistik ist personenorientiert (jede Person wird einmal gezählt). Die Beschäftigungsstatistik ist stellenorientiert (Personen mit mehreren Stellen werden mehrfach gezählt). Der Unterschied liegt in der Mehrfachbeschäftigung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Beschäftigungsstatistik erfasst nur den Industriesektor",
+      "Es gibt keinen Unterschied",
+      "Die Erwerbstätigenstatistik zählt Personen, die Beschäftigungsstatistik zählt Stellen",
+      "Sie erfassen unterschiedliche Altersgruppen"
+    ],
+    "korrekt": "Die Erwerbstätigenstatistik zählt Personen, die Beschäftigungsstatistik zählt Stellen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s07",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Schweiz werden täglich über 1'000 Stellen abgebaut und gleichzeitig noch mehr neu geschaffen. Erklären Sie, was diese hohe Dynamik des Arbeitsmarktes für die strukturelle Arbeitslosigkeit bedeutet.",
+    "erklaerung": "Die Schweiz hat einen «Hochleistungsarbeitsmarkt»: hohe Dynamik, kurze Arbeitslosigkeitsdauern (Anteil Langzeitarbeitslose ca. 16%), aber auch hohe Anforderungen an alle Beteiligten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die hohe Dynamik (ca. 10% aller Stellen werden jährlich ab- oder aufgebaut) zeigt, dass der Schweizer Arbeitsmarkt die Strukturanpassungen relativ gut bewältigt. Der ständige Auf- und Abbau ermöglicht es, Ressourcen von schrumpfenden in wachsende Branchen umzulenken, ohne allzu massive Verwerfungen. Die strukturelle Arbeitslosigkeit bleibt dadurch relativ tief. Entscheidende Faktoren sind: gutes Aus- und Weiterbildungssystem und relativ flexible Arbeitsmarktregulierungen."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s08",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zur Erwerbslosenquote (BFS/ILO) sind korrekt?",
+    "erklaerung": "Die Erwerbslosenquote basiert auf der SAKE-Befragung (A), ist international standardisiert (B) und erfasst auch nicht registrierte Stellensuchende (D). Sie ist in der Regel HÖHER als die Arbeitslosenquote (SECO), nicht tiefer (C ist falsch).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie basiert auf einer Stichprobenbefragung (SAKE)",
+      "Sie ist international vergleichbar, weil sie auf einheitlichen Kriterien beruht",
+      "Sie ist in der Schweiz in der Regel tiefer als die Arbeitslosenquote (SECO)",
+      "Sie erfasst auch Personen, die nicht beim Arbeitsamt registriert sind, aber aktiv eine Stelle suchen"
+    ],
+    "korrekt": [
+      "Sie basiert auf einer Stichprobenbefragung (SAKE)",
+      "Sie ist international vergleichbar, weil sie auf einheitlichen Kriterien beruht",
+      "Sie erfasst auch Personen, die nicht beim Arbeitsamt registriert sind, aber aktiv eine Stelle suchen"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s09",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind Erwerbspersonen?",
+    "erklaerung": "Erwerbspersonen = Erwerbstätige + Erwerbslose. Es sind alle Personen, die dem Arbeitsmarkt zur Verfügung stehen – egal ob sie gerade arbeiten oder eine Stelle suchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Alle Personen im Rentenalter",
+      "Alle Personen, die entweder erwerbstätig sind oder eine Stelle suchen",
+      "Alle Einwohnerinnen und Einwohner eines Landes",
+      "Nur die vollzeitbeschäftigten Personen"
+    ],
+    "korrekt": "Alle Personen, die entweder erwerbstätig sind oder eine Stelle suchen"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-s10",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Arbeitslosenquote von 0% wäre in einer dynamischen Marktwirtschaft ein erstrebenswertes Ziel.",
+    "erklaerung": "Falsch. Eine Arbeitslosenquote von 0% ist in einer dynamischen Wirtschaft weder realistisch noch erstrebenswert. Eine gewisse friktionelle Arbeitslosigkeit ist unvermeidlich und sogar nützlich: Sie zeigt, dass Arbeitnehmer die Freiheit haben, bessere Stellen zu suchen, und dass ein Strukturwandel stattfindet. Das Ziel ist «Vollbeschäftigung», was eine tiefe, aber nicht null-prozentige Arbeitslosigkeit meint.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r01",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welches ist der grösste Ausgabenposten des schweizerischen Staates?",
+    "erklaerung": "Die soziale Wohlfahrt macht mit ca. einem Drittel der Staatsausgaben den grössten Ausgabenposten des schweizerischen Staates aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Verteidigung",
+      "Bildung",
+      "Verkehr und Infrastruktur",
+      "Soziale Wohlfahrt"
+    ],
+    "korrekt": "Soziale Wohlfahrt"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r02",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Existenz von Sozialversicherungen lässt sich unter anderem mit Marktversagen begründen: Ohne staatliche Eingriffe würden sich viele Menschen nicht ausreichend gegen Risiken wie Alter, Krankheit oder Arbeitslosigkeit absichern.",
+    "erklaerung": "Korrekt. Ohne obligatorische Sozialversicherungen würden viele Menschen die Risiken unterschätzen oder sich die Absicherung nicht leisten können (Informationsasymmetrien, adverse Selektion). Der Staat greift ein, um dieses Marktversagen zu korrigieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r03",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Unterschied zwischen vertikaler und horizontaler Gerechtigkeit?",
+    "erklaerung": "Vertikale Gerechtigkeit fordert eine Umverteilung zwischen verschiedenen Einkommensgruppen (von oben nach unten). Horizontale Gerechtigkeit fordert, dass Menschen in gleicher Lage gleich behandelt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Vertikale Gerechtigkeit betrifft nur Steuern, horizontale nur Sozialversicherungen",
+      "Es gibt keinen inhaltlichen Unterschied",
+      "Vertikale Gerechtigkeit: Umverteilung von Reich zu Arm. Horizontale Gerechtigkeit: Gleiche Behandlung bei gleichen Verhältnissen.",
+      "Vertikale Gerechtigkeit: Gleichbehandlung aller. Horizontale Gerechtigkeit: Umverteilung."
+    ],
+    "korrekt": "Vertikale Gerechtigkeit: Umverteilung von Reich zu Arm. Horizontale Gerechtigkeit: Gleiche Behandlung bei gleichen Verhältnissen."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r04",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Diskutieren Sie: Welche Probleme oder unbeabsichtigten Nebeneffekte können sich aus Staatseingriffen in die soziale Wohlfahrt ergeben?",
+    "erklaerung": "Grundprinzip: Staatseingriffe lösen ein Problem, können aber neue schaffen. Die Sozialpolitik muss ständig zwischen Schutz und Fehlanreizen abwägen – ein Kernproblem der ökonomischen Analyse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Mögliche Probleme: 1) Fehlanreize – grosszügige Sozialleistungen können den Anreiz zur Arbeit mindern (Armutsfalle). 2) Moral Hazard – Versicherte gehen grössere Risiken ein, weil sie abgesichert sind. 3) Hohe Kosten – steigende Sozialausgaben belasten den Staatshaushalt und können zu höheren Steuern führen. 4) Demographischer Druck – alternde Gesellschaft belastet Umlagefinanzierung. 5) Bürokratie – komplexe Systeme verursachen Verwaltungskosten."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r05",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Unterschied zwischen absoluter und relativer Armut?",
+    "erklaerung": "Absolute Armut bedeutet, dass das physische Existenzminimum (Nahrung, Kleidung, Obdach) nicht gesichert ist. Relative Armut wird im Verhältnis zum Wohlstand der Gesellschaft gemessen – z.B. weniger als 60% des Medianeinkommens. In der Schweiz ist primär die relative Armut relevant.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es gibt keinen Unterschied – beide Begriffe meinen dasselbe",
+      "Absolute Armut: Physisches Existenzminimum nicht gesichert. Relative Armut: Einkommen deutlich unter dem gesellschaftlichen Durchschnitt.",
+      "Absolute Armut betrifft nur Entwicklungsländer, relative Armut nur Industrieländer",
+      "Absolute Armut wird in Prozent gemessen, relative Armut in Franken"
+    ],
+    "korrekt": "Absolute Armut: Physisches Existenzminimum nicht gesichert. Relative Armut: Einkommen deutlich unter dem gesellschaftlichen Durchschnitt."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r06",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In der Schweiz gibt es keine Armut, weil das Land eines der höchsten Pro-Kopf-Einkommen der Welt hat.",
+    "erklaerung": "Falsch. Trotz des hohen Wohlstands leben gemäss BFS rund 8% der Bevölkerung in relativer Einkommensarmut. Die hohen Lebenshaltungskosten (Mieten, Krankenkasse) führen dazu, dass auch in der Schweiz Menschen am Existenzminimum leben. Absolute Armut ist selten, relative Armut jedoch real.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r07",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter «Working Poor»?",
+    "erklaerung": "Working Poor sind Erwerbstätige, deren Einkommen trotz Arbeit nicht ausreicht, um über der Armutsgrenze zu leben. Besonders betroffen sind Alleinerziehende, Personen ohne Berufsabschluss und Erwerbstätige in Tieflohnbranchen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Personen, die ausschliesslich Teilzeit arbeiten",
+      "Arbeitslose, die einen Zwischenverdienst haben",
+      "Personen, die freiwillig auf einen hohen Lohn verzichten",
+      "Personen, die trotz Erwerbstätigkeit unter der Armutsgrenze leben"
+    ],
+    "korrekt": "Personen, die trotz Erwerbstätigkeit unter der Armutsgrenze leben"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r08",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die {0} beschreibt eine Situation, in der sich die Aufnahme einer Erwerbstätigkeit finanziell kaum lohnt, weil der Wegfall von {1} den zusätzlichen Verdienst weitgehend aufhebt. Dadurch wird der Anreiz zur Arbeit {2}.",
+    "erklaerung": "Die Armutsfalle (auch Sozialhilfefalle) entsteht, wenn der marginale Steuersatz bei der Aufnahme von Erwerbsarbeit nahe 100% liegt: Jeder verdiente Franken wird durch den Wegfall von Sozialleistungen und höhere Abgaben kompensiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Armutsfalle",
+        "optionen": [
+          "Sozialhilfefalle"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Sozialleistungen",
+        "optionen": [
+          "Transferleistungen",
+          "Sozialhilfe"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "geschwächt",
+        "optionen": [
+          "reduziert",
+          "vermindert",
+          "gesenkt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r09",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Merkmale der richtigen Armutsform zu.",
+    "erklaerung": "Absolute Armut: physisches Überleben bedroht (v.a. Entwicklungsländer). Relative Armut: deutlich unter dem gesellschaftlichen Durchschnitt (v.a. in Industrieländern wie der Schweiz relevant).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Absolute Armut",
+      "Relative Armut"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r10",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Personengruppen sind in der Schweiz überdurchschnittlich von Armut betroffen?",
+    "erklaerung": "Überdurchschnittlich armutsgefährdet sind: Alleinerziehende (fehlende zweite Einkommensquelle, Betreuungskosten), Personen ohne Berufsabschluss (tiefe Löhne, unsichere Stellen), Personen mit gesundheitlichen Einschränkungen (eingeschränkte Erwerbsfähigkeit). Hochschulabsolventen mit Berufserfahrung gehören zur am wenigsten betroffenen Gruppe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Alleinerziehende",
+      "Personen ohne Berufsabschluss",
+      "Hochschulabsolventen mit Berufserfahrung",
+      "Personen mit gesundheitlichen Einschränkungen"
+    ],
+    "korrekt": [
+      "Alleinerziehende",
+      "Personen ohne Berufsabschluss",
+      "Personen mit gesundheitlichen Einschränkungen"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r11",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Sozialhilfe in der Schweiz ist eine Sozialversicherung, die durch Beiträge der Versicherten finanziert wird.",
+    "erklaerung": "Falsch. Die Sozialhilfe ist keine Sozialversicherung, sondern eine bedarfsabhängige Leistung, die aus allgemeinen Steuermitteln finanziert wird. Sie bildet das «letzte Netz» der sozialen Sicherung und greift, wenn alle anderen Einkommensquellen (Erwerbseinkommen, Versicherungsleistungen, Vermögen) ausgeschöpft sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r12",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Sozialhilfe in der Schweiz wird manchmal als «zu grosszügig» und manchmal als «unzureichend» kritisiert. Erläutern Sie beide Standpunkte und nehmen Sie begründet Stellung.",
+    "erklaerung": "Zentraler Zielkonflikt der Sozialpolitik: Schutz vs. Fehlanreize. Die Herausforderung besteht darin, ein Sicherungsnetz zu bieten, das zugleich die Eigeninitiative fördert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Standpunkt «zu grosszügig»: Die Sozialhilfe schaffe Fehlanreize (Armutsfalle), da sich die Aufnahme einer Erwerbstätigkeit finanziell kaum lohne. Zudem belaste sie die Gemeindefinanzen und fördere eine Abhängigkeitskultur. Standpunkt «unzureichend»: Der Grundbedarf sei zu knapp bemessen, um am gesellschaftlichen Leben teilhaben zu können (relative Armut). Die Sozialhilfe sei mit Stigma verbunden, sodass viele Berechtigte sie nicht beanspruchen. Eigene Stellungnahme (z.B.): Beide Argumente haben einen Kern. Eine gute Sozialhilfe muss die Existenz sichern und gleichzeitig die Anreize zur Arbeitsaufnahme erhalten – z.B. durch Einkommensfreibeträge oder begleitete Wiedereingliederung."
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r13",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter dem sozialen Existenzminimum?",
+    "erklaerung": "Das soziale Existenzminimum geht über das physische Überleben hinaus: Es soll eine minimale Teilhabe am gesellschaftlichen Leben ermöglichen (z.B. Mobilität, Kommunikation, Bildung). In der Schweiz wird es von der SKOS (Schweizerische Konferenz für Sozialhilfe) definiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Mindesthöhe der AHV-Rente",
+      "Den durchschnittlichen Lohn in der Schweiz",
+      "Das Einkommen, das neben dem physischen Überleben auch die Teilhabe am gesellschaftlichen Leben ermöglicht",
+      "Das Einkommen, das nötig ist, um gerade nicht zu verhungern"
+    ],
+    "korrekt": "Das Einkommen, das neben dem physischen Überleben auch die Teilhabe am gesellschaftlichen Leben ermöglicht"
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-r14",
+    "fach": "VWL",
+    "thema": "Armut & Armutsbekämpfung",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche der folgenden Aussagen zum Zusammenhang zwischen Arbeitslosigkeit und Armut sind korrekt?",
+    "erklaerung": "Langzeitarbeitslosigkeit ist ein zentraler Risikofaktor für Armut: Nach der Aussteuerung (Ende der ALV-Leistungen) sinkt das Einkommen drastisch. Arbeitslosigkeit belastet zudem psychisch und sozial. Die ALV schützt nicht unbegrenzt – die Taggelder sind zeitlich befristet (max. 520 Taggelder für über 55-Jährige).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Langzeitarbeitslosigkeit erhöht das Armutsrisiko massiv, da die Versicherungsleistungen zeitlich begrenzt sind",
+      "Arbeitslosigkeit betrifft nicht nur das Einkommen, sondern auch die soziale Integration und das Selbstwertgefühl",
+      "In der Schweiz schützt die ALV vollständig und zeitlich unbegrenzt vor Armut",
+      "Der Übergang von Arbeitslosigkeit in Armut erfolgt oft schleichend über Aussteuerung und Sozialhilfe"
+    ],
+    "korrekt": [
+      "Langzeitarbeitslosigkeit erhöht das Armutsrisiko massiv, da die Versicherungsleistungen zeitlich begrenzt sind",
+      "Arbeitslosigkeit betrifft nicht nur das Einkommen, sondern auch die soziale Integration und das Selbstwertgefühl",
+      "Der Übergang von Arbeitslosigkeit in Armut erfolgt oft schleichend über Aussteuerung und Sozialhilfe"
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Bekämpfung der Arbeitslosigkeit",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Schritte der Arbeitslosenversicherung (ALV) in der Schweiz in die korrekte zeitliche Reihenfolge.",
+    "erklaerung": "Die ALV folgt einem klaren Ablauf: Zuerst meldet man sich beim RAV an, dann wird ein individueller Plan erstellt. Während des Bezugs muss man Bewerbungsbemühungen nachweisen. Die Taggelder sind zeitlich begrenzt – danach folgt die Aussteuerung, und die Person fällt ggf. in die Sozialhilfe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Ursachen von Arbeitslosigkeit nach ihrer typischen Dauer – von der kürzesten zur längsten.",
+    "erklaerung": "Friktionelle AL dauert typischerweise Tage bis wenige Wochen (Stellenwechsel). Saisonale AL dauert einige Monate (z.B. Winter). Konjunkturelle AL dauert so lange wie die Rezession (Monate bis wenige Jahre). Strukturelle AL ist oft langfristig, weil sie Umschulung oder Standortwechsel erfordert und ganze Branchen betreffen kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Messung & Statistik",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Personengruppen danach, ob sie in der Schweizer Arbeitslosenstatistik (SECO) erfasst werden – von «sicher erfasst» bis «nicht erfasst».",
+    "erklaerung": "Das SECO zählt nur beim RAV registrierte Arbeitslose. Personen in Beschäftigungsprogrammen gelten oft nicht als arbeitslos (je nach Programm). Ausgesteuerte und entmutigte Personen tauchen in der offiziellen Statistik gar nicht auf – sie gehören zur sogenannten «versteckten Arbeitslosigkeit». Die ILO-Statistik (BFS/SAKE) erfasst einen breiteren Kreis.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-hotspot01",
+    "fach": "VWL",
+    "thema": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+    "typ": "hotspot",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Klicke auf den Punkt der Beveridge-Kurve, der eine Rezession mit hoher Arbeitslosigkeit und wenigen offenen Stellen zeigt.",
+    "erklaerung": "In einer Rezession bewegt sich die Wirtschaft entlang der Beveridge-Kurve nach rechts unten: Die Arbeitslosigkeit steigt, während gleichzeitig weniger offene Stellen angeboten werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/arbeitslosigkeit_beveridge_hotspot.svg",
+      "alt": "Beveridge-Kurve mit vier markierten Punkten (A–D)"
+    },
+    "hotspots": [
+      {
+        "x": 25,
+        "y": 30,
+        "r": 8,
+        "label": "A: Boom (tiefe AL, viele Stellen)"
+      },
+      {
+        "x": 69.3,
+        "y": 75,
+        "r": 8,
+        "label": "B: Rezession (hohe AL, wenig Stellen)"
+      },
+      {
+        "x": 46.1,
+        "y": 52.6,
+        "r": 8,
+        "label": "C: Strukturelle Arbeitslosigkeit"
+      },
+      {
+        "x": 69.3,
+        "y": 30.5,
+        "r": 8,
+        "label": "D: Ausserhalb der Kurve"
+      }
+    ],
+    "korrekt": [
+      1
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-beschriftung01",
+    "fach": "VWL",
+    "thema": "Der Arbeitsmarkt",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die sechs markierten Elemente im Arbeitsmarktdiagramm.",
+    "erklaerung": "Der Arbeitsmarkt im Gleichgewicht: Arbeitsangebot (Ls, steigend) trifft Arbeitsnachfrage (Ld, fallend). Liegt der Lohn über dem Gleichgewicht (z.B. durch Mindestlohn), entsteht Arbeitslosigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/arbeitslosigkeit_arbeitsmarkt_beschriftung.svg",
+      "alt": "Arbeitsmarkt-Diagramm mit sechs nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Arbeitsangebot (Ls)",
+        "x": 81,
+        "y": 31
+      },
+      {
+        "id": "l2",
+        "text": "Arbeitsnachfrage (Ld)",
+        "x": 81,
+        "y": 80
+      },
+      {
+        "id": "l3",
+        "text": "Gleichgewichtslohn",
+        "x": 12,
+        "y": 53
+      },
+      {
+        "id": "l4",
+        "text": "Mindestlohn (Lohnrigidität)",
+        "x": 12,
+        "y": 41
+      },
+      {
+        "id": "l5",
+        "text": "Arbeitslosigkeit",
+        "x": 51,
+        "y": 42
+      },
+      {
+        "id": "l6",
+        "text": "Gleichgewichtsmenge",
+        "x": 48,
+        "y": 87
+      }
+    ]
+  },
+  {
+    "id": "vwl_arbeitslosigkeit-dragdrop01",
+    "fach": "VWL",
+    "thema": "Typen von Arbeitslosigkeit",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Merkmale dem richtigen Arbeitslosigkeitstyp zu.",
+    "erklaerung": "Friktionelle AL: Normal, kurzfristig (Stellenwechsel). Strukturelle AL: Mismatch (Qualifikation, Region, Technologie). Konjunkturelle AL: Durch Rezession verursacht, kann durch Konjunkturpolitik bekämpft werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/arbeitslosigkeit/arbeitslosigkeit_typen_dragdrop.svg",
+      "alt": "Drei Spalten: Friktionelle, Strukturelle, Konjunkturelle Arbeitslosigkeit"
+    },
+    "zones": [
+      {
+        "id": "friktionell",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "strukturell",
+        "x": 34,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "konjunkturell",
+        "x": 65.5,
+        "y": 14,
+        "w": 32,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Stellenwechsel und Suchphase",
+        "zone": "friktionell"
+      },
+      {
+        "id": "m2",
+        "text": "Freiwillig und kurzfristig",
+        "zone": "friktionell"
+      },
+      {
+        "id": "m3",
+        "text": "Auch in Boomphasen vorhanden",
+        "zone": "friktionell"
+      },
+      {
+        "id": "m4",
+        "text": "Mismatch von Qualifikationen",
+        "zone": "strukturell"
+      },
+      {
+        "id": "m5",
+        "text": "Regionale Disparitäten",
+        "zone": "strukturell"
+      },
+      {
+        "id": "m6",
+        "text": "Technologischer Wandel",
+        "zone": "strukturell"
+      },
+      {
+        "id": "m7",
+        "text": "Nachfragerückgang in der Rezession",
+        "zone": "konjunkturell"
+      },
+      {
+        "id": "m8",
+        "text": "Betrifft viele Branchen gleichzeitig",
+        "zone": "konjunkturell"
+      },
+      {
+        "id": "m9",
+        "text": "Durch expansive Fiskalpolitik bekämpfbar",
+        "zone": "konjunkturell"
+      }
+    ]
+  }
+]

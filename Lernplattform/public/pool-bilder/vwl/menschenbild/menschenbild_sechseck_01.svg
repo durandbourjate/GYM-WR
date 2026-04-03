@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" font-family="'DM Sans',system-ui,sans-serif">
+  <style>
+    .label{font-size:13px;font-weight:600;fill:#1e293b;text-anchor:middle}
+    .sub{font-size:10.5px;fill:#64748b;text-anchor:middle}
+    .node{fill:#fff;stroke:#f89907;stroke-width:2}
+    .line{stroke:#e2e8f0;stroke-width:1.5;stroke-dasharray:6,4}
+    .title{font-size:16px;font-weight:700;fill:#1e293b;text-anchor:middle}
+    @media(prefers-color-scheme:dark){
+      .label{fill:#e2e8f0}.sub{fill:#94a3b8}.node{fill:#1a1d27;stroke:#f89907}
+      .line{stroke:#2d3348}.title{fill:#e2e8f0}
+    }
+  </style>
+  <!-- Titel -->
+  <text x="250" y="28" class="title">Magisches Sechseck der Wirtschaftspolitik</text>
+  <!-- Verbindungslinien (alle mit allen) -->
+  <line x1="250" y1="70" x2="415" y2="165" class="line"/>
+  <line x1="250" y1="70" x2="415" y2="295" class="line"/>
+  <line x1="250" y1="70" x2="250" y2="390" class="line"/>
+  <line x1="250" y1="70" x2="85" y2="295" class="line"/>
+  <line x1="250" y1="70" x2="85" y2="165" class="line"/>
+  <line x1="415" y1="165" x2="415" y2="295" class="line"/>
+  <line x1="415" y1="165" x2="250" y2="390" class="line"/>
+  <line x1="415" y1="165" x2="85" y2="295" class="line"/>
+  <line x1="415" y1="165" x2="85" y2="165" class="line"/>
+  <line x1="415" y1="295" x2="250" y2="390" class="line"/>
+  <line x1="415" y1="295" x2="85" y2="295" class="line"/>
+  <line x1="415" y1="295" x2="85" y2="165" class="line"/>
+  <line x1="250" y1="390" x2="85" y2="295" class="line"/>
+  <line x1="250" y1="390" x2="85" y2="165" class="line"/>
+  <line x1="85" y1="295" x2="85" y2="165" class="line"/>
+  <!-- Knoten -->
+  <rect x="180" y="50" width="140" height="44" rx="10" class="node"/>
+  <text x="250" y="68" class="label">?</text>
+  <text x="250" y="83" class="sub">tiefe Arbeitslosigkeit</text>
+  <rect x="345" y="143" width="140" height="44" rx="10" class="node"/>
+  <text x="415" y="161" class="label">?</text>
+  <text x="415" y="176" class="sub">tiefe Inflation</text>
+  <rect x="345" y="273" width="140" height="44" rx="10" class="node"/>
+  <text x="415" y="291" class="label">?</text>
+  <text x="415" y="306" class="sub">steigendes BIP</text>
+  <rect x="180" y="368" width="140" height="44" rx="10" class="node"/>
+  <text x="250" y="386" class="label">?</text>
+  <text x="250" y="401" class="sub">Nachhaltigkeit</text>
+  <rect x="15" y="273" width="140" height="44" rx="10" class="node"/>
+  <text x="85" y="291" class="label">?</text>
+  <text x="85" y="306" class="sub">gerechte Verteilung</text>
+  <rect x="15" y="143" width="140" height="44" rx="10" class="node"/>
+  <text x="85" y="161" class="label">?</text>
+  <text x="85" y="176" class="sub">ausgeglichene Bilanz</text>
+</svg>

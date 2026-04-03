@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <rect width="800" height="420" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Geldmarkt — Klicke auf das Gleichgewicht</text>
+
+  <!-- Achsen -->
+  <line x1="100" y1="360" x2="720" y2="360" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="100" y1="60" x2="100" y2="360" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="720,355 720,365 735,360" fill="#94a3b8"/>
+  <polygon points="95,60 105,60 100,45" fill="#94a3b8"/>
+
+  <!-- Achsenbeschriftungen -->
+  <text x="727" y="363" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b">M</text>
+  <text x="40" y="215" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b" transform="rotate(-90,40,215)">Zinssatz (i)</text>
+
+  <!-- Geldangebot Ms: vertikale Linie bei x=400 -->
+  <line x1="400" y1="70" x2="400" y2="355" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="406" y="68" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#16a34a">Ms</text>
+  <text x="406" y="84" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#16a34a">(ZB fixiert)</text>
+
+  <!-- Geldnachfrage Md: fallende Kurve -->
+  <!-- Punkte: (130,100) → (400,215) → (680,340) -->
+  <path d="M130,100 C200,120 310,175 400,215 C490,255 600,305 680,340"
+        stroke="#2563eb" stroke-width="2.5" fill="none"/>
+  <text x="685" y="343" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#2563eb">Md</text>
+
+  <!-- Gleichgewichts-Hilfslinien (gestrichelt) -->
+  <line x1="100" y1="215" x2="400" y2="215" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="88" y="219" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">i*</text>
+  <line x1="400" y1="215" x2="400" y2="360" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="400" y="374" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">M*</text>
+
+  <!-- Marker A: Gleichgewicht (Schnittpunkt) x=400, y=215 -->
+  <circle cx="400" cy="215" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="400" y="220" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">A</text>
+
+  <!-- Marker B: auf Ms oberhalb GG, 20px nach unten verschoben weg vom (ZB fixiert)-Label -->
+  <circle cx="400" cy="140" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="400" y="145" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">B</text>
+
+  <!-- Marker C: auf Md links x=240, y=155 -->
+  <circle cx="240" cy="155" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="240" y="160" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">C</text>
+
+  <!-- Marker D: rechts unten x=560, y=300 -->
+  <circle cx="560" cy="300" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+  <text x="560" y="305" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">D</text>
+
+  <!-- Legende -->
+  <line x1="110" y1="390" x2="140" y2="390" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="147" y="394" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Geldangebot (Ms, fix)</text>
+  <line x1="310" y1="390" x2="340" y2="390" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="347" y="394" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Geldnachfrage (Md)</text>
+</svg>

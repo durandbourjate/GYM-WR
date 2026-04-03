@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="800" height="420" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1e293b">Systematik der Sachenrechte (ZGB)</text>
+
+  <!-- Top box: Sachenrechte -->
+  <rect x="290" y="55" width="220" height="42" rx="8" fill="#73ab2c" stroke="#5a8a1e" stroke-width="1.5"/>
+  <text x="400" y="81" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Sachenrechte</text>
+
+  <!-- Lines from top to 3 children -->
+  <!-- Left: Eigentum at x=130, Center: Beschr. dingl. Rechte at x=400, Right: Besitz at x=670 -->
+  <line x1="400" y1="97" x2="400" y2="115" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="130" y1="115" x2="670" y2="115" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="130" y1="115" x2="130" y2="135" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="400" y1="115" x2="400" y2="135" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="670" y1="115" x2="670" y2="135" stroke="#64748b" stroke-width="1.5"/>
+
+  <!-- Box: Eigentum -->
+  <rect x="30" y="135" width="200" height="42" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="130" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Eigentum</text>
+  <text x="130" y="170" text-anchor="middle" font-size="10" fill="#dbeafe">Art. 641 ff. ZGB</text>
+
+  <!-- Box: Beschränkte dingliche Rechte -->
+  <rect x="270" y="135" width="260" height="42" rx="8" fill="#7c3aed" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="400" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Beschränkte dingliche Rechte</text>
+  <text x="400" y="170" text-anchor="middle" font-size="10" fill="#ede9fe">Art. 730 ff. ZGB</text>
+
+  <!-- Box: Besitz -->
+  <rect x="570" y="135" width="200" height="42" rx="8" fill="#dc2626" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="670" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Besitz</text>
+  <text x="670" y="170" text-anchor="middle" font-size="10" fill="#fecaca">Art. 919 ff. ZGB</text>
+
+  <!-- === Eigentum children === -->
+  <line x1="130" y1="177" x2="130" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="50" y1="200" x2="210" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="50" y1="200" x2="50" y2="215" stroke="#64748b" stroke-width="1"/>
+  <line x1="130" y1="200" x2="130" y2="215" stroke="#64748b" stroke-width="1"/>
+  <line x1="210" y1="200" x2="210" y2="215" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="10" y="215" width="80" height="55" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1"/>
+  <text x="50" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Allein-</text>
+  <text x="50" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">eigentum</text>
+  <text x="50" y="264" text-anchor="middle" font-size="9" fill="#3b82f6">Art. 641</text>
+
+  <rect x="95" y="215" width="70" height="55" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1"/>
+  <text x="130" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Mit-</text>
+  <text x="130" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">eigentum</text>
+  <text x="130" y="264" text-anchor="middle" font-size="9" fill="#3b82f6">Art. 646 ff.</text>
+
+  <rect x="170" y="215" width="80" height="55" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="1"/>
+  <text x="210" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Gesamt-</text>
+  <text x="210" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">eigentum</text>
+  <text x="210" y="264" text-anchor="middle" font-size="9" fill="#3b82f6">Art. 652 ff.</text>
+
+  <!-- Stockwerkeigentum as special form of Miteigentum -->
+  <line x1="130" y1="270" x2="130" y2="290" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="80" y="290" width="100" height="40" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="130" y="308" text-anchor="middle" font-size="9" font-weight="600" fill="#1e40af">Stockwerk-</text>
+  <text x="130" y="320" text-anchor="middle" font-size="9" font-weight="600" fill="#1e40af">eigentum</text>
+  <text x="130" y="337" text-anchor="middle" font-size="8" fill="#3b82f6">(qualif. ME)</text>
+
+  <!-- === Beschr. dingl. Rechte children === -->
+  <line x1="400" y1="177" x2="400" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="305" y1="200" x2="495" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="305" y1="200" x2="305" y2="215" stroke="#64748b" stroke-width="1"/>
+  <line x1="400" y1="200" x2="400" y2="215" stroke="#64748b" stroke-width="1"/>
+  <line x1="495" y1="200" x2="495" y2="215" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="260" y="215" width="90" height="55" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="305" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">Dienst-</text>
+  <text x="305" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">barkeiten</text>
+  <text x="305" y="264" text-anchor="middle" font-size="9" fill="#7c3aed">Art. 730 ff.</text>
+
+  <rect x="355" y="215" width="90" height="55" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="400" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">Grund-</text>
+  <text x="400" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">lasten</text>
+  <text x="400" y="264" text-anchor="middle" font-size="9" fill="#7c3aed">Art. 782 ff.</text>
+
+  <rect x="450" y="215" width="90" height="55" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="495" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">Pfand-</text>
+  <text x="495" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#5b21b6">rechte</text>
+  <text x="495" y="264" text-anchor="middle" font-size="9" fill="#7c3aed">Art. 793 ff.</text>
+
+  <!-- Dienstbarkeiten sub-items -->
+  <line x1="305" y1="270" x2="305" y2="290" stroke="#64748b" stroke-width="1"/>
+  <line x1="265" y1="290" x2="345" y2="290" stroke="#64748b" stroke-width="1"/>
+  <line x1="265" y1="290" x2="265" y2="300" stroke="#64748b" stroke-width="1"/>
+  <line x1="345" y1="290" x2="345" y2="300" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="235" y="300" width="60" height="38" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="265" y="316" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">Grund-</text>
+  <text x="265" y="327" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">dienst.</text>
+
+  <rect x="315" y="300" width="60" height="38" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="345" y="316" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">Persönl.</text>
+  <text x="345" y="327" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">Dienst.</text>
+
+  <!-- Pfandrechte sub-items -->
+  <line x1="495" y1="270" x2="495" y2="290" stroke="#64748b" stroke-width="1"/>
+  <line x1="455" y1="290" x2="535" y2="290" stroke="#64748b" stroke-width="1"/>
+  <line x1="455" y1="290" x2="455" y2="300" stroke="#64748b" stroke-width="1"/>
+  <line x1="535" y1="290" x2="535" y2="300" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="420" y="300" width="70" height="38" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="455" y="316" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">Fahrnis-</text>
+  <text x="455" y="327" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">pfand</text>
+
+  <rect x="500" y="300" width="70" height="38" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="535" y="316" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">Grund-</text>
+  <text x="535" y="327" text-anchor="middle" font-size="8" font-weight="600" fill="#5b21b6">pfand</text>
+
+  <!-- === Besitz children === -->
+  <line x1="670" y1="177" x2="670" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="610" y1="200" x2="730" y2="200" stroke="#64748b" stroke-width="1"/>
+  <line x1="610" y1="200" x2="610" y2="215" stroke="#64748b" stroke-width="1"/>
+  <line x1="730" y1="200" x2="730" y2="215" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="565" y="215" width="90" height="55" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+  <text x="610" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">Selbst-</text>
+  <text x="610" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">ständiger</text>
+  <text x="610" y="264" text-anchor="middle" font-size="9" fill="#dc2626">(Eigentümer)</text>
+
+  <rect x="685" y="215" width="90" height="55" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+  <text x="730" y="237" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">Unselbst-</text>
+  <text x="730" y="250" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">ständiger</text>
+  <text x="730" y="264" text-anchor="middle" font-size="9" fill="#dc2626">(Mieter, …)</text>
+
+  <!-- Legend -->
+  <text x="400" y="400" text-anchor="middle" font-size="10" fill="#94a3b8">Welche Sachenrechte kennt das ZGB? Ordne die Begriffe in die Systematik ein.</text>
+</svg>

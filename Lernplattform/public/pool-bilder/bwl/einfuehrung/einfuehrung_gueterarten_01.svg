@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund für Dark Mode -->
+  <rect width="700" height="400" fill="#ffffff"/>
+  
+  <title>Baumdiagramm der Wirtschaftsgüter mit leeren Feldern zum Zuordnen</title>
+  
+  <!-- Titel -->
+  <text x="350" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Wirtschaftsgüter – Übersicht</text>
+  
+  <!-- Ebene 0: Wirtschaftsgüter -->
+  <rect x="250" y="50" width="200" height="36" rx="6" fill="#01a9f4" opacity="0.15" stroke="#01a9f4" stroke-width="2"/>
+  <text x="350" y="73" text-anchor="middle" font-size="13" font-weight="600" fill="#0284c7">Wirtschaftsgüter</text>
+  
+  <!-- Verbindungslinien Ebene 0 → 1 -->
+  <line x1="290" y1="86" x2="150" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="410" y1="86" x2="550" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+  
+  <!-- Ebene 1 links: Immaterielle Güter -->
+  <rect x="50" y="120" width="200" height="36" rx="6" fill="#7c3aed" opacity="0.12" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="150" y="143" text-anchor="middle" font-size="12" font-weight="600" fill="#7c3aed">Immaterielle Güter</text>
+  
+  <!-- Ebene 1 rechts: Materielle Güter -->
+  <rect x="450" y="120" width="200" height="36" rx="6" fill="#2563eb" opacity="0.12" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="550" y="143" text-anchor="middle" font-size="12" font-weight="600" fill="#2563eb">Materielle Güter (Sachgüter)</text>
+  
+  <!-- Von Immaterielle → Dienstleistungen -->
+  <line x1="150" y1="156" x2="150" y2="195" stroke="#94a3b8" stroke-width="1.5"/>
+  <rect x="50" y="195" width="200" height="32" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="150" y="216" text-anchor="middle" font-size="12" fill="#64748b">? / Rechte</text>
+  
+  <!-- Von Materielle → Konsumgüter + Investitionsgüter -->
+  <line x1="500" y1="156" x2="430" y2="195" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="600" y1="156" x2="630" y2="195" stroke="#94a3b8" stroke-width="1.5"/>
+  
+  <!-- Konsumgüter -->
+  <rect x="340" y="195" width="170" height="32" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="425" y="216" text-anchor="middle" font-size="12" fill="#64748b">?</text>
+  
+  <!-- Investitionsgüter -->
+  <rect x="550" y="195" width="140" height="32" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="620" y="216" text-anchor="middle" font-size="12" fill="#64748b">?</text>
+  
+  <!-- Unter Konsumgüter: Gebrauchs- und Verbrauchsgüter -->
+  <line x1="390" y1="227" x2="370" y2="265" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="460" y1="227" x2="480" y2="265" stroke="#94a3b8" stroke-width="1"/>
+  
+  <rect x="290" y="265" width="140" height="28" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="360" y="284" text-anchor="middle" font-size="11" fill="#64748b">?</text>
+  <text x="360" y="305" text-anchor="middle" font-size="9" fill="#94a3b8">📱 z.B. Fernseher, Bücher</text>
+  
+  <rect x="450" y="265" width="140" height="28" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="520" y="284" text-anchor="middle" font-size="11" fill="#64748b">?</text>
+  <text x="520" y="305" text-anchor="middle" font-size="9" fill="#94a3b8">🍞 z.B. Lebensmittel</text>
+  
+  <!-- Unter Investitionsgüter: Repetierfaktoren und Potenzialfaktoren -->
+  <line x1="600" y1="227" x2="580" y2="265" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="640" y1="227" x2="660" y2="265" stroke="#94a3b8" stroke-width="1"/>
+  
+  <rect x="510" y="265" width="120" height="28" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="570" y="284" text-anchor="middle" font-size="11" fill="#64748b">?</text>
+  
+  <rect x="640" y="265" width="55" height="28" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="668" y="284" text-anchor="middle" font-size="11" fill="#64748b">?</text>
+  
+  <!-- Unten: Zusammenführung zu Marktleistungen -->
+  <line x1="150" y1="227" x2="300" y2="350" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="425" y1="293" x2="400" y2="350" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  
+  <rect x="260" y="350" width="180" height="32" rx="6" fill="#16a34a" opacity="0.12" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="350" y="371" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">Marktleistungen</text>
+  
+  <!-- Legende -->
+  <text x="15" y="390" font-size="9" fill="#94a3b8">Gestrichelte Felder = zu ergänzende Begriffe</text>
+</svg>

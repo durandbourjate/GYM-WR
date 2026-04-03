@@ -1,0 +1,1846 @@
+[
+  {
+    "id": "vwl_bip-d01",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was misst das Bruttoinlandprodukt (BIP)?",
+    "erklaerung": "Das BIP entspricht dem Marktwert aller Endprodukte (Waren und Dienstleistungen), die in einem Land innerhalb eines Jahres hergestellt werden. Vorleistungen werden abgezogen, um Doppelzählungen zu vermeiden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Wert aller Exporte eines Landes.",
+      "Den Marktwert aller in einem Land während eines Jahres hergestellten Endprodukte.",
+      "Die Summe aller in einem Land produzierten Güter inklusive Vorleistungen.",
+      "Das Gesamtvermögen aller Einwohner eines Landes."
+    ],
+    "korrekt": "Den Marktwert aller in einem Land während eines Jahres hergestellten Endprodukte."
+  },
+  {
+    "id": "vwl_bip-d02",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Vorleistungen werden beim BIP abgezogen, um Doppelzählungen zu vermeiden.",
+    "erklaerung": "Korrekt. Das BIP misst nur die Wertschöpfung jeder Produktionsstufe. Würde man den gesamten Produktionswert zählen, wäre das BIP künstlich aufgebläht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-d03",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das BIP misst die {0} einer Volkswirtschaft. Dabei werden nur {1} berücksichtigt, nicht Vorleistungen, um {2} zu vermeiden.",
+    "erklaerung": "BIP = Marktwert aller Endprodukte. Endprodukte sind Güter, die nicht weiterverarbeitet, sondern direkt konsumiert oder investiert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Wertschöpfung",
+        "optionen": [
+          "Wertschoepfung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Endprodukte",
+        "optionen": [
+          "Endgüter"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Doppelzählungen",
+        "optionen": [
+          "Doppelzaehlungen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-d04",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche vier Produktionsfaktoren unterscheidet man in der VWL?",
+    "erklaerung": "Die vier Produktionsfaktoren: Arbeit (körperliche/geistige Tätigkeit), Boden (Rohstoffe, Standort, Energie), Kapital (Sach-/Geldkapital, Maschinen), Wissen (Humankapital, Know-how, Patente).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Arbeit, Boden (natürliche Ressourcen), Kapital und Wissen",
+      "Löhne, Zinsen, Mieten und Gewinne",
+      "Geld, Maschinen, Rohstoffe und Energie",
+      "Konsum, Investitionen, Staat und Exporte"
+    ],
+    "korrekt": "Arbeit, Boden (natürliche Ressourcen), Kapital und Wissen"
+  },
+  {
+    "id": "vwl_bip-d05",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie in eigenen Worten, warum Vorleistungen bei der BIP-Berechnung abgezogen werden. Verwenden Sie ein Beispiel.",
+    "erklaerung": "Das BIP misst die Wertschöpfung, nicht den Umsatz. Im Brot-Beispiel: Bauer (30) + Bäcker (100–30=70) + Händler (120–100=20) = BIP von 120 = Endproduktpreis.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Vorleistungen werden abgezogen, um Doppelzählungen zu vermeiden. Beispiel: Bauer verkauft Mehl für CHF 30 an Bäcker, Bäcker verkauft Brot für CHF 100 an Händler, Händler verkauft es für CHF 120. Ohne Abzug: 30+100+120 = CHF 250. Wertschöpfung aber nur: 30+70+20 = CHF 120."
+  },
+  {
+    "id": "vwl_bip-d06",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Drei Produzenten: Bauer verkauft Weizen für CHF 40 an Müller. Müller verkauft Mehl für CHF 90 an Bäcker. Bäcker verkauft Brot für CHF 150 an Konsumenten. Berechnen Sie:",
+    "erklaerung": "BIP = Endproduktpreis = CHF 150. Wertschöpfung Bauer: 40, Müller: 90–40=50, Bäcker: 150–90=60. Summe: 40+50+60 = 150 = BIP.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "BIP der Volkswirtschaft",
+        "answer": 150,
+        "tolerance": 0,
+        "unit": "CHF"
+      },
+      {
+        "label": "Wertschöpfung des Bäckers",
+        "answer": 60,
+        "tolerance": 0,
+        "unit": "CHF"
+      }
+    ],
+    "korrekt": "150",
+    "toleranz": 0,
+    "einheit": "CHF"
+  },
+  {
+    "id": "vwl_bip-d07",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Wertschöpfung eines Unternehmens berechnet sich als Produktionswert minus Vorleistungen.",
+    "erklaerung": "Richtig. Wertschöpfung = Verkaufspreis – zugekaufte Vorleistungen = der neu geschaffene Wert auf dieser Produktionsstufe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-d08",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Begriffe den korrekten Produktionsfaktoren zu.",
+    "erklaerung": "Arbeit = körperliche/geistige Tätigkeit. Boden = Standort, Rohstoffe. Kapital = Sach- und Geldkapital. Wissen = Humankapital, Patente, Know-how.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Arbeit",
+      "Boden / Natürl. Ressourcen",
+      "Kapital",
+      "Wissen"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-d09",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Unterschied zwischen Wohlstand und Wohlfahrt?",
+    "erklaerung": "Wohlstand = materieller Lebensstandard (BIP pro Kopf). Wohlfahrt = umfassenderes Wohlergehen inkl. Gesundheit, Bildung, Freizeit, Umwelt, soziale Sicherheit. Das BIP misst Wohlstand, aber nicht Wohlfahrt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wohlstand = materielle Güterversorgung (BIP pro Kopf), Wohlfahrt = zusätzlich Gesundheit, Bildung, Umwelt etc.",
+      "Wohlstand berücksichtigt die Umwelt, Wohlfahrt nicht.",
+      "Wohlfahrt misst nur die staatlichen Sozialleistungen.",
+      "Wohlstand und Wohlfahrt sind Synonyme für das BIP."
+    ],
+    "korrekt": "Wohlstand = materielle Güterversorgung (BIP pro Kopf), Wohlfahrt = zusätzlich Gesundheit, Bildung, Umwelt etc."
+  },
+  {
+    "id": "vwl_bip-d10",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Das BIP pro Kopf ist ein geeignetes Mass für die Lebensqualität einer Bevölkerung.",
+    "erklaerung": "Falsch. Das BIP pro Kopf misst den materiellen Wohlstand, nicht die Lebensqualität. Es ignoriert Umweltschäden, Einkommensverteilung, Gesundheit, Bildung und Freizeit. Mehr Autounfälle erhöhen z.B. das BIP, senken aber die Lebensqualität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-d11",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Güter sind Endprodukte (und gehen ins BIP ein)?",
+    "erklaerung": "Endprodukte = Güter, die nicht weiterverarbeitet werden. Das Familienauto (Konsum) und der Bürocomputer (Investition) sind Endprodukte. Stahl und Mehl sind Vorleistungen, weil sie weiterverarbeitet werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein von einer Familie gekauftes Auto",
+      "Stahl, den ein Autohersteller zur Produktion einkauft",
+      "Ein Computer, den eine Firma für das Büro kauft (Investition)",
+      "Mehl, das eine Bäckerei für die Brotproduktion kauft"
+    ],
+    "korrekt": [
+      "Ein von einer Familie gekauftes Auto",
+      "Ein Computer, den eine Firma für das Büro kauft (Investition)"
+    ]
+  },
+  {
+    "id": "vwl_bip-d12",
+    "fach": "VWL",
+    "thema": "Definition & Grundbegriffe",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Möbelhersteller kauft Holz für CHF 500 und Schrauben für CHF 20. Er produziert einen Tisch, den er für CHF 1’200 an einen Händler verkauft. Der Händler verkauft den Tisch für CHF 1’500 an einen Konsumenten. Welche Aussage ist korrekt?",
+    "erklaerung": "BIP = Endproduktpreis = CHF 1’500. Wertschöpfung: Zulieferer = 520, Möbelhersteller = 1’200 – 520 = 680, Händler = 1’500 – 1’200 = 300. Summe: 520 + 680 + 300 = 1’500. Antwort D ist falsch, weil 1’200 der Produktionswert, nicht die Wertschöpfung ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der BIP-Beitrag dieser Wertschöpfungskette beträgt CHF 1’500.",
+      "Der BIP-Beitrag beträgt CHF 3’220 (Summe aller Transaktionen).",
+      "Die Wertschöpfung des Händlers beträgt CHF 1’500.",
+      "Die Wertschöpfung des Möbelherstellers beträgt CHF 1’200."
+    ],
+    "korrekt": "Der BIP-Beitrag dieser Wertschöpfungskette beträgt CHF 1’500."
+  },
+  {
+    "id": "vwl_bip-m01",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Leistung wird im BIP NICHT erfasst?",
+    "erklaerung": "Hausarbeit, Eigenleistungen und DIY werden nicht erfasst, da kein Marktpreis existiert. Wenn eine Familie die Kinderbetreuung in eine Krippe auslagert, steigt das BIP – obwohl die Leistung gleich bleibt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Dienstleistungen eines Coiffeurs",
+      "Die Produktion eines Automobilherstellers",
+      "Hausarbeit und Eigenleistungen (z.B. selber kochen)",
+      "Staatliche Leistungen wie Polizei und Schulen"
+    ],
+    "korrekt": "Hausarbeit und Eigenleistungen (z.B. selber kochen)"
+  },
+  {
+    "id": "vwl_bip-m02",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Jahrhunderthochwasser Milliardenschäden verursacht, sinkt das BIP.",
+    "erklaerung": "Falsch – das BIP steigt sogar! Die Wiederaufbauarbeiten werden als Wertschöpfung erfasst. Die Zerstörung selbst wird nicht als negative Position verbucht. Das zeigt eine wichtige Schwäche des BIP.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-m03",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist die Bewertung staatlicher Leistungen im BIP problematisch?",
+    "erklaerung": "Da Staatsleistungen nicht am Markt verkauft werden, fehlt ein Marktpreis. Sie werden zu ihren Kosten (v.a. Löhne) bewertet. Eine Lohnerhöhung erhöht das BIP, ohne Leistungsverbesserung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Staatliche Leistungen werden zu ihren Kosten bewertet – eine Lohnerhöhung für Beamte erhöht das BIP, ohne dass die Leistung besser wird.",
+      "Staatliche Leistungen werden doppelt gezählt.",
+      "Staatliche Leistungen werden gar nicht erfasst.",
+      "Der Staat produziert keine Güter."
+    ],
+    "korrekt": "Staatliche Leistungen werden zu ihren Kosten bewertet – eine Lohnerhöhung für Beamte erhöht das BIP, ohne dass die Leistung besser wird."
+  },
+  {
+    "id": "vwl_bip-m04",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Seit 2014 werden in der Schweiz auch Schätzungen zu Drogenhandel und Prostitution ins BIP eingerechnet.",
+    "erklaerung": "Richtig. Seit September 2014 werden gemäss einer europäischen Richtlinie illegale Aktivitäten wie Drogenhandel und Prostitution geschätzt und im BIP erfasst (Statistik-Revision).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-m05",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie zu: Wird die Aktivität im BIP erfasst oder nicht?",
+    "erklaerung": "Die VGR erfasst nur monetäre Markttransaktionen. Eigenleistungen und Schwarzarbeit fehlen. Dieselbe Leistung wird erfasst, sobald sie über den Markt abgewickelt wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Im BIP erfasst",
+      "NICHT im BIP erfasst"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-m06",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Nationalrat beschäftigte eine Putzfrau schwarz. Nachdem der Fall publik wurde, stieg die Zahl der offiziellen Anmeldungen von Haushaltshilfen stark. Analysieren Sie die Auswirkung auf das BIP.",
+    "erklaerung": "Schwarzarbeit (geschätzt ca. 7% des BIP in der Schweiz) wird nicht vollständig erfasst. Eine Legalisierung erhöht das gemessene BIP, ohne die tatsächliche Wirtschaftsleistung zu verändern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Das BIP steigt, obwohl sich die tatsächliche Wirtschaftsleistung nicht verändert. Die Putzarbeiten wurden vorher als Schwarzarbeit geleistet und nicht erfasst. Durch die offizielle Anmeldung werden dieselben Leistungen nun registriert – das BIP bildet einen höheren Wert ab, nur weil bisher nicht erfasste Leistungen sichtbar werden."
+  },
+  {
+    "id": "vwl_bip-m07",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Herausforderung stellt die Digitalisierung für die BIP-Messung dar?",
+    "erklaerung": "Kostenlose Online-Dienste (soziale Medien, Wikipedia) generieren Nutzen, erscheinen aber nicht im BIP. Zudem lässt sich die Wertschöpfung oft nicht klar einem Land zuordnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Digitale Güter sind zu günstig.",
+      "Die Digitalisierung hat keinen Einfluss auf das BIP.",
+      "Digitale Werte wie Daten und kostenlose Online-Dienste haben keinen klassischen Marktpreis.",
+      "Digitale Produkte werden doppelt gezählt."
+    ],
+    "korrekt": "Digitale Werte wie Daten und kostenlose Online-Dienste haben keinen klassischen Marktpreis."
+  },
+  {
+    "id": "vwl_bip-m08",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Umweltschäden durch die Produktion werden im BIP als negative Position verbucht.",
+    "erklaerung": "Falsch. Umweltschäden werden nicht abgezogen. Die Beseitigung von Umweltschäden wird sogar als positive Wertschöpfung gezählt. Das BIP erfasst externe Kosten nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-m09",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie: «Das BIP ist trotz aller Schwächen das beste Mass für den Wohlstand.»",
+    "erklaerung": "Diese K5-Frage erfordert eine differenzierte Beurteilung mit Pro und Contra. Das BIP hat klare Stärken (Vergleichbarkeit) und Schwächen (fehlende Erfassung vieler wohlstandsrelevanter Aspekte).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Pro: International standardisiert, objektiv messbar, ermöglicht Vergleiche. Contra: Ignoriert Eigenleistungen, Schwarzarbeit, Umweltschäden, Verteilung, Lebensqualität. Alternative Indikatoren (HDI, Happy Planet Index) versuchen Lücken zu schliessen, sind aber weniger standardisiert. Fazit: Nützlicher, aber unvollständiger Indikator – sollte mit anderen Kennzahlen ergänzt werden."
+  },
+  {
+    "id": "vwl_bip-m10",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die VGR erfasst nur {0} Flüsse. Deshalb fehlen im BIP z.B. {1} und Eigenleistungen. Zudem werden {2} nicht als Kosten abgezogen.",
+    "erklaerung": "Drei Hauptkritikpunkte: (1) Nicht erfasste Leistungen (Eigenarbeit, Schwarzarbeit), (2) Nicht erfasste Schäden (Umwelt), (3) Problematische Bewertung (Staatsleistungen zu Kosten).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "monetäre",
+        "optionen": [
+          "monetaere",
+          "geldmässige"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Schwarzarbeit",
+        "optionen": [
+          "Schattenwirtschaft"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Umweltschäden",
+        "optionen": [
+          "Umweltschaeden",
+          "externe Kosten"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-m11",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Faktoren werden vom BIP NICHT oder nur unzureichend erfasst?",
+    "erklaerung": "Ehrenamtliche Arbeit hat keinen Marktpreis (fehlt). Umweltschäden werden nicht als Kosten erfasst (Schwäche). Kostenlose digitale Dienste generieren Nutzen ohne Marktpreis (fehlt). Nur die Medikamentenproduktion (B) wird über den Marktpreis korrekt erfasst.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ehrenamtliche Arbeit (z.B. Freiwilligenarbeit im Sportverein)",
+      "Die Produktion von Medikamenten durch Novartis",
+      "Umweltzerstörung durch eine Chemiefabrik",
+      "Der Nutzen kostenloser Apps wie Wikipedia oder Google Maps"
+    ],
+    "korrekt": [
+      "Ehrenamtliche Arbeit (z.B. Freiwilligenarbeit im Sportverein)",
+      "Umweltzerstörung durch eine Chemiefabrik",
+      "Der Nutzen kostenloser Apps wie Wikipedia oder Google Maps"
+    ]
+  },
+  {
+    "id": "vwl_bip-m12",
+    "fach": "VWL",
+    "thema": "Was das BIP (nicht) misst",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Human Development Index (HDI) ergänzt das BIP um welche Dimensionen?",
+    "erklaerung": "Der HDI (UNDP) kombiniert drei Dimensionen: (1) Gesundheit (Lebenserwartung), (2) Bildung (erwartete und durchschnittliche Schuljahre), (3) Lebensstandard (BNE pro Kopf in PPP). Er ist ein häufig verwendetes Mass, das über das reine BIP hinausgeht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Gesundheit (Lebenserwartung) und Bildung (Schuljahre)",
+      "Umweltqualität und CO₂-Emissionen",
+      "Militärausgaben und Sicherheit",
+      "Exportquote und Handelsbilanz"
+    ],
+    "korrekt": "Gesundheit (Lebenserwartung) und Bildung (Schuljahre)"
+  },
+  {
+    "id": "vwl_bip-s01",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das BIP kann auf drei Arten berechnet werden. Welche?",
+    "erklaerung": "(1) Produktionsansatz = Summe aller Wertschöpfungen, (2) Einkommensansatz = Summe aller Einkommen, (3) Verwendungsansatz = C + I + G + NX. Alle drei ergeben denselben Wert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Konsumansatz, Sparansatz und Investitionsansatz",
+      "Brutto-, Netto- und Realansatz",
+      "Exportansatz, Importansatz und Binnenmarktansatz",
+      "Produktionsansatz, Einkommensansatz und Verwendungsansatz"
+    ],
+    "korrekt": "Produktionsansatz, Einkommensansatz und Verwendungsansatz"
+  },
+  {
+    "id": "vwl_bip-s02",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Beim {0} wird das BIP als Summe aller Wertschöpfungen berechnet. Beim {1} zählt man alle Einkommen zusammen. Beim {2} betrachtet man, wofür die Güter verwendet werden.",
+    "erklaerung": "Die drei Ansätze sind gleichwertige Methoden. Produktionsansatz: Wertschöpfung aller Unternehmen. Einkommensansatz: Alle Faktoreinkommen. Verwendungsansatz: C + I + G + NX.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Produktionsansatz",
+        "optionen": [
+          "Produktions-Ansatz"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Einkommensansatz",
+        "optionen": [
+          "Einkommens-Ansatz"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Verwendungsansatz",
+        "optionen": [
+          "Verwendungs-Ansatz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-s03",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "BIP = C + I + G + (X – M). Was bedeuten die Variablen?",
+    "erklaerung": "BIP nach Verwendungsansatz: C = privater Konsum (Haushalte), I = Bruttoinvestitionen, G = Staatskonsum (Government), X–M = Nettoexporte. In der Schweiz macht der private Konsum den grössten Anteil aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "C = privater Konsum, I = Investitionen, G = Staatsausgaben, X = Exporte, M = Importe",
+      "C = Kosten, I = Investitionen, G = Grundstücke, X = Extra, M = Mehrwert",
+      "C = Konsum, I = Zinsen, G = Geld, X = Exporte, M = Maschinen",
+      "C = Kapital, I = Importe, G = Gewinne, X = Exporte, M = Mieten"
+    ],
+    "korrekt": "C = privater Konsum, I = Investitionen, G = Staatsausgaben, X = Exporte, M = Importe"
+  },
+  {
+    "id": "vwl_bip-s04",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele dem korrekten BIP-Berechnungsansatz zu.",
+    "erklaerung": "Produktionsansatz: Wertschöpfung. Einkommensansatz: Alle Einkommen. Verwendungsansatz: Wofür das BIP ausgegeben wird (C+I+G+NX). Uhrenexport = Nettoexport, Lehrerlohn = Einkommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Produktionsansatz",
+      "Einkommensansatz",
+      "Verwendungsansatz"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-s05",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Produktionsansatz und der Einkommensansatz müssen immer denselben Wert ergeben.",
+    "erklaerung": "Richtig. Die drei Ansätze betrachten denselben Sachverhalt aus drei Perspektiven: Was produziert wird, fliesst als Einkommen zu und wird verwendet. Alle drei = gleiches BIP.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-s06",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Berechnen Sie das BIP (Verwendungsansatz): Privater Konsum = 400 Mrd., Investitionen = 150 Mrd., Staatsausgaben = 100 Mrd., Exporte = 250 Mrd., Importe = 200 Mrd.",
+    "erklaerung": "NX = 250–200 = 50 Mrd. BIP = 400+150+100+50 = 700 Mrd.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Nettoexporte (X – M)",
+        "answer": 50,
+        "tolerance": 0,
+        "unit": "Mrd."
+      },
+      {
+        "label": "BIP (C + I + G + NX)",
+        "answer": 700,
+        "tolerance": 0,
+        "unit": "Mrd."
+      }
+    ],
+    "korrekt": "50",
+    "toleranz": 0,
+    "einheit": "Mrd."
+  },
+  {
+    "id": "vwl_bip-s07",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie, warum die drei Berechnungsarten des BIP zum selben Ergebnis führen müssen.",
+    "erklaerung": "Der Kreislaufgedanke: Was produziert wird = was als Einkommen verteilt wird = was verwendet wird. Drei Perspektiven auf denselben ökonomischen Vorgang.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Jedes produzierte Gut wird konsumiert, investiert, vom Staat gekauft oder exportiert (Verwendung). Die Einnahmen fliessen als Löhne, Gewinne, Zinsen, Mieten an die Produktionsfaktoren (Einkommen). Die Wertschöpfung bei der Herstellung entspricht dem Endproduktwert (Produktion). Es ist derselbe Geldfluss aus drei Blickwinkeln."
+  },
+  {
+    "id": "vwl_bip-s08",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Posten gehören zur BIP-Berechnung nach dem Verwendungsansatz (C + I + G + NX)?",
+    "erklaerung": "Verwendungsansatz = C + I + G + NX. Autokauf (C = Konsum) und Fabrikbau (I = Investition) gehören dazu. Die Wertschöpfung (B) gehört zum Produktionsansatz, die Lohnzahlung (D) zum Einkommensansatz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Kauf eines neuen Autos durch eine Familie (Konsum)",
+      "Wertschöpfung einer Schreinerei",
+      "Bau einer neuen Fabrikhalle (Investition)",
+      "Lohnzahlung an einen Bankangestellten"
+    ],
+    "korrekt": [
+      "Kauf eines neuen Autos durch eine Familie (Konsum)",
+      "Bau einer neuen Fabrikhalle (Investition)"
+    ]
+  },
+  {
+    "id": "vwl_bip-s09",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In einer kleinen Volkswirtschaft produziert ein Unternehmen Güter im Wert von CHF 500. Die Löhne betragen CHF 300, Gewinne CHF 200. Die Haushalte konsumieren CHF 400 und importieren CHF 100 aus dem Ausland. Der Staat gibt CHF 100 aus, Investitionen betragen CHF 100. Es gibt keine Exporte. Was stimmt?",
+    "erklaerung": "Produktion: Wertschöpfung = 500. Einkommen: 300 + 200 = 500. Verwendung: C(400) + I(100) + G(100) + NX(0–100) = 500. Importe werden abgezogen, weil sie zwar konsumiert, aber nicht im Inland produziert wurden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Einkommensansatz ergibt CHF 600.",
+      "Die Importe erhöhen das BIP.",
+      "Das BIP nach Verwendungsansatz ist höher als nach Produktionsansatz.",
+      "Alle drei Ansätze ergeben CHF 500 – die Rechnung geht auf."
+    ],
+    "korrekt": "Alle drei Ansätze ergeben CHF 500 – die Rechnung geht auf."
+  },
+  {
+    "id": "vwl_bip-s10",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wenn die Schweiz mehr importiert als exportiert, ist der Beitrag der Nettoexporte zum BIP negativ – das BIP sinkt dadurch zwingend.",
+    "erklaerung": "Falsch. Negative Nettoexporte (NX < 0) bedeuten nur, dass dieser Teilposten negativ ist. Das BIP kann trotzdem steigen, wenn Konsum, Investitionen oder Staatsausgaben stärker wachsen. NX ist nur eine von vier Komponenten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-n01",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was unterscheidet das nominale vom realen BIP?",
+    "erklaerung": "Nominales BIP = Produktion zu aktuellen Marktpreisen (enthält Preisveränderungen). Reales BIP = Produktion zu konstanten Preisen eines Basisjahres. Nur das reale BIP zeigt die tatsächliche Mengenveränderung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Das nominale BIP berücksichtigt die Inflation, das reale nicht.",
+      "Es gibt keinen Unterschied.",
+      "Nominal = aktuelle Preise, real = konstante Preise eines Basisjahres (inflationsbereinigt).",
+      "Das reale BIP wird nur für die Schweiz berechnet."
+    ],
+    "korrekt": "Nominal = aktuelle Preise, real = konstante Preise eines Basisjahres (inflationsbereinigt)."
+  },
+  {
+    "id": "vwl_bip-n02",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Wenn das nominale BIP steigt, bedeutet das immer, dass die Wirtschaft gewachsen ist.",
+    "erklaerung": "Falsch. Ein Anstieg des nominalen BIP kann nur auf Inflation zurückzuführen sein. Nur ein Anstieg des realen BIP zeigt echtes Wirtschaftswachstum.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-n03",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Nominales BIP 2023 = CHF 800 Mrd., Preisindex = 105 (Basis 2020 = 100). Berechnen Sie:",
+    "erklaerung": "Reales BIP = Nominales BIP / Preisindex × 100 = 800/105×100 = 761.9 Mrd. Inflation = 105–100 = 5%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Reales BIP (zu Preisen von 2020)",
+        "answer": 761.9,
+        "tolerance": 0.5,
+        "unit": "Mrd. CHF"
+      },
+      {
+        "label": "Inflationsrate seit 2020",
+        "answer": 5,
+        "tolerance": 0,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "761.9",
+    "toleranz": 0.5,
+    "einheit": "Mrd. CHF"
+  },
+  {
+    "id": "vwl_bip-n04",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum verwendet man bei internationalen BIP-Vergleichen Kaufkraftparitäten (PPP)?",
+    "erklaerung": "Wechselkurse spiegeln nicht die tatsächliche Kaufkraft wider. Mit CHF 10 kauft man in der Schweiz weniger als mit dem Gegenwert in Thailand. PPP berücksichtigt die Preisniveauunterschiede.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die UNO PPP vorschreibt.",
+      "Weil PPP einfacher zu berechnen sind.",
+      "Weil das BIP in PPP immer höher ist.",
+      "Weil Wechselkurse schwanken und man in verschiedenen Ländern für denselben Betrag unterschiedlich viel kaufen kann."
+    ],
+    "korrekt": "Weil Wechselkurse schwanken und man in verschiedenen Ländern für denselben Betrag unterschiedlich viel kaufen kann."
+  },
+  {
+    "id": "vwl_bip-n05",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Für zeitliche Vergleiche verwendet man das {0} BIP, das die {1} herausrechnet. Für internationale Vergleiche rechnet man in {2} um.",
+    "erklaerung": "Reales BIP = inflationsbereinigt (zeitliche Vergleiche). Kaufkraftparitäten (PPP) = berücksichtigen Preisniveauunterschiede (internationale Vergleiche).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "reale",
+        "optionen": [
+          "reales"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Inflation",
+        "optionen": [
+          "Teuerung",
+          "Preissteigerung"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Kaufkraftparitäten",
+        "optionen": [
+          "PPP",
+          "Kaufkraftparität",
+          "KKP"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-n06",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beim BIP-Vergleich mit Kaufkraftparitäten (PPP) rutscht die Schweiz in der Rangliste tendenziell nach unten.",
+    "erklaerung": "Richtig. Die Schweiz hat ein sehr hohes Preisniveau. Bei PPP-Bereinigung wird berücksichtigt, dass man in der Schweiz für denselben Betrag weniger kaufen kann. Länder mit tiefem Preisniveau (z.B. China) steigen entsprechend auf.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-n07",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Land A: nominales BIP/Kopf = USD 60'000, PPP-Faktor = 0.85. Land B: BIP/Kopf = USD 25'000, PPP-Faktor = 1.6. Berechnen Sie das BIP/Kopf in PPP.",
+    "erklaerung": "Land A: 60'000 × 0.85 = 51'000 USD (sinkt wegen hohem Preisniveau). Land B: 25'000 × 1.6 = 40'000 USD (steigt wegen tiefem Preisniveau). Unterschied schrumpft von 35'000 auf 11'000.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Land A: BIP/Kopf in PPP",
+        "answer": 51000,
+        "tolerance": 100,
+        "unit": "USD"
+      },
+      {
+        "label": "Land B: BIP/Kopf in PPP",
+        "answer": 40000,
+        "tolerance": 100,
+        "unit": "USD"
+      }
+    ],
+    "korrekt": "51000",
+    "toleranz": 100,
+    "einheit": "USD"
+  },
+  {
+    "id": "vwl_bip-n08",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zum nominalen und realen BIP sind korrekt?",
+    "erklaerung": "A ist korrekt: Nur das reale BIP zeigt die Mengenentwicklung. C ist korrekt: Im Basisjahr ist der Preisindex = 100, daher sind nominal und real gleich. B ist falsch: Bei Deflation (Preise sinken) ist das reale BIP höher als das nominale. D ist falsch: Bei Deflation (Preisindex < 100) ist das reale BIP grösser.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Das reale BIP ist besser geeignet, um echtes Wirtschaftswachstum zu messen.",
+      "Bei Deflation ist das nominale BIP höher als das reale BIP.",
+      "Nominales und reales BIP sind im Basisjahr identisch.",
+      "Das reale BIP kann nie höher sein als das nominale BIP."
+    ],
+    "korrekt": [
+      "Das reale BIP ist besser geeignet, um echtes Wirtschaftswachstum zu messen.",
+      "Nominales und reales BIP sind im Basisjahr identisch."
+    ]
+  },
+  {
+    "id": "vwl_bip-n09",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Kaufkraftparitäten (PPP) korrigieren für Wechselkursschwankungen, nicht für Preisunterschiede zwischen Ländern.",
+    "erklaerung": "Falsch. PPP korrigieren gerade für Preisunterschiede zwischen Ländern. In einem Hochpreisland (z.B. Schweiz) kann man für denselben USD-Betrag weniger kaufen als in einem Niedrigpreisland (z.B. Indien). PPP rechnen auf gleiche Kaufkraft um.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-k01",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche zwei Akteure stehen im Zentrum des einfachen Wirtschaftskreislaufs?",
+    "erklaerung": "Der einfache Wirtschaftskreislauf: Haushalte bieten Produktionsfaktoren an und fragen Güter nach. Unternehmen produzieren Güter und fragen Produktionsfaktoren nach.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Staat und Ausland",
+      "Arbeitnehmer und Arbeitgeber",
+      "Banken und Versicherungen",
+      "Haushalte und Unternehmen"
+    ],
+    "korrekt": "Haushalte und Unternehmen"
+  },
+  {
+    "id": "vwl_bip-k02",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Ströme im einfachen Wirtschaftskreislauf zu.",
+    "erklaerung": "Haushalte → Unternehmen: Produktionsfaktoren (Arbeit, Kapital) + Geld für Güter. Unternehmen → Haushalte: Güter + Faktorentgelte (Löhne, Zinsen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Haushalte → Unternehmen",
+      "Unternehmen → Haushalte"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-k03",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Welche zusätzlichen Akteure kommen im erweiterten Wirtschaftskreislauf hinzu?",
+    "erklaerung": "Erweiterter Kreislauf: + Staat (Steuern, Güter, Transfers), + Ausland (Exporte/Importe), + Banken (Ersparnisse, Kredite).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur der Staat",
+      "Börse und Nationalbank",
+      "Gewerkschaften und Verbände",
+      "Staat, Ausland und Banken"
+    ],
+    "korrekt": "Staat, Ausland und Banken"
+  },
+  {
+    "id": "vwl_bip-k04",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Im Wirtschaftskreislauf steht jedem Geldstrom ein Güterstrom (oder Faktorstrom) gegenüber.",
+    "erklaerung": "Richtig. Der Kreislauf besteht aus realen Strömen (Güter, Faktoren) und monetären Strömen (Geld), die in entgegengesetzter Richtung fliessen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-k05",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Im erweiterten Kreislauf finanziert sich der Staat über {0}. Er verwendet diese für den Kauf von {1} und für {2} an die Haushalte.",
+    "erklaerung": "Staat: Einnahmen = Steuern. Ausgaben = Güterkäufe + Löhne an Staatsangestellte + Transfers (z.B. AHV-Renten, Sozialhilfe – Leistungen ohne direkte Gegenleistung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Steuern",
+        "optionen": [
+          "Steuereinnahmen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Gütern",
+        "optionen": [
+          "Güter",
+          "Waren und Dienstleistungen"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Transfers",
+        "optionen": [
+          "Transferzahlungen",
+          "Sozialleistungen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-k06",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Frau Studer arbeitet als Verkäuferin im Globus (CHF 2'800/Monat) und kauft dort eine Bluse für CHF 70. Beschreiben Sie Güter- und Geldkreislauf.",
+    "erklaerung": "Dieses Beispiel illustriert den einfachen Wirtschaftskreislauf: Faktormarkt (Arbeit gegen Lohn) und Gütermarkt (Bluse gegen Geld). Geldströme laufen jeweils entgegengesetzt zu den Güterströmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Faktormarkt: Frau Studer liefert Arbeitskraft an Globus (Güterstrom) → Globus zahlt CHF 2'800 Lohn (Geldstrom). Gütermarkt: Globus liefert Bluse (Güterstrom) → Frau Studer zahlt CHF 70 (Geldstrom). Es handelt sich um den einfachen Wirtschaftskreislauf mit zwei Tauschbeziehungen."
+  },
+  {
+    "id": "vwl_bip-k07",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter einem Transfer im Wirtschaftskreislauf?",
+    "erklaerung": "Transfers = Zahlungen des Staates an Haushalte ohne Gegenleistung (anders als Löhne). Beispiele: AHV, IV, Sozialhilfe, Kinderzulagen, Stipendien.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Export von Gütern.",
+      "Eine staatliche Leistung ohne direkte Gegenleistung, z.B. AHV-Renten oder Sozialhilfe.",
+      "Die Überweisung von Geld ins Ausland.",
+      "Eine Steuerzahlung an den Staat."
+    ],
+    "korrekt": "Eine staatliche Leistung ohne direkte Gegenleistung, z.B. AHV-Renten oder Sozialhilfe."
+  },
+  {
+    "id": "vwl_bip-k08",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im erweiterten Kreislauf fliessen Zahlungen für Importe von den Haushalten ans Ausland.",
+    "erklaerung": "Richtig. Schweizer Haushalte kaufen ausländische Güter (Importe) → Geld fliesst ans Ausland. Umgekehrt fliessen Exporteinnahmen vom Ausland an inländische Unternehmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-k09",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Ströme fliessen im erweiterten Wirtschaftskreislauf vom Staat an die Haushalte?",
+    "erklaerung": "Vom Staat an Haushalte fliessen: Transfers (AHV, Sozialhilfe – ohne Gegenleistung) und Löhne (an Staatsangestellte – als Entgelt für Arbeit). Subventionen (C) fliessen an Unternehmen, Steuern (D) fliessen in die umgekehrte Richtung (Haushalte → Staat).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Transferzahlungen (z.B. AHV-Renten, Sozialhilfe)",
+      "Löhne an Staatsangestellte",
+      "Subventionen an Unternehmen",
+      "Steuereinnahmen"
+    ],
+    "korrekt": [
+      "Transferzahlungen (z.B. AHV-Renten, Sozialhilfe)",
+      "Löhne an Staatsangestellte"
+    ]
+  },
+  {
+    "id": "vwl_bip-k10",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Was passiert im Wirtschaftskreislauf, wenn die Haushalte plötzlich deutlich mehr sparen und weniger konsumieren?",
+    "erklaerung": "Höheres Sparen = weniger Konsum = weniger Nachfrage auf dem Gütermarkt. Die Unternehmen verkaufen weniger, reduzieren Produktion und Beschäftigung. Das Einkommen sinkt (Kreislauf-Effekt). Dieses Phänomen heisst «Sparparadoxon»: Was für den Einzelnen vernünftig ist (sparen), kann gesamtwirtschaftlich schaden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Das BIP steigt, weil Sparen eine Investition ist.",
+      "Es hat keinen Effekt, da das Geld bei den Banken landet und sofort weitergeleitet wird.",
+      "Der Staat gleicht die Lücke automatisch aus.",
+      "Die Unternehmen erhalten weniger Einnahmen, produzieren weniger und zahlen tiefere Löhne – ein Abschwung droht."
+    ],
+    "korrekt": "Die Unternehmen erhalten weniger Einnahmen, produzieren weniger und zahlen tiefere Löhne – ein Abschwung droht."
+  },
+  {
+    "id": "vwl_bip-k11",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Im Wirtschaftskreislauf spricht man von Sickerströmen (Abflüssen) und Zuflüssen. Erklären Sie, warum Sparen, Steuern und Importe als Sickerströme gelten, und nennen Sie die zugehörigen Zuflüsse.",
+    "erklaerung": "Sickerströme (S + T + M) und Zuflüsse (I + G + X). Im Gleichgewicht gilt: S + T + M = I + G + X. Diese Gleichung ist eine Umformung der Verwendungsgleichung Y = C + I + G + (X–M).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Sickerströme = Geld, das den Güterkreislauf zwischen Haushalten und Unternehmen verlässt: Sparen (Geld fliesst an Banken statt in Konsum), Steuern (Geld fliesst an den Staat statt in Konsum/Investition), Importe (Geld fliesst ans Ausland statt an inländische Unternehmen). Zuflüsse: Investitionen (Banken → Unternehmen), Staatsausgaben (Staat → Unternehmen/Haushalte), Exporte (Ausland → Unternehmen). Damit der Kreislauf stabil bleibt, müssen Sickerströme ≈ Zuflüsse sein."
+  },
+  {
+    "id": "vwl_bip-v01",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was zeigt die Lorenzkurve?",
+    "erklaerung": "Die Lorenzkurve zeigt die kumulative Verteilung. Die 45°-Linie = perfekte Gleichverteilung. Je stärker die Kurve abweicht, desto ungleicher die Verteilung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Verteilung von Einkommen oder Vermögen – je weiter von der 45°-Linie, desto ungleicher.",
+      "Das Wirtschaftswachstum über die Zeit.",
+      "Den Zusammenhang zwischen Inflation und Arbeitslosigkeit.",
+      "Die Entwicklung des BIP pro Kopf."
+    ],
+    "korrekt": "Die Verteilung von Einkommen oder Vermögen – je weiter von der 45°-Linie, desto ungleicher."
+  },
+  {
+    "id": "vwl_bip-v02",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der {0} misst die Ungleichheit. Er nimmt Werte zwischen {1} (Gleichverteilung) und {2} (maximale Ungleichheit) an.",
+    "erklaerung": "Gini = Fläche zwischen 45°-Linie und Lorenzkurve / Gesamtdreiecksfläche. 0 = alle haben gleich viel, 1 = eine Person hat alles.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Gini-Koeffizient",
+        "optionen": [
+          "Gini Koeffizient",
+          "Ginikoeffizient",
+          "Gini"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "0",
+        "optionen": [
+          "null"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "1",
+        "optionen": [
+          "eins"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-v03",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Gini-Koeffizient beträgt in der Schweiz ca. 0.29 und in den USA ca. 0.37. Was bedeutet das?",
+    "erklaerung": "Höherer Gini = grössere Ungleichheit. Schweiz 0.29 (relativ gleichmässig), USA 0.37 (deutlich ungleicher). Durch Umverteilung sinkt der Gini in der Schweiz von ca. 0.34 (Primäreinkommen) auf 0.29 (verfügbares Einkommen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "In der Schweiz gibt es mehr Milliardäre.",
+      "Die Schweiz ist reicher als die USA.",
+      "Die USA haben ein höheres BIP pro Kopf.",
+      "Die Einkommensungleichheit ist in den USA deutlich grösser als in der Schweiz."
+    ],
+    "korrekt": "Die Einkommensungleichheit ist in den USA deutlich grösser als in der Schweiz."
+  },
+  {
+    "id": "vwl_bip-v04",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht Branko Milanovic unter «guter» und «schlechter» Ungleichheit?",
+    "erklaerung": "Nach Milanovic: «Gute» Ungleichheit ist leistungsbezogen (Anreize, Wachstum). «Schlechte» entsteht durch Rent-Seeking (politischen Einfluss zum Machterhalt) oder fehlenden Bildungszugang für Arme.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Gute Ungleichheit betrifft nur Vermögen, schlechte nur Einkommen.",
+      "Gute Ungleichheit gibt es nur in reichen Ländern.",
+      "Jede Form von Ungleichheit ist schlecht.",
+      "Gute Ungleichheit schafft Leistungsanreize. Schlechte Ungleichheit zementiert Privilegien und verhindert Chancengleichheit."
+    ],
+    "korrekt": "Gute Ungleichheit schafft Leistungsanreize. Schlechte Ungleichheit zementiert Privilegien und verhindert Chancengleichheit."
+  },
+  {
+    "id": "vwl_bip-v05",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gemäss aktueller Forschung ist Frühförderung das effizienteste Mittel gegen Ungleichheit.",
+    "erklaerung": "Richtig. Nobelpreisträger Heckman zeigt: ca. 50% der Einkommensunterschiede werden vor dem 18. Lebensjahr geprägt. Frühförderung ist effektiver als spätere Umverteilung, da sie an der Wurzel ansetzt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-v06",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie zu: Umverteilung (Symptombekämpfung) oder Ursachenbekämpfung?",
+    "erklaerung": "Umverteilung (Steuern, Transfers) wirkt schnell, kann aber Anreize verringern. Ursachenbekämpfung (Bildung, Frühförderung) setzt bei den Wurzeln an und fördert gleichzeitig das Humankapital.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Umverteilung",
+      "Ursachenbekämpfung"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-v07",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Vermögensverteilung in der Schweiz ist deutlich ungleicher als die Einkommensverteilung.",
+    "erklaerung": "Richtig. Die Lorenzkurve für Vermögen weicht viel stärker ab als für Einkommen. Im Kanton Bern z.B. besitzen ca. 209'000 Personen gar kein Vermögen, während 770 Personen rund 20% des Gesamtvermögens besitzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-v08",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "«Mehr Gleichheit bedeutet automatisch weniger Wirtschaftswachstum.» Nehmen Sie kritisch Stellung.",
+    "erklaerung": "Die Forschung zeigt: Die Beziehung ist nicht linear. Der Schlüssel liegt in der Unterscheidung zwischen «guter» und «schlechter» Ungleichheit (Milanovic).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Zu vereinfacht. Moderate Ungleichheit kann wachstumsfördernd sein (Anreize), aber zu hohe Ungleichheit schadet: mangelnde Bildungschancen, soziale Instabilität, Polarisierung. Entscheidend ist die Art: Leistungsbezogene Ungleichheit motiviert, privilegienbasierte hemmt. Kluge Politik (Frühförderung statt nur Umverteilung) kann Gleichheit und Wachstum gleichzeitig fördern."
+  },
+  {
+    "id": "vwl_bip-v09",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum kann sehr hohe Ungleichheit das Wirtschaftswachstum gefährden?",
+    "erklaerung": "Bei sehr hoher Ungleichheit (Gini > ca. 0.4) steigt das Risiko sozialer Instabilität. Menschen werden kriminell statt produktiv. Die Unsicherheit hemmt Investitionen. Zudem entstehen Forderungen nach starker Umverteilung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Extreme Ungleichheit provoziert soziale Unruhen, verringert Vertrauen und hemmt Investitionen.",
+      "In ungleichen Gesellschaften investieren die Reichen mehr.",
+      "Hohe Ungleichheit hat keinen Einfluss auf den sozialen Frieden.",
+      "Soziale Unruhen führen zu mehr Konsum."
+    ],
+    "korrekt": "Extreme Ungleichheit provoziert soziale Unruhen, verringert Vertrauen und hemmt Investitionen."
+  },
+  {
+    "id": "vwl_bip-v10",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Betrachten Sie das Diagramm mit den Lorenzkurven zweier Länder. Welche Aussage trifft zu?",
+    "erklaerung": "Je weiter eine Lorenzkurve von der 45°-Linie (= perfekte Gleichverteilung) entfernt ist, desto ungleicher ist die Verteilung. Land B weicht stärker ab → höherer Gini → grössere Ungleichheit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/bip/lorenzkurve_vergleich.svg",
+      "alt": "Lorenzkurven von Land A und Land B im Vergleich"
+    },
+    "optionen": [
+      "Land B hat eine ungleichere Einkommensverteilung als Land A, weil seine Kurve weiter von der 45°-Linie entfernt ist.",
+      "Land A ist ungleicher, weil seine Kurve näher an der 45°-Linie liegt.",
+      "Beide Länder haben denselben Gini-Koeffizienten.",
+      "Die Kurven zeigen das BIP-Wachstum, nicht die Verteilung."
+    ],
+    "korrekt": "Land B hat eine ungleichere Einkommensverteilung als Land A, weil seine Kurve weiter von der 45°-Linie entfernt ist."
+  },
+  {
+    "id": "vwl_bip-v11",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Massnahmen verringern typischerweise die Einkommensungleichheit?",
+    "erklaerung": "Progressive Steuern belasten hohe Einkommen stärker und finanzieren Umverteilung. Bildungsinvestitionen schaffen Chancengleichheit und erhöhen das Humankapital der Ärmeren. Senkung der Sozialleistungen (B) und Abschaffung der Erbschaftssteuer (D) würden die Ungleichheit eher vergrössern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Progressive Einkommenssteuer (höherer Steuersatz bei höherem Einkommen)",
+      "Senkung der Sozialleistungen",
+      "Investitionen in öffentliche Bildung",
+      "Abschaffung der Erbschaftssteuer"
+    ],
+    "korrekt": [
+      "Progressive Einkommenssteuer (höherer Steuersatz bei höherem Einkommen)",
+      "Investitionen in öffentliche Bildung"
+    ]
+  },
+  {
+    "id": "vwl_bip-v12",
+    "fach": "VWL",
+    "thema": "Verteilung & Ungleichheit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Ein Gini-Koeffizient von 0 bedeutet, dass alle Personen exakt das gleiche Einkommen haben.",
+    "erklaerung": "Richtig. Gini = 0 entspricht der 45°-Linie (perfekte Gleichverteilung). Jeder Prozentanteil der Bevölkerung erhält denselben Prozentanteil des Gesamteinkommens.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-w01",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Auf welche zwei Arten kann eine Volkswirtschaft wachsen?",
+    "erklaerung": "BIP-Wachstum durch: (1) Mehr Arbeitsstunden (mehr Erwerbstätige, Zuwanderung) oder (2) Höhere Arbeitsproduktivität (mehr Kapital, bessere Technologie, Humankapital). Für den Wohlstand pro Kopf ist v.a. die Produktivität entscheidend.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Durch höhere Preise oder mehr Steuern.",
+      "Durch mehr Exporte oder weniger Importe.",
+      "Durch mehr Konsum oder mehr Sparen.",
+      "Durch mehr Arbeitsstunden oder durch höhere Produktivität."
+    ],
+    "korrekt": "Durch mehr Arbeitsstunden oder durch höhere Produktivität."
+  },
+  {
+    "id": "vwl_bip-w02",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Nachhaltige Entwicklung befriedigt die Bedürfnisse der {0}, ohne zu riskieren, dass {1} Generationen ihre Bedürfnisse nicht befriedigen können. Diese Definition stammt aus dem {2}-Bericht von 1987.",
+    "erklaerung": "Die Brundtland-Definition (1987) betont intergenerationelle Gerechtigkeit: Heutige Bedürfnisbefriedigung darf nicht auf Kosten zukünftiger Generationen gehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Gegenwart",
+        "optionen": [
+          "heutigen Generation"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "künftige",
+        "optionen": [
+          "zukünftige",
+          "kommende",
+          "nachfolgende"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Brundtland",
+        "optionen": []
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-w03",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was sind externe Effekte (Externalitäten)?",
+    "erklaerung": "Externe Effekte = Kosten/Nutzen für Dritte, die nicht im Preis berücksichtigt werden. Negativ: Fabrik verschmutzt Fluss (Allgemeinheit trägt Kosten). Positiv: Impfung schützt andere. Bei negativen Externalitäten wird «zu viel» produziert → Marktversagen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Gewinne für ausländische Investoren.",
+      "Kosten, die im Ausland anfallen.",
+      "Auswirkungen von Exporten auf das BIP.",
+      "Kosten oder Nutzen, die bei Produktion/Konsum entstehen, aber nicht vom Verursacher getragen werden."
+    ],
+    "korrekt": "Kosten oder Nutzen, die bei Produktion/Konsum entstehen, aber nicht vom Verursacher getragen werden."
+  },
+  {
+    "id": "vwl_bip-w04",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Instrumente der Umweltpolitik den Kategorien zu.",
+    "erklaerung": "(1) Gebote/Verbote: direkte Regeln. (2) Lenkungsabgaben: Preisanreize, Einnahmen rückverteilt. (3) Umweltzertifikate: Staat legt Gesamtmenge fest, Handel bestimmt Preis. Marktbasiert und kosteneffizient.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Gebote und Verbote",
+      "Lenkungsabgaben",
+      "Umweltzertifikate"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-w05",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Lenkungsabgaben sollen dem Staat primär höhere Einnahmen verschaffen.",
+    "erklaerung": "Falsch. Lenkungsabgaben zielen auf Verhaltensänderung, nicht auf Einnahmen. Die Einnahmen werden vollumfänglich an die Bevölkerung rückverteilt. Wer umweltfreundlich handelt, erhält mehr zurück als er einzahlt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-w06",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Was besagt das Coase-Theorem?",
+    "erklaerung": "Das Coase-Theorem: Wenn Eigentums- und Klagerechte klar definiert sind und die Transaktionskosten gering, können die Betroffenen das Problem durch freiwillige Verhandlungen lösen – ohne Staatseingriff.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Externe Effekte existieren nur bei Monopolen.",
+      "Der Staat muss immer eingreifen bei externen Effekten.",
+      "Umweltverschmutzung kann nicht durch den Markt gelöst werden.",
+      "Bei klar definierten Eigentumsrechten und geringen Transaktionskosten können Betroffene externe Effekte durch Verhandlungen lösen."
+    ],
+    "korrekt": "Bei klar definierten Eigentumsrechten und geringen Transaktionskosten können Betroffene externe Effekte durch Verhandlungen lösen."
+  },
+  {
+    "id": "vwl_bip-w07",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wirtschaftswachstum und Nachhaltigkeit schliessen sich gegenseitig aus.",
+    "erklaerung": "Falsch. Qualitatives Wachstum (bessere Technologie, Effizienz, Dienstleistungen) kann mit Nachhaltigkeit vereinbar sein. Es geht nicht darum, kein Wachstum zu haben, sondern die Art des Wachstums zu verändern – weg von ressourcenintensiver Produktion hin zu nachhaltigerem Wirtschaften.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-w08",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Zementwerk verursacht erhebliche CO₂-Emissionen. Vergleichen Sie zwei Instrumente (z.B. Lenkungsabgabe vs. Emissionshandel), mit denen der Staat dieses Problem angehen kann.",
+    "erklaerung": "Lenkungsabgabe = Preislösung (Preis fix, Menge variabel). Emissionshandel = Mengenlösung (Menge fix, Preis variabel). Beide Instrumente internalisieren externe Kosten und sind theoretisch gleich effizient.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Lenkungsabgabe: Der Staat legt eine CO₂-Abgabe pro Tonne fest. Vorteil: Planungssicherheit beim Preis, einfache Umsetzung. Nachteil: Die tatsächliche Reduktionsmenge ist unsicher. Emissionshandel: Der Staat legt eine Obergrenze (Cap) fest und verteilt Zertifikate. Vorteil: Die Gesamtmenge ist fix, der Markt findet den günstigsten Weg zur Reduktion (Kosteneffizienz). Nachteil: Preisschwankungen, komplexe Administration. Beide internalisieren externe Kosten, aber auf unterschiedlichem Weg: Preis vs. Menge."
+  },
+  {
+    "id": "vwl_bip-w09",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele zu: Handelt es sich um einen negativen oder positiven externen Effekt?",
+    "erklaerung": "Negative Externalitäten: Kosten für Dritte (Verschmutzung, Lärm, Abgase) → zu viel Produktion. Positive Externalitäten: Nutzen für Dritte (Bestäubung, Impfschutz, Forschung) → zu wenig Produktion. Beides = Marktversagen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Negativer externer Effekt",
+      "Positiver externer Effekt"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_bip-w10",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Situationen sind Beispiele für negative externe Effekte?",
+    "erklaerung": "A, C und D sind negative externe Effekte: Dritte tragen Kosten (Lärm, Verschmutzung, Wertminderung), ohne entschädigt zu werden. B ist ein positiver externer Effekt: Die Ausbildungsleistung der Universität nützt auch Dritten (Unternehmen, Region).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Nachbar renoviert sein Haus und der Baulärm stört die Anwohner.",
+      "Eine Universität bildet Fachkräfte aus, die in der ganzen Region Arbeitsplätze schaffen.",
+      "Eine Fabrik leitet Abwasser in einen See, in dem Fischer ihre Existenz haben.",
+      "Ein Flughafen verursacht Lärm und tiefere Immobilienpreise in der Umgebung."
+    ],
+    "korrekt": [
+      "Ein Nachbar renoviert sein Haus und der Baulärm stört die Anwohner.",
+      "Eine Fabrik leitet Abwasser in einen See, in dem Fischer ihre Existenz haben.",
+      "Ein Flughafen verursacht Lärm und tiefere Immobilienpreise in der Umgebung."
+    ]
+  },
+  {
+    "id": "vwl_bip-w11",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die drei Dimensionen der Nachhaltigkeit sind Ökologie, Ökonomie und Gesellschaft (Soziales).",
+    "erklaerung": "Richtig. Das Drei-Säulen-Modell der Nachhaltigkeit: (1) Ökologische Nachhaltigkeit (Umwelt schützen), (2) Ökonomische Nachhaltigkeit (wirtschaftliche Leistungsfähigkeit erhalten), (3) Soziale Nachhaltigkeit (Gerechtigkeit, Teilhabe). Alle drei Dimensionen müssen gleichgewichtig berücksichtigt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_bip-w12",
+    "fach": "VWL",
+    "thema": "Wachstum & Nachhaltigkeit",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Was beschreibt die «Tragik der Allmende» (Tragedy of the Commons)?",
+    "erklaerung": "Beispiel: Eine gemeinsame Weide wird übernutzt, weil jeder Hirte ein zusätzliches Tier hinstellt – der Nutzen ist privat, die Kosten (Überweidung) tragen alle. Lösungen: Privatisierung, Regulierung, oder Selbstorganisation (Ostrom). Das Konzept ist zentral für Umweltprobleme wie Überfischung und Klimawandel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Staat muss alle Ressourcen privatisieren.",
+      "Gemeinsames Eigentum ist immer effizienter als privates.",
+      "Wenn eine Ressource allen gehört, wird sie übernutzt, weil jeder seinen eigenen Nutzen maximiert, die Kosten aber die Allgemeinheit trägt.",
+      "Die Allmende bezeichnet das BIP eines Landes."
+    ],
+    "korrekt": "Wenn eine Ressource allen gehört, wird sie übernutzt, weil jeder seinen eigenen Nutzen maximiert, die Kosten aber die Allgemeinheit trägt."
+  },
+  {
+    "id": "vwl_bip-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Wirtschaftskreislauf",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Sektoren des erweiterten Wirtschaftskreislaufs in der Reihenfolge, in der sie typischerweise in Lehrbüchern eingeführt werden – vom einfachsten zum komplexesten Modell.",
+    "erklaerung": "Der Wirtschaftskreislauf wird schrittweise aufgebaut: Zuerst der einfache 2-Sektoren-Kreislauf (Haushalte ↔ Unternehmen), dann wird der Staat ergänzt (Steuern, Transfers, Staatskonsum), dann die Banken (Kapitalmarkt: Sparen und Investieren), und schliesslich das Ausland (Exporte, Importe, Kapitalströme).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_bip-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Komponenten des BIP nach dem Verwendungsansatz (Y = C + I + G + NX) nach ihrem typischen Anteil am Schweizer BIP – vom grössten zum kleinsten.",
+    "erklaerung": "In der Schweiz ist der private Konsum mit über 50% die grösste BIP-Komponente, gefolgt von den Investitionen (ca. 25–30%). Der Staatskonsum liegt bei rund 10–12%. Die Nettoexporte (Exporte minus Importe) schwanken und machen nur wenige Prozent aus – trotz der starken Exportwirtschaft, weil die Schweiz auch viel importiert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      2,
+      1,
+      3
+    ]
+  },
+  {
+    "id": "vwl_bip-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Nominales & Reales BIP",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Schritte zur Berechnung des realen BIP in die korrekte Reihenfolge.",
+    "erklaerung": "Um das reale BIP zu berechnen, muss zuerst das nominale BIP bekannt sein. Dann wählt man ein Basisjahr, berechnet den BIP-Deflator (Preisveränderung gegenüber dem Basisjahr) und bereinigt das nominale BIP um die Preisentwicklung. So erhält man ein Mass für die tatsächliche Mengenveränderung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_bip-neu_zeichnen_01",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "zeichnen",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Stelle die Verwendungsseite des BIP grafisch dar (z.B. als Balkendiagramm oder Kreisdiagramm). Beschrifte die vier Komponenten und gib ungefähre prozentuale Anteile für die Schweiz an.",
+    "erklaerung": "Das BIP nach Verwendungsseite: Y = C + I + G + NX. In der Schweiz: Konsum ca. 55%, Investitionen ca. 25%, Staatsausgaben ca. 12%, Nettoexporte ca. 8%. Die Aufteilung zeigt, dass der private Konsum die wichtigste Nachfragekomponente ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "hinweise": [
+      "Die vier Komponenten sind: Konsum (C), Investitionen (I), Staatsausgaben (G) und Nettoexporte (NX).",
+      "Der private Konsum macht in der Schweiz über die Hälfte aus.",
+      "Die Formel lautet: Y = C + I + G + NX."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/vwl/bip/bip_verwendungsseite_zeichnen.svg",
+      "alt": "Musterlösung: BIP-Verwendungsseite"
+    }
+  },
+  {
+    "id": "vwl_bip-beschriftung01",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die vier Komponenten des BIP nach Verwendungsseite und die Formel.",
+    "erklaerung": "Das BIP nach Verwendungsseite: Y = C + I + G + NX. Privater Konsum (C, ca. 52%), Staatlicher Konsum (G, ca. 12%), Investitionen (I, ca. 25%), Nettoexporte (NX, ca. 11% in der Schweiz).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/bip/bip_verwendung_beschriftung.svg",
+      "alt": "BIP-Verwendungskomponenten mit fünf nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Privater Konsum (C)",
+        "x": 40,
+        "y": 41
+      },
+      {
+        "id": "l2",
+        "text": "Staatlicher Konsum (G)",
+        "x": 32,
+        "y": 79
+      },
+      {
+        "id": "l3",
+        "text": "Investitionen (I)",
+        "x": 49,
+        "y": 67
+      },
+      {
+        "id": "l4",
+        "text": "Nettoexporte (NX = X − M)",
+        "x": 22,
+        "y": 57
+      },
+      {
+        "id": "l5",
+        "text": "Y = C + I + G + NX",
+        "x": 85,
+        "y": 92
+      }
+    ]
+  },
+  {
+    "id": "vwl_bip-dragdrop01",
+    "fach": "VWL",
+    "thema": "Drei Seiten des BIP",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Begriffe der richtigen BIP-Berechnungsseite zu.",
+    "erklaerung": "Das BIP kann auf drei Arten berechnet werden: Entstehungsseite (Wertschöpfung der Sektoren), Verwendungsseite (Y=C+I+G+NX), Verteilungsseite (Löhne + Gewinne + Vermögenseinkommen). Alle drei ergeben dasselbe BIP.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "EWR GYM2 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/bip/bip_dreiseiten_dragdrop.svg",
+      "alt": "Drei Spalten: Entstehungsseite, Verwendungsseite, Verteilungsseite"
+    },
+    "zones": [
+      {
+        "id": "entstehung",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "verwendung",
+        "x": 34,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "verteilung",
+        "x": 65.5,
+        "y": 14,
+        "w": 32,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Wertschöpfung der Branchen",
+        "zone": "entstehung"
+      },
+      {
+        "id": "m2",
+        "text": "Bruttoproduktionswert − Vorleistungen",
+        "zone": "entstehung"
+      },
+      {
+        "id": "m3",
+        "text": "Primär-/Sekundär-/Tertiärsektor",
+        "zone": "entstehung"
+      },
+      {
+        "id": "m4",
+        "text": "Privater Konsum (C)",
+        "zone": "verwendung"
+      },
+      {
+        "id": "m5",
+        "text": "Investitionen (I)",
+        "zone": "verwendung"
+      },
+      {
+        "id": "m6",
+        "text": "Nettoexporte (NX)",
+        "zone": "verwendung"
+      },
+      {
+        "id": "m7",
+        "text": "Arbeitnehmerentgelt",
+        "zone": "verteilung"
+      },
+      {
+        "id": "m8",
+        "text": "Unternehmensgewinne",
+        "zone": "verteilung"
+      },
+      {
+        "id": "m9",
+        "text": "Vermögenseinkommen",
+        "zone": "verteilung"
+      }
+    ]
+  }
+]

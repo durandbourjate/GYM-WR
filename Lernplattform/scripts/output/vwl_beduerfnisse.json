@@ -1,0 +1,1767 @@
+[
+  {
+    "id": "vwl_beduerfnisse-k01",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist das zentrale Problem, mit dem sich die Volkswirtschaftslehre beschäftigt?",
+    "erklaerung": "Die VWL wird oft als «Lehre von Entscheidungen bei Knappheit» bezeichnet. Knappheit entsteht, weil wir von bestimmten Gütern mehr haben wollen, als uns zur Verfügung steht. Es geht also immer um das Verhältnis zwischen (unbegrenzten) Bedürfnissen und (begrenzten) Mitteln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Knappheit – die verfügbaren Mittel reichen nicht aus, um alle Bedürfnisse zu befriedigen.",
+      "Die Maximierung der Exporte eines Landes.",
+      "Die Verteilung der Macht zwischen Staat und Wirtschaft.",
+      "Die Verwaltung von Unternehmen."
+    ],
+    "korrekt": "Knappheit – die verfügbaren Mittel reichen nicht aus, um alle Bedürfnisse zu befriedigen."
+  },
+  {
+    "id": "vwl_beduerfnisse-k02",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Knappheit bedeutet, dass ein Gut selten ist.",
+    "erklaerung": "Falsch. Knappheit bedeutet nicht dasselbe wie Seltenheit. Knappheit entsteht durch das Verhältnis zwischen Bedürfnissen und verfügbaren Mitteln: Wir wollen mehr, als vorhanden ist. Auch ein häufig vorhandenes Gut kann knapp sein, wenn die Nachfrage das Angebot übersteigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-k03",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die VWL beschäftigt sich mit dem Problem der {0}. Knappheit entsteht, weil die {1} der Menschen unbegrenzt sind, die {2} zur Befriedigung aber begrenzt.",
+    "erklaerung": "Das Grundproblem der VWL: Unbegrenzte Bedürfnisse treffen auf begrenzte Mittel (Güter, Ressourcen). Deshalb müssen wir wirtschaften, also Entscheidungen treffen, wie wir die knappen Mittel am besten einsetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Knappheit",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Bedürfnisse",
+        "optionen": [
+          "Wünsche"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Mittel",
+        "optionen": [
+          "Güter",
+          "Ressourcen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-k04",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Unterschied zwischen Volkswirtschaftslehre (VWL) und Betriebswirtschaftslehre (BWL)?",
+    "erklaerung": "BWL = Mikro-Perspektive (einzelnes Unternehmen, z.B. Marketing, Buchführung, Organisation). VWL = Makro-Perspektive (gesamte Volkswirtschaft, z.B. Arbeitslosigkeit, Inflation, Wirtschaftswachstum). Beide gehören zu den Wirtschaftswissenschaften, die wiederum Teil der Sozialwissenschaften sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die VWL untersucht nur den Staat, die BWL nur die Privaten.",
+      "Die VWL betrachtet die gesamtwirtschaftlichen Zusammenhänge (alle Haushalte, Unternehmen, Staat), die BWL betrachtet einzelne Betriebe und deren Innenleben.",
+      "Die VWL beschäftigt sich mit Geld, die BWL mit Gütern.",
+      "Es gibt keinen wesentlichen Unterschied."
+    ],
+    "korrekt": "Die VWL betrachtet die gesamtwirtschaftlichen Zusammenhänge (alle Haushalte, Unternehmen, Staat), die BWL betrachtet einzelne Betriebe und deren Innenleben."
+  },
+  {
+    "id": "vwl_beduerfnisse-k05",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie, warum «Wirtschaften» notwendig ist. Verwenden Sie die Begriffe «Knappheit» und «Bedürfnisse».",
+    "erklaerung": "Wirtschaften = rationaler Umgang mit Knappheit. Ohne Knappheit wäre Wirtschaften überflüssig (Schlaraffenland). Da wir aber nicht alles haben können, müssen wir abwägen und Prioritäten setzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Wirtschaften ist notwendig, weil die Bedürfnisse der Menschen unbegrenzt sind, die Mittel (Güter, Ressourcen, Zeit, Geld) aber begrenzt. Es entsteht Knappheit. Deshalb müssen wir Entscheidungen treffen: Welche Bedürfnisse befriedigen wir zuerst? Wie setzen wir die knappen Mittel am effizientesten ein? Wirtschaften bedeutet also das Gewinnen, Herstellen und Verteilen von knappen Gütern zur Deckung menschlicher Bedürfnisse nach dem ökonomischen Prinzip."
+  },
+  {
+    "id": "vwl_beduerfnisse-k06",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Volkswirtschaftslehre gehört zu den Sozialwissenschaften.",
+    "erklaerung": "Richtig. Die Wirtschaftswissenschaften (VWL und BWL) sind Teil der Sozialwissenschaften, zusammen mit z.B. Soziologie und Rechtswissenschaft. Sie gehören zu den Geisteswissenschaften (im Gegensatz zu den Naturwissenschaften).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-k07",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche drei Aufgaben hat die Volkswirtschaftslehre?",
+    "erklaerung": "Die VWL hat drei Aufgaben: (1) Theoretisch-wissenschaftlich: Phänomene beschreiben und erklären (z.B. warum gibt es Arbeitslosigkeit?). (2) Prognosen: Entwicklungen vorhersagen. (3) Wirtschaftspolitisch: Möglichkeiten der Beeinflussung aufzeigen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Preise festlegen, Löhne bestimmen, Handel regeln.",
+      "Gesetze erlassen, Steuern erheben, Währungen drucken.",
+      "Gewinne maximieren, Kosten senken, Märkte erobern.",
+      "Beschreiben und erklären von Phänomenen, Prognostizieren von Entwicklungen, Möglichkeiten der Beeinflussung aufzeigen."
+    ],
+    "korrekt": "Beschreiben und erklären von Phänomenen, Prognostizieren von Entwicklungen, Möglichkeiten der Beeinflussung aufzeigen."
+  },
+  {
+    "id": "vwl_beduerfnisse-k08",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen über Knappheit sind korrekt?",
+    "erklaerung": "A und C sind richtig. Knappheit ist ein relatives Konzept: Solange Bedürfnisse die verfügbaren Mittel übersteigen, herrscht Knappheit – unabhängig vom Wohlstandsniveau. Auch in der Schweiz sind z.B. Zeit, Bauland und Fachkräfte knapp. Armut hingegen bedeutet, dass Grundbedürfnisse nicht gedeckt werden können – das ist etwas anderes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Knappheit entsteht aus dem Verhältnis von Bedürfnissen und verfügbaren Mitteln.",
+      "Knappheit betrifft nur arme Länder.",
+      "Auch wohlhabende Gesellschaften sind mit Knappheit konfrontiert.",
+      "Knappheit ist dasselbe wie Armut."
+    ],
+    "korrekt": [
+      "Knappheit entsteht aus dem Verhältnis von Bedürfnissen und verfügbaren Mitteln.",
+      "Auch wohlhabende Gesellschaften sind mit Knappheit konfrontiert."
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-k09",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In einem Gedankenexperiment gäbe es plötzlich unbegrenzte Energie und alle Güter wären durch Roboter gratis herstellbar. Wäre Knappheit damit abgeschafft?",
+    "erklaerung": "Selbst bei unbegrenzter Güterproduktion blieben bestimmte Dinge knapp: Zeit (jeder Mensch hat nur 24 Stunden), Aufmerksamkeit anderer Menschen, einzigartige Standorte (Seegrundstück), natürliche Schönheit, Status und Ansehen. Knappheit ist letztlich ein Grundproblem, das sich nicht vollständig aufheben lässt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nein, denn knappe Güter wie Zeit, persönliche Aufmerksamkeit und bestimmte Standorte lassen sich nicht beliebig vermehren.",
+      "Nein, weil die Roboter selbst knapp wären.",
+      "Ja, weil Knappheit nur ein Problem der Produktion ist.",
+      "Ja, weil alle Bedürfnisse kostenlos befriedigt werden könnten."
+    ],
+    "korrekt": "Nein, denn knappe Güter wie Zeit, persönliche Aufmerksamkeit und bestimmte Standorte lassen sich nicht beliebig vermehren."
+  },
+  {
+    "id": "vwl_beduerfnisse-k10",
+    "fach": "VWL",
+    "thema": "Knappheit & Grundfragen der VWL",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wenn die Schweiz ihren Wohlstand verdoppeln würde, wäre das Knappheitsproblem gelöst.",
+    "erklaerung": "Falsch. Knappheit ist relativ: Mit steigendem Wohlstand entstehen neue, anspruchsvollere Bedürfnisse (grössere Wohnung, mehr Reisen, bessere Gesundheitsversorgung). Die Ansprüche wachsen mit dem Wohlstand. Eisenhut betont, dass die Bedürfnisse grundsätzlich unbegrenzt sind – das ändert sich auch bei Wohlstandswachstum nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-b01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter einem Bedürfnis?",
+    "erklaerung": "Ein Bedürfnis ist der Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern. Der Begriff wird in der VWL sehr weit gefasst: Er umfasst nicht nur materielle Wünsche, sondern auch z.B. Macht, Ansehen, Sicherheit, Schönheit, Abwechslung und Selbstverwirklichung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern.",
+      "Das Einkommen einer Person.",
+      "Die Menge an Gütern, die ein Haushalt kauft.",
+      "Die Produktionsmenge eines Unternehmens."
+    ],
+    "korrekt": "Den Wunsch, einen empfundenen Mangel zu beseitigen oder zu mildern."
+  },
+  {
+    "id": "vwl_beduerfnisse-b02",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gemäss der VWL sind die Bedürfnisse der Menschen grundsätzlich unbegrenzt.",
+    "erklaerung": "Richtig. Ökonomen gehen davon aus, dass die Bedürfnisse der Menschen unbegrenzt sind. Sobald ein Bedürfnis befriedigt ist, entstehen neue Wünsche. Diese Annahme ist zentral für das Knappheitsproblem.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-b03",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Beispiele den Stufen der Maslow'schen Bedürfnispyramide zu.",
+    "erklaerung": "Maslow'sche Bedürfnispyramide von unten nach oben: (1) Körperliche Grundbedürfnisse (Nahrung, Schlaf, Wärme), (2) Sicherheit (Schutz, Versicherung, Arbeitsplatz), (3) Soziale Bedürfnisse (Zugehörigkeit, Freundschaft), (4) Wertschätzung, (5) Selbstverwirklichung. In der Praxis versuchen Menschen, mehrere Stufen gleichzeitig zu erfüllen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Körperliche Bedürfnisse",
+      "Sicherheitsbedürfnisse",
+      "Soziale Bedürfnisse",
+      "Selbstverwirklichung"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-b04",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Maslow'sche Bedürfnispyramide hat vier Hauptstufen: Zuunterst die {0}, darüber die {1}, dann die {2} und zuoberst die {3}.",
+    "erklaerung": "Maslow ordnet Bedürfnisse hierarchisch: Körperlich → Sicherheit → Sozial → (Wertschätzung →) Selbstverwirklichung. Die Darstellung in der Präsentation fasst Wertschätzung und Selbstverwirklichung zusammen. Eisenhut nennt 5 Stufen inkl. Wertschätzungsbedürfnisse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "körperlichen Bedürfnisse",
+        "optionen": [
+          "Grundbedürfnisse",
+          "körperliche Bedürfnisse",
+          "physiologischen Bedürfnisse"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Sicherheitsbedürfnisse",
+        "optionen": [
+          "Sicherheit"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "sozialen Bedürfnisse",
+        "optionen": [
+          "soziale Bedürfnisse",
+          "Sozialbedürfnisse"
+        ]
+      },
+      {
+        "id": "3",
+        "korrekt": "Selbstverwirklichung",
+        "optionen": [
+          "Selbstverwirklichungsbedürfnisse"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-b05",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Jemand kauft einen teuren Geländewagen, obwohl er nur in der Stadt fährt. Welche Bedürfnisstufe wird hier primär befriedigt?",
+    "erklaerung": "Dieses Beispiel stammt direkt aus dem Lehrbuch (Eisenhut). Wenn jemand einen Geländewagen für den Stadtverkehr kauft, wird damit ein anderes Bedürfnis (Status, Ansehen) befriedigt als dem Gut eigentlich zugedacht ist (Geländefahrten). Das Gut wird zum Statussymbol.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Soziale Bedürfnisse – man gehört zu einer Gemeinschaft.",
+      "Körperliche Bedürfnisse – der Wagen bietet Mobilität.",
+      "Wertschätzungsbedürfnisse (Status, Ansehen) – der Geländewagen dient als Statussymbol.",
+      "Sicherheitsbedürfnisse – der grosse Wagen schützt bei Unfällen."
+    ],
+    "korrekt": "Wertschätzungsbedürfnisse (Status, Ansehen) – der Geländewagen dient als Statussymbol."
+  },
+  {
+    "id": "vwl_beduerfnisse-b06",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Nennen Sie ein eigenes Beispiel für ein Gut, das als Statussymbol verwendet wird, und erklären Sie, welches Bedürfnis damit eigentlich befriedigt wird.",
+    "erklaerung": "Eisenhut nennt weitere Beispiele: Champagner verspritzen statt trinken, Van Gogh im Banktresor statt an der Wand. Statussymbole zeigen, dass Güter oft mehrere Bedürfnisstufen gleichzeitig ansprechen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beispiel: Teure Marken-Sneakers (z.B. Jordans für CHF 300+). Eigentlicher Zweck: Schutz der Füsse (Grundbedürfnis). Als Statussymbol: Wertschätzung und Zugehörigkeit zur Gruppe. Das Bedürfnis nach Ansehen und Anerkennung (Wertschätzungsbedürfnis) wird wichtiger als der praktische Nutzen."
+  },
+  {
+    "id": "vwl_beduerfnisse-b07",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gemäss Maslow befriedigen Menschen immer zuerst alle Grundbedürfnisse, bevor sie sich höheren Bedürfnissen zuwenden.",
+    "erklaerung": "Falsch. Maslow beschreibt zwar eine Hierarchie, aber in der Praxis versuchen Menschen, Bedürfnisse aus verschiedenen Stufen gleichzeitig zu erfüllen. Eisenhut betont: «Der Mensch versucht, möglichst viele Wünsche aus den unterschiedlichen Ebenen gleichzeitig zu erfüllen.»",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-b08",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Schüler lernt 4 Stunden für eine Prüfung und erzielt die Note 5. Am nächsten Tag merkt er, dass sein Mitschüler mit nur 2 Stunden Lernzeit dieselbe Note erreicht hat. Welches ökonomische Konzept erklärt diesen Unterschied?",
+    "erklaerung": "Minimumprinzip: Ein bestimmtes Ergebnis (Note 5) mit minimalem Aufwand (2 statt 4 Stunden) erreichen. Das ist wirtschaftlich effizienter. Das Maximumprinzip wäre umgekehrt: Mit gegebenem Aufwand das bestmögliche Ergebnis erzielen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es handelt sich um Knappheit von Lernzeit.",
+      "Der Mitschüler hat das Maximumprinzip besser umgesetzt.",
+      "Der Mitschüler hat das Minimumprinzip (Sparsamkeitsprinzip) besser umgesetzt.",
+      "Der Mitschüler hat mehr Produktionsfaktoren eingesetzt."
+    ],
+    "korrekt": "Der Mitschüler hat das Minimumprinzip (Sparsamkeitsprinzip) besser umgesetzt."
+  },
+  {
+    "id": "vwl_beduerfnisse-b09",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Beispiele gehören zu den Sicherheitsbedürfnissen in Maslows Pyramide?",
+    "erklaerung": "A und C sind richtig. Sicherheitsbedürfnisse umfassen den Schutz vor Unsicherheit und Gefahren: Versicherungen (A) schützen vor finanziellen Risiken, ein fester Arbeitsvertrag (C) bietet wirtschaftliche Sicherheit. Der Sportverein (B) und das Konzert (D) gehören zu den sozialen Bedürfnissen (Zugehörigkeit, Gemeinschaft).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Abschluss einer Hausratversicherung",
+      "Mitgliedschaft im Sportverein",
+      "Fester Arbeitsvertrag mit Kündigungsschutz",
+      "Besuch eines Konzerts mit Freunden"
+    ],
+    "korrekt": [
+      "Abschluss einer Hausratversicherung",
+      "Fester Arbeitsvertrag mit Kündigungsschutz"
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-b10",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Maslow wird häufig kritisiert. Welcher Kritikpunkt ist aus volkswirtschaftlicher Sicht am gewichtigsten?",
+    "erklaerung": "Die stärkste Kritik betrifft die starre Hierarchie: Empirisch lässt sich nicht belegen, dass Bedürfnisse strikt stufenweise befriedigt werden. In manchen Kulturen stehen soziale Bedürfnisse (Gemeinschaft) über individuellen Sicherheitsbedürfnissen. Eisenhut selbst relativiert: Menschen versuchen, Wünsche aus verschiedenen Ebenen gleichzeitig zu erfüllen. B ist falsch (die Pyramide umfasst auch immaterielle Bedürfnisse wie Zugehörigkeit und Selbstverwirklichung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Pyramide berücksichtigt nur materielle Bedürfnisse.",
+      "Maslow hat seine Theorie nie wissenschaftlich überprüft.",
+      "Die Pyramide gilt nur für westliche Gesellschaften, nicht für Entwicklungsländer.",
+      "Die strikte Hierarchie stimmt empirisch nicht – Menschen gewichten Bedürfnisse je nach Kultur, Alter und Lebenssituation sehr unterschiedlich."
+    ],
+    "korrekt": "Die strikte Hierarchie stimmt empirisch nicht – Menschen gewichten Bedürfnisse je nach Kultur, Alter und Lebenssituation sehr unterschiedlich."
+  },
+  {
+    "id": "vwl_beduerfnisse-b11",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "sort",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Betrachten Sie die Bedürfnispyramide. Ordnen Sie die folgenden konkreten Situationen der jeweils dominierenden Bedürfnisstufe zu.",
+    "erklaerung": "Die Einordnung erfordert Analyse der dominierenden Motivation: Bei der obdachlosen Person dominiert das Grundbedürfnis nach Schutz und Wärme. Lebensversicherung und unbefristeter Vertrag dienen der finanziellen Sicherheit. Der Kleidungsstil dient der Zugehörigkeit (sozial). Das Start-up und die Social-Media-Posts zielen auf Selbstverwirklichung bzw. Wertschätzung (hier zusammengefasst als Stufe 4).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/beduerfnispyramide_01.svg",
+      "alt": "Bedürfnispyramide nach Maslow mit vier Stufen"
+    },
+    "kategorien": [
+      "Körperliche Bedürfnisse",
+      "Sicherheitsbedürfnisse",
+      "Soziale Bedürfnisse",
+      "Selbstverwirklichung"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-g01",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was unterscheidet freie Güter von wirtschaftlichen (knappen) Gütern?",
+    "erklaerung": "Freie Güter: Von der Natur ausreichend vorhanden, z.B. Luft (in den meisten Situationen), Sonnenlicht. Wirtschaftliche Güter: Knapp und begehrt, deshalb nachgefragt und mit einem Preis versehen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es gibt keinen Unterschied.",
+      "Freie Güter sind immer Dienstleistungen.",
+      "Freie Güter sind von der Natur in ausreichender Menge vorhanden und gratis. Wirtschaftliche Güter sind knapp und haben einen Preis.",
+      "Freie Güter werden vom Staat bereitgestellt, wirtschaftliche von Unternehmen."
+    ],
+    "korrekt": "Freie Güter sind von der Natur in ausreichender Menge vorhanden und gratis. Wirtschaftliche Güter sind knapp und haben einen Preis."
+  },
+  {
+    "id": "vwl_beduerfnisse-g02",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Beispiele der korrekten Güterkategorie zu.",
+    "erklaerung": "Konsumgüter: Dienen direkt der Bedürfnisbefriedigung (Smartphone, Buch, Kleider). Investitionsgüter: Dienen der Herstellung von anderen Gütern (Friteuse, Lastwagen, Fabrik). Freie Güter: Von der Natur gratis und ausreichend vorhanden (Luft, Sonnenlicht).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Konsumgüter",
+      "Investitionsgüter",
+      "Freie Güter"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-g03",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Luft ist immer ein freies Gut.",
+    "erklaerung": "Falsch. Eisenhut schreibt: «Luft ist zum Beispiel in fast allen Situationen ein freies Gut.» In bestimmten Situationen kann Luft aber knapp und somit ein wirtschaftliches Gut werden – z.B. saubere Luft in stark verschmutzten Städten oder Atemluft unter Wasser (Tauchflasche).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-g04",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Güter, die direkt der Bedürfnisbefriedigung dienen, heissen {0}. Güter, die zur Herstellung anderer Güter benötigt werden, heissen {1}. Bei einer {2} geht es nicht um den Wert einer Ware, sondern um den Wert einer Leistung.",
+    "erklaerung": "Konsumgüter = direkte Bedürfnisbefriedigung (z.B. Brot, Kleidung). Investitionsgüter = Herstellung anderer Güter (z.B. Maschinen, Fabrikgebäude). Dienstleistung = immaterielle Leistung (z.B. Zugfahrt, Unterricht, Beratung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Konsumgüter",
+        "optionen": [
+          "Konsumgut"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Investitionsgüter",
+        "optionen": [
+          "Investitionsgut",
+          "Produktionsgüter"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Dienstleistung",
+        "optionen": [
+          "Dienstleistungen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-g05",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Verbrauchsgüter von Gebrauchsgütern?",
+    "erklaerung": "Konsumgüter werden unterteilt in: Verbrauchsgüter (einmalige Nutzung, z.B. Essen, Getränke, Benzin) und Gebrauchsgüter (mehrmalige/längere Nutzung, z.B. Velo, Handy, Kleider, Spielkonsole).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Verbrauchsgüter sind teurer als Gebrauchsgüter.",
+      "Verbrauchsgüter sind immer Lebensmittel.",
+      "Gebrauchsgüter sind immer Investitionsgüter.",
+      "Verbrauchsgüter werden bei der Nutzung aufgebraucht (z.B. Lebensmittel), Gebrauchsgüter können längere Zeit benutzt werden (z.B. Smartphone)."
+    ],
+    "korrekt": "Verbrauchsgüter werden bei der Nutzung aufgebraucht (z.B. Lebensmittel), Gebrauchsgüter können längere Zeit benutzt werden (z.B. Smartphone)."
+  },
+  {
+    "id": "vwl_beduerfnisse-g06",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Konsumgüter: Verbrauchsgüter oder Gebrauchsgüter?",
+    "erklaerung": "Verbrauchsgüter werden beim Konsum aufgebraucht (Sandwich, Benzin, Wasser). Gebrauchsgüter können längere Zeit genutzt werden (Velo, Winterjacke, Spielkonsole).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Verbrauchsgüter",
+      "Gebrauchsgüter"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-g07",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Nennen Sie je zwei Beispiele für Sachgüter und Dienstleistungen, die Sie gestern direkt genutzt haben. Erklären Sie den Unterschied.",
+    "erklaerung": "Eisenhut betont: «Bei einer Dienstleistung geht es nicht um den Wert einer Ware, sondern um den Wert einer Leistung.» Beispiele: Zugfahrt, Unterricht, Studienberatung, Haarschnitt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Sachgüter: Brot zum Frühstück (Verbrauchsgut), Laptop für die Schule (Gebrauchsgut). Dienstleistungen: Zugfahrt zur Schule (Transportdienstleistung), Unterrichtsstunde (Bildungsdienstleistung). Unterschied: Bei Sachgütern besitzt man ein physisches Objekt. Bei Dienstleistungen geht es um den Wert einer Leistung, nicht einer Ware – sie sind immateriell und können nicht gelagert werden."
+  },
+  {
+    "id": "vwl_beduerfnisse-g08",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Lastwagen ist immer ein Investitionsgut.",
+    "erklaerung": "Falsch. Die Zuordnung hängt von der Verwendung ab. Ein Lastwagen, der für den gewerblichen Gütertransport eingesetzt wird, ist ein Investitionsgut. Ein Lastwagen, den jemand privat als Hobby-Fahrzeug nutzt, wäre ein Konsumgut (Gebrauchsgut). Entscheidend ist der Zweck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-g09",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Güter sind Investitionsgüter?",
+    "erklaerung": "A und C sind richtig. Investitionsgüter dienen der Herstellung anderer Güter oder Dienstleistungen (gewerblicher Zweck). Die Nähmaschine in der Schneiderei (A) produziert Kleidung, das Kassensystem (C) ermöglicht den Verkaufsprozess. Die private Nähmaschine (B) und der Schülerlaptop (D) dienen dem privaten Konsum = Konsumgüter (Gebrauchsgüter).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nähmaschine in einer Schneiderei",
+      "Nähmaschine, die jemand privat zum Hobby nutzt",
+      "Kassensystem in einem Supermarkt",
+      "Laptop, den ein Schüler für die Schule nutzt"
+    ],
+    "korrekt": [
+      "Nähmaschine in einer Schneiderei",
+      "Kassensystem in einem Supermarkt"
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-g10",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Grafik zeigt eine Klassifikation der Güterarten. Wasser aus dem Hahn kostet in der Schweiz einen kleinen Betrag, in einem Wüstengebiet kann es ein Vielfaches kosten. Was zeigt dieses Beispiel über die Güterklassifikation?",
+    "erklaerung": "Die Einordnung als freies oder wirtschaftliches Gut ist nicht absolut, sondern abhängig von der Knappheitssituation. Wasser in der Schweiz ist relativ günstig (geringe Knappheit), in der Wüste extrem teuer (hohe Knappheit). Ebenso kann saubere Luft in einer stark verschmutzten Stadt zum wirtschaftlichen Gut werden. Die Güterklassifikation ist also kontextabhängig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/gueterklassifikation_01.svg",
+      "alt": "Klassifikation der Güterarten: freie vs. wirtschaftliche Güter, Sachgüter und Dienstleistungen"
+    },
+    "optionen": [
+      "Die Güterklassifikation gilt nicht für natürliche Ressourcen.",
+      "Die Grenze zwischen freien und wirtschaftlichen Gütern ist nicht fix, sondern hängt von der Knappheitssituation ab.",
+      "Wasser ist immer ein wirtschaftliches Gut.",
+      "Wasser ist immer ein freies Gut, nur die Aufbereitung kostet etwas."
+    ],
+    "korrekt": "Die Grenze zwischen freien und wirtschaftlichen Gütern ist nicht fix, sondern hängt von der Knappheitssituation ab."
+  },
+  {
+    "id": "vwl_beduerfnisse-g11",
+    "fach": "VWL",
+    "thema": "Güterarten",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Diskutieren Sie: Sollte sauberes Trinkwasser als freies Gut behandelt werden (gratis für alle), oder sollte es einen Preis haben? Argumentieren Sie mit dem Knappheitsprinzip.",
+    "erklaerung": "Diese Frage verbindet die Güterklassifikation mit einer normativen Frage der Wirtschaftspolitik. In der VWL wird betont: Wenn knappe Güter keinen Preis haben, droht Übernutzung (Tragik der Allmende). Gleichzeitig gibt es gute Gründe für einen garantierten Grundzugang zu lebensnotwendigen Gütern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Argument für einen Preis: Sauberes Trinkwasser ist ein knappes wirtschaftliches Gut – die Aufbereitung, Speicherung und Verteilung kosten Ressourcen. Ohne Preis fehlt der Anreiz zum sparsamen Umgang, was zu Verschwendung führt (z.B. Übernutzung). Argument für Gratis-Zugang: Wasser ist lebensnotwendig (Grundbedürfnis). Wenn arme Menschen es sich nicht leisten können, ist das ethisch problematisch. Kompromiss: Ein Grundkontingent gratis (Grundbedürfnis), darüber hinaus ein steigender Preis (Anreiz zum Sparen)."
+  },
+  {
+    "id": "vwl_beduerfnisse-p01",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche vier Produktionsfaktoren unterscheidet man in der VWL?",
+    "erklaerung": "Die vier Produktionsfaktoren: (1) Arbeit = jede produktive Tätigkeit des Menschen. (2) Natürliche Ressourcen = Boden, Rohmaterial. (3) Realkapital = Maschinen, Anlagen, Gebäude. (4) Wissen = Humankapital (Können, Fähigkeiten) und technischer Fortschritt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Arbeit, natürliche Ressourcen (Boden), Realkapital und Wissen.",
+      "Löhne, Zinsen, Mieten und Gewinne.",
+      "Geld, Maschinen, Rohstoffe und Energie.",
+      "Konsum, Investitionen, Staat und Exporte."
+    ],
+    "korrekt": "Arbeit, natürliche Ressourcen (Boden), Realkapital und Wissen."
+  },
+  {
+    "id": "vwl_beduerfnisse-p02",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele den korrekten Produktionsfaktoren zu.",
+    "erklaerung": "Am Beispiel der Pommes frites (nach Eisenhut): Um Pommes zu produzieren, braucht es immer eine Kombination aller vier Produktionsfaktoren: menschliche Arbeit, natürliche Ressourcen (Kartoffeln, Energie), Realkapital (Friteuse, Gebäude, Besteck) und Wissen (Ausbildung, Rezepte).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Arbeit",
+      "Natürliche Ressourcen",
+      "Realkapital",
+      "Wissen"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-p03",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Unter dem Produktionsfaktor {0} versteht man jede produktive Tätigkeit des Menschen. {1} benötigt man z.B. in Form von Boden und Rohmaterial. {2} umfasst Maschinen, Anlagen und Gebäude.",
+    "erklaerung": "Arbeit = produktive Tätigkeit. Natürliche Ressourcen = Boden, Rohstoffe, Energie. Realkapital = Sachkapital (Maschinen, Anlagen, Gebäude). Der vierte Faktor ist Wissen (Humankapital, technischer Fortschritt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Arbeit",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Natürliche Ressourcen",
+        "optionen": [
+          "Boden",
+          "natürliche Ressourcen"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Realkapital",
+        "optionen": [
+          "Kapital"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-p04",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Humankapital (Wissen, Können, Fähigkeiten) gilt als eigenständiger Produktionsfaktor.",
+    "erklaerung": "Richtig. Neben Arbeit, natürlichen Ressourcen und Realkapital wird Wissen als vierter Produktionsfaktor betrachtet. Es umfasst Humankapital (Wissen, Können, Fähigkeiten, Fertigkeiten) und technischen Fortschritt. Wissen ist für die wirtschaftliche Entwicklung eines Landes besonders bedeutungsvoll.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-p05",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Wählen Sie ein beliebiges Produkt aus Ihrem Alltag und beschreiben Sie, welche vier Produktionsfaktoren für dessen Herstellung nötig sind.",
+    "erklaerung": "Eisenhut betont: Um ein Gut zu produzieren, braucht es immer eine Kombination aller vier Produktionsfaktoren. Die Qualität und Quantität dieser Faktoren bestimmt den «Wohlstandskuchen» eines Landes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Beispiel Smartphone: (1) Arbeit: Ingenieure entwickeln das Design, Arbeiter*innen montieren die Teile. (2) Natürliche Ressourcen: Seltene Erden, Kupfer, Glas, Lithium für die Batterie. (3) Realkapital: Fabriken, Maschinen, Montagelinien, Transportmittel. (4) Wissen: Software-Entwicklung, Patente, Design-Know-how, Forschung."
+  },
+  {
+    "id": "vwl_beduerfnisse-p06",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum wird Wissen als der wichtigste Produktionsfaktor für moderne Volkswirtschaften angesehen?",
+    "erklaerung": "Wissen erhöht die Produktivität der anderen Faktoren: Besseres Know-how → effizientere Arbeit, bessere Nutzung von Ressourcen und produktivere Maschinen. Deshalb investieren moderne Volkswirtschaften stark in Bildung und Forschung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil man ohne Wissen gar keine Güter produzieren kann.",
+      "Weil Wissen gratis ist und unbegrenzt zur Verfügung steht.",
+      "Weil Wissen den Produktionsfaktor Arbeit ersetzt.",
+      "Weil technischer Fortschritt und Humankapital die Produktivität aller anderen Faktoren steigern."
+    ],
+    "korrekt": "Weil technischer Fortschritt und Humankapital die Produktivität aller anderen Faktoren steigern."
+  },
+  {
+    "id": "vwl_beduerfnisse-p07",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein Bäckermeister, der seine langjährige Erfahrung im Brotbacken einsetzt, nutzt dabei nur den Produktionsfaktor Arbeit.",
+    "erklaerung": "Falsch. Der Bäckermeister nutzt mindestens zwei Produktionsfaktoren gleichzeitig: Arbeit (seine körperliche und geistige Tätigkeit) und Wissen (seine Erfahrung, sein Know-how, seine Ausbildung als Humankapital). Dazu kommen natürlich Realkapital (Backofen) und natürliche Ressourcen (Mehl, Wasser).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-p08",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Produktionsfaktor wird mit dem Begriff «Realkapital» bezeichnet?",
+    "erklaerung": "Realkapital (auch Sachkapital) = produzierte Produktionsmittel wie Maschinen, Anlagen, Werkzeuge, Gebäude. Nicht zu verwechseln mit Geldkapital (Finanzmittel). Patente und Know-how gehören zum Produktionsfaktor Wissen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Patente und geistiges Eigentum.",
+      "Maschinen, Anlagen und Gebäude – also produzierte Produktionsmittel.",
+      "Die Arbeitskraft der Mitarbeitenden.",
+      "Das Geld auf dem Bankkonto eines Unternehmens."
+    ],
+    "korrekt": "Maschinen, Anlagen und Gebäude – also produzierte Produktionsmittel."
+  },
+  {
+    "id": "vwl_beduerfnisse-p09",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Beispiele gehören zum Produktionsfaktor «Wissen»?",
+    "erklaerung": "A und C sind richtig. Wissen umfasst Humankapital (Berufserfahrung, Ausbildung, Fähigkeiten der Ärztin) und technischen Fortschritt (Patent für ein Medikament). Das Spitalgebäude (B) und die Geräte (D) sind Realkapital – sie sind produzierte Produktionsmittel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Berufserfahrung einer Ärztin",
+      "Das Gebäude eines Spitals",
+      "Ein Patent für ein neues Medikament",
+      "Medizinische Geräte im Operationssaal"
+    ],
+    "korrekt": [
+      "Die Berufserfahrung einer Ärztin",
+      "Ein Patent für ein neues Medikament"
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-p10",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Schweiz hat wenig natürliche Ressourcen (kaum Rohstoffe, wenig Agrarfläche), ist aber eines der reichsten Länder der Welt. Welcher Produktionsfaktor erklärt diesen Widerspruch am besten?",
+    "erklaerung": "Die Schweiz ist ein Paradebeispiel dafür, dass Wissen (Humankapital + Innovation) der entscheidende Produktionsfaktor ist. Hochqualifizierte Arbeitskräfte, exzellente Forschung (ETH, Pharma), starke Berufsbildung und technologischer Fortschritt kompensieren den Mangel an Rohstoffen. Eisenhut betont: Wissen ist «für die wirtschaftliche Entwicklung eines Landes besonders bedeutungsvoll».",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Arbeit – die Schweizer arbeiten mehr Stunden als andere Völker.",
+      "Natürliche Ressourcen – die Schweiz nutzt ihre Wasserkraft besonders gut.",
+      "Realkapital – die Schweiz hat besonders viele Maschinen und Fabriken.",
+      "Wissen – die Schweiz investiert stark in Bildung, Forschung und Innovation, was die Produktivität aller anderen Faktoren steigert."
+    ],
+    "korrekt": "Wissen – die Schweiz investiert stark in Bildung, Forschung und Innovation, was die Produktivität aller anderen Faktoren steigert."
+  },
+  {
+    "id": "vwl_beduerfnisse-p11",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Geldkapital (z.B. Bankguthaben eines Unternehmens) ist ein Produktionsfaktor.",
+    "erklaerung": "Falsch. In der VWL-Systematik ist Geld kein Produktionsfaktor. Geld ist ein Tauschmittel, mit dem man Produktionsfaktoren erwerben kann (z.B. Maschinen kaufen = Realkapital, Löhne zahlen = Arbeit). Der dritte Produktionsfaktor heisst deshalb bewusst «Realkapital» (Sachkapital) – zur Abgrenzung von Geldkapital.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-o01",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was besagt das Maximumprinzip (Ergiebigkeitsprinzip)?",
+    "erklaerung": "Maximumprinzip: Gegebener Input → maximaler Output. Beispiel: 4 Stunden lernen (gegebener Aufwand) → bestmögliche Note erzielen. Das Gegenstück ist das Minimumprinzip: Bestimmtes Ergebnis → minimaler Aufwand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Immer den maximalen Preis für ein Gut verlangen.",
+      "Möglichst viel produzieren, unabhängig von den Kosten.",
+      "Ein bestimmtes Ergebnis mit minimalem Aufwand erreichen.",
+      "Mit gegebenem Aufwand (Input) das grösstmögliche Ergebnis (Output) erzielen."
+    ],
+    "korrekt": "Mit gegebenem Aufwand (Input) das grösstmögliche Ergebnis (Output) erzielen."
+  },
+  {
+    "id": "vwl_beduerfnisse-o02",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was besagt das Minimumprinzip (Sparsamkeitsprinzip)?",
+    "erklaerung": "Minimumprinzip: Bestimmter Output → minimaler Input. Beispiel: Note 5 erreichen (bestimmtes Ergebnis) → möglichst wenig Lernzeit aufwenden. Das Optimumprinzip vereint beide: Input und Output optimal aufeinander abstimmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "So wenig wie möglich arbeiten.",
+      "Ein bestimmtes Ergebnis (Output) mit möglichst geringem Aufwand (Input) erreichen.",
+      "Die Produktion auf ein Minimum reduzieren.",
+      "Immer das billigste Produkt kaufen."
+    ],
+    "korrekt": "Ein bestimmtes Ergebnis (Output) mit möglichst geringem Aufwand (Input) erreichen."
+  },
+  {
+    "id": "vwl_beduerfnisse-o03",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Beispiele dem Maximum- oder Minimumprinzip zu.",
+    "erklaerung": "Maximumprinzip: Input ist gegeben → Output maximieren (CHF 50 → max. Lebensmittel; 4h → beste Note; 1 Tank → max. Distanz). Minimumprinzip: Output ist gegeben → Input minimieren (Note 5 → min. Lernzeit; Strecke → min. Benzin; Haus → min. Kosten).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Maximumprinzip",
+      "Minimumprinzip"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-o04",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das ökonomische Prinzip hat zwei Ausprägungen: Das {0} (gegebener Aufwand → maximales Ergebnis) und das {1} (gegebenes Ergebnis → minimaler Aufwand). Zusammen bilden sie das {2}.",
+    "erklaerung": "Das Optimumprinzip (Wirtschaftlichkeitsprinzip) vereint Maximum- und Minimumprinzip: Input und Output werden optimal aufeinander abgestimmt. Wirtschaften bedeutet, nach diesem Prinzip zu handeln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Maximumprinzip",
+        "optionen": [
+          "Maximum-Prinzip",
+          "Ergiebigkeitsprinzip"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Minimumprinzip",
+        "optionen": [
+          "Minimum-Prinzip",
+          "Sparsamkeitsprinzip"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Optimumprinzip",
+        "optionen": [
+          "Wirtschaftlichkeitsprinzip",
+          "Optimum-Prinzip"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-o05",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Unternehmen 1'000 Hemden mit möglichst geringen Kosten produzieren will, handelt es nach dem Maximumprinzip.",
+    "erklaerung": "Falsch. Es handelt nach dem Minimumprinzip: Das Ergebnis ist vorgegeben (1'000 Hemden), der Aufwand (Kosten) soll minimiert werden. Beim Maximumprinzip wäre es umgekehrt: Mit einem gegebenen Budget möglichst viele Hemden produzieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-o06",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Formulieren Sie ein eigenes Alltagsbeispiel für das Maximumprinzip und eines für das Minimumprinzip.",
+    "erklaerung": "Entscheidend für die Zuordnung: Beim Maximumprinzip ist der Input fix (Budget, Zeit, Menge), beim Minimumprinzip ist der Output fix (Ziel, Ergebnis, Menge). Im Alltag wenden wir beide Prinzipien ständig an.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Maximumprinzip: Ich habe ein Budget von CHF 200 für Weihnachtsgeschenke und versuche, damit möglichst viele und gute Geschenke zu kaufen (gegebener Input → maximaler Output). Minimumprinzip: Ich möchte an den Bodensee fahren und suche die günstigste Verbindung (gegebenes Ziel → minimale Kosten/Aufwand)."
+  },
+  {
+    "id": "vwl_beduerfnisse-o07",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche der folgenden Situationen sind Beispiele für das Minimumprinzip?",
+    "erklaerung": "A und C sind Minimumprinzip: Das Ergebnis ist vorgegeben (Lieferung nach Basel; 10'000 Einheiten) und der Aufwand soll minimiert werden (kürzeste Route; wenig Materialverlust). B und D sind Maximumprinzip: Der Input ist fix (CHF 500; 60 Minuten) und das Ergebnis soll maximiert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Logistikunternehmen sucht die kürzeste Route für eine Lieferung nach Basel.",
+      "Mit einem Monatsbudget von CHF 500 möglichst gut essen.",
+      "Eine Firma will 10'000 Einheiten mit möglichst wenig Materialverlust produzieren.",
+      "Ein Sportler will in 60 Minuten Training möglichst viele Kalorien verbrennen."
+    ],
+    "korrekt": [
+      "Ein Logistikunternehmen sucht die kürzeste Route für eine Lieferung nach Basel.",
+      "Eine Firma will 10'000 Einheiten mit möglichst wenig Materialverlust produzieren."
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-o08",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Schülerin lernt für zwei Prüfungen gleichzeitig. Für Mathe hat sie 3 Stunden eingeplant, für Deutsch 2 Stunden. Nach welchem ökonomischen Prinzip handelt sie?",
+    "erklaerung": "Hier handelt die Schülerin nach dem Optimumprinzip: Sie hat begrenzte Ressourcen (Gesamtlernzeit) und muss diese so auf verschiedene Verwendungen aufteilen, dass das Gesamtergebnis möglichst gut ist. Das ist die Kernidee des Wirtschaftens: knappe Mittel optimal einsetzen. Ökonomische Prinzipien gelten nicht nur in der Wirtschaft, sondern in allen Bereichen des Lebens.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nach keinem ökonomischen Prinzip, da es sich um Lernen und nicht um Wirtschaft handelt.",
+      "Nach dem Optimumprinzip – sie teilt ihre begrenzte Lernzeit so auf, dass das Gesamtergebnis möglichst gut wird.",
+      "Nach dem Maximumprinzip für jedes einzelne Fach.",
+      "Nach dem Minimumprinzip, weil sie die Lernzeit minimiert."
+    ],
+    "korrekt": "Nach dem Optimumprinzip – sie teilt ihre begrenzte Lernzeit so auf, dass das Gesamtergebnis möglichst gut wird."
+  },
+  {
+    "id": "vwl_beduerfnisse-o09",
+    "fach": "VWL",
+    "thema": "Ökonomisches Prinzip",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Das ökonomische Prinzip gilt nur für Unternehmen und den Staat, nicht für private Entscheidungen im Alltag.",
+    "erklaerung": "Falsch. Das ökonomische Prinzip gilt universal – überall dort, wo knappe Mittel auf unbegrenzte Bedürfnisse treffen. Auch im Alltag wenden wir es an: beim Einkaufen (Budget einteilen), bei der Zeitplanung (knappe Freizeit optimal nutzen) oder bei der Wahl des Verkehrsmittels (schnellste/günstigste Route). Wirtschaften ist nicht auf «die Wirtschaft» beschränkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-a01",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der Hauptvorteil von Arbeitsteilung und Spezialisierung?",
+    "erklaerung": "Arbeitsteilung und Spezialisierung erhöhen die Produktivität: Jeder konzentriert sich auf das, was er am besten kann. Besonders Kräftige werden Bauarbeiter, kreativ Begabte Künstler, besonders Unentwegte Volkswirtschafter (Eisenhut). Das entschärft das Knappheitsproblem.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Produktivität (Leistung pro Stunde/Arbeitskraft) steigt, weil sich jeder auf seine Stärken spezialisiert.",
+      "Die Preise sinken automatisch.",
+      "Es gibt weniger Arbeitslose.",
+      "Alle verdienen gleich viel."
+    ],
+    "korrekt": "Die Produktivität (Leistung pro Stunde/Arbeitskraft) steigt, weil sich jeder auf seine Stärken spezialisiert."
+  },
+  {
+    "id": "vwl_beduerfnisse-a02",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Arbeitsteilung setzt eine Bereitschaft zum Tausch voraus.",
+    "erklaerung": "Richtig. Eisenhut: «Die notwendige Ergänzung der Arbeitsteilung ist der Tausch.» Wer sich spezialisiert, produziert nur wenige Güter und muss die restlichen durch Tausch beschaffen. Ohne Tauschbereitschaft wäre Spezialisierung nicht möglich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-a03",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche drei Funktionen erfüllt Geld?",
+    "erklaerung": "Die drei Funktionen des Geldes: (1) Zahlungsmittel – ermöglicht einfachen Tausch ohne Gütertausch (spart Zeit und Kosten). (2) Rechnungseinheit – ermöglicht transparente, vergleichbare Preise. (3) Wertaufbewahrungsmittel – ermöglicht Sparen, Konsum zeitlich verschieben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sparmittel, Investitionsmittel und Kreditmittel.",
+      "Zahlungsmittel, Rechnungseinheit und Wertaufbewahrungsmittel.",
+      "Bargeld, Buchgeld und Kryptowährung.",
+      "Tausch, Produktion und Konsum."
+    ],
+    "korrekt": "Zahlungsmittel, Rechnungseinheit und Wertaufbewahrungsmittel."
+  },
+  {
+    "id": "vwl_beduerfnisse-a04",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Beispiele der korrekten Geldfunktion zu.",
+    "erklaerung": "Zahlungsmittel: Geld zum Bezahlen verwenden. Rechnungseinheit: Preise in einer einheitlichen Währung ausdrücken und vergleichen. Wertaufbewahrung: Geld sparen, Kaufkraft über die Zeit erhalten, Konsum auf später verschieben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Zahlungsmittel",
+      "Rechnungseinheit",
+      "Wertaufbewahrungsmittel"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-a05",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Alle drei Geldfunktionen helfen, die sogenannten {0} zu senken. Darunter versteht man alle Kosten, die bei der Abwicklung eines {1} entstehen, z.B. Suche nach Tauschpartnern und {2}.",
+    "erklaerung": "Transaktionskosten = alle Kosten für die Anbahnung und Abwicklung eines Tauschgeschäfts: Suche nach Tauschpartnern, Informationen über Anbieter und Preise, Vertragskosten, Kontrolle. Geld senkt diese Kosten erheblich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Transaktionskosten",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Tauschgeschäfts",
+        "optionen": [
+          "Tauschgeschäftes",
+          "Tausches"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Informationsbeschaffung",
+        "optionen": [
+          "Informationskosten",
+          "Vertragskosten"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-a06",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Stellen Sie sich vor, es gäbe kein Geld. Welche drei konkreten Probleme hätten Sie beim Tausch? Nennen Sie zu jedem Problem die Geldfunktion, die es löst.",
+    "erklaerung": "Eisenhut beschreibt diese drei Probleme am Beispiel einer Tauschwirtschaft. Geld löst alle drei durch seine Funktionen und senkt so die Transaktionskosten erheblich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "(1) Problem: Ich müsste jemanden finden, der genau das will, was ich anbiete, und gleichzeitig das hat, was ich brauche (doppelte Koinzidenz der Wünsche). Lösung: Zahlungsmittelfunktion. (2) Problem: Wie viele Brote ist ein Velo wert? Ohne gemeinsame Einheit müsste man unzählige Tauschverhältnisse kennen. Lösung: Rechnungseinheit. (3) Problem: Verderbliche Güter (z.B. Äpfel) kann man nicht lagern, ohne dass sie an Wert verlieren. Lösung: Wertaufbewahrungsfunktion."
+  },
+  {
+    "id": "vwl_beduerfnisse-a07",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "In einer modernen Volkswirtschaft produzieren die meisten Menschen den Grossteil der Güter, die sie täglich konsumieren, selbst.",
+    "erklaerung": "Falsch. In einer arbeitsteiligen Wirtschaft produzieren wir fast nichts von dem, was wir täglich konsumieren, selbst. Eisenhut fordert zum Nachdenken auf: Wie viele Güter stellen Sie selber her? Eines, zwei, vielleicht zehn? Wir sind Teil eines dichten Netzes der Arbeitsteilung und Spezialisierung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-a08",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen über die Wertaufbewahrungsfunktion des Geldes sind korrekt?",
+    "erklaerung": "A, B und D sind korrekt. Geld ermöglicht Sparen und zeitliche Verschiebung von Konsum (A, D). Bei hoher Inflation verliert Geld aber an Kaufkraft, was die Wertaufbewahrung einschränkt (B). Aussage C ist falsch: Geld behält nicht immer seinen Wert – Inflation entwertet Geld real. Deshalb legen Menschen Geld auch in Sachwerten (Immobilien, Aktien) an.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Geld ermöglicht es, Konsum in die Zukunft zu verschieben.",
+      "Geld verliert bei Inflation an Kaufkraft, was diese Funktion einschränkt.",
+      "Die Wertaufbewahrungsfunktion bedeutet, dass Geld immer seinen Wert behält.",
+      "Ohne diese Funktion wäre langfristiges Sparen unmöglich."
+    ],
+    "korrekt": [
+      "Geld ermöglicht es, Konsum in die Zukunft zu verschieben.",
+      "Geld verliert bei Inflation an Kaufkraft, was diese Funktion einschränkt.",
+      "Ohne diese Funktion wäre langfristiges Sparen unmöglich."
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-a09",
+    "fach": "VWL",
+    "thema": "Arbeitsteilung, Tausch & Geld",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Coronapandemie wurden internationale Lieferketten unterbrochen, und es gab Engpässe bei Computerchips und Medikamenten. Was zeigt dies über Arbeitsteilung?",
+    "erklaerung": "Die Pandemie hat die Kehrseite der Arbeitsteilung sichtbar gemacht: Hohe Spezialisierung und globale Lieferketten schaffen gegenseitige Abhängigkeiten. Wenn ein Glied der Kette ausfällt, kann das ganze System gestört werden. Das heisst aber nicht, dass Arbeitsteilung schlecht ist – die Vorteile (höhere Produktivität, niedrigere Kosten) überwiegen deutlich. Es zeigt jedoch die Notwendigkeit von Risikomanagement und Diversifikation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur nationale Arbeitsteilung ist sinnvoll, internationale nicht.",
+      "Arbeitsteilung funktioniert nur in guten Zeiten und sollte abgeschafft werden.",
+      "Die Engpässe zeigen, dass Arbeitsteilung die Produktivität nicht wirklich steigert.",
+      "Arbeitsteilung erhöht zwar die Effizienz, macht aber auch verletzlich: Hohe Spezialisierung und internationale Verflechtung schaffen Abhängigkeiten."
+    ],
+    "korrekt": "Arbeitsteilung erhöht zwar die Effizienz, macht aber auch verletzlich: Hohe Spezialisierung und internationale Verflechtung schaffen Abhängigkeiten."
+  },
+  {
+    "id": "vwl_beduerfnisse-s01",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Wirtschaftssektoren unterscheidet man?",
+    "erklaerung": "Primärer Sektor = Urproduktion (Land-/Forstwirtschaft, Fischerei, Bergbau). Sekundärer Sektor = Veredelung/Industrie (Verarbeitung der Güter aus der Urproduktion). Tertiärer Sektor = Dienstleistungen (Handel, Banken, Versicherungen, Bildung, Gesundheit).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Primärer Sektor (Urproduktion), sekundärer Sektor (Industrie), tertiärer Sektor (Dienstleistungen).",
+      "Produktion, Handel und Konsum.",
+      "Staat, Unternehmen und Haushalte.",
+      "Import, Export und Binnenmarkt."
+    ],
+    "korrekt": "Primärer Sektor (Urproduktion), sekundärer Sektor (Industrie), tertiärer Sektor (Dienstleistungen)."
+  },
+  {
+    "id": "vwl_beduerfnisse-s02",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "sort",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Berufe dem korrekten Wirtschaftssektor zu.",
+    "erklaerung": "Primär: Bauer, Förster, Fischer (Urproduktion/Rohstoffgewinnung). Sekundär: Automechaniker in Fabrik, Uhrmacher (Verarbeitung/Industrie). Tertiär: Bankberaterin, Lehrerin, Krankenpfleger (Dienstleistungen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Primärer Sektor",
+      "Sekundärer Sektor",
+      "Tertiärer Sektor"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-s03",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie hat sich die Beschäftigungsstruktur in der Schweiz seit 1800 verändert (Strukturwandel)?",
+    "erklaerung": "Strukturwandel der Schweiz: Um 1800 arbeiteten über 50% im primären Sektor (Agrarland). Um 1900 dominierte der sekundäre Sektor (Industrieland). Heute arbeiten über 70% im tertiären Sektor (Dienstleistungsgesellschaft). Der primäre Sektor beschäftigt nur noch ca. 3%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Industrie dominiert heute stärker als je zuvor.",
+      "Der primäre Sektor ist stetig gewachsen.",
+      "Von einem Agrarland (primärer Sektor dominiert) über ein Industrieland (sekundärer Sektor dominiert) zur Dienstleistungsgesellschaft (tertiärer Sektor dominiert).",
+      "Alle drei Sektoren sind gleich gross geblieben."
+    ],
+    "korrekt": "Von einem Agrarland (primärer Sektor dominiert) über ein Industrieland (sekundärer Sektor dominiert) zur Dienstleistungsgesellschaft (tertiärer Sektor dominiert)."
+  },
+  {
+    "id": "vwl_beduerfnisse-s04",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Schweiz ist heute eine Dienstleistungsgesellschaft – der tertiäre Sektor ist der grösste.",
+    "erklaerung": "Richtig. Über 70% der Beschäftigten in der Schweiz arbeiten im tertiären Sektor (Dienstleistungen: Banken, Versicherungen, Handel, Bildung, Gesundheit, IT). Der sekundäre Sektor (Industrie) beschäftigt ca. 25%, der primäre (Landwirtschaft) nur noch ca. 3%.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-s05",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der {0} Sektor umfasst die Urproduktion (z.B. Landwirtschaft). Der {1} Sektor umfasst die Industrie. Der {2} Sektor umfasst die Dienstleistungen.",
+    "erklaerung": "Die drei Sektoren der Volkswirtschaft: Primär (Urproduktion), sekundär (Verarbeitung/Industrie), tertiär (Dienstleistungen). Der Strukturwandel beschreibt die Verschiebung der Beschäftigung vom primären zum tertiären Sektor über die Jahrhunderte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "primäre",
+        "optionen": [
+          "erste",
+          "1.",
+          "primaere"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "sekundäre",
+        "optionen": [
+          "zweite",
+          "2.",
+          "sekundaere"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "tertiäre",
+        "optionen": [
+          "dritte",
+          "3.",
+          "tertiaere"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-s06",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie, warum der Strukturwandel von der Agrar- zur Dienstleistungsgesellschaft stattgefunden hat. Welche Rolle spielen dabei Produktivität und Arbeitsteilung?",
+    "erklaerung": "Der Strukturwandel ist ein zentrales Phänomen der wirtschaftlichen Entwicklung. Steigende Produktivität in einem Sektor setzt Arbeitskräfte frei, die in wachsenden Sektoren absorbiert werden. Gleichzeitig verändern sich mit steigendem Wohlstand die Bedürfnisse.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Durch technischen Fortschritt (Maschinen, Düngemittel) stieg die Produktivität in der Landwirtschaft stark an – weniger Arbeitskräfte konnten mehr produzieren. Freigesetzte Arbeitskräfte wanderten in die Industrie (Industrialisierung). Dort wiederum stieg die Produktivität durch Automatisierung, und Arbeitskräfte wechselten in den Dienstleistungssektor. Zudem steigen mit dem Wohlstand die Bedürfnisse nach Dienstleistungen (Bildung, Gesundheit, Reisen, Beratung). Arbeitsteilung und Spezialisierung trieben diesen Wandel voran."
+  },
+  {
+    "id": "vwl_beduerfnisse-s07",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Berufe gehören zum tertiären Sektor?",
+    "erklaerung": "A und C sind richtig. Softwareentwicklung bei einer Bank (A) und Physiotherapie (C) sind Dienstleistungen (tertiärer Sektor). Der Winzer (B) gehört zum primären Sektor (Urproduktion/Landwirtschaft). Der Maschinenbauingenieur in einer Fabrik (D) gehört zum sekundären Sektor (Industrie/Verarbeitung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Softwareentwicklerin bei einer Bank",
+      "Winzer im Wallis",
+      "Physiotherapeutin in einer Praxis",
+      "Maschinenbauingenieur in einer Fabrik"
+    ],
+    "korrekt": [
+      "Softwareentwicklerin bei einer Bank",
+      "Physiotherapeutin in einer Praxis"
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-s08",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Grafik zeigt den Strukturwandel der Schweiz. Sektor A, B und C sind nicht beschriftet. Welche Zuordnung ist korrekt?",
+    "erklaerung": "Der primäre Sektor (A, grün) sinkt kontinuierlich von über 50% um 1800 auf ca. 3% heute. Der sekundäre Sektor (B, blau) steigt mit der Industrialisierung an, erreicht um 1960 seinen Höhepunkt und sinkt dann. Der tertiäre Sektor (C, orange) steigt kontinuierlich und dominiert heute mit über 70%. Dieses Muster ist typisch für den Strukturwandel aller entwickelten Volkswirtschaften.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/strukturwandel_01.svg",
+      "alt": "Drei Linien zeigen die Beschäftigungsentwicklung dreier Sektoren in der Schweiz von 1800 bis 2020"
+    },
+    "optionen": [
+      "A = primärer Sektor, B = tertiärer Sektor, C = sekundärer Sektor",
+      "A = primärer Sektor (sinkend), B = sekundärer Sektor (erst steigend, dann sinkend), C = tertiärer Sektor (steigend)",
+      "A = tertiärer Sektor, B = primärer Sektor, C = sekundärer Sektor",
+      "A = sekundärer Sektor, B = primärer Sektor, C = tertiärer Sektor"
+    ],
+    "korrekt": "A = primärer Sektor (sinkend), B = sekundärer Sektor (erst steigend, dann sinkend), C = tertiärer Sektor (steigend)"
+  },
+  {
+    "id": "vwl_beduerfnisse-s09",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Rückgang des primären Sektors in der Schweiz bedeutet, dass die Landwirtschaft weniger produziert als früher.",
+    "erklaerung": "Falsch. Der Rückgang bezieht sich auf den Anteil der Beschäftigten, nicht auf die Produktion. Dank technischem Fortschritt (Maschinen, Düngemittel, Züchtung) produziert die Schweizer Landwirtschaft heute mit viel weniger Arbeitskräften mehr als vor 200 Jahren. Die Produktivität pro Arbeitskraft ist massiv gestiegen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_beduerfnisse-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Bedürfnisstufen gemäss der Maslowschen Bedürfnispyramide von der untersten (grundlegendsten) zur obersten Stufe.",
+    "erklaerung": "Maslow ordnet die Bedürfnisse hierarchisch: Zuerst müssen die grundlegenden Bedürfnisse (physiologisch, Sicherheit) befriedigt sein, bevor höhere Stufen (sozial, Wertschätzung, Selbstverwirklichung) relevant werden. Die Pyramide ist ein Modell – in der Realität können die Stufen sich überschneiden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Wirtschaftssektoren & Strukturwandel",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Phasen des Strukturwandels in der Schweiz in die historisch korrekte Reihenfolge.",
+    "erklaerung": "Die Schweiz durchlief den klassischen Strukturwandel: Von der Agrargesellschaft (vor 1800) über die Industrialisierung (19. Jh.) zur Dominanz des tertiären Sektors (ab ca. 1970). Heute arbeiten über 75% im Dienstleistungssektor. Der primäre Sektor beschäftigt nur noch ca. 3% der Erwerbstätigen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Produktionsfaktoren",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die volkswirtschaftlichen Produktionsfaktoren nach ihrer historischen Bedeutung – vom ältesten/ursprünglichsten zum jüngsten.",
+    "erklaerung": "In der Agrargesellschaft war Boden der knappste Faktor. Mit der Industrialisierung gewann Kapital (Maschinen) an Bedeutung. In der heutigen Wissensgesellschaft ist Humankapital (Bildung, Innovation) der entscheidende Wachstumstreiber. Alle vier Faktoren bleiben relevant, aber ihre relative Bedeutung hat sich verschoben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-neu_zeichnen_01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "zeichnen",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Zeichne die Bedürfnispyramide nach Maslow mit allen fünf Stufen. Beschrifte jede Stufe und markiere die Grenze zwischen Defizit- und Wachstumsbedürfnissen.",
+    "erklaerung": "Die Bedürfnispyramide nach Maslow (1943) ordnet menschliche Bedürfnisse hierarchisch: Grundbedürfnisse → Sicherheit → Soziale Bedürfnisse → Wertschätzung → Selbstverwirklichung. Die unteren vier sind Defizitbedürfnisse (Mangel motiviert), die oberste ist ein Wachstumsbedürfnis.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "hinweise": [
+      "Die Pyramide hat 5 Stufen, von unten nach oben.",
+      "Die untersten 4 Stufen sind Defizitbedürfnisse.",
+      "Ganz oben steht die Selbstverwirklichung."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/beduerfnisse_maslow_zeichnen.svg",
+      "alt": "Musterlösung: Maslow-Pyramide mit 5 Stufen"
+    }
+  },
+  {
+    "id": "vwl_beduerfnisse-hotspot01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "hotspot",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Klicke auf die Stufe der Bedürfnispyramide, die den Wunsch nach Freundschaft und sozialer Zugehörigkeit umfasst.",
+    "erklaerung": "Soziale Bedürfnisse (3. Stufe nach Maslow) umfassen den Wunsch nach Zugehörigkeit, Freundschaft, Liebe und Gemeinschaft. Sie werden relevant, wenn Grund- und Sicherheitsbedürfnisse befriedigt sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/beduerfnisse_pyramide_hotspot.svg",
+      "alt": "Maslow-Bedürfnispyramide mit fünf Stufen, markiert A (unten) bis E (oben)"
+    },
+    "hotspots": [
+      {
+        "x": 50,
+        "y": 85.7,
+        "r": 8,
+        "label": "A: Grundbedürfnisse"
+      },
+      {
+        "x": 50,
+        "y": 71.4,
+        "r": 8,
+        "label": "B: Sicherheitsbedürfnisse"
+      },
+      {
+        "x": 50,
+        "y": 57.1,
+        "r": 8,
+        "label": "C: Soziale Bedürfnisse"
+      },
+      {
+        "x": 50,
+        "y": 42.9,
+        "r": 8,
+        "label": "D: Wertschätzung"
+      },
+      {
+        "x": 50,
+        "y": 26.2,
+        "r": 8,
+        "label": "E: Selbstverwirklichung"
+      }
+    ],
+    "korrekt": [
+      2
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-beschriftung01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die fünf Stufen der Bedürfnispyramide nach Maslow.",
+    "erklaerung": "Die fünf Stufen nach Maslow (1943): 1) Grundbedürfnisse (Nahrung, Schlaf), 2) Sicherheit (Wohnung, Gesundheit), 3) Soziale Bedürfnisse (Zugehörigkeit, Liebe), 4) Wertschätzung (Anerkennung, Status), 5) Selbstverwirklichung (persönliches Wachstum).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/beduerfnisse_pyramide_beschriftung.svg",
+      "alt": "Maslow-Pyramide mit fünf Stufen und nummerierten roten Kreisen (1–5)"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Grundbedürfnisse (physiologisch)",
+        "x": 50,
+        "y": 86
+      },
+      {
+        "id": "l2",
+        "text": "Sicherheitsbedürfnisse",
+        "x": 50,
+        "y": 72
+      },
+      {
+        "id": "l3",
+        "text": "Soziale Bedürfnisse",
+        "x": 50,
+        "y": 59
+      },
+      {
+        "id": "l4",
+        "text": "Wertschätzung / Anerkennung",
+        "x": 50,
+        "y": 46
+      },
+      {
+        "id": "l5",
+        "text": "Selbstverwirklichung",
+        "x": 50,
+        "y": 29
+      }
+    ]
+  },
+  {
+    "id": "vwl_beduerfnisse-dragdrop01",
+    "fach": "VWL",
+    "thema": "Bedürfnisse & Bedürfnispyramide",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Beispiele der passenden Stufe der Bedürfnispyramide zu.",
+    "erklaerung": "Maslow ordnet Bedürfnisse hierarchisch: Grundbedürfnisse (Nahrung, Kleidung) → Sicherheit (Versicherung, Arbeitsplatz) → Soziales (Freundschaft, Familie) → Wertschätzung (Erfolg, Anerkennung) → Selbstverwirklichung (Kreativität, Wachstum).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/beduerfnisse/beduerfnisse_stufen_dragdrop.svg",
+      "alt": "Fünf Spalten: Grundbedürfnisse, Sicherheit, Sozial, Wertschätzung, Selbstverwirklichung"
+    },
+    "zones": [
+      {
+        "id": "grund",
+        "x": 2.5,
+        "y": 14,
+        "w": 17.5,
+        "h": 82
+      },
+      {
+        "id": "sicherheit",
+        "x": 21,
+        "y": 14,
+        "w": 17.5,
+        "h": 82
+      },
+      {
+        "id": "sozial",
+        "x": 39.5,
+        "y": 14,
+        "w": 17.5,
+        "h": 82
+      },
+      {
+        "id": "wertschaetzung",
+        "x": 58,
+        "y": 14,
+        "w": 17.5,
+        "h": 82
+      },
+      {
+        "id": "selbst",
+        "x": 76.5,
+        "y": 14,
+        "w": 21,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Nahrung und Wasser",
+        "zone": "grund"
+      },
+      {
+        "id": "m2",
+        "text": "Wohnung und Kleidung",
+        "zone": "grund"
+      },
+      {
+        "id": "m3",
+        "text": "Krankenversicherung",
+        "zone": "sicherheit"
+      },
+      {
+        "id": "m4",
+        "text": "Stabiler Arbeitsplatz",
+        "zone": "sicherheit"
+      },
+      {
+        "id": "m5",
+        "text": "Freundschaft und Liebe",
+        "zone": "sozial"
+      },
+      {
+        "id": "m6",
+        "text": "Familienzugehörigkeit",
+        "zone": "sozial"
+      },
+      {
+        "id": "m7",
+        "text": "Beruflicher Erfolg",
+        "zone": "wertschaetzung"
+      },
+      {
+        "id": "m8",
+        "text": "Respekt und Anerkennung",
+        "zone": "wertschaetzung"
+      },
+      {
+        "id": "m9",
+        "text": "Kreative Entfaltung",
+        "zone": "selbst"
+      },
+      {
+        "id": "m10",
+        "text": "Persönliches Wachstum",
+        "zone": "selbst"
+      }
+    ]
+  }
+]

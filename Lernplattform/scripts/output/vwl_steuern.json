@@ -1,0 +1,2231 @@
+[
+  {
+    "id": "vwl_steuern-z01",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Steuerzweck steht bei der Einkommenssteuer im Vordergrund?",
+    "erklaerung": "Der Hauptzweck der Einkommenssteuer ist der Fiskalzweck: Sie soll dem Staat genügend Mittel zur Finanzierung seiner Aufgaben verschaffen. Die Einkommenssteuer ist eine der wichtigsten Einnahmequellen des Staates.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Kontrollzweck",
+      "Umverteilungszweck",
+      "Fiskalzweck",
+      "Lenkungszweck"
+    ],
+    "korrekt": "Fiskalzweck"
+  },
+  {
+    "id": "vwl_steuern-z02",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welcher Steuerzweck wird mit der Tabaksteuer primär verfolgt?",
+    "erklaerung": "Die Tabaksteuer verfolgt primär einen Lenkungszweck: Sie soll gesellschaftlich unerwünschtes Verhalten (Rauchen) verteuern und damit entmutigen. Daneben generiert sie natürlich auch Fiskaleinnahmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Fiskalzweck",
+      "Solidaritätszweck",
+      "Lenkungszweck",
+      "Umverteilungszweck"
+    ],
+    "korrekt": "Lenkungszweck"
+  },
+  {
+    "id": "vwl_steuern-z03",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum wird die Steuerprogression oft mit dem Umverteilungszweck begründet?",
+    "erklaerung": "Bei der Steuerprogression steigt der Steuersatz mit zunehmendem Einkommen. Dadurch werden Personen mit höherem Einkommen nicht nur absolut, sondern auch relativ (prozentual) stärker belastet. Dies bewirkt eine Umverteilung von wohlhabenden zu weniger wohlhabenden Personen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil sie nur auf indirekte Steuern angewendet wird",
+      "Weil höhere Einkommen einen höheren Prozentsatz entrichten",
+      "Weil alle den gleichen Betrag bezahlen",
+      "Weil sie den Konsum von Luxusgütern lenkt"
+    ],
+    "korrekt": "Weil höhere Einkommen einen höheren Prozentsatz entrichten"
+  },
+  {
+    "id": "vwl_steuern-z04",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die CO₂-Abgabe ist ein Beispiel für eine Steuer mit Lenkungszweck.",
+    "erklaerung": "Richtig. Die CO₂-Abgabe soll den Ausstoss von Treibhausgasen verteuern und damit klimaschädliches Verhalten reduzieren – ein klassischer Lenkungszweck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-z05",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Eine Steuer kann gleichzeitig mehrere Zwecke verfolgen.",
+    "erklaerung": "Richtig. Die meisten Steuern verfolgen mehrere Zwecke gleichzeitig. Beispiel: Die Tabaksteuer hat einen Lenkungszweck (Rauchverhalten reduzieren), generiert aber auch Fiskaleinnahmen und die Progression bei der Einkommenssteuer dient dem Fiskal- und dem Umverteilungszweck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-z06",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Steuern dem passenden Hauptzweck zu.",
+    "erklaerung": "Die Einkommens- und Mehrwertsteuer dienen primär dem Fiskalzweck (Finanzierung der Staatsaufgaben). Die Erbschaftssteuer betont den Umverteilungszweck. Alkoholsteuer und CO₂-Abgabe verfolgen einen Lenkungszweck (unerwünschtes Verhalten verteuern).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Fiskalzweck",
+      "Umverteilungszweck",
+      "Lenkungszweck"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_steuern-z07",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "open",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Erklären Sie den Unterschied zwischen Fiskalzweck und Lenkungszweck anhand je eines konkreten Beispiels.",
+    "erklaerung": "Beim Fiskalzweck geht es primär um Einnahmen (Beispiele: Einkommens-, Vermögens-, Mehrwertsteuer). Beim Lenkungszweck geht es um Verhaltenssteuerung (Beispiele: Tabak-, Alkohol-, CO₂-Abgabe). In der Praxis überschneiden sich die Zwecke oft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Der Fiskalzweck zielt darauf ab, dem Staat Einnahmen zu verschaffen, um seine Aufgaben zu finanzieren (z.B. Einkommenssteuer). Der Lenkungszweck will bestimmtes Verhalten beeinflussen – unerwünschtes entmutigen oder erwünschtes fördern (z.B. Tabaksteuer: Rauchen soll reduziert werden; Steuervergünstigungen für energetische Sanierungen: umweltfreundliches Verhalten soll gefördert werden)."
+  },
+  {
+    "id": "vwl_steuern-z08",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Kanton führt eine hohe Steuer auf Einweg-Plastiktüten ein, deren Ertrag in den Umweltschutz fliesst. Welche Kombination von Steuerzwecken liegt hier vor?",
+    "erklaerung": "Die Steuer verteuert den Konsum von Einweg-Plastiktüten (Lenkungszweck: unerwünschtes Verhalten entmutigen) und generiert gleichzeitig Einnahmen, die zweckgebunden für den Umweltschutz verwendet werden (Fiskalzweck). Ein Umverteilungszweck (von Reich zu Arm) liegt nicht vor.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur Fiskalzweck",
+      "Lenkungszweck und Umverteilungszweck",
+      "Fiskalzweck und Lenkungszweck",
+      "Nur Umverteilungszweck"
+    ],
+    "korrekt": "Fiskalzweck und Lenkungszweck"
+  },
+  {
+    "id": "vwl_steuern-z09",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der Fiskalzweck ist der Hauptzweck der meisten Steuern in der Schweiz.",
+    "erklaerung": "Richtig. Der Grossteil der Steuereinnahmen (Einkommens-, Vermögens-, Mehrwertsteuer, Gewinnsteuer) dient primär dem Fiskalzweck – also der Finanzierung der Staatsaufgaben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-z10",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Ökonom argumentiert, dass Lenkungssteuern «sich selbst abschaffen», wenn sie wirksam sind. Was ist damit gemeint?",
+    "erklaerung": "Wenn eine Lenkungssteuer ihren Zweck erfüllt (z.B. weniger Tabakkonsum), sinkt die besteuerte Menge und damit auch die Steuereinnahmen. Eine «perfekt» wirkende Lenkungssteuer würde keine Einnahmen mehr generieren. Dies steht in einem Spannungsverhältnis zum Fiskalzweck.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Steuer wird durch Subventionen ersetzt",
+      "Die Steuer wird automatisch gesenkt, wenn weniger konsumiert wird",
+      "Die Steuer wird vom Parlament abgeschafft, sobald sie wirkt",
+      "Wenn das unerwünschte Verhalten abnimmt, sinken auch die Steuereinnahmen"
+    ],
+    "korrekt": "Wenn das unerwünschte Verhalten abnimmt, sinken auch die Steuereinnahmen"
+  },
+  {
+    "id": "vwl_steuern-z11",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Steuern verfolgen (auch) einen Lenkungszweck? (Mehrere Antworten möglich)",
+    "erklaerung": "Tabaksteuer, CO₂-Abgabe und Alkoholsteuer haben alle einen Lenkungszweck: Sie verteuern gesellschaftlich unerwünschtes Verhalten (Rauchen, CO₂-Ausstoss, übermässiger Alkoholkonsum). Die Einkommenssteuer dient primär dem Fiskal- und Umverteilungszweck, nicht der Verhaltenslenkung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Tabaksteuer",
+      "Einkommenssteuer",
+      "CO₂-Abgabe",
+      "Alkoholsteuer"
+    ],
+    "korrekt": [
+      "Tabaksteuer",
+      "CO₂-Abgabe",
+      "Alkoholsteuer"
+    ]
+  },
+  {
+    "id": "vwl_steuern-z12",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Der {0} dient der Finanzierung der Staatsaufgaben. Der {1} will Verhalten beeinflussen. Der {2} soll die Einkommensunterschiede verringern.",
+    "erklaerung": "Die drei Hauptzwecke von Steuern sind: Fiskalzweck (Einnahmen generieren), Lenkungszweck (Verhalten steuern) und Umverteilungszweck (Ungleichheit reduzieren). Die meisten Steuern verfolgen mehrere Zwecke gleichzeitig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Fiskalzweck",
+        "optionen": [
+          "fiskalische Zweck"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Lenkungszweck",
+        "optionen": [
+          "Lenkungseffekt"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Umverteilungszweck",
+        "optionen": [
+          "Verteilungszweck"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-z13",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Steuervergünstigungen für den Kauf von Elektroautos verfolgen denselben Steuerzweck wie die Tabaksteuer, nur mit umgekehrtem Vorzeichen.",
+    "erklaerung": "Richtig. Beide verfolgen einen Lenkungszweck: Die Tabaksteuer verteuert unerwünschtes Verhalten (Rauchen), die Steuervergünstigung verbilligt erwünschtes Verhalten (umweltfreundliche Mobilität). Der Mechanismus ist derselbe – einmal als Bestrafung (Lenkungsabgabe), einmal als Belohnung (Steuervorteil).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-z14",
+    "fach": "VWL",
+    "thema": "Steuerzweck",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Schweiz erhebt auf Alcopops (süsse Alkoholgetränke) einen höheren Steuersatz als auf Bier. Was spricht aus ökonomischer Sicht für diese Differenzierung?",
+    "erklaerung": "Die höhere Besteuerung von Alcopops verfolgt einen gezielten Lenkungszweck: Jugendliche, die besonders anfällig für süsse Alkoholgetränke sind, sollen vom Konsum abgehalten werden. Die Preiserhöhung wirkt bei jungen Menschen mit geringem Budget besonders stark. Dies ist ein Beispiel für zielgruppenspezifische Lenkung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Alcopops generieren höhere Fiskaleinnahmen",
+      "Der höhere Steuersatz ist historisch bedingt und hat keine ökonomische Begründung",
+      "Die Zielgruppe (Jugendliche) soll besonders vom Konsum abgehalten werden",
+      "Alcopops sind teurer in der Herstellung"
+    ],
+    "korrekt": "Die Zielgruppe (Jugendliche) soll besonders vom Konsum abgehalten werden"
+  },
+  {
+    "id": "vwl_steuern-f01",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Hauptquellen hat der Staat, um seine Ausgaben zu finanzieren?",
+    "erklaerung": "Die drei Hauptquellen sind: Steuern (direkte und indirekte), Gebühren (für konkrete Staatsleistungen) und Verschuldung (Kreditaufnahme am Kapitalmarkt). Längerfristig ist die Finanzierung nur über Steuern möglich, da Schulden irgendwann zurückgezahlt werden müssen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Steuern, Zölle und Spenden",
+      "Gebühren, Bussen und Lotterieeinnahmen",
+      "Steuern, Gebühren und Verschuldung",
+      "Steuern, Gebühren und Geldschöpfung"
+    ],
+    "korrekt": "Steuern, Gebühren und Verschuldung"
+  },
+  {
+    "id": "vwl_steuern-f02",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Direkte Steuern berücksichtigen persönliche Merkmale der steuerpflichtigen Person.",
+    "erklaerung": "Richtig. Direkte Steuern (z.B. Einkommens- und Vermögenssteuer) werden aufgrund persönlicher Merkmale wie Einkommen, Vermögen und Familienstand erhoben. Sie sind deshalb bei verschiedenen Personen unterschiedlich hoch.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-f03",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Mehrwertsteuer ist eine direkte Steuer.",
+    "erklaerung": "Falsch. Die Mehrwertsteuer ist eine indirekte Steuer. Sie wird auf Markttransaktionen erhoben, unabhängig von persönlichen Merkmalen der Käuferin oder des Käufers. Alle bezahlen denselben MwSt-Satz auf einem bestimmten Produkt, unabhängig von ihrem Einkommen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-f04",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum können indirekte Steuern degressiv wirken?",
+    "erklaerung": "Indirekte Steuern wie die MwSt belasten alle mit demselben Satz. Da Personen mit niedrigem Einkommen einen grösseren Anteil ihres Einkommens für Konsum ausgeben (und weniger sparen), wird ihr Einkommen relativ stärker durch die MwSt belastet. Dies nennt man einen degressiven (regressiven) Effekt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil sie nur auf Luxusgüter erhoben werden",
+      "Weil sie nur von Unternehmen bezahlt werden",
+      "Weil Personen mit niedrigem Einkommen anteilig mehr für Konsum ausgeben",
+      "Weil der Steuersatz mit dem Einkommen sinkt"
+    ],
+    "korrekt": "Weil Personen mit niedrigem Einkommen anteilig mehr für Konsum ausgeben"
+  },
+  {
+    "id": "vwl_steuern-f05",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Abgaben der richtigen Kategorie zu.",
+    "erklaerung": "Direkte Steuern berücksichtigen persönliche Merkmale (Einkommen, Vermögen). Indirekte Steuern werden auf Transaktionen erhoben (MwSt, Zölle). Gebühren sind Zahlungen für konkrete Staatsleistungen (Kehrichtentsorgung, Pass).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Direkte Steuer",
+      "Indirekte Steuer",
+      "Gebühr"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_steuern-f06",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Gebühren sind Zahlungen für konkrete {0} des Staates und werden nur geschuldet, wenn die Leistung auch tatsächlich {1} wird.",
+    "erklaerung": "Im Gegensatz zu Steuern, die unabhängig vom Leistungsbezug erhoben werden, sind Gebühren an eine konkrete Gegenleistung gebunden (z.B. Passgebühr, Führerausweis, Kehrichtentsorgung). Wer die Leistung nicht bezieht, muss die Gebühr nicht bezahlen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Leistungen",
+        "optionen": [
+          "Gegenleistungen",
+          "Dienstleistungen"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "bezogen",
+        "optionen": [
+          "beansprucht",
+          "genutzt",
+          "in Anspruch genommen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-f07",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum kann sich ein Staat langfristig nicht nur über Verschuldung finanzieren?",
+    "erklaerung": "Schulden verschieben die Finanzierungslast in die Zukunft. In einer späteren Periode müssen die Steuereinnahmen zwingend höher sein als die Staatsausgaben, um die Schulden zurückzuzahlen. Verschuldung ist daher nur eine vorübergehende Finanzierungslösung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die Inflation automatisch alle Schulden tilgt",
+      "Weil die Nationalbank keine Kredite an den Staat vergeben darf",
+      "Weil Schulden irgendwann zurückgezahlt werden müssen, was höhere Steuern erfordert",
+      "Weil Obligationen nur an Inländer verkauft werden dürfen"
+    ],
+    "korrekt": "Weil Schulden irgendwann zurückgezahlt werden müssen, was höhere Steuern erfordert"
+  },
+  {
+    "id": "vwl_steuern-f08",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wer ist bei der Mehrwertsteuer der Steuerschuldner und wer der Steuerträger?",
+    "erklaerung": "Bei indirekten Steuern fallen Steuerschuldner und Steuerträger auseinander. Der Konsument bezahlt die MwSt beim Kauf (Steuerträger), aber das Unternehmen ist verpflichtet, die Steuer an den Staat abzuliefern (Steuerschuldner).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Steuerschuldner: Staat; Steuerträger: Unternehmen",
+      "Steuerschuldner: Konsument; Steuerträger: Konsument",
+      "Steuerschuldner: Unternehmen; Steuerträger: Konsument",
+      "Steuerschuldner: Konsument; Steuerträger: Unternehmen"
+    ],
+    "korrekt": "Steuerschuldner: Unternehmen; Steuerträger: Konsument"
+  },
+  {
+    "id": "vwl_steuern-f09",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Quellensteuern werden direkt an der Einkunftsquelle abgeschöpft, bevor das Geld beim Empfänger ankommt.",
+    "erklaerung": "Richtig. Bei Quellensteuern wird die Steuer direkt beim Schuldner der steuerpflichtigen Leistung erhoben, bevor die Zahlung den Empfänger erreicht. Ein typisches Beispiel ist die Verrechnungssteuer auf Kapitalerträgen (35%), die von der Bank einbehalten wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-f10",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Im ‹Tagebuch eines Steuerzahlers› bezahlt ein Tramführer an einem einzigen Tag Fr. 59.90 an verschiedensten Steuern und Gebühren. Analysieren Sie: Welche Steuerarten (direkt/indirekt/Gebühren) sind dabei überproportional vertreten, und was sagt das über das Schweizer Steuersystem?",
+    "erklaerung": "Das Tagebuch verdeutlicht die Vielfalt des Schweizer Steuersystems: Obwohl die direkten Steuern (Einkommens-, Vermögenssteuer) den höchsten Einzelbetrag ausmachen, gibt es eine grosse Anzahl verschiedener indirekter Steuern und Gebühren, die den Alltag durchziehen. Dies zeigt den föderalistischen Aufbau (Gemeinde-, Kantons-, Bundessteuern) und die verschiedenen Steuerzwecke (Fiskal-, Lenkungs-, Umverteilungszweck).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Der Tramführer bezahlt eine Vielzahl indirekter Steuern (MwSt auf Kaffee, Lebensmittel, Benzin, Zigaretten; Mineralölsteuer; Tabaksteuer; Biersteuer; Alkoholsteuer; Billettsteuern; Zölle) sowie Gebühren (Kehricht, Autobahnvignette). Die grössten Einzelbeträge entfallen aber auf die direkten Steuern (Gemeinde-, Kantons-, Bundessteuer = Fr. 34.80). Das zeigt, dass im Schweizer System die direkten Steuern den grössten Anteil ausmachen, man aber im Alltag ständig von einer Vielzahl kleinerer indirekter Steuern betroffen ist."
+  },
+  {
+    "id": "vwl_steuern-f11",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche der folgenden Abgaben sind direkte Steuern? (Mehrere Antworten möglich)",
+    "erklaerung": "Einkommenssteuer, Vermögenssteuer und Gewinnsteuer sind direkte Steuern – sie werden aufgrund persönlicher oder unternehmerischer Merkmale erhoben. Die Mehrwertsteuer hingegen ist eine indirekte Steuer, die auf Markttransaktionen anfällt, unabhängig von persönlichen Merkmalen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Einkommenssteuer",
+      "Mehrwertsteuer",
+      "Vermögenssteuer",
+      "Gewinnsteuer"
+    ],
+    "korrekt": [
+      "Einkommenssteuer",
+      "Vermögenssteuer",
+      "Gewinnsteuer"
+    ]
+  },
+  {
+    "id": "vwl_steuern-f12",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Übersicht der Schweizer Staatseinnahmen. Welche Aussage ist korrekt?",
+    "erklaerung": "In der Schweiz machen die direkten Steuern (v.a. Einkommens- und Gewinnsteuern) den grössten Anteil der Staatseinnahmen aus – rund 60%. Die indirekten Steuern (v.a. MwSt) tragen etwa 25% bei, Gebühren und übrige Einnahmen den Rest.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/staatseinnahmen_uebersicht.svg",
+      "alt": "Übersicht der Schweizer Staatseinnahmen nach Kategorie"
+    },
+    "optionen": [
+      "Direkte Steuern (Einkommens- und Vermögenssteuern) sind die wichtigste Einnahmequelle",
+      "Die Mehrwertsteuer allein generiert mehr als alle direkten Steuern zusammen",
+      "Indirekte Steuern machen den grössten Anteil der Staatseinnahmen aus",
+      "Gebühren und Beiträge übersteigen die Steuereinnahmen"
+    ],
+    "korrekt": "Direkte Steuern (Einkommens- und Vermögenssteuern) sind die wichtigste Einnahmequelle"
+  },
+  {
+    "id": "vwl_steuern-f13",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Kopfsteuer (jede Person bezahlt denselben Betrag) wäre die einzige Steuer, die keinerlei Verzerrung verursacht.",
+    "erklaerung": "Richtig. Eine Kopfsteuer (Pauschalsteuer, Lump-Sum Tax) verzerrt keine wirtschaftlichen Entscheidungen, weil sie unabhängig von Einkommen, Konsum oder Verhalten anfällt. Es gibt keinen Ausweicheffekt. Allerdings ist sie höchst ungerecht (regressiv), weshalb sie politisch kaum durchsetzbar ist. Sie dient in der ökonomischen Theorie als Referenzpunkt für verzerrungsfreie Besteuerung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-f14",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Bei indirekten Steuern fallen {0} und {1} auseinander: Das Unternehmen liefert die Steuer ab, der Konsument trägt die Last.",
+    "erklaerung": "Der Steuerschuldner ist die Person oder das Unternehmen, das die Steuer formal an den Staat abführen muss. Der Steuerträger ist die Person, die die Steuer wirtschaftlich tatsächlich bezahlt. Bei der MwSt ist das Unternehmen der Steuerschuldner, aber der Konsument der Steuerträger.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Steuerschuldner",
+        "optionen": [
+          "Ablieferer"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Steuerträger",
+        "optionen": [
+          "Belasteter",
+          "Steuersubjekt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-s01",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was bedeutet Steuerprogression?",
+    "erklaerung": "Bei der Steuerprogression steigt der Steuersatz (Prozentsatz) mit zunehmendem Einkommen. Das Einkommen wird somit überproportional besteuert. Dies dient dem Umverteilungszweck: Personen mit höherem Einkommen tragen relativ und absolut mehr bei.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Steuersatz bleibt bei allen Einkommen gleich",
+      "Der Steuersatz sinkt mit zunehmendem Einkommen",
+      "Der Steuersatz steigt mit zunehmendem Einkommen",
+      "Die Steuer wird nur ab einem bestimmten Einkommen erhoben"
+    ],
+    "korrekt": "Der Steuersatz steigt mit zunehmendem Einkommen"
+  },
+  {
+    "id": "vwl_steuern-s02",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Unterschied zwischen dem Grenzsteuersatz und dem Durchschnittssteuersatz?",
+    "erklaerung": "Der Grenzsteuersatz gibt an, wie viel Steuer auf den zuletzt verdienten Franken entfällt (z.B. 30% auf den letzten verdienten Franken). Der Durchschnittssteuersatz gibt den Anteil der Steuern am gesamten Einkommen an (z.B. 15% des Gesamteinkommens). Bei einer progressiven Steuer liegt der Grenzsteuersatz immer über dem Durchschnittssteuersatz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Grenzsteuersatz wird vom Bund erhoben, der Durchschnittssteuersatz vom Kanton",
+      "Es gibt keinen Unterschied, beide Begriffe sind synonym",
+      "Der Grenzsteuersatz bezieht sich auf den letzten verdienten Franken, der Durchschnittssteuersatz auf das gesamte Einkommen",
+      "Der Grenzsteuersatz gilt nur für Unternehmen, der Durchschnittssteuersatz für Privatpersonen"
+    ],
+    "korrekt": "Der Grenzsteuersatz bezieht sich auf den letzten verdienten Franken, der Durchschnittssteuersatz auf das gesamte Einkommen"
+  },
+  {
+    "id": "vwl_steuern-s03",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Eine Person verdient CHF 80'000 steuerbares Einkommen und bezahlt CHF 12'000 Einkommenssteuer. Berechnen Sie den Durchschnittssteuersatz.",
+    "erklaerung": "Durchschnittssteuersatz = Steuerbetrag / steuerbares Einkommen × 100 = CHF 12'000 / CHF 80'000 × 100 = 15%. Das bedeutet, dass diese Person im Durchschnitt 15 Rappen pro verdienten Franken als Steuer abliefert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Durchschnittssteuersatz",
+        "answer": 15,
+        "tolerance": 0.1,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "15",
+    "toleranz": 0.1,
+    "einheit": "%"
+  },
+  {
+    "id": "vwl_steuern-s04",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie hoch ist der Normalsatz der Mehrwertsteuer in der Schweiz (Stand 2024)?",
+    "erklaerung": "Der Normalsatz der Schweizer Mehrwertsteuer beträgt seit 2024 8.1% (zuvor 7.7%). Daneben gibt es einen reduzierten Satz von 2.6% (für Güter des täglichen Bedarfs wie Lebensmittel, Bücher, Zeitungen) und einen Sondersatz von 3.8% (für Beherbergungsleistungen).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "19%",
+      "8.1%",
+      "7.7%",
+      "10%"
+    ],
+    "korrekt": "8.1%"
+  },
+  {
+    "id": "vwl_steuern-s05",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Verrechnungssteuer in der Schweiz beträgt 35% und wird auf Kapitalerträge erhoben.",
+    "erklaerung": "Richtig. Die Verrechnungssteuer von 35% wird direkt an der Quelle auf Kapitalerträge (z.B. Zinsen, Dividenden) erhoben. Sie wird bei korrekter Deklaration in der Steuererklärung zurückerstattet. Sie dient damit auch als Anreiz zur ehrlichen Deklaration.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-s06",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum wird die Verrechnungssteuer bei korrekter Deklaration zurückerstattet?",
+    "erklaerung": "Die Verrechnungssteuer ist eine Sicherungssteuer: Sie soll sicherstellen, dass Kapitalerträge in der Steuererklärung deklariert werden. Wer die Erträge korrekt deklariert, erhält die 35% zurück. Wer nicht deklariert, verliert den Betrag – ein starker Anreiz zur ehrlichen Angabe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil der Bund das Geld nicht benötigt",
+      "Weil sie nur für ausländische Anleger gedacht ist",
+      "Weil sie verfassungswidrig ist",
+      "Weil sie als Sicherungssteuer gegen Steuerhinterziehung dient"
+    ],
+    "korrekt": "Weil sie als Sicherungssteuer gegen Steuerhinterziehung dient"
+  },
+  {
+    "id": "vwl_steuern-s07",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Eine Anlegerin erhält CHF 2'000 Dividende. Wie viel wird als Verrechnungssteuer abgezogen, und wie viel erhält sie ausbezahlt?",
+    "erklaerung": "Verrechnungssteuer = 35% von CHF 2'000 = CHF 700. Die Anlegerin erhält CHF 2'000 − CHF 700 = CHF 1'300 ausbezahlt. Die CHF 700 kann sie bei korrekter Deklaration in der Steuererklärung vollständig zurückfordern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Verrechnungssteuer",
+        "answer": 700,
+        "tolerance": 1,
+        "unit": "CHF"
+      },
+      {
+        "label": "Auszahlung",
+        "answer": 1300,
+        "tolerance": 1,
+        "unit": "CHF"
+      }
+    ],
+    "korrekt": "700",
+    "toleranz": 1,
+    "einheit": "CHF"
+  },
+  {
+    "id": "vwl_steuern-s08",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Lebensmittel unterliegen in der Schweiz dem reduzierten Mehrwertsteuersatz, was ein Umverteilungselement darstellt.",
+    "erklaerung": "Richtig. Der reduzierte MwSt-Satz (2.6%) auf Güter des täglichen Bedarfs (Lebensmittel, Medikamente, Bücher) entlastet relativ gesehen Personen mit geringerem Einkommen stärker, da diese einen grösseren Anteil ihres Einkommens für Grundbedürfnisse ausgeben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-s09",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wovon hängt die Höhe der Einkommenssteuer in der Schweiz ab?",
+    "erklaerung": "Die Einkommenssteuer in der Schweiz hängt von drei Faktoren ab: dem Wohnort (jeder Kanton und jede Gemeinde hat einen eigenen Steuersatz), dem Zivilstand (Ehepaare haben tiefere Sätze) und der Einkommenshöhe (Progression: höheres Einkommen → höherer Steuersatz).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Vom Wohnort, Zivilstand und der Einkommenshöhe",
+      "Nur vom Kanton",
+      "Nur vom Einkommen",
+      "Vom Arbeitgeber und dem Beruf"
+    ],
+    "korrekt": "Vom Wohnort, Zivilstand und der Einkommenshöhe"
+  },
+  {
+    "id": "vwl_steuern-s10",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie, warum die Mehrwertsteuer trotz einheitlichem Satz als regressive Steuer gilt. Beurteilen Sie, ob der reduzierte Satz auf Lebensmittel dieses Problem löst.",
+    "erklaerung": "Die Regressivität der MwSt ergibt sich aus der unterschiedlichen Sparquote: Wer wenig verdient, konsumiert einen grösseren Anteil seines Einkommens und wird daher relativ stärker belastet. Der reduzierte Satz auf Grundbedürfnisse ist ein Korrektiv, löst aber das Grundproblem nicht vollständig, da der Effekt nicht zielgenau ist (alle profitieren) und die Gesamtbelastung weiterhin regressiv wirkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die MwSt ist regressiv, weil alle denselben Prozentsatz bezahlen, unabhängig vom Einkommen. Da einkommensschwache Personen einen grösseren Anteil ihres Einkommens für Konsum ausgeben (und weniger sparen können), wird ihr Einkommen relativ stärker durch die MwSt belastet. Der reduzierte Satz auf Lebensmittel mildert den Effekt ab, löst das Problem aber nicht, da auch wohlhabende Personen vom reduzierten Satz profitieren und die Konsumquote insgesamt bei einkommensschwachen Haushalten höher bleibt."
+  },
+  {
+    "id": "vwl_steuern-s11",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zur Mehrwertsteuer in der Schweiz sind korrekt? (Mehrere Antworten möglich)",
+    "erklaerung": "Der MwSt-Normalsatz beträgt 8.1%, der reduzierte Satz 2.6% (Lebensmittel, Bücher, Medikamente) und der Sondersatz 3.8% (Beherbergung). Die MwSt ist eine indirekte Steuer (nicht direkt), da sie auf Transaktionen erhoben wird, nicht aufgrund persönlicher Merkmale.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Normalsatz beträgt 8.1% (Stand 2024)",
+      "Lebensmittel werden zum reduzierten Satz von 2.6% besteuert",
+      "Die MwSt ist eine direkte Steuer",
+      "Hotels zahlen einen Sondersatz von 3.8%"
+    ],
+    "korrekt": [
+      "Der Normalsatz beträgt 8.1% (Stand 2024)",
+      "Lebensmittel werden zum reduzierten Satz von 2.6% besteuert",
+      "Hotels zahlen einen Sondersatz von 3.8%"
+    ]
+  },
+  {
+    "id": "vwl_steuern-s12",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Grafik, die drei verschiedene Steuertarife zeigt. Welcher Tarif entspricht einer progressiven Besteuerung?",
+    "erklaerung": "Ein progressiver Steuertarif zeigt einen steigenden Steuersatz bei steigendem Einkommen (Tarif A). Tarif B (konstanter Steuersatz) ist ein proportionaler Tarif (Flat Tax). Tarif C (sinkender Steuersatz bei steigendem Einkommen) wäre ein degressiver/regressiver Tarif.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuertarife_vergleich.svg",
+      "alt": "Vergleich dreier Steuertarife: Steuersatz in Abhängigkeit vom Einkommen"
+    },
+    "optionen": [
+      "Tarif B (waagrechte Linie)",
+      "Tarif C (fallende Kurve)",
+      "Tarif A (steigende Kurve)",
+      "Alle drei Tarife sind progressiv"
+    ],
+    "korrekt": "Tarif A (steigende Kurve)"
+  },
+  {
+    "id": "vwl_steuern-s13",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Schweizer MwSt kennt drei Sätze: den {0} von 8.1%, den {1} von 2.6% für Grundbedürfnisse und den {2} von 3.8% für Hotels.",
+    "erklaerung": "Die drei MwSt-Sätze sind: Normalsatz 8.1% (für die meisten Güter und Dienstleistungen), reduzierter Satz 2.6% (Lebensmittel, Bücher, Medikamente, Zeitungen) und Sondersatz 3.8% (Beherbergungsleistungen). Die unterschiedlichen Sätze haben verteilungspolitische und wirtschaftspolitische Gründe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Normalsatz",
+        "optionen": [
+          "normalen Satz",
+          "Normalsteuersatz"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "reduzierten Satz",
+        "optionen": [
+          "Reduzierten Satz",
+          "ermässigten Satz"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Sondersatz",
+        "optionen": [
+          "Spezialsatz",
+          "Beherbergungssatz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-s14",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Flat Tax (proportionaler Steuersatz) auf das Einkommen belastet alle Steuerpflichtigen gleichmässig.",
+    "erklaerung": "Falsch. Obwohl alle denselben Prozentsatz bezahlen, ist die relative Belastung unterschiedlich. Wer wenig verdient, muss einen grösseren Anteil seines Einkommens für Grundbedürfnisse ausgeben. Ein Steuersatz von 20% auf CHF 40'000 (bleiben CHF 32'000 – knapp für den Lebensunterhalt) trifft härter als 20% auf CHF 400'000 (bleiben CHF 320'000 – komfortabel). Das Prinzip der Leistungsfähigkeit verlangt daher eine progressive Besteuerung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-q01",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} gibt den Anteil der Steuern, Abgaben und Gebühren am BIP an. Die {1} gibt den Anteil der Staatsausgaben am BIP an.",
+    "erklaerung": "Die Fiskalquote misst die Einnahmeseite (Steuern + Abgaben + Gebühren in % des BIP). Die Staatsquote misst die Ausgabeseite (Staatsausgaben in % des BIP). Beide Kennzahlen zeigen den Umfang der Staatstätigkeit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Fiskalquote",
+        "optionen": [
+          "Steuerquote",
+          "Abgabenquote"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Staatsquote",
+        "optionen": [
+          "Ausgabenquote"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-q02",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Schweiz hat im internationalen Vergleich eine tiefe Fiskalquote. Was deutet das an?",
+    "erklaerung": "Eine tiefe Fiskalquote bedeutet, dass der Staat relativ wenig Steuern und Abgaben gemessen an der Wirtschaftsleistung erhebt. Die Schweiz liegt mit rund 28% deutlich unter dem OECD-Durchschnitt (ca. 34%). Dies widerspiegelt die traditionell liberale Wirtschaftspolitik mit vergleichsweise wenig staatlicher Umverteilung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Schweiz hat eine hohe Staatsverschuldung",
+      "Der Staat gibt wenig Geld aus",
+      "Die Schweiz erhebt keine indirekten Steuern",
+      "Der Anteil der staatlichen Abgaben am BIP ist relativ gering"
+    ],
+    "korrekt": "Der Anteil der staatlichen Abgaben am BIP ist relativ gering"
+  },
+  {
+    "id": "vwl_steuern-q03",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Land A hat eine Fiskalquote von 45% und Land B eine von 25%. Welche Aussage lässt sich daraus NICHT ableiten?",
+    "erklaerung": "Die Fiskalquote sagt nichts über das absolute Wohlstandsniveau aus. Ein Land kann eine hohe Fiskalquote haben und trotzdem ärmer sein (oder umgekehrt). Die Quote misst nur den relativen Anteil der Abgaben am BIP, nicht den absoluten Wohlstand.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Bevölkerung von Land A ist wohlhabender als die von Land B",
+      "Land A hat vermutlich ein umfassenderes Sozialsystem",
+      "Land A erhebt relativ mehr Steuern als Land B",
+      "In Land A spielt der Staat eine grössere Rolle in der Wirtschaft"
+    ],
+    "korrekt": "Die Bevölkerung von Land A ist wohlhabender als die von Land B"
+  },
+  {
+    "id": "vwl_steuern-q04",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was beschreibt die Laffer-Kurve?",
+    "erklaerung": "Die Laffer-Kurve zeigt, dass die Steuereinnahmen bei einem Steuersatz von 0% und 100% jeweils null betragen. Dazwischen gibt es ein Maximum. Bei einem Steuersatz von 100% entfällt jeder Arbeitsanreiz, sodass niemand mehr arbeitet und keine Einnahmen generiert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Zusammenhang zwischen Steuersatz und Steuereinnahmen",
+      "Den Zusammenhang zwischen BIP-Wachstum und Staatsquote",
+      "Den Zusammenhang zwischen Verschuldung und Zinssatz",
+      "Den Zusammenhang zwischen Inflation und Arbeitslosigkeit"
+    ],
+    "korrekt": "Den Zusammenhang zwischen Steuersatz und Steuereinnahmen"
+  },
+  {
+    "id": "vwl_steuern-q05",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Gemäss der Laffer-Kurve führt eine Erhöhung des Steuersatzes immer zu höheren Steuereinnahmen.",
+    "erklaerung": "Falsch. Die Laffer-Kurve zeigt, dass ab einem bestimmten Punkt (dem Scheitelpunkt) eine weitere Erhöhung des Steuersatzes zu sinkenden Einnahmen führt. Jenseits des Optimums überwiegen die negativen Anreizeffekte (Arbeitsvermeidung, Steuerflucht, Schwarzarbeit), sodass die Bemessungsgrundlage schrumpft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-q06",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie die Aussagekraft der Laffer-Kurve für die Steuerpolitik. Wo liegen die Grenzen dieses Modells?",
+    "erklaerung": "Die Laffer-Kurve ist ein nützliches Denkmodell, hat aber erhebliche praktische Grenzen: Der optimale Steuersatz ist empirisch kaum bestimmbar, er variiert je nach Steuerart und Kontext, und das Modell berücksichtigt keine Verteilungseffekte oder Wohlfahrtswirkungen der Staatsausgaben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die Laffer-Kurve ist theoretisch einleuchtend: Bei 0% und 100% Steuern sind die Einnahmen null. In der Praxis ist es jedoch extrem schwierig, den optimalen Steuersatz zu bestimmen, da er von vielen Faktoren abhängt (Wirtschaftsstruktur, Steuermoral, internationale Mobilität). Zudem suggeriert die Kurve, dass es nur einen optimalen Satz gibt, obwohl verschiedene Steuerarten unterschiedliche Kurven haben. Politisch wird die Laffer-Kurve oft instrumentalisiert: Befürworter von Steuersenkungen argumentieren, man befinde sich rechts des Maximums – was empirisch selten belegt ist."
+  },
+  {
+    "id": "vwl_steuern-q07",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Bei einem Steuersatz von 100% beträgt die Steuereinnahme gemäss Laffer-Kurve null.",
+    "erklaerung": "Richtig. Bei einem Steuersatz von 100% müssten die Steuerpflichtigen ihr gesamtes Einkommen abgeben. Dies vernichtet jeglichen Arbeitsanreiz – niemand würde mehr arbeiten, und die Steuereinnahmen wären null.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-q08",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Land hat ein BIP von CHF 800 Mrd. und Steuereinnahmen von CHF 224 Mrd. Berechnen Sie die Fiskalquote.",
+    "erklaerung": "Fiskalquote = Steuereinnahmen / BIP × 100 = CHF 224 Mrd. / CHF 800 Mrd. × 100 = 28%. Zum Vergleich: Die Schweiz hat eine Fiskalquote von rund 28%, was im internationalen Vergleich tief ist (z.B. Schweden ca. 43%, Deutschland ca. 38%).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Fiskalquote",
+        "answer": 28,
+        "tolerance": 0.1,
+        "unit": "%"
+      }
+    ],
+    "korrekt": "28",
+    "toleranz": 0.1,
+    "einheit": "%"
+  },
+  {
+    "id": "vwl_steuern-q09",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum kann die Staatsquote eines Landes höher sein als seine Fiskalquote?",
+    "erklaerung": "Wenn die Staatsausgaben (Staatsquote) die Steuereinnahmen (Fiskalquote) übersteigen, finanziert der Staat die Differenz über Verschuldung. Dies führt zu einem Haushaltsdefizit. Umgekehrt weist ein Staat einen Überschuss auf, wenn die Fiskalquote höher ist als die Staatsquote.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil der Staat mehr einnimmt als ausgibt",
+      "Weil die Staatsquote die Inflation berücksichtigt",
+      "Weil Gebühren nicht zur Fiskalquote zählen",
+      "Weil der Staat die Differenz über Verschuldung finanziert"
+    ],
+    "korrekt": "Weil der Staat die Differenz über Verschuldung finanziert"
+  },
+  {
+    "id": "vwl_steuern-q10",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Laffer-Kurve. In welchem Bereich der Kurve führt eine Steuersenkung zu höheren Steuereinnahmen?",
+    "erklaerung": "Rechts des Scheitelpunkts (im sogenannten prohibitiven Bereich) ist der Steuersatz so hoch, dass die Bemessungsgrundlage stark schrumpft. Eine Senkung des Steuersatzes führt hier dazu, dass mehr gearbeitet wird und weniger Steuervermeidung betrieben wird – die Einnahmen steigen trotz tieferem Satz. Links des Scheitelpunkts hingegen führt eine Steuersenkung zu tieferen Einnahmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/laffer_kurve.svg",
+      "alt": "Laffer-Kurve: Zusammenhang zwischen Steuersatz und Steuereinnahmen"
+    },
+    "optionen": [
+      "Links des Scheitelpunkts (im Normalbereich)",
+      "Eine Steuersenkung führt immer zu tieferen Einnahmen",
+      "Rechts des Scheitelpunkts (im prohibitiven Bereich)",
+      "Genau am Scheitelpunkt"
+    ],
+    "korrekt": "Rechts des Scheitelpunkts (im prohibitiven Bereich)"
+  },
+  {
+    "id": "vwl_steuern-q11",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Länder nach dem typischen Niveau ihrer Fiskalquote (tiefe vs. hohe Fiskalquote).",
+    "erklaerung": "Die Schweiz und die USA haben im internationalen Vergleich tiefe Fiskalquoten (wenig staatliche Umverteilung). Schweden und Dänemark (skandinavische Wohlfahrtsstaaten) haben hohe Fiskalquoten mit umfassenden Sozialsystemen. Deutschland und Frankreich liegen im Mittelfeld bzw. leicht darüber.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Tiefe Fiskalquote",
+      "Hohe Fiskalquote"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_steuern-q12",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Faktoren können laut der Laffer-Kurve dazu führen, dass hohe Steuersätze die Einnahmen senken? (Mehrere Antworten möglich)",
+    "erklaerung": "Die Laffer-Kurve basiert auf der Idee, dass zu hohe Steuersätze die Bemessungsgrundlage schrumpfen lassen. Dies geschieht durch: Steuerflucht ins Ausland (mobile Steuerzahler wandern ab), Zunahme der Schwarzarbeit (Umgehung der legalen Kanäle) und sinkenden Arbeitsanreiz (weniger Motivation, mehr zu verdienen). Die Inflation ist kein direkter Mechanismus der Laffer-Kurve.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Steuerflucht ins Ausland",
+      "Zunahme der Schwarzarbeit",
+      "Sinkender Arbeitsanreiz",
+      "Steigende Inflation"
+    ],
+    "korrekt": [
+      "Steuerflucht ins Ausland",
+      "Zunahme der Schwarzarbeit",
+      "Sinkender Arbeitsanreiz"
+    ]
+  },
+  {
+    "id": "vwl_steuern-q13",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ein Land hat ein BIP von CHF 600 Mrd. und eine Staatsquote von 35%. Im selben Jahr beträgt die Fiskalquote 30%. Berechnen Sie das Haushaltsdefizit.",
+    "erklaerung": "Staatsausgaben = Staatsquote × BIP = 35% × 600 = CHF 210 Mrd. Staatseinnahmen = Fiskalquote × BIP = 30% × 600 = CHF 180 Mrd. Die Fiskalquote umfasst alle Zwangsabgaben (Steuern + Sozialversicherungsbeiträge). Haushaltsdefizit = 210 − 180 = CHF 30 Mrd.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "Staatsausgaben",
+        "answer": 210,
+        "tolerance": 1,
+        "unit": "Mrd. CHF"
+      },
+      {
+        "label": "Staatseinnahmen (Fiskalquote)",
+        "answer": 180,
+        "tolerance": 1,
+        "unit": "Mrd. CHF"
+      },
+      {
+        "label": "Haushaltsdefizit",
+        "answer": 30,
+        "tolerance": 1,
+        "unit": "Mrd. CHF"
+      }
+    ],
+    "korrekt": "210",
+    "toleranz": 1,
+    "einheit": "Mrd. CHF"
+  },
+  {
+    "id": "vwl_steuern-w01",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter Steuerwettbewerb?",
+    "erklaerung": "Steuerwettbewerb bedeutet, dass Länder, Kantone oder Gemeinden versuchen, durch tiefe Steuersätze attraktive Steuerzahlende (wohlhabende Privatpersonen und profitable Unternehmen) anzulocken. Das Schweizer föderalistische System mit unterschiedlichen Kantons- und Gemeindesteuern ist ein typisches Beispiel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Verschiedene Steuerarten konkurrieren um die höchsten Einnahmen",
+      "Steuerpflichtige konkurrieren um den günstigsten Steuersatz",
+      "Länder oder Kantone konkurrieren mit tiefen Steuern um attraktive Steuerzahlende",
+      "Der Bund und die Kantone streiten um die Verteilung der Steuereinnahmen"
+    ],
+    "korrekt": "Länder oder Kantone konkurrieren mit tiefen Steuern um attraktive Steuerzahlende"
+  },
+  {
+    "id": "vwl_steuern-w02",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was misst der Steuerausschöpfungsindex?",
+    "erklaerung": "Der Steuerausschöpfungsindex der Eidgenössischen Finanzverwaltung setzt die Steuereinnahmen eines Kantons ins Verhältnis zu seinem steuerlich ausschöpfbaren Potenzial (Wirtschaftskraft). Kantone wie Zug, Schwyz und Nidwalden schöpfen ihr Potenzial wenig aus (tiefe Steuern), während Genf, Bern oder Graubünden stark ausschöpfen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den höchsten Steuersatz eines Kantons",
+      "Das Verhältnis der Steuereinnahmen zum steuerlich ausschöpfbaren Potenzial",
+      "Die Anzahl verschiedener Steuerarten in einem Kanton",
+      "Den Anteil der Steuern am BIP eines Kantons"
+    ],
+    "korrekt": "Das Verhältnis der Steuereinnahmen zum steuerlich ausschöpfbaren Potenzial"
+  },
+  {
+    "id": "vwl_steuern-w03",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Das Rezept der Steueroasen funktioniert immer: Steuern senken → reiche Neuzuzüger → Steuerausfälle werden kompensiert.",
+    "erklaerung": "Falsch. Am Beispiel Luzern zeigt sich, dass das Rezept nicht immer funktioniert. Grosse Kantone mit Zentrumsfunktion haben strukturelle Nachteile (Zentrumslasten, ländliche Gebiete), die auch durch tiefe Steuern kaum kompensiert werden können. Luzern musste trotz tiefster Unternehmenssteuern Sparpakete schnüren und die Steuern für die Bevölkerung wieder erhöhen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w04",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Warum konnte Obwalden seine Steuerstrategie erfolgreicher umsetzen als Luzern?",
+    "erklaerung": "Obwalden ist ein kleiner Kanton ohne grosse Zentrumslasten. Schon wenige wohlhabende Neuzuzüger haben eine spürbare Wirkung auf die Steuerkraft. Luzern dagegen hat mit dem Entlebuch und dem Hinterland strukturschwache Gebiete und als Zentrum zusätzliche Kosten, die durch Steueranreize allein nicht kompensiert werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Obwalden hat eine grössere Bevölkerung",
+      "Obwalden ist kleiner und hat weniger Zentrumslasten",
+      "Obwalden hat höhere Steuern als Luzern",
+      "Obwalden liegt näher bei Zürich"
+    ],
+    "korrekt": "Obwalden ist kleiner und hat weniger Zentrumslasten"
+  },
+  {
+    "id": "vwl_steuern-w05",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist der nationale Finanzausgleich (NFA)?",
+    "erklaerung": "Der NFA (Nationaler Finanzausgleich) ist ein Ausgleichsmechanismus, bei dem finanzstarke Kantone (Geberkantone wie Zug, Schwyz, Zürich, Basel-Stadt) Beiträge an finanzschwache Kantone (Nehmerkantone wie Uri, Jura, Glarus, Wallis, Freiburg) leisten. Ziel ist es, allen Kantonen eine minimale finanzielle Ausstattung zu gewährleisten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Steuersenkungsprogramm des Bundes",
+      "Ein System zur Vereinheitlichung aller Kantonssteuern",
+      "Ein System, bei dem ressourcenstarke Kantone an ressourcenschwache Kantone zahlen",
+      "Ein Kreditprogramm der Nationalbank für verschuldete Kantone"
+    ],
+    "korrekt": "Ein System, bei dem ressourcenstarke Kantone an ressourcenschwache Kantone zahlen"
+  },
+  {
+    "id": "vwl_steuern-w06",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Kanton dank Steuersenkungen an Wirtschaftskraft gewinnt, erhält er automatisch mehr aus dem NFA.",
+    "erklaerung": "Falsch – das Gegenteil ist der Fall. Wenn ein Kanton an Wirtschaftskraft (Ressourcenstärke) gewinnt, erhält er weniger aus dem NFA, weil er weniger auf Ausgleichszahlungen angewiesen ist. Dies erlebte Luzern: Der Kanton gewann an Wirtschaftskraft, erhielt aber weniger NFA-Mittel – was die Finanzlage zusätzlich verschärfte.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w07",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Beurteilen Sie den Steuerwettbewerb zwischen den Schweizer Kantonen: Überwiegen Ihrer Meinung nach die Vorteile oder die Nachteile?",
+    "erklaerung": "Der Steuerwettbewerb hat positive (Disziplinierung, Effizienz, Wahlfreiheit) und negative Seiten (Ungleichheit, Unterfinanzierung, Race to the Bottom). Der NFA korrigiert die grössten Ungleichheiten, schafft aber seinerseits Anreizkonflikte (z.B. kann ein Kanton von Steuererhöhungen profitieren, wenn er dadurch mehr NFA-Beiträge erhält).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Vorteile: Der Steuerwettbewerb sorgt für Haushaltsdisziplin, begrenzt die Staatstätigkeit, ermöglicht Vielfalt und Experimentierfreude. Bürgerinnen und Bürger können mit den Füssen abstimmen. Nachteile: Er kann zu einem Wettlauf nach unten führen (Race to the Bottom), benachteiligt strukturschwache Kantone, und es besteht die Gefahr, dass öffentliche Leistungen (Bildung, Infrastruktur) unterfinanziert werden. Der Finanzausgleich mildert die Nachteile, kann aber Fehlanreize setzen."
+  },
+  {
+    "id": "vwl_steuern-w08",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die Kantone als typische Geber- oder Nehmerkantone im nationalen Finanzausgleich zu.",
+    "erklaerung": "Geberkantone (ressourcenstark, tiefe Steuerausschöpfung): Zug, Schwyz, Nidwalden, Zürich, Basel-Stadt. Nehmerkantone (ressourcenschwach): Uri, Jura, Glarus, Wallis, Freiburg. Die Einteilung basiert auf der Ressourcenstärke (Wirtschaftskraft pro Kopf) der Kantone.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Geberkanton",
+      "Nehmerkanton"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_steuern-w09",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die OECD-Mindeststeuer von 15% auf Unternehmensgewinne zielt darauf ab, den internationalen Steuerwettbewerb einzuschränken.",
+    "erklaerung": "Richtig. Die globale Mindeststeuer der OECD (Pillar 2) von 15% soll verhindern, dass multinationale Konzerne ihre Gewinne in Tiefsteuerländer verschieben. Sie setzt dem internationalen Steuerwettbewerb eine Untergrenze und betrifft auch die Schweiz, die in einigen Kantonen Unternehmenssteuern unter 15% erhoben hat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w10",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Kanton Luzern senkte die Unternehmenssteuern drastisch, musste aber gleichzeitig Sparpakete schnüren und die Steuern für Privatpersonen erhöhen. Was erklärt dieses Paradox am besten?",
+    "erklaerung": "Luzern erlebte einen doppelten Effekt: Die tiefen Unternehmenssteuern lockten nicht genug Neuzuzüger an, um die Ausfälle zu kompensieren (strukturelle Nachteile: Zentrumslast, ländliche Gebiete). Gleichzeitig stieg die Ressourcenstärke, sodass Luzern weniger NFA-Mittel erhielt. Die Bevölkerung musste die Lücke über höhere Privatsteuern und Sparmassnahmen finanzieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Luzern hat zu viele Unternehmen angelockt",
+      "Die Finanzkrise hat alle Steuereinnahmen zunichtegemacht",
+      "Die Bundessteuer wurde gleichzeitig erhöht",
+      "Die Steuerausfälle wurden nicht ausreichend durch Neuzuzüger kompensiert, und der NFA-Beitrag sank gleichzeitig"
+    ],
+    "korrekt": "Die Steuerausfälle wurden nicht ausreichend durch Neuzuzüger kompensiert, und der NFA-Beitrag sank gleichzeitig"
+  },
+  {
+    "id": "vwl_steuern-w11",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Argumente sprechen FÜR den Steuerwettbewerb zwischen den Kantonen? (Mehrere Antworten möglich)",
+    "erklaerung": "Der Steuerwettbewerb diszipliniert (Kantone müssen effizient wirtschaften), ermöglicht Wahlfreiheit (Umzug in einen steuergünstigeren Kanton) und fördert Vielfalt (verschiedene Modelle werden erprobt). Allerdings spricht gerade die Gefahr der Unterfinanzierung öffentlicher Leistungen GEGEN den Steuerwettbewerb – dies ist ein Nachteil, kein Vorteil.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Diszipliniert die Staatshaushalte und fördert Sparsamkeit",
+      "Verhindert eine Unterfinanzierung öffentlicher Leistungen",
+      "Ermöglicht den Bürgerinnen und Bürgern, «mit den Füssen abzustimmen»",
+      "Fördert Vielfalt und Experimentierfreude in der Steuerpolitik"
+    ],
+    "korrekt": [
+      "Diszipliniert die Staatshaushalte und fördert Sparsamkeit",
+      "Ermöglicht den Bürgerinnen und Bürgern, «mit den Füssen abzustimmen»",
+      "Fördert Vielfalt und Experimentierfreude in der Steuerpolitik"
+    ]
+  },
+  {
+    "id": "vwl_steuern-w12",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Im NFA zahlen {0} an {1}. Ziel ist eine minimale finanzielle Ausstattung aller Kantone.",
+    "erklaerung": "Im Nationalen Finanzausgleich (NFA) leisten finanzstarke Kantone (Geberkantone wie Zug, Schwyz, Zürich) Ausgleichszahlungen an finanzschwache Kantone (Nehmerkantone wie Uri, Jura, Wallis). Dies soll sicherstellen, dass alle Kantone ihre Grundaufgaben finanzieren können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Geberkantone",
+        "optionen": [
+          "ressourcenstarke Kantone",
+          "reiche Kantone"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Nehmerkantone",
+        "optionen": [
+          "ressourcenschwache Kantone",
+          "arme Kantone"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-w13",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie viele Ebenen umfasst das Schweizer Steuersystem?",
+    "erklaerung": "Das Schweizer Steuersystem ist dreistufig aufgebaut (Steuerföderalismus): Bund, Kantone und Gemeinden erheben jeweils eigene Steuern. Dies führt zu unterschiedlichen Steuerbelastungen je nach Wohnort und ist die Grundlage des Steuerwettbewerbs.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Vier: Bund, Kantone, Gemeinden und Bezirke",
+      "Eine: nur der Bund erhebt Steuern",
+      "Zwei: Bund und Kantone",
+      "Drei: Bund, Kantone und Gemeinden"
+    ],
+    "korrekt": "Drei: Bund, Kantone und Gemeinden"
+  },
+  {
+    "id": "vwl_steuern-w14",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die OECD-Mindeststeuer von 15% macht den Steuerwettbewerb zwischen den Schweizer Kantonen überflüssig.",
+    "erklaerung": "Falsch. Die OECD-Mindeststeuer betrifft nur grosse multinationale Konzerne (ab 750 Mio. Euro Umsatz) und nur die Gewinnbesteuerung. Der innerkantonale Steuerwettbewerb in der Schweiz umfasst aber viel mehr: Einkommenssteuern für Privatpersonen, Vermögenssteuern, KMU usw. Die Mindeststeuer setzt lediglich eine Untergrenze für einen Teilbereich des Steuerwettbewerbs.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w15",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Steuerparadies (Tax Haven)?",
+    "erklaerung": "Ein Steuerparadies (Tax Haven) ist ein Land oder Gebiet, das durch sehr tiefe oder keine Steuern, Bankgeheimnis bzw. mangelnde Transparenz, geringe Substanzanforderungen und politische Stabilität ausländisches Kapital und Gewinne anzieht. Bekannte Beispiele sind die Cayman Islands, Bermuda, die Kanalinseln (Jersey, Guernsey) und Panama.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Land, das ausschliesslich indirekte Steuern erhebt",
+      "Ein Land, das keine Staatsausgaben hat",
+      "Ein Land mit einem besonders gerechten Steuersystem",
+      "Ein Land oder Gebiet, das durch sehr tiefe Steuern und mangelnde Transparenz ausländisches Kapital anzieht"
+    ],
+    "korrekt": "Ein Land oder Gebiet, das durch sehr tiefe Steuern und mangelnde Transparenz ausländisches Kapital anzieht"
+  },
+  {
+    "id": "vwl_steuern-w16",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Steuerparadiese zeichnen sich durch vier zentrale Merkmale aus: {0}, mangelnde Transparenz (z.B. Bankgeheimnis), geringe {1} und politische Stabilität.",
+    "erklaerung": "Die vier Merkmale eines Steuerparadieses sind: (1) Tiefe oder keine Steuern auf Unternehmensgewinne und/oder Kapitalerträge, (2) Mangelnde Transparenz / Bankgeheimnis (kein Informationsaustausch), (3) Geringe Substanzanforderungen (Firmen brauchen keine echte wirtschaftliche Tätigkeit vor Ort), (4) Politische und wirtschaftliche Stabilität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "tiefe oder keine Steuern",
+        "optionen": [
+          "tiefe Steuern",
+          "sehr tiefe Steuern",
+          "keine Steuern",
+          "niedrige Steuern"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Substanzanforderungen",
+        "optionen": [
+          "Substanzpflicht",
+          "wirtschaftliche Substanzanforderungen",
+          "Anforderungen an wirtschaftliche Substanz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-w17",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Cayman Islands, Bermuda und die Kanalinseln (Jersey, Guernsey) gelten als klassische Steuerparadiese.",
+    "erklaerung": "Richtig. Diese Gebiete erheben keine oder sehr tiefe Unternehmenssteuern, haben lange Zeit strenges Bankgeheimnis gewahrt und stellen geringe Anforderungen an die wirtschaftliche Substanz von dort ansässigen Unternehmen. Sie zählen zu den bekanntesten Steuerparadiesen weltweit.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w18",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Grafik mit den vier Merkmalen eines Steuerparadieses. Welches Merkmal erklärt, warum Briefkastenfirmen in Steuerparadiesen möglich sind?",
+    "erklaerung": "Briefkastenfirmen (Unternehmen ohne echte Geschäftstätigkeit, Mitarbeitende oder Büros vor Ort) sind möglich, weil Steuerparadiese geringe Substanzanforderungen stellen. Es genügt, dort formal registriert zu sein – eine echte wirtschaftliche Tätigkeit ist nicht nötig. Die anderen Merkmale (tiefe Steuern, Bankgeheimnis, Stabilität) machen das Steuerparadies zusätzlich attraktiv.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuerparadiese_merkmale.svg",
+      "alt": "Vier Merkmale eines Steuerparadieses mit Fragezeichen"
+    },
+    "optionen": [
+      "Tiefe oder keine Steuern",
+      "Mangelnde Transparenz / Bankgeheimnis",
+      "Geringe Substanzanforderungen",
+      "Politische Stabilität"
+    ],
+    "korrekt": "Geringe Substanzanforderungen"
+  },
+  {
+    "id": "vwl_steuern-w19",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Methoden nutzen multinationale Konzerne, um Gewinne in Steuerparadiese zu verschieben? (Mehrere Antworten möglich)",
+    "erklaerung": "Transfer Pricing, Lizenzzahlungen und konzerninterne Darlehen sind die drei Hauptmethoden der Gewinnverschiebung. Bei allen drei Methoden werden konzerninterne Zahlungen so gestaltet, dass Kosten im Hochsteuerland und Gewinne im Tiefsteuerland anfallen. Ein Börsengang hat keinen direkten Einfluss auf die steuerliche Gewinnzuteilung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Verrechnungspreise (Transfer Pricing): Konzerninterne Preise so setzen, dass Gewinne im Tiefsteuerland anfallen",
+      "Lizenzzahlungen: Geistiges Eigentum (z.B. Markenrechte) in ein Steuerparadies verlagern und Lizenzgebühren verrechnen",
+      "Konzerninterne Darlehen: Tochtergesellschaft im Hochsteuerland zahlt hohe Zinsen an Mutter im Steuerparadies",
+      "Börsengang: Aktien an einer ausländischen Börse kotieren lassen"
+    ],
+    "korrekt": [
+      "Verrechnungspreise (Transfer Pricing): Konzerninterne Preise so setzen, dass Gewinne im Tiefsteuerland anfallen",
+      "Lizenzzahlungen: Geistiges Eigentum (z.B. Markenrechte) in ein Steuerparadies verlagern und Lizenzgebühren verrechnen",
+      "Konzerninterne Darlehen: Tochtergesellschaft im Hochsteuerland zahlt hohe Zinsen an Mutter im Steuerparadies"
+    ]
+  },
+  {
+    "id": "vwl_steuern-w20",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie funktioniert Gewinnverschiebung durch Verrechnungspreise (Transfer Pricing)?",
+    "erklaerung": "Beim Transfer Pricing werden konzerninterne Preise so gesetzt, dass die Tochtergesellschaft im Hochsteuerland hohe Kosten hat (tiefe Gewinne) und die Gesellschaft im Tiefsteuerland hohe Einnahmen verbucht (hohe Gewinne). Beispiel: Eine Tochterfirma in der Schweiz kauft Produkte zu überhöhten Preisen von der Schwester auf den Cayman Islands ein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Muttergesellschaft verkauft konzernintern Güter oder Dienstleistungen zu überhöhten oder zu tiefen Preisen, sodass Gewinne im Tiefsteuerland anfallen",
+      "Die Steuererklärung wird in zwei Ländern gleichzeitig eingereicht",
+      "Gewinne werden an die Aktionäre ausgeschüttet",
+      "Der Unternehmensgewinn wird in verschiedene Währungen umgerechnet"
+    ],
+    "korrekt": "Die Muttergesellschaft verkauft konzernintern Güter oder Dienstleistungen zu überhöhten oder zu tiefen Preisen, sodass Gewinne im Tiefsteuerland anfallen"
+  },
+  {
+    "id": "vwl_steuern-w21",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "sort",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordnen Sie die folgenden Massnahmen gegen Steuerparadiese dem richtigen Instrument zu.",
+    "erklaerung": "Der Automatische Informationsaustausch (AIA) und die schwarzen Listen der EU sind Transparenz-Instrumente, die das Bankgeheimnis und die Intransparenz von Steuerparadiesen bekämpfen. Das OECD-BEPS-Projekt und die OECD-Mindeststeuer von 15% sind Instrumente gegen Gewinnverschiebung, die sicherstellen sollen, dass Gewinne dort besteuert werden, wo die wirtschaftliche Wertschöpfung stattfindet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kategorien": [
+      "Transparenz-Instrumente",
+      "Instrumente gegen Gewinnverschiebung"
+    ],
+    "elemente": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  {
+    "id": "vwl_steuern-w22",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Automatische Informationsaustausch (AIA) verpflichtet teilnehmende Länder, Bankdaten ausländischer Kontoinhaberinnen und -inhaber automatisch an deren Heimatstaaten weiterzuleiten.",
+    "erklaerung": "Richtig. Der AIA wurde 2014 von der OECD lanciert und ist inzwischen von über 100 Ländern unterzeichnet. Er verpflichtet Finanzinstitute, Kontodaten (Salden, Zinsen, Dividenden) ausländischer Kundinnen und Kunden an deren Steuerbehörden zu melden. Damit wird das Bankgeheimnis im internationalen Kontext faktisch aufgehoben und Steuerhinterziehung erschwert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w23",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ein Schweizer Tech-Unternehmen gründet eine Tochtergesellschaft auf den Cayman Islands und überträgt ihr alle Patente. Die Schweizer Firma zahlt nun hohe Lizenzgebühren an die Tochter. Welchen Effekt hat das auf die Steuerlast des Konzerns?",
+    "erklaerung": "Durch die Lizenzzahlungen fliesst der Gewinn von der Schweiz (ca. 14% Gewinnsteuer) auf die Cayman Islands (0% Steuer). Die Schweizer Firma kann die Lizenzgebühren als Aufwand abziehen und senkt so ihren steuerbaren Gewinn. Die Tochter auf den Cayman Islands versteuert die Lizenzeinnahmen zu 0%. Netto sinkt die Gesamtsteuerlast des Konzerns erheblich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "kontext": "Steuersatz Schweiz: ca. 14%. Steuersatz Cayman Islands: 0%.",
+    "optionen": [
+      "Die Steuerlast steigt, weil nun in zwei Ländern Steuern anfallen",
+      "Die Steuerlast steigt, weil die Cayman Islands höhere Steuern haben",
+      "Die Steuerlast sinkt, weil die Lizenzgebühren den Gewinn in der Schweiz reduzieren und auf den Cayman Islands steuerfrei sind",
+      "Die Steuerlast bleibt gleich, weil Lizenzen nicht steuerrelevant sind"
+    ],
+    "korrekt": "Die Steuerlast sinkt, weil die Lizenzgebühren den Gewinn in der Schweiz reduzieren und auf den Cayman Islands steuerfrei sind"
+  },
+  {
+    "id": "vwl_steuern-w24",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Schätzungen zufolge werden rund 40% der Gewinne multinationaler Konzerne in Tiefsteuerländer verschoben. Warum ist dieses Ausmass problematisch für Hochsteuerländer?",
+    "erklaerung": "Die Gewinnverschiebung multinationaler Konzerne führt zu einer Erosion der Steuerbasis in Hochsteuerländern. Die entgangenen Einnahmen müssen durch höhere Steuern auf nicht-mobile Faktoren (v.a. Arbeitseinkommen, Konsum) oder durch Kürzungen bei öffentlichen Leistungen kompensiert werden. Dies verschärft die Ungleichheit, da die Steuerlast auf weniger mobile Wirtschaftssubjekte überwälzt wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Unternehmen werden dadurch weniger produktiv",
+      "Die Arbeitslosigkeit nimmt in den Steuerparadiesen zu",
+      "Die Inflation steigt in den Hochsteuerländern",
+      "Den Hochsteuerländern entgehen erhebliche Steuereinnahmen, was zu höherer Belastung der übrigen Steuerzahlenden oder Kürzungen öffentlicher Leistungen führt"
+    ],
+    "korrekt": "Den Hochsteuerländern entgehen erhebliche Steuereinnahmen, was zu höherer Belastung der übrigen Steuerzahlenden oder Kürzungen öffentlicher Leistungen führt"
+  },
+  {
+    "id": "vwl_steuern-w25",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Kritiker argumentieren, dass Steuerparadiese den Steuerwettbewerb verzerren und zu einem «Race to the Bottom» führen. Befürworter betonen hingegen den Nutzen für Entwicklungsländer. Welches Argument spricht tatsächlich FÜR Steuerparadiese?",
+    "erklaerung": "Das stärkste Argument für Steuerparadiese ist der Disziplinierungseffekt: Sie setzen Hochsteuerländer unter Druck, Steuergelder effizient einzusetzen und die Steuerlast moderat zu halten. Allerdings überwiegen in der ökonomischen Literatur die Gegenargumente: Steuerparadiese reduzieren die globalen Steuereinnahmen, begünstigen Vermögende überproportional und untergraben die Finanzierung öffentlicher Güter.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie erhöhen die weltweiten Steuereinnahmen insgesamt",
+      "Sie zwingen Hochsteuerländer zu effizienterer Verwendung von Steuergeldern",
+      "Sie sorgen für eine gerechtere Verteilung des Wohlstands",
+      "Sie machen das internationale Steuersystem transparenter"
+    ],
+    "korrekt": "Sie zwingen Hochsteuerländer zu effizienterer Verwendung von Steuergeldern"
+  },
+  {
+    "id": "vwl_steuern-w26",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Die Schweiz wurde international immer wieder als Steuerparadies kritisiert. Analysieren Sie, welche Merkmale der Schweiz diese Kritik begründen und welche Reformen die Schweiz in den letzten Jahren umgesetzt hat.",
+    "erklaerung": "Die Schweiz stand wegen Bankgeheimnis, tiefen Unternehmenssteuern, Pauschalbesteuerung und Sonderstatuten international in der Kritik. In den letzten Jahren hat sie bedeutende Reformen durchgeführt: AIA-Einführung (Bankgeheimnis de facto aufgehoben für Auslandbeziehungen), STAF-Reform (Abschaffung steuerlicher Sonderstatuten) und Umsetzung der OECD-Mindeststeuer. Die Schweiz ist heute kein klassisches Steuerparadies mehr, hat aber nach wie vor vergleichsweise tiefe Unternehmenssteuern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Merkmale, die zur Kritik führten: (1) Bankgeheimnis – die Schweiz schützte lange die Anonymität ausländischer Kontoinhaberinnen und -inhaber. (2) Tiefe Unternehmenssteuern in gewissen Kantonen (z.B. Zug, Nidwalden unter 12%). (3) Steuerliche Sonderregelungen wie die Pauschalbesteuerung für wohlhabende Ausländerinnen und Ausländer. (4) Spezialstatuten für Holdings, gemischte Gesellschaften und Verwaltungsgesellschaften.\n\nReformen: Die Schweiz hat den AIA eingeführt (2017/2018), das Bankgeheimnis für ausländische Kundinnen und Kunden aufgegeben, die Unternehmenssteuerreform (STAF 2020) umgesetzt (Abschaffung von Sonderstatuten) und 2024 die OECD-Mindeststeuer von 15% für Grosskonzerne eingeführt."
+  },
+  {
+    "id": "vwl_steuern-w27",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Kleine Länder und Inselstaaten haben einen strategischen Vorteil beim Betreiben eines Steuerparadieses, weil schon wenige zugezogene Firmen ihre Staatskasse füllen können.",
+    "erklaerung": "Richtig. Kleine Jurisdiktionen wie die Cayman Islands oder Jersey haben geringe Staatsausgaben. Schon wenige multinationale Firmen, die geringe Gebühren und Steuern zahlen, reichen aus, um den Staatshaushalt zu finanzieren. Für grosse Länder mit umfangreichen öffentlichen Leistungen (Bildung, Gesundheit, Infrastruktur) wäre dieses Modell nicht tragfähig – dieselbe Logik, die auch beim innerkantonalen Steuerwettbewerb zwischen kleinen (Obwalden) und grossen Kantonen (Luzern) gilt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-w28",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche der folgenden Massnahmen zielen direkt auf die Bekämpfung von Gewinnverschiebung in Steuerparadiese ab? (Mehrere Antworten möglich)",
+    "erklaerung": "Das OECD-BEPS-Projekt bekämpft gezielt die Gewinnverschiebung (Base Erosion and Profit Shifting) multinationaler Konzerne durch strengere Regeln für Verrechnungspreise und Substanzanforderungen. Die globale Mindeststeuer von 15% (Pillar 2) setzt eine Untergrenze, die es unattraktiv macht, Gewinne in Null-Steuer-Länder zu verschieben. Die Schuldenbremse und die MwSt-Erhöhung sind inländische fiskalpolitische Instrumente ohne direkten Bezug zur Bekämpfung von Steuerparadiesen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "OECD-BEPS-Projekt (Base Erosion and Profit Shifting)",
+      "Einführung der Schuldenbremse",
+      "Globale Mindeststeuer von 15% auf Unternehmensgewinne",
+      "Erhöhung der Mehrwertsteuer im Inland"
+    ],
+    "korrekt": [
+      "OECD-BEPS-Projekt (Base Erosion and Profit Shifting)",
+      "Globale Mindeststeuer von 15% auf Unternehmensgewinne"
+    ]
+  },
+  {
+    "id": "vwl_steuern-e01",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter Steuerinzidenz?",
+    "erklaerung": "Die Steuerinzidenz beschreibt, wer die Last einer Steuer tatsächlich trägt. Dies muss nicht die Seite sein, die die Steuer formal bezahlt. Entscheidend ist, welche Marktseite (Anbieter oder Nachfrager) der Preisveränderung weniger gut ausweichen kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Frage, wie hoch eine Steuer ist",
+      "Die Frage, welche Bevölkerungsgruppe eine Steuer letztlich bezahlen muss",
+      "Die Frage, wie oft eine Steuer erhoben wird",
+      "Die Frage, ob eine Steuer direkt oder indirekt ist"
+    ],
+    "korrekt": "Die Frage, welche Bevölkerungsgruppe eine Steuer letztlich bezahlen muss"
+  },
+  {
+    "id": "vwl_steuern-e02",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wer trägt bei einer Steuer die grössere Last?",
+    "erklaerung": "Die Steuerlast wird stets von der weniger elastischen Marktseite getragen. Wer der Preisveränderung weniger gut ausweichen kann (unelastische Seite), muss den grösseren Teil der Steuer tragen – unabhängig davon, bei wem die Steuer formal erhoben wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Marktseite mit der geringeren Preiselastizität",
+      "Die Marktseite, auf der die Steuer formal erhoben wird",
+      "Immer der Produzent",
+      "Immer der Konsument"
+    ],
+    "korrekt": "Die Marktseite mit der geringeren Preiselastizität"
+  },
+  {
+    "id": "vwl_steuern-e03",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Steuern führen praktisch immer zu Wohlfahrtsverlusten, da sie die relativen Preise verzerren.",
+    "erklaerung": "Richtig. Jede Steuer verändert die relativen Preise und führt damit zu Verzerrungen. Die Preise spiegeln nicht mehr die tatsächlichen Knappheiten wider. Dieser Wohlfahrtsverlust ist grundsätzlich unvermeidlich. Die Staatstätigkeit kann die Wohlfahrt dennoch insgesamt steigern, wenn die positiven Wirkungen der Staatsausgaben die negativen Verzerrungseffekte überwiegen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-e04",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum sind die Wohlfahrtsverluste einer Steuer besonders gross, wenn Angebot und Nachfrage elastisch sind?",
+    "erklaerung": "Bei hoher Elastizität reagieren Angebot und Nachfrage stark auf die steuerbedingte Preisveränderung. Viele Transaktionen finden nicht mehr statt (die Menge sinkt deutlich), was zu einem grossen Wohlfahrtsverlust führt. Bei unelastischer Nachfrage oder unelastischem Angebot hingegen bleibt die Menge relativ stabil und der Wohlfahrtsverlust ist geringer.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die Mengenreaktion stark ausfällt und viele Transaktionen nicht mehr stattfinden",
+      "Weil die Steuer dann nicht erhoben werden kann",
+      "Weil die Preise sinken",
+      "Weil die Steuereinnahmen dann besonders hoch sind"
+    ],
+    "korrekt": "Weil die Mengenreaktion stark ausfällt und viele Transaktionen nicht mehr stattfinden"
+  },
+  {
+    "id": "vwl_steuern-e05",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Die Tabaksteuer wird formal beim Produzenten erhoben. Warum tragen trotzdem vor allem die Raucherinnen und Raucher die Steuerlast?",
+    "erklaerung": "Die Nachfrage nach Zigaretten ist sehr unelastisch (Suchtcharakter). Die Produzenten können daher den grössten Teil der Steuer auf den Verkaufspreis überwälzen, ohne dass die Nachfrage wesentlich einbricht. Damit tragen die Konsumenten (Raucher) den Löwenanteil der Steuer, obwohl sie formal beim Produzenten erhoben wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die Tabaksteuer eine direkte Steuer ist",
+      "Weil Raucher freiwillig mehr bezahlen",
+      "Weil die Nachfrage nach Zigaretten sehr unelastisch ist und die Produzenten die Steuer auf den Preis überwälzen können",
+      "Weil die Produzenten die Steuer nicht bezahlen müssen"
+    ],
+    "korrekt": "Weil die Nachfrage nach Zigaretten sehr unelastisch ist und die Produzenten die Steuer auf den Preis überwälzen können"
+  },
+  {
+    "id": "vwl_steuern-e06",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "open",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Erklären Sie anhand des Beispiels der US-Luxussteuer auf Yachten (1990er-Jahre), warum eine Luxussteuer nicht unbedingt die Reichen belastet.",
+    "erklaerung": "Das Beispiel illustriert die zentrale Rolle der Elastizität: Die Nachfrage war elastisch (Reiche konnten ausweichen), das Angebot unelastisch (Werftarbeiter konnten nicht einfach den Beruf wechseln). Daher traf die Steuer nicht die beabsichtigte Zielgruppe (Reiche), sondern die weniger wohlhabenden Arbeiter der Yachtindustrie.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "musterantwort": "Die USA führten Anfang der 1990er-Jahre eine Luxussteuer auf Yachten ein, um Reiche stärker zu besteuern. Die Nachfrage nach Yachten erwies sich jedoch als sehr elastisch: Wohlhabende kauften ihre Yachten stattdessen im Ausland oder erwarben andere Luxusgüter. Der Yachtverkauf in Florida brach um 90% ein. Die Steuerlast traf stattdessen die Angestellten der Yachtwerften (unelastisches Angebot), die ihre Arbeit nicht leicht wechseln konnten. Die Steuer wurde deshalb bald wieder abgeschafft."
+  },
+  {
+    "id": "vwl_steuern-e07",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Es spielt keine Rolle, auf welcher Marktseite eine Steuer formal erhoben wird – die tatsächliche Lastverteilung hängt allein von den Elastizitäten ab.",
+    "erklaerung": "Richtig. Ob eine Steuer beim Anbieter oder Nachfrager erhoben wird, ändert nichts an der Verteilung der Steuerlast. Entscheidend ist einzig die relative Elastizität von Angebot und Nachfrage. Die weniger elastische Seite trägt den grösseren Anteil.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-e08",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Auf welche Güter sollte der Staat gemäss der Elastizitätsanalyse Steuern erheben, um möglichst geringe Wohlfahrtsverluste zu verursachen?",
+    "erklaerung": "Bei unelastischer Nachfrage oder unelastischem Angebot führt eine Steuer zu geringen Mengenreaktionen und damit zu geringen Wohlfahrtsverlusten. Die Steuer verzerrt die Marktmengen kaum. Umgekehrt verursachen Steuern auf Güter mit hoher Elastizität grosse Verzerrungen und Wohlfahrtsverluste.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Auf Güter mit unelastischer Nachfrage oder unelastischem Angebot",
+      "Auf Güter mit elastischer Nachfrage und elastischem Angebot",
+      "Nur auf Luxusgüter",
+      "Nur auf importierte Güter"
+    ],
+    "korrekt": "Auf Güter mit unelastischer Nachfrage oder unelastischem Angebot"
+  },
+  {
+    "id": "vwl_steuern-e09",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Ein Arbeitgeber und ein Arbeitnehmer teilen sich formal je hälftig die AHV-Beiträge. Wer trägt ökonomisch gesehen die grössere Last?",
+    "erklaerung": "Wie bei jeder Steuer oder Abgabe bestimmen die Elastizitäten die tatsächliche Lastverteilung, nicht die gesetzliche Aufteilung. Da die Arbeitsnachfrage meist elastischer ist als das Arbeitsangebot, tragen Arbeitnehmer tendenziell den grösseren Teil. Die formale Aufteilung 50:50 sagt nichts über die tatsächliche ökonomische Belastung aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Immer der Arbeitnehmer",
+      "Beide genau gleich viel, weil es so im Gesetz steht",
+      "Immer der Arbeitgeber",
+      "Es hängt von der Elastizität des Arbeitsangebots und der Arbeitsnachfrage ab"
+    ],
+    "korrekt": "Es hängt von der Elastizität des Arbeitsangebots und der Arbeitsnachfrage ab"
+  },
+  {
+    "id": "vwl_steuern-e10",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Steuer auf ein Gut mit völlig unelastischem Angebot verursacht keinen Wohlfahrtsverlust.",
+    "erklaerung": "Richtig. Bei völlig unelastischem Angebot (die angebotene Menge ändert sich nicht, egal wie der Preis ist) verursacht die Steuer keine Mengenveränderung und damit keine Verzerrung. Die gesamte Steuerlast wird vom Anbieter getragen, aber da die Menge konstant bleibt, gibt es keinen Wohlfahrtsverlust. Dies ist allerdings ein theoretischer Extremfall.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-e11",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Je {0} die Preiselastizität, desto stärker reagiert die Menge auf eine Steuer und desto {1} fällt der Wohlfahrtsverlust aus.",
+    "erklaerung": "Bei hoher Preiselastizität weichen Konsumenten oder Produzenten der Steuer leicht aus, was zu starken Mengenreaktionen führt. Viele Transaktionen finden nicht mehr statt – der Wohlfahrtsverlust ist gross. Bei unelastischer Nachfrage oder Angebot bleibt die Menge nahezu stabil und der Wohlfahrtsverlust gering.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "elastischer",
+        "optionen": [
+          "grösser",
+          "höher"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "grösser",
+        "optionen": [
+          "höher",
+          "stärker"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-e12",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Grafik zeigt zwei Märkte mit unterschiedlicher Nachfrageelastizität, auf die jeweils dieselbe Steuer erhoben wird. In welchem Markt ist der Wohlfahrtsverlust grösser?",
+    "erklaerung": "Bei elastischer Nachfrage reagiert die Menge stark auf den Steuerkeil – viele Transaktionen fallen weg, und das Wohlfahrtsverlust-Dreieck (Deadweight Loss) wird gross. Bei unelastischer Nachfrage bleibt die Menge nahezu stabil, und der Wohlfahrtsverlust ist gering, obwohl die Konsumenten den grösseren Teil der Steuer tragen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuerinzidenz_elastizitaet.svg",
+      "alt": "Zwei Märkte: Links elastische Nachfrage, rechts unelastische Nachfrage, jeweils mit Steuerkeil"
+    },
+    "optionen": [
+      "Der Wohlfahrtsverlust ist in beiden Märkten gleich",
+      "Im Markt mit elastischer Nachfrage (links)",
+      "Im Markt mit unelastischer Nachfrage (rechts)",
+      "Es lässt sich ohne weitere Informationen nicht bestimmen"
+    ],
+    "korrekt": "Im Markt mit elastischer Nachfrage (links)"
+  },
+  {
+    "id": "vwl_steuern-e13",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen zur Steuerinzidenz sind korrekt? (Mehrere Antworten möglich)",
+    "erklaerung": "Die Steuerinzidenz zeigt: Die weniger elastische Seite trägt stets die grössere Last (B), und es ist irrelevant, wo die Steuer formal erhoben wird (C). Aussagen A und D sind falsch – die formale und die ökonomische Belastung fallen regelmässig auseinander.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die formal belastete Seite trägt immer auch die ökonomische Last",
+      "Die weniger elastische Marktseite trägt die grössere Last",
+      "Die Lastverteilung ist unabhängig davon, wo die Steuer formal erhoben wird",
+      "Eine Steuer auf Konsumenten belastet immer nur Konsumenten"
+    ],
+    "korrekt": [
+      "Die weniger elastische Marktseite trägt die grössere Last",
+      "Die Lastverteilung ist unabhängig davon, wo die Steuer formal erhoben wird"
+    ]
+  },
+  {
+    "id": "vwl_steuern-e14",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist ein Wohlfahrtsverlust (Deadweight Loss) durch eine Steuer?",
+    "erklaerung": "Der Wohlfahrtsverlust (Deadweight Loss) entsteht, weil eine Steuer die Preise verzerrt und dadurch einige Transaktionen verhindert, die ohne Steuer für beide Seiten vorteilhaft gewesen wären. Diese «verlorenen» Tauschgewinne sind der Wohlfahrtsverlust – ein Nettoverlust für die Gesellschaft, der weder dem Staat noch den Marktteilnehmern zugutekommt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Differenz zwischen Steuersatz und Inflation",
+      "Die Kosten für die Erhebung der Steuer",
+      "Der Verlust an Wohlfahrt, der entsteht, weil Transaktionen nicht mehr stattfinden",
+      "Der Betrag, den der Staat durch die Steuer einnimmt"
+    ],
+    "korrekt": "Der Verlust an Wohlfahrt, der entsteht, weil Transaktionen nicht mehr stattfinden"
+  },
+  {
+    "id": "vwl_steuern-e15",
+    "fach": "VWL",
+    "thema": "Steuern und Elastizitäten",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Steuerinzidenz zeigt, wer eine Steuer formal an den Staat abliefert.",
+    "erklaerung": "Falsch. Die Steuerinzidenz zeigt, wer die Steuer wirtschaftlich tatsächlich trägt – nicht wer sie formal abliefert. Die formale Ablieferung (Steuerschuldner) und die tatsächliche wirtschaftliche Belastung (Steuerträger) können stark voneinander abweichen. Die Inzidenz hängt von den Elastizitäten ab, nicht von der gesetzlichen Regelung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_steuern-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Steuerarten nach der Ebene im föderalen System der Schweiz – von der Bundesebene zur Gemeindeebene.",
+    "erklaerung": "Die Schweiz hat ein dreistufiges Steuersystem: Der Bund erhebt die direkte Bundessteuer und die MWST. Die Kantone erheben eigene Einkommens- und Vermögenssteuern (mit unterschiedlichen Tarifen – daher Steuerwettbewerb). Die Gemeinden erheben einen Zuschlag auf die Kantonssteuer (Steuerfuss). Diese Dreigliedrigkeit ist weltweit einzigartig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_steuern-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Formen von Staatseinnahmen",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Steuertarife nach ihrer Wirkung auf die Einkommensverteilung – vom am stärksten umverteilenden zum am wenigsten umverteilenden.",
+    "erklaerung": "Ein progressiver Tarif (wie die Einkommenssteuer in der Schweiz) belastet hohe Einkommen überproportional und wirkt stark umverteilend. Ein proportionaler Tarif (z.B. Flat Tax) belastet alle gleich – keine Umverteilungswirkung. Ein degressiver Tarif belastet tiefe Einkommen relativ stärker – er wirkt sogar anti-umverteilend (z.B. indirekte Steuern wie die MWST wirken tendenziell degressiv).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "vwl_steuern-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden internationalen Massnahmen gegen Steuervermeidung in die chronologische Reihenfolge ihrer Einführung.",
+    "erklaerung": "Die internationale Steuerkooperation hat sich schrittweise verschärft: Von bilateralen Abkommen gegen Doppelbesteuerung über den Druck auf das Schweizer Bankgeheimnis (nach dem UBS-Skandal) zum automatischen Informationsaustausch (über 100 Länder) bis zur globalen Mindeststeuer von 15% für Unternehmen mit über 750 Mio. EUR Umsatz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_steuern-hotspot01",
+    "fach": "VWL",
+    "thema": "Fiskal-/Staatsquote & Laffer-Kurve",
+    "typ": "hotspot",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Klicke auf den Punkt der Laffer-Kurve, bei dem die Steuereinnahmen maximal sind.",
+    "erklaerung": "Die Laffer-Kurve zeigt: Bei 0% und 100% Steuersatz sind die Einnahmen null. Am Scheitelpunkt (A) sind sie maximal. Steigt der Satz über das Optimum, sinken die Einnahmen durch weniger Arbeit und Steuerflucht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuern_laffer_hotspot.svg",
+      "alt": "Laffer-Kurve mit vier markierten Punkten (A–D)"
+    },
+    "hotspots": [
+      {
+        "x": 50,
+        "y": 21.4,
+        "r": 8,
+        "label": "A: Optimaler Steuersatz"
+      },
+      {
+        "x": 25,
+        "y": 54.8,
+        "r": 8,
+        "label": "B: Tiefer Steuersatz"
+      },
+      {
+        "x": 75,
+        "y": 54.8,
+        "r": 8,
+        "label": "C: Hoher Steuersatz"
+      },
+      {
+        "x": 88.8,
+        "y": 78.6,
+        "r": 8,
+        "label": "D: 100% Steuersatz"
+      }
+    ],
+    "korrekt": [
+      0
+    ]
+  },
+  {
+    "id": "vwl_steuern-beschriftung01",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die Ebenen und wichtigsten Steuerarten des Schweizer Steuersystems.",
+    "erklaerung": "Dreistufiges System: Bund (direkte Bundessteuer + MWST), Kantone (Einkommens-/Vermögenssteuer mit unterschiedlichen Steuerfüssen = Steuerwettbewerb), Gemeinden (Zuschlag auf Kantonssteuern).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuern_system_beschriftung.svg",
+      "alt": "Steuersystem der Schweiz mit sechs nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Bundesebene",
+        "x": 19,
+        "y": 33
+      },
+      {
+        "id": "l2",
+        "text": "Direkte Bundessteuer + MWST",
+        "x": 19,
+        "y": 46
+      },
+      {
+        "id": "l3",
+        "text": "Kantonsebene",
+        "x": 50,
+        "y": 33
+      },
+      {
+        "id": "l4",
+        "text": "Einkommens- und Vermögenssteuer",
+        "x": 50,
+        "y": 46
+      },
+      {
+        "id": "l5",
+        "text": "Gemeindeebene",
+        "x": 81,
+        "y": 33
+      },
+      {
+        "id": "l6",
+        "text": "Gemeindesteuerzuschlag",
+        "x": 81,
+        "y": 46
+      }
+    ]
+  },
+  {
+    "id": "vwl_steuern-dragdrop01",
+    "fach": "VWL",
+    "thema": "Steuerarten in der Schweiz",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Steuerarten der richtigen staatlichen Ebene zu.",
+    "erklaerung": "Bund: MWST, direkte Bundessteuer, Verrechnungssteuer. Kantone: Einkommens-/Vermögenssteuer (Steuerwettbewerb!), Motorfahrzeugsteuer. Gemeinden: Zuschlag auf Kantonssteuer, Liegenschaftssteuer, diverse Abgaben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/steuern/steuern_ebenen_dragdrop.svg",
+      "alt": "Drei Spalten: Bund, Kanton, Gemeinde"
+    },
+    "zones": [
+      {
+        "id": "bund",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "kanton",
+        "x": 35,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "gemeinde",
+        "x": 67.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Mehrwertsteuer (MWST)",
+        "zone": "bund"
+      },
+      {
+        "id": "m2",
+        "text": "Direkte Bundessteuer",
+        "zone": "bund"
+      },
+      {
+        "id": "m3",
+        "text": "Verrechnungssteuer",
+        "zone": "bund"
+      },
+      {
+        "id": "m4",
+        "text": "Einkommenssteuer (kantonaler Tarif)",
+        "zone": "kanton"
+      },
+      {
+        "id": "m5",
+        "text": "Vermögenssteuer",
+        "zone": "kanton"
+      },
+      {
+        "id": "m6",
+        "text": "Motorfahrzeugsteuer",
+        "zone": "kanton"
+      },
+      {
+        "id": "m7",
+        "text": "Gemeindesteuerfuss (Zuschlag)",
+        "zone": "gemeinde"
+      },
+      {
+        "id": "m8",
+        "text": "Liegenschaftssteuer",
+        "zone": "gemeinde"
+      },
+      {
+        "id": "m9",
+        "text": "Hundesteuer und Gebühren",
+        "zone": "gemeinde"
+      }
+    ]
+  }
+]

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 440" font-family="'DM Sans', system-ui, sans-serif">
+  <!-- Weisser Hintergrund -->
+  <rect width="600" height="440" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="300" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Instanzenzug im Zivilprozess (Kanton Bern)</text>
+
+  <!-- 3. Instanz: Bundesgericht (oben) -->
+  <rect x="120" y="56" width="360" height="72" rx="14" fill="#1e293b"/>
+  <text x="300" y="86" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Bundesgericht</text>
+  <text x="300" y="108" text-anchor="middle" font-size="11" fill="#94a3b8">3. Instanz · Lausanne</text>
+  <text x="300" y="122" text-anchor="middle" font-size="10" fill="#94a3b8">Prüft Rechtsfragen</text>
+
+  <!-- Pfeil 2→3 -->
+  <line x1="300" y1="128" x2="300" y2="168" stroke="#64748b" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="292,162 300,174 308,162" fill="#64748b"/>
+  <text x="316" y="153" font-size="10" fill="#64748b">Beschwerde</text>
+
+  <!-- 2. Instanz: Obergericht -->
+  <rect x="120" y="174" width="360" height="72" rx="14" fill="#334155"/>
+  <text x="300" y="204" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Obergericht</text>
+  <text x="300" y="226" text-anchor="middle" font-size="11" fill="#94a3b8">2. Instanz · Kanton Bern</text>
+  <text x="300" y="240" text-anchor="middle" font-size="10" fill="#94a3b8">Prüft Sach- und Rechtsfragen</text>
+
+  <!-- Pfeil 1→2 -->
+  <line x1="300" y1="246" x2="300" y2="286" stroke="#64748b" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="292,280 300,292 308,280" fill="#64748b"/>
+  <text x="316" y="271" font-size="10" fill="#64748b">Berufung</text>
+
+  <!-- 1. Instanz: Regionalgericht -->
+  <rect x="120" y="292" width="360" height="72" rx="14" fill="#73ab2c"/>
+  <text x="300" y="322" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Regionalgericht</text>
+  <text x="300" y="344" text-anchor="middle" font-size="11" fill="#e8f5d4">1. Instanz · Kanton Bern</text>
+  <text x="300" y="358" text-anchor="middle" font-size="10" fill="#e8f5d4">Prüft Sach- und Rechtsfragen</text>
+
+  <!-- Pfeil Schlichtung→1. Instanz -->
+  <line x1="300" y1="364" x2="300" y2="394" stroke="#64748b" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="292,388 300,400 308,388" fill="#64748b"/>
+  <text x="316" y="385" font-size="10" fill="#64748b">Klagebewilligung</text>
+
+  <!-- Schlichtungsbehörde -->
+  <rect x="160" y="400" width="280" height="32" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="300" y="421" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b">Schlichtungsbehörde (obligatorisch)</text>
+
+  <!-- Hinweis: Pfeile von unten nach oben (Instanzenzug aufsteigend) -->
+  <!-- Die gestrichelten Pfeile zeigen die Richtung der Anfechtung: von unten nach oben -->
+</svg>

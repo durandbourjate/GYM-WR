@@ -1,0 +1,2330 @@
+[
+  {
+    "id": "vwl_geld-t01",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter einer Tauschwirtschaft?",
+    "erklaerung": "In einer Tauschwirtschaft gibt es kein allgemein akzeptiertes Zahlungsmittel. Güter und Dienstleistungen werden direkt gegeneinander getauscht (z.B. Schuhe gegen Brot). Dieses System wird auch als Naturaltausch oder Barterhandel bezeichnet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein Wirtschaftssystem, in dem alle Güter gratis verteilt werden.",
+      "Ein Wirtschaftssystem, in dem nur mit Gold bezahlt wird.",
+      "Ein Wirtschaftssystem, in dem Waren direkt gegen andere Waren getauscht werden.",
+      "Ein Wirtschaftssystem, in dem der Staat den Preis aller Güter festlegt."
+    ],
+    "korrekt": "Ein Wirtschaftssystem, in dem Waren direkt gegen andere Waren getauscht werden."
+  },
+  {
+    "id": "vwl_geld-t02",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "In einer reinen Tauschwirtschaft muss jeder Tauschpartner genau das Gut besitzen, das der andere haben möchte – man spricht von der «doppelten Koinzidenz der Bedürfnisse».",
+    "erklaerung": "Das ist korrekt. Die «doppelte Koinzidenz der Bedürfnisse» (double coincidence of wants) ist die zentrale Schwierigkeit einer Tauschwirtschaft: Beide Tauschpartner müssen gleichzeitig genau das anbieten, was der andere sucht. Dies macht den Tausch sehr aufwändig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-t03",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Probleme treten in einer reinen Tauschwirtschaft auf? (Mehrere Antworten möglich.)",
+    "erklaerung": "Alle drei Probleme sind typisch für Tauschwirtschaften: (A) Die doppelte Koinzidenz der Bedürfnisse macht die Partnersuche schwierig. (B) Ohne gemeinsame Recheneinheit ist der Wertvergleich mühsam (z.B. Wie viele Brote ist ein Haarschnitt wert?). (C) Viele Güter sind verderblich und eignen sich schlecht zur Wertaufbewahrung. D ist zwar eine Konsequenz, aber kein direktes Grundproblem der Tauschwirtschaft an sich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Es ist schwierig, einen passenden Tauschpartner zu finden.",
+      "Der Wertvergleich zwischen verschiedenen Gütern ist kompliziert.",
+      "Güter wie Lebensmittel können nur begrenzt gelagert und somit schlecht als «Vermögen» aufbewahrt werden.",
+      "Der Staat kann keine Steuern erheben."
+    ],
+    "korrekt": [
+      "Es ist schwierig, einen passenden Tauschpartner zu finden.",
+      "Der Wertvergleich zwischen verschiedenen Gütern ist kompliziert.",
+      "Güter wie Lebensmittel können nur begrenzt gelagert und somit schlecht als «Vermögen» aufbewahrt werden."
+    ]
+  },
+  {
+    "id": "vwl_geld-t04",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im Spiel BOB (Barter or Buy) übernimmt der Buchstabe X eine besondere Funktion. Was passiert nachweislich, wenn X konsequent als Tauschmittel eingesetzt wird?",
+    "erklaerung": "Systemtests zeigen: Wird X konsequent als Tauschmittel eingesetzt, erzielen Spielende durchschnittlich 110 Punkte gegenüber nur rund 80 Punkten ohne X. Der Grund: X erleichtert den Tausch erheblich, weil jede Person es akzeptiert. Man muss keinen direkten Tauschpartner mehr finden und kann über den Umweg X flexibler handeln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Spielenden erzielen im Durchschnitt deutlich mehr Punkte (ca. 110 statt 80).",
+      "Die Punktzahl bleibt ungefähr gleich, aber das Spiel dauert kürzer.",
+      "Nur die Spielenden, die X sammeln, erzielen mehr Punkte.",
+      "Die Spielenden erzielen im Durchschnitt weniger Punkte, weil X wertvoll ist."
+    ],
+    "korrekt": "Die Spielenden erzielen im Durchschnitt deutlich mehr Punkte (ca. 110 statt 80)."
+  },
+  {
+    "id": "vwl_geld-t05",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Im Spiel BOB findet eine Entwicklung von der Autarkie (Selbstversorgung) über eine Tauschwirtschaft hin zu einer Geldwirtschaft statt.",
+    "erklaerung": "Zu Beginn versuchen die Spielenden, allein mit den eigenen Buchstaben Wörter zu bilden (Autarkie). Dann beginnen sie, Buchstaben untereinander zu tauschen (Tauschwirtschaft). Schliesslich setzt sich X als allgemein akzeptiertes Tauschmittel durch (Geldwirtschaft). Diese Entwicklung spiegelt die historische Entstehung von Geld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-t06",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Warum sind die Vorteile einer Geldwirtschaft in der realen Welt noch grösser als im Spiel BOB?",
+    "erklaerung": "In der realen Welt gibt es Tausende verschiedener Güter, Millionen von Wirtschaftsteilnehmern und hochgradig spezialisierte Produktionsprozesse. Die Wahrscheinlichkeit, einen passenden Tauschpartner mit genau der gewünschten Ware zu finden, wäre verschwindend gering. Im Spiel ist die Vielfalt auf wenige Buchstaben und eine kleine Gruppe begrenzt. Geld ist also in der Realität noch viel wichtiger als im Spiel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil in der Realität weniger verschiedene Güter gehandelt werden als im Spiel.",
+      "Weil Geld in der Realität immer seinen Wert behält.",
+      "Weil in der Realität viel mehr Güter, Personen und Bedürfnisse existieren und die Wahrscheinlichkeit einer doppelten Koinzidenz daher noch geringer ist.",
+      "Weil im Spiel bereits alle Güter vorhanden sind."
+    ],
+    "korrekt": "Weil in der Realität viel mehr Güter, Personen und Bedürfnisse existieren und die Wahrscheinlichkeit einer doppelten Koinzidenz daher noch geringer ist."
+  },
+  {
+    "id": "vwl_geld-t07",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In einer Geldwirtschaft wird nicht Ware gegen Ware getauscht, sondern Ware gegen {0}. Dies erleichtert den Handel, weil man keinen Tauschpartner finden muss, der genau die angebotene Ware braucht – man spricht vom Wegfall der doppelten {1} der Bedürfnisse.",
+    "erklaerung": "In einer Geldwirtschaft tauscht man Ware gegen ein allgemein akzeptiertes Zahlungsmittel (Geld). Dadurch entfällt das Problem der «doppelten Koinzidenz der Bedürfnisse»: Man muss nicht mehr jemanden finden, der genau das eigene Gut will und gleichzeitig das gewünschte Gut anbietet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Geld",
+        "optionen": [
+          "Zahlungsmittel"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Koinzidenz",
+        "optionen": [
+          "Übereinstimmung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-t08",
+    "fach": "VWL",
+    "thema": "Tauschwirtschaft vs. Geldwirtschaft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Eine Kollegin behauptet: «Geld ist eigentlich überflüssig – man könnte auch einfach tauschen.» Welches Argument entkräftet diese Aussage am besten?",
+    "erklaerung": "Das stärkste Argument ist der Zusammenhang zwischen Geld und Spezialisierung. Geld ermöglicht es Menschen, sich auf eine Tätigkeit zu spezialisieren und ihren Lohn dann für beliebige Waren auszugeben. Ohne Geld wäre Arbeitsteilung kaum möglich, weil jeder Produzent erst passende Tauschpartner finden müsste. Die moderne, hochspezialisierte Wirtschaft wäre ohne Geld undenkbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Geld ermöglicht Arbeitsteilung und Spezialisierung, weil es den Tausch massiv vereinfacht – ohne Geld wäre die heutige Wirtschaft nicht funktionsfähig.",
+      "Die Regierung hat beschlossen, dass Geld verwendet werden muss.",
+      "Geld ist ein Statussymbol und deswegen unverzichtbar.",
+      "Ohne Geld müsste man alle Waren selbst herstellen, was gesetzlich verboten ist."
+    ],
+    "korrekt": "Geld ermöglicht Arbeitsteilung und Spezialisierung, weil es den Tausch massiv vereinfacht – ohne Geld wäre die heutige Wirtschaft nicht funktionsfähig."
+  },
+  {
+    "id": "vwl_geld-f01",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Funktionen erfüllt Geld?",
+    "erklaerung": "Die drei klassischen Geldfunktionen sind: (1) Tauschmittel bzw. Zahlungsmittel – Geld erleichtert den Kauf und Verkauf von Gütern. (2) Recheneinheit – Geld dient als gemeinsamer Massstab, um Preise zu vergleichen. (3) Wertaufbewahrungsmittel – Geld ermöglicht es, Kaufkraft über die Zeit zu speichern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_funktionen_01.svg",
+      "alt": "Übersicht der drei Geldfunktionen"
+    },
+    "optionen": [
+      "Konsummittel, Recheneinheit, Spekulationsmittel",
+      "Tauschmittel, Schuldenmittel, Produktionsmittel",
+      "Tauschmittel, Recheneinheit, Wertaufbewahrungsmittel",
+      "Zahlungsmittel, Sparmittel, Investitionsmittel"
+    ],
+    "korrekt": "Tauschmittel, Recheneinheit, Wertaufbewahrungsmittel"
+  },
+  {
+    "id": "vwl_geld-f02",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In modernen Volkswirtschaften wird in der Regel nicht Ware gegen Ware getauscht, sondern Ware gegen Geld. Somit spielt Geld eine zentrale Rolle als {0}. Eng mit dieser Rolle verknüpft ist die Funktion als {1}, weil man vor jedem Kauf den Wert der Gegenleistung einschätzen will. Wenn man Geld zur Seite legt, um es später auszugeben, dient es als {2}.",
+    "erklaerung": "Die drei Geldfunktionen: (1) Zahlungsmittel/Tauschmittel – ermöglicht Kauf und Verkauf. (2) Recheneinheit – alle Preise werden in einer Einheit (z.B. CHF) ausgedrückt, was Vergleiche ermöglicht. (3) Wertaufbewahrungsmittel – Geld kann gespart und später eingesetzt werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Zahlungsmittel",
+        "optionen": [
+          "Tauschmittel"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Recheneinheit",
+        "optionen": [
+          "Wertmassstab",
+          "Wertmesser"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Wertaufbewahrungsmittel",
+        "optionen": [
+          "Wertaufbewahrung",
+          "Sparmittel"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-f03",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Max verkauft seine gebrauchte Spielkonsole für CHF 200 und legt das Geld auf sein Sparkonto, um sich in einigen Monaten ein neues Fahrrad zu kaufen. Welche Geldfunktionen werden in diesem Beispiel genutzt?",
+    "erklaerung": "Alle drei Funktionen sind beteiligt: (1) Tauschmittel – Max erhält Geld für die Konsole. (2) Recheneinheit – der Preis von CHF 200 drückt den Wert der Konsole in einer vergleichbaren Einheit aus. (3) Wertaufbewahrungsmittel – Max legt das Geld auf sein Sparkonto, um es später für das Fahrrad einzusetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur Tauschmittel",
+      "Tauschmittel und Recheneinheit",
+      "Alle drei Geldfunktionen",
+      "Tauschmittel und Wertaufbewahrungsmittel"
+    ],
+    "korrekt": "Alle drei Geldfunktionen"
+  },
+  {
+    "id": "vwl_geld-f04",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In welchen der folgenden Situationen wird die Funktion des Geldes als Recheneinheit besonders deutlich? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Recheneinheit-Funktion zeigt sich dort, wo Geld als gemeinsamer Massstab dient: (A) Beim Preisvergleich verschiedener Produkte – alle Preise sind in CHF ausgedrückt und somit direkt vergleichbar. (C) Das BIP wird in einer Geldeinheit gemessen, um die Wirtschaftsleistung quantifizierbar zu machen. (B) ist Wertaufbewahrung, (D) ist Tauschmittel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Man vergleicht die Preise von drei verschiedenen Smartphones in einem Onlineshop.",
+      "Man bewahrt CHF 500 unter dem Kopfkissen auf.",
+      "Das BIP der Schweiz wird in Schweizer Franken angegeben.",
+      "Man bezahlt die Rechnung im Restaurant mit Bargeld."
+    ],
+    "korrekt": [
+      "Man vergleicht die Preise von drei verschiedenen Smartphones in einem Onlineshop.",
+      "Das BIP der Schweiz wird in Schweizer Franken angegeben."
+    ]
+  },
+  {
+    "id": "vwl_geld-f05",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im Spiel BOB übernimmt X neben der Funktion als Tauschmittel auch die Funktion als Wertaufbewahrungsmittel, da X im Gegensatz zu anderen Buchstaben zwischen den Runden behalten werden darf.",
+    "erklaerung": "X bleibt zwischen den Runden erhalten, während alle anderen nicht eingesetzten Buchstaben zurückgegeben werden müssen. Damit kann X über mehrere Runden hinweg «gespart» werden – es dient also als Wertaufbewahrungsmittel. X funktioniert auch als Tauschmittel und gewissermassen als Recheneinheit (1 X = 1 Siegpunkt).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-f06",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Geldfunktion wird durch eine hohe Inflation am stärksten beeinträchtigt?",
+    "erklaerung": "Bei hoher Inflation verliert Geld laufend an Kaufkraft. Wer heute CHF 100 spart, kann sich in einem Jahr möglicherweise deutlich weniger dafür kaufen. Damit wird die Funktion als Wertaufbewahrungsmittel direkt untergraben. Auch die Recheneinheit-Funktion leidet, weil sich Preise ständig ändern und Vergleiche schwieriger werden. Die Tauschmittel-Funktion ist erst bei extremer Hyperinflation gefährdet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wertaufbewahrungsmittel – weil das Geld kontinuierlich an Kaufkraft verliert.",
+      "Recheneinheit – weil alle Preise gleich stark steigen.",
+      "Tauschmittel – weil niemand mehr Geld annimmt.",
+      "Keine – Inflation hat keinen Einfluss auf die Geldfunktionen."
+    ],
+    "korrekt": "Wertaufbewahrungsmittel – weil das Geld kontinuierlich an Kaufkraft verliert."
+  },
+  {
+    "id": "vwl_geld-f07",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Stellen Sie sich vor, in einem Land verlören Banknoten nach einer Woche ihren Wert und würden wertlos. Welche Auswirkung hätte dies voraussichtlich auf das Wirtschaftsverhalten der Bevölkerung?",
+    "erklaerung": "Wenn Geld schnell an Wert verliert, würden die Menschen es sofort ausgeben – denn Warten bedeutet Kaufkraftverlust. Dies entspricht dem Phänomen der «Flucht in Sachwerte» bei Hyperinflation. Niemand würde sparen wollen. Der Konsum würde kurzfristig ansteigen, aber die langfristige Planung und Investition würde massiv erschwert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Menschen würden mehr sparen, um den Verlust auszugleichen.",
+      "Es hätte keine Auswirkungen, da der Staat neues Geld drucken könnte.",
+      "Die Menschen würden möglichst schnell Waren kaufen und Geld nicht mehr halten wollen.",
+      "Die Menschen würden nur noch mit Kreditkarten bezahlen."
+    ],
+    "korrekt": "Die Menschen würden möglichst schnell Waren kaufen und Geld nicht mehr halten wollen."
+  },
+  {
+    "id": "vwl_geld-f08",
+    "fach": "VWL",
+    "thema": "Geldfunktionen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Die Recheneinheit-Funktion des Geldes ermöglicht es, den Wert unterschiedlicher Güter in einer gemeinsamen Einheit (z.B. Schweizer Franken) auszudrücken und somit Preise einfach zu vergleichen.",
+    "erklaerung": "Genau das ist die Recheneinheit-Funktion: Geld dient als gemeinsamer Massstab. Statt unzählige Tauschverhältnisse zu kennen (wie viele Brote ist ein Haarschnitt wert? wie viele Haarschnitte ein Kinoticket?), genügt es, den Preis jedes Gutes in einer Einheit auszudrücken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-e01",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Eigenschaften sollte ein Gegenstand aufweisen, damit er als Geld geeignet ist? (Mehrere Antworten möglich.)",
+    "erklaerung": "Geld muss haltbar sein (nicht verderben), knapp (nicht unbegrenzt verfügbar, sonst verliert es seinen Wert), und teilbar (um verschiedene Beträge darstellen zu können). Hohes Gewicht ist keine wünschenswerte Eigenschaft – im Gegenteil: Geld sollte leicht transportierbar sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Haltbarkeit",
+      "Hohes Gewicht",
+      "Knappheit",
+      "Teilbarkeit"
+    ],
+    "korrekt": [
+      "Haltbarkeit",
+      "Knappheit",
+      "Teilbarkeit"
+    ]
+  },
+  {
+    "id": "vwl_geld-e02",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Warum eignen sich Wassermelonen schlecht als Geld?",
+    "erklaerung": "Wassermelonen erfüllen mehrere Geldeigenschaften nicht: Sie sind nicht haltbar (verderben), nicht gut transportierbar (schwer), und schwer gleichmässig teilbar. Geld muss dagegen haltbar, leicht, teilbar und einheitlich sein – deshalb eignen sich z.B. Münzen oder Banknoten viel besser.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil sie verderblich, schwer und schlecht teilbar sind.",
+      "Weil sie nicht knapp genug sind.",
+      "Weil sie zu wertvoll sind.",
+      "Weil sie nicht von allen akzeptiert werden."
+    ],
+    "korrekt": "Weil sie verderblich, schwer und schlecht teilbar sind."
+  },
+  {
+    "id": "vwl_geld-e03",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Im Spiel BOB eignet sich X besonders gut als Tauschmittel, weil es in keinem Wort des vorgegebenen Satzes vorkommt und deshalb von allen als «neutrale Tauschware» akzeptiert wird.",
+    "erklaerung": "X kommt in keinem der zu bildenden Wörter vor. Deshalb ist X für niemanden direkt nützlich zum Wortbilden, aber als Tauschmittel akzeptieren es alle. Zudem ist X haltbar (wird nicht eingesammelt), relativ knapp und einheitlich – es erfüllt also viele Geldeigenschaften.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-e04",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Eigenschaften von Geld sind bei Zigaretten als Zahlungsmittel in Gefangenenlagern des Zweiten Weltkriegs erfüllt? (Mehrere Antworten möglich.)",
+    "erklaerung": "Zigaretten erfüllen tatsächlich alle genannten Geldeigenschaften: Sie sind knapp (begrenzte Lieferungen ins Lager), relativ haltbar, gut teilbar (einzelne Zigaretten oder Packungen) und einheitlich (gleiche Marke = gleicher Wert). Deshalb setzten sie sich als Zahlungsmittel durch.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Knappheit – Zigaretten waren begrenzt verfügbar.",
+      "Haltbarkeit – Zigaretten verderben nicht schnell.",
+      "Teilbarkeit – man kann einzelne Zigaretten oder Packungen handeln.",
+      "Einheitlichkeit – Zigaretten derselben Marke sind gleichwertig."
+    ],
+    "korrekt": [
+      "Knappheit – Zigaretten waren begrenzt verfügbar.",
+      "Haltbarkeit – Zigaretten verderben nicht schnell.",
+      "Teilbarkeit – man kann einzelne Zigaretten oder Packungen handeln.",
+      "Einheitlichkeit – Zigaretten derselben Marke sind gleichwertig."
+    ]
+  },
+  {
+    "id": "vwl_geld-e05",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist «Knappheit» eine wichtige Eigenschaft von Geld?",
+    "erklaerung": "Knappheit ist eine Grundvoraussetzung für Wert. Wäre Geld unbeschränkt verfügbar (wie Sand in der Wüste), hätte es keinen Tauschwert – niemand würde wertvolle Güter gegen etwas tauschen, das jeder in beliebiger Menge besitzt. Deshalb muss Geld knapp sein, aber auch nicht zu knapp, damit genügend Zahlungsmittel für den Wirtschaftsverkehr vorhanden sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil knappes Geld leichter zu fälschen ist.",
+      "Weil es sonst zu viele Münzen gäbe und die Taschen zu schwer würden.",
+      "Weil knappes Geld schöner aussieht.",
+      "Weil Geld, das unbeschränkt verfügbar ist, seinen Wert verliert – niemand würde wertvolle Güter dagegen tauschen."
+    ],
+    "korrekt": "Weil Geld, das unbeschränkt verfügbar ist, seinen Wert verliert – niemand würde wertvolle Güter dagegen tauschen."
+  },
+  {
+    "id": "vwl_geld-e06",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Was ist für die Funktion von Geld wichtiger: Dass pro Geldeinheit möglichst viele Waren erhältlich sind, oder dass das Geld von allen als Zahlungsmittel akzeptiert wird?",
+    "erklaerung": "Die allgemeine Akzeptanz ist die fundamentalste Eigenschaft von Geld. Wenn niemand ein Zahlungsmittel akzeptiert, ist es wertlos – egal wie viel darauf steht. Erst wenn alle es akzeptieren, kann es seine Tauschmittelfunktion erfüllen. Der Warenwert pro Geldeinheit ist ein Ergebnis von Angebot und Nachfrage und kann sich verändern, ohne dass Geld seine Funktion verliert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Warenwert pro Geldeinheit – denn nur wertvolles Geld wird benutzt.",
+      "Die allgemeine Akzeptanz – denn ohne Akzeptanz ist Geld nutzlos, egal wie hoch sein Nennwert ist.",
+      "Beides ist gleich wichtig und voneinander unabhängig.",
+      "Weder noch – entscheidend ist nur die Anzahl der im Umlauf befindlichen Geldeinheiten."
+    ],
+    "korrekt": "Die allgemeine Akzeptanz – denn ohne Akzeptanz ist Geld nutzlos, egal wie hoch sein Nennwert ist."
+  },
+  {
+    "id": "vwl_geld-e07",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Geld muss zwingend einen eigenen materiellen Wert haben (z.B. aus Gold oder Silber bestehen), um als Zahlungsmittel funktionieren zu können.",
+    "erklaerung": "Falsch. Modernes Papiergeld (und erst recht Buchgeld) hat praktisch keinen materiellen Eigenwert – die Produktion einer 100-Franken-Note kostet nur rund 40 Rappen. Entscheidend ist nicht der Materialwert, sondern das Vertrauen der Bevölkerung und die allgemeine Akzeptanz. Solange alle das Geld annehmen, funktioniert es – auch ohne eigenen Materialwert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-e08",
+    "fach": "VWL",
+    "thema": "Eigenschaften von Geld",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Damit ein Gegenstand als Geld funktioniert, muss er unter anderem {0} (nicht verderblich), {1} (begrenzt verfügbar) und {2} (leicht zu transportieren) sein.",
+    "erklaerung": "Die wichtigsten Eigenschaften von Geld umfassen Haltbarkeit (nicht verderblich), Knappheit (begrenzte Verfügbarkeit), Transportierbarkeit (leichtes Gewicht, handliches Format), sowie Teilbarkeit, Einheitlichkeit und Wertstabilität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "haltbar",
+        "optionen": [
+          "dauerhaft"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "knapp",
+        "optionen": [
+          "begrenzt"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "transportierbar",
+        "optionen": [
+          "transportfähig",
+          "leicht"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-ga01",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wie nennt man Geld, das selbst einen konkreten Wert als Ware aufweist (z.B. Goldmünzen, Muscheln, Tierfelle)?",
+    "erklaerung": "Warengeld hat neben seiner Geldfunktion auch einen Eigenwert als Ware. Historische Beispiele sind Goldmünzen, Silber, Muscheln, Salz oder Tierfelle. Der Vorteil: Der Gegenstand hat auch dann einen Wert, wenn er nicht mehr als Zahlungsmittel akzeptiert wird.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Buchgeld",
+      "Warengeld",
+      "Kryptogeld",
+      "Papiergeld"
+    ],
+    "korrekt": "Warengeld"
+  },
+  {
+    "id": "vwl_geld-ga02",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die drei historischen Entwicklungsstufen des Geldes sind: Zunächst {0} (z.B. Goldmünzen), dann {1} (z.B. Banknoten) und schliesslich {2} (z.B. Bankguthaben).",
+    "erklaerung": "Die historische Entwicklung: (1) Warengeld – Gegenstände mit Eigenwert (Muscheln, Edelmetalle). (2) Papiergeld – Banknoten, die selbst kaum materiellen Wert haben, aber staatlich garantiert sind. (3) Buchgeld – elektronische Kontoguthaben, die nur als Buchungseinträge existieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldarten_01.svg",
+      "alt": "Zeitstrahl der Entwicklung der Geldarten"
+    },
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Warengeld",
+        "optionen": [
+          "Münzgeld"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Papiergeld",
+        "optionen": [
+          "Banknoten"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Buchgeld",
+        "optionen": [
+          "Giralgeld"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-ga03",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Aussagen über Buchgeld sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "Buchgeld (auch Giralgeld genannt) besteht lediglich aus elektronischen Buchungseinträgen auf Bank- oder Postkonten. Man kann es nicht physisch halten (B ist falsch). Es ist die abstrakteste Geldform und macht heute den weitaus grössten Teil aller Zahlungen und der gesamten Geldmenge aus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Buchgeld existiert nur als Buchungseintrag auf Konten.",
+      "Buchgeld kann man physisch in den Händen halten.",
+      "Buchgeld ist die abstrakteste Form des Geldes.",
+      "Buchgeld wird heute für den Grossteil aller Zahlungen verwendet."
+    ],
+    "korrekt": [
+      "Buchgeld existiert nur als Buchungseintrag auf Konten.",
+      "Buchgeld ist die abstrakteste Form des Geldes.",
+      "Buchgeld wird heute für den Grossteil aller Zahlungen verwendet."
+    ]
+  },
+  {
+    "id": "vwl_geld-ga04",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Im Spiel BOB hat X einen eigenen Wert (1 Siegpunkt). Welcher Geldart entspricht X im Spiel am ehesten?",
+    "erklaerung": "X ist Warengeld, weil es einen eigenen Wert besitzt (jedes X gibt 1 Siegpunkt). Es hat also neben der Tauschmittelfunktion auch einen konkreten Eigenwert als «Ware». Wäre X nur ein wertloses Plättchen, das allein zum Tauschen dient, wäre es Papiergeld. Würde X als reiner Kontostand geführt, wäre es Buchgeld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Warengeld – denn X hat neben seiner Tauschmittelfunktion auch einen eigenen Wert (Siegpunkte).",
+      "Buchgeld – denn X ist nur eine Zahl auf dem Punkteblatt.",
+      "Papiergeld – denn X ist aus Papier.",
+      "Kryptowährung – denn X ist digital."
+    ],
+    "korrekt": "Warengeld – denn X hat neben seiner Tauschmittelfunktion auch einen eigenen Wert (Siegpunkte)."
+  },
+  {
+    "id": "vwl_geld-ga05",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Produktion einer Schweizer 100-Franken-Banknote kostet rund 40 Rappen. Banknoten sind deshalb ein Beispiel für Warengeld.",
+    "erklaerung": "Falsch. Gerade weil der Materialwert (ca. 40 Rappen) weit unter dem Nennwert (100 Franken) liegt, handelt es sich um Papiergeld – nicht um Warengeld. Warengeld hätte einen materiellen Eigenwert, der dem Nennwert entspricht (z.B. eine Goldmünze). Beim Papiergeld beruht der Wert auf dem Vertrauen in die herausgebende Institution.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-ga06",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Unter welchen Voraussetzungen würde X im Spiel BOB eher Papiergeld entsprechen?",
+    "erklaerung": "Papiergeld hat keinen nennenswerten Eigenwert – sein Wert beruht rein auf Vertrauen und Akzeptanz. Wenn X keine Siegpunkte wert wäre (keinen Eigenwert hätte), aber trotzdem allgemein als Tauschmittel akzeptiert würde, hätte es dieselbe Eigenschaft wie Papiergeld: Wert durch Vertrauen statt durch materiellen Gehalt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Wenn X keinen eigenen Punktewert hätte, aber trotzdem von allen als Tauschmittel akzeptiert würde.",
+      "Wenn es mehr X im Spiel gäbe.",
+      "Wenn X aus echtem Papier statt aus Karton hergestellt würde.",
+      "Wenn X nur von der Spielleitung ausgegeben würde."
+    ],
+    "korrekt": "Wenn X keinen eigenen Punktewert hätte, aber trotzdem von allen als Tauschmittel akzeptiert würde."
+  },
+  {
+    "id": "vwl_geld-ga07",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Als Erfinder des Papiergeldes gelten die Chinesen. Erste Formen von Papiergeld kamen in China im 7. Jahrhundert auf.",
+    "erklaerung": "Korrekt. Erste Formen von Papiergeld entstanden tatsächlich im China des 7. Jahrhunderts, setzten sich allerdings damals noch nicht dauerhaft durch. In Europa wurden die ersten regulären Banknoten erst im 17. Jahrhundert eingeführt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-ga08",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "In der herkömmlichen Sichtweise entstand Geld, weil eine spezielle Ware zum allgemeinen Tauschmittel erhoben wurde. Eine alternative Sichtweise sieht Geld primär als etwas anderes. Welche Funktion steht in der alternativen Sichtweise im Vordergrund?",
+    "erklaerung": "Die alternative Sichtweise (u.a. von David Graeber vertreten) sieht Geld nicht primär als Tauschmittel, sondern als System zur Dokumentation von Schulden. Wenn jemand eine Ware erhält, ohne sofort eine Gegenleistung zu erbringen, entsteht eine Schuld. Geld dient als «Erinnerung» an diese Schuld. Historisch gibt es keine Belege für Gesellschaften mit reinem Tauschhandel (z.B. eine Kuh gegen drei Schafe).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Geld dient primär als Anreiz für Arbeit.",
+      "Geld dient primär als Statussymbol.",
+      "Geld dient primär zur Dokumentation von Schuldverhältnissen in einer Gesellschaft.",
+      "Geld dient primär als Mittel zur staatlichen Kontrolle."
+    ],
+    "korrekt": "Geld dient primär zur Dokumentation von Schuldverhältnissen in einer Gesellschaft."
+  },
+  {
+    "id": "vwl_geld-v01",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Institution hat in der Schweiz das alleinige Recht, Banknoten herauszugeben?",
+    "erklaerung": "In der Schweiz hat die Schweizerische Nationalbank (SNB) das Monopol auf die Herausgabe von Banknoten. Münzen werden hingegen von der Swissmint (einer Einheit der Bundesverwaltung) geprägt. Geschäftsbanken dürfen keine eigenen Banknoten drucken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Schweizerische Nationalbank (SNB)",
+      "Die Geschäftsbanken (UBS, Raiffeisen etc.)",
+      "Die Swissmint",
+      "Der Bundesrat"
+    ],
+    "korrekt": "Die Schweizerische Nationalbank (SNB)"
+  },
+  {
+    "id": "vwl_geld-v02",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie sorgt die Nationalbank für Vertrauen in das Geld? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Nationalbank sichert das Vertrauen auf zwei Wegen: (1) Preisstabilität – sie hält die Inflation tief, indem sie die Geldmenge kontrolliert (A und D). (2) Fälschungssicherheit – Sicherheitsmerkmale wie Wasserzeichen oder Glitzerzahlen erschweren das Fälschen (B). C ist falsch: Seit der Aufhebung des Goldstandards (1971 weltweit, 2000 in der Schweiz) besteht keine Goldeinlösepflicht mehr.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie hält die Inflation möglichst tief, indem sie die Geldmenge steuert.",
+      "Sie versieht die Banknoten mit Sicherheitsmerkmalen gegen Fälschungen.",
+      "Sie garantiert, dass man Banknoten jederzeit in Gold umtauschen kann.",
+      "Sie sorgt dafür, dass nicht zu viel Geld im Umlauf ist."
+    ],
+    "korrekt": [
+      "Sie hält die Inflation möglichst tief, indem sie die Geldmenge steuert.",
+      "Sie versieht die Banknoten mit Sicherheitsmerkmalen gegen Fälschungen.",
+      "Sie sorgt dafür, dass nicht zu viel Geld im Umlauf ist."
+    ]
+  },
+  {
+    "id": "vwl_geld-v03",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Das Geldmonopol liegt in der Schweiz beim Staat beziehungsweise bei der Schweizerischen Nationalbank.",
+    "erklaerung": "Korrekt. In modernen Volkswirtschaften ist die Herausgabe von Geld ein staatliches Monopol. In der Schweiz darf nur die SNB Banknoten herausgeben. Dies ist wichtig, damit die Geldmenge kontrolliert werden kann und Vertrauen in die Währung besteht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-v04",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Was würde passieren, wenn es viele gut gemachte Fälschungen von Banknoten gäbe?",
+    "erklaerung": "Viele Fälschungen würden das Vertrauen in Bargeld untergraben. Geschäfte würden Banknoten nur noch widerwillig und nach mühsamer Prüfung annehmen. Die Tauschmittelfunktion wäre beeinträchtigt. Deshalb investiert die Nationalbank stark in Sicherheitsmerkmale, die das Fälschen erschweren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Nationalbank würde einfach mehr Geld drucken, um die Fälschungen auszugleichen.",
+      "Die Akzeptanz von Banknoten würde sinken, da Geschäfte aufwändig prüfen müssten und das Vertrauen in Bargeld schwinden würde.",
+      "Die Preise würden sinken, weil mehr Geld im Umlauf wäre.",
+      "Gar nichts – die Wirtschaft funktioniert auch mit gefälschtem Geld."
+    ],
+    "korrekt": "Die Akzeptanz von Banknoten würde sinken, da Geschäfte aufwändig prüfen müssten und das Vertrauen in Bargeld schwinden würde."
+  },
+  {
+    "id": "vwl_geld-v05",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Stellen Sie sich einen Staat vor, der seiner Bevölkerung unbegrenzt Banknoten druckt und auf der Strasse verteilt. Wäre dies «das Paradies auf Erden»?",
+    "erklaerung": "Mehr Geld bei gleichbleibender Gütermenge führt zu steigenden Preisen (Inflation). Würde unbegrenzt Geld gedruckt, käme es zur Hyperinflation – das Geld verlöre seinen Wert. Historische Beispiele: Deutschland 1923, Simbabwe 2008, Venezuela 2018. Der Wohlstand einer Gesellschaft hängt von der realen Güterproduktion ab, nicht von der Geldmenge.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nein, denn die Gütermenge bleibt gleich; durch die massive Geldvermehrung würden die Preise explodieren (Hyperinflation) und das Geld wäre wertlos.",
+      "Nein, denn die Bank würde die Zinsen erhöhen.",
+      "Ja, denn alle hätten genug Geld, um sich alles zu kaufen.",
+      "Ja, denn mehr Geld führt automatisch zu mehr Produktion."
+    ],
+    "korrekt": "Nein, denn die Gütermenge bleibt gleich; durch die massive Geldvermehrung würden die Preise explodieren (Hyperinflation) und das Geld wäre wertlos."
+  },
+  {
+    "id": "vwl_geld-v06",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Die Tatsache, dass Papiergeld keinen materiellen Eigenwert hat, macht Vertrauen zu einer noch wichtigeren Voraussetzung als bei Warengeld.",
+    "erklaerung": "Korrekt. Bei Warengeld (z.B. Goldmünzen) hat das Zahlungsmittel auch ohne seine Geldfunktion einen Materialwert. Bei Papiergeld dagegen ist der Materialwert praktisch null – eine 100-Franken-Note kostet ca. 40 Rappen in der Herstellung. Deshalb ist das Vertrauen in die herausgebende Institution und die Stabilität des Geldes hier besonders entscheidend.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-v07",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn eine hohe {0} herrscht, das heisst, wenn man für gleich viel Geld mit der Zeit immer weniger Waren erhält, wird die Verwendung von Geld unattraktiv. Die Nationalbank muss deshalb dafür sorgen, dass nicht zu viel Geld im {1} ist.",
+    "erklaerung": "Bei hoher Inflation verliert Geld an Kaufkraft. Die Nationalbank steuert dies, indem sie die Geldmenge kontrolliert – nicht zu viel (sonst Inflation) und nicht zu wenig (sonst Deflation). Ihr Ziel ist Preisstabilität.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Inflation",
+        "optionen": [
+          "Teuerung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Umlauf",
+        "optionen": [
+          "Wirtschaftskreislauf"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-v08",
+    "fach": "VWL",
+    "thema": "Vertrauen & Rolle der Nationalbank",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welches der folgenden Sicherheitsmerkmale findet sich auf Schweizer Banknoten?",
+    "erklaerung": "Schweizer Banknoten verfügen über zahlreiche Sicherheitsmerkmale wie Wasserzeichen, Glitzerzahlen (irisierende Elemente), spezielle Drucktechniken und weitere schwer fälschbare Eigenschaften. Diese befinden sich mehrheitlich auf der Porträtseite der Note. Mikrochips, QR-Codes mit Kontostand oder Ablaufdaten gibt es nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Ein QR-Code mit dem Kontostand des Besitzers",
+      "Ein eingebauter Mikrochip",
+      "Wasserzeichen, Glitzerzahlen und spezielle Drucktechniken",
+      "Ein Ablaufdatum wie bei Lebensmitteln"
+    ],
+    "korrekt": "Wasserzeichen, Glitzerzahlen und spezielle Drucktechniken"
+  },
+  {
+    "id": "vwl_geld-p01",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter einem «absoluten Preis»?",
+    "erklaerung": "Ein absoluter Preis ist der Preis eines Gutes, ausgedrückt in einer Geldeinheit (Recheneinheit). Zum Beispiel: Ein Brot kostet 5 Franken. Dies unterscheidet sich vom relativen Preis, der das Tauschverhältnis zwischen zwei Gütern ausdrückt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Preis eines Gutes, ausgedrückt in einer Geldeinheit (z.B. in Franken).",
+      "Den Preis eines Gutes im Vergleich zu einem anderen Gut.",
+      "Den höchsten Preis, den jemand jemals für ein Gut bezahlt hat.",
+      "Den Preis, der vom Staat festgelegt wurde."
+    ],
+    "korrekt": "Den Preis eines Gutes, ausgedrückt in einer Geldeinheit (z.B. in Franken)."
+  },
+  {
+    "id": "vwl_geld-p02",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was ist ein «relativer Preis»?",
+    "erklaerung": "Der relative Preis drückt aus, wie viel von einem Gut man für ein anderes Gut erhalten kann. Beispiel: Kostet ein Hemd CHF 40 und ein Buch CHF 20, beträgt der relative Preis 1 Hemd = 2 Bücher. Relative Preise zeigen den Wert eines Gutes im Vergleich zu anderen Gütern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Preis nach Abzug der Inflation.",
+      "Das Tauschverhältnis zwischen zwei Gütern – z.B. 1 Hemd = 2 Bücher.",
+      "Ein besonders günstiger Preis für Verwandte.",
+      "Der Durchschnittspreis aller Güter in einer Volkswirtschaft."
+    ],
+    "korrekt": "Das Tauschverhältnis zwischen zwei Gütern – z.B. 1 Hemd = 2 Bücher."
+  },
+  {
+    "id": "vwl_geld-p03",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "calc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "In einer Ortschaft werden alle Preise in Kilo Salz ausgedrückt: 1 Apfel = 1 Kilo Salz, 1 Kuchen = 20 Kilo Salz, 1 Banane = 2 Kilo Salz, 1 Brot = 10 Kilo Salz. Wie viele Äpfel ist ein Kuchen wert?",
+    "erklaerung": "1 Kuchen = 20 Kilo Salz und 1 Apfel = 1 Kilo Salz. Somit ist 1 Kuchen = 20 Kilo Salz ÷ 1 Kilo Salz pro Apfel = 20 Äpfel. Die gemeinsame Recheneinheit (Salz) macht den Vergleich einfach.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "calcZeilen": [
+      {
+        "label": "1 Kuchen = … Äpfel",
+        "answer": 20,
+        "tolerance": 0,
+        "unit": "Äpfel"
+      }
+    ],
+    "korrekt": "20",
+    "toleranz": 0,
+    "einheit": "Äpfel"
+  },
+  {
+    "id": "vwl_geld-p04",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "calc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "In einer Volkswirtschaft werden 5 verschiedene Güter gehandelt. Wie viele Tauschverhältnisse (relative Preise) müsste man ohne gemeinsame Recheneinheit kennen? (Formel: n × (n − 1) / 2)",
+    "erklaerung": "Die Formel lautet n × (n − 1) / 2. Bei 5 Gütern: 5 × 4 / 2 = 10 Tauschverhältnisse. Mit einer Recheneinheit bräuchte man nur 5 absolute Preise. Bei 100 Gütern wären es sogar 4950 Tauschverhältnisse statt 100 Preise – dies zeigt den enormen Nutzen der Recheneinheit-Funktion.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_tauschwirtschaft_01.svg",
+      "alt": "Vergleich: Tauschbeziehungen bei Tausch- vs. Geldwirtschaft"
+    },
+    "calcZeilen": [
+      {
+        "label": "Anzahl Tauschverhältnisse bei 5 Gütern",
+        "answer": 10,
+        "tolerance": 0
+      }
+    ],
+    "korrekt": "10",
+    "toleranz": 0
+  },
+  {
+    "id": "vwl_geld-p05",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn sich alle absoluten Preise in einer Volkswirtschaft verdoppeln, ändern sich auch die relativen Preise.",
+    "erklaerung": "Falsch. Wenn sich alle absoluten Preise proportional verdoppeln, bleiben die relativen Preise (Tauschverhältnisse) gleich. Beispiel: Wenn ein Hemd von CHF 40 auf CHF 80 steigt und ein Buch von CHF 20 auf CHF 40, kostet ein Hemd immer noch genau 2 Bücher. Relative Preise ändern sich nur, wenn sich einzelne Preise stärker oder schwächer als andere verändern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-p06",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Preis von einem Kilo Zucker steigt innerhalb eines Jahres um 40 %, während die allgemeine Teuerung nahe bei null liegt. Was lässt sich daraus schliessen?",
+    "erklaerung": "Bei nahezu null Inflation ist der allgemeine Preisstand stabil. Wenn ein einzelnes Gut trotzdem 40 % teurer wird, ist das ein Zeichen für eine Änderung des relativen Preises: Zucker ist im Vergleich zu anderen Gütern teurer geworden. Mögliche Ursachen sind z.B. Missernten, gestiegene Produktionskosten oder erhöhte Nachfrage nach Zucker.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Nationalbank hat zu viel Geld gedruckt.",
+      "Es handelt sich um allgemeine Inflation, die alle Preise betrifft.",
+      "Der relative Preis hat sich nicht verändert, weil nur ein Preis gestiegen ist.",
+      "Der relative Preis von Zucker ist gestiegen – Zucker ist im Vergleich zu anderen Gütern teurer geworden, z.B. wegen einer Misserntemittel oder erhöhter Nachfrage."
+    ],
+    "korrekt": "Der relative Preis von Zucker ist gestiegen – Zucker ist im Vergleich zu anderen Gütern teurer geworden, z.B. wegen einer Misserntemittel oder erhöhter Nachfrage."
+  },
+  {
+    "id": "vwl_geld-p07",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Bei einer hohen und unberechenbaren Inflation (20–50 % pro Jahr) steigt der Zuckerpreis um 40 %. Warum ist die Interpretation dieses Preisanstiegs jetzt schwieriger als bei stabilen Preisen?",
+    "erklaerung": "Bei hoher und unberechenbarer Inflation weiss man nicht, ob der Zuckerpreis «überproportional» gestiegen ist (relativer Preis gestiegen) oder nur die allgemeine Teuerung widerspiegelt. Die Signalfunktion der Preise geht verloren: Man kann nicht mehr erkennen, ob ein Gut wirklich knapper geworden ist. Dies ist eine der schwerwiegendsten negativen Folgen hoher Inflation – die Recheneinheit-Funktion des Geldes wird beeinträchtigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil die Geschäfte die Preise nicht mehr anpassen.",
+      "Weil unklar ist, ob sich der relative Preis von Zucker verändert hat oder ob der Anstieg einfach die allgemeine Teuerung widerspiegelt.",
+      "Weil man bei hoher Inflation keine Preise mehr ablesen kann.",
+      "Weil Zucker bei Inflation weniger nachgefragt wird."
+    ],
+    "korrekt": "Weil unklar ist, ob sich der relative Preis von Zucker verändert hat oder ob der Anstieg einfach die allgemeine Teuerung widerspiegelt."
+  },
+  {
+    "id": "vwl_geld-p08",
+    "fach": "VWL",
+    "thema": "Absolute & relative Preise",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Vorteile bietet eine gemeinsame Recheneinheit (z.B. Franken) gegenüber einem System mit lauter bilateralen Tauschverhältnissen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Eine Recheneinheit vereinfacht das Wirtschaftsleben enorm: (A) Statt n(n−1)/2 Tauschverhältnisse braucht man nur n absolute Preise. (B) Alle Preise sind direkt vergleichbar. (D) Man kann Preise über die Zeit verfolgen. C ist falsch – eine gemeinsame Recheneinheit macht Güter nicht gleich teuer, sie macht nur den Vergleich einfacher.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Man braucht weniger Preisinformationen, um den Markt zu überblicken.",
+      "Preisvergleiche zwischen verschiedenen Gütern werden viel einfacher.",
+      "Alle Güter kosten automatisch gleich viel.",
+      "Man kann den Wert von Gütern über die Zeit vergleichen."
+    ],
+    "korrekt": [
+      "Man braucht weniger Preisinformationen, um den Markt zu überblicken.",
+      "Preisvergleiche zwischen verschiedenen Gütern werden viel einfacher.",
+      "Man kann den Wert von Gütern über die Zeit vergleichen."
+    ]
+  },
+  {
+    "id": "vwl_geld-g01",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man in der Volkswirtschaftslehre unter «Geld»?",
+    "erklaerung": "Geld ist der liquideste, also flüssigste Teil des Vermögens. «Viel Geld haben» und «reich sein» sind nicht dasselbe: Zum Vermögen gehören auch Aktien, Immobilien oder Kunstwerke, die sich aber im Alltag nicht als Zahlungsmittel eignen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Alle Wertgegenstände, die sich verkaufen lassen",
+      "Den liquidesten Teil des Vermögens, der sich leicht für Transaktionen verwenden lässt",
+      "Ausschliesslich Banknoten und Münzen",
+      "Das gesamte Vermögen einer Person"
+    ],
+    "korrekt": "Den liquidesten Teil des Vermögens, der sich leicht für Transaktionen verwenden lässt"
+  },
+  {
+    "id": "vwl_geld-g02",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche Eigenschaften muss Geld aufweisen, damit es als Zahlungsmittel akzeptiert wird? (Mehrere Antworten möglich.)",
+    "erklaerung": "Geld muss knapp, einheitlich, haltbar, transportierbar und teilbar sein. Ein hoher Materialwert ist hingegen nicht nötig — Papiergeld hat praktisch keinen Materialwert. Entscheidend ist das Vertrauen in den Herausgeber.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Knappheit",
+      "Einheitlichkeit",
+      "Haltbarkeit, Transportierbarkeit und Teilbarkeit",
+      "Hoher Materialwert"
+    ],
+    "korrekt": [
+      "Knappheit",
+      "Einheitlichkeit",
+      "Haltbarkeit, Transportierbarkeit und Teilbarkeit"
+    ]
+  },
+  {
+    "id": "vwl_geld-g03",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Eine Kreditkarte (z.B. Visa) ist selbst kein Geld, sondern dient lediglich als Mittel, um Buchgeld von einem Konto auf ein anderes zu übertragen.",
+    "erklaerung": "Korrekt. Debitkarten, Kreditkarten und mobile Zahlungsformen sind strikt genommen kein Geld. Sie sind Instrumente, um Buchgeld zu übertragen — sie erzeugen kein neues Geld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-g04",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was unterscheidet Warengeld von Papiergeld?",
+    "erklaerung": "Warengeld (z.B. Gold- oder Silbermünzen, Muscheln) hat für die Nutzer einen konkreten Materialwert. Papiergeld (Banknoten) hat praktisch keinen Materialwert — die Produktion einer 100-Franken-Note kostet weniger als 40 Rappen. Es funktioniert nur durch Vertrauen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Warengeld wird von der Zentralbank herausgegeben, Papiergeld von Geschäftsbanken",
+      "Papiergeld kann nur für kleine Beträge verwendet werden",
+      "Papiergeld ist älter als Warengeld",
+      "Warengeld hat einen konkreten Materialwert, Papiergeld praktisch keinen"
+    ],
+    "korrekt": "Warengeld hat einen konkreten Materialwert, Papiergeld praktisch keinen"
+  },
+  {
+    "id": "vwl_geld-g05",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "In der Schweiz darf nur die {0} Banknoten herausgeben. Man spricht vom Geld- oder {1} des Staates.",
+    "erklaerung": "Das Geldmonopol liegt beim Staat bzw. bei der staatlichen Zentralbank. In der Schweiz hat die SNB das alleinige Recht, Banknoten herauszugeben (Notenmonopol). Die Münzen werden von Swissmint hergestellt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Schweizerische Nationalbank",
+        "optionen": [
+          "SNB",
+          "Nationalbank"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Notenmonopol",
+        "optionen": [
+          "Banknotenmonopol"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-g06",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Weshalb eignen sich Wassermelonen oder Baumstämme nicht als Geld?",
+    "erklaerung": "Wassermelonen sind nicht haltbar (sie verderben), Baumstämme sind nicht leicht transportierbar und kaum teilbar. Geld muss haltbar, transportierbar und teilbar sein — Muscheln, Zigaretten oder Silbermünzen erfüllen diese Bedingungen besser.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Sie werden bereits für andere Zwecke verwendet",
+      "Sie haben keinen Materialwert",
+      "Sie sind zu selten",
+      "Sie erfüllen die Eigenschaften Haltbarkeit, Transportierbarkeit und Teilbarkeit nicht ausreichend"
+    ],
+    "korrekt": "Sie erfüllen die Eigenschaften Haltbarkeit, Transportierbarkeit und Teilbarkeit nicht ausreichend"
+  },
+  {
+    "id": "vwl_geld-g07",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Buchgeld (Bankguthaben) ist sicherer als Bargeld, da es durch die Zentralbank garantiert wird.",
+    "erklaerung": "Falsch. Buchgeld besteht aus Guthaben auf Konten bei Geschäftsbanken — es ist eine Forderung gegenüber der jeweiligen Bank, nicht der Zentralbank. Bei einer Bankpleite wäre dieses Guthaben (über die Einlagensicherung hinaus) gefährdet. Bargeld hingegen ist eine direkte Forderung an die Zentralbank.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-k01",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was misst der Landesindex der Konsumentenpreise (LIK)?",
+    "erklaerung": "Der LIK (Landesindex der Konsumentenpreise) misst den Preis eines typischen Warenkorbs mit den wichtigsten Waren und Dienstleistungen eines durchschnittlichen Haushalts. Die Höhe des Indexwerts in einem bestimmten Jahr entspricht dem Preisniveau.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Den Preis eines typischen Warenkorbs, den ein durchschnittlicher Haushalt konsumiert",
+      "Das Bruttoinlandprodukt pro Kopf",
+      "Die Kaufkraft des Schweizer Frankens im Vergleich zum Euro",
+      "Die Gesamtmenge aller im Umlauf befindlichen Banknoten"
+    ],
+    "korrekt": "Den Preis eines typischen Warenkorbs, den ein durchschnittlicher Haushalt konsumiert"
+  },
+  {
+    "id": "vwl_geld-k02",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Je höher das Preisniveau, desto geringer ist die Kaufkraft des Geldes.",
+    "erklaerung": "Richtig. Kaufkraft und Preisniveau verhalten sich umgekehrt zueinander. Steigt das Preisniveau, bekommt man für eine Geldeinheit weniger Waren und Dienstleistungen — die Kaufkraft sinkt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-k03",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie das Geldmarktdiagramm. Was geschieht mit der Kaufkraft des Geldes, wenn die Zentralbank das Geldangebot stark ausweitet (bei gleichbleibender Geldnachfrage)?",
+    "erklaerung": "Steigt das Geldangebot (Verschiebung der senkrechten Angebotskurve nach rechts), sinkt bei gleichbleibender Geldnachfrage die Kaufkraft — das Geld verliert an Wert. Ein viel zu grosses Geldangebot führt zum Wertzerfall des Geldes.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldmarkt_01.svg",
+      "alt": "Diagramm: Gleichgewicht von Geldangebot und Geldnachfrage"
+    },
+    "optionen": [
+      "Die Kaufkraft steigt zuerst und sinkt dann",
+      "Die Kaufkraft sinkt, da das Geld an Wert verliert",
+      "Die Kaufkraft steigt, weil mehr Geld verfügbar ist",
+      "Die Kaufkraft bleibt unverändert"
+    ],
+    "korrekt": "Die Kaufkraft sinkt, da das Geld an Wert verliert"
+  },
+  {
+    "id": "vwl_geld-k04",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ein anhaltender Anstieg des allgemeinen Preisniveaus wird als {0} bezeichnet. Das Gegenteil — ein anhaltendes Sinken des Preisniveaus — nennt man {1}.",
+    "erklaerung": "Inflation bedeutet, dass das allgemeine Preisniveau über einen längeren Zeitraum kontinuierlich steigt. Von Deflation spricht man, wenn das allgemeine Preisniveau über einen längeren Zeitraum andauernd sinkt. Einzelne Preisänderungen (z.B. nur Benzin) bedeuten noch keine Inflation oder Deflation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Inflation",
+        "optionen": [
+          "Teuerung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Deflation",
+        "optionen": []
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-k05",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Wenn sich nur der Benzinpreis deutlich verteuert, alle anderen Preise aber stabil bleiben, herrscht Inflation.",
+    "erklaerung": "Falsch. Von Inflation spricht man erst, wenn das allgemeine Preisniveau über einen längeren Zeitraum kontinuierlich steigt. Verteuert sich lediglich ein einzelnes Gut (z.B. Benzin), bedeutet dies nicht, dass Inflation herrscht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-k06",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Verschiebungen im Geldmarkt führen zu einer Erhöhung des Preisniveaus (Inflation)? (Mehrere Antworten möglich.)",
+    "erklaerung": "Eine Zunahme des Geldangebots (Verschiebung nach rechts) senkt die Kaufkraft, was das Preisniveau erhöht. Ebenso führt eine Abnahme der Geldnachfrage (Verschiebung nach links) zu sinkender Kaufkraft und steigendem Preisniveau. Umgekehrt: Eine Zunahme der Geldnachfrage oder eine Abnahme des Geldangebots würde das Preisniveau senken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Zunahme des Geldangebots",
+      "Zunahme der Geldnachfrage",
+      "Abnahme der Geldnachfrage",
+      "Abnahme des Geldangebots"
+    ],
+    "korrekt": [
+      "Zunahme des Geldangebots",
+      "Abnahme der Geldnachfrage"
+    ]
+  },
+  {
+    "id": "vwl_geld-n01",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Weshalb hat die Geldnachfragekurve eine negative Steigung?",
+    "erklaerung": "Je höher die Kaufkraft des Geldes, desto mehr kann man sich mit weniger Geld leisten. Man benötigt also weniger Geld für die täglichen Einkäufe — die nachgefragte Geldmenge sinkt. Umgekehrt: Bei tiefer Kaufkraft braucht man mehr Geld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Je höher die Kaufkraft des Geldes, desto weniger Geld braucht man für den Alltag",
+      "Die Banken vergeben weniger Kredite bei hoher Kaufkraft",
+      "Die Zentralbank verringert das Angebot bei steigender Nachfrage",
+      "Je höher die Kaufkraft, desto mehr Geld wollen die Leute halten"
+    ],
+    "korrekt": "Je höher die Kaufkraft des Geldes, desto weniger Geld braucht man für den Alltag"
+  },
+  {
+    "id": "vwl_geld-n02",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Wenn das reale BIP einer Volkswirtschaft zunimmt, steigt in der Regel auch die Geldnachfrage.",
+    "erklaerung": "Richtig. Je mehr eine Wirtschaft produziert, desto mehr Transaktionen finden statt. Für jede Transaktion wird Geld benötigt, daher steigt die Geldnachfrage bei zunehmendem BIP (Verschiebung der Geldnachfrage nach rechts).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-n03",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was sind die Opportunitätskosten der Geldhaltung?",
+    "erklaerung": "Wer Geld im Portemonnaie oder auf dem Lohnkonto hält, verzichtet auf Zinserträge eines Sparkontos oder Renditen von Wertpapieren. Diese entgangenen Erträge sind die Opportunitätskosten der Geldhaltung.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die entgangenen Zinsen, die man mit einer alternativen Anlage (z.B. Sparkonto, Aktien) hätte erzielen können",
+      "Die Gebühren, die eine Bank für die Kontoführung verlangt",
+      "Die Kosten für die Herstellung von Banknoten",
+      "Die Inflationsrate multipliziert mit dem Geldbetrag"
+    ],
+    "korrekt": "Die entgangenen Zinsen, die man mit einer alternativen Anlage (z.B. Sparkonto, Aktien) hätte erzielen können"
+  },
+  {
+    "id": "vwl_geld-n04",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Steigen die Zinsen auf Sparkonten, nehmen die Opportunitätskosten der Bargeldhaltung zu, und das Publikum hält weniger Bargeld.",
+    "erklaerung": "Richtig. Höhere Zinsen auf Sparkonten bedeuten höhere entgangene Erträge, wenn man Geld als Bargeld oder auf dem Lohnkonto hält. Die Opportunitätskosten steigen, weshalb das Publikum tendenziell weniger Bargeld hält und mehr auf verzinsliche Konten einzahlt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-n05",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Während der Finanzkrise 2007/2008 stieg der Umlauf grosser Banknoten (1000-Franken-Noten) stark an. Was war der Hauptgrund?",
+    "erklaerung": "In Krisenzeiten steigt der Bedarf an liquiden Geldmitteln, weil andere Vermögensanlagen (Aktien, Obligationen) als riskant erscheinen. Bargeld gilt als besonders sichere Anlageform — die Geldnachfrage verschiebt sich nach rechts.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Banken zahlten Kredite in bar aus",
+      "Die Nachfrage nach Bargeld als sicherer Wertaufbewahrung stieg, weil andere Anlagen als riskant galten",
+      "Die Inflation war sehr hoch",
+      "Die SNB druckte mehr grosse Noten als gewöhnlich"
+    ],
+    "korrekt": "Die Nachfrage nach Bargeld als sicherer Wertaufbewahrung stieg, weil andere Anlagen als riskant galten"
+  },
+  {
+    "id": "vwl_geld-n06",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Faktoren führen zu einer Erhöhung der Geldnachfrage? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Geldnachfrage steigt bei: (A) mehr Transaktionen durch BIP-Wachstum, (C) höherem Sicherheitsbedürfnis (Bargeld als «sicherer Hafen»), (D) höheren Mindestreserveanforderungen (Banken müssen mehr Notenbankgeld halten). Steigende Sparzinsen (B) hingegen erhöhen die Opportunitätskosten der Geldhaltung und senken die Geldnachfrage.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Zunahme des realen BIP",
+      "Steigende Zinsen auf Sparkonten",
+      "Zunehmende Unsicherheit auf den Finanzmärkten",
+      "Steigende Mindestreserveanforderungen"
+    ],
+    "korrekt": [
+      "Zunahme des realen BIP",
+      "Zunehmende Unsicherheit auf den Finanzmärkten",
+      "Steigende Mindestreserveanforderungen"
+    ]
+  },
+  {
+    "id": "vwl_geld-n07",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "{0} sind Guthaben, welche die Geschäftsbanken bei der Nationalbank halten müssen. Der aktuelle Mindestreservesatz beträgt {1} Prozent.",
+    "erklaerung": "Das Nationalbankgesetz schreibt vor, dass die Banken ihre Verbindlichkeiten (Sicht-, Termin- und 20% der Spargelder) zu 2,5% mit Reserven bei der Nationalbank hinterlegen müssen. Diese Mindestreserven sichern die Nachfrage nach Notenbankgeld.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Mindestreserven",
+        "optionen": [
+          "Reserven"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "2,5",
+        "optionen": [
+          "2.5"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-a01",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was sind die gesetzlichen Zahlungsmittel in der Schweiz?",
+    "erklaerung": "Die SNB bringt als einzige die gesetzlichen Zahlungsmittel in Umlauf: Bargeld und die Giroguthaben der Geschäftsbanken bei der Nationalbank. Buchgeld auf normalen Bankkonten zählt zwar zur Geldmenge, ist aber kein gesetzliches Zahlungsmittel.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Nur Banknoten",
+      "Bargeld (Banknoten und Münzen) sowie Giroguthaben der Geschäftsbanken bei der SNB",
+      "Bargeld und Kreditkarten",
+      "Alle Guthaben auf Bankkonten"
+    ],
+    "korrekt": "Bargeld (Banknoten und Münzen) sowie Giroguthaben der Geschäftsbanken bei der SNB"
+  },
+  {
+    "id": "vwl_geld-a02",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie schaffen Geschäftsbanken neues Geld?",
+    "erklaerung": "Wenn eine Bank einen Kredit vergibt, schreibt sie den Betrag dem Bankkonto des Kreditnehmers gut — so entsteht Buchgeld. Dieses Buchgeld kann für Zahlungen verwendet werden und zählt zur Geldmenge. Die Geldmenge hat sich durch die Kreditvergabe erhöht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Indem sie Banknoten drucken",
+      "Indem sie Kredite vergeben und den Kreditbetrag dem Konto des Kreditnehmers gutschreiben (Buchgeld)",
+      "Indem sie Spareinlagen der Kunden an andere Kunden weiterreichen",
+      "Indem sie Devisen an die SNB verkaufen"
+    ],
+    "korrekt": "Indem sie Kredite vergeben und den Kreditbetrag dem Konto des Kreditnehmers gutschreiben (Buchgeld)"
+  },
+  {
+    "id": "vwl_geld-a03",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Faktoren begrenzen die Geldschöpfung durch Geschäftsbanken? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Geldschöpfung wird begrenzt durch: (A) Die Kreditnachfrage von Haushalten und Firmen, die von Wirtschaftslage und Zinsniveau abhängt. (B) Mindestreserve- und Eigenkapitalvorschriften. (C) Die Kreditpolitik der Bank — sie vergibt nur Kredite, wenn der Kreditnehmer voraussichtlich zurückzahlen kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Höhe der Kreditnachfrage",
+      "Mindestreservevorschriften",
+      "Die Kreditpolitik der Banken (Bonitätsprüfung)",
+      "Die Anzahl der Bankomaten im Land"
+    ],
+    "korrekt": [
+      "Die Höhe der Kreditnachfrage",
+      "Mindestreservevorschriften",
+      "Die Kreditpolitik der Banken (Bonitätsprüfung)"
+    ]
+  },
+  {
+    "id": "vwl_geld-a04",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wenn ein Kreditnehmer seinen Kredit zurückzahlt (Tilgung), wird zuvor geschaffenes Geld wieder vernichtet.",
+    "erklaerung": "Richtig. Die Kreditrückzahlung ist der umgekehrte Prozess der Geldschöpfung: Das bei der Kreditvergabe geschaffene Buchgeld wird bei der Tilgung wieder aus der Geldmenge entfernt. Geldschöpfung und Geldvernichtung sind also zwei Seiten desselben Prozesses.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-a05",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Was geschieht im Zahlungsverkehr, wenn Bank A einen Kredit an einen Kunden vergibt und dieser eine Zahlung an einen Kunden von Bank B tätigt?",
+    "erklaerung": "Der Zahlungsverkehr zwischen Banken erfolgt über Giroguthaben bei der SNB. Bank A überweist Notenbankgeld von ihrem Girokonto bei der SNB auf das Girokonto von Bank B. Deshalb können Banken nur dann Kredite vergeben, wenn sie genügend Giroguthaben bei der SNB haben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Bank A überweist Bargeld an Bank B",
+      "Die SNB überweist automatisch den Betrag",
+      "Bank A überweist von ihrem Giroguthaben bei der SNB auf das Giroguthaben von Bank B bei der SNB",
+      "Die beiden Banken verrechnen den Betrag direkt ohne die SNB"
+    ],
+    "korrekt": "Bank A überweist von ihrem Giroguthaben bei der SNB auf das Giroguthaben von Bank B bei der SNB"
+  },
+  {
+    "id": "vwl_geld-a06",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Die Geldangebotskurve verläuft senkrecht, weil das Geldangebot von der Zentralbank festgelegt wird.",
+    "erklaerung": "Richtig. Die Zentralbank bestimmt das Geldangebot, unabhängig von der Kaufkraft. Deshalb verläuft die Angebotskurve im Geldmarktdiagramm senkrecht (vertikal).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-a07",
+    "fach": "VWL",
+    "thema": "Geldangebot und Geldschöpfung",
+    "typ": "fill",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Die Geldschöpfung ist ein zweistufiger Prozess: Die {0} schöpft Notenbankgeld (M0), und die {1} schöpfen daraus über die Kreditvergabe die breiteren Geldmengen (M1–M3).",
+    "erklaerung": "Die Zentralbank (SNB) schöpft Notenbankgeld (Banknoten und Giroguthaben der Banken bei der SNB). Die Geschäftsbanken schaffen darauf aufbauend Buchgeld durch Kreditvergabe. So entstehen die breiteren Geldaggregate M1, M2 und M3.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Zentralbank",
+        "optionen": [
+          "SNB",
+          "Nationalbank",
+          "Schweizerische Nationalbank"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Geschäftsbanken",
+        "optionen": [
+          "Banken",
+          "Geschäftsbanken",
+          "Kommerzbanken"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-m01",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Woraus setzt sich die Notenbankgeldmenge (M0) zusammen?",
+    "erklaerung": "Die Notenbankgeldmenge M0 (monetäre Basis) besteht aus dem Notenumlauf und den Giroguthaben inländischer Geschäftsbanken bei der SNB. Münzen gehören nicht dazu, da sie Verpflichtungen des Bundes (nicht der SNB) darstellen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Notenumlauf plus Giroguthaben der Geschäftsbanken bei der SNB",
+      "Notenumlauf plus Münzumlauf",
+      "Alle Bankguthaben plus Bargeld",
+      "Bargeldumlauf plus Spareinlagen"
+    ],
+    "korrekt": "Notenumlauf plus Giroguthaben der Geschäftsbanken bei der SNB"
+  },
+  {
+    "id": "vwl_geld-m02",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Betrachten Sie die Übersicht der Geldmengen. Wie unterscheidet sich M1 von M2?",
+    "erklaerung": "M1 umfasst den Bargeldumlauf, Sichteinlagen und Transaktionskonten. M2 ist M1 plus Spareinlagen (ohne gebundene Vorsorgegelder und ohne die bereits in M1 enthaltenen Transaktionskonten). M3 wiederum ist M2 plus Termineinlagen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldmengen_02.svg",
+      "alt": "Übersicht der Geldmengen M0, M1, M2, M3"
+    },
+    "optionen": [
+      "M1 und M2 unterscheiden sich nur durch den Bargeldumlauf",
+      "M1 enthält nur Bargeld, M2 auch Sichteinlagen",
+      "M2 enthält zusätzlich zu M1 die Termineinlagen",
+      "M2 enthält zusätzlich zu M1 die Spareinlagen"
+    ],
+    "korrekt": "M2 enthält zusätzlich zu M1 die Spareinlagen"
+  },
+  {
+    "id": "vwl_geld-m03",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die SNB definiert die Geldmenge M3 als Summe der Geldmenge {0} und der {1}.",
+    "erklaerung": "M3 = M2 + Termineinlagen (Kreditoren auf Zeit und Geldmarktpapiere). M3 ist das breiteste von der SNB definierte Geldaggregat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "M2",
+        "optionen": []
+      },
+      {
+        "id": "1",
+        "korrekt": "Termineinlagen",
+        "optionen": [
+          "Termingelder"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-m04",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Sie zahlen eine 100-Franken-Note auf Ihr Sparkonto ein. Wie verändern sich die Geldmengen? (Mehrere Antworten möglich.)",
+    "erklaerung": "Durch die Einzahlung sinkt der Bargeldumlauf (Teil von M1), also sinkt M1. Gleichzeitig steigen die Spareinlagen — da M2 = M1 + Spareinlagen, gleicht sich die Änderung aus, und M2 bleibt unverändert. M3 bleibt ebenfalls gleich, da sich M2 nicht verändert.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "M1 sinkt",
+      "M2 bleibt unverändert",
+      "M3 bleibt unverändert",
+      "M1 steigt"
+    ],
+    "korrekt": [
+      "M1 sinkt",
+      "M2 bleibt unverändert",
+      "M3 bleibt unverändert"
+    ]
+  },
+  {
+    "id": "vwl_geld-m05",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was ist der Geldschöpfungsmultiplikator?",
+    "erklaerung": "Der Geldschöpfungsmultiplikator beschreibt den Zusammenhang zwischen Notenbankgeldmenge (M0) und den breiteren Geldaggregaten (z.B. M3 = m₃ × M0). Er ist grösser als 1, da die Geschäftsbanken aus einer gegebenen Menge an Notenbankgeld eine grössere Geldmenge schöpfen können.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Der Zinssatz, zu dem Banken untereinander Geld leihen",
+      "Die Rate, mit der die Zentralbank Geld druckt",
+      "Das Verhältnis von Bargeld zu Buchgeld",
+      "Ein Faktor, der angibt, um wie viel die breiteren Geldmengen grösser sind als die Notenbankgeldmenge"
+    ],
+    "korrekt": "Ein Faktor, der angibt, um wie viel die breiteren Geldmengen grösser sind als die Notenbankgeldmenge"
+  },
+  {
+    "id": "vwl_geld-m06",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Geldschöpfungsmultiplikator ist ein fester, unveränderlicher Wert.",
+    "erklaerung": "Falsch. Der Multiplikator kann über die Zeit stark schwanken. Er hängt ab vom Zinsniveau, von der Bargeldnachfrage und der Bereitschaft der Banken, Kredite zu vergeben. In Krisenzeiten (z.B. nach 2008) sinkt er typischerweise, weil Banken vorsichtiger werden und grössere Reserven halten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-m07",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Münzen gehören nicht zur Notenbankgeldmenge M0, da sie Verpflichtungen des Bundes (nicht der SNB) darstellen.",
+    "erklaerung": "Richtig. Die Münzen werden von Swissmint (einer Einheit der Bundesverwaltung) hergestellt und an die SNB verkauft. Die SNB bringt sie zwar in Umlauf, aber sie gelten als Verpflichtungen des Bundes und gehören deshalb nicht zur Notenbankgeldmenge M0.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-z01",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Nationalbank setzt ihre Geldpolitik um, indem sie den {0} festlegt. Der wichtigste kurzfristige Geldmarktzinssatz ist der {1}.",
+    "erklaerung": "Die SNB legt den SNB-Leitzins fest, der die angestrebte Höhe der kurzfristigen Geldmarktzinssätze signalisiert. Der SARON (Swiss Average Rate Overnight) ist der wichtigste dieser Zinssätze — er ist der Zinssatz für Übernachtkredite zwischen Banken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "SNB-Leitzins",
+        "optionen": [
+          "Leitzins"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "SARON",
+        "optionen": [
+          "Swiss Average Rate Overnight"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-z02",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Die Inflationsprognose der SNB zeigt steigende Teuerung. Betrachten Sie das Schema des Kreditkanals. Wie reagiert die Nationalbank?",
+    "erklaerung": "Bei drohender Inflation erhöht die SNB den Leitzins → SARON steigt → Banken erhöhen ihre Kreditzinsen → Unternehmen und Haushalte nehmen weniger Kredite auf → Nachfrage nach Waren und Dienstleistungen sinkt → Preisanstieg wird gedämpft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_kreditkanal_03.svg",
+      "alt": "Flussdiagramm: Kreditkanal der Geldpolitik"
+    },
+    "optionen": [
+      "Sie senkt den Leitzins, damit Kredite billiger werden",
+      "Sie erhöht die Mindestreserven der Banken",
+      "Sie kauft Devisen, um den Wechselkurs zu stabilisieren",
+      "Sie erhöht den Leitzins, was über steigende Kreditzinsen die Nachfrage dämpft und so die Inflation bremst"
+    ],
+    "korrekt": "Sie erhöht den Leitzins, was über steigende Kreditzinsen die Nachfrage dämpft und so die Inflation bremst"
+  },
+  {
+    "id": "vwl_geld-z03",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was versteht man unter dem Wechselkurskanal der Geldpolitik?",
+    "erklaerung": "Eine Zinserhöhung macht Anlagen in CHF attraktiver → Nachfrage nach Franken steigt → Franken wertet auf → Schweizer Güter werden für Ausländer teurer (Nachfrage sinkt, indirekter Effekt) und Importe werden billiger (direkter Effekt). Beides wirkt dämpfend auf die Inflation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Eine Zinsänderung beeinflusst den Wechselkurs, der wiederum die Import- und Exportpreise und damit das Preisniveau verändert",
+      "Die Banken tauschen Franken gegen Euro, wenn die Zinsen steigen",
+      "Die SNB legt den Wechselkurs direkt fest",
+      "Wechselkursänderungen haben keinen Einfluss auf die Geldpolitik"
+    ],
+    "korrekt": "Eine Zinsänderung beeinflusst den Wechselkurs, der wiederum die Import- und Exportpreise und damit das Preisniveau verändert"
+  },
+  {
+    "id": "vwl_geld-z04",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Transmissionskanäle der Geldpolitik werden im Fachtext beschrieben? (Mehrere Antworten möglich.)",
+    "erklaerung": "Der Fachtext beschreibt drei Transmissionskanäle: (A) Kreditkanal: Zinsänderung → Kreditkosten → Nachfrage → Preise. (B) Inflationserwartungen: Erwartungen über zukünftige Teuerung beeinflussen langfristige Zinsen. (C) Wechselkurskanal: Zinsänderung → Wechselkurs → Import-/Exportpreise. Ein «Fiskalkanal» wird nicht als Transmissionskanal der Geldpolitik beschrieben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Kreditkanal",
+      "Inflationserwartungen",
+      "Wechselkurskanal",
+      "Fiskalkanal"
+    ],
+    "korrekt": [
+      "Kreditkanal",
+      "Inflationserwartungen",
+      "Wechselkurskanal"
+    ]
+  },
+  {
+    "id": "vwl_geld-z05",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Inflationserwartungen können zu einer «sich selbst erfüllenden Prophezeiung» werden: Bereits die blosse Erwartung einer Geldentwertung kann tatsächlich zur Geldentwertung führen.",
+    "erklaerung": "Richtig. Wenn Kreditgeber steigende Inflation erwarten, verlangen sie höhere Zinsen (Fisher-Effekt). Die höheren Nominalzinsen verteuern Kredite und beeinflussen Real- und Finanzwirtschaft. Die Erwartung wird so zur «self-fulfilling prophecy».",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-z06",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Weshalb ist die Glaubwürdigkeit einer Zentralbank entscheidend für die Wirksamkeit der Geldpolitik?",
+    "erklaerung": "Die Zentralbank kann über die Erwartungen des Publikums die langfristigen Zinsen und damit Preisniveau und Konjunktur beeinflussen. Dafür muss sie glaubwürdig das Ziel der Preisstabilität verfolgen. Verliert sie Glaubwürdigkeit, können sich Inflationserwartungen verselbstständigen und die Zinssteuerung wird unwirksam.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil nur eine glaubwürdige Zentralbank Banknoten drucken darf",
+      "Weil die Geschäftsbanken sonst keine Kredite mehr vergeben",
+      "Weil die Zentralbank über die Inflationserwartungen des Publikums die langfristigen Zinsen beeinflusst — und das nur bei Glaubwürdigkeit funktioniert",
+      "Weil die Bevölkerung sonst auf Bargeld verzichten würde"
+    ],
+    "korrekt": "Weil die Zentralbank über die Inflationserwartungen des Publikums die langfristigen Zinsen beeinflusst — und das nur bei Glaubwürdigkeit funktioniert"
+  },
+  {
+    "id": "vwl_geld-u01",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter «Quantitative Easing» (mengenmässige Lockerung)?",
+    "erklaerung": "Quantitative Easing (QE) bezeichnet die Politik, namentlich Staatsanleihen des eigenen Währungsraums zu kaufen, um die langfristigen Zinsen zu senken. Der Begriff gewann durch die Finanzkrise 2007/2008 an Bedeutung, als Ben Bernanke als Fed-Präsident das erste QE-Programm verkündete.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Reduktion der Geldmenge zur Inflationsbekämpfung",
+      "Den Kauf von Staatsanleihen durch die Zentralbank, um die langfristigen Zinsen zu senken",
+      "Die Erhöhung der Mindestreserven",
+      "Die Senkung des Leitzinses auf null"
+    ],
+    "korrekt": "Den Kauf von Staatsanleihen durch die Zentralbank, um die langfristigen Zinsen zu senken"
+  },
+  {
+    "id": "vwl_geld-u02",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K1",
+    "frage": "Am {0} 2011 führte die SNB einen Mindestkurs von {1} Franken pro Euro ein, um die Frankenaufwertung zu stoppen.",
+    "erklaerung": "Am 6. September 2011 legte die SNB einen Mindestkurs von 1.20 Franken pro Euro fest. Der starke Franken drohte zu einem Wachstumseinbruch und einer Deflation zu führen. Am 15. Januar 2015 wurde der Mindestkurs wieder aufgehoben.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "6. September",
+        "optionen": [
+          "6.9.",
+          "6. Sept.",
+          "September"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "1.20",
+        "optionen": [
+          "1,20",
+          "CHF 1.20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-u03",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Wie hat die SNB den Mindestkurs von 1.20 CHF/EUR durchgesetzt?",
+    "erklaerung": "Die SNB kaufte Devisen (v.a. Euro) und bezahlte diese mit neu geschaffenen Franken. So erhöhte sie das Angebot an Franken und stützte die Nachfrage nach Euro. Zwischen August 2011 und Januar 2015 wurden Devisen im Wert von über 200 Mrd. Franken gekauft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Durch ein Verbot von Devisentransaktionen unter 1.20",
+      "Durch Devisenkäufe: Sie kaufte Euro und andere Fremdwährungen mit neu geschaffenen Franken",
+      "Durch Erhöhung des Leitzinses",
+      "Durch Senkung der Mindestreserven der Geschäftsbanken"
+    ],
+    "korrekt": "Durch Devisenkäufe: Sie kaufte Euro und andere Fremdwährungen mit neu geschaffenen Franken"
+  },
+  {
+    "id": "vwl_geld-u04",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Negativzins der SNB (eingeführt im Januar 2015) zielte darauf ab, Anlagen in Franken weniger attraktiv zu machen und so den Aufwertungsdruck auf den Franken zu begrenzen.",
+    "erklaerung": "Richtig. Der Negativzins von –0,75% auf Sichtguthaben bei der SNB sollte die Attraktivität von Frankenanlagen senken und damit die Nachfrage nach CHF und den Aufwertungsdruck reduzieren. Der Negativzins übertrug sich auf weitere Zinssätze über alle Laufzeiten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-u05",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Weshalb kann die SNB die Zinsen nicht unbegrenzt in den negativen Bereich senken?",
+    "erklaerung": "Ab einer bestimmten Grenze («effektive Untergrenze») lohnt es sich für Anleger, Geld als Bargeld zu halten (Zins = 0%) statt auf Konten mit negativer Verzinsung. Die logistischen und versicherungstechnischen Kosten der Bargeldhaltung bestimmen, wo diese Grenze liegt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil negative Zinsen gesetzlich verboten sind",
+      "Weil der Franken dann seinen Status als Reservewährung verlieren würde",
+      "Weil die Geschäftsbanken die Negativzinsen nicht weitergeben können",
+      "Weil ab einer gewissen Grenze Anleger vom Konto ins Bargeld umschichten würden (Bargeld hat einen Zins von null)"
+    ],
+    "korrekt": "Weil ab einer gewissen Grenze Anleger vom Konto ins Bargeld umschichten würden (Bargeld hat einen Zins von null)"
+  },
+  {
+    "id": "vwl_geld-u06",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Welche Aussagen zur Auswirkung der unkonventionellen Geldpolitik auf die Geldmengen treffen zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Die Devisenkäufe liessen M0 massiv steigen (A). Die breiteren Geldaggregate stiegen jedoch deutlich weniger, weshalb der Multiplikator sank (C). Trotz der Geldmengenausweitung blieb die Inflation aus, da die lockere Geldpolitik die Umlaufgeschwindigkeit des Geldes senkte (D). Gemäss der Quantitätsgleichung (M × V = P × Y) kann bei sinkendem V die Geldmenge steigen, ohne Inflation auszulösen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Notenbankgeldmenge (M0) stieg durch die Devisenkäufe massiv an",
+      "Die breiteren Geldaggregate (M1–M3) stiegen im gleichen Masse wie M0",
+      "Der Geldschöpfungsmultiplikator ging stark zurück",
+      "Trotz der Geldmengenausweitung kam es nicht zu Inflation, weil die Umlaufgeschwindigkeit sank"
+    ],
+    "korrekt": [
+      "Die Notenbankgeldmenge (M0) stieg durch die Devisenkäufe massiv an",
+      "Der Geldschöpfungsmultiplikator ging stark zurück",
+      "Trotz der Geldmengenausweitung kam es nicht zu Inflation, weil die Umlaufgeschwindigkeit sank"
+    ]
+  },
+  {
+    "id": "vwl_geld-u07",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Wann wurde der EUR/CHF-Mindestkurs der SNB aufgehoben?",
+    "erklaerung": "Am 15. Januar 2015 hob die SNB den Mindestkurs von 1.20 CHF/EUR auf. Der Mindestkurs war nicht mehr nachhaltig, da er nur noch mit anhaltenden und rasch zunehmenden Devisenkäufen durchzusetzen gewesen wäre.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "15. Januar 2015",
+      "6. September 2011",
+      "1. Januar 2016",
+      "22. Januar 2015"
+    ],
+    "korrekt": "15. Januar 2015"
+  },
+  {
+    "id": "vwl_geld-u08",
+    "fach": "VWL",
+    "thema": "Unkonventionelle Geldpolitik seit der Finanzkrise",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Ein Negativzins wirkt sich nachteilig auf die Profitabilität der Geschäftsbanken aus, da diese den Negativzins nur ungern an ihre Sparkunden weitergeben.",
+    "erklaerung": "Richtig. Banken betreiben ein Zinsdifferenzgeschäft: Sie zahlen tiefere Zinsen auf Spareinlagen als sie bei der Kreditvergabe einnehmen. Wenn die Giroguthaben bei der SNB negativ verzinst werden, aber Spargelder weiter positiv verzinst werden, sinken die Zinseinnahmen der Banken. Banken können dies teilweise durch höhere Gebühren kompensieren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-k07",
+    "fach": "VWL",
+    "thema": "Geldmenge, Kaufkraft und Preisniveau",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Die Quantitätsgleichung lautet M × V = P × Y. Was passiert laut dieser Gleichung, wenn die Geldmenge (M) stärker steigt als das reale BIP (Y), bei konstanter Umlaufgeschwindigkeit (V)?",
+    "erklaerung": "Bei konstanter Umlaufgeschwindigkeit (V) und wenn die Geldmenge (M) stärker steigt als das reale BIP (Y), muss das Preisniveau (P) steigen, damit die Gleichung M × V = P × Y erfüllt bleibt. Das bedeutet: Zu viel Geld jagt zu wenig Güter → Inflation.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Das reale BIP (Y) passt sich automatisch an",
+      "Das Preisniveau (P) muss steigen",
+      "Die Geldmenge (M) reguliert sich selbst",
+      "Die Umlaufgeschwindigkeit (V) muss sinken"
+    ],
+    "korrekt": "Das Preisniveau (P) muss steigen"
+  },
+  {
+    "id": "vwl_geld-g08",
+    "fach": "VWL",
+    "thema": "Grundlagen: Geld und Geldfunktionen",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist es in modernen Volkswirtschaften die Aufgabe der Zentralbank (und nicht des freien Marktes), für die Werthaltigkeit des Geldes zu sorgen?",
+    "erklaerung": "Papiergeld hat praktisch keinen Materialwert und lässt sich theoretisch leicht vermehren. Ohne eine vertrauenswürdige Institution, die für die Knappheit und den Wert des Geldes sorgt, würde das Vertrauen in die Währung zusammenbrechen. Das Geldmonopol liegt daher beim Staat bzw. der Zentralbank.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Weil Geschäftsbanken kein Interesse an stabilem Geld haben",
+      "Weil Papiergeld praktisch keinen Materialwert hat und leicht vermehrt werden kann — ohne staatliche Kontrolle würde das Vertrauen schwinden",
+      "Weil Warengeld nur in staatlicher Hand funktioniert",
+      "Weil der Staat möglichst viel Geld drucken möchte, um seine Ausgaben zu finanzieren"
+    ],
+    "korrekt": "Weil Papiergeld praktisch keinen Materialwert hat und leicht vermehrt werden kann — ohne staatliche Kontrolle würde das Vertrauen schwinden"
+  },
+  {
+    "id": "vwl_geld-z07",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Eine Aufwertung des Schweizer Frankens wirkt sich immer inflationär auf das Preisniveau in der Schweiz aus.",
+    "erklaerung": "Falsch. Eine Aufwertung des Frankens wirkt dämpfend (deflationär) auf das Preisniveau — nicht inflationär. Importe werden billiger (direkter Effekt), und Schweizer Exportgüter werden für Ausländer teurer, was die Nachfrage und damit die Konjunktur dämpft (indirekter Effekt). Beide Effekte senken das Preisniveau.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "aussagen": []
+  },
+  {
+    "id": "vwl_geld-n08",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Die Geldnachfragefunktion lautet Mᵈ = P × f(Y, R, …). Was bedeutet es, wenn die Nominalzinsen (R) sinken?",
+    "erklaerung": "Wenn die Nominalzinsen (R) sinken, sinken auch die Opportunitätskosten der Geldhaltung — der entgangene Ertrag durch das Halten von Geld statt Sparguthaben wird kleiner. Deshalb hält das Publikum mehr Geld, und die Geldnachfrage steigt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "optionen": [
+      "Die Geldnachfrage steigt, weil mehr Transaktionen stattfinden",
+      "Die Geldnachfrage sinkt, weil das Geld weniger wert wird",
+      "Die Geldnachfrage steigt, weil die Opportunitätskosten der Geldhaltung sinken",
+      "Die Geldnachfrage bleibt unverändert, da R nur die Sparquote beeinflusst"
+    ],
+    "korrekt": "Die Geldnachfrage steigt, weil die Opportunitätskosten der Geldhaltung sinken"
+  },
+  {
+    "id": "vwl_geld-neu_sort_01",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Geldformen in die historisch korrekte Entwicklungsreihenfolge.",
+    "erklaerung": "Die Geldentwicklung verlief über Jahrtausende: Erst Warengeld (Tauschgüter), dann Münzgeld (standardisiert, ca. 600 v. Chr.), später Banknoten mit Golddeckung (ab 17. Jh.), dann Fiat-Geld ohne Deckung (Nixon Shock 1971 beendete den Goldstandard), und schliesslich dominiert heute Buchgeld (über 90% der Geldmenge M1 in der Schweiz).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_geld-neu_sort_02",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Geldmengenaggregate der SNB vom engsten (liquidesten) zum weitesten.",
+    "erklaerung": "Die Geldmengenaggregate werden immer breiter: M0 umfasst nur das Zentralbankgeld, M1 fügt Sichteinlagen hinzu (jederzeit verfügbar), M2 ergänzt Spareinlagen (etwas weniger liquide), und M3 schliesst auch Termineinlagen ein (festgelegt auf bestimmte Laufzeit). Je breiter das Aggregat, desto weniger liquide die enthaltenen Komponenten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "vwl_geld-neu_sort_03",
+    "fach": "VWL",
+    "thema": "Konventionelle Geldpolitik und Transmissionskanäle",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die Schritte des geldpolitischen Transmissionsmechanismus in die korrekte Wirkungskette – von der SNB-Entscheidung bis zur Wirkung auf die Realwirtschaft.",
+    "erklaerung": "Der Zinskanal der Geldpolitik wirkt stufenweise: Die SNB senkt den Leitzins → Banken geben die tieferen Zinsen weiter → Kredite werden günstiger → Unternehmen investieren mehr, Haushalte konsumieren mehr → Die gesamtwirtschaftliche Nachfrage steigt → BIP und Beschäftigung nehmen zu. Dieser Prozess dauert typischerweise 6–18 Monate (Time Lag).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": "vwl_geld-neu_zeichnen_01",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "zeichnen",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Zeichne den Prozess der Geldschöpfung durch Geschäftsbanken (multiple Geldschöpfung). Zeige mindestens 3 Runden mit Einlage, Mindestreserve und Kreditvergabe bei einem Mindestreservesatz von 10%.",
+    "erklaerung": "Bei einem Mindestreservesatz von 10% beträgt der Geldschöpfungsmultiplikator m = 1/0.1 = 10. Aus einer Einlage von 1000 CHF kann theoretisch bis zu 10'000 CHF Buchgeld entstehen. In der Praxis ist der Multiplikator kleiner, da Banken freiwillige Reserven halten und nicht alle Kredite als Einlagen zurückkehren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "hinweise": [
+      "Starte mit einer Einlage von 1000 CHF bei Bank A.",
+      "Bank A behält 10% (100 CHF) als Reserve und verleiht 900 CHF.",
+      "Die 900 CHF werden bei Bank B eingelegt, die wieder 10% behält und den Rest verleiht."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldschoepfung_zeichnen.svg",
+      "alt": "Musterlösung: Multiple Geldschöpfung"
+    }
+  },
+  {
+    "id": "vwl_geld-hotspot01",
+    "fach": "VWL",
+    "thema": "Geldnachfrage",
+    "typ": "hotspot",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Klicke auf den Punkt, der das Geldmarktgleichgewicht darstellt — dort wo Geldangebot und Geldnachfrage übereinstimmen.",
+    "erklaerung": "Das Geldmarktgleichgewicht liegt dort, wo das (von der Zentralbank fixierte) Geldangebot auf die Geldnachfrage trifft. Der Gleichgewichtszinssatz stellt sich so ein, dass die Wirtschaftssubjekte genau die vorhandene Geldmenge halten wollen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldmarkt_hotspot.svg",
+      "alt": "Geldmarkt-Diagramm mit vier markierten Punkten (A–D)"
+    },
+    "hotspots": [
+      {
+        "x": 50,
+        "y": 51.2,
+        "r": 8,
+        "label": "A: Gleichgewicht"
+      },
+      {
+        "x": 50,
+        "y": 33.3,
+        "r": 8,
+        "label": "B: Überschüssiges Geldangebot"
+      },
+      {
+        "x": 30,
+        "y": 36.9,
+        "r": 8,
+        "label": "C: Geldknappheit"
+      },
+      {
+        "x": 70,
+        "y": 71.4,
+        "r": 8,
+        "label": "D: Kein Schnittpunkt"
+      }
+    ],
+    "korrekt": [
+      0
+    ]
+  },
+  {
+    "id": "vwl_geld-beschriftung01",
+    "fach": "VWL",
+    "thema": "Geldmengen und Geldaggregate (M0–M3)",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die vier Geldmengenaggregate und ihre Bestandteile.",
+    "erklaerung": "Die Geldmengenaggregate sind ineinander geschachtelt: M0 (monetäre Basis) → M1 (Transaktionsgeld) → M2 (+ Spareinlagen) → M3 (+ Termineinlagen). Je weiter aussen, desto weniger liquide.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldmengen_beschriftung.svg",
+      "alt": "Geldmengenaggregate M0–M3 als konzentrische Schichten mit vier nummerierten Beschriftungspunkten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "M0: Notenbankgeld (Bargeld + Giroguthaben bei SNB)",
+        "x": 39,
+        "y": 57
+      },
+      {
+        "id": "l2",
+        "text": "M1: Bargeld + Sichteinlagen",
+        "x": 24,
+        "y": 42
+      },
+      {
+        "id": "l3",
+        "text": "M2: M1 + Spareinlagen",
+        "x": 16,
+        "y": 34
+      },
+      {
+        "id": "l4",
+        "text": "M3: M2 + Termineinlagen",
+        "x": 10,
+        "y": 22
+      }
+    ]
+  },
+  {
+    "id": "vwl_geld-dragdrop01",
+    "fach": "VWL",
+    "thema": "Warengeld, Papiergeld & Buchgeld",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordne die folgenden Beispiele der richtigen Geldart zu.",
+    "erklaerung": "Warengeld hat inneren Wert (Gold, Salz, Muscheln). Kreditgeld entsteht durch Bankenschöpfung (Kontoguthaben). Digitales Geld umfasst Kryptowährungen (Bitcoin), mobile Zahlungssysteme (TWINT) und potenziell CBDC.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM3–GYM4 · Gymnasium Hofwil · Individuell üben",
+    "bild": {
+      "src": "/pool-bilder/vwl/geld/geld_geldarten_dragdrop.svg",
+      "alt": "Drei Spalten: Warengeld, Kreditgeld, Digitales Geld"
+    },
+    "zones": [
+      {
+        "id": "waren",
+        "x": 2.5,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "kredit",
+        "x": 34,
+        "y": 14,
+        "w": 30,
+        "h": 82
+      },
+      {
+        "id": "digital",
+        "x": 65.5,
+        "y": 14,
+        "w": 32,
+        "h": 82
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "m1",
+        "text": "Goldmünzen",
+        "zone": "waren"
+      },
+      {
+        "id": "m2",
+        "text": "Salz als Zahlungsmittel",
+        "zone": "waren"
+      },
+      {
+        "id": "m3",
+        "text": "Kaurimuscheln",
+        "zone": "waren"
+      },
+      {
+        "id": "m4",
+        "text": "Lohnüberweisung auf Bankkonto",
+        "zone": "kredit"
+      },
+      {
+        "id": "m5",
+        "text": "Hypothekarkredit",
+        "zone": "kredit"
+      },
+      {
+        "id": "m6",
+        "text": "Sichteinlage bei der UBS",
+        "zone": "kredit"
+      },
+      {
+        "id": "m7",
+        "text": "Bitcoin",
+        "zone": "digital"
+      },
+      {
+        "id": "m8",
+        "text": "TWINT-Zahlung",
+        "zone": "digital"
+      },
+      {
+        "id": "m9",
+        "text": "CBDC (digitales Zentralbankgeld)",
+        "zone": "digital"
+      }
+    ]
+  }
+]

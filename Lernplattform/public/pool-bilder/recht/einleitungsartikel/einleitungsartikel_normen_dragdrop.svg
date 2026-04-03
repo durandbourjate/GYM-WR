@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#ffffff" rx="8"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Normenpyramide — Ordne die Normen den Stufen zu</text>
+
+  <!-- Column 1: Verfassungsstufe (grün dunkel) -->
+  <rect x="20" y="55" width="240" height="330" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="140" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Verfassungsstufe</text>
+  <text x="140" y="97" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Bundesverfassung (BV)</text>
+  <line x1="35" y1="106" x2="245" y2="106" stroke="#86efac" stroke-width="1"/>
+  <rect x="35" y="116" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="35" y="162" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Column 2: Gesetzesstufe (grün mittel) -->
+  <rect x="280" y="55" width="240" height="330" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="400" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Gesetzesstufe</text>
+  <text x="400" y="97" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Bundesgesetze (OR, ZGB, StGB…)</text>
+  <line x1="295" y1="106" x2="505" y2="106" stroke="#86efac" stroke-width="1"/>
+  <rect x="295" y="116" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="295" y="162" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="295" y="208" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Column 3: Verordnungsstufe (grün hell) -->
+  <rect x="540" y="55" width="240" height="330" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"/>
+  <text x="660" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Verordnungsstufe</text>
+  <text x="660" y="97" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Bundesratsverordnungen</text>
+  <line x1="555" y1="106" x2="765" y2="106" stroke="#86efac" stroke-width="1"/>
+  <rect x="555" y="116" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="555" y="162" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <rect x="555" y="208" width="210" height="38" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Hint -->
+  <text x="400" y="392" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Normen in die passende Stufe</text>
+</svg>

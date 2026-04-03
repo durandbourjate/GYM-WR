@@ -1,0 +1,1371 @@
+[
+  {
+    "id": "recht_einfuehrung-m01",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was ist Moral?",
+    "erklaerung": "Moral (angewandte Ethik) ist die innere, nicht erzwingbare Einstellung und Werthaltung eines Menschen. Man handelt auch danach, wenn man nicht beobachtet wird. Im Gegensatz dazu betrifft Sitte das äussere Verhalten (B) und Recht ist staatlich erzwingbar (C).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einfuehrung/einfuehrung_moral_sitte_recht_01.svg",
+      "alt": "Diagramm: Drei Normsysteme – Moral, Sitte, Recht – und ihr Einfluss auf menschliches Verhalten"
+    },
+    "optionen": [
+      "Ein äusseres, nicht erzwingbares, aber im Allgemeinen erwartetes Verhalten.",
+      "Die innere, nicht erzwingbare Einstellung und Werthaltung eines Menschen.",
+      "Ordnungsregeln, die das äussere Verhalten bestimmen und staatlich erzwingbar sind.",
+      "Ein Gerichtsentscheid, der Rechtskraft erlangt hat."
+    ],
+    "korrekt": "Die innere, nicht erzwingbare Einstellung und Werthaltung eines Menschen."
+  },
+  {
+    "id": "recht_einfuehrung-m02",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Sitte ist ein äusseres, nicht erzwingbares, aber im Allgemeinen erwartetes Verhalten von Menschen.",
+    "erklaerung": "Richtig. Sitte bezieht sich auf das äussere Verhalten (z.B. sich beim neuen Nachbarn vorstellen) und ist gesellschaftlich erwartet, aber nicht staatlich erzwingbar. Die Missachtung kann allenfalls gesellschaftliche Konsequenzen haben (z.B. Ächtung).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-m03",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Recht besteht aus Ordnungsregeln, die das äussere Verhalten von Menschen mitbestimmen und staatlich {0} sind.",
+    "erklaerung": "Das entscheidende Merkmal, das Recht von Moral und Sitte unterscheidet, ist die staatliche Erzwingbarkeit. Der Staat kann die Einhaltung von Rechtsnormen mit Zwangsmassnahmen durchsetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "erzwingbar",
+        "optionen": [
+          "durchsetzbar"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-m04",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Was ist der Hauptunterschied zwischen Moral und Sitte?",
+    "erklaerung": "Moral bezieht sich auf die innere Haltung (Werte und Überzeugungen), Sitte auf die äussere Haltung (erwartetes Verhalten). Beide sind nicht erzwingbar – im Gegensatz zum Recht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Moral betrifft die innere Haltung, Sitte die äussere Haltung.",
+      "Moral wird vom Staat durchgesetzt, Sitte von der Gesellschaft.",
+      "Sitte betrifft die innere Haltung, Moral die äussere Haltung.",
+      "Moral ist erzwingbar, Sitte nicht."
+    ],
+    "korrekt": "Moral betrifft die innere Haltung, Sitte die äussere Haltung."
+  },
+  {
+    "id": "recht_einfuehrung-m05",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Regel beeinflusst das Verhalten der Schülergruppe am stärksten?",
+    "erklaerung": "Es gibt keine gesetzliche Pflicht, störende Mitschüler zurechtzuweisen. Das Verhalten entspricht einer gesellschaftlichen Erwartung (Sitte): Man erwartet, dass sich Mitschüler an gewisse Anstandsregeln halten und gegenseitig darauf hinweisen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "In einem Gymnasium weist eine Gruppe von Schülerinnen und Schülern einen störenden Mitschüler während der Unterrichtsstunde zurecht.",
+    "optionen": [
+      "Sitte – es ist ein gesellschaftlich erwartetes Verhalten, dass man störendes Verhalten nicht toleriert.",
+      "Recht – der Lehrer hat die Klasse dazu verpflichtet.",
+      "Recht – es gibt eine gesetzliche Pflicht, störende Mitschüler zurechtzuweisen.",
+      "Moral – die Schüler handeln aus innerer Überzeugung."
+    ],
+    "korrekt": "Sitte – es ist ein gesellschaftlich erwartetes Verhalten, dass man störendes Verhalten nicht toleriert."
+  },
+  {
+    "id": "recht_einfuehrung-m06",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Regel beeinflusst das Verhalten des Lehrers am stärksten?",
+    "erklaerung": "Der Lehrer handelt hier primär aus innerer Überzeugung (Moral). Zwar ist Bestechung auch rechtlich verboten (Art. 322ter ff. StGB), aber die Frage zielt auf die Regel, die das Verhalten zuerst und am stärksten beeinflusst. Die innere Haltung gegen Korruption ist der stärkste Antrieb.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Ein Lehrer lehnt den Bestechungsversuch einer Schülerin ab, die ihm Geld anbietet, damit er ihre Note ändert.",
+    "optionen": [
+      "Moral und Recht gleichermassen.",
+      "Moral – der Lehrer handelt aus innerer Überzeugung gegen Korruption.",
+      "Sitte – Bestechung gilt als unanständig.",
+      "Recht – Bestechung ist gesetzlich verboten und strafbar."
+    ],
+    "korrekt": "Moral – der Lehrer handelt aus innerer Überzeugung gegen Korruption."
+  },
+  {
+    "id": "recht_einfuehrung-m07",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen treffen auf das Recht zu? (Mehrere Antworten möglich.)",
+    "erklaerung": "Recht regelt das äussere Verhalten (A) und ist staatlich erzwingbar (B). Bei der Einhaltung von Recht spielt die innere Einstellung keine Rolle (D) – ob jemand nicht stiehlt, weil er es für falsch hält oder weil er Angst vor Strafe hat, ist aus rechtlicher Sicht gleichgültig. C ist falsch: Recht setzt gerade keine innere Überzeugung voraus.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Recht betrifft das äussere Verhalten von Menschen.",
+      "Recht ist staatlich erzwingbar.",
+      "Recht setzt eine innere Überzeugung voraus.",
+      "Bei Einhaltung der Rechtsregeln ist die innere Einstellung aus rechtlicher Sicht gleichgültig."
+    ],
+    "korrekt": [
+      "Recht betrifft das äussere Verhalten von Menschen.",
+      "Recht ist staatlich erzwingbar.",
+      "Bei Einhaltung der Rechtsregeln ist die innere Einstellung aus rechtlicher Sicht gleichgültig."
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-m08",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Abgrenzung zwischen Recht und Nichtrecht (Sitte) ist immer klar und eindeutig.",
+    "erklaerung": "Falsch. Die Abgrenzung zwischen Recht und Nichtrecht kann fliessend sein. Beispiel: Eine Verabredung mit einem Nachbarn zu einem Sonntagsspaziergang schafft keine Rechtspflicht. Eine Verabredung, gemeinsam in die Ferien zu fahren und die Kosten zu teilen, kann aber eine rechtlich relevante Vereinbarung begründen (Zwick, Kap. 1).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-m09",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Wie ist die Situation rechtlich einzuordnen?",
+    "erklaerung": "Spielleiter und Strafrichter haben unterschiedliche Aufgaben: Der Schiedsrichter sorgt für den geordneten Spielablauf, der Strafrichter schützt die öffentliche Ordnung. Wer Spielregeln massiv missachtet und gefährlich handelt, kann strafrechtlich zur Rechenschaft gezogen werden – unabhängig von sportlichen Sanktionen (vgl. Zwick, Kap. 1: Abgrenzung Recht und Spielregeln, BGE 109 IV 102ff.).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Ein Fussballer begeht im Spiel ein hartes Foul, das der Schiedsrichter mit einer gelben Karte bestraft. Der gefoulte Spieler erleidet eine Bänderverletzung.",
+    "optionen": [
+      "Da der Schiedsrichter die Situation bereits mit einer gelben Karte geahndet hat, ist sie rechtlich erledigt.",
+      "Sportliche Sanktionen und rechtliche Konsequenzen sind unabhängig voneinander – bei groben Fouls mit Verletzungsfolge kann auch eine strafrechtliche Überprüfung erfolgen.",
+      "Der Spielregelverstoss kann ausschliesslich sportlich sanktioniert werden – eine strafrechtliche Überprüfung ist ausgeschlossen.",
+      "Nur wenn der Spieler absichtlich gefoult hat, kann er strafrechtlich belangt werden."
+    ],
+    "korrekt": "Sportliche Sanktionen und rechtliche Konsequenzen sind unabhängig voneinander – bei groben Fouls mit Verletzungsfolge kann auch eine strafrechtliche Überprüfung erfolgen."
+  },
+  {
+    "id": "recht_einfuehrung-m10",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum reichen Moral und Sitte allein nicht aus, um das Zusammenleben in einer Gesellschaft zu regeln?",
+    "erklaerung": "Moral ist subjektiv (jeder hat eigene Werte) und Sitte ist gesellschaftlich variabel. Ohne verbindliche, staatlich erzwingbare Regeln (Recht) könnten Konflikte nicht verlässlich gelöst werden. Das Recht schafft Berechenbarkeit und Rechtssicherheit für alle Mitglieder der Gesellschaft.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Weil Moral und Sitte veraltet sind und in modernen Gesellschaften keine Rolle mehr spielen.",
+      "Weil Moral und Sitte von Person zu Person unterschiedlich sein können und nicht durchsetzbar sind – ohne verbindliche, erzwingbare Regeln gäbe es keine Rechtssicherheit.",
+      "Weil der Staat kein Interesse an moralischem Verhalten hat.",
+      "Weil Moral und Sitte nur für religiöse Menschen gelten."
+    ],
+    "korrekt": "Weil Moral und Sitte von Person zu Person unterschiedlich sein können und nicht durchsetzbar sind – ohne verbindliche, erzwingbare Regeln gäbe es keine Rechtssicherheit."
+  },
+  {
+    "id": "recht_einfuehrung-m11",
+    "fach": "Recht",
+    "thema": "Moral, Sitte und Recht",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In der Frühzeit der Menschheit war das Recht eng mit Magie und Religion verbunden – die Zehn Gebote sind ein Beispiel für ein göttliches Recht.",
+    "erklaerung": "Richtig. In der Frühzeit waren Recht und Religion eng verknüpft. Die Zehn Gebote sind ein Beispiel für ein Recht in Form von Geboten, das als heilig und von Gott oder den Göttern gewollt galt. Erst mit fortschreitender Zivilisation wurden Recht, Sitte und Religion (Moral) voneinander getrennt (Zwick, Kap. 1).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-o01",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die {0} umfasst alle Vorschriften (Gebote, Verbote, Rechte und Pflichten), die der Staat erlässt und deren Befolgung er erzwingen kann.",
+    "erklaerung": "Die Rechtsordnung ist die Gesamtheit aller staatlichen Vorschriften (Gebote, Verbote, Rechte und Pflichten), deren Einhaltung der Staat erzwingen kann.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Rechtsordnung",
+        "optionen": [
+          "rechtsordnung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-o02",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was bedeutet «Gewaltmonopol» des Staates?",
+    "erklaerung": "Das Gewaltmonopol bedeutet, dass die Durchsetzung des Rechts mit Zwangsmitteln dem Staat vorbehalten ist. Die Bürgerinnen und Bürger verzichten auf Selbstjustiz und wenden sich stattdessen an staatliche Organe (Polizei, Gerichte), um ihre Rechte durchzusetzen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Nur die Polizei darf Verbrecher verhaften.",
+      "Nur der Staat darf Gewalt anwenden – Bürgerinnen und Bürger verzichten auf Selbstjustiz.",
+      "Der Staat allein entscheidet, wer ins Gefängnis kommt.",
+      "Der Staat hat ein Monopol auf den Verkauf von Waffen."
+    ],
+    "korrekt": "Nur der Staat darf Gewalt anwenden – Bürgerinnen und Bürger verzichten auf Selbstjustiz."
+  },
+  {
+    "id": "recht_einfuehrung-o03",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Rechtskraft bedeutet, dass ein Gerichtsentscheid definitiv gilt und nicht mehr abgeändert werden kann.",
+    "erklaerung": "Richtig. Ein Gerichtsentscheid erlangt Rechtskraft, wenn er nicht mehr mit ordentlichen Rechtsmitteln angefochten werden kann. Dies ist der Fall, wenn die Rechtsmittelfrist ungenutzt abgelaufen ist oder die letzte Instanz entschieden hat.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-o04",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche Gerichtsinstanzen gibt es in der Schweiz (in aufsteigender Reihenfolge)?",
+    "erklaerung": "Die Instanzen in aufsteigender Reihenfolge sind: Bezirksgericht (erste Instanz) → Obergericht (kantonale Berufungsinstanz) → Bundesgericht (höchste Instanz). Je nach Kanton und Streitwert gibt es zudem noch ein Schlichtungsverfahren (z.B. Friedensrichter) vor dem Bezirksgericht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Bezirksgericht → Obergericht → Bundesgericht",
+      "Obergericht → Bezirksgericht → Bundesgericht",
+      "Friedensrichter → Bundesgericht → Obergericht",
+      "Bundesgericht → Obergericht → Bezirksgericht"
+    ],
+    "korrekt": "Bezirksgericht → Obergericht → Bundesgericht"
+  },
+  {
+    "id": "recht_einfuehrung-o05",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Auf welche zwei Arten kann Rechtskraft eintreten?",
+    "erklaerung": "Rechtskraft tritt auf zwei Wegen ein: (1) Die Rechtsmittelfrist läuft ab, ohne dass ein Rechtsmittel eingelegt wird. (2) Die letzte Instanz hat entschieden – es gibt keine weitere Anfechtungsmöglichkeit mehr.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Wenn das Urteil veröffentlicht wird oder wenn 30 Tage vergangen sind.",
+      "Wenn die Rechtsmittelfrist ungenutzt abläuft oder wenn die letzte Instanz entschieden hat.",
+      "Wenn das Bezirksgericht entschieden hat oder wenn das Bundesgericht den Fall ablehnt.",
+      "Wenn beide Parteien dem Urteil zustimmen oder wenn der Richter es für rechtskräftig erklärt."
+    ],
+    "korrekt": "Wenn die Rechtsmittelfrist ungenutzt abläuft oder wenn die letzte Instanz entschieden hat."
+  },
+  {
+    "id": "recht_einfuehrung-o06",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was passiert im Zivilrecht, wenn eine Partei ihre Verpflichtung nicht freiwillig erfüllt?",
+    "erklaerung": "Im Zivilrecht wird die Erfüllung in natura (Realerfüllung) erzwungen, sofern dies möglich ist (z.B. ein Mieter, der die Wohnung nicht verlässt, wird nötigenfalls mit Hilfe der Polizei ausgewiesen). Ist Realerfüllung nicht möglich, tritt an ihre Stelle die Pflicht, Schadenersatz zu zahlen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Die andere Partei darf Selbstjustiz üben.",
+      "Der Vertrag wird automatisch aufgelöst.",
+      "Der Staat erzwingt die Erfüllung in natura (Realerfüllung) oder in Form von Schadenersatz.",
+      "Die Partei wird strafrechtlich verfolgt."
+    ],
+    "korrekt": "Der Staat erzwingt die Erfüllung in natura (Realerfüllung) oder in Form von Schadenersatz."
+  },
+  {
+    "id": "recht_einfuehrung-o07",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Aussagen zu den staatlichen Zwangsmitteln sind korrekt? (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt (Realerfüllung oder Schadenersatz im Zivilrecht). B ist korrekt (Freiheitsstrafe gegen die Person, Geldstrafe/Busse gegen das Vermögen). C ist falsch – neben Freiheitsstrafen gibt es auch Geldstrafen und Bussen. D ist korrekt – die Zwangsmittel sind vielfältig.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Im Zivilrecht erfolgt die Erfüllung in natura oder als Schadenersatz.",
+      "Im Strafrecht richtet sich die Zwangsmassnahme gegen die Person oder ihr Vermögen.",
+      "Im Strafrecht kann nur eine Freiheitsstrafe verhängt werden.",
+      "Die staatlichen Zwangsmittel sind vielfältig."
+    ],
+    "korrekt": [
+      "Im Zivilrecht erfolgt die Erfüllung in natura oder als Schadenersatz.",
+      "Im Strafrecht richtet sich die Zwangsmassnahme gegen die Person oder ihr Vermögen.",
+      "Die staatlichen Zwangsmittel sind vielfältig."
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-o08",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Was muss der Steuerpflichtige tun, wenn er mit dem Entscheid nicht einverstanden ist?",
+    "erklaerung": "Um den Entscheid anzufechten, muss der Steuerpflichtige fristgerecht ein ordentliches Rechtsmittel (Einsprache) einlegen. Unterlässt er dies, erwächst der Einschätzungsentscheid in Rechtskraft. Der Instanzenzug verlangt, dass zuerst die tieferen Instanzen durchlaufen werden – ein direkter Gang ans Bundesgericht ist nicht möglich.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Ein Steuerpflichtiger hat in der Steuererklärung Hard- und Software im Wert von Fr. 5'000.– als Berufsauslagen geltend gemacht. Der Steuerkommissär akzeptiert die Abzüge nicht und erhöht das steuerbare Einkommen um diesen Betrag.",
+    "optionen": [
+      "Er muss nichts tun – der Entscheid wird automatisch von einer höheren Instanz überprüft.",
+      "Er kann den Steuerkommissär persönlich um eine Änderung bitten.",
+      "Er muss innerhalb der Frist schriftliche Einsprache beim kantonalen Steueramt erheben.",
+      "Er kann direkt beim Bundesgericht klagen."
+    ],
+    "korrekt": "Er muss innerhalb der Frist schriftliche Einsprache beim kantonalen Steueramt erheben."
+  },
+  {
+    "id": "recht_einfuehrung-o09",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "tf",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Der Grundsatz der Rechtskraft gilt ausnahmslos – ein rechtskräftiger Entscheid kann unter keinen Umständen aufgehoben werden.",
+    "erklaerung": "Falsch. Der Grundsatz der Rechtskraft gilt nicht ausnahmslos. Unter bestimmten Voraussetzungen kann ein rechtskräftiger Gerichts- oder Verwaltungsentscheid in Revision gezogen werden, zum Beispiel wenn erhebliche Tatsachen oder entscheidende Beweismittel entdeckt werden, die im ordentlichen Verfahren bei der zumutbaren Sorgfalt noch nicht bekannt sein konnten.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-o10",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Warum ist das Gewaltmonopol des Staates eine zentrale Voraussetzung für den Rechtsfrieden?",
+    "erklaerung": "Das Gewaltmonopol ist zentral für den Rechtsfrieden, weil es die Eliminierung der Selbsthilfe bedeutet. Rechtsstreitigkeiten werden durch einen Gerichts- oder Verwaltungsentscheid ein für allemal entschieden (Rechtskraft). Dies schafft Rechtssicherheit und verhindert Eskalation durch Selbstjustiz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Weil der Staat dadurch willkürlich handeln kann.",
+      "Weil es den Bürgern verbietet, sich gegen den Staat zu wehren.",
+      "Weil es verhindert, dass Bürger selbst Recht sprechen, und sicherstellt, dass Konflikte nach einheitlichen Regeln durch unabhängige Gerichte gelöst werden.",
+      "Weil ohne Gewaltmonopol keine Gesetze existieren würden."
+    ],
+    "korrekt": "Weil es verhindert, dass Bürger selbst Recht sprechen, und sicherstellt, dass Konflikte nach einheitlichen Regeln durch unabhängige Gerichte gelöst werden."
+  },
+  {
+    "id": "recht_einfuehrung-s01",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welchen drei Grundsätzen verpflichtet sich ein Rechtsstaat?",
+    "erklaerung": "Ein Rechtsstaat (z.B. die Schweiz) verpflichtet sich zur Achtung von drei zentralen Grundsätzen: (1) Legalitätsprinzip (Art. 5 Abs. 1 BV), (2) Gewaltenteilung (Legislative, Exekutive, Judikative) und (3) Schutz der Grundrechte (Art. 7–36 BV).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einfuehrung/einfuehrung_rechtsstaat_01.svg",
+      "alt": "Diagramm: Vom Gewaltmonopol zum Rechtsstaat"
+    },
+    "optionen": [
+      "Verhältnismässigkeit, Rechtsgleichheit und Legalitätsprinzip.",
+      "Gewaltmonopol, Rechtskraft und Subsidiarität.",
+      "Legalitätsprinzip, Gewaltenteilung und Schutz der Grundrechte.",
+      "Demokratie, Föderalismus und Neutralität."
+    ],
+    "korrekt": "Legalitätsprinzip, Gewaltenteilung und Schutz der Grundrechte."
+  },
+  {
+    "id": "recht_einfuehrung-s02",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das {0} verpflichtet den Staat, sich streng an die Ordnungsregeln zu halten und nicht willkürlich zu handeln.",
+    "erklaerung": "Das Legalitätsprinzip (Art. 5 Abs. 1 BV) bedeutet, dass der Staat nur handeln darf, wenn eine gesetzliche Grundlage besteht. Es schützt die Bürgerinnen und Bürger vor willkürlichem staatlichem Handeln.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Legalitätsprinzip",
+        "optionen": [
+          "Legalitaetsprinzip",
+          "legalitätsprinzip"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-s03",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Welche drei Gewalten unterscheidet die Gewaltenteilung?",
+    "erklaerung": "Die Gewaltenteilung teilt die Macht des Staates in drei Gewalten: Legislative (gesetzgebend – auf Bundesebene das Parlament), Exekutive (ausführend – auf Bundesebene der Bundesrat) und Judikative (richterlich – höchstes Gericht ist das Bundesgericht).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Polizei, Gericht, Gefängnis.",
+      "Legislative (gesetzgebend), Exekutive (ausführend), Judikative (richterlich).",
+      "Bundesrat, Parlament, Volk.",
+      "Gemeinde, Kanton, Bund."
+    ],
+    "korrekt": "Legislative (gesetzgebend), Exekutive (ausführend), Judikative (richterlich)."
+  },
+  {
+    "id": "recht_einfuehrung-s04",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Die Grundrechte sind in der Bundesverfassung in den Artikeln 7–36 verankert.",
+    "erklaerung": "Richtig. Die Grundrechte (z.B. Recht auf Leben, Meinungsfreiheit, Eigentumsgarantie) sind in Art. 7–36 BV festgeschrieben. Sie begrenzen die Macht des Staates und schützen die Freiheit des Einzelnen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-s05",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Welche Organe gehören auf Bundesebene zu welcher Gewalt? Wählen Sie alle korrekten Zuordnungen. (Mehrere Antworten möglich.)",
+    "erklaerung": "A ist korrekt: Das Parlament (bestehend aus National- und Ständerat) ist die gesetzgebende Gewalt (Legislative). B ist korrekt: Der Bundesrat ist die ausführende Gewalt (Exekutive). C ist falsch: Das Bundesgericht ist nicht die Legislative. D ist korrekt: Das Bundesgericht ist die richterliche Gewalt (Judikative).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Das Parlament (National- und Ständerat) ist die Legislative.",
+      "Der Bundesrat ist die Exekutive.",
+      "Das Bundesgericht ist die Legislative.",
+      "Das Bundesgericht ist die Judikative."
+    ],
+    "korrekt": [
+      "Das Parlament (National- und Ständerat) ist die Legislative.",
+      "Der Bundesrat ist die Exekutive.",
+      "Das Bundesgericht ist die Judikative."
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-s06",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Warum ist die Gewaltenteilung ein zentrales Merkmal des Rechtsstaats?",
+    "erklaerung": "Die Gewaltenteilung verteilt die Staatsmacht auf drei voneinander unabhängige Gewalten. Dadurch wird verhindert, dass eine einzelne Behörde oder Person zu viel Macht hat. Die Gewalten kontrollieren sich gegenseitig (checks and balances).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Sie macht den Staat effizienter, weil jede Behörde nur eine Aufgabe hat.",
+      "Sie ermöglicht es den Bürgern, direkt Gesetze zu erlassen.",
+      "Sie garantiert, dass alle Gesetze fair sind.",
+      "Sie verhindert die Konzentration der Macht in einer Hand und ermöglicht gegenseitige Kontrolle."
+    ],
+    "korrekt": "Sie verhindert die Konzentration der Macht in einer Hand und ermöglicht gegenseitige Kontrolle."
+  },
+  {
+    "id": "recht_einfuehrung-s07",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K4",
+    "frage": "Was unterscheidet einen Rechtsstaat von einem autoritären Staat?",
+    "erklaerung": "Auch autoritäre Staaten (z.B. China, Russland) haben Gesetze, Wahlen und Gerichte. Der Unterschied liegt darin, dass in autoritären Staaten die Ordnungsregeln oft willkürlich gestaltet werden, die Macht zentralisiert ist und die Grundrechte nicht geschützt sind. Ein Rechtsstaat verpflichtet sich hingegen auf Legalitätsprinzip, Gewaltenteilung und Grundrechteschutz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Im Rechtsstaat gibt es Wahlen, im autoritären Staat nicht.",
+      "Autoritäre Staaten haben keine Gerichte.",
+      "Im Rechtsstaat bindet das Legalitätsprinzip den Staat an die Gesetze, die Gewaltenteilung verhindert Machtkonzentration und die Grundrechte schützen die Bürger – in autoritären Staaten fehlen diese Garantien.",
+      "Im Rechtsstaat gibt es Gesetze, im autoritären Staat nicht."
+    ],
+    "korrekt": "Im Rechtsstaat bindet das Legalitätsprinzip den Staat an die Gesetze, die Gewaltenteilung verhindert Machtkonzentration und die Grundrechte schützen die Bürger – in autoritären Staaten fehlen diese Garantien."
+  },
+  {
+    "id": "recht_einfuehrung-s08",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Der Schutz der Grundrechte bedeutet, dass die Grundrechte unter keinen Umständen eingeschränkt werden dürfen.",
+    "erklaerung": "Falsch. Grundrechte können unter bestimmten Voraussetzungen eingeschränkt werden (Art. 36 BV). Dafür braucht es eine gesetzliche Grundlage, ein öffentliches Interesse und die Einschränkung muss verhältnismässig sein. Der Kerngehalt der Grundrechte ist jedoch unantastbar.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-s09",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K5",
+    "frage": "Wie beurteilen Sie diese Situation aus rechtsstaatlicher Perspektive?",
+    "erklaerung": "Art. 36 BV erlaubt Grundrechtseinschränkungen unter drei kumulativen Voraussetzungen: (1) gesetzliche Grundlage, (2) öffentliches Interesse (hier: Schutz der öffentlichen Gesundheit), (3) Verhältnismässigkeit. Auch Notverordnungen des Bundesrates bedürfen einer gesetzlichen Grundlage (z.B. Epidemiengesetz). Die Massnahme ist rechtsstaatlich vertretbar, sofern alle Voraussetzungen erfüllt sind.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Während einer Pandemie erlässt der Bundesrat per Notverordnung Massnahmen, die die Versammlungsfreiheit (Art. 22 BV) einschränken.",
+    "optionen": [
+      "Nur das Parlament darf Grundrechte einschränken.",
+      "In einer Notlage darf der Bundesrat ohne gesetzliche Grundlage handeln.",
+      "Die Einschränkung ist grundsätzlich zulässig, wenn sie auf einer gesetzlichen Grundlage beruht, einem öffentlichen Interesse dient und verhältnismässig ist.",
+      "Grundrechte dürfen unter keinen Umständen eingeschränkt werden – die Massnahme ist verfassungswidrig."
+    ],
+    "korrekt": "Die Einschränkung ist grundsätzlich zulässig, wenn sie auf einer gesetzlichen Grundlage beruht, einem öffentlichen Interesse dient und verhältnismässig ist."
+  },
+  {
+    "id": "recht_einfuehrung-s10",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "In welchem Zusammenhang stehen das Legalitätsprinzip (Art. 5 Abs. 1 BV) und die Grundrechte?",
+    "erklaerung": "Das Legalitätsprinzip und die Grundrechte sind zwei sich ergänzende Begrenzungen der Staatsmacht. Das Legalitätsprinzip verlangt eine formelle Grundlage (Gesetze) für jedes staatliche Handeln. Die Grundrechte setzen darüber hinaus inhaltliche Grenzen – auch wenn ein Gesetz existiert, darf es die Grundrechte nur unter den Voraussetzungen von Art. 36 BV einschränken.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Grundrechte gelten nur, wenn das Legalitätsprinzip nicht verletzt wird.",
+      "Sie stehen in keinem Zusammenhang – das Legalitätsprinzip betrifft nur den Staat, Grundrechte nur die Bürger.",
+      "Beide begrenzen die Staatsmacht: Das Legalitätsprinzip verlangt eine gesetzliche Grundlage für staatliches Handeln, die Grundrechte setzen dem staatlichen Handeln inhaltliche Grenzen.",
+      "Das Legalitätsprinzip ist ein Grundrecht."
+    ],
+    "korrekt": "Beide begrenzen die Staatsmacht: Das Legalitätsprinzip verlangt eine gesetzliche Grundlage für staatliches Handeln, die Grundrechte setzen dem staatlichen Handeln inhaltliche Grenzen."
+  },
+  {
+    "id": "recht_einfuehrung-s11",
+    "fach": "Recht",
+    "thema": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Auf Bundesebene ist die gesetzgebende Gewalt das {0}, die ausführende Gewalt der {1} und die richterliche Gewalt das {2}.",
+    "erklaerung": "Legislative = Parlament (Bundesversammlung, bestehend aus National- und Ständerat). Exekutive = Bundesrat (siebenköpfiges Gremium). Judikative = Bundesgericht (höchstes Gericht der Schweiz, Sitz in Lausanne).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Parlament",
+        "optionen": [
+          "parlament",
+          "Bundesversammlung"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Bundesrat",
+        "optionen": [
+          "bundesrat"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Bundesgericht",
+        "optionen": [
+          "bundesgericht"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-p01",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was regelt das Privatrecht?",
+    "erklaerung": "Das Privatrecht regelt koordinative Rechtsbeziehungen zwischen gleichberechtigten Rechtssubjekten (natürliche und juristische Personen). Die Parteien begegnen sich auf Augenhöhe. Im Gegensatz dazu regelt das öffentliche Recht subordinative Beziehungen (Über-/Unterordnung) zwischen Staat und Bürger.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Koordinative Rechtsbeziehungen zwischen gleichberechtigten Rechtssubjekten.",
+      "Ausschliesslich Beziehungen zwischen natürlichen Personen.",
+      "Nur Beziehungen zwischen juristischen Personen.",
+      "Subordinative Rechtsbeziehungen zwischen Staat und Bürger."
+    ],
+    "korrekt": "Koordinative Rechtsbeziehungen zwischen gleichberechtigten Rechtssubjekten."
+  },
+  {
+    "id": "recht_einfuehrung-p02",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Das öffentliche Recht regelt {0} Rechtsbeziehungen zwischen nicht gleichgestellten Rechtssubjekten.",
+    "erklaerung": "Das öffentliche Recht regelt subordinative (unterordnende) Rechtsbeziehungen: Der Staat steht dem Bürger in einer Über-/Unterordnung gegenüber. Die Rechtssubjekte begegnen sich nicht auf Augenhöhe.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "subordinative",
+        "optionen": [
+          "Subordinative"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-p03",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welches der folgenden Rechtsgebiete gehört zum Privatrecht?",
+    "erklaerung": "Das Obligationenrecht (OR) gehört zum Privatrecht. Es regelt Beziehungen zwischen gleichberechtigten Rechtssubjekten (z.B. Kauf-, Miet- oder Arbeitsverträge). Strafrecht, Verwaltungsrecht und Prozessrecht gehören zum öffentlichen Recht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Obligationenrecht",
+      "Prozessrecht",
+      "Strafrecht",
+      "Verwaltungsrecht"
+    ],
+    "korrekt": "Obligationenrecht"
+  },
+  {
+    "id": "recht_einfuehrung-p04",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "multi",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Welche der folgenden Rechtsgebiete gehören zum Privatrecht (ZGB und OR)? (Mehrere Antworten möglich.)",
+    "erklaerung": "Das ZGB besteht aus: 1. Personenrecht, 2. Familienrecht, 3. Erbrecht, 4. Sachenrecht, und das OR (als 5. Teil des ZGB) enthält das Obligationenrecht. Alle diese gehören zum Privatrecht. Das Strafrecht (B) gehört zum öffentlichen Recht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Personenrecht",
+      "Strafrecht",
+      "Familienrecht",
+      "Sachenrecht"
+    ],
+    "korrekt": [
+      "Personenrecht",
+      "Familienrecht",
+      "Sachenrecht"
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-p05",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet «dispositives Recht»?",
+    "erklaerung": "Dispositives Recht (ergänzendes Recht) gilt nur dann, wenn die Parteien keine abweichende Vereinbarung getroffen haben. Viele Normen im Privatrecht sind dispositiver Natur – die Parteien können sie bei gegenseitigem Einverständnis vertraglich abändern.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Recht, das vom Staat jederzeit geändert werden kann.",
+      "Recht, das von den Parteien zwingend eingehalten werden muss.",
+      "Recht, das nur für bestimmte Berufsgruppen gilt.",
+      "Ergänzendes Recht, das nur gilt, wenn die Parteien keine andere Abmachung getroffen haben."
+    ],
+    "korrekt": "Ergänzendes Recht, das nur gilt, wenn die Parteien keine andere Abmachung getroffen haben."
+  },
+  {
+    "id": "recht_einfuehrung-p06",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Was bedeutet «relativ zwingendes Recht»?",
+    "erklaerung": "Relativ zwingendes Recht sind Bestimmungen, die nur zugunsten einer (meist schwächeren) Partei abgeändert werden dürfen. Beispiel: Im Arbeitsrecht darf vertraglich ein höherer Mindestlohn, aber kein niedrigerer vereinbart werden.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Bestimmungen, die nur für Verwandte gelten.",
+      "Bestimmungen, die relativ selten angewandt werden.",
+      "Bestimmungen, die teilweise zwingend und teilweise dispositiv sind.",
+      "Bestimmungen, die nur zugunsten einer (meist schwächeren) Partei abgeändert werden dürfen."
+    ],
+    "korrekt": "Bestimmungen, die nur zugunsten einer (meist schwächeren) Partei abgeändert werden dürfen."
+  },
+  {
+    "id": "recht_einfuehrung-p07",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Handelt es sich bei diesem Artikel um öffentliches Recht oder Privatrecht?",
+    "erklaerung": "Art. 1 Abs. 1 OR regelt den Vertragsabschluss zwischen gleichberechtigten Parteien. Es handelt sich um Privatrecht (Obligationenrecht als Teil des ZGB). Das Kriterium ist nicht, ob eine staatliche Vorschrift vorliegt (das trifft auf alles Recht zu), sondern ob die Beziehung koordinativ (Privatrecht) oder subordinativ (öffentliches Recht) ist.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "«Zum Abschluss eines Vertrages ist die übereinstimmende gegenseitige Willensäusserung der Parteien erforderlich.» (Art. 1 Abs. 1 OR)",
+    "optionen": [
+      "Beides – weil der Artikel sowohl im öffentlichen als auch im privaten Recht gilt.",
+      "Öffentliches Recht – weil es eine staatliche Vorschrift ist.",
+      "Öffentliches Recht – weil Verträge beim Staat registriert werden müssen.",
+      "Privatrecht – weil er die Beziehung zwischen gleichberechtigten Vertragsparteien regelt."
+    ],
+    "korrekt": "Privatrecht – weil er die Beziehung zwischen gleichberechtigten Vertragsparteien regelt."
+  },
+  {
+    "id": "recht_einfuehrung-p08",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die Rechtsnormen des öffentlichen Rechts sind immer zwingender Natur.",
+    "erklaerung": "Richtig. Im öffentlichen Recht sind die Normen zwingend – sie können nicht von den Parteien abgeändert werden. Wenn z.B. ein Straftäter erwischt wird, muss er die Konsequenzen tragen, ob er damit einverstanden ist oder nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-p09",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Warum gehört dieser Artikel zum öffentlichen Recht?",
+    "erklaerung": "Der entscheidende Grund ist die subordinative Rechtsbeziehung: Der Staat tritt dem Beschuldigten in einer Über-/Unterordnung gegenüber. Der Beschuldigte kann die Rechtsfolge (Strafe) nicht vertraglich abändern – die Norm ist zwingend. Dass eine Strafe vorgesehen ist (B) oder der Artikel im StGB steht (C), sind Folgen dieser Einordnung, nicht der Grund.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "«Wer fahrlässig den Tod eines Menschen verursacht, wird mit Freiheitsstrafe bis zu drei Jahren oder Geldstrafe bestraft.» (Art. 117 StGB)",
+    "optionen": [
+      "Weil er eine subordinative Rechtsbeziehung regelt: Der Staat (Staatsanwaltschaft) tritt dem Täter nicht auf Augenhöhe gegenüber, und die Norm ist zwingend.",
+      "Weil er im Strafgesetzbuch steht.",
+      "Weil er eine Strafe vorsieht.",
+      "Weil er für alle Menschen gilt."
+    ],
+    "korrekt": "Weil er eine subordinative Rechtsbeziehung regelt: Der Staat (Staatsanwaltschaft) tritt dem Täter nicht auf Augenhöhe gegenüber, und die Norm ist zwingend."
+  },
+  {
+    "id": "recht_einfuehrung-p10",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "multi",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Bereiche korrekt zu. Welche gehören zum öffentlichen Recht? (Mehrere Antworten möglich.)",
+    "erklaerung": "A (Völkerrecht) gehört zum öffentlichen Recht – es regelt Beziehungen zwischen Staaten. C (SchKG) gehört zum öffentlichen Recht – die zwangsweise Eintreibung von Geldforderungen erfolgt durch staatliche Behörden (Betreibungsamt). B (Kaufvertrag) ist Privatrecht (OR). D (Eigentum/Besitz) ist Privatrecht (Sachenrecht, ZGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Bilaterale Verträge zwischen Staaten (Völkerrecht)",
+      "Abschluss eines Kaufvertrages zwischen zwei Privatpersonen",
+      "Schuldbetreibungs- und Konkursrecht",
+      "Bestimmungen zu Eigentum und Besitz"
+    ],
+    "korrekt": [
+      "Bilaterale Verträge zwischen Staaten (Völkerrecht)",
+      "Schuldbetreibungs- und Konkursrecht"
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-p11",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Dürfte der Arbeitgeber vertraglich eine kürzere Kündigungsfrist (z.B. 2 Wochen) vereinbaren?",
+    "erklaerung": "Die gesetzlichen Kündigungsfristen im Arbeitsrecht sind relativ zwingend zugunsten des Arbeitnehmers. Das bedeutet: Eine längere Frist darf vereinbart werden (zum Vorteil des Arbeitnehmers), eine kürzere jedoch nicht. Dies ist ein typisches Beispiel für relativ zwingendes Recht – es schützt die schwächere Partei (Arbeitnehmer).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Ein Arbeitgeber bietet einer Arbeitnehmerin im Vertrag eine Kündigungsfrist von einem Monat an. Das Gesetz sieht im ersten Dienstjahr ebenfalls eine Kündigungsfrist von einem Monat vor (Art. 335c Abs. 1 OR).",
+    "optionen": [
+      "Nein, weil die Kündigungsfrist absolut zwingend ist.",
+      "Nein, weil die gesetzliche Kündigungsfrist relativ zwingend ist – sie darf nur zugunsten der Arbeitnehmerin (also durch eine längere Frist) abgeändert werden.",
+      "Ja, wenn beide Parteien einverstanden sind.",
+      "Ja, weil das Arbeitsrecht dispositiv ist."
+    ],
+    "korrekt": "Nein, weil die gesetzliche Kündigungsfrist relativ zwingend ist – sie darf nur zugunsten der Arbeitnehmerin (also durch eine längere Frist) abgeändert werden."
+  },
+  {
+    "id": "recht_einfuehrung-p12",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "tf",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Man kann freiwillig auf ein Grundrecht verzichten.",
+    "erklaerung": "Falsch. Grundrechte gehören zum öffentlichen Recht und sind zwingender Natur. Man kann nicht freiwillig auf ein Grundrecht verzichten. Sie gelten für alle Schweizerinnen und Schweizer unabhängig davon, ob sie dies wünschen oder nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-r01",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "fill",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "{0} sind die Voraussetzungen (\"Wenn ...\") für eine bestimmte rechtliche Folge. {1} sind die rechtlichen Konsequenzen (\"... dann ...\"), wenn alle Tatbestandsmerkmale erfüllt sind.",
+    "erklaerung": "Ein Gesetzesartikel besteht typischerweise aus Tatbestandsmerkmalen (Voraussetzungen, «Wenn ...») und Rechtsfolgen (Konsequenzen, «... dann ...»). Nur wenn alle Tatbestandsmerkmale erfüllt sind, tritt die Rechtsfolge ein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Tatbestandsmerkmale",
+        "optionen": [
+          "TBM",
+          "tatbestandsmerkmale"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Rechtsfolgen",
+        "optionen": [
+          "rechtsfolgen",
+          "Rechtsfolge"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-r02",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K1",
+    "frage": "Was versteht man unter Subsumtion?",
+    "erklaerung": "Subsumtion bedeutet, abstrakte Gesetzesnormen auf einen konkreten Sachverhalt anzuwenden. Dabei wird geprüft, ob die Tatbestandsmerkmale der Gesetzesnorm im konkreten Fall erfüllt sind. Falls ja, tritt die Rechtsfolge ein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Das Anfechten eines Urteils bei einer höheren Instanz.",
+      "Das Zusammenfassen eines Gerichtsentscheids.",
+      "Das Erstellen eines neuen Gesetzes durch das Parlament.",
+      "Das Anwenden von abstrakten Gesetzesnormen auf konkrete Sachverhalte."
+    ],
+    "korrekt": "Das Anwenden von abstrakten Gesetzesnormen auf konkrete Sachverhalte."
+  },
+  {
+    "id": "recht_einfuehrung-r03",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "In welcher Reihenfolge wird bei der Rechtsanwendung vorgegangen?",
+    "erklaerung": "Die Rechtsanwendung folgt vier Schritten: (1) Sachverhalt feststellen: Was ist passiert? Wer ist beteiligt? (2) Rechtsregel finden: Welche gesetzliche Bestimmung ist einschlägig? (3) Subsumtion: Stimmt der Sachverhalt mit den Tatbestandsmerkmalen überein? (4) Falls ja: Rechtsfolge bestimmen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einfuehrung/einfuehrung_rechtsanwendung_01.svg",
+      "alt": "Flussdiagramm: Vier Schritte der Rechtsanwendung"
+    },
+    "optionen": [
+      "Gesetz lesen → Urteil fällen → Sachverhalt prüfen.",
+      "Sachverhalt feststellen → Rechtsregel finden → Subsumtion → Rechtsfolge.",
+      "Subsumtion → Sachverhalt feststellen → Rechtsfolge → Gesetz suchen.",
+      "Rechtsfolge bestimmen → Gesetz suchen → Sachverhalt anpassen."
+    ],
+    "korrekt": "Sachverhalt feststellen → Rechtsregel finden → Subsumtion → Rechtsfolge."
+  },
+  {
+    "id": "recht_einfuehrung-r04",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "tf",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Bei der Rechtsanwendung muss zuerst die Rechtsfolge bestimmt werden, bevor der Sachverhalt geprüft wird.",
+    "erklaerung": "Falsch. Der Sachverhalt wird zuerst festgestellt (Was ist passiert? Wer ist beteiligt?), dann wird die passende Rechtsnorm gesucht, dann folgt die Subsumtion (Prüfung der Tatbestandsmerkmale), und erst dann wird die Rechtsfolge bestimmt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "aussagen": []
+  },
+  {
+    "id": "recht_einfuehrung-r05",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Bestimmen Sie die Tatbestandsmerkmale und die Rechtsfolge dieses Artikels.",
+    "erklaerung": "Art. 12 ZGB: «Wenn» jemand handlungsfähig ist (= TBM), «dann» hat diese Person die Fähigkeit, durch ihre Handlungen Rechte und Pflichten zu begründen (= RF). D ist unvollständig – Handlungsfähigkeit setzt nicht nur Volljährigkeit, sondern auch Urteilsfähigkeit voraus (Art. 13 ZGB).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Art. 12 ZGB: «Wer handlungsfähig ist, hat die Fähigkeit, durch seine Handlungen Rechte und Pflichten zu begründen.»",
+    "optionen": [
+      "TBM: Handlungsfähigkeit. RF: Fähigkeit, durch Handlungen Rechte und Pflichten zu begründen.",
+      "TBM: 18 Jahre alt sein. RF: Verträge abschliessen können.",
+      "TBM: Schweizer Bürger sein. RF: Handlungsfähigkeit erlangen.",
+      "TBM: Rechte und Pflichten haben. RF: Handlungsfähig sein."
+    ],
+    "korrekt": "TBM: Handlungsfähigkeit. RF: Fähigkeit, durch Handlungen Rechte und Pflichten zu begründen."
+  },
+  {
+    "id": "recht_einfuehrung-r06",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welches sind die Tatbestandsmerkmale (TBM) dieses Artikels?",
+    "erklaerung": "Art. 13 ZGB: «Wenn» eine Person volljährig (TBM 1) UND urteilsfähig (TBM 2) ist, «dann» ist sie handlungsfähig (RF). Beide Tatbestandsmerkmale müssen kumulativ erfüllt sein. B ist falsch – Handlungsfähigkeit ist die Rechtsfolge, nicht das TBM.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Art. 13 ZGB: «Handlungsfähig ist, wer volljährig und urteilsfähig ist.»",
+    "optionen": [
+      "TBM: handlungsfähig.",
+      "TBM 1: volljährig. TBM 2: urteilsfähig.",
+      "TBM: Schweizer Bürger.",
+      "TBM 1: 18 Jahre alt. TBM 2: psychisch gesund."
+    ],
+    "korrekt": "TBM 1: volljährig. TBM 2: urteilsfähig."
+  },
+  {
+    "id": "recht_einfuehrung-r07",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Bestimmen Sie die Tatbestandsmerkmale und die Rechtsfolge dieses Artikels.",
+    "erklaerung": "Art. 2 Abs. 2 ZGB: «Wenn» jemand ein Recht offenbar missbraucht (= TBM), «dann» findet dieses Verhalten keinen Rechtsschutz (= RF). Das bedeutet: Das Gericht schützt eine rechtsmissbräuchliche Berufung auf ein Recht nicht.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Art. 2 Abs. 2 ZGB: «Der offenbare Missbrauch eines Rechtes findet keinen Rechtsschutz.»",
+    "optionen": [
+      "TBM: offenbarer Missbrauch eines Rechtes. RF: kein Rechtsschutz.",
+      "TBM: kein Rechtsschutz. RF: Missbrauch eines Rechtes.",
+      "TBM: ein Recht haben. RF: es offenbar missbrauchen.",
+      "TBM: ein Recht ausüben. RF: Rechtsschutz erhalten."
+    ],
+    "korrekt": "TBM: offenbarer Missbrauch eines Rechtes. RF: kein Rechtsschutz."
+  },
+  {
+    "id": "recht_einfuehrung-r08",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "multi",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Welche Fragen gehören zum ersten Schritt der Rechtsanwendung (Sachverhalt feststellen)? (Mehrere Antworten möglich.)",
+    "erklaerung": "Beim Sachverhalt feststellen geht es um drei Fragen: Was ist passiert? Wer sind die Parteien? Welche Ansprüche machen sie geltend? Die Frage nach dem anwendbaren Gesetzesartikel (C) gehört zum zweiten Schritt (Rechtsregel finden).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "optionen": [
+      "Was ist passiert?",
+      "Wer sind die Parteien?",
+      "Welcher Gesetzesartikel ist anwendbar?",
+      "Welche Ansprüche machen die Parteien geltend?"
+    ],
+    "korrekt": [
+      "Was ist passiert?",
+      "Wer sind die Parteien?",
+      "Welche Ansprüche machen die Parteien geltend?"
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-r09",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Welche Aussage zur rechtlichen Einordnung ist korrekt?",
+    "erklaerung": "Obersatz: Es ist zu prüfen, ob ein strafbarer Tatbestand vorliegt. Variante 1 (Herzinfarkt): Es liegt ein natürlicher Tod ohne Fremdeinfluss vor – kein Tatbestand erfüllt. Variante 2 (Vergiftung): TBM von Art. 112 StGB (Mord): (1) ein Toter, (2) Tod wurde vorsätzlich herbeigeführt (Vergiftung), (3) besonders verwerflicher Zweck (Eliminationsmord). Subsumtion: Alle TBM sind erfüllt. RF: Lebenslängliche Freiheitsstrafe oder Freiheitsstrafe nicht unter zehn Jahren.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Milosevic wird tot in seiner Gefängniszelle aufgefunden. Variante 1: Herzinfarkt ohne Fremdeinfluss. Variante 2: Vergiftung durch eine Drittperson.",
+    "optionen": [
+      "In Variante 1 liegt ein natürlicher Todesfall vor – dies ist rechtlich nicht relevant. In Variante 2 käme Art. 112 StGB (Mord) als qualifizierte Tötung in Betracht.",
+      "Eine strafrechtliche Einordnung ist erst nach dem Gerichtsurteil möglich.",
+      "Beide Varianten sind strafrechtlich relevant, da ein Mensch gestorben ist.",
+      "In beiden Varianten ist Art. 111 StGB (vorsätzliche Tötung) anwendbar."
+    ],
+    "korrekt": "In Variante 1 liegt ein natürlicher Todesfall vor – dies ist rechtlich nicht relevant. In Variante 2 käme Art. 112 StGB (Mord) als qualifizierte Tötung in Betracht."
+  },
+  {
+    "id": "recht_einfuehrung-r10",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Bestimmen Sie die Tatbestandsmerkmale und die Rechtsfolge.",
+    "erklaerung": "Art. 54 ZGB: «Wenn» es sich um eine juristische Person handelt (TBM 1) UND die nach Gesetz und Statuten unentbehrlichen Organe bestellt sind (TBM 2), «dann» ist die juristische Person handlungsfähig (RF). Beide TBM müssen kumulativ erfüllt sein.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Art. 54 ZGB: «Die juristischen Personen sind handlungsfähig, sobald die nach Gesetz und Statuten hiefür unentbehrlichen Organe bestellt sind.»",
+    "optionen": [
+      "TBM: Handlungsfähigkeit. RF: Organe bestellen.",
+      "TBM 1: juristische Person. TBM 2: unentbehrliche Organe nach Gesetz und Statuten bestellt. RF: Handlungsfähigkeit.",
+      "TBM: juristische Person sein. RF: Organe bestellen müssen.",
+      "TBM: Statuten haben. RF: juristische Person werden."
+    ],
+    "korrekt": "TBM 1: juristische Person. TBM 2: unentbehrliche Organe nach Gesetz und Statuten bestellt. RF: Handlungsfähigkeit."
+  },
+  {
+    "id": "recht_einfuehrung-r11",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "mc",
+    "schwierigkeit": 3,
+    "taxonomie": "K4",
+    "frage": "Was regelt dieser Artikel und warum ist er für die Rechtsanwendung wichtig?",
+    "erklaerung": "Art. 8 ZGB enthält die grundlegende Beweislastregel des Privatrechts: TBM: Jemand leitet aus einer behaupteten Tatsache Rechte ab, und das Gesetz bestimmt nichts anderes. RF: Diese Person muss die Tatsache beweisen. Dies ist für die Rechtsanwendung zentral, weil der Sachverhalt oft strittig ist und klar sein muss, wer die Beweislast trägt.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "kontext": "Art. 8 ZGB: «Wo das Gesetz es nicht anders bestimmt, hat derjenige das Vorhandensein einer behaupteten Tatsache zu beweisen, der aus ihr Rechte ableitet.»",
+    "optionen": [
+      "Er regelt, dass der Beklagte immer beweisen muss, dass er unschuldig ist.",
+      "Er regelt die Beweislastverteilung: Wer Rechte geltend macht, muss die zugrunde liegenden Tatsachen beweisen. Dies ist zentral, weil bei unklarem Sachverhalt entschieden werden muss, wer die Folgen der Beweislosigkeit trägt.",
+      "Er regelt, dass nur schriftliche Beweise vor Gericht zulässig sind.",
+      "Er regelt, dass das Gericht immer alle Beweise selbst beschaffen muss."
+    ],
+    "korrekt": "Er regelt die Beweislastverteilung: Wer Rechte geltend macht, muss die zugrunde liegenden Tatsachen beweisen. Dies ist zentral, weil bei unklarem Sachverhalt entschieden werden muss, wer die Folgen der Beweislosigkeit trägt."
+  },
+  {
+    "id": "recht_einfuehrung-r12",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "fill",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Die vier Schritte der Rechtsanwendung sind: 1. {0} feststellen, 2. {1} finden, 3. {2}, 4. {3} bestimmen.",
+    "erklaerung": "Die Rechtsanwendung folgt einem festen Schema: (1) Sachverhalt feststellen (Was ist passiert?), (2) Rechtsregel/Rechtsnorm finden (Welcher Artikel ist einschlägig?), (3) Subsumtion (Stimmen die TBM mit dem Sachverhalt überein?), (4) Rechtsfolge bestimmen (Was ist die rechtliche Konsequenz?).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "luecken": [
+      {
+        "id": "0",
+        "korrekt": "Sachverhalt",
+        "optionen": [
+          "sachverhalt"
+        ]
+      },
+      {
+        "id": "1",
+        "korrekt": "Rechtsregel",
+        "optionen": [
+          "Rechtsnorm",
+          "Gesetzesartikel",
+          "rechtsregel"
+        ]
+      },
+      {
+        "id": "2",
+        "korrekt": "Subsumtion",
+        "optionen": [
+          "subsumtion",
+          "Subsumption"
+        ]
+      },
+      {
+        "id": "3",
+        "korrekt": "Rechtsfolge",
+        "optionen": [
+          "rechtsfolge"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-neu_sort_01",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden Rechtserlasse nach ihrer Rangordnung in der schweizerischen Normenhierarchie – von der höchsten zur tiefsten Stufe.",
+    "erklaerung": "Der Stufenbau der Rechtsordnung folgt dem Legalitätsprinzip: Die BV steht zuoberst und bildet die Grundlage für alles weitere Recht. Gesetze werden vom Parlament erlassen und konkretisieren die Verfassung. Verordnungen werden vom Bundesrat (Exekutive) erlassen und regeln die Details. Weisungen sind behördeninterne Anweisungen ohne direkte Bindungswirkung für Bürger.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-neu_sort_02",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "sortierung",
+    "schwierigkeit": 2,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die vier Schritte der Rechtsanwendung (Subsumtionstechnik) in die korrekte Reihenfolge.",
+    "erklaerung": "Die Rechtsanwendung folgt immer diesem Schema: Erst den Sachverhalt klären (Was genau ist geschehen?), dann die passende Rechtsnorm suchen, den Sachverhalt unter die Norm subsumieren (Tatbestandsmerkmale einzeln prüfen) und schliesslich die Rechtsfolge bestimmen. Dieses Schema wird auch als «juristischer Syllogismus» bezeichnet.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-neu_sort_03",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "sortierung",
+    "schwierigkeit": 3,
+    "taxonomie": "K3",
+    "frage": "Ordnen Sie die folgenden historischen Meilensteine der Schweizer Rechtsordnung in die chronologische Reihenfolge.",
+    "erklaerung": "Die Schweizer Rechtsordnung entwickelte sich schrittweise: 1848 entstand der Bundesstaat mit erster BV. 1874 wurde die BV totalrevidiert (mehr direkte Demokratie). 1912 trat das ZGB in Kraft und vereinheitlichte das zuvor kantonale Zivilrecht. 1999 wurde die aktuelle BV verabschiedet (in Kraft 2000) – primär eine Nachführung ohne grosse inhaltliche Änderungen.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "reihenfolge": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-neu_zeichnen_01",
+    "fach": "Recht",
+    "thema": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+    "typ": "zeichnen",
+    "schwierigkeit": 1,
+    "taxonomie": "K2",
+    "frage": "Zeichne die Normenhierarchie der Schweizer Rechtsordnung als Pyramide. Beschrifte die Stufen und erkläre das Prinzip «lex superior derogat legi inferiori».",
+    "erklaerung": "Die Normenhierarchie ordnet Rechtsquellen nach ihrer Rangstufe: Bundesverfassung (BV) > Bundesgesetze (OR, ZGB, StGB) > Verordnungen (Bundesrat, Departemente) > Gewohnheitsrecht. Das Prinzip «lex superior» besagt, dass höherrangiges Recht dem niederrangigen vorgeht. Widerspricht eine Verordnung einem Gesetz, gilt das Gesetz.",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "hinweise": [
+      "Die Pyramide hat mindestens 4 Stufen.",
+      "Zuoberst steht die Bundesverfassung (BV).",
+      "Darunter kommen Bundesgesetze, dann Verordnungen."
+    ],
+    "musterbild": {
+      "src": "/pool-bilder/recht/einfuehrung/recht_rechtsquellen_zeichnen.svg",
+      "alt": "Musterlösung: Normenhierarchie"
+    }
+  },
+  {
+    "id": "recht_einfuehrung-beschriftung01",
+    "fach": "Recht",
+    "thema": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge",
+    "typ": "bildbeschriftung",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Beschrifte die vier Schritte der Rechtsanwendung durch Subsumtion.",
+    "erklaerung": "Rechtsanwendung durch Subsumtion: 1) Obersatz (Tatbestandsmerkmale der Norm), 2) Untersatz (konkreter Sachverhalt), 3) Subsumtion (passt der Sachverhalt?), 4) Schlussfolgerung (Rechtsfolge anwenden).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einfuehrung/einfuehrung_subsumtion_beschriftung.svg",
+      "alt": "Flussdiagramm der Subsumtion mit vier nummerierten Schritten"
+    },
+    "labels": [
+      {
+        "id": "l1",
+        "text": "Obersatz (Rechtsnorm)",
+        "x": 50,
+        "y": 22
+      },
+      {
+        "id": "l2",
+        "text": "Untersatz (Sachverhalt)",
+        "x": 50,
+        "y": 47
+      },
+      {
+        "id": "l3",
+        "text": "Subsumtion (Vergleich)",
+        "x": 50,
+        "y": 71
+      },
+      {
+        "id": "l4",
+        "text": "Schlussfolgerung (Rechtsfolge)",
+        "x": 50,
+        "y": 92
+      }
+    ]
+  },
+  {
+    "id": "recht_einfuehrung-dragdrop01",
+    "fach": "Recht",
+    "thema": "Öffentliches Recht vs. Privatrecht",
+    "typ": "dragdrop_bild",
+    "schwierigkeit": 2,
+    "taxonomie": "K2",
+    "frage": "Ordne die Rechtsgebiete dem öffentlichen Recht oder dem Privatrecht zu.",
+    "erklaerung": "Öffentliches Recht regelt das Staat-Bürger-Verhältnis (Verfassung, Verwaltung, Strafrecht, Steuern). Privatrecht regelt das Bürger-Bürger-Verhältnis (OR, ZGB: Sachen-, Familien-, Erbrecht).",
+    "uebung": true,
+    "pruefungstauglich": false,
+    "stufe": "SF GYM1 / EWR GYM2",
+    "bild": {
+      "src": "/pool-bilder/recht/einfuehrung/einfuehrung_rechtsgebiete_dragdrop.svg",
+      "alt": "Zwei Spalten: Öffentliches Recht und Privatrecht mit Drop-Slots"
+    },
+    "zones": [
+      {
+        "id": "oeffentlich",
+        "x": 3.75,
+        "y": 13.75,
+        "w": 44.375,
+        "h": 82.5
+      },
+      {
+        "id": "privat",
+        "x": 51.875,
+        "y": 13.75,
+        "w": 44.375,
+        "h": 82.5
+      }
+    ],
+    "dragLabels": [
+      {
+        "id": "verfassungsrecht",
+        "text": "Verfassungsrecht",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "verwaltungsrecht",
+        "text": "Verwaltungsrecht",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "strafrecht",
+        "text": "Strafrecht",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "steuerrecht",
+        "text": "Steuerrecht",
+        "zone": "oeffentlich"
+      },
+      {
+        "id": "obligationenrecht",
+        "text": "Obligationenrecht",
+        "zone": "privat"
+      },
+      {
+        "id": "sachenrecht",
+        "text": "Sachenrecht",
+        "zone": "privat"
+      },
+      {
+        "id": "familienrecht",
+        "text": "Familienrecht",
+        "zone": "privat"
+      },
+      {
+        "id": "zgb_at",
+        "text": "ZGB Allg. Teil",
+        "zone": "privat"
+      }
+    ]
+  }
+]

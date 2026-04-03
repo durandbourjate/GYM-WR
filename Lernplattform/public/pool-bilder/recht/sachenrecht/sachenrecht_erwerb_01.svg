@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" font-family="'DM Sans', system-ui, sans-serif">
+  <rect width="780" height="400" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="390" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1e293b">Erwerb des Eigentums</text>
+  <text x="390" y="48" text-anchor="middle" font-size="11" fill="#64748b">Fahrniseigentum (Art. 714 ZGB) vs. Grundeigentum (Art. 656 ZGB)</text>
+
+  <!-- Top split -->
+  <line x1="390" y1="58" x2="390" y2="78" stroke="#64748b" stroke-width="2"/>
+  <line x1="200" y1="78" x2="580" y2="78" stroke="#64748b" stroke-width="2"/>
+  <line x1="200" y1="78" x2="200" y2="92" stroke="#64748b" stroke-width="2"/>
+  <line x1="580" y1="78" x2="580" y2="92" stroke="#64748b" stroke-width="2"/>
+
+  <!-- Left: Originärer Erwerb -->
+  <rect x="70" y="92" width="260" height="40" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="200" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Originärer Erwerb</text>
+  <text x="200" y="126" text-anchor="middle" font-size="9" fill="#bfdbfe">(unabhängig vom Voreigentümer)</text>
+
+  <!-- Right: Derivativer Erwerb -->
+  <rect x="450" y="92" width="260" height="40" rx="8" fill="#16a34a" stroke="#15803d" stroke-width="1.5"/>
+  <text x="580" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Derivativer Erwerb</text>
+  <text x="580" y="126" text-anchor="middle" font-size="9" fill="#bbf7d0">(vom bisherigen Eigentümer abgeleitet)</text>
+
+  <!-- Originär items -->
+  <line x1="200" y1="132" x2="200" y2="150" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="75" y="155" width="250" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="88" y="176" font-size="11" font-weight="600" fill="#1e40af">🏔️ Aneignung</text>
+  <text x="260" y="176" text-anchor="end" font-size="9" fill="#3b82f6">Art. 718 ZGB</text>
+
+  <rect x="75" y="195" width="250" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="88" y="216" font-size="11" font-weight="600" fill="#1e40af">🔍 Fund</text>
+  <text x="260" y="216" text-anchor="end" font-size="9" fill="#3b82f6">Art. 722 ZGB</text>
+
+  <rect x="75" y="235" width="250" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="88" y="256" font-size="11" font-weight="600" fill="#1e40af">⏳ Ersitzung</text>
+  <text x="260" y="256" text-anchor="end" font-size="9" fill="#3b82f6">Art. 728 ZGB (5 J.)</text>
+
+  <rect x="75" y="275" width="250" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="88" y="296" font-size="11" font-weight="600" fill="#1e40af">🔗 Verbindung / Vermischung</text>
+  <text x="260" y="296" text-anchor="end" font-size="9" fill="#3b82f6">Art. 726/727</text>
+
+  <rect x="75" y="315" width="250" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="88" y="336" font-size="11" font-weight="600" fill="#1e40af">🌍 Bildung neuen Landes</text>
+  <text x="260" y="336" text-anchor="end" font-size="9" fill="#3b82f6">Art. 659 ZGB</text>
+
+  <!-- Derivativ items -->
+  <line x1="580" y1="132" x2="580" y2="150" stroke="#64748b" stroke-width="1"/>
+
+  <rect x="455" y="155" width="250" height="34" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="468" y="176" font-size="11" font-weight="600" fill="#166534">📝 Rechtsgeschäft</text>
+  <text x="640" y="176" text-anchor="end" font-size="9" fill="#16a34a">Kauf, Schenkung, …</text>
+
+  <rect x="455" y="195" width="250" height="34" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="468" y="216" font-size="11" font-weight="600" fill="#166534">⚰️ Erbgang</text>
+  <text x="640" y="216" text-anchor="end" font-size="9" fill="#16a34a">Art. 560 ZGB</text>
+
+  <rect x="455" y="235" width="250" height="34" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="468" y="256" font-size="11" font-weight="600" fill="#166534">🏛️ Hoheitlicher Akt</text>
+  <text x="640" y="256" text-anchor="end" font-size="9" fill="#16a34a">Enteignung, Urteil</text>
+
+  <!-- Key rule box -->
+  <rect x="435" y="305" width="290" height="72" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="580" y="325" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">⚡ Publizitätsprinzip</text>
+  <text x="580" y="342" text-anchor="middle" font-size="10" fill="#92400e">Fahrnis: Besitzübertragung</text>
+  <text x="580" y="356" text-anchor="middle" font-size="10" fill="#92400e">Grundstücke: Grundbucheintrag</text>
+  <text x="580" y="370" text-anchor="middle" font-size="9" fill="#b45309">(Art. 714 / Art. 656 ZGB)</text>
+
+  <!-- Bottom note -->
+  <text x="390" y="393" text-anchor="middle" font-size="10" fill="#94a3b8">Wie wird Eigentum erworben? Ordne die Erwerbsarten den Kategorien zu.</text>
+</svg>
