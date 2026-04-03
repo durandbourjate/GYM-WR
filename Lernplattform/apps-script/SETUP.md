@@ -10,11 +10,13 @@ Das ist das zentrale Sheet, in dem alle Gruppen (Klassen, Familien) registriert 
 
 1. Öffne [Google Sheets](https://sheets.google.com) und erstelle ein **neues leeres Dokument**
 2. Benenne es: **Lernplattform: Gruppen-Registry**
-3. In der **ersten Zeile** (A1 bis F1) diese 6 Header eintragen — **je ein Wort pro Zelle**:
+3. Kopiere die folgende Zeile und füge sie in **Zelle A1** ein (Ctrl+V / Cmd+V). Google Sheets verteilt die Werte automatisch auf die Spalten A–F:
 
-   | A1 | B1 | C1 | D1 | E1 | F1 |
-   |----|----|----|----|----|----|
-   | id | name | typ | adminEmail | fragenbankSheetId | analytikSheetId |
+   ```
+   id	name	typ	adminEmail	fragenbankSheetId	analytikSheetId
+   ```
+
+   > **Wichtig:** Die Werte sind Tab-getrennt. Falls sie alle in einer Zelle landen: Benutze stattdessen "Daten → Text in Spalten aufteilen" oder trage sie manuell ein: A1=id, B1=name, C1=typ, D1=adminEmail, E1=fragenbankSheetId, F1=analytikSheetId
 
 4. **Sheet-ID kopieren:** Schau in die URL-Leiste. Du siehst etwas wie:
    ```
