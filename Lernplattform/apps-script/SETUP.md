@@ -80,7 +80,7 @@ Das ist das zentrale Sheet, in dem alle Gruppen (Klassen, Familien) registriert 
 
 2. Erstelle eine Datei `.env.local` (wird von Git ignoriert):
    ```bash
-   echo 'VITE_APPS_SCRIPT_URL=DEINE_URL_HIER' > .env.local
+   echo 'VITE_APPS_SCRIPT_URL=https://script.google.com/macros/s/AKfycbwl6-YLhmDm7QDNMiEXy9Pv56PonzRMxtEA2OHl6tWBpb-VL_9x9lunqd-oA_L200maqw/exec' > .env.local
    ```
    Ersetze `DEINE_URL_HIER` mit der URL aus Schritt 3.
 
