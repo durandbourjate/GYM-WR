@@ -3,8 +3,8 @@
 ## Aktueller Stand
 
 **Branch:** `feature/lernplattform-phase7a`
-**Phase:** 7a–7f abgeschlossen (Typen + Komponenten + Pool-Anbindung + Backend)
-**Status:** Alle 22 Fragetypen, 2360 Fragen live, Apps Script Backend ready
+**Phase:** 7a–7f abgeschlossen + Backend deployed + 7 Gruppen erstellt
+**Status:** Alle 22 Fragetypen, 2360 Fragen live, Backend deployed, bereit fuer E2E-Test
 
 ### Verifikation (03.04.2026)
 
@@ -12,11 +12,12 @@
 |-------|--------|
 | `npx tsc -b` | OK |
 | `npx vitest run` | 82 Tests gruen (10 Testdateien) |
-| `npm run build` | OK (dist/ 299 KB JS) |
+| `npm run build` | OK (dist/ 300 KB JS) |
 | Pruefungstool Regression | 193 Tests gruen, tsc OK |
 | Pool-Konvertierung | 26/26 Pools, 2360 Fragen, 0 fehlende Bilder |
 | Pool-Daten live | Lazy-Loading via PoolFragenAdapter, Browser-verifiziert |
-| Apps Script Backend | 14 Endpoints, Setup-Anleitung in apps-script/SETUP.md |
+| Apps Script Backend | 14 Endpoints, deployed + getestet (doGet OK, Gruppen erstellt) |
+| Dashboard-Filter | Fach/Schwierigkeit/Typ + einklappbare Sektionen, Browser-verifiziert |
 
 ---
 
@@ -27,16 +28,62 @@
 | 1 | 02.04 | Scaffolding + Auth + Gruppen | — |
 | 2 | 03.04 | 8 Fragetypen + Uebungs-Engine | 8 |
 | 3 | 03.04 | Mastery-System + Fortschritt | — |
-| 4 | 03.04 | Admin-Dashboard (3-Ebenen) | �� |
+| 4 | 03.04 | Admin-Dashboard (3-Ebenen) | — |
 | 5 | 03.04 | Auftraege + Empfehlungen | — |
 | 6 | 03.04 | Gamification + Kinder-UX | — |
 | **7a** | **03.04** | **Typen + Pool-Konvertierung** | **+12 Typen** |
 | **7b** | **03.04** | **FiBu-Fragetypen** | **+4** |
-| **7c** | **03.04** | **open + formel + pdf** | **+3** |
+| **7c** | **03.04** | **open + formel + pdf + audio/code** | **+3** |
 | **7d** | **03.04** | **Bild-interaktive Typen** | **+3** |
 | **7e** | **03.04** | **Gruppe + Zeichnen + Audio + Code** | **+4** |
-| **—** | **03.04** | **Pool-Daten als Fragen-Quelle angebunden** | **—** |
-| **7f** | **03.04** | **Apps Script Backend (14 Endpoints)** | **—** |
+| **—** | **03.04** | **Pool-Daten live + Dashboard-Filter** | **—** |
+| **7f** | **03.04** | **Apps Script Backend deployed, 7 Gruppen** | **—** |
+
+## Backend-Status (deployed 03.04.2026)
+
+### Apps Script URL
+```
+VITE_APPS_SCRIPT_URL in Lernplattform/.env.local (nicht im Repo)
+```
+
+### Gruppen in der Registry
+
+| ID | Name | Typ | Kontext |
+|----|------|-----|---------|
+| familie | Familie | familie | Kinder (privat), Eltern als Admin |
+| sf-wr-29c | SF WR 29c | gym | GYM1 |
+| sf-wr-28bc29fs | SF WR 28bc29fs | gym | GYM2 |
+| sf-wr-27a28f | SF WR 27a28f | gym | GYM3 |
+| in-28c | IN 28c | gym | Informatik |
+| in-29f | IN 29f | gym | Informatik |
+| in-30s | IN 30s | gym | Informatik |
+
+### Sheets-Struktur (Google Drive)
+```
+Lernplattform/ (Ordner in Google Drive)
+├── Gruppen-Registry (Tab "Gruppen": 7 Eintraege)
+├── Lernplattform: Familie          (5 Tabs)
+├── Lernplattform: SF WR 29c       (5 Tabs)
+├── Lernplattform: SF WR 28bc29fs  (5 Tabs)
+├── Lernplattform: SF WR 27a28f    (5 Tabs)
+├── Lernplattform: IN 28c          (5 Tabs)
+├── Lernplattform: IN 29f          (5 Tabs)
+└── Lernplattform: IN 30s          (5 Tabs)
+```
+
+Pro Sheet: Tabs Fragen, Mitglieder, Auftraege, Fortschritt, Sessions.
+
+### Mitglieder eintragen (manuell im Sheet)
+
+**Familie:** Tab "Mitglieder" in "Lernplattform: Familie":
+- Eltern: rolle=admin, mit E-Mail
+- Kinder: rolle=mitglied, mit E-Mail (Code-Login als Fallback fuer unterwegs)
+- Private E-Mails verwenden (nicht Schul-Email)
+- LP kann zusaetzlich mit Schul-Email als admin eingetragen werden (sieht Gruppe bei beiden Logins)
+
+**Gym-Klassen:** SuS-Emails aus Evento/Kurse-Sheet. Noch nicht eingetragen.
+
+---
 
 ## Alle 22 Fragetypen (komplett)
 
@@ -65,45 +112,28 @@
 | audio | AudioFrage | Selbstbewertung | 0** |
 | code | CodeFrage | Selbstbewertung | 0** |
 
-*zuordnung: Typ existiert, keine Pool-Fragen (wird fuer Lernplattform-eigene Fragen genutzt)
-**audio/code: Aus Pruefungstool uebernommen, keine Pool-Fragen vorhanden
-
-### Architektur (nach Phase 7e)
-
-```
-Lernplattform/src/components/fragetypen/
-├── index.ts            # Registry: 22 Komponenten
-├── FeedbackBox.tsx     # Shared: Lob/Trost-Feedback
-├── shared/
-│   ├── KontenSelect.tsx  # FiBu: Konto-Dropdown
-│   └── BildContainer.tsx # Bild: Lade + Overlay
-├── MCFrage.tsx, MultiFrage.tsx, TFFrage.tsx, FillFrage.tsx
-├── CalcFrage.tsx, SortFrage.tsx, SortierungFrage.tsx, ZuordnungFrage.tsx
-├── OpenFrage.tsx, FormelFrage.tsx, PdfFrage.tsx
-├── BuchungssatzFrage.tsx, TKontoFrage.tsx, BilanzFrage.tsx, KontenbestimmungFrage.tsx
-├── HotspotFrage.tsx, BildbeschriftungFrage.tsx, DragDropBildFrage.tsx
-└── GruppeFrage.tsx, ZeichnenFrage.tsx, AudioFrage.tsx, CodeFrage.tsx
-```
-
 ---
 
 ## Was fehlt (naechste Schritte)
 
-### Apps Script Deployment
-- GRUPPEN_REGISTRY_ID Sheet erstellen + ID eintragen
-- Backend in Apps Script deployen (Anleitung: apps-script/SETUP.md)
-- VITE_APPS_SCRIPT_URL in .env setzen
-- Frontend-Adapter auf echtes Backend umstellen (Mock → AppsScript Toggle)
+### Naechste Session: E2E-Test im Browser
+- Login mit Google OAuth → Gruppen-Auswahl → echte Fragen ueben
+- Fortschritt speichern (Backend) statt localStorage
+- Alle Fragetypen visuell pruefen
+- Dashboard-Filter testen
 
-### Phase 7g: Sheet-Import + E2E
-- Upload-Script fuer konvertierte Pool-Fragen in Sheets
-- Default-Gruppe anlegen (SF WR 29c, Familie etc.)
-- End-to-End: Login → Gruppe → echte Fragen → Fortschritt gespeichert
+### Frontend-Adapter umstellen
+- Mock → echtes Backend (Toggle via VITE_APPS_SCRIPT_URL vorhanden/leer)
+- FortschrittStore: localStorage → Backend-Persistenz
+- AuftragStore: localStorage → Backend-Persistenz
+
+### Bekannte UX-Themen
+- Fill-Fragen: {0}-Platzhalter im Text sichtbar (kosmetisch, Luecken sind als separate Felder)
+- Dashboard: Sehr viele Themen (~85 VWL, ~67 Recht, ~36 BWL) — Filter helfen, evtl. Suche ergaenzen
 
 ### Spaetere Verbesserungen
-- Streak-Anzeige im Dashboard (UI vorhanden, Daten fehlen ohne Backend)
-- Offline-Queue (Spec vorhanden, Implementation in spaeterer Phase)
+- SuS-Import aus Evento/Kurse-Sheet (Klassenlisten-Sync)
+- Streak-Anzeige im Dashboard
+- Offline-Queue
 - Diktat-Typ (Browser-TTS)
-- Wortschatz/Konjugation-Typen fuer Sprachen
-- CodeMirror 6 Integration (statt Textarea) fuer Code-Typ
-- KaTeX als npm-Dependency statt CDN fuer Formel-Typ
+- CodeMirror 6 / KaTeX als npm-Dependency statt CDN
