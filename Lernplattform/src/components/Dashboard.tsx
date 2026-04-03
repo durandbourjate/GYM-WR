@@ -6,10 +6,30 @@ import { useFortschrittStore } from '../store/fortschrittStore'
 import { useAuftragStore } from '../store/auftragStore'
 import { fragenAdapter } from '../adapters/appsScriptAdapter'
 import { berechneEmpfehlungen } from '../utils/empfehlungen'
-import type { Frage } from '../types/fragen'
+import type { Frage, FrageTyp } from '../types/fragen'
 import type { ThemenFortschritt } from '../types/fortschritt'
 import type { Empfehlung } from '../types/auftrag'
 import { berechneSterne, sterneText } from '../utils/gamification'
+
+// Fachbereich-Farben (konsistent mit Design-System)
+const FACH_FARBEN: Record<string, { bg: string; text: string; border: string }> = {
+  VWL: { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-800' },
+  BWL: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800' },
+  Recht: { bg: 'bg-green-50 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800' },
+}
+
+// Schwierigkeits-Labels
+const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
+
+// Typ-Labels (Kurzform)
+const TYP_LABELS: Record<string, string> = {
+  mc: 'MC', multi: 'Multi', tf: 'R/F', fill: 'Lücken', calc: 'Berechnung',
+  sort: 'Zuordnung', sortierung: 'Sortierung', zuordnung: 'Paare',
+  open: 'Freitext', formel: 'Formel', pdf: 'PDF',
+  buchungssatz: 'Buchungssatz', tkonto: 'T-Konto', bilanz: 'Bilanz', kontenbestimmung: 'Kontenb.',
+  hotspot: 'Hotspot', bildbeschriftung: 'Beschriftung', dragdrop_bild: 'DragDrop',
+  gruppe: 'Gruppe', zeichnen: 'Zeichnen', audio: 'Audio', code: 'Code',
+}
 
 interface ThemenInfo {
   fach: string
@@ -27,6 +47,12 @@ export default function Dashboard() {
   const [themenInfo, setThemenInfo] = useState<Record<string, ThemenInfo[]>>({})
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
+
+  // Filter-State
+  const [fachFilter, setFachFilter] = useState<string | null>(null)
+  const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<number | null>(null)
+  const [typFilter, setTypFilter] = useState<FrageTyp | null>(null)
+  const [eingeklappteF, setEingeklappteF] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     ladeFortschritt()
@@ -59,6 +85,69 @@ export default function Dashboard() {
     }
     ladeThemen()
   }, [aktiveGruppe, getThemenFortschritt])
+
+  // Verfügbare Fächer, Typen, Schwierigkeiten aus den geladenen Fragen
+  const verfuegbareFaecher = useMemo(() =>
+    [...new Set(alleFragen.map(f => f.fach))].sort()
+  , [alleFragen])
+
+  const verfuegbareTypen = useMemo(() =>
+    [...new Set(alleFragen.map(f => f.typ))].sort()
+  , [alleFragen])
+
+  const verfuegbareSchwierigkeiten = useMemo(() =>
+    [...new Set(alleFragen.map(f => f.schwierigkeit))].sort()
+  , [alleFragen])
+
+  // Gefilterte Themen
+  const gefilterteThemen = useMemo(() => {
+    const result: Record<string, ThemenInfo[]> = {}
+
+    for (const [fach, themen] of Object.entries(themenInfo)) {
+      if (fachFilter && fach !== fachFilter) continue
+
+      const gefiltert = themen.filter(t => {
+        let fragen = t.fragen
+        if (schwierigkeitFilter) fragen = fragen.filter(f => f.schwierigkeit === schwierigkeitFilter)
+        if (typFilter) fragen = fragen.filter(f => f.typ === typFilter)
+        return fragen.length > 0
+      }).map(t => {
+        // Fragen-Anzahl anpassen wenn Filter aktiv
+        if (!schwierigkeitFilter && !typFilter) return t
+        const fragen = t.fragen.filter(f => {
+          if (schwierigkeitFilter && f.schwierigkeit !== schwierigkeitFilter) return false
+          if (typFilter && f.typ !== typFilter) return false
+          return true
+        })
+        return { ...t, fragen, fortschritt: getThemenFortschritt(fragen) }
+      })
+
+      if (gefiltert.length > 0) result[fach] = gefiltert
+    }
+
+    return result
+  }, [themenInfo, fachFilter, schwierigkeitFilter, typFilter, getThemenFortschritt])
+
+  // Anzahl gefilterter Fragen
+  const gefilterteAnzahl = useMemo(() =>
+    Object.values(gefilterteThemen).flat().reduce((sum, t) => sum + t.fragen.length, 0)
+  , [gefilterteThemen])
+
+  const totalAnzahl = alleFragen.length
+
+  const toggleFach = (fach: string) => {
+    const neu = new Set(eingeklappteF)
+    if (neu.has(fach)) neu.delete(fach)
+    else neu.add(fach)
+    setEingeklappteF(neu)
+  }
+
+  const filterAktiv = fachFilter || schwierigkeitFilter || typFilter
+  const filterZuruecksetzen = () => {
+    setFachFilter(null)
+    setSchwierigkeitFilter(null)
+    setTypFilter(null)
+  }
 
   const empfehlungen: Empfehlung[] = useMemo(() => {
     if (!user || alleFragen.length === 0) return []
@@ -114,39 +203,134 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Filter-Leiste */}
+        {!laden && totalAnzahl > 0 && (
+          <div className="mb-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                {filterAktiv
+                  ? `${gefilterteAnzahl} von ${totalAnzahl} Fragen`
+                  : `Alle Themen (${totalAnzahl} Fragen)`}
+              </h3>
+              {filterAktiv && (
+                <button onClick={filterZuruecksetzen} className="text-xs text-blue-500 hover:underline">
+                  Filter zuruecksetzen
+                </button>
+              )}
+            </div>
+
+            {/* Fach-Filter */}
+            <div className="flex flex-wrap gap-1.5">
+              {verfuegbareFaecher.map(fach => (
+                <button
+                  key={fach}
+                  onClick={() => setFachFilter(fachFilter === fach ? null : fach)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors
+                    ${fachFilter === fach
+                      ? `${FACH_FARBEN[fach]?.bg || 'bg-gray-100 dark:bg-gray-700'} ${FACH_FARBEN[fach]?.text || 'text-gray-700'} ${FACH_FARBEN[fach]?.border || 'border-gray-300'} ring-1 ring-current`
+                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-gray-400'}
+                  `}
+                >
+                  {fach}
+                </button>
+              ))}
+            </div>
+
+            {/* Schwierigkeits-Filter */}
+            <div className="flex flex-wrap gap-1.5">
+              {verfuegbareSchwierigkeiten.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setSchwierigkeitFilter(schwierigkeitFilter === s ? null : s)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors
+                    ${schwierigkeitFilter === s
+                      ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700 ring-1 ring-purple-400'
+                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-gray-400'}
+                  `}
+                >
+                  {SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}
+                </button>
+              ))}
+
+              {/* Typ-Filter (kompakte Dropdown-Alternative wegen vieler Typen) */}
+              <select
+                value={typFilter || ''}
+                onChange={(e) => setTypFilter(e.target.value ? e.target.value as FrageTyp : null)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors cursor-pointer
+                  ${typFilter
+                    ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'}
+                `}
+              >
+                <option value="">Alle Typen</option>
+                {verfuegbareTypen.map(t => (
+                  <option key={t} value={t}>{TYP_LABELS[t] || t}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
         {/* Themen-Browser */}
         {laden ? (
           <p className="text-gray-500">Themen werden geladen...</p>
-        ) : Object.keys(themenInfo).length === 0 ? (
+        ) : Object.keys(gefilterteThemen).length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm text-gray-500">
-            <p>Noch keine Uebungsfragen vorhanden.</p>
+            <p>{filterAktiv ? 'Keine Themen fuer diesen Filter.' : 'Noch keine Uebungsfragen vorhanden.'}</p>
           </div>
         ) : (
-          <div className="space-y-6">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Alle Themen</h3>
-            {Object.entries(themenInfo).map(([fach, themen]) => (
-              <div key={fach}>
-                <h3 className="text-lg font-semibold mb-3 dark:text-white">{fach}</h3>
-                <div className="grid gap-2">
-                  {themen.map(({ thema, fortschritt }) => (
-                    <button
-                      key={thema}
-                      onClick={() => handleStarte(fach, thema)}
-                      className="w-full text-left p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 min-h-[48px]"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium dark:text-white text-base">{thema}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm tracking-wide">{sterneText(berechneSterne(fortschritt.quote))}</span>
-                          <MasteryBadges fortschritt={fortschritt} />
-                        </div>
-                      </div>
-                      <FortschrittsBalken fortschritt={fortschritt} />
-                    </button>
-                  ))}
+          <div className="space-y-4">
+            {Object.entries(gefilterteThemen).map(([fach, themen]) => {
+              const istEingeklappt = eingeklappteF.has(fach)
+              const fachFarbe = FACH_FARBEN[fach]
+
+              return (
+                <div key={fach}>
+                  {/* Fach-Header (klickbar zum Ein-/Ausklappen) */}
+                  <button
+                    onClick={() => toggleFach(fach)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl mb-2 min-h-[48px] border transition-colors
+                      ${fachFarbe ? `${fachFarbe.bg} ${fachFarbe.border}` : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-600'}
+                    `}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`text-lg font-semibold ${fachFarbe?.text || 'dark:text-white'}`}>
+                        {fach}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {themen.length} Themen, {themen.reduce((s, t) => s + t.fragen.length, 0)} Fragen
+                      </span>
+                    </div>
+                    <span className={`text-sm transition-transform ${istEingeklappt ? '' : 'rotate-180'}`}>
+                      &#9660;
+                    </span>
+                  </button>
+
+                  {/* Themen-Liste */}
+                  {!istEingeklappt && (
+                    <div className="grid gap-2 ml-1">
+                      {themen.map(({ thema, fragen, fortschritt }) => (
+                        <button
+                          key={thema}
+                          onClick={() => handleStarte(fach, thema)}
+                          className="w-full text-left p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 min-h-[48px]"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium dark:text-white text-base">{thema}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm tracking-wide">{sterneText(berechneSterne(fortschritt.quote))}</span>
+                              <span className="text-xs text-gray-400">{fragen.length}</span>
+                              <MasteryBadges fortschritt={fortschritt} />
+                            </div>
+                          </div>
+                          <FortschrittsBalken fortschritt={fortschritt} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </main>
