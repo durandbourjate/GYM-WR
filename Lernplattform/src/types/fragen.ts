@@ -9,6 +9,8 @@ export type FrageTyp =
   | 'hotspot' | 'bildbeschriftung' | 'dragdrop_bild'
   // Weitere Typen
   | 'open' | 'formel' | 'zeichnen' | 'gruppe' | 'pdf'
+  // Aus Prüfungstool (nicht in Pools, aber für Vollständigkeit)
+  | 'audio' | 'code'
 
 // ── FiBu-Hilfstypen ──
 
@@ -176,6 +178,11 @@ export interface Frage {
   pdfUrl?: string                                        // pdf
   antwortTyp?: 'freitext' | 'mc'                         // pdf
   calcZeilen?: CalcZeile[]                               // calc (Pool-Format mit rows)
+
+  // ── Audio/Code-Felder (aus Prüfungstool) ──
+  maxAufnahmeDauer?: number                              // audio: max Sekunden
+  sprache?: string                                       // code: Programmiersprache
+  starterCode?: string                                   // code: Vorgabe-Code
 }
 
 export interface FragenFilter {
@@ -196,6 +203,7 @@ export type AntwortTyp =
   | BuchungssatzAntwort | TKontoAntwort | BilanzAntwort | KontenbestimmungAntwort
   | HotspotAntwort | BildbeschriftungAntwort | DragDropBildAntwort
   | OpenAntwort | FormelAntwort | ZeichnenAntwort | GruppeAntwort | PdfAntwort
+  | AudioAntwort | CodeAntwort
 
 // ── Bestehende Antworten ──
 
@@ -312,5 +320,18 @@ export interface PdfAntwort {
   typ: 'pdf'
   text?: string        // Freitext-Antwort
   gewaehlt?: string    // MC-Antwort
+  selbstbewertung?: 'korrekt' | 'teilweise' | 'falsch'
+}
+
+export interface AudioAntwort {
+  typ: 'audio'
+  datenUrl: string  // Audio als Data-URL (base64)
+  selbstbewertung?: 'korrekt' | 'teilweise' | 'falsch'
+}
+
+export interface CodeAntwort {
+  typ: 'code'
+  code: string
+  sprache?: string
   selbstbewertung?: 'korrekt' | 'teilweise' | 'falsch'
 }

@@ -52,7 +52,39 @@ export function pruefeAntwort(frage: Frage, antwort: AntwortTyp): boolean {
       return paare.every(p => antwort.paare[p.links] === p.rechts)
     }
 
+    // Selbstbewertete Typen: Ergebnis basiert auf Nutzer-Eingabe
+    case 'open':
+      return antwort.selbstbewertung === 'korrekt'
+
+    case 'pdf':
+      return antwort.selbstbewertung === 'korrekt'
+
+    case 'zeichnen':
+      return antwort.selbstbewertung === 'korrekt'
+
+    case 'audio':
+      return antwort.selbstbewertung === 'korrekt'
+
+    case 'code':
+      return antwort.selbstbewertung === 'korrekt'
+
+    // Formel: normalisierter String-Vergleich
+    case 'formel': {
+      const soll = normalisiereLatex(frage.korrekt as string || '')
+      const ist = normalisiereLatex(antwort.latex)
+      return soll === ist
+    }
+
     default:
       return false
   }
+}
+
+/** LaTeX normalisieren fuer Vergleich: Leerzeichen, Backslash-Varianten */
+function normalisiereLatex(s: string): string {
+  return s
+    .replace(/\s+/g, '')           // Alle Leerzeichen entfernen
+    .replace(/\\cdot/g, '\\times') // cdot und times gleichwertig
+    .replace(/\*\*/g, '^')         // ** als Potenz
+    .toLowerCase()
 }

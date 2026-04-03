@@ -8,6 +8,9 @@ import CalcFrage from './CalcFrage'
 import SortFrage from './SortFrage'
 import SortierungFrage from './SortierungFrage'
 import ZuordnungFrage from './ZuordnungFrage'
+import OpenFrage from './OpenFrage'
+import FormelFrage from './FormelFrage'
+import PdfFrage from './PdfFrage'
 
 export interface FrageKomponenteProps {
   frage: Frage
@@ -26,4 +29,7 @@ export const FRAGETYP_KOMPONENTEN: Record<string, ComponentType<FrageKomponenteP
   sort: SortFrage,
   sortierung: SortierungFrage,
   zuordnung: ZuordnungFrage,
+  open: OpenFrage,
+  formel: FormelFrage,
+  pdf: PdfFrage,
 }
