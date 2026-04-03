@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { FragenFortschritt, MasteryStufe, ThemenFortschritt } from '../types/fortschritt'
 import type { Frage } from '../types/fragen'
 import { aktualisiereFortschritt } from '../utils/mastery'
+import { db } from '../utils/indexedDB'
 
 const STORAGE_KEY = 'lernplattform-fortschritt'
 
@@ -9,7 +10,7 @@ interface FortschrittState {
   fortschritte: Record<string, FragenFortschritt>
 
   antwortVerarbeiten: (fragenId: string, email: string, korrekt: boolean, sessionId: string) => void
-  ladeFortschritt: () => void
+  ladeFortschritt: () => Promise<void>
   getMastery: (fragenId: string) => MasteryStufe
   getFortschritt: (fragenId: string) => FragenFortschritt | null
   getThemenFortschritt: (fragen: Frage[]) => ThemenFortschritt
@@ -21,6 +22,8 @@ function speichereInLocalStorage(fortschritte: Record<string, FragenFortschritt>
   } catch {
     // localStorage voll — graceful degradation
   }
+  // Zusätzlich in IndexedDB speichern (fire-and-forget)
+  db.setFortschritt(fortschritte).catch(() => {})
 }
 
 export const useFortschrittStore = create<FortschrittState>((set, get) => ({
@@ -45,15 +48,25 @@ export const useFortschrittStore = create<FortschrittState>((set, get) => ({
     speichereInLocalStorage(neueFortschritte)
   },
 
-  ladeFortschritt: () => {
+  ladeFortschritt: async () => {
+    // IndexedDB zuerst versuchen
+    try {
+      const idbData = await db.getFortschritt()
+      if (idbData && Object.keys(idbData).length > 0) {
+        set({ fortschritte: idbData })
+        return
+      }
+    } catch { /* Fallback auf localStorage */ }
+
+    // Fallback: localStorage
     try {
       const gespeichert = localStorage.getItem(STORAGE_KEY)
       if (!gespeichert) return
       const parsed = JSON.parse(gespeichert) as Record<string, FragenFortschritt>
       set({ fortschritte: parsed })
-    } catch {
-      // Korrupte Daten — ignorieren
-    }
+      // Migration zu IndexedDB
+      db.setFortschritt(parsed).catch(() => {})
+    } catch { /* Korrupte Daten — ignorieren */ }
   },
 
   getMastery: (fragenId) => {

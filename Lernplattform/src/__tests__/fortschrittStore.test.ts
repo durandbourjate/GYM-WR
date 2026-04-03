@@ -63,7 +63,7 @@ describe('fortschrittStore', () => {
     expect(parsed['f1']).toBeDefined()
   })
 
-  it('laedt aus localStorage', () => {
+  it('laedt aus localStorage', async () => {
     const data = {
       f1: {
         fragenId: 'f1', email: 'test@mail.com', versuche: 3, richtig: 3,
@@ -72,7 +72,7 @@ describe('fortschrittStore', () => {
     }
     localStorage.setItem('lernplattform-fortschritt', JSON.stringify(data))
 
-    useFortschrittStore.getState().ladeFortschritt()
+    await useFortschrittStore.getState().ladeFortschritt()
 
     const f = useFortschrittStore.getState().fortschritte['f1']
     expect(f.mastery).toBe('gefestigt')

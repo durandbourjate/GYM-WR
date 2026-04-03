@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { initSyncManager } from './utils/syncManager'
 import { useAuthStore } from './store/authStore'
 import { useGruppenStore } from './store/gruppenStore'
 import { useUebungsStore } from './store/uebungsStore'
@@ -23,6 +24,11 @@ export default function App() {
   const { session, starteSession } = useUebungsStore()
   const { aktuellerScreen, navigiere } = useNavigationStore()
   const [demoAktiv, setDemoAktiv] = useState(false)
+
+  // SyncManager initialisieren (Offline-Queue bei Verbindungswiederherstellung leeren)
+  useEffect(() => {
+    initSyncManager()
+  }, [])
 
   // Demo-Modus: ?demo=true in URL → Mock-Login ohne Backend
   useEffect(() => {
@@ -49,7 +55,7 @@ export default function App() {
       }
       useGruppenStore.setState({ gruppen: [gruppe], aktiveGruppe: gruppe, ladeStatus: 'fertig' })
 
-      useFortschrittStore.getState().ladeFortschritt()
+      useFortschrittStore.getState().ladeFortschritt().catch(() => {})
       navigiere('dashboard')
     }
   }, [demoAktiv, navigiere])
