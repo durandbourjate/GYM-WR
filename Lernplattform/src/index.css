@@ -3,3 +3,84 @@
 @source "../../packages/shared/src/**/*.tsx";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Neutrales Farbschema: slate hat Blau-Stich → mit reinem Grau überschreiben */
+/* Identisch mit Prüfungstool für konsistentes Rendering des SharedFragenEditor */
+html {
+  background-color: #ffffff;
+}
+html.dark {
+  background-color: #171717;
+  color-scheme: dark;
+}
+
+@theme {
+  --color-slate-50: #fafafa;
+  --color-slate-100: #f5f5f5;
+  --color-slate-200: #e5e5e5;
+  --color-slate-300: #d4d4d4;
+  --color-slate-400: #a3a3a3;
+  --color-slate-500: #737373;
+  --color-slate-600: #525252;
+  --color-slate-700: #404040;
+  --color-slate-800: #262626;
+  --color-slate-900: #171717;
+}
+
+/* Light Mode: Kontrast-Override (WCAG AA) */
+html:not(.dark) {
+  --color-slate-400: #525252;
+  --color-slate-500: #404040;
+}
+
+/* Fachbereich-Farben */
+:root {
+  --c-vwl: #f97316;
+  --c-vwl-light: #ffb74d;
+  --c-bwl: #3b82f6;
+  --c-bwl-light: #60a5fa;
+  --c-recht: #22c55e;
+  --c-recht-light: #4ade80;
+  --c-in: #6b7280;
+}
+
+/* Composer: input-field Utility (SharedFragenEditor nutzt diese Klasse) */
+.input-field {
+  @apply w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400;
+}
+.dark .input-field {
+  @apply border-slate-600 bg-slate-700 text-slate-100 placeholder-slate-500 focus:ring-slate-500;
+}
+
+.input-field-narrow {
+  @apply px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400;
+}
+.dark .input-field-narrow {
+  @apply border-slate-600 bg-slate-700 text-slate-100 placeholder-slate-500 focus:ring-slate-500;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+/* Hoher Kontrast für Input-Felder im Dark Mode */
+.dark input::placeholder {
+  color: #94a3b8;
+}
+
+/* Textarea auto-resize */
+textarea {
+  field-sizing: content;
+  min-height: 4rem;
+}
