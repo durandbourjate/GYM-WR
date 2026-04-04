@@ -388,7 +388,10 @@ function toggleSection(headerEl) {
   }
 }
 
-render();
+render().then(function() {
+  // 🏁-Buttons erst prüfen wenn Cards gerendert sind
+  checkLzButtons();
+});
 
 // ══════════════════════════════════════════
 // LERNZIELE — Dynamisches Laden und Anzeige
@@ -578,8 +581,7 @@ async function openAllLernziele() {
   document.getElementById('lzOverlay').classList.add('active');
 }
 
-// 🏁-Buttons nach dem Rendern prüfen
-checkLzButtons();
+// 🏁-Buttons werden nach render().then() geprüft (nicht hier, da render() async)
 
 // ══════════════════════════════════════════
 // GLOBALE SUCHE — Über alle Pools hinweg
