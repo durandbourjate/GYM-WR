@@ -3,144 +3,87 @@
 ## Aktueller Stand
 
 **Branch:** `main`
-**Phase:** Shared Fragenbank Migration komplett (04.04.2026)
+**Phase:** Shared Fragenbank Migration + Erster Browser-Test (04.04.2026)
 **Status:** TSC OK, 92 LP-Tests + 193 Pruefung-Tests grün, Build OK
-**Apps Script:** Neuer Code — User muss Apps Script NEU BEREITSTELLEN
+**Apps Script:** Bereitgestellt (04.04.2026 abends)
 
-### Architektur (nach Migration)
+### Architektur
 - **Ein Format:** Kanonisch aus `@shared/types/fragen` (discriminated union)
 - **Eine Fragenbank:** `FRAGENBANK_ID` = Prüfungstool-Sheet (Gym-Gruppen), eigenes Sheet (Familie)
 - **Ein Editor:** SharedFragenEditor mit allen Features (KI, Anhänge, Sharing, Lernziele)
 - **Kein Adapter:** Keine Konvertierung zwischen LP und Prüfungstool-Format
+- **CSS:** Identisch mit Prüfungstool (input-field, slate-Farben, Kontrast)
 
 ### Letzte Commits (main)
 
 | Commit | Beschreibung |
 |--------|-------------|
-| 9d87de3 | feat(LP): Backend liest aus gemeinsamer Fragenbank (FRAGENBANK_ID) |
-| d0d08d6 | refactor(LP): Shared Fragenbank-Format — 42 Dateien, -700 Zeilen |
-| 990a0b1 | docs: HANDOFF aktualisiert — offene Punkte |
-| 23e1806 | fix: Tailwind v4 @source für shared-Komponenten |
+| 708d4a6 | fix(LP): CSS identisch mit Prüfungstool |
+| 140fd40 | fix(LP): Header NICHT lowercasen (camelCase) |
+| 8f65199 | fix(LP): UI — Aufträge-Typo, Login Toggle + Hilfe |
+| 22471a1 | feat(LP): EditorProvider mit allen Features |
+| 9d87de3 | feat(LP): Backend liest aus gemeinsamer Fragenbank |
+| d0d08d6 | refactor(LP): Shared Fragenbank-Format — 42 Dateien |
 
 ---
 
-## Shared Editor — 4-Phasen-Plan
+## Offene Bugs (Priorität 1 — nächste Session)
 
-**Ziel:** Ein FragenEditor in `packages/shared/`, den Prüfungstool UND Lernplattform importieren. Kein doppelter Code.
+### A) Kritische Bugs (blockieren Nutzung)
 
-**Plan-Datei:** `.claude/plans/wild-booping-corbato.md`
+| # | Bug | Details |
+|---|-----|---------|
+| 1 | **SuS sieht keine Gruppen** | wr.test@stud.gymhofwil.ch → "Keine Gruppen" obwohl in Test-Gruppe hinzugefügt. Zurück-Button funktioniert hier auch nicht. |
+| 2 | **MC-Optionen zeigen UUID** | Im Editor werden bei MC-Optionen die IDs (z.B. "ecb...9bc3–4734–88ea–82aba1b2a3f5") angezeigt statt nur der Text. Gleich bei Lückentext korrekten Antworten. |
+| 3 | **LP-Dashboard Startscreen leer** | Nach Gruppen-Auswahl als LP: leerer Screen. Erst nach Klick auf "Admin" kommt das Dashboard. |
 
-### Phase 1: Shared Infrastructure ✅ (04.04.2026)
+### B) UI-Bugs (funktioniert aber sieht falsch aus)
 
-15 neue Dateien in `packages/shared/src/editor/` (1029 Zeilen):
+| # | Bug | Details |
+|---|-----|---------|
+| 4 | **Freitextfelder zu schmal** | Fragetext, Musterlösung — nur wenige cm breit statt volle Editor-Breite |
+| 5 | **Umlaute in Tabs/Labels** | "Faecher" → "Fächer", "pruefen" → "prüfen", weitere |
+| 6 | **Fragenbank-Filter fehlen** | Prüfungstool hat Filter (Fach, Thema, Typ, Suche) — LP Fragenbank hat nur Fach-Filter |
+| 7 | **Dashboard-Auswahlmenü** | Übungspools haben Unterthema, Schwierigkeit, Fragetyp als Buttons — LP hat nur Dropdowns. User wünscht Buttons wie in Pools. Suchfunktion fehlt. |
+| 8 | **Übersicht-Tab leer** | Admin → Übersicht zeigt nichts (keine Mitglieder-Fortschritte) |
 
-| Datei | Inhalt |
-|-------|--------|
-| `types.ts` | `EditorConfig`, `EditorServices`, `EditorFeatures`, `EditorBenutzer` |
-| `EditorContext.tsx` | React Context + Provider + `useEditorConfig()` / `useEditorServices()` |
-| `editorUtils.ts` | `FrageTyp`, `generiereFrageId()`, `parseLuecken()` |
-| `fragenValidierung.ts` | `validiereFrage()` für alle 20 Typen |
-| `fragenFactory.ts` | `erstelleFrageObjekt()`, `FrageBasis`, `TypSpezifischeDaten` |
-| `zeitbedarf.ts` | `berechneZeitbedarf()` Richtwert-Tabelle |
-| `fachUtils.ts` | `typLabel()`, `bloomLabel()`, `FIBU_TYPEN`, `fachbereichFarbe()` etc. |
-| `kontenrahmen.ts` | KMU-Kontenrahmen Utility (mit `setKontenrahmenData()` DI) |
-| `musterloesungGenerierung.ts` | 4 FiBu-Musterlösungsgeneratoren |
-| `useKIAssistent.ts` | Abstrahierter KI-Hook (nutzt EditorContext) |
-| `hooks/useFocusTrap.ts` | Focus-Trap Hook |
-| `hooks/usePanelResize.ts` | Panel-Resize Hook |
+### C) Architektur/Konzept
 
-**Kontenrahmen-Hinweis:** `kontenrahmen.ts` nutzt Dependency Injection (`setKontenrahmenData()`) statt direktem JSON-Import, damit die Host-App die Daten liefert. Die JSON-Datei liegt weiterhin in `Pruefung/src/data/kontenrahmen-kmu.json`.
+| # | Thema | Details |
+|---|-------|---------|
+| 9 | **Übungspools-Lernziele weg?** | User meldet dass Lernziele in Übungspools verschwunden sind. NICHT in dieser Session angefasst — separat prüfen ob Deployment-Artefakt oder anderer Bug. |
+| 10 | **Kopfzeile: Home, Hilfe, Lernziele** | LP soll gleiche Kopfzeile wie Übungspools haben (Home, Hilfe, Lernziele-Button) |
+| 11 | **Backend KI/Upload/Lernziele** | Endpoints im EditorProvider vorbereitet, fehlen im Apps Script Backend |
+| 12 | **speichereFrage → FRAGENBANK_ID** | Speichert noch ins alte Gruppen-Sheet, muss auf gemeinsame Fragenbank umgestellt werden |
 
-### Phase 5b: Admin-Fragenbank ✅ (04.04.2026)
+---
 
-10 geänderte Dateien (1225 neue Zeilen):
+## Was in dieser Session erledigt wurde
 
-| Datei | Inhalt |
-|-------|--------|
-| `adapters/frageAdapter.ts` | `toSharedFrage()` / `fromSharedFrage()` für alle 20 Typen |
-| `__tests__/frageAdapter.test.ts` | 20 Tests (Mapping, Roundtrip) |
-| `components/admin/LernplattformEditorProvider.tsx` | EditorProvider-Wrapper (alle Features off) |
-| `components/admin/AdminFragenbank.tsx` | Fragen-Liste, Fach-Filter, Editor-Modal via SharedFragenEditor |
-| `components/admin/AdminDashboard.tsx` | Fragenbank-Tab hinzugefügt (4 Tabs) |
-| `store/navigationStore.ts` | `adminFragenbank` ScreenTyp |
-| `services/interfaces.ts` | `speichereFrage` + `invalidateCache` im FragenService |
-| `adapters/appsScriptAdapter.ts` | `speichereFrage` Methode + `getEmail()` Helper |
-| `apps-script/lernplattform-backend.js` | `lernplattformSpeichereFrage` Endpoint (Upsert) |
-| `vite.config.ts` | `dedupe: ['react', 'react-dom']` für Shared-JSX |
-
-**Wichtig:** Apps Script muss neu bereitgestellt werden (neuer Endpoint `lernplattformSpeichereFrage`).
-
-### Phase 2: Typ-Editoren nach Shared ✅
-
-20 Typ-Editoren + UI-Komponenten in `packages/shared/src/editor/typen/` (alle 20 Typen).
-
-### Phase 3: Haupteditor + Lernplattform-Integration ✅
-
-SharedFragenEditor mit Slot-Props, frageAdapter, AdminFragenbank.
-
-### Phase 4: Prüfungstool umstellen ✅
-
-PruefungFragenEditor als Wrapper um SharedFragenEditor. Imports umgestellt.
+1. ✅ Phase 5b: AdminFragenbank + SharedFragenEditor (6 Tasks)
+2. ✅ Tailwind v4 Fixes (Scroll, @source, CI)
+3. ✅ **Shared Format Migration** — 42 Dateien, LP nutzt shared Frage-Typ, frageAdapter gelöscht
+4. ✅ **Backend liest aus FRAGENBANK_ID** (gemeinsame Fragenbank)
+5. ✅ EditorProvider mit allen Features
+6. ✅ UI-Fixes (Aufträge-Typo, Login Toggle+Hilfe)
+7. ✅ CSS identisch mit Prüfungstool (input-field, slate-Farben)
 
 ---
 
 ## Verifikation
 
 ```bash
-# Shared
-cd packages/shared && npx tsc --noEmit  # (über Lernplattform: npx tsc --noEmit --project ../packages/shared/tsconfig.json)
-
-# Lernplattform
 cd Lernplattform && npx tsc -b && npx vitest run && npm run build
-
-# Pruefung (erst ab Phase 4 verändert)
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd Pruefung && npx tsc -b && npx vitest run
 ```
 
 ---
 
-## Architektur-Überblick
+## Nächste Session — Empfohlene Reihenfolge
 
-### Dependency Injection Pattern
-```
-Host-App (Pruefung/Lernplattform)
-  └─ EditorProvider (config + services)
-       └─ FragenEditor (shared)
-            ├─ useEditorConfig() → Gefässe, Semester, Benutzer, Features
-            ├─ useEditorServices() → Upload, KI
-            └─ Typ-Editoren (shared, Phase 2)
-```
-
-### Was wo lebt
-- `packages/shared/src/editor/` — SharedFragenEditor + alle 20 Typ-Editoren
-- `packages/shared/src/types/fragen.ts` — Kanonische Frage-Types (ein Format für beide Tools)
-- `Pruefung/` — PruefungFragenEditor (Wrapper) + eigenes Backend
-- `Lernplattform/` — LernplattformEditorProvider + AdminFragenbank + Übungsflow
-
----
-
-## Offene Punkte
-
-### A) Apps Script bereitstellen — PFLICHT
-Backend-Code wurde aktualisiert. User muss in Apps Script Editor neue Bereitstellung erstellen.
-Dann laden Gym-Gruppen automatisch alle Fragen aus der Prüfungstool-Fragenbank.
-
-### B) Backend-Endpoints noch nicht implementiert (niedrige Priorität)
-- `lernplattformKIAssistent` — KI-Funktionen für LP (Fragen generieren etc.)
-- `lernplattformUploadAnhang` — Datei-Upload an Drive
-- `lernplattformLadeLernziele` — Lernziele laden
-Diese Endpoints sind im EditorProvider vorbereitet aber noch nicht im Backend. Editor funktioniert ohne sie (Buttons zeigen "nicht verfügbar").
-
-### C) UI-Verbesserungen (niedrige Priorität)
-
-- [ ] Admin-Tab "Auftraege" → "Aufträge" (Typo)
-- [ ] Login-Screen: Light/Dark-Mode Toggle
-- [ ] Login-Screen: Hilfe-Button / Info-Text
-- [ ] Fächer-Anzeige im Dashboard verbessern
-
-### D) Nächste Schritte
-
-1. **Apps Script bereitstellen** → Fragen erscheinen automatisch
-2. **Browser-Test**: Dashboard → Übung starten (mit echten Fragen)
-3. **Browser-Test**: Admin → Fragenbank → Frage erstellen/bearbeiten
-4. Backend-Endpoints für KI/Upload/Lernziele (wenn benötigt)
+1. Bug 2 fixen (MC-UUID-Anzeige) — wahrscheinlich Option.id statt Option.text im Editor
+2. Bug 1 fixen (SuS-Gruppen) — Backend-Debug nötig
+3. Bug 3 fixen (LP-Startscreen) — Navigation/Routing
+4. Bug 4 fixen (Feldbreiten) — CSS
+5. Bug 5 fixen (Umlaute) — Texte durchsuchen
+6. Bug 6+7 (Filter + Auswahlmenü) — grösseres Feature, Übungspools-UI als Vorbild
