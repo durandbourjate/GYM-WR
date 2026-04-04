@@ -5,6 +5,7 @@ import AdminKindDetail from './AdminKindDetail'
 import AdminThemaDetail from './AdminThemaDetail'
 import AdminAuftraege from './AdminAuftraege'
 import AdminSettings from './AdminSettings'
+import AdminFragenbank from './AdminFragenbank'
 
 interface AdminDashboardProps {
   onZuUeben?: () => void
@@ -14,6 +15,7 @@ type AdminAnsicht =
   | { typ: 'uebersicht' }
   | { typ: 'auftraege' }
   | { typ: 'einstellungen' }
+  | { typ: 'fragenbank' }
   | { typ: 'kind'; email: string; name: string }
   | { typ: 'thema'; email: string; name: string; fach: string; thema: string }
 
@@ -29,7 +31,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
     }
   }
 
-  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'auftraege' || ansicht.typ === 'einstellungen'
+  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'auftraege' || ansicht.typ === 'einstellungen' || ansicht.typ === 'fragenbank'
 
   return (
     <div>
@@ -71,6 +73,12 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
               Auftraege
             </button>
             <button
+              onClick={() => setAnsicht({ typ: 'fragenbank' })}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'fragenbank' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+              Fragenbank
+            </button>
+            <button
               onClick={() => setAnsicht({ typ: 'einstellungen' })}
               className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
@@ -94,6 +102,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
           />
         )}
         {ansicht.typ === 'auftraege' && <AdminAuftraege />}
+        {ansicht.typ === 'fragenbank' && <AdminFragenbank />}
         {ansicht.typ === 'einstellungen' && <AdminSettings />}
         {ansicht.typ === 'thema' && (
           <AdminThemaDetail

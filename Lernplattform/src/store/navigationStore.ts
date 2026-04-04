@@ -7,6 +7,7 @@ export type ScreenTyp =
   | 'uebung'
   | 'ergebnis'
   | 'admin'
+  | 'adminFragenbank'
 
 interface NavigationState {
   aktuellerScreen: ScreenTyp

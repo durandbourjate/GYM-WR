@@ -27,4 +27,6 @@ export interface SessionService {
 export interface FragenService {
   ladeFragen(gruppeId: string, filter?: FragenFilter): Promise<Frage[]>
   ladeThemen(gruppeId: string, fach?: string): Promise<string[]>
+  speichereFrage(gruppeId: string, frage: Frage): Promise<{ success: boolean; id: string }>
+  invalidateCache(gruppeId?: string): void
 }

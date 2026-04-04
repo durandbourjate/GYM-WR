@@ -136,6 +136,19 @@ class AppsScriptFragenAdapter implements FragenService {
     return [...new Set(gefiltert.map(f => f.thema))]
   }
 
+  async speichereFrage(gruppeId: string, frage: Frage): Promise<{ success: boolean; id: string }> {
+    const token = this.getToken()
+    const email = this.getEmail()
+    const response = await apiClient.post<{ success: boolean; id: string }>(
+      'lernplattformSpeichereFrage',
+      { gruppeId, frage, email },
+      token
+    )
+    if (!response?.success) throw new Error('Frage speichern fehlgeschlagen')
+    this.invalidateCache(gruppeId)
+    return response
+  }
+
   invalidateCache(gruppeId?: string) {
     if (gruppeId) this.cache.delete(gruppeId)
     else this.cache.clear()
@@ -145,6 +158,13 @@ class AppsScriptFragenAdapter implements FragenService {
     try {
       const stored = localStorage.getItem('lernplattform-auth')
       return stored ? JSON.parse(stored).sessionToken : undefined
+    } catch { return undefined }
+  }
+
+  private getEmail(): string | undefined {
+    try {
+      const stored = localStorage.getItem('lernplattform-auth')
+      return stored ? JSON.parse(stored).email : undefined
     } catch { return undefined }
   }
 }

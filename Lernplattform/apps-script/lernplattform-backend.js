@@ -140,6 +140,9 @@ function doPost(e) {
     case 'lernplattformLadeFragen':
       return lernplattformLadeFragen(body);
 
+    case 'lernplattformSpeichereFrage':
+      return lernplattformSpeichereFrage(body);
+
     // === FORTSCHRITT ===
 
     case 'lernplattformSpeichereFortschritt':
@@ -571,6 +574,94 @@ function lernplattformLadeFragen(body) {
     }
 
     return jsonResponse({ success: true, data: fragen });
+  } catch (e) {
+    return jsonResponse({ success: false, error: e.message });
+  }
+}
+
+/**
+ * Einzelne Frage speichern (Upsert: Update oder Insert).
+ * Nur Admin der Gruppe darf Fragen speichern.
+ */
+function lernplattformSpeichereFrage(body) {
+  var email = (body.email || '').toLowerCase().trim();
+  if (!validiereSessionToken_(body.token || body.sessionToken, email)) {
+    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
+  }
+
+  var gruppeId = body.gruppeId;
+  var frage = body.frage;
+  if (!frage || !frage.id) {
+    return jsonResponse({ success: false, error: 'Frage-Daten fehlen' });
+  }
+
+  var gruppen = alleGruppenLaden_();
+  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
+  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+
+  // Admin-Check
+  if (gruppe.adminEmail !== email) {
+    return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
+  }
+
+  if (!gruppe.fragebankSheetId) {
+    return jsonResponse({ success: false, error: 'Fragenbank-Sheet nicht konfiguriert' });
+  }
+
+  // Spalten-Definition (Reihenfolge = Header-Reihenfolge im Sheet)
+  var spalten = [
+    'id', 'fach', 'thema', 'typ', 'schwierigkeit', 'taxonomie',
+    'frage', 'erklaerung', 'uebung', 'pruefungstauglich',
+    'optionen', 'korrekt', 'aussagen', 'luecken', 'toleranz',
+    'einheit', 'kategorien', 'elemente', 'reihenfolge', 'daten'
+  ];
+
+  try {
+    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var sheet = ss.getSheetByName('Fragen');
+
+    // Tab erstellen falls nicht vorhanden
+    if (!sheet) {
+      sheet = ss.insertSheet('Fragen');
+      sheet.appendRow(spalten);
+    }
+
+    var daten = sheet.getDataRange().getValues();
+    var headers = daten[0].map(function(h) { return String(h).trim(); });
+    var idIdx = headers.indexOf('id');
+
+    // Wert für eine Spalte vorbereiten (Arrays/Objekte → JSON)
+    function wert(key) {
+      var val = frage[key];
+      if (val === undefined || val === null) return '';
+      if (typeof val === 'object') return JSON.stringify(val);
+      return val;
+    }
+
+    // Bestehende Zeile suchen
+    var gefunden = false;
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][idIdx]) === frage.id) {
+        // Update: Jede Spalte einzeln setzen
+        var zeilenIdx = i + 1; // 1-basiert
+        for (var s = 0; s < spalten.length; s++) {
+          var colIdx = headers.indexOf(spalten[s]);
+          if (colIdx >= 0) {
+            sheet.getRange(zeilenIdx, colIdx + 1).setValue(wert(spalten[s]));
+          }
+        }
+        gefunden = true;
+        break;
+      }
+    }
+
+    if (!gefunden) {
+      // Neue Zeile anhängen
+      var neueZeile = spalten.map(function(key) { return wert(key); });
+      sheet.appendRow(neueZeile);
+    }
+
+    return jsonResponse({ success: true, id: frage.id });
   } catch (e) {
     return jsonResponse({ success: false, error: e.message });
   }

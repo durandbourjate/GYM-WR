@@ -45,8 +45,10 @@ export default defineConfig({
   base: basePath,
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, '../packages/shared/src')
-    }
+      '@shared': path.resolve(__dirname, '../packages/shared/src'),
+    },
+    // Shared-Pakete nutzen die node_modules der Lernplattform (Monorepo)
+    dedupe: ['react', 'react-dom'],
   },
   build: {
     outDir: 'dist',
