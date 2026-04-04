@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'path'
 
 // Base-Path: Standard = Production, überschreibbar für Staging via VITE_BASE_PATH
 const basePath = process.env.VITE_BASE_PATH || '/GYM-WR-DUY/Pruefung/'
@@ -12,6 +13,12 @@ export default defineConfig({
   base: basePath,
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
+  },
+  resolve: {
+    alias: {
+      '@shared': path.resolve(__dirname, '../packages/shared/src')
+    },
+    dedupe: ['react', 'react-dom']
   },
   plugins: [
     react(),

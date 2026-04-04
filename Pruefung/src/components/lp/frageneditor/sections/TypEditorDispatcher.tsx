@@ -689,7 +689,6 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           onCanvasConfigChange={props.setCanvasConfig}
           musterloesungBild={props.musterloesungBild}
           onMusterloesungBildChange={props.setMusterloesungBild}
-          email={props.email}
         />
       )}
 
