@@ -30,6 +30,32 @@
 
 ---
 
+## Session 57 — Shared Editor Phase 4: EditorProvider verdrahtet (04.04.2026)
+
+### Stand
+Branch `feature/shared-editor-phase1`. tsc ✅ | 193 Tests ✅ | Build ✅. **Nicht auf main** — Lernplattform-Integration noch ausstehend.
+
+### Änderungen
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **EditorProvider in FragenEditor.tsx** — Config aus authStore + schulConfigStore, Services als Adapter um uploadApi, poolApi, apiClient | `FragenEditor.tsx` |
+| 2 | **MetadataSection Props bereinigt** — `lpListe` + `eigeneFachschaft` entfernt, liest jetzt aus `useEditorConfig()` | `MetadataSection.tsx`, `FragenEditor.tsx` |
+
+### Shared-Komponenten die jetzt über Context funktionieren
+- **FragetextSection** — `useEditorConfig()` + `useEditorServices()` (email, ladeLernziele)
+- **MetadataSection** — `useEditorConfig()` (verfuegbareSemester, verfuegbareGefaesse, lpListe, benutzer.fachschaft)
+- **BildUpload** — `useEditorConfig()` + `useEditorServices()` (email, uploadAnhang, istUploadVerfuegbar)
+- **FrageTypAuswahl** — `useEditorConfig()` (zeigeFiBuTypen)
+- **useKIAssistent** — `useEditorConfig()` + `useEditorServices()` (email, kiAssistent, istKIVerfuegbar)
+
+### Nächste Schritte (Phase 5+)
+- **Lernplattform-Integration** — Lernplattform importiert shared Editor-Komponenten, eigener EditorProvider
+- **PDFEditor evaluieren** — optional in shared verschieben (komplexer PDF-Subbaum)
+- **Branch mergen** — Nach LP-Test auf main mergen
+
+---
+
 ## Session 56 — Shared Editor Phase 3: Sections + EditorServices (04.04.2026)
 
 ### Stand
