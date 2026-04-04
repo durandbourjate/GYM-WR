@@ -3,6 +3,10 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Typ-Narrowing auf AudioFrage (shared discriminated union)
+  if (frage.typ !== 'audio') return null
+  const audio = frage
+
   const mediaRecorder = useRef<MediaRecorder | null>(null)
   const chunks = useRef<Blob[]>([])
   const [aufnahmeAktiv, setAufnahmeAktiv] = useState(false)
@@ -10,7 +14,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
   const [fehler, setFehler] = useState<string | null>(null)
   const [selbstbewertung, setSelbstbewertung] = useState<'korrekt' | 'teilweise' | 'falsch' | null>(null)
 
-  const maxDauer = frage.maxAufnahmeDauer || 120 // Default 2 Minuten
+  const maxDauer = audio.maxDauerSekunden || 120 // Default 2 Minuten
 
   const startAufnahme = async () => {
     try {
@@ -104,10 +108,10 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
 
       {feedbackSichtbar && (
         <div className="space-y-3">
-          {frage.musterantwort && (
+          {frage.musterlosung && (
             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
               <p className="font-medium text-sm mb-1">Musterantwort:</p>
-              <p className="text-sm">{frage.musterantwort}</p>
+              <p className="text-sm">{frage.musterlosung}</p>
             </div>
           )}
 
@@ -122,7 +126,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
             </div>
           )}
 
-          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
-import type { BuchungssatzZeile } from '../../types/fragen'
+import type { BuchungssatzFrage as BuchungssatzFrageTyp, BuchungssatzZeile } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import KontenSelect from './shared/KontenSelect'
 
@@ -11,8 +11,15 @@ interface Zeile {
 }
 
 export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const konten = frage.konten || []
-  const anzahlKorrekt = frage.buchungssatzKorrekt?.length || 1
+  // Type narrowing: Zugriff auf buchungssatz-spezifische Felder
+  if (frage.typ !== 'buchungssatz') return null
+  const bsFrage = frage as BuchungssatzFrageTyp
+
+  const buchungen = bsFrage.buchungen || []
+  const kontenauswahl = bsFrage.kontenauswahl
+  // Konten-Liste für KontenSelect aus kontenauswahl extrahieren
+  const konten = (kontenauswahl?.konten || []).map(k => ({ nr: k, name: k }))
+  const anzahlKorrekt = buchungen.length || 1
 
   const [zeilen, setZeilen] = useState<Zeile[]>(
     Array.from({ length: anzahlKorrekt }, () => ({ soll: '', haben: '', betrag: '' }))
@@ -39,13 +46,13 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
 
   const handleAbsenden = () => {
     if (!istVollstaendig || disabled) return
-    const antwortZeilen: BuchungssatzZeile[] = zeilen
+    const antwortZeilen: { soll: string; haben: string; betrag: number }[] = zeilen
       .filter(z => z.soll && z.haben && z.betrag)
       .map(z => ({ soll: z.soll, haben: z.haben, betrag: parseFloat(z.betrag) || 0 }))
     onAntwort({ typ: 'buchungssatz', zeilen: antwortZeilen })
   }
 
-  const korrekteDaten = frage.buchungssatzKorrekt || []
+  const korrekteDaten: BuchungssatzZeile[] = buchungen
 
   return (
     <div className="space-y-3">
@@ -61,8 +68,8 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
       {/* Zeilen */}
       {zeilen.map((z, i) => {
         const korrZ = feedbackSichtbar && korrekteDaten[i]
-        const sollOk = korrZ && z.soll === korrZ.soll
-        const habenOk = korrZ && z.haben === korrZ.haben
+        const sollOk = korrZ && z.soll === korrZ.sollKonto
+        const habenOk = korrZ && z.haben === korrZ.habenKonto
         const betragOk = korrZ && Math.abs(parseFloat(z.betrag) - korrZ.betrag) < 0.01
 
         return (
@@ -105,15 +112,11 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
       {feedbackSichtbar && !korrekt && korrekteDaten.length > 0 && (
         <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-sm">
           <p className="font-medium text-green-800 dark:text-green-200 mb-1">Korrekte Buchung:</p>
-          {korrekteDaten.map((z, i) => {
-            const sollName = konten.find(k => k.nr === z.soll)
-            const habenName = konten.find(k => k.nr === z.haben)
-            return (
-              <p key={i} className="text-green-700 dark:text-green-300">
-                {sollName ? `${z.soll} ${sollName.name}` : z.soll} an {habenName ? `${z.haben} ${habenName.name}` : z.haben} CHF {z.betrag.toLocaleString('de-CH')}
-              </p>
-            )
-          })}
+          {korrekteDaten.map((z, i) => (
+            <p key={i} className="text-green-700 dark:text-green-300">
+              {z.sollKonto} an {z.habenKonto} CHF {z.betrag.toLocaleString('de-CH')}
+            </p>
+          ))}
         </div>
       )}
 
@@ -123,7 +126,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={bsFrage.musterlosung} />}
     </div>
   )
 }

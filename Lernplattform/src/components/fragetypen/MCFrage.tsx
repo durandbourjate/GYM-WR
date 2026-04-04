@@ -3,12 +3,16 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const [gewaehlt, setGewaehlt] = useState<string | null>(null)
-  const optionen = frage.optionen || []
+  // Typ-Narrowing auf MCFrage (shared discriminated union)
+  if (frage.typ !== 'mc') return null
+  const mc = frage
 
-  const handleWahl = (option: string) => {
+  const [gewaehlt, setGewaehlt] = useState<string | null>(null)
+  const optionen = mc.optionen || []
+
+  const handleWahl = (optionText: string) => {
     if (disabled) return
-    setGewaehlt(option)
+    setGewaehlt(optionText)
   }
 
   const handleAbsenden = () => {
@@ -19,14 +23,14 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
   return (
     <div className="space-y-3">
       {optionen.map((option, i) => {
-        const istGewaehlt = gewaehlt === option
-        const istKorrekt = feedbackSichtbar && option === frage.korrekt
-        const istFalsch = feedbackSichtbar && istGewaehlt && option !== frage.korrekt
+        const istGewaehlt = gewaehlt === option.text
+        const istKorrekt = feedbackSichtbar && option.korrekt
+        const istFalsch = feedbackSichtbar && istGewaehlt && !option.korrekt
 
         return (
           <button
-            key={i}
-            onClick={() => handleWahl(option)}
+            key={option.id || i}
+            onClick={() => handleWahl(option.text)}
             disabled={disabled}
             className={`w-full text-left p-4 rounded-xl border-2 transition-colors min-h-[48px]
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
@@ -36,7 +40,10 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
               ${disabled ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
-            <span className="dark:text-white">{option}</span>
+            <span className="dark:text-white">{option.text}</span>
+            {feedbackSichtbar && option.erklaerung && (
+              <span className="block text-xs mt-1 text-gray-500 dark:text-gray-400">{option.erklaerung}</span>
+            )}
           </button>
         )
       })}
@@ -47,7 +54,7 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={mc.musterlosung} />}
     </div>
   )
 }

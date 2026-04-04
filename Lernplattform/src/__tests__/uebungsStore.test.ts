@@ -15,10 +15,30 @@ import { useUebungsStore } from '../store/uebungsStore'
 import { fragenAdapter } from '../adapters/appsScriptAdapter'
 import type { Frage } from '../types/fragen'
 
+const BASIS = {
+  version: 1, erstelltAm: '', geaendertAm: '',
+  fachbereich: 'VWL' as const, fach: 'Mathe', semester: [] as string[], gefaesse: [] as string[],
+  bloom: 'K2' as const, tags: [] as string[], punkte: 1, musterlosung: '',
+  bewertungsraster: [], verwendungen: [],
+  schwierigkeit: 1, thema: 'Add',
+}
+
 const testFragen: Frage[] = [
-  { id: 'f1', fach: 'Mathe', thema: 'Add', typ: 'mc', schwierigkeit: 1, frage: 'Q1', optionen: ['A', 'B'], korrekt: 'A', uebung: true, pruefungstauglich: false },
-  { id: 'f2', fach: 'Mathe', thema: 'Add', typ: 'mc', schwierigkeit: 1, frage: 'Q2', optionen: ['X', 'Y'], korrekt: 'Y', uebung: true, pruefungstauglich: false },
-  { id: 'f3', fach: 'Mathe', thema: 'Add', typ: 'mc', schwierigkeit: 1, frage: 'Q3', optionen: ['1', '2'], korrekt: '2', uebung: true, pruefungstauglich: false },
+  {
+    ...BASIS, id: 'f1', typ: 'mc', fragetext: 'Q1',
+    optionen: [{ id: '1', text: 'A', korrekt: true }, { id: '2', text: 'B', korrekt: false }],
+    mehrfachauswahl: false, zufallsreihenfolge: false,
+  },
+  {
+    ...BASIS, id: 'f2', typ: 'mc', fragetext: 'Q2',
+    optionen: [{ id: '1', text: 'X', korrekt: false }, { id: '2', text: 'Y', korrekt: true }],
+    mehrfachauswahl: false, zufallsreihenfolge: false,
+  },
+  {
+    ...BASIS, id: 'f3', typ: 'mc', fragetext: 'Q3',
+    optionen: [{ id: '1', text: '1', korrekt: false }, { id: '2', text: '2', korrekt: true }],
+    mehrfachauswahl: false, zufallsreihenfolge: false,
+  },
 ]
 
 describe('uebungsStore', () => {
@@ -55,7 +75,7 @@ describe('uebungsStore', () => {
       ladeStatus: 'fertig',
     })
 
-    useUebungsStore.getState().beantworte({ typ: 'mc', gewaehlt: 'A' })
+    useUebungsStore.getState().beantworte({ typ: 'mc', gewaehlt: '1' })
 
     const state = useUebungsStore.getState()
     expect(state.session!.antworten['f1']).toBeDefined()
@@ -69,7 +89,7 @@ describe('uebungsStore', () => {
       session: {
         id: 's1', gruppeId: 'g1', email: 'test@mail.com',
         fach: 'Mathe', thema: 'Add', fragen: testFragen,
-        antworten: { f1: { typ: 'mc', gewaehlt: 'A' } },
+        antworten: { f1: { typ: 'mc', gewaehlt: '1' } },
         ergebnisse: { f1: true }, aktuelleFrageIndex: 0,
         gestartet: new Date().toISOString(),
         unsicher: new Set(), uebersprungen: new Set(), score: 0,
@@ -89,7 +109,7 @@ describe('uebungsStore', () => {
       session: {
         id: 's1', gruppeId: 'g1', email: 'test@mail.com',
         fach: 'Mathe', thema: 'Add', fragen: testFragen,
-        antworten: { f1: { typ: 'mc', gewaehlt: 'A' }, f2: { typ: 'mc', gewaehlt: 'Y' }, f3: { typ: 'mc', gewaehlt: '2' } },
+        antworten: { f1: { typ: 'mc', gewaehlt: '1' }, f2: { typ: 'mc', gewaehlt: '2' }, f3: { typ: 'mc', gewaehlt: '2' } },
         ergebnisse: { f1: true, f2: true, f3: true }, aktuelleFrageIndex: 2,
         gestartet: new Date().toISOString(),
         unsicher: new Set(), uebersprungen: new Set(), score: 0,
@@ -106,7 +126,7 @@ describe('uebungsStore', () => {
       session: {
         id: 's1', gruppeId: 'g1', email: 'test@mail.com',
         fach: 'Mathe', thema: 'Add', fragen: testFragen,
-        antworten: { f1: { typ: 'mc', gewaehlt: 'A' }, f2: { typ: 'mc', gewaehlt: 'X' }, f3: { typ: 'mc', gewaehlt: '2' } },
+        antworten: { f1: { typ: 'mc', gewaehlt: '1' }, f2: { typ: 'mc', gewaehlt: '1' }, f3: { typ: 'mc', gewaehlt: '2' } },
         ergebnisse: { f1: true, f2: false, f3: true }, aktuelleFrageIndex: 2,
         gestartet: new Date().toISOString(),
         unsicher: new Set(), uebersprungen: new Set(), score: 0,

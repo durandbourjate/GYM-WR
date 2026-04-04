@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { BildbeschriftungFrage as BildbeschriftungFrageTyp } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import BildContainer from './shared/BildContainer'
 
 export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const labels = frage.labels || []
+  // Type narrowing
+  if (frage.typ !== 'bildbeschriftung') return null
+  const bbFrage = frage as BildbeschriftungFrageTyp
+
+  const beschriftungen = bbFrage.beschriftungen || []
   const [texte, setTexte] = useState<Record<string, string>>({})
 
   const handleChange = (id: string, text: string) => {
@@ -12,7 +17,7 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
     setTexte({ ...texte, [id]: text })
   }
 
-  const istVollstaendig = labels.some(l => (texte[l.id] || '').trim())
+  const istVollstaendig = beschriftungen.some(b => (texte[b.id] || '').trim())
 
   const handleAbsenden = () => {
     if (!istVollstaendig || disabled) return
@@ -22,15 +27,15 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
   return (
     <div className="space-y-3">
       {/* Bild mit Positions-Markern */}
-      {frage.bild && (
-        <BildContainer src={frage.bild.src} alt={frage.bild.alt}>
+      {bbFrage.bildUrl && (
+        <BildContainer src={bbFrage.bildUrl} alt="Bildbeschriftung">
           {() => (
             <>
-              {labels.map((l, i) => (
+              {beschriftungen.map((b, i) => (
                 <div
-                  key={l.id}
+                  key={b.id}
                   className="absolute flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                  style={{ left: `${l.x}%`, top: `${l.y}%` }}
+                  style={{ left: `${b.position.x}%`, top: `${b.position.y}%` }}
                 >
                   {i + 1}
                 </div>
@@ -42,20 +47,24 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
 
       {/* Eingabefelder */}
       <div className="space-y-2">
-        {labels.map((l, i) => {
-          const eingabe = (texte[l.id] || '').trim().toLowerCase()
-          const korrektText = l.text.trim().toLowerCase()
-          const istKorrekt = feedbackSichtbar && eingabe === korrektText
+        {beschriftungen.map((b, i) => {
+          const eingabe = (texte[b.id] || '').trim().toLowerCase()
+          // Prüfe gegen alle akzeptierten Antworten
+          const korrektAntworten = b.korrekt || []
+          const ersteKorrekt = korrektAntworten[0] || ''
+          const istKorrekt = feedbackSichtbar && korrektAntworten.some(
+            k => eingabe === k.trim().toLowerCase()
+          )
 
           return (
-            <div key={l.id} className="flex gap-2 items-center">
+            <div key={b.id} className="flex gap-2 items-center">
               <span className="w-8 h-8 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center shrink-0">
                 {i + 1}
               </span>
               <input
                 type="text"
-                value={texte[l.id] || ''}
-                onChange={(e) => handleChange(l.id, e.target.value)}
+                value={texte[b.id] || ''}
+                onChange={(e) => handleChange(b.id, e.target.value)}
                 disabled={disabled}
                 placeholder={`Beschriftung ${i + 1}`}
                 className={`flex-1 p-3 rounded-lg border text-sm min-h-[44px] dark:bg-gray-800 dark:text-white
@@ -65,8 +74,8 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
                 `}
               />
               {feedbackSichtbar && !istKorrekt && (
-                <span className="text-xs text-green-600 dark:text-green-400 shrink-0 max-w-[150px] truncate" title={l.text}>
-                  → {l.text}
+                <span className="text-xs text-green-600 dark:text-green-400 shrink-0 max-w-[150px] truncate" title={ersteKorrekt}>
+                  → {ersteKorrekt}
                 </span>
               )}
             </div>
@@ -80,7 +89,7 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={bbFrage.musterlosung} />}
     </div>
   )
 }

@@ -3,8 +3,11 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Typ-Narrowing auf FormelFrage (shared discriminated union)
+  if (frage.typ !== 'formel') return null
+  const formel = frage
+
   const [latex, setLatex] = useState('')
-  const [hinweisIndex, setHinweisIndex] = useState(0)
   const previewRef = useRef<HTMLDivElement>(null)
   const katexLoaded = useRef(false)
 
@@ -60,29 +63,8 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
     onAntwort({ typ: 'formel', latex: latex.trim() })
   }
 
-  const hinweise = frage.hinweise || []
-
   return (
     <div className="space-y-3">
-      {/* Hinweise */}
-      {hinweise.length > 0 && hinweisIndex < hinweise.length && (
-        <div className="space-y-2">
-          {hinweise.slice(0, hinweisIndex + 1).map((h, i) => (
-            <div key={i} className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 text-sm">
-              💡 {h}
-            </div>
-          ))}
-          {hinweisIndex < hinweise.length - 1 && !disabled && (
-            <button
-              onClick={() => setHinweisIndex(hinweisIndex + 1)}
-              className="text-sm text-amber-600 dark:text-amber-400 hover:underline"
-            >
-              Naechster Hinweis
-            </button>
-          )}
-        </div>
-      )}
-
       {/* LaTeX-Eingabe */}
       <input
         type="text"
@@ -111,13 +93,13 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
       {feedbackSichtbar && (
         <div className="space-y-2">
           {/* Korrekte Formel */}
-          {frage.korrekt && typeof frage.korrekt === 'string' && (
+          {formel.korrekteFormel && (
             <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-sm">
               <span className="font-medium text-blue-800 dark:text-blue-200">Korrekte Formel: </span>
-              <code className="text-blue-700 dark:text-blue-300 font-mono">{frage.korrekt}</code>
+              <code className="text-blue-700 dark:text-blue-300 font-mono">{formel.korrekteFormel}</code>
             </div>
           )}
-          {korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+          {korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
         </div>
       )}
     </div>

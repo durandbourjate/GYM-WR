@@ -3,8 +3,10 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function SortFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const kategorien = frage.kategorien || []
-  const elemente = frage.elemente || []
+  // SortFrage = Kategorisierung (Legacy-Typ). Type narrowing via runtime check.
+  const frageAny = frage as unknown as Record<string, unknown>
+  const kategorien = (frageAny.kategorien as string[]) || []
+  const elemente = (frageAny.elemente as { text: string; kategorie: string }[]) || []
   const [zuordnungen, setZuordnungen] = useState<Record<string, string>>({})
   const [aktiv, setAktiv] = useState<string | null>(null)
 
@@ -77,7 +79,7 @@ export default function SortFrage({ frage, onAntwort, disabled, feedbackSichtbar
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
     </div>
   )
 }

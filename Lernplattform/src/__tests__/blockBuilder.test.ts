@@ -2,13 +2,24 @@ import { describe, it, expect } from 'vitest'
 import { erstelleBlock } from '../utils/blockBuilder'
 import type { Frage } from '../types/fragen'
 
+const BASIS = {
+  version: 1, erstelltAm: '', geaendertAm: '',
+  fachbereich: 'VWL' as const, fach: 'Mathe', semester: [] as string[], gefaesse: [] as string[],
+  bloom: 'K2' as const, tags: [] as string[], punkte: 1, musterlosung: '',
+  bewertungsraster: [], verwendungen: [],
+  schwierigkeit: 1,
+}
+
 function macheFrage(id: string, thema: string, overrides?: Partial<Frage>): Frage {
   return {
-    id, fach: 'Mathe', thema, frage: `Frage ${id}`,
-    typ: 'mc', schwierigkeit: 1, uebung: true, pruefungstauglich: false,
-    optionen: ['A', 'B'], korrekt: 'A',
+    ...BASIS, id, thema, typ: 'mc', fragetext: `Frage ${id}`,
+    optionen: [
+      { id: '1', text: 'A', korrekt: true },
+      { id: '2', text: 'B', korrekt: false },
+    ],
+    mehrfachauswahl: false, zufallsreihenfolge: false,
     ...overrides,
-  }
+  } as Frage
 }
 
 describe('erstelleBlock', () => {

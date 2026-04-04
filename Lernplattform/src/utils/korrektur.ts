@@ -1,68 +1,83 @@
-import type { Frage, AntwortTyp } from '../types/fragen'
+/**
+ * Korrektur-Logik für die Lernplattform-Übungen.
+ * Arbeitet mit dem shared Frage-Format (kanonisch, discriminated union).
+ */
+import type { Frage } from '../types/fragen'
+import type { AntwortTyp } from '../types/antworten'
 
 export function pruefeAntwort(frage: Frage, antwort: AntwortTyp): boolean {
-  switch (antwort.typ) {
-    case 'mc':
-      return antwort.gewaehlt === frage.korrekt
-
-    case 'multi': {
-      const korrekt = frage.korrekt as string[]
-      const gewaehlt = [...antwort.gewaehlt].sort()
-      return korrekt.length === gewaehlt.length &&
-        [...korrekt].sort().every((k, i) => k === gewaehlt[i])
+  switch (frage.typ) {
+    case 'mc': {
+      if (!('gewaehlt' in antwort)) return false
+      if (frage.mehrfachauswahl) {
+        // Multi: alle korrekten Optionen müssen gewählt sein
+        const korrekte = frage.optionen.filter(o => o.korrekt).map(o => o.id)
+        const gewaehlt = Array.isArray(antwort.gewaehlt) ? [...antwort.gewaehlt].sort() : [antwort.gewaehlt]
+        return korrekte.length === gewaehlt.length &&
+          [...korrekte].sort().every((k, i) => k === gewaehlt[i])
+      }
+      // Single: die gewählte Option muss korrekt sein
+      const gewaehlt = 'gewaehlt' in antwort ? String(antwort.gewaehlt) : ''
+      const korrektOpt = frage.optionen.find(o => o.korrekt)
+      return korrektOpt ? gewaehlt === korrektOpt.id || gewaehlt === korrektOpt.text : false
     }
 
-    case 'tf': {
-      const aussagen = frage.aussagen || []
-      return aussagen.every((a, i) =>
-        antwort.bewertungen[String(i)] === a.korrekt
+    case 'richtigfalsch': {
+      if (!('bewertungen' in antwort)) return false
+      return frage.aussagen.every(a =>
+        antwort.bewertungen[a.id] === a.korrekt
       )
     }
 
-    case 'fill': {
-      const luecken = frage.luecken || []
-      return luecken.every(l =>
-        (antwort.eintraege[l.id] || '').trim().toLowerCase() === l.korrekt.trim().toLowerCase()
-      )
+    case 'lueckentext': {
+      if (!('eintraege' in antwort)) return false
+      return frage.luecken.every(l => {
+        const eingabe = (antwort.eintraege[l.id] || '').trim()
+        return l.korrekteAntworten.some(ka =>
+          l.caseSensitive ? eingabe === ka.trim() : eingabe.toLowerCase() === ka.trim().toLowerCase()
+        )
+      })
     }
 
-    case 'calc': {
-      const soll = parseFloat(frage.korrekt as string)
-      const ist = parseFloat(antwort.wert)
-      if (isNaN(soll) || isNaN(ist)) return false
-      const toleranz = frage.toleranz ?? 0
-      return Math.abs(soll - ist) <= toleranz
-    }
-
-    case 'sort': {
-      const elemente = frage.elemente || []
-      return elemente.every(e =>
-        antwort.zuordnungen[e.text] === e.kategorie
-      )
+    case 'berechnung': {
+      if (!('wert' in antwort) && !('werte' in antwort)) return false
+      if (frage.ergebnisse.length === 1) {
+        const soll = frage.ergebnisse[0].korrekt
+        const ist = parseFloat('wert' in antwort ? String(antwort.wert) : '0')
+        if (isNaN(ist)) return false
+        return Math.abs(soll - ist) <= frage.ergebnisse[0].toleranz
+      }
+      // Mehrere Ergebnisse
+      const werte = 'werte' in antwort ? (antwort as { werte?: Record<string, string> }).werte : undefined
+      if (!werte) return false
+      return frage.ergebnisse.every(e => {
+        const ist = parseFloat(werte[e.id] || '0')
+        if (isNaN(ist)) return false
+        return Math.abs(e.korrekt - ist) <= e.toleranz
+      })
     }
 
     case 'sortierung': {
-      const korrekt = frage.reihenfolge || []
-      return korrekt.length === antwort.reihenfolge.length &&
-        korrekt.every((k, i) => k === antwort.reihenfolge[i])
+      if (!('reihenfolge' in antwort)) return false
+      return frage.elemente.length === antwort.reihenfolge.length &&
+        frage.elemente.every((e, i) => e === antwort.reihenfolge[i])
     }
 
     case 'zuordnung': {
-      const paare = frage.paare || []
-      return paare.every(p => antwort.paare[p.links] === p.rechts)
+      if (!('paare' in antwort)) return false
+      return frage.paare.every(p => antwort.paare[p.links] === p.rechts)
     }
 
-    // FiBu-Typen
     case 'buchungssatz': {
-      const korrektZeilen = frage.buchungssatzKorrekt || []
+      if (!('zeilen' in antwort)) return false
+      const korrektZeilen = frage.buchungen
       const eingabeZeilen = antwort.zeilen || []
       if (korrektZeilen.length !== eingabeZeilen.length) return false
-      // Jede korrekte Zeile muss matchen (reihenfolge-unabhängig)
       const genutzt = new Set<number>()
       return korrektZeilen.every(kz =>
         eingabeZeilen.some((ez, i) => {
           if (genutzt.has(i)) return false
-          if (ez.soll === kz.soll && ez.haben === kz.haben && Math.abs(ez.betrag - kz.betrag) < 0.01) {
+          if (ez.soll === kz.sollKonto && ez.haben === kz.habenKonto && Math.abs(ez.betrag - kz.betrag) < 0.01) {
             genutzt.add(i)
             return true
           }
@@ -72,99 +87,92 @@ export function pruefeAntwort(frage: Frage, antwort: AntwortTyp): boolean {
     }
 
     case 'tkonto': {
-      const tkontoKonten = frage.tkontoKonten || []
-      return tkontoKonten.every(konto => {
-        const eingabe = antwort.konten[konto.nr]
+      if (!('konten' in antwort)) return false
+      return frage.konten.every(konto => {
+        const eingabe = antwort.konten[konto.kontonummer]
         if (!eingabe) return false
-        // Soll-Einträge prüfen
-        const sollOk = konto.correctSoll.length === eingabe.soll.length &&
-          konto.correctSoll.every(ks =>
-            eingabe.soll.some(es => es.gegen === ks.gegen && Math.abs(es.betrag - ks.betrag) < 0.01)
+        const korrektSoll = konto.eintraege.filter(e => e.seite === 'soll')
+        const korrektHaben = konto.eintraege.filter(e => e.seite === 'haben')
+        const sollOk = korrektSoll.length === eingabe.soll.length &&
+          korrektSoll.every(ks =>
+            eingabe.soll.some(es => es.gegen === ks.gegenkonto && Math.abs(es.betrag - ks.betrag) < 0.01)
           )
-        // Haben-Einträge prüfen
-        const habenOk = konto.correctHaben.length === eingabe.haben.length &&
-          konto.correctHaben.every(kh =>
-            eingabe.haben.some(eh => eh.gegen === kh.gegen && Math.abs(eh.betrag - kh.betrag) < 0.01)
+        const habenOk = korrektHaben.length === eingabe.haben.length &&
+          korrektHaben.every(kh =>
+            eingabe.haben.some(eh => eh.gegen === kh.gegenkonto && Math.abs(eh.betrag - kh.betrag) < 0.01)
           )
-        // Saldo prüfen
-        const saldoOk = konto.correctSaldo &&
-          eingabe.saldo.seite === konto.correctSaldo.seite &&
-          Math.abs(eingabe.saldo.betrag - konto.correctSaldo.betrag) < 0.01
+        const saldoOk = eingabe.saldo.seite === konto.saldo.seite &&
+          Math.abs(eingabe.saldo.betrag - konto.saldo.betrag) < 0.01
         return sollOk && habenOk && saldoOk
       })
     }
 
-    case 'bilanz': {
-      const bk = frage.bilanzKorrekt
-      if (!bk) return false
-      const aktivenOk = bk.aktiven.length === antwort.aktiven.length &&
-        bk.aktiven.every(nr => antwort.aktiven.includes(nr))
-      const passivenOk = bk.passiven.length === antwort.passiven.length &&
-        bk.passiven.every(nr => antwort.passiven.includes(nr))
-      const summeOk = Math.abs(antwort.bilanzsumme - bk.bilanzsumme) < 0.01
-      return aktivenOk && passivenOk && summeOk
+    case 'bilanzstruktur': {
+      if (!('aktiven' in antwort)) return false
+      const loesung = frage.loesung
+      if (!loesung?.bilanz) return false
+      // Vereinfachte Prüfung: Bilanzsumme korrekt
+      return Math.abs(antwort.bilanzsumme - frage.loesung.bilanz!.bilanzsumme) < 0.01
     }
 
     case 'kontenbestimmung': {
-      const aufgaben = frage.aufgaben || []
-      return aufgaben.every((aufgabe, i) => {
-        const eingabe = antwort.zuordnungen[i] || []
-        if (aufgabe.correct.length !== eingabe.length) return false
-        return aufgabe.correct.every(kz =>
-          eingabe.some(ez => ez.konto === kz.konto && ez.seite === kz.seite)
+      if (!('zuordnungen' in antwort)) return false
+      const kbZuordnungen = antwort.zuordnungen as { konto: string; seite: 'soll' | 'haben' }[][]
+      return frage.aufgaben.every((aufgabe, i) => {
+        const eingabe = kbZuordnungen[i] || []
+        if (aufgabe.erwarteteAntworten.length !== eingabe.length) return false
+        return aufgabe.erwarteteAntworten.every(ea =>
+          eingabe.some((ez: { konto: string; seite: string }) => ez.konto === (ea.kontonummer || '') && ez.seite === ea.seite)
         )
       })
     }
 
-    // Bild-Typen
     case 'hotspot': {
-      const hotspots = frage.hotspots || []
-      const korrektIdx = (frage.korrekt as number[]) || []
-      const korrektHotspots = korrektIdx.map(i => hotspots[i]).filter(Boolean)
-      // Jeder Klick muss einen korrekten Hotspot treffen (innerhalb Radius)
-      return korrektHotspots.length === antwort.klicks.length &&
-        korrektHotspots.every(hs =>
-          antwort.klicks.some(k => Math.hypot(hs.x - k.x, hs.y - k.y) < hs.r)
+      if (!('klicks' in antwort)) return false
+      return frage.bereiche.length === antwort.klicks.length &&
+        frage.bereiche.every(b =>
+          antwort.klicks.some(k => {
+            const r = b.koordinaten.radius || 10
+            return Math.hypot(b.koordinaten.x - k.x, b.koordinaten.y - k.y) < r
+          })
         )
     }
 
     case 'bildbeschriftung': {
-      const labels = frage.labels || []
-      return labels.every(l =>
-        (antwort.texte[l.id] || '').trim().toLowerCase() === l.text.trim().toLowerCase()
+      if (!('texte' in antwort)) return false
+      return frage.beschriftungen.every(b =>
+        b.korrekt.some(ka =>
+          (antwort.texte[b.id] || '').trim().toLowerCase() === ka.trim().toLowerCase()
+        )
       )
     }
 
     case 'dragdrop_bild': {
-      const dragLabels = frage.dragLabels || []
-      return dragLabels.every(l => antwort.zuordnungen[l.id] === l.zone)
+      if (!('zuordnungen' in antwort)) return false
+      const ddZuordnungen = antwort.zuordnungen as Record<string, string>
+      return frage.zielzonen.every(z =>
+        ddZuordnungen[z.korrektesLabel] === z.id ||
+        frage.labels.some(l => l === z.korrektesLabel && ddZuordnungen[l] === z.id)
+      )
     }
 
-    // Selbstbewertete Typen: Ergebnis basiert auf Nutzer-Eingabe
-    case 'open':
-      return antwort.selbstbewertung === 'korrekt'
-
+    // Selbstbewertete Typen
+    case 'freitext':
     case 'pdf':
-      return antwort.selbstbewertung === 'korrekt'
-
-    case 'zeichnen':
-      return antwort.selbstbewertung === 'korrekt'
-
+    case 'visualisierung':
     case 'audio':
-      return antwort.selbstbewertung === 'korrekt'
-
     case 'code':
-      return antwort.selbstbewertung === 'korrekt'
+      return 'selbstbewertung' in antwort && antwort.selbstbewertung === 'korrekt'
 
-    // Gruppe: alle Teile müssen beantwortet sein (Detailkorrektur in Komponente)
-    case 'gruppe': {
-      const teil = frage.teil || []
-      return teil.length > 0 && Object.keys(antwort.teilAntworten).length === teil.length
+    case 'aufgabengruppe': {
+      if (!('teilAntworten' in antwort)) return false
+      const teilaufgaben = frage.teilaufgaben || []
+      return teilaufgaben.length > 0 && Object.keys(antwort.teilAntworten).length === teilaufgaben.length
     }
 
-    // Formel: normalisierter String-Vergleich
     case 'formel': {
-      const soll = normalisiereLatex(frage.korrekt as string || '')
+      if (!('latex' in antwort)) return false
+      const soll = normalisiereLatex(frage.korrekteFormel)
       const ist = normalisiereLatex(antwort.latex)
       return soll === ist
     }
@@ -174,11 +182,10 @@ export function pruefeAntwort(frage: Frage, antwort: AntwortTyp): boolean {
   }
 }
 
-/** LaTeX normalisieren fuer Vergleich: Leerzeichen, Backslash-Varianten */
 function normalisiereLatex(s: string): string {
   return s
-    .replace(/\s+/g, '')           // Alle Leerzeichen entfernen
-    .replace(/\\cdot/g, '\\times') // cdot und times gleichwertig
-    .replace(/\*\*/g, '^')         // ** als Potenz
+    .replace(/\s+/g, '')
+    .replace(/\\cdot/g, '\\times')
+    .replace(/\*\*/g, '^')
     .toLowerCase()
 }

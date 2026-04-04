@@ -3,7 +3,11 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const luecken = frage.luecken || []
+  // Typ-Narrowing auf LueckentextFrage (shared = 'lueckentext', legacy = 'fill')
+  if (frage.typ !== 'lueckentext' && (frage.typ as string) !== 'fill') return null
+  const lt = frage as import('../../types/fragen').LueckentextFrage
+
+  const luecken = lt.luecken || []
   const [eintraege, setEintraege] = useState<Record<string, string>>({})
 
   const alleAusgefuellt = luecken.every(l => (eintraege[l.id] || '').trim().length > 0)
@@ -15,14 +19,15 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
 
   return (
     <div className="space-y-4">
-      {luecken.map((luecke) => {
+      {luecken.map((luecke, i) => {
         const wert = eintraege[luecke.id] || ''
-        const istKorrekt = feedbackSichtbar && wert.trim().toLowerCase() === luecke.korrekt.trim().toLowerCase()
+        const korrekteAntwort = luecke.korrekteAntworten[0] || ''
+        const istKorrekt = feedbackSichtbar && wert.trim().toLowerCase() === korrekteAntwort.trim().toLowerCase()
         const istFalsch = feedbackSichtbar && !istKorrekt
 
         return (
           <div key={luecke.id}>
-            {luecke.optionen ? (
+            {luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0 ? (
               <select
                 value={wert}
                 onChange={(e) => setEintraege(prev => ({ ...prev, [luecke.id]: e.target.value }))}
@@ -34,7 +39,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
                 `}
               >
                 <option value="">-- Waehlen --</option>
-                {luecke.optionen.map(o => <option key={o} value={o}>{o}</option>)}
+                {luecke.dropdownOptionen.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             ) : (
               <input
@@ -43,7 +48,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
                 onChange={(e) => setEintraege(prev => ({ ...prev, [luecke.id]: e.target.value }))}
                 disabled={disabled}
                 placeholder="Antwort eingeben"
-                autoFocus={luecken.indexOf(luecke) === 0}
+                autoFocus={i === 0}
                 className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-gray-700 dark:text-white focus:outline-none
                   ${istKorrekt ? 'border-green-500' : ''}
                   ${istFalsch ? 'border-red-500' : ''}
@@ -52,7 +57,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
               />
             )}
             {istFalsch && (
-              <p className="text-sm text-red-500 mt-1">Korrekt: {luecke.korrekt}</p>
+              <p className="text-sm text-red-500 mt-1">Korrekt: {korrekteAntwort}</p>
             )}
           </div>
         )
@@ -64,7 +69,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
     </div>
   )
 }

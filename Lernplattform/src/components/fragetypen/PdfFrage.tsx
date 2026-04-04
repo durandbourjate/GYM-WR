@@ -4,6 +4,10 @@ import FeedbackBox from './FeedbackBox'
 import { resolveAssetUrl } from '../../utils/assetUrl'
 
 export default function PdfFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Typ-Narrowing auf PDFFrage (shared discriminated union)
+  if (frage.typ !== 'pdf') return null
+  const pdf = frage
+
   const [text, setText] = useState('')
   const [selbstbewertung, setSelbstbewertung] = useState<'korrekt' | 'teilweise' | 'falsch' | null>(null)
 
@@ -20,25 +24,14 @@ export default function PdfFrage({ frage, onAntwort, disabled, feedbackSichtbar,
   return (
     <div className="space-y-3">
       {/* PDF-Viewer — kein sandbox-Attribut (Regel #16 bilder-in-pools.md) */}
-      {frage.pdfUrl && (
+      {pdf.pdfUrl && (
         <div className="rounded-xl border-2 border-gray-200 dark:border-gray-600 overflow-hidden">
           <iframe
-            src={resolveAssetUrl(frage.pdfUrl)}
+            src={resolveAssetUrl(pdf.pdfUrl)}
             title="PDF-Material"
             className="w-full"
             style={{ height: '500px' }}
           />
-        </div>
-      )}
-
-      {/* Hinweise */}
-      {frage.hinweise && frage.hinweise.length > 0 && (
-        <div className="space-y-1">
-          {frage.hinweise.map((h, i) => (
-            <div key={i} className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 text-sm">
-              💡 {h}
-            </div>
-          ))}
         </div>
       )}
 
@@ -61,10 +54,10 @@ export default function PdfFrage({ frage, onAntwort, disabled, feedbackSichtbar,
 
       {feedbackSichtbar && (
         <div className="space-y-3">
-          {frage.musterantwort && (
+          {frage.musterlosung && (
             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
               <p className="font-medium text-sm mb-1">Musterantwort:</p>
-              <p className="text-sm">{frage.musterantwort}</p>
+              <p className="text-sm">{frage.musterlosung}</p>
             </div>
           )}
 
@@ -95,7 +88,7 @@ export default function PdfFrage({ frage, onAntwort, disabled, feedbackSichtbar,
           )}
 
           {selbstbewertung && korrekt !== null && (
-            <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />
+            <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />
           )}
         </div>
       )}

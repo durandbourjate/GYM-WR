@@ -1,9 +1,14 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { VisualisierungFrage } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import { resolveAssetUrl } from '../../utils/assetUrl'
 
 export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Type narrowing
+  if (frage.typ !== 'visualisierung' && (frage.typ as string) !== 'zeichnen') return null
+  const vizFrage = frage as VisualisierungFrage
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const isDrawing = useRef(false)
   const lastPoint = useRef<{ x: number; y: number } | null>(null)
@@ -102,21 +107,8 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
     onAntwort({ typ: 'zeichnen', datenUrl: canvas.toDataURL('image/png'), selbstbewertung: bewertung })
   }
 
-  const hinweise = frage.hinweise || []
-
   return (
     <div className="space-y-3">
-      {/* Hinweise */}
-      {hinweise.length > 0 && (
-        <div className="space-y-1">
-          {hinweise.map((h, i) => (
-            <div key={i} className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 text-sm">
-              💡 {h}
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* Toolbar */}
       <div className="flex gap-2 items-center flex-wrap">
         <input type="color" value={farbe} onChange={(e) => setFarbe(e.target.value)} disabled={disabled} className="w-10 h-10 rounded cursor-pointer" title="Farbe" />
@@ -145,10 +137,10 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
 
       {feedbackSichtbar && (
         <div className="space-y-3">
-          {frage.musterbild && (
+          {vizFrage.musterloesungBild && (
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Musterlösung:</p>
-              <img src={resolveAssetUrl(frage.musterbild.src)} alt={frage.musterbild.alt} className="w-full rounded-xl border border-gray-200 dark:border-gray-600" />
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Musterloesung:</p>
+              <img src={resolveAssetUrl(vizFrage.musterloesungBild)} alt="Musterloesung" className="w-full rounded-xl border border-gray-200 dark:border-gray-600" />
             </div>
           )}
 
@@ -163,7 +155,7 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
             </div>
           )}
 
-          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={vizFrage.musterlosung} />}
         </div>
       )}
     </div>

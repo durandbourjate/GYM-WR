@@ -3,10 +3,14 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const aussagen = frage.aussagen || []
+  // Typ-Narrowing: shared = 'richtigfalsch', legacy = 'tf'
+  if (frage.typ !== 'richtigfalsch' && (frage.typ as string) !== 'tf') return null
+  // Nach dem Guard: Aussagen existieren auf dem Typ
+  const aussagen = (frage as { aussagen: { id: string; text: string; korrekt: boolean; erklaerung?: string }[] }).aussagen || []
+
   const [bewertungen, setBewertungen] = useState<Record<string, boolean>>({})
 
-  const alleBewertet = aussagen.every((_, i) => String(i) in bewertungen)
+  const alleBewertet = aussagen.every(a => a.id in bewertungen)
 
   const handleAbsenden = () => {
     if (!alleBewertet || disabled) return
@@ -15,15 +19,15 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
 
   return (
     <div className="space-y-3">
-      {aussagen.map((aussage, i) => {
-        const key = String(i)
+      {aussagen.map((aussage) => {
+        const key = aussage.id
         const wert = bewertungen[key]
         const istBewertet = key in bewertungen
         const istKorrekt = feedbackSichtbar && istBewertet && wert === aussage.korrekt
         const istFalsch = feedbackSichtbar && istBewertet && wert !== aussage.korrekt
 
         return (
-          <div key={i} className={`p-4 rounded-xl border-2 transition-colors
+          <div key={aussage.id} className={`p-4 rounded-xl border-2 transition-colors
             ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
             ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
             ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600' : ''}
@@ -49,6 +53,9 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
                 Falsch
               </button>
             </div>
+            {feedbackSichtbar && istFalsch && aussage.erklaerung && (
+              <p className="text-xs mt-2 text-gray-500 dark:text-gray-400">{aussage.erklaerung}</p>
+            )}
           </div>
         )
       })}
@@ -59,7 +66,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
     </div>
   )
 }

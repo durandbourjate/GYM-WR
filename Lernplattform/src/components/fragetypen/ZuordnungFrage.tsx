@@ -4,7 +4,11 @@ import { seededShuffle } from '../../utils/shuffle'
 import FeedbackBox from './FeedbackBox'
 
 export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const originalPaare = frage.paare || []
+  // Typ-Narrowing auf ZuordnungFrage (shared discriminated union)
+  if (frage.typ !== 'zuordnung') return null
+  const zuordnung = frage
+
+  const originalPaare = zuordnung.paare || []
   const linksElemente = originalPaare.map(p => p.links)
   const [rechtsGemischt] = useState(() => seededShuffle(originalPaare.map(p => p.rechts), frage.id))
   const [paare, setPaare] = useState<Record<string, string>>({})
@@ -90,7 +94,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
     </div>
   )
 }

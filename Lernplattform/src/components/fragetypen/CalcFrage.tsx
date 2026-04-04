@@ -3,6 +3,15 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function CalcFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Typ-Narrowing auf BerechnungFrage (shared = 'berechnung', legacy = 'calc')
+  if (frage.typ !== 'berechnung' && (frage.typ as string) !== 'calc') return null
+  const calc = frage as import('../../types/fragen').BerechnungFrage
+
+  const erstesErgebnis = calc.ergebnisse?.[0]
+  const einheit = erstesErgebnis?.einheit
+  const toleranz = erstesErgebnis?.toleranz
+  const korrektWert = erstesErgebnis?.korrekt
+
   const [wert, setWert] = useState('')
 
   const handleAbsenden = () => {
@@ -28,11 +37,11 @@ export default function CalcFrage({ frage, onAntwort, disabled, feedbackSichtbar
           `}
           onKeyDown={(e) => { if (e.key === 'Enter') handleAbsenden() }}
         />
-        {frage.einheit && <span className="text-gray-500 dark:text-gray-400">{frage.einheit}</span>}
+        {einheit && <span className="text-gray-500 dark:text-gray-400">{einheit}</span>}
       </div>
 
-      {feedbackSichtbar && !korrekt && (
-        <p className="text-sm text-red-500">Korrekt: {frage.korrekt}{frage.einheit ? ` ${frage.einheit}` : ''}{frage.toleranz ? ` (+-${frage.toleranz})` : ''}</p>
+      {feedbackSichtbar && !korrekt && korrektWert !== undefined && (
+        <p className="text-sm text-red-500">Korrekt: {korrektWert}{einheit ? ` ${einheit}` : ''}{toleranz ? ` (+-${toleranz})` : ''}</p>
       )}
 
       {!disabled && wert.trim() && !feedbackSichtbar && (
@@ -41,7 +50,7 @@ export default function CalcFrage({ frage, onAntwort, disabled, feedbackSichtbar
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
     </div>
   )
 }

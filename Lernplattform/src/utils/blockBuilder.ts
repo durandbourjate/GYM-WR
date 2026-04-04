@@ -26,7 +26,7 @@ export function erstelleBlock(
     ? { seed: seedOrOptions }
     : seedOrOptions || {}
 
-  const themaFragen = alleFragen.filter(f => f.thema === thema && f.uebung)
+  const themaFragen = alleFragen.filter(f => f.thema === thema)
   if (themaFragen.length === 0) return []
 
   const seed = options.seed || `${Date.now()}`

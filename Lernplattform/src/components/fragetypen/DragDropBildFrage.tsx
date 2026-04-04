@@ -1,23 +1,28 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { DragDropBildFrage as DragDropBildFrageTyp } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import BildContainer from './shared/BildContainer'
 
 export default function DragDropBildFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const zones = frage.zones || []
-  const dragLabels = frage.dragLabels || []
+  // Type narrowing
+  if (frage.typ !== 'dragdrop_bild') return null
+  const ddFrage = frage as DragDropBildFrageTyp
 
-  // Zuordnung: Label-ID → Zone-ID
+  const zielzonen = ddFrage.zielzonen || []
+  const labels = ddFrage.labels || []
+
+  // Zuordnung: Label (string) → Zone-ID
   const [zuordnungen, setZuordnungen] = useState<Record<string, string>>({})
   // Aktuell ausgewähltes Label (Tap-to-Select, Tap-to-Place — Regel #18)
   const [ausgewaehlt, setAusgewaehlt] = useState<string | null>(null)
 
-  const handleLabelKlick = (labelId: string) => {
+  const handleLabelKlick = (label: string) => {
     if (disabled || feedbackSichtbar) return
-    if (ausgewaehlt === labelId) {
+    if (ausgewaehlt === label) {
       setAusgewaehlt(null) // Deselect
     } else {
-      setAusgewaehlt(labelId)
+      setAusgewaehlt(label)
     }
   }
 
@@ -27,14 +32,14 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
     setAusgewaehlt(null)
   }
 
-  const entferneZuordnung = (labelId: string) => {
+  const entferneZuordnung = (label: string) => {
     if (disabled || feedbackSichtbar) return
     const neu = { ...zuordnungen }
-    delete neu[labelId]
+    delete neu[label]
     setZuordnungen(neu)
   }
 
-  const istVollstaendig = dragLabels.some(l => zuordnungen[l.id])
+  const istVollstaendig = labels.some(l => zuordnungen[l])
 
   const handleAbsenden = () => {
     if (!istVollstaendig || disabled) return
@@ -42,7 +47,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
   }
 
   const zugeordneteLabels = (zoneId: string) =>
-    dragLabels.filter(l => zuordnungen[l.id] === zoneId)
+    labels.filter(l => zuordnungen[l] === zoneId)
 
   return (
     <div className="space-y-3">
@@ -51,40 +56,40 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
       </p>
 
       {/* Bild mit Zones */}
-      {frage.bild && (
-        <BildContainer src={frage.bild.src} alt={frage.bild.alt}>
+      {ddFrage.bildUrl && (
+        <BildContainer src={ddFrage.bildUrl} alt="DragDrop-Bild">
           {() => (
             <>
-              {zones.map((z) => {
-                const labelsInZone = zugeordneteLabels(z.id)
+              {zielzonen.map((zone) => {
+                const labelsInZone = zugeordneteLabels(zone.id)
                 return (
                   <div
-                    key={z.id}
-                    onClick={() => handleZoneKlick(z.id)}
+                    key={zone.id}
+                    onClick={() => handleZoneKlick(zone.id)}
                     className={`absolute border-2 rounded transition-colors
                       ${ausgewaehlt ? 'border-blue-400 bg-blue-100/30 cursor-pointer hover:bg-blue-200/40' : 'border-gray-400/50 bg-gray-100/20'}
                       ${disabled || feedbackSichtbar ? 'cursor-default' : ''}
                     `}
                     style={{
-                      left: `${z.x}%`, top: `${z.y}%`,
-                      width: `${z.w}%`, height: `${z.h}%`,
+                      left: `${zone.position.x}%`, top: `${zone.position.y}%`,
+                      width: `${zone.position.breite}%`, height: `${zone.position.hoehe}%`,
                       touchAction: 'none',
                     }}
                   >
                     {/* Labels in dieser Zone */}
                     <div className="absolute inset-0 flex flex-wrap gap-0.5 p-0.5 items-start content-start overflow-hidden">
-                      {labelsInZone.map((l) => {
-                        const istKorrekt = feedbackSichtbar && l.zone === z.id
+                      {labelsInZone.map((label) => {
+                        const istKorrekt = feedbackSichtbar && zone.korrektesLabel === label
                         return (
                           <span
-                            key={l.id}
+                            key={label}
                             className={`text-xs px-1 py-0.5 rounded whitespace-nowrap
                               ${feedbackSichtbar
                                 ? (istKorrekt ? 'bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200' : 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200')
                                 : 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'}
                             `}
                           >
-                            {l.text}
+                            {label}
                           </span>
                         )
                       })}
@@ -99,16 +104,17 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
 
       {/* Label-Chips */}
       <div className="flex flex-wrap gap-2">
-        {dragLabels.map((l) => {
-          const istZugeordnet = !!zuordnungen[l.id]
-          const istAusgewaehlt = ausgewaehlt === l.id
-          const korrektZone = feedbackSichtbar && l.zone
-          const istKorrekt = feedbackSichtbar && zuordnungen[l.id] === korrektZone
+        {labels.map((label) => {
+          const istZugeordnet = !!zuordnungen[label]
+          const istAusgewaehlt = ausgewaehlt === label
+          // Finde die Zone, in die dieses Label korrekt gehört
+          const korrekteZone = zielzonen.find(z => z.korrektesLabel === label)
+          const istKorrekt = feedbackSichtbar && korrekteZone && zuordnungen[label] === korrekteZone.id
 
           return (
             <button
-              key={l.id}
-              onClick={() => istZugeordnet && !feedbackSichtbar ? entferneZuordnung(l.id) : handleLabelKlick(l.id)}
+              key={label}
+              onClick={() => istZugeordnet && !feedbackSichtbar ? entferneZuordnung(label) : handleLabelKlick(label)}
               disabled={disabled && !feedbackSichtbar}
               className={`px-3 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors border-2
                 ${istAusgewaehlt ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 ring-2 ring-blue-300' : ''}
@@ -118,7 +124,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
                 ${feedbackSichtbar && !istKorrekt && istZugeordnet ? 'border-red-400 bg-red-50 dark:bg-red-900/30' : ''}
               `}
             >
-              <span className="dark:text-white">{l.text}</span>
+              <span className="dark:text-white">{label}</span>
               {istZugeordnet && !feedbackSichtbar && (
                 <span className="ml-1 text-xs text-gray-400">✕</span>
               )}
@@ -133,7 +139,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={ddFrage.musterlosung} />}
     </div>
   )
 }

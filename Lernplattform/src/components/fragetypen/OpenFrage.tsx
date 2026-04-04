@@ -3,6 +3,9 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
+  // Typ-Narrowing auf FreitextFrage (shared = 'freitext', legacy = 'open')
+  if (frage.typ !== 'freitext' && (frage.typ as string) !== 'open') return null
+
   const [text, setText] = useState('')
   const [selbstbewertung, setSelbstbewertung] = useState<'korrekt' | 'teilweise' | 'falsch' | null>(null)
 
@@ -38,10 +41,10 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
       {feedbackSichtbar && (
         <div className="space-y-3">
           {/* Musterantwort anzeigen */}
-          {frage.musterantwort && (
+          {frage.musterlosung && (
             <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
               <p className="font-medium text-sm mb-1">Musterantwort:</p>
-              <p className="text-sm">{frage.musterantwort}</p>
+              <p className="text-sm">{frage.musterlosung}</p>
             </div>
           )}
 
@@ -73,7 +76,7 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
           )}
 
           {selbstbewertung && korrekt !== null && (
-            <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />
+            <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />
           )}
         </div>
       )}

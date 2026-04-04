@@ -4,7 +4,11 @@ import { seededShuffle } from '../../utils/shuffle'
 import FeedbackBox from './FeedbackBox'
 
 export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const korrektReihenfolge = frage.reihenfolge || []
+  // Typ-Narrowing auf SortierungFrage (shared discriminated union)
+  if (frage.typ !== 'sortierung') return null
+  const sort = frage
+
+  const korrektReihenfolge = sort.elemente || []
   const [reihenfolge, setReihenfolge] = useState<string[]>(() =>
     seededShuffle(korrektReihenfolge, frage.id)
   )
@@ -67,7 +71,7 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
           {!korrekt && (
             <p className="text-sm text-red-500 mt-2">Richtig: {korrektReihenfolge.join(' \u2192 ')}</p>
           )}
-          <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />
+          <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />
         </>
       )}
     </div>

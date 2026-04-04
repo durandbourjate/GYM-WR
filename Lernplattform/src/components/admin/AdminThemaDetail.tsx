@@ -53,7 +53,7 @@ export default function AdminThemaDetail({ email: _email, fach, thema }: Props) 
             return (
               <div key={frage.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm dark:text-white">{frage.frage}</span>
+                  <span className="text-sm dark:text-white">{'fragetext' in frage ? (frage as { fragetext: string }).fragetext : frage.thema}</span>
                   <MasteryLabel mastery={fp?.mastery || 'neu'} />
                 </div>
 

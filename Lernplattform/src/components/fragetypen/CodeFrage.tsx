@@ -3,24 +3,28 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function CodeFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const [code, setCode] = useState(frage.starterCode || '')
+  // Typ-Narrowing auf CodeFrage (shared discriminated union)
+  if (frage.typ !== 'code') return null
+  const codeFrage = frage
+
+  const [code, setCode] = useState(codeFrage.starterCode || '')
   const [selbstbewertung, setSelbstbewertung] = useState<'korrekt' | 'teilweise' | 'falsch' | null>(null)
 
   const handleAbsenden = () => {
     if (!code.trim() || disabled) return
-    onAntwort({ typ: 'code', code: code.trim(), sprache: frage.sprache })
+    onAntwort({ typ: 'code', code: code.trim(), sprache: codeFrage.sprache })
   }
 
   const handleSelbstbewertung = (bewertung: 'korrekt' | 'teilweise' | 'falsch') => {
     setSelbstbewertung(bewertung)
-    onAntwort({ typ: 'code', code: code.trim(), sprache: frage.sprache, selbstbewertung: bewertung })
+    onAntwort({ typ: 'code', code: code.trim(), sprache: codeFrage.sprache, selbstbewertung: bewertung })
   }
 
   return (
     <div className="space-y-3">
-      {frage.sprache && (
+      {codeFrage.sprache && (
         <span className="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-          {frage.sprache}
+          {codeFrage.sprache}
         </span>
       )}
 
@@ -43,10 +47,10 @@ export default function CodeFrage({ frage, onAntwort, disabled, feedbackSichtbar
 
       {feedbackSichtbar && (
         <div className="space-y-3">
-          {frage.musterantwort && (
+          {codeFrage.musterLoesung && (
             <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p className="font-medium text-sm mb-2 text-gray-600 dark:text-gray-400">Musterlösung:</p>
-              <pre className="text-sm font-mono text-gray-800 dark:text-green-400 whitespace-pre-wrap">{frage.musterantwort}</pre>
+              <pre className="text-sm font-mono text-gray-800 dark:text-green-400 whitespace-pre-wrap">{codeFrage.musterLoesung}</pre>
             </div>
           )}
 
@@ -61,7 +65,7 @@ export default function CodeFrage({ frage, onAntwort, disabled, feedbackSichtbar
             </div>
           )}
 
-          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+          {selbstbewertung && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}
         </div>
       )}
     </div>

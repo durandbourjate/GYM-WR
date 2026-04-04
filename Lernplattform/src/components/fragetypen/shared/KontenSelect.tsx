@@ -1,4 +1,4 @@
-import type { Konto } from '../../../types/fragen'
+interface Konto { nr: string; name: string; kategorie?: string }
 
 interface Props {
   konten: Konto[]

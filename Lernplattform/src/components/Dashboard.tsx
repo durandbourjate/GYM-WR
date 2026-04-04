@@ -25,6 +25,10 @@ const TYP_LABELS: Record<string, string> = {
   buchungssatz: 'Buchungssatz', tkonto: 'T-Konto', bilanz: 'Bilanz', kontenbestimmung: 'Kontenb.',
   hotspot: 'Hotspot', bildbeschriftung: 'Beschriftung', dragdrop_bild: 'DragDrop',
   gruppe: 'Gruppe', zeichnen: 'Zeichnen', audio: 'Audio', code: 'Code',
+  // Shared Typ-Namen (kanonisch)
+  richtigfalsch: 'R/F', lueckentext: 'Lücken', berechnung: 'Berechnung',
+  freitext: 'Freitext', visualisierung: 'Zeichnen', bilanzstruktur: 'Bilanz',
+  aufgabengruppe: 'Gruppe',
 }
 
 interface ThemenInfo {
@@ -62,7 +66,7 @@ export default function Dashboard() {
     if (!aktiveGruppe) return
     const ladeThemen = async () => {
       setLaden(true)
-      const fragen = await fragenAdapter.ladeFragen(aktiveGruppe.id, { nurUebung: true })
+      const fragen = await fragenAdapter.ladeFragen(aktiveGruppe.id)
       setAlleFragen(fragen)
 
       const fachMap: Record<string, Record<string, Frage[]>> = {}
@@ -99,7 +103,7 @@ export default function Dashboard() {
   , [alleFragen])
 
   const verfuegbareSchwierigkeiten = useMemo(() =>
-    [...new Set(alleFragen.map(f => f.schwierigkeit))].sort()
+    [...new Set(alleFragen.map(f => f.schwierigkeit ?? 2).filter(Boolean))].sort()
   , [alleFragen])
 
   // Gefilterte Themen

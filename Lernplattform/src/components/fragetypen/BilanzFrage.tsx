@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { BilanzERFrage } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 
 export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const kontenMitSaldi = frage.kontenMitSaldi || []
-  const bilanzKorrekt = frage.bilanzKorrekt
-  const istBilanz = frage.bilanzModus !== 'erfolgsrechnung'
+  // Type narrowing
+  if (frage.typ !== 'bilanzstruktur') return null
+  const beFrage = frage as BilanzERFrage
+
+  const kontenMitSaldi = beFrage.kontenMitSaldi || []
+  const loesung = beFrage.loesung
+  const istBilanz = beFrage.modus !== 'erfolgsrechnung'
   const linksLabel = istBilanz ? 'Aktiven' : 'Aufwand'
   const rechtsLabel = istBilanz ? 'Passiven' : 'Ertrag'
 
@@ -13,22 +18,22 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
   const [rechts, setRechts] = useState<string[]>([])
   const [bilanzsumme, setBilanzsumme] = useState('')
 
-  const toggleKonto = (nr: string) => {
+  const toggleKonto = (kontonummer: string) => {
     if (disabled) return
     // Konto auf eine Seite zuordnen oder zwischen Seiten wechseln
-    if (links.includes(nr)) {
-      setLinks(links.filter(n => n !== nr))
-      setRechts([...rechts, nr])
-    } else if (rechts.includes(nr)) {
-      setRechts(rechts.filter(n => n !== nr))
+    if (links.includes(kontonummer)) {
+      setLinks(links.filter(n => n !== kontonummer))
+      setRechts([...rechts, kontonummer])
+    } else if (rechts.includes(kontonummer)) {
+      setRechts(rechts.filter(n => n !== kontonummer))
     } else {
-      setLinks([...links, nr])
+      setLinks([...links, kontonummer])
     }
   }
 
-  const getSeite = (nr: string): 'links' | 'rechts' | 'none' => {
-    if (links.includes(nr)) return 'links'
-    if (rechts.includes(nr)) return 'rechts'
+  const getSeite = (kontonummer: string): 'links' | 'rechts' | 'none' => {
+    if (links.includes(kontonummer)) return 'links'
+    if (rechts.includes(kontonummer)) return 'rechts'
     return 'none'
   }
 
@@ -42,7 +47,12 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
     })
   }
 
-  const alleZugeordnet = kontenMitSaldi.every(k => links.includes(k.nr) || rechts.includes(k.nr))
+  // Korrekte Zuordnung aus loesung extrahieren
+  const korrekteAktiven = loesung?.bilanz?.aktivSeite?.gruppen?.flatMap(g => g.konten) || []
+  const korrektePassiven = loesung?.bilanz?.passivSeite?.gruppen?.flatMap(g => g.konten) || []
+  const korrekteBilanzsumme = loesung?.bilanz?.bilanzsumme
+
+  const alleZugeordnet = kontenMitSaldi.every(k => links.includes(k.kontonummer) || rechts.includes(k.kontonummer))
 
   return (
     <div className="space-y-4">
@@ -53,16 +63,16 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {kontenMitSaldi.map((k) => {
-            const seite = getSeite(k.nr)
-            const korrektSeite = feedbackSichtbar && bilanzKorrekt
-              ? (bilanzKorrekt.aktiven.includes(k.nr) ? 'links' : bilanzKorrekt.passiven.includes(k.nr) ? 'rechts' : null)
+            const seite = getSeite(k.kontonummer)
+            const korrektSeite = feedbackSichtbar && loesung
+              ? (korrekteAktiven.includes(k.kontonummer) ? 'links' : korrektePassiven.includes(k.kontonummer) ? 'rechts' : null)
               : null
             const istRichtig = feedbackSichtbar && korrektSeite === seite
 
             return (
               <button
-                key={k.nr}
-                onClick={() => toggleKonto(k.nr)}
+                key={k.kontonummer}
+                onClick={() => toggleKonto(k.kontonummer)}
                 disabled={disabled}
                 className={`p-3 rounded-lg border-2 text-left text-sm min-h-[48px] flex justify-between items-center transition-colors
                   ${seite === 'links' ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/30' : ''}
@@ -74,8 +84,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
                 `}
               >
                 <span className="dark:text-white">
-                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400 mr-2">{k.nr}</span>
-                  {k.name}
+                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400 mr-2">{k.kontonummer}</span>
                 </span>
                 <span className="font-mono text-sm dark:text-white">{k.saldo.toLocaleString('de-CH')}</span>
               </button>
@@ -106,8 +115,8 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
           disabled={disabled}
           placeholder="CHF"
           className={`w-32 p-2 rounded-lg border text-sm text-right min-h-[44px] dark:bg-gray-800 dark:text-white
-            ${feedbackSichtbar && bilanzKorrekt
-              ? (parseFloat(bilanzsumme) === bilanzKorrekt.bilanzsumme ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400')
+            ${feedbackSichtbar && korrekteBilanzsumme !== undefined
+              ? (parseFloat(bilanzsumme) === korrekteBilanzsumme ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400')
               : 'border-gray-300 dark:border-gray-600'}
           `}
         />
@@ -119,7 +128,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={beFrage.musterlosung} />}
     </div>
   )
 }

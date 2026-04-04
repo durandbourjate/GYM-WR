@@ -1,4 +1,5 @@
-import type { Frage, AntwortTyp } from './fragen'
+import type { Frage } from './fragen'
+import type { AntwortTyp } from './antworten'
 
 export interface UebungsSession {
   id: string

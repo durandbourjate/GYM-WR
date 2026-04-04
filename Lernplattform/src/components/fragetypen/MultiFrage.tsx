@@ -3,14 +3,17 @@ import type { FrageKomponenteProps } from './index'
 import FeedbackBox from './FeedbackBox'
 
 export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const [gewaehlt, setGewaehlt] = useState<string[]>([])
-  const optionen = frage.optionen || []
-  const korrekteOptionen = (frage.korrekt as string[]) || []
+  // Typ-Narrowing auf MCFrage mit mehrfachauswahl (shared discriminated union)
+  if (frage.typ !== 'mc') return null
+  const mc = frage
 
-  const toggleOption = (option: string) => {
+  const [gewaehlt, setGewaehlt] = useState<string[]>([])
+  const optionen = mc.optionen || []
+
+  const toggleOption = (optionText: string) => {
     if (disabled) return
     setGewaehlt(prev =>
-      prev.includes(option) ? prev.filter(o => o !== option) : [...prev, option]
+      prev.includes(optionText) ? prev.filter(o => o !== optionText) : [...prev, optionText]
     )
   }
 
@@ -23,14 +26,14 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
     <div className="space-y-3">
       <p className="text-sm text-gray-500 dark:text-gray-400">Mehrere Antworten moeglich</p>
       {optionen.map((option, i) => {
-        const istGewaehlt = gewaehlt.includes(option)
-        const istKorrekt = feedbackSichtbar && korrekteOptionen.includes(option)
-        const istFalsch = feedbackSichtbar && istGewaehlt && !korrekteOptionen.includes(option)
+        const istGewaehlt = gewaehlt.includes(option.text)
+        const istKorrekt = feedbackSichtbar && option.korrekt
+        const istFalsch = feedbackSichtbar && istGewaehlt && !option.korrekt
 
         return (
           <button
-            key={i}
-            onClick={() => toggleOption(option)}
+            key={option.id || i}
+            onClick={() => toggleOption(option.text)}
             disabled={disabled}
             className={`w-full text-left p-4 rounded-xl border-2 transition-colors min-h-[48px] flex items-center gap-3
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
@@ -45,7 +48,10 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
             `}>
               {istGewaehlt ? '✓' : ''}
             </span>
-            <span className="dark:text-white">{option}</span>
+            <span className="dark:text-white">{option.text}</span>
+            {feedbackSichtbar && option.erklaerung && (
+              <span className="block text-xs mt-1 text-gray-500 dark:text-gray-400">{option.erklaerung}</span>
+            )}
           </button>
         )
       })}
@@ -56,7 +62,7 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={mc.musterlosung} />}
     </div>
   )
 }

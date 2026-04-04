@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
-import type { Frage, AntwortTyp } from '../../types/fragen'
+import type { Frage } from '../../types/fragen'
+import type { AntwortTyp } from '../../types/antworten'
 import MCFrage from './MCFrage'
 import MultiFrage from './MultiFrage'
 import TFFrage from './TFFrage'
@@ -54,4 +55,12 @@ export const FRAGETYP_KOMPONENTEN: Record<string, ComponentType<FrageKomponenteP
   zeichnen: ZeichnenFrage,
   audio: AudioFrage,
   code: CodeFrage,
+  // Shared Typ-Namen (kanonisch) → gleiche Komponenten
+  richtigfalsch: TFFrage,
+  lueckentext: FillFrage,
+  berechnung: CalcFrage,
+  freitext: OpenFrage,
+  visualisierung: ZeichnenFrage,
+  bilanzstruktur: BilanzFrage,
+  aufgabengruppe: GruppeFrage,
 }

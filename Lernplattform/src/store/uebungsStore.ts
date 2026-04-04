@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import type { Frage, AntwortTyp } from '../types/fragen'
+import type { Frage } from '../types/fragen'
+import type { AntwortTyp } from '../types/antworten'
+import { getFragetext } from '../utils/fragetext'
 import type { UebungsSession, SessionErgebnis } from '../types/uebung'
 import { fragenAdapter } from '../adapters/appsScriptAdapter'
 import { erstelleBlock } from '../utils/blockBuilder'
@@ -36,7 +38,7 @@ export const useUebungsStore = create<UebungsState>((set, get) => ({
     set({ ladeStatus: 'laden' })
 
     try {
-      const alleFragen = await fragenAdapter.ladeFragen(gruppeId, { fach, thema, nurUebung: true })
+      const alleFragen = await fragenAdapter.ladeFragen(gruppeId, { fach, thema })
 
       const fortschritte = useFortschrittStore.getState().fortschritte
       const mastery: Record<string, import('../types/fortschritt').MasteryStufe> = {}
@@ -186,10 +188,10 @@ export const useUebungsStore = create<UebungsState>((set, get) => ({
 
     const details = session.fragen.map(f => ({
       frageId: f.id,
-      frage: f.frage,
+      frage: getFragetext(f),
       typ: f.typ,
       korrekt: session.ergebnisse[f.id] ?? false,
-      erklaerung: f.erklaerung,
+      erklaerung: f.musterlosung,
       unsicher: session.unsicher.has(f.id),
       uebersprungen: session.uebersprungen.has(f.id),
     }))

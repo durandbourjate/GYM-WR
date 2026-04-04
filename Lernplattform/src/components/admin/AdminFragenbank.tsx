@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useGruppenStore } from '../../store/gruppenStore'
 import { fragenAdapter } from '../../adapters/appsScriptAdapter'
-import { toSharedFrage, fromSharedFrage } from '../../adapters/frageAdapter'
 import type { Frage } from '../../types/fragen'
-import type { Frage as SharedFrage } from '@shared/types/fragen'
+import { getFragetext } from '../../utils/fragetext'
 
 // Lazy-Import für SharedFragenEditor + Provider (nur wenn Editor offen)
 import LernplattformEditorProvider from './LernplattformEditorProvider'
@@ -55,17 +54,12 @@ export default function AdminFragenbank() {
     setEditorOffen(true)
   }
 
-  // Speichern-Handler
-  async function handleSpeichern(sharedFrage: SharedFrage) {
+  // Speichern-Handler — Frage kommt direkt im shared-Format, keine Konvertierung nötig
+  async function handleSpeichern(frage: Frage) {
     if (!aktiveGruppe) return
     setSpeichern(true)
     try {
-      const lpFrage = fromSharedFrage(sharedFrage, aktiveFrage ?? undefined)
-      // speichereFrage wird in Task 5 zum Adapter hinzugefügt
-      const adapter = fragenAdapter as { speichereFrage?: (gruppeId: string, frage: Frage) => Promise<unknown> }
-      if (adapter.speichereFrage) {
-        await adapter.speichereFrage(aktiveGruppe.id, lpFrage)
-      }
+      await fragenAdapter.speichereFrage(aktiveGruppe.id, frage)
       // Cache invalidieren und neu laden
       fragenAdapter.invalidateCache(aktiveGruppe.id)
       await ladeFragen()
@@ -171,11 +165,11 @@ export default function AdminFragenbank() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium dark:text-white truncate">
-                    {frage.frage || '(Kein Fragetext)'}
+                    {getFragetext(frage) || '(Kein Fragetext)'}
                   </p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${FACH_FARBEN[frage.fach] || 'bg-gray-100 text-gray-600'}`}>
-                      {frage.fach}
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${FACH_FARBEN[frage.fachbereich] || 'bg-gray-100 text-gray-600'}`}>
+                      {frage.fachbereich}
                     </span>
                     <span className="text-xs text-gray-400 dark:text-gray-500">
                       {frage.typ}
@@ -186,7 +180,7 @@ export default function AdminFragenbank() {
                       </span>
                     )}
                     <span className="text-xs text-gray-400">
-                      {'★'.repeat(frage.schwierigkeit)}{'☆'.repeat(3 - frage.schwierigkeit)}
+                      {'★'.repeat(frage.schwierigkeit ?? 2)}{'☆'.repeat(3 - (frage.schwierigkeit ?? 2))}
                     </span>
                   </div>
                 </div>
@@ -201,7 +195,7 @@ export default function AdminFragenbank() {
       {editorOffen && (
         <LernplattformEditorProvider>
           <SharedFragenEditor
-            frage={aktiveFrage ? toSharedFrage(aktiveFrage) : null}
+            frage={aktiveFrage}
             onSpeichern={handleSpeichern}
             onAbbrechen={() => {
               setEditorOffen(false)

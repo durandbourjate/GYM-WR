@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { HotspotFrage as HotspotFrageTyp } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import BildContainer from './shared/BildContainer'
 
@@ -9,9 +10,13 @@ interface Klick {
 }
 
 export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const hotspots = frage.hotspots || []
-  const korrektIndices = (frage.korrekt as number[]) || []
-  const maxKlicks = korrektIndices.length
+  // Type narrowing
+  if (frage.typ !== 'hotspot') return null
+  const hsFrage = frage as HotspotFrageTyp
+
+  const bereiche = hsFrage.bereiche || []
+  // Alle Bereiche sind korrekte Targets
+  const maxKlicks = bereiche.length
 
   const [klicks, setKlicks] = useState<Klick[]>([])
 
@@ -45,8 +50,8 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
         Klicke auf {maxKlicks} Stelle{maxKlicks > 1 ? 'n' : ''} im Bild. Erneut klicken zum Entfernen.
       </p>
 
-      {frage.bild && (
-        <BildContainer src={frage.bild.src} alt={frage.bild.alt}>
+      {hsFrage.bildUrl && (
+        <BildContainer src={hsFrage.bildUrl} alt="Hotspot-Bild">
           {(bounds) => (
             <div
               className="absolute inset-0 cursor-crosshair"
@@ -58,9 +63,10 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
                 // Bei Feedback prüfen ob korrekt
                 let markerClass = 'bg-blue-500 border-white'
                 if (feedbackSichtbar) {
-                  const istKorrekt = hotspots.some((hs, hi) =>
-                    korrektIndices.includes(hi) && Math.hypot(hs.x - k.x, hs.y - k.y) < hs.r
-                  )
+                  const istKorrekt = bereiche.some((bereich) => {
+                    const radius = bereich.koordinaten.radius || 5
+                    return Math.hypot(bereich.koordinaten.x - k.x, bereich.koordinaten.y - k.y) < radius
+                  })
                   markerClass = istKorrekt ? 'bg-green-500 border-white' : 'bg-red-500 border-white'
                 }
 
@@ -74,16 +80,12 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
               })}
 
               {/* Korrekte Hotspots bei Feedback */}
-              {feedbackSichtbar && korrektIndices.map((hi) => {
-                const hs = hotspots[hi]
-                if (!hs) return null
-                return (
-                  <div key={`correct-${hi}`} className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: `${hs.x}%`, top: `${hs.y}%` }}>
-                    <div className="w-8 h-8 rounded-full border-2 border-dashed border-green-500 opacity-60" />
-                    <span className="text-xs bg-green-500 text-white px-1 rounded mt-0.5 whitespace-nowrap">{hs.label}</span>
-                  </div>
-                )
-              })}
+              {feedbackSichtbar && bereiche.map((bereich) => (
+                <div key={`correct-${bereich.id}`} className="absolute flex flex-col items-center -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: `${bereich.koordinaten.x}%`, top: `${bereich.koordinaten.y}%` }}>
+                  <div className="w-8 h-8 rounded-full border-2 border-dashed border-green-500 opacity-60" />
+                  <span className="text-xs bg-green-500 text-white px-1 rounded mt-0.5 whitespace-nowrap">{bereich.label}</span>
+                </div>
+              ))}
             </div>
           )}
         </BildContainer>
@@ -95,7 +97,7 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={hsFrage.musterlosung} />}
     </div>
   )
 }

@@ -4,10 +4,22 @@ import type { Frage } from '../types/fragen'
 import type { FragenFortschritt } from '../types/fortschritt'
 import type { Auftrag } from '../types/auftrag'
 
+const BASIS = {
+  version: 1, erstelltAm: '', geaendertAm: '',
+  fachbereich: 'VWL' as const, semester: [] as string[], gefaesse: [] as string[],
+  bloom: 'K2' as const, tags: [] as string[], punkte: 1, musterlosung: '',
+  bewertungsraster: [], verwendungen: [],
+  schwierigkeit: 1,
+}
+
 function macheFrage(id: string, fach: string, thema: string): Frage {
   return {
-    id, fach, thema, frage: `Frage ${id}`, typ: 'mc', schwierigkeit: 1,
-    uebung: true, pruefungstauglich: false, optionen: ['A', 'B'], korrekt: 'A',
+    ...BASIS, id, fach, thema, typ: 'mc', fragetext: `Frage ${id}`,
+    optionen: [
+      { id: '1', text: 'A', korrekt: true },
+      { id: '2', text: 'B', korrekt: false },
+    ],
+    mehrfachauswahl: false, zufallsreihenfolge: false,
   }
 }
 

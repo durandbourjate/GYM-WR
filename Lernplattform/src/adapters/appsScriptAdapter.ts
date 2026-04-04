@@ -125,7 +125,7 @@ class AppsScriptFragenAdapter implements FragenService {
     if (filter?.fach) result = result.filter(f => f.fach === filter.fach)
     if (filter?.thema) result = result.filter(f => f.thema === filter.thema)
     if (filter?.schwierigkeit) result = result.filter(f => f.schwierigkeit === filter.schwierigkeit)
-    if (filter?.nurUebung) result = result.filter(f => f.uebung)
+    // nurUebung entfällt — in der LP sind alle Fragen Übungsfragen
     return result
   }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
+import type { KontenbestimmungFrage as KontenbestimmungFrageTyp } from '../../types/fragen'
 import FeedbackBox from './FeedbackBox'
 import KontenSelect from './shared/KontenSelect'
 
@@ -9,11 +10,16 @@ interface ZuordnungState {
 }
 
 export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
-  const konten = frage.konten || []
-  const aufgaben = frage.aufgaben || []
+  // Type narrowing
+  if (frage.typ !== 'kontenbestimmung') return null
+  const kbFrage = frage as KontenbestimmungFrageTyp
+
+  const kontenauswahl = kbFrage.kontenauswahl
+  const konten = (kontenauswahl?.konten || []).map(k => ({ nr: k, name: k }))
+  const aufgaben = kbFrage.aufgaben || []
 
   const [zuordnungen, setZuordnungen] = useState<ZuordnungState[][]>(() =>
-    aufgaben.map(a => a.correct.map(() => ({ konto: '', seite: '' as const })))
+    aufgaben.map(a => a.erwarteteAntworten.map(() => ({ konto: '', seite: '' as const })))
   )
 
   const updateZuordnung = (aufgabeIdx: number, zeileIdx: number, feld: 'konto' | 'seite', wert: string) => {
@@ -41,7 +47,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
   return (
     <div className="space-y-4">
       {aufgaben.map((aufgabe, ai) => {
-        const korrektZeilen = aufgabe.correct
+        const korrektZeilen = aufgabe.erwarteteAntworten
 
         return (
           <div key={ai} className="p-3 rounded-xl border border-gray-200 dark:border-gray-600 space-y-2">
@@ -52,7 +58,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
 
             {zuordnungen[ai]?.map((z, zi) => {
               const korrZ = feedbackSichtbar && korrektZeilen[zi]
-              const kontoOk = korrZ && z.konto === korrZ.konto
+              const kontoOk = korrZ && z.konto === korrZ.kontonummer
               const seiteOk = korrZ && z.seite === korrZ.seite
 
               return (
@@ -85,7 +91,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
         </button>
       )}
 
-      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.erklaerung} />}
+      {feedbackSichtbar && korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={kbFrage.musterlosung} />}
     </div>
   )
 }

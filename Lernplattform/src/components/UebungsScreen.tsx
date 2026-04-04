@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useUebungsStore } from '../store/uebungsStore'
 import { useNavigationStore } from '../store/navigationStore'
 import { FRAGETYP_KOMPONENTEN } from './fragetypen'
-import { bereinigePlatzhalter } from '../utils/fragetext'
+import { getFragetext, bereinigePlatzhalter } from '../utils/fragetext'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
 import QuizActions from './uebung/QuizActions'
@@ -74,15 +74,15 @@ export default function UebungsScreen() {
         fortschritt={fortschritt}
         gesamt={session.fragen.length}
         score={session.score}
-        schwierigkeit={frage.schwierigkeit}
+        schwierigkeit={frage.schwierigkeit ?? 2}
         typ={frage.typ}
       />
 
       <main className="max-w-2xl mx-auto p-4">
         {/* Frage-Karte */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-4">
-          {/* Kontext */}
-          {frage.kontext && (
+          {/* Kontext (bei Aufgabengruppe) */}
+          {frage.typ === 'aufgabengruppe' && frage.kontext && (
             <div className="mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-sm text-gray-600 dark:text-gray-400">
               <span className="text-xs font-medium text-gray-400 uppercase block mb-1">Situation</span>
               {frage.kontext}
@@ -91,7 +91,7 @@ export default function UebungsScreen() {
 
           {/* Fragetext */}
           <h2 className="text-lg font-medium mb-4 dark:text-white">
-            {bereinigePlatzhalter(frage.frage)}
+            {bereinigePlatzhalter(getFragetext(frage))}
           </h2>
 
           {/* Fragetyp-Komponente */}
