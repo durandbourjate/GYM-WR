@@ -54,3 +54,12 @@ export { default as ZeichnenEditor } from './editor/typen/ZeichnenEditor'
 export { default as AufgabengruppeEditor } from './editor/typen/AufgabengruppeEditor'
 export { default as BewertungsrasterEditor } from './editor/typen/BewertungsrasterEditor'
 export { default as FrageTypAuswahl } from './editor/components/FrageTypAuswahl'
+
+// Sections
+export { default as TypEditorDispatcher } from './editor/sections/TypEditorDispatcher'
+export { default as FragetextSection } from './editor/sections/FragetextSection'
+export { default as MetadataSection } from './editor/sections/MetadataSection'
+export { default as MusterloesungSection } from './editor/sections/MusterloesungSection'
+
+// Utils
+export { loesungsquoteFarbe, loesungsquoteBgFarbe } from './editor/utils/performanceUtils'

@@ -3,7 +3,7 @@
  * Host-Apps (Prüfungstool, Lernplattform) implementieren diese Interfaces
  * und übergeben sie via EditorContext.
  */
-import type { FrageAnhang } from '../types/fragen'
+import type { FrageAnhang, Lernziel } from '../types/fragen'
 
 /** Feature-Flags: was der Editor anzeigen soll */
 export interface EditorFeatures {
@@ -53,4 +53,7 @@ export interface EditorServices {
 
   /** Prüft ob Upload verfügbar ist */
   istUploadVerfuegbar: () => boolean
+
+  /** Lernziele für ein Gefäss/Fachbereich laden. Null = nicht verfügbar. */
+  ladeLernziele?: (gefaess: string, fachbereich: string) => Promise<Lernziel[]>
 }

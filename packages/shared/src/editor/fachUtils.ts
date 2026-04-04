@@ -84,6 +84,11 @@ export function fachbereichFarbe(fachbereich: string): string {
   }
 }
 
+/** Prüft ob die Fachschaft WR ist */
+export function istWRFachschaft(fachschaft?: string): boolean {
+  return fachschaft === 'WR'
+}
+
 /** Default-Fachbereich aus Fachschaft */
 export function defaultFachbereich(fachschaft?: string): string {
   if (fachschaft === 'WR') return 'VWL'

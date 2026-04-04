@@ -615,3 +615,26 @@ export interface FormelFrage extends FrageBase {
 }
 
 export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage | VisualisierungFrage | RichtigFalschFrage | BerechnungFrage | BuchungssatzFrage | TKontoFrage | KontenbestimmungFrage | BilanzERFrage | AufgabengruppeFrage | PDFFrage | SortierungFrage | HotspotFrage | BildbeschriftungFrage | AudioFrage | DragDropBildFrage | CodeFrage | FormelFrage;
+
+// === LERNZIELE ===
+
+export interface Lernziel {
+  id: string
+  fach: string
+  poolId: string
+  thema: string
+  text: string
+  bloom: string
+  aktiv: boolean
+}
+
+// === PERFORMANCE-TRACKING ===
+
+export interface FragenPerformance {
+  frageId: string
+  anzahlVerwendungen: number
+  gesamtN: number
+  durchschnittLoesungsquote: number  // 0-100
+  durchschnittTrennschaerfe: number | null
+  verwendungen: { pruefungId: string; pruefungTitel: string; datum: string; loesungsquote: number; n: number; trennschaerfe?: number | null }[]
+}

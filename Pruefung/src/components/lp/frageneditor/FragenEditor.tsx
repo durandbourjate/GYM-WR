@@ -46,6 +46,8 @@ import MetadataSection from './sections/MetadataSection.tsx'
 import FragetextSection from './sections/FragetextSection.tsx'
 import TypEditorDispatcher from './sections/TypEditorDispatcher.tsx'
 import MusterloesungSection from './sections/MusterloesungSection.tsx'
+import PDFEditor from './PDFEditor.tsx'
+import BerechtigungenEditor from '../../shared/BerechtigungenEditor.tsx'
 
 
 interface Props {
@@ -703,6 +705,14 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             lpListe={lpListe} eigeneFachschaft={user?.fachschaft}
             ki={ki}
             performance={performance}
+            berechtigungenEditor={
+              <BerechtigungenEditor
+                berechtigungen={berechtigungen}
+                onChange={setBerechtigungen}
+                lpListe={lpListe}
+                eigeneFachschaft={user?.fachschaft}
+              />
+            }
           />
 
           {/* Fragetext */}
@@ -735,6 +745,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
             fachbereich={fachbereich}
             thema={thema}
             ki={ki}
+            PDFEditorComponent={PDFEditor}
             laenge={laenge} setLaenge={setLaenge}
             placeholder={placeholder} setPlaceholder={setPlaceholder}
             minWoerter={minWoerter} setMinWoerter={setMinWoerter}
