@@ -1,2 +1,17 @@
 export * from './types/fragen'
 export * from './types/auth'
+
+// Editor Infrastructure
+export * from './editor/types'
+export { EditorProvider, useEditorContext, useEditorConfig, useEditorServices } from './editor/EditorContext'
+export * from './editor/editorUtils'
+export * from './editor/fragenValidierung'
+export * from './editor/fragenFactory'
+export * from './editor/zeitbedarf'
+export * from './editor/fachUtils'
+export * from './editor/kontenrahmen'
+export * from './editor/musterloesungGenerierung'
+export { useKIAssistent } from './editor/useKIAssistent'
+export type { AktionKey, AktionErgebnis } from './editor/useKIAssistent'
+export { useFocusTrap } from './editor/hooks/useFocusTrap'
+export { usePanelResize } from './editor/hooks/usePanelResize'
