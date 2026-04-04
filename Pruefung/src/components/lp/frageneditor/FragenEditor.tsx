@@ -1,10 +1,15 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
 import { apiService } from '../../../services/apiService.ts'
+import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent } from '../../../services/uploadApi.ts'
+import { ladeLernziele as apiLadeLernziele } from '../../../services/poolApi.ts'
+import { istKonfiguriert } from '../../../services/apiClient.ts'
+import { EditorProvider } from '@shared/editor/EditorContext'
+import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { usePanelResize } from '../../../hooks/usePanelResize.ts'
-import { defaultFachbereich } from '../../../utils/fachUtils.ts'
+import { defaultFachbereich, istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { validiereFrage } from '../../../utils/fragenValidierung.ts'
 import { erstelleFrageObjekt } from '../../../utils/fragenFactory.ts'
 import type { FrageBasis, TypSpezifischeDaten } from '../../../utils/fragenFactory.ts'
@@ -69,6 +74,50 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
   useEffect(() => {
     ladeUndCacheLPs().then(setLpListe)
   }, [])
+
+  // EditorProvider Config + Services (Dependency Injection für shared Komponenten)
+  const semesterListe = useMemo(() => {
+    const n = schulConfig.semesterModell.regel.anzahl
+    return Array.from({ length: n }, (_, i) => `S${i + 1}`)
+  }, [schulConfig.semesterModell.regel.anzahl])
+
+  const editorConfig: EditorConfig = useMemo(() => ({
+    benutzer: {
+      email: user?.email ?? '',
+      name: user?.name,
+      fachschaft: user?.fachschaft,
+      fachschaften: user?.fachschaften,
+    },
+    verfuegbareGefaesse: schulConfig.gefaesse,
+    verfuegbareSemester: semesterListe,
+    zeigeFiBuTypen: istWRFachschaft(user?.fachschaft),
+    lpListe: lpListe.map(lp => ({ email: lp.email, name: lp.name, kuerzel: lp.kuerzel })),
+    features: {
+      kiAssistent: istKonfiguriert(),
+      anhangUpload: istKonfiguriert(),
+      bewertungsraster: true,
+      sharing: true,
+      poolSync: true,
+      performance: !!performance,
+    },
+  }), [user, schulConfig, lpListe, performance, semesterListe])
+
+  const editorServices: EditorServices = useMemo(() => ({
+    uploadAnhang: async (frageId: string, datei: File) => {
+      if (!user) return null
+      return apiUploadAnhang(user.email, frageId, datei)
+    },
+    kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
+      if (!user) return null
+      return apiKiAssistent(user.email, aktion, daten)
+    },
+    istKIVerfuegbar: () => istKonfiguriert(),
+    istUploadVerfuegbar: () => istKonfiguriert() && !!user,
+    ladeLernziele: async (_gefaess: string, fachbereich: string) => {
+      if (!user) return []
+      return apiLadeLernziele(user.email, fachbereich)
+    },
+  }), [user])
 
   // Grunddaten
   const [typ, setTypRaw] = useState<FrageTyp>(frage?.typ as FrageTyp ?? 'mc')
@@ -578,6 +627,7 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
   }, [onAbbrechen])
 
   return (
+    <EditorProvider config={editorConfig} services={editorServices}>
     <>
     <div className="fixed inset-0 z-[55] flex pointer-events-none">
       <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onAbbrechen} />
@@ -919,5 +969,6 @@ export default function FragenEditor({ frage, onSpeichern, onAbbrechen, performa
       />
     )}
     </>
+    </EditorProvider>
   )
 }
