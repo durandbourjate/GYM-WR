@@ -563,7 +563,7 @@ function lernplattformLadeFragen(body) {
       var daten = sheet.getDataRange().getValues();
       if (daten.length < 2) continue;
 
-      var headers = daten[0].map(function(h) { return String(h).trim(); });
+      var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
 
       for (var i = 1; i < daten.length; i++) {
         var row = {};
