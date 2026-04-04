@@ -3,128 +3,79 @@
 ## Aktueller Stand
 
 **Branch:** `main` (gemergt + gepusht)
-**Phase:** 5+6 abgeschlossen (Shared Types, Kontext-Trennung, Admin-Settings, Fragenbank-Migration, Offline-PWA)
-**Status:** 93 Tests gruen, Build OK (322 KB JS + PWA)
-**Apps Script:** GRUPPEN_REGISTRY_ID eingetragen, Backend muss neu bereitgestellt werden
+**Phase:** 5+6 abgeschlossen + UI-Bugfixes (04.04.2026)
+**Status:** 93 Tests grün, Build OK (323 KB JS + PWA)
+**Apps Script:** Deployed, Registry-Sheet mit 8 Gruppen angelegt (Familie + 6 Gym + Test)
 
-### Commits auf dem Feature-Branch
+### Letzte Commits
 
 | Commit | Beschreibung |
 |--------|-------------|
-| 2dced2b | Shared Library Grundgeruest (types, tsconfig, path alias) |
-| 934a439 | Settings-Datenmodell + Store + Backend-Endpoints |
-| 07cdfd0 | Fragenbank-Adapter: JSON -> Google Sheets |
-| bb7b0ff | LernKontextProvider + Anrede-System + Fachfarben |
-| 265636e | Dashboard + Quiz an LernKontext angebunden |
-| 27f0393 | Admin-Settings-Panel (4 Tabs) |
-| 3c8f267 | Offline-PWA: IndexedDB, Offline-Queue, Service Worker |
-| 7febeff | Aufraeumen: pool-daten/ + convertPools.mjs entfernt |
+| 41e26b1 | Duplikat-Dateien entfernt (macOS Kopien) |
+| 827ac74 | 5 UI-Bugfixes (Dark Mode, Navigation, Umlaute, Ladezeit) |
+
+### UI-Bugfixes (04.04.2026)
+
+1. **Dark Mode Toggle** — `@custom-variant dark` in index.css (Tailwind CSS v4 class-basiert)
+2. **Zurück/Home-Button während Übung** — Session wird genullt bevor Navigation, kein Effect-Loop mehr
+3. **Gruppe wechseln** — `gruppeAbwaehlen()` im Store, Gruppenname im Header klickbar (bei >1 Gruppe)
+4. **Umlaute** — 20+ UI-Texte korrigiert (ue→ü, ae→ä, oe→ö) in 10+ Dateien
+5. **Gruppen-Ladezeit** — Mitglieder non-blocking im Hintergrund laden
 
 ### Verifikation
 
 | Check | Status |
 |-------|--------|
 | `npx tsc -b` | OK |
-| `npx vitest run` | 93 Tests gruen |
-| `npm run build` | OK (322 KB JS, 198 Precache-Eintraege) |
+| `npx vitest run` | 93 Tests grün |
+| `npm run build` | OK (323 KB JS, 198 Precache-Einträge) |
+| Preview Dark Mode | OK (Toggle, Farben, Persistenz) |
+| Preview Umlaute | OK (Login, Dashboard, Zusammenfassung) |
 
 ---
 
-## Was in dieser Session gemacht wurde
+## Offene Punkte
 
-### Architektur-Aenderung
-- **Fragenbank:** Statische JSON-Dateien (pool-daten/) ersetzt durch Google Sheets via Apps Script
-- **Shared Library:** `packages/shared/` mit kanonischen Frage-Types (aus Pruefungstool)
-- **Kontext-Trennung:** Gym (Sie, sachlich) vs. Familie (Du, ermutigend) via LernKontextProvider
-- **Admin-Settings:** 4-Tab-Panel (Allgemein, Faecher, Farben, Mitglieder) mit Backend-Persistenz
-- **Offline-PWA:** IndexedDB-Cache, Offline-Queue, Sync-Manager, Service Worker (Workbox)
+### Sofort testbar (nächster Schritt)
 
-### Neue Dateien
+1. **Browser-Test mit echtem Login** — Login → Gruppen → Dashboard → Übung → Zurück/Home → Gruppe wechseln
+2. **Dark Mode im echten Browser** — Toggle, Persistenz über Reload, System-Präferenz
 
-```
-packages/shared/
-  tsconfig.json
-  src/types/fragen.ts              — Kanonische Frage-Interfaces
-  src/types/auth.ts                — Gemeinsame Auth-Typen
-  src/index.ts                     — Barrel Export
+### Offene Features
 
-Lernplattform/src/
-  types/settings.ts                — GruppenEinstellungen Interface
-  store/settingsStore.ts           — Zustand Store fuer Einstellungen
-  context/LernKontextProvider.tsx  — React Context (Gym/Familie)
-  hooks/useLernKontext.ts          — Context-Hook
-  utils/anrede.ts                  — Du/Sie Textbausteine
-  utils/fachFarben.ts              — Dynamische Fachbereich-Farben
-  utils/indexedDB.ts               — IndexedDB Wrapper
-  utils/offlineQueue.ts            — Offline-Queue fuer fehlgeschlagene Writes
-  utils/syncManager.ts             — Reconnect-Detection + Queue-Flush
-  components/admin/AdminSettings.tsx
-  components/admin/settings/AllgemeinTab.tsx
-  components/admin/settings/FaecherTab.tsx
-  components/admin/settings/FarbenTab.tsx
-  components/admin/settings/MitgliederTab.tsx
-  __tests__/settingsStore.test.ts
-  __tests__/anrede.test.ts
-  __tests__/fachFarben.test.ts
-  __tests__/offlineQueue.test.ts
-```
-
-### Geaenderte Dateien
-
-```
-Lernplattform/tsconfig.app.json    — Path Alias @shared
-Lernplattform/vite.config.ts       — Alias + VitePWA Plugin
-Lernplattform/src/App.tsx           — LernKontextProvider + SyncManager
-Lernplattform/src/adapters/appsScriptAdapter.ts — Sheets-Adapter + Settings-Methoden
-Lernplattform/src/store/fortschrittStore.ts     — IndexedDB + Offline-Queue
-Lernplattform/src/components/Dashboard.tsx       — Dynamische Farben + Kontext-Filter
-Lernplattform/src/components/uebung/FeedbackPanel.tsx — Anrede-Texte
-Lernplattform/src/components/uebung/QuizActions.tsx   — Anrede-Texte
-Lernplattform/src/components/Zusammenfassung.tsx      — Anrede-Texte
-Lernplattform/src/components/layout/AppShell.tsx      — Anrede-Texte
-Lernplattform/src/components/admin/AdminDashboard.tsx — Einstellungen-Tab
-Lernplattform/apps-script/lernplattform-backend.js    — 3 neue Endpoints
-```
-
-### Entfernte Dateien
-
-```
-Lernplattform/public/pool-daten/*.json (27 Dateien)
-Lernplattform/scripts/convertPools.mjs
-Lernplattform/scripts/output/*.json
-Lernplattform/src/adapters/poolDaten.ts
-Lernplattform/src/adapters/mockDaten.ts
-Lernplattform/src/adapters/mockMitgliederDaten.ts
-```
-
----
-
-## Naechste Schritte (naechste Session)
-
-1. **Apps Script Backend neu deployen** — Code aus `lernplattform-backend.js` in Editor kopieren + neue Bereitstellung
-2. **Gruppen im Registry-Sheet anlegen** — Tab "Gruppen" mit Spalten: id, name, typ, adminEmail, fragebankSheetId, analytikSheetId
-3. **Gym-Gruppen:** fragebankSheetId = Pruefungstool-Fragenbank (geteilt)
-4. **Familie-Gruppe:** Eigenes fragebankSheetId (Datentrennung)
-5. **Im Browser testen** — Login, Gruppen-Auswahl, Dashboard, Settings-Panel
-6. **Dann:** Pool.html-Features nachrüsten (Suchfeld, Lernziele-Modal, etc.)
-
----
-
-## Spaetere Sessions (Out of Scope)
-
-### Shared Editor (Prioritaet: Hoch)
-- FragenEditor aus Pruefungstool nach `packages/shared/` extrahieren
-- ~12 Abhaengigkeiten abstrahieren (authStore, apiService, KI-Assistent, Upload, etc.)
-- EditorConfig fuer kontextabhaengige Felder (Punkte, Bewertungsraster nur im Pruefungstool)
-- Fragen erstellen/bearbeiten direkt in der Lernplattform
-
-### Pruefungstool Path Alias
-- `Pruefung/tsconfig.app.json` + `vite.config.ts` auf @shared umstellen
-- Re-Exports in Pruefung fuer Backward-Compatibility
-
-### Pool.html Features nachr\u00fcsten
+#### Pool.html-Features nachrüsten (Priorität: Mittel)
 - Suchfeld, Lernziele-Modal, Hilfe-Modal, Problem-melden, Schnellstart-Karten, Filter-Chips
 
-### Phase 7: Backend-Persistenz (Rest)
-- AuftragStore: localStorage -> Apps Script
-- FortschrittStore: Backend-Sync vollstaendig (aktuell: IndexedDB + Offline-Queue, aber Backend-Endpoint noch nicht aufgerufen)
+#### Shared Editor (Priorität: Hoch)
+- FragenEditor aus Prüfungstool nach `packages/shared/` extrahieren
+- ~12 Abhängigkeiten abstrahieren (authStore, apiService, KI-Assistent, Upload, etc.)
+- EditorConfig für kontextabhängige Felder (Punkte, Bewertungsraster nur im Prüfungstool)
+- Fragen erstellen/bearbeiten direkt in der Lernplattform
+
+#### Prüfungstool Path Alias (Priorität: Niedrig)
+- `Pruefung/tsconfig.app.json` + `vite.config.ts` auf @shared umstellen
+- Re-Exports in Prüfung für Backward-Compatibility
+
+#### Phase 7: Backend-Persistenz (Priorität: Mittel)
+- AuftragStore: localStorage → Apps Script
+- FortschrittStore: Backend-Sync vollständig (aktuell: IndexedDB + Offline-Queue, aber Backend-Endpoint noch nicht aufgerufen)
+
+---
+
+## Architektur-Überblick
+
+### Stack
+React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 (PWA)
+
+### Kontext-System
+- **Gym** (Sie-Form, sachlich) vs. **Familie** (Du-Form, ermutigend) via LernKontextProvider
+- Rolle wird aus Gruppe abgeleitet (adminEmail → admin, sonst lernend)
+
+### Daten-Flow
+- Google Sheets via Apps Script Backend (14 Endpoints)
+- Fragenbank: Sheets-basiert (pro Gruppe eigenes fragebankSheetId)
+- Fortschritt: IndexedDB + Offline-Queue (Backend-Sync noch offen)
+- Auth: Google OAuth + Code-Login
+
+### Gruppen-Registry (Google Sheet)
+8 Gruppen angelegt: Familie, sf-wr-29c, sf-wr-28bc29fs, sf-wr-27a28f, in-28c, in-29f, in-30s, test
