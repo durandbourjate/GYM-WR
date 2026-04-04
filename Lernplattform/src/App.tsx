@@ -70,17 +70,18 @@ export default function App() {
     }
   }, [istAngemeldet, user?.email, ladeGruppen])
 
-  // Rolle aus Gruppe ableiten
+  // Rolle aus Gruppe ableiten + Admin direkt zu Admin-Screen navigieren
   useEffect(() => {
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
       if (istAdmin && user.rolle !== 'admin') {
         useAuthStore.getState().setzeRolle('admin')
+        navigiere('admin')
       } else if (!istAdmin && user.rolle !== 'lernend') {
         useAuthStore.getState().setzeRolle('lernend')
       }
     }
-  }, [aktiveGruppe, user?.email, user?.rolle])
+  }, [aktiveGruppe, user?.email, user?.rolle, navigiere])
 
   // Navigation-State synchronisieren
   useEffect(() => {
@@ -137,6 +138,12 @@ export default function App() {
             <p className="text-gray-500 dark:text-gray-400 mb-4">
               Du bist noch keiner Gruppe zugeordnet.
             </p>
+            <button
+              onClick={() => useAuthStore.getState().abmelden()}
+              className="px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
+            >
+              Abmelden
+            </button>
           </div>
         </div>
       </AppShell>

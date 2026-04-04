@@ -86,7 +86,7 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
 
       {!disabled && latex.trim() && !feedbackSichtbar && (
         <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
-          Pruefen
+          Prüfen
         </button>
       )}
 

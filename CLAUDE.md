@@ -7,7 +7,8 @@ Lehrer: DUY. Fächer: Wirtschaft & Recht (SF, EWR, EF), Informatik. Klassenlehre
 
 ```
 Unterrichtsplaner/   → React/TS/Vite PWA (Semesterplaner)
-Pruefung/            → React/TS/Vite PWA (Digitale Prüfungsplattform)
+Pruefung/            → React/TS/Vite PWA (Prüfungstool)
+Lernplattform/       → React/TS/Vite PWA (Übungstool)
 Uebungen/            → Übungspools (pool.html + config/*.js) + Informatik-Material
 Projektdateien/      → Claude-Projektanweisungen (nicht deployed)
 ```
@@ -39,4 +40,4 @@ git add -A && git commit -m "vX.XX: Beschreibung" && git push
 - Schulkontext (Stundenplan, IW, Lehrplan): @.claude/rules/schulkontext.md
 - Unterrichtsplaner-Entwicklung: Unterrichtsplaner/CLAUDE.md + HANDOFF.md
 - Übungspools-Entwicklung: Uebungen/Uebungspools/CLAUDE.md
-- Prüfungsplattform-Entwicklung: Pruefung/HANDOFF.md + Pruefungsplattform_Spec_v2.md
+- Prüfungstool-Entwicklung: Pruefung/HANDOFF.md + Pruefungsplattform_Spec_v2.md

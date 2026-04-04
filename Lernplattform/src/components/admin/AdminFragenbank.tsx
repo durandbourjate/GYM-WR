@@ -23,6 +23,9 @@ export default function AdminFragenbank() {
   const [editorOffen, setEditorOffen] = useState(false)
   const [aktiveFrage, setAktiveFrage] = useState<Frage | null>(null)
   const [filterFach, setFilterFach] = useState<string>('')
+  const [filterThema, setFilterThema] = useState<string>('')
+  const [filterTyp, setFilterTyp] = useState<string>('')
+  const [suchtext, setSuchtext] = useState('')
   const [speichern, setSpeichern] = useState(false)
 
   // Fragen laden
@@ -72,11 +75,23 @@ export default function AdminFragenbank() {
     }
   }
 
-  // Filter
+  // Filter-Optionen aus Daten ableiten
   const faecher = [...new Set(fragen.map(f => f.fach))].sort()
-  const gefilterteFragen = filterFach
-    ? fragen.filter(f => f.fach === filterFach)
-    : fragen
+  const themen = [...new Set(fragen.filter(f => !filterFach || f.fach === filterFach).map(f => f.thema).filter(Boolean))].sort()
+  const typen = [...new Set(fragen.map(f => f.typ))].sort()
+
+  const gefilterteFragen = fragen.filter(f => {
+    if (filterFach && f.fach !== filterFach) return false
+    if (filterThema && f.thema !== filterThema) return false
+    if (filterTyp && f.typ !== filterTyp) return false
+    if (suchtext) {
+      const s = suchtext.toLowerCase()
+      const text = getFragetext(f)?.toLowerCase() ?? ''
+      const thema = f.thema?.toLowerCase() ?? ''
+      if (!text.includes(s) && !thema.includes(s)) return false
+    }
+    return true
+  })
 
   return (
     <div>
@@ -98,34 +113,78 @@ export default function AdminFragenbank() {
         </button>
       </div>
 
-      {/* Fach-Filter */}
-      {faecher.length > 1 && (
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <button
-            onClick={() => setFilterFach('')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              !filterFach
-                ? 'bg-gray-800 text-white dark:bg-white dark:text-gray-800'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
-            }`}
-          >
-            Alle
-          </button>
-          {faecher.map(fach => (
+      {/* Filter */}
+      <div className="space-y-3 mb-4">
+        {/* Suchfeld */}
+        <input
+          type="text"
+          value={suchtext}
+          onChange={(e) => setSuchtext(e.target.value)}
+          placeholder="Fragen durchsuchen..."
+          className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-blue-500"
+        />
+
+        {/* Fach-Filter */}
+        {faecher.length > 1 && (
+          <div className="flex gap-2 flex-wrap">
             <button
-              key={fach}
-              onClick={() => setFilterFach(fach === filterFach ? '' : fach)}
+              onClick={() => { setFilterFach(''); setFilterThema('') }}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                filterFach === fach
+                !filterFach
                   ? 'bg-gray-800 text-white dark:bg-white dark:text-gray-800'
-                  : FACH_FARBEN[fach] || 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
               }`}
             >
-              {fach}
+              Alle Fächer
             </button>
-          ))}
+            {faecher.map(fach => (
+              <button
+                key={fach}
+                onClick={() => { setFilterFach(fach === filterFach ? '' : fach); setFilterThema('') }}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  filterFach === fach
+                    ? 'bg-gray-800 text-white dark:bg-white dark:text-gray-800'
+                    : FACH_FARBEN[fach] || 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                }`}
+              >
+                {fach}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Thema + Typ Filter */}
+        <div className="flex gap-2 flex-wrap">
+          {themen.length > 1 && (
+            <select
+              value={filterThema}
+              onChange={(e) => setFilterThema(e.target.value)}
+              className="px-2 py-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+            >
+              <option value="">Alle Themen</option>
+              {themen.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          )}
+          {typen.length > 1 && (
+            <select
+              value={filterTyp}
+              onChange={(e) => setFilterTyp(e.target.value)}
+              className="px-2 py-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+            >
+              <option value="">Alle Typen</option>
+              {typen.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          )}
+          {(filterFach || filterThema || filterTyp || suchtext) && (
+            <button
+              onClick={() => { setFilterFach(''); setFilterThema(''); setFilterTyp(''); setSuchtext('') }}
+              className="px-2 py-1 text-xs text-red-500 hover:text-red-600 dark:text-red-400"
+            >
+              Filter zurücksetzen
+            </button>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Status */}
       {laden && (

@@ -145,7 +145,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
           type="text"
           value={titel}
           onChange={(e) => setTitel(e.target.value)}
-          placeholder="z.B. Mathe Addition ueben"
+          placeholder="z.B. Mathe Addition üben"
           className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-blue-500"
         />
       </div>

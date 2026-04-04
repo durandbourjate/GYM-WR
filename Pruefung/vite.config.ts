@@ -27,9 +27,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Prüfungsplattform — Gymnasium Hofwil',
-        short_name: 'Prüfung',
-        description: 'Digitale Prüfungsplattform',
+        name: 'Prüfungstool — Gymnasium Hofwil',
+        short_name: 'Prüfungstool',
+        description: 'Digitales Prüfungstool',
         theme_color: '#1e40af',
         background_color: '#f8fafc',
         display: 'standalone',

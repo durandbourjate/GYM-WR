@@ -79,8 +79,9 @@ html:not(.dark) {
   color: #94a3b8;
 }
 
-/* Textarea auto-resize */
+/* Textarea auto-resize (nur Höhe, Breite bleibt 100% aus input-field) */
 textarea {
   field-sizing: content;
   min-height: 4rem;
+  width: 100%;
 }

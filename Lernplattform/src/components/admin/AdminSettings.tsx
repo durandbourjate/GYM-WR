@@ -8,7 +8,7 @@ type SettingsTab = 'allgemein' | 'faecher' | 'farben' | 'mitglieder'
 
 const TABS: { id: SettingsTab; label: string }[] = [
   { id: 'allgemein', label: 'Allgemein' },
-  { id: 'faecher', label: 'Faecher' },
+  { id: 'faecher', label: 'Fächer' },
   { id: 'farben', label: 'Farben' },
   { id: 'mitglieder', label: 'Mitglieder' },
 ]

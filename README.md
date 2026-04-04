@@ -23,9 +23,9 @@ Webbasierter Semesterplaner für Lektionen, Sequenzen und Prüfungen.
 - Google Calendar Integration (OAuth, bidirektionaler Sync)
 - LearningView-Farbschema (VWL orange, BWL blau, Recht grün)
 
-### Prüfungsplattform (v1.1)
+### Prüfungstool (v1.1)
 
-Digitale Prüfungsplattform für summative und formative Prüfungen.
+Digitales Prüfungstool für summative und formative Prüfungen.
 
 **[→ Live öffnen](https://durandbourjate.github.io/GYM-WR-DUY/Pruefung/)** · [Quellcode](./Pruefung/)
 

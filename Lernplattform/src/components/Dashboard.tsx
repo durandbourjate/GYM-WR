@@ -54,6 +54,7 @@ export default function Dashboard() {
   const [fachFilter, setFachFilter] = useState<string | null>(null)
   const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<number | null>(null)
   const [typFilter, setTypFilter] = useState<FrageTyp | null>(null)
+  const [suchtext, setSuchtext] = useState('')
   // Fächer default eingeklappt — wird nach dem Laden mit allen Fächern befüllt
   const [eingeklappteF, setEingeklappteF] = useState<Set<string> | null>(null)
 
@@ -121,6 +122,8 @@ export default function Dashboard() {
       const gefiltert = themen.filter(t => {
         // Kontext-Filter: nur sichtbare Themen anzeigen (wenn gesetzt)
         if (sichtbareThemenFuerFach.length > 0 && !sichtbareThemenFuerFach.includes(t.thema)) return false
+        // Suchtext-Filter: Themenname muss matchen
+        if (suchtext && !t.thema.toLowerCase().includes(suchtext.toLowerCase())) return false
         let fragen = t.fragen
         if (schwierigkeitFilter) fragen = fragen.filter(f => f.schwierigkeit === schwierigkeitFilter)
         if (typFilter) fragen = fragen.filter(f => f.typ === typFilter)
@@ -140,7 +143,7 @@ export default function Dashboard() {
     }
 
     return result
-  }, [themenInfo, fachFilter, schwierigkeitFilter, typFilter, getThemenFortschritt, sichtbareFaecher, sichtbareThemen])
+  }, [themenInfo, fachFilter, schwierigkeitFilter, typFilter, suchtext, getThemenFortschritt, sichtbareFaecher, sichtbareThemen])
 
   // Anzahl gefilterter Fragen
   const gefilterteAnzahl = useMemo(() =>
@@ -157,11 +160,12 @@ export default function Dashboard() {
     setEingeklappteF(neu)
   }
 
-  const filterAktiv = fachFilter || schwierigkeitFilter || typFilter
+  const filterAktiv = fachFilter || schwierigkeitFilter || typFilter || suchtext
   const filterZuruecksetzen = () => {
     setFachFilter(null)
     setSchwierigkeitFilter(null)
     setTypFilter(null)
+    setSuchtext('')
   }
 
   const empfehlungen: Empfehlung[] = useMemo(() => {
@@ -210,6 +214,15 @@ export default function Dashboard() {
         {/* Filter-Leiste */}
         {!laden && totalAnzahl > 0 && (
           <div className="mb-4 space-y-3">
+            {/* Suchfeld */}
+            <input
+              type="text"
+              value={suchtext}
+              onChange={(e) => setSuchtext(e.target.value)}
+              placeholder="Thema suchen..."
+              className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:border-blue-500"
+            />
+
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
                 {filterAktiv

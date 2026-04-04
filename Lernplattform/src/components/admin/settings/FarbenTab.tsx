@@ -68,7 +68,7 @@ export default function FarbenTab() {
   }
 
   if (laden) {
-    return <p className="text-sm text-gray-400">Faecher werden geladen…</p>
+    return <p className="text-sm text-gray-400">Fächer werden geladen…</p>
   }
 
   if (sichtbareFaecher.length === 0) {

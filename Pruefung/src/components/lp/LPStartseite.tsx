@@ -245,7 +245,7 @@ export default function LPStartseite() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <LPHeader
-        titel="Prüfungsplattform"
+        titel="Prüfungstool"
         untertitel={user ? `${user.name} · Lehrperson` : undefined}
         ansichtsButtons={
           <>

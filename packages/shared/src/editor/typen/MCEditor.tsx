@@ -60,9 +60,9 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
               {opt.korrekt && <span className="text-xs">✓</span>}
             </button>
 
-            {/* Option-ID */}
+            {/* Option-Label (a, b, c, ...) */}
             <span className="mt-2 text-xs text-slate-400 dark:text-slate-500 font-mono w-4 shrink-0">
-              {opt.id})
+              {String.fromCharCode(97 + i)})
             </span>
 
             {/* Text */}
@@ -70,7 +70,7 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
               type="text"
               value={opt.text}
               onChange={(e) => updateOption(i, { text: e.target.value })}
-              placeholder={`Option ${opt.id}...`}
+              placeholder={`Option ${String.fromCharCode(97 + i)}...`}
               className="input-field flex-1"
             />
 

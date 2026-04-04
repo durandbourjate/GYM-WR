@@ -62,7 +62,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
 
       {!disabled && alleBewertet && !feedbackSichtbar && (
         <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium mt-2 min-h-[48px]">
-          Pruefen
+          Prüfen
         </button>
       )}
 

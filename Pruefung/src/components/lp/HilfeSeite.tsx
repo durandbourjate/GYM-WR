@@ -146,9 +146,9 @@ function Hinweis({ children }: { children: React.ReactNode }) {
 function HilfeEinstieg() {
   return (
     <div>
-      <Titel>Willkommen zur Prüfungsplattform</Titel>
+      <Titel>Willkommen zum Prüfungstool</Titel>
       <Text>
-        Die Prüfungsplattform ermöglicht digitale Prüfungen direkt im Browser — für alle Fachschaften am Gymnasium Hofwil. Sie erstellen Prüfungen im Composer, die Schülerinnen und Schüler bearbeiten sie online, und die Korrektur kann KI-unterstützt erfolgen.
+        Das Prüfungstool ermöglicht digitale Prüfungen direkt im Browser — für alle Fachschaften am Gymnasium Hofwil. Sie erstellen Prüfungen im Composer, die Schülerinnen und Schüler bearbeiten sie online, und die Korrektur kann KI-unterstützt erfolgen.
       </Text>
 
       <Untertitel>Anmeldung</Untertitel>

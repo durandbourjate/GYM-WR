@@ -1,82 +1,80 @@
 import { useGruppenStore } from '../../store/gruppenStore'
-import type { MasteryStufe } from '../../types/fortschritt'
 
 interface Props {
   onKindKlick: (email: string, name: string) => void
 }
 
 export default function AdminUebersicht({ onKindKlick }: Props) {
-  const { mitglieder } = useGruppenStore()
+  const { mitglieder, aktiveGruppe } = useGruppenStore()
   const lernende = mitglieder.filter(m => m.rolle === 'lernend')
+  const admins = mitglieder.filter(m => m.rolle === 'admin')
 
-  // Platzhalter bis Fortschritt-Daten aus Backend geladen werden
-  const faecher: string[] = []
+  if (mitglieder.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-400 dark:text-gray-500">
+        <p className="text-4xl mb-3">👥</p>
+        <p>Noch keine Mitglieder in dieser Gruppe.</p>
+        <p className="text-sm mt-1">Mitglieder können im Tab «Einstellungen → Mitglieder» hinzugefügt werden.</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-4">
-      {lernende.map((mitglied) => {
-        const fortschritte: { fragenId: string; mastery: MasteryStufe }[] = []
-        const sessions: { datum: string }[] = []
-        const letzteSession = sessions[0]
+    <div className="space-y-6">
+      {/* Gruppen-Info */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+        <h3 className="font-semibold dark:text-white mb-2">{aktiveGruppe?.name}</h3>
+        <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <span>{lernende.length} Lernende</span>
+          <span>{admins.length} Admin{admins.length !== 1 ? 's' : ''}</span>
+        </div>
+      </div>
 
-        return (
-          <button
-            key={mitglied.email}
-            onClick={() => onKindKlick(mitglied.email, mitglied.name)}
-            className="w-full text-left bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold dark:text-white">{mitglied.name}</h3>
-              {letzteSession && (
-                <span className="text-xs text-gray-400">
-                  Letzte Session: {letzteSession.datum}
-                </span>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              {faecher.map(fach => {
-                const fachFortschritte = fortschritte.filter(fp => fp.fragenId.startsWith(fach))
-                const counts = zaehleMastery(fachFortschritte.map(f => f.mastery), fachFortschritte.length || 1)
-
-                return (
-                  <div key={fach} className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500 dark:text-gray-400 w-20 flex-shrink-0">{fach}</span>
-                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden flex">
-                      {counts.gemeistert > 0 && <div className="bg-green-500 h-2.5" style={{ width: `${counts.gemeistertPct}%` }} />}
-                      {counts.gefestigt > 0 && <div className="bg-blue-400 h-2.5" style={{ width: `${counts.gefestigtPct}%` }} />}
-                      {counts.ueben > 0 && <div className="bg-yellow-400 h-2.5" style={{ width: `${counts.uebenPct}%` }} />}
-                    </div>
-                    <span className="text-xs text-gray-400 w-10 text-right">{Math.round(counts.quote)}%</span>
+      {/* Lernende */}
+      {lernende.length > 0 && (
+        <div>
+          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+            Lernende ({lernende.length})
+          </h4>
+          <div className="space-y-2">
+            {lernende.map((mitglied) => (
+              <button
+                key={mitglied.email}
+                onClick={() => onKindKlick(mitglied.email, mitglied.name)}
+                className="w-full text-left bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 min-h-[48px]"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="font-medium dark:text-white">{mitglied.name}</span>
+                    <span className="text-xs text-gray-400 ml-2">{mitglied.email}</span>
                   </div>
-                )
-              })}
-            </div>
+                  <span className="text-gray-300 dark:text-gray-600">›</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-            <div className="mt-3 flex gap-4 text-xs text-gray-400">
-              <span>{sessions.length} Sessions</span>
-              <span>{fortschritte.filter(f => f.mastery === 'gemeistert').length} gemeistert</span>
-            </div>
-          </button>
-        )
-      })}
+      {/* Admins */}
+      {admins.length > 0 && (
+        <div>
+          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+            Admins ({admins.length})
+          </h4>
+          <div className="space-y-2">
+            {admins.map((mitglied) => (
+              <div
+                key={mitglied.email}
+                className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700"
+              >
+                <span className="font-medium dark:text-white">{mitglied.name}</span>
+                <span className="text-xs text-gray-400 ml-2">{mitglied.email}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
-}
-
-function zaehleMastery(masteryListe: MasteryStufe[], gesamt: number) {
-  let gemeistert = 0, gefestigt = 0, ueben = 0
-  for (const m of masteryListe) {
-    if (m === 'gemeistert') gemeistert++
-    else if (m === 'gefestigt') gefestigt++
-    else if (m === 'ueben') ueben++
-  }
-  const quote = gesamt > 0 ? ((gemeistert + gefestigt) / gesamt) * 100 : 0
-  return {
-    gemeistert, gefestigt, ueben,
-    gemeistertPct: (gemeistert / gesamt) * 100,
-    gefestigtPct: (gefestigt / gesamt) * 100,
-    uebenPct: (ueben / gesamt) * 100,
-    quote,
-  }
 }

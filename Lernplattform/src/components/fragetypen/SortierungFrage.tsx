@@ -62,7 +62,7 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
 
       {!disabled && !feedbackSichtbar && (
         <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
-          Pruefen
+          Prüfen
         </button>
       )}
 

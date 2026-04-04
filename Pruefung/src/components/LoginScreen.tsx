@@ -133,7 +133,7 @@ export default function LoginScreen() {
             <span className="text-white dark:text-slate-800 text-2xl font-bold">{config.schulKuerzel}</span>
           </div>
           <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
-            Prüfungsplattform
+            Prüfungstool
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             {config.schulName}

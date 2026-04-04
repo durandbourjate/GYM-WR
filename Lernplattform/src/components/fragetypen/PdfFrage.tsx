@@ -48,7 +48,7 @@ export default function PdfFrage({ frage, onAntwort, disabled, feedbackSichtbar,
 
       {!disabled && text.trim() && !feedbackSichtbar && (
         <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
-          Pruefen
+          Prüfen
         </button>
       )}
 

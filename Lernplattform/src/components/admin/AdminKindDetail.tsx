@@ -86,7 +86,7 @@ export default function AdminKindDetail({ email: _email, onThemaKlick }: Props) 
                   <div className="flex gap-3 mt-2 text-xs text-gray-400">
                     {stats.gemeistert > 0 && <span className="text-green-600">{stats.gemeistert} gemeistert</span>}
                     {stats.gefestigt > 0 && <span className="text-blue-500">{stats.gefestigt} gefestigt</span>}
-                    {stats.ueben > 0 && <span className="text-yellow-600">{stats.ueben} ueben</span>}
+                    {stats.ueben > 0 && <span className="text-yellow-600">{stats.ueben} üben</span>}
                     {stats.neu > 0 && <span>{stats.neu} neu</span>}
                   </div>
                 </button>

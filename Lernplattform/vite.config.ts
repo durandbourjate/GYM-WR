@@ -14,8 +14,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Lernplattform — Gymnasium Hofwil',
-        short_name: 'Lernen',
+        name: 'Übungstool — Gymnasium Hofwil',
+        short_name: 'Übungstool',
         description: 'Üben und Lernen',
         theme_color: '#3b82f6',
         background_color: '#f8fafc',

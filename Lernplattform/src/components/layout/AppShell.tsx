@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { useGruppenStore } from '../../store/gruppenStore'
 import { useNavigationStore } from '../../store/navigationStore'
@@ -18,6 +18,7 @@ export default function AppShell({ children }: Props) {
   const { istDark, toggleTheme } = useTheme()
   const { anrede } = useLernKontext()
 
+  const [hilfeOffen, setHilfeOffen] = useState(false)
   const istAngemeldet = !!user
   const istAdmin = user?.rolle === 'admin'
   const zeigeHeader = istAngemeldet && aktuellerScreen !== 'login'
@@ -60,7 +61,7 @@ export default function AppShell({ children }: Props) {
           )}
 
           <div>
-            <h1 className="text-base font-bold dark:text-white">Lernplattform</h1>
+            <h1 className="text-base font-bold dark:text-white">Übungstool</h1>
             {aktiveGruppe && gruppen.length > 1 ? (
               <button
                 onClick={() => {
@@ -80,6 +81,15 @@ export default function AppShell({ children }: Props) {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Hilfe-Button */}
+          <button
+            onClick={() => setHilfeOffen(!hilfeOffen)}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            title="Hilfe"
+          >
+            <span className="text-lg">?</span>
+          </button>
+
           {/* Admin-Button */}
           {istAdmin && aktuellerScreen !== 'admin' && (
             <button
@@ -109,6 +119,27 @@ export default function AppShell({ children }: Props) {
           </button>
         </div>
       </header>
+
+      {/* Hilfe-Panel */}
+      {hilfeOffen && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800 px-4 py-3">
+          <div className="max-w-2xl mx-auto text-sm text-gray-700 dark:text-gray-300 space-y-2">
+            <div className="flex justify-between items-start">
+              <h3 className="font-semibold dark:text-white">Hilfe</h3>
+              <button onClick={() => setHilfeOffen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">x</button>
+            </div>
+            <p>Wähle ein Thema aus und bearbeite Übungsfragen mit sofortigem Feedback.</p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div><strong>Mastery-Stufen:</strong></div>
+              <div />
+              <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-300 inline-block" /> Neu</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-400 inline-block" /> Üben</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-400 inline-block" /> Gefestigt</div>
+              <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500 inline-block" /> Gemeistert</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {children}
     </div>
