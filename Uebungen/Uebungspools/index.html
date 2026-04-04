@@ -275,10 +275,11 @@ async function loadPoolCounts() {
       var qMatches = qsPart.match(/\{\s*(?:\n\s*)?(?:"id"|id)\s*:\s*"/g);
       var questions = qMatches ? qMatches.length : 0;
       // TOPICS-Objekt zählen: Keys in window.TOPICS = { ... }
-      var topicsBlock = code.match(/window\.TOPICS\s*=\s*\{([\s\S]*?)\n\};/);
+      // Beide Formate: quoted ("key":{) und unquoted (key:{)
+      var topicsBlock = code.match(/window\.TOPICS\s*=\s*\{([\s\S]*?)\n?\};/);
       var topics = 0;
       if (topicsBlock) {
-        var topicKeys = topicsBlock[1].match(/"[^"]+"\s*:\s*\{/g);
+        var topicKeys = topicsBlock[1].match(/(?:"[^"]+"|[a-zA-Z_]\w*)\s*:\s*\{/g);
         topics = topicKeys ? topicKeys.length : 0;
       }
       return { id: p.id, questions: questions, topics: topics };
