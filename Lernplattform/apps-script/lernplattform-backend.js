@@ -563,7 +563,8 @@ function lernplattformLadeFragen(body) {
       var daten = sheet.getDataRange().getValues();
       if (daten.length < 2) continue;
 
-      var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+      // Headers NICHT lowercasen — Prüfungstool-Sheet hat camelCase (typDaten, erstelltAm etc.)
+      var headers = daten[0].map(function(h) { return String(h).trim(); });
 
       for (var i = 1; i < daten.length; i++) {
         var row = {};
