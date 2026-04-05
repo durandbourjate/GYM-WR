@@ -329,7 +329,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
             }
           `}
         >
-          {wiederhergestellt ? 'Sitzung fortsetzen' : 'Prüfung starten'}
+          {wiederhergestellt ? 'Sitzung fortsetzen' : config.typ === 'formativ' ? 'Übung starten' : 'Prüfung starten'}
         </button>
       </div>
     </div>

@@ -27,9 +27,10 @@ interface Props {
   onGesamtAudioUpdate: (email: string, audioId: string) => void
   onPDF?: () => void
   defaultOffen?: boolean
+  istFormativ?: boolean
 }
 
-export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, fragen, autoErgebnisse, notenConfig, userEmail, onBewertungUpdate, onNoteOverride, onAudioUpload, onGesamtAudioUpdate, onPDF, defaultOffen = false }: Props) {
+export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, fragen, autoErgebnisse, notenConfig, userEmail, onBewertungUpdate, onNoteOverride, onAudioUpload, onGesamtAudioUpdate, onPDF, defaultOffen = false, istFormativ = false }: Props) {
   const [offen, setOffen] = useState(defaultOffen)
   const [noteEditModus, setNoteEditModus] = useState(false)
   const [noteInput, setNoteInput] = useState('')
@@ -105,16 +106,18 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {totalPunkte} / {totalMax}
           </span>
-          <span
-            className={`text-xs font-medium px-1.5 py-0.5 rounded ${
-              note >= 4
-                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-            } ${hatOverride ? 'ring-1 ring-amber-400 dark:ring-amber-500' : ''}`}
-            title={hatOverride ? `Berechnet: ${berechneteNote.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}, Überschrieben: ${note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}` : `Note: ${note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}`}
-          >
-            {note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}
-          </span>
+          {!istFormativ && (
+            <span
+              className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                note >= 4
+                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                  : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+              } ${hatOverride ? 'ring-1 ring-amber-400 dark:ring-amber-500' : ''}`}
+              title={hatOverride ? `Berechnet: ${berechneteNote.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}, Überschrieben: ${note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}` : `Note: ${note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}`}
+            >
+              {note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)}
+            </span>
+          )}
         </div>
 
         {/* Status + Geprüft-Zähler */}
@@ -145,9 +148,11 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {totalPunkte}/{totalMax}
           </span>
-          <span className={`ml-1 text-xs ${note >= 4 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-            ({note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)})
-          </span>
+          {!istFormativ && (
+            <span className={`ml-1 text-xs ${note >= 4 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+              ({note.toFixed((notenConfig?.rundung ?? 0.5) < 0.5 ? 2 : 1)})
+            </span>
+          )}
         </div>
       </button>
 
@@ -260,7 +265,8 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
             )
           })}
 
-          {/* Note-Anzeige und Override */}
+          {/* Note-Anzeige und Override (nicht bei formativen Übungen) */}
+          {!istFormativ && (
           <div className="pt-3 mt-2 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3">
             <span className="text-xs text-slate-500 dark:text-slate-400">Note:</span>
             {noteEditModus ? (
@@ -324,6 +330,7 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
               {totalPunkte} / {totalMax} Pkt. ({totalMax > 0 ? Math.round(totalPunkte / totalMax * 100) : 0}%)
             </div>
           </div>
+          )}
 
           {/* Audio-Gesamtkommentar */}
           <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">

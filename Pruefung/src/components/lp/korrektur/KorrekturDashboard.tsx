@@ -288,6 +288,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
                 onGesamtAudioUpdate={handleGesamtAudioUpdate}
                 onPDF={() => setPdfSchuelerEmail(sortierteSchueler[susNavIndex].email)}
                 defaultOffen={true}
+                istFormativ={istFormativ}
               />
             )}
           </div>
