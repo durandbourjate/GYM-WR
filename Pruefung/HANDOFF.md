@@ -14,7 +14,7 @@ Plan: `.claude/plans/toasty-popping-liskov.md`
 |-------|--------|-------------|
 | 0 | ✅ 05.04.2026 | Build-System: appMode.ts, Dual-Build, deploy.yml |
 | 1 | ✅ 05.04.2026 | Types + Utils migrieren (8 Types + 11 Utils + idb-keyval) |
-| 2 | ⬜ | Stores + Services migrieren |
+| 2 | ✅ 05.04.2026 | Stores + Services migrieren (7 Stores + 3 Services + 1 Adapter + 2 Hooks + 1 Context) |
 | 3 | ⬜ | UI migrieren (Dashboard, UebungsScreen, Admin, Fragetypen-Override) |
 | 4 | ⬜ | Integration-Tests + Security-Audit |
 | 5 | ⬜ | Backend konsolidieren (Apps Script) |
@@ -44,6 +44,40 @@ Plan: `.claude/plans/toasty-popping-liskov.md`
   - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 02.04.2026 — istDemoModus nur in React-State, nicht manipulierbar
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
   - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 02.04.2026 — persist.clearStorage() nach Abgabe
+
+---
+
+## Session 60 — Fusion Phase 2: Stores + Services migriert (05.04.2026)
+
+### Stand
+Branch `feature/fusion-phase1`. tsc ✅ | 193 Tests ✅ | Build ✅ (beide Targets). **Nicht auf main.**
+
+### Änderungen
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **7 Stores nach `store/lernen/`** — authStore, uebungsStore, fortschrittStore, gruppenStore, navigationStore, settingsStore, auftragStore | `Pruefung/src/store/lernen/*.ts` |
+| 2 | **3 Services nach `services/lernen/`** — apiClient (LernenApiClient), authService, interfaces | `Pruefung/src/services/lernen/*.ts` |
+| 3 | **Adapter nach `adapters/lernen/`** — appsScriptAdapter (3 Adapter-Klassen) | `Pruefung/src/adapters/lernen/appsScriptAdapter.ts` |
+| 4 | **2 Hooks nach `hooks/lernen/`** — useLernenTheme, useLernKontext | `Pruefung/src/hooks/lernen/*.ts` |
+| 5 | **Context nach `context/lernen/`** — LernKontextProvider (ohne fachFarben, Phase 3) | `Pruefung/src/context/lernen/LernKontextProvider.tsx` |
+| 6 | **Barrel-Exports** — `index.ts` in allen 5 Ordnern | diverse |
+
+### Namenskonventionen (Kollisionsvermeidung)
+- Stores: `useLernen*` Prefix (z.B. `useLernenAuthStore`, `useLernenUebungsStore`)
+- API-Client: `lernenApiClient` (statt `apiClient`)
+- Adapter: `lernenGruppenAdapter`, `lernenFragenAdapter`, `lernenFortschrittAdapter`
+- Auth-Service: `initializeLernenGoogleAuth`, `decodeLernenJwt` etc.
+- Navigation-Typen: `LernenScreenTyp`
+- Window.google: Doppelte Deklaration entfernt, nutzt Pruefungs-Deklaration
+
+### Nicht migriert (spätere Phasen)
+- `fachFarben.ts` → Phase 3 (DOM-Manipulation, aus LernKontextProvider ausgebaut)
+- `syncManager.ts` → Phase 3 (Window-Events, navigator.onLine)
+
+### Nächste Schritte
+- **Phase 3:** UI migrieren (Dashboard, UebungsScreen, Admin, Fragetypen-Override)
+- **Branch mergen:** Nach Phase 3 oder 4 zusammen auf main
 
 ---
 
