@@ -1,20 +1,34 @@
 /**
  * API-Client für das Lernplattform-Backend.
- * Verwendet VITE_LERNPLATTFORM_APPS_SCRIPT_URL (eigene LP-Deployment-URL).
- * Fallback auf VITE_APPS_SCRIPT_URL (für den Lernen-Build wo nur eine URL existiert).
+ *
+ * URL-Auflösung:
+ * - __LERNEN_BACKEND_URL__ (vite define, aus process.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL)
+ * - Fallback im Lernen-Build: VITE_APPS_SCRIPT_URL
+ *
+ * WICHTIG: Die URL wird direkt in getLernenUrl() aufgelöst und NICHT in einer
+ * Modul-Level-Variable gespeichert. Der Vite-Minifier dedupliziert Modul-Level-
+ * String-Variablen aggressiv, was dazu führt dass die LP-URL mit der Prüfungs-URL
+ * zusammengelegt wird.
  */
 
-// URL via vite.config.ts define-Injection (process.env → Build-Time-Konstante).
-// __LERNEN_BACKEND_URL__ wird in vite.config.ts aus process.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL gesetzt.
-// Im Lernen-Build (VITE_APP_MODE=lernen) ist VITE_APPS_SCRIPT_URL die LP-URL (Fallback).
 declare const __LERNEN_BACKEND_URL__: string
-const LERNEN_URL: string =
-  (typeof __LERNEN_BACKEND_URL__ !== 'undefined' && __LERNEN_BACKEND_URL__) ||
-  (import.meta.env.VITE_APP_MODE === 'lernen' ? (import.meta.env.VITE_APPS_SCRIPT_URL as string) || '' : '')
+
+/** Gibt die LP-Backend-URL zurück. Inline, nicht als Variable (Minifier-sicher). */
+function getLernenUrl(): string {
+  // Priorität 1: Explizites LP-Backend-Secret (Pruefung-Build)
+  if (typeof __LERNEN_BACKEND_URL__ !== 'undefined' && __LERNEN_BACKEND_URL__) {
+    return __LERNEN_BACKEND_URL__
+  }
+  // Priorität 2: Im Lernen-Build ist VITE_APPS_SCRIPT_URL die LP-URL
+  if (import.meta.env.VITE_APP_MODE === 'lernen') {
+    return (import.meta.env.VITE_APPS_SCRIPT_URL as string) || ''
+  }
+  return ''
+}
 
 /** Prüft ob das LP-Backend konfiguriert ist */
 export function lernenIstKonfiguriert(): boolean {
-  return !!LERNEN_URL
+  return !!getLernenUrl()
 }
 
 /** POST an das LP-Backend */
@@ -24,7 +38,8 @@ export async function lernenPost<T = unknown>(
   sessionToken?: string,
   timeoutMs = 30000
 ): Promise<T | null> {
-  if (!LERNEN_URL) return null
+  const url = getLernenUrl()
+  if (!url) return null
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
@@ -36,7 +51,7 @@ export async function lernenPost<T = unknown>(
       ...payload,
     })
 
-    const response = await fetch(LERNEN_URL, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body,
