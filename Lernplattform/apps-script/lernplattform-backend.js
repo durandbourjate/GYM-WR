@@ -62,6 +62,91 @@ function rateLimitCheck_(aktion, key, maxProFenster, fensterSekunden) {
   return { blocked: false };
 }
 
+// === AUTH-HELPER: Admin/Mitglied-Check ===
+
+/**
+ * Prüft ob der Anfragende Admin einer Gruppe ist.
+ * Validiert Token + Email-Bindung + Admin-Rolle.
+ * @returns {{ email: string, gruppe: object }} oder null
+ */
+function istGruppenAdmin_(body, gruppeId) {
+  var email = (body.email || '').toLowerCase().trim();
+  if (!validiereSessionToken_(body.token || body.sessionToken, email)) return null;
+
+  var gruppen = alleGruppenLaden_();
+  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
+  if (!gruppe) return null;
+
+  // Gruppen-Ersteller ist immer Admin
+  if (gruppe.adminEmail === email) return { email: email, gruppe: gruppe };
+
+  // Im Mitglieder-Tab als Admin eingetragen?
+  try {
+    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var mitgSheet = ss.getSheetByName('Mitglieder');
+    if (!mitgSheet) return null;
+    var daten = mitgSheet.getDataRange().getValues();
+    var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var emailIdx = headers.indexOf('email');
+    var rolleIdx = headers.indexOf('rolle');
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][emailIdx]).toLowerCase().trim() === email && String(daten[i][rolleIdx]) === 'admin') {
+        return { email: email, gruppe: gruppe };
+      }
+    }
+  } catch(e) {}
+  return null;
+}
+
+/**
+ * Prüft ob der Anfragende Mitglied einer Gruppe ist (Admin oder normales Mitglied).
+ * @returns {{ email: string, gruppe: object, rolle: string }} oder null
+ */
+function istGruppenMitglied_(body, gruppeId) {
+  var email = (body.email || '').toLowerCase().trim();
+  if (!validiereSessionToken_(body.token || body.sessionToken, email)) return null;
+
+  var gruppen = alleGruppenLaden_();
+  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
+  if (!gruppe) return null;
+
+  if (gruppe.adminEmail === email) return { email: email, gruppe: gruppe, rolle: 'admin' };
+
+  try {
+    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var mitgSheet = ss.getSheetByName('Mitglieder');
+    if (!mitgSheet) return null;
+    var daten = mitgSheet.getDataRange().getValues();
+    var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var emailIdx = headers.indexOf('email');
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][emailIdx]).toLowerCase().trim() === email) {
+        return { email: email, gruppe: gruppe, rolle: String(daten[i][headers.indexOf('rolle')] || 'mitglied') };
+      }
+    }
+  } catch(e) {}
+  return null;
+}
+
+// === AUDIT-LOGGING ===
+
+/**
+ * Loggt sensible Aktionen in den AuditLog-Tab im Registry-Sheet.
+ * Darf nie die Hauptaktion blockieren.
+ */
+function auditLog_(aktion, email, details) {
+  try {
+    var ss = SpreadsheetApp.openById(GRUPPEN_REGISTRY_ID);
+    var sheet = ss.getSheetByName('AuditLog');
+    if (!sheet) {
+      sheet = ss.insertSheet('AuditLog');
+      sheet.appendRow(['timestamp', 'aktion', 'email', 'details']);
+      sheet.setFrozenRows(1);
+    }
+    sheet.appendRow([new Date().toISOString(), aktion, email, JSON.stringify(details)]);
+  } catch(e) { /* Logging darf nie die Hauptaktion blockieren */ }
+}
+
 // === GRUPPEN-REGISTRY ===
 
 function getGruppenRegistry_() {
@@ -106,6 +191,8 @@ function doPost(e) {
     // === AUTH ===
 
     case 'lernplattformLogin':
+      var rlLogin = rateLimitCheck_('login', body.email || 'anon', 20, 600);
+      if (rlLogin.blocked) return jsonResponse({ success: false, error: rlLogin.error });
       return lernplattformLogin(body);
 
     case 'lernplattformValidiereToken':
@@ -297,11 +384,17 @@ function lernplattformCodeLogin(body) {
  */
 function lernplattformGeneriereCode(body) {
   var gruppeId = body.gruppeId;
-  var mitgliedEmail = (body.email || '').toLowerCase().trim();
+  var mitgliedEmail = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
 
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+  // Auth + Admin-Check
+  var adminBody = { email: body.adminEmail || body.email, token: body.token, sessionToken: body.sessionToken };
+  var auth = istGruppenAdmin_(adminBody, gruppeId);
+  if (!auth) {
+    auditLog_('generiereCode:DENIED', (body.adminEmail || body.email || ''), { gruppeId: gruppeId, mitglied: mitgliedEmail });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+
+  var gruppe = auth.gruppe;
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
@@ -324,6 +417,7 @@ function lernplattformGeneriereCode(body) {
     for (var j = 1; j < daten.length; j++) {
       if (String(daten[j][emailIdx]).toLowerCase().trim() === mitgliedEmail) {
         mitgliederSheet.getRange(j + 1, codeIdx + 1).setValue(neuerCode);
+        auditLog_('generiereCode', auth.email, { gruppeId: gruppeId, mitglied: mitgliedEmail });
         return jsonResponse({ success: true, data: { code: neuerCode } });
       }
     }
@@ -450,9 +544,12 @@ function lernplattformErstelleGruppe(body) {
 
 function lernplattformLadeMitglieder(body) {
   var gruppeId = body.gruppeId;
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+
+  // Auth + Mitglied-Check (jedes Mitglied darf die Liste sehen)
+  var auth = istGruppenMitglied_(body, gruppeId);
+  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+
+  var gruppe = auth.gruppe;
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
@@ -482,12 +579,19 @@ function lernplattformLadeMitglieder(body) {
 
 function lernplattformEinladen(body) {
   var gruppeId = body.gruppeId;
-  var email = (body.email || '').toLowerCase().trim();
+  var email = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
   var name = body.name || '';
 
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+  // Auth + Admin-Check
+  var adminBody = { email: body.adminEmail || body.email, token: body.token, sessionToken: body.sessionToken };
+  var auth = istGruppenAdmin_(adminBody, gruppeId);
+  if (!auth) {
+    auditLog_('einladen:DENIED', (body.adminEmail || body.email || ''), { gruppeId: gruppeId, mitglied: email });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+
+  var gruppe = auth.gruppe;
+  auditLog_('einladen', auth.email, { gruppeId: gruppeId, mitglied: email, name: name });
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
@@ -512,11 +616,18 @@ function lernplattformEinladen(body) {
 
 function lernplattformEntfernen(body) {
   var gruppeId = body.gruppeId;
-  var email = (body.email || '').toLowerCase().trim();
+  var email = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
 
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+  // Auth + Admin-Check
+  var adminBody = { email: body.adminEmail || body.email, token: body.token, sessionToken: body.sessionToken };
+  var auth = istGruppenAdmin_(adminBody, gruppeId);
+  if (!auth) {
+    auditLog_('entfernen:DENIED', (body.adminEmail || body.email || ''), { gruppeId: gruppeId, mitglied: email });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+
+  var gruppe = auth.gruppe;
+  auditLog_('entfernen', auth.email, { gruppeId: gruppeId, mitglied: email });
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
@@ -832,25 +943,16 @@ function lernplattformLadeFragenAusGruppenSheet_(gruppe) {
  * Nur Admin der Gruppe darf Fragen speichern.
  */
 function lernplattformSpeichereFrage(body) {
-  var email = (body.email || '').toLowerCase().trim();
-  if (!validiereSessionToken_(body.token || body.sessionToken, email)) {
-    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
-  }
-
   var gruppeId = body.gruppeId;
   var frage = body.frage;
   if (!frage || !frage.id) {
     return jsonResponse({ success: false, error: 'Frage-Daten fehlen' });
   }
 
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
-
-  // Admin-Check
-  if (gruppe.adminEmail !== email) {
-    return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
-  }
+  // Auth + Admin-Check (über Helper)
+  var auth = istGruppenAdmin_(body, gruppeId);
+  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
+  var gruppe = auth.gruppe;
 
   // Fachbereich bestimmt den Tab in der Fragenbank
   var fachbereich = frage.fachbereich || frage.fach || '';
@@ -980,11 +1082,6 @@ function speichereFrageInGruppenSheet_(gruppe, frage) {
  * Familie-Gruppen: Löscht aus Gruppen-Sheet.
  */
 function lernplattformLoescheFrage(body) {
-  var email = (body.email || '').toLowerCase().trim();
-  if (!validiereSessionToken_(body.token || body.sessionToken, email)) {
-    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
-  }
-
   var gruppeId = body.gruppeId;
   var frageId = body.frageId;
   var fachbereich = body.fachbereich;
@@ -993,13 +1090,10 @@ function lernplattformLoescheFrage(body) {
     return jsonResponse({ success: false, error: 'frageId fehlt' });
   }
 
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
-
-  if (gruppe.adminEmail !== email) {
-    return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
-  }
+  // Auth + Admin-Check (über Helper)
+  var auth = istGruppenAdmin_(body, gruppeId);
+  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
+  var gruppe = auth.gruppe;
 
   try {
     var ss, sheet;

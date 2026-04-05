@@ -15,6 +15,13 @@ class AppsScriptGruppenAdapter implements GruppenService {
     }
   }
 
+  private getEmail(): string | undefined {
+    try {
+      const stored = localStorage.getItem('lernplattform-auth')
+      return stored ? JSON.parse(stored).email : undefined
+    } catch { return undefined }
+  }
+
   async ladeGruppen(email: string): Promise<Gruppe[]> {
     const response = await apiClient.post<{ success: boolean; data: Gruppe[] }>(
       'lernplattformLadeGruppen',
@@ -39,7 +46,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
   async ladeMitglieder(gruppeId: string): Promise<Mitglied[]> {
     const response = await apiClient.post<{ success: boolean; data: Mitglied[] }>(
       'lernplattformLadeMitglieder',
-      { gruppeId },
+      { gruppeId, email: this.getEmail() },
       this.getToken()
     )
     return response?.data || []
@@ -48,7 +55,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
   async einladen(gruppeId: string, email: string, name: string): Promise<void> {
     await apiClient.post(
       'lernplattformEinladen',
-      { gruppeId, email, name },
+      { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail(), name },
       this.getToken()
     )
   }
@@ -56,7 +63,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
   async entfernen(gruppeId: string, email: string): Promise<void> {
     await apiClient.post(
       'lernplattformEntfernen',
-      { gruppeId, email },
+      { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail() },
       this.getToken()
     )
   }
@@ -64,7 +71,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
   async generiereCode(gruppeId: string, email: string): Promise<string> {
     const response = await apiClient.post<{ success: boolean; data: { code: string } }>(
       'lernplattformGeneriereCode',
-      { gruppeId, email },
+      { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail() },
       this.getToken()
     )
     if (!response?.data?.code) throw new Error('Code konnte nicht generiert werden')
