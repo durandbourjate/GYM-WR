@@ -2,10 +2,10 @@
 
 ## Aktueller Stand
 
-**Branch:** `feature/fortschritt-lernziele`
+**Branch:** `main`
 **Phase:** Fortschritt pro Mitglied + Lernziele (05.04.2026)
 **Status:** TSC OK, 101 LP-Tests + 193 Pruefungs-Tests gruen, Build OK
-**Apps Script:** Muss neu deployed werden (3 neue Endpoints + Security-Hardening)
+**Apps Script:** Deployed (Security-Hardening + 3 neue Endpoints)
 
 ### Architektur
 - **Ein Format:** Kanonisch aus `@shared/types/fragen` (discriminated union)
@@ -61,10 +61,8 @@
 
 | # | Thema | Details | Aufwand |
 |---|-------|---------|---------|
-| 1 | **E2E-Browser-Test** | Gesamtes Feature im Browser testen (Editor, Lernziele-Panel, Admin-Ansicht) | Mittel |
-| 2 | **Merge zu main** | Nach E2E-Test + LP-Freigabe | Klein |
-| 3 | **Apps Script Deploy** | User muss Code in Editor kopieren + neue Bereitstellung | Manuell |
-| 4 | **Lernziele-Tab erstellen** | Wird automatisch beim ersten speichereLernziel erstellt, oder manuell im Sheet | Manuell |
+| 1 | **E2E-Browser-Test** | LP testet manuell: Admin-Ansicht (Kind-Detail), SuS-Ansicht (Lernziele-Panel) | Mittel |
+| 2 | **Lernziele-Tab erstellen** | Wird automatisch beim ersten speichereLernziel erstellt, oder manuell im Sheet (Spalten: id, text, fach, thema, bloom, fragenIds) | Manuell |
 
 ---
 
