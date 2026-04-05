@@ -22,6 +22,40 @@ Plan: `.claude/plans/toasty-popping-liskov.md`
 
 ---
 
+## Session 63 — Backend-Fusion + Übungstool funktional (05.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **Deployed auf GitHub Pages.**
+
+### Änderungen
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **Backend-Fusion** — 24 LP-Endpoints + 28 Funktionen ins Prüfungs-Apps-Script gemergt (5654→7510 Zeilen) | `apps-script-code.js` |
+| 2 | **lernenApiClient** — nutzt jetzt `VITE_APPS_SCRIPT_URL` (gleiche URL wie Prüfungstool) | `services/lernen/apiClient.ts` |
+| 3 | **VITE_LERNPLATTFORM_APPS_SCRIPT_URL** entfernt — nicht mehr nötig | `deploy.yml`, `vite.config.ts` |
+| 4 | **UebungsToolView** — LP-Login Bridging, defensive `mitglieder`-Prüfung | `UebungsToolView.tsx` |
+| 5 | **SuS-Header** — FeedbackButton + Abmelden rechts (Übungstool + Prüfungstool) | `AppShell.tsx`, `KorrekturListe.tsx` |
+
+### Verifiziert im Browser
+- ✅ LP: Prüfungstool → "Übungstool" klicken → Gruppenauswahl (8 Gruppen) → AdminDashboard mit Tabs
+- ✅ LP: Gruppen-Dropdown, Fragenbank (2206 Fragen), Admin-Info
+- ✅ LP: Zurück zu "Prüfungstool" funktioniert
+- ✅ SuS: /Lernplattform/ Login → "Keine Gruppen" (korrekt, Test-SuS nicht zugeordnet)
+
+### Nächste Session — Plan: `.claude/plans/uebungstool-integration-v2.md`
+
+| # | Aufgabe | Aufwand |
+|---|---------|---------|
+| A | SuS-Header konsistent (beide URLs) | klein |
+| B | Build-Timestamp statt v1.0 | klein |
+| C | Übungstool-Dashboard UI-Redesign (kein Admin-Dashboard Titel, kein Fragenbank-Tab, Gruppen-Dropdown im Info-Bereich) | mittel |
+| D | "Neue Frage" Button in Kopfzeile | klein |
+| E | Formatives Durchführen im Übungstool (gemeinsames Tool, istFormativ-Flag) | gross (2-3 Sessions) |
+| F | Fach-Filter dynamisch + LP-konfigurierbar | mittel |
+
+---
+
 ## Session 62 — Übungstool-Tab im Prüfungstool (05.04.2026)
 
 ### Stand
