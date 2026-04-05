@@ -242,6 +242,9 @@ function doPost(e) {
     case 'lernplattformLadeFortschritt':
       return lernplattformLadeFortschritt(body);
 
+    case 'lernplattformLadeGruppenFortschritt':
+      return lernplattformLadeGruppenFortschritt(body);
+
     // === AUFTRÄGE ===
 
     case 'lernplattformLadeAuftraege':
@@ -268,6 +271,12 @@ function doPost(e) {
 
     case 'lernplattformLadeLernziele':
       return lernplattformLadeLernziele(body);
+
+    case 'lernplattformLadeLernzieleV2':
+      return lernplattformLadeLernzieleV2(body);
+
+    case 'lernplattformSpeichereLernziel':
+      return lernplattformSpeichereLernziel(body);
 
     default:
       return jsonResponse({ success: false, error: 'Unbekannte Aktion: ' + action });
@@ -1657,5 +1666,187 @@ function lernplattformLadeLernziele(body) {
     return jsonResponse({ success: true, data: lernziele });
   } catch (e) {
     return jsonResponse({ success: false, error: 'Lernziele laden: ' + e.message });
+  }
+}
+
+// ============================================================
+// GRUPPEN-FORTSCHRITT + LERNZIELE V2
+// ============================================================
+
+/**
+ * Lädt den Fortschritt aller SuS einer Gruppe (nur für Admins).
+ */
+function lernplattformLadeGruppenFortschritt(body) {
+  var auth = istGruppenAdmin_(body, body.gruppeId);
+  if (!auth) {
+    auditLog_('ladeGruppenFortschritt:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+
+  var gruppe = auth.gruppe;
+
+  try {
+    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+
+    // Mitglieder-Emails laden (für Filterung bei geteiltem Sheet)
+    var mitgSheet = ss.getSheetByName('Mitglieder');
+    var mitgliederEmails = [];
+    if (mitgSheet) {
+      var mitgDaten = mitgSheet.getDataRange().getValues();
+      var mitgHeaders = mitgDaten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+      var mitgEmailIdx = mitgHeaders.indexOf('email');
+      for (var m = 1; m < mitgDaten.length; m++) {
+        mitgliederEmails.push(String(mitgDaten[m][mitgEmailIdx] || '').toLowerCase().trim());
+      }
+    }
+
+    // Fortschritt laden + nach Mitgliedern filtern
+    var fortschrittSheet = ss.getSheetByName('Fortschritt');
+    var fortschritte = [];
+    if (fortschrittSheet) {
+      var fpDaten = fortschrittSheet.getDataRange().getValues();
+      if (fpDaten.length >= 2) {
+        var fpHeaders = fpDaten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+        for (var i = 1; i < fpDaten.length; i++) {
+          var fpEmail = String(fpDaten[i][0]).toLowerCase().trim();
+          if (mitgliederEmails.length > 0 && mitgliederEmails.indexOf(fpEmail) === -1) continue;
+          var sessionIdsRaw = String(fpDaten[i][fpHeaders.indexOf('sessionids')] || '');
+          fortschritte.push({
+            email: fpEmail,
+            fragenId: String(fpDaten[i][fpHeaders.indexOf('fragenid')]),
+            versuche: Number(fpDaten[i][fpHeaders.indexOf('versuche')]),
+            richtig: Number(fpDaten[i][fpHeaders.indexOf('richtig')]),
+            richtigInFolge: Number(fpDaten[i][fpHeaders.indexOf('richtiginfolge')]),
+            mastery: String(fpDaten[i][fpHeaders.indexOf('mastery')]),
+            letzterVersuch: String(fpDaten[i][fpHeaders.indexOf('letzterversuch')]),
+            sessionIds: sessionIdsRaw ? sessionIdsRaw.split(',').map(function(s) { return s.trim(); }) : [],
+          });
+        }
+      }
+    }
+
+    // Sessions laden + nach Mitgliedern filtern
+    var sessionsSheet = ss.getSheetByName('Sessions');
+    var sessions = [];
+    if (sessionsSheet) {
+      var sesDaten = sessionsSheet.getDataRange().getValues();
+      if (sesDaten.length >= 2) {
+        var sesHeaders = sesDaten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+        for (var j = 1; j < sesDaten.length; j++) {
+          var sesEmail = String(sesDaten[j][sesHeaders.indexOf('email')] || '').toLowerCase().trim();
+          if (mitgliederEmails.length > 0 && mitgliederEmails.indexOf(sesEmail) === -1) continue;
+          sessions.push({
+            sessionId: String(sesDaten[j][sesHeaders.indexOf('sessionid')]),
+            email: sesEmail,
+            fach: String(sesDaten[j][sesHeaders.indexOf('fach')] || ''),
+            thema: String(sesDaten[j][sesHeaders.indexOf('thema')] || ''),
+            datum: String(sesDaten[j][sesHeaders.indexOf('datum')] || ''),
+            anzahlFragen: Number(sesDaten[j][sesHeaders.indexOf('anzahlfragen')] || 0),
+            richtig: Number(sesDaten[j][sesHeaders.indexOf('richtig')] || 0),
+          });
+        }
+      }
+    }
+
+    auditLog_('ladeGruppenFortschritt', auth.email, { gruppeId: body.gruppeId, anzahlSuS: mitgliederEmails.length, anzahlFortschritte: fortschritte.length });
+    return jsonResponse({ success: true, data: { fortschritte: fortschritte, sessions: sessions } });
+  } catch (e) {
+    return jsonResponse({ success: false, error: 'Gruppenfortschritt laden: ' + e.message });
+  }
+}
+
+/**
+ * Lädt Lernziele aus dediziertem Lernziele-Tab.
+ * Gym: aus FRAGENBANK_ID, Familie: aus Gruppen-Sheet.
+ */
+function lernplattformLadeLernzieleV2(body) {
+  var email = (body.email || '').toLowerCase().trim();
+  if (!validiereSessionToken_(body.token || body.sessionToken, email)) {
+    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
+  }
+
+  var gruppeId = body.gruppeId;
+  var gruppen = alleGruppenLaden_();
+  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
+  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+
+  try {
+    var sheetId = gruppe.typ === 'familie' ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var ss = SpreadsheetApp.openById(sheetId);
+    var lzSheet = ss.getSheetByName('Lernziele');
+
+    if (!lzSheet) return jsonResponse({ success: true, data: [] });
+
+    var daten = lzSheet.getDataRange().getValues();
+    if (daten.length < 2) return jsonResponse({ success: true, data: [] });
+
+    var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var lernziele = [];
+
+    for (var i = 1; i < daten.length; i++) {
+      var fragenIdsRaw = String(daten[i][headers.indexOf('fragenids')] || '');
+      lernziele.push({
+        id: String(daten[i][headers.indexOf('id')]),
+        text: String(daten[i][headers.indexOf('text')]),
+        fach: String(daten[i][headers.indexOf('fach')]),
+        thema: String(daten[i][headers.indexOf('thema')] || ''),
+        bloom: String(daten[i][headers.indexOf('bloom')] || 'K2'),
+        fragenIds: fragenIdsRaw ? fragenIdsRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+      });
+    }
+
+    return jsonResponse({ success: true, data: lernziele });
+  } catch (e) {
+    return jsonResponse({ success: false, error: 'Lernziele V2 laden: ' + e.message });
+  }
+}
+
+/**
+ * Speichert ein Lernziel (Upsert). Nur Admins.
+ */
+function lernplattformSpeichereLernziel(body) {
+  var auth = istGruppenAdmin_(body, body.gruppeId);
+  if (!auth) {
+    auditLog_('speichereLernziel:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+
+  var gruppe = auth.gruppe;
+  var lz = body.lernziel;
+  if (!lz || !lz.id || !lz.text || !lz.fach) {
+    return jsonResponse({ success: false, error: 'Lernziel-Daten unvollständig' });
+  }
+
+  try {
+    var sheetId = gruppe.typ === 'familie' ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var ss = SpreadsheetApp.openById(sheetId);
+    var lzSheet = ss.getSheetByName('Lernziele');
+
+    // Tab erstellen falls nicht vorhanden
+    if (!lzSheet) {
+      lzSheet = ss.insertSheet('Lernziele');
+      lzSheet.appendRow(['id', 'text', 'fach', 'thema', 'bloom', 'fragenIds']);
+      lzSheet.setFrozenRows(1);
+    }
+
+    var daten = lzSheet.getDataRange().getValues();
+    var fragenIdsStr = (lz.fragenIds || []).join(', ');
+
+    // Bestehend → Update
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][0]) === lz.id) {
+        var zeile = i + 1;
+        lzSheet.getRange(zeile, 1, 1, 6).setValues([[lz.id, lz.text, lz.fach, lz.thema || '', lz.bloom || 'K2', fragenIdsStr]]);
+        auditLog_('speichereLernziel:UPDATE', auth.email, { gruppeId: body.gruppeId, lernzielId: lz.id });
+        return jsonResponse({ success: true, data: { id: lz.id } });
+      }
+    }
+
+    // Neu → Append
+    lzSheet.appendRow([lz.id, lz.text, lz.fach, lz.thema || '', lz.bloom || 'K2', fragenIdsStr]);
+    auditLog_('speichereLernziel:CREATE', auth.email, { gruppeId: body.gruppeId, lernzielId: lz.id });
+    return jsonResponse({ success: true, data: { id: lz.id } });
+  } catch (e) {
+    return jsonResponse({ success: false, error: 'Lernziel speichern: ' + e.message });
   }
 }
