@@ -190,3 +190,62 @@ class AppsScriptFragenAdapter implements FragenService {
 }
 
 export const fragenAdapter: FragenService = new AppsScriptFragenAdapter()
+
+// --- Fortschritt-Adapter: Gruppen-Fortschritt + Lernziele ---
+
+import type { Lernziel } from '@shared/types/fragen'
+import type { FragenFortschritt, SessionEintrag } from '../types/fortschritt'
+import type { FortschrittService } from '../services/interfaces'
+
+class AppsScriptFortschrittAdapter implements FortschrittService {
+  private getToken(): string | undefined {
+    try {
+      const stored = localStorage.getItem('lernplattform-auth')
+      return stored ? JSON.parse(stored).sessionToken : undefined
+    } catch { return undefined }
+  }
+
+  private getEmail(): string | undefined {
+    try {
+      const stored = localStorage.getItem('lernplattform-auth')
+      return stored ? JSON.parse(stored).email : undefined
+    } catch { return undefined }
+  }
+
+  async ladeGruppenFortschritt(gruppeId: string): Promise<{
+    fortschritte: FragenFortschritt[]
+    sessions: SessionEintrag[]
+  }> {
+    const response = await apiClient.post<{
+      success: boolean
+      data: { fortschritte: FragenFortschritt[]; sessions: SessionEintrag[] }
+      error?: string
+    }>('lernplattformLadeGruppenFortschritt', { gruppeId, email: this.getEmail() }, this.getToken())
+
+    if (!response?.success) throw new Error(response?.error || 'Fortschritt laden fehlgeschlagen')
+    return response.data
+  }
+
+  async ladeLernziele(gruppeId: string): Promise<Lernziel[]> {
+    const response = await apiClient.post<{
+      success: boolean
+      data: Lernziel[]
+      error?: string
+    }>('lernplattformLadeLernzieleV2', { gruppeId, email: this.getEmail() }, this.getToken())
+
+    return response?.data || []
+  }
+
+  async speichereLernziel(gruppeId: string, lernziel: Lernziel): Promise<{ id: string }> {
+    const response = await apiClient.post<{
+      success: boolean
+      data: { id: string }
+      error?: string
+    }>('lernplattformSpeichereLernziel', { gruppeId, lernziel, email: this.getEmail() }, this.getToken())
+
+    if (!response?.success) throw new Error(response?.error || 'Lernziel speichern fehlgeschlagen')
+    return response.data
+  }
+}
+
+export const fortschrittAdapter: FortschrittService = new AppsScriptFortschrittAdapter()

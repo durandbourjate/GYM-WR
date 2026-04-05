@@ -105,3 +105,46 @@ describe('fortschrittStore', () => {
     expect(thema.neu).toBe(1)
   })
 })
+
+describe('fortschrittStore Gruppen-Selektoren', () => {
+  beforeEach(() => {
+    useFortschrittStore.setState({
+      fortschritte: {},
+      gruppenFortschritt: {
+        'gruppe-1': [
+          { fragenId: 'f1', email: 'alice@test.ch', versuche: 5, richtig: 5, richtigInFolge: 5, sessionIds: ['s1', 's2'], letzterVersuch: '2026-04-05', mastery: 'gemeistert' },
+          { fragenId: 'f2', email: 'alice@test.ch', versuche: 3, richtig: 1, richtigInFolge: 0, sessionIds: ['s1'], letzterVersuch: '2026-04-05', mastery: 'ueben' },
+          { fragenId: 'f1', email: 'bob@test.ch', versuche: 3, richtig: 3, richtigInFolge: 3, sessionIds: ['s1'], letzterVersuch: '2026-04-05', mastery: 'gefestigt' },
+        ]
+      },
+      gruppenSessions: {
+        'gruppe-1': [
+          { sessionId: 's1', email: 'alice@test.ch', fach: 'BWL', thema: 'Bilanz', datum: '2026-04-05', anzahlFragen: 10, richtig: 7 },
+        ]
+      },
+      lernziele: [],
+    })
+    localStorage.clear()
+  })
+
+  it('getFortschrittFuerSuS filtert nach Email', () => {
+    const result = useFortschrittStore.getState().getFortschrittFuerSuS('gruppe-1', 'alice@test.ch')
+    expect(result).toHaveLength(2)
+    expect(result.every(fp => fp.email === 'alice@test.ch')).toBe(true)
+  })
+
+  it('getFortschrittFuerSuS gibt leeres Array für unbekannte Gruppe', () => {
+    const result = useFortschrittStore.getState().getFortschrittFuerSuS('nope', 'alice@test.ch')
+    expect(result).toHaveLength(0)
+  })
+
+  it('getSessionsFuerSuS filtert nach Email', () => {
+    const result = useFortschrittStore.getState().getSessionsFuerSuS('gruppe-1', 'alice@test.ch')
+    expect(result).toHaveLength(1)
+  })
+
+  it('getSessionsFuerSuS gibt leeres Array für unbekannte Email', () => {
+    const result = useFortschrittStore.getState().getSessionsFuerSuS('gruppe-1', 'nobody@test.ch')
+    expect(result).toHaveLength(0)
+  })
+})

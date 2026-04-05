@@ -1,8 +1,10 @@
 import { create } from 'zustand'
-import type { FragenFortschritt, MasteryStufe, ThemenFortschritt } from '../types/fortschritt'
+import type { FragenFortschritt, MasteryStufe, ThemenFortschritt, SessionEintrag } from '../types/fortschritt'
 import type { Frage } from '../types/fragen'
+import type { Lernziel } from '@shared/types/fragen'
 import { aktualisiereFortschritt } from '../utils/mastery'
 import { db } from '../utils/indexedDB'
+import { fortschrittAdapter } from '../adapters/appsScriptAdapter'
 
 const STORAGE_KEY = 'lernplattform-fortschritt'
 
@@ -14,6 +16,19 @@ interface FortschrittState {
   getMastery: (fragenId: string) => MasteryStufe
   getFortschritt: (fragenId: string) => FragenFortschritt | null
   getThemenFortschritt: (fragen: Frage[]) => ThemenFortschritt
+
+  // Admin-Daten (Gruppen-Fortschritt aller SuS)
+  gruppenFortschritt: Record<string, FragenFortschritt[]>
+  gruppenSessions: Record<string, SessionEintrag[]>
+  lernziele: Lernziel[]
+
+  // Admin-Actions
+  ladeGruppenFortschritt: (gruppeId: string) => Promise<void>
+  ladeLernziele: (gruppeId: string) => Promise<void>
+
+  // Selektoren
+  getFortschrittFuerSuS: (gruppeId: string, email: string) => FragenFortschritt[]
+  getSessionsFuerSuS: (gruppeId: string, email: string) => SessionEintrag[]
 }
 
 function speichereInLocalStorage(fortschritte: Record<string, FragenFortschritt>): void {
@@ -106,5 +121,40 @@ export const useFortschrittStore = create<FortschrittState>((set, get) => ({
       gemeistert,
       quote,
     }
+  },
+
+  // Admin-Daten
+  gruppenFortschritt: {},
+  gruppenSessions: {},
+  lernziele: [],
+
+  ladeGruppenFortschritt: async (gruppeId) => {
+    if (get().gruppenFortschritt[gruppeId]) return // gecacht
+    try {
+      const { fortschritte, sessions } = await fortschrittAdapter.ladeGruppenFortschritt(gruppeId)
+      set({
+        gruppenFortschritt: { ...get().gruppenFortschritt, [gruppeId]: fortschritte },
+        gruppenSessions: { ...get().gruppenSessions, [gruppeId]: sessions },
+      })
+    } catch (e) {
+      console.error('Gruppen-Fortschritt laden fehlgeschlagen:', e)
+    }
+  },
+
+  ladeLernziele: async (gruppeId) => {
+    try {
+      const lernziele = await fortschrittAdapter.ladeLernziele(gruppeId)
+      set({ lernziele })
+    } catch (e) {
+      console.error('Lernziele laden fehlgeschlagen:', e)
+    }
+  },
+
+  getFortschrittFuerSuS: (gruppeId, email) => {
+    return (get().gruppenFortschritt[gruppeId] || []).filter(fp => fp.email === email)
+  },
+
+  getSessionsFuerSuS: (gruppeId, email) => {
+    return (get().gruppenSessions[gruppeId] || []).filter(s => s.email === email)
   },
 }))
