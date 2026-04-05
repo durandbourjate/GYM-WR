@@ -112,12 +112,12 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
       {/* Toolbar */}
       <div className="flex gap-2 items-center flex-wrap">
         <input type="color" value={farbe} onChange={(e) => setFarbe(e.target.value)} disabled={disabled} className="w-10 h-10 rounded cursor-pointer" title="Farbe" />
-        <select value={dicke} onChange={(e) => setDicke(Number(e.target.value))} disabled={disabled} className="p-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm min-h-[44px]">
+        <select value={dicke} onChange={(e) => setDicke(Number(e.target.value))} disabled={disabled} className="p-2 rounded border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-sm min-h-[44px]">
           <option value={1}>Fein</option>
           <option value={3}>Normal</option>
           <option value={6}>Dick</option>
         </select>
-        <button onClick={loeschen} disabled={disabled} className="px-3 py-2 rounded border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 min-h-[44px] dark:text-white">
+        <button onClick={loeschen} disabled={disabled} className="px-3 py-2 rounded border border-slate-300 dark:border-slate-600 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 min-h-[44px] dark:text-white">
           Alles loeschen
         </button>
       </div>
@@ -125,7 +125,7 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
       {/* Canvas */}
       <canvas
         ref={canvasRef}
-        className="w-full rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white"
+        className="w-full rounded-xl border-2 border-slate-300 dark:border-slate-600 bg-white"
         style={{ touchAction: 'none', height: 400 }}
       />
 
@@ -139,14 +139,14 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
         <div className="space-y-3">
           {vizFrage.musterloesungBild && (
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Musterloesung:</p>
-              <img src={resolveAssetUrl(vizFrage.musterloesungBild)} alt="Musterloesung" className="w-full rounded-xl border border-gray-200 dark:border-gray-600" />
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Musterloesung:</p>
+              <img src={resolveAssetUrl(vizFrage.musterloesungBild)} alt="Musterloesung" className="w-full rounded-xl border border-slate-200 dark:border-slate-600" />
             </div>
           )}
 
           {!selbstbewertung && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Wie hast du abgeschnitten?</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Wie hast du abgeschnitten?</p>
               <div className="flex gap-2">
                 <button onClick={() => handleSelbstbewertung('korrekt')} className="flex-1 py-3 rounded-xl border-2 border-green-300 text-green-700 dark:text-green-300 dark:border-green-600 font-medium min-h-[48px]">Korrekt</button>
                 <button onClick={() => handleSelbstbewertung('teilweise')} className="flex-1 py-3 rounded-xl border-2 border-amber-300 text-amber-700 dark:text-amber-300 dark:border-amber-600 font-medium min-h-[48px]">Teilweise</button>

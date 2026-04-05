@@ -36,13 +36,13 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
               ${istGewaehlt && !feedbackSichtbar ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
-              ${!istGewaehlt && !istKorrekt ? 'border-gray-200 dark:border-gray-600 hover:border-gray-400' : ''}
+              ${!istGewaehlt && !istKorrekt ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400' : ''}
               ${disabled ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
             <span className="dark:text-white">{option.text}</span>
             {feedbackSichtbar && option.erklaerung && (
-              <span className="block text-xs mt-1 text-gray-500 dark:text-gray-400">{option.erklaerung}</span>
+              <span className="block text-xs mt-1 text-slate-500 dark:text-slate-400">{option.erklaerung}</span>
             )}
           </button>
         )

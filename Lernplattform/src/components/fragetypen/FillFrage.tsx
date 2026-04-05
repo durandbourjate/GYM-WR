@@ -32,10 +32,10 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
                 value={wert}
                 onChange={(e) => setEintraege(prev => ({ ...prev, [luecke.id]: e.target.value }))}
                 disabled={disabled}
-                className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-gray-700 dark:text-white
+                className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-slate-700 dark:text-white
                   ${istKorrekt ? 'border-green-500' : ''}
                   ${istFalsch ? 'border-red-500' : ''}
-                  ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600' : ''}
+                  ${!feedbackSichtbar ? 'border-slate-200 dark:border-slate-600' : ''}
                 `}
               >
                 <option value="">-- Waehlen --</option>
@@ -49,10 +49,10 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
                 disabled={disabled}
                 placeholder="Antwort eingeben"
                 autoFocus={i === 0}
-                className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-gray-700 dark:text-white focus:outline-none
+                className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-slate-700 dark:text-white focus:outline-none
                   ${istKorrekt ? 'border-green-500' : ''}
                   ${istFalsch ? 'border-red-500' : ''}
-                  ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600 focus:border-slate-500' : ''}
+                  ${!feedbackSichtbar ? 'border-slate-200 dark:border-slate-600 focus:border-slate-500' : ''}
                 `}
               />
             )}

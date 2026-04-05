@@ -36,7 +36,7 @@ export default function FarbenTab() {
   }, [aktiveGruppe])
 
   if (!einstellungen || !aktiveGruppe) {
-    return <p className="text-sm text-gray-400">Keine Einstellungen geladen.</p>
+    return <p className="text-sm text-slate-400">Keine Einstellungen geladen.</p>
   }
 
   const farbeFuerFach = (fach: string) =>
@@ -68,20 +68,20 @@ export default function FarbenTab() {
   }
 
   if (laden) {
-    return <p className="text-sm text-gray-400">Fächer werden geladen…</p>
+    return <p className="text-sm text-slate-400">Fächer werden geladen…</p>
   }
 
   if (sichtbareFaecher.length === 0) {
-    return <p className="text-sm text-gray-400">Keine Fächer gefunden.</p>
+    return <p className="text-sm text-slate-400">Keine Fächer gefunden.</p>
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         Farben pro Fach anpassen. Klicke auf das Farbfeld um eine Farbe zu wählen.
       </p>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
         {sichtbareFaecher.map((fach) => {
           const aktuellefarbe = farbeFuerFach(fach)
           const istGeaendert = einstellungen.fachFarben[fach] !== undefined
@@ -92,7 +92,7 @@ export default function FarbenTab() {
                 type="color"
                 value={aktuellefarbe}
                 onChange={(e) => setzefarbe(fach, e.target.value)}
-                className="w-10 h-10 rounded cursor-pointer border border-gray-200 dark:border-gray-600 p-0.5"
+                className="w-10 h-10 rounded cursor-pointer border border-slate-200 dark:border-slate-600 p-0.5"
                 title={`Farbe für ${fach}`}
               />
 
@@ -110,14 +110,14 @@ export default function FarbenTab() {
               {istGeaendert && (
                 <button
                   onClick={() => resetFarbe(fach)}
-                  className="text-xs text-gray-400 hover:text-red-500 min-h-[44px] px-2"
+                  className="text-xs text-slate-400 hover:text-red-500 min-h-[44px] px-2"
                   title="Standard-Farbe wiederherstellen"
                 >
                   Zuruecksetzen
                 </button>
               )}
               {!istGeaendert && (
-                <span className="text-xs text-gray-300 dark:text-gray-600 px-2">
+                <span className="text-xs text-slate-300 dark:text-slate-600 px-2">
                   Standard ({getStandardFarbe(fach)})
                 </span>
               )}

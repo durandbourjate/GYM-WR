@@ -802,15 +802,18 @@ function parseFrageKanonisch_(row, fachbereich) {
   };
 
   // Themen-Hierarchie aus poolId ableiten (Pool-Titel → thema, bisheriges thema → unterthema)
-  if (base.poolId && !base.unterthema) {
-    // poolId = "bwl_einfuehrung_w01" → Prefix = "bwl_einfuehrung"
+  // IMMER anwenden wenn poolId matcht (auch wenn unterthema schon gesetzt)
+  if (base.poolId) {
     var parts = base.poolId.split('_');
     // Pool-Prefix: alle Teile ausser dem letzten (Frage-ID)
     var poolPrefix = parts.slice(0, -1).join('_');
     var poolThema = THEMEN_MAPPING[poolPrefix];
-    if (poolThema && base.thema !== poolThema) {
-      base.unterthema = base.thema; // bisheriges Thema → Unterthema
-      base.thema = poolThema;       // Pool-Titel → Thema
+    if (poolThema) {
+      // Bisheriges Thema → Unterthema (wenn nicht identisch mit Pool-Titel und noch nicht gesetzt)
+      if (base.thema && base.thema !== poolThema && !base.unterthema) {
+        base.unterthema = base.thema;
+      }
+      base.thema = poolThema; // Pool-Titel → Thema (IMMER)
     }
   }
 

@@ -70,18 +70,21 @@ export default function App() {
     }
   }, [istAngemeldet, user?.email, ladeGruppen])
 
-  // Rolle aus Gruppe ableiten + Admin direkt zu Admin-Screen navigieren
+  // Rolle aus Gruppe ableiten + zum richtigen Screen navigieren
   useEffect(() => {
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
-      if (istAdmin && user.rolle !== 'admin') {
-        useAuthStore.getState().setzeRolle('admin')
-        navigiere('admin')
-      } else if (!istAdmin && user.rolle !== 'lernend') {
-        useAuthStore.getState().setzeRolle('lernend')
+      if (istAdmin) {
+        if (user.rolle !== 'admin') useAuthStore.getState().setzeRolle('admin')
+        if (aktuellerScreen !== 'admin') navigiere('admin')
+      } else {
+        if (user.rolle !== 'lernend') useAuthStore.getState().setzeRolle('lernend')
+        if (aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'uebung' && aktuellerScreen !== 'ergebnis') {
+          navigiere('dashboard')
+        }
       }
     }
-  }, [aktiveGruppe, user?.email, user?.rolle, navigiere])
+  }, [aktiveGruppe, user?.email, user?.rolle, aktuellerScreen, navigiere])
 
   // Navigation-State synchronisieren
   useEffect(() => {
@@ -110,8 +113,8 @@ export default function App() {
   // Laden
   if (!IST_DEMO && authStatus === 'laden') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <p className="text-gray-500">Wird geladen...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-slate-500">Wird geladen...</p>
       </div>
     )
   }
@@ -122,8 +125,8 @@ export default function App() {
   // Gruppen laden
   if (!IST_DEMO && gruppenStatus === 'laden') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <p className="text-gray-500">Gruppen werden geladen...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-slate-500">Gruppen werden geladen...</p>
       </div>
     )
   }
@@ -133,9 +136,9 @@ export default function App() {
     return (
       <AppShell>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
             <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">
+            <p className="text-slate-500 dark:text-slate-400 mb-4">
               Du bist noch keiner Gruppe zugeordnet.
             </p>
             <button

@@ -20,7 +20,7 @@ export default function QuizNavigation({
       {kannZurueck && (
         <button
           onClick={onZurueck}
-          className="px-4 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+          className="px-4 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
         >
           &#8592; Zurück
         </button>
@@ -30,7 +30,7 @@ export default function QuizNavigation({
       {!istBeantwortet && !feedbackSichtbar && (
         <button
           onClick={onUeberspringen}
-          className="px-4 py-2.5 rounded-xl text-sm font-medium min-h-[44px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          className="px-4 py-2.5 rounded-xl text-sm font-medium min-h-[44px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
         >
           Überspringen &#8594;
         </button>
@@ -40,7 +40,7 @@ export default function QuizNavigation({
       {feedbackSichtbar && (
         <button
           onClick={istSessionFertig ? onErgebnis : onWeiter}
-          className="ml-auto px-6 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-gray-300"
+          className="ml-auto px-6 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 hover:bg-slate-700 dark:hover:bg-slate-300"
         >
           {istSessionFertig ? 'Ergebnis anzeigen' : 'Weiter \u2192'}
         </button>

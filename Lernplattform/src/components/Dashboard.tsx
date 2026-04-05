@@ -179,20 +179,20 @@ export default function Dashboard() {
                   ${e.typ === 'festigung' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : ''}
                 `}
               >
-                <div className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-1">
                   {e.typ === 'auftrag' ? 'Auftrag' : e.typ === 'luecke' ? 'Empfohlen' : 'Festigung'}
                 </div>
                 <div className="font-medium dark:text-white">{e.titel}</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">{e.beschreibung}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{e.beschreibung}</div>
               </button>
             ))}
           </div>
         )}
 
         {laden ? (
-          <p className="text-gray-500">Themen werden geladen...</p>
+          <p className="text-slate-500">Themen werden geladen...</p>
         ) : alleFragen.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm text-gray-500">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm text-slate-500">
             Noch keine Übungsfragen vorhanden.
           </div>
         ) : aktivesThema && themaDetail ? (
@@ -243,7 +243,7 @@ export default function Dashboard() {
                     className="px-4 py-2 rounded-full text-sm font-medium border-2 transition-colors"
                     style={aktiverFach === fach
                       ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
-                      : { borderColor: '#e2e8f0', color: farbe }
+                      : { borderColor: '#e5e5e5', color: farbe }
                     }
                   >
                     {fach}
@@ -460,7 +460,7 @@ function Chip({ label, count, aktiv, farbe, onClick }: {
       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors cursor-pointer select-none"
       style={aktiv
         ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
-        : { borderColor: '#e2e8f0', color: '#475569' }
+        : { borderColor: '#e5e5e5', color: '#525252' }
       }
     >
       {label}
@@ -495,7 +495,7 @@ function MasteryBadges({ fortschritt }: { fortschritt: ThemenFortschritt }) {
       {fortschritt.gemeistert > 0 && <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">{fortschritt.gemeistert}</span>}
       {fortschritt.gefestigt > 0 && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">{fortschritt.gefestigt}</span>}
       {fortschritt.ueben > 0 && <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">{fortschritt.ueben}</span>}
-      {fortschritt.neu > 0 && <span className="px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">{fortschritt.neu}</span>}
+      {fortschritt.neu > 0 && <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">{fortschritt.neu}</span>}
     </div>
   )
 }

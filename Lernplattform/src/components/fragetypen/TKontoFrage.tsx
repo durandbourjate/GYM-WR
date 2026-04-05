@@ -80,9 +80,9 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
     <div className="space-y-4">
       {/* Geschäftsfälle */}
       {geschaeftsfaelle.length > 0 && (
-        <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm">
+        <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm">
           <p className="font-medium mb-1 dark:text-white">Geschaeftsfaelle:</p>
-          <ol className="list-decimal list-inside space-y-1 text-gray-700 dark:text-gray-300">
+          <ol className="list-decimal list-inside space-y-1 text-slate-700 dark:text-slate-300">
             {geschaeftsfaelle.map((gf, i) => <li key={i}>{gf}</li>)}
           </ol>
         </div>
@@ -94,18 +94,18 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
         if (!state) return null
 
         return (
-          <div key={konto.kontonummer} className="border-2 border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden">
+          <div key={konto.kontonummer} className="border-2 border-slate-300 dark:border-slate-600 rounded-xl overflow-hidden">
             {/* Konto-Titel */}
-            <div className="bg-gray-100 dark:bg-gray-700 px-3 py-2 font-medium text-sm dark:text-white text-center border-b-2 border-gray-300 dark:border-gray-600">
+            <div className="bg-slate-100 dark:bg-slate-700 px-3 py-2 font-medium text-sm dark:text-white text-center border-b-2 border-slate-300 dark:border-slate-600">
               {konto.kontonummer}
             </div>
 
-            <div className="grid grid-cols-2 divide-x-2 divide-gray-300 dark:divide-gray-600">
+            <div className="grid grid-cols-2 divide-x-2 divide-slate-300 dark:divide-slate-600">
               {/* Soll-Seite */}
               <div className="p-2 space-y-1">
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">Soll</p>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 text-center">Soll</p>
                 {konto.anfangsbestand !== undefined && (
-                  <div className="flex gap-1 text-xs text-gray-500 dark:text-gray-400 italic px-1">
+                  <div className="flex gap-1 text-xs text-slate-500 dark:text-slate-400 italic px-1">
                     <span className="flex-1">AB</span>
                     <span>{konto.anfangsbestand.toLocaleString('de-CH')}</span>
                   </div>
@@ -115,7 +115,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
                     <div className="flex-1">
                       <KontenSelect konten={gegenkonten} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'soll', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
                     </div>
-                    <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'soll', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-xs text-right min-h-[44px]" />
+                    <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'soll', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs text-right min-h-[44px]" />
                   </div>
                 ))}
                 {!disabled && !feedbackSichtbar && (
@@ -125,13 +125,13 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
 
               {/* Haben-Seite */}
               <div className="p-2 space-y-1">
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center">Haben</p>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 text-center">Haben</p>
                 {state.haben.map((e, i) => (
                   <div key={i} className="flex gap-1">
                     <div className="flex-1">
                       <KontenSelect konten={gegenkonten} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'haben', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
                     </div>
-                    <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'haben', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-xs text-right min-h-[44px]" />
+                    <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'haben', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs text-right min-h-[44px]" />
                   </div>
                 ))}
                 {!disabled && !feedbackSichtbar && (
@@ -141,14 +141,14 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
             </div>
 
             {/* Saldo */}
-            <div className="border-t-2 border-gray-300 dark:border-gray-600 p-2 flex gap-2 items-center">
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Saldo:</span>
-              <select value={state.saldoSeite} onChange={(e) => updateSaldo(konto.kontonummer, 'saldoSeite', e.target.value)} disabled={disabled} className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-xs min-h-[44px]">
+            <div className="border-t-2 border-slate-300 dark:border-slate-600 p-2 flex gap-2 items-center">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Saldo:</span>
+              <select value={state.saldoSeite} onChange={(e) => updateSaldo(konto.kontonummer, 'saldoSeite', e.target.value)} disabled={disabled} className="p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs min-h-[44px]">
                 <option value="">Seite</option>
                 <option value="soll">Soll</option>
                 <option value="haben">Haben</option>
               </select>
-              <input type="number" value={state.saldoBetrag} onChange={(e) => updateSaldo(konto.kontonummer, 'saldoBetrag', e.target.value)} disabled={disabled} placeholder="CHF" className="w-24 p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-xs text-right min-h-[44px]" />
+              <input type="number" value={state.saldoBetrag} onChange={(e) => updateSaldo(konto.kontonummer, 'saldoBetrag', e.target.value)} disabled={disabled} placeholder="CHF" className="w-24 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs text-right min-h-[44px]" />
             </div>
           </div>
         )

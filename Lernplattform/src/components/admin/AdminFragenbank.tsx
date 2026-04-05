@@ -12,7 +12,7 @@ const FACH_FARBEN: Record<string, string> = {
   VWL: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
   BWL: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   Recht: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  Informatik: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400',
+  Informatik: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400',
   Andere: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
 }
 
@@ -21,7 +21,7 @@ const FACH_FARBEN_AKTIV: Record<string, string> = {
   VWL: 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white ring-2 ring-orange-300',
   BWL: 'bg-blue-500 text-white dark:bg-blue-600 dark:text-white ring-2 ring-blue-300',
   Recht: 'bg-green-500 text-white dark:bg-green-600 dark:text-white ring-2 ring-green-300',
-  Informatik: 'bg-gray-500 text-white dark:bg-gray-600 dark:text-white ring-2 ring-gray-300',
+  Informatik: 'bg-slate-500 text-white dark:bg-slate-600 dark:text-white ring-2 ring-slate-300',
   Andere: 'bg-purple-500 text-white dark:bg-purple-600 dark:text-white ring-2 ring-purple-300',
 }
 
@@ -141,7 +141,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
           <h3 className="text-lg font-semibold dark:text-white">
             Fragenbank
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             {fragen.length} Fragen{filterFach ? ` (${gefilterteFragen.length} angezeigt)` : ''}
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
           value={suchtext}
           onChange={(e) => setSuchtext(e.target.value)}
           placeholder="Fragen durchsuchen..."
-          className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500"
+          className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500"
         />
 
         {/* Fach-Filter */}
@@ -171,8 +171,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
               onClick={() => { setFilterFach(''); setFilterThema(''); setFilterUnterthema('') }}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 !filterFach
-                  ? 'bg-gray-800 text-white dark:bg-white dark:text-gray-800'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
+                  ? 'bg-slate-800 text-white dark:bg-white dark:text-slate-800'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300'
               }`}
             >
               Alle Fächer
@@ -183,8 +183,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
                 onClick={() => { setFilterFach(fach === filterFach ? '' : fach); setFilterThema(''); setFilterUnterthema('') }}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                   filterFach === fach
-                    ? FACH_FARBEN_AKTIV[fach] || 'bg-gray-800 text-white dark:bg-white dark:text-gray-800'
-                    : FACH_FARBEN[fach] || 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                    ? FACH_FARBEN_AKTIV[fach] || 'bg-slate-800 text-white dark:bg-white dark:text-slate-800'
+                    : FACH_FARBEN[fach] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                 }`}
               >
                 {fach}
@@ -199,7 +199,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             <select
               value={filterThema}
               onChange={(e) => { setFilterThema(e.target.value); setFilterUnterthema('') }}
-              className="px-2 py-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+              className="px-2 py-1 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-white"
             >
               <option value="">Alle Themen</option>
               {themen.map(t => <option key={t} value={t}>{t}</option>)}
@@ -209,7 +209,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             <select
               value={filterUnterthema}
               onChange={(e) => setFilterUnterthema(e.target.value)}
-              className="px-2 py-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+              className="px-2 py-1 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-white"
             >
               <option value="">Alle Unterthemen</option>
               {unterthemen.map(t => <option key={t} value={t}>{t}</option>)}
@@ -219,7 +219,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             <select
               value={filterTyp}
               onChange={(e) => setFilterTyp(e.target.value)}
-              className="px-2 py-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white"
+              className="px-2 py-1 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-white"
             >
               <option value="">Alle Typen</option>
               {typen.map(t => <option key={t} value={t}>{t}</option>)}
@@ -238,7 +238,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
 
       {/* Status */}
       {laden && (
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-12 text-slate-500 dark:text-slate-400">
           Fragen werden geladen...
         </div>
       )}
@@ -254,7 +254,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
 
       {/* Fragen-Liste */}
       {!laden && gefilterteFragen.length === 0 && !fehler && (
-        <div className="text-center py-12 text-gray-400 dark:text-gray-500">
+        <div className="text-center py-12 text-slate-400 dark:text-slate-500">
           <p className="text-4xl mb-3">📝</p>
           <p>Noch keine Fragen vorhanden.</p>
           <button onClick={neueFrageErstellen} className="text-slate-600 dark:text-slate-400 underline text-sm mt-2">
@@ -269,7 +269,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             <button
               key={frage.id}
               onClick={() => frageBearbeiten(frage)}
-              className="w-full text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+              className="w-full text-left bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -277,18 +277,18 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
                     {getFragetext(frage) || '(Kein Fragetext)'}
                   </p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${FACH_FARBEN[frage.fachbereich] || 'bg-gray-100 text-gray-600'}`}>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${FACH_FARBEN[frage.fachbereich] || 'bg-slate-100 text-slate-600'}`}>
                       {frage.fachbereich}
                     </span>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                    <span className="text-xs text-slate-400 dark:text-slate-500">
                       {frage.typ}
                     </span>
                     {frage.thema && (
-                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                      <span className="text-xs text-slate-400 dark:text-slate-500">
                         · {frage.thema}{(frage as { unterthema?: string }).unterthema ? ` › ${(frage as { unterthema?: string }).unterthema}` : ''}
                       </span>
                     )}
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-slate-400">
                       {'★'.repeat(frage.schwierigkeit ?? 2)}{'☆'.repeat(3 - (frage.schwierigkeit ?? 2))}
                     </span>
                   </div>
@@ -300,12 +300,12 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
                       frageLoeschen(frage)
                     }
                   }}
-                  className="text-gray-300 hover:text-red-500 dark:text-gray-600 dark:hover:text-red-400 text-sm transition-colors cursor-pointer p-1"
+                  className="text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 text-sm transition-colors cursor-pointer p-1"
                   title="Frage löschen"
                 >
                   🗑
                 </button>
-                <span className="text-gray-300 dark:text-gray-600 text-lg">›</span>
+                <span className="text-slate-300 dark:text-slate-600 text-lg">›</span>
               </div>
             </button>
           ))}
@@ -330,7 +330,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
           />
           {speichern && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/20">
-              <div className="bg-white dark:bg-gray-800 rounded-lg px-6 py-4 shadow-xl">
+              <div className="bg-white dark:bg-slate-800 rounded-lg px-6 py-4 shadow-xl">
                 <p className="text-sm dark:text-white">Wird gespeichert...</p>
               </div>
             </div>

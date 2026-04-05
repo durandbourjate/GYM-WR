@@ -30,7 +30,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
           <div key={aussage.id} className={`p-4 rounded-xl border-2 transition-colors
             ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
             ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
-            ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600' : ''}
+            ${!feedbackSichtbar ? 'border-slate-200 dark:border-slate-600' : ''}
           `}>
             <p className="mb-2 dark:text-white">{aussage.text}</p>
             <div className="flex gap-2">
@@ -38,7 +38,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
                 onClick={() => { if (!disabled) setBewertungen(prev => ({ ...prev, [key]: true })) }}
                 disabled={disabled}
                 className={`px-4 py-2 rounded-lg min-h-[44px] font-medium transition-colors
-                  ${wert === true ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
+                  ${wert === true ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-slate-100 dark:bg-slate-700 dark:text-white'}
                 `}
               >
                 Richtig
@@ -47,14 +47,14 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
                 onClick={() => { if (!disabled) setBewertungen(prev => ({ ...prev, [key]: false })) }}
                 disabled={disabled}
                 className={`px-4 py-2 rounded-lg min-h-[44px] font-medium transition-colors
-                  ${wert === false ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
+                  ${wert === false ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-slate-100 dark:bg-slate-700 dark:text-white'}
                 `}
               >
                 Falsch
               </button>
             </div>
             {feedbackSichtbar && istFalsch && aussage.erklaerung && (
-              <p className="text-xs mt-2 text-gray-500 dark:text-gray-400">{aussage.erklaerung}</p>
+              <p className="text-xs mt-2 text-slate-500 dark:text-slate-400">{aussage.erklaerung}</p>
             )}
           </div>
         )

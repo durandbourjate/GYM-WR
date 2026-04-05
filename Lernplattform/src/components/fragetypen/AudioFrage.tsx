@@ -87,7 +87,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
               Aufnahme starten
             </button>
           ) : (
-            <button onClick={stopAufnahme} className="px-6 py-4 rounded-full bg-gray-700 text-white font-medium min-h-[48px] flex items-center gap-2 animate-pulse">
+            <button onClick={stopAufnahme} className="px-6 py-4 rounded-full bg-slate-700 text-white font-medium min-h-[48px] flex items-center gap-2 animate-pulse">
               <span className="w-4 h-4 rounded-sm bg-red-500" />
               Aufnahme stoppen
             </button>
@@ -117,7 +117,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
 
           {!selbstbewertung && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Wie hast du abgeschnitten?</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Wie hast du abgeschnitten?</p>
               <div className="flex gap-2">
                 <button onClick={() => handleSelbstbewertung('korrekt')} className="flex-1 py-3 rounded-xl border-2 border-green-300 text-green-700 dark:text-green-300 dark:border-green-600 font-medium min-h-[48px]">Korrekt</button>
                 <button onClick={() => handleSelbstbewertung('teilweise')} className="flex-1 py-3 rounded-xl border-2 border-amber-300 text-amber-700 dark:text-amber-300 dark:border-amber-600 font-medium min-h-[48px]">Teilweise</button>

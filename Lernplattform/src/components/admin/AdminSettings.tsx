@@ -19,12 +19,12 @@ export default function AdminSettings() {
   return (
     <div className="space-y-5">
       {/* Sub-Tab-Navigation */}
-      <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
+      <div className="flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-xl p-1">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             onClick={() => setAktiv(id)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors ${aktiv === id ? 'bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors ${aktiv === id ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
           >
             {label}
           </button>

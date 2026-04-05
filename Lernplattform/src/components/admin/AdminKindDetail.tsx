@@ -70,22 +70,22 @@ export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }:
       <h2 className="text-xl font-bold dark:text-white">{name}</h2>
 
       {/* Session-Statistik letzte 7 Tage */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
         <h3 className="font-semibold mb-3 dark:text-white">Letzte 7 Tage</h3>
         <div className="flex gap-6 text-sm">
           <div>
             <span className="text-2xl font-bold dark:text-white">{siebeTage.length}</span>
-            <span className="text-gray-500 dark:text-gray-400 ml-1">Sessions</span>
+            <span className="text-slate-500 dark:text-slate-400 ml-1">Sessions</span>
           </div>
           <div>
             <span className="text-2xl font-bold dark:text-white">{gesamtFragen}</span>
-            <span className="text-gray-500 dark:text-gray-400 ml-1">Fragen</span>
+            <span className="text-slate-500 dark:text-slate-400 ml-1">Fragen</span>
           </div>
           <div>
             <span className="text-2xl font-bold dark:text-white">
               {gesamtFragen > 0 ? Math.round((gesamtRichtig / gesamtFragen) * 100) : 0}%
             </span>
-            <span className="text-gray-500 dark:text-gray-400 ml-1">richtig</span>
+            <span className="text-slate-500 dark:text-slate-400 ml-1">richtig</span>
           </div>
         </div>
       </div>
@@ -118,18 +118,18 @@ export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }:
                 <button
                   key={thema}
                   onClick={() => onThemaKlick(fach, thema)}
-                  className="w-full text-left bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
+                  className="w-full text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border border-slate-100 dark:border-slate-700"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium dark:text-white">{thema}</span>
-                    <span className="text-sm text-gray-500">{Math.round(quote)}%</span>
+                    <span className="text-sm text-slate-500">{Math.round(quote)}%</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden flex">
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden flex">
                     {stats.gemeistert > 0 && <div className="bg-green-500 h-2" style={{ width: `${(stats.gemeistert / stats.gesamt) * 100}%` }} />}
                     {stats.gefestigt > 0 && <div className="bg-blue-400 h-2" style={{ width: `${(stats.gefestigt / stats.gesamt) * 100}%` }} />}
                     {stats.ueben > 0 && <div className="bg-yellow-400 h-2" style={{ width: `${(stats.ueben / stats.gesamt) * 100}%` }} />}
                   </div>
-                  <div className="flex gap-3 mt-2 text-xs text-gray-400">
+                  <div className="flex gap-3 mt-2 text-xs text-slate-400">
                     {stats.gemeistert > 0 && <span className="text-green-600">{stats.gemeistert} gemeistert</span>}
                     {stats.gefestigt > 0 && <span className="text-blue-500">{stats.gefestigt} gefestigt</span>}
                     {stats.ueben > 0 && <span className="text-yellow-600">{stats.ueben} ueben</span>}
@@ -144,7 +144,7 @@ export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }:
 
       {/* Leer-Zustand */}
       {fortschritte.length === 0 && (
-        <div className="text-center py-12 text-gray-400">
+        <div className="text-center py-12 text-slate-400">
           <p className="text-4xl mb-3">&#128203;</p>
           <p>Noch keine Uebungsdaten vorhanden.</p>
         </div>
@@ -156,10 +156,10 @@ export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }:
           <h3 className="text-lg font-semibold mb-3 dark:text-white">Sessions</h3>
           <div className="space-y-2">
             {[...sessions].sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime()).slice(0, 20).map((ses) => (
-              <div key={ses.sessionId} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex items-center justify-between border border-gray-100 dark:border-gray-700">
+              <div key={ses.sessionId} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 flex items-center justify-between border border-slate-100 dark:border-slate-700">
                 <div>
                   <span className="font-medium dark:text-white">{ses.fach} — {ses.thema}</span>
-                  <span className="text-sm text-gray-400 ml-2">{new Date(ses.datum).toLocaleDateString('de-CH')}</span>
+                  <span className="text-sm text-slate-400 ml-2">{new Date(ses.datum).toLocaleDateString('de-CH')}</span>
                 </div>
                 <span className={`font-medium ${ses.anzahlFragen > 0 && ses.richtig / ses.anzahlFragen >= 0.7 ? 'text-green-600' : ses.anzahlFragen > 0 && ses.richtig / ses.anzahlFragen >= 0.5 ? 'text-yellow-600' : 'text-red-500'}`}>
                   {ses.richtig}/{ses.anzahlFragen}

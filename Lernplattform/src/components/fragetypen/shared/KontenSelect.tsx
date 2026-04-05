@@ -14,8 +14,8 @@ export default function KontenSelect({ konten, value, onChange, disabled, placeh
       value={value}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className={`p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white text-sm min-h-[44px] w-full
-        ${!value ? 'text-gray-400' : ''}
+      className={`p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-sm min-h-[44px] w-full
+        ${!value ? 'text-slate-400' : ''}
         ${disabled ? 'opacity-60 cursor-default' : 'cursor-pointer'}
       `}
     >

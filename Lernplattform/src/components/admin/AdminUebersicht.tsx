@@ -46,7 +46,7 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
 
   if (mitglieder.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400 dark:text-gray-500">
+      <div className="text-center py-12 text-slate-400 dark:text-slate-500">
         <p className="text-4xl mb-3">&#128101;</p>
         <p>Noch keine Mitglieder in dieser Gruppe.</p>
         <p className="text-sm mt-1">Mitglieder können im Tab «Einstellungen» hinzugefügt werden.</p>
@@ -57,9 +57,9 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
   return (
     <div className="space-y-6">
       {/* Gruppen-Info */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
         <h3 className="font-semibold dark:text-white mb-2">{aktiveGruppe?.name}</h3>
-        <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex gap-4 text-sm text-slate-500 dark:text-slate-400">
           <span>{lernende.length} Lernende</span>
           <span>{admins.length} Admin{admins.length !== 1 ? 's' : ''}</span>
           <span>{fragen.length} Fragen</span>
@@ -69,7 +69,7 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
       {/* Fragen-Statistiken nach Fach */}
       {!laden && fachStats.length > 0 && (
         <div>
-          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
             Fragenbank
           </h4>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -79,7 +79,7 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
                 <button
                   key={stat.fach}
                   onClick={() => onFachKlick?.(stat.fach)}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors text-left cursor-pointer"
+                  className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span
@@ -89,12 +89,12 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
                     <span className="font-medium dark:text-white">{stat.fach}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex gap-4 text-xs text-slate-500 dark:text-slate-400">
                       <span>{stat.anzahl} Fragen</span>
                       <span>{stat.themen.size} Themen</span>
                       <span>{stat.typen.size} Typen</span>
                     </div>
-                    <span className="text-gray-300 dark:text-gray-600 text-lg">›</span>
+                    <span className="text-slate-300 dark:text-slate-600 text-lg">›</span>
                   </div>
                 </button>
               )
@@ -104,13 +104,13 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
       )}
 
       {laden && (
-        <p className="text-sm text-gray-400">Statistiken werden geladen...</p>
+        <p className="text-sm text-slate-400">Statistiken werden geladen...</p>
       )}
 
       {/* Lernende */}
       {lernende.length > 0 && (
         <div>
-          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
             Lernende ({lernende.length})
           </h4>
           <div className="space-y-2">
@@ -118,14 +118,14 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
               <button
                 key={mitglied.email}
                 onClick={() => onKindKlick(mitglied.email, mitglied.name)}
-                className="w-full text-left bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 min-h-[48px]"
+                className="w-full text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow border border-slate-100 dark:border-slate-700 min-h-[48px]"
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-medium dark:text-white">{mitglied.name}</span>
-                    <span className="text-xs text-gray-400 ml-2">{mitglied.email}</span>
+                    <span className="text-xs text-slate-400 ml-2">{mitglied.email}</span>
                   </div>
-                  <span className="text-gray-300 dark:text-gray-600">&#8250;</span>
+                  <span className="text-slate-300 dark:text-slate-600">&#8250;</span>
                 </div>
               </button>
             ))}
@@ -136,17 +136,17 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
       {/* Admins */}
       {admins.length > 0 && (
         <div>
-          <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
             Admins ({admins.length})
           </h4>
           <div className="space-y-2">
             {admins.map((mitglied) => (
               <div
                 key={mitglied.email}
-                className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700"
+                className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700"
               >
                 <span className="font-medium dark:text-white">{mitglied.name}</span>
-                <span className="text-xs text-gray-400 ml-2">{mitglied.email}</span>
+                <span className="text-xs text-slate-400 ml-2">{mitglied.email}</span>
               </div>
             ))}
           </div>

@@ -67,10 +67,10 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
                 onChange={(e) => handleChange(b.id, e.target.value)}
                 disabled={disabled}
                 placeholder={`Beschriftung ${i + 1}`}
-                className={`flex-1 p-3 rounded-lg border text-sm min-h-[44px] dark:bg-gray-800 dark:text-white
+                className={`flex-1 p-3 rounded-lg border text-sm min-h-[44px] dark:bg-slate-800 dark:text-white
                   ${feedbackSichtbar
                     ? (istKorrekt ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400')
-                    : 'border-gray-300 dark:border-gray-600'}
+                    : 'border-slate-300 dark:border-slate-600'}
                 `}
               />
               {feedbackSichtbar && !istKorrekt && (

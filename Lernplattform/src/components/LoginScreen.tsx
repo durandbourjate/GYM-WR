@@ -30,19 +30,19 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
       {/* Dark/Light Toggle (oben rechts) */}
       <button
         onClick={toggleTheme}
-        className="fixed top-4 right-4 p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
+        className="fixed top-4 right-4 p-2 rounded-lg bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
         title={istDark ? 'Light Mode' : 'Dark Mode'}
       >
         {istDark ? '☀️' : '🌙'}
       </button>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
         <h1 className="text-2xl font-bold mb-2 dark:text-white">Übungstool</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-4">Anmelden um zu üben</p>
+        <p className="text-slate-500 dark:text-slate-400 mb-4">Anmelden um zu üben</p>
 
         {/* Hilfe/Info */}
         <button
@@ -52,7 +52,7 @@ export default function LoginScreen() {
           {hilfeOffen ? '▾' : '▸'} Was ist das Übungstool?
         </button>
         {hilfeOffen && (
-          <div className="mb-6 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/20 text-left text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          <div className="mb-6 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/20 text-left text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             <p className="mb-2">Das Übungstool ermöglicht dir, Übungsfragen zu deinen Fächern zu bearbeiten — mit sofortigem Feedback und Fortschrittsverfolgung.</p>
             <p>Melde dich mit deinem Schulkonto (Google) oder einem Code an, den du von deiner Lehrperson erhalten hast.</p>
           </div>
@@ -63,7 +63,7 @@ export default function LoginScreen() {
             <div ref={googleButtonRef} className="flex justify-center mb-4" />
             <button
               onClick={() => setCodeLogin(true)}
-              className="text-sm text-gray-400 hover:text-gray-600 mt-2"
+              className="text-sm text-slate-400 hover:text-slate-600 mt-2"
             >
               Mit Code anmelden
             </button>
@@ -75,7 +75,7 @@ export default function LoginScreen() {
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
-              className="w-full text-center text-2xl tracking-widest border-2 border-gray-200 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-700 dark:text-white focus:border-slate-500 focus:outline-none"
+              className="w-full text-center text-2xl tracking-widest border-2 border-slate-200 dark:border-slate-600 rounded-xl p-3 bg-white dark:bg-slate-700 dark:text-white focus:border-slate-500 focus:outline-none"
               maxLength={6}
               autoFocus
             />
@@ -89,7 +89,7 @@ export default function LoginScreen() {
             <button
               type="button"
               onClick={() => { setCodeLogin(false); setCode('') }}
-              className="text-sm text-gray-400 hover:text-gray-600"
+              className="text-sm text-slate-400 hover:text-slate-600"
             >
               Zurück zu Google-Login
             </button>
@@ -101,18 +101,18 @@ export default function LoginScreen() {
         )}
 
         {/* Demo-Links */}
-        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center mb-2">Demo ohne Login starten</p>
+        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <p className="text-xs text-slate-400 dark:text-slate-500 text-center mb-2">Demo ohne Login starten</p>
           <div className="flex gap-2">
             <a
               href="?demo=kind"
-              className="flex-1 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-center"
+              className="flex-1 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-center"
             >
               Als Kind
             </a>
             <a
               href="?demo=eltern"
-              className="flex-1 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-center"
+              className="flex-1 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-center"
             >
               Als Elternteil
             </a>

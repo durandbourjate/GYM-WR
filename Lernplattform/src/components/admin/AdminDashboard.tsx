@@ -36,11 +36,11 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
   return (
     <div>
       {/* Breadcrumb / Titel */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             {!istHauptTab && (
-              <button onClick={zurueck} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 min-w-[44px] min-h-[44px] flex items-center justify-center">
+              <button onClick={zurueck} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 min-w-[44px] min-h-[44px] flex items-center justify-center">
                 &#8592;
               </button>
             )}
@@ -50,7 +50,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
                 {ansicht.typ === 'kind' && ansicht.name}
                 {ansicht.typ === 'thema' && `${ansicht.name} — ${ansicht.thema}`}
               </h2>
-              {aktiveGruppe && <span className="text-xs text-gray-500">{aktiveGruppe.name}</span>}
+              {aktiveGruppe && <span className="text-xs text-slate-500">{aktiveGruppe.name}</span>}
             </div>
           </div>
         </div>
@@ -58,29 +58,29 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
 
       {/* Tab-Leiste */}
       {istHauptTab && (
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
           <div className="max-w-4xl mx-auto px-6 flex gap-4">
             <button
               onClick={() => setAnsicht({ typ: 'uebersicht' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'uebersicht' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'uebersicht' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
             >
               Übersicht
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'auftraege' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'auftraege' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'auftraege' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
             >
               Aufträge
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'fragenbank' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'fragenbank' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'fragenbank' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
             >
               Fragenbank
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'einstellungen' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
             >
               Einstellungen
             </button>

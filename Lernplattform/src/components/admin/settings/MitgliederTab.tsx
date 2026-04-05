@@ -11,7 +11,7 @@ export default function MitgliederTab() {
   const [kodeStatus, setKodeStatus] = useState<Record<string, 'laden' | 'fehler'>>({})
 
   if (!aktiveGruppe) {
-    return <p className="text-sm text-gray-400">Keine Gruppe aktiv.</p>
+    return <p className="text-sm text-slate-400">Keine Gruppe aktiv.</p>
   }
 
   const refreshMitglieder = () => {
@@ -65,9 +65,9 @@ export default function MitgliederTab() {
   return (
     <div className="space-y-6">
       {/* Mitgliederliste */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
         {mitglieder.length === 0 && (
-          <p className="text-sm text-gray-400 p-4">Keine Mitglieder gefunden.</p>
+          <p className="text-sm text-slate-400 p-4">Keine Mitglieder gefunden.</p>
         )}
         {mitglieder.map((m) => {
           const istAdmin = m.rolle === 'admin'
@@ -75,7 +75,7 @@ export default function MitgliederTab() {
             <div key={m.email} className="flex items-center gap-3 p-4">
               <div className="flex-1 min-w-0">
                 <p className="font-medium dark:text-white truncate">{m.name}</p>
-                <p className="text-xs text-gray-400 truncate">{m.email}</p>
+                <p className="text-xs text-slate-400 truncate">{m.email}</p>
                 {generierteKodes[m.email] && (
                   <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                     Code: <span className="font-mono font-bold">{generierteKodes[m.email]}</span>
@@ -119,7 +119,7 @@ export default function MitgliederTab() {
       </div>
 
       {/* Einladen */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 space-y-3">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-5 space-y-3">
         <p className="text-sm font-medium dark:text-white">Mitglied einladen</p>
         <div className="flex gap-2">
           <input
@@ -128,7 +128,7 @@ export default function MitgliederTab() {
             onChange={(e) => setEinladenEmail(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleEinladen() }}
             placeholder="E-Mail-Adresse"
-            className="flex-1 p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
+            className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
           />
           <button
             onClick={handleEinladen}

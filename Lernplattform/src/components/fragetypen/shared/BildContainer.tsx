@@ -21,7 +21,7 @@ export default function BildContainer({ src, alt, children }: Props) {
   return (
     <div ref={containerRef} className="relative inline-block w-full">
       {fehler ? (
-        <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-400 text-sm">
+        <div className="w-full h-48 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 text-sm">
           Bild konnte nicht geladen werden
         </div>
       ) : (

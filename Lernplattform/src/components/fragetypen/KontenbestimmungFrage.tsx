@@ -50,9 +50,9 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
         const korrektZeilen = aufgabe.erwarteteAntworten
 
         return (
-          <div key={ai} className="p-3 rounded-xl border border-gray-200 dark:border-gray-600 space-y-2">
+          <div key={ai} className="p-3 rounded-xl border border-slate-200 dark:border-slate-600 space-y-2">
             <p className="text-sm font-medium dark:text-white">
-              <span className="text-gray-500 dark:text-gray-400 mr-2">{ai + 1}.</span>
+              <span className="text-slate-500 dark:text-slate-400 mr-2">{ai + 1}.</span>
               {aufgabe.text}
             </p>
 
@@ -70,8 +70,8 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
                     value={z.seite}
                     onChange={(e) => updateZuordnung(ai, zi, 'seite', e.target.value)}
                     disabled={disabled}
-                    className={`p-2 rounded-lg border text-sm min-h-[44px] w-24 dark:bg-gray-800 dark:text-white
-                      ${feedbackSichtbar ? (seiteOk ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400') : 'border-gray-300 dark:border-gray-600'}
+                    className={`p-2 rounded-lg border text-sm min-h-[44px] w-24 dark:bg-slate-800 dark:text-white
+                      ${feedbackSichtbar ? (seiteOk ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400') : 'border-slate-300 dark:border-slate-600'}
                     `}
                   >
                     <option value="">Seite</option>

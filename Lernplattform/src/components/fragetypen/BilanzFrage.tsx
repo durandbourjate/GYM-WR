@@ -58,7 +58,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
     <div className="space-y-4">
       {/* Konten-Liste zum Zuordnen */}
       <div className="space-y-2">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Klicke auf ein Konto: 1× = {linksLabel}, 2× = {rechtsLabel}, 3× = entfernen
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -77,14 +77,14 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
                 className={`p-3 rounded-lg border-2 text-left text-sm min-h-[48px] flex justify-between items-center transition-colors
                   ${seite === 'links' ? 'border-slate-400 bg-slate-50 dark:bg-slate-900/30' : ''}
                   ${seite === 'rechts' ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/30' : ''}
-                  ${seite === 'none' ? 'border-gray-200 dark:border-gray-600' : ''}
+                  ${seite === 'none' ? 'border-slate-200 dark:border-slate-600' : ''}
                   ${feedbackSichtbar && istRichtig ? 'ring-2 ring-green-400' : ''}
                   ${feedbackSichtbar && !istRichtig && seite !== 'none' ? 'ring-2 ring-red-400' : ''}
-                  ${disabled ? 'cursor-default' : 'cursor-pointer hover:border-gray-400'}
+                  ${disabled ? 'cursor-default' : 'cursor-pointer hover:border-slate-400'}
                 `}
               >
                 <span className="dark:text-white">
-                  <span className="font-mono text-xs text-gray-500 dark:text-gray-400 mr-2">{k.kontonummer}</span>
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400 mr-2">{k.kontonummer}</span>
                 </span>
                 <span className="font-mono text-sm dark:text-white">{k.saldo.toLocaleString('de-CH')}</span>
               </button>
@@ -94,7 +94,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
       </div>
 
       {/* Legende */}
-      <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex gap-4 text-xs text-slate-500 dark:text-slate-400">
         <span className="flex items-center gap-1">
           <span className="w-3 h-3 rounded bg-slate-400 inline-block" /> {linksLabel}
         </span>
@@ -105,7 +105,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
 
       {/* Bilanzsumme */}
       <div className="flex items-center gap-2">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
           {istBilanz ? 'Bilanzsumme' : 'Total'}:
         </label>
         <input
@@ -114,10 +114,10 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
           onChange={(e) => setBilanzsumme(e.target.value)}
           disabled={disabled}
           placeholder="CHF"
-          className={`w-32 p-2 rounded-lg border text-sm text-right min-h-[44px] dark:bg-gray-800 dark:text-white
+          className={`w-32 p-2 rounded-lg border text-sm text-right min-h-[44px] dark:bg-slate-800 dark:text-white
             ${feedbackSichtbar && korrekteBilanzsumme !== undefined
               ? (parseFloat(bilanzsumme) === korrekteBilanzsumme ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400')
-              : 'border-gray-300 dark:border-gray-600'}
+              : 'border-slate-300 dark:border-slate-600'}
           `}
         />
       </div>

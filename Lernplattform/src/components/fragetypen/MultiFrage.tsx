@@ -24,7 +24,7 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 dark:text-gray-400">Mehrere Antworten moeglich</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">Mehrere Antworten moeglich</p>
       {optionen.map((option, i) => {
         const istGewaehlt = gewaehlt.includes(option.text)
         const istKorrekt = feedbackSichtbar && option.korrekt
@@ -39,18 +39,18 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
               ${istGewaehlt && !feedbackSichtbar ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
-              ${!istGewaehlt && !istKorrekt ? 'border-gray-200 dark:border-gray-600 hover:border-gray-400' : ''}
+              ${!istGewaehlt && !istKorrekt ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400' : ''}
               ${disabled ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
             <span className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center text-xs
-              ${istGewaehlt ? 'bg-slate-800 border-slate-800 text-white dark:bg-slate-200 dark:border-slate-200 dark:text-slate-800' : 'border-gray-300 dark:border-gray-500'}
+              ${istGewaehlt ? 'bg-slate-800 border-slate-800 text-white dark:bg-slate-200 dark:border-slate-200 dark:text-slate-800' : 'border-slate-300 dark:border-slate-500'}
             `}>
               {istGewaehlt ? '✓' : ''}
             </span>
             <span className="dark:text-white">{option.text}</span>
             {feedbackSichtbar && option.erklaerung && (
-              <span className="block text-xs mt-1 text-gray-500 dark:text-gray-400">{option.erklaerung}</span>
+              <span className="block text-xs mt-1 text-slate-500 dark:text-slate-400">{option.erklaerung}</span>
             )}
           </button>
         )

@@ -30,14 +30,14 @@ export default function CalcFrage({ frage, onAntwort, disabled, feedbackSichtbar
           disabled={disabled}
           placeholder="Ergebnis eingeben"
           autoFocus
-          className={`flex-1 p-3 rounded-xl border-2 min-h-[48px] text-lg bg-white dark:bg-gray-700 dark:text-white focus:outline-none
+          className={`flex-1 p-3 rounded-xl border-2 min-h-[48px] text-lg bg-white dark:bg-slate-700 dark:text-white focus:outline-none
             ${feedbackSichtbar && korrekt ? 'border-green-500' : ''}
             ${feedbackSichtbar && !korrekt ? 'border-red-500' : ''}
-            ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600 focus:border-slate-500' : ''}
+            ${!feedbackSichtbar ? 'border-slate-200 dark:border-slate-600 focus:border-slate-500' : ''}
           `}
           onKeyDown={(e) => { if (e.key === 'Enter') handleAbsenden() }}
         />
-        {einheit && <span className="text-gray-500 dark:text-gray-400">{einheit}</span>}
+        {einheit && <span className="text-slate-500 dark:text-slate-400">{einheit}</span>}
       </div>
 
       {feedbackSichtbar && !korrekt && korrektWert !== undefined && (

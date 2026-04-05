@@ -23,7 +23,7 @@ export default function FeedbackPanel({ korrekt, erklaerung }: Props) {
         )}
       </div>
       {erklaerung && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           {erklaerung}
         </p>
       )}

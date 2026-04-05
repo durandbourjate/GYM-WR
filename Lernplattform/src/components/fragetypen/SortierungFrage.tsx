@@ -33,7 +33,7 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 dark:text-gray-400">Tippe zwei Elemente um sie zu tauschen.</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">Tippe zwei Elemente um sie zu tauschen.</p>
 
       {reihenfolge.map((element, i) => {
         const istAusgewaehlt = ausgewaehlt === i
@@ -49,10 +49,10 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
               ${istAusgewaehlt ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
-              ${!istAusgewaehlt && !istKorrekt && !istFalsch ? 'border-gray-200 dark:border-gray-600' : ''}
+              ${!istAusgewaehlt && !istKorrekt && !istFalsch ? 'border-slate-200 dark:border-slate-600' : ''}
             `}
           >
-            <span className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-sm font-medium dark:text-white">
+            <span className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-sm font-medium dark:text-white">
               {i + 1}
             </span>
             <span className="dark:text-white">{element}</span>

@@ -51,7 +51,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         Waehle ein Label, dann klicke auf die passende Zone im Bild.
       </p>
 
@@ -67,7 +67,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
                     key={zone.id}
                     onClick={() => handleZoneKlick(zone.id)}
                     className={`absolute border-2 rounded transition-colors
-                      ${ausgewaehlt ? 'border-slate-400 bg-slate-100/30 cursor-pointer hover:bg-slate-200/40' : 'border-gray-400/50 bg-gray-100/20'}
+                      ${ausgewaehlt ? 'border-slate-400 bg-slate-100/30 cursor-pointer hover:bg-slate-200/40' : 'border-slate-400/50 bg-slate-100/20'}
                       ${disabled || feedbackSichtbar ? 'cursor-default' : ''}
                     `}
                     style={{
@@ -118,15 +118,15 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
               disabled={disabled && !feedbackSichtbar}
               className={`px-3 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors border-2
                 ${istAusgewaehlt ? 'border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 ring-2 ring-slate-300' : ''}
-                ${istZugeordnet && !istAusgewaehlt && !feedbackSichtbar ? 'border-gray-300 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 line-through' : ''}
-                ${!istZugeordnet && !istAusgewaehlt ? 'border-gray-300 dark:border-gray-600 hover:border-slate-400' : ''}
+                ${istZugeordnet && !istAusgewaehlt && !feedbackSichtbar ? 'border-slate-300 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 line-through' : ''}
+                ${!istZugeordnet && !istAusgewaehlt ? 'border-slate-300 dark:border-slate-600 hover:border-slate-400' : ''}
                 ${feedbackSichtbar && istKorrekt ? 'border-green-400 bg-green-50 dark:bg-green-900/30' : ''}
                 ${feedbackSichtbar && !istKorrekt && istZugeordnet ? 'border-red-400 bg-red-50 dark:bg-red-900/30' : ''}
               `}
             >
               <span className="dark:text-white">{label}</span>
               {istZugeordnet && !feedbackSichtbar && (
-                <span className="ml-1 text-xs text-gray-400">✕</span>
+                <span className="ml-1 text-xs text-slate-400">✕</span>
               )}
             </button>
           )

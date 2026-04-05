@@ -47,17 +47,17 @@ export default function AdminAuftraege() {
       {/* Aktive Auftraege */}
       <div className="space-y-2">
         {auftraege.filter(a => a.status === 'aktiv').map((auftrag) => (
-          <div key={auftrag.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+          <div key={auftrag.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 border border-slate-100 dark:border-slate-700">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium dark:text-white">{auftrag.titel}</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-300">aktiv</span>
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">
               {auftrag.filter.fach && `${auftrag.filter.fach}`}
               {auftrag.filter.thema && ` — ${auftrag.filter.thema}`}
               {auftrag.frist && ` | Bis ${auftrag.frist}`}
             </div>
-            <div className="text-xs text-gray-400 mb-3">
+            <div className="text-xs text-slate-400 mb-3">
               Fuer: {auftrag.zielEmail.join(', ')}
             </div>
             <div className="flex gap-2">
@@ -78,17 +78,17 @@ export default function AdminAuftraege() {
         ))}
 
         {auftraege.filter(a => a.status === 'aktiv').length === 0 && (
-          <p className="text-sm text-gray-400">Keine aktiven Aufträge.</p>
+          <p className="text-sm text-slate-400">Keine aktiven Aufträge.</p>
         )}
       </div>
 
       {/* Abgeschlossene */}
       {auftraege.filter(a => a.status === 'abgeschlossen').length > 0 && (
         <div>
-          <h4 className="text-sm font-medium text-gray-400 mb-2">Abgeschlossen</h4>
+          <h4 className="text-sm font-medium text-slate-400 mb-2">Abgeschlossen</h4>
           <div className="space-y-1">
             {auftraege.filter(a => a.status === 'abgeschlossen').map((a) => (
-              <div key={a.id} className="text-sm text-gray-400 flex items-center justify-between">
+              <div key={a.id} className="text-sm text-slate-400 flex items-center justify-between">
                 <span>{a.titel}</span>
                 <button onClick={() => loescheAuftrag(a.id)} className="text-xs text-red-400 hover:text-red-600">Entfernen</button>
               </div>
@@ -138,7 +138,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700 space-y-4">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 border border-slate-100 dark:border-slate-700 space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1 dark:text-white">Titel</label>
         <input
@@ -146,7 +146,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
           value={titel}
           onChange={(e) => setTitel(e.target.value)}
           placeholder="z.B. Mathe Addition üben"
-          className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500"
+          className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500"
         />
       </div>
 
@@ -156,7 +156,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
           <select
             value={fach}
             onChange={(e) => { setFach(e.target.value); setThema('') }}
-            className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white"
+            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white"
           >
             <option value="">Alle</option>
             {faecher.map(f => <option key={f} value={f}>{f}</option>)}
@@ -168,7 +168,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
             value={thema}
             onChange={(e) => setThema(e.target.value)}
             disabled={!fach}
-            className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white disabled:opacity-50"
+            className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white disabled:opacity-50"
           >
             <option value="">Alle</option>
             {themen.map(t => <option key={t} value={t}>{t}</option>)}
@@ -182,7 +182,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
           type="date"
           value={frist}
           onChange={(e) => setFrist(e.target.value)}
-          className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white"
+          className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white"
         />
       </div>
 
@@ -190,7 +190,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
         <label className="block text-sm font-medium mb-1 dark:text-white">Fuer</label>
         <div className="space-y-1">
           {mitglieder.map(m => (
-            <label key={m.email} className="flex items-center gap-2 text-sm dark:text-gray-300">
+            <label key={m.email} className="flex items-center gap-2 text-sm dark:text-slate-300">
               <input
                 type="checkbox"
                 checked={zielEmails.includes(m.email)}

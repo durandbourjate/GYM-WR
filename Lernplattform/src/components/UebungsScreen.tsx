@@ -80,11 +80,11 @@ export default function UebungsScreen() {
 
       <main className="max-w-2xl mx-auto p-4">
         {/* Frage-Karte */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 mb-4">
           {/* Kontext (bei Aufgabengruppe) */}
           {frage.typ === 'aufgabengruppe' && frage.kontext && (
-            <div className="mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-sm text-gray-600 dark:text-gray-400">
-              <span className="text-xs font-medium text-gray-400 uppercase block mb-1">Situation</span>
+            <div className="mb-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 text-sm text-slate-600 dark:text-slate-400">
+              <span className="text-xs font-medium text-slate-400 uppercase block mb-1">Situation</span>
               {frage.kontext}
             </div>
           )}
@@ -104,7 +104,7 @@ export default function UebungsScreen() {
               korrekt={letzteAntwortKorrekt}
             />
           ) : (
-            <p className="text-gray-500">Fragetyp &ldquo;{frage.typ}&rdquo; nicht unterstützt.</p>
+            <p className="text-slate-500">Fragetyp &ldquo;{frage.typ}&rdquo; nicht unterstützt.</p>
           )}
 
           {/* Feedback wird von den Fragetyp-Komponenten via FeedbackBox angezeigt */}
@@ -134,7 +134,7 @@ export default function UebungsScreen() {
         </div>
 
         {/* Keyboard-Hinweis */}
-        <div className="mt-4 text-center text-xs text-gray-400 dark:text-gray-600 hidden sm:block">
+        <div className="mt-4 text-center text-xs text-slate-400 dark:text-slate-600 hidden sm:block">
           Tastatur: &#8592; Zurück &middot; &#8594; Weiter/Überspringen
         </div>
       </main>

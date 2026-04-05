@@ -34,7 +34,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-500 dark:text-gray-400">Tippe links, dann rechts um Paare zu bilden.</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400">Tippe links, dann rechts um Paare zu bilden.</p>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-2">
@@ -54,13 +54,13 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
                   ${istAktiv ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
                   ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
                   ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
-                  ${!istAktiv && !istKorrekt && !istFalsch ? 'border-gray-200 dark:border-gray-600' : ''}
+                  ${!istAktiv && !istKorrekt && !istFalsch ? 'border-slate-200 dark:border-slate-600' : ''}
                   dark:text-white
                 `}
               >
                 {links}
                 {zugeordnet && !feedbackSichtbar && (
-                  <span className="block text-xs text-gray-400 mt-1">→ {zugeordnet}</span>
+                  <span className="block text-xs text-slate-400 mt-1">→ {zugeordnet}</span>
                 )}
               </button>
             )
@@ -77,7 +77,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
                 disabled={disabled || !aktivLinks}
                 className={`w-full text-left p-3 rounded-lg border-2 min-h-[44px] text-sm transition-colors
                   ${istVergeben ? 'opacity-50' : ''}
-                  ${aktivLinks ? 'border-gray-300 dark:border-gray-500 hover:border-slate-400' : 'border-gray-200 dark:border-gray-600'}
+                  ${aktivLinks ? 'border-slate-300 dark:border-slate-500 hover:border-slate-400' : 'border-slate-200 dark:border-slate-600'}
                   dark:text-white
                 `}
               >

@@ -42,7 +42,7 @@ export default function FaecherTab() {
   }, [aktiveGruppe])
 
   if (!einstellungen || !aktiveGruppe) {
-    return <p className="text-sm text-gray-400">Keine Einstellungen geladen.</p>
+    return <p className="text-sm text-slate-400">Keine Einstellungen geladen.</p>
   }
 
   const alleFaecher = fachGruppen.map(g => g.fach)
@@ -121,17 +121,17 @@ export default function FaecherTab() {
   }
 
   if (laden) {
-    return <p className="text-sm text-gray-400">Fragen werden geladen…</p>
+    return <p className="text-sm text-slate-400">Fragen werden geladen…</p>
   }
 
   if (fachGruppen.length === 0) {
-    return <p className="text-sm text-gray-400">Keine Fragen gefunden.</p>
+    return <p className="text-sm text-slate-400">Keine Fragen gefunden.</p>
   }
 
   return (
     <div className="space-y-3">
       {fachGruppen.map(({ fach, anzahl, themen }) => (
-        <div key={fach} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div key={fach} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
           {/* Fach-Zeile */}
           <div className="flex items-center gap-3 p-4">
             <input
@@ -145,11 +145,11 @@ export default function FaecherTab() {
               htmlFor={`fach-${fach}`}
               className="flex-1 font-medium dark:text-white cursor-pointer"
             >
-              {fach} <span className="text-sm text-gray-500 dark:text-gray-400 font-normal">— {anzahl} Fragen</span>
+              {fach} <span className="text-sm text-slate-500 dark:text-slate-400 font-normal">— {anzahl} Fragen</span>
             </label>
             <button
               onClick={() => toggleAusgeklappt(fach)}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs"
             >
               {ausgeklappt.has(fach) ? '▲' : '▼'}
             </button>
@@ -157,7 +157,7 @@ export default function FaecherTab() {
 
           {/* Themen */}
           {ausgeklappt.has(fach) && (
-            <div className="border-t border-gray-100 dark:border-gray-700 px-4 pb-3 space-y-2 pt-2">
+            <div className="border-t border-slate-100 dark:border-slate-700 px-4 pb-3 space-y-2 pt-2">
               {themen.map(({ thema, anzahl: tAnzahl }) => (
                 <div key={thema} className="flex items-center gap-3 pl-6">
                   <input
@@ -169,9 +169,9 @@ export default function FaecherTab() {
                   />
                   <label
                     htmlFor={`thema-${fach}-${thema}`}
-                    className="text-sm dark:text-gray-300 cursor-pointer"
+                    className="text-sm dark:text-slate-300 cursor-pointer"
                   >
-                    {thema} <span className="text-gray-400 font-normal">({tAnzahl})</span>
+                    {thema} <span className="text-slate-400 font-normal">({tAnzahl})</span>
                   </label>
                 </div>
               ))}

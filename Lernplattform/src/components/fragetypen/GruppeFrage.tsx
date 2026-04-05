@@ -26,7 +26,7 @@ export default function GruppeFrage({ frage, onAntwort, disabled, feedbackSichtb
     <div className="space-y-4">
       {/* Kontext-Block */}
       {agFrage.kontext && (
-        <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 italic">
+        <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 italic">
           {agFrage.kontext}
         </div>
       )}
@@ -103,12 +103,12 @@ export default function GruppeFrage({ frage, onAntwort, disabled, feedbackSichtb
         const teilKorrekt = feedbackSichtbar ? (teilAntworten[ta.id] ? true : null) : null
 
         return (
-          <div key={ta.id} className="border border-gray-200 dark:border-gray-600 rounded-xl p-4 space-y-2">
+          <div key={ta.id} className="border border-slate-200 dark:border-slate-600 rounded-xl p-4 space-y-2">
             <div className="flex items-center gap-2 mb-2">
-              <span className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold flex items-center justify-center">
+              <span className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-bold flex items-center justify-center">
                 {label}
               </span>
-              <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+              <span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">
                 {ta.typ}
               </span>
             </div>

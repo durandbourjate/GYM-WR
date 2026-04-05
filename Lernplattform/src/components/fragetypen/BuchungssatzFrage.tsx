@@ -57,7 +57,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
   return (
     <div className="space-y-3">
       {/* Header */}
-      <div className="grid grid-cols-[1fr_auto_1fr_100px_auto] gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 px-1">
+      <div className="grid grid-cols-[1fr_auto_1fr_100px_auto] gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
         <span>Soll</span>
         <span></span>
         <span>Haben</span>
@@ -77,7 +77,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
             <div className={feedbackSichtbar ? (sollOk ? 'ring-2 ring-green-400 rounded-lg' : 'ring-2 ring-red-400 rounded-lg') : ''}>
               <KontenSelect konten={konten} value={z.soll} onChange={(v) => updateZeile(i, 'soll', v)} disabled={disabled} placeholder="Soll" />
             </div>
-            <span className="text-gray-400 text-sm text-center">an</span>
+            <span className="text-slate-400 text-sm text-center">an</span>
             <div className={feedbackSichtbar ? (habenOk ? 'ring-2 ring-green-400 rounded-lg' : 'ring-2 ring-red-400 rounded-lg') : ''}>
               <KontenSelect konten={konten} value={z.haben} onChange={(v) => updateZeile(i, 'haben', v)} disabled={disabled} placeholder="Haben" />
             </div>
@@ -87,8 +87,8 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
               onChange={(e) => updateZeile(i, 'betrag', e.target.value)}
               disabled={disabled}
               placeholder="CHF"
-              className={`p-2 rounded-lg border text-sm min-h-[44px] w-full dark:bg-gray-800 dark:text-white text-right
-                ${feedbackSichtbar ? (betragOk ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400') : 'border-gray-300 dark:border-gray-600'}
+              className={`p-2 rounded-lg border text-sm min-h-[44px] w-full dark:bg-slate-800 dark:text-white text-right
+                ${feedbackSichtbar ? (betragOk ? 'border-green-400 ring-2 ring-green-400' : 'border-red-400 ring-2 ring-red-400') : 'border-slate-300 dark:border-slate-600'}
               `}
             />
             {zeilen.length > 1 && !disabled && (

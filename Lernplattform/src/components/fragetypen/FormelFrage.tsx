@@ -73,13 +73,13 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
         disabled={disabled}
         autoFocus
         placeholder="LaTeX-Formel eingeben, z.B. \frac{a}{b}"
-        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-mono text-base focus:border-slate-500 focus:outline-none"
+        className="w-full p-4 rounded-xl border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-white font-mono text-base focus:border-slate-500 focus:outline-none"
       />
 
       {/* Live-Preview */}
       {latex.trim() && (
-        <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Vorschau:</p>
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Vorschau:</p>
           <div ref={previewRef} className="text-lg text-center dark:text-white min-h-[40px]" />
         </div>
       )}

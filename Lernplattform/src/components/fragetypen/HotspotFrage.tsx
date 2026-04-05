@@ -46,7 +46,7 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         Klicke auf {maxKlicks} Stelle{maxKlicks > 1 ? 'n' : ''} im Bild. Erneut klicken zum Entfernen.
       </p>
 

@@ -29,7 +29,7 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
         autoFocus
         rows={5}
         placeholder="Deine Antwort..."
-        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white resize-y text-base min-h-[120px] focus:border-slate-500 focus:outline-none"
+        className="w-full p-4 rounded-xl border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-800 dark:text-white resize-y text-base min-h-[120px] focus:border-slate-500 focus:outline-none"
       />
 
       {!disabled && text.trim() && !feedbackSichtbar && (
@@ -51,7 +51,7 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
           {/* Selbstbewertung */}
           {!selbstbewertung && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Wie hast du abgeschnitten?</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Wie hast du abgeschnitten?</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleSelbstbewertung('korrekt')}
