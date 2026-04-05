@@ -5,6 +5,7 @@ import { apiService } from '../../services/apiService.ts'
 import type { PruefungsConfig } from '../../types/pruefung.ts'
 import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.ts'
 import { formatDatum } from '../../utils/zeit.ts'
+import { getFachFarbe } from '../../utils/lernen/fachFarben.ts'
 import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel, erstelleDemoTrackerDaten } from '../../utils/trackerUtils.ts'
 import LPHeader from './LPHeader.tsx'
 import PruefungsComposer, { leereUebung } from './vorbereitung/PruefungsComposer.tsx'
@@ -43,6 +44,19 @@ export default function LPStartseite() {
   const [filterStatus, setFilterStatus] = useState<'alle' | 'aktiv' | 'archiviert'>('aktiv')
 
   const hatAktiveFilter = suchtext.length > 0 || filterFach.length > 0 || filterTyp !== null || filterGefaess !== null || filterStatus !== 'aktiv'
+
+  // Verfügbare Fachbereiche und Gefässe dynamisch aus configs
+  const verfuegbareFachbereiche = useMemo(() => {
+    const faecher = new Set<string>()
+    for (const c of configs) for (const fb of c.fachbereiche) faecher.add(fb)
+    return [...faecher].sort()
+  }, [configs])
+
+  const verfuegbareGefaesse = useMemo(() => {
+    const gefaesse = new Set<string>()
+    for (const c of configs) if (c.gefaess) gefaesse.add(c.gefaess)
+    return [...gefaesse].sort()
+  }, [configs])
 
   // Gefilterte und sortierte Prüfungen
   const gefilterteConfigs = useMemo(() => {
@@ -396,21 +410,22 @@ export default function LPStartseite() {
                 </select>
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
-                {['VWL', 'BWL', 'Recht'].map(fb => (
-                  <button
-                    key={fb}
-                    onClick={() => toggleFachFilter(fb)}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
-                      filterFach.includes(fb)
-                        ? fb === 'VWL' ? 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/40 dark:text-orange-300 dark:border-orange-700'
-                        : fb === 'BWL' ? 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700'
-                        : 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/40 dark:text-green-300 dark:border-green-700'
-                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
-                    }`}
-                  >
-                    {fb}
-                  </button>
-                ))}
+                {verfuegbareFachbereiche.map(fb => {
+                  const farbe = getFachFarbe(fb, {})
+                  const aktiv = filterFach.includes(fb)
+                  return (
+                    <button
+                      key={fb}
+                      onClick={() => toggleFachFilter(fb)}
+                      className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
+                        !aktiv ? 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750' : ''
+                      }`}
+                      style={aktiv ? { backgroundColor: farbe + '20', color: farbe, borderColor: farbe + '60' } : undefined}
+                    >
+                      {fb}
+                    </button>
+                  )
+                })}
                 <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
                 {(['summativ', 'formativ'] as const).map(t => (
                   <button
@@ -426,7 +441,7 @@ export default function LPStartseite() {
                   </button>
                 ))}
                 <span className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
-                {(['SF', 'EF', 'EWR', 'GF'] as const).map(g => (
+                {verfuegbareGefaesse.map(g => (
                   <button
                     key={g}
                     onClick={() => setFilterGefaess(filterGefaess === g ? null : g)}
@@ -540,19 +555,18 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
           <span>{c.gesamtpunkte} P.</span>
           <span>·</span>
           <span>{c.abschnitte.reduce((s, a) => s + a.fragenIds.length, 0)} Fragen</span>
-          {c.fachbereiche.map((fb) => (
-            <span
-              key={fb}
-              className={`px-1.5 py-0.5 text-xs rounded ${
-                fb === 'VWL' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' :
-                fb === 'BWL' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
-                fb === 'Recht' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-              }`}
-            >
-              {fb}
-            </span>
-          ))}
+          {c.fachbereiche.map((fb) => {
+            const farbe = getFachFarbe(fb, {})
+            return (
+              <span
+                key={fb}
+                className="px-1.5 py-0.5 text-xs rounded"
+                style={{ backgroundColor: farbe + '20', color: farbe }}
+              >
+                {fb}
+              </span>
+            )
+          })}
         </div>
         {/* Tracker-Badges */}
         {trackerSummary && (
