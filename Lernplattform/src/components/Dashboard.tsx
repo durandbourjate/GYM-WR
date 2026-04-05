@@ -7,17 +7,16 @@ import { useAuftragStore } from '../store/auftragStore'
 import { useNavigationStore } from '../store/navigationStore'
 import { fragenAdapter } from '../adapters/appsScriptAdapter'
 import { berechneEmpfehlungen } from '../utils/empfehlungen'
-import type { Frage, FrageTyp } from '../types/fragen'
+import type { Frage } from '../types/fragen'
 import type { ThemenFortschritt } from '../types/fortschritt'
 import type { Empfehlung } from '../types/auftrag'
 import { berechneSterne, sterneText } from '../utils/gamification'
 import { useLernKontext } from '../hooks/useLernKontext'
 import { getFachFarbe } from '../utils/fachFarben'
 
-// Schwierigkeits-Labels
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
+const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
 
-// Typ-Labels (Kurzform)
 const TYP_LABELS: Record<string, string> = {
   mc: 'MC', multi: 'Multi', tf: 'R/F', fill: 'Lücken', calc: 'Berechnung',
   sort: 'Zuordnung', sortierung: 'Sortierung', zuordnung: 'Paare',
@@ -25,7 +24,6 @@ const TYP_LABELS: Record<string, string> = {
   buchungssatz: 'Buchungssatz', tkonto: 'T-Konto', bilanz: 'Bilanz', kontenbestimmung: 'Kontenb.',
   hotspot: 'Hotspot', bildbeschriftung: 'Beschriftung', dragdrop_bild: 'DragDrop',
   gruppe: 'Gruppe', zeichnen: 'Zeichnen', audio: 'Audio', code: 'Code',
-  // Shared Typ-Namen (kanonisch)
   richtigfalsch: 'R/F', lueckentext: 'Lücken', berechnung: 'Berechnung',
   freitext: 'Freitext', visualisierung: 'Zeichnen', bilanzstruktur: 'Bilanz',
   aufgabengruppe: 'Gruppe',
@@ -34,6 +32,7 @@ const TYP_LABELS: Record<string, string> = {
 interface ThemenInfo {
   fach: string
   thema: string
+  unterthemen: string[]
   fragen: Frage[]
   fortschritt: ThemenFortschritt
 }
@@ -45,19 +44,18 @@ export default function Dashboard() {
   const { ladeFortschritt, getThemenFortschritt, fortschritte } = useFortschrittStore()
   const { ladeAuftraege, auftraege } = useAuftragStore()
   const { navigiere } = useNavigationStore()
-  const { sichtbareFaecher, sichtbareThemen, fachFarben } = useLernKontext()
-  const [themenInfo, setThemenInfo] = useState<Record<string, ThemenInfo[]>>({})
+  const { sichtbareFaecher, fachFarben } = useLernKontext()
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
 
-  // Filter-State
-  const [fachFilter, setFachFilter] = useState<string | null>(null)
-  const [themaFilter, setThemaFilter] = useState<string | null>(null)
-  const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<number | null>(null)
-  const [typFilter, setTypFilter] = useState<FrageTyp | null>(null)
-  const [suchtext, setSuchtext] = useState('')
-  // Fächer default eingeklappt — wird nach dem Laden mit allen Fächern befüllt
-  const [eingeklappteF, setEingeklappteF] = useState<Set<string> | null>(null)
+  // Navigation: Fachbereich → Thema → Filter → Übung starten
+  const [aktiverFach, setAktiverFach] = useState<string | null>(null)
+  const [aktivesThema, setAktivesThema] = useState<string | null>(null)
+
+  // Filter innerhalb eines Themas (Chips wie pool.html)
+  const [unterthemaFilter, setUnterthemaFilter] = useState<Set<string>>(new Set())
+  const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<Set<number>>(new Set())
+  const [typFilter, setTypFilter] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     ladeFortschritt()
@@ -70,123 +68,95 @@ export default function Dashboard() {
       setLaden(true)
       const fragen = await fragenAdapter.ladeFragen(aktiveGruppe.id)
       setAlleFragen(fragen)
-
-      const fachMap: Record<string, Record<string, Frage[]>> = {}
-      for (const f of fragen) {
-        if (!fachMap[f.fach]) fachMap[f.fach] = {}
-        if (!fachMap[f.fach][f.thema]) fachMap[f.fach][f.thema] = []
-        fachMap[f.fach][f.thema].push(f)
-      }
-
-      const info: Record<string, ThemenInfo[]> = {}
-      for (const [fach, themen] of Object.entries(fachMap)) {
-        info[fach] = Object.entries(themen).map(([thema, fragen]) => ({
-          fach, thema, fragen, fortschritt: getThemenFortschritt(fragen),
-        }))
-      }
-
-      setThemenInfo(info)
-      // Alle Fächer default eingeklappt (nur beim ersten Laden)
-      if (eingeklappteF === null) {
-        setEingeklappteF(new Set(Object.keys(info)))
-      }
       setLaden(false)
     }
     ladeThemen()
-  }, [aktiveGruppe, getThemenFortschritt])
+  }, [aktiveGruppe])
 
-  // Verfügbare Fächer, Typen, Schwierigkeiten aus den geladenen Fragen
-  const verfuegbareFaecher = useMemo(() =>
-    [...new Set(alleFragen.map(f => f.fach))].sort()
-  , [alleFragen])
+  // Themen-Infos: Fach → Thema → { unterthemen, fragen, fortschritt }
+  const themenMap = useMemo(() => {
+    const map: Record<string, ThemenInfo[]> = {}
+    const fachThema: Record<string, Record<string, Frage[]>> = {}
 
-  // Themen abhängig vom Fach-Filter
-  const verfuegbareThemen = useMemo(() => {
-    const fragen = fachFilter ? alleFragen.filter(f => f.fach === fachFilter) : alleFragen
-    return [...new Set(fragen.map(f => f.thema).filter(Boolean))].sort()
-  }, [alleFragen, fachFilter])
-
-  const verfuegbareTypen = useMemo(() =>
-    [...new Set(alleFragen.map(f => f.typ))].sort()
-  , [alleFragen])
-
-  const verfuegbareSchwierigkeiten = useMemo(() =>
-    [...new Set(alleFragen.map(f => f.schwierigkeit ?? 2).filter(Boolean))].sort()
-  , [alleFragen])
-
-  // Gefilterte Themen
-  const gefilterteThemen = useMemo(() => {
-    const result: Record<string, ThemenInfo[]> = {}
-
-    for (const [fach, themen] of Object.entries(themenInfo)) {
-      // Kontext-Filter: nur sichtbare Fächer anzeigen (wenn gesetzt)
+    for (const f of alleFragen) {
+      const fach = f.fach || 'Andere'
+      const thema = f.thema || 'Allgemein'
       if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
-      // Benutzer-Filter: Fach-Filter aus der Filter-Leiste
-      if (fachFilter && fach !== fachFilter) continue
-
-      const sichtbareThemenFuerFach = sichtbareThemen[fach] ?? []
-
-      const gefiltert = themen.filter(t => {
-        // Kontext-Filter: nur sichtbare Themen anzeigen (wenn gesetzt)
-        if (sichtbareThemenFuerFach.length > 0 && !sichtbareThemenFuerFach.includes(t.thema)) return false
-        // Thema-Filter: nur gewähltes Thema anzeigen
-        if (themaFilter && t.thema !== themaFilter) return false
-        // Suchtext-Filter: Themenname muss matchen
-        if (suchtext && !t.thema.toLowerCase().includes(suchtext.toLowerCase())) return false
-        let fragen = t.fragen
-        if (schwierigkeitFilter) fragen = fragen.filter(f => f.schwierigkeit === schwierigkeitFilter)
-        if (typFilter) fragen = fragen.filter(f => f.typ === typFilter)
-        return fragen.length > 0
-      }).map(t => {
-        // Fragen-Anzahl anpassen wenn Filter aktiv
-        if (!schwierigkeitFilter && !typFilter) return t
-        const fragen = t.fragen.filter(f => {
-          if (schwierigkeitFilter && f.schwierigkeit !== schwierigkeitFilter) return false
-          if (typFilter && f.typ !== typFilter) return false
-          return true
-        })
-        return { ...t, fragen, fortschritt: getThemenFortschritt(fragen) }
-      })
-
-      if (gefiltert.length > 0) result[fach] = gefiltert
+      if (!fachThema[fach]) fachThema[fach] = {}
+      if (!fachThema[fach][thema]) fachThema[fach][thema] = []
+      fachThema[fach][thema].push(f)
     }
 
-    return result
-  }, [themenInfo, fachFilter, themaFilter, schwierigkeitFilter, typFilter, suchtext, getThemenFortschritt, sichtbareFaecher, sichtbareThemen])
+    for (const [fach, themen] of Object.entries(fachThema)) {
+      map[fach] = Object.entries(themen).map(([thema, fragen]) => {
+        const unterthemen = [...new Set(
+          fragen.map(f => (f as { unterthema?: string }).unterthema).filter(Boolean)
+        )].sort() as string[]
+        return { fach, thema, unterthemen, fragen, fortschritt: getThemenFortschritt(fragen) }
+      }).sort((a, b) => a.thema.localeCompare(b.thema))
+    }
+    return map
+  }, [alleFragen, getThemenFortschritt, sichtbareFaecher])
 
-  // Anzahl gefilterter Fragen
-  const gefilterteAnzahl = useMemo(() =>
-    Object.values(gefilterteThemen).flat().reduce((sum, t) => sum + t.fragen.length, 0)
-  , [gefilterteThemen])
+  const verfuegbareFaecher = useMemo(() => Object.keys(themenMap).sort(), [themenMap])
 
-  const totalAnzahl = alleFragen.length
+  // Sichtbare Themen (abhängig vom Fach-Filter)
+  const sichtbareThemenListe = useMemo(() => {
+    if (aktiverFach) return themenMap[aktiverFach] || []
+    return Object.values(themenMap).flat()
+  }, [themenMap, aktiverFach])
 
-  const toggleFach = (fach: string) => {
-    const basis = eingeklappteF || new Set<string>()
-    const neu = new Set(basis)
-    if (neu.has(fach)) neu.delete(fach)
-    else neu.add(fach)
-    setEingeklappteF(neu)
-  }
+  // Aktives Thema-Detail
+  const themaDetail = useMemo(() => {
+    if (!aktivesThema) return null
+    return sichtbareThemenListe.find(t => t.thema === aktivesThema) || null
+  }, [sichtbareThemenListe, aktivesThema])
 
-  const filterAktiv = fachFilter || themaFilter || schwierigkeitFilter || typFilter || suchtext
-  const filterZuruecksetzen = () => {
-    setFachFilter(null)
-    setThemaFilter(null)
-    setSchwierigkeitFilter(null)
-    setTypFilter(null)
-    setSuchtext('')
-  }
+  // Gefilterte Fragen im aktiven Thema
+  const gefilterteFragen = useMemo(() => {
+    if (!themaDetail) return []
+    return themaDetail.fragen.filter(f => {
+      if (unterthemaFilter.size > 0 && !unterthemaFilter.has((f as { unterthema?: string }).unterthema || '')) return false
+      if (schwierigkeitFilter.size > 0 && !schwierigkeitFilter.has(f.schwierigkeit ?? 2)) return false
+      if (typFilter.size > 0 && !typFilter.has(f.typ)) return false
+      return true
+    })
+  }, [themaDetail, unterthemaFilter, schwierigkeitFilter, typFilter])
 
+  // Empfehlungen
   const empfehlungen: Empfehlung[] = useMemo(() => {
     if (!user || alleFragen.length === 0) return []
     return berechneEmpfehlungen(alleFragen, fortschritte, auftraege, user.email)
   }, [alleFragen, fortschritte, auftraege, user])
 
-  const handleStarte = (fach: string, thema: string) => {
+  const handleStarte = (fach: string, thema: string, fragenOverride?: Frage[]) => {
     if (!aktiveGruppe || !user) return
-    starteSession(aktiveGruppe.id, user.email, fach, thema)
+    starteSession(aktiveGruppe.id, user.email, fach, thema, fragenOverride)
     navigiere('uebung')
+  }
+
+  const handleStarteGefiltert = () => {
+    if (!themaDetail || gefilterteFragen.length === 0) return
+    handleStarte(themaDetail.fach, themaDetail.thema, gefilterteFragen)
+  }
+
+  const toggleChip = <T,>(set: Set<T>, setFn: (s: Set<T>) => void, val: T) => {
+    const neu = new Set(set)
+    if (neu.has(val)) neu.delete(val)
+    else neu.add(val)
+    setFn(neu)
+  }
+
+  const toggleAll = <T,>(set: Set<T>, setFn: (s: Set<T>) => void, alle: T[]) => {
+    if (set.size === alle.length) setFn(new Set())
+    else setFn(new Set(alle))
+  }
+
+  const zurueckZuThemen = () => {
+    setAktivesThema(null)
+    setUnterthemaFilter(new Set())
+    setSchwierigkeitFilter(new Set())
+    setTypFilter(new Set())
   }
 
   return (
@@ -197,7 +167,7 @@ export default function Dashboard() {
         </h2>
 
         {/* Empfehlungen */}
-        {empfehlungen.length > 0 && (
+        {!aktivesThema && empfehlungen.length > 0 && (
           <div className="mb-6 space-y-2">
             {empfehlungen.map((e, i) => (
               <button
@@ -209,10 +179,8 @@ export default function Dashboard() {
                   ${e.typ === 'festigung' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : ''}
                 `}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
-                    {e.typ === 'auftrag' ? 'Auftrag' : e.typ === 'luecke' ? 'Empfohlen' : 'Festigung'}
-                  </span>
+                <div className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
+                  {e.typ === 'auftrag' ? 'Auftrag' : e.typ === 'luecke' ? 'Empfohlen' : 'Festigung'}
                 </div>
                 <div className="font-medium dark:text-white">{e.titel}</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">{e.beschreibung}</div>
@@ -221,43 +189,61 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Filter-Leiste */}
-        {!laden && totalAnzahl > 0 && (
-          <div className="mb-4 space-y-3">
-            {/* Suchfeld */}
-            <input
-              type="text"
-              value={suchtext}
-              onChange={(e) => setSuchtext(e.target.value)}
-              placeholder="Thema suchen..."
-              className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:border-blue-500"
-            />
-
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
-                {filterAktiv
-                  ? `${gefilterteAnzahl} von ${totalAnzahl} Fragen`
-                  : `Alle Themen (${totalAnzahl} Fragen)`}
-              </h3>
-              {filterAktiv && (
-                <button onClick={filterZuruecksetzen} className="text-xs text-blue-500 hover:underline">
-                  Filter zurücksetzen
-                </button>
-              )}
-            </div>
-
-            {/* Fach-Filter */}
-            <div className="flex flex-wrap gap-1.5">
+        {laden ? (
+          <p className="text-gray-500">Themen werden geladen...</p>
+        ) : alleFragen.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm text-gray-500">
+            Noch keine Übungsfragen vorhanden.
+          </div>
+        ) : aktivesThema && themaDetail ? (
+          /* ===================== THEMA-DETAIL (Pool-Stil Filter) ===================== */
+          <ThemaDetailView
+            themaDetail={themaDetail}
+            gefilterteFragen={gefilterteFragen}
+            unterthemaFilter={unterthemaFilter}
+            schwierigkeitFilter={schwierigkeitFilter}
+            typFilter={typFilter}
+            onToggleUnterthema={(v) => toggleChip(unterthemaFilter, setUnterthemaFilter, v)}
+            onToggleSchwierigkeit={(v) => toggleChip(schwierigkeitFilter, setSchwierigkeitFilter, v)}
+            onToggleTyp={(v) => toggleChip(typFilter, setTypFilter, v)}
+            onToggleAlleUnterthemen={() => toggleAll(unterthemaFilter, setUnterthemaFilter, themaDetail.unterthemen)}
+            onToggleAlleSchwierigkeiten={() => {
+              const alle = [...new Set(themaDetail.fragen.map(f => f.schwierigkeit ?? 2))]
+              toggleAll(schwierigkeitFilter, setSchwierigkeitFilter, alle)
+            }}
+            onToggleAlleTypen={() => {
+              const alle = [...new Set(themaDetail.fragen.map(f => f.typ))]
+              toggleAll(typFilter, setTypFilter, alle)
+            }}
+            onZurueck={zurueckZuThemen}
+            onStarte={handleStarteGefiltert}
+            fachFarben={fachFarben}
+          />
+        ) : (
+          /* ===================== THEMEN-ÜBERSICHT (Fach → Thema Karten) ===================== */
+          <>
+            {/* Fach-Filter Chips */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <button
+                onClick={() => setAktiverFach(null)}
+                className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-colors ${
+                  !aktiverFach
+                    ? 'bg-slate-800 text-white border-slate-800 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-600 hover:border-slate-400'
+                }`}
+              >
+                Alle
+              </button>
               {verfuegbareFaecher.map(fach => {
                 const farbe = getFachFarbe(fach, fachFarben)
                 return (
                   <button
                     key={fach}
-                    onClick={() => { setFachFilter(fachFilter === fach ? null : fach); setThemaFilter(null) }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors"
-                    style={fachFilter === fach
-                      ? { backgroundColor: farbe + '1a', color: farbe, borderColor: farbe + '4d', outline: `1px solid ${farbe}` }
-                      : undefined
+                    onClick={() => setAktiverFach(aktiverFach === fach ? null : fach)}
+                    className="px-4 py-2 rounded-full text-sm font-medium border-2 transition-colors"
+                    style={aktiverFach === fach
+                      ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
+                      : { borderColor: '#e2e8f0', color: farbe }
                     }
                   >
                     {fach}
@@ -266,122 +252,224 @@ export default function Dashboard() {
               })}
             </div>
 
-            {/* Thema-Filter (abhängig von Fach) */}
-            {verfuegbareThemen.length > 1 && (
-              <select
-                value={themaFilter || ''}
-                onChange={(e) => setThemaFilter(e.target.value || null)}
-                className={`w-full px-3 py-2 rounded-xl text-sm border transition-colors cursor-pointer
-                  ${themaFilter
-                    ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700'
-                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'}
-                `}
-              >
-                <option value="">Alle Themen{fachFilter ? ` (${verfuegbareThemen.length})` : ''}</option>
-                {verfuegbareThemen.map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            )}
-
-            {/* Schwierigkeits-Filter */}
-            <div className="flex flex-wrap gap-1.5">
-              {verfuegbareSchwierigkeiten.map(s => (
-                <button
-                  key={s}
-                  onClick={() => setSchwierigkeitFilter(schwierigkeitFilter === s ? null : s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors
-                    ${schwierigkeitFilter === s
-                      ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700 ring-1 ring-purple-400'
-                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:border-gray-400'}
-                  `}
-                >
-                  {SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}
-                </button>
-              ))}
-
-              {/* Typ-Filter (kompakte Dropdown-Alternative wegen vieler Typen) */}
-              <select
-                value={typFilter || ''}
-                onChange={(e) => setTypFilter(e.target.value ? e.target.value as FrageTyp : null)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[36px] border transition-colors cursor-pointer
-                  ${typFilter
-                    ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700'
-                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-600'}
-                `}
-              >
-                <option value="">Alle Typen</option>
-                {verfuegbareTypen.map(t => (
-                  <option key={t} value={t}>{TYP_LABELS[t] || t}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Themen-Browser */}
-        {laden ? (
-          <p className="text-gray-500">Themen werden geladen...</p>
-        ) : Object.keys(gefilterteThemen).length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm text-gray-500">
-            <p>{filterAktiv ? 'Keine Themen für diesen Filter.' : 'Noch keine Übungsfragen vorhanden.'}</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {Object.entries(gefilterteThemen).map(([fach, themen]) => {
-              const istEingeklappt = eingeklappteF?.has(fach) ?? true
-              const farbe = getFachFarbe(fach, fachFarben)
-
-              return (
-                <div key={fach}>
-                  {/* Fach-Header (klickbar zum Ein-/Ausklappen) */}
+            {/* Thema-Karten Grid */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {sichtbareThemenListe.map(info => {
+                const farbe = getFachFarbe(info.fach, fachFarben)
+                return (
                   <button
-                    onClick={() => toggleFach(fach)}
-                    className="w-full flex items-center justify-between p-3 rounded-xl mb-2 min-h-[48px] border transition-colors"
-                    style={{ backgroundColor: farbe + '1a', borderColor: farbe + '4d' }}
+                    key={`${info.fach}-${info.thema}`}
+                    onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
+                    className="text-left p-4 bg-white dark:bg-slate-800 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors min-h-[48px]"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold" style={{ color: farbe }}>
-                        {fach}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {themen.length} Themen, {themen.reduce((s, t) => s + t.fragen.length, 0)} Fragen
-                      </span>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <span className="font-semibold dark:text-white text-sm leading-tight">{info.thema}</span>
+                      <span className="shrink-0 w-3 h-3 rounded-full mt-1" style={{ backgroundColor: farbe }} />
                     </div>
-                    <span className={`text-sm transition-transform ${istEingeklappt ? '' : 'rotate-180'}`}>
-                      &#9660;
-                    </span>
+                    <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                      <span>{info.fragen.length} Fragen</span>
+                      {info.unterthemen.length > 0 && <span>{info.unterthemen.length} Unterthemen</span>}
+                      <span>{sterneText(berechneSterne(info.fortschritt.quote))}</span>
+                    </div>
+                    <FortschrittsBalken fortschritt={info.fortschritt} />
                   </button>
-
-                  {/* Themen-Liste */}
-                  {!istEingeklappt && (
-                    <div className="grid gap-2 ml-1">
-                      {themen.map(({ thema, fragen, fortschritt }) => (
-                        <button
-                          key={thema}
-                          onClick={() => handleStarte(fach, thema)}
-                          className="w-full text-left p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 min-h-[48px]"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-medium dark:text-white text-base">{thema}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm tracking-wide">{sterneText(berechneSterne(fortschritt.quote))}</span>
-                              <span className="text-xs text-gray-400">{fragen.length}</span>
-                              <MasteryBadges fortschritt={fortschritt} />
-                            </div>
-                          </div>
-                          <FortschrittsBalken fortschritt={fortschritt} />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          </>
         )}
       </main>
     </div>
+  )
+}
+
+// ===================== THEMA-DETAIL VIEW (Pool-Stil) =====================
+
+interface ThemaDetailProps {
+  themaDetail: ThemenInfo
+  gefilterteFragen: Frage[]
+  unterthemaFilter: Set<string>
+  schwierigkeitFilter: Set<number>
+  typFilter: Set<string>
+  onToggleUnterthema: (v: string) => void
+  onToggleSchwierigkeit: (v: number) => void
+  onToggleTyp: (v: string) => void
+  onToggleAlleUnterthemen: () => void
+  onToggleAlleSchwierigkeiten: () => void
+  onToggleAlleTypen: () => void
+  onZurueck: () => void
+  onStarte: () => void
+  fachFarben: Record<string, string>
+}
+
+function ThemaDetailView({
+  themaDetail, gefilterteFragen,
+  unterthemaFilter, schwierigkeitFilter, typFilter,
+  onToggleUnterthema, onToggleSchwierigkeit, onToggleTyp,
+  onToggleAlleUnterthemen, onToggleAlleSchwierigkeiten, onToggleAlleTypen,
+  onZurueck, onStarte, fachFarben,
+}: ThemaDetailProps) {
+  const farbe = getFachFarbe(themaDetail.fach, fachFarben)
+  const verfuegbareSchwierigkeiten = [...new Set(themaDetail.fragen.map(f => f.schwierigkeit ?? 2))].sort()
+  const verfuegbareTypen = [...new Set(themaDetail.fragen.map(f => f.typ))].sort()
+  const filterAktiv = unterthemaFilter.size > 0 || schwierigkeitFilter.size > 0 || typFilter.size > 0
+
+  return (
+    <div className="space-y-4">
+      {/* Header mit Zurück */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onZurueck}
+          className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        >
+          ←
+        </button>
+        <div>
+          <h3 className="text-lg font-bold dark:text-white">{themaDetail.thema}</h3>
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: farbe }} />
+            <span>{themaDetail.fach}</span>
+            <span>·</span>
+            <span>{themaDetail.fragen.length} Fragen</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Fortschritt */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+        <FortschrittsBalken fortschritt={themaDetail.fortschritt} />
+        <div className="flex justify-between mt-2">
+          <MasteryBadges fortschritt={themaDetail.fortschritt} />
+          <span className="text-sm">{sterneText(berechneSterne(themaDetail.fortschritt.quote))}</span>
+        </div>
+      </div>
+
+      {/* Unterthema-Chips */}
+      {themaDetail.unterthemen.length > 0 && (
+        <FilterSection
+          titel="Unterthemen"
+          emoji="📚"
+          onToggleAlle={onToggleAlleUnterthemen}
+        >
+          {themaDetail.unterthemen.map(ut => {
+            const anzahl = themaDetail.fragen.filter(f => (f as { unterthema?: string }).unterthema === ut).length
+            return (
+              <Chip
+                key={ut}
+                label={ut}
+                count={anzahl}
+                aktiv={unterthemaFilter.has(ut)}
+                farbe={farbe}
+                onClick={() => onToggleUnterthema(ut)}
+              />
+            )
+          })}
+        </FilterSection>
+      )}
+
+      {/* Schwierigkeits-Chips */}
+      <FilterSection titel="Schwierigkeit" emoji="📊" onToggleAlle={onToggleAlleSchwierigkeiten}>
+        {verfuegbareSchwierigkeiten.map(s => {
+          const anzahl = themaDetail.fragen.filter(f => (f.schwierigkeit ?? 2) === s).length
+          return (
+            <Chip
+              key={s}
+              label={`${SCHWIERIGKEIT_STERNE[s] || '⭐'} ${SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}`}
+              count={anzahl}
+              aktiv={schwierigkeitFilter.has(s)}
+              farbe={farbe}
+              onClick={() => onToggleSchwierigkeit(s)}
+            />
+          )
+        })}
+      </FilterSection>
+
+      {/* Fragetyp-Chips */}
+      {verfuegbareTypen.length > 1 && (
+        <FilterSection titel="Fragetyp" emoji="✏️" onToggleAlle={onToggleAlleTypen}>
+          {verfuegbareTypen.map(t => {
+            const anzahl = themaDetail.fragen.filter(f => f.typ === t).length
+            return (
+              <Chip
+                key={t}
+                label={TYP_LABELS[t] || t}
+                count={anzahl}
+                aktiv={typFilter.has(t)}
+                farbe={farbe}
+                onClick={() => onToggleTyp(t)}
+              />
+            )
+          })}
+        </FilterSection>
+      )}
+
+      {/* Info-Balken + Start-Button */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-slate-600 dark:text-slate-400">
+            {filterAktiv
+              ? `${gefilterteFragen.length} von ${themaDetail.fragen.length} Fragen ausgewählt`
+              : `${themaDetail.fragen.length} Fragen verfügbar`
+            }
+          </span>
+          <button
+            onClick={onStarte}
+            disabled={gefilterteFragen.length === 0}
+            className="px-6 py-2.5 rounded-xl font-semibold text-white transition-colors min-h-[44px] disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ backgroundColor: gefilterteFragen.length > 0 ? farbe : undefined }}
+          >
+            Übung starten
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ===================== SHARED COMPONENTS =====================
+
+function FilterSection({ titel, emoji, children, onToggleAlle }: {
+  titel: string; emoji: string; children: React.ReactNode; onToggleAlle: () => void
+}) {
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          {emoji} {titel}
+        </h4>
+        <button
+          onClick={onToggleAlle}
+          className="text-xs font-medium px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-slate-400 transition-colors"
+        >
+          Alle ⇄
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function Chip({ label, count, aktiv, farbe, onClick }: {
+  label: string; count?: number; aktiv: boolean; farbe: string; onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors cursor-pointer select-none"
+      style={aktiv
+        ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
+        : { borderColor: '#e2e8f0', color: '#475569' }
+      }
+    >
+      {label}
+      {count !== undefined && (
+        <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
+          {count}
+        </span>
+      )}
+    </button>
   )
 }
 
@@ -392,7 +480,7 @@ function FortschrittsBalken({ fortschritt }: { fortschritt: ThemenFortschritt })
   const uebenPct = (fortschritt.ueben / fortschritt.gesamt) * 100
 
   return (
-    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden flex">
+    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden flex mt-2">
       {gemeistertPct > 0 && <div className="bg-green-500 h-2" style={{ width: `${gemeistertPct}%` }} />}
       {gefestigtPct > 0 && <div className="bg-blue-400 h-2" style={{ width: `${gefestigtPct}%` }} />}
       {uebenPct > 0 && <div className="bg-yellow-400 h-2" style={{ width: `${uebenPct}%` }} />}

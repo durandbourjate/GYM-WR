@@ -2,8 +2,8 @@
 
 ## Aktueller Stand
 
-**Branch:** `fix/lernplattform-ux-bugs`
-**Phase:** Bug-Fixes + UX-Verbesserungen (05.04.2026)
+**Branch:** `fix/lernplattform-ux-phase2`
+**Phase:** Farbschema + Themen-Hierarchie + SuS-Dashboard Redesign (05.04.2026)
 **Status:** TSC OK, 101 LP-Tests + 193 Pruefungs-Tests gruen, Build OK
 **Apps Script:** Aenderungen pending (User muss deployen)
 
@@ -12,29 +12,37 @@
 - **Eine Fragenbank:** `FRAGENBANK_ID` = Pruefungstool-Sheet (Gym-Gruppen), eigenes Sheet (Familie)
 - **Ein Editor:** SharedFragenEditor mit allen Features (KI, Anhaenge, Sharing, Lernziele)
 - **Kein Adapter:** Keine Konvertierung zwischen LP und Pruefungstool-Format
-- **CSS:** Identisch mit Pruefungstool (input-field, slate-Farben, Kontrast)
-- **Kontenrahmen:** KMU-Kontenrahmen (CH) geladen in beiden EditorProviders
+- **CSS:** Slate-basiertes Farbschema (identisch mit Pruefungstool)
+- **Themen-Hierarchie:** Backend mappt poolId → Thema/Unterthema via THEMEN_MAPPING
 
 ---
 
-## In dieser Session erledigt (05.04.2026 — Nachmittag)
+## In dieser Session erledigt (05.04.2026 — Session 2)
 
-### Bug-Fixes
+### Phase 1: Quick-Fixes
 | # | Fix | Details |
 |---|-----|---------|
-| 1 | FRAGENBANK_TABS dynamisch | Nicht mehr hardcoded auf 4 Tabs — liest alle Tabs aus dem Sheet (exkl. System-Tabs) |
-| 2 | Fachbereich-Mapping | "Allgemein" und "Wirtschaft & Recht" werden auf "Andere" gemappt (lila Badge) |
-| 3 | Bilder-Fix | resolveAssetUrl() erkennt Pool-Bild-Pfade (img/, pool-bilder/) und loest auf GitHub-Pages-URL auf |
-| 4 | PDF CSP-Fix | frame-src um blob:, Google Drive domains erweitert |
-| 5 | SuS leerer Screen | Geloest durch Fix #1 (fehlende Tabs wurden nicht geladen) |
+| 1 | Farbschema Blau → Slate | 30+ Dateien: bg-blue → bg-slate, Buttons, Tabs, Links, Focus-States |
+| 2 | Mitglieder-Race-Condition | gruppenStore: await statt Background-Promise bei Auto-Select |
+| 3 | Schwierigkeit-Default | parseFrageKanonisch_: Default 2 (Mittel) statt undefined |
+| 4 | Fremde Email Meldung | GruppenAuswahl: "Keine Gruppe zugeordnet" + Hinweis an LP |
 
-### UX-Verbesserungen
+### Phase 2: Themen-Hierarchie
 | # | Feature | Details |
 |---|---------|---------|
-| 1 | Loeschen im Editor | "Frage loeschen"-Button unten im SharedFragenEditor (rot, mit Bestaetigungsdialog) |
-| 2 | Hierarchische Filter | Fach → Thema → Unterthema (3 Ebenen), Unterthema-Dropdown nur wenn Thema gewaehlt |
-| 3 | Berechnung Feldgroessen | Bezeichnung groesser (flex-5), Ergebnis + Toleranz kompakter (w-24, w-20) |
-| 4 | Klickbare Fach-Karten | Admin-Uebersicht: Fach-Karten navigieren zur Fragenbank mit Fach-Filter vorausgewaehlt |
+| 1 | Pool-Configs Parser | scripts/generateThemaMapping.mjs: 26 Pools, 190 Unterthemen, 2500 Fragen |
+| 2 | THEMEN_MAPPING | Backend: poolId-Prefix → Pool-Titel als Thema, bisheriges Thema → Unterthema |
+| 3 | Automatisches Mapping | parseFrageKanonisch_ extrahiert Hierarchie beim Laden (kein Sheet-Migration noetig) |
+
+### Phase 3: SuS-Dashboard Redesign
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | Pool-Stil Navigation | Fachbereich-Chips → Thema-Karten-Grid → Thema-Detail mit Filtern |
+| 2 | Chip-Filter | Unterthema, Schwierigkeit, Fragetyp als togglebare Chips (wie pool.html) |
+| 3 | "Alle ⇄" Toggle | Pro Filtergruppe alle Chips an/aus schalten |
+| 4 | Thema-Karten | Titel, Fach-Farbpunkt, Anzahl Fragen/Unterthemen, Fortschrittsbalken |
+| 5 | Gefiltert starten | "Uebung starten" mit vorgefilterter Fragenauswahl (fragenOverride) |
+| 6 | Keine 10-Fragen-Grenze | Gym-SuS koennen alle gefilterten Fragen erhalten |
 
 ---
 
@@ -42,14 +50,13 @@
 
 | Datei | Aenderung |
 |-------|----------|
-| `apps-script/lernplattform-backend.js` | getFragenbankTabs_(), FACHBEREICH_MAPPING, parseFrageKanonisch_ Mapping |
-| `index.html` | CSP frame-src erweitert |
-| `src/utils/assetUrl.ts` | Pool-Bild-Pfade erkennen + auf Uebungen-URL aufloesen |
-| `src/components/admin/AdminFragenbank.tsx` | Hierarchische Filter, initialFach, onLoeschen, Andere-Farbe |
-| `src/components/admin/AdminUebersicht.tsx` | Klickbare Fach-Karten (onFachKlick) |
-| `src/components/admin/AdminDashboard.tsx` | Fach-Filter Routing (initialFach in Ansicht) |
-| `packages/shared/src/editor/SharedFragenEditor.tsx` | onLoeschen Prop + Button |
-| `packages/shared/src/editor/typen/BerechnungEditor.tsx` | Feldgroessen angepasst |
+| `apps-script/lernplattform-backend.js` | THEMEN_MAPPING, schwierigkeit Default, getFragenbankTabs_ |
+| `src/components/Dashboard.tsx` | Komplett umgebaut: Pool-Stil mit Chips, Karten, Detail-Ansicht |
+| `src/store/uebungsStore.ts` | starteSession: fragenOverride Parameter |
+| `src/store/gruppenStore.ts` | Mitglieder await statt Background-Promise |
+| `src/components/GruppenAuswahl.tsx` | Bessere Fehlermeldung bei 0 Gruppen |
+| 30+ Komponenten | Farbschema: blue-* → slate-* |
+| `scripts/generateThemaMapping.mjs` | Pool-Config-Parser fuer Themen-Mapping |
 
 ---
 
@@ -57,9 +64,10 @@
 
 | # | Thema | Details | Aufwand |
 |---|-------|---------|--------|
-| 1 | **Apps Script deployen** | User muss lernplattform-backend.js in Apps Script Editor kopieren + neue Bereitstellung erstellen | User |
-| 2 | **E2E-Browser-Test** | Nach Deploy: Bilder, PDFs, Filter, Loeschen, SuS-Ansicht testen | Mittel |
-| 3 | **Lernziele-Tab erstellen** | Wird automatisch beim ersten speichereLernziel erstellt, oder manuell im Sheet | Manuell |
+| 1 | **Apps Script deployen** | lernplattform-backend.js in Apps Script Editor kopieren + neue Bereitstellung | User |
+| 2 | **E2E-Browser-Test** | Nach Deploy: SuS-Dashboard, Themen-Hierarchie, Filter, Farbschema | Mittel |
+| 3 | **Lernziele im Dashboard** | 🏁 Mini-Modal pro Unterthema (noch nicht implementiert) | Klein |
+| 4 | **10-Fragen-Limit** | blockBuilder MAX_BLOCK_SIZE kontextabhaengig machen (Gym vs Familie) | Klein |
 
 ---
 

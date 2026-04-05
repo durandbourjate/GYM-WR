@@ -103,7 +103,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
 
       {/* Zeile hinzufügen */}
       {!disabled && !feedbackSichtbar && (
-        <button onClick={zeileHinzufuegen} className="text-sm text-blue-500 hover:text-blue-700 dark:text-blue-400">
+        <button onClick={zeileHinzufuegen} className="text-sm text-slate-600 hover:text-slate-800 dark:text-slate-400">
           + Zeile hinzufuegen
         </button>
       )}
@@ -121,7 +121,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
       )}
 
       {!disabled && istVollstaendig && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

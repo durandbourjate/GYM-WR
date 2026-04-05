@@ -14,7 +14,7 @@ interface UebungsState {
   feedbackSichtbar: boolean
   letzteAntwortKorrekt: boolean | null
 
-  starteSession: (gruppeId: string, email: string, fach: string, thema: string) => Promise<void>
+  starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: import('../types/fragen').Frage[]) => Promise<void>
   beantworte: (antwort: AntwortTyp) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
@@ -34,11 +34,11 @@ export const useUebungsStore = create<UebungsState>((set, get) => ({
   feedbackSichtbar: false,
   letzteAntwortKorrekt: null,
 
-  starteSession: async (gruppeId, email, fach, thema) => {
+  starteSession: async (gruppeId, email, fach, thema, fragenOverride) => {
     set({ ladeStatus: 'laden' })
 
     try {
-      const alleFragen = await fragenAdapter.ladeFragen(gruppeId, { fach, thema })
+      const alleFragen = fragenOverride || await fragenAdapter.ladeFragen(gruppeId, { fach, thema })
 
       const fortschritte = useFortschrittStore.getState().fortschritte
       const mastery: Record<string, import('../types/fortschritt').MasteryStufe> = {}

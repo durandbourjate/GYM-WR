@@ -38,13 +38,13 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
             className={`w-full text-left p-4 rounded-xl border-2 transition-colors min-h-[48px] flex items-center gap-3
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
-              ${istGewaehlt && !feedbackSichtbar ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : ''}
+              ${istGewaehlt && !feedbackSichtbar ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
               ${!istGewaehlt && !istKorrekt ? 'border-gray-200 dark:border-gray-600 hover:border-gray-400' : ''}
               ${disabled ? 'cursor-default' : 'cursor-pointer'}
             `}
           >
             <span className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center text-xs
-              ${istGewaehlt ? 'bg-blue-500 border-blue-500 text-white' : 'border-gray-300 dark:border-gray-500'}
+              ${istGewaehlt ? 'bg-slate-800 border-slate-800 text-white dark:bg-slate-200 dark:border-slate-200 dark:text-slate-800' : 'border-gray-300 dark:border-gray-500'}
             `}>
               {istGewaehlt ? '✓' : ''}
             </span>
@@ -57,7 +57,7 @@ export default function MultiFrage({ frage, onAntwort, disabled, feedbackSichtba
       })}
 
       {!disabled && gewaehlt.length > 0 && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium mt-2 min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium mt-2 min-h-[48px]">
           Prüfen
         </button>
       )}

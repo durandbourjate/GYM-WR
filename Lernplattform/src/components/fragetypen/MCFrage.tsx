@@ -35,7 +35,7 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
             className={`w-full text-left p-4 rounded-xl border-2 transition-colors min-h-[48px]
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
-              ${istGewaehlt && !feedbackSichtbar ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : ''}
+              ${istGewaehlt && !feedbackSichtbar ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
               ${!istGewaehlt && !istKorrekt ? 'border-gray-200 dark:border-gray-600 hover:border-gray-400' : ''}
               ${disabled ? 'cursor-default' : 'cursor-pointer'}
             `}
@@ -49,7 +49,7 @@ export default function MCFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
       })}
 
       {!disabled && gewaehlt && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium mt-2 min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium mt-2 min-h-[48px]">
           Prüfen
         </button>
       )}

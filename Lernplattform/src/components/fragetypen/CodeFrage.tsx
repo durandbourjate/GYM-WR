@@ -35,12 +35,12 @@ export default function CodeFrage({ frage, onAntwort, disabled, feedbackSichtbar
         autoFocus
         rows={10}
         spellCheck={false}
-        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-900 dark:text-green-400 font-mono text-sm resize-y min-h-[200px] focus:border-blue-500 focus:outline-none"
+        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-900 dark:text-green-400 font-mono text-sm resize-y min-h-[200px] focus:border-slate-500 focus:outline-none"
         placeholder="// Dein Code hier..."
       />
 
       {!disabled && code.trim() && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

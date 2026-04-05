@@ -29,11 +29,11 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
         autoFocus
         rows={5}
         placeholder="Deine Antwort..."
-        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white resize-y text-base min-h-[120px] focus:border-blue-500 focus:outline-none"
+        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white resize-y text-base min-h-[120px] focus:border-slate-500 focus:outline-none"
       />
 
       {!disabled && text.trim() && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}
@@ -42,7 +42,7 @@ export default function OpenFrage({ frage, onAntwort, disabled, feedbackSichtbar
         <div className="space-y-3">
           {/* Musterantwort anzeigen */}
           {frage.musterlosung && (
-            <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/20 text-slate-800 dark:text-slate-200">
               <p className="font-medium text-sm mb-1">Musterantwort:</p>
               <p className="text-sm">{frage.musterlosung}</p>
             </div>

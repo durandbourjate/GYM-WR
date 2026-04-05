@@ -119,7 +119,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
                   </div>
                 ))}
                 {!disabled && !feedbackSichtbar && (
-                  <button onClick={() => addEintrag(konto.kontonummer, 'soll')} className="text-xs text-blue-500">+ Zeile</button>
+                  <button onClick={() => addEintrag(konto.kontonummer, 'soll')} className="text-xs text-slate-600 dark:text-slate-400">+ Zeile</button>
                 )}
               </div>
 
@@ -135,7 +135,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
                   </div>
                 ))}
                 {!disabled && !feedbackSichtbar && (
-                  <button onClick={() => addEintrag(konto.kontonummer, 'haben')} className="text-xs text-blue-500">+ Zeile</button>
+                  <button onClick={() => addEintrag(konto.kontonummer, 'haben')} className="text-xs text-slate-600 dark:text-slate-400">+ Zeile</button>
                 )}
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
       })}
 
       {!disabled && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

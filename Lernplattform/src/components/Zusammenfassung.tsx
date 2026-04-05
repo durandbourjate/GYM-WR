@@ -127,7 +127,7 @@ export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
       <div className="space-y-2">
         <button
           onClick={onNochmal}
-          className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px] text-base"
+          className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px] text-base hover:bg-slate-900 dark:hover:bg-slate-100"
         >
           {t('nochmal', anrede)}
         </button>

@@ -1,0 +1,577 @@
+{
+  "bwl_einfuehrung": {
+    "thema": "Einführung BWL",
+    "fach": "BWL",
+    "level": "SF GYM1",
+    "topicCount": 7,
+    "questionCount": 73,
+    "topics": {
+      "wirtschaft": "Wirtschaft, Bedürfnisse & Knappheit",
+      "gueter": "Güterarten & ökonomisches Prinzip",
+      "struktur": "Struktur der Schweizer Wirtschaft",
+      "unternehmen": "Kriterien zur Unterscheidung von Unternehmen",
+      "ziele": "Unternehmensziele & Zielbeziehungen",
+      "kennzahlen": "Kennzahlen",
+      "standort": "Standortfaktoren & Nutzwertanalyse"
+    },
+    "lernziele": [
+      "Ich kann grundlegende wirtschaftliche Konzepte (Bedürfnisse, Güter, ökonomisches Prinzip) erklären. (K2)",
+      "Ich kann Unternehmen nach verschiedenen Kriterien unterscheiden und einordnen. (K2)",
+      "Ich kann betriebswirtschaftliche Kennzahlen berechnen und interpretieren. (K3)",
+      "Ich kann Standortfaktoren analysieren und eine Nutzwertanalyse durchführen. (K3)"
+    ]
+  },
+  "bwl_fibu": {
+    "thema": "Finanzbuchhaltung (FIBU)",
+    "fach": "BWL",
+    "level": "SF GYM1–GYM2",
+    "topicCount": 9,
+    "questionCount": 224,
+    "topics": {
+      "grundlagen": "Grundlagen der Buchhaltung",
+      "bilanz": "Bilanz, Inventar & Bewertung",
+      "kontentypen": "Die vier Kontentypen – Zu- und Abnahmen",
+      "buchungssatz": "Buchungssätze & Bilanzkonten",
+      "erfolgsrechnung": "Erfolgsrechnung & Erfolgskonten",
+      "eigentuemer": "Konten des Eigentümers",
+      "warenkonten": "Warenkonten & dreistufige Erfolgsrechnung",
+      "wertberichtigungen": "Wertberichtigungen & Abschreibungen",
+      "abgrenzungen": "Rechnungsabgrenzungen & Rückstellungen"
+    },
+    "lernziele": [
+      "Ich kann die Aufgaben und Grundsätze der Finanzbuchhaltung erklären. (K2)",
+      "Ich kann eine korrekt gegliederte Bilanz erstellen und die Bilanzgleichung anwenden. (K3)",
+      "Ich kann Geschäftsfälle in Buchungssätze übersetzen und auf T-Konten verbuchen. (K3)",
+      "Ich kann die vier Kontentypen (Aktiv, Passiv, Aufwand, Ertrag) unterscheiden und ihre Buchungsregeln anwenden. (K3)",
+      "Ich kann die Erfolgsrechnung (ein- und zweistufig) erstellen und den Jahreserfolg ermitteln. (K3)",
+      "Ich kann die Konten des Eigentümers (Eigenkapital, Privat) korrekt führen. (K3)",
+      "Ich kann Warenkonten inkl. Bestandesänderung führen und die dreistufige Erfolgsrechnung erstellen. (K3)",
+      "Ich kann Wertberichtigungen (Abschreibungen, Delkredere) und Rechnungsabgrenzungen verbuchen. (K3)"
+    ]
+  },
+  "bwl_marketing": {
+    "thema": "Markt- und Leistungsanalyse",
+    "fach": "BWL",
+    "level": "SF GYM3",
+    "topicCount": 6,
+    "questionCount": 70,
+    "topics": {
+      "marketing": "Marketing & Marketingkonzept",
+      "marktgroesse": "Marktgrösse: Potenzial, Volumen, Sättigung",
+      "marktstellung": "Marktstellung & Marktanteil",
+      "segmentierung": "Marktsegmentierung & Konkurrenz",
+      "bcg": "BCG-Portfolio",
+      "plz": "Produktlebenszyklus"
+    },
+    "lernziele": [
+      "Ich kann ein Marketingkonzept in seinen Grundzügen erklären. (K2)",
+      "Ich kann die Marktgrösse (Potenzial, Volumen, Anteil) berechnen und interpretieren. (K3)",
+      "Ich kann strategische Analyseinstrumente (BCG-Portfolio, Produktlebenszyklus) anwenden. (K3)"
+    ]
+  },
+  "bwl_stratfuehrung": {
+    "thema": "Strategische Unternehmensführung",
+    "fach": "BWL",
+    "level": "SF GYM1",
+    "topicCount": 7,
+    "questionCount": 71,
+    "topics": {
+      "einfuehrung": "Einführung & strategische Planung",
+      "grundsaetze": "Vision, Werte, Leitbild & CSR",
+      "analyse_intern": "Unternehmensanalyse & Fähigkeitsanalyse",
+      "analyse_extern": "Umweltanalyse & 5-Kräfte-Modell",
+      "swot": "SWOT-Analyse",
+      "strategie": "Strategien & Unternehmensziele",
+      "konzept": "Unternehmenskonzept & Evaluation"
+    },
+    "lernziele": [
+      "Ich kann den Prozess der strategischen Planung erklären und die zentralen Instrumente anwenden. (K3)",
+      "Ich kann interne und externe Analysen (Fähigkeitsanalyse, 5-Kräfte-Modell, SWOT) durchführen. (K3)",
+      "Ich kann Unternehmensstrategien formulieren und ein Unternehmenskonzept beurteilen. (K5)"
+    ]
+  },
+  "bwl_unternehmensmodell": {
+    "thema": "Unternehmensmodell",
+    "fach": "BWL",
+    "level": "SF GYM1",
+    "topicCount": 7,
+    "questionCount": 78,
+    "topics": {
+      "modelle": "Modelle in der BWL",
+      "anspruchsgruppen": "Anspruchsgruppen & ihre Ansprüche",
+      "zielbeziehungen": "Zielbeziehungen & Wertansätze",
+      "umweltsphaeren": "Die fünf Umweltsphären",
+      "wechselwirkungen": "Wechselwirkungen Unternehmen & Umwelt",
+      "verhaltensweisen": "Verhaltensweisen von Unternehmen",
+      "anwendung": "Anwendung & Fallbeispiele"
+    },
+    "lernziele": [
+      "Ich kann die Elemente des Unternehmensmodells (Umweltsphären und Anspruchsgruppen) erklären. (K2)",
+      "Ich kann Wechselwirkungen zwischen Unternehmen und Umwelt analysieren. (K4)",
+      "Ich kann das Unternehmensmodell auf konkrete Fallbeispiele anwenden. (K3)"
+    ]
+  },
+  "recht_arbeitsrecht": {
+    "thema": "Arbeitsrecht",
+    "fach": "Recht",
+    "level": "SF GYM3–GYM4",
+    "topicCount": 8,
+    "questionCount": 110,
+    "topics": {
+      "grundlagen": "Grundlagen & 3 Bereiche des Arbeitsrechts",
+      "vertragsarten": "Verträge auf Arbeitsleistung & Arbeitsvertragsarten",
+      "pflichten_an": "Pflichten des Arbeitnehmers",
+      "pflichten_ag": "Pflichten des Arbeitgebers",
+      "beendigung": "Beendigung des Arbeitsverhältnisses & Kündigung",
+      "kuendigungsschutz": "Kündigungsschutz & Sperrfristen",
+      "oeffentliches_ar": "Öffentlich-rechtliches Arbeitsrecht (ArG)",
+      "kollektives_ar": "Kollektives Arbeitsrecht (GAV, NAV, GlG)"
+    },
+    "lernziele": [
+      "Ich kann die drei Bereiche des Arbeitsrechts (öffentliches, kollektives, individuelles) unterscheiden. (K2)",
+      "Ich kann die wichtigsten Rechte und Pflichten von Arbeitgeber und Arbeitnehmer erklären. (K2)",
+      "Ich kann die Regeln zur Beendigung des Arbeitsverhältnisses und den Kündigungsschutz anwenden. (K3)",
+      "Ich kann die Bedeutung des GAV und des öffentlichen Arbeitsrechts für den Arbeitnehmerschutz erklären. (K2)"
+    ]
+  },
+  "recht_einfuehrung": {
+    "thema": "Einführung Recht",
+    "fach": "Recht",
+    "level": "SF GYM1 / EWR GYM2",
+    "topicCount": 5,
+    "questionCount": 76,
+    "topics": {
+      "moral_sitte_recht": "Moral, Sitte und Recht",
+      "rechtsordnung": "Rechtsordnung, Gewaltmonopol & Rechtskraft",
+      "rechtsstaat": "Rechtsstaat – Legalität, Gewaltenteilung, Grundrechte",
+      "oeffentlich_privat": "Öffentliches Recht vs. Privatrecht",
+      "rechtsanwendung": "Rechtsanwendung – Tatbestand, Subsumtion, Rechtsfolge"
+    },
+    "lernziele": [
+      "Ich kann die Grundsätze der schweizerischen Rechtsordnung (Rechtsstaatlichkeit, Gewaltenteilung, Grundrechte) erklären. (K2)",
+      "Ich kann zwischen öffentlichem Recht und Privatrecht unterscheiden und Beispiele zuordnen. (K2)",
+      "Ich kann die Technik der Rechtsanwendung (Tatbestand, Subsumtion, Rechtsfolge) auf einfache Fälle anwenden. (K3)"
+    ]
+  },
+  "recht_einleitungsartikel": {
+    "thema": "Rechtsquellen und Rechtsgrundsätze",
+    "fach": "Recht",
+    "level": "SF GYM1–GYM2",
+    "topicCount": 6,
+    "questionCount": 76,
+    "topics": {
+      "rechtsquellen": "Rechtsquellen (Art. 1 ZGB)",
+      "treu_glauben": "Handeln nach Treu und Glauben (Art. 2 Abs. 1 ZGB)",
+      "rechtsmissbrauch": "Rechtsmissbrauchsverbot (Art. 2 Abs. 2 ZGB)",
+      "guter_glaube": "Der gute Glaube (Art. 3 ZGB)",
+      "beweislast": "Die Beweislast (Art. 8 ZGB)",
+      "weitere": "Weitere Rechtsgrundsätze"
+    },
+    "lernziele": [
+      "Ich kann die Rechtsquellen des schweizerischen Rechts gemäss Art. 1 ZGB nennen und erklären. (K2)",
+      "Ich kann die Grundsätze Treu und Glauben, Rechtsmissbrauchsverbot und guter Glaube unterscheiden und anwenden. (K3)",
+      "Ich kann Beweislastregeln (Art. 8 ZGB) auf konkrete Fälle anwenden. (K3)"
+    ]
+  },
+  "recht_grundrechte": {
+    "thema": "Menschenrechte und Grundrechte",
+    "fach": "Recht",
+    "level": "SF GYM2 / EWR GYM2",
+    "topicCount": 4,
+    "questionCount": 76,
+    "topics": {
+      "menschenrechte": "Allgemeine Menschenrechte & AEMR",
+      "grundrechte_bv": "Grundrechte in der Bundesverfassung",
+      "einschraenkung": "Einschränkung von Grundrechten (Art. 36 BV)",
+      "faelle": "Fallanwendungen – Grundrechte im Alltag"
+    },
+    "lernziele": [
+      "Ich kann die Allgemeine Erklärung der Menschenrechte (AEMR) und ihre Bedeutung erklären. (K2)",
+      "Ich kann die Grundrechte der schweizerischen Bundesverfassung nennen und einordnen. (K2)",
+      "Ich kann die Voraussetzungen für die Einschränkung von Grundrechten (Art. 36 BV) erklären und anwenden. (K3)",
+      "Ich kann Grundrechtsfragen auf konkrete Alltagssituationen anwenden. (K3)"
+    ]
+  },
+  "recht_mietrecht": {
+    "thema": "Mietrecht",
+    "fach": "Recht",
+    "level": "SF GYM3",
+    "topicCount": 7,
+    "questionCount": 99,
+    "topics": {
+      "grundlagen": "Grundlagen des Mietvertrags",
+      "mietzins": "Mietzins, Nebenkosten & Depot",
+      "kuendigung": "Kündigung & Kündigungsfristen",
+      "maengel": "Mängel & Reparaturen",
+      "untermiete": "Untermiete & Erstreckung",
+      "uebergabe": "Wohnungsübergabe & -abgabe",
+      "zusammenleben": "Zusammenleben, Haustiere & Datenschutz"
+    },
+    "lernziele": [
+      "Ich kann die Grundlagen des Mietvertrags (OR 253–274) erklären und den Mietvertrag von verwandten Vertragstypen abgrenzen. (K2)",
+      "Ich kann die Rechte und Pflichten von Mieter und Vermieter beschreiben. (K2)",
+      "Ich kann die Regeln zu Kündigung, Mängeln und Mietzins auf konkrete Fälle anwenden. (K3)",
+      "Ich kann den Mieterschutz im schweizerischen Recht beurteilen. (K5)"
+    ]
+  },
+  "recht_or_at": {
+    "thema": "OR AT",
+    "fach": "Recht",
+    "level": "SF GYM3–GYM4",
+    "topicCount": 9,
+    "questionCount": 146,
+    "topics": {
+      "entstehung": "Entstehungsgründe der Obligationen",
+      "unerlaubte_handlung": "Obligationen aus unerlaubter Handlung",
+      "bereicherung": "Ungerechtfertigte Bereicherung",
+      "vertragsvoraussetzungen": "Voraussetzungen gültiger Verträge",
+      "willensmaengel": "Anfechtungsgründe und Willensmängel",
+      "erfuellung": "Vertragserfüllung",
+      "sicherung": "Sicherung von Forderungen",
+      "erloeschen": "Erlöschen der Obligation",
+      "stoerung": "Störung der Vertragserfüllung"
+    },
+    "lernziele": [
+      "Ich kann die drei Entstehungsgründe von Obligationen (Vertrag, unerlaubte Handlung, ungerechtfertigte Bereicherung) erklären. (K2)",
+      "Ich kann die Voraussetzungen eines gültigen Vertrags prüfen und Willensmängel erkennen. (K3)",
+      "Ich kann die Regeln zur Vertragserfüllung, Sicherung und zum Erlöschen von Obligationen anwenden. (K3)",
+      "Ich kann Vertragsstörungen (Verzug, Schlechterfüllung, Nichterfüllung) rechtlich einordnen und die Rechtsfolgen bestimmen. (K4)"
+    ]
+  },
+  "recht_personenrecht": {
+    "thema": "Personenrecht",
+    "fach": "Recht",
+    "level": "SF GYM2",
+    "topicCount": 5,
+    "questionCount": 73,
+    "topics": {
+      "rechtssubjekte": "Rechtssubjekte und Rechtsobjekte",
+      "rechtsfaehigkeit": "Rechtsfähigkeit (ZGB 11, 31, 53, 54)",
+      "handlungsfaehigkeit": "Handlungsfähigkeit (ZGB 12–18)",
+      "beschraenkte_hu": "Beschränkte Handlungsunfähigkeit (ZGB 19 ff.)",
+      "persoenlichkeit": "Persönlichkeitsverletzungen (ZGB 28)"
+    },
+    "lernziele": [
+      "Ich kann die Begriffe Rechtsfähigkeit, Urteilsfähigkeit und Handlungsfähigkeit unterscheiden und erklären. (K2)",
+      "Ich kann prüfen, ob eine Person handlungsfähig ist und welche Rechtsgeschäfte sie abschliessen kann. (K3)",
+      "Ich kann den Persönlichkeitsschutz (Art. 28 ZGB) erklären und auf Fälle anwenden. (K3)"
+    ]
+  },
+  "recht_prozessrecht": {
+    "thema": "Prozessrecht",
+    "fach": "Recht",
+    "level": "EWR GYM2",
+    "topicCount": 6,
+    "questionCount": 65,
+    "topics": {
+      "grundlagen": "Zivilprozess und Strafverfahren im Vergleich",
+      "zustaendigkeit": "Sachliche und örtliche Zuständigkeit",
+      "instanzenzug": "Instanzenzug und Gerichtsorganisation",
+      "beweis": "Beweislast und Beweismittel",
+      "streitbeilegung": "Alternative Streitbeilegung",
+      "strafverfahren": "Ablauf des Strafverfahrens"
+    },
+    "lernziele": [
+      "Ich kann die Unterschiede zwischen Zivilprozess und Strafverfahren erklären. (K2)",
+      "Ich kann die sachliche und örtliche Zuständigkeit im Zivilprozess bestimmen. (K3)",
+      "Ich kann die Beweislast zuordnen und die Beweismittel im Zivilprozess nennen. (K2)",
+      "Ich kann die Formen der alternativen Streitbeilegung (Schlichtung, Mediation, Schiedsgericht) unterscheiden. (K2)"
+    ]
+  },
+  "recht_sachenrecht": {
+    "thema": "Sachenrecht",
+    "fach": "Recht",
+    "level": "SF GYM2",
+    "topicCount": 7,
+    "questionCount": 88,
+    "topics": {
+      "einfuehrung": "Einführung Sachenrecht",
+      "eigentum_besitz": "Eigentum und Besitz",
+      "formen": "Formen des Eigentums",
+      "erwerb_verlust": "Erwerb und Verlust des Eigentums",
+      "gutglaeubig": "Schutz des gutgläubigen Besitzers",
+      "dienstbarkeiten": "Dienstbarkeiten",
+      "pfandrechte": "Pfandrechte, Grundlasten und Grundbuch"
+    },
+    "lernziele": [
+      "Ich kann die Grundbegriffe des Sachenrechts (Eigentum, Besitz, dingliche Rechte) erklären und unterscheiden. (K2)",
+      "Ich kann die verschiedenen Formen des Eigentumserwerbs und -verlusts beschreiben. (K2)",
+      "Ich kann sachenrechtliche Probleme (z.B. gutgläubiger Erwerb, Dienstbarkeiten) auf einfache Fälle anwenden. (K3)"
+    ]
+  },
+  "recht_strafrecht": {
+    "thema": "Strafrecht",
+    "fach": "Recht",
+    "level": "SF GYM3–GYM4",
+    "topicCount": 10,
+    "questionCount": 117,
+    "topics": {
+      "zweck": "Zweck & Grundsätze des Strafrechts",
+      "strafarten": "Strafarten & Deliktsarten",
+      "vollzug": "Strafvollzug & bedingter Vollzug",
+      "massnahmen": "Massnahmen & Verwahrung",
+      "tatbestand": "Tatbestandsmässigkeit",
+      "verfahren": "Strafantrag, Offizialdelikt & Verjährung",
+      "rechtfertigung": "Rechtfertigungs- & Schuldausschliessungsgründe",
+      "taeter": "Mehrere Täter*innen",
+      "strafzumessung": "Strafzumessung & Strafregister",
+      "jugend": "Jugendstrafrecht & SVG"
+    },
+    "lernziele": [
+      "Ich kann die Grundsätze und Zwecke des Strafrechts (Vergeltung, Spezial- und Generalprävention) erklären. (K2)",
+      "Ich kann die Strafbarkeitsvoraussetzungen (Tatbestandsmässigkeit, Rechtswidrigkeit, Schuld) prüfen. (K3)",
+      "Ich kann die verschiedenen Strafarten und Massnahmen des schweizerischen Strafrechts beschreiben. (K2)",
+      "Ich kann bei der Strafzumessung relevante Faktoren nennen und ihre Anwendung beurteilen. (K4)"
+    ]
+  },
+  "vwl_arbeitslosigkeit": {
+    "thema": "Arbeitslosigkeit & Armut",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 80,
+    "topics": {
+      "arbeitsmarkt": "Der Arbeitsmarkt",
+      "loehne": "Löhne & Lohnrigiditäten",
+      "typen": "Typen von Arbeitslosigkeit",
+      "beveridge": "Beveridge-Kurve & Sockelarbeitslosigkeit",
+      "bekaempfung": "Bekämpfung der Arbeitslosigkeit",
+      "statistik": "Messung & Statistik",
+      "armut": "Armut & Armutsbekämpfung"
+    },
+    "lernziele": [
+      "Ich kann die Funktionsweise des Arbeitsmarktes und die Rolle der Löhne erklären. (K2)",
+      "Ich kann die verschiedenen Typen von Arbeitslosigkeit unterscheiden und deren Ursachen nennen. (K2)",
+      "Ich kann Massnahmen zur Bekämpfung der Arbeitslosigkeit beurteilen. (K5)",
+      "Ich kann die Arbeitslosenquote berechnen und Statistiken kritisch interpretieren. (K3)"
+    ]
+  },
+  "vwl_beduerfnisse": {
+    "thema": "Bedürfnisse, Knappheit & Produktionsfaktoren",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 77,
+    "topics": {
+      "knappheit": "Knappheit & Grundfragen der VWL",
+      "beduerfnisse": "Bedürfnisse & Bedürfnispyramide",
+      "gueter": "Güterarten",
+      "produktionsfaktoren": "Produktionsfaktoren",
+      "oekprinzip": "Ökonomisches Prinzip",
+      "arbeitsteilung": "Arbeitsteilung, Tausch & Geld",
+      "sektoren": "Wirtschaftssektoren & Strukturwandel"
+    },
+    "lernziele": [
+      "Ich kann die Grundfragen der Volkswirtschaftslehre (Was? Wie? Für wen?) erklären. (K2)",
+      "Ich kann den Zusammenhang zwischen Bedürfnissen, Gütern und Knappheit erläutern. (K2)",
+      "Ich kann die volkswirtschaftlichen Produktionsfaktoren nennen und mit Beispielen veranschaulichen. (K2)",
+      "Ich kann das ökonomische Prinzip (Minimal- und Maximalprinzip) auf Alltagssituationen anwenden. (K3)"
+    ]
+  },
+  "vwl_bip": {
+    "thema": "Bruttoinlandprodukt (BIP)",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 84,
+    "topics": {
+      "definition": "Definition & Grundbegriffe",
+      "messprobleme": "Was das BIP (nicht) misst",
+      "dreiseiten": "Drei Seiten des BIP",
+      "nomreal": "Nominales & Reales BIP",
+      "kreislauf": "Wirtschaftskreislauf",
+      "verteilung": "Verteilung & Ungleichheit",
+      "wachstum": "Wachstum & Nachhaltigkeit"
+    },
+    "lernziele": [
+      "Ich kann das BIP definieren und von verwandten Grössen (BNE, Volkseinkommen) abgrenzen. (K2)",
+      "Ich kann den Wirtschaftskreislauf erklären und die drei Berechnungsansätze des BIP unterscheiden. (K2)",
+      "Ich kann nominales und reales BIP unterscheiden und den BIP-Deflator erklären. (K2)",
+      "Ich kann die Aussagekraft des BIP als Wohlstandsindikator kritisch beurteilen und alternative Indikatoren nennen. (K5)"
+    ]
+  },
+  "vwl_geld": {
+    "thema": "Geld, Geldpolitik und Finanzmärkte",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 13,
+    "questionCount": 107,
+    "topics": {
+      "tauschwirtschaft": "Tauschwirtschaft vs. Geldwirtschaft",
+      "geldfunktionen": "Geldfunktionen",
+      "eigenschaften": "Eigenschaften von Geld",
+      "geldarten": "Warengeld, Papiergeld & Buchgeld",
+      "vertrauen": "Vertrauen & Rolle der Nationalbank",
+      "preise": "Absolute & relative Preise",
+      "grundlagen": "Grundlagen: Geld und Geldfunktionen",
+      "kaufkraft": "Geldmenge, Kaufkraft und Preisniveau",
+      "geldnachfrage": "Geldnachfrage",
+      "geldangebot": "Geldangebot und Geldschöpfung",
+      "geldmengen": "Geldmengen und Geldaggregate (M0–M3)",
+      "zinssteuerung": "Konventionelle Geldpolitik und Transmissionskanäle",
+      "unkonventionell": "Unkonventionelle Geldpolitik seit der Finanzkrise"
+    },
+    "lernziele": [
+      "Ich kann die Funktionen und Eigenschaften von Geld erklären und verschiedene Geldarten unterscheiden. (K2)",
+      "Ich kann die Geldmengenaggregate (M0–M3) und den Prozess der Geldschöpfung beschreiben. (K2)",
+      "Ich kann die geldpolitischen Instrumente der Schweizerischen Nationalbank erklären und ihre Wirkung analysieren. (K4)",
+      "Ich kann den Zusammenhang zwischen Geldmenge, Preisniveau und Kaufkraft erklären. (K2)"
+    ]
+  },
+  "vwl_konjunktur": {
+    "thema": "Konjunktur und Konjunkturpolitik",
+    "fach": "VWL",
+    "level": "SF GYM3–GYM4",
+    "topicCount": 7,
+    "questionCount": 83,
+    "topics": {
+      "zyklus": "Konjunkturzyklus & Phasen",
+      "indikatoren": "Konjunkturindikatoren",
+      "ursachen": "Ursachen für Konjunkturschwankungen",
+      "klassiker": "Klassische Konzeption",
+      "keynes": "Keynesianische Konzeption",
+      "monetaristen": "Monetaristische Konzeption",
+      "angebot": "Angebotsorientierte Konzeption & Synthese"
+    },
+    "lernziele": [
+      "Ich kann den Konjunkturzyklus beschreiben und Konjunkturindikatoren interpretieren. (K2)",
+      "Ich kann die Ursachen von Konjunkturschwankungen erklären. (K2)",
+      "Ich kann die vier wirtschaftspolitischen Konzeptionen (Klassik, Keynesianismus, Monetarismus, Angebotsorientierung) vergleichen und beurteilen. (K5)"
+    ]
+  },
+  "vwl_markteffizienz": {
+    "thema": "Markteffizienz",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 13,
+    "questionCount": 169,
+    "topics": {
+      "angebot_nachfrage": "Angebot & Nachfrage",
+      "gleichgewicht": "Marktgleichgewicht & Preisbildung",
+      "verschiebungen": "Kurvenverschiebungen & Elastizität",
+      "wohlfahrt": "Wohlfahrt & Effizienz",
+      "gueterarten": "Güterarten & Klassifikation",
+      "wettbewerb": "Wettbewerbsbeschränkungen",
+      "oeffentlich": "Öffentliche Güter & Trittbrettfahrer",
+      "allmende": "Allmendegüter & Tragödie der Allmende",
+      "externeffekte": "Externe Effekte & Internalisierung",
+      "asyminfo": "Asymmetrische Information",
+      "steuern": "Steuern & Wohlfahrtsverlust",
+      "staatsversagen": "Staatsversagen & Politikversagen",
+      "nachhaltigkeit": "Wachstum & Nachhaltigkeit"
+    },
+    "lernziele": [
+      "Ich kann das Zusammenspiel von Angebot und Nachfrage erklären und das Marktgleichgewicht bestimmen. (K3)",
+      "Ich kann verschiedene Formen von Marktversagen (öffentliche Güter, Externalitäten, Informationsasymmetrien) erkennen und erklären. (K2)",
+      "Ich kann staatliche Eingriffe zur Korrektur von Marktversagen beurteilen und deren Wirkung analysieren. (K5)",
+      "Ich kann Wohlfahrtseffekte von Marktgleichgewicht, Steuern und Regulierung grafisch und verbal analysieren. (K4)"
+    ]
+  },
+  "vwl_menschenbild": {
+    "thema": "Ökonomisches Menschenbild",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 71,
+    "topics": {
+      "homo": "Homo Oeconomicus",
+      "kritik": "Kritik & Verhaltensökonomie",
+      "opportunitaet": "Opportunitätskosten & Trade-offs",
+      "anreize": "Anreize und ihre Wirkung",
+      "spieltheorie": "Gefangenendilemma & Spieltheorie",
+      "aufgaben": "Aufgaben der VWL",
+      "ziele": "Ziele der Wirtschaftspolitik"
+    },
+    "lernziele": [
+      "Ich kann das Modell des Homo Oeconomicus erklären und kritisch hinterfragen. (K5)",
+      "Ich kann Opportunitätskosten berechnen und bei Entscheidungssituationen anwenden. (K3)",
+      "Ich kann grundlegende Konzepte der Spieltheorie (z.B. Gefangenendilemma) auf ökonomische Situationen anwenden. (K3)",
+      "Ich kann die Ziele der schweizerischen Wirtschaftspolitik (magisches Sechseck) nennen und Zielkonflikte erkennen. (K4)"
+    ]
+  },
+  "vwl_sozialpolitik": {
+    "thema": "Sozialpolitik und Sozialversicherungen",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 110,
+    "topics": {
+      "verteilung": "Einkommensverteilung & Umverteilung",
+      "gerechtigkeit": "Gerechtigkeitstheorien",
+      "sozialversicherungen": "Sozialversicherungssystem Schweiz",
+      "finanzierung": "Finanzierung der Sozialversicherungen",
+      "versicherung": "Versicherungsprinzipien & -theorie",
+      "staatseingriffe": "Staatseingriffe & Staatsversagen",
+      "herausforderungen": "Herausforderungen & Reformen"
+    },
+    "lernziele": [
+      "Ich kann die Einkommensverteilung in der Schweiz beschreiben und verschiedene Gerechtigkeitsbegriffe unterscheiden. (K2)",
+      "Ich kann das schweizerische Sozialversicherungssystem (Drei-Säulen-System) im Überblick erklären. (K2)",
+      "Ich kann die Finanzierungsprobleme und Herausforderungen der Sozialversicherungen analysieren. (K4)",
+      "Ich kann Staatseingriffe zur Umverteilung beurteilen und deren Nebenwirkungen einschätzen. (K5)"
+    ]
+  },
+  "vwl_staatsverschuldung": {
+    "thema": "Staatsverschuldung",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 7,
+    "questionCount": 92,
+    "topics": {
+      "staatsanteil": "Staatsanteil, Staatsquote & Fiskalquote",
+      "ausgaben": "Ausgaben des Bundes",
+      "einnahmen": "Einnahmen des Bundes",
+      "defizite": "Konjunkturelle & strukturelle Defizite",
+      "international": "Internationale Staatsverschuldung",
+      "gefahren": "Gefahren & Risiken der Verschuldung",
+      "richtlinien": "Richtlinien & Schuldenbremse"
+    },
+    "lernziele": [
+      "Ich kann die Struktur des schweizerischen Staatshaushalts (Einnahmen und Ausgaben) beschreiben. (K2)",
+      "Ich kann die Verschuldungssituation der Schweiz im internationalen Vergleich einordnen. (K3)",
+      "Ich kann Gefahren einer hohen Staatsverschuldung erklären und die Schuldenbremse beurteilen. (K5)"
+    ]
+  },
+  "vwl_steuern": {
+    "thema": "Steuern und Staatseinnahmen",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 6,
+    "questionCount": 104,
+    "topics": {
+      "zweck": "Steuerzweck",
+      "formen": "Formen von Staatseinnahmen",
+      "steuerarten": "Steuerarten in der Schweiz",
+      "quoten": "Fiskal-/Staatsquote & Laffer-Kurve",
+      "wettbewerb": "Steuerwettbewerb, Finanzausgleich & Steuerparadiese",
+      "elastizitaeten": "Steuern und Elastizitäten"
+    },
+    "lernziele": [
+      "Ich kann den Zweck von Steuern und die wichtigsten Steuerarten in der Schweiz erklären. (K2)",
+      "Ich kann die Steuerbelastung mit verschiedenen Kennzahlen (Steuer-, Fiskal-, Staatsquote) messen und international vergleichen. (K3)",
+      "Ich kann die Wirkung von Steuern auf das Verhalten der Wirtschaftssubjekte und die Effizienz analysieren. (K4)",
+      "Ich kann die Problematik von Steuerparadiesen und internationale Gegenmassnahmen beurteilen. (K5)"
+    ]
+  },
+  "vwl_wachstum": {
+    "thema": "Wirtschaftswachstum",
+    "fach": "VWL",
+    "level": "",
+    "topicCount": 6,
+    "questionCount": 81,
+    "topics": {
+      "definition": "Definition & Grundbegriffe",
+      "ebene1": "Unmittelbare Ebene: Einkommen & Produktion",
+      "ebene2": "Zwischenebene: Investitionen & Innovation",
+      "ebene3": "Tief liegende Ebene: Institutionen & Rahmenbedingungen",
+      "verteilung": "Wachstum & Verteilung",
+      "nachhaltigkeit": "Wachstum & Nachhaltigkeit"
+    },
+    "lernziele": [
+      "Ich kann Wirtschaftswachstum definieren und seine Messung erklären. (K1)",
+      "Ich kann die Bestimmungsfaktoren des Wachstums auf drei Ebenen unterscheiden und erklären. (K2)",
+      "Ich kann Chancen und Gefahren von Wirtschaftswachstum gegeneinander abwägen. (K5)",
+      "Ich kann den Zusammenhang zwischen Wachstum, Verteilung und Nachhaltigkeit analysieren. (K4)"
+    ]
+  }
+}

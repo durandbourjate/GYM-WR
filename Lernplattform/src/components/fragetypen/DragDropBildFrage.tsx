@@ -67,7 +67,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
                     key={zone.id}
                     onClick={() => handleZoneKlick(zone.id)}
                     className={`absolute border-2 rounded transition-colors
-                      ${ausgewaehlt ? 'border-blue-400 bg-blue-100/30 cursor-pointer hover:bg-blue-200/40' : 'border-gray-400/50 bg-gray-100/20'}
+                      ${ausgewaehlt ? 'border-slate-400 bg-slate-100/30 cursor-pointer hover:bg-slate-200/40' : 'border-gray-400/50 bg-gray-100/20'}
                       ${disabled || feedbackSichtbar ? 'cursor-default' : ''}
                     `}
                     style={{
@@ -86,7 +86,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
                             className={`text-xs px-1 py-0.5 rounded whitespace-nowrap
                               ${feedbackSichtbar
                                 ? (istKorrekt ? 'bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200' : 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200')
-                                : 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'}
+                                : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}
                             `}
                           >
                             {label}
@@ -117,9 +117,9 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
               onClick={() => istZugeordnet && !feedbackSichtbar ? entferneZuordnung(label) : handleLabelKlick(label)}
               disabled={disabled && !feedbackSichtbar}
               className={`px-3 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors border-2
-                ${istAusgewaehlt ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 ring-2 ring-blue-300' : ''}
+                ${istAusgewaehlt ? 'border-slate-500 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 ring-2 ring-slate-300' : ''}
                 ${istZugeordnet && !istAusgewaehlt && !feedbackSichtbar ? 'border-gray-300 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 line-through' : ''}
-                ${!istZugeordnet && !istAusgewaehlt ? 'border-gray-300 dark:border-gray-600 hover:border-blue-400' : ''}
+                ${!istZugeordnet && !istAusgewaehlt ? 'border-gray-300 dark:border-gray-600 hover:border-slate-400' : ''}
                 ${feedbackSichtbar && istKorrekt ? 'border-green-400 bg-green-50 dark:bg-green-900/30' : ''}
                 ${feedbackSichtbar && !istKorrekt && istZugeordnet ? 'border-red-400 bg-red-50 dark:bg-red-900/30' : ''}
               `}
@@ -134,7 +134,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
       </div>
 
       {!disabled && istVollstaendig && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

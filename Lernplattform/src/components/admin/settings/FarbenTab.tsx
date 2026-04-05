@@ -129,7 +129,7 @@ export default function FarbenTab() {
       <button
         onClick={handleSpeichern}
         disabled={speichern === 'laden'}
-        className="w-full bg-blue-500 text-white rounded-lg py-3 font-medium disabled:opacity-50 min-h-[44px] hover:bg-blue-600 transition-colors mt-4"
+        className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-3 font-medium disabled:opacity-50 min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors mt-4"
       >
         {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? 'Gespeichert ✓' : 'Speichern'}
       </button>

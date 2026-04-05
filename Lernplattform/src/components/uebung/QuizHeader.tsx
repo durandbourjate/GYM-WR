@@ -34,7 +34,7 @@ export default function QuizHeader({ fach, thema, fortschritt, gesamt, score, sc
       </div>
       <div className="h-1 bg-gray-200 dark:bg-gray-700">
         <div
-          className="h-1 bg-blue-500 transition-all duration-300"
+          className="h-1 bg-slate-600 dark:bg-slate-400 transition-all duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>

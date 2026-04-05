@@ -23,7 +23,7 @@ export default function AdminAuftraege() {
         <h3 className="text-lg font-semibold dark:text-white">Aufträge</h3>
         <button
           onClick={() => setFormOffen(!formOffen)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium min-h-[44px]"
+          className="bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 px-4 py-2 rounded-lg text-sm font-medium min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100"
         >
           {formOffen ? 'Abbrechen' : 'Neuer Auftrag'}
         </button>
@@ -50,7 +50,7 @@ export default function AdminAuftraege() {
           <div key={auftrag.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium dark:text-white">{auftrag.titel}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">aktiv</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-300">aktiv</span>
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
               {auftrag.filter.fach && `${auftrag.filter.fach}`}
@@ -146,7 +146,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
           value={titel}
           onChange={(e) => setTitel(e.target.value)}
           placeholder="z.B. Mathe Addition üben"
-          className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-blue-500"
+          className="w-full p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500"
         />
       </div>
 
@@ -211,7 +211,7 @@ function AuftragForm({ faecher, mitglieder, onErstellen }: AuftragFormProps) {
       <button
         type="submit"
         disabled={!titel.trim() || zielEmails.length === 0}
-        className="w-full bg-blue-500 text-white rounded-lg py-2 font-medium disabled:opacity-50 min-h-[44px]"
+        className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-2 font-medium disabled:opacity-50 min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100"
       >
         Auftrag erstellen
       </button>

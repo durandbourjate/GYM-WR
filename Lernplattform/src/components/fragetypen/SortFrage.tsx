@@ -45,7 +45,7 @@ export default function SortFrage({ frage, onAntwort, disabled, feedbackSichtbar
               onClick={() => handleElementKlick(el.text)}
               disabled={disabled}
               className={`px-4 py-2 rounded-lg min-h-[44px] font-medium transition-colors border-2
-                ${istAktiv ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50' : ''}
+                ${istAktiv ? 'border-slate-500 bg-slate-100 dark:bg-slate-900/50' : ''}
                 ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
                 ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
                 ${!istAktiv && !istKorrekt && !istFalsch ? 'border-gray-200 dark:border-gray-600' : ''}
@@ -74,7 +74,7 @@ export default function SortFrage({ frage, onAntwort, disabled, feedbackSichtbar
       )}
 
       {!disabled && alleZugeordnet && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

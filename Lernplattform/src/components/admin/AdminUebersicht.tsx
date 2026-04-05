@@ -79,7 +79,7 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
                 <button
                   key={stat.fach}
                   onClick={() => onFachKlick?.(stat.fach)}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors text-left cursor-pointer"
+                  className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700 hover:border-slate-400 dark:hover:border-slate-500 transition-colors text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span

@@ -99,7 +99,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
         <div className="space-y-2">
           <audio src={audioUrl} controls className="w-full" />
           {!disabled && !feedbackSichtbar && (
-            <button onClick={() => { setAudioUrl(null); chunks.current = [] }} className="text-sm text-blue-500 hover:underline">
+            <button onClick={() => { setAudioUrl(null); chunks.current = [] }} className="text-sm text-slate-600 dark:text-slate-400 hover:underline">
               Neu aufnehmen
             </button>
           )}
@@ -109,7 +109,7 @@ export default function AudioFrage({ frage, onAntwort, disabled, feedbackSichtba
       {feedbackSichtbar && (
         <div className="space-y-3">
           {frage.musterlosung && (
-            <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/20 text-slate-800 dark:text-slate-200">
               <p className="font-medium text-sm mb-1">Musterantwort:</p>
               <p className="text-sm">{frage.musterlosung}</p>
             </div>

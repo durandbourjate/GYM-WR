@@ -47,12 +47,12 @@ export default function LoginScreen() {
         {/* Hilfe/Info */}
         <button
           onClick={() => setHilfeOffen(!hilfeOffen)}
-          className="text-xs text-blue-500 hover:text-blue-600 mb-4 inline-flex items-center gap-1"
+          className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 mb-4 inline-flex items-center gap-1"
         >
           {hilfeOffen ? '▾' : '▸'} Was ist das Übungstool?
         </button>
         {hilfeOffen && (
-          <div className="mb-6 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-left text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          <div className="mb-6 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/20 text-left text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
             <p className="mb-2">Das Übungstool ermöglicht dir, Übungsfragen zu deinen Fächern zu bearbeiten — mit sofortigem Feedback und Fortschrittsverfolgung.</p>
             <p>Melde dich mit deinem Schulkonto (Google) oder einem Code an, den du von deiner Lehrperson erhalten hast.</p>
           </div>
@@ -75,14 +75,14 @@ export default function LoginScreen() {
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
-              className="w-full text-center text-2xl tracking-widest border-2 border-gray-200 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:outline-none"
+              className="w-full text-center text-2xl tracking-widest border-2 border-gray-200 dark:border-gray-600 rounded-xl p-3 bg-white dark:bg-gray-700 dark:text-white focus:border-slate-500 focus:outline-none"
               maxLength={6}
               autoFocus
             />
             <button
               type="submit"
               disabled={code.length < 6 || ladeStatus === 'laden'}
-              className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium disabled:opacity-50"
+              className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium disabled:opacity-50 hover:bg-slate-900 dark:hover:bg-slate-100"
             >
               {ladeStatus === 'laden' ? 'Wird geprüft...' : 'Anmelden'}
             </button>

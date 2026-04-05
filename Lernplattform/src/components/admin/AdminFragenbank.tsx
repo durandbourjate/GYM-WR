@@ -147,7 +147,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
         </div>
         <button
           onClick={neueFrageErstellen}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium min-h-[44px]"
+          className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800 dark:hover:bg-slate-100 text-sm font-medium min-h-[44px]"
         >
           + Neue Frage
         </button>
@@ -161,7 +161,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
           value={suchtext}
           onChange={(e) => setSuchtext(e.target.value)}
           placeholder="Fragen durchsuchen..."
-          className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-blue-500"
+          className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500"
         />
 
         {/* Fach-Filter */}
@@ -257,7 +257,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
         <div className="text-center py-12 text-gray-400 dark:text-gray-500">
           <p className="text-4xl mb-3">📝</p>
           <p>Noch keine Fragen vorhanden.</p>
-          <button onClick={neueFrageErstellen} className="text-blue-600 underline text-sm mt-2">
+          <button onClick={neueFrageErstellen} className="text-slate-600 dark:text-slate-400 underline text-sm mt-2">
             Erste Frage erstellen
           </button>
         </div>
@@ -269,7 +269,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             <button
               key={frage.id}
               onClick={() => frageBearbeiten(frage)}
-              className="w-full text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
+              className="w-full text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">

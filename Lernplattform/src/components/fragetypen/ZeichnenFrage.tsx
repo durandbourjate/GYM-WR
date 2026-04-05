@@ -130,7 +130,7 @@ export default function ZeichnenFrage({ frage, onAntwort, disabled, feedbackSich
       />
 
       {!disabled && hatGezeichnet && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

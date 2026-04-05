@@ -95,7 +95,7 @@ export default function MitgliederTab() {
                   <button
                     onClick={() => handleKodeGenerieren(m.email)}
                     disabled={kodeStatus[m.email] === 'laden'}
-                    className="text-xs text-blue-500 hover:text-blue-700 min-h-[44px] px-2 disabled:opacity-50"
+                    className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 min-h-[44px] px-2 disabled:opacity-50"
                     title="Login-Code generieren"
                   >
                     {kodeStatus[m.email] === 'laden' ? '…' : kodeStatus[m.email] === 'fehler' ? 'Fehler' : 'Code'}
@@ -128,12 +128,12 @@ export default function MitgliederTab() {
             onChange={(e) => setEinladenEmail(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleEinladen() }}
             placeholder="E-Mail-Adresse"
-            className="flex-1 p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-blue-500 text-sm"
+            className="flex-1 p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
           />
           <button
             onClick={handleEinladen}
             disabled={!einladenEmail.trim() || einladenStatus === 'laden'}
-            className="bg-blue-500 text-white px-4 rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 hover:bg-blue-600 transition-colors"
+            className="bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 px-4 rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
           >
             {einladenStatus === 'laden' ? '…' : 'Einladen'}
           </button>

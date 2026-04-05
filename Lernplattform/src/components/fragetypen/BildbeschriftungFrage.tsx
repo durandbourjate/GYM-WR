@@ -34,7 +34,7 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
               {beschriftungen.map((b, i) => (
                 <div
                   key={b.id}
-                  className="absolute flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                  className="absolute flex items-center justify-center w-6 h-6 rounded-full bg-slate-600 text-white text-xs font-bold -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                   style={{ left: `${b.position.x}%`, top: `${b.position.y}%` }}
                 >
                   {i + 1}
@@ -58,7 +58,7 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
 
           return (
             <div key={b.id} className="flex gap-2 items-center">
-              <span className="w-8 h-8 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-full bg-slate-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
                 {i + 1}
               </span>
               <input
@@ -84,7 +84,7 @@ export default function BildbeschriftungFrage({ frage, onAntwort, disabled, feed
       </div>
 
       {!disabled && istVollstaendig && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-600 text-white rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

@@ -17,6 +17,37 @@ const FRAGENBANK_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfigur
 // Fachbereich-Mapping: Unklare Tab-Namen auf saubere Bezeichnungen mappen
 const FACHBEREICH_MAPPING = { 'Allgemein': 'Andere', 'Wirtschaft & Recht': 'Andere' };
 
+// Themen-Mapping: poolId-Prefix → Thema-Titel (generiert aus Pool-Configs)
+// Damit: bisheriges thema → unterthema, Pool-Titel → thema
+var THEMEN_MAPPING = {
+  "bwl_einfuehrung": "Einführung BWL",
+  "bwl_fibu": "Finanzbuchhaltung (FIBU)",
+  "bwl_marketing": "Markt- und Leistungsanalyse",
+  "bwl_stratfuehrung": "Strategische Unternehmensführung",
+  "bwl_unternehmensmodell": "Unternehmensmodell",
+  "recht_arbeitsrecht": "Arbeitsrecht",
+  "recht_einfuehrung": "Einführung Recht",
+  "recht_einleitungsartikel": "Rechtsquellen und Rechtsgrundsätze",
+  "recht_grundrechte": "Menschenrechte und Grundrechte",
+  "recht_mietrecht": "Mietrecht",
+  "recht_or_at": "OR AT",
+  "recht_personenrecht": "Personenrecht",
+  "recht_prozessrecht": "Prozessrecht",
+  "recht_sachenrecht": "Sachenrecht",
+  "recht_strafrecht": "Strafrecht",
+  "vwl_arbeitslosigkeit": "Arbeitslosigkeit & Armut",
+  "vwl_beduerfnisse": "Bedürfnisse, Knappheit & Produktionsfaktoren",
+  "vwl_bip": "Bruttoinlandprodukt (BIP)",
+  "vwl_geld": "Geld, Geldpolitik und Finanzmärkte",
+  "vwl_konjunktur": "Konjunktur und Konjunkturpolitik",
+  "vwl_markteffizienz": "Markteffizienz",
+  "vwl_menschenbild": "Ökonomisches Menschenbild",
+  "vwl_sozialpolitik": "Sozialpolitik und Sozialversicherungen",
+  "vwl_staatsverschuldung": "Staatsverschuldung",
+  "vwl_steuern": "Steuern und Staatseinnahmen",
+  "vwl_wachstum": "Wirtschaftswachstum"
+};
+
 function getFragenbankTabs_() {
   var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
   var sheets = fragenbank.getSheets();
@@ -764,11 +795,24 @@ function parseFrageKanonisch_(row, fachbereich) {
     verwendungen: [],
     quelle: row.quelle || 'manuell',
     autor: row.autor || '',
-    schwierigkeit: Number(row.schwierigkeit) || undefined,
+    schwierigkeit: Number(row.schwierigkeit) || 2, // Default: Mittel
     poolId: row.poolId || '',
     pruefungstauglich: row.pruefungstauglich === 'true',
     lernzielIds: (row.lernzielIds || '').split(',').filter(Boolean),
   };
+
+  // Themen-Hierarchie aus poolId ableiten (Pool-Titel → thema, bisheriges thema → unterthema)
+  if (base.poolId && !base.unterthema) {
+    // poolId = "bwl_einfuehrung_w01" → Prefix = "bwl_einfuehrung"
+    var parts = base.poolId.split('_');
+    // Pool-Prefix: alle Teile ausser dem letzten (Frage-ID)
+    var poolPrefix = parts.slice(0, -1).join('_');
+    var poolThema = THEMEN_MAPPING[poolPrefix];
+    if (poolThema && base.thema !== poolThema) {
+      base.unterthema = base.thema; // bisheriges Thema → Unterthema
+      base.thema = poolThema;       // Pool-Titel → Thema
+    }
+  }
 
   var typ = row.typ || 'mc';
   var typDaten = safeJsonParse_(row.typDaten, {});

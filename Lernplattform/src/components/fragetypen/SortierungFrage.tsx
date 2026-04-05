@@ -46,7 +46,7 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
             onClick={() => handleKlick(i)}
             disabled={disabled}
             className={`w-full text-left p-4 rounded-xl border-2 min-h-[48px] flex items-center gap-3 transition-colors
-              ${istAusgewaehlt ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : ''}
+              ${istAusgewaehlt ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
               ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
               ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
               ${!istAusgewaehlt && !istKorrekt && !istFalsch ? 'border-gray-200 dark:border-gray-600' : ''}
@@ -61,7 +61,7 @@ export default function SortierungFrage({ frage, onAntwort, disabled, feedbackSi
       })}
 
       {!disabled && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

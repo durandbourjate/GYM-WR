@@ -62,25 +62,25 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben }: AdminDashboard
           <div className="max-w-4xl mx-auto px-6 flex gap-4">
             <button
               onClick={() => setAnsicht({ typ: 'uebersicht' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'uebersicht' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'uebersicht' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
               Übersicht
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'auftraege' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'auftraege' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'auftraege' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
               Aufträge
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'fragenbank' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'fragenbank' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'fragenbank' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
               Fragenbank
             </button>
             <button
               onClick={() => setAnsicht({ typ: 'einstellungen' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
               Einstellungen
             </button>

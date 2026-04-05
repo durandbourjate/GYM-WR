@@ -78,7 +78,7 @@ export default function AppShell({ children }: Props) {
                   gruppeAbwaehlen()
                   navigiere('gruppenAuswahl')
                 }}
-                className="text-xs text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+                className="text-xs text-gray-500 dark:text-gray-400 hover:text-slate-600 dark:hover:text-slate-300"
                 title="Gruppe wechseln"
               >
                 {aktiveGruppe.name} &#8227;
@@ -142,7 +142,7 @@ export default function AppShell({ children }: Props) {
 
       {/* Hilfe-Panel */}
       {hilfeOffen && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800 px-4 py-3">
+        <div className="bg-slate-50 dark:bg-slate-900/20 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
           <div className="max-w-2xl mx-auto text-sm text-gray-700 dark:text-gray-300 space-y-2">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold dark:text-white">Hilfe</h3>

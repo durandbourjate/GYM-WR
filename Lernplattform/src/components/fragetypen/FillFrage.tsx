@@ -52,7 +52,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
                 className={`w-full p-3 rounded-xl border-2 min-h-[48px] bg-white dark:bg-gray-700 dark:text-white focus:outline-none
                   ${istKorrekt ? 'border-green-500' : ''}
                   ${istFalsch ? 'border-red-500' : ''}
-                  ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600 focus:border-blue-500' : ''}
+                  ${!feedbackSichtbar ? 'border-gray-200 dark:border-gray-600 focus:border-slate-500' : ''}
                 `}
               />
             )}
@@ -64,7 +64,7 @@ export default function FillFrage({ frage, onAntwort, disabled, feedbackSichtbar
       })}
 
       {!disabled && alleAusgefuellt && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}

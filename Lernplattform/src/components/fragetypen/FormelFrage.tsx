@@ -73,7 +73,7 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
         disabled={disabled}
         autoFocus
         placeholder="LaTeX-Formel eingeben, z.B. \frac{a}{b}"
-        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-mono text-base focus:border-blue-500 focus:outline-none"
+        className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white font-mono text-base focus:border-slate-500 focus:outline-none"
       />
 
       {/* Live-Preview */}
@@ -85,7 +85,7 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
       )}
 
       {!disabled && latex.trim() && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}
@@ -94,9 +94,9 @@ export default function FormelFrage({ frage, onAntwort, disabled, feedbackSichtb
         <div className="space-y-2">
           {/* Korrekte Formel */}
           {formel.korrekteFormel && (
-            <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-sm">
-              <span className="font-medium text-blue-800 dark:text-blue-200">Korrekte Formel: </span>
-              <code className="text-blue-700 dark:text-blue-300 font-mono">{formel.korrekteFormel}</code>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/20 text-sm">
+              <span className="font-medium text-slate-800 dark:text-slate-200">Korrekte Formel: </span>
+              <code className="text-slate-700 dark:text-slate-300 font-mono">{formel.korrekteFormel}</code>
             </div>
           )}
           {korrekt !== null && <FeedbackBox korrekt={korrekt} erklaerung={frage.musterlosung} />}

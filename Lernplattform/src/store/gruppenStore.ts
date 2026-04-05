@@ -29,11 +29,12 @@ export const useGruppenStore = create<GruppenState>((set, get) => ({
 
       set({ gruppen, aktiveGruppe, ladeStatus: 'fertig' })
 
-      // Mitglieder im Hintergrund laden (nicht blockierend)
+      // Mitglieder laden (blockierend, damit Liste nicht leer angezeigt wird)
       if (aktiveGruppe) {
-        gruppenAdapter.ladeMitglieder(aktiveGruppe.id)
-          .then(mitglieder => set({ mitglieder }))
-          .catch(() => {})
+        try {
+          const mitglieder = await gruppenAdapter.ladeMitglieder(aktiveGruppe.id)
+          set({ mitglieder })
+        } catch { /* ignorieren */ }
       }
     } catch {
       set({ ladeStatus: 'fehler' })

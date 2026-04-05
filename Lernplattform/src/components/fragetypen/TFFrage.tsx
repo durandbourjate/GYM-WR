@@ -38,7 +38,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
                 onClick={() => { if (!disabled) setBewertungen(prev => ({ ...prev, [key]: true })) }}
                 disabled={disabled}
                 className={`px-4 py-2 rounded-lg min-h-[44px] font-medium transition-colors
-                  ${wert === true ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
+                  ${wert === true ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
                 `}
               >
                 Richtig
@@ -47,7 +47,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
                 onClick={() => { if (!disabled) setBewertungen(prev => ({ ...prev, [key]: false })) }}
                 disabled={disabled}
                 className={`px-4 py-2 rounded-lg min-h-[44px] font-medium transition-colors
-                  ${wert === false ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
+                  ${wert === false ? 'bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800' : 'bg-gray-100 dark:bg-gray-700 dark:text-white'}
                 `}
               >
                 Falsch
@@ -61,7 +61,7 @@ export default function TFFrage({ frage, onAntwort, disabled, feedbackSichtbar, 
       })}
 
       {!disabled && alleBewertet && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium mt-2 min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium mt-2 min-h-[48px]">
           Prüfen
         </button>
       )}

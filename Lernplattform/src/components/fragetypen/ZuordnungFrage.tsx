@@ -51,7 +51,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
                 onClick={() => handleLinksKlick(links)}
                 disabled={disabled}
                 className={`w-full text-left p-3 rounded-lg border-2 min-h-[44px] text-sm transition-colors
-                  ${istAktiv ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : ''}
+                  ${istAktiv ? 'border-slate-500 bg-slate-50 dark:bg-slate-900/30' : ''}
                   ${istKorrekt ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : ''}
                   ${istFalsch ? 'border-red-500 bg-red-50 dark:bg-red-900/30' : ''}
                   ${!istAktiv && !istKorrekt && !istFalsch ? 'border-gray-200 dark:border-gray-600' : ''}
@@ -77,7 +77,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
                 disabled={disabled || !aktivLinks}
                 className={`w-full text-left p-3 rounded-lg border-2 min-h-[44px] text-sm transition-colors
                   ${istVergeben ? 'opacity-50' : ''}
-                  ${aktivLinks ? 'border-gray-300 dark:border-gray-500 hover:border-blue-400' : 'border-gray-200 dark:border-gray-600'}
+                  ${aktivLinks ? 'border-gray-300 dark:border-gray-500 hover:border-slate-400' : 'border-gray-200 dark:border-gray-600'}
                   dark:text-white
                 `}
               >
@@ -89,7 +89,7 @@ export default function ZuordnungFrage({ frage, onAntwort, disabled, feedbackSic
       </div>
 
       {!disabled && alleZugeordnet && !feedbackSichtbar && (
-        <button onClick={handleAbsenden} className="w-full bg-blue-500 text-white rounded-xl py-3 font-medium min-h-[48px]">
+        <button onClick={handleAbsenden} className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px]">
           Prüfen
         </button>
       )}
