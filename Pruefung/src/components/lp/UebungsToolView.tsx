@@ -1,47 +1,78 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { useLernenAuthStore } from '../../store/lernen/authStore'
 import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
+import { lernenApiClient } from '../../services/lernen/apiClient'
 import { LernKontextProvider } from '../../context/lernen/LernKontextProvider'
 import AdminDashboard from '../lernen/admin/AdminDashboard'
 
-interface Props {
-  /** Callback wenn "Neue Frage" in der Fragenbank geöffnet werden soll */
-  onNeueFrage?: () => void
-}
+const LP_AUTH_KEY = 'lernplattform-auth'
 
 /**
  * Wrapper der die Lernen-Stores mit dem Prüfungstool-User initialisiert
  * und das AdminDashboard rendert.
+ *
+ * Schritte:
+ * 1. LP-Login auf dem LP-Backend (lernplattformLogin) → Session-Token holen
+ * 2. Token + User in localStorage + Zustand-Store schreiben
+ * 3. Gruppen laden
+ * 4. AdminDashboard rendern
  */
-export default function UebungsToolView({ onNeueFrage: _onNeueFrage }: Props) {
+export default function UebungsToolView() {
   const pruefungUser = useAuthStore(s => s.user)
   const { gruppen, aktiveGruppe, ladeGruppen, waehleGruppe, ladeStatus } = useLernenGruppenStore()
+  const [loginStatus, setLoginStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
 
-  // Lernen-Auth mit Prüfungstool-User initialisieren
+  // LP-Login auf dem LP-Backend ausführen um einen gültigen Session-Token zu bekommen
   useEffect(() => {
-    if (!pruefungUser) return
-    useLernenAuthStore.setState({
-      user: {
-        email: pruefungUser.email,
-        name: pruefungUser.name || pruefungUser.email,
-        vorname: pruefungUser.name?.split(' ')[0] || '',
-        nachname: pruefungUser.name?.split(' ').slice(1).join(' ') || '',
-        rolle: 'admin',
-        sessionToken: pruefungUser.sessionToken,
-        loginMethode: 'google',
-      },
-      istAngemeldet: true,
-      ladeStatus: 'fertig',
-    })
-  }, [pruefungUser])
+    if (!pruefungUser?.email || loginStatus !== 'idle') return
+    setLoginStatus('laden')
 
-  // Gruppen laden
+    async function login() {
+      try {
+        const response = await lernenApiClient.post<{
+          success: boolean
+          data: { sessionToken: string }
+        }>('lernplattformLogin', {
+          email: pruefungUser!.email,
+          name: pruefungUser!.name || pruefungUser!.email,
+        })
+
+        const sessionToken = response?.data?.sessionToken || ''
+
+        // In localStorage schreiben (Adapter lesen von dort)
+        const lpUser = {
+          email: pruefungUser!.email,
+          name: pruefungUser!.name || pruefungUser!.email,
+          vorname: pruefungUser!.name?.split(' ')[0] || '',
+          nachname: pruefungUser!.name?.split(' ').slice(1).join(' ') || '',
+          rolle: 'admin' as const,
+          sessionToken,
+          loginMethode: 'google' as const,
+        }
+        localStorage.setItem(LP_AUTH_KEY, JSON.stringify(lpUser))
+
+        // Zustand-Store aktualisieren
+        useLernenAuthStore.setState({
+          user: lpUser,
+          istAngemeldet: true,
+          ladeStatus: 'fertig',
+        })
+
+        setLoginStatus('fertig')
+      } catch {
+        setLoginStatus('fehler')
+      }
+    }
+    login()
+  }, [pruefungUser?.email, pruefungUser?.name, loginStatus])
+
+  // Gruppen laden nachdem Login fertig
   useEffect(() => {
-    if (pruefungUser?.email && ladeStatus === 'idle') {
+    if (loginStatus === 'fertig' && pruefungUser?.email && ladeStatus === 'idle') {
       ladeGruppen(pruefungUser.email)
     }
-  }, [pruefungUser?.email, ladeStatus, ladeGruppen])
+  }, [loginStatus, pruefungUser?.email, ladeStatus, ladeGruppen])
 
   // Auto-Select bei genau 1 Gruppe
   useEffect(() => {
@@ -54,11 +85,34 @@ export default function UebungsToolView({ onNeueFrage: _onNeueFrage }: Props) {
     waehleGruppe(gruppeId)
   }, [waehleGruppe])
 
-  // Laden
-  if (ladeStatus === 'laden' || ladeStatus === 'idle') {
+  // Laden (Login oder Gruppen)
+  if (loginStatus === 'idle' || loginStatus === 'laden' || ladeStatus === 'laden' || ladeStatus === 'idle') {
     return (
       <div className="flex items-center justify-center py-24">
-        <p className="text-slate-500 dark:text-slate-400">Gruppen werden geladen...</p>
+        <p className="text-slate-500 dark:text-slate-400">
+          {loginStatus === 'laden' ? 'Übungstool wird verbunden...' : 'Gruppen werden geladen...'}
+        </p>
+      </div>
+    )
+  }
+
+  // Login-Fehler
+  if (loginStatus === 'fehler') {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
+          <p className="text-4xl mb-3">⚠️</p>
+          <h2 className="text-xl font-bold mb-2 dark:text-white">Verbindung fehlgeschlagen</h2>
+          <p className="text-slate-500 dark:text-slate-400">
+            Das Übungstool-Backend konnte nicht erreicht werden.
+          </p>
+          <button
+            onClick={() => setLoginStatus('idle')}
+            className="mt-4 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer"
+          >
+            Erneut versuchen
+          </button>
+        </div>
       </div>
     )
   }
@@ -92,7 +146,7 @@ export default function UebungsToolView({ onNeueFrage: _onNeueFrage }: Props) {
             >
               <div className="font-medium dark:text-white">{g.name}</div>
               <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                {g.typ === 'familie' ? '👨‍👩‍👧‍👦 Familie' : '🏫 Schule'} · {g.mitglieder.length} Mitglieder
+                {g.typ === 'familie' ? 'Familie' : 'Schule'} · {g.mitglieder.length} Mitglieder
               </div>
             </button>
           ))}

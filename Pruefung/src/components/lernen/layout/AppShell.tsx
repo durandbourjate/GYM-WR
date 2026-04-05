@@ -5,9 +5,8 @@ import { useLernenNavigationStore } from '../../../store/lernen/navigationStore'
 import { useLernenUebungsStore } from '../../../store/lernen/uebungsStore'
 import { useLernenFortschrittStore } from '../../../store/lernen/fortschrittStore'
 import { useLernenTheme } from '../../../hooks/lernen/useTheme'
-import { useLernKontext } from '../../../hooks/lernen/useLernKontext'
 import { lernzielStatus } from '../../../utils/lernen/mastery'
-import { t } from '../../../utils/lernen/anrede'
+import FeedbackButton from '../../shared/FeedbackButton'
 
 interface Props {
   children: ReactNode
@@ -18,7 +17,6 @@ export default function AppShell({ children }: Props) {
   const { gruppen, aktiveGruppe, gruppeAbwaehlen } = useLernenGruppenStore()
   const { aktuellerScreen, zurueck, kannZurueck, navigiere } = useLernenNavigationStore()
   const { istDark, toggleTheme } = useLernenTheme()
-  const { anrede } = useLernKontext()
 
   const [hilfeOffen, setHilfeOffen] = useState(false)
   const [lernzieleOffen, setLernzieleOffen] = useState(false)
@@ -120,6 +118,15 @@ export default function AppShell({ children }: Props) {
             </button>
           )}
 
+          {/* Trennstrich */}
+          <span className="w-px h-5 bg-slate-200 dark:bg-slate-600 mx-1" />
+
+          {/* Feedback-Button */}
+          <FeedbackButton
+            variant="icon"
+            context={{ rolle: user?.rolle === 'admin' ? 'lp' : 'sus', ort: 'uebungstool' }}
+          />
+
           {/* Theme-Toggle */}
           <button
             onClick={toggleTheme}
@@ -129,13 +136,15 @@ export default function AppShell({ children }: Props) {
             <span className="text-lg">{istDark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</span>
           </button>
 
-          {/* User-Info + Abmelden */}
+          {/* User-Info */}
           <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{user?.vorname}</span>
+
+          {/* Abmelden (immer ganz rechts) */}
           <button
             onClick={abmelden}
-            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+            className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
           >
-            {t('abmelden', anrede)}
+            Abmelden
           </button>
         </div>
       </header>
