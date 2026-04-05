@@ -5,6 +5,23 @@
 
 ---
 
+## Fusion: Lernplattform → Prüfungstool (ab 05.04.2026)
+
+Lernplattform wird als "Übungsmodus" in das Prüfungstool integriert.
+Plan: `.claude/plans/toasty-popping-liskov.md`
+
+| Phase | Status | Beschreibung |
+|-------|--------|-------------|
+| 0 | ✅ 05.04.2026 | Build-System: appMode.ts, Dual-Build, deploy.yml |
+| 1 | ⬜ | Types + Utils migrieren |
+| 2 | ⬜ | Stores + Services migrieren |
+| 3 | ⬜ | UI migrieren (Dashboard, UebungsScreen, Admin, Fragetypen-Override) |
+| 4 | ⬜ | Integration-Tests + Security-Audit |
+| 5 | ⬜ | Backend konsolidieren (Apps Script) |
+| 6 | ⬜ | Cleanup (Lernplattform/ löschen) |
+
+---
+
 ## Offene Punkte
 
 - **SEB / iPad** — SEB weiterhin deaktiviert (`sebErforderlich: false`)
