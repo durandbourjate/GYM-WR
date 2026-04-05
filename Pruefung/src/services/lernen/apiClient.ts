@@ -4,10 +4,17 @@
  * Fallback auf VITE_APPS_SCRIPT_URL (für den Lernen-Build wo nur eine URL existiert).
  */
 
-const LERNEN_URL: string =
-  (import.meta.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL as string) ||
-  (import.meta.env.VITE_APPS_SCRIPT_URL as string) ||
-  ''
+// Explizit nur die LP-URL verwenden, KEIN Fallback auf Prüfungs-URL.
+// Im Lernen-Build (VITE_APP_MODE=lernen) wird VITE_APPS_SCRIPT_URL auf die LP-URL gesetzt.
+// Im Pruefung-Build existiert VITE_LERNPLATTFORM_APPS_SCRIPT_URL als separates Secret.
+const LERNEN_URL: string = ((): string => {
+  const lpUrl = import.meta.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL
+  if (lpUrl) return lpUrl as string
+  // Im Lernen-Build: VITE_APP_MODE=lernen → VITE_APPS_SCRIPT_URL ist bereits die LP-URL
+  const appMode = import.meta.env.VITE_APP_MODE
+  if (appMode === 'lernen') return (import.meta.env.VITE_APPS_SCRIPT_URL as string) || ''
+  return ''
+})()
 
 /** Prüft ob das LP-Backend konfiguriert ist */
 export function lernenIstKonfiguriert(): boolean {
