@@ -37,3 +37,6 @@ export { enqueue, getQueue, clearQueue, removeFromQueue } from './offlineQueue'
 
 // Deterministisches Mischen
 export { seededShuffle } from './shuffle'
+
+// Fachbereich-Farben (DOM-Manipulation)
+export { setzeFachFarben, getFachFarbe } from './fachFarben'

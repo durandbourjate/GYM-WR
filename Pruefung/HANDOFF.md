@@ -15,7 +15,7 @@ Plan: `.claude/plans/toasty-popping-liskov.md`
 | 0 | ✅ 05.04.2026 | Build-System: appMode.ts, Dual-Build, deploy.yml |
 | 1 | ✅ 05.04.2026 | Types + Utils migrieren (8 Types + 11 Utils + idb-keyval) |
 | 2 | ✅ 05.04.2026 | Stores + Services migrieren (7 Stores + 3 Services + 1 Adapter + 2 Hooks + 1 Context) |
-| 3 | ⬜ | UI migrieren (Dashboard, UebungsScreen, Admin, Fragetypen-Override) |
+| 3 | ✅ 05.04.2026 | UI migrieren (49 Komponenten + AppLernen verdrahtet + fachFarben) |
 | 4 | ⬜ | Integration-Tests + Security-Audit |
 | 5 | ⬜ | Backend konsolidieren (Apps Script) |
 | 6 | ⬜ | Cleanup (Lernplattform/ löschen) |
@@ -44,6 +44,34 @@ Plan: `.claude/plans/toasty-popping-liskov.md`
   - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 02.04.2026 — istDemoModus nur in React-State, nicht manipulierbar
   - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
   - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 02.04.2026 — persist.clearStorage() nach Abgabe
+
+---
+
+## Session 61 — Fusion Phase 3: UI komplett migriert (05.04.2026)
+
+### Stand
+Branch `feature/fusion-phase1`. tsc ✅ | 193 Tests ✅ | Build ✅ (beide Targets). **Nicht auf main.**
+
+### Änderungen
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **49 Komponenten nach `components/lernen/`** — 6 Screens, 22 Fragetypen, 4 Uebung-Panels, 7 Admin-Ansichten, 4 Settings-Tabs, AppShell, 2 Shared, fragetypen/index.ts | `Pruefung/src/components/lernen/**/*.tsx` |
+| 2 | **AppLernen.tsx verdrahtet** — Stub ersetzt mit vollständiger App (Login, Gruppen, Dashboard, Übung, Ergebnis, Admin, LernKontextProvider) | `Pruefung/src/AppLernen.tsx` |
+| 3 | **fachFarben.ts migriert** — DOM-abhängige Farbsetzung + in LernKontextProvider eingebaut | `utils/lernen/fachFarben.ts`, `context/lernen/LernKontextProvider.tsx` |
+| 4 | **Import-Rewriting** — Alle 49 Dateien: Pfade, Store-Namen (useLernen*), Adapter-Namen, Auth-Typen automatisch umgeschrieben | alle `lernen/`-Dateien |
+
+### Build-Grössen
+- Lernen-Build: 921 KiB (vorher 298 KiB Stub) — vollständige App inkl. KaTeX
+- Pruefung-Build: 3554 KiB (unverändert)
+
+### Nicht migriert
+- `syncManager.ts` → wird bei Bedarf in Phase 4 nachgezogen (Offline-Queue)
+
+### Nächste Schritte
+- **Phase 4:** Integration-Tests + Security-Audit
+- **Phase 5:** Backend konsolidieren (Apps Script)
+- **E2E-Test:** Lernen-Build im Browser testen (Login, Übung, Admin)
 
 ---
 

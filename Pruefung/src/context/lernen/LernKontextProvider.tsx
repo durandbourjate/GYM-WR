@@ -2,6 +2,7 @@ import { createContext, useEffect, type ReactNode } from 'react'
 import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
 import { useLernenSettingsStore } from '../../store/lernen/settingsStore'
 import { lernenGruppenAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { setzeFachFarben } from '../../utils/lernen/fachFarben'
 import type { GruppenEinstellungen } from '../../types/lernen/settings'
 
 export interface LernKontext {
@@ -35,6 +36,11 @@ export function LernKontextProvider({ children }: { children: ReactNode }) {
       .catch(() => { if (!cancelled) setzeDefaults(aktiveGruppe.typ) })
     return () => { cancelled = true }
   }, [aktiveGruppe, setzeEinstellungen, setzeDefaults])
+
+  // Fachfarben als CSS Custom Properties setzen
+  useEffect(() => {
+    if (einstellungen?.fachFarben) setzeFachFarben(einstellungen.fachFarben)
+  }, [einstellungen?.fachFarben])
 
   const kontext: LernKontext = einstellungen && aktiveGruppe
     ? {
