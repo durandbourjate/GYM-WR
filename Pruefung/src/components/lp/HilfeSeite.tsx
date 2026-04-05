@@ -5,10 +5,11 @@ interface Props {
   onSchliessen: () => void
 }
 
-type HilfeKategorie = 'einstieg' | 'pruefung' | 'fragen' | 'zusammenarbeit' | 'ki' | 'durchfuehrung' | 'korrektur' | 'bloom' | 'faq'
+type HilfeKategorie = 'einstieg' | 'ueben' | 'pruefung' | 'fragen' | 'zusammenarbeit' | 'ki' | 'durchfuehrung' | 'korrektur' | 'bloom' | 'faq'
 
 const KATEGORIEN: { key: HilfeKategorie; label: string }[] = [
   { key: 'einstieg', label: 'Erste Schritte' },
+  { key: 'ueben', label: 'Üben' },
   { key: 'pruefung', label: 'Prüfung erstellen' },
   { key: 'fragen', label: 'Fragen & Fragensammlung' },
   { key: 'zusammenarbeit', label: 'Zusammenarbeit' },
@@ -96,6 +97,7 @@ export default function HilfeSeite({ onSchliessen }: Props) {
         {/* Inhalt */}
         <div className="flex-1 overflow-auto px-6 py-5">
           {kategorie === 'einstieg' && <HilfeEinstieg />}
+          {kategorie === 'ueben' && <HilfeUeben />}
           {kategorie === 'pruefung' && <HilfePruefung />}
           {kategorie === 'fragen' && <HilfeFragen />}
           {kategorie === 'zusammenarbeit' && <HilfeZusammenarbeit />}
@@ -182,6 +184,55 @@ function HilfeEinstieg() {
       <Untertitel>Demo-Modus</Untertitel>
       <Text>
         Ohne Backend-Konfiguration läuft die App im Demo-Modus mit Beispieldaten. Sie können alle Funktionen ausprobieren — Änderungen werden aber nicht gespeichert. Klicken Sie auf dem Login-Screen auf &laquo;Als Lehrperson&raquo; oder &laquo;Als Schüler/in&raquo; unter &laquo;Demo ohne Login starten&raquo;.
+      </Text>
+    </div>
+  )
+}
+
+function HilfeUeben() {
+  return (
+    <div>
+      <Titel>Üben — Formative Übungen</Titel>
+      <Text>
+        Der Bereich <strong>Üben</strong> ermöglicht formative Übungen ohne Notendruck. Übungen verwenden die gleichen Fragetypen und den gleichen Workflow wie Prüfungen — aber ohne Punkte, Noten und strenge Sicherheitsmassnahmen.
+      </Text>
+
+      <Untertitel>Unterschiede zu Prüfungen</Untertitel>
+      <Text>
+        Übungen sind immer <strong>formativ</strong> (unbenotet). Folgende Elemente sind automatisch angepasst:
+      </Text>
+      <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1 mb-4 ml-4">
+        <li>• Keine Punkte und keine Noten</li>
+        <li>• Kontrollstufe standardmässig auf &laquo;Locker&raquo; (nur Logging, keine Sperre)</li>
+        <li>• Open-End-Modus (kein Countdown)</li>
+        <li>• &laquo;Auswertung&raquo; statt &laquo;Korrektur&raquo; — ohne Notenberechnung</li>
+      </ul>
+
+      <Untertitel>Übung erstellen</Untertitel>
+      <Schritt nr={1}>
+        Wechseln Sie zum Tab <strong>Üben</strong> in der Kopfzeile.
+      </Schritt>
+      <Schritt nr={2}>
+        Klicken Sie auf <strong>+ Neue Übung</strong>.
+      </Schritt>
+      <Schritt nr={3}>
+        Der Composer öffnet sich mit formativ-Defaults. Titel eingeben, Fragen aus der Fragensammlung hinzufügen, Abschnitte bilden.
+      </Schritt>
+      <Schritt nr={4}>
+        Übung durchführen: gleicher 4-Phasen-Workflow (Vorbereitung → Lobby → Live → Auswertung).
+      </Schritt>
+
+      <Untertitel>SuS-Übungsbereich (Selbststudium)</Untertitel>
+      <Text>
+        Im Sub-Tab <strong>Übungen</strong> innerhalb von Üben verwalten Sie den Selbststudium-Bereich. Hier sind SuS in <strong>Gruppen</strong> organisiert (z.B. nach Kurs oder Familie). Jede Gruppe hat eine eigene Fragenbank und Fortschrittsdaten.
+      </Text>
+      <Text>
+        Das Mastery-System basiert auf <strong>Sessions</strong> (nicht auf Tagen). Fragen durchlaufen 4 Stufen: <strong>neu → üben → gefestigt → gemeistert</strong>. Persistente Schwächen werden als &laquo;Dauerbaustellen&raquo; regelmässig erneut eingestreut, blockieren aber den Fortschritt nicht.
+      </Text>
+
+      <Untertitel>Einführungsübung</Untertitel>
+      <Text>
+        Die <strong>Einführungsübung</strong> wird automatisch bereitgestellt und enthält Beispielaufgaben zu allen wichtigen Fragetypen. Sie erklärt auch das Mastery-System. Ideal für den Einstieg mit einer neuen Klasse.
       </Text>
     </div>
   )
@@ -737,6 +788,10 @@ function HilfeFAQ() {
   return (
     <div>
       <Titel>Häufige Fragen</Titel>
+
+      <FAQItem frage="Was sind die drei Bereiche (Prüfen, Üben, Fragensammlung)?">
+        <strong>Prüfen</strong> ist für summative (benotete) Prüfungen. <strong>Üben</strong> ist für formative (unbenotete) Übungen und den Selbststudium-Bereich der SuS. <strong>Fragensammlung</strong> ist die zentrale Sammlung aller Fragen — Fragen können sowohl in Prüfungen als auch in Übungen verwendet werden.
+      </FAQItem>
 
       <FAQItem frage="Was passiert wenn ein SuS die Verbindung verliert?">
         Die Antworten werden lokal im Browser gespeichert. Sobald die Verbindung wiederhergestellt ist, werden sie automatisch an den Server gesendet. Es gehen keine Daten verloren.

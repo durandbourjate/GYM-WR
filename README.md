@@ -23,25 +23,19 @@ Webbasierter Semesterplaner für Lektionen, Sequenzen und Prüfungen.
 - Google Calendar Integration (OAuth, bidirektionaler Sync)
 - LearningView-Farbschema (VWL orange, BWL blau, Recht grün)
 
-### Prüfungstool (v1.1)
+### ExamLab (ehemals Prüfungstool)
 
-Digitales Prüfungstool für summative und formative Prüfungen.
+Digitale Prüfungs- und Übungsplattform mit drei Bereichen: **Prüfen** | **Üben** | **Fragensammlung**.
 
 **[→ Live öffnen](https://durandbourjate.github.io/GYM-WR-DUY/Pruefung/)** · [Quellcode](./Pruefung/)
 
 - React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 + Tiptap (PWA)
-- **13 Fragetypen:** Multiple Choice, Freitext, Lückentext, Zuordnung, Richtig/Falsch, Berechnung, Buchungssatz, T-Konto, Kontenbestimmung, Bilanz/ER, Aufgabengruppe, Zeichnen, PDF-Annotation
-- **4-Phasen-Workflow:** Vorbereitung → Lobby → Aktiv → Beendet
-- Kurs-basierte Teilnehmer-Auswahl mit Indeterminate-Checkboxen (pro Gefäss/Kurs, Direktauswahl einzelner SuS)
-- Prüfungs-Composer mit Analyse-Tab (Taxonomie, Zeitbedarf, KI-Analyse)
-- KI-Assistent: Fragen generieren/verbessern, Musterlösung, KI-Korrektur
-- Fragenbank mit Pool-Sync (bidirektional, 27 Übungspools)
-- Live-Monitoring mit Inaktivitäts-Warnung, Inline-Zeitzuschlag + individuelles Beenden
-- Soft-Lockdown (3 Stufen: Locker/Standard/Streng) + SEB-Integration
-- Multi-Prüfungs-Dashboard (parallele Überwachung mehrerer Prüfungen)
-- Open-End- und Countdown-Modus + individuelle Zeitzuschläge (Nachteilsausgleich)
-- Backup-Export als Excel (.xlsx) mit Übersicht + Tab pro SuS
-- Light/Dark Mode, Audio/Video-Anhänge, SuS-Korrektur-Einsicht
+- **20 Fragetypen:** MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung, 4× FiBu, Aufgabengruppe, Zeichnen, PDF-Annotation, Sortierung, Hotspot, Bildbeschriftung, Audio, Drag & Drop, Code, Formel (LaTeX)
+- **Prüfen:** 4-Phasen-Workflow, Kurs-basierte Auswahl, Live-Monitoring, KI-Korrektur, Soft-Lockdown (4 Stufen), SEB-Integration, Multi-Prüfungs-Dashboard
+- **Üben:** Formative Übungen ohne Punkte/Noten, SuS-Selbststudium mit Mastery-System (4 Stufen), Gruppenbasiert
+- **Fragensammlung:** Zentrale Fragenverwaltung mit Fach/Thema/Unterthema-Filter, Pool-Sync (bidirektional, 27 Übungspools)
+- KI-Assistent, Bewertungsraster mit Niveaustufen, Excel-Export, SuS-PDFs
+- Light/Dark Mode (2-Stufen-Toggle: System ↔ manuell)
 - Backend: Google Apps Script + Google Sheets + Google Drive
 
 ### Übungspools (27 Pools)

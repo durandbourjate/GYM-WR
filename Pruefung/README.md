@@ -1,6 +1,6 @@
-# Prüfungsplattform — Gymnasium Hofwil
+# ExamLab — Gymnasium Hofwil
 
-Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil (Münchenbuchsee BE). Ermöglicht das Erstellen, Durchführen und Auswerten von Prüfungen — vollständig im Browser.
+Digitale Prüfungs- und Übungsplattform für alle Fachschaften am Gymnasium Hofwil (Münchenbuchsee BE). Drei Bereiche: **Prüfen** (summative Prüfungen), **Üben** (formative Übungen + Selbststudium) und **Fragensammlung** (zentrale Fragenverwaltung) — vollständig im Browser.
 
 ## Features
 
@@ -18,15 +18,17 @@ Digitale Prüfungsplattform für alle Fachschaften am Gymnasium Hofwil (München
 - Code-Editor mit Syntax-Highlighting: 7 Sprachen (Python, JavaScript, SQL, HTML, CSS, Java, TypeScript), Zeilennummern
 
 **Für Lehrpersonen**
-- Prüfungs-Composer: Prüfungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragenbank)
+- Prüfungs-Composer: Prüfungen und Übungen erstellen und bearbeiten (Einstellungen, Abschnitte, Fragensammlung)
 - 4-Phasen-Workflow: Vorbereitung → Lobby → Live-Monitoring → Ergebnisse/Korrektur
+- Üben-Modus: Formative Übungen ohne Punkte/Noten, Kontrollstufe "Locker", Open-End
+- SuS-Selbststudium: Gruppen, Mastery-System (4 Stufen), Dauerbaustellen-Konzept
 - Kurs-basierte Teilnehmer-Auswahl (pro Gefäss, mit Dedup bei Mehrfach-Kursen)
 - Prüfungs-Analyse: Taxonomie-Verteilung (K1-K6), Fragetypen-Mix, Zeitbedarf vs. Dauer, Themen-Abdeckung
 - KI-Assistent: Fragetext, Musterlösung, MC-Optionen, Zuordnungspaare, R/F-Aussagen, Lücken, Berechnungsergebnisse, FiBu-Aufgaben und Bewertungsraster (mit Niveaustufen) generieren oder prüfen lassen
 - KI-Korrektur: Kriterienbasierte Bewertung (pro Kriterium Punkte + Kurzkommentar) mit manueller Übersteuerung + individuelles Feedback per E-Mail
 - Audio-Korrektur: Audio-Feedback pro Frage und gesamt
 - Live-Monitoring: Fortschritt, Heartbeat, Inaktivitäts-Warnstufen, SEB-Status, Lockdown-Verstösse, Geräteerkennung, Entsperren-Button — alles in Echtzeit
-- Fragenbank: Fragen nach Fach + Tags, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
+- Fragensammlung: Fragen nach Fach, Thema, Unterthema, Typ, Bloom-Stufe, Pool-Status, Anhänge (📎) filtern
 - Fragen-Statistiken: Lösungsquoten und Verwendungen pro Frage über alle Prüfungen (📊 Badges)
 - Pool-Brücke: Bidirektionaler Sync mit Übungspools (Import + Rück-Sync via GitHub API)
 - Open-End-Modus: Prüfung ohne Zeitlimit, LP beendet manuell (optional mit Restzeit)
