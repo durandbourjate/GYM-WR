@@ -52,13 +52,23 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **Deployed auf GitHub Pages.
 | G | **Formativ-Labels** — Composer: "Übung bearbeiten"/"Neue Übung", Durchführung: "Übung durchführen", Korrektur: "Auswertung" | `PruefungsComposer.tsx`, `DurchfuehrenDashboard.tsx`, `KorrekturDashboard.tsx` |
 | H | **Übungen-Tab** — Tab-System (Lernplattform | Übungen durchführen) mit Empty State + "Neue Übung erstellen" | `LPStartseite.tsx` |
 
+### Weitere Änderungen (gleiche Session, Batch 2)
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| I | **Startbildschirm** — "Übung starten" statt "Prüfung starten" bei formativ | `Startbildschirm.tsx` |
+| J | **KorrekturSchuelerZeile** — Note-Badge, Note-Override bei formativ ausgeblendet | `KorrekturSchuelerZeile.tsx`, `KorrekturDashboard.tsx` |
+| K | **Prompt Injection Schutz** — Alle KI-Aufrufe: SuS-Antworten + Annotationen in `<user_data>` gewrappt, System-Prompts mit Injection-Hinweis | `apps-script-code.js` |
+
+### ⚠ Apps Script Deploy nötig
+`apps-script-code.js` wurde geändert (Prompt Injection Schutz). Neue Bereitstellung im Apps Script Editor erstellen.
+
 ### Nächste Session
 
 | # | Aufgabe | Aufwand |
 |---|---------|--------|
 | 1 | E2E-Browser-Test mit echtem Login (formative Übung erstellen → durchführen → auswerten) | mittel |
-| 2 | Startbildschirm: "Übung" statt "Prüfung" in Texten bei formativ | klein |
-| 3 | KorrekturSchuelerZeile: Note-Spalte bei formativ ausblenden | klein |
+| 2 | Prüfungstool für andere Fächer (Bedarfsanalyse liegt vor) | gross |
 
 | # | Aufgabe | Aufwand |
 |---|---------|--------|
@@ -136,7 +146,7 @@ Branch `feature/uebungstool-tab`. tsc ✅ | 193 Tests ✅ | Build ✅.
   - ~~Rate Limiting auf API-Endpoints fehlt~~ ✅ 31.03.2026 — 4 SuS-Endpoints limitiert (10-15/min)
   - ~~Session-Token nicht an Prüfung gebunden~~ ✅ 31.03.2026 — Cross-Exam Token Reuse verhindert
   - ~~Demo-Modus Bypass via sessionStorage~~ ✅ 02.04.2026 — istDemoModus nur in React-State, nicht manipulierbar
-  - Prompt Injection bei KI-Assistent (User-Input unsanitisiert an Claude)
+  - ~~Prompt Injection bei KI-Assistent~~ ✅ 05.04.2026 — Alle Inputs in `<user_data>` gewrappt, System-Prompts mit Injection-Hinweis
   - ~~`pruefung-state-*` in localStorage bleibt nach Abgabe~~ ✅ 02.04.2026 — persist.clearStorage() nach Abgabe
 
 ---
