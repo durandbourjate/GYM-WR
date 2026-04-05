@@ -4,6 +4,7 @@ import { apiService } from '../../services/apiService.ts'
 import type { KorrekturListeEintrag } from '../../services/apiService.ts'
 import { formatDatum } from '../../utils/zeit.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
+import FeedbackButton from '../shared/FeedbackButton.tsx'
 
 interface Props {
   onWaehle: (pruefungId: string) => void
@@ -34,14 +35,15 @@ export default function KorrekturListe({ onWaehle }: Props) {
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3 flex items-center justify-between">
         <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Meine Korrekturen</h1>
         <div className="flex items-center gap-2">
+          <FeedbackButton variant="icon" context={{ rolle: 'sus', ort: 'korrektur-einsicht' }} />
+          <ThemeToggle />
           <span className="text-xs text-slate-400 dark:text-slate-500">{user?.name || user?.email}</span>
           <button
             onClick={abmelden}
-            className="px-3 py-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+            className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
           >
             Abmelden
           </button>
-          <ThemeToggle />
         </div>
       </header>
 

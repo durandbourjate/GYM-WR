@@ -1,100 +1,56 @@
-export class LernenApiClient {
-  private url: string
-  private writeQueue: Promise<unknown> = Promise.resolve()
+/**
+ * API-Client für das Lernplattform-Backend.
+ * Verwendet VITE_LERNPLATTFORM_APPS_SCRIPT_URL (eigene LP-Deployment-URL).
+ * Fallback auf VITE_APPS_SCRIPT_URL (für den Lernen-Build wo nur eine URL existiert).
+ */
 
-  constructor(url: string) {
-    this.url = url
-  }
+const LERNEN_URL: string =
+  (import.meta.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL as string) ||
+  (import.meta.env.VITE_APPS_SCRIPT_URL as string) ||
+  ''
 
-  istKonfiguriert(): boolean {
-    return !!this.url
-  }
+/** Prüft ob das LP-Backend konfiguriert ist */
+export function lernenIstKonfiguriert(): boolean {
+  return !!LERNEN_URL
+}
 
-  async post<T = unknown>(
-    action: string,
-    payload: Record<string, unknown>,
-    sessionToken?: string,
-    timeoutMs = 30000
-  ): Promise<T | null> {
-    if (!this.url) return null
+/** POST an das LP-Backend */
+export async function lernenPost<T = unknown>(
+  action: string,
+  payload: Record<string, unknown>,
+  sessionToken?: string,
+  timeoutMs = 30000
+): Promise<T | null> {
+  if (!LERNEN_URL) return null
 
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
-    try {
-      const body = JSON.stringify({
-        action,
-        ...(sessionToken ? { sessionToken } : {}),
-        ...payload,
-      })
-
-      const response = await fetch(this.url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body,
-        signal: controller.signal,
-      })
-
-      if (!response.ok) return null
-      return await response.json() as T
-    } catch {
-      return null
-    } finally {
-      clearTimeout(timeout)
-    }
-  }
-
-  async postQueued<T = unknown>(
-    action: string,
-    payload: Record<string, unknown>,
-    sessionToken?: string,
-    timeoutMs = 30000
-  ): Promise<T | null> {
-    const result = new Promise<T | null>((resolve) => {
-      this.writeQueue = this.writeQueue.then(async () => {
-        const res = await this.post<T>(action, payload, sessionToken, timeoutMs)
-        resolve(res)
-      }).catch(() => {
-        resolve(null)
-      })
+  try {
+    const body = JSON.stringify({
+      action,
+      ...(sessionToken ? { sessionToken } : {}),
+      ...payload,
     })
-    return result
-  }
 
-  async get<T = unknown>(
-    action: string,
-    params: Record<string, string>,
-    sessionToken?: string,
-    timeoutMs = 30000
-  ): Promise<T | null> {
-    if (!this.url) return null
+    const response = await fetch(LERNEN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body,
+      signal: controller.signal,
+    })
 
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), timeoutMs)
-
-    try {
-      const urlParams = new URLSearchParams({ action, ...params })
-      if (sessionToken) urlParams.set('sessionToken', sessionToken)
-
-      const response = await fetch(`${this.url}?${urlParams}`, {
-        signal: controller.signal,
-      })
-
-      if (!response.ok) return null
-      return await response.json() as T
-    } catch {
-      return null
-    } finally {
-      clearTimeout(timeout)
-    }
+    if (!response.ok) return null
+    return await response.json() as T
+  } catch {
+    return null
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
-// Singleton-Instanz für Lernplattform
-// Im Lernen-Build: VITE_APPS_SCRIPT_URL zeigt direkt auf LP-Backend
-// Im Pruefung-Build: VITE_LERNPLATTFORM_APPS_SCRIPT_URL zeigt auf LP-Backend
-const LERNEN_APPS_SCRIPT_URL =
-  import.meta.env.VITE_LERNPLATTFORM_APPS_SCRIPT_URL ||
-  import.meta.env.VITE_APPS_SCRIPT_URL ||
-  ''
-export const lernenApiClient = new LernenApiClient(LERNEN_APPS_SCRIPT_URL)
+// Re-export als Objekt für Kompatibilität mit Adapter-Code
+export const lernenApiClient = {
+  istKonfiguriert: lernenIstKonfiguriert,
+  post: lernenPost,
+}
