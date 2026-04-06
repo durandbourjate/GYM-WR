@@ -5,19 +5,18 @@ export default function ThemeToggle() {
   const toggleMode = useThemeStore((s) => s.toggleMode)
   const mode = useThemeStore((s) => s.mode)
 
-  const label =
-    mode === 'light' ? 'Hell' : mode === 'dark' ? 'Dunkel' : 'System'
-
-  const icon = mode === 'system' ? '🖥️' : mode === 'light' ? '☀️' : '🌙'
+  // Aktueller visueller Zustand: dunkel oder hell?
+  const istAktuellDunkel = mode === 'dark' || (mode === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const icon = istAktuellDunkel ? '☀️' : '🌙'
+  const label = istAktuellDunkel ? 'Hell' : 'Dunkel'
 
   return (
-    <Tooltip text={`Modus: ${label} (klicken zum Wechseln)`} position="bottom">
+    <Tooltip text={`Zu ${label} wechseln`} position="bottom">
     <button
       onClick={toggleMode}
       className="h-8 px-2 rounded-lg flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer text-xs"
     >
       <span className="text-sm">{icon}</span>
-      <span className="hidden sm:inline">{label}</span>
     </button>
     </Tooltip>
   )

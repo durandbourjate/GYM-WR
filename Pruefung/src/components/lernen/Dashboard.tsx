@@ -79,12 +79,11 @@ export default function Dashboard() {
     const fachThema: Record<string, Record<string, Frage[]>> = {}
 
     for (const f of alleFragen) {
-      // Einrichtungs-/Demo-Fragen im SuS-Dashboard ausblenden
       const themaRaw = f.thema || 'Allgemein'
-      if (themaRaw.startsWith('Einrichtung')) continue
-      const fach = f.fach || 'Andere'
+      // Einrichtungsfragen unter "Einführung" gruppieren (statt unter unbekanntem Fach)
+      const fach = themaRaw.startsWith('Einrichtung') ? 'Einführung' : (f.fach || 'Andere')
       const thema = themaRaw
-      if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
+      if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach) && fach !== 'Einführung') continue
       if (!fachThema[fach]) fachThema[fach] = {}
       if (!fachThema[fach][thema]) fachThema[fach][thema] = []
       fachThema[fach][thema].push(f)
@@ -164,7 +163,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <main className="max-w-2xl mx-auto p-6">
+      <main className="max-w-5xl mx-auto p-6">
         <h2 className="text-xl font-bold mb-4 dark:text-white">
           Hallo {user?.vorname || 'dort'}!
         </h2>

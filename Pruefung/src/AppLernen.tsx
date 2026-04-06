@@ -119,8 +119,18 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
     )
   }
 
-  // Nicht eingeloggt
-  if (!istAngemeldet) return <LoginScreen />
+  // Nicht eingeloggt: wenn embedded (onZurueck gesetzt) → Ladescreen statt LoginScreen
+  // Das Login-Bridging läuft in SuSStartseite, AppLernen wartet darauf
+  if (!istAngemeldet) {
+    if (_onZurueck) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">Übungen werden vorbereitet...</p>
+        </div>
+      )
+    }
+    return <LoginScreen />
+  }
 
   // Gruppen laden
   if (!IST_DEMO && gruppenStatus === 'laden') {
