@@ -6,6 +6,85 @@
 
 ---
 
+## Session 66 Gesamt — ExamLab Overhaul (06.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified build).**
+Pool-Themen-Migration: 2178/2179 Fragen im Backend aktualisiert (thema/unterthema korrekt).
+
+### Architektur-Änderungen
+- **Unified Build:** Kein Dual-Build mehr. Ein Build unter `/ExamLab/`. Alte URLs `/Pruefung/` und `/Lernplattform/` leiten per Redirect um.
+- **Rollen-Routing:** LP → LPStartseite, SuS ohne ID → SuSStartseite (Üben/Prüfen-Auswahl), SuS mit ID → Prüfung
+- **Pool-Themen-Migration:** 2178 Pool-Fragen im Backend aktualisiert: `thema` = Pool-Titel, `unterthema` = Topic-Label. Frontend-Mapping (`poolTitelMapping.ts`) bleibt als Fallback.
+
+### Alle Änderungen (Session 66a–c + Fixes)
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Bugs** | |
+| A | Modus-Filter: Prüfen nur summativ, Üben nur formativ | `LPStartseite.tsx` |
+| B | Header-Tooltips → position="bottom" (LP + SuS) | `LPHeader.tsx`, `AppShell.tsx`, `ThemeToggle.tsx` |
+| C | Kontrollstufe Default = locker bei formativ | `VorbereitungPhase.tsx` |
+| D | Volle Breite (max-w-7xl) überall | 4 Dateien |
+| E | Fachbereichs-Kacheln → Fragensammlung verlinkt | 3 Dateien |
+| F | Frage-ID aus DetailKarte entfernt | `DetailKarte.tsx` |
+| G | Filter-Layout 2-zeilig, Filter kaskadierend (Fach→Thema→Unterthema) | `FragenBrowserHeader.tsx`, `useFragenFilter.ts` |
+| H | deploy.yml: Lernplattform-Build nutzt gleichen Backend-URL | `deploy.yml` |
+| I | Einrichtungsprüfung typ→summativ, Sync prüft typ+punkte | `einrichtungsPruefung.ts`, `LPStartseite.tsx` |
+| J | SuS Login→Üben: Ladescreen statt LoginScreen (Race Condition) | `AppLernen.tsx`, `SuSStartseite.tsx` |
+| K | ThemeToggle: Sonne/Mond konsistent, Tooltip Default→bottom | `ThemeToggle.tsx`, `Tooltip.tsx` |
+| L | Einrichtungsfragen im SuS-Dashboard unter "Einführung" | `Dashboard.tsx` |
+| M | Tracker→Analyse umbenannt | `LPStartseite.tsx` |
+| N | Dark-Mode Chips lesbar, 3 Schwierigkeitsstufen, Fragetypen immer sichtbar | `Dashboard.tsx` |
+| O | VWL/BWL/Recht-Prefix aus Pool-Titeln entfernt | `Dashboard.tsx`, `useFragenFilter.ts` |
+| P | FeedbackButton: native title→Tooltip Komponente | `FeedbackButton.tsx` |
+| Q | Dynamic Import Recovery bei Cache-Mismatch (auto-reload) | `SuSStartseite.tsx` |
+| R | Filter-Dropdowns immer sichtbar (nicht mehr bedingt ausgeblendet) | `FragenBrowserHeader.tsx` |
+| **Features** | |
+| F1 | **/ExamLab/ als einzige URL** — Unified Build, SuS-Startseite mit Üben/Prüfen | `vite.config.ts`, `deploy.yml`, `main.tsx`, `appMode.ts`, `App.tsx` |
+| F2 | **Einstellungen-Button** (⚙) im LP-Header mit Slide-over Panel | `LPHeader.tsx`, `LPStartseite.tsx`, `EinstellungenPanel.tsx` |
+| F3 | **Analyse-Tab** in Üben (Grundstruktur mit Platzhaltern) | `LPStartseite.tsx`, `AnalyseDashboard.tsx` |
+| F4 | **Schule/Privat Toggle** in Fragensammlung | `useFragenFilter.ts`, `FragenBrowserHeader.tsx` |
+| F5 | **Einführungsübung komplett** — 23 Fragen, alle Fragetypen | `einrichtungsUebung.ts`, `einrichtungsUebungFragen.ts` |
+| F6 | **Pool-Themen-Migration** — 2178 Fragen Backend-Update + Migrations-Script | `migratePoolThemen.ts`, `poolTitelMapping.ts`, `EinstellungenPanel.tsx` |
+
+### Neue Dateien (7)
+- `src/components/sus/SuSStartseite.tsx` — SuS-Startseite mit Üben/Prüfen + Login-Bridging
+- `src/components/settings/EinstellungenPanel.tsx` — Einstellungen Slide-over
+- `src/components/lp/ueben/AnalyseDashboard.tsx` — Analyse-Dashboard (Grundstruktur)
+- `src/utils/poolTitelMapping.ts` — Feste Pool-ID → Titel Zuordnung (28 Pools)
+- `src/utils/migratePoolThemen.ts` — Migration Pool-Fragen thema/unterthema
+- `scripts/migrate-pool-themen.mjs` — CLI-Migrations-Script (einmalig ausgeführt)
+
+### Verifiziert
+- ✅ tsc, 193 Tests, Build
+- ✅ LP: Einrichtungsprüfung bei Prüfen, Einrichtungsübung bei Üben (je 23 Fragen)
+- ✅ LP: Tooltips, ThemeToggle, Einstellungen-Button, Analyse-Tab
+- ✅ SuS: ExamLab-URL mit Üben/Prüfen-Auswahl, Login-Bridging funktioniert
+- ✅ Fragensammlung: Filter kaskadierend, Schule/Privat Toggle, Layout 2-zeilig
+- ✅ Pool-Migration: 2178/2179 Fragen im Backend korrekt (1 Netzwerkfehler)
+- ⏳ SuS-Dashboard mit migrierten Themen (nach Deployment testen)
+
+### Nächste Session
+
+| # | Aufgabe | Aufwand |
+|---|---------|--------|
+| 1 | Browser-Test SuS-Dashboard mit migrierten Themen | klein |
+| 2 | Analyse-Dashboard mit echten Daten füllen (Fortschritt, Schwierigste Fragen) | mittel |
+| 3 | Einstellungen-Panel mit Funktionalität (Kurse, LP-Verwaltung) | mittel |
+| 4 | SuS-Übungserlebnis: Dark-Mode Kontrast in ThemaDetailView verifizieren | klein |
+| 5 | Fragetypen im SuS-Dashboard: Alle Pool-Typen korrekt anzeigen | klein |
+| 6 | Tooltip-Migration: Schrittweise title= → Tooltip Komponente (190 Stellen) | gross |
+| 7 | Drag & Drop für Fragen-Sortierung im Composer (@dnd-kit) | mittel |
+| 8 | Code-Variablen-Renaming (Lernplattform → Üben etc.) | gross |
+
+### Offene Bugs (aus letztem Test)
+- "Geld (1)" in Fragenbank — wahrscheinlich eine manuell erstellte Frage ohne poolId (prüfen nach Migration)
+- SuS Dynamic Import Error bei altem Cache — Fix deployed (auto-reload), User muss Hard Refresh machen
+- 1 Frage (ID `1e363395...`) nicht migriert (Netzwerkfehler) — manuell prüfen oder Script nochmal laufen lassen
+
+---
+
 ## Session 66b — Bugs + Features: ExamLab-URL, Einstellungen, Analyse, Schule/Privat (06.04.2026)
 
 ### Stand
