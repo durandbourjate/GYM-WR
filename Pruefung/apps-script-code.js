@@ -23,7 +23,7 @@ const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
 // Dynamisch: Alle Tabs im Fragenbank-Sheet ausser System-Tabs
 const FRAGENBANK_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
 // Fachbereich-Mapping: Unklare Tab-Namen auf saubere Bezeichnungen mappen
-const FACHBEREICH_MAPPING = { 'Allgemein': 'Andere', 'Wirtschaft & Recht': 'Andere' };
+const FACHBEREICH_MAPPING = { 'Allgemein': 'Andere' };
 
 // Themen-Mapping: poolId-Prefix → Thema-Titel (generiert aus Pool-Configs)
 // Damit: bisheriges thema → unterthema, Pool-Titel → thema
@@ -6379,7 +6379,8 @@ function lernplattformLadeFragen(body) {
 function parseFrageKanonisch_(row, fachbereich) {
   // Fachbereich-Mapping anwenden (z.B. "Allgemein" → "Andere")
   var mappedFachbereich = FACHBEREICH_MAPPING[fachbereich] || fachbereich;
-  var mappedFach = FACHBEREICH_MAPPING[row.fach] || row.fach;
+  // fach: Wenn 'Wirtschaft & Recht' (unspezifisch), den konkreten Fachbereich übernehmen
+  var mappedFach = row.fach === 'Wirtschaft & Recht' ? mappedFachbereich : (FACHBEREICH_MAPPING[row.fach] || row.fach || mappedFachbereich);
   var base = {
     id: row.id,
     version: Number(row.version) || 1,
