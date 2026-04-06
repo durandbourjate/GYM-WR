@@ -6,6 +6,75 @@
 
 ---
 
+## Session 67 — Progressive Loading: Fragenbank Performance (06.04.2026)
+
+### Stand
+Branch `feature/progressive-loading`. tsc ✅ | 193 Tests ✅ | Build ✅.
+**Apps Script muss neu deployed werden** (2 neue Endpoints).
+
+### Problem
+`ladeFragenbank` lädt 2218 Fragen (3-5 MB) in einem Call. Bei Cold Cache dauert das 28-37s und sprengt den 30s-Timeout. User sieht langen Ladescreen.
+
+### Lösung: Summary/Detail-Split
+
+**Backend (apps-script-code.js):**
+
+| Endpoint | Payload | Zweck |
+|----------|---------|-------|
+| `ladeFragenbankSummary` (NEU) | ~440 KB | Listenansicht: id, typ, fachbereich, thema, fragetext (200 Zeichen), bloom, punkte, tags, etc. |
+| `ladeFrageDetail` (NEU) | ~1.5 KB | Einzelne Frage mit allen Feldern (on-demand) |
+| `ladeFragenbank` (bestehend) | 3-5 MB | Unverändert, wird als Background-Prefetch genutzt (Timeout 90s) |
+
+- Cache-TTL: 5 Min → 30 Min
+- Separater `fragenbank_summary`-Cache (kleiner, schneller)
+- `frageZuSummary_()` Helper extrahiert Summary-Felder
+
+**Frontend:**
+
+| Datei | Änderung |
+|-------|----------|
+| `types/fragen.ts` | Neuer `FrageSummary`-Typ |
+| `store/fragenbankStore.ts` | Progressiver Status: idle→summary_laden→summary_fertig→detail_laden→fertig. `summaries[]`, `detailCache{}`, Background-Prefetch |
+| `services/fragenbankApi.ts` | `ladeFragenbankSummary()`, `ladeFrageDetail()` + angepasste Timeouts (Summary 30s, Detail 15s, Full 90s) |
+| `hooks/useFragenFilter.ts` | Akzeptiert `FilterbareFrage` (Summary oder Frage) |
+| `FragenBrowser.tsx` | Nutzt Summaries für Liste, Detail on-demand bei Klick, Lade-Overlay |
+| `DetailKarte/KompaktZeile/PoolBadges` | Akzeptieren `Frage | FrageSummary` |
+| `PruefungsComposer.tsx` | Nutzt `detailCache` als Fallback |
+
+### Flow
+1. LP Login → `ladeSummaries()` (~440 KB, ~8-12s) → UI sofort interaktiv
+2. Filter, Suche, Gruppierung arbeiten auf Summary-Daten
+3. Background-Prefetch: `ladeAlleDetails()` lädt volle Fragen (90s Timeout)
+4. Klick auf Frage → Detail aus Cache oder on-demand via `ladeFrageDetail`
+
+### Verifiziert
+- ✅ tsc, 193 Tests, Build
+- ⏳ Browser-Test nach Apps Script Deploy
+- ⏳ Performance-Messung (Summary-Response < 500 KB, TTI < 12s)
+
+### Nächste Schritte
+
+| # | Aufgabe | Prio |
+|---|---------|------|
+| 1 | **Apps Script deployen** (User muss Code ersetzen + neue Bereitstellung) | hoch |
+| 2 | **Browser-Test** LP: Fragensammlung lädt schnell, Detail-Klick funktioniert | hoch |
+| 3 | **Merge zu main** nach erfolgreichem Test | hoch |
+| 4 | Analyse-Dashboard mit echten Daten | mittel |
+| 5 | Einstellungen-Panel mit Funktionalität | mittel |
+
+### Offene Bugs (aus Session 66)
+- **"Geld (1)"** in Fragenbank — wahrscheinlich manuell erstellte Frage ohne poolId
+- **1 Frage** (ID `1e363395...`) nicht migriert (Netzwerkfehler)
+
+### ⚠ Apps Script Deploy nötig
+`apps-script-code.js` enthält 2 neue Endpoints + Cache-TTL-Änderung. **Noch NICHT deployed.**
+User muss:
+1. Code im Apps Script Editor ersetzen
+2. Neue Bereitstellung erstellen
+3. Browser-Test durchführen
+
+---
+
 ## Session 66 Gesamt — ExamLab Overhaul (06.04.2026)
 
 ### Stand
