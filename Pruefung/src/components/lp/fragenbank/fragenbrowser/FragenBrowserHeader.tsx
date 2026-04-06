@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../../../../types/fragen.ts'
 import type { Sortierung, FilterPoolStatus, FilterKontext } from '../../../../hooks/useFragenFilter.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
+import { typLabel } from '../../../../utils/fachUtils.ts'
 
 interface Props {
   // Daten
@@ -243,17 +244,11 @@ export default function FragenBrowserHeader({
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="">Typ</option>
-          <option value="mc">MC ({stats.typen.get('mc') ?? 0})</option>
-          <option value="freitext">Freitext ({stats.typen.get('freitext') ?? 0})</option>
-          <option value="lueckentext">Lückentext ({stats.typen.get('lueckentext') ?? 0})</option>
-          <option value="zuordnung">Zuordnung ({stats.typen.get('zuordnung') ?? 0})</option>
-          <option value="richtigfalsch">Richtig/Falsch ({stats.typen.get('richtigfalsch') ?? 0})</option>
-          <option value="berechnung">Berechnung ({stats.typen.get('berechnung') ?? 0})</option>
-          <option value="buchungssatz">Buchungssatz ({stats.typen.get('buchungssatz') ?? 0})</option>
-          <option value="tkonto">T-Konto ({stats.typen.get('tkonto') ?? 0})</option>
-          <option value="kontenbestimmung">Kontenbestimmung ({stats.typen.get('kontenbestimmung') ?? 0})</option>
-          <option value="bilanzstruktur">Bilanz/ER ({stats.typen.get('bilanzstruktur') ?? 0})</option>
-          <option value="aufgabengruppe">Aufgabengruppe ({stats.typen.get('aufgabengruppe') ?? 0})</option>
+          {Array.from(stats.typen.entries())
+            .sort((a, b) => b[1] - a[1])
+            .map(([typ, anzahl]) => (
+              <option key={typ} value={typ}>{typLabel(typ)} ({anzahl})</option>
+            ))}
         </select>
 
         {/* Bloom */}
