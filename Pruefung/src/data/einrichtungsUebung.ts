@@ -14,7 +14,7 @@ export const einrichtungsUebung: PruefungsConfig = {
   modus: 'uebung',
   dauerMinuten: 30,
   zeitModus: 'open-end',
-  gesamtpunkte: 36,
+  gesamtpunkte: 59,
 
   erlaubteKlasse: 'sf-wr-27a28f',
 
@@ -41,6 +41,11 @@ export const einrichtungsUebung: PruefungsConfig = {
       titel: 'Teil D: Weitere Fragetypen kennenlernen',
       beschreibung: 'Testen Sie Berechnung, Sortierung, Buchhaltung und Zeichnen.',
       fragenIds: ['ueb-be-rechnung', 'ueb-sort-wochentage', 'ueb-bs-einkauf', 'ueb-tk-bank', 'ueb-bilanz-einfach', 'ueb-kb-kategorien', 'ueb-vis-smiley'],
+    },
+    {
+      titel: 'Teil E: Spezielle Fragetypen',
+      beschreibung: 'Testen Sie PDF-Annotation, Hotspot, Bildbeschriftung, Audio, DragDrop, Code und Formel.',
+      fragenIds: ['ueb-pdf-witz', 'ueb-sort-planeten', 'ueb-hs-europa', 'ueb-bb-zelle', 'ueb-audio-vorstellen', 'ueb-dd-kontinente', 'ueb-code-python', 'ueb-formel-pythagoras'],
     },
   ],
 
