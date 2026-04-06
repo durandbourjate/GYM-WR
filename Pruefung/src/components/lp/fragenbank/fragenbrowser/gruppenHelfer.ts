@@ -1,9 +1,9 @@
 import { typLabel } from '../../../../utils/fachUtils.ts'
-import type { Frage } from '../../../../types/fragen.ts'
+import type { Frage, FrageSummary } from '../../../../types/fragen.ts'
 
 export type Gruppierung = 'keine' | 'fachbereich' | 'thema' | 'typ' | 'bloom'
 
-export function gruppenKey(frage: Frage, gruppierung: Gruppierung): string {
+export function gruppenKey(frage: Frage | FrageSummary, gruppierung: Gruppierung): string {
   switch (gruppierung) {
     case 'fachbereich': return frage.fachbereich
     case 'thema': return frage.thema

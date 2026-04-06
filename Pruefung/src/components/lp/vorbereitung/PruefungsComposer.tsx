@@ -99,16 +99,18 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   const speichertRef = useRef(false)
 
   // Fragen-Map aus Store (wird beim Login parallel geladen)
+  // detailCache wird zuerst gefüllt (on-demand), fragenMap nach Background-Prefetch
   const storeFragenMap = useFragenbankStore(s => s.fragenMap)
+  const storeDetailCache = useFragenbankStore(s => s.detailCache)
   const storeStatus = useFragenbankStore(s => s.status)
 
-  // Im Demo-Modus: Demo-Fragen direkt nutzen, sonst Store
+  // Im Demo-Modus: Demo-Fragen direkt nutzen, sonst Store (Detail-Cache hat Vorrang)
   const fragenMap = (istDemoModus || !apiService.istKonfiguriert())
     ? Object.fromEntries(demoFragen.map(f => [f.id, f]))
-    : storeFragenMap
+    : (Object.keys(storeFragenMap).length > 0 ? storeFragenMap : storeDetailCache)
   const fragenGeladen = (istDemoModus || !apiService.istKonfiguriert())
     ? true
-    : storeStatus === 'fertig'
+    : (storeStatus === 'fertig' || storeStatus === 'summary_fertig' || storeStatus === 'detail_laden')
 
   // Falls Store noch nicht geladen: Laden anstossen (Fallback)
   useEffect(() => {

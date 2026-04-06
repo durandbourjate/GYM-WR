@@ -8,7 +8,7 @@ import { apiService } from '../../../services/apiService.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
-import type { Frage } from '../../../types/fragen.ts'
+import type { Frage, FrageSummary } from '../../../types/fragen.ts'
 import type { FragenPerformance } from '../../../types/tracker.ts'
 import { gruppenLabel, gruppenLabelFarbe } from './fragenbrowser/gruppenHelfer.ts'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
@@ -55,12 +55,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const { panelBreite, handleZiehStart } = usePanelResize(1008, 600, 0.9)
 
   // Fragen aus Store (wird beim Login parallel geladen)
+  // Summaries für Listenansicht (schnell geladen), Details on-demand
+  const storeSummaries = useFragenbankStore(s => s.summaries)
   const storeFragen = useFragenbankStore(s => s.fragen)
   const storeStatus = useFragenbankStore(s => s.status)
 
-  // Im Demo-Modus Demo-Fragen, sonst Store
-  const alleFragen = (istDemoModus || !apiService.istKonfiguriert()) ? demoFragen : storeFragen
-  const ladeStatus = (istDemoModus || !apiService.istKonfiguriert()) ? 'fertig' as const : (storeStatus === 'fertig' ? 'fertig' as const : 'laden' as const)
+  // Im Demo-Modus Demo-Fragen, sonst Summaries (oder volle Fragen als Fallback)
+  const alleFragen = (istDemoModus || !apiService.istKonfiguriert())
+    ? demoFragen
+    : (storeSummaries.length > 0 ? storeSummaries : storeFragen)
+  const ladeStatus = (istDemoModus || !apiService.istKonfiguriert())
+    ? 'fertig' as const
+    : (storeStatus === 'summary_fertig' || storeStatus === 'detail_laden' || storeStatus === 'fertig' ? 'fertig' as const : 'laden' as const)
 
   // Store-Mutationen
   const { setFragen: setAlleFragen, aktualisiereFrage, entferneFrage, fuegeFragenHinzu } = useFragenbankStore.getState()
@@ -75,10 +81,36 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [editFrage, setEditFrage] = useState<Frage | null>(null)
   const [zeigImport, setZeigImport] = useState(false)
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
-  const [loeschKandidat, setLoeschKandidat] = useState<Frage | null>(null)
+  const [loeschKandidat, setLoeschKandidat] = useState<{ id: string; fachbereich: string; typ: string; fragetext?: string } | null>(null)
+  const [detailLaden, setDetailLaden] = useState(false)
 
   // Filter/Sort/Gruppierungs-Hook
   const filter = useFragenFilter(alleFragen, user?.email, ladeStatus)
+
+  /** Detail on-demand laden und Editor öffnen */
+  async function handleEditFrage(frage: Frage | FrageSummary): Promise<void> {
+    // Prüfe ob Detail schon im Cache
+    const detail = useFragenbankStore.getState().getDetail(frage.id)
+    if (detail) {
+      setEditFrage(detail)
+      setZeigEditor(true)
+      return
+    }
+    // Detail vom Backend laden
+    if (user && apiService.istKonfiguriert() && !istDemoModus) {
+      setDetailLaden(true)
+      const geladen = await useFragenbankStore.getState().ladeDetail(user.email, frage.id, frage.fachbereich)
+      setDetailLaden(false)
+      if (geladen) {
+        setEditFrage(geladen)
+        setZeigEditor(true)
+      }
+    } else {
+      // Demo-Modus: Frage ist bereits vollständig
+      setEditFrage(frage as Frage)
+      setZeigEditor(true)
+    }
+  }
 
   // Falls Store noch nicht geladen: Laden anstossen (Fallback)
   useEffect(() => {
@@ -109,8 +141,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     if (ladeStatus === 'fertig' && initialEditFrageId) {
       const frage = alleFragen.find((f) => f.id === initialEditFrageId)
       if (frage) {
-        setEditFrage(frage)
-        setZeigEditor(true)
+        handleEditFrage(frage)
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps — Nur beim ersten Laden ausführen
@@ -171,13 +202,16 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     }
   }
 
-  async function handleFrageDuplizieren(frage: Frage): Promise<void> {
+  async function handleFrageDuplizieren(frage: Frage | FrageSummary): Promise<void> {
     if (!user) return
 
     if (istDemoModus || !apiService.istKonfiguriert()) {
-      // Demo: Lokale Kopie erstellen
-      const kopie = { ...structuredClone(frage), id: `kopie-${Date.now()}`, autor: user.email } as Frage
-      fuegeFragenHinzu([kopie])
+      // Demo: Lokale Kopie erstellen — braucht volle Frage
+      const detail = useFragenbankStore.getState().getDetail(frage.id)
+      if (detail) {
+        const kopie = { ...structuredClone(detail), id: `kopie-${Date.now()}`, autor: user.email } as Frage
+        fuegeFragenHinzu([kopie])
+      }
       return
     }
 
@@ -250,11 +284,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         />
 
         {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto">
+        <div ref={listeRef} className="flex-1 overflow-auto relative">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
             </p>
+          )}
+
+          {/* Detail-Lade-Overlay */}
+          {detailLaden && (
+            <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 z-10 flex items-center justify-center">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Frage wird geladen...</p>
+            </div>
           )}
 
           {ladeStatus === 'fertig' && filter.gefilterteFragen.length === 0 && (
@@ -300,7 +341,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 frage={frage}
                                 istInPruefung={bereitsVerwendetSet.has(frage.id)}
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
+                                onEdit={() => handleEditFrage(frage)}
                                 onDuplizieren={() => handleFrageDuplizieren(frage)}
                                 zeigeGruppierung={filter.gruppierung}
                                 performance={fragenStats.get(frage.id)}
@@ -310,8 +351,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 frage={frage}
                                 istInPruefung={bereitsVerwendetSet.has(frage.id)}
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
-                                onLoeschen={() => setLoeschKandidat(frage)}
+                                onEdit={() => handleEditFrage(frage)}
+                                onLoeschen={() => setLoeschKandidat({ id: frage.id, fachbereich: frage.fachbereich, typ: frage.typ, fragetext: 'fragetext' in frage ? (frage as any).fragetext : '' })}
                                 onDuplizieren={() => handleFrageDuplizieren(frage)}
                                 performance={fragenStats.get(frage.id)}
                               />
@@ -355,9 +396,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                 <strong>{loeschKandidat.id}</strong> · {loeschKandidat.fachbereich} · {typLabel(loeschKandidat.typ)}
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                {'fragetext' in loeschKandidat
-                  ? (loeschKandidat as { fragetext: string }).fragetext?.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 120)
-                  : ''}
+                {loeschKandidat.fragetext?.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 120) || ''}
               </p>
               <p className="text-xs text-red-600 dark:text-red-400 mb-4">
                 Diese Aktion kann nicht rückgängig gemacht werden.
@@ -391,7 +430,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         {/* Batch-Export Overlay */}
         {zeigBatchExport && (
           <BatchExportDialog
-            fragen={filter.gefilterteFragen}
+            fragen={filter.gefilterteFragen as Frage[]}
             onSchliessen={() => setZeigBatchExport(false)}
             onErfolg={(updates) => {
               const aktuell = useFragenbankStore.getState().fragen
@@ -467,11 +506,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         />
 
         {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto">
+        <div ref={listeRef} className="flex-1 overflow-auto relative">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
             </p>
+          )}
+
+          {/* Detail-Lade-Overlay */}
+          {detailLaden && (
+            <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 z-10 flex items-center justify-center">
+              <p className="text-sm text-slate-500 dark:text-slate-400">Frage wird geladen...</p>
+            </div>
           )}
 
           {ladeStatus === 'fertig' && filter.gefilterteFragen.length === 0 && (
@@ -519,7 +565,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 frage={frage}
                                 istInPruefung={bereitsVerwendetSet.has(frage.id)}
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
+                                onEdit={() => handleEditFrage(frage)}
                                 onDuplizieren={() => handleFrageDuplizieren(frage)}
                                 zeigeGruppierung={filter.gruppierung}
                                 performance={fragenStats.get(frage.id)}
@@ -529,8 +575,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
                                 frage={frage}
                                 istInPruefung={bereitsVerwendetSet.has(frage.id)}
                                 onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => { setEditFrage(frage); setZeigEditor(true) }}
-                                onLoeschen={() => setLoeschKandidat(frage)}
+                                onEdit={() => handleEditFrage(frage)}
+                                onLoeschen={() => setLoeschKandidat({ id: frage.id, fachbereich: frage.fachbereich, typ: frage.typ, fragetext: 'fragetext' in frage ? (frage as any).fragetext : '' })}
                                 onDuplizieren={() => handleFrageDuplizieren(frage)}
                                 performance={fragenStats.get(frage.id)}
                               />
@@ -576,9 +622,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
               <strong>{loeschKandidat.id}</strong> · {loeschKandidat.fachbereich} · {typLabel(loeschKandidat.typ)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              {'fragetext' in loeschKandidat
-                ? (loeschKandidat as { fragetext: string }).fragetext?.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 120)
-                : ''}
+              {loeschKandidat.fragetext?.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 120) || ''}
             </p>
             <p className="text-xs text-red-600 dark:text-red-400 mb-4">
               Diese Aktion kann nicht rückgängig gemacht werden.
@@ -612,7 +656,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       {/* Batch-Export Overlay */}
       {zeigBatchExport && (
         <BatchExportDialog
-          fragen={filter.gefilterteFragen}
+          fragen={filter.gefilterteFragen as Frage[]}
           onSchliessen={() => setZeigBatchExport(false)}
           onErfolg={(updates) => {
             const aktuell = useFragenbankStore.getState().fragen

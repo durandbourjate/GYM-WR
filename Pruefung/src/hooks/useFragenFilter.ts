@@ -5,7 +5,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import { gruppenKey } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
 import type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
-import type { Frage, Fachbereich, BloomStufe } from '../types/fragen.ts'
+import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/fragen.ts'
+
+/** Typ der sowohl für Frage als auch FrageSummary funktioniert (Filter braucht nur diese Felder) */
+type FilterbareFrage = Frage | FrageSummary
 import { poolTitel } from '../utils/poolTitelMapping'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
@@ -21,12 +24,12 @@ const SEITEN_GROESSE = 30
  *  Pool-Fragen im alten Format haben thema=Topic-Label und kein unterthema.
  *  Erkennung über quellReferenz "Pool: ...", poolId, oder quelle='pool' */
 /** Pool-Themen-Mapping: Pool-Titel aus fester Tabelle, Topic-Label als Unterthema */
-function poolThemenMapping(f: Frage): { thema: string; unterthema: string } {
+function poolThemenMapping(f: FilterbareFrage): { thema: string; unterthema: string } {
   const hatUnterthema = !!f.unterthema
 
   // Pool-Fragen: über poolId identifizieren und Titel aus Mapping-Tabelle
-  if (!hatUnterthema && (f as { poolId?: string }).poolId) {
-    const poolMetaId = ((f as { poolId?: string }).poolId || '').split(':')[0]
+  if (!hatUnterthema && f.poolId) {
+    const poolMetaId = (f.poolId || '').split(':')[0]
     const titel = poolTitel(poolMetaId)
     if (titel) {
       return { thema: titel, unterthema: f.thema }
@@ -74,9 +77,9 @@ interface FragenFilterErgebnis {
   // Berechnete Werte
   verfuegbareThemen: [string, number][]
   verfuegbareUnterthemen: [string, number][]
-  gefilterteFragen: Frage[]
-  sortierteFragen: Frage[]
-  gruppierteAnzeige: { key: string; label: string; fragen: Frage[] }[]
+  gefilterteFragen: FilterbareFrage[]
+  sortierteFragen: FilterbareFrage[]
+  gruppierteAnzeige: { key: string; label: string; fragen: FilterbareFrage[] }[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   aktiveFilter: number
 
@@ -86,7 +89,7 @@ interface FragenFilterErgebnis {
 }
 
 export function useFragenFilter(
-  alleFragen: Frage[],
+  alleFragen: FilterbareFrage[],
   userEmail: string | undefined,
   ladeStatus: 'laden' | 'fertig',
 ): FragenFilterErgebnis {
@@ -170,8 +173,11 @@ export function useFragenFilter(
           case 'update': if (!f.poolUpdateVerfuegbar) return false; break
         }
       }
-      // Anhang-Filter
-      if (filterMitAnhang && (!f.anhaenge || f.anhaenge.length === 0)) return false
+      // Anhang-Filter (Summary hat hatAnhang boolean, Frage hat anhaenge Array)
+      if (filterMitAnhang) {
+        const hatAnhang = 'hatAnhang' in f ? (f as FrageSummary).hatAnhang : (Array.isArray((f as Frage).anhaenge) && (f as Frage).anhaenge!.length > 0)
+        if (!hatAnhang) return false
+      }
       if (suchtext) {
         const text = suchtext.toLowerCase()
         const fragetext = 'fragetext' in f ? (f as { fragetext: string }).fragetext : ''
@@ -209,7 +215,7 @@ export function useFragenFilter(
       return [{ key: '', label: '', fragen: sortierteFragen.slice(0, angezeigteMenge) }]
     }
 
-    const gruppenMap = new Map<string, Frage[]>()
+    const gruppenMap = new Map<string, FilterbareFrage[]>()
     for (const f of sortierteFragen) {
       const key = gruppenKey(f, gruppierung)
       if (!gruppenMap.has(key)) gruppenMap.set(key, [])

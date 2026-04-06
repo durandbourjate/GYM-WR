@@ -353,7 +353,7 @@ function getLPInfo(email) {
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
 // Versions-Counter invalidiert alle Caches bei Schreiboperationen.
 
-var CACHE_TTL = 300; // 5 Minuten
+var CACHE_TTL = 1800; // 30 Minuten (Fragenbank ändert sich selten)
 var CACHE_MAX_CHUNK = 90000; // 90KB pro CacheService-Key (Limit: 100KB)
 
 /** Liest gecachte Daten (mit Chunking-Support für grosse Datensätze) */
@@ -646,6 +646,10 @@ function doGet(e) {
       return ladeEinzelConfig(e.parameter.id, email);
     case 'ladeFragenbank':
       return ladeFragenbank(email);
+    case 'ladeFragenbankSummary':
+      return ladeFragenbankSummary(email);
+    case 'ladeFrageDetail':
+      return ladeFrageDetail(e.parameter.frageId, e.parameter.fachbereich, email);
     case 'monitoring':
       return ladeMonitoring(e.parameter.id, email);
     case 'ladeKorrektur':
@@ -2715,6 +2719,163 @@ function ladeFragenbank(email) {
     }
 
     return jsonResponse({ fragen: alleFragen });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === FRAGENBANK SUMMARY (leichtgewichtig für Listenansicht) ===
+
+/**
+ * Gibt nur die für die Listenansicht nötigen Felder zurück (~200 Bytes/Frage statt ~1500).
+ * Nutzt den bestehenden alle_fragen-Cache, extrahiert aber nur Summary-Felder.
+ */
+function ladeFragenbankSummary(email) {
+  try {
+    if (!istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    var lpInfo = getLPInfo(email);
+    var istAdmin = lpInfo && lpInfo.rolle === 'admin';
+
+    // Summary-Cache prüfen (viel kleiner als voller Cache)
+    var summaryCache = cacheGet_('fragenbank_summary');
+    if (!summaryCache) {
+      // Voller Cache als Basis (oder frisch laden)
+      var alleParsed = cacheGet_('alle_fragen');
+      if (!alleParsed) {
+        alleParsed = [];
+        var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+        var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+        for (var t = 0; t < tabs.length; t++) {
+          var sheet = fragenbank.getSheetByName(tabs[t]);
+          if (!sheet) continue;
+          var data = getSheetData(sheet);
+          for (var r = 0; r < data.length; r++) {
+            if (data[r].id) alleParsed.push(parseFrage(data[r], tabs[t]));
+          }
+        }
+        cachePut_('alle_fragen', alleParsed);
+      }
+
+      // Summary extrahieren und separat cachen
+      summaryCache = alleParsed.map(function(f) {
+        return frageZuSummary_(f);
+      });
+      cachePut_('fragenbank_summary', summaryCache);
+    }
+
+    // Sichtbarkeits-Filter (auf Summary-Daten — braucht quelle, autor, geteilt, berechtigungen, fachbereich)
+    var summaries = [];
+    for (var i = 0; i < summaryCache.length; i++) {
+      var s = summaryCache[i];
+      if (istSichtbarMitLP(email, s, lpInfo, istAdmin)) {
+        s._recht = ermittleRechtMitLP(email, s, lpInfo, istAdmin);
+        if (s.autor && s.autor !== email) {
+          s.geteiltVon = s.autor.split('@')[0];
+        }
+        summaries.push(s);
+      }
+    }
+
+    return jsonResponse({ summaries: summaries });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Extrahiert die Summary-Felder aus einem vollständigen Frage-Objekt.
+ * Wird für Summary-Cache und Summary-Endpoint verwendet.
+ */
+function frageZuSummary_(frage) {
+  var fragetext = frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '';
+  if (fragetext.length > 200) fragetext = fragetext.substring(0, 200) + '…';
+  return {
+    id: frage.id,
+    typ: frage.typ,
+    fachbereich: frage.fachbereich,
+    thema: frage.thema || '',
+    unterthema: frage.unterthema || '',
+    fragetext: fragetext,
+    bloom: frage.bloom || 'K1',
+    punkte: frage.punkte || 1,
+    tags: frage.tags || [],
+    quelle: frage.quelle || 'manuell',
+    autor: frage.autor || '',
+    erstelltVon: frage.erstelltVon || frage.autor || '',
+    erstelltAm: frage.erstelltAm || '',
+    geteilt: frage.geteilt || 'privat',
+    geteiltVon: frage.geteiltVon || '',
+    poolId: frage.poolId || '',
+    poolGeprueft: frage.poolGeprueft || false,
+    pruefungstauglich: frage.pruefungstauglich || false,
+    poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar || false,
+    hatAnhang: Array.isArray(frage.anhaenge) && frage.anhaenge.length > 0,
+    hatMaterial: !!(frage.pdfDriveFileId || frage.pdfUrl),
+    fach: frage.fach || '',
+    berechtigungen: frage.berechtigungen || [],
+    lernzielIds: frage.lernzielIds || [],
+    semester: frage.semester || [],
+    gefaesse: frage.gefaesse || [],
+  };
+}
+
+// === FRAGENBANK DETAIL (einzelne Frage mit allen Feldern) ===
+
+/**
+ * Lädt eine einzelne Frage mit allen Detail-Feldern.
+ * Nutzt den bestehenden alle_fragen-Cache wenn verfügbar.
+ */
+function ladeFrageDetail(frageId, fachbereich, email) {
+  try {
+    if (!frageId) return jsonResponse({ error: 'frageId fehlt' });
+    if (!istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    var lpInfo = getLPInfo(email);
+    var istAdmin = lpInfo && lpInfo.rolle === 'admin';
+
+    // Erst im Cache suchen
+    var alleParsed = cacheGet_('alle_fragen');
+    var frage = null;
+
+    if (alleParsed) {
+      for (var i = 0; i < alleParsed.length; i++) {
+        if (alleParsed[i].id === frageId) { frage = alleParsed[i]; break; }
+      }
+    }
+
+    // Falls nicht im Cache: direkt aus Sheet laden
+    if (!frage && fachbereich) {
+      var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+      var sheet = fragenbank.getSheetByName(fachbereich);
+      if (sheet) {
+        var data = getSheetData(sheet);
+        for (var r = 0; r < data.length; r++) {
+          if (data[r].id === frageId) {
+            frage = parseFrage(data[r], fachbereich);
+            break;
+          }
+        }
+      }
+    }
+
+    if (!frage) return jsonResponse({ error: 'Frage nicht gefunden' });
+
+    // Sichtbarkeits-Check
+    if (!istSichtbarMitLP(email, frage, lpInfo, istAdmin)) {
+      return jsonResponse({ error: 'Kein Zugriff auf diese Frage' });
+    }
+
+    frage._recht = ermittleRechtMitLP(email, frage, lpInfo, istAdmin);
+    if (frage.autor && frage.autor !== email) {
+      frage.geteiltVon = frage.autor.split('@')[0];
+    }
+
+    return jsonResponse({ frage: frage });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

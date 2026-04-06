@@ -82,6 +82,37 @@ export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik' | 'Allgemein';
 export type Gefaess = 'SF' | 'EF' | 'EWR' | 'GF';
 export type BloomStufe = 'K1' | 'K2' | 'K3' | 'K4' | 'K5' | 'K6';
 
+/** Leichtgewichtige Frage-Zusammenfassung für Listenansicht (~200 Bytes statt ~1500) */
+export interface FrageSummary {
+  id: string
+  typ: string
+  fachbereich: Fachbereich
+  thema: string
+  unterthema?: string
+  fragetext: string  // Gekürzt auf max. 200 Zeichen
+  bloom: BloomStufe
+  punkte: number
+  tags: (string | import('../types/tags').Tag)[]
+  quelle?: 'pool' | 'papier' | 'manuell' | 'ki-generiert'
+  autor?: string
+  erstelltVon?: string
+  erstelltAm: string
+  geteilt?: 'privat' | 'fachschaft' | 'schule'
+  geteiltVon?: string
+  poolId?: string
+  poolGeprueft?: boolean
+  pruefungstauglich?: boolean
+  poolUpdateVerfuegbar?: boolean
+  hatAnhang: boolean
+  hatMaterial: boolean
+  fach: string
+  berechtigungen?: import('./auth').Berechtigung[]
+  _recht?: import('./auth').EffektivesRecht
+  lernzielIds?: string[]
+  semester?: string[]
+  gefaesse?: string[]
+}
+
 export interface Niveaustufe {
   punkte: number;        // z.B. 3, 2, 1, 0
   beschreibung: string;  // z.B. "Schlüssige Argumentation mit mehreren Belegen"

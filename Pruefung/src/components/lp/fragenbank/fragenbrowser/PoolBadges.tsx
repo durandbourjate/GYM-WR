@@ -1,7 +1,7 @@
-import type { Frage } from '../../../../types/fragen.ts'
+import type { Frage, FrageSummary } from '../../../../types/fragen.ts'
 
 /** Pool-Badges: Zeigt Quelle und Status von Pool-Fragen */
-export default function PoolBadges({ frage }: { frage: Frage }) {
+export default function PoolBadges({ frage }: { frage: Frage | FrageSummary }) {
   if (frage.quelle !== 'pool') return null
   return (
     <span className="inline-flex gap-1">

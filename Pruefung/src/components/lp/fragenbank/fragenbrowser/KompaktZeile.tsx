@@ -1,13 +1,13 @@
 import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteBgFarbe } from '../../../../utils/trackerUtils.ts'
-import type { Frage, FrageBase } from '../../../../types/fragen.ts'
+import type { Frage, FrageSummary, FrageBase } from '../../../../types/fragen.ts'
 import type { EffektivesRecht } from '../../../../types/auth.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import PoolBadges from './PoolBadges.tsx'
 
 interface Props {
-  frage: Frage
+  frage: Frage | FrageSummary
   istInPruefung: boolean
   onToggle: () => void
   onEdit: () => void

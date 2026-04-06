@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import type { Frage, Fachbereich, BloomStufe } from '../../../../types/fragen.ts'
+import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../../../../types/fragen.ts'
 import type { Sortierung, FilterPoolStatus, FilterKontext } from '../../../../hooks/useFragenFilter.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 
 interface Props {
   // Daten
   ladeStatus: 'laden' | 'fertig'
-  gefilterteFragen: Frage[]
+  gefilterteFragen: (Frage | FrageSummary)[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   verfuegbareThemen: [string, number][]
   verfuegbareUnterthemen: [string, number][]

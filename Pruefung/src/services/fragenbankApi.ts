@@ -1,4 +1,4 @@
-import type { Frage } from '../types/fragen.ts'
+import type { Frage, FrageSummary } from '../types/fragen.ts'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import { APPS_SCRIPT_URL, getJson, postBool } from './apiClient'
 
@@ -9,11 +9,25 @@ export async function ladeAlleConfigs(email: string): Promise<PruefungsConfig[] 
   return data.configs ?? []
 }
 
-/** Fragenbank laden (alle Fragen für Composer) */
+/** Fragenbank laden (alle Fragen für Composer) — langsam, nutze ladeFragenbankSummary für UI */
 export async function ladeFragenbank(email: string): Promise<Frage[] | null> {
-  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email })
+  const data = await getJson<{ fragen: Frage[] }>('ladeFragenbank', { email }, { timeoutMs: 90_000 })
   if (!data) return null
   return data.fragen ?? []
+}
+
+/** Fragenbank-Summaries laden (schnell, ~500KB statt 3-5MB) */
+export async function ladeFragenbankSummary(email: string): Promise<FrageSummary[] | null> {
+  const data = await getJson<{ summaries: FrageSummary[] }>('ladeFragenbankSummary', { email })
+  if (!data) return null
+  return data.summaries ?? []
+}
+
+/** Einzelne Frage mit allen Details laden */
+export async function ladeFrageDetail(email: string, frageId: string, fachbereich: string): Promise<Frage | null> {
+  const data = await getJson<{ frage: Frage }>('ladeFrageDetail', { email, frageId, fachbereich }, { timeoutMs: 15_000 })
+  if (!data) return null
+  return data.frage ?? null
 }
 
 /** Prüfungs-Config speichern (Composer -> Configs-Sheet) */
