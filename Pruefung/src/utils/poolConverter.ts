@@ -20,6 +20,12 @@ import type {
   BildbeschriftungFrage,
   DragDropBildFrage,
   CodeFrage,
+  VisualisierungFrage,
+  BilanzERFrage,
+  AufgabengruppeFrage,
+  BuchungssatzFrage,
+  TKontoFrage,
+  KontenbestimmungFrage,
 } from '../types/fragen'
 
 const POOL_IMG_BASE_URL = 'https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/'
@@ -82,6 +88,18 @@ export function berechnePunkte(pf: PoolFrage): number {
       return pf.labels?.length ?? 2
     case 'code':
       return 4
+    case 'zeichnen':
+      return 3
+    case 'buchungssatz':
+      return ((pf as any).correct?.length ?? 1) * 2
+    case 'tkonto':
+      return ((pf as any).geschaeftsfaelle?.length ?? 1) * 2
+    case 'kontenbestimmung':
+      return ((pf as any).aufgaben?.length ?? 1) * 2
+    case 'bilanz':
+      return ((pf as any).kontenMitSaldi?.length ?? 4)
+    case 'gruppe':
+      return ((pf as any).teil?.length ?? 1) * 2
     default:
       return 1
   }
@@ -116,6 +134,18 @@ export function schaetzeZeitbedarf(pf: PoolFrage): number {
       return Math.max(2, (pf.labels?.length ?? 2))
     case 'code':
       return 5
+    case 'zeichnen':
+      return 4
+    case 'buchungssatz':
+      return ((pf as any).correct?.length ?? 1) * 3
+    case 'tkonto':
+      return ((pf as any).geschaeftsfaelle?.length ?? 1) * 3
+    case 'kontenbestimmung':
+      return ((pf as any).aufgaben?.length ?? 1) * 2
+    case 'bilanz':
+      return 5
+    case 'gruppe':
+      return ((pf as any).teil?.length ?? 1) * 3
     default:
       return 2
   }
@@ -530,8 +560,98 @@ export function konvertierePoolFrage(
       return frage
     }
 
+    // zeichnen → VisualisierungFrage
+    case 'zeichnen': {
+      const frage: VisualisierungFrage = {
+        ...basis,
+        typ: 'visualisierung',
+        untertyp: 'zeichnen',
+        fragetext: poolFrage.q,
+      }
+      return frage
+    }
+
+    // bilanz → BilanzERFrage
+    case 'bilanz': {
+      const frage: BilanzERFrage = {
+        ...basis,
+        typ: 'bilanzstruktur',
+        aufgabentext: poolFrage.q,
+        modus: (poolFrage as any).modus ?? 'bilanz',
+        kontenMitSaldi: (poolFrage as any).kontenMitSaldi ?? [],
+        loesung: (poolFrage as any).correct ?? {},
+        bewertungsoptionen: {
+          seitenbeschriftung: true, gruppenbildung: true, gruppenreihenfolge: true,
+          kontenreihenfolge: true, betraegeKorrekt: true, zwischentotale: true,
+          bilanzsummeOderGewinn: true, mehrstufigkeit: false,
+        },
+      }
+      return frage
+    }
+
+    // buchungssatz → BuchungssatzFrage
+    case 'buchungssatz': {
+      const frage: BuchungssatzFrage = {
+        ...basis,
+        typ: 'buchungssatz',
+        geschaeftsfall: poolFrage.q,
+        buchungen: (poolFrage as any).correct ?? [],
+        kontenauswahl: { modus: 'eingeschraenkt' as const, konten: (poolFrage as any).konten ?? [] },
+      }
+      return frage
+    }
+
+    // tkonto → TKontoFrage
+    case 'tkonto': {
+      const frage: TKontoFrage = {
+        ...basis,
+        typ: 'tkonto',
+        aufgabentext: poolFrage.q,
+        geschaeftsfaelle: (poolFrage as any).geschaeftsfaelle ?? [],
+        konten: (poolFrage as any).konten ?? [],
+        kontenauswahl: { modus: 'voll' },
+        bewertungsoptionen: {
+          beschriftungSollHaben: true, kontenkategorie: true,
+          zunahmeAbnahme: true, buchungenKorrekt: true, saldoKorrekt: true,
+        },
+      }
+      return frage
+    }
+
+    // kontenbestimmung → KontenbestimmungFrage
+    case 'kontenbestimmung': {
+      const frage: KontenbestimmungFrage = {
+        ...basis,
+        typ: 'kontenbestimmung',
+        aufgabentext: poolFrage.q,
+        modus: 'gemischt',
+        aufgaben: (poolFrage as any).aufgaben ?? [],
+        kontenauswahl: { modus: 'voll' },
+      }
+      return frage
+    }
+
+    // gruppe → AufgabengruppeFrage (Teilaufgaben inline)
+    case 'gruppe': {
+      const teilaufgaben = ((poolFrage as any).teil ?? []).map((teil: any) => ({
+        id: genId(),
+        typ: teil.type ?? 'freitext',
+        fragetext: teil.q ?? '',
+        punkte: berechnePunkte({ ...poolFrage, type: teil.type } as PoolFrage),
+        ...teil,
+      }))
+      const frage: AufgabengruppeFrage = {
+        ...basis,
+        typ: 'aufgabengruppe',
+        kontext: `${poolFrage.q}${(poolFrage as any).context ? '\n\n' + (poolFrage as any).context : ''}`,
+        teilaufgaben,
+      }
+      return frage
+    }
+
     default: {
       // Unbekannter Typ → als Freitext importieren (statt Error werfen)
+      console.warn(`[poolConverter] Unbekannter Pool-Typ "${poolFrage.type}" → Freitext-Fallback`)
       const frage: FreitextFrage = {
         ...basis,
         typ: 'freitext',

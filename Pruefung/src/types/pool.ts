@@ -36,6 +36,7 @@ export interface PoolFrage {
   topic: string
   type: 'mc' | 'multi' | 'tf' | 'fill' | 'calc' | 'sort' | 'open'
     | 'sortierung' | 'formel' | 'hotspot' | 'bildbeschriftung' | 'dragdrop_bild' | 'code'
+    | 'zeichnen' | 'buchungssatz' | 'tkonto' | 'kontenbestimmung' | 'bilanz' | 'gruppe' | 'pdf'
   diff: number
   tax: string
   q: string

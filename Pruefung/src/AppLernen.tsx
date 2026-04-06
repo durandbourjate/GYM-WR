@@ -121,15 +121,21 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
     )
   }
 
-  // Nicht eingeloggt: wenn embedded (onZurueck gesetzt) → Ladescreen statt LoginScreen
-  // Das Login-Bridging läuft in SuSStartseite, AppLernen wartet darauf
+  // Nicht eingeloggt
   if (!istAngemeldet) {
     if (_onZurueck) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-          <p className="text-slate-500 dark:text-slate-400">Übungen werden vorbereitet...</p>
-        </div>
-      )
+      // Embedded: Wenn Auth noch nicht versucht wurde (idle), warte auf Login-Bridging
+      // Wenn Auth fehlgeschlagen oder abgemeldet → zurück zur Startseite
+      if (authStatus === 'idle') {
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+            <p className="text-slate-500 dark:text-slate-400">Übungen werden vorbereitet...</p>
+          </div>
+        )
+      }
+      // Auth ist fertig aber nicht angemeldet → zurück (z.B. nach Logout)
+      _onZurueck()
+      return null
     }
     return <LoginScreen />
   }
