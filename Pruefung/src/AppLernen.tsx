@@ -60,9 +60,11 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
     }
   }, [demoAktiv, navigiere])
 
+  // Session nur wiederherstellen wenn NICHT embedded (standalone /Lernplattform/ Login)
+  // Bei embedded (via SuSStartseite/UebungsToolView) wurde der Login bereits gebrückt
   useEffect(() => {
-    if (!IST_DEMO) sessionWiederherstellen()
-  }, [sessionWiederherstellen])
+    if (!IST_DEMO && !_onZurueck) sessionWiederherstellen()
+  }, [sessionWiederherstellen, _onZurueck])
 
   useEffect(() => {
     if (!IST_DEMO && istAngemeldet && user?.email) {

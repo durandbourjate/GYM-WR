@@ -83,10 +83,11 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
 
   // Gruppen laden nachdem Login fertig
   useEffect(() => {
-    if (loginStatus === 'fertig' && pruefungUser?.email && ladeStatus === 'idle') {
+    if (loginStatus === 'fertig' && pruefungUser?.email && (ladeStatus === 'idle' || (ladeStatus === 'fertig' && gruppen.length === 0))) {
+      console.log('[UebungsToolView] Gruppen laden für', pruefungUser.email, '(ladeStatus:', ladeStatus, ')')
       ladeGruppen(pruefungUser.email)
     }
-  }, [loginStatus, pruefungUser?.email, ladeStatus, ladeGruppen])
+  }, [loginStatus, pruefungUser?.email, ladeStatus, gruppen.length, ladeGruppen])
 
   // Auto-Select bei genau 1 Gruppe
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
   }, [waehleGruppe])
 
   // Laden (Login oder Gruppen)
-  if (loginStatus === 'idle' || loginStatus === 'laden' || ladeStatus === 'laden' || ladeStatus === 'idle') {
+  if (loginStatus === 'idle' || loginStatus === 'laden' || ladeStatus === 'laden') {
     return (
       <div className="flex items-center justify-center py-24">
         <p className="text-slate-500 dark:text-slate-400">
