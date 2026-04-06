@@ -18,7 +18,7 @@ import DurchfuehrenDashboard from './components/lp/durchfuehrung/DurchfuehrenDas
 import { MultiDurchfuehrenDashboard } from './components/lp/durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
-import KorrekturListe from './components/sus/KorrekturListe.tsx'
+import SuSStartseite from './components/sus/SuSStartseite.tsx'
 import KorrekturEinsicht from './components/sus/KorrekturEinsicht.tsx'
 
 // Theme-Store importieren damit er initialisiert wird
@@ -240,12 +240,12 @@ export default function App() {
     return <LPStartseite />
   }
 
-  // SuS ohne Prüfungs-ID: Korrektur-Einsicht
+  // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl
   if (user.rolle === 'sus' && !pruefungIdAusUrl && !istDemoModus && apiService.istKonfiguriert()) {
     if (korrekturId) {
       return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
     }
-    return <KorrekturListe onWaehle={setKorrekturId} />
+    return <SuSStartseite onKorrekturWaehle={setKorrekturId} />
   }
 
   // Ladefehler

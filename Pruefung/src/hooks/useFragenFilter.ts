@@ -10,6 +10,9 @@ import type { Frage, Fachbereich, BloomStufe } from '../types/fragen.ts'
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
 export type FilterQuelle = 'alle' | 'meine' | 'fachschaft' | 'schule' | 'pool'
 export type FilterPoolStatus = 'alle' | 'ungeprueft' | 'pool_geprueft' | 'pruefungstauglich' | 'update'
+export type FilterKontext = 'alle' | 'schule' | 'privat'
+
+const SCHUL_FACHBEREICHE = new Set(['VWL', 'BWL', 'Recht', 'Informatik'])
 
 const SEITEN_GROESSE = 30
 
@@ -33,6 +36,8 @@ interface FragenFilterErgebnis {
   setFilterPoolStatus: (v: FilterPoolStatus) => void
   filterMitAnhang: boolean
   setFilterMitAnhang: (v: boolean) => void
+  filterKontext: FilterKontext
+  setFilterKontext: (v: FilterKontext) => void
 
   // Ansicht-State + Setter
   sortierung: Sortierung
@@ -75,6 +80,7 @@ export function useFragenFilter(
   const [filterQuelle, setFilterQuelle] = useState<FilterQuelle>('alle')
   const [filterPoolStatus, setFilterPoolStatus] = useState<FilterPoolStatus>('alle')
   const [filterMitAnhang, setFilterMitAnhang] = useState(false)
+  const [filterKontext, setFilterKontext] = useState<FilterKontext>('alle')
 
   // Ansicht
   const [sortierung, setSortierung] = useState<Sortierung>('thema')
@@ -115,6 +121,9 @@ export function useFragenFilter(
   // Filtern
   const gefilterteFragen = useMemo(() => {
     return alleFragen.filter((f) => {
+      // Schule/Privat-Filter
+      if (filterKontext === 'schule' && !SCHUL_FACHBEREICHE.has(f.fachbereich)) return false
+      if (filterKontext === 'privat' && SCHUL_FACHBEREICHE.has(f.fachbereich)) return false
       if (filterFachbereich && f.fachbereich !== filterFachbereich) return false
       if (filterTyp && f.typ !== filterTyp) return false
       if (filterBloom && f.bloom !== filterBloom) return false
@@ -202,7 +211,7 @@ export function useFragenFilter(
   }, [gefilterteFragen])
 
   // Aktive Filter zählen
-  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, suchtext, filterQuelle !== 'alle' ? filterQuelle : '', filterPoolStatus !== 'alle' ? filterPoolStatus : '', filterMitAnhang ? 'anhang' : ''].filter(Boolean).length
+  const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, suchtext, filterQuelle !== 'alle' ? filterQuelle : '', filterPoolStatus !== 'alle' ? filterPoolStatus : '', filterMitAnhang ? 'anhang' : '', filterKontext !== 'alle' ? filterKontext : ''].filter(Boolean).length
 
   function filterZuruecksetzen(): void {
     setSuchtext('')
@@ -214,6 +223,7 @@ export function useFragenFilter(
     setFilterQuelle('alle')
     setFilterPoolStatus('alle')
     setFilterMitAnhang(false)
+    setFilterKontext('alle')
   }
 
   return {
@@ -226,6 +236,7 @@ export function useFragenFilter(
     filterQuelle, setFilterQuelle,
     filterPoolStatus, setFilterPoolStatus,
     filterMitAnhang, setFilterMitAnhang,
+    filterKontext, setFilterKontext,
     sortierung, setSortierung,
     gruppierung, setGruppierung,
     aufgeklappteGruppen, setAufgeklappteGruppen,

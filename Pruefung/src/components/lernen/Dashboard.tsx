@@ -79,8 +79,11 @@ export default function Dashboard() {
     const fachThema: Record<string, Record<string, Frage[]>> = {}
 
     for (const f of alleFragen) {
+      // Einrichtungs-/Demo-Fragen im SuS-Dashboard ausblenden
+      const themaRaw = f.thema || 'Allgemein'
+      if (themaRaw.startsWith('Einrichtung')) continue
       const fach = f.fach || 'Andere'
-      const thema = f.thema || 'Allgemein'
+      const thema = themaRaw
       if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
       if (!fachThema[fach]) fachThema[fach] = {}
       if (!fachThema[fach][thema]) fachThema[fach][thema] = []

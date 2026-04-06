@@ -4,32 +4,21 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
-// Dual-Build: VITE_APP_MODE bestimmt Prüfungs- oder Übungsmodus
-const appMode = process.env.VITE_APP_MODE || 'pruefung'
-const istLernen = appMode === 'lernen'
-
-// Base-Path: Standard = Production, überschreibbar via VITE_BASE_PATH
-const defaultBasePath = istLernen ? '/GYM-WR-DUY/Lernplattform/' : '/GYM-WR-DUY/Pruefung/'
-const basePath = process.env.VITE_BASE_PATH || defaultBasePath
+// Unified Build: Ein einziger Base-Path für ExamLab
+// Im Dev-Modus (npm run dev) → '/' für lokale Entwicklung
+const istDev = process.env.NODE_ENV !== 'production' && !process.env.VITE_BASE_PATH
+const basePath = process.env.VITE_BASE_PATH || (istDev ? '/' : '/GYM-WR-DUY/ExamLab/')
 // RegExp für navigateFallbackAllowlist aus basePath ableiten
 const basePathEscaped = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-// PWA-Manifest je nach Modus
-const pwaManifest = istLernen
-  ? {
-      name: 'ExamLab — Üben',
-      short_name: 'ExamLab',
-      description: 'Digitales Übungstool',
-      theme_color: '#171717',
-      background_color: '#fafafa',
-    }
-  : {
-      name: 'ExamLab — Prüfen',
-      short_name: 'ExamLab',
-      description: 'Digitales Prüfungstool',
-      theme_color: '#1e40af',
-      background_color: '#f8fafc',
-    }
+// PWA-Manifest
+const pwaManifest = {
+  name: 'ExamLab',
+  short_name: 'ExamLab',
+  description: 'Digitale Prüfungs- und Übungsplattform',
+  theme_color: '#1e40af',
+  background_color: '#f8fafc',
+}
 
 export default defineConfig({
   base: basePath,
@@ -70,14 +59,12 @@ export default defineConfig({
         navigateFallbackAllowlist: [new RegExp(`^${basePathEscaped}(\\/|$)`)],
         // Statische Dateien NICHT durch SPA-Fallback ersetzen
         navigateFallbackDenylist: [/\.pdf$/i, /\.png$/i, /\.jpg$/i, /\.jpeg$/i, /\.gif$/i, /\.svg$/i, /\.mp3$/i, /\.mp4$/i, /\.webm$/i, /\/materialien\//],
-        ...(istLernen ? {
-          // Übungstool: Bilder für Pool-Fragen cachen
-          runtimeCaching: [{
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'images', expiration: { maxEntries: 500, maxAgeSeconds: 30 * 24 * 60 * 60 } }
-          }]
-        } : {}),
+        // Bilder für Pool-Fragen cachen (Üben-Modus)
+        runtimeCaching: [{
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/i,
+          handler: 'CacheFirst',
+          options: { cacheName: 'images', expiration: { maxEntries: 500, maxAgeSeconds: 30 * 24 * 60 * 60 } }
+        }],
       },
     }),
   ],

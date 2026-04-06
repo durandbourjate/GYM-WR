@@ -1,6 +1,6 @@
-// Dual-Build: VITE_APP_MODE bestimmt ob Prüfungs- oder Übungsmodus gebaut wird
-// Default: 'pruefung' (bestehendes Verhalten)
+// Unified Build: Kein Dual-Build mehr. Rolle bestimmt Routing zur Laufzeit.
+// APP_MODE wird nur noch für Abwärtskompatibilität beibehalten.
 export type AppMode = 'pruefung' | 'lernen'
-export const APP_MODE: AppMode = (import.meta.env.VITE_APP_MODE as AppMode) || 'pruefung'
-export const istPruefung = APP_MODE === 'pruefung'
-export const istLernen = APP_MODE === 'lernen'
+export const APP_MODE: AppMode = 'pruefung'
+export const istPruefung = true
+export const istLernen = false

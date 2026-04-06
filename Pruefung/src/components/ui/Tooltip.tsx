@@ -11,7 +11,7 @@ interface Props {
  * Zeigt bei Hover einen Tooltip mit leichter Verzögerung (~300ms).
  * CSS-only Opacity-Transition, kein npm-Dependency.
  */
-export default function Tooltip({ text, position = 'top', children }: Props) {
+export default function Tooltip({ text, position = 'bottom', children }: Props) {
   const [sichtbar, setSichtbar] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 

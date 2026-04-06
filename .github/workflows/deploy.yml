@@ -48,36 +48,27 @@ jobs:
         working-directory: Pruefung
         run: npm ci
 
-      - name: Build Pruefung
+      - name: Build ExamLab (unified)
         working-directory: Pruefung
         env:
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
           VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
         run: npx tsc -b && npx vite build
 
-      # Lernplattform: Zweiter Build aus Pruefung-Source mit VITE_APP_MODE=lernen
-      - name: Build Lernplattform (from Pruefung source)
-        working-directory: Pruefung
-        env:
-          VITE_APP_MODE: lernen
-          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
-          VITE_BASE_PATH: /GYM-WR-DUY/Lernplattform/
-        run: npx vite build --outDir dist-lernen
-
-      # Combine: repo root (Uebungen etc.) + Unterrichtsplaner + Pruefung + Lernplattform builds
+      # Combine: repo root (Uebungen etc.) + Unterrichtsplaner + ExamLab
       - name: Prepare combined site
         run: |
-          mkdir -p _site/Unterrichtsplaner _site/Pruefung _site/Lernplattform
+          mkdir -p _site/Unterrichtsplaner _site/ExamLab _site/Pruefung _site/Lernplattform
           # Copy static content (Uebungen + root landing page)
           cp -r Uebungen _site/Uebungen
           cp index.html _site/ 2>/dev/null || true
           # Copy Unterrichtsplaner build output
           cp -r Unterrichtsplaner/dist/* _site/Unterrichtsplaner/
-          # Copy Pruefung build output
-          cp -r Pruefung/dist/* _site/Pruefung/
-          # Copy Lernplattform build output
-          cp -r Pruefung/dist-lernen/* _site/Lernplattform/
+          # Copy ExamLab build output
+          cp -r Pruefung/dist/* _site/ExamLab/
+          # Redirects: alte URLs → /ExamLab/
+          echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Pruefung/index.html
+          echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Lernplattform/index.html
           # Clean up macOS artifacts
           find _site -name '.DS_Store' -delete
 

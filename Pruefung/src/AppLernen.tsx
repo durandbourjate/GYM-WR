@@ -18,7 +18,12 @@ const DEMO_PARAM = new URLSearchParams(window.location.search).get('demo')
 const IST_DEMO = !!DEMO_PARAM
 const DEMO_ROLLE: LernenRolle = DEMO_PARAM === 'eltern' ? 'admin' : 'lernend'
 
-export default function AppLernen() {
+interface AppLernenProps {
+  /** Callback wenn SuS "Zurück" zur ExamLab-Startseite will */
+  onZurueck?: () => void
+}
+
+export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}) {
   const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useLernenAuthStore()
   const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useLernenGruppenStore()
   const { session, starteSession } = useLernenUebungsStore()

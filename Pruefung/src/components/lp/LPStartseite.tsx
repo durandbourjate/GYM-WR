@@ -19,6 +19,8 @@ import { einrichtungsFragen } from '../../data/einrichtungsFragen.ts'
 import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
 import { einrichtungsUebungFragen } from '../../data/einrichtungsUebungFragen.ts'
 import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts'
+import EinstellungenPanel from '../settings/EinstellungenPanel.tsx'
+import AnalyseDashboard from './ueben/AnalyseDashboard.tsx'
 
 /** Startseite für Lehrpersonen: Prüfungen verwalten + erstellen */
 export default function LPStartseite() {
@@ -32,6 +34,7 @@ export default function LPStartseite() {
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
   const [composerKey, setComposerKey] = useState(0)
   const [zeigHilfe, setZeigHilfe] = useState(false)
+  const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
   const [modus, setModusRaw] = useState<'pruefung' | 'uebung' | 'fragensammlung'>(() => {
     try {
       const gespeichert = sessionStorage.getItem('lp-modus')
@@ -44,7 +47,7 @@ export default function LPStartseite() {
     try { sessionStorage.setItem('lp-modus', m) } catch { /* ignore */ }
   }
   const [listenTab, setListenTab] = useState<'pruefungen' | 'tracker'>('pruefungen')
-  const [uebungsTab, setUebungsTab] = useState<'uebungen' | 'durchfuehren'>('uebungen')
+  const [uebungsTab, setUebungsTab] = useState<'uebungen' | 'durchfuehren' | 'analyse'>('uebungen')
   const [trackerDaten, setTrackerDaten] = useState<TrackerDaten | null>(null)
 
   // Such- und Filterstate
@@ -125,7 +128,7 @@ export default function LPStartseite() {
   // Einrichtungsprüfung ins Backend synchronisieren (einmalig)
   // localStorage-Guard verhindert Duplikate bei Reloads
   const SYNC_KEY = 'einrichtung-sync-version'
-  const SYNC_VERSION = `${einrichtungsPruefung.id}-${einrichtungsPruefung.gesamtpunkte}`
+  const SYNC_VERSION = `${einrichtungsPruefung.id}-${einrichtungsPruefung.gesamtpunkte}-${einrichtungsPruefung.typ}`
 
   async function syncEinrichtungsPruefung(email: string, backendConfigs: PruefungsConfig[]): Promise<void> {
     // Guard: Bereits für diese Version synchronisiert?
@@ -314,6 +317,7 @@ export default function LPStartseite() {
             </button>
           ) : undefined
         }
+        onEinstellungen={() => setZeigEinstellungen(true)}
         onHilfe={() => { setZeigHilfe(!zeigHilfe) }}
         hilfeOffen={zeigHilfe}
       />
@@ -343,6 +347,16 @@ export default function LPStartseite() {
                 }`}
               >
                 Übung durchführen
+              </button>
+              <button
+                onClick={() => setUebungsTab('analyse')}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
+                  uebungsTab === 'analyse'
+                    ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                Analyse
               </button>
             </div>
           </div>
@@ -382,6 +396,8 @@ export default function LPStartseite() {
               })()}
             </main>
           )}
+
+          {uebungsTab === 'analyse' && <AnalyseDashboard />}
         </>
       )}
 
@@ -605,6 +621,11 @@ export default function LPStartseite() {
       {/* Hilfe Overlay (alle Modi) */}
       {zeigHilfe && (
         <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />
+      )}
+
+      {/* Einstellungen Panel */}
+      {zeigEinstellungen && (
+        <EinstellungenPanel onSchliessen={() => setZeigEinstellungen(false)} />
       )}
     </div>
   )

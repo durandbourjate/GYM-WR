@@ -10,8 +10,8 @@ export const einrichtungsPruefung: PruefungsConfig = {
   fachbereiche: ['VWL', 'BWL', 'Recht'],
   datum: '2026-03-24',
 
-  typ: 'formativ',
-  modus: 'uebung',
+  typ: 'summativ',
+  modus: 'pruefung',
   dauerMinuten: 30,
   zeitModus: 'open-end',
   gesamtpunkte: 61,

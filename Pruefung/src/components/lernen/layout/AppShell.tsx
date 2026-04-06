@@ -48,7 +48,7 @@ export default function AppShell({ children }: Props) {
         <div className="flex items-center gap-3">
           {/* Zurück-Button — nur wenn aktive Gruppe vorhanden (sonst nur Abmelden) */}
           {kannZurueck() && aktuellerScreen !== 'dashboard' && aktiveGruppe && (
-            <Tooltip text="Zurück">
+            <Tooltip text="Zurück" position="bottom">
               <button
                 onClick={istInUebung ? navigiereZuDashboard : zurueck}
                 className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -60,7 +60,7 @@ export default function AppShell({ children }: Props) {
 
           {/* Home-Button (nur wenn nicht auf Dashboard und Gruppe vorhanden) */}
           {aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'gruppenAuswahl' && aktiveGruppe && (
-            <Tooltip text="Zum Dashboard">
+            <Tooltip text="Zum Dashboard" position="bottom">
               <button
                 onClick={navigiereZuDashboard}
                 className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -92,7 +92,7 @@ export default function AppShell({ children }: Props) {
         <div className="flex items-center gap-2">
           {/* Lernziele-Button */}
           {aktuellerScreen === 'dashboard' && (
-            <Tooltip text="Lernziele">
+            <Tooltip text="Lernziele" position="bottom">
               <button
                 onClick={() => { setLernzieleOffen(!lernzieleOffen); setHilfeOffen(false) }}
                 className={`p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center ${lernzieleOffen ? 'bg-slate-100 dark:bg-slate-700' : ''}`}
@@ -103,7 +103,7 @@ export default function AppShell({ children }: Props) {
           )}
 
           {/* Hilfe-Button */}
-          <Tooltip text="Hilfe">
+          <Tooltip text="Hilfe" position="bottom">
             <button
               onClick={() => { setHilfeOffen(!hilfeOffen); setLernzieleOffen(false) }}
               className={`p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center ${hilfeOffen ? 'bg-slate-100 dark:bg-slate-700' : ''}`}
@@ -132,7 +132,7 @@ export default function AppShell({ children }: Props) {
           />
 
           {/* Theme-Toggle */}
-          <Tooltip text={istDark ? 'Light Mode' : 'Dark Mode'}>
+          <Tooltip text={istDark ? 'Light Mode' : 'Dark Mode'} position="bottom">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center"

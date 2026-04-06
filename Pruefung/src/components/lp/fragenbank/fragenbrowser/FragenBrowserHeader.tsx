@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import type { Frage, Fachbereich, BloomStufe } from '../../../../types/fragen.ts'
-import type { Sortierung, FilterPoolStatus } from '../../../../hooks/useFragenFilter.ts'
+import type { Sortierung, FilterPoolStatus, FilterKontext } from '../../../../hooks/useFragenFilter.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 
 interface Props {
@@ -30,6 +30,8 @@ interface Props {
   setFilterPoolStatus: (v: FilterPoolStatus) => void
   filterMitAnhang: boolean
   setFilterMitAnhang: (v: boolean) => void
+  filterKontext: FilterKontext
+  setFilterKontext: (v: FilterKontext) => void
   filterZuruecksetzen: () => void
 
   // Ansicht-State
@@ -70,6 +72,7 @@ export default function FragenBrowserHeader({
   filterUnterthema, setFilterUnterthema,
   filterPoolStatus, setFilterPoolStatus,
   filterMitAnhang, setFilterMitAnhang,
+  filterKontext, setFilterKontext,
   filterZuruecksetzen,
   sortierung, setSortierung,
   gruppierung, setGruppierung,
@@ -296,6 +299,24 @@ export default function FragenBrowserHeader({
         >
           Anhang
         </button>
+
+        {/* Schule/Privat Toggle */}
+        <div className="flex items-center gap-0.5 ml-2">
+          {(['alle', 'schule', 'privat'] as const).map(k => (
+            <button
+              key={k}
+              onClick={() => { setFilterKontext(k); setAngezeigteMenge(seitenGroesse) }}
+              className={`text-xs px-2 py-1.5 border transition-colors cursor-pointer ${
+                k === 'alle' ? 'rounded-l-lg' : k === 'privat' ? 'rounded-r-lg' : ''
+              } ${filterKontext === k
+                ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
+                : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              {k === 'alle' ? 'Alle' : k === 'schule' ? 'Schule' : 'Privat'}
+            </button>
+          ))}
+        </div>
 
         {/* Filter zurücksetzen */}
         {aktiveFilter > 0 && (

@@ -230,6 +230,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           setFilterPoolStatus={filter.setFilterPoolStatus}
           filterMitAnhang={filter.filterMitAnhang}
           setFilterMitAnhang={filter.setFilterMitAnhang}
+          filterKontext={filter.filterKontext}
+          setFilterKontext={filter.setFilterKontext}
           filterZuruecksetzen={filter.filterZuruecksetzen}
           sortierung={filter.sortierung}
           setSortierung={filter.setSortierung}
@@ -444,6 +446,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           setFilterPoolStatus={filter.setFilterPoolStatus}
           filterMitAnhang={filter.filterMitAnhang}
           setFilterMitAnhang={filter.setFilterMitAnhang}
+          filterKontext={filter.filterKontext}
+          setFilterKontext={filter.setFilterKontext}
           filterZuruecksetzen={filter.filterZuruecksetzen}
           sortierung={filter.sortierung}
           setSortierung={filter.setSortierung}

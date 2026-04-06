@@ -17,6 +17,7 @@ interface Props {
   onModusChange?: (m: Modus) => void
   onFragensammlung?: () => void
   onHilfe?: () => void
+  onEinstellungen?: () => void
   fragensammlungOffen?: boolean
   hilfeOffen?: boolean
 }
@@ -27,7 +28,7 @@ const TABS: { key: Modus; label: string }[] = [
   { key: 'fragensammlung', label: 'Fragensammlung' },
 ]
 
-export default function LPHeader({ titel, untertitel, zurueck, statusText, aktionsButtons, modus, onModusChange, onFragensammlung, onHilfe, fragensammlungOffen, hilfeOffen }: Props) {
+export default function LPHeader({ titel, untertitel, zurueck, statusText, aktionsButtons, modus, onModusChange, onFragensammlung, onHilfe, onEinstellungen, fragensammlungOffen, hilfeOffen }: Props) {
   const abmelden = useAuthStore((s) => s.abmelden)
 
   // ESC-Handler: schliesst oberstes Panel
@@ -96,6 +97,11 @@ export default function LPHeader({ titel, untertitel, zurueck, statusText, aktio
           {onFragensammlung && (
             <Tooltip text="Fragensammlung öffnen" position="bottom">
               <button onClick={onFragensammlung} className={buttonClass}>Fragensammlung</button>
+            </Tooltip>
+          )}
+          {onEinstellungen && (
+            <Tooltip text="Einstellungen" position="bottom">
+              <button onClick={onEinstellungen} className={buttonClass}>⚙</button>
             </Tooltip>
           )}
           {onHilfe && (
