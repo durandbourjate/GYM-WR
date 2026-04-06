@@ -6,6 +6,42 @@
 
 ---
 
+## Session 66 — Browser-Test Fixes (06.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **Deployed auf GitHub Pages.**
+
+### Änderungen
+
+| # | Fix | Dateien |
+|---|-----|---------|
+| A | **Modus-Filter**: Prüfen-Tab zeigt nur summative, Üben nur formative Configs | `LPStartseite.tsx` |
+| B | **Tooltip-Position**: Header-Tooltips nach unten (bottom) statt oben | `LPHeader.tsx`, `ThemeToggle.tsx` |
+| C | **Kontrollstufe Default**: formativ = locker (statt standard) | `VorbereitungPhase.tsx` |
+| D | **Volle Breite**: max-w-7xl für Durchführen, Üben, AdminDashboard | 4 Dateien |
+| E | **Fachbereichs-Kacheln**: Klick in Üben → wechselt zu Fragensammlung | 3 Dateien |
+| F | **Frage-ID entfernt**: Kryptischer Code aus DetailKarte ausgeblendet | `DetailKarte.tsx` |
+| G | **Filter-Layout**: 2 Zeilen — Zeile 1: Filter (Fach→Thema→Unterthema→Typ→Bloom→Status→Anhang), Zeile 2: Gruppieren + Sortieren | `FragenBrowserHeader.tsx` |
+| H | **SuS-Gruppen Fix**: deploy.yml nutzte alten Backend-URL für Lernplattform-Build → korrigiert auf gleichen URL wie Pruefung | `deploy.yml` |
+
+### Verifiziert
+- ✅ tsc, 193 Tests, Build
+- ✅ Browser-Test (Demo-Modus): Fragensammlung Filter-Layout, Tooltips, Tab-Wechsel
+- ⏳ SuS-Gruppen-Fix (H) erfordert Redeployment — erst nach Push verifizierbar
+
+### Nächste Session
+
+| # | Aufgabe | Aufwand |
+|---|---------|--------|
+| 1 | /ExamLab/ als einzige URL (ersetzt /Pruefung/ + /Lernplattform/) | gross |
+| 2 | Einstellungen-Button in Kopfzeile (rollenbasiert: Admin→LP hinzufügen, LP→Kurse, Übungen→Settings) | mittel |
+| 3 | Analyse-Tab in Üben (Dashboard mit individuellem Fortschritt, Schwierigkeiten) | mittel |
+| 4 | Schule/Privat-Toggle in Fragensammlung (Logik definieren) | klein |
+| 5 | Drag & Drop für Fragen-Sortierung im Composer (@dnd-kit) | mittel |
+| 6 | Code-Variablen-Renaming (Lernplattform → Üben etc.) | gross |
+
+---
+
 ## Session 65 — ExamLab UI/UX Overhaul (05.04.2026)
 
 ### Stand
