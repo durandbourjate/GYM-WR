@@ -9,7 +9,7 @@
 ## Session 65 — ExamLab UI/UX Overhaul (05.04.2026)
 
 ### Stand
-Branch `feature/examlab-ui-overhaul`. tsc ✅ | 193 Tests ✅ | Build ✅. **Noch nicht auf main/deployed.**
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **Deployed auf GitHub Pages.**
 
 ### Änderungen
 
@@ -20,24 +20,26 @@ Branch `feature/examlab-ui-overhaul`. tsc ✅ | 193 Tests ✅ | Build ✅. **Noc
 | 3 | ✅ | **Bug-Fixes**: React #310 (Hooks-Reihenfolge UebungsToolView), SuS Gruppen nicht sichtbar (Error-Logging), Zurück-Button (AppShell), SuS-Vorschau (Fragenbank-Quelle + direkt zu Fragen), Zurück zum richtigen Tool (sessionStorage), PDF in Korrektur (URL-Fallback) |
 | 4 | ✅ | **Theme Toggle**: 2-Stufen (System ↔ manuell), **Fragensammlung Filter**: "Fach" statt "Fachbereich", Unterthema als separates Dropdown (kaskadierend), Quellen-Filter entfernt, "Filter:"/"Sortieren:" Labels, Frage-ID ausgeblendet |
 | 5 | ✅ | **Einführungsübung**: Neue Daten (einrichtungsUebung.ts + 8 Fragen inkl. Mastery-Frage), Auto-Sync, **Tooltips**: Tooltip-Komponente (CSS-only), angewandt auf Header + ThemeToggle + AppShell |
+| 6 | ✅ | **Dokumentation**: HilfeSeite neue Kategorie "Üben" (Mastery, Einführungsübung, FAQ), README + Root-README aktualisiert |
 
-### Dateien (32 Dateien, 3 neu)
+### Dateien (36 Dateien, 3 neu)
 
 **Neue Dateien:**
 - `src/components/ui/Tooltip.tsx` — Wiederverwendbare Tooltip-Komponente
 - `src/data/einrichtungsUebung.ts` — Einführungsübung Config
 - `src/data/einrichtungsUebungFragen.ts` — 8 Fragen für Einführungsübung (inkl. Mastery)
 
-**Modifizierte Dateien (29):** LPHeader, LPStartseite, LPHeader-Callers (Composer, Durchführen, Korrektur), ConfigTab, Startbildschirm, ThemeToggle, themeStore, FragenBrowser, FragenBrowserHeader, KompaktZeile, AppShell, LoginScreens, HilfeSeite, UebungsToolView, gruppenStore, useFragenFilter, SuSVorschau, PDFKorrektur, VorbereitungPhase, AktivPhase, BeendenDialog, vite.config, Admin-Komponenten
+**Modifizierte Dateien (33):** LPHeader, LPStartseite, LPHeader-Callers (Composer, Durchführen, Korrektur), ConfigTab, Startbildschirm, ThemeToggle, themeStore, FragenBrowser, FragenBrowserHeader, KompaktZeile, AppShell, LoginScreens, HilfeSeite, UebungsToolView, gruppenStore, useFragenFilter, SuSVorschau, PDFKorrektur, VorbereitungPhase, AktivPhase, BeendenDialog, vite.config, Admin-Komponenten, README.md, Root-README.md
 
-### ⚠ Vor Merge: Browser-Test nötig
-Feature-Branch — LP muss im Browser testen bevor Merge auf main.
+### Verifiziert
+- ✅ tsc, 193 Tests, Build
+- ⏳ Browser-Test mit echtem Login steht noch aus (LP testet morgen)
 
 ### Nächste Session
 
 | # | Aufgabe | Aufwand |
 |---|---------|--------|
-| 1 | Browser-Test mit echtem Login (LP + SuS), dann Merge auf main | mittel |
+| 1 | Browser-Test mit echtem Login (LP + SuS) — Bugs aus Test einarbeiten | mittel |
 | 2 | Drag & Drop für Fragen-Sortierung im Composer (@dnd-kit) | mittel |
 | 3 | Code-Variablen-Renaming (Lernplattform → Üben etc.) | gross |
 | 4 | Prüfungstool für andere Fächer (Bedarfsanalyse liegt vor) | gross |
