@@ -7,8 +7,14 @@ import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import Tooltip from '../ui/Tooltip'
 
-// AppLernen lazy laden
-const AppLernen = lazy(() => import('../../AppLernen'))
+// AppLernen lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
+const AppLernen = lazy(() =>
+  import('../../AppLernen').catch(() => {
+    // Chunk-Hash stimmt nicht (altes Cache) → Seite neu laden
+    window.location.reload()
+    return { default: () => null } as never
+  })
+)
 
 const LP_AUTH_KEY = 'lernplattform-auth'
 

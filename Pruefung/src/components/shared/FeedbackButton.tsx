@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FeedbackModal, { type FeedbackContext } from './FeedbackModal'
+import Tooltip from '../ui/Tooltip'
 
 interface Props {
   context: FeedbackContext
@@ -15,13 +16,14 @@ export default function FeedbackButton({ context, variant, label }: Props) {
   return (
     <>
       {variant === 'icon' && (
-        <button
-          onClick={() => setOpen(true)}
-          title="Rückmeldung geben"
-          className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
-        >
-          💬
-        </button>
+        <Tooltip text="Rückmeldung geben">
+          <button
+            onClick={() => setOpen(true)}
+            className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+          >
+            💬
+          </button>
+        </Tooltip>
       )}
 
       {variant === 'text' && (

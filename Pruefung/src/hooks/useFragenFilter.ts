@@ -118,27 +118,29 @@ export function useFragenFilter(
   // eslint-disable-next-line react-hooks/exhaustive-deps — aufgeklappteGruppen absichtlich ausgeschlossen (wuerde Loop verursachen)
   }, [ladeStatus, alleFragen, gruppierung])
 
-  // Verfügbare Themen (Pool-Titel für Pool-Fragen, sonst f.thema)
+  // Verfügbare Themen — kaskadierend nach Fachbereich-Filter
   const verfuegbareThemen = useMemo(() => {
     const themen = new Map<string, number>()
     for (const f of alleFragen) {
+      if (filterFachbereich && f.fachbereich !== filterFachbereich) continue
       const { thema } = poolThemenMapping(f)
       themen.set(thema, (themen.get(thema) || 0) + 1)
     }
     return Array.from(themen.entries()).sort((a, b) => a[0].localeCompare(b[0]))
-  }, [alleFragen])
+  }, [alleFragen, filterFachbereich])
 
-  // Verfügbare Unterthemen (Topic-Labels für Pool-Fragen, kaskadierend nach Thema)
+  // Verfügbare Unterthemen — kaskadierend nach Fachbereich + Thema
   const verfuegbareUnterthemen = useMemo(() => {
     const unterthemen = new Map<string, number>()
     for (const f of alleFragen) {
+      if (filterFachbereich && f.fachbereich !== filterFachbereich) continue
       const mapped = poolThemenMapping(f)
       if (!mapped.unterthema) continue
       if (filterThema && mapped.thema !== filterThema) continue
       unterthemen.set(mapped.unterthema, (unterthemen.get(mapped.unterthema) || 0) + 1)
     }
     return Array.from(unterthemen.entries()).sort((a, b) => a[0].localeCompare(b[0]))
-  }, [alleFragen, filterThema])
+  }, [alleFragen, filterFachbereich, filterThema])
 
   // Filtern
   const gefilterteFragen = useMemo(() => {
