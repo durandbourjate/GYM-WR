@@ -2398,6 +2398,13 @@ function speichereFrage(body) {
       geteiltVon: frage.geteiltVon || '',
       fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
       schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
+      // Pool-Sync Felder
+      poolId: frage.poolId || '',
+      poolGeprueft: frage.poolGeprueft ? 'true' : '',
+      pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
+      poolContentHash: frage.poolContentHash || '',
+      poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
+      lernzielIds: (frage.lernzielIds || []).join(','),
     };
 
     // Fehlende Spalten automatisch hinzufügen
