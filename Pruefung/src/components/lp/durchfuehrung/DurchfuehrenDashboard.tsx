@@ -4,6 +4,14 @@ import { apiService } from '../../../services/apiService.ts'
 import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { einrichtungsPruefung } from '../../../data/einrichtungsPruefung.ts'
+import { einrichtungsUebung } from '../../../data/einrichtungsUebung.ts'
+import { einrichtungsUebungFragen } from '../../../data/einrichtungsUebungFragen.ts'
+
+// Eingebaute Versionen für Einrichtungsprüfung/-übung (Fallback wenn Backend-Config veraltet)
+const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Frage[] }> = {
+  'einrichtung-uebung': { config: einrichtungsUebung, fragen: einrichtungsUebungFragen },
+  [einrichtungsPruefung.id]: { config: einrichtungsPruefung, fragen: demoFragen },
+}
 import type { MonitoringDaten, PruefungsNachricht } from '../../../types/monitoring.ts'
 import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage } from '../../../types/fragen.ts'
@@ -236,6 +244,14 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         apiService.ladePruefung(pruefungId, user!.email),
       ])
       if (abgabenResult) setAbgaben(abgabenResult)
+
+      // Einrichtungsprüfung/-übung: Eingebaute Config + Fragen verwenden
+      if (pruefungResult && eingebauteVersionen[pruefungId]) {
+        const eingebaut = eingebauteVersionen[pruefungId]
+        pruefungResult.config = { ...eingebaut.config, freigeschaltet: pruefungResult.config.freigeschaltet, durchfuehrungId: pruefungResult.config.durchfuehrungId, beendetUm: pruefungResult.config.beendetUm, teilnehmer: pruefungResult.config.teilnehmer }
+        pruefungResult.fragen = eingebaut.fragen
+      }
+
       if (pruefungResult?.fragen) setFragen(pruefungResult.fragen)
       // Config aus ladePruefung übernehmen (spart separaten ladeAlleConfigs-Call)
       if (pruefungResult?.config) {

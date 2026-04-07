@@ -26,6 +26,11 @@ import KorrekturEinsicht from './components/sus/KorrekturEinsicht.tsx'
 // Theme-Store importieren damit er initialisiert wird
 import './store/themeStore.ts'
 
+// Kontenrahmen für FiBu-Fragetypen initialisieren
+import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
+import kontenrahmenJson from './data/kontenrahmen-kmu.json'
+setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmenData>[0])
+
 // Hinweis: Eingebaute Prüfungen (EINGEBAUTE_PRUEFUNGEN) wurden entfernt.
 // Alle Prüfungen laufen jetzt über den normalen Backend-Datenfluss (Google Sheets).
 // Im Demo-Modus wird die einrichtungsPruefung aus data/einrichtungsPruefung.ts verwendet.
