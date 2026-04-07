@@ -17,6 +17,7 @@ const EMAIL = 'yannick.durand@gymhofwil.ch'
 const POOL_DIR = join(import.meta.dirname, '../../Uebungen/Uebungspools/config')
 const POOL_IMG_BASE = 'https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/'
 const DRY_RUN = process.argv.includes('--dry-run')
+const SKIP_DELETE = process.argv.includes('--skip-delete')
 
 // === HELPERS ===
 
@@ -285,7 +286,13 @@ async function main() {
   console.log(`  ${poolFragen.length} Pool-Fragen → werden gelöscht`)
   console.log(`  ${manuelleFragen.length} manuelle Fragen → bleiben erhalten`)
 
-  if (!DRY_RUN) {
+  // Bestehende poolIds sammeln (für Skip-Logik)
+  const bestehendePools = new Set(poolFragen.map(f => f.poolId).filter(Boolean))
+  console.log(`  ${bestehendePools.size} mit poolId (werden bei Import übersprungen)`)
+
+  if (SKIP_DELETE) {
+    console.log('\n  [SKIP-DELETE] Löschphase übersprungen — nur fehlende importieren')
+  } else if (!DRY_RUN) {
     console.log('\nPHASE 2: Pool-Fragen batch-löschen (ein API-Call)...')
     try {
       const result = await apiPost('loescheAllePoolFragen', {})
@@ -303,11 +310,11 @@ async function main() {
     console.log(`  [DRY] Würde ${poolFragen.length} Pool-Fragen löschen`)
   }
 
-  // PHASE 3: Alle Pools lesen und neu importieren
-  console.log('\nPHASE 3: Pools lesen und importieren...')
+  // PHASE 3: Alle Pools lesen und konvertieren
+  console.log('\nPHASE 3: Pools lesen und konvertieren...')
   const poolFiles = readdirSync(POOL_DIR).filter(f => f.endsWith('.js')).sort()
-  let totalNeu = 0
-  let totalFehler = 0
+  const alleFragen = []
+  let totalUebersprungen = 0
   const proFach = {}
   const proTyp = {}
 
@@ -321,43 +328,52 @@ async function main() {
     const meta = pool.POOL_META
     const topics = pool.TOPICS || {}
     const fach = mapFachbereich(meta.fach)
-    console.log(`  → ${file}: ${pool.QUESTIONS.length} Fragen (${fach})`)
+    let poolNeu = 0
+    let poolSkip = 0
 
     for (const pf of pool.QUESTIONS) {
-      const frage = konvertiereFrage(pf, meta, topics)
-      if (!frage) { totalFehler++; continue }
+      const expectedPoolId = `${meta.id}:${pf.id}`
+      if (bestehendePools.has(expectedPoolId)) { poolSkip++; totalUebersprungen++; continue }
 
+      const frage = konvertiereFrage(pf, meta, topics)
+      if (!frage) continue
+
+      alleFragen.push(frage)
       proTyp[frage.typ] = (proTyp[frage.typ] || 0) + 1
       proFach[fach] = (proFach[fach] || 0) + 1
+      poolNeu++
+    }
 
-      if (DRY_RUN) { totalNeu++; continue }
+    console.log(`  → ${file}: ${pool.QUESTIONS.length} Fragen (${fach}) — ${poolNeu} neu${poolSkip > 0 ? `, ${poolSkip} übersprungen` : ''}`)
+  }
 
-      try {
-        const result = await apiPost('speichereFrage', { frage })
-        if (result.success) { totalNeu++ }
-        else { console.error(`    ✗ ${pf.id}: ${result.error}`); totalFehler++ }
-        // Rate Limiting: 200ms zwischen Requests
-        await sleep(200)
-        if (totalNeu % 100 === 0) console.log(`    ... ${totalNeu} importiert`)
-      } catch (e) {
-        console.error(`    ✗ ${pf.id}: ${e.message}`); totalFehler++
-        await sleep(2000)
+  console.log(`\n  Total: ${alleFragen.length} neue Fragen konvertiert, ${totalUebersprungen} übersprungen`)
+
+  // PHASE 4: Batch-Import (ein API-Call)
+  if (DRY_RUN) {
+    console.log('\n[DRY RUN] Würde importieren:', alleFragen.length)
+  } else if (alleFragen.length > 0) {
+    console.log('\nPHASE 4: Batch-Import (ein API-Call)...')
+    try {
+      const result = await apiPost('batchImportFragen', { fragen: alleFragen })
+      if (result.success) {
+        console.log(`  ✓ ${result.importiert} Fragen importiert`)
+      } else {
+        console.error(`  ✗ Batch-Import fehlgeschlagen: ${result.error}`)
+        process.exit(1)
       }
+    } catch (e) {
+      console.error(`  ✗ Batch-Import fehlgeschlagen: ${e.message}`)
+      process.exit(1)
     }
   }
 
   console.log('\n=== ERGEBNIS ===')
-  console.log(`Pool-Fragen gelöscht: ${DRY_RUN ? `[DRY] ${poolFragen.length}` : poolFragen.length}`)
-  console.log(`Neu importiert: ${totalNeu}`)
-  console.log(`Fehler: ${totalFehler}`)
+  console.log(`Neu importiert: ${alleFragen.length}`)
+  console.log(`Übersprungen: ${totalUebersprungen}`)
   console.log(`Pro Fachbereich:`, proFach)
   console.log(`Pro Typ:`, proTyp)
-
-  if (!DRY_RUN && totalNeu > 0) {
-    console.log('\nCache invalidieren...')
-    try { await apiPost('cacheInvalidieren', {}) } catch {}
-    console.log('✓ Fertig!')
-  }
+  console.log('✓ Fertig!')
 }
 
 main().catch(e => { console.error('Fatal:', e); process.exit(1) })

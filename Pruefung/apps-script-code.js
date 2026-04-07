@@ -782,6 +782,8 @@ function doPost(e) {
       return loescheFrage(body);
     case 'loescheAllePoolFragen':
       return loescheAllePoolFragen(body);
+    case 'batchImportFragen':
+      return batchImportFragen(body);
     case 'starteKorrektur':
       return starteKorrekturEndpoint(body);
     case 'speichereKorrekturZeile':
@@ -2520,6 +2522,133 @@ function loescheAllePoolFragen(body) {
     cacheInvalidieren_();
 
     return jsonResponse({ success: true, geloescht: geloescht, erhalten: erhalten });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Batch-Import: Mehrere Fragen auf einmal in die Fragenbank schreiben.
+ * Nutzt setValues() für alle Fragen eines Fachbereichs auf einmal — Sekunden statt Stunden.
+ * Body: { email, fragen: Frage[] }
+ */
+function batchImportFragen(body) {
+  try {
+    var email = body.email;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var lpInfo = getLPInfo(email);
+    if (!lpInfo || lpInfo.rolle !== 'admin') {
+      return jsonResponse({ error: 'Nur für Admins' });
+    }
+    var fragen = body.fragen;
+    if (!Array.isArray(fragen) || fragen.length === 0) {
+      return jsonResponse({ error: 'Keine Fragen übergeben' });
+    }
+
+    // Fragen nach Fachbereich gruppieren
+    var proTab = {};
+    for (var i = 0; i < fragen.length; i++) {
+      var f = fragen[i];
+      var tab = f.fachbereich || 'VWL';
+      if (!proTab[tab]) proTab[tab] = [];
+      proTab[tab].push(f);
+    }
+
+    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var importiert = 0;
+
+    for (var tabName in proTab) {
+      var sheet = fragenbank.getSheetByName(tabName);
+      if (!sheet) {
+        // Tab erstellen wenn nicht vorhanden
+        sheet = fragenbank.insertSheet(tabName);
+      }
+
+      var tabFragen = proTab[tabName];
+
+      // Headers: bestehende Headers lesen oder neue erstellen
+      var lastCol = sheet.getLastColumn();
+      var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String) : [];
+
+      // Alle rowData-Objekte erstellen und fehlende Spalten sammeln
+      var alleRowData = [];
+      for (var j = 0; j < tabFragen.length; j++) {
+        var frage = tabFragen[j];
+        var rowData = {
+          id: frage.id || '',
+          typ: frage.typ || '',
+          version: String(frage.version || 1),
+          erstelltAm: frage.erstelltAm || new Date().toISOString(),
+          geaendertAm: new Date().toISOString(),
+          thema: frage.thema || '',
+          unterthema: frage.unterthema || '',
+          semester: (frage.semester || []).join(','),
+          gefaesse: Array.isArray(frage.gefaesse) ? frage.gefaesse.join(',') : '',
+          bloom: frage.bloom || 'K1',
+          tags: (frage.tags || []).join(','),
+          punkte: String(frage.punkte || 0),
+          musterlosung: frage.musterlosung || '',
+          bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
+          fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
+          quelle: frage.quelle || 'manuell',
+          anhaenge: JSON.stringify(frage.anhaenge || []),
+          typDaten: JSON.stringify(getTypDaten(frage)),
+          autor: frage.autor || email,
+          geteilt: frage.geteilt || 'privat',
+          geteiltVon: frage.geteiltVon || '',
+          fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
+          schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
+          poolId: frage.poolId || '',
+          poolGeprueft: frage.poolGeprueft ? 'true' : '',
+          pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
+          poolContentHash: frage.poolContentHash || '',
+          poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
+          lernzielIds: (frage.lernzielIds || []).join(','),
+        };
+        alleRowData.push(rowData);
+      }
+
+      // Alle benötigten Spalten sicherstellen
+      var allKeys = new Set(headers);
+      for (var k = 0; k < alleRowData.length; k++) {
+        Object.keys(alleRowData[k]).forEach(function(key) { allKeys.add(key); });
+      }
+      var neueHeaders = Array.from(allKeys);
+      // Neue Spalten hinzufügen wenn nötig
+      if (neueHeaders.length > headers.length) {
+        for (var h = 0; h < neueHeaders.length; h++) {
+          if (headers.indexOf(neueHeaders[h]) < 0) headers.push(neueHeaders[h]);
+        }
+        // Header-Zeile schreiben
+        if (headers.length > 0) {
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        }
+      }
+
+      // Alle Fragen als 2D-Array aufbauen
+      var rows = [];
+      for (var m = 0; m < alleRowData.length; m++) {
+        var row = [];
+        for (var n = 0; n < headers.length; n++) {
+          row.push(alleRowData[m][headers[n]] || '');
+        }
+        rows.push(row);
+      }
+
+      // Alle Zeilen auf einmal schreiben (nach bestehenden Daten)
+      if (rows.length > 0) {
+        var startRow = Math.max(sheet.getLastRow() + 1, 2); // Nach Header + bestehende Daten
+        sheet.getRange(startRow, 1, rows.length, headers.length).setValues(rows);
+        importiert += rows.length;
+      }
+    }
+
+    // Cache invalidieren
+    cacheInvalidieren_();
+
+    return jsonResponse({ success: true, importiert: importiert });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
