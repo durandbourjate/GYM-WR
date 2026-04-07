@@ -2826,34 +2826,38 @@ function ladeAktivePruefungenFuerSuS(email) {
     for (var i = 0; i < configData.length; i++) {
       var row = configData[i];
 
-      // Nur freigeschaltete, nicht beendete
-      var istFreigeschaltet = row.freigeschaltet === 'true' || row.freigeschaltet === true;
-      if (!istFreigeschaltet) continue;
+      // Beendete überspringen
       if (row.beendetUm) continue;
+
+      var istFreigeschaltet = row.freigeschaltet === 'true' || row.freigeschaltet === true;
 
       // SuS-Zugang prüfen: Teilnehmerliste ODER Klassen-Zugehörigkeit
       var teilnehmer = safeJsonParse(row.teilnehmer, []);
       var erlaubteKlasse = String(row.erlaubteKlasse || '');
 
       var hatZugang = false;
+      var istInTeilnehmerliste = false;
 
       // Check 1: In Teilnehmerliste
       if (teilnehmer.length > 0) {
-        hatZugang = teilnehmer.some(function(t) {
+        istInTeilnehmerliste = teilnehmer.some(function(t) {
           return (t.email || '').toLowerCase() === email.toLowerCase();
         });
+        hatZugang = istInTeilnehmerliste;
       }
 
-      // Check 2: erlaubteKlasse passt
-      if (!hatZugang && erlaubteKlasse && erlaubteKlasse !== '—' && erlaubteKlasse !== '-') {
+      // Check 2: erlaubteKlasse passt (nur bei freigeschalteten)
+      if (!hatZugang && istFreigeschaltet && erlaubteKlasse && erlaubteKlasse !== '—' && erlaubteKlasse !== '-') {
         hatZugang = susKlassen.indexOf(erlaubteKlasse) >= 0;
       }
 
-      // Check 3: Keine Einschränkung (weder Teilnehmer noch Klasse) → offen für alle
-      if (!hatZugang && teilnehmer.length === 0 && (!erlaubteKlasse || erlaubteKlasse === '—' || erlaubteKlasse === '-')) {
+      // Check 3: Keine Einschränkung → offen für alle (nur bei freigeschalteten)
+      if (!hatZugang && istFreigeschaltet && teilnehmer.length === 0 && (!erlaubteKlasse || erlaubteKlasse === '—' || erlaubteKlasse === '-')) {
         hatZugang = true;
       }
 
+      // Nicht freigeschaltete: nur anzeigen wenn SuS in Teilnehmerliste (Lobby)
+      if (!istFreigeschaltet && !istInTeilnehmerliste) continue;
       if (!hatZugang) continue;
 
       aktive.push({
@@ -2862,6 +2866,7 @@ function ladeAktivePruefungenFuerSuS(email) {
         typ: row.typ || 'summativ',
         modus: row.modus || 'pruefung',
         datum: row.datum || '',
+        phase: istFreigeschaltet ? 'aktiv' : 'lobby',
         fachbereiche: String(row.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
         klasse: row.klasse || '',
       });
