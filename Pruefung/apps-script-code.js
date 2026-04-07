@@ -654,6 +654,8 @@ function doGet(e) {
       return ladePruefung(e.parameter.id, email);
     case 'ladeAlleConfigs':
       return ladeAlleConfigs(email);
+    case 'ladeAktivePruefungenFuerSuS':
+      return ladeAktivePruefungenFuerSuS(email);
     case 'ladeEinzelConfig':
       return ladeEinzelConfig(e.parameter.id, email);
     case 'ladeFragenbank':
@@ -2778,6 +2780,94 @@ function ladeAlleConfigs(email) {
     });
 
     return jsonResponse({ configs: gefilterteConfigs });
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === AKTIVE PRÜFUNGEN FÜR SuS ===
+
+/**
+ * Gibt alle Prüfungen/Übungen zurück, die für den SuS aktiv sind:
+ * - freigeschaltet = true (LP in Lobby/Live)
+ * - nicht beendet (kein beendetUm)
+ * - SuS in Teilnehmerliste ODER erlaubteKlasse passt
+ * Gibt nur minimale Daten zurück (id, titel, typ, modus, datum, fachbereiche).
+ */
+function ladeAktivePruefungenFuerSuS(email) {
+  try {
+    if (!email) return jsonResponse({ error: 'Email fehlt' });
+
+    var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    var configData = getSheetData(configSheet);
+
+    // SuS Klassen-Zugehörigkeit ermitteln (aus Kurse-Sheet)
+    var susKlassen = [];
+    try {
+      var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+      var kurseMetaSheet = kurseSS.getSheetByName('Kurse');
+      var kurseData = kurseMetaSheet ? getSheetData(kurseMetaSheet) : [];
+      for (var ki = 0; ki < kurseData.length; ki++) {
+        var kurs = kurseData[ki];
+        var kursTab = kurseSS.getSheetByName(kurs.kursId);
+        if (!kursTab) continue;
+        var kursData = getSheetData(kursTab);
+        var istImKurs = kursData.some(function(row) { return row.email === email; });
+        if (istImKurs) {
+          var klassen = String(kurs.klassen || '').split(',').map(function(s) { return s.trim(); });
+          susKlassen = susKlassen.concat(klassen);
+        }
+      }
+    } catch (e) {
+      // Klassen nicht ladbar — kein Fehler, nur Teilnehmer-Check
+    }
+
+    var aktive = [];
+    for (var i = 0; i < configData.length; i++) {
+      var row = configData[i];
+
+      // Nur freigeschaltete, nicht beendete
+      var istFreigeschaltet = row.freigeschaltet === 'true' || row.freigeschaltet === true;
+      if (!istFreigeschaltet) continue;
+      if (row.beendetUm) continue;
+
+      // SuS-Zugang prüfen: Teilnehmerliste ODER Klassen-Zugehörigkeit
+      var teilnehmer = safeJsonParse(row.teilnehmer, []);
+      var erlaubteKlasse = String(row.erlaubteKlasse || '');
+
+      var hatZugang = false;
+
+      // Check 1: In Teilnehmerliste
+      if (teilnehmer.length > 0) {
+        hatZugang = teilnehmer.some(function(t) {
+          return (t.email || '').toLowerCase() === email.toLowerCase();
+        });
+      }
+
+      // Check 2: erlaubteKlasse passt
+      if (!hatZugang && erlaubteKlasse && erlaubteKlasse !== '—' && erlaubteKlasse !== '-') {
+        hatZugang = susKlassen.indexOf(erlaubteKlasse) >= 0;
+      }
+
+      // Check 3: Keine Einschränkung (weder Teilnehmer noch Klasse) → offen für alle
+      if (!hatZugang && teilnehmer.length === 0 && (!erlaubteKlasse || erlaubteKlasse === '—' || erlaubteKlasse === '-')) {
+        hatZugang = true;
+      }
+
+      if (!hatZugang) continue;
+
+      aktive.push({
+        id: row.id,
+        titel: row.titel || '',
+        typ: row.typ || 'summativ',
+        modus: row.modus || 'pruefung',
+        datum: row.datum || '',
+        fachbereiche: String(row.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+        klasse: row.klasse || '',
+      });
+    }
+
+    return jsonResponse({ success: true, data: aktive });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }

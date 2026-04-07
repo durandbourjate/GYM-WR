@@ -6,6 +6,7 @@ import ThemeToggle from '../ThemeToggle'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import Tooltip from '../ui/Tooltip'
+import AktivePruefungen from './AktivePruefungen'
 
 // AppUeben lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
 const AppUeben = lazy(() =>
@@ -148,6 +149,10 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
       </header>
 
       <main className="flex-1 flex items-center justify-center p-6">
+        <div className="flex flex-col items-center w-full">
+          {/* Aktive Prüfungen/Übungen (pollt Backend) */}
+          {user?.email && <AktivePruefungen email={user.email} />}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl w-full">
           {/* Üben */}
           <button
@@ -172,6 +177,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
               Prüfungen starten und abgeschlossene Korrekturen einsehen.
             </p>
           </button>
+        </div>
         </div>
       </main>
     </div>
