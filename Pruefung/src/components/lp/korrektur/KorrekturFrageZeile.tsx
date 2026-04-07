@@ -21,6 +21,8 @@ interface Props {
   aufgabeNr?: number
   /** E-Mail der LP (für API-Key-Routing bei KI-Korrektur) */
   userEmail?: string
+  /** Bei formativen Übungen: keine Punktevergabe anzeigen */
+  istFormativ?: boolean
   onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: 'auto' | 'ki' | 'manuell' | 'fehler'; kriterienBewertung?: KriteriumBewertung[] | null }) => void
   onAudioUpload: (frageId: string, blob: Blob) => Promise<string | null>
 }
@@ -57,6 +59,7 @@ export default function KorrekturFrageZeile({
   bewertung,
   aufgabeNr,
   userEmail,
+  istFormativ = false,
   onUpdate,
   onAudioUpload,
 }: Props) {
@@ -129,9 +132,11 @@ export default function KorrekturFrageZeile({
         <span className={`inline-block px-1.5 py-0.5 text-xs rounded font-medium ${quelleFarbe(bewertung.quelle)}`}>
           {quelleLabel(bewertung.quelle)}
         </span>
-        <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 tabular-nums">
-          max. {bewertung.maxPunkte} Pkt.
-        </span>
+        {!istFormativ && (
+          <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 tabular-nums">
+            max. {bewertung.maxPunkte} Pkt.
+          </span>
+        )}
       </div>
 
       {/* Vollansicht: Frage + Antwort + Auto-Korrektur + Musterlösung */}
@@ -233,7 +238,8 @@ export default function KorrekturFrageZeile({
 
       {/* Bewertungszeile: Punkte | = X Pkt. | 🎤 Audio | ☑ Geprüft */}
       <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
-        {/* Punkte-Eingabe */}
+        {/* Punkte-Eingabe (nicht bei formativen Übungen) */}
+        {!istFormativ && (
         <div className="flex items-center gap-1.5">
           <label htmlFor={`punkte-${frageId}`} className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
             Punkte:
@@ -263,8 +269,10 @@ export default function KorrekturFrageZeile({
             / {bewertung.maxPunkte}
           </span>
         </div>
+        )}
 
-        {/* Effektive Punkte Anzeige */}
+        {/* Effektive Punkte Anzeige (nicht bei formativen Übungen) */}
+        {!istFormativ && (
         <div className="flex items-center gap-1.5">
           <span className="text-xs text-slate-400 dark:text-slate-500">=</span>
           <span className={`text-sm font-semibold tabular-nums ${
@@ -277,6 +285,7 @@ export default function KorrekturFrageZeile({
             {aktuellePunkte} Pkt.
           </span>
         </div>
+        )}
 
         {/* Audio + Geprüft (rechts, zusammen) */}
         <div className="flex items-center gap-2 ml-auto">

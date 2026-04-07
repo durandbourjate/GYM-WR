@@ -15,6 +15,7 @@ interface Props {
     frageId: string,
     updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean }
   ) => void
+  istFormativ?: boolean
 }
 
 /** Fragentyp-Label für Badge */
@@ -157,6 +158,7 @@ export default function KorrekturFragenAnsicht({
   abgaben,
   notenConfig: _notenConfig,
   onBewertungUpdate,
+  istFormativ = false,
 }: Props) {
   const [aktiverFrageIndex, setAktiverFrageIndex] = useState(0)
   const [aktiverSchuelerIndex, setAktiverSchuelerIndex] = useState(0)
@@ -227,9 +229,11 @@ export default function KorrekturFragenAnsicht({
           <span className="inline-block px-1.5 py-0.5 text-[10px] rounded font-medium bg-slate-200 text-slate-600 dark:bg-slate-600 dark:text-slate-300">
             {typLabel(aktiveFrage.typ)}
           </span>
+          {!istFormativ && (
           <span className="ml-auto text-xs text-slate-500 dark:text-slate-400 tabular-nums">
             max. {aktiveFrage.punkte} Pkt.
           </span>
+          )}
           <span className="text-xs text-slate-400 dark:text-slate-500">
             {gepruefte}/{sortierteSchueler.length} geprüft
           </span>
@@ -308,6 +312,7 @@ export default function KorrekturFragenAnsicht({
                 antwort={antwort}
                 frage={aktiveFrage}
                 bewertung={bewertung}
+                istFormativ={istFormativ}
                 onUpdate={(updates) => onBewertungUpdate(schueler.email, aktiveFrage.id, updates)}
               />
             )}
@@ -347,6 +352,7 @@ interface SchuelerAntwortKarteProps {
   antwort: Antwort | undefined
   frage: Frage
   bewertung: FragenBewertung
+  istFormativ?: boolean
   onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean }) => void
 }
 
@@ -355,6 +361,7 @@ function SchuelerAntwortKarte({
   antwort,
   frage,
   bewertung,
+  istFormativ = false,
   onUpdate,
 }: SchuelerAntwortKarteProps) {
   const punkteWert = bewertung.lpPunkte ?? bewertung.kiPunkte ?? ''
@@ -397,6 +404,8 @@ function SchuelerAntwortKarte({
 
         {/* Punkte + Geprüft */}
         <div className="flex items-center gap-2 shrink-0">
+          {!istFormativ && (
+          <>
           {/* KI-Vorschlag Anzeige (wenn vorhanden und LP noch nicht angepasst) */}
           {bewertung.kiPunkte !== null && bewertung.lpPunkte === null && (
             <span className="text-[10px] text-amber-500 dark:text-amber-400" title="KI-Vorschlag">
@@ -418,6 +427,8 @@ function SchuelerAntwortKarte({
           <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">
             /{bewertung.maxPunkte}
           </span>
+          </>
+          )}
           <label className="flex items-center gap-1 cursor-pointer" title="Geprüft">
             <input
               type="checkbox"

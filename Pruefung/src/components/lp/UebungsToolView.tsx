@@ -1,10 +1,10 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
-import { useUebenAuthStore } from '../../store/lernen/authStore'
-import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
-import { uebenApiClient } from '../../services/lernen/apiClient'
-import { UebenKontextProvider } from '../../context/lernen/UebenKontextProvider'
-import AdminDashboard from '../lernen/admin/AdminDashboard'
+import { useUebenAuthStore } from '../../store/ueben/authStore'
+import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
+import { uebenApiClient } from '../../services/ueben/apiClient'
+import { UebenKontextProvider } from '../../context/ueben/UebenKontextProvider'
+import AdminDashboard from '../ueben/admin/AdminDashboard'
 
 const LP_AUTH_KEY = 'ueben-auth'
 

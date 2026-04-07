@@ -183,9 +183,11 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
                     <span className="inline-block px-1.5 py-0.5 text-xs rounded font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                       visualisierung
                     </span>
+                    {!istFormativ && (
                     <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 tabular-nums">
                       max. {bewertung.maxPunkte} Pkt.
                     </span>
+                    )}
                   </div>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 truncate" title={(frage as { fragetext?: string }).fragetext}>
                     {(frage as { fragetext?: string }).fragetext ?? frage.id}
@@ -227,9 +229,11 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
                     <span className="inline-block px-1.5 py-0.5 text-xs rounded font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                       pdf
                     </span>
+                    {!istFormativ && (
                     <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 tabular-nums">
                       max. {bewertung.maxPunkte} Pkt.
                     </span>
+                    )}
                   </div>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 truncate" title={(frage as PDFFrage).fragetext}>
                     {(frage as PDFFrage).fragetext ?? frage.id}
@@ -260,6 +264,7 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
                 bewertung={bewertung}
                 aufgabeNr={fragenIdx + 1}
                 userEmail={userEmail}
+                istFormativ={istFormativ}
                 onUpdate={(updates) => onBewertungUpdate(schueler.email, frage.id, updates)}
                 onAudioUpload={(frageId, blob) => onAudioUpload(schueler.email, frageId, blob)}
               />

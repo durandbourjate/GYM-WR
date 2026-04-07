@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFKategorie, ZoomStufe } from './PDFTypes.ts'
 import { ZOOM_STUFEN, STANDARD_HIGHLIGHT_FARBEN } from './PDFTypes.ts'
 import ToolbarDropdown from '../../shared/ToolbarDropdown.tsx'
+import Tooltip from '../../ui/Tooltip.tsx'
 
 /** Inline SVG Radierer-Icon (identisch mit ZeichnenToolbar) */
 function RadiererIcon() {
@@ -120,33 +121,37 @@ export function PDFToolbar({
     >
       {/* Layout-Toggle (erstes Element) */}
       {onLayoutToggle && (
-        <button
-          type="button"
-          title={isHorizontal ? 'Vertikal anordnen' : 'Horizontal anordnen'}
-          onClick={onLayoutToggle}
-          className={btnKlassen(false)}
-        >
-          {isHorizontal ? '⇅' : '⇆'}
-        </button>
+        <Tooltip text={isHorizontal ? 'Vertikal anordnen' : 'Horizontal anordnen'}>
+          <button
+            type="button"
+            onClick={onLayoutToggle}
+            className={btnKlassen(false)}
+          >
+            {isHorizontal ? '⇅' : '⇆'}
+          </button>
+        </Tooltip>
       )}
 
       {/* Auswahl */}
-      <button
-        type="button"
-        aria-pressed={aktivesWerkzeug === 'auswahl'}
-        title="Auswahl"
-        onClick={() => onWerkzeugWechsel('auswahl')}
-        className={btnKlassen(aktivesWerkzeug === 'auswahl')}
-      >
-        ↖
-      </button>
+      <Tooltip text="Auswahl">
+        <button
+          type="button"
+          aria-pressed={aktivesWerkzeug === 'auswahl'}
+          onClick={() => onWerkzeugWechsel('auswahl')}
+          className={btnKlassen(aktivesWerkzeug === 'auswahl')}
+        >
+          ↖
+        </button>
+      </Tooltip>
 
       {/* Markieren */}
       {(erlaubteWerkzeuge || []).includes('highlighter') && (
-        <button type="button" aria-pressed={aktivesWerkzeug === 'highlighter'} title="Markieren"
-          onClick={() => onWerkzeugWechsel('highlighter')} className={btnKlassen(aktivesWerkzeug === 'highlighter')}>
-          <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />
-        </button>
+        <Tooltip text="Markieren">
+          <button type="button" aria-pressed={aktivesWerkzeug === 'highlighter'}
+            onClick={() => onWerkzeugWechsel('highlighter')} className={btnKlassen(aktivesWerkzeug === 'highlighter')}>
+            <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />
+          </button>
+        </Tooltip>
       )}
 
       {/* Text-Werkzeug:
@@ -156,30 +161,34 @@ export function PDFToolbar({
         // Inline-Properties für selektierte Text-Annotation
         <div className={`flex ${isHorizontal ? 'flex-row items-center' : 'flex-col items-center'} gap-0.5`}>
           {/* T-Label (visueller Indikator, kein Tool-Switch) */}
-          <span
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400"
-            title="Selektierte Textannotation"
-          >T</span>
+          <Tooltip text="Selektierte Textannotation">
+            <span
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400"
+            >T</span>
+          </Tooltip>
           {/* Grösse */}
           {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
-            <button key={label} type="button"
-              title={`Grösse ${px}px`}
-              onClick={() => onTextGroesseChange?.(px)}
-              className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
-            >{label}</button>
+            <Tooltip key={label} text={`Grösse ${px}px`}>
+              <button type="button"
+                onClick={() => onTextGroesseChange?.(px)}
+                className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+              >{label}</button>
+            </Tooltip>
           ))}
           {/* Fett */}
-          <button type="button"
-            title={textFett ? 'Fett aus' : 'Fett ein'}
-            onClick={() => onTextFettChange?.(!textFett)}
-            className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm font-bold transition-colors ${textFett ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
-          >B</button>
+          <Tooltip text={textFett ? 'Fett aus' : 'Fett ein'}>
+            <button type="button"
+              onClick={() => onTextFettChange?.(!textFett)}
+              className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm font-bold transition-colors ${textFett ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 ring-1 ring-blue-400' : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
+            >B</button>
+          </Tooltip>
           {/* Rotation */}
-          <button type="button"
-            title={`Rotation: ${textRotation}° (klicken zum Drehen)`}
-            onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-xs transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
-          >⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
+          <Tooltip text={`Rotation: ${textRotation}° (klicken zum Drehen)`}>
+            <button type="button"
+              onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-xs transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+            >⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
+          </Tooltip>
         </div>
       ) : (
         // Kein Text ausgewählt: Dropdown zum Konfigurieren + Aktivieren des Text-Werkzeugs
@@ -196,17 +205,17 @@ export function PDFToolbar({
               {([{ label: 'S', px: 14 }, { label: 'M', px: 18 }, { label: 'L', px: 24 }, { label: 'XL', px: 32 }] as const).map(({ label, px }) => (
                 <button key={label} type="button" onClick={() => onTextGroesseChange?.(px)}
                   className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === px ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                  title={`${px}px`}>{label}</button>
+                  >{label}</button>
               ))}
             </div>
             <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
             <div className="flex gap-1 px-1">
               <button type="button" onClick={() => onTextFettChange?.(!textFett)}
                 className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
+                >B</button>
               <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
                 className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
-                title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? ` ${textRotation}°` : ''}</button>
+                >⟳{textRotation > 0 ? ` ${textRotation}°` : ''}</button>
             </div>
           </div>
         </ToolbarDropdown>
@@ -214,10 +223,12 @@ export function PDFToolbar({
 
       {/* Kommentar */}
       {(erlaubteWerkzeuge || []).includes('kommentar') && (
-        <button type="button" aria-pressed={aktivesWerkzeug === 'kommentar'} title="Kommentar"
-          onClick={() => onWerkzeugWechsel('kommentar')} className={btnKlassen(aktivesWerkzeug === 'kommentar')}>
-          💬
-        </button>
+        <Tooltip text="Kommentar">
+          <button type="button" aria-pressed={aktivesWerkzeug === 'kommentar'}
+            onClick={() => onWerkzeugWechsel('kommentar')} className={btnKlassen(aktivesWerkzeug === 'kommentar')}>
+            💬
+          </button>
+        </Tooltip>
       )}
 
       {/* Freihand als Stift-Menü (Stärke + Gestrichelt) */}
@@ -271,15 +282,16 @@ export function PDFToolbar({
       )}
 
       {/* Radierer */}
-      <button
-        type="button"
-        aria-pressed={aktivesWerkzeug === 'radierer'}
-        title="Radierer"
-        onClick={() => onWerkzeugWechsel('radierer')}
-        className={btnKlassen(aktivesWerkzeug === 'radierer')}
-      >
-        <RadiererIcon />
-      </button>
+      <Tooltip text="Radierer">
+        <button
+          type="button"
+          aria-pressed={aktivesWerkzeug === 'radierer'}
+          onClick={() => onWerkzeugWechsel('radierer')}
+          className={btnKlassen(aktivesWerkzeug === 'radierer')}
+        >
+          <RadiererIcon />
+        </button>
+      </Tooltip>
 
       <div className={separatorKlassen} aria-hidden="true" />
 
@@ -291,18 +303,19 @@ export function PDFToolbar({
       >
         <div className="grid grid-cols-3 gap-2" style={{ minWidth: 156 }}>
           {STANDARD_HIGHLIGHT_FARBEN.map((farbe) => (
-            <button
-              key={farbe}
-              type="button"
-              title={farbe}
-              onClick={() => onFarbeWechsel(farbe)}
-              className={[
-                'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
-                aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',
-              ].join(' ')}
-            >
-              <span className="block rounded-full border border-slate-300 dark:border-slate-500" style={{ width: 30, height: 30, backgroundColor: farbe }} />
-            </button>
+            <Tooltip text={farbe}>
+              <button
+                key={farbe}
+                type="button"
+                onClick={() => onFarbeWechsel(farbe)}
+                className={[
+                  'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
+                  aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',
+                ].join(' ')}
+              >
+                <span className="block rounded-full border border-slate-300 dark:border-slate-500" style={{ width: 30, height: 30, backgroundColor: farbe }} />
+              </button>
+            </Tooltip>
           ))}
         </div>
       </ToolbarDropdown>
@@ -329,10 +342,14 @@ export function PDFToolbar({
 
       {/* Undo / Redo */}
       <div role="group" aria-label="Verlauf" className={`flex gap-0.5 ${isHorizontal ? '' : 'flex-col'}`}>
-        <button type="button" title="Rückgängig" onClick={onUndo} disabled={!kannUndo}
-          className={`${btnKlassen(false)} ${!kannUndo ? 'opacity-40 cursor-not-allowed' : ''}`}>↩</button>
-        <button type="button" title="Wiederherstellen" onClick={onRedo} disabled={!kannRedo}
-          className={`${btnKlassen(false)} ${!kannRedo ? 'opacity-40 cursor-not-allowed' : ''}`}>↪</button>
+        <Tooltip text="Rückgängig">
+          <button type="button" onClick={onUndo} disabled={!kannUndo}
+            className={`${btnKlassen(false)} ${!kannUndo ? 'opacity-40 cursor-not-allowed' : ''}`}>↩</button>
+        </Tooltip>
+        <Tooltip text="Wiederherstellen">
+          <button type="button" onClick={onRedo} disabled={!kannRedo}
+            className={`${btnKlassen(false)} ${!kannRedo ? 'opacity-40 cursor-not-allowed' : ''}`}>↪</button>
+        </Tooltip>
       </div>
 
       <div className={separatorKlassen} aria-hidden="true" />
@@ -353,14 +370,15 @@ export function PDFToolbar({
 
       {/* Alles löschen */}
       {onAllesLoeschen && (
-        <button
-          type="button"
-          title="Alles löschen"
-          onClick={() => setZeigeLoeschenDialog(true)}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
-        >
-          🗑
-        </button>
+        <Tooltip text="Alles löschen">
+          <button
+            type="button"
+            onClick={() => setZeigeLoeschenDialog(true)}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
+          >
+            🗑
+          </button>
+        </Tooltip>
       )}
 
       {/* Annotation-Zähler */}

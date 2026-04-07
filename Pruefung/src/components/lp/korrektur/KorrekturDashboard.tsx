@@ -192,8 +192,8 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
           </div>
         )}
 
-        {/* Warnung: Fragen als geprüft markiert, aber ohne Punkte */}
-        {korrektur && korrektur.schueler.length > 0 && (() => {
+        {/* Warnung: Fragen als geprüft markiert, aber ohne Punkte (nicht bei formativen Übungen) */}
+        {!istFormativ && korrektur && korrektur.schueler.length > 0 && (() => {
           let ohnePunkte = 0
           for (const s of korrektur.schueler) {
             for (const b of Object.values(s.bewertungen)) {
@@ -289,7 +289,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
             )}
           </div>
         ) : korrektur ? (
-          <KorrekturFragenAnsicht fragen={fragen} korrektur={korrektur} abgaben={abgaben} notenConfig={notenConfig} onBewertungUpdate={handleBewertungUpdate} />
+          <KorrekturFragenAnsicht fragen={fragen} korrektur={korrektur} abgaben={abgaben} notenConfig={notenConfig} onBewertungUpdate={handleBewertungUpdate} istFormativ={istFormativ} />
         ) : null}
       </main>
 

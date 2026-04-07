@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Tool, ToolbarLayout } from './ZeichnenTypes';
 import ToolbarDropdown from '../../shared/ToolbarDropdown';
+import Tooltip from '../../ui/Tooltip';
 
 /** Inline SVG Radierer-Icon */
 function RadiererIcon() {
@@ -124,21 +125,24 @@ export function ZeichnenToolbar({
       className={containerKlassen}
     >
       {/* Layout-Toggle (erstes Element) */}
-      <button
-        type="button"
-        title={isHorizontal ? 'Vertikal anordnen' : 'Horizontal anordnen'}
-        onClick={onLayoutToggle}
-        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400"
-      >
-        {isHorizontal ? '⇅' : '⇆'}
-      </button>
+      <Tooltip text={isHorizontal ? 'Vertikal anordnen' : 'Horizontal anordnen'}>
+        <button
+          type="button"
+          onClick={onLayoutToggle}
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-transparent hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-400"
+        >
+          {isHorizontal ? '⇅' : '⇆'}
+        </button>
+      </Tooltip>
 
       <div className={separatorKlassen} aria-hidden="true" />
 
       {/* Auswahl */}
-      <button type="button" title="Auswahl" onClick={() => onToolChange('auswahl')} className={btnKlassen(aktivesTool === 'auswahl')}>
-        ↖
-      </button>
+      <Tooltip text="Auswahl">
+        <button type="button" onClick={() => onToolChange('auswahl')} className={btnKlassen(aktivesTool === 'auswahl')}>
+          ↖
+        </button>
+      </Tooltip>
 
       {/* Stift-Menü (Stärke + Stil) — Klick aktiviert Stift + öffnet Optionen */}
       {hatStift && (
@@ -236,7 +240,7 @@ export function ZeichnenToolbar({
               {([{ label: 'S', wert: 14 }, { label: 'M', wert: 18 }, { label: 'L', wert: 24 }, { label: 'XL', wert: 32 }] as const).map(({ label, wert }) => (
                 <button key={label} type="button" onClick={() => onTextGroesseChange?.(wert)}
                   className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-xs font-medium transition-colors ${textGroesse === wert ? 'bg-slate-200 dark:bg-slate-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                  title={`${wert}px`}>{label}</button>
+                  >{label}</button>
               ))}
             </div>
             <div className="h-px bg-slate-200 dark:bg-slate-600 my-0.5" />
@@ -244,10 +248,10 @@ export function ZeichnenToolbar({
             <div className="flex gap-1 px-1">
               <button type="button" onClick={() => onTextFettChange?.(!textFett)}
                 className={`min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors ${textFett ? 'bg-slate-200 dark:bg-slate-600 font-bold' : 'hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-                title={textFett ? 'Fett aus' : 'Fett ein'}>B</button>
+                >B</button>
               <button type="button" onClick={() => onTextRotationChange?.(((textRotation + 90) % 360) as 0 | 90 | 180 | 270)}
                 className="min-w-[32px] min-h-[32px] flex items-center justify-center rounded text-sm transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
-                title={`Rotation: ${textRotation}°`}>⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
+                >⟳{textRotation > 0 ? `${textRotation}°` : ''}</button>
             </div>
           </div>
         </ToolbarDropdown>
@@ -255,9 +259,11 @@ export function ZeichnenToolbar({
 
       {/* Radierer */}
       {radiererAktiv && (
-        <button type="button" title="Radierer" onClick={() => onToolChange('radierer')} className={btnKlassen(aktivesTool === 'radierer')}>
-          <RadiererIcon />
-        </button>
+        <Tooltip text="Radierer">
+          <button type="button" onClick={() => onToolChange('radierer')} className={btnKlassen(aktivesTool === 'radierer')}>
+            <RadiererIcon />
+          </button>
+        </Tooltip>
       )}
 
       <div className={separatorKlassen} aria-hidden="true" />
@@ -270,18 +276,19 @@ export function ZeichnenToolbar({
       >
         <div className="grid grid-cols-3 gap-2" style={{ minWidth: 156 }}>
           {verfuegbareFarben.map((farbe) => (
-            <button
-              key={farbe}
-              type="button"
-              title={farbe}
-              onClick={() => onFarbeChange(farbe)}
-              className={[
-                'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
-                aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',
-              ].join(' ')}
-            >
-              <span className="block rounded-full border border-slate-300 dark:border-slate-500" style={{ width: 30, height: 30, backgroundColor: farbe }} />
-            </button>
+            <Tooltip text={farbe}>
+              <button
+                key={farbe}
+                type="button"
+                onClick={() => onFarbeChange(farbe)}
+                className={[
+                  'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
+                  aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',
+                ].join(' ')}
+              >
+                <span className="block rounded-full border border-slate-300 dark:border-slate-500" style={{ width: 30, height: 30, backgroundColor: farbe }} />
+              </button>
+            </Tooltip>
           ))}
         </div>
       </ToolbarDropdown>
@@ -290,23 +297,28 @@ export function ZeichnenToolbar({
 
       {/* Undo/Redo */}
       <div role="group" aria-label="Verlauf" className={`flex gap-0.5 ${isHorizontal ? 'flex-row' : 'flex-col'}`}>
-        <button type="button" title="Rückgängig" onClick={onUndo} disabled={!kannUndo}
-          className={`${btnKlassen(false)} ${!kannUndo ? 'opacity-40 cursor-not-allowed' : ''}`}>↩</button>
-        <button type="button" title="Wiederherstellen" onClick={onRedo} disabled={!kannRedo}
-          className={`${btnKlassen(false)} ${!kannRedo ? 'opacity-40 cursor-not-allowed' : ''}`}>↪</button>
+        <Tooltip text="Rückgängig">
+          <button type="button" onClick={onUndo} disabled={!kannUndo}
+            className={`${btnKlassen(false)} ${!kannUndo ? 'opacity-40 cursor-not-allowed' : ''}`}>↩</button>
+        </Tooltip>
+        <Tooltip text="Wiederherstellen">
+          <button type="button" onClick={onRedo} disabled={!kannRedo}
+            className={`${btnKlassen(false)} ${!kannRedo ? 'opacity-40 cursor-not-allowed' : ''}`}>↪</button>
+        </Tooltip>
       </div>
 
       {isHorizontal && <div className="flex-1" aria-hidden="true" />}
 
       {/* Alles löschen */}
-      <button
-        type="button"
-        title="Alles löschen"
-        onClick={() => setZeigeLoeschenDialog(true)}
-        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
-      >
-        🗑
-      </button>
+      <Tooltip text="Alles löschen">
+        <button
+          type="button"
+          onClick={() => setZeigeLoeschenDialog(true)}
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
+        >
+          🗑
+        </button>
+      </Tooltip>
 
       {/* Bestätigungsdialog */}
       {zeigeLoeschenDialog && (
