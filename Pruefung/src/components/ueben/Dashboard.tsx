@@ -474,7 +474,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                   themenStatus={freischaltungen.length > 0 ? getStatus(info.fach, info.thema) : 'abgeschlossen'}
                   fachFarben={fachFarben}
                   onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
-                  anzahlLernziele={lernziele.filter(lz => lz.aktiv && lz.fach === info.fach && lz.thema === info.thema).length}
+                  anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
                   onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
                 />
               ))}

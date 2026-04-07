@@ -22,7 +22,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
   // Gruppierung: Fach → Thema → Lernziele
   const fachMap: Record<string, Record<string, Lernziel[]>> = {}
   for (const lz of lernziele) {
-    if (!lz.aktiv) continue
+    if (lz.aktiv === false) continue
     const fach = lz.fach || 'Andere'
     const thema = lz.thema || 'Allgemein'
     if (!fachMap[fach]) fachMap[fach] = {}
@@ -188,7 +188,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
   onUeben: () => void
 }) {
   const farbe = getFachFarbe(fach, {})
-  const relevante = lernziele.filter(lz => lz.aktiv && lz.fach === fach && lz.thema === thema)
+  const relevante = lernziele.filter(lz => lz.aktiv !== false && lz.fach === fach && (lz.thema === thema || lz.thema?.includes(thema) || thema?.includes(lz.thema)))
 
   if (relevante.length === 0) return null
 

@@ -115,7 +115,7 @@ async function main() {
                 id: `pool-${poolId}-${topicKey}-${alleLernziele.length}`,
                 fach,
                 poolId,
-                thema: topicLabel,
+                thema: poolTitle, // Pool-Titel = Thema in ExamLab (nicht topicLabel)
                 text: bereinigeLernzielText(lzText),
                 bloom: extrahiereBloom(lzText),
                 aktiv: true,
