@@ -1,7 +1,7 @@
 /**
  * API-Client für das Üben-Backend.
- * Nach der Backend-Fusion nutzt die LP das gleiche Apps Script wie das Prüfungstool.
- * Die LP-Endpoints (lernplattform*) sind im selben doPost-Switch.
+ * Nach der Backend-Fusion nutzt die LP das gleiche Apps Script wie ExamLab Prüfen.
+ * Die Üben-Endpoints (lernplattform*) sind im selben doPost-Switch.
  */
 
 const APPS_SCRIPT_URL: string = (import.meta.env.VITE_APPS_SCRIPT_URL as string) || ''
@@ -11,7 +11,7 @@ export function uebenIstKonfiguriert(): boolean {
   return !!APPS_SCRIPT_URL
 }
 
-/** POST an das Backend (gleiche URL wie Prüfungstool) */
+/** POST an das Backend (gleiche URL wie ExamLab Prüfen) */
 export async function uebenPost<T = unknown>(
   action: string,
   payload: Record<string, unknown>,

@@ -44,8 +44,8 @@ function erstelleBeatAntworten(): Record<string, Antwort> {
   // B1: Freitext kurz
   antworten['einr-ft-formatierung'] = {
     typ: 'freitext',
-    text: 'Ich teste gerade das **Prüfungstool** und finde es *spannend*.',
-    formatierung: '<p>Ich teste gerade das <strong>Prüfungstool</strong> und finde es <em>spannend</em>.</p>',
+    text: 'Ich teste gerade **ExamLab** und finde es *spannend*.',
+    formatierung: '<p>Ich teste gerade <strong>ExamLab</strong> und finde es <em>spannend</em>.</p>',
   }
 
   // B2: Lückentext — alle korrekt
@@ -326,7 +326,7 @@ export function erstelleDemoKorrektur(): PruefungsKorrektur {
 
   return {
     pruefungId: 'einrichtung-sf-wr-27a28f',
-    pruefungTitel: 'Einrichtungsprüfung — Lerne das Prüfungstool kennen',
+    pruefungTitel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
     datum: '2026-03-24',
     klasse: 'sf-wr-27a28f',
     schueler: [

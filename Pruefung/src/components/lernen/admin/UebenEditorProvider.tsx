@@ -1,7 +1,7 @@
 /**
  * EditorProvider für ExamLab Üben.
  * Konfiguriert den SharedFragenEditor mit allen Features.
- * Nutzt dieselben Endpoints wie das Prüfungstool für KI, Upload, Lernziele.
+ * Nutzt dieselben Endpoints wie ExamLab Prüfen für KI, Upload, Lernziele.
  */
 import { useMemo, useEffect, type ReactNode } from 'react'
 import { EditorProvider } from '@shared/editor/EditorContext'
@@ -34,13 +34,13 @@ export default function UebenEditorProvider({ children }: Props) {
       anhangUpload: true,
       bewertungsraster: true,
       sharing: true,
-      poolSync: false, // Pool-Sync nur im Prüfungstool (Übungspools-Brücke)
-      performance: false, // Performance-Daten nur im Prüfungstool
+      poolSync: false, // Pool-Sync nur in ExamLab Prüfen (Übungspools-Brücke)
+      performance: false, // Performance-Daten nur in ExamLab Prüfen
     },
   }), [user?.email, user?.name])
 
   const services: EditorServices = useMemo(() => ({
-    // KI-Assistent: Ruft das Prüfungstool-Backend für KI-Aktionen auf
+    // KI-Assistent: Ruft das ExamLab-Backend für KI-Aktionen auf
     kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
       try {
         const response = await uebenApiClient.post<{ success: boolean; data: Record<string, unknown> }>(

@@ -110,7 +110,7 @@ export const einrichtungsFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Beurteilen Sie die folgenden Aussagen über das Prüfungstool als **richtig** oder **falsch**.',
+    fragetext: 'Beurteilen Sie die folgenden Aussagen über ExamLab als **richtig** oder **falsch**.',
     aussagen: [
       { id: '1', text: 'Man kann zwischen Fragen vor- und zurücknavigieren.', korrekt: true, erklaerung: 'Rücknavigation ist bei dieser Prüfung aktiviert.' },
       { id: '2', text: 'Die Antworten werden automatisch gespeichert (AutoSave).', korrekt: true, erklaerung: 'AutoSave speichert alle 30 Sekunden.' },
@@ -140,7 +140,7 @@ export const einrichtungsFragen: Frage[] = [
     tags: ['einrichtung', 'test'],
     punkte: 2,
     zeitbedarf: 2,
-    musterlosung: 'Ein Satz mit einem fetten und einem kursiven Wort, z.B.: «Ich teste gerade das Prüfungstool und finde es spannend.»',
+    musterlosung: 'Ein Satz mit einem fetten und einem kursiven Wort, z.B.: «Ich teste gerade ExamLab und finde es spannend.»',
     bewertungsraster: [
       { beschreibung: 'Ein Wort ist fett formatiert', punkte: 1 },
       { beschreibung: 'Ein Wort ist kursiv formatiert', punkte: 1 },

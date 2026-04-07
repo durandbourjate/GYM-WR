@@ -1,5 +1,5 @@
 // Pruefung/src/utils/poolConverter.ts
-// Konvertiert Pool-Frageformate ins Prüfungstool-Format
+// Konvertiert Pool-Frageformate ins ExamLab-Format
 
 import type { PoolFrage, PoolMeta, PoolTopic, PoolFrageSnapshot } from '../types/pool'
 import type {
@@ -227,7 +227,7 @@ export function erzeugeSnapshot(poolFrage: PoolFrage): PoolFrageSnapshot {
 // === HAUPTKONVERTIERUNG ===
 
 /**
- * Konvertiert eine Pool-Frage ins Prüfungstool-Format.
+ * Konvertiert eine Pool-Frage ins ExamLab-Format.
  *
  * @param poolFrage  - Die Rohfrage aus dem Pool
  * @param poolMeta   - Pool-Metadaten (id, title, fach)

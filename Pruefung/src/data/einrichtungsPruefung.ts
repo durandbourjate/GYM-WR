@@ -2,7 +2,7 @@ import type { PruefungsConfig } from '../types/pruefung.ts'
 
 export const einrichtungsPruefung: PruefungsConfig = {
   id: 'einrichtung-sf-wr-27a28f',
-  titel: 'Einrichtungsprüfung — Lerne das Prüfungstool kennen',
+  titel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
 
   klasse: 'sf-wr-27a28f',
   gefaess: 'SF',

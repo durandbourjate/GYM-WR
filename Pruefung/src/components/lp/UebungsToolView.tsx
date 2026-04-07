@@ -13,7 +13,7 @@ const LP_AUTH_KEY = 'ueben-auth'
  * und das AdminDashboard rendert.
  *
  * Schritte:
- * 1. LP-Login auf dem LP-Backend (lernplattformLogin) → Session-Token holen
+ * 1. LP-Login auf dem Üben-Backend (lernplattformLogin) → Session-Token holen
  * 2. Token + User in localStorage + Zustand-Store schreiben
  * 3. Gruppen laden
  * 4. AdminDashboard rendern
@@ -28,7 +28,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
   const storeMitglieder = useUebenGruppenStore(s => s.mitglieder)
   const [loginStatus, setLoginStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
 
-  // LP-Login auf dem LP-Backend ausführen um einen gültigen Session-Token zu bekommen
+  // LP-Login auf dem Üben-Backend ausführen um einen gültigen Session-Token zu bekommen
   useEffect(() => {
     if (!pruefungUser?.email || loginStatus !== 'idle') return
     setLoginStatus('laden')

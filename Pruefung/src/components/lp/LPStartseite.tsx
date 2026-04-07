@@ -476,7 +476,7 @@ export default function LPStartseite() {
         </>
       )}
 
-      {/* Prüfungstool-Ansicht */}
+      {/* Prüfen-Ansicht */}
       {modus === 'pruefung' && <>
       {/* Tab-Leiste */}
       <div className="px-6 pt-4">

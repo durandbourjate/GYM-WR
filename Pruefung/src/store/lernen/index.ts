@@ -1,6 +1,6 @@
 /**
  * Üben-Stores (Zustand).
- * Alle Stores mit `useLernen`-Prefix um Kollisionen mit Prüfungs-Stores zu vermeiden.
+ * Alle Stores mit `useUeben`-Prefix um Kollisionen mit Prüfungs-Stores zu vermeiden.
  */
 
 export { useUebenAuthStore } from './authStore'

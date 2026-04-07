@@ -71,7 +71,7 @@ export interface FrageBase {
   // Pool-Sync (importierte Fragen aus Übungspools)
   poolId?: string                     // Compound-Key '{pool}:{frage}', z.B. 'vwl_bip:d01'
   poolGeprueft?: boolean              // Review-Status in Pool-Quelle
-  pruefungstauglich?: boolean         // Separat abgesegnet im Prüfungstool
+  pruefungstauglich?: boolean         // Separat abgesegnet in ExamLab Prüfen
   poolContentHash?: string            // SHA-256 für Änderungserkennung
   poolUpdateVerfuegbar?: boolean      // true wenn Pool-Version neuer
   poolVersion?: import('./pool').PoolFrageSnapshot

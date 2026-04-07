@@ -242,7 +242,7 @@ export async function berechneDelta(
       const bestehendeFrageOpt = bestehendeFragenMap.get(compoundId)
 
       if (!bestehendeFrageOpt) {
-        // Neu: noch nicht im Prüfungstool
+        // Neu: noch nicht in ExamLab
         const lernzielIds = findeLernzielIds(config.meta.id, poolFrage.topic, poolLernziele)
         const neueFrage = konvertierePoolFrage(poolFrage, config.meta, config.topics, lernzielIds)
         // Hash nachträglich setzen (konvertierePoolFrage setzt '' als Platzhalter)
@@ -300,7 +300,7 @@ export interface RueckSyncDiffFeld {
   feld: string        // Anzeigename (z.B. "Fragetext", "Erklärung")
   poolFeld: string    // Pool-Feldname (z.B. "q", "explain")
   alt: unknown        // Wert im Pool (aus Snapshot)
-  neu: unknown        // Aktueller Wert im Prüfungstool
+  neu: unknown        // Aktueller Wert in ExamLab
 }
 
 /**

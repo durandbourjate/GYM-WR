@@ -1,5 +1,5 @@
 // Pruefung/src/utils/poolExporter.ts
-// Konvertierung Prüfungstool → Pool-Format (Gegenstück zu poolConverter.ts)
+// Konvertierung ExamLab → Pool-Format (Gegenstück zu poolConverter.ts)
 
 import type {
   Frage,
@@ -29,7 +29,7 @@ export interface PoolFrageExport {
 }
 
 /**
- * Konvertiert eine Prüfungstool-Frage ins Pool-Format.
+ * Konvertiert eine ExamLab-Frage ins Pool-Format.
  * Wirft Error bei VisualisierungFrage (nicht exportierbar).
  */
 export function konvertiereZuPoolFormat(
