@@ -6,6 +6,92 @@
 
 ---
 
+## Session 69 — Paket A-C: Lernsteuerung + Navigation + Bugfixes (07.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
+**Fragenbank: 2398 Fragen** (2360 Pool + 38 manuell).
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Paket A: Lernsteuerung (8 Phasen)** | |
+| A1 | Themen-Sichtbarkeit: 3 Stufen (nicht_freigeschaltet/aktiv/abgeschlossen), FIFO max 3, Backend-Tab + Store + Adapter | themenSichtbarkeit.ts, themenSichtbarkeitStore.ts, appsScriptAdapter.ts, apps-script-code.js |
+| A2 | Dashboard: ThemaKarte-Komponente, Sichtbarkeitsfilter, "Alle Themen anzeigen"-Toggle | Dashboard.tsx, ThemaKarte.tsx |
+| A3 | Deep-Links: `?fach=...&thema=...` aktiviert Thema + navigiert direkt, Aufträge-Store localStorage→Backend | useDeepLinkAktivierung.ts, AppUeben.tsx, auftragStore.ts, apps-script-code.js |
+| A4 | LP Themensteuerung: Admin-Tab mit Aktivieren/Abschliessen, ausklappbare Unterthemen, Deep-Link-URL kopieren | AdminThemensteuerung.tsx, AdminDashboard.tsx |
+| A5 | Recency-gewichtete Mastery: >30d 1 Stufe runter, >90d → üben, 10 Tests | mastery.ts, apps-script-code.js, masteryRecency.test.ts |
+| A6 | "Für dich empfohlen": LP-Aufträge > Fokus > aktive Themen > Dauerbaustellen > Festigung, EmpfehlungsKarte | empfehlungen.ts, blockBuilder.ts, EmpfehlungsKarte.tsx, Dashboard.tsx |
+| A7 | LP Analyse-Dashboard: KursHeatmap, KlassenLuecken, SuSUebersicht mit echten Daten | AnalyseDashboard.tsx, analyse/*.tsx |
+| A8 | SuS-Analyse: Level, Streak, Meilensteine, Themen-Übersicht, Tab "Mein Fortschritt" | SuSAnalyse.tsx, gamification.ts, Dashboard.tsx |
+| **Paket B: Navigation & Einstieg** | |
+| B1 | Deep-Links navigieren direkt zur Thema-Detailansicht + Unterthema-Filter | useDeepLinkAktivierung.ts, Dashboard.tsx |
+| B2 | SuS-Suchfeld: Freitextsuche über Themen, Fächer, Unterthemen, Fragetexte | Dashboard.tsx |
+| **Paket C: Admin & Daten** | |
+| C1 | Fokusthema-Dropdown in Einstellungen (LP wählt Schwerpunkt) | AllgemeinTab.tsx, settings.ts |
+| C2 | LernzielAnzeige-Komponente (Mastery-Status pro Lernziel) | LernzielAnzeige.tsx |
+| **Bugfixes & UX** | |
+| F1 | Einrichtungsübung: Eingebaute Config+Fragen als Fallback (kein Backend-Dependency) | App.tsx, DurchfuehrenDashboard.tsx |
+| F2 | FiBu-Dropdowns: Kontenrahmen-Daten beim App-Start initialisiert | App.tsx |
+| F3 | LP-Auswertung: 23/23 statt 12/13, keine Punkte im Übungsmodus | DurchfuehrenDashboard.tsx |
+| F4 | Sync-Guard: Backend-Check entfernt, nur localStorage-Guard | LPStartseite.tsx |
+| F5 | Fachbereich-Fix: 'Allgemein'→'VWL', 'Informatik'→'BWL' in Einrichtungsübung | einrichtungsUebungFragen.ts |
+| F6 | Materialien in Einrichtungsübung (Witzsammlung + OR-Auszug) | einrichtungsUebung.ts |
+| F7 | Demo-Hinweis entfernt ("wird geladen" statt "Demo-Modus") | DurchfuehrenDashboard.tsx |
+| **Naming & UX** | |
+| N1 | index.html Titel → "ExamLab — Gymnasium Hofwil" | index.html |
+| N2 | E-Mail-Absender + Footer → "ExamLab" | apps-script-code.js |
+| N3 | erlaubteKlasse entfernt (Einrichtung offen für alle) | einrichtungsPruefung.ts, einrichtungsUebung.ts |
+| N4 | Backend-Kommentare: Prüfungstool → ExamLab (10 Stellen) | apps-script-code.js, diverse |
+| N5 | Home-Button: "Zurück zu ExamLab" nach Prüfungsabgabe | AbgabeBestaetigung.tsx |
+| N6 | SuS-Startseite: ExamLab-Titel klickbar als Home-Link | SuSStartseite.tsx |
+| N7 | Aktive Prüfungen auf SuS-Startseite (Backend-Endpoint + Polling) | AktivePruefungen.tsx, apps-script-code.js |
+
+### Neue Dateien (26)
+- `src/types/ueben/themenSichtbarkeit.ts`
+- `src/store/ueben/themenSichtbarkeitStore.ts`
+- `src/hooks/ueben/useDeepLinkAktivierung.ts`
+- `src/components/ueben/ThemaKarte.tsx`
+- `src/components/ueben/EmpfehlungsKarte.tsx`
+- `src/components/ueben/SuSAnalyse.tsx`
+- `src/components/ueben/LernzielAnzeige.tsx`
+- `src/components/ueben/admin/AdminThemensteuerung.tsx`
+- `src/components/lp/ueben/analyse/KursHeatmap.tsx`
+- `src/components/lp/ueben/analyse/KlassenLuecken.tsx`
+- `src/components/lp/ueben/analyse/SuSUebersicht.tsx`
+- `src/components/sus/AktivePruefungen.tsx`
+- `src/__tests__/themenSichtbarkeit.test.ts`
+- `src/__tests__/masteryRecency.test.ts`
+
+### Apps Script — Neue Endpoints
+- `lernplattformLadeThemenSichtbarkeit` — Themen-Sichtbarkeit laden
+- `lernplattformSetzeThemenStatus` — Themen-Status setzen (FIFO)
+- `ladeAktivePruefungenFuerSuS` — Aktive Prüfungen für SuS (Startseite)
+- Erweiterte Aufträge-Endpoints (status, zielEmails, erstelltVon, Auto-Tab)
+- `berechneMasteryMitRecency_()` — Recency-gewichtete Mastery
+
+### ⚠ Apps Script Deploy nötig
+Neuer Code muss im Apps Script Editor deployed werden:
+- 3 neue Endpoints
+- E-Mail-Absender → "ExamLab"
+- Kommentare aktualisiert
+
+### Zu verifizieren (nach Deploy)
+- Einrichtungsübung: Alle 23 Fragen korrekt (Texte, FiBu-Dropdowns, Materialien)
+- Themensteuerung: Aktivieren/Abschliessen, Deep-Link kopieren
+- SuS-Dashboard: Sichtbarkeitsfilter, Empfehlungen, Mein Fortschritt
+- LP-Analyse: Heatmap, Lücken, SuS-Übersicht (braucht echte Daten)
+- Aktive Prüfungen auf SuS-Startseite (Polling)
+- Deep-Links: `?fach=...&thema=...` aktiviert + navigiert
+
+### Offene Wünsche
+- Aktive Prüfungen auf SuS-Startseite: Endpoint braucht neuen Apps Script Deploy
+- LP-Reconnect nach Logout während Prüfung: Noch nicht getestet
+- Gruppenname editierbar + Rollenverwaltung: Braucht neue Backend-Endpoints
+
+---
+
 ## Session 68 — Tech-Verbesserungen + Bug-Fixes (07.04.2026)
 
 ### Stand
