@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import { useUebenAuthStore } from '../../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
+import { useAuthStore } from '../../../store/authStore'
 import { useUebenNavigationStore } from '../../../store/ueben/navigationStore'
 import { useUebenUebungsStore } from '../../../store/ueben/uebungsStore'
 import { useUebenFortschrittStore } from '../../../store/ueben/fortschrittStore'
@@ -14,7 +15,15 @@ interface Props {
 }
 
 export default function AppShell({ children }: Props) {
-  const { user, abmelden } = useUebenAuthStore()
+  const { user, abmelden: uebenAbmelden } = useUebenAuthStore()
+  const pruefungAbmelden = useAuthStore(s => s.abmelden)
+
+  // Vollständiges Abmelden: Üben-Auth + Gruppen + Prüfungs-Auth
+  function abmelden() {
+    uebenAbmelden()
+    useUebenGruppenStore.setState({ gruppen: [], aktiveGruppe: null, mitglieder: [], ladeStatus: 'idle' })
+    pruefungAbmelden()
+  }
   const { gruppen, aktiveGruppe, gruppeAbwaehlen } = useUebenGruppenStore()
   const { aktuellerScreen, zurueck, kannZurueck, navigiere } = useUebenNavigationStore()
   const { istDark, toggleTheme } = useUebenTheme()
