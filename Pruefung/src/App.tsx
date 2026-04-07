@@ -177,23 +177,17 @@ export default function App() {
               setWurdeZurueckgesetzt(true)
             }
 
-            // Einrichtungsprüfung/-übung: Eingebaute Fragen als Fallback wenn Backend nicht alle hat
-            let fragenPool = result.fragen
-            const eingebauteFallbacks: Record<string, Frage[]> = {
-              'einrichtung-uebung': einrichtungsUebungFragen,
-              [einrichtungsPruefung.id]: demoFragen,
+            // Einrichtungsprüfung/-übung: Eingebaute Config + Fragen verwenden
+            // (Backend-Config kann veraltet sein — eingebaute Version ist immer aktuell)
+            const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Frage[] }> = {
+              'einrichtung-uebung': { config: einrichtungsUebung, fragen: einrichtungsUebungFragen },
+              [einrichtungsPruefung.id]: { config: einrichtungsPruefung, fragen: demoFragen },
             }
-            const fallback = eingebauteFallbacks[pruefungIdAusUrl]
-            if (fallback) {
-              const backendIds = new Set(fragenPool.map(f => f.id))
-              const fehlende = fallback.filter(f => !backendIds.has(f.id))
-              if (fehlende.length > 0) {
-                console.log(`[App] ${pruefungIdAusUrl}: ${fehlende.length} fehlende Fragen aus eingebautem Fallback ergänzt`)
-                fragenPool = [...fragenPool, ...fehlende]
-              }
-            }
+            const eingebaut = eingebauteVersionen[pruefungIdAusUrl]
+            const aktuelleConfig = eingebaut ? { ...eingebaut.config, freigeschaltet: true, durchfuehrungId: result.config.durchfuehrungId } : result.config
+            const fragenPool = eingebaut ? eingebaut.fragen : result.fragen
 
-            const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(result.config, fragenPool)
+            const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(aktuelleConfig, fragenPool)
             setPruefungsConfig(result.config)
             setPruefungsFragen(navigationsFragen)
             setPruefungsAlleFragen(alleFragen)

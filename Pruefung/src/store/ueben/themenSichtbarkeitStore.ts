@@ -42,12 +42,7 @@ export const useThemenSichtbarkeitStore = create<ThemenSichtbarkeitState>((set, 
   },
 
   setzeStatus: async (gruppeId, fach, thema, status, aktiviertVon, typ = 'manuell') => {
-    const erfolg = await uebenThemenSichtbarkeitAdapter.setzeStatus(
-      gruppeId, fach, thema, status, aktiviertVon, typ
-    )
-    if (!erfolg) return false
-
-    // Lokalen State optimistisch aktualisieren
+    // Optimistisch: State SOFORT aktualisieren (UI reagiert instant)
     const jetzt = new Date().toISOString()
     set(state => {
       const bestehend = state.freischaltungen.filter(
@@ -77,6 +72,11 @@ export const useThemenSichtbarkeitStore = create<ThemenSichtbarkeitState>((set, 
 
       return { freischaltungen: aktualisiert }
     })
+
+    // Backend im Hintergrund aktualisieren (Fehler loggen, nicht blockieren)
+    uebenThemenSichtbarkeitAdapter.setzeStatus(
+      gruppeId, fach, thema, status, aktiviertVon, typ
+    ).catch(err => console.warn('[ThemenSichtbarkeit] Backend-Update fehlgeschlagen:', err))
 
     return true
   },

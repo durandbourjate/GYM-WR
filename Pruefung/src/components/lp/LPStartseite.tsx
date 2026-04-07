@@ -144,19 +144,12 @@ export default function LPStartseite() {
   const SYNC_KEY = 'einrichtung-sync-v3'
   const SYNC_VERSION = `${einrichtungsPruefung.id}-${einrichtungsPruefung.gesamtpunkte}-${einrichtungsPruefung.typ}-${einrichtungsFragen.length}`
 
-  async function syncEinrichtungsPruefung(email: string, backendConfigs: PruefungsConfig[]): Promise<void> {
-    // Guard: Bereits für diese Version synchronisiert?
+  async function syncEinrichtungsPruefung(email: string, _backendConfigs: PruefungsConfig[]): Promise<void> {
+    // Guard: Nur localStorage-basiert (Backend-Check entfernt — Config kann
+    // im Backend existieren während Fragen fehlen)
     try { if (localStorage.getItem(SYNC_KEY) === SYNC_VERSION) return } catch { /* ignore */ }
 
-    const backendVersion = backendConfigs.find(c => c.id === einrichtungsPruefung.id)
-    // Sync wenn: nicht vorhanden ODER Punktzahl/Typ anders
-    if (backendVersion && backendVersion.gesamtpunkte === einrichtungsPruefung.gesamtpunkte && backendVersion.typ === einrichtungsPruefung.typ) {
-      // Bereits aktuell — Guard setzen und fertig
-      try { localStorage.setItem(SYNC_KEY, SYNC_VERSION) } catch { /* ignore */ }
-      return
-    }
-
-    console.log('[LP] Einrichtungsprüfung sync starten...', backendVersion ? 'update' : 'neu')
+    console.log('[LP] Einrichtungsprüfung sync starten...')
     try {
       // Config speichern
       await speichereConfig(email, { ...einrichtungsPruefung, erstelltVon: email })
@@ -177,16 +170,12 @@ export default function LPStartseite() {
   const UEBUNG_SYNC_KEY = 'einrichtung-uebung-sync-v3'
   const UEBUNG_SYNC_VERSION = `${einrichtungsUebung.id}-${einrichtungsUebung.gesamtpunkte}-${einrichtungsUebungFragen.length}`
 
-  async function syncEinrichtungsUebung(email: string, backendConfigs: PruefungsConfig[]): Promise<void> {
+  async function syncEinrichtungsUebung(email: string, _backendConfigs: PruefungsConfig[]): Promise<void> {
+    // Guard: Nur localStorage-basiert (Backend-Check entfernt — Punktzahl allein
+    // reicht nicht, da Config stimmen kann aber Fragen fehlen)
     try { if (localStorage.getItem(UEBUNG_SYNC_KEY) === UEBUNG_SYNC_VERSION) return } catch { /* ignore */ }
 
-    const backendVersion = backendConfigs.find(c => c.id === einrichtungsUebung.id)
-    if (backendVersion && backendVersion.gesamtpunkte === einrichtungsUebung.gesamtpunkte) {
-      try { localStorage.setItem(UEBUNG_SYNC_KEY, UEBUNG_SYNC_VERSION) } catch { /* ignore */ }
-      return
-    }
-
-    console.log('[LP] Einführungsübung sync starten...', backendVersion ? 'update' : 'neu')
+    console.log('[LP] Einführungsübung sync starten...')
     try {
       await speichereConfig(email, { ...einrichtungsUebung, erstelltVon: email })
       for (let i = 0; i < einrichtungsUebungFragen.length; i += 5) {
