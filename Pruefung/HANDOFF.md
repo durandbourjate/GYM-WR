@@ -46,20 +46,26 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
 | U2 | "Fortschrittsbalken" → "Seitenzahl wie «1/23» (oben Mitte)" | einrichtungsFragen.ts, einrichtungsUebungFragen.ts |
 | U3 | "Materialpanel rechte Seite / Dokument-Symbol oben rechts" → "«📄 Material»-Button in Sidebar links oben" | einrichtungsFragen.ts |
 
+| **Restposten** | |
+| R1 | Übungs-Auswertung: Punktevergabe bei formativen Übungen ausgeblendet (`istFormativ`) | KorrekturFrageZeile, KorrekturSchuelerZeile, KorrekturFragenAnsicht, KorrekturDashboard |
+| R2 | localStorage-Migration: `lernplattform-*` → `ueben-*` (4 Keys, automatisch beim App-Start) | storageMigration.ts (neu), authStore.ts |
+| R3 | 2 "unbenutzte" Fragen: Waren Teilaufgaben der Aufgabengruppe `einr-ag-material` — korrekt | — |
+| **Tooltip-Migration komplett** | |
+| T2c | ZeichnenToolbar: 10 Stellen (7× Tooltip, 3× title entfernt) | ZeichnenToolbar.tsx |
+| T2d | PDFToolbar: 18 Stellen (12× Tooltip, 6× title entfernt) | PDFToolbar.tsx |
+| T2e | PDFKategorieChooser: 1 Stelle | PDFKategorieChooser.tsx |
+| **Verzeichnis-Renaming** | |
+| V1 | 8 Verzeichnisse: `lernen/` → `ueben/` (components, store, types, hooks, services, context, utils, adapters) | 102 Dateien |
+| V2 | 57 Import-Pfade aktualisiert | diverse |
+
 ### Nicht geändert (bewusst)
 - `lernziel`/`Lernziel`, `Lernende`/`lernend` (Fachbegriffe)
-- `components/lernen/`, `store/lernen/` etc. (Verzeichnisnamen — grösseres Refactoring)
 - Apps Script Endpoint-Strings (`lernplattformLogin` etc. — Backend-Kompatibilität)
-- ZeichnenToolbar/PDFToolbar title= (~30 Stellen — eigene Aufgabe wegen Toolbar-Komplexität)
-- 2 nicht referenzierte Fragen im `einrichtungsFragen.ts` Array (25 im Array, 23 in Config — harmlos)
 
 ### Zu verifizieren (nach Deploy)
 - Einrichtungsübung: Alle 23 Fragen im Browser durchklicken (insbesondere FiBu-Typen F9-F15)
 - Demo-Prüfung: UI-Texte korrekt?
-- Übungs-Auswertung zeigt Punktevergabe (soll sie das bei formativen Übungen?)
-
-### ⚠ Bekannt: localStorage-Key geändert
-`'lernplattform-auth'` → `'ueben-auth'`. SuS mit altem Key müssen sich einmal neu einloggen. Keine automatische Migration eingebaut.
+- localStorage-Migration: SuS mit altem Key sollten automatisch migriert werden
 
 ### Nächste Session — Strategische Features (Planung nötig)
 
@@ -74,13 +80,12 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
 | 7 | **SuS-Suchfeld** | Direktsuche nach Fragen in SuS-Dashboard | mittel |
 | 8 | **SuS-Hilfe erweitern** | Ausführlichere Hinweise (wie bei Übungspools) | niedrig |
 
-### Technische Schulden (verbleibend)
+### Technische Schulden
+Alle abgearbeitet ✅ (Tooltip-Migration komplett, Verzeichnis-Renaming erledigt). Einzig verbleibend:
 
 | # | Aufgabe | Prio |
 |---|---------|------|
 | 1 | **Analyse-Dashboard** mit echten Daten (aktuell nur Platzhalter) | mittel |
-| 2 | **ZeichnenToolbar/PDFToolbar Tooltip-Migration** (~30 Stellen) | niedrig |
-| 3 | **Verzeichnis-Renaming** (`components/lernen/` → `components/ueben/` etc.) | niedrig |
 
 ### ⚠ Apps Script
 Keine Code-Änderungen. Berechtigungen mussten am 07.04.2026 neu autorisiert werden (SpreadsheetApp.openById Scope verloren). Bereitstellung aktualisiert, gleiche URL.
