@@ -6,6 +6,65 @@
 
 ---
 
+## Session 68 — Technische Verbesserungen: Tooltip, DnD, Renaming (07.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
+**Fragenbank: 2398 Fragen** (2360 Pool + 38 manuell).
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **T2: Tooltip-Migration** | |
+| T2a | 85 Stellen: `title=` → `<Tooltip>` Komponente oder entfernt (redundant bei sichtbarem Text) | 43 Dateien |
+| T2b | ~70 Stellen bewusst nicht migriert: Overflow-Tooltips, Status-Badges, Toolbar-Buttons, Drag-Handles | — |
+| **T3: Drag & Drop Composer** | |
+| T3a | @dnd-kit installiert (core, sortable, utilities) | package.json |
+| T3b | Fragen per Drag & Drop sortierbar (pro Aufgabengruppe, nicht zwischen Gruppen) | AbschnitteTab.tsx, PruefungsComposer.tsx |
+| T3c | Drag-Handle (6-Punkt-Raster) + DragOverlay + Touch-Support (iPad: PointerSensor + TouchSensor) | AbschnitteTab.tsx |
+| T3d | Hoch/Runter-Buttons bleiben als Accessibility-Fallback | AbschnitteTab.tsx |
+| **T4: Variablen-Renaming** | |
+| T4a | `AppLernen` → `AppUeben` (Datei + Komponente) | 4 Dateien umbenannt |
+| T4b | Alle Stores: `useLernen*` → `useUeben*`, Adapter: `lernen*` → `ueben*` | 47 Dateien |
+| T4c | Typen: `LernenAuthUser` → `UebenAuthUser`, `LernenRolle` → `UebenRolle` | types/lernen/ |
+| T4d | API-Client: `lernenApiClient` → `uebenApiClient`, localStorage-Keys aktualisiert | apiClient.ts, authStore.ts |
+| T4e | `istLernen` → `istUeben` in appMode.ts | appMode.ts |
+| T4f | Kommentare bereinigt: "Prüfungstool" → "ExamLab", "Lernplattform" → "Üben" (21 Stellen) | 15 Dateien |
+| T4g | UI-Texte: Einrichtungsprüfung "Lerne das Prüfungstool kennen" → "Lerne ExamLab kennen" | einrichtungsFragen.ts |
+
+### Nicht geändert (bewusst)
+- `lernziel`/`Lernziel`, `Lernende`/`lernend` (Fachbegriffe)
+- `components/lernen/`, `store/lernen/` etc. (Verzeichnisnamen — grösseres Refactoring)
+- Apps Script Endpoint-Strings (`lernplattformLogin` etc. — Backend-Kompatibilität)
+- ZeichnenToolbar/PDFToolbar title= (~30 Stellen — eigene Aufgabe wegen Toolbar-Komplexität)
+
+### Nächste Session — Strategische Features (Planung nötig)
+
+| # | Feature | Beschreibung | Prio |
+|---|---------|-------------|------|
+| 1 | **Individualisiertes Lernen** | Mastery-System: Lücken trainieren, Beherrschtes zurückstellen | hoch |
+| 2 | **Aufträge als Themen-Aktivierung** | LP aktiviert Themen per Auftrag → SuS sieht nur freigeschaltete Themen | hoch |
+| 3 | **LearningView Deep-Links** | URL-Parameter für Fach/Thema/Unterthema → SuS landet direkt bei relevanten Fragen | hoch |
+| 4 | **Einstellungen-Panel** | Gruppennamen ändern, Rollen verwalten, alles aus App statt Sheet | mittel |
+| 5 | **Lernziel-Verlinkung** | Lernziele in Themen/Unterthemen/Fragen verlinken (wie Übungspools) | mittel |
+| 6 | **Freie Übungszusammenstellung** | SuS stellt sich Übung aus mehreren Themen/Fächern zusammen (Repetition) | mittel |
+| 7 | **SuS-Suchfeld** | Direktsuche nach Fragen in SuS-Dashboard | mittel |
+| 8 | **SuS-Hilfe erweitern** | Ausführlichere Hinweise (wie bei Übungspools) | niedrig |
+
+### Technische Schulden (verbleibend)
+
+| # | Aufgabe | Prio |
+|---|---------|------|
+| 1 | **Analyse-Dashboard** mit echten Daten (aktuell nur Platzhalter) | mittel |
+| 2 | **ZeichnenToolbar/PDFToolbar Tooltip-Migration** (~30 Stellen) | niedrig |
+| 3 | **Verzeichnis-Renaming** (`components/lernen/` → `components/ueben/` etc.) | niedrig |
+
+### ⚠ Apps Script
+Keine Backend-Änderungen in dieser Session. Letzte Bereitstellung: 07.04.2026 (Session 67).
+
+---
+
 ## Session 67 — Performance + Datenbereinigung + Features (07.04.2026)
 
 ### Stand
@@ -43,23 +102,6 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
 - `scripts/reimport-pools.mjs` — Vollständiger Re-Import mit Batch-Delete + Batch-Import
 - `scripts/test-import.mjs` — Verifizierung: 1 Frage pro Typ importieren + zurücklesen
 - `scripts/import-spezialtypen.mjs` — Historisch (ersetzt durch reimport-pools)
-
-### Nächste Session — Strategische Features (Planung nötig)
-
-| # | Feature | Beschreibung | Prio |
-|---|---------|-------------|------|
-| 1 | **Individualisiertes Lernen** | Mastery-System: Lücken trainieren, Beherrschtes zurückstellen | hoch |
-| 2 | **Aufträge als Themen-Aktivierung** | LP aktiviert Themen per Auftrag → SuS sieht nur freigeschaltete Themen | hoch |
-| 3 | **LearningView Deep-Links** | URL-Parameter für Fach/Thema/Unterthema → SuS landet direkt bei relevanten Fragen | hoch |
-| 4 | **Einstellungen-Panel** | Gruppennamen ändern, Rollen verwalten, alles aus App statt Sheet | mittel |
-| 5 | **Lernziel-Verlinkung** | Lernziele in Themen/Unterthemen/Fragen verlinken (wie Übungspools) | mittel |
-| 6 | **Freie Übungszusammenstellung** | SuS stellt sich Übung aus mehreren Themen/Fächern zusammen (Repetition) | mittel |
-| 7 | **SuS-Suchfeld** | Direktsuche nach Fragen in SuS-Dashboard | mittel |
-| 8 | **SuS-Hilfe erweitern** | Ausführlichere Hinweise (wie bei Übungspools) | niedrig |
-
-### ⚠ Apps Script Deploy
-`apps-script-code.js` wurde mehrfach geändert. Letzte Bereitstellung: 07.04.2026.
-Enthält: Summary/Detail-Endpoints, Batch-Import/Delete, Session-Lock, schwierigkeit, poolId.
 
 ---
 
