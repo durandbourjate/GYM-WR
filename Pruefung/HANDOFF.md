@@ -42,9 +42,11 @@ Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 ### Neue Dateien (1)
 - `src/components/ueben/UebungsEinsicht.tsx` — Session-Historie + Detail-Ansicht (Richtig/Falsch + Musterlösung)
 
+| F7 | Lernziel-Zuordnung in MetadataSection: Checkboxen + lernzielIds in FrageBasis persistierbar | SharedFragenEditor.tsx, MetadataSection.tsx, fragenFactory.ts |
+
 ### Offen (nächste Session)
-- **Lernziel-Zuordnung in MetadataSection** — Checkboxen vorhanden, lernzielIds noch nicht mit Frage gespeichert
 - **Fortschritt-Sync zum Backend** — `lernplattformSpeichereFortschritt` Endpoint existiert, wird aber nie aufgerufen
+- **Apps Script: unterthemen-Parameter** — Backend muss Unterthemen-Array speichern/laden
 
 ---
 
