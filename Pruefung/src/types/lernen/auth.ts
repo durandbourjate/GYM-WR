@@ -1,12 +1,12 @@
-export type LernenRolle = 'admin' | 'lernend' | 'unbekannt'
+export type UebenRolle = 'admin' | 'lernend' | 'unbekannt'
 
-export interface LernenAuthUser {
+export interface UebenAuthUser {
   email: string
   name: string
   vorname: string
   nachname: string
   bild?: string
-  rolle: LernenRolle
+  rolle: UebenRolle
   sessionToken?: string
   loginMethode: 'google' | 'code'
 }

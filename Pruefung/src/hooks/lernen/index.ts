@@ -1,2 +1,2 @@
-export { useLernKontext } from './useLernKontext'
-export { useLernenTheme } from './useTheme'
+export { useUebenKontext } from './useUebenKontext'
+export { useUebenTheme } from './useTheme'

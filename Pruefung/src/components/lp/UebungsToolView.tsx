@@ -1,15 +1,15 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
-import { useLernenAuthStore } from '../../store/lernen/authStore'
-import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
-import { lernenApiClient } from '../../services/lernen/apiClient'
-import { LernKontextProvider } from '../../context/lernen/LernKontextProvider'
+import { useUebenAuthStore } from '../../store/lernen/authStore'
+import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
+import { uebenApiClient } from '../../services/lernen/apiClient'
+import { UebenKontextProvider } from '../../context/lernen/UebenKontextProvider'
 import AdminDashboard from '../lernen/admin/AdminDashboard'
 
-const LP_AUTH_KEY = 'lernplattform-auth'
+const LP_AUTH_KEY = 'ueben-auth'
 
 /**
- * Wrapper der die Lernen-Stores mit dem Prüfungstool-User initialisiert
+ * Wrapper der die Üben-Stores mit dem Prüfungstool-User initialisiert
  * und das AdminDashboard rendert.
  *
  * Schritte:
@@ -24,8 +24,8 @@ interface UebungsToolViewProps {
 
 export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = {}) {
   const pruefungUser = useAuthStore(s => s.user)
-  const { gruppen, aktiveGruppe, ladeGruppen, waehleGruppe, ladeStatus } = useLernenGruppenStore()
-  const storeMitglieder = useLernenGruppenStore(s => s.mitglieder)
+  const { gruppen, aktiveGruppe, ladeGruppen, waehleGruppe, ladeStatus } = useUebenGruppenStore()
+  const storeMitglieder = useUebenGruppenStore(s => s.mitglieder)
   const [loginStatus, setLoginStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
 
   // LP-Login auf dem LP-Backend ausführen um einen gültigen Session-Token zu bekommen
@@ -36,7 +36,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
     async function login() {
       try {
         console.log('[UebungsToolView] LP-Login starten für', pruefungUser!.email)
-        const response = await lernenApiClient.post<{
+        const response = await uebenApiClient.post<{
           success: boolean
           data: { sessionToken: string }
         }>('lernplattformLogin', {
@@ -66,7 +66,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
         localStorage.setItem(LP_AUTH_KEY, JSON.stringify(lpUser))
 
         // Zustand-Store aktualisieren
-        useLernenAuthStore.setState({
+        useUebenAuthStore.setState({
           user: lpUser,
           istAngemeldet: true,
           ladeStatus: 'fertig',
@@ -176,7 +176,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
 
   // AdminDashboard mit Gruppen-Kontext
   return (
-    <LernKontextProvider>
+    <UebenKontextProvider>
       <div className="relative">
         {/* Gruppen-Info-Bar */}
         <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2">
@@ -204,6 +204,6 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
         </div>
         <AdminDashboard onFachKlick={onFachKlick} />
       </div>
-    </LernKontextProvider>
+    </UebenKontextProvider>
   )
 }

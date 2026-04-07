@@ -3,4 +3,4 @@
 export type AppMode = 'pruefung' | 'lernen'
 export const APP_MODE: AppMode = 'pruefung'
 export const istPruefung = true
-export const istLernen = false
+export const istUeben = false

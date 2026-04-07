@@ -1,5 +1,5 @@
 /**
- * Lernplattform-spezifische Types.
+ * Üben-spezifische Types.
  * Barrel-Export für alle LP-Typen.
  */
 
@@ -18,7 +18,7 @@ export type {
 export type { Auftrag, Empfehlung } from './auftrag'
 
 // Auth (LP-spezifisch: admin/lernend statt sus/lp)
-export type { LernenRolle, LernenAuthUser, GooglePayload, CodeLoginResponse } from './auth'
+export type { UebenRolle, UebenAuthUser, GooglePayload, CodeLoginResponse } from './auth'
 
 // Fortschritt & Mastery
 export type {

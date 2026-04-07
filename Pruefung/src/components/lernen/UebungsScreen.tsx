@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
-import { useLernenUebungsStore } from '../../store/lernen/uebungsStore'
-import { useLernenNavigationStore } from '../../store/lernen/navigationStore'
+import { useUebenUebungsStore } from '../../store/lernen/uebungsStore'
+import { useUebenNavigationStore } from '../../store/lernen/navigationStore'
 import { FRAGETYP_KOMPONENTEN } from './fragetypen'
 import { getFragetext, bereinigePlatzhalter } from '../../utils/lernen/fragetext'
 import QuizHeader from './uebung/QuizHeader'
@@ -14,8 +14,8 @@ export default function UebungsScreen() {
     beantworte, naechsteFrage, vorherigeFrage, ueberspringen,
     toggleUnsicher, istUnsicher, istSessionFertig, beendeSession,
     aktuelleFrage, kannZurueck,
-  } = useLernenUebungsStore()
-  const { navigiere } = useLernenNavigationStore()
+  } = useUebenUebungsStore()
+  const { navigiere } = useUebenNavigationStore()
 
   const frage = aktuelleFrage()
 

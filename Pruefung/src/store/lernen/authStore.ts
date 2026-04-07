@@ -1,11 +1,11 @@
 import { create } from 'zustand'
-import type { LernenAuthUser, GooglePayload, LernenRolle } from '../../types/lernen/auth'
-import { lernenApiClient } from '../../services/lernen/apiClient'
+import type { UebenAuthUser, GooglePayload, UebenRolle } from '../../types/lernen/auth'
+import { uebenApiClient } from '../../services/lernen/apiClient'
 
-const STORAGE_KEY = 'lernplattform-auth'
+const STORAGE_KEY = 'ueben-auth'
 
-interface LernenAuthState {
-  user: LernenAuthUser | null
+interface UebenAuthState {
+  user: UebenAuthUser | null
   istAngemeldet: boolean
   ladeStatus: 'idle' | 'laden' | 'fertig' | 'fehler'
   fehler: string | null
@@ -14,10 +14,10 @@ interface LernenAuthState {
   anmeldenMitCode: (code: string) => Promise<void>
   sessionWiederherstellen: () => Promise<void>
   abmelden: () => void
-  setzeRolle: (rolle: LernenRolle) => void
+  setzeRolle: (rolle: UebenRolle) => void
 }
 
-export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
+export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
   user: null,
   istAngemeldet: false,
   ladeStatus: 'idle',
@@ -27,14 +27,14 @@ export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
     set({ ladeStatus: 'laden', fehler: null })
 
     try {
-      const response = await lernenApiClient.post<{ success: boolean; data: { sessionToken: string } }>(
+      const response = await uebenApiClient.post<{ success: boolean; data: { sessionToken: string } }>(
         'lernplattformLogin',
         { email: payload.email, name: payload.name }
       )
 
       const sessionToken = response?.data?.sessionToken || undefined
 
-      const user: LernenAuthUser = {
+      const user: UebenAuthUser = {
         email: payload.email,
         name: payload.name || payload.email,
         vorname: payload.given_name || '',
@@ -56,7 +56,7 @@ export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
     set({ ladeStatus: 'laden', fehler: null })
 
     try {
-      const response = await lernenApiClient.post<{
+      const response = await uebenApiClient.post<{
         success: boolean
         data: { email: string; name: string; sessionToken: string }
         error?: string
@@ -68,7 +68,7 @@ export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
       }
 
       const { email, name, sessionToken } = response.data
-      const user: LernenAuthUser = {
+      const user: UebenAuthUser = {
         email,
         name,
         vorname: name.split(' ')[0] || '',
@@ -90,13 +90,13 @@ export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
     if (!gespeichert) return
 
     try {
-      const user = JSON.parse(gespeichert) as LernenAuthUser
+      const user = JSON.parse(gespeichert) as UebenAuthUser
       if (!user.email || !user.sessionToken) {
         localStorage.removeItem(STORAGE_KEY)
         return
       }
 
-      const response = await lernenApiClient.post<{ success: boolean; data: { gueltig: boolean } }>(
+      const response = await uebenApiClient.post<{ success: boolean; data: { gueltig: boolean } }>(
         'lernplattformValidiereToken',
         { email: user.email, sessionToken: user.sessionToken }
       )
@@ -117,7 +117,7 @@ export const useLernenAuthStore = create<LernenAuthState>((set, get) => ({
     set({ user: null, istAngemeldet: false, ladeStatus: 'idle', fehler: null })
   },
 
-  setzeRolle: (rolle: LernenRolle) => {
+  setzeRolle: (rolle: UebenRolle) => {
     const user = get().user
     if (!user) return
     const aktualisiert = { ...user, rolle }

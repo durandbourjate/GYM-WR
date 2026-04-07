@@ -1,5 +1,5 @@
 /**
- * Antwort-Typen für die Lernplattform-Übungskorrektur.
+ * Antwort-Typen für die Üben-Korrektur.
  * LP-spezifisch: repräsentieren SuS-Eingaben beim Üben, nicht Frage-Definitionen.
  */
 

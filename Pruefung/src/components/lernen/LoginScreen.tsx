@@ -1,14 +1,14 @@
 import { useRef, useEffect, useState } from 'react'
 import { initializeLernenGoogleAuth, renderLernenGoogleButton } from '../../services/lernen/authService'
-import { useLernenAuthStore } from '../../store/lernen/authStore'
-import { useLernenTheme } from '../../hooks/lernen/useTheme'
+import { useUebenAuthStore } from '../../store/lernen/authStore'
+import { useUebenTheme } from '../../hooks/lernen/useTheme'
 
 export default function LoginScreen() {
   const googleButtonRef = useRef<HTMLDivElement>(null)
   const [codeLogin, setCodeLogin] = useState(false)
   const [code, setCode] = useState('')
-  const { anmeldenMitGoogle, anmeldenMitCode, ladeStatus, fehler } = useLernenAuthStore()
-  const { istDark, toggleTheme } = useLernenTheme()
+  const { anmeldenMitGoogle, anmeldenMitCode, ladeStatus, fehler } = useUebenAuthStore()
+  const { istDark, toggleTheme } = useUebenTheme()
   const [hilfeOffen, setHilfeOffen] = useState(false)
 
   useEffect(() => {

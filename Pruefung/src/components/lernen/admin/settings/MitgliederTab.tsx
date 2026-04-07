@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useLernenGruppenStore } from '../../../../store/lernen/gruppenStore'
-import { lernenGruppenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
+import { useUebenGruppenStore } from '../../../../store/lernen/gruppenStore'
+import { uebenGruppenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
 
 export default function MitgliederTab() {
-  const { aktiveGruppe, mitglieder } = useLernenGruppenStore()
+  const { aktiveGruppe, mitglieder } = useUebenGruppenStore()
   const [einladenEmail, setEinladenEmail] = useState('')
   const [einladenStatus, setEinladenStatus] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
   const [einladenFehler, setEinladenFehler] = useState('')
@@ -15,13 +15,13 @@ export default function MitgliederTab() {
   }
 
   const refreshMitglieder = () => {
-    useLernenGruppenStore.getState().waehleGruppe(aktiveGruppe.id)
+    useUebenGruppenStore.getState().waehleGruppe(aktiveGruppe.id)
   }
 
   const handleEntfernen = async (email: string, name: string) => {
     if (!window.confirm(`Wirklich entfernen: ${name} (${email})?`)) return
     try {
-      await lernenGruppenAdapter.entfernen(aktiveGruppe.id, email)
+      await uebenGruppenAdapter.entfernen(aktiveGruppe.id, email)
       refreshMitglieder()
     } catch {
       alert('Entfernen fehlgeschlagen.')
@@ -34,7 +34,7 @@ export default function MitgliederTab() {
     setEinladenStatus('laden')
     setEinladenFehler('')
     try {
-      await lernenGruppenAdapter.einladen(aktiveGruppe.id, email, '')
+      await uebenGruppenAdapter.einladen(aktiveGruppe.id, email, '')
       setEinladenEmail('')
       setEinladenStatus('ok')
       refreshMitglieder()
@@ -48,7 +48,7 @@ export default function MitgliederTab() {
   const handleKodeGenerieren = async (email: string) => {
     setKodeStatus(prev => ({ ...prev, [email]: 'laden' }))
     try {
-      const code = await lernenGruppenAdapter.generiereCode(aktiveGruppe.id, email)
+      const code = await uebenGruppenAdapter.generiereCode(aktiveGruppe.id, email)
       setGenerierteKodes(prev => ({ ...prev, [email]: code }))
       setKodeStatus(prev => {
         const next = { ...prev }

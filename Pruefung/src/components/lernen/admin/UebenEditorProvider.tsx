@@ -1,5 +1,5 @@
 /**
- * EditorProvider für die Lernplattform.
+ * EditorProvider für ExamLab Üben.
  * Konfiguriert den SharedFragenEditor mit allen Features.
  * Nutzt dieselben Endpoints wie das Prüfungstool für KI, Upload, Lernziele.
  */
@@ -8,15 +8,15 @@ import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
-import { useLernenAuthStore } from '../../../store/lernen/authStore'
-import { lernenApiClient } from '../../../services/lernen/apiClient'
+import { useUebenAuthStore } from '../../../store/lernen/authStore'
+import { uebenApiClient } from '../../../services/lernen/apiClient'
 
 interface Props {
   children: ReactNode
 }
 
-export default function LernplattformEditorProvider({ children }: Props) {
-  const user = useLernenAuthStore(s => s.user)
+export default function UebenEditorProvider({ children }: Props) {
+  const user = useUebenAuthStore(s => s.user)
 
   // Kontenrahmen einmalig laden (für FiBu-Fragetypen)
   useEffect(() => { setKontenrahmenData(kontenrahmenDaten) }, [])
@@ -43,7 +43,7 @@ export default function LernplattformEditorProvider({ children }: Props) {
     // KI-Assistent: Ruft das Prüfungstool-Backend für KI-Aktionen auf
     kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
       try {
-        const response = await lernenApiClient.post<{ success: boolean; data: Record<string, unknown> }>(
+        const response = await uebenApiClient.post<{ success: boolean; data: Record<string, unknown> }>(
           'lernplattformKIAssistent',
           { aktion, daten, email: user?.email },
           getToken()
@@ -56,7 +56,7 @@ export default function LernplattformEditorProvider({ children }: Props) {
     uploadAnhang: async (frageId: string, datei: File) => {
       try {
         const base64 = await dateiZuBase64(datei)
-        const response = await lernenApiClient.post<{ success: boolean; data: import('@shared/types/fragen').FrageAnhang }>(
+        const response = await uebenApiClient.post<{ success: boolean; data: import('@shared/types/fragen').FrageAnhang }>(
           'lernplattformUploadAnhang',
           { frageId, dateiname: datei.name, mimeType: datei.type, base64, email: user?.email },
           getToken()
@@ -71,7 +71,7 @@ export default function LernplattformEditorProvider({ children }: Props) {
     // Lernziele laden (aus Fragenbank-Metadaten)
     ladeLernziele: async (_gefaess: string, fachbereich: string) => {
       try {
-        const response = await lernenApiClient.post<{ success: boolean; data: import('@shared/types/fragen').Lernziel[] }>(
+        const response = await uebenApiClient.post<{ success: boolean; data: import('@shared/types/fragen').Lernziel[] }>(
           'lernplattformLadeLernziele',
           { fachbereich, email: user?.email },
           getToken()
@@ -90,7 +90,7 @@ export default function LernplattformEditorProvider({ children }: Props) {
 
 function getToken(): string | undefined {
   try {
-    const stored = localStorage.getItem('lernplattform-auth')
+    const stored = localStorage.getItem('ueben-auth')
     return stored ? JSON.parse(stored).sessionToken : undefined
   } catch { return undefined }
 }

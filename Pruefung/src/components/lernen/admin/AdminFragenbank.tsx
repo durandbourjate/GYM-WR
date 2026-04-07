@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useLernenGruppenStore } from '../../../store/lernen/gruppenStore'
-import { lernenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
+import { useUebenGruppenStore } from '../../../store/lernen/gruppenStore'
+import { uebenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
 import type { Frage } from '../../../types/lernen/fragen'
 import { getFragetext } from '../../../utils/lernen/fragetext'
 
 // Lazy-Import für SharedFragenEditor + Provider (nur wenn Editor offen)
-import LernplattformEditorProvider from './LernplattformEditorProvider'
+import UebenEditorProvider from './UebenEditorProvider'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 
 const FACH_FARBEN: Record<string, string> = {
@@ -30,7 +30,7 @@ interface AdminFragenbankProps {
 }
 
 export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = {}) {
-  const { aktiveGruppe } = useLernenGruppenStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
   const [fragen, setFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(false)
   const [fehler, setFehler] = useState<string | null>(null)
@@ -49,7 +49,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
     setLaden(true)
     setFehler(null)
     try {
-      const result = await lernenFragenAdapter.ladeFragen(aktiveGruppe.id)
+      const result = await uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
       setFragen(result)
     } catch (e) {
       setFehler(e instanceof Error ? e.message : 'Fragen laden fehlgeschlagen')
@@ -76,8 +76,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
   async function frageLoeschen(frage: Frage) {
     if (!aktiveGruppe) return
     try {
-      await lernenFragenAdapter.loescheFrage(aktiveGruppe.id, frage.id, frage.fachbereich)
-      lernenFragenAdapter.invalidateCache(aktiveGruppe.id)
+      await uebenFragenAdapter.loescheFrage(aktiveGruppe.id, frage.id, frage.fachbereich)
+      uebenFragenAdapter.invalidateCache(aktiveGruppe.id)
       await ladeFragen()
     } catch (e) {
       setFehler(e instanceof Error ? e.message : 'Löschen fehlgeschlagen')
@@ -89,9 +89,9 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
     if (!aktiveGruppe) return
     setSpeichern(true)
     try {
-      await lernenFragenAdapter.speichereFrage(aktiveGruppe.id, frage)
+      await uebenFragenAdapter.speichereFrage(aktiveGruppe.id, frage)
       // Cache invalidieren und neu laden
-      lernenFragenAdapter.invalidateCache(aktiveGruppe.id)
+      uebenFragenAdapter.invalidateCache(aktiveGruppe.id)
       await ladeFragen()
       setEditorOffen(false)
       setAktiveFrage(null)
@@ -314,7 +314,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
 
       {/* Editor Modal (Overlay) */}
       {editorOffen && (
-        <LernplattformEditorProvider>
+        <UebenEditorProvider>
           <SharedFragenEditor
             frage={aktiveFrage}
             onSpeichern={handleSpeichern}
@@ -335,7 +335,7 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
               </div>
             </div>
           )}
-        </LernplattformEditorProvider>
+        </UebenEditorProvider>
       )}
     </div>
   )

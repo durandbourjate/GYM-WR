@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { useLernenAuftragStore } from '../../../store/lernen/auftragStore'
-import { useLernenGruppenStore } from '../../../store/lernen/gruppenStore'
-import { useLernenAuthStore } from '../../../store/lernen/authStore'
+import { useUebenAuftragStore } from '../../../store/lernen/auftragStore'
+import { useUebenGruppenStore } from '../../../store/lernen/gruppenStore'
+import { useUebenAuthStore } from '../../../store/lernen/authStore'
 
 export default function AdminAuftraege() {
-  const { auftraege, erstelleAuftrag, schliesseAuftrag, loescheAuftrag, ladeAuftraege } = useLernenAuftragStore()
-  const { aktiveGruppe, mitglieder } = useLernenGruppenStore()
-  const { user } = useLernenAuthStore()
+  const { auftraege, erstelleAuftrag, schliesseAuftrag, loescheAuftrag, ladeAuftraege } = useUebenAuftragStore()
+  const { aktiveGruppe, mitglieder } = useUebenGruppenStore()
+  const { user } = useUebenAuthStore()
   const [formOffen, setFormOffen] = useState(false)
 
   const alleMitglieder = mitglieder.filter(m => m.rolle === 'lernend')

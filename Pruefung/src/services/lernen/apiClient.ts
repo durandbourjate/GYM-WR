@@ -1,5 +1,5 @@
 /**
- * API-Client für das Lernplattform-Backend.
+ * API-Client für das Üben-Backend.
  * Nach der Backend-Fusion nutzt die LP das gleiche Apps Script wie das Prüfungstool.
  * Die LP-Endpoints (lernplattform*) sind im selben doPost-Switch.
  */
@@ -7,12 +7,12 @@
 const APPS_SCRIPT_URL: string = (import.meta.env.VITE_APPS_SCRIPT_URL as string) || ''
 
 /** Prüft ob das Backend konfiguriert ist */
-export function lernenIstKonfiguriert(): boolean {
+export function uebenIstKonfiguriert(): boolean {
   return !!APPS_SCRIPT_URL
 }
 
 /** POST an das Backend (gleiche URL wie Prüfungstool) */
-export async function lernenPost<T = unknown>(
+export async function uebenPost<T = unknown>(
   action: string,
   payload: Record<string, unknown>,
   sessionToken?: string,
@@ -47,7 +47,7 @@ export async function lernenPost<T = unknown>(
 }
 
 // Re-export als Objekt für Kompatibilität mit Adapter-Code
-export const lernenApiClient = {
-  istKonfiguriert: lernenIstKonfiguriert,
-  post: lernenPost,
+export const uebenApiClient = {
+  istKonfiguriert: uebenIstKonfiguriert,
+  post: uebenPost,
 }

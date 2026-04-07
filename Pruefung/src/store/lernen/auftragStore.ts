@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import type { Auftrag } from '../../types/lernen/auftrag'
 
-const STORAGE_KEY = 'lernplattform-auftraege'
+const STORAGE_KEY = 'ueben-auftraege'
 
-interface LernenAuftragState {
+interface UebenAuftragState {
   auftraege: Auftrag[]
 
   ladeAuftraege: () => void
@@ -19,7 +19,7 @@ function speichere(auftraege: Auftrag[]) {
   } catch { /* localStorage voll */ }
 }
 
-export const useLernenAuftragStore = create<LernenAuftragState>((set, get) => ({
+export const useUebenAuftragStore = create<UebenAuftragState>((set, get) => ({
   auftraege: [],
 
   ladeAuftraege: () => {

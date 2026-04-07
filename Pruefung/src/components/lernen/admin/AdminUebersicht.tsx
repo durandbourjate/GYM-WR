@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
-import { useLernenGruppenStore } from '../../../store/lernen/gruppenStore'
-import { lernenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
+import { useUebenGruppenStore } from '../../../store/lernen/gruppenStore'
+import { uebenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
 import type { Frage } from '../../../types/lernen/fragen'
 import { getFachFarbe } from '../../../utils/lernen/fachFarben'
-import { useLernKontext } from '../../../hooks/lernen/useLernKontext'
+import { useUebenKontext } from '../../../hooks/lernen/useUebenKontext'
 
 interface Props {
   onKindKlick: (email: string, name: string) => void
@@ -11,8 +11,8 @@ interface Props {
 }
 
 export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
-  const { mitglieder, aktiveGruppe } = useLernenGruppenStore()
-  const { fachFarben } = useLernKontext()
+  const { mitglieder, aktiveGruppe } = useUebenGruppenStore()
+  const { fachFarben } = useUebenKontext()
   const lernende = mitglieder.filter(m => m.rolle !== 'admin')
   const admins = mitglieder.filter(m => m.rolle === 'admin')
 
@@ -24,7 +24,7 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
     if (!aktiveGruppe) return
     setLaden(true)
     try {
-      const result = await lernenFragenAdapter.ladeFragen(aktiveGruppe.id)
+      const result = await uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
       setFragen(result)
     } catch { /* ignorieren */ }
     finally { setLaden(false) }

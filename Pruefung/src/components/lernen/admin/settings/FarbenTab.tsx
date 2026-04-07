@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useLernenSettingsStore } from '../../../../store/lernen/settingsStore'
-import { useLernenGruppenStore } from '../../../../store/lernen/gruppenStore'
-import { useLernenAuthStore } from '../../../../store/lernen/authStore'
-import { lernenGruppenAdapter, lernenFragenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
+import { useUebenSettingsStore } from '../../../../store/lernen/settingsStore'
+import { useUebenGruppenStore } from '../../../../store/lernen/gruppenStore'
+import { useUebenAuthStore } from '../../../../store/lernen/authStore'
+import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
 import { getFachFarbe } from '../../../../utils/lernen/fachFarben'
 
 const STANDARD_FARBEN: Record<string, string> = {
@@ -17,9 +17,9 @@ function getStandardFarbe(fach: string): string {
 }
 
 export default function FarbenTab() {
-  const { einstellungen, aktualisiereEinstellungen } = useLernenSettingsStore()
-  const { aktiveGruppe } = useLernenGruppenStore()
-  const { user } = useLernenAuthStore()
+  const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
+  const { user } = useUebenAuthStore()
   const [sichtbareFaecher, setSichtbareFaecher] = useState<string[]>([])
   const [laden, setLaden] = useState(true)
   const [speichern, setSpeichern] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
@@ -28,7 +28,7 @@ export default function FarbenTab() {
   useEffect(() => {
     if (!aktiveGruppe) return
     setLaden(true)
-    lernenFragenAdapter.ladeFragen(aktiveGruppe.id).then((fragen) => {
+    uebenFragenAdapter.ladeFragen(aktiveGruppe.id).then((fragen) => {
       const alleFaecher = [...new Set(fragen.map(f => f.fach))]
       setSichtbareFaecher(alleFaecher)
       setLaden(false)
@@ -58,7 +58,7 @@ export default function FarbenTab() {
     setSpeichern('laden')
     setFehlerText('')
     try {
-      await lernenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
+      await uebenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
       setSpeichern('ok')
       setTimeout(() => setSpeichern('idle'), 2000)
     } catch (e) {

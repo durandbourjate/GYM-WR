@@ -1,17 +1,17 @@
 import { useEffect, useState, useMemo } from 'react'
-import { useLernenAuthStore } from '../../store/lernen/authStore'
-import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
-import { useLernenUebungsStore } from '../../store/lernen/uebungsStore'
-import { useLernenFortschrittStore } from '../../store/lernen/fortschrittStore'
-import { useLernenAuftragStore } from '../../store/lernen/auftragStore'
-import { useLernenNavigationStore } from '../../store/lernen/navigationStore'
-import { lernenFragenAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { useUebenAuthStore } from '../../store/lernen/authStore'
+import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
+import { useUebenUebungsStore } from '../../store/lernen/uebungsStore'
+import { useUebenFortschrittStore } from '../../store/lernen/fortschrittStore'
+import { useUebenAuftragStore } from '../../store/lernen/auftragStore'
+import { useUebenNavigationStore } from '../../store/lernen/navigationStore'
+import { uebenFragenAdapter } from '../../adapters/lernen/appsScriptAdapter'
 import { berechneEmpfehlungen } from '../../utils/lernen/empfehlungen'
 import type { Frage } from '../../types/lernen/fragen'
 import type { ThemenFortschritt } from '../../types/lernen/fortschritt'
 import type { Empfehlung } from '../../types/lernen/auftrag'
 import { berechneSterne, sterneText } from '../../utils/lernen/gamification'
-import { useLernKontext } from '../../hooks/lernen/useLernKontext'
+import { useUebenKontext } from '../../hooks/lernen/useUebenKontext'
 import { getFachFarbe } from '../../utils/lernen/fachFarben'
 import { poolTitel } from '../../utils/poolTitelMapping'
 
@@ -39,13 +39,13 @@ interface ThemenInfo {
 }
 
 export default function Dashboard() {
-  const { user } = useLernenAuthStore()
-  const { aktiveGruppe } = useLernenGruppenStore()
-  const { starteSession } = useLernenUebungsStore()
-  const { ladeFortschritt, getThemenFortschritt, fortschritte } = useLernenFortschrittStore()
-  const { ladeAuftraege, auftraege } = useLernenAuftragStore()
-  const { navigiere } = useLernenNavigationStore()
-  const { sichtbareFaecher, fachFarben } = useLernKontext()
+  const { user } = useUebenAuthStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
+  const { starteSession } = useUebenUebungsStore()
+  const { ladeFortschritt, getThemenFortschritt, fortschritte } = useUebenFortschrittStore()
+  const { ladeAuftraege, auftraege } = useUebenAuftragStore()
+  const { navigiere } = useUebenNavigationStore()
+  const { sichtbareFaecher, fachFarben } = useUebenKontext()
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
 
@@ -67,7 +67,7 @@ export default function Dashboard() {
     if (!aktiveGruppe) return
     const ladeThemen = async () => {
       setLaden(true)
-      const fragen = await lernenFragenAdapter.ladeFragen(aktiveGruppe.id)
+      const fragen = await uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
       setAlleFragen(fragen)
       setLaden(false)
     }

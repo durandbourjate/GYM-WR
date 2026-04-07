@@ -1,1 +1,1 @@
-export { lernenGruppenAdapter, lernenFragenAdapter, lernenFortschrittAdapter } from './appsScriptAdapter'
+export { uebenGruppenAdapter, uebenFragenAdapter, uebenFortschrittAdapter } from './appsScriptAdapter'

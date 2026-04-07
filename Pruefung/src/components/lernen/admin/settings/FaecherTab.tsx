@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useLernenSettingsStore } from '../../../../store/lernen/settingsStore'
-import { useLernenGruppenStore } from '../../../../store/lernen/gruppenStore'
-import { useLernenAuthStore } from '../../../../store/lernen/authStore'
-import { lernenGruppenAdapter, lernenFragenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
+import { useUebenSettingsStore } from '../../../../store/lernen/settingsStore'
+import { useUebenGruppenStore } from '../../../../store/lernen/gruppenStore'
+import { useUebenAuthStore } from '../../../../store/lernen/authStore'
+import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
 
 interface FachGruppe {
   fach: string
@@ -11,9 +11,9 @@ interface FachGruppe {
 }
 
 export default function FaecherTab() {
-  const { einstellungen, aktualisiereEinstellungen } = useLernenSettingsStore()
-  const { aktiveGruppe } = useLernenGruppenStore()
-  const { user } = useLernenAuthStore()
+  const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
+  const { user } = useUebenAuthStore()
   const [fachGruppen, setFachGruppen] = useState<FachGruppe[]>([])
   const [ausgeklappt, setAusgeklappt] = useState<Set<string>>(new Set())
   const [laden, setLaden] = useState(true)
@@ -23,7 +23,7 @@ export default function FaecherTab() {
   useEffect(() => {
     if (!aktiveGruppe) return
     setLaden(true)
-    lernenFragenAdapter.ladeFragen(aktiveGruppe.id).then((fragen) => {
+    uebenFragenAdapter.ladeFragen(aktiveGruppe.id).then((fragen) => {
       // Fächer und Themen gruppieren
       const map: Record<string, Record<string, number>> = {}
       for (const f of fragen) {
@@ -111,7 +111,7 @@ export default function FaecherTab() {
     setSpeichern('laden')
     setFehlerText('')
     try {
-      await lernenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
+      await uebenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
       setSpeichern('ok')
       setTimeout(() => setSpeichern('idle'), 2000)
     } catch (e) {

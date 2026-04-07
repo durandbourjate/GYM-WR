@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLernenGruppenStore } from '../../../store/lernen/gruppenStore'
+import { useUebenGruppenStore } from '../../../store/lernen/gruppenStore'
 import AdminUebersicht from './AdminUebersicht'
 import AdminKindDetail from './AdminKindDetail'
 import AdminThemaDetail from './AdminThemaDetail'
@@ -20,7 +20,7 @@ type AdminAnsicht =
   | { typ: 'thema'; email: string; name: string; fach: string; thema: string }
 
 export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: AdminDashboardProps) {
-  const { aktiveGruppe } = useLernenGruppenStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
   const [ansicht, setAnsicht] = useState<AdminAnsicht>({ typ: 'uebersicht' })
 
   const zurueck = () => {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useLernenAuthStore } from './store/lernen/authStore'
-import { useLernenGruppenStore } from './store/lernen/gruppenStore'
-import { useLernenUebungsStore } from './store/lernen/uebungsStore'
-import { useLernenFortschrittStore } from './store/lernen/fortschrittStore'
-import { useLernenNavigationStore } from './store/lernen/navigationStore'
+import { useUebenAuthStore } from './store/lernen/authStore'
+import { useUebenGruppenStore } from './store/lernen/gruppenStore'
+import { useUebenUebungsStore } from './store/lernen/uebungsStore'
+import { useUebenFortschrittStore } from './store/lernen/fortschrittStore'
+import { useUebenNavigationStore } from './store/lernen/navigationStore'
 import LoginScreen from './components/lernen/LoginScreen'
 import GruppenAuswahl from './components/lernen/GruppenAuswahl'
 import Dashboard from './components/lernen/Dashboard'
@@ -11,23 +11,23 @@ import UebungsScreen from './components/lernen/UebungsScreen'
 import Zusammenfassung from './components/lernen/Zusammenfassung'
 import AdminDashboard from './components/lernen/admin/AdminDashboard'
 import AppShell from './components/lernen/layout/AppShell'
-import { LernKontextProvider } from './context/lernen/LernKontextProvider'
-import type { LernenRolle } from './types/lernen/auth'
+import { UebenKontextProvider } from './context/lernen/UebenKontextProvider'
+import type { UebenRolle } from './types/lernen/auth'
 
 const DEMO_PARAM = new URLSearchParams(window.location.search).get('demo')
 const IST_DEMO = !!DEMO_PARAM
-const DEMO_ROLLE: LernenRolle = DEMO_PARAM === 'eltern' ? 'admin' : 'lernend'
+const DEMO_ROLLE: UebenRolle = DEMO_PARAM === 'eltern' ? 'admin' : 'lernend'
 
-interface AppLernenProps {
+interface AppUebenProps {
   /** Callback wenn SuS "Zurück" zur ExamLab-Startseite will */
   onZurueck?: () => void
 }
 
-export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}) {
-  const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useLernenAuthStore()
-  const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useLernenGruppenStore()
-  const { session, starteSession } = useLernenUebungsStore()
-  const { aktuellerScreen, navigiere } = useLernenNavigationStore()
+export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) {
+  const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useUebenAuthStore()
+  const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useUebenGruppenStore()
+  const { session, starteSession } = useUebenUebungsStore()
+  const { aktuellerScreen, navigiere } = useUebenNavigationStore()
   const [demoAktiv, setDemoAktiv] = useState(false)
 
   // Demo-Modus: ?demo=true in URL → Mock-Login ohne Backend
@@ -40,7 +40,7 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
       const name = istEltern ? 'Demo Elternteil' : 'Demo Kind'
       const vorname = istEltern ? 'Elternteil' : 'Kind'
 
-      useLernenAuthStore.setState({
+      useUebenAuthStore.setState({
         user: {
           email, name, vorname, nachname: 'Demo',
           rolle: DEMO_ROLLE, sessionToken: 'demo-token', loginMethode: 'google',
@@ -53,14 +53,14 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
         adminEmail: 'eltern@demo.ch', fragebankSheetId: 'demo',
         analytikSheetId: 'demo', mitglieder: ['eltern@demo.ch', 'kind@demo.ch'],
       }
-      useLernenGruppenStore.setState({ gruppen: [gruppe], aktiveGruppe: gruppe, ladeStatus: 'fertig' })
+      useUebenGruppenStore.setState({ gruppen: [gruppe], aktiveGruppe: gruppe, ladeStatus: 'fertig' })
 
-      useLernenFortschrittStore.getState().ladeFortschritt().catch(() => {})
+      useUebenFortschrittStore.getState().ladeFortschritt().catch(() => {})
       navigiere('dashboard')
     }
   }, [demoAktiv, navigiere])
 
-  // Session nur wiederherstellen wenn NICHT embedded (standalone /Lernplattform/ Login)
+  // Session nur wiederherstellen wenn NICHT embedded (standalone Üben-Login)
   // Bei embedded (via SuSStartseite/UebungsToolView) wurde der Login bereits gebrückt
   useEffect(() => {
     if (!IST_DEMO && !_onZurueck) sessionWiederherstellen()
@@ -77,10 +77,10 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
       if (istAdmin) {
-        if (user.rolle !== 'admin') useLernenAuthStore.getState().setzeRolle('admin')
+        if (user.rolle !== 'admin') useUebenAuthStore.getState().setzeRolle('admin')
         if (aktuellerScreen !== 'admin') navigiere('admin')
       } else {
-        if (user.rolle !== 'lernend') useLernenAuthStore.getState().setzeRolle('lernend')
+        if (user.rolle !== 'lernend') useUebenAuthStore.getState().setzeRolle('lernend')
         if (aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'uebung' && aktuellerScreen !== 'ergebnis') {
           navigiere('dashboard')
         }
@@ -160,7 +160,7 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
               Du bist noch keiner Gruppe zugeordnet.
             </p>
             <button
-              onClick={() => useLernenAuthStore.getState().abmelden()}
+              onClick={() => useUebenAuthStore.getState().abmelden()}
               className="px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
             >
               Abmelden
@@ -176,7 +176,7 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
 
   // Screen-Rendering
   return (
-    <LernKontextProvider>
+    <UebenKontextProvider>
       <AppShell>
         {aktuellerScreen === 'admin' && (
           <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
@@ -185,7 +185,7 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
         {aktuellerScreen === 'ergebnis' && session?.beendet && (
           <Zusammenfassung
             onZurueck={() => {
-              useLernenUebungsStore.setState({ session: null })
+              useUebenUebungsStore.setState({ session: null })
               navigiere('dashboard')
             }}
             onNochmal={() => {
@@ -204,6 +204,6 @@ export default function AppLernen({ onZurueck: _onZurueck }: AppLernenProps = {}
           <Dashboard />
         )}
       </AppShell>
-    </LernKontextProvider>
+    </UebenKontextProvider>
   )
 }

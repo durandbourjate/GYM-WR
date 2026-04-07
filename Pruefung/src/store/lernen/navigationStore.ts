@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type LernenScreenTyp =
+export type UebenScreenTyp =
   | 'login'
   | 'gruppenAuswahl'
   | 'dashboard'
@@ -9,17 +9,17 @@ export type LernenScreenTyp =
   | 'admin'
   | 'adminFragenbank'
 
-interface LernenNavigationState {
-  aktuellerScreen: LernenScreenTyp
-  screenHistory: LernenScreenTyp[]
+interface UebenNavigationState {
+  aktuellerScreen: UebenScreenTyp
+  screenHistory: UebenScreenTyp[]
 
-  navigiere: (screen: LernenScreenTyp) => void
+  navigiere: (screen: UebenScreenTyp) => void
   zurueck: () => void
   kannZurueck: () => boolean
   reset: () => void
 }
 
-export const useLernenNavigationStore = create<LernenNavigationState>((set, get) => ({
+export const useUebenNavigationStore = create<UebenNavigationState>((set, get) => ({
   aktuellerScreen: 'login',
   screenHistory: [],
 

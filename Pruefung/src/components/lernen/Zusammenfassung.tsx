@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useLernenUebungsStore } from '../../store/lernen/uebungsStore'
+import { useUebenUebungsStore } from '../../store/lernen/uebungsStore'
 import { berechneSterne, sterneText } from '../../utils/lernen/gamification'
-import { useLernKontext } from '../../hooks/lernen/useLernKontext'
+import { useUebenKontext } from '../../hooks/lernen/useUebenKontext'
 import { t } from '../../utils/lernen/anrede'
 
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 }
 
 export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
-  const { session, berechneErgebnis } = useLernenUebungsStore()
-  const { anrede } = useLernKontext()
+  const { session, berechneErgebnis } = useUebenUebungsStore()
+  const { anrede } = useUebenKontext()
   const [reviewOffen, setReviewOffen] = useState(false)
 
   if (!session) return null

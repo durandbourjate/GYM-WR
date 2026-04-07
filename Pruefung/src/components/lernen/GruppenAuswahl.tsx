@@ -1,7 +1,7 @@
-import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
+import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
 
 export default function GruppenAuswahl() {
-  const { gruppen, waehleGruppe, ladeStatus } = useLernenGruppenStore()
+  const { gruppen, waehleGruppe, ladeStatus } = useUebenGruppenStore()
 
   if (ladeStatus === 'laden') {
     return (

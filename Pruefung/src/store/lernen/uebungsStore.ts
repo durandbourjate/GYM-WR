@@ -4,10 +4,10 @@ import type { AntwortTyp } from '../../types/lernen/antworten'
 import { getFragetext } from '../../utils/lernen/fragetext'
 import type { UebungsSession, SessionErgebnis } from '../../types/lernen/uebung'
 import type { MasteryStufe } from '../../types/lernen/fortschritt'
-import { lernenFragenAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { uebenFragenAdapter } from '../../adapters/lernen/appsScriptAdapter'
 import { erstelleBlock } from '../../utils/lernen/blockBuilder'
 import { pruefeAntwort } from '../../utils/lernen/korrektur'
-import { useLernenFortschrittStore } from './fortschrittStore'
+import { useUebenFortschrittStore } from './fortschrittStore'
 
 interface UebungsState {
   session: UebungsSession | null
@@ -29,7 +29,7 @@ interface UebungsState {
   kannZurueck: () => boolean
 }
 
-export const useLernenUebungsStore = create<UebungsState>((set, get) => ({
+export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
   session: null,
   ladeStatus: 'idle',
   feedbackSichtbar: false,
@@ -39,9 +39,9 @@ export const useLernenUebungsStore = create<UebungsState>((set, get) => ({
     set({ ladeStatus: 'laden' })
 
     try {
-      const alleFragen = fragenOverride || await lernenFragenAdapter.ladeFragen(gruppeId, { fach, thema })
+      const alleFragen = fragenOverride || await uebenFragenAdapter.ladeFragen(gruppeId, { fach, thema })
 
-      const fortschritte = useLernenFortschrittStore.getState().fortschritte
+      const fortschritte = useUebenFortschrittStore.getState().fortschritte
       const mastery: Record<string, MasteryStufe> = {}
       for (const f of alleFragen) {
         mastery[f.id] = fortschritte[f.id]?.mastery || 'neu'
@@ -82,7 +82,7 @@ export const useLernenUebungsStore = create<UebungsState>((set, get) => ({
 
     const korrekt = pruefeAntwort(frage, antwort)
 
-    useLernenFortschrittStore.getState().antwortVerarbeiten(frage.id, session.email, korrekt, session.id)
+    useUebenFortschrittStore.getState().antwortVerarbeiten(frage.id, session.email, korrekt, session.id)
 
     set({
       session: {

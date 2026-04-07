@@ -1,5 +1,5 @@
 /**
- * Korrektur-Logik für die Lernplattform-Übungen.
+ * Korrektur-Logik für ExamLab Üben.
  * Arbeitet mit dem shared Frage-Format (kanonisch, discriminated union).
  */
 import type { Frage } from '../../types/lernen/fragen'

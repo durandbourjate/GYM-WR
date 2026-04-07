@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { GruppenEinstellungen } from '../../types/lernen/settings'
 import { defaultEinstellungen } from '../../types/lernen/settings'
 
-interface LernenSettingsState {
+interface UebenSettingsState {
   einstellungen: GruppenEinstellungen | null
   ladeStatus: 'idle' | 'laden' | 'fertig' | 'fehler'
   setzeDefaults: (typ: 'gym' | 'familie') => void
@@ -10,7 +10,7 @@ interface LernenSettingsState {
   aktualisiereEinstellungen: (partial: Partial<GruppenEinstellungen>) => void
 }
 
-export const useLernenSettingsStore = create<LernenSettingsState>((set, get) => ({
+export const useUebenSettingsStore = create<UebenSettingsState>((set, get) => ({
   einstellungen: null,
   ladeStatus: 'idle',
   setzeDefaults: (typ) => {

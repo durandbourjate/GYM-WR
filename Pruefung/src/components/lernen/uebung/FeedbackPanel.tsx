@@ -1,4 +1,4 @@
-import { useLernKontext } from '../../../hooks/lernen/useLernKontext'
+import { useUebenKontext } from '../../../hooks/lernen/useUebenKontext'
 import { t } from '../../../utils/lernen/anrede'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function FeedbackPanel({ korrekt, erklaerung }: Props) {
-  const { anrede } = useLernKontext()
+  const { anrede } = useUebenKontext()
 
   return (
     <div className={`rounded-xl p-4 border-l-4 ${

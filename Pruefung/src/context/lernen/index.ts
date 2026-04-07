@@ -1,2 +1,2 @@
-export { LernKontextProvider, LernKontextContext } from './LernKontextProvider'
-export type { LernKontext } from './LernKontextProvider'
+export { UebenKontextProvider, UebenKontextContext } from './UebenKontextProvider'
+export type { UebenKontext } from './UebenKontextProvider'

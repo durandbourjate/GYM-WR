@@ -4,11 +4,11 @@ import type { Frage } from '../../types/lernen/fragen'
 import type { Lernziel } from '@shared/types/fragen'
 import { aktualisiereFortschritt } from '../../utils/lernen/mastery'
 import { db } from '../../utils/lernen/indexedDB'
-import { lernenFortschrittAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { uebenFortschrittAdapter } from '../../adapters/lernen/appsScriptAdapter'
 
-const STORAGE_KEY = 'lernplattform-fortschritt'
+const STORAGE_KEY = 'ueben-fortschritt'
 
-interface LernenFortschrittState {
+interface UebenFortschrittState {
   fortschritte: Record<string, FragenFortschritt>
 
   antwortVerarbeiten: (fragenId: string, email: string, korrekt: boolean, sessionId: string) => void
@@ -41,7 +41,7 @@ function speichereInLocalStorage(fortschritte: Record<string, FragenFortschritt>
   db.setFortschritt(fortschritte).catch(() => {})
 }
 
-export const useLernenFortschrittStore = create<LernenFortschrittState>((set, get) => ({
+export const useUebenFortschrittStore = create<UebenFortschrittState>((set, get) => ({
   fortschritte: {},
 
   antwortVerarbeiten: (fragenId, email, korrekt, sessionId) => {
@@ -131,7 +131,7 @@ export const useLernenFortschrittStore = create<LernenFortschrittState>((set, ge
   ladeGruppenFortschritt: async (gruppeId) => {
     if (get().gruppenFortschritt[gruppeId]) return // gecacht
     try {
-      const { fortschritte, sessions } = await lernenFortschrittAdapter.ladeGruppenFortschritt(gruppeId)
+      const { fortschritte, sessions } = await uebenFortschrittAdapter.ladeGruppenFortschritt(gruppeId)
       set({
         gruppenFortschritt: { ...get().gruppenFortschritt, [gruppeId]: fortschritte },
         gruppenSessions: { ...get().gruppenSessions, [gruppeId]: sessions },
@@ -143,7 +143,7 @@ export const useLernenFortschrittStore = create<LernenFortschrittState>((set, ge
 
   ladeLernziele: async (gruppeId) => {
     try {
-      const lernziele = await lernenFortschrittAdapter.ladeLernziele(gruppeId)
+      const lernziele = await uebenFortschrittAdapter.ladeLernziele(gruppeId)
       set({ lernziele })
     } catch (e) {
       console.error('Lernziele laden fehlgeschlagen:', e)

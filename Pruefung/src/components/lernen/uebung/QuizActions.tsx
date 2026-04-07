@@ -1,4 +1,4 @@
-import { useLernKontext } from '../../../hooks/lernen/useLernKontext'
+import { useUebenKontext } from '../../../hooks/lernen/useUebenKontext'
 import { t } from '../../../utils/lernen/anrede'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function QuizActions({ istUnsicher, onToggleUnsicher, onBeenden }: Props) {
-  const { anrede } = useLernKontext()
+  const { anrede } = useUebenKontext()
 
   return (
     <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">

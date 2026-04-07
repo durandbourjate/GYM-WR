@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLernenFortschrittStore } from '../../../store/lernen/fortschrittStore'
+import { useUebenFortschrittStore } from '../../../store/lernen/fortschrittStore'
 import { istDauerbaustelle } from '../../../utils/lernen/mastery'
-import { lernenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
+import { uebenFragenAdapter } from '../../../adapters/lernen/appsScriptAdapter'
 import type { Frage } from '../../../types/lernen/fragen'
 
 interface Props {
@@ -12,16 +12,16 @@ interface Props {
 }
 
 export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }: Props) {
-  const { ladeGruppenFortschritt } = useLernenFortschrittStore()
+  const { ladeGruppenFortschritt } = useUebenFortschrittStore()
   const [fragen, setFragen] = useState<Frage[]>([])
 
   useEffect(() => {
     ladeGruppenFortschritt(gruppeId)
-    lernenFragenAdapter.ladeFragen(gruppeId).then(setFragen).catch(() => {})
+    uebenFragenAdapter.ladeFragen(gruppeId).then(setFragen).catch(() => {})
   }, [gruppeId, ladeGruppenFortschritt])
 
-  const fortschritte = useLernenFortschrittStore(s => s.getFortschrittFuerSuS(gruppeId, email))
-  const sessions = useLernenFortschrittStore(s => s.getSessionsFuerSuS(gruppeId, email))
+  const fortschritte = useUebenFortschrittStore(s => s.getFortschrittFuerSuS(gruppeId, email))
+  const sessions = useUebenFortschrittStore(s => s.getSessionsFuerSuS(gruppeId, email))
 
   // Fragen-Lookup
   const fragenMap = useMemo(() => {

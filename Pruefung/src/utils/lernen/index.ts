@@ -1,5 +1,5 @@
 /**
- * Lernplattform-spezifische Utilities.
+ * Üben-spezifische Utilities.
  * Barrel-Export für alle LP-Utils.
  */
 

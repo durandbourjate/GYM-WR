@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import type { Gruppe, Mitglied } from '../../types/lernen/gruppen'
-import { lernenGruppenAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { uebenGruppenAdapter } from '../../adapters/lernen/appsScriptAdapter'
 
-interface LernenGruppenState {
+interface UebenGruppenState {
   gruppen: Gruppe[]
   aktiveGruppe: Gruppe | null
   mitglieder: Mitglied[]
@@ -14,7 +14,7 @@ interface LernenGruppenState {
   istAdmin: (email: string) => boolean
 }
 
-export const useLernenGruppenStore = create<LernenGruppenState>((set, get) => ({
+export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
   gruppen: [],
   aktiveGruppe: null,
   mitglieder: [],
@@ -24,14 +24,14 @@ export const useLernenGruppenStore = create<LernenGruppenState>((set, get) => ({
     set({ ladeStatus: 'laden' })
 
     try {
-      const gruppen = await lernenGruppenAdapter.ladeGruppen(email)
+      const gruppen = await uebenGruppenAdapter.ladeGruppen(email)
       const aktiveGruppe = gruppen.length === 1 ? gruppen[0] : null
 
       set({ gruppen, aktiveGruppe, ladeStatus: 'fertig' })
 
       if (aktiveGruppe) {
         try {
-          const mitglieder = await lernenGruppenAdapter.ladeMitglieder(aktiveGruppe.id)
+          const mitglieder = await uebenGruppenAdapter.ladeMitglieder(aktiveGruppe.id)
           set({ mitglieder })
         } catch (err) {
           console.error('[GruppenStore] Mitglieder laden fehlgeschlagen:', err)
@@ -50,7 +50,7 @@ export const useLernenGruppenStore = create<LernenGruppenState>((set, get) => ({
     set({ aktiveGruppe: gruppe })
 
     try {
-      const mitglieder = await lernenGruppenAdapter.ladeMitglieder(gruppeId)
+      const mitglieder = await uebenGruppenAdapter.ladeMitglieder(gruppeId)
       set({ mitglieder })
     } catch (err) {
       console.error('[GruppenStore] Mitglieder laden bei Gruppenwahl fehlgeschlagen:', err)

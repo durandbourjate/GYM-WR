@@ -1,28 +1,28 @@
 import { useState, useEffect, Suspense, lazy } from 'react'
 import { useAuthStore } from '../../store/authStore'
-import { useLernenAuthStore } from '../../store/lernen/authStore'
-import { lernenApiClient } from '../../services/lernen/apiClient'
+import { useUebenAuthStore } from '../../store/lernen/authStore'
+import { uebenApiClient } from '../../services/lernen/apiClient'
 import ThemeToggle from '../ThemeToggle'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import Tooltip from '../ui/Tooltip'
 
-// AppLernen lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
-const AppLernen = lazy(() =>
-  import('../../AppLernen').catch(() => {
+// AppUeben lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
+const AppUeben = lazy(() =>
+  import('../../AppUeben').catch(() => {
     // Chunk-Hash stimmt nicht (altes Cache) → Seite neu laden
     window.location.reload()
     return { default: () => null } as never
   })
 )
 
-const LP_AUTH_KEY = 'lernplattform-auth'
+const LP_AUTH_KEY = 'ueben-auth'
 
 type SuSModus = 'start' | 'ueben' | 'pruefen'
 
 /**
  * Startseite für SuS: Wahl zwischen Üben und Prüfen.
- * - Üben: Gruppen → Dashboard → Übungen (= AppLernen)
+ * - Üben: Gruppen → Dashboard → Übungen (= AppUeben)
  * - Prüfen: Warteraum für Prüfungen + Korrektur-Einsicht
  */
 export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }: { onKorrekturWaehle: (id: string) => void }) {
@@ -32,14 +32,14 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
   const [korrekturId, setKorrekturId] = useState<string | null>(null)
   const [loginBridged, setLoginBridged] = useState(false)
 
-  // Login-Bridging: Pruefung-Auth → Lernen-Auth synchronisieren
+  // Login-Bridging: Pruefung-Auth → Üben-Auth synchronisieren
   useEffect(() => {
     if (!user?.email || loginBridged) return
 
     async function bridgeLogin() {
       try {
         console.log('[SuSStartseite] Login-Bridge starten für', user!.email)
-        const response = await lernenApiClient.post<{
+        const response = await uebenApiClient.post<{
           success: boolean
           data: { sessionToken: string }
         }>('lernplattformLogin', {
@@ -65,7 +65,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
           loginMethode: 'google' as const,
         }
         localStorage.setItem(LP_AUTH_KEY, JSON.stringify(lpUser))
-        useLernenAuthStore.setState({
+        useUebenAuthStore.setState({
           user: lpUser,
           istAngemeldet: true,
           ladeStatus: 'fertig',
@@ -80,7 +80,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
   }, [user?.email, user?.name, loginBridged])
 
   if (modus === 'ueben') {
-    // Warten bis Login-Bridge fertig, dann AppLernen laden
+    // Warten bis Login-Bridge fertig, dann AppUeben laden
     if (!loginBridged) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
@@ -94,7 +94,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
           <p className="text-slate-500 dark:text-slate-400">Üben wird geladen...</p>
         </div>
       }>
-        <AppLernen onZurueck={() => setModus('start')} />
+        <AppUeben onZurueck={() => setModus('start')} />
       </Suspense>
     )
   }

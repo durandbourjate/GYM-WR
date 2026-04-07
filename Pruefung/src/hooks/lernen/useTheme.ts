@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 type Theme = 'light' | 'dark'
 
-const STORAGE_KEY = 'lernplattform-theme'
+const STORAGE_KEY = 'ueben-theme'
 
 function getInitialTheme(): Theme {
   try {
@@ -14,7 +14,7 @@ function getInitialTheme(): Theme {
   return 'light'
 }
 
-export function useLernenTheme() {
+export function useUebenTheme() {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {

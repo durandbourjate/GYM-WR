@@ -1,11 +1,11 @@
 import { createContext, useEffect, type ReactNode } from 'react'
-import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
-import { useLernenSettingsStore } from '../../store/lernen/settingsStore'
-import { lernenGruppenAdapter } from '../../adapters/lernen/appsScriptAdapter'
+import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
+import { useUebenSettingsStore } from '../../store/lernen/settingsStore'
+import { uebenGruppenAdapter } from '../../adapters/lernen/appsScriptAdapter'
 import { setzeFachFarben } from '../../utils/lernen/fachFarben'
 import type { GruppenEinstellungen } from '../../types/lernen/settings'
 
-export interface LernKontext {
+export interface UebenKontext {
   typ: 'gym' | 'familie'
   anrede: 'sie' | 'du'
   feedbackStil: 'sachlich' | 'ermutigend'
@@ -15,23 +15,23 @@ export interface LernKontext {
   einstellungen: GruppenEinstellungen | null
 }
 
-const DEFAULT_KONTEXT: LernKontext = {
+const DEFAULT_KONTEXT: UebenKontext = {
   typ: 'gym', anrede: 'sie', feedbackStil: 'sachlich',
   sichtbareFaecher: [], sichtbareThemen: {}, fachFarben: {},
   einstellungen: null,
 }
 
-export const LernKontextContext = createContext<LernKontext>(DEFAULT_KONTEXT)
+export const UebenKontextContext = createContext<UebenKontext>(DEFAULT_KONTEXT)
 
-export function LernKontextProvider({ children }: { children: ReactNode }) {
-  const { aktiveGruppe } = useLernenGruppenStore()
-  const { einstellungen, setzeEinstellungen, setzeDefaults } = useLernenSettingsStore()
+export function UebenKontextProvider({ children }: { children: ReactNode }) {
+  const { aktiveGruppe } = useUebenGruppenStore()
+  const { einstellungen, setzeEinstellungen, setzeDefaults } = useUebenSettingsStore()
 
   // Settings laden wenn Gruppe wechselt
   useEffect(() => {
     if (!aktiveGruppe) return
     let cancelled = false
-    lernenGruppenAdapter.ladeEinstellungen(aktiveGruppe.id)
+    uebenGruppenAdapter.ladeEinstellungen(aktiveGruppe.id)
       .then(e => { if (!cancelled) setzeEinstellungen(e) })
       .catch(() => { if (!cancelled) setzeDefaults(aktiveGruppe.typ) })
     return () => { cancelled = true }
@@ -42,7 +42,7 @@ export function LernKontextProvider({ children }: { children: ReactNode }) {
     if (einstellungen?.fachFarben) setzeFachFarben(einstellungen.fachFarben)
   }, [einstellungen?.fachFarben])
 
-  const kontext: LernKontext = einstellungen && aktiveGruppe
+  const kontext: UebenKontext = einstellungen && aktiveGruppe
     ? {
         typ: aktiveGruppe.typ, anrede: einstellungen.anrede,
         feedbackStil: einstellungen.feedbackStil,
@@ -52,5 +52,5 @@ export function LernKontextProvider({ children }: { children: ReactNode }) {
       }
     : DEFAULT_KONTEXT
 
-  return <LernKontextContext.Provider value={kontext}>{children}</LernKontextContext.Provider>
+  return <UebenKontextContext.Provider value={kontext}>{children}</UebenKontextContext.Provider>
 }

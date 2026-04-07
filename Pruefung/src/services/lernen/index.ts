@@ -1,4 +1,4 @@
-export { lernenApiClient, lernenPost, lernenIstKonfiguriert } from './apiClient'
+export { uebenApiClient, uebenPost, uebenIstKonfiguriert } from './apiClient'
 export {
   initializeLernenGoogleAuth,
   renderLernenGoogleButton,

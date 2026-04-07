@@ -1,7 +1,7 @@
-import { useLernenGruppenStore } from '../../store/lernen/gruppenStore'
+import { useUebenGruppenStore } from '../../store/lernen/gruppenStore'
 
 export default function AdminLayout() {
-  const { aktiveGruppe, mitglieder } = useLernenGruppenStore()
+  const { aktiveGruppe, mitglieder } = useUebenGruppenStore()
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

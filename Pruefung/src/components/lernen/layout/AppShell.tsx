@@ -1,10 +1,10 @@
 import { useState, useEffect, type ReactNode } from 'react'
-import { useLernenAuthStore } from '../../../store/lernen/authStore'
-import { useLernenGruppenStore } from '../../../store/lernen/gruppenStore'
-import { useLernenNavigationStore } from '../../../store/lernen/navigationStore'
-import { useLernenUebungsStore } from '../../../store/lernen/uebungsStore'
-import { useLernenFortschrittStore } from '../../../store/lernen/fortschrittStore'
-import { useLernenTheme } from '../../../hooks/lernen/useTheme'
+import { useUebenAuthStore } from '../../../store/lernen/authStore'
+import { useUebenGruppenStore } from '../../../store/lernen/gruppenStore'
+import { useUebenNavigationStore } from '../../../store/lernen/navigationStore'
+import { useUebenUebungsStore } from '../../../store/lernen/uebungsStore'
+import { useUebenFortschrittStore } from '../../../store/lernen/fortschrittStore'
+import { useUebenTheme } from '../../../hooks/lernen/useTheme'
 import { lernzielStatus } from '../../../utils/lernen/mastery'
 import FeedbackButton from '../../shared/FeedbackButton'
 import Tooltip from '../../ui/Tooltip'
@@ -14,14 +14,14 @@ interface Props {
 }
 
 export default function AppShell({ children }: Props) {
-  const { user, abmelden } = useLernenAuthStore()
-  const { gruppen, aktiveGruppe, gruppeAbwaehlen } = useLernenGruppenStore()
-  const { aktuellerScreen, zurueck, kannZurueck, navigiere } = useLernenNavigationStore()
-  const { istDark, toggleTheme } = useLernenTheme()
+  const { user, abmelden } = useUebenAuthStore()
+  const { gruppen, aktiveGruppe, gruppeAbwaehlen } = useUebenGruppenStore()
+  const { aktuellerScreen, zurueck, kannZurueck, navigiere } = useUebenNavigationStore()
+  const { istDark, toggleTheme } = useUebenTheme()
 
   const [hilfeOffen, setHilfeOffen] = useState(false)
   const [lernzieleOffen, setLernzieleOffen] = useState(false)
-  const { lernziele, ladeLernziele, fortschritte } = useLernenFortschrittStore()
+  const { lernziele, ladeLernziele, fortschritte } = useUebenFortschrittStore()
   const istAngemeldet = !!user
 
   // Lernziele beim App-Start laden
@@ -35,7 +35,7 @@ export default function AppShell({ children }: Props) {
   const navigiereZuDashboard = () => {
     // Session beenden/nullen wenn in Übung
     if (istInUebung) {
-      useLernenUebungsStore.setState({ session: null })
+      useUebenUebungsStore.setState({ session: null })
     }
     navigiere('dashboard')
   }
@@ -75,7 +75,7 @@ export default function AppShell({ children }: Props) {
             {aktiveGruppe && gruppen.length > 1 ? (
               <button
                 onClick={() => {
-                  if (istInUebung) useLernenUebungsStore.setState({ session: null })
+                  if (istInUebung) useUebenUebungsStore.setState({ session: null })
                   gruppeAbwaehlen()
                   navigiere('gruppenAuswahl')
                 }}

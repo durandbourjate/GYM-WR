@@ -1,6 +1,6 @@
 /**
  * Re-Exporte aus @shared/types/fragen.
- * Die Lernplattform nutzt dasselbe Frage-Format wie das Prüfungstool.
+ * ExamLab Üben nutzt dasselbe Frage-Format wie das Prüfungstool.
  * Antwort-Typen (LP-spezifisch) → siehe ./antworten.ts
  */
 

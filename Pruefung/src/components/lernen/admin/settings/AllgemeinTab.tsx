@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { useLernenSettingsStore } from '../../../../store/lernen/settingsStore'
-import { useLernenGruppenStore } from '../../../../store/lernen/gruppenStore'
-import { useLernenAuthStore } from '../../../../store/lernen/authStore'
-import { lernenGruppenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
+import { useUebenSettingsStore } from '../../../../store/lernen/settingsStore'
+import { useUebenGruppenStore } from '../../../../store/lernen/gruppenStore'
+import { useUebenAuthStore } from '../../../../store/lernen/authStore'
+import { uebenGruppenAdapter } from '../../../../adapters/lernen/appsScriptAdapter'
 
 export default function AllgemeinTab() {
-  const { einstellungen, aktualisiereEinstellungen } = useLernenSettingsStore()
-  const { aktiveGruppe } = useLernenGruppenStore()
-  const { user } = useLernenAuthStore()
+  const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
+  const { aktiveGruppe } = useUebenGruppenStore()
+  const { user } = useUebenAuthStore()
   const [speichern, setSpeichern] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
   const [fehlerText, setFehlerText] = useState('')
 
@@ -20,7 +20,7 @@ export default function AllgemeinTab() {
     setSpeichern('laden')
     setFehlerText('')
     try {
-      await lernenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
+      await uebenGruppenAdapter.speichereEinstellungen(aktiveGruppe.id, einstellungen, user.email)
       setSpeichern('ok')
       setTimeout(() => setSpeichern('idle'), 2000)
     } catch (e) {
