@@ -37,9 +37,14 @@ Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 - `lernplattformSetzeThemenStatus` erweitert: optionaler `unterthemen` Parameter
 - Backend muss Unterthemen-Array im ThemenSichtbarkeit-Tab speichern/laden
 
+| F6 | Übungs-Einsicht für SuS: Session-Historie in localStorage, Ergebnisse-Tab im Dashboard | uebungsStore.ts, UebungsEinsicht.tsx (neu), Dashboard.tsx |
+
+### Neue Dateien (1)
+- `src/components/ueben/UebungsEinsicht.tsx` — Session-Historie + Detail-Ansicht (Richtig/Falsch + Musterlösung)
+
 ### Offen (nächste Session)
-- **3D Übungs-Einsicht für SuS** — Backend-Endpoint nötig (`lernplattformLadeSessionErgebnisse`)
 - **Lernziel-Zuordnung in MetadataSection** — Checkboxen vorhanden, lernzielIds noch nicht mit Frage gespeichert
+- **Fortschritt-Sync zum Backend** — `lernplattformSpeichereFortschritt` Endpoint existiert, wird aber nie aufgerufen
 
 ---
 

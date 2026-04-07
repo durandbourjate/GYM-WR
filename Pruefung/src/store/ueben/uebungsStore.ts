@@ -10,11 +10,40 @@ import { istDauerbaustelle } from '../../utils/ueben/mastery'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { useUebenFortschrittStore } from './fortschrittStore'
 
+/** Persistiertes Session-Ergebnis für die Übungs-Einsicht */
+export interface GespeichertesErgebnis {
+  sessionId: string
+  fach: string
+  thema: string
+  datum: string
+  anzahlFragen: number
+  richtig: number
+  quote: number
+  dauer: number
+  details: SessionErgebnis['details']
+}
+
+const HISTORIE_KEY = 'ueben-session-historie'
+const MAX_HISTORIE = 50
+
+function ladeHistorie(): GespeichertesErgebnis[] {
+  try {
+    const raw = localStorage.getItem(HISTORIE_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+function speichereHistorie(historie: GespeichertesErgebnis[]) {
+  try { localStorage.setItem(HISTORIE_KEY, JSON.stringify(historie.slice(0, MAX_HISTORIE))) } catch { /* quota */ }
+}
+
 interface UebungsState {
   session: UebungsSession | null
   ladeStatus: 'idle' | 'laden' | 'fertig' | 'fehler'
   feedbackSichtbar: boolean
   letzteAntwortKorrekt: boolean | null
+  /** Session-Historie für Übungs-Einsicht */
+  historie: GespeichertesErgebnis[]
 
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[]) => Promise<void>
   beantworte: (antwort: AntwortTyp) => void
@@ -28,6 +57,7 @@ interface UebungsState {
   beendeSession: () => void
   aktuelleFrage: () => Frage | null
   kannZurueck: () => boolean
+  ladeHistorie: () => void
 }
 
 export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
@@ -35,6 +65,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
   ladeStatus: 'idle',
   feedbackSichtbar: false,
   letzteAntwortKorrekt: null,
+  historie: ladeHistorie(),
 
   starteSession: async (gruppeId, email, fach, thema, fragenOverride, modus = 'standard', quellen) => {
     set({ ladeStatus: 'laden' })
@@ -194,6 +225,10 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     return frage ? session.unsicher.has(frage.id) : false
   },
 
+  ladeHistorie: () => {
+    set({ historie: ladeHistorie() })
+  },
+
   kannZurueck: () => {
     const session = get().session
     return session ? session.aktuelleFrageIndex > 0 : false
@@ -240,7 +275,24 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
   beendeSession: () => {
     const session = get().session
     if (session) {
-      set({ session: { ...session, beendet: new Date().toISOString() } })
+      const beendet = new Date().toISOString()
+      set({ session: { ...session, beendet } })
+      // Ergebnis in Historie speichern
+      const ergebnis = get().berechneErgebnis()
+      const eintrag: GespeichertesErgebnis = {
+        sessionId: session.id,
+        fach: session.fach,
+        thema: session.thema,
+        datum: beendet,
+        anzahlFragen: ergebnis.anzahlFragen,
+        richtig: ergebnis.richtig,
+        quote: ergebnis.quote,
+        dauer: ergebnis.dauer,
+        details: ergebnis.details,
+      }
+      const neueHistorie = [eintrag, ...get().historie].slice(0, MAX_HISTORIE)
+      set({ historie: neueHistorie })
+      speichereHistorie(neueHistorie)
     }
   },
 

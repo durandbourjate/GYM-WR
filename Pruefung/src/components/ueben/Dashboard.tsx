@@ -22,6 +22,7 @@ import SuSAnalyse from './SuSAnalyse'
 import type { DeepLinkZiel } from '../../hooks/ueben/useDeepLinkAktivierung'
 import type { ThemaQuelle } from '../../types/ueben/uebung'
 import MixSessionDialog from './MixSessionDialog'
+import UebungsEinsicht from './UebungsEinsicht'
 
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
 const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
@@ -63,7 +64,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
   const [alleThemenAnzeigen, setAlleThemenAnzeigen] = useState(false)
-  const [dashboardTab, setDashboardTab] = useState<'themen' | 'fortschritt'>('themen')
+  const [dashboardTab, setDashboardTab] = useState<'themen' | 'fortschritt' | 'ergebnisse'>('themen')
 
   // Navigation: Fachbereich → Thema → Filter → Übung starten
   const [aktiverFach, setAktiverFach] = useState<string | null>(null)
@@ -292,10 +293,22 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
             >
               Mein Fortschritt
             </button>
+            <button
+              onClick={() => setDashboardTab('ergebnisse')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                dashboardTab === 'ergebnisse'
+                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'
+              }`}
+            >
+              Ergebnisse
+            </button>
           </div>
         </div>
 
-        {dashboardTab === 'fortschritt' ? (
+        {dashboardTab === 'ergebnisse' ? (
+          <UebungsEinsicht />
+        ) : dashboardTab === 'fortschritt' ? (
           <SuSAnalyse />
         ) : (
           <>
