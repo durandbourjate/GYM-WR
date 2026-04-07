@@ -31,8 +31,8 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
   const { aktuellerScreen, navigiere } = useUebenNavigationStore()
   const [demoAktiv, setDemoAktiv] = useState(false)
 
-  // Deep-Link: ?fach=...&thema=... → Thema automatisch aktivieren
-  useDeepLinkAktivierung(aktiveGruppe?.id, user?.email, istAngemeldet)
+  // Deep-Link: ?fach=...&thema=... → Thema automatisch aktivieren + Ziel merken
+  const deepLinkZiel = useDeepLinkAktivierung(aktiveGruppe?.id, user?.email, istAngemeldet)
 
   // Demo-Modus: ?demo=true in URL → Mock-Login ohne Backend
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
         )}
 
         {aktuellerScreen === 'dashboard' && (
-          <Dashboard />
+          <Dashboard deepLinkZiel={deepLinkZiel} />
         )}
       </AppShell>
     </UebenKontextProvider>

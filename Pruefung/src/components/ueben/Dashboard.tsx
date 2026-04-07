@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
@@ -19,6 +19,7 @@ import { useUebenSettingsStore } from '../../store/ueben/settingsStore'
 import { ThemaKarte } from './ThemaKarte'
 import { EmpfehlungsKarte } from './EmpfehlungsKarte'
 import SuSAnalyse from './SuSAnalyse'
+import type { DeepLinkZiel } from '../../hooks/ueben/useDeepLinkAktivierung'
 
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
 const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
@@ -43,7 +44,11 @@ interface ThemenInfo {
   fortschritt: ThemenFortschritt
 }
 
-export default function Dashboard() {
+interface DashboardProps {
+  deepLinkZiel?: DeepLinkZiel | null
+}
+
+export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
   const { starteSession } = useUebenUebungsStore()
@@ -61,6 +66,12 @@ export default function Dashboard() {
   // Navigation: Fachbereich → Thema → Filter → Übung starten
   const [aktiverFach, setAktiverFach] = useState<string | null>(null)
   const [aktivesThema, setAktivesThema] = useState<string | null>(null)
+
+  // Deep-Link: Automatisch zum Thema navigieren wenn Ziel vorhanden
+  const deepLinkVerarbeitet = useRef(false)
+
+  // SuS-Suchfeld
+  const [suchtext, setSuchtext] = useState('')
 
   // Filter innerhalb eines Themas (Chips wie pool.html)
   const [unterthemaFilter, setUnterthemaFilter] = useState<Set<string>>(new Set())
@@ -83,6 +94,23 @@ export default function Dashboard() {
     ladeThemen()
     ladeFreischaltungen(aktiveGruppe.id)
   }, [aktiveGruppe, ladeFreischaltungen])
+
+  // Deep-Link: Nach dem Laden direkt zum Thema navigieren
+  useEffect(() => {
+    if (deepLinkVerarbeitet.current || !deepLinkZiel || laden || alleFragen.length === 0) return
+    deepLinkVerarbeitet.current = true
+
+    // Fach + Thema setzen → Dashboard navigiert zur Thema-Detailansicht
+    setAktiverFach(deepLinkZiel.fach)
+    setAktivesThema(deepLinkZiel.thema)
+
+    // Unterthema-Filter vorselektieren wenn angegeben
+    if (deepLinkZiel.unterthema) {
+      setUnterthemaFilter(new Set([deepLinkZiel.unterthema]))
+    }
+
+    console.log(`[DeepLink] Dashboard navigiert zu: ${deepLinkZiel.fach} / ${deepLinkZiel.thema}${deepLinkZiel.unterthema ? ` / ${deepLinkZiel.unterthema}` : ''}`)
+  }, [deepLinkZiel, laden, alleFragen.length])
 
   // Themen-Infos: Fach → Thema → { unterthemen, fragen, fortschritt }
   const themenMap = useMemo(() => {
@@ -142,11 +170,24 @@ export default function Dashboard() {
     if (alleThemenAnzeigen) return alleFachThemen
 
     // Nur aktive + abgeschlossene Themen anzeigen
-    return alleFachThemen.filter(info => {
+    let gefiltert = alleFachThemen.filter(info => {
       const status = getStatus(info.fach, info.thema)
       return status === 'aktiv' || status === 'abgeschlossen'
     })
-  }, [themenMap, aktiverFach, freischaltungen, alleThemenAnzeigen, getStatus])
+
+    // Suchtext: Themen + Unterthemen + Fachtitel durchsuchen
+    if (suchtext.trim()) {
+      const lower = suchtext.toLowerCase().trim()
+      gefiltert = (alleThemenAnzeigen ? alleFachThemen : gefiltert).filter(info =>
+        info.thema.toLowerCase().includes(lower) ||
+        info.fach.toLowerCase().includes(lower) ||
+        info.unterthemen.some(ut => ut.toLowerCase().includes(lower)) ||
+        info.fragen.some(f => ('fragetext' in f && typeof f.fragetext === 'string') ? f.fragetext.toLowerCase().includes(lower) : false)
+      )
+    }
+
+    return gefiltert
+  }, [themenMap, aktiverFach, freischaltungen, alleThemenAnzeigen, getStatus, suchtext])
 
   // Aktives Thema-Detail
   const themaDetail = useMemo(() => {
@@ -288,6 +329,17 @@ export default function Dashboard() {
         ) : (
           /* ===================== THEMEN-ÜBERSICHT (Fach → Thema Karten) ===================== */
           <>
+            {/* Suchfeld */}
+            <div className="mb-4">
+              <input
+                type="text"
+                value={suchtext}
+                onChange={e => setSuchtext(e.target.value)}
+                placeholder="Thema, Fach oder Frage suchen..."
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
+              />
+            </div>
+
             {/* Fach-Filter Chips */}
             <div className="flex flex-wrap gap-2 mb-4">
               <button
