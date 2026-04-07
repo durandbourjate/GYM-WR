@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { usePruefungStore } from './store/pruefungStore.ts'
 import { useAuthStore } from './store/authStore.ts'
 import { einrichtungsPruefung } from './data/einrichtungsPruefung.ts'
+import { einrichtungsUebung } from './data/einrichtungsUebung.ts'
+import { einrichtungsUebungFragen } from './data/einrichtungsUebungFragen.ts'
 import { demoFragen } from './data/demoFragen.ts'
 import { apiService } from './services/apiService.ts'
 import { clearIndexedDB } from './services/autoSave.ts'
@@ -175,7 +177,23 @@ export default function App() {
               setWurdeZurueckgesetzt(true)
             }
 
-            const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(result.config, result.fragen)
+            // Einrichtungsprüfung/-übung: Eingebaute Fragen als Fallback wenn Backend nicht alle hat
+            let fragenPool = result.fragen
+            const eingebauteFallbacks: Record<string, Frage[]> = {
+              'einrichtung-uebung': einrichtungsUebungFragen,
+              [einrichtungsPruefung.id]: demoFragen,
+            }
+            const fallback = eingebauteFallbacks[pruefungIdAusUrl]
+            if (fallback) {
+              const backendIds = new Set(fragenPool.map(f => f.id))
+              const fehlende = fallback.filter(f => !backendIds.has(f.id))
+              if (fehlende.length > 0) {
+                console.log(`[App] ${pruefungIdAusUrl}: ${fehlende.length} fehlende Fragen aus eingebautem Fallback ergänzt`)
+                fragenPool = [...fragenPool, ...fehlende]
+              }
+            }
+
+            const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(result.config, fragenPool)
             setPruefungsConfig(result.config)
             setPruefungsFragen(navigationsFragen)
             setPruefungsAlleFragen(alleFragen)
@@ -201,6 +219,17 @@ export default function App() {
           console.error('[App] Backend-Fehler beim Laden:', error)
           // Nicht crashen — Fehler anzeigen, aber NICHT auf eingebaute Prüfungen zurückfallen
           // (sonst umgeht der Schüler die Freischaltung)
+        }
+
+        // Fallback: Einrichtungsübung lokal laden wenn Backend sie nicht kennt
+        if (pruefungIdAusUrl === 'einrichtung-uebung') {
+          console.log('[App] Einrichtungsübung: Backend hat keine Config — verwende eingebaute Version')
+          const resolvedConfig = { ...einrichtungsUebung, freigeschaltet: true }
+          const { navigationsFragen, alleFragen } = resolveFragenFuerPruefung(resolvedConfig, einrichtungsUebungFragen)
+          setPruefungsConfig(resolvedConfig)
+          setPruefungsFragen(navigationsFragen)
+          setPruefungsAlleFragen(alleFragen)
+          return
         }
 
         setLadeFehler('Prüfung konnte nicht geladen werden. Bitte URL prüfen oder Lehrperson kontaktieren.')
