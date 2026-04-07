@@ -7662,22 +7662,50 @@ function lernplattformLadeThemenSichtbarkeit(body) {
     var sheet = ss.getSheetByName('ThemenSichtbarkeit');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
+    // Header-Migration: Wenn 'fach' nicht in Zeile 1 → Header einfügen
+    var ersteSpalte = String(sheet.getRange(1, 1).getValue()).toLowerCase().trim();
+    if (ersteSpalte !== 'fach' && sheet.getLastRow() > 0) {
+      sheet.insertRowBefore(1);
+      sheet.getRange(1, 1, 1, 7).setValues([['fach', 'thema', 'status', 'aktiviertAm', 'aktiviertVon', 'typ', 'unterthemen']]);
+    }
+
     var daten = sheet.getDataRange().getValues();
     if (daten.length < 2) return jsonResponse({ success: true, data: [] });
 
-    var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var rawHeaders = daten[0].map(function(h) { return String(h).trim(); });
+    var headers = rawHeaders.map(function(h) { return h.toLowerCase(); });
     var eintraege = [];
 
+    // Header-Indices finden (robust: case-insensitive + Fallback auf Position)
+    var fachIdx = headers.indexOf('fach');
+    var themaIdx = headers.indexOf('thema');
+    var statusIdx = headers.indexOf('status');
+    var amIdx = headers.indexOf('aktiviertam');
+    var vonIdx = headers.indexOf('aktiviertvon');
+    var typIdx = headers.indexOf('typ');
     var utIdx = headers.indexOf('unterthemen');
 
+    // Fallback: Wenn Header nicht gefunden → Standard-Positionen (fach=0, thema=1, status=2, am=3, von=4, typ=5, ut=6)
+    if (fachIdx === -1) fachIdx = 0;
+    if (themaIdx === -1) themaIdx = 1;
+    if (statusIdx === -1) statusIdx = 2;
+    if (amIdx === -1) amIdx = 3;
+    if (vonIdx === -1) vonIdx = 4;
+    if (typIdx === -1) typIdx = 5;
+
     for (var i = 1; i < daten.length; i++) {
+      var fachVal = String(daten[i][fachIdx] || '').trim();
+      var themaVal = String(daten[i][themaIdx] || '').trim();
+      // Leere Zeilen überspringen
+      if (!fachVal && !themaVal) continue;
+
       var eintrag = {
-        fach: String(daten[i][headers.indexOf('fach')] || ''),
-        thema: String(daten[i][headers.indexOf('thema')] || ''),
-        status: String(daten[i][headers.indexOf('status')] || 'nicht_freigeschaltet'),
-        aktiviertAm: String(daten[i][headers.indexOf('aktiviertam')] || ''),
-        aktiviertVon: String(daten[i][headers.indexOf('aktiviertvon')] || ''),
-        typ: String(daten[i][headers.indexOf('typ')] || 'manuell'),
+        fach: fachVal,
+        thema: themaVal,
+        status: String(daten[i][statusIdx] || 'nicht_freigeschaltet').trim(),
+        aktiviertAm: String(daten[i][amIdx] || ''),
+        aktiviertVon: String(daten[i][vonIdx] || ''),
+        typ: String(daten[i][typIdx] || 'manuell'),
       };
       // unterthemen: JSON-Array oder undefined
       if (utIdx >= 0 && daten[i][utIdx]) {
@@ -7729,6 +7757,14 @@ function lernplattformSetzeThemenStatus(body) {
     if (!sheet) {
       sheet = ss.insertSheet('ThemenSichtbarkeit');
       sheet.appendRow(['fach', 'thema', 'status', 'aktiviertAm', 'aktiviertVon', 'typ', 'unterthemen']);
+    } else {
+      // Header-Migration: Wenn 'fach' nicht in Zeile 1 → Header reparieren
+      var ersteSpalte = String(sheet.getRange(1, 1).getValue()).toLowerCase().trim();
+      if (ersteSpalte !== 'fach') {
+        // Header-Zeile fehlt oder ist falsch → einfügen
+        sheet.insertRowBefore(1);
+        sheet.getRange(1, 1, 1, 7).setValues([['fach', 'thema', 'status', 'aktiviertAm', 'aktiviertVon', 'typ', 'unterthemen']]);
+      }
     }
 
     var daten = sheet.getDataRange().getValues();
@@ -7741,6 +7777,14 @@ function lernplattformSetzeThemenStatus(body) {
     var typIdx = headers.indexOf('typ');
     var utIdx = headers.indexOf('unterthemen');
     var jetzt = new Date().toISOString();
+
+    // Fallback auf Positionen wenn Header nicht gefunden
+    if (fachIdx === -1) fachIdx = 0;
+    if (themaIdx === -1) themaIdx = 1;
+    if (statusIdx === -1) statusIdx = 2;
+    if (amIdx === -1) amIdx = 3;
+    if (vonIdx === -1) vonIdx = 4;
+    if (typIdx === -1) typIdx = 5;
 
     // unterthemen-Spalte hinzufügen wenn sie im bestehenden Tab fehlt
     if (utIdx === -1) {
