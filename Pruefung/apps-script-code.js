@@ -7668,15 +7668,25 @@ function lernplattformLadeThemenSichtbarkeit(body) {
     var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
     var eintraege = [];
 
+    var utIdx = headers.indexOf('unterthemen');
+
     for (var i = 1; i < daten.length; i++) {
-      eintraege.push({
+      var eintrag = {
         fach: String(daten[i][headers.indexOf('fach')] || ''),
         thema: String(daten[i][headers.indexOf('thema')] || ''),
         status: String(daten[i][headers.indexOf('status')] || 'nicht_freigeschaltet'),
         aktiviertAm: String(daten[i][headers.indexOf('aktiviertam')] || ''),
         aktiviertVon: String(daten[i][headers.indexOf('aktiviertvon')] || ''),
         typ: String(daten[i][headers.indexOf('typ')] || 'manuell'),
-      });
+      };
+      // unterthemen: JSON-Array oder undefined
+      if (utIdx >= 0 && daten[i][utIdx]) {
+        try {
+          var utVal = JSON.parse(String(daten[i][utIdx]));
+          if (Array.isArray(utVal) && utVal.length > 0) eintrag.unterthemen = utVal;
+        } catch (e) { /* ignorieren */ }
+      }
+      eintraege.push(eintrag);
     }
 
     return jsonResponse({ success: true, data: eintraege });
@@ -7697,6 +7707,7 @@ function lernplattformSetzeThemenStatus(body) {
   var status = body.status;
   var aktiviertVon = body.aktiviertVon || '';
   var typ = body.typ || 'manuell';
+  var unterthemen = body.unterthemen || null; // Array von Strings oder null (= alle)
   var maxAktiv = 3;
 
   if (!fach || !thema || !status) {
@@ -7717,7 +7728,7 @@ function lernplattformSetzeThemenStatus(body) {
     // Tab erstellen wenn nötig
     if (!sheet) {
       sheet = ss.insertSheet('ThemenSichtbarkeit');
-      sheet.appendRow(['fach', 'thema', 'status', 'aktiviertAm', 'aktiviertVon', 'typ']);
+      sheet.appendRow(['fach', 'thema', 'status', 'aktiviertAm', 'aktiviertVon', 'typ', 'unterthemen']);
     }
 
     var daten = sheet.getDataRange().getValues();
@@ -7728,7 +7739,17 @@ function lernplattformSetzeThemenStatus(body) {
     var amIdx = headers.indexOf('aktiviertam');
     var vonIdx = headers.indexOf('aktiviertvon');
     var typIdx = headers.indexOf('typ');
+    var utIdx = headers.indexOf('unterthemen');
     var jetzt = new Date().toISOString();
+
+    // unterthemen-Spalte hinzufügen wenn sie im bestehenden Tab fehlt
+    if (utIdx === -1) {
+      var letzteCol = headers.length + 1;
+      sheet.getRange(1, letzteCol).setValue('unterthemen');
+      utIdx = letzteCol - 1;
+    }
+
+    var unterthemenStr = unterthemen ? JSON.stringify(unterthemen) : '';
 
     // Bestehenden Eintrag suchen
     var gefunden = false;
@@ -7740,6 +7761,7 @@ function lernplattformSetzeThemenStatus(body) {
         sheet.getRange(zeile, amIdx + 1).setValue(jetzt);
         sheet.getRange(zeile, vonIdx + 1).setValue(aktiviertVon);
         sheet.getRange(zeile, typIdx + 1).setValue(typ);
+        if (utIdx >= 0) sheet.getRange(zeile, utIdx + 1).setValue(unterthemenStr);
         gefunden = true;
         break;
       }
@@ -7747,7 +7769,7 @@ function lernplattformSetzeThemenStatus(body) {
 
     // Neuer Eintrag
     if (!gefunden) {
-      sheet.appendRow([fach, thema, status, jetzt, aktiviertVon, typ]);
+      sheet.appendRow([fach, thema, status, jetzt, aktiviertVon, typ, unterthemenStr]);
     }
 
     // FIFO: Wenn zu viele aktive Themen → ältestes abschliessen

@@ -6,8 +6,58 @@ import { aktualisiereFortschritt } from '../../utils/ueben/mastery'
 import { db } from '../../utils/ueben/indexedDB'
 import { uebenFortschrittAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { useUebenSettingsStore } from './settingsStore'
+import { useUebenGruppenStore } from './gruppenStore'
 
 const STORAGE_KEY = 'ueben-fortschritt'
+const SYNC_QUEUE_KEY = 'ueben-fortschritt-sync-queue'
+const SYNC_DEBOUNCE_MS = 5000
+
+/** Pendente Antworten für Backend-Sync */
+interface PendenteAntwort {
+  fragenId: string
+  korrekt: boolean
+  sessionId: string
+}
+
+let syncTimer: ReturnType<typeof setTimeout> | null = null
+
+/** Queue aus localStorage laden */
+function ladeSyncQueue(): PendenteAntwort[] {
+  try {
+    const raw = localStorage.getItem(SYNC_QUEUE_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+/** Queue in localStorage speichern */
+function speichereSyncQueue(queue: PendenteAntwort[]) {
+  try { localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue)) } catch { /* quota */ }
+}
+
+/** Queue zum Backend senden und leeren */
+async function flushSyncQueue(gruppeId: string, email: string): Promise<void> {
+  const queue = ladeSyncQueue()
+  if (queue.length === 0) return
+
+  try {
+    const erfolg = await uebenFortschrittAdapter.speichereFortschritt(gruppeId, email, queue)
+    if (erfolg) {
+      localStorage.removeItem(SYNC_QUEUE_KEY)
+      console.log(`[Fortschritt] ${queue.length} Antworten zum Backend gesynced`)
+    }
+  } catch (err) {
+    console.warn('[Fortschritt] Backend-Sync fehlgeschlagen, Queue bleibt erhalten:', err)
+  }
+}
+
+/** Debounced Sync starten */
+function scheduleSyncFlush(gruppeId: string, email: string) {
+  if (syncTimer) clearTimeout(syncTimer)
+  syncTimer = setTimeout(() => {
+    flushSyncQueue(gruppeId, email)
+    syncTimer = null
+  }, SYNC_DEBOUNCE_MS)
+}
 
 interface UebenFortschrittState {
   fortschritte: Record<string, FragenFortschritt>
@@ -63,6 +113,17 @@ export const useUebenFortschrittStore = create<UebenFortschrittState>((set, get)
 
     set({ fortschritte: neueFortschritte })
     speichereInLocalStorage(neueFortschritte)
+
+    // Backend-Sync: Antwort in Queue legen + debounced senden
+    const queue = ladeSyncQueue()
+    queue.push({ fragenId, korrekt, sessionId })
+    speichereSyncQueue(queue)
+
+    // Gruppe + Email für den Sync holen
+    const aktiveGruppe = useUebenGruppenStore.getState().aktiveGruppe
+    if (aktiveGruppe?.id && email) {
+      scheduleSyncFlush(aktiveGruppe.id, email)
+    }
   },
 
   ladeFortschritt: async () => {

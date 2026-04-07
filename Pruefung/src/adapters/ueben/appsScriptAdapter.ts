@@ -253,6 +253,20 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
     return response?.data || []
   }
 
+  async speichereFortschritt(
+    gruppeId: string,
+    email: string,
+    fortschritte: { fragenId: string; korrekt: boolean; sessionId: string }[],
+  ): Promise<boolean> {
+    if (fortschritte.length === 0) return true
+    const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
+      'lernplattformSpeichereFortschritt',
+      { gruppeId, email, fortschritte },
+      this.getToken()
+    )
+    return response?.success ?? false
+  }
+
   async speichereLernziel(gruppeId: string, lernziel: Lernziel): Promise<{ id: string }> {
     const response = await uebenApiClient.post<{
       success: boolean

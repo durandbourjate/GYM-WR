@@ -44,9 +44,17 @@ Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 
 | F7 | Lernziel-Zuordnung in MetadataSection: Checkboxen + lernzielIds in FrageBasis persistierbar | SharedFragenEditor.tsx, MetadataSection.tsx, fragenFactory.ts |
 
+| F8 | Fortschritt-Sync zum Backend: Debounced Queue (5s), localStorage-Persistenz bei Offline | fortschrittStore.ts, appsScriptAdapter.ts, interfaces.ts |
+| F9 | Apps Script: unterthemen-Parameter in setzeThemenStatus + ladeThemenSichtbarkeit | apps-script-code.js |
+
+### ⚠ Apps Script Deploy nötig (erweitert)
+- `lernplattformSetzeThemenStatus`: neuer Parameter `unterthemen` (JSON-Array)
+- `lernplattformLadeThemenSichtbarkeit`: gibt `unterthemen`-Feld zurück
+- `lernplattformSpeichereFortschritt`: wird jetzt vom Frontend aufgerufen (debounced, 5s)
+- Bestehende ThemenSichtbarkeit-Tabs bekommen automatisch eine `unterthemen`-Spalte beim nächsten Schreiben
+
 ### Offen (nächste Session)
-- **Fortschritt-Sync zum Backend** — `lernplattformSpeichereFortschritt` Endpoint existiert, wird aber nie aufgerufen
-- **Apps Script: unterthemen-Parameter** — Backend muss Unterthemen-Array speichern/laden
+- **SuS-Dashboard: Unterthemen-Filter** — Dashboard filtert noch nicht nach aktiven Unterthemen (Frontend-TODO)
 
 ---
 

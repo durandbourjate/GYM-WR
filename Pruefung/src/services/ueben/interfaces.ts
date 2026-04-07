@@ -33,6 +33,11 @@ export interface FortschrittService {
   }>
   ladeLernziele(gruppeId: string): Promise<Lernziel[]>
   speichereLernziel(gruppeId: string, lernziel: Lernziel): Promise<{ id: string }>
+  speichereFortschritt(
+    gruppeId: string,
+    email: string,
+    fortschritte: { fragenId: string; korrekt: boolean; sessionId: string }[],
+  ): Promise<boolean>
 }
 
 export interface FragenService {
