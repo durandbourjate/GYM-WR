@@ -249,10 +249,19 @@ export default function AdminThemensteuerung() {
                 const alleAktiv = !aktiveUT || aktiveUT.length === 0
                 const themaIstAktivOderAbgeschlossen = eintrag.status === 'aktiv' || eintrag.status === 'abgeschlossen'
 
-                const toggleUnterthema = (utName: string) => {
-                  if (!aktiveGruppe) return
+                const toggleUnterthema = async (utName: string) => {
+                  if (!aktiveGruppe || !user) return
+
+                  // Thema automatisch aktivieren wenn es noch nicht freigeschaltet ist
+                  if (!themaIstAktivOderAbgeschlossen) {
+                    await setzeStatus(aktiveGruppe.id, eintrag.fach, eintrag.thema, 'aktiv', user.email, 'manuell')
+                    // Nur dieses Unterthema aktiv setzen
+                    setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, [utName])
+                    return
+                  }
+
                   if (alleAktiv) {
-                    // Alle waren aktiv → alle ausser dieses
+                    // Alle waren aktiv → alle ausser dieses deaktivieren
                     const alle = eintrag.unterthemen.map(u => u.name).filter(n => n !== utName)
                     setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, alle)
                   } else {
@@ -280,15 +289,13 @@ export default function AdminThemensteuerung() {
                       return (
                         <div key={ut.name} className="flex items-center justify-between px-4 py-2.5 pl-14">
                           <label className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
-                            {themaIstAktivOderAbgeschlossen && (
-                              <input
-                                type="checkbox"
-                                checked={istChecked}
-                                onChange={() => toggleUnterthema(ut.name)}
-                                className="rounded border-slate-300 dark:border-slate-600 text-slate-600 focus:ring-slate-500"
-                              />
-                            )}
-                            <span className={`text-sm ${istChecked ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}`}>{ut.name}</span>
+                            <input
+                              type="checkbox"
+                              checked={themaIstAktivOderAbgeschlossen && istChecked}
+                              onChange={() => toggleUnterthema(ut.name)}
+                              className="rounded border-slate-300 dark:border-slate-600 text-slate-600 focus:ring-slate-500"
+                            />
+                            <span className={`text-sm ${themaIstAktivOderAbgeschlossen && istChecked ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'}`}>{ut.name}</span>
                             <span className="text-xs text-slate-400">{ut.anzahl} Fragen</span>
                           </label>
                           <button
