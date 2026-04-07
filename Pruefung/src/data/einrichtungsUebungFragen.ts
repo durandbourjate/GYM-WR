@@ -31,17 +31,17 @@ export const einrichtungsUebungFragen: Frage[] = [
     tags: ['einrichtung', 'uebung'],
     punkte: 1,
     zeitbedarf: 1,
-    musterlosung: 'Die Übung hat 8 Fragen — sichtbar in der Navigationsleiste unten.',
+    musterlosung: 'Die Übung hat 23 Fragen — sichtbar in der Navigationsleiste unten.',
     bewertungsraster: [{ beschreibung: 'Korrekte Antwort gewählt', punkte: 1 }],
     verwendungen: [],
     quelle: 'manuell',
     autor,
     fragetext: 'Schauen Sie sich die Übungsoberfläche an. **Wie viele Fragen** hat diese Einführungsübung insgesamt? Tipp: Schauen Sie auf die Navigationsleiste am unteren Bildschirmrand.',
     optionen: [
-      { id: 'a', text: '5 Fragen', korrekt: false },
-      { id: 'b', text: '8 Fragen', korrekt: true },
-      { id: 'c', text: '12 Fragen', korrekt: false },
-      { id: 'd', text: '20 Fragen', korrekt: false },
+      { id: 'a', text: '16 Fragen', korrekt: false },
+      { id: 'b', text: '20 Fragen', korrekt: false },
+      { id: 'c', text: '23 Fragen', korrekt: true },
+      { id: 'd', text: '30 Fragen', korrekt: false },
     ],
     mehrfachauswahl: false,
     zufallsreihenfolge: false,
@@ -115,7 +115,7 @@ export const einrichtungsUebungFragen: Frage[] = [
       { id: '1', text: 'Man kann zwischen Fragen vor- und zurücknavigieren.', korrekt: true, erklaerung: 'Rücknavigation ist bei dieser Übung aktiviert.' },
       { id: '2', text: 'Die Antworten werden automatisch gespeichert (AutoSave).', korrekt: true, erklaerung: 'AutoSave speichert alle 30 Sekunden.' },
       { id: '3', text: 'Man muss die Fragen zwingend in der vorgegebenen Reihenfolge lösen.', korrekt: false, erklaerung: 'Man kann über die Navigationsleiste zu jeder Frage springen.' },
-      { id: '4', text: 'Es gibt einen Dark Mode (dunkles Farbschema).', korrekt: true, erklaerung: 'Dark Mode kann über das Theme-Toggle-Symbol umgeschaltet werden.' },
+      { id: '4', text: 'Es gibt einen Dark Mode (dunkles Farbschema).', korrekt: true, erklaerung: 'Dark Mode kann über das Sonnen-Symbol (☀️) im Header umgeschaltet werden.' },
     ],
   },
 
@@ -291,7 +291,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: '**Feature-Check!** Probieren Sie die folgenden Funktionen aus und kreuzen Sie an, welche **funktioniert** haben:\n\n- **Dark Mode**: Klicken Sie auf das Mond/Sonnen-Symbol oben\n- **Frage markieren**: Klicken Sie auf den «?»-Button (Unsicher) bei einer Frage\n- **Tastaturkürzel**: Drücken Sie Cmd+Enter (Mac) oder Ctrl+Enter (Windows), um zur nächsten Frage zu springen\n- **Navigation**: Klicken Sie auf eine Fragennummer in der Navigationsleiste unten\n\nKreuzen Sie **alle** an, die funktioniert haben:',
+    fragetext: '**Feature-Check!** Probieren Sie die folgenden Funktionen aus und kreuzen Sie an, welche **funktioniert** haben:\n\n- **Dark Mode**: Klicken Sie auf das Sonnen-Symbol (☀️) im Header\n- **Frage markieren**: Klicken Sie auf den «?»-Button (Unsicher) bei einer Frage\n- **Tastaturkürzel**: Drücken Sie Cmd+Enter (Mac) oder Ctrl+Enter (Windows), um zur nächsten Frage zu springen\n- **Navigation**: Klicken Sie auf eine Fragennummer in der Navigationsleiste unten\n\nKreuzen Sie **alle** an, die funktioniert haben:',
     optionen: [
       { id: 'a', text: 'Dark Mode umschalten hat funktioniert', korrekt: true },
       { id: 'b', text: 'Frage markieren hat funktioniert', korrekt: true },
@@ -331,11 +331,13 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Eine Pizza kostet CHF 18.50. Sie bestellen **3 Pizzas** und geben **10% Trinkgeld** auf den Gesamtbetrag.\n\nBerechnen Sie den **Gesamtbetrag** (Pizzas + Trinkgeld).',
-    korrekteAntwort: '61.05',
-    toleranz: 0.01,
-    einheit: 'CHF',
-  } as unknown as Frage,
+    fragetext: 'Eine Pizza kostet **CHF 18.50**. Sie bestellen **3 Pizzas** und geben **10% Trinkgeld** auf den Gesamtbetrag.\n\nBerechnen Sie den **Gesamtbetrag** (Pizzas + Trinkgeld). Zeigen Sie den Rechenweg im Feld darunter.\n\n💡 **Tipp:** Geben Sie die Zahl ohne «CHF» ein. Nutzen Sie einen Punkt als Dezimalzeichen.',
+    ergebnisse: [
+      { id: '1', label: 'Pizzas ohne Trinkgeld', korrekt: 55.50, toleranz: 0, einheit: 'CHF' },
+      { id: '2', label: 'Gesamtbetrag mit Trinkgeld', korrekt: 61.05, toleranz: 0.05, einheit: 'CHF' },
+    ],
+    rechenwegErforderlich: true,
+  },
 
   // D2 — Sortierung: Reihenfolge bringen
   {
@@ -362,16 +364,10 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Bringen Sie die **Wochentage** in die korrekte Reihenfolge (Montag bis Freitag).',
-    elemente: [
-      { id: 'mi', text: 'Mittwoch' },
-      { id: 'fr', text: 'Freitag' },
-      { id: 'mo', text: 'Montag' },
-      { id: 'do', text: 'Donnerstag' },
-      { id: 'di', text: 'Dienstag' },
-    ],
-    korrekteReihenfolge: ['mo', 'di', 'mi', 'do', 'fr'],
-  } as unknown as Frage,
+    fragetext: 'Bringen Sie die **Wochentage** in die korrekte Reihenfolge (Montag bis Freitag).\n\n💡 **Tipp:** Ziehen Sie die Wochentage per Drag & Drop an die richtige Position.',
+    elemente: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'],
+    teilpunkte: true,
+  },
 
   // D3 — Buchungssatz: Einfache Buchung
   {
@@ -398,11 +394,15 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Sie kaufen im Laden Büromaterial für **CHF 50.00** und bezahlen **bar**.\n\nErfassen Sie den Buchungssatz.',
+    geschaeftsfall: '**Übungsaufgabe zum Testen der Eingabefelder:**\n\nSie kaufen im Laden Büromaterial für **CHF 50.00** und bezahlen **bar**.\n\n📋 **Anleitung — die Lösung ist hier angegeben:**\n- **Soll:** Konto 4200 (Warenaufwand), Betrag: 50.00\n- **Haben:** Konto 1000 (Kasse), Betrag: 50.00\n\nGeben Sie diese Buchung in die Felder unten ein.',
     buchungen: [
-      { soll: 'Warenaufwand', haben: 'Kasse', betrag: 50 },
+      { id: 'bs-einkauf', sollKonto: '4200', habenKonto: '1000', betrag: 50 },
     ],
-  } as unknown as Frage,
+    kontenauswahl: {
+      modus: 'eingeschraenkt',
+      konten: ['1000', '1020', '2000', '3200', '4200', '5200'],
+    },
+  },
 
   // D4 — T-Konto: Einfaches T-Konto
   {
@@ -429,13 +429,34 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Erstellen Sie ein **T-Konto** für das Konto **Bank**.\n\n- Anfangsbestand: CHF 1000 (Soll)\n- Mietzahlung: CHF 800 (Haben)\n\nTragen Sie die Buchungen ein und berechnen Sie den Saldo.',
-    kontoName: 'Bank',
-    sollBuchungen: [{ text: 'Anfangsbestand', betrag: 1000 }],
-    habenBuchungen: [{ text: 'Miete', betrag: 800 }],
-    saldo: 200,
-    saldoSeite: 'soll',
-  } as unknown as Frage,
+    aufgabentext: '**Übungsaufgabe zum Testen des T-Konto-Editors:**\n\nDer Anfangsbestand ist bereits eingetragen (CHF 1000).\n\n📋 **Anleitung:** Tragen Sie eine **Mietzahlung von CHF 800** auf der **Haben-Seite** ein (Gegenkonto: 6000). Das ist die rechte Seite des T-Kontos.',
+    geschaeftsfaelle: [
+      'Mietzahlung: CHF 800 per Bank bezahlt.',
+    ],
+    konten: [
+      {
+        id: 'tk-1020',
+        kontonummer: '1020',
+        anfangsbestand: 1000,
+        anfangsbestandVorgegeben: true,
+        eintraege: [
+          { seite: 'haben', gegenkonto: '6000', betrag: 800, buchungstext: 'Mietzahlung' },
+        ],
+        saldo: { betrag: 200, seite: 'soll' },
+      },
+    ],
+    kontenauswahl: {
+      modus: 'eingeschraenkt',
+      konten: ['1000', '1020', '2000', '4200', '5200', '6000'],
+    },
+    bewertungsoptionen: {
+      beschriftungSollHaben: false,
+      kontenkategorie: false,
+      zunahmeAbnahme: false,
+      buchungenKorrekt: true,
+      saldoKorrekt: false,
+    },
+  },
 
   // D5 — Bilanzstruktur: Einfache Bilanz
   {
@@ -462,16 +483,44 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Ordnen Sie die folgenden Positionen der **Bilanz** zu:\n\n- **Kasse**: CHF 500\n- **Maschinen**: CHF 1500\n- **Darlehen**: CHF 800\n- **Eigenkapital**: CHF 1200',
-    aktiven: [
-      { bezeichnung: 'Kasse', betrag: 500 },
-      { bezeichnung: 'Maschinen', betrag: 1500 },
+    aufgabentext: '**Übungsaufgabe zum Testen der Bilanz-Eingabe:**\n\nOrdnen Sie die 4 Konten den **Aktiven** (linke Seite) oder **Passiven** (rechte Seite) zu.\n\n📋 **Tipp:** Kasse und Maschinen = Aktiven (links). Darlehen und Eigenkapital = Passiven (rechts).',
+    modus: 'bilanz',
+    kontenMitSaldi: [
+      { kontonummer: '1000', saldo: 500 },
+      { kontonummer: '1500', saldo: 1500 },
+      { kontonummer: '2400', saldo: 800 },
+      { kontonummer: '2800', saldo: 1200 },
     ],
-    passiven: [
-      { bezeichnung: 'Darlehen', betrag: 800 },
-      { bezeichnung: 'Eigenkapital', betrag: 1200 },
-    ],
-  } as unknown as Frage,
+    loesung: {
+      bilanz: {
+        aktivSeite: {
+          label: 'Aktiven',
+          gruppen: [
+            { label: 'Umlaufvermögen', konten: ['1000'] },
+            { label: 'Anlagevermögen', konten: ['1500'] },
+          ],
+        },
+        passivSeite: {
+          label: 'Passiven',
+          gruppen: [
+            { label: 'Fremdkapital', konten: ['2400'] },
+            { label: 'Eigenkapital', konten: ['2800'] },
+          ],
+        },
+        bilanzsumme: 2000,
+      },
+    },
+    bewertungsoptionen: {
+      seitenbeschriftung: false,
+      gruppenbildung: false,
+      gruppenreihenfolge: false,
+      kontenreihenfolge: false,
+      betraegeKorrekt: true,
+      zwischentotale: false,
+      bilanzsummeOderGewinn: true,
+      mehrstufigkeit: false,
+    },
+  },
 
   // D6 — Kontenbestimmung: Konten kategorisieren
   {
@@ -498,14 +547,35 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Bestimmen Sie für jedes Konto die **Kategorie** (Aktiv, Passiv, Aufwand, Ertrag).',
-    konten: [
-      { name: 'Kasse', kategorie: 'Aktiv' },
-      { name: 'Warenaufwand', kategorie: 'Aufwand' },
-      { name: 'Warenertrag', kategorie: 'Ertrag' },
-      { name: 'Eigenkapital', kategorie: 'Passiv' },
+    aufgabentext: '**Übungsaufgabe zum Testen der Eingabefelder:**\n\nBestimmen Sie die Kontenkategorie. Die Lösung ist angegeben — tippen Sie sie einfach ein!\n\n📋 **Lösung:** Kasse = **Aktivkonto** | Warenaufwand = **Aufwandkonto** | Warenertrag = **Ertragskonto** | Eigenkapital = **Passivkonto**',
+    modus: 'kategorie_bestimmen',
+    aufgaben: [
+      {
+        id: 'kb-kasse',
+        text: 'Kasse (1000) — Welche Kategorie? (Tipp: Aktivkonto)',
+        erwarteteAntworten: [{ kontonummer: '1000', kategorie: 'aktiv' }],
+      },
+      {
+        id: 'kb-warenaufwand',
+        text: 'Warenaufwand (4200) — Welche Kategorie? (Tipp: Aufwandkonto)',
+        erwarteteAntworten: [{ kontonummer: '4200', kategorie: 'aufwand' }],
+      },
+      {
+        id: 'kb-warenertrag',
+        text: 'Warenertrag (3200) — Welche Kategorie? (Tipp: Ertragskonto)',
+        erwarteteAntworten: [{ kontonummer: '3200', kategorie: 'ertrag' }],
+      },
+      {
+        id: 'kb-eigenkapital',
+        text: 'Eigenkapital (2800) — Welche Kategorie? (Tipp: Passivkonto)',
+        erwarteteAntworten: [{ kontonummer: '2800', kategorie: 'passiv' }],
+      },
     ],
-  } as unknown as Frage,
+    kontenauswahl: {
+      modus: 'eingeschraenkt',
+      konten: ['1000', '1020', '2000', '2800', '3200', '4200', '5200', '6000'],
+    },
+  },
 
   // D7 — Zeichnen/Visualisierung: Etwas zeichnen
   {
@@ -532,8 +602,10 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: '**Zeichenübung:** Zeichnen Sie einen **Smiley** 😊.\n\nVerwenden Sie mindestens **2 verschiedene Werkzeuge** (z.B. Stift + Farbe ändern, oder Stift + Text).\n\n💡 Probieren Sie die Werkzeugleiste oben aus: Stift, Farbe, Grösse, Radierer, Rückgängig.',
-  } as unknown as Frage,
+    fragetext: '**Zeichenübung:** Zeichnen Sie einen **Smiley** 😊 auf die Zeichenfläche unten.\n\n💡 **Aufgabe:** Testen Sie dabei mindestens **2 verschiedene Werkzeuge** aus der Werkzeugleiste (z.B. Stift, Linie, Kreis, Text, Pfeil). Probieren Sie auch verschiedene Farben aus!',
+    untertyp: 'zeichnen',
+    canvasConfig: { breite: 600, hoehe: 400, koordinatensystem: false, werkzeuge: ['stift', 'linie', 'pfeil', 'text', 'rechteck', 'ellipse'] },
+  },
 
   // ═══════════════════════════════════════════════════════
   // TEIL E: Spezielle Fragetypen
@@ -574,7 +646,7 @@ export const einrichtungsUebungFragen: Frage[] = [
       { id: 'okay', label: 'Okay', farbe: '#90CAF9' },
     ],
     erlaubteWerkzeuge: ['highlighter', 'kommentar', 'freihand'],
-  } as unknown as Frage,
+  },
 
   // E2 — Sortierung: Planeten nach Entfernung
   {
@@ -602,16 +674,10 @@ export const einrichtungsUebungFragen: Frage[] = [
     verwendungen: [],
     quelle: 'manuell',
     autor,
-    fragetext: 'Bringen Sie die **Planeten** in die korrekte Reihenfolge nach **Entfernung von der Sonne** (nächster zuerst).\n\n💡 Ziehen Sie die Elemente an die richtige Position oder nutzen Sie die Pfeile.',
-    elemente: [
-      { id: 'mars', text: 'Mars' },
-      { id: 'venus', text: 'Venus' },
-      { id: 'jupiter', text: 'Jupiter' },
-      { id: 'merkur', text: 'Merkur' },
-      { id: 'erde', text: 'Erde' },
-    ],
-    korrekteReihenfolge: ['merkur', 'venus', 'erde', 'mars', 'jupiter'],
-  } as unknown as Frage,
+    fragetext: 'Bringen Sie die **Planeten** in die korrekte Reihenfolge nach **Entfernung von der Sonne** (nächster zuerst).\n\n💡 **Tipp:** Ziehen Sie die Planeten per Drag & Drop an die richtige Position.',
+    elemente: ['Merkur', 'Venus', 'Erde', 'Mars', 'Jupiter'],
+    teilpunkte: true,
+  },
 
   // E3 — Hotspot: Schweiz auf Europakarte
   {
@@ -643,14 +709,14 @@ export const einrichtungsUebungFragen: Frage[] = [
     bereiche: [
       {
         id: 'schweiz',
-        form: 'rechteck',
+        form: 'rechteck' as const,
         koordinaten: { x: 45, y: 43, breite: 6, hoehe: 5 },
         label: 'Schweiz',
         punkte: 2,
       },
     ],
     mehrfachauswahl: false,
-  } as unknown as Frage,
+  },
 
   // E4 — Bildbeschriftung: Zelle beschriften
   {
@@ -685,7 +751,7 @@ export const einrichtungsUebungFragen: Frage[] = [
       { id: '2', position: { x: 25, y: 30 }, korrekt: ['Zellmembran', 'Membran'] },
       { id: '3', position: { x: 62, y: 55 }, korrekt: ['Mitochondrium', 'Mitochondrien'] },
     ],
-  } as unknown as Frage,
+  },
 
   // E5 — Audio-Aufnahme: Sich vorstellen
   {
@@ -714,7 +780,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     autor,
     fragetext: 'Stellen Sie sich kurz **vor**: Sagen Sie Ihren **Namen**, Ihr **Lieblingsfach** und einen **Fun Fact** über sich selbst.\n\nSie haben max. **60 Sekunden**.\n\n💡 Klicken Sie auf «Aufnahme starten», sprechen Sie, und klicken Sie dann auf «Stopp».',
     maxDauerSekunden: 60,
-  } as unknown as Frage,
+  },
 
   // E6 — DragDrop-Bild: Kontinente zuordnen
   {
@@ -752,7 +818,7 @@ export const einrichtungsUebungFragen: Frage[] = [
       { id: '4', position: { x: 20, y: 65, breite: 15, hoehe: 20 }, korrektesLabel: 'Südamerika' },
     ],
     labels: ['Nordamerika', 'Europa', 'Asien', 'Südamerika', 'Afrika', 'Australien'],
-  } as unknown as Frage,
+  },
 
   // E7 — Code: Python-Funktion schreiben
   {
@@ -784,7 +850,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     sprache: 'python',
     starterCode: 'def ist_primzahl(n):\n    # Ihre Lösung hier\n    pass',
     musterLoesung: 'def ist_primzahl(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            return False\n    return True',
-  } as unknown as Frage,
+  },
 
   // E8 — Formel: Satz des Pythagoras
   {
@@ -813,5 +879,5 @@ export const einrichtungsUebungFragen: Frage[] = [
     fragetext: 'Geben Sie den **Satz des Pythagoras** als Formel ein.\n\nVerwenden Sie die Variablen **a**, **b** und **c**.\n\n💡 Nutzen Sie die Buttons im Formel-Editor für Hochzahlen (x²) und Gleichheitszeichen.',
     korrekteFormel: 'a^2 + b^2 = c^2',
     vergleichsModus: 'exakt',
-  } as unknown as Frage,
+  },
 ]
