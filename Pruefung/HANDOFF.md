@@ -6,7 +6,7 @@
 
 ---
 
-## Session 68 — Technische Verbesserungen: Tooltip, DnD, Renaming (07.04.2026)
+## Session 68 — Tech-Verbesserungen + Bug-Fixes (07.04.2026)
 
 ### Stand
 Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
@@ -32,12 +32,26 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
 | T4e | `istLernen` → `istUeben` in appMode.ts | appMode.ts |
 | T4f | Kommentare bereinigt: "Prüfungstool" → "ExamLab", "Lernplattform" → "Üben" (21 Stellen) | 15 Dateien |
 | T4g | UI-Texte: Einrichtungsprüfung "Lerne das Prüfungstool kennen" → "Lerne ExamLab kennen" | einrichtungsFragen.ts |
+| **Bug-Fixes** | |
+| B1 | "Prüfung wird geladen" → kontextabhängig (Prüfung/Übung) | App.tsx, AbgabeDialog.tsx, Layout.tsx |
+| B2 | Doppelter Fragetext bei Aufgabengruppen im Üben-Modus | UebungsScreen.tsx |
+| B3 | FiBu-Dropdown leer: Fallback auf alle Konten wenn `konten` undefined | KontenSelect.tsx |
+| B4 | NaN in Auswertung: `Number.isFinite()` Guards bei Punkteberechnung | korrekturUtils.ts, KorrekturSchuelerZeile.tsx, KorrekturPDFAnsicht.tsx, useKorrekturDaten.ts |
+| B5 | Einrichtungsfragen: "Zahnrad-Symbol" / "Mond/Sonnen-Symbol" → "Sonnen-Symbol (☀️) im Header" | einrichtungsFragen.ts |
 
 ### Nicht geändert (bewusst)
 - `lernziel`/`Lernziel`, `Lernende`/`lernend` (Fachbegriffe)
 - `components/lernen/`, `store/lernen/` etc. (Verzeichnisnamen — grösseres Refactoring)
 - Apps Script Endpoint-Strings (`lernplattformLogin` etc. — Backend-Kompatibilität)
 - ZeichnenToolbar/PDFToolbar title= (~30 Stellen — eigene Aufgabe wegen Toolbar-Komplexität)
+
+### Zu verifizieren (nach Deploy)
+- Einrichtungsprüfung F9-F23: Daten sind korrekt, Rendering im Browser prüfen (Berechnung, FiBu, T-Konto etc.)
+- Einrichtungsübung (`einrichtungsUebungFragen.ts`): Sonne/Mond-Text dort noch nicht korrigiert
+- Übungs-Auswertung zeigt Punktevergabe (soll sie das bei formativen Übungen?)
+
+### ⚠ Bekannt: localStorage-Key geändert
+`'lernplattform-auth'` → `'ueben-auth'`. SuS mit altem Key müssen sich einmal neu einloggen. Keine automatische Migration eingebaut.
 
 ### Nächste Session — Strategische Features (Planung nötig)
 
@@ -61,7 +75,7 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
 | 3 | **Verzeichnis-Renaming** (`components/lernen/` → `components/ueben/` etc.) | niedrig |
 
 ### ⚠ Apps Script
-Keine Backend-Änderungen in dieser Session. Letzte Bereitstellung: 07.04.2026 (Session 67).
+Keine Code-Änderungen. Berechtigungen mussten am 07.04.2026 neu autorisiert werden (SpreadsheetApp.openById Scope verloren). Bereitstellung aktualisiert, gleiche URL.
 
 ---
 
