@@ -4,6 +4,7 @@ export interface GruppenEinstellungen {
   sichtbareFaecher: string[]
   sichtbareThemen: Record<string, string[]>
   fachFarben: Record<string, string>
+  fokusThema?: { fach: string; thema: string }
 }
 
 export const DEFAULT_GYM: GruppenEinstellungen = {

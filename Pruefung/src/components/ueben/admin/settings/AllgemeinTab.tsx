@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUebenSettingsStore } from '../../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { useUebenAuthStore } from '../../../../store/ueben/authStore'
-import { uebenGruppenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
+import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
 
 export default function AllgemeinTab() {
   const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
@@ -10,6 +10,25 @@ export default function AllgemeinTab() {
   const { user } = useUebenAuthStore()
   const [speichern, setSpeichern] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
   const [fehlerText, setFehlerText] = useState('')
+  // Themen für Fokusthema-Dropdown laden
+  const [verfuegbareThemen, setVerfuegbareThemen] = useState<{ fach: string; thema: string }[]>([])
+  useEffect(() => {
+    if (!aktiveGruppe) return
+    uebenFragenAdapter.ladeFragen(aktiveGruppe.id).then(fragen => {
+      const map = new Map<string, string>()
+      for (const f of fragen) {
+        const tags = (f.tags || []) as (string | { name: string })[]
+        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
+        if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+        const key = `${f.fach}|${f.thema}`
+        if (!map.has(key)) map.set(key, f.fach)
+      }
+      setVerfuegbareThemen(
+        [...map.entries()].map(([key, fach]) => ({ fach, thema: key.split('|')[1] }))
+          .sort((a, b) => a.fach.localeCompare(b.fach) || a.thema.localeCompare(b.thema))
+      )
+    })
+  }, [aktiveGruppe])
 
   if (!einstellungen || !aktiveGruppe) {
     return <p className="text-sm text-slate-400">Keine Einstellungen geladen.</p>
@@ -28,6 +47,9 @@ export default function AllgemeinTab() {
       setSpeichern('fehler')
     }
   }
+
+  const fokus = einstellungen.fokusThema
+  const fokusKey = fokus ? `${fokus.fach}|${fokus.thema}` : ''
 
   return (
     <div className="space-y-6">
@@ -75,6 +97,31 @@ export default function AllgemeinTab() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Fokusthema */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-100 dark:border-slate-700">
+        <p className="text-sm font-medium dark:text-white mb-1">Fokusthema</p>
+        <p className="text-xs text-slate-400 mb-3">Wird den SuS prominent empfohlen. Optional.</p>
+        <select
+          value={fokusKey}
+          onChange={e => {
+            if (!e.target.value) {
+              aktualisiereEinstellungen({ fokusThema: undefined })
+            } else {
+              const [fach, thema] = e.target.value.split('|')
+              aktualisiereEinstellungen({ fokusThema: { fach, thema } })
+            }
+          }}
+          className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white text-sm"
+        >
+          <option value="">Kein Fokusthema</option>
+          {verfuegbareThemen.map(t => (
+            <option key={`${t.fach}|${t.thema}`} value={`${t.fach}|${t.thema}`}>
+              {t.fach} — {t.thema}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Speichern */}
