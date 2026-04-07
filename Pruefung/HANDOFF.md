@@ -6,7 +6,64 @@
 
 ---
 
-## Session 67 — Progressive Loading: Fragenbank Performance (06.04.2026)
+## Session 67 — Performance + Datenbereinigung + Features (07.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅.
+**Fragenbank: 2398 Fragen** (2360 Pool + 38 manuell). Alle 27 Pools sauber importiert.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Performance** | |
+| P1 | Progressive Loading: Summary/Detail-Split | fragenbankStore, fragenbankApi, apiClient, FragenBrowser, etc. |
+| P2 | Batch-Import/Delete Endpoints | apps-script-code.js |
+| P3 | Cache-TTL 5→30 Min, Summary-Cache | apps-script-code.js |
+| **Datenbereinigung** | |
+| D1 | Vollständiger Re-Import aller 27 Pools (2360 Fragen) | reimport-pools.mjs, test-import.mjs |
+| D2 | poolConverter: alle 20 Typen korrekt | poolConverter.ts, pool.ts |
+| D3 | speichereFrage: poolId + schwierigkeit + Pool-Felder | apps-script-code.js |
+| D4 | getTypDaten: formel korrekteFormel/vergleichsModus | apps-script-code.js |
+| D5 | Recht-Pools: 9 fehlende Kommas gefixt | config/recht_*.js |
+| D6 | Übungspools index.html: Zählung per Parsing statt Regex | index.html |
+| **UI-Fixes** | |
+| U1 | Typ-Filter dynamisch (alle 18 Typen) | FragenBrowserHeader.tsx |
+| U2 | Einrichtungsfragen aus LP-Fragensammlung gefiltert | useFragenFilter.ts |
+| U3 | Einrichtungsfragen aus SuS-Dashboard gefiltert | Dashboard.tsx |
+| U4 | Einrichtungsfragen aus LP-Übersicht gefiltert | AdminUebersicht.tsx |
+| U5 | summativ/formativ Filter entfernt (überflüssig) | LPStartseite.tsx |
+| U6 | Filter+Suche bei Übung durchführen (analog Prüfen) | LPStartseite.tsx |
+| U7 | Tabs getauscht: Übung durchführen als Default | LPStartseite.tsx |
+| U8 | SuS Logout-Bug gefixt (AppLernen onZurueck) | AppLernen.tsx |
+| **Sicherheit** | |
+| S1 | Session-Lock: Neuer Login invalidiert alten Token | apps-script-code.js |
+
+### Neue Dateien
+- `scripts/reimport-pools.mjs` — Vollständiger Re-Import mit Batch-Delete + Batch-Import
+- `scripts/test-import.mjs` — Verifizierung: 1 Frage pro Typ importieren + zurücklesen
+- `scripts/import-spezialtypen.mjs` — Historisch (ersetzt durch reimport-pools)
+
+### Nächste Session — Strategische Features (Planung nötig)
+
+| # | Feature | Beschreibung | Prio |
+|---|---------|-------------|------|
+| 1 | **Individualisiertes Lernen** | Mastery-System: Lücken trainieren, Beherrschtes zurückstellen | hoch |
+| 2 | **Aufträge als Themen-Aktivierung** | LP aktiviert Themen per Auftrag → SuS sieht nur freigeschaltete Themen | hoch |
+| 3 | **LearningView Deep-Links** | URL-Parameter für Fach/Thema/Unterthema → SuS landet direkt bei relevanten Fragen | hoch |
+| 4 | **Einstellungen-Panel** | Gruppennamen ändern, Rollen verwalten, alles aus App statt Sheet | mittel |
+| 5 | **Lernziel-Verlinkung** | Lernziele in Themen/Unterthemen/Fragen verlinken (wie Übungspools) | mittel |
+| 6 | **Freie Übungszusammenstellung** | SuS stellt sich Übung aus mehreren Themen/Fächern zusammen (Repetition) | mittel |
+| 7 | **SuS-Suchfeld** | Direktsuche nach Fragen in SuS-Dashboard | mittel |
+| 8 | **SuS-Hilfe erweitern** | Ausführlichere Hinweise (wie bei Übungspools) | niedrig |
+
+### ⚠ Apps Script Deploy
+`apps-script-code.js` wurde mehrfach geändert. Letzte Bereitstellung: 07.04.2026.
+Enthält: Summary/Detail-Endpoints, Batch-Import/Delete, Session-Lock, schwierigkeit, poolId.
+
+---
+
+## Session 67a — Progressive Loading: Fragenbank Performance (06.04.2026)
 
 ### Stand
 Branch `feature/progressive-loading`. tsc ✅ | 193 Tests ✅ | Build ✅.
