@@ -233,7 +233,7 @@ export function erzeugeSnapshot(poolFrage: PoolFrage): PoolFrageSnapshot {
  * @param poolMeta   - Pool-Metadaten (id, title, fach)
  * @param topics     - Topic-Map für Thema-Lookup
  * @param lernzielIds - Zugeordnete Lernziel-IDs (vom Caller)
- * @returns          Fertige Frage im Prüfungstool-Format
+ * @returns          Fertige Frage im ExamLab-Format
  */
 export function konvertierePoolFrage(
   poolFrage: PoolFrage,

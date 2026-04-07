@@ -16,7 +16,7 @@ export const einrichtungsUebung: PruefungsConfig = {
   zeitModus: 'open-end',
   gesamtpunkte: 59,
 
-  erlaubteKlasse: 'sf-wr-27a28f',
+  erlaubteKlasse: '',  // Offen für alle Klassen
 
   sebErforderlich: false,
   kontrollStufe: 'locker',

@@ -9,7 +9,7 @@ import AdminDashboard from '../ueben/admin/AdminDashboard'
 const LP_AUTH_KEY = 'ueben-auth'
 
 /**
- * Wrapper der die Üben-Stores mit dem Prüfungstool-User initialisiert
+ * Wrapper der die Üben-Stores mit dem ExamLab-User initialisiert
  * und das AdminDashboard rendert.
  *
  * Schritte:

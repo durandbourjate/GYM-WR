@@ -5076,7 +5076,7 @@ function generiereUndSendeFeedbackEndpoint(body) {
         GmailApp.sendEmail(susEmail,
           'Feedback: ' + configRow.titel,
           'Im Anhang findest du das Feedback zu deiner Prüfung «' + configRow.titel + '».\n\nBei Fragen wende dich bitte an deine Lehrperson.',
-          { attachments: [blob], name: 'Prüfungsplattform WR — Gymnasium Hofwil' }
+          { attachments: [blob], name: 'ExamLab — Gymnasium Hofwil' }
         );
 
         erfolg.push(susEmail);
@@ -5125,7 +5125,7 @@ function buildFeedbackHtml(configRow, zeilen, susName) {
     '<div class="total">Gesamtpunkte: ' + totalPunkte + ' / ' + totalMax + ' · Note: ' + note.toFixed(1) + '</div>' +
     '<h2>Einzelbewertungen</h2>' +
     fragenHtml +
-    '<p style="color:#94a3b8;font-size:11px;margin-top:20px;text-align:center">Generiert von der Prüfungsplattform WR — Gymnasium Hofwil</p>' +
+    '<p style="color:#94a3b8;font-size:11px;margin-top:20px;text-align:center">Generiert von ExamLab — Gymnasium Hofwil</p>' +
     '</body></html>';
 }
 
@@ -6788,7 +6788,7 @@ function lernplattformEntfernen(body) {
 // ============================================================
 
 /**
- * Fragen laden aus der GEMEINSAMEN Fragenbank (gleiche Datenquelle wie Prüfungstool).
+ * Fragen laden aus der GEMEINSAMEN Fragenbank (gleiche Datenquelle wie ExamLab).
  * Liest alle Fragen aus FRAGENBANK_ID, Tabs: VWL, BWL, Recht, Informatik.
  * Gibt Fragen im kanonischen shared-Format zurück (fragetext, fachbereich, bloom, typDaten).
  */
@@ -6806,7 +6806,7 @@ function lernplattformLadeFragen(body) {
     return lernplattformLadeFragenAusGruppenSheet_(gruppe);
   }
 
-  // Gym-Gruppen: Gemeinsame Fragenbank (wie Prüfungstool)
+  // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
   try {
     var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
     var alleFragen = [];
@@ -6820,7 +6820,7 @@ function lernplattformLadeFragen(body) {
       var daten = sheet.getDataRange().getValues();
       if (daten.length < 2) continue;
 
-      // Headers NICHT lowercasen — Prüfungstool-Sheet hat camelCase (typDaten, erstelltAm etc.)
+      // Headers NICHT lowercasen — ExamLab-Sheet hat camelCase (typDaten, erstelltAm etc.)
       var headers = daten[0].map(function(h) { return String(h).trim(); });
 
       for (var i = 1; i < daten.length; i++) {
@@ -6833,7 +6833,7 @@ function lernplattformLadeFragen(body) {
         }
         if (!row.id) continue;
 
-        // Frage im kanonischen Format parsen (wie Prüfungstool parseFrage)
+        // Frage im kanonischen Format parsen (wie ExamLab parseFrage)
         var frage = parseFrageKanonisch_(row, tabName);
         alleFragen.push(frage);
       }
@@ -6845,7 +6845,7 @@ function lernplattformLadeFragen(body) {
   }
 }
 
-/** Frage aus einer Sheet-Zeile im kanonischen Format parsen (shared mit Prüfungstool) */
+/** Frage aus einer Sheet-Zeile im kanonischen Format parsen (shared mit ExamLab) */
 function parseFrageKanonisch_(row, fachbereich) {
   // Fachbereich-Mapping anwenden (z.B. "Allgemein" → "Andere")
   var mappedFachbereich = FACHBEREICH_MAPPING[fachbereich] || fachbereich;
@@ -7108,7 +7108,7 @@ function lernplattformSpeichereFrage(body) {
     return speichereFrageInGruppenSheet_(gruppe, frage);
   }
 
-  // Gym-Gruppen: Gemeinsame Fragenbank (wie Prüfungstool)
+  // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
   try {
     var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
     var sheet = fragenbank.getSheetByName(fachbereich);
@@ -7118,7 +7118,7 @@ function lernplattformSpeichereFrage(body) {
     }
 
     var daten = sheet.getDataRange().getValues();
-    // Headers NICHT lowercasen — Prüfungstool-Sheet hat camelCase
+    // Headers NICHT lowercasen — ExamLab-Sheet hat camelCase
     var headers = daten[0].map(function(h) { return String(h).trim(); });
     var idIdx = headers.indexOf('id');
 
