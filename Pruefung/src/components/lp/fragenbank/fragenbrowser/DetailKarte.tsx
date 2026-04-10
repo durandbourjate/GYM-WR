@@ -64,6 +64,11 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
                 ✓ In Prüfung
               </span>
             )}
+            {(frage.lernzielIds?.length ?? 0) > 0 && (
+              <span className="text-xs px-1.5 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''} zugeordnet`}>
+                🏁 {frage.lernzielIds!.length}
+              </span>
+            )}
           </div>
 
           {/* Fragetext (gekürzt) */}

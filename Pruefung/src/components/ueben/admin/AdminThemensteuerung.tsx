@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useThemenSichtbarkeitStore } from '../../../store/ueben/themenSichtbarkeitStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import { useUebenAuthStore } from '../../../store/ueben/authStore'
+import { useUebenFortschrittStore } from '../../../store/ueben/fortschrittStore'
 import { uebenFragenAdapter } from '../../../adapters/ueben/appsScriptAdapter'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
 import { useUebenKontext } from '../../../hooks/ueben/useUebenKontext'
+import { LernzieleMiniModal } from '../LernzieleAkkordeon'
 import { MAX_AKTIVE_THEMEN } from '../../../types/ueben/themenSichtbarkeit'
 import type { ThemenStatus } from '../../../types/ueben/themenSichtbarkeit'
 import type { Frage } from '../../../types/ueben/fragen'
@@ -13,6 +15,7 @@ interface ThemaEintrag {
   fach: string
   thema: string
   anzahlFragen: number
+  anzahlLernziele: number
   unterthemen: { name: string; anzahl: number }[]
   status: ThemenStatus
 }
@@ -27,10 +30,15 @@ export default function AdminThemensteuerung() {
   const [filterFach, setFilterFach] = useState<string | null>(null)
   const [ausgeklappt, setAusgeklappt] = useState<Set<string>>(new Set())
   const [kopiert, setKopiert] = useState<string | null>(null)
+  const [lzModal, setLzModal] = useState<{ fach: string; thema: string } | null>(null)
+
+  // Lernziele
+  const { lernziele, ladeLernziele } = useUebenFortschrittStore()
 
   useEffect(() => {
     if (!aktiveGruppe) return
     ladeFreischaltungen(aktiveGruppe.id)
+    ladeLernziele(aktiveGruppe.id)
     const ladeFragen = async () => {
       setLaden(true)
       const fragen = await uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
@@ -38,7 +46,7 @@ export default function AdminThemensteuerung() {
       setLaden(false)
     }
     ladeFragen()
-  }, [aktiveGruppe, ladeFreischaltungen])
+  }, [aktiveGruppe, ladeFreischaltungen, ladeLernziele])
 
   const themen = useMemo(() => {
     const map: Record<string, ThemaEintrag> = {}
@@ -51,7 +59,8 @@ export default function AdminThemensteuerung() {
       const thema = f.thema || 'Allgemein'
       const key = `${fach}::${thema}`
       if (!map[key]) {
-        map[key] = { fach, thema, anzahlFragen: 0, unterthemen: [], status: getStatus(fach, thema) }
+        const lzAnzahl = lernziele.filter(lz => lz.aktiv !== false && lz.fach === fach && (lz.thema === thema || lz.thema?.includes(thema) || thema?.includes(lz.thema))).length
+        map[key] = { fach, thema, anzahlFragen: 0, anzahlLernziele: lzAnzahl, unterthemen: [], status: getStatus(fach, thema) }
       }
       map[key].anzahlFragen++
 
@@ -68,7 +77,7 @@ export default function AdminThemensteuerung() {
       if (diff !== 0) return diff
       return a.fach.localeCompare(b.fach) || a.thema.localeCompare(b.thema)
     })
-  }, [alleFragen, getStatus, freischaltungen])
+  }, [alleFragen, getStatus, freischaltungen, lernziele])
 
   const faecher = useMemo(() => [...new Set(themen.map(t => t.fach))].sort(), [themen])
   const gefilterteThemen = filterFach ? themen.filter(t => t.fach === filterFach) : themen
@@ -203,6 +212,22 @@ export default function AdminThemensteuerung() {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
+                  {/* Lernziele */}
+                  {eintrag.anzahlLernziele > 0 && (
+                    <button
+                      onClick={() => setLzModal({ fach: eintrag.fach, thema: eintrag.thema })}
+                      className="text-xs px-2 py-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 transition-colors"
+                      title={`${eintrag.anzahlLernziele} Lernziele`}
+                    >
+                      🏁 {eintrag.anzahlLernziele}
+                    </button>
+                  )}
+                  {eintrag.anzahlLernziele === 0 && (
+                    <span className="text-[10px] text-slate-300 dark:text-slate-600 px-2" title="Keine Lernziele definiert">
+                      —
+                    </span>
+                  )}
+
                   {/* Deep-Link kopieren */}
                   <button
                     onClick={() => kopiereLink(erzeugeDeepLink(eintrag.fach, eintrag.thema), key)}
@@ -328,6 +353,18 @@ export default function AdminThemensteuerung() {
           <p className="text-sm text-slate-400 text-center py-8">Keine Themen gefunden.</p>
         )}
       </div>
+
+      {/* Lernziele-Modal */}
+      {lzModal && (
+        <LernzieleMiniModal
+          thema={lzModal.thema}
+          fach={lzModal.fach}
+          lernziele={lernziele}
+          fortschritte={{}}
+          onSchliessen={() => setLzModal(null)}
+          onUeben={() => setLzModal(null)}
+        />
+      )}
     </div>
   )
 }

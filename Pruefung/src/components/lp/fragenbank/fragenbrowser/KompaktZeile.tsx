@@ -71,6 +71,13 @@ export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, o
         {frage.bloom} · {frage.punkte}P.
       </span>
 
+      {/* Lernziele */}
+      {(frage.lernzielIds?.length ?? 0) > 0 && (
+        <span className="text-[10px] px-1 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded shrink-0" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''}`}>
+          🏁{frage.lernzielIds!.length}
+        </span>
+      )}
+
       {/* Thema */}
       <span className="text-xs text-slate-600 dark:text-slate-300 truncate flex-1">
         {frage.thema}{frage.unterthema ? ` \u203A ${frage.unterthema}` : ''}

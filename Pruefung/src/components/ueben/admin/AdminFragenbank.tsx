@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
+import { useUebenFortschrittStore } from '../../../store/ueben/fortschrittStore'
 import { uebenFragenAdapter } from '../../../adapters/ueben/appsScriptAdapter'
 import type { Frage } from '../../../types/ueben/fragen'
 import { getFragetext } from '../../../utils/ueben/fragetext'
@@ -31,8 +32,10 @@ interface AdminFragenbankProps {
 
 export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = {}) {
   const { aktiveGruppe } = useUebenGruppenStore()
+  const { lernziele, ladeLernziele } = useUebenFortschrittStore()
   const [fragen, setFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(false)
+  const [filterLernziele, setFilterLernziele] = useState<'alle' | 'mit' | 'ohne'>('alle')
   const [fehler, setFehler] = useState<string | null>(null)
   const [editorOffen, setEditorOffen] = useState(false)
   const [aktiveFrage, setAktiveFrage] = useState<Frage | null>(null)
@@ -59,6 +62,14 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
   }, [aktiveGruppe])
 
   useEffect(() => { ladeFragen() }, [ladeFragen])
+  useEffect(() => { if (aktiveGruppe) ladeLernziele(aktiveGruppe.id) }, [aktiveGruppe, ladeLernziele])
+
+  // Lernziel-ID → Text Mapping für Chips
+  const lzMap = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const lz of lernziele) map.set(lz.id, lz.text)
+    return map
+  }, [lernziele])
 
   // Neue Frage erstellen
   function neueFrageErstellen() {
@@ -130,6 +141,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
       const unterthema = ((f as { unterthema?: string }).unterthema ?? '').toLowerCase()
       if (!text.includes(s) && !thema.includes(s) && !unterthema.includes(s)) return false
     }
+    if (filterLernziele === 'mit' && (!(f as { lernzielIds?: string[] }).lernzielIds?.length)) return false
+    if (filterLernziele === 'ohne' && ((f as { lernzielIds?: string[] }).lernzielIds?.length ?? 0) > 0) return false
     return true
   })
 
@@ -225,9 +238,21 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
               {typen.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           )}
-          {(filterFach || filterThema || filterUnterthema || filterTyp || suchtext) && (
+          {/* Lernziele-Filter */}
+          {lernziele.length > 0 && (
+            <select
+              value={filterLernziele}
+              onChange={(e) => setFilterLernziele(e.target.value as 'alle' | 'mit' | 'ohne')}
+              className="px-2 py-1 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-white"
+            >
+              <option value="alle">Lernziele</option>
+              <option value="mit">Mit Lernziele</option>
+              <option value="ohne">Ohne Lernziele</option>
+            </select>
+          )}
+          {(filterFach || filterThema || filterUnterthema || filterTyp || suchtext || filterLernziele !== 'alle') && (
             <button
-              onClick={() => { setFilterFach(''); setFilterThema(''); setFilterUnterthema(''); setFilterTyp(''); setSuchtext('') }}
+              onClick={() => { setFilterFach(''); setFilterThema(''); setFilterUnterthema(''); setFilterTyp(''); setSuchtext(''); setFilterLernziele('alle') }}
               className="px-2 py-1 text-xs text-red-500 hover:text-red-600 dark:text-red-400"
             >
               Filter zurücksetzen
@@ -291,6 +316,14 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
                     <span className="text-xs text-slate-400">
                       {'★'.repeat(frage.schwierigkeit ?? 2)}{'☆'.repeat(3 - (frage.schwierigkeit ?? 2))}
                     </span>
+                    {/* Lernziel-Chips */}
+                    {((frage as { lernzielIds?: string[] }).lernzielIds ?? []).length > 0 && (
+                      <span className="text-xs text-slate-400 dark:text-slate-500" title={
+                        ((frage as { lernzielIds?: string[] }).lernzielIds ?? []).map(id => lzMap.get(id) || id).join('\n')
+                      }>
+                        🏁 {(frage as { lernzielIds?: string[] }).lernzielIds!.length}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button

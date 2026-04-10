@@ -16,6 +16,7 @@ import KompaktZeile from './fragenbrowser/KompaktZeile.tsx'
 import DetailKarte from './fragenbrowser/DetailKarte.tsx'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
+import ExcelImport from './ExcelImport.tsx'
 import BatchExportDialog from '../korrektur/BatchExportDialog.tsx'
 
 interface Props {
@@ -80,6 +81,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigEditor, setZeigEditor] = useState(false)
   const [editFrage, setEditFrage] = useState<Frage | null>(null)
   const [zeigImport, setZeigImport] = useState(false)
+  const [zeigExcelImport, setZeigExcelImport] = useState(false)
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
   const [loeschKandidat, setLoeschKandidat] = useState<{ id: string; fachbereich: string; typ: string; fragetext?: string } | null>(null)
   const [detailLaden, setDetailLaden] = useState(false)
@@ -279,6 +281,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           onNeueFrageErstellen={() => { setEditFrage(null); setZeigEditor(true) }}
           onBatchExport={() => setZeigBatchExport(true)}
           onImport={() => setZeigImport(true)}
+          onExcelImport={() => setZeigExcelImport(true)}
           onSchliessen={onSchliessen}
           inline
           listeRef={listeRef}
@@ -428,6 +431,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           />
         )}
 
+        {/* Excel-Import Overlay */}
+        {zeigExcelImport && (
+          <ExcelImport
+            onImportiert={(fragen) => { handleImportFragen(fragen); setZeigExcelImport(false) }}
+            onSchliessen={() => setZeigExcelImport(false)}
+            bestehendeIds={new Set(alleFragen.map(f => f.id))}
+          />
+        )}
+
         {/* Batch-Export Overlay */}
         {zeigBatchExport && (
           <BatchExportDialog
@@ -501,6 +513,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           onNeueFrageErstellen={() => { setEditFrage(null); setZeigEditor(true) }}
           onBatchExport={() => setZeigBatchExport(true)}
           onImport={() => setZeigImport(true)}
+          onExcelImport={() => setZeigExcelImport(true)}
           onSchliessen={onSchliessen}
           zielPruefungTitel={zielPruefungTitel}
           zielAbschnittTitel={zielAbschnittTitel}
@@ -652,6 +665,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         <FragenImport
           onImportiert={handleImportFragen}
           onSchliessen={() => setZeigImport(false)}
+        />
+      )}
+
+      {/* Excel-Import Overlay */}
+      {zeigExcelImport && (
+        <ExcelImport
+          onImportiert={(fragen) => { handleImportFragen(fragen); setZeigExcelImport(false) }}
+          onSchliessen={() => setZeigExcelImport(false)}
+          bestehendeIds={new Set(alleFragen.map(f => f.id))}
         />
       )}
 

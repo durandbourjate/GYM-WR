@@ -6,6 +6,65 @@
 
 ---
 
+## Session 79 — Excel-Import + Lernziele überall (10.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Excel-Import (IMPROVEMENT_PLAN 6D)** | |
+| E1 | `excelImport.ts` (neu, ~280 Z.): Parser-Utility (XLSX → Frage[], Validierung, Spalten-Mapping, Vorlage-Export) | excelImport.ts |
+| E2 | `ExcelImport.tsx` (neu, ~310 Z.): Import-Dialog (Drag&Drop Upload, Sheet-Auswahl, Vorschau mit Validierung, Duplikat-Erkennung, Fortschrittsbalken) | ExcelImport.tsx |
+| E3 | Button "Excel-Import" in FragenBrowserHeader (neben "Import via KI") | FragenBrowserHeader.tsx |
+| E4 | Verdrahtung in FragenBrowser: `zeigExcelImport` State + ExcelImport-Overlay (inline + overlay) | FragenBrowser.tsx |
+| **Lernziele überall (IMPROVEMENT_PLAN 6F)** | |
+| L1 | AdminThemensteuerung: 🏁 Button pro Thema mit Lernziele-Anzahl, LernzieleMiniModal-Integration | AdminThemensteuerung.tsx |
+| L2 | AdminThemensteuerung: Lernziele laden beim Mount via `fortschrittStore.ladeLernziele()` | AdminThemensteuerung.tsx |
+| L3 | AdminFragenbank: Lernziel-Chips (🏁 N) pro Frage, Lernziele-Filter (Alle/Mit/Ohne), lzMap-Tooltip | AdminFragenbank.tsx |
+| L4 | DetailKarte: 🏁-Badge mit Anzahl zugeordneter Lernziele (violett) | DetailKarte.tsx |
+| L5 | KompaktZeile: 🏁-Badge mit Anzahl zugeordneter Lernziele (violett) | KompaktZeile.tsx |
+
+### Neue Dateien (2)
+- `src/utils/excelImport.ts` — Excel-Parser + Template-Export
+- `src/components/lp/fragenbank/ExcelImport.tsx` — Import-Dialog
+
+### Geänderte Dateien (6)
+- `src/components/lp/fragenbank/FragenBrowser.tsx` — ExcelImport-Import + State + Overlay
+- `src/components/lp/fragenbank/fragenbrowser/FragenBrowserHeader.tsx` — onExcelImport Prop + Button
+- `src/components/lp/fragenbank/fragenbrowser/DetailKarte.tsx` — Lernziel-Badge
+- `src/components/lp/fragenbank/fragenbrowser/KompaktZeile.tsx` — Lernziel-Badge
+- `src/components/ueben/admin/AdminThemensteuerung.tsx` — Lernziele laden + 🏁 Button + Modal
+- `src/components/ueben/admin/AdminFragenbank.tsx` — Lernziele laden + Filter + Chips
+
+### Verifiziert
+- ✅ tsc -b grün (0 Errors)
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ⬜ Browser-Test: Excel-Import-Dialog + Vorlage + Re-Import
+- ⬜ Browser-Test: 🏁 Buttons in AdminThemensteuerung sichtbar
+- ⬜ Browser-Test: Lernziel-Filter in AdminFragenbank
+- ⬜ Browser-Test: Lernziel-Badges in Fragensammlung (Detail + Kompakt)
+
+### IMPROVEMENT_PLAN Status
+- ✅ Session 1–5: Komplett erledigt
+- ✅ Session 6A–C, E: Erledigt (Session 78)
+- ✅ Session 6D: Excel-Import (diese Session)
+- ✅ Session 6F: Lernziele überall (diese Session)
+- **IMPROVEMENT_PLAN vollständig abgeschlossen.**
+
+### Offen (Folge-Sessions)
+- Kurse/Fächer/Fachschaften CRUD im Admin-Tab (aktuell nur Anzeige)
+- LP-Profil automatisch laden beim Login
+- Stammdaten-Tab initial befüllen
+- LP-Favoriten (⭐-Button, Favoriten-Dropdown)
+- Store-Migration LPStartseite useState → lpNavigationStore
+- Prüfung/Übung bearbeiten: "Fachbereiche" → "Fach", Gesamtpunkte auto
+
+---
+
 ## Session 78 — Performance + Problem-Melden (10.04.2026)
 
 ### Stand
