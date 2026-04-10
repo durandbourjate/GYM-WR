@@ -33,6 +33,12 @@ export async function schreibePoolAenderung(
   return postJson('schreibePoolAenderung', { email, poolDatei, aenderungen })
 }
 
+/** Einzelnes Lernziel erstellen — gibt die neue ID zurück, oder null bei Fehler */
+export async function speichereLernziel(email: string, lernziel: Omit<Lernziel, 'id'>): Promise<string | null> {
+  const result = await postJson<{ erfolg: boolean; id: string }>('speichereLernziel', { email, lernziel })
+  return result?.id ?? null
+}
+
 /** Lernziele laden (optional nach Fach gefiltert) — gibt [] statt null zurück */
 export async function ladeLernziele(email: string, fach?: string): Promise<Lernziel[]> {
   if (!APPS_SCRIPT_URL) return []

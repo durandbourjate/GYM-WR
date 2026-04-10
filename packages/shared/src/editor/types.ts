@@ -56,4 +56,7 @@ export interface EditorServices {
 
   /** Lernziele für ein Gefäss/Fachbereich laden. Null = nicht verfügbar. */
   ladeLernziele?: (gefaess: string, fachbereich: string) => Promise<Lernziel[]>
+
+  /** Neues Lernziel erstellen. Gibt die neue ID zurück, oder null bei Fehler. */
+  speichereLernziel?: (lernziel: Omit<Lernziel, 'id'>) => Promise<string | null>
 }

@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
 import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent } from '../../../services/uploadApi.ts'
-import { ladeLernziele as apiLadeLernziele } from '../../../services/poolApi.ts'
+import { ladeLernziele as apiLadeLernziele, speichereLernziel as apiSpeichereLernziel } from '../../../services/poolApi.ts'
 import { istKonfiguriert } from '../../../services/apiClient.ts'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
@@ -88,6 +88,10 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     ladeLernziele: async (_gefaess: string, fachbereich: string) => {
       if (!user) return []
       return apiLadeLernziele(user.email, fachbereich)
+    },
+    speichereLernziel: async (lernziel) => {
+      if (!user) return null
+      return apiSpeichereLernziel(user.email, lernziel)
     },
   }), [user])
 

@@ -478,9 +478,33 @@ export default function SharedFragenEditor({
 
   // Lernziel-Generierung + Zuordnung
   const [lernziele, setLernziele] = useState<Lernziel[]>([])
+  const [lernzieleLadend, setLernzieleLadend] = useState(false)
   const [zeigLernzielDialog, setZeigLernzielDialog] = useState(false)
   const [gewaehlterLernzielId, setGewaehlterLernzielId] = useState('')
   const [lernzielIds, setLernzielIds] = useState<string[]>(frage?.lernzielIds ?? [])
+
+  // Auto-Load: Lernziele beim Editor-Öffnen laden
+  useEffect(() => {
+    if (!services.ladeLernziele || lernziele.length > 0) return
+    let abgebrochen = false
+    setLernzieleLadend(true)
+    services.ladeLernziele(config.benutzer?.email ?? '', fachbereich)
+      .then(lz => { if (!abgebrochen && lz) setLernziele(lz) })
+      .catch(e => console.warn('[SharedFragenEditor] Lernziele laden fehlgeschlagen:', e))
+      .finally(() => { if (!abgebrochen) setLernzieleLadend(false) })
+    return () => { abgebrochen = true }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Nur einmal beim Mount laden
+
+  // Neues Lernziel erstellen + lokal hinzufügen
+  async function handleNeuLernzielErstellen(lernziel: Omit<Lernziel, 'id'>): Promise<string | null> {
+    if (!services.speichereLernziel) return null
+    const id = await services.speichereLernziel(lernziel)
+    if (id) {
+      setLernziele(prev => [...prev, { ...lernziel, id } as Lernziel])
+    }
+    return id
+  }
 
   const panelRef = useRef<HTMLDivElement>(null)
   const fragetextRef = useRef<HTMLTextAreaElement>(null)
@@ -715,6 +739,8 @@ export default function SharedFragenEditor({
             zeigLernzielDialog={zeigLernzielDialog} setZeigLernzielDialog={setZeigLernzielDialog}
             gewaehlterLernzielId={gewaehlterLernzielId} setGewaehlterLernzielId={setGewaehlterLernzielId}
             lernzielIds={lernzielIds} setLernzielIds={setLernzielIds}
+            onNeuLernzielErstellen={services.speichereLernziel ? handleNeuLernzielErstellen : undefined}
+            lernzieleLadend={lernzieleLadend}
           />
 
           {/* Fragetyp wählen — kategorisiert */}

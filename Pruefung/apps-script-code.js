@@ -839,6 +839,8 @@ function doPost(e) {
       return importiereLehrplanzieleEndpoint(body);
     case 'ladeLernziele':
       return ladeLernziele(body);
+    case 'speichereLernziel':
+      return speichereLernzielEndpoint(body);
     case 'schreibePoolAenderung':
       return schreibePoolAenderung(body);
     case 'beendePruefung':
@@ -4017,6 +4019,40 @@ function ladeLernziele(body) {
     return jsonResponse({ lernziele: lernziele });
   } catch (error) {
     return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Einzelnes Lernziel erstellen (LP-only).
+ * Schreibt in die zentrale Lehrplan-DB (LEHRPLAN_SHEET_ID → Lehrplanziele).
+ */
+function speichereLernzielEndpoint(body) {
+  try {
+    var email = body.email;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var lz = body.lernziel;
+    if (!lz || !lz.text || !lz.fach) {
+      return jsonResponse({ error: 'Lernziel-Text und Fach sind Pflichtfelder' });
+    }
+
+    var ss = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
+    var sheet = ss.getSheetByName('Lehrplanziele');
+    if (!sheet) {
+      sheet = ss.insertSheet('Lehrplanziele');
+      sheet.getRange(1, 1, 1, 9).setValues([['id', 'ebene', 'parentId', 'fach', 'gefaess', 'semester', 'thema', 'text', 'bloom']]);
+    }
+
+    // ID generieren: lz-{fach}-{timestamp}
+    var id = 'lz-' + (lz.fach || 'allg').toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Date.now();
+    var rowValues = [id, 'fein', '', lz.fach || '', '', '', lz.thema || '', lz.text, lz.bloom || 'K1'];
+    sheet.appendRow(rowValues);
+
+    auditLog_('speichereLernziel:CREATE', email, { lernzielId: id, fach: lz.fach });
+    return jsonResponse({ erfolg: true, id: id });
+  } catch (e) {
+    return jsonResponse({ error: 'Lernziel speichern: ' + e.message });
   }
 }
 
