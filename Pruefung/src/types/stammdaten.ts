@@ -36,12 +36,22 @@ export interface Stammdaten {
   fachschaften: FachschaftDefinition[]
 }
 
+/** Favorisierter App-Ort (Screen + Parameter für Direktlinks) */
+export interface AppOrt {
+  id: string                          // Unique ID (generiert)
+  titel: string                       // z.B. "SF WR 29c — Analyse"
+  screen: 'pruefung' | 'uebung' | 'fragensammlung'
+  params: Record<string, string>      // z.B. { configId: 'abc', tab: 'analyse' }
+  erstelltAm: string                  // ISO timestamp
+}
+
 /** LP-Profil: Eigene Kurs-/Fachzuordnung */
 export interface LPProfil {
   email: string
   kursIds: string[]
   fachschaftIds: string[]
   gefaesse: string[]
+  favoriten?: AppOrt[]                // Account-verknüpfte Favoriten
 }
 
 /** Default-Stammdaten (Gym Hofwil) — Fallback wenn Backend nicht erreichbar */

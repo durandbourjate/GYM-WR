@@ -129,14 +129,16 @@ export default function LPStartseite() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [formativeConfigs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus])
 
-  // Favoriten aus dem Store
+  // Favoriten aus dem Store (AppOrt[])
   const favoriten = useLPNavigationStore(s => s.favoriten)
+  const aktiveConfigId = useLPNavigationStore(s => s.aktiveConfigId)
 
   // Favoriten-Configs (nur existierende IDs, nach Datum sortiert)
+  const favoritenConfigIds = useMemo(() => new Set(favoriten.map(f => f.params.configId).filter(Boolean)), [favoriten])
   const favoritenConfigs = useMemo(() => {
-    if (favoriten.length === 0) return []
-    return configs.filter(c => favoriten.includes(c.id)).sort((a, b) => b.datum.localeCompare(a.datum))
-  }, [configs, favoriten])
+    if (favoritenConfigIds.size === 0) return []
+    return configs.filter(c => favoritenConfigIds.has(c.id)).sort((a, b) => b.datum.localeCompare(a.datum))
+  }, [configs, favoritenConfigIds])
 
   // Favoriten-Prüfungen und -Übungen getrennt
   const favoritenPruefungen = useMemo(() => favoritenConfigs.filter(c => c.typ !== 'formativ'), [favoritenConfigs])
@@ -218,7 +220,28 @@ export default function LPStartseite() {
       // Stammdaten + LP-Profil parallel laden (Fire-and-forget, blockiert nicht)
       const { ladeStammdaten, ladeLPProfil } = useStammdatenStore.getState()
       ladeStammdaten(user.email)
-      ladeLPProfil(user.email)
+      ladeLPProfil(user.email).then(() => {
+        // Backend-Favoriten in den Navigation-Store übernehmen
+        const profil = useStammdatenStore.getState().lpProfil
+        if (profil?.favoriten && profil.favoriten.length > 0) {
+          const { favoriten: lokal, setFavoriten } = useLPNavigationStore.getState()
+          // Backend gewinnt, aber lokal hinzugefügte (die noch nicht gesynct wurden) mergen
+          const backendIds = new Set(profil.favoriten.map(f => f.id))
+          const nurLokal = lokal.filter(f => !backendIds.has(f.id))
+          setFavoriten([...profil.favoriten, ...nurLokal])
+        }
+
+        // Sync-Funktion verdrahten: Bei jeder Favoriten-Änderung ins Backend schreiben
+        useLPNavigationStore.setState({
+          favoritenSyncMitBackend: () => {
+            const aktuellesProfil = useStammdatenStore.getState().lpProfil
+            if (!aktuellesProfil || !user) return
+            const aktuelleFavoriten = useLPNavigationStore.getState().favoriten
+            const { speichereLPProfil } = useStammdatenStore.getState()
+            speichereLPProfil({ ...aktuellesProfil, favoriten: aktuelleFavoriten })
+          },
+        })
+      })
 
       // Configs, Tracker-Daten und Fragenbank parallel laden
       const fragenbankLade = useFragenbankStore.getState().lade(user.email)
@@ -273,6 +296,31 @@ export default function LPStartseite() {
     lade()
   }, [user, istDemoModus])
 
+  // Hash-Router: Beim Mount und bei hashchange den State wiederherstellen
+  useEffect(() => {
+    const { navigiereZuHash } = useLPNavigationStore.getState()
+    // Initiales Parsen
+    if (window.location.hash) {
+      navigiereZuHash(window.location.hash)
+    }
+    // hashchange-Listener (Browser Back/Forward)
+    function handleHashChange(): void {
+      navigiereZuHash(window.location.hash)
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  // Hash-Router: Config via aktiveConfigId öffnen (nachdem Configs geladen)
+  useEffect(() => {
+    if (ladeStatus !== 'fertig' || !aktiveConfigId || ansicht === 'composer') return
+    const config = configs.find(c => c.id === aktiveConfigId)
+    if (config) {
+      setEditConfig(config)
+      navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
+    }
+  }, [ladeStatus, aktiveConfigId, configs])
+
   function handleNeue(): void {
     setEditConfig(null)
     navigiereZuComposer('Neue Prüfung')
@@ -286,7 +334,7 @@ export default function LPStartseite() {
 
   function handleBearbeiten(config: PruefungsConfig): void {
     setEditConfig(config)
-    navigiereZuComposer(config.titel || 'Bearbeiten')
+    navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
   }
 
   function handleDuplizieren(config: PruefungsConfig): void {
@@ -828,12 +876,13 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
   onDuplizieren: (c: PruefungsConfig) => void
   trackerSummary?: TrackerPruefungSummary
 }) {
-  const toggleFavorit = useLPNavigationStore(s => s.toggleFavorit)
-  const favoriten = useLPNavigationStore(s => s.favoriten)
-  const istFav = favoriten.includes(c.id)
+  const toggleFavoritById = useLPNavigationStore(s => s.toggleFavoritById)
+  const istFavoritFn = useLPNavigationStore(s => s.istFavorit)
+  const istFav = istFavoritFn(c.id)
   const [linkKopiert, setLinkKopiert] = useState(false)
   const kopiereLink = async () => {
-    const url = `${window.location.origin}${window.location.pathname}?id=${c.id}`
+    const screen = c.typ === 'formativ' ? 'uebung' : 'pruefung'
+    const url = `${window.location.origin}${window.location.pathname}#/${screen}/${c.id}`
     try { await navigator.clipboard.writeText(url) } catch {
       const input = document.createElement('input')
       input.value = url; document.body.appendChild(input); input.select()
@@ -845,7 +894,7 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 flex items-center justify-between gap-4">
       <div className="flex items-start gap-2 flex-1 min-w-0">
         <button
-          onClick={() => toggleFavorit(c.id)}
+          onClick={() => toggleFavoritById(c.id)}
           className="mt-0.5 text-lg leading-none cursor-pointer hover:scale-110 transition-transform shrink-0"
           title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
         >

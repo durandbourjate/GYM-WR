@@ -181,6 +181,14 @@ function HilfeEinstieg() {
         <strong>Nachverfolgen</strong> — Im Tracker-Tab sehen Sie: Wer hat gefehlt? Wie viele Noten gibt es pro Kurs? Fragen-Statistiken zeigen Lösungsquoten über alle Durchführungen.
       </Schritt>
 
+      <Untertitel>Favoriten & Direktlinks</Untertitel>
+      <Text>
+        Markieren Sie häufig verwendete Prüfungen oder Übungen mit dem <strong>☆-Button</strong> auf jeder Karte. Favoriten erscheinen oben in der jeweiligen Liste und sind über das <strong>⭐-Dropdown</strong> in der Kopfzeile jederzeit erreichbar.
+      </Text>
+      <Text>
+        Favoriten sind <strong>Account-verknüpft</strong> — sie werden automatisch mit Ihrem LP-Profil im Backend gespeichert und stehen auf allen Geräten zur Verfügung. Im Dropdown können Sie über das 🔗-Icon einen <strong>Direktlink</strong> kopieren, der direkt zur Prüfung oder Übung führt. Diese Links können Sie z.B. in Ihrem Browser als Lesezeichen speichern oder an Kolleginnen und Kollegen weitergeben.
+      </Text>
+
       <Untertitel>Demo-Modus</Untertitel>
       <Text>
         Ohne Backend-Konfiguration läuft die App im Demo-Modus mit Beispieldaten. Sie können alle Funktionen ausprobieren — Änderungen werden aber nicht gespeichert. Klicken Sie auf dem Login-Screen auf &laquo;Als Lehrperson&raquo; oder &laquo;Als Schüler/in&raquo; unter &laquo;Demo ohne Login starten&raquo;.

@@ -6,6 +6,61 @@
 
 ---
 
+## Session 86 — Block G2: Favoriten Account-verknüpft + Direktlinks (10.04.2026)
+
+### Stand
+Branch `feature/favoriten-g2`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| G2-1 | **AppOrt-Datenmodell:** Interface mit id, titel, screen, params, erstelltAm | `src/types/stammdaten.ts` |
+| G2-2 | **LPProfil erweitert:** `favoriten?: AppOrt[]` Feld (backwards-kompatibel) | `src/types/stammdaten.ts` |
+| G2-3 | **Navigation Store umgebaut:** `favoriten: AppOrt[]`, `toggleFavoritById()`, `istFavorit()`, Backend-Sync-Hook, Hash-Router (`navigiereZuHash`, `aktualisiereHash`, `bauHash`) | `src/store/lpNavigationStore.ts` |
+| G2-4 | **Migration:** Alte `string[]`-Favoriten in localStorage werden automatisch zu `AppOrt[]` konvertiert | `src/store/lpNavigationStore.ts` |
+| G2-5 | **Hash-Router:** URL-Schema `#/pruefung/id`, `#/uebung/id`, `#/fragensammlung`, `#/pruefung/tracker`. Browser Back/Forward funktioniert, Hash wird bei Navigation aktualisiert | `src/components/lp/LPStartseite.tsx` |
+| G2-6 | **Backend-Sync:** Nach Login werden Backend-Favoriten aus LP-Profil geladen + lokal gemergt. Jede Änderung wird async ins LP-Profil zurückgeschrieben | `src/components/lp/LPStartseite.tsx` |
+| G2-7 | **Favoriten-Dropdown:** ⭐-Button im Header, Dropdown mit allen Favoriten, Link-kopieren (🔗), Entfernen (✕), Klick navigiert direkt | `src/components/lp/LPHeader.tsx` |
+| G2-8 | **Direktlinks in Karten:** `kopiereLink` nutzt Hash-URLs (`#/pruefung/id`) statt Query-Parameter (`?id=`) | `src/components/lp/LPStartseite.tsx` |
+| G2-9 | **Hilfe aktualisiert:** Neuer Abschnitt "Favoriten & Direktlinks" in HilfeSeite | `src/components/lp/HilfeSeite.tsx` |
+
+### Geänderte Dateien (5)
+- `src/types/stammdaten.ts` — AppOrt Interface + favoriten? in LPProfil
+- `src/store/lpNavigationStore.ts` — Komplett umgebaut (AppOrt[], Hash-Router, Backend-Sync)
+- `src/components/lp/LPStartseite.tsx` — Hash-Router-Init, Backend-Sync, PruefungsKarte angepasst
+- `src/components/lp/LPHeader.tsx` — FavoritenDropdown-Komponente hinzugefügt
+- `src/components/lp/HilfeSeite.tsx` — Favoriten & Direktlinks Abschnitt
+
+### URL-Schema
+```
+#/pruefung                    → Dashboard Prüfen
+#/pruefung/tracker            → Analyse-Tab
+#/pruefung/{configId}         → Composer für Prüfung
+#/uebung                     → Dashboard Üben
+#/uebung/durchfuehren        → Durchführung-Tab
+#/uebung/analyse             → Analyse-Tab
+#/uebung/{configId}          → Composer für Übung
+#/fragensammlung              → Fragensammlung-Tab
+```
+
+### Verifiziert
+- ✅ tsc -b grün
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ✅ Preview: ⭐-Button im Header mit Tooltip "Favoriten (N)"
+- ✅ Preview: ☆ auf Karte klicken → Favorit gesetzt, ⭐ FAVORITEN-Sektion erscheint
+- ✅ Preview: Dropdown öffnet mit Favoriten-Einträgen (📋 + Titel)
+- ✅ Preview: Keine Konsolen-Fehler
+- ⬜ Browser-Test mit echtem Login: Backend-Sync (Favoriten in LP-Profil gespeichert)
+- ⬜ Browser-Test: Direktlink kopieren + in neuem Tab öffnen → Config öffnet
+- ⬜ Browser-Test: Favoriten nach Re-Login noch vorhanden (Backend-Persistenz)
+
+### Ausstehend
+- Alle Feature-Blöcke (A–G2) abgeschlossen. Nur noch Browser-Tests ausstehend.
+
+---
+
 ## Session 85 — Block E: LernzielWähler (10.04.2026)
 
 ### Stand
@@ -45,7 +100,7 @@ Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 - ⬜ Browser-Test: Neues Lernziel erstellen + Backend-Speicherung
 
 ### Ausstehend (Folge-Sessions)
-- **Block G2:** Favoriten Account-verknüpft + Direktlinks (eigene Session)
+- ~~**Block G2:** Favoriten Account-verknüpft + Direktlinks~~ ✅ Session 86
 
 ---
 

@@ -34,6 +34,7 @@ Digitale Prüfungs- und Übungsplattform mit drei Bereichen: **Prüfen** | **Üb
 - **Prüfen:** 4-Phasen-Workflow, Kurs-basierte Auswahl, Live-Monitoring, KI-Korrektur, Soft-Lockdown (4 Stufen), SEB-Integration, Multi-Prüfungs-Dashboard
 - **Üben:** Formative Übungen ohne Punkte/Noten, SuS-Selbststudium mit Mastery-System (4 Stufen), Gruppenbasiert
 - **Fragensammlung:** Zentrale Fragenverwaltung mit Fach/Thema/Unterthema-Filter, Pool-Sync (bidirektional, 27 Übungspools)
+- **Favoriten & Direktlinks:** Account-verknüpfte Favoriten (Backend-Persistenz), Hash-basierte Direktlinks (#/pruefung/id), Dropdown mit Schnellzugriff
 - KI-Assistent, Bewertungsraster mit Niveaustufen, Excel-Export, SuS-PDFs
 - Light/Dark Mode (2-Stufen-Toggle: System ↔ manuell)
 - Backend: Google Apps Script + Google Sheets + Google Drive
