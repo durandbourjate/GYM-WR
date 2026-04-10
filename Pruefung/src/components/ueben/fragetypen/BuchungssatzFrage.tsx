@@ -2,8 +2,7 @@ import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
 import type { BuchungssatzFrage as BuchungssatzFrageTyp, BuchungssatzZeile } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
-import KontenSelect from './shared/KontenSelect'
-import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
+import KontenSelect from '../../shared/KontenSelect.tsx'
 
 interface Zeile {
   soll: string
@@ -18,8 +17,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
 
   const buchungen = bsFrage.buchungen || []
   const kontenauswahl = bsFrage.kontenauswahl
-  // Konten-Liste für KontenSelect aus kontenauswahl extrahieren
-  const konten = normalizeKonten(kontenauswahl?.konten || [])
+  // Konten-Konfiguration für KontenSelect (shared: nutzt KMU-Kontenrahmen)
   const anzahlKorrekt = buchungen.length || 1
 
   const [zeilen, setZeilen] = useState<Zeile[]>(
@@ -76,11 +74,11 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
         return (
           <div key={i} className="grid grid-cols-[1fr_auto_1fr_100px_auto] gap-2 items-center">
             <div className={feedbackSichtbar ? (sollOk ? 'ring-2 ring-green-400 rounded-lg' : 'ring-2 ring-red-400 rounded-lg') : ''}>
-              <KontenSelect konten={konten} value={z.soll} onChange={(v) => updateZeile(i, 'soll', v)} disabled={disabled} placeholder="Soll" />
+              <KontenSelect config={kontenauswahl} value={z.soll} onChange={(v) => updateZeile(i, 'soll', v)} disabled={disabled} placeholder="Soll" />
             </div>
             <span className="text-slate-400 text-sm text-center">an</span>
             <div className={feedbackSichtbar ? (habenOk ? 'ring-2 ring-green-400 rounded-lg' : 'ring-2 ring-red-400 rounded-lg') : ''}>
-              <KontenSelect konten={konten} value={z.haben} onChange={(v) => updateZeile(i, 'haben', v)} disabled={disabled} placeholder="Haben" />
+              <KontenSelect config={kontenauswahl} value={z.haben} onChange={(v) => updateZeile(i, 'haben', v)} disabled={disabled} placeholder="Haben" />
             </div>
             <input
               type="number"

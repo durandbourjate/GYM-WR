@@ -2,8 +2,7 @@ import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
 import type { KontenbestimmungFrage as KontenbestimmungFrageTyp } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
-import KontenSelect from './shared/KontenSelect'
-import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
+import KontenSelect from '../../shared/KontenSelect.tsx'
 
 interface ZuordnungState {
   konto: string
@@ -16,7 +15,6 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
   const kbFrage = frage as KontenbestimmungFrageTyp
 
   const kontenauswahl = kbFrage.kontenauswahl
-  const konten = normalizeKonten(kontenauswahl?.konten || [])
   const aufgaben = kbFrage.aufgaben || []
 
   const [zuordnungen, setZuordnungen] = useState<ZuordnungState[][]>(() =>
@@ -65,7 +63,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
               return (
                 <div key={zi} className="flex gap-2 items-center">
                   <div className={`flex-1 ${feedbackSichtbar ? (kontoOk ? 'ring-2 ring-green-400 rounded-lg' : 'ring-2 ring-red-400 rounded-lg') : ''}`}>
-                    <KontenSelect konten={konten} value={z.konto} onChange={(v) => updateZuordnung(ai, zi, 'konto', v)} disabled={disabled} />
+                    <KontenSelect config={kontenauswahl} value={z.konto} onChange={(v) => updateZuordnung(ai, zi, 'konto', v)} disabled={disabled} />
                   </div>
                   <select
                     value={z.seite}

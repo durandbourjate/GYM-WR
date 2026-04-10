@@ -22,7 +22,12 @@ export function normalizeKonten(konten: unknown[]): { nr: string; name: string }
 export function normalizeLabels(labels: unknown[]): string[] {
   return (labels || []).map(l => {
     if (typeof l === 'string') return l
-    if (l && typeof l === 'object' && 'text' in l) return String((l as { text: string }).text)
+    if (l && typeof l === 'object') {
+      const obj = l as Record<string, unknown>
+      // Pool-Daten können {text, id, zone} oder {name} enthalten
+      if ('text' in obj) return String(obj.text)
+      if ('name' in obj) return String(obj.name)
+    }
     return String(l)
   })
 }

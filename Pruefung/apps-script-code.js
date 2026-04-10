@@ -7296,6 +7296,12 @@ function lernplattformSpeichereFrage(body) {
     if (!frage.erstelltAm) frage.erstelltAm = frage.geaendertAm;
     if (!frage.version) frage.version = 1;
 
+    // typDaten korrekt berechnen (ExamLab-Format hat kein typDaten-Feld,
+    // aber die Sheet-Spalte braucht es für parseFrageKanonisch_)
+    if (!frage.typDaten && frage.typ) {
+      frage.typDaten = JSON.stringify(getTypDaten(frage));
+    }
+
     // Bestehende Zeile suchen
     var gefunden = false;
     for (var i = 1; i < daten.length; i++) {

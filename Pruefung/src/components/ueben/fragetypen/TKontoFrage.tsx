@@ -2,8 +2,7 @@ import { useState } from 'react'
 import type { FrageKomponenteProps } from './index'
 import type { TKontoFrage as TKontoFrageTyp } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
-import KontenSelect from './shared/KontenSelect'
-import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
+import KontenSelect from '../../shared/KontenSelect.tsx'
 
 interface EintragState {
   gegen: string
@@ -24,9 +23,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
 
   const kontenDef = tkFrage.konten || []
   const geschaeftsfaelle = tkFrage.geschaeftsfaelle || []
-  // Gegenkonten aus kontenauswahl extrahieren
   const kontenauswahl = tkFrage.kontenauswahl
-  const gegenkonten = normalizeKonten(kontenauswahl?.konten || [])
 
   const [kontenState, setKontenState] = useState<Record<string, KontoState>>(() => {
     const init: Record<string, KontoState> = {}
@@ -114,7 +111,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
                 {state.soll.map((e, i) => (
                   <div key={i} className="flex gap-1">
                     <div className="flex-1">
-                      <KontenSelect konten={gegenkonten} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'soll', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
+                      <KontenSelect config={kontenauswahl} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'soll', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
                     </div>
                     <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'soll', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs text-right min-h-[44px]" />
                   </div>
@@ -130,7 +127,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
                 {state.haben.map((e, i) => (
                   <div key={i} className="flex gap-1">
                     <div className="flex-1">
-                      <KontenSelect konten={gegenkonten} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'haben', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
+                      <KontenSelect config={kontenauswahl} value={e.gegen} onChange={(v) => updateEintrag(konto.kontonummer, 'haben', i, 'gegen', v)} disabled={disabled} placeholder="Gegenkonto" />
                     </div>
                     <input type="number" value={e.betrag} onChange={(ev) => updateEintrag(konto.kontonummer, 'haben', i, 'betrag', ev.target.value)} disabled={disabled} placeholder="CHF" className="w-20 p-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-xs text-right min-h-[44px]" />
                   </div>
