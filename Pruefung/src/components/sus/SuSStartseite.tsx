@@ -143,7 +143,11 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
                 <span className="text-lg dark:text-white">&#8592;</span>
               </button>
             </Tooltip>
-            <h1 className="text-lg font-bold dark:text-white">Prüfungen & Korrekturen</h1>
+            <button onClick={() => { setModus('start'); setKorrekturId(null) }} className="text-lg font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
+              ExamLab
+            </button>
+            <span className="text-slate-300 dark:text-slate-600">›</span>
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Prüfungen & Korrekturen</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />

@@ -364,6 +364,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
           : (config ? 'Prüfung bearbeiten' : 'Neue Prüfung')
         }
         zurueck={onZurueck}
+        onHome={onZurueck}
         statusText={
           speicherStatus === 'erfolg' ? 'Gespeichert ✓'
           : speicherStatus === 'fehler' ? 'Fehler beim Speichern'

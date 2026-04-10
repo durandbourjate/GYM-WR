@@ -332,37 +332,34 @@ export default function LPStartseite() {
     return trackerDaten.pruefungen.find((p) => p.pruefungId === pruefungId)
   }
 
-  // Breadcrumbs aus dem Store
-  const composerBreadcrumbs = ansicht === 'composer' ? useLPNavigationStore.getState().breadcrumbs : undefined
-
   // Skeleton während Laden — nicht beim Composer (direkter Aufruf möglich)
   if (ladeStatus !== 'fertig' && ansicht !== 'composer') return <LPSkeleton />
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <LPHeader
-        untertitel={user ? `${user.name} · Lehrperson` : undefined}
-        modus={ansicht === 'composer' ? undefined : modus}
-        onModusChange={ansicht === 'composer' ? undefined : setModus}
-        zurueck={ansicht === 'composer' ? handleZurueck : undefined}
-        breadcrumbs={composerBreadcrumbs}
-        onHome={ansicht === 'composer' ? handleZurueck : undefined}
-        aktionsButtons={
-          ansicht === 'composer' ? undefined :
-          modus === 'pruefung' ? (
-            <button onClick={handleNeue} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-              + Neue Prüfung
-            </button>
-          ) : modus === 'uebung' ? (
-            <button onClick={handleNeueUebung} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-              + Neue Übung
-            </button>
-          ) : undefined
-        }
-        onEinstellungen={ansicht === 'composer' ? undefined : () => setZeigEinstellungen(true)}
-        onHilfe={ansicht === 'composer' ? undefined : toggleHilfe}
-        hilfeOffen={zeigHilfe}
-      />
+      {/* Header nur im Dashboard-Modus — Composer hat eigenen Header */}
+      {ansicht !== 'composer' && (
+        <LPHeader
+          untertitel={user ? `${user.name} · Lehrperson` : undefined}
+          modus={modus}
+          onModusChange={setModus}
+          onHome={handleZurueck}
+          aktionsButtons={
+            modus === 'pruefung' ? (
+              <button onClick={handleNeue} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                + Neue Prüfung
+              </button>
+            ) : modus === 'uebung' ? (
+              <button onClick={handleNeueUebung} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                + Neue Übung
+              </button>
+            ) : undefined
+          }
+          onEinstellungen={() => setZeigEinstellungen(true)}
+          onHilfe={toggleHilfe}
+          hilfeOffen={zeigHilfe}
+        />
+      )}
 
       {ansicht === 'composer' && (
         <PruefungsComposer key={composerKey} config={editConfig} onZurueck={handleZurueck} onDuplizieren={handleDuplizieren} />

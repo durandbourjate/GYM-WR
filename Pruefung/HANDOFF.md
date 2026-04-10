@@ -6,6 +6,52 @@
 
 ---
 
+## Session 82 — Browser-Test Bugfixes Block A+C (10.04.2026)
+
+### Stand
+Branch `fix/browser-test-bugs-blockAC`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Block A: Navigation & Header** | |
+| A1 | Doppelte Header eliminiert: LPStartseite rendert Header NUR im Dashboard-Modus, Composer hat eigenen Header | LPStartseite.tsx |
+| A2 | ExamLab-Titel immer klickbar (LP): `onHome` auch auf Dashboard, Composer bekommt `onHome={onZurueck}` | LPStartseite.tsx, PruefungsComposer.tsx |
+| A3 | SuS Prüfen-Header: ExamLab als klickbarer Home-Button + Breadcrumbs ("ExamLab › Prüfungen & Korrekturen") | SuSStartseite.tsx |
+| A4 | SuS-Üben AppShell: ExamLab-Titel klickbar → zurück zur SuS-Startseite. `onExamLabHome` Prop durch AppUeben → AppShell | AppShell.tsx, AppUeben.tsx |
+| **Block C: Einstellungen-Panel** | |
+| C1 | Z-Index Fix: `z-50` → `z-[70]` (über Header z-[60]) + `mt-14` Top-Offset (Panel unter Header) | EinstellungenPanel.tsx |
+| C2 | Speichern-Fehler: Detaillierte Fehlermeldung statt generisch — zeigt Backend-Error im UI | stammdatenStore.ts, EinstellungenPanel.tsx |
+
+### Geänderte Dateien (7)
+- `src/components/lp/LPStartseite.tsx` — Header nur im Dashboard, onHome immer, composerBreadcrumbs entfernt
+- `src/components/lp/LPHeader.tsx` — (unverändert, nutzt onHome korrekt)
+- `src/components/lp/vorbereitung/PruefungsComposer.tsx` — `onHome={onZurueck}` hinzugefügt
+- `src/components/sus/SuSStartseite.tsx` — Prüfen-Header mit ExamLab-Button + Breadcrumbs
+- `src/components/ueben/layout/AppShell.tsx` — `onExamLabHome` Prop, ExamLab als Button
+- `src/AppUeben.tsx` — `onZurueck` an AppShell weitergeleitet (nicht mehr _onZurueck)
+- `src/components/settings/EinstellungenPanel.tsx` — z-[70] + mt-14 + detaillierte Fehlermeldung
+- `src/store/stammdatenStore.ts` — Fehlerdetails aus Backend in Store.fehler
+
+### Verifiziert
+- ✅ tsc -b grün
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ⬜ Browser-Test: Kein doppelter Header im Composer
+- ⬜ Browser-Test: ExamLab klickbar auf LP-Dashboard + Composer + SuS-Prüfen + SuS-Üben
+- ⬜ Browser-Test: Einstellungen-Panel nicht mehr hinter Header
+- ⬜ Browser-Test: Speichern-Fehler zeigt Details
+
+### Bugfix-Plan (Folge-Blöcke)
+- **Block B:** Üben-Fragetypen → Prüfungs-Komponenten wiederverwenden (6 Typen)
+- **Block D:** Analyse-Tab (gestapelter Zeitbedarf-Balken, Taxonomie-Limit, Üben-Analyse Performance)
+- **Block E:** Lernziele-UX (Position → Metadaten, DB-Auswahl, Suchfunktion)
+- **Block F:** Druckansicht (4 Typen druckbar machen)
+- **Block G:** Favoriten erweitern (Direktlinks, Account-verknüpft) + Gesperrte Themen
+
+---
+
 ## Session 81 — Store-Migration + LP-Favoriten + Stammdaten-Erstbefüllung (10.04.2026)
 
 ### Stand

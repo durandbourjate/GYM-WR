@@ -82,7 +82,7 @@ export const useStammdatenStore = create<StammdatenState>((set, get) => ({
 
   speichereLPProfil: async (profil: LPProfil) => {
     try {
-      const result = await postJson<{ success: boolean }>('speichereLPProfil', {
+      const result = await postJson<{ success: boolean; error?: string }>('speichereLPProfil', {
         callerEmail: profil.email,
         profil,
       })
@@ -90,9 +90,12 @@ export const useStammdatenStore = create<StammdatenState>((set, get) => ({
         set({ lpProfil: profil })
         return true
       }
+      console.error('[Stammdaten] LP-Profil speichern fehlgeschlagen:', result?.error || 'Unbekannter Fehler')
+      set({ fehler: result?.error || 'LP-Profil konnte nicht gespeichert werden' })
       return false
     } catch (error) {
       console.error('[Stammdaten] LP-Profil speichern Fehler:', error)
+      set({ fehler: String(error) })
       return false
     }
   },

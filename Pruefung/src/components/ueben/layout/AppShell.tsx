@@ -14,9 +14,11 @@ import SuSHilfePanel from '../SuSHilfePanel'
 
 interface Props {
   children: ReactNode
+  /** Callback: Zurück zur ExamLab-Startseite (verlässt Üben-Modus) */
+  onExamLabHome?: () => void
 }
 
-export default function AppShell({ children }: Props) {
+export default function AppShell({ children, onExamLabHome }: Props) {
   const { user, abmelden: uebenAbmelden } = useUebenAuthStore()
   const pruefungAbmelden = useAuthStore(s => s.abmelden)
 
@@ -82,7 +84,13 @@ export default function AppShell({ children }: Props) {
           )}
 
           <div>
-            <h1 className="text-base font-bold dark:text-white">ExamLab</h1>
+            {onExamLabHome ? (
+              <button onClick={onExamLabHome} className="text-base font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
+                ExamLab
+              </button>
+            ) : (
+              <h1 className="text-base font-bold dark:text-white">ExamLab</h1>
+            )}
             {aktiveGruppe && gruppen.length > 1 ? (
               <button
                 onClick={() => {

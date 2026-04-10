@@ -24,7 +24,7 @@ interface AppUebenProps {
   onZurueck?: () => void
 }
 
-export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) {
+export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
   const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useUebenAuthStore()
   const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useUebenGruppenStore()
   const { session, starteSession } = useUebenUebungsStore()
@@ -71,8 +71,8 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
   // Session nur wiederherstellen wenn NICHT embedded (standalone Üben-Login)
   // Bei embedded (via SuSStartseite/UebungsToolView) wurde der Login bereits gebrückt
   useEffect(() => {
-    if (!IST_DEMO && !_onZurueck) sessionWiederherstellen()
-  }, [sessionWiederherstellen, _onZurueck])
+    if (!IST_DEMO && !onZurueck) sessionWiederherstellen()
+  }, [sessionWiederherstellen, onZurueck])
 
   useEffect(() => {
     if (!IST_DEMO && istAngemeldet && user?.email) {
@@ -131,7 +131,7 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
 
   // Nicht eingeloggt
   if (!istAngemeldet) {
-    if (_onZurueck) {
+    if (onZurueck) {
       // Embedded: Wenn Auth noch nicht versucht wurde (idle), warte auf Login-Bridging
       // Wenn Auth fehlgeschlagen oder abgemeldet → zurück zur Startseite
       if (authStatus === 'idle') {
@@ -142,7 +142,7 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
         )
       }
       // Auth ist fertig aber nicht angemeldet → zurück (z.B. nach Logout)
-      _onZurueck()
+      onZurueck()
       return null
     }
     return <LoginScreen />
@@ -160,7 +160,7 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
   // Keine Gruppen
   if (gruppen.length === 0 && gruppenStatus === 'fertig') {
     return (
-      <AppShell>
+      <AppShell onExamLabHome={onZurueck}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
             <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
@@ -180,12 +180,12 @@ export default function AppUeben({ onZurueck: _onZurueck }: AppUebenProps = {}) 
   }
 
   // Gruppen-Auswahl
-  if (!aktiveGruppe) return <AppShell><GruppenAuswahl /></AppShell>
+  if (!aktiveGruppe) return <AppShell onExamLabHome={onZurueck}><GruppenAuswahl /></AppShell>
 
   // Screen-Rendering
   return (
     <UebenKontextProvider>
-      <AppShell>
+      <AppShell onExamLabHome={onZurueck}>
         {aktuellerScreen === 'admin' && (
           <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
         )}

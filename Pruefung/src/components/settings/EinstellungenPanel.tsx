@@ -38,12 +38,12 @@ export default function EinstellungenPanel({ onSchliessen }: Props) {
   const sichtbareTabs = tabs.filter(t => t.sichtbar)
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-[70] flex justify-end">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/30" onClick={onSchliessen} />
 
-      {/* Panel */}
-      <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 shadow-xl overflow-y-auto">
+      {/* Panel — unterhalb des Headers beginnen */}
+      <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 shadow-xl overflow-y-auto mt-14">
         <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="text-lg font-bold dark:text-white">Einstellungen</h2>
           <button onClick={onSchliessen} className="w-8 h-8 text-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer">
@@ -188,7 +188,9 @@ function ProfilTab({ email, stammdaten, profil }: { email: string; stammdaten: S
         {speicherStatus === 'laeuft' ? 'Speichern...' : speicherStatus === 'gespeichert' ? '✓ Gespeichert' : 'Profil speichern'}
       </button>
       {speicherStatus === 'fehler' && (
-        <p className="text-sm text-red-600 dark:text-red-400">Fehler beim Speichern. Bitte erneut versuchen.</p>
+        <p className="text-sm text-red-600 dark:text-red-400">
+          Fehler beim Speichern. {useStammdatenStore.getState().fehler ? `Details: ${useStammdatenStore.getState().fehler}` : 'Bitte erneut versuchen.'}
+        </p>
       )}
     </div>
   )
