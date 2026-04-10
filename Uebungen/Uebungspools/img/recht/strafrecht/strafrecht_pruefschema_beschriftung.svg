@@ -1,53 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Strafrechtliches Prüfschema — Beschrifte die Stufen</text>
-
-  <!-- Block 1: Tatbestandsmässigkeit -->
-  <rect x="60" y="52" width="680" height="130" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">I. Tatbestandsmässigkeit</text>
-  <line x1="80" y1="88" x2="720" y2="88" stroke="#86efac" stroke-width="1"/>
-  <!-- Sub: objektiv -->
-  <rect x="80" y="96" width="290" height="75" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-  <text x="225" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#166534">Objektiver Tatbestand</text>
-  <text x="225" y="136" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Handlung / Unterlassung</text>
-  <text x="225" y="153" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Erfolg + Kausalzusammenhang</text>
-  <!-- Sub: subjektiv -->
-  <rect x="430" y="96" width="290" height="75" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
-  <text x="575" y="118" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#166534">Subjektiver Tatbestand</text>
-  <text x="575" y="136" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Vorsatz (Art. 12 Abs. 2 StGB)</text>
-  <text x="575" y="153" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">oder Fahrlässigkeit (Art. 12 Abs. 3)</text>
-
-  <!-- Arrow 1→2 -->
-  <line x1="400" y1="182" x2="400" y2="207" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,204 407,204 400,217" fill="#94a3b8"/>
-
-  <!-- Block 2: Rechtswidrigkeit -->
-  <rect x="60" y="217" width="680" height="80" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="243" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">II. Rechtswidrigkeit</text>
-  <text x="400" y="264" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Keine Rechtfertigungsgründe (Notwehr Art. 15, Notstand Art. 17, Einwilligung)</text>
-  <text x="400" y="284" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">→ Fehlt Rechtswidrigkeit: kein strafbares Verhalten trotz Tatbestand</text>
-
-  <!-- Arrow 2→3 -->
-  <line x1="400" y1="297" x2="400" y2="322" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,319 407,319 400,332" fill="#94a3b8"/>
-
-  <!-- Block 3: Schuld -->
-  <rect x="60" y="332" width="680" height="90" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="358" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">III. Schuld</text>
-  <text x="400" y="378" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Schuldfähigkeit (Zurechnungsfähigkeit, Art. 19 StGB)</text>
-  <text x="400" y="397" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Keine Schuldausschlussgründe (Unzurechnungsfähigkeit, entschuldbarer Notstand)</text>
-  <text x="400" y="414" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">→ Alle 3 Stufen erfüllt: Strafbarkeit</text>
-
-  <!-- Red numbered circles -->
-  <!-- 1: Tatbestandsmässigkeit -->
-
-  <!-- 2: Objektiver TB -->
-
-  <!-- 3: Subjektiver TB -->
-
-  <!-- 4: Rechtswidrigkeit -->
-
-  <!-- 5: Schuld -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="system-ui,-apple-system,sans-serif">
+  <rect width="800" height="600" fill="#fff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+    </marker>
+  </defs>
+  <!-- Step 1 -->
+  <rect x="250" y="30" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <circle cx="240" cy="60" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="240" y="65" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">1</text>
+  <!-- Arrow down -->
+  <line x1="400" y1="90" x2="400" y2="130" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Step 2 -->
+  <rect x="250" y="135" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <circle cx="240" cy="165" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="240" y="170" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">2</text>
+  <!-- Arrow down -->
+  <line x1="400" y1="195" x2="400" y2="235" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Step 3 -->
+  <rect x="250" y="240" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <circle cx="240" cy="270" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="240" y="275" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">3</text>
+  <!-- Arrow down -->
+  <line x1="400" y1="300" x2="400" y2="340" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Step 4 -->
+  <rect x="250" y="345" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <circle cx="240" cy="375" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="240" y="380" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">4</text>
+  <!-- Arrow down -->
+  <line x1="400" y1="405" x2="400" y2="445" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Step 5 -->
+  <rect x="250" y="450" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <circle cx="240" cy="480" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="240" y="485" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">5</text>
 </svg>

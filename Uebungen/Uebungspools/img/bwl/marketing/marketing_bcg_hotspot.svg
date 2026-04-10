@@ -1,64 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
-  <rect width="800" height="420" fill="#ffffff" rx="8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#ffffff"/>
 
-  <!-- Title -->
-  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">BCG-Portfolio-Matrix — Klicke auf den richtigen Quadranten</text>
+  <!-- Y-axis -->
+  <line x1="120" y1="40" x2="120" y2="440" stroke="#666666" stroke-width="2"/>
+  <!-- Y-axis arrow -->
+  <polygon points="120,35 115,48 125,48" fill="#666666"/>
 
-  <!-- Matrix container -->
-  <rect x="100" y="55" width="620" height="330" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <!-- X-axis -->
+  <line x1="120" y1="440" x2="760" y2="440" stroke="#666666" stroke-width="2"/>
+  <!-- X-axis arrow -->
+  <polygon points="765,440 752,435 752,445" fill="#666666"/>
 
-  <!-- Achsenbeschriftungen -->
-  <text x="410" y="50" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#64748b">Relativer Marktanteil</text>
-  <text x="248" y="72" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Hoch</text>
-  <text x="572" y="72" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Niedrig</text>
-  <text x="60" y="235" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#64748b" transform="rotate(-90,60,235)">Marktwachstum</text>
-  <text x="92" y="162" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Hoch</text>
-  <text x="92" y="322" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b">Niedrig</text>
+  <!-- Y-axis label -->
+  <text x="30" y="245" text-anchor="middle" fill="#666666" font-size="14" font-weight="500" transform="rotate(-90,30,245)">Marktwachstum</text>
+  <text x="70" y="80" text-anchor="middle" fill="#666666" font-size="13">hoch</text>
+  <text x="70" y="420" text-anchor="middle" fill="#666666" font-size="13">niedrig</text>
 
-  <!-- Trennlinien -->
-  <line x1="410" y1="55" x2="410" y2="385" stroke="#94a3b8" stroke-width="2"/>
-  <line x1="100" y1="220" x2="720" y2="220" stroke="#94a3b8" stroke-width="2"/>
+  <!-- X-axis label -->
+  <text x="440" y="490" text-anchor="middle" fill="#666666" font-size="14" font-weight="500">Relativer Marktanteil</text>
+  <text x="280" y="470" text-anchor="middle" fill="#666666" font-size="13">hoch</text>
+  <text x="600" y="470" text-anchor="middle" fill="#666666" font-size="13">niedrig</text>
 
-  <!-- Feld A: Stars (oben links: hoher Anteil, hohes Wachstum) -->
-  <rect x="100" y="55" width="310" height="165" rx="0" fill="#fefce8"/>
-  <text x="255" y="120" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="28" fill="#fde047">★</text>
-  <text x="255" y="155" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#a16207">Stars</text>
-  <text x="255" y="173" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#ca8a04">Hoher Anteil, hohes Wachstum</text>
+  <!-- Grid divider lines -->
+  <line x1="440" y1="40" x2="440" y2="440" stroke="#d0d0d0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="120" y1="240" x2="760" y2="240" stroke="#d0d0d0" stroke-width="1.5" stroke-dasharray="6,4"/>
 
-  <!-- Feld B: Question Marks (oben rechts: niedriger Anteil, hohes Wachstum) -->
-  <rect x="410" y="55" width="310" height="165" rx="0" fill="#faf5ff"/>
-  <text x="565" y="120" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="28" fill="#c4b5fd">?</text>
-  <text x="565" y="155" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#7c3aed">Question Marks</text>
-  <text x="565" y="173" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#9333ea">Niedriger Anteil, hohes Wachstum</text>
+  <!-- Quadrant A (top-left) -->
+  <rect x="122" y="42" width="316" height="196" fill="#f5f5f5" stroke="none"/>
+  <text x="280" y="145" text-anchor="middle" fill="#999999" font-size="28" font-weight="300">A</text>
 
-  <!-- Feld C: Cash Cows (unten links: hoher Anteil, niedriges Wachstum) -->
-  <rect x="100" y="220" width="310" height="165" rx="0" fill="#f0fdf4"/>
-  <text x="255" y="285" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="28" fill="#86efac">🐄</text>
-  <text x="255" y="320" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">Cash Cows</text>
-  <text x="255" y="338" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#16a34a">Hoher Anteil, niedriges Wachstum</text>
+  <!-- Quadrant B (top-right) -->
+  <rect x="442" y="42" width="316" height="196" fill="#ebebeb" stroke="none"/>
+  <text x="600" y="145" text-anchor="middle" fill="#999999" font-size="28" font-weight="300">B</text>
 
-  <!-- Feld D: Dogs (unten rechts: niedriger Anteil, niedriges Wachstum) -->
-  <rect x="410" y="220" width="310" height="165" rx="0" fill="#fef2f2"/>
-  <text x="565" y="285" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="28" fill="#fca5a5">🐕</text>
-  <text x="565" y="320" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#dc2626">Dogs</text>
-  <text x="565" y="338" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#ef4444">Niedriger Anteil, niedriges Wachstum</text>
+  <!-- Quadrant C (bottom-left) -->
+  <rect x="122" y="242" width="316" height="196" fill="#ebebeb" stroke="none"/>
+  <text x="280" y="345" text-anchor="middle" fill="#999999" font-size="28" font-weight="300">C</text>
 
-  <!-- Rahmen overlay -->
-  <rect x="100" y="55" width="620" height="330" rx="6" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
-
-  <!-- Marker A — links oben im Stars-Feld -->
-  <circle cx="155" cy="100" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="155" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">A</text>
-
-  <!-- Marker B — rechts oben im Q-Marks-Feld -->
-  <circle cx="665" cy="100" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="665" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">B</text>
-
-  <!-- Marker C — links unten im Cash-Cows-Feld -->
-  <circle cx="155" cy="350" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="155" y="355" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">C</text>
-
-  <!-- Marker D — rechts unten im Dogs-Feld -->
-  <circle cx="665" cy="350" r="16" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="665" y="355" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">D</text>
+  <!-- Quadrant D (bottom-right) -->
+  <rect x="442" y="242" width="316" height="196" fill="#f5f5f5" stroke="none"/>
+  <text x="600" y="345" text-anchor="middle" fill="#999999" font-size="28" font-weight="300">D</text>
 </svg>

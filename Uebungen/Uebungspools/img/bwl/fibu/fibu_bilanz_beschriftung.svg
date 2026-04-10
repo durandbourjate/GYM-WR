@@ -1,62 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#ffffff"/>
 
-  <!-- Title -->
-  <text x="400" y="30" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Bilanz — Beschrifte die sechs Bereiche</text>
+  <!-- T-shape: vertical center line -->
+  <line x1="400" y1="40" x2="400" y2="420" stroke="#999999" stroke-width="2"/>
+  <!-- T-shape: top horizontal line -->
+  <line x1="40" y1="40" x2="760" y2="40" stroke="#999999" stroke-width="2"/>
 
-  <!-- Bilanz-T-Form Rahmen -->
-  <rect x="30" y="55" width="740" height="350" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <!-- LEFT SIDE (2 rows) - light blue tones -->
+  <!-- Top left area -->
+  <rect x="42" y="42" width="356" height="188" fill="#e8f0fe" stroke="none" rx="2"/>
+  <!-- Bottom left area -->
+  <rect x="42" y="232" width="356" height="186" fill="#d0e2fc" stroke="none" rx="2"/>
 
-  <!-- Mittel-Trennlinie (T-Form) -->
-  <line x1="400" y1="55" x2="400" y2="405" stroke="#64748b" stroke-width="2.5"/>
+  <!-- Left side horizontal divider -->
+  <line x1="42" y1="230" x2="398" y2="230" stroke="#b0c8e8" stroke-width="1" stroke-dasharray="6,4"/>
 
-  <!-- Header links: Aktiven -->
-  <rect x="30" y="55" width="370" height="44" rx="0" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
-  <rect x="30" y="88" width="370" height="11" fill="#dbeafe"/>
-  <text x="215" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="15" font-weight="700" fill="#1e40af">AKTIVEN</text>
+  <!-- RIGHT SIDE (3 rows) - light pink tones -->
+  <!-- Top right area -->
+  <rect x="402" y="42" width="356" height="122" fill="#fde8e8" stroke="none" rx="2"/>
+  <!-- Middle right area -->
+  <rect x="402" y="166" width="356" height="122" fill="#f5d0d0" stroke="none" rx="2"/>
+  <!-- Bottom right area -->
+  <rect x="402" y="290" width="356" height="128" fill="#ecc0c0" stroke="none" rx="2"/>
 
-  <!-- Header rechts: Passiven -->
-  <rect x="400" y="55" width="370" height="44" rx="0" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
-  <rect x="400" y="88" width="370" height="11" fill="#fef2f2"/>
-  <text x="585" y="82" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="15" font-weight="700" fill="#dc2626">PASSIVEN</text>
+  <!-- Right side horizontal dividers -->
+  <line x1="402" y1="164" x2="758" y2="164" stroke="#d4a8a8" stroke-width="1" stroke-dasharray="6,4"/>
+  <line x1="402" y1="288" x2="758" y2="288" stroke="#d4a8a8" stroke-width="1" stroke-dasharray="6,4"/>
 
-  <!-- Aktiven-Seite: UV (obere Hälfte) -->
-  <rect x="30" y="99" width="370" height="140" rx="0" fill="#eff6ff"/>
-  <text x="215" y="155" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#93c5fd">Kasse · Bank · Debitoren · Vorräte</text>
-  <line x1="50" y1="239" x2="380" y2="239" stroke="#bfdbfe" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Bottom bar (Bilanzsumme) -->
+  <rect x="40" y="420" width="720" height="50" fill="#f0f0f0" stroke="#999999" stroke-width="1.5" rx="4"/>
 
-  <!-- Aktiven-Seite: AV (untere Hälfte) -->
-  <rect x="30" y="239" width="370" height="130" rx="0" fill="#dbeafe"/>
-  <text x="215" y="290" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#93c5fd">Maschinen · Gebäude · Fahrzeuge</text>
+  <!-- Outer border -->
+  <rect x="40" y="40" width="720" height="380" fill="none" stroke="#999999" stroke-width="2" rx="4"/>
 
-  <!-- Passiven-Seite: FKk (oberes Viertel) -->
-  <rect x="400" y="99" width="370" height="86" rx="0" fill="#fef2f2"/>
-  <text x="585" y="132" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#fca5a5">Kreditoren · kurzfr. Darlehen</text>
-  <line x1="420" y1="185" x2="750" y2="185" stroke="#fca5a5" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- Passiven-Seite: FKl (mittleres Viertel) -->
-  <rect x="400" y="185" width="370" height="86" rx="0" fill="#fee2e2"/>
-  <text x="585" y="218" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#fca5a5">Hypothek · langfr. Darlehen</text>
-  <line x1="420" y1="271" x2="750" y2="271" stroke="#fca5a5" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- Passiven-Seite: EK (unteres Drittel) -->
-  <rect x="400" y="271" width="370" height="98" rx="0" fill="#fecaca"/>
-  <text x="585" y="308" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#dc2626">Eigenkapital · Gewinnvortrag</text>
-
-  <!-- Bilanzsumme (unterste Zeile) -->
-  <rect x="30" y="369" width="740" height="36" rx="0" fill="#1e293b"/>
-  <rect x="30" y="395" width="740" height="10" rx="0" fill="#1e293b"/>
-  <text x="400" y="391" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#ffffff">Bilanzsumme</text>
-
-  <!-- Marker 1: UV -->
-
-  <!-- Marker 2: AV -->
-
-  <!-- Marker 3: FKk -->
-
-  <!-- Marker 4: FKl -->
-
-  <!-- Marker 5: EK -->
-
-  <!-- Marker 6: Bilanzsumme -->
+  <!-- Balance line in bottom bar -->
+  <line x1="400" y1="420" x2="400" y2="470" stroke="#999999" stroke-width="1.5"/>
 </svg>

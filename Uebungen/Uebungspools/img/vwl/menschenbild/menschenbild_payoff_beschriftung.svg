@@ -1,61 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Gefangenendilemma — Beschrifte die Elemente der Payoff-Matrix</text>
-
-  <!-- Rahmen der Matrix (äusserer Kasten) -->
-  <!-- Gesamt-Rahmen -->
-  <rect x="200" y="80" width="470" height="310" rx="4" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
-
-  <!-- Kopfzeile Spieler B (oben) -->
-  <rect x="330" y="80" width="170" height="55" rx="0" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
-  <text x="415" y="107" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#475569">Spieler B:</text>
-  <text x="415" y="124" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#475569">Gestehen</text>
-  <rect x="500" y="80" width="170" height="55" rx="0" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
-  <text x="585" y="107" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#475569">Spieler B:</text>
-  <text x="585" y="124" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#475569">Schweigen</text>
-
-  <!-- Kopfspalte Spieler A (links) -->
-  <rect x="200" y="135" width="130" height="125" rx="0" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
-  <text x="265" y="188" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#475569">Spieler A:</text>
-  <text x="265" y="205" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#475569">Gestehen</text>
-  <rect x="200" y="260" width="130" height="130" rx="0" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
-  <text x="265" y="315" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="700" fill="#475569">Spieler A:</text>
-  <text x="265" y="332" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#475569">Schweigen</text>
-
-  <!-- Zelle 1: Beide gestehen (oben-links) — leer, wird beschriftet -->
-  <rect x="330" y="135" width="170" height="125" rx="0" fill="#fef2f2" stroke="#94a3b8" stroke-width="1"/>
-  <text x="415" y="193" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#94a3b8" font-style="italic">?</text>
-  <!-- Nash-Gleichgewicht Markierung -->
-  <rect x="333" y="138" width="164" height="119" rx="2" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,3"/>
-
-  <!-- Zelle 2: A gesteht, B schweigt (oben-rechts) -->
-  <rect x="500" y="135" width="170" height="125" rx="0" fill="#fafafa" stroke="#94a3b8" stroke-width="1"/>
-  <text x="585" y="193" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#94a3b8" font-style="italic">?</text>
-
-  <!-- Zelle 3: A schweigt, B gesteht (unten-links) -->
-  <rect x="330" y="260" width="170" height="130" rx="0" fill="#fafafa" stroke="#94a3b8" stroke-width="1"/>
-  <text x="415" y="322" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#94a3b8" font-style="italic">?</text>
-
-  <!-- Zelle 4: Beide schweigen (unten-rechts) — Pareto-optimum -->
-  <rect x="500" y="260" width="170" height="130" rx="0" fill="#f0fdf4" stroke="#94a3b8" stroke-width="1"/>
-  <text x="585" y="322" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#94a3b8" font-style="italic">?</text>
-
-  <!-- Nummerierte rote Kreise -->
-
-  <!-- Kreis 1: Zelle oben-links (beide gestehen) -->
-
-  <!-- Kreis 2: Zelle oben-rechts (A gesteht, B schweigt) -->
-
-  <!-- Kreis 3: Zelle unten-links (A schweigt, B gesteht) -->
-
-  <!-- Kreis 4: Zelle unten-rechts (beide schweigen) -->
-
-  <!-- Kreis 5: Zeilen-Beschriftung (Spieler A) -->
-
-  <!-- Kreis 6: Spalten-Beschriftung (Spieler B) -->
-
-  <!-- Nash-Gleichgewicht Hinweis -->
-  <text x="400" y="442" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Roter Rahmen = Nash-Gleichgewicht · Grüner Hintergrund = kollektiv optimales Ergebnis</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui,-apple-system,sans-serif">
+<rect width="800" height="500" fill="#fff"/>
+<text x="400" y="30" text-anchor="middle" fill="#666" font-size="14">Beschrifte die Elemente der Payoff-Matrix</text>
+<!-- Row/Column headers -->
+<text x="400" y="70" text-anchor="middle" fill="#666" font-size="13">Spieler 2</text>
+<text x="100" y="260" text-anchor="middle" fill="#666" font-size="13" transform="rotate(-90,100,260)">Spieler 1</text>
+<!-- Strategy labels -->
+<text x="310" y="100" text-anchor="middle" fill="#666" font-size="12">Strategie I</text>
+<text x="530" y="100" text-anchor="middle" fill="#666" font-size="12">Strategie II</text>
+<text x="165" y="210" text-anchor="middle" fill="#666" font-size="12">Strategie I</text>
+<text x="165" y="350" text-anchor="middle" fill="#666" font-size="12">Strategie II</text>
+<!-- Grid -->
+<rect x="200" y="110" width="220" height="140" fill="#f5f5f5" stroke="#999" stroke-width="1.5"/>
+<rect x="420" y="110" width="220" height="140" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+<rect x="200" y="250" width="220" height="140" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+<rect x="420" y="250" width="220" height="140" fill="#f5f5f5" stroke="#999" stroke-width="1.5"/>
+<!-- 6 numbered markers -->
+<circle cx="310" cy="180" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="310" y="185" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">1</text>
+<circle cx="530" cy="180" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="530" y="185" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">2</text>
+<circle cx="310" cy="320" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="310" y="325" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">3</text>
+<circle cx="530" cy="320" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="530" y="325" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">4</text>
+<circle cx="200" cy="180" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="200" y="185" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">5</text>
+<circle cx="640" cy="320" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="640" y="325" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">6</text>
 </svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="800" height="550" fill="#f5f5f5"/>
+  <!-- Level 1 (bottom) -->
+  <polygon points="80,480 720,480 640,400 160,400" fill="#d4d4d4" stroke="#999" stroke-width="1.5"/>
+  <circle cx="400" cy="440" r="16" fill="white" stroke="#666" stroke-width="2"/>
+  <text x="400" y="446" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">1</text>
+  <!-- Level 2 -->
+  <polygon points="160,400 640,400 560,320 240,320" fill="#e0e0e0" stroke="#999" stroke-width="1.5"/>
+  <circle cx="400" cy="360" r="16" fill="white" stroke="#666" stroke-width="2"/>
+  <text x="400" y="366" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">2</text>
+  <!-- Level 3 -->
+  <polygon points="240,320 560,320 480,240 320,240" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <circle cx="400" cy="280" r="16" fill="white" stroke="#666" stroke-width="2"/>
+  <text x="400" y="286" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">3</text>
+  <!-- Level 4 -->
+  <polygon points="320,240 480,240 440,160 360,160" fill="#efefef" stroke="#999" stroke-width="1.5"/>
+  <circle cx="400" cy="200" r="16" fill="white" stroke="#666" stroke-width="2"/>
+  <text x="400" y="206" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">4</text>
+  <!-- Level 5 (top) -->
+  <polygon points="360,160 440,160 400,80" fill="#f5f5f5" stroke="#999" stroke-width="1.5"/>
+  <circle cx="400" cy="125" r="16" fill="white" stroke="#666" stroke-width="2"/>
+  <text x="400" y="131" text-anchor="middle" font-size="14" font-weight="bold" fill="#666">5</text>
+</svg>

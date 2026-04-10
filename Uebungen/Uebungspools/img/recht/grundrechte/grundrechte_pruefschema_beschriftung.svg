@@ -1,57 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Grundrechts-Prüfschema — Beschrifte die Prüfschritte</text>
-
-  <!-- Step 1: Schutzbereich -->
-  <rect x="250" y="50" width="300" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="75" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b" font-weight="600">?</text>
-  <text x="400" y="96" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Arrow 1→2 -->
-  <line x1="400" y1="105" x2="400" y2="130" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,127 407,127 400,140" fill="#94a3b8"/>
-
-  <!-- Step 2: Eingriff -->
-  <rect x="250" y="140" width="300" height="50" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="162" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b" font-weight="600">?</text>
-  <text x="400" y="180" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Arrow 2→3 -->
-  <line x1="400" y1="190" x2="400" y2="215" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,212 407,212 400,225" fill="#94a3b8"/>
-
-  <!-- Step 3: Rechtfertigung (3 boxes side by side) -->
-  <rect x="60" y="225" width="680" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="247" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#1e293b" font-weight="600">?</text>
-  <!-- 3 sub-boxes -->
-  <rect x="75" y="255" width="195" height="18" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
-  <text x="172" y="268" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#166534">?</text>
-  <rect x="302" y="255" width="195" height="18" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
-  <text x="399" y="268" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#166534">?</text>
-  <rect x="529" y="255" width="195" height="18" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
-  <text x="626" y="268" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#166534">?</text>
-
-  <!-- Arrow 3→4 -->
-  <line x1="400" y1="280" x2="400" y2="310" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,307 407,307 400,320" fill="#94a3b8"/>
-
-  <!-- Step 4: Kerngehalt -->
-  <rect x="200" y="320" width="400" height="55" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
-  <text x="400" y="345" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#92400e" font-weight="700">?</text>
-  <text x="400" y="365" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#92400e">?</text>
-
-  <!-- Red numbered circles -->
-  <!-- 1: Schutzbereich -->
-
-  <!-- 2: Eingriff -->
-
-  <!-- 3: Gesetzliche Grundlage -->
-
-  <!-- 4: Öffentliches Interesse -->
-
-  <!-- 5: Verhältnismässigkeit -->
-
-  <!-- 6: Kerngehalt -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="800" height="600" fill="#fafafa"/>
+  <text x="400" y="35" text-anchor="middle" font-size="16" fill="#666" font-weight="600">Grundrechtliches Pruefschema</text>
+  <defs>
+    <marker id="arrow7" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#999"/>
+    </marker>
+  </defs>
+  <!-- Step 1 -->
+  <rect x="250" y="55" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="85" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="90" text-anchor="middle" font-size="13" fill="#666" font-weight="600">1</text>
+  <line x1="400" y1="115" x2="400" y2="140" stroke="#999" stroke-width="1.5" marker-end="url(#arrow7)"/>
+  <!-- Step 2 -->
+  <rect x="250" y="150" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="180" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="185" text-anchor="middle" font-size="13" fill="#666" font-weight="600">2</text>
+  <line x1="400" y1="210" x2="400" y2="235" stroke="#999" stroke-width="1.5" marker-end="url(#arrow7)"/>
+  <!-- Step 3 -->
+  <rect x="250" y="245" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="275" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="280" text-anchor="middle" font-size="13" fill="#666" font-weight="600">3</text>
+  <line x1="400" y1="305" x2="400" y2="330" stroke="#999" stroke-width="1.5" marker-end="url(#arrow7)"/>
+  <!-- Step 4 -->
+  <rect x="250" y="340" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="370" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="375" text-anchor="middle" font-size="13" fill="#666" font-weight="600">4</text>
+  <line x1="400" y1="400" x2="400" y2="425" stroke="#999" stroke-width="1.5" marker-end="url(#arrow7)"/>
+  <!-- Step 5 -->
+  <rect x="250" y="435" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="465" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="470" text-anchor="middle" font-size="13" fill="#666" font-weight="600">5</text>
+  <line x1="400" y1="495" x2="400" y2="520" stroke="#999" stroke-width="1.5" marker-end="url(#arrow7)"/>
+  <!-- Step 6 -->
+  <rect x="250" y="530" width="300" height="60" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="280" cy="560" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="280" y="565" text-anchor="middle" font-size="13" fill="#666" font-weight="600">6</text>
 </svg>

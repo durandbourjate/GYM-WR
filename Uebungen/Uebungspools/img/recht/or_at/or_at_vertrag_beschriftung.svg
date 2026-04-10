@@ -1,70 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Vertragsentstehung — Beschrifte das Schema</text>
-
-  <!-- Partei A: Antrag -->
-  <rect x="60" y="65" width="240" height="60" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="180" y="88" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#15803d">Partei A</text>
-  <text x="180" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Erklärt den Willen zu kontrahieren</text>
-
-  <!-- Partei B: Annahme -->
-  <rect x="500" y="65" width="240" height="60" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="620" y="88" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="600" fill="#15803d">Partei B</text>
-  <text x="620" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Erklärt die Zustimmung</text>
-
-  <!-- Arrow: Antrag → -->
-  <line x1="300" y1="95" x2="497" y2="95" stroke="#22c55e" stroke-width="2"/>
-  <polygon points="494,88 494,102 507,95" fill="#22c55e"/>
-  <text x="400" y="88" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Antrag (Offerte)</text>
-
-  <!-- Arrow: ← Annahme -->
-  <line x1="500" y1="118" x2="303" y2="118" stroke="#22c55e" stroke-width="2"/>
-  <polygon points="306,111 306,125 293,118" fill="#22c55e"/>
-  <text x="400" y="133" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Annahme (Akzept)</text>
-
-  <!-- Arrow down to Konsens -->
-  <line x1="400" y1="140" x2="400" y2="175" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,172 407,172 400,185" fill="#94a3b8"/>
-
-  <!-- Konsens box -->
-  <rect x="250" y="185" width="300" height="55" rx="8" fill="#22c55e" stroke="#15803d" stroke-width="2"/>
-  <text x="400" y="207" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#ffffff">Konsens</text>
-  <text x="400" y="228" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#dcfce7">Übereinstimmende Willensäusserung (OR 1)</text>
-
-  <!-- Arrow down to Voraussetzungen -->
-  <line x1="400" y1="240" x2="400" y2="270" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,267 407,267 400,280" fill="#94a3b8"/>
-
-  <!-- Voraussetzung 1 + 2 side by side -->
-  <rect x="60" y="280" width="320" height="60" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
-  <text x="220" y="304" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">Handlungsfähigkeit beider Parteien</text>
-  <text x="220" y="322" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Urteilsfähigkeit + Mündigkeit (Art. 12 ZGB)</text>
-
-  <rect x="420" y="280" width="320" height="60" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
-  <text x="580" y="304" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">Kein Formmangel / Inhaltsmangel</text>
-  <text x="580" y="322" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Erlaubter Zweck, ev. Formvorschrift (OR 11)</text>
-
-  <!-- Arrow to result -->
-  <line x1="220" y1="340" x2="220" y2="368" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="580" y1="340" x2="580" y2="368" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="220" y1="368" x2="580" y2="368" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="400" y1="368" x2="400" y2="385" stroke="#94a3b8" stroke-width="1.5"/>
-  <polygon points="393,382 407,382 400,395" fill="#94a3b8"/>
-
-  <!-- Result: Vertrag -->
-  <rect x="250" y="395" width="300" height="42" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="421" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">Gültiger Vertrag</text>
-
-  <!-- Red numbered circles -->
-  <!-- 1: Antrag -->
-
-  <!-- 2: Annahme -->
-
-  <!-- 3: Konsens -->
-
-  <!-- 4: Handlungsfähigkeit -->
-
-  <!-- 5: Kein Form/Inhaltsmangel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui,-apple-system,sans-serif">
+  <rect width="800" height="500" fill="#fff"/>
+  <!-- Party A box -->
+  <rect x="80" y="160" width="200" height="120" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Party B box -->
+  <rect x="520" y="160" width="200" height="120" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Offer arrow (A -> B) -->
+  <line x1="280" y1="200" x2="520" y2="200" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Acceptance arrow (B -> A) -->
+  <line x1="520" y1="260" x2="280" y2="260" stroke="#999" stroke-width="2" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+    </marker>
+  </defs>
+  <!-- Contract zone -->
+  <rect x="300" y="350" width="200" height="80" rx="8" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <line x1="400" y1="280" x2="400" y2="350" stroke="#999" stroke-width="2" stroke-dasharray="6 3"/>
+  <!-- Numbered markers -->
+  <circle cx="180" cy="155" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="180" y="160" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">1</text>
+  <circle cx="620" cy="155" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="620" y="160" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">2</text>
+  <circle cx="400" cy="190" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="195" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">3</text>
+  <circle cx="400" cy="250" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="255" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">4</text>
+  <circle cx="400" cy="345" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="350" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">5</text>
 </svg>

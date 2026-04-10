@@ -1,56 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Mietrecht — Beschrifte das Systematik-Diagramm</text>
-
-  <!-- Step 1: Mietvertrag -->
-  <rect x="270" y="52" width="260" height="52" rx="8" fill="#22c55e" stroke="#15803d" stroke-width="2"/>
-  <text x="400" y="74" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#ffffff">?</text>
-  <text x="400" y="93" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#dcfce7">?</text>
-
-  <!-- Arrow down -->
-  <line x1="400" y1="104" x2="400" y2="130" stroke="#94a3b8" stroke-width="2"/>
-  <line x1="200" y1="130" x2="600" y2="130" stroke="#94a3b8" stroke-width="2"/>
-  <line x1="200" y1="130" x2="200" y2="155" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="600" y1="130" x2="600" y2="155" stroke="#94a3b8" stroke-width="1.5"/>
-
-  <!-- Step 2a: Pflichten Vermieter -->
-  <rect x="60" y="155" width="280" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="200" y="178" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">?</text>
-  <text x="200" y="198" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Step 2b: Pflichten Mieter -->
-  <rect x="460" y="155" width="280" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="600" y="178" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">?</text>
-  <text x="600" y="198" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Arrow to Mängel -->
-  <line x1="400" y1="130" x2="400" y2="240" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,237 407,237 400,250" fill="#94a3b8"/>
-
-  <!-- Step 3: Mängelrecht -->
-  <rect x="270" y="250" width="260" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="272" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">?</text>
-  <text x="400" y="292" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Arrow to Kündigung -->
-  <line x1="400" y1="305" x2="400" y2="335" stroke="#94a3b8" stroke-width="2"/>
-  <polygon points="393,332 407,332 400,345" fill="#94a3b8"/>
-
-  <!-- Step 4: Kündigung -->
-  <rect x="270" y="345" width="260" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="367" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" font-weight="600" fill="#15803d">?</text>
-  <text x="400" y="387" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">?</text>
-
-  <!-- Red numbered circles -->
-  <!-- 1: Mietvertrag -->
-
-  <!-- 2: Vermieter -->
-
-  <!-- 3: Mieter -->
-
-  <!-- 4: Mängelrecht -->
-
-  <!-- 5: Kündigung -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="800" height="500" fill="#fafafa"/>
+  <text x="400" y="35" text-anchor="middle" font-size="16" fill="#666" font-weight="600">Systematik des Mietrechts</text>
+  <!-- Root node -->
+  <rect x="300" y="60" width="200" height="55" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="325" cy="87" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="325" y="92" text-anchor="middle" font-size="13" fill="#666" font-weight="600">1</text>
+  <!-- Lines to level 2 -->
+  <line x1="350" y1="115" x2="200" y2="170" stroke="#d4d4d4" stroke-width="1.5"/>
+  <line x1="450" y1="115" x2="600" y2="170" stroke="#d4d4d4" stroke-width="1.5"/>
+  <!-- Level 2 left -->
+  <rect x="80" y="170" width="240" height="55" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="105" cy="197" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="105" y="202" text-anchor="middle" font-size="13" fill="#666" font-weight="600">2</text>
+  <!-- Level 2 right -->
+  <rect x="480" y="170" width="240" height="55" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="505" cy="197" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="505" y="202" text-anchor="middle" font-size="13" fill="#666" font-weight="600">3</text>
+  <!-- Lines to level 3 -->
+  <line x1="200" y1="225" x2="150" y2="310" stroke="#d4d4d4" stroke-width="1.5"/>
+  <line x1="200" y1="225" x2="350" y2="310" stroke="#d4d4d4" stroke-width="1.5"/>
+  <!-- Level 3 -->
+  <rect x="50" y="310" width="200" height="55" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="75" cy="337" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="75" y="342" text-anchor="middle" font-size="13" fill="#666" font-weight="600">4</text>
+  <rect x="300" y="310" width="200" height="55" rx="8" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+  <circle cx="325" cy="337" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="325" y="342" text-anchor="middle" font-size="13" fill="#666" font-weight="600">5</text>
 </svg>

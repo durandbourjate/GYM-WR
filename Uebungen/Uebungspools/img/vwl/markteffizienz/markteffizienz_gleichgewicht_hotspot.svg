@@ -1,54 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
-  <rect width="800" height="420" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Marktdiagramm — Klicke auf den Gleichgewichtspunkt</text>
-
-  <!-- Achsen -->
-  <line x1="100" y1="370" x2="720" y2="370" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="100" y1="50" x2="100" y2="370" stroke="#94a3b8" stroke-width="1.5"/>
-  <!-- Pfeile -->
-  <polygon points="715,365 715,375 730,370" fill="#94a3b8"/>
-  <polygon points="95,55 105,55 100,42" fill="#94a3b8"/>
-
-  <!-- Achsenbeschriftungen -->
-  <text x="400" y="400" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b">Menge (Q)</text>
-  <text x="50" y="210" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" fill="#64748b" transform="rotate(-90,50,210)">Preis (P)</text>
-
-  <!-- Angebotskurve (blau, steigend): von (120,340) nach (680,100) -->
-  <line x1="120" y1="340" x2="680" y2="100" stroke="#2563eb" stroke-width="2.5"/>
-  <text x="690" y="96" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#2563eb">A</text>
-
-  <!-- Nachfragekurve (rot, fallend): von (120,100) nach (680,340) -->
-  <line x1="120" y1="100" x2="680" y2="340" stroke="#ef4444" stroke-width="2.5"/>
-  <text x="690" y="344" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#ef4444">N</text>
-
-  <!-- Gleichgewicht liegt beim Schnittpunkt: x=400, y=220 -->
-  <!-- Gestrichelte Hilfslinien zum Gleichgewicht -->
-  <line x1="100" y1="220" x2="400" y2="220" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
-  <line x1="400" y1="220" x2="400" y2="370" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
-  <text x="90" y="224" text-anchor="end" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">P*</text>
-  <text x="400" y="385" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">M*</text>
-
-  <!-- Marker A: Gleichgewichtspunkt (Schnittpunkt, x=400=50%, y=220≈52%) -->
-  <circle cx="400" cy="220" r="18" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="400" y="225" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">A</text>
-
-  <!-- Marker B: Punkt auf Angebotskurve oberhalb GG (x=520, y=165 ≈ 65%,39%) -->
-  <circle cx="520" cy="165" r="18" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="520" y="170" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">B</text>
-
-  <!-- Marker C: Punkt auf Nachfragekurve links vom GG (x=240, y=151 ≈ 30%,36%) -->
-  <circle cx="240" cy="151" r="18" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="240" y="156" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">C</text>
-
-  <!-- Marker D: Punkt im Überschussbereich rechts unten (x=560, y=295 ≈ 70%,70%) -->
-  <circle cx="560" cy="295" r="18" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
-  <text x="560" y="300" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#1e293b">D</text>
-
-  <!-- Legende -->
-  <line x1="120" y1="60" x2="150" y2="60" stroke="#2563eb" stroke-width="2.5"/>
-  <text x="158" y="64" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Angebotskurve</text>
-  <line x1="280" y1="60" x2="310" y2="60" stroke="#ef4444" stroke-width="2.5"/>
-  <text x="318" y="64" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#1e293b">Nachfragekurve</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui,-apple-system,sans-serif">
+<rect width="800" height="500" fill="#fff"/>
+<text x="400" y="30" text-anchor="middle" fill="#666" font-size="14">Klicke auf den richtigen Punkt</text>
+<!-- Axes -->
+<line x1="100" y1="420" x2="720" y2="420" stroke="#999" stroke-width="1.5"/>
+<line x1="100" y1="420" x2="100" y2="60" stroke="#999" stroke-width="1.5"/>
+<text x="410" y="460" text-anchor="middle" fill="#666" font-size="13">Menge</text>
+<text x="50" y="240" text-anchor="middle" fill="#666" font-size="13" transform="rotate(-90,50,240)">Preis</text>
+<!-- Supply curve (upward sloping) -->
+<line x1="150" y1="380" x2="650" y2="120" stroke="#999" stroke-width="2"/>
+<!-- Demand curve (downward sloping) -->
+<line x1="150" y1="120" x2="650" y2="380" stroke="#999" stroke-width="2"/>
+<!-- Points A, B, C -->
+<circle cx="400" cy="250" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="400" y="255" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">A</text>
+<circle cx="250" cy="250" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="250" y="255" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">B</text>
+<circle cx="550" cy="250" r="14" fill="#fff" stroke="#999" stroke-width="1.5"/>
+<text x="550" y="255" text-anchor="middle" fill="#666" font-size="12" font-weight="bold">C</text>
 </svg>

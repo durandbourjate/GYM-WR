@@ -1,41 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
-  <rect width="800" height="400" fill="#ffffff" rx="8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#ffffff"/>
 
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">SWOT-Analyse — Ordne die Beispiele zu</text>
+  <!-- Axis labels -->
+  <text x="275" y="35" text-anchor="middle" fill="#666666" font-size="14" font-weight="500">Positiv</text>
+  <text x="575" y="35" text-anchor="middle" fill="#666666" font-size="14" font-weight="500">Negativ</text>
+  <text x="55" y="185" text-anchor="middle" fill="#666666" font-size="14" font-weight="500" transform="rotate(-90,55,185)">Intern</text>
+  <text x="55" y="385" text-anchor="middle" fill="#666666" font-size="14" font-weight="500" transform="rotate(-90,55,385)">Extern</text>
 
-  <!-- Spalte S: Stärken (grün) -->
-  <rect x="20" y="55" width="176" height="328" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="108" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#15803d">Stärken (S)</text>
-  <line x1="38" y1="90" x2="178" y2="90" stroke="#86efac" stroke-width="1"/>
-  <text x="108" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#16a34a">intern · positiv</text>
-  <rect x="33" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="33" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Grid border -->
+  <rect x="100" y="50" width="650" height="420" fill="none" stroke="#999999" stroke-width="2" rx="4"/>
 
-  <!-- Spalte W: Schwächen (rot) -->
-  <rect x="208" y="55" width="176" height="328" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
-  <text x="296" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#dc2626">Schwächen (W)</text>
-  <line x1="226" y1="90" x2="366" y2="90" stroke="#fca5a5" stroke-width="1"/>
-  <text x="296" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#dc2626">intern · negativ</text>
-  <rect x="221" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="221" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Dividers -->
+  <line x1="425" y1="50" x2="425" y2="470" stroke="#d0d0d0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="100" y1="260" x2="750" y2="260" stroke="#d0d0d0" stroke-width="1.5" stroke-dasharray="6,4"/>
 
-  <!-- Spalte O: Chancen (blau) -->
-  <rect x="396" y="55" width="176" height="328" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
-  <text x="484" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#1d4ed8">Chancen (O)</text>
-  <line x1="414" y1="90" x2="554" y2="90" stroke="#93c5fd" stroke-width="1"/>
-  <text x="484" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#1d4ed8">extern · positiv</text>
-  <rect x="409" y="118" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="409" y="162" width="150" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Zone S (top-left) -->
+  <rect x="102" y="52" width="321" height="206" fill="#fafafa" stroke="none"/>
+  <text x="263" y="70" text-anchor="middle" fill="#666666" font-size="18" font-weight="600">S</text>
+  <rect x="115" y="80" width="295" height="165" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,3" rx="4"/>
 
-  <!-- Spalte T: Risiken (orange) -->
-  <rect x="584" y="55" width="196" height="328" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
-  <text x="682" y="80" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#c2410c">Risiken (T)</text>
-  <line x1="602" y1="90" x2="762" y2="90" stroke="#fdba74" stroke-width="1"/>
-  <text x="682" y="108" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#c2410c">extern · negativ</text>
-  <rect x="597" y="118" width="170" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="597" y="162" width="170" height="36" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Zone W (top-right) -->
+  <rect x="427" y="52" width="321" height="206" fill="#fafafa" stroke="none"/>
+  <text x="588" y="70" text-anchor="middle" fill="#666666" font-size="18" font-weight="600">W</text>
+  <rect x="440" y="80" width="295" height="165" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,3" rx="4"/>
 
-  <!-- Hint -->
-  <text x="400" y="392" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Beispiele in das passende SWOT-Feld</text>
+  <!-- Zone O (bottom-left) -->
+  <rect x="102" y="262" width="321" height="206" fill="#fafafa" stroke="none"/>
+  <text x="263" y="280" text-anchor="middle" fill="#666666" font-size="18" font-weight="600">O</text>
+  <rect x="115" y="290" width="295" height="165" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,3" rx="4"/>
+
+  <!-- Zone T (bottom-right) -->
+  <rect x="427" y="262" width="321" height="206" fill="#fafafa" stroke="none"/>
+  <text x="588" y="280" text-anchor="middle" fill="#666666" font-size="18" font-weight="600">T</text>
+  <rect x="440" y="290" width="295" height="165" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4,3" rx="4"/>
 </svg>

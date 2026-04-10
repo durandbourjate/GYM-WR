@@ -1,40 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
-  <rect width="800" height="400" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Geldarten — Ordne die Beispiele zu</text>
-
-  <!-- Spalte 1: Warengeld (gelb/amber) -->
-  <rect x="20" y="56" width="240" height="328" rx="8" fill="#fffbeb" stroke="#fde047" stroke-width="2"/>
-  <text x="140" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#ca8a04">Warengeld</text>
-  <line x1="40" y1="88" x2="240" y2="88" stroke="#fde047" stroke-width="1"/>
-  <text x="140" y="104" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#92400e">Innerer Wert vorhanden</text>
-  <!-- Drop-Slots -->
-  <rect x="35" y="113" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="35" y="163" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="35" y="213" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- Spalte 2: Kreditgeld / Buchgeld (blau) -->
-  <rect x="272" y="56" width="240" height="328" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
-  <text x="392" y="75" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#2563eb">Kreditgeld</text>
-  <text x="392" y="91" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" font-weight="600" fill="#2563eb">(Buchgeld)</text>
-  <line x1="292" y1="100" x2="492" y2="100" stroke="#93c5fd" stroke-width="1"/>
-  <text x="392" y="112" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#1d4ed8">Bankenschöpfung, Kontoguthaben</text>
-  <!-- Drop-Slots -->
-  <rect x="287" y="120" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="287" y="170" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="287" y="220" width="210" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- Spalte 3: Digitales Geld (grün) -->
-  <rect x="524" y="56" width="256" height="328" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="652" y="78" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="14" font-weight="700" fill="#16a34a">Digitales Geld</text>
-  <line x1="544" y1="88" x2="760" y2="88" stroke="#86efac" stroke-width="1"/>
-  <text x="652" y="104" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="10" fill="#15803d">Krypto, Mobile Payment, CBDC</text>
-  <!-- Drop-Slots -->
-  <rect x="539" y="113" width="226" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="539" y="163" width="226" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-  <rect x="539" y="213" width="226" height="40" rx="4" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
-
-  <!-- Hinweis -->
-  <text x="400" y="393" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#94a3b8">Ziehe die Beispiele in die passende Geldart-Kategorie</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui,-apple-system,sans-serif">
+<rect width="800" height="500" fill="#fff"/>
+<text x="400" y="30" text-anchor="middle" fill="#666" font-size="14">Ordne die Begriffe der richtigen Kategorie zu</text>
+<rect x="20" y="50" width="240" height="430" rx="8" fill="#f5f5f5" stroke="#999" stroke-dasharray="6 3"/>
+<text x="140" y="80" text-anchor="middle" fill="#666" font-size="18" font-weight="bold">A</text>
+<rect x="280" y="50" width="240" height="430" rx="8" fill="#f5f5f5" stroke="#999" stroke-dasharray="6 3"/>
+<text x="400" y="80" text-anchor="middle" fill="#666" font-size="18" font-weight="bold">B</text>
+<rect x="540" y="50" width="240" height="430" rx="8" fill="#f5f5f5" stroke="#999" stroke-dasharray="6 3"/>
+<text x="660" y="80" text-anchor="middle" fill="#666" font-size="18" font-weight="bold">C</text>
 </svg>

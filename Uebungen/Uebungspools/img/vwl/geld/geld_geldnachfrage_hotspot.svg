@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="800" height="500" fill="#f5f5f5"/>
+  <!-- Axes -->
+  <line x1="100" y1="420" x2="720" y2="420" stroke="#666" stroke-width="2"/>
+  <line x1="100" y1="420" x2="100" y2="60" stroke="#666" stroke-width="2"/>
+  <polygon points="720,420 710,414 710,426" fill="#666"/>
+  <polygon points="100,60 94,70 106,70" fill="#666"/>
+  <!-- Axis labels -->
+  <text x="400" y="460" text-anchor="middle" font-size="16" fill="#666">Geldmenge</text>
+  <text x="40" y="240" text-anchor="middle" font-size="16" fill="#666" transform="rotate(-90, 40, 240)">Zinssatz</text>
+  <!-- Money supply (vertical line) -->
+  <line x1="400" y1="80" x2="400" y2="415" stroke="#999" stroke-width="2.5"/>
+  <!-- Money demand (downward-sloping curve) -->
+  <path d="M 140 100 C 200 140, 300 220, 400 280 C 500 340, 580 380, 680 400" fill="none" stroke="#999" stroke-width="2.5"/>
+  <!-- Point A: equilibrium (intersection) -->
+  <circle cx="400" cy="280" r="8" fill="#d4d4d4" stroke="#666" stroke-width="2"/>
+  <text x="420" y="270" text-anchor="start" font-size="18" font-weight="bold" fill="#666">A</text>
+  <!-- Point B: on supply line above equilibrium -->
+  <circle cx="400" cy="150" r="8" fill="#d4d4d4" stroke="#666" stroke-width="2"/>
+  <text x="420" y="145" text-anchor="start" font-size="18" font-weight="bold" fill="#666">B</text>
+  <!-- Point C: on demand curve below equilibrium -->
+  <circle cx="560" cy="365" r="8" fill="#d4d4d4" stroke="#666" stroke-width="2"/>
+  <text x="575" y="355" text-anchor="start" font-size="18" font-weight="bold" fill="#666">C</text>
+</svg>

@@ -1,37 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
-  <rect width="800" height="450" fill="#ffffff" rx="8"/>
-
-  <!-- Title -->
-  <text x="400" y="32" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="16" font-weight="700" fill="#1e293b">Handlungsfähigkeit — Beschrifte das Stufenmodell</text>
-
-  <!-- Stufe 1: Handlungsfähig (grün) -->
-  <rect x="60" y="55" width="680" height="80" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
-  <text x="400" y="84" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#15803d">Vollständig wirksame Rechtsgeschäfte möglich</text>
-  <text x="400" y="105" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Kann selbständig Verträge abschliessen, Testament errichten etc.</text>
-  <text x="400" y="123" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Voraussetzungen: → Urteilsfähigkeit + Mündigkeit (Vollendung 18. LJ, Art. 12–14 ZGB)</text>
-
-  <!-- Stufe 2: Beschränkt (orange) -->
-  <rect x="100" y="175" width="600" height="80" rx="8" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>
-  <text x="400" y="204" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#92400e">Nur bestimmte Rechtsgeschäfte (mit Zustimmung ges. Vertr.)</text>
-  <text x="400" y="224" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Eigener Lohn frei verfügbar, Schenkungen bis übliches Mass, Taschengeld</text>
-  <text x="400" y="243" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Voraussetzung: → Urteilsfähig, aber unter 18 Jahren (Art. 19 ff. ZGB)</text>
-
-  <!-- Stufe 3: Handlungsunfähig (rot) -->
-  <rect x="160" y="295" width="480" height="80" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
-  <text x="400" y="324" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="13" font-weight="700" fill="#b91c1c">Keine Rechtsgeschäfte möglich</text>
-  <text x="400" y="344" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="12" fill="#64748b">Gesetzliche Vertretung handelt (Eltern, Beistand)</text>
-  <text x="400" y="363" text-anchor="middle" font-family="'DM Sans',system-ui,sans-serif" font-size="11" fill="#64748b">Voraussetzung: → Urteilsunfähig (Kleinkinder, schwere geistige Beeintr., Art. 16 ZGB)</text>
-
-  <!-- Red numbered circles -->
-  <!-- 1: Handlungsfähigkeit -->
-
-  <!-- 2: Urteilsfähigkeit + Mündigkeit -->
-
-  <!-- 3: Beschränkte Handlungsfähigkeit -->
-
-  <!-- 4: Urteilsfähig aber unmündig -->
-
-  <!-- 5: Handlungsunfähigkeit -->
-
-  <!-- 6: Urteilsunfähig -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="system-ui,-apple-system,sans-serif">
+  <rect width="800" height="500" fill="#fff"/>
+  <!-- Outermost layer -->
+  <ellipse cx="400" cy="270" rx="350" ry="200" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Second layer -->
+  <ellipse cx="400" cy="270" rx="280" ry="160" fill="#fff" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Third layer -->
+  <ellipse cx="400" cy="270" rx="210" ry="120" fill="#f5f5f5" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Inner core -->
+  <ellipse cx="400" cy="270" rx="120" ry="70" fill="#fff" stroke="#e8e8e8" stroke-width="2"/>
+  <!-- Numbered markers -->
+  <circle cx="400" cy="270" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="275" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">1</text>
+  <circle cx="400" cy="185" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="190" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">2</text>
+  <circle cx="550" cy="270" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="550" y="275" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">3</text>
+  <circle cx="640" cy="270" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="640" y="275" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">4</text>
+  <circle cx="400" cy="105" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="400" y="110" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">5</text>
+  <circle cx="250" cy="370" r="14" fill="#e8e8e8" stroke="#999" stroke-width="1.5"/>
+  <text x="250" y="375" text-anchor="middle" fill="#666" font-size="14" font-weight="bold">6</text>
 </svg>
