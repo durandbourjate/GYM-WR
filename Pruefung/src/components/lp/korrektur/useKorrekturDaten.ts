@@ -112,11 +112,18 @@ export function useKorrekturDaten({ pruefungId, userEmail, queueSave, updateKorr
     }
 
     async function lade(): Promise<void> {
-      const [korrekturResult, abgabenResult, pruefungResult] = await Promise.all([
-        apiService.ladeKorrektur(pruefungId, userEmail),
-        apiService.ladeAbgaben(pruefungId, userEmail),
-        apiService.ladePruefung(pruefungId, userEmail),
-      ])
+      let korrekturResult, abgabenResult, pruefungResult
+      try {
+        ;[korrekturResult, abgabenResult, pruefungResult] = await Promise.all([
+          apiService.ladeKorrektur(pruefungId, userEmail),
+          apiService.ladeAbgaben(pruefungId, userEmail),
+          apiService.ladePruefung(pruefungId, userEmail),
+        ])
+      } catch (err) {
+        console.error('Korrektur-Daten laden fehlgeschlagen:', err)
+        setLadeStatus('fehler')
+        return
+      }
 
       if (abgabenResult) setAbgaben(abgabenResult)
       if (pruefungResult) setFragen(pruefungResult.fragen)

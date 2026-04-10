@@ -318,6 +318,7 @@ export interface KontenbestimmungFrage extends FrageBase {
 
 export interface KontoMitSaldo {
   kontonummer: string
+  name?: string
   saldo: number
 }
 

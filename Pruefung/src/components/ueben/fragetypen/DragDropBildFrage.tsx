@@ -3,6 +3,7 @@ import type { FrageKomponenteProps } from './index'
 import type { DragDropBildFrage as DragDropBildFrageTyp } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
 import BildContainer from './shared/BildContainer'
+import { normalizeLabels } from '../../../utils/ueben/normalizeKonten'
 
 export default function DragDropBildFrage({ frage, onAntwort, disabled, feedbackSichtbar, korrekt }: FrageKomponenteProps) {
   // Type narrowing
@@ -10,7 +11,7 @@ export default function DragDropBildFrage({ frage, onAntwort, disabled, feedback
   const ddFrage = frage as DragDropBildFrageTyp
 
   const zielzonen = ddFrage.zielzonen || []
-  const labels = ddFrage.labels || []
+  const labels = normalizeLabels(ddFrage.labels || [])
 
   // Zuordnung: Label (string) → Zone-ID
   const [zuordnungen, setZuordnungen] = useState<Record<string, string>>({})

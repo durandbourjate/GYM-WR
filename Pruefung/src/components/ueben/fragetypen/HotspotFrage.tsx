@@ -15,8 +15,8 @@ export default function HotspotFrage({ frage, onAntwort, disabled, feedbackSicht
   const hsFrage = frage as HotspotFrageTyp
 
   const bereiche = hsFrage.bereiche || []
-  // Alle Bereiche sind korrekte Targets
-  const maxKlicks = bereiche.length
+  // Alle Bereiche sind korrekte Targets — Fallback auf 1, damit bei fehlenden Daten mindestens ein Klick möglich ist
+  const maxKlicks = bereiche.length || 1
 
   const [klicks, setKlicks] = useState<Klick[]>([])
 

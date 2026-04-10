@@ -6,6 +6,44 @@
 
 ---
 
+## Session 73 — Üben-Fragetyp-Crashes + Korrektur-Guard (10.04.2026)
+
+### Stand
+Branch `fix/ueben-fragetypen-korrektur`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **FiBu-Normalisierung (React Error #31)** | |
+| F1 | Shared `normalizeKonten()` + `normalizeLabels()` Utility erstellt | normalizeKonten.ts (neu) |
+| F2 | KontenbestimmungFrage: `konten.map(k => ({nr:k, name:k}))` → `normalizeKonten()` | KontenbestimmungFrage.tsx |
+| F3 | BuchungssatzFrage: gleiche Normalisierung | BuchungssatzFrage.tsx |
+| F4 | TKontoFrage: gleiche Normalisierung für Gegenkonten | TKontoFrage.tsx |
+| **DragDrop-Labels (React Error #31)** | |
+| D1 | Labels-Array normalisiert: Objekte `{id,text,zone}` → Strings | DragDropBildFrage.tsx |
+| **Bilanz UX** | |
+| B1 | `KontoMitSaldo.name?` Feld hinzugefügt + in BilanzFrage angezeigt | fragen.ts (shared + pruefung), BilanzFrage.tsx |
+| **Hotspot UX** | |
+| H1 | `maxKlicks` Fallback auf 1 bei fehlenden Bereiche-Daten | HotspotFrage.tsx |
+| **Korrektur-Guard** | |
+| K1 | try/catch um Korrektur-Daten-Laden (verhindert Crash bei API-Fehler) | useKorrekturDaten.ts |
+
+### Neue Dateien (1)
+- `src/utils/ueben/normalizeKonten.ts` — Shared Normalisierung für Konten + Labels
+
+### Nicht gefixt (braucht Live-Test mit echten Daten)
+- Bildbeschriftung/Hotspot: Code korrekt, Problem ist fehlende Daten in Pool-Konvertierung
+- Zeichnen: `musterloesungBild` wird korrekt gerendert wenn vorhanden, Daten fehlen
+- Aufgabengruppe: `teilaufgaben`-Loading braucht Backend-Verifikation
+- Backup-Export "Keine Daten": Timing-Problem, braucht Live-Test
+
+### Verifiziert
+- ✅ tsc + 209 Tests + Build
+- ✅ App startet ohne Console-Errors im Browser-Preview
+
+---
+
 ## Session 72 — Editor-Crashes + Dropdown-Fix + Cleanup (10.04.2026)
 
 ### Stand

@@ -3,6 +3,7 @@ import type { FrageKomponenteProps } from './index'
 import type { BuchungssatzFrage as BuchungssatzFrageTyp, BuchungssatzZeile } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
 import KontenSelect from './shared/KontenSelect'
+import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
 
 interface Zeile {
   soll: string
@@ -18,7 +19,7 @@ export default function BuchungssatzFrage({ frage, onAntwort, disabled, feedback
   const buchungen = bsFrage.buchungen || []
   const kontenauswahl = bsFrage.kontenauswahl
   // Konten-Liste für KontenSelect aus kontenauswahl extrahieren
-  const konten = (kontenauswahl?.konten || []).map(k => ({ nr: k, name: k }))
+  const konten = normalizeKonten(kontenauswahl?.konten || [])
   const anzahlKorrekt = buchungen.length || 1
 
   const [zeilen, setZeilen] = useState<Zeile[]>(

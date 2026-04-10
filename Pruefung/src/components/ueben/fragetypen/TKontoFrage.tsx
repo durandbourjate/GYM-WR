@@ -3,6 +3,7 @@ import type { FrageKomponenteProps } from './index'
 import type { TKontoFrage as TKontoFrageTyp } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
 import KontenSelect from './shared/KontenSelect'
+import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
 
 interface EintragState {
   gegen: string
@@ -25,7 +26,7 @@ export default function TKontoFrage({ frage, onAntwort, disabled, feedbackSichtb
   const geschaeftsfaelle = tkFrage.geschaeftsfaelle || []
   // Gegenkonten aus kontenauswahl extrahieren
   const kontenauswahl = tkFrage.kontenauswahl
-  const gegenkonten = (kontenauswahl?.konten || []).map(k => ({ nr: k, name: k }))
+  const gegenkonten = normalizeKonten(kontenauswahl?.konten || [])
 
   const [kontenState, setKontenState] = useState<Record<string, KontoState>>(() => {
     const init: Record<string, KontoState> = {}

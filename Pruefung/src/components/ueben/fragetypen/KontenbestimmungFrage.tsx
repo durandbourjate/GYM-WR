@@ -3,6 +3,7 @@ import type { FrageKomponenteProps } from './index'
 import type { KontenbestimmungFrage as KontenbestimmungFrageTyp } from '../../../types/ueben/fragen'
 import FeedbackBox from './FeedbackBox'
 import KontenSelect from './shared/KontenSelect'
+import { normalizeKonten } from '../../../utils/ueben/normalizeKonten'
 
 interface ZuordnungState {
   konto: string
@@ -15,7 +16,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
   const kbFrage = frage as KontenbestimmungFrageTyp
 
   const kontenauswahl = kbFrage.kontenauswahl
-  const konten = (kontenauswahl?.konten || []).map(k => ({ nr: k, name: k }))
+  const konten = normalizeKonten(kontenauswahl?.konten || [])
   const aufgaben = kbFrage.aufgaben || []
 
   const [zuordnungen, setZuordnungen] = useState<ZuordnungState[][]>(() =>
