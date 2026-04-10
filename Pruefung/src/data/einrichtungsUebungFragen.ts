@@ -1,7 +1,8 @@
 import type { Frage } from '../types/fragen.ts'
+import { DEMO_AUTOR_EMAIL } from './demoConfig.ts'
 
 const jetzt = '2026-04-05T00:00:00.000Z'
-const autor = 'yannick.durand@gymhofwil.ch'
+const autor = DEMO_AUTOR_EMAIL
 
 // ═══════════════════════════════════════════════════════════════
 // Einführungsübung — ExamLab Üben kennenlernen

@@ -6,6 +6,65 @@
 
 ---
 
+## Session 75 — Einstellungen + Stammdaten + Hardcoded-Audit (10.04.2026)
+
+### Stand
+Branch `feature/einstellungen-stammdaten`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Stammdaten-System (neu)** | |
+| S1 | `Stammdaten`-Typen: Admins, Klassen, Kurse, Fächer, Gefässe, Fachschaften | stammdaten.ts (neu) |
+| S2 | `DEFAULT_STAMMDATEN` mit Gym-Hofwil-Daten (DUY-Kurse, 16 Fächer, Fachbereich-Tags) | stammdaten.ts (neu) |
+| S3 | `stammdatenStore.ts` — Zustand Store mit Laden/Speichern + Admin-Check | stammdatenStore.ts (neu) |
+| S4 | 4 Apps Script Endpoints: ladeStammdaten, speichereStammdaten, ladeLPProfil, speichereLPProfil | apps-script-code.js |
+| S5 | Stammdaten-Tab + LP-Profile-Tab im CONFIGS-Sheet (Key-Value mit JSON) | apps-script-code.js |
+| **Hardcoded-Audit** | |
+| H1 | `demoConfig.ts` erstellt: DEMO_KURS_ID, DEMO_PRUEFUNG_ID, DEMO_AUTOR_EMAIL | demoConfig.ts (neu) |
+| H2 | `einrichtungsPruefung.ts`: hardcoded `sf-wr-27a28f` → `DEMO_KURS_ID` | einrichtungsPruefung.ts |
+| H3 | `einrichtungsUebung.ts`: hardcoded `sf-wr-27a28f` → `DEMO_KURS_ID` | einrichtungsUebung.ts |
+| H4 | `demoKorrektur.ts`: hardcoded kursId + pruefungId → `DEMO_KURS_ID` / `DEMO_PRUEFUNG_ID` | demoKorrektur.ts |
+| H5 | `einrichtungsFragen.ts` + `einrichtungsUebungFragen.ts`: Autor → `DEMO_AUTOR_EMAIL` | einrichtungsFragen.ts, einrichtungsUebungFragen.ts |
+| H6 | Test-Datei: hardcoded Email → `test-lp@gymhofwil.ch` | themenSichtbarkeit.test.ts |
+| **Einstellungen-Panel (Umbau)** | |
+| E1 | Komplett umgebaut: "Mein Profil" (Fachschaften, Kurse, Gefässe wählen) + "Admin" (Stammdaten verwalten) | EinstellungenPanel.tsx |
+| E2 | Admin-Check: `stammdaten.admins.includes(email)` statt hardcoded | EinstellungenPanel.tsx |
+| E3 | "Pool-Themen migrieren"-Button entfernt | EinstellungenPanel.tsx |
+| E4 | CheckboxChip + SettingsField Shared Components | EinstellungenPanel.tsx |
+| **Stammdaten-Integration** | |
+| I1 | `fachUtils.ts`: `fachschaftZuFach()` + `schulFachbereiche()` mit Stammdaten-Fallback | fachUtils.ts |
+| I2 | `useFragenFilter.ts`: `SCHUL_FACHBEREICHE` aus `schulFachbereiche()` statt hardcoded Set | useFragenFilter.ts |
+
+### Neue Dateien (3)
+- `src/data/demoConfig.ts` — Demo-Konstanten (DEMO_KURS_ID, DEMO_PRUEFUNG_ID, DEMO_AUTOR_EMAIL)
+- `src/types/stammdaten.ts` — Stammdaten-Typen + DEFAULT_STAMMDATEN
+- `src/store/stammdatenStore.ts` — Stammdaten Zustand Store
+
+### ⚠ Apps Script Deploy nötig
+- `ladeStammdaten`: Liest Key-Value-Paare aus neuem "Stammdaten"-Tab
+- `speichereStammdaten`: Nur Admins, schreibt in "Stammdaten"-Tab
+- `ladeLPProfil`: Liest LP-Profil aus "LP-Profile"-Tab
+- `speichereLPProfil`: Speichert LP-Profil in "LP-Profile"-Tab
+- **Tabs werden automatisch erstellt** beim ersten Schreibzugriff
+
+### Verifiziert
+- ✅ tsc -b grün (0 Errors)
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ✅ Kein `yannick.durand@gymhofwil.ch` mehr in Source (nur in demoConfig.ts + DEFAULT_STAMMDATEN)
+- ✅ Kein `sf-wr-27a28f` mehr in Source (nur in demoConfig.ts + DEFAULT_STAMMDATEN)
+
+### Offen (Folge-Sessions)
+- Prüfung/Übung bearbeiten: "Fachbereiche" → "Fach", Gesamtpunkte auto-berechnen
+- Kurse CRUD im Admin-Tab (aktuell nur Anzeige)
+- Fächer/Fachschaften CRUD im Admin-Tab (aktuell nur Anzeige)
+- LP-Profil laden beim Login (automatisch)
+- Stammdaten-Tab initial befüllen (manuell oder Import-Script)
+
+---
+
 ## Session 74 — Navigation & Kopfzeile (10.04.2026)
 
 ### Stand

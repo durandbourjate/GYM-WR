@@ -1,6 +1,7 @@
 import type { SchuelerAbgabe, PruefungsKorrektur, FragenBewertung } from '../types/korrektur.ts'
 import type { Antwort } from '../types/antworten.ts'
 import { einrichtungsFragen } from './einrichtungsFragen.ts'
+import { DEMO_KURS_ID, DEMO_PRUEFUNG_ID } from './demoConfig.ts'
 
 /**
  * Demo-Abgaben und -Korrekturdaten für die LP-Ansicht im Demo-Modus.
@@ -325,10 +326,10 @@ export function erstelleDemoKorrektur(): PruefungsKorrektur {
   const maxPunkte = Object.values(beatBewertungen).reduce((s, b) => s + b.maxPunkte, 0)
 
   return {
-    pruefungId: 'einrichtung-sf-wr-27a28f',
+    pruefungId: DEMO_PRUEFUNG_ID,
     pruefungTitel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
     datum: '2026-03-24',
-    klasse: 'sf-wr-27a28f',
+    klasse: DEMO_KURS_ID,
     schueler: [
       {
         email: 'beat.beispiel@stud.gymhofwil.ch',

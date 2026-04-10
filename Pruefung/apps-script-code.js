@@ -751,6 +751,7 @@ function doPost(e) {
     'importierePoolFragen', 'schreibePoolAenderung', 'setzeBerechtigungen',
     'dupliziereFrage', 'duplizierePruefung', 'korrekturFreigeben', 'resetPruefung',
     'uploadAnhang', 'uploadMaterial',
+    'ladeStammdaten', 'speichereStammdaten', 'ladeLPProfil', 'speichereLPProfil',
   ];
   if (LP_AKTIONEN.indexOf(action) >= 0) {
     if (!body.email || !istZugelasseneLP(body.email)) {
@@ -1010,6 +1011,16 @@ function doPost(e) {
       return lernplattformLadeLernzieleV2(body);
     case 'lernplattformSpeichereLernziel':
       return lernplattformSpeichereLernziel(body);
+
+    // === STAMMDATEN ===
+    case 'ladeStammdaten':
+      return ladeStammdatenEndpoint(body);
+    case 'speichereStammdaten':
+      return speichereStammdatenEndpoint(body);
+    case 'ladeLPProfil':
+      return ladeLPProfilEndpoint(body);
+    case 'speichereLPProfil':
+      return speichereLPProfilEndpoint(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
@@ -8364,5 +8375,187 @@ function lernplattformSpeichereLernziel(body) {
     return jsonResponse({ success: true, data: { id: lz.id } });
   } catch (e) {
     return jsonResponse({ success: false, error: 'Lernziel speichern: ' + e.message });
+  }
+}
+
+// ============================================================
+// STAMMDATEN — Schulweite Konfiguration
+// Tab "Stammdaten" im CONFIGS-Sheet: key | value (JSON)
+// Tab "LP-Profile" im CONFIGS-Sheet: email | profil (JSON)
+// ============================================================
+
+var STAMMDATEN_TAB = 'Stammdaten';
+var LP_PROFILE_TAB = 'LP-Profile';
+
+/**
+ * Liest Stammdaten aus dem Stammdaten-Tab.
+ * Jede Zeile: key (string) | value (JSON string)
+ * Zusammengesetzt ergibt sich das Stammdaten-Objekt.
+ */
+function ladeStammdatenEndpoint(body) {
+  try {
+    var email = body.callerEmail;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var ss = SpreadsheetApp.openById(CONFIGS_ID);
+    var sheet = ss.getSheetByName(STAMMDATEN_TAB);
+    if (!sheet) {
+      // Tab existiert noch nicht → Default-Stammdaten zurückgeben
+      return jsonResponse({ stammdaten: null });
+    }
+    var data = sheet.getDataRange().getValues();
+    if (data.length <= 1) {
+      return jsonResponse({ stammdaten: null });
+    }
+    var stammdaten = {};
+    for (var i = 1; i < data.length; i++) {
+      var key = String(data[i][0]).trim();
+      var valStr = String(data[i][1]).trim();
+      if (key && valStr) {
+        try {
+          stammdaten[key] = JSON.parse(valStr);
+        } catch (e2) {
+          stammdaten[key] = valStr;
+        }
+      }
+    }
+    return jsonResponse({ stammdaten: stammdaten });
+  } catch (e) {
+    return jsonResponse({ error: 'Stammdaten laden: ' + e.message });
+  }
+}
+
+/**
+ * Speichert Stammdaten (nur Admins).
+ * Erwartet body.stammdaten als Partial<Stammdaten>.
+ */
+function speichereStammdatenEndpoint(body) {
+  try {
+    var email = body.callerEmail;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    // Admin-Check: Lese bestehende Admins oder verwende Fallback
+    var admins = ladeStammdatenKey_('admins') || ['yannick.durand@gymhofwil.ch'];
+    if (admins.indexOf(email.toLowerCase()) < 0) {
+      return jsonResponse({ error: 'Nur Admins dürfen Stammdaten bearbeiten' });
+    }
+    var daten = body.stammdaten;
+    if (!daten || typeof daten !== 'object') {
+      return jsonResponse({ error: 'stammdaten-Objekt fehlt' });
+    }
+    var ss = SpreadsheetApp.openById(CONFIGS_ID);
+    var sheet = ss.getSheetByName(STAMMDATEN_TAB);
+    if (!sheet) {
+      sheet = ss.insertSheet(STAMMDATEN_TAB);
+      sheet.appendRow(['key', 'value']);
+    }
+    var data = sheet.getDataRange().getValues();
+    var keys = Object.keys(daten);
+    for (var k = 0; k < keys.length; k++) {
+      var key = keys[k];
+      var valStr = JSON.stringify(daten[key]);
+      var found = false;
+      for (var i = 1; i < data.length; i++) {
+        if (String(data[i][0]).trim() === key) {
+          sheet.getRange(i + 1, 2).setValue(valStr);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        sheet.appendRow([key, valStr]);
+        data.push([key, valStr]); // Für nachfolgende Keys
+      }
+    }
+    return jsonResponse({ success: true });
+  } catch (e) {
+    return jsonResponse({ error: 'Stammdaten speichern: ' + e.message });
+  }
+}
+
+/** Hilfsfunktion: Liest einen einzelnen Stammdaten-Key */
+function ladeStammdatenKey_(key) {
+  try {
+    var ss = SpreadsheetApp.openById(CONFIGS_ID);
+    var sheet = ss.getSheetByName(STAMMDATEN_TAB);
+    if (!sheet) return null;
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]).trim() === key) {
+        try { return JSON.parse(String(data[i][1])); } catch (e2) { return String(data[i][1]); }
+      }
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Liest LP-Profil (eigene Kurs-/Fachzuordnung).
+ */
+function ladeLPProfilEndpoint(body) {
+  try {
+    var email = body.callerEmail;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var ss = SpreadsheetApp.openById(CONFIGS_ID);
+    var sheet = ss.getSheetByName(LP_PROFILE_TAB);
+    if (!sheet) {
+      return jsonResponse({ profil: null });
+    }
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]).trim().toLowerCase() === email.toLowerCase()) {
+        try {
+          var profil = JSON.parse(String(data[i][1]));
+          return jsonResponse({ profil: profil });
+        } catch (e2) {
+          return jsonResponse({ profil: null });
+        }
+      }
+    }
+    return jsonResponse({ profil: null });
+  } catch (e) {
+    return jsonResponse({ error: 'LP-Profil laden: ' + e.message });
+  }
+}
+
+/**
+ * Speichert LP-Profil (eigene Einstellungen).
+ */
+function speichereLPProfilEndpoint(body) {
+  try {
+    var email = body.callerEmail;
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var profil = body.profil;
+    if (!profil || typeof profil !== 'object') {
+      return jsonResponse({ error: 'profil-Objekt fehlt' });
+    }
+    profil.email = email.toLowerCase();
+    var ss = SpreadsheetApp.openById(CONFIGS_ID);
+    var sheet = ss.getSheetByName(LP_PROFILE_TAB);
+    if (!sheet) {
+      sheet = ss.insertSheet(LP_PROFILE_TAB);
+      sheet.appendRow(['email', 'profil']);
+    }
+    var data = sheet.getDataRange().getValues();
+    var profilStr = JSON.stringify(profil);
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]).trim().toLowerCase() === email.toLowerCase()) {
+        sheet.getRange(i + 1, 2).setValue(profilStr);
+        return jsonResponse({ success: true });
+      }
+    }
+    // Neu
+    sheet.appendRow([email.toLowerCase(), profilStr]);
+    return jsonResponse({ success: true });
+  } catch (e) {
+    return jsonResponse({ error: 'LP-Profil speichern: ' + e.message });
   }
 }

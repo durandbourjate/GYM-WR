@@ -13,7 +13,7 @@ describe('ThemenSichtbarkeit Typen', () => {
       thema: 'Konjunktur',
       status: 'aktiv',
       aktiviertAm: '2026-04-07T00:00:00.000Z',
-      aktiviertVon: 'yannick.durand@gymhofwil.ch',
+      aktiviertVon: 'test-lp@gymhofwil.ch',
       typ: 'manuell',
     }
     expect(eintrag.fach).toBe('VWL')

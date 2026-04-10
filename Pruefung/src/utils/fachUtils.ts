@@ -1,4 +1,34 @@
 import type { Tag } from '../types/tags'
+import { DEFAULT_STAMMDATEN, type Stammdaten } from '../types/stammdaten'
+
+/** Fachschaft-Kürzel → Fach-Name aus Stammdaten (mit Fallback auf Default) */
+export function fachschaftZuFach(kuerzel: string, stammdaten?: Stammdaten): string {
+  const sd = stammdaten ?? DEFAULT_STAMMDATEN
+  const fach = sd.faecher.find(f => f.kuerzel === kuerzel)
+  if (fach) return fach.name
+  return FACHSCHAFT_ZU_FACH[kuerzel] || 'Allgemein'
+}
+
+/** Fachbereiche aus Stammdaten lesen (alle Fachbereich-Tags aller Fachschaften) */
+export function schulFachbereiche(stammdaten?: Stammdaten): Set<string> {
+  const sd = stammdaten ?? DEFAULT_STAMMDATEN
+  const bereiche = new Set<string>()
+  for (const fs of sd.fachschaften) {
+    if (fs.fachbereichTags) {
+      for (const tag of fs.fachbereichTags) {
+        bereiche.add(tag.name)
+      }
+    }
+  }
+  // Fallback: WR-Fachbereiche
+  if (bereiche.size === 0) {
+    bereiche.add('VWL')
+    bereiche.add('BWL')
+    bereiche.add('Recht')
+    bereiche.add('Informatik')
+  }
+  return bereiche
+}
 
 /** Tailwind Badge-Klassen für einen Tag */
 export function tagBadgeKlassen(tag: Tag): string {

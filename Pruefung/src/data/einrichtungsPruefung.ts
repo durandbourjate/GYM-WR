@@ -1,10 +1,11 @@
 import type { PruefungsConfig } from '../types/pruefung.ts'
+import { DEMO_KURS_ID, DEMO_PRUEFUNG_ID } from './demoConfig.ts'
 
 export const einrichtungsPruefung: PruefungsConfig = {
-  id: 'einrichtung-sf-wr-27a28f',
+  id: DEMO_PRUEFUNG_ID,
   titel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
 
-  klasse: 'sf-wr-27a28f',
+  klasse: DEMO_KURS_ID,
   gefaess: 'SF',
   semester: 'S5',
   fachbereiche: ['VWL', 'BWL', 'Recht'],

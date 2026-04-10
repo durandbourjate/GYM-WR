@@ -10,13 +10,14 @@ import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/frag
 /** Typ der sowohl für Frage als auch FrageSummary funktioniert (Filter braucht nur diese Felder) */
 type FilterbareFrage = Frage | FrageSummary
 import { poolTitel } from '../utils/poolTitelMapping'
+import { schulFachbereiche } from '../utils/fachUtils'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
 export type FilterQuelle = 'alle' | 'meine' | 'fachschaft' | 'schule' | 'pool'
 export type FilterPoolStatus = 'alle' | 'ungeprueft' | 'pool_geprueft' | 'pruefungstauglich' | 'update'
 export type FilterKontext = 'alle' | 'schule' | 'privat'
 
-const SCHUL_FACHBEREICHE = new Set(['VWL', 'BWL', 'Recht', 'Informatik'])
+const SCHUL_FACHBEREICHE = schulFachbereiche()
 
 const SEITEN_GROESSE = 30
 
