@@ -87,7 +87,7 @@ export default function BilanzFrage({ frage, onAntwort, disabled, feedbackSichtb
                   <span className="font-mono text-xs text-slate-500 dark:text-slate-400 mr-2">{k.kontonummer}</span>
                   {k.name && <span className="text-sm mr-2">{k.name}</span>}
                 </span>
-                <span className="font-mono text-sm dark:text-white">{k.saldo.toLocaleString('de-CH')}</span>
+                <span className="font-mono text-sm dark:text-white">{(typeof k.saldo === 'number' ? k.saldo : parseFloat(String(k.saldo)) || 0).toLocaleString('de-CH')}</span>
               </button>
             )
           })}

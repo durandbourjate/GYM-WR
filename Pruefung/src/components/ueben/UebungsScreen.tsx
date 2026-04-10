@@ -2,6 +2,7 @@ import { useEffect, useCallback } from 'react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { useUebenNavigationStore } from '../../store/ueben/navigationStore'
 import { FRAGETYP_KOMPONENTEN } from './fragetypen'
+import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import { getFragetext, bereinigePlatzhalter } from '../../utils/ueben/fragetext'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
@@ -52,7 +53,9 @@ export default function UebungsScreen() {
 
   if (!session || !frage) return null
 
-  const Komponente = FRAGETYP_KOMPONENTEN[frage.typ]
+  // Daten normalisieren (fehlende Felder mit Defaults füllen)
+  const normFrage = normalisiereFrageDaten(frage)
+  const Komponente = FRAGETYP_KOMPONENTEN[normFrage.typ]
   const istBeantwortet = frage.id in session.antworten
   const fortschritt = Object.keys(session.antworten).length
 
@@ -91,7 +94,7 @@ export default function UebungsScreen() {
           {/* Fragetyp-Komponente */}
           {Komponente ? (
             <Komponente
-              frage={frage}
+              frage={normFrage}
               onAntwort={beantworte}
               disabled={istBeantwortet}
               feedbackSichtbar={feedbackSichtbar}

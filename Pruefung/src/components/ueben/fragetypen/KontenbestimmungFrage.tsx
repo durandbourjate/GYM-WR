@@ -20,7 +20,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
   const aufgaben = kbFrage.aufgaben || []
 
   const [zuordnungen, setZuordnungen] = useState<ZuordnungState[][]>(() =>
-    aufgaben.map(a => a.erwarteteAntworten.map(() => ({ konto: '', seite: '' as const })))
+    aufgaben.map(a => (a.erwarteteAntworten || [{}]).map(() => ({ konto: '', seite: '' as const })))
   )
 
   const updateZuordnung = (aufgabeIdx: number, zeileIdx: number, feld: 'konto' | 'seite', wert: string) => {
@@ -48,7 +48,7 @@ export default function KontenbestimmungFrage({ frage, onAntwort, disabled, feed
   return (
     <div className="space-y-4">
       {aufgaben.map((aufgabe, ai) => {
-        const korrektZeilen = aufgabe.erwarteteAntworten
+        const korrektZeilen = aufgabe.erwarteteAntworten || []
 
         return (
           <div key={ai} className="p-3 rounded-xl border border-slate-200 dark:border-slate-600 space-y-2">

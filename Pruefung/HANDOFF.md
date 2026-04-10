@@ -6,6 +6,58 @@
 
 ---
 
+## Session 83 — Üben-Fragetypen Daten-Normalisierung (Block B) (10.04.2026)
+
+### Stand
+Branch `fix/ueben-fragetypen-shared`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Daten-Normalisierung** | |
+| N1 | `fragetypNormalizer.ts` (neu): Normalisiert alle 6 Üben-Fragetyp-Daten vor dem Rendern | fragetypNormalizer.ts |
+| N2 | UebungsScreen: `normalisiereFrageDaten(frage)` vor Komponenten-Rendering | UebungsScreen.tsx |
+| **T-Konto** | |
+| T1 | Fallback: Wenn `kontenauswahl.konten` leer → automatisch aus `konten`-Definitionen ableiten | fragetypNormalizer.ts |
+| **Kontenbestimmung** | |
+| K1 | `erwarteteAntworten` mit `|| [{}]` abgesichert (kein map-Crash mehr) | KontenbestimmungFrage.tsx |
+| K2 | `korrektZeilen` mit `|| []` abgesichert | KontenbestimmungFrage.tsx |
+| **Bildbeschriftung** | |
+| B1 | `beschriftungen` Array normalisiert (id, position, korrekt sichergestellt) | fragetypNormalizer.ts |
+| **DragDrop-Bild** | |
+| D1 | `zielzonen` + `labels` normalisiert (position, korrektesLabel, String-Labels) | fragetypNormalizer.ts |
+| **Bilanz** | |
+| BL1 | `saldo` Type-Guard: `toLocaleString()` nur auf echtem Number | BilanzFrage.tsx |
+| BL2 | `kontenMitSaldi` normalisiert (name, saldo als Number) | fragetypNormalizer.ts |
+| **Hotspot** | |
+| H1 | Koordinaten-Normalisierung: Werte 0-1 → 0-100 (Prozent) automatisch skaliert | fragetypNormalizer.ts |
+| H2 | `bereiche.koordinaten.radius` Fallback auf 5 | fragetypNormalizer.ts |
+
+### Neue Dateien (1)
+- `src/utils/ueben/fragetypNormalizer.ts` — Daten-Normalisierung für alle 6 Fragetypen
+
+### Geänderte Dateien (3)
+- `src/components/ueben/UebungsScreen.tsx` — Normalisierung vor Rendering
+- `src/components/ueben/fragetypen/KontenbestimmungFrage.tsx` — Defensive Guards
+- `src/components/ueben/fragetypen/BilanzFrage.tsx` — saldo Type-Guard
+
+### Verifiziert
+- ✅ tsc -b grün
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ⬜ Browser-Test: T-Konto Dropdowns gefüllt
+- ⬜ Browser-Test: Kontenbestimmung kein map-Error
+- ⬜ Browser-Test: Bildbeschriftung Felder sichtbar
+- ⬜ Browser-Test: DragDrop Zonen klickbar
+- ⬜ Browser-Test: Bilanz Toggle einzeln
+- ⬜ Browser-Test: Hotspot Positionen korrekt
+
+### Hinweis
+Die Normalisierung löst Daten-Qualitäts-Probleme. Falls im Browser-Test noch Probleme auftreten, liegt es an den **Quell-Daten** (Pool-Konvertierung oder Apps Script). In dem Fall müssen die Daten in den Sheets/Pools geprüft werden.
+
+---
+
 ## Session 82 — Browser-Test Bugfixes Block A+C (10.04.2026)
 
 ### Stand
