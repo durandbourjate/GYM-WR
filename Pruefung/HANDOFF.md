@@ -6,6 +6,44 @@
 
 ---
 
+## Session 81 — Store-Migration + LP-Favoriten + Stammdaten-Erstbefüllung (10.04.2026)
+
+### Stand
+Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Store-Migration** | |
+| S1 | LPStartseite: 10 useState-Hooks (ansicht, modus, vorherigerModus, listenTab, uebungsTab, zeigHilfe, zeigEinstellungen, composerKey) → useLPNavigationStore migriert | LPStartseite.tsx |
+| S2 | lpNavigationStore erweitert: listenTab, uebungsTab, zeigHilfe, zeigEinstellungen, composerKey, neuerComposerKey(), toggleHilfe() | lpNavigationStore.ts |
+| **LP-Favoriten** | |
+| F1 | ⭐-Button auf jeder PruefungsKarte (☆/⭐ Toggle, localStorage-persistiert) | LPStartseite.tsx |
+| F2 | Favoriten-Sektion (amber-farbig) vor "Zuletzt" in Prüfungen-Liste und in Übungen-Liste | LPStartseite.tsx |
+| F3 | Favoriten-State im lpNavigationStore: favoriten[], toggleFavorit(), istFavorit() | lpNavigationStore.ts |
+| **Stammdaten-Erstbefüllung** | |
+| D1 | Auto-Befüllung: Wenn Backend keine Stammdaten hat und LP ein Admin ist → DEFAULT_STAMMDATEN automatisch ins Backend schreiben | stammdatenStore.ts |
+
+### Geänderte Dateien (3)
+- `src/components/lp/LPStartseite.tsx` — Store-Migration + Favoriten-Button + Favoriten-Sektionen
+- `src/store/lpNavigationStore.ts` — Erweitert um Sub-Tabs, UI-Panels, Favoriten
+- `src/store/stammdatenStore.ts` — Auto-Befüllung mit Defaults
+
+### Verifiziert
+- ✅ tsc -b grün
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ⬜ Browser-Test: ⭐-Button auf Prüfungskarten sichtbar + Toggle funktioniert
+- ⬜ Browser-Test: Favoriten-Sektion erscheint wenn Favoriten gesetzt
+- ⬜ Browser-Test: Modus/Tab-Wechsel funktioniert weiterhin nach Store-Migration
+
+### Offen (Folge-Sessions)
+- Browser-Tests für Session 79–81 Features
+- Weitere UX-Verbesserungen nach User-Feedback
+
+---
+
 ## Session 80 — Admin-CRUD + LP-Profil Auto-Load + Fach/Punkte (10.04.2026)
 
 ### Stand
