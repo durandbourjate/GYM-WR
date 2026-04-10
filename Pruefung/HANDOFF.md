@@ -6,6 +6,39 @@
 
 ---
 
+## Session 72 — Editor-Crashes + Dropdown-Fix + Cleanup (10.04.2026)
+
+### Stand
+Branch `fix/editor-array-undefined-crashes`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Editor-Crashes (Session 1 aus IMPROVEMENT_PLAN)** | |
+| E1 | `tags.join()` Crash gefixt: `(frage?.tags ?? []).join()` | SharedFragenEditor.tsx |
+| E2 | 14 Array-Felder mit `?? []` abgesichert (luecken, optionen, paare, aussagen, ergebnisse, buchungen, konten, aufgaben, elemente, bereiche, beschriftungen, zielzonen, labels, kontenMitSaldi) | SharedFragenEditor.tsx |
+| E3 | DragDropBildEditor: 3 unsichere `labels`-Zugriffe gefixt | DragDropBildEditor.tsx |
+| **Dropdown-Bug** | |
+| D1 | `alleStats` (ungefiltert) hinzugefügt — Fach/Typ-Dropdowns zeigen immer alle Optionen | useFragenFilter.ts, FragenBrowserHeader.tsx, FragenBrowser.tsx |
+| **Cleanup** | |
+| C1 | 191 macOS-Duplikat-Dateien (`" 2.svg"`) gelöscht | pool-bilder/ |
+| C2 | 8 alte `lernen/`-Verzeichnisse + `AppLernen.tsx` gelöscht (toter Code nach Rename Session 68) | src/ |
+
+### Verifiziert im Browser (Preview)
+- ✅ App startet ohne Fehler
+- ✅ Fragensammlung-Editor: Alle 6 crash-gefährdeten Typen (Lückentext, Bildbeschriftung, DragDrop, Hotspot, Kontenbestimmung, T-Konto) wechselbar ohne Crash
+- ✅ Keine Console-Errors
+
+### Offen (nächste Session)
+- Session 2: Üben-Modus Fragetyp-Crashes + Korrektur-Bug
+- Session 3: Navigation & Kopfzeile
+- Session 4: Einstellungen + Stammdaten + Hardcoded-Audit
+- Session 5: UX-Polish + Analyse-Verbesserungen
+- Session 6: Performance + Erweiterte Features
+
+---
+
 ## Session 71 — Grosses Bugfix & Feature-Paket (07.04.2026)
 
 ### Stand
@@ -339,6 +372,23 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 - **Tier 2 Features (später):** Diktat, GeoGebra/Desmos, Randomisierte Zahlenvarianten, Code-Ausführung (Sandbox)
 - **TaF Phasen-UI** — klassenTyp-Feld vorhanden, UI für Phasen-Auswahl noch nicht (auf nächstes SJ verschoben)
 - **Monitoring-Verzögerung ~28s** — Abwarten, aktuell akzeptabel
+
+### Verbesserungsplan (55 Punkte, 6 Sessions) — 10.04.2026
+
+> Detaillierter Plan: **`IMPROVEMENT_PLAN.md`** (gleiches Verzeichnis)
+> Basiert auf User-Testing vom 10.04.2026.
+
+| Session | Branch | Inhalt | Status |
+|---------|--------|--------|--------|
+| **1** | `fix/editor-array-undefined-crashes` | Fragensammlung-Editor Crashes: 6 Fragetypen (Lückentext, Bildbeschriftung, DragDrop, Hotspot, Kontenbestimmung, T-Konto) + Dropdown-Vereinheitlichung | offen |
+| **2** | `fix/ueben-fragetypen-korrektur` | Üben-Modus Crashes: 9 Fragetypen (FiBu, Bilanz, DragDrop, Hotspot, Zeichnen, Aufgabengruppe) + Korrektur-Loading-Bug + Backup-Export | offen |
+| **3** | `feature/navigation-breadcrumbs` | Navigation & Kopfzeile: Zurück-Stack, Breadcrumbs, persistente Kopfzeile, Favoriten, Loading-Skeleton | offen |
+| **4** | `feature/einstellungen-stammdaten` | Einstellungen-Menü: Stammdaten-System, LP-Profil, Hardcoded-Audit, Prüfungs-Einstellungen | offen |
+| **5** | `feature/ux-polish` | UX-Polish: Analyse-Tab, Vorschau, Drag-Handles, Fragetyp-Labels, SuS-Üben UX | offen |
+| **6** | `feature/performance-features` | Performance (~25s Laden), Problem-Melden-Kontext, Excel-Import, Prefetching, Lernziele | offen |
+
+**Reihenfolge:** 1 → 2 → 3 → 4 → 5 → 6 (1+3 oder 1+4 können parallel)
+**Priorität bei Zeitmangel:** Sessions 1–3 sind kritisch, Session 4 architektonisch wichtig.
 
 ### Strategische Features (alle erledigt ✅ Session 70)
 - ~~Einstellungen-Panel~~ ✅ Gruppenname editierbar, Rollen verwalten, Mastery-Schwellwerte

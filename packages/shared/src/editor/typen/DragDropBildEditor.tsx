@@ -19,7 +19,7 @@ interface Props {
 export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, setZielzonen, labels, setLabels }: Props) {
   const [ersteEcke, setErsteEcke] = useState<{ x: number; y: number } | null>(null)
   const [editZone, setEditZone] = useState<string | null>(null)
-  const [labelsText, setLabelsText] = useState(labels.join(', '))
+  const [labelsText, setLabelsText] = useState((labels ?? []).join(', '))
 
   const handleBildKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -166,9 +166,9 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
         </p>
       </div>
 
-      {zielzonen.length > 0 && labels.length > 0 && (
+      {zielzonen.length > 0 && (labels ?? []).length > 0 && (
         (() => {
-          const fehlend = zielzonen.filter(z => !labels.includes(z.korrektesLabel))
+          const fehlend = zielzonen.filter(z => !(labels ?? []).includes(z.korrektesLabel))
           if (fehlend.length === 0) return null
           return (
             <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">

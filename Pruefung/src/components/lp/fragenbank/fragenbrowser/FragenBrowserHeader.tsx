@@ -9,6 +9,8 @@ interface Props {
   ladeStatus: 'laden' | 'fertig'
   gefilterteFragen: (Frage | FrageSummary)[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
+  /** Ungefilterte Stats — für Dropdown-Optionen, damit alle Werte immer sichtbar bleiben */
+  alleStats?: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   verfuegbareThemen: [string, number][]
   verfuegbareUnterthemen: [string, number][]
   aktiveFilter: number
@@ -64,7 +66,7 @@ interface Props {
 
 /** Header mit Suche, Filter, Sortierung und Aktions-Buttons */
 export default function FragenBrowserHeader({
-  ladeStatus, gefilterteFragen, stats, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter, seitenGroesse,
+  ladeStatus, gefilterteFragen, stats, alleStats: alleStatsProp, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter, seitenGroesse,
   suchtext, setSuchtext,
   filterFachbereich, setFilterFachbereich,
   filterTyp, setFilterTyp,
@@ -84,6 +86,9 @@ export default function FragenBrowserHeader({
   listeRef,
   inline,
 }: Props) {
+  // Ungefilterte Stats für Dropdown-Optionen (Fallback auf gefilterte Stats)
+  const dropdownStats = alleStatsProp ?? stats
+
   const [exportOffen, setExportOffen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
 
@@ -203,8 +208,7 @@ export default function FragenBrowserHeader({
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
           >
             <option value="">Fach</option>
-            {Array.from(stats.fachbereiche.entries())
-              .filter(([, count]) => count > 0)
+            {Array.from(dropdownStats.fachbereiche.entries())
               .map(([fb, count]) => (
                 <option key={fb} value={fb}>{fb} ({count})</option>
               ))}
@@ -241,7 +245,7 @@ export default function FragenBrowserHeader({
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="">Typ</option>
-          {Array.from(stats.typen.entries())
+          {Array.from(dropdownStats.typen.entries())
             .sort((a, b) => b[1] - a[1])
             .map(([typ, anzahl]) => (
               <option key={typ} value={typ}>{typLabel(typ)} ({anzahl})</option>

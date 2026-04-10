@@ -81,6 +81,7 @@ interface FragenFilterErgebnis {
   sortierteFragen: FilterbareFrage[]
   gruppierteAnzeige: { key: string; label: string; fragen: FilterbareFrage[] }[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
+  alleStats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   aktiveFilter: number
 
   // Aktionen
@@ -235,7 +236,7 @@ export function useFragenFilter(
     }))
   }, [sortierteFragen, gruppierung, angezeigteMenge])
 
-  // Statistiken für Header
+  // Statistiken für Header (gefiltert — zeigt Anzahl der aktuell sichtbaren Fragen)
   const stats = useMemo(() => {
     const fachbereiche = new Map<string, number>()
     const typen = new Map<string, number>()
@@ -245,6 +246,17 @@ export function useFragenFilter(
     }
     return { fachbereiche, typen, gesamt: gefilterteFragen.length }
   }, [gefilterteFragen])
+
+  // Ungefilterte Statistiken — für Dropdown-Optionen, damit alle Werte immer sichtbar bleiben
+  const alleStats = useMemo(() => {
+    const fachbereiche = new Map<string, number>()
+    const typen = new Map<string, number>()
+    for (const f of alleFragen) {
+      fachbereiche.set(f.fachbereich, (fachbereiche.get(f.fachbereich) || 0) + 1)
+      typen.set(f.typ, (typen.get(f.typ) || 0) + 1)
+    }
+    return { fachbereiche, typen, gesamt: alleFragen.length }
+  }, [alleFragen])
 
   // Aktive Filter zählen
   const aktiveFilter = [filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, suchtext, filterQuelle !== 'alle' ? filterQuelle : '', filterPoolStatus !== 'alle' ? filterPoolStatus : '', filterMitAnhang ? 'anhang' : '', filterKontext !== 'alle' ? filterKontext : ''].filter(Boolean).length
@@ -284,6 +296,7 @@ export function useFragenFilter(
     sortierteFragen,
     gruppierteAnzeige,
     stats,
+    alleStats,
     aktiveFilter,
     filterZuruecksetzen,
     seitenGroesse: SEITEN_GROESSE,

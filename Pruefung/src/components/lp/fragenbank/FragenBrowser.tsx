@@ -244,6 +244,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           ladeStatus={ladeStatus}
           gefilterteFragen={filter.gefilterteFragen}
           stats={filter.stats}
+          alleStats={filter.alleStats}
           verfuegbareThemen={filter.verfuegbareThemen}
           verfuegbareUnterthemen={filter.verfuegbareUnterthemen}
           aktiveFilter={filter.aktiveFilter}
@@ -465,6 +466,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           ladeStatus={ladeStatus}
           gefilterteFragen={filter.gefilterteFragen}
           stats={filter.stats}
+          alleStats={filter.alleStats}
           verfuegbareThemen={filter.verfuegbareThemen}
           verfuegbareUnterthemen={filter.verfuegbareUnterthemen}
           aktiveFilter={filter.aktiveFilter}

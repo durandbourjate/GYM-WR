@@ -148,7 +148,7 @@ export default function SharedFragenEditor({
   const [unterthema, setUnterthema] = useState(frage?.unterthema ?? '')
   const [bloom, setBloom] = useState<BloomStufe>(frage?.bloom ?? 'K2')
   const [punkte, setPunkte] = useState(frage?.punkte ?? 1)
-  const [tags, setTags] = useState(frage?.tags.join(', ') ?? '')
+  const [tags, setTags] = useState((frage?.tags ?? []).join(', '))
   const [semester, setSemester] = useState<string[]>(frage?.semester ?? [])
   const [gefaesse, setGefaesse] = useState<string[]>(frage?.gefaesse ?? ['SF'])
 
@@ -172,7 +172,12 @@ export default function SharedFragenEditor({
 
   // MC-spezifisch
   const [optionen, setOptionen] = useState<MCOption[]>(
-    frage?.typ === 'mc' ? (frage as MCFrage).optionen : [
+    frage?.typ === 'mc' ? ((frage as MCFrage).optionen ?? [
+      { id: 'a', text: '', korrekt: true },
+      { id: 'b', text: '', korrekt: false },
+      { id: 'c', text: '', korrekt: false },
+      { id: 'd', text: '', korrekt: false },
+    ]) : [
       { id: 'a', text: '', korrekt: true },
       { id: 'b', text: '', korrekt: false },
       { id: 'c', text: '', korrekt: false },
@@ -202,12 +207,15 @@ export default function SharedFragenEditor({
     frage?.typ === 'lueckentext' ? (frage as LueckentextFrage).textMitLuecken : ''
   )
   const [luecken, setLuecken] = useState(
-    frage?.typ === 'lueckentext' ? (frage as LueckentextFrage).luecken : []
+    frage?.typ === 'lueckentext' ? (frage as LueckentextFrage).luecken ?? [] : []
   )
 
   // Zuordnung-spezifisch
   const [paare, setPaare] = useState(
-    frage?.typ === 'zuordnung' ? (frage as ZuordnungFrage).paare : [
+    frage?.typ === 'zuordnung' ? ((frage as ZuordnungFrage).paare ?? [
+      { links: '', rechts: '' },
+      { links: '', rechts: '' },
+    ]) : [
       { links: '', rechts: '' },
       { links: '', rechts: '' },
     ]
@@ -215,7 +223,11 @@ export default function SharedFragenEditor({
 
   // Richtig/Falsch-spezifisch
   const [aussagen, setAussagen] = useState<RichtigFalschFrage['aussagen']>(
-    frage?.typ === 'richtigfalsch' ? (frage as RichtigFalschFrage).aussagen : [
+    frage?.typ === 'richtigfalsch' ? ((frage as RichtigFalschFrage).aussagen ?? [
+      { id: '1', text: '', korrekt: true },
+      { id: '2', text: '', korrekt: false },
+      { id: '3', text: '', korrekt: true },
+    ]) : [
       { id: '1', text: '', korrekt: true },
       { id: '2', text: '', korrekt: false },
       { id: '3', text: '', korrekt: true },
@@ -229,7 +241,9 @@ export default function SharedFragenEditor({
 
   // Berechnung-spezifisch
   const [ergebnisse, setErgebnisse] = useState<BerechnungFrage['ergebnisse']>(
-    frage?.typ === 'berechnung' ? (frage as BerechnungFrage).ergebnisse : [
+    frage?.typ === 'berechnung' ? ((frage as BerechnungFrage).ergebnisse ?? [
+      { id: '1', label: 'Ergebnis', korrekt: 0, toleranz: 0, einheit: '' },
+    ]) : [
       { id: '1', label: 'Ergebnis', korrekt: 0, toleranz: 0, einheit: '' },
     ]
   )
@@ -245,7 +259,9 @@ export default function SharedFragenEditor({
     frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).geschaeftsfall : ''
   )
   const [buchungen, setBuchungen] = useState<BuchungssatzZeile[]>(
-    frage?.typ === 'buchungssatz' ? (frage as BuchungssatzFrage).buchungen : [
+    frage?.typ === 'buchungssatz' ? ((frage as BuchungssatzFrage).buchungen ?? [
+      { id: '1', sollKonto: '', habenKonto: '', betrag: 0 },
+    ]) : [
       { id: '1', sollKonto: '', habenKonto: '', betrag: 0 },
     ]
   )
@@ -263,7 +279,9 @@ export default function SharedFragenEditor({
     frage?.typ === 'tkonto' ? (frage as TKontoFrage).geschaeftsfaelle ?? [] : []
   )
   const [tkKonten, setTkKonten] = useState<TKontoDefinition[]>(
-    frage?.typ === 'tkonto' ? (frage as TKontoFrage).konten : [
+    frage?.typ === 'tkonto' ? (frage as TKontoFrage).konten ?? [
+      { id: '1', kontonummer: '', anfangsbestandVorgegeben: false, eintraege: [], saldo: { betrag: 0, seite: 'soll' } },
+    ] : [
       { id: '1', kontonummer: '', anfangsbestandVorgegeben: false, eintraege: [], saldo: { betrag: 0, seite: 'soll' } },
     ]
   )
@@ -285,7 +303,9 @@ export default function SharedFragenEditor({
     frage?.typ === 'kontenbestimmung' ? (frage as KontenbestimmungFrage).modus : 'gemischt'
   )
   const [kbAufgaben, setKbAufgaben] = useState<Kontenaufgabe[]>(
-    frage?.typ === 'kontenbestimmung' ? (frage as KontenbestimmungFrage).aufgaben : [
+    frage?.typ === 'kontenbestimmung' ? (frage as KontenbestimmungFrage).aufgaben ?? [
+      { id: '1', text: '', erwarteteAntworten: [{}] },
+    ] : [
       { id: '1', text: '', erwarteteAntworten: [{}] },
     ]
   )
@@ -301,7 +321,7 @@ export default function SharedFragenEditor({
     frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).modus : 'bilanz'
   )
   const [biKontenMitSaldi, setBiKontenMitSaldi] = useState<KontoMitSaldo[]>(
-    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).kontenMitSaldi : [{ kontonummer: '', saldo: 0 }]
+    frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).kontenMitSaldi ?? [{ kontonummer: '', saldo: 0 }] : [{ kontonummer: '', saldo: 0 }]
   )
   const [biLoesung, setBiLoesung] = useState<BilanzERLoesung>(
     frage?.typ === 'bilanzstruktur' ? (frage as BilanzERFrage).loesung : {}
@@ -368,7 +388,7 @@ export default function SharedFragenEditor({
 
   // Sortierung-spezifisch
   const [sortElemente, setSortElemente] = useState<string[]>(
-    frage?.typ === 'sortierung' ? (frage as SortierungFrage).elemente : []
+    frage?.typ === 'sortierung' ? (frage as SortierungFrage).elemente ?? [] : []
   )
   const [sortTeilpunkte, setSortTeilpunkte] = useState(
     frage?.typ === 'sortierung' ? (frage as SortierungFrage).teilpunkte : true
@@ -379,7 +399,7 @@ export default function SharedFragenEditor({
     frage?.typ === 'hotspot' ? (frage as HotspotFrage).bildUrl : ''
   )
   const [hsBereiche, setHsBereiche] = useState<HotspotBereich[]>(
-    frage?.typ === 'hotspot' ? (frage as HotspotFrage).bereiche : []
+    frage?.typ === 'hotspot' ? (frage as HotspotFrage).bereiche ?? [] : []
   )
   const [hsMehrfachauswahl, setHsMehrfachauswahl] = useState(
     frage?.typ === 'hotspot' ? (frage as HotspotFrage).mehrfachauswahl : false
@@ -390,7 +410,7 @@ export default function SharedFragenEditor({
     frage?.typ === 'bildbeschriftung' ? (frage as BildbeschriftungFrage).bildUrl : ''
   )
   const [bbBeschriftungen, setBbBeschriftungen] = useState<BildbeschriftungLabel[]>(
-    frage?.typ === 'bildbeschriftung' ? (frage as BildbeschriftungFrage).beschriftungen : []
+    frage?.typ === 'bildbeschriftung' ? (frage as BildbeschriftungFrage).beschriftungen ?? [] : []
   )
 
   // Audio-spezifisch
@@ -403,10 +423,10 @@ export default function SharedFragenEditor({
     frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).bildUrl : ''
   )
   const [ddZielzonen, setDdZielzonen] = useState<DragDropBildZielzone[]>(
-    frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).zielzonen : []
+    frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).zielzonen ?? [] : []
   )
   const [ddLabels, setDdLabels] = useState<string[]>(
-    frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).labels : []
+    frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).labels ?? [] : []
   )
 
   // Code-spezifisch
