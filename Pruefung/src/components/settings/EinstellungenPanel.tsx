@@ -21,13 +21,14 @@ export default function EinstellungenPanel({ onSchliessen }: Props) {
 
   const [tab, setTab] = useState<EinstellungenTab>(admin ? 'admin' : 'profil')
 
-  // Stammdaten + Profil laden
+  // Stammdaten + Profil laden (Actions sind stabile Zustand-Referenzen)
   useEffect(() => {
     if (user?.email) {
       ladeStammdaten(user.email)
       ladeLPProfil(user.email)
     }
-  }, [user?.email, ladeStammdaten, ladeLPProfil])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email])
 
   const tabs: { key: EinstellungenTab; label: string; sichtbar: boolean }[] = [
     { key: 'profil', label: 'Mein Profil', sichtbar: true },
