@@ -6,6 +6,61 @@
 
 ---
 
+## Session 78 — Performance + Problem-Melden (10.04.2026)
+
+### Stand
+Branch `feature/performance-features` (basiert auf `feature/ux-polish-session5`). tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **IndexedDB-Cache (Performance)** | |
+| P1 | `fragenbankCache.ts` (neu, 125 Z.): IndexedDB Cache-Layer mit 3 Stores (summaries, details, meta), 10min TTL, silent error handling | fragenbankCache.ts |
+| P2 | Stale-While-Revalidate in `fragenbankStore.ts`: Cache zuerst → sofort anzeigen → Server im Hintergrund revalidieren ohne UI-Flicker | fragenbankStore.ts |
+| P3 | Cache-Invalidierung: `_cacheInvalid` Flag in `aktualisiereFrage`, `entferneFrage`, `fuegeFragenHinzu`; `clearFragenbankCache()` in `reset()` | fragenbankStore.ts |
+| **LP-Skeleton + Sync-Guard** | |
+| P4 | `LPSkeleton.tsx` (neu, ~50 Z.): Pulsierendes Dashboard-Skeleton (Header + Tabs + 6 Karten) | LPSkeleton.tsx |
+| P5 | Skeleton-Einbindung: `if (ladeStatus !== 'fertig' && ansicht !== 'composer') return <LPSkeleton />` | LPStartseite.tsx |
+| P6 | Sync-Guard: `sessionStorage` Flag, Einrichtungs-Sync nur einmal pro Browser-Session | LPStartseite.tsx |
+| P7 | Prefetch-Trigger: `requestIdleCallback` / `setTimeout(2s)` für Fragenbank-Details | LPStartseite.tsx |
+| **SuS-Skeleton** | |
+| P8 | Karten-Platzhalter (4 Cards, responsive Grid) im SuS-Loading-Skeleton | SuSStartseite.tsx |
+| **FeedbackContext** | |
+| P9 | `FeedbackContext` erweitert: `frageTyp`, `modus`, `bildschirm`, `appVersion`, `gruppeId` | FeedbackModal.tsx |
+| P10 | `appVersion` aus `__BUILD_TIMESTAMP__` (bereits in vite.config.ts definiert) | FeedbackModal.tsx |
+| P11 | 5 Verwendungsstellen: LPHeader, AppShell, KorrekturFragenAnsicht, KorrekturEinsicht, Startbildschirm | 5 Dateien |
+
+### Neue Dateien (2)
+- `src/services/fragenbankCache.ts` — IndexedDB Cache-Layer für Fragenbank
+- `src/components/lp/LPSkeleton.tsx` — LP Dashboard Loading Skeleton
+
+### Geänderte Dateien (8)
+- `src/store/fragenbankStore.ts` — SWR-Cache + Invalidierung + Cache-Clear bei Logout
+- `src/components/lp/LPStartseite.tsx` — Skeleton + Sync-Guard + Prefetch
+- `src/components/sus/SuSStartseite.tsx` — Karten-Skeleton
+- `src/components/shared/FeedbackModal.tsx` — Erweiterte Context-Felder im Payload
+- `src/components/lp/LPHeader.tsx` — FeedbackButton modus/bildschirm
+- `src/components/ueben/layout/AppShell.tsx` — FeedbackButton modus/bildschirm
+- `src/components/lp/korrektur/KorrekturFragenAnsicht.tsx` — FeedbackButton frageTyp/modus/bildschirm
+- `src/components/sus/KorrekturEinsicht.tsx` — FeedbackButton modus/bildschirm
+- `src/components/Startbildschirm.tsx` — FeedbackButton modus/bildschirm
+
+### Verifiziert
+- ✅ tsc -b grün (0 Errors)
+- ✅ 209 Tests grün
+- ✅ Build erfolgreich
+- ⬜ Browser-Test: LP-Ladezeit messen (Erstaufruf vs. Zweitaufruf mit Cache)
+- ⬜ Browser-Test: Skeleton sichtbar beim Laden
+- ⬜ Browser-Test: Problem-Melden Payload enthält neue Felder
+
+### Offen (Folge-Sessions)
+- Branch auf main mergen (nach User-Test + Freigabe aller Feature-Branches)
+- Excel-Import (IMPROVEMENT_PLAN Session 6D) — eigene Session
+- Lernziele überall (IMPROVEMENT_PLAN Session 6F) — eigene Session
+
+---
+
 ## Session 77 — B2: Druckbare Ansicht (10.04.2026)
 
 ### Stand
