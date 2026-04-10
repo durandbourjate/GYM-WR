@@ -3757,14 +3757,18 @@ function importierePoolFragen(body) {
         }
 
         if (existingIdx >= 0) {
-          // Nur Pool-Sync-Felder aktualisieren (Inhalt bleibt unverändert)
+          // Pool-Sync-Felder + typDaten aktualisieren
           var rowIndex = existingIdx + 2;
           var syncFelder = {
             poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : 'false',
             poolVersion: JSON.stringify(frage.poolVersion || {}),
             poolGeprueft: frage.poolGeprueft ? 'true' : 'false',
             poolContentHash: frage.poolContentHash || '',
-            anhaenge: JSON.stringify(frage.anhaenge || [])
+            anhaenge: JSON.stringify(frage.anhaenge || []),
+            typDaten: JSON.stringify(getTypDaten(frage)),
+            fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
+            musterlosung: frage.musterlosung || '',
+            bildUrl: frage.bildUrl || '',
           };
           for (var feld in syncFelder) {
             var colIdx = headers.indexOf(feld);
