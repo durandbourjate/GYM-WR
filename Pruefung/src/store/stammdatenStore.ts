@@ -33,8 +33,15 @@ export const useStammdatenStore = create<StammdatenState>((set, get) => ({
       if (result?.stammdaten) {
         set({ stammdaten: result.stammdaten, ladeStatus: 'fertig' })
       } else {
-        // Fallback: Default-Stammdaten verwenden
+        // Backend hat keine Stammdaten → Default-Stammdaten initial befüllen
+        console.log('[Stammdaten] Backend leer — befülle mit Defaults')
         set({ ladeStatus: 'fertig' })
+        // Fire-and-forget: Defaults ins Backend schreiben (Admins-Guard)
+        if (DEFAULT_STAMMDATEN.admins.includes(callerEmail.toLowerCase())) {
+          get().speichereStammdaten(callerEmail, DEFAULT_STAMMDATEN).then(ok => {
+            if (ok) console.log('[Stammdaten] Defaults erfolgreich ins Backend geschrieben')
+          }).catch(() => { /* silent */ })
+        }
       }
     } catch (error) {
       console.error('[Stammdaten] Fehler beim Laden:', error)

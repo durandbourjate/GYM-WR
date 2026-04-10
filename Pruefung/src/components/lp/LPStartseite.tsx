@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useFragenbankStore } from '../../store/fragenbankStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
+import { useLPNavigationStore } from '../../store/lpNavigationStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import type { PruefungsConfig } from '../../types/pruefung.ts'
 import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.ts'
@@ -15,7 +16,6 @@ import FragenBrowser from './fragenbank/FragenBrowser.tsx'
 import HilfeSeite from './HilfeSeite.tsx'
 import UebungsToolView from './UebungsToolView.tsx'
 import TrackerSection from './TrackerSection.tsx'
-// demoPruefung entfernt — nur noch Einrichtungsprüfung im Demo-Modus
 import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
 import { einrichtungsFragen } from '../../data/einrichtungsFragen.ts'
 import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
@@ -29,34 +29,30 @@ export default function LPStartseite() {
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
+  // Navigation aus dem Store
+  const ansicht = useLPNavigationStore(s => s.ansicht)
+  const modus = useLPNavigationStore(s => s.modus)
+  const listenTab = useLPNavigationStore(s => s.listenTab)
+  const uebungsTab = useLPNavigationStore(s => s.uebungsTab)
+  const zeigHilfe = useLPNavigationStore(s => s.zeigHilfe)
+  const zeigEinstellungen = useLPNavigationStore(s => s.zeigEinstellungen)
+  const composerKey = useLPNavigationStore(s => s.composerKey)
+  const setModus = useLPNavigationStore(s => s.setModus)
+  const setListenTab = useLPNavigationStore(s => s.setListenTab)
+  const setUebungsTab = useLPNavigationStore(s => s.setUebungsTab)
+  const zurueckZumDashboard = useLPNavigationStore(s => s.zurueckZumDashboard)
+  const navigiereZuComposer = useLPNavigationStore(s => s.navigiereZuComposer)
+  const neuerComposerKey = useLPNavigationStore(s => s.neuerComposerKey)
+  const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
+  const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
+
+  // Lokaler State (Daten, nicht Navigation)
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
   const [backendFehler, setBackendFehler] = useState(false)
-  const [ansicht, setAnsicht] = useState<'liste' | 'composer'>('liste')
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
-  const [composerKey, setComposerKey] = useState(0)
-  const [zeigHilfe, setZeigHilfe] = useState(false)
-  const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
-  const [modus, setModusRaw] = useState<'pruefung' | 'uebung' | 'fragensammlung'>(() => {
-    try {
-      const gespeichert = sessionStorage.getItem('lp-modus')
-      if (gespeichert === 'pruefung' || gespeichert === 'uebung' || gespeichert === 'fragensammlung') return gespeichert
-    } catch { /* ignore */ }
-    return 'pruefung'
-  })
-  const [vorherigerModus, setVorherigerModus] = useState<'pruefung' | 'uebung'>('pruefung')
-  const setModus = (m: 'pruefung' | 'uebung' | 'fragensammlung') => {
-    // Vorherigen Nicht-Fragensammlung-Modus merken für Zurück-Navigation
-    if (m === 'fragensammlung' && modus !== 'fragensammlung') {
-      setVorherigerModus(modus === 'uebung' ? 'uebung' : 'pruefung')
-    }
-    setModusRaw(m)
-    try { sessionStorage.setItem('lp-modus', m) } catch { /* ignore */ }
-  }
-  const [listenTab, setListenTab] = useState<'pruefungen' | 'tracker'>('pruefungen')
   const [multiDashboardOffen, setMultiDashboardOffen] = useState(false)
   const [multiDashboardAuswahl, setMultiDashboardAuswahl] = useState<Set<string>>(new Set())
-  const [uebungsTab, setUebungsTab] = useState<'uebungen' | 'durchfuehren' | 'analyse'>('durchfuehren')
   const [trackerDaten, setTrackerDaten] = useState<TrackerDaten | null>(null)
 
   // Such- und Filterstate
@@ -132,6 +128,19 @@ export default function LPStartseite() {
   const gefilterteUebungen = useMemo(() => filtereConfigs(formativeConfigs),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [formativeConfigs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus])
+
+  // Favoriten aus dem Store
+  const favoriten = useLPNavigationStore(s => s.favoriten)
+
+  // Favoriten-Configs (nur existierende IDs, nach Datum sortiert)
+  const favoritenConfigs = useMemo(() => {
+    if (favoriten.length === 0) return []
+    return configs.filter(c => favoriten.includes(c.id)).sort((a, b) => b.datum.localeCompare(a.datum))
+  }, [configs, favoriten])
+
+  // Favoriten-Prüfungen und -Übungen getrennt
+  const favoritenPruefungen = useMemo(() => favoritenConfigs.filter(c => c.typ !== 'formativ'), [favoritenConfigs])
+  const favoritenUebungen = useMemo(() => favoritenConfigs.filter(c => c.typ === 'formativ'), [favoritenConfigs])
 
   // Letzte 5 (nach Datum, nur ohne aktive Filter)
   const letzteFuenf = useMemo(() => {
@@ -266,18 +275,18 @@ export default function LPStartseite() {
 
   function handleNeue(): void {
     setEditConfig(null)
-    setAnsicht('composer')
+    navigiereZuComposer('Neue Prüfung')
   }
 
   function handleNeueUebung(): void {
     setEditConfig({ ...leereUebung })
-    setComposerKey(k => k + 1)
-    setAnsicht('composer')
+    neuerComposerKey()
+    navigiereZuComposer('Neue Übung')
   }
 
   function handleBearbeiten(config: PruefungsConfig): void {
     setEditConfig(config)
-    setAnsicht('composer')
+    navigiereZuComposer(config.titel || 'Bearbeiten')
   }
 
   function handleDuplizieren(config: PruefungsConfig): void {
@@ -295,12 +304,12 @@ export default function LPStartseite() {
       sebAusnahmen: [],
     }
     setEditConfig(kopie)
-    setComposerKey(k => k + 1)  // Composer komplett neu mounten
-    setAnsicht('composer')
+    neuerComposerKey()
+    navigiereZuComposer(`${config.titel} (Kopie)`)
   }
 
   function handleZurueck(): void {
-    setAnsicht('liste')
+    zurueckZumDashboard()
     // Configs neu laden
     setLadeStatus('laden')
     if (user && apiService.istKonfiguriert() && !istDemoModus) {
@@ -323,11 +332,8 @@ export default function LPStartseite() {
     return trackerDaten.pruefungen.find((p) => p.pruefungId === pruefungId)
   }
 
-  // Breadcrumbs für Composer
-  const composerBreadcrumbs = ansicht === 'composer' ? [
-    { label: editConfig?.modus === 'uebung' ? 'Üben' : 'Prüfen', aktion: handleZurueck },
-    { label: editConfig?.titel || (editConfig?.id ? 'Bearbeiten' : 'Neu erstellen') },
-  ] : undefined
+  // Breadcrumbs aus dem Store
+  const composerBreadcrumbs = ansicht === 'composer' ? useLPNavigationStore.getState().breadcrumbs : undefined
 
   // Skeleton während Laden — nicht beim Composer (direkter Aufruf möglich)
   if (ladeStatus !== 'fertig' && ansicht !== 'composer') return <LPSkeleton />
@@ -354,7 +360,7 @@ export default function LPStartseite() {
           ) : undefined
         }
         onEinstellungen={ansicht === 'composer' ? undefined : () => setZeigEinstellungen(true)}
-        onHilfe={ansicht === 'composer' ? undefined : () => { setZeigHilfe(!zeigHilfe) }}
+        onHilfe={ansicht === 'composer' ? undefined : toggleHilfe}
         hilfeOffen={zeigHilfe}
       />
 
@@ -507,6 +513,19 @@ export default function LPStartseite() {
                       ? `${gefilterteUebungen.length} von ${formativeConfigs.length} Übungen`
                       : `${formativeConfigs.length} Übung${formativeConfigs.length !== 1 ? 'en' : ''}`}
                   </h2>
+
+                  {/* Favoriten-Sektion für Übungen */}
+                  {!hatAktiveFilter && favoritenUebungen.length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="text-xs font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                        <span>⭐</span> Favoriten
+                      </h3>
+                      {favoritenUebungen.map(c => (
+                        <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+                      ))}
+                      <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
+                    </div>
+                  )}
 
                   {gefilterteUebungen.map(c => (
                     <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
@@ -736,6 +755,19 @@ export default function LPStartseite() {
               </div>
             )}
 
+            {/* Favoriten-Sektion (nur wenn Favoriten vorhanden und kein aktiver Filter) */}
+            {!hatAktiveFilter && favoritenPruefungen.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                  <span>⭐</span> Favoriten
+                </h3>
+                {favoritenPruefungen.map(c => (
+                  <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+                ))}
+                <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
+              </div>
+            )}
+
             {/* Zuletzt-Sektion (nur ohne Filter und wenn >5 Prüfungen) */}
             {letzteFuenf.length > 0 && (
               <div className="space-y-2">
@@ -773,7 +805,7 @@ export default function LPStartseite() {
           <FragenBrowser
             inline
             onHinzufuegen={() => {}}
-            onSchliessen={() => setModus(vorherigerModus)}
+            onSchliessen={() => useLPNavigationStore.getState().zurueck()}
             bereitsVerwendet={[]}
           />
         </main>
@@ -781,7 +813,7 @@ export default function LPStartseite() {
 
       {/* Hilfe Overlay (alle Modi) */}
       {zeigHilfe && (
-        <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />
+        <HilfeSeite onSchliessen={toggleHilfe} />
       )}
 
       {/* Einstellungen Panel */}
@@ -799,6 +831,9 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
   onDuplizieren: (c: PruefungsConfig) => void
   trackerSummary?: TrackerPruefungSummary
 }) {
+  const toggleFavorit = useLPNavigationStore(s => s.toggleFavorit)
+  const favoriten = useLPNavigationStore(s => s.favoriten)
+  const istFav = favoriten.includes(c.id)
   const [linkKopiert, setLinkKopiert] = useState(false)
   const kopiereLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}?id=${c.id}`
@@ -811,7 +846,15 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
   }
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 flex items-center justify-between gap-4">
-      <div className="flex-1 min-w-0">
+      <div className="flex items-start gap-2 flex-1 min-w-0">
+        <button
+          onClick={() => toggleFavorit(c.id)}
+          className="mt-0.5 text-lg leading-none cursor-pointer hover:scale-110 transition-transform shrink-0"
+          title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
+        >
+          {istFav ? '⭐' : '☆'}
+        </button>
+        <div className="flex-1 min-w-0">
         <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate">{c.titel}</h3>
         <div className="flex items-center gap-3 mt-1 text-sm text-slate-500 dark:text-slate-400 flex-wrap">
           <span>{c.klasse}</span>
@@ -842,6 +885,7 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
             <TrackerBadge summary={trackerSummary} />
           </div>
         )}
+        </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <a
