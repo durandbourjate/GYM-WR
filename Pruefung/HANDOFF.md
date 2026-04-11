@@ -1222,7 +1222,7 @@ Branch `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 - LP Navigation Store mit History-Stack, Breadcrumbs, Favoriten, Hash-Router war vollständig implementiert
 - typLabel() hatte bereits konsistente Gross-Labels (Multiple Choice, Kontenbestimmung, etc.)
 - FeedbackModal hatte bereits erweiterte Kontext-Felder
-- **S6 bleibt offen:** Performance (~25s LP-Laden), Excel-Import, Prefetching — erfordert eigene Session
+- **S6 erledigt:** Performance (Session 90), Excel-Import (Session 79), Lernziele (Session 79) — IMPROVEMENT_PLAN komplett ✅
 
 ---
 
@@ -1316,7 +1316,7 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 | **3** | `feature/navigation-breadcrumbs` | Composer-Breadcrumbs, SuS ExamLab-Klick | ✅ erledigt (Session 89) |
 | **4** | `feature/einstellungen-stammdaten` | Stammdaten-System, LP-Profil, Hardcoded-Audit | ✅ bereits erledigt (Session 66–70) |
 | **5** | `feature/ux-polish` | Drag-Handle rechts, Labels konsistent | ✅ erledigt (Session 89) |
-| **6** | `feature/performance-features` | Performance, Problem-Melden-Kontext, Excel-Import, Prefetching, Lernziele | offen — Grössere Features, eigene Session nötig |
+| **6** | `feature/performance-features` | Performance, Problem-Melden-Kontext, Excel-Import, Prefetching, Lernziele | ✅ erledigt (Sessions 67, 79, 90) |
 
 **Reihenfolge:** 1 → 2 → 3 → 4 → 5 → 6 (1+3 oder 1+4 können parallel)
 **Priorität bei Zeitmangel:** Sessions 1–3 sind kritisch, Session 4 architektonisch wichtig.
