@@ -6,7 +6,6 @@ import { uebenApiClient } from '../../services/ueben/apiClient'
 import ThemeToggle from '../ThemeToggle'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
-import Tooltip from '../ui/Tooltip'
 import AktivePruefungen from './AktivePruefungen'
 
 // AppUeben lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
@@ -20,17 +19,18 @@ const AppUeben = lazy(() =>
 
 const LP_AUTH_KEY = 'ueben-auth'
 
-type SuSModus = 'start' | 'ueben' | 'pruefen'
+type SuSModus = 'ueben' | 'pruefen'
 
 /**
- * Startseite für SuS: Wahl zwischen Üben und Prüfen.
- * - Üben: Gruppen → Dashboard → Übungen (= AppUeben)
+ * Startseite für SuS: Tab-Navigation zwischen Üben und Prüfen.
+ * - Üben (Default): Gruppen → Dashboard → Übungen (= AppUeben)
  * - Prüfen: Warteraum für Prüfungen + Korrektur-Einsicht
  */
 export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }: { onKorrekturWaehle: (id: string) => void }) {
   const user = useAuthStore(s => s.user)
   const pruefungAbmelden = useAuthStore(s => s.abmelden)
-  const [modus, setModus] = useState<SuSModus>('start')
+  // Default: direkt in Üben starten (kein Start-Screen mehr)
+  const [modus, setModus] = useState<SuSModus>('ueben')
   const [korrekturId, setKorrekturId] = useState<string | null>(null)
   const [loginBridged, setLoginBridged] = useState(false)
 
@@ -39,7 +39,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
     useUebenAuthStore.getState().abmelden()
     useUebenGruppenStore.setState({ gruppen: [], aktiveGruppe: null, mitglieder: [], ladeStatus: 'idle' })
     setLoginBridged(false)
-    setModus('start')
+    setModus('ueben')
     pruefungAbmelden()
   }
 
@@ -125,94 +125,58 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
           </div>
         </div>
       }>
-        <AppUeben onZurueck={() => setModus('start')} />
+        <AppUeben onZurueck={() => setModus('pruefen')} onModusWechsel={setModus} />
       </Suspense>
     )
   }
 
-  if (modus === 'pruefen') {
-    if (korrekturId) {
-      return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
-    }
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-        <header className="bg-white dark:bg-slate-800 shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center gap-3">
-            <Tooltip text="Zurück zur Startseite">
-              <button onClick={() => setModus('start')} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center">
-                <span className="text-lg dark:text-white">&#8592;</span>
-              </button>
-            </Tooltip>
-            <button onClick={() => { setModus('start'); setKorrekturId(null) }} className="text-lg font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
-              ExamLab
-            </button>
-            <span className="text-slate-300 dark:text-slate-600">›</span>
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Prüfungen & Korrekturen</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <span className="text-sm text-slate-500 dark:text-slate-400">{user?.name}</span>
-          </div>
-        </header>
-        <main className="max-w-7xl mx-auto p-6">
-          <KorrekturListe onWaehle={(id) => setKorrekturId(id)} />
-        </main>
-      </div>
-    )
+  // === Prüfen-Modus ===
+  if (korrekturId) {
+    return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
   }
 
-  // Startseite: Üben / Prüfen Auswahl
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
-      <header className="bg-white dark:bg-slate-800 shadow-sm px-4 py-3 flex items-center justify-between">
-        <button onClick={() => { setModus('start'); setKorrekturId(null) }} className="text-lg font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">
-          ExamLab
-        </button>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <header className="bg-white dark:bg-slate-800 shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-base font-bold dark:text-white">ExamLab</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {user?.name} · Schüler/in
+            </p>
+          </div>
+
+          {/* Tabs: Üben | Prüfen */}
+          <nav className="flex items-center gap-1 ml-4">
+            <button
+              onClick={() => setModus('ueben')}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              Üben
+            </button>
+            <button
+              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white"
+            >
+              Prüfen
+            </button>
+          </nav>
+        </div>
+
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <span className="text-sm text-slate-500 dark:text-slate-400">{user?.name}</span>
-          <Tooltip text="Abmelden">
-            <button
-              onClick={abmelden}
-              className="px-3 py-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
-            >
-              Abmelden
-            </button>
-          </Tooltip>
+          <button
+            onClick={abmelden}
+            className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+          >
+            Abmelden
+          </button>
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center p-6">
-        <div className="flex flex-col items-center w-full">
-          {/* Aktive Prüfungen/Übungen (pollt Backend) */}
-          {user?.email && <AktivePruefungen email={user.email} />}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl w-full">
-          {/* Üben */}
-          <button
-            onClick={() => setModus('ueben')}
-            className="group p-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-xl transition-all cursor-pointer text-left"
-          >
-            <div className="text-4xl mb-4">📚</div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Üben</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Übungen zu deinen Themen starten, Fortschritt verfolgen und Lernziele erreichen.
-            </p>
-          </button>
-
-          {/* Prüfen */}
-          <button
-            onClick={() => setModus('pruefen')}
-            className="group p-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-2 border-slate-200 dark:border-slate-700 hover:border-green-400 dark:hover:border-green-500 hover:shadow-xl transition-all cursor-pointer text-left"
-          >
-            <div className="text-4xl mb-4">📝</div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Prüfen</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Prüfungen starten und abgeschlossene Korrekturen einsehen.
-            </p>
-          </button>
-        </div>
-        </div>
+      <main className="max-w-7xl mx-auto p-6">
+        {/* Aktive Prüfungen (pollt Backend) */}
+        {user?.email && <AktivePruefungen email={user.email} />}
+        <KorrekturListe onWaehle={(id) => setKorrekturId(id)} />
       </main>
     </div>
   )

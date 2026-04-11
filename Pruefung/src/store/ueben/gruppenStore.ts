@@ -14,6 +14,8 @@ interface UebenGruppenState {
   istAdmin: (email: string) => boolean
 }
 
+const LETZTE_GRUPPE_KEY = 'ueben-letzte-gruppe-id'
+
 export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
   gruppen: [],
   aktiveGruppe: null,
@@ -25,11 +27,25 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
 
     try {
       const gruppen = await uebenGruppenAdapter.ladeGruppen(email)
-      const aktiveGruppe = gruppen.length === 1 ? gruppen[0] : null
+
+      // Auto-Select: 1 Gruppe → direkt aktiv, sonst letzte Gruppe aus localStorage
+      let aktiveGruppe: Gruppe | null = null
+      if (gruppen.length === 1) {
+        aktiveGruppe = gruppen[0]
+      } else if (gruppen.length > 1) {
+        try {
+          const letzteId = localStorage.getItem(LETZTE_GRUPPE_KEY)
+          if (letzteId) {
+            aktiveGruppe = gruppen.find(g => g.id === letzteId) || null
+          }
+        } catch { /* localStorage nicht verfügbar */ }
+      }
 
       set({ gruppen, aktiveGruppe, ladeStatus: 'fertig' })
 
       if (aktiveGruppe) {
+        // Letzte Gruppe merken
+        try { localStorage.setItem(LETZTE_GRUPPE_KEY, aktiveGruppe.id) } catch { /* */ }
         try {
           const mitglieder = await uebenGruppenAdapter.ladeMitglieder(aktiveGruppe.id)
           set({ mitglieder })
@@ -48,6 +64,8 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
     if (!gruppe) return
 
     set({ aktiveGruppe: gruppe })
+    // Letzte Gruppe merken
+    try { localStorage.setItem(LETZTE_GRUPPE_KEY, gruppeId) } catch { /* */ }
 
     try {
       const mitglieder = await uebenGruppenAdapter.ladeMitglieder(gruppeId)

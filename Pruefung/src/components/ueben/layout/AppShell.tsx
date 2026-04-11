@@ -16,9 +16,11 @@ interface Props {
   children: ReactNode
   /** Callback: Zurück zur ExamLab-Startseite (verlässt Üben-Modus) */
   onExamLabHome?: () => void
+  /** Callback: Tab-Wechsel zwischen Üben/Prüfen */
+  onModusWechsel?: (modus: 'ueben' | 'pruefen') => void
 }
 
-export default function AppShell({ children, onExamLabHome }: Props) {
+export default function AppShell({ children, onExamLabHome, onModusWechsel }: Props) {
   const { user, abmelden: uebenAbmelden } = useUebenAuthStore()
   const pruefungAbmelden = useAuthStore(s => s.abmelden)
 
@@ -115,6 +117,23 @@ export default function AppShell({ children, onExamLabHome }: Props) {
               ) : null}
             </p>
           </div>
+
+          {/* Tabs: Üben | Prüfen — nur auf Dashboard/Nicht-Übung anzeigen */}
+          {onModusWechsel && !istInUebung && (
+            <nav className="flex items-center gap-1 ml-4">
+              <button
+                className="px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white"
+              >
+                Üben
+              </button>
+              <button
+                onClick={() => onModusWechsel('pruefen')}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                Prüfen
+              </button>
+            </nav>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

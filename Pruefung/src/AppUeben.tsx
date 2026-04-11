@@ -22,9 +22,11 @@ const DEMO_ROLLE: UebenRolle = DEMO_PARAM === 'eltern' ? 'admin' : 'lernend'
 interface AppUebenProps {
   /** Callback wenn SuS "Zurück" zur ExamLab-Startseite will */
   onZurueck?: () => void
+  /** Callback für Tab-Wechsel (Üben/Prüfen) */
+  onModusWechsel?: (modus: 'ueben' | 'pruefen') => void
 }
 
-export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
+export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = {}) {
   const { user, istAngemeldet, sessionWiederherstellen, ladeStatus: authStatus } = useUebenAuthStore()
   const { gruppen, aktiveGruppe, ladeGruppen, ladeStatus: gruppenStatus } = useUebenGruppenStore()
   const { session, starteSession } = useUebenUebungsStore()
@@ -162,7 +164,7 @@ export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
   // Keine Gruppen
   if (gruppen.length === 0 && gruppenStatus === 'fertig') {
     return (
-      <AppShell onExamLabHome={onZurueck}>
+      <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
             <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
@@ -182,12 +184,12 @@ export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
   }
 
   // Gruppen-Auswahl
-  if (!aktiveGruppe) return <AppShell onExamLabHome={onZurueck}><GruppenAuswahl /></AppShell>
+  if (!aktiveGruppe) return <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}><GruppenAuswahl /></AppShell>
 
   // Screen-Rendering
   return (
     <UebenKontextProvider>
-      <AppShell onExamLabHome={onZurueck}>
+      <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}>
         {aktuellerScreen === 'admin' && (
           <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
         )}

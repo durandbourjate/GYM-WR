@@ -55,7 +55,7 @@ interface LPNavigationState {
 
   // Favoriten — erweitert
   toggleFavorit: (ort: AppOrt) => void
-  toggleFavoritById: (id: string) => void
+  toggleFavoritById: (id: string, screen?: 'pruefung' | 'uebung' | 'fragensammlung') => void
   istFavorit: (id: string) => boolean
   setFavoriten: (favoriten: AppOrt[]) => void
   favoritenSyncMitBackend: () => void
@@ -230,7 +230,7 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
     get().favoritenSyncMitBackend()
   },
 
-  toggleFavoritById: (configId: string) => {
+  toggleFavoritById: (configId: string, screen: 'pruefung' | 'uebung' | 'fragensammlung' = 'pruefung') => {
     const { favoriten } = get()
     const existiert = favoriten.find(f => f.params.configId === configId)
     if (existiert) {
@@ -242,7 +242,7 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
       const neuerOrt: AppOrt = {
         id: generiereId(),
         titel: '',
-        screen: 'pruefung',
+        screen,
         params: { configId },
         erstelltAm: new Date().toISOString(),
       }
