@@ -13,6 +13,7 @@ import Zusammenfassung from './components/ueben/Zusammenfassung'
 import AdminDashboard from './components/ueben/admin/AdminDashboard'
 import AppShell from './components/ueben/layout/AppShell'
 import { UebenKontextProvider } from './context/ueben/UebenKontextProvider'
+import { FrageModeProvider } from './context/FrageModeContext'
 import type { UebenRolle } from './types/ueben/auth'
 import { useDeepLinkAktivierung } from './hooks/ueben/useDeepLinkAktivierung'
 
@@ -188,34 +189,36 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
 
   // Screen-Rendering
   return (
-    <UebenKontextProvider>
-      <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}>
-        {aktuellerScreen === 'admin' && (
-          <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
-        )}
+    <FrageModeProvider mode="ueben">
+      <UebenKontextProvider>
+        <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}>
+          {aktuellerScreen === 'admin' && (
+            <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
+          )}
 
-        {aktuellerScreen === 'ergebnis' && (
-          <Zusammenfassung
-            onZurueck={() => {
-              useUebenUebungsStore.setState({ session: null })
-              navigiere('dashboard')
-            }}
-            onNochmal={() => {
-              if (aktiveGruppe && user && session) {
-                starteSession(aktiveGruppe.id, user.email, session.fach, session.thema)
-              }
-            }}
-          />
-        )}
+          {aktuellerScreen === 'ergebnis' && (
+            <Zusammenfassung
+              onZurueck={() => {
+                useUebenUebungsStore.setState({ session: null })
+                navigiere('dashboard')
+              }}
+              onNochmal={() => {
+                if (aktiveGruppe && user && session) {
+                  starteSession(aktiveGruppe.id, user.email, session.fach, session.thema)
+                }
+              }}
+            />
+          )}
 
-        {aktuellerScreen === 'uebung' && session && !session.beendet && (
-          <UebungsScreen />
-        )}
+          {aktuellerScreen === 'uebung' && session && !session.beendet && (
+            <UebungsScreen />
+          )}
 
-        {aktuellerScreen === 'dashboard' && (
-          <Dashboard deepLinkZiel={deepLinkZiel} />
-        )}
-      </AppShell>
-    </UebenKontextProvider>
+          {aktuellerScreen === 'dashboard' && (
+            <Dashboard deepLinkZiel={deepLinkZiel} />
+          )}
+        </AppShell>
+      </UebenKontextProvider>
+    </FrageModeProvider>
   )
 }
