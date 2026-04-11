@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
+import type { Antwort } from '../../types/antworten'
 import type { AntwortTyp } from '../../types/ueben/antworten'
 import { getFragetext } from '../../utils/ueben/fragetext'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
@@ -8,6 +9,7 @@ import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { erstelleBlock, erstelleMixBlock, erstelleRepetitionsBlock } from '../../utils/ueben/blockBuilder'
 import { istDauerbaustelle } from '../../utils/ueben/mastery'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
+import { normalizeAntwort } from '../../utils/normalizeAntwort'
 import { useUebenFortschrittStore } from './fortschrittStore'
 
 /** Persistiertes Session-Ergebnis für die Übungs-Einsicht */
@@ -47,10 +49,12 @@ interface UebungsState {
 
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
   beantworte: (antwort: AntwortTyp) => void
+  beantworteById: (frageId: string, antwort: Antwort) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
   ueberspringen: () => void
   toggleUnsicher: () => void
+  toggleUnsicherById: (frageId: string) => void
   istUnsicher: () => boolean
   istSessionFertig: () => boolean
   berechneErgebnis: () => SessionErgebnis
@@ -136,18 +140,29 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     const frage = session.fragen[session.aktuelleFrageIndex]
     if (!frage) return
 
-    const korrekt = pruefeAntwort(frage, antwort)
+    get().beantworteById(frage.id, normalizeAntwort(antwort))
+  },
+
+  beantworteById: (frageId, antwort) => {
+    const session = get().session
+    if (!session) return
+
+    const frage = session.fragen.find(f => f.id === frageId)
+    if (!frage) return
+
+    const normalized = normalizeAntwort(antwort)
+    const korrekt = pruefeAntwort(frage, normalized)
 
     // Bei freiwilligem Üben (gesperrtes Thema): Fortschritt NICHT speichern
     if (!session.freiwillig) {
-      useUebenFortschrittStore.getState().antwortVerarbeiten(frage.id, session.email, korrekt, session.id)
+      useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
     }
 
     set({
       session: {
         ...session,
-        antworten: { ...session.antworten, [frage.id]: antwort },
-        ergebnisse: { ...session.ergebnisse, [frage.id]: korrekt },
+        antworten: { ...session.antworten, [frageId]: normalized },
+        ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
         score: session.score + (korrekt ? 1 : 0),
       },
       feedbackSichtbar: true,
@@ -212,11 +227,18 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     const frage = session.fragen[session.aktuelleFrageIndex]
     if (!frage) return
 
+    get().toggleUnsicherById(frage.id)
+  },
+
+  toggleUnsicherById: (frageId) => {
+    const session = get().session
+    if (!session) return
+
     const neueUnsicher = new Set(session.unsicher)
-    if (neueUnsicher.has(frage.id)) {
-      neueUnsicher.delete(frage.id)
+    if (neueUnsicher.has(frageId)) {
+      neueUnsicher.delete(frageId)
     } else {
-      neueUnsicher.add(frage.id)
+      neueUnsicher.add(frageId)
     }
 
     set({ session: { ...session, unsicher: neueUnsicher } })

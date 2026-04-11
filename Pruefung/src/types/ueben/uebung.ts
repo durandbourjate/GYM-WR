@@ -1,5 +1,5 @@
 import type { Frage } from './fragen'
-import type { AntwortTyp } from './antworten'
+import type { Antwort } from '../antworten'
 
 export type SessionModus = 'standard' | 'mix' | 'repetition'
 
@@ -17,7 +17,7 @@ export interface UebungsSession {
   modus?: SessionModus
   quellen?: ThemaQuelle[]
   fragen: Frage[]
-  antworten: Record<string, AntwortTyp>
+  antworten: Record<string, Antwort>
   ergebnisse: Record<string, boolean>
   aktuelleFrageIndex: number
   gestartet: string
