@@ -6,46 +6,81 @@
 
 ---
 
-## Session 88 — Kritische Bug-Fixes S1 (11.04.2026)
+## Session 88 — IMPROVEMENT_PLAN v2: S1–S5 (11.04.2026)
 
 ### Stand
-Branch `fix/session88-bugfixes`. tsc ✅ | 209 Tests ✅ | Build ✅.
+Branch `fix/session88-bugfixes`. tsc ✅ | 209 Tests ✅ | Build ✅. 5 Commits.
 
-### Erledigte Arbeiten
+### Erledigte Arbeiten (5 Sessions in 1)
 
-| # | Änderung | Dateien |
-|---|----------|---------|
-| B1 | **LP Profil speichern:** Zentraler LP-Auth-Check prüfte `body.email`, aber Store sendet `callerEmail`. Fix: `body.email \|\| body.callerEmail` + bessere Fehlermeldung | apps-script-code.js |
-| B2 | **Buchungssatz Normalizer:** `case 'buchungssatz'` im fragetypNormalizer hinzugefügt — stellt `kontenauswahl` mit Default `{ modus: 'voll' }` sicher | fragetypNormalizer.ts |
-| B3 | **Bilanzstruktur Normalizer:** Defensiver gegen Pool-Datenformate — Fallbacks für `nr/nummer/konto`, `betrag`, `bezeichnung/kontoname` | fragetypNormalizer.ts |
-| B4 | **Leerer Bildschirm nach Serie:** Race Condition in AppUeben useEffect — nur von 'uebung' zurück zu Dashboard, nicht von 'ergebnis'. Zusammenfassung zeigt Fallback-UI statt `null` | AppUeben.tsx, Zusammenfassung.tsx |
+| Session | # | Änderung | Dateien |
+|---------|---|----------|---------|
+| **S1: Bug-Fixes** ||||
+|| B1 | **LP Profil speichern:** Zentraler Auth-Check prüfte `body.email`, Store sendet `callerEmail` → akzeptiert jetzt beides | apps-script-code.js |
+|| B2 | **Buchungssatz Normalizer:** `case 'buchungssatz'` neu → `kontenauswahl` Default `{ modus: 'voll' }` | fragetypNormalizer.ts |
+|| B3 | **Bilanzstruktur Normalizer:** Fallbacks für `nr/nummer/konto`, `betrag`, `bezeichnung/kontoname` | fragetypNormalizer.ts |
+|| B4 | **Leerer Bildschirm:** Race Condition behoben + Fallback-UI | AppUeben.tsx, Zusammenfassung.tsx |
+| **S2: UX-Fixes** ||||
+|| B5 | **Gesperrte Themen:** 2-Klick-System → persistentes Overlay mit "Freiwillig üben"-Button | ThemaKarte.tsx |
+|| B6 | **Demo-Kurs:** `sf-wr-27a28f` → generisches `'demo'` | demoConfig.ts |
+|| U1 | **SuS-Header:** Rolle unter ExamLab-Titel (wie LP), "Schüler/in" bzw. "Admin" | AppShell.tsx |
+| **S3: SuS-Navigation** ||||
+|| F1 | **Tabs Üben/Prüfen:** SuS-App startet direkt im Üben-Tab (kein Start-Screen) | SuSStartseite.tsx, AppShell.tsx, AppUeben.tsx |
+|| F1 | **Auto-Load Gruppe:** Letzte Gruppe in localStorage, auto-select bei Login | gruppenStore.ts |
+|| F4 | **Favoriten:** `toggleFavoritById` akzeptiert `screen`-Parameter | lpNavigationStore.ts |
+| **S4: Lernziel-Editor** ||||
+|| F3 | **Lernziele-Tab:** Neuer Tab in Einstellungen mit vollständigem CRUD | LernzielTab.tsx (NEU), EinstellungenPanel.tsx |
+|| F3 | **Backend:** `aktualisiereLernziel` + `loescheLernziel` Endpoints | apps-script-code.js |
+|| U2 | **KI-Button-Klärung:** "🎯 Lernziel" → "🤖 KI: Frage aus Lernziel" | FragetextSection.tsx |
+| **S5: Bild-Editor** ||||
+|| F2 | **BildMitGenerator:** Tab-Umschalter "Hochladen" / "KI generieren" | BildMitGenerator.tsx (NEU) |
+|| F2 | **BildGeneratorPanel:** KI-SVG-Generierung aus Textbeschreibung | BildGeneratorPanel.tsx (NEU) |
+|| F2 | **3 Bild-Editoren umgestellt:** Bildbeschriftung, Hotspot, DragDrop nutzen BildMitGenerator | 3 Editor-Dateien |
 
-### Geänderte Dateien (4)
-- `Pruefung/apps-script-code.js` — Zentrale LP-Auth akzeptiert `body.email || body.callerEmail`
-- `Pruefung/src/utils/ueben/fragetypNormalizer.ts` — `normalisiereBuchungssatz()` neu, `normalisiereBilanz()` defensiver
-- `Pruefung/src/AppUeben.tsx` — useEffect Guard: nur von 'uebung' redirecten
-- `Pruefung/src/components/ueben/Zusammenfassung.tsx` — Fallback-UI bei !session
+### Neue Dateien (3)
+- `Pruefung/src/components/settings/LernzielTab.tsx` — Lernziel-CRUD-Editor
+- `packages/shared/src/editor/components/BildGeneratorPanel.tsx` — KI-SVG-Generierung
+- `packages/shared/src/editor/components/BildMitGenerator.tsx` — Upload/KI Tab-Wrapper
+
+### Geänderte Dateien (15)
+- `Pruefung/apps-script-code.js` — LP-Auth Fix + 2 neue Endpoints (aktualisiereLernziel, loescheLernziel)
+- `Pruefung/src/utils/ueben/fragetypNormalizer.ts` — Buchungssatz + Bilanz Normalizer
+- `Pruefung/src/AppUeben.tsx` — Race Condition Fix + onModusWechsel Prop
+- `Pruefung/src/components/ueben/Zusammenfassung.tsx` — Fallback-UI
+- `Pruefung/src/components/ueben/ThemaKarte.tsx` — Persistentes Overlay
+- `Pruefung/src/data/demoConfig.ts` — Demo-Kurs generisch
+- `Pruefung/src/components/ueben/layout/AppShell.tsx` — Tabs + Rolle unter Titel
+- `Pruefung/src/components/sus/SuSStartseite.tsx` — Direkt Üben-Tab, kein Start-Screen
+- `Pruefung/src/store/ueben/gruppenStore.ts` — Letzte Gruppe in localStorage
+- `Pruefung/src/store/lpNavigationStore.ts` — toggleFavoritById mit screen-Param
+- `Pruefung/src/components/settings/EinstellungenPanel.tsx` — Lernziele-Tab
+- `packages/shared/src/editor/sections/FragetextSection.tsx` — Button umbenannt
+- `packages/shared/src/editor/typen/BildbeschriftungEditor.tsx` — BildMitGenerator
+- `packages/shared/src/editor/typen/HotspotEditor.tsx` — BildMitGenerator
+- `packages/shared/src/editor/typen/DragDropBildEditor.tsx` — BildMitGenerator
 
 ### Noch zu testen (Browser mit Login)
-⬜ LP Profil speichern (sollte jetzt funktionieren)
-⬜ SuS-Üben Buchungssatz Dropdowns (braucht neue Apps Script Bereitstellung + GitHub Pages Build)
-⬜ SuS-Üben Bilanzstruktur (Daten im Sheet prüfen)
-⬜ SuS-Üben Serie beenden → Ergebnis-Screen
-⬜ Alle offenen Tests aus Session 87 (Favoriten, Direktlinks, LernzielWähler etc.)
+⬜ LP Profil speichern (B1 Fix)
+⬜ SuS-Üben Buchungssatz Dropdowns (B2)
+⬜ SuS-Üben Bilanzstruktur (B3 — Daten im Sheet ggf. reparieren)
+⬜ SuS-Üben Serie beenden → Ergebnis-Screen (B4)
+⬜ Gesperrte Themen Overlay (B5)
+⬜ SuS-Header Rolle + Tabs (U1, F1)
+⬜ Lernziele-Tab: CRUD im Browser (F3)
+⬜ Bild-Editor: Upload + KI-Tab sichtbar (F2 — KI-Backend noch nicht deployed)
+⬜ Alle offenen Tests aus Session 87
 
-### IMPROVEMENT_PLAN v2
-Vollständiger 6-Session-Plan unter `.claude/plans/atomic-exploring-origami.md`:
-- S1 ✅ Bug-Fixes (diese Session)
-- S2: UX-Fixes (Gesperrte Themen, Demo-Kurs, Header, Fachkürzel)
-- S3: SuS-Navigation + Favoriten + Deep Links
-- S4: Lernziel-Editor
-- S5: Bild-Editor + SVG-Reparatur
-- S6: Architektur + Tests + Cleanup
+### Offene Punkte (nicht in dieser Session)
+- B7: Deep Links (Hash-Router 3-Segment) — verschoben auf S6
+- B8: 62 SVGs visuell prüfen — mit neuem Bild-Editor einfacher
+- U3: Fachkürzel — User liefert Dokument mit Lehrplan-Kürzeln
+- F2: Backend-Endpoint `generiereFrageBild` (Claude API) — muss in apps-script-code.js implementiert werden
+- S6: Tests + Architektur + Cleanup
 
 ### Hinweise für nächste Session
 - Branch `fix/session88-bugfixes` muss nach Browser-Test auf `main` gemergt werden
-- Apps Script muss neu deployed werden (B1 Fix)
-- B2/B3: Möglicherweise auch Daten-Reparatur im Sheet nötig (Bilanzstruktur-Fragen)
+- Apps Script muss neu deployed werden (LP-Auth Fix + neue Lernziel-Endpoints)
+- KI-Bild-Generator: Frontend steht, Backend-Endpoint fehlt noch (Claude API Call)
 
 ---
 
