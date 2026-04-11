@@ -78,9 +78,12 @@ Branch `fix/session88-bugfixes`. tsc ✅ | 209 Tests ✅ | Build ✅. 5 Commits.
 - S6: Tests + Architektur + Cleanup
 
 ### Hinweise für nächste Session
-- Branch `fix/session88-bugfixes` muss nach Browser-Test auf `main` gemergt werden
-- Apps Script muss neu deployed werden (LP-Auth Fix + neue Lernziel-Endpoints)
-- KI-Bild-Generator: Frontend steht, Backend-Endpoint fehlt noch (Claude API Call)
+- ✅ Branch `fix/session88-bugfixes` auf `main` gemergt + gepusht (GitHub Actions baut)
+- ⬜ Apps Script muss neu deployed werden (LP-Auth Fix + 2 neue Lernziel-Endpoints)
+- ⬜ Browser-Tests durchführen (9 Punkte oben)
+- KI-Bild-Generator: Frontend steht, Backend-Endpoint `generiereFrageBild` fehlt noch (Claude API Call in apps-script-code.js)
+- IMPROVEMENT_PLAN: S1–S5 erledigt, S6 (Deep Links, Fachkürzel, Tests, Cleanup) offen
+- User liefert Dokument mit notenrelevanten Fachkürzeln gemäss Lehrplan (für U3)
 
 ---
 
