@@ -140,7 +140,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
       <header className="bg-white dark:bg-slate-800 shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
           <div>
-            <h1 className="text-base font-bold dark:text-white">ExamLab</h1>
+            <button onClick={() => setModus('ueben')} className="text-base font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">ExamLab</button>
             <p className="text-xs text-slate-500 dark:text-slate-400">
               {user?.name} · Schüler/in
             </p>

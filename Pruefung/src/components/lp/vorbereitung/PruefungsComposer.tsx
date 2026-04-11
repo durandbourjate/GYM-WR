@@ -4,6 +4,7 @@ import { useAuthStore } from '../../../store/authStore.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
 import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
+import { useLPNavigationStore } from '../../../store/lpNavigationStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
@@ -365,6 +366,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
         }
         zurueck={onZurueck}
         onHome={onZurueck}
+        breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
         statusText={
           speicherStatus === 'erfolg' ? 'Gespeichert ✓'
           : speicherStatus === 'fehler' ? 'Fehler beim Speichern'

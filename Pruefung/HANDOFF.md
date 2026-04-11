@@ -1182,8 +1182,8 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 | Session | Branch | Inhalt | Status |
 |---------|--------|--------|--------|
 | **1** | `fix/editor-array-undefined-crashes` | Fragensammlung-Editor Crashes: 6 Fragetypen (Lückentext, Bildbeschriftung, DragDrop, Hotspot, Kontenbestimmung, T-Konto) + Dropdown-Vereinheitlichung | offen |
-| **2** | `fix/ueben-fragetypen-korrektur` | Üben-Modus Crashes: 9 Fragetypen (FiBu, Bilanz, DragDrop, Hotspot, Zeichnen, Aufgabengruppe) + Korrektur-Loading-Bug + Backup-Export | ✅ erledigt |
-| **3** | `feature/navigation-breadcrumbs` | Navigation & Kopfzeile: Zurück-Stack, Breadcrumbs, persistente Kopfzeile, Favoriten, Loading-Skeleton | offen |
+| **2** | `fix/ueben-fragetypen-korrektur` | Üben-Modus Crashes: 9 Fragetypen (FiBu, Bilanz, DragDrop, Hotspot, Zeichnen, Aufgabengruppe) + Korrektur-Loading-Bug + Backup-Export | offen |
+| **3** | `feature/navigation-breadcrumbs` | Navigation & Kopfzeile: Zurück-Stack, Breadcrumbs, persistente Kopfzeile, Favoriten, Loading-Skeleton | ✅ erledigt |
 | **4** | `feature/einstellungen-stammdaten` | Einstellungen-Menü: Stammdaten-System, LP-Profil, Hardcoded-Audit, Prüfungs-Einstellungen | offen |
 | **5** | `feature/ux-polish` | UX-Polish: Analyse-Tab, Vorschau, Drag-Handles, Fragetyp-Labels, SuS-Üben UX | offen |
 | **6** | `feature/performance-features` | Performance (~25s Laden), Problem-Melden-Kontext, Excel-Import, Prefetching, Lernziele | offen |
@@ -1198,26 +1198,24 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 
 ---
 
-## Session 89 — S2: Üben-Fragetypen-Korrektur (11.04.2026)
+## Session 89 — S3: Navigation & Breadcrumbs (11.04.2026)
 
 ### Stand
-Branch `fix/ueben-fragetypen-korrektur`. tsc ✅ | 209 Tests ✅ | Build ✅.
+Branch `feature/navigation-breadcrumbs`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Analyse
+Die meisten S3-Features waren bereits implementiert:
+- **LP Navigation Store** (`lpNavigationStore.ts`): History-Stack, Breadcrumbs, Favoriten, Hash-Router — alles vorhanden
+- **LPHeader**: Breadcrumbs, ExamLab-Home-Button, Tabs, Favoriten-Dropdown — vorhanden
+- **SuS Loading-Skeleton**: Suspense-Fallback in SuSStartseite — vorhanden
+- **GruppenAuswahl**: ExamLab-Button in AppShell verdrahtet — vorhanden
 
 ### Erledigte Arbeiten
 
 | # | Änderung | Dateien |
 |---|----------|---------|
-| 1 | KontenSelect: Defensive Normalisierung von konten-Objekten ({nr,name} → string) | packages/shared/src/editor/components/KontenSelect.tsx |
-| 2 | HotspotFrage: Rechteck-basierter Hit-Test statt nur Radius (für breite/hoehe Bereiche) | src/components/ueben/fragetypen/HotspotFrage.tsx |
-| 3 | GruppeFrage: Leere Teilaufgaben-Hinweis statt stiller leerer Render | src/components/ueben/fragetypen/GruppeFrage.tsx |
-| 4 | Korrektur-Loading: Defensive Filter + Name-Fallback bei abgabenResult | src/components/lp/korrektur/useKorrekturDaten.ts |
-
-### Hinweise
-- DragDropBildFrage hatte bereits `normalizeLabels()` — kein Crash
-- BildbeschriftungFrage hatte bereits `beschriftungen || []` — kein Crash
-- BilanzFrage: Toggle-Logik und Name-Anzeige waren bereits korrekt implementiert
-- ZeichnenFrage: Musterlösung wird korrekt gezeigt wenn vorhanden, Selbstbewertung als Fallback
-- Backup-Export (autoSave.ts): Code defensiv, Problem nur im Laufzeit-Kontext verifizierbar
+| 1 | Composer: Breadcrumbs aus NavigationStore an LPHeader übergeben | PruefungsComposer.tsx |
+| 2 | SuS Prüfen-Header: ExamLab-Titel klickbar (→ Üben) | SuSStartseite.tsx |
 
 ---
 
