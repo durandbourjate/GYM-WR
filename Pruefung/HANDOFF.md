@@ -6,6 +6,49 @@
 
 ---
 
+## Session 88 — Kritische Bug-Fixes S1 (11.04.2026)
+
+### Stand
+Branch `fix/session88-bugfixes`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| B1 | **LP Profil speichern:** Zentraler LP-Auth-Check prüfte `body.email`, aber Store sendet `callerEmail`. Fix: `body.email \|\| body.callerEmail` + bessere Fehlermeldung | apps-script-code.js |
+| B2 | **Buchungssatz Normalizer:** `case 'buchungssatz'` im fragetypNormalizer hinzugefügt — stellt `kontenauswahl` mit Default `{ modus: 'voll' }` sicher | fragetypNormalizer.ts |
+| B3 | **Bilanzstruktur Normalizer:** Defensiver gegen Pool-Datenformate — Fallbacks für `nr/nummer/konto`, `betrag`, `bezeichnung/kontoname` | fragetypNormalizer.ts |
+| B4 | **Leerer Bildschirm nach Serie:** Race Condition in AppUeben useEffect — nur von 'uebung' zurück zu Dashboard, nicht von 'ergebnis'. Zusammenfassung zeigt Fallback-UI statt `null` | AppUeben.tsx, Zusammenfassung.tsx |
+
+### Geänderte Dateien (4)
+- `Pruefung/apps-script-code.js` — Zentrale LP-Auth akzeptiert `body.email || body.callerEmail`
+- `Pruefung/src/utils/ueben/fragetypNormalizer.ts` — `normalisiereBuchungssatz()` neu, `normalisiereBilanz()` defensiver
+- `Pruefung/src/AppUeben.tsx` — useEffect Guard: nur von 'uebung' redirecten
+- `Pruefung/src/components/ueben/Zusammenfassung.tsx` — Fallback-UI bei !session
+
+### Noch zu testen (Browser mit Login)
+⬜ LP Profil speichern (sollte jetzt funktionieren)
+⬜ SuS-Üben Buchungssatz Dropdowns (braucht neue Apps Script Bereitstellung + GitHub Pages Build)
+⬜ SuS-Üben Bilanzstruktur (Daten im Sheet prüfen)
+⬜ SuS-Üben Serie beenden → Ergebnis-Screen
+⬜ Alle offenen Tests aus Session 87 (Favoriten, Direktlinks, LernzielWähler etc.)
+
+### IMPROVEMENT_PLAN v2
+Vollständiger 6-Session-Plan unter `.claude/plans/atomic-exploring-origami.md`:
+- S1 ✅ Bug-Fixes (diese Session)
+- S2: UX-Fixes (Gesperrte Themen, Demo-Kurs, Header, Fachkürzel)
+- S3: SuS-Navigation + Favoriten + Deep Links
+- S4: Lernziel-Editor
+- S5: Bild-Editor + SVG-Reparatur
+- S6: Architektur + Tests + Cleanup
+
+### Hinweise für nächste Session
+- Branch `fix/session88-bugfixes` muss nach Browser-Test auf `main` gemergt werden
+- Apps Script muss neu deployed werden (B1 Fix)
+- B2/B3: Möglicherweise auch Daten-Reparatur im Sheet nötig (Bilanzstruktur-Fragen)
+
+---
+
 ## Session 87 — Browser-Tests + Bild-Fragetypen Reparatur (10.04.2026)
 
 ### Stand

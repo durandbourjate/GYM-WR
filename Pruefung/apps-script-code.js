@@ -754,8 +754,9 @@ function doPost(e) {
     'ladeStammdaten', 'speichereStammdaten', 'ladeLPProfil', 'speichereLPProfil',
   ];
   if (LP_AKTIONEN.indexOf(action) >= 0) {
-    if (!body.email || !istZugelasseneLP(body.email)) {
-      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    var lpEmail = body.email || body.callerEmail;
+    if (!lpEmail || !istZugelasseneLP(lpEmail)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen (Email: ' + (lpEmail || 'nicht angegeben') + ')' });
     }
   }
 

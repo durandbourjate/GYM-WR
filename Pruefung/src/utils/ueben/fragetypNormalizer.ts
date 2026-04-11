@@ -5,9 +5,19 @@
  */
 import type { Frage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, HotspotFrage, BildbeschriftungFrage, DragDropBildFrage } from '../../types/ueben/fragen'
 
+// BuchungssatzFrage-Typ aus shared fragen importieren
+interface BuchungssatzFrageMinimal {
+  typ: 'buchungssatz'
+  buchungen?: unknown[]
+  kontenauswahl?: { modus?: string; konten?: string[]; zeigeKategoriefarben?: boolean }
+  [key: string]: unknown
+}
+
 /** Normalisiert eine Frage für die Üben-Komponente */
 export function normalisiereFrageDaten(frage: Frage): Frage {
   switch (frage.typ) {
+    case 'buchungssatz':
+      return normalisiereBuchungssatz(frage as unknown as BuchungssatzFrageMinimal) as unknown as Frage
     case 'tkonto':
       return normalisiereTKonto(frage as TKontoFrage) as Frage
     case 'kontenbestimmung':
@@ -23,6 +33,23 @@ export function normalisiereFrageDaten(frage: Frage): Frage {
     default:
       return frage
   }
+}
+
+function normalisiereBuchungssatz(f: BuchungssatzFrageMinimal): BuchungssatzFrageMinimal {
+  // Buchungen sicherstellen
+  const buchungen = Array.isArray(f.buchungen) ? f.buchungen : []
+
+  // Kontenauswahl: Fallback auf Vollmodus (KMU-Kontenrahmen) wenn nicht vorhanden
+  let kontenauswahl = f.kontenauswahl
+  if (!kontenauswahl || typeof kontenauswahl !== 'object') {
+    kontenauswahl = { modus: 'voll' }
+  }
+  // Sicherstellen dass modus gesetzt ist
+  if (!kontenauswahl.modus) {
+    kontenauswahl = { ...kontenauswahl, modus: 'voll' }
+  }
+
+  return { ...f, buchungen, kontenauswahl }
 }
 
 function normalisiereTKonto(f: TKontoFrage): TKontoFrage {
@@ -85,15 +112,29 @@ function normalisiereKontenbestimmung(f: KontenbestimmungFrage): Kontenbestimmun
 }
 
 function normalisiereBilanz(f: BilanzERFrage): BilanzERFrage {
+  // Konten normalisieren — Pool-Daten können alternative Feldnamen haben
+  const rawKonten = Array.isArray(f.kontenMitSaldi) ? f.kontenMitSaldi : []
+  const kontenMitSaldi = rawKonten.map(k => {
+    const raw = k as unknown as Record<string, unknown>
+    return {
+      kontonummer: String(raw.kontonummer || raw.nr || raw.nummer || raw.konto || ''),
+      name: String(raw.name || raw.bezeichnung || raw.kontoname || raw.kontonummer || raw.nr || ''),
+      saldo: typeof raw.saldo === 'number' ? raw.saldo
+        : typeof raw.betrag === 'number' ? raw.betrag
+        : parseFloat(String(raw.saldo ?? raw.betrag ?? 0)) || 0,
+    }
+  })
+
+  if (kontenMitSaldi.length === 0) {
+    console.warn('[fragetypNormalizer] Bilanzstruktur ohne kontenMitSaldi:', f.id)
+  }
+
   return {
     ...f,
-    kontenMitSaldi: Array.isArray(f.kontenMitSaldi) ? f.kontenMitSaldi.map(k => ({
-      kontonummer: String(k.kontonummer || ''),
-      name: k.name || '',
-      saldo: typeof k.saldo === 'number' ? k.saldo : parseFloat(String(k.saldo)) || 0,
-    })) : [],
+    kontenMitSaldi,
     modus: f.modus || 'bilanz',
     loesung: f.loesung || { bilanz: undefined, erfolgsrechnung: undefined },
+    bewertungsoptionen: f.bewertungsoptionen || {},
   }
 }
 

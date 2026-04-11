@@ -115,7 +115,9 @@ export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
     if (session?.beendet && aktuellerScreen !== 'ergebnis') {
       navigiere('ergebnis')
     }
-    if (!session && (aktuellerScreen === 'uebung' || aktuellerScreen === 'ergebnis')) {
+    // Nur von 'uebung' zurück zum Dashboard wenn keine Session — NICHT von 'ergebnis'
+    // (Zusammenfassung zeigt Fallback-UI wenn Session bereits null ist)
+    if (!session && aktuellerScreen === 'uebung') {
       navigiere('dashboard')
     }
   }, [session, session?.beendet, aktuellerScreen, navigiere])
@@ -190,14 +192,14 @@ export default function AppUeben({ onZurueck }: AppUebenProps = {}) {
           <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
         )}
 
-        {aktuellerScreen === 'ergebnis' && session?.beendet && (
+        {aktuellerScreen === 'ergebnis' && (
           <Zusammenfassung
             onZurueck={() => {
               useUebenUebungsStore.setState({ session: null })
               navigiere('dashboard')
             }}
             onNochmal={() => {
-              if (aktiveGruppe && user) {
+              if (aktiveGruppe && user && session) {
                 starteSession(aktiveGruppe.id, user.email, session.fach, session.thema)
               }
             }}

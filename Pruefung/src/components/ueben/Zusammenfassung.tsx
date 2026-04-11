@@ -14,7 +14,23 @@ export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
   const { anrede } = useUebenKontext()
   const [reviewOffen, setReviewOffen] = useState(false)
 
-  if (!session) return null
+  // Fallback-UI wenn Session bereits aufgeräumt wurde (z.B. Race Condition)
+  if (!session) {
+    return (
+      <div className="max-w-2xl mx-auto p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-8 text-center mb-4">
+          <h2 className="text-xl font-bold mb-2 dark:text-white">Übung abgeschlossen</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-6">Die Ergebnisse wurden gespeichert.</p>
+          <button
+            onClick={onZurueck}
+            className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium min-h-[48px] text-base"
+          >
+            Zurück zum Dashboard
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const ergebnis = berechneErgebnis()
   const quoteGerundet = Math.round(ergebnis.quote)
