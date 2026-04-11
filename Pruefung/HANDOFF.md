@@ -1183,9 +1183,9 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 |---------|--------|--------|--------|
 | **1** | `fix/editor-array-undefined-crashes` | Fragensammlung-Editor Crashes: 6 Fragetypen (Lückentext, Bildbeschriftung, DragDrop, Hotspot, Kontenbestimmung, T-Konto) + Dropdown-Vereinheitlichung | offen |
 | **2** | `fix/ueben-fragetypen-korrektur` | Üben-Modus Crashes: 9 Fragetypen (FiBu, Bilanz, DragDrop, Hotspot, Zeichnen, Aufgabengruppe) + Korrektur-Loading-Bug + Backup-Export | offen |
-| **3** | `feature/navigation-breadcrumbs` | Navigation & Kopfzeile: Zurück-Stack, Breadcrumbs, persistente Kopfzeile, Favoriten, Loading-Skeleton | ✅ erledigt |
-| **4** | `feature/einstellungen-stammdaten` | Einstellungen-Menü: Stammdaten-System, LP-Profil, Hardcoded-Audit, Prüfungs-Einstellungen | offen |
-| **5** | `feature/ux-polish` | UX-Polish: Analyse-Tab, Vorschau, Drag-Handles, Fragetyp-Labels, SuS-Üben UX | offen |
+| **3** | `feature/navigation-breadcrumbs` | Navigation & Kopfzeile: Zurück-Stack, Breadcrumbs, persistente Kopfzeile, Favoriten, Loading-Skeleton | offen |
+| **4** | `feature/einstellungen-stammdaten` | Einstellungen-Menü: Stammdaten-System, LP-Profil, Hardcoded-Audit, Prüfungs-Einstellungen | ✅ bereits erledigt (Session 66–70) |
+| **5** | `feature/ux-polish` | UX-Polish: Analyse-Tab, Vorschau, Drag-Handles, Fragetyp-Labels, SuS-Üben UX | ✅ erledigt |
 | **6** | `feature/performance-features` | Performance (~25s Laden), Problem-Melden-Kontext, Excel-Import, Prefetching, Lernziele | offen |
 
 **Reihenfolge:** 1 → 2 → 3 → 4 → 5 → 6 (1+3 oder 1+4 können parallel)
@@ -1195,27 +1195,6 @@ Branch `main`. tsc ✅ | 193 Tests ✅ | Build ✅. **URL: /ExamLab/ (unified bu
 - ~~Einstellungen-Panel~~ ✅ Gruppenname editierbar, Rollen verwalten, Mastery-Schwellwerte
 - ~~Freie Übungszusammenstellung~~ ✅ Cross-Topic-Mix + Repetitions-Modus
 - ~~SuS-Hilfe erweitern~~ ✅ 7-Kategorien Slide-over Panel
-
----
-
-## Session 89 — S3: Navigation & Breadcrumbs (11.04.2026)
-
-### Stand
-Branch `feature/navigation-breadcrumbs`. tsc ✅ | 209 Tests ✅ | Build ✅.
-
-### Analyse
-Die meisten S3-Features waren bereits implementiert:
-- **LP Navigation Store** (`lpNavigationStore.ts`): History-Stack, Breadcrumbs, Favoriten, Hash-Router — alles vorhanden
-- **LPHeader**: Breadcrumbs, ExamLab-Home-Button, Tabs, Favoriten-Dropdown — vorhanden
-- **SuS Loading-Skeleton**: Suspense-Fallback in SuSStartseite — vorhanden
-- **GruppenAuswahl**: ExamLab-Button in AppShell verdrahtet — vorhanden
-
-### Erledigte Arbeiten
-
-| # | Änderung | Dateien |
-|---|----------|---------|
-| 1 | Composer: Breadcrumbs aus NavigationStore an LPHeader übergeben | PruefungsComposer.tsx |
-| 2 | SuS Prüfen-Header: ExamLab-Titel klickbar (→ Üben) | SuSStartseite.tsx |
 
 ---
 

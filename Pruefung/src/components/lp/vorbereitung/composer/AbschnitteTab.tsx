@@ -47,7 +47,6 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
   return (
     <div ref={setNodeRef} style={style} className="px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
       <div className="flex items-center gap-2">
-        <button {...attributes} {...listeners} className="w-7 h-11 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-grab active:cursor-grabbing touch-none shrink-0" title="Ziehen zum Sortieren" aria-label={`Frage ${fIndex + 1} verschieben`}><DragHandleIcon /></button>
         <span className="flex-1 min-w-0 cursor-pointer" onClick={() => onEditFrage(frageId)} title="Klicken zum Bearbeiten">
           <span className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-slate-400 dark:text-slate-500 w-5 text-center tabular-nums shrink-0">{fIndex + 1}.</span>
@@ -60,14 +59,15 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
             {!frage && fragenGeladen && <span className="font-mono text-xs text-red-400 dark:text-red-500 italic">{frageId} (nicht gefunden)</span>}
           </span>
         </span>
-        <div className="flex gap-0.5 shrink-0">
+        <div className="flex gap-0.5 shrink-0 items-center">
+          <button {...attributes} {...listeners} className="w-7 h-11 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-grab active:cursor-grabbing touch-none shrink-0" title="Ziehen zum Sortieren" aria-label={`Frage ${fIndex + 1} verschieben`}><DragHandleIcon /></button>
           <button onClick={() => onMoveFrage(abschnittIndex, fIndex, 'hoch')} disabled={fIndex === 0} className="w-6 h-6 text-xs text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed" title="Nach oben">↑</button>
           <button onClick={() => onMoveFrage(abschnittIndex, fIndex, 'runter')} disabled={fIndex === abschnittLength - 1} className="w-6 h-6 text-xs text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed" title="Nach unten">↓</button>
           <button onClick={() => onRemoveFrage(abschnittIndex, frageId)} className="w-6 h-6 text-xs text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer" title="Frage entfernen">×</button>
         </div>
       </div>
-      {vorschau && <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 ml-9 line-clamp-2 cursor-pointer" onClick={() => onEditFrage(frageId)}>{vorschau}</p>}
-      {frage?.thema && (<div className="flex items-center gap-2 mt-1 ml-9 flex-wrap"><span className="text-[10px] text-slate-400 dark:text-slate-500">{frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}</span>{frage.tags && frage.tags.length > 0 && <>{frage.tags.slice(0, 3).map((tag) => { const tagName = typeof tag === 'string' ? tag : tag.name; return <span key={tagName} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tagName}</span> })}</>}</div>)}
+      {vorschau && <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 line-clamp-2 cursor-pointer" onClick={() => onEditFrage(frageId)}>{vorschau}</p>}
+      {frage?.thema && (<div className="flex items-center gap-2 mt-1 flex-wrap"><span className="text-[10px] text-slate-400 dark:text-slate-500">{frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}</span>{frage.tags && frage.tags.length > 0 && <>{frage.tags.slice(0, 3).map((tag) => { const tagName = typeof tag === 'string' ? tag : tag.name; return <span key={tagName} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tagName}</span> })}</>}</div>)}
     </div>
   )
 }
