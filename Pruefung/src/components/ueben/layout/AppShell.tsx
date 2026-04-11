@@ -91,20 +91,29 @@ export default function AppShell({ children, onExamLabHome }: Props) {
             ) : (
               <h1 className="text-base font-bold dark:text-white">ExamLab</h1>
             )}
-            {aktiveGruppe && gruppen.length > 1 ? (
-              <button
-                onClick={() => {
-                  if (istInUebung) useUebenUebungsStore.setState({ session: null })
-                  gruppeAbwaehlen()
-                  navigiere('gruppenAuswahl')
-                }}
-                className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-              >
-                {aktiveGruppe.name} &#8227;
-              </button>
-            ) : aktiveGruppe ? (
-              <span className="text-xs text-slate-500 dark:text-slate-400">{aktiveGruppe.name}</span>
-            ) : null}
+            {/* Rollenbezeichnung unter ExamLab — wie bei LP-Header */}
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
+              {user?.name || user?.vorname}
+              {' · '}
+              {istAdmin ? 'Admin' : 'Schüler/in'}
+              {aktiveGruppe && gruppen.length > 1 ? (
+                <>
+                  {' — '}
+                  <button
+                    onClick={() => {
+                      if (istInUebung) useUebenUebungsStore.setState({ session: null })
+                      gruppeAbwaehlen()
+                      navigiere('gruppenAuswahl')
+                    }}
+                    className="hover:text-slate-600 dark:hover:text-slate-300 underline"
+                  >
+                    {aktiveGruppe.name} &#8227;
+                  </button>
+                </>
+              ) : aktiveGruppe ? (
+                <> — {aktiveGruppe.name}</>
+              ) : null}
+            </p>
           </div>
         </div>
 
@@ -159,9 +168,6 @@ export default function AppShell({ children, onExamLabHome }: Props) {
               <span className="text-lg">{istDark ? '\u2600\uFE0F' : '\uD83C\uDF19'}</span>
             </button>
           </Tooltip>
-
-          {/* User-Info */}
-          <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{user?.vorname}</span>
 
           {/* Abmelden (immer ganz rechts) */}
           <button

@@ -38,18 +38,22 @@ export function ThemaKarte({
 
   const handleKlick = () => {
     if (istGesperrt) {
-      // Beim ersten Klick: Hinweis anzeigen
-      if (!zeigeGesperrtInfo) {
-        setZeigeGesperrtInfo(true)
-        setTimeout(() => setZeigeGesperrtInfo(false), 4000)
-      } else {
-        // Beim zweiten Klick (innerhalb 4s): Freiwilliges Üben starten
-        setZeigeGesperrtInfo(false)
-        onClick()
-      }
+      // Overlay anzeigen (bleibt bis User explizit agiert)
+      setZeigeGesperrtInfo(true)
     } else {
       onClick()
     }
+  }
+
+  const handleFreiwilligUeben = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setZeigeGesperrtInfo(false)
+    onClick()
+  }
+
+  const handleOverlaySchliessen = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setZeigeGesperrtInfo(false)
   }
 
   return (
@@ -84,10 +88,24 @@ export function ThemaKarte({
         </span>
       )}
 
-      {/* Info-Hinweis bei Klick auf gesperrtes Thema */}
+      {/* Overlay bei Klick auf gesperrtes Thema — bleibt bis User agiert */}
       {zeigeGesperrtInfo && (
-        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 text-xs font-medium px-3 py-2 rounded-lg text-center z-10 shadow-lg">
-          Noch nicht freigeschaltet — nochmal klicken für freiwilliges Üben (wird nicht getrackt)
+        <div className="absolute inset-0 bg-slate-900/90 dark:bg-slate-100/90 rounded-xl flex flex-col items-center justify-center gap-3 z-10 p-4">
+          <p className="text-white dark:text-slate-800 text-xs text-center font-medium">
+            Noch nicht freigeschaltet
+          </p>
+          <button
+            onClick={handleFreiwilligUeben}
+            className="bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium px-4 py-2 rounded-lg min-h-[36px] hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          >
+            Freiwillig üben (nicht bewertet)
+          </button>
+          <button
+            onClick={handleOverlaySchliessen}
+            className="text-slate-400 dark:text-slate-500 text-xs hover:text-white dark:hover:text-slate-800"
+          >
+            Abbrechen
+          </button>
         </div>
       )}
 
