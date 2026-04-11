@@ -5,6 +5,7 @@ export type LPModus = 'pruefung' | 'uebung' | 'fragensammlung'
 export type LPAnsicht = 'dashboard' | 'composer'
 export type ListenTab = 'pruefungen' | 'tracker'
 export type UebungsTab = 'uebungen' | 'durchfuehren' | 'analyse'
+export type EinstellungenTab = 'profil' | 'lernziele' | 'admin'
 
 export interface BreadcrumbEintrag {
   label: string
@@ -24,6 +25,11 @@ interface LPNavigationState {
   // UI-Panels
   zeigHilfe: boolean
   zeigEinstellungen: boolean
+  einstellungenTab: EinstellungenTab | null
+
+  // Deep-Link-Targets
+  deepLinkFrageId: string | null
+  deepLinkComposerTab: string | null
 
   // Composer-State
   composerKey: number
@@ -47,7 +53,9 @@ interface LPNavigationState {
   setListenTab: (tab: ListenTab) => void
   setUebungsTab: (tab: UebungsTab) => void
   toggleHilfe: () => void
-  setZeigEinstellungen: (zeig: boolean) => void
+  setZeigEinstellungen: (zeig: boolean, tab?: EinstellungenTab) => void
+  clearDeepLinkFrageId: () => void
+  clearDeepLinkComposerTab: () => void
   neuerComposerKey: () => void
   kannZurueck: () => boolean
   zurueck: () => void
@@ -113,11 +121,25 @@ function generiereId(): string {
 }
 
 /** Hash aus aktuellem Navigations-State bauen */
-function bauHash(state: { modus: LPModus; ansicht: LPAnsicht; aktiveConfigId: string | null; listenTab: ListenTab; uebungsTab: UebungsTab }): string {
-  if (state.ansicht === 'composer' && state.aktiveConfigId) {
-    return `#/${state.modus === 'uebung' ? 'uebung' : 'pruefung'}/${state.aktiveConfigId}`
+function bauHash(state: {
+  modus: LPModus; ansicht: LPAnsicht; aktiveConfigId: string | null;
+  listenTab: ListenTab; uebungsTab: UebungsTab;
+  zeigEinstellungen: boolean; einstellungenTab: EinstellungenTab | null;
+  deepLinkFrageId: string | null; deepLinkComposerTab: string | null;
+}): string {
+  // Einstellungen-Overlay hat eigenen Hash
+  if (state.zeigEinstellungen) {
+    return state.einstellungenTab ? `#/einstellungen/${state.einstellungenTab}` : '#/einstellungen'
   }
-  if (state.modus === 'fragensammlung') return '#/fragensammlung'
+  // Composer mit Sub-Tab (z.B. /korrektur)
+  if (state.ansicht === 'composer' && state.aktiveConfigId) {
+    const base = `#/${state.modus === 'uebung' ? 'uebung' : 'pruefung'}/${state.aktiveConfigId}`
+    return state.deepLinkComposerTab ? `${base}/${state.deepLinkComposerTab}` : base
+  }
+  // Fragensammlung mit optionaler Frage-ID
+  if (state.modus === 'fragensammlung') {
+    return state.deepLinkFrageId ? `#/fragensammlung/${state.deepLinkFrageId}` : '#/fragensammlung'
+  }
   if (state.modus === 'uebung') {
     if (state.uebungsTab !== 'uebungen') return `#/uebung/${state.uebungsTab}`
     return '#/uebung'
@@ -137,6 +159,9 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
   uebungsTab: 'durchfuehren',
   zeigHilfe: false,
   zeigEinstellungen: false,
+  einstellungenTab: null,
+  deepLinkFrageId: null,
+  deepLinkComposerTab: null,
   composerKey: 0,
   ansichtHistory: [],
   breadcrumbs: [],
@@ -185,7 +210,12 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
     setTimeout(() => get().aktualisiereHash(), 0)
   },
   toggleHilfe: () => set(s => ({ zeigHilfe: !s.zeigHilfe })),
-  setZeigEinstellungen: (zeig) => set({ zeigEinstellungen: zeig }),
+  setZeigEinstellungen: (zeig, tab) => set({
+    zeigEinstellungen: zeig,
+    einstellungenTab: zeig && tab ? tab : null,
+  }),
+  clearDeepLinkFrageId: () => set({ deepLinkFrageId: null }),
+  clearDeepLinkComposerTab: () => set({ deepLinkComposerTab: null }),
   neuerComposerKey: () => set(s => ({ composerKey: s.composerKey + 1 })),
 
   kannZurueck: () => get().ansichtHistory.length > 0,
@@ -282,30 +312,51 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
     if (teile.length === 0 || !teile[0]) return
 
     const screen = teile[0]
+
+    // Einstellungen: #/einstellungen oder #/einstellungen/{tab}
+    if (screen === 'einstellungen') {
+      const tab = teile[1] as EinstellungenTab | undefined
+      const gueltigesTabs: EinstellungenTab[] = ['profil', 'lernziele', 'admin']
+      set({
+        zeigEinstellungen: true,
+        einstellungenTab: tab && gueltigesTabs.includes(tab) ? tab : null,
+      })
+      return
+    }
+
+    // Fragensammlung: #/fragensammlung oder #/fragensammlung/{frageId}
     if (screen === 'fragensammlung') {
-      set({ modus: 'fragensammlung' })
+      set({
+        modus: 'fragensammlung',
+        deepLinkFrageId: teile[1] || null,
+      })
       try { sessionStorage.setItem(MODUS_KEY, 'fragensammlung') } catch { /* ignore */ }
       return
     }
+
+    // Prüfung: #/pruefung, #/pruefung/tracker, #/pruefung/{configId}, #/pruefung/{configId}/korrektur
     if (screen === 'pruefung') {
       set({ modus: 'pruefung' })
       try { sessionStorage.setItem(MODUS_KEY, 'pruefung') } catch { /* ignore */ }
       if (teile[1] === 'tracker') {
         set({ listenTab: 'tracker' })
       } else if (teile[1]) {
-        // Config-ID → wird von LPStartseite aufgelöst
-        set({ aktiveConfigId: teile[1] })
+        // Config-ID mit optionalem Sub-Tab (korrektur, monitoring)
+        const subTab = teile[2] || null
+        set({ aktiveConfigId: teile[1], deepLinkComposerTab: subTab })
       }
       return
     }
+
+    // Übung: #/uebung, #/uebung/durchfuehren, #/uebung/analyse, #/uebung/{configId}
     if (screen === 'uebung') {
       set({ modus: 'uebung' })
       try { sessionStorage.setItem(MODUS_KEY, 'uebung') } catch { /* ignore */ }
       if (teile[1] === 'durchfuehren') set({ uebungsTab: 'durchfuehren' })
       else if (teile[1] === 'analyse') set({ uebungsTab: 'analyse' })
       else if (teile[1]) {
-        // Config-ID
-        set({ aktiveConfigId: teile[1] })
+        const subTab = teile[2] || null
+        set({ aktiveConfigId: teile[1], deepLinkComposerTab: subTab })
       }
       return
     }
@@ -321,6 +372,9 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
     uebungsTab: 'durchfuehren',
     zeigHilfe: false,
     zeigEinstellungen: false,
+    einstellungenTab: null,
+    deepLinkFrageId: null,
+    deepLinkComposerTab: null,
     composerKey: 0,
     ansichtHistory: [],
     breadcrumbs: [],

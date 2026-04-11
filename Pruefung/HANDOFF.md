@@ -6,6 +6,76 @@
 
 ---
 
+## Session 90 — Deep Links + Fachkürzel (11.04.2026)
+
+### Stand
+Branch `feature/deep-links-fachkuerzel`. tsc ✅ | 209 Tests ✅ | Build ✅.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Deep Links (IMPROVEMENT_PLAN B7)** | |
+| D1 | **Hash-Router erweitert:** Neue Routen `#/einstellungen/{tab}`, `#/fragensammlung/{frageId}`, `#/pruefung/{id}/korrektur`, `#/pruefung/{id}/monitoring` | lpNavigationStore.ts |
+| D2 | **Einstellungen Deep Link:** `initialTab`-Prop, Hash-Reset beim Schliessen | EinstellungenPanel.tsx, LPStartseite.tsx |
+| D3 | **Fragensammlung Deep Link:** `deepLinkFrageId` → `initialEditFrageId` an FragenBrowser | LPStartseite.tsx |
+| D4 | **Korrektur/Monitoring Deep Link:** Redirect zu `?id=` DurchfuehrenDashboard | LPStartseite.tsx |
+| D5 | **Store-Erweiterung:** `EinstellungenTab` exportiert, `deepLinkFrageId`, `deepLinkComposerTab`, `einstellungenTab` State-Felder | lpNavigationStore.ts |
+| **Fachkürzel (IMPROVEMENT_PLAN U3)** | |
+| F1 | **Offizielle Kürzel:** Alle Fächer aus Kürzelliste SJ2025/26 in DEFAULT_STAMMDATEN (37 Fächer, 16 Fachschaften) | stammdaten.ts |
+| F2 | **FACHKUERZEL_MAP:** Mapping offizielles Kürzel → {fachId, gefaess} (42 Einträge: GF, SF, EF) | stammdaten.ts |
+| F3 | **LP_KUERZEL_MAP:** Lehrpersonen-Kürzel → Name (WR/IN-Fachschaft) | stammdaten.ts |
+| F4 | **Abwärtskompatibilität:** FACHSCHAFT_ZU_FACH unterstützt alte (DE, FR) und neue (D, F) Kürzel | fachUtils.ts |
+| F5 | **Gefäss TAF hinzugefügt:** `gefaesse: [..., 'TAF']` | stammdaten.ts |
+| F6 | **Fachschaften mit SF/EF-Fächern:** faecherIds erweitert (z.B. WR → [wr, wr-sf, wr-ef]) | stammdaten.ts |
+
+### Deep Link Routen (vollständig)
+
+| Route | Ziel |
+|-------|------|
+| `#/pruefung` | LP Prüfungs-Dashboard |
+| `#/pruefung/tracker` | LP Prüfungs-Tracker |
+| `#/pruefung/{configId}` | LP Prüfungs-Composer |
+| `#/pruefung/{configId}/korrektur` | → Redirect zu ?id= (DurchfuehrenDashboard) |
+| `#/pruefung/{configId}/monitoring` | → Redirect zu ?id= (DurchfuehrenDashboard) |
+| `#/uebung` | LP Übungs-Dashboard |
+| `#/uebung/durchfuehren` | LP Üben-Durchführen |
+| `#/uebung/analyse` | LP Üben-Analyse |
+| `#/uebung/{configId}` | LP Übungs-Composer |
+| `#/fragensammlung` | LP Fragensammlung |
+| `#/fragensammlung/{frageId}` | Frage direkt im Editor öffnen |
+| `#/einstellungen` | Einstellungen-Panel |
+| `#/einstellungen/profil` | Profil-Tab |
+| `#/einstellungen/lernziele` | Lernziele-Tab |
+| `#/einstellungen/admin` | Admin-Tab |
+
+### Fachkürzel-Schema (offiziell, Gym Hofwil)
+
+| Suffix | Gefäss | Beispiele |
+|--------|--------|-----------|
+| (keins) | GF | D, F, E, M, WR, IN, BG, MU, SP |
+| `!` | SF | WR!, BG!, MU!, PPP!, S!, BC! |
+| `!!` | EF | WR!!, IN!!, G!!, GG!!, P!!, PH!!, SP!! |
+| `+` / `-FF` | FF | E+, M+, MU+, TH-FF, CH-FF, VO-FF |
+| `t` | TAF | BGt, MUt, SPt, THWt |
+
+### Geänderte Dateien (4)
+- `Pruefung/src/store/lpNavigationStore.ts` — Deep Links: bauHash, navigiereZuHash, neue State-Felder
+- `Pruefung/src/components/lp/LPStartseite.tsx` — Deep Link Integration (Einstellungen, Fragensammlung, Korrektur)
+- `Pruefung/src/components/settings/EinstellungenPanel.tsx` — initialTab-Prop, Import EinstellungenTab
+- `Pruefung/src/types/stammdaten.ts` — 37 Fächer, 16 Fachschaften, FACHKUERZEL_MAP, LP_KUERZEL_MAP
+- `Pruefung/src/utils/fachUtils.ts` — FACHSCHAFT_ZU_FACH Abwärtskompatibilität (alte + neue Kürzel)
+
+### Noch offen
+- Browser-Test: Deep Links im Browser verifizieren (Hash-Navigation)
+- Browser-Test: Fachkürzel in Einstellungen-Panel sichtbar
+- Apps Script: Kein Deploy nötig (nur Frontend-Änderungen)
+- Performance S6A: LP-Laden noch ~25s — eigene Session
+- Excel-Import S6D: Session 79 teilweise, Feinschliff offen
+- KI-Bild-Generator Backend: generiereFrageBild fehlt noch
+
+---
+
 ## Session 88 — IMPROVEMENT_PLAN v2: S1–S5 (11.04.2026)
 
 ### Stand

@@ -132,6 +132,8 @@ export default function LPStartseite() {
   // Favoriten aus dem Store (AppOrt[])
   const favoriten = useLPNavigationStore(s => s.favoriten)
   const aktiveConfigId = useLPNavigationStore(s => s.aktiveConfigId)
+  const deepLinkFrageId = useLPNavigationStore(s => s.deepLinkFrageId)
+  const clearDeepLinkFrageId = useLPNavigationStore(s => s.clearDeepLinkFrageId)
 
   // Favoriten-Configs (nur existierende IDs, nach Datum sortiert)
   const favoritenConfigIds = useMemo(() => new Set(favoriten.map(f => f.params.configId).filter(Boolean)), [favoriten])
@@ -312,14 +314,24 @@ export default function LPStartseite() {
   }, [])
 
   // Hash-Router: Config via aktiveConfigId öffnen (nachdem Configs geladen)
+  const deepLinkComposerTab = useLPNavigationStore(s => s.deepLinkComposerTab)
   useEffect(() => {
     if (ladeStatus !== 'fertig' || !aktiveConfigId || ansicht === 'composer') return
     const config = configs.find(c => c.id === aktiveConfigId)
-    if (config) {
-      setEditConfig(config)
-      navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
+    if (!config) return
+
+    // Deep Link zu Monitoring/Korrektur → DurchfuehrenDashboard via ?id=
+    if (deepLinkComposerTab === 'korrektur' || deepLinkComposerTab === 'monitoring') {
+      const url = new URL(window.location.href)
+      url.hash = ''
+      url.searchParams.set('id', config.id)
+      window.location.href = url.toString()
+      return
     }
-  }, [ladeStatus, aktiveConfigId, configs])
+
+    setEditConfig(config)
+    navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
+  }, [ladeStatus, aktiveConfigId, configs, deepLinkComposerTab])
 
   function handleNeue(): void {
     setEditConfig(null)
@@ -852,6 +864,8 @@ export default function LPStartseite() {
             onHinzufuegen={() => {}}
             onSchliessen={() => useLPNavigationStore.getState().zurueck()}
             bereitsVerwendet={[]}
+            initialEditFrageId={deepLinkFrageId ?? undefined}
+            onFrageAktualisiert={() => { clearDeepLinkFrageId() }}
           />
         </main>
       )}
@@ -863,7 +877,14 @@ export default function LPStartseite() {
 
       {/* Einstellungen Panel */}
       {zeigEinstellungen && (
-        <EinstellungenPanel onSchliessen={() => setZeigEinstellungen(false)} />
+        <EinstellungenPanel
+          initialTab={useLPNavigationStore.getState().einstellungenTab ?? undefined}
+          onSchliessen={() => {
+            setZeigEinstellungen(false)
+            // Hash zurücksetzen auf aktuellen Modus
+            setTimeout(() => useLPNavigationStore.getState().aktualisiereHash(), 0)
+          }}
+        />
       )}
     </div>
   )

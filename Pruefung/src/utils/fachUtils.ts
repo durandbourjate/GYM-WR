@@ -51,23 +51,29 @@ export function istFachschaftMitFiBu(fachschaften: string[]): boolean {
   return fachschaften.includes('WR')
 }
 
-/** Default-Fach aus Fachschaften ableiten */
+/** Default-Fach aus Fachschaften ableiten.
+ * Kürzel gemäss offizieller Kürzelliste Gym Hofwil SJ2025/26.
+ * Unterstützt alte (DE, FR, etc.) und neue (D, F, etc.) Kürzel für Abwärtskompatibilität.
+ */
 const FACHSCHAFT_ZU_FACH: Record<string, string> = {
   'WR': 'Wirtschaft & Recht',
   'IN': 'Informatik',
-  'DE': 'Deutsch',
-  'FR': 'Französisch',
-  'EN': 'Englisch',
-  'MA': 'Mathematik',
-  'BI': 'Biologie',
-  'CH': 'Chemie',
-  'PH': 'Physik',
-  'GS': 'Geschichte',
+  'D': 'Deutsch', 'DE': 'Deutsch',
+  'F': 'Französisch', 'FR': 'Französisch',
+  'E': 'Englisch', 'EN': 'Englisch',
+  'M': 'Mathematik', 'MA': 'Mathematik',
+  'B': 'Biologie', 'BI': 'Biologie',
+  'C': 'Chemie', 'CH': 'Chemie',
+  'P': 'Physik', 'PH': 'Physik',
+  'G': 'Geschichte', 'GS': 'Geschichte',
   'GG': 'Geografie',
   'BG': 'Bildnerisches Gestalten',
   'MU': 'Musik',
   'SP': 'Sport',
+  'RL': 'Religionslehre',
   'PL': 'Philosophie',
+  'PPP': 'Pädagogik Psychologie Philosophie',
+  'S': 'Spanisch',
   'LA': 'Latein',
 }
 

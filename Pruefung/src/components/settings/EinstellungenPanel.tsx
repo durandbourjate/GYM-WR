@@ -4,23 +4,24 @@ import { useStammdatenStore } from '../../store/stammdatenStore'
 import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDefinition } from '../../types/stammdaten'
 import LernzielTab from './LernzielTab'
 
+import type { EinstellungenTab } from '../../store/lpNavigationStore'
+
 interface Props {
   onSchliessen: () => void
+  initialTab?: EinstellungenTab
 }
-
-type EinstellungenTab = 'profil' | 'lernziele' | 'admin'
 
 /**
  * Einstellungen-Panel: Slide-over Panel.
  * - Mein Profil: LP konfiguriert eigene Kurse/Fächer/Gefässe
  * - Admin: Stammdaten verwalten (nur Admins)
  */
-export default function EinstellungenPanel({ onSchliessen }: Props) {
+export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) {
   const user = useAuthStore(s => s.user)
   const { stammdaten, lpProfil, istAdmin, ladeStammdaten, ladeLPProfil } = useStammdatenStore()
   const admin = istAdmin(user?.email)
 
-  const [tab, setTab] = useState<EinstellungenTab>(admin ? 'admin' : 'profil')
+  const [tab, setTab] = useState<EinstellungenTab>(initialTab ?? (admin ? 'admin' : 'profil'))
 
   // Stammdaten + Profil laden (Actions sind stabile Zustand-Referenzen)
   useEffect(() => {
