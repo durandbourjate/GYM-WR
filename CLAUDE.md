@@ -34,6 +34,17 @@ git add -A && git commit -m "vX.XX: Beschreibung" && git push
 - Kursbezeichnungen im Stundenplan: `WR!` = SF, `WR` = EWR, `WR!!` = EF
 - TaF = 5-jähriges Gymnasium mit Phasenmodell (4 Phasen/Jahr, nicht durchgehend)
 
+## Entwicklungsprozess
+
+Drei Schichten, automatisch geladen:
+1. **Superpowers-Skills** — Generischer Prozess (Brainstorming → Plan → TDD → Verify)
+2. **`.claude/rules/`** — Projektspezifische Regeln (Regression Prevention, Security, Design, Qualität)
+3. **Memory** — Gelerntes aus vergangenen Sessions (Feedback, Projektkontext)
+
+Bei Features: Brainstorming → Plan → Umsetzung → Qualitäts-Checkliste → Browser-Test → Merge-Gate
+Bei Bugfixes: Systematic Debugging → Fix → Qualitäts-Checkliste → Browser-Test → Merge-Gate
+Bei Fehlern: Lernschleife → Rule-File ergänzen
+
 ## Referenzen
 
 - Schulkontext (Stundenplan, IW, Lehrplan): @.claude/rules/schulkontext.md
