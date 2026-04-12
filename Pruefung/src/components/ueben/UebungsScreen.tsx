@@ -52,6 +52,14 @@ export default function UebungsScreen() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
+  // Keine Frage mehr → Session automatisch beenden (z.B. letzte Frage übersprungen)
+  useEffect(() => {
+    if (session && !frage && !session.beendet) {
+      beendeSession()
+      navigiere('ergebnis')
+    }
+  }, [session, frage, beendeSession, navigiere])
+
   if (!session || !frage) return null
 
   // Daten normalisieren (fehlende Felder mit Defaults füllen)
