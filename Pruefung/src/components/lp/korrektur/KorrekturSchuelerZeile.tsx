@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { SchuelerKorrektur, SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage, PDFAnnotation, PDFFrage } from '../../../types/fragen.ts'
 import type { KorrekturErgebnis } from '../../../utils/autoKorrektur.ts'
-import { effektivePunkte, berechneNote, statusLabel, statusFarbe } from '../../../utils/korrekturUtils.ts'
+import { effektivePunkte, berechneNote, statusLabel, korrekturStatusFarbe } from '../../../utils/korrekturUtils.ts'
 import type { NotenConfig } from '../../../types/pruefung.ts'
 import KorrekturFrageZeile from './KorrekturFrageZeile.tsx'
 import ZeichnenKorrektur from './ZeichnenKorrektur.tsx'
@@ -124,7 +124,7 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
 
         {/* Status + Geprüft-Zähler */}
         <div className="flex items-center gap-2 justify-end md:justify-start">
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusFarbe(schueler.korrekturStatus)}`}>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${korrekturStatusFarbe(schueler.korrekturStatus)}`}>
             {statusLabel(schueler.korrekturStatus)}
           </span>
           <span className={`text-xs ${

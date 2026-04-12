@@ -3,6 +3,7 @@ import { initializeLernenGoogleAuth, renderLernenGoogleButton } from '../../serv
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenTheme } from '../../hooks/ueben/useTheme'
 import Tooltip from '../ui/Tooltip.tsx'
+import LoginLayout from '../shared/LoginLayout.tsx'
 
 export default function LoginScreen() {
   const googleButtonRef = useRef<HTMLDivElement>(null)
@@ -31,7 +32,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+    <LoginLayout title="ExamLab">
       {/* Dark/Light Toggle (oben rechts) */}
       <button
         onClick={toggleTheme}
@@ -40,8 +41,7 @@ export default function LoginScreen() {
         <Tooltip text={istDark ? 'Light Mode' : 'Dark Mode'}><span>{istDark ? '☀️' : '🌙'}</span></Tooltip>
       </button>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
-        <h1 className="text-2xl font-bold mb-2 dark:text-white">ExamLab</h1>
+      <div className="text-center">
         <p className="text-slate-500 dark:text-slate-400 mb-4">Anmelden um zu üben</p>
 
         {/* Hilfe/Info */}
@@ -119,6 +119,6 @@ export default function LoginScreen() {
           </div>
         </div>
       </div>
-    </div>
+    </LoginLayout>
   )
 }
