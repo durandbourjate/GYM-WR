@@ -1,5 +1,6 @@
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { RichtigFalschFrage as RichtigFalschFrageType } from '../../types/fragen.ts'
+import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 
@@ -8,16 +9,13 @@ interface Props {
 }
 
 export default function RichtigFalschFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const bewertungen: Record<string, boolean> =
-    aktuelleAntwort?.typ === 'richtigfalsch' ? aktuelleAntwort.bewertungen : {}
+    (antwort as Extract<Antwort, { typ: 'richtigfalsch' }> | null)?.bewertungen ?? {}
 
   function handleKlick(aussageId: string, wert: boolean) {
-    if (abgegeben) return
+    if (disabled) return
 
     const neueBewertungen = { ...bewertungen }
     // Toggle: Wenn gleicher Wert nochmal geklickt → abwählen
@@ -26,7 +24,7 @@ export default function RichtigFalschFrage({ frage }: Props) {
     } else {
       neueBewertungen[aussageId] = wert
     }
-    setAntwort(frage.id, { typ: 'richtigfalsch', bewertungen: neueBewertungen })
+    onAntwort({ typ: 'richtigfalsch', bewertungen: neueBewertungen })
   }
 
   return (
@@ -63,11 +61,11 @@ export default function RichtigFalschFrage({ frage }: Props) {
               className={`p-4 rounded-xl border-2 transition-all
                 ${gewaehlt !== undefined
                   ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700/30'
-                  : !abgegeben
+                  : !disabled
                     ? 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-800'
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
                 }
-                ${abgegeben ? 'opacity-75' : ''}
+                ${disabled ? 'opacity-75' : ''}
               `}
             >
               {/* Aussagentext */}
@@ -82,13 +80,13 @@ export default function RichtigFalschFrage({ frage }: Props) {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleKlick(aussage.id, true)}
-                  disabled={abgegeben}
+                  disabled={disabled}
                   className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg border-2 transition-all cursor-pointer
                     ${gewaehlt === true
                       ? 'border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200'
                       : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500'
                     }
-                    ${abgegeben ? 'cursor-not-allowed' : ''}
+                    ${disabled ? 'cursor-not-allowed' : ''}
                   `}
                 >
                   <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === true ? 'border-green-600 bg-green-600 text-white dark:border-green-400 dark:bg-green-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === true ? '✓' : ''}</span>
@@ -96,13 +94,13 @@ export default function RichtigFalschFrage({ frage }: Props) {
                 </button>
                 <button
                   onClick={() => handleKlick(aussage.id, false)}
-                  disabled={abgegeben}
+                  disabled={disabled}
                   className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg border-2 transition-all cursor-pointer
                     ${gewaehlt === false
                       ? 'border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200'
                       : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500'
                     }
-                    ${abgegeben ? 'cursor-not-allowed' : ''}
+                    ${disabled ? 'cursor-not-allowed' : ''}
                   `}
                 >
                   <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === false ? 'border-red-600 bg-red-600 text-white dark:border-red-400 dark:bg-red-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === false ? '✗' : ''}</span>
@@ -113,6 +111,14 @@ export default function RichtigFalschFrage({ frage }: Props) {
           )
         })}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { LueckentextFrage as LueckentextFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
@@ -21,16 +22,13 @@ function shuffleOptionen(optionen: string[], stableKey: string): string[] {
 }
 
 export default function LueckentextFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const config = usePruefungStore((s) => s.config)
   const rechtschreibpruefungAktiv = config?.rechtschreibpruefung !== false
   const rechtschreibSprache = config?.rechtschreibSprache ?? 'de'
 
-  const aktuelleAntwort = antworten[frage.id]
   const eintraege: Record<string, string> =
-    aktuelleAntwort?.typ === 'lueckentext' ? aktuelleAntwort.eintraege : {}
+    antwort?.typ === 'lueckentext' ? antwort.eintraege : {}
 
   // Gemischte Dropdown-Optionen einmalig pro Frage berechnen
   const gemischteOptionen = useMemo(() => {
@@ -44,9 +42,9 @@ export default function LueckentextFrage({ frage }: Props) {
   }, [frage.id, frage.luecken])
 
   function handleChange(lueckenId: string, wert: string) {
-    if (abgegeben) return
+    if (disabled) return
     const neueEintraege = { ...eintraege, [lueckenId]: wert }
-    setAntwort(frage.id, { typ: 'lueckentext', eintraege: neueEintraege })
+    onAntwort({ typ: 'lueckentext', eintraege: neueEintraege })
   }
 
   // Text mit Lücken rendern
@@ -89,9 +87,9 @@ export default function LueckentextFrage({ frage }: Props) {
                   key={i}
                   value={wert}
                   onChange={(e) => handleChange(lueckenId, e.target.value)}
-                  disabled={abgegeben}
+                  disabled={disabled}
                   className={`inline-block mx-1 px-2 py-1 text-base border-b-2 outline-none transition-colors text-slate-800 dark:text-slate-100 bg-transparent cursor-pointer
-                    ${abgegeben
+                    ${disabled
                       ? 'border-slate-300 dark:border-slate-600 opacity-75'
                       : wert
                         ? 'border-slate-400 dark:border-slate-500'
@@ -114,12 +112,12 @@ export default function LueckentextFrage({ frage }: Props) {
                 type="text"
                 value={wert}
                 onChange={(e) => handleChange(lueckenId, e.target.value)}
-                disabled={abgegeben}
+                disabled={disabled}
                 placeholder={`Lücke ${lueckenId}`}
                 spellCheck={rechtschreibpruefungAktiv}
                 lang={rechtschreibSprache}
                 className={`inline-block mx-1 px-3 py-1 w-48 text-base border-b-2 outline-none transition-colors text-slate-800 dark:text-slate-100
-                  ${abgegeben
+                  ${disabled
                     ? 'border-slate-300 dark:border-slate-600 bg-transparent opacity-75'
                     : wert
                       ? 'border-slate-400 dark:border-slate-500 bg-transparent'
@@ -132,6 +130,14 @@ export default function LueckentextFrage({ frage }: Props) {
           return <span key={i} dangerouslySetInnerHTML={{ __html: renderMarkdown(teil) }} />
         })}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

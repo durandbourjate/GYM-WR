@@ -1,5 +1,6 @@
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { MCFrage as MCFrageType } from '../../types/fragen.ts'
+import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 
@@ -8,16 +9,13 @@ interface Props {
 }
 
 export default function MCFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const gewaehlte: string[] =
-    aktuelleAntwort?.typ === 'mc' ? aktuelleAntwort.gewaehlteOptionen : []
+    (antwort as Extract<Antwort, { typ: 'mc' }> | null)?.gewaehlteOptionen ?? []
 
   function handleKlick(optionId: string) {
-    if (abgegeben) return
+    if (disabled) return
 
     let neueAuswahl: string[]
     if (frage.mehrfachauswahl) {
@@ -27,7 +25,7 @@ export default function MCFrage({ frage }: Props) {
     } else {
       neueAuswahl = gewaehlte.includes(optionId) ? [] : [optionId]
     }
-    setAntwort(frage.id, { typ: 'mc', gewaehlteOptionen: neueAuswahl })
+    onAntwort({ typ: 'mc', gewaehlteOptionen: neueAuswahl })
   }
 
   return (
@@ -57,20 +55,20 @@ export default function MCFrage({ frage }: Props) {
       />
 
       {/* Optionen */}
-      <div className={`flex flex-col gap-2.5 ${!abgegeben && gewaehlte.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      <div className={`flex flex-col gap-2.5 ${!disabled && gewaehlte.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         {(frage.optionen ?? []).map((option) => {
           const istGewaehlt = gewaehlte.includes(option.id)
           return (
             <button
               key={option.id}
               onClick={() => handleKlick(option.id)}
-              disabled={abgegeben}
+              disabled={disabled}
               className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all cursor-pointer
                 ${istGewaehlt
                   ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
                   : 'border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-slate-800'
                 }
-                ${abgegeben ? 'opacity-75 cursor-not-allowed' : ''}
+                ${disabled ? 'opacity-75 cursor-not-allowed' : ''}
               `}
             >
               {/* Radio / Checkbox Icon */}
@@ -98,6 +96,14 @@ export default function MCFrage({ frage }: Props) {
           )
         })}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

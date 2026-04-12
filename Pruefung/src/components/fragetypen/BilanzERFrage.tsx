@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BilanzERFrage as BilanzERFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -74,10 +74,8 @@ function vonAntwortER(a?: Antwort): ERFeldEingabe {
 
 /* ─── Hauptkomponente ─── */
 export default function BilanzERFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
-  const gespeichert = antworten[frage.id]?.typ === 'bilanzstruktur' ? antworten[frage.id] : undefined
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const gespeichert = antwort?.typ === 'bilanzstruktur' ? antwort : undefined
   const zeigeBilanz = frage.modus === 'bilanz' || frage.modus === 'beides'
   const zeigeER = frage.modus === 'erfolgsrechnung' || frage.modus === 'beides'
 
@@ -87,8 +85,7 @@ export default function BilanzERFrage({ frage }: Props) {
 
   // Bei Fragenwechsel: State neu initialisieren
   useEffect(() => {
-    const a = antworten[frage.id]
-    const g = a?.typ === 'bilanzstruktur' ? a : undefined
+    const g = antwort?.typ === 'bilanzstruktur' ? antwort : undefined
     setBilanzLokal(zeigeBilanz ? vonAntwortBilanz(g) : null)
     setERLokal(zeigeER ? vonAntwortER(g) : null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,9 +94,9 @@ export default function BilanzERFrage({ frage }: Props) {
   const speichern = (b: BilanzEingabe | null, e: ERFeldEingabe | null) => {
     setBilanzLokal(b)
     setERLokal(e)
-    setAntwort(frage.id, zuAntwort(b, e))
+    onAntwort(zuAntwort(b, e))
   }
-  const readOnly = abgegeben
+  const readOnly = disabled
   const verfuegbar = (frage.kontenMitSaldi ?? []).map(k => k.kontonummer)
 
   return (
@@ -114,6 +111,14 @@ export default function BilanzERFrage({ frage }: Props) {
       <KontenTabelle konten={frage.kontenMitSaldi} />
       {zeigeBilanz && bilanz && <BilanzUI bilanz={bilanz} onChange={b => speichern(b, er)} readOnly={readOnly} konten={verfuegbar} />}
       {zeigeER && er && <ERUI er={er} onChange={e => speichern(bilanz, e)} readOnly={readOnly} konten={verfuegbar} />}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { HotspotFrage as HotspotFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -9,16 +9,13 @@ interface Props {
 }
 
 export default function HotspotFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const geklickt: { x: number; y: number }[] =
-    aktuelleAntwort?.typ === 'hotspot' ? aktuelleAntwort.klicks : []
+    antwort?.typ === 'hotspot' ? antwort.klicks : []
 
   const handleKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (abgegeben) return
+    if (disabled) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width) * 100
     const y = ((e.clientY - rect.top) / rect.height) * 100
@@ -29,12 +26,12 @@ export default function HotspotFrage({ frage }: Props) {
     } else {
       neueKlicks = [{ x, y }]
     }
-    setAntwort(frage.id, { typ: 'hotspot', klicks: neueKlicks })
-  }, [abgegeben, frage.id, frage.mehrfachauswahl, geklickt, setAntwort])
+    onAntwort({ typ: 'hotspot', klicks: neueKlicks })
+  }, [disabled, frage.id, frage.mehrfachauswahl, geklickt, onAntwort])
 
   function handleZuruecksetzen() {
-    if (abgegeben) return
-    setAntwort(frage.id, { typ: 'hotspot', klicks: [] })
+    if (disabled) return
+    onAntwort({ typ: 'hotspot', klicks: [] })
   }
 
   return (
@@ -64,9 +61,9 @@ export default function HotspotFrage({ frage }: Props) {
       />
 
       {/* Bild mit Klickbereichen */}
-      <div className={`relative inline-block ${!abgegeben && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      <div className={`relative inline-block ${!disabled && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div
-          className={`relative overflow-hidden w-fit max-w-full ${abgegeben ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
+          className={`relative overflow-hidden w-fit max-w-full ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
           onClick={handleKlick}
         >
           <img
@@ -89,13 +86,21 @@ export default function HotspotFrage({ frage }: Props) {
       </div>
 
       {/* Zuruecksetzen-Button */}
-      {!abgegeben && geklickt.length > 0 && (
+      {!disabled && geklickt.length > 0 && (
         <button
           onClick={handleZuruecksetzen}
           className="self-start px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer"
         >
           Auswahl zurucksetzen
         </button>
+      )}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
       )}
     </div>
   )

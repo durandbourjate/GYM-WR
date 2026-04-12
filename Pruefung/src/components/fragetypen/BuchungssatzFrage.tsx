@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BuchungssatzFrage as BuchungssatzFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -56,13 +56,10 @@ function vonAntwort(
 }
 
 export default function BuchungssatzFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const gespeicherteAntwort =
-    aktuelleAntwort?.typ === 'buchungssatz' ? aktuelleAntwort : undefined
+    antwort?.typ === 'buchungssatz' ? antwort : undefined
 
   const [buchungen, setBuchungenLokal] = useState<BuchungEingabe[]>(() =>
     vonAntwort(gespeicherteAntwort)
@@ -70,15 +67,14 @@ export default function BuchungssatzFrage({ frage }: Props) {
 
   // Bei Fragenwechsel: State neu initialisieren
   useEffect(() => {
-    const a = antworten[frage.id]
-    const gespeichert = a?.typ === 'buchungssatz' ? a : undefined
+    const gespeichert = antwort?.typ === 'buchungssatz' ? antwort : undefined
     setBuchungenLokal(vonAntwort(gespeichert))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frage.id])
 
   function aktualisiere(neueBuchungen: BuchungEingabe[]) {
     setBuchungenLokal(neueBuchungen)
-    setAntwort(frage.id, zuAntwort(neueBuchungen))
+    onAntwort(zuAntwort(neueBuchungen))
   }
 
   function feldAendern(buchungIdx: number, feld: keyof BuchungEingabe, wert: string) {
@@ -96,7 +92,7 @@ export default function BuchungssatzFrage({ frage }: Props) {
     aktualisiere(buchungen.filter((_, i) => i !== buchungIdx))
   }
 
-  const readOnly = abgegeben
+  const readOnly = disabled
 
   return (
     <div className="flex flex-col gap-5">
@@ -217,6 +213,14 @@ export default function BuchungssatzFrage({ frage }: Props) {
           </svg>
           Buchungssatz hinzufügen
         </button>
+      )}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '✓ Richtig!' : '✗ Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
       )}
     </div>
   )

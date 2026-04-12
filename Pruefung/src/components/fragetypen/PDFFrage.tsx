@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import type { PDFFrage as PDFFrageTyp } from '../../types/fragen.ts'
@@ -20,18 +20,15 @@ interface Props {
 const AUTOSAVE_DEBOUNCE_MS = 2000
 
 export default function PDFFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort: adapterAntwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const user = useAuthStore((s) => s.user)
 
   // PDF renderer
   const renderer = usePDFRenderer()
 
   // Load saved annotations from store
-  const gespeicherteAntwort = antworten[frage.id]
   const gespeicherteAnnotationen: PDFAnnotation[] =
-    gespeicherteAntwort?.typ === 'pdf' ? (gespeicherteAntwort.annotationen ?? []) : []
+    adapterAntwort?.typ === 'pdf' ? (adapterAntwort.annotationen ?? []) : []
 
   // Annotations hook
   const {
@@ -163,8 +160,7 @@ export default function PDFFrage({ frage }: Props) {
 
   // --- Sync annotations from store on frage change ---
   useEffect(() => {
-    const antwort = antworten[frage.id]
-    const saved: PDFAnnotation[] = antwort?.typ === 'pdf' ? (antwort.annotationen ?? []) : []
+    const saved: PDFAnnotation[] = adapterAntwort?.typ === 'pdf' ? (adapterAntwort.annotationen ?? []) : []
     setAnnotationen(saved)
 
     return () => {
@@ -172,7 +168,7 @@ export default function PDFFrage({ frage }: Props) {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current)
         debounceRef.current = null
-        setAntwort(frageIdRef.current, {
+        onAntwort({
           typ: 'pdf',
           annotationen: annotationenRef.current,
         })
@@ -187,7 +183,7 @@ export default function PDFFrage({ frage }: Props) {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
       debounceRef.current = null
-      setAntwort(frageIdRef.current, {
+      onAntwort({
         typ: 'pdf',
         annotationen,
       })
@@ -295,7 +291,7 @@ export default function PDFFrage({ frage }: Props) {
       {/* Toolbar + Viewer Container */}
       <div className={toolbarLayout === 'vertikal' ? 'flex flex-row gap-2' : 'flex flex-col gap-4'}>
         {/* Toolbar (hidden when submitted) */}
-        {!abgegeben && (
+        {!disabled && (
           <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start' : ''}`}>
             <PDFToolbar
               aktivesWerkzeug={aktivesWerkzeug}
@@ -319,7 +315,7 @@ export default function PDFFrage({ frage }: Props) {
               onUndo={undo}
               onRedo={redo}
               annotationCount={annotationen.length}
-              readOnly={abgegeben}
+              readOnly={disabled}
               layout={toolbarLayout}
               onLayoutToggle={() => setToolbarLayout(l => {
                 const neu = l === 'horizontal' ? 'vertikal' : 'horizontal'
@@ -385,19 +381,27 @@ export default function PDFFrage({ frage }: Props) {
         onAnnotationHinzufuegen={handleAnnotationHinzufuegen}
         onAnnotationLoeschen={handleAnnotationLoeschen}
         onAnnotationEditieren={handleAnnotationEditieren}
-        readOnly={abgegeben}
+        readOnly={disabled}
       />
         </div>
       </div>
 
       {/* Status bar */}
       <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-        <span>{abgegeben ? 'Abgegeben' : 'Auto-Save aktiv'}</span>
+        <span>{disabled ? 'Abgegeben' : 'Auto-Save aktiv'}</span>
         <span>
           {seitenAnzahl} {seitenAnzahl === 1 ? 'Seite' : 'Seiten'} &middot; {annotationen.length}{' '}
           {annotationen.length === 1 ? 'Annotation' : 'Annotationen'}
         </span>
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BerechnungFrage as BerechnungFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -8,25 +8,22 @@ interface Props {
 }
 
 export default function BerechnungFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const ergebnisse: Record<string, string> =
-    aktuelleAntwort?.typ === 'berechnung' ? aktuelleAntwort.ergebnisse : {}
+    antwort?.typ === 'berechnung' ? antwort.ergebnisse : {}
   const rechenweg: string =
-    aktuelleAntwort?.typ === 'berechnung' ? aktuelleAntwort.rechenweg ?? '' : ''
+    antwort?.typ === 'berechnung' ? antwort.rechenweg ?? '' : ''
 
   function handleErgebnis(ergebnisId: string, wert: string) {
-    if (abgegeben) return
+    if (disabled) return
     const neueErgebnisse = { ...ergebnisse, [ergebnisId]: wert }
-    setAntwort(frage.id, { typ: 'berechnung', ergebnisse: neueErgebnisse, rechenweg })
+    onAntwort({ typ: 'berechnung', ergebnisse: neueErgebnisse, rechenweg })
   }
 
   function handleRechenweg(text: string) {
-    if (abgegeben) return
-    setAntwort(frage.id, { typ: 'berechnung', ergebnisse, rechenweg: text })
+    if (disabled) return
+    onAntwort({ typ: 'berechnung', ergebnisse, rechenweg: text })
   }
 
   return (
@@ -71,9 +68,9 @@ export default function BerechnungFrage({ frage }: Props) {
                 inputMode="decimal"
                 value={ergebnisse[erg.id] ?? ''}
                 onChange={(e) => handleErgebnis(erg.id, e.target.value)}
-                disabled={abgegeben}
+                disabled={disabled}
                 placeholder="Ergebnis eingeben..."
-                className={`flex-1 px-3 py-2 text-base bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 font-mono disabled:opacity-60 ${!abgegeben && !(ergebnisse[erg.id]) ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
+                className={`flex-1 px-3 py-2 text-base bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 font-mono disabled:opacity-60 ${!disabled && !(ergebnisse[erg.id]) ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
               />
               {erg.einheit && (
                 <span className="text-sm font-medium text-slate-500 dark:text-slate-400 shrink-0">
@@ -99,14 +96,22 @@ export default function BerechnungFrage({ frage }: Props) {
           <textarea
             value={rechenweg}
             onChange={(e) => handleRechenweg(e.target.value)}
-            disabled={abgegeben}
+            disabled={disabled}
             rows={6}
             placeholder="Zeigen Sie Ihren Rechenweg hier..."
-            className={`w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 resize-y disabled:opacity-60 ${!abgegeben && !rechenweg ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
+            className={`w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 text-slate-800 dark:text-slate-100 resize-y disabled:opacity-60 ${!disabled && !rechenweg ? 'border-violet-400 dark:border-violet-500' : 'border-slate-300 dark:border-slate-600'}`}
           />
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
             Beschreiben Sie Ihren Lösungsweg — auch Teilresultate zählen.
           </p>
+        </div>
+      )}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
       )}
     </div>
