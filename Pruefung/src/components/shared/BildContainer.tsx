@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from 'react'
-import { resolveAssetUrl } from '../../../../utils/ueben/assetUrl'
+import { resolveAssetUrl } from '../../utils/ueben/assetUrl'
 
 interface Props {
   src: string

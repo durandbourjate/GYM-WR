@@ -56,9 +56,6 @@ export type {
 import type { Frage } from '@shared/types/fragen'
 export type FrageTyp = Frage['typ']
 
-// Antwort-Typen re-exportieren (LP-spezifisch)
-export type { AntwortTyp } from './antworten'
-
 // Filter für Fragen-Abfragen
 export interface FragenFilter {
   fach?: string

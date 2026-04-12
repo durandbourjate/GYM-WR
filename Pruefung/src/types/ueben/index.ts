@@ -3,17 +3,6 @@
  * Barrel-Export für alle LP-Typen.
  */
 
-// Antwort-Typen (LP-spezifisches Format für Übungskorrektur)
-export type {
-  AntwortTyp,
-  MCAntwort, MultiAntwort, TFAntwort, FillAntwort,
-  CalcAntwort, SortAntwort, SortierungAntwort, ZuordnungAntwort,
-  BuchungssatzAntwort, TKontoAntwort, BilanzAntwort, KontenbestimmungAntwort,
-  HotspotAntwort, BildbeschriftungAntwort, DragDropBildAntwort,
-  OpenAntwort, FormelAntwort, ZeichnenAntwort, GruppeAntwort, PdfAntwort,
-  AudioAntwort, CodeAntwort,
-} from './antworten'
-
 // Aufträge & Empfehlungen
 export type { Auftrag, Empfehlung } from './auftrag'
 

@@ -1,8 +1,9 @@
 import { useEffect, useCallback } from 'react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { useUebenNavigationStore } from '../../store/ueben/navigationStore'
-import { FRAGETYP_KOMPONENTEN } from './fragetypen'
+import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
+import type { Frage } from '../../types/fragen'
 import { getFragetext, bereinigePlatzhalter } from '../../utils/ueben/fragetext'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
@@ -11,8 +12,8 @@ import QuizActions from './uebung/QuizActions'
 
 export default function UebungsScreen() {
   const {
-    session, feedbackSichtbar, letzteAntwortKorrekt,
-    beantworte, naechsteFrage, vorherigeFrage, ueberspringen,
+    session, feedbackSichtbar,
+    naechsteFrage, vorherigeFrage, ueberspringen,
     toggleUnsicher, istUnsicher, istSessionFertig, beendeSession,
     aktuelleFrage, kannZurueck,
   } = useUebenUebungsStore()
@@ -55,7 +56,6 @@ export default function UebungsScreen() {
 
   // Daten normalisieren (fehlende Felder mit Defaults füllen)
   const normFrage = normalisiereFrageDaten(frage)
-  const Komponente = FRAGETYP_KOMPONENTEN[normFrage.typ]
   const istBeantwortet = frage.id in session.antworten
   const fortschritt = Object.keys(session.antworten).length
 
@@ -84,27 +84,15 @@ export default function UebungsScreen() {
       <main className="max-w-2xl mx-auto p-4">
         {/* Frage-Karte */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 mb-4">
-          {/* Fragetext — nicht bei Aufgabengruppe (GruppeFrage rendert Kontext selbst) */}
+          {/* Fragetext — nicht bei Aufgabengruppe (AufgabengruppeFrage rendert Kontext selbst) */}
           {frage.typ !== 'aufgabengruppe' && (
             <h2 className="text-lg font-medium mb-4 dark:text-white">
               {bereinigePlatzhalter(getFragetext(frage))}
             </h2>
           )}
 
-          {/* Fragetyp-Komponente */}
-          {Komponente ? (
-            <Komponente
-              frage={normFrage}
-              onAntwort={beantworte}
-              disabled={istBeantwortet}
-              feedbackSichtbar={feedbackSichtbar}
-              korrekt={letzteAntwortKorrekt}
-            />
-          ) : (
-            <p className="text-slate-500">Fragetyp &ldquo;{frage.typ}&rdquo; nicht unterstützt.</p>
-          )}
-
-          {/* Feedback wird von den Fragetyp-Komponenten via FeedbackBox angezeigt */}
+          {/* Fragetyp-Komponente via einheitlichem FrageRenderer */}
+          <FrageRenderer frage={normFrage as unknown as Frage} />
         </div>
 
         {/* Navigation (Zurück / Überspringen / Weiter) */}

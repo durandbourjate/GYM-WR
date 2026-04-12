@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort } from '../../types/antworten'
-import type { AntwortTyp } from '../../types/ueben/antworten'
 import { getFragetext } from '../../utils/ueben/fragetext'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
 import type { MasteryStufe } from '../../types/ueben/fortschritt'
@@ -53,7 +52,7 @@ interface UebungsState {
   historie: GespeichertesErgebnis[]
 
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
-  beantworte: (antwort: AntwortTyp) => void
+  beantworte: (antwort: unknown) => void
   beantworteById: (frageId: string, antwort: Antwort) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
