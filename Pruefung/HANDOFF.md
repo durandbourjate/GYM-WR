@@ -9,10 +9,10 @@
 ## Session 93 — Browser-Test Bugfixes (12.04.2026)
 
 ### Stand
-Branch `fix/session93-bugfixes`. tsc ✅ | 209 Tests ✅ | Build ✅.
+Gemergt auf `main`. tsc ✅ | 209 Tests ✅ | Build ✅. **Browser-Tests laufen.**
 
 ### Kontext
-Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 8 Fixes in 15 Dateien.
+Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Dateien.
 
 ### Erledigte Arbeiten
 
@@ -31,7 +31,6 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 8 Fixes in 15 Da
 | U2 | **SuS-Einladen:** Manuelles Hinzufügen-Feld auch vor Kurse-Laden sichtbar | VorbereitungPhase.tsx |
 | U3 | **Lernziele-Tab Links:** deepLinkThema in NavigationStore, Dashboard konsumiert Thema | AppShell.tsx, navigationStore.ts, Dashboard.tsx |
 | U4 | **LernzieleAkkordeon:** Verschachtelter button→span (valides HTML) | LernzieleAkkordeon.tsx |
-| U5 | **Deep Links Default:** uebungsTab Default von 'durchfuehren' → 'uebungen' | lpNavigationStore.ts |
 
 ### Geänderte Dateien (15)
 - `Pruefung/src/hooks/useFrageAdapter.ts` — speichereZwischenstand
@@ -44,24 +43,71 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 8 Fixes in 15 Da
 - `Pruefung/src/AppUeben.tsx` — Race Condition Fix
 - `Pruefung/src/components/ueben/Dashboard.tsx` — Gesperrte Themen + deepLinkThema
 - `Pruefung/src/components/ueben/LernzieleAkkordeon.tsx` — Verschachtelter Button Fix
-- `Pruefung/src/components/ueben/layout/AppShell.tsx` — deepLinkThema
+- `Pruefung/src/components/ueben/layout/AppShell.tsx` — deepLinkThema setzen
 - `Pruefung/src/store/ueben/navigationStore.ts` — deepLinkThema State
-- `Pruefung/src/store/lpNavigationStore.ts` — Default uebungsTab
-- `Pruefung/src/components/lp/durchfuehrung/DurchfuehrenDashboard.tsx` — Einstellungen-Button
+- `Pruefung/src/store/lpNavigationStore.ts` — Revert: Default bleibt durchfuehren
+- `Pruefung/src/components/lp/durchfuehrung/DurchfuehrenDashboard.tsx` — Einstellungen-Button + Panel
 - `Pruefung/src/components/lp/vorbereitung/VorbereitungPhase.tsx` — ladeStatus-Guard entfernt
 
-### Manuelle Schritte nach Merge
+### Manuelle Schritte
 - ⬜ Configs-Sheet: `einrichtung-demo` und `sf-wr-27a28f` Configs löschen
-- ⬜ Apps Script NICHT neu deployen nötig (nur Frontend-Änderungen)
+- ✅ Apps Script: Kein neues Deploy nötig (nur Frontend-Änderungen)
 
-### Noch offen (nächste Session)
-- **Bild-Upload:** Root Cause im Backend prüfen (Konsole öffnen → `[BildUpload] Upload fehlgeschlagen, result:` ansehen)
-- **Fachkürzel:** Stimmen nicht mit hochgeladenem Dokument überein — konkret abklären welche falsch sind
-- **Audio iPhone-Trigger:** 19s Aufnahme speichert 4s, iPhone wird nicht mehr getriggert nach erneutem Aufnehmen
-- **Abgabe-Timeout:** Sowohl Prüfung als auch Übung zeigen "Abgabe gespeichert, Übertragung ausstehend" — Resilienz weiter verbessern
-- **Bilanzstruktur Erfolg:** Gewinn/Verlust-Eingabe ergänzen (ER-Feld existiert, aber Korrektur fehlt evtl.)
-- **Neues Feature:** KI-Zusammenfassung Audio-Rückmeldungen (Konzept erstellen)
-- **KI-Bild-Generator Backend:** generiereFrageBild Endpoint fehlt
+---
+
+## Offene Punkte (priorisiert)
+
+### Architektur / Feature (vor Implementierung Konzept nötig)
+
+| # | Thema | Beschreibung | Abhängigkeit |
+|---|-------|-------------|-------------|
+| A1 | **Echte Deep Links + App-Strukturverzeichnis** | Jeder Ort in der App braucht eine echte URL (`#/uebung/themen`, `#/uebung/durchfuehren`, etc.) die in neuem Tab funktioniert. Dazu: Strukturverzeichnis in Einstellungen mit Favoriten-Funktion. Kein Quick-Fix — braucht vollständiges Hash-Routing-Konzept. | — |
+| A2 | **KI-Bild-Generator Backend** | `generiereFrageBild` Endpoint in apps-script-code.js (Claude API Call). Frontend steht bereits (BildGeneratorPanel + BildMitGenerator). | Apps Script Deploy |
+| A3 | **KI-Zusammenfassung Audio-Rückmeldungen** | Neues Feature: Audio-Antworten per KI zu strukturierter Rückmeldung zusammenfassen. Konzept erstellen. | A2 (Claude API Pattern) |
+| A4 | **Entwicklungsprozess strukturieren** | Workflow mit Multi-Perspektiven-Review vor Implementierung. Agents für Funktionalität, Sicherheit, bestehende Patterns, UX. Ziel: weniger Regressionen, weniger Ad-hoc-Improvisation, mehr Wiederverwendung. | — |
+
+### Bugs (reproduzierbar, brauchen Debugging)
+
+| # | Bug | Symptom | Nächster Schritt |
+|---|-----|---------|-----------------|
+| B1 | **Bild-Upload fehlgeschlagen** | LP Frageneditor: "Upload fehlgeschlagen. Bitte erneut versuchen oder Bild-URL eingeben." | Konsole öffnen → `[BildUpload] Upload fehlgeschlagen, result:` lesen → Backend-Fehler identifizieren |
+| B2 | **Audio iPhone-Trigger** | 19s Aufnahme speichert nur 4s. iPhone wird beim ersten Mal getriggert, bei erneutem Aufnehmen nicht mehr. | iPhone-spezifisch: `recorder.onstart`-Timing (S92 A3) verifizieren, ggf. MediaRecorder-Settings |
+| B3 | **Abgabe-Timeout** | Sowohl Prüfung als auch Übung: "Abgabe gespeichert, Übertragung ausstehend". LP-Erzwingen-Beenden funktioniert, Antworten kommen an. | Apps Script Execution Log prüfen — Timeout bei grossen Payloads? Save-Resilienz (S92) wirkt teilweise. |
+| B4 | **Fachkürzel stimmen nicht** | Bei Prüfung/Übung durchführen sind Fachkürzel nicht wie im hochgeladenen Dokument. | User muss klären welche konkret falsch sind (Screenshot/Liste) |
+
+### Verbesserungen (kein Bug, aber gewünscht)
+
+| # | Verbesserung | Beschreibung |
+|---|-------------|-------------|
+| V1 | **Bilanzstruktur: Erfolg-Eingabe** | Gewinn/Verlust soll in Bilanzstruktur eingegeben werden können. ER-Feld existiert (`gewinnVerlust` in ERFeldEingabe), Korrektur-Logik prüfen. |
+| V2 | **Bilanzstruktur vs. Kontenbestimmung** | Klären ob `kontenbestimmung` durch `bilanzstruktur` ersetzt werden soll (59 Dateien betroffen) |
+| V3 | **Testdaten-Generator** | Für `wr.test` (Mastery-System + Tracking testen) |
+| V4 | **Fachkürzel bei neue Prüfung/Übung** | Offizielle Kürzel im Erstellungs-Dialog |
+| V5 | **Lernziele-Tab einklappbar** | UX-Verbesserung Einstellungen |
+| V6 | **Resizable Sidebar** | LP-Dashboard |
+| V7 | **Favoriten erweitern** | Mehr Orte als Favoriten setzbar (hängt mit A1 zusammen) |
+| V8 | **Ähnliche Fragen erkennen** | Duplikat-Erkennung in Fragensammlung |
+
+### Technische Schulden
+
+| # | Thema | Status |
+|---|-------|--------|
+| T1 | **62 SVGs visuell prüfen** | Neutrale Bilder erstellt (S87), noch nicht alle im Browser verifiziert |
+| T2 | **Excel-Import Feinschliff** | S6D teilweise aus Session 79, Feinschliff offen |
+| T3 | **Prefetching** | S6E: requestIdleCallback für Detail-Prefetch (teilimplementiert) |
+| T4 | **Alte Remote-Branches aufräumen** | 10+ gemergte Branches auf GitHub |
+
+### Browser-Tests (ausstehend aus früheren Sessions)
+
+| # | Test | Session | Status |
+|---|------|---------|--------|
+| BT1 | Session 93 Fixes (FiBu Prüfen-Button, Gesperrte Themen, Zusammenfassung) | S93 | ⬜ Läuft |
+| BT2 | Kontenbestimmung im Browser (nach Frontend-Build) | S87 | ⬜ |
+| BT3 | Buchungssatz + T-Konto Dropdowns (shared KontenSelect) | S87 | ⬜ |
+| BT4 | Favoriten: Backend-Sync + Direktlinks | S86 | ⬜ |
+| BT5 | LP Profil speichern (Auth-Fix) | S88 | ⬜ |
+| BT6 | Lernziele-Tab: CRUD im Browser | S88 | ⬜ |
+| BT7 | Bild-Editor: Upload + KI-Tab sichtbar | S88 | ⬜ |
 
 ---
 
