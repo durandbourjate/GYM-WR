@@ -1,3 +1,5 @@
+export type Selbstbewertung = 'korrekt' | 'teilweise' | 'falsch'
+
 export interface PruefungsAbgabe {
   pruefungId: string;
   email: string;
@@ -27,10 +29,10 @@ export interface Unterbrechung {
 
 export type Antwort =
   | { typ: 'mc'; gewaehlteOptionen: string[] }
-  | { typ: 'freitext'; text: string; formatierung?: string }
+  | { typ: 'freitext'; text: string; formatierung?: string; selbstbewertung?: Selbstbewertung }
   | { typ: 'zuordnung'; zuordnungen: Record<string, string> }
   | { typ: 'lueckentext'; eintraege: Record<string, string> }
-  | { typ: 'visualisierung'; daten: string; bildLink?: string }
+  | { typ: 'visualisierung'; daten: string; bildLink?: string; selbstbewertung?: Selbstbewertung }
   | { typ: 'richtigfalsch'; bewertungen: Record<string, boolean> }
   | { typ: 'berechnung'; ergebnisse: Record<string, string>; rechenweg?: string }
   | { typ: 'buchungssatz'; buchungen: {
@@ -61,11 +63,12 @@ export type Antwort =
       stufen: { label: string; konten: { nr: string; betrag: number }[]; zwischentotal?: number }[];
       gewinnVerlust?: number;
     } }
-  | { typ: 'pdf'; annotationen: import('./fragen').PDFAnnotation[] }
+  | { typ: 'pdf'; annotationen?: import('./fragen').PDFAnnotation[]; text?: string; selbstbewertung?: Selbstbewertung }
   | { typ: 'sortierung'; reihenfolge: string[] }
-  | { typ: 'hotspot'; geklickt: { x: number; y: number }[] }
+  | { typ: 'hotspot'; klicks: { x: number; y: number }[] }
   | { typ: 'bildbeschriftung'; eintraege: Record<string, string> }
-  | { typ: 'audio'; aufnahmeUrl: string; dauer: number }
+  | { typ: 'audio'; aufnahmeUrl?: string; dauer?: number; selbstbewertung?: Selbstbewertung }
   | { typ: 'dragdrop_bild'; zuordnungen: Record<string, string> }
-  | { typ: 'code'; code: string }
+  | { typ: 'code'; code: string; sprache?: string; selbstbewertung?: Selbstbewertung }
+  | { typ: 'aufgabengruppe'; teilAntworten: Record<string, Antwort> }
   | { typ: 'formel'; latex: string };

@@ -11,6 +11,7 @@ import { clearQueue } from './services/retryQueue.ts'
 import { resolveFragenFuerPruefung } from './utils/fragenResolver.ts'
 import type { Frage } from './types/fragen.ts'
 import type { PruefungsConfig } from './types/pruefung.ts'
+import { FrageModeProvider } from './context/FrageModeContext.tsx'
 import LoginScreen from './components/LoginScreen.tsx'
 import Startbildschirm from './components/Startbildschirm.tsx'
 import Layout from './components/Layout.tsx'
@@ -312,24 +313,28 @@ export default function App() {
   switch (phase) {
     case 'start':
       return (
-        <Startbildschirm
-          config={pruefungsConfig}
-          fragen={pruefungsFragen}
-          alleFragen={pruefungsAlleFragen}
-          wiederhergestellt={wiederhergestellt}
-          wurdeZurueckgesetzt={wurdeZurueckgesetzt}
-        />
+        <FrageModeProvider mode="pruefung">
+          <Startbildschirm
+            config={pruefungsConfig}
+            fragen={pruefungsFragen}
+            alleFragen={pruefungsAlleFragen}
+            wiederhergestellt={wiederhergestellt}
+            wurdeZurueckgesetzt={wurdeZurueckgesetzt}
+          />
+        </FrageModeProvider>
       )
     case 'pruefung':
-      return <Layout />
+      return <FrageModeProvider mode="pruefung"><Layout /></FrageModeProvider>
     case 'uebersicht':
       return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-          <FragenUebersicht />
-        </div>
+        <FrageModeProvider mode="pruefung">
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+            <FragenUebersicht />
+          </div>
+        </FrageModeProvider>
       )
     case 'abgegeben':
-      return <AbgabeBestaetigung />
+      return <FrageModeProvider mode="pruefung"><AbgabeBestaetigung /></FrageModeProvider>
     default:
       return null
   }

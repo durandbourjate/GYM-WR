@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { SortierungFrage as SortierungFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -24,28 +24,25 @@ function mischen(arr: string[], seed: string): string[] {
 }
 
 export default function SortierungFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   // Gemischte Anfangsreihenfolge (einmalig berechnet)
   const gemischt = useRef<string[]>(mischen((frage.elemente ?? []), frage.id))
 
-  const aktuelleAntwort = antworten[frage.id]
   const reihenfolge: string[] = useMemo(() => {
-    if (aktuelleAntwort?.typ === 'sortierung' && aktuelleAntwort.reihenfolge.length > 0) {
-      return aktuelleAntwort.reihenfolge
+    if (antwort?.typ === 'sortierung' && antwort.reihenfolge.length > 0) {
+      return antwort.reihenfolge
     }
     return gemischt.current
-  }, [aktuelleAntwort])
+  }, [antwort])
 
   function verschieben(index: number, richtung: 'hoch' | 'runter') {
-    if (abgegeben) return
+    if (disabled) return
     const neueReihenfolge = [...reihenfolge]
     const zielIndex = richtung === 'hoch' ? index - 1 : index + 1
     if (zielIndex < 0 || zielIndex >= neueReihenfolge.length) return
     ;[neueReihenfolge[index], neueReihenfolge[zielIndex]] = [neueReihenfolge[zielIndex], neueReihenfolge[index]]
-    setAntwort(frage.id, { typ: 'sortierung', reihenfolge: neueReihenfolge })
+    onAntwort({ typ: 'sortierung', reihenfolge: neueReihenfolge })
   }
 
   // Drag & Drop State
@@ -53,9 +50,9 @@ export default function SortierungFrage({ frage }: Props) {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
   const handleDragStart = useCallback((index: number) => {
-    if (abgegeben) return
+    if (disabled) return
     setDragIndex(index)
-  }, [abgegeben])
+  }, [disabled])
 
   const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
     e.preventDefault()
@@ -69,7 +66,7 @@ export default function SortierungFrage({ frage }: Props) {
   const handleDrop = useCallback((e: React.DragEvent, zielIndex: number) => {
     e.preventDefault()
     setDragOverIndex(null)
-    if (dragIndex === null || dragIndex === zielIndex || abgegeben) {
+    if (dragIndex === null || dragIndex === zielIndex || disabled) {
       setDragIndex(null)
       return
     }
@@ -77,9 +74,9 @@ export default function SortierungFrage({ frage }: Props) {
     const neueReihenfolge = [...reihenfolge]
     const [element] = neueReihenfolge.splice(dragIndex, 1)
     neueReihenfolge.splice(zielIndex, 0, element)
-    setAntwort(frage.id, { typ: 'sortierung', reihenfolge: neueReihenfolge })
+    onAntwort({ typ: 'sortierung', reihenfolge: neueReihenfolge })
     setDragIndex(null)
-  }, [dragIndex, abgegeben, reihenfolge, setAntwort, frage.id])
+  }, [dragIndex, disabled, reihenfolge, onAntwort, frage.id])
 
   const handleDragEnd = useCallback(() => {
     setDragIndex(null)
@@ -92,12 +89,12 @@ export default function SortierungFrage({ frage }: Props) {
   const listRef = useRef<HTMLDivElement>(null)
 
   const handleTouchStart = useCallback((e: React.PointerEvent, index: number) => {
-    if (abgegeben || e.pointerType === 'mouse') return // Maus nutzt HTML5-DnD
+    if (disabled || e.pointerType === 'mouse') return // Maus nutzt HTML5-DnD
     touchStartY.current = e.clientY
     touchCurrentIndex.current = index
     setDragIndex(index)
     ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
-  }, [abgegeben])
+  }, [disabled])
 
   const handleTouchMove = useCallback((e: React.PointerEvent) => {
     if (touchCurrentIndex.current === null || e.pointerType === 'mouse') return
@@ -117,16 +114,16 @@ export default function SortierungFrage({ frage }: Props) {
     if (touchCurrentIndex.current === null) return
     const von = touchCurrentIndex.current
     const nach = dragOverIndex
-    if (nach !== null && von !== nach && !abgegeben) {
+    if (nach !== null && von !== nach && !disabled) {
       const neueReihenfolge = [...reihenfolge]
       const [element] = neueReihenfolge.splice(von, 1)
       neueReihenfolge.splice(nach, 0, element)
-      setAntwort(frage.id, { typ: 'sortierung', reihenfolge: neueReihenfolge })
+      onAntwort({ typ: 'sortierung', reihenfolge: neueReihenfolge })
     }
     touchCurrentIndex.current = null
     setDragIndex(null)
     setDragOverIndex(null)
-  }, [dragOverIndex, abgegeben, reihenfolge, setAntwort, frage.id])
+  }, [dragOverIndex, disabled, reihenfolge, onAntwort, frage.id])
 
   return (
     <div className="flex flex-col gap-5">
@@ -155,14 +152,14 @@ export default function SortierungFrage({ frage }: Props) {
       {/* Sortier-Liste mit Drag & Drop (Desktop) + Pointer-DnD (Touch/iPad) */}
       <div
         ref={listRef}
-        className={`flex flex-col gap-2 ${!abgegeben && (!aktuelleAntwort || aktuelleAntwort.typ !== 'sortierung') ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}
-        style={{ touchAction: abgegeben ? 'auto' : 'none' }}
+        className={`flex flex-col gap-2 ${!disabled && (!antwort || antwort.typ !== 'sortierung') ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}
+        style={{ touchAction: disabled ? 'auto' : 'none' }}
       >
         {reihenfolge.map((element, index) => (
           <div
             key={`${element}-${index}`}
             data-sort-item
-            draggable={!abgegeben}
+            draggable={!disabled}
             onDragStart={() => handleDragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragLeave={handleDragLeave}
@@ -173,7 +170,7 @@ export default function SortierungFrage({ frage }: Props) {
             onPointerUp={handleTouchEnd}
             onPointerCancel={handleTouchEnd}
             className={`flex items-center gap-3 p-3 rounded-xl border-2 bg-white dark:bg-slate-800 transition-all select-none
-              ${abgegeben ? 'opacity-75' : 'cursor-grab active:cursor-grabbing'}
+              ${disabled ? 'opacity-75' : 'cursor-grab active:cursor-grabbing'}
               ${dragIndex === index ? 'opacity-40 border-blue-400 dark:border-blue-500' : ''}
               ${dragOverIndex === index && dragIndex !== index
                 ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
@@ -182,7 +179,7 @@ export default function SortierungFrage({ frage }: Props) {
             `}
           >
             {/* Drag-Handle */}
-            {!abgegeben && (
+            {!disabled && (
               <span className="flex-shrink-0 text-slate-400 dark:text-slate-500 cursor-grab" title="Ziehen zum Sortieren">
                 ⠿
               </span>
@@ -197,7 +194,7 @@ export default function SortierungFrage({ frage }: Props) {
             <span className="flex-1 text-slate-800 dark:text-slate-100">{element}</span>
 
             {/* Hoch/Runter-Buttons */}
-            {!abgegeben && (
+            {!disabled && (
               <div className="flex flex-col gap-0.5">
                 <button
                   onClick={() => verschieben(index, 'hoch')}
@@ -218,6 +215,14 @@ export default function SortierungFrage({ frage }: Props) {
           </div>
         ))}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

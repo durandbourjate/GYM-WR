@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { VisualisierungFrage } from '../../types/fragen.ts'
 import type { CanvasConfig } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
@@ -31,9 +31,7 @@ const WARNSCHWELLE_AMBER = 40_000
 const WARNSCHWELLE_ROT = 50_000
 
 export default function ZeichnenFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   // canvasConfig kann als verschachteltes Objekt oder als flache Felder auf der Frage kommen
   const rawFrage = frage as unknown as Record<string, unknown>
@@ -80,9 +78,8 @@ export default function ZeichnenFrage({ frage }: Props) {
   const [canvasGross, setCanvasGross] = useState(false)
 
   // Aktuell geladene Daten aus Store (beim Fragewechsel synchronisieren)
-  const gespeicherteAntwort = antworten[frage.id]
   const gespeicherteDaten =
-    gespeicherteAntwort?.typ === 'visualisierung' ? gespeicherteAntwort.daten : undefined
+    antwort?.typ === 'visualisierung' ? antwort.daten : undefined
 
   // Ref für aktuellen frage.id (stale-closure-safe in Callbacks)
   const frageIdRef = useRef(frage.id)
@@ -96,12 +93,12 @@ export default function ZeichnenFrage({ frage }: Props) {
 
   // PNG-Export-Callback (wird von ZeichnenCanvas via onPNGExport geliefert)
   const handlePNGExport = useCallback((png: string) => {
-    setAntwort(frageIdRef.current, {
+    onAntwort({
       typ: 'visualisierung',
       daten: aktuellerDatenRef.current,
       bildLink: png,
     })
-  }, [setAntwort])
+  }, [onAntwort])
 
   // B47 Root-Cause-Fix: Sofort in Store schreiben (kein 2s-Debounce mehr).
   // Der 400ms-Debounce im Canvas schützt bereits vor zu häufiger Serialisierung.
@@ -109,16 +106,16 @@ export default function ZeichnenFrage({ frage }: Props) {
   // lesen den Store, der noch veraltete Daten enthält.
   const handleDatenChange = useCallback((daten: string) => {
     aktuellerDatenRef.current = daten
-    setAntwort(frageIdRef.current, { typ: 'visualisierung', daten })
+    onAntwort({ typ: 'visualisierung', daten })
 
     // Inaktivitäts-Timer zurücksetzen (10s → PNG-Export)
     if (inaktivitaetRef.current) clearTimeout(inaktivitaetRef.current)
     inaktivitaetRef.current = setTimeout(() => {
       inaktivitaetRef.current = null
       // PNG-Export wird durch ZeichnenCanvas selbst ausgelöst; hier nur Store-Save sicherstellen
-      setAntwort(frageIdRef.current, { typ: 'visualisierung', daten: aktuellerDatenRef.current })
+      onAntwort({ typ: 'visualisierung', daten: aktuellerDatenRef.current })
     }, INAKTIVITAET_TIMEOUT_MS)
-  }, [setAntwort])
+  }, [onAntwort])
 
   // Fragewechsel-Sync: Store-Daten laden + pending Debounce flushen
   useEffect(() => {
@@ -272,8 +269,8 @@ export default function ZeichnenFrage({ frage }: Props) {
 
       {/* Toolbar + Canvas Container */}
       <div className={toolbarLayout === 'vertikal' ? 'flex flex-row gap-2' : 'flex flex-col gap-4'}>
-        {/* Toolbar (nur wenn nicht abgegeben) */}
-        {!abgegeben && (
+        {/* Toolbar (nur wenn nicht disabled) */}
+        {!disabled && (
           <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 ${toolbarLayout === 'vertikal' ? 'flex-shrink-0 self-start' : ''}`}>
             <ZeichnenToolbar
               aktivesTool={aktivesTool}
@@ -290,7 +287,7 @@ export default function ZeichnenFrage({ frage }: Props) {
               onAllesLoeschen={handleAllesLoeschen}
               kannUndo={kannUndoRef.current}
               kannRedo={kannRedoRef.current}
-              disabled={abgegeben}
+              disabled={disabled}
               textRotation={istTextSelektiert && selektierterCmd.typ === 'text' ? (selektierterCmd.rotation ?? 0) : textRotation}
               onTextRotationChange={handleTextRotation}
               textGroesse={istTextSelektiert && selektierterCmd.typ === 'text' ? selektierterCmd.groesse : textGroesse}
@@ -308,7 +305,7 @@ export default function ZeichnenFrage({ frage }: Props) {
 
         {/* Vergrössern-Button + Zeichenfläche */}
         <div className={`overflow-x-auto ${toolbarLayout === 'vertikal' ? 'flex-1 min-w-0' : 'w-full'} ${canvasGross ? 'max-w-none' : 'max-w-3xl'}`}>
-          {!abgegeben && (
+          {!disabled && (
             <button
               type="button"
               onClick={() => setCanvasGross(!canvasGross)}
@@ -329,7 +326,7 @@ export default function ZeichnenFrage({ frage }: Props) {
             initialDaten={gespeicherteDaten}
             onDatenChange={handleDatenChange}
             onPNGExport={handlePNGExport}
-            disabled={abgegeben}
+            disabled={disabled}
             onEngineActions={handleEngineActions}
             onTextCommit={() => setTextRotation(0)}
           />
@@ -350,12 +347,20 @@ export default function ZeichnenFrage({ frage }: Props) {
 
       {/* Status-Leiste */}
       <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-        <span>{abgegeben ? 'Abgegeben' : 'Auto-Save aktiv'}</span>
+        <span>{disabled ? 'Abgegeben' : 'Auto-Save aktiv'}</span>
         <span>{canvasConfig.breite} × {canvasConfig.hoehe} px</span>
       </div>
 
       {/* Trigger für Undo-State-Tracking (unused output suppressed) */}
       <span className="hidden" aria-hidden="true">{undoState}</span>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

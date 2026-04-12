@@ -1,4 +1,4 @@
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BildbeschriftungFrage as BildbeschriftungFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -8,18 +8,15 @@ interface Props {
 }
 
 export default function BildbeschriftungFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const eintraege: Record<string, string> =
-    aktuelleAntwort?.typ === 'bildbeschriftung' ? aktuelleAntwort.eintraege : {}
+    antwort?.typ === 'bildbeschriftung' ? antwort.eintraege : {}
 
   function handleEingabe(beschriftungId: string, text: string) {
-    if (abgegeben) return
+    if (disabled) return
     const neueEintraege = { ...eintraege, [beschriftungId]: text }
-    setAntwort(frage.id, { typ: 'bildbeschriftung', eintraege: neueEintraege })
+    onAntwort({ typ: 'bildbeschriftung', eintraege: neueEintraege })
   }
 
   const alleAusgefuellt = (frage.beschriftungen ?? []).every(b => (eintraege[b.id] ?? '').trim() !== '')
@@ -49,7 +46,7 @@ export default function BildbeschriftungFrage({ frage }: Props) {
       />
 
       {/* Bild mit Labels */}
-      <div className={`relative inline-block ${!abgegeben && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      <div className={`relative inline-block ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div className="relative overflow-hidden w-fit max-w-full">
           <img
             src={frage.bildUrl}
@@ -77,19 +74,27 @@ export default function BildbeschriftungFrage({ frage }: Props) {
                 type="text"
                 value={eintraege[beschriftung.id] ?? ''}
                 onChange={(e) => handleEingabe(beschriftung.id, e.target.value)}
-                disabled={abgegeben}
+                disabled={disabled}
                 placeholder={`Label ${i + 1}`}
                 className={`w-28 px-2 py-1 text-sm rounded border shadow-sm
                   bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100
                   border-slate-300 dark:border-slate-600
                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none
-                  ${abgegeben ? 'opacity-75 cursor-not-allowed' : ''}
+                  ${disabled ? 'opacity-75 cursor-not-allowed' : ''}
                 `}
               />
             </div>
           ))}
         </div>
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

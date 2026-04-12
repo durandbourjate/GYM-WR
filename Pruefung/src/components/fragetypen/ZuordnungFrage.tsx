@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { ZuordnungFrage as ZuordnungFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -9,13 +9,10 @@ interface Props {
 }
 
 export default function ZuordnungFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const zuordnungen: Record<string, string> =
-    aktuelleAntwort?.typ === 'zuordnung' ? aktuelleAntwort.zuordnungen : {}
+    antwort?.typ === 'zuordnung' ? antwort.zuordnungen : {}
 
   // Rechte Seite mischen wenn zufallsreihenfolge aktiviert (einmalig pro Render-Zyklus)
   const rechteOptionen = useMemo(() => {
@@ -52,16 +49,15 @@ export default function ZuordnungFrage({ frage }: Props) {
   }, [frage.id, frage.paare, frage.zufallsreihenfolge])
 
   function handleAuswahl(linksWert: string, rechtsWert: string) {
-    if (abgegeben) return
+    if (disabled) return
 
     const neueZuordnungen = { ...zuordnungen }
     if (rechtsWert === '') {
-      // Zuordnung entfernen
       delete neueZuordnungen[linksWert]
     } else {
       neueZuordnungen[linksWert] = rechtsWert
     }
-    setAntwort(frage.id, { typ: 'zuordnung', zuordnungen: neueZuordnungen })
+    onAntwort({ typ: 'zuordnung', zuordnungen: neueZuordnungen })
   }
 
   // Welche rechten Optionen sind bereits vergeben?
@@ -103,11 +99,11 @@ export default function ZuordnungFrage({ frage }: Props) {
               className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all
                 ${aktuelleZuordnung
                   ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
-                  : !abgegeben
+                  : !disabled
                     ? 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-800'
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
                 }
-                ${abgegeben ? 'opacity-75' : ''}
+                ${disabled ? 'opacity-75' : ''}
               `}
             >
               {/* Nummer */}
@@ -129,13 +125,13 @@ export default function ZuordnungFrage({ frage }: Props) {
               <select
                 value={aktuelleZuordnung}
                 onChange={(e) => handleAuswahl(links, e.target.value)}
-                disabled={abgegeben}
+                disabled={disabled}
                 className={`flex-1 max-w-[50%] px-3 py-2 rounded-lg border text-sm transition-colors
                   ${aktuelleZuordnung
                     ? 'border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900/15 text-slate-800 dark:text-slate-100'
                     : 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                   }
-                  ${abgegeben ? 'cursor-not-allowed' : 'cursor-pointer'}
+                  ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}
                 `}
               >
                 <option value="">— auswählen —</option>
@@ -162,9 +158,17 @@ export default function ZuordnungFrage({ frage }: Props) {
       <div className="flex justify-end text-xs text-slate-500 dark:text-slate-400">
         <span className={alleZugeordnet ? 'text-green-600 dark:text-green-400 font-medium' : ''}>
           {Object.keys(zuordnungen).length} von {linkeElemente.length} zugeordnet
-          {alleZugeordnet && ' ✓'}
+          {alleZugeordnet && ' \u2713'}
         </span>
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

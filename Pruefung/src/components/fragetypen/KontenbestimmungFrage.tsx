@@ -1,4 +1,4 @@
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { KontenbestimmungFrage as KontenbestimmungFrageType, Kontenaufgabe } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -28,18 +28,15 @@ function vonAntwort(
 }
 
 export default function KontenbestimmungFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const gespeicherteAntwort =
-    aktuelleAntwort?.typ === 'kontenbestimmung' ? aktuelleAntwort : undefined
+    antwort?.typ === 'kontenbestimmung' ? antwort : undefined
 
   const aufgabenAntworten = vonAntwort(gespeicherteAntwort, frage.aufgaben ?? [])
 
   function aktualisiere(neueAufgaben: Record<string, AufgabeAntwort>) {
-    setAntwort(frage.id, { typ: 'kontenbestimmung' as const, aufgaben: neueAufgaben })
+    onAntwort({ typ: 'kontenbestimmung' as const, aufgaben: neueAufgaben })
   }
 
   function aendereAntwort(
@@ -56,7 +53,7 @@ export default function KontenbestimmungFrage({ frage }: Props) {
     aktualisiere(kopie)
   }
 
-  const readOnly = abgegeben
+  const readOnly = disabled
   const zeigeKonto = frage.modus === 'konto_bestimmen' || frage.modus === 'gemischt'
   const zeigeKategorie = frage.modus === 'kategorie_bestimmen' || frage.modus === 'gemischt'
   const zeigeSeite = frage.modus === 'kategorie_bestimmen' || frage.modus === 'gemischt'
@@ -188,6 +185,14 @@ export default function KontenbestimmungFrage({ frage }: Props) {
           </tbody>
         </table>
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

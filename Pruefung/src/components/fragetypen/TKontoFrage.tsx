@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { TKontoFrage as TKontoFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -123,13 +123,10 @@ function vonAntwort(
 }
 
 export default function TKontoFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const gespeicherteAntwort =
-    aktuelleAntwort?.typ === 'tkonto' ? aktuelleAntwort : undefined
+    antwort?.typ === 'tkonto' ? antwort : undefined
 
   // Lokaler State statt Neuberechnung bei jedem Render (verhindert Cursor-Sprung bei Inputs)
   const [konten, setKontenLokal] = useState<KontoEingabe[]>(() =>
@@ -138,15 +135,14 @@ export default function TKontoFrage({ frage }: Props) {
 
   // Bei Fragenwechsel: State neu initialisieren
   useEffect(() => {
-    const a = antworten[frage.id]
-    const gespeichert = a?.typ === 'tkonto' ? a : undefined
+    const gespeichert = antwort?.typ === 'tkonto' ? antwort : undefined
     setKontenLokal(vonAntwort(gespeichert as ReturnType<typeof zuAntwort> | undefined, frage.konten))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frage.id])
 
   function aktualisiere(neueKonten: KontoEingabe[]) {
     setKontenLokal(neueKonten)
-    setAntwort(frage.id, zuAntwort(neueKonten))
+    onAntwort(zuAntwort(neueKonten))
   }
 
   function deepCopy(): KontoEingabe[] {
@@ -186,7 +182,7 @@ export default function TKontoFrage({ frage }: Props) {
     aktualisiere(kopie)
   }
 
-  const readOnly = abgegeben
+  const readOnly = disabled
   const opts = frage.bewertungsoptionen
   const hatGeschaeftsfaelle = frage.geschaeftsfaelle && frage.geschaeftsfaelle.length > 0
 
@@ -526,6 +522,14 @@ export default function TKontoFrage({ frage }: Props) {
           )
         })}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

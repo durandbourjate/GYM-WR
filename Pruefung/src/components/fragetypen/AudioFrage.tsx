@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { AudioFrage as AudioFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -9,12 +9,9 @@ interface Props {
 }
 
 export default function AudioFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
-  const bestehendeAufnahme = aktuelleAntwort?.typ === 'audio' ? aktuelleAntwort : null
+  const bestehendeAufnahme = antwort?.typ === 'audio' ? antwort : null
 
   const [status, setStatus] = useState<'idle' | 'recording' | 'preview'>('idle')
   const [dauer, setDauer] = useState(0)
@@ -84,7 +81,7 @@ export default function AudioFrage({ frage }: Props) {
         // Blob als DataURL für Persistenz (localStorage/Backend) speichern
         const reader = new FileReader()
         reader.onload = () => {
-          setAntwort(frage.id, {
+          onAntwort({
             typ: 'audio',
             aufnahmeUrl: reader.result as string,
             dauer: Math.round((Date.now() - startZeitRef.current) / 1000),
@@ -124,7 +121,7 @@ export default function AudioFrage({ frage }: Props) {
       setStatus('idle')
       mediaRecorderRef.current = null
     }
-  }, [frage.id, frage.maxDauerSekunden, setAntwort])
+  }, [frage.id, frage.maxDauerSekunden, onAntwort])
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
@@ -176,7 +173,7 @@ export default function AudioFrage({ frage }: Props) {
 
       {/* Audio-Aufnahme */}
       <div className={`p-4 rounded-xl border ${
-        !abgegeben && !bestehendeAufnahme
+        !disabled && !bestehendeAufnahme
           ? 'border-2 border-violet-400 dark:border-violet-500'
           : 'border-slate-200 dark:border-slate-700'
       } bg-white dark:bg-slate-800`}>
@@ -187,7 +184,7 @@ export default function AudioFrage({ frage }: Props) {
         )}
 
         {/* Idle: Aufnahme-Button */}
-        {status === 'idle' && !audioUrl && !abgegeben && (
+        {status === 'idle' && !audioUrl && !disabled && (
           <button
             type="button"
             onClick={startRecording}
@@ -224,7 +221,7 @@ export default function AudioFrage({ frage }: Props) {
         {(status === 'preview' || (status === 'idle' && audioUrl)) && audioUrl && (
           <div className="flex flex-col gap-3">
             <audio controls controlsList="nodownload noplaybackrate" src={audioUrl} className="w-full" preload="metadata" />
-            {!abgegeben && (
+            {!disabled && (
               <button
                 type="button"
                 onClick={handleNeuaufnahme}
@@ -237,12 +234,20 @@ export default function AudioFrage({ frage }: Props) {
         )}
 
         {/* Abgegeben ohne Aufnahme */}
-        {abgegeben && !audioUrl && (
+        {disabled && !audioUrl && (
           <p className="text-sm text-slate-500 dark:text-slate-400 italic">
             Keine Aufnahme vorhanden.
           </p>
         )}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

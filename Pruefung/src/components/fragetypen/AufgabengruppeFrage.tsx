@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -36,8 +37,8 @@ interface Props {
 const BUCHSTABEN = 'abcdefghijklmnopqrstuvwxyz'
 
 export default function AufgabengruppeFrage({ frage }: Props) {
+  const { disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const alleFragen = usePruefungStore((s) => s.alleFragen)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
   const [kontextOffen, setKontextOffen] = useState(true)
 
   // Inline-Teilaufgaben (neues Format) ODER Legacy-ID-Auflösung
@@ -130,10 +131,18 @@ export default function AufgabengruppeFrage({ frage }: Props) {
       </div>
 
       {/* Hinweis bei abgegebener Prüfung */}
-      {abgegeben && (
+      {disabled && (
         <p className="text-xs text-slate-400 dark:text-slate-500 italic">
           Prüfung abgegeben — Antworten können nicht mehr geändert werden.
         </p>
+      )}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
       )}
     </div>
   )

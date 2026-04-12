@@ -224,7 +224,7 @@ describe('autoKorrigiere', () => {
       }],
       mehrfachauswahl: false,
     }
-    const antwort: Antwort = { typ: 'hotspot', geklickt: [{ x: 15, y: 15 }] }
+    const antwort: Antwort = { typ: 'hotspot', klicks: [{ x: 15, y: 15 }] }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
     expect(result!.erreichtePunkte).toBe(2)
@@ -245,7 +245,7 @@ describe('autoKorrigiere', () => {
       }],
       mehrfachauswahl: false,
     }
-    const antwort: Antwort = { typ: 'hotspot', geklickt: [{ x: 50, y: 50 }] }
+    const antwort: Antwort = { typ: 'hotspot', klicks: [{ x: 50, y: 50 }] }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
     expect(result!.erreichtePunkte).toBe(0)
@@ -266,7 +266,7 @@ describe('autoKorrigiere', () => {
       }],
       mehrfachauswahl: false,
     }
-    const antwort: Antwort = { typ: 'hotspot', geklickt: [{ x: 55, y: 50 }] }
+    const antwort: Antwort = { typ: 'hotspot', klicks: [{ x: 55, y: 50 }] }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
     expect(result!.erreichtePunkte).toBe(3) // Innerhalb des Radius

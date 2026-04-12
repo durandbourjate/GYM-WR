@@ -4,7 +4,7 @@
  * Lazy-loaded: CodeMirror wird erst bei Bedarf geladen.
  */
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { CodeFrage } from '../../types/fragen.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import FrageText from '../shared/FrageText.tsx'
@@ -36,16 +36,13 @@ async function ladeSprache(sprache: string) {
 }
 
 export default function CodeFrageComponent({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<import('@codemirror/view').EditorView | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
   const [geladen, setGeladen] = useState(false)
 
-  const aktuelleAntwort = antworten[frage.id]
-  const aktuellerCode = aktuelleAntwort?.typ === 'code' ? aktuelleAntwort.code : (frage.starterCode ?? '')
+  const aktuellerCode = antwort?.typ === 'code' ? antwort.code : (frage.starterCode ?? '')
 
   // Ref für aktuelle Werte (verhindert stale closure)
   const frageIdRef = useRef(frage.id)
@@ -54,9 +51,9 @@ export default function CodeFrageComponent({ frage }: Props) {
   const speichereCode = useCallback((code: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      setAntwort(frageIdRef.current, { typ: 'code', code })
+      onAntwort({ typ: 'code', code })
     }, 300)
-  }, [setAntwort])
+  }, [onAntwort])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -88,8 +85,8 @@ export default function CodeFrageComponent({ frage }: Props) {
         }),
       ]
 
-      // Read-only wenn abgegeben
-      if (abgegeben) {
+      // Read-only wenn disabled
+      if (disabled) {
         extensions.push(EditorView.editable.of(false))
         extensions.push(EditorState.readOnly.of(true))
       }
@@ -121,7 +118,7 @@ export default function CodeFrageComponent({ frage }: Props) {
       viewRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frage.id, frage.sprache, abgegeben])
+  }, [frage.id, frage.sprache, disabled])
 
   return (
     <div className="flex flex-col gap-5">
@@ -152,7 +149,7 @@ export default function CodeFrageComponent({ frage }: Props) {
         <div
           ref={containerRef}
           className={`rounded-lg border-2 overflow-hidden min-h-[200px] ${
-            abgegeben
+            disabled
               ? 'border-slate-200 dark:border-slate-700 opacity-75'
               : aktuellerCode.trim()
                 ? 'border-slate-300 dark:border-slate-600'
@@ -160,7 +157,7 @@ export default function CodeFrageComponent({ frage }: Props) {
           }`}
           onClick={() => {
             // iOS: Focus auf CodeMirror via direkte User-Geste (Keyboard öffnet sich)
-            if (viewRef.current && !abgegeben) {
+            if (viewRef.current && !disabled) {
               viewRef.current.focus()
             }
           }}
@@ -172,6 +169,14 @@ export default function CodeFrageComponent({ frage }: Props) {
           )}
         </div>
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

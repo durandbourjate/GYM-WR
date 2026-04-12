@@ -124,7 +124,7 @@ export function istVollstaendigBeantwortet(
 
     case 'hotspot':
       // Mindestens ein Klick
-      return antwort.geklickt.length > 0
+      return antwort.klicks.length > 0
 
     case 'bildbeschriftung': {
       if (frage.typ !== 'bildbeschriftung') return true

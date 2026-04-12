@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { DragDropBildFrage as DragDropBildFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
@@ -9,13 +9,10 @@ interface Props {
 }
 
 export default function DragDropBildFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
-  const aktuelleAntwort = antworten[frage.id]
   const zuordnungen: Record<string, string> =
-    aktuelleAntwort?.typ === 'dragdrop_bild' ? aktuelleAntwort.zuordnungen : {}
+    antwort?.typ === 'dragdrop_bild' ? antwort.zuordnungen : {}
 
   // Dragging State (Desktop: HTML5 DnD, Touch: Tap-to-select + Tap-to-place)
   const [draggingLabel, setDraggingLabel] = useState<string | null>(null)
@@ -30,9 +27,9 @@ export default function DragDropBildFrage({ frage }: Props) {
   const verfuegbareLabels = (frage.labels ?? []).filter(l => !zugeordneteLabels.has(l))
 
   const handleDragStart = useCallback((label: string) => {
-    if (abgegeben) return
+    if (disabled) return
     setDraggingLabel(label)
-  }, [abgegeben])
+  }, [disabled])
 
   const handleDragOver = useCallback((e: React.DragEvent, zoneId: string) => {
     e.preventDefault()
@@ -46,22 +43,22 @@ export default function DragDropBildFrage({ frage }: Props) {
   const handleDrop = useCallback((e: React.DragEvent, zoneId: string) => {
     e.preventDefault()
     setDragOverZone(null)
-    if (!draggingLabel || abgegeben) return
+    if (!draggingLabel || disabled) return
 
     // Wenn Zone bereits belegt ist, altes Label zurueck in Pool
     const neueZuordnungen = { ...zuordnungen }
     neueZuordnungen[zoneId] = draggingLabel
-    setAntwort(frage.id, { typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
+    onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
     setDraggingLabel(null)
-  }, [draggingLabel, abgegeben, zuordnungen, setAntwort, frage.id])
+  }, [draggingLabel, disabled, zuordnungen, onAntwort, frage.id])
 
   const handleZoneKlick = useCallback((zoneId: string) => {
-    if (abgegeben) return
+    if (disabled) return
     // Tap-to-place: Wenn ein Label ausgewählt ist, in diese Zone platzieren
     if (selectedLabel) {
       const neueZuordnungen = { ...zuordnungen }
       neueZuordnungen[zoneId] = selectedLabel
-      setAntwort(frage.id, { typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
+      onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
       setSelectedLabel(null)
       return
     }
@@ -69,15 +66,15 @@ export default function DragDropBildFrage({ frage }: Props) {
     if (zuordnungen[zoneId]) {
       const neueZuordnungen = { ...zuordnungen }
       delete neueZuordnungen[zoneId]
-      setAntwort(frage.id, { typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
+      onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
     }
-  }, [abgegeben, zuordnungen, setAntwort, frage.id, selectedLabel])
+  }, [disabled, zuordnungen, onAntwort, frage.id, selectedLabel])
 
   /** Label per Touch auswählen (Tap-to-select) */
   const handleLabelTap = useCallback((label: string) => {
-    if (abgegeben) return
+    if (disabled) return
     setSelectedLabel(prev => prev === label ? null : label) // Toggle
-  }, [abgegeben])
+  }, [disabled])
 
   const alleZugeordnet = (frage.zielzonen ?? []).every(z => zuordnungen[z.id])
 
@@ -106,7 +103,7 @@ export default function DragDropBildFrage({ frage }: Props) {
       />
 
       {/* Bild mit Zielzonen */}
-      <div className={`relative inline-block ${!abgegeben && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
+      <div className={`relative inline-block ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
         <div className="relative overflow-hidden w-fit max-w-full">
           <img
             src={frage.bildUrl}
@@ -131,7 +128,7 @@ export default function DragDropBildFrage({ frage }: Props) {
                       ? 'bg-green-500/20 border-2 border-green-500 border-dashed dark:bg-green-400/20 dark:border-green-400'
                       : 'bg-slate-500/10 border-2 border-dashed border-slate-400 dark:border-slate-500'
                   }
-                  ${!abgegeben && istBelegt ? 'cursor-pointer hover:bg-red-500/10 hover:border-red-400' : ''}
+                  ${!disabled && istBelegt ? 'cursor-pointer hover:bg-red-500/10 hover:border-red-400' : ''}
                 `}
                 style={{
                   left: `${zone.position.x}%`,
@@ -143,7 +140,7 @@ export default function DragDropBildFrage({ frage }: Props) {
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, zone.id)}
                 onClick={() => handleZoneKlick(zone.id)}
-                title={istBelegt && !abgegeben ? 'Klicken zum Entfernen' : undefined}
+                title={istBelegt && !disabled ? 'Klicken zum Entfernen' : undefined}
               >
                 {istBelegt && (
                   <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded text-slate-800 dark:text-slate-100 shadow-sm text-xs truncate max-w-full">
@@ -157,18 +154,18 @@ export default function DragDropBildFrage({ frage }: Props) {
       </div>
 
       {/* Label-Pool */}
-      {!abgegeben && selectedLabel && (
+      {!disabled && selectedLabel && (
         <p className="text-xs text-green-600 dark:text-green-400 font-medium">
           &laquo;{selectedLabel}&raquo; ausgewählt — tippe auf eine Zone zum Platzieren
         </p>
       )}
-      {!abgegeben && (
+      {!disabled && (
         <div className="flex flex-wrap gap-2">
           {verfuegbareLabels.length > 0 ? (
             verfuegbareLabels.map((label, idx) => (
               <div
                 key={`${label}-${idx}`}
-                draggable={!abgegeben}
+                draggable={!disabled}
                 onDragStart={() => handleDragStart(label)}
                 onDragEnd={() => setDraggingLabel(null)}
                 onClick={() => handleLabelTap(label)}
@@ -195,7 +192,7 @@ export default function DragDropBildFrage({ frage }: Props) {
       )}
 
       {/* Abgegeben: Zuordnungen anzeigen */}
-      {abgegeben && (
+      {disabled && (
         <div className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
           {(frage.zielzonen ?? []).map((zone) => (
             <div key={zone.id} className="flex items-center gap-2">
@@ -203,6 +200,14 @@ export default function DragDropBildFrage({ frage }: Props) {
               <span>{zuordnungen[zone.id] || '(leer)'}</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
       )}
     </div>

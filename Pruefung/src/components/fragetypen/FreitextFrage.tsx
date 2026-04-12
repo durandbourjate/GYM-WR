@@ -4,6 +4,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import { Extension } from '@tiptap/core'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import { usePruefungStore } from '../../store/pruefungStore.ts'
 import type { FreitextFrage as FreitextFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
@@ -48,9 +49,7 @@ const ArrowReplace = Extension.create({
 })
 
 export default function FreitextFrage({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const config = usePruefungStore((s) => s.config)
   const rechtschreibpruefungAktiv = config?.rechtschreibpruefung !== false
   const rechtschreibSprache = config?.rechtschreibSprache ?? 'de'
@@ -59,9 +58,8 @@ export default function FreitextFrage({ frage }: Props) {
   const frageIdRef = useRef(frage.id)
   frageIdRef.current = frage.id
 
-  const aktuelleAntwort = antworten[frage.id]
   const gespeicherterText =
-    aktuelleAntwort?.typ === 'freitext' ? aktuelleAntwort.text : ''
+    antwort?.typ === 'freitext' ? antwort.text : ''
 
   const editor = useEditor({
     extensions: [
@@ -75,7 +73,7 @@ export default function FreitextFrage({ frage }: Props) {
       ArrowReplace,
     ],
     content: gespeicherterText,
-    editable: !abgegeben,
+    editable: !disabled,
     editorProps: {
       attributes: {
         class: 'prose prose-slate dark:prose-invert max-w-none focus:outline-none',
@@ -89,7 +87,7 @@ export default function FreitextFrage({ frage }: Props) {
         debounceRef.current = null
         const html = ed.getHTML()
         // frageIdRef statt frage.id aus Closure → immer aktuell
-        setAntwort(frageIdRef.current, { typ: 'freitext', text: html, formatierung: 'html' })
+        onAntwort({ typ: 'freitext', text: html, formatierung: 'html' })
       }, 300) // 300ms statt 500ms — kürzeres Fenster für Datenverlust
     },
   })
@@ -110,7 +108,7 @@ export default function FreitextFrage({ frage }: Props) {
         clearTimeout(debounceRef.current)
         debounceRef.current = null
         const html = editor.getHTML()
-        setAntwort(frageIdRef.current, { typ: 'freitext', text: html, formatierung: 'html' })
+        onAntwort({ typ: 'freitext', text: html, formatierung: 'html' })
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps — Nur bei Fragewechsel triggern
@@ -118,12 +116,12 @@ export default function FreitextFrage({ frage }: Props) {
 
   // Auto-Focus: Cursor automatisch ins Textfeld
   useEffect(() => {
-    if (editor && !editor.isDestroyed && !abgegeben) {
+    if (editor && !editor.isDestroyed && !disabled) {
       // Kleiner Delay damit der DOM fertig gerendert ist
       const timer = setTimeout(() => editor.commands.focus('end'), 100)
       return () => clearTimeout(timer)
     }
-  }, [frage.id, editor, abgegeben])
+  }, [frage.id, editor, disabled])
 
   // Wort- und Zeichenzähler
   const text = editor?.getText() ?? ''
@@ -158,7 +156,7 @@ export default function FreitextFrage({ frage }: Props) {
       />
 
       {/* Toolbar */}
-      {editor && !abgegeben && (
+      {editor && !disabled && (
         <div className="flex flex-wrap gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
           <ToolbarButton
             aktiv={editor.isActive('heading', { level: 2 })}
@@ -210,7 +208,7 @@ export default function FreitextFrage({ frage }: Props) {
       {/* Editor — volle Breite, auto-grow, min-height für leichtes Antippen auf iPad */}
       <div
         className={`tiptap-editor w-full border-2 rounded-xl min-h-[120px]
-          ${abgegeben
+          ${disabled
             ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
             : zeichenAnzahl > 0
               ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
@@ -221,13 +219,21 @@ export default function FreitextFrage({ frage }: Props) {
         onClick={() => {
           // iOS: programmatischer Focus funktioniert nicht ohne User-Geste.
           // Dieser onClick ist eine direkte User-Geste → iOS erlaubt Keyboard-Öffnung.
-          if (editor && !editor.isDestroyed && !abgegeben && !editor.isFocused) {
+          if (editor && !editor.isDestroyed && !disabled && !editor.isFocused) {
             editor.commands.focus('end')
           }
         }}
       >
         <EditorContent editor={editor} />
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
 
       {/* Zähler */}
       <div className="flex flex-wrap justify-end gap-4 text-xs text-slate-500 dark:text-slate-400">

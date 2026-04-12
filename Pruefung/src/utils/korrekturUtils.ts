@@ -114,7 +114,7 @@ export function statusLabel(status: SchuelerKorrektur['korrekturStatus']): strin
 }
 
 /** Korrektur-Status-Farbe (Tailwind) */
-export function statusFarbe(status: SchuelerKorrektur['korrekturStatus']): string {
+export function korrekturStatusFarbe(status: SchuelerKorrektur['korrekturStatus']): string {
   switch (status) {
     case 'offen': return 'text-slate-500 bg-slate-100 dark:text-slate-400 dark:bg-slate-700'
     case 'ki-bewertet': return 'text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/30'

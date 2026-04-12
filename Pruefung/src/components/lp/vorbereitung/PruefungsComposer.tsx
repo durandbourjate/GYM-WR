@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
@@ -12,6 +11,7 @@ import type { Frage } from '../../../types/fragen.ts'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefung.ts'
 import type { FragenPerformance } from '../../../types/tracker.ts'
 
+import BaseDialog from '../../ui/BaseDialog'
 import LPHeader from '../LPHeader.tsx'
 import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
@@ -48,9 +48,6 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   const [zeigSuSVorschau, setZeigSuSVorschau] = useState(false)
   const [zeigLoeschPruefung, setZeigLoeschPruefung] = useState(false)
   const [loescht, setLoescht] = useState(false)
-
-  const loeschDialogRef = useRef<HTMLDivElement>(null)
-  useFocusTrap(loeschDialog ? loeschDialogRef : { current: null })
 
   // Autosave: Refs für Vergleich und Debounce
   const vorherigePruefungRef = useRef<string>(JSON.stringify(config ?? leerePruefung))
@@ -464,68 +461,68 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
       )}
 
       {/* Abschnitt-Lösch-Bestätigungsdialog */}
-      {loeschDialog && (
-        <div ref={loeschDialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">
-              Abschnitt löschen?
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">
-              Abschnitt &laquo;{loeschDialog.titel}&raquo; wirklich löschen? Die enthaltenen Fragen werden entfernt.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setLoeschDialog(null)}
-                className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm"
-              >
-                Abbrechen
-              </button>
-              <button
-                onClick={bestaetigeLoeschen}
-                className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm"
-              >
-                Löschen
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <BaseDialog
+        open={!!loeschDialog}
+        onClose={() => setLoeschDialog(null)}
+        title="Abschnitt löschen?"
+        maxWidth="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setLoeschDialog(null)}
+              className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={bestaetigeLoeschen}
+              className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm"
+            >
+              Löschen
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-600 dark:text-slate-300">
+          Abschnitt &laquo;{loeschDialog?.titel}&raquo; wirklich löschen? Die enthaltenen Fragen werden entfernt.
+        </p>
+      </BaseDialog>
 
       {/* Prüfung-Lösch-Bestätigungsdialog */}
-      {zeigLoeschPruefung && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-red-600 dark:text-red-400 mb-2">
-              {pruefung.typ === 'formativ' ? 'Übung löschen?' : 'Prüfung löschen?'}
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-              &laquo;{pruefung.titel || (pruefung.typ === 'formativ' ? 'Unbenannte Übung' : 'Unbenannte Prüfung')}&raquo; unwiderruflich löschen?
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
-              Die Konfiguration wird aus dem System entfernt. Bereits abgegebene Antworten bleiben in Google Drive erhalten.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setZeigLoeschPruefung(false)}
-                disabled={loescht}
-                className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm disabled:opacity-40"
-              >
-                Abbrechen
-              </button>
-              <button
-                onClick={handleLoeschePruefung}
-                disabled={loescht}
-                className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm disabled:opacity-60 flex items-center justify-center gap-2"
-              >
-                {loescht && (
-                  <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                )}
-                {loescht ? 'Wird gelöscht...' : 'Endgültig löschen'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <BaseDialog
+        open={zeigLoeschPruefung}
+        onClose={() => setZeigLoeschPruefung(false)}
+        title={pruefung.typ === 'formativ' ? 'Übung löschen?' : 'Prüfung löschen?'}
+        maxWidth="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setZeigLoeschPruefung(false)}
+              disabled={loescht}
+              className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm disabled:opacity-40"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={handleLoeschePruefung}
+              disabled={loescht}
+              className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {loescht && (
+                <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              )}
+              {loescht ? 'Wird gelöscht...' : 'Endgültig löschen'}
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+          &laquo;{pruefung.titel || (pruefung.typ === 'formativ' ? 'Unbenannte Übung' : 'Unbenannte Prüfung')}&raquo; unwiderruflich löschen?
+        </p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Die Konfiguration wird aus dem System entfernt. Bereits abgegebene Antworten bleiben in Google Drive erhalten.
+        </p>
+      </BaseDialog>
     </div>
   )
 }

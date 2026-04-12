@@ -17,6 +17,7 @@ import VerbindungsStatus from './VerbindungsStatus.tsx'
 import AutoSaveIndikator from './AutoSaveIndikator.tsx'
 import FragenNavigation from './FragenNavigation.tsx'
 import AbgabeDialog from './AbgabeDialog.tsx'
+import BaseDialog from './ui/BaseDialog'
 import ThemeToggle from './ThemeToggle.tsx'
 import SuSHilfeButton from './SuSHilfeButton.tsx'
 import MaterialPanel, { type MaterialModus } from './MaterialPanel.tsx'
@@ -522,16 +523,18 @@ export default function Layout() {
 
       {/* Zeitablauf-Dialog (prominent, zentriert — wie AbgabeDialog-Erfolg) */}
       {zeitAbgelaufen && abgegeben && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+        <BaseDialog
+          open={true}
+          onClose={() => {}}
+          title={beendetUm ? (config?.typ === 'formativ' ? 'Übung beendet' : 'Prüfung beendet') : 'Zeit abgelaufen'}
+          maxWidth="md"
+        >
+          <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
               <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-              {beendetUm ? (config?.typ === 'formativ' ? 'Übung beendet' : 'Prüfung beendet') : 'Zeit abgelaufen'}
-            </h2>
             <p className="text-slate-600 dark:text-slate-300 mb-1">
               {beendetUm
                 ? `Die Lehrperson hat die ${config?.typ === 'formativ' ? 'Übung' : 'Prüfung'} beendet. Ihre Antworten wurden automatisch abgegeben.`
@@ -541,7 +544,7 @@ export default function Layout() {
               Alle Antworten wurden gespeichert. Sie können das Fenster schliessen.
             </p>
           </div>
-        </div>
+        </BaseDialog>
       )}
 
       {/* Abgabe-Dialog */}

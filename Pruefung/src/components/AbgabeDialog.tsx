@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
-import { useFocusTrap } from '../hooks/useFocusTrap.ts'
+import { useState } from 'react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
+import BaseDialog from './ui/BaseDialog'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
 import { cleanupNachAbgabe } from '../utils/cleanupNachAbgabe.ts'
@@ -34,9 +34,6 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   const [status, setStatus] = useState<AbgabeStatus>('bereit')
   const [abgabezeit, setAbgabezeit] = useState<string>('')
   const [retryCount, setRetryCount] = useState(0)
-
-  const dialogRef = useRef<HTMLDivElement>(null)
-  useFocusTrap(dialogRef)
 
   const beantwortet = fragen.filter((f) => istVollstaendigBeantwortet(f, antworten[f.id], alleFragen, antworten)).length
   const unbeantwortet = fragen.length - beantwortet
@@ -142,8 +139,8 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
   // === Erfolgs-Anzeige ===
   if (status === 'erfolg') {
     return (
-      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <BaseDialog open={true} onClose={onSchliessen} maxWidth="md">
+        <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -159,21 +156,18 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
             Sie können das Fenster schliessen.
           </p>
         </div>
-      </div>
+      </BaseDialog>
     )
   }
 
   // === Fehler-Anzeige (Retry möglich) ===
   if (status === 'fehler') {
     return (
-      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <BaseDialog open={true} onClose={onSchliessen} title="Abgabe gespeichert — Übertragung ausstehend" maxWidth="md">
+        <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
             <span className="text-3xl">⚠</span>
           </div>
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Abgabe gespeichert — Übertragung ausstehend
-          </h2>
           <p className="text-slate-500 dark:text-slate-400 mb-2">
             Ihre Antworten sind lokal gesichert. Die Übertragung an den Server hat nicht geklappt.
           </p>
@@ -192,67 +186,33 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
             Die Prüfung wurde lokal als abgegeben markiert. Ihre Lehrperson wird informiert.
           </p>
         </div>
-      </div>
+      </BaseDialog>
     )
   }
 
   // === Senden-Anzeige ===
   if (status === 'senden') {
     return (
-      <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <BaseDialog open={true} onClose={onSchliessen} maxWidth="md">
+        <div className="text-center py-2">
           <div className="w-12 h-12 mx-auto mb-4 border-4 border-slate-200 dark:border-slate-600 border-t-slate-700 dark:border-t-slate-300 rounded-full animate-spin" />
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
             {config?.typ === 'formativ' ? 'Übung' : 'Prüfung'} wird abgegeben…
           </h2>
         </div>
-      </div>
+      </BaseDialog>
     )
   }
 
   // === Bestätigungs-Dialog ===
   return (
-    <div ref={dialogRef} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-md w-full">
-        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">
-          {config?.typ === 'formativ' ? 'Übung' : 'Prüfung'} abgeben?
-        </h2>
-
-        {/* Status */}
-        <div className="space-y-2 mb-6">
-          <StatusZeile
-            label="Beantwortet"
-            wert={`${beantwortet} von ${fragen.length}`}
-            icon={'\u2713'}
-            farbe="text-green-700 dark:text-green-400"
-          />
-          {unbeantwortet > 0 && (
-            <StatusZeile
-              label="Nicht beantwortet"
-              wert={`${unbeantwortet}`}
-              icon={'\u2717'}
-              farbe="text-red-700 dark:text-red-400"
-            />
-          )}
-          {markiert > 0 && (
-            <StatusZeile
-              label="Als unsicher markiert"
-              wert={`${markiert}`}
-              icon="?"
-              farbe="text-amber-700 dark:text-amber-400"
-            />
-          )}
-        </div>
-
-        {/* Warnung */}
-        {unbeantwortet > 0 && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
-            Achtung: Sie haben {unbeantwortet} {unbeantwortet === 1 ? 'Frage' : 'Fragen'} nicht beantwortet!
-          </div>
-        )}
-
-        {/* Buttons */}
-        <div className="flex gap-3">
+    <BaseDialog
+      open={true}
+      onClose={onSchliessen}
+      title={`${config?.typ === 'formativ' ? 'Übung' : 'Prüfung'} abgeben?`}
+      maxWidth="md"
+      footer={
+        <>
           <button
             onClick={onSchliessen}
             className="flex-1 py-2.5 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium"
@@ -265,9 +225,42 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
           >
             Definitiv abgeben
           </button>
-        </div>
+        </>
+      }
+    >
+      {/* Status */}
+      <div className="space-y-2 mb-6">
+        <StatusZeile
+          label="Beantwortet"
+          wert={`${beantwortet} von ${fragen.length}`}
+          icon={'\u2713'}
+          farbe="text-green-700 dark:text-green-400"
+        />
+        {unbeantwortet > 0 && (
+          <StatusZeile
+            label="Nicht beantwortet"
+            wert={`${unbeantwortet}`}
+            icon={'\u2717'}
+            farbe="text-red-700 dark:text-red-400"
+          />
+        )}
+        {markiert > 0 && (
+          <StatusZeile
+            label="Als unsicher markiert"
+            wert={`${markiert}`}
+            icon="?"
+            farbe="text-amber-700 dark:text-amber-400"
+          />
+        )}
       </div>
-    </div>
+
+      {/* Warnung */}
+      {unbeantwortet > 0 && (
+        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-700 dark:text-red-300">
+          Achtung: Sie haben {unbeantwortet} {unbeantwortet === 1 ? 'Frage' : 'Fragen'} nicht beantwortet!
+        </div>
+      )}
+    </BaseDialog>
   )
 }
 

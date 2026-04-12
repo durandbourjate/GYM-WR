@@ -4,6 +4,7 @@ import { apiService } from '../services/apiService.ts'
 import { initializeGoogleAuth, renderGoogleButton, CLIENT_ID } from '../services/authService.ts'
 import ThemeToggle from './ThemeToggle.tsx'
 import { useSchulConfig } from '../store/schulConfigStore.ts'
+import LoginLayout from './shared/LoginLayout.tsx'
 
 export default function LoginScreen() {
   const { config } = useSchulConfig()
@@ -121,12 +122,12 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
-      <div className="absolute top-4 right-4">
+    <LoginLayout>
+      <div className="fixed top-4 right-4">
         <ThemeToggle />
       </div>
 
-      <div className="max-w-sm w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
+      <div>
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-800 dark:bg-slate-200 rounded-2xl flex items-center justify-center">
@@ -251,6 +252,6 @@ export default function LoginScreen() {
           </div>
         </div>
       </div>
-    </div>
+    </LoginLayout>
   )
 }

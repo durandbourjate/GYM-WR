@@ -306,7 +306,7 @@ function korrigiereHotspot(
   const getroffeneBereiche = new Set<string>()
   const bereiche = frage.bereiche ?? []
 
-  for (const klick of antwort.geklickt) {
+  for (const klick of antwort.klicks) {
     for (const bereich of bereiche) {
       if (getroffeneBereiche.has(bereich.id)) continue
       const k = bereich.koordinaten

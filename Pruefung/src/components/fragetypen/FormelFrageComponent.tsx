@@ -4,7 +4,7 @@
  * Kein MathLive — schlanke Lösung mit KaTeX.
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { usePruefungStore } from '../../store/pruefungStore.ts'
+import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { FormelFrage } from '../../types/fragen.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { ladeKatexAsync, istKatexGeladen } from '../../utils/latexRenderer.ts'
@@ -64,14 +64,11 @@ const SYMBOLE = [
 ]
 
 export default function FormelFrageComponent({ frage }: Props) {
-  const antworten = usePruefungStore((s) => s.antworten)
-  const setAntwort = usePruefungStore((s) => s.setAntwort)
-  const abgegeben = usePruefungStore((s) => s.abgegeben)
+  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
 
-  const aktuelleAntwort = antworten[frage.id]
-  const aktuellerLatex = aktuelleAntwort?.typ === 'formel' ? aktuelleAntwort.latex : ''
+  const aktuellerLatex = antwort?.typ === 'formel' ? antwort.latex : ''
 
   const [eingabe, setEingabe] = useState(aktuellerLatex)
   const [vorschauHtml, setVorschauHtml] = useState('')
@@ -122,9 +119,9 @@ export default function FormelFrageComponent({ frage }: Props) {
   const speichereAntwort = useCallback((latex: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      setAntwort(frage.id, { typ: 'formel', latex })
+      onAntwort({ typ: 'formel', latex })
     }, 300)
-  }, [frage.id, setAntwort])
+  }, [onAntwort])
 
   function handleEingabe(value: string): void {
     setUndoStack(prev => [...prev.slice(-20), eingabe]) // Max 20 Schritte
@@ -133,7 +130,7 @@ export default function FormelFrageComponent({ frage }: Props) {
   }
 
   function handleUndo(): void {
-    if (undoStack.length === 0 || abgegeben) return
+    if (undoStack.length === 0 || disabled) return
     const vorherigerWert = undoStack[undoStack.length - 1]
     setUndoStack(prev => prev.slice(0, -1))
     setEingabe(vorherigerWert)
@@ -141,7 +138,7 @@ export default function FormelFrageComponent({ frage }: Props) {
   }
 
   function symbolEinfuegen(symbol: string): void {
-    if (abgegeben || !inputRef.current) return
+    if (disabled || !inputRef.current) return
     const input = inputRef.current
     const start = input.selectionStart ?? eingabe.length
     const end = input.selectionEnd ?? eingabe.length
@@ -178,7 +175,7 @@ export default function FormelFrageComponent({ frage }: Props) {
       <FrageText text={frage.fragetext} />
 
       {/* Symbol-Toolbar */}
-      {!abgegeben && (
+      {!disabled && (
         <div className="flex flex-wrap gap-3 items-start">
           {/* Undo-Button */}
           <button
@@ -217,10 +214,10 @@ export default function FormelFrageComponent({ frage }: Props) {
           type="text"
           value={eingabe}
           onChange={(e) => handleEingabe(e.target.value)}
-          disabled={abgegeben}
+          disabled={disabled}
           placeholder="z.B. \frac{a}{b} + \sqrt{c}"
           className={`w-full px-4 py-3 font-mono text-base border-2 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 ${
-            abgegeben
+            disabled
               ? 'border-slate-200 dark:border-slate-700 opacity-75 cursor-not-allowed'
               : eingabe.trim()
                 ? 'border-slate-300 dark:border-slate-600'
@@ -244,6 +241,14 @@ export default function FormelFrageComponent({ frage }: Props) {
           </p>
         )}
       </div>
+
+      {/* Feedback (Üben-Modus) */}
+      {feedbackSichtbar && korrekt !== null && (
+        <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
+          {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
+          {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
     </div>
   )
 }

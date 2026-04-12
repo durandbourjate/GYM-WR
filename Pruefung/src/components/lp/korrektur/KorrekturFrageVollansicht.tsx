@@ -434,13 +434,13 @@ function HotspotAnzeige({ frage, antwort }: { frage: HotspotFrage; antwort: Extr
             </div>
           ))}
           {/* SuS-Klicks (rot) */}
-          {antwort.geklickt?.map((klick, i) => (
+          {antwort.klicks?.map((klick, i) => (
             <div key={i} className="absolute w-4 h-4 -ml-2 -mt-2 bg-red-500 rounded-full border-2 border-white opacity-80" style={{ left: `${klick.x}%`, top: `${klick.y}%` }} />
           ))}
         </div>
       )}
       <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-        {antwort.geklickt?.length ?? 0} Markierungen gesetzt
+        {antwort.klicks?.length ?? 0} Markierungen gesetzt
       </div>
     </div>
   )
