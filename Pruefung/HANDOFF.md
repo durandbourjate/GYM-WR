@@ -61,10 +61,10 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Da
 
 | # | Thema | Beschreibung | Abhängigkeit |
 |---|-------|-------------|-------------|
-| A1 | **Echte Deep Links + App-Strukturverzeichnis** | Jeder Ort in der App braucht eine echte URL (`#/uebung/themen`, `#/uebung/durchfuehren`, etc.) die in neuem Tab funktioniert. Dazu: Strukturverzeichnis in Einstellungen mit Favoriten-Funktion. Kein Quick-Fix — braucht vollständiges Hash-Routing-Konzept. | — |
+| A1 | **Echte Deep Links + App-Strukturverzeichnis** | Jeder Ort in der App braucht eine echte URL (`#/uebung/themen`, `#/uebung/durchfuehren`, etc.) die in neuem Tab funktioniert. Dazu: Strukturverzeichnis in Einstellungen mit Favoriten-Funktion. Kein Quick-Fix — braucht vollständiges Hash-Routing-Konzept. **Eigene Session, sauber planen.** | — |
 | A2 | **KI-Bild-Generator Backend** | `generiereFrageBild` Endpoint in apps-script-code.js (Claude API Call). Frontend steht bereits (BildGeneratorPanel + BildMitGenerator). | Apps Script Deploy |
 | A3 | **KI-Zusammenfassung Audio-Rückmeldungen** | Neues Feature: Audio-Antworten per KI zu strukturierter Rückmeldung zusammenfassen. Konzept erstellen. | A2 (Claude API Pattern) |
-| A4 | **Entwicklungsprozess strukturieren** | Workflow mit Multi-Perspektiven-Review vor Implementierung. Agents für Funktionalität, Sicherheit, bestehende Patterns, UX. Ziel: weniger Regressionen, weniger Ad-hoc-Improvisation, mehr Wiederverwendung. | — |
+| A4 | **Entwicklungsprozess strukturieren** | Professioneller Workflow mit Multi-Perspektiven-Review vor Implementierung (Funktionalität, Sicherheit, bestehende Patterns, UX). Superpowers-Plugin reicht nicht aus — externes Research nötig zu AI-gestützten Dev-Workflows mit Review-Gates. **Eigene Session, Priorität hoch.** | — |
 
 ### Bugs (reproduzierbar, brauchen Debugging)
 
@@ -73,14 +73,14 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Da
 | B1 | **Bild-Upload fehlgeschlagen** | LP Frageneditor: "Upload fehlgeschlagen. Bitte erneut versuchen oder Bild-URL eingeben." | Konsole öffnen → `[BildUpload] Upload fehlgeschlagen, result:` lesen → Backend-Fehler identifizieren |
 | B2 | **Audio iPhone-Trigger** | 19s Aufnahme speichert nur 4s. iPhone wird beim ersten Mal getriggert, bei erneutem Aufnehmen nicht mehr. | iPhone-spezifisch: `recorder.onstart`-Timing (S92 A3) verifizieren, ggf. MediaRecorder-Settings |
 | B3 | **Abgabe-Timeout** | Sowohl Prüfung als auch Übung: "Abgabe gespeichert, Übertragung ausstehend". LP-Erzwingen-Beenden funktioniert, Antworten kommen an. | Apps Script Execution Log prüfen — Timeout bei grossen Payloads? Save-Resilienz (S92) wirkt teilweise. |
-| B4 | **Fachkürzel stimmen nicht** | Bei Prüfung/Übung durchführen sind Fachkürzel nicht wie im hochgeladenen Dokument. | User muss klären welche konkret falsch sind (Screenshot/Liste) |
+| B4 | **Fachkürzel stimmen nicht** | Bei Prüfung/Übung durchführen sind Fachkürzel nicht wie im hochgeladenen Dokument. | PDF `Kuerzelliste_25_26.pdf` liegt vor. Abgleich mit Lehrplan Sek II → `stammdaten.ts` korrigieren. |
 
 ### Verbesserungen (kein Bug, aber gewünscht)
 
 | # | Verbesserung | Beschreibung |
 |---|-------------|-------------|
 | V1 | **Bilanzstruktur: Erfolg-Eingabe** | Gewinn/Verlust soll in Bilanzstruktur eingegeben werden können. ER-Feld existiert (`gewinnVerlust` in ERFeldEingabe), Korrektur-Logik prüfen. |
-| V2 | **Bilanzstruktur vs. Kontenbestimmung** | Klären ob `kontenbestimmung` durch `bilanzstruktur` ersetzt werden soll (59 Dateien betroffen) |
+| ~~V2~~ | ~~Bilanzstruktur vs. Kontenbestimmung~~ | **Geklärt:** Kontenbestimmung bleibt als eigener Fragetyp. Kein Zusammenlegen. FiBu-Typen sollen in Prüfung und Übung identisch funktionieren (mit Adapter-Hook S91 + Prüfen-Button S93 umgesetzt). |
 | V3 | **Testdaten-Generator** | Für `wr.test` (Mastery-System + Tracking testen) |
 | V4 | **Fachkürzel bei neue Prüfung/Übung** | Offizielle Kürzel im Erstellungs-Dialog |
 | V5 | **Lernziele-Tab einklappbar** | UX-Verbesserung Einstellungen |
