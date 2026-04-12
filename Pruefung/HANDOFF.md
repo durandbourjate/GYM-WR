@@ -26,17 +26,19 @@ Ausführliche Testphase durch User deckte FiBu-Probleme, Dashboard-Filter-Regres
 | K1 | **T-Konto Üben-Korrektur:** `k.id === konto.kontonummer` → `k.id === konto.id`. Antwort-ID matcht Definition-ID, nicht Kontonummer. | korrektur.ts |
 | **Dashboard** | |
 | D1 | **Themen-Filter repariert:** `nicht_freigeschaltet` aus Default-Filter entfernt. Wurde in S93 irrtümlich hinzugefügt → Toggle-Button hatte keine Wirkung mehr. | Dashboard.tsx |
-| **Schwarzer Bildschirm** | |
-| S1 | **Fallback-Dashboard:** Wenn `aktuellerScreen === 'uebung'` aber `session === null`, wird Dashboard statt leerer Seite gezeigt. Verhindert schwarzen Bildschirm bei Race Condition. | AppUeben.tsx |
+| **Schwarzer Bildschirm (GELÖST)** | |
+| S1 | **Fallback-Dashboard:** Wenn `aktuellerScreen === 'uebung'` aber `session === null`, wird Dashboard statt leerer Seite gezeigt. | AppUeben.tsx |
+| S2 | **Auto-Beendigung:** Root Cause gefunden — nach letzter Frage wurde `aktuelleFrageIndex` über Array-Ende erhöht, `aktuelleFrage()` gab null zurück → `return null` → schwarzer Bildschirm. Fix: `useEffect` in UebungsScreen erkennt session ohne frage und ruft `beendeSession()` + `navigiere('ergebnis')` auf. **Im Browser verifiziert.** | UebungsScreen.tsx |
 | **Editor-Crashes** | |
 | E1 | **TKontoEditor Null-Guards:** `konto.eintraege` kann undefined sein (unvollständige Backend-Daten) → `(konto.eintraege \|\| [])` in map/filter/length | TKontoEditor.tsx |
 | E2 | **KontenbestimmungEditor Null-Guards:** `aufgabe.erwarteteAntworten` kann undefined sein → Null-Guards in map/filter/length + CRUD-Funktionen | KontenbestimmungEditor.tsx |
 
-### Geänderte Dateien (7)
+### Geänderte Dateien (8)
 - `Pruefung/src/components/fragetypen/TKontoFrage.tsx` — Layout-Umbau: Zunahme/Abnahme pro Seite, Kontenkategorie in Kopfzeile
 - `Pruefung/src/utils/ueben/korrektur.ts` — T-Konto ID-Matching Fix
 - `Pruefung/src/components/ueben/Dashboard.tsx` — Filter-Toggle repariert
-- `Pruefung/src/AppUeben.tsx` — Schwarzer-Bildschirm-Fallback
+- `Pruefung/src/AppUeben.tsx` — Schwarzer-Bildschirm-Fallback (session===null)
+- `Pruefung/src/components/ueben/UebungsScreen.tsx` — Auto-beende Session wenn keine Frage mehr (Root Cause schwarzer Bildschirm)
 - `packages/shared/src/editor/typen/TKontoEditor.tsx` — Null-Guards
 - `packages/shared/src/editor/typen/KontenbestimmungEditor.tsx` — Null-Guards
 
