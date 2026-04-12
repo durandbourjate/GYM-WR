@@ -6,6 +6,60 @@
 
 ---
 
+## Session 94 — FiBu-Fixes + Dashboard-Filter + Black Screen (12.04.2026)
+
+### Stand
+Branch `fix/session94-fibu-bugs`. tsc ✅ | 209 Tests ✅ | Build ✅. **Browser-Tests ausstehend.**
+
+### Kontext
+Ausführliche Testphase durch User deckte FiBu-Probleme, Dashboard-Filter-Regression und wiederkehrenden schwarzen Bildschirm auf. 6 Fixes in 7 Dateien.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **T-Konto Layout (User-Wunsch)** | |
+| L1 | **Zunahme/Abnahme pro Seite:** Neue Felder `zunahmeAbnahmeLinks/Rechts`, je ein Dropdown pro T-Konto-Seite statt eines einzelnen in der Kopfzeile | TKontoFrage.tsx |
+| L2 | **Kontenkategorie in Kopfzeile:** Dropdown aus separatem Abschnitt in die Kopfzeile (neben Kontoname) verschoben | TKontoFrage.tsx |
+| L3 | **Soll/Haben + Zunahme/Abnahme aus Header entfernt:** Die alten zentral platzierten Dropdowns gelöscht, Felder als Legacy beibehalten | TKontoFrage.tsx |
+| **Korrektur-Bug** | |
+| K1 | **T-Konto Üben-Korrektur:** `k.id === konto.kontonummer` → `k.id === konto.id`. Antwort-ID matcht Definition-ID, nicht Kontonummer. | korrektur.ts |
+| **Dashboard** | |
+| D1 | **Themen-Filter repariert:** `nicht_freigeschaltet` aus Default-Filter entfernt. Wurde in S93 irrtümlich hinzugefügt → Toggle-Button hatte keine Wirkung mehr. | Dashboard.tsx |
+| **Schwarzer Bildschirm** | |
+| S1 | **Fallback-Dashboard:** Wenn `aktuellerScreen === 'uebung'` aber `session === null`, wird Dashboard statt leerer Seite gezeigt. Verhindert schwarzen Bildschirm bei Race Condition. | AppUeben.tsx |
+| **Editor-Crashes** | |
+| E1 | **TKontoEditor Null-Guards:** `konto.eintraege` kann undefined sein (unvollständige Backend-Daten) → `(konto.eintraege \|\| [])` in map/filter/length | TKontoEditor.tsx |
+| E2 | **KontenbestimmungEditor Null-Guards:** `aufgabe.erwarteteAntworten` kann undefined sein → Null-Guards in map/filter/length + CRUD-Funktionen | KontenbestimmungEditor.tsx |
+
+### Geänderte Dateien (7)
+- `Pruefung/src/components/fragetypen/TKontoFrage.tsx` — Layout-Umbau: Zunahme/Abnahme pro Seite, Kontenkategorie in Kopfzeile
+- `Pruefung/src/utils/ueben/korrektur.ts` — T-Konto ID-Matching Fix
+- `Pruefung/src/components/ueben/Dashboard.tsx` — Filter-Toggle repariert
+- `Pruefung/src/AppUeben.tsx` — Schwarzer-Bildschirm-Fallback
+- `packages/shared/src/editor/typen/TKontoEditor.tsx` — Null-Guards
+- `packages/shared/src/editor/typen/KontenbestimmungEditor.tsx` — Null-Guards
+
+### Zusätzlich erledigt
+- **T4:** Alte Branches aufgeräumt (3 lokal + 1 remote, alle gemergt)
+- **A4:** Als erledigt markiert (war bereits zuvor abgeschlossen)
+- **Manuelle Schritte:** User hat `einrichtung-demo` und `sf-wr-27a28f` Configs gelöscht
+
+### Offene Punkte aus Browser-Tests (brauchen weitere Untersuchung)
+
+| # | Thema | Status |
+|---|-------|--------|
+| F1 | **Buchungssatz falsche Bewertung** | Wahrscheinlich fehlende Musterlösung in Fragensammlung. `frage.buchungen` leer → `0 !== N` → immer falsch. **FiBu-Musterlösungen in Fragensammlung prüfen.** |
+| F2 | **3 Einrichtungsprüfungen sichtbar** | Alte Backend-Daten (sf-wr-27a28f, demo). User hat Configs gelöscht — nach Reload sollten nur noch `einrichtung-pruefung` und `einrichtung-uebung` sichtbar sein. |
+| F3 | **61 vs 59 Punkte** | Gewollt — einrichtungsPruefung hat 2 Fragen/Punkte mehr als einrichtungsUebung (unterschiedliche Fragen-Sets). |
+| F4 | **Bilanz/ER Musterlösung unvollständig** | Nur Umlaufvermögen + kf. FK angewählt, keine Konten. Beträge ohne Konten. **Im Frageneditor korrigieren.** |
+| F5 | **Bild-Upload fehlgeschlagen (B1)** | Weiterhin offen — Konsole prüfen. |
+| F6 | **Audio iPhone-Trigger (B2)** | Weiterhin offen — iPhone-spezifisch. |
+| F7 | **Abgabe-Timeout (B3)** | Weiterhin offen — Apps Script Execution Log prüfen. |
+| F8 | **Fachkürzel stimmen nicht (B4)** | Weiterhin offen — PDF-Abgleich mit stammdaten.ts. |
+
+---
+
 ## Session 93 — Browser-Test Bugfixes (12.04.2026)
 
 ### Stand
@@ -50,7 +104,7 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Da
 - `Pruefung/src/components/lp/vorbereitung/VorbereitungPhase.tsx` — ladeStatus-Guard entfernt
 
 ### Manuelle Schritte
-- ⬜ Configs-Sheet: `einrichtung-demo` und `sf-wr-27a28f` Configs löschen
+- ✅ Configs-Sheet: `einrichtung-demo` und `sf-wr-27a28f` Configs gelöscht (User, S94)
 - ✅ Apps Script: Kein neues Deploy nötig (nur Frontend-Änderungen)
 
 ---
@@ -64,7 +118,7 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Da
 | A1 | **Echte Deep Links + App-Strukturverzeichnis** | Jeder Ort in der App braucht eine echte URL (`#/uebung/themen`, `#/uebung/durchfuehren`, etc.) die in neuem Tab funktioniert. Dazu: Strukturverzeichnis in Einstellungen mit Favoriten-Funktion. Kein Quick-Fix — braucht vollständiges Hash-Routing-Konzept. **Eigene Session, sauber planen.** | — |
 | A2 | **KI-Bild-Generator Backend** | `generiereFrageBild` Endpoint in apps-script-code.js (Claude API Call). Frontend steht bereits (BildGeneratorPanel + BildMitGenerator). | Apps Script Deploy |
 | A3 | **KI-Zusammenfassung Audio-Rückmeldungen** | Neues Feature: Audio-Antworten per KI zu strukturierter Rückmeldung zusammenfassen. Konzept erstellen. | A2 (Claude API Pattern) |
-| A4 | **Entwicklungsprozess strukturieren** | Professioneller Workflow mit Multi-Perspektiven-Review vor Implementierung (Funktionalität, Sicherheit, bestehende Patterns, UX). Superpowers-Plugin reicht nicht aus — externes Research nötig zu AI-gestützten Dev-Workflows mit Review-Gates. **Eigene Session, Priorität hoch.** | — |
+| ~~A4~~ | ~~Entwicklungsprozess strukturieren~~ | **Erledigt** (S94). Superpowers-Skills + Rules + Memory = 3-Schichten-Architektur. |
 
 ### Bugs (reproduzierbar, brauchen Debugging)
 
@@ -95,7 +149,7 @@ Ausführlicher Browser-Test durch User deckte diverse Bugs auf. 7 Fixes in 15 Da
 | T1 | **62 SVGs visuell prüfen** | Neutrale Bilder erstellt (S87), noch nicht alle im Browser verifiziert |
 | T2 | **Excel-Import Feinschliff** | S6D teilweise aus Session 79, Feinschliff offen |
 | T3 | **Prefetching** | S6E: requestIdleCallback für Detail-Prefetch (teilimplementiert) |
-| T4 | **Alte Remote-Branches aufräumen** | 10+ gemergte Branches auf GitHub |
+| ~~T4~~ | ~~Alte Remote-Branches aufräumen~~ | **Erledigt** (S94). 3 lokale + 1 remote Branch gelöscht. Nur noch main + gh-pages. |
 
 ### Browser-Tests (ausstehend aus früheren Sessions)
 

@@ -33,8 +33,10 @@ interface KontoEingabe {
   beschriftungLinks: string
   beschriftungRechts: string
   kontenkategorie: string
-  sollHaben: string          // Soll oder Haben (Titel-Dropdown)
-  zunahmeAbnahme: string     // +Zunahme oder -Abnahme (Titel-Dropdown)
+  sollHaben: string              // Legacy (nicht mehr im UI)
+  zunahmeAbnahme: string         // Legacy (nicht mehr im UI)
+  zunahmeAbnahmeLinks: string    // Zunahme/Abnahme pro Seite
+  zunahmeAbnahmeRechts: string   // Zunahme/Abnahme pro Seite
   anfangsbestandLinks: string
   anfangsbestandRechts: string
   eintraegeLinks: EintragZeile[]
@@ -55,6 +57,8 @@ function leereKontoEingabe(id: string): KontoEingabe {
     kontenkategorie: '',
     sollHaben: '',
     zunahmeAbnahme: '',
+    zunahmeAbnahmeLinks: '',
+    zunahmeAbnahmeRechts: '',
     anfangsbestandLinks: '',
     anfangsbestandRechts: '',
     eintraegeLinks: [leereZeile()],
@@ -75,6 +79,8 @@ function zuAntwort(konten: KontoEingabe[]) {
       kontenkategorie: k.kontenkategorie || undefined,
       sollHaben: k.sollHaben || undefined,
       zunahmeAbnahme: k.zunahmeAbnahme || undefined,
+      zunahmeAbnahmeLinks: k.zunahmeAbnahmeLinks || undefined,
+      zunahmeAbnahmeRechts: k.zunahmeAbnahmeRechts || undefined,
       eintraegeLinks: k.eintraegeLinks.map((e) => ({
         gegenkonto: e.gegenkonto,
         betrag: parseFloat(e.betrag) || 0,
@@ -108,6 +114,8 @@ function vonAntwort(
       kontenkategorie: eingabe.kontenkategorie ?? '',
       sollHaben: (eingabe as Record<string, unknown>).sollHaben as string ?? '',
       zunahmeAbnahme: (eingabe as Record<string, unknown>).zunahmeAbnahme as string ?? '',
+      zunahmeAbnahmeLinks: (eingabe as Record<string, unknown>).zunahmeAbnahmeLinks as string ?? '',
+      zunahmeAbnahmeRechts: (eingabe as Record<string, unknown>).zunahmeAbnahmeRechts as string ?? '',
       anfangsbestandLinks: '',
       anfangsbestandRechts: '',
       eintraegeLinks: eingabe.eintraegeLinks.length > 0
@@ -236,103 +244,104 @@ export default function TKontoFrage({ frage }: Props) {
           const def = frage.konten[kIdx]
           return (
             <div key={konto.id} className="rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
-              {/* Konto-Header — zentriert, mit Soll/Haben + Zunahme/Abnahme */}
+              {/* Konto-Header — Kontoname + Kontenkategorie */}
               <div className="px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
-                <div className="text-center text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">
-                  {kontoLabel(def.kontonummer)}
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    {kontoLabel(def.kontonummer)}
+                  </span>
+                  {opts.kontenkategorie && (
+                    <>
+                      <select
+                        value={konto.kontenkategorie}
+                        onChange={(e) => feldAendern(kIdx, 'kontenkategorie', e.target.value)}
+                        disabled={readOnly}
+                        className={`min-h-[32px] rounded border bg-white px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 ${brd(konto.kontenkategorie, readOnly)}`}
+                      >
+                        <option value="">Kategorie...</option>
+                        <option value="aktiv">Aktiv</option>
+                        <option value="passiv">Passiv</option>
+                        <option value="aufwand">Aufwand</option>
+                        <option value="ertrag">Ertrag</option>
+                      </select>
+                      {konto.kontenkategorie && (
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
+                          konto.kontenkategorie === 'aktiv' ? 'bg-yellow-50 text-yellow-700 border-yellow-300 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-700' :
+                          konto.kontenkategorie === 'passiv' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/15 dark:text-red-300 dark:border-red-800' :
+                          konto.kontenkategorie === 'aufwand' ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/15 dark:text-blue-300 dark:border-blue-800' :
+                          'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/15 dark:text-green-300 dark:border-green-800'
+                        }`}>
+                          {konto.kontenkategorie.charAt(0).toUpperCase() + konto.kontenkategorie.slice(1)}
+                        </span>
+                      )}
+                    </>
+                  )}
                 </div>
-                {opts.beschriftungSollHaben && (
-                  <div className="flex items-center justify-center gap-3">
-                    <select
-                      value={konto.sollHaben}
-                      onChange={(e) => feldAendern(kIdx, 'sollHaben', e.target.value)}
-                      disabled={readOnly}
-                      className={`min-h-[32px] rounded border bg-white px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 ${brd(konto.sollHaben, readOnly)}`}
-                    >
-                      <option value="">Soll/Haben...</option>
-                      <option value="Soll">Soll</option>
-                      <option value="Haben">Haben</option>
-                    </select>
-                    <select
-                      value={konto.zunahmeAbnahme}
-                      onChange={(e) => feldAendern(kIdx, 'zunahmeAbnahme', e.target.value)}
-                      disabled={readOnly}
-                      className={`min-h-[32px] rounded border bg-white px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 ${brd(konto.zunahmeAbnahme, readOnly)}`}
-                    >
-                      <option value="">+/−...</option>
-                      <option value="+Zunahme">(+) Zunahme</option>
-                      <option value="-Abnahme">(−) Abnahme</option>
-                    </select>
-                  </div>
-                )}
               </div>
-
-              {/* Kontenkategorie */}
-              {opts.kontenkategorie && (
-                <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-700">
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-slate-500 dark:text-slate-400">Kontenkategorie</label>
-                    {konto.kontenkategorie && (
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
-                        konto.kontenkategorie === 'aktiv' ? 'bg-yellow-50 text-yellow-700 border-yellow-300 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-700' :
-                        konto.kontenkategorie === 'passiv' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/15 dark:text-red-300 dark:border-red-800' :
-                        konto.kontenkategorie === 'aufwand' ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/15 dark:text-blue-300 dark:border-blue-800' :
-                        'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/15 dark:text-green-300 dark:border-green-800'
-                      }`}>
-                        {konto.kontenkategorie.charAt(0).toUpperCase() + konto.kontenkategorie.slice(1)}
-                      </span>
-                    )}
-                  </div>
-                  <select
-                    value={konto.kontenkategorie}
-                    onChange={(e) => feldAendern(kIdx, 'kontenkategorie', e.target.value)}
-                    disabled={readOnly}
-                    className={`mt-1 min-h-[44px] rounded-md border bg-white px-3 py-2 text-sm text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 ${brd(konto.kontenkategorie, readOnly)}`}
-                  >
-                    <option value="">-- wählen --</option>
-                    <option value="aktiv">Aktiv</option>
-                    <option value="passiv">Passiv</option>
-                    <option value="aufwand">Aufwand</option>
-                    <option value="ertrag">Ertrag</option>
-                  </select>
-                </div>
-              )}
 
               {/* T-Form */}
               <div className="px-4 py-3">
-                {/* Kopfzeile Soll / Haben */}
+                {/* Kopfzeile Soll/Haben + Zunahme/Abnahme pro Seite */}
                 <div className="grid grid-cols-2 border-b-2 border-slate-800 dark:border-slate-300">
-                  <div className="pb-1 pr-2 border-r border-slate-800 dark:border-slate-300">
-                    {opts.beschriftungSollHaben ? (
-                      <select
-                        value={konto.beschriftungLinks}
-                        onChange={(e) => feldAendern(kIdx, 'beschriftungLinks', e.target.value)}
-                        disabled={readOnly}
-                        className="text-xs font-bold uppercase tracking-wider bg-transparent border-none focus:outline-none text-slate-700 dark:text-slate-200 disabled:opacity-50"
-                      >
-                        <option value="">-- Seite --</option>
-                        <option value="Soll">Soll</option>
-                        <option value="Haben">Haben</option>
-                      </select>
-                    ) : (
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Soll</span>
-                    )}
+                  <div className="pb-1.5 pr-2 border-r border-slate-800 dark:border-slate-300">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {opts.beschriftungSollHaben ? (
+                        <select
+                          value={konto.beschriftungLinks}
+                          onChange={(e) => feldAendern(kIdx, 'beschriftungLinks', e.target.value)}
+                          disabled={readOnly}
+                          className={`min-h-[28px] text-xs font-bold uppercase tracking-wider bg-transparent rounded border px-1 py-0.5 focus:outline-none text-slate-700 dark:text-slate-200 disabled:opacity-50 ${brd(konto.beschriftungLinks, readOnly)}`}
+                        >
+                          <option value="">Seite...</option>
+                          <option value="Soll">Soll</option>
+                          <option value="Haben">Haben</option>
+                        </select>
+                      ) : (
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Soll</span>
+                      )}
+                      {opts.zunahmeAbnahme && (
+                        <select
+                          value={konto.zunahmeAbnahmeLinks}
+                          onChange={(e) => feldAendern(kIdx, 'zunahmeAbnahmeLinks', e.target.value)}
+                          disabled={readOnly}
+                          className={`min-h-[28px] text-xs rounded border bg-white px-1 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300 focus:outline-none disabled:opacity-50 ${brd(konto.zunahmeAbnahmeLinks, readOnly)}`}
+                        >
+                          <option value="">+/−</option>
+                          <option value="+Zunahme">(+) Zunahme</option>
+                          <option value="-Abnahme">(−) Abnahme</option>
+                        </select>
+                      )}
+                    </div>
                   </div>
-                  <div className="pb-1 pl-2">
-                    {opts.beschriftungSollHaben ? (
-                      <select
-                        value={konto.beschriftungRechts}
-                        onChange={(e) => feldAendern(kIdx, 'beschriftungRechts', e.target.value)}
-                        disabled={readOnly}
-                        className="text-xs font-bold uppercase tracking-wider bg-transparent border-none focus:outline-none text-slate-700 dark:text-slate-200 disabled:opacity-50"
-                      >
-                        <option value="">-- Seite --</option>
-                        <option value="Soll">Soll</option>
-                        <option value="Haben">Haben</option>
-                      </select>
-                    ) : (
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Haben</span>
-                    )}
+                  <div className="pb-1.5 pl-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {opts.beschriftungSollHaben ? (
+                        <select
+                          value={konto.beschriftungRechts}
+                          onChange={(e) => feldAendern(kIdx, 'beschriftungRechts', e.target.value)}
+                          disabled={readOnly}
+                          className={`min-h-[28px] text-xs font-bold uppercase tracking-wider bg-transparent rounded border px-1 py-0.5 focus:outline-none text-slate-700 dark:text-slate-200 disabled:opacity-50 ${brd(konto.beschriftungRechts, readOnly)}`}
+                        >
+                          <option value="">Seite...</option>
+                          <option value="Soll">Soll</option>
+                          <option value="Haben">Haben</option>
+                        </select>
+                      ) : (
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Haben</span>
+                      )}
+                      {opts.zunahmeAbnahme && (
+                        <select
+                          value={konto.zunahmeAbnahmeRechts}
+                          onChange={(e) => feldAendern(kIdx, 'zunahmeAbnahmeRechts', e.target.value)}
+                          disabled={readOnly}
+                          className={`min-h-[28px] text-xs rounded border bg-white px-1 py-0.5 text-slate-600 dark:bg-slate-700 dark:text-slate-300 focus:outline-none disabled:opacity-50 ${brd(konto.zunahmeAbnahmeRechts, readOnly)}`}
+                        >
+                          <option value="">+/−</option>
+                          <option value="+Zunahme">(+) Zunahme</option>
+                          <option value="-Abnahme">(−) Abnahme</option>
+                        </select>
+                      )}
+                    </div>
                   </div>
                 </div>
 

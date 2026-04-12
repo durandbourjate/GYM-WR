@@ -214,6 +214,11 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
             <UebungsScreen />
           )}
 
+          {/* Fallback: Auf 'uebung' ohne Session → Dashboard anzeigen (verhindert schwarzen Bildschirm) */}
+          {aktuellerScreen === 'uebung' && !session && (
+            <Dashboard deepLinkZiel={deepLinkZiel} />
+          )}
+
           {aktuellerScreen === 'dashboard' && (
             <Dashboard deepLinkZiel={deepLinkZiel} />
           )}

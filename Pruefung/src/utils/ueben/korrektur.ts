@@ -96,7 +96,7 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
     case 'tkonto': {
       if (a.typ !== 'tkonto') return false
       return frage.konten.every(konto => {
-        const eingabe = a.konten.find(k => k.id === konto.kontonummer)
+        const eingabe = a.konten.find(k => k.id === konto.id)
         if (!eingabe) return false
         const korrektLinks = konto.eintraege.filter(e => e.seite === 'soll')
         const korrektRechts = konto.eintraege.filter(e => e.seite === 'haben')

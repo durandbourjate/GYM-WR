@@ -53,7 +53,7 @@ export default function KontenbestimmungEditor({
 
   function updateAntwort(aufgabeIdx: number, antwortIdx: number, partial: Partial<KontenAntwort>): void {
     const neu = [...aufgaben]
-    const antworten = [...neu[aufgabeIdx].erwarteteAntworten]
+    const antworten = [...(neu[aufgabeIdx].erwarteteAntworten || [])]
     antworten[antwortIdx] = { ...antworten[antwortIdx], ...partial }
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
@@ -61,15 +61,15 @@ export default function KontenbestimmungEditor({
 
   function addAntwort(aufgabeIdx: number): void {
     const neu = [...aufgaben]
-    const antworten = [...neu[aufgabeIdx].erwarteteAntworten, {}]
+    const antworten = [...(neu[aufgabeIdx].erwarteteAntworten || []), {}]
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
   }
 
   function removeAntwort(aufgabeIdx: number, antwortIdx: number): void {
     const neu = [...aufgaben]
-    if (neu[aufgabeIdx].erwarteteAntworten.length <= 1) return
-    const antworten = neu[aufgabeIdx].erwarteteAntworten.filter((_, i) => i !== antwortIdx)
+    if ((neu[aufgabeIdx].erwarteteAntworten || []).length <= 1) return
+    const antworten = (neu[aufgabeIdx].erwarteteAntworten || []).filter((_, i) => i !== antwortIdx)
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
   }
@@ -223,7 +223,7 @@ export default function KontenbestimmungEditor({
                 Erwartete Antworten
               </label>
               <div className="space-y-2">
-                {aufgabe.erwarteteAntworten.map((antwort, eIdx) => (
+                {(aufgabe.erwarteteAntworten || []).map((antwort, eIdx) => (
                   <div key={eIdx} className="flex items-center gap-2">
                     {zeigeKonto && (
                       <div className="flex-1 min-w-0">
@@ -259,7 +259,7 @@ export default function KontenbestimmungEditor({
                         <option value="haben">Haben</option>
                       </select>
                     )}
-                    {aufgabe.erwarteteAntworten.length > 1 && (
+                    {(aufgabe.erwarteteAntworten || []).length > 1 && (
                       <button
                         onClick={() => removeAntwort(aIdx, eIdx)}
                         className="w-7 h-7 text-red-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer text-sm shrink-0"

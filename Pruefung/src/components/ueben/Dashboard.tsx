@@ -186,11 +186,11 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     // Wenn "Alle Themen anzeigen" aktiv → alles zeigen
     if (alleThemenAnzeigen) return alleFachThemen
 
-    // Aktive + abgeschlossene + gesperrte Themen anzeigen (gesperrte mit Overlay)
+    // Nur aktive + abgeschlossene Themen anzeigen (nicht_freigeschaltet nur bei "Alle Themen")
     let gefiltert = alleFachThemen
       .filter(info => {
         const status = getStatus(info.fach, info.thema)
-        return status === 'aktiv' || status === 'abgeschlossen' || status === 'nicht_freigeschaltet'
+        return status === 'aktiv' || status === 'abgeschlossen'
       })
       .map(info => {
         // Unterthemen-Filter: Wenn nur bestimmte Unterthemen aktiv → Fragen filtern

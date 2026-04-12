@@ -70,11 +70,12 @@ export default function TKontoEditor({
 
   function addEintrag(kontoIdx: number): void {
     const k = konten[kontoIdx]
-    if (k.eintraege.length >= MAX_EINTRAEGE) return
+    const eintraege = k.eintraege || []
+    if (eintraege.length >= MAX_EINTRAEGE) return
     const neu = [...konten]
     neu[kontoIdx] = {
       ...k,
-      eintraege: [...k.eintraege, { seite: 'soll', gegenkonto: '', betrag: 0 }],
+      eintraege: [...eintraege, { seite: 'soll', gegenkonto: '', betrag: 0 }],
     }
     setKonten(neu)
   }
@@ -84,7 +85,7 @@ export default function TKontoEditor({
     const k = neu[kontoIdx]
     neu[kontoIdx] = {
       ...k,
-      eintraege: k.eintraege.filter((_, i) => i !== eintragIdx),
+      eintraege: (k.eintraege || []).filter((_, i) => i !== eintragIdx),
     }
     setKonten(neu)
   }
@@ -92,7 +93,7 @@ export default function TKontoEditor({
   function updateEintrag(kontoIdx: number, eintragIdx: number, partial: Partial<TKontoDefinition['eintraege'][0]>): void {
     const neu = [...konten]
     const k = neu[kontoIdx]
-    const eintraege = [...k.eintraege]
+    const eintraege = [...(k.eintraege || [])]
     eintraege[eintragIdx] = { ...eintraege[eintragIdx], ...partial }
     neu[kontoIdx] = { ...k, eintraege }
     setKonten(neu)
@@ -316,7 +317,7 @@ export default function TKontoEditor({
                   Buchungseinträge (Musterlösung)
                 </label>
                 <div className="space-y-1">
-                  {konto.eintraege.map((eintrag, eIdx) => (
+                  {(konto.eintraege || []).map((eintrag, eIdx) => (
                     <div key={eIdx} className="flex items-center gap-2">
                       <select
                         value={eintrag.seite}
@@ -353,7 +354,7 @@ export default function TKontoEditor({
                     </div>
                   ))}
                 </div>
-                {konto.eintraege.length < MAX_EINTRAEGE && (
+                {(konto.eintraege || []).length < MAX_EINTRAEGE && (
                   <button
                     onClick={() => addEintrag(kIdx)}
                     className="mt-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
