@@ -172,7 +172,7 @@ export default function LPStartseite() {
 
   // Einrichtungsprüfung ins Backend synchronisieren (einmalig)
   // localStorage-Guard verhindert Duplikate bei Reloads
-  const SYNC_KEY = 'einrichtung-sync-v4'
+  const SYNC_KEY = 'einrichtung-sync-v5'
   const SYNC_VERSION = `${einrichtungsPruefung.id}-${einrichtungsPruefung.gesamtpunkte}-${einrichtungsPruefung.typ}-${einrichtungsFragen.length}`
 
   /** Sync-Helper: Fragen einzeln (seriell) speichern um Backend nicht zu überlasten.
@@ -206,7 +206,7 @@ export default function LPStartseite() {
   }
 
   // Einführungsübung ins Backend synchronisieren (einmalig)
-  const UEBUNG_SYNC_KEY = 'einrichtung-uebung-sync-v4'
+  const UEBUNG_SYNC_KEY = 'einrichtung-uebung-sync-v5'
   const UEBUNG_SYNC_VERSION = `${einrichtungsUebung.id}-${einrichtungsUebung.gesamtpunkte}-${einrichtungsUebungFragen.length}`
 
   async function syncEinrichtungsUebung(email: string, _backendConfigs: PruefungsConfig[]): Promise<void> {
