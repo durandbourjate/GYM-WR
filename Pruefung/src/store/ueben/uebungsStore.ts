@@ -54,6 +54,8 @@ interface UebungsState {
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
   beantworte: (antwort: unknown) => void
   beantworteById: (frageId: string, antwort: Antwort) => void
+  /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen) */
+  speichereZwischenstandById: (frageId: string, antwort: Antwort) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
   ueberspringen: () => void
@@ -171,6 +173,18 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       },
       feedbackSichtbar: true,
       letzteAntwortKorrekt: korrekt,
+    })
+  },
+
+  speichereZwischenstandById: (frageId, antwort) => {
+    const session = get().session
+    if (!session) return
+    // Nur lokalen Zwischenstand merken — keine Korrektur, kein Locking
+    set({
+      session: {
+        ...session,
+        zwischenstande: { ...(session.zwischenstande ?? {}), [frageId]: normalizeAntwort(antwort) },
+      },
     })
   },
 

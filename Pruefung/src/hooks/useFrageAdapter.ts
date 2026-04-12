@@ -6,6 +6,8 @@ import type { Antwort } from '../types/antworten.ts'
 export interface FrageAdapterResult {
   antwort: Antwort | null
   onAntwort: (antwort: Antwort) => void
+  /** Zwischenstand speichern ohne Korrektur (für Multi-Feld-Fragetypen im Üben-Modus) */
+  speichereZwischenstand: ((antwort: Antwort) => void) | null
   disabled: boolean
   feedbackSichtbar: boolean
   korrekt: boolean | null
@@ -27,12 +29,14 @@ export function useFrageAdapter(frageId: string): FrageAdapterResult {
   const uebenFeedbackSichtbar = useUebenUebungsStore((s) => s.feedbackSichtbar)
   const uebenLetzteKorrekt = useUebenUebungsStore((s) => s.letzteAntwortKorrekt)
   const uebenBeantworteById = useUebenUebungsStore((s) => s.beantworteById)
+  const uebenSpeichereZwischenstandById = useUebenUebungsStore((s) => s.speichereZwischenstandById)
   const uebenToggleUnsicherById = useUebenUebungsStore((s) => s.toggleUnsicherById)
 
   if (mode === 'pruefung') {
     return {
       antwort: pruefungAntwort,
       onAntwort: (a) => pruefungSetAntwort(frageId, a),
+      speichereZwischenstand: null, // Im Prüfungsmodus nicht nötig — onAntwort speichert ohne Korrektur
       disabled: pruefungAbgegeben,
       feedbackSichtbar: false,
       korrekt: null,
@@ -41,13 +45,14 @@ export function useFrageAdapter(frageId: string): FrageAdapterResult {
     }
   }
 
-  const antwort = uebenSession?.antworten[frageId] ?? null
+  const antwort = uebenSession?.antworten[frageId] ?? uebenSession?.zwischenstande?.[frageId] ?? null
   const korrekt = uebenSession?.ergebnisse[frageId] ?? uebenLetzteKorrekt
   const istBeantwortet = frageId in (uebenSession?.antworten ?? {})
 
   return {
     antwort,
     onAntwort: (a) => uebenBeantworteById(frageId, a),
+    speichereZwischenstand: (a) => uebenSpeichereZwischenstandById(frageId, a),
     disabled: istBeantwortet,
     feedbackSichtbar: uebenFeedbackSichtbar,
     korrekt: korrekt ?? null,

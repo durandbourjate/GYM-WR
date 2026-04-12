@@ -214,10 +214,10 @@ export default function AppShell({ children, onExamLabHome, onModusWechsel }: Pr
           lernziele={lernziele}
           fortschritte={fortschritte}
           onSchliessen={() => setLernzieleOffen(false)}
-          onThemaUeben={(_thema) => {
+          onThemaUeben={(thema) => {
             setLernzieleOffen(false)
+            useUebenNavigationStore.getState().setDeepLinkThema(thema)
             navigiere('dashboard')
-            // TODO: Thema im Dashboard filtern
           }}
         />
       )}

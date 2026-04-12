@@ -16,6 +16,7 @@ import type { MonitoringDaten, PruefungsNachricht } from '../../../types/monitor
 import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage } from '../../../types/fragen.ts'
 import LPHeader from '../LPHeader.tsx'
+import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
 import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
 import type { PruefungsConfig } from '../../../types/pruefung'
@@ -95,6 +96,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const [daten, setDaten] = useState<MonitoringDaten | null>(null)
   const [zeigFragenbank, setZeigFragenbank] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
+  const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
   const [autoRefresh, setAutoRefresh] = useState(true)
 
@@ -388,8 +390,9 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
             )}
           </>
         }
-        onFragensammlung={() => { setZeigHilfe(false); setZeigFragenbank(!zeigFragenbank) }}
-        onHilfe={() => { setZeigFragenbank(false); setZeigHilfe(!zeigHilfe) }}
+        onFragensammlung={() => { setZeigHilfe(false); setZeigEinstellungen(false); setZeigFragenbank(!zeigFragenbank) }}
+        onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
+        onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
         fragensammlungOffen={zeigFragenbank}
         hilfeOffen={zeigHilfe}
       />
@@ -630,6 +633,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       {/* Hilfe Overlay */}
       {zeigHilfe && (
         <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />
+      )}
+
+      {/* Einstellungen Overlay */}
+      {zeigEinstellungen && (
+        <EinstellungenPanel onSchliessen={() => setZeigEinstellungen(false)} />
       )}
     </div>
   )

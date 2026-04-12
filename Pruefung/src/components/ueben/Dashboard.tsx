@@ -164,6 +164,18 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
 
   const verfuegbareFaecher = useMemo(() => Object.keys(themenMap).sort(), [themenMap])
 
+  // Lernziele-Deep-Link: Wenn aus LernzieleAkkordeon ein Thema gewählt wurde
+  const deepLinkThema = useUebenNavigationStore((s) => s.deepLinkThema)
+  useEffect(() => {
+    if (!deepLinkThema || laden || alleFragen.length === 0) return
+    const gefunden = Object.values(themenMap).flat().find(t => t.thema === deepLinkThema)
+    if (gefunden) {
+      setAktiverFach(gefunden.fach)
+      setAktivesThema(gefunden.thema)
+    }
+    useUebenNavigationStore.getState().setDeepLinkThema(null)
+  }, [deepLinkThema, laden, alleFragen.length, themenMap])
+
   // Sichtbare Themen (abhängig vom Fach-Filter + Sichtbarkeitsfilter)
   const sichtbareThemenListe = useMemo(() => {
     const alleFachThemen = aktiverFach ? (themenMap[aktiverFach] || []) : Object.values(themenMap).flat()
@@ -174,11 +186,11 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     // Wenn "Alle Themen anzeigen" aktiv → alles zeigen
     if (alleThemenAnzeigen) return alleFachThemen
 
-    // Nur aktive + abgeschlossene Themen anzeigen, Fragen nach aktiven Unterthemen filtern
+    // Aktive + abgeschlossene + gesperrte Themen anzeigen (gesperrte mit Overlay)
     let gefiltert = alleFachThemen
       .filter(info => {
         const status = getStatus(info.fach, info.thema)
-        return status === 'aktiv' || status === 'abgeschlossen'
+        return status === 'aktiv' || status === 'abgeschlossen' || status === 'nicht_freigeschaltet'
       })
       .map(info => {
         // Unterthemen-Filter: Wenn nur bestimmte Unterthemen aktiv → Fragen filtern

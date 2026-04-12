@@ -12,16 +12,20 @@ export type UebenScreenTyp =
 interface UebenNavigationState {
   aktuellerScreen: UebenScreenTyp
   screenHistory: UebenScreenTyp[]
+  /** Thema das vom Lernziele-Akkordeon als Deep Link gesetzt wurde */
+  deepLinkThema: string | null
 
   navigiere: (screen: UebenScreenTyp) => void
   zurueck: () => void
   kannZurueck: () => boolean
   reset: () => void
+  setDeepLinkThema: (thema: string | null) => void
 }
 
 export const useUebenNavigationStore = create<UebenNavigationState>((set, get) => ({
   aktuellerScreen: 'login',
   screenHistory: [],
+  deepLinkThema: null,
 
   navigiere: (screen) => {
     const { aktuellerScreen } = get()
@@ -44,5 +48,7 @@ export const useUebenNavigationStore = create<UebenNavigationState>((set, get) =
 
   kannZurueck: () => get().screenHistory.length > 0,
 
-  reset: () => set({ aktuellerScreen: 'login', screenHistory: [] }),
+  reset: () => set({ aktuellerScreen: 'login', screenHistory: [], deepLinkThema: null }),
+
+  setDeepLinkThema: (thema) => set({ deepLinkThema: thema }),
 }))

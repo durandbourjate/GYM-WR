@@ -196,7 +196,7 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
             <AdminDashboard onZuUeben={() => navigiere('dashboard')} />
           )}
 
-          {aktuellerScreen === 'ergebnis' && (
+          {(aktuellerScreen === 'ergebnis' || (session?.beendet && aktuellerScreen === 'uebung')) && (
             <Zusammenfassung
               onZurueck={() => {
                 useUebenUebungsStore.setState({ session: null })

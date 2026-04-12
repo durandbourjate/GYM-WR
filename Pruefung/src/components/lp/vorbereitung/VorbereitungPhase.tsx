@@ -350,7 +350,7 @@ export default function VorbereitungPhase({ config, onTeilnehmerGesetzt, onWeite
       )}
 
       {/* Manuell hinzufügen (wenn noch kein SuS gewählt) */}
-      {teilnehmer.length === 0 && ladeStatus === 'fertig' && (
+      {teilnehmer.length === 0 && (
         <TeilnehmerListe
           teilnehmer={[]}
           onToggle={() => {}}

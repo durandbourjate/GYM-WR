@@ -74,7 +74,7 @@ function vonAntwortER(a?: Antwort): ERFeldEingabe {
 
 /* ─── Hauptkomponente ─── */
 export default function BilanzERFrage({ frage }: Props) {
-  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const { antwort, onAntwort, speichereZwischenstand, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const gespeichert = antwort?.typ === 'bilanzstruktur' ? antwort : undefined
   const zeigeBilanz = frage.modus === 'bilanz' || frage.modus === 'beides'
   const zeigeER = frage.modus === 'erfolgsrechnung' || frage.modus === 'beides'
@@ -94,7 +94,15 @@ export default function BilanzERFrage({ frage }: Props) {
   const speichern = (b: BilanzEingabe | null, e: ERFeldEingabe | null) => {
     setBilanzLokal(b)
     setERLokal(e)
-    onAntwort(zuAntwort(b, e))
+    if (speichereZwischenstand) {
+      speichereZwischenstand(zuAntwort(b, e))
+    } else {
+      onAntwort(zuAntwort(b, e))
+    }
+  }
+
+  const antwortPruefen = () => {
+    onAntwort(zuAntwort(bilanz, er))
   }
   const readOnly = disabled
   const verfuegbar = (frage.kontenMitSaldi ?? []).map(k => k.kontonummer)
@@ -111,6 +119,17 @@ export default function BilanzERFrage({ frage }: Props) {
       <KontenTabelle konten={frage.kontenMitSaldi} />
       {zeigeBilanz && bilanz && <BilanzUI bilanz={bilanz} onChange={b => speichern(b, er)} readOnly={readOnly} konten={verfuegbar} />}
       {zeigeER && er && <ERUI er={er} onChange={e => speichern(bilanz, e)} readOnly={readOnly} konten={verfuegbar} />}
+
+      {/* Prüfen-Button (nur Üben-Modus, wenn noch nicht beantwortet) */}
+      {speichereZwischenstand && !disabled && (
+        <button
+          type="button"
+          onClick={antwortPruefen}
+          className="min-h-[48px] self-end px-6 py-2.5 rounded-xl bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 font-medium text-sm hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
+        >
+          Antwort prüfen
+        </button>
+      )}
 
       {/* Feedback (Üben-Modus) */}
       {feedbackSichtbar && korrekt !== null && (

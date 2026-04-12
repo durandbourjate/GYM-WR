@@ -30,6 +30,8 @@ export interface UebungsSession {
   score: number
   /** Freiwilliges Üben (gesperrtes Thema) — Fortschritt wird NICHT gespeichert */
   freiwillig?: boolean
+  /** Zwischenstände für Multi-Feld-Fragetypen (ohne Korrektur) */
+  zwischenstande?: Record<string, Antwort>
 }
 
 export interface SessionErgebnis {

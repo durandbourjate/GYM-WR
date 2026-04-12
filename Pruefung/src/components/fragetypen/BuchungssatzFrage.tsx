@@ -56,7 +56,7 @@ function vonAntwort(
 }
 
 export default function BuchungssatzFrage({ frage }: Props) {
-  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const { antwort, onAntwort, speichereZwischenstand, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   const gespeicherteAntwort =
     antwort?.typ === 'buchungssatz' ? antwort : undefined
@@ -74,7 +74,17 @@ export default function BuchungssatzFrage({ frage }: Props) {
 
   function aktualisiere(neueBuchungen: BuchungEingabe[]) {
     setBuchungenLokal(neueBuchungen)
-    onAntwort(zuAntwort(neueBuchungen))
+    // Im Üben-Modus nur Zwischenstand speichern (ohne Korrektur), im Prüfungsmodus direkt speichern
+    if (speichereZwischenstand) {
+      speichereZwischenstand(zuAntwort(neueBuchungen))
+    } else {
+      onAntwort(zuAntwort(neueBuchungen))
+    }
+  }
+
+  /** Explizite Abgabe im Üben-Modus (mit Korrektur) */
+  function antwortPruefen() {
+    onAntwort(zuAntwort(buchungen))
   }
 
   function feldAendern(buchungIdx: number, feld: keyof BuchungEingabe, wert: string) {
@@ -212,6 +222,17 @@ export default function BuchungssatzFrage({ frage }: Props) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Buchungssatz hinzufügen
+        </button>
+      )}
+
+      {/* Prüfen-Button (nur Üben-Modus, wenn noch nicht beantwortet) */}
+      {speichereZwischenstand && !disabled && (
+        <button
+          type="button"
+          onClick={antwortPruefen}
+          className="min-h-[48px] self-end px-6 py-2.5 rounded-xl bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 font-medium text-sm hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
+        >
+          Antwort prüfen
         </button>
       )}
 

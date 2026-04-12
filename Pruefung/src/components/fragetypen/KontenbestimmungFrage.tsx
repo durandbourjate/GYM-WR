@@ -28,7 +28,7 @@ function vonAntwort(
 }
 
 export default function KontenbestimmungFrage({ frage }: Props) {
-  const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const { antwort, onAntwort, speichereZwischenstand, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   const gespeicherteAntwort =
     antwort?.typ === 'kontenbestimmung' ? antwort : undefined
@@ -36,7 +36,16 @@ export default function KontenbestimmungFrage({ frage }: Props) {
   const aufgabenAntworten = vonAntwort(gespeicherteAntwort, frage.aufgaben ?? [])
 
   function aktualisiere(neueAufgaben: Record<string, AufgabeAntwort>) {
-    onAntwort({ typ: 'kontenbestimmung' as const, aufgaben: neueAufgaben })
+    const a = { typ: 'kontenbestimmung' as const, aufgaben: neueAufgaben }
+    if (speichereZwischenstand) {
+      speichereZwischenstand(a)
+    } else {
+      onAntwort(a)
+    }
+  }
+
+  function antwortPruefen() {
+    onAntwort({ typ: 'kontenbestimmung' as const, aufgaben: aufgabenAntworten })
   }
 
   function aendereAntwort(
@@ -185,6 +194,17 @@ export default function KontenbestimmungFrage({ frage }: Props) {
           </tbody>
         </table>
       </div>
+
+      {/* Prüfen-Button (nur Üben-Modus, wenn noch nicht beantwortet) */}
+      {speichereZwischenstand && !disabled && (
+        <button
+          type="button"
+          onClick={antwortPruefen}
+          className="min-h-[48px] self-end px-6 py-2.5 rounded-xl bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 font-medium text-sm hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
+        >
+          Antwort prüfen
+        </button>
+      )}
 
       {/* Feedback (Üben-Modus) */}
       {feedbackSichtbar && korrekt !== null && (

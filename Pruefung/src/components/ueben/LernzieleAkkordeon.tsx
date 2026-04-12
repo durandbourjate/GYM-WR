@@ -150,13 +150,16 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-slate-400">{totalLZ} LZ</span>
                               {!themaOffen && (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); onThemaUeben(thema) }}
-                                  className="text-xs px-2 py-0.5 rounded text-white transition-colors"
+                                <span
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={(e) => { e.stopPropagation(); e.preventDefault(); onThemaUeben(thema) }}
+                                  onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onThemaUeben(thema) } }}
+                                  className="text-xs px-2 py-0.5 rounded text-white transition-colors cursor-pointer"
                                   style={{ backgroundColor: farbe }}
                                 >
                                   Fragen ▶
-                                </button>
+                                </span>
                               )}
                               <span className="text-slate-400">{themaOffen ? '▲' : '▼'}</span>
                             </div>
