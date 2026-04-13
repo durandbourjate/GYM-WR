@@ -6,6 +6,28 @@
 
 ---
 
+## Session 100 — Bundle 3: Übungs-Themen UX (13.04.2026)
+
+### Stand
+Auf `feature/bundle3-uebungs-themen-ux`. tsc ✅ | 226 Tests ✅ | Build ✅. Browser-Test ausstehend.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| N14 | **Übungs-Einstellungen ins globale EinstellungenPanel** — Neuer Tab "Übungen" (sichtbar wenn aktiveGruppe). AdminDashboard hat nur noch 3 Tabs (Übersicht, Aufträge, Themen). | EinstellungenPanel.tsx, AdminDashboard.tsx, lpUIStore.ts |
+| N9 | **Konfigurierbares Limit aktuelle Themen** — `maxAktiveThemen` in GruppenEinstellungen (Default 5). Slider in AllgemeinTab (1–20). FIFO-Logik liest dynamisch aus settingsStore. `MAX_AKTIVE_THEMEN`-Konstante entfernt. | settings.ts, themenSichtbarkeit.ts, themenSichtbarkeitStore.ts, AdminThemensteuerung.tsx, AllgemeinTab.tsx |
+| N12 | **LP-Status-Differenzierung** — Nicht freigeschaltete Themen: opacity 70% + 🔒-Icon | AdminThemensteuerung.tsx |
+| N11 | **SuS-Sortierung mit Sektionen** — Aktuelle Themen zuoberst (fachübergreifend), dann Fach-Sektionen. Sortier-Toggle (alphabetisch / zuletzt geübt). localStorage-Persist. "Weitere Themen"-Sektion für nicht freigeschaltete. | Dashboard.tsx |
+
+### Kontext
+- **Spec:** `docs/superpowers/specs/2026-04-13-bundle3-uebungs-themen-ux-design.md`
+- **Plan:** `docs/superpowers/plans/2026-04-13-bundle3-uebungs-themen-ux.md`
+- **Edge Case maxAktiveThemen:** Wenn Limit unter aktuelle Anzahl gesenkt wird, bleiben bestehende Themen aktiv. Limit greift erst bei nächster Aktivierung.
+- **Nächste Session:** Browser-Test, dann Merge zu main. Danach Bundle 4 (Layout-Umbau Durchführen) oder eines der anderen offenen Bundles.
+
+---
+
 ## Session 99 — Bundle 2: Favoriten-Redesign (13.04.2026)
 
 ### Stand
@@ -155,7 +177,7 @@ Auf `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 |--------|--------|--------|
 | **1** | Quick Wins (N3, N5, N6, N10, N13, N17, N18) | ✅ S98 |
 | **2** | Favoriten-Redesign (N1 dynamische Struktur, N2 Tab + Home) | ✅ S99 |
-| **3** | Übungs-Themen UX (N9 max 5 aktuelle, N11 SuS-Sortierung, N12 LP-Status, N14 Einstellungen verschieben) | Offen |
+| **3** | Übungs-Themen UX (N9 max 5 aktuelle, N11 SuS-Sortierung, N12 LP-Status, N14 Einstellungen verschieben) | ✅ S100 |
 | **4** | Layout-Umbau Durchführen (N15 Tabs+Suche+CTA, N16 Buttons konsistent) | Offen |
 | **5** | Bildfragen-Editor (N7 violette Pins/Zonen, N19 Bild-Persistenz) | Offen |
 | **6** | KI-UI (N20 Buttons/Farben/Cursor) | Offen |
