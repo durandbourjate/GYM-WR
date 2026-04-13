@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../packages/shared/src";
 
 /* KaTeX: MathML-Fallback verstecken (bevor CDN-CSS geladen ist) */
 .katex-mathml {

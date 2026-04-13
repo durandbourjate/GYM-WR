@@ -163,17 +163,17 @@ interface TypEditorDispatcherProps {
   sortTeilpunkte: boolean
   setSortTeilpunkte: (v: boolean) => void
 
+  // Gemeinsam: Bild-URL für alle Bild-Fragetypen
+  bildUrl: string
+  setBildUrl: (v: string) => void
+
   // Hotspot
-  hsBildUrl: string
-  setHsBildUrl: (v: string) => void
   hsBereiche: HotspotBereich[]
   setHsBereiche: React.Dispatch<React.SetStateAction<HotspotBereich[]>>
   hsMehrfachauswahl: boolean
   setHsMehrfachauswahl: (v: boolean) => void
 
   // Bildbeschriftung
-  bbBildUrl: string
-  setBbBildUrl: (v: string) => void
   bbBeschriftungen: BildbeschriftungLabel[]
   setBbBeschriftungen: React.Dispatch<React.SetStateAction<BildbeschriftungLabel[]>>
 
@@ -182,8 +182,6 @@ interface TypEditorDispatcherProps {
   setAudioMaxDauer: (v: number | undefined) => void
 
   // DragDrop Bild
-  ddBildUrl: string
-  setDdBildUrl: (v: string) => void
   ddZielzonen: DragDropBildZielzone[]
   setDdZielzonen: React.Dispatch<React.SetStateAction<DragDropBildZielzone[]>>
   ddLabels: string[]
@@ -744,8 +742,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
 
       {typ === 'hotspot' && (
         <HotspotEditor
-          bildUrl={props.hsBildUrl}
-          setBildUrl={props.setHsBildUrl}
+          bildUrl={props.bildUrl}
+          setBildUrl={props.setBildUrl}
           bereiche={props.hsBereiche}
           setBereiche={props.setHsBereiche}
           mehrfachauswahl={props.hsMehrfachauswahl}
@@ -755,8 +753,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
 
       {typ === 'bildbeschriftung' && (
         <BildbeschriftungEditor
-          bildUrl={props.bbBildUrl}
-          setBildUrl={props.setBbBildUrl}
+          bildUrl={props.bildUrl}
+          setBildUrl={props.setBildUrl}
           beschriftungen={props.bbBeschriftungen}
           setBeschriftungen={props.setBbBeschriftungen}
         />
@@ -771,8 +769,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
 
       {typ === 'dragdrop_bild' && (
         <DragDropBildEditor
-          bildUrl={props.ddBildUrl}
-          setBildUrl={props.setDdBildUrl}
+          bildUrl={props.bildUrl}
+          setBildUrl={props.setBildUrl}
           zielzonen={props.ddZielzonen}
           setZielzonen={props.setDdZielzonen}
           labels={props.ddLabels}

@@ -394,10 +394,16 @@ export default function SharedFragenEditor({
     frage?.typ === 'sortierung' ? (frage as SortierungFrage).teilpunkte : true
   )
 
+  // Gemeinsamer Bild-State für alle Bild-Fragetypen (Hotspot, Bildbeschriftung, DragDrop-Bild)
+  const BILD_FRAGETYPEN = ['hotspot', 'bildbeschriftung', 'dragdrop_bild'] as const
+  const [bildUrl, setBildUrl] = useState(() => {
+    if (frage && (BILD_FRAGETYPEN as readonly string[]).includes(frage.typ)) {
+      return (frage as { bildUrl?: string }).bildUrl ?? ''
+    }
+    return ''
+  })
+
   // Hotspot-spezifisch
-  const [hsBildUrl, setHsBildUrl] = useState(
-    frage?.typ === 'hotspot' ? (frage as HotspotFrage).bildUrl : ''
-  )
   const [hsBereiche, setHsBereiche] = useState<HotspotBereich[]>(
     frage?.typ === 'hotspot' ? (frage as HotspotFrage).bereiche ?? [] : []
   )
@@ -406,9 +412,6 @@ export default function SharedFragenEditor({
   )
 
   // Bildbeschriftung-spezifisch
-  const [bbBildUrl, setBbBildUrl] = useState(
-    frage?.typ === 'bildbeschriftung' ? (frage as BildbeschriftungFrage).bildUrl : ''
-  )
   const [bbBeschriftungen, setBbBeschriftungen] = useState<BildbeschriftungLabel[]>(
     frage?.typ === 'bildbeschriftung' ? (frage as BildbeschriftungFrage).beschriftungen ?? [] : []
   )
@@ -419,9 +422,6 @@ export default function SharedFragenEditor({
   )
 
   // DragDrop-Bild-spezifisch
-  const [ddBildUrl, setDdBildUrl] = useState(
-    frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).bildUrl : ''
-  )
   const [ddZielzonen, setDdZielzonen] = useState<DragDropBildZielzone[]>(
     frage?.typ === 'dragdrop_bild' ? (frage as DragDropBildFrage).zielzonen ?? [] : []
   )
@@ -633,13 +633,13 @@ export default function SharedFragenEditor({
       case 'sortierung':
         typDaten = { typ: 'sortierung', fragetext, elemente: sortElemente, teilpunkte: sortTeilpunkte }; break
       case 'hotspot':
-        typDaten = { typ: 'hotspot', fragetext, bildUrl: hsBildUrl, bereiche: hsBereiche, mehrfachauswahl: hsMehrfachauswahl }; break
+        typDaten = { typ: 'hotspot', fragetext, bildUrl, bereiche: hsBereiche, mehrfachauswahl: hsMehrfachauswahl }; break
       case 'bildbeschriftung':
-        typDaten = { typ: 'bildbeschriftung', fragetext, bildUrl: bbBildUrl, beschriftungen: bbBeschriftungen }; break
+        typDaten = { typ: 'bildbeschriftung', fragetext, bildUrl, beschriftungen: bbBeschriftungen }; break
       case 'audio':
         typDaten = { typ: 'audio', fragetext, maxDauerSekunden: audioMaxDauer }; break
       case 'dragdrop_bild':
-        typDaten = { typ: 'dragdrop_bild', fragetext, bildUrl: ddBildUrl, zielzonen: ddZielzonen, labels: ddLabels }; break
+        typDaten = { typ: 'dragdrop_bild', fragetext, bildUrl, zielzonen: ddZielzonen, labels: ddLabels }; break
       case 'code':
         typDaten = { typ: 'code', fragetext, sprache: codeSprache, starterCode: codeStarterCode, musterLoesungCode: codeMusterLoesungCode }; break
       case 'formel':
@@ -833,13 +833,11 @@ export default function SharedFragenEditor({
             pdfMusterloesungAnnotationen={pdfMusterloesungAnnotationen} setPdfMusterloesungAnnotationen={setPdfMusterloesungAnnotationen}
             sortElemente={sortElemente} setSortElemente={setSortElemente}
             sortTeilpunkte={sortTeilpunkte} setSortTeilpunkte={setSortTeilpunkte}
-            hsBildUrl={hsBildUrl} setHsBildUrl={setHsBildUrl}
+            bildUrl={bildUrl} setBildUrl={setBildUrl}
             hsBereiche={hsBereiche} setHsBereiche={setHsBereiche}
             hsMehrfachauswahl={hsMehrfachauswahl} setHsMehrfachauswahl={setHsMehrfachauswahl}
-            bbBildUrl={bbBildUrl} setBbBildUrl={setBbBildUrl}
             bbBeschriftungen={bbBeschriftungen} setBbBeschriftungen={setBbBeschriftungen}
             audioMaxDauer={audioMaxDauer} setAudioMaxDauer={setAudioMaxDauer}
-            ddBildUrl={ddBildUrl} setDdBildUrl={setDdBildUrl}
             ddZielzonen={ddZielzonen} setDdZielzonen={setDdZielzonen}
             ddLabels={ddLabels} setDdLabels={setDdLabels}
             codeSprache={codeSprache} setCodeSprache={setCodeSprache}
