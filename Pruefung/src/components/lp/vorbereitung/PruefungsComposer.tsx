@@ -326,7 +326,6 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
           : (config ? 'Prüfung bearbeiten' : 'Neue Prüfung')
         }
         zurueck={onZurueck}
-        onHome={onZurueck}
         breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
         statusText={
           speicherStatus === 'erfolg' ? 'Gespeichert ✓'

@@ -409,7 +409,6 @@ export default function LPStartseite() {
           untertitel={user ? `${user.name} · Lehrperson` : undefined}
           modus={modus}
           onModusChange={setModus}
-          onHome={handleZurueck}
           aktionsButtons={
             modus === 'pruefung' ? (
               <button onClick={handleNeue} className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">

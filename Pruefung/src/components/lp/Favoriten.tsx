@@ -18,7 +18,7 @@ export default function Favoriten() {
     [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung),
   [rawFavoriten])
 
-  const { setModus, navigiereZuEinstellungen, navigiereZuFavoriten } = useLPNavigation()
+  const { setModus, navigiereZuEinstellungen } = useLPNavigation()
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
 
@@ -75,7 +75,6 @@ export default function Favoriten() {
         untertitel={user ? `${user.name} · Lehrperson` : undefined}
         modus="pruefung"
         onModusChange={(m) => setModus(m as 'pruefung' | 'uebung' | 'fragensammlung')}
-        onHome={navigiereZuFavoriten}
         aktionsButtons={null}
         onFragensammlung={() => setModus('fragensammlung')}
         onEinstellungen={() => navigiereZuEinstellungen()}
