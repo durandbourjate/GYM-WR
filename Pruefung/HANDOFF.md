@@ -9,7 +9,7 @@
 ## Session 101 — Bundle 4: Layout-Umbau Durchführen (13.04.2026)
 
 ### Stand
-Auf `feature/bundle4-layout-umbau`. tsc ✅ | 226 Tests ✅ | Build ✅. Browser-Test ausstehend.
+Auf `main`. tsc ✅ | 226 Tests ✅ | Build ✅. Browser-Test ✅ (Demo-Modus, Prüfen + Üben + Fragensammlung).
 
 ### Erledigte Arbeiten
 
