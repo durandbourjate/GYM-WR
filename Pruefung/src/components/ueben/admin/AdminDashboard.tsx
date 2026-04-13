@@ -5,7 +5,6 @@ import AdminKindDetail from './AdminKindDetail'
 import AdminThemaDetail from './AdminThemaDetail'
 import AdminAuftraege from './AdminAuftraege'
 import AdminThemensteuerung from './AdminThemensteuerung'
-import AdminSettings from './AdminSettings'
 // AdminFragenbank entfernt — Fragenbank ist über LPHeader erreichbar
 
 interface AdminDashboardProps {
@@ -17,7 +16,6 @@ type AdminAnsicht =
   | { typ: 'uebersicht' }
   | { typ: 'auftraege' }
   | { typ: 'themensteuerung' }
-  | { typ: 'einstellungen' }
   | { typ: 'kind'; email: string; name: string }
   | { typ: 'thema'; email: string; name: string; fach: string; thema: string }
 
@@ -33,7 +31,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
     }
   }
 
-  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'auftraege' || ansicht.typ === 'themensteuerung' || ansicht.typ === 'einstellungen'
+  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'auftraege' || ansicht.typ === 'themensteuerung'
 
   return (
     <div>
@@ -74,12 +72,6 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
             >
               Themen
             </button>
-            <button
-              onClick={() => setAnsicht({ typ: 'einstellungen' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'einstellungen' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-            >
-              Einstellungen
-            </button>
           </div>
         </div>
       )}
@@ -101,7 +93,6 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
         )}
         {ansicht.typ === 'auftraege' && <AdminAuftraege />}
         {ansicht.typ === 'themensteuerung' && <AdminThemensteuerung />}
-        {ansicht.typ === 'einstellungen' && <AdminSettings />}
         {ansicht.typ === 'thema' && (
           <AdminThemaDetail
             email={ansicht.email}
