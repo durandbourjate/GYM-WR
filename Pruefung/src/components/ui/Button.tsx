@@ -1,10 +1,12 @@
 import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: 'primary' | 'secondary' | 'danger' | 'ghost'
+  variant: 'primary' | 'secondary' | 'danger' | 'ghost' | 'ki'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   icon?: ReactNode
+  /** KI-Variant: aktiv (blau) oder inaktiv (wie secondary). Default: true */
+  kiAktiv?: boolean
 }
 
 const VARIANT_CLASSES = {
@@ -13,6 +15,16 @@ const VARIANT_CLASSES = {
   danger: 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600',
   ghost: 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800',
 } as const
+
+/** Variant-Klassen ermitteln — ki-Variant haengt von kiAktiv ab */
+function getVariantClasses(variant: ButtonProps['variant'], kiAktiv: boolean): string {
+  if (variant === 'ki') {
+    return kiAktiv
+      ? 'border border-blue-300 dark:border-blue-500 bg-blue-50 dark:bg-[#1e2a3f] text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-[#253650]'
+      : VARIANT_CLASSES.secondary
+  }
+  return VARIANT_CLASSES[variant]
+}
 
 const SIZE_CLASSES = {
   sm: 'px-3 py-1.5 text-xs min-h-[36px]',
@@ -28,6 +40,7 @@ export default function Button({
   children,
   disabled,
   className = '',
+  kiAktiv = true,
   ...rest
 }: ButtonProps) {
   return (
@@ -35,7 +48,7 @@ export default function Button({
       disabled={disabled || loading}
       className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed
-        ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+        ${getVariantClasses(variant, kiAktiv)} ${SIZE_CLASSES[size]} ${className}`}
       {...rest}
     >
       {loading ? (
