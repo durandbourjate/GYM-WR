@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Weiterleitung...</title>
+  <script>
+    (function() {
+      var l = window.location;
+      var base = '/GYM-WR-DUY/ExamLab/';
+      // Nur ExamLab-Pfade umleiten (nicht Unterrichtsplaner, Uebungen etc.)
+      if (l.pathname.startsWith(base) && l.pathname !== base) {
+        var route = l.pathname.slice(base.length);
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          base + '?p=/' + encodeURIComponent(route) +
+          (l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '') +
+          l.hash
+        );
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Seite nicht gefunden</h1>
+  <p><a href="/GYM-WR-DUY/">Zur Startseite</a></p>
+</body>
+</html>

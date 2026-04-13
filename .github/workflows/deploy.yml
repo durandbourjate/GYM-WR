@@ -69,6 +69,8 @@ jobs:
           # Redirects: alte URLs → /ExamLab/
           echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Pruefung/index.html
           echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Lernplattform/index.html
+          # 404.html für BrowserRouter SPA-Routing (nur ExamLab-Pfade)
+          cp 404.html _site/404.html 2>/dev/null || true
           # Clean up macOS artifacts
           find _site -name '.DS_Store' -delete
 
