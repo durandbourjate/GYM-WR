@@ -6,6 +6,65 @@
 
 ---
 
+## Session 96 — A1: Deep Links, Home-Startseite & React Router (13.04.2026)
+
+### Stand
+Auf Branch `feature/a1-deep-links-router`. tsc ✅ | 216 Tests ✅ | Build ✅. **Browser-Test ausstehend.**
+
+### Kontext
+Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiertes LP-Routing wurde durch React Router (BrowserRouter) ersetzt. Neue Home-Startseite für LP mit Favoriten, offenen Korrekturen, anstehenden/letzten Prüfungen und Übungen. Erweitertes Favoriten-System mit App-Orten + Drag & Drop Sortierung.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| **Phase 1 — React Router Foundation** | |
+| P1.1 | `react-router-dom` installiert | package.json |
+| P1.2 | `404.html` für GitHub Pages BrowserRouter + Decoder in index.html | 404.html, index.html, deploy.yml |
+| P1.3 | BrowserRouter-Shell mit AuthGuard + Hash-Migration | router/Router.tsx, router/AuthGuard.tsx, router/hashMigration.ts, main.tsx |
+| **Phase 2 — LP Hash-Routing ablösen** | |
+| P2 | `useLPNavigation` Hook (useNavigate-basiert), `useLPRouteSync` Hook (URL→Store), Hash-Funktionen aus lpNavigationStore entfernt | hooks/useLPNavigation.ts, hooks/useLPRouteSync.ts, store/lpNavigationStore.ts, LPStartseite.tsx, LPHeader.tsx |
+| **Phase 3 — Home + Favoriten** | |
+| P3.1 | Neuer `favoritenStore` mit erweitertem Favorit-Modell (typ/ziel/label/sortierung), Migration von alten AppOrt[], 7 Tests | store/favoritenStore.ts + .test.ts |
+| P3.2 | Home-Dashboard mit 5 Sektionen (Favoriten, offene Korrekturen, anstehende/letzte Prüfungen/Übungen) | components/lp/Home.tsx, router/Router.tsx |
+| P3.3 | FavoritenTab in Einstellungen mit @dnd-kit Drag & Drop Sortierung | components/settings/FavoritenTab.tsx, EinstellungenPanel.tsx |
+
+### Neue Dateien (9)
+- `404.html` — GitHub Pages SPA-Redirect (Repo-Root)
+- `src/router/Router.tsx` — BrowserRouter mit LP/SuS-Routes
+- `src/router/AuthGuard.tsx` — Rollen-basierter Route-Guard
+- `src/router/hashMigration.ts` — Einmalige #/... → /... Migration
+- `src/hooks/useLPNavigation.ts` — LP-Navigation via useNavigate()
+- `src/hooks/useLPRouteSync.ts` — URL → lpNavigationStore Sync
+- `src/store/favoritenStore.ts` — Erweiterter Favoriten-Store
+- `src/components/lp/Home.tsx` — Home-Dashboard
+- `src/components/settings/FavoritenTab.tsx` — Favoriten-Verwaltung
+
+### Geänderte Dateien (7)
+- `Pruefung/index.html` — 404-Decoder + CSP unsafe-inline
+- `Pruefung/src/main.tsx` — AppRouter statt App
+- `Pruefung/src/store/lpNavigationStore.ts` — Hash-Funktionen entfernt, EinstellungenTab + 'favoriten'
+- `Pruefung/src/components/lp/LPStartseite.tsx` — hashchange-Listener → useLPRouteSync, useLPNavigation
+- `Pruefung/src/components/lp/LPHeader.tsx` — FavoritenDropdown: Hash → Pfad-URLs
+- `Pruefung/src/components/settings/EinstellungenPanel.tsx` — FavoritenTab hinzugefügt
+- `.github/workflows/deploy.yml` — 404.html kopieren
+
+### Noch offen (Phase 4+5)
+
+| # | Thema | Status |
+|---|-------|--------|
+| P4 | **SuS-Üben Routes migrieren** | Offen — Eigenständige Erweiterung, nicht blockierend |
+| P5.1 | **lpNavigationStore → lpUIStore umbenennen** | Offen — Cleanup |
+| P5.2 | **?ids= Legacy entfernen** | Offen — Multi-Monitoring jetzt unter /pruefung/monitoring |
+| P5.3 | **Route-Tests** | Offen — Unit-Tests für Routing/Auth |
+| BT | **Browser-Test** | ⬜ Alle LP-Routes testen, Home-Dashboard, Favoriten, Back/Forward |
+
+### Manuelle Schritte nach Merge
+- ✅ Apps Script: Kein neues Deploy nötig (nur Frontend-Änderungen)
+- ⚠️ Bestehende Lesezeichen mit `#/pruefung/...` werden automatisch migriert (hashMigration.ts)
+
+---
+
 ## Session 95 — FiBu-Musterlösungen repariert (13.04.2026)
 
 ### Stand
