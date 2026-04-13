@@ -62,7 +62,7 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
         setFehler(`Upload fehlgeschlagen: ${result.error}`)
       } else if (result?.driveFileId) {
         // Drive-Preview-URL generieren
-        const previewUrl = `https://drive.google.com/uc?id=${result.driveFileId}&export=view`
+        const previewUrl = `https://lh3.googleusercontent.com/d/${result.driveFileId}`
         setBildUrl(previewUrl)
         setBildDriveFileId?.(result.driveFileId)
       } else {

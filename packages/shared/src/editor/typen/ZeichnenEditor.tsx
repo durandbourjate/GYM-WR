@@ -103,7 +103,7 @@ export default function ZeichnenEditor({
         setUploadFehler(ergebnis && 'error' in ergebnis ? `Upload fehlgeschlagen: ${ergebnis.error}` : 'Upload fehlgeschlagen. Bitte erneut versuchen.')
         return
       }
-      const url = `https://drive.google.com/uc?id=${ergebnis.driveFileId}&export=view`
+      const url = `https://lh3.googleusercontent.com/d/${ergebnis.driveFileId}`
       const neueConfig: CanvasConfig = {
         ...canvasConfig,
         hintergrundbild: url,
@@ -163,7 +163,7 @@ export default function ZeichnenEditor({
       if (!services.istUploadVerfuegbar() || !services.uploadAnhang) return
       const ergebnis = await services.uploadAnhang('zeichnen-musterloesung', datei)
       if (ergebnis && !('error' in ergebnis) && ergebnis.driveFileId) {
-        onMusterloesungBildChange(`https://drive.google.com/uc?id=${ergebnis.driveFileId}&export=view`)
+        onMusterloesungBildChange(`https://lh3.googleusercontent.com/d/${ergebnis.driveFileId}`)
       }
     } finally {
       setMusterUploadLaeuft(false)

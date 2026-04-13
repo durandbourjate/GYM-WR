@@ -78,6 +78,10 @@ export function parseVideoUrl(url: string): EmbedInfo | null {
 }
 
 // Drive-URLs für Medien
+export function driveImageUrl(driveFileId: string): string {
+  return `https://lh3.googleusercontent.com/d/${driveFileId}`
+}
+
 export function driveStreamUrl(driveFileId: string): string {
   return `https://drive.google.com/uc?id=${driveFileId}&export=download`
 }
