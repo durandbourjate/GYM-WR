@@ -5,7 +5,7 @@ import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDe
 import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 
-import type { EinstellungenTab } from '../../store/lpNavigationStore'
+import type { EinstellungenTab } from '../../store/lpUIStore'
 
 interface Props {
   onSchliessen: () => void

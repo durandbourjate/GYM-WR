@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useLPNavigationStore } from '../store/lpNavigationStore'
+import { useLPNavigationStore } from '../store/lpUIStore'
 
 /**
  * Synchronisiert die aktuelle URL in den lpNavigationStore.

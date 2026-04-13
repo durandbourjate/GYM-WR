@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
-import { useLPNavigationStore } from '../../store/lpNavigationStore.ts'
+import { useLPNavigationStore } from '../../store/lpUIStore.ts'
+import { useFavoritenStore, type Favorit } from '../../store/favoritenStore.ts'
 import ThemeToggle from '../ThemeToggle.tsx'
 import FeedbackButton from '../shared/FeedbackButton.tsx'
 import Tooltip from '../ui/Tooltip.tsx'
 import { APP_VERSION } from '../../version'
-import type { AppOrt } from '../../types/stammdaten.ts'
+
 
 type Modus = 'pruefung' | 'uebung' | 'fragensammlung'
 
@@ -164,10 +165,11 @@ export default function LPHeader({ titel, untertitel, zurueck, statusText, aktio
   )
 }
 
-/** Favoriten-Dropdown: Zeigt gespeicherte App-Orte mit Direktlinks */
+/** Favoriten-Dropdown: Zeigt gespeicherte Favoriten mit Direktlinks */
 function FavoritenDropdown() {
-  const favoriten = useLPNavigationStore(s => s.favoriten)
-  const toggleFavorit = useLPNavigationStore(s => s.toggleFavorit)
+  const favoriten = useFavoritenStore(s => s.favoriten)
+  const entferneFavorit = useFavoritenStore(s => s.entferneFavorit)
+  const sortiert = useMemo(() => [...favoriten].sort((a, b) => a.sortierung - b.sortierung), [favoriten])
   const [offen, setOffen] = useState(false)
   const [kopiert, setKopiert] = useState<string | null>(null)
   const ref = useRef<HTMLDivElement>(null)
@@ -182,43 +184,56 @@ function FavoritenDropdown() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [offen])
 
-  function kopiereLink(ort: AppOrt): void {
-    const pfad = ort.params.configId ? `/${ort.screen}/${ort.params.configId}` : `/${ort.screen}`
+  function pfadFuerFavorit(fav: Favorit): string {
+    if (fav.typ === 'ort') return fav.ziel.startsWith('/') ? fav.ziel : `/${fav.ziel}`
+    const screen = fav.typ === 'uebung' ? 'uebung' : fav.typ === 'frage' ? 'fragensammlung' : 'pruefung'
+    return `/${screen}/${fav.ziel}`
+  }
+
+  function kopiereLink(fav: Favorit): void {
+    const pfad = pfadFuerFavorit(fav)
     const url = `${window.location.origin}${import.meta.env.BASE_URL}${pfad.slice(1)}`
     navigator.clipboard.writeText(url).catch(() => {
       const input = document.createElement('input')
       input.value = url; document.body.appendChild(input); input.select()
       document.execCommand('copy'); document.body.removeChild(input)
     })
-    setKopiert(ort.id)
+    setKopiert(fav.ziel)
     setTimeout(() => setKopiert(null), 2000)
   }
 
-  function navigiereZu(ort: AppOrt): void {
-    // React Router Navigation via window.location (FavoritenDropdown hat keinen Router-Kontext)
-    const pfad = ort.params.configId ? `/${ort.screen}/${ort.params.configId}` : `/${ort.screen}`
+  function navigiereZu(fav: Favorit): void {
+    const pfad = pfadFuerFavorit(fav)
     window.location.pathname = `${import.meta.env.BASE_URL}${pfad.slice(1)}`
     setOffen(false)
   }
 
-  const anzeigeLabel = (ort: AppOrt): string => {
-    if (ort.titel) return ort.titel
-    const prefix = ort.screen === 'uebung' ? 'Übung' : ort.screen === 'fragensammlung' ? 'Fragensammlung' : 'Prüfung'
-    return `${prefix} ${ort.params.configId?.slice(0, 8) || ''}…`
+  const anzeigeLabel = (fav: Favorit): string => {
+    if (fav.label) return fav.label
+    if (fav.icon) return fav.icon
+    const prefix = fav.typ === 'uebung' ? 'Übung' : fav.typ === 'frage' ? 'Frage' : 'Prüfung'
+    return `${prefix} ${fav.ziel.slice(0, 8)}…`
+  }
+
+  const typIcon = (fav: Favorit): string => {
+    if (fav.typ === 'uebung') return '📝'
+    if (fav.typ === 'frage') return '📚'
+    if (fav.typ === 'ort') return '📌'
+    return '📋'
   }
 
   return (
     <div ref={ref} className="relative">
-      <Tooltip text={`Favoriten (${favoriten.length})`} position="bottom">
+      <Tooltip text={`Favoriten (${sortiert.length})`} position="bottom">
         <button
           onClick={() => setOffen(o => !o)}
           className={`px-2 py-1.5 text-sm rounded-lg transition-colors cursor-pointer ${
-            favoriten.length > 0
+            sortiert.length > 0
               ? 'text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'
               : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
           }`}
         >
-          {favoriten.length > 0 ? '⭐' : '☆'}
+          {sortiert.length > 0 ? '⭐' : '☆'}
         </button>
       </Tooltip>
 
@@ -226,40 +241,40 @@ function FavoritenDropdown() {
         <div className="absolute right-0 top-full mt-1 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-[70] overflow-hidden">
           <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-700">
             <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              Favoriten {favoriten.length > 0 && <span className="text-slate-400 font-normal">({favoriten.length})</span>}
+              Favoriten {sortiert.length > 0 && <span className="text-slate-400 font-normal">({sortiert.length})</span>}
             </h3>
           </div>
 
-          {favoriten.length === 0 ? (
+          {sortiert.length === 0 ? (
             <div className="px-4 py-6 text-center text-sm text-slate-400 dark:text-slate-500">
               Noch keine Favoriten. Klicke ☆ auf einer Prüfung oder Übung.
             </div>
           ) : (
             <div className="max-h-64 overflow-y-auto">
-              {favoriten.map(ort => (
+              {sortiert.map(fav => (
                 <div
-                  key={ort.id}
+                  key={fav.ziel}
                   className="flex items-center gap-2 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 group"
                 >
                   <button
-                    onClick={() => navigiereZu(ort)}
+                    onClick={() => navigiereZu(fav)}
                     className="flex-1 text-left text-sm text-slate-700 dark:text-slate-200 truncate cursor-pointer"
-                    title={anzeigeLabel(ort)}
+                    title={anzeigeLabel(fav)}
                   >
                     <span className="text-xs text-slate-400 dark:text-slate-500 mr-1.5">
-                      {ort.screen === 'uebung' ? '📝' : ort.screen === 'fragensammlung' ? '📚' : '📋'}
+                      {typIcon(fav)}
                     </span>
-                    {anzeigeLabel(ort)}
+                    {anzeigeLabel(fav)}
                   </button>
                   <button
-                    onClick={() => kopiereLink(ort)}
+                    onClick={() => kopiereLink(fav)}
                     className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                     title="Link kopieren"
                   >
-                    {kopiert === ort.id ? '✓' : '🔗'}
+                    {kopiert === fav.ziel ? '✓' : '🔗'}
                   </button>
                   <button
-                    onClick={() => toggleFavorit(ort)}
+                    onClick={() => entferneFavorit(fav.ziel)}
                     className="text-xs text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                     title="Entfernen"
                   >

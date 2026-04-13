@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import type { AppOrt } from '../types/stammdaten'
 
 export type LPModus = 'pruefung' | 'uebung' | 'fragensammlung'
 export type LPAnsicht = 'dashboard' | 'composer'
@@ -12,7 +11,7 @@ export interface BreadcrumbEintrag {
   aktion?: () => void
 }
 
-interface LPNavigationState {
+interface LPUIState {
   // Aktuelle Ansicht
   ansicht: LPAnsicht
   modus: LPModus
@@ -40,9 +39,6 @@ interface LPNavigationState {
   // Breadcrumb-Daten
   breadcrumbs: BreadcrumbEintrag[]
 
-  // Favoriten (Account-verknüpfte App-Orte)
-  favoriten: AppOrt[]
-
   // Aktuelle Config-ID (gesetzt per URL-Sync)
   aktiveConfigId: string | null
 
@@ -61,13 +57,6 @@ interface LPNavigationState {
   zurueck: () => void
   setBreadcrumbs: (crumbs: BreadcrumbEintrag[]) => void
 
-  // Favoriten
-  toggleFavorit: (ort: AppOrt) => void
-  toggleFavoritById: (id: string, screen?: 'pruefung' | 'uebung' | 'fragensammlung') => void
-  istFavorit: (id: string) => boolean
-  setFavoriten: (favoriten: AppOrt[]) => void
-  favoritenSyncMitBackend: () => void
-
   // Config-ID (wird per useLPRouteSync aus URL gesetzt)
   setAktiveConfigId: (id: string | null) => void
 
@@ -75,7 +64,6 @@ interface LPNavigationState {
 }
 
 const MODUS_KEY = 'lp-modus'
-const FAVORITEN_KEY = 'lp-favoriten'
 
 function gespeicherterModus(): LPModus {
   try {
@@ -85,40 +73,7 @@ function gespeicherterModus(): LPModus {
   return 'pruefung'
 }
 
-/** Lade Favoriten aus localStorage (Fallback / Offline) */
-function gespeicherteFavoriten(): AppOrt[] {
-  try {
-    const val = localStorage.getItem(FAVORITEN_KEY)
-    if (val) {
-      const parsed = JSON.parse(val)
-      if (Array.isArray(parsed)) {
-        // Migration: alte string[] → AppOrt[]
-        if (parsed.length > 0 && typeof parsed[0] === 'string') {
-          return (parsed as string[]).map(id => ({
-            id,
-            titel: '',
-            screen: 'pruefung' as const,
-            params: { configId: id },
-            erstelltAm: new Date().toISOString(),
-          }))
-        }
-        return parsed as AppOrt[]
-      }
-    }
-  } catch { /* ignore */ }
-  return []
-}
-
-function speichereFavoriten(favoriten: AppOrt[]): void {
-  try { localStorage.setItem(FAVORITEN_KEY, JSON.stringify(favoriten)) } catch { /* ignore */ }
-}
-
-/** Generiere eine kurze eindeutige ID */
-function generiereId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
-}
-
-export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
+export const useLPUIStore = create<LPUIState>((set, get) => ({
   ansicht: 'dashboard',
   modus: gespeicherterModus(),
   vorherigerModus: 'pruefung',
@@ -132,7 +87,6 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
   composerKey: 0,
   ansichtHistory: [],
   breadcrumbs: [],
-  favoriten: gespeicherteFavoriten(),
   aktiveConfigId: null,
 
   navigiereZuComposer: (titel, configId) => {
@@ -145,7 +99,6 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
         { label: titel },
       ],
     }))
-    // Keine Hash-Aktualisierung mehr — URL wird via React Router gesetzt
   },
 
   zurueckZumDashboard: () => {
@@ -199,55 +152,6 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
 
   setBreadcrumbs: (crumbs) => set({ breadcrumbs: crumbs }),
 
-  // --- Favoriten (AppOrt) ---
-
-  toggleFavorit: (ort: AppOrt) => {
-    const { favoriten } = get()
-    const existiert = favoriten.find(f => f.id === ort.id || (
-      f.screen === ort.screen && f.params.configId === ort.params.configId &&
-      (f.params.tab ?? '') === (ort.params.tab ?? '')
-    ))
-    const neueFavoriten = existiert
-      ? favoriten.filter(f => f.id !== (existiert.id))
-      : [...favoriten, { ...ort, id: ort.id || generiereId() }]
-    speichereFavoriten(neueFavoriten)
-    set({ favoriten: neueFavoriten })
-    get().favoritenSyncMitBackend()
-  },
-
-  toggleFavoritById: (configId: string, screen: 'pruefung' | 'uebung' | 'fragensammlung' = 'pruefung') => {
-    const { favoriten } = get()
-    const existiert = favoriten.find(f => f.params.configId === configId)
-    if (existiert) {
-      const neueFavoriten = favoriten.filter(f => f.id !== existiert.id)
-      speichereFavoriten(neueFavoriten)
-      set({ favoriten: neueFavoriten })
-    } else {
-      const neuerOrt: AppOrt = {
-        id: generiereId(),
-        titel: '',
-        screen,
-        params: { configId },
-        erstelltAm: new Date().toISOString(),
-      }
-      const neueFavoriten = [...favoriten, neuerOrt]
-      speichereFavoriten(neueFavoriten)
-      set({ favoriten: neueFavoriten })
-    }
-    get().favoritenSyncMitBackend()
-  },
-
-  istFavorit: (configId: string) => get().favoriten.some(f => f.params.configId === configId),
-
-  setFavoriten: (favoriten) => {
-    speichereFavoriten(favoriten)
-    set({ favoriten })
-  },
-
-  favoritenSyncMitBackend: () => {
-    // Wird extern verdrahtet wenn LP-Profil geladen ist
-  },
-
   setAktiveConfigId: (id) => set({ aktiveConfigId: id }),
 
   reset: () => set({
@@ -267,3 +171,6 @@ export const useLPNavigationStore = create<LPNavigationState>((set, get) => ({
     aktiveConfigId: null,
   }),
 }))
+
+// Rückwärts-kompatibler Re-Export (Übergang)
+export const useLPNavigationStore = useLPUIStore

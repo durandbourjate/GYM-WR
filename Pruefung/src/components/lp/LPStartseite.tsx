@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useFragenbankStore } from '../../store/fragenbankStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
-import { useLPNavigationStore } from '../../store/lpNavigationStore.ts'
+import { useLPNavigationStore } from '../../store/lpUIStore.ts'
+import { useFavoritenStore } from '../../store/favoritenStore.ts'
 import { useLPRouteSync } from '../../hooks/useLPRouteSync.ts'
 import { useLPNavigation } from '../../hooks/useLPNavigation.ts'
 import { apiService } from '../../services/apiService.ts'
@@ -150,14 +151,16 @@ export default function LPStartseite() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [formativeConfigs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus])
 
-  // Favoriten aus dem Store (AppOrt[])
-  const favoriten = useLPNavigationStore(s => s.favoriten)
+  // Favoriten aus dem neuen Store
+  const favoriten = useFavoritenStore(s => s.favoriten)
   const aktiveConfigId = useLPNavigationStore(s => s.aktiveConfigId)
   const deepLinkFrageId = useLPNavigationStore(s => s.deepLinkFrageId)
   const clearDeepLinkFrageId = useLPNavigationStore(s => s.clearDeepLinkFrageId)
 
   // Favoriten-Configs (nur existierende IDs, nach Datum sortiert)
-  const favoritenConfigIds = useMemo(() => new Set(favoriten.map(f => f.params.configId).filter(Boolean)), [favoriten])
+  const favoritenConfigIds = useMemo(() => new Set(
+    favoriten.filter(f => f.typ === 'pruefung' || f.typ === 'uebung').map(f => f.ziel)
+  ), [favoriten])
   const favoritenConfigs = useMemo(() => {
     if (favoritenConfigIds.size === 0) return []
     return configs.filter(c => favoritenConfigIds.has(c.id)).sort((a, b) => b.datum.localeCompare(a.datum))
@@ -250,26 +253,21 @@ export default function LPStartseite() {
       const { ladeStammdaten, ladeLPProfil } = useStammdatenStore.getState()
       ladeStammdaten(user.email)
       ladeLPProfil(user.email).then(() => {
-        // Backend-Favoriten in den Navigation-Store übernehmen
+        // Backend-Favoriten in den neuen favoritenStore übernehmen (Legacy-Migration)
         const profil = useStammdatenStore.getState().lpProfil
         if (profil?.favoriten && profil.favoriten.length > 0) {
-          const { favoriten: lokal, setFavoriten } = useLPNavigationStore.getState()
-          // Backend gewinnt, aber lokal hinzugefügte (die noch nicht gesynct wurden) mergen
-          const backendIds = new Set(profil.favoriten.map(f => f.id))
-          const nurLokal = lokal.filter(f => !backendIds.has(f.id))
-          setFavoriten([...profil.favoriten, ...nurLokal])
+          const { favoriten: lokal } = useFavoritenStore.getState()
+          if (lokal.length === 0) {
+            // Nur migrieren wenn lokal leer (Erstmigration)
+            const migriert = profil.favoriten.map((f: { id?: string; titel?: string; screen?: string; params?: { configId?: string } }, i: number) => ({
+              typ: (f.params?.configId ? (f.screen === 'uebung' ? 'uebung' : 'pruefung') : 'ort') as 'ort' | 'pruefung' | 'uebung' | 'frage',
+              ziel: f.params?.configId ?? `/${f.screen ?? 'pruefung'}`,
+              label: f.titel || '',
+              sortierung: i,
+            }))
+            useFavoritenStore.setState({ favoriten: migriert })
+          }
         }
-
-        // Sync-Funktion verdrahten: Bei jeder Favoriten-Änderung ins Backend schreiben
-        useLPNavigationStore.setState({
-          favoritenSyncMitBackend: () => {
-            const aktuellesProfil = useStammdatenStore.getState().lpProfil
-            if (!aktuellesProfil || !user) return
-            const aktuelleFavoriten = useLPNavigationStore.getState().favoriten
-            const { speichereLPProfil } = useStammdatenStore.getState()
-            speichereLPProfil({ ...aktuellesProfil, favoriten: aktuelleFavoriten })
-          },
-        })
       })
 
       // Configs + Fragenbank-Summaries parallel laden (schnell ~3-5s)
@@ -912,8 +910,8 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
   onDuplizieren: (c: PruefungsConfig) => void
   trackerSummary?: TrackerPruefungSummary
 }) {
-  const toggleFavoritById = useLPNavigationStore(s => s.toggleFavoritById)
-  const istFavoritFn = useLPNavigationStore(s => s.istFavorit)
+  const toggleFavorit = useFavoritenStore(s => s.toggleFavorit)
+  const istFavoritFn = useFavoritenStore(s => s.istFavorit)
   const istFav = istFavoritFn(c.id)
   const [linkKopiert, setLinkKopiert] = useState(false)
   const kopiereLink = async () => {
@@ -930,7 +928,7 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 flex items-center justify-between gap-4">
       <div className="flex items-start gap-2 flex-1 min-w-0">
         <button
-          onClick={() => toggleFavoritById(c.id)}
+          onClick={() => toggleFavorit({ typ: c.typ === 'formativ' ? 'uebung' : 'pruefung', ziel: c.id, label: c.titel })}
           className="mt-0.5 text-lg leading-none cursor-pointer hover:scale-110 transition-transform shrink-0"
           title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
         >
