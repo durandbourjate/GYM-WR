@@ -9,7 +9,7 @@
 ## Session 96 — A1: Deep Links, Home-Startseite & React Router (13.04.2026)
 
 ### Stand
-Auf Branch `feature/a1-deep-links-router`. tsc ✅ | 216 Tests ✅ | Build ✅. **Browser-Test ✅ (Demo-Modus, P1-P4).**
+Auf `main`. tsc ✅ | 227 Tests ✅ | Build ✅. **Browser-Test ✅ (Demo-Modus, P1-P4).** Phase 5 (Cleanup) abgeschlossen.
 
 ### Kontext
 Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiertes LP-Routing wurde durch React Router (BrowserRouter) ersetzt. Neue Home-Startseite für LP mit Favoriten, offenen Korrekturen, anstehenden/letzten Prüfungen und Übungen. Erweitertes Favoriten-System mit App-Orten + Drag & Drop Sortierung.
@@ -70,22 +70,15 @@ Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiert
 | Tab Üben → URL `/sus/ueben` | ✅ |
 | Browser Back/Forward (SuS) | ✅ |
 
-### Noch offen (eigene Sessions, nicht blockierend für Merge)
-
-| # | Thema | Beschreibung | Abhängigkeit |
-|---|-------|-------------|-------------|
-| P5.1 | **lpNavigationStore → lpUIStore** | Umbenennen, Favoriten-Code entfernen (ist jetzt in favoritenStore), nur UI-State behalten | — |
-| P5.2 | **?ids= Legacy entfernen** | Multi-Monitoring unter `/pruefung/monitoring` statt `?ids=` | P5.1 |
-| P5.3 | **Route-Tests** | Unit-Tests für Auth Guard, Rollen-Mismatch, Hash-Migration | — |
-
-### Kontext für nächste Sessions
+### Kontext
 - **Spec:** `docs/superpowers/specs/2026-04-13-deep-links-home-design.md`
 - **Plan:** `docs/superpowers/plans/2026-04-13-deep-links-home.md`
-- **Branch:** `feature/a1-deep-links-router` (13 Commits, gepusht)
-- **Architektur:** BrowserRouter in `src/router/Router.tsx`, App.tsx unverändert (rendert SuS-Flow). LP-Routes nutzen `useLPRouteSync` + `useLPNavigation`, SuS-Routes nutzen `useSuSRouteSync` + `useSuSNavigation` für URL↔Store Bridge.
-- **Wichtig:** `lpNavigationStore` hat NOCH alten Favoriten-Code (parallel zu neuem `favoritenStore`). P5.1 räumt das auf.
-- **Wichtig:** `selectFavoritenSortiert` darf NICHT als Zustand-Selector verwendet werden (erzeugt neues Array → Infinite Loop). Immer `useMemo` verwenden.
-- **Wichtig:** `navigationStore` (Üben) enthält nur noch `aktuellerScreen` (via Route-Sync) + `deepLinkThema`. `navigiere/zurueck/screenHistory` entfernt.
+- **Architektur:** BrowserRouter in `src/router/Router.tsx`. LP-Routes nutzen `useLPRouteSync` + `useLPNavigation`, SuS-Routes nutzen `useSuSRouteSync` + `useSuSNavigation` für URL↔Store Bridge.
+- **`lpUIStore.ts`** (ehemals lpNavigationStore): Nur noch UI-State, keine Favoriten mehr.
+- **`favoritenStore.ts`**: Neuer Store für Favoriten (Favorit-Modell mit typ/ziel/label/sortierung), persist via zustand/middleware.
+- **`navigationStore.ts`** (Üben): Nur noch `aktuellerScreen` (via Route-Sync) + `deepLinkThema`.
+- **Multi-Dashboard:** Unter `/pruefung/monitoring?ids=` statt Root `?ids=`. Gehandhabt in LPStartseite.
+- **`selectFavoritenSortiert`** darf NICHT als Zustand-Selector verwendet werden (erzeugt neues Array → Infinite Loop). Immer `useMemo` verwenden.
 
 ### Manuelle Schritte nach Merge
 - ✅ Apps Script: Kein neues Deploy nötig (nur Frontend-Änderungen)
