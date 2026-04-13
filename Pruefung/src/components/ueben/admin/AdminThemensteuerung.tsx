@@ -182,7 +182,7 @@ export default function AdminThemensteuerung() {
           const hatUnterthemen = eintrag.unterthemen.length > 0
 
           return (
-            <div key={key} className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div key={key} className={`rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden${eintrag.status === 'nicht_freigeschaltet' ? ' opacity-70' : ''}`}>
               {/* Thema-Zeile */}
               <div
                 className={`flex items-center justify-between p-4 bg-white dark:bg-slate-800 transition-colors ${
@@ -204,7 +204,7 @@ export default function AdminThemensteuerung() {
                   )}
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: farbe }} />
                   <div className="min-w-0">
-                    <span className="font-medium text-sm dark:text-white">{eintrag.thema}</span>
+                    <span className="font-medium text-sm dark:text-white">{eintrag.status === 'nicht_freigeschaltet' && <span className="mr-1">🔒</span>}{eintrag.thema}</span>
                     <div className="text-xs text-slate-400">
                       {eintrag.fach} · {eintrag.anzahlFragen} Fragen
                       {hatUnterthemen && ` · ${eintrag.unterthemen.length} Unterthemen`}
