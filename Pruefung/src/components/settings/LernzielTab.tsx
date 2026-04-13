@@ -202,13 +202,13 @@ export default function LernzielTab({ email }: Props) {
           className="w-full px-4 py-3 text-left text-sm font-medium bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between"
         >
           <span className="dark:text-white">+ Neues Lernziel erstellen</span>
-          <span className={`text-slate-400 transition-transform ${zeigeNeu ? 'rotate-180' : ''}`}>▾</span>
+          <span className={`text-slate-600 dark:text-slate-300 transition-transform ${zeigeNeu ? 'rotate-180' : ''}`}>▾</span>
         </button>
         {zeigeNeu && (
           <div className="p-4 space-y-3 border-t dark:border-slate-700">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-slate-500 dark:text-slate-400">Fach *</label>
+                <label className="text-xs text-slate-600 dark:text-slate-300">Fach *</label>
                 <input
                   value={neuDaten.fach || ''}
                   onChange={e => setNeuDaten({ ...neuDaten, fach: e.target.value })}
@@ -221,7 +221,7 @@ export default function LernzielTab({ email }: Props) {
                 </datalist>
               </div>
               <div>
-                <label className="text-xs text-slate-500 dark:text-slate-400">Bloom-Stufe</label>
+                <label className="text-xs text-slate-600 dark:text-slate-300">Bloom-Stufe</label>
                 <select
                   value={neuDaten.bloom || 'K2'}
                   onChange={e => setNeuDaten({ ...neuDaten, bloom: e.target.value })}
@@ -232,7 +232,7 @@ export default function LernzielTab({ email }: Props) {
               </div>
             </div>
             <div>
-              <label className="text-xs text-slate-500 dark:text-slate-400">Thema</label>
+              <label className="text-xs text-slate-600 dark:text-slate-300">Thema</label>
               <input
                 value={neuDaten.thema || ''}
                 onChange={e => setNeuDaten({ ...neuDaten, thema: e.target.value })}
@@ -241,7 +241,7 @@ export default function LernzielTab({ email }: Props) {
               />
             </div>
             <div>
-              <label className="text-xs text-slate-500 dark:text-slate-400">Lernziel-Text *</label>
+              <label className="text-xs text-slate-600 dark:text-slate-300">Lernziel-Text *</label>
               <textarea
                 value={neuDaten.text || ''}
                 onChange={e => setNeuDaten({ ...neuDaten, text: e.target.value })}
@@ -298,8 +298,8 @@ export default function LernzielTab({ email }: Props) {
                       </span>
                       <p className="flex-1 text-sm text-slate-700 dark:text-slate-300">{lz.text}</p>
                       <div className="shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => startEdit(lz)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-xs" title="Bearbeiten">✏️</button>
-                        <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-400 hover:text-red-500 text-xs" title="Löschen">🗑️</button>
+                        <button onClick={() => startEdit(lz)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xs" title="Bearbeiten">✏️</button>
+                        <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-red-500 text-xs" title="Löschen">🗑️</button>
                       </div>
                     </>
                   )}

@@ -13,7 +13,7 @@ export default function SuSHilfeButton() {
       <Tooltip text="Hilfe zur Bedienung">
         <button
           onClick={() => setOffen(true)}
-          className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+          className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
       >
         <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           <circle cx="12" cy="12" r="10" />
@@ -28,7 +28,7 @@ export default function SuSHilfeButton() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Hilfe zur Bedienung</h2>
-              <button onClick={() => setOffen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl cursor-pointer">&times;</button>
+              <button onClick={() => setOffen(false)} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xl cursor-pointer">&times;</button>
             </div>
 
             <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300">

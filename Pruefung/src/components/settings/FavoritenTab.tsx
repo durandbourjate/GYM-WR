@@ -184,7 +184,7 @@ function SortableFavoritItem({ fav, onEntfernen }: { fav: Favorit; onEntfernen: 
       <button
         {...attributes}
         {...listeners}
-        className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-grab active:cursor-grabbing"
+        className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 cursor-grab active:cursor-grabbing"
         title="Verschieben"
       >
         ⠿
@@ -196,7 +196,7 @@ function SortableFavoritItem({ fav, onEntfernen }: { fav: Favorit; onEntfernen: 
 
       <button
         onClick={onEntfernen}
-        className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 cursor-pointer"
+        className="text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 cursor-pointer"
         title="Favorit entfernen"
       >
         ✕

@@ -40,7 +40,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
       {!istHauptTab && (
         <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-3">
           <div className="max-w-7xl mx-auto flex items-center gap-3">
-            <button onClick={zurueck} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <button onClick={zurueck} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 min-w-[44px] min-h-[44px] flex items-center justify-center">
               &#8592;
             </button>
             <h2 className="text-lg font-bold dark:text-white">

@@ -81,7 +81,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-md mx-4" onClick={e => e.stopPropagation()}>
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-lg font-bold dark:text-white">🏁 Lernziele</h2>
-            <button onClick={onSchliessen} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl">✕</button>
+            <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xl">✕</button>
           </div>
           <p className="text-slate-500 dark:text-slate-400">Lernziele werden von der Lehrperson definiert. Sobald Themen aktiviert sind, erscheinen hier die zugehörigen Lernziele.</p>
         </div>
@@ -98,7 +98,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
         {/* Header */}
         <div className="flex justify-between items-center p-5 pb-3 border-b border-slate-200 dark:border-slate-700">
           <h2 className="text-lg font-bold dark:text-white">🏁 Alle Lernziele</h2>
-          <button onClick={onSchliessen} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl">✕</button>
+          <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xl">✕</button>
         </div>
 
         {/* Scrollbarer Inhalt */}
@@ -247,7 +247,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: farbe }} />
             <h3 className="font-semibold dark:text-white text-sm">{thema}</h3>
           </div>
-          <button onClick={onSchliessen} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+          <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100">✕</button>
         </div>
 
         <div className="overflow-y-auto flex-1 space-y-3 mb-4">

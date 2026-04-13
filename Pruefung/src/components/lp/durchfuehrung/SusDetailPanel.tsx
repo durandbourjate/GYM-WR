@@ -61,7 +61,7 @@ export default function SusDetailPanel({ schueler, pruefungId, onSchliessen }: P
         <button
           type="button"
           onClick={onSchliessen}
-          className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+          className="w-8 h-8 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
         >
           ✕
         </button>

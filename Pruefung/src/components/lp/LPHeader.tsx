@@ -79,7 +79,7 @@ export default function LPHeader({ untertitel, zurueck, statusText, aktionsButto
               <span className="text-[11px] text-slate-400 dark:text-slate-500">{APP_VERSION}</span>
               {/* Breadcrumbs */}
               {breadcrumbs && breadcrumbs.length > 0 && (
-                <nav className="flex items-center gap-1 ml-2 text-sm text-slate-500 dark:text-slate-400">
+                <nav className="flex items-center gap-1 ml-2 text-sm text-slate-600 dark:text-slate-300">
                   {breadcrumbs.map((crumb, i) => (
                     <span key={i} className="flex items-center gap-1">
                       <span className="text-slate-300 dark:text-slate-600">›</span>
@@ -151,7 +151,7 @@ export default function LPHeader({ untertitel, zurueck, statusText, aktionsButto
           <Tooltip text="Von ExamLab abmelden" position="bottom">
             <button
               onClick={abmelden}
-              className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
+              className="px-2 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
             >
               Abmelden
             </button>

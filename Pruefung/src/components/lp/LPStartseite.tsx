@@ -782,7 +782,7 @@ export default function LPStartseite() {
               <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-lg space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold dark:text-white">Prüfungen für Multi-Dashboard wählen</h3>
-                  <button onClick={() => setMultiDashboardOffen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">✕</button>
+                  <button onClick={() => setMultiDashboardOffen(false)} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100">✕</button>
                 </div>
                 <div className="space-y-1 max-h-60 overflow-y-auto">
                   {summativeConfigs.map(c => (

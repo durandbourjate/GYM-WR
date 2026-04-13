@@ -206,7 +206,7 @@ export default function FragenBrowserHeader({
 
       {/* Filter-Zeile 1: Alle Filter */}
       <div className="flex items-center gap-2 mt-2 flex-wrap">
-        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide font-medium">Filter:</span>
+        <span className="text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wide font-medium">Filter:</span>
 
         {/* Fach — immer sichtbar */}
         <select
@@ -327,7 +327,7 @@ export default function FragenBrowserHeader({
 
       {/* Zeile 2: Sortieren + Ansicht */}
       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide font-medium">Gruppieren:</span>
+        <span className="text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wide font-medium">Gruppieren:</span>
         <select
           value={gruppierung}
           onChange={(e) => { setGruppierung(e.target.value as Gruppierung); setAufgeklappteGruppen(new Set()) }}
@@ -340,7 +340,7 @@ export default function FragenBrowserHeader({
           <option value="bloom">Bloom-Stufe</option>
         </select>
 
-        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide font-medium ml-2">Sortieren:</span>
+        <span className="text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wide font-medium ml-2">Sortieren:</span>
         <select
           value={sortierung}
           onChange={(e) => setSortierung(e.target.value as Sortierung)}
