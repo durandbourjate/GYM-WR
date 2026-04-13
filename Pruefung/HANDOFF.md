@@ -6,6 +6,40 @@
 
 ---
 
+## Session 97 — Bild-Upload Fix + Routing + Bild-Editor Farben (13.04.2026)
+
+### Stand
+Auf `main`. tsc ✅ | 227 Tests ✅ | Build ✅. Bild-Upload funktioniert. Neues Apps Script Deployment (neue URL im GitHub Secret).
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **Bild-Upload Bug gefixt** — Drive-Berechtigung fehlte im Web-App Deployment. `autorisiereAlleScopes()` Hilfsfunktion + `userinfo.email` Scope in appsscript.json. Neues Apps Script Deployment erstellt. | apps-script-code.js, appsscript.json |
+| 2 | **Upload-Fehlerbehandlung** — Backend-Fehlermeldungen werden jetzt dem User angezeigt statt verschluckt (`{error: string}` Return-Type). | uploadApi.ts, BildUpload.tsx, types.ts, SharedFragenEditor.tsx, ZeichnenEditor.tsx |
+| 3 | **Drive Bild-URLs** — `drive.google.com/uc?id=...&export=view` → `lh3.googleusercontent.com/d/{id}` (Google blockiert alte URL). Neue `driveImageUrl()` Hilfsfunktion. | BildUpload.tsx, ZeichnenEditor.tsx, mediaUtils.ts |
+| 4 | **404.html SPA-Routing** — Fängt jetzt auch bekannte Routes ohne Base-Path ab (/login, /sus, /home etc.) und leitet auf `/GYM-WR-DUY/ExamLab/` um. | 404.html |
+| 5 | **index.html Decoder** — Base-Path wurde beim Dekodieren des `?p=` Parameters vergessen → weisse Seite bei Hard-Reload. | index.html |
+| 6 | **LPHeader Navigation** — Favoriten-Navigation nutzt jetzt `useNavigate()` statt `window.location.pathname` (verursachte Hard-Reload ohne Base-Path). | LPHeader.tsx |
+| 7 | **Bild-Editoren Farbkonzept** — Pins/Zonen/Rechtecke im Bild: violett. Listen-Nummern: slate (normales App-Design). Dark Mode Container: `bg-slate-800` statt `bg-slate-800/60`. | HotspotEditor.tsx, BildbeschriftungEditor.tsx, DragDropBildEditor.tsx |
+| 8 | **Cleanup** — Toter Ternary in BildMitGenerator, ungenutzter Import in BildUpload, ungenutzter Import in router.test.ts (Build-Fix). | BildMitGenerator.tsx, BildUpload.tsx, router.test.ts |
+
+### Kontext
+- **Apps Script URL geändert** — Neues Deployment wegen Drive-Scope-Autorisierung. GitHub Secret `VITE_APPS_SCRIPT_URL` + `.env.local` aktualisiert.
+- **Trick für Scope-Autorisierung**: Temporären neuen Scope (z.B. `calendar.readonly`) in appsscript.json hinzufügen → `autorisiereAlleScopes()` ausführen → Popup kommt → alle Scopes genehmigen → temporären Scope entfernen → neu deployen.
+- **Bild-Editoren existieren und funktionieren** — Hotspot (2-Klick-Rechtecke), Bildbeschriftung (Klick-Pins), DragDrop-Bild (2-Klick-Zonen + Label-Pool). Upload zu Google Drive funktioniert.
+
+### Offene Punkte
+- UI-Kommentare vom User werden gesammelt (Farben, Layout in Bild-Editoren)
+- E2E Browser-Test mit echtem Backend (GitHub Pages) noch ausstehend
+- KI-Bild-Generator Backend (offen)
+- 62 SVGs visuell prüfen (offen)
+- Audio iPhone (offen)
+- Abgabe-Timeout (offen)
+- Fachkürzel-Abgleich (offen)
+
+---
+
 ## Session 96 — A1: Deep Links, Home-Startseite & React Router (13.04.2026)
 
 ### Stand
