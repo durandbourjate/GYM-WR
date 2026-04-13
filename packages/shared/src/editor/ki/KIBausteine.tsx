@@ -1,7 +1,7 @@
 import type { AktionErgebnis } from '../useKIAssistent'
 
 /** Einzelner KI-Aktions-Button mit Lade-, Hinweis- und Tooltip-State */
-export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, onClick }: {
+export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, onClick, kiAktiv = true }: {
   label: string
   /** Hilfetext bei Mouseover */
   tooltip?: string
@@ -9,7 +9,12 @@ export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, 
   disabled: boolean
   ladend: boolean
   onClick: () => void
+  /** KI-Styling aktiv (blau) oder inaktiv (slate). Default: true */
+  kiAktiv?: boolean
 }) {
+  const enabledClasses = kiAktiv
+    ? 'border-blue-300 dark:border-blue-500 bg-blue-50 dark:bg-[#1e2a3f] text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-[#253650]'
+    : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
   return (
     <div>
       <button
@@ -19,7 +24,7 @@ export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, 
         className={`px-2.5 py-1 text-xs rounded-lg border transition-colors cursor-pointer inline-flex items-center gap-1.5
           ${disabled
             ? 'border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-            : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+            : enabledClasses
           }`}
       >
         {ladend ? (
