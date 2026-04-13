@@ -356,7 +356,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const titel = config?.titel || daten.pruefungTitel || pruefungId || (config?.typ === 'formativ' ? 'Übung' : 'Prüfung')
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+    <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <LPHeader
         titel={config?.typ === 'formativ' ? 'Übung durchführen' : 'Prüfung durchführen'}
         untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}
@@ -397,6 +397,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         fragensammlungOffen={zeigFragenbank}
         hilfeOffen={zeigHilfe}
       />
+
+      {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
+      <div className="flex flex-1 overflow-hidden">
+      {/* Scrollbarer Hauptinhalt */}
+      <div className="flex-1 overflow-y-auto">
 
       {/* === Verbindungsfehler-Banner === */}
       {zeigeVerbindungsBanner && (
@@ -606,6 +611,14 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         </div>
       )}
 
+      </div>{/* Ende Scrollbarer Hauptinhalt */}
+
+      {/* Einstellungen Sidebar */}
+      {zeigEinstellungen && (
+        <EinstellungenPanel onSchliessen={() => setZeigEinstellungen(false)} />
+      )}
+      </div>{/* Ende Flex-Row */}
+
       {/* Fragenbank Overlay */}
       {zeigFragenbank && (
         <FragenBrowser
@@ -618,11 +631,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       {/* Hilfe Overlay */}
       {zeigHilfe && (
         <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />
-      )}
-
-      {/* Einstellungen Overlay */}
-      {zeigEinstellungen && (
-        <EinstellungenPanel onSchliessen={() => setZeigEinstellungen(false)} />
       )}
     </div>
   )

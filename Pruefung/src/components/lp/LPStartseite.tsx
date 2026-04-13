@@ -403,7 +403,7 @@ export default function LPStartseite() {
   if (ladeStatus !== 'fertig' && ansicht !== 'composer') return <LPSkeleton />
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header nur im Dashboard-Modus — Composer hat eigenen Header */}
       {ansicht !== 'composer' && (
         <LPHeader
@@ -416,6 +416,11 @@ export default function LPStartseite() {
           hilfeOffen={zeigHilfe}
         />
       )}
+
+      {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
+      <div className="flex flex-1 overflow-hidden">
+      {/* Scrollbarer Hauptinhalt */}
+      <div className="flex-1 overflow-y-auto">
 
       {ansicht === 'composer' && (
         <Suspense fallback={<LazyFallback />}>
@@ -875,14 +880,9 @@ export default function LPStartseite() {
         </main>
       )}
 
-      {/* Hilfe Overlay (alle Modi) */}
-      {zeigHilfe && (
-        <Suspense fallback={<LazyFallback />}>
-          <HilfeSeite onSchliessen={toggleHilfe} />
-        </Suspense>
-      )}
+      </div>{/* Ende Scrollbarer Hauptinhalt */}
 
-      {/* Einstellungen Panel */}
+      {/* Einstellungen Sidebar */}
       {zeigEinstellungen && (
         <Suspense fallback={<LazyFallback />}>
           <EinstellungenPanel
@@ -893,6 +893,14 @@ export default function LPStartseite() {
             zurueckZumDashboard()
           }}
         />
+        </Suspense>
+      )}
+      </div>{/* Ende Flex-Row */}
+
+      {/* Hilfe Overlay (alle Modi) */}
+      {zeigHilfe && (
+        <Suspense fallback={<LazyFallback />}>
+          <HilfeSeite onSchliessen={toggleHilfe} />
         </Suspense>
       )}
     </div>

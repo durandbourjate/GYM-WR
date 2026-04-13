@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { TabBar } from '../ui/TabBar'
+import { ResizableSidebar } from '../ui/ResizableSidebar'
 import { useAuthStore } from '../../store/authStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDefinition } from '../../types/stammdaten'
@@ -16,7 +17,7 @@ interface Props {
 }
 
 /**
- * Einstellungen-Panel: Slide-over Panel.
+ * Einstellungen-Panel: ResizableSidebar.
  * - Mein Profil: LP konfiguriert eigene Kurse/Fächer/Gefässe
  * - Admin: Stammdaten verwalten (nur Admins)
  */
@@ -48,46 +49,40 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   const sichtbareTabs = tabs.filter(t => t.sichtbar)
 
   return (
-    <div className="fixed inset-0 z-[70] flex justify-end">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/30" onClick={onSchliessen} />
-
-      {/* Panel — unterhalb des Headers beginnen */}
-      <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 shadow-xl overflow-y-auto mt-14">
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <h2 className="text-lg font-bold dark:text-white">Einstellungen</h2>
-          <button onClick={onSchliessen} className="w-8 h-8 text-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer">
-            &times;
-          </button>
-        </div>
-
-        {/* Tabs */}
-        <div className="px-6 pt-3">
-          <TabBar
-            tabs={sichtbareTabs.map(t => ({ id: t.key, label: t.label }))}
-            activeTab={tab}
-            onTabChange={(id) => setTab(id as EinstellungenTab)}
-            size="sm"
-          />
-        </div>
-
-        <div className="p-6">
-          {tab === 'profil' && user?.email && (
-            <ProfilTab email={user.email} stammdaten={stammdaten} profil={lpProfil} />
-          )}
-          {tab === 'lernziele' && user?.email && (
-            <LernzielTab email={user.email} />
-          )}
-          {tab === 'favoriten' && (
-            <FavoritenTab istAdmin={admin} />
-          )}
-          {tab === 'uebungen' && <AdminSettings />}
-          {tab === 'admin' && admin && user?.email && (
-            <AdminTab email={user.email} stammdaten={stammdaten} />
-          )}
-        </div>
+    <ResizableSidebar
+      title="Einstellungen"
+      onClose={onSchliessen}
+      storageKey="einstellungen-breite"
+      defaultWidth={480}
+      minWidth={360}
+      maxWidth={640}
+    >
+      {/* Tabs */}
+      <div className="pb-3">
+        <TabBar
+          tabs={sichtbareTabs.map(t => ({ id: t.key, label: t.label }))}
+          activeTab={tab}
+          onTabChange={(id) => setTab(id as EinstellungenTab)}
+          size="sm"
+        />
       </div>
-    </div>
+
+      <div>
+        {tab === 'profil' && user?.email && (
+          <ProfilTab email={user.email} stammdaten={stammdaten} profil={lpProfil} />
+        )}
+        {tab === 'lernziele' && user?.email && (
+          <LernzielTab email={user.email} />
+        )}
+        {tab === 'favoriten' && (
+          <FavoritenTab istAdmin={admin} />
+        )}
+        {tab === 'uebungen' && <AdminSettings />}
+        {tab === 'admin' && admin && user?.email && (
+          <AdminTab email={user.email} stammdaten={stammdaten} />
+        )}
+      </div>
+    </ResizableSidebar>
   )
 }
 
