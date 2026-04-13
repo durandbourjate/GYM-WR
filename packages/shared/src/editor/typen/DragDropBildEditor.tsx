@@ -95,7 +95,7 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
             {zielzonen.map((zone, i) => (
               <div
                 key={zone.id}
-                className="absolute bg-blue-500/20 border-2 border-blue-500 dark:border-blue-400 flex items-center justify-center"
+                className="absolute bg-violet-500/20 border-2 border-violet-500 dark:border-violet-400 flex items-center justify-center"
                 style={{
                   left: `${zone.position.x}%`,
                   top: `${zone.position.y}%`,
@@ -104,7 +104,7 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
                 }}
                 onClick={(e) => { e.stopPropagation(); setEditZone(zone.id) }}
               >
-                <span className="text-xs font-bold text-blue-800 dark:text-blue-200 bg-white/80 dark:bg-slate-800/80 px-1 rounded">
+                <span className="text-xs font-bold text-violet-800 dark:text-violet-200 bg-white/80 dark:bg-slate-800/80 px-1 rounded">
                   {i + 1}
                 </span>
               </div>
@@ -123,11 +123,11 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
               key={zone.id}
               className={`flex items-center gap-2 p-2 rounded-lg border ${
                 editZone === zone.id
-                  ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  ? 'border-violet-400 dark:border-violet-500 bg-violet-50 dark:bg-violet-900/20'
                   : 'border-slate-200 dark:border-slate-600'
               }`}
             >
-              <span className="w-6 h-6 flex items-center justify-center bg-blue-500 text-white text-xs font-bold rounded-full shrink-0">
+              <span className="w-6 h-6 flex items-center justify-center bg-violet-500 text-white text-xs font-bold rounded-full shrink-0">
                 {i + 1}
               </span>
               <input

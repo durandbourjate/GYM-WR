@@ -61,7 +61,7 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
                 className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                 style={{ left: `${b.position.x}%`, top: `${b.position.y}%` }}
               >
-                <div className="w-7 h-7 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold shadow-md border-2 border-white dark:border-slate-800">
+                <div className="w-7 h-7 rounded-full bg-violet-500 text-white text-xs flex items-center justify-center font-bold shadow-md border-2 border-white dark:border-slate-800">
                   {i + 1}
                 </div>
               </div>
@@ -78,7 +78,7 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
           <div className="space-y-2">
             {beschriftungen.map((b, i) => (
               <div key={b.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-bold text-violet-600 dark:text-violet-400">
                   {i + 1}
                 </span>
                 <div className="flex-1">
@@ -91,7 +91,7 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
                     onChange={(e) => handleKorrektAendern(b.id, e.target.value)}
                     autoFocus={editId === b.id}
                     onFocus={() => setEditId(null)}
-                    className="w-full px-2 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none"
+                    className="w-full px-2 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-violet-500 focus:outline-none"
                     placeholder="Antwort 1, Antwort 2, ..."
                   />
                 </div>
