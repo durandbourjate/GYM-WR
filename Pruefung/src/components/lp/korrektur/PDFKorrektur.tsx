@@ -388,7 +388,7 @@ export default function PDFKorrektur({
                 }
               }
             }}
-            className="w-16 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-2 py-1 text-sm text-slate-800 dark:text-slate-100 tabular-nums text-right focus:outline-none focus:ring-1 focus:ring-slate-400 dark:focus:ring-slate-500"
+            className={`w-16 rounded border bg-white dark:bg-slate-700 px-2 py-1 text-sm text-slate-800 dark:text-slate-100 tabular-nums text-right focus:outline-none focus:ring-1 focus:ring-violet-500 ${punkteWert === '' ? 'border-violet-500 bg-violet-50 dark:bg-[#2d2040]' : 'border-slate-300 dark:border-slate-600'}`}
           />
           <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">
             / {maxPunkte}

@@ -425,7 +425,7 @@ function SchuelerAntwortKarte({
             min={0}
             max={bewertung.maxPunkte}
             step={0.5}
-            className="w-14 px-1.5 py-1 text-sm text-right border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 tabular-nums"
+            className={`w-14 px-1.5 py-1 text-sm text-right border rounded bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-500 tabular-nums ${punkteWert === '' ? 'border-violet-500 bg-violet-50 dark:bg-[#2d2040]' : 'border-slate-300 dark:border-slate-600'}`}
           />
           <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">
             /{bewertung.maxPunkte}
