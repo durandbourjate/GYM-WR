@@ -9,7 +9,7 @@
 ## Session 96 — A1: Deep Links, Home-Startseite & React Router (13.04.2026)
 
 ### Stand
-Auf Branch `feature/a1-deep-links-router`. tsc ✅ | 216 Tests ✅ | Build ✅. **Browser-Test ausstehend.**
+Auf Branch `feature/a1-deep-links-router`. tsc ✅ | 216 Tests ✅ | Build ✅. **Browser-Test ✅ (Demo-Modus, P1-P4).**
 
 ### Kontext
 Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiertes LP-Routing wurde durch React Router (BrowserRouter) ersetzt. Neue Home-Startseite für LP mit Favoriten, offenen Korrekturen, anstehenden/letzten Prüfungen und Übungen. Erweitertes Favoriten-System mit App-Orten + Drag & Drop Sortierung.
@@ -28,14 +28,18 @@ Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiert
 | P3.1 | Neuer `favoritenStore` mit erweitertem Favorit-Modell (typ/ziel/label/sortierung), Migration von alten AppOrt[], 7 Tests | store/favoritenStore.ts + .test.ts |
 | P3.2 | Home-Dashboard mit 5 Sektionen (Favoriten, offene Korrekturen, anstehende/letzte Prüfungen/Übungen) | components/lp/Home.tsx, router/Router.tsx |
 | P3.3 | FavoritenTab in Einstellungen mit @dnd-kit Drag & Drop Sortierung | components/settings/FavoritenTab.tsx, EinstellungenPanel.tsx |
+| **Phase 4 — SuS-Üben Routes** | |
+| P4 | `useUebenNavigationStore.navigiere()` durch `useSuSNavigation` Hook ersetzt (useNavigate), `useSuSRouteSync` Hook (URL→Store), 9 SuS-Routes in Router.tsx, Modus in SuSStartseite aus URL, navigationStore entkernt | hooks/ueben/useSuSNavigation.ts, hooks/ueben/useSuSRouteSync.ts, router/Router.tsx, AppUeben.tsx, SuSStartseite.tsx, Dashboard.tsx, UebungsScreen.tsx, AppShell.tsx, navigationStore.ts |
 
-### Neue Dateien (9)
+### Neue Dateien (11)
 - `404.html` — GitHub Pages SPA-Redirect (Repo-Root)
 - `src/router/Router.tsx` — BrowserRouter mit LP/SuS-Routes
 - `src/router/AuthGuard.tsx` — Rollen-basierter Route-Guard
 - `src/router/hashMigration.ts` — Einmalige #/... → /... Migration
 - `src/hooks/useLPNavigation.ts` — LP-Navigation via useNavigate()
 - `src/hooks/useLPRouteSync.ts` — URL → lpNavigationStore Sync
+- `src/hooks/ueben/useSuSNavigation.ts` — SuS-Navigation via useNavigate()
+- `src/hooks/ueben/useSuSRouteSync.ts` — URL → navigationStore Sync
 - `src/store/favoritenStore.ts` — Erweiterter Favoriten-Store
 - `src/components/lp/Home.tsx` — Home-Dashboard
 - `src/components/settings/FavoritenTab.tsx` — Favoriten-Verwaltung
@@ -60,12 +64,16 @@ Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiert
 | Tab Üben → URL `/uebung` | ✅ |
 | Browser Back/Forward | ✅ |
 | Test mit echtem Backend (GitHub Pages) | ⬜ Ausstehend |
+| **SuS-Üben Routes (P4)** | |
+| `/sus/ueben` → Dashboard (Demo) | ✅ |
+| Tab Prüfen → URL `/sus/pruefen` | ✅ |
+| Tab Üben → URL `/sus/ueben` | ✅ |
+| Browser Back/Forward (SuS) | ✅ |
 
 ### Noch offen (eigene Sessions, nicht blockierend für Merge)
 
 | # | Thema | Beschreibung | Abhängigkeit |
 |---|-------|-------------|-------------|
-| P4 | **SuS-Üben Routes** | `useUebenNavigationStore` durch SuS-Routes ersetzen (`/sus`, `/sus/ueben`, `/sus/ueben/:themaId`) | — |
 | P5.1 | **lpNavigationStore → lpUIStore** | Umbenennen, Favoriten-Code entfernen (ist jetzt in favoritenStore), nur UI-State behalten | — |
 | P5.2 | **?ids= Legacy entfernen** | Multi-Monitoring unter `/pruefung/monitoring` statt `?ids=` | P5.1 |
 | P5.3 | **Route-Tests** | Unit-Tests für Auth Guard, Rollen-Mismatch, Hash-Migration | — |
@@ -73,10 +81,11 @@ Feature A1 aus HANDOFF: Echte Deep Links + App-Strukturverzeichnis. Hash-basiert
 ### Kontext für nächste Sessions
 - **Spec:** `docs/superpowers/specs/2026-04-13-deep-links-home-design.md`
 - **Plan:** `docs/superpowers/plans/2026-04-13-deep-links-home.md`
-- **Branch:** `feature/a1-deep-links-router` (10 Commits, gepusht)
-- **Architektur:** BrowserRouter in `src/router/Router.tsx`, App.tsx unverändert (rendert SuS-Flow), LP-Routes nutzen `useLPRouteSync` + `useLPNavigation` für URL↔Store Bridge
+- **Branch:** `feature/a1-deep-links-router` (13 Commits, gepusht)
+- **Architektur:** BrowserRouter in `src/router/Router.tsx`, App.tsx unverändert (rendert SuS-Flow). LP-Routes nutzen `useLPRouteSync` + `useLPNavigation`, SuS-Routes nutzen `useSuSRouteSync` + `useSuSNavigation` für URL↔Store Bridge.
 - **Wichtig:** `lpNavigationStore` hat NOCH alten Favoriten-Code (parallel zu neuem `favoritenStore`). P5.1 räumt das auf.
 - **Wichtig:** `selectFavoritenSortiert` darf NICHT als Zustand-Selector verwendet werden (erzeugt neues Array → Infinite Loop). Immer `useMemo` verwenden.
+- **Wichtig:** `navigationStore` (Üben) enthält nur noch `aktuellerScreen` (via Route-Sync) + `deepLinkThema`. `navigiere/zurueck/screenHistory` entfernt.
 
 ### Manuelle Schritte nach Merge
 - ✅ Apps Script: Kein neues Deploy nötig (nur Frontend-Änderungen)
