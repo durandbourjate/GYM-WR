@@ -9,7 +9,7 @@
 ## Session 100 — Bundle 3: Übungs-Themen UX (13.04.2026)
 
 ### Stand
-Auf `feature/bundle3-uebungs-themen-ux`. tsc ✅ | 226 Tests ✅ | Build ✅. Browser-Test ausstehend.
+Auf `main`. tsc ✅ | 226 Tests ✅ | Build ✅. Browser-Test ausstehend.
 
 ### Erledigte Arbeiten
 
@@ -24,7 +24,7 @@ Auf `feature/bundle3-uebungs-themen-ux`. tsc ✅ | 226 Tests ✅ | Build ✅. Br
 - **Spec:** `docs/superpowers/specs/2026-04-13-bundle3-uebungs-themen-ux-design.md`
 - **Plan:** `docs/superpowers/plans/2026-04-13-bundle3-uebungs-themen-ux.md`
 - **Edge Case maxAktiveThemen:** Wenn Limit unter aktuelle Anzahl gesenkt wird, bleiben bestehende Themen aktiv. Limit greift erst bei nächster Aktivierung.
-- **Nächste Session:** Browser-Test, dann Merge zu main. Danach Bundle 4 (Layout-Umbau Durchführen) oder eines der anderen offenen Bundles.
+- **Nächste Session:** Bundle 4 (Layout-Umbau Durchführen) oder eines der anderen offenen Bundles.
 
 ---
 
