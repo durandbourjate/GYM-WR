@@ -102,26 +102,6 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
         Bild {bildDriveFileId && <span className="text-xs text-green-600 dark:text-green-400">(hochgeladen ✓)</span>}
       </label>
 
-      {/* Vorschau wenn Bild vorhanden */}
-      {bildUrl && (
-        <div className="relative inline-block">
-          <img
-            src={bildUrl}
-            alt="Vorschau"
-            className="max-h-48 rounded-lg border border-slate-200 dark:border-slate-700"
-            style={{ objectFit: 'contain' }}
-          />
-          <button
-            type="button"
-            onClick={handleEntfernen}
-            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center hover:bg-red-600 cursor-pointer shadow"
-            title="Bild entfernen"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       {/* Upload-Zone (wenn kein Bild) */}
       {!bildUrl && (
         <div
@@ -162,7 +142,7 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
         </div>
       )}
 
-      {/* URL-Eingabe als Alternative */}
+      {/* URL-Eingabe als Alternative + Bild-Aktionen */}
       <div className="flex items-center gap-2">
         <span className="text-xs text-slate-400 dark:text-slate-500">oder</span>
         <input
@@ -175,6 +155,18 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
           className="flex-1 px-2 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none"
           placeholder="Bild-URL einfügen (https://...)"
         />
+        {bildUrl && bildUrl.startsWith('data:') && (
+          <span className="text-xs text-green-600 dark:text-green-400 whitespace-nowrap">(Bild geladen)</span>
+        )}
+        {bildUrl && (
+          <button
+            type="button"
+            onClick={handleEntfernen}
+            className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 whitespace-nowrap cursor-pointer"
+          >
+            Bild entfernen
+          </button>
+        )}
       </div>
 
       {/* Fehler */}

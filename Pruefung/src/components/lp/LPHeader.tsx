@@ -125,7 +125,7 @@ export default function LPHeader({ titel, untertitel, zurueck, statusText, aktio
         </div>
         <div className="flex items-center gap-2">
           {aktionsButtons}
-          {onFragensammlung && (
+          {onFragensammlung && !(istDashboard && !zurueck) && (
             <Tooltip text="Fragensammlung öffnen" position="bottom">
               <button onClick={onFragensammlung} className={buttonClass}>Fragensammlung</button>
             </Tooltip>

@@ -7,39 +7,32 @@ import type { FrageTyp } from '../editorUtils'
 
 interface Kategorie {
   label: string
-  icon: string
   typen: FrageTyp[]
 }
 
 const KATEGORIEN: Kategorie[] = [
   {
     label: 'Text & Sprache',
-    icon: '\u{1F4DD}',
     typen: ['freitext', 'lueckentext', 'audio'],
   },
   {
     label: 'Auswahl & Zuordnung',
-    icon: '\u2611\uFE0F',
     typen: ['mc', 'richtigfalsch', 'zuordnung', 'sortierung'],
   },
   {
     label: 'Bilder & Medien',
-    icon: '\u{1F5BC}\uFE0F',
     typen: ['hotspot', 'bildbeschriftung', 'dragdrop_bild', 'visualisierung', 'pdf'],
   },
   {
     label: 'MINT',
-    icon: '\u{1F52C}',
     typen: ['berechnung', 'code', 'formel'],
   },
   {
     label: 'Buchhaltung',
-    icon: '\u{1F4CA}',
     typen: ['buchungssatz', 'tkonto', 'kontenbestimmung', 'bilanzstruktur'],
   },
   {
     label: 'Struktur',
-    icon: '\u{1F4E6}',
     typen: ['aufgabengruppe'],
   },
 ]
@@ -93,7 +86,7 @@ export default function FrageTypAuswahl({ typ, setTyp, gesperrt }: Props) {
         return (
           <div key={kat.label}>
             <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
-              {kat.icon} {kat.label}
+              {kat.label}
             </div>
             <div className="flex gap-1.5 flex-wrap">
               {sichtbar.map((t) => (

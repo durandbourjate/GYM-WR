@@ -336,7 +336,7 @@ export default function FragenBrowserHeader({
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="keine">Keine</option>
-          <option value="fachbereich">Fachbereich</option>
+          <option value="fachbereich">Fach</option>
           <option value="thema">Thema</option>
           <option value="typ">Typ</option>
           <option value="bloom">Bloom-Stufe</option>

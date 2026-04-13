@@ -109,11 +109,11 @@ export function ThemaKarte({
         </div>
       )}
 
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <span className="font-semibold dark:text-white text-sm leading-tight">{thema}</span>
+      <div className="flex items-start gap-2 mb-2">
         {!istAktiv && !istGesperrt && (
           <span className="shrink-0 w-3 h-3 rounded-full mt-1" style={{ backgroundColor: farbe }} />
         )}
+        <span className="font-semibold dark:text-white text-sm leading-tight">{thema}</span>
       </div>
       <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
         <span>{anzahlFragen} Fragen</span>
