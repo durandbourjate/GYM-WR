@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
+import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
@@ -359,31 +360,18 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
       />
 
       {/* Tabs */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6">
-        <div className="flex gap-1">
-          {([
-            { key: 'config' as ComposerTab, label: 'Einstellungen' },
-            { key: 'abschnitte' as ComposerTab, label: `Abschnitte & Fragen (${gesamtFragen})` },
-            { key: 'vorschau' as ComposerTab, label: 'Vorschau' },
-            { key: 'analyse' as ComposerTab, label: 'Analyse' },
-          ]).map((t) => (
-            <button
-              key={t.key}
-              onClick={() => t.key !== 'analyse' || gesamtFragen > 0 ? setTab(t.key) : undefined}
-              disabled={t.key === 'analyse' && gesamtFragen === 0}
-              className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors cursor-pointer
-                ${tab === t.key
-                  ? 'bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-b-0 border-slate-200 dark:border-slate-700'
-                  : t.key === 'analyse' && gesamtFragen === 0
-                    ? 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-                }
-              `}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2">
+        <TabBar
+          tabs={[
+            { id: 'config', label: 'Einstellungen' },
+            { id: 'abschnitte', label: `Abschnitte & Fragen (${gesamtFragen})` },
+            { id: 'vorschau', label: 'Vorschau' },
+            { id: 'analyse', label: 'Analyse', disabled: gesamtFragen === 0 },
+          ]}
+          activeTab={tab}
+          onTabChange={(id) => setTab(id as ComposerTab)}
+          size="md"
+        />
       </div>
 
       {/* Content */}

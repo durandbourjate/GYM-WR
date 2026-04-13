@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TabBar } from '../../ui/TabBar'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import AdminUebersicht from './AdminUebersicht'
 import AdminKindDetail from './AdminKindDetail'
@@ -53,25 +54,17 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
       {/* Tab-Leiste */}
       {istHauptTab && (
         <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-          <div className="max-w-7xl mx-auto px-6 flex gap-4">
-            <button
-              onClick={() => setAnsicht({ typ: 'uebersicht' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'uebersicht' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-            >
-              Übersicht
-            </button>
-            <button
-              onClick={() => setAnsicht({ typ: 'auftraege' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'auftraege' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-            >
-              Aufträge
-            </button>
-            <button
-              onClick={() => setAnsicht({ typ: 'themensteuerung' })}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${ansicht.typ === 'themensteuerung' ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-            >
-              Themen
-            </button>
+          <div className="max-w-7xl mx-auto px-6 py-2">
+            <TabBar
+              tabs={[
+                { id: 'uebersicht', label: 'Übersicht' },
+                { id: 'auftraege', label: 'Aufträge' },
+                { id: 'themensteuerung', label: 'Themen' },
+              ]}
+              activeTab={ansicht.typ}
+              onTabChange={(id) => setAnsicht({ typ: id as 'uebersicht' | 'auftraege' | 'themensteuerung' })}
+              size="md"
+            />
           </div>
         </div>
       )}

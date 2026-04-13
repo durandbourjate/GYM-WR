@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
@@ -407,39 +408,23 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
       {/* === Tab-Leiste === */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto w-full px-4">
-          <nav className="flex gap-0 overflow-x-auto" role="tablist">
-            {TAB_CONFIG.map(({ key, label, icon }) => {
-              const verfuegbar = istTabVerfuegbar(key, phase)
-              const aktiv = activeTab === key
+        <div className="max-w-7xl mx-auto w-full px-4 py-2">
+          <TabBar
+            tabs={TAB_CONFIG.map(({ key, label, icon }) => {
               const istAktuellePhase = phaseZuTab(phase) === key
-              return (
-                <button
-                  key={key}
-                  role="tab"
-                  aria-selected={aktiv}
-                  disabled={!verfuegbar}
-                  onClick={() => wechsleTab(key)}
-                  className={`relative min-h-[44px] px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer
-                    ${aktiv
-                      ? 'text-slate-800 dark:text-slate-100 border-b-2 border-slate-800 dark:border-slate-200'
-                      : verfuegbar
-                        ? 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 border-b-2 border-transparent'
-                        : 'text-slate-300 dark:text-slate-600 cursor-not-allowed border-b-2 border-transparent'
-                    }`}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <span>{icon}</span>
-                    <span>{label}</span>
-                    {/* Phasen-Indikator: kleiner Punkt auf dem Tab der aktuellen Phase */}
-                    {istAktuellePhase && !aktiv && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    )}
-                  </span>
-                </button>
-              )
+              return {
+                id: key,
+                label: `${icon} ${label}`,
+                disabled: !istTabVerfuegbar(key, phase),
+                icon: istAktuellePhase && activeTab !== key
+                  ? <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  : undefined,
+              }
             })}
-          </nav>
+            activeTab={activeTab}
+            onTabChange={(id) => wechsleTab(id as DurchfuehrenTab)}
+            size="md"
+          />
         </div>
       </div>
 

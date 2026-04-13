@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { TabBar } from '../ui/TabBar'
 import { useAuthStore } from '../../store/authStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDefinition } from '../../types/stammdaten'
@@ -61,20 +62,13 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         </div>
 
         {/* Tabs */}
-        <div className="px-6 pt-3 flex gap-4 border-b border-slate-200 dark:border-slate-700">
-          {sichtbareTabs.map(t => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`pb-2 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-                tab === t.key
-                  ? 'border-slate-800 text-slate-800 dark:border-slate-200 dark:text-slate-200'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+        <div className="px-6 pt-3">
+          <TabBar
+            tabs={sichtbareTabs.map(t => ({ id: t.key, label: t.label }))}
+            activeTab={tab}
+            onTabChange={(id) => setTab(id as EinstellungenTab)}
+            size="sm"
+          />
         </div>
 
         <div className="p-6">

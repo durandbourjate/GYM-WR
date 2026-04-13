@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { useKorrekturAutoSave } from '../../../hooks/useKorrekturAutoSave.ts'
@@ -213,22 +214,15 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
 
         {/* Modus-Toggle + Sortierung */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
-            <button
-              onClick={() => setKorrekturModus('schueler')}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer border-r border-slate-300 dark:border-slate-600
-                ${korrekturModus === 'schueler' ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-            >
-              SuS-Ansicht
-            </button>
-            <button
-              onClick={() => setKorrekturModus('frage')}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer
-                ${korrekturModus === 'frage' ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
-            >
-              Fragen-Ansicht
-            </button>
-          </div>
+          <TabBar
+            tabs={[
+              { id: 'schueler', label: 'SuS-Ansicht' },
+              { id: 'frage', label: 'Fragen-Ansicht' },
+            ]}
+            activeTab={korrekturModus}
+            onTabChange={(id) => setKorrekturModus(id as 'schueler' | 'frage')}
+            size="sm"
+          />
           {korrekturModus === 'schueler' && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500 dark:text-slate-400">Sortierung:</span>
