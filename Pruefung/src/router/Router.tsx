@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react'
 const App = lazy(() => import('../App'))
 const LoginScreen = lazy(() => import('../components/LoginScreen'))
 const LPStartseite = lazy(() => import('../components/lp/LPStartseite'))
+const Home = lazy(() => import('../components/lp/Home'))
 
 const basePath = import.meta.env.BASE_URL
 
@@ -59,13 +60,22 @@ function SuSFlow() {
 
 /**
  * LP-Flow: Rendert LPStartseite mit URL-Sync.
- * LPStartseite liest aus lpNavigationStore, der per useLPRouteSync
- * mit der URL synchronisiert wird.
  */
 function LPFlow() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <LPStartseite />
+    </Suspense>
+  )
+}
+
+/**
+ * Home-Flow: Rendert Home-Dashboard.
+ */
+function HomeFlow() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <Home />
     </Suspense>
   )
 }
@@ -85,7 +95,7 @@ export function AppRouter() {
         } />
 
         {/* LP-Bereich: Alle Routes rendern LPStartseite (mit URL-Sync) */}
-        <Route path="/home" element={<LPGuard><LPFlow /></LPGuard>} />
+        <Route path="/home" element={<LPGuard><HomeFlow /></LPGuard>} />
         <Route path="/pruefung" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/pruefung/tracker" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/pruefung/monitoring" element={<LPGuard><LPFlow /></LPGuard>} />
