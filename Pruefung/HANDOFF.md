@@ -6,6 +6,45 @@
 
 ---
 
+## Session 103 — Design-Bundle 6+7: Einheitliches Design-System (14.04.2026)
+
+### Stand
+Auf Branch `feature/design-system`. tsc ✅ | 236 Tests ✅ | Build ✅. Browser-Test ausstehend.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| 1 | **CSS-Grundlagen** — `.input-pflicht` (violetter Rahmen+BG), Focus-Ring global violet-500, Elevation Dark-Mode-Fixes | index.css |
+| 2 | **TabBar-Komponente** — Shared Pill-Tabs mit violettem Akzent, ARIA, Keyboard-Navigation. 6 Tests. | TabBar.tsx, TabBar.test.tsx |
+| 3 | **7 Tab-Migrationen** — Alle manuellen Tabs durch TabBar ersetzt: LPHeader, EinstellungenPanel, AdminDashboard (Üben), AdminSettings, PruefungsComposer, DurchfuehrenDashboard, KorrekturDashboard | 7 Dateien |
+| 4 | **ResizableSidebar** — Drag-Resize + Maximize, Pointer Events (Touch-kompatibel), localStorage-Persistenz. 4 Tests. | ResizableSidebar.tsx, ResizableSidebar.test.tsx |
+| 5 | **EinstellungenPanel → ResizableSidebar** — Fixes Slide-Over durch Side-by-Side ersetzt. Eltern-Container (LPStartseite, DurchfuehrenDashboard) auf Flex-Layout. | EinstellungenPanel.tsx, LPStartseite.tsx, DurchfuehrenDashboard.tsx |
+| 6 | **Button ki-Variante** — Blau wenn KI-API aktiv, Grau wenn inaktiv. `getVariantClasses()` Funktion. | Button.tsx |
+| 7 | **KI-Buttons blau/grau** — `InlineAktionButton` mit `kiAktiv`-Prop | KIBausteine.tsx |
+| 8 | **Pflichtfelder violett** — Fragetext, MC-Optionen, R/F-Aussagen, Punktzahl mit `.input-pflicht` | 4 Editor-Dateien |
+| 9 | **Korrektur-Punkte violett** — Focus-Ring violet-500, unbewertete Felder hervorgehoben | 4 Korrektur-Dateien |
+| 10 | **Kontrast-Fixes** — 15 gezielte Fixes: Close-Buttons, Form-Labels, Icons von slate-400/500 auf slate-600/300 | 11 Dateien |
+
+### Neue Shared Components
+- **`src/components/ui/TabBar.tsx`** — Pill-Tabs, Props: `tabs, activeTab, onTabChange, size`
+- **`src/components/ui/ResizableSidebar.tsx`** — Props: `title, onClose, side, defaultWidth, minWidth, maxWidth, storageKey`
+
+### Design-Entscheidungen (validiert via Mockups)
+- **Violett (#8b5cf6)** identisch in Light und Dark Mode
+- **Farb-Rollen:** Violett = Navigation/Focus, Blau = KI (aktiv), Slate = Primary/Secondary
+- **Inaktive Tabs:** slate-700 (Light) / slate-300 (Dark) für besseren Kontrast
+- **Icons/Labels:** slate-600 (Light) / slate-300 (Dark)
+- **Mockups:** `.superpowers/brainstorm/session-1776118380/` (6 HTML-Dateien)
+
+### Kontext
+- **Spec:** `docs/superpowers/specs/2026-04-14-design-bundle-6-7-design.md`
+- **Plan:** `docs/superpowers/plans/2026-04-14-design-bundle-6-7.md`
+- **Scope-Abgrenzung:** Frageneditor-Sidebar und Korrektur-Sidebar NICHT auf ResizableSidebar migriert — nur EinstellungenPanel als erster Anwender.
+- **Nächste Session:** Browser-Test, dann Merge auf main. Danach: weitere Sidebar-Migrationen, KI-Bild-Generator Backend, oder offene Bugs.
+
+---
+
 ## Session 102 — Bundle 5: Bildfragen-Editor (14.04.2026)
 
 ### Stand
@@ -221,8 +260,7 @@ Auf `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 | **3** | Übungs-Themen UX (N9 max 5 aktuelle, N11 SuS-Sortierung, N12 LP-Status, N14 Einstellungen verschieben) | ✅ S100 |
 | **4** | Layout-Umbau Durchführen (N15 Tabs+Suche+CTA, N16 Buttons konsistent) | ✅ S101 |
 | **5** | Bildfragen-Editor (N7 violette Pins/Zonen, N19 Bild-Persistenz) | ✅ S102 |
-| **6** | KI-UI (N20 Buttons/Farben/Cursor) | Offen |
-| **7** | Design-Konzept (N8 Design-Schliff, N21 violette Felder, N4 resizable Sidebar) — braucht Mockups | Offen |
+| **6+7** | Design-Bundle: KI-UI + Design-Konzept (N4 resizable Sidebar, N8 Design-Schliff, N20 KI-Buttons, N21 violette Felder) | ✅ S103 |
 
 ### Architektur / Features
 
