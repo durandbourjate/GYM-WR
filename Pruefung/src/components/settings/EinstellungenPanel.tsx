@@ -3,6 +3,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDefinition } from '../../types/stammdaten'
 import LernzielTab from './LernzielTab'
+import FavoritenTab from './FavoritenTab'
 
 import type { EinstellungenTab } from '../../store/lpNavigationStore'
 
@@ -35,6 +36,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   const tabs: { key: EinstellungenTab; label: string; sichtbar: boolean }[] = [
     { key: 'profil', label: 'Mein Profil', sichtbar: true },
     { key: 'lernziele', label: 'Lernziele', sichtbar: true },
+    { key: 'favoriten', label: 'Favoriten', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
   ]
 
@@ -77,6 +79,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
           )}
           {tab === 'lernziele' && user?.email && (
             <LernzielTab email={user.email} />
+          )}
+          {tab === 'favoriten' && (
+            <FavoritenTab />
           )}
           {tab === 'admin' && admin && user?.email && (
             <AdminTab email={user.email} stammdaten={stammdaten} />
