@@ -71,7 +71,7 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
               value={opt.text}
               onChange={(e) => updateOption(i, { text: e.target.value })}
               placeholder={`Option ${String.fromCharCode(97 + i)}...`}
-              className="input-field flex-1"
+              className="input-field input-pflicht flex-1"
             />
 
             {/* Erklärung (optional) */}

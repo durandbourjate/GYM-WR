@@ -86,7 +86,7 @@ export default function FragetextSection({
         onChange={(e) => setFragetext(e.target.value)}
         rows={4}
         placeholder="Formulieren Sie die Frage... (Markdown: **fett**, *kursiv*)"
-        className="input-field resize-y"
+        className="input-field input-pflicht resize-y"
       />
       <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
         Tipp: **fett** für Hervorhebungen, \n für Absätze, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">$x^2$</code> für LaTeX inline, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">$$\sum_&#123;i=1&#125;^n$$</code> für Block, <code className="bg-slate-100 dark:bg-slate-700 px-1 rounded">```python</code> für Code-Blöcke

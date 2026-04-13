@@ -204,7 +204,7 @@ export default function MetadataSection({
         </Feld>
         <Feld label={bewertungsrasterAktiv ? 'Punkte (aus Bewertungsraster)' : 'Punkte *'}>
           <input type="number" value={punkte} onChange={(e) => setPunkte(parseInt(e.target.value) || 0)}
-            min={1} max={20} className="input-field"
+            min={1} max={20} className="input-field input-pflicht"
             disabled={bewertungsrasterAktiv}
             title={bewertungsrasterAktiv ? 'Punkte werden automatisch aus dem Bewertungsraster berechnet' : undefined} />
         </Feld>

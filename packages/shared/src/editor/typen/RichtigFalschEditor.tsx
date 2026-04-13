@@ -55,7 +55,7 @@ export default function RichtigFalschEditor({ aussagen, setAussagen, titelRechts
               value={a.text}
               onChange={(e) => updateAussage(i, { text: e.target.value })}
               placeholder={`Aussage ${i + 1}...`}
-              className="input-field flex-1"
+              className="input-field input-pflicht flex-1"
             />
 
             {/* Erklärung (optional) */}
