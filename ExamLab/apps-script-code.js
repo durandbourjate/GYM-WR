@@ -7384,7 +7384,7 @@ function lernplattformSpeichereFrage(body) {
 
   // Auth + Admin-Check (über Helper)
   var auth = istGruppenAdmin_(body, gruppeId);
-  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
+  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Kurs-Leitung)' });
   var gruppe = auth.gruppe;
 
   // Fachbereich bestimmt den Tab in der Fragenbank
@@ -7528,7 +7528,7 @@ function lernplattformLoescheFrage(body) {
 
   // Auth + Admin-Check (über Helper)
   var auth = istGruppenAdmin_(body, gruppeId);
-  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Admin)' });
+  if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Kurs-Leitung)' });
   var gruppe = auth.gruppe;
 
   try {
@@ -8117,10 +8117,13 @@ function lernplattformSpeichereEinstellungen(body) {
   for (var i = 1; i < daten.length; i++) {
     if (String(daten[i][idIdx]).trim() !== gruppeId) continue;
 
-    // Admin-Prüfung
+    // Berechtigungsprüfung: nur die Kurs-Leitung (Gruppen-Besitzer) darf Einstellungen speichern
     var adminEmail = String(daten[i][adminEmailIdx] || '').toLowerCase().trim();
     if (adminEmail !== email) {
-      return jsonResponse({ success: false, error: 'Keine Berechtigung: Nur Admin darf Einstellungen speichern' });
+      return jsonResponse({
+        success: false,
+        error: 'Diese Einstellungen können nur von der Kurs-Leitung gespeichert werden. Kurs-Leitung: ' + adminEmail,
+      });
     }
 
     // 'einstellungen'-Spalte erstellen falls nicht vorhanden

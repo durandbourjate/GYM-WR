@@ -116,9 +116,9 @@ export default function MitgliederTab() {
                         ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50'
                         : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                     } ${istAdmin && adminAnzahl <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    title={istAdmin ? (adminAnzahl <= 1 ? 'Letzter Admin' : 'Zu Lernend herabstufen') : 'Zu Admin hochstufen'}
+                    title={istAdmin ? (adminAnzahl <= 1 ? 'Letzte Kurs-Leitung — kann nicht entfernt werden' : 'Zu Lernend herabstufen') : 'Zu Kurs-Leitung hochstufen'}
                   >
-                    {istAdmin ? 'Admin' : 'Lernend'}
+                    {istAdmin ? 'Kurs-Leitung' : 'Lernend'}
                   </button>
                 )}
                 {rolleStatus[m.email] === 'ok' && <span className="text-xs text-green-500">✓</span>}

@@ -102,7 +102,7 @@ export default function AppShell({ children, onExamLabHome, onModusWechsel }: Pr
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
               {user?.name || user?.vorname}
               {' · '}
-              {istAdmin ? 'Admin' : 'Schüler/in'}
+              {istAdmin ? 'Kurs-Leitung' : 'Schüler/in'}
               {aktiveGruppe && gruppen.length > 1 ? (
                 <>
                   {' — '}
