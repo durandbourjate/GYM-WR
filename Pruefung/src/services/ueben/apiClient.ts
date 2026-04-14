@@ -16,7 +16,7 @@ export async function uebenPost<T = unknown>(
   action: string,
   payload: Record<string, unknown>,
   sessionToken?: string,
-  timeoutMs = 30000
+  timeoutMs = 60000
 ): Promise<T | null> {
   if (!APPS_SCRIPT_URL) return null
 

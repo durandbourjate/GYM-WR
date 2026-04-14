@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -29,6 +29,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
   const { gruppen, aktiveGruppe, ladeGruppen, waehleGruppe, ladeStatus } = useUebenGruppenStore()
   const storeMitglieder = useUebenGruppenStore(s => s.mitglieder)
   const [loginStatus, setLoginStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
+  const loginGestartetRef = useRef(false)
 
   // Demo-Modus: Kein Backend-Login nötig, Mock-Daten verwenden
   useEffect(() => {
@@ -60,6 +61,8 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
   // LP-Login auf dem Üben-Backend ausführen um einen gültigen Session-Token zu bekommen
   useEffect(() => {
     if (!pruefungUser?.email || loginStatus !== 'idle' || istDemoModus || !apiService.istKonfiguriert()) return
+    if (loginGestartetRef.current) return
+    loginGestartetRef.current = true
     setLoginStatus('laden')
 
     async function login() {
@@ -104,6 +107,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
         setLoginStatus('fertig')
       } catch (error) {
         console.error('[UebungsToolView] LP-Login Fehler:', error)
+        loginGestartetRef.current = false
         setLoginStatus('fehler')
       }
     }
@@ -151,7 +155,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
             Das Backend konnte nicht erreicht werden.
           </p>
           <button
-            onClick={() => setLoginStatus('idle')}
+            onClick={() => { loginGestartetRef.current = false; setLoginStatus('idle') }}
             className="mt-4 px-4 py-2 text-sm bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 cursor-pointer"
           >
             Erneut versuchen

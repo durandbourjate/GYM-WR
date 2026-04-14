@@ -7,7 +7,7 @@ export function erstelleDemoMonitoring(): MonitoringDaten {
 
   return {
     pruefungId: 'demo',
-    pruefungTitel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
+    pruefungTitel: 'Einführungsprüfung — Lerne ExamLab kennen',
     gesamtSus: 8,
     aktualisiert: jetzt.toISOString(),
     schueler: [
