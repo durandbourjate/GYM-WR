@@ -191,6 +191,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
   setFehler: (fehler: string | null) => set({ fehler, ladeStatus: fehler ? 'fehler' : 'idle' }),
 }))
 
+// Temporäres Debug-Hook für Staging-Troubleshooting (Cluster C Demo-Bugs).
+// TODO: Nach Verifikation aller Demo-Flows entfernen.
+if (typeof window !== 'undefined') {
+  ;(window as unknown as { __auth?: unknown }).__auth = useAuthStore
+}
+
 // Session via sessionStorage (Tab-gebunden, überlebt Reload aber nicht Tab-Schliessung)
 function saveSession(user: AuthUser): void {
   try {
