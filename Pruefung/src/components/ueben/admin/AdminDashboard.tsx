@@ -4,8 +4,9 @@ import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import AdminUebersicht from './AdminUebersicht'
 import AdminKindDetail from './AdminKindDetail'
 import AdminThemaDetail from './AdminThemaDetail'
-import AdminAuftraege from './AdminAuftraege'
 import AdminThemensteuerung from './AdminThemensteuerung'
+// AdminAuftraege entfernt (Bundle 8) — Aufträge werden in LearningView verwaltet.
+// Store bleibt bestehen für SuS-Anzeige im Dashboard.
 // AdminFragenbank entfernt — Fragenbank ist über LPHeader erreichbar
 
 interface AdminDashboardProps {
@@ -15,7 +16,6 @@ interface AdminDashboardProps {
 
 type AdminAnsicht =
   | { typ: 'uebersicht' }
-  | { typ: 'auftraege' }
   | { typ: 'themensteuerung' }
   | { typ: 'kind'; email: string; name: string }
   | { typ: 'thema'; email: string; name: string; fach: string; thema: string }
@@ -32,7 +32,7 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
     }
   }
 
-  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'auftraege' || ansicht.typ === 'themensteuerung'
+  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'themensteuerung'
 
   return (
     <div>
@@ -58,11 +58,10 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
             <TabBar
               tabs={[
                 { id: 'uebersicht', label: 'Übersicht' },
-                { id: 'auftraege', label: 'Aufträge' },
                 { id: 'themensteuerung', label: 'Themen' },
               ]}
               activeTab={ansicht.typ}
-              onTabChange={(id) => setAnsicht({ typ: id as 'uebersicht' | 'auftraege' | 'themensteuerung' })}
+              onTabChange={(id) => setAnsicht({ typ: id as 'uebersicht' | 'themensteuerung' })}
               size="md"
             />
           </div>
@@ -84,7 +83,6 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
             onThemaKlick={(fach, thema) => setAnsicht({ typ: 'thema', email: ansicht.email, name: ansicht.name, fach, thema })}
           />
         )}
-        {ansicht.typ === 'auftraege' && <AdminAuftraege />}
         {ansicht.typ === 'themensteuerung' && <AdminThemensteuerung />}
         {ansicht.typ === 'thema' && (
           <AdminThemaDetail
