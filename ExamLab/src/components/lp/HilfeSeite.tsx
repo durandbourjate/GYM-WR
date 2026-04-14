@@ -39,9 +39,6 @@ export default function HilfeSeite({ onSchliessen }: Props) {
       mode="overlay"
       onClose={onSchliessen}
       topOffset={headerH}
-      defaultWidth={1152}
-      minWidth={400}
-      maxWidth={2400}
       storageKey="hilfe-breite"
     >
       <div ref={panelRef} className="flex flex-col h-full">

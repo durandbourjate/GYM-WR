@@ -657,9 +657,6 @@ export default function SharedFragenEditor({
       mode="overlay"
       onClose={onAbbrechen}
       topOffset={headerH}
-      defaultWidth={1008}
-      minWidth={480}
-      maxWidth={2400}
       storageKey="frageneditor-breite"
     >
       <div ref={panelRef} className="flex flex-col h-full">

@@ -462,9 +462,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       mode="overlay"
       onClose={onSchliessen}
       topOffset={headerH}
-      defaultWidth={1008}
-      minWidth={600}
-      maxWidth={2400}
       storageKey="fragensammlung-breite"
     >
       <div ref={panelRef} className="flex flex-col h-full">

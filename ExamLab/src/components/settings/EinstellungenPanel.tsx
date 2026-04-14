@@ -62,9 +62,6 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
       onClose={onSchliessen}
       topOffset={headerH}
       storageKey="einstellungen-breite"
-      defaultWidth={480}
-      minWidth={360}
-      maxWidth={2400}
     >
       <div className="p-4">
       {/* Tabs */}

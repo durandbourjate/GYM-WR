@@ -24,6 +24,7 @@ interface Props {
   onEinstellungen?: () => void
   fragensammlungOffen?: boolean
   hilfeOffen?: boolean
+  einstellungenOffen?: boolean
   /** Breadcrumb-Pfad, z.B. [{label: 'Prüfen'}, {label: 'Einrichtungsprüfung'}] */
   breadcrumbs?: { label: string; aktion?: () => void }[]
 }
@@ -35,7 +36,7 @@ const HEADER_TABS = [
   { id: 'fragensammlung', label: 'Fragensammlung' },
 ]
 
-export default function LPHeader({ untertitel, zurueck, statusText, aktionsButtons, modus, onModusChange, onFragensammlung, onHilfe, onEinstellungen, fragensammlungOffen, hilfeOffen, breadcrumbs }: Props) {
+export default function LPHeader({ untertitel, zurueck, statusText, aktionsButtons, modus, onModusChange, onFragensammlung, onHilfe, onEinstellungen, fragensammlungOffen, hilfeOffen, einstellungenOffen, breadcrumbs }: Props) {
   const abmelden = useAuthStore((s) => s.abmelden)
   const navigate = useNavigate()
   const location = useLocation()
@@ -52,6 +53,7 @@ export default function LPHeader({ untertitel, zurueck, statusText, aktionsButto
   }, [fragensammlungOffen, hilfeOffen, onFragensammlung, onHilfe])
 
   const buttonClass = 'px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer'
+  const buttonActiveClass = 'px-3 py-1.5 text-sm font-medium text-slate-800 dark:text-slate-100 bg-slate-200 dark:bg-slate-700 rounded-lg transition-colors cursor-pointer'
 
   // Dashboard-Modus: Tabs werden angezeigt
   const istDashboard = modus !== undefined && onModusChange !== undefined
@@ -124,17 +126,17 @@ export default function LPHeader({ untertitel, zurueck, statusText, aktionsButto
           {aktionsButtons}
           {onFragensammlung && !(istDashboard && !zurueck) && (
             <Tooltip text="Fragensammlung öffnen" position="bottom">
-              <button onClick={onFragensammlung} className={buttonClass}>Fragensammlung</button>
+              <button onClick={onFragensammlung} className={fragensammlungOffen ? buttonActiveClass : buttonClass}>Fragensammlung</button>
             </Tooltip>
           )}
           {onEinstellungen && (
             <Tooltip text="Einstellungen" position="bottom">
-              <button onClick={onEinstellungen} className={buttonClass}>⚙</button>
+              <button onClick={onEinstellungen} className={einstellungenOffen ? buttonActiveClass : buttonClass}>⚙</button>
             </Tooltip>
           )}
           {onHilfe && (
             <Tooltip text="Hilfe & Anleitungen" position="bottom">
-              <button onClick={onHilfe} className={buttonClass}>Hilfe</button>
+              <button onClick={onHilfe} className={hilfeOffen ? buttonActiveClass : buttonClass}>Hilfe</button>
             </Tooltip>
           )}
           <FeedbackButton
