@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }: Props) {
-  const { ladeGruppenFortschritt } = useUebenFortschrittStore()
+  const ladeGruppenFortschritt = useUebenFortschrittStore(s => s.ladeGruppenFortschritt)
   const [fragen, setFragen] = useState<Frage[]>([])
 
   useEffect(() => {
@@ -20,8 +20,18 @@ export default function AdminKindDetail({ gruppeId, email, name, onThemaKlick }:
     uebenFragenAdapter.ladeFragen(gruppeId).then(setFragen).catch(() => {})
   }, [gruppeId, ladeGruppenFortschritt])
 
-  const fortschritte = useUebenFortschrittStore(s => s.getFortschrittFuerSuS(gruppeId, email))
-  const sessions = useUebenFortschrittStore(s => s.getSessionsFuerSuS(gruppeId, email))
+  // Rohdaten selektieren (stabile Referenz) und im Komponenten-Scope filtern,
+  // damit Zustand-Selector kein neues Array pro Render liefert (React #185).
+  const gruppenFortschritt = useUebenFortschrittStore(s => s.gruppenFortschritt[gruppeId])
+  const gruppenSessions = useUebenFortschrittStore(s => s.gruppenSessions[gruppeId])
+  const fortschritte = useMemo(
+    () => (gruppenFortschritt || []).filter(fp => fp.email === email),
+    [gruppenFortschritt, email]
+  )
+  const sessions = useMemo(
+    () => (gruppenSessions || []).filter(s => s.email === email),
+    [gruppenSessions, email]
+  )
 
   // Fragen-Lookup
   const fragenMap = useMemo(() => {

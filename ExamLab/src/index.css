@@ -81,11 +81,55 @@ html:not(.dark) {
 .filter-btn {
   @apply text-xs px-2 py-1.5 rounded-lg border transition-colors cursor-pointer
          border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300
-         hover:bg-slate-100 dark:hover:bg-slate-700;
+         hover:bg-slate-200 dark:hover:bg-slate-700 hover:border-slate-400 dark:hover:border-slate-500;
 }
 .filter-btn-active {
   @apply bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100
          border-slate-400 dark:border-slate-500 font-semibold shadow-sm;
+}
+
+/* ====================================================================== */
+/* Einheitliches Hover/Active-Pattern für klickbare Kacheln und Tabs       */
+/* ====================================================================== */
+/* Grundsatz: Hover = Hintergrund leicht heller + Unterstrich (slate),     */
+/*           Active = Hintergrund heller + Unterstrich violett             */
+/* Varianten:                                                              */
+/*   .hover-card         — Standard (neutraler Violett-Akzent)             */
+/*   .hover-card-active  — Active-Zustand dazu                             */
+/*   .hover-card-fach    — Hover-Unterstrich nutzt var(--c-primary)        */
+/*   .hover-tab          — Schmaler für Tabs (kein Padding-Shift)          */
+/*   .hover-tab-active   — Active-Zustand für Tabs                         */
+/*                                                                         */
+/* Konvention: Die Klassen fügen NUR transition, bg-Hover und border-b     */
+/* hinzu. Grösse/Padding/Rundung bleibt beim Konsumenten.                  */
+/* border-b-2 liegt innerhalb der Rundung (rounded-xl überdeckt).          */
+/* ====================================================================== */
+.hover-card {
+  @apply transition-colors cursor-pointer border-b-2 border-transparent;
+  @apply hover:bg-slate-50 hover:border-slate-400;
+  @apply dark:hover:bg-slate-700/50 dark:hover:border-slate-500;
+}
+.hover-card-active {
+  @apply bg-slate-50 dark:bg-slate-700/50;
+  border-bottom-color: rgb(139 92 246); /* violet-500 */
+}
+/* Fach-Variante: Unterstrich nimmt --c-primary (wenn gesetzt), sonst slate-400 */
+.hover-card-fach {
+  @apply transition-colors cursor-pointer border-b-2 border-transparent;
+  @apply hover:bg-slate-50 dark:hover:bg-slate-700/50;
+}
+.hover-card-fach:hover {
+  border-bottom-color: var(--c-primary, #94a3b8); /* slate-400 fallback */
+}
+
+.hover-tab {
+  @apply transition-colors cursor-pointer border-b-2 border-transparent;
+  @apply hover:bg-slate-50 hover:border-slate-400;
+  @apply dark:hover:bg-slate-700/50 dark:hover:border-slate-500;
+}
+.hover-tab-active {
+  @apply bg-slate-50 dark:bg-slate-700/50;
+  border-bottom-color: rgb(139 92 246); /* violet-500 */
 }
 
 /* Dark Mode: Stärkere Schatten für bessere Sichtbarkeit */

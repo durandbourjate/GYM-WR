@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 // ExamLab Problemmeldungen — Sheet "ExamLab Problemmeldungen", Tab "ExamLab-Problemmeldungen"
 const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSxIOqGhAbnNM2-Y4ulgBY3usVEC6cKT4S5sEk4sf2CMognF5qxopj3FJtnTpm3nq7TQ/exec'
@@ -57,6 +57,16 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
     reset()
     onClose()
   }, [reset, onClose])
+
+  // ESC schliesst das Modal (einheitlich mit BaseDialog / Sidebars)
+  useEffect(() => {
+    if (!isOpen) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose()
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [isOpen, handleClose])
 
   const handleSend = useCallback(() => {
     if (!typ) { setError('Bitte wähle Problem oder Wunsch.'); return }
