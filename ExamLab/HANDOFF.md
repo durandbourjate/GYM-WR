@@ -6,62 +6,53 @@
 
 ---
 
-## Session 108 — Feedback-Backlog LP/SuS-Test 14.04.2026 (geplant)
+## Session 108 — Cluster C (Demo-Modus) + Cluster A (SuS-Üben Layout) (14.04.2026)
 
 ### Stand
-Branch `fix/cluster-c-demo-modus` erstellt. Cluster C wird zuerst angegangen. Restliche Cluster als Backlog dokumentiert.
+Bereit für main-Merge. Auf preview vollständig im Browser verifiziert (Demo-LP + Demo-SuS).
+tsc ✅ | 236 Tests ✅ | Build ✅.
 
-### Backlog — ~25 Punkte aus LP/SuS-Browser-Test (14.04.2026)
+### Backlog-Status (aus LP/SuS-Test 14.04.)
+- **Cluster A (SuS-Üben Layout): A1–A7 ALLE GRÜN** ✅
+- **Cluster C (Demo-Modus): ALLE GRÜN** ✅
+- Cluster B/D/E offen (siehe unten)
 
-#### Cluster A — SuS-Üben Layout/UX
-- A1 Nach Übung "Alle"-Filter statt letzter Fach-Filter
-- A2 Suchfeld auf Zeile mit "Gemischte Übung"/"Repetition", rechtsbündig
-- A3 "Alle Themen" + Sortier-Dropdown auf Fachfilter-Zeile, rechtsbündig
-- A4 Fächer-Überschriften ein-/ausklappbar
-- A5 "Für dich empfohlen" orange → violett (Konsistenz)
-- A6 Sub-Tabs (Themen/Fortschritt/Ergebnisse) linksbündig wie LP
-- A7 Mein-Fortschritt: nur freigeschaltete Themen, ausklappbar mit Fehler-Details
+### Cluster C — Root Causes & Fixes
+| Bug | Root Cause | Fix |
+|-----|-----------|-----|
+| C1 Demo-LP-URL `/sus` | Folgebug von SW-Cache + istDemoModus-Verlust nach Reload | siehe C4 |
+| C2 Fragensammlung leer | `einrichtung`-Tag-Filter in 6 Stellen | `useFragenFilter`+5 weitere: !istDemo Guard |
+| C3 Favoriten leer | demoStarten seedet Favoriten nicht | useFavoritenStore.setState im Demo |
+| C4 "Backend nicht erreichbar" | istDemoModus aus sessionStorage entfernt nach Reload | restoreDemoFlag aus User-E-Mail (DEMO-EMAILS) |
+| C5 Üben keine Übungen (admin-typo) | demo.lp vs demo-lp in UebungsToolView | sed-Fix |
+| C6 "Gruppen werden geladen" | Folgebug C4 | identisch |
+| C7 Abmelden hängt | nur uebenAuthStore | beide Stores + window.location |
+| Neu: weisser Bildschirm /staging/sus | 404.html hatte /ExamLab/ hardcoded | dynamische Bases |
+| Neu: TDZ "Vp before init" | DEMO_EMAILS const nach create() | inline in restoreDemoFlag |
+| Neu: Demo-LP "0 Themen" Üben | 3 weitere einrichtung-Filter im Üben-Admin | Demo-Guard in 3 Stellen |
+| Neu: Demo-SuS keine Übungsfragen | uebenFragenAdapter ruft Backend für 'demo-gruppe' | Lazy-import einrichtungsFragen |
+| Neu: Logout URL hängt → Re-Login Loop | abmelden hatte kein Redirect | window.location.href = /login |
+| Neu: SuS direkt in Prüfung statt SuSStartseite | App.tsx Guard zu strikt | Deep-Link-Erkennung /sus/ueben\|pruefen |
+| Neu: AbgabeBestätigung-Link öffnete Prüfung | href = parent-Pfad | href = /sus/ueben (SuS) bzw. /favoriten (LP) |
+| Konsistenz: Daten "Einrichtung" vs UI "Einführung" | Demo-Daten hatten alte Bezeichnung | Tag/Thema umbenannt + Filter abwärtskompatibel |
 
-#### Cluster B — Design-Konsistenz global
-- B1 LP-Sidebars: Resize-Rand überall violett, einheitliche Min/Max-Breiten (Einstellungen ~50%, Hilfe/Fragensammlung breiter)
-- B2 Hover-Zustände konsistent (Tabs/Buttons überall gleich)
-- B3 SuS-Hilfe: blaue Tipp-Hervorhebungen neutralisieren (Blau = KI-reserviert)
-- B4 Problem-melden-Icon: Ausrufezeichen statt Sprechblase
-- B5 Icon-Audit: Übersicht aller Icons + gemeinsame Designsprache (eigene Session)
+### Cluster A — Layout/UX-Fixes (Dashboard.tsx, EmpfehlungsKarte, SuSAnalyse)
+| # | Fix |
+|---|-----|
+| A1 | zurueckZuThemen resettet Fach-Filter |
+| A2 | Suchfeld in Mix/Repetition-Zeile rechtsbündig |
+| A3 | "Alle Themen"-Toggle + Sortier in Fach-Filter-Zeile rechtsbündig |
+| A4 | Fach-Sektionen ein-/ausklappbar (localStorage) |
+| A5 | "Für dich empfohlen" + "Aktuelle Themen" amber → violett |
+| A6 | Sub-Tabs linksbündig (analog LP) |
+| A7 | SuSAnalyse: nur freigeschaltete Themen + ausklappbar mit Top-5 schwierigsten Fragen |
 
-#### Cluster C — Demo-Modus defekt (🚧 teilweise gefixt — Stand Staging-Test 14.04.)
-- **GRÜN:** C3 Favoriten, C4 Backend-Fehler, C5 Üben keine Übungen, C6 Gruppen hängen
-- **ROT:** C1 Demo-LP-URL bleibt `/staging/sus`, C2 Fragensammlung leer, neu: Üben-Themen leer, neu: SuS nach Abgabe "Zurück zu ExamLab" → weisser Bildschirm
-- Nach SW-Unregister erneut testen — falls Bugs bleiben: Console/Netzwerk-Logs prüfen
+### Infrastructure-Patches direkt auf main (notwendig für Staging-Build)
+- `0ba9af3` 404.html: dynamische Base (ExamLab + staging)
+- `5db1c14` CI: Staging-Build installiert packages/shared deps
 
-#### Cluster C — Backlog-Referenz (ursprüngliche Liste)
-- C1 Demo-LP-Login öffnet `/ExamLab/sus` statt LP-Route
-- C2 Demo-LP Fragensammlung: keine Fragen
-- C3 Demo-LP Favoriten leer (Einführungsprüfung als Default-Favorit)
-- C4 Demo-LP Einrichtungsprüfung starten → "Backend nicht erreichbar"
-- C5 Demo-LP-Üben durchführen: keine Übungen trotz Einführungsprüfung
-- C6 Demo-LP-Üben-Übungen: hängt bei "Gruppen werden geladen"
-- C7 Demo-SuS nach Abgabe: "Keine Gruppen"-Feld + roter Abmelden-Link loggt nicht sauber aus
-
-#### Cluster D — Routing/URLs
-- D1 Hard-Reload nach Logout: SuS-URL bleibt `/sus/ueben`, LP bleibt `/login`
-- D2 LP-URL sollte `/lp/...` analog `/sus/...` sein
-- D3 Demo-SuS Logout → URL `/ExamLab/sus/pruefen` falsch
-
-#### Cluster E — LP-Bereich
-- E1 LP-Favoriten: Prüfungs-Favoriten-Kacheln kleiner als andere (inkonsistent)
-- E2 LP-Prüfen-Analyse zählt Einführungsprüfung doppelt (wegen Favorit?)
-- E3 LP-Üben-Übungen: Default-Tab "Themen" statt "Übersicht"; Zweck Übersicht-Tab klären
-- E4 LP-Hilfe: Mastery-System dokumentieren
-- E5 LP-Fragensammlung: Excel-Export ergänzen, KI-PDF-Import umsetzen (Platzhalter), "In Pools exportieren" notieren für späteres Löschen nach Pool-Abschaltung
-
-### Reihenfolge
-1. **Cluster C** (Demo-Modus) — blockiert Demo-Präsentationen, mehrere Bugs evtl. mit gemeinsamer Ursache (Demo-Seeds fehlen, Routing)
-2. **Cluster A** (SuS-Üben-Layout) — zusammenhängender Block
-3. **Cluster D** (Routing) — klein, kombiniert mit C
-4. **Cluster B1–B4** (Design-Polish)
-5. **Cluster E** (LP-Fixes + neue Features)
-6. **B5 Icon-Audit** + **E5 KI-PDF-Import** — eigene Sessions
+### Offen (Cluster B/D/E aus Backlog)
+Siehe Backlog-Sektion in Session 107-Block weiter unten.
 
 ---
 
