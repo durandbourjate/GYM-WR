@@ -154,21 +154,24 @@ export default function AdminThemensteuerung() {
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
             !filterFach
               ? 'bg-slate-800 text-white border-slate-800 dark:bg-slate-200 dark:text-slate-800'
-              : 'text-slate-500 border-slate-300 dark:border-slate-600 hover:border-slate-400'
+              : 'text-slate-500 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-400'
           }`}
         >
           Alle
         </button>
         {faecher.map(fach => {
           const farbe = getFachFarbe(fach, fachFarben)
+          const aktiv = filterFach === fach
           return (
             <button
               key={fach}
-              onClick={() => setFilterFach(filterFach === fach ? null : fach)}
-              className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors"
-              style={filterFach === fach
+              onClick={() => setFilterFach(aktiv ? null : fach)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                aktiv ? '' : 'hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+              style={aktiv
                 ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
-                : { borderColor: '#d1d5db', color: farbe }
+                : { borderColor: farbe, color: farbe }
               }
             >
               {fach}
@@ -189,7 +192,7 @@ export default function AdminThemensteuerung() {
             <div key={key} className={`rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden${eintrag.status === 'nicht_freigeschaltet' ? ' opacity-70' : ''}`}>
               {/* Thema-Zeile */}
               <div
-                className={`flex items-center justify-between p-4 bg-white dark:bg-slate-800 transition-colors ${
+                className={`hover-card flex items-center justify-between p-4 bg-white dark:bg-slate-800 ${
                   eintrag.status === 'aktiv' ? 'border-l-4' : ''
                 }`}
                 style={eintrag.status === 'aktiv' ? { borderLeftColor: farbe } : undefined}
@@ -217,32 +220,9 @@ export default function AdminThemensteuerung() {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  {/* Lernziele */}
-                  {eintrag.anzahlLernziele > 0 && (
-                    <button
-                      onClick={() => setLzModal({ fach: eintrag.fach, thema: eintrag.thema })}
-                      className="text-xs px-2 py-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 transition-colors"
-                      title={`${eintrag.anzahlLernziele} Lernziele`}
-                    >
-                      🏁 {eintrag.anzahlLernziele}
-                    </button>
-                  )}
-                  {eintrag.anzahlLernziele === 0 && (
-                    <span className="text-[10px] text-slate-300 dark:text-slate-600 px-2" title="Keine Lernziele definiert">
-                      —
-                    </span>
-                  )}
+                  {/* Reihenfolge rechtsbündig: [Badge/CTA] [Aktionen] [Lernziele] [Link] */}
 
-                  {/* Deep-Link kopieren */}
-                  <button
-                    onClick={() => kopiereLink(erzeugeDeepLink(eintrag.fach, eintrag.thema), key)}
-                    className="text-xs px-2 py-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 transition-colors"
-                    title="Deep-Link kopieren"
-                  >
-                    {kopiert === key ? '✓ Kopiert' : '🔗 Link'}
-                  </button>
-
-                  {/* Status-Badge — "z.T. aktuell" wenn nur einige Unterthemen */}
+                  {/* Status-Badge links der Aktions-Buttons — "z.T. aktuell" wenn nur einige Unterthemen */}
                   {(() => {
                     const aktiveUT = getAktiveUnterthemen(eintrag.fach, eintrag.thema)
                     const istPartiell = eintrag.status === 'aktiv' && aktiveUT && aktiveUT.length > 0 && aktiveUT.length < eintrag.unterthemen.length
@@ -276,13 +256,13 @@ export default function AdminThemensteuerung() {
                     <>
                       <button
                         onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'abgeschlossen')}
-                        className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                        className="filter-btn min-h-[36px]"
                       >
                         Abschliessen
                       </button>
                       <button
                         onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'nicht_freigeschaltet')}
-                        className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                        className="filter-btn min-h-[36px]"
                         title="Aktivierung rückgängig — Thema ist für SuS nicht mehr sichtbar"
                       >
                         Deaktivieren
@@ -290,14 +270,47 @@ export default function AdminThemensteuerung() {
                     </>
                   )}
                   {eintrag.status === 'abgeschlossen' && (
-                    <button
-                      onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'nicht_freigeschaltet')}
-                      className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                      title="Thema wieder sperren"
-                    >
-                      Deaktivieren
-                    </button>
+                    <>
+                      <button
+                        onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'aktiv')}
+                        className="filter-btn min-h-[36px]"
+                        title="Thema erneut als aktuell markieren"
+                      >
+                        Aktuell setzen
+                      </button>
+                      <button
+                        onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'nicht_freigeschaltet')}
+                        className="filter-btn min-h-[36px]"
+                        title="Thema wieder sperren"
+                      >
+                        Deaktivieren
+                      </button>
+                    </>
                   )}
+
+                  {/* Lernziele — konstant zweitletzte Position */}
+                  {eintrag.anzahlLernziele > 0 ? (
+                    <button
+                      onClick={() => setLzModal({ fach: eintrag.fach, thema: eintrag.thema })}
+                      className="filter-btn min-h-[36px]"
+                      title={`${eintrag.anzahlLernziele} Lernziele`}
+                    >
+                      🏁 {eintrag.anzahlLernziele}
+                    </button>
+                  ) : (
+                    <span className="text-[10px] text-slate-300 dark:text-slate-600 px-2 min-h-[36px] flex items-center" title="Keine Lernziele definiert">
+                      —
+                    </span>
+                  )}
+
+                  {/* Deep-Link kopieren — immer ganz rechts */}
+                  <button
+                    onClick={() => kopiereLink(erzeugeDeepLink(eintrag.fach, eintrag.thema), key)}
+                    className="filter-btn min-h-[36px]"
+                    title="Deep-Link kopieren"
+                  >
+                    {kopiert === key ? '✓ Kopiert' : '🔗 Link'}
+                  </button>
                 </div>
               </div>
 
