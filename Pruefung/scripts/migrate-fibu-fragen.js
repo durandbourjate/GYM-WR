@@ -18,11 +18,11 @@
  * Ausführung: Im Apps Script Editor kopieren und migriereFibuFragen() starten.
  */
 
-var FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+var MIGRATE_FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
 var DRY_RUN = true;  // <-- Auf false setzen für echtes Schreiben!
 
 function migriereFibuFragen() {
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragenbank = SpreadsheetApp.openById(MIGRATE_FRAGENBANK_ID);
   var tabs = ['BWL', 'VWL', 'Recht', 'Informatik'];
   var fibuTypen = ['buchungssatz', 'tkonto', 'bilanzstruktur', 'kontenbestimmung'];
 

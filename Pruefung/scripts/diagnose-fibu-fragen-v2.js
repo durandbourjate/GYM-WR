@@ -13,8 +13,8 @@
  */
 
 function diagnoseFibuFragenV2() {
-  var FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var DIAG_FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+  var fragenbank = SpreadsheetApp.openById(DIAG_FRAGENBANK_ID);
   var tabs = ['BWL', 'VWL', 'Recht', 'Informatik'];
   var fibuTypen = ['buchungssatz', 'tkonto', 'bilanzstruktur', 'kontenbestimmung'];
 
