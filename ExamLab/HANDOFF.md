@@ -6,6 +6,64 @@
 
 ---
 
+## Session 109 — Cluster B: Sidebars vereinheitlicht (14.04.2026)
+
+### Stand
+Auf `main` gemergt (`9a3b6c7`). tsc ✅ | 239 Tests ✅ | Build ✅. Auf Staging vom User verifiziert.
+
+### Erledigte Arbeiten
+
+**Cluster B Quick-Wins (Commit `2197d6c`)**
+- B1: Resize-Handles 3 Sidebars (Frageneditor/LP-Hilfe/Fragensammlung) auf konsistenten violetten Hover.
+- B3: SuS-Hilfe Tipp-Box von blau auf neutral (Blau bleibt KI-reserviert).
+- B4: Problem-melden-Icon 💬 → ⚠️.
+- Bonus: launch.json Pfad `/Pruefung` → `/ExamLab` (S107-Relikt).
+
+**Cluster B Nachträge (Commit `caddf09`)**
+- HilfeSeite z-50 → z-[60] (lag hinter Frageneditor).
+- EinstellungenPanel maxWidth 640 → 2000.
+
+**Refactor: gemeinsame ResizableSidebar (Commit `e68e418`)**
+- Eine Komponente in `packages/shared/src/ui/ResizableSidebar.tsx` ersetzt zwei Implementationen (alte ExamLab-`ResizableSidebar` + 3× duplizierte `usePanelResize`-JSX-Blöcke).
+- Modi: `layout` (im flex) und `overlay` (fixed + Backdrop).
+- ESC + Klick-Backdrop einheitlich (closeOnEsc/closeOnBackdrop, default true).
+- Tests: 239/239, vitest.config.ts mit `@shared`-Alias + react-dedupe.
+
+**Auto-z-Index (Commit `42414c0`)**
+- Modul-Counter: jede neu geöffnete overlay-Sidebar holt sich nächsthöheren z-Index. Zuletzt geöffnete liegt zuoberst, unabhängig von der Art.
+- Einstellungen umgestellt auf `mode='overlay'` + Backdrop + Klick-daneben.
+
+**Toggle-Trigger + einheitliche Breiten (Commit `5097589`)**
+- Store-Action `toggleEinstellungen` analog `toggleHilfe`.
+- LPStartseite: `setZeigEinstellungen(true)` → `toggleEinstellungen()`.
+- LPHeader: `einstellungenOffen`-Prop + `buttonActiveClass` für alle drei Trigger (Fragensammlung/⚙/Hilfe) — aktive Sidebar-Buttons visuell markiert.
+- ResizableSidebar einheitliche Defaults: defaultWidth=1008, minWidth=400, maxWidth=2400. Konsumenten setzen nur `storageKey` + `topOffset`.
+
+**Resize-Handle dezent (Commit `cbd07cf`)**
+- bg-transparent per Default, hover bleibt violett. Greifbar bleibt der 4px breite Bereich via `cursor-col-resize`.
+
+### Architektonisches Ergebnis
+Alle 4 Sidebars (Einstellungen/Frageneditor/Hilfe/Fragensammlung) haben jetzt **identisches Verhalten**:
+- Öffnen/Schliessen per Icon-Toggle, Aktiv-Visual am Trigger.
+- Schliessen per ESC oder Klick auf Backdrop.
+- Resize per violettem Handle links (transparent ohne Hover).
+- Gleiche Min/Max/Default-Breiten.
+- Auto-z-Index (zuletzt geöffnet zuoberst).
+
+### Gelöscht
+- `ExamLab/src/components/ui/ResizableSidebar.tsx` (Duplikat)
+- `ExamLab/src/hooks/usePanelResize.ts` (Duplikat)
+- `packages/shared/src/editor/hooks/usePanelResize.ts` (kein Konsument mehr)
+- Export `usePanelResize` aus `packages/shared/src/index.ts`
+
+### Offen / Nächste Sessions
+- **B2 Hover-Zustände konsistent** (vage — konkrete Stellen aus Browser-Test nötig)
+- **B5 Icon-Audit** (eigene Session)
+- **Cluster D**: Routing/URLs (LP-URL `/lp/...`, D1/D3 Logout-URL Cleanup)
+- **Cluster E**: LP-Favoriten-Kacheln, Analyse-Doppelzählung, Übersicht-Tab Sinn klären, Mastery-Hilfe, Excel-Export, KI-PDF-Import (E5 als eigene Session)
+
+---
+
 ## Session 108 — Cluster C (Demo-Modus) + Cluster A (SuS-Üben Layout) (14.04.2026)
 
 ### Stand
