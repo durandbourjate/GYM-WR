@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 
-// Gleicher Endpoint wie Übungspools
-const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycby9-zm3DJXdAN8uq7nuCKNwfn4Do4ej8mo5-5niM0jozAzcwVbxYW0oN7AzmS-fqoh2qQ/exec'
+// ExamLab Problemmeldungen — Sheet "ExamLab Problemmeldungen", Tab "ExamLab-Problemmeldungen"
+const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSxIOqGhAbnNM2-Y4ulgBY3usVEC6cKT4S5sEk4sf2CMognF5qxopj3FJtnTpm3nq7TQ/exec'
 
 export interface FeedbackContext {
   rolle: 'lp' | 'sus'

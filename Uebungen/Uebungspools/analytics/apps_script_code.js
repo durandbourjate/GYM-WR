@@ -119,10 +119,10 @@ function doGet(e) {
         sheet.appendRow([
           'Zeitstempel', 'Rolle', 'Ort', 'Modus', 'Typ', 'Kategorie', 'Kommentar',
           'Frage-ID', 'Fragetext', 'Fragetyp', 'Prüfung-ID', 'Gruppe-ID',
-          'Bildschirm', 'App-Version', 'E-Mail', 'Zusatzinfo'
+          'Bildschirm', 'App-Version', 'Zusatzinfo'
         ]);
         sheet.setFrozenRows(1);
-        sheet.getRange(1, 1, 1, 16).setFontWeight('bold');
+        sheet.getRange(1, 1, 1, 15).setFontWeight('bold');
         sheet.setColumnWidth(1, 150);  // Zeitstempel
         sheet.setColumnWidth(7, 350);  // Kommentar
         sheet.setColumnWidth(9, 300);  // Fragetext
@@ -142,7 +142,6 @@ function doGet(e) {
         params.gruppeId || '',
         params.bildschirm || '',
         params.appVersion || '',
-        params.email || '',
         params.zusatzinfo || ''
       ]);
     } else if (params.pool && params.qid && (params.cat || params.category)) {
