@@ -15,7 +15,7 @@ export function Abschnitt({ titel, children, titelRechts, einklappbar, standardO
   const [offen, setOffen] = useState(standardOffen)
 
   return (
-    <div className="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+    <div className="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-4 transition-colors hover:border-slate-300 dark:hover:border-slate-600">
       <div
         className={`flex items-center justify-between ${einklappbar ? 'cursor-pointer select-none group' : ''}`}
         onClick={einklappbar ? () => setOffen(!offen) : undefined}

@@ -6,6 +6,89 @@
 
 ---
 
+## Backlog — UX-Testrunde 14.04.2026 (offen, Bundle 10–13)
+
+Aus User-Testrunde nach S109. Vorgehen: Bundles nacheinander, jeweils Staging-Test → Freigabe → main.
+
+### Reihenfolge (bestätigt)
+1. **Bugfix sofort** — React #185 Crash beim Klick auf Kachel unter Rubrik "Lernende" in LP-Üben-Übungen.
+2. **Bundle 10 — Cluster F + G + H** (Design-System Drop)
+3. **Bundle 11 — Cluster J** (Themen-Kacheln Refactor)
+4. **Bundle 12 — Cluster K** (Frageneditor + Namens-Refactor + Einstellungen erweitern)
+5. **Bundle 13 — Cluster I** (Üben-Übungen Tab-Architektur, separate Session)
+6. **Cluster L** — Üben-Analyse Heatmap-Neudarstellung: geparkt bis echte SuS-Daten vorliegen.
+
+### Cluster F — Modal/Sidebar ESC-Einheitlichkeit
+- Problem-Melden-Modal schliesst nicht mit ESC. Einheitlich: ESC + Klick-daneben + auslösender Button toggelt zu. Alle übrigen Modals gegen diesen Standard auditieren.
+
+### Cluster G — Globales Hover/Active-Design
+Grundsatz: **Hover = Hintergrund leicht heller + Unterstrich unten** (dem Container-Rand mit Rundung folgend). **Aktiv = gleicher Unterstrich permanent**. Fach-Filter optional Fachfarben (VWL/BWL/Recht).
+Nicht mehr: uneinheitliches Hell/Dunkel/Border-Mix.
+
+Betroffene Stellen:
+- LP-Favoriten: Prüfungs-/Übungs-Kacheln Hover blau → violett (gemäss Farbkonzept).
+- LP-Prüfen Sub-Tabs (Prüfungen/Analyse): Hover-Hintergrund reagiert nicht, muss wie Kopfzeilen-Tabs.
+- LP-Prüfen Filter-Buttons (BWL/Recht/SF/aktiv…): werden fast weiss bei Hover — auf neuen Standard.
+- LP-Üben Sub-Tabs (Übung durchführen/Übungen/Analyse): analog.
+- LP-Üben-Übungen Kurs-Flächen: Standard-Hover, Rand in Fachfarbe.
+- LP-Üben-Themen Kacheln: Standard-Hover.
+- LP-Üben-Themen Fach-Filter-Buttons: Standard-Hover.
+- Fragensammlung Frage-Kacheln: Standard-Hover, Fachfarben-Akzent möglich.
+- Fragensammlung Dropdowns + Filter: prüfen ob Dropdowns auch Hover-Feedback haben sollen, Filter-Buttons auf Standard.
+- Frageneditor-Bereiche (Metadaten, Fragetyp, Fragetext, Anhänge, Antwortoptionen, Musterlösung, Bewertungsraster): Bereichs-Hover.
+- Frageneditor Fragetyp-Buttons: Standard-Hover.
+
+### Cluster H — LP-Favoriten Detail
+- "Entwurf"-Badge gelb → neutral (nicht als Warnung codieren).
+
+### Cluster I — Üben-Übungen Tab-Architektur (gross, eigene Session)
+- Tab **Übersicht** entfällt → Inhalt (Kurs-Mitglieder, Admins, Fachfreischaltung) wandert in Einstellungen.
+- Tab **Themen** entfällt → direkt unter "Übungen" sichtbar.
+- **Kurs-Sub-Tabs** klappen beim Klick auf "Übungen" neben dem Tab auf (Analyse-Tab verschiebt sich nach rechts). Klick auf "Übung durchführen" / "Analyse" klappt sie wieder zu.
+- Einstellungen: Kurs-Mitglieder-Editor, Admin-Rolle, freigeschaltete Fächer pro Kurs.
+
+### Cluster J — Themen-Kacheln Refactor
+- Kachel-Hover auf globalen Standard.
+- Interne Buttons (Lernziele / Link / Aktuell / Abschliessen / Deaktivieren…): einheitliche Höhe, Standard-Hover.
+- **"Aktuell"-Button ganz links** positionieren, damit andere nicht verschoben werden → aufgeräumter.
+- Fach-Filter-Buttons auf Standard.
+- **Fehlend:** abgeschlossenes freigegebenes Thema wieder als "Aktuell" markierbar machen (Aktion prüfen / ergänzen).
+
+### Cluster K — Frageneditor, Metadaten, Namens-Refactor
+**Defaults:**
+- Zeitbedarf: default leer.
+- Bloom-Stufe: default leer.
+- Fach (früher Fachbereich): default leer + Pflichtfeld-violett hervorgehoben.
+
+**Pflichtfeld-Violett konsequent:**
+- Thema hat Stern, aber wird nicht violett eingefärbt → fixen.
+- Audit: alle Pflichtfelder mit Stern müssen violett hervorgehoben sein.
+
+**KI-Button-Blau:**
+- Metadaten "KI klassifizieren" und Bewertungsraster "KI verbessern" sind nicht blau — prüfen: wenn deaktiviert (weil Voraussetzungen fehlen) ist Weglassen OK, sonst einfärben.
+
+**Namens-Refactor (app-weit):**
+- "Fachbereich" → "Fach" **überall** (UI, Labels, Drop-downs).
+- "Fragenbank" → "Fragensammlung" **überall** (inkl. Text "Lernziele aus der Fragenbank" unten bei Lernzielen).
+- "Übungspool: …" Präfix aus Themen-Namen entfernen (Lernziele-Dropdown etc.).
+- ae/oe/ue → ä/ö/ü Audit (Bewertungsraster-Beispiele und andere Stellen).
+
+**Semester → Zeitpunkt (konfigurierbar):**
+- Umbenennen "Semester" → "Zeitpunkt".
+- Einstellungen: Modus wählbar (Schuljahr / Semester / Quartal) + Anzahl Einheiten. Grund: Schule geht vermehrt auf Quartale, TaF-Klassen haben ein Jahr länger.
+
+**Gefässe konfigurierbar:**
+- Einstellungen: Gefässe definierbar. Aktuelle Liste bleibt Default.
+
+**Lernziele:**
+- Thema: Dropdown analog Fach (derzeit freitext).
+- "Fachbereich" im Lernziele-Dropdown → "Fach".
+
+**Header-Umbau:**
+- "Geteilt mit" in Kopfzeile links vom KI-Button.
+
+---
+
 ## Session 109 — Cluster B: Sidebars vereinheitlicht (14.04.2026)
 
 ### Stand

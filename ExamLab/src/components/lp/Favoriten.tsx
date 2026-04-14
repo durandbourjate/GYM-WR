@@ -93,7 +93,7 @@ export default function Favoriten() {
               <Link
                 key={fav.ziel}
                 to={fav.typ === 'ort' ? fav.ziel : `/${fav.typ}/${fav.ziel}`}
-                className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors shadow-sm min-w-[140px]"
+                className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
               >
                 <span className="text-lg">{fav.icon || typIcon(fav.typ)}</span>
                 <div className="min-w-0">
@@ -160,7 +160,7 @@ function ConfigListe({ configs, linkPrefix, linkSuffix = '' }: {
           <Link
             key={c.id}
             to={`${linkPrefix}/${c.id}${linkSuffix}`}
-            className="flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors shadow-sm"
+            className="flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm"
           >
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
@@ -204,5 +204,5 @@ function typLabel(typ: string): string {
 function configStatus(c: PruefungsConfig): { label: string; farbe: string } {
   if (c.beendetUm) return { label: 'Beendet', farbe: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' }
   if (c.freigeschaltet) return { label: 'Aktiv', farbe: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' }
-  return { label: 'Entwurf', farbe: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' }
+  return { label: 'Entwurf', farbe: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }
 }

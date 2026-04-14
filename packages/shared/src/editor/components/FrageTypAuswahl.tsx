@@ -54,7 +54,7 @@ export default function FrageTypAuswahl({ typ, setTyp, gesperrt }: Props) {
     'px-3 py-1.5 text-sm rounded-lg border transition-colors',
     typ === t
       ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
-      : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700',
+      : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:border-slate-400 dark:hover:border-slate-500',
     gesperrt ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
   ].join(' ')
 

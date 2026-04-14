@@ -30,6 +30,34 @@ Bei neuen Features: Prüfe ob eine bestehende Datei über 800 Zeilen wächst. Fa
 - Grosse Listen: Prüfe ob virtualisiert werden muss (>100 Einträge sichtbar)
 - Keine neuen `useEffect` ohne Cleanup-Funktion wenn Event-Listener oder Timer verwendet werden
 
+## Zustand-Selektoren (React #185 vermeiden)
+
+**Problem (S110, AdminKindDetail):** Selektoren, die ein neues Objekt/Array pro Render erzeugen, führen zu Endlos-Re-Renders (React #185: "Maximum update depth exceeded"). Zustand vergleicht Selector-Ergebnisse per `Object.is` — neue Referenz = "State geändert" → Re-Render → Selector läuft erneut → neues Array → Schleife.
+
+**Verboten:**
+```ts
+// ❌ .filter()/.map()/Object-Literal im Selector
+const items = useStore(s => s.list.filter(x => x.email === email))
+const stats = useStore(s => ({ a: s.a, b: s.b }))
+```
+
+**Erlaubt:**
+```ts
+// ✅ Rohdaten-Slice subscriben, mit useMemo filtern
+const list = useStore(s => s.list)
+const items = useMemo(() => list.filter(x => x.email === email), [list, email])
+
+// ✅ Einzelne Felder pro Selector
+const a = useStore(s => s.a)
+const b = useStore(s => s.b)
+
+// ✅ useShallow für Objekt-Selektionen
+import { useShallow } from 'zustand/shallow'
+const { a, b } = useStore(useShallow(s => ({ a: s.a, b: s.b })))
+```
+
+Auch Store-Getter-Methoden wie `getFoo(id)` sind nicht sicher im Selector, wenn sie intern filtern/mappen. Rohdaten selektieren, im Component transformieren.
+
 ## Inline Styles vs. Tailwind
 
 - Tailwind-Klassen bevorzugen (1220 className vs. 359 style= aktuell)

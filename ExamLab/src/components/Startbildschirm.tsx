@@ -266,8 +266,9 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
 
         {/* Reset-Hinweis (LP hat Prüfung zurückgesetzt) */}
         {wurdeZurueckgesetzt && (
-          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-800 dark:text-blue-200">
-            Diese Prüfung wurde von der Lehrperson zurückgesetzt. Ihre vorherigen Antworten wurden gelöscht.
+          <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2">
+            <span className="text-slate-400 shrink-0 mt-0.5">ⓘ</span>
+            <span>Diese Prüfung wurde von der Lehrperson zurückgesetzt. Ihre vorherigen Antworten wurden gelöscht.</span>
           </div>
         )}
 

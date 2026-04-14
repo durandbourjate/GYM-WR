@@ -442,7 +442,7 @@ export default function LPStartseite() {
                   className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                     uebungsTab === 'durchfuehren'
                       ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   Übung durchführen
@@ -452,7 +452,7 @@ export default function LPStartseite() {
                   className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                     uebungsTab === 'uebungen'
                       ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   Übungen
@@ -462,7 +462,7 @@ export default function LPStartseite() {
                   className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                     uebungsTab === 'analyse'
                       ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   Analyse
@@ -511,7 +511,7 @@ export default function LPStartseite() {
                             key={fb}
                             onClick={() => toggleFachFilter(fb)}
                             className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
-                              !aktiv ? 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750' : ''
+                              !aktiv ? 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500' : ''
                             }`}
                             style={aktiv ? { backgroundColor: farbe + '20', color: farbe, borderColor: farbe + '60' } : undefined}
                           >
@@ -528,7 +528,7 @@ export default function LPStartseite() {
                             className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                               filterGefaess === g
                                 ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
-                                : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
+                                : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500'
                             }`}
                           >
                             {g}
@@ -543,7 +543,7 @@ export default function LPStartseite() {
                           className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                             filterStatus === s
                               ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
-                              : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
+                              : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500'
                           }`}
                         >
                           {s === 'aktiv' ? 'Aktiv' : s === 'archiviert' ? 'Archiviert' : 'Alle'}
@@ -616,7 +616,7 @@ export default function LPStartseite() {
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                 listenTab === 'pruefungen'
                   ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               Prüfungen
@@ -626,7 +626,7 @@ export default function LPStartseite() {
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
                 listenTab === 'tracker'
                   ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
               Analyse
@@ -699,7 +699,7 @@ export default function LPStartseite() {
                       key={fb}
                       onClick={() => toggleFachFilter(fb)}
                       className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
-                        !aktiv ? 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750' : ''
+                        !aktiv ? 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500' : ''
                       }`}
                       style={aktiv ? { backgroundColor: farbe + '20', color: farbe, borderColor: farbe + '60' } : undefined}
                     >
@@ -715,7 +715,7 @@ export default function LPStartseite() {
                     className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                       filterGefaess === g
                         ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
-                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
+                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500'
                     }`}
                   >
                     {g}
@@ -729,7 +729,7 @@ export default function LPStartseite() {
                     className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                       filterStatus === s
                         ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
-                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
+                        : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-200 hover:border-slate-400 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:border-slate-500'
                     }`}
                   >
                     {s === 'aktiv' ? 'Aktiv' : s === 'archiviert' ? 'Archiviert' : 'Alle'}
