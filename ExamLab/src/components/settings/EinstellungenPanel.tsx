@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { TabBar } from '../ui/TabBar'
-import { ResizableSidebar } from '../ui/ResizableSidebar'
+import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { useAuthStore } from '../../store/authStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDefinition } from '../../types/stammdaten'
@@ -48,15 +48,22 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
 
   const sichtbareTabs = tabs.filter(t => t.sichtbar)
 
+  // Header-Höhe messen, damit Overlay unterhalb des App-Headers beginnt
+  const [headerH, setHeaderH] = useState(0)
+  useEffect(() => {
+    const h = document.querySelector('header')?.getBoundingClientRect()?.height ?? 0
+    setHeaderH(h)
+  }, [])
+
   return (
     <ResizableSidebar
+      mode="overlay"
       title="Einstellungen"
       onClose={onSchliessen}
+      topOffset={headerH}
       storageKey="einstellungen-breite"
-      defaultWidth={480}
-      minWidth={360}
-      maxWidth={640}
     >
+      <div className="p-4">
       {/* Tabs */}
       <div className="pb-3">
         <TabBar
@@ -81,6 +88,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         {tab === 'admin' && admin && user?.email && (
           <AdminTab email={user.email} stammdaten={stammdaten} />
         )}
+      </div>
       </div>
     </ResizableSidebar>
   )

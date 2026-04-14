@@ -185,7 +185,12 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
               Du bist noch keiner Gruppe zugeordnet.
             </p>
             <button
-              onClick={() => useUebenAuthStore.getState().abmelden()}
+              onClick={() => {
+                // Beide Auth-Stores aufräumen, damit Session komplett beendet wird
+                useUebenAuthStore.getState().abmelden()
+                useAuthStore.getState().abmelden()
+                window.location.href = import.meta.env.BASE_URL + 'login'
+              }}
               className="px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
             >
               Abmelden

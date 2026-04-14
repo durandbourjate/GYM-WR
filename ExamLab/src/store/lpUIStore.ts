@@ -50,6 +50,7 @@ interface LPUIState {
   setUebungsTab: (tab: UebungsTab) => void
   toggleHilfe: () => void
   setZeigEinstellungen: (zeig: boolean, tab?: EinstellungenTab) => void
+  toggleEinstellungen: (tab?: EinstellungenTab) => void
   clearDeepLinkFrageId: () => void
   clearDeepLinkComposerTab: () => void
   neuerComposerKey: () => void
@@ -125,6 +126,10 @@ export const useLPUIStore = create<LPUIState>((set, get) => ({
     zeigEinstellungen: zeig,
     einstellungenTab: zeig && tab ? tab : null,
   }),
+  toggleEinstellungen: (tab) => set(s => ({
+    zeigEinstellungen: !s.zeigEinstellungen,
+    einstellungenTab: !s.zeigEinstellungen && tab ? tab : null,
+  })),
   clearDeepLinkFrageId: () => set({ deepLinkFrageId: null }),
   clearDeepLinkComposerTab: () => set({ deepLinkComposerTab: null }),
   neuerComposerKey: () => set(s => ({ composerKey: s.composerKey + 1 })),

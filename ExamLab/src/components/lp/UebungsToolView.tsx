@@ -36,12 +36,12 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
     if (!istDemoModus || loginStatus !== 'idle') return
     const demoGruppe = {
       id: 'demo-gruppe', name: 'Demo-Klasse', typ: 'gym' as const,
-      adminEmail: 'demo.lp@gymhofwil.ch', fragebankSheetId: 'demo',
-      analytikSheetId: 'demo', mitglieder: ['demo.lp@gymhofwil.ch', 'demo.sus@stud.gymhofwil.ch'],
+      adminEmail: 'demo-lp@gymhofwil.ch', fragebankSheetId: 'demo',
+      analytikSheetId: 'demo', mitglieder: ['demo-lp@gymhofwil.ch', 'demo.sus@stud.gymhofwil.ch'],
     }
     useUebenAuthStore.setState({
       user: {
-        email: pruefungUser?.email || 'demo.lp@gymhofwil.ch',
+        email: pruefungUser?.email || 'demo-lp@gymhofwil.ch',
         name: pruefungUser?.name || 'Demo LP',
         vorname: 'Demo', nachname: 'LP',
         rolle: 'admin', sessionToken: 'demo-token', loginMethode: 'google',
@@ -51,7 +51,7 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
     useUebenGruppenStore.setState({
       gruppen: [demoGruppe], aktiveGruppe: demoGruppe, ladeStatus: 'fertig',
       mitglieder: [
-        { email: 'demo.lp@gymhofwil.ch', name: 'Demo LP', rolle: 'admin' as const, beigetreten: new Date().toISOString() },
+        { email: 'demo-lp@gymhofwil.ch', name: 'Demo LP', rolle: 'admin' as const, beigetreten: new Date().toISOString() },
         { email: 'demo.sus@stud.gymhofwil.ch', name: 'Demo SuS', rolle: 'lernend' as const, beigetreten: new Date().toISOString() },
       ],
     })

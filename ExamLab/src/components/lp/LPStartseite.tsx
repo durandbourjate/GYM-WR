@@ -77,6 +77,7 @@ export default function LPStartseite() {
   // UI-State bleibt im Store (Panels, Keys)
   const neuerComposerKey = useLPNavigationStore(s => s.neuerComposerKey)
   const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
+  const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
   const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
 
   // Lokaler State (Daten, nicht Navigation)
@@ -411,9 +412,10 @@ export default function LPStartseite() {
           modus={modus}
           onModusChange={setModus}
           aktionsButtons={undefined}
-          onEinstellungen={() => setZeigEinstellungen(true)}
+          onEinstellungen={() => toggleEinstellungen()}
           onHilfe={toggleHilfe}
           hilfeOffen={zeigHilfe}
+          einstellungenOffen={zeigEinstellungen}
         />
       )}
 

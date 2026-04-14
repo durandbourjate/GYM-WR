@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
-import { usePanelResize } from '../../../hooks/usePanelResize.ts'
+import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { useFragenFilter } from '../../../hooks/useFragenFilter.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
@@ -51,9 +51,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     const h = document.querySelector('header')?.getBoundingClientRect()?.height ?? 0
     setHeaderH(h)
   }, [])
-
-  // Resizable Panel (wiederverwendbarer Hook)
-  const { panelBreite, handleZiehStart } = usePanelResize(1008, 600, 0.9)
 
   // Fragen aus Store (wird beim Login parallel geladen)
   // Summaries für Listenansicht (schnell geladen), Details on-demand
@@ -460,19 +457,14 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex pointer-events-none">
-      {/* Backdrop */}
-      <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onSchliessen} />
-
-      {/* Panel (rechts) */}
-      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto overflow-hidden" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }} onWheel={(e) => e.stopPropagation()}>
-        {/* Drag-Handle zum Resize */}
-        <div
-          onMouseDown={handleZiehStart}
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
-          title="Breite anpassen"
-        />
-
+    <>
+    <ResizableSidebar
+      mode="overlay"
+      onClose={onSchliessen}
+      topOffset={headerH}
+      storageKey="fragensammlung-breite"
+    >
+      <div ref={panelRef} className="flex flex-col h-full">
         {/* Header mit Suche + Filter */}
         <FragenBrowserHeader
           ladeStatus={ladeStatus}
@@ -617,6 +609,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           )}
         </div>
       </div>
+    </ResizableSidebar>
 
       {/* Fragen-Editor Overlay */}
       {zeigEditor && (
@@ -692,6 +685,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           }}
         />
       )}
-    </div>
+    </>
   )
 }

@@ -14,11 +14,11 @@ export * from './editor/musterloesungGenerierung'
 export { useKIAssistent } from './editor/useKIAssistent'
 export type { AktionKey, AktionErgebnis } from './editor/useKIAssistent'
 export { useFocusTrap } from './editor/hooks/useFocusTrap'
-export { usePanelResize } from './editor/hooks/usePanelResize'
 
 // UI-Komponenten
 export { Abschnitt, Feld } from './editor/components/EditorBausteine'
 export { default as FormattierungsToolbar } from './editor/components/FormattierungsToolbar'
+export { ResizableSidebar } from './ui/ResizableSidebar'
 
 // Typ-Editoren
 export { default as MCEditor } from './editor/typen/MCEditor'

@@ -5,7 +5,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useEditorConfig, useEditorServices } from './EditorContext'
 import { useFocusTrap } from './hooks/useFocusTrap'
-import { usePanelResize } from './hooks/usePanelResize'
+import { ResizableSidebar } from '../ui/ResizableSidebar'
 import { defaultFachbereich } from './fachUtils'
 import { validiereFrage } from './fragenValidierung'
 import { erstelleFrageObjekt } from './fragenFactory'
@@ -518,9 +518,6 @@ export default function SharedFragenEditor({
     setHeaderH(h)
   }, [])
 
-  // Resizable Panel (extrahierter Hook)
-  const { panelBreite, handleZiehStart } = usePanelResize(1008, 480, 0.9)
-
   async function handleSpeichern(): Promise<void> {
     const errs = validiereFrage({
       typ, thema, fragetext, punkte,
@@ -654,30 +651,15 @@ export default function SharedFragenEditor({
     onSpeichern(neueFrage)
   }
 
-  // ESC schliesst den Editor (stoppt Propagation, damit nicht die Fragenbank geschlossen wird)
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent): void {
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        onAbbrechen()
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown, true) // capture phase
-    return () => document.removeEventListener('keydown', handleKeyDown, true)
-  }, [onAbbrechen])
-
   return (
     <>
-    <div className="fixed inset-0 z-[55] flex pointer-events-none" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 55 }}>
-      <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH, left: 0, right: 0, bottom: 0 }} onClick={onAbbrechen} />
-
-      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto overflow-hidden" style={{ top: headerH, right: 0, bottom: 0, width: panelBreite, maxWidth: '90vw' }} onWheel={(e) => e.stopPropagation()}>
-        {/* Drag-Handle zum Resize */}
-        <div
-          onMouseDown={handleZiehStart}
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
-          title="Breite anpassen"
-        />
+    <ResizableSidebar
+      mode="overlay"
+      onClose={onAbbrechen}
+      topOffset={headerH}
+      storageKey="frageneditor-breite"
+    >
+      <div ref={panelRef} className="flex flex-col h-full">
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
@@ -960,8 +942,7 @@ export default function SharedFragenEditor({
           )}
         </div>
       </div>
-
-    </div>
+    </ResizableSidebar>
 
     {/* Rück-Sync Dialog (Host-Slot) */}
     {frage && rueckSyncOffen && rueckSyncSlot?.({

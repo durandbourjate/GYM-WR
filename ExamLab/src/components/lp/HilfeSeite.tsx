@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
+import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 
 interface Props {
   onSchliessen: () => void
@@ -33,38 +34,16 @@ export default function HilfeSeite({ onSchliessen }: Props) {
     setHeaderH(h)
   }, [])
 
-  // Resizable Panel
-  const [panelBreite, setPanelBreite] = useState(1152)
-
-  const handleZiehStart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    const startX = e.clientX
-    const startW = panelBreite
-    function onMove(ev: MouseEvent) {
-      const diff = startX - ev.clientX
-      setPanelBreite(Math.max(400, Math.min(startW + diff, window.innerWidth * 0.9)))
-    }
-    function onUp() {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-    }
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
-  }, [panelBreite])
-
   return (
-    <div className="fixed inset-0 z-50 flex pointer-events-none">
-      <div className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto" style={{ top: headerH }} onClick={onSchliessen} />
-
-      <div ref={panelRef} className="absolute right-0 bottom-0 bg-white dark:bg-slate-800 shadow-2xl flex flex-col pointer-events-auto overflow-hidden" style={{ top: headerH, width: panelBreite, maxWidth: '90vw' }} onWheel={(e) => e.stopPropagation()}>
-        {/* Drag-Handle zum Resize */}
-        <div
-          onMouseDown={handleZiehStart}
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
-          title="Breite anpassen"
-        />
+    <ResizableSidebar
+      mode="overlay"
+      onClose={onSchliessen}
+      topOffset={headerH}
+      storageKey="hilfe-breite"
+    >
+      <div ref={panelRef} className="flex flex-col h-full">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shrink-0">
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
             Hilfe & Anleitung
           </h2>
@@ -77,7 +56,7 @@ export default function HilfeSeite({ onSchliessen }: Props) {
         </div>
 
         {/* Navigation */}
-        <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex gap-1 overflow-x-auto">
+        <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex gap-1 overflow-x-auto shrink-0">
           {KATEGORIEN.map((k) => (
             <button
               key={k.key}
@@ -108,7 +87,7 @@ export default function HilfeSeite({ onSchliessen }: Props) {
           {kategorie === 'faq' && <HilfeFAQ />}
         </div>
       </div>
-    </div>
+    </ResizableSidebar>
   )
 }
 

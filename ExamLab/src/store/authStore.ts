@@ -4,6 +4,7 @@ import { usePruefungStore } from './pruefungStore.ts'
 import { clearIndexedDB } from '../services/autoSave.ts'
 import { clearQueue } from '../services/retryQueue.ts'
 import { ladeLehrpersonen, type LPInfo } from '../services/lpApi.ts'
+import { useFavoritenStore } from './favoritenStore.ts'
 
 // Cache für LP-Liste (pro Session geladen)
 let lpCache: LPInfo[] | null = null
@@ -99,7 +100,7 @@ function resetPruefungState(): void {
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: restoreSession(),
-  istDemoModus: false,
+  istDemoModus: restoreDemoFlag(restoreSession()),
   ladeStatus: 'idle',
   fehler: null,
 
@@ -127,6 +128,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
       // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
       resetPruefungState()
       saveSession(user)
+      saveDemoFlag(false)
       set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
     } finally {
       loginInProgress = false
@@ -146,6 +148,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
     resetPruefungState()
     saveSession(user)
+    saveDemoFlag(false)
     set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
   },
 
@@ -166,6 +169,16 @@ export const useAuthStore = create<AuthStore>((set) => ({
       rolle: 'sus',
     }
     saveSession(user)
+    saveDemoFlag(true)
+    // Demo-Favoriten seeden (nur wenn der Demo-User noch keine hat — respektiert bestehende User-Anpassungen)
+    if (rolle === 'lp' && useFavoritenStore.getState().favoriten.length === 0) {
+      useFavoritenStore.setState({
+        favoriten: [
+          { typ: 'pruefung', ziel: 'einrichtung-pruefung', label: 'Einführungsprüfung', sortierung: 0 },
+          { typ: 'uebung', ziel: 'einrichtung-uebung', label: 'Einführungsübung', sortierung: 1 },
+        ],
+      })
+    }
     set({ user, istDemoModus: true, ladeStatus: 'fertig', fehler: null })
   },
 
@@ -225,4 +238,28 @@ function clearSession(): void {
   } catch {
     // ignore
   }
+}
+
+/**
+ * Demo-Flag aus User-E-Mail ableiten (NICHT aus sessionStorage — das wäre ein
+ * Lockdown-Bypass-Vektor, siehe securityInvarianten.test.ts).
+ * Demo-Accounts sind per Konvention feste E-Mail-Adressen. restoreSession()
+ * re-validiert Rollen aus der Domain, sodass ein SuS seine E-Mail nicht auf
+ * eine Demo-Adresse ändern kann ohne Rolle='sus' zu bekommen.
+ * Ohne diese Ableitung geht istDemoModus nach Reload verloren und echte
+ * Backend-Calls laufen los, obwohl der User im Demo-Kontext sitzt (C4/C6).
+ * Die E-Mail-Liste ist inline (nicht als Modul-const), weil create()
+ * restoreDemoFlag() bei Modul-Init aufruft und eine const nach create() in
+ * der TDZ landen würde.
+ */
+function saveDemoFlag(aktiv: boolean): void {
+  // bewusst NOOP — Demo-Flag wird nicht in sessionStorage persistiert (Security).
+  // Persistenz erfolgt implizit über die gespeicherte User-E-Mail.
+  void aktiv
+}
+
+function restoreDemoFlag(user: AuthUser | null): boolean {
+  if (!user) return false
+  const email = user.email.toLowerCase()
+  return email === 'demo-lp@gymhofwil.ch' || email === 'demo@example.com'
 }
