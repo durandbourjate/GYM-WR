@@ -9,7 +9,7 @@
 ## Session 107 — Rename Pruefung→ExamLab + Kontenrahmen 2850 + Lernziele einklappen (14.04.2026)
 
 ### Stand
-Branch `fix/s107-kontenrahmen-lernziele-rename`. tsc ✅ | 236 Tests ✅ | Build ✅. **Noch nicht im Browser verifiziert** — Merge erst nach E2E-Test mit echtem Login.
+Auf `main` gemergt (`e5f798a` + `d4c87b6`). tsc ✅ | 236 Tests ✅ | Build ✅. **Noch nicht im Browser verifiziert** — bei nächster Gelegenheit prüfen: FiBu-2850-Label, Lernziele-Einklappen, Deploy-URLs (/ExamLab/ + Redirect /Pruefung/).
 
 ### Erledigte Arbeiten
 
@@ -18,7 +18,7 @@ Branch `fix/s107-kontenrahmen-lernziele-rename`. tsc ✅ | 236 Tests ✅ | Build
 | Kontenrahmen 2850 | Runtime-JSON: "Aktienkapital" → "Privat (Privatkonto)" (HANDOFF-S106-Fund: Z295 Privatentnahme zeigte falsches Label) | `ExamLab/src/data/kontenrahmen-kmu.json:37` |
 | LP-Einstellungen Lernziele | Fach- und Thema-Gruppen einklappbar (Default collapsed). Bei aktivem Filter/Suche automatisch expandiert. Anzahl pro Gruppe im Header. | `ExamLab/src/components/settings/LernzielTab.tsx` |
 | Ordner-Rename | `Pruefung/` → `ExamLab/`, `Uebungen/` → `ExamLab/Uebungen/`. Pfade in CI (`deploy.yml`), Rules, Docs, Scripts angepasst. Deploy-URL `/ExamLab/` bleibt gleich, `/Pruefung/` redirected. | 947 Renames via `git mv`, sed auf `.yml/.md/.html/.mjs` |
-| Cleanup | `IMPROVEMENT_PLAN.md` (als ABGESCHLOSSEN markiert) gelöscht | — |
+| Cleanup | `IMPROVEMENT_PLAN.md` + `PLANUNGSDOKUMENT_v2.md` gelöscht (veraltet) | — |
 
 ### Offen / TODO nächste Session
 - **E2E-Browser-Test** mit LP + SuS Login nach Merge prüfen: FiBu-Dropdown zeigt 2850 korrekt, Lernziele-Einklappen funktioniert, Deploy nach Push in beiden URLs erreichbar.
