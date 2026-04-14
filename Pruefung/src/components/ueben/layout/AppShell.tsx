@@ -182,7 +182,7 @@ export default function AppShell({ children, onExamLabHome, onModusWechsel }: Pr
             variant="icon"
             context={{
               rolle: user?.rolle === 'admin' ? 'lp' : 'sus',
-              ort: 'uebungstool',
+              ort: aktuellerScreen === 'uebung' ? 'frage-ueben' : 'uebungstool',
               modus: 'ueben',
               bildschirm: aktuellerScreen,
               gruppeId: aktiveGruppe?.id,
