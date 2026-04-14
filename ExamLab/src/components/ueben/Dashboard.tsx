@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
+import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
@@ -158,9 +159,12 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
       const hatUnterthema = !!(f as { unterthema?: string }).unterthema
       const tags = (f.tags || []) as (string | { name: string })[]
 
-      // Einrichtungsfragen komplett ausblenden (Tutorial-Fragen, nicht für reguläres Üben)
-      if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
-      if (themaRaw === 'Einrichtung' || themaRaw === 'Einrichtungstest') continue
+      // Einrichtungsfragen komplett ausblenden — ausser im Demo-Modus, wo sie der einzige Inhalt sind
+      const istDemo = useAuthStore.getState().istDemoModus
+      if (!istDemo) {
+        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
+        if (themaRaw === 'Einrichtung' || themaRaw === 'Einrichtungstest') continue
+      }
 
       const fach = f.fach || 'Andere'
 

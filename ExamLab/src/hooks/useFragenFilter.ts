@@ -94,6 +94,7 @@ export function useFragenFilter(
   alleFragen: FilterbareFrage[],
   userEmail: string | undefined,
   ladeStatus: 'laden' | 'fertig',
+  istDemoModus: boolean = false,
 ): FragenFilterErgebnis {
   // Filter
   const [suchtext, setSuchtext] = useState('')
@@ -150,9 +151,9 @@ export function useFragenFilter(
   // Filtern
   const gefilterteFragen = useMemo(() => {
     return alleFragen.filter((f) => {
-      // Einrichtungsfragen ausblenden (hardcoded Tutorial-Fragen, nicht Teil der regulären Fragenbank)
+      // Einrichtungsfragen ausblenden — ausser im Demo-Modus, wo sie der einzige Inhalt sind
       const tags = f.tags || []
-      if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) return false
+      if (!istDemoModus && tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) return false
 
       // Schule/Privat-Filter
       if (filterKontext === 'schule' && !SCHUL_FACHBEREICHE.has(f.fachbereich)) return false
@@ -197,7 +198,7 @@ export function useFragenFilter(
       }
       return true
     })
-  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, filterQuelle, filterPoolStatus, filterMitAnhang, suchtext, userEmail])
+  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, filterQuelle, filterPoolStatus, filterMitAnhang, suchtext, userEmail, filterKontext, istDemoModus])
 
   // Sortieren
   const sortierteFragen = useMemo(() => {

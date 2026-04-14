@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useAuthStore } from '../../store/authStore'
 import { useUebenFortschrittStore } from '../../store/ueben/fortschrittStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenKontext } from '../../hooks/ueben/useUebenKontext'
@@ -50,7 +51,10 @@ export default function SuSAnalyse() {
         const laden = uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
         const f = await Promise.race([laden, timeout])
         if (abgebrochen) return
+        // Im Demo-Modus sind die Einrichtungs-Fragen der einzige Inhalt — nicht ausfiltern.
+        const istDemo = useAuthStore.getState().istDemoModus
         setFragen(f.filter(fr => {
+          if (istDemo) return true
           const tags = (fr.tags || []) as (string | { name: string })[]
           if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) return false
           return fr.thema !== 'Einrichtung' && fr.thema !== 'Einrichtungstest'
