@@ -266,13 +266,22 @@ export default function App() {
     return <LPStartseite />
   }
 
-  // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl
-  // Demo-SuS bekommt dieselbe Startseite — ohne Backend-Login-Bridge (SuSStartseite skippt im Demo).
-  if (user.rolle === 'sus' && !pruefungIdAusUrl && (apiService.istKonfiguriert() || istDemoModus)) {
-    if (korrekturId) {
-      return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
+  // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl.
+  // Demo-SuS: Nur auf expliziten /sus/ueben oder /sus/pruefen Pfaden SuSStartseite zeigen —
+  // initial (nur /sus) geht direkt in die Einrichtungsprüfung. Nach Abgabe navigiert
+  // AbgabeBestaetigung auf /sus/ueben, damit Üben/Prüfen-Sicht erscheint.
+  {
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
+    const istSuSDeepLink = /\/sus\/(ueben|pruefen)(\/|$)/.test(pathname)
+    const zeigeSuSStartseite = user.rolle === 'sus' && !pruefungIdAusUrl && (
+      istSuSDeepLink || (apiService.istKonfiguriert() && !istDemoModus)
+    )
+    if (zeigeSuSStartseite) {
+      if (korrekturId) {
+        return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
+      }
+      return <SuSStartseite onKorrekturWaehle={setKorrekturId} />
     }
-    return <SuSStartseite onKorrekturWaehle={setKorrekturId} />
   }
 
   // Ladefehler
