@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useAuthStore } from '../../../store/authStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import { uebenFragenAdapter } from '../../../adapters/ueben/appsScriptAdapter'
 import type { Frage } from '../../../types/ueben/fragen'
@@ -35,11 +36,14 @@ export default function AdminUebersicht({ onKindKlick, onFachKlick }: Props) {
   // Fragen-Statistiken nach Fach gruppiert
   const fachStats = useMemo(() => {
     const stats: Record<string, { fach: string; anzahl: number; themen: Set<string>; typen: Set<string> }> = {}
+    const istDemo = useAuthStore.getState().istDemoModus
     for (const f of fragen) {
-      // Einrichtungsfragen ausblenden (Tutorial-Fragen)
+      // Einrichtungsfragen ausblenden (Tutorial-Fragen) — ausser im Demo-Modus
       const tags = (f.tags || []) as (string | { name: string })[]
-      if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
-      if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+      if (!istDemo) {
+        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
+        if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+      }
 
       if (!stats[f.fach]) stats[f.fach] = { fach: f.fach, anzahl: 0, themen: new Set(), typen: new Set() }
       stats[f.fach].anzahl++
