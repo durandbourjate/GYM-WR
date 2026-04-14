@@ -2397,6 +2397,43 @@ function resetPruefungEndpoint(body) {
 
 // === FRAGE SPEICHERN (Fragenbank) ===
 
+/**
+ * Stellt sicher, dass bei FiBu-Fragen mit eingeschränkter Kontenauswahl alle
+ * in der Musterlösung verwendeten Konten im Dropdown verfügbar sind.
+ * Verhindert Bug A (SuS kann korrektes Konto nicht wählen).
+ */
+function ergaenzeFehlendeKontenInAuswahl_(frage) {
+  if (!frage || !frage.kontenauswahl || frage.kontenauswahl.modus !== 'eingeschraenkt') return;
+  var bestehend = (frage.kontenauswahl.konten || []).map(function(k) {
+    return typeof k === 'string' ? k : String((k && (k.nr || k.nummer || k.kontonummer)) || '');
+  }).filter(Boolean);
+  var benoetigt = [];
+  if (frage.typ === 'buchungssatz' && Array.isArray(frage.buchungen)) {
+    frage.buchungen.forEach(function(b) {
+      if (b.sollKonto) benoetigt.push(String(b.sollKonto));
+      if (b.habenKonto) benoetigt.push(String(b.habenKonto));
+      // Legacy-Format absichern (wird durch Migration später bereinigt)
+      if (Array.isArray(b.sollKonten)) b.sollKonten.forEach(function(k) { if (k.kontonummer) benoetigt.push(String(k.kontonummer)); });
+      if (Array.isArray(b.habenKonten)) b.habenKonten.forEach(function(k) { if (k.kontonummer) benoetigt.push(String(k.kontonummer)); });
+    });
+  } else if (frage.typ === 'tkonto' && Array.isArray(frage.konten)) {
+    frage.konten.forEach(function(k) {
+      if (k.kontonummer) benoetigt.push(String(k.kontonummer));
+      if (Array.isArray(k.eintraege)) k.eintraege.forEach(function(e) { if (e.gegenkonto) benoetigt.push(String(e.gegenkonto)); });
+    });
+  } else if (frage.typ === 'kontenbestimmung' && Array.isArray(frage.aufgaben)) {
+    frage.aufgaben.forEach(function(a) {
+      (a.erwarteteAntworten || []).forEach(function(ea) { if (ea.kontonummer) benoetigt.push(String(ea.kontonummer)); });
+    });
+  } else {
+    return;
+  }
+  var set = {};
+  bestehend.forEach(function(k) { set[k] = true; });
+  benoetigt.forEach(function(k) { if (k) set[k] = true; });
+  frage.kontenauswahl.konten = Object.keys(set);
+}
+
 function speichereFrage(body) {
   try {
     const { email, frage } = body;
@@ -2406,6 +2443,9 @@ function speichereFrage(body) {
     if (!frage || !frage.id || !frage.typ || !frage.fachbereich) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
+
+    // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
+    ergaenzeFehlendeKontenInAuswahl_(frage);
 
     const tabName = frage.fachbereich;
     const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
@@ -4443,7 +4483,9 @@ function kiAssistentEndpoint(body) {
       case 'generiereKontenauswahl':
         if (!daten.geschaeftsfall) return jsonResponse({ error: 'Geschäftsfall fehlt' });
         userPrompt = 'Du bist ein Buchhaltungsexperte für den Schweizer KMU-Kontenrahmen. ' +
-          'Gegeben ist ein Geschäftsfall. Schlage 8–12 relevante Konten vor (die korrekten + plausible Distraktoren).\n\n' +
+          'Gegeben ist ein Geschäftsfall. Schlage 8–12 relevante Konten vor. ' +
+          'WICHTIG: Alle Konten, die für die korrekte Lösung des Geschäftsfalls nötig sind, MÜSSEN enthalten sein (Soll- UND Haben-Konten aller Buchungssätze). ' +
+          'Ergänze zusätzlich 3–6 plausible Distraktoren aus verwandten Themenbereichen.\n\n' +
           'Geschäftsfall:\n' + wrapUserData('geschaeftsfall', daten.geschaeftsfall) + '\n\n' +
           'Antworte als JSON: { "konten": [{ "nummer": "1000", "name": "Kasse" }, ...] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
@@ -4453,8 +4495,10 @@ function kiAssistentEndpoint(body) {
         if (!daten.geschaeftsfall) return jsonResponse({ error: 'Geschäftsfall fehlt' });
         userPrompt = 'Du bist ein Buchhaltungsexperte. Erstelle die korrekten Buchungssätze (Soll/Haben mit Kontonummern und Beträgen) für den gegebenen Geschäftsfall. ' +
           'Verwende den Schweizer KMU-Kontenrahmen.\n\n' +
+          'Format: Je Buchungssatz genau EIN Soll-Konto und EIN Haben-Konto (vereinfachter Buchungssatz "Soll an Haben Betrag"). ' +
+          'Bei zusammengesetzten Buchungen mehrere Einträge erstellen (eine Zeile pro Soll/Haben-Paar).\n\n' +
           'Geschäftsfall:\n' + wrapUserData('geschaeftsfall', daten.geschaeftsfall) + '\n\n' +
-          'Antworte als JSON: { "buchungen": [{ "sollKonten": [{ "kontonummer": "1000", "betrag": 500 }], "habenKonten": [{ "kontonummer": "2000", "betrag": 500 }], "buchungstext": "..." }] }';
+          'Antworte als JSON: { "buchungen": [{ "sollKonto": "1000", "habenKonto": "2000", "betrag": 500 }] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
 
@@ -4463,7 +4507,7 @@ function kiAssistentEndpoint(body) {
         userPrompt = 'Du bist ein Buchhaltungsexperte. Prüfe die folgenden Buchungssätze auf fachliche Korrektheit (Soll/Haben-Logik, Kontenrahmen, Beträge).\n\n' +
           'Geschäftsfall:\n' + wrapUserData('geschaeftsfall', daten.geschaeftsfall) + '\n\n' +
           'Buchungen:\n' + wrapUserData('buchungen', JSON.stringify(daten.buchungen)) + '\n\n' +
-          'Antworte als JSON: { "korrekt": true/false, "bewertung": "...", "korrigiert": [{ "sollKonten": [...], "habenKonten": [...], "buchungstext": "..." }] }';
+          'Antworte als JSON: { "korrekt": true/false, "bewertung": "...", "korrigiert": [{ "sollKonto": "1000", "habenKonto": "2000", "betrag": 500 }] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
 
@@ -4491,9 +4535,11 @@ function kiAssistentEndpoint(body) {
           (daten.modus === 'erfolgsrechnung' ? 'mehrstufige Erfolgsrechnung' : 'Bilanz') +
           ' basierend auf dem Aufgabentext. Verwende den Schweizer KMU-Kontenrahmen.\n\n' +
           'Aufgabe:\n' + wrapUserData('aufgabentext', daten.aufgabentext) + '\n\n' +
+          'WICHTIG: Erstelle ZUSÄTZLICH zur Struktur die Liste aller verwendeten Konten mit ihren Salden ' +
+          '(Feld "kontenMitSaldi"). Gruppen enthalten NUR Kontonummern als String-Array.\n\n' +
           (daten.modus === 'erfolgsrechnung' ?
-            'Antworte als JSON: { "erfolgsrechnung": { "stufen": [{ "label": "Bruttogewinn", "aufwandKonten": ["4200"], "ertragKonten": ["3200"], "zwischentotal": 50000 }] } }' :
-            'Antworte als JSON: { "bilanz": { "aktivSeite": { "label": "Aktiven", "gruppen": [{ "label": "Umlaufvermögen", "positionen": [{ "konto": "1000", "name": "Kasse", "betrag": 5000 }] }] }, "passivSeite": { "label": "Passiven", "gruppen": [{ "label": "Fremdkapital", "positionen": [{ "konto": "2000", "name": "Kreditoren", "betrag": 3000 }] }] }, "bilanzsumme": 100000 } }');
+            'Antworte als JSON: { "kontenMitSaldi": [{ "kontonummer": "4200", "name": "Warenaufwand", "saldo": 40000 }, { "kontonummer": "3200", "name": "Warenertrag", "saldo": 90000 }], "erfolgsrechnung": { "stufen": [{ "label": "Bruttogewinn", "aufwandKonten": ["4200"], "ertragKonten": ["3200"], "zwischentotal": 50000 }] } }' :
+            'Antworte als JSON: { "kontenMitSaldi": [{ "kontonummer": "1000", "name": "Kasse", "saldo": 5000 }, { "kontonummer": "2000", "name": "Kreditoren", "saldo": 3000 }], "bilanz": { "aktivSeite": { "label": "Aktiven", "gruppen": [{ "label": "Umlaufvermögen", "konten": ["1000"] }] }, "passivSeite": { "label": "Passiven", "gruppen": [{ "label": "Fremdkapital", "konten": ["2000"] }] }, "bilanzsumme": 100000 } }');
         result = rufeClaudeAuf(systemPrompt, userPrompt, 1536, email);
         return jsonResponse({ success: true, ergebnis: result });
 
@@ -4503,7 +4549,8 @@ function kiAssistentEndpoint(body) {
           'Verwende Schweizer KMU-Kontenrahmen und CHF.\n\n' +
           'Thema: ' + wrapUserData('thema', daten.thema) + '\n' +
           (daten.schwierigkeit ? 'Schwierigkeit: ' + wrapUserData('schwierigkeit', daten.schwierigkeit) + '\n' : '') +
-          '\nAntworte als JSON: { "titel": "...", "beschreibung": "Ausgangslage des Unternehmens", "geschaeftsfaelle": [{ "nr": 1, "text": "...", "loesung": { "sollKonten": [{ "kontonummer": "1000", "betrag": 500 }], "habenKonten": [{ "kontonummer": "2000", "betrag": 500 }] } }] }';
+          '\nFormat: Pro Geschäftsfall eine Liste von Buchungen, je Buchung genau EIN Soll- und EIN Haben-Konto (vereinfachter Buchungssatz).\n\n' +
+          'Antworte als JSON: { "titel": "...", "beschreibung": "Ausgangslage des Unternehmens", "geschaeftsfaelle": [{ "nr": 1, "text": "...", "loesung": { "buchungen": [{ "sollKonto": "1000", "habenKonto": "2000", "betrag": 500 }] } }] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, 2048, email);
         return jsonResponse({ success: true, ergebnis: result });
 
