@@ -59,7 +59,7 @@ function diagnoseFibuFragenV2() {
             (b.sollKonten || []).forEach(function(k) { if (k.kontonummer) verwendete.push(String(k.kontonummer)); });
             (b.habenKonten || []).forEach(function(k) { if (k.kontonummer) verwendete.push(String(k.kontonummer)); });
           } else if (!istNeu) {
-            probleme.push('B' + (idx + 1) + ': UNGÜLTIG (weder Alt- noch Neu-Format)');
+            probleme.push('B' + (idx + 1) + ': UNGÜLTIG — Felder: ' + Object.keys(b).join(',') + ' | JSON: ' + JSON.stringify(b).substring(0, 250));
           } else {
             if (b.sollKonto) verwendete.push(String(b.sollKonto));
             if (b.habenKonto) verwendete.push(String(b.habenKonto));
