@@ -54,10 +54,15 @@ function diagnoseFibuFragenV2() {
         buchungen.forEach(function(b, idx) {
           var istAlt = Array.isArray(b.sollKonten) || Array.isArray(b.habenKonten);
           var istNeu = typeof b.sollKonto === 'string' && typeof b.habenKonto === 'string';
+          var istKurz = !istNeu && typeof b.soll === 'string' && typeof b.haben === 'string';
           if (istAlt && !istNeu) {
             probleme.push('B' + (idx + 1) + ': ALTES Format (sollKonten[]/habenKonten[])');
             (b.sollKonten || []).forEach(function(k) { if (k.kontonummer) verwendete.push(String(k.kontonummer)); });
             (b.habenKonten || []).forEach(function(k) { if (k.kontonummer) verwendete.push(String(k.kontonummer)); });
+          } else if (istKurz) {
+            probleme.push('B' + (idx + 1) + ': KURZES Format ({soll,haben} statt {sollKonto,habenKonto})');
+            if (b.soll) verwendete.push(String(b.soll));
+            if (b.haben) verwendete.push(String(b.haben));
           } else if (!istNeu) {
             probleme.push('B' + (idx + 1) + ': UNGÜLTIG — Felder: ' + Object.keys(b).join(',') + ' | JSON: ' + JSON.stringify(b).substring(0, 250));
           } else {

@@ -63,6 +63,8 @@ function migriereFibuFragen() {
         typDaten.buchungen.forEach(function(b) {
           var hasOld = Array.isArray(b.sollKonten) || Array.isArray(b.habenKonten);
           var hasNew = typeof b.sollKonto === 'string' && typeof b.habenKonto === 'string';
+          // 3. Format: {soll, haben, betrag} — nur Feldnamen kürzer
+          var hasShort = !hasNew && typeof b.soll === 'string' && typeof b.haben === 'string';
           if (hasNew) {
             neueBuchungen.push({
               id: b.id || ('b_' + Utilities.getUuid().substring(0, 8)),
@@ -70,6 +72,15 @@ function migriereFibuFragen() {
               habenKonto: b.habenKonto,
               betrag: Number(b.betrag) || 0,
             });
+          } else if (hasShort) {
+            neueBuchungen.push({
+              id: b.id || ('b_' + Utilities.getUuid().substring(0, 8)),
+              sollKonto: String(b.soll),
+              habenKonto: String(b.haben),
+              betrag: Number(b.betrag) || 0,
+            });
+            changed = true;
+            aenderungen.push('Buchungssatz {soll,haben}→{sollKonto,habenKonto}');
           } else if (hasOld) {
             // Zusammengesetzte Buchung aufspalten: eine Zeile pro Soll×Haben-Paar
             var sollKs = b.sollKonten || [];
