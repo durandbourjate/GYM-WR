@@ -111,7 +111,7 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
           className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer
             ${dragOver
               ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
+              : 'border-violet-500 bg-violet-50 dark:bg-[#2d2040] hover:border-violet-600 dark:hover:border-violet-400'
             }
             ${ladetHoch ? 'opacity-60 pointer-events-none' : ''}
           `}

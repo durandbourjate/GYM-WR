@@ -327,7 +327,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
           className={`w-full py-3 text-lg font-semibold rounded-xl transition-colors
             ${sebBlockiert
               ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-              : 'bg-slate-800 hover:bg-slate-900 dark:bg-slate-200 dark:hover:bg-slate-100 text-white dark:text-slate-800 cursor-pointer'
+              : 'bg-violet-500 hover:bg-violet-600 text-white cursor-pointer'
             }
           `}
         >

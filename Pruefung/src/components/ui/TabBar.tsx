@@ -55,7 +55,7 @@ export function TabBar({ tabs, activeTab, onTabChange, size = 'md' }: TabBarProp
       return `${base} text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-50`;
     }
     if (isActive) {
-      return `${base} bg-violet-500 text-white font-semibold shadow-sm`;
+      return `${base} bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-semibold shadow-sm`;
     }
     return `${base} text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600`;
   };

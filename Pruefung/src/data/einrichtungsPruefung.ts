@@ -3,7 +3,7 @@ import { DEMO_KURS_ID, DEMO_PRUEFUNG_ID } from './demoConfig.ts'
 
 export const einrichtungsPruefung: PruefungsConfig = {
   id: DEMO_PRUEFUNG_ID,
-  titel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
+  titel: 'Einführungsprüfung — Lerne ExamLab kennen',
 
   klasse: DEMO_KURS_ID,
   gefaess: 'SF',

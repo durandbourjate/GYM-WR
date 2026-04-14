@@ -287,11 +287,7 @@ export default function FragenBrowserHeader({
         {/* Anhang */}
         <button
           onClick={() => { setFilterMitAnhang(!filterMitAnhang); setAngezeigteMenge(seitenGroesse) }}
-          className={`text-xs px-2 py-1.5 rounded-lg border transition-colors cursor-pointer
-            ${filterMitAnhang
-              ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
-              : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-            }`}
+          className={`filter-btn ${filterMitAnhang ? 'filter-btn-active' : ''}`}
         >
           Anhang
         </button>
@@ -302,12 +298,9 @@ export default function FragenBrowserHeader({
             <button
               key={k}
               onClick={() => { setFilterKontext(k); setAngezeigteMenge(seitenGroesse) }}
-              className={`text-xs px-2 py-1.5 border transition-colors cursor-pointer ${
-                k === 'alle' ? 'rounded-l-lg' : k === 'privat' ? 'rounded-r-lg' : ''
-              } ${filterKontext === k
-                ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
-                : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
+              className={`filter-btn ${
+                k === 'alle' ? 'rounded-l-lg rounded-r-none' : k === 'privat' ? 'rounded-r-lg rounded-l-none' : 'rounded-none'
+              } ${filterKontext === k ? 'filter-btn-active' : ''}`}
             >
               {k === 'alle' ? 'Alle' : k === 'schule' ? 'Schule' : 'Privat'}
             </button>
@@ -356,11 +349,7 @@ export default function FragenBrowserHeader({
         {/* Kompakt-Toggle */}
         <button
           onClick={() => setKompaktModus(!kompaktModus)}
-          className={`text-xs px-2 py-1.5 rounded-lg border transition-colors cursor-pointer ml-auto
-            ${kompaktModus
-              ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
-              : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
-            }`}
+          className={`filter-btn ml-auto ${kompaktModus ? 'filter-btn-active' : ''}`}
         >
           {kompaktModus ? 'Kompakt' : 'Detail'}
         </button>

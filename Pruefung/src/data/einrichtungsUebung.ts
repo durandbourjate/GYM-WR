@@ -3,7 +3,7 @@ import { DEMO_KURS_ID } from './demoConfig.ts'
 
 export const einrichtungsUebung: PruefungsConfig = {
   id: 'einrichtung-uebung',
-  titel: 'Einführungsübung — Lerne ExamLab Üben kennen',
+  titel: 'Einführungsübung — Lerne ExamLab kennen',
 
   klasse: DEMO_KURS_ID,
   gefaess: 'SF',

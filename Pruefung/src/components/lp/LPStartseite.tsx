@@ -525,7 +525,7 @@ export default function LPStartseite() {
                             onClick={() => setFilterGefaess(filterGefaess === g ? null : g)}
                             className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                               filterGefaess === g
-                                ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                                ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
                                 : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
                             }`}
                           >
@@ -540,7 +540,7 @@ export default function LPStartseite() {
                           onClick={() => setFilterStatus(s)}
                           className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                             filterStatus === s
-                              ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                              ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
                               : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
                           }`}
                         >
@@ -712,7 +712,7 @@ export default function LPStartseite() {
                     onClick={() => setFilterGefaess(filterGefaess === g ? null : g)}
                     className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                       filterGefaess === g
-                        ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                        ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
                         : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
                     }`}
                   >
@@ -726,7 +726,7 @@ export default function LPStartseite() {
                     onClick={() => setFilterStatus(s)}
                     className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors cursor-pointer ${
                       filterStatus === s
-                        ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-200 dark:text-slate-800 dark:border-slate-200'
+                        ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-400 dark:border-slate-500 font-semibold shadow-sm'
                         : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-750'
                     }`}
                   >
@@ -983,9 +983,11 @@ function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, trackerSummary
       <div className="flex items-center gap-2 shrink-0">
         <a
           href={`${window.location.pathname}?id=${c.id}`}
-          className="px-4 py-2 text-xs font-medium text-white dark:text-slate-800 bg-slate-800 dark:bg-slate-200 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
+          className={c.beendetUm
+            ? 'px-4 py-2 text-xs font-medium text-white dark:text-slate-800 bg-slate-800 dark:bg-slate-200 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors'
+            : 'px-4 py-2 text-xs font-medium text-white bg-violet-500 rounded-lg hover:bg-violet-600 transition-colors'}
         >
-          {c.beendetUm ? 'Auswerten' : c.typ === 'formativ' ? 'Übung starten' : 'Durchführen'}
+          {c.beendetUm ? 'Auswerten' : c.typ === 'formativ' ? 'Übung starten' : 'Prüfung starten'}
         </a>
         <button
           onClick={kopiereLink}

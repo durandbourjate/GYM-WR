@@ -327,7 +327,7 @@ export function erstelleDemoKorrektur(): PruefungsKorrektur {
 
   return {
     pruefungId: DEMO_PRUEFUNG_ID,
-    pruefungTitel: 'Einrichtungsprüfung — Lerne ExamLab kennen',
+    pruefungTitel: 'Einführungsprüfung — Lerne ExamLab kennen',
     datum: '2026-03-24',
     klasse: DEMO_KURS_ID,
     schueler: [
