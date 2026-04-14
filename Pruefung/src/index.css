@@ -186,8 +186,10 @@ html:not(.dark) {
   color: #94a3b8;
 }
 
-/* SuS-Antwort-Hervorhebung: Number-Inputs mit Wert → dezenter Indigo-Rand */
-input[type="number"]:not(:placeholder-shown):not(:disabled):not(:focus) {
+/* SuS-Antwort-Hervorhebung: Number-Inputs mit Wert → dezenter Indigo-Rand.
+   Ausgeschlossen: Editor-Formulare (.input-field / .input-field-narrow) und
+   explizit via .no-answer-highlight markierte Felder. */
+input[type="number"]:not(.input-field):not(.input-field-narrow):not(.no-answer-highlight):not(:placeholder-shown):not(:disabled):not(:focus) {
   border-color: var(--color-indigo-400, #818cf8);
 }
 

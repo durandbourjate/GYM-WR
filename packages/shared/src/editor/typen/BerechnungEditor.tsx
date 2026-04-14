@@ -55,57 +55,63 @@ export default function BerechnungEditor({ ergebnisse, setErgebnisse, rechenwegE
       <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-2">
         Erwartete Ergebnisse
       </label>
-      <div className="space-y-2">
-        {/* Spalten-Header */}
-        {ergebnisse.length > 0 && (
-          <div className="flex gap-2 items-center text-xs text-slate-500 dark:text-slate-400">
-            <span className="flex-[5] min-w-0">Bezeichnung</span>
-            <span className="w-24 text-center shrink-0">Ergebnis</span>
-            <span className="w-20 text-center shrink-0">±Toleranz</span>
-            <span className="w-16 text-center shrink-0">Einheit</span>
-            {ergebnisse.length > 1 && <span className="w-7" />}
-          </div>
-        )}
+      <div className="space-y-3">
         {ergebnisse.map((erg, i) => (
-          <div key={erg.id} className="flex items-start gap-2">
-            <input
-              type="text"
-              value={erg.label}
-              onChange={(e) => updateErgebnis(i, { label: e.target.value })}
-              placeholder="z.B. Gewinn, Umsatz..."
-              className="input-field flex-[5] min-w-0"
-            />
-            <input
-              type="number"
-              value={erg.korrekt}
-              onChange={(e) => updateErgebnis(i, { korrekt: parseFloat(e.target.value) || 0 })}
-              placeholder="Korrekt"
-              className="input-field w-24 shrink-0 text-center font-mono"
-              title="Korrekte Antwort"
-            />
-            <input
-              type="number"
-              value={erg.toleranz}
-              onChange={(e) => updateErgebnis(i, { toleranz: parseFloat(e.target.value) || 0 })}
-              placeholder="±Tol."
-              className="input-field w-20 shrink-0 text-center"
-              title="Toleranz"
-              min={0}
-            />
-            <input
-              type="text"
-              value={erg.einheit ?? ''}
-              onChange={(e) => updateErgebnis(i, { einheit: e.target.value || undefined })}
-              placeholder="Einh."
-              className="input-field-narrow w-16 shrink-0"
-              title="Einheit"
-            />
-            {ergebnisse.length > 1 && (
-              <button
-                onClick={() => removeErgebnis(i)}
-                className="mt-1.5 w-7 h-7 text-red-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer text-sm shrink-0"
-              >×</button>
-            )}
+          <div key={erg.id} className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+            {/* Zeile 1: Bezeichnung (volle Breite) + Löschen */}
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={erg.label}
+                onChange={(e) => updateErgebnis(i, { label: e.target.value })}
+                placeholder="Bezeichnung (z.B. Gewinn, Umsatz)"
+                className="input-field flex-1 min-w-0"
+              />
+              {ergebnisse.length > 1 && (
+                <button
+                  onClick={() => removeErgebnis(i)}
+                  className="w-7 h-7 text-red-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer text-lg shrink-0"
+                  title="Ergebnis entfernen"
+                >×</button>
+              )}
+            </div>
+            {/* Zeile 2: Ergebnis + Toleranz + Einheit nebeneinander */}
+            <div className="grid grid-cols-[1fr_1fr_1fr] gap-2">
+              <div>
+                <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-0.5">Ergebnis</label>
+                <input
+                  type="number"
+                  value={erg.korrekt}
+                  onChange={(e) => updateErgebnis(i, { korrekt: parseFloat(e.target.value) || 0 })}
+                  placeholder="0"
+                  className="input-field text-center font-mono"
+                  title="Korrekte Antwort"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-0.5">±Toleranz</label>
+                <input
+                  type="number"
+                  value={erg.toleranz}
+                  onChange={(e) => updateErgebnis(i, { toleranz: parseFloat(e.target.value) || 0 })}
+                  placeholder="0"
+                  className="input-field text-center"
+                  title="Toleranz"
+                  min={0}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] text-slate-500 dark:text-slate-400 mb-0.5">Einheit</label>
+                <input
+                  type="text"
+                  value={erg.einheit ?? ''}
+                  onChange={(e) => updateErgebnis(i, { einheit: e.target.value || undefined })}
+                  placeholder="CHF, %, kg…"
+                  className="input-field text-center"
+                  title="Einheit"
+                />
+              </div>
+            </div>
           </div>
         ))}
       </div>
