@@ -7,7 +7,6 @@ import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDe
 import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 import AdminSettings from '../ueben/admin/AdminSettings'
-import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -25,7 +24,6 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   const user = useAuthStore(s => s.user)
   const { stammdaten, lpProfil, istAdmin, ladeStammdaten, ladeLPProfil } = useStammdatenStore()
   const admin = istAdmin(user?.email)
-  const aktiveGruppe = useUebenGruppenStore(s => s.aktiveGruppe)
 
   const [tab, setTab] = useState<EinstellungenTab>(initialTab ?? (admin ? 'admin' : 'profil'))
 
@@ -42,7 +40,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
     { key: 'profil', label: 'Mein Profil', sichtbar: true },
     { key: 'lernziele', label: 'Lernziele', sichtbar: true },
     { key: 'favoriten', label: 'Favoriten', sichtbar: true },
-    { key: 'uebungen', label: 'Übungen', sichtbar: !!aktiveGruppe },
+    { key: 'uebungen', label: 'Übungen', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
   ]
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { TabBar } from '../../ui/TabBar'
 import { useUebenSettingsStore } from '../../../store/ueben/settingsStore'
+import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import AllgemeinTab from './settings/AllgemeinTab'
 import FaecherTab from './settings/FaecherTab'
 import FarbenTab from './settings/FarbenTab'
@@ -20,45 +21,77 @@ export default function AdminSettings() {
   const saveFehler = useUebenSettingsStore(s => s.saveFehler)
   const speichertGerade = useUebenSettingsStore(s => s.speichertGerade)
   const resetSaveFehler = useUebenSettingsStore(s => s.resetSaveFehler)
+  const gruppen = useUebenGruppenStore(s => s.gruppen)
+  const aktiveGruppe = useUebenGruppenStore(s => s.aktiveGruppe)
+  const waehleGruppe = useUebenGruppenStore(s => s.waehleGruppe)
 
   return (
     <div className="space-y-5">
-      {/* Save-Fehler-Banner */}
-      {saveFehler && (
-        <div className="flex items-start gap-3 p-3 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
-          <div className="flex-1 text-sm text-red-700 dark:text-red-300">
-            <strong>Einstellung konnte nicht gespeichert werden:</strong> {saveFehler}
-          </div>
-          <button
-            onClick={resetSaveFehler}
-            className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0"
-            title="Schliessen"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-
-      {/* Sub-Tab-Navigation + Speicher-Indikator */}
-      <div className="flex items-center justify-between gap-3">
-        <TabBar
-          tabs={TABS}
-          activeTab={aktiv}
-          onTabChange={(id) => setAktiv(id as SettingsTab)}
-          size="sm"
-        />
-        {speichertGerade && (
-          <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0" title="Wird gespeichert">
-            Speichern…
-          </span>
-        )}
+      {/* Kurs-Auswahl — steht vor allem anderen, damit klar ist welche Gruppe konfiguriert wird */}
+      <div className="flex items-center gap-3">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 shrink-0">Kurs:</label>
+        <select
+          value={aktiveGruppe?.id ?? ''}
+          onChange={(e) => {
+            const id = e.target.value
+            if (id) void waehleGruppe(id)
+          }}
+          className="flex-1 text-sm px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 cursor-pointer"
+        >
+          {!aktiveGruppe && <option value="" disabled>— Kurs wählen —</option>}
+          {gruppen.map(g => (
+            <option key={g.id} value={g.id}>{g.name}</option>
+          ))}
+        </select>
       </div>
 
-      {/* Tab-Inhalt */}
-      {aktiv === 'allgemein' && <AllgemeinTab />}
-      {aktiv === 'faecher' && <FaecherTab />}
-      {aktiv === 'farben' && <FarbenTab />}
-      {aktiv === 'mitglieder' && <MitgliederTab />}
+      {/* Ohne aktive Gruppe: Hinweis statt leerer Tabs */}
+      {!aktiveGruppe && (
+        <p className="text-sm text-slate-500 dark:text-slate-400 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+          Bitte wähle oben einen Kurs aus, um dessen Einstellungen zu bearbeiten.
+        </p>
+      )}
+
+      {aktiveGruppe && (
+        <>
+          {/* Save-Fehler-Banner */}
+          {saveFehler && (
+            <div className="flex items-start gap-3 p-3 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
+              <div className="flex-1 text-sm text-red-700 dark:text-red-300">
+                <strong>Einstellung konnte nicht gespeichert werden:</strong> {saveFehler}
+              </div>
+              <button
+                onClick={resetSaveFehler}
+                className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0"
+                title="Schliessen"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* Sub-Tab-Navigation + Speicher-Indikator */}
+          <div className="flex items-center justify-between gap-3">
+            <TabBar
+              tabs={TABS}
+              activeTab={aktiv}
+              onTabChange={(id) => setAktiv(id as SettingsTab)}
+              size="sm"
+            />
+            {speichertGerade && (
+              <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0" title="Wird gespeichert">
+                Speichern…
+              </span>
+            )}
+          </div>
+
+          {/* Tab-Inhalt */}
+          {aktiv === 'allgemein' && <AllgemeinTab />}
+          {aktiv === 'faecher' && <FaecherTab />}
+          {aktiv === 'farben' && <FarbenTab />}
+          {aktiv === 'mitglieder' && <MitgliederTab />}
+        </>
+      )}
     </div>
   )
 }

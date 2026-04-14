@@ -101,25 +101,25 @@ export default function MitgliederTab() {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {/* Rollen-Toggle */}
+                {/* Rollen-Dropdown — "Letzte Kurs-Leitung" darf nicht herabgestuft werden */}
                 {rolleStatus[m.email] === 'laden' ? (
                   <span className="text-xs text-slate-400 px-2">…</span>
                 ) : (
-                  <button
-                    onClick={() => {
-                      if (istAdmin && adminAnzahl <= 1) return // Letzter Admin
-                      handleRolleAendern(m.email, istAdmin ? 'lernend' : 'admin')
+                  <select
+                    value={m.rolle}
+                    onChange={(e) => {
+                      const neueRolle = e.target.value as 'admin' | 'lernend'
+                      if (neueRolle === m.rolle) return
+                      if (istAdmin && adminAnzahl <= 1 && neueRolle === 'lernend') return
+                      handleRolleAendern(m.email, neueRolle)
                     }}
                     disabled={istAdmin && adminAnzahl <= 1}
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${
-                      istAdmin
-                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50'
-                        : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                    } ${istAdmin && adminAnzahl <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    title={istAdmin ? (adminAnzahl <= 1 ? 'Letzte Kurs-Leitung — kann nicht entfernt werden' : 'Zu Lernend herabstufen') : 'Zu Kurs-Leitung hochstufen'}
+                    className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-500 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                    title={istAdmin && adminAnzahl <= 1 ? 'Letzte Kurs-Leitung — Rolle kann nicht geändert werden' : 'Rolle ändern'}
                   >
-                    {istAdmin ? 'Kurs-Leitung' : 'Lernend'}
-                  </button>
+                    <option value="admin">Kurs-Leitung</option>
+                    <option value="lernend">Lernend</option>
+                  </select>
                 )}
                 {rolleStatus[m.email] === 'ok' && <span className="text-xs text-green-500">✓</span>}
                 {rolleFehler[m.email] && <span className="text-xs text-red-500">{rolleFehler[m.email]}</span>}
