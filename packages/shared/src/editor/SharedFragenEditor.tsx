@@ -675,7 +675,7 @@ export default function SharedFragenEditor({
         {/* Drag-Handle zum Resize */}
         <div
           onMouseDown={handleZiehStart}
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 hover:bg-slate-400/50 active:bg-slate-400/70 transition-colors"
+          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-10 bg-slate-300 dark:bg-slate-600 hover:bg-violet-400 dark:hover:bg-violet-500 active:bg-violet-500 dark:active:bg-violet-600 transition-colors"
           title="Breite anpassen"
         />
         {/* Header */}

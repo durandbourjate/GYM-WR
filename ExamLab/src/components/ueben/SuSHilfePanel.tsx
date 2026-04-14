@@ -74,7 +74,7 @@ export default function SuSHilfePanel({ onSchliessen }: Props) {
 
 function Tipp({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-xs">
+    <div className="bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs">
       <span className="font-semibold">💡 Tipp:</span> {children}
     </div>
   )

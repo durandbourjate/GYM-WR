@@ -10,13 +10,13 @@
     {
       "name": "pruefung-dev",
       "runtimeExecutable": "/usr/local/bin/npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/Pruefung"],
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/ExamLab"],
       "port": 5174
     },
     {
       "name": "lernplattform-dev",
       "runtimeExecutable": "/usr/local/bin/npm",
-      "runtimeArgs": ["run", "dev:lernen", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/Pruefung"],
+      "runtimeArgs": ["run", "dev:lernen", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/ExamLab"],
       "port": 5175
     },
     {
