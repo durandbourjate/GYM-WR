@@ -82,16 +82,17 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
       gruppeId: context.gruppeId || '',
     })
 
-    // Image-Ping — zuverlässigste Cross-Origin Methode
-    const img = new Image()
+    // fetch no-cors — umgeht Multi-Account-Routing (/u/N/) das Image-Ping in 503 laufen lässt
     const done = () => {
       setSending(false)
       setSent(true)
       setTimeout(handleClose, 1800)
     }
-    img.onload = done
-    img.onerror = done
-    img.src = FEEDBACK_ENDPOINT + '?' + params.toString()
+    fetch(FEEDBACK_ENDPOINT + '?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors',
+      credentials: 'omit',
+    }).finally(done)
 
     // Fallback
     setTimeout(() => {
