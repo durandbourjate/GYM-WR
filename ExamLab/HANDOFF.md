@@ -29,7 +29,12 @@ Branch `fix/cluster-c-demo-modus` erstellt. Cluster C wird zuerst angegangen. Re
 - B4 Problem-melden-Icon: Ausrufezeichen statt Sprechblase
 - B5 Icon-Audit: Übersicht aller Icons + gemeinsame Designsprache (eigene Session)
 
-#### Cluster C — Demo-Modus defekt (🚧 in Arbeit)
+#### Cluster C — Demo-Modus defekt (🚧 teilweise gefixt — Stand Staging-Test 14.04.)
+- **GRÜN:** C3 Favoriten, C4 Backend-Fehler, C5 Üben keine Übungen, C6 Gruppen hängen
+- **ROT:** C1 Demo-LP-URL bleibt `/staging/sus`, C2 Fragensammlung leer, neu: Üben-Themen leer, neu: SuS nach Abgabe "Zurück zu ExamLab" → weisser Bildschirm
+- Nach SW-Unregister erneut testen — falls Bugs bleiben: Console/Netzwerk-Logs prüfen
+
+#### Cluster C — Backlog-Referenz (ursprüngliche Liste)
 - C1 Demo-LP-Login öffnet `/ExamLab/sus` statt LP-Route
 - C2 Demo-LP Fragensammlung: keine Fragen
 - C3 Demo-LP Favoriten leer (Einführungsprüfung als Default-Favorit)

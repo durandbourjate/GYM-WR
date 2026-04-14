@@ -242,12 +242,10 @@ function clearSession(): void {
  * eine Demo-Adresse ändern kann ohne Rolle='sus' zu bekommen.
  * Ohne diese Ableitung geht istDemoModus nach Reload verloren und echte
  * Backend-Calls laufen los, obwohl der User im Demo-Kontext sitzt (C4/C6).
+ * Die E-Mail-Liste ist inline (nicht als Modul-const), weil create()
+ * restoreDemoFlag() bei Modul-Init aufruft und eine const nach create() in
+ * der TDZ landen würde.
  */
-const DEMO_EMAILS: ReadonlySet<string> = new Set([
-  'demo-lp@gymhofwil.ch',
-  'demo@example.com',
-])
-
 function saveDemoFlag(aktiv: boolean): void {
   // bewusst NOOP — Demo-Flag wird nicht in sessionStorage persistiert (Security).
   // Persistenz erfolgt implizit über die gespeicherte User-E-Mail.
@@ -256,5 +254,6 @@ function saveDemoFlag(aktiv: boolean): void {
 
 function restoreDemoFlag(user: AuthUser | null): boolean {
   if (!user) return false
-  return DEMO_EMAILS.has(user.email.toLowerCase())
+  const email = user.email.toLowerCase()
+  return email === 'demo-lp@gymhofwil.ch' || email === 'demo@example.com'
 }
