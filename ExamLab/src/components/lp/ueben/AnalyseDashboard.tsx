@@ -30,8 +30,8 @@ export default function AnalyseDashboard({ onSuSKlick }: AnalyseDashboardProps) 
       const f = await uebenFragenAdapter.ladeFragen(gruppeId)
       setFragen(f.filter(fr => {
         const tags = (fr.tags || []) as (string | { name: string })[]
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) return false
-        if (fr.thema === 'Einrichtung' || fr.thema === 'Einrichtungstest') return false
+        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) return false
+        if (fr.thema === 'Einrichtung' || fr.thema === 'Einrichtungstest' || fr.thema === 'Einführung') return false
         return true
       }))
       setLaden(false)

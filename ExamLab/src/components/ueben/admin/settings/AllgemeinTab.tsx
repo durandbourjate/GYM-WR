@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useUebenSettingsStore } from '../../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
+import { useAuthStore } from '../../../../store/authStore'
 import { useUebenAuthStore } from '../../../../store/ueben/authStore'
 import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
 import { DEFAULT_MASTERY_SCHWELLWERTE } from '../../../../types/ueben/settings'
@@ -20,12 +21,15 @@ export default function AllgemeinTab() {
   const [verfuegbareThemen, setVerfuegbareThemen] = useState<{ fach: string; thema: string }[]>([])
   useEffect(() => {
     if (!aktiveGruppe) return
+    const istDemo = useAuthStore.getState().istDemoModus
     uebenFragenAdapter.ladeFragen(aktiveGruppe.id).then(fragen => {
       const map = new Map<string, string>()
       for (const f of fragen) {
         const tags = (f.tags || []) as (string | { name: string })[]
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
-        if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+        if (!istDemo) {
+          if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) continue
+          if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest' || f.thema === 'Einführung') continue
+        }
         const key = `${f.fach}|${f.thema}`
         if (!map.has(key)) map.set(key, f.fach)
       }

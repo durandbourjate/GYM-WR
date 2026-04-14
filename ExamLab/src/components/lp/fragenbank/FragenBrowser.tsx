@@ -87,7 +87,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [detailLaden, setDetailLaden] = useState(false)
 
   // Filter/Sort/Gruppierungs-Hook
-  const filter = useFragenFilter(alleFragen, user?.email, ladeStatus)
+  const filter = useFragenFilter(alleFragen, user?.email, ladeStatus, istDemoModus)
 
   /** Detail on-demand laden und Editor öffnen */
   async function handleEditFrage(frage: Frage | FrageSummary): Promise<void> {

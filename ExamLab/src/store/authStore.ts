@@ -173,6 +173,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
     clearSession()
     resetPruefungState()
     set({ user: null, istDemoModus: false, ladeStatus: 'idle', fehler: null })
+    // Hart auf /login navigieren — verhindert dass alte Pfade wie /sus/ueben hängen
+    // bleiben (würden nach Re-Login wieder das SuSStartseite-Layout statt direkt
+    // Prüfung zeigen) und triggert keinen Demo-Login-Loop.
+    if (typeof window !== 'undefined') {
+      window.location.href = import.meta.env.BASE_URL + 'login'
+    }
   },
 
   setFehler: (fehler: string | null) => set({ fehler, ladeStatus: fehler ? 'fehler' : 'idle' }),
