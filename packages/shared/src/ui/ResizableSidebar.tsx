@@ -128,8 +128,8 @@ export function ResizableSidebar({
   const toggleMaximize = () => setIsMaximized(v => !v);
   const currentWidth = isMaximized ? effectiveMax : width;
 
-  // Resize-Handle (einheitlicher Stil über beide Modi)
-  const resizeHandleClass = `${mode === 'overlay' ? 'absolute top-0 bottom-0' : 'flex items-center justify-center'} w-1 cursor-col-resize z-10 bg-slate-300 dark:bg-slate-600 hover:bg-violet-400 dark:hover:bg-violet-500 active:bg-violet-500 dark:active:bg-violet-600 transition-colors ${
+  // Resize-Handle: transparent per Default, violett bei Hover — einheitlich über beide Modi
+  const resizeHandleClass = `${mode === 'overlay' ? 'absolute top-0 bottom-0' : 'flex items-center justify-center'} w-1 cursor-col-resize z-10 bg-transparent hover:bg-violet-400 dark:hover:bg-violet-500 active:bg-violet-500 dark:active:bg-violet-600 transition-colors ${
     mode === 'overlay'
       ? (side === 'right' ? 'left-0' : 'right-0')
       : (side === 'right' ? 'order-first' : 'order-last')
