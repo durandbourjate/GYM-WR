@@ -27,22 +27,54 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-5">
-      {/* Kurs-Auswahl — steht vor allem anderen, damit klar ist welche Gruppe konfiguriert wird */}
-      <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 shrink-0">Kurs:</label>
+      {/* Save-Fehler-Banner */}
+      {aktiveGruppe && saveFehler && (
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
+          <div className="flex-1 text-sm text-red-700 dark:text-red-300">
+            <strong>Einstellung konnte nicht gespeichert werden:</strong> {saveFehler}
+          </div>
+          <button
+            onClick={resetSaveFehler}
+            className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0"
+            title="Schliessen"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* Kopfzeile: Kurs-Dropdown + Sub-Tabs + Speicher-Indikator */}
+      <div className="flex items-center gap-3 flex-wrap">
         <select
           value={aktiveGruppe?.id ?? ''}
           onChange={(e) => {
             const id = e.target.value
             if (id) void waehleGruppe(id)
           }}
-          className="flex-1 text-sm px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 cursor-pointer"
+          className="text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 cursor-pointer shrink-0"
+          title="Kurs wählen"
         >
           {!aktiveGruppe && <option value="" disabled>— Kurs wählen —</option>}
           {gruppen.map(g => (
             <option key={g.id} value={g.id}>{g.name}</option>
           ))}
         </select>
+
+        {aktiveGruppe && (
+          <>
+            <TabBar
+              tabs={TABS}
+              activeTab={aktiv}
+              onTabChange={(id) => setAktiv(id as SettingsTab)}
+              size="sm"
+            />
+            {speichertGerade && (
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto shrink-0" title="Wird gespeichert">
+                Speichern…
+              </span>
+            )}
+          </>
+        )}
       </div>
 
       {/* Ohne aktive Gruppe: Hinweis statt leerer Tabs */}
@@ -52,46 +84,11 @@ export default function AdminSettings() {
         </p>
       )}
 
-      {aktiveGruppe && (
-        <>
-          {/* Save-Fehler-Banner */}
-          {saveFehler && (
-            <div className="flex items-start gap-3 p-3 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">
-              <div className="flex-1 text-sm text-red-700 dark:text-red-300">
-                <strong>Einstellung konnte nicht gespeichert werden:</strong> {saveFehler}
-              </div>
-              <button
-                onClick={resetSaveFehler}
-                className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0"
-                title="Schliessen"
-              >
-                ✕
-              </button>
-            </div>
-          )}
-
-          {/* Sub-Tab-Navigation + Speicher-Indikator */}
-          <div className="flex items-center justify-between gap-3">
-            <TabBar
-              tabs={TABS}
-              activeTab={aktiv}
-              onTabChange={(id) => setAktiv(id as SettingsTab)}
-              size="sm"
-            />
-            {speichertGerade && (
-              <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0" title="Wird gespeichert">
-                Speichern…
-              </span>
-            )}
-          </div>
-
-          {/* Tab-Inhalt */}
-          {aktiv === 'allgemein' && <AllgemeinTab />}
-          {aktiv === 'faecher' && <FaecherTab />}
-          {aktiv === 'farben' && <FarbenTab />}
-          {aktiv === 'mitglieder' && <MitgliederTab />}
-        </>
-      )}
+      {/* Tab-Inhalt */}
+      {aktiveGruppe && aktiv === 'allgemein' && <AllgemeinTab />}
+      {aktiveGruppe && aktiv === 'faecher' && <FaecherTab />}
+      {aktiveGruppe && aktiv === 'farben' && <FarbenTab />}
+      {aktiveGruppe && aktiv === 'mitglieder' && <MitgliederTab />}
     </div>
   )
 }
