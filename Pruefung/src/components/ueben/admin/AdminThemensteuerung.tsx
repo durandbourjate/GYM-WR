@@ -259,7 +259,7 @@ export default function AdminThemensteuerung() {
                   })()}
 
                   {/* Aktions-Buttons */}
-                  {eintrag.status !== 'aktiv' && (
+                  {eintrag.status === 'nicht_freigeschaltet' && (
                     <button
                       onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'aktiv')}
                       className="text-xs px-3 py-1.5 rounded-lg font-medium text-white min-h-[36px] transition-colors hover:opacity-90"
@@ -269,11 +269,29 @@ export default function AdminThemensteuerung() {
                     </button>
                   )}
                   {eintrag.status === 'aktiv' && (
+                    <>
+                      <button
+                        onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'abgeschlossen')}
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        Abschliessen
+                      </button>
+                      <button
+                        onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'nicht_freigeschaltet')}
+                        className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                        title="Aktivierung rückgängig — Thema ist für SuS nicht mehr sichtbar"
+                      >
+                        Deaktivieren
+                      </button>
+                    </>
+                  )}
+                  {eintrag.status === 'abgeschlossen' && (
                     <button
-                      onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'abgeschlossen')}
-                      className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                      onClick={() => handleStatusAendern(eintrag.fach, eintrag.thema, 'nicht_freigeschaltet')}
+                      className="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-600 min-h-[36px] hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                      title="Thema wieder sperren"
                     >
-                      Abschliessen
+                      Deaktivieren
                     </button>
                   )}
                 </div>
