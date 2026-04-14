@@ -70,7 +70,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
         {/* Resize-Handle am linken Rand */}
         <div
           onPointerDown={handleResizeStart}
-          className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-500/30 active:bg-indigo-500/50 z-10 transition-colors"
+          className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-violet-400 active:bg-violet-500 z-10 transition-colors"
           title="Breite anpassen"
         />
         {/* Header — kompakt im Split-Modus */}

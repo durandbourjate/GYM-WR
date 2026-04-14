@@ -457,7 +457,7 @@ export default function Layout() {
             {/* Resize-Handle am rechten Rand */}
             <div
               onPointerDown={handleSidebarResizeStart}
-              className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-500/30 active:bg-indigo-500/50 z-10 transition-colors"
+              className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-violet-400 active:bg-violet-500 z-10 transition-colors"
               title="Sidebar-Breite anpassen"
             />
           </aside>

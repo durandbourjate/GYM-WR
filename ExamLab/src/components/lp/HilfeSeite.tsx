@@ -117,9 +117,11 @@ function Schritt({ nr, children }: { nr: number; children: React.ReactNode }) {
 }
 
 function Hinweis({ children }: { children: React.ReactNode }) {
+  // Neutrale Slate-Box — Blau ist für KI-Elemente reserviert (Design-System)
   return (
-    <div className="px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300 mb-4">
-      {children}
+    <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-300 mb-4 flex items-start gap-2">
+      <span className="text-slate-400 shrink-0 mt-0.5">ⓘ</span>
+      <div className="flex-1">{children}</div>
     </div>
   )
 }
@@ -633,10 +635,10 @@ function HilfeKorrektur() {
         SuS und LP können direkt aus der Plattform Probleme oder Wünsche melden. Das Feedback wird in einem eigenen Tab im Google Sheet gesammelt.
       </Text>
       <Text>
-        <strong>Für LP:</strong> Im Header finden Sie ein 💬-Icon neben dem Theme-Toggle. In der Korrektur-Ansicht erscheint zusätzlich ein &laquo;Problem melden&raquo;-Link unter jeder Frage — damit können Sie fachliche Fehler oder technische Probleme direkt im Kontext der Frage melden.
+        <strong>Für LP:</strong> Im Header finden Sie ein ⚠️-Icon neben dem Theme-Toggle. In der Korrektur-Ansicht erscheint zusätzlich ein &laquo;Problem melden&raquo;-Link unter jeder Frage — damit können Sie fachliche Fehler oder technische Probleme direkt im Kontext der Frage melden.
       </Text>
       <Text>
-        <strong>Für SuS:</strong> In der Korrektur-Einsicht (nach Freigabe) finden SuS ein 💬-Icon im Header und einen &laquo;Problem melden&raquo;-Link unter jeder Frage — z.B. wenn eine Bewertung unklar ist.
+        <strong>Für SuS:</strong> In der Korrektur-Einsicht (nach Freigabe) finden SuS ein ⚠️-Icon im Header und einen &laquo;Problem melden&raquo;-Link unter jeder Frage — z.B. wenn eine Bewertung unklar ist.
       </Text>
     </div>
   )
@@ -869,11 +871,11 @@ function HilfeFAQ() {
       </FAQItem>
 
       <FAQItem frage="Wie kann ich ein Problem oder einen Wunsch melden?">
-        Über das 💬-Icon im Header oder den &laquo;Problem melden&raquo;-Link unter jeder Frage (in der Korrektur-Ansicht). Wählen Sie den Typ (Problem/Wunsch), eine Kategorie und optional einen Kommentar. Das Feedback wird direkt im Google Sheet erfasst.
+        Über das ⚠️-Icon im Header oder den &laquo;Problem melden&raquo;-Link unter jeder Frage (in der Korrektur-Ansicht). Wählen Sie den Typ (Problem/Wunsch), eine Kategorie und optional einen Kommentar. Das Feedback wird direkt im Google Sheet erfasst.
       </FAQItem>
 
       <FAQItem frage="Können SuS Feedback geben?">
-        Ja, aber erst nach Freigabe der Korrektur-Einsicht. SuS sehen dann ein 💬-Icon im Header und können pro Frage Feedback geben — z.B. wenn eine Bewertung unklar ist oder ein technisches Problem aufgetreten ist.
+        Ja, aber erst nach Freigabe der Korrektur-Einsicht. SuS sehen dann ein ⚠️-Icon im Header und können pro Frage Feedback geben — z.B. wenn eine Bewertung unklar ist oder ein technisches Problem aufgetreten ist.
       </FAQItem>
     </div>
   )
