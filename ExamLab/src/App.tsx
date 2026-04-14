@@ -267,7 +267,8 @@ export default function App() {
   }
 
   // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl
-  if (user.rolle === 'sus' && !pruefungIdAusUrl && !istDemoModus && apiService.istKonfiguriert()) {
+  // Demo-SuS bekommt dieselbe Startseite — ohne Backend-Login-Bridge (SuSStartseite skippt im Demo).
+  if (user.rolle === 'sus' && !pruefungIdAusUrl && (apiService.istKonfiguriert() || istDemoModus)) {
     if (korrekturId) {
       return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
     }

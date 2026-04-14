@@ -648,10 +648,10 @@ export default function LPStartseite() {
           </p>
         )}
 
-        {ladeStatus === "fertig" && backendFehler && (
-          <div className="mb-4 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-800 dark:text-amber-300">
-            Backend nicht erreichbar — bestehende Prüfungen konnten nicht geladen werden.
-            Der Composer ist trotzdem nutzbar.
+        {ladeStatus === "fertig" && backendFehler && !istDemoModus && (
+          <div className="mb-4 px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 flex items-start gap-2">
+            <span className="text-slate-400 shrink-0 mt-0.5">ⓘ</span>
+            <span>Backend nicht erreichbar — bestehende Prüfungen konnten nicht geladen werden. Der Composer ist trotzdem nutzbar.</span>
           </div>
         )}
 

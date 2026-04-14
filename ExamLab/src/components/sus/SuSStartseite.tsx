@@ -30,6 +30,7 @@ const LP_AUTH_KEY = 'ueben-auth'
  */
 export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }: { onKorrekturWaehle: (id: string) => void }) {
   const user = useAuthStore(s => s.user)
+  const istDemoModus = useAuthStore(s => s.istDemoModus)
   const pruefungAbmelden = useAuthStore(s => s.abmelden)
   const { zuPruefen, zuDashboard } = useSuSNavigation()
 
@@ -51,6 +52,8 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
   // Login-Bridging: Pruefung-Auth → Üben-Auth synchronisieren
   useEffect(() => {
     if (!user?.email || loginBridged) return
+    // Im Demo-Modus keine Backend-Bridge — der Üben-Flow nutzt lokale Demo-Daten
+    if (istDemoModus) { setLoginBridged(true); return }
 
     async function bridgeLogin() {
       try {
@@ -93,7 +96,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
       }
     }
     bridgeLogin()
-  }, [user?.email, user?.name, loginBridged])
+  }, [user?.email, user?.name, loginBridged, istDemoModus])
 
   if (modus === 'ueben') {
     // Warten bis Login-Bridge fertig, dann AppUeben laden

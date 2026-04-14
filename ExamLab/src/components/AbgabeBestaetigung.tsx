@@ -35,7 +35,7 @@ export default function AbgabeBestaetigung() {
           Ihre Antworten wurden gespeichert. Sie können das Fenster schliessen.
         </p>
         <a
-          href={window.location.pathname.replace(/\/[^/]*$/, '/')}
+          href={`${import.meta.env.BASE_URL}${user?.rolle === 'lp' ? 'favoriten' : 'sus'}`}
           className="inline-block px-6 py-2.5 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-xl font-medium text-sm hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors mb-4 min-h-[44px] leading-[44px]"
         >
           Zurück zu ExamLab
