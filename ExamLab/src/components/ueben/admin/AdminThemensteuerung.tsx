@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useThemenSichtbarkeitStore } from '../../../store/ueben/themenSichtbarkeitStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
+import { useAuthStore } from '../../../store/authStore'
 import { useUebenAuthStore } from '../../../store/ueben/authStore'
 import { useUebenFortschrittStore } from '../../../store/ueben/fortschrittStore'
 import { uebenFragenAdapter } from '../../../adapters/ueben/appsScriptAdapter'
@@ -51,10 +52,13 @@ export default function AdminThemensteuerung() {
 
   const themen = useMemo(() => {
     const map: Record<string, ThemaEintrag> = {}
+    const istDemo = useAuthStore.getState().istDemoModus
     for (const f of alleFragen) {
       const tags = (f.tags || []) as (string | { name: string })[]
-      if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
-      if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+      if (!istDemo) {
+        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung')) continue
+        if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest') continue
+      }
 
       const fach = f.fach || 'Andere'
       const thema = f.thema || 'Allgemein'
