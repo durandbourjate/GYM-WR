@@ -139,11 +139,19 @@ class AppsScriptFragenAdapter implements FragenService {
   async ladeFragen(gruppeId: string, filter?: FragenFilter): Promise<Frage[]> {
     let fragen = this.cache.get(gruppeId)
     if (!fragen) {
-      const token = this.getToken()
-      const response = await uebenApiClient.post<{ success: boolean; data: Frage[] }>(
-        'lernplattformLadeFragen', { gruppeId }, token
-      )
-      fragen = response?.data || []
+      // Demo-Modus: Lokale Einrichtungsfragen statt Backend-Call.
+      // 'demo-gruppe' wird sowohl von UebungsToolView (LP) als auch AppUeben (SuS)
+      // als Mock-Gruppe gesetzt — dafür gibt's keine echte Backend-Antwort.
+      if (gruppeId === 'demo-gruppe') {
+        const { einrichtungsFragen } = await import('../../data/einrichtungsFragen')
+        fragen = einrichtungsFragen as unknown as Frage[]
+      } else {
+        const token = this.getToken()
+        const response = await uebenApiClient.post<{ success: boolean; data: Frage[] }>(
+          'lernplattformLadeFragen', { gruppeId }, token
+        )
+        fragen = response?.data || []
+      }
       this.cache.set(gruppeId, fragen)
     }
     let result = [...fragen]
