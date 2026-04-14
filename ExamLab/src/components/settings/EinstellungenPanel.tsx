@@ -55,7 +55,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
       storageKey="einstellungen-breite"
       defaultWidth={480}
       minWidth={360}
-      maxWidth={640}
+      maxWidth={2000}
     >
       {/* Tabs */}
       <div className="pb-3">
