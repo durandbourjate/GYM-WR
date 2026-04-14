@@ -10,7 +10,7 @@
 const SHEET_EVENTS = 'Events';
 const SHEET_SESSIONS = 'Sessions';
 const SHEET_REPORTS = 'Problemmeldungen';
-const SHEET_PRUEFUNG_FEEDBACK = 'Pruefung-Feedback';
+const SHEET_PRUEFUNG_FEEDBACK = 'ExamLab-Problemmeldungen';
 
 /**
  * Einmalig ausführen: Erstellt die Analytics-Blätter im bestehenden Sheet.
@@ -112,24 +112,36 @@ function doGet(e) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
     if (params.source === 'pruefung') {
-      // Prüfungstool-Feedback → eigener Tab
+      // ExamLab-Feedback → eigener Tab
       let sheet = ss.getSheetByName(SHEET_PRUEFUNG_FEEDBACK);
       if (!sheet) {
         sheet = ss.insertSheet(SHEET_PRUEFUNG_FEEDBACK);
-        sheet.appendRow(['Zeitstempel', 'Rolle', 'Ort', 'Typ', 'Kategorie', 'Kommentar', 'Prüfung-ID', 'Frage-ID', 'Fragetext', 'E-Mail', 'Zusatzinfo']);
+        sheet.appendRow([
+          'Zeitstempel', 'Rolle', 'Ort', 'Modus', 'Typ', 'Kategorie', 'Kommentar',
+          'Frage-ID', 'Fragetext', 'Fragetyp', 'Prüfung-ID', 'Gruppe-ID',
+          'Bildschirm', 'App-Version', 'E-Mail', 'Zusatzinfo'
+        ]);
         sheet.setFrozenRows(1);
-        sheet.getRange(1, 1, 1, 11).setFontWeight('bold');
+        sheet.getRange(1, 1, 1, 16).setFontWeight('bold');
+        sheet.setColumnWidth(1, 150);  // Zeitstempel
+        sheet.setColumnWidth(7, 350);  // Kommentar
+        sheet.setColumnWidth(9, 300);  // Fragetext
       }
       sheet.appendRow([
         ts,
         params.rolle || '',
         params.ort || '',
+        params.modus || '',
         params.typ || '',
         params.category || '',
         params.comment || '',
-        params.pruefungId || '',
         params.frageId || '',
         params.frageText || '',
+        params.frageTyp || '',
+        params.pruefungId || '',
+        params.gruppeId || '',
+        params.bildschirm || '',
+        params.appVersion || '',
         params.email || '',
         params.zusatzinfo || ''
       ]);
