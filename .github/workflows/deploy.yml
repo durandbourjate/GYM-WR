@@ -83,6 +83,11 @@ jobs:
         continue-on-error: true
         id: checkout-preview
 
+      - name: Install Staging Shared dependencies
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/packages/shared
+        run: npm ci
+
       - name: Install Staging dependencies
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
