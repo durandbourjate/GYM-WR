@@ -69,7 +69,7 @@ Notiere die 4 IDs für Step 6.
 ### Task 2: Apps Script — Sheet-Konstanten + Endpoints
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js` (Konstanten + 4 neue Endpoints)
+- Modify: `ExamLab/apps-script-code.js` (Konstanten + 4 neue Endpoints)
 
 - [ ] **Step 1: Sheet-Konstanten hinzufügen**
 
@@ -213,7 +213,7 @@ case 'ladeLehrplan': return ladeLehrplanEndpoint({ email: e.parameter.email, fac
 - [ ] **Step 7: Build verifizieren + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add apps-script-code.js && git commit -m "S1: Apps Script Endpoints für zentrale Kurs-Verwaltung"
 ```
 
@@ -222,8 +222,8 @@ git add apps-script-code.js && git commit -m "S1: Apps Script Endpoints für zen
 ### Task 3: Prüfungstool — API-Client für zentrale Daten
 
 **Files:**
-- Create: `Pruefung/src/services/synergyApi.ts`
-- Modify: `Pruefung/src/services/apiService.ts` (Import + Re-Export)
+- Create: `ExamLab/src/services/synergyApi.ts`
+- Modify: `ExamLab/src/services/apiService.ts` (Import + Re-Export)
 
 - [ ] **Step 1: synergyApi.ts erstellen**
 
@@ -305,7 +305,7 @@ ladeLehrplan,
 - [ ] **Step 3: Build + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add src/services/synergyApi.ts src/services/apiService.ts
 git commit -m "S1: API-Client für zentrale Kurs-/Schuljahr-/Lehrplan-Daten"
 ```
@@ -419,8 +419,8 @@ git commit -m "S1: Synergy-Service mit Caching für Unterrichtsplaner"
 ### Task 5: FragenPerformance an Composer durchreichen
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/PruefungsComposer.tsx`
-- Modify: `Pruefung/src/components/lp/composer/AbschnitteTab.tsx`
+- Modify: `ExamLab/src/components/lp/PruefungsComposer.tsx`
+- Modify: `ExamLab/src/components/lp/composer/AbschnitteTab.tsx`
 
 - [ ] **Step 1: PruefungsComposer — fragenStats laden + weitergeben**
 
@@ -489,7 +489,7 @@ Nach dem Performance-Badge:
 - [ ] **Step 4: Build + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add src/components/lp/PruefungsComposer.tsx src/components/lp/composer/AbschnitteTab.tsx
 git commit -m "S3: Pool-Statistiken + Warnungen im Prüfungs-Composer"
 ```
@@ -501,8 +501,8 @@ git commit -m "S3: Pool-Statistiken + Warnungen im Prüfungs-Composer"
 ### Task 6: ladeTrackerDaten um Noten-Stand erweitern
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js` (ladeTrackerDaten erweitern)
-- Modify: `Pruefung/src/types/tracker.ts` (Interface erweitern)
+- Modify: `ExamLab/apps-script-code.js` (ladeTrackerDaten erweitern)
+- Modify: `ExamLab/src/types/tracker.ts` (Interface erweitern)
 
 - [ ] **Step 1: TrackerDaten-Interface erweitern**
 
@@ -565,7 +565,7 @@ Im Response-Objekt `notenStand: notenStand` ergänzen.
 - [ ] **Step 3: Build + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add apps-script-code.js src/types/tracker.ts
 git commit -m "S2: Noten-Stand in Tracker-Daten (Beurteilungsregeln)"
 ```
@@ -631,8 +631,8 @@ git commit -m "S2: Prüfungs-Bridge Grundstruktur im Unterrichtsplaner"
 ### Task 8: Lehrplanziele-Import (Preset → Sheet)
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js` (neuer Endpoint)
-- Create: `Pruefung/src/utils/lehrplanImport.ts`
+- Modify: `ExamLab/apps-script-code.js` (neuer Endpoint)
+- Create: `ExamLab/src/utils/lehrplanImport.ts`
 
 - [ ] **Step 1: Endpoint `importiereLehrplanziele` implementieren**
 
@@ -735,7 +735,7 @@ function areaZuFach(area: string): string {
 - [ ] **Step 3: Build + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add apps-script-code.js src/utils/lehrplanImport.ts
 git commit -m "S4a: Lehrplanziele-Import Endpoint + Preset-Konverter"
 ```
@@ -745,8 +745,8 @@ git commit -m "S4a: Lehrplanziele-Import Endpoint + Preset-Konverter"
 ### Task 9: ladeLernziele auf zentrale DB umstellen
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js` (ladeLernziele erweitern)
-- Modify: `Pruefung/src/services/poolApi.ts` (Fallback-Logik)
+- Modify: `ExamLab/apps-script-code.js` (ladeLernziele erweitern)
+- Modify: `ExamLab/src/services/poolApi.ts` (Fallback-Logik)
 
 - [ ] **Step 1: ladeLernziele — zuerst Lehrplan-Sheet, dann Pool-Sheet**
 
@@ -775,7 +775,7 @@ try {
 - [ ] **Step 2: Build + Commit**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add apps-script-code.js
 git commit -m "S4a: ladeLernziele liest zuerst aus zentralem Lehrplan-Sheet"
 ```
@@ -789,8 +789,8 @@ git commit -m "S4a: ladeLernziele liest zuerst aus zentralem Lehrplan-Sheet"
 > **Hinweis:** S4b setzt voraus, dass alle 3 Tools zentrale Lernziel-IDs nutzen. Kann erst implementiert werden, wenn Planer `lernzielIds[]` pro Sequenz hat und Pools `lernzielIds[]` in POOL_META haben.
 
 **Files:**
-- Create: `Pruefung/src/utils/lernzielAbdeckung.ts`
-- Modify: `Pruefung/apps-script-code.js` (Endpoint)
+- Create: `ExamLab/src/utils/lernzielAbdeckung.ts`
+- Modify: `ExamLab/apps-script-code.js` (Endpoint)
 
 - [ ] **Step 1: Abdeckungs-Utility erstellen**
 
@@ -834,7 +834,7 @@ export function berechneLernzielAbdeckung(
 - [ ] **Step 2: Commit (Grundstruktur, Ausbau in späterer Session)**
 
 ```bash
-cd Pruefung && npx tsc --noEmit && npm run build
+cd ExamLab && npx tsc --noEmit && npm run build
 git add src/utils/lernzielAbdeckung.ts
 git commit -m "S4b: Lernziel-Abdeckung Grundstruktur (ohne Planer-Integration)"
 ```
@@ -846,7 +846,7 @@ git commit -m "S4b: Lernziel-Abdeckung Grundstruktur (ohne Planer-Integration)"
 ### Task 11: HANDOFF + Dokumentation aktualisieren
 
 **Files:**
-- Modify: `Pruefung/HANDOFF.md`
+- Modify: `ExamLab/HANDOFF.md`
 - Modify: `Unterrichtsplaner/HANDOFF.md`
 
 - [ ] **Step 1: HANDOFF.md beider Projekte aktualisieren**

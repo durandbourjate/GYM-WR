@@ -36,7 +36,7 @@
 ```
 GYM-WR-DUY/
 ├── Unterrichtsplaner/     (bestehend, unverändert)
-├── Pruefung/              (bestehend, Auth-Code wird geteilt)
+├── ExamLab/              (bestehend, Auth-Code wird geteilt)
 ├── Lernplattform/         ← NEU: React 19 + TS + Vite + Zustand + Tailwind
 ├── Uebungen/              (bestehend, läuft parallel weiter)
 │   └── Uebungspools/

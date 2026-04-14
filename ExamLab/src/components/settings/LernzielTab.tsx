@@ -41,6 +41,26 @@ export default function LernzielTab({ email }: Props) {
   // Speicher-Status
   const [speicherStatus, setSpeicherStatus] = useState<string | null>(null)
 
+  // Einklapp-State (Default: alles eingeklappt). Key für Thema: `${fach}::${thema}`.
+  const [expandedFaecher, setExpandedFaecher] = useState<Set<string>>(new Set())
+  const [expandedThemen, setExpandedThemen] = useState<Set<string>>(new Set())
+  const filterAktiv = Boolean(suchtext || filterFach || filterBloom)
+
+  function toggleFach(fach: string) {
+    setExpandedFaecher(prev => {
+      const next = new Set(prev)
+      if (next.has(fach)) next.delete(fach); else next.add(fach)
+      return next
+    })
+  }
+  function toggleThema(key: string) {
+    setExpandedThemen(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key); else next.add(key)
+      return next
+    })
+  }
+
   // Laden
   useEffect(() => {
     if (!email) return
@@ -262,17 +282,39 @@ export default function LernzielTab({ email }: Props) {
       </div>
 
       {/* Lernziel-Liste gruppiert */}
-      {Array.from(gruppiert.entries()).map(([fach, themaMap]) => (
+      {Array.from(gruppiert.entries()).map(([fach, themaMap]) => {
+        const fachOffen = filterAktiv || expandedFaecher.has(fach)
+        const fachAnzahl = Array.from(themaMap.values()).reduce((sum, l) => sum + l.length, 0)
+        return (
         <div key={fach} className="border rounded-xl dark:border-slate-700 overflow-hidden">
-          <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700">
+          <button
+            type="button"
+            onClick={() => toggleFach(fach)}
+            className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-700 flex items-center justify-between hover:bg-slate-100 dark:hover:bg-slate-700 text-left"
+          >
             <h3 className="font-semibold text-sm dark:text-white">{fach}</h3>
-          </div>
-          {Array.from(themaMap.entries()).map(([thema, lzListe]) => (
+            <span className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <span>{fachAnzahl}</span>
+              <span className={`transition-transform ${fachOffen ? 'rotate-180' : ''}`}>▾</span>
+            </span>
+          </button>
+          {fachOffen && Array.from(themaMap.entries()).map(([thema, lzListe]) => {
+            const themaKey = `${fach}::${thema}`
+            const themaOffen = filterAktiv || expandedThemen.has(themaKey)
+            return (
             <div key={thema} className="border-b dark:border-slate-700 last:border-0">
-              <div className="px-4 py-1.5 bg-slate-25 dark:bg-slate-800/50">
+              <button
+                type="button"
+                onClick={() => toggleThema(themaKey)}
+                className="w-full px-4 py-1.5 bg-slate-25 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between text-left"
+              >
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{thema}</span>
-              </div>
-              {lzListe.map(lz => (
+                <span className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
+                  <span>{lzListe.length}</span>
+                  <span className={`transition-transform ${themaOffen ? 'rotate-180' : ''}`}>▾</span>
+                </span>
+              </button>
+              {themaOffen && lzListe.map(lz => (
                 <div key={lz.id} className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/30 flex items-start gap-3 group">
                   {editId === lz.id ? (
                     // Edit-Modus
@@ -306,9 +348,11 @@ export default function LernzielTab({ email }: Props) {
                 </div>
               ))}
             </div>
-          ))}
+            )
+          })}
         </div>
-      ))}
+        )
+      })}
 
       {gefiltert.length === 0 && ladeStatus === 'fertig' && (
         <p className="text-center text-slate-500 dark:text-slate-400 py-8 text-sm">

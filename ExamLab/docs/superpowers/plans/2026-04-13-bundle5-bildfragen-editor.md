@@ -16,7 +16,7 @@
 
 | Datei | Aktion | Verantwortung |
 |-------|--------|---------------|
-| `Pruefung/src/index.css` | Modify (Z.1) | `@source`-Direktive für shared package |
+| `ExamLab/src/index.css` | Modify (Z.1) | `@source`-Direktive für shared package |
 | `packages/shared/src/editor/SharedFragenEditor.tsx` | Modify (Z.397–424, Z.635–642, Z.836–842) | 3 bildUrl-States → 1, onSpeichern anpassen, Props anpassen |
 | `packages/shared/src/editor/sections/TypEditorDispatcher.tsx` | Modify (Z.166–190, Z.747–775) | Props-Interface und Editor-Übergabe vereinfachen |
 
@@ -25,11 +25,11 @@
 ## Task 1: N7 — Tailwind @source Direktive
 
 **Files:**
-- Modify: `Pruefung/src/index.css:1`
+- Modify: `ExamLab/src/index.css:1`
 
 - [ ] **Step 1: Add @source directive**
 
-In `Pruefung/src/index.css`, nach Zeile 1 (`@import "tailwindcss";`) einfügen:
+In `ExamLab/src/index.css`, nach Zeile 1 (`@import "tailwindcss";`) einfügen:
 
 ```css
 @source "../../packages/shared/src";
@@ -38,7 +38,7 @@ In `Pruefung/src/index.css`, nach Zeile 1 (`@import "tailwindcss";`) einfügen:
 - [ ] **Step 2: Verify build**
 
 ```bash
-cd Pruefung && npm run build
+cd ExamLab && npm run build
 ```
 
 Expected: Build erfolgreich. Keine Fehler.
@@ -46,7 +46,7 @@ Expected: Build erfolgreich. Keine Fehler.
 - [ ] **Step 3: Verify violet classes in CSS output**
 
 ```bash
-cd Pruefung && npx vite build 2>&1 | head -5
+cd ExamLab && npx vite build 2>&1 | head -5
 grep -r "violet" dist/assets/*.css | head -3
 ```
 
@@ -55,7 +55,7 @@ Expected: `violet`-bezogene CSS-Regeln im Build-Output vorhanden.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Pruefung/src/index.css
+git add ExamLab/src/index.css
 git commit -m "N7: @source Direktive für shared package (Tailwind violet-Klassen)"
 ```
 
@@ -314,7 +314,7 @@ In `TypEditorDispatcher.tsx`, die Übergabe an die drei Editoren (Z.747–780):
 - [ ] **Step 10: TypeScript-Check**
 
 ```bash
-cd Pruefung && npx tsc -b
+cd ExamLab && npx tsc -b
 ```
 
 Expected: Keine Fehler. Alle Typ-Referenzen auf `hsBildUrl/bbBildUrl/ddBildUrl` sind eliminiert.
@@ -322,7 +322,7 @@ Expected: Keine Fehler. Alle Typ-Referenzen auf `hsBildUrl/bbBildUrl/ddBildUrl` 
 - [ ] **Step 11: Tests**
 
 ```bash
-cd Pruefung && npx vitest run
+cd ExamLab && npx vitest run
 ```
 
 Expected: 226+ Tests grün.
@@ -330,7 +330,7 @@ Expected: 226+ Tests grün.
 - [ ] **Step 12: Build**
 
 ```bash
-cd Pruefung && npm run build
+cd ExamLab && npm run build
 ```
 
 Expected: Build erfolgreich.

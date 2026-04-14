@@ -34,7 +34,7 @@
     { "nummer": "2450", "name": "Hypotheken", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Langfristige Verbindlichkeiten" },
     { "nummer": "2500", "name": "Rückstellungen", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Rückstellungen" },
     { "nummer": "2800", "name": "Eigenkapital (Einzelunternehmung)", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
-    { "nummer": "2850", "name": "Aktienkapital", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
+    { "nummer": "2850", "name": "Privat (Privatkonto)", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
     { "nummer": "2900", "name": "Gesetzliche Gewinnreserve", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
     { "nummer": "2950", "name": "Freiwillige Gewinnreserve", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
     { "nummer": "2970", "name": "Gewinnvortrag", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },

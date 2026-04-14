@@ -112,7 +112,7 @@ export { erkenneGeraet }
 
 - [ ] **Step 3: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 Expected: Keine Fehler (neue Dateien noch nicht importiert)
 
 - [ ] **Step 4: Commit**
@@ -332,7 +332,7 @@ export function useLockdown({ kontrollStufe, maxVerstoesse = 3, aktiv }: UseLock
 
 - [ ] **Step 2: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 Expected: Keine Fehler
 
 - [ ] **Step 3: Commit**
@@ -430,7 +430,7 @@ export function SperreOverlay() {
 
 - [ ] **Step 3: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 4: Commit**
 
@@ -522,7 +522,7 @@ async function handleStart() {
 
 - [ ] **Step 3: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 4: Commit**
 
@@ -584,7 +584,7 @@ export interface Unterbrechung {
 
 - [ ] **Step 5: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 6: Commit**
 
@@ -675,7 +675,7 @@ if (response.entsperrt) {
 
 - [ ] **Step 4: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 5: Commit**
 
@@ -879,7 +879,7 @@ function handleKontrollStufeChange(stufe: KontrollStufe) {
 
 - [ ] **Step 3: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 4: Commit**
 
@@ -991,7 +991,7 @@ function stufeIcon(stufe?: string): string {
 
 - [ ] **Step 5: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 6: Commit**
 
@@ -1097,7 +1097,7 @@ if (user.rolle === 'lp') {
 
 - [ ] **Step 3: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 4: Commit**
 
@@ -1132,7 +1132,7 @@ Die `onTabWechsel`-Callback wird von Layout.tsx übergeben und ruft `lockdown.re
 
 - [ ] **Step 2: `tsc -b` prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 
 - [ ] **Step 3: Commit**
 
@@ -1147,7 +1147,7 @@ git commit -m "feat(lockdown): visibilitychange mit Lockdown-Verstoss verbunden"
 
 - [ ] **Step 1: Vollständiger Build**
 
-Run: `cd Pruefung && npx tsc -b && npm run build`
+Run: `cd ExamLab && npx tsc -b && npm run build`
 Expected: Keine Fehler
 
 - [ ] **Step 2: Apps Script manuell aktualisieren**
@@ -1156,7 +1156,7 @@ Hinweis an User: `apps-script-code.js` in den Apps Script Editor kopieren → Be
 
 - [ ] **Step 3: HANDOFF.md aktualisieren**
 
-Neue Session-Sektion in `Pruefung/HANDOFF.md` mit:
+Neue Session-Sektion in `ExamLab/HANDOFF.md` mit:
 - Erledigte Tasks
 - Geänderte Dateien
 - Apps Script Änderungen (manuell kopieren!)

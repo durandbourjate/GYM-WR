@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-03-25-f1-f15-lp-live-test-feedback-design.md`
 
-**Working directory:** Alle `src/` Pfade relativ zu `Pruefung/`. `apps-script-code.js` liegt im Repo-Root. Git-Befehle vom Repo-Root ausführen (`10 Github/GYM-WR-DUY/`).
+**Working directory:** Alle `src/` Pfade relativ zu `ExamLab/`. `apps-script-code.js` liegt im Repo-Root. Git-Befehle vom Repo-Root ausführen (`10 Github/GYM-WR-DUY/`).
 
 ---
 
@@ -255,7 +255,7 @@ function korrigiereBerechnung(frage: BerechnungFrage, antwort: Antwort): Korrekt
 
 - [ ] **Step 2: Verify TypeScript compiles**
 
-Run: `cd Pruefung && npx tsc --noEmit src/utils/autoKorrektur.ts 2>&1 | head -20`
+Run: `cd ExamLab && npx tsc --noEmit src/utils/autoKorrektur.ts 2>&1 | head -20`
 
 Fix any type errors. Note: FiBu-Funktionen (`korrigiereKontenbestimmung`, `korrigiereBilanzstruktur`) müssen eventuell als Exports in `fibuAutoKorrektur.ts` ergänzt werden falls sie fehlen.
 
@@ -482,7 +482,7 @@ Pass `autoErgebnisse[schueler.email]` to `KorrekturSchuelerZeile`.
 
 - [ ] **Step 5: Verify build compiles**
 
-Run: `cd Pruefung && npx tsc --noEmit 2>&1 | head -30`
+Run: `cd ExamLab && npx tsc --noEmit 2>&1 | head -30`
 
 Fix type errors.
 
@@ -1076,7 +1076,7 @@ Alle 15 Punkte auf ✅ ERLEDIGT setzen (oder jeweiligen Status wenn Investigatio
 - [ ] **Step 2: Commit + Push**
 
 ```bash
-git add Pruefung/HANDOFF.md
+git add ExamLab/HANDOFF.md
 git commit -m "docs: HANDOFF.md — F1-F15 Status aktualisiert"
 git push
 ```

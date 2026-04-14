@@ -86,7 +86,7 @@ Digitale Prüfungs- und Übungsplattform für alle Fachschaften am Gymnasium Hof
 ### Lokal entwickeln
 
 ```bash
-cd Pruefung
+cd ExamLab
 npm install
 npm run dev
 ```

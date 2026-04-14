@@ -15,7 +15,7 @@ import { join, basename } from 'path'
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOi9ONg678NeyjoY6azruVhv6yc7HI9GVSmKep6rp84GtR-WiG8BV_9w75pmLeD-x0IA/exec'
 const EMAIL = 'yannick.durand@gymhofwil.ch'
-const POOL_DIR = join(import.meta.dirname, '../../Uebungen/Uebungspools/config')
+const POOL_DIR = join(import.meta.dirname, '../Uebungen/Uebungspools/config')
 const POOL_IMG_BASE = 'https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/'
 const DRY_RUN = process.argv.includes('--dry-run')
 

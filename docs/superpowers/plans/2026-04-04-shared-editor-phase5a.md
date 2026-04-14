@@ -32,7 +32,7 @@ This is a large refactoring. The safest approach:
 
 - [ ] **Step 1: Copy FragenEditor.tsx to shared**
 
-Copy `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` to `packages/shared/src/editor/SharedFragenEditor.tsx`
+Copy `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` to `packages/shared/src/editor/SharedFragenEditor.tsx`
 
 - [ ] **Step 2: Define SharedFragenEditorProps interface**
 
@@ -149,8 +149,8 @@ git commit -m "feat: SharedFragenEditor with slot props (Phase 5a)"
 ### Task 2: Create PruefungFragenEditor wrapper
 
 **Files:**
-- Create: `Pruefung/src/components/lp/frageneditor/PruefungFragenEditor.tsx`
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (replace with re-export)
+- Create: `ExamLab/src/components/lp/frageneditor/PruefungFragenEditor.tsx`
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (replace with re-export)
 
 - [ ] **Step 1: Create PruefungFragenEditor.tsx**
 
@@ -179,13 +179,13 @@ export { default } from './PruefungFragenEditor'
 - [ ] **Step 3: Run tsc**
 
 ```bash
-cd Pruefung && npx tsc -b
+cd ExamLab && npx tsc -b
 ```
 
 - [ ] **Step 4: Run tests**
 
 ```bash
-cd Pruefung && npx vitest run
+cd ExamLab && npx vitest run
 ```
 
 Expected: 193+ tests pass.
@@ -193,13 +193,13 @@ Expected: 193+ tests pass.
 - [ ] **Step 5: Run build**
 
 ```bash
-cd Pruefung && npm run build
+cd ExamLab && npm run build
 ```
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/frageneditor/PruefungFragenEditor.tsx Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+git add ExamLab/src/components/lp/frageneditor/PruefungFragenEditor.tsx ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 git commit -m "refactor: PruefungFragenEditor wrapper + FragenEditor re-export (Phase 5a)"
 ```
 
@@ -210,7 +210,7 @@ git commit -m "refactor: PruefungFragenEditor wrapper + FragenEditor re-export (
 - [ ] **Step 1: Full verification**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 2: Push**

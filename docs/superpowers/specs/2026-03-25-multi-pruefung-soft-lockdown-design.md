@@ -2,7 +2,7 @@
 
 > Datum: 25.03.2026
 > Status: Entwurf
-> Projekt: Prüfungsplattform (Pruefung/)
+> Projekt: Prüfungsplattform (ExamLab/)
 
 ---
 

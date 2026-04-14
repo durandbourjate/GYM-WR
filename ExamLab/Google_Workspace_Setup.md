@@ -64,7 +64,7 @@ Die Client-ID ist: `522991918024-8a9mgghp1eue65dkqj15ag0p1c0rgtv8.apps.googleuse
 Erstelle im Pruefung-Ordner eine Datei `.env.local`:
 
 ```bash
-cd Pruefung
+cd ExamLab
 cp .env.example .env.local
 ```
 
@@ -82,7 +82,7 @@ Die `.env.local` wird **nicht** ins Repo committed (steht in `.gitignore`).
 ### 1.5 Testen
 
 ```bash
-cd Pruefung
+cd ExamLab
 npm run dev
 ```
 
@@ -831,7 +831,7 @@ Die URL sieht so aus: `https://script.google.com/macros/s/AKfycb.../exec`
 
 ### 3.5 Apps Script URL in der App eintragen
 
-In `Pruefung/.env.local`:
+In `ExamLab/.env.local`:
 
 ```
 VITE_GOOGLE_CLIENT_ID=123456789-abcdefg.apps.googleusercontent.com
@@ -867,7 +867,7 @@ Da `.env.local` nicht im Repo ist, müssen die Variablen im Build gesetzt werden
 
 ```yaml
 - name: Build Pruefung
-  working-directory: Pruefung
+  working-directory: ExamLab
   env:
     VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
     VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
@@ -903,7 +903,7 @@ Stelle sicher, dass `https://durandbourjate.github.io` als autorisierter JavaScr
 ### 5.1 Lokaler Test
 
 ```bash
-cd Pruefung
+cd ExamLab
 npm run dev
 ```
 

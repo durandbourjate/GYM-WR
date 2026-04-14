@@ -6,6 +6,27 @@
 
 ---
 
+## Session 107 — Rename Pruefung→ExamLab + Kontenrahmen 2850 + Lernziele einklappen (14.04.2026)
+
+### Stand
+Branch `fix/s107-kontenrahmen-lernziele-rename`. tsc ✅ | 236 Tests ✅ | Build ✅. **Noch nicht im Browser verifiziert** — Merge erst nach E2E-Test mit echtem Login.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Dateien |
+|---|----------|---------|
+| Kontenrahmen 2850 | Runtime-JSON: "Aktienkapital" → "Privat (Privatkonto)" (HANDOFF-S106-Fund: Z295 Privatentnahme zeigte falsches Label) | `ExamLab/src/data/kontenrahmen-kmu.json:37` |
+| LP-Einstellungen Lernziele | Fach- und Thema-Gruppen einklappbar (Default collapsed). Bei aktivem Filter/Suche automatisch expandiert. Anzahl pro Gruppe im Header. | `ExamLab/src/components/settings/LernzielTab.tsx` |
+| Ordner-Rename | `Pruefung/` → `ExamLab/`, `Uebungen/` → `ExamLab/Uebungen/`. Pfade in CI (`deploy.yml`), Rules, Docs, Scripts angepasst. Deploy-URL `/ExamLab/` bleibt gleich, `/Pruefung/` redirected. | 947 Renames via `git mv`, sed auf `.yml/.md/.html/.mjs` |
+| Cleanup | `IMPROVEMENT_PLAN.md` (als ABGESCHLOSSEN markiert) gelöscht | — |
+
+### Offen / TODO nächste Session
+- **E2E-Browser-Test** mit LP + SuS Login nach Merge prüfen: FiBu-Dropdown zeigt 2850 korrekt, Lernziele-Einklappen funktioniert, Deploy nach Push in beiden URLs erreichbar.
+- Weitere alte Docs prüfen: `ExamLab/PLANUNGSDOKUMENT_v2.md` (29.03.2026), `ExamLab/Google_Workspace_Setup.md` — bei Bedarf löschen.
+- Memory-Einträge aktualisieren: `Pfad: Pruefung/` → `Pfad: ExamLab/`.
+
+---
+
 ## Session 106 — E1 FiBu-Fix + Feedback-System-Aufräumarbeiten (14.04.2026)
 
 ### Stand
@@ -19,8 +40,8 @@ Auf `main`. tsc ✅ | Tests ✅. E2E im Browser verifiziert (3 Fragen).
 |-----|-------|
 | KI-Prompts vereinfachtes Format | `apps-script-code.js` (`generiereBuchungssaetze`, `generiereFallbeispiel`, `generiereBilanzStruktur`, `pruefeBuchungssaetze`) |
 | Save-Guard `ergaenzeFehlendeKontenInAuswahl_` | `apps-script-code.js` |
-| Diagnose-Script v2 (alle 3 Formate erkennen) | `Pruefung/scripts/diagnose-fibu-fragen-v2.js` |
-| Migrations-Script (3. Format unterstützen) | `Pruefung/scripts/migrate-fibu-fragen.js` |
+| Diagnose-Script v2 (alle 3 Formate erkennen) | `ExamLab/scripts/diagnose-fibu-fragen-v2.js` |
+| Migrations-Script (3. Format unterstützen) | `ExamLab/scripts/migrate-fibu-fragen.js` |
 
 **Migration-Ergebnis (LIVE):** 19/41 Fragen konvertiert, 0 Fehler. Re-Diagnose: 0 Probleme.
 
@@ -105,17 +126,17 @@ Auf `main`. tsc ✅ | 236 Tests ✅ | Build ✅. Browser-Test teilweise im Demo-
 | E1 | **FiBu-Buchungssatz inhaltlich** — richtige Antworten werden als falsch gezählt, nötige Konto-Dropdown-Optionen fehlen bei diversen Aufgaben. **Alle bestehenden FiBu-Buchungssatz-Fragen im Sheet auditieren.** Zusätzlich KI-Generierungs-Prompt prüfen. | Eigener Block — braucht Sheet-Zugriff. |
 
 ### Dateien (neu / geändert)
-- `Pruefung/src/components/ui/TabBar.tsx` — aktives Tab slate statt violett
-- `Pruefung/src/components/ui/Button.tsx` — primary = violett
-- `Pruefung/src/index.css` — `.filter-btn` / `.filter-btn-active` Utilities, number-input Regel entschärft
-- `Pruefung/src/components/lp/LPStartseite.tsx` — CTA + Filter-Pills
-- `Pruefung/src/components/lp/fragenbank/fragenbrowser/FragenBrowserHeader.tsx` — filter-btn-Utility
-- `Pruefung/src/components/Startbildschirm.tsx` — SuS-CTA violett
-- `Pruefung/src/components/ueben/admin/AdminDashboard.tsx` — Aufträge-Tab weg
-- `Pruefung/src/components/ueben/admin/AdminThemensteuerung.tsx` — Deaktivieren-Button
-- `Pruefung/src/components/ueben/admin/AdminAuftraege.tsx` — **gelöscht**
-- `Pruefung/src/config/appNavigation.ts` — Labels = Tab-Namen
-- `Pruefung/src/data/einrichtungsPruefung.ts` / `einrichtungsUebung.ts` / `demoKorrektur.ts` — Wording
+- `ExamLab/src/components/ui/TabBar.tsx` — aktives Tab slate statt violett
+- `ExamLab/src/components/ui/Button.tsx` — primary = violett
+- `ExamLab/src/index.css` — `.filter-btn` / `.filter-btn-active` Utilities, number-input Regel entschärft
+- `ExamLab/src/components/lp/LPStartseite.tsx` — CTA + Filter-Pills
+- `ExamLab/src/components/lp/fragenbank/fragenbrowser/FragenBrowserHeader.tsx` — filter-btn-Utility
+- `ExamLab/src/components/Startbildschirm.tsx` — SuS-CTA violett
+- `ExamLab/src/components/ueben/admin/AdminDashboard.tsx` — Aufträge-Tab weg
+- `ExamLab/src/components/ueben/admin/AdminThemensteuerung.tsx` — Deaktivieren-Button
+- `ExamLab/src/components/ueben/admin/AdminAuftraege.tsx` — **gelöscht**
+- `ExamLab/src/config/appNavigation.ts` — Labels = Tab-Namen
+- `ExamLab/src/data/einrichtungsPruefung.ts` / `einrichtungsUebung.ts` / `demoKorrektur.ts` — Wording
 - `packages/shared/src/editor/typen/BerechnungEditor.tsx` — Layout-Umbau
 - `packages/shared/src/editor/components/BildUpload.tsx` — Dropzone violett
 
@@ -125,7 +146,7 @@ Auf `main`. tsc ✅ | 236 Tests ✅ | Build ✅. Browser-Test teilweise im Demo-
   1. C9 – Demo-LP ohne Login starten, Prüfen-Tab → dynamic import? Einführungsprüfung sichtbar?
   2. C11 – LP-Üben-Übungen öffnen → Backend-Fehlermeldung reproduzieren (Console + Network)
   3. Regressions: Übungsthemen deaktivieren/abschliessen (echte Gruppe), Frageneditor alle Fragetypen, Favoriten-Stern auf Baum-Einträgen
-- **Dann E1:** FiBu-Buchungssatz-Audit. Scripts in `Pruefung/scripts/` (diagnose-fibu-fragen.js / repair-fibu-fragen.js sind aus S95 für Musterlösungen). Neue Problematik ist Dropdown-Optionen + Musterlösung-Fehler bei Buchungssatz-Typ.
+- **Dann E1:** FiBu-Buchungssatz-Audit. Scripts in `ExamLab/scripts/` (diagnose-fibu-fragen.js / repair-fibu-fragen.js sind aus S95 für Musterlösungen). Neue Problematik ist Dropdown-Optionen + Musterlösung-Fehler bei Buchungssatz-Typ.
 
 ---
 

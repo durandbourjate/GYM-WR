@@ -146,7 +146,7 @@ export function kontenNachKategorie(nummern: string[]): Record<string, KontoEint
 
 - [ ] **Step 3: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Expected: Build succeeds, JSON is bundled.
 
 - [ ] **Step 4: Commit**
@@ -201,7 +201,7 @@ Key behaviors:
 
 - [ ] **Step 2: Verify build + visual check**
 
-Run: `cd Pruefung && npm run dev`
+Run: `cd ExamLab && npm run dev`
 (Component not yet integrated — just verify it compiles)
 
 - [ ] **Step 3: Commit**
@@ -444,7 +444,7 @@ const typKuerzel: Record<string, string> = {
 
 - [ ] **Step 5: Verify TypeScript compiles**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: Type errors in switch statements (exhaustive checks) — this is expected and will be fixed in later tasks.
 
 - [ ] **Step 6: Commit**
@@ -498,7 +498,7 @@ Add the import at the top of the file.
 
 - [ ] **Step 3: Verify build + visual test**
 
-Run: `cd Pruefung && npm run dev`
+Run: `cd ExamLab && npm run dev`
 Create a test question in the demo data or via the editor to verify rendering.
 
 - [ ] **Step 4: Commit**
@@ -549,7 +549,7 @@ Add to the type dropdown options and default values for new Buchungssatz questio
 
 - [ ] **Step 3: Verify build + test editor flow**
 
-Run: `cd Pruefung && npm run dev`
+Run: `cd ExamLab && npm run dev`
 Create a new Buchungssatz question in the editor, verify save/load.
 
 - [ ] **Step 4: Commit**
@@ -659,7 +659,7 @@ Keep this as pure functions — no React, no side effects.
 
 - [ ] **Step 7: Verify full flow**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Test: Create question → Preview → Take exam → Submit → View correction.
 
 - [ ] **Step 8: Commit**
@@ -1105,7 +1105,7 @@ git commit -m "feat(pruefung): add export formatting for FiBu + Aufgabengruppe t
 
 - [ ] **Step 1: Full build check**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Fix any TypeScript errors or missing imports.
 
 - [ ] **Step 2: Visual inspection of all new types**

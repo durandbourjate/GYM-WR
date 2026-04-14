@@ -20,7 +20,7 @@
 - [ ] **Step 1: Feature-Branch erstellen**
 
 ```bash
-cd Pruefung
+cd ExamLab
 git checkout main && git pull
 git checkout -b feature/session48-improvements
 ```

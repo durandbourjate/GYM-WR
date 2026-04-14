@@ -127,7 +127,7 @@ interface SharedFragenEditorProps {
 ### 4. PruefungFragenEditor (dünner Wrapper)
 
 ```typescript
-// Pruefung/src/components/lp/frageneditor/PruefungFragenEditor.tsx
+// ExamLab/src/components/lp/frageneditor/PruefungFragenEditor.tsx
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import AnhangEditor from './AnhangEditor'
@@ -156,7 +156,7 @@ export default function PruefungFragenEditor(props) {
 ### 5. Re-Export für Backwards Compatibility
 
 ```typescript
-// Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+// ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 // Re-Export damit bestehende Imports funktionieren
 export { default } from './PruefungFragenEditor'
 ```
@@ -167,8 +167,8 @@ export { default } from './PruefungFragenEditor'
 |---|---|
 | `packages/shared/src/editor/SharedFragenEditor.tsx` | **Neu** — generischer Editor-Hub (~700 Zeilen) |
 | `packages/shared/src/index.ts` | Modify — SharedFragenEditor exportieren |
-| `Pruefung/.../PruefungFragenEditor.tsx` | **Neu** — Wrapper (~120 Zeilen) |
-| `Pruefung/.../FragenEditor.tsx` | **Ersetzen** — wird zu Re-Export-Proxy |
+| `ExamLab/.../PruefungFragenEditor.tsx` | **Neu** — Wrapper (~120 Zeilen) |
+| `ExamLab/.../FragenEditor.tsx` | **Ersetzen** — wird zu Re-Export-Proxy |
 
 ## Import-Änderungen in Pruefung
 
@@ -176,9 +176,9 @@ export { default } from './PruefungFragenEditor'
 
 ## Verifikation
 
-1. `cd Pruefung && npx tsc -b` — TypeScript grün
-2. `cd Pruefung && npx vitest run` — 193+ Tests grün
-3. `cd Pruefung && npm run build` — Build erfolgreich
+1. `cd ExamLab && npx tsc -b` — TypeScript grün
+2. `cd ExamLab && npx vitest run` — 193+ Tests grün
+3. `cd ExamLab && npm run build` — Build erfolgreich
 
 ## Risiko
 

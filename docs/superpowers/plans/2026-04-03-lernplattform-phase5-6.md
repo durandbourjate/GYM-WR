@@ -59,7 +59,7 @@ git checkout -b feature/lernplattform-phase5-6
 
 - [ ] **Step 3: Kanonische Frage-Types aus Pruefung kopieren**
 
-`packages/shared/src/types/fragen.ts` — Kopiere `FrageBase`, `Fachbereich`, `BloomStufe`, `Bewertungskriterium`, `Verwendung`, `FrageAnhang` und alle Fragetyp-Interfaces aus `Pruefung/src/types/fragen.ts`. Diese werden die Single Source of Truth. Exportiere Union-Type `Frage`.
+`packages/shared/src/types/fragen.ts` — Kopiere `FrageBase`, `Fachbereich`, `BloomStufe`, `Bewertungskriterium`, `Verwendung`, `FrageAnhang` und alle Fragetyp-Interfaces aus `ExamLab/src/types/fragen.ts`. Diese werden die Single Source of Truth. Exportiere Union-Type `Frage`.
 
 - [ ] **Step 4: Shared Auth-Types**
 

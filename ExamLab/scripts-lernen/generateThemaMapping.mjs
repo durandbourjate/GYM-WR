@@ -14,7 +14,7 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const poolConfigDir = join(__dirname, '../../Uebungen/Uebungspools/config')
+const poolConfigDir = join(__dirname, '../Uebungen/Uebungspools/config')
 const outputPath = join(__dirname, 'output/thema-mapping.json')
 
 // Pool-Configs simulieren window.POOL_META und window.TOPICS

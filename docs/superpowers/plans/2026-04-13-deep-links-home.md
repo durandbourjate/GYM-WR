@@ -52,11 +52,11 @@
 ### Task 1.1: Install react-router-dom and create branch
 
 **Files:**
-- Modify: `Pruefung/package.json`
+- Modify: `ExamLab/package.json`
 
 - [ ] **Step 1: Create feature branch**
 ```bash
-cd Pruefung && git checkout -b feature/a1-deep-links-router
+cd ExamLab && git checkout -b feature/a1-deep-links-router
 ```
 
 - [ ] **Step 2: Install react-router-dom**
@@ -82,7 +82,7 @@ git commit -m "Phase 1.1: Install react-router-dom"
 
 **Files:**
 - Create: `404.html` (repo root)
-- Modify: `Pruefung/index.html`
+- Modify: `ExamLab/index.html`
 - Modify: `.github/workflows/deploy.yml`
 
 - [ ] **Step 1: Create 404.html at repo root**
@@ -119,7 +119,7 @@ git commit -m "Phase 1.1: Install react-router-dom"
 
 - [ ] **Step 2: Add decoder script to index.html**
 
-In `Pruefung/index.html`, add before `<script type="module" src="/src/main.tsx">`:
+In `ExamLab/index.html`, add before `<script type="module" src="/src/main.tsx">`:
 
 ```html
 <script>
@@ -148,13 +148,13 @@ In `.github/workflows/deploy.yml`, after the site assembly step that creates `_s
 
 - [ ] **Step 4: Verify build still works**
 ```bash
-cd Pruefung && npm run build
+cd ExamLab && npm run build
 ```
 Expected: PASS
 
 - [ ] **Step 5: Commit**
 ```bash
-cd .. && git add 404.html Pruefung/index.html .github/workflows/deploy.yml
+cd .. && git add 404.html ExamLab/index.html .github/workflows/deploy.yml
 git commit -m "Phase 1.2: Add 404.html redirect + index.html decoder for GitHub Pages BrowserRouter"
 ```
 
@@ -163,13 +163,13 @@ git commit -m "Phase 1.2: Add 404.html redirect + index.html decoder for GitHub 
 ### Task 1.3: Create Router shell with BrowserRouter
 
 **Files:**
-- Create: `Pruefung/src/router/Router.tsx`
-- Create: `Pruefung/src/router/AuthGuard.tsx`
-- Create: `Pruefung/src/router/LPRoutes.tsx`
-- Create: `Pruefung/src/router/SuSRoutes.tsx`
-- Create: `Pruefung/src/router/hashMigration.ts`
-- Modify: `Pruefung/src/main.tsx`
-- Modify: `Pruefung/src/App.tsx`
+- Create: `ExamLab/src/router/Router.tsx`
+- Create: `ExamLab/src/router/AuthGuard.tsx`
+- Create: `ExamLab/src/router/LPRoutes.tsx`
+- Create: `ExamLab/src/router/SuSRoutes.tsx`
+- Create: `ExamLab/src/router/hashMigration.ts`
+- Modify: `ExamLab/src/main.tsx`
+- Modify: `ExamLab/src/App.tsx`
 
 This is the biggest task. The approach: wrap the existing App.tsx content in Router, keeping existing rendering logic intact. Navigation still goes through lpNavigationStore (compatibility layer). We're NOT changing component rendering yet — just adding the Router shell.
 
@@ -440,8 +440,8 @@ git commit -m "Phase 1.3: BrowserRouter shell with AuthGuard, LPRoutes, SuSRoute
 ### Task 2.1: Sync lpNavigationStore from URL (full compatibility bridge)
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/LPStartseite.tsx`
-- Modify: `Pruefung/src/store/lpNavigationStore.ts`
+- Modify: `ExamLab/src/components/lp/LPStartseite.tsx`
+- Modify: `ExamLab/src/store/lpNavigationStore.ts`
 
 The goal: URL is now source of truth for top-level navigation. `lpNavigationStore` reads from URL instead of being the source. `bauHash()` and `navigiereZuHash()` are replaced by a `useEffect` that syncs URL → store.
 
@@ -556,8 +556,8 @@ git commit -m "Phase 2.1: Replace hash routing with useLPNavigation hook, remove
 ### Task 2.2: Split LPRoutes into individual route components
 
 **Files:**
-- Modify: `Pruefung/src/router/LPRoutes.tsx`
-- Modify: `Pruefung/src/components/lp/LPStartseite.tsx`
+- Modify: `ExamLab/src/router/LPRoutes.tsx`
+- Modify: `ExamLab/src/components/lp/LPStartseite.tsx`
 
 Now that navigation goes through React Router, each route renders its specific component directly instead of LPStartseite routing internally.
 
@@ -681,9 +681,9 @@ git commit -m "Phase 2.2: Split LP routes into individual components, useParams 
 ### Task 3.1: Create favoritenStore (extract from lpNavigationStore)
 
 **Files:**
-- Create: `Pruefung/src/store/favoritenStore.ts`
-- Create: `Pruefung/src/store/favoritenStore.test.ts`
-- Modify: `Pruefung/src/store/lpNavigationStore.ts` (remove favoriten code)
+- Create: `ExamLab/src/store/favoritenStore.ts`
+- Create: `ExamLab/src/store/favoritenStore.test.ts`
+- Modify: `ExamLab/src/store/lpNavigationStore.ts` (remove favoriten code)
 
 - [ ] **Step 1: Write failing test for favoritenStore**
 
@@ -884,8 +884,8 @@ git commit -m "Phase 3.1: Extract favoritenStore with extended Favorit model + A
 ### Task 3.2: Build Home dashboard component
 
 **Files:**
-- Create: `Pruefung/src/components/lp/Home.tsx`
-- Create: `Pruefung/src/components/lp/Home.test.tsx`
+- Create: `ExamLab/src/components/lp/Home.tsx`
+- Create: `ExamLab/src/components/lp/Home.test.tsx`
 
 - [ ] **Step 1: Write test for Home component**
 
@@ -957,9 +957,9 @@ git commit -m "Phase 3.2: Home dashboard with Favoriten, offene Korrekturen, ans
 ### Task 3.3: Add Favoriten-Tab to Einstellungen
 
 **Files:**
-- Create: `Pruefung/src/components/settings/FavoritenTab.tsx`
-- Modify: `Pruefung/src/components/settings/EinstellungenPanel.tsx` (add tab)
-- Modify: `Pruefung/src/store/lpNavigationStore.ts` (add `'favoriten'` to `EinstellungenTab` type + `gueltigesTabs` validation)
+- Create: `ExamLab/src/components/settings/FavoritenTab.tsx`
+- Modify: `ExamLab/src/components/settings/EinstellungenPanel.tsx` (add tab)
+- Modify: `ExamLab/src/store/lpNavigationStore.ts` (add `'favoriten'` to `EinstellungenTab` type + `gueltigesTabs` validation)
 
 - [ ] **Step 1: Implement FavoritenTab with DnD sorting**
 
@@ -1003,9 +1003,9 @@ git commit -m "Phase 3.3: FavoritenTab in Einstellungen with @dnd-kit drag & dro
 ### Task 4.1: Replace useUebenNavigationStore with SuS routes
 
 **Files:**
-- Modify: `Pruefung/src/router/SuSRoutes.tsx`
-- Modify: `Pruefung/src/AppUeben.tsx`
-- Modify: `Pruefung/src/store/ueben/navigationStore.ts`
+- Modify: `ExamLab/src/router/SuSRoutes.tsx`
+- Modify: `ExamLab/src/AppUeben.tsx`
+- Modify: `ExamLab/src/store/ueben/navigationStore.ts`
 
 - [ ] **Step 1: Update SuSRoutes with actual components**
 
@@ -1082,7 +1082,7 @@ git commit -m "Phase 5.1: Rename lpNavigationStore to lpUIStore (UI-only state)"
 ### Task 5.2: Remove old ?ids= logic and clean up App.tsx
 
 **Files:**
-- Modify: `Pruefung/src/App.tsx`
+- Modify: `ExamLab/src/App.tsx`
 
 - [ ] **Step 1: Remove ?ids= handling from App.tsx**
 
@@ -1111,7 +1111,7 @@ git commit -m "Phase 5.2: Remove ?ids= legacy flow, simplify App.tsx"
 ### Task 5.3: Add route navigation tests
 
 **Files:**
-- Create: `Pruefung/src/router/Router.test.tsx`
+- Create: `ExamLab/src/router/Router.test.tsx`
 
 - [ ] **Step 1: Write route tests**
 
@@ -1167,7 +1167,7 @@ git commit -m "Phase 5.3: Route navigation tests (auth guard, role mismatch, has
 ### Task 5.4: Update HANDOFF.md and final verification
 
 **Files:**
-- Modify: `Pruefung/HANDOFF.md`
+- Modify: `ExamLab/HANDOFF.md`
 
 - [ ] **Step 1: Update HANDOFF.md with new session entry**
 

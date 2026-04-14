@@ -44,7 +44,7 @@
 - [ ] **Step 1: Neuen Feature-Branch erstellen**
 
 ```bash
-cd Pruefung
+cd ExamLab
 git checkout feature/ux-polish-session5
 git checkout -b feature/performance-features
 ```
@@ -768,7 +768,7 @@ Session 78 Eintrag mit:
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/HANDOFF.md
+git add ExamLab/HANDOFF.md
 git commit -m "HANDOFF: Session 78 — Performance + Problem-Melden dokumentiert"
 git push -u origin feature/performance-features
 ```

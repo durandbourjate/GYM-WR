@@ -2,7 +2,7 @@
 
 **Datum:** 2026-03-21
 **Status:** Approved
-**Kontext:** Prüfungsplattform (Pruefung/)
+**Kontext:** Prüfungsplattform (ExamLab/)
 
 ## Übersicht
 

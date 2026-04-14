@@ -24,9 +24,9 @@ Fusion abgeschlossen (Phasen 0–6). Übungstool-Tab im Prüfungstool funktionie
 **Ziel:** Gleiche Button-Reihenfolge, gleiche Buttons (Hilfe, Feedback, Theme, Name, Abmelden ganz rechts).
 
 **Dateien:**
-- `Pruefung/src/components/sus/KorrekturListe.tsx` — bereits teilweise gefixt (FeedbackButton + Abmelden rechts)
-- `Pruefung/src/components/lernen/layout/AppShell.tsx` — bereits gefixt
-- Prüfen: `Pruefung/src/components/Startbildschirm.tsx` (SuS-Startseite vor Prüfung)
+- `ExamLab/src/components/sus/KorrekturListe.tsx` — bereits teilweise gefixt (FeedbackButton + Abmelden rechts)
+- `ExamLab/src/components/lernen/layout/AppShell.tsx` — bereits gefixt
+- Prüfen: `ExamLab/src/components/Startbildschirm.tsx` (SuS-Startseite vor Prüfung)
 - Prüfen: Login-Screens beider Apps
 
 **Massnahme:** Alle SuS-Header-Varianten inventarisieren und vereinheitlichen. Idealerweise eine gemeinsame `SuSHeader`-Komponente extrahieren.
@@ -46,9 +46,9 @@ Fusion abgeschlossen (Phasen 0–6). Übungstool-Tab im Prüfungstool funktionie
 - LPHeader.tsx zeigt es neben dem Titel an
 
 **Dateien:**
-- `Pruefung/vite.config.ts` — define ergänzen
-- `Pruefung/src/version.ts` — auf Build-Timestamp umstellen
-- `Pruefung/src/components/lp/LPHeader.tsx` — zeigt Version
+- `ExamLab/vite.config.ts` — define ergänzen
+- `ExamLab/src/version.ts` — auf Build-Timestamp umstellen
+- `ExamLab/src/components/lp/LPHeader.tsx` — zeigt Version
 
 ---
 
@@ -71,10 +71,10 @@ Content:   (je nach Tab)
 4. Neuer Tab "Übung durchführen" (zunächst Platzhalter, wird in E implementiert)
 
 **Dateien:**
-- `Pruefung/src/components/lp/UebungsToolView.tsx`
-- `Pruefung/src/components/lp/LPStartseite.tsx` — "Neue Frage" Button im Übungsmodus
-- `Pruefung/src/components/lernen/admin/AdminDashboard.tsx` — Layout anpassen
-- Evtl. neue Komponente `Pruefung/src/components/lp/UebungsToolDashboard.tsx` als Ersatz
+- `ExamLab/src/components/lp/UebungsToolView.tsx`
+- `ExamLab/src/components/lp/LPStartseite.tsx` — "Neue Frage" Button im Übungsmodus
+- `ExamLab/src/components/lernen/admin/AdminDashboard.tsx` — Layout anpassen
+- Evtl. neue Komponente `ExamLab/src/components/lp/UebungsToolDashboard.tsx` als Ersatz
 
 ---
 
@@ -89,7 +89,7 @@ Content:   (je nach Tab)
 - Klick auf "Neue Frage" → `setZeigFragenbank(true)` (gleiche Fragenbank wie im Prüfungstool)
 
 **Dateien:**
-- `Pruefung/src/components/lp/LPStartseite.tsx`
+- `ExamLab/src/components/lp/LPStartseite.tsx`
 
 ---
 
@@ -131,8 +131,8 @@ Content:   (je nach Tab)
 - Filter-Badges dynamisch rendern
 
 **Dateien:**
-- `Pruefung/src/components/lp/LPStartseite.tsx`
-- Evtl. `Pruefung/src/types/schulConfig.ts`
+- `ExamLab/src/components/lp/LPStartseite.tsx`
+- Evtl. `ExamLab/src/types/schulConfig.ts`
 
 **Aufwand:** 1 Session. Tiefere Priorität.
 

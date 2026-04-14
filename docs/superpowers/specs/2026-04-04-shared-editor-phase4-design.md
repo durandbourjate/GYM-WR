@@ -26,7 +26,7 @@ Die shared-Komponenten (Sections, BildUpload, FrageTypAuswahl, useKIAssistent) r
 
 | Datei | Änderung |
 |---|---|
-| `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` | EditorProvider wrappen, editorConfig + editorServices zusammenbauen |
+| `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` | EditorProvider wrappen, editorConfig + editorServices zusammenbauen |
 | `packages/shared/src/editor/sections/MetadataSection.tsx` | Props `lpListe`, `eigeneFachschaft` entfernen — liest aus `useEditorConfig()` |
 
 ## Technisches Design
@@ -92,7 +92,7 @@ const editorServices: EditorServices = useMemo(() => ({
 **Hinweise zu den Service-Adaptern:**
 - `kiAssistent`: Die Methode heisst `apiService.kiAssistent` (nicht `kiAktion`). Der 1. Parameter ist `email`, der vom shared Interface abstrahiert wird — der Host injiziert die Email.
 - `ladeLernziele`: Die Methode heisst `poolApi.ladeLernziele(email, fach?)`. Das shared Interface definiert `(gefaess, fachbereich)` — der `gefaess`-Parameter wird vom Pruefung-Backend aktuell ignoriert und nicht weitergegeben. Die Email wird vom Host injiziert.
-- **Lernziel-Typ:** `packages/shared/src/types/fragen.ts` definiert `Lernziel`. Muss kompatibel sein mit `Pruefung/src/types/pool.ts:Lernziel`. Bei der Implementierung prüfen ob es derselbe Typ ist oder ob ein Mapping nötig ist.
+- **Lernziel-Typ:** `packages/shared/src/types/fragen.ts` definiert `Lernziel`. Muss kompatibel sein mit `ExamLab/src/types/pool.ts:Lernziel`. Bei der Implementierung prüfen ob es derselbe Typ ist oder ob ein Mapping nötig ist.
 
 ### 3. JSX wrappen
 

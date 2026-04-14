@@ -7,7 +7,7 @@ Lehrer: DUY. Fächer: Wirtschaft & Recht (SF, EWR, EF), Informatik. Klassenlehre
 
 ```
 Unterrichtsplaner/   → React/TS/Vite PWA (Semesterplaner)
-Pruefung/            → React/TS/Vite PWA (ExamLab: Prüfen + Üben + Fragensammlung)
+ExamLab/            → React/TS/Vite PWA (ExamLab: Prüfen + Üben + Fragensammlung)
 Uebungen/            → Übungspools (pool.html + config/*.js) + Informatik-Material
 Projektdateien/      → Claude-Projektanweisungen (nicht deployed)
 ```
@@ -25,7 +25,7 @@ git add -A && git commit -m "vX.XX: Beschreibung" && git push
 ```
 
 - Deploy via GitHub Actions: Push to `main` → Build Unterrichtsplaner + ExamLab → Combine mit Uebungen → GitHub Pages
-- **Deployed:** Unterrichtsplaner/dist + ExamLab (aus Pruefung/dist) + Uebungen + index.html
+- **Deployed:** Unterrichtsplaner/dist + ExamLab (aus ExamLab/dist) + Uebungen + index.html
 - **Nicht deployed:** Projektdateien/, CLAUDE.md, Dev-Docs
 
 ## Klassenbezeichnungen
@@ -50,4 +50,4 @@ Bei Fehlern: Lernschleife → Rule-File ergänzen
 - Schulkontext (Stundenplan, IW, Lehrplan): @.claude/rules/schulkontext.md
 - Unterrichtsplaner-Entwicklung: Unterrichtsplaner/CLAUDE.md + HANDOFF.md
 - Übungspools-Entwicklung: Uebungen/Uebungspools/CLAUDE.md
-- ExamLab-Entwicklung: Pruefung/HANDOFF.md + Pruefungsplattform_Spec_v2.md
+- ExamLab-Entwicklung: ExamLab/HANDOFF.md + Pruefungsplattform_Spec_v2.md

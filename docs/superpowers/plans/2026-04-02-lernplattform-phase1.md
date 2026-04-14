@@ -1711,14 +1711,14 @@ Expected: `dist/` korrekt erstellt.
 - [ ] **Step 4: Prüfungstool nicht kaputt**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 Expected: Alles grün — Prüfungstool unverändert.
 
 - [ ] **Step 5: HANDOFF.md aktualisieren**
 
-Neuen Session-Eintrag in `Pruefung/HANDOFF.md` (oder separates `Lernplattform/HANDOFF.md`) mit:
+Neuen Session-Eintrag in `ExamLab/HANDOFF.md` (oder separates `Lernplattform/HANDOFF.md`) mit:
 - Stand: Branch `feature/lernplattform-phase1`, tsc ✅, Tests ✅, Build ✅
 - Was wurde gemacht (8 Tasks)
 - Was fehlt (Phase 2: Fragenbank + Übungs-Engine)

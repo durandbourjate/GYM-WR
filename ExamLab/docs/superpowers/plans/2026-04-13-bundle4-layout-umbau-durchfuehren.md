@@ -79,7 +79,7 @@ Nach dem letzten Status-Button und vor dem schliessenden `</div>` einfügen:
 
 - [ ] **Step 4: tsc + vitest prüfen**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün
 
 - [ ] **Step 5: Commit**
@@ -141,7 +141,7 @@ Den Empty-State Button (~Zeile 670) von inline `<button>` auf:
 
 - [ ] **Step 5: tsc + vitest prüfen**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün
 
 - [ ] **Step 6: Commit**
@@ -226,7 +226,7 @@ Den Empty-State Button (~Zeile 496) auf:
 
 - [ ] **Step 6: tsc + vitest prüfen**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün
 
 - [ ] **Step 7: Commit**
@@ -270,7 +270,7 @@ Zu:
 
 - [ ] **Step 3: tsc + vitest + build prüfen**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run && npm run build`
+Run: `cd ExamLab && npx tsc -b && npx vitest run && npm run build`
 Expected: Alles grün
 
 - [ ] **Step 4: Commit**
@@ -289,7 +289,7 @@ git commit -m "Bundle 4: Fragensammlung — +Neue Frage als Button primary"
 
 - [ ] **Step 1: Finaler Build**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run && npm run build`
+Run: `cd ExamLab && npx tsc -b && npx vitest run && npm run build`
 Expected: Alles grün
 
 - [ ] **Step 2: HANDOFF.md aktualisieren**

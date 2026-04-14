@@ -101,7 +101,7 @@ export function alleNavigationsEintraege(eintraege: NavigationsEintrag[] = APP_N
 
 - [ ] **Step 2: tsc prüfen**
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 Expected: Keine neuen Fehler (Datei wird noch nicht importiert)
 
 - [ ] **Step 3: Commit**
@@ -126,7 +126,7 @@ git commit -m "feat: Route-Registry APP_NAVIGATION als Single Source of Truth"
 - [ ] **Step 1: Home.tsx umbenennen**
 
 ```bash
-cd Pruefung && git mv src/components/lp/Home.tsx src/components/lp/Favoriten.tsx
+cd ExamLab && git mv src/components/lp/Home.tsx src/components/lp/Favoriten.tsx
 ```
 
 - [ ] **Step 2: In Favoriten.tsx den Komponent umbenennen**
@@ -168,7 +168,7 @@ In `src/components/LoginScreen.tsx`:
 
 - [ ] **Step 8: tsc + Tests**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün (227 Tests)
 
 - [ ] **Step 9: Commit**
@@ -304,7 +304,7 @@ In `FavoritenTab.tsx`:
 
 - [ ] **Step 4: tsc + Tests**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün
 
 - [ ] **Step 5: Commit**
@@ -349,12 +349,12 @@ git commit -m "feat: FavoritenTab mit Baumstruktur statt Dropdown"
 
 - [ ] **Step 3: tsc + Tests**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run`
+Run: `cd ExamLab && npx tsc -b && npx vitest run`
 Expected: Alles grün
 
 - [ ] **Step 4: Build prüfen**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Expected: Build erfolgreich
 
 - [ ] **Step 5: Commit**
@@ -383,7 +383,7 @@ Prüfen dass keine Reste der alten `APP_ORTE`-Konstante oder des Dropdown-States
 
 - [ ] **Step 3: Finale Prüfung**
 
-Run: `cd Pruefung && npx tsc -b && npx vitest run && npm run build`
+Run: `cd ExamLab && npx tsc -b && npx vitest run && npm run build`
 Expected: Alles grün, Build OK
 
 - [ ] **Step 4: Commit**

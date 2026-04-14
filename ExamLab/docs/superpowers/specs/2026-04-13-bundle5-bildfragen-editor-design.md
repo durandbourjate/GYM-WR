@@ -13,13 +13,13 @@ Die drei Bild-Editoren (HotspotEditor, BildbeschriftungEditor, DragDropBildEdito
 
 ### Root Cause
 
-Tailwind CSS v4 mit dem `@tailwindcss/vite` Plugin scannt automatisch das Projektverzeichnis (`Pruefung/src/`). Die Bild-Editoren liegen jedoch in `packages/shared/src/editor/typen/` — ausserhalb des Scan-Bereichs. Die `violet`-Klassen werden deshalb nie ins generierte CSS aufgenommen.
+Tailwind CSS v4 mit dem `@tailwindcss/vite` Plugin scannt automatisch das Projektverzeichnis (`ExamLab/src/`). Die Bild-Editoren liegen jedoch in `packages/shared/src/editor/typen/` — ausserhalb des Scan-Bereichs. Die `violet`-Klassen werden deshalb nie ins generierte CSS aufgenommen.
 
 Der Vite-Alias `@shared` löst die Imports zur Buildzeit korrekt auf, aber der Tailwind Content-Scanner kennt diesen Alias nicht.
 
 ### Lösung
 
-Eine `@source`-Direktive in `Pruefung/src/index.css` hinzufügen, direkt nach Zeile 1 (`@import "tailwindcss";`):
+Eine `@source`-Direktive in `ExamLab/src/index.css` hinzufügen, direkt nach Zeile 1 (`@import "tailwindcss";`):
 
 ```css
 @import "tailwindcss";
@@ -32,7 +32,7 @@ Dies teilt Tailwind v4 mit, auch Dateien in `packages/shared/src/` nach Klassen 
 
 | Datei | Änderung |
 |-------|----------|
-| `Pruefung/src/index.css` | `@source`-Direktive hinzufügen |
+| `ExamLab/src/index.css` | `@source`-Direktive hinzufügen |
 
 ### Keine Code-Änderungen nötig an
 

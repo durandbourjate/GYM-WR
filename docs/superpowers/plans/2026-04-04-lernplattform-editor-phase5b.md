@@ -424,7 +424,7 @@ git commit -m "feat(LP): lernplattformSpeichereFrage Backend + Adapter"
 
 ```bash
 cd Lernplattform && npx tsc -b && npx vitest run && npm run build
-cd Pruefung && npx tsc -b && npx vitest run  # Keine Regressions
+cd ExamLab && npx tsc -b && npx vitest run  # Keine Regressions
 ```
 
 - [ ] **Step 2: Push**

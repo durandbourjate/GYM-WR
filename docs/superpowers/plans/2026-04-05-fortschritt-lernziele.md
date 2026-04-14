@@ -118,7 +118,7 @@ export type LernzielStatus = 'offen' | 'inArbeit' | 'gefestigt' | 'gemeistert'
 Run: `cd Lernplattform && npx tsc -b`
 Expected: PASS (keine Breaking Changes, da Felder optional gemacht)
 
-Run: `cd Pruefung && npx tsc -b`
+Run: `cd ExamLab && npx tsc -b`
 Expected: PASS (shared types werden dort auch verwendet)
 
 - [ ] **Step 4: Commit**

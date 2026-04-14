@@ -47,7 +47,7 @@
 - [ ] **Step 1: Branch erstellen**
 
 ```bash
-cd Pruefung && git checkout -b feature/design-system
+cd ExamLab && git checkout -b feature/design-system
 ```
 
 ---
@@ -55,7 +55,7 @@ cd Pruefung && git checkout -b feature/design-system
 ## Task 1: CSS-Grundlagen
 
 **Files:**
-- Modify: `Pruefung/src/index.css`
+- Modify: `ExamLab/src/index.css`
 
 - [ ] **Step 1: `.input-pflicht` Klasse hinzufügen**
 
@@ -95,7 +95,7 @@ Zusätzlich: Prüfen ob Karten in Dark Mode genügend Border haben (`border-slat
 - [ ] **Step 4: Build prüfen**
 
 ```bash
-cd Pruefung && npx tsc -b && npm run build
+cd ExamLab && npx tsc -b && npm run build
 ```
 Expected: Grün (reine CSS-Änderungen)
 
@@ -111,8 +111,8 @@ git commit -m "Design-System: CSS-Grundlagen — .input-pflicht + violetter Focu
 ## Task 2: TabBar-Komponente
 
 **Files:**
-- Create: `Pruefung/src/components/ui/TabBar.tsx`
-- Create: `Pruefung/src/components/ui/TabBar.test.tsx`
+- Create: `ExamLab/src/components/ui/TabBar.tsx`
+- Create: `ExamLab/src/components/ui/TabBar.test.tsx`
 
 - [ ] **Step 1: Test schreiben**
 
@@ -170,7 +170,7 @@ describe('TabBar', () => {
 - [ ] **Step 2: Test läuft und scheitert**
 
 ```bash
-cd Pruefung && npx vitest run src/components/ui/TabBar.test.tsx
+cd ExamLab && npx vitest run src/components/ui/TabBar.test.tsx
 ```
 Expected: FAIL (TabBar existiert nicht)
 
@@ -266,14 +266,14 @@ export function TabBar({ tabs, activeTab, onTabChange, size = 'md' }: TabBarProp
 - [ ] **Step 4: Tests grün**
 
 ```bash
-cd Pruefung && npx vitest run src/components/ui/TabBar.test.tsx
+cd ExamLab && npx vitest run src/components/ui/TabBar.test.tsx
 ```
 Expected: 5 Tests PASS
 
 - [ ] **Step 5: tsc + Build**
 
 ```bash
-cd Pruefung && npx tsc -b && npm run build
+cd ExamLab && npx tsc -b && npm run build
 ```
 
 - [ ] **Step 6: Commit**
@@ -288,7 +288,7 @@ git commit -m "Design-System: TabBar-Komponente — Pill-Tabs mit Violett-Akzent
 ## Task 3: Tabs migrieren — LPHeader
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/LPHeader.tsx`
+- Modify: `ExamLab/src/components/lp/LPHeader.tsx`
 
 - [ ] **Step 1: LPHeader.tsx lesen**
 
@@ -301,7 +301,7 @@ Die manuell gestylten Tabs (pruefung/uebung/fragensammlung) durch `<TabBar>` ers
 - [ ] **Step 3: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 Expected: Alles grün
 
@@ -317,9 +317,9 @@ git commit -m "Design-System: LPHeader Tabs → TabBar"
 ## Task 4: Tabs migrieren — EinstellungenPanel + AdminDashboard + AdminSettings
 
 **Files:**
-- Modify: `Pruefung/src/components/settings/EinstellungenPanel.tsx`
-- Modify: `Pruefung/src/components/ueben/admin/AdminDashboard.tsx`
-- Modify: `Pruefung/src/components/ueben/admin/AdminSettings.tsx`
+- Modify: `ExamLab/src/components/settings/EinstellungenPanel.tsx`
+- Modify: `ExamLab/src/components/ueben/admin/AdminDashboard.tsx`
+- Modify: `ExamLab/src/components/ueben/admin/AdminSettings.tsx`
 
 - [ ] **Step 1: Dateien lesen**
 
@@ -340,7 +340,7 @@ Bestehende Pill-Tabs (eigene Implementierung mit `bg-slate-100 rounded-xl`) durc
 - [ ] **Step 5: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 6: Commit**
@@ -355,9 +355,9 @@ git commit -m "Design-System: EinstellungenPanel + AdminDashboard + AdminSetting
 ## Task 5: Tabs migrieren — PruefungsComposer + DurchfuehrenDashboard + KorrekturDashboard
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/vorbereitung/PruefungsComposer.tsx`
-- Modify: `Pruefung/src/components/lp/durchfuehrung/DurchfuehrenDashboard.tsx`
-- Modify: `Pruefung/src/components/lp/korrektur/KorrekturDashboard.tsx`
+- Modify: `ExamLab/src/components/lp/vorbereitung/PruefungsComposer.tsx`
+- Modify: `ExamLab/src/components/lp/durchfuehrung/DurchfuehrenDashboard.tsx`
+- Modify: `ExamLab/src/components/lp/korrektur/KorrekturDashboard.tsx`
 
 - [ ] **Step 1: Dateien lesen**
 
@@ -378,7 +378,7 @@ Underline-Tabs + ARIA durch `<TabBar size="sm">` ersetzen. Phase-Indikator (puls
 - [ ] **Step 5: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 6: Commit**
@@ -393,8 +393,8 @@ git commit -m "Design-System: PruefungsComposer + DurchfuehrenDashboard + Korrek
 ## Task 6: ResizableSidebar-Komponente
 
 **Files:**
-- Create: `Pruefung/src/components/ui/ResizableSidebar.tsx`
-- Create: `Pruefung/src/components/ui/ResizableSidebar.test.tsx`
+- Create: `ExamLab/src/components/ui/ResizableSidebar.tsx`
+- Create: `ExamLab/src/components/ui/ResizableSidebar.test.tsx`
 
 - [ ] **Step 1: Resize-Logik planen**
 
@@ -456,7 +456,7 @@ describe('ResizableSidebar', () => {
 - [ ] **Step 3: Test scheitert**
 
 ```bash
-cd Pruefung && npx vitest run src/components/ui/ResizableSidebar.test.tsx
+cd ExamLab && npx vitest run src/components/ui/ResizableSidebar.test.tsx
 ```
 
 - [ ] **Step 4: ResizableSidebar implementieren**
@@ -473,7 +473,7 @@ Komponente mit:
 - [ ] **Step 5: Tests grün + tsc + Build**
 
 ```bash
-cd Pruefung && npx vitest run src/components/ui/ResizableSidebar.test.tsx && npx tsc -b && npm run build
+cd ExamLab && npx vitest run src/components/ui/ResizableSidebar.test.tsx && npx tsc -b && npm run build
 ```
 
 - [ ] **Step 6: Commit**
@@ -488,7 +488,7 @@ git commit -m "Design-System: ResizableSidebar-Komponente — Drag-Resize + Maxi
 ## Task 7: EinstellungenPanel auf ResizableSidebar umstellen
 
 **Files:**
-- Modify: `Pruefung/src/components/settings/EinstellungenPanel.tsx`
+- Modify: `ExamLab/src/components/settings/EinstellungenPanel.tsx`
 
 - [ ] **Step 1: Datei lesen (aktueller Stand nach Task 4)**
 
@@ -510,7 +510,7 @@ Beide Eltern müssen ein Flex-Layout haben damit Side-by-Side funktioniert. Prü
 - [ ] **Step 3: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 4: Commit**
@@ -525,7 +525,7 @@ git commit -m "Design-System: EinstellungenPanel → ResizableSidebar (Side-by-S
 ## Task 8: Button ki-Variante + KI-Buttons Styling
 
 **Files:**
-- Modify: `Pruefung/src/components/ui/Button.tsx`
+- Modify: `ExamLab/src/components/ui/Button.tsx`
 - Modify: `packages/shared/src/editor/ki/KIBausteine.tsx`
 
 - [ ] **Step 1: Button.tsx lesen**
@@ -581,7 +581,7 @@ Wenn nicht kiAktiv: bestehende Slate-Farben beibehalten.
 - [ ] **Step 4: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 5: Commit**
@@ -611,7 +611,7 @@ Prüfen ob es weitere Pflichtfelder gibt (Antwortoptionen, Punktzahl) und diese 
 - [ ] **Step 3: tsc + Build**
 
 ```bash
-cd Pruefung && npx tsc -b && npm run build
+cd ExamLab && npx tsc -b && npm run build
 ```
 
 - [ ] **Step 4: Commit**
@@ -626,10 +626,10 @@ git commit -m "Design-System: Pflichtfelder violett im Frageneditor"
 ## Task 10: Pflichtfelder violett — Korrektur-Punkte
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/korrektur/KorrekturFragenAnsicht.tsx`
-- Modify: `Pruefung/src/components/lp/korrektur/KorrekturFrageZeile.tsx`
-- Modify: `Pruefung/src/components/lp/korrektur/PDFKorrektur.tsx`
-- Modify: `Pruefung/src/components/lp/korrektur/ZeichnenKorrektur.tsx`
+- Modify: `ExamLab/src/components/lp/korrektur/KorrekturFragenAnsicht.tsx`
+- Modify: `ExamLab/src/components/lp/korrektur/KorrekturFrageZeile.tsx`
+- Modify: `ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx`
+- Modify: `ExamLab/src/components/lp/korrektur/ZeichnenKorrektur.tsx`
 
 - [ ] **Step 1: Alle 4 Dateien lesen — Punkte-Inputs finden**
 
@@ -648,7 +648,7 @@ Zusätzlich: Wenn ein Punkte-Feld noch NICHT bewertet ist (Wert ist leer/null), 
 - [ ] **Step 3: tsc + Build + Tests**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 - [ ] **Step 4: Commit**
@@ -668,7 +668,7 @@ git commit -m "Design-System: Korrektur-Punkte violett hervorgehoben"
 - [ ] **Step 1: Alle Stellen mit `text-slate-500` und `text-slate-400` suchen**
 
 ```bash
-cd Pruefung && grep -rn "text-slate-400\|text-slate-500" src/components/ --include="*.tsx" | head -50
+cd ExamLab && grep -rn "text-slate-400\|text-slate-500" src/components/ --include="*.tsx" | head -50
 ```
 
 Prüfen welche davon Labels, Icons oder UI-Text sind (nicht Placeholder — die bleiben bei slate-400).
@@ -686,7 +686,7 @@ Gezielt die wichtigsten Stellen korrigieren — nicht jede einzelne Stelle auf e
 - [ ] **Step 3: tsc + Build**
 
 ```bash
-cd Pruefung && npx tsc -b && npm run build
+cd ExamLab && npx tsc -b && npm run build
 ```
 
 - [ ] **Step 4: Commit**
@@ -703,7 +703,7 @@ git commit -m "Design-System: Kontrast-Fixes — Labels und Icons kräftiger"
 - [ ] **Step 1: Alle Tests + Build**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 Expected: Alles grün
 

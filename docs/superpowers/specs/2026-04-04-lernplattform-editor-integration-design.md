@@ -178,7 +178,7 @@ case 'lernplattformSpeichereFrage': {
 1. `cd Lernplattform && npx tsc -b` — TypeScript grün
 2. `cd Lernplattform && npx vitest run` — 93+ Tests grün
 3. `cd Lernplattform && npm run build` — Build erfolgreich
-4. `cd Pruefung && npx tsc -b && npx vitest run` — Keine Regressions
+4. `cd ExamLab && npx tsc -b && npx vitest run` — Keine Regressions
 
 ## Risiko
 

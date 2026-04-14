@@ -16,7 +16,7 @@
 
 | File | Action | Responsibility |
 |---|---|---|
-| `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` | Modify | Add EditorProvider wrapper, build config + services |
+| `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` | Modify | Add EditorProvider wrapper, build config + services |
 | `packages/shared/src/editor/sections/MetadataSection.tsx` | Modify | Remove `lpListe` + `eigeneFachschaft` props, use config |
 
 ---
@@ -24,7 +24,7 @@
 ### Task 1: EditorProvider in FragenEditor.tsx verdrahten
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx`
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx`
 
 **Context for implementer:**
 - FragenEditor.tsx (923 lines) is the editor hub with ~80 useState. We do NOT touch the state — only wrap the JSX.
@@ -119,7 +119,7 @@ return (
 - [ ] **Step 5: Run tsc**
 
 ```bash
-cd Pruefung && npx tsc -b
+cd ExamLab && npx tsc -b
 ```
 
 Expected: 0 errors. If type mismatches on `EditorConfig` fields (e.g. `schulConfig.gefaesse` doesn't exist), fix the field mapping.
@@ -127,7 +127,7 @@ Expected: 0 errors. If type mismatches on `EditorConfig` fields (e.g. `schulConf
 - [ ] **Step 6: Run tests**
 
 ```bash
-cd Pruefung && npx vitest run
+cd ExamLab && npx vitest run
 ```
 
 Expected: 193+ tests pass. No regressions — we only added a context wrapper.
@@ -135,7 +135,7 @@ Expected: 193+ tests pass. No regressions — we only added a context wrapper.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+git add ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 git commit -m "feat: wire EditorProvider in FragenEditor.tsx (Phase 4)"
 ```
 
@@ -145,7 +145,7 @@ git commit -m "feat: wire EditorProvider in FragenEditor.tsx (Phase 4)"
 
 **Files:**
 - Modify: `packages/shared/src/editor/sections/MetadataSection.tsx`
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (Props-Übergabe)
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (Props-Übergabe)
 
 **Context for implementer:**
 - MetadataSection already calls `useEditorConfig()` at line 74
@@ -193,7 +193,7 @@ Also check the `<BerechtigungenEditor>` slot passed as `berechtigungenEditor` pr
 - [ ] **Step 5: Run tsc**
 
 ```bash
-cd Pruefung && npx tsc -b
+cd ExamLab && npx tsc -b
 ```
 
 Expected: 0 errors. If something still references the removed props, fix it.
@@ -201,7 +201,7 @@ Expected: 0 errors. If something still references the removed props, fix it.
 - [ ] **Step 6: Run tests**
 
 ```bash
-cd Pruefung && npx vitest run
+cd ExamLab && npx vitest run
 ```
 
 Expected: 193+ tests pass.
@@ -209,7 +209,7 @@ Expected: 193+ tests pass.
 - [ ] **Step 7: Run build**
 
 ```bash
-cd Pruefung && npm run build
+cd ExamLab && npm run build
 ```
 
 Expected: Build succeeds.
@@ -217,7 +217,7 @@ Expected: Build succeeds.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add packages/shared/src/editor/sections/MetadataSection.tsx Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+git add packages/shared/src/editor/sections/MetadataSection.tsx ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 git commit -m "refactor: remove redundant MetadataSection props (now from EditorContext)"
 ```
 
@@ -228,7 +228,7 @@ git commit -m "refactor: remove redundant MetadataSection props (now from Editor
 - [ ] **Step 1: Full verification**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 
 Expected: All green.

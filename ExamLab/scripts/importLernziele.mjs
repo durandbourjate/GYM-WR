@@ -15,7 +15,7 @@ import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const CONFIG_DIR = join(__dirname, '../../Uebungen/Uebungspools/config')
+const CONFIG_DIR = join(__dirname, '../Uebungen/Uebungspools/config')
 
 // Apps Script URL aus .env.local oder Umgebungsvariable
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL || (() => {

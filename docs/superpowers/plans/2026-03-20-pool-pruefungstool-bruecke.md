@@ -17,22 +17,22 @@
 ### Neue Dateien
 | Datei | Verantwortung |
 |-------|---------------|
-| `Pruefung/src/services/poolSync.ts` | Fetch Pool-Configs, Parse, Delta-Berechnung, Content-Hash |
-| `Pruefung/src/utils/poolConverter.ts` | Typ-Konvertierung Pool→Prüfungstool (7 Fragetypen) |
-| `Pruefung/src/types/pool.ts` | Pool-spezifische Typen (PoolFrageSnapshot, PoolMeta, PoolFrage, etc.) |
-| `Pruefung/src/components/lp/PoolSyncDialog.tsx` | Sync-Dialog mit Fortschritt und Vorschau |
+| `ExamLab/src/services/poolSync.ts` | Fetch Pool-Configs, Parse, Delta-Berechnung, Content-Hash |
+| `ExamLab/src/utils/poolConverter.ts` | Typ-Konvertierung Pool→Prüfungstool (7 Fragetypen) |
+| `ExamLab/src/types/pool.ts` | Pool-spezifische Typen (PoolFrageSnapshot, PoolMeta, PoolFrage, etc.) |
+| `ExamLab/src/components/lp/PoolSyncDialog.tsx` | Sync-Dialog mit Fortschritt und Vorschau |
 | `Uebungen/Uebungspools/config/index.json` | Maschinenlesbarer Pool-Index |
 
 ### Modifizierte Dateien
 | Datei | Änderung |
 |-------|----------|
-| `Pruefung/src/types/fragen.ts` | Neue Felder auf FrageBase (poolId, Review-Flags, Hash, lernzielIds) |
-| `Pruefung/src/components/lp/FragenBrowser.tsx` (~786 Z.) | Badges + Filter (Quelle, Status) |
-| `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (~1212 Z.) | Pool-Info-Leiste, Absegnen-Button, Update-Vergleich |
-| `Pruefung/src/components/lp/LPStartseite.tsx` (~300 Z.) | Sync-Button |
-| `Pruefung/src/services/apiService.ts` (~766 Z.) | 4 neue API-Methoden |
-| `Pruefung/src/components/lp/frageneditor/useKIAssistent.ts` (~80 Z.) | Neue Aktion "generiereFrageZuLernziel" |
-| `Pruefung/apps-script-code.js` (~3000 Z.) | 4 neue Endpoints + Lernziele-Sheet |
+| `ExamLab/src/types/fragen.ts` | Neue Felder auf FrageBase (poolId, Review-Flags, Hash, lernzielIds) |
+| `ExamLab/src/components/lp/FragenBrowser.tsx` (~786 Z.) | Badges + Filter (Quelle, Status) |
+| `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (~1212 Z.) | Pool-Info-Leiste, Absegnen-Button, Update-Vergleich |
+| `ExamLab/src/components/lp/LPStartseite.tsx` (~300 Z.) | Sync-Button |
+| `ExamLab/src/services/apiService.ts` (~766 Z.) | 4 neue API-Methoden |
+| `ExamLab/src/components/lp/frageneditor/useKIAssistent.ts` (~80 Z.) | Neue Aktion "generiereFrageZuLernziel" |
+| `ExamLab/apps-script-code.js` (~3000 Z.) | 4 neue Endpoints + Lernziele-Sheet |
 | 26× `Uebungen/Uebungspools/config/*.js` | `reviewed: false` pro Frage |
 
 ---
@@ -40,13 +40,13 @@
 ## Task 1: Pool-Typen und FrageBase-Erweiterung
 
 **Files:**
-- Create: `Pruefung/src/types/pool.ts`
-- Modify: `Pruefung/src/types/fragen.ts`
+- Create: `ExamLab/src/types/pool.ts`
+- Modify: `ExamLab/src/types/fragen.ts`
 
 - [ ] **Step 1: Neue Datei `pool.ts` mit Pool-spezifischen Typen erstellen**
 
 ```typescript
-// Pruefung/src/types/pool.ts
+// ExamLab/src/types/pool.ts
 
 /** Snapshot einer Pool-Frage für Vergleich im Update-Dialog */
 export interface PoolFrageSnapshot {
@@ -135,7 +135,7 @@ export interface PoolSyncErgebnis {
 
 - [ ] **Step 2: FrageBase in fragen.ts erweitern**
 
-In `Pruefung/src/types/fragen.ts` nach Zeile 57 (nach `geteiltVon`) einfügen:
+In `ExamLab/src/types/fragen.ts` nach Zeile 57 (nach `geteiltVon`) einfügen:
 
 ```typescript
   // Pool-Sync (importierte Fragen aus Übungspools)
@@ -150,13 +150,13 @@ In `Pruefung/src/types/fragen.ts` nach Zeile 57 (nach `geteiltVon`) einfügen:
 
 - [ ] **Step 3: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS (keine Typfehler)
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Pruefung/src/types/pool.ts Pruefung/src/types/fragen.ts
+git add ExamLab/src/types/pool.ts ExamLab/src/types/fragen.ts
 git commit -m "Pool-Brücke: Typen für Pool-Sync und FrageBase-Erweiterung"
 ```
 
@@ -233,12 +233,12 @@ git commit -m "Pool-Brücke: index.json + reviewed-Feld in allen 26 Pools"
 ## Task 3: Pool-Converter (Typ-Konvertierung)
 
 **Files:**
-- Create: `Pruefung/src/utils/poolConverter.ts`
+- Create: `ExamLab/src/utils/poolConverter.ts`
 
 - [ ] **Step 1: poolConverter.ts erstellen**
 
 ```typescript
-// Pruefung/src/utils/poolConverter.ts
+// ExamLab/src/utils/poolConverter.ts
 import type { Frage, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage, Fachbereich, BloomStufe } from '../types/fragen'
 import type { PoolFrage, PoolMeta, PoolTopic } from '../types/pool'
 
@@ -413,13 +413,13 @@ export function erzeugeSnapshot(pf: PoolFrage): import('../types/pool').PoolFrag
 
 - [ ] **Step 2: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/utils/poolConverter.ts
+git add ExamLab/src/utils/poolConverter.ts
 git commit -m "Pool-Brücke: Typ-Konvertierung Pool→Prüfungstool (7 Fragetypen)"
 ```
 
@@ -428,14 +428,14 @@ git commit -m "Pool-Brücke: Typ-Konvertierung Pool→Prüfungstool (7 Fragetype
 ## Task 4: Pool-Sync-Service
 
 **Files:**
-- Create: `Pruefung/src/services/poolSync.ts`
+- Create: `ExamLab/src/services/poolSync.ts`
 
 - [ ] **Step 1: poolSync.ts erstellen**
 
 Ref: Spec Sektion 3 (Sync-Mechanismus), Sektion 3.3 (Content-Hash), Sektion 3.5 (JS-Parsing).
 
 ```typescript
-// Pruefung/src/services/poolSync.ts
+// ExamLab/src/services/poolSync.ts
 import type { Frage } from '../types/fragen'
 import type { PoolConfig, PoolFrage, PoolIndexEintrag, PoolSyncErgebnis, Lernziel } from '../types/pool'
 import { konvertierePoolFrage, erzeugeSnapshot } from '../utils/poolConverter'
@@ -613,13 +613,13 @@ export async function berechneDelta(
 
 - [ ] **Step 2: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/services/poolSync.ts
+git add ExamLab/src/services/poolSync.ts
 git commit -m "Pool-Brücke: Sync-Service (Fetch, Parse, Delta, Hash)"
 ```
 
@@ -628,7 +628,7 @@ git commit -m "Pool-Brücke: Sync-Service (Fetch, Parse, Delta, Hash)"
 ## Task 5: Apps Script Backend (4 neue Endpoints)
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js`
+- Modify: `ExamLab/apps-script-code.js`
 
 Referenz: Bestehende `speichereFrage`-Funktion (Zeile ~476) für Sheet-Schreibmuster und `doPost`-Routing (Zeile ~18).
 
@@ -887,7 +887,7 @@ function safeParseJSON(str) {
 - [ ] **Step 6: Commit**
 
 ```bash
-git add Pruefung/apps-script-code.js
+git add ExamLab/apps-script-code.js
 git commit -m "Pool-Brücke: 4 neue Backend-Endpoints (Import, Lernziele, KI)"
 ```
 
@@ -898,7 +898,7 @@ git commit -m "Pool-Brücke: 4 neue Backend-Endpoints (Import, Lernziele, KI)"
 ## Task 6: API-Service-Erweiterung (Frontend)
 
 **Files:**
-- Modify: `Pruefung/src/services/apiService.ts`
+- Modify: `ExamLab/src/services/apiService.ts`
 
 - [ ] **Step 1: 3 neue Methoden in apiService.ts ergänzen**
 
@@ -977,13 +977,13 @@ Hinweis: `generiereFrageZuLernziel` läuft über den bestehenden `kiAssistent`-E
 
 - [ ] **Step 2: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/services/apiService.ts
+git add ExamLab/src/services/apiService.ts
 git commit -m "Pool-Brücke: API-Client-Methoden für Pool-Import und Lernziele"
 ```
 
@@ -992,12 +992,12 @@ git commit -m "Pool-Brücke: API-Client-Methoden für Pool-Import und Lernziele"
 ## Task 7: Sync-Dialog-Komponente
 
 **Files:**
-- Create: `Pruefung/src/components/lp/PoolSyncDialog.tsx`
+- Create: `ExamLab/src/components/lp/PoolSyncDialog.tsx`
 
 - [ ] **Step 1: PoolSyncDialog.tsx erstellen**
 
 ```tsx
-// Pruefung/src/components/lp/PoolSyncDialog.tsx
+// ExamLab/src/components/lp/PoolSyncDialog.tsx
 import { useState, useCallback } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { ladePoolIndex, ladePoolConfig, berechneDelta } from '../../services/poolSync'
@@ -1239,13 +1239,13 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
 
 - [ ] **Step 2: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/PoolSyncDialog.tsx
+git add ExamLab/src/components/lp/PoolSyncDialog.tsx
 git commit -m "Pool-Brücke: Sync-Dialog mit Fortschritt und Vorschau"
 ```
 
@@ -1254,7 +1254,7 @@ git commit -m "Pool-Brücke: Sync-Dialog mit Fortschritt und Vorschau"
 ## Task 8: LPStartseite — Sync-Button einbauen
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/LPStartseite.tsx`
+- Modify: `ExamLab/src/components/lp/LPStartseite.tsx`
 
 - [ ] **Step 1: State und Import ergänzen**
 
@@ -1300,13 +1300,13 @@ Hinweis: `alleFragen` und `ladeFragen` müssen ggf. aus dem Kontext verfügbar g
 
 - [ ] **Step 4: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/LPStartseite.tsx
+git add ExamLab/src/components/lp/LPStartseite.tsx
 git commit -m "Pool-Brücke: Sync-Button auf LP-Startseite"
 ```
 
@@ -1315,7 +1315,7 @@ git commit -m "Pool-Brücke: Sync-Button auf LP-Startseite"
 ## Task 9: FragenBrowser — Badges und Filter
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/FragenBrowser.tsx`
+- Modify: `ExamLab/src/components/lp/FragenBrowser.tsx`
 
 Achtung: Datei ist bereits 786 Zeilen — Änderungen gezielt und minimal halten.
 
@@ -1426,13 +1426,13 @@ In `DetailKarte` (nach dem Fachbereich-Badge):
 
 - [ ] **Step 6: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/FragenBrowser.tsx
+git add ExamLab/src/components/lp/FragenBrowser.tsx
 git commit -m "Pool-Brücke: Badges + Filter (Quelle, Status) im FragenBrowser"
 ```
 
@@ -1441,7 +1441,7 @@ git commit -m "Pool-Brücke: Badges + Filter (Quelle, Status) im FragenBrowser"
 ## Task 10: FragenEditor — Pool-Info, Absegnen, Update-Vergleich
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx`
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx`
 
 Achtung: Datei ist bereits 1212 Zeilen (über Limit). Änderungen minimal halten — kein neuer Abschnitt über 50 Zeilen. Bei Bedarf Update-Vergleich als eigene Komponente extrahieren.
 
@@ -1498,7 +1498,7 @@ Im Editor-JSX, direkt nach dem Header/Titel-Bereich (und vor den Abschnitten):
 
 - [ ] **Step 2: PoolUpdateVergleich als eigene Komponente erstellen**
 
-Neue Datei `Pruefung/src/components/lp/frageneditor/PoolUpdateVergleich.tsx`:
+Neue Datei `ExamLab/src/components/lp/frageneditor/PoolUpdateVergleich.tsx`:
 
 ```tsx
 import { useState } from 'react'
@@ -1573,13 +1573,13 @@ import PoolUpdateVergleich from './PoolUpdateVergleich'
 
 - [ ] **Step 4: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/frageneditor/FragenEditor.tsx Pruefung/src/components/lp/frageneditor/PoolUpdateVergleich.tsx
+git add ExamLab/src/components/lp/frageneditor/FragenEditor.tsx ExamLab/src/components/lp/frageneditor/PoolUpdateVergleich.tsx
 git commit -m "Pool-Brücke: Pool-Info, Absegnen-Button, Update-Vergleich im Editor"
 ```
 
@@ -1588,8 +1588,8 @@ git commit -m "Pool-Brücke: Pool-Info, Absegnen-Button, Update-Vergleich im Edi
 ## Task 11: KI-Assistent — Lernziel-Generierung
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/frageneditor/useKIAssistent.ts`
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (Button im UI)
+- Modify: `ExamLab/src/components/lp/frageneditor/useKIAssistent.ts`
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (Button im UI)
 
 - [ ] **Step 1: Neue Aktion in useKIAssistent.ts**
 
@@ -1673,13 +1673,13 @@ Im bestehenden Ergebnis-Handling (wo KI-Ergebnisse angezeigt werden), für die n
 
 - [ ] **Step 4: Build prüfen**
 
-Run: `cd Pruefung && npx tsc --noEmit`
+Run: `cd ExamLab && npx tsc --noEmit`
 Expected: PASS
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/frageneditor/useKIAssistent.ts Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+git add ExamLab/src/components/lp/frageneditor/useKIAssistent.ts ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 git commit -m "Pool-Brücke: KI-Lernziel-Generierung im FragenEditor"
 ```
 
@@ -1688,12 +1688,12 @@ git commit -m "Pool-Brücke: KI-Lernziel-Generierung im FragenEditor"
 ## Task 12: Integration-Test und HANDOFF aktualisieren
 
 **Files:**
-- Modify: `Pruefung/HANDOFF.md`
+- Modify: `ExamLab/HANDOFF.md`
 
 - [ ] **Step 1: Manueller E2E-Test**
 
 Checkliste:
-1. `cd Pruefung && npm run dev` → App startet
+1. `cd ExamLab && npm run dev` → App startet
 2. LP-Login → LP-Startseite zeigt "↻ Pools sync" Button
 3. Klick auf Sync → Dialog öffnet, "Synchronisierung starten" klicken
 4. Fortschritt: Pools werden geladen (26 Stück)

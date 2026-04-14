@@ -16,7 +16,7 @@ import vm from 'vm'
 // === CONFIG ===
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOi9ONg678NeyjoY6azruVhv6yc7HI9GVSmKep6rp84GtR-WiG8BV_9w75pmLeD-x0IA/exec'
 const LP_EMAIL = 'yannick.durand@gymhofwil.ch'
-const POOL_BASE = resolve(import.meta.dirname, '../../Uebungen/Uebungspools')
+const POOL_BASE = resolve(import.meta.dirname, '../Uebungen/Uebungspools')
 const POOL_IMG_BASE_URL = 'https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/'
 const BATCH_SIZE = 15
 const BILD_TYPEN = new Set(['bildbeschriftung', 'dragdrop_bild', 'hotspot'])

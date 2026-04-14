@@ -30,7 +30,7 @@ jobs:
           cache-dependency-path: |
             packages/shared/package-lock.json
             Unterrichtsplaner/package-lock.json
-            Pruefung/package-lock.json
+            ExamLab/package-lock.json
 
       - name: Install Shared dependencies
         working-directory: packages/shared
@@ -44,12 +44,12 @@ jobs:
         working-directory: Unterrichtsplaner
         run: npx tsc -b && npx vite build
 
-      - name: Install Pruefung dependencies
-        working-directory: Pruefung
+      - name: Install ExamLab dependencies
+        working-directory: ExamLab
         run: npm ci
 
       - name: Build ExamLab (unified)
-        working-directory: Pruefung
+        working-directory: ExamLab
         env:
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
           VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
@@ -59,13 +59,13 @@ jobs:
       - name: Prepare combined site
         run: |
           mkdir -p _site/Unterrichtsplaner _site/ExamLab _site/Pruefung _site/Lernplattform
-          # Copy static content (Uebungen + root landing page)
-          cp -r Uebungen _site/Uebungen
+          # Copy static content (Uebungen liegt jetzt unter ExamLab/, wird separat an alter URL gespiegelt) + root landing page
+          cp -r ExamLab/Uebungen _site/Uebungen
           cp index.html _site/ 2>/dev/null || true
           # Copy Unterrichtsplaner build output
           cp -r Unterrichtsplaner/dist/* _site/Unterrichtsplaner/
           # Copy ExamLab build output
-          cp -r Pruefung/dist/* _site/ExamLab/
+          cp -r ExamLab/dist/* _site/ExamLab/
           # Redirects: alte URLs → /ExamLab/
           echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Pruefung/index.html
           echo '<meta http-equiv="refresh" content="0;url=/GYM-WR-DUY/ExamLab/">' > _site/Lernplattform/index.html
@@ -74,7 +74,7 @@ jobs:
           # Clean up macOS artifacts
           find _site -name '.DS_Store' -delete
 
-      # === Staging: Pruefung vom preview-Branch bauen (falls vorhanden) ===
+      # === Staging: ExamLab vom preview-Branch bauen (falls vorhanden) ===
       - name: Checkout preview branch
         uses: actions/checkout@v4
         with:
@@ -85,12 +85,12 @@ jobs:
 
       - name: Install Staging dependencies
         if: steps.checkout-preview.outcome == 'success'
-        working-directory: preview-src/Pruefung
+        working-directory: preview-src/ExamLab
         run: npm ci
 
-      - name: Build Staging (Pruefung from preview)
+      - name: Build Staging (ExamLab from preview)
         if: steps.checkout-preview.outcome == 'success'
-        working-directory: preview-src/Pruefung
+        working-directory: preview-src/ExamLab
         env:
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
           VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
@@ -101,7 +101,7 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         run: |
           mkdir -p _site/staging
-          cp -r preview-src/Pruefung/dist/* _site/staging/
+          cp -r preview-src/ExamLab/dist/* _site/staging/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

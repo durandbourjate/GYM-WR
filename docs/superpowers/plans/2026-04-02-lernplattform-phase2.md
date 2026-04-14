@@ -2144,7 +2144,7 @@ cd Lernplattform && npx tsc -b && npm run build
 - [ ] **Step 3: Pruefungstool nicht kaputt**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run
+cd ExamLab && npx tsc -b && npx vitest run
 ```
 
 Expected: 193+ Tests gruen.

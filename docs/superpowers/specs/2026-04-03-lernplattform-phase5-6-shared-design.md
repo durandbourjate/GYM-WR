@@ -80,7 +80,7 @@ Editor-Komponenten (FragenEditor, TypEditorDispatcher, 25+ Editoren, Sections) b
 Kein npm Workspace, sondern TypeScript Path Alias:
 
 ```jsonc
-// Lernplattform/tsconfig.app.json + Pruefung/tsconfig.app.json
+// Lernplattform/tsconfig.app.json + ExamLab/tsconfig.app.json
 {
   "compilerOptions": {
     "paths": {
@@ -91,7 +91,7 @@ Kein npm Workspace, sondern TypeScript Path Alias:
 ```
 
 ```typescript
-// Lernplattform/vite.config.ts + Pruefung/vite.config.ts
+// Lernplattform/vite.config.ts + ExamLab/vite.config.ts
 resolve: {
   alias: {
     '@shared': path.resolve(__dirname, '../../packages/shared/src')
@@ -410,7 +410,7 @@ Hinweis: Schritt G (Dashboard an Kontext anbinden) funktioniert teilweise schon 
 ## 11. Spaetere Sessions (Out of Scope)
 
 ### Shared Editor (eigene Session)
-- FragenEditor aus `Pruefung/src/components/lp/frageneditor/` nach `packages/shared/` extrahieren
+- FragenEditor aus `ExamLab/src/components/lp/frageneditor/` nach `packages/shared/` extrahieren
 - ~12 Abhaengigkeiten analysieren und abstrahieren: authStore, apiService, KI-Assistent, uploadApi, schulConfigStore, lpApi, fragenValidierung, fragenFactory, fachUtils, gefaessUtils, useFocusTrap, usePanelResize
 - EditorConfig erweitern: Auth-Context-Injection, Upload-Callbacks, KI-Assistent Toggle, Validation-Service
 - Shared Editor in Lernplattform integrieren (Admin kann Fragen erstellen/bearbeiten)

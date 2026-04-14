@@ -6,7 +6,7 @@
 
 **Architecture:** Reine UI-Änderungen in bestehenden Komponenten. Kein neuer State, keine neuen Dateien, keine API-Änderungen. Jede Task ist unabhängig.
 
-**Wichtig:** Dateien unter `packages/shared/` liegen im Repo-Root, NICHT unter `Pruefung/`. Git-Befehle für diese Dateien vom Repo-Root ausführen oder relative Pfade verwenden (`../packages/shared/...`).
+**Wichtig:** Dateien unter `packages/shared/` liegen im Repo-Root, NICHT unter `ExamLab/`. Git-Befehle für diese Dateien vom Repo-Root ausführen oder relative Pfade verwenden (`../packages/shared/...`).
 
 **Tech Stack:** React 19 + TypeScript + Tailwind CSS v4
 
@@ -22,7 +22,7 @@
 - [ ] **Step 1: Erstelle Feature Branch**
 
 ```bash
-cd Pruefung && git checkout -b feature/bundle1-quick-wins
+cd ExamLab && git checkout -b feature/bundle1-quick-wins
 ```
 
 - [ ] **Step 2: Ändere das Label**
@@ -358,7 +358,7 @@ git commit -m "N5+N6: Bildvorschau entfernt, 'Bild entfernen' neben URL-Feld"
 - [ ] **Step 1: Gesamter Build-Check**
 
 ```bash
-cd Pruefung && npx tsc -b && npx vitest run && npm run build
+cd ExamLab && npx tsc -b && npx vitest run && npm run build
 ```
 Erwartet: Alles grün.
 

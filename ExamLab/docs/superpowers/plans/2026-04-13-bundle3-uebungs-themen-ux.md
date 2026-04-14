@@ -495,6 +495,6 @@ Neue Session 100 eintragen mit:
 - [ ] **Step 3: Commit HANDOFF**
 
 ```bash
-git add Pruefung/HANDOFF.md
+git add ExamLab/HANDOFF.md
 git commit -m "HANDOFF: Session 100 — Bundle 3 Übungs-Themen UX"
 ```

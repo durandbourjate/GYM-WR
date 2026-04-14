@@ -19,30 +19,30 @@
 ### New Files
 | File | Responsibility |
 |------|---------------|
-| `Pruefung/src/utils/poolExporter.ts` | Reverse type mapping: Frage → PoolFrage format (Gegenstück zu poolConverter.ts) |
-| `Pruefung/src/components/lp/RueckSyncDialog.tsx` | Two-mode modal: Update-Diff with checkboxes / Export with pool+topic selection |
+| `ExamLab/src/utils/poolExporter.ts` | Reverse type mapping: Frage → PoolFrage format (Gegenstück zu poolConverter.ts) |
+| `ExamLab/src/components/lp/RueckSyncDialog.tsx` | Two-mode modal: Update-Diff with checkboxes / Export with pool+topic selection |
 
 ### Modified Files
 | File | Changes |
 |------|---------|
-| `Pruefung/src/services/poolSync.ts` (275 Z.) | Add `berechneRueckSyncDiff()` + `ladePoolIndex()` re-export for pool list |
-| `Pruefung/src/services/apiService.ts` (833 Z.) | Add `schreibePoolAenderung()` method |
-| `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (1329 Z.) | Add "↑ An Pool" / "↑ In Pool exportieren" buttons + dialog trigger |
-| `Pruefung/src/components/lp/FragenBrowser.tsx` (856 Z.) | Add "↑ Pool-Export" batch button |
-| `Pruefung/apps-script-code.js` (2206 Z.) | New `schreibePoolAenderung` action + GitHub API helper functions |
+| `ExamLab/src/services/poolSync.ts` (275 Z.) | Add `berechneRueckSyncDiff()` + `ladePoolIndex()` re-export for pool list |
+| `ExamLab/src/services/apiService.ts` (833 Z.) | Add `schreibePoolAenderung()` method |
+| `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (1329 Z.) | Add "↑ An Pool" / "↑ In Pool exportieren" buttons + dialog trigger |
+| `ExamLab/src/components/lp/FragenBrowser.tsx` (856 Z.) | Add "↑ Pool-Export" batch button |
+| `ExamLab/apps-script-code.js` (2206 Z.) | New `schreibePoolAenderung` action + GitHub API helper functions |
 
 ---
 
 ## Task 1: poolExporter.ts — Reverse Type Mapping
 
 **Files:**
-- Create: `Pruefung/src/utils/poolExporter.ts`
-- Reference: `Pruefung/src/utils/poolConverter.ts` (forward mapping), `Pruefung/src/types/fragen.ts`, `Pruefung/src/types/pool.ts`
+- Create: `ExamLab/src/utils/poolExporter.ts`
+- Reference: `ExamLab/src/utils/poolConverter.ts` (forward mapping), `ExamLab/src/types/fragen.ts`, `ExamLab/src/types/pool.ts`
 
 - [ ] **Step 1: Create poolExporter.ts with type mapping function**
 
 ```typescript
-// Pruefung/src/utils/poolExporter.ts
+// ExamLab/src/utils/poolExporter.ts
 // Konvertierung Prüfungstool → Pool-Format (Gegenstück zu poolConverter.ts)
 
 import type { Frage, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage } from '../types/fragen';
@@ -261,13 +261,13 @@ export function serialisierePoolFrage(pf: PoolFrageExport): string {
 
 - [ ] **Step 2: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Expected: No TypeScript errors
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/utils/poolExporter.ts
+git add ExamLab/src/utils/poolExporter.ts
 git commit -m "Pool-Rück-Sync: poolExporter.ts — Reverse type mapping Prüfung→Pool"
 ```
 
@@ -276,8 +276,8 @@ git commit -m "Pool-Rück-Sync: poolExporter.ts — Reverse type mapping Prüfun
 ## Task 2: berechneRueckSyncDiff in poolSync.ts
 
 **Files:**
-- Modify: `Pruefung/src/services/poolSync.ts` (275 Z.)
-- Reference: `Pruefung/src/types/pool.ts` (PoolFrageSnapshot)
+- Modify: `ExamLab/src/services/poolSync.ts` (275 Z.)
+- Reference: `ExamLab/src/types/pool.ts` (PoolFrageSnapshot)
 
 - [ ] **Step 1: Add RueckSyncDiffFeld type and berechneRueckSyncDiff function**
 
@@ -388,12 +388,12 @@ schwierigkeit?: number;
 
 - [ ] **Step 2: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/services/poolSync.ts
+git add ExamLab/src/services/poolSync.ts
 git commit -m "Pool-Rück-Sync: berechneRueckSyncDiff — Feld-für-Feld Vergleich"
 ```
 
@@ -402,7 +402,7 @@ git commit -m "Pool-Rück-Sync: berechneRueckSyncDiff — Feld-für-Feld Verglei
 ## Task 3: apiService.ts — schreibePoolAenderung
 
 **Files:**
-- Modify: `Pruefung/src/services/apiService.ts` (833 Z.)
+- Modify: `ExamLab/src/services/apiService.ts` (833 Z.)
 
 - [ ] **Step 1: Add schreibePoolAenderung method**
 
@@ -456,12 +456,12 @@ Add after `importiereLernziele` method (around line 267):
 
 - [ ] **Step 2: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/services/apiService.ts
+git add ExamLab/src/services/apiService.ts
 git commit -m "Pool-Rück-Sync: apiService.schreibePoolAenderung Endpoint"
 ```
 
@@ -470,7 +470,7 @@ git commit -m "Pool-Rück-Sync: apiService.schreibePoolAenderung Endpoint"
 ## Task 4: Apps Script Backend — schreibePoolAenderung
 
 **Files:**
-- Modify: `Pruefung/apps-script-code.js` (2206 Z.)
+- Modify: `ExamLab/apps-script-code.js` (2206 Z.)
 
 This is the most complex task. It needs: doPost dispatch, GitHub API helpers, JS parsing, and the main endpoint.
 
@@ -924,13 +924,13 @@ function serialisiereNeuePoolFrage(felder) {
 
 - [ ] **Step 5: Verify no syntax errors in apps-script-code.js**
 
-Run: `node -c Pruefung/apps-script-code.js`
+Run: `node -c ExamLab/apps-script-code.js`
 Expected: No syntax errors
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add Pruefung/apps-script-code.js
+git add ExamLab/apps-script-code.js
 git commit -m "Pool-Rück-Sync: Backend — schreibePoolAenderung + GitHub API Integration"
 ```
 
@@ -939,13 +939,13 @@ git commit -m "Pool-Rück-Sync: Backend — schreibePoolAenderung + GitHub API I
 ## Task 5: RueckSyncDialog.tsx — Two-Mode Dialog
 
 **Files:**
-- Create: `Pruefung/src/components/lp/RueckSyncDialog.tsx`
-- Reference: `Pruefung/src/components/lp/PoolSyncDialog.tsx` (341 Z., pattern)
+- Create: `ExamLab/src/components/lp/RueckSyncDialog.tsx`
+- Reference: `ExamLab/src/components/lp/PoolSyncDialog.tsx` (341 Z., pattern)
 
 - [ ] **Step 1: Create RueckSyncDialog with Update-Mode**
 
 ```typescript
-// Pruefung/src/components/lp/RueckSyncDialog.tsx
+// ExamLab/src/components/lp/RueckSyncDialog.tsx
 // Zwei-Modus-Dialog: Update bestehender Pool-Fragen / Export neuer Fragen
 
 import { useState, useEffect } from 'react';
@@ -1284,12 +1284,12 @@ Replace the Topic-Dropdown placeholder with:
 
 - [ ] **Step 3: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/RueckSyncDialog.tsx
+git add ExamLab/src/components/lp/RueckSyncDialog.tsx
 git commit -m "Pool-Rück-Sync: RueckSyncDialog — Diff-Vorschau + Export-Dialog"
 ```
 
@@ -1298,7 +1298,7 @@ git commit -m "Pool-Rück-Sync: RueckSyncDialog — Diff-Vorschau + Export-Dialo
 ## Task 6: FragenEditor — Buttons hinzufügen
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/frageneditor/FragenEditor.tsx` (1329 Z.)
+- Modify: `ExamLab/src/components/lp/frageneditor/FragenEditor.tsx` (1329 Z.)
 
 - [ ] **Step 1: Add import and state for RueckSyncDialog**
 
@@ -1360,12 +1360,12 @@ At end of component JSX (before closing fragment/div), add:
 
 - [ ] **Step 4: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/frageneditor/FragenEditor.tsx
+git add ExamLab/src/components/lp/frageneditor/FragenEditor.tsx
 git commit -m "Pool-Rück-Sync: Buttons '↑ An Pool' / '↑ In Pool exportieren' im FragenEditor"
 ```
 
@@ -1374,7 +1374,7 @@ git commit -m "Pool-Rück-Sync: Buttons '↑ An Pool' / '↑ In Pool exportieren
 ## Task 7: FragenBrowser — Batch-Export Button
 
 **Files:**
-- Modify: `Pruefung/src/components/lp/FragenBrowser.tsx` (856 Z.)
+- Modify: `ExamLab/src/components/lp/FragenBrowser.tsx` (856 Z.)
 
 - [ ] **Step 1: Add batch export button in header**
 
@@ -1394,12 +1394,12 @@ Note: Der Batch-Export-Dialog ist ein Ergänzung nach dem Einzelexport. Der Butt
 
 - [ ] **Step 2: Verify build**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add Pruefung/src/components/lp/FragenBrowser.tsx
+git add ExamLab/src/components/lp/FragenBrowser.tsx
 git commit -m "Pool-Rück-Sync: Batch-Export Button im FragenBrowser (Platzhalter)"
 ```
 
@@ -1408,11 +1408,11 @@ git commit -m "Pool-Rück-Sync: Batch-Export Button im FragenBrowser (Platzhalte
 ## Task 8: Integration, Build & HANDOFF
 
 **Files:**
-- Modify: `Pruefung/HANDOFF.md`
+- Modify: `ExamLab/HANDOFF.md`
 
 - [ ] **Step 1: Full build verification**
 
-Run: `cd Pruefung && npm run build`
+Run: `cd ExamLab && npm run build`
 Expected: Build succeeds with no errors
 
 - [ ] **Step 2: Update HANDOFF.md**

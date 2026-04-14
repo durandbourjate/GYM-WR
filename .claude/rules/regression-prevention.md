@@ -75,7 +75,7 @@ Plan im Chat dokumentieren BEVOR Code geschrieben wird. Kein Raten, kein Ausprob
 3. Lokale Pruefung:
 
 ```bash
-cd Pruefung && npx tsc -b    # TypeScript (CI-aequivalent)
+cd ExamLab && npx tsc -b    # TypeScript (CI-aequivalent)
 npx vitest run                # Alle Tests
 npm run build                 # Build-Test
 ```
