@@ -462,7 +462,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       mode="overlay"
       onClose={onSchliessen}
       topOffset={headerH}
-      zIndex={50}
       defaultWidth={1008}
       minWidth={600}
       maxWidth={2400}

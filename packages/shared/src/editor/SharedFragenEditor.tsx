@@ -657,7 +657,6 @@ export default function SharedFragenEditor({
       mode="overlay"
       onClose={onAbbrechen}
       topOffset={headerH}
-      zIndex={55}
       defaultWidth={1008}
       minWidth={480}
       maxWidth={2400}

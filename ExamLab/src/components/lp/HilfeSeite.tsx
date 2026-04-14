@@ -39,7 +39,6 @@ export default function HilfeSeite({ onSchliessen }: Props) {
       mode="overlay"
       onClose={onSchliessen}
       topOffset={headerH}
-      zIndex={60}
       defaultWidth={1152}
       minWidth={400}
       maxWidth={2400}

@@ -1,5 +1,9 @@
 import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react';
 
+// Modul-lokaler Zähler: jede neu geöffnete overlay-Sidebar bekommt den nächsthöheren z-Index.
+// Startet bei 50 (unter Dialogen/Toasts), zählt bei jedem Mount hoch.
+let nextOverlayZIndex = 50;
+
 interface ResizableSidebarProps {
   children: ReactNode;
   onClose: () => void;
@@ -14,7 +18,7 @@ interface ResizableSidebarProps {
   storageKey?: string;
   /** Nur für overlay: App-Header-Höhe (Sidebar beginnt darunter) */
   topOffset?: number;
-  /** Nur für overlay: z-Index (default 55) */
+  /** Nur für overlay: expliziter z-Index. Wenn nicht gesetzt, auto-increment (zuletzt geöffnet = zuoberst). */
   zIndex?: number;
   /** ESC schliesst. Default true. */
   closeOnEsc?: boolean;
@@ -42,7 +46,7 @@ export function ResizableSidebar({
   maxWidth = 2000,
   storageKey,
   topOffset = 0,
-  zIndex = 55,
+  zIndex,
   closeOnEsc = true,
   closeOnBackdrop = true,
 }: ResizableSidebarProps) {
@@ -58,6 +62,15 @@ export function ResizableSidebar({
   });
 
   const [isMaximized, setIsMaximized] = useState(false);
+
+  // Auto-z-Index: beim ersten Render wird der nächste Zähler-Wert geholt.
+  // So liegt die zuletzt geöffnete overlay-Sidebar immer zuoberst.
+  const [autoZIndex] = useState(() => {
+    if (mode !== 'overlay') return 0;
+    nextOverlayZIndex += 1;
+    return nextOverlayZIndex;
+  });
+  const effectiveZIndex = zIndex ?? autoZIndex;
   const isDragging = useRef(false);
   const startX = useRef(0);
   const startWidth = useRef(0);
@@ -179,7 +192,7 @@ export function ResizableSidebar({
   return (
     <div
       className="fixed inset-0 flex pointer-events-none"
-      style={{ zIndex }}
+      style={{ zIndex: effectiveZIndex }}
     >
       <div
         className="absolute left-0 right-0 bottom-0 bg-black/40 pointer-events-auto"
