@@ -17,8 +17,8 @@ const TYP_CONFIG: Record<Empfehlung['typ'], { icon: string; label: string; bgLig
   luecke: {
     icon: '🎯',
     label: 'Empfohlen',
-    bgLight: 'bg-amber-50', bgDark: 'dark:bg-amber-900/20',
-    borderLight: 'border-amber-200', borderDark: 'dark:border-amber-800',
+    bgLight: 'bg-violet-50', bgDark: 'dark:bg-violet-900/20',
+    borderLight: 'border-violet-200', borderDark: 'dark:border-violet-800',
   },
   festigung: {
     icon: '💪',

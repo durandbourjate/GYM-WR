@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useUebenFortschrittStore } from '../../store/ueben/fortschrittStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenKontext } from '../../hooks/ueben/useUebenKontext'
+import { useThemenSichtbarkeitStore } from '../../store/ueben/themenSichtbarkeitStore'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { berechneSterne, sterneText, berechneStreak, berechneLevel, berechneMeilensteine } from '../../utils/ueben/gamification'
 import { berechneMasteryMitRecency } from '../../utils/ueben/mastery'
@@ -13,6 +14,7 @@ import { useEffect, useState } from 'react'
 interface ThemaAnalyse {
   fach: string
   thema: string
+  fragen: Frage[]
   fortschritt: ThemenFortschritt
   istVerblasst: boolean
 }
@@ -21,9 +23,20 @@ export default function SuSAnalyse() {
   const { aktiveGruppe } = useUebenGruppenStore()
   const { fortschritte, getThemenFortschritt } = useUebenFortschrittStore()
   const { fachFarben } = useUebenKontext()
+  const { freischaltungen, getStatus } = useThemenSichtbarkeitStore()
   const [fragen, setFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
   const [fehler, setFehler] = useState(false)
+  // A7: Welche Themen sind expandiert (Key: "fach|thema")
+  const [expandierteThemen, setExpandierteThemen] = useState<Set<string>>(new Set())
+  const toggleThema = (key: string): void => {
+    setExpandierteThemen(prev => {
+      const neu = new Set(prev)
+      if (neu.has(key)) neu.delete(key)
+      else neu.add(key)
+      return neu
+    })
+  }
 
   useEffect(() => {
     if (!aktiveGruppe) return
@@ -78,11 +91,19 @@ export default function SuSAnalyse() {
         aeltesterVersuch || undefined
       )
 
-      ergebnis.push({ fach, thema: tFragen[0].thema, fortschritt, istVerblasst })
+      ergebnis.push({ fach, thema: tFragen[0].thema, fragen: tFragen, fortschritt, istVerblasst })
     }
 
-    return ergebnis.sort((a, b) => a.fortschritt.quote - b.fortschritt.quote)
-  }, [fragen, fortschritte, getThemenFortschritt])
+    // A7: Nur freigeschaltete Themen (aktiv + abgeschlossen). Wenn keine Freischaltungen konfiguriert: alle zeigen.
+    const gefiltert = freischaltungen.length === 0
+      ? ergebnis
+      : ergebnis.filter(t => {
+          const status = getStatus(t.fach, t.thema)
+          return status !== 'nicht_freigeschaltet'
+        })
+
+    return gefiltert.sort((a, b) => a.fortschritt.quote - b.fortschritt.quote)
+  }, [fragen, fortschritte, getThemenFortschritt, freischaltungen, getStatus])
 
   // Gesamt-Statistiken
   const stats = useMemo(() => {
@@ -142,35 +163,96 @@ export default function SuSAnalyse() {
         </div>
       )}
 
-      {/* Themen-Übersicht (schwächste zuerst) */}
+      {/* Themen-Übersicht (schwächste zuerst) — A7: ausklappbar mit Fehler-Details */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Themen (schwächste zuerst)</h4>
-        <div className="space-y-2">
-          {themenAnalyse.map(t => {
-            const farbe = getFachFarbe(t.fach, fachFarben)
-            const sterne = berechneSterne(t.fortschritt.quote)
-            return (
-              <div key={`${t.fach}-${t.thema}`} className="flex items-center justify-between py-2">
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: farbe }} />
-                  <div>
-                    <span className="text-sm font-medium dark:text-white">{t.thema}</span>
-                    {t.istVerblasst && (
-                      <span className="ml-2 text-[10px] text-amber-500 dark:text-amber-400" title="Lange nicht geübt">
-                        Lange nicht geübt
-                      </span>
-                    )}
-                    <div className="text-xs text-slate-400">{t.fach} · {t.fortschritt.gesamt} Fragen</div>
-                  </div>
+        {themenAnalyse.length === 0 ? (
+          <p className="text-sm text-slate-500 dark:text-slate-400 py-2">Noch keine freigeschalteten Themen geübt.</p>
+        ) : (
+          <div className="space-y-1">
+            {themenAnalyse.map(t => {
+              const key = `${t.fach}|${t.thema}`
+              const farbe = getFachFarbe(t.fach, fachFarben)
+              const sterne = berechneSterne(t.fortschritt.quote)
+              const expandiert = expandierteThemen.has(key)
+              // Schwächste Fragen: quote=0 oder zuletzt falsch, sortiert nach Fehlerquote desc
+              const fragenMitFehlern = t.fragen
+                .map(f => {
+                  const fp = fortschritte[f.id]
+                  if (!fp || fp.versuche === 0) return null
+                  const fehlerquote = 1 - (fp.richtig / fp.versuche)
+                  return { frage: f, fp, fehlerquote }
+                })
+                .filter((x): x is NonNullable<typeof x> => x !== null && x.fehlerquote > 0)
+                .sort((a, b) => b.fehlerquote - a.fehlerquote)
+                .slice(0, 5)
+              return (
+                <div key={key} className="border-b border-slate-100 dark:border-slate-700 last:border-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleThema(key)}
+                    className="w-full flex items-center justify-between py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded transition-colors cursor-pointer"
+                    aria-expanded={expandiert}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <span className={`text-slate-400 transition-transform shrink-0 ${expandiert ? 'rotate-90' : ''}`}>▸</span>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: farbe }} />
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium dark:text-white">{t.thema}</span>
+                        {t.istVerblasst && (
+                          <span className="ml-2 text-[10px] text-amber-500 dark:text-amber-400" title="Lange nicht geübt">
+                            Lange nicht geübt
+                          </span>
+                        )}
+                        <div className="text-xs text-slate-400">{t.fach} · {t.fortschritt.gesamt} Fragen</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <MiniBar quote={t.fortschritt.quote} />
+                      <span className="text-xs w-8 text-right">{sterneText(sterne)}</span>
+                    </div>
+                  </button>
+                  {expandiert && (
+                    <div className="pl-10 pr-2 pb-3 pt-1 text-xs space-y-2">
+                      {fragenMitFehlern.length === 0 ? (
+                        <p className="text-slate-400 dark:text-slate-500 italic">
+                          Noch keine Fehler in diesem Thema — weiter so!
+                        </p>
+                      ) : (
+                        <>
+                          <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            Schwierigste Fragen:
+                          </p>
+                          <ul className="space-y-1.5">
+                            {fragenMitFehlern.map(({ frage, fp, fehlerquote }) => {
+                              const fragetext = (frage as { fragetext?: string }).fragetext || (frage as { text?: string }).text || ''
+                              const vorschau = fragetext.slice(0, 80) + (fragetext.length > 80 ? '…' : '')
+                              return (
+                                <li key={frage.id} className="flex items-start gap-2">
+                                  <span
+                                    className={`shrink-0 w-1.5 h-1.5 rounded-full mt-1.5 ${
+                                      fehlerquote >= 0.66 ? 'bg-red-400' : fehlerquote >= 0.33 ? 'bg-amber-400' : 'bg-slate-300'
+                                    }`}
+                                  />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-slate-700 dark:text-slate-300 truncate">{vorschau || '(kein Fragetext)'}</div>
+                                    <div className="text-[10px] text-slate-400">
+                                      {Math.round(fehlerquote * 100)}% falsch · {fp.richtig}/{fp.versuche} richtig
+                                    </div>
+                                  </div>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-3">
-                  <MiniBar quote={t.fortschritt.quote} />
-                  <span className="text-xs w-8 text-right">{sterneText(sterne)}</span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </div>
   )

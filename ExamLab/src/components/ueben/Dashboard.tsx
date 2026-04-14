@@ -66,6 +66,23 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
   const [alleThemenAnzeigen, setAlleThemenAnzeigen] = useState(false)
+  // A4: Welche Fach-Sektionen sind eingeklappt (Default: alle offen)
+  const [eingeklappteFaecher, setEingeklappteFaecher] = useState<Set<string>>(() => {
+    try {
+      const gespeichert = localStorage.getItem('examlab-ueben-fach-collapsed')
+      if (gespeichert) return new Set(JSON.parse(gespeichert) as string[])
+    } catch { /* ignorieren */ }
+    return new Set()
+  })
+  const toggleFachEinklappen = (fach: string): void => {
+    setEingeklappteFaecher(prev => {
+      const neu = new Set(prev)
+      if (neu.has(fach)) neu.delete(fach)
+      else neu.add(fach)
+      try { localStorage.setItem('examlab-ueben-fach-collapsed', JSON.stringify([...neu])) } catch { /* ignorieren */ }
+      return neu
+    })
+  }
   const [sortierung, setSortierung] = useState<'alphabetisch' | 'zuletztGeuebt'>(() => {
     try {
       const gespeichert = localStorage.getItem('examlab-ueben-sortierung')
@@ -361,6 +378,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
 
   const zurueckZuThemen = () => {
     setAktivesThema(null)
+    setAktiverFach(null) // A1: Nach Übung/Zurück "Alle" statt letzter Fach-Filter
     setUnterthemaFilter(new Set())
     setSchwierigkeitFilter(new Set())
     setTypFilter(new Set())
@@ -369,11 +387,11 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   return (
     <div>
       <main className="max-w-5xl mx-auto p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold dark:text-white">
-            Hallo {user?.vorname || 'dort'}!
-          </h2>
-          {/* Tab-Wechsel: Themen | Mein Fortschritt */}
+        <h2 className="text-xl font-bold dark:text-white mb-3">
+          Hallo {user?.vorname || 'dort'}!
+        </h2>
+        <div className="flex items-center mb-4">
+          {/* Tab-Wechsel: Themen | Mein Fortschritt — linksbündig analog LP */}
           <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
             <button
               onClick={() => setDashboardTab('themen')}
@@ -429,9 +447,9 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
           </div>
         )}
 
-        {/* Mix / Repetition Buttons */}
+        {/* Mix / Repetition Buttons + Suchfeld (A2: Suchfeld rechtsbündig in derselben Zeile) */}
         {!aktivesThema && !laden && alleFragen.length > 0 && (
-          <div className="flex gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4">
             <button
               onClick={() => setMixDialogOffen(true)}
               className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all cursor-pointer"
@@ -450,6 +468,13 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
             >
               <span>🔄</span> Repetition
             </button>
+            <input
+              type="text"
+              value={suchtext}
+              onChange={e => setSuchtext(e.target.value)}
+              placeholder="Thema, Fach oder Frage suchen..."
+              className="ml-auto w-64 max-w-[40%] px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
+            />
           </div>
         )}
 
@@ -496,19 +521,8 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
         ) : (
           /* ===================== THEMEN-ÜBERSICHT (Fach → Thema Karten) ===================== */
           <>
-            {/* Suchfeld */}
-            <div className="mb-4">
-              <input
-                type="text"
-                value={suchtext}
-                onChange={e => setSuchtext(e.target.value)}
-                placeholder="Thema, Fach oder Frage suchen..."
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
-              />
-            </div>
-
-            {/* Fach-Filter Chips */}
-            <div className="flex flex-wrap gap-2 mb-4">
+            {/* Fach-Filter Chips (links) + Alle-Themen-Toggle + Sortierung (rechts) — A3 */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
               <button
                 onClick={() => setAktiverFach(null)}
                 className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-colors ${
@@ -535,30 +549,29 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                   </button>
                 )
               })}
-            </div>
-
-            {/* Alle-Themen-Toggle + Sortierung */}
-            <div className="flex items-center justify-between mb-3">
-              {freischaltungen.length > 0 ? (
-                <button
-                  onClick={() => setAlleThemenAnzeigen(!alleThemenAnzeigen)}
-                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
-                    alleThemenAnzeigen
-                      ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-300 dark:text-slate-800 dark:border-slate-300'
-                      : 'text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600 hover:border-slate-400'
-                  }`}
+              {/* Rechte Gruppe: Alle-Themen-Toggle + Sortier-Dropdown */}
+              <div className="ml-auto flex items-center gap-2">
+                {freischaltungen.length > 0 && (
+                  <button
+                    onClick={() => setAlleThemenAnzeigen(!alleThemenAnzeigen)}
+                    className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                      alleThemenAnzeigen
+                        ? 'bg-slate-700 text-white border-slate-700 dark:bg-slate-300 dark:text-slate-800 dark:border-slate-300'
+                        : 'text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600 hover:border-slate-400'
+                    }`}
+                  >
+                    {alleThemenAnzeigen ? 'Nur freigeschaltete' : 'Alle Themen anzeigen'}
+                  </button>
+                )}
+                <select
+                  value={sortierung}
+                  onChange={e => handleSortierungAendern(e.target.value as 'alphabetisch' | 'zuletztGeuebt')}
+                  className="text-xs px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 focus:outline-none focus:border-slate-400 cursor-pointer"
                 >
-                  {alleThemenAnzeigen ? 'Nur freigeschaltete' : 'Alle Themen anzeigen'}
-                </button>
-              ) : <div />}
-              <select
-                value={sortierung}
-                onChange={e => handleSortierungAendern(e.target.value as 'alphabetisch' | 'zuletztGeuebt')}
-                className="text-xs px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 focus:outline-none focus:border-slate-400 cursor-pointer"
-              >
-                <option value="alphabetisch">A–Z</option>
-                <option value="zuletztGeuebt">Zuletzt geuebt</option>
-              </select>
+                  <option value="alphabetisch">A–Z</option>
+                  <option value="zuletztGeuebt">Zuletzt geübt</option>
+                </select>
+              </div>
             </div>
 
             {/* Thema-Karten nach Sektionen */}
@@ -566,7 +579,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               {/* Aktuelle Themen */}
               {themenSektionen.aktuelle.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-1.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-1.5">
                     <span>★</span> Aktuelle Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -589,32 +602,44 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 </div>
               )}
 
-              {/* Freigegebene Themen nach Fach */}
-              {themenSektionen.faecherSortiert.map(([fach, themen]) => (
-                <div key={fach}>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getFachFarbe(fach, fachFarben) }} />
-                    {fach}
-                  </h3>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {themen.map(info => (
-                      <ThemaKarte
-                        key={`${info.fach}-${info.thema}`}
-                        thema={info.thema}
-                        fach={info.fach}
-                        anzahlFragen={info.fragen.length}
-                        anzahlUnterthemen={info.unterthemen.length}
-                        fortschritt={info.fortschritt}
-                        themenStatus="abgeschlossen"
-                        fachFarben={fachFarben}
-                        onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
-                        anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
-                        onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
-                      />
-                    ))}
+              {/* Freigegebene Themen nach Fach — A4: ein-/ausklappbar */}
+              {themenSektionen.faecherSortiert.map(([fach, themen]) => {
+                const eingeklappt = eingeklappteFaecher.has(fach)
+                return (
+                  <div key={fach}>
+                    <button
+                      type="button"
+                      onClick={() => toggleFachEinklappen(fach)}
+                      className="w-full flex items-center gap-1.5 mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer text-left"
+                      aria-expanded={!eingeklappt}
+                    >
+                      <span className={`text-slate-400 transition-transform ${eingeklappt ? '' : 'rotate-90'}`}>▸</span>
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getFachFarbe(fach, fachFarben) }} />
+                      <span>{fach}</span>
+                      <span className="text-slate-400 font-normal normal-case tracking-normal">({themen.length})</span>
+                    </button>
+                    {!eingeklappt && (
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {themen.map(info => (
+                          <ThemaKarte
+                            key={`${info.fach}-${info.thema}`}
+                            thema={info.thema}
+                            fach={info.fach}
+                            anzahlFragen={info.fragen.length}
+                            anzahlUnterthemen={info.unterthemen.length}
+                            fortschritt={info.fortschritt}
+                            themenStatus="abgeschlossen"
+                            fachFarben={fachFarben}
+                            onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
+                            anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
+                            onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
 
               {/* Weitere Themen (nicht freigeschaltet) */}
               {themenSektionen.weitere.length > 0 && (
