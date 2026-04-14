@@ -10,22 +10,30 @@ export interface NavigationsEintrag {
  * Zentrale Baumstruktur aller navigierbaren LP-Orte.
  * Single Source of Truth für FavoritenTab und Navigation.
  */
+/**
+ * Baumstruktur entspricht den Tabs in der ExamLab-UI.
+ * Labels = Tab-Beschriftungen (Prüfen, Üben, Prüfungen, Analyse, …).
+ * Favoriten-Haupttab ist nicht aufgeführt — man befindet sich dort beim
+ * Favoriten-Verwalten selbst.
+ */
 export const APP_NAVIGATION: NavigationsEintrag[] = [
   {
+    // Haupt-Tab "Prüfen" führt auf den Sub-Tab "Prüfungen" (Default).
     pfad: '/pruefung',
-    label: 'Prüfungsliste',
+    label: 'Prüfen',
     icon: '📝',
     kinder: [
-      { pfad: '/pruefung/tracker', label: 'Tracker', icon: '📊' },
+      { pfad: '/pruefung/tracker', label: 'Analyse', icon: '📊' },
       { pfad: '/pruefung/monitoring', label: 'Multi-Monitoring', icon: '👁️' },
     ],
   },
   {
+    // Haupt-Tab "Üben" führt auf den Sub-Tab "Übungen" (Default).
     pfad: '/uebung',
-    label: 'Übungsliste',
+    label: 'Üben',
     icon: '🎯',
     kinder: [
-      { pfad: '/uebung/durchfuehren', label: 'Durchführen', icon: '▶️' },
+      { pfad: '/uebung/durchfuehren', label: 'Übung durchführen', icon: '▶️' },
       { pfad: '/uebung/analyse', label: 'Analyse', icon: '📈' },
     ],
   },
