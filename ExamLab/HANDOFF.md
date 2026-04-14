@@ -6,6 +6,56 @@
 
 ---
 
+## Session 108 — Cluster C (Demo-Modus) + Cluster A (SuS-Üben Layout) (14.04.2026)
+
+### Stand
+Bereit für main-Merge. Auf preview vollständig im Browser verifiziert (Demo-LP + Demo-SuS).
+tsc ✅ | 236 Tests ✅ | Build ✅.
+
+### Backlog-Status (aus LP/SuS-Test 14.04.)
+- **Cluster A (SuS-Üben Layout): A1–A7 ALLE GRÜN** ✅
+- **Cluster C (Demo-Modus): ALLE GRÜN** ✅
+- Cluster B/D/E offen (siehe unten)
+
+### Cluster C — Root Causes & Fixes
+| Bug | Root Cause | Fix |
+|-----|-----------|-----|
+| C1 Demo-LP-URL `/sus` | Folgebug von SW-Cache + istDemoModus-Verlust nach Reload | siehe C4 |
+| C2 Fragensammlung leer | `einrichtung`-Tag-Filter in 6 Stellen | `useFragenFilter`+5 weitere: !istDemo Guard |
+| C3 Favoriten leer | demoStarten seedet Favoriten nicht | useFavoritenStore.setState im Demo |
+| C4 "Backend nicht erreichbar" | istDemoModus aus sessionStorage entfernt nach Reload | restoreDemoFlag aus User-E-Mail (DEMO-EMAILS) |
+| C5 Üben keine Übungen (admin-typo) | demo.lp vs demo-lp in UebungsToolView | sed-Fix |
+| C6 "Gruppen werden geladen" | Folgebug C4 | identisch |
+| C7 Abmelden hängt | nur uebenAuthStore | beide Stores + window.location |
+| Neu: weisser Bildschirm /staging/sus | 404.html hatte /ExamLab/ hardcoded | dynamische Bases |
+| Neu: TDZ "Vp before init" | DEMO_EMAILS const nach create() | inline in restoreDemoFlag |
+| Neu: Demo-LP "0 Themen" Üben | 3 weitere einrichtung-Filter im Üben-Admin | Demo-Guard in 3 Stellen |
+| Neu: Demo-SuS keine Übungsfragen | uebenFragenAdapter ruft Backend für 'demo-gruppe' | Lazy-import einrichtungsFragen |
+| Neu: Logout URL hängt → Re-Login Loop | abmelden hatte kein Redirect | window.location.href = /login |
+| Neu: SuS direkt in Prüfung statt SuSStartseite | App.tsx Guard zu strikt | Deep-Link-Erkennung /sus/ueben\|pruefen |
+| Neu: AbgabeBestätigung-Link öffnete Prüfung | href = parent-Pfad | href = /sus/ueben (SuS) bzw. /favoriten (LP) |
+| Konsistenz: Daten "Einrichtung" vs UI "Einführung" | Demo-Daten hatten alte Bezeichnung | Tag/Thema umbenannt + Filter abwärtskompatibel |
+
+### Cluster A — Layout/UX-Fixes (Dashboard.tsx, EmpfehlungsKarte, SuSAnalyse)
+| # | Fix |
+|---|-----|
+| A1 | zurueckZuThemen resettet Fach-Filter |
+| A2 | Suchfeld in Mix/Repetition-Zeile rechtsbündig |
+| A3 | "Alle Themen"-Toggle + Sortier in Fach-Filter-Zeile rechtsbündig |
+| A4 | Fach-Sektionen ein-/ausklappbar (localStorage) |
+| A5 | "Für dich empfohlen" + "Aktuelle Themen" amber → violett |
+| A6 | Sub-Tabs linksbündig (analog LP) |
+| A7 | SuSAnalyse: nur freigeschaltete Themen + ausklappbar mit Top-5 schwierigsten Fragen |
+
+### Infrastructure-Patches direkt auf main (notwendig für Staging-Build)
+- `0ba9af3` 404.html: dynamische Base (ExamLab + staging)
+- `5db1c14` CI: Staging-Build installiert packages/shared deps
+
+### Offen (Cluster B/D/E aus Backlog)
+Siehe Backlog-Sektion in Session 107-Block weiter unten.
+
+---
+
 ## Session 107 — Rename Pruefung→ExamLab + Kontenrahmen 2850 + Lernziele einklappen (14.04.2026)
 
 ### Stand
