@@ -6,10 +6,59 @@
 
 ---
 
+## Session 104 — Bundle 8: UX-Harmonisierung (14.04.2026)
+
+### Stand
+Auf `main`. tsc ✅ | 236 Tests ✅ | Build ✅. Browser-Test teilweise im Demo-Modus ✅ — E2E-Test mit echtem Backend + Tab-Gruppe steht aus.
+
+### Erledigte Arbeiten (aus User-Test 14.04.)
+
+| Block | Commit | Inhalt |
+|-------|--------|--------|
+| A+B | `fafa6ab` | **Design-Harmonisierung:** Aktive Tabs grau statt violett (TabBar), primary-Button violett (CTAs "+Neue …"), Filter-Buttons dezent via `.filter-btn` / `.filter-btn-active`-Utility, LP "Durchführen" → "Prüfung starten" + violett, SuS-Startbildschirm violett, Bild-Upload-Dropzone violett (Pflichtfeld). **Wording:** "Einrichtungsprüfung" → "Einführungsprüfung", Folgesatz "Lerne ExamLab kennen" harmonisiert (Prüfung + Übung). |
+| C7 | `d0565a1` | **Übungsthemen deaktivieren:** aktive Themen haben zwei Aktionen (Abschliessen + Deaktivieren), abgeschlossene können ebenfalls deaktiviert werden → zurück auf `nicht_freigeschaltet`. |
+| D12 | `d0565a1` | **LP-Aufträge-Tab gelöscht** — TabBar nur noch Übersicht + Themen. `AdminAuftraege.tsx` entfernt. Store + SuS-Anzeige bleiben (bei Bedarf neu implementieren). |
+| C10 | `2198fdb` | **BerechnungEditor-Layout:** Bezeichnung auf eigene Zeile (volle Breite), darunter 3-Spalten-Grid (Ergebnis / Toleranz / Einheit) mit Mini-Labels. Pro Ergebnis in eigene Card. |
+| A4 | `2198fdb` | **Zeitbedarf-Violett-Fix:** Globale Regel `input[type="number"]:not(:placeholder-shown)` färbte alle ausgefüllten Number-Inputs violett. Regel schliesst jetzt `.input-field`, `.input-field-narrow`, `.no-answer-highlight` aus. |
+| C8 | `d0fde8b` | **Favoriten-Baum:** Labels = Tab-Namen ("Prüfen" / "Üben"), Kinder = Sub-Tabs (Analyse, Übung durchführen, Multi-Monitoring). Parent-Pfad = Default-Sub-Tab, keine doppelten Pfade. |
+
+### Offene Punkte aus dem User-Test (priorisiert)
+
+| # | Thema | Status |
+|---|-------|--------|
+| C9 | Demo-LP Prüfen-Tab "keine Prüfung" + dynamic import error | Im Demo-Modus war die Einführungsprüfung vorhanden — evtl. SW-Cache auf GitHub Pages. **Nach Deploy nochmal testen.** |
+| C11 | LP-Üben "Backend konnte nicht erreicht werden" | Nur mit echtem Backend reproduzierbar. **E2E mit Tab-Gruppe nötig.** |
+| E1 | **FiBu-Buchungssatz inhaltlich** — richtige Antworten werden als falsch gezählt, nötige Konto-Dropdown-Optionen fehlen bei diversen Aufgaben. **Alle bestehenden FiBu-Buchungssatz-Fragen im Sheet auditieren.** Zusätzlich KI-Generierungs-Prompt prüfen. | Eigener Block — braucht Sheet-Zugriff. |
+
+### Dateien (neu / geändert)
+- `Pruefung/src/components/ui/TabBar.tsx` — aktives Tab slate statt violett
+- `Pruefung/src/components/ui/Button.tsx` — primary = violett
+- `Pruefung/src/index.css` — `.filter-btn` / `.filter-btn-active` Utilities, number-input Regel entschärft
+- `Pruefung/src/components/lp/LPStartseite.tsx` — CTA + Filter-Pills
+- `Pruefung/src/components/lp/fragenbank/fragenbrowser/FragenBrowserHeader.tsx` — filter-btn-Utility
+- `Pruefung/src/components/Startbildschirm.tsx` — SuS-CTA violett
+- `Pruefung/src/components/ueben/admin/AdminDashboard.tsx` — Aufträge-Tab weg
+- `Pruefung/src/components/ueben/admin/AdminThemensteuerung.tsx` — Deaktivieren-Button
+- `Pruefung/src/components/ueben/admin/AdminAuftraege.tsx` — **gelöscht**
+- `Pruefung/src/config/appNavigation.ts` — Labels = Tab-Namen
+- `Pruefung/src/data/einrichtungsPruefung.ts` / `einrichtungsUebung.ts` / `demoKorrektur.ts` — Wording
+- `packages/shared/src/editor/typen/BerechnungEditor.tsx` — Layout-Umbau
+- `packages/shared/src/editor/components/BildUpload.tsx` — Dropzone violett
+
+### Kontext für nächste Session (Tab-Gruppe)
+- **Setup:** Tab 1 LP `wr.test@gymhofwil.ch`, Tab 2 SuS `wr.test@stud.gymhofwil.ch`, Kontrollstufe "Locker"
+- **Zu testen nach Deploy:**
+  1. C9 – Demo-LP ohne Login starten, Prüfen-Tab → dynamic import? Einführungsprüfung sichtbar?
+  2. C11 – LP-Üben-Übungen öffnen → Backend-Fehlermeldung reproduzieren (Console + Network)
+  3. Regressions: Übungsthemen deaktivieren/abschliessen (echte Gruppe), Frageneditor alle Fragetypen, Favoriten-Stern auf Baum-Einträgen
+- **Dann E1:** FiBu-Buchungssatz-Audit. Scripts in `Pruefung/scripts/` (diagnose-fibu-fragen.js / repair-fibu-fragen.js sind aus S95 für Musterlösungen). Neue Problematik ist Dropdown-Optionen + Musterlösung-Fehler bei Buchungssatz-Typ.
+
+---
+
 ## Session 103 — Design-Bundle 6+7: Einheitliches Design-System (14.04.2026)
 
 ### Stand
-Auf Branch `feature/design-system`. tsc ✅ | 236 Tests ✅ | Build ✅. Browser-Test ausstehend.
+Auf `main` (Branch `feature/design-system` gemergt in Session 104).
 
 ### Erledigte Arbeiten
 
@@ -261,6 +310,7 @@ Auf `main`. tsc ✅ | 209 Tests ✅ | Build ✅.
 | **4** | Layout-Umbau Durchführen (N15 Tabs+Suche+CTA, N16 Buttons konsistent) | ✅ S101 |
 | **5** | Bildfragen-Editor (N7 violette Pins/Zonen, N19 Bild-Persistenz) | ✅ S102 |
 | **6+7** | Design-Bundle: KI-UI + Design-Konzept (N4 resizable Sidebar, N8 Design-Schliff, N20 KI-Buttons, N21 violette Felder) | ✅ S103 |
+| **8** | UX-Harmonisierung: Design (Tabs/CTAs/Filter), Wording (Einführungsprüfung, Prüfung starten), Bugs (Deaktivieren, Berechnung-Layout, Zeitbedarf-Violett, Favoriten-Baum), D12 Aufträge-Tab weg | ✅ S104 (Teil); C9/C11/E1 offen |
 
 ### Architektur / Features
 
