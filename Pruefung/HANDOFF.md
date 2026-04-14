@@ -6,6 +6,29 @@
 
 ---
 
+## Session 105 — C11 + C9 + Wording-Nacharbeit (14.04.2026)
+
+### Stand
+Auf `main`. tsc ✅ | 236 Tests ✅. E2E-Browser-Test mit echten Logins (LP + SuS Tab-Gruppe) durchgeführt.
+
+### Erledigte Arbeiten
+
+| # | Änderung | Datei |
+|---|----------|-------|
+| C11 | **LP-Üben "Backend konnte nicht erreicht werden":** Timeout 30s→60s (Apps Script Cold-Start kann >30s dauern). Zusätzlich Ref-Guard (`loginGestartetRef`) gegen Doppel-Login-Effect, Retry-Handler setzt Ref zurück. | `services/ueben/apiClient.ts`, `components/lp/UebungsToolView.tsx` |
+| C9 | **Demo-LP Prüfen-Tab:** War SW-Cache. Nach S104-Deploy grün verifiziert — "Einführungsprüfung" lädt korrekt, keine dynamic import errors. Kein Code-Fix. | – |
+| Wording | **demoMonitoring.ts:10** — "Einrichtungsprüfung" → "Einführungsprüfung" (S104 hatte diese Datei übersehen, zeigt sich im Demo-Monitoring). | `data/demoMonitoring.ts` |
+
+### Root Cause C11
+- `apiClient.ts` hatte 30s Timeout. Apps Script Cold-Start > 30s → AbortController abortet → `null` → `loginStatus: 'fehler'` → "Das Backend konnte nicht erreicht werden."
+- Zusätzlich: Login-Effect hatte `loginStatus` in Dep-Array → nach `setLoginStatus('fertig')` triggerte ein Re-Run unter Umständen einen zweiten Login-Call (Logs zeigten 2× "LP-Login starten").
+
+### Offene Punkte
+- **E1 FiBu-Buchungssatz-Audit** — richtige Antworten werden als falsch gezählt, fehlende Dropdown-Optionen bei diversen Aufgaben. Sheet-Daten + KI-Generator-Prompt prüfen. Eigener Block.
+- Nach Deploy nochmal echten LP-Login testen, ob C11 jetzt stabil läuft (auch bei Cold-Start).
+
+---
+
 ## Session 104 — Bundle 8: UX-Harmonisierung (14.04.2026)
 
 ### Stand
