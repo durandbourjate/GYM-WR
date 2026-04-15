@@ -1,5 +1,8 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
+import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
+import { UebenTabLeiste } from './uebung/UebenTabLeiste.tsx'
 import { useFragenbankStore } from '../../store/fragenbankStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
 import { useLPNavigationStore } from '../../store/lpUIStore.ts'
@@ -69,13 +72,37 @@ export default function LPStartseite() {
   const {
     setModus,
     setListenTab,
-    setUebungsTab,
     zurueckZumDashboard,
     navigiereZuComposer,
   } = useLPNavigation()
 
   // UI-State bleibt im Store (Panels, Keys)
   const neuerComposerKey = useLPNavigationStore(s => s.neuerComposerKey)
+
+  // Bundle 13 I: URL-basierte Kurs-Auswahl für Üben-Übungen
+  const navigate = useNavigate()
+  const { kursId: urlKursId } = useParams<{ kursId?: string }>()
+  const gruppen = useUebenGruppenStore(s => s.gruppen)
+  const aktiverKursId = urlKursId
+  const aktiverKurs = useMemo(
+    () => gruppen.find(g => g.id === aktiverKursId),
+    [gruppen, aktiverKursId]
+  )
+
+  // Invaliden Kurs → Redirect auf erste Gruppe
+  useEffect(() => {
+    if (urlKursId && !aktiverKurs && gruppen.length > 0) {
+      navigate(`/uebung/kurs/${gruppen[0].id}`, { replace: true })
+      console.warn(`[Üben] Kurs "${urlKursId}" nicht gefunden, auf ${gruppen[0].id} umgeleitet`)
+    }
+  }, [urlKursId, aktiverKurs, gruppen, navigate])
+
+  // localStorage: letzten Kurs merken
+  useEffect(() => {
+    if (aktiverKursId) {
+      try { localStorage.setItem('examlab-ueben-letzter-kurs', aktiverKursId) } catch { /* */ }
+    }
+  }, [aktiverKursId])
   const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
   const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
   const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
@@ -436,38 +463,20 @@ export default function LPStartseite() {
           {/* Tab-Leiste */}
           <div className="px-6 pt-4">
             <div className="flex items-center justify-between gap-4">
-              <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
-                <button
-                  onClick={() => setUebungsTab('durchfuehren')}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-                    uebungsTab === 'durchfuehren'
-                      ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  Übung durchführen
-                </button>
-                <button
-                  onClick={() => setUebungsTab('uebungen')}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-                    uebungsTab === 'uebungen'
-                      ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  Übungen
-                </button>
-                <button
-                  onClick={() => setUebungsTab('analyse')}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-                    uebungsTab === 'analyse'
-                      ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  Analyse
-                </button>
-              </div>
+              <UebenTabLeiste
+                aktiv={uebungsTab === 'uebungen' ? 'uebungen' : uebungsTab === 'analyse' ? 'analyse' : 'durchfuehren'}
+                aktiverKursId={aktiverKursId}
+                gruppen={gruppen.map(g => ({ id: g.id, name: g.name }))}
+                onDurchfuehren={() => navigate('/uebung/durchfuehren')}
+                onUebungen={() => {
+                  const letzter = (() => { try { return localStorage.getItem('examlab-ueben-letzter-kurs') } catch { return null } })()
+                  const zielId = gruppen.find(g => g.id === letzter)?.id ?? gruppen[0]?.id
+                  if (zielId) navigate(`/uebung/kurs/${zielId}`)
+                  else navigate('/uebung')
+                }}
+                onAnalyse={() => navigate('/uebung/analyse')}
+                onKursWaehle={(kursId) => navigate(`/uebung/kurs/${kursId}`)}
+              />
               <input
                 type="text"
                 placeholder="Suche nach Titel, Klasse oder ID..."
@@ -479,7 +488,7 @@ export default function LPStartseite() {
           </div>
 
           {/* Tab-Content */}
-          {uebungsTab === 'uebungen' && <UebungsToolView onFachKlick={() => setModus('fragensammlung')} />}
+          {uebungsTab === 'uebungen' && <UebungsToolView aktiverKursId={aktiverKursId} onFachKlick={() => setModus('fragensammlung')} />}
 
           {uebungsTab === 'durchfuehren' && (
             <main className="p-6">

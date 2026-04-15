@@ -48,6 +48,8 @@ export function useLPRouteSync(): void {
         store.setUebungsTab('durchfuehren')
       } else if (segment === 'analyse' && store.uebungsTab !== 'analyse') {
         store.setUebungsTab('analyse')
+      } else if (segment === 'kurs') {
+        if (store.uebungsTab !== 'uebungen') store.setUebungsTab('uebungen')
       } else if (!segment || segment === '') {
         if (store.uebungsTab !== 'uebungen') store.setUebungsTab('uebungen')
       }

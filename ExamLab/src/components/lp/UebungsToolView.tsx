@@ -21,13 +21,14 @@ const LP_AUTH_KEY = 'ueben-auth'
  */
 interface UebungsToolViewProps {
   onFachKlick?: () => void
+  /** Aktiver Kurs aus URL (LPStartseite) — synchronisiert Store bei Wechsel */
+  aktiverKursId?: string
 }
 
-export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = {}) {
+export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsToolViewProps = {}) {
   const pruefungUser = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
   const { gruppen, aktiveGruppe, ladeGruppen, waehleGruppe, ladeStatus } = useUebenGruppenStore()
-  const storeMitglieder = useUebenGruppenStore(s => s.mitglieder)
   const [loginStatus, setLoginStatus] = useState<'idle' | 'laden' | 'fertig' | 'fehler'>('idle')
   const loginGestartetRef = useRef(false)
 
@@ -129,6 +130,13 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
     }
   }, [ladeStatus, gruppen, aktiveGruppe, waehleGruppe])
 
+  // Bundle 13 I: Sync aktiverKursId (aus URL) → Store
+  useEffect(() => {
+    if (aktiverKursId && aktiveGruppe?.id !== aktiverKursId) {
+      void waehleGruppe(aktiverKursId)
+    }
+  }, [aktiverKursId, aktiveGruppe, waehleGruppe])
+
   const handleGruppeWaehlen = useCallback((gruppeId: string) => {
     waehleGruppe(gruppeId)
   }, [waehleGruppe])
@@ -203,40 +211,10 @@ export default function UebungsToolView({ onFachKlick }: UebungsToolViewProps = 
     )
   }
 
-  // Mitglieder-Stats aus dem Store (haben Rollen-Info)
-  const lernende = storeMitglieder.filter(m => m.rolle !== 'admin').length
-  const admins = storeMitglieder.filter(m => m.rolle === 'admin').length
-
-  // AdminDashboard mit Gruppen-Kontext
+  // AdminDashboard mit Gruppen-Kontext (Bundle 13 I: Info-Bar entfernt, Kurs via Tab-Leiste)
   return (
     <UebenKontextProvider>
-      <div className="relative">
-        {/* Gruppen-Info-Bar */}
-        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2">
-          <div className="max-w-7xl mx-auto flex items-center gap-3">
-            {gruppen.length > 1 ? (
-              <>
-                <span className="text-sm text-slate-500 dark:text-slate-400">Gruppe:</span>
-                <select
-                  value={aktiveGruppe.id}
-                  onChange={e => handleGruppeWaehlen(e.target.value)}
-                  className="text-sm px-2 py-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md dark:text-slate-200 font-medium"
-                >
-                  {gruppen.map(g => (
-                    <option key={g.id} value={g.id}>{g.name}</option>
-                  ))}
-                </select>
-              </>
-            ) : (
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{aktiveGruppe.name}</span>
-            )}
-            <span className="text-sm text-slate-400 dark:text-slate-500">
-              {lernende} Lernende · {admins} Admin{admins !== 1 ? 's' : ''}
-            </span>
-          </div>
-        </div>
-        <AdminDashboard onFachKlick={onFachKlick} />
-      </div>
+      <AdminDashboard onFachKlick={onFachKlick} />
     </UebenKontextProvider>
   )
 }
