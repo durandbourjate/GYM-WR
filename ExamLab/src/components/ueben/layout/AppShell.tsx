@@ -254,6 +254,10 @@ export default function AppShell({ children, onExamLabHome, onModusWechsel }: Pr
 function ermittleScreen(pathname: string): string {
   if (pathname.startsWith('/sus/admin')) return 'admin'
   if (pathname.startsWith('/sus/ueben/ergebnis')) return 'ergebnis'
+  // Neue Header-L2-Routen: bleiben im Dashboard (Body-Tab wechselt via Dashboard.tsx useEffect)
+  if (pathname.startsWith('/sus/ueben/fortschritt')) return 'dashboard'
+  if (pathname.startsWith('/sus/ueben/ergebnisse')) return 'dashboard'
+  if (pathname.startsWith('/sus/ueben/kurs/')) return 'dashboard'
   if (pathname.match(/^\/sus\/ueben\/[^/]+/)) return 'uebung'
   if (pathname.startsWith('/sus/ueben')) return 'dashboard'
   if (pathname.startsWith('/sus/gruppen')) return 'gruppenAuswahl'
