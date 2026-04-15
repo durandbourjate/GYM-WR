@@ -142,6 +142,10 @@ export function AppRouter() {
         <Route path="/sus/korrektur/:pruefungId" element={<SuSGuard><SuSFlow /></SuSGuard>} />
         <Route path="/sus/admin" element={<SuSGuard><SuSFlow /></SuSGuard>} />
         <Route path="/sus/gruppen" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben/fortschritt" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben/ergebnisse" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben/kurs/:kursId" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/pruefen/ergebnisse" element={<SuSGuard><SuSFlow /></SuSGuard>} />
 
         {/* Catch-all → Root-Redirect */}
         <Route path="*" element={<RootRedirect />} />
