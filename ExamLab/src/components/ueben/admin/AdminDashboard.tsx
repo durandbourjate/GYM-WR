@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { TabBar } from '../../ui/TabBar'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
-import AdminUebersicht from './AdminUebersicht'
 import AdminKindDetail from './AdminKindDetail'
 import AdminThemaDetail from './AdminThemaDetail'
 import AdminThemensteuerung from './AdminThemensteuerung'
 // AdminAuftraege entfernt (Bundle 8) — Aufträge werden in LearningView verwaltet.
-// Store bleibt bestehen für SuS-Anzeige im Dashboard.
+// AdminUebersicht entfernt (Bundle 13 I) — Inhalt verschoben in Einstellungen→Mitglieder.
 // AdminFragenbank entfernt — Fragenbank ist über LPHeader erreichbar
 
 interface AdminDashboardProps {
@@ -15,24 +13,23 @@ interface AdminDashboardProps {
 }
 
 type AdminAnsicht =
-  | { typ: 'uebersicht' }
-  | { typ: 'themensteuerung' }
+  | { typ: 'haupt' }  // Bundle 13 I: uebersicht + themensteuerung konsolidiert → Themensteuerung direkt
   | { typ: 'kind'; email: string; name: string }
   | { typ: 'thema'; email: string; name: string; fach: string; thema: string }
 
-export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: AdminDashboardProps) {
+export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick: _onFachKlick }: AdminDashboardProps) {
   const { aktiveGruppe } = useUebenGruppenStore()
-  const [ansicht, setAnsicht] = useState<AdminAnsicht>({ typ: 'uebersicht' })
+  const [ansicht, setAnsicht] = useState<AdminAnsicht>({ typ: 'haupt' })
 
   const zurueck = () => {
     if (ansicht.typ === 'thema') {
       setAnsicht({ typ: 'kind', email: ansicht.email, name: ansicht.name })
     } else {
-      setAnsicht({ typ: 'uebersicht' })
+      setAnsicht({ typ: 'haupt' })
     }
   }
 
-  const istHauptTab = ansicht.typ === 'uebersicht' || ansicht.typ === 'themensteuerung'
+  const istHauptTab = ansicht.typ === 'haupt'
 
   return (
     <div>
@@ -51,30 +48,8 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
         </div>
       )}
 
-      {/* Tab-Leiste */}
-      {istHauptTab && (
-        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-          <div className="max-w-7xl mx-auto px-6 py-2">
-            <TabBar
-              tabs={[
-                { id: 'uebersicht', label: 'Übersicht' },
-                { id: 'themensteuerung', label: 'Themen' },
-              ]}
-              activeTab={ansicht.typ}
-              onTabChange={(id) => setAnsicht({ typ: id as 'uebersicht' | 'themensteuerung' })}
-              size="md"
-            />
-          </div>
-        </div>
-      )}
-
       <main className="max-w-7xl mx-auto p-6">
-        {ansicht.typ === 'uebersicht' && (
-          <AdminUebersicht
-            onKindKlick={(email, name) => setAnsicht({ typ: 'kind', email, name })}
-            onFachKlick={onFachKlick ? () => onFachKlick() : undefined}
-          />
-        )}
+        {ansicht.typ === 'haupt' && <AdminThemensteuerung />}
         {ansicht.typ === 'kind' && (
           <AdminKindDetail
             gruppeId={aktiveGruppe?.id || ''}
@@ -83,7 +58,6 @@ export default function AdminDashboard({ onZuUeben: _onZuUeben, onFachKlick }: A
             onThemaKlick={(fach, thema) => setAnsicht({ typ: 'thema', email: ansicht.email, name: ansicht.name, fach, thema })}
           />
         )}
-        {ansicht.typ === 'themensteuerung' && <AdminThemensteuerung />}
         {ansicht.typ === 'thema' && (
           <AdminThemaDetail
             email={ansicht.email}
