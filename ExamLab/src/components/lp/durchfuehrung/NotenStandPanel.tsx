@@ -41,7 +41,7 @@ export default function NotenStandPanel({ notenStand }: Props) {
           <thead>
             <tr className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700">
               <th className="pb-2 pr-4">Kurs</th>
-              <th className="pb-2 pr-4">Semester</th>
+              <th className="pb-2 pr-4">Zeitpunkt</th>
               <th className="pb-2 pr-4 text-right">Vorhanden</th>
               <th className="pb-2 pr-4 text-right">Nötig</th>
               <th className="pb-2 text-center">Status</th>

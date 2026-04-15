@@ -86,7 +86,7 @@ export default function ConfigTab({ pruefung, updatePruefung, toggleFachbereich,
             </select>
           </Field>
 
-          <Field label="Semester">
+          <Field label="Zeitpunkt">
             <select
               value={pruefung.semester}
               onChange={(e) => updatePruefung({ semester: e.target.value })}

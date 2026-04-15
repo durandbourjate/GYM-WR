@@ -15,6 +15,7 @@ import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
+import { generateZeitpunkte, zeitpunktModellAusConfig } from '../../../utils/zeitpunktUtils.ts'
 import type { Frage } from '../../../types/fragen.ts'
 import type { Frage as SharedFrage } from '@shared/types/fragen'
 import type { FragenPerformance } from '../../../types/tracker.ts'
@@ -48,10 +49,11 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
   useEffect(() => { setKontenrahmenData(kontenrahmenDaten) }, [])
 
   // EditorProvider Config + Services
+  // Zeitpunkte (Bundle 12 K-4): Modus+Anzahl aus SchulConfig, Fallback auf Legacy-semesterModell
   const semesterListe = useMemo(() => {
-    const n = schulConfig.semesterModell.regel.anzahl
-    return Array.from({ length: n }, (_, i) => `S${i + 1}`)
-  }, [schulConfig.semesterModell.regel.anzahl])
+    const modell = zeitpunktModellAusConfig(schulConfig, 'regel')
+    return generateZeitpunkte(modell)
+  }, [schulConfig])
 
   const editorConfig: EditorConfig = useMemo(() => ({
     benutzer: {
