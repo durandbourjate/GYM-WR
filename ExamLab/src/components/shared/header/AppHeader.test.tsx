@@ -1,7 +1,20 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { AppHeader } from './AppHeader'
+
+beforeAll(() => {
+  window.matchMedia = vi.fn().mockImplementation((q: string) => ({
+    matches: q === '(min-width: 900px)' || q === '(min-width: 600px)',
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    media: q,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }))
+})
 
 describe('AppHeader', () => {
   const baseProps = {

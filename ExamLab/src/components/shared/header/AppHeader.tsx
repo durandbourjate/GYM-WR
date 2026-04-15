@@ -5,6 +5,7 @@ import { OptionenMenu } from './OptionenMenu'
 import type { Rolle, TabKaskadeConfig } from './types'
 import type { SucheErgebnis } from '../../../hooks/useGlobalSuche.shared'
 import { APP_VERSION } from '../../../version'
+import { useViewport } from '../../../hooks/useViewport'
 
 interface Props {
   rolle: Rolle
@@ -23,6 +24,7 @@ interface Props {
 
 export function AppHeader(props: Props) {
   const navigate = useNavigate()
+  const tier = useViewport()
   return (
     <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 sticky top-0 z-[60]">
       <div className="flex items-center justify-between gap-3">
@@ -34,7 +36,7 @@ export function AppHeader(props: Props) {
           >
             ExamLab
           </button>
-          <span className="text-[10px] text-slate-400">{APP_VERSION}</span>
+          {tier === 'desktop' && <span className="text-[10px] text-slate-400">{APP_VERSION}</span>}
         </div>
         <TabKaskade config={props.kaskadeConfig} />
         <div className="flex items-center gap-2 flex-shrink-0">
