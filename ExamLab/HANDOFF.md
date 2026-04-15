@@ -6,6 +6,74 @@
 
 ---
 
+## Session 113 — Bundle 12 + Deep-Link-Fix + Bundle 13 Plan (15.04.2026)
+
+### Stand
+**Noch nicht auf main gemergt.** Alles auf `origin/preview` (Staging) gepusht, wartet auf User-Freigabe.
+tsc ✅ | 246 Tests ✅ | Build ✅ | Browser-Tests in Chrome-in-Chrome durchgeführt.
+
+### Erledigte Arbeiten (auf preview)
+
+**Bundle 12 — Cluster K (Namens-Refactor + Frageneditor-UX + Einstellungen)**
+- **K-1 Namens-Refactor (user-sichtbar):** "Fachbereich" → "Fach" in FragenImport, SuSHilfePanel, HilfeSeite, excelImport, FragetextSection-Tooltip. "Lernziele aus der Fragenbank" → "Fragensammlung" (LernzielWaehler). Code-intern Rename (Types/Stores/Files) bewusst **NICHT** durchgeführt (User-Entscheid: eigene Session, Risikoeindämmung).
+- **K-1 Cleanup-Script:** `ExamLab/scripts/clean-themen-praefix.mjs` — entfernt "Übungspool: "-Präfix aus thema/unterthema aller Fragen via Apps-Script-API. Dry-Run Default, `--apply` zum Schreiben. **User-Aufgabe:** Einmalig lokal ausführen.
+- **K-2 Frageneditor-UX (Teilmenge):** MetadataSection — Fach als Pflichtfeld (`input-pflicht`, Stern), Thema violett, Label "Fachbereich" → "Fach", KI-Klassifizieren-Button blau wenn aktiv. KI-Klassifizieren-Vorschau + Tooltip: "Fachbereich" → "Fach".
+- **K-2 Header "Geteilt mit":** Neuer `berechtigungenHeaderSlot` in SharedFragenEditor. Kompakte Status-Badge in Editor-Kopfzeile ("Geteilt: Privat" / "Fachschaft" / "Schulweit" / "Privat + geteilt · N LP"). Voller BerechtigungenEditor bleibt im Metadaten-Body.
+- **K-2 Thema-Dropdown (Lernziele):** LernzielWaehler "Neu erstellen"-Block — Thema als Dropdown mit bestehenden Themen pro Fach + "+ Neues Thema …"-Fallback. Label "Fachbereich" → "Fach". Fach-Wechsel leert Thema.
+- **K-3 Gefässe konfigurierbar:** Einstellungen → Admin → Gefässe jetzt als Chip-Editor (analog Fächer/Fachschaften). `+ Gefäss`-Inline-Editor mit Duplikat-Schutz.
+- **K-4 Zeitpunkt-Grundlagen:** `SchulConfig.zeitpunktModell` (Modus `schuljahr|semester|quartal` + Anzahl) optional mit Fallback auf legacy `semesterModell`. Utility `zeitpunktUtils.ts`. UI-Label "Semester" → "Zeitpunkt" (MetadataSection, ConfigTab, NotenStandPanel).
+
+**Deep-Link SuS-Flow Fix (aus S111 Backlog)**
+- `Router.tsx`: LPGuard ergänzt `returnTo=currentUrl`-Param beim Login-Redirect. Neuer **SuSGuard** für alle SuS-Routes (war vorher ohne Guard — App.tsx rendered LoginScreen inline ohne returnTo-Weitergabe).
+- Verifiziert: `/sus/ueben?fach=BWL&thema=Einführung` ohne Login → Redirect mit returnTo → nach Demo-SuS-Login zurück mit intaktem Query-String → `useDeepLinkAktivierung` aktiviert Thema.
+
+**Weitere Fixes**
+- **Dark-Mode `.filter-btn`:** Basis-BG `bg-white dark:bg-slate-800` — inaktive Filter-Buttons im Dark Mode nicht mehr "unsichtbar" im Parent-Hintergrund.
+
+**Bundle 13 — Cluster I Planung**
+- Design-Spec `ExamLab/docs/superpowers/specs/2026-04-15-bundle13-cluster-i-design.md`
+- Implementation-Plan `ExamLab/docs/superpowers/plans/2026-04-15-bundle13-cluster-i.md` (8 Tasks)
+- Branch: `feature/bundle13-cluster-i` (separat, nicht in preview gemerged)
+- **Bereit zur Implementation in neuer Session** (empfehlung: superpowers:executing-plans skill mit subagent-driven-development)
+
+### Parkiert im Backlog (eigene Sessions)
+
+- **Code-intern Rename** (Types/Stores/Files): User-Entscheid Bundle 12.
+- **K-2 Defaults leer** (nullable Types `fachbereich?`, `bloom?`, `zeitbedarf?`): braucht Type-Refactor, viele Call-Sites.
+- **K-2 Header-Umbau "Geteilt mit" voll:** aktuell nur Status-Badge. Popover mit Inline-Edit wäre eigene Session.
+- **K-4 Admin-Editor Zeitpunkt-Modell:** braucht Backend-Persistenz (SchulConfig aktuell nur Defaults).
+
+### Commits (chronologisch auf preview)
+- `f45de0a` Bundle 12 K-1 + K-2 Teilmenge
+- `b474663` K-3 Gefässe Chip-Editor (gemerged)
+- `be3867a` K-4 Zeitpunkt-Grundlagen (gemerged)
+- `ce81df2` Deep-Link SuS-Flow Fix
+- `fb62007` Merge Deep-Link Fix
+- `aa5b6b6` Dark-Mode .filter-btn
+- `a632155` K-2 Header Geteilt-mit Badge
+- `f65759e` K-2 Thema-Dropdown Lernziele
+- `cffe9d3` Merge Dark-Mode + K-2 Teilergebnisse
+- `5d52fa8` Tooltip-Rest Fachbereich→Fach
+
+### User-Aufgaben
+
+1. **Staging testen** (preview-Branch, GitHub Pages `/staging/` Ordner nach Build):
+   - Fragensammlung: "Fach" statt "Fachbereich" in Filtern + Editor
+   - Frage öffnen: violetter Rahmen bei Fach/Thema, KI-Button blau, "Geteilt: X" Badge
+   - Dark Mode: Filter-Buttons sichtbar
+   - Einstellungen → Admin → Gefässe-Chip-Editor (nur für Admin-User sichtbar)
+   - Einstellungen → Übungen → Fächer: Label "Zeitpunkt" statt "Semester"
+   - Deep-Link: als SuS `/sus/ueben?fach=BWL&thema=X` öffnen ohne Login → Login → Query-String bleibt
+2. **Altdaten bereinigen (optional):**
+   ```
+   cd ExamLab
+   node scripts/clean-themen-praefix.mjs          # Dry-Run
+   node scripts/clean-themen-praefix.mjs --apply  # Schreibt
+   ```
+3. **Bei Freigabe:** Merge `preview` → `main` + push
+
+---
+
 ## Session 112 — Ueben-Settings-Persistenz + Begriffs-Klärung + UX-Wünsche (15.04.2026)
 
 ### Stand
