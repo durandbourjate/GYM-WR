@@ -6,6 +6,23 @@
 
 ---
 
+## 🚨 HOCHPRIORITÄT — Offener Blocker-Bug (Stand: 15.04.2026)
+
+**Prüfungen und Übungen können nicht durchgeführt und bearbeitet werden.**
+
+- "Prüfung starten" und "Übung starten"-Buttons auf den Karten funktionieren nicht
+- Ursache: Wahrscheinlich X-Frame-Options / CSP-Problem (Console zeigt Warning)
+- Betroffen: LP-Seite (Prüfung starten) + SuS-Seite (Übung starten)
+- Existiert bereits vor dem Kopfzeilen-Refactor (kein Regressionsbug aus S114)
+- **MUSS als erstes in der nächsten Session untersucht und behoben werden** — blockiert den produktiven Einsatz der Plattform
+
+**Vorgehen nächste Session:**
+1. Systematisches Debugging (Chrome DevTools: Console + Network) — Was passiert beim Klick?
+2. Ist es ein Routing-Problem, ein State-Problem oder ein iframe/CSP-Problem?
+3. Fix auf Feature-Branch, Browser-Test, dann merge
+
+---
+
 ## Session 114 — Kopfzeilen-Refactor Phase 1-3 (15.04.2026)
 
 ### Stand
