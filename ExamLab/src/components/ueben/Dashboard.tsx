@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -97,6 +98,19 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     try { localStorage.setItem('examlab-ueben-sortierung', neu) } catch { /* ignorieren */ }
   }
   const [dashboardTab, setDashboardTab] = useState<'themen' | 'fortschritt' | 'ergebnisse'>('themen')
+  const location = useLocation()
+
+  // Sync dashboardTab mit URL wenn neuer Header aktiv
+  useEffect(() => {
+    if (import.meta.env.VITE_ENABLE_NEW_HEADER !== '1') return
+    const p = location.pathname
+    if (p.includes('/fortschritt') && dashboardTab !== 'fortschritt') setDashboardTab('fortschritt')
+    else if (p.includes('/ergebnisse') && dashboardTab !== 'ergebnisse') setDashboardTab('ergebnisse')
+    else if (p === '/sus/ueben' || p === '/sus/ueben/' || p.startsWith('/sus/ueben/kurs/')) {
+      if (dashboardTab !== 'themen') setDashboardTab('themen')
+    }
+  }, [location.pathname, dashboardTab])
+
   const [lzMiniModal, setLzMiniModal] = useState<{ fach: string; thema: string } | null>(null)
 
   // Navigation: Fachbereich → Thema → Filter → Übung starten
@@ -394,6 +408,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
         <h2 className="text-xl font-bold dark:text-white mb-3">
           Hallo {user?.vorname || 'dort'}!
         </h2>
+        {import.meta.env.VITE_ENABLE_NEW_HEADER !== '1' && (
         <div className="flex items-center mb-4">
           {/* Tab-Wechsel: Themen | Mein Fortschritt — linksbündig analog LP */}
           <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
@@ -429,6 +444,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
             </button>
           </div>
         </div>
+        )}
 
         {dashboardTab === 'ergebnisse' ? (
           <UebungsEinsicht />
