@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { migrateHashBookmarks } from './hashMigration'
 import { lazy, Suspense } from 'react'
@@ -33,15 +33,33 @@ function RootRedirect() {
 
 /**
  * LP-Guard: Prüft ob eingeloggt und LP-Rolle. Sonst Redirect.
+ * Bei fehlendem Login: returnTo=currentUrl mitgeben, damit Deep-Link nach
+ * Anmeldung wiederhergestellt wird (Fix Bundle 12, 15.04.2026).
  */
 function LPGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore(s => s.user)
+  const location = useLocation()
   if (!user) {
-    // returnTo für Deep Links wird in LoginScreen gelesen
-    return <Navigate to="/login" replace />
+    const returnTo = location.pathname + location.search
+    return <Navigate to={`/login?returnTo=${encodeURIComponent(returnTo)}`} replace />
   }
   if (user.rolle !== 'lp') {
     return <Navigate to="/sus" replace />
+  }
+  return <>{children}</>
+}
+
+/**
+ * SuS-Guard: Schützt SuS-Routes. Bei fehlendem Login: returnTo mitgeben
+ * (Deep-Link-Erhalt). Rolle wird nicht strikt geprüft, weil App.tsx
+ * selbst LP-Umleitung macht (siehe `user.rolle === 'lp'` Branch dort).
+ */
+function SuSGuard({ children }: { children: React.ReactNode }) {
+  const user = useAuthStore(s => s.user)
+  const location = useLocation()
+  if (!user) {
+    const returnTo = location.pathname + location.search
+    return <Navigate to={`/login?returnTo=${encodeURIComponent(returnTo)}`} replace />
   }
   return <>{children}</>
 }
@@ -111,16 +129,18 @@ export function AppRouter() {
         <Route path="/einstellungen" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/einstellungen/:tab" element={<LPGuard><LPFlow /></LPGuard>} />
 
-        {/* SuS-Bereich: Spezifische Routes für Deep Links + Browser-History */}
-        <Route path="/sus" element={<SuSFlow />} />
-        <Route path="/sus/ueben" element={<SuSFlow />} />
-        <Route path="/sus/ueben/ergebnis" element={<SuSFlow />} />
-        <Route path="/sus/ueben/:themaId" element={<SuSFlow />} />
-        <Route path="/sus/pruefen" element={<SuSFlow />} />
-        <Route path="/sus/pruefung" element={<SuSFlow />} />
-        <Route path="/sus/korrektur/:pruefungId" element={<SuSFlow />} />
-        <Route path="/sus/admin" element={<SuSFlow />} />
-        <Route path="/sus/gruppen" element={<SuSFlow />} />
+        {/* SuS-Bereich: Spezifische Routes für Deep Links + Browser-History.
+            SuSGuard leitet bei fehlendem Login auf /login?returnTo=... um,
+            damit gepastete Deep-Links nach Anmeldung erhalten bleiben. */}
+        <Route path="/sus" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben/ergebnis" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/ueben/:themaId" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/pruefen" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/pruefung" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/korrektur/:pruefungId" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/admin" element={<SuSGuard><SuSFlow /></SuSGuard>} />
+        <Route path="/sus/gruppen" element={<SuSGuard><SuSFlow /></SuSGuard>} />
 
         {/* Catch-all → Root-Redirect */}
         <Route path="*" element={<RootRedirect />} />
