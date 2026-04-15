@@ -11,7 +11,7 @@
 
 Heutige Kopfzeile:
 - 4 Haupt-Tabs (Favoriten/Prüfen/Üben/Fragensammlung) im `LPHeader`
-- Rechts 6 einzelne Buttons: Fragensammlung, Einstellungen, Hilfe, Feedback-Icon, ThemeToggle, Abmelden — unübersichtlich
+- Rechts 5 individuelle Header-Buttons (Einstellungen, Hilfe, Feedback-Icon, ThemeToggle, Abmelden) plus einen konditionalen Fragensammlung-Button — unübersichtlich
 - Bundle 13 Cluster I hat für LP-Üben bereits eine zweite Tab-Ebene (Durchführen / Übungen / Analyse) plus Kurs-Tabs eingeführt. Die anderen Bereiche (Prüfen, Fragensammlung, SuS) haben dieses Muster nicht — inkonsistent.
 - SuS haben keinen einheitlichen Header (wird ad hoc pro Seite gerendert). Design weicht vom LP-Design ab (Hover, Buttons, Tabs).
 - Keine globale Suche.
@@ -36,6 +36,8 @@ Drei Ebenen:
                      ↑ L2+L3 klebt inline am aktiven L1, restliche L1 bleiben rechts sichtbar
 ```
 
+**L1-Reihenfolge ist fix** (Favoriten · Prüfen · Üben · Fragensammlung). Bei L1-Wechsel verschieben sich die nicht-aktiven L1 horizontal, weil die L2-Gruppe inline eingefügt wird. Der Trade-off (Fitts-Law: Fragensammlung wandert) ist bewusst akzeptiert, weil L1-Wechsel seltener passieren als L2-Nutzung und der Kontext-Bezug zwischen aktivem L1 und seinen L2-Tabs visuell wichtiger ist. Bei Overflow: horizontales Scrollen der Tab-Leiste; Suche und ⋮ bleiben sticky rechts.
+
 ### 2.2 Visuelle Hierarchie
 
 - **L1-Tabs:** 13 px, padding 5px/11px, aktiv = violetter Unterstrich + violetter Hintergrund (`bg-violet-50`).
@@ -50,7 +52,7 @@ Drei Ebenen:
 | LP | Prüfen | Durchführen, Analyse | Aktive Prüfung(en) — MultiSelect, nur bei `Durchführen`. Analyse: Prüfung als Dropdown, SingleSelect. |
 | LP | Üben | Durchführen, Übungen, Analyse | Kurs — SingleSelect, bei `Übungen` und `Analyse`. Bei `Durchführen`: aktive Übung (SingleSelect). |
 | LP | Fragensammlung | — | — |
-| SuS | Prüfen | Offen, Ergebnisse | — (bei `Offen`: ausgewählte Prüfung inline; bei `Ergebnisse`: eventuell Prüfung-Dropdown) |
+| SuS | Prüfen | Offen, Ergebnisse | — (kein L3). Auswahl einer Prüfung navigiert in Detail-View, kein Tab-Zustand. |
 | SuS | Üben | Themen, Fortschritt, Ergebnisse | Kurs — SingleSelect, bei `Themen`. Bei `Fortschritt/Ergebnisse` kein L3 nötig. |
 
 ### 2.4 Wording
@@ -64,7 +66,8 @@ Drei Ebenen:
 - **Kein L3 sichtbar, wenn nichts gewählt.** Keine Placeholder-Dropdowns.
 - **Auswahl passiert primär im Hauptbildschirm** (Klick auf Prüfung/Kurs-Karte). Das setzt die L3-Selektion automatisch und blendet das Dropdown ein.
 - **Dropdown** dient zum Wechseln und Schliessen aktiver Selektionen (bei MultiSelect: Checkbox pro Item).
-- **MultiSelect** (Prüfen · Durchführen): Eine Prüfung ist "primär" (im Hauptbereich sichtbar), weitere laufen im Hintergrund (Live-Monitoring-Aggregation). Trigger zeigt Name der primären + "+N"-Pill.
+- **MultiSelect** (Prüfen · Durchführen): Eine Prüfung ist "primär" (im Hauptbereich sichtbar), weitere laufen im Hintergrund (Live-Monitoring-Aggregation). Trigger zeigt Name der primären + "+N"-Pill. Trigger-Label wird auf 40 Zeichen begrenzt, danach Ellipsis. "+N"-Pill zählt die nicht-primären aktiven Prüfungen.
+  - **Uncheck der primären:** Die nächste aktive (nach Index) wird primär. Sind keine weiteren aktiv: zurück zum Leer-State (kein L3 sichtbar), Hauptbereich zeigt Prüfungs-Liste.
 - **SingleSelect** (alle anderen): Ein aktiver Item, Wechsel ersetzt ihn.
 
 ### 2.6 Favoriten
@@ -84,8 +87,20 @@ Favoriten hat kein L2/L3 (ist eine flache Liste). Klick auf ein Favoriten-Item n
 
 ### 3.2 Scope pro Rolle
 
-- **LP-Suche:** Vollständiger LP-Datenraum (alle eigenen Prüfungen, alle Fragen der Fragensammlung, alle Pools, alle Kurse).
-- **SuS-Suche:** Nur SuS-relevante Daten — eigene Kurse, dort verfügbare Themen, eigene Prüfungs-Historie (nicht freigegebene Prüfungen oder Lösungen ausgeschlossen).
+**Architektur:** Zwei separate Hooks, nicht ein Hook mit Rollen-Flag. Dies verhindert, dass ein vergessener Guard zu Datenleck zwischen Rollen führt.
+
+- **`useGlobalSucheLP()`** — Liest ausschliesslich aus LP-Stores. Vollständiger LP-Datenraum (alle eigenen Prüfungen, alle Fragen der Fragensammlung, alle Pools, alle Kurse).
+- **`useGlobalSucheSuS()`** — Liest ausschliesslich aus SuS-Stores. Nur SuS-relevante Daten: eigene Kurse, dort verfügbare (freigegebene) Themen, eigene Prüfungs-Historie mit Freigabe-Status.
+
+**Indexierungs-Blacklist (beide Hooks):** Folgende Felder werden NIE in den Suchindex geschrieben — weder bei LP noch bei SuS:
+
+- `musterlosung`, `korrekt`, `korrekteAntworten`, `bewertungsraster`, `toleranz`, `hinweis`
+
+**Zusätzliche SuS-Guards (`useGlobalSucheSuS`):**
+
+- Nur Prüfungen mit Status `freigegeben` oder `zurueckgegeben` werden indexiert (auch Metadaten wie Titel). Entwürfe, Live-Prüfungen vor Freigabe, zurückgerufene Prüfungen werden ausgeschlossen.
+- Nur Themen/Kurse, in denen der SuS Mitglied ist.
+- Explizite vitest-Tests, die versuchen, aus SuS-Suche auf LP-exclusive Felder zuzugreifen. Erwartet: leerer Treffer.
 
 ### 3.3 Ergebnis-Gruppen (in dieser Reihenfolge)
 
@@ -94,7 +109,7 @@ Favoriten hat kein L2/L3 (ist eine flache Liste). Klick auf ein Favoriten-Item n
 3. **Prüfungen**
 4. **Themen / Kurse**
 
-Max 5 Items pro Gruppe, "Alle N anzeigen …" am Ende jeder Gruppe.
+Max 5 Items pro Gruppe. Wenn mehr vorhanden: Zeile "N weitere Treffer — Filter verfeinern" (nicht klickbar, kein eigener Suchergebnis-Screen in diesem Refactor).
 
 ### 3.4 Layout
 
@@ -109,11 +124,13 @@ Max 5 Items pro Gruppe, "Alle N anzeigen …" am Ende jeder Gruppe.
 ### 4.1 Inhalt (LP)
 
 1. **Benutzer** — Name + Rollenbadge (nicht klickbar, nur Info)
-2. Einstellungen `⌘,`
+2. Einstellungen
 3. Dark Mode (Toggle)
-4. Hilfe & Anleitungen `⌘?`
+4. Hilfe & Anleitungen `⌘/` (plattformneutral, nicht von macOS/Safari belegt; auf Windows/Linux `Ctrl+/`)
 5. Feedback senden
 6. Abmelden (rote Variante)
+
+**Tastatur-Shortcuts:** Nur `⌘K` (Suche) und `⌘/` (Hilfe) werden unterstützt. Shortcuts werden mit `event.preventDefault()` abgefangen und plattformadaptiv angezeigt (`⌘` auf macOS, `Ctrl` sonst). Kein `⌘,` (Safari-Konflikt), kein `⌘?` (Shift-Abhängigkeit uneinheitlich über Layouts).
 
 ### 4.2 Inhalt (SuS)
 
@@ -143,9 +160,11 @@ Zweizeilig:
 
 ### 5.3 < 600 px (Phone Portrait)
 
-- **Zeile 1:** Brand · L1-Dropdown (aktiver Name) · `⌕`-Icon (öffnet Such-Modal) · ⋮
+- **Zeile 1:** Brand · L1-Dropdown (zeigt aktiven L1-Namen, Klick öffnet Liste aller L1) · `⌕`-Icon (öffnet Such-Modal) · ⋮
 - **Zeile 2:** L2 als scrollbarer Chip-Row + L3-Dropdown inline
-- Deep-Links zu SuS-Übungen (`/sus/ueben?fach=X`) müssen auf Phone funktionieren.
+- L1-Dropdown enthält L1-Items flach ohne Nesting; L2/L3 werden erst nach L1-Auswahl in Zeile 2 aktualisiert
+- Break-Points via `matchMedia` mit `throttle 150ms`, um Flicker bei Rotation zu vermeiden
+- Deep-Links zu SuS-Übungen (`/sus/ueben?fach=X`) müssen auf Phone funktionieren
 
 ---
 
@@ -170,6 +189,7 @@ Zweizeilig:
 - `LPHeader.tsx` — wird `AppHeader` mit Rolle `lp`. Bestehende Props (titel, zurueck, aktionsButtons, breadcrumbs) bleiben kompatibel, aktiviert über `mode="detail"` vs. `mode="dashboard"`.
 - `ThemeToggle.tsx` — verliert eigene Platzierung, wird vom `OptionenMenu` intern verwendet.
 - `FeedbackButton.tsx` — wird vom `OptionenMenu` verwendet, kein separates Icon mehr in der Header-Leiste.
+- `UebenTabLeiste.tsx` (Bundle 13 S113, inkl. 5 vitest-Tests) — Funktionalität wird in `TabKaskade` absorbiert. Datei wird gelöscht, Tests auf `TabKaskade.test.tsx` migriert (gleiche Szenarien: Kurs-Tabs-Rendering, Click-Navigation, localStorage).
 - SuS-Seiten (z.B. `SuSStartseite.tsx`, `KorrekturListe.tsx`, `KorrekturEinsicht.tsx`) — inline-Header-Code wird entfernt, `AppHeader rolle="sus"` eingefügt.
 
 ### 6.4 Tab-Config-Schema (TypeScript)
@@ -235,8 +255,13 @@ interface TabKaskadeConfig {
 ## 8 — Datenfluss & State
 
 - **Tab-Selektion:** URL ist Source of Truth. `useTabKaskadeConfig` leitet Aktiv-Status aus URL ab.
-- **L3-Selektion:** URL-Parameter (z.B. `/uebung/kurs/:kursId`) + localStorage-Fallback (`examlab-ueben-letzter-kurs`).
+- **L3-Selektion — Precedence:**
+  1. URL-Parameter (z.B. `/uebung/kurs/:kursId`) gewinnt immer
+  2. Wenn URL keinen L3-Parameter hat, wird `localStorage` (z.B. `examlab-ueben-letzter-kurs`) gelesen und die URL entsprechend ergänzt (`navigate(..., { replace: true })`)
+  3. Wenn weder URL noch localStorage einen Wert hat: L3 nicht sichtbar, User wählt im Hauptbildschirm
+  4. localStorage wird nur geschrieben, wenn der Benutzer aktiv eine Auswahl trifft (nicht bei Redirects)
 - **Suche:** Client-seitig, indexiert aus vorhandenen Stores. Kein Backend-Call für Suche.
+- **Store-Ladestatus:** `useGlobalSucheLP`/`useGlobalSucheSuS` geben `{ treffer, istLadend, fehler }` zurück. Bei `istLadend` zeigt das Ergebnis-Panel "Lade Daten …" statt Leer-Treffer, um "nichts gefunden" nicht fälschlich anzuzeigen, während Stores noch laden.
 - **⋮-Menü:** Lokaler UI-State (offen/zu), keine Persistenz.
 
 ---
@@ -292,12 +317,22 @@ Wir können `AppHeader` hinter einem `ENABLE_NEW_HEADER`-Flag aktivieren, damit 
 
 ---
 
+## 10.4 — Accessibility (ARIA)
+
+- **Tab-Kaskade:** L1-Container hat `role="tablist"`, L1-Tabs haben `role="tab"` und `aria-selected`. L2 analog als zweites nested tablist mit `aria-label="Ansichten für {L1-Name}"`. Panels haben `role="tabpanel"` mit `aria-labelledby` auf den aktiven Tab.
+- **L3-Dropdown:** `role="combobox"` mit `aria-haspopup="listbox"` und `aria-expanded`. Panel `role="listbox"`, Items `role="option"` mit `aria-selected`.
+- **Suche:** Input `role="searchbox"` mit `aria-label="ExamLab durchsuchen"`. Ergebnis-Panel `role="listbox"`, Items `role="option"`, Gruppen-Label als `role="group"` mit `aria-label`.
+- **⋮-Menü:** Trigger `aria-haspopup="menu"`, Panel `role="menu"`, Items `role="menuitem"`. Separator `role="separator"`.
+- **Fokus-Reihenfolge:** Brand → L1 → aktives L2 → L3-Dropdown → verbleibende L1 → Suche → ⋮. Tab-Taste folgt dieser Reihenfolge. Pfeiltasten innerhalb tablist navigieren Tabs (WAI-ARIA Authoring Practices).
+- **Screenreader-Ankündigung:** Bei L1-Wechsel wird "Ansicht {Name} aktiv, {N} Unter-Ansichten verfügbar" gelesen (via `aria-live="polite"` region im Header).
+
 ## 11 — Out of Scope (parkiert)
 
-- Keyboard-Shortcuts über `⌘K` hinaus (Tab-Wechsel per Zahl etc.) — späterer Bundle.
+- Keyboard-Shortcuts über `⌘K`/`⌘/` hinaus (Tab-Wechsel per Zahl etc.) — späterer Bundle.
 - Breadcrumb-Historie ("zuletzt besucht") — späterer Bundle.
 - Such-Backend-Integration (server-side indexed search) — aktuell client-seitig ausreichend.
 - Favoriten als L1-Dropdown mit Preview — aktuell einfache Liste auf /favoriten.
+- Eigener Suchergebnis-Screen ("Alle N Treffer anzeigen …") — aktuell nur Top 5 pro Gruppe + Verfeinerungs-Hinweis.
 
 ---
 
