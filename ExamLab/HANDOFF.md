@@ -41,11 +41,23 @@ tsc ✅ | 246 Tests ✅ | Build ✅ | Browser-Tests in Chrome-in-Chrome durchgef
   - I-4 `UebungsToolView.tsx`: Gruppen-Info-Bar entfernt, neue Prop `aktiverKursId` synct Store
   - I-5 `AdminDashboard.tsx`: interne Tabs "Übersicht"/"Themen" entfernt, rendert Themensteuerung direkt
   - I-6 `AdminUebersicht.tsx` gelöscht (Inhalt war Mitglieder-Stats → Einstellungen→Mitglieder)
-  - I-7 `FaecherTab.tsx`: neue Sektion "Freigeschaltete Fächer pro Kurs" (lädt `ladeEinstellungen` parallel, direkter Save pro Toggle)
+  - I-7 ~~Fachfreischaltung pro Kurs in FaecherTab~~ **nach User-Test zurückgerollt:** obere Checkbox-Liste deckt den Use-Case bereits ab (Kurs-Wechsel via Tab-Leiste → Fächer der aktiven Gruppe verwalten). Stattdessen Schrift in oberer Liste verkleinert (`text-sm`/`text-xs`).
 
 ### Offen (Bundle 13)
 - `AdminKindDetail`/`AdminThemaDetail`: aktuell keine Entry-Points mehr. Follow-up-Löschung möglich.
 - Toast-System für "Kurs nicht gefunden" (derzeit console.warn).
+
+### Backlog aus S113 User-Test (für nächste Session)
+- **Einstellungen → Übungen → Farben:** Schrift sehr gross (analog FaecherTab verkleinern).
+- **Einstellungen → allgemein:** Mouse-over auf Flächen/Kacheln hat keine Hervorhebung.
+- **SuS-Version ≠ LP-Version Design:** Mouse-over, Buttons, Tabs, Farben sollten identisch sein. Als generische Regel (CSS-Layer/Tailwind-Preset) global definieren, nicht pro Komponente.
+- **Tabs global:** Bei Hover und Aktiv unten Strich, leicht abgerundete Ecken. Design-System-Regel.
+- **LP-Login Üben-Übungen:** "Keine Themen gefunden" → nach Wartezeit "Backend konnte nicht erreicht werden". Reproduzieren + Fix (war ev. Restwirkung vom fehlenden Bundle 12; nach Rebase erneut prüfen).
+- **Kopfzeilen-Refactor (gross):** Tab-Leiste + Suchfeld in Kopfzeile integrieren (Prüfen/Üben). Rechte Buttons (Einstellungen, Theme, Hilfe, Problem melden, Abmelden) in "⋮"-Menü zusammenfassen. Tab-Vorschläge:
+  - LP Prüfen: *Prüfung durchführen / Analyse*
+  - LP Üben: *Übung durchführen / Übungen (mit inline Kurs-Tabs) / Analyse* (bereits umgesetzt)
+  - SuS Üben: *Themen / Mein Fortschritt / Ergebnisse*
+  - SuS Prüfen: analog
 
 ### Parkiert im Backlog (eigene Sessions)
 
