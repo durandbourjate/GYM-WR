@@ -3,6 +3,7 @@ import { useUebenSettingsStore } from '../../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { useUebenAuthStore } from '../../../../store/ueben/authStore'
 import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
+import type { GruppenEinstellungen } from '../../../../types/ueben/settings'
 
 interface FachGruppe {
   fach: string
@@ -12,13 +13,37 @@ interface FachGruppe {
 
 export default function FaecherTab() {
   const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
-  const { aktiveGruppe } = useUebenGruppenStore()
+  const { aktiveGruppe, gruppen } = useUebenGruppenStore()
   const { user } = useUebenAuthStore()
   const [fachGruppen, setFachGruppen] = useState<FachGruppe[]>([])
   const [ausgeklappt, setAusgeklappt] = useState<Set<string>>(new Set())
   const [laden, setLaden] = useState(true)
   const [speichern, setSpeichern] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
   const [fehlerText, setFehlerText] = useState('')
+  // Bundle 13 I: Einstellungen pro Gruppe (für "Freigeschaltete Fächer pro Kurs")
+  const [einstellungenProGruppe, setEinstellungenProGruppe] = useState<Record<string, GruppenEinstellungen>>({})
+
+  // Lade Einstellungen aller Gruppen (für Fachfreischaltungs-Sektion)
+  useEffect(() => {
+    let abgebrochen = false
+    ;(async () => {
+      const entries = await Promise.all(gruppen.map(async g => {
+        try {
+          const e = await uebenGruppenAdapter.ladeEinstellungen(g.id)
+          return [g.id, e] as const
+        } catch {
+          return null
+        }
+      }))
+      if (abgebrochen) return
+      const map: Record<string, GruppenEinstellungen> = {}
+      for (const entry of entries) {
+        if (entry) map[entry[0]] = entry[1]
+      }
+      setEinstellungenProGruppe(map)
+    })()
+    return () => { abgebrochen = true }
+  }, [gruppen])
 
   useEffect(() => {
     if (!aktiveGruppe) return
@@ -189,6 +214,64 @@ export default function FaecherTab() {
       </button>
       {speichern === 'fehler' && (
         <p className="text-sm text-red-500">{fehlerText}</p>
+      )}
+
+      {/* Bundle 13 I: Freigeschaltete Fächer pro Kurs */}
+      {gruppen.length > 0 && alleFaecher.length > 0 && (
+        <div className="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+            Freigeschaltete Fächer pro Kurs
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            Welche Fächer die SuS im jeweiligen Kurs sehen. Leer lassen = alle Fächer sichtbar.
+          </p>
+          <div className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 space-y-1">
+            {gruppen.map(gruppe => {
+              const gruppenEinst = einstellungenProGruppe[gruppe.id]
+              const sichtbare = gruppenEinst?.sichtbareFaecher ?? []
+              return (
+                <div key={gruppe.id} className="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 min-w-[160px]">
+                    {gruppe.name}
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {!gruppenEinst ? (
+                      <span className="text-xs text-slate-400 italic">Einstellungen werden geladen…</span>
+                    ) : alleFaecher.map(fach => {
+                      const aktiv = sichtbare.length === 0 || sichtbare.includes(fach)
+                      return (
+                        <button
+                          key={fach}
+                          onClick={async () => {
+                            if (!user?.email) return
+                            const neueListe = sichtbare.length === 0
+                              ? alleFaecher.filter(f => f !== fach) // war "alle" → alle ausser diesem
+                              : sichtbare.includes(fach)
+                                ? sichtbare.filter(f => f !== fach)
+                                : [...sichtbare, fach]
+                            const normalisiert = neueListe.length === alleFaecher.length ? [] : neueListe
+                            const neu: GruppenEinstellungen = { ...gruppenEinst, sichtbareFaecher: normalisiert }
+                            // Optimistic
+                            setEinstellungenProGruppe(prev => ({ ...prev, [gruppe.id]: neu }))
+                            try {
+                              await uebenGruppenAdapter.speichereEinstellungen(gruppe.id, neu, user.email)
+                            } catch (err) {
+                              console.error('[FaecherTab] Speichern fehlgeschlagen:', err)
+                            }
+                          }}
+                          className={`filter-btn ${aktiv ? 'filter-btn-active' : ''}`}
+                          title={aktiv ? `${fach} deaktivieren` : `${fach} aktivieren`}
+                        >
+                          {fach} {aktiv ? '✓' : ''}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
     </div>
   )
