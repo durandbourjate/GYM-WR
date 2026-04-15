@@ -7,8 +7,9 @@
 // bis dahin wird LPHeader.tsx weiterhin verwendet.
 
 import type React from 'react'
-import { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useMemo, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useL3Precedence } from '../shared/header/useL3Precedence'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -44,6 +45,7 @@ export function LPAppHeaderContainer({ onHilfe, onFeedback, onEinstellungen, onZ
   const theme: 'light' | 'dark' = istAktuellDunkel ? 'dark' : 'light'
 
   const navigate = useNavigate()
+  const location = useLocation()
   const [suchen, setSuchen] = useState('')
 
   // Kurse: alle Gruppen aus dem UebenGruppenStore, gefiltert auf Gruppen wo LP Admin ist.
@@ -56,6 +58,35 @@ export function LPAppHeaderContainer({ onHilfe, onFeedback, onEinstellungen, onZ
         .map((g) => ({ id: g.id, label: g.name })),
     [gruppen, userEmail],
   )
+
+  // Auto-Select: Wenn LP auf /uebung ohne :kursId, zu letztem/erstem Kurs umleiten
+  const urlKursId = (location.pathname.match(/^\/uebung\/kurs\/([^/?]+)/)?.[1]) ?? null
+  const istUebungBereich =
+    location.pathname.startsWith('/uebung') &&
+    !location.pathname.startsWith('/uebung/durchfuehren') &&
+    !location.pathname.startsWith('/uebung/analyse')
+  useL3Precedence({
+    urlWert: istUebungBereich ? urlKursId : null,
+    storageKey: 'examlab-ueben-letzter-kurs',
+    aufRedirect: (to, opts) => navigate(to, opts),
+    basePath: '/uebung',
+  })
+
+  // Fallback: Wenn auf /uebung-Root UND kein kurs in URL UND kein localStorage → ersten Kurs wählen
+  useEffect(() => {
+    if (urlKursId) return
+    const istUebungenRoot = location.pathname === '/uebung' || location.pathname === '/uebung/'
+    if (!istUebungenRoot) return
+    try {
+      const stored = localStorage.getItem('examlab-ueben-letzter-kurs')
+      if (stored) return // useL3Precedence kümmert sich darum
+    } catch {
+      /* ignore */
+    }
+    if (kurse.length > 0) {
+      navigate(`/uebung/kurs/${kurse[0].id}`, { replace: true })
+    }
+  }, [urlKursId, location.pathname, kurse, navigate])
 
   // Kaskaden-Konfiguration aus Route.
   // Pruefungen/aktivePruefungen: kein globaler Store vorhanden — TODO: anbinden wenn Store existiert.
