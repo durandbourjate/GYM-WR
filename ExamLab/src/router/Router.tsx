@@ -123,6 +123,7 @@ export function AppRouter() {
         <Route path="/uebung" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/uebung/durchfuehren" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/uebung/analyse" element={<LPGuard><LPFlow /></LPGuard>} />
+        <Route path="/uebung/kurs/:kursId" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/uebung/:configId" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/fragensammlung" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/fragensammlung/:frageId" element={<LPGuard><LPFlow /></LPGuard>} />
