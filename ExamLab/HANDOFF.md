@@ -6,6 +6,84 @@
 
 ---
 
+## Session 114 — Kopfzeilen-Refactor Phase 1-3 (15.04.2026)
+
+### Stand
+**Branch `feature/kopfzeile-refactor`, noch nicht gemergt.** Alle neuen Komponenten hinter Feature-Flag `VITE_ENABLE_NEW_HEADER=1`. Ohne Flag: unverändertes Verhalten.
+Tests: 306 grün (vorher 251, +55 neue). tsc ✅ | Build ✅. 15 Commits.
+
+### Umgesetzt
+
+**Design-Dokumente:**
+- `docs/superpowers/specs/2026-04-15-kopfzeile-refactor-design.md`
+- `docs/superpowers/plans/2026-04-15-kopfzeile-refactor.md`
+- Mockups (6 HTML-Varianten) unter `.superpowers/brainstorm/mockups/` (nicht deployed)
+
+**Phase 1 — Skeleton (11 Tasks, 55 Tests):**
+- `src/components/shared/header/` (neu):
+  - `types.ts` — L1Id, L3Mode, L1Tab, L2Tab, L3Config, TabKaskadeConfig, Rolle
+  - `L3Dropdown.tsx` — Single/Multi-Select mit "+N"-Pill, Outside-Click + ESC
+  - `TabKaskade.tsx` — L1/L2 inline + L3-Dropdown am aktiven L2; Pfeiltasten-Navigation (WAI-ARIA), aria-live für Screenreader
+  - `OptionenMenu.tsx` — ⋮-Menü, Rolle-spezifische Inhalte (LP zeigt Einstellungen, SuS zeigt "Problem melden" statt "Feedback senden")
+  - `GlobalSuche.tsx` — Input + Ergebnis-Panel, ⌘K/Ctrl+K Fokus, ESC, gruppierte Treffer, Lade-State
+  - `useTabKaskadeConfig.lp.ts` / `.sus.ts` — URL→Config pure Functions + React-Hooks
+  - `AppHeader.tsx` — integrierende Komponente (TabKaskade + GlobalSuche + OptionenMenu)
+  - `useL3Precedence.ts` — URL > localStorage mit replace-Navigation
+- `src/hooks/useViewport.ts` — 3 Tiers (desktop/schmal/phone) via matchMedia + 150ms throttle
+- `src/hooks/useGlobalSuche.shared.ts` + `useGlobalSucheLP.ts` + `useGlobalSucheSuS.ts` — separate Hooks mit Index-Blacklist (musterlosung, korrekt, bewertungsraster etc.) gegen Datenleck
+
+**Phase 2 — LP-Migration (hinter Flag):**
+- `src/components/lp/LPAppHeaderContainer.tsx` — Bridge zu Stores
+- `AppHeader` Detail-Modus ergänzt: `onZurueck`, `breadcrumbs`, `aktionsButtons`, `statusText`, `untertitel`
+- 5 LP-Pages geswitcht (alle ternary mit Flag): `LPStartseite`, `Favoriten`, `PruefungsComposer`, `KorrekturDashboard`, `DurchfuehrenDashboard`. Alter LPHeader in else-Branch unverändert erhalten.
+
+**Phase 3 — SuS-Migration (hinter Flag):**
+- `src/components/sus/SuSAppHeaderContainer.tsx`
+- 2 SuS-Pages geswitcht: `SuSStartseite`, `KorrekturEinsicht`. `AktivePruefungen` und `KorrekturListe` haben keine eigenen Header (Sub-Komponenten).
+
+### ⚠️ Bekannte Einschränkung (Finding aus Task 1.5)
+
+ExamLab hat **keine globalen Zustand-Stores für Prüfungen/Kurse** — sie werden per Route via API gefetcht. Die neuen Such-Hooks `useGlobalSucheLP` / `useGlobalSucheSuS` haben daher aktuell nur **Fragensammlung-Treffer** aktiv (via `useFragenbankStore.summaries`). Prüfungen/Kurse-Suche liefert leere Treffer mit TODO-Kommentar. Kann nachgerüstet werden, wenn die Suche im Alltag genutzt wird und der Bedarf zeigt, was wirklich hinzukommen muss (Option: globaler Cache-Store mit SWR-Pattern).
+
+### User-Aufgaben — Browser-Verifikation BEIDER Rollen
+
+```bash
+cd ExamLab
+VITE_ENABLE_NEW_HEADER=1 npm run dev
+```
+
+**LP-Test:**
+1. `/favoriten` → L1 "Favoriten" aktiv
+2. Klick "Prüfen" → L2 "Durchführen/Analyse" inline
+3. Klick "Üben" → L2 "Durchführen/Übungen/Analyse"
+4. Kurs via Übungen wählen → L3-Dropdown zeigt Kurs
+5. Klick "Fragensammlung" → kein L2
+6. Suche "konjunktur" → Fragen-Treffer gruppiert
+7. ⌘K fokussiert Suche; ESC räumt auf
+8. ⋮-Menü: Benutzer, Einstellungen, Dark Mode, Hilfe, Feedback, Abmelden
+9. Detail-View (Prüfung öffnen) → Zurück-Button + Breadcrumbs
+
+**SuS-Test:**
+1. `/sus/ueben` → L1 "Üben" aktiv, L2 "Themen/Fortschritt/Ergebnisse"
+2. Klick "Prüfen" → L2 "Offen/Ergebnisse"
+3. Deep-Link `/sus/ueben?fach=BWL&thema=X` ohne Login → Login → Return mit erhaltener Query
+4. ⋮: kein "Einstellungen" (SuS hat keine), "Problem melden" statt "Feedback senden"
+5. Suche funktioniert (aktuell nur Fragensammlung-ähnliche Treffer)
+
+**Ohne Flag:** Alter LPHeader + Inline-SuS-Header müssen weiterhin unverändert funktionieren.
+
+### Offen (nach User-Freigabe)
+
+- **Phase 4 Cleanup:** Flag permanent machen, LPHeader löschen, UebenTabLeiste entfernen, Favoriten-Click setzt L3 direkt
+- **Such-Stores:** Falls Prüfungen/Kurse-Suche gewünscht, globale Stores bauen
+- **Mobile phone-Layout:** aktuell nur Brand+Version ausgeblendet auf schmal/phone. Vollständige Phone-Variante (L1-Dropdown + Such-Modal + L2-Chip-Row) als eigene Session, wenn Bedarf entsteht
+
+### Commits (chronologisch)
+
+Siehe `git log --oneline main..feature/kopfzeile-refactor` (15 Commits).
+
+---
+
 ## Session 113 — Bundle 12 + Deep-Link-Fix + Bundle 13 Cluster I (15.04.2026)
 
 ### Stand
