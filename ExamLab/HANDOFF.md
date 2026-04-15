@@ -72,11 +72,40 @@ VITE_ENABLE_NEW_HEADER=1 npm run dev
 
 **Ohne Flag:** Alter LPHeader + Inline-SuS-Header müssen weiterhin unverändert funktionieren.
 
-### Offen (nach User-Freigabe)
+### Staging-Bugs Runde 1 (behoben)
 
-- **Phase 4 Cleanup:** Flag permanent machen, LPHeader löschen, UebenTabLeiste entfernen, Favoriten-Click setzt L3 direkt
-- **Such-Stores:** Falls Prüfungen/Kurse-Suche gewünscht, globale Stores bauen
-- **Mobile phone-Layout:** aktuell nur Brand+Version ausgeblendet auf schmal/phone. Vollständige Phone-Variante (L1-Dropdown + Such-Modal + L2-Chip-Row) als eigene Session, wenn Bedarf entsteht
+- `0e67b0f` LP: Analyse-URL `/pruefung/analyse` → `/pruefung/tracker`, Kurse-Wire-up aus gruppenStore, alte Body-Tabs + Suche ausblenden, L2-Pfade korrigiert
+- `8cd3554` L3 Kurs-Dropdown immer sichtbar (auch ohne Auswahl) mit Placeholder "Kurs wählen …"
+- `318363f` L3 overflow-x-clip (overflow-x-auto triggerte y-clipping → Dropdown-Panel abgeschnitten) + Admin-Filter entfernt (zeigt alle Kurse des LP, nicht nur Admin-Gruppen)
+- `2271f40` SuS AppUeben (AppShell.tsx) hinter Flag migriert
+- `542b0d2` SuS Dashboard-Tabs (Themen/Fortschritt/Ergebnisse) synct `dashboardTab` mit URL
+- `7b043cd` Router: `/sus/ueben/fortschritt`, `/sus/ueben/ergebnisse`, `/sus/ueben/kurs/:kursId`, `/sus/pruefen/ergebnisse` ergänzt
+- `06f451b` `ermittleScreen()` in AppShell.tsx + AppUeben.tsx: neue L2-Routen expliziten als `dashboard` erkennen, bevor das Übungs-Regex zuschlägt (behebt Flash+Rücksprung)
+
+### Offen (nach User-Freigabe der Staging-Tests)
+
+**Phase 4 Cleanup:**
+- Flag permanent aktivieren (alle `{flag ? X : Y}`-Ternaries durch `X` ersetzen)
+- `LPHeader.tsx` löschen (nach Verify dass nicht mehr referenziert)
+- `UebenTabLeiste.tsx` + Tests löschen
+- Inline-Header-Code in SuSStartseite/AppShell/KorrekturEinsicht entfernen (else-Zweige)
+- Favoriten-Klick setzt Ziel-L3 direkt (Spec §2.6)
+- HANDOFF S115 schreiben, Merge `preview` → `main`
+
+**UX-Wünsche (aus S114 Browser-Test, als eigenes Bundle):**
+- Hover-Preview auf L2/L3 (was würde aufklappen?)
+- L1 aktiv: linker + unterer Rand hervorheben (zusätzlich zum violetten Unterstrich)
+- Striche unter/neben aktiven Tabs inkl. halben abgerundeten Ecken
+
+**Bekannte Randfälle (nicht blockierend):**
+- **Suche:** Prüfungen/Kurse-Treffer leer (keine globalen Stores). Kann nachgerüstet werden wenn Suche im Alltag genutzt wird.
+- **MultiSelect L3 bei Prüfen → Durchführen:** Aktuell leer (kein globaler Prüfungs-Store). Nachprüfungs-Use-Case noch nicht implementiert.
+- **Mobile phone-Layout:** Nur Brand+Version ausgeblendet bei `<900px`. Vollständige L1-Dropdown + Such-Modal + L2-Chip-Row als eigene Session.
+
+**Pre-existing Bugs (NICHT aus diesem Refactor):**
+- `X-Frame-Options via meta` Console-Warning (LoginScreen)
+- CSP `style-src` blockt `accounts.google.com/gsi/style`
+- "Prüfung starten" / "Übung starten" Buttons auf Karten tun nichts (X-Frame-Options bezogen)
 
 ### Commits (chronologisch)
 
