@@ -214,10 +214,10 @@ export default function MetadataSection({
         </Feld>
       </div>
 
-      {/* Semester + Gefässe */}
+      {/* Zeitpunkt + Gefässe */}
       <div className="flex gap-6 mt-3">
         <div>
-          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Semester</label>
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Zeitpunkt</label>
           <div className="flex gap-1 flex-wrap">
             {config.verfuegbareSemester.map((s) => (
               <button
