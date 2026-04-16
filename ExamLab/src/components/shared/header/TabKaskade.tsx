@@ -86,18 +86,24 @@ function SuperChip({ t1, l1Aktiv, aktivL2 }: { t1: L1Tab; l1Aktiv: boolean; akti
 }
 
 function L2Block({ t2, l1Aktiv, aktivL2 }: { t2: L2Tab; l1Aktiv: boolean; aktivL2: string | null }) {
+  const [hovered, setHovered] = useState(false)
   const l2Aktiv = l1Aktiv && t2.id === aktivL2
   const hatL3 = !!t2.l3 && t2.l3.items.length > 0
 
   // L2-State: parent wenn aktiv+L3 vorhanden, active wenn aktiv+kein L3, inactive sonst
   const l2State: TabState = l2Aktiv ? (hatL3 ? 'parent' : 'active') : 'inactive'
 
-  // L3-Dropdown IMMER sichtbar wenn L2 ein L3 hat (nicht nur bei aktivem L2).
-  // So sieht die LP bei 1+ Kurs die Dropdown-Auswahl direkt, ohne erst "Übungen" klicken zu müssen.
+  // L3-Dropdown sichtbar wenn L2 aktiv ODER gehovert (und L2 hat L3).
+  const zeigeL3 = hatL3 && (l2Aktiv || hovered)
+
   return (
-    <div className="inline-flex items-center gap-0.5">
+    <div
+      className="inline-flex items-center gap-0.5"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       {renderTab(t2.label, l2State, t2.onClick)}
-      {hatL3 && (
+      {zeigeL3 && (
         <L3Dropdown
           mode={t2.l3!.mode}
           items={t2.l3!.items}

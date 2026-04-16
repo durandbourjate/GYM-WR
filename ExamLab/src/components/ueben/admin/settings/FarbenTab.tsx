@@ -5,17 +5,6 @@ import { useUebenAuthStore } from '../../../../store/ueben/authStore'
 import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
 import { getFachFarbe } from '../../../../utils/ueben/fachFarben'
 
-const STANDARD_FARBEN: Record<string, string> = {
-  VWL: '#f97316',
-  BWL: '#3b82f6',
-  Recht: '#22c55e',
-  Informatik: '#6b7280',
-}
-
-function getStandardFarbe(fach: string): string {
-  return STANDARD_FARBEN[fach] || '#6b7280'
-}
-
 export default function FarbenTab() {
   const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
   const { aktiveGruppe } = useUebenGruppenStore()
@@ -76,32 +65,32 @@ export default function FarbenTab() {
   }
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-slate-500 dark:text-slate-400">
+    <div className="space-y-2">
+      <p className="text-xs text-slate-500 dark:text-slate-400">
         Farben pro Fach anpassen. Klicke auf das Farbfeld um eine Farbe zu wählen.
       </p>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
+      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
         {sichtbareFaecher.map((fach) => {
           const aktuellefarbe = farbeFuerFach(fach)
           const istGeaendert = einstellungen.fachFarben[fach] !== undefined
           return (
-            <div key={fach} className="flex items-center gap-4 p-4">
+            <div key={fach} className="flex items-center gap-3 px-3 py-2">
               {/* Farbwähler */}
               <input
                 type="color"
                 value={aktuellefarbe}
                 onChange={(e) => setzefarbe(fach, e.target.value)}
-                className="w-10 h-10 rounded cursor-pointer border border-slate-200 dark:border-slate-600 p-0.5"
+                className="w-7 h-7 rounded cursor-pointer border border-slate-200 dark:border-slate-600 p-0.5"
                 title={`Farbe für ${fach}`}
               />
 
               {/* Name */}
-              <span className="flex-1 font-medium dark:text-white">{fach}</span>
+              <span className="flex-1 text-sm font-medium dark:text-white">{fach}</span>
 
               {/* Vorschau-Badge */}
               <span
-                style={{ backgroundColor: aktuellefarbe, color: '#fff', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}
+                style={{ backgroundColor: aktuellefarbe, color: '#fff', padding: '1px 6px', borderRadius: '4px', fontSize: '11px' }}
               >
                 {fach}
               </span>
@@ -110,14 +99,14 @@ export default function FarbenTab() {
               {istGeaendert && (
                 <button
                   onClick={() => resetFarbe(fach)}
-                  className="text-xs text-slate-400 hover:text-red-500 min-h-[44px] px-2"
+                  className="text-xs text-slate-400 hover:text-red-500 px-1.5 py-1"
                 >
-                  Zuruecksetzen
+                  Zurücksetzen
                 </button>
               )}
               {!istGeaendert && (
-                <span className="text-xs text-slate-300 dark:text-slate-600 px-2">
-                  Standard ({getStandardFarbe(fach)})
+                <span className="text-[10px] text-slate-300 dark:text-slate-600 px-1.5">
+                  Standard
                 </span>
               )}
             </div>
@@ -128,12 +117,12 @@ export default function FarbenTab() {
       <button
         onClick={handleSpeichern}
         disabled={speichern === 'laden'}
-        className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-3 font-medium disabled:opacity-50 min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors mt-4"
+        className="w-full bg-slate-800 text-sm text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-2 font-medium disabled:opacity-50 min-h-[36px] hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors mt-3"
       >
         {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? 'Gespeichert ✓' : 'Speichern'}
       </button>
       {speichern === 'fehler' && (
-        <p className="text-sm text-red-500">{fehlerText}</p>
+        <p className="text-xs text-red-500">{fehlerText}</p>
       )}
     </div>
   )
