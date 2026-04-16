@@ -2,10 +2,8 @@ import { useState, useEffect, Suspense, lazy } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
-import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { uebenApiClient } from '../../services/ueben/apiClient'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
-import ThemeToggle from '../ThemeToggle'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import AktivePruefungen from './AktivePruefungen'
@@ -32,7 +30,6 @@ const LP_AUTH_KEY = 'ueben-auth'
 export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }: { onKorrekturWaehle: (id: string) => void }) {
   const user = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
-  const pruefungAbmelden = useAuthStore(s => s.abmelden)
   const { zuPruefen, zuDashboard } = useSuSNavigation()
 
   // Modus aus URL ableiten
@@ -41,14 +38,6 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
 
   const [korrekturId, setKorrekturId] = useState<string | null>(null)
   const [loginBridged, setLoginBridged] = useState(false)
-
-  // Vollständiges Abmelden: Prüfungs-Auth + Üben-Auth + Gruppen-Store
-  function abmelden() {
-    useUebenAuthStore.getState().abmelden()
-    useUebenGruppenStore.setState({ gruppen: [], aktiveGruppe: null, mitglieder: [], ladeStatus: 'idle' })
-    setLoginBridged(false)
-    pruefungAbmelden()
-  }
 
   // Login-Bridging: Pruefung-Auth → Üben-Auth synchronisieren
   useEffect(() => {
@@ -157,48 +146,10 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-        <SuSAppHeaderContainer
-          onHilfe={() => {}}
-          onFeedback={() => {}}
-        />
-      ) : (
-        <header className="bg-white dark:bg-slate-800 shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center gap-3">
-            <div>
-              <button onClick={zuDashboard} className="text-base font-bold dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer">ExamLab</button>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {user?.name} · Schüler/in
-              </p>
-            </div>
-
-            {/* Tabs: Üben | Prüfen */}
-            <nav className="flex items-center gap-1 ml-4">
-              <button
-                onClick={zuDashboard}
-                className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              >
-                Üben
-              </button>
-              <button
-                className="px-3 py-1.5 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white"
-              >
-                Prüfen
-              </button>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              onClick={abmelden}
-              className="px-2 py-1.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
-            >
-              Abmelden
-            </button>
-          </div>
-        </header>
-      )}
+      <SuSAppHeaderContainer
+        onHilfe={() => {}}
+        onFeedback={() => {}}
+      />
 
       <main className="max-w-7xl mx-auto p-6">
         {/* Aktive Prüfungen (pollt Backend) */}

@@ -13,7 +13,6 @@ import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefun
 import type { FragenPerformance } from '../../../types/tracker.ts'
 
 import BaseDialog from '../../ui/BaseDialog'
-import LPHeader from '../LPHeader.tsx'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
@@ -322,78 +321,38 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-        <LPAppHeaderContainer
-          onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}
-          onFeedback={() => {}}
-          onEinstellungen={() => {}}
-          onZurueck={onZurueck}
-          breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
-          statusText={
-            speicherStatus === 'erfolg' ? 'Gespeichert ✓'
-            : speicherStatus === 'fehler' ? 'Fehler beim Speichern'
-            : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert ✓'
-            : undefined
-          }
-          aktionsButtons={
-            <div className="flex items-center gap-1">
-              {config && onDuplizieren && (
-                <button
-                  onClick={() => onDuplizieren(pruefung)}
-                  className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-                >
-                  Duplizieren
-                </button>
-              )}
+      <LPAppHeaderContainer
+        onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}
+        onFeedback={() => {}}
+        onEinstellungen={() => {}}
+        onZurueck={onZurueck}
+        breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
+        statusText={
+          speicherStatus === 'erfolg' ? 'Gespeichert ✓'
+          : speicherStatus === 'fehler' ? 'Fehler beim Speichern'
+          : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert ✓'
+          : undefined
+        }
+        aktionsButtons={
+          <div className="flex items-center gap-1">
+            {config && onDuplizieren && (
               <button
-                onClick={handleSpeichern}
-                disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
-                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                onClick={() => onDuplizieren(pruefung)}
+                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
-                {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
+                Duplizieren
               </button>
-            </div>
-          }
-        />
-      ) : (
-        <LPHeader
-          titel={pruefung.typ === 'formativ'
-            ? (config ? 'Übung bearbeiten' : 'Neue Übung')
-            : (config ? 'Prüfung bearbeiten' : 'Neue Prüfung')
-          }
-          zurueck={onZurueck}
-          breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
-          statusText={
-            speicherStatus === 'erfolg' ? 'Gespeichert ✓'
-            : speicherStatus === 'fehler' ? 'Fehler beim Speichern'
-            : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert ✓'
-            : undefined
-          }
-          aktionsButtons={
-            <div className="flex items-center gap-1">
-              {config && onDuplizieren && (
-                <button
-                  onClick={() => onDuplizieren(pruefung)}
-                  className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-                >
-                  Duplizieren
-                </button>
-              )}
-              <button
-                onClick={handleSpeichern}
-                disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
-                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-              >
-                {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
-              </button>
-            </div>
-          }
-          onFragensammlung={() => { setZeigHilfe(false); setZeigFragenBrowser(!zeigFragenBrowser) }}
-          onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}
-          fragensammlungOffen={zeigFragenBrowser}
-          hilfeOffen={zeigHilfe}
-        />
-      )}
+            )}
+            <button
+              onClick={handleSpeichern}
+              disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
+              className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
+            </button>
+          </div>
+        }
+      />
 
       {/* Tabs */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2">

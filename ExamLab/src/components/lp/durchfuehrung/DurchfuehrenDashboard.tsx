@@ -16,7 +16,6 @@ const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Fra
 import type { MonitoringDaten, PruefungsNachricht } from '../../../types/monitoring.ts'
 import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage } from '../../../types/fragen.ts'
-import LPHeader from '../LPHeader.tsx'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
 import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
@@ -358,86 +357,43 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
-      {import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-        <LPAppHeaderContainer
-          onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
-          onFeedback={() => {}}
-          onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
-          onZurueck={zurueck}
-          untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}
-          aktionsButtons={
-            <>
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors cursor-pointer flex items-center gap-1.5
-                  ${autoRefresh
-                    ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
-                    : 'border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400'
-                  }`}
-              >
-                <span className={`inline-block w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-                Live
-              </button>
-              <button
-                onClick={ladeDaten}
-                className="px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              >
-                ↻
-              </button>
-              {/* Timer in aktiver Phase */}
-              {phase === 'aktiv' && dauer && (
-                <span className="text-sm font-mono text-slate-600 dark:text-slate-300">⏱ {dauer}</span>
-              )}
-              {phase === 'beendet' && config?.beendetUm && (
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  Beendet: {new Date(config.beendetUm).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              )}
-            </>
-          }
-        />
-      ) : (
-        <LPHeader
-          titel={config?.typ === 'formativ' ? 'Übung durchführen' : 'Prüfung durchführen'}
-          untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}
-          zurueck={zurueck}
-          aktionsButtons={
-            <>
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors cursor-pointer flex items-center gap-1.5
-                  ${autoRefresh
-                    ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
-                    : 'border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400'
-                  }`}
-              >
-                <span className={`inline-block w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
-                Live
-              </button>
-              <button
-                onClick={ladeDaten}
-                className="px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              >
-                ↻
-              </button>
-              {/* Timer in aktiver Phase */}
-              {phase === 'aktiv' && dauer && (
-                <span className="text-sm font-mono text-slate-600 dark:text-slate-300">⏱ {dauer}</span>
-              )}
-              {phase === 'beendet' && config?.beendetUm && (
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  Beendet: {new Date(config.beendetUm).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              )}
-            </>
-          }
-          onFragensammlung={() => { setZeigHilfe(false); setZeigEinstellungen(false); setZeigFragenbank(!zeigFragenbank) }}
-          onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
-          onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
-          fragensammlungOffen={zeigFragenbank}
-          hilfeOffen={zeigHilfe}
-        />
-      )}
+      <LPAppHeaderContainer
+        onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
+        onFeedback={() => {}}
+        onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
+        onZurueck={zurueck}
+        untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}
+        aktionsButtons={
+          <>
+            <button
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors cursor-pointer flex items-center gap-1.5
+                ${autoRefresh
+                  ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
+                  : 'border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400'
+                }`}
+            >
+              <span className={`inline-block w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
+              Live
+            </button>
+            <button
+              onClick={ladeDaten}
+              className="px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            >
+              ↻
+            </button>
+            {/* Timer in aktiver Phase */}
+            {phase === 'aktiv' && dauer && (
+              <span className="text-sm font-mono text-slate-600 dark:text-slate-300">⏱ {dauer}</span>
+            )}
+            {phase === 'beendet' && config?.beendetUm && (
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                Beendet: {new Date(config.beendetUm).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+          </>
+        }
+      />
 
       {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
       <div className="flex flex-1 overflow-hidden">

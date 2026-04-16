@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
-import { UebenTabLeiste } from './uebung/UebenTabLeiste.tsx'
 import { useFragenbankStore } from '../../store/fragenbankStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
 import { useLPNavigationStore } from '../../store/lpUIStore.ts'
@@ -15,7 +14,6 @@ import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.t
 import { formatDatum } from '../../utils/zeit.ts'
 import { getFachFarbe } from '../../utils/ueben/fachFarben.ts'
 import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel, erstelleDemoTrackerDaten } from '../../utils/trackerUtils.ts'
-import LPHeader from './LPHeader.tsx'
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
 import LPSkeleton from './LPSkeleton.tsx'
 import UebungsToolView from './UebungsToolView.tsx'
@@ -84,7 +82,6 @@ export default function LPStartseite() {
   // Navigation via React Router (URL-basiert)
   const {
     setModus,
-    setListenTab,
     zurueckZumDashboard,
     navigiereZuComposer,
   } = useLPNavigation()
@@ -447,24 +444,11 @@ export default function LPStartseite() {
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header nur im Dashboard-Modus — Composer hat eigenen Header */}
       {ansicht !== 'composer' && (
-        import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-          <LPAppHeaderContainer
-            onHilfe={toggleHilfe}
-            onFeedback={() => {}}
-            onEinstellungen={() => toggleEinstellungen()}
-          />
-        ) : (
-          <LPHeader
-            untertitel={user ? `${user.name} · Lehrperson` : undefined}
-            modus={modus}
-            onModusChange={setModus}
-            aktionsButtons={undefined}
-            onEinstellungen={() => toggleEinstellungen()}
-            onHilfe={toggleHilfe}
-            hilfeOffen={zeigHilfe}
-            einstellungenOffen={zeigEinstellungen}
-          />
-        )
+        <LPAppHeaderContainer
+          onHilfe={toggleHilfe}
+          onFeedback={() => {}}
+          onEinstellungen={() => toggleEinstellungen()}
+        />
       )}
 
       {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
@@ -481,35 +465,6 @@ export default function LPStartseite() {
       {/* Dashboard-Inhalte — nur wenn nicht im Composer */}
       {ansicht !== 'composer' && modus === 'uebung' && (
         <>
-          {/* Tab-Leiste — nur ohne neuen Header sichtbar (sonst doppelt) */}
-          {import.meta.env.VITE_ENABLE_NEW_HEADER !== '1' && (
-          <div className="px-6 pt-4">
-            <div className="flex items-center justify-between gap-4">
-              <UebenTabLeiste
-                aktiv={uebungsTab === 'uebungen' ? 'uebungen' : uebungsTab === 'analyse' ? 'analyse' : 'durchfuehren'}
-                aktiverKursId={aktiverKursId}
-                gruppen={gruppen.map(g => ({ id: g.id, name: g.name }))}
-                onDurchfuehren={() => navigate('/uebung/durchfuehren')}
-                onUebungen={() => {
-                  const letzter = (() => { try { return localStorage.getItem('examlab-ueben-letzter-kurs') } catch { return null } })()
-                  const zielId = gruppen.find(g => g.id === letzter)?.id ?? gruppen[0]?.id
-                  if (zielId) navigate(`/uebung/kurs/${zielId}`)
-                  else navigate('/uebung')
-                }}
-                onAnalyse={() => navigate('/uebung/analyse')}
-                onKursWaehle={(kursId) => navigate(`/uebung/kurs/${kursId}`)}
-              />
-              <input
-                type="text"
-                placeholder="Suche nach Titel, Klasse oder ID..."
-                value={suchtext}
-                onChange={(e) => setSuchtext(e.target.value)}
-                className="input-field max-w-xs flex-1 px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600"
-              />
-            </div>
-          </div>
-          )}
-
           {/* Tab-Content */}
           {uebungsTab === 'uebungen' && <UebungsToolView aktiverKursId={aktiverKursId} onFachKlick={() => setModus('fragensammlung')} />}
 
@@ -639,43 +594,6 @@ export default function LPStartseite() {
 
       {/* Prüfen-Ansicht */}
       {ansicht !== 'composer' && modus === 'pruefung' && <>
-      {/* Tab-Leiste — nur ohne neuen Header sichtbar (sonst doppelt) */}
-      {import.meta.env.VITE_ENABLE_NEW_HEADER !== '1' && (
-      <div className="px-6 pt-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
-            <button
-              onClick={() => setListenTab('pruefungen')}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-                listenTab === 'pruefungen'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-              }`}
-            >
-              Prüfungen
-            </button>
-            <button
-              onClick={() => setListenTab('tracker')}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors cursor-pointer ${
-                listenTab === 'tracker'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-              }`}
-            >
-              Analyse
-            </button>
-          </div>
-          <input
-            type="text"
-            placeholder="Suche nach Titel, Klasse oder ID..."
-            value={suchtext}
-            onChange={(e) => setSuchtext(e.target.value)}
-            className="input-field max-w-xs flex-1 px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600"
-          />
-        </div>
-      </div>
-      )}
-
       {/* Content */}
       <main className="p-6">
         {ladeStatus === 'laden' && (

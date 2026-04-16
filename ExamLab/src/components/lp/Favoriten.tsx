@@ -6,7 +6,6 @@ import { apiService } from '../../services/apiService'
 import { useLPNavigation } from '../../hooks/useLPNavigation'
 import type { PruefungsConfig } from '../../types/pruefung'
 // Status direkt aus PruefungsConfig ableiten (ohne TrackerDaten)
-import LPHeader from './LPHeader'
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
 import LPSkeleton from './LPSkeleton'
 
@@ -19,7 +18,7 @@ export default function Favoriten() {
     [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung),
   [rawFavoriten])
 
-  const { setModus, navigiereZuEinstellungen } = useLPNavigation()
+  const { navigiereZuEinstellungen } = useLPNavigation()
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
 
@@ -72,36 +71,30 @@ export default function Favoriten() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-        <LPAppHeaderContainer
-          onHilfe={() => {}}
-          onFeedback={() => {}}
-          onEinstellungen={() => navigiereZuEinstellungen()}
-        />
-      ) : (
-        <LPHeader
-          untertitel={user ? `${user.name} · Lehrperson` : undefined}
-          modus="pruefung"
-          onModusChange={(m) => setModus(m as 'pruefung' | 'uebung' | 'fragensammlung')}
-          aktionsButtons={null}
-          onFragensammlung={() => setModus('fragensammlung')}
-          onEinstellungen={() => navigiereZuEinstellungen()}
-          onHilfe={() => {}}
-        />
-      )}
+      <LPAppHeaderContainer
+        onHilfe={() => {}}
+        onFeedback={() => {}}
+        onEinstellungen={() => navigiereZuEinstellungen()}
+      />
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
           Willkommen{user?.vorname ? `, ${user.vorname}` : ''}
         </h1>
 
-        {/* Favoriten */}
+        {/* Favoriten — Klick navigiert direkt ins Ziel (Durchführen statt Composer, Spec §2.6) */}
         <Sektion titel="Favoriten" leer={favoriten.length === 0} leerText="Noch keine Favoriten gesetzt. In den Einstellungen oder per Stern-Icon hinzufügen.">
           <div className="flex gap-3 overflow-x-auto pb-2">
             {favoriten.map(fav => (
               <Link
                 key={fav.ziel}
-                to={fav.typ === 'ort' ? fav.ziel : `/${fav.typ}/${fav.ziel}`}
+                to={
+                  fav.typ === 'ort'
+                    ? fav.ziel
+                    : fav.typ === 'frage'
+                      ? `/fragensammlung/${fav.ziel}`
+                      : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
+                }
                 className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
               >
                 <span className="text-lg">{fav.icon || typIcon(fav.typ)}</span>

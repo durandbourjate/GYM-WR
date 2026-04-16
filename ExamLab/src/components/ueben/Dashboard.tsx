@@ -100,9 +100,8 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const [dashboardTab, setDashboardTab] = useState<'themen' | 'fortschritt' | 'ergebnisse'>('themen')
   const location = useLocation()
 
-  // Sync dashboardTab mit URL wenn neuer Header aktiv
+  // Sync dashboardTab mit URL (L2-Tabs im neuen Header)
   useEffect(() => {
-    if (import.meta.env.VITE_ENABLE_NEW_HEADER !== '1') return
     const p = location.pathname
     if (p.includes('/fortschritt') && dashboardTab !== 'fortschritt') setDashboardTab('fortschritt')
     else if (p.includes('/ergebnisse') && dashboardTab !== 'ergebnisse') setDashboardTab('ergebnisse')
@@ -408,44 +407,6 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
         <h2 className="text-xl font-bold dark:text-white mb-3">
           Hallo {user?.vorname || 'dort'}!
         </h2>
-        {import.meta.env.VITE_ENABLE_NEW_HEADER !== '1' && (
-        <div className="flex items-center mb-4">
-          {/* Tab-Wechsel: Themen | Mein Fortschritt — linksbündig analog LP */}
-          <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
-            <button
-              onClick={() => setDashboardTab('themen')}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                dashboardTab === 'themen'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'
-              }`}
-            >
-              Themen
-            </button>
-            <button
-              onClick={() => setDashboardTab('fortschritt')}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                dashboardTab === 'fortschritt'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'
-              }`}
-            >
-              Mein Fortschritt
-            </button>
-            <button
-              onClick={() => setDashboardTab('ergebnisse')}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                dashboardTab === 'ergebnisse'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'
-              }`}
-            >
-              Ergebnisse
-            </button>
-          </div>
-        </div>
-        )}
-
         {dashboardTab === 'ergebnisse' ? (
           <UebungsEinsicht />
         ) : dashboardTab === 'fortschritt' ? (

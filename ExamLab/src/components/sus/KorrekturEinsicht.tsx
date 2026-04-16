@@ -5,9 +5,7 @@ import type { KorrekturDetailDaten, KorrekturDetailBewertung } from '../../servi
 import AudioPlayer from '../AudioPlayer.tsx'
 import MediaAnhang from '../MediaAnhang.tsx'
 import FeedbackButton from '../shared/FeedbackButton.tsx'
-import { formatDatum } from '../../utils/zeit.ts'
 import { driveStreamUrl } from '../../utils/mediaUtils.ts'
-import ThemeToggle from '../ThemeToggle.tsx'
 import Tooltip from '../ui/Tooltip.tsx'
 import { SuSAppHeaderContainer } from './SuSAppHeaderContainer.tsx'
 
@@ -71,66 +69,23 @@ export default function KorrekturEinsicht({ pruefungId, onZurueck }: Props) {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
-      {import.meta.env.VITE_ENABLE_NEW_HEADER === '1' ? (
-        <SuSAppHeaderContainer
-          onHilfe={() => {}}
-          onFeedback={() => {}}
-          onZurueck={onZurueck}
-          breadcrumbs={[{ label: daten.titel }]}
-          statusText={`${daten.gesamtPunkte} / ${daten.maxPunkte} Pkt. (${prozent}%)`}
-          aktionsButtons={
-            daten.pdfFreigegeben ? (
-              <button
-                onClick={() => window.print()}
-                className="px-3 py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
-              >
-                <Tooltip text="Korrektur als PDF drucken/speichern"><span>PDF</span></Tooltip>
-              </button>
-            ) : undefined
-          }
-        />
-      ) : (
-        /* Inline-Header (Fallback wenn Flag aus) */
-        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onZurueck}
-                className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
-              >
-                <Tooltip text="Zurück zur Liste"><span>← Zurück</span></Tooltip>
-              </button>
-              <div>
-                <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{daten.titel}</h1>
-                <p className="text-xs text-slate-400 dark:text-slate-500">
-                  {daten.datum ? formatDatum(daten.datum) : ''} {daten.klasse && `· ${daten.klasse}`}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 tabular-nums">
-                  {daten.gesamtPunkte} / {daten.maxPunkte} Pkt.
-                </span>
-                <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({prozent}%)</span>
-              </div>
-              {daten.pdfFreigegeben && (
-                <button
-                  onClick={() => window.print()}
-                  className="px-3 py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
-                >
-                  <Tooltip text="Korrektur als PDF drucken/speichern"><span>PDF</span></Tooltip>
-                </button>
-              )}
-              <FeedbackButton
-                variant="icon"
-                context={{ rolle: 'sus', ort: 'einsicht-allgemein', pruefungId, modus: 'pruefen', bildschirm: 'einsicht' }}
-              />
-              <ThemeToggle />
-            </div>
-          </div>
-        </header>
-      )}
+      <SuSAppHeaderContainer
+        onHilfe={() => {}}
+        onFeedback={() => {}}
+        onZurueck={onZurueck}
+        breadcrumbs={[{ label: daten.titel }]}
+        statusText={`${daten.gesamtPunkte} / ${daten.maxPunkte} Pkt. (${prozent}%)`}
+        aktionsButtons={
+          daten.pdfFreigegeben ? (
+            <button
+              onClick={() => window.print()}
+              className="px-3 py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+            >
+              <Tooltip text="Korrektur als PDF drucken/speichern"><span>PDF</span></Tooltip>
+            </button>
+          ) : undefined
+        }
+      />
 
       <main className="max-w-3xl mx-auto p-4 space-y-4">
         {/* Gesamt-Audio-Kommentar */}
