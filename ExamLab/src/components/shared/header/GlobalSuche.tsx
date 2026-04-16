@@ -43,7 +43,8 @@ export function GlobalSuche({ suchen, onSuchen, ergebnis, istFokussiert, placeho
 
   return (
     <div className="relative flex-shrink-0">
-      <span className="absolute left-2.5 top-[7px] text-slate-400 text-sm pointer-events-none">⌕</span>
+      {/* Höhe: py-1.5 + text-sm → matcht TabKaskade-Tabs (TAB_BASE). */}
+      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none">⌕</span>
       <input
         ref={inputRef}
         role="searchbox"
@@ -55,11 +56,11 @@ export function GlobalSuche({ suchen, onSuchen, ergebnis, istFokussiert, placeho
         onFocus={() => setFokussiert(true)}
         onBlur={() => setTimeout(() => setFokussiert(false), 150)}
         onKeyDown={handleKeyDown}
-        className={`bg-slate-100 dark:bg-slate-700 rounded-md pl-8 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 outline-none border border-transparent transition-all ${
+        className={`bg-slate-100 dark:bg-slate-700 rounded-md pl-8 pr-12 py-1.5 text-sm text-slate-900 dark:text-slate-100 outline-none border border-transparent transition-all ${
           fokussiert ? 'bg-white dark:bg-slate-800 border-violet-500 w-[360px]' : 'w-[220px]'
         }`}
       />
-      <span className="absolute right-2 top-[7px] text-[10px] bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 px-1 rounded pointer-events-none">
+      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 px-1 rounded pointer-events-none">
         {fokussiert ? 'ESC' : SHORTCUT_KEY}
       </span>
       {panelOffen && (

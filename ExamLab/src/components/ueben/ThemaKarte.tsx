@@ -65,11 +65,11 @@ export function ThemaKarte({
           : 'bg-white dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-500'
         }
         ${istAktiv
-          ? 'border-l-4'
+          ? 'border-l-4 border-b-4'
           : 'border-slate-200 dark:border-slate-700'
         }
       `}
-      style={istAktiv ? { borderLeftColor: farbe, borderTopColor: undefined, borderRightColor: undefined, borderBottomColor: undefined } : undefined}
+      style={istAktiv ? { borderLeftColor: farbe, borderBottomColor: farbe } : undefined}
     >
       {/* Aktuell-Badge */}
       {istAktiv && (

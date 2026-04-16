@@ -213,22 +213,27 @@ export default function AdminThemensteuerung() {
                 <div className="flex items-center gap-2 shrink-0">
                   {/* Reihenfolge rechtsbündig: [Badge/CTA] [Aktionen] [Lernziele] [Link] */}
 
-                  {/* Status-Badge links der Aktions-Buttons — "z.T. aktuell" wenn nur einige Unterthemen */}
+                  {/* Status-Badge links der Aktions-Buttons — "Aktuell" in Fachfarbe,
+                      "z.T. aktuell" in abgeschwächter Fachfarbe, "Freigegeben" slate. */}
                   {(() => {
                     const aktiveUT = getAktiveUnterthemen(eintrag.fach, eintrag.thema)
                     const istPartiell = eintrag.status === 'aktiv' && aktiveUT && aktiveUT.length > 0 && aktiveUT.length < eintrag.unterthemen.length
                     if (eintrag.status !== 'aktiv' && eintrag.status !== 'abgeschlossen') return null
+                    if (eintrag.status === 'aktiv') {
+                      // Aktuell = Fachfarbe; z.T. aktuell = Fachfarbe mit reduzierter Deckkraft
+                      return (
+                        <span
+                          className="text-xs px-2 py-0.5 rounded-full font-semibold text-white"
+                          style={{ backgroundColor: farbe, opacity: istPartiell ? 0.6 : 1 }}
+                        >
+                          {istPartiell ? 'z.T. aktuell' : 'Aktuell'}
+                        </span>
+                      )
+                    }
+                    // Freigegeben = slate
                     return (
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        eintrag.status === 'aktiv'
-                          ? (istPartiell
-                            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
-                            : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300')
-                          : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-                      }`}>
-                        {eintrag.status === 'aktiv'
-                          ? (istPartiell ? 'z.T. aktuell' : 'Aktuell')
-                          : 'Freigegeben'}
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                        Freigegeben
                       </span>
                     )
                   })()}
