@@ -89,3 +89,20 @@ git push
 - [ ] Security-Invarianten geprüft (siehe regression-prevention.md)
 - [ ] Keine aktiven Prüfungen
 - [ ] HANDOFF.md aktualisiert
+
+## Post-Deploy Cache-Probleme
+
+**Problem (S115):** Nach Deploy zeigt Browser gelegentlich kaputte Seiten (ungestyltes HTML, 503-Fehler für JS/CSS-Chunks, "Seite funktioniert nicht"). Ursache: Browser hat alte `index.html` im Memory-/Disk-Cache, diese verweist auf Chunk-Hashes die nach Deploy nicht mehr existieren.
+
+**Erkennung:**
+- Network-Tab: 503 oder 404 für `assets/index-<hash>.css` oder `.js`
+- Page source zeigt andere Hashes als Server (curl zum Vergleich)
+- Styling komplett weg, aber Text sichtbar
+
+**Lösungen (in Reihenfolge):**
+1. **Hard Reload** (`Cmd+Shift+R` / `Ctrl+Shift+R`) — reicht in 90% der Fälle
+2. **SW-unregister + Cache-Clear** im DevTools (Application → Storage → Clear site data)
+3. **Cache-Buster-URL**: `?cb=<timestamp>` anhängen → erzwingt frisches HTML ohne Cache
+4. Im Code: SW-unregister-Script bei Chunk-Load-Fehlern (Pattern in `LPStartseite.tsx::lazyMitRetry`)
+
+**Für User-Reports "sieht kaputt aus":** IMMER zuerst Hard-Reload empfehlen, BEVOR Bug-Untersuchung gestartet wird.

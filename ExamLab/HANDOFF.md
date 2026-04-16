@@ -6,26 +6,83 @@
 
 ---
 
-## Session 115 — Blocker-Bug Fix "Prüfung/Übung starten" (16.04.2026)
+## Session 115 — Grosse Polish-Session (16.04.2026 → main)
 
 ### Stand
-**Fix auf `preview` deployed, auf Staging verifiziert (Einrichtungsprüfung → DurchfuehrenDashboard rendert korrekt mit Live-Monitoring, SuS-Zeile, Phase-Tabs).** User-Freigabe: Merge auf main.
+**Komplett auf `main` gemergt + gepusht.** Alle Bugs aus dem User-Staging-Test gefixt und auf Staging verifiziert.
 
-### Root Cause
-`LPStartseite.tsx:1008` verwendete `<a href={window.location.pathname}?id={c.id}>` auf den Prüfungs/Übungs-Karten. Vor dem React-Router-Refactor las `App.tsx` bei `?id=` das DurchfuehrenDashboard ein. Mit dem Router gehen `/pruefung`, `/uebung`, `/favoriten` aber durch LPFlow/LPStartseite, nicht mehr durch App. LPStartseite las nur `?ids=` (Multi-Dashboard), nicht `?id=` (single) — Klick bewirkte nur einen Full-Page-Reload auf dieselbe Liste.
+### Umgesetzt (chronologisch)
 
-Die Vermutung "X-Frame-Options / CSP-Problem" war falsch — die Console-Warnung zum Meta-Tag X-Frame-Options ist rein kosmetisch und unabhängig vom Bug.
+**1. Blocker-Bug Fix "Prüfung/Übung starten"**
+- Root Cause: `LPStartseite.tsx` `<a href={pathname}?id={c.id}>` auf den Karten — nach React-Router-Refactor landet Klick auf LPStartseite statt App.tsx, aber LPStartseite las nur `?ids=` (Multi), nicht `?id=` (single).
+- Fix: `?id=` Handling ergänzt, rendert `DurchfuehrenDashboard`.
+- Commit `e076c7c`
 
-### Fix
-Minimal-Patch in `ExamLab/src/components/lp/LPStartseite.tsx` (12 Zeilen): Direkt unter dem bestehenden `?ids=`-Check einen `?id=`-Check ergänzt, der `DurchfuehrenDashboard` rendert. Der `<a href>` bleibt unverändert — der Full-Page-Reload auf dieselbe URL rendert jetzt `DurchfuehrenDashboard` statt der Liste.
+**2. Phase 4 Header-Cleanup**
+- Feature-Flag `VITE_ENABLE_NEW_HEADER` entfernt, neuer Header permanent aktiv.
+- Alte `LPHeader.tsx` + `UebenTabLeiste.tsx` (+Test) gelöscht.
+- Inline-Fallback-Header-Code in SuSStartseite/AppShell/KorrekturEinsicht entfernt.
+- Favoriten-Klick → Ziel-L3 direkt (Spec §2.6): `/{typ}?id={ziel}` statt `/{typ}/{ziel}` → öffnet DurchfuehrenDashboard statt Composer.
+- Commit `e0a6c39`
 
-### Commit
-- `e076c7c` fix(lp): "Prüfung starten"/"Übung starten"/"Auswerten" Karten-Buttons
+**3. TabKaskade Super-Chip + Hover-Cascade**
+- Pro L1-Gruppe eigener Super-Chip-Container (slate-100/slate-900, rounded-lg, p-1), 8px Gap zwischen.
+- Einheitliche States: inaktiv (plain) / parent (slate ⌐) / aktiv (violet ⌐) / hover (slate ⌐).
+- `⌐`-Form = border-l-2 + border-b-2 + rounded-bl-lg → "Ordner-Lasche"
+- Hover-Cascade: Non-aktives L1 hover → L2 inline erscheint. React useState (nicht CSS-only), damit Tests DOM-basiert prüfen können.
+- L3-Dropdown erscheint bei L2 aktiv ODER L2 hover.
+- L3Dropdown-Styling an neue Tab-Optik angepasst.
+- Commits `62a5b2e`, `3dce947`, `6cdd4e8`
 
-### Verifikation
-- `npx tsc -b` ✅ | 308 Tests ✅ | Build ✅
-- Staging: `/pruefung?id=einrichtung-pruefung` rendert DurchfuehrenDashboard mit Vorbereitung/Lobby/Live/Auswertung-Tabs korrekt (✓)
-- Hinweis für künftige Tests: Bei Deploy-Cache-Problem (alter JS-Chunk-Hash in HTML → 503) hilft SW-unregister + Caches.delete + Cache-Buster-URL
+**4. Admin-Cleanup + Toast**
+- `AdminKindDetail.tsx` + `AdminThemaDetail.tsx` gelöscht (unreachable Entry-Points, Bundle 13 I Follow-up).
+- `AdminDashboard.tsx` vereinfacht.
+- Toast-Banner für "Kurs nicht gefunden" (statt console.warn).
+- FarbenTab kompakter: text-sm/text-xs, kleinere Farbfelder.
+
+**5. SuS /pruefen Empty-State**
+- `ladeKorrekturenFuerSuS`: Array.isArray-Check statt `?? null`. null = echter Fehler, [] = keine Korrekturen. Verhindert "Korrekturen konnten nicht geladen werden"-Fehler wenn SuS keine hat.
+- Commit `38c9d8d`
+
+**6. Design-System Utilities + Unification**
+- `.settings-card` (index.css): dezenter Hover-Rand für Einstellungs-Kacheln.
+- AllgemeinTab: 6× `.settings-card` statt duplizierter Klassen.
+- FarbenTab/MitgliederTab/FaecherTab: Listen-Zeilen bekommen `hover:bg-slate-50 dark:hover:bg-slate-700/30`.
+- SuS Dashboard Chip: inaktive Chips haben jetzt Hover-Feedback (Rand + BG).
+- Commit `d5cb11b`, `08b3259`
+
+**7. Asset-URL-Bug (Bilder + PDFs laden nicht)**
+- Root Cause: Daten-Dateien (einrichtungsPruefung.ts etc.) nutzen `./materialien/` und `./demo-bilder/` (relativ). Bei SPA-Route wie `/sus/ueben/einrichtung-pruefung` löst der Browser relativ gegen die Route → falscher Pfad → GitHub Pages SPA-Fallback liefert `index.html` → im PDF-iframe lädt die App selbst (= "SuS-Üben-Website im PDF-Fenster").
+- Fix: Neue Utility `utils/assetUrl.ts` mit `toAssetUrl(url)` absolutiert relative Pfade gegen `BASE_URL`. Angewendet in `MaterialPanel.tsx` + 4 Fragetypen (Hotspot, Bildbeschriftung, DragDrop, PDF).
+- Commit `7911a61`
+
+**8. Einrichtungsprüfungs-Fallback**
+- `App.tsx` hatte Fallback auf `einrichtung-uebung` wenn Backend Config nicht kennt. Einrichtungsprüfung fehlte im Fallback → SuS sah "Prüfung konnte nicht geladen werden".
+- Fix: Fallback-Map mit beiden eingebauten Prüfungen.
+- Commit `7911a61`
+
+**9. Design-Wünsche (F1-F3)**
+- F1: "Aktuell"-Badges in LP-Themensteuerung nutzen Fachfarbe (statt grün); "z.T. aktuell" = Fachfarbe mit opacity 0.6; "Freigegeben" bleibt slate.
+- F2: SuS-Themen-Kacheln bekommen unteren Rand in Fachfarbe zusätzlich zum linken (analog Header-Tabs).
+- F3: GlobalSuche-Eingabefeld text-xs → text-sm, Icon-Positionierung per top-1/2 — matcht TabKaskade-Höhe.
+- Commit `b2092f5`
+
+### Verifikation (Staging mit echten Logins)
+
+Alle Bugs aus User-Testbericht als gefixt verifiziert:
+- ✅ E1 SuS-Lobby-Beitritt: SuS kommt in Prüfung, Frage 1/23
+- ✅ E2 Frage 13 (Tierzelle), Frage 14 (Weltkarte/Kontinente), Frage 16 (PDF-Annotation Witzsammlung)
+- ✅ E3 Material-PDFs: OR-Auszug Kaufvertrag lädt korrekt (nicht mehr SuS-Website)
+- ✅ E4 LP-Live-Monitoring: zeigt SuS `wr.test@stud.gymhofwil.ch`, Aktiv, Frage 1/23
+- ✅ F1 Aktuell-Tags in Fachfarbe (Recht grün, VWL orange)
+- ✅ F2 Themen-Kacheln ⌐-Rand in Fachfarbe
+- ✅ F3 Suchfeld matcht Tab-Höhe
+
+`tsc -b` ✅ | 303 Tests ✅ | Build ✅
+
+### Lehre
+- Relative Asset-URLs in Daten-Dateien sind eine Zeitbombe bei SPA-Routing. Bei neuen Assets konsequent `toAssetUrl()` verwenden.
+- Deploy-Cache: Browser cacht oft `index.html` selbst, verweist auf alten Chunk-Hash (503). SW-unregister + `caches.delete()` + Cache-Buster in URL hilft. Wenn Kunden das gleiche erleben: Empfehlung für Hard-Reload (Cmd+Shift+R).
 
 ---
 

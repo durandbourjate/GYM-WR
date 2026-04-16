@@ -170,3 +170,23 @@
 - [ ] RDP-Toleranz < 1.0
 - [ ] CSP geprüft wenn neue Quellen eingebunden werden
 - [ ] Fehler in async Funktionen re-thrown (nicht verschluckt)
+
+---
+
+## G) Asset-URLs bei SPA-Routing (ExamLab, Session 115)
+
+### 27. Relative URLs lösen gegen SPA-Route auf
+**Problem:** Daten-Dateien wie `einrichtungsPruefung.ts` / `einrichtungsFragen.ts` verwendeten relative Pfade: `./materialien/witzsammlung.pdf`, `./demo-bilder/europa-karte.svg`. Bei einer SPA-Route wie `/sus/ueben/einrichtung-pruefung` löst der Browser `./materialien/…` gegen die aktuelle Seite auf → `/sus/ueben/materialien/witzsammlung.pdf` → 404 → GitHub Pages SPA-Fallback lieferte `index.html` → im iframe lud die App selbst (User sah "SuS-Üben-Website im PDF-Fenster"). (S115)
+
+**Regel:** Asset-URLs in Daten-Dateien (PDFs, Bilder, SVGs) MÜSSEN beim Rendern durch `utils/assetUrl.ts::toAssetUrl(url)` geschickt werden. Die Utility:
+- lässt absolute URLs (http/https/blob/data) unverändert
+- absolutiert relative Pfade gegen `import.meta.env.BASE_URL` (z.B. `/GYM-WR-DUY/staging/`)
+
+Alternativ: Beim Erstellen neuer Daten-Dateien absolute Pfade mit `import.meta.env.BASE_URL` bauen statt `./…`.
+
+**Betroffene Komponenten (alle gefixt in S115):** `MaterialPanel.tsx` (iframe-src), `HotspotFrage.tsx`, `BildbeschriftungFrage.tsx`, `DragDropBildFrage.tsx`, `PDFFrage.tsx` (pdfUrl).
+
+**Checkliste neue Bild/PDF-Komponente:**
+- [ ] `toAssetUrl()` verwendet (nicht direkte `frage.bildUrl` / `material.url`)
+- [ ] Bei SPA-Route `/sus/ueben/X` getestet dass Asset noch lädt
+- [ ] Relative Pfade in Daten-Dateien sind akzeptabel SOLANGE sie durch `toAssetUrl()` gehen
