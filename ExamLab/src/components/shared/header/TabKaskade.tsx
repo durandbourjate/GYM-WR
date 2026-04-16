@@ -86,55 +86,27 @@ function SuperChip({ t1, l1Aktiv, aktivL2 }: { t1: L1Tab; l1Aktiv: boolean; akti
 }
 
 function L2Block({ t2, l1Aktiv, aktivL2 }: { t2: L2Tab; l1Aktiv: boolean; aktivL2: string | null }) {
-  const [hovered, setHovered] = useState(false)
   const l2Aktiv = l1Aktiv && t2.id === aktivL2
   const hatL3 = !!t2.l3 && t2.l3.items.length > 0
 
   // L2-State: parent wenn aktiv+L3 vorhanden, active wenn aktiv+kein L3, inactive sonst
   const l2State: TabState = l2Aktiv ? (hatL3 ? 'parent' : 'active') : 'inactive'
 
-  if (l2Aktiv) {
-    // Aktiver L2: L3 als Dropdown (falls vorhanden)
-    return (
-      <div className="inline-flex items-center gap-0.5">
-        {renderTab(t2.label, l2State, t2.onClick)}
-        {hatL3 && (
-          <L3Dropdown
-            mode={t2.l3!.mode}
-            items={t2.l3!.items}
-            selectedIds={t2.l3!.selectedIds}
-            onSelect={t2.l3!.onSelect}
-            onAddNew={t2.l3!.onAddNew}
-            addNewLabel={t2.l3!.addNewLabel}
-            placeholder={t2.l3!.placeholder}
-          />
-        )}
-      </div>
-    )
-  }
-
-  // Nicht-aktiver L2: bei Hover → L3-Items als Inline-Preview (falls vorhanden)
+  // L3-Dropdown IMMER sichtbar wenn L2 ein L3 hat (nicht nur bei aktivem L2).
+  // So sieht die LP bei 1+ Kurs die Dropdown-Auswahl direkt, ohne erst "Übungen" klicken zu müssen.
   return (
-    <div
-      className="inline-flex items-center gap-0.5"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <div className="inline-flex items-center gap-0.5">
       {renderTab(t2.label, l2State, t2.onClick)}
-      {hatL3 && hovered && (
-        <div className="inline-flex items-center gap-0.5">
-          {t2.l3!.items.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => t2.l3!.onSelect([item.id])}
-              title={item.label}
-              className={`${TAB_BASE} ${TAB_INACTIVE}`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+      {hatL3 && (
+        <L3Dropdown
+          mode={t2.l3!.mode}
+          items={t2.l3!.items}
+          selectedIds={t2.l3!.selectedIds}
+          onSelect={t2.l3!.onSelect}
+          onAddNew={t2.l3!.onAddNew}
+          addNewLabel={t2.l3!.addNewLabel}
+          placeholder={t2.l3!.placeholder}
+        />
       )}
     </div>
   )
