@@ -127,22 +127,27 @@ export async function korrekturFreigeben(pruefungId: string, freigegeben: boolea
   return postBool('korrekturFreigeben', { email, pruefungId, freigegeben, typ })
 }
 
-/** Freigegebene Korrekturen für SuS laden */
+/** Freigegebene Korrekturen für SuS laden.
+ *  Unterscheidet bewusst zwischen "kein Backend / echter Fehler" (null) und
+ *  "Backend OK, keine Korrekturen vorhanden" (leeres Array). Sonst zeigt die UI
+ *  fälschlich "Korrekturen konnten nicht geladen werden" wenn der SuS einfach
+ *  noch keine freigegebenen Korrekturen hat. */
 export async function ladeKorrekturenFuerSuS(email: string): Promise<KorrekturListeEintrag[] | null> {
-  if (!APPS_SCRIPT_URL) return null
+  if (!APPS_SCRIPT_URL) return [] // kein Backend → keine Korrekturen (kein Fehler)
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action: 'ladeKorrekturenFuerSuS', email }),
     })
-    if (!response.ok) return null
+    if (!response.ok) return null // HTTP-Fehler → echter Fehler
     const text = await response.text()
     try {
       const data = JSON.parse(text)
-      return data.korrekturen ?? null
-    } catch { return null }
-  } catch { return null }
+      // Backend hat korrekt geantwortet — fehlendes oder null-Feld = keine Korrekturen
+      return Array.isArray(data.korrekturen) ? data.korrekturen : []
+    } catch { return null } // JSON-Parse-Fehler → echter Fehler
+  } catch { return null } // Netzwerk-Fehler → echter Fehler
 }
 
 /** Detail einer korrigierten Prüfung für SuS laden */
