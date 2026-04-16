@@ -1,110 +1,171 @@
+import { useState } from 'react'
 import { L3Dropdown } from './L3Dropdown'
-import type { TabKaskadeConfig } from './types'
+import type { TabKaskadeConfig, L1Tab, L2Tab } from './types'
 
 interface Props {
   config: TabKaskadeConfig
 }
 
+// === Tab-States (einheitlich über L1/L2/L3) ===
+const TAB_BASE =
+  'px-3 py-1.5 text-sm rounded-md cursor-pointer whitespace-nowrap ' +
+  'inline-flex items-center gap-1 border-l-2 border-b-2 border-transparent transition-colors'
+
+const TAB_INACTIVE =
+  'text-slate-600 dark:text-slate-400 ' +
+  'hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 hover:font-medium ' +
+  'hover:border-l-slate-400 dark:hover:border-l-slate-600 ' +
+  'hover:border-b-slate-400 dark:hover:border-b-slate-600 ' +
+  'hover:rounded-bl-lg'
+
+// Parent = L1 wenn L2 aktiv, L2 wenn L3 aktiv → slate ⌐
+const TAB_PARENT =
+  'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium ' +
+  'border-l-slate-400 dark:border-l-slate-600 ' +
+  'border-b-slate-400 dark:border-b-slate-600 ' +
+  'rounded-bl-lg'
+
+// Aktiv = innerster Tab mit Fokus → violett ⌐
+const TAB_ACTIVE =
+  'bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 font-semibold ' +
+  'border-l-violet-500 border-b-violet-500 rounded-bl-lg'
+
+// Super-Chip-Container pro L1-Gruppe
+const SUPER_CHIP = 'inline-flex items-center gap-0.5 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg'
+
 export function TabKaskade({ config }: Props) {
   const { l1Tabs, aktivL1, aktivL2 } = config
-  const aktivesL1Tab = l1Tabs.find((t) => t.id === aktivL1)
-  const indexAktiv = aktivesL1Tab ? l1Tabs.indexOf(aktivesL1Tab) : -1
-
-  function renderL1Tab(t: (typeof l1Tabs)[number]) {
-    const aktiv = t.id === aktivL1
-    return (
-      <button
-        key={t.id}
-        type="button"
-        role="tab"
-        data-l1-tab
-        aria-selected={aktiv}
-        onClick={t.onClick}
-        className={`px-2.5 py-1 text-sm whitespace-nowrap cursor-pointer transition-colors ${
-          aktiv
-            ? 'text-slate-900 dark:text-slate-100 font-semibold bg-violet-50 dark:bg-violet-950 border-b-2 border-violet-500 -mb-[1px] rounded-t'
-            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-b-2 hover:border-slate-300 -mb-[1px] rounded-t'
-        }`}
-      >
-        {t.label}
-      </button>
-    )
-  }
-
-  function renderL2Group() {
-    if (!aktivesL1Tab?.l2 || aktivesL1Tab.l2.length === 0) return null
-    return (
-      <div
-        className="inline-flex items-center gap-[1px] pl-1.5 ml-0.5 border-l-2 border-violet-400 dark:border-violet-600"
-        role="tablist"
-        aria-label={`Ansichten für ${aktivesL1Tab.label}`}
-      >
-        {aktivesL1Tab.l2.map((t2) => {
-          const aktiv = t2.id === aktivL2
-          return (
-            <span key={t2.id} className="inline-flex items-center">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={aktiv}
-                onClick={t2.onClick}
-                className={`px-2 py-0.5 text-xs whitespace-nowrap cursor-pointer transition-colors ${
-                  aktiv
-                    ? 'text-violet-700 dark:text-violet-300 font-semibold border-b-2 border-violet-400 -mb-[1px] bg-violet-50 dark:bg-violet-950 rounded-t'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800'
-                }`}
-              >
-                {t2.label}
-              </button>
-              {aktiv && t2.l3 && t2.l3.items.length > 0 && (
-                <L3Dropdown
-                  mode={t2.l3.mode}
-                  items={t2.l3.items}
-                  selectedIds={t2.l3.selectedIds}
-                  onSelect={t2.l3.onSelect}
-                  onAddNew={t2.l3.onAddNew}
-                  addNewLabel={t2.l3.addNewLabel}
-                  placeholder={t2.l3.placeholder}
-                />
-              )}
-            </span>
-          )
-        })}
-      </div>
-    )
-  }
-
-  function onL1KeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
-    const tabs = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-l1-tab]'))
-    const current = tabs.findIndex((t) => t === document.activeElement)
-    if (current < 0) return
-    const delta = e.key === 'ArrowRight' ? 1 : -1
-    const next = (current + delta + tabs.length) % tabs.length
-    tabs[next]?.focus()
-    e.preventDefault()
-  }
 
   return (
-    <>
-      <div
-        className="flex items-center gap-[1px] flex-1 flex-nowrap overflow-x-clip"
-        role="tablist"
-        aria-label="Hauptnavigation"
-        onKeyDown={onL1KeyDown}
-      >
-        {l1Tabs.map((t, i) => (
-          <span key={t.id} className="inline-flex items-center">
-            {renderL1Tab(t)}
-            {i === indexAktiv && renderL2Group()}
-          </span>
-        ))}
-      </div>
+    <div
+      className="flex items-center gap-2 flex-1 flex-nowrap overflow-x-clip py-1"
+      role="tablist"
+      aria-label="Hauptnavigation"
+      onKeyDown={onL1KeyDown}
+    >
+      {l1Tabs.map((t1) => (
+        <SuperChip key={t1.id} t1={t1} l1Aktiv={t1.id === aktivL1} aktivL2={aktivL2 ?? null} />
+      ))}
+
+      {/* Screen-Reader Announcement */}
       <div role="status" aria-live="polite" className="sr-only">
-        {aktivesL1Tab
-          ? `Ansicht ${aktivesL1Tab.label} aktiv${aktivesL1Tab.l2 ? `, ${aktivesL1Tab.l2.length} Unter-Ansichten verfügbar` : ''}`
-          : ''}
+        {aktivL1 ? `Ansicht ${l1Tabs.find((t) => t.id === aktivL1)?.label ?? ''} aktiv` : ''}
       </div>
-    </>
+    </div>
   )
+}
+
+function SuperChip({ t1, l1Aktiv, aktivL2 }: { t1: L1Tab; l1Aktiv: boolean; aktivL2: string | null }) {
+  const [hovered, setHovered] = useState(false)
+  const hatL2 = !!t1.l2 && t1.l2.length > 0
+  // L1 ist "Parent" wenn aktiv MIT L2, sonst "Aktiv" wenn ohne L2, sonst "Inaktiv"
+  const l1State: TabState = l1Aktiv ? (hatL2 ? 'parent' : 'active') : 'inactive'
+  const zeigeL2 = hatL2 && (l1Aktiv || hovered)
+
+  return (
+    <div
+      className={SUPER_CHIP}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {renderTab(t1.label, l1State, t1.onClick, true)}
+
+      {zeigeL2 && (
+        <div
+          role="tablist"
+          aria-label={`Ansichten für ${t1.label}`}
+          className="inline-flex items-center gap-0.5"
+        >
+          {t1.l2!.map((t2) => (
+            <L2Block key={t2.id} t2={t2} l1Aktiv={l1Aktiv} aktivL2={aktivL2} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function L2Block({ t2, l1Aktiv, aktivL2 }: { t2: L2Tab; l1Aktiv: boolean; aktivL2: string | null }) {
+  const [hovered, setHovered] = useState(false)
+  const l2Aktiv = l1Aktiv && t2.id === aktivL2
+  const hatL3 = !!t2.l3 && t2.l3.items.length > 0
+
+  // L2-State: parent wenn aktiv+L3 vorhanden, active wenn aktiv+kein L3, inactive sonst
+  const l2State: TabState = l2Aktiv ? (hatL3 ? 'parent' : 'active') : 'inactive'
+
+  if (l2Aktiv) {
+    // Aktiver L2: L3 als Dropdown (falls vorhanden)
+    return (
+      <div className="inline-flex items-center gap-0.5">
+        {renderTab(t2.label, l2State, t2.onClick)}
+        {hatL3 && (
+          <L3Dropdown
+            mode={t2.l3!.mode}
+            items={t2.l3!.items}
+            selectedIds={t2.l3!.selectedIds}
+            onSelect={t2.l3!.onSelect}
+            onAddNew={t2.l3!.onAddNew}
+            addNewLabel={t2.l3!.addNewLabel}
+            placeholder={t2.l3!.placeholder}
+          />
+        )}
+      </div>
+    )
+  }
+
+  // Nicht-aktiver L2: bei Hover → L3-Items als Inline-Preview (falls vorhanden)
+  return (
+    <div
+      className="inline-flex items-center gap-0.5"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {renderTab(t2.label, l2State, t2.onClick)}
+      {hatL3 && hovered && (
+        <div className="inline-flex items-center gap-0.5">
+          {t2.l3!.items.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => t2.l3!.onSelect([item.id])}
+              title={item.label}
+              className={`${TAB_BASE} ${TAB_INACTIVE}`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+type TabState = 'inactive' | 'parent' | 'active'
+
+function renderTab(label: string, state: TabState, onClick: () => void, isL1 = false) {
+  const stateClass = state === 'active' ? TAB_ACTIVE : state === 'parent' ? TAB_PARENT : TAB_INACTIVE
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={state !== 'inactive'}
+      onClick={onClick}
+      title={label}
+      className={`${TAB_BASE} ${stateClass}`}
+      {...(isL1 ? { 'data-l1-tab': '' } : {})}
+    >
+      {label}
+    </button>
+  )
+}
+
+function onL1KeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
+  const tabs = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-l1-tab]'))
+  const current = tabs.findIndex((t) => t === document.activeElement)
+  if (current < 0) return
+  const delta = e.key === 'ArrowRight' ? 1 : -1
+  const next = (current + delta + tabs.length) % tabs.length
+  tabs[next]?.focus()
+  e.preventDefault()
 }

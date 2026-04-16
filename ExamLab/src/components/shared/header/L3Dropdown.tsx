@@ -60,10 +60,14 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
         aria-haspopup="listbox"
         aria-expanded={offen}
         onClick={() => setOffen((o) => !o)}
-        className="px-2.5 py-1 text-xs text-slate-900 dark:text-slate-100 cursor-pointer border border-violet-300 dark:border-violet-700 rounded bg-white dark:bg-slate-800 hover:border-violet-500 flex items-center gap-1.5"
+        className={`px-3 py-1.5 text-sm rounded-md cursor-pointer whitespace-nowrap inline-flex items-center gap-1 border-l-2 border-b-2 border-transparent transition-colors ${
+          keinItemGewaehlt
+            ? 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 hover:font-medium hover:border-l-slate-400 dark:hover:border-l-slate-600 hover:border-b-slate-400 dark:hover:border-b-slate-600 hover:rounded-bl-lg'
+            : 'bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 font-semibold border-l-violet-500 border-b-violet-500 rounded-bl-lg'
+        }`}
       >
         {keinItemGewaehlt ? (
-          <span className="italic text-slate-500 dark:text-slate-400">{placeholder ?? 'Auswählen …'}</span>
+          <span className="italic">{placeholder ?? 'Auswählen …'}</span>
         ) : (
           <>
             <span>{truncated}</span>
@@ -74,7 +78,7 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
             )}
           </>
         )}
-        <span className="text-violet-500 text-[10px]">▾</span>
+        <span className="text-[10px] opacity-60">{offen ? '▴' : '▾'}</span>
       </button>
       {offen && (
         <div role="listbox" className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg min-w-[220px] p-1 z-20">
