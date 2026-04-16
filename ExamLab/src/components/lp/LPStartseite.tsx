@@ -26,6 +26,7 @@ import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
 import { einrichtungsUebungFragen } from '../../data/einrichtungsUebungFragen.ts'
 import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts'
 import { MultiDurchfuehrenDashboard } from './durchfuehrung/MultiDurchfuehrenDashboard.tsx'
+import DurchfuehrenDashboard from './durchfuehrung/DurchfuehrenDashboard.tsx'
 import Button from '../ui/Button.tsx'
 
 import { leereUebung } from './vorbereitung/configVorlagen'
@@ -59,6 +60,17 @@ export default function LPStartseite() {
   }, [])
   if (multiIds.length > 1) {
     return <MultiDurchfuehrenDashboard pruefungIds={multiIds} />
+  }
+
+  // Einzel-Durchführen: ?id=X → DurchfuehrenDashboard (Start/Lobby/Monitoring/Korrektur
+  // je nach Phase). Wird von den Karten-Buttons "Prüfung starten"/"Übung starten"/
+  // "Auswerten" aufgerufen (LPStartseite.PruefungsKarte → <a href={pathname}?id={id}>).
+  const singleId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('id')
+  }, [])
+  if (singleId) {
+    return <DurchfuehrenDashboard pruefungId={singleId} />
   }
 
   // Navigation aus dem Store
