@@ -6,20 +6,26 @@
 
 ---
 
-## 🚨 HOCHPRIORITÄT — Offener Blocker-Bug (Stand: 15.04.2026)
+## Session 115 — Blocker-Bug Fix "Prüfung/Übung starten" (16.04.2026)
 
-**Prüfungen und Übungen können nicht durchgeführt und bearbeitet werden.**
+### Stand
+**Fix auf `preview` deployed, auf Staging verifiziert (Einrichtungsprüfung → DurchfuehrenDashboard rendert korrekt mit Live-Monitoring, SuS-Zeile, Phase-Tabs).** User-Freigabe: Merge auf main.
 
-- "Prüfung starten" und "Übung starten"-Buttons auf den Karten funktionieren nicht
-- Ursache: Wahrscheinlich X-Frame-Options / CSP-Problem (Console zeigt Warning)
-- Betroffen: LP-Seite (Prüfung starten) + SuS-Seite (Übung starten)
-- Existiert bereits vor dem Kopfzeilen-Refactor (kein Regressionsbug aus S114)
-- **MUSS als erstes in der nächsten Session untersucht und behoben werden** — blockiert den produktiven Einsatz der Plattform
+### Root Cause
+`LPStartseite.tsx:1008` verwendete `<a href={window.location.pathname}?id={c.id}>` auf den Prüfungs/Übungs-Karten. Vor dem React-Router-Refactor las `App.tsx` bei `?id=` das DurchfuehrenDashboard ein. Mit dem Router gehen `/pruefung`, `/uebung`, `/favoriten` aber durch LPFlow/LPStartseite, nicht mehr durch App. LPStartseite las nur `?ids=` (Multi-Dashboard), nicht `?id=` (single) — Klick bewirkte nur einen Full-Page-Reload auf dieselbe Liste.
 
-**Vorgehen nächste Session:**
-1. Systematisches Debugging (Chrome DevTools: Console + Network) — Was passiert beim Klick?
-2. Ist es ein Routing-Problem, ein State-Problem oder ein iframe/CSP-Problem?
-3. Fix auf Feature-Branch, Browser-Test, dann merge
+Die Vermutung "X-Frame-Options / CSP-Problem" war falsch — die Console-Warnung zum Meta-Tag X-Frame-Options ist rein kosmetisch und unabhängig vom Bug.
+
+### Fix
+Minimal-Patch in `ExamLab/src/components/lp/LPStartseite.tsx` (12 Zeilen): Direkt unter dem bestehenden `?ids=`-Check einen `?id=`-Check ergänzt, der `DurchfuehrenDashboard` rendert. Der `<a href>` bleibt unverändert — der Full-Page-Reload auf dieselbe URL rendert jetzt `DurchfuehrenDashboard` statt der Liste.
+
+### Commit
+- `e076c7c` fix(lp): "Prüfung starten"/"Übung starten"/"Auswerten" Karten-Buttons
+
+### Verifikation
+- `npx tsc -b` ✅ | 308 Tests ✅ | Build ✅
+- Staging: `/pruefung?id=einrichtung-pruefung` rendert DurchfuehrenDashboard mit Vorbereitung/Lobby/Live/Auswertung-Tabs korrekt (✓)
+- Hinweis für künftige Tests: Bei Deploy-Cache-Problem (alter JS-Chunk-Hash in HTML → 503) hilft SW-unregister + Caches.delete + Cache-Buster-URL
 
 ---
 
