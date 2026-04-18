@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
-import { lazyMitRetry } from '../../utils/lazyMitRetry'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
@@ -27,6 +26,8 @@ import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts
 import { MultiDurchfuehrenDashboard } from './durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import DurchfuehrenDashboard from './durchfuehrung/DurchfuehrenDashboard.tsx'
 import Button from '../ui/Button.tsx'
+import LazyFallback from '../ui/LazyFallback'
+import { lazyMitRetry } from '../../utils/lazyMitRetry'
 
 import { leereUebung } from './vorbereitung/configVorlagen'
 
@@ -869,15 +870,6 @@ export default function LPStartseite() {
           <HilfeSeite onSchliessen={toggleHilfe} />
         </Suspense>
       )}
-    </div>
-  )
-}
-
-/** Fallback-Spinner für lazy-geladene Komponenten */
-function LazyFallback() {
-  return (
-    <div className="flex items-center justify-center py-12">
-      <div className="animate-spin h-6 w-6 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full" />
     </div>
   )
 }

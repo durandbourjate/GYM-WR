@@ -1,13 +1,19 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useFavoritenStore } from '../../store/favoritenStore'
 import { apiService } from '../../services/apiService'
-import { useLPNavigation } from '../../hooks/useLPNavigation'
+import { useLPNavigationStore } from '../../store/lpUIStore'
 import type { PruefungsConfig } from '../../types/pruefung'
 // Status direkt aus PruefungsConfig ableiten (ohne TrackerDaten)
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
 import LPSkeleton from './LPSkeleton'
+import LazyFallback from '../ui/LazyFallback'
+import { lazyMitRetry } from '../../utils/lazyMitRetry'
+
+// Lazy-loaded Overlays (analog LPStartseite.tsx, mit Retry bei Chunk-Load-Fehler nach Deploy)
+const EinstellungenPanel = lazyMitRetry(() => import('../settings/EinstellungenPanel.tsx'))
+const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))
 
 /** Favoriten-Startseite für Lehrpersonen: Favoriten, Korrekturen, anstehende/letzte Prüfungen */
 export default function Favoriten() {
@@ -18,7 +24,12 @@ export default function Favoriten() {
     [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung),
   [rawFavoriten])
 
-  const { navigiereZuEinstellungen } = useLPNavigation()
+  const zeigHilfe = useLPNavigationStore(s => s.zeigHilfe)
+  const zeigEinstellungen = useLPNavigationStore(s => s.zeigEinstellungen)
+  const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
+  const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
+  const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
+
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
 
@@ -72,9 +83,9 @@ export default function Favoriten() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <LPAppHeaderContainer
-        onHilfe={() => {}}
+        onHilfe={toggleHilfe}
         onFeedback={() => {}}
-        onEinstellungen={() => navigiereZuEinstellungen()}
+        onEinstellungen={() => toggleEinstellungen()}
       />
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
@@ -127,6 +138,23 @@ export default function Favoriten() {
           <ConfigListe configs={letzteUebungen} linkPrefix="/uebung" />
         </Sektion>
       </main>
+
+      {/* Einstellungen-Overlay (kein Route-Wechsel, analog LPStartseite) */}
+      {zeigEinstellungen && (
+        <Suspense fallback={<LazyFallback />}>
+          <EinstellungenPanel
+            initialTab={useLPNavigationStore.getState().einstellungenTab ?? undefined}
+            onSchliessen={() => setZeigEinstellungen(false)}
+          />
+        </Suspense>
+      )}
+
+      {/* Hilfe-Overlay */}
+      {zeigHilfe && (
+        <Suspense fallback={<LazyFallback />}>
+          <HilfeSeite onSchliessen={toggleHilfe} />
+        </Suspense>
+      )}
     </div>
   )
 }
