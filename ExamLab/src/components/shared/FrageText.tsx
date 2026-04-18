@@ -6,11 +6,12 @@
  * - Rendert LaTeX-Formeln ($...$ inline, $$...$$ display)
  * - Extrahiert ```sprache...``` Code-Blöcke und rendert sie mit CodeMirror
  */
-import { useState, useEffect, useMemo, Suspense, lazy } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { istKatexGeladen, ladeKatexAsync, renderLatexSync } from '../../utils/latexRenderer.ts'
+import { lazyMitRetry } from '../../utils/lazyMitRetry.ts'
 
-const CodeBlock = lazy(() => import('./CodeBlock.tsx'))
+const CodeBlock = lazyMitRetry(() => import('./CodeBlock.tsx'))
 
 interface FrageTextProps {
   text: string

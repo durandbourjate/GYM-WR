@@ -2,17 +2,19 @@ interface Props {
   kannZurueck: boolean
   istBeantwortet: boolean
   feedbackSichtbar: boolean
+  hatZwischenstand: boolean
   istLetzteFrage: boolean
   istSessionFertig: boolean
   onZurueck: () => void
   onUeberspringen: () => void
+  onPruefen: () => void
   onWeiter: () => void
   onErgebnis: () => void
 }
 
 export default function QuizNavigation({
-  kannZurueck, istBeantwortet, feedbackSichtbar, istLetzteFrage: _istLetzteFrage, istSessionFertig,
-  onZurueck, onUeberspringen, onWeiter, onErgebnis,
+  kannZurueck, istBeantwortet, feedbackSichtbar, hatZwischenstand, istLetzteFrage: _istLetzteFrage, istSessionFertig,
+  onZurueck, onUeberspringen, onPruefen, onWeiter, onErgebnis,
 }: Props) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -33,6 +35,16 @@ export default function QuizNavigation({
           className="px-4 py-2.5 rounded-xl text-sm font-medium min-h-[44px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
         >
           Überspringen &#8594;
+        </button>
+      )}
+
+      {/* Antwort prüfen (nur wenn nicht geprüft + Zwischenstand vorhanden) */}
+      {!feedbackSichtbar && hatZwischenstand && (
+        <button
+          onClick={onPruefen}
+          className="ml-auto px-6 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400"
+        >
+          Antwort prüfen
         </button>
       )}
 

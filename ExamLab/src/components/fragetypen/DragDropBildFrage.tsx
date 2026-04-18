@@ -12,20 +12,33 @@ interface Props {
 export default function DragDropBildFrage({ frage }: Props) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
+  // Antwort-Schema: zuordnungen[labelText] = zoneId (wie in korrektur.ts erwartet).
+  // Ein Label liegt in höchstens einer Zone; eine Zone kann beliebig viele Labels halten.
   const zuordnungen: Record<string, string> =
     antwort?.typ === 'dragdrop_bild' ? antwort.zuordnungen : {}
 
   // Dragging State (Desktop: HTML5 DnD, Touch: Tap-to-select + Tap-to-place)
   const [draggingLabel, setDraggingLabel] = useState<string | null>(null)
   const [dragOverZone, setDragOverZone] = useState<string | null>(null)
-  // Tap-Select: Label wurde per Touch ausgewählt, wartet auf Zone-Tap
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null)
 
-  // Labels, die bereits einer Zone zugeordnet sind
-  const zugeordneteLabels = new Set(Object.values(zuordnungen))
+  const labelZone = (label: string): string | undefined => zuordnungen[label]
+  const labelsInZone = (zoneId: string): string[] =>
+    (frage.labels ?? []).filter(l => zuordnungen[l] === zoneId)
+  const verfuegbareLabels = (frage.labels ?? []).filter(l => !labelZone(l))
 
-  // Verfuegbare Labels (Pool)
-  const verfuegbareLabels = (frage.labels ?? []).filter(l => !zugeordneteLabels.has(l))
+  const platzieren = useCallback((label: string, zoneId: string) => {
+    onAntwort({
+      typ: 'dragdrop_bild',
+      zuordnungen: { ...zuordnungen, [label]: zoneId },
+    })
+  }, [zuordnungen, onAntwort])
+
+  const entfernen = useCallback((label: string) => {
+    const neu = { ...zuordnungen }
+    delete neu[label]
+    onAntwort({ typ: 'dragdrop_bild', zuordnungen: neu })
+  }, [zuordnungen, onAntwort])
 
   const handleDragStart = useCallback((label: string) => {
     if (disabled) return
@@ -45,39 +58,30 @@ export default function DragDropBildFrage({ frage }: Props) {
     e.preventDefault()
     setDragOverZone(null)
     if (!draggingLabel || disabled) return
-
-    // Wenn Zone bereits belegt ist, altes Label zurueck in Pool
-    const neueZuordnungen = { ...zuordnungen }
-    neueZuordnungen[zoneId] = draggingLabel
-    onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
+    platzieren(draggingLabel, zoneId)
     setDraggingLabel(null)
-  }, [draggingLabel, disabled, zuordnungen, onAntwort, frage.id])
+  }, [draggingLabel, disabled, platzieren])
 
   const handleZoneKlick = useCallback((zoneId: string) => {
     if (disabled) return
-    // Tap-to-place: Wenn ein Label ausgewählt ist, in diese Zone platzieren
     if (selectedLabel) {
-      const neueZuordnungen = { ...zuordnungen }
-      neueZuordnungen[zoneId] = selectedLabel
-      onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
+      platzieren(selectedLabel, zoneId)
       setSelectedLabel(null)
-      return
     }
-    // Label aus Zone entfernen (zurueck in Pool)
-    if (zuordnungen[zoneId]) {
-      const neueZuordnungen = { ...zuordnungen }
-      delete neueZuordnungen[zoneId]
-      onAntwort({ typ: 'dragdrop_bild', zuordnungen: neueZuordnungen })
-    }
-  }, [disabled, zuordnungen, onAntwort, frage.id, selectedLabel])
+  }, [disabled, selectedLabel, platzieren])
 
-  /** Label per Touch auswählen (Tap-to-select) */
+  const handleLabelInZoneKlick = useCallback((e: React.MouseEvent, label: string) => {
+    if (disabled) return
+    e.stopPropagation() // Verhindert Zone-Click (der würde selectedLabel platzieren)
+    entfernen(label)
+  }, [disabled, entfernen])
+
   const handleLabelTap = useCallback((label: string) => {
     if (disabled) return
     setSelectedLabel(prev => prev === label ? null : label) // Toggle
   }, [disabled])
 
-  const alleZugeordnet = (frage.zielzonen ?? []).every(z => zuordnungen[z.id])
+  const alleZugeordnet = verfuegbareLabels.length === 0
 
   return (
     <div className="flex flex-col gap-5">
@@ -103,33 +107,34 @@ export default function DragDropBildFrage({ frage }: Props) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
-      {/* Bild mit Zielzonen */}
-      <div className={`relative inline-block ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
-        <div className="relative overflow-hidden w-fit max-w-full">
+      {/* Bild mit Zielzonen — feste Container-Breite, damit SVGs ohne explizite width-Attribute
+          (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
+      <div className={`relative block w-full max-w-2xl ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
+        <div className="relative overflow-hidden w-full">
           <img
             src={toAssetUrl(frage.bildUrl)}
             alt="Drag & Drop Bild"
-            className="block max-w-full rounded-lg select-none"
+            className="block w-full h-auto rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />
 
-          {/* Zielzonen */}
+          {/* Zielzonen — enthalten 0..N Labels, vertikal gestapelt */}
           {(frage.zielzonen ?? []).map((zone) => {
-            const istBelegt = !!zuordnungen[zone.id]
+            const labels = labelsInZone(zone.id)
+            const istBelegt = labels.length > 0
             const istDragOver = dragOverZone === zone.id
 
             return (
               <div
                 key={zone.id}
-                className={`absolute flex items-center justify-center text-xs font-medium rounded transition-colors select-none
+                className={`absolute flex flex-col items-center justify-center gap-1 p-1 rounded transition-colors select-none overflow-auto
                   ${istBelegt
                     ? 'bg-blue-500/20 border-2 border-blue-500 dark:bg-blue-400/20 dark:border-blue-400'
                     : istDragOver
                       ? 'bg-green-500/20 border-2 border-green-500 border-dashed dark:bg-green-400/20 dark:border-green-400'
                       : 'bg-slate-500/10 border-2 border-dashed border-slate-400 dark:border-slate-500'
                   }
-                  ${!disabled && istBelegt ? 'cursor-pointer hover:bg-red-500/10 hover:border-red-400' : ''}
                 `}
                 style={{
                   left: `${zone.position.x}%`,
@@ -141,13 +146,19 @@ export default function DragDropBildFrage({ frage }: Props) {
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, zone.id)}
                 onClick={() => handleZoneKlick(zone.id)}
-                title={istBelegt && !disabled ? 'Klicken zum Entfernen' : undefined}
               >
-                {istBelegt && (
-                  <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded text-slate-800 dark:text-slate-100 shadow-sm text-xs truncate max-w-full">
-                    {zuordnungen[zone.id]}
+                {labels.map(label => (
+                  <span
+                    key={label}
+                    onClick={(e) => handleLabelInZoneKlick(e, label)}
+                    className={`px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded text-slate-800 dark:text-slate-100 shadow-sm text-xs truncate max-w-full
+                      ${!disabled ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:ring-1 hover:ring-red-400' : ''}
+                    `}
+                    title={!disabled ? 'Klicken zum Entfernen' : undefined}
+                  >
+                    {label}
                   </span>
-                )}
+                ))}
               </div>
             )
           })}
@@ -195,12 +206,15 @@ export default function DragDropBildFrage({ frage }: Props) {
       {/* Abgegeben: Zuordnungen anzeigen */}
       {disabled && (
         <div className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-          {(frage.zielzonen ?? []).map((zone) => (
-            <div key={zone.id} className="flex items-center gap-2">
-              <span className="text-slate-400">Zone:</span>
-              <span>{zuordnungen[zone.id] || '(leer)'}</span>
-            </div>
-          ))}
+          {(frage.zielzonen ?? []).map((zone) => {
+            const labels = labelsInZone(zone.id)
+            return (
+              <div key={zone.id} className="flex items-start gap-2">
+                <span className="text-slate-400 flex-shrink-0">Zone:</span>
+                <span>{labels.length > 0 ? labels.join(', ') : '(leer)'}</span>
+              </div>
+            )
+          })}
         </div>
       )}
 

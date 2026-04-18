@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
+import { lazyMitRetry } from '../../utils/lazyMitRetry'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
@@ -30,16 +31,7 @@ import Button from '../ui/Button.tsx'
 import { leereUebung } from './vorbereitung/configVorlagen'
 
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
-// Bei Chunk-Load-Fehler (z.B. nach Deploy mit neuem Hash): Auto-Retry mit Page-Reload
-function lazyMitRetry(importFn: () => Promise<{ default: React.ComponentType<any> }>) {
-  return lazy(() => importFn().catch(() => {
-    // Chunk nicht gefunden (z.B. nach Deploy) → Seite neu laden
-    console.warn('[LP] Chunk-Load fehlgeschlagen, Seite wird neu geladen...')
-    window.location.reload()
-    // Nie erreicht, aber TypeScript braucht einen Return-Typ
-    return new Promise(() => {})
-  }))
-}
+// lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
 const PruefungsComposer = lazyMitRetry(() => import('./vorbereitung/PruefungsComposer.tsx'))
 const FragenBrowser = lazyMitRetry(() => import('./fragenbank/FragenBrowser.tsx'))
 const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))

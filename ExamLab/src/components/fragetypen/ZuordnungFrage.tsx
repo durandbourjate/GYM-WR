@@ -14,21 +14,25 @@ export default function ZuordnungFrage({ frage }: Props) {
   const zuordnungen: Record<string, string> =
     antwort?.typ === 'zuordnung' ? antwort.zuordnungen : {}
 
-  // Rechte Seite mischen wenn zufallsreihenfolge aktiviert (einmalig pro Render-Zyklus)
+  // Rechte Seite: eindeutige Kategorien ermitteln, dann optional mischen.
+  // Dedup ist wichtig für N:1-Zuordnungen (z.B. 6 Behauptungen → 2 Kategorien),
+  // sonst erscheint "Absolute Armut" mehrfach im Dropdown.
+  // Sortiert stabil (frage.id-seed), damit die Reihenfolge KEIN Hinweis auf die
+  // Lösung gibt (sonst wäre Reihenfolge = Reihenfolge der paare-Liste).
   const rechteOptionen = useMemo(() => {
-    const optionen = (frage.paare ?? []).map((p) => p.rechts)
-    if (frage.zufallsreihenfolge) {
-      // Fisher-Yates Shuffle mit festem Seed basierend auf frage.id
-      const shuffled = [...optionen]
-      let seed = frage.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        seed = (seed * 16807 + 0) % 2147483647
-        const j = seed % (i + 1)
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-      return shuffled
+    const alleRechts = (frage.paare ?? []).map((p) => p.rechts)
+    const eindeutig = Array.from(new Set(alleRechts))
+    const shuffled = [...eindeutig]
+    // Seed-basierter Fisher-Yates — immer mischen, nicht nur bei zufallsreihenfolge,
+    // damit die natürliche Reihenfolge der paare keine Hinweise gibt.
+    const seedBasis = frage.zufallsreihenfolge !== false ? frage.id : `${frage.id}-stable`
+    let seed = seedBasis.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      seed = (seed * 16807 + 0) % 2147483647
+      const j = seed % (i + 1)
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
-    return optionen
+    return shuffled
   }, [frage.id, frage.paare, frage.zufallsreihenfolge])
 
   // Linke Seite ebenfalls mischen wenn aktiviert
@@ -60,8 +64,6 @@ export default function ZuordnungFrage({ frage }: Props) {
     onAntwort({ typ: 'zuordnung', zuordnungen: neueZuordnungen })
   }
 
-  // Welche rechten Optionen sind bereits vergeben?
-  const vergebeneRechts = new Set(Object.values(zuordnungen))
   const alleZugeordnet = linkeElemente.every((l) => !!zuordnungen[l])
 
   return (
@@ -135,19 +137,13 @@ export default function ZuordnungFrage({ frage }: Props) {
                 `}
               >
                 <option value="">— auswählen —</option>
-                {rechteOptionen.map((rechts) => {
-                  // Option anzeigen wenn: noch nicht vergeben ODER aktuell diesem Element zugeordnet
-                  const istVergeben = vergebeneRechts.has(rechts) && aktuelleZuordnung !== rechts
-                  return (
-                    <option
-                      key={rechts}
-                      value={rechts}
-                      disabled={istVergeben}
-                    >
-                      {rechts}{istVergeben ? ' ✓' : ''}
-                    </option>
-                  )
-                })}
+                {rechteOptionen.map((rechts) => (
+                  // Alle Optionen immer wählbar (N:1-Zuordnungen möglich).
+                  // Kein Vergeben-Marker — würde Lösung verraten.
+                  <option key={rechts} value={rechts}>
+                    {rechts}
+                  </option>
+                ))}
               </select>
             </div>
           )

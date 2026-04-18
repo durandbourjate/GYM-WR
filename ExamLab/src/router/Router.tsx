@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { migrateHashBookmarks } from './hashMigration'
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
+import { lazyMitRetry } from '../utils/lazyMitRetry'
 
-// Bestehende Komponenten (alle haben default export)
-const App = lazy(() => import('../App'))
-const LoginScreen = lazy(() => import('../components/LoginScreen'))
-const LPStartseite = lazy(() => import('../components/lp/LPStartseite'))
-const Favoriten = lazy(() => import('../components/lp/Favoriten'))
+// Bestehende Komponenten (alle haben default export).
+// lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
+const App = lazyMitRetry(() => import('../App'))
+const LoginScreen = lazyMitRetry(() => import('../components/LoginScreen'))
+const LPStartseite = lazyMitRetry(() => import('../components/lp/LPStartseite'))
+const Favoriten = lazyMitRetry(() => import('../components/lp/Favoriten'))
 
 const basePath = import.meta.env.BASE_URL
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
-import type { Antwort } from '../../types/antworten'
+import type { Antwort, Selbstbewertung } from '../../types/antworten'
 import { getFragetext } from '../../utils/ueben/fragetext'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
 import type { MasteryStufe } from '../../types/ueben/fortschritt'
@@ -54,8 +54,12 @@ interface UebungsState {
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
   beantworte: (antwort: unknown) => void
   beantworteById: (frageId: string, antwort: Antwort) => void
-  /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen) */
+  /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen + Üben-Modus) */
   speichereZwischenstandById: (frageId: string, antwort: Antwort) => void
+  /** Üben-Modus: explizit "Antwort prüfen" — liest Zwischenstand und korrigiert auto */
+  pruefeAntwortJetzt: (frageId: string) => void
+  /** Üben-Modus: SuS-Selbstbewertung für Freitext/Visualisierung/PDF/Audio/Code */
+  selbstbewertenById: (frageId: string, bewertung: Selbstbewertung) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
   ueberspringen: () => void
@@ -185,6 +189,70 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
         ...session,
         zwischenstande: { ...(session.zwischenstande ?? {}), [frageId]: normalizeAntwort(antwort) },
       },
+    })
+  },
+
+  pruefeAntwortJetzt: (frageId) => {
+    const session = get().session
+    if (!session) return
+    const frage = session.fragen.find(f => f.id === frageId)
+    if (!frage) return
+
+    // Antwort: Zwischenstand bevorzugen, sonst bereits gespeicherte antwort
+    const antwort = session.zwischenstande?.[frageId] ?? session.antworten[frageId]
+    if (antwort === undefined) return
+
+    const normalized = normalizeAntwort(antwort)
+    const korrekt = pruefeAntwort(frage, normalized)
+
+    if (!session.freiwillig) {
+      useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
+    }
+
+    set({
+      session: {
+        ...session,
+        antworten: { ...session.antworten, [frageId]: normalized },
+        ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
+        score: session.score + (korrekt ? 1 : 0),
+      },
+      feedbackSichtbar: true,
+      letzteAntwortKorrekt: korrekt,
+    })
+  },
+
+  selbstbewertenById: (frageId, bewertung) => {
+    const session = get().session
+    if (!session) return
+    const frage = session.fragen.find(f => f.id === frageId)
+    if (!frage) return
+
+    const roh = session.zwischenstande?.[frageId] ?? session.antworten[frageId]
+    if (roh === undefined) return
+    const basis = normalizeAntwort(roh)
+
+    // Selbstbewertung in die Antwort schreiben — nur sinnvoll bei selbstbewerteten Typen.
+    // Bei anderen Typen (Sicherheitsnetz): bewertung wird nur in ergebnisse gespeichert.
+    const istSelbstbewertbar = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'].includes(basis.typ)
+    const antwort = istSelbstbewertbar
+      ? ({ ...basis, selbstbewertung: bewertung } as Antwort)
+      : basis
+
+    const korrekt = bewertung === 'korrekt'
+
+    if (!session.freiwillig) {
+      useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
+    }
+
+    set({
+      session: {
+        ...session,
+        antworten: { ...session.antworten, [frageId]: antwort },
+        ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
+        score: session.score + (korrekt ? 1 : 0),
+      },
+      feedbackSichtbar: true,
+      letzteAntwortKorrekt: korrekt,
     })
   },
 

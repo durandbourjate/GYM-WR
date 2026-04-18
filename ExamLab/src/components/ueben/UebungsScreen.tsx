@@ -1,13 +1,15 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import type { Frage } from '../../types/fragen'
-import { getFragetext, bereinigePlatzhalter } from '../../utils/ueben/fragetext'
+import { istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
+import type { Selbstbewertung } from '../../types/antworten'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
 import QuizActions from './uebung/QuizActions'
+import SelbstbewertungsDialog from './uebung/SelbstbewertungsDialog'
 // FeedbackPanel wird von Fragetyp-Komponenten via FeedbackBox gerendert
 
 export default function UebungsScreen() {
@@ -16,10 +18,15 @@ export default function UebungsScreen() {
     naechsteFrage, vorherigeFrage, ueberspringen,
     toggleUnsicher, istUnsicher, istSessionFertig, beendeSession,
     aktuelleFrage, kannZurueck,
+    pruefeAntwortJetzt, selbstbewertenById,
   } = useUebenUebungsStore()
   const { zuErgebnis } = useSuSNavigation()
 
   const frage = aktuelleFrage()
+  const [selbstbewertungOffen, setSelbstbewertungOffen] = useState(false)
+
+  // Beim Frage-Wechsel Dialog schliessen
+  useEffect(() => { setSelbstbewertungOffen(false) }, [frage?.id])
 
   // Keyboard-Shortcuts
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -65,8 +72,20 @@ export default function UebungsScreen() {
   // Daten normalisieren (fehlende Felder mit Defaults füllen)
   const normFrage = normalisiereFrageDaten(frage)
   const istBeantwortet = frage.id in session.antworten
+  const hatZwischenstand = frage.id in (session.zwischenstande ?? {})
   const fortschritt = Object.keys(session.antworten).length
 
+  const handlePruefen = () => {
+    if (istSelbstbewertungstyp(frage.typ)) {
+      setSelbstbewertungOffen(true)
+    } else {
+      pruefeAntwortJetzt(frage.id)
+    }
+  }
+  const handleSelbstbewerten = (bewertung: Selbstbewertung) => {
+    selbstbewertenById(frage.id, bewertung)
+    setSelbstbewertungOffen(false)
+  }
   const handleWeiter = () => naechsteFrage()
   const handleErgebnis = () => {
     beendeSession()
@@ -90,28 +109,30 @@ export default function UebungsScreen() {
       />
 
       <main className="max-w-2xl mx-auto p-4">
-        {/* Frage-Karte */}
+        {/* Frage-Karte — Fragetyp-Komponenten rendern fragetext selbst, analog Prüfungs-Modus (Layout.tsx) */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 mb-4">
-          {/* Fragetext — nicht bei Aufgabengruppe (AufgabengruppeFrage rendert Kontext selbst) */}
-          {frage.typ !== 'aufgabengruppe' && (
-            <h2 className="text-lg font-medium mb-4 dark:text-white">
-              {bereinigePlatzhalter(getFragetext(frage))}
-            </h2>
-          )}
-
-          {/* Fragetyp-Komponente via einheitlichem FrageRenderer */}
           <FrageRenderer frage={normFrage as unknown as Frage} />
         </div>
 
-        {/* Navigation (Zurück / Überspringen / Weiter) */}
+        {/* Selbstbewertung-Dialog (Freitext/Zeichnen/PDF/Audio/Code) */}
+        {selbstbewertungOffen && frage.musterlosung && (
+          <SelbstbewertungsDialog
+            musterloesung={frage.musterlosung}
+            onWahl={handleSelbstbewerten}
+          />
+        )}
+
+        {/* Navigation (Zurück / Überspringen / Prüfen / Weiter) */}
         <QuizNavigation
           kannZurueck={kannZurueck()}
           istBeantwortet={istBeantwortet}
           feedbackSichtbar={feedbackSichtbar}
+          hatZwischenstand={hatZwischenstand && !selbstbewertungOffen}
           istLetzteFrage={session.aktuelleFrageIndex >= session.fragen.length - 1}
           istSessionFertig={istSessionFertig()}
           onZurueck={vorherigeFrage}
           onUeberspringen={ueberspringen}
+          onPruefen={handlePruefen}
           onWeiter={handleWeiter}
           onErgebnis={handleErgebnis}
         />

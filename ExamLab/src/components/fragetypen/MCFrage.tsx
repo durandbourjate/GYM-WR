@@ -56,8 +56,9 @@ export default function MCFrage({ frage }: Props) {
 
       {/* Optionen */}
       <div className={`flex flex-col gap-2.5 ${!disabled && gewaehlte.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
-        {(frage.optionen ?? []).map((option) => {
+        {(frage.optionen ?? []).map((option, index) => {
           const istGewaehlt = gewaehlte.includes(option.id)
+          const label = String.fromCharCode(65 + index)
           return (
             <button
               key={option.id}
@@ -88,7 +89,7 @@ export default function MCFrage({ frage }: Props) {
               {/* Option Label + Text */}
               <div className="flex-1">
                 <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">
-                  {option.id.toUpperCase()})
+                  {label})
                 </span>
                 <span className="text-slate-800 dark:text-slate-100">{option.text}</span>
               </div>

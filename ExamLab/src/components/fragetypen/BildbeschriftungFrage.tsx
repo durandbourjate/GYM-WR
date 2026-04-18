@@ -46,13 +46,14 @@ export default function BildbeschriftungFrage({ frage }: Props) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
-      {/* Bild mit Labels */}
-      <div className={`relative inline-block ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
-        <div className="relative overflow-hidden w-fit max-w-full">
+      {/* Bild mit Labels — feste Container-Breite, damit SVGs ohne explizite width-Attribute
+          (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
+      <div className={`relative block w-full max-w-2xl ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+        <div className="relative overflow-hidden w-full">
           <img
             src={toAssetUrl(frage.bildUrl)}
             alt="Bildbeschriftung"
-            className="block max-w-full rounded-lg select-none"
+            className="block w-full h-auto rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />
@@ -77,7 +78,7 @@ export default function BildbeschriftungFrage({ frage }: Props) {
                 onChange={(e) => handleEingabe(beschriftung.id, e.target.value)}
                 disabled={disabled}
                 placeholder={`Label ${i + 1}`}
-                className={`w-28 px-2 py-1 text-sm rounded border shadow-sm
+                className={`min-w-[120px] max-w-[220px] w-auto px-2 py-1 text-sm rounded border shadow-sm
                   bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100
                   border-slate-300 dark:border-slate-600
                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none

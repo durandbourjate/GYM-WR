@@ -1,22 +1,17 @@
-import { useState, useEffect, Suspense, lazy } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { uebenApiClient } from '../../services/ueben/apiClient'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
+import { lazyMitRetry } from '../../utils/lazyMitRetry'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import AktivePruefungen from './AktivePruefungen'
 import { SuSAppHeaderContainer } from './SuSAppHeaderContainer'
 
-// AppUeben lazy laden — mit Retry bei Cache-Mismatch (neues Deployment)
-const AppUeben = lazy(() =>
-  import('../../AppUeben').catch(() => {
-    // Chunk-Hash stimmt nicht (altes Cache) → Seite neu laden
-    window.location.reload()
-    return { default: () => null } as never
-  })
-)
+// AppUeben lazy laden — bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
+const AppUeben = lazyMitRetry(() => import('../../AppUeben'))
 
 const LP_AUTH_KEY = 'ueben-auth'
 

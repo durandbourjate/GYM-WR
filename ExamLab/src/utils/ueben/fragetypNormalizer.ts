@@ -3,7 +3,7 @@
  * Stellt sicher, dass alle erwarteten Felder vorhanden sind,
  * auch wenn das Backend unvollständige Daten liefert.
  */
-import type { Frage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, HotspotFrage, BildbeschriftungFrage, DragDropBildFrage } from '../../types/ueben/fragen'
+import type { Frage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, HotspotFrage, BildbeschriftungFrage, DragDropBildFrage, LueckentextFrage } from '../../types/ueben/fragen'
 
 // BuchungssatzFrage-Typ aus shared fragen importieren
 interface BuchungssatzFrageMinimal {
@@ -30,9 +30,33 @@ export function normalisiereFrageDaten(frage: Frage): Frage {
       return normalisiereBildbeschriftung(frage as BildbeschriftungFrage) as Frage
     case 'dragdrop_bild':
       return normalisiereDragDrop(frage as DragDropBildFrage) as Frage
+    case 'lueckentext':
+      return normalisiereLueckentext(frage as LueckentextFrage) as Frage
     default:
       return frage
   }
+}
+
+function normalisiereLueckentext(f: LueckentextFrage): LueckentextFrage {
+  const raw = Array.isArray(f.luecken) ? f.luecken : []
+  const luecken = raw.map((l, index) => {
+    const rohKorrekt = (l as { korrekteAntworten?: unknown; korrekt?: unknown; antwort?: unknown; alternativen?: unknown }).korrekteAntworten
+      ?? (l as { korrekt?: unknown }).korrekt
+      ?? (l as { antwort?: unknown }).antwort
+    const alternativen = (l as { alternativen?: unknown }).alternativen
+    const korrekteAntworten: string[] = Array.isArray(rohKorrekt)
+      ? rohKorrekt.map(String)
+      : typeof rohKorrekt === 'string'
+        ? [rohKorrekt, ...(Array.isArray(alternativen) ? alternativen.map(String) : [])]
+        : []
+    return {
+      ...l,
+      id: l.id || `luecke-${index}`,
+      korrekteAntworten,
+      caseSensitive: l.caseSensitive ?? false,
+    }
+  })
+  return { ...f, luecken }
 }
 
 function normalisiereBuchungssatz(f: BuchungssatzFrageMinimal): BuchungssatzFrageMinimal {
