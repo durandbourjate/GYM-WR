@@ -30,7 +30,7 @@ export default function LueckentextFrage({ frage }: Props) {
   const eintraege: Record<string, string> =
     antwort?.typ === 'lueckentext' ? antwort.eintraege : {}
 
-  // Gemischte Dropdown-Optionen einmalig pro Frage berechnen
+  // Gemischte Dropdown-Optionen einmalig pro Frage berechnen (key = luecke.id)
   const gemischteOptionen = useMemo(() => {
     const result: Record<string, string[]> = {}
     for (const luecke of (frage.luecken ?? [])) {
@@ -40,6 +40,15 @@ export default function LueckentextFrage({ frage }: Props) {
     }
     return result
   }, [frage.id, frage.luecken])
+
+  // Mapping Platzhalter-Nummer (aus {0}, {1}) → tatsächliche Lücken-ID
+  // Pool-Converter vergibt Zufalls-IDs, der Text nutzt aber Index-basierte {0}/{1}.
+  // Index im luecken[]-Array entspricht der Platzhalter-Nummer.
+  function lueckeVon(nummer: string): { id: string } | undefined {
+    const index = parseInt(nummer, 10)
+    if (Number.isNaN(index)) return undefined
+    return (frage.luecken ?? [])[index]
+  }
 
   function handleChange(lueckenId: string, wert: string) {
     if (disabled) return
@@ -81,7 +90,9 @@ export default function LueckentextFrage({ frage }: Props) {
         {teile.map((teil, i) => {
           const match = teil.match(/^\{\{?(\d+)\}\}?$/)
           if (match) {
-            const lueckenId = match[1]
+            const luecke = lueckeVon(match[1])
+            if (!luecke) return <span key={i}>{teil}</span>
+            const lueckenId = luecke.id
             const wert = eintraege[lueckenId] ?? ''
             const dropdownOpts = gemischteOptionen[lueckenId]
 
