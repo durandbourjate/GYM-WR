@@ -6,6 +6,74 @@
 
 ---
 
+## Session 118 — A2-Fragetypen-Bugfixes aus Staging-Test (18.04.2026)
+
+### Stand
+**Branch `fix/a2-fragetypen-uebung` auf `preview` gepusht und live verifiziert.** 303/303 Tests grün, tsc clean, Build OK. **Mergt bei Freigabe zu `main`** (zusammen mit Session 116 Bundle A).
+
+Parallel-Branch: `feature/bundle-b-ux-systemregeln` (Session 117) liegt noch von `main` abgezweigt und wartet auf A2-Merge → dann rebase + Browser-Test.
+
+### Umgesetzt — 7 Bugs aus User-Staging-Test
+
+Commits auf `fix/a2-fragetypen-uebung`:
+- `b6129ee` Lückentext-Crash bei fehlender `korrekteAntworten` (live verifiziert)
+- `c30795f` Lückentext-Prüfen-Button + DragDrop Mehrfach-Labels
+- `2c57c37` 5 Fragetypen-Bugs (R/F, Lückentext, Zuordnung, Bildbeschriftung, DragDrop)
+
+**Bugfixes (chronologisch):**
+
+1. **R/F Fragetext doppelt** — `UebungsScreen.tsx` rendert den fragetext zusätzlich zur Fragetyp-Komponente, die ihn schon zeigt. Fix: UebungsScreen überlässt das Rendering den Fragetyp-Komponenten (analog Prüfungs-Modus / `Layout.tsx`).
+
+2. **Lückentext keine Input-Felder** — Pool-Daten nutzen `{0}` als Platzhalter, Regex erwartete nur `{{0}}` → nie gematcht → nur Plaintext. Regex auf beide Formate erweitert (`{\d+}|{{\d+}}`). Fragetext-Duplikat wird unterdrückt wenn `fragetext === textMitLuecken`.
+
+3. **Zuordnung Dropdown-Blocker + Lösungs-Leak** — `disabled={istVergeben}` + `✓`-Suffix blockierte N:1-Zuordnungen (6 Behauptungen, 2 Kategorien) und verriet bisherige Wahl. Entfernt. `rechteOptionen` dedupliziert + immer gemischt (Reihenfolge ≠ Hinweis).
+
+4. **Bildbeschriftung / DragDrop / Hotspot: Bild 0×0** — Pool-SVGs haben nur `viewBox`, kein `width`/`height` → Container `w-fit` kollabierte auf 0. Container umgestellt auf `block w-full max-w-2xl`, Bild `w-full h-auto` → streckt auf Container, Höhe folgt Aspect-Ratio.
+
+5. **Lückentext-Mapping** — Pool-Converter vergibt `genId()` (Zufalls-ID) als Lücken-ID, aber Platzhalter `{0}` liefert Key `"0"`. Keys matchten nie. Fix: Mapping Platzhalter-Nummer → `luecken[index].id`, Input schreibt unter echter Lücken-ID.
+
+6. **DragDrop nur 1 Label/Zone** — UI schrieb `zuordnungen[zoneId] = label` (überschreibt), aber `korrektur.ts` erwartet `zuordnungen[label] = zoneId`. UI auf korrektes Schema umgestellt → Zone hält N Labels vertikal gestapelt, Klick auf Label entfernt nur dieses.
+
+7. **Lückentext "Antwort prüfen" tat scheinbar nichts** — Live-Debug (window.onerror + click) zeigte echten Crash: `TypeError: Cannot read properties of undefined (reading 'some')` in `korrektur.ts`. `luecken[].korrekteAntworten` war undefined → silent geswallowed. Fix in 2 Lagen:
+   - **`fragetypNormalizer.ts`**: neue `normalisiereLueckentext` stellt sicher dass `korrekteAntworten` immer ein Array ist (Fallback auf `korrekt`/`antwort`/`alternativen`).
+   - **`korrektur.ts`**: defensive Array-Checks für `frage.luecken` und `l.korrekteAntworten` — kein Crash bei fehlenden Daten.
+
+### Verifikation (Staging, echte Logins)
+- ✅ Lückentext: Eingabe → "Antwort prüfen" klicken → Feedback ("Leider falsch" + Musterlösung) + "Weiter"-Button (Screenshot dokumentiert).
+- ✅ Zuordnung: Dropdown klappt, alle Optionen wählbar (User bestätigt).
+- ⏸ DragDrop Mehrfach-Labels: vom User noch nicht live getestet (deployed, wartet auf Verify).
+- ⏸ R/F Fragetext doppelt, Bildbeschriftung Bild-Fix, Hotspot: deployed, User-Verify ausstehend.
+
+### Offene Kleinigkeiten
+- Lückentext-Placeholder zeigt `Lücke luecke-0` statt `Lücke 1` — Kosmetik, kann in eigenem Commit.
+- Korrektur der Lückentext-Daten: Backend-seitig scheint `luecken[].korrekteAntworten` nicht konsistent zu kommen. Die defensive Lösung auf Client-Seite fängt das ab (Frage wird als falsch bewertet), aber für echte Pool-Fragen wäre es wünschenswert, den Datenfluss Pool→Fragenbank→Apps-Script→Client zu auditieren und sicherzustellen dass `korrekteAntworten` mitkommt.
+
+### Apps-Script
+**Nicht geändert — kein Deploy nötig.**
+
+### Lehre (Kandidaten für rules/)
+- **"Button tut nichts"-Debugging = Live-Browser-Debug (`window.onerror` abonnieren + klicken).** Silent-swallowed Exceptions sind genau bei React-EventHandlers häufig — Ohne window.onerror wird ein TypeError vom Klick nicht sichtbar, wirkt wie "keine Reaktion". Regel: bei "macht nichts"-Bugreports IMMER zuerst `window.onerror`-Patch setzen, dann klicken.
+- **Defensive Normalizer für Backend-Daten.** Wenn das Backend Felder inkonsistent liefert (optional, umbenannt, gefiltert), lieber im `fragetypNormalizer` alle Varianten einfangen statt im UI-Code. Siehe `normalisiereLueckentext` als Muster.
+- **Staging-Deploy-Queue.** Zwei schnell hintereinander gepushte Commits führten zu "Deploy hängt" — der erste lief, der zweite blieb aus. Leerer Trigger-Commit (`git commit --allow-empty`) setzt den Workflow neu in Gang. Bei verdächtig altem `last-modified` auf Staging → leerer Commit als Retrigger.
+
+---
+
+## Session 117 — Bundle B UX-Systemregeln (18.04.2026)
+
+Parallel-Branch `feature/bundle-b-ux-systemregeln` (von main abgezweigt, NICHT auf A2 aufgebaut). Komplett implementiert, gepusht. Wartet auf A2-Merge → Rebase → Browser-Test.
+
+Siehe Branch-HANDOFF (auf `origin/feature/bundle-b-ux-systemregeln`) für Details. Kurzfassung:
+
+- B-2 Globaler Zurück-Button (`useGlobalZurueck`-Hook)
+- B-3 `useTabAutoScroll`-Hook (Auto-Scroll bei Maus nahe Rand, respektiert prefers-reduced-motion)
+- B-4 Settings/Hilfe öffnen ohne Re-Mount (Favoriten nutzt Store-Flag statt Route-Change)
+- B-5 TabBar-Audit (keine Migration nötig — TabBar wird bereits konsistent genutzt)
+- Shared Extracts: `utils/lazyMitRetry.ts` + `ui/LazyFallback.tsx`
+
+326 Tests grün, tsc clean. Bundle-A-Branch (A1+A2) **unabhängig** — der gleiche `lazyMitRetry` wurde auf beiden Branches parallel extrahiert, Merge könnte einen trivialen Konflikt geben (gleicher Inhalt, doppelte Datei-Creation).
+
+---
+
 ## Session 116 — Bundle A: Dynamic Import Fix + Übungsmodus-Korrektur-Flow (18.04.2026)
 
 ### Stand
