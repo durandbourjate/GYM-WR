@@ -103,13 +103,14 @@ export default function DragDropBildFrage({ frage }: Props) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
-      {/* Bild mit Zielzonen */}
-      <div className={`relative inline-block ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
-        <div className="relative overflow-hidden w-fit max-w-full">
+      {/* Bild mit Zielzonen — feste Container-Breite, damit SVGs ohne explizite width-Attribute
+          (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
+      <div className={`relative block w-full max-w-2xl ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
+        <div className="relative overflow-hidden w-full">
           <img
             src={toAssetUrl(frage.bildUrl)}
             alt="Drag & Drop Bild"
-            className="block max-w-full rounded-lg select-none"
+            className="block w-full h-auto rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />

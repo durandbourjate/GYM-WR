@@ -47,8 +47,11 @@ export default function LueckentextFrage({ frage }: Props) {
     onAntwort({ typ: 'lueckentext', eintraege: neueEintraege })
   }
 
-  // Text mit Lücken rendern
-  const teile = frage.textMitLuecken.split(/(\{\{\d+\}\})/)
+  // Text mit Lücken rendern — unterstützt beide Platzhalter-Formate: {0} (Pool) und {{0}} (Legacy)
+  const teile = frage.textMitLuecken.split(/(\{\{\d+\}\}|\{\d+\})/)
+
+  // Fragetext nicht doppelt anzeigen, wenn er identisch zu textMitLuecken ist (Pool-Daten)
+  const fragetextZeigen = frage.fragetext && frage.fragetext.trim() !== frage.textMitLuecken.trim()
 
   return (
     <div className="flex flex-col gap-5">
@@ -65,16 +68,18 @@ export default function LueckentextFrage({ frage }: Props) {
         </span>
       </div>
 
-      {/* Fragetext (sticky: bleibt beim Scrollen sichtbar) */}
-      <div
-        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
-      />
+      {/* Fragetext (sticky: bleibt beim Scrollen sichtbar) — nur wenn ≠ textMitLuecken */}
+      {fragetextZeigen && (
+        <div
+          className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
+        />
+      )}
 
       {/* Text mit Inline-Inputs */}
       <div className="text-base leading-loose text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
         {teile.map((teil, i) => {
-          const match = teil.match(/^\{\{(\d+)\}\}$/)
+          const match = teil.match(/^\{\{?(\d+)\}\}?$/)
           if (match) {
             const lueckenId = match[1]
             const wert = eintraege[lueckenId] ?? ''

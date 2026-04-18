@@ -61,16 +61,17 @@ export default function HotspotFrage({ frage }: Props) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
-      {/* Bild mit Klickbereichen */}
-      <div className={`relative inline-block ${!disabled && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      {/* Bild mit Klickbereichen — feste Container-Breite, damit SVGs ohne explizite width-Attribute
+          (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
+      <div className={`relative block w-full max-w-2xl ${!disabled && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div
-          className={`relative overflow-hidden w-fit max-w-full ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
+          className={`relative overflow-hidden w-full ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
           onClick={handleKlick}
         >
           <img
             src={toAssetUrl(frage.bildUrl)}
             alt="Hotspot-Bild"
-            className="block max-w-full rounded-lg select-none"
+            className="block w-full h-auto rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />

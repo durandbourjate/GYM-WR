@@ -4,7 +4,6 @@ import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import type { Frage } from '../../types/fragen'
-import { getFragetext, bereinigePlatzhalter } from '../../utils/ueben/fragetext'
 import { istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
 import type { Selbstbewertung } from '../../types/antworten'
 import QuizHeader from './uebung/QuizHeader'
@@ -110,16 +109,8 @@ export default function UebungsScreen() {
       />
 
       <main className="max-w-2xl mx-auto p-4">
-        {/* Frage-Karte */}
+        {/* Frage-Karte — Fragetyp-Komponenten rendern fragetext selbst, analog Prüfungs-Modus (Layout.tsx) */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 mb-4">
-          {/* Fragetext — nicht bei Aufgabengruppe (AufgabengruppeFrage rendert Kontext selbst) */}
-          {frage.typ !== 'aufgabengruppe' && (
-            <h2 className="text-lg font-medium mb-4 dark:text-white">
-              {bereinigePlatzhalter(getFragetext(frage))}
-            </h2>
-          )}
-
-          {/* Fragetyp-Komponente via einheitlichem FrageRenderer */}
           <FrageRenderer frage={normFrage as unknown as Frage} />
         </div>
 

@@ -46,13 +46,14 @@ export default function BildbeschriftungFrage({ frage }: Props) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
       />
 
-      {/* Bild mit Labels */}
-      <div className={`relative inline-block ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
-        <div className="relative overflow-hidden w-fit max-w-full">
+      {/* Bild mit Labels — feste Container-Breite, damit SVGs ohne explizite width-Attribute
+          (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
+      <div className={`relative block w-full max-w-2xl ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+        <div className="relative overflow-hidden w-full">
           <img
             src={toAssetUrl(frage.bildUrl)}
             alt="Bildbeschriftung"
-            className="block max-w-full rounded-lg select-none"
+            className="block w-full h-auto rounded-lg select-none"
             style={{ objectFit: 'contain' }}
             draggable={false}
           />
