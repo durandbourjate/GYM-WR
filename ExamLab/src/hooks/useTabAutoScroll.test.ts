@@ -130,4 +130,28 @@ describe('useTabAutoScroll', () => {
 
     document.body.removeChild(el)
   })
+
+  it('respektiert prefers-reduced-motion — kein Event-Listener', () => {
+    const originalMatchMedia = window.matchMedia
+    window.matchMedia = vi.fn().mockImplementation((q: string) => ({
+      matches: q === '(prefers-reduced-motion: reduce)',
+      media: q,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    }))
+
+    const el = makeScrollableEl(1000, 500, 0)
+    const addSpy = vi.spyOn(el, 'addEventListener')
+    const ref = { current: el }
+    renderHook(() => useTabAutoScroll(ref))
+
+    expect(addSpy).not.toHaveBeenCalled()
+
+    document.body.removeChild(el)
+    window.matchMedia = originalMatchMedia
+  })
 })
