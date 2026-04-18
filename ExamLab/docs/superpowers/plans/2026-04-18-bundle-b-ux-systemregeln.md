@@ -57,9 +57,28 @@ Wenn vollständiges Re-Mount (LPStartseite-Mount log mehrfach): das ist der Bug.
 
 Zustand-Stores prüfen: werden `gruppen`, `configs`, `fragenbank` neu gefetcht beim Settings-Öffnen? Falls ja: Cache-Invalidation prüfen.
 
-- [ ] **Step 1.3: Findings dokumentieren**
+- [x] **Step 1.3: Findings dokumentieren**
 
-In Plan unter `## Audit-Findings (Task 1)` eintragen. **Erst dann** Implementierung beginnen.
+## Audit-Findings (Task 1) — 18.04.2026
+
+**Root Cause:** Inkonsistentes Öffnen der Einstellungen in zwei Code-Pfaden:
+- `Favoriten.tsx:54` ruft `navigiereZuEinstellungen()` → `navigate('/einstellungen')` → Router wechselt von `/favoriten` (Element `<FavoritenFlow>`) zu `/einstellungen` (Element `<LPFlow>`) → Favoriten unmountet, LPStartseite mountet neu.
+- `LPStartseite.tsx:344` ruft `toggleEinstellungen()` (Store-Flag) → kein Route-Wechsel → ResizableSidebar-Overlay erscheint ohne Remount.
+
+`EinstellungenPanel.tsx:64` nutzt bereits `<ResizableSidebar mode="overlay">` — Design ist korrekt, nur der Einstieg aus Favoriten ist kaputt.
+
+**Weitere Beobachtungen:**
+- `Router.tsx:127–128`: `/einstellungen` + `/einstellungen/:tab` sind separate Routen (Sibling von `/favoriten`). Bookmark-Fähigkeit war vermutlich Absicht.
+- `useLPRouteSync.ts:17–24`: URL→Store-Sync setzt `setZeigEinstellungen(true, tab)` wenn pathname mit `/einstellungen` anfängt — nach dem Remount.
+- Hilfe und Fragensammlung haben vermutlich ein analoges Muster (TODO in Task 4 prüfen).
+
+**Fix-Plan (minimal-invasiv) für Task 4:**
+1. `Favoriten.tsx` + andere Einstiegspunkte nutzen `toggleEinstellungen(tab?)` statt `navigate('/einstellungen')`.
+2. `/einstellungen` und `/einstellungen/:tab` Routen in `Router.tsx` entfernen. Alternativ Redirect auf `/favoriten` + `toggleEinstellungen(tab)` via Effect, damit bestehende Bookmarks nicht brechen.
+3. `useLPRouteSync.ts` URL-Sync für `/einstellungen` entfernen (Store ist jetzt Quelle der Wahrheit).
+4. Analog für `/hilfe`/`/fragensammlung` prüfen und vereinheitlichen.
+
+**Browser-Verifikation:** später auf Staging mit echten Logins — Performance-Recording vor/nach wenn User verfügbar.
 
 ---
 
@@ -215,13 +234,22 @@ Branch-intern, ein Commit pro umgestellter Komponente.
 
 Bestehende Komponententests müssen weiterhin grün bleiben. Snapshot-Updates wo nötig.
 
-- [ ] **Step 5.5: Commit-Sequenz**
+- [x] **Step 5.5: Commit-Sequenz**
 
-```
-B-5a: TabBar in <X> einsetzen
-B-5b: TabBar in <Y> einsetzen
-...
-```
+## Audit-Findings (Task 5) — 18.04.2026
+
+TabBar-Adoption ist bereits stark. 5 Konsumenten importieren `TabBar` direkt:
+- `lp/vorbereitung/PruefungsComposer.tsx` (Einstellungen/Abschnitte/Vorschau/Analyse)
+- `lp/korrektur/KorrekturDashboard.tsx`
+- `lp/durchfuehrung/DurchfuehrenDashboard.tsx`
+- `settings/EinstellungenPanel.tsx` (Top-Level-Tabs im Settings-Overlay)
+- `ueben/admin/AdminSettings.tsx`
+
+Verbleibende "tab-artige" State-Variablen (z.B. `dashboardTab` in `ueben/Dashboard.tsx`) sind **URL-synchronisierter State**, keine eigenen Tab-UIs — die Tab-Optik kommt dort aus `TabKaskade`. Kein Migrations-Kandidat.
+
+**Ergebnis:** Keine Migration nötig in Bundle B. Ausreichend konsistent. Folgenutzen (z.B. `variant="compact"` oder `badge`-Prop) kann später bei konkreter Nachfrage folgen.
+
+**Keine Commits für Task 5 nötig.**
 
 ---
 
