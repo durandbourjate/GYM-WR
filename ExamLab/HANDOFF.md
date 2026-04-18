@@ -6,12 +6,15 @@
 
 ---
 
-## Session 119 — Merge A, Rebase B, Cleanup S118-Reste (18.04.2026)
+## Session 119 — Merge A + B + Cleanup S118-Reste (18.-19.04.2026)
 
 ### Stand
-**Bundle A (S116) + A2-Bugfixes (S118) auf `main` gemergt + gepusht** (Merge-Commit `ec38944`). **Bundle B (S117) auf neue `main` rebased + Force-Push auf `feature/bundle-b-ux-systemregeln` und `preview`.** Wartet auf User-Browser-Test (Staging) → bei Freigabe Merge zu `main`.
+**Alle drei Bundles auf `main` gemergt + gepusht:**
+- Bundle A (S116) + A2-Bugfixes (S118) — Merge-Commit `ec38944` (18.04.)
+- S119-Cleanup (Lückentext-Placeholder + rules/) — Merge-Commit `b49da34` (18.04.)
+- Bundle B (S117) — Merge-Commit `5cddf2e` (19.04., nach User-Freigabe)
 
-Branch `fix/s119-cleanup` enthält die Follow-ups aus S118 und die Lehren-Integration in `.claude/rules/`.
+**`main` ist damit komplett auf dem Stand der 18.04.-Planungsrunde. Kein offener Branch mehr.**
 
 ### Umgesetzt
 
@@ -41,15 +44,14 @@ Branch `fix/s119-cleanup` enthält die Follow-ups aus S118 und die Lehren-Integr
    - `regression-prevention.md`: "Button tut nichts"-Debugging via `window.onerror`
 
 ### Offene Punkte nach S119
-- **Bundle B Browser-Test:** User muss auf Staging (`preview`) die 4 UX-Systemregeln verifizieren (Global-Zurück-Button, TabAutoScroll, Settings/Hilfe ohne Re-Mount, TabBar-Audit). Nach Freigabe Merge zu `main`.
-- **Staging-Verifikation S118-Restfixes:** DragDrop Mehrfach-Labels, R/F Fragetext-Dedup, Bildbeschriftung/Hotspot Bild-Kollaps — deployed, User-Verify ausstehend.
+- **Staging-Verifikation S118-Restfixes (live auf main):** DragDrop Mehrfach-Labels, R/F Fragetext-Dedup, Bildbeschriftung/Hotspot Bild-Kollaps — User-Verify ausstehend (wenn ein Fall noch bricht, eigener Bugfix).
 - **Backend-Security `lernplattformLadeFragen()`:** eigener Auftrag für separate Session (siehe oben).
 
 ### Verifikation
-- TypeScript: ✅ tsc -b (A-Merge + S119-Branch)
-- Tests: ✅ 303/303 (main/S119) · 325/325 (Bundle B nach Rebase)
+- TypeScript: ✅ tsc -b (A-Merge + S119 + B-Merge)
+- Tests: ✅ 303/303 (main vor B) · 325/325 (main nach B-Merge)
 - Build: ✅
-- Browser: ⏸ Staging User-Test steht für Bundle B aus
+- Browser: User hat Bundle B auf Staging freigegeben vor Merge zu main
 
 ### Apps-Script
 **Nicht geändert — kein Deploy nötig.**
