@@ -1,4 +1,5 @@
 import { useRef, type ReactNode, type KeyboardEvent } from 'react';
+import { useTabAutoScroll } from '../../hooks/useTabAutoScroll';
 
 interface Tab {
   id: string;
@@ -16,6 +17,7 @@ interface TabBarProps {
 
 export function TabBar({ tabs, activeTab, onTabChange, size = 'md' }: TabBarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  useTabAutoScroll(containerRef);
 
   const enabledTabs = tabs.filter(t => !t.disabled);
 
@@ -42,8 +44,8 @@ export function TabBar({ tabs, activeTab, onTabChange, size = 'md' }: TabBarProp
   };
 
   const containerClass = size === 'sm'
-    ? 'flex gap-0.5 bg-slate-200 dark:bg-[#2a2a2a] p-[3px] rounded-md'
-    : 'flex gap-1 bg-slate-200 dark:bg-[#2a2a2a] p-[3px] rounded-lg';
+    ? 'flex gap-0.5 bg-slate-200 dark:bg-[#2a2a2a] p-[3px] rounded-md overflow-x-auto scrollbar-hide'
+    : 'flex gap-1 bg-slate-200 dark:bg-[#2a2a2a] p-[3px] rounded-lg overflow-x-auto scrollbar-hide';
 
   const tabClass = (tab: Tab) => {
     const isActive = tab.id === activeTab;

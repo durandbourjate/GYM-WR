@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { L3Dropdown } from './L3Dropdown'
 import type { TabKaskadeConfig, L1Tab, L2Tab } from './types'
+import { useTabAutoScroll } from '../../../hooks/useTabAutoScroll'
 
 interface Props {
   config: TabKaskadeConfig
@@ -35,10 +36,13 @@ const SUPER_CHIP = 'inline-flex items-center gap-0.5 bg-slate-100 dark:bg-slate-
 
 export function TabKaskade({ config }: Props) {
   const { l1Tabs, aktivL1, aktivL2 } = config
+  const containerRef = useRef<HTMLDivElement>(null)
+  useTabAutoScroll(containerRef)
 
   return (
     <div
-      className="flex items-center gap-2 flex-1 flex-nowrap overflow-x-clip py-1"
+      ref={containerRef}
+      className="flex items-center gap-2 flex-1 flex-nowrap overflow-x-auto scrollbar-hide py-1"
       role="tablist"
       aria-label="Hauptnavigation"
       onKeyDown={onL1KeyDown}
