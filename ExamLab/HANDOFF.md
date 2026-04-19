@@ -6,6 +6,39 @@
 
 ---
 
+## Session 124 — Bildfragen-Editor-Hotfix + MediaQuelle-Plan (19.04.2026)
+
+### Stand
+**`c7fe4c9` Hotfix + `1df6113` Plan-Dokument auf `main`. Plan wartet auf separate Ausführungs-Session.**
+
+### Hotfix (committed)
+Bildfragen-Editor (Hotspot/Bildbeschriftung/DragDrop-Bild) crashte bei Klick in der Fragensammlung mit `Cannot read properties of undefined (reading 'startsWith')`.
+
+**Root Cause (via Source-Map-Recovery des Staging-Chunks verifiziert):** `AnhangEditor.tsx:216` iteriert `anhaenge.map` und ruft `istBild(a.mimeType)`. Pool-importierte oder ältere Anhänge haben kein `mimeType`-Feld → `undefined.startsWith('image/')` → Crash.
+
+**Fix:** `packages/shared/src/editor/utils/mediaUtils.ts` — alle fünf MIME-Helper (`istBild/istAudio/istVideo/istEmbed/istPDF` + `maxGroesseFuerMimeType`) akzeptieren `string | undefined | null` und returnen `false` bei falsy.
+
+Staging-E2E: Bildbeschriftung + Hotspot + DragDrop-Bild im LP-Editor geöffnet ohne Crash — alle drei Editors rendern korrekt.
+
+### Zweiter Bug entdeckt (nicht im Hotfix)
+PDF-Fragen aus Pool-Import zeigen im Editor keine PDF-Info — sie nutzen `pdfUrl` (Pool-Pfad), der `SharedFragenEditor`-State-Init liest aber nur `pdfBase64` und `pdfDriveFileId`. Daten gehen beim Speichern verloren.
+
+### Fundamentale Analyse statt zweitem Hotfix
+Beide Bugs (Bildfragen-mimeType, PDF-Pool-Quelle) haben dieselbe Ursache: Medien werden über parallele Felder (`bildUrl` + `bildDriveFileId`, `pdfBase64` + `pdfDriveFileId` + `pdfUrl` + `pdfDateiname`, Anhang-Felder vermischt) verteilt, ohne einheitliche Quelle. Jede Komponente hat eine eigene "was gilt zuerst?"-Logik.
+
+**Plan:** `ExamLab/docs/superpowers/plans/2026-04-19-mediaquelle-unification.md` (v2, nach Plan-Review überarbeitet).
+
+**Zielzustand:** Ein Discriminated-Union-Type `MediaQuelle` mit 5 Varianten (`drive | pool | app | extern | inline`). Eine `<MediaAnzeige>` für Read-Only, eine `<MediaUpload>` für Editor. PDF.js bekommt `mediaQuelleZuArrayBuffer`. Apps-Script-Migration mit Backup + Dry-Run + One-Sheet-First.
+
+**6 Phasen, 13 Tasks, ≈8h aktive Arbeit**, verteilbar. Dual-Write in Phasen 3–5, Cooling-Off 2 Wochen vor Phase 6 (Alt-Felder-Entfernung). mediaUtils-Hotfix wird in Phase 6 zurückgebaut.
+
+### Lehren
+- **Source-Map-Recovery:** Bei minifizierten Staging-Stacktraces liefert `awk 'NR==94 {print substr($0, colStart, 300)}' chunk.js` oft genug Kontext, um die echte Funktion zu identifizieren — billiger als lokales Rebuild mit Sourcemap. Kandidat für `regression-prevention.md` oder eigene Debugging-Rule.
+- **Format-Drift als wiederkehrendes Pattern:** S118 (DragDrop), S123 (Auto-Korrektur), S124 (mimeType, PDF-Quelle) haben alle dasselbe Schema: inkrementell eingeführte Felder ohne Single-Source-of-Truth → silent-wrong + Crashes. Generische Lösung = MediaQuelle-Pattern für Medien, analoger Ansatz für andere Multi-Feld-Zustände (S118 `dragdropBildUtils.ts` war schon ein erster Schritt).
+- **Plan-Reviewer-Loop lohnt sich:** Der Agent fand 3 Blocker + 7 Major in Plan v1, u.a. komplett falsche File-Pfade (`packages/shared` ist Repo-Root-Sibling, nicht unter `ExamLab/`). Ohne Review hätte die Execution-Session mit 15+ Min "Cannot find module" begonnen.
+
+---
+
 ## Session 123 — LP-Composer-Navigation + Korrektur-Assets + DragDrop-Format (19.04.2026)
 
 ### Stand
