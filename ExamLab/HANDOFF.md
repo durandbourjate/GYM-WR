@@ -9,7 +9,19 @@
 ## Session 125 — MediaQuelle Phasen 0-4 (19.04.2026)
 
 ### Stand
-**Feature-Branch `feature/mediaquelle-unification` auf Remote. 13 Commits. Phasen 0-4 abgeschlossen — Frontend komplett auf MediaQuelle Dual-Read + Dual-Write. Phasen 5 (Apps-Script-Migration) + 6 (Cleanup) offen.**
+**Merge-Commit `52dd695` auf `main` + Push. Feature-Branch gelöscht. Phasen 0-4 abgeschlossen — Frontend komplett auf MediaQuelle Dual-Read + Dual-Write. Staging-E2E clean. Phasen 5 (Apps-Script-Migration) + 6 (Cleanup) offen.**
+
+### Staging-E2E (echte Logins, Fragensammlung)
+- Hotspot-Filter → 11 Fragen, keine Errors
+- Hotspot-Editor öffnen (`bwl_marketing:hotspot01`) → Pool-SVG geladen (240×150)
+- PDF-Editor öffnen (`vwl_konjunktur:neu09`) → clean
+- Bildbeschriftung-Editor öffnen → Pool-SVG geladen
+- DragDropBild-Editor öffnen → Pool-SVG geladen
+- Vorherige ErrorBoundary-Crashes beim Typ-Filter (S124 mimeType-startsWith) sind Cache-Artefakte vom alten Chunk — mit dem neuen Chunk 0 Errors.
+
+### Pre-existing Bugs bestätigt (nicht in Scope Phase 4)
+- **PDF-Editor-State-Init liest `pdfUrl` aus Pool-Import nicht** (2. S124-Bug). PDF-Upload-Bereich ist leer beim Pool-Import. Fix in Phase 6 (Editor-Umbau auf MediaUpload/State-Init MediaQuelle).
+- **SVG-Container kollabiert auf `height: 0`** im Editor wenn SVG nur `viewBox` hat ohne `width`. CSS-Bug, unabhängig von MediaQuelle.
 
 ### Phase 4 (Frontend-Verdrahtung)
 
