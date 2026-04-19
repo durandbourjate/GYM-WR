@@ -183,26 +183,32 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
 
     case 'hotspot': {
       if (a.typ !== 'hotspot') return false
-      const bereiche = Array.isArray(frage.bereiche) ? frage.bereiche : []
+      const alle = Array.isArray(frage.bereiche) ? frage.bereiche : []
       const klicks = Array.isArray(a.klicks) ? a.klicks : []
-      if (bereiche.length === 0 || klicks.length === 0) return false
-      // Korrekt = jeder Bereich von mind. einem Klick getroffen (form-abhaengig:
-      // rechteck pruefung x/y + breite/hoehe, kreis per Radius-Distanz).
-      return bereiche.every(b =>
-        klicks.some(k => {
-          const ko = b.koordinaten
-          if (b.form === 'rechteck') {
-            return k.x >= ko.x && k.x <= ko.x + (ko.breite ?? 0) &&
-                   k.y >= ko.y && k.y <= ko.y + (ko.hoehe ?? 0)
-          }
-          if (b.form === 'kreis') {
-            const dx = k.x - ko.x
-            const dy = k.y - ko.y
-            return Math.sqrt(dx * dx + dy * dy) <= (ko.radius ?? 10)
-          }
-          return false
-        })
-      )
+      if (alle.length === 0 || klicks.length === 0) return false
+      // Pool-Import-Konvention: alle Hotspots sind in bereiche[], nur der korrekte
+      // hat punkte>0. LP-Editor: alle Bereiche haben punkte>0. Filter loest beides.
+      const punkteBereiche = alle.filter(b => (b.punkte ?? 0) > 0)
+      const zuPruefen = punkteBereiche.length > 0 ? punkteBereiche : alle
+      function trifft(b: typeof alle[0], k: { x: number; y: number }): boolean {
+        const ko = b.koordinaten
+        if (b.form === 'rechteck') {
+          return k.x >= ko.x && k.x <= ko.x + (ko.breite ?? 0) &&
+                 k.y >= ko.y && k.y <= ko.y + (ko.hoehe ?? 0)
+        }
+        if (b.form === 'kreis') {
+          const dx = k.x - ko.x
+          const dy = k.y - ko.y
+          return Math.sqrt(dx * dx + dy * dy) <= (ko.radius ?? 10)
+        }
+        return false
+      }
+      // Korrekt = alle punkte-Bereiche getroffen UND kein punkte=0-Bereich getroffen.
+      const alleKorrekteGetroffen = zuPruefen.every(b => klicks.some(k => trifft(b, k)))
+      if (!alleKorrekteGetroffen) return false
+      const nichtKorrekte = alle.filter(b => !zuPruefen.includes(b))
+      const falscheGetroffen = nichtKorrekte.some(b => klicks.some(k => trifft(b, k)))
+      return !falscheGetroffen
     }
 
     case 'bildbeschriftung': {

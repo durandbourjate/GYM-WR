@@ -2012,25 +2012,34 @@ function pruefeAntwortServer_(frage, antwort) {
 
     case 'hotspot': {
       if (a.typ !== 'hotspot') return false;
-      var bereiche = Array.isArray(frage.bereiche) ? frage.bereiche : [];
+      var alle = Array.isArray(frage.bereiche) ? frage.bereiche : [];
       var klicks = Array.isArray(a.klicks) ? a.klicks : [];
-      if (bereiche.length === 0 || klicks.length === 0) return false;
-      // Korrekt = jeder Bereich von mind. einem Klick getroffen.
-      // Form-abhaengig: rechteck (x/y + breite/hoehe) vs. kreis (Radius-Distanz).
-      return bereiche.every(function(b) {
-        return klicks.some(function(kl) {
-          var ko = b.koordinaten || {};
-          if (b.form === 'rechteck') {
-            return kl.x >= ko.x && kl.x <= ko.x + (ko.breite || 0) &&
-                   kl.y >= ko.y && kl.y <= ko.y + (ko.hoehe || 0);
-          }
-          if (b.form === 'kreis') {
-            var dx = kl.x - ko.x, dy = kl.y - ko.y;
-            return Math.sqrt(dx * dx + dy * dy) <= (ko.radius || 10);
-          }
-          return false;
-        });
+      if (alle.length === 0 || klicks.length === 0) return false;
+      // Pool-Import-Konvention: alle Hotspots in bereiche[], nur korrekte mit punkte>0.
+      // LP-Editor: alle Bereiche haben punkte>0. Filter loest beides.
+      var punkteBereiche = alle.filter(function(b) { return (b.punkte || 0) > 0; });
+      var zuPruefen = punkteBereiche.length > 0 ? punkteBereiche : alle;
+      function trifft(b, kl) {
+        var ko = b.koordinaten || {};
+        if (b.form === 'rechteck') {
+          return kl.x >= ko.x && kl.x <= ko.x + (ko.breite || 0) &&
+                 kl.y >= ko.y && kl.y <= ko.y + (ko.hoehe || 0);
+        }
+        if (b.form === 'kreis') {
+          var dx = kl.x - ko.x, dy = kl.y - ko.y;
+          return Math.sqrt(dx * dx + dy * dy) <= (ko.radius || 10);
+        }
+        return false;
+      }
+      var alleKorrekteGetroffen = zuPruefen.every(function(b) {
+        return klicks.some(function(kl) { return trifft(b, kl); });
       });
+      if (!alleKorrekteGetroffen) return false;
+      var nichtKorrekte = alle.filter(function(b) { return zuPruefen.indexOf(b) < 0; });
+      var falscheGetroffen = nichtKorrekte.some(function(b) {
+        return klicks.some(function(kl) { return trifft(b, kl); });
+      });
+      return !falscheGetroffen;
     }
 
     case 'bildbeschriftung': {

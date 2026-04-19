@@ -70,4 +70,39 @@ describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', (
   it('kein Bereich = falsch', () => {
     expect(pruefeAntwort({ id:'f', typ:'hotspot', bereiche: [] } as any, { typ: 'hotspot', klicks: [{x:10,y:10}] } as any)).toBe(false)
   })
+
+  it('Pool-Import mit 4 Hotspots (nur einer mit punkte=1): Klick auf den korrekten = true', () => {
+    const poolFrage: any = {
+      id: 'f', typ: 'hotspot',
+      bereiche: [
+        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
+        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
+        { id: 'c', form: 'kreis', koordinaten: {x: 46.1, y: 52.6, radius: 8}, punkte: 0, label: 'C' },
+        { id: 'd', form: 'kreis', koordinaten: {x: 69.3, y: 30.5, radius: 8}, punkte: 0, label: 'D' },
+      ],
+    }
+    expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 69, y: 74}] } as any)).toBe(true)
+  })
+
+  it('Pool-Import: Klick auf falschen Hotspot = false', () => {
+    const poolFrage: any = {
+      id: 'f', typ: 'hotspot',
+      bereiche: [
+        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
+        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
+      ],
+    }
+    expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 25, y: 30}] } as any)).toBe(false)
+  })
+
+  it('Pool-Import: Klick auf korrekten + falschen = false', () => {
+    const poolFrage: any = {
+      id: 'f', typ: 'hotspot',
+      bereiche: [
+        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
+        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
+      ],
+    }
+    expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 25, y: 30}, {x: 69, y: 74}] } as any)).toBe(false)
+  })
 })
