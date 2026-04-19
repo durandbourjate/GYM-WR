@@ -6,34 +6,45 @@
 
 ---
 
-## Session 125 — MediaQuelle Phase 0 + 1 (19.04.2026)
+## Session 125 — MediaQuelle Phasen 0-3 (19.04.2026)
 
 ### Stand
-**Feature-Branch `feature/mediaquelle-unification` auf Remote. 6 Commits. Noch nicht verdrahtet — Phasen 2-6 offen.**
+**Feature-Branch `feature/mediaquelle-unification` auf Remote. 10 Commits. Phasen 0-3 abgeschlossen, Phase 4 (Verdrahtung Frontend) offen.**
 
-### Umgesetzt
-Phase 0 + Phase 1 aus [Plan `2026-04-19-mediaquelle-unification.md`] durchgezogen, TDD pro Task:
+### Umgesetzt (Plan `2026-04-19-mediaquelle-unification.md`)
 
-| Task | Artefakt | Tests |
-|------|----------|-------|
-| 0 | `ExamLab/docs/superpowers/plans/2026-04-19-mediaquelle-callsites.txt` — 285 Zeilen Grep-Output (bildUrl, pdfBase64, mimeType, Apps-Script) | — |
-| 1 | `packages/shared/src/types/mediaQuelle.ts` — Discriminated Union (`drive | pool | app | extern | inline`) + 5 Type-Guards | 5/5 |
-| 2 | `packages/shared/src/utils/mediaQuelleMigrator.ts` — `bildQuelleAus`/`pdfQuelleAus`/`anhangQuelleAus` inkl. Drive-ID-Extraktion aus lh3/drive.google-URLs + mimeType-Inferenz | 19/19 |
-| 3 | `packages/shared/src/utils/mediaQuelleUrl.ts` — `mediaQuelleZuImgSrc`/`mediaQuelleZuIframeSrc` mit DI-`AppAssetResolver` (für BASE_URL-Delegation an ExamLab-seitiges `toAssetUrl`) | 8/8 |
-| 4 | `packages/shared/src/utils/mediaQuelleBytes.ts` — `mediaQuelleZuArrayBuffer` für pdf.js/Audio (inline → base64-decode, rest → fetch) | 4/4 |
+**Phase 0 — Inventur:**
+- `ExamLab/docs/superpowers/plans/2026-04-19-mediaquelle-callsites.txt` — 285 Zeilen Grep-Output aller Alt-Feld-Referenzen.
+
+**Phase 1 — Foundation (TDD, 36 Tests):**
+- `packages/shared/src/types/mediaQuelle.ts` — Discriminated Union (`drive | pool | app | extern | inline`) + 5 Type-Guards. 5 Tests.
+- `packages/shared/src/utils/mediaQuelleMigrator.ts` — `bildQuelleAus`/`pdfQuelleAus`/`anhangQuelleAus` inkl. Drive-ID-Extraktion aus lh3/drive.google-URLs + mimeType-Inferenz. 19 Tests.
+- `packages/shared/src/utils/mediaQuelleUrl.ts` — `mediaQuelleZuImgSrc`/`mediaQuelleZuIframeSrc` mit DI-`AppAssetResolver` (für BASE_URL-Delegation an ExamLab-seitiges `toAssetUrl`). 8 Tests.
+- `packages/shared/src/utils/mediaQuelleBytes.ts` — `mediaQuelleZuArrayBuffer` für pdf.js/Audio (inline → base64-decode, rest → fetch). 4 Tests.
+
+**Phase 2 — UI-Komponenten (TDD, 13 Tests):**
+- `packages/shared/src/components/MediaAnzeige.tsx` — Universeller Render-Switch per MIME-Type (img/iframe/audio/video/Badge). 7 Tests.
+- `packages/shared/src/components/MediaUpload.tsx` — Upload-Dropzone mit Drive-Detection in URL-Input, Fallback auf inline-base64 wenn `services.istUploadVerfuegbar()` false. 6 Tests.
+
+**Phase 3 — Frage-Types erweitert:**
+- `packages/shared/src/types/fragen.ts`: neue optionale Felder `bild?: MediaQuelle` (Hotspot/Bildbeschriftung/DragDropBild), `pdf?: MediaQuelle` (PDFFrage), `quelle?: MediaQuelle` (FrageAnhang). Alt-Felder unangetastet — Dual-Write-fähig ohne Breaking-Change.
+- Abweichung vom Plan: HotspotFrage/BildbeschriftungFrage/DragDropBildFrage behalten `bildUrl: string` non-optional. Grund: Konservativer, kein TSC-Breaking-Change im Rest-Code. Phase 6 (Cleanup) entfernt Alt-Felder sauber.
 
 ### Verifikation
-- `npx tsc -b` grün (nach Fix: `globalThis.fetch` statt `global.fetch` — Projekt-Convention).
-- `npx vitest run` — 389/389 Tests grün (36 neu in `src/__tests__/media/`).
-- Keine Verdrahtung ins Production-Frontend → kein Browser-Test nötig.
-- `main` unverändert; Feature-Branch kann Phase-für-Phase weitergeführt werden.
+- `npx tsc -b` grün.
+- `npx vitest run` — 402/402 Tests grün (49 neu in `src/__tests__/media/`).
+- `main` unverändert; alle Änderungen nur auf Feature-Branch.
 
-### Offen (Plan-Phasen 2-6)
-- Phase 2: `<MediaAnzeige>` + `<MediaUpload>` Komponenten
-- Phase 3: Frage-Typ-Erweiterung (`bildQuelle`/`pdfQuelle` als optionale Felder parallel zu Alt-Feldern)
-- Phase 4: Bild-/PDF-Fragetypen auf Komponenten umstellen (Dual-Read)
-- Phase 5: Editor + `fragenFactory.ts` auf MediaQuelle umstellen (Dual-Write)
-- Phase 6: Cooling-Off 2 Wochen → Alt-Felder entfernen, mediaUtils-Hotfix zurückbauen
+### Offen
+- **Phase 4 — Verdrahtung Frontend** (Tasks 8-11): SharedFragenEditor State-Init auf MediaQuelle, fragenFactory.ts Dual-Write, Editor-Typen (Hotspot/Bildbeschriftung/DragDropBild/PDF) + AnhangEditor auf MediaUpload/MediaAnzeige, SuS-Fragetypen + Korrektur + DruckAnsicht + Demo-Daten.
+- Phase 5 — Apps-Script Backend-Migration + Dry-Run-Migrator.
+- Phase 6 — Cooling-Off 2 Wochen → Alt-Felder entfernen, mediaUtils-Hotfix zurückbauen.
+
+### Lehren
+- **Test-Convention:** `globalThis.fetch` statt `global.fetch` (tsc-strict ohne @types/node in ExamLab-tsconfig).
+- **EditorContext-API:** Exportiert `EditorProvider` (nicht `EditorContext.Provider` direkt) — Plan v2 hatte den falschen Test-Setup-Hint. Korrekt: `<EditorProvider config={...} services={...}>`.
+
+---
 
 ---
 
