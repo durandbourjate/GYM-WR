@@ -34,3 +34,23 @@ describe('normalisiereRichtigFalsch', () => {
     expect(Array.isArray(n.aussagen)).toBe(true)
   })
 })
+
+describe('normalisiereSortierung', () => {
+  it('fehlendes elemente[] → []', () => {
+    const n: any = normalisiereFrageDaten({ id: 'f1', typ: 'sortierung' } as any)
+    expect(Array.isArray(n.elemente)).toBe(true)
+  })
+})
+describe('normalisiereZuordnung', () => {
+  it('fehlendes paare[] → [] und linksItems/rechtsItems Fallback', () => {
+    const n: any = normalisiereFrageDaten({ id: 'f1', typ: 'zuordnung' } as any)
+    expect(Array.isArray(n.paare)).toBe(true)
+    expect(Array.isArray(n.linksItems)).toBe(true)
+    expect(Array.isArray(n.rechtsItems)).toBe(true)
+  })
+  it('rekonstruiert paare[] aus linksItems + rechtsItems (neues Backend-Format)', () => {
+    const f: any = { id: 'f1', typ: 'zuordnung', linksItems: [{ id: 'L1', text: 'a' }], rechtsItems: [{ id: 'R1', text: 'b' }] }
+    const n: any = normalisiereFrageDaten(f)
+    expect(Array.isArray(n.paare)).toBe(true)
+  })
+})
