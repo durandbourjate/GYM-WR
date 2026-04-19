@@ -7,6 +7,8 @@ import MediaAnhang from '../../MediaAnhang.tsx'
 import AudioPlayer from '../../AudioPlayer.tsx'
 import { toAssetUrl } from '../../../utils/assetUrl'
 import { labelsInZone, zoneKorrektBelegt } from '../../../utils/dragdropBildUtils'
+import { ermittleBildQuelle, ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuImgSrc, mediaQuelleZuIframeSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
   frage: Frage
@@ -345,13 +347,11 @@ function VisualisierungAnzeige({ antwort }: { antwort: Extract<Antwort, { typ: '
 
 /** PDF-Annotation-Antwort mit PDF-Vorschau */
 function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage; antwort: Extract<Antwort, { typ: 'pdf' }> | undefined }) {
-  // PDF aus Anhängen, Drive oder direkter URL (relativ → toAssetUrl).
   const pdfAnhang = ('anhaenge' in frage ? (frage as { anhaenge?: FrageAnhang[] }).anhaenge : [])?.find(a => a.mimeType === 'application/pdf')
-  const pdfDriveFileId = 'pdfDriveFileId' in frage ? (frage as { pdfDriveFileId?: string }).pdfDriveFileId : undefined
-  const pdfUrl = 'pdfUrl' in frage ? (frage as { pdfUrl?: string }).pdfUrl : undefined
+  const pdfQuelle = ermittlePdfQuelle(frage as Parameters<typeof ermittlePdfQuelle>[0])
   const pdfDateiname = 'pdfDateiname' in frage ? (frage as { pdfDateiname?: string }).pdfDateiname : 'Dokument'
 
-  const hatPdf = Boolean(pdfAnhang || pdfDriveFileId || pdfUrl)
+  const hatPdf = Boolean(pdfAnhang || pdfQuelle)
 
   return (
     <div className="mt-2 space-y-2">
@@ -361,16 +361,9 @@ function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage; antwort: Extra
           <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">📄 {pdfDateiname}</span>
           {pdfAnhang ? (
             <MediaAnhang anhang={pdfAnhang} />
-          ) : pdfDriveFileId ? (
+          ) : pdfQuelle ? (
             <iframe
-              src={`https://drive.google.com/file/d/${pdfDriveFileId}/preview`}
-              className="w-full rounded border border-slate-200 dark:border-slate-600"
-              style={{ height: '400px' }}
-              title={pdfDateiname}
-            />
-          ) : pdfUrl ? (
-            <iframe
-              src={toAssetUrl(pdfUrl)}
+              src={mediaQuelleZuIframeSrc(pdfQuelle, toAssetUrl)}
               className="w-full rounded border border-slate-200 dark:border-slate-600"
               style={{ height: '400px' }}
               title={pdfDateiname}
@@ -429,12 +422,14 @@ function SortierungAnzeige({ antwort }: { antwort: Extract<Antwort, { typ: 'sort
 
 /** Hotspot-Antwort mit Bild + Markierungen */
 function HotspotAnzeige({ frage, antwort }: { frage: HotspotFrage; antwort: Extract<Antwort, { typ: 'hotspot' }> | undefined }) {
-  if (!antwort) return <>{frage.bildUrl && <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded mt-2" />}<KeineAntwort /></>
+  const bildQuelle = ermittleBildQuelle(frage)
+  const bildSrc = bildQuelle ? mediaQuelleZuImgSrc(bildQuelle, toAssetUrl) : null
+  if (!antwort) return <>{bildSrc && <img src={bildSrc} alt="Hotspot" className="max-w-full rounded mt-2" />}<KeineAntwort /></>
   return (
     <div className="mt-2">
-      {frage.bildUrl && (
+      {bildSrc && (
         <div className="relative inline-block">
-          <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded" />
+          <img src={bildSrc} alt="Hotspot" className="max-w-full rounded" />
           {/* Korrekte Bereiche (gestrichelt) */}
           {(frage.bereiche ?? []).map((b) => (
             <div key={b.id} className="absolute border-2 border-dashed border-green-500/60" style={
@@ -460,11 +455,13 @@ function HotspotAnzeige({ frage, antwort }: { frage: HotspotFrage; antwort: Extr
 
 /** Bildbeschriftung-Antwort mit Bild + Labels an Positionen */
 function BildbeschriftungAnzeige({ frage, antwort }: { frage: BildbeschriftungFrage; antwort: Extract<Antwort, { typ: 'bildbeschriftung' }> | undefined }) {
+  const bildQuelle = ermittleBildQuelle(frage)
+  const bildSrc = bildQuelle ? mediaQuelleZuImgSrc(bildQuelle, toAssetUrl) : null
   return (
     <div className="mt-2">
-      {frage.bildUrl && (
+      {bildSrc && (
         <div className="relative inline-block">
-          <img src={toAssetUrl(frage.bildUrl)} alt="Bildbeschriftung" className="max-w-full rounded" />
+          <img src={bildSrc} alt="Bildbeschriftung" className="max-w-full rounded" />
           {/* Labels an ihren Positionen */}
           {frage.beschriftungen.map((label, i) => {
             const eingabe = antwort?.eintraege?.[label.id] ?? ''
@@ -505,12 +502,13 @@ function BildbeschriftungAnzeige({ frage, antwort }: { frage: BildbeschriftungFr
 
 /** DragDrop-Bild-Antwort mit Bild + Zonen + Labels */
 function DragDropBildAnzeige({ frage, antwort }: { frage: DragDropBildFrage; antwort: Extract<Antwort, { typ: 'dragdrop_bild' }> | undefined }) {
-  // Antwort-Format: { [labelText]: zoneId } — Reverse-Lookup je Zone.
+  const bildQuelle = ermittleBildQuelle(frage)
+  const bildSrc = bildQuelle ? mediaQuelleZuImgSrc(bildQuelle, toAssetUrl) : null
   return (
     <div className="mt-2">
-      {frage.bildUrl && (
+      {bildSrc && (
         <div className="relative inline-block">
-          <img src={toAssetUrl(frage.bildUrl)} alt="Drag & Drop" className="max-w-full rounded" />
+          <img src={bildSrc} alt="Drag & Drop" className="max-w-full rounded" />
           {/* Zielzonen mit platzierten Labels */}
           {frage.zielzonen.map((zone) => {
             const labels = labelsInZone(antwort?.zuordnungen, zone.id)
