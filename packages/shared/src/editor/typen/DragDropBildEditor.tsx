@@ -75,13 +75,13 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
               : 'Klicke auf zwei Ecken im Bild, um eine Zielzone zu definieren.'}
           </p>
           <div
-            className="relative inline-block cursor-crosshair border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden"
+            className="relative block w-full max-w-2xl cursor-crosshair border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden"
             onClick={handleBildKlick}
           >
             <img
               src={resolvePoolBildUrl(bildUrl)}
               alt="Drag & Drop Bild"
-              className="max-w-full"
+              className="block w-full h-auto"
               draggable={false}
             />
 

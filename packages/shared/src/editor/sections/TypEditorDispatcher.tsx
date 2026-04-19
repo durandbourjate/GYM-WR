@@ -146,6 +146,8 @@ interface TypEditorDispatcherProps {
   setPdfBase64: (v: string) => void
   pdfDriveFileId: string
   setPdfDriveFileId: (v: string) => void
+  pdfUrl: string
+  setPdfUrl: (v: string) => void
   pdfDateiname: string
   setPdfDateiname: (v: string) => void
   pdfSeitenAnzahl: number
@@ -700,6 +702,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setPdfBase64={props.setPdfBase64}
             pdfDriveFileId={props.pdfDriveFileId}
             setPdfDriveFileId={props.setPdfDriveFileId}
+            pdfUrl={props.pdfUrl}
+            setPdfUrl={props.setPdfUrl}
             pdfDateiname={props.pdfDateiname}
             setPdfDateiname={props.setPdfDateiname}
             seitenAnzahl={props.pdfSeitenAnzahl}
@@ -717,6 +721,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setPdfBase64={props.setPdfBase64}
             pdfDriveFileId={props.pdfDriveFileId}
             setPdfDriveFileId={props.setPdfDriveFileId}
+            pdfUrl={props.pdfUrl}
+            setPdfUrl={props.setPdfUrl}
             pdfDateiname={props.pdfDateiname}
             setPdfDateiname={props.setPdfDateiname}
             seitenAnzahl={props.pdfSeitenAnzahl}

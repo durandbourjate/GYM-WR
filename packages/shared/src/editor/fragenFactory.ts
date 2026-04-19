@@ -214,6 +214,7 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
       const pdfQuelle = pdfQuelleAus({
         pdfBase64: typDaten.pdfBase64,
         pdfDriveFileId: typDaten.pdfDriveFileId,
+        pdfUrl: typDaten.pdfUrl,
         pdfDateiname: typDaten.pdfDateiname,
       }) ?? undefined
       return {
@@ -222,6 +223,7 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         fragetext: typDaten.fragetext.trim(),
         pdfDriveFileId: typDaten.pdfDriveFileId,
         pdfBase64: typDaten.pdfBase64,
+        pdfUrl: typDaten.pdfUrl,
         pdfDateiname: typDaten.pdfDateiname,
         pdf: pdfQuelle,
         seitenAnzahl: typDaten.seitenAnzahl,

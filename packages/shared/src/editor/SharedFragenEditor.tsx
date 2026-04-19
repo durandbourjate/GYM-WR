@@ -379,6 +379,9 @@ export default function SharedFragenEditor({
   const [pdfDriveFileId, setPdfDriveFileId] = useState(
     frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDriveFileId || '' : ''
   )
+  const [pdfUrl, setPdfUrl] = useState(
+    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfUrl ?? '' : ''
+  )
   const [pdfDateiname, setPdfDateiname] = useState(
     frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDateiname : ''
   )
@@ -630,7 +633,10 @@ export default function SharedFragenEditor({
         typDaten = { typ: 'visualisierung', fragetext, canvasConfig, musterloesungBild }; break
       case 'pdf':
         typDaten = {
-          typ: 'pdf', fragetext, pdfDriveFileId, pdfBase64: pdfBase64 || undefined,
+          typ: 'pdf', fragetext,
+          pdfDriveFileId: pdfDriveFileId || undefined,
+          pdfBase64: pdfBase64 || undefined,
+          pdfUrl: pdfUrl || undefined,
           pdfDateiname, seitenAnzahl: pdfSeitenAnzahl,
           kategorien: pdfKategorien.length > 0 ? pdfKategorien : undefined,
           erlaubteWerkzeuge: pdfErlaubteWerkzeuge,
@@ -819,6 +825,7 @@ export default function SharedFragenEditor({
             email={config.benutzer.email}
             pdfBase64={pdfBase64} setPdfBase64={setPdfBase64}
             pdfDriveFileId={pdfDriveFileId} setPdfDriveFileId={setPdfDriveFileId}
+            pdfUrl={pdfUrl} setPdfUrl={setPdfUrl}
             pdfDateiname={pdfDateiname} setPdfDateiname={setPdfDateiname}
             pdfSeitenAnzahl={pdfSeitenAnzahl} setPdfSeitenAnzahl={setPdfSeitenAnzahl}
             pdfKategorien={pdfKategorien} setPdfKategorien={setPdfKategorien}

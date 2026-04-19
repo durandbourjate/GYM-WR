@@ -46,11 +46,11 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
           <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
             Klicke auf das Bild, um Label-Positionen zu setzen
           </p>
-          <div className="relative inline-block cursor-crosshair" onClick={handleBildKlick}>
+          <div className="relative block w-full max-w-2xl cursor-crosshair" onClick={handleBildKlick}>
             <img
               src={resolvePoolBildUrl(bildUrl)}
               alt="Bildbeschriftung-Vorschau"
-              className="max-w-full rounded-lg select-none"
+              className="block w-full h-auto rounded-lg select-none"
               style={{ objectFit: 'contain', maxHeight: '400px' }}
               draggable={false}
             />

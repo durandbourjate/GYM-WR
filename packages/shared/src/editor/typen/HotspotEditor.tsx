@@ -63,11 +63,11 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
               ? 'Klicke auf die zweite Ecke des Rechtecks'
               : 'Klicke auf das Bild, um die erste Ecke eines neuen Bereichs zu setzen'}
           </p>
-          <div className="relative inline-block cursor-crosshair" onClick={handleBildKlick}>
+          <div className="relative block w-full max-w-2xl cursor-crosshair" onClick={handleBildKlick}>
             <img
               src={resolvePoolBildUrl(bildUrl)}
               alt="Hotspot-Vorschau"
-              className="max-w-full rounded-lg select-none"
+              className="block w-full h-auto rounded-lg select-none"
               style={{ objectFit: 'contain', maxHeight: '400px' }}
               draggable={false}
             />
