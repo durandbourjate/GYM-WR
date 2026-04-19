@@ -1607,8 +1607,11 @@ function bereinigeFrageFuerSuSUeben_(frage) {
   }
 
   // Bildbeschriftung: labels[].zoneId IST die Lösung + beschriftungen[].korrekt
+  // ACHTUNG: labels[] ist je nach Pool-Daten string[] (DragDrop-Bild) oder {id,text,zoneId}[]
+  // (Bildbeschriftung). Strings unverändert lassen, sonst werden sie zu Char-Objekten.
   if ((f.typ === 'bildbeschriftung' || f.typ === 'dragdrop_bild') && Array.isArray(f.labels)) {
     f.labels = f.labels.map(function(l) {
+      if (typeof l !== 'object' || l === null) return l;
       var c = Object.assign({}, l);
       delete c.zoneId;
       delete c.zone;
