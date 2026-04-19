@@ -12,6 +12,8 @@ export interface PDFEditorProps {
   setPdfBase64: (v: string) => void
   pdfDriveFileId: string
   setPdfDriveFileId: (v: string) => void
+  pdfUrl: string
+  setPdfUrl: (v: string) => void
   pdfDateiname: string
   setPdfDateiname: (v: string) => void
   seitenAnzahl: number
@@ -94,6 +96,7 @@ function erzeugeId(): string {
 export default function PDFEditor({
   pdfBase64, setPdfBase64,
   pdfDriveFileId: _pdfDriveFileId, setPdfDriveFileId,
+  pdfUrl, setPdfUrl: _setPdfUrl,
   pdfDateiname, setPdfDateiname,
   seitenAnzahl, setSeitenAnzahl,
   kategorien, setKategorien,
@@ -212,13 +215,17 @@ export default function PDFEditor({
 
         {/* 1. PDF Upload */}
         <Feld label="PDF-Datei">
-          {pdfBase64 ? (
+          {(pdfBase64 || pdfUrl || _pdfDriveFileId) ? (
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
                 <div>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{pdfDateiname}</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{pdfDateiname || 'PDF'}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {seitenAnzahl > 0 ? `${seitenAnzahl} Seite${seitenAnzahl !== 1 ? 'n' : ''}` : pdfRenderer ? 'Wird geladen...' : 'PDF hochgeladen'}
+                    {pdfBase64
+                      ? (seitenAnzahl > 0 ? `${seitenAnzahl} Seite${seitenAnzahl !== 1 ? 'n' : ''}` : pdfRenderer ? 'Wird geladen...' : 'PDF hochgeladen')
+                      : _pdfDriveFileId
+                        ? `Drive-Datei · ${seitenAnzahl > 0 ? `${seitenAnzahl} Seite${seitenAnzahl !== 1 ? 'n' : ''}` : 'extern'}`
+                        : `Pool-/URL-Referenz · ${seitenAnzahl > 0 ? `${seitenAnzahl} Seite${seitenAnzahl !== 1 ? 'n' : ''}` : 'extern'}`}
                   </p>
                 </div>
                 <button
@@ -226,6 +233,7 @@ export default function PDFEditor({
                   onClick={() => {
                     setPdfBase64('')
                     setPdfDriveFileId('')
+                    _setPdfUrl('')
                     setPdfDateiname('')
                     setSeitenAnzahl(0)
                     setVerworfeneAnnotationen(0)
