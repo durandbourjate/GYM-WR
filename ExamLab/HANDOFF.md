@@ -6,6 +6,32 @@
 
 ---
 
+## Session 123 — LP-Composer-Navigation + Korrektur-Assets + DragDrop-Format (19.04.2026)
+
+### Stand
+**Merge `59b4413` auf `main` + Push. Staging-E2E verifiziert (Tests 1-5, 8, 9).**
+
+4 Bugs aus User-Report (Staging 19.04.2026) gebündelt gefixt:
+
+1. **LP "Bearbeiten"/"Duplizieren"/"Neue Prüfung" tat nichts** — `useLPRouteSync` las `:configId` nie aus URL → `store.aktiveConfigId` blieb null → Composer öffnete nie. Fix: URL-Segment parsen + `'neu'`-Sentinel. ~70 Zeilen in `useLPRouteSync.ts`.
+2. **Einführungsprüfung F7 dritte Lücke zeigte `{{3}}`** — Daten 1-basiert, Renderer 0-basiert → `{{3}}` → `luecken[3]` = undefined → Text-Fallback. Fix: `einrichtungsFragen.ts` + `einrichtungsUebungFragen.ts` auf 0-basiert.
+3. **LP Auswertung: Bilder/PDF/DragDrop-Zuordnungen unsichtbar** — (a) `KorrekturFrageVollansicht.tsx` nutzte `frage.bildUrl` roh statt `toAssetUrl()` (S115 hatte nur SuS-Komponenten gefixt). (b) `pdfUrl`-Fallback fehlte in `PDFAnnotationAnzeige`. (c) **Kritisch**: `zuordnungen[zone.id]` erwartete `{zoneId:label}`, SuS-Store speichert `{label:zoneId}` (S118-Format). Gleicher Bug in `autoKorrektur.ts::korrigiereDragDropBild` → **DragDrop-Bild bei summativen Prüfungen wurde immer als falsch bewertet**. Fix: Neue Utility `utils/dragdropBildUtils.ts` mit `labelsInZone()`/`zoneKorrektBelegt()`. S118-Refactor ist jetzt durchgezogen.
+4. **Korrektur-Zurück-Button Full-Reload** — `KorrekturDashboard.tsx:119` nutzte `window.location.href`. Fix: `navigate()` (SPA).
+
+### Verifikation
+- TSC + 353/353 Unit-Tests grün + Production-Build grün.
+- Staging-E2E (echte Logins): Tests 1-5, 8, 9 durch Claude-in-Chrome bestätigt. Tests 6+7 (Auswertung Assets/DragDrop-Anzeige) per Code-Review + Unit-Tests abgedeckt (kein abgegebener Datensatz im Staging).
+
+### Lehren (Rule-Kandidaten)
+- **Format-Drift-Prävention** (`code-quality.md`): Bei Antwort-Daten-Format-Änderungen IMMER alle Konsumenten auflisten (`grep -r "typ: '<fragetyp>'"` + alle utils/*-Auto-Korrektur-Pfade + Korrektur-Anzeige). Single-Source-of-Truth als shared Utility (wie `dragdropBildUtils.ts`) statt duplizierter Reverse-Lookup-Logik.
+- **Composer-URL-Sync** (`regression-prevention.md`): Neue URL-Route-Parameter für Composer-State brauchen einen Sync-Hook-Eintrag, der den Derivat-Store-State (`ansicht`, `aktiveConfigId`) setzt. Sonst: silent no-op bei URL-Änderung.
+- **Asset-URLs in Korrektur-Pfaden** (`bilder-in-pools.md` Abschnitt G): `toAssetUrl()` muss nicht nur in SuS-Rendering-Komponenten verwendet werden, sondern auch in LP-Korrektur-Ansichten (`KorrekturFrageVollansicht.tsx`).
+
+### Entdeckt, aber nicht gefixt (eigener Task)
+**Interaktive SuS-Vorschau im Composer crasht** mit `useFrageMode muss innerhalb eines FrageModeProvider verwendet werden`. Pre-existing, Dateien in S123 nicht angefasst. Als separater Fix-Task im Chip gespawnt.
+
+---
+
 ## Session 122 — Phase 2 Backend-Security + Server-Korrektur-Endpoint (19.04.2026)
 
 ### Stand
