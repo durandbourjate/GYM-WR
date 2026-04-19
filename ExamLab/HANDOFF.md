@@ -6,6 +6,34 @@
 
 ---
 
+## Für die nächste Session (S126+)
+
+### Aktueller Stand (Ende S125)
+- **Alles auf `main`**. Letzter Commit: `2a14bfa` (HANDOFF S125-Hotspot-Bundle). Apps-Script ist deployed + Migration durchgeführt. Keine offenen Feature-Branches.
+- **Tests:** 419/419 vitest grün, tsc -b grün.
+- **2 untracked Files** (`AdminKindDetail.tsx`, `AdminThemaDetail.tsx`) sind aus S115-Regression — keine User-Sichtbarkeit, kein Bug. Separater Task zum Aufräumen.
+
+### Offene Punkte (priorisiert)
+
+**Mittel:**
+1. **Editor-UX Resize-Handles** (Hotspot/DragDrop): Aktuell nur Drag-to-Move + numerische x/y/b/h-Inputs für Resize. Ecken-Handles (8-Richtungen) wären UX-Polish.
+2. **Bildbeschriftung SuS-Layout** (aus S118 erwähnt, nochmal prüfen): Labels positionieren, Input-Feld-Überlappung.
+3. **2 Demo-Einrichtungsfragen** (`einr-hs-europa`, `ueb-hs-europa`) haben kein Pool → manuell `bereiche` setzen oder Demo-Daten-Datei updaten (`einrichtungsFragen.ts`).
+
+**Gross (eigene Session):**
+4. **Detaillierte SuS-Lösungen pro Teilantwort** — User-Anliegen, siehe Memory `project_detaillierte_loesungen.md`. Braucht Brainstorming + Plan + eigene Implementierung pro Fragetyp (MC, R/F, Zuordnung, Hotspot, Bildbeschriftung, DragDrop, Lückentext).
+5. **Phase 6 Cleanup** MediaQuelle (frühestens +2 Wochen nach Phase 5 = ab 03.05.2026): Alt-Felder aus Types entfernen, Editor-UI auf MediaUpload/MediaAnzeige umbauen, mediaUtils-Hotfix zurückbauen.
+
+### Lehren aus S125 (für Rule-Files)
+
+- **Backend-Save-Funktionen müssen identische Feldnamen wie Frontend-Types haben** (`code-quality.md` Kandidat). S125 `getTypDaten` speicherte Legacy-Namen `hotspots`/`maxKlicks` statt `bereiche`/`mehrfachauswahl` → jedes LP-Save zerstörte die Daten über Monate. Beim Type-Rename im Frontend immer `grep` im Backend nach Alt-Namen.
+- **Pool-Import-Konvention:** Hotspot-Pool-Fragen haben ALLE Hotspots als `bereiche[]`, nur der korrekte hat `punkte>0`. Korrektur-Logik muss filter auf `punkte>0` + Distraktor-Hit-Check machen. Ohne Filter erwartet `every()` dass ALLE Bereiche getroffen werden.
+- **curl vs Browser-fetch auf Apps-Script:** `curl` bekommt 302-Redirect + HTML-Error-Page. Browser-fetch mit `redirect:follow` funktioniert. Für Node-Scripts `fetch()` mit `redirect:'follow'` nutzen, nicht `https.request`.
+- **Apps-Script-Deploy pro Code-Änderung:** Backend-Änderungen brauchen **jedes Mal** User-Deploy im Apps-Script-Editor. In S125 3× redeployed. Für Phase-6-Cleanup gleiches Pattern erwartet.
+- **Re-Import-Script als Reparatur-Pattern:** `tmp/repair-hotspots.mjs` parst lokal Pool-Dateien (Node Function-Constructor, erlaubt lokal) und POST'et via `speichereFrage`. Für andere Data-Loss-Reparaturen wiederverwendbar.
+
+---
+
 ## Session 125 — Hotspot-Bundle (19.04.2026 spät)
 
 ### Stand
