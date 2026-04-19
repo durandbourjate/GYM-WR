@@ -5,7 +5,7 @@ const fakeAppResolver = (p: string) => `/ExamLab/${p}`
 
 describe('mediaQuelleZuArrayBuffer', () => {
   beforeEach(() => {
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
@@ -20,7 +20,7 @@ describe('mediaQuelleZuArrayBuffer', () => {
       fakeAppResolver,
     )
     expect(ab.byteLength).toBe(3)
-    expect(global.fetch).not.toHaveBeenCalled()
+    expect(globalThis.fetch).not.toHaveBeenCalled()
   })
 
   it('Drive: fetcht lh3-URL', async () => {
@@ -28,7 +28,7 @@ describe('mediaQuelleZuArrayBuffer', () => {
       { typ: 'drive', driveFileId: 'abc', mimeType: 'application/pdf' },
       fakeAppResolver,
     )
-    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('lh3.googleusercontent.com/d/abc'))
+    expect(globalThis.fetch).toHaveBeenCalledWith(expect.stringContaining('lh3.googleusercontent.com/d/abc'))
   })
 
   it('App: fetcht via resolver', async () => {
@@ -36,11 +36,11 @@ describe('mediaQuelleZuArrayBuffer', () => {
       { typ: 'app', appPfad: 'materialien/x.pdf', mimeType: 'application/pdf' },
       fakeAppResolver,
     )
-    expect(global.fetch).toHaveBeenCalledWith('/ExamLab/materialien/x.pdf')
+    expect(globalThis.fetch).toHaveBeenCalledWith('/ExamLab/materialien/x.pdf')
   })
 
   it('throws bei HTTP-Fehler', async () => {
-    ;(global.fetch as any).mockResolvedValueOnce({ ok: false, status: 404, statusText: 'NF' })
+    ;(globalThis.fetch as any).mockResolvedValueOnce({ ok: false, status: 404, statusText: 'NF' })
     await expect(
       mediaQuelleZuArrayBuffer(
         { typ: 'extern', url: 'https://x/y.pdf', mimeType: 'application/pdf' },
