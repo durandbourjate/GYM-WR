@@ -1662,13 +1662,14 @@ function bereinigeFrageFuerSuSUeben_(frage) {
       if (Array.isArray(f.elemente)) f.elemente = shuffle_(f.elemente);
       break;
     case 'zuordnung':
-      // Split in linksItems (Reihenfolge-konstant) + rechtsItems (gemischt)
+      // Mische die rechts-Spalte unabhängig von links — Paarung verschleiert,
+      // UI-Komponente liest weiterhin paare[].links + paare[].rechts.
       if (Array.isArray(f.paare)) {
-        var links = f.paare.map(function(p, i) { return { id: p.id || 'L' + i, text: p.links }; });
-        var rechts = f.paare.map(function(p, i) { return { id: p.id || 'R' + i, text: p.rechts }; });
-        f.linksItems = links;
-        f.rechtsItems = shuffle_(rechts);
-        delete f.paare; // Paarung weg
+        var rechtsValues = f.paare.map(function(p) { return p.rechts; });
+        var rechtsShuffled = shuffle_(rechtsValues);
+        f.paare = f.paare.map(function(p, i) {
+          return Object.assign({}, p, { rechts: rechtsShuffled[i] });
+        });
       }
       break;
     case 'bildbeschriftung':
