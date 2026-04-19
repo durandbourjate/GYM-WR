@@ -14,6 +14,9 @@ export default function RichtigFalschFrage({ frage }: Props) {
   const bewertungen: Record<string, boolean> =
     (antwort as Extract<Antwort, { typ: 'richtigfalsch' }> | null)?.bewertungen ?? {}
 
+  const fragetextIstEinzelAussage =
+    (frage.aussagen?.length ?? 0) === 1 && frage.aussagen?.[0]?.text?.trim() === frage.fragetext?.trim()
+
   function handleKlick(aussageId: string, wert: boolean) {
     if (disabled) return
 
@@ -45,11 +48,13 @@ export default function RichtigFalschFrage({ frage }: Props) {
         </span>
       </div>
 
-      {/* Fragetext (sticky) */}
-      <div
-        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
-      />
+      {/* Fragetext (sticky) — unterdrückt wenn Einzel-Aussage identisch zum Fragetext (Pool-Daten-Artefakt) */}
+      {!fragetextIstEinzelAussage && (
+        <div
+          className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
+        />
+      )}
 
       {/* Aussagen */}
       <div className="flex flex-col gap-3">
