@@ -268,6 +268,11 @@ Race-Risiko: während eines Deploys kann ein alter Client (z.B. in einem offenen
 
 **Frontend-Feature-Flag:** nicht nötig — Phase 1 ist rückwärtskompatibel, Phase 2 koppelt Frontend- und Backend-Deploy.
 
+**⚠️ Phase 2 MUSS atomisch deployen (Backend + Frontend zusammen):**
+Der Phase-1-Normalizer kann `normalisiereZuordnung` nur **von** `paare[]` **zu** `linksItems[]/rechtsItems[]` rekonstruieren, **nicht umgekehrt** — weil die Paarung selbst die Lösung ist. Wenn Phase 2 Backend die bereinigte Zuordnung ausliefert (`paare` gelöscht, nur `linksItems/rechtsItems`) aber der Client noch Phase-1-Code nutzt, lautet `frage.paare = []` → client-side `pruefeAntwort` → immer `false`.
+
+→ Phase 2 Frontend (Async-Store + Server-Korrektur-Call) **muss** gleichzeitig mit Phase 2 Backend deployen. Kein partial-Merge zulässig.
+
 ## Sicherheits-Invariante
 
 Nach Implementation muss für jeden SuS-Aufruf gelten:

@@ -1501,11 +1501,12 @@ function bereinigeFrageFuerSuS_(frage) {
   delete f.musterlosung;
   delete f.bewertungsraster;
 
-  // MC: korrekt-Feld aus Optionen entfernen
+  // MC: korrekt + erklaerung aus Optionen entfernen
   if (f.optionen && Array.isArray(f.optionen)) {
     f.optionen = f.optionen.map(function(o) {
       var cleaned = Object.assign({}, o);
       delete cleaned.korrekt;
+      delete cleaned.erklaerung;
       return cleaned;
     });
   }
@@ -1581,6 +1582,10 @@ function bereinigeFrageFuerSuSUeben_(frage) {
       var c = Object.assign({}, k);
       delete c.korrekt;
       delete c.eintraege; // T-Konto-Lösungs-Einträge
+      delete c.saldo;     // T-Konto-Saldo = Lösung
+      if (!c.anfangsbestandVorgegeben) {
+        delete c.anfangsbestand; // Bereinigen wenn nicht als Aufgabenstellung sichtbar
+      }
       return c;
     });
   }
@@ -1692,6 +1697,82 @@ function bereinigeFrageFuerSuSUeben_(frage) {
 }
 
 // === SERVER-SIDE KORREKTUR (Port aus korrektur.ts) ===
+
+/**
+ * Normalisiert eine rohe Antwort auf das kanonische Schema.
+ * 1:1 Port von src/utils/normalizeAntwort.ts — deckt Legacy-Aliases (multi/tf/fill/…)
+ * und abweichende Feldnamen (gewaehlt/wert/texte/…) ab.
+ */
+var ANTWORT_ALIAS_ = {
+  multi: 'mc', tf: 'richtigfalsch', fill: 'lueckentext', calc: 'berechnung',
+  sort: 'sortierung', open: 'freitext', zeichnen: 'visualisierung',
+  bilanz: 'bilanzstruktur', gruppe: 'aufgabengruppe',
+};
+
+function normalisiereAntwortServer_(raw) {
+  if (!raw || typeof raw !== 'object' || !raw.typ) return raw;
+  var typ = ANTWORT_ALIAS_[raw.typ] || raw.typ;
+
+  switch (typ) {
+    case 'mc':
+      if ('gewaehlteOptionen' in raw) return Object.assign({}, raw, { typ: 'mc' });
+      var gew = raw.gewaehlt;
+      return { typ: 'mc', gewaehlteOptionen: Array.isArray(gew) ? gew : [gew || ''] };
+    case 'richtigfalsch':
+      return { typ: 'richtigfalsch', bewertungen: raw.bewertungen || {} };
+    case 'lueckentext':
+      return { typ: 'lueckentext', eintraege: raw.eintraege || {} };
+    case 'berechnung':
+      if ('ergebnisse' in raw) {
+        return { typ: 'berechnung', ergebnisse: raw.ergebnisse, rechenweg: raw.rechenweg };
+      }
+      var ergebnisse = raw.werte || { 'default': raw.wert || '' };
+      return { typ: 'berechnung', ergebnisse: ergebnisse, rechenweg: raw.rechenweg };
+    case 'hotspot':
+      return { typ: 'hotspot', klicks: raw.klicks || raw.geklickt || [] };
+    case 'visualisierung':
+      return {
+        typ: 'visualisierung',
+        daten: raw.daten || raw.datenUrl || '',
+        bildLink: raw.bildLink,
+        selbstbewertung: raw.selbstbewertung,
+      };
+    case 'bildbeschriftung':
+      return { typ: 'bildbeschriftung', eintraege: raw.eintraege || raw.texte || {} };
+    case 'buchungssatz':
+      if (Array.isArray(raw.buchungen) && raw.buchungen[0] && raw.buchungen[0].sollKonto !== undefined) {
+        return Object.assign({}, raw, { typ: 'buchungssatz' });
+      }
+      var zeilen = raw.zeilen || raw.buchungen || [];
+      return {
+        typ: 'buchungssatz',
+        buchungen: zeilen.map(function(z, i) {
+          return {
+            id: z.id || ('b' + i),
+            sollKonto: (z.sollKonto !== undefined ? z.sollKonto : (z.soll || '')),
+            habenKonto: (z.habenKonto !== undefined ? z.habenKonto : (z.haben || '')),
+            betrag: z.betrag || 0,
+          };
+        }),
+      };
+    case 'freitext':
+      return {
+        typ: 'freitext',
+        text: raw.text || '',
+        formatierung: raw.formatierung,
+        selbstbewertung: raw.selbstbewertung,
+      };
+    case 'aufgabengruppe':
+      var teilAntworten = {};
+      var rawTeil = raw.teilAntworten || raw.teilantworten || {};
+      Object.keys(rawTeil).forEach(function(key) {
+        teilAntworten[key] = normalisiereAntwortServer_(rawTeil[key]);
+      });
+      return { typ: 'aufgabengruppe', teilAntworten: teilAntworten };
+    default:
+      return Object.assign({}, raw, { typ: typ });
+  }
+}
 
 var SELBSTBEWERTUNGS_TYPEN_ = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'];
 
@@ -7465,8 +7546,13 @@ function lernplattformAendereRolle(body) {
 function lernplattformLadeFragen(body) {
   // gruppeId wird für Berechtigungsprüfung noch gebraucht, aber Fragen kommen aus der gemeinsamen Fragenbank
   var gruppeId = body.gruppeId;
-  var email = (body.email || '').toString().toLowerCase();
-  var istLP = istZugelasseneLP(email);
+  // SICHERHEIT: Email NICHT aus body übernehmen — Token-Validierung ist die einzige Quelle.
+  // Ohne validiertes Token: SuS-Pfad (bereinigt), nie LP-Pfad.
+  var claimEmail = (body.email || '').toString().toLowerCase();
+  var token = body.token || body.sessionToken;
+  var tokenGueltig = lernplattformValidiereToken_(token, claimEmail);
+  var email = tokenGueltig ? claimEmail : '';
+  var istLP = tokenGueltig && istZugelasseneLP(email);
 
   // Prüfe ob Gruppe existiert (für Familie-Gruppen → eigenes Sheet)
   var gruppen = alleGruppenLaden_();
@@ -7531,27 +7617,39 @@ function lernplattformPruefeAntwort(body) {
   var gruppeId = body.gruppeId;
   var frageId = body.frageId;
   var antwort = body.antwort;
-  var email = (body.email || '').toString().toLowerCase();
+  var claimEmail = (body.email || '').toString().toLowerCase();
+  var token = body.token || body.sessionToken;
 
-  if (!gruppeId || !frageId || !antwort || !email) {
+  if (!gruppeId || !frageId || !antwort || !claimEmail || !token) {
     return jsonResponse({ success: false, error: 'Fehlende Parameter' });
   }
 
-  // Rate-Limit: 30 Prüf-Requests pro Minute pro SuS (reicht für zügiges Üben,
-  // blockt Brute-Force-Scans via DevTools).
-  var rl = rateLimitCheck_('pruefe-antwort', email, 30, 60);
+  // SICHERHEIT: Token zwingend — Email wird nur verwendet wenn Token gültig.
+  if (!lernplattformValidiereToken_(token, claimEmail)) {
+    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
+  }
+  var email = claimEmail;
+
+  // Rate-Limit: 10 Prüf-Requests pro Minute pro SuS
+  // (macht Brute-Force auf R/F mit N Aussagen merklich teurer, ohne zügiges Üben zu blockieren).
+  var rl = lernplattformRateLimitCheck_('pruefe-antwort', email, 10, 60);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
 
-  // Gruppe existiert?
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+  // Gruppe existiert + Mitgliedschaft prüfen (via etablierten Helper)
+  var mitgliedCheck = istGruppenMitglied_(body, gruppeId);
+  if (!mitgliedCheck) {
+    return jsonResponse({ success: false, error: 'Kein Zugriff auf diese Gruppe' });
+  }
+  var gruppe = mitgliedCheck.gruppe;
 
-  // Frage frisch (unbereinigt) laden — NIEMALS aus Request-Body nehmen
-  var frage = ladeFrageUnbereinigtById_(frageId);
+  // Frage frisch (unbereinigt) laden — NIEMALS aus Request-Body nehmen.
+  // Familie-Gruppen: aus Gruppen-Sheet; sonst globale Fragenbank.
+  var frage = ladeFrageUnbereinigtById_(frageId, gruppe);
   if (!frage) return jsonResponse({ success: false, error: 'Frage nicht gefunden' });
 
-  var korrektResult = pruefeAntwortServer_(frage, antwort);
+  // Normalisiere Legacy-Antwort-Formate (multi/tf/fill/…) vor der Korrektur
+  var normAntwort = normalisiereAntwortServer_(antwort);
+  var korrektResult = pruefeAntwortServer_(frage, normAntwort);
 
   if (istSelbstbewertungstyp_(frage.typ)) {
     return jsonResponse({
@@ -7569,13 +7667,19 @@ function lernplattformPruefeAntwort(body) {
   });
 }
 
-/** Frage unbereinigt aus Fragenbank laden — für Server-Korrektur */
-function ladeFrageUnbereinigtById_(frageId) {
+/**
+ * Frage unbereinigt laden — für Server-Korrektur.
+ * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
+ * Alle anderen: aus globaler FRAGENBANK_ID.
+ */
+function ladeFrageUnbereinigtById_(frageId, gruppe) {
   try {
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var fragenbankTabs = getFragenbankTabs_();
-    for (var t = 0; t < fragenbankTabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(fragenbankTabs[t]);
+    var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
+    var sheetId = istFamilie ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var ss = SpreadsheetApp.openById(sheetId);
+    var tabs = istFamilie ? ['Fragen'] : getFragenbankTabs_();
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = ss.getSheetByName(tabs[t]);
       if (!sheet) continue;
       var daten = sheet.getDataRange().getValues();
       if (daten.length < 2) continue;
@@ -7589,7 +7693,7 @@ function ladeFrageUnbereinigtById_(frageId) {
           row[key] = String(val);
         }
         if (row.id === frageId) {
-          return parseFrageKanonisch_(row, fragenbankTabs[t]);
+          return parseFrageKanonisch_(row, tabs[t]);
         }
       }
     }
