@@ -6,6 +6,25 @@
 
 ---
 
+## Session 125 — Hotspot-Bundle (19.04.2026 spät)
+
+### Stand
+**Merge `c9ce0d4` auf main. Apps-Script 3× redeployed. 11 Pool-Hotspots repariert. SuS-Test Beveridge = ✓ Richtig.**
+
+### 4 Bugs gefixt (aus User-Staging-Test)
+
+1. **Hotspot-Auto-Korrektur form-abhängig** (Frontend + Backend): Rechteck-Bereiche trafen nie, weil `pruefeAntwort` nur Kreis-Logik (`Math.hypot`) mit Fallback-Radius 10 nutzte. Jetzt `rechteck` vs `kreis` per `b.form`.
+2. **Hotspot-Editor Kreis unsichtbar:** Render mit `width:0%` weil `koordinaten.breite` bei Kreis undefined. Neuer Render-Pfad mit `borderRadius:50%` + `2*radius`-Größe.
+3. **Bild-Editor UX Drag-to-Move** in `HotspotEditor` + `BildbeschriftungEditor` + `DragDropBildEditor`: Pointer-Drag verschiebt Bereiche/Labels/Zonen, plus numerische Input-Felder.
+4. **getTypDaten-Regression:** Hotspot-Save persistierte `hotspots` + `maxKlicks` (falsche Feldnamen) statt `bereiche` + `mehrfachauswahl`. Jedes LP-Save zerstörte die Bereiche. Backend-Daten-Reparatur: `tmp/repair-hotspots.mjs`-Script hat 11 Pool-Hotspot-Fragen via Pool-Re-Import repariert.
+5. **Pool-Filter** bei `pruefeAntwort`: Pool-Fragen haben alle 4 Hotspots als bereiche[] (nur einer mit punkte>0). Neu filter auf `punkte>0` + kein Distraktor-Hit.
+
+### Verifikation
+- 16/16 vitest für hotspot-Tests (7 neue: form-abh. + 3 Pool-Filter-Fälle).
+- Staging-E2E: Beveridge-Frage (Rezession/Hohe AL) Klick auf Punkt B → **✓ Richtig!**
+
+---
+
 ## Session 125 — Phase 5 abgeschlossen (19.04.2026 spät)
 
 ### Stand
