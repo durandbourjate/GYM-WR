@@ -6,6 +6,38 @@
 
 ---
 
+## Session 120 — S118-Staging-Verifikation + R/F-Dedup-Followup (19.04.2026)
+
+### Stand
+**Staging-Verifikation der S118-Restfixes mit echten Logins (LP + SuS) abgeschlossen:**
+
+| Fix | Ergebnis |
+|-----|---------|
+| Bildbeschriftung Bild-Kollaps | ✅ 580×362 px, Labels platzierbar |
+| Hotspot Bild-Kollaps | ✅ Marker platzierbar (Beveridge-Kurve) |
+| DragDrop Mehrfach-Labels pro Zone | ✅ Zone A hält 2 Labels |
+| R/F Fragetext-Dedup (UebungsScreen) | ✅ Code-Fix wirkt |
+
+**Neuer Follow-up-Fix: `fix/rf-fragetext-dedup-einzelaussage` (Commit `2375e1b`)**
+- Der S118-Fix adressierte den UebungsScreen. Bei Pool-Fragen mit genau 1 Aussage, deren Text identisch zum Fragetext ist, rendet `RichtigFalschFrage.tsx` den Text trotzdem zweimal (Fragetext-Box + Aussagen-Liste).
+- Fix: Dedup-Guard `fragetextIstEinzelAussage` in `RichtigFalschFrage.tsx:14`. Wirkt in Übungs- UND Prüfungs-Modus.
+- Konkret beobachtet in Pool-Frage "Stellensuchende und Arbeitslose bezeichnen dieselbe Personengruppe" (VWL Arbeitslosigkeit & Armut).
+- 3 neue Vitest-Tests in `RichtigFalschFrage.test.tsx`.
+
+### Verifikation
+- TypeScript: ✅ tsc -b
+- Tests: ✅ 328/328 (33 Files, +3 neue)
+- Build: ✅
+- Browser auf Staging: Nach Deploy zu prüfen (preview advanced auf `2375e1b`).
+
+### Apps-Script
+**Nicht geändert — kein Deploy nötig.**
+
+### Lehre für `bilder-in-pools.md` G-Sektion
+R/F-Pool-Daten-Qualität: Wenn eine R/F-Frage nur 1 Aussage hat, sollte diese nicht identisch zum Fragetext sein. Fragetext = allgemeine Frage ("Welche Aussage ist korrekt?"), Aussagen = konkrete Behauptungen. Bei Einzelaussagen-Fragen kann die Aussage direkt als Fragetext dienen, ohne doppelte Box. Der neue Dedup-Guard in `RichtigFalschFrage.tsx` fängt das ab, idealerweise bereinigen wir das langfristig in den Pool-Daten.
+
+---
+
 ## Session 119 — Merge A + B + Cleanup S118-Reste (18.-19.04.2026)
 
 ### Stand
