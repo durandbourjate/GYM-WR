@@ -13,6 +13,9 @@ import { typLabel } from '../../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../../store/schulConfigStore.ts'
 import { formatFragetext } from '../../../../utils/textFormatierung.tsx'
 import { istBild } from '../../../../utils/mediaUtils.ts'
+import { toAssetUrl } from '../../../../utils/assetUrl.ts'
+import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -682,10 +685,11 @@ function ZeichenDruck() {
 }
 
 function HotspotDruck({ frage }: { frage: HotspotFrage }) {
+  const bildQuelle = ermittleBildQuelle(frage)
   return (
     <div className="space-y-2">
-      {frage.bildUrl && (
-        <img src={frage.bildUrl} alt="Hotspot-Bild" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+      {bildQuelle && (
+        <img src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)} alt="Hotspot-Bild" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
       )}
       <p className="text-sm text-slate-600 print:text-black">
         Markiere {frage.bereiche?.length || 1} Stelle{(frage.bereiche?.length || 1) > 1 ? 'n' : ''} auf dem Bild.
@@ -696,11 +700,12 @@ function HotspotDruck({ frage }: { frage: HotspotFrage }) {
 
 function BildbeschriftungDruck({ frage }: { frage: BildbeschriftungFrage }) {
   const beschriftungen = frage.beschriftungen || []
+  const bildQuelle = ermittleBildQuelle(frage)
   return (
     <div className="space-y-3">
-      {frage.bildUrl && (
+      {bildQuelle && (
         <div className="relative inline-block">
-          <img src={frage.bildUrl} alt="Bildbeschriftung" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+          <img src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)} alt="Bildbeschriftung" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
           {/* Nummerierte Marker auf dem Bild */}
           {beschriftungen.map((b, i) => (
             <div
@@ -727,11 +732,12 @@ function BildbeschriftungDruck({ frage }: { frage: BildbeschriftungFrage }) {
 function DragDropBildDruck({ frage }: { frage: DragDropBildFrage }) {
   const zielzonen = frage.zielzonen || []
   const labels = frage.labels || []
+  const bildQuelle = ermittleBildQuelle(frage)
   return (
     <div className="space-y-3">
-      {frage.bildUrl && (
+      {bildQuelle && (
         <div className="relative inline-block">
-          <img src={frage.bildUrl} alt="Drag & Drop" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+          <img src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)} alt="Drag & Drop" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
           {/* Nummerierte Zielzonen auf dem Bild */}
           {zielzonen.map((z, i) => (
             <div

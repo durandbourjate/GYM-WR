@@ -4,6 +4,8 @@ import type { DragDropBildFrage as DragDropBildFrageType } from '../../types/fra
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
+import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
   frage: DragDropBildFrageType
@@ -11,6 +13,7 @@ interface Props {
 
 export default function DragDropBildFrage({ frage }: Props) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const bildQuelle = ermittleBildQuelle(frage)
 
   // Antwort-Schema: zuordnungen[labelText] = zoneId (wie in korrektur.ts erwartet).
   // Ein Label liegt in höchstens einer Zone; eine Zone kann beliebig viele Labels halten.
@@ -111,13 +114,15 @@ export default function DragDropBildFrage({ frage }: Props) {
           (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
       <div className={`relative block w-full max-w-2xl ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
         <div className="relative overflow-hidden w-full">
-          <img
-            src={toAssetUrl(frage.bildUrl)}
-            alt="Drag & Drop Bild"
-            className="block w-full h-auto rounded-lg select-none"
-            style={{ objectFit: 'contain' }}
-            draggable={false}
-          />
+          {bildQuelle && (
+            <img
+              src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)}
+              alt="Drag & Drop Bild"
+              className="block w-full h-auto rounded-lg select-none"
+              style={{ objectFit: 'contain' }}
+              draggable={false}
+            />
+          )}
 
           {/* Zielzonen — enthalten 0..N Labels, vertikal gestapelt */}
           {(frage.zielzonen ?? []).map((zone) => {

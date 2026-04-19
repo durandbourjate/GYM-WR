@@ -25,6 +25,7 @@ import {
   generiereMuserloesungKontenbestimmung,
   generiereMuserloesungBilanzER,
 } from './musterloesungGenerierung'
+import { bildQuelleAus, pdfQuelleAus } from '../utils/mediaQuelleMigrator'
 
 /** Gemeinsame Basis-Felder (typ-unabhängig) */
 export interface FrageBasis {
@@ -209,7 +210,12 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         musterloesungBild: typDaten.musterloesungBild,
       } as VisualisierungFrage
 
-    case 'pdf':
+    case 'pdf': {
+      const pdfQuelle = pdfQuelleAus({
+        pdfBase64: typDaten.pdfBase64,
+        pdfDriveFileId: typDaten.pdfDriveFileId,
+        pdfDateiname: typDaten.pdfDateiname,
+      }) ?? undefined
       return {
         ...basis,
         typ: 'pdf',
@@ -217,11 +223,13 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         pdfDriveFileId: typDaten.pdfDriveFileId,
         pdfBase64: typDaten.pdfBase64,
         pdfDateiname: typDaten.pdfDateiname,
+        pdf: pdfQuelle,
         seitenAnzahl: typDaten.seitenAnzahl,
         kategorien: typDaten.kategorien,
         erlaubteWerkzeuge: typDaten.erlaubteWerkzeuge,
         musterloesungAnnotationen: typDaten.musterloesungAnnotationen,
       } as PDFFrage
+    }
 
     case 'sortierung':
       return {
@@ -232,24 +240,30 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         teilpunkte: typDaten.teilpunkte,
       } as SortierungFrage
 
-    case 'hotspot':
+    case 'hotspot': {
+      const bildUrl = typDaten.bildUrl.trim()
       return {
         ...basis,
         typ: 'hotspot',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl: typDaten.bildUrl.trim(),
+        bildUrl,
+        bild: bildQuelleAus({ bildUrl }) ?? undefined,
         bereiche: typDaten.bereiche,
         mehrfachauswahl: typDaten.mehrfachauswahl,
       } as HotspotFrage
+    }
 
-    case 'bildbeschriftung':
+    case 'bildbeschriftung': {
+      const bildUrl = typDaten.bildUrl.trim()
       return {
         ...basis,
         typ: 'bildbeschriftung',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl: typDaten.bildUrl.trim(),
+        bildUrl,
+        bild: bildQuelleAus({ bildUrl }) ?? undefined,
         beschriftungen: typDaten.beschriftungen,
       } as BildbeschriftungFrage
+    }
 
     case 'audio':
       return {
@@ -259,15 +273,18 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         maxDauerSekunden: typDaten.maxDauerSekunden,
       } as AudioFrage
 
-    case 'dragdrop_bild':
+    case 'dragdrop_bild': {
+      const bildUrl = typDaten.bildUrl.trim()
       return {
         ...basis,
         typ: 'dragdrop_bild',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl: typDaten.bildUrl.trim(),
+        bildUrl,
+        bild: bildQuelleAus({ bildUrl }) ?? undefined,
         zielzonen: typDaten.zielzonen,
         labels: typDaten.labels.filter(l => l.trim()),
       } as DragDropBildFrage
+    }
 
     case 'code':
       return {

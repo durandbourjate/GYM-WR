@@ -6,6 +6,8 @@ import type { PDFFrage as PDFFrageTyp } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
+import { ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuIframeSrc } from '@shared/utils/mediaQuelleUrl'
 import { usePDFRenderer } from './pdf/usePDFRenderer.ts'
 import { usePDFAnnotations } from './pdf/usePDFAnnotations.ts'
 import { PDFToolbar } from './pdf/PDFToolbar.tsx'
@@ -97,21 +99,12 @@ export default function PDFFrage({ frage }: Props) {
 
     async function ladePDFAsync() {
       setLadeFehler(null)
+      const quelle = ermittlePdfQuelle(frage)
 
-      // 1. Base64 direkt (kein Netzwerk nötig)
-      if (frage.pdfBase64) {
+      // Drive: Backend-Proxy (CORS-sicher), liefert base64 zurück
+      if (quelle?.typ === 'drive' && apiService.istKonfiguriert()) {
         try {
-          await renderer.ladePDF({ base64: frage.pdfBase64 })
-          return
-        } catch (err) {
-          console.warn('[PDFFrage] Base64-Load fehlgeschlagen:', err)
-        }
-      }
-
-      // 2. Google Drive via Apps Script Proxy (CORS-sicher)
-      if (frage.pdfDriveFileId && apiService.istKonfiguriert()) {
-        try {
-          const result = await apiService.ladeDriveFile(frage.pdfDriveFileId, user?.email ?? '')
+          const result = await apiService.ladeDriveFile(quelle.driveFileId, user?.email ?? '')
           if (abgebrochen) return
           if (result?.base64) {
             await renderer.ladePDF({ base64: result.base64 })
@@ -124,12 +117,22 @@ export default function PDFFrage({ frage }: Props) {
         }
       }
 
-      // 3. Direkte URL (funktioniert nur bei same-origin oder CORS-erlaubten URLs)
-      // Relative URLs (./materialien/..) absolutieren, damit sie nicht gegen die SPA-Route aufgelöst werden
-      if (frage.pdfUrl) {
+      // Inline: base64 direkt ohne Netzwerk
+      if (quelle?.typ === 'inline') {
+        try {
+          await renderer.ladePDF({ base64: quelle.base64 })
+          return
+        } catch (err) {
+          if (abgebrochen) return
+          console.warn('[PDFFrage] Inline-Load fehlgeschlagen:', err)
+        }
+      }
+
+      // Pool/App/Extern: direkte URL (aufgelöst via MediaQuelle-Resolver)
+      if (quelle && (quelle.typ === 'pool' || quelle.typ === 'app' || quelle.typ === 'extern')) {
         try {
           if (abgebrochen) return
-          await renderer.ladePDF({ url: toAssetUrl(frage.pdfUrl) })
+          await renderer.ladePDF({ url: mediaQuelleZuIframeSrc(quelle, toAssetUrl) })
           return
         } catch (err) {
           if (abgebrochen) return
@@ -137,18 +140,17 @@ export default function PDFFrage({ frage }: Props) {
         }
       }
 
-      // 4. Lokale Datei im materialien-Ordner
+      // Fallback: Lokale Datei aus pdfDateiname (Alt-Daten ohne pdfUrl)
       if (frage.pdfDateiname) {
         try {
           if (abgebrochen) return
-          await renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
+          await renderer.ladePDF({ url: toAssetUrl(`./materialien/${frage.pdfDateiname}`) })
           return
         } catch (err) {
           console.error('[PDFFrage] Alle PDF-Quellen fehlgeschlagen:', err)
         }
       }
 
-      // Keine Quelle verfügbar oder alle fehlgeschlagen → Fehlerzustand
       if (!abgebrochen) {
         console.error('[PDFFrage] Kein PDF geladen — keine Quelle verfügbar')
         setLadeFehler('Alle PDF-Quellen fehlgeschlagen. Bitte Lehrperson informieren.')

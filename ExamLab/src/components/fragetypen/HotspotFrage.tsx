@@ -4,6 +4,8 @@ import type { HotspotFrage as HotspotFrageType } from '../../types/fragen.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
+import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
   frage: HotspotFrageType
@@ -11,6 +13,7 @@ interface Props {
 
 export default function HotspotFrage({ frage }: Props) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const bildQuelle = ermittleBildQuelle(frage)
 
   const geklickt: { x: number; y: number }[] =
     antwort?.typ === 'hotspot' ? antwort.klicks : []
@@ -68,13 +71,15 @@ export default function HotspotFrage({ frage }: Props) {
           className={`relative overflow-hidden w-full ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
           onClick={handleKlick}
         >
-          <img
-            src={toAssetUrl(frage.bildUrl)}
-            alt="Hotspot-Bild"
-            className="block w-full h-auto rounded-lg select-none"
-            style={{ objectFit: 'contain' }}
-            draggable={false}
-          />
+          {bildQuelle && (
+            <img
+              src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)}
+              alt="Hotspot-Bild"
+              className="block w-full h-auto rounded-lg select-none"
+              style={{ objectFit: 'contain' }}
+              draggable={false}
+            />
+          )}
 
           {/* Klick-Marker */}
           {geklickt.map((pos, i) => (

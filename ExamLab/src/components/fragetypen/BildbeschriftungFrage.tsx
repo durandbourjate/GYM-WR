@@ -3,6 +3,8 @@ import type { BildbeschriftungFrage as BildbeschriftungFrageType } from '../../t
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
+import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
+import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
   frage: BildbeschriftungFrageType
@@ -10,6 +12,7 @@ interface Props {
 
 export default function BildbeschriftungFrage({ frage }: Props) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
+  const bildQuelle = ermittleBildQuelle(frage)
 
   const eintraege: Record<string, string> =
     antwort?.typ === 'bildbeschriftung' ? antwort.eintraege : {}
@@ -50,13 +53,15 @@ export default function BildbeschriftungFrage({ frage }: Props) {
           (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
       <div className={`relative block w-full max-w-2xl ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div className="relative overflow-hidden w-full">
-          <img
-            src={toAssetUrl(frage.bildUrl)}
-            alt="Bildbeschriftung"
-            className="block w-full h-auto rounded-lg select-none"
-            style={{ objectFit: 'contain' }}
-            draggable={false}
-          />
+          {bildQuelle && (
+            <img
+              src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)}
+              alt="Bildbeschriftung"
+              className="block w-full h-auto rounded-lg select-none"
+              style={{ objectFit: 'contain' }}
+              draggable={false}
+            />
+          )}
 
           {/* Label-Eingabefelder */}
           {(frage.beschriftungen ?? []).map((beschriftung, i) => (

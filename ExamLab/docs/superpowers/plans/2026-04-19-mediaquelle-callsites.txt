@@ -1,0 +1,285 @@
+# Call-Sites für Alt-Felder (Stand 2026-04-19)
+
+## bildUrl + bildDriveFileId
+ExamLab/src/types/fragen.ts:442:  bildUrl?: string
+ExamLab/src/types/fragen.ts:586:  bildUrl: string
+ExamLab/src/types/fragen.ts:602:  bildUrl: string
+ExamLab/src/types/fragen.ts:625:  bildUrl: string
+ExamLab/src/utils/fragenFactory.ts:72:  | { typ: 'hotspot'; fragetext: string; bildUrl: string; bereiche: HotspotBereich[]; mehrfachauswahl: boolean }
+ExamLab/src/utils/fragenFactory.ts:73:  | { typ: 'bildbeschriftung'; fragetext: string; bildUrl: string; beschriftungen: BildbeschriftungLabel[] }
+ExamLab/src/utils/fragenFactory.ts:75:  | { typ: 'dragdrop_bild'; fragetext: string; bildUrl: string; zielzonen: DragDropBildZielzone[]; labels: string[] }
+ExamLab/src/utils/fragenFactory.ts:240:        bildUrl: typDaten.bildUrl.trim(),
+ExamLab/src/utils/fragenFactory.ts:250:        bildUrl: typDaten.bildUrl.trim(),
+ExamLab/src/utils/fragenFactory.ts:267:        bildUrl: typDaten.bildUrl.trim(),
+ExamLab/src/utils/poolConverter.ts:491:      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+ExamLab/src/utils/poolConverter.ts:496:        bildUrl,
+ExamLab/src/utils/poolConverter.ts:513:      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+ExamLab/src/utils/poolConverter.ts:518:        bildUrl,
+ExamLab/src/utils/poolConverter.ts:536:      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+ExamLab/src/utils/poolConverter.ts:541:        bildUrl,
+ExamLab/src/utils/autoKorrektur.test.ts:219:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:240:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:261:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:284:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:307:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:329:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:353:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:378:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:401:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/utils/autoKorrektur.test.ts:423:      bildUrl: 'https://example.com/bild.png',
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:432:  if (!antwort) return <>{frage.bildUrl && <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded mt-2" />}<KeineAntwort /></>
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:435:      {frage.bildUrl && (
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:437:          <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded" />
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:465:      {frage.bildUrl && (
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:467:          <img src={toAssetUrl(frage.bildUrl)} alt="Bildbeschriftung" className="max-w-full rounded" />
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:511:      {frage.bildUrl && (
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:513:          <img src={toAssetUrl(frage.bildUrl)} alt="Drag & Drop" className="max-w-full rounded" />
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:687:      {frage.bildUrl && (
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:688:        <img src={frage.bildUrl} alt="Hotspot-Bild" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:701:      {frage.bildUrl && (
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:703:          <img src={frage.bildUrl} alt="Bildbeschriftung" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:732:      {frage.bildUrl && (
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:734:          <img src={frage.bildUrl} alt="Drag & Drop" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
+ExamLab/src/components/fragetypen/HotspotFrage.tsx:72:            src={toAssetUrl(frage.bildUrl)}
+ExamLab/src/components/fragetypen/BildbeschriftungFrage.tsx:54:            src={toAssetUrl(frage.bildUrl)}
+ExamLab/src/components/fragetypen/DragDropBildFrage.tsx:115:            src={toAssetUrl(frage.bildUrl)}
+ExamLab/src/data/einrichtungsUebungFragen.ts:709:    bildUrl: './demo-bilder/europa-karte.svg',
+ExamLab/src/data/einrichtungsUebungFragen.ts:749:    bildUrl: './demo-bilder/tierzelle.svg',
+ExamLab/src/data/einrichtungsUebungFragen.ts:814:    bildUrl: './demo-bilder/weltkarte.svg',
+ExamLab/src/data/einrichtungsFragen.ts:727:    bildUrl: './demo-bilder/europa-karte.svg',
+ExamLab/src/data/einrichtungsFragen.ts:767:    bildUrl: './demo-bilder/tierzelle.svg',
+ExamLab/src/data/einrichtungsFragen.ts:832:    bildUrl: './demo-bilder/weltkarte.svg',
+packages/shared/src/types/fragen.ts:410:  bildUrl?: string
+packages/shared/src/types/fragen.ts:554:  bildUrl: string
+packages/shared/src/types/fragen.ts:570:  bildUrl: string
+packages/shared/src/types/fragen.ts:593:  bildUrl: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:167:  bildUrl: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:745:          bildUrl={props.bildUrl}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:756:          bildUrl={props.bildUrl}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:772:          bildUrl={props.bildUrl}
+packages/shared/src/editor/fragenFactory.ts:72:  | { typ: 'hotspot'; fragetext: string; bildUrl: string; bereiche: HotspotBereich[]; mehrfachauswahl: boolean }
+packages/shared/src/editor/fragenFactory.ts:73:  | { typ: 'bildbeschriftung'; fragetext: string; bildUrl: string; beschriftungen: BildbeschriftungLabel[] }
+packages/shared/src/editor/fragenFactory.ts:75:  | { typ: 'dragdrop_bild'; fragetext: string; bildUrl: string; zielzonen: DragDropBildZielzone[]; labels: string[] }
+packages/shared/src/editor/fragenFactory.ts:240:        bildUrl: typDaten.bildUrl.trim(),
+packages/shared/src/editor/fragenFactory.ts:250:        bildUrl: typDaten.bildUrl.trim(),
+packages/shared/src/editor/fragenFactory.ts:267:        bildUrl: typDaten.bildUrl.trim(),
+packages/shared/src/editor/typen/AufgabengruppeEditor.tsx:434:      <input type="text" value={ta.bildUrl as string ?? ''} onChange={(e) => onUpdate({ bildUrl: e.target.value })}
+packages/shared/src/editor/typen/DragDropBildEditor.tsx:7:  bildUrl: string
+packages/shared/src/editor/typen/DragDropBildEditor.tsx:19:export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, setZielzonen, labels, setLabels }: Props) {
+packages/shared/src/editor/typen/DragDropBildEditor.tsx:68:      <BildMitGenerator bildUrl={bildUrl} setBildUrl={setBildUrl} fragetyp="dragdrop_bild" />
+packages/shared/src/editor/typen/DragDropBildEditor.tsx:70:      {bildUrl && (
+packages/shared/src/editor/typen/DragDropBildEditor.tsx:82:              src={resolvePoolBildUrl(bildUrl)}
+packages/shared/src/editor/typen/HotspotEditor.tsx:7:  bildUrl: string
+packages/shared/src/editor/typen/HotspotEditor.tsx:15:export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereiche, mehrfachauswahl, setMehrfachauswahl }: Props) {
+packages/shared/src/editor/typen/HotspotEditor.tsx:57:      <BildMitGenerator bildUrl={bildUrl} setBildUrl={setBildUrl} fragetyp="hotspot" />
+packages/shared/src/editor/typen/HotspotEditor.tsx:59:      {bildUrl && (
+packages/shared/src/editor/typen/HotspotEditor.tsx:68:              src={resolvePoolBildUrl(bildUrl)}
+packages/shared/src/editor/typen/BildbeschriftungEditor.tsx:7:  bildUrl: string
+packages/shared/src/editor/typen/BildbeschriftungEditor.tsx:13:export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftungen, setBeschriftungen }: Props) {
+packages/shared/src/editor/typen/BildbeschriftungEditor.tsx:42:      <BildMitGenerator bildUrl={bildUrl} setBildUrl={setBildUrl} fragetyp="bildbeschriftung" />
+packages/shared/src/editor/typen/BildbeschriftungEditor.tsx:44:      {bildUrl && (
+packages/shared/src/editor/typen/BildbeschriftungEditor.tsx:51:              src={resolvePoolBildUrl(bildUrl)}
+packages/shared/src/editor/SharedFragenEditor.tsx:408:  const [bildUrl, setBildUrl] = useState(() => {
+packages/shared/src/editor/SharedFragenEditor.tsx:410:      return (frage as { bildUrl?: string }).bildUrl ?? ''
+packages/shared/src/editor/SharedFragenEditor.tsx:642:        typDaten = { typ: 'hotspot', fragetext, bildUrl, bereiche: hsBereiche, mehrfachauswahl: hsMehrfachauswahl }; break
+packages/shared/src/editor/SharedFragenEditor.tsx:644:        typDaten = { typ: 'bildbeschriftung', fragetext, bildUrl, beschriftungen: bbBeschriftungen }; break
+packages/shared/src/editor/SharedFragenEditor.tsx:648:        typDaten = { typ: 'dragdrop_bild', fragetext, bildUrl, zielzonen: ddZielzonen, labels: ddLabels }; break
+packages/shared/src/editor/SharedFragenEditor.tsx:829:            bildUrl={bildUrl} setBildUrl={setBildUrl}
+packages/shared/src/editor/components/BildUpload.tsx:14:  bildUrl: string
+packages/shared/src/editor/components/BildUpload.tsx:17:  bildDriveFileId?: string
+packages/shared/src/editor/components/BildUpload.tsx:21:export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveFileId, setBildDriveFileId }: Props) {
+packages/shared/src/editor/components/BildUpload.tsx:23:  const bildUrl = resolvePoolBildUrl(rawBildUrl)
+packages/shared/src/editor/components/BildUpload.tsx:102:        Bild {bildDriveFileId && <span className="text-xs text-green-600 dark:text-green-400">(hochgeladen ✓)</span>}
+packages/shared/src/editor/components/BildUpload.tsx:106:      {!bildUrl && (
+packages/shared/src/editor/components/BildUpload.tsx:150:          value={bildUrl.startsWith('data:') ? '' : bildUrl}
+packages/shared/src/editor/components/BildUpload.tsx:158:        {bildUrl && bildUrl.startsWith('data:') && (
+packages/shared/src/editor/components/BildUpload.tsx:161:        {bildUrl && (
+packages/shared/src/editor/components/BildMitGenerator.tsx:4: * Beide führen zum gleichen Ergebnis: bildUrl wird gesetzt.
+packages/shared/src/editor/components/BildMitGenerator.tsx:13:  bildUrl: string
+packages/shared/src/editor/components/BildMitGenerator.tsx:15:  bildDriveFileId?: string
+packages/shared/src/editor/components/BildMitGenerator.tsx:21:export default function BildMitGenerator({ bildUrl, setBildUrl, bildDriveFileId, setBildDriveFileId, fragetyp }: Props) {
+packages/shared/src/editor/components/BildMitGenerator.tsx:25:  if (bildUrl) {
+packages/shared/src/editor/components/BildMitGenerator.tsx:26:    return <BildUpload bildUrl={bildUrl} setBildUrl={setBildUrl} bildDriveFileId={bildDriveFileId} setBildDriveFileId={setBildDriveFileId} />
+packages/shared/src/editor/components/BildMitGenerator.tsx:57:        <BildUpload bildUrl={bildUrl} setBildUrl={setBildUrl} bildDriveFileId={bildDriveFileId} setBildDriveFileId={setBildDriveFileId} />
+packages/shared/src/editor/components/BildGeneratorPanel.tsx:11:  /** Callback wenn SVG generiert wurde — setzt die bildUrl */
+
+## pdfBase64 + pdfDriveFileId + pdfUrl + pdfDateiname
+ExamLab/src/types/fragen.ts:459:  pdfBase64?: string
+ExamLab/src/types/fragen.ts:460:  pdfDriveFileId?: string
+ExamLab/src/types/fragen.ts:461:  pdfUrl?: string
+ExamLab/src/types/fragen.ts:462:  pdfDateiname?: string
+ExamLab/src/types/fragen.ts:554:  pdfDriveFileId?: string
+ExamLab/src/types/fragen.ts:555:  pdfBase64?: string
+ExamLab/src/types/fragen.ts:556:  pdfUrl?: string
+ExamLab/src/types/fragen.ts:557:  pdfDateiname: string
+ExamLab/src/utils/fragenFactory.ts:70:  | { typ: 'pdf'; fragetext: string; pdfDriveFileId?: string; pdfBase64?: string; pdfUrl?: string; pdfDateiname: string; seitenAnzahl: number; kategorien?: PDFKategorie[]; erlaubteWerkzeuge: PDFAnnotationsWerkzeug[]; musterloesungAnnotationen?: PDFAnnotation[] }
+ExamLab/src/utils/fragenFactory.ts:217:        pdfDriveFileId: typDaten.pdfDriveFileId,
+ExamLab/src/utils/fragenFactory.ts:218:        pdfBase64: typDaten.pdfBase64,
+ExamLab/src/utils/fragenFactory.ts:219:        pdfDateiname: typDaten.pdfDateiname,
+ExamLab/src/utils/fragenValidierung.ts:28:  pdfDriveFileId?: string
+ExamLab/src/utils/fragenValidierung.ts:87:    if (!params.pdfDriveFileId) errs.push('Bitte PDF hochladen')
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:350:  const pdfDriveFileId = 'pdfDriveFileId' in frage ? (frage as { pdfDriveFileId?: string }).pdfDriveFileId : undefined
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:351:  const pdfUrl = 'pdfUrl' in frage ? (frage as { pdfUrl?: string }).pdfUrl : undefined
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:352:  const pdfDateiname = 'pdfDateiname' in frage ? (frage as { pdfDateiname?: string }).pdfDateiname : 'Dokument'
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:354:  const hatPdf = Boolean(pdfAnhang || pdfDriveFileId || pdfUrl)
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:361:          <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">📄 {pdfDateiname}</span>
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:364:          ) : pdfDriveFileId ? (
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:366:              src={`https://drive.google.com/file/d/${pdfDriveFileId}/preview`}
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:369:              title={pdfDateiname}
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:371:          ) : pdfUrl ? (
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:373:              src={toAssetUrl(pdfUrl)}
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:376:              title={pdfDateiname}
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:64:    if (frage.pdfBase64) return // Bereits vorhanden
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:65:    const driveId = frage.pdfDriveFileId || frage.anhaenge?.find(a => a.mimeType === 'application/pdf')?.driveFileId
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:72:    } else if (frage.pdfUrl && !driveId) {
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:74:      fetch(frage.pdfUrl)
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:86:  }, [frage.pdfDriveFileId, frage.pdfBase64, frage.pdfUrl, frage.anhaenge, schuelerEmail])
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:88:  const effectivePdf = frage.pdfBase64 || geladenesPdf
+ExamLab/src/components/lp/vorbereitung/composer/VorschauTab.tsx:262:          {(frage as any).pdfDateiname && (
+ExamLab/src/components/lp/vorbereitung/composer/VorschauTab.tsx:263:            <p className="text-xs text-slate-500 dark:text-slate-400">Datei: {(frage as any).pdfDateiname}</p>
+ExamLab/src/components/fragetypen/PDFFrage.tsx:102:      if (frage.pdfBase64) {
+ExamLab/src/components/fragetypen/PDFFrage.tsx:104:          await renderer.ladePDF({ base64: frage.pdfBase64 })
+ExamLab/src/components/fragetypen/PDFFrage.tsx:112:      if (frage.pdfDriveFileId && apiService.istKonfiguriert()) {
+ExamLab/src/components/fragetypen/PDFFrage.tsx:114:          const result = await apiService.ladeDriveFile(frage.pdfDriveFileId, user?.email ?? '')
+ExamLab/src/components/fragetypen/PDFFrage.tsx:129:      if (frage.pdfUrl) {
+ExamLab/src/components/fragetypen/PDFFrage.tsx:132:          await renderer.ladePDF({ url: toAssetUrl(frage.pdfUrl) })
+ExamLab/src/components/fragetypen/PDFFrage.tsx:141:      if (frage.pdfDateiname) {
+ExamLab/src/components/fragetypen/PDFFrage.tsx:144:          await renderer.ladePDF({ url: `./materialien/${frage.pdfDateiname}` })
+ExamLab/src/components/fragetypen/PDFFrage.tsx:232:  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && !ladeFehler && (frage.pdfBase64 || frage.pdfUrl || frage.pdfDriveFileId || frage.pdfDateiname))) {
+ExamLab/src/data/einrichtungsUebungFragen.ts:642:    pdfUrl: './materialien/witzsammlung.pdf',
+ExamLab/src/data/einrichtungsUebungFragen.ts:643:    pdfDateiname: 'witzsammlung.pdf',
+ExamLab/src/data/einrichtungsFragen.ts:359:    pdfUrl: './materialien/witzsammlung.pdf',
+ExamLab/src/data/einrichtungsFragen.ts:360:    pdfDateiname: 'witzsammlung.pdf',
+packages/shared/src/types/fragen.ts:427:  pdfBase64?: string
+packages/shared/src/types/fragen.ts:428:  pdfDriveFileId?: string
+packages/shared/src/types/fragen.ts:429:  pdfUrl?: string
+packages/shared/src/types/fragen.ts:430:  pdfDateiname?: string
+packages/shared/src/types/fragen.ts:522:  pdfDriveFileId?: string
+packages/shared/src/types/fragen.ts:523:  pdfBase64?: string
+packages/shared/src/types/fragen.ts:524:  pdfUrl?: string
+packages/shared/src/types/fragen.ts:525:  pdfDateiname: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:145:  pdfBase64: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:147:  pdfDriveFileId: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:149:  pdfDateiname: string
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:699:            pdfBase64={props.pdfBase64}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:701:            pdfDriveFileId={props.pdfDriveFileId}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:703:            pdfDateiname={props.pdfDateiname}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:716:            pdfBase64={props.pdfBase64}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:718:            pdfDriveFileId={props.pdfDriveFileId}
+packages/shared/src/editor/sections/TypEditorDispatcher.tsx:720:            pdfDateiname={props.pdfDateiname}
+packages/shared/src/editor/fragenFactory.ts:70:  | { typ: 'pdf'; fragetext: string; pdfDriveFileId?: string; pdfBase64?: string; pdfUrl?: string; pdfDateiname: string; seitenAnzahl: number; kategorien?: PDFKategorie[]; erlaubteWerkzeuge: PDFAnnotationsWerkzeug[]; musterloesungAnnotationen?: PDFAnnotation[] }
+packages/shared/src/editor/fragenFactory.ts:217:        pdfDriveFileId: typDaten.pdfDriveFileId,
+packages/shared/src/editor/fragenFactory.ts:218:        pdfBase64: typDaten.pdfBase64,
+packages/shared/src/editor/fragenFactory.ts:219:        pdfDateiname: typDaten.pdfDateiname,
+packages/shared/src/editor/fragenValidierung.ts:28:  pdfDriveFileId?: string
+packages/shared/src/editor/fragenValidierung.ts:87:    if (!params.pdfDriveFileId) errs.push('Bitte PDF hochladen')
+packages/shared/src/editor/SharedFragenEditor.tsx:376:  const [pdfBase64, setPdfBase64] = useState(
+packages/shared/src/editor/SharedFragenEditor.tsx:377:    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfBase64 ?? '' : ''
+packages/shared/src/editor/SharedFragenEditor.tsx:379:  const [pdfDriveFileId, setPdfDriveFileId] = useState(
+packages/shared/src/editor/SharedFragenEditor.tsx:380:    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDriveFileId || '' : ''
+packages/shared/src/editor/SharedFragenEditor.tsx:382:  const [pdfDateiname, setPdfDateiname] = useState(
+packages/shared/src/editor/SharedFragenEditor.tsx:383:    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDateiname : ''
+packages/shared/src/editor/SharedFragenEditor.tsx:633:          typ: 'pdf', fragetext, pdfDriveFileId, pdfBase64: pdfBase64 || undefined,
+packages/shared/src/editor/SharedFragenEditor.tsx:634:          pdfDateiname, seitenAnzahl: pdfSeitenAnzahl,
+packages/shared/src/editor/SharedFragenEditor.tsx:820:            pdfBase64={pdfBase64} setPdfBase64={setPdfBase64}
+packages/shared/src/editor/SharedFragenEditor.tsx:821:            pdfDriveFileId={pdfDriveFileId} setPdfDriveFileId={setPdfDriveFileId}
+packages/shared/src/editor/SharedFragenEditor.tsx:822:            pdfDateiname={pdfDateiname} setPdfDateiname={setPdfDateiname}
+packages/shared/src/editor/components/PDFEditor.tsx:11:  pdfBase64: string
+packages/shared/src/editor/components/PDFEditor.tsx:13:  pdfDriveFileId: string
+packages/shared/src/editor/components/PDFEditor.tsx:15:  pdfDateiname: string
+packages/shared/src/editor/components/PDFEditor.tsx:95:  pdfBase64, setPdfBase64,
+packages/shared/src/editor/components/PDFEditor.tsx:96:  pdfDriveFileId: _pdfDriveFileId, setPdfDriveFileId,
+packages/shared/src/editor/components/PDFEditor.tsx:97:  pdfDateiname, setPdfDateiname,
+packages/shared/src/editor/components/PDFEditor.tsx:110:    if (pdfBase64 && pdfRenderer) {
+packages/shared/src/editor/components/PDFEditor.tsx:111:      void pdfRenderer.ladePDF({ base64: pdfBase64 })
+packages/shared/src/editor/components/PDFEditor.tsx:215:          {pdfBase64 ? (
+packages/shared/src/editor/components/PDFEditor.tsx:219:                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{pdfDateiname}</p>
+
+## FrageAnhang-Felder
+ExamLab/src/components/MaterialPanel.tsx:237:  if (material.typ === 'dateiUpload' && material.mimeType?.startsWith('audio/') && material.url) {
+ExamLab/src/components/MaterialPanel.tsx:249:  if (material.typ === 'dateiUpload' && material.mimeType?.startsWith('video/') && material.url) {
+ExamLab/src/components/MaterialPanel.tsx:287:  const materialUrl = material.url || (material.driveFileId ? `https://drive.google.com/file/d/${material.driveFileId}/view` : '')
+ExamLab/src/components/MaterialPanel.tsx:365:    driveFileId: material.driveFileId,
+ExamLab/src/components/MaterialPanel.tsx:368:    mimeType: material.mimeType,
+ExamLab/src/components/MaterialPanel.tsx:375:        Typ: {material.typ} · {material.url ? 'URL vorhanden' : material.driveFileId ? 'Drive-ID vorhanden' : 'Keine Quelle'}
+ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:349:  const pdfAnhang = ('anhaenge' in frage ? (frage as { anhaenge?: FrageAnhang[] }).anhaenge : [])?.find(a => a.mimeType === 'application/pdf')
+ExamLab/src/components/lp/korrektur/PDFKorrektur.tsx:65:    const driveId = frage.pdfDriveFileId || frage.anhaenge?.find(a => a.mimeType === 'application/pdf')?.driveFileId
+ExamLab/src/components/lp/vorbereitung/composer/VorschauTab.tsx:630:      {lightboxAnhang && lightboxAnhang.mimeType.startsWith('image/') && (
+ExamLab/src/components/lp/vorbereitung/composer/VorschauTab.tsx:634:            src={`https://drive.google.com/thumbnail?id=${lightboxAnhang.driveFileId}&sz=w800`}
+ExamLab/src/components/lp/vorbereitung/composer/ConfigTab.tsx:417:        driveFileId: ergebnis.driveFileId,
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:198:        if (istBild(anhang.mimeType)) {
+ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:200:            || `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=w600`
+ExamLab/src/components/MediaAnhang.tsx:20:        {anhang.driveFileId && (
+ExamLab/src/components/MediaAnhang.tsx:22:            href={driveViewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:35:  if (istBild(anhang.mimeType)) {
+ExamLab/src/components/MediaAnhang.tsx:36:    const thumbnailUrl = anhang.externeUrl || `https://drive.google.com/thumbnail?id=${anhang.driveFileId}&sz=${bildSz}`
+ExamLab/src/components/MediaAnhang.tsx:61:  if (istAudio(anhang.mimeType)) {
+ExamLab/src/components/MediaAnhang.tsx:70:          <source src={driveStreamUrl(anhang.driveFileId)} type={anhang.mimeType} />
+ExamLab/src/components/MediaAnhang.tsx:75:            href={driveViewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:88:  if (istEmbed(anhang.mimeType) && anhang.url) {
+ExamLab/src/components/MediaAnhang.tsx:111:  if (istVideo(anhang.mimeType)) {
+ExamLab/src/components/MediaAnhang.tsx:116:            src={drivePreviewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:126:            href={driveViewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:139:  if (istPDF(anhang.mimeType)) {
+ExamLab/src/components/MediaAnhang.tsx:143:          src={drivePreviewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:151:            href={driveViewUrl(anhang.driveFileId)}
+ExamLab/src/components/MediaAnhang.tsx:167:      {anhang.driveFileId && (
+ExamLab/src/components/MediaAnhang.tsx:168:        <a href={driveViewUrl(anhang.driveFileId)} target="_blank" rel="noopener noreferrer" className="ml-2 underline">
+ExamLab/src/components/FrageAnhaenge.tsx:32:      {lightboxAnhang && lightboxAnhang.mimeType.startsWith('image/') && (
+ExamLab/src/components/FrageAnhaenge.tsx:45:            src={`https://drive.google.com/thumbnail?id=${lightboxAnhang.driveFileId}&sz=w1600`}
+ExamLab/src/services/uploadApi.ts:29:      return { driveFileId: data.driveFileId, url: data.url }
+ExamLab/src/services/uploadApi.ts:104:      return data.driveFileId ?? null
+packages/shared/src/editor/typen/ZeichnenEditor.tsx:106:      const url = `https://lh3.googleusercontent.com/d/${ergebnis.driveFileId}`
+packages/shared/src/editor/typen/ZeichnenEditor.tsx:110:        hintergrundbildId: ergebnis.driveFileId,
+packages/shared/src/editor/typen/ZeichnenEditor.tsx:165:      if (ergebnis && !('error' in ergebnis) && ergebnis.driveFileId) {
+packages/shared/src/editor/typen/ZeichnenEditor.tsx:166:        onMusterloesungBildChange(`https://lh3.googleusercontent.com/d/${ergebnis.driveFileId}`)
+packages/shared/src/editor/components/BildUpload.tsx:63:      } else if (result?.driveFileId) {
+packages/shared/src/editor/components/BildUpload.tsx:65:        const previewUrl = `https://lh3.googleusercontent.com/d/${result.driveFileId}`
+packages/shared/src/editor/components/BildUpload.tsx:67:        setBildDriveFileId?.(result.driveFileId)
+packages/shared/src/editor/components/AnhangEditor.tsx:223:                {istBild(a.mimeType) && a.driveFileId ? (
+packages/shared/src/editor/components/AnhangEditor.tsx:225:                    src={`https://drive.google.com/thumbnail?id=${a.driveFileId}&sz=w80`}
+packages/shared/src/editor/components/AnhangEditor.tsx:230:                  <span className="text-lg">{medienIcon(a.mimeType)}</span>
+
+## Apps-Script
+695:        return jsonResponse({ base64: base64, mimeType: blob.getContentType(), name: file.getName() });
+1059:    var mimeType = body.mimeType;
+1073:    if (mimeType && ERLAUBTE_UPLOAD_MIME_TYPES.indexOf(mimeType) < 0) {
+1074:      return jsonResponse({ error: 'Dateityp nicht erlaubt: ' + mimeType });
+1079:    var blob = Utilities.newBlob(decoded, mimeType, dateiname);
+1082:    var anhaengeOrdner = DriveApp.getFolderById(ANHAENGE_ORDNER_ID);
+1083:    var file = anhaengeOrdner.createFile(blob);
+1091:      mimeType: mimeType,
+1108:    var mimeType = body.mimeType;
+1122:    if (mimeType && ERLAUBTE_UPLOAD_MIME_TYPES.indexOf(mimeType) < 0) {
+1123:      return jsonResponse({ error: 'Dateityp nicht erlaubt: ' + mimeType });
+1128:    var blob = Utilities.newBlob(decoded, mimeType, dateiname);
+2078:    anhaenge: safeJsonParse(row.anhaenge, []),
+2218:        pdfUrl: typDaten.pdfUrl || row.pdfUrl || '',
+2219:        pdfBase64: typDaten.pdfBase64 || '',
+2239:        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
+2947:      anhaenge: JSON.stringify(frage.anhaenge || []),
+3147:          anhaenge: JSON.stringify(frage.anhaenge || []),
+3245:        pdfUrl: frage.pdfUrl,
+3263:      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, hotspots: frage.hotspots, hotspotRadius: frage.hotspotRadius, maxKlicks: frage.maxKlicks };
+3265:      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, beschriftungen: frage.beschriftungen };
+3267:      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, labels: frage.labels, zielzonen: frage.zielzonen };
+3278:        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
+3659:    hatAnhang: Array.isArray(frage.anhaenge) && frage.anhaenge.length > 0,
+3660:    hatMaterial: !!(frage.pdfDriveFileId || frage.pdfUrl),
+4226:      'anhaenge', 'typDaten', 'autor', 'geteilt', 'geteiltVon',
+4281:            anhaenge: JSON.stringify(frage.anhaenge || []),
+4285:            bildUrl: frage.bildUrl || '',
+4313:            anhaenge: JSON.stringify(frage.anhaenge || []),
+7050:    'einr-hs-europa': { bildUrl: './demo-bilder/europa-karte.svg', bereiche: [{ id: 'schweiz', form: 'rechteck', koordinaten: { x: 45, y: 43, breite: 6, hoehe: 5 }, label: 'Schweiz', punkte: 2 }], mehrfachauswahl: false },
+7051:    'einr-bb-zelle': { bildUrl: './demo-bilder/tierzelle.svg', beschriftungen: [{ id: '1', position: { x: 50, y: 50 }, korrekt: ['Zellkern','Nukleus','Nucleus'] }, { id: '2', position: { x: 25, y: 30 }, korrekt: ['Zellmembran','Membran'] }, { id: '3', position: { x: 62, y: 55 }, korrekt: ['Mitochondrium','Mitochondrien'] }] },
+7053:    'einr-dd-kontinente': { bildUrl: './demo-bilder/weltkarte.svg', zielzonen: [{ id: '1', position: { x: 12, y: 35, breite: 20, hoehe: 25 }, korrektesLabel: 'Nordamerika' }, { id: '2', position: { x: 45, y: 25, breite: 15, hoehe: 30 }, korrektesLabel: 'Europa' }, { id: '3', position: { x: 70, y: 35, breite: 20, hoehe: 30 }, korrektesLabel: 'Asien' }, { id: '4', position: { x: 20, y: 65, breite: 15, hoehe: 20 }, korrektesLabel: 'Südamerika' }], labels: ['Nordamerika','Europa','Asien','Südamerika','Afrika','Australien'] },
+7787:    anhaenge: safeJsonParse_(row.anhaenge, []),
+7914:        bildUrl: typDaten.bildUrl || row.bildUrl || '',
+7922:        bildUrl: typDaten.bildUrl || row.bildUrl || '',
+7929:        bildUrl: typDaten.bildUrl || row.bildUrl || '',
+7937:        pdfUrl: typDaten.pdfUrl || row.pdfUrl || '',
+8888:  var mimeType = body.mimeType || 'application/octet-stream';
+8899:  if (erlaubteMimeTypes.indexOf(mimeType) === -1) {
+8900:    return jsonResponse({ success: false, error: 'Dateityp nicht erlaubt: ' + mimeType });
+8913:    var blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, dateiname);
+8922:        mimeType: mimeType,

@@ -1,3 +1,5 @@
+import type { MediaQuelle } from './mediaQuelle'
+
 // === ANHANG ===
 export interface FrageAnhang {
   id: string
@@ -10,6 +12,8 @@ export interface FrageAnhang {
   bildGroesse?: 'klein' | 'mittel' | 'gross'
   url?: string       // YouTube/Vimeo/nanoo.tv URL (nur bei URL-Embeds)
   externeUrl?: string // Direkter Bild-Link (z.B. Pool-Bilder auf GitHub Pages)
+  /** Neue kanonische Media-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
+  quelle?: MediaQuelle
 }
 
 // === FRAGE (Basis) ===
@@ -523,6 +527,8 @@ export interface PDFFrage extends FrageBase {
   pdfBase64?: string
   pdfUrl?: string
   pdfDateiname: string
+  /** Neue kanonische PDF-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
+  pdf?: MediaQuelle
   seitenAnzahl: number
   kategorien?: PDFKategorie[]
   erlaubteWerkzeuge: PDFAnnotationsWerkzeug[]
@@ -552,6 +558,10 @@ export interface HotspotFrage extends FrageBase {
   typ: 'hotspot'
   fragetext: string
   bildUrl: string
+  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
+  bildDriveFileId?: string
+  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
+  bild?: MediaQuelle
   bereiche: HotspotBereich[]
   mehrfachauswahl: boolean
 }
@@ -568,6 +578,10 @@ export interface BildbeschriftungFrage extends FrageBase {
   typ: 'bildbeschriftung'
   fragetext: string
   bildUrl: string
+  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
+  bildDriveFileId?: string
+  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
+  bild?: MediaQuelle
   beschriftungen: BildbeschriftungLabel[]
 }
 
@@ -591,6 +605,10 @@ export interface DragDropBildFrage extends FrageBase {
   typ: 'dragdrop_bild'
   fragetext: string
   bildUrl: string
+  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
+  bildDriveFileId?: string
+  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
+  bild?: MediaQuelle
   zielzonen: DragDropBildZielzone[]
   labels: string[]  // Pool von Labels (kann Distraktoren enthalten)
 }

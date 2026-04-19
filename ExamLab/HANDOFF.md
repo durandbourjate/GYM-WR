@@ -6,6 +6,72 @@
 
 ---
 
+## Session 125 — MediaQuelle Phasen 0-4 (19.04.2026)
+
+### Stand
+**Feature-Branch `feature/mediaquelle-unification` auf Remote. 13 Commits. Phasen 0-4 abgeschlossen — Frontend komplett auf MediaQuelle Dual-Read + Dual-Write. Phasen 5 (Apps-Script-Migration) + 6 (Cleanup) offen.**
+
+### Phase 4 (Frontend-Verdrahtung)
+
+**Read-Pfad (Dual-Read via `ermittleBildQuelle`/`ermittlePdfQuelle`):**
+- `packages/shared/src/utils/mediaQuelleResolver.ts` — neuer Helper (`frage.bild ?? bildQuelleAus(frage)`), 10 Tests.
+- `ExamLab/src/components/fragetypen/{Hotspot,Bildbeschriftung,DragDropBild,PDF}Frage.tsx` — alle 4 SuS-Bild/PDF-Komponenten lesen jetzt über Resolver.
+  - PDFFrage: 4-Stufen-Fallback-Kette durch MediaQuelle-Switch ersetzt. Drive bleibt Backend-Proxy (CORS-sicher), Inline → base64 direkt, Pool/App/Extern → URL-Load via `mediaQuelleZuIframeSrc`.
+  - **Fixt Pool-PDF-Bug (S124):** Pool-Pfade wurden früher durch `toAssetUrl` fälschlich gegen BASE_URL aufgelöst. Jetzt liefert `mediaQuelleZuIframeSrc` für `typ: 'pool'` die korrekte Cross-Site-URL (`https://durandbourjate.github.io/GYM-WR-DUY/Uebungen/Uebungspools/...`).
+- `ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx` — PDF-Anzeige + 3 Bild-Stellen (Hotspot/Bildbeschriftung/DragDrop) auf Resolver.
+- `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx` — 3 Bild-Stellen: waren früher `<img src={frage.bildUrl}>` ohne `toAssetUrl` → im Druckpreview kaputt bei Pool-Bildern. Jetzt durch `mediaQuelleZuImgSrc(ermittleBildQuelle(frage), toAssetUrl)` unified.
+
+**Write-Pfad (Dual-Write in Factory):**
+- `packages/shared/src/editor/fragenFactory.ts` — `case 'hotspot'|'bildbeschriftung'|'dragdrop_bild'` ergänzen `bild: bildQuelleAus({bildUrl})`; `case 'pdf'` ergänzt `pdf: pdfQuelleAus({...})`. Alt-Felder bleiben parallel (Dual-Write). Jede neu gespeicherte Frage hat die kanonische MediaQuelle.
+
+### Nicht umgesetzt in S125 (Follow-up)
+- **MaterialPanel** (Task 10.5): nicht kritisch — LP-uploaded Materialien, kein Pool-PDF-Bug. `toAssetUrl` bereits vorhanden. Kann in Phase 5/6 nachziehen.
+- **Editor-Interna** (Task 8.2 State-Init, 8.4 TypEditorDispatcher-Props, 9.1-9.5 MediaUpload/MediaAnzeige im Editor-UI): Nicht nötig für Dual-Write. Die Factory ist der Save-Pfad. Editor-UI bleibt mit den bestehenden Komponenten (BildUpload etc.). Phase 6 (Cleanup) räumt das mit auf.
+- **`FrageAnhang.quelle` Dual-Write**: Kein Konsument im Frontend liest das Feld aktuell. Apps-Script-Load kann es in Phase 5 ergänzen.
+
+### Verifikation
+- `npx tsc -b` grün über alle Commits.
+- `npx vitest run` — 412/412 Tests grün (59 neu in `src/__tests__/media/`).
+- `main` unverändert; alle 13 Commits auf Feature-Branch.
+- **Noch kein Browser-Test.** Nächster Schritt: Feature-Branch auf `preview` pushen, Staging-E2E mit echten Logins (LP + SuS) für Pool-PDF + Bildfragen.
+
+### Umgesetzt (Plan `2026-04-19-mediaquelle-unification.md`)
+
+**Phase 0 — Inventur:**
+- `ExamLab/docs/superpowers/plans/2026-04-19-mediaquelle-callsites.txt` — 285 Zeilen Grep-Output aller Alt-Feld-Referenzen.
+
+**Phase 1 — Foundation (TDD, 36 Tests):**
+- `packages/shared/src/types/mediaQuelle.ts` — Discriminated Union (`drive | pool | app | extern | inline`) + 5 Type-Guards. 5 Tests.
+- `packages/shared/src/utils/mediaQuelleMigrator.ts` — `bildQuelleAus`/`pdfQuelleAus`/`anhangQuelleAus` inkl. Drive-ID-Extraktion aus lh3/drive.google-URLs + mimeType-Inferenz. 19 Tests.
+- `packages/shared/src/utils/mediaQuelleUrl.ts` — `mediaQuelleZuImgSrc`/`mediaQuelleZuIframeSrc` mit DI-`AppAssetResolver` (für BASE_URL-Delegation an ExamLab-seitiges `toAssetUrl`). 8 Tests.
+- `packages/shared/src/utils/mediaQuelleBytes.ts` — `mediaQuelleZuArrayBuffer` für pdf.js/Audio (inline → base64-decode, rest → fetch). 4 Tests.
+
+**Phase 2 — UI-Komponenten (TDD, 13 Tests):**
+- `packages/shared/src/components/MediaAnzeige.tsx` — Universeller Render-Switch per MIME-Type (img/iframe/audio/video/Badge). 7 Tests.
+- `packages/shared/src/components/MediaUpload.tsx` — Upload-Dropzone mit Drive-Detection in URL-Input, Fallback auf inline-base64 wenn `services.istUploadVerfuegbar()` false. 6 Tests.
+
+**Phase 3 — Frage-Types erweitert:**
+- `packages/shared/src/types/fragen.ts`: neue optionale Felder `bild?: MediaQuelle` (Hotspot/Bildbeschriftung/DragDropBild), `pdf?: MediaQuelle` (PDFFrage), `quelle?: MediaQuelle` (FrageAnhang). Alt-Felder unangetastet — Dual-Write-fähig ohne Breaking-Change.
+- Abweichung vom Plan: HotspotFrage/BildbeschriftungFrage/DragDropBildFrage behalten `bildUrl: string` non-optional. Grund: Konservativer, kein TSC-Breaking-Change im Rest-Code. Phase 6 (Cleanup) entfernt Alt-Felder sauber.
+
+### Verifikation
+- `npx tsc -b` grün.
+- `npx vitest run` — 402/402 Tests grün (49 neu in `src/__tests__/media/`).
+- `main` unverändert; alle Änderungen nur auf Feature-Branch.
+
+### Offen
+- **Phase 4 — Verdrahtung Frontend** (Tasks 8-11): SharedFragenEditor State-Init auf MediaQuelle, fragenFactory.ts Dual-Write, Editor-Typen (Hotspot/Bildbeschriftung/DragDropBild/PDF) + AnhangEditor auf MediaUpload/MediaAnzeige, SuS-Fragetypen + Korrektur + DruckAnsicht + Demo-Daten.
+- Phase 5 — Apps-Script Backend-Migration + Dry-Run-Migrator.
+- Phase 6 — Cooling-Off 2 Wochen → Alt-Felder entfernen, mediaUtils-Hotfix zurückbauen.
+
+### Lehren
+- **Test-Convention:** `globalThis.fetch` statt `global.fetch` (tsc-strict ohne @types/node in ExamLab-tsconfig).
+- **EditorContext-API:** Exportiert `EditorProvider` (nicht `EditorContext.Provider` direkt) — Plan v2 hatte den falschen Test-Setup-Hint. Korrekt: `<EditorProvider config={...} services={...}>`.
+
+---
+
+---
+
 ## Session 124 — Bildfragen-Editor-Hotfix + MediaQuelle-Plan (19.04.2026)
 
 ### Stand
