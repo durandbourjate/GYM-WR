@@ -6,6 +6,7 @@ import type { Frage, MCFrage, RichtigFalschFrage, LueckentextFrage, ZuordnungFra
 import type { Antwort } from '../types/antworten'
 import { korrigiereBuchungssatz, korrigiereTKonto, korrigiereKontenbestimmung, korrigiereBilanzER } from './fibuAutoKorrektur'
 import { normalisiereLatex } from './latexRenderer'
+import { labelsInZone, zoneKorrektBelegt } from './dragdropBildUtils'
 export type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
 import type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
 
@@ -383,14 +384,16 @@ function korrigiereDragDropBild(
   const punkteProZone = frage.punkte / Math.max(1, frage.zielzonen.length)
 
   for (const zone of frage.zielzonen) {
-    const zugeordnet = antwort.zuordnungen[zone.id] ?? ''
-    const korrekt = zugeordnet.trim().toLowerCase() === zone.korrektesLabel.trim().toLowerCase()
+    // Antwort-Format: { [labelText]: zoneId } — Reverse-Lookup für Anzeige/Prüfung.
+    const platzierteLabels = labelsInZone(antwort.zuordnungen, zone.id)
+    const korrekt = zoneKorrektBelegt(antwort.zuordnungen, zone.id, zone.korrektesLabel)
+    const anzeige = platzierteLabels.join(', ')
     details.push({
       bezeichnung: `Zone: ${zone.korrektesLabel}`,
       korrekt,
       erreicht: korrekt ? punkteProZone : 0,
       max: punkteProZone,
-      kommentar: korrekt ? undefined : (zugeordnet ? `Zugeordnet: ${zugeordnet}` : 'Nicht zugeordnet'),
+      kommentar: korrekt ? undefined : (anzeige ? `Zugeordnet: ${anzeige}` : 'Nicht zugeordnet'),
     })
   }
 

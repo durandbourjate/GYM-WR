@@ -360,7 +360,8 @@ describe('autoKorrigiere', () => {
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { z1: 'Angebot', z2: 'Nachfrage', z3: 'Preis' },
+      // Kanonisches Format: { [labelText]: zoneId }
+      zuordnungen: { Angebot: 'z1', Nachfrage: 'z2', Preis: 'z3' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
@@ -383,7 +384,7 @@ describe('autoKorrigiere', () => {
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { z1: 'BIP', z2: 'Deflation' },
+      zuordnungen: { BIP: 'z1', Deflation: 'z2' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
@@ -405,7 +406,7 @@ describe('autoKorrigiere', () => {
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { z1: 'bip' },
+      zuordnungen: { bip: 'z1' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()

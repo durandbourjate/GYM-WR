@@ -181,11 +181,11 @@ export const einrichtungsUebungFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'Ergänzen Sie die Lücken. Tippen Sie die fehlenden Wörter in die Eingabefelder.',
-    textMitLuecken: 'Das Gymnasium {{1}} liegt in der Gemeinde {{2}} im Kanton {{3}}.',
+    textMitLuecken: 'Das Gymnasium {{0}} liegt in der Gemeinde {{1}} im Kanton {{2}}.',
     luecken: [
-      { id: '1', korrekteAntworten: ['Hofwil'], caseSensitive: false },
-      { id: '2', korrekteAntworten: ['Münchenbuchsee', 'Muenchenbuchsee'], caseSensitive: false },
-      { id: '3', korrekteAntworten: ['Bern'], caseSensitive: false },
+      { id: '0', korrekteAntworten: ['Hofwil'], caseSensitive: false },
+      { id: '1', korrekteAntworten: ['Münchenbuchsee', 'Muenchenbuchsee'], caseSensitive: false },
+      { id: '2', korrekteAntworten: ['Bern'], caseSensitive: false },
     ],
   },
 

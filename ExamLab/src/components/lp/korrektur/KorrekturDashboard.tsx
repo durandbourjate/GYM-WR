@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
@@ -26,6 +27,7 @@ interface Props {
 
 export default function KorrekturDashboard({ pruefungId, eingebettet = false, config: configProp }: Props) {
   const istFormativ = configProp?.typ === 'formativ'
+  const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
@@ -116,7 +118,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
           onHilfe={() => { setZeigFragenbank(false); setZeigHilfe(!zeigHilfe) }}
           onFeedback={() => {}}
           onEinstellungen={() => {}}
-          onZurueck={() => { window.location.href = window.location.pathname }}
+          onZurueck={() => navigate(istFormativ ? '/uebung' : '/pruefung')}
           statusText={
             (korrektur?.batchStatus === 'laeuft' || batchLaeuft)
               ? `Korrektur läuft... ${korrektur?.batchFortschritt ? `${korrektur.batchFortschritt.erledigt}/${korrektur.batchFortschritt.gesamt}` : ''}`

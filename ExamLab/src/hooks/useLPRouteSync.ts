@@ -10,6 +10,27 @@ import { useLPNavigationStore } from '../store/lpUIStore'
  * Wenn LPStartseite vollständig auf useLocation/useParams umgestellt ist,
  * kann dieser Hook entfernt werden.
  */
+/**
+ * Pfad-Segmente, die keine Config-ID sind, sondern eigene Sub-Routen.
+ * Alles andere nach /pruefung/ oder /uebung/ wird als Config-ID interpretiert.
+ */
+const RESERVIERTE_SEGMENTE = new Set([
+  'tracker', 'monitoring', 'durchfuehren', 'analyse', 'kurs',
+])
+
+/**
+ * Liest die Config-ID aus einem Pfad wie /pruefung/abc123 oder /uebung/xyz/korrektur.
+ * Gibt null zurück, wenn kein configId-Segment vorhanden ist.
+ * 'neu' ist ein Sentinel für neue/duplizierte Prüfungen (kein Config-Lookup, nur Composer öffnen).
+ */
+function leseConfigIdAusPfad(path: string): string | null {
+  const match = path.match(/^\/(?:pruefung|uebung)\/([^/]+)/)
+  if (!match) return null
+  const segment = match[1]
+  if (RESERVIERTE_SEGMENTE.has(segment)) return null
+  return segment
+}
+
 export function useLPRouteSync(): void {
   const location = useLocation()
   useEffect(() => {
@@ -38,6 +59,10 @@ export function useLPRouteSync(): void {
       return
     }
 
+    // Config-ID aus der URL ableiten (für /pruefung/:id und /uebung/:id).
+    // Wird unten von Prüfung/Übung-Branch benötigt, um Composer zu öffnen.
+    const configIdInUrl = leseConfigIdAusPfad(path)
+
     // Übung: /uebung, /uebung/durchfuehren, /uebung/analyse, /uebung/{configId}
     if (path.startsWith('/uebung')) {
       if (store.modus !== 'uebung') {
@@ -53,6 +78,7 @@ export function useLPRouteSync(): void {
       } else if (!segment || segment === '') {
         if (store.uebungsTab !== 'uebungen') store.setUebungsTab('uebungen')
       }
+      syncComposerState(store, configIdInUrl)
       return
     }
 
@@ -69,9 +95,45 @@ export function useLPRouteSync(): void {
       } else if (!segment || segment === '') {
         if (store.listenTab !== 'pruefungen') store.setListenTab('pruefungen')
       }
+      syncComposerState(store, configIdInUrl)
       return
     }
 
-    // Favoriten: /favoriten — kein Store-Sync nötig
+    // Favoriten: /favoriten — kein Store-Sync nötig. Composer schliessen falls noch offen.
+    if (store.ansicht === 'composer') {
+      store.zurueckZumDashboard()
+    }
   }, [location.pathname])
+}
+
+/**
+ * Synct Composer-State (ansicht + aktiveConfigId) mit der URL.
+ * - /pruefung/neu → Composer öffnen ohne Config-Lookup (für "Neue"/"Duplizieren")
+ * - /pruefung/{id} → aktiveConfigId setzen, LPStartseite öffnet Composer via useEffect
+ * - /pruefung oder /pruefung/tracker → Composer schliessen
+ */
+function syncComposerState(
+  store: ReturnType<typeof useLPNavigationStore.getState>,
+  configIdInUrl: string | null,
+): void {
+  if (configIdInUrl === 'neu') {
+    // Neue/Duplizierte Prüfung: Composer direkt öffnen, keine Config-ID im Store setzen
+    if (store.ansicht !== 'composer') {
+      store.navigiereZuComposer('Neu')
+    }
+    return
+  }
+
+  if (configIdInUrl) {
+    // Bestehende Config: ID in Store schreiben, LPStartseite-Effect öffnet den Composer
+    if (store.aktiveConfigId !== configIdInUrl) {
+      store.setAktiveConfigId(configIdInUrl)
+    }
+    return
+  }
+
+  // Kein Composer-Pfad → zurück zum Dashboard, wenn noch offen
+  if (store.ansicht === 'composer') {
+    store.zurueckZumDashboard()
+  }
 }

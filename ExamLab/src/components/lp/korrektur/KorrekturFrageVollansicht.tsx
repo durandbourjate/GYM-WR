@@ -5,6 +5,8 @@ import type { Antwort } from '../../../types/antworten'
 import type { KorrekturErgebnis } from '../../../utils/autoKorrektur'
 import MediaAnhang from '../../MediaAnhang.tsx'
 import AudioPlayer from '../../AudioPlayer.tsx'
+import { toAssetUrl } from '../../../utils/assetUrl'
+import { labelsInZone, zoneKorrektBelegt } from '../../../utils/dragdropBildUtils'
 
 interface Props {
   frage: Frage
@@ -343,15 +345,18 @@ function VisualisierungAnzeige({ antwort }: { antwort: Extract<Antwort, { typ: '
 
 /** PDF-Annotation-Antwort mit PDF-Vorschau */
 function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage; antwort: Extract<Antwort, { typ: 'pdf' }> | undefined }) {
-  // PDF aus Anhängen oder direkter Referenz
+  // PDF aus Anhängen, Drive oder direkter URL (relativ → toAssetUrl).
   const pdfAnhang = ('anhaenge' in frage ? (frage as { anhaenge?: FrageAnhang[] }).anhaenge : [])?.find(a => a.mimeType === 'application/pdf')
   const pdfDriveFileId = 'pdfDriveFileId' in frage ? (frage as { pdfDriveFileId?: string }).pdfDriveFileId : undefined
+  const pdfUrl = 'pdfUrl' in frage ? (frage as { pdfUrl?: string }).pdfUrl : undefined
   const pdfDateiname = 'pdfDateiname' in frage ? (frage as { pdfDateiname?: string }).pdfDateiname : 'Dokument'
+
+  const hatPdf = Boolean(pdfAnhang || pdfDriveFileId || pdfUrl)
 
   return (
     <div className="mt-2 space-y-2">
       {/* PDF-Vorschau */}
-      {(pdfAnhang || pdfDriveFileId) && (
+      {hatPdf && (
         <div>
           <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">📄 {pdfDateiname}</span>
           {pdfAnhang ? (
@@ -359,6 +364,13 @@ function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage; antwort: Extra
           ) : pdfDriveFileId ? (
             <iframe
               src={`https://drive.google.com/file/d/${pdfDriveFileId}/preview`}
+              className="w-full rounded border border-slate-200 dark:border-slate-600"
+              style={{ height: '400px' }}
+              title={pdfDateiname}
+            />
+          ) : pdfUrl ? (
+            <iframe
+              src={toAssetUrl(pdfUrl)}
               className="w-full rounded border border-slate-200 dark:border-slate-600"
               style={{ height: '400px' }}
               title={pdfDateiname}
@@ -417,12 +429,12 @@ function SortierungAnzeige({ antwort }: { antwort: Extract<Antwort, { typ: 'sort
 
 /** Hotspot-Antwort mit Bild + Markierungen */
 function HotspotAnzeige({ frage, antwort }: { frage: HotspotFrage; antwort: Extract<Antwort, { typ: 'hotspot' }> | undefined }) {
-  if (!antwort) return <>{frage.bildUrl && <img src={frage.bildUrl} alt="Hotspot" className="max-w-full rounded mt-2" />}<KeineAntwort /></>
+  if (!antwort) return <>{frage.bildUrl && <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded mt-2" />}<KeineAntwort /></>
   return (
     <div className="mt-2">
       {frage.bildUrl && (
         <div className="relative inline-block">
-          <img src={frage.bildUrl} alt="Hotspot" className="max-w-full rounded" />
+          <img src={toAssetUrl(frage.bildUrl)} alt="Hotspot" className="max-w-full rounded" />
           {/* Korrekte Bereiche (gestrichelt) */}
           {(frage.bereiche ?? []).map((b) => (
             <div key={b.id} className="absolute border-2 border-dashed border-green-500/60" style={
@@ -452,7 +464,7 @@ function BildbeschriftungAnzeige({ frage, antwort }: { frage: BildbeschriftungFr
     <div className="mt-2">
       {frage.bildUrl && (
         <div className="relative inline-block">
-          <img src={frage.bildUrl} alt="Bildbeschriftung" className="max-w-full rounded" />
+          <img src={toAssetUrl(frage.bildUrl)} alt="Bildbeschriftung" className="max-w-full rounded" />
           {/* Labels an ihren Positionen */}
           {frage.beschriftungen.map((label, i) => {
             const eingabe = antwort?.eintraege?.[label.id] ?? ''
@@ -493,24 +505,26 @@ function BildbeschriftungAnzeige({ frage, antwort }: { frage: BildbeschriftungFr
 
 /** DragDrop-Bild-Antwort mit Bild + Zonen + Labels */
 function DragDropBildAnzeige({ frage, antwort }: { frage: DragDropBildFrage; antwort: Extract<Antwort, { typ: 'dragdrop_bild' }> | undefined }) {
+  // Antwort-Format: { [labelText]: zoneId } — Reverse-Lookup je Zone.
   return (
     <div className="mt-2">
       {frage.bildUrl && (
         <div className="relative inline-block">
-          <img src={frage.bildUrl} alt="Drag & Drop" className="max-w-full rounded" />
+          <img src={toAssetUrl(frage.bildUrl)} alt="Drag & Drop" className="max-w-full rounded" />
           {/* Zielzonen mit platzierten Labels */}
           {frage.zielzonen.map((zone) => {
-            const platziert = antwort?.zuordnungen?.[zone.id]
-            const korrekt = platziert === zone.korrektesLabel
+            const labels = labelsInZone(antwort?.zuordnungen, zone.id)
+            const hatAntwort = labels.length > 0
+            const korrekt = zoneKorrektBelegt(antwort?.zuordnungen, zone.id, zone.korrektesLabel)
             return (
               <div key={zone.id} className={`absolute border-2 flex items-center justify-center ${
-                !platziert ? 'border-dashed border-slate-400/60'
+                !hatAntwort ? 'border-dashed border-slate-400/60'
                 : korrekt ? 'border-green-500 bg-green-500/15'
                 : 'border-red-500 bg-red-500/15'
               }`} style={{ left: `${zone.position.x}%`, top: `${zone.position.y}%`, width: `${zone.position.breite}%`, height: `${zone.position.hoehe}%` }}>
-                {platziert && (
+                {hatAntwort && (
                   <span className={`text-xs font-medium px-1 rounded ${korrekt ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>
-                    {platziert}
+                    {labels.join(', ')}
                   </span>
                 )}
               </div>
@@ -521,13 +535,14 @@ function DragDropBildAnzeige({ frage, antwort }: { frage: DragDropBildFrage; ant
       {/* Textliste als Zusatzinfo */}
       <div className="rounded bg-slate-50 dark:bg-slate-700/50 px-3 py-2 mt-2 space-y-0.5">
         {frage.zielzonen.map((zone) => {
-          const platziert = antwort?.zuordnungen?.[zone.id]
-          const korrekt = platziert === zone.korrektesLabel
+          const labels = labelsInZone(antwort?.zuordnungen, zone.id)
+          const hatAntwort = labels.length > 0
+          const korrekt = zoneKorrektBelegt(antwort?.zuordnungen, zone.id, zone.korrektesLabel)
           return (
             <div key={zone.id} className="text-sm flex items-center gap-2">
-              <span className="shrink-0">{platziert ? (korrekt ? '✓' : '✗') : '—'}</span>
-              <span className="text-slate-700 dark:text-slate-200">{platziert || 'Nicht platziert'}</span>
-              {!korrekt && platziert && <span className="text-xs text-slate-400">Erwartet: {zone.korrektesLabel}</span>}
+              <span className="shrink-0">{hatAntwort ? (korrekt ? '✓' : '✗') : '—'}</span>
+              <span className="text-slate-700 dark:text-slate-200">{hatAntwort ? labels.join(', ') : 'Nicht platziert'}</span>
+              {!korrekt && hatAntwort && <span className="text-xs text-slate-400">Erwartet: {zone.korrektesLabel}</span>}
             </div>
           )
         })}
