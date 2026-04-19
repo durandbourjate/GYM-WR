@@ -6,6 +6,37 @@
 
 ---
 
+## Session 125 — MediaQuelle Phase 0 + 1 (19.04.2026)
+
+### Stand
+**Feature-Branch `feature/mediaquelle-unification` auf Remote. 6 Commits. Noch nicht verdrahtet — Phasen 2-6 offen.**
+
+### Umgesetzt
+Phase 0 + Phase 1 aus [Plan `2026-04-19-mediaquelle-unification.md`] durchgezogen, TDD pro Task:
+
+| Task | Artefakt | Tests |
+|------|----------|-------|
+| 0 | `ExamLab/docs/superpowers/plans/2026-04-19-mediaquelle-callsites.txt` — 285 Zeilen Grep-Output (bildUrl, pdfBase64, mimeType, Apps-Script) | — |
+| 1 | `packages/shared/src/types/mediaQuelle.ts` — Discriminated Union (`drive | pool | app | extern | inline`) + 5 Type-Guards | 5/5 |
+| 2 | `packages/shared/src/utils/mediaQuelleMigrator.ts` — `bildQuelleAus`/`pdfQuelleAus`/`anhangQuelleAus` inkl. Drive-ID-Extraktion aus lh3/drive.google-URLs + mimeType-Inferenz | 19/19 |
+| 3 | `packages/shared/src/utils/mediaQuelleUrl.ts` — `mediaQuelleZuImgSrc`/`mediaQuelleZuIframeSrc` mit DI-`AppAssetResolver` (für BASE_URL-Delegation an ExamLab-seitiges `toAssetUrl`) | 8/8 |
+| 4 | `packages/shared/src/utils/mediaQuelleBytes.ts` — `mediaQuelleZuArrayBuffer` für pdf.js/Audio (inline → base64-decode, rest → fetch) | 4/4 |
+
+### Verifikation
+- `npx tsc -b` grün (nach Fix: `globalThis.fetch` statt `global.fetch` — Projekt-Convention).
+- `npx vitest run` — 389/389 Tests grün (36 neu in `src/__tests__/media/`).
+- Keine Verdrahtung ins Production-Frontend → kein Browser-Test nötig.
+- `main` unverändert; Feature-Branch kann Phase-für-Phase weitergeführt werden.
+
+### Offen (Plan-Phasen 2-6)
+- Phase 2: `<MediaAnzeige>` + `<MediaUpload>` Komponenten
+- Phase 3: Frage-Typ-Erweiterung (`bildQuelle`/`pdfQuelle` als optionale Felder parallel zu Alt-Feldern)
+- Phase 4: Bild-/PDF-Fragetypen auf Komponenten umstellen (Dual-Read)
+- Phase 5: Editor + `fragenFactory.ts` auf MediaQuelle umstellen (Dual-Write)
+- Phase 6: Cooling-Off 2 Wochen → Alt-Felder entfernen, mediaUtils-Hotfix zurückbauen
+
+---
+
 ## Session 124 — Bildfragen-Editor-Hotfix + MediaQuelle-Plan (19.04.2026)
 
 ### Stand
