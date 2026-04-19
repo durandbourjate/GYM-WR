@@ -28,6 +28,12 @@ export interface FrageAdapterResult {
   korrekt: boolean | null
   markiertAlsUnsicher: boolean
   toggleUnsicher: () => void
+  /** Üben-Modus: Server-Prüfung läuft gerade (Spinner auf Button). Prüfungs-Modus: immer false. */
+  speichertPruefung: boolean
+  /** Üben-Modus: Fehlermeldung bei fehlgeschlagener Server-Prüfung (für Retry-Banner). */
+  pruefFehler: string | null
+  /** Üben-Modus: Musterlösung vom Server (Selbstbewertung / auto-Feedback). */
+  letzteMusterloesung: string | null
 }
 
 export function useFrageAdapter(frageId: string): FrageAdapterResult {
@@ -47,6 +53,9 @@ export function useFrageAdapter(frageId: string): FrageAdapterResult {
   const uebenPruefeAntwortJetzt = useUebenUebungsStore((s) => s.pruefeAntwortJetzt)
   const uebenSelbstbewertenById = useUebenUebungsStore((s) => s.selbstbewertenById)
   const uebenToggleUnsicherById = useUebenUebungsStore((s) => s.toggleUnsicherById)
+  const uebenSpeichertPruefung = useUebenUebungsStore((s) => s.speichertPruefung)
+  const uebenPruefFehler = useUebenUebungsStore((s) => s.pruefFehler)
+  const uebenLetzteMusterloesung = useUebenUebungsStore((s) => s.letzteMusterloesung)
 
   if (mode === 'pruefung') {
     return {
@@ -62,6 +71,9 @@ export function useFrageAdapter(frageId: string): FrageAdapterResult {
       korrekt: null,
       markiertAlsUnsicher: pruefungMarkiert,
       toggleUnsicher: () => pruefungToggleMarkierung(frageId),
+      speichertPruefung: false,
+      pruefFehler: null,
+      letzteMusterloesung: null,
     }
   }
 
@@ -86,5 +98,8 @@ export function useFrageAdapter(frageId: string): FrageAdapterResult {
     korrekt: korrekt ?? null,
     markiertAlsUnsicher: uebenSession?.unsicher?.has(frageId) ?? false,
     toggleUnsicher: () => uebenToggleUnsicherById(frageId),
+    speichertPruefung: uebenSpeichertPruefung,
+    pruefFehler: uebenPruefFehler,
+    letzteMusterloesung: uebenLetzteMusterloesung,
   }
 }

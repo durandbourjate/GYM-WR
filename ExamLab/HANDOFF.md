@@ -6,6 +6,97 @@
 
 ---
 
+## Session 122 — Phase 2 Backend-Security + Server-Korrektur-Endpoint (19.04.2026)
+
+### Stand
+**Phase 2 auf `feature/ueben-security-korrekturendpoint` — wartet auf Staging-Deploy + User-Test.**
+
+Löst den Haupt-Bug aus S119: `lernplattformLadeFragen()` lieferte Lösungsdaten 1:1 an SuS. Neuer Server-Korrektur-Endpoint erlaubt weiterhin sofortiges Feedback im selbstständigen Üben, ohne dass je eine Lösung im SuS-Network-Tab landet.
+
+### Umgesetzt — 11 Tasks auf Branch `feature/ueben-security-korrekturendpoint`
+
+**Backend (`apps-script-code.js`):**
+| Task | Inhalt |
+|------|--------|
+| 6 | `shuffle_` Fisher-Yates Helper |
+| 7 | `bereinigeFrageFuerSuSUeben_` — Löschung aller 20-Typen-Lösungsfelder + Mischung für 8 Typen |
+| 8 | `lernplattformLadeFragen` bereinigt SuS-Path + Adapter schickt `email` |
+| 9 | `pruefeAntwortServer_` + `pruefeFibuAntwortServer_` — 1:1 Port aus `korrektur.ts` |
+| 10 | `lernplattformPruefeAntwort` Endpoint + `ladeFrageUnbereinigtById_` + `doPost`-Routing |
+
+**Security-Fixes (nach Code-Review, C1..C6 + I1):**
+- **Auth-Bypass-Fix** (C-1/C-2): `lernplattformValidiereToken_` + `istGruppenMitglied_` — Email nur aus validem Token, nicht aus Request-Body. Ohne Token: SuS-Pfad, niemals LP.
+- **Legacy-Antwort-Normalizer** (C-3): `normalisiereAntwortServer_` 1:1 Port aus `normalizeAntwort.ts` (Aliases multi/tf/fill/calc/sort/open/zeichnen/bilanz/gruppe).
+- **T-Konto Saldo-Leak** (C-4): `saldo` + `anfangsbestand` (wenn nicht vorgegeben) entfernt.
+- **MC `erklaerung`-Leak** (C-5): `optionen[].erklaerung` in `bereinigeFrageFuerSuS_` gelöscht.
+- **IDOR + Familie-Gruppen** (C-6): `ladeFrageUnbereinigtById_(frageId, gruppe)` — Familie-Sheet-Support + Gruppen-Mitgliedschaft-Validierung.
+- **Rate-Limit** (I-1): 30 → 10/min auf `lernplattformRateLimitCheck_`.
+
+**Frontend (Tasks 12-16 via Subagent-Driven-Development):**
+| Task | Inhalt |
+|------|--------|
+| 12 | `PruefResultat`-Type + `uebenKorrekturApi.pruefeAntwortApi` Service |
+| 13 | `uebungsStore.pruefeAntwortJetzt` async, neue States `speichertPruefung`/`pruefFehler`/`letzteMusterloesung` |
+| 14 | `useFrageAdapter` propagiert neue States |
+| 15 | `QuizNavigation` Spinner + `aria-busy`; `UebungsScreen` `role="alert"`-Retry-Banner |
+| 16 | `uebenSecurityInvariant.test.ts` Snapshot-Test gegen 11-Felder-Sperrliste |
+
+**Selbstbewertung-Fix (Subagent-Risk-Report):**
+Bei Freitext/Visualisierung/PDF/Audio/Code war `frage.musterlosung` nach Bereinigung leer — `SelbstbewertungsDialog` nutzt jetzt `letzteMusterloesung` aus Store (kommt vom Server bei Prüf-Call). `handlePruefen` ruft für alle Typen `pruefeAntwortJetzt`; `useEffect` öffnet den Dialog wenn die Musterlösung eintrifft. Fallback auf `frage.musterlosung` für Demo-Modus.
+
+### Verifikation (lokal)
+- tsc -b: ✅
+- Tests: ✅ 353/353 (39 Files, 11 neue Tests)
+- Build: ✅
+- Subagent-Reviews: Code-Quality + Spec-Compliance durchgelaufen, Security-Findings adressiert.
+
+### ⚠️ Kritisch: Phase 2 MUSS atomisch deployen
+- Phase-1-Normalizer rekonstruiert `paare[]` NICHT aus `linksItems/rechtsItems` (Paarung = Lösung). Client auf Phase-1-Code mit Phase-2-Backend → Zuordnung-Korrektur immer `false`.
+- **Lösung:** Frontend (Tasks 12-16) + Backend (Tasks 6-10) müssen gleichzeitig live gehen. Kein partial-Merge.
+- Spec-Dokument ergänzt.
+
+### Apps-Script-Deploy (User)
+**Erforderlich vor Merge zu main.** User öffnet Apps-Script-Editor, kopiert `apps-script-code.js`, erstellt neue Bereitstellung.
+
+### Hotfixes nach Staging-E2E-Test (chronologisch)
+
+| Commit | Inhalt |
+|--------|--------|
+| `7553777` | DragDrop Labels `[object Object]` — `Object.assign({}, "string")` erzeugte Char-Objekt; Fix: `typeof !== 'object'` durchreichen |
+| `f92a931` | `frage.musterlosung` leer für SuS → Komponenten zeigen nichts; Fix: `UebungsScreen` patcht `baseFrage.musterlosung = letzteMusterloesung` zentral; + `naechsteFrage`/`vorherigeFrage`/`ueberspringen` resetten `letzteMusterloesung`+`pruefFehler` (vermeidet Vor-Anzeige der vorigen Lösung) |
+| `8b5aebf` | Zuordnung zeigte nur Fragetext — Backend hatte `paare[]` durch `linksItems`/`rechtsItems` ersetzt, Frontend liest `paare[]`; Fix: Backend behält `paare[]` und mischt nur die `rechts`-Werte (Paarung verschleiert, UI unverändert kompatibel) |
+| `2e287df` | Speed v1: `fachbereich`-Hint vom Client mitgeschickt → Server priorisiert 1 Tab statt 4; CacheService 1h für gefundene Frage; Spalten-First-Lookup (id-Spalte separat, Object-Mapping nur bei Hit) |
+| `867b21c` | Speed v2: Pre-Warm Cache beim Initial-Load — `lernplattformLadeFragen` schreibt alle Fragen via `cache.putAll()` (1h TTL), spätere Prüf-Calls finden sie sofort |
+| (latest) | UX: Spinner-Text „Korrektur lädt …" statt nur „Prüfe…" — kommuniziert Server-Roundtrip |
+
+### Speed-Befund (aus Apps-Script-Logs, 19.04.2026)
+- Pro Prüf-Klick: **2 doPost-Calls** = ca. 4s + 2s ≈ **5.9s gesamt**
+- Auch reine `doGet`s dauern **1.1-2.8s** — Apps-Script-Latenz allein ist >1s, **plattform-inhärent**
+- Pre-Warm-Cache + fachbereich-Hint sparen Sheet-Reads (~75%) — aber nicht den HTTPS-Roundtrip
+- **Untere Grenze pro Apps-Script-Call: ~1.5-2s** (HTTPS-Handshake + V8-Container-Init + Spreadsheet-Auth)
+- **Akzeptiert als Tradeoff für Sicherheits-Architektur.** User plant langfristig Backend-Migration auf Cloud-Run/Vercel-Edge → echte Lösung dort.
+
+### Bekannte offene Punkte (eigene Sessions)
+- **Bildfragen-Pool-Audit**: Beveridge-Frage hat falsche Korrektur — siehe `memory/project_bildfragen_qualitaet.md`. Generelles Inhalts-Audit aller Pool-Fragen empfohlen.
+- **Backend-Migration**: Apps-Script-Latenz ist Plattform-Limit. Echte instant-UX nur durch Edge-Backend.
+
+### Verifikation nach Hotfixes (Staging mit echten Logins)
+- ✅ MC: Server-Korrektur → „Richtig!"
+- ✅ R/F: Server-Korrektur → „Richtig!"
+- ✅ DragDrop: Labels mit echten Texten + Server-Korrektur + Musterlösung
+- ✅ Zuordnung: 6 Paare mit Dropdowns, Server-Korrektur
+- ✅ Network-Schema: `{success, korrekt, musterlosung}` — keine Lösungs-Leaks
+- ✅ Vitest: 353/353 grün
+- ✅ tsc + build clean
+- ⚠️ Speed: 4-6s pro Prüf-Klick (siehe oben) — UX-Hinweis „Korrektur lädt …" mildert
+
+### Offene Schritte für S122-Abschluss
+- [ ] Merge `feature/ueben-security-korrekturendpoint` → `main`
+- [ ] Branch-Cleanup
+- [ ] Lehre in `rules/` (Apps-Script-Latenz dokumentieren, Pool-Audit-Trigger)
+
+---
+
 ## Session 121 — Phase 1 Frontend-Defensive (19.04.2026)
 
 ### Stand

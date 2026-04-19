@@ -19,6 +19,7 @@ export default function UebungsScreen() {
     toggleUnsicher, istUnsicher, istSessionFertig, beendeSession,
     aktuelleFrage, kannZurueck,
     pruefeAntwortJetzt, selbstbewertenById,
+    speichertPruefung, pruefFehler, letzteMusterloesung,
   } = useUebenUebungsStore()
   const { zuErgebnis } = useSuSNavigation()
 
@@ -27,6 +28,14 @@ export default function UebungsScreen() {
 
   // Beim Frage-Wechsel Dialog schliessen
   useEffect(() => { setSelbstbewertungOffen(false) }, [frage?.id])
+
+  // Phase 2: Server liefert für Selbstbewertungstypen letzteMusterloesung —
+  // Dialog dann öffnen. Auto-korrigierbare Typen setzen stattdessen feedbackSichtbar.
+  useEffect(() => {
+    if (frage && istSelbstbewertungstyp(frage.typ) && letzteMusterloesung && !feedbackSichtbar) {
+      setSelbstbewertungOffen(true)
+    }
+  }, [frage, letzteMusterloesung, feedbackSichtbar])
 
   // Keyboard-Shortcuts
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -70,17 +79,22 @@ export default function UebungsScreen() {
   if (!session || !frage) return null
 
   // Daten normalisieren (fehlende Felder mit Defaults füllen)
-  const normFrage = normalisiereFrageDaten(frage)
+  // Phase 2: Backend liefert frage.musterlosung leer (bereinigt). Server schickt sie
+  // erst beim Prüf-Call zurück (in letzteMusterloesung). Hier patchen, damit
+  // Fragetyp-Komponenten + Feedback-Boxen weiterhin frage.musterlosung lesen können.
+  const baseFrage = letzteMusterloesung && !frage.musterlosung
+    ? { ...frage, musterlosung: letzteMusterloesung }
+    : frage
+  const normFrage = normalisiereFrageDaten(baseFrage)
   const istBeantwortet = frage.id in session.antworten
   const hatZwischenstand = frage.id in (session.zwischenstande ?? {})
   const fortschritt = Object.keys(session.antworten).length
 
   const handlePruefen = () => {
-    if (istSelbstbewertungstyp(frage.typ)) {
-      setSelbstbewertungOffen(true)
-    } else {
-      pruefeAntwortJetzt(frage.id)
-    }
+    // Phase 2: Server liefert Musterlösung + korrekt/selbstbewertung-Flag.
+    // Für Selbstbewertungstypen öffnet der useEffect unten den Dialog,
+    // sobald letzteMusterloesung vom Server eintrifft.
+    pruefeAntwortJetzt(frage.id)
   }
   const handleSelbstbewerten = (bewertung: Selbstbewertung) => {
     selbstbewertenById(frage.id, bewertung)
@@ -109,15 +123,32 @@ export default function UebungsScreen() {
       />
 
       <main className="max-w-2xl mx-auto p-4">
+        {/* Retry-Banner bei fehlgeschlagener Server-Prüfung (Phase 2) */}
+        {pruefFehler && (
+          <div
+            role="alert"
+            className="mb-3 p-3 rounded-lg bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300 flex items-center justify-between gap-3"
+          >
+            <span>Prüfung fehlgeschlagen: {pruefFehler}</span>
+            <button
+              onClick={handlePruefen}
+              className="underline hover:no-underline font-medium whitespace-nowrap"
+            >
+              Erneut versuchen
+            </button>
+          </div>
+        )}
+
         {/* Frage-Karte — Fragetyp-Komponenten rendern fragetext selbst, analog Prüfungs-Modus (Layout.tsx) */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 mb-4">
           <FrageRenderer frage={normFrage as unknown as Frage} />
         </div>
 
-        {/* Selbstbewertung-Dialog (Freitext/Zeichnen/PDF/Audio/Code) */}
-        {selbstbewertungOffen && frage.musterlosung && (
+        {/* Selbstbewertung-Dialog (Freitext/Zeichnen/PDF/Audio/Code).
+            Musterlösung wird oben in normFrage gepatcht (frage.musterlosung || letzteMusterloesung). */}
+        {selbstbewertungOffen && normFrage.musterlosung && (
           <SelbstbewertungsDialog
-            musterloesung={frage.musterlosung}
+            musterloesung={normFrage.musterlosung}
             onWahl={handleSelbstbewerten}
           />
         )}
@@ -130,6 +161,7 @@ export default function UebungsScreen() {
           hatZwischenstand={hatZwischenstand && !selbstbewertungOffen}
           istLetzteFrage={session.aktuelleFrageIndex >= session.fragen.length - 1}
           istSessionFertig={istSessionFertig()}
+          speichertPruefung={speichertPruefung}
           onZurueck={vorherigeFrage}
           onUeberspringen={ueberspringen}
           onPruefen={handlePruefen}

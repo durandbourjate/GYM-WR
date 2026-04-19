@@ -48,6 +48,12 @@ interface UebungsState {
   ladeStatus: 'idle' | 'laden' | 'fertig' | 'fehler'
   feedbackSichtbar: boolean
   letzteAntwortKorrekt: boolean | null
+  /** Server-seitige Prüfung läuft gerade (Üben-Modus, Phase 2) */
+  speichertPruefung: boolean
+  /** Fehler-Text bei fehlgeschlagener Server-Prüfung — UI zeigt Retry-Banner */
+  pruefFehler: string | null
+  /** Musterlösung vom Server (wird bei Selbstbewertung + optional auto-Korrektur geliefert) */
+  letzteMusterloesung: string | null
   /** Session-Historie für Übungs-Einsicht */
   historie: GespeichertesErgebnis[]
 
@@ -56,8 +62,8 @@ interface UebungsState {
   beantworteById: (frageId: string, antwort: Antwort) => void
   /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen + Üben-Modus) */
   speichereZwischenstandById: (frageId: string, antwort: Antwort) => void
-  /** Üben-Modus: explizit "Antwort prüfen" — liest Zwischenstand und korrigiert auto */
-  pruefeAntwortJetzt: (frageId: string) => void
+  /** Üben-Modus: explizit "Antwort prüfen" — ruft Server-Endpoint lernplattformPruefeAntwort */
+  pruefeAntwortJetzt: (frageId: string) => Promise<void>
   /** Üben-Modus: SuS-Selbstbewertung für Freitext/Visualisierung/PDF/Audio/Code */
   selbstbewertenById: (frageId: string, bewertung: Selbstbewertung) => void
   naechsteFrage: () => void
@@ -79,6 +85,9 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
   ladeStatus: 'idle',
   feedbackSichtbar: false,
   letzteAntwortKorrekt: null,
+  speichertPruefung: false,
+  pruefFehler: null,
+  letzteMusterloesung: null,
   historie: ladeHistorie(),
 
   starteSession: async (gruppeId, email, fach, thema, fragenOverride, modus = 'standard', quellen, freiwillig = false) => {
@@ -192,8 +201,9 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     })
   },
 
-  pruefeAntwortJetzt: (frageId) => {
-    const session = get().session
+  pruefeAntwortJetzt: async (frageId) => {
+    const state = get()
+    const session = state.session
     if (!session) return
     const frage = session.fragen.find(f => f.id === frageId)
     if (!frage) return
@@ -203,22 +213,72 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     if (antwort === undefined) return
 
     const normalized = normalizeAntwort(antwort)
-    const korrekt = pruefeAntwort(frage, normalized)
 
-    if (!session.freiwillig) {
-      useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
+    // Sofort speichertPruefung markieren (synchron, vor jedem await), damit die UI
+    // den Spinner rendert bevor der erste Micro-Task läuft.
+    set({ speichertPruefung: true, pruefFehler: null })
+
+    try {
+      // Server-Call vorbereiten: Token aus authStore lesen (session hat nur email).
+      // Dynamic-Import verhindert Zirkular-Imports (Service nutzt apiClient, der evtl.
+      // indirekt Store-Typen sieht).
+      const { useUebenAuthStore } = await import('./authStore')
+      const user = useUebenAuthStore.getState().user
+      const token = user?.sessionToken || ''
+
+      const { pruefeAntwortApi } = await import('../../services/uebenKorrekturApi')
+      const res = await pruefeAntwortApi({
+        gruppeId: session.gruppeId,
+        frageId,
+        antwort: normalized,
+        email: session.email,
+        token,
+        // fachbereich-Hint: spart Server ~75% Sheet-Reads (1 Tab statt 4)
+        fachbereich: frage.fachbereich,
+      })
+
+      // Auto-korrigierbare Fragen: `res.korrekt` ist boolean.
+      // Selbstbewertungs-Typen: `res.selbstbewertung` ist true, korrekt bleibt undefined
+      // (die Bewertung erfolgt später über `selbstbewertenById`).
+      const istAuto = typeof res.korrekt === 'boolean'
+      const korrekt = istAuto ? res.korrekt! : null
+
+      // Fortschritt nur bei auto-korrigierbaren Antworten + nicht-freiwillig speichern.
+      // Selbstbewertung triggert Fortschritt erst im `selbstbewertenById`-Pfad.
+      if (istAuto && !session.freiwillig) {
+        useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt!, session.id)
+      }
+
+      // Aktuellen Store-State erneut lesen (session könnte extern mutiert worden sein).
+      const aktuelleSession = get().session
+      if (!aktuelleSession) {
+        set({ speichertPruefung: false })
+        return
+      }
+
+      set({
+        session: istAuto
+          ? {
+              ...aktuelleSession,
+              antworten: { ...aktuelleSession.antworten, [frageId]: normalized },
+              ergebnisse: { ...aktuelleSession.ergebnisse, [frageId]: korrekt! },
+              score: aktuelleSession.score + (korrekt ? 1 : 0),
+            }
+          : {
+              // Selbstbewertung: nur Antwort merken, ergebnisse/score bleiben unverändert.
+              ...aktuelleSession,
+              antworten: { ...aktuelleSession.antworten, [frageId]: normalized },
+            },
+        speichertPruefung: false,
+        pruefFehler: null,
+        letzteAntwortKorrekt: korrekt,
+        letzteMusterloesung: res.musterlosung ?? null,
+        feedbackSichtbar: istAuto,
+      })
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Prüfung fehlgeschlagen'
+      set({ speichertPruefung: false, pruefFehler: msg })
     }
-
-    set({
-      session: {
-        ...session,
-        antworten: { ...session.antworten, [frageId]: normalized },
-        ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
-        score: session.score + (korrekt ? 1 : 0),
-      },
-      feedbackSichtbar: true,
-      letzteAntwortKorrekt: korrekt,
-    })
   },
 
   selbstbewertenById: (frageId, bewertung) => {
@@ -267,6 +327,8 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       },
       feedbackSichtbar: false,
       letzteAntwortKorrekt: null,
+      letzteMusterloesung: null,
+      pruefFehler: null,
     })
   },
 
@@ -282,6 +344,8 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       session: { ...session, aktuelleFrageIndex: vorherigerIndex },
       feedbackSichtbar: hatAntwort,
       letzteAntwortKorrekt: hatAntwort ? (session.ergebnisse[vorherigeFrage.id] ?? null) : null,
+      letzteMusterloesung: null,
+      pruefFehler: null,
     })
   },
 
@@ -303,6 +367,8 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       },
       feedbackSichtbar: false,
       letzteAntwortKorrekt: null,
+      letzteMusterloesung: null,
+      pruefFehler: null,
     })
   },
 

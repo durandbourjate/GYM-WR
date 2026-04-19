@@ -5,6 +5,8 @@ interface Props {
   hatZwischenstand: boolean
   istLetzteFrage: boolean
   istSessionFertig: boolean
+  /** Server-Prüfung läuft → Spinner + disabled */
+  speichertPruefung?: boolean
   onZurueck: () => void
   onUeberspringen: () => void
   onPruefen: () => void
@@ -14,6 +16,7 @@ interface Props {
 
 export default function QuizNavigation({
   kannZurueck, istBeantwortet, feedbackSichtbar, hatZwischenstand, istLetzteFrage: _istLetzteFrage, istSessionFertig,
+  speichertPruefung = false,
   onZurueck, onUeberspringen, onPruefen, onWeiter, onErgebnis,
 }: Props) {
   return (
@@ -42,9 +45,17 @@ export default function QuizNavigation({
       {!feedbackSichtbar && hatZwischenstand && (
         <button
           onClick={onPruefen}
-          className="ml-auto px-6 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400"
+          disabled={speichertPruefung}
+          aria-busy={speichertPruefung}
+          className="ml-auto px-6 py-2.5 rounded-xl text-sm font-medium min-h-[44px] bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          Antwort prüfen
+          {speichertPruefung && (
+            <span
+              aria-hidden="true"
+              className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+            />
+          )}
+          {speichertPruefung ? 'Korrektur lädt …' : 'Antwort prüfen'}
         </button>
       )}
 

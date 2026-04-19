@@ -147,8 +147,9 @@ class AppsScriptFragenAdapter implements FragenService {
         fragen = einrichtungsFragen as unknown as Frage[]
       } else {
         const token = this.getToken()
+        const email = this.getEmail()
         const response = await uebenApiClient.post<{ success: boolean; data: Frage[] }>(
-          'lernplattformLadeFragen', { gruppeId }, token
+          'lernplattformLadeFragen', { gruppeId, email }, token
         )
         fragen = response?.data || []
       }

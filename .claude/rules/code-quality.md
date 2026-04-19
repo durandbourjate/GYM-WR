@@ -87,3 +87,33 @@ function normalisiereLueckentext(frage: any): LueckentextFrage {
 ```
 
 **Komplementär:** In Pfaden die trotzdem gegen unvollständige Daten laufen können (z.B. `korrektur.ts`), defensive Array-Checks (`Array.isArray(x) && x.some(...)`) statt direkter Methodenaufrufe.
+
+## Backend-Bereinigung von Strings vs. Objekten (S122)
+
+**Problem:** Beim Bereinigen einer Pool-Frage darf `Object.assign({}, item)` NICHT auf String-Items angewendet werden — `Object.assign({}, "foo")` erzeugt `{0:'f',1:'o',2:'o'}` (Char-Objekt). Im Frontend wird das dann als `[object Object]` gerendert.
+
+**Konkret aufgetreten:** `bereinigeFrageFuerSuSUeben_` in `apps-script-code.js` für DragDrop-Bild-Labels — `frage.labels[]` ist je nach Pool string[] oder {id, text, zoneId}[].
+
+**Regel:** Bei `.map(Object.assign)` über heterogene Arrays IMMER `typeof item !== 'object'`-Guard einbauen:
+```js
+f.labels = f.labels.map(function(l) {
+  if (typeof l !== 'object' || l === null) return l; // String oder primitiv: durchreichen
+  var c = Object.assign({}, l);
+  delete c.zoneId;
+  return c;
+});
+```
+
+## Apps-Script-Latenz ist Plattform-Limit (S122)
+
+Jeder Apps-Script-Web-App-Call dauert **mindestens ~1.5-2s** (HTTPS-Handshake + V8-Container-Init + Spreadsheet-Auth). Das gilt auch für triviale Endpoints, unabhängig von der Funktion.
+
+**Optimierungs-Patterns:**
+- `CacheService.putAll()` für Batch-Caching beim Initial-Load (spart Sheet-Reads, NICHT Roundtrip)
+- `fachbereich`-Hint mitsenden um Sheet-Lookups zu reduzieren
+- `scheduleSyncFlush` debouncen (5s) um Klick-Frequency-Spam zu vermeiden
+- Spinner-Text „Korrektur lädt …" damit User die Latenz versteht
+
+**Echte instant-UX nur durch:** Backend-Migration auf Edge-Runtime (Cloud Run / Vercel / Cloudflare Workers). Im Apps-Script-System ist <1s pro Call faktisch nicht erreichbar.
+
+**Bei neuen Latenz-sensitiven Features:** entweder Server-Roundtrip akzeptieren ODER Architektur-Refactor mit Pre-Loading + Client-Verifikation (Hash-Approach hat Sicherheits-Probleme bei kleinen Antworträumen wie R/F).

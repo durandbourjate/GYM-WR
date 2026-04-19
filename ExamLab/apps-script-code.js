@@ -981,6 +981,8 @@ function doPost(e) {
       return lernplattformSpeichereFrage(body);
     case 'lernplattformLoescheFrage':
       return lernplattformLoescheFrage(body);
+    case 'lernplattformPruefeAntwort':
+      return lernplattformPruefeAntwort(body);
 
     // Fortschritt
     case 'lernplattformSpeichereFortschritt':
@@ -1479,6 +1481,19 @@ function ladePruefung(pruefungId, email) {
 
 // === SICHERHEIT: Lösungsdaten für SuS entfernen ===
 
+/** Fisher-Yates Shuffle (mutiert nicht, liefert neue Kopie). Für Übungs-Bereinigung. */
+function shuffle_(arr) {
+  if (!Array.isArray(arr)) return arr;
+  var result = arr.slice();
+  for (var i = result.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = result[i];
+    result[i] = result[j];
+    result[j] = temp;
+  }
+  return result;
+}
+
 function bereinigeFrageFuerSuS_(frage) {
   var f = JSON.parse(JSON.stringify(frage)); // Deep Copy
 
@@ -1486,11 +1501,12 @@ function bereinigeFrageFuerSuS_(frage) {
   delete f.musterlosung;
   delete f.bewertungsraster;
 
-  // MC: korrekt-Feld aus Optionen entfernen
+  // MC: korrekt + erklaerung aus Optionen entfernen
   if (f.optionen && Array.isArray(f.optionen)) {
     f.optionen = f.optionen.map(function(o) {
       var cleaned = Object.assign({}, o);
       delete cleaned.korrekt;
+      delete cleaned.erklaerung;
       return cleaned;
     });
   }
@@ -1542,6 +1558,458 @@ function bereinigeFrageFuerSuS_(frage) {
   // Kontenauswahl bleibt — SuS braucht sie zum Auswählen. Kategorien sind Lernstoff, kein Geheimnis.
 
   return f;
+}
+
+/**
+ * Bereinigung für selbstständiges Üben: baut auf bereinigeFrageFuerSuS_ auf.
+ * Zusätzlich: entfernt weitere Lösungsfelder (FiBu + Formel + Bildbeschriftung/DragDrop/Hotspot)
+ * und mischt Reihenfolgen bei 8 Typen, damit konstantes Muster kein Hinweis auf Lösung gibt.
+ */
+function bereinigeFrageFuerSuSUeben_(frage) {
+  var f = bereinigeFrageFuerSuS_(frage);
+
+  // Zusätzliche Lösungsfeld-Bereinigungen (über Pruefungs-Variante hinaus)
+  if (f.buchungen) delete f.buchungen;
+  if (f.korrektBuchung) delete f.korrektBuchung;
+  if (f.sollEintraege) delete f.sollEintraege;
+  if (f.habenEintraege) delete f.habenEintraege;
+  if (f.korrekteFormel) delete f.korrekteFormel;
+  if (f.typ === 'formel' && f.korrekt) delete f.korrekt;
+
+  // FiBu: konten[].korrekt + bilanzEintraege[].korrekt + tkonto.loesung entfernen
+  if (Array.isArray(f.konten)) {
+    f.konten = f.konten.map(function(k) {
+      var c = Object.assign({}, k);
+      delete c.korrekt;
+      delete c.eintraege; // T-Konto-Lösungs-Einträge
+      delete c.saldo;     // T-Konto-Saldo = Lösung
+      if (!c.anfangsbestandVorgegeben) {
+        delete c.anfangsbestand; // Bereinigen wenn nicht als Aufgabenstellung sichtbar
+      }
+      return c;
+    });
+  }
+  if (Array.isArray(f.bilanzEintraege)) {
+    f.bilanzEintraege = f.bilanzEintraege.map(function(e) {
+      var c = Object.assign({}, e);
+      delete c.korrekt;
+      return c;
+    });
+  }
+  if (f.loesung) delete f.loesung; // bilanzstruktur.loesung
+  if (Array.isArray(f.aufgaben)) {
+    // kontenbestimmung.aufgaben[].erwarteteAntworten entfernen
+    f.aufgaben = f.aufgaben.map(function(a) {
+      var c = Object.assign({}, a);
+      delete c.erwarteteAntworten;
+      return c;
+    });
+  }
+
+  // Bildbeschriftung: labels[].zoneId IST die Lösung + beschriftungen[].korrekt
+  // ACHTUNG: labels[] ist je nach Pool-Daten string[] (DragDrop-Bild) oder {id,text,zoneId}[]
+  // (Bildbeschriftung). Strings unverändert lassen, sonst werden sie zu Char-Objekten.
+  if ((f.typ === 'bildbeschriftung' || f.typ === 'dragdrop_bild') && Array.isArray(f.labels)) {
+    f.labels = f.labels.map(function(l) {
+      if (typeof l !== 'object' || l === null) return l;
+      var c = Object.assign({}, l);
+      delete c.zoneId;
+      delete c.zone;
+      delete c.korrekt;
+      return c;
+    });
+  }
+  if (Array.isArray(f.beschriftungen)) {
+    f.beschriftungen = f.beschriftungen.map(function(b) {
+      var c = Object.assign({}, b);
+      delete c.korrekt;
+      return c;
+    });
+  }
+  if (Array.isArray(f.zielzonen)) {
+    f.zielzonen = f.zielzonen.map(function(z) {
+      var c = Object.assign({}, z);
+      delete c.korrektesLabel;
+      return c;
+    });
+  }
+
+  // Hotspot: bereiche[].korrekt + koordinaten unverändert (visuelles Target darstellen)
+  if (f.typ === 'hotspot' && Array.isArray(f.bereiche)) {
+    f.bereiche = f.bereiche.map(function(b) {
+      var c = Object.assign({}, b);
+      delete c.korrekt;
+      return c;
+    });
+  }
+  if (f.typ === 'hotspot' && Array.isArray(f.hotspots)) {
+    f.hotspots = f.hotspots.map(function(h) {
+      var c = Object.assign({}, h);
+      delete c.korrekt;
+      return c;
+    });
+  }
+
+  // Mischung (Fisher-Yates) pro Typ
+  switch (f.typ) {
+    case 'mc':
+      if (Array.isArray(f.optionen)) f.optionen = shuffle_(f.optionen);
+      break;
+    case 'richtigfalsch':
+      if (Array.isArray(f.aussagen)) f.aussagen = shuffle_(f.aussagen);
+      break;
+    case 'sortierung':
+      if (Array.isArray(f.elemente)) f.elemente = shuffle_(f.elemente);
+      break;
+    case 'zuordnung':
+      // Mische die rechts-Spalte unabhängig von links — Paarung verschleiert,
+      // UI-Komponente liest weiterhin paare[].links + paare[].rechts.
+      if (Array.isArray(f.paare)) {
+        var rechtsValues = f.paare.map(function(p) { return p.rechts; });
+        var rechtsShuffled = shuffle_(rechtsValues);
+        f.paare = f.paare.map(function(p, i) {
+          return Object.assign({}, p, { rechts: rechtsShuffled[i] });
+        });
+      }
+      break;
+    case 'bildbeschriftung':
+    case 'dragdrop_bild':
+      if (Array.isArray(f.labels)) f.labels = shuffle_(f.labels);
+      break;
+    case 'hotspot':
+      if (Array.isArray(f.hotspots)) f.hotspots = shuffle_(f.hotspots);
+      if (Array.isArray(f.bereiche)) f.bereiche = shuffle_(f.bereiche);
+      break;
+    case 'lueckentext':
+      if (Array.isArray(f.luecken)) {
+        f.luecken = f.luecken.map(function(l) {
+          if (Array.isArray(l.optionen)) {
+            return Object.assign({}, l, { optionen: shuffle_(l.optionen) });
+          }
+          return l;
+        });
+      }
+      break;
+  }
+
+  // Aufgabengruppe: rekursiv
+  if (Array.isArray(f.teilaufgaben)) {
+    f.teilaufgaben = f.teilaufgaben.map(bereinigeFrageFuerSuSUeben_);
+  }
+
+  return f;
+}
+
+// === SERVER-SIDE KORREKTUR (Port aus korrektur.ts) ===
+
+/**
+ * Normalisiert eine rohe Antwort auf das kanonische Schema.
+ * 1:1 Port von src/utils/normalizeAntwort.ts — deckt Legacy-Aliases (multi/tf/fill/…)
+ * und abweichende Feldnamen (gewaehlt/wert/texte/…) ab.
+ */
+var ANTWORT_ALIAS_ = {
+  multi: 'mc', tf: 'richtigfalsch', fill: 'lueckentext', calc: 'berechnung',
+  sort: 'sortierung', open: 'freitext', zeichnen: 'visualisierung',
+  bilanz: 'bilanzstruktur', gruppe: 'aufgabengruppe',
+};
+
+function normalisiereAntwortServer_(raw) {
+  if (!raw || typeof raw !== 'object' || !raw.typ) return raw;
+  var typ = ANTWORT_ALIAS_[raw.typ] || raw.typ;
+
+  switch (typ) {
+    case 'mc':
+      if ('gewaehlteOptionen' in raw) return Object.assign({}, raw, { typ: 'mc' });
+      var gew = raw.gewaehlt;
+      return { typ: 'mc', gewaehlteOptionen: Array.isArray(gew) ? gew : [gew || ''] };
+    case 'richtigfalsch':
+      return { typ: 'richtigfalsch', bewertungen: raw.bewertungen || {} };
+    case 'lueckentext':
+      return { typ: 'lueckentext', eintraege: raw.eintraege || {} };
+    case 'berechnung':
+      if ('ergebnisse' in raw) {
+        return { typ: 'berechnung', ergebnisse: raw.ergebnisse, rechenweg: raw.rechenweg };
+      }
+      var ergebnisse = raw.werte || { 'default': raw.wert || '' };
+      return { typ: 'berechnung', ergebnisse: ergebnisse, rechenweg: raw.rechenweg };
+    case 'hotspot':
+      return { typ: 'hotspot', klicks: raw.klicks || raw.geklickt || [] };
+    case 'visualisierung':
+      return {
+        typ: 'visualisierung',
+        daten: raw.daten || raw.datenUrl || '',
+        bildLink: raw.bildLink,
+        selbstbewertung: raw.selbstbewertung,
+      };
+    case 'bildbeschriftung':
+      return { typ: 'bildbeschriftung', eintraege: raw.eintraege || raw.texte || {} };
+    case 'buchungssatz':
+      if (Array.isArray(raw.buchungen) && raw.buchungen[0] && raw.buchungen[0].sollKonto !== undefined) {
+        return Object.assign({}, raw, { typ: 'buchungssatz' });
+      }
+      var zeilen = raw.zeilen || raw.buchungen || [];
+      return {
+        typ: 'buchungssatz',
+        buchungen: zeilen.map(function(z, i) {
+          return {
+            id: z.id || ('b' + i),
+            sollKonto: (z.sollKonto !== undefined ? z.sollKonto : (z.soll || '')),
+            habenKonto: (z.habenKonto !== undefined ? z.habenKonto : (z.haben || '')),
+            betrag: z.betrag || 0,
+          };
+        }),
+      };
+    case 'freitext':
+      return {
+        typ: 'freitext',
+        text: raw.text || '',
+        formatierung: raw.formatierung,
+        selbstbewertung: raw.selbstbewertung,
+      };
+    case 'aufgabengruppe':
+      var teilAntworten = {};
+      var rawTeil = raw.teilAntworten || raw.teilantworten || {};
+      Object.keys(rawTeil).forEach(function(key) {
+        teilAntworten[key] = normalisiereAntwortServer_(rawTeil[key]);
+      });
+      return { typ: 'aufgabengruppe', teilAntworten: teilAntworten };
+    default:
+      return Object.assign({}, raw, { typ: typ });
+  }
+}
+
+var SELBSTBEWERTUNGS_TYPEN_ = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'];
+
+function istSelbstbewertungstyp_(typ) {
+  return SELBSTBEWERTUNGS_TYPEN_.indexOf(typ) !== -1;
+}
+
+/** LaTeX-Normalisierung für Formel-Vergleich (1:1 Port) */
+function normalisiereLatex_(s) {
+  return String(s || '').replace(/\s+/g, '').replace(/\\cdot/g, '\\times').replace(/\*\*/g, '^').toLowerCase();
+}
+
+/**
+ * Server-side Antwort-Prüfung — spiegelt korrektur.ts::pruefeAntwort 1:1.
+ * Rückgabe: boolean (true/false) für auto-korrigierbare Typen,
+ * null für Selbstbewertungstypen (Caller entscheidet über Response).
+ */
+function pruefeAntwortServer_(frage, antwort) {
+  if (!frage || !antwort) return false;
+  var a = antwort;
+  switch (frage.typ) {
+    case 'mc': {
+      if (a.typ !== 'mc') return false;
+      var gewaehlt = Array.isArray(a.gewaehlteOptionen) ? a.gewaehlteOptionen : [];
+      var optionen = Array.isArray(frage.optionen) ? frage.optionen : [];
+      if (frage.mehrfachauswahl) {
+        var korrekte = optionen.filter(function(o) { return o.korrekt; }).map(function(o) { return o.id; });
+        var s1 = gewaehlt.slice().sort();
+        var s2 = korrekte.slice().sort();
+        return s1.length === s2.length && s1.every(function(v, i) { return v === s2[i]; });
+      }
+      var k = optionen.filter(function(o) { return o.korrekt; })[0];
+      if (!k) return false;
+      return gewaehlt[0] === k.id || gewaehlt[0] === k.text;
+    }
+
+    case 'richtigfalsch': {
+      if (a.typ !== 'richtigfalsch') return false;
+      var aussagen = Array.isArray(frage.aussagen) ? frage.aussagen : [];
+      var bew = a.bewertungen || {};
+      return aussagen.length > 0 && aussagen.every(function(x) { return bew[x.id] === x.korrekt; });
+    }
+
+    case 'lueckentext': {
+      if (a.typ !== 'lueckentext') return false;
+      var luecken = Array.isArray(frage.luecken) ? frage.luecken : [];
+      var eintraege = a.eintraege || {};
+      return luecken.length > 0 && luecken.every(function(l) {
+        var eingabe = String(eintraege[l.id] || '').trim();
+        var korrekt = Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : [];
+        if (korrekt.length === 0) return false;
+        return korrekt.some(function(ka) {
+          return l.caseSensitive
+            ? eingabe === String(ka).trim()
+            : eingabe.toLowerCase() === String(ka).trim().toLowerCase();
+        });
+      });
+    }
+
+    case 'berechnung': {
+      if (a.typ !== 'berechnung') return false;
+      var ergebnisse = Array.isArray(frage.ergebnisse) ? frage.ergebnisse : [];
+      var input = a.ergebnisse || {};
+      if (ergebnisse.length === 1) {
+        var istStr = input['default'] !== undefined ? input['default'] : (Object.values(input)[0] || '');
+        var ist = parseFloat(istStr);
+        if (isNaN(ist)) return false;
+        return Math.abs(ergebnisse[0].korrekt - ist) <= ergebnisse[0].toleranz;
+      }
+      return ergebnisse.length > 0 && ergebnisse.every(function(e) {
+        var v = parseFloat(input[e.id] || '0');
+        if (isNaN(v)) return false;
+        return Math.abs(e.korrekt - v) <= e.toleranz;
+      });
+    }
+
+    case 'sortierung': {
+      if (a.typ !== 'sortierung') return false;
+      var elemente = Array.isArray(frage.elemente) ? frage.elemente : [];
+      var reihenfolge = Array.isArray(a.reihenfolge) ? a.reihenfolge : [];
+      return elemente.length > 0 && elemente.length === reihenfolge.length &&
+        elemente.every(function(e, i) { return e === reihenfolge[i]; });
+    }
+
+    case 'zuordnung': {
+      if (a.typ !== 'zuordnung') return false;
+      var paare = Array.isArray(frage.paare) ? frage.paare : [];
+      var zu = a.zuordnungen || {};
+      return paare.length > 0 && paare.every(function(p) { return zu[p.links] === p.rechts; });
+    }
+
+    case 'hotspot': {
+      if (a.typ !== 'hotspot') return false;
+      var bereiche = Array.isArray(frage.bereiche) ? frage.bereiche : [];
+      var klicks = Array.isArray(a.klicks) ? a.klicks : [];
+      return bereiche.length > 0 && bereiche.length === klicks.length && bereiche.every(function(b) {
+        return klicks.some(function(kl) {
+          var r = (b.koordinaten && b.koordinaten.radius) || 10;
+          var dx = b.koordinaten.x - kl.x, dy = b.koordinaten.y - kl.y;
+          return Math.sqrt(dx * dx + dy * dy) < r;
+        });
+      });
+    }
+
+    case 'bildbeschriftung': {
+      if (a.typ !== 'bildbeschriftung') return false;
+      var beschr = Array.isArray(frage.beschriftungen) ? frage.beschriftungen : [];
+      var eintr = a.eintraege || {};
+      return beschr.length > 0 && beschr.every(function(b) {
+        var kks = Array.isArray(b.korrekt) ? b.korrekt : [];
+        return kks.some(function(ka) {
+          return String(eintr[b.id] || '').trim().toLowerCase() === String(ka).trim().toLowerCase();
+        });
+      });
+    }
+
+    case 'dragdrop_bild': {
+      if (a.typ !== 'dragdrop_bild') return false;
+      var zielzonen = Array.isArray(frage.zielzonen) ? frage.zielzonen : [];
+      var labels = Array.isArray(frage.labels) ? frage.labels : [];
+      var zud = a.zuordnungen || {};
+      return zielzonen.length > 0 && zielzonen.every(function(z) {
+        if (zud[z.korrektesLabel] === z.id) return true;
+        return labels.some(function(l) { return l === z.korrektesLabel && zud[l] === z.id; });
+      });
+    }
+
+    case 'aufgabengruppe': {
+      var ta = Array.isArray(frage.teilaufgaben) ? frage.teilaufgaben : [];
+      var ans = a.teilAntworten || a.teilantworten || {};
+      return ta.length > 0 && ta.every(function(sub) {
+        return pruefeAntwortServer_(sub, ans[sub.id]) === true;
+      });
+    }
+
+    case 'buchungssatz':
+    case 'tkonto':
+    case 'bilanzstruktur':
+    case 'kontenbestimmung':
+    case 'formel':
+      return pruefeFibuAntwortServer_(frage, a);
+
+    case 'freitext':
+    case 'visualisierung':
+    case 'pdf':
+    case 'audio':
+    case 'code':
+      return null; // Selbstbewertung — Caller entscheidet
+  }
+  return false;
+}
+
+/** FiBu + Formel — 1:1 Port aus korrektur.ts */
+function pruefeFibuAntwortServer_(frage, antwort) {
+  switch (frage.typ) {
+    case 'buchungssatz': {
+      if (antwort.typ !== 'buchungssatz') return false;
+      var korrektZeilen = Array.isArray(frage.buchungen) ? frage.buchungen : [];
+      var eingabeZeilen = Array.isArray(antwort.buchungen) ? antwort.buchungen : [];
+      if (korrektZeilen.length === 0 || korrektZeilen.length !== eingabeZeilen.length) return false;
+      var genutzt = {};
+      return korrektZeilen.every(function(kz) {
+        return eingabeZeilen.some(function(ez, i) {
+          if (genutzt[i]) return false;
+          if (ez.sollKonto === kz.sollKonto && ez.habenKonto === kz.habenKonto && Math.abs(ez.betrag - kz.betrag) < 0.01) {
+            genutzt[i] = true;
+            return true;
+          }
+          return false;
+        });
+      });
+    }
+
+    case 'tkonto': {
+      if (antwort.typ !== 'tkonto') return false;
+      var konten = Array.isArray(frage.konten) ? frage.konten : [];
+      if (konten.length === 0) return false;
+      return konten.every(function(konto) {
+        var eingabe = (Array.isArray(antwort.konten) ? antwort.konten : []).find(function(k) { return k.id === konto.id; });
+        if (!eingabe) return false;
+        var eintraege = Array.isArray(konto.eintraege) ? konto.eintraege : [];
+        var kLinks = eintraege.filter(function(e) { return e.seite === 'soll'; });
+        var kRechts = eintraege.filter(function(e) { return e.seite === 'haben'; });
+        var eL = Array.isArray(eingabe.eintraegeLinks) ? eingabe.eintraegeLinks : [];
+        var eR = Array.isArray(eingabe.eintraegeRechts) ? eingabe.eintraegeRechts : [];
+        var linksOk = kLinks.length === eL.length && kLinks.every(function(ks) {
+          return eL.some(function(es) { return es.gegenkonto === ks.gegenkonto && Math.abs(es.betrag - ks.betrag) < 0.01; });
+        });
+        var rechtsOk = kRechts.length === eR.length && kRechts.every(function(kh) {
+          return eR.some(function(eh) { return eh.gegenkonto === kh.gegenkonto && Math.abs(eh.betrag - kh.betrag) < 0.01; });
+        });
+        var saldo = eingabe.saldo;
+        var saldoOk = saldo ? Math.abs((saldo.betragLinks || 0) - (saldo.betragRechts || 0)) < 0.01 : true;
+        return linksOk && rechtsOk && saldoOk;
+      });
+    }
+
+    case 'bilanzstruktur': {
+      if (antwort.typ !== 'bilanzstruktur') return false;
+      var loesung = frage.loesung;
+      if (!loesung || !loesung.bilanz) return false;
+      var bilanz = antwort.bilanz || {};
+      var bilanzsumme = bilanz.bilanzsummeLinks !== undefined ? bilanz.bilanzsummeLinks : (bilanz.bilanzsummeRechts || 0);
+      return Math.abs(bilanzsumme - loesung.bilanz.bilanzsumme) < 0.01;
+    }
+
+    case 'kontenbestimmung': {
+      if (antwort.typ !== 'kontenbestimmung') return false;
+      var aufgaben = Array.isArray(frage.aufgaben) ? frage.aufgaben : [];
+      if (aufgaben.length === 0) return false;
+      var antwortAufgaben = antwort.aufgaben || {};
+      var antwortValues = Object.keys(antwortAufgaben).map(function(k) { return antwortAufgaben[k]; });
+      return aufgaben.every(function(aufgabe, i) {
+        var eingabe = (antwortValues[i] && antwortValues[i].antworten) || [];
+        var erwartet = Array.isArray(aufgabe.erwarteteAntworten) ? aufgabe.erwarteteAntworten : [];
+        if (erwartet.length !== eingabe.length) return false;
+        return erwartet.every(function(ea) {
+          return eingabe.some(function(ez) { return ez.kontonummer === (ea.kontonummer || '') && ez.seite === ea.seite; });
+        });
+      });
+    }
+
+    case 'formel': {
+      if (antwort.typ !== 'formel') return false;
+      var soll = normalisiereLatex_(frage.korrekteFormel);
+      var ist = normalisiereLatex_(antwort.latex);
+      if (!soll) return false;
+      return soll === ist;
+    }
+
+    default:
+      return false;
+  }
 }
 
 // === FRAGEN LADEN ===
@@ -7082,6 +7550,13 @@ function lernplattformAendereRolle(body) {
 function lernplattformLadeFragen(body) {
   // gruppeId wird für Berechtigungsprüfung noch gebraucht, aber Fragen kommen aus der gemeinsamen Fragenbank
   var gruppeId = body.gruppeId;
+  // SICHERHEIT: Email NICHT aus body übernehmen — Token-Validierung ist die einzige Quelle.
+  // Ohne validiertes Token: SuS-Pfad (bereinigt), nie LP-Pfad.
+  var claimEmail = (body.email || '').toString().toLowerCase();
+  var token = body.token || body.sessionToken;
+  var tokenGueltig = lernplattformValidiereToken_(token, claimEmail);
+  var email = tokenGueltig ? claimEmail : '';
+  var istLP = tokenGueltig && istZugelasseneLP(email);
 
   // Prüfe ob Gruppe existiert (für Familie-Gruppen → eigenes Sheet)
   var gruppen = alleGruppenLaden_();
@@ -7126,10 +7601,165 @@ function lernplattformLadeFragen(body) {
       }
     }
 
+    // Pre-Warm CacheService: alle unbereinigten Fragen einmalig speichern.
+    // Jeder spätere lernplattformPruefeAntwort-Call findet die Frage <100ms im Cache,
+    // statt erneut Sheet-Reads über alle Tabs zu machen.
+    try {
+      var cache = CacheService.getScriptCache();
+      var cacheEntries = {};
+      for (var pf = 0; pf < alleFragen.length; pf++) {
+        var fr = alleFragen[pf];
+        if (!fr || !fr.id) continue;
+        try {
+          var serialized = JSON.stringify(fr);
+          if (serialized.length < 95000) { // CacheService Limit ~100KB
+            cacheEntries['frage_v1_' + FRAGENBANK_ID + '_' + fr.id] = serialized;
+          }
+        } catch (eS) { /* skip frage on serialize error */ }
+      }
+      if (Object.keys(cacheEntries).length > 0) {
+        // putAll batch-schreibt in einem Call (max 1000 Keys, Total <9MB) — günstig.
+        cache.putAll(cacheEntries, 3600); // 1h TTL
+      }
+    } catch (eCache) {
+      // Cache-Failure ist nicht kritisch — Prüf-Calls fallen auf Sheet-Read zurück.
+      console.log('[lernplattformLadeFragen] Pre-Warm Cache fehlgeschlagen: ' + eCache.message);
+    }
+
+    // Security: SuS erhalten bereinigte + gemischte Fragen (LP sieht Original)
+    if (!istLP) {
+      alleFragen = alleFragen.map(bereinigeFrageFuerSuSUeben_);
+    }
+
     return jsonResponse({ success: true, data: alleFragen });
   } catch (e) {
     return jsonResponse({ success: false, error: e.message });
   }
+}
+
+/**
+ * SuS-Endpoint für server-seitige Antwort-Prüfung.
+ * Kehrt nur `{korrekt, musterlosung}` oder `{selbstbewertung:true, musterlosung}` zurück —
+ * niemals die Frage mit Lösungsfeldern.
+ */
+function lernplattformPruefeAntwort(body) {
+  var gruppeId = body.gruppeId;
+  var frageId = body.frageId;
+  var antwort = body.antwort;
+  var claimEmail = (body.email || '').toString().toLowerCase();
+  var token = body.token || body.sessionToken;
+
+  if (!gruppeId || !frageId || !antwort || !claimEmail || !token) {
+    return jsonResponse({ success: false, error: 'Fehlende Parameter' });
+  }
+
+  // SICHERHEIT: Token zwingend — Email wird nur verwendet wenn Token gültig.
+  if (!lernplattformValidiereToken_(token, claimEmail)) {
+    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
+  }
+  var email = claimEmail;
+
+  // Rate-Limit: 10 Prüf-Requests pro Minute pro SuS
+  // (macht Brute-Force auf R/F mit N Aussagen merklich teurer, ohne zügiges Üben zu blockieren).
+  var rl = lernplattformRateLimitCheck_('pruefe-antwort', email, 10, 60);
+  if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
+
+  // Gruppe existiert + Mitgliedschaft prüfen (via etablierten Helper)
+  var mitgliedCheck = istGruppenMitglied_(body, gruppeId);
+  if (!mitgliedCheck) {
+    return jsonResponse({ success: false, error: 'Kein Zugriff auf diese Gruppe' });
+  }
+  var gruppe = mitgliedCheck.gruppe;
+
+  // Frage frisch (unbereinigt) laden — NIEMALS aus Request-Body nehmen.
+  // Familie-Gruppen: aus Gruppen-Sheet; sonst globale Fragenbank.
+  // fachbereichHint reduziert Sheet-Reads um ~75% (1 Tab statt 4).
+  var frage = ladeFrageUnbereinigtById_(frageId, gruppe, body.fachbereich);
+  if (!frage) return jsonResponse({ success: false, error: 'Frage nicht gefunden' });
+
+  // Normalisiere Legacy-Antwort-Formate (multi/tf/fill/…) vor der Korrektur
+  var normAntwort = normalisiereAntwortServer_(antwort);
+  var korrektResult = pruefeAntwortServer_(frage, normAntwort);
+
+  if (istSelbstbewertungstyp_(frage.typ)) {
+    return jsonResponse({
+      success: true,
+      selbstbewertung: true,
+      musterlosung: frage.musterlosung || '',
+      bewertungsraster: frage.bewertungsraster || null,
+    });
+  }
+
+  return jsonResponse({
+    success: true,
+    korrekt: korrektResult === true,
+    musterlosung: frage.musterlosung || '',
+  });
+}
+
+/**
+ * Frage unbereinigt laden — für Server-Korrektur.
+ * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
+ * Alle anderen: aus globaler FRAGENBANK_ID.
+ *
+ * Performance:
+ * - CacheService cached die geparste Frage 1h (Schlüssel = sheetId + frageId).
+ *   Zweiter Aufruf für dieselbe Frage liefert <100ms statt 1-3s Sheet-Read.
+ * - fachbereichHint (optional): wenn der Client den Fachbereich mitschickt,
+ *   wird nur dieser Tab durchsucht (4× schneller als alle Tabs zu lesen).
+ */
+function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
+  try {
+    var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
+    var sheetId = istFamilie ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+
+    // Cache-Lookup
+    var cache = CacheService.getScriptCache();
+    var cacheKey = 'frage_v1_' + sheetId + '_' + frageId;
+    var cached = cache.get(cacheKey);
+    if (cached) {
+      try { return JSON.parse(cached); } catch (e) { /* fallthrough */ }
+    }
+
+    var ss = SpreadsheetApp.openById(sheetId);
+    var alleTabs = istFamilie ? ['Fragen'] : getFragenbankTabs_();
+    // Hint nutzen: nur den richtigen Tab durchsuchen wenn fachbereich bekannt
+    var tabs = (fachbereichHint && alleTabs.indexOf(fachbereichHint) !== -1)
+      ? [fachbereichHint].concat(alleTabs.filter(function(t) { return t !== fachbereichHint; }))
+      : alleTabs;
+
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = ss.getSheetByName(tabs[t]);
+      if (!sheet) continue;
+      var daten = sheet.getDataRange().getValues();
+      if (daten.length < 2) continue;
+      var headers = daten[0].map(function(h) { return String(h).trim(); });
+      var idIdx = headers.indexOf('id');
+      if (idIdx === -1) continue;
+
+      // Spalte zuerst durchsuchen (vermeidet teures Row-zu-Object-Mapping bei jedem Miss)
+      for (var i = 1; i < daten.length; i++) {
+        if (String(daten[i][idIdx]) !== frageId) continue;
+        var row = {};
+        for (var j = 0; j < headers.length; j++) {
+          var key = headers[j];
+          var val = daten[i][j];
+          if (!key || val === '' || val === null || val === undefined) continue;
+          row[key] = String(val);
+        }
+        var frage = parseFrageKanonisch_(row, tabs[t]);
+        // Cache 1h. Bei <100KB pro Eintrag (CacheService-Limit) sind das tausende Fragen.
+        try {
+          var serialized = JSON.stringify(frage);
+          if (serialized.length < 100000) cache.put(cacheKey, serialized, 3600);
+        } catch (e) { /* skip cache on serialize error */ }
+        return frage;
+      }
+    }
+  } catch (e) {
+    console.log('[ladeFrageUnbereinigtById_] Fehler: ' + e.message);
+  }
+  return null;
 }
 
 /** Frage aus einer Sheet-Zeile im kanonischen Format parsen (shared mit ExamLab) */
