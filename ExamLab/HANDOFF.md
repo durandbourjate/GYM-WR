@@ -6,6 +6,62 @@
 
 ---
 
+## Session 125 — Phase 5 vorbereitet (19.04.2026 spät)
+
+### Stand
+**Branch `feature/apps-script-mediaquelle-migrator` auf Remote, wartet auf User-Deploy. `apps-script-code.js` erweitert — Frontend bleibt kompatibel (412/412 Tests, tsc grün).**
+
+### Umgesetzt (Apps-Script-Port)
+- **Migrator-Helper** `mq_mimeType_`, `mq_extrahiereDriveId_`, `mq_klassifiziere_`, `mq_bildQuelleAus_`, `mq_pdfQuelleAus_`, `mq_anhangQuelleAus_`, `mq_ergaenzeMediaQuelle_` (JS-Port der Phase-1 TypeScript-Functions).
+- **Load-Pfad:** `ladeFragen()` + 2× LP-Browser-Calls + Einzel-Lookup wrappen `parseFrage(...)` in `mq_ergaenzeMediaQuelle_(...)`. Alle Fragen aus Backend kommen mit ergänztem `bild`/`pdf`/`anhaenge[*].quelle`-Feld.
+- **Save-Pfad:** `getTypDaten()` — PDF/Hotspot/Bildbeschriftung/DragDropBild schreiben jetzt `bild`/`pdf` + Alt-Felder parallel (Dual-Write). PDF zusätzlich `pdfBase64` + `pdfUrl` (waren teilweise fehlend).
+- **Parse-Pfad:** `parseFrage` PDF-Case liest `pdf` aus `typDaten`.
+- **Admin-Endpoint** `aktion: 'admin:migrierMediaQuelle'` mit Dry-Run-Default. Liefert Summary-List (erste 50 Einträge) + Stats pro Sheet.
+
+### User-Deploy-Anleitung
+
+**⚠️ Vorbereitung (Pflicht, nicht während laufender Prüfungen!):**
+
+1. **Backup-Kopien aller Fragenbank-Sheets** im Google-Drive:
+   - Öffne Drive → finde die Fragenbank (ID: `1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs`).
+   - Rechtsklick → "Kopie erstellen" mit Suffix `-backup-2026-04-19`.
+   - Verifiziere dass alle 4 Tabs (VWL/BWL/Recht/Informatik) in der Backup-Datei sind.
+
+2. **Apps-Script-Code deployen:**
+   - `ExamLab/apps-script-code.js` komplett in den Apps-Script-Editor kopieren (überschreiben).
+   - "Bereitstellen → Bereitstellung verwalten → Bearbeiten (Stift-Icon) → Version: Neu → Bereitstellen".
+   - Deployment-URL in `.env.local` prüfen (sollte gleich bleiben).
+
+3. **Dry-Run auf einem Sheet testen** (z.B. `BWL` — hat wenige Bild/PDF-Fragen):
+   ```
+   POST /macros/s/.../exec
+   { "action": "admin:migrierMediaQuelle", "callerEmail": "yannick.durand@gymhofwil.ch",
+     "dryRun": true, "sheetName": "BWL" }
+   ```
+   - Erwartet: `{ success: true, dryRun: true, tabs: [{name:'BWL', rows:X, aktualisiert:Y}], summary: [...] }`
+   - Reviewe die ersten 20 summary-Einträge — ergeben die Resultate Sinn?
+
+4. **Echte Migration auf einem Sheet** (nur wenn Dry-Run OK):
+   ```
+   { "action": "admin:migrierMediaQuelle", "callerEmail": "...",
+     "dryRun": false, "sheetName": "BWL" }
+   ```
+   - Frontend-Verifikation: Eine Frage aus BWL im LP-Editor öffnen — zeigt Pool-Info korrekt?
+   - Lade eine Frage im SuS-Flow — rendert korrekt?
+
+5. **Rollout auf alle Sheets** (sheetName weglassen):
+   ```
+   { "action": "admin:migrierMediaQuelle", "callerEmail": "...", "dryRun": false }
+   ```
+
+**Rollback bei Problemen:** Backup-Sheets über Google Drive-Versions-Historie zurückspielen ODER manuell Alt-Felder aus Backup kopieren.
+
+### Was Phase 5 NICHT tut
+- **Bereits leere `pdfUrl`-Felder** (S124 Data-Loss) werden NICHT rekonstruiert. Das braucht Pool-Re-Import (via existierenden `importierePoolFragen`-Endpoint). Phase-5-Migrator ergänzt nur `pdf`/`bild` aus bestehenden Alt-Feldern.
+- Phase 6 (Cleanup: Alt-Felder entfernen) folgt frühestens +2 Wochen nach erfolgreichem Phase-5-Rollout.
+
+---
+
 ## Session 125 — MediaQuelle Phasen 0-4 + Editor-Hotfixes (19.04.2026)
 
 ### Stand

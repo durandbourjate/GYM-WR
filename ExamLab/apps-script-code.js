@@ -1032,6 +1032,10 @@ function doPost(e) {
     case 'speichereLPProfil':
       return speichereLPProfilEndpoint(body);
 
+    // === MEDIAQUELLE MIGRATION (Admin-only, S125 Phase 5) ===
+    case 'admin:migrierMediaQuelle':
+      return migrierFragenZuMediaQuelleEndpoint_(body);
+
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -1202,6 +1206,144 @@ function safeJsonParse(str, fallback) {
 
 /** Alias für Lernplattform-Funktionen (die safeJsonParse_ mit Unterstrich verwenden) */
 function safeJsonParse_(str, fallback) { return safeJsonParse(str, fallback); }
+
+// ============================================================
+// === MediaQuelle Migrator (JS-Port, S125 Phase 5) ===
+// ============================================================
+// Leitet `frage.bild` / `frage.pdf` / `anhang.quelle` aus Alt-Feldern ab.
+// Frontend ermittelt via `ermittleBildQuelle/PdfQuelle/AnhangQuelle` — Backend
+// ergänzt die kanonischen Felder beim Laden, damit neue Konsumenten sie sofort
+// sehen. Save-Pfad schreibt sie ebenfalls, wenn nur Alt-Felder kommen.
+
+var MQ_POOL_PATTERNS = ['img/', 'pool-bilder/'];
+
+function mq_mimeType_(pfad) {
+  if (!pfad) return 'application/octet-stream';
+  var lower = String(pfad).toLowerCase();
+  if (lower.indexOf('.png') === lower.length - 4) return 'image/png';
+  if (lower.indexOf('.jpg') === lower.length - 4) return 'image/jpeg';
+  if (lower.indexOf('.jpeg') === lower.length - 5) return 'image/jpeg';
+  if (lower.indexOf('.gif') === lower.length - 4) return 'image/gif';
+  if (lower.indexOf('.webp') === lower.length - 5) return 'image/webp';
+  if (lower.indexOf('.svg') === lower.length - 4) return 'image/svg+xml';
+  if (lower.indexOf('.pdf') === lower.length - 4) return 'application/pdf';
+  if (lower.indexOf('.mp3') === lower.length - 4) return 'audio/mpeg';
+  if (lower.indexOf('.m4a') === lower.length - 4) return 'audio/mp4';
+  if (lower.indexOf('.wav') === lower.length - 4) return 'audio/wav';
+  if (lower.indexOf('.webm') === lower.length - 5) return 'video/webm';
+  if (lower.indexOf('.mp4') === lower.length - 4) return 'video/mp4';
+  return 'application/octet-stream';
+}
+
+function mq_extrahiereDriveId_(url) {
+  if (!url) return null;
+  var s = String(url);
+  var lh3 = s.match(/lh3\.googleusercontent\.com\/d\/([^\/?#]+)/);
+  if (lh3) return lh3[1];
+  var drive = s.match(/drive\.google\.com\/file\/d\/([^\/?#]+)/);
+  if (drive) return drive[1];
+  var driveOpen = s.match(/drive\.google\.com\/open\?id=([^&]+)/);
+  if (driveOpen) return driveOpen[1];
+  return null;
+}
+
+function mq_klassifiziere_(cleaned) {
+  for (var i = 0; i < MQ_POOL_PATTERNS.length; i++) {
+    if (cleaned.indexOf(MQ_POOL_PATTERNS[i]) === 0) return 'pool';
+  }
+  return 'app';
+}
+
+function mq_bildQuelleAus_(frage) {
+  if (!frage) return null;
+  if (frage.bildDriveFileId) {
+    return { typ: 'drive', driveFileId: frage.bildDriveFileId, mimeType: 'image/png' };
+  }
+  var url = frage.bildUrl;
+  if (!url || typeof url !== 'string' || !url.length) return null;
+  if (url.indexOf('data:') === 0) {
+    var m = url.match(/^data:([^;]+);base64,(.+)$/);
+    if (m) return { typ: 'inline', base64: m[2], mimeType: m[1] };
+    return null;
+  }
+  var driveId = mq_extrahiereDriveId_(url);
+  if (driveId) return { typ: 'drive', driveFileId: driveId, mimeType: mq_mimeType_(url) || 'image/png' };
+  if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) {
+    return { typ: 'extern', url: url, mimeType: mq_mimeType_(url) };
+  }
+  var cleaned = url.replace(/^\.?\//, '');
+  var typ = mq_klassifiziere_(cleaned);
+  if (typ === 'pool') return { typ: 'pool', poolPfad: cleaned, mimeType: mq_mimeType_(cleaned) };
+  return { typ: 'app', appPfad: cleaned, mimeType: mq_mimeType_(cleaned) };
+}
+
+function mq_pdfQuelleAus_(frage) {
+  if (!frage) return null;
+  var dateiname = frage.pdfDateiname;
+  if (frage.pdfBase64) return { typ: 'inline', base64: frage.pdfBase64, mimeType: 'application/pdf', dateiname: dateiname };
+  if (frage.pdfDriveFileId) return { typ: 'drive', driveFileId: frage.pdfDriveFileId, mimeType: 'application/pdf', dateiname: dateiname };
+  var url = frage.pdfUrl;
+  if (!url) return null;
+  if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) {
+    var driveId = mq_extrahiereDriveId_(url);
+    if (driveId) return { typ: 'drive', driveFileId: driveId, mimeType: 'application/pdf', dateiname: dateiname };
+    return { typ: 'extern', url: url, mimeType: 'application/pdf', dateiname: dateiname };
+  }
+  var cleaned = url.replace(/^\.?\//, '');
+  var typ = mq_klassifiziere_(cleaned);
+  if (typ === 'pool') return { typ: 'pool', poolPfad: cleaned, mimeType: 'application/pdf', dateiname: dateiname };
+  return { typ: 'app', appPfad: cleaned, mimeType: 'application/pdf', dateiname: dateiname };
+}
+
+function mq_anhangQuelleAus_(a) {
+  if (!a) return null;
+  var dateiname = a.dateiname;
+  var mimeType = a.mimeType || mq_mimeType_(dateiname);
+  if (a.driveFileId) return { typ: 'drive', driveFileId: a.driveFileId, mimeType: mimeType, dateiname: dateiname };
+  if (a.base64) return { typ: 'inline', base64: a.base64, mimeType: mimeType, dateiname: dateiname };
+  if (a.url) {
+    if (a.url.indexOf('http') === 0) {
+      var driveId2 = mq_extrahiereDriveId_(a.url);
+      if (driveId2) return { typ: 'drive', driveFileId: driveId2, mimeType: mimeType, dateiname: dateiname };
+      return { typ: 'extern', url: a.url, mimeType: mimeType, dateiname: dateiname };
+    }
+    var cleaned2 = a.url.replace(/^\.?\//, '');
+    var typ2 = mq_klassifiziere_(cleaned2);
+    if (typ2 === 'pool') return { typ: 'pool', poolPfad: cleaned2, mimeType: mimeType, dateiname: dateiname };
+    return { typ: 'app', appPfad: cleaned2, mimeType: mimeType, dateiname: dateiname };
+  }
+  return null;
+}
+
+/**
+ * Ergänzt `frage.bild`/`frage.pdf`/`anhaenge[*].quelle` aus Alt-Feldern.
+ * Alt-Felder bleiben unverändert (Dual-Write Phase 3-5). Idempotent: wenn
+ * kanonisches Feld bereits gesetzt ist, wird nichts überschrieben.
+ */
+function mq_ergaenzeMediaQuelle_(frage) {
+  if (!frage || typeof frage !== 'object') return frage;
+  var BILD_TYPEN = ['hotspot', 'bildbeschriftung', 'dragdrop_bild'];
+  if (BILD_TYPEN.indexOf(frage.typ) >= 0 && !frage.bild) {
+    var bild = mq_bildQuelleAus_(frage);
+    if (bild) frage.bild = bild;
+  }
+  if (frage.typ === 'pdf' && !frage.pdf) {
+    var pdf = mq_pdfQuelleAus_(frage);
+    if (pdf) frage.pdf = pdf;
+  }
+  if (Array.isArray(frage.anhaenge)) {
+    frage.anhaenge = frage.anhaenge.map(function(a) {
+      if (a && a.quelle) return a;
+      var q = mq_anhangQuelleAus_(a);
+      if (!q) return a;
+      var kopie = {};
+      for (var k in a) if (Object.prototype.hasOwnProperty.call(a, k)) kopie[k] = a[k];
+      kopie.quelle = q;
+      return kopie;
+    });
+  }
+  return frage;
+}
 
 /**
  * Stellt sicher, dass alle Schlüssel aus rowData als Spaltenheader existieren.
@@ -2026,7 +2168,7 @@ function ladeFragen(fragenIds) {
     const data = getSheetData(sheet);
     for (const row of data) {
       if (fragenIds.includes(row.id)) {
-        alleFragen.push(parseFrage(row, tab));
+        alleFragen.push(mq_ergaenzeMediaQuelle_(parseFrage(row, tab)));
       }
     }
   }
@@ -2050,7 +2192,7 @@ function ladeFragen(fragenIds) {
       const data = getSheetData(sheet);
       for (const row of data) {
         if (teilaufgabenIds.includes(row.id)) {
-          alleFragen.push(parseFrage(row, tab));
+          alleFragen.push(mq_ergaenzeMediaQuelle_(parseFrage(row, tab)));
         }
       }
     }
@@ -2218,6 +2360,7 @@ function parseFrage(row, fachbereich) {
         pdfUrl: typDaten.pdfUrl || row.pdfUrl || '',
         pdfBase64: typDaten.pdfBase64 || '',
         pdfDateiname: typDaten.pdfDateiname || row.pdfDateiname || '',
+        pdf: typDaten.pdf || undefined,
         seitenAnzahl: typDaten.seitenAnzahl || Number(row.seitenAnzahl) || 0,
         kategorien: typDaten.kategorien || [],
         erlaubteWerkzeuge: typDaten.erlaubteWerkzeuge || ['highlighter', 'kommentar', 'freihand'],
@@ -3243,7 +3386,9 @@ function getTypDaten(frage) {
       return {
         pdfDriveFileId: frage.pdfDriveFileId,
         pdfUrl: frage.pdfUrl,
+        pdfBase64: frage.pdfBase64,
         pdfDateiname: frage.pdfDateiname,
+        pdf: frage.pdf,
         seitenAnzahl: frage.seitenAnzahl,
         kategorien: frage.kategorien,
         erlaubteWerkzeuge: frage.erlaubteWerkzeuge,
@@ -3260,11 +3405,11 @@ function getTypDaten(frage) {
     case 'sortierung':
       return { elemente: frage.elemente, teilpunkte: frage.teilpunkte };
     case 'hotspot':
-      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, hotspots: frage.hotspots, hotspotRadius: frage.hotspotRadius, maxKlicks: frage.maxKlicks };
+      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, hotspots: frage.hotspots, hotspotRadius: frage.hotspotRadius, maxKlicks: frage.maxKlicks };
     case 'bildbeschriftung':
-      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, beschriftungen: frage.beschriftungen };
+      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, beschriftungen: frage.beschriftungen };
     case 'dragdrop_bild':
-      return { bildUrl: frage.bildUrl, bildDriveId: frage.bildDriveId, labels: frage.labels, zielzonen: frage.zielzonen };
+      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, labels: frage.labels, zielzonen: frage.zielzonen };
     case 'audio':
       return { maxDauerSekunden: frage.maxDauerSekunden, sprachhinweis: frage.sprachhinweis };
     case 'code':
@@ -3543,7 +3688,7 @@ function ladeFragenbank(email) {
         if (!sheet) continue;
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
-          if (data[r].id) alleParsed.push(parseFrage(data[r], tabs[t]));
+          if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
         }
       }
       cachePut_('alle_fragen', alleParsed);
@@ -3597,7 +3742,7 @@ function ladeFragenbankSummary(email) {
           if (!sheet) continue;
           var data = getSheetData(sheet);
           for (var r = 0; r < data.length; r++) {
-            if (data[r].id) alleParsed.push(parseFrage(data[r], tabs[t]));
+            if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
           }
         }
         cachePut_('alle_fragen', alleParsed);
@@ -3701,7 +3846,7 @@ function ladeFrageDetail(frageId, fachbereich, email) {
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
           if (data[r].id === frageId) {
-            frage = parseFrage(data[r], fachbereich);
+            frage = mq_ergaenzeMediaQuelle_(parseFrage(data[r], fachbereich));
             break;
           }
         }
@@ -9382,4 +9527,133 @@ function autorisiereAlleScopes() {
   Logger.log('Mail OK: ' + email);
 
   Logger.log('Alle Scopes autorisiert!');
+}
+
+// ============================================================
+// === MEDIAQUELLE MIGRATION (Admin-Endpoint, S125 Phase 5) ===
+// ============================================================
+
+/**
+ * Admin-Endpoint: Migriert alle Fragen auf MediaQuelle-Felder (bild/pdf/quelle).
+ *
+ * Erwartet body:
+ *   - callerEmail: Admin-E-Mail (wird gegen Stammdaten-Admins geprüft)
+ *   - dryRun: true = nur Summary, kein Schreiben (Default: true für Sicherheit)
+ *   - sheetName: Optional — nur ein einzelner Tab ('VWL'|'BWL'|'Recht'|'Informatik'),
+ *     leer = alle. Für One-Sheet-First-Rollout.
+ *
+ * Liefert: { success, dryRun, tabs: [{name, rows, aktualisiert, fehler}],
+ *            summary: [erste 50 Aktualisierungen], totalSummary, errors }
+ *
+ * WICHTIG: User muss VOR dem echten Lauf (dryRun=false) Backup-Kopien der
+ * Fragenbank-Sheets erstellen (Google Drive -> "Kopie erstellen").
+ */
+function migrierFragenZuMediaQuelleEndpoint_(body) {
+  try {
+    var email = (body.callerEmail || body.email || '').toLowerCase();
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    var admins = ladeStammdatenKey_('admins') || ['yannick.durand@gymhofwil.ch'];
+    if (admins.indexOf(email) < 0) {
+      return jsonResponse({ error: 'Nur Admins dürfen die MediaQuelle-Migration ausführen' });
+    }
+
+    var dryRun = body.dryRun !== false; // Default true zur Sicherheit
+    var sheetFilter = body.sheetName || null;
+    var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+    if (sheetFilter) tabs = tabs.filter(function(t) { return t === sheetFilter; });
+
+    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var summary = [];
+    var tabStats = [];
+    var errors = [];
+
+    for (var ti = 0; ti < tabs.length; ti++) {
+      var tabName = tabs[ti];
+      var sheet = fragenbank.getSheetByName(tabName);
+      if (!sheet) {
+        tabStats.push({ name: tabName, rows: 0, aktualisiert: 0, fehler: 'Tab nicht gefunden' });
+        continue;
+      }
+
+      try {
+        var range = sheet.getDataRange();
+        var values = range.getValues();
+        if (values.length < 2) {
+          tabStats.push({ name: tabName, rows: 0, aktualisiert: 0 });
+          continue;
+        }
+        var headers = values[0];
+        var typDatenCol = headers.indexOf('typDaten');
+        var typCol = headers.indexOf('typ');
+        if (typDatenCol < 0 || typCol < 0) {
+          errors.push({ tab: tabName, error: 'typDaten- oder typ-Spalte fehlt' });
+          continue;
+        }
+
+        var aktualisiert = 0;
+        for (var r = 1; r < values.length; r++) {
+          var typ = values[r][typCol];
+          var BILD_TYPEN = ['hotspot', 'bildbeschriftung', 'dragdrop_bild'];
+          if (typ !== 'pdf' && BILD_TYPEN.indexOf(typ) < 0) continue;
+
+          var typDatenStr = values[r][typDatenCol];
+          var typDaten = {};
+          try {
+            typDaten = typDatenStr ? JSON.parse(typDatenStr) : {};
+          } catch (parseErr) {
+            errors.push({ tab: tabName, row: r + 1, error: 'typDaten-Parse-Fehler: ' + parseErr.message });
+            continue;
+          }
+
+          var vorher = JSON.stringify(typDaten);
+          var geaendert = false;
+
+          if (BILD_TYPEN.indexOf(typ) >= 0 && !typDaten.bild) {
+            var bildQ = mq_bildQuelleAus_(typDaten);
+            if (bildQ) {
+              typDaten.bild = bildQ;
+              geaendert = true;
+              summary.push({ tab: tabName, row: r + 1, typ: typ, feld: 'bild', quelleTyp: bildQ.typ });
+            }
+          }
+          if (typ === 'pdf' && !typDaten.pdf) {
+            var pdfQ = mq_pdfQuelleAus_(typDaten);
+            if (pdfQ) {
+              typDaten.pdf = pdfQ;
+              geaendert = true;
+              summary.push({ tab: tabName, row: r + 1, typ: typ, feld: 'pdf', quelleTyp: pdfQ.typ });
+            }
+          }
+
+          if (geaendert) {
+            aktualisiert++;
+            if (!dryRun) {
+              sheet.getRange(r + 1, typDatenCol + 1).setValue(JSON.stringify(typDaten));
+            }
+          }
+          vorher; // lint-mute
+        }
+
+        tabStats.push({ name: tabName, rows: values.length - 1, aktualisiert: aktualisiert });
+      } catch (e) {
+        errors.push({ tab: tabName, error: e.toString() });
+      }
+    }
+
+    if (!dryRun) cacheInvalidieren_();
+
+    return jsonResponse({
+      success: true,
+      dryRun: dryRun,
+      sheetFilter: sheetFilter,
+      tabs: tabStats,
+      totalSummary: summary.length,
+      summary: summary.slice(0, 50),
+      errors: errors
+    });
+  } catch (e) {
+    return jsonResponse({ error: 'Migration fehlgeschlagen: ' + e.message });
+  }
 }
