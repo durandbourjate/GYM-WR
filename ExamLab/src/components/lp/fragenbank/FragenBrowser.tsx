@@ -164,6 +164,20 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     })
   }
 
+  // Nachbar-Fragen (vorherige/nächste) für Editor-Navigation
+  const nachbarCallbacks = useMemo(() => {
+    if (!editFrage) return { onVor: undefined, onNach: undefined }
+    const idx = filter.sortierteFragen.findIndex(f => f.id === editFrage.id)
+    if (idx < 0) return { onVor: undefined, onNach: undefined }
+    const vor = idx > 0 ? filter.sortierteFragen[idx - 1] : null
+    const nach = idx < filter.sortierteFragen.length - 1 ? filter.sortierteFragen[idx + 1] : null
+    return {
+      onVor: vor ? () => handleEditFrage(vor as Frage | FrageSummary) : undefined,
+      onNach: nach ? () => handleEditFrage(nach as Frage | FrageSummary) : undefined,
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps — handleEditFrage ist stabil genug
+  }, [editFrage, filter.sortierteFragen])
+
   async function handleFrageGespeichert(neueFrage: Frage): Promise<void> {
     aktualisiereFrage(neueFrage)
     setZeigEditor(false)
@@ -385,6 +399,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
             onSpeichern={handleFrageGespeichert}
             onAbbrechen={() => { setZeigEditor(false); setEditFrage(null) }}
             performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
+            onVorherigeFrage={nachbarCallbacks.onVor}
+            onNaechsteFrage={nachbarCallbacks.onNach}
           />
         )}
 

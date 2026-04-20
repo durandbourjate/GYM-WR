@@ -102,10 +102,12 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
             Korrekte Antworten pro Lücke
           </label>
           {luecken.map((luecke, lueckenIndex) => {
+            // Defensive: korrekteAntworten kann bei alten/unvollständigen Pool-Fragen undefined sein
+            const korrekteAntw = luecke.korrekteAntworten ?? []
             const dropdownText = luecke.dropdownOptionen?.join(', ') ?? ''
             const korrekteImDropdown =
               luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0
-                ? luecke.korrekteAntworten.some((a) => luecke.dropdownOptionen!.includes(a))
+                ? korrekteAntw.some((a) => luecke.dropdownOptionen!.includes(a))
                 : true
             return (
               <div key={luecke.id} className="space-y-1.5">
@@ -115,7 +117,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
                   </span>
                   <input
                     type="text"
-                    value={luecke.korrekteAntworten.join(', ')}
+                    value={korrekteAntw.join(', ')}
                     onChange={(e) => {
                       const neu = luecken.map((l) =>
                         l.id === luecke.id

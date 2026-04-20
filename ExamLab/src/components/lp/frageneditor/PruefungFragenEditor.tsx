@@ -33,9 +33,13 @@ interface Props {
   onSpeichern: (frage: Frage) => void
   onAbbrechen: () => void
   performance?: FragenPerformance
+  /** Optional: zur vorherigen Frage der Liste springen. undefined = kein Button. */
+  onVorherigeFrage?: () => void
+  /** Optional: zur nächsten Frage der Liste springen. undefined = kein Button. */
+  onNaechsteFrage?: () => void
 }
 
-export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance }: Props) {
+export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
 
@@ -104,6 +108,8 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
         onSpeichern={(f) => onSpeichern(f as unknown as Frage)}
         onAbbrechen={onAbbrechen}
         performance={performance as any}
+        onVorherigeFrage={onVorherigeFrage}
+        onNaechsteFrage={onNaechsteFrage}
         PDFEditorComponent={PDFEditor}
         anhangEditorSlot={(props) => (
           <AnhangEditor

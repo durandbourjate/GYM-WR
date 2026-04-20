@@ -220,8 +220,14 @@ export default function SharedFragenEditor({
   const [textMitLuecken, setTextMitLuecken] = useState(
     frage?.typ === 'lueckentext' ? (frage as LueckentextFrage).textMitLuecken : ''
   )
-  const [luecken, setLuecken] = useState(
-    frage?.typ === 'lueckentext' ? (frage as LueckentextFrage).luecken ?? [] : []
+  const [luecken, setLuecken] = useState<LueckentextFrage['luecken']>(
+    frage?.typ === 'lueckentext'
+      // Defensive: einzelne Lücken können ohne korrekteAntworten aus Pool-/Alt-Daten kommen
+      ? ((frage as LueckentextFrage).luecken ?? []).map(l => ({
+          ...l,
+          korrekteAntworten: Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : [],
+        }))
+      : []
   )
 
   // Zuordnung-spezifisch
