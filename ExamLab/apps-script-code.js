@@ -10328,4 +10328,107 @@ function markiereFeedbackAlsIgnoriert_(feedbackId) {
   }
 }
 
+// ─── Task 4: Heuristik — gewichtete Diff-Score + Qualifikation ───────────────
+
+function berechneDiffScore_(aktion, ki, lp) {
+  if (!ki || !lp) return 1;
+  switch (aktion) {
+    case 'generiereMusterloesung':
+    case 'bewertungsrasterGenerieren':
+      return levenshteinNorm_(extrahiereText_(aktion, ki), extrahiereText_(aktion, lp));
+    case 'klassifiziereFrage':
+      var w = { fachbereich: 0.4, bloom: 0.25, thema: 0.25, unterthema: 0.1 };
+      var diff = 0;
+      for (var k in w) if ((ki[k] || '') !== (lp[k] || '')) diff += w[k];
+      return Math.min(1, diff);
+    case 'korrigiereFreitext':
+      var maxP = ki.maxPunkte || lp.maxPunkte || 1;
+      var punkteDiff = Math.abs((ki.punkte || 0) - (lp.punkte || 0)) / Math.max(maxP, 1);
+      var textDiff = levenshteinNorm_(ki.begruendung || '', lp.begruendung || '');
+      return 0.6 * Math.min(1, punkteDiff) + 0.4 * textDiff;
+    default:
+      return 0.5;
+  }
+}
+
+function istQualifiziert_(aktion, diff) {
+  return diff === 0 || diff >= 0.15;
+}
+
+function extrahiereText_(aktion, daten) {
+  if (aktion === 'generiereMusterloesung') return daten.loesung || daten.musterlosung || '';
+  if (aktion === 'bewertungsrasterGenerieren') {
+    if (Array.isArray(daten.kriterien)) {
+      return daten.kriterien.map(function(k) {
+        return (k.beschreibung || '') + (k.punkte || '') + (Array.isArray(k.niveaustufen) ? k.niveaustufen.map(function(n){return n.beschreibung;}).join('|') : '');
+      }).join('\n');
+    }
+    return JSON.stringify(daten);
+  }
+  return JSON.stringify(daten);
+}
+
+function levenshteinNorm_(a, b) {
+  a = String(a); b = String(b);
+  if (!a && !b) return 0;
+  if (!a || !b) return 1;
+  var m = a.length, n = b.length;
+  var dp = new Array(n + 1);
+  for (var j = 0; j <= n; j++) dp[j] = j;
+  for (var i = 1; i <= m; i++) {
+    var prev = dp[0]; dp[0] = i;
+    for (var j = 1; j <= n; j++) {
+      var cur = dp[j];
+      dp[j] = a[i-1] === b[j-1] ? prev : Math.min(prev, dp[j-1], dp[j]) + 1;
+      prev = cur;
+    }
+  }
+  return dp[n] / Math.max(m, n);
+}
+
+function testHeuristik_() {
+  // Levenshtein-Norm
+  console.assert(levenshteinNorm_('abc', 'abc') === 0, 'gleicher String = 0');
+  console.assert(levenshteinNorm_('', '') === 0, 'beide leer = 0');
+  console.assert(levenshteinNorm_('abc', 'abd') < 0.4, '1 Zeichen Diff bei 3 = ~0.33');
+  console.assert(levenshteinNorm_('', 'abc') === 1, 'eine leer = 1');
+  var lang = 'A'.repeat ? 'A'.repeat(100) : new Array(101).join('A');
+  var lang2 = 'B'.repeat ? 'B'.repeat(100) : new Array(101).join('B');
+  console.assert(levenshteinNorm_(lang, lang2) === 1, '100 Ersetzungen = 1');
+
+  // Musterlösung — Mikro-Edit darf NICHT qualifizieren
+  var diff1 = berechneDiffScore_('generiereMusterloesung',
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes.'},
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes'});
+  console.assert(!istQualifiziert_('generiereMusterloesung', diff1), 'Mikro-Edit nicht qualifiziert');
+
+  // Musterlösung — deutlicher Rewrite qualifiziert
+  var diff2 = berechneDiffScore_('generiereMusterloesung',
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes.'},
+    {loesung:'BIP = Bruttoinlandsprodukt. Misst Wert aller produzierten Güter und Dienstleistungen in einem Jahr.'});
+  console.assert(istQualifiziert_('generiereMusterloesung', diff2), 'Rewrite qualifiziert');
+
+  // klassifiziereFrage — fachbereich geändert (0.4) → qualifiziert
+  var diff3 = berechneDiffScore_('klassifiziereFrage',
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:''},
+    {fachbereich:'BWL', bloom:'K2', thema:'BIP', unterthema:''});
+  console.assert(Math.abs(diff3 - 0.4) < 0.001, 'fachbereich-Diff = 0.4');
+  console.assert(istQualifiziert_('klassifiziereFrage', diff3), 'fachbereich-Change qualifiziert');
+
+  // klassifiziereFrage — nur unterthema geändert (0.1) → NICHT qualifiziert
+  var diff4 = berechneDiffScore_('klassifiziereFrage',
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:''},
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:'nominal vs. real'});
+  console.assert(!istQualifiziert_('klassifiziereFrage', diff4), 'nur unterthema nicht qualifiziert');
+
+  // korrigiereFreitext — 2 Punkte von 10 diff → qualifiziert
+  var diff5 = berechneDiffScore_('korrigiereFreitext',
+    {punkte: 5, maxPunkte: 10, begruendung: 'Gut.'},
+    {punkte: 7, maxPunkte: 10, begruendung: 'Gut.'});
+  console.assert(diff5 > 0.1, 'Punktediff signifikant');
+  console.assert(istQualifiziert_('korrigiereFreitext', diff5), 'Punktediff qualifiziert');
+
+  console.log('Alle Heuristik-Tests bestanden.');
+}
+
 function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
