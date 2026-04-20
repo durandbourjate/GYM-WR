@@ -10220,3 +10220,107 @@ function speichereLPKalibrierungsEinstellungen_(lpEmail, konfig) {
   }
   sheet.appendRow([lpEmail, konfigStr, jetzt]);
 }
+
+// ============================================================
+// KI-Kalibrierung — Feedback-Lifecycle (2026-04-20)
+// ============================================================
+
+/** Neue offene Zeile ins KIFeedback-Sheet. Rückgabe: feedbackId. */
+function starteFeedbackEintrag_(args) {
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var feedbackId = 'fb_' + new Date().toISOString().slice(0,10) + '_' + Utilities.getUuid().slice(0,8);
+    var fachschaft = holeFachschaftAusEmail_(args.lpEmail) || '';
+    sheet.appendRow([
+      feedbackId,
+      new Date().toISOString(),
+      args.lpEmail,
+      fachschaft,
+      args.aktion,
+      args.fachbereich || '',
+      args.bloom || '',
+      JSON.stringify(args.inputJson || {}),
+      JSON.stringify(args.kiOutputJson || {}),
+      '',       // finaleVersionJson
+      '',       // diffScore
+      'offen',
+      false,    // qualifiziert
+      false,    // wichtig
+      true,     // aktiv
+      'privat', // teilen
+      ''        // embeddingHash
+    ]);
+    return feedbackId;
+  } catch (e) {
+    console.warn('[KIFeedback] starteFeedbackEintrag_ Lock-Fehler:', e);
+    return null;
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+function holeFachschaftAusEmail_(email) {
+  try {
+    var lpInfo = getLPInfo(email);  // existierender Helper
+    return lpInfo && lpInfo.fachschaft ? lpInfo.fachschaft : '';
+  } catch(e) { return ''; }
+}
+
+function schliesseFeedbackEintrag_(feedbackId, finaleVersionJson, options) {
+  options = options || {};
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var col = function(name) { return headers.indexOf(name); };
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][col('feedbackId')] === feedbackId) {
+        if (rows[i][col('status')] !== 'offen') {
+          console.log('[KIFeedback] Eintrag bereits geschlossen:', feedbackId);
+          return;
+        }
+        var aktion = rows[i][col('aktion')];
+        var kiOutput = safeParse_(rows[i][col('kiOutputJson')]);
+        var diff = berechneDiffScore_(aktion, kiOutput, finaleVersionJson);
+        var wichtig = options.wichtig || false;
+        var qualifiziert = istQualifiziert_(aktion, diff) || wichtig;
+        var rowIdx = i + 1;
+        sheet.getRange(rowIdx, col('finaleVersionJson') + 1).setValue(JSON.stringify(finaleVersionJson));
+        sheet.getRange(rowIdx, col('diffScore') + 1).setValue(diff);
+        sheet.getRange(rowIdx, col('status') + 1).setValue('geschlossen');
+        sheet.getRange(rowIdx, col('qualifiziert') + 1).setValue(qualifiziert);
+        sheet.getRange(rowIdx, col('wichtig') + 1).setValue(wichtig);
+        return;
+      }
+    }
+    console.warn('[KIFeedback] feedbackId nicht gefunden:', feedbackId);
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+function markiereFeedbackAlsIgnoriert_(feedbackId) {
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var statusIdx = headers.indexOf('status');
+    var idIdx = headers.indexOf('feedbackId');
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][idIdx] === feedbackId && rows[i][statusIdx] === 'offen') {
+        sheet.getRange(i + 1, statusIdx + 1).setValue('ignoriert');
+        return;
+      }
+    }
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
