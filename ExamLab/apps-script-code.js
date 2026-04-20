@@ -10435,3 +10435,108 @@ function testHeuristik_() {
 }
 
 function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
+
+// ─── Task 5: Few-Shot-Retrieval + Block-Builder ───────────────────────────────
+
+function holeFewShotBeispiele_(opts) {
+  if (opts.sortierung && opts.sortierung === 'similarity') {
+    throw new Error('NotImplemented: similarity-Retrieval in v3');
+  }
+  var einst = ladeLPKalibrierungsEinstellungen_(opts.lpEmail);
+  if (!einst.global) return [];
+  if (!einst.aktionenAktiv[opts.aktion]) return [];
+
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  var headers = rows[0];
+  var col = function(n) { return headers.indexOf(n); };
+
+  var passend = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (r[col('lpEmail')] !== opts.lpEmail) continue;
+    if (r[col('aktion')] !== opts.aktion) continue;
+    if (r[col('status')] !== 'geschlossen') continue;
+    if (r[col('qualifiziert')] !== true) continue;
+    if (r[col('aktiv')] !== true) continue;
+    if (opts.fachbereich && r[col('fachbereich')] !== opts.fachbereich) continue;
+    passend.push({
+      zeitstempel: r[col('zeitstempel')],
+      bloom: r[col('bloom')],
+      wichtig: r[col('wichtig')],
+      inputJson: safeParse_(r[col('inputJson')]),
+      kiOutputJson: safeParse_(r[col('kiOutputJson')]),
+      finaleVersionJson: safeParse_(r[col('finaleVersionJson')])
+    });
+  }
+
+  passend.sort(function(a, b) {
+    if (a.wichtig !== b.wichtig) return a.wichtig ? -1 : 1;
+    return String(b.zeitstempel).localeCompare(String(a.zeitstempel));
+  });
+
+  if (passend.length < einst.minBeispiele) return [];
+
+  return passend.slice(0, einst.beispielAnzahl);
+}
+
+function baueFewShotBlock_(aktion, beispiele, opts) {
+  if (!beispiele || beispiele.length === 0) return '';
+  var token_cap = 1500;
+  var lines;
+  switch (aktion) {
+    case 'generiereMusterloesung':
+      lines = beispiele.map(function(b, i) {
+        return 'Beispiel ' + (i+1) + ' (' + (b.inputJson.fachbereich || '?') + ', ' + (b.bloom || '?') + '):\n' +
+               'Frage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Musterlösung: "' + truncate_(b.finaleVersionJson.loesung || b.finaleVersionJson.musterlosung || '', 400) + '"';
+      });
+      return '--- ' + beispiele.length + ' Beispiele aus deinen bisherigen Musterlösungen ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'klassifiziereFrage':
+      lines = beispiele.map(function(b, i) {
+        var f = b.finaleVersionJson;
+        return 'Beispiel ' + (i+1) + ':\nFrage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Deine Klassifikation: Fach=' + (f.fachbereich||'?') + ', Thema=' + (f.thema||'?') +
+               ', Bloom=' + (f.bloom||'?') + (f.unterthema ? ', Unterthema=' + f.unterthema : '');
+      });
+      return '--- Beispiele deiner bisherigen Klassifikationen ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'bewertungsrasterGenerieren':
+      lines = beispiele.map(function(b, i) {
+        return 'Beispiel ' + (i+1) + ':\nFrage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Dein Bewertungsraster: ' + truncate_(JSON.stringify(b.finaleVersionJson.kriterien || b.finaleVersionJson), 500);
+      });
+      return '--- Beispiele deiner Bewertungsraster ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'korrigiereFreitext':
+      // PRIVACY: Keine SuS-Antworten! Nur Bewertungs-Logik.
+      lines = beispiele.map(function(b, i) {
+        var f = b.finaleVersionJson, k = b.kiOutputJson;
+        var raster = b.inputJson.bewertungsraster;
+        return 'Beispiel ' + (i+1) + ' (Bewertungsraster-basiert):\n' +
+               'Raster: ' + truncate_(JSON.stringify(raster || []), 300) + '\n' +
+               'KI hatte: ' + (k.punkte||'?') + 'P — "' + truncate_(k.begruendung||'', 150) + '"\n' +
+               'Du gabst: ' + (f.punkte||'?') + 'P — "' + truncate_(f.begruendung||'', 150) + '"';
+      });
+      return '--- Beispiele deiner Korrektur-Entscheidungen (ohne SuS-Antworten) ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    default:
+      return '';
+  }
+}
+
+function truncate_(s, max) { s = String(s||''); return s.length > max ? s.slice(0, max) + '...' : s; }
+function capByTokens_(s, max) {
+  var maxChars = max * 4;
+  return s.length > maxChars ? s.slice(0, maxChars) + '\n[… ältere Beispiele abgeschnitten …]' : s;
+}
