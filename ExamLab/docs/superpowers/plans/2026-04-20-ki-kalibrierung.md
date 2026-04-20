@@ -727,44 +727,6 @@ Cases bleiben 1:1 unverändert. Response-Schema bleibt { ergebnis },
 nur optional +feedbackId — rückwärtskompatibel."
 ```
 
-- [ ] **Step 6.2: Im Apps-Script-Editor smoke-testen**
-
-```js
-function smokeTest_kiEndpoint() {
-  var res = kiAssistentEndpoint({
-    email: 'yannick.durand@gymhofwil.ch',
-    aktion: 'generiereMusterloesung',  // instrumentiert, aber global=false → kein Feedback
-    daten: { fragetext: 'Was ist BIP?', fachbereich: 'VWL', bloom: 'K2' }
-  });
-  console.log(JSON.parse(res.getContent()));
-}
-```
-
-Erwartet: `success: true, daten: {...}, feedbackId: null` (global default=false).
-
-- [ ] **Step 6.3: Master-Toggle manuell AN schalten → Smoke re-run**
-
-Im Editor:
-```js
-speichereLPKalibrierungsEinstellungen_('yannick.durand@gymhofwil.ch',
-  Object.assign({}, KALIBRIERUNG_DEFAULTS, { global: true }));
-```
-
-Dann Smoke wieder. Erwartet: `feedbackId: 'fb_...'`. KIFeedback-Sheet enthält neuen Eintrag mit Status `offen`.
-
-- [ ] **Step 6.4: Commit**
-
-```bash
-git add ExamLab/apps-script-code.js
-git commit -m "kiAssistentEndpoint: Few-Shot-Injection + Feedback-Start
-
-Nur 4 instrumentierte Aktionen. Master-Toggle (global) steuert
-ob Feedback-Eintrag erzeugt wird. Bei Fehlern Fail-open.
-
-Response-Shape: {daten, feedbackId}. feedbackId=null wenn Kalibrierung
-AUS oder Aktion nicht instrumentiert."
-```
-
 ---
 
 ### Task 7 — speichereFrage um offeneKIFeedbacks erweitern
