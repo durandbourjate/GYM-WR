@@ -983,6 +983,8 @@ function doPost(e) {
       return lernplattformLoescheFrage(body);
     case 'lernplattformPruefeAntwort':
       return lernplattformPruefeAntwort(body);
+    case 'lernplattformLadeLoesungen':
+      return lernplattformLadeLoesungen(body);
 
     // Fortschritt
     case 'lernplattformSpeichereFortschritt':
@@ -7958,6 +7960,70 @@ function lernplattformPruefeAntwort(body) {
     korrekt: korrektResult === true,
     musterlosung: frage.musterlosung || '',
   });
+}
+
+/**
+ * Liefert eine flache Map {frageId → LoesungsSlice} für die gegebenen
+ * Fragen-IDs. Enthält nur Lösungs-Felder (siehe extrahiereLoesungsSlice_).
+ *
+ * Wird vom Frontend beim Session-Start im selbstständigen Üben-Modus
+ * aufgerufen, damit clientseitige Korrektur instant Feedback geben kann.
+ *
+ * Auth: Token-Pflicht, Mitgliedschaft-Check (wie lernplattformPruefeAntwort).
+ * Rate-Limit: 5 Calls/Minute pro SuS (1 Call pro Session-Start reicht).
+ * Aufgabengruppen: Teilaufgaben als eigene Map-Keys (flach serialisiert).
+ */
+function lernplattformLadeLoesungen(body) {
+  var gruppeId = body.gruppeId;
+  var fragenIds = body.fragenIds;
+  var claimEmail = (body.email || '').toString().toLowerCase();
+  var token = body.token || body.sessionToken;
+
+  if (!gruppeId || !Array.isArray(fragenIds) || fragenIds.length === 0 || !claimEmail || !token) {
+    return jsonResponse({ success: false, error: 'Fehlende oder ungültige Parameter' });
+  }
+
+  if (!lernplattformValidiereToken_(token, claimEmail)) {
+    return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
+  }
+  var email = claimEmail;
+
+  // Rate-Limit: 5 Calls/Minute pro SuS
+  var rl = lernplattformRateLimitCheck_('lade-loesungen', email, 5, 60);
+  if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
+
+  // Gruppe + Mitgliedschaft prüfen
+  var mitgliedCheck = istGruppenMitglied_(body, gruppeId);
+  if (!mitgliedCheck) {
+    return jsonResponse({ success: false, error: 'Kein Zugriff auf diese Gruppe' });
+  }
+  var gruppe = mitgliedCheck.gruppe;
+
+  // Audit-Log — wer hat wann wieviele Lösungen abgefragt
+  try {
+    Logger.log('[lernplattformLadeLoesungen] gruppe=%s email=%s n=%s',
+      gruppeId, email, String(fragenIds.length));
+  } catch (e) { /* Logger-Unavailable nicht kritisch */ }
+
+  var loesungen = {};
+  for (var i = 0; i < fragenIds.length; i++) {
+    var frageId = fragenIds[i];
+    var frage = ladeFrageUnbereinigtById_(frageId, gruppe, body.fachbereich);
+    if (!frage) continue; // Lücke → Client fällt pro-Frage zurück
+
+    loesungen[frageId] = extrahiereLoesungsSlice_(frage);
+    // Aufgabengruppe: Teilaufgaben als eigene Map-Keys ergänzen
+    if (frage.typ === 'aufgabengruppe' && Array.isArray(frage.teilaufgaben)) {
+      for (var t = 0; t < frage.teilaufgaben.length; t++) {
+        var ta = frage.teilaufgaben[t];
+        if (ta && ta.id) {
+          loesungen[ta.id] = extrahiereLoesungsSlice_(ta);
+        }
+      }
+    }
+  }
+
+  return jsonResponse({ success: true, loesungen: loesungen });
 }
 
 /**
