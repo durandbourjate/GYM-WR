@@ -117,3 +117,36 @@ Jeder Apps-Script-Web-App-Call dauert **mindestens ~1.5-2s** (HTTPS-Handshake + 
 **Echte instant-UX nur durch:** Backend-Migration auf Edge-Runtime (Cloud Run / Vercel / Cloudflare Workers). Im Apps-Script-System ist <1s pro Call faktisch nicht erreichbar.
 
 **Bei neuen Latenz-sensitiven Features:** entweder Server-Roundtrip akzeptieren ODER Architektur-Refactor mit Pre-Loading + Client-Verifikation (Hash-Approach hat Sicherheits-Probleme bei kleinen Antworträumen wie R/F).
+
+## useState-Init + prop-Wechsel (S129)
+
+**Problem:** Wenn ein Editor/eine Komponente alle Felder via `useState(prop?.xxx)` initialisiert und der Parent die gleiche Komponenten-Instanz mit neuem prop wiederverwendet (z.B. Frageneditor-Navigation prev/next), bleibt der State stuck — useState-Initialisierer laufen nur beim Mount. Reine Prop-Lese-Pfade (Pool-Info-Slot, Titel-Anzeige) updaten als Einzige, was den Bug tarnt.
+
+**Konkret aufgetreten (S129):** `SharedFragenEditor` + `PruefungFragenEditor` bei prev/next in `FragenBrowser` — Pool-Info ("Importiert aus Pool: X") wechselte, aber Fragetext/Luecken/Metadaten nicht.
+
+**Regel:** Wenn eine Komponente bei prop-Wechsel nicht synct, im Parent `key={prop.id ?? 'neu'}` setzen — React remountet, useState initialisiert sauber neu. Alternative (komplexer): useEffect-Sync in der Komponente selber.
+
+```tsx
+// Parent (FragenBrowser):
+<FragenEditor
+  key={editFrage?.id ?? 'neu'}   // ← löst das Problem
+  frage={editFrage}
+  onVorherigeFrage={...}
+  onNaechsteFrage={...}
+/>
+```
+
+## Tote Code-Pfade bei UI-Feature-Audits (S129)
+
+**Problem:** Dateien können funktional aussehen, aber nirgends importiert sein (Reste aus Refactors). Fixes in toten Dateien erscheinen erfolgreich (tsc+Tests grün), wirken aber im Browser nicht.
+
+**Konkret aufgetreten (S129):** `AdminFragenbank.tsx` — vollständige Fragensammlung-Komponente, aber kein `import.*AdminFragenbank`-Match ausserhalb der Datei selbst. Aktive Fragensammlung läuft über `LPHeader → FragenBrowser → FragenEditor`. Erster Fix-Versuch ging in die tote Datei.
+
+**Regel:** Vor Fix an einer UI-Komponente IMMER den aktiven Import-Graph verifizieren:
+
+```bash
+# Nach "wer importiert das?"-Grep, NICHT nur nach Namen suchen
+grep -rn "import.*ComponentName" src/
+```
+
+Wenn die einzigen Treffer die Datei selbst + Tests sind: Component ist tot, richtigen Pfad suchen.
