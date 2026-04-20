@@ -7,6 +7,7 @@ import type { Antwort } from '../types/antworten'
 import { korrigiereBuchungssatz, korrigiereTKonto, korrigiereKontenbestimmung, korrigiereBilanzER } from './fibuAutoKorrektur'
 import { normalisiereLatex } from './latexRenderer'
 import { labelsInZone, zoneKorrektBelegt } from './dragdropBildUtils'
+import { istPunktInPolygon } from './zonen/polygon'
 export type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
 import type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
 
@@ -310,17 +311,9 @@ function korrigiereHotspot(
   for (const klick of antwort.klicks) {
     for (const bereich of bereiche) {
       if (getroffeneBereiche.has(bereich.id)) continue
-      const k = bereich.koordinaten
-      let treffer = false
-      if (bereich.form === 'rechteck') {
-        treffer = klick.x >= k.x && klick.x <= k.x + (k.breite ?? 0) &&
-                  klick.y >= k.y && klick.y <= k.y + (k.hoehe ?? 0)
-      } else if (bereich.form === 'kreis') {
-        const dx = klick.x - k.x
-        const dy = klick.y - k.y
-        treffer = Math.sqrt(dx * dx + dy * dy) <= (k.radius ?? 0)
+      if (istPunktInPolygon(klick, bereich.punkte ?? [])) {
+        getroffeneBereiche.add(bereich.id)
       }
-      if (treffer) getroffeneBereiche.add(bereich.id)
     }
   }
 
@@ -329,8 +322,8 @@ function korrigiereHotspot(
     details.push({
       bezeichnung: bereich.label,
       korrekt,
-      erreicht: korrekt ? bereich.punkte : 0,
-      max: bereich.punkte,
+      erreicht: korrekt ? bereich.punktzahl : 0,
+      max: bereich.punktzahl,
       kommentar: korrekt ? undefined : 'Nicht getroffen',
     })
   }
@@ -338,7 +331,7 @@ function korrigiereHotspot(
   const erreicht = details.reduce((s, d) => s + d.erreicht, 0)
   return {
     erreichtePunkte: Math.round(erreicht * 100) / 100,
-    maxPunkte: frage.bereiche.reduce((s, b) => s + b.punkte, 0),
+    maxPunkte: frage.bereiche.reduce((s, b) => s + b.punktzahl, 0),
     details,
   }
 }

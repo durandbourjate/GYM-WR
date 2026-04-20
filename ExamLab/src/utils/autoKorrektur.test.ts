@@ -219,8 +219,8 @@ describe('autoKorrigiere', () => {
       bildUrl: 'https://example.com/bild.png',
       bereiche: [{
         id: 'b1', form: 'rechteck',
-        koordinaten: { x: 10, y: 10, breite: 20, hoehe: 20 },
-        label: 'Bereich 1', punkte: 2,
+        punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}],
+        label: 'Bereich 1', punktzahl: 2,
       }],
       mehrfachauswahl: false,
     }
@@ -240,8 +240,8 @@ describe('autoKorrigiere', () => {
       bildUrl: 'https://example.com/bild.png',
       bereiche: [{
         id: 'b1', form: 'rechteck',
-        koordinaten: { x: 10, y: 10, breite: 20, hoehe: 20 },
-        label: 'Bereich 1', punkte: 2,
+        punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}],
+        label: 'Bereich 1', punktzahl: 2,
       }],
       mehrfachauswahl: false,
     }
@@ -251,7 +251,7 @@ describe('autoKorrigiere', () => {
     expect(result!.erreichtePunkte).toBe(0)
   })
 
-  it('korrigiert Hotspot Treffer in Kreis', () => {
+  it('korrigiert Hotspot Treffer in Polygon (Kreis-Approximation)', () => {
     const frage: HotspotFrage = {
       id: 'hs-3', typ: 'hotspot', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
@@ -260,16 +260,20 @@ describe('autoKorrigiere', () => {
       fragetext: 'Klicke auf den Kreis',
       bildUrl: 'https://example.com/bild.png',
       bereiche: [{
-        id: 'b1', form: 'kreis',
-        koordinaten: { x: 50, y: 50, radius: 10 },
-        label: 'Zentrum', punkte: 3,
+        id: 'b1', form: 'polygon',
+        // 12-Punkt-Approximation eines Kreises bei (50,50) mit Radius 10
+        punkte: Array.from({ length: 12 }, (_, i) => ({
+          x: 50 + 10 * Math.cos((2 * Math.PI * i) / 12),
+          y: 50 + 10 * Math.sin((2 * Math.PI * i) / 12),
+        })),
+        label: 'Zentrum', punktzahl: 3,
       }],
       mehrfachauswahl: false,
     }
     const antwort: Antwort = { typ: 'hotspot', klicks: [{ x: 55, y: 50 }] }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
-    expect(result!.erreichtePunkte).toBe(3) // Innerhalb des Radius
+    expect(result!.erreichtePunkte).toBe(3) // Innerhalb des Polygons
   })
 
   // === BILDBESCHRIFTUNG ===
@@ -352,9 +356,9 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne die Labels zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', position: { x: 10, y: 10, breite: 20, hoehe: 20 }, korrektesLabel: 'Angebot' },
-        { id: 'z2', position: { x: 50, y: 50, breite: 20, hoehe: 20 }, korrektesLabel: 'Nachfrage' },
-        { id: 'z3', position: { x: 80, y: 20, breite: 10, hoehe: 10 }, korrektesLabel: 'Preis' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'Angebot' },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Nachfrage' },
+        { id: 'z3', form: 'rechteck', punkte: [{x:80,y:20},{x:90,y:20},{x:90,y:30},{x:80,y:30}], korrektesLabel: 'Preis' },
       ],
       labels: ['Angebot', 'Nachfrage', 'Preis', 'Menge'],
     }
@@ -377,8 +381,8 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', position: { x: 10, y: 10, breite: 20, hoehe: 20 }, korrektesLabel: 'BIP' },
-        { id: 'z2', position: { x: 50, y: 50, breite: 20, hoehe: 20 }, korrektesLabel: 'Inflation' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Inflation' },
       ],
       labels: ['BIP', 'Inflation', 'Deflation'],
     }
@@ -400,7 +404,7 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', position: { x: 10, y: 10, breite: 20, hoehe: 20 }, korrektesLabel: 'BIP' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
       ],
       labels: ['BIP'],
     }
@@ -422,8 +426,8 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', position: { x: 10, y: 10, breite: 20, hoehe: 20 }, korrektesLabel: 'BIP' },
-        { id: 'z2', position: { x: 50, y: 50, breite: 20, hoehe: 20 }, korrektesLabel: 'Inflation' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Inflation' },
       ],
       labels: ['BIP', 'Inflation'],
     }

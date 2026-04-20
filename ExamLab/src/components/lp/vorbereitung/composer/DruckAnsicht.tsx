@@ -738,19 +738,21 @@ function DragDropBildDruck({ frage }: { frage: DragDropBildFrage }) {
       {bildQuelle && (
         <div className="relative inline-block">
           <img src={mediaQuelleZuImgSrc(bildQuelle, toAssetUrl)} alt="Drag & Drop" className="max-w-full rounded border border-slate-300 print:border-slate-400" />
-          {/* Nummerierte Zielzonen auf dem Bild */}
-          {zielzonen.map((z, i) => (
-            <div
-              key={z.id}
-              className="absolute border-2 border-dashed border-slate-500 print:border-black rounded flex items-center justify-center"
-              style={{
-                left: `${z.position.x}%`, top: `${z.position.y}%`,
-                width: `${z.position.breite}%`, height: `${z.position.hoehe}%`,
-              }}
-            >
-              <span className="text-xs font-bold text-slate-500 print:text-black">{String.fromCharCode(65 + i)}</span>
-            </div>
-          ))}
+          {/* Nummerierte Zielzonen auf dem Bild (Bounding-Box aus punkte[]) */}
+          {zielzonen.map((z, i) => {
+            const xs = z.punkte.map(p => p.x), ys = z.punkte.map(p => p.y)
+            const x = Math.min(...xs), y = Math.min(...ys)
+            const b = Math.max(...xs) - x, h = Math.max(...ys) - y
+            return (
+              <div
+                key={z.id}
+                className="absolute border-2 border-dashed border-slate-500 print:border-black rounded flex items-center justify-center"
+                style={{ left: `${x}%`, top: `${y}%`, width: `${b}%`, height: `${h}%` }}
+              >
+                <span className="text-xs font-bold text-slate-500 print:text-black">{String.fromCharCode(65 + i)}</span>
+              </div>
+            )
+          })}
         </div>
       )}
       {/* Begriffe zum Zuordnen */}

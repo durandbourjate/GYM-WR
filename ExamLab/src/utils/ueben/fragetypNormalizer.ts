@@ -219,12 +219,13 @@ function normalisiereHotspot(f: HotspotFrage): HotspotFrage {
   return {
     ...f,
     bereiche: Array.isArray(f.bereiche) ? f.bereiche.map(b => ({
-      ...b,
-      koordinaten: {
-        x: normalisiereKoordinate(b.koordinaten?.x),
-        y: normalisiereKoordinate(b.koordinaten?.y),
-        radius: typeof b.koordinaten?.radius === 'number' ? b.koordinaten.radius : 5,
-      },
+      id: b.id,
+      form: b.form === 'polygon' ? 'polygon' : 'rechteck',
+      punkte: Array.isArray((b as any).punkte) && (b as any).punkte.every((p: any) => typeof p?.x === 'number' && typeof p?.y === 'number')
+        ? (b as any).punkte.map((p: any) => ({ x: normalisiereKoordinate(p.x), y: normalisiereKoordinate(p.y) }))
+        : [],
+      label: b.label ?? '',
+      punktzahl: typeof (b as any).punktzahl === 'number' ? (b as any).punktzahl : 1,
     })) : [],
   }
 }
@@ -248,12 +249,10 @@ function normalisiereDragDrop(f: DragDropBildFrage): DragDropBildFrage {
     ...f,
     zielzonen: Array.isArray(f.zielzonen) ? f.zielzonen.map(z => ({
       id: z.id || `zone-${Math.random().toString(36).slice(2, 8)}`,
-      position: {
-        x: normalisiereKoordinate(z.position?.x),
-        y: normalisiereKoordinate(z.position?.y),
-        breite: typeof z.position?.breite === 'number' ? z.position.breite : 20,
-        hoehe: typeof z.position?.hoehe === 'number' ? z.position.hoehe : 10,
-      },
+      form: z.form === 'polygon' ? 'polygon' : 'rechteck',
+      punkte: Array.isArray((z as any).punkte) && (z as any).punkte.every((p: any) => typeof p?.x === 'number' && typeof p?.y === 'number')
+        ? (z as any).punkte.map((p: any) => ({ x: normalisiereKoordinate(p.x), y: normalisiereKoordinate(p.y) }))
+        : [],
       korrektesLabel: z.korrektesLabel || '',
     })) : [],
     labels: Array.isArray(f.labels) ? f.labels.map(l => typeof l === 'string' ? l : String(l)) : [],

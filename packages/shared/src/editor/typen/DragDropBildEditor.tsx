@@ -12,7 +12,15 @@ interface Props {
   setLabels: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-type DragState = { zoneId: string; offsetX: number; offsetY: number } | null
+type DragState = { zoneId: string; startX: number; startY: number } | null
+
+/** Bounding-Box aus Polygon-Punkten (für Render + Drag-Anzeige). */
+function bbox(punkte: { x: number; y: number }[]): { x: number; y: number; b: number; h: number } {
+  if (!Array.isArray(punkte) || punkte.length === 0) return { x: 0, y: 0, b: 0, h: 0 }
+  const xs = punkte.map(p => p.x), ys = punkte.map(p => p.y)
+  const minX = Math.min(...xs), minY = Math.min(...ys)
+  return { x: minX, y: minY, b: Math.max(...xs) - minX, h: Math.max(...ys) - minY }
+}
 
 export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, setZielzonen, labels, setLabels }: Props) {
   const [ersteEcke, setErsteEcke] = useState<{ x: number; y: number } | null>(null)
@@ -45,9 +53,16 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
       const minY = Math.min(ersteEcke.y, p.y)
       const breite = Math.abs(p.x - ersteEcke.x)
       const hoehe = Math.abs(p.y - ersteEcke.y)
+      // Als 4-Punkt-Polygon speichern (TL, TR, BR, BL)
       const neueZone: DragDropBildZielzone = {
         id: `z${Date.now()}`,
-        position: { x: minX, y: minY, breite, hoehe },
+        form: 'rechteck',
+        punkte: [
+          { x: minX, y: minY },
+          { x: minX + breite, y: minY },
+          { x: minX + breite, y: minY + hoehe },
+          { x: minX, y: minY + hoehe },
+        ],
         korrektesLabel: `Label ${zielzonen.length + 1}`,
       }
       setZielzonen(prev => [...prev, neueZone])
@@ -70,29 +85,29 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
     setLabels(text.split(',').map(l => l.trim()).filter(Boolean))
   }, [setLabels])
 
-  function handlePositionAendern(id: string, feld: 'x' | 'y' | 'breite' | 'hoehe', wert: number) {
-    setZielzonen(prev => prev.map(z => (z.id === id ? { ...z, position: { ...z.position, [feld]: wert } } : z)))
-  }
-
   function handleZonePointerDown(zone: DragDropBildZielzone, e: React.PointerEvent<HTMLDivElement>) {
     e.stopPropagation()
     const p = bildKoordinaten(e)
     if (!p) return
-    setDrag({ zoneId: zone.id, offsetX: p.x - zone.position.x, offsetY: p.y - zone.position.y })
+    setDrag({ zoneId: zone.id, startX: p.x, startY: p.y })
     ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     setEditZone(zone.id)
   }
 
   useEffect(() => {
     if (!drag) return
+    let lastX = drag.startX, lastY = drag.startY
     function onMove(e: PointerEvent) {
       const p = bildKoordinaten(e)
       if (!p) return
+      const dx = p.x - lastX, dy = p.y - lastY
+      lastX = p.x; lastY = p.y
       setZielzonen(prev => prev.map(z => {
         if (z.id !== drag!.zoneId) return z
-        const newX = Math.max(0, Math.min(100 - z.position.breite, p.x - drag!.offsetX))
-        const newY = Math.max(0, Math.min(100 - z.position.hoehe, p.y - drag!.offsetY))
-        return { ...z, position: { ...z.position, x: newX, y: newY } }
+        return { ...z, punkte: z.punkte.map(pt => ({
+          x: Math.max(0, Math.min(100, pt.x + dx)),
+          y: Math.max(0, Math.min(100, pt.y + dy)),
+        })) }
       }))
     }
     function onUp() { setDrag(null) }
@@ -138,27 +153,43 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
               />
             )}
 
-            {zielzonen.map((zone, i) => (
-              <div
-                key={zone.id}
-                data-zone={zone.id}
-                onPointerDown={(e) => handleZonePointerDown(zone, e)}
-                className={`absolute bg-violet-500/20 border-2 flex items-center justify-center cursor-move ${
-                  editZone === zone.id ? 'border-violet-600 dark:border-violet-300' : 'border-violet-500 dark:border-violet-400'
-                }`}
-                style={{
-                  left: `${zone.position.x}%`,
-                  top: `${zone.position.y}%`,
-                  width: `${zone.position.breite}%`,
-                  height: `${zone.position.hoehe}%`,
-                  touchAction: 'none',
-                }}
-              >
-                <span className="text-xs font-bold text-violet-800 dark:text-violet-200 bg-white/80 dark:bg-slate-800/80 px-1 rounded pointer-events-none">
-                  {i + 1}
-                </span>
-              </div>
-            ))}
+            {/* SVG-Polygone */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+              {zielzonen.map((zone) => (
+                <polygon
+                  key={zone.id}
+                  points={zone.punkte.map(p => `${p.x},${p.y}`).join(' ')}
+                  fill="rgba(139,92,246,0.2)"
+                  stroke={editZone === zone.id ? '#7c3aed' : '#8b5cf6'}
+                  strokeWidth="0.4"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+            </svg>
+
+            {/* Bounding-Box-Div pro Zone für Drag + Nummer */}
+            {zielzonen.map((zone, i) => {
+              const bb = bbox(zone.punkte)
+              return (
+                <div
+                  key={zone.id}
+                  data-zone={zone.id}
+                  onPointerDown={(e) => handleZonePointerDown(zone, e)}
+                  className="absolute flex items-center justify-center cursor-move"
+                  style={{
+                    left: `${bb.x}%`,
+                    top: `${bb.y}%`,
+                    width: `${bb.b}%`,
+                    height: `${bb.h}%`,
+                    touchAction: 'none',
+                  }}
+                >
+                  <span className="text-xs font-bold text-violet-800 dark:text-violet-200 bg-white/80 dark:bg-slate-800/80 px-1 rounded pointer-events-none">
+                    {i + 1}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -171,7 +202,7 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
           {zielzonen.map((zone, i) => (
             <div
               key={zone.id}
-              className={`p-2 rounded-lg border space-y-2 ${
+              className={`p-2 rounded-lg border ${
                 editZone === zone.id
                   ? 'border-slate-400 dark:border-slate-500 bg-slate-100 dark:bg-slate-800'
                   : 'border-slate-200 dark:border-slate-600'
@@ -196,17 +227,6 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
                 >
                   x
                 </button>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <span>x:</span>
-                <input type="number" value={Math.round(zone.position.x)} onChange={(e) => handlePositionAendern(zone.id, 'x', Number(e.target.value))} min={0} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                <span>y:</span>
-                <input type="number" value={Math.round(zone.position.y)} onChange={(e) => handlePositionAendern(zone.id, 'y', Number(e.target.value))} min={0} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                <span>b:</span>
-                <input type="number" value={Math.round(zone.position.breite)} onChange={(e) => handlePositionAendern(zone.id, 'breite', Number(e.target.value))} min={1} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                <span>h:</span>
-                <input type="number" value={Math.round(zone.position.hoehe)} onChange={(e) => handlePositionAendern(zone.id, 'hoehe', Number(e.target.value))} min={1} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                <span className="ml-1 italic">%</span>
               </div>
             </div>
           ))}

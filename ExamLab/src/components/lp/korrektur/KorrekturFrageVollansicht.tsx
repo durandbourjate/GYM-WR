@@ -430,16 +430,35 @@ function HotspotAnzeige({ frage, antwort }: { frage: HotspotFrage; antwort: Extr
       {bildSrc && (
         <div className="relative inline-block">
           <img src={bildSrc} alt="Hotspot" className="max-w-full rounded" />
-          {/* Korrekte Bereiche (gestrichelt) */}
-          {(frage.bereiche ?? []).map((b) => (
-            <div key={b.id} className="absolute border-2 border-dashed border-green-500/60" style={
-              b.form === 'kreis'
-                ? { left: `${b.koordinaten.x - (b.koordinaten.radius ?? 5)}%`, top: `${b.koordinaten.y - (b.koordinaten.radius ?? 5)}%`, width: `${(b.koordinaten.radius ?? 5) * 2}%`, height: `${(b.koordinaten.radius ?? 5) * 2}%`, borderRadius: '50%' }
-                : { left: `${b.koordinaten.x}%`, top: `${b.koordinaten.y}%`, width: `${b.koordinaten.breite ?? 10}%`, height: `${b.koordinaten.hoehe ?? 10}%` }
-            }>
-              <span className="absolute -top-5 left-0 text-[10px] text-green-600 dark:text-green-400 bg-white/80 dark:bg-slate-800/80 px-1 rounded">{b.label}</span>
-            </div>
-          ))}
+          {/* Korrekte Bereiche als SVG-Polygone (grün gestrichelt) */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {(frage.bereiche ?? []).map((b) => (
+              <polygon
+                key={b.id}
+                points={b.punkte.map(p => `${p.x},${p.y}`).join(' ')}
+                fill="rgba(34,197,94,0.15)"
+                stroke="#22c55e"
+                strokeWidth="0.4"
+                strokeDasharray="1,0.7"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </svg>
+          {/* Bereich-Labels (als HTML, damit Text nicht skaliert wird) */}
+          {(frage.bereiche ?? []).map((b) => {
+            const xs = b.punkte.map(p => p.x), ys = b.punkte.map(p => p.y)
+            const cx = xs.reduce((s, v) => s + v, 0) / xs.length
+            const cy = ys.reduce((s, v) => s + v, 0) / ys.length
+            return (
+              <span
+                key={b.id + '-label'}
+                className="absolute text-[10px] text-green-600 dark:text-green-400 bg-white/80 dark:bg-slate-800/80 px-1 rounded pointer-events-none"
+                style={{ left: `${cx}%`, top: `${cy}%`, transform: 'translate(-50%, -50%)' }}
+              >
+                {b.label}
+              </span>
+            )
+          })}
           {/* SuS-Klicks (rot) */}
           {antwort.klicks?.map((klick, i) => (
             <div key={i} className="absolute w-4 h-4 -ml-2 -mt-2 bg-red-500 rounded-full border-2 border-white opacity-80" style={{ left: `${klick.x}%`, top: `${klick.y}%` }} />
@@ -514,12 +533,16 @@ function DragDropBildAnzeige({ frage, antwort }: { frage: DragDropBildFrage; ant
             const labels = labelsInZone(antwort?.zuordnungen, zone.id)
             const hatAntwort = labels.length > 0
             const korrekt = zoneKorrektBelegt(antwort?.zuordnungen, zone.id, zone.korrektesLabel)
+            // Bounding-Box aus Polygon-Punkten fürs HTML-Div-Layout
+            const xs = zone.punkte.map(p => p.x), ys = zone.punkte.map(p => p.y)
+            const minX = Math.min(...xs), minY = Math.min(...ys)
+            const breite = Math.max(...xs) - minX, hoehe = Math.max(...ys) - minY
             return (
               <div key={zone.id} className={`absolute border-2 flex items-center justify-center ${
                 !hatAntwort ? 'border-dashed border-slate-400/60'
                 : korrekt ? 'border-green-500 bg-green-500/15'
                 : 'border-red-500 bg-red-500/15'
-              }`} style={{ left: `${zone.position.x}%`, top: `${zone.position.y}%`, width: `${zone.position.breite}%`, height: `${zone.position.hoehe}%` }}>
+              }`} style={{ left: `${minX}%`, top: `${minY}%`, width: `${breite}%`, height: `${hoehe}%` }}>
                 {hatAntwort && (
                   <span className={`text-xs font-medium px-1 rounded ${korrekt ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>
                     {labels.join(', ')}

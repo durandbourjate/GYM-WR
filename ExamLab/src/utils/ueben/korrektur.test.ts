@@ -30,21 +30,33 @@ describe('pruefeAntwort — defensive gegen bereinigte Pool-Daten', () => {
   })
 })
 
-describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', () => {
+describe('pruefeAntwort — hotspot Treffer-Logik (Polygon-Format)', () => {
+  // Helper: Rechteck als 4-Punkt-Polygon
+  const rechteck = (x: number, y: number, b: number, h: number) => [
+    { x, y }, { x: x + b, y }, { x: x + b, y: y + h }, { x, y: y + h },
+  ]
+  // Helper: Kreis als 12-Punkt-Polygon-Approximation (Migrations-kompatibel)
+  const kreis = (cx: number, cy: number, r: number) => {
+    const pts: { x: number; y: number }[] = []
+    for (let i = 0; i < 12; i++) {
+      const t = (2 * Math.PI * i) / 12
+      pts.push({ x: cx + r * Math.cos(t), y: cy + r * Math.sin(t) })
+    }
+    return pts
+  }
+
   const rechteckFrage: any = {
     id: 'f', typ: 'hotspot',
     bereiche: [{
-      id: 'r1', form: 'rechteck',
-      koordinaten: { x: 20, y: 20, breite: 30, hoehe: 30 },
-      label: 'Bereich', punkte: 1,
+      id: 'r1', form: 'rechteck', punkte: rechteck(20, 20, 30, 30),
+      label: 'Bereich', punktzahl: 1,
     }],
   }
   const kreisFrage: any = {
     id: 'f', typ: 'hotspot',
     bereiche: [{
-      id: 'k1', form: 'kreis',
-      koordinaten: { x: 50, y: 50, radius: 10 },
-      label: 'Bereich', punkte: 1,
+      id: 'k1', form: 'polygon', punkte: kreis(50, 50, 10),
+      label: 'Bereich', punktzahl: 1,
     }],
   }
 
@@ -54,14 +66,15 @@ describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', (
   it('rechteck: Klick ausserhalb = falsch', () => {
     expect(pruefeAntwort(rechteckFrage, { typ: 'hotspot', klicks: [{x: 60, y: 60}] } as any)).toBe(false)
   })
-  it('rechteck: Klick am Rand = korrekt (inklusive Grenzen)', () => {
-    expect(pruefeAntwort(rechteckFrage, { typ: 'hotspot', klicks: [{x: 20, y: 20}] } as any)).toBe(true)
-    expect(pruefeAntwort(rechteckFrage, { typ: 'hotspot', klicks: [{x: 50, y: 50}] } as any)).toBe(true)
+  it('rechteck: Klick klar drinnen nahe Rand = korrekt', () => {
+    // Ray-Casting ist auf Kanten undefined; deshalb nicht auf exaktem Rand testen
+    expect(pruefeAntwort(rechteckFrage, { typ: 'hotspot', klicks: [{x: 21, y: 21}] } as any)).toBe(true)
+    expect(pruefeAntwort(rechteckFrage, { typ: 'hotspot', klicks: [{x: 49, y: 49}] } as any)).toBe(true)
   })
-  it('kreis: Klick im Radius = korrekt', () => {
+  it('polygon (Kreis): Klick im Radius = korrekt', () => {
     expect(pruefeAntwort(kreisFrage, { typ: 'hotspot', klicks: [{x: 55, y: 55}] } as any)).toBe(true)
   })
-  it('kreis: Klick ausserhalb Radius = falsch', () => {
+  it('polygon (Kreis): Klick ausserhalb Radius = falsch', () => {
     expect(pruefeAntwort(kreisFrage, { typ: 'hotspot', klicks: [{x: 70, y: 70}] } as any)).toBe(false)
   })
   it('kein Klick = falsch', () => {
@@ -71,14 +84,14 @@ describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', (
     expect(pruefeAntwort({ id:'f', typ:'hotspot', bereiche: [] } as any, { typ: 'hotspot', klicks: [{x:10,y:10}] } as any)).toBe(false)
   })
 
-  it('Pool-Import mit 4 Hotspots (nur einer mit punkte=1): Klick auf den korrekten = true', () => {
+  it('Pool-Import mit 4 Hotspots (nur einer mit punktzahl=1): Klick auf den korrekten = true', () => {
     const poolFrage: any = {
       id: 'f', typ: 'hotspot',
       bereiche: [
-        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
-        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
-        { id: 'c', form: 'kreis', koordinaten: {x: 46.1, y: 52.6, radius: 8}, punkte: 0, label: 'C' },
-        { id: 'd', form: 'kreis', koordinaten: {x: 69.3, y: 30.5, radius: 8}, punkte: 0, label: 'D' },
+        { id: 'a', form: 'polygon', punkte: kreis(25, 30, 8), punktzahl: 0, label: 'A' },
+        { id: 'b', form: 'polygon', punkte: kreis(69.3, 75, 8), punktzahl: 1, label: 'B' },
+        { id: 'c', form: 'polygon', punkte: kreis(46.1, 52.6, 8), punktzahl: 0, label: 'C' },
+        { id: 'd', form: 'polygon', punkte: kreis(69.3, 30.5, 8), punktzahl: 0, label: 'D' },
       ],
     }
     expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 69, y: 74}] } as any)).toBe(true)
@@ -88,8 +101,8 @@ describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', (
     const poolFrage: any = {
       id: 'f', typ: 'hotspot',
       bereiche: [
-        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
-        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
+        { id: 'a', form: 'polygon', punkte: kreis(25, 30, 8), punktzahl: 0, label: 'A' },
+        { id: 'b', form: 'polygon', punkte: kreis(69.3, 75, 8), punktzahl: 1, label: 'B' },
       ],
     }
     expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 25, y: 30}] } as any)).toBe(false)
@@ -99,8 +112,8 @@ describe('pruefeAntwort — hotspot form-abhaengige Treffer-Logik (S125 Fix)', (
     const poolFrage: any = {
       id: 'f', typ: 'hotspot',
       bereiche: [
-        { id: 'a', form: 'kreis', koordinaten: {x: 25, y: 30, radius: 8}, punkte: 0, label: 'A' },
-        { id: 'b', form: 'kreis', koordinaten: {x: 69.3, y: 75, radius: 8}, punkte: 1, label: 'B' },
+        { id: 'a', form: 'polygon', punkte: kreis(25, 30, 8), punktzahl: 0, label: 'A' },
+        { id: 'b', form: 'polygon', punkte: kreis(69.3, 75, 8), punktzahl: 1, label: 'B' },
       ],
     }
     expect(pruefeAntwort(poolFrage, { typ: 'hotspot', klicks: [{x: 25, y: 30}, {x: 69, y: 74}] } as any)).toBe(false)

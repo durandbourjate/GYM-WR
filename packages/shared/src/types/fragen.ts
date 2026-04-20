@@ -548,10 +548,10 @@ export interface SortierungFrage extends FrageBase {
 
 export interface HotspotBereich {
   id: string
-  form: 'rechteck' | 'kreis'
-  koordinaten: { x: number; y: number; breite?: number; hoehe?: number; radius?: number }  // Prozent 0-100
+  form: 'rechteck' | 'polygon'           // nur Editor-UX, Korrektur ignoriert
+  punkte: { x: number; y: number }[]     // Prozent 0-100, ≥3 Punkte (Rechteck = 4)
   label: string
-  punkte: number
+  punktzahl: number                      // Punkte-Wert für Korrektur
 }
 
 export interface HotspotFrage extends FrageBase {
@@ -597,7 +597,8 @@ export interface AudioFrage extends FrageBase {
 
 export interface DragDropBildZielzone {
   id: string
-  position: { x: number; y: number; breite: number; hoehe: number }  // Prozent 0-100
+  form: 'rechteck' | 'polygon'
+  punkte: { x: number; y: number }[]   // Prozent 0-100, ≥3 Punkte (Rechteck = 4)
   korrektesLabel: string
 }
 

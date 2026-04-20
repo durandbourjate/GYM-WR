@@ -5,6 +5,7 @@
 import type { Frage, FrageTyp } from '../../types/ueben/fragen'
 import type { Antwort } from '../../types/antworten'
 import { normalizeAntwort } from '../normalizeAntwort'
+import { istPunktInPolygon } from '../zonen/polygon'
 
 /**
  * Fragetypen, die nicht automatisch korrigiert werden können
@@ -187,21 +188,11 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
       const klicks = Array.isArray(a.klicks) ? a.klicks : []
       if (alle.length === 0 || klicks.length === 0) return false
       // Pool-Import-Konvention: alle Hotspots sind in bereiche[], nur der korrekte
-      // hat punkte>0. LP-Editor: alle Bereiche haben punkte>0. Filter loest beides.
-      const punkteBereiche = alle.filter(b => (b.punkte ?? 0) > 0)
+      // hat punktzahl>0. LP-Editor: alle Bereiche haben punktzahl>0. Filter loest beides.
+      const punkteBereiche = alle.filter(b => (b.punktzahl ?? 0) > 0)
       const zuPruefen = punkteBereiche.length > 0 ? punkteBereiche : alle
       function trifft(b: typeof alle[0], k: { x: number; y: number }): boolean {
-        const ko = b.koordinaten
-        if (b.form === 'rechteck') {
-          return k.x >= ko.x && k.x <= ko.x + (ko.breite ?? 0) &&
-                 k.y >= ko.y && k.y <= ko.y + (ko.hoehe ?? 0)
-        }
-        if (b.form === 'kreis') {
-          const dx = k.x - ko.x
-          const dy = k.y - ko.y
-          return Math.sqrt(dx * dx + dy * dy) <= (ko.radius ?? 10)
-        }
-        return false
+        return istPunktInPolygon(k, b.punkte ?? [])
       }
       // Korrekt = alle punkte-Bereiche getroffen UND kein punkte=0-Bereich getroffen.
       const alleKorrekteGetroffen = zuPruefen.every(b => klicks.some(k => trifft(b, k)))

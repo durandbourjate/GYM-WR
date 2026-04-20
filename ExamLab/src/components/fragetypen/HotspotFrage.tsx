@@ -6,12 +6,24 @@ import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
 import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
+import { istZoneWohlgeformt } from '../../utils/zonen/migriereZone.ts'
 
 interface Props {
   frage: HotspotFrageType
 }
 
 export default function HotspotFrage({ frage }: Props) {
+  // Error-Boundary: Zonen müssen im neuen Format (punkte[]) vorliegen
+  const zonenUngueltig =
+    Array.isArray(frage.bereiche) && frage.bereiche.length > 0 &&
+    frage.bereiche.some(b => !istZoneWohlgeformt(b))
+  if (zonenUngueltig) {
+    return (
+      <div className="p-4 rounded border border-red-300 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm">
+        Diese Frage konnte nicht geladen werden. Bitte LP informieren.
+      </div>
+    )
+  }
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const bildQuelle = ermittleBildQuelle(frage)
 

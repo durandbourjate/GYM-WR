@@ -477,17 +477,21 @@ export function konvertierePoolFrage(
       const korrektIndices = new Set(
         Array.isArray(poolFrage.correct) ? (poolFrage.correct as number[]) : []
       )
-      const bereiche: HotspotBereich[] = (poolFrage.hotspots ?? []).map((hs, idx) => ({
-        id: genId(),
-        form: 'kreis' as const,
-        koordinaten: {
-          x: hs.x,
-          y: hs.y,
-          radius: hs.r ?? 8,
-        },
-        label: hs.label || `Bereich ${idx + 1}`,
-        punkte: korrektIndices.has(idx) ? 1 : 0,
-      }))
+      const bereiche: HotspotBereich[] = (poolFrage.hotspots ?? []).map((hs, idx) => {
+        // Pool-Hotspots sind Kreise → 12-Punkt-Polygon-Approximation
+        const r = hs.r ?? 8
+        const polygonPunkte = Array.from({ length: 12 }, (_, i) => {
+          const t = (2 * Math.PI * i) / 12
+          return { x: hs.x + r * Math.cos(t), y: hs.y + r * Math.sin(t) }
+        })
+        return {
+          id: genId(),
+          form: 'polygon' as const,
+          punkte: polygonPunkte,
+          label: hs.label || `Bereich ${idx + 1}`,
+          punktzahl: korrektIndices.has(idx) ? 1 : 0,
+        }
+      })
       const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
       const frage: HotspotFrage = {
         ...basis,
@@ -528,7 +532,13 @@ export function konvertierePoolFrage(
     case 'dragdrop_bild': {
       const zielzonen = (poolFrage.zones ?? []).map(zone => ({
         id: zone.id || genId(),
-        position: { x: zone.x, y: zone.y, breite: zone.w, hoehe: zone.h },
+        form: 'rechteck' as const,
+        punkte: [
+          { x: zone.x, y: zone.y },
+          { x: zone.x + zone.w, y: zone.y },
+          { x: zone.x + zone.w, y: zone.y + zone.h },
+          { x: zone.x, y: zone.y + zone.h },
+        ],
         // Finde das erste korrekte Label für diese Zone
         korrektesLabel: (poolFrage.labels ?? []).find(l => l.zone === zone.id)?.text ?? '',
       }))

@@ -6,12 +6,32 @@ import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { toAssetUrl } from '../../utils/assetUrl.ts'
 import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
+import { istZoneWohlgeformt } from '../../utils/zonen/migriereZone.ts'
 
 interface Props {
   frage: DragDropBildFrageType
 }
 
+/** Bounding-Box aus Polygon-Punkten — SuS sieht Zone als Rechteck (Phase 2). */
+function zoneBBox(punkte: { x: number; y: number }[]): { x: number; y: number; breite: number; hoehe: number } {
+  if (!Array.isArray(punkte) || punkte.length === 0) return { x: 0, y: 0, breite: 0, hoehe: 0 }
+  const xs = punkte.map(p => p.x), ys = punkte.map(p => p.y)
+  const minX = Math.min(...xs), minY = Math.min(...ys)
+  return { x: minX, y: minY, breite: Math.max(...xs) - minX, hoehe: Math.max(...ys) - minY }
+}
+
 export default function DragDropBildFrage({ frage }: Props) {
+  // Error-Boundary: Zonen müssen im neuen Format (punkte[]) vorliegen
+  const zonenUngueltig =
+    Array.isArray(frage.zielzonen) && frage.zielzonen.length > 0 &&
+    frage.zielzonen.some(z => !istZoneWohlgeformt(z))
+  if (zonenUngueltig) {
+    return (
+      <div className="p-4 rounded border border-red-300 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm">
+        Diese Frage konnte nicht geladen werden. Bitte LP informieren.
+      </div>
+    )
+  }
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const bildQuelle = ermittleBildQuelle(frage)
 
@@ -141,12 +161,15 @@ export default function DragDropBildFrage({ frage }: Props) {
                       : 'bg-slate-500/10 border-2 border-dashed border-slate-400 dark:border-slate-500'
                   }
                 `}
-                style={{
-                  left: `${zone.position.x}%`,
-                  top: `${zone.position.y}%`,
-                  width: `${zone.position.breite}%`,
-                  height: `${zone.position.hoehe}%`,
-                }}
+                style={(() => {
+                  const b = zoneBBox(zone.punkte)
+                  return {
+                    left: `${b.x}%`,
+                    top: `${b.y}%`,
+                    width: `${b.breite}%`,
+                    height: `${b.hoehe}%`,
+                  }
+                })()}
                 onDragOver={(e) => handleDragOver(e, zone.id)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, zone.id)}
