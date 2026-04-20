@@ -75,14 +75,14 @@ Der bestehende Test hat eine Sperrliste für SuS-Response-Felder (Zeile 8–13).
   })
 ```
 
-- [ ] **Step 2: Test laufen lassen — soll durchfallen**
+- [ ] **Step 2: Test laufen lassen — Teil-Failures erwartet**
 
 ```bash
 cd "10 Github/GYM-WR-DUY/ExamLab"
 npx vitest run src/tests/uebenSecurityInvariant.test.ts
 ```
 
-Erwartet: 5 neue Tests FAIL (weil `zoneId`, `korrekteFormel`, `erwarteteAntworten`, `konten[].korrekt` nicht in Sperrliste).
+Erwartet: **mindestens 3 neue Tests FAIL** — die Tests für `zoneId`, `korrekteFormel`, `erwarteteAntworten` fallen durch, weil diese Felder nicht in der Sperrliste sind. Die Tests für `konten[].korrekt` und `bereiche[].korrekt` laufen möglicherweise bereits grün, weil `'korrekt'` schon in der bestehenden Sperrliste steht — das ist in Ordnung, Step 3 stellt sicher dass die Tests inhaltlich korrekt werden (kontextuelle Pfad-Verifikation).
 
 - [ ] **Step 3: Sperrliste erweitern**
 
@@ -231,7 +231,7 @@ Die bestehende Funktion `bereinigeFrageFuerSuS_` bekommt alle strengen Bereinigu
 
 - [ ] **Step 1: `bereinigeFrageFuerSuS_` komplett ersetzen**
 
-Ersetze den kompletten Body von `function bereinigeFrageFuerSuS_(frage) { ... }` (aktuell Zeilen 1639–1703) durch:
+Ersetze die komplette Funktion (aktuell Zeilen 1639–1703, inkl. `function`-Keyword und schliessender `}`) durch folgenden Block:
 
 ```javascript
 function bereinigeFrageFuerSuS_(frage) {
@@ -397,7 +397,7 @@ Die Funktion enthält jetzt nur noch die Wrapper-Logik.
 
 - [ ] **Step 1: `bereinigeFrageFuerSuSUeben_` komplett ersetzen**
 
-Ersetze den kompletten Body von `function bereinigeFrageFuerSuSUeben_(frage) { ... }` durch:
+Ersetze die komplette Funktion (inkl. `function`-Keyword und schliessender `}`, aktuell der gesamte Block von Zeile 1710 bis vor `// === SERVER-SIDE KORREKTUR (Port aus korrektur.ts) ===`) durch folgenden Block:
 
 ```javascript
 /**
@@ -520,6 +520,19 @@ User-Aktion:
 3. Kurz warten bis Deployment aktiv ist.
 4. Claude bestätigen: "Apps-Script deployed".
 
+**Post-Deploy Smoke-Check** (Claude-Aktion, **vor** Step 3):
+
+Öffne einen Staging-Tab, führe einen Test-`ladePruefung`-Call aus (beliebige existierende Prüfung als SuS laden) und prüfe via `mcp__Claude_in_Chrome__read_network_requests`:
+- Response enthält `fragen: [...]`.
+- **Spot-Check:** In mindestens einer Frage mit `typ: 'hotspot'` oder `typ: 'bildbeschriftung'` sind `bereiche[].korrekt` / `labels[].zoneId` nicht mehr vorhanden.
+
+Wenn die Felder noch da sind: Deploy-Queue hängt (bekanntes Problem aus S118). Trigger leerer Commit:
+```bash
+cd "10 Github/GYM-WR-DUY"
+git commit --allow-empty -m "Trigger Apps-Script deploy refresh"
+```
+User deployt erneut, Smoke-Check wiederholen. Erst weiter zu Step 3 wenn Spot-Check grün.
+
 - [ ] **Step 3: Staging-E2E-Test — LP-Sicht**
 
 User öffnet 2-Tab-Setup (wie in regression-prevention.md beschrieben):
@@ -579,7 +592,7 @@ User bestätigt: "Üben-Regression OK".
 
 - [ ] **Step 1: HANDOFF.md aktualisieren**
 
-Öffne `ExamLab/HANDOFF.md`. Ergänze unter "Für die nächste Session (S126+) — Aktueller Stand" einen neuen Abschnitt direkt oberhalb der bestehenden "Offene Punkte"-Liste:
+Öffne `ExamLab/HANDOFF.md`. Suche die Überschrift "Für die nächste Session (S126+) — Aktueller Stand" und ergänze direkt oberhalb der bestehenden "Offene Punkte"-Liste folgenden Abschnitt. **Fallback:** Falls die Überschrift nicht exakt so heisst, füge den Abschnitt direkt nach der obersten Session-Log-Überschrift ein (also nach dem Tabellen-Header, vor dem letzten eingetragenen Session-Eintrag) — die Struktur der Datei ist chronologisch absteigend.
 
 ```markdown
 ### Session 126 (2026-04-20) — Bundle P: Prüfung-Hardening
