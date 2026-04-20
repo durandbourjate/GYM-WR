@@ -10101,14 +10101,16 @@ function stelleKIFeedbackSheetBereit_() {
     sheet.setFrozenRows(1);
     return sheet;
   }
-  var vorhandene = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var lastCol = sheet.getLastColumn();
+  var vorhandene = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
   for (var i = 0; i < headers.length; i++) {
     if (vorhandene[i] !== headers[i]) {
-      if (i >= sheet.getLastColumn()) {
+      if (i >= lastCol) {
         // Spalte fehlt am Ende: ergänzen
         sheet.getRange(1, i + 1).setValue(headers[i]);
+      } else {
+        console.log('[KIFeedback] Header-Mismatch an Position ' + i + ': erwartet=' + headers[i] + ', gefunden=' + vorhandene[i]);
       }
-      // Header-Mismatch in mittlerer Spalte → Log, kein Throw (defensive)
     }
   }
   return sheet;
@@ -10119,9 +10121,10 @@ function stelleKIFeedbackSheetBereit_() {
  * Aufgerufen von speichereKorrekturZeile vor dem Write.
  */
 function stelleKorrekturSheetHeaderBereit_(korrekturSheet) {
-  var headers = korrekturSheet.getRange(1, 1, 1, korrekturSheet.getLastColumn()).getValues()[0];
+  var lastCol = korrekturSheet.getLastColumn();
+  var headers = lastCol > 0 ? korrekturSheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
   if (headers.indexOf('kriterienBewertung') === -1) {
-    var neueSpalteIdx = korrekturSheet.getLastColumn() + 1;
+    var neueSpalteIdx = lastCol + 1;
     korrekturSheet.getRange(1, neueSpalteIdx).setValue('kriterienBewertung');
   }
 }
