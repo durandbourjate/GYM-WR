@@ -206,8 +206,8 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
 
   // Defensiv: Zonen im Alt-Format (ohne Array-punkte) nicht rendern, sondern als Hinweis anzeigen
   const istWohlgeformt = (z: DragDropBildZielzone) => Array.isArray((z as any).punkte) && (z as any).punkte.length >= 3
-  const sichereZonen = zielzonen.filter(istWohlgeformt)
-  const anzahlAlt = zielzonen.length - sichereZonen.length
+  const sichereZonen = (zielzonen ?? []).filter(istWohlgeformt)
+  const anzahlAlt = (zielzonen ?? []).length - sichereZonen.length
   const zonen = sichereZonen.map(z => ({ id: z.id, punkte: z.punkte, akzent: 'violett' as const }))
 
   return (
@@ -317,12 +317,12 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
         </>
       )}
 
-      {zielzonen.length > 0 && (
+      {(zielzonen ?? []).length > 0 && (
         <div className="space-y-2">
           <h5 className="text-xs font-medium text-slate-600 dark:text-slate-300">
-            Zielzonen ({zielzonen.length})
+            Zielzonen ({(zielzonen ?? []).length})
           </h5>
-          {zielzonen.map((zone, i) => (
+          {(zielzonen ?? []).map((zone, i) => (
             <div
               key={zone.id}
               className={`p-2 rounded-lg border ${

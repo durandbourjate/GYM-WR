@@ -227,8 +227,8 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
 
   // Defensiv: Bereiche im Alt-Format (ohne Array-punkte) nicht rendern, sondern anzeigen als Hinweis
   const istWohlgeformt = (b: HotspotBereich) => Array.isArray((b as any).punkte) && (b as any).punkte.length >= 3
-  const sichereBereiche = bereiche.filter(istWohlgeformt)
-  const anzahlAlt = bereiche.length - sichereBereiche.length
+  const sichereBereiche = (bereiche ?? []).filter(istWohlgeformt)
+  const anzahlAlt = (bereiche ?? []).length - sichereBereiche.length
   const zonen = sichereBereiche.map(b => ({ id: b.id, punkte: b.punkte, label: b.label, akzent: 'violett' as const }))
 
   return (
@@ -336,13 +336,13 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
         </>
       )}
 
-      {bereiche.length > 0 && (
+      {(bereiche ?? []).length > 0 && (
         <div>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
-            Definierte Bereiche ({bereiche.length})
+            Definierte Bereiche ({(bereiche ?? []).length})
           </p>
           <div className="space-y-2">
-            {bereiche.map((bereich, i) => (
+            {(bereiche ?? []).map((bereich, i) => (
               <div
                 key={bereich.id}
                 className={`p-2 rounded-lg border ${
