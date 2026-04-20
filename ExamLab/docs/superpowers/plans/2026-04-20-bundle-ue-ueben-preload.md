@@ -434,11 +434,15 @@ function bereinigeFrageFuerSuS_(frage) {
     delete f[LOESUNGS_FELDER_.einfach[i]];
   }
 
-  // Typ-spezifische Top-Level-Felder
+  // Typ-spezifische Top-Level-Felder.
+  // Truthy-Guard bewusst (NICHT `!== undefined`) — matcht das Live-Verhalten
+  // von Bundle P (z.B. `if (f.buchungen) delete f.buchungen`). Änderung zu
+  // `!== undefined` wäre eine stille Verhaltens-Abweichung (würde auch
+  // `korrekt: 0` / `korrekt: false` bei Formel löschen, was Live nicht tut).
   for (var j = 0; j < LOESUNGS_FELDER_.typSpezifisch.length; j++) {
     var ts = LOESUNGS_FELDER_.typSpezifisch[j];
     if (ts.nurBeiTyp && f.typ !== ts.nurBeiTyp) continue;
-    if (f[ts.feld] !== undefined) delete f[ts.feld];
+    if (f[ts.feld]) delete f[ts.feld];
   }
 
   // Array-Felder: Sub-Lösungsfelder entfernen
@@ -902,7 +906,7 @@ function mergeLoesungen(
 
 ### Step 5.3: `starteSession` erweitern
 
-In `starteSession`, nach der Block-Erstellung und vor `if (block.length === 0) { ... }`, einfügen:
+In `starteSession` — **nach** der Block-Erstellung UND **nach** dem `if (block.length === 0) { set({ ladeStatus: 'fehler' }); return }`-Guard (nicht davor — sonst würde für leere Blöcke ein unnötiger Endpoint-Call mit leerem `fragenIds`-Array ausgelöst), direkt **vor** der Session-Objekt-Erstellung einfügen:
 
 ```typescript
       // Lösungs-Preload via separatem Endpoint (Bundle Ü).
@@ -1139,6 +1143,42 @@ describe('uebungsStore Lösungs-Preload', () => {
     expect(state.loesungenPreloaded.f1).toBe(true)
     expect(state.loesungenPreloaded.f2).toBe(false)
   })
+
+  it('beantworteById: preloaded=true → clientseitige Korrektur, Ergebnis im Store', async () => {
+    vi.mocked(uebenFragenAdapter.ladeFragen).mockResolvedValue([mcFrage])
+    vi.mocked(ladeLoesungenApi).mockResolvedValue({
+      f1: { optionen: [{ id: 'a', korrekt: true }] },
+    })
+
+    await useUebenUebungsStore.getState().starteSession('g1', 'sus@stud.test', 'VWL', 'Test')
+    useUebenUebungsStore.getState().beantworteById('f1', { typ: 'mc', gewaehlt: ['a'] } as never)
+
+    const state = useUebenUebungsStore.getState()
+    expect(state.ergebnisse?.f1).toBe(undefined) // state.session.ergebnisse
+    expect(state.session?.ergebnisse.f1).toBe(true) // korrekt, weil 'a' die richtige Option ist
+    expect(state.feedbackSichtbar).toBe(true)
+    expect(state.letzteAntwortKorrekt).toBe(true)
+    expect(state.speichertPruefung).toBe(false) // kein Server-Call
+  })
+
+  it('beantworteById: preloaded=false → Fallback auf pruefeAntwortJetzt (setzt speichertPruefung)', async () => {
+    vi.mocked(uebenFragenAdapter.ladeFragen).mockResolvedValue([mcFrage])
+    // Preload scheitert → f1 ist nicht preloaded
+    vi.mocked(ladeLoesungenApi).mockRejectedValue(new Error('Rate limit'))
+
+    await useUebenUebungsStore.getState().starteSession('g1', 'sus@stud.test', 'VWL', 'Test')
+    expect(useUebenUebungsStore.getState().loesungenPreloaded.f1).toBeFalsy()
+
+    // Server-Korrektur wird asynchron aufgerufen — wir prüfen, dass speichertPruefung
+    // sofort (synchron) true wird (via get().pruefeAntwortJetzt → set({ speichertPruefung: true }))
+    useUebenUebungsStore.getState().beantworteById('f1', { typ: 'mc', gewaehlt: ['a'] } as never)
+
+    const state = useUebenUebungsStore.getState()
+    // Zwischenstand wurde gesetzt
+    expect(state.session?.zwischenstande?.f1).toBeDefined()
+    // Server-Korrektur-Pfad aktiv: speichertPruefung = true
+    expect(state.speichertPruefung).toBe(true)
+  })
 })
 ```
 
@@ -1156,7 +1196,7 @@ cd "10 Github/GYM-WR-DUY/ExamLab"
 npx vitest run
 ```
 
-Erwartet: alle Tests grün (429 + 4 Service + 3 Store = 436).
+Erwartet: alle Tests grün (429 + 4 Service + 5 Store = 438).
 
 ### Step 6.3: Build
 
@@ -1191,7 +1231,7 @@ aus flacher Map per id gemerged.
 Lösungen landen NICHT in localStorage (Store hat keine persist-
 Middleware, nur historie wird manuell gespeichert).
 
-3 Integration-Tests: Merge, Preload-Fehler-Fallback, Partial-Response.
+5 Integration-Tests: Merge, Preload-Fehler-Fallback, Partial-Response, beantworteById-preloaded-Branch, beantworteById-Fallback-Branch.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 EOF
@@ -1339,7 +1379,7 @@ Branch `feature/bundle-ue-ueben-preload` → `main`. Spec `docs/superpowers/spec
 - Backend-Endpoint `lernplattformLadeLoesungen` — Token-Auth, Rate-Limit 5/min, flache Map inkl. Aufgabengruppen-Teilaufgaben.
 - Frontend-Types `LoesungsSlice` + `LoesungsMap` in `src/types/ueben/loesung.ts`.
 - Frontend-Service `uebenLoesungsApi.ts` (4 Unit-Tests).
-- Store: `uebungsStore` erweitert um `loesungenPreloaded: Record<string, boolean>`; `starteSession` merged Lösungen; `beantworteById` verzweigt pro Frage clientseitig vs. Server-Fallback (3 Integration-Tests).
+- Store: `uebungsStore` erweitert um `loesungenPreloaded: Record<string, boolean>`; `starteSession` merged Lösungen; `beantworteById` verzweigt pro Frage clientseitig vs. Server-Fallback (5 Integration-Tests).
 - Lösungen landen nicht in localStorage.
 
 **Staging-E2E verifiziert:**
@@ -1354,7 +1394,7 @@ Scope: Bundle Ü betrifft nur selbstständiges Üben. Prüfung + angeleitetes Pr
 ```markdown
 ### Aktueller Stand (Ende S127)
 - **Alles auf `main`**. Letzter Commit: Bundle Ü Merge. Apps-Script deployed. Keine offenen Feature-Branches.
-- **Tests:** 436/436 vitest grün, tsc -b grün.
+- **Tests:** 438/438 vitest grün, tsc -b grün.
 ```
 
 **Offene Punkte:** Entferne den Bundle-Ü-Eintrag aus "Gross (eigene Session)".
@@ -1379,7 +1419,7 @@ Claude meldet:
 ```
 Bundle Ü ready for merge. Checklist:
 - [x] tsc -b grün
-- [x] vitest grün (436/436)
+- [x] vitest grün (438/438)
 - [x] npm run build grün
 - [x] Apps-Script deployed
 - [x] Bundle-P-Regression: 0 Sperrlist-Hits
