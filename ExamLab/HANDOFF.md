@@ -6,12 +6,48 @@
 
 ---
 
-## Für die nächste Session (S128+)
+## Für die nächste Session (S129+)
 
-### Aktueller Stand (Ende S127)
-- **Alles auf `main`**. Letzter Commit: S127 Bundle Ü — Üben-Pre-Load mit clientseitiger Instant-Korrektur. Apps-Script deployed. Keine offenen Feature-Branches.
-- **Tests:** 438/438 vitest grün, tsc -b grün, build grün.
-- Beide Bundles der Musterlösungen-Bereinigung sind live: Bundle P (Prüfung-Hardening) + Bundle Ü (Üben-Pre-Load).
+### Aktueller Stand (Ende S128)
+- **Alles auf `main`**. Letzter Commit: S128 Polygon-Zonen-Refactor (Merge `3b5b9ac`). Apps-Script deployed, Fragenbank live migriert (4 Sheets, 58 Zonen). Keine offenen Feature-Branches.
+- **Tests:** 455/455 vitest grün, tsc -b grün, build grün.
+
+### Session 128 — Polygon-Zonen-Refactor (2026-04-20)
+
+Branch `feature/polygon-zonen` → `main`. Spec `docs/superpowers/specs/2026-04-20-polygon-zonen-design.md`, Plan `docs/superpowers/plans/2026-04-20-polygon-zonen.md`.
+
+**Ziel:** Hotspot + DragDrop-Bild-Zonen als einheitliches Polygon-Format (`punkte: {x,y}[]` + `form: 'rechteck' | 'polygon'`). LP kann freie Polygone zeichnen (n Punkte + Doppelklick zum Schliessen). `form: 'kreis'` abgeschafft.
+
+**Umgesetzt:**
+- `utils/zonen/polygon.ts` — Ray-Casting Point-in-Polygon (8 Tests)
+- `utils/zonen/migriereZone.ts` — Migrations-Mapping (Kreis→12-Punkt, Rechteck→4-Punkt) (9 Tests)
+- Types umgestellt: `HotspotBereich.punkte: {x,y}[]` + `punktzahl: number`, `DragDropBildZielzone.punkte[]`. Alt-Felder `koordinaten`/`position` komplett entfernt.
+- `korrektur.ts` + `autoKorrektur.ts`: 1 Algorithmus (istPunktInPolygon) statt 3 Form-Zweige. `Math.hypot`/`koordinaten` raus.
+- `poolConverter.ts`: Pool-Hotspots werden zu 12-Punkt-Polygon (Kreis-Approximation).
+- Rendering überall auf SVG-Polygon via `ZonenOverlay.tsx` (Shared): Editor, Korrektur-Ansicht, SuS-Rendering konsistent.
+- `HotspotEditor` + `DragDropBildEditor` komplett umgebaut: Modus-Toggle Rechteck/Polygon, Klick-Klick-Klick-Abschluss, Punkt-Handles, Doppelklick-Lösch, Kanten-Plus für Einfügen, axis-aligned Constraint beim Rechteck-Eck-Drag.
+- Error-Boundaries in `HotspotFrage`/`DragDropBildFrage` (SuS) + Editor-Banner "⚠ N Bereiche im Alt-Format" als Auffangnetz.
+- Apps-Script: `istPunktInPolygon_` + `zn_migriere*_`-Helper + Admin-Endpoint `admin:migriereZonen` (dryRun-default, idempotent).
+- Frontend: `ZonenMigratorButton` im Einstellungen→Admin-Tab (Dry-Run + Live + Sheet-Auswahl + Ergebnis-Tabelle).
+
+**Migrations-Fenster (deployed + ausgeführt):**
+| Sheet | Zeilen | Aktualisiert | Übersprungen |
+|-------|--------|--------------|--------------|
+| BWL | 536 | 11 → +0 (2. Run) | 1 → 12 |
+| VWL | 1080 | 18 | 1 |
+| Recht | 796 | 11 | 0 |
+| Informatik | — | Tab nicht vorhanden | — |
+
+Total: 40 migrierte Zonen, 13 bereits wohlgeformte.
+
+**Lehre aus S128 — Bug mit Dual-Quelle im Sheet:**
+- **parseFrage liest Hotspot/DragDrop primär aus `json`/`daten`-Spalte** (vollständige Frage als JSON), Fallback auf `typDaten`. Der Migrator hatte zunächst nur `typDaten` aktualisiert → Frontend sah weiterhin Alt-Format. Fix: Migrator liest + schreibt beide Spalten synchron. Lesson: bei Migrationen auf Apps-Script-Fragenbank IMMER grepen welche parseFrage-Quellen es gibt (json, daten, typDaten, plus fachbereich-spezifische Spalten wie `bereiche`, `zielzonen`, `beschriftungen`).
+- **React-Hooks-Regel bei Error-Boundaries:** Early-Return VOR useState-Aufrufen ist illegal. Defensive Guards müssen am JSX-Ende stehen (filter auf Array) oder in einem Wrapper-Komponenten-Layer.
+- **SVG-stroke-width + viewBox:** `vectorEffect="non-scaling-stroke"` ist unverzichtbar für `viewBox="0 0 100 100"`-Overlays, sonst wird Linienbreite auf ~0.4% des Bildes skaliert (unsichtbar bei kleinen Bildern).
+
+**Offen / Follow-ups aus S128:**
+- **Frage-ID im Editor-Metadaten anzeigen** (User-Wunsch): In der Editor-Sidebar aktuell nicht sichtbar. Schneller Follow-up.
+- SuS-E2E-Test mit echter Prüfung (nur LP-Side getestet im Migrations-Fenster).
 
 ### Session 127 — Bundle Ü: Üben-Pre-Load (2026-04-20)
 
