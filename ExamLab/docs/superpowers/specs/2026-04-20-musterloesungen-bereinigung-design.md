@@ -10,9 +10,9 @@ Drei Modi, unterschiedliche Security-Anforderungen:
 
 | Modus                         | Ladepfad darf Lösung enthalten? | Musterlösung wird freigeschaltet durch                                  |
 |-------------------------------|---------------------------------|-------------------------------------------------------------------------|
-| Prüfung (summativ)            | nein                            | LP-Korrekturfreigabe nach Abgabe                                        |
-| Prüfen (angeleitet, ohne Note) | nein                           | LP-Korrekturfreigabe nach Abgabe (gleicher Code wie Prüfung)           |
-| Selbstständig Üben            | nein                            | Separater autorisierter Endpoint beim Session-Start (Pre-Load)          |
+| Prüfung (summativ)             | nein                            | LP-Korrekturfreigabe nach Abgabe                                      |
+| Prüfen (angeleitet, ohne Note) | nein                            | LP-Korrekturfreigabe nach Abgabe (gleicher Code wie Prüfung)          |
+| Selbstständig Üben             | nein                            | Separater autorisierter Endpoint beim Session-Start (Pre-Load)        |
 
 Nach Audit am 2026-04-20 bestehen zwei unabhängige Lücken:
 
@@ -198,6 +198,8 @@ Plan P wird zuerst geschrieben und umgesetzt. Plan Ü entsteht erst nach Freigab
 
 ## Offene Punkte für Plan Ü
 
-- `LOESUNGS_FELDER_`-Konstante: exakte Feldliste pro Fragetyp (ergibt sich aus bereinigungs-Audit).
+- `LOESUNGS_FELDER_`-Konstante: exakte Feldliste pro Fragetyp. Basis ist Line-by-Line-Cross-Check gegen `bereinigeFrageFuerSuSUeben_` — die LoesungsSlice-Tabelle oben ist **nicht vollständig**, es fehlen mindestens: `sollEintraege`/`habenEintraege` (buchungssatz), `konten[].anfangsbestand` (tkonto, bedingt bei `anfangsbestandVorgegeben=false`). Plan Ü startet mit dem Audit.
+- Aufgabengruppe-Serialisierung: Response-Form für rekursive Teilaufgaben konkretisieren — entweder flache Map (`{<teilaufgabenId>: LoesungsSlice}`) oder verschachtelt (`teilaufgaben[].<LoesungsSlice>`). Entscheidung vor Backend-Implementation.
+- Partial-Pre-Load-Strategie: Wenn der Endpoint einige Fragen-IDs aus der Response weglässt (z.B. Frage existiert nicht mehr, Rate-Limit mitten drin): pro-Frage-Fallback (`loesungenPreloaded` Map statt Boolean, fehlende Frage → `pruefeAntwortJetzt`) oder pro-Session-Fallback (alle-oder-nichts)? Entscheidung vor Store-Implementation.
 - Persist-Middleware-`partialize` Konfiguration (Lösungen nicht persistieren).
 - E2E-Fallback-Simulation: DevTools-basiert oder Feature-Flag im Service.
