@@ -6,30 +6,38 @@
 
 ---
 
-## Für die nächste Session (S127+)
+## Für die nächste Session (S128+)
 
-### Aktueller Stand (Ende S126)
-- **Alles auf `main`**. Letzter Commit: S126 Bundle P — Apps-Script-Bereinigungsfunktionen konsolidiert, Prüfung-Endpoint erhält automatisch strenge Bereinigung. Apps-Script deployed. Keine offenen Feature-Branches.
-- **Tests:** 429/429 vitest grün (inkl. 10 neue/erweiterte Security-Invariant-Tests), tsc -b grün.
-- Untracked Files `AdminKindDetail.tsx`/`AdminThemaDetail.tsx` aufgeräumt (S126 Cleanup).
+### Aktueller Stand (Ende S127)
+- **Alles auf `main`**. Letzter Commit: S127 Bundle Ü — Üben-Pre-Load mit clientseitiger Instant-Korrektur. Apps-Script deployed. Keine offenen Feature-Branches.
+- **Tests:** 438/438 vitest grün, tsc -b grün, build grün.
+- Beide Bundles der Musterlösungen-Bereinigung sind live: Bundle P (Prüfung-Hardening) + Bundle Ü (Üben-Pre-Load).
 
-### Session 126 — Bundle P: Prüfung-Hardening (2026-04-20)
+### Session 127 — Bundle Ü: Üben-Pre-Load (2026-04-20)
 
-Branch `feature/musterloesungen-bereinigung` → `main`. Spec `docs/superpowers/specs/2026-04-20-musterloesungen-bereinigung-design.md`, Plan `docs/superpowers/plans/2026-04-20-bundle-p-pruefung-hardening.md`.
+Branch `feature/bundle-ue-ueben-preload` → `main`. Spec `docs/superpowers/specs/2026-04-20-musterloesungen-bereinigung-design.md` (Abschnitt Bundle Ü), Plan `docs/superpowers/plans/2026-04-20-bundle-ue-ueben-preload.md`.
 
-**Ziel:** SuS darf in Prüfung + angeleiteter Übung nie Lösungsfelder sehen, unabhängig vom Fragetyp. Vorher bereinigte `ladePruefung` nur mild (MC/RF/Lückentext/Berechnung) — FiBu/Hotspot/Bildbeschriftung/Formel-Lösungen waren in der Response sichtbar.
+**Ziel:** Selbstständiges Üben korrigiert instant clientseitig, Lösungen werden beim Session-Start in einem separaten autorisierten Call geladen. Spart ~1.5-2s Apps-Script-Roundtrip pro „Antwort prüfen"-Klick.
 
 **Umgesetzt:**
-- Konsolidierung in `apps-script-code.js`: `bereinigeFrageFuerSuS_` erhält volle strenge Bereinigung. `mischeFrageOptionen_` neu als separate Funktion (Fisher-Yates pro Fragetyp). `bereinigeFrageFuerSuSUeben_` → Ein-Zeiler-Wrapper.
-- Call-Sites unverändert: `ladePruefung` erhält automatisch strenge Bereinigung durch Funktions-Ersetzung.
-- Frontend unberührt (Prüfungs-Store nutzt Lösungsfelder nicht).
-- Vitest-Security-Invariant-Sperrliste erweitert um `buchungen`, `loesung`, `erwarteteAntworten`, `zoneId`, `korrektesLabel`, `korrekteFormel`, `sollEintraege`, `habenEintraege` (+ 7 neue Tests decken Leak-Erkennung pro Fragetyp).
+- **Single Source of Truth** `LOESUNGS_FELDER_`-Konstante im Apps-Script: `bereinigeFrageFuerSuS_` (Retrofit Bundle P, verhalten-identisch) und neue `extrahiereLoesungsSlice_` iterieren deklarativ darüber. Neue Lösungs-Felder in Zukunft = eine Stelle editieren.
+- **Backend-Endpoint** `lernplattformLadeLoesungen` — Token-Auth, Rate-Limit 5/min, flache Map `{frageId → LoesungsSlice}` inkl. Aufgabengruppen-Teilaufgaben als eigene Keys.
+- **Frontend-Types** `LoesungsSlice` + `LoesungsMap` in `src/types/ueben/loesung.ts`.
+- **Frontend-Service** `uebenLoesungsApi.ts` (4 Unit-Tests).
+- **Store**: `uebungsStore` erweitert um `loesungenPreloaded: Record<string, boolean>`. `starteSession` merged Lösungen in Session-Fragen. **`pruefeAntwortJetzt`** (UI-Entry-Point vom "Antwort prüfen"-Button) hat neue Branch-Logik: preloaded+nicht-Selbstbewertung → clientseitige `pruefeAntwort()`, sonst Server-Fallback. **Wichtig:** Die Branch-Logik ist in `pruefeAntwortJetzt` UND `beantworteById` — `UebungsScreen.tsx` ruft `pruefeAntwortJetzt` direkt (nicht `beantworteById`).
+- Lösungen landen NICHT in localStorage (Store hat keine persist-Middleware).
+- 5 Integration-Tests decken Merge, Preload-Fehler-Fallback, Partial-Response, beantworteById-Branch, beantworteById-Fallback-Branch ab.
 
-**Staging-E2E verifiziert:**
-- `lernplattformLadeFragen` als SuS direkt getestet: 2412 Fragen, alle 20 Typen → **0 Sperrlist-Felder** in Response.
-- Server-Korrektur (`lernplattformPruefeAntwort`) funktioniert weiterhin (MC + Musterlösung on-demand).
+**Staging-E2E verifiziert (echter SuS-Login `info.test@stud.gymhofwil.ch`):**
+- Bundle-P-Regression: 2412 Fragen, **0 Sperrlist-Hits** (Retrofit verhalten-identisch).
+- Endpoint-Smoke: MC/Hotspot/Buchungssatz/R/F liefern korrekte LoesungsSlices.
+- Frontend Pre-Load: Genau 1 `lernplattformLadeLoesungen`-Call beim Session-Start, 10/10 Lösungen gemerged.
+- Instant-Korrektur: R/F-Antwort → Feedback ✗ sofort sichtbar, **kein `lernplattformPruefeAntwort`-Call** (clientseitige Korrektur).
 
-**Bundle Ü (Üben-Pre-Load für instant Client-Korrektur)** folgt in eigener Session — Plan wird erst nach Freigabe von P geschrieben (Spec schon vorhanden).
+**Lehre aus S127 (kandidaten für Rule-Files):**
+- **UI-Entry-Points doppelt beachten:** Der Plan hatte Branch-Logik nur in `beantworteById`, aber `UebungsScreen.tsx::handlePruefen` ruft direkt `pruefeAntwortJetzt`. Erst beim Staging-E2E aufgefallen. Fix: Branch-Logik in BEIDEN Store-Actions. Lesson: bei neuen Store-Features immer grepen welche UI-Komponenten welche Action rufen.
+- **Admin-Account-Deaktivierung kippt Tests:** Während S127-E2E hatte der ursprüngliche Test-Account (`wr.test@stud.gymhofwil.ch`) LP-Rollen-Leak-Verhalten (11 Sperrlist-Hits), weil Admin den Account deaktiviert hatte. Mit frischem SuS-Account (`info.test@stud.gymhofwil.ch`) = 0 Hits. Lesson: bei unerklärlichen Security-Test-Befunden zuerst Account-Status prüfen.
+- **Preview-Branch-Workflow:** GitHub Actions deployed `preview` nach `/staging/`. Pattern für Frontend-E2E-Validierung VOR Main-Merge. Memory `feedback_preview_forcepush.md` einhalten (kein Force-Push wenn WIP auf preview).
 
 ### Offene Punkte (priorisiert)
 
@@ -38,12 +46,13 @@ Branch `feature/musterloesungen-bereinigung` → `main`. Spec `docs/superpowers/
 2. **Bildbeschriftung SuS-Layout** (aus S118 erwähnt, nochmal prüfen): Labels positionieren, Input-Feld-Überlappung.
 
 **Gross (eigene Session):**
-3. **Bundle Ü — Üben-Pre-Load** (Musterlösungen-Bereinigung Phase 2): Spec unter `docs/superpowers/specs/2026-04-20-musterloesungen-bereinigung-design.md` Abschnitt Bundle Ü. Neuer Endpoint `lernplattformLadeLoesungen` für instant-Client-Korrektur im Üben-Modus.
-4. **Detaillierte SuS-Lösungen pro Teilantwort** — User-Anliegen, Memory `project_detaillierte_loesungen.md`.
+3. **Detaillierte SuS-Lösungen pro Teilantwort** — User-Anliegen, Memory `project_detaillierte_loesungen.md`.
+4. **Bildfragen Qualität + Pool-Audit** — Beveridge-Frage falsch korrigiert (S122), Labels überdecken Inhalte, generelles Pool-Inhalts-Audit nötig. Memory `project_bildfragen_qualitaet.md`.
 5. **Phase 6 Cleanup** MediaQuelle (frühestens ab 03.05.2026): Alt-Felder aus Types entfernen, Editor-UI auf MediaUpload/MediaAnzeige umbauen, mediaUtils-Hotfix zurückbauen.
 
-**Niedrig (Follow-up-Hardening aus S126 Code-Review):**
-6. **Truthy-check delete pattern** (`apps-script-code.js` `bereinigeFrageFuerSuS_`): `if (f.buchungen) delete f.buchungen` etc. überspringt falsy-aber-present Werte. Unconditional `delete` ist in JS safe. Risk niedrig (Feldtypen fast immer wahrheitsfähig), aber defensiver.
+**Niedrig:**
+6. **Truthy-check delete pattern** (`apps-script-code.js`): `if (f.buchungen) delete f.buchungen` etc. überspringt falsy-aber-present Werte. In Bundle Ü bewusst beibehalten (Verhalten-Identität zu Bundle P). Unconditional `delete` wäre defensiver — low-risk Follow-up.
+7. **Test-Accounts stabilisieren:** Fester SuS-Test-Account mit LP-Admin-Schutz, damit Staging-E2E nicht durch Account-Deaktivierungen gestört wird.
 
 ### Lehren aus S125 (für Rule-Files)
 
