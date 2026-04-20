@@ -1715,6 +1715,9 @@ var LOESUNGS_FELDER_ = {
   einfach: ['musterlosung', 'bewertungsraster'],
 
   typSpezifisch: [
+    // korrekteFormel: top-level bei allen Typen die es tragen könnten
+    // korrekt: nur top-level bei formel — bei anderen Typen ist `korrekt`
+    // ein Sub-Feld innerhalb von Arrays (optionen[].korrekt, aussagen[].korrekt, ...)
     { feld: 'korrekteFormel' },
     { feld: 'korrekt', nurBeiTyp: 'formel' },
     { feld: 'buchungen' },
@@ -1801,8 +1804,8 @@ function bereinigeFrageFuerSuS_(frage) {
 
   // Konten: feste + bedingte Sub-Felder
   if (Array.isArray(f.konten)) {
-    f.konten = f.konten.map(function(k) {
-      var c = Object.assign({}, k);
+    f.konten = f.konten.map(function(konto) {
+      var c = Object.assign({}, konto);
       for (var s = 0; s < LOESUNGS_FELDER_.konten.subFelder.length; s++) {
         delete c[LOESUNGS_FELDER_.konten.subFelder[s]];
       }
@@ -1843,6 +1846,11 @@ function bereinigeFrageFuerSuS_(frage) {
  * hier in Original-Form kopiert (Lösung), weil der Ladepfad sie mischt.
  *
  * Rückgabe enthält NUR Lösungs-Felder (keine Frage-Metadaten wie fragetext).
+ *
+ * Aufgabengruppen werden NICHT rekursiv verarbeitet — der Endpoint-Handler
+ * (lernplattformLadeLoesungen, Task 4) ist dafür verantwortlich, teilaufgaben
+ * separat zu extrahieren und als eigene Map-Keys in die LoesungsMap zu legen
+ * (flache Serialisierungs-Strategie).
  */
 function extrahiereLoesungsSlice_(frage) {
   var slice = {};
@@ -1876,7 +1884,11 @@ function extrahiereLoesungsSlice_(frage) {
     }
   }
 
-  // Reihenfolgen-kritisch: Original-Reihenfolge in slice übernehmen
+  // Reihenfolgen-kritisch: Original-Reihenfolge in slice übernehmen.
+  // paare: explizit {links, rechts} kopieren (weitere Felder am Paar-Objekt
+  // sind nicht Teil der Lösung und bleiben draussen). elemente: shallow
+  // slice — unmutiert, weil extrahiereLoesungsSlice_ keine Schreibzugriffe
+  // auf frage macht und slice nur gelesen wird.
   for (var r = 0; r < LOESUNGS_FELDER_.reihenfolge.length; r++) {
     var rf = LOESUNGS_FELDER_.reihenfolge[r];
     if (frage.typ === rf.nurBeiTyp && Array.isArray(frage[rf.feld])) {
@@ -1890,15 +1902,15 @@ function extrahiereLoesungsSlice_(frage) {
 
   // Konten: feste + bedingte Sub-Felder kopieren
   if (Array.isArray(frage.konten)) {
-    slice.konten = frage.konten.map(function(k) {
-      var out = { id: k.id };
+    slice.konten = frage.konten.map(function(konto) {
+      var out = { id: konto.id };
       for (var s = 0; s < LOESUNGS_FELDER_.konten.subFelder.length; s++) {
         var sf = LOESUNGS_FELDER_.konten.subFelder[s];
-        if (k[sf] !== undefined) out[sf] = k[sf];
+        if (konto[sf] !== undefined) out[sf] = konto[sf];
       }
       for (var bs = 0; bs < LOESUNGS_FELDER_.konten.bedingteSubFelder.length; bs++) {
         var b = LOESUNGS_FELDER_.konten.bedingteSubFelder[bs];
-        if (b.bedingung(k) && k[b.feld] !== undefined) out[b.feld] = k[b.feld];
+        if (b.bedingung(konto) && konto[b.feld] !== undefined) out[b.feld] = konto[b.feld];
       }
       return out;
     });
