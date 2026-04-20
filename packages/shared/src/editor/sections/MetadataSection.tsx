@@ -15,6 +15,8 @@ import LernzielWaehler from '../components/LernzielWaehler'
 
 interface MetadataSectionProps {
   istNeu: boolean
+  /** Frage-ID (nur bei Bearbeitung vorhandener Fragen) — wird als kleiner Hinweis angezeigt */
+  fragenId?: string
   fragetext: string
   fachbereich: Fachbereich
   setFachbereich: (v: Fachbereich) => void
@@ -63,7 +65,7 @@ interface MetadataSectionProps {
 }
 
 export default function MetadataSection({
-  istNeu, fragetext,
+  istNeu, fragenId, fragetext,
   fachbereich, setFachbereich,
   bloom, setBloom,
   thema, setThema,
@@ -116,6 +118,13 @@ export default function MetadataSection({
         </button>
       ) : undefined}
     >
+      {/* Frage-ID (Referenz fuer LP) */}
+      {fragenId && (
+        <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono mb-2 select-all">
+          ID: {fragenId}
+        </p>
+      )}
+
       {/* KI-Klassifizierungs-Ergebnis */}
       {ki.ergebnisse.klassifiziereFrage && (
         <div className="mb-3">

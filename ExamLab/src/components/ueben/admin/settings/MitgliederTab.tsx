@@ -5,6 +5,7 @@ import { uebenGruppenAdapter } from '../../../../adapters/ueben/appsScriptAdapte
 export default function MitgliederTab() {
   const { aktiveGruppe, mitglieder } = useUebenGruppenStore()
   const [einladenEmail, setEinladenEmail] = useState('')
+  const [einladenRolle, setEinladenRolle] = useState<'admin' | 'lernend'>('lernend')
   const [einladenStatus, setEinladenStatus] = useState<'idle' | 'laden' | 'ok' | 'fehler'>('idle')
   const [einladenFehler, setEinladenFehler] = useState('')
   const [generierteKodes, setGenerierteKodes] = useState<Record<string, string>>({})
@@ -36,8 +37,9 @@ export default function MitgliederTab() {
     setEinladenStatus('laden')
     setEinladenFehler('')
     try {
-      await uebenGruppenAdapter.einladen(aktiveGruppe.id, email, '')
+      await uebenGruppenAdapter.einladen(aktiveGruppe.id, email, '', einladenRolle)
       setEinladenEmail('')
+      setEinladenRolle('lernend')
       setEinladenStatus('ok')
       refreshMitglieder()
       setTimeout(() => setEinladenStatus('idle'), 2000)
@@ -153,15 +155,24 @@ export default function MitgliederTab() {
       {/* Einladen */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-5 space-y-3">
         <p className="text-sm font-medium dark:text-white">Mitglied einladen</p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <input
             type="email"
             value={einladenEmail}
             onChange={(e) => setEinladenEmail(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleEinladen() }}
             placeholder="E-Mail-Adresse"
-            className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
+            className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
           />
+          <select
+            value={einladenRolle}
+            onChange={(e) => setEinladenRolle(e.target.value as 'admin' | 'lernend')}
+            className="text-sm px-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 cursor-pointer shrink-0"
+            title="Rolle beim Einladen"
+          >
+            <option value="lernend">Lernend</option>
+            <option value="admin">Kurs-Leitung</option>
+          </select>
           <button
             onClick={handleEinladen}
             disabled={!einladenEmail.trim() || einladenStatus === 'laden'}

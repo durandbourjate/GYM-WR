@@ -345,7 +345,11 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
       )}
 
       {/* Editor Modal (Overlay) */}
-      {editorOffen && (
+      {editorOffen && (() => {
+        const aktiveIdx = aktiveFrage ? gefilterteFragen.findIndex(f => f.id === aktiveFrage.id) : -1
+        const hatVorherige = aktiveIdx > 0
+        const hatNaechste = aktiveIdx >= 0 && aktiveIdx < gefilterteFragen.length - 1
+        return (
         <UebenEditorProvider>
           <SharedFragenEditor
             frage={aktiveFrage}
@@ -359,6 +363,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
               setEditorOffen(false)
               setAktiveFrage(null)
             }}
+            onVorherigeFrage={hatVorherige ? () => setAktiveFrage(gefilterteFragen[aktiveIdx - 1]) : undefined}
+            onNaechsteFrage={hatNaechste ? () => setAktiveFrage(gefilterteFragen[aktiveIdx + 1]) : undefined}
           />
           {speichern && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/20">
@@ -368,7 +374,8 @@ export default function AdminFragenbank({ initialFach }: AdminFragenbankProps = 
             </div>
           )}
         </UebenEditorProvider>
-      )}
+        )
+      })()}
     </div>
   )
 }

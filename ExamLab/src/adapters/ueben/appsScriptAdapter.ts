@@ -52,10 +52,15 @@ class AppsScriptGruppenAdapter implements GruppenService {
     return response?.data || []
   }
 
-  async einladen(gruppeId: string, email: string, name: string): Promise<void> {
+  async einladen(
+    gruppeId: string,
+    email: string,
+    name: string,
+    rolle: 'admin' | 'lernend' = 'lernend',
+  ): Promise<void> {
     await uebenApiClient.post(
       'lernplattformEinladen',
-      { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail(), name },
+      { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail(), name, rolle },
       this.getToken()
     )
   }

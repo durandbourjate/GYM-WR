@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { createPortal } from 'react-dom'
 import type { L3Mode, L3Item } from './types'
 
 interface Props {
@@ -16,11 +17,18 @@ const MAX_LABEL_LEN = 37
 export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNewLabel, placeholder }: Props) {
   const [offen, setOffen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
+  // Portal-Position: fixed-coords der Button-Kante damit das Menü über overflow-Container hinaus rendert.
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
 
   useEffect(() => {
     if (!offen) return
     function onClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOffen(false)
+      const ziel = e.target as Node
+      if (ref.current?.contains(ziel)) return
+      if (listboxRef.current?.contains(ziel)) return
+      setOffen(false)
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setOffen(false)
@@ -30,6 +38,21 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
     return () => {
       document.removeEventListener('mousedown', onClick)
       document.removeEventListener('keydown', onKey)
+    }
+  }, [offen])
+
+  useLayoutEffect(() => {
+    if (!offen || !buttonRef.current) return
+    function updatePos() {
+      const r = buttonRef.current?.getBoundingClientRect()
+      if (r) setMenuPos({ top: r.bottom + 4, left: r.left })
+    }
+    updatePos()
+    window.addEventListener('scroll', updatePos, true)
+    window.addEventListener('resize', updatePos)
+    return () => {
+      window.removeEventListener('scroll', updatePos, true)
+      window.removeEventListener('resize', updatePos)
     }
   }, [offen])
 
@@ -55,6 +78,7 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
   return (
     <div ref={ref} className="relative inline-block">
       <button
+        ref={buttonRef}
         type="button"
         role="combobox"
         aria-haspopup="listbox"
@@ -80,8 +104,13 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
         )}
         <span className="text-[10px] opacity-60">{offen ? '▴' : '▾'}</span>
       </button>
-      {offen && (
-        <div role="listbox" className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg min-w-[220px] p-1 z-20">
+      {offen && menuPos && createPortal(
+        <div
+          ref={listboxRef}
+          role="listbox"
+          style={{ position: 'fixed', top: menuPos.top, left: menuPos.left }}
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg min-w-[220px] p-1 z-[100]"
+        >
           {items.map((it) => {
             const sel = selectedIds.includes(it.id)
             return (
@@ -121,7 +150,8 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
               </button>
             </>
           )}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   )

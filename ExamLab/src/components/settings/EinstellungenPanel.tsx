@@ -7,7 +7,6 @@ import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDe
 import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 import AdminSettings from '../ueben/admin/AdminSettings'
-import ZonenMigratorButton from './ZonenMigratorButton'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -278,9 +277,6 @@ function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten
           </button>
         )}
       </div>
-
-      {/* Einmalige Migrations-Tools (nach Abschluss entfernbar) */}
-      <ZonenMigratorButton email={email} />
 
       <SettingsField label="Admins (E-Mails, eine pro Zeile)" value={admins} onChange={setAdmins} multiline readonly={!bearbeitungsModus} />
       <SettingsField label="Klassen (kommasepariert)" value={klassen} onChange={setKlassen} readonly={!bearbeitungsModus} hinweis="z.B. 27a, 28bc29fs, 29c, 30s" />

@@ -15,7 +15,7 @@ export interface GruppenService {
   ladeGruppen(email: string): Promise<Gruppe[]>
   erstelleGruppe(gruppe: Omit<Gruppe, 'fragebankSheetId' | 'analytikSheetId'>): Promise<Gruppe>
   ladeMitglieder(gruppeId: string): Promise<Mitglied[]>
-  einladen(gruppeId: string, email: string, name: string): Promise<void>
+  einladen(gruppeId: string, email: string, name: string, rolle?: 'admin' | 'lernend'): Promise<void>
   entfernen(gruppeId: string, email: string): Promise<void>
   generiereCode(gruppeId: string, email: string): Promise<string>
   validiereCode(code: string): Promise<CodeLoginResponse>

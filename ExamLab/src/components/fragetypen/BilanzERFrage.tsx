@@ -270,7 +270,7 @@ function BilanzSeiteUI({ seite, bilanzsumme, readOnly, konten, onUpdate, onBsCha
           <div key={gruppe.id} className="rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 p-2">
             <div className="flex items-center gap-1 mb-2">
               <select value={gruppe.label} onChange={e => onUpdate(s => { s.gruppen[gi].label = e.target.value })} disabled={readOnly}
-                className={`${inputSm} flex-1 font-medium ${!readOnly && !gruppe.label ? 'border-violet-400 dark:border-violet-500' : ''}`}>
+                className={`${inputSm} flex-1 min-w-0 truncate font-medium ${!readOnly && !gruppe.label ? 'border-violet-400 dark:border-violet-500' : ''}`}>
                 <option value="">Kontenhauptgruppe...</option>
                 {KONTENHAUPTGRUPPEN.map(khg => <option key={khg} value={khg}>{khg}</option>)}
               </select>

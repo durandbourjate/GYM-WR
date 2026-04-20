@@ -58,6 +58,10 @@ export interface SharedFragenEditorProps {
   onLoeschen?: (frage: Frage) => void
   /** Aggregierte Performance-Daten für diese Frage (optional) */
   performance?: FragenPerformance
+  /** Zur vorherigen Frage wechseln (optional — zeigt Pfeil-Button). undefined = Button ausgeblendet. */
+  onVorherigeFrage?: () => void
+  /** Zur nächsten Frage wechseln (optional — zeigt Pfeil-Button). undefined = Button ausgeblendet. */
+  onNaechsteFrage?: () => void
 
   // === Slot-Props (Host-spezifische UI) ===
 
@@ -113,6 +117,7 @@ export interface SharedFragenEditorProps {
 /** Generischer Vollbild-Editor für Prüfungs-/Übungsfragen. Host wrapped mit EditorProvider. */
 export default function SharedFragenEditor({
   frage, onSpeichern, onAbbrechen, onLoeschen, performance,
+  onVorherigeFrage, onNaechsteFrage,
   anhangEditorSlot, berechtigungenSlot, poolInfoSlot, poolSyncSlot,
   berechtigungenHeaderSlot,
   PDFEditorComponent, rueckSyncSlot,
@@ -681,6 +686,29 @@ export default function SharedFragenEditor({
             {frage ? 'Frage bearbeiten' : 'Neue Frage erstellen'}
           </h2>
           <div className="flex items-center gap-2">
+            {/* Navigation zwischen Fragen (nur Fragensammlung — optional) */}
+            {(onVorherigeFrage || onNaechsteFrage) && (
+              <div className="flex items-center gap-0.5 mr-1">
+                <button
+                  onClick={onVorherigeFrage}
+                  disabled={!onVorherigeFrage}
+                  title="Vorherige Frage"
+                  aria-label="Vorherige Frage"
+                  className="px-2 py-1.5 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={onNaechsteFrage}
+                  disabled={!onNaechsteFrage}
+                  title="Nächste Frage"
+                  aria-label="Nächste Frage"
+                  className="px-2 py-1.5 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  ›
+                </button>
+              </div>
+            )}
             {/* Kompakte Geteilt-mit-Anzeige (Host-Slot, Bundle 12 K-2) */}
             {berechtigungenHeaderSlot?.({ berechtigungen, geteilt })}
             {/* Pool-Sync Buttons (Host-Slot) */}
@@ -719,6 +747,7 @@ export default function SharedFragenEditor({
           {/* Metadaten (vor Fragetyp — LP wählt zuerst Fach/Thema/Bloom/Lernziele) */}
           <MetadataSection
             istNeu={!frage}
+            fragenId={frage?.id}
             fragetext={fragetext}
             fachbereich={fachbereich} setFachbereich={setFachbereich}
             bloom={bloom} setBloom={setBloom}

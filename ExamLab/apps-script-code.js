@@ -7733,6 +7733,9 @@ function lernplattformEinladen(body) {
   var gruppeId = body.gruppeId;
   var email = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
   var name = body.name || '';
+  // Rolle: 'admin' oder 'lernend' (Default). Alles andere faellt auf 'mitglied' zurueck (= lernend im Frontend).
+  var rolleInput = String(body.rolle || '').toLowerCase();
+  var rolle = rolleInput === 'admin' ? 'admin' : 'mitglied';
 
   // Auth + Admin-Check
   var adminBody = { email: body.adminEmail || body.email, token: body.token, sessionToken: body.sessionToken };
@@ -7743,7 +7746,7 @@ function lernplattformEinladen(body) {
   }
 
   var gruppe = auth.gruppe;
-  auditLog_('einladen', auth.email, { gruppeId: gruppeId, mitglied: email, name: name });
+  auditLog_('einladen', auth.email, { gruppeId: gruppeId, mitglied: email, name: name, rolle: rolle });
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
@@ -7759,7 +7762,7 @@ function lernplattformEinladen(body) {
       }
     }
 
-    sheet.appendRow([email, name, 'mitglied', '', new Date().toISOString()]);
+    sheet.appendRow([email, name, rolle, '', new Date().toISOString()]);
     return jsonResponse({ success: true });
   } catch (e) {
     return jsonResponse({ success: false, error: e.message });
