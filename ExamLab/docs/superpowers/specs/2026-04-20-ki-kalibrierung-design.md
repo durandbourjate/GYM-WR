@@ -20,7 +20,7 @@ LP verwendet KI-Vorschläge im Frageneditor (Musterlösung, Klassifizierung, Bew
 
 - **Kein Fine-Tuning** — Claude Sonnet 4 bietet öffentlich keines, wäre auch überdimensioniert.
 - **Keine übergreifende Kalibrierung in v1** — nur pro-LP. Fachschafts-/schulweit später (Ansatz 3).
-- **Kein neues Bewertungsraster-UI** im Korrektur-Panel — bleibt Follow-Up-Arbeit. Feature funktioniert auch ohne.
+- **Kein neues Bewertungsraster-UI** im Korrektur-Panel — bleibt Follow-Up-Arbeit. Feature funktioniert auch ohne. `KorrekturFrageZeile.tsx:182–211` rendert `bewertung.kriterienBewertung` bereits *anzeigend*; das Fehlende ist die *pro-Kriterium-Edit-Fähigkeit* der LP. Solange LP nur das Total anpasst (nicht pro Kriterium), bleibt das Few-Shot-Signal auf Bewertungs-Logik-Ebene schwächer. Akzeptiert für v1, explizit als Follow-Up-Verbesserung in Abschnitt 14.
 - **Keine automatische Batch-KI-Korrektur** — LP löst KI-Vorschläge in der Korrektur wie heute pro SuS-Antwort manuell aus.
 
 ## 3. Ansatz & Mechanismus
@@ -102,10 +102,14 @@ Ein zentrales Sheet im Lernplattform/ExamLab-Spreadsheet. Eine Zeile pro KI-Call
 
 **Auth:** LP-only (`istZugelasseneLP`-Check). Queries streng gefiltert auf `lpEmail`.
 
+**`fachschaft`-Feld-Disziplin (Blocker B4):** Das Feld wird ab Tag 1 geschrieben, darf aber in v1 **nicht** für Retrieval-Filter verwendet werden (Pro-LP-Scope). Beim Schreiben: via `holeFachschaftAusEmail_(lpEmail)` live aus LP-Stammdaten auflösen, nicht aus altem Sheet-Eintrag übernehmen. Bei v3-Aktivierung (Fachschafts-Sharing) wird für jede Retrieval-Query erneut live aufgelöst — verhindert Zombie-Werte, wenn LP zwischenzeitlich Fachschaft wechselt.
+
 ## 7. Backend-Änderungen (Apps Script)
 
 ### 7.1 Sheet-Setup
-`stelleKIFeedbackSheetBereit_()` — idempotent, legt Sheet + Header an, wenn fehlt.
+`stelleKIFeedbackSheetBereit_()` — idempotent, legt Sheet + Header an, wenn fehlt. Wird bei jedem schreibenden Aufruf (`starteFeedbackEintrag_` etc.) als erstes aufgerufen, sodass alte Bestände automatisch migriert werden (keine separate Migrations-Runde nötig).
+
+**Write-Konkurrenz:** Alle Schreib-Operationen (`appendRow`, `getRange().setValues()`) werden via `LockService.getScriptLock()` serialisiert — verhindert Race-Conditions bei gleichzeitigen Calls verschiedener LP-Sessions (Apps-Script ist single-threaded pro Sheet, aber `doPost` kann parallelisieren). Lock-Timeout: 5s (Apps-Script-Default), bei Fehlschlag → Log + Fail-Open (Feature degradiert, Hauptfluss läuft).
 
 ### 7.2 Neue interne Helper
 ```js
@@ -141,8 +145,12 @@ return { daten: claudeAntwort, feedbackId }
 **`speichereFrage`** (Editor-Save): akzeptiert `offeneKIFeedbacks: [{feedbackId, wichtig}]`, schliesst alle.
 
 **`speichereKorrekturZeile`** (Korrektur-Save):
-- Persistenz-Fix: akzeptiert + speichert jetzt auch `kiPunkte`, `kiBegruendung`, `kriterienBewertung`, `quelle` (Spalten im Korrektur_-Sheet existieren bereits, werden nur nicht geschrieben — blockierender Bug)
-- Akzeptiert `offeneKIFeedbacks` analog Editor
+- Persistenz-Fix (verifiziert gegen `apps-script-code.js:6015–6056` + Header in `:5797`):
+  - Heute vorhandene Header: `kiPunkte`, `kiBegruendung`, `kiFeedback`, `quelle` → werden bei Auto-Korrektur-Initial-Setup geschrieben, aber bei manuellen LP-Updates NICHT überschrieben.
+  - `kriterienBewertung` fehlt im Header komplett → muss ergänzt werden.
+  - **Header-Migration** (idempotent, in `stelleKIFeedbackSheetBereit_()`-Pattern): beim ersten Call des Features prüft Helper `stelleKorrekturSheetHeaderBereit_()`, ob Spalte `kriterienBewertung` existiert; wenn nicht, fügt sie am rechten Rand an, setzt Header.
+  - `kriterienBewertung` wird als JSON-String serialisiert gespeichert (wie `bewertungsraster` in `fragen.ts`), beim Lesen per `JSON.parse` mit try/catch (Fallback: leeres Array).
+- Akzeptiert `offeneKIFeedbacks` analog Editor.
 
 ### 7.5 Unverändert
 - Modell bleibt `claude-sonnet-4-20250514`
@@ -167,6 +175,22 @@ return { daten: claudeAntwort, feedbackId }
 
 ### 8.1 Editor (`SharedFragenEditor` + `useKIAssistent`)
 
+**Service-Signatur-Erweiterung (Breaking Change für `EditorServices.kiAssistent`):**
+
+Heute (`useKIAssistent.ts:42–80`): `services.kiAssistent(aktion, daten) → Promise<Record<string, unknown>>`.
+
+Neu:
+```ts
+// packages/shared/src/editor/types.ts (EditorServices)
+type KIAssistentRueckgabe = {
+  ergebnis: Record<string, unknown>  // Claude-Daten wie heute
+  feedbackId?: string                 // nur bei den 4 instrumentierten Aktionen
+}
+kiAssistent(aktion: string, daten: unknown): Promise<KIAssistentRueckgabe | null>
+```
+
+Beide Host-Apps (ExamLab `PruefungFragenEditor` + Lernplattform `UebenEditorProvider`) passen ihren Service-Adapter entsprechend an. Nicht-instrumentierte Aktionen liefern `feedbackId: undefined` → kein Kalibrierungs-Pfad.
+
 **Hook erweitern:**
 ```ts
 // useKIAssistent.ts
@@ -175,6 +199,20 @@ markiereWichtig(aktion, wert)        // setzt wichtig auf letzten Eintrag der Ak
 alleOffenenFeedbacks(): {...}[]      // für Save-Payload
 reset()                              // nach Save
 ```
+
+**Race-Behandlung bei Mehrfach-Klick (Blocker B2):** Wenn LP dieselbe Aktion erneut auslöst, ohne gespeichert zu haben (z.B. dreimal „Generiere Musterlösung"), hat der alte Vorschlag keinen Wert mehr (wurde nie übernommen). Regel:
+
+```ts
+// vor neuem ausfuehren(aktion, daten):
+const altOffen = offeneKIFeedbacks.find(f => f.aktion === aktion)
+if (altOffen) {
+  void services.markiereFeedbackAlsIgnoriert(altOffen.feedbackId)  // fire-and-forget
+  offeneKIFeedbacks = offeneKIFeedbacks.filter(f => f.aktion !== aktion)
+}
+// ...dann neuen Call ausführen
+```
+
+Damit gibt es pro Aktion max. einen offenen Eintrag gleichzeitig. `markiereWichtig(aktion, wert)` bezieht sich eindeutig auf genau diesen einen Eintrag.
 
 **`ErgebnisAnzeige` erweitern:** Stern-Toggle (☆/★) rechts oben, neben Übernehmen/Verwerfen. Tooltip: „Als wichtiges Trainings-Beispiel markieren".
 
@@ -287,6 +325,8 @@ Ohne v1-Refactor später ergänzbar:
 | 4 | Freitext-Korrektur-Stern visuell übersehen | V1 ohne aktives Nudging; bei tiefer Adoption später Tooltip |
 | 5 | Token-Explosion bei 10 langen Beispielen | Hart-Cap 1500 Token, alte Beispiele fallen raus |
 | 6 | Ansatz-3-Sharing datenschutzsensibel (Arbeitsrecht?) | v1 `teilen` nur intern, readonly UI. Vor v3 formal klären. |
+| 7 | Apps-Script-Limits (Quoten: ~20k `UrlFetchApp`-Calls/Tag, 30s Call-Timeout, 6MB Response-Limit) | Few-Shot-Block + Anthropic-Latenz summiert zu längeren Roundtrips — Monitoring in `auditLog_` pro Call. Hart-Cap 1500 Token auf Few-Shot hält Response-Size unter Limit. Bei Quotenfehlern: Master-Toggle automatisch AUS schalten + LP benachrichtigen (siehe Folge-Ticket). |
+| 8 | Sheet-Lock-Kontention bei viel paralleler LP-Aktivität | `LockService.getScriptLock()` serialisiert Writes (Abschnitt 7.1). Bei Lock-Timeout → Fail-Open, Feature degradiert. |
 
 ## 13. Security-Invarianten
 
@@ -306,6 +346,9 @@ Ohne v1-Refactor später ergänzbar:
 ## 15. Erfolgsmessung
 
 Nach 4–6 Wochen produktivem Einsatz sollte messbar sein:
-- **Primär:** Akzeptanz-Trend pro Aktion — „unverändert übernommen"-Rate steigt ggü. Baseline (erste 2 Wochen ohne Few-Shot).
+
+**Baseline (implizit):** Solange der Pool pro Aktion unter `minBeispiele`-Schwelle (Default 3) liegt, läuft KI ohne Few-Shot — das IST die Baseline. Der Statistik-Tab zeigt das transparent pro Aktion (`Aktive Trainings-Beispiele: 0/3`). Die Akzeptanz-Rate in dieser Phase ist der Referenzwert.
+
+- **Primär:** Akzeptanz-Trend pro Aktion — „unverändert übernommen"-Rate steigt, nachdem `minBeispiele` erreicht ist, ggü. der Baseline-Phase derselben LP/Aktion.
 - **Sekundär:** LP-Feedback qualitativ: „KI trifft häufiger meinen Stil".
-- **Gegen-Kennzahl:** Input-Token-Cost pro KI-Call (Monitoring in Apps-Script — falls über Budget → Master-Toggle aus / limit senken).
+- **Gegen-Kennzahl:** Input-Token-Cost pro KI-Call (Monitoring in Apps-Script-Audit-Log — falls über Budget → Master-Toggle aus / `beispielAnzahl` senken).
