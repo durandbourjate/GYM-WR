@@ -10439,6 +10439,7 @@ function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return
 // ─── Task 5: Few-Shot-Retrieval + Block-Builder ───────────────────────────────
 
 function holeFewShotBeispiele_(opts) {
+  if (!opts || !opts.aktion || !opts.lpEmail) return [];
   if (opts.sortierung && opts.sortierung === 'similarity') {
     throw new Error('NotImplemented: similarity-Retrieval in v3');
   }
@@ -10537,6 +10538,7 @@ function baueFewShotBlock_(aktion, beispiele, opts) {
 
 function truncate_(s, max) { s = String(s||''); return s.length > max ? s.slice(0, max) + '...' : s; }
 function capByTokens_(s, max) {
-  var maxChars = max * 4;
+  // ~3 Chars/Token konservativ für Deutsch (Englisch wäre 4)
+  var maxChars = max * 3;
   return s.length > maxChars ? s.slice(0, maxChars) + '\n[… ältere Beispiele abgeschnitten …]' : s;
 }
