@@ -163,12 +163,17 @@ export default function PDFKorrektur({
 
     setKiLaedt(false)
 
-    if (ergebnis && !ergebnis.fehler) {
-      const punkte = typeof ergebnis.punkte === 'number' ? ergebnis.punkte : null
-      setKiPunkte(punkte)
-      const text = (ergebnis.begruendung || ergebnis.feedback || null) as string | null
-      setKiBegruendung(text)
-      setKiVorschlagGeladen(true)
+    if (ergebnis) {
+      const daten = ergebnis.ergebnis
+      if (!daten.fehler) {
+        const punkte = typeof daten.punkte === 'number' ? daten.punkte : null
+        setKiPunkte(punkte)
+        const text = (daten.begruendung || daten.feedback || null) as string | null
+        setKiBegruendung(text)
+        setKiVorschlagGeladen(true)
+      } else {
+        setKiFehler(true)
+      }
     } else {
       setKiFehler(true)
     }

@@ -43,14 +43,18 @@ export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, 
   )
 }
 
-/** Ergebnis-Anzeige mit Vorschau, Uebernehmen/Verwerfen-Buttons */
-export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorschau, onUebernehmen, onVerwerfen }: {
+/** Ergebnis-Anzeige mit Vorschau, Uebernehmen/Verwerfen-Buttons und optionalem Stern-Toggle */
+export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorschau, onUebernehmen, onVerwerfen, wichtig, onWichtigToggle }: {
   ergebnis: AktionErgebnis
   vorschauKey: string
   zusatzKey?: string
   renderVorschau?: (daten: Record<string, unknown>) => React.ReactNode
   onUebernehmen: () => void
   onVerwerfen: () => void
+  /** Ist dieses Ergebnis als wichtiges Trainings-Beispiel markiert? */
+  wichtig?: boolean
+  /** Wenn gesetzt: Stern-Toggle wird angezeigt */
+  onWichtigToggle?: () => void
 }) {
   if (ergebnis.fehler) {
     return (
@@ -88,7 +92,7 @@ export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorsch
           {ergebnis.daten[zusatzKey] as string}
         </p>
       )}
-      <div className="flex gap-2 pt-1">
+      <div className="flex gap-2 pt-1 items-center">
         <button
           onClick={onUebernehmen}
           title="Vorschlag in die Frage uebernehmen"
@@ -103,6 +107,23 @@ export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorsch
         >
           Verwerfen
         </button>
+        {onWichtigToggle && (
+          <button
+            type="button"
+            onClick={onWichtigToggle}
+            className={wichtig
+              ? 'text-amber-500 hover:text-amber-600 text-lg leading-none cursor-pointer'
+              : 'text-slate-400 hover:text-amber-400 text-lg leading-none cursor-pointer'
+            }
+            title={wichtig
+              ? 'Als wichtiges Trainings-Beispiel markiert (Klick = entfernen)'
+              : 'Als wichtiges Trainings-Beispiel markieren — fliesst priorisiert in kuenftige KI-Vorschlaege'
+            }
+            aria-label={wichtig ? 'Stern entfernen' : 'Als wichtig markieren'}
+          >
+            {wichtig ? '★' : '☆'}
+          </button>
+        )}
       </div>
     </div>
   )

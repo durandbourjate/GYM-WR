@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { FragenBewertung, KriteriumBewertung } from '../../../types/korrektur.ts'
+import type { FragenBewertung, KriteriumBewertung, KIFeedbackEintrag } from '../../../types/korrektur.ts'
 import type { Frage, FreitextFrage } from '../../../types/fragen.ts'
 import type { Antwort } from '../../../types/antworten.ts'
 import type { KorrekturErgebnis } from '../../../utils/autoKorrektur.ts'
@@ -23,7 +23,7 @@ interface Props {
   userEmail?: string
   /** Bei formativen Übungen: keine Punktevergabe anzeigen */
   istFormativ?: boolean
-  onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: 'auto' | 'ki' | 'manuell' | 'fehler'; kriterienBewertung?: KriteriumBewertung[] | null }) => void
+  onUpdate: (updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: 'auto' | 'ki' | 'manuell' | 'fehler'; kriterienBewertung?: KriteriumBewertung[] | null; offeneKIFeedbacks?: KIFeedbackEintrag[]; maxPunkte?: number }) => void
   onAudioUpload: (frageId: string, blob: Blob) => Promise<string | null>
 }
 
@@ -64,6 +64,9 @@ export default function KorrekturFrageZeile({
   onAudioUpload,
 }: Props) {
   const [kiLaedt, setKiLaedt] = useState(false)
+  // Lokaler State für offene KI-Feedback-ID und Wichtig-Markierung (nicht in FragenBewertung gespeichert)
+  const [offeneKIFeedbackId, setOffeneKIFeedbackId] = useState<string | undefined>(undefined)
+  const [kiWichtig, setKiWichtig] = useState(false)
   const aktuellePunkte = effektivePunkte(bewertung)
   const hatKiErgebnis = bewertung.quelle === 'ki' || bewertung.quelle === 'auto'
   const fragenTyp = frage.typ
@@ -102,11 +105,39 @@ export default function KorrekturFrageZeile({
           }))
         }
         onUpdate(updates)
+        // feedbackId lokal merken für späteres Speichern (kein Teil von FragenBewertung)
+        if (result?.feedbackId) {
+          setOffeneKIFeedbackId(result.feedbackId)
+          setKiWichtig(false)
+        }
       }
     } catch (err) {
       console.error('[KI-Vorschlag] Fehler:', err)
     } finally {
       setKiLaedt(false)
+    }
+  }
+
+  // Baut die KI-Persistenz-Felder für einen Save-Update zusammen.
+  // Wird bei LP-Punkte-Änderung und Geprueft-Toggle mitgesendet, damit kiPunkte/quelle persistent werden.
+  function kiPersistenzFelder(lpPunkte?: number | null): Parameters<typeof onUpdate>[0] {
+    const hatKiPunkte = bewertung.kiPunkte !== null && bewertung.kiPunkte !== undefined
+    if (!hatKiPunkte) return {}
+    const effectiveLp = lpPunkte !== undefined ? lpPunkte : bewertung.lpPunkte
+    const quelle: 'manuell' | 'ki' =
+      effectiveLp !== null && effectiveLp !== undefined && effectiveLp !== bewertung.kiPunkte
+        ? 'manuell'
+        : 'ki'
+    const feedbacks: KIFeedbackEintrag[] = offeneKIFeedbackId
+      ? [{ feedbackId: offeneKIFeedbackId, wichtig: kiWichtig }]
+      : []
+    return {
+      kiPunkte: bewertung.kiPunkte,
+      kiBegruendung: bewertung.kiBegruendung,
+      kriterienBewertung: bewertung.kriterienBewertung ?? null,
+      quelle,
+      offeneKIFeedbacks: feedbacks,
+      maxPunkte: frage.punkte,
     }
   }
 
@@ -175,6 +206,17 @@ export default function KorrekturFrageZeile({
               <span className="text-xs text-slate-500 dark:text-slate-400 italic truncate">
                 {bewertung.kiBegruendung}
               </span>
+            )}
+            {/* Stern-Toggle: Markiert diesen KI-Vorschlag als wichtiges Kalibrierungsbeispiel */}
+            {offeneKIFeedbackId && (
+              <button
+                type="button"
+                onClick={() => setKiWichtig((v) => !v)}
+                className={`text-base leading-none transition-colors cursor-pointer ${kiWichtig ? 'text-amber-500' : 'text-slate-400 hover:text-amber-400'}`}
+                title={kiWichtig ? 'Als wichtig markiert' : 'Für künftige Korrekturen als wichtig markieren'}
+              >
+                {kiWichtig ? '★' : '☆'}
+              </button>
             )}
           </div>
 
@@ -258,8 +300,13 @@ export default function KorrekturFrageZeile({
               } else {
                 const val = parseFloat(raw)
                 if (!isNaN(val) && val >= 0 && val <= bewertung.maxPunkte) {
-                  // Auto-Geprüft bei Punkte-Änderung
-                  onUpdate({ lpPunkte: val, geprueft: true })
+                  // Auto-Geprüft bei Punkte-Änderung; KI-Persistenz-Felder mitsenden
+                  onUpdate({ lpPunkte: val, geprueft: true, ...kiPersistenzFelder(val) })
+                  // feedbackId nach erfolgtem Save-Auslöser zurücksetzen
+                  if (offeneKIFeedbackId) {
+                    setOffeneKIFeedbackId(undefined)
+                    setKiWichtig(false)
+                  }
                 }
               }
             }}
@@ -304,7 +351,15 @@ export default function KorrekturFrageZeile({
             <input
               type="checkbox"
               checked={bewertung.geprueft}
-              onChange={(e) => onUpdate({ geprueft: e.target.checked })}
+              onChange={(e) => {
+                // KI-Persistenz-Felder mitsenden damit sie beim Geprüft-Save persistiert werden
+                onUpdate({ geprueft: e.target.checked, ...kiPersistenzFelder() })
+                // feedbackId nach erfolgtem Save-Auslöser zurücksetzen
+                if (offeneKIFeedbackId) {
+                  setOffeneKIFeedbackId(undefined)
+                  setKiWichtig(false)
+                }
+              }}
               className="rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 dark:bg-slate-700 cursor-pointer"
             />
             <span className="text-xs text-slate-600 dark:text-slate-300">Geprüft</span>

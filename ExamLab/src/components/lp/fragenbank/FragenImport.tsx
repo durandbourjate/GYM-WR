@@ -64,13 +64,14 @@ export default function FragenImport({ onImportiert, onSchliessen }: Props) {
         setStatus('fehler')
         return
       }
-      if ('error' in result && typeof result.error === 'string') {
-        setFehler(result.error)
+      const ergebnis = result.ergebnis
+      if ('error' in ergebnis && typeof ergebnis.error === 'string') {
+        setFehler(ergebnis.error)
         setStatus('fehler')
         return
       }
 
-      const fragen = (result.fragen ?? result.questions ?? []) as ErkannterFrage[]
+      const fragen = (ergebnis.fragen ?? ergebnis.questions ?? []) as ErkannterFrage[]
       if (!Array.isArray(fragen) || fragen.length === 0) {
         setFehler('Keine Fragen erkannt. Versuchen Sie, den Text deutlicher zu formulieren.')
         setStatus('fehler')

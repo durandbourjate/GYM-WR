@@ -5,7 +5,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
-import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent } from '../../../services/uploadApi.ts'
+import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent, markiereFeedbackAlsIgnoriert as apiMarkiereFeedbackAlsIgnoriert } from '../../../services/uploadApi.ts'
 import { ladeLernziele as apiLadeLernziele, speichereLernziel as apiSpeichereLernziel } from '../../../services/poolApi.ts'
 import { istKonfiguriert } from '../../../services/apiClient.ts'
 import { EditorProvider } from '@shared/editor/EditorContext'
@@ -13,6 +13,7 @@ import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
+import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { generateZeitpunkte, zeitpunktModellAusConfig } from '../../../utils/zeitpunktUtils.ts'
@@ -30,7 +31,7 @@ import Tooltip from '../../ui/Tooltip.tsx'
 
 interface Props {
   frage: Frage | null
-  onSpeichern: (frage: Frage) => void
+  onSpeichern: (frage: Frage, meta?: SpeichernMeta) => void
   onAbbrechen: () => void
   performance?: FragenPerformance
   /** Optional: zur vorherigen Frage der Liste springen. undefined = kein Button. */
@@ -89,6 +90,10 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
       if (!user) return null
       return apiKiAssistent(user.email, aktion, daten)
     },
+    markiereFeedbackAlsIgnoriert: async (feedbackId: string) => {
+      if (!user) return
+      await apiMarkiereFeedbackAlsIgnoriert(user.email, feedbackId)
+    },
     istKIVerfuegbar: () => istKonfiguriert(),
     istUploadVerfuegbar: () => istKonfiguriert() && !!user,
     ladeLernziele: async (_gefaess: string, fachbereich: string) => {
@@ -105,7 +110,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     <EditorProvider config={editorConfig} services={editorServices}>
       <SharedFragenEditor
         frage={frage as unknown as SharedFrage | null}
-        onSpeichern={(f) => onSpeichern(f as unknown as Frage)}
+        onSpeichern={(f, meta) => onSpeichern(f as unknown as Frage, meta)}
         onAbbrechen={onAbbrechen}
         performance={performance as any}
         onVorherigeFrage={onVorherigeFrage}

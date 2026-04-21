@@ -7,7 +7,7 @@ import { ladeAlleConfigs, ladeFragenbank, speichereConfig, loeschePruefung, spei
 import { ladeKorrektur, ladeAbgaben, starteKorrektur, ladeKorrekturFortschritt, ladeKorrekturStatus, speichereKorrekturZeile, generiereUndSendeFeedback, korrekturFreigeben, ladeKorrekturenFuerSuS, ladeKorrekturDetail } from './korrekturApi'
 import { importierePoolFragen, importiereLernziele, schreibePoolAenderung, ladeLernziele } from './poolApi'
 import { ladeKlassenlisten, setzeTeilnehmer, sendeEinladungen, validiereSchuelercode } from './klassenlistenApi'
-import { uploadMaterial, uploadAnhang, uploadAudioKommentar, kiAssistent } from './uploadApi'
+import { uploadMaterial, uploadAnhang, uploadAudioKommentar, kiAssistent, markiereFeedbackAlsIgnoriert } from './uploadApi'
 import { sendeNachricht, ladeNachrichten } from './nachrichtenApi'
 import { ladeMonitoring } from './monitoringApi'
 import { ladeTrackerDaten } from './api/trackerApi'
@@ -47,6 +47,7 @@ export const apiService = {
   uploadMaterial,
   uploadAnhang,
   kiAssistent,
+  markiereFeedbackAlsIgnoriert,
   uploadAudioKommentar,
   korrekturFreigeben,
   ladeKorrekturenFuerSuS,

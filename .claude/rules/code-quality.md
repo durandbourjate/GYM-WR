@@ -150,3 +150,45 @@ grep -rn "import.*ComponentName" src/
 ```
 
 Wenn die einzigen Treffer die Datei selbst + Tests sind: Component ist tot, richtigen Pfad suchen.
+
+## Apps-Script Sheet-Guards (S130)
+
+**Problem 1:** `sheet.getRange(1, 1, 1, sheet.getLastColumn())` wirft bei leerem Sheet (`lastColumn === 0`) einen `"number of columns must be at least 1"`-Fehler. Das passiert bei frisch angelegten Sheets oder wenn der User Header-Zeile manuell gelöscht hat.
+
+**Regel:** Alle Header-Lese-Helper cachen `lastCol` in einer Variable und schützen den `getRange`-Call:
+```js
+var lastCol = sheet.getLastColumn();
+var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+```
+
+Nachfolgende Checks auf `i >= lastCol` (statt `i >= sheet.getLastColumn()` in jeder Iteration neu zu lesen).
+
+**Problem 2:** Sheets kann ISO-String-Timestamps beim Einlesen automatisch zu Date-Objekten parsen (je nachdem wie das Sheet formatiert ist). `String(dateObj)` liefert dann `"Mon Apr 21 2026 02:18:38 GMT+0200"` — NICHT lexikographisch mit `new Date().toISOString()` vergleichbar. Resultat: Filter wie `zs < schwelleIso` liefern 0 Ergebnisse, Statistiken zeigen leer.
+
+**Regel:** Am Read-Eintrittspunkt jede Timestamp-Spalte durch `toIsoStr_`-Helper normalisieren:
+```js
+function toIsoStr_(wert) {
+  if (wert instanceof Date) return wert.toISOString();
+  return String(wert || '');
+}
+```
+
+Dann `toIsoStr_(r[col('zeitstempel')])` statt `String(r[col('zeitstempel')])`.
+
+**Problem 3:** `UrlFetchApp`-Calls aus dem Frontend mit `Content-Type: application/json` lösen bei Apps Script Web Apps einen CORS-Preflight-Request aus, der meist fehlschlägt. Das Projekt hat dafür einen zentralen `postJson`-Helper der `text/plain` nutzt — damit wird der Preflight übersprungen.
+
+**Regel:** Neue API-Clients NIEMALS eigene `fetch`-Calls schreiben. Immer über den existierenden `postJson(action, payload)`-Helper im `apiClient.ts` (oder analog). Das ist auch DRY — Retry-Logik + Error-Handling sind dort zentralisiert.
+
+**Problem 4 (Security):** Bei Apps-Script-Endpoints, die an fire-and-forget-Helpers delegieren (z.B. `markiereFeedbackAlsIgnoriert_(feedbackId)`), prüft der Helper in der Regel NICHT, ob der anfragende User den Eintrag besitzen sollte. Wenn der Dispatcher-Case nur `istZugelasseneLP(body.email)` prüft, ist das ein IDOR-Gap: jeder LP kann fremde feedbackIds manipulieren (wenn er die ID kennt).
+
+**Regel:** Dispatcher-Case zu fire-and-forget-Helpers muss zusätzlich prüfen, dass der `feedbackId` wirklich dem anfragenden LP gehört — Pattern analog zu den Schreib-Endpoints (`aktualisiereKIFeedback`, `loescheKIFeedback`):
+```js
+case 'markiereKIFeedbackAlsIgnoriert': {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({error:'Nicht autorisiert'});
+  // IDOR-Schutz: Besitzer prüfen
+  var gehoert = /* Schleife durch Sheet, match lpEmail */;
+  if (!gehoert) return jsonResponse({error:'Nicht eigener Eintrag'});
+  helper_(body.feedbackId);
+  return jsonResponse({success:true});
+}
+```

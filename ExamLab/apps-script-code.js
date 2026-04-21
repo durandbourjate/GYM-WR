@@ -1138,6 +1138,33 @@ function doPost(e) {
     case 'admin:migriereZonen':
       return migrierZonenEndpoint_(body);
 
+    // === KI-KALIBRIERUNG: Review + Statistik + Einstellungen (Task 9) ===
+    case 'listeKIFeedbacks': return listeKIFeedbacks(body);
+    case 'aktualisiereKIFeedback': return aktualisiereKIFeedback(body);
+    case 'loescheKIFeedback': return loescheKIFeedback(body);
+    case 'bulkLoescheKIFeedbacks': return bulkLoescheKIFeedbacks(body);
+    case 'kalibrierungsEinstellungen': return kalibrierungsEinstellungen(body);
+    case 'kalibrierungsStatistik': return kalibrierungsStatistik(body);
+    case 'markiereKIFeedbackAlsIgnoriert': {
+      if (!istZugelasseneLP(body.email)) return jsonResponse({success:false,error:'Nicht autorisiert'});
+      // IDOR-Schutz: prüfe dass feedbackId wirklich dem anfragenden LP gehört
+      var sheetCheck = stelleKIFeedbackSheetBereit_();
+      var rowsCheck = sheetCheck.getDataRange().getValues();
+      var hdrCheck = rowsCheck[0];
+      var idIdx = hdrCheck.indexOf('feedbackId');
+      var emailIdx = hdrCheck.indexOf('lpEmail');
+      var gehoert = false;
+      for (var i = 1; i < rowsCheck.length; i++) {
+        if (rowsCheck[i][idIdx] === body.feedbackId) {
+          gehoert = String(rowsCheck[i][emailIdx]).toLowerCase() === String(body.email).toLowerCase();
+          break;
+        }
+      }
+      if (!gehoert) return jsonResponse({success:false, error:'Nicht autorisiert (nicht eigener Eintrag)'});
+      markiereFeedbackAlsIgnoriert_(body.feedbackId);
+      return jsonResponse({success:true});
+    }
+
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -3330,6 +3357,16 @@ function speichereFrage(body) {
       sheet.appendRow(newRow);
     }
 
+    // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
+    if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
+      body.offeneKIFeedbacks.forEach(function(fb) {
+        try {
+          var final = extrahiereFinaleVersionEditor_(fb.aktion, frage);
+          schliesseFeedbackEintrag_(fb.feedbackId, final, { wichtig: !!fb.wichtig });
+        } catch(e) { console.warn('[Kalibrierung] schliesseFeedback fehlgeschlagen:', e); }
+      });
+    }
+
     return jsonResponse({ success: true, id: frage.id });
   } catch (error) {
     return jsonResponse({ error: error.message });
@@ -5011,6 +5048,49 @@ function wrapUserData(key, value) {
   return '<user_data key="' + key + '">' + safe + '</user_data>';
 }
 
+/**
+ * Injiziert Few-Shot-Prefix und erzeugt offenen Feedback-Eintrag.
+ * Nur für 4 instrumentierte Aktionen aufrufen.
+ * Rückgabe: { userPromptPrefix, feedbackId }.
+ */
+function injiziereKalibrierung_(email, aktion, daten) {
+  var out = { userPromptPrefix: '', feedbackId: null };
+  try {
+    var einst = ladeLPKalibrierungsEinstellungen_(email);
+    if (!einst.global) return out;
+    var beispiele = holeFewShotBeispiele_({
+      lpEmail: email, aktion: aktion,
+      fachbereich: daten.fachbereich, bloom: daten.bloom
+    });
+    out.userPromptPrefix = baueFewShotBlock_(aktion, beispiele);
+    out.feedbackId = starteFeedbackEintrag_({
+      lpEmail: email, aktion: aktion,
+      fachbereich: daten.fachbereich, bloom: daten.bloom,
+      inputJson: daten, kiOutputJson: {}
+    });
+  } catch (e) {
+    console.warn('[Kalibrierung] injiziereKalibrierung_ Fehler, fahre ohne Few-Shot fort:', e.message);
+  }
+  return out;
+}
+
+/** Trägt kiOutput nachträglich in offenen Feedback-Eintrag ein. Fail-open. */
+function setzeKIOutputInFeedback_(feedbackId, kiOutput) {
+  if (!feedbackId || !kiOutput) return;
+  try {
+    var sheet = stelleKIFeedbackSheetBereit_();
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var ki = hdr.indexOf('kiOutputJson'), idIdx = hdr.indexOf('feedbackId');
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][idIdx] === feedbackId) {
+        sheet.getRange(i + 1, ki + 1).setValue(JSON.stringify(kiOutput));
+        return;
+      }
+    }
+  } catch (e) { console.warn('[Kalibrierung] kiOutput-Nachtrag fehlgeschlagen:', e); }
+}
+
 function kiAssistentEndpoint(body) {
   try {
     var email = body.email;
@@ -5091,8 +5171,12 @@ function kiAssistentEndpoint(body) {
           'Fragetyp: ' + wrapUserData('typ', daten.typ || 'freitext') + '\n' +
           'Fragetext:\n' + wrapUserData('fragetext', daten.fragetext) + '\n\n' +
           'Antworte als JSON: { "musterlosung": "..." }';
+        // NEU: Kalibrierung v1 — Spec 2026-04-20
+        var _kal = injiziereKalibrierung_(email, 'generiereMusterloesung', daten);
+        userPrompt = _kal.userPromptPrefix + userPrompt;
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
-        return jsonResponse({ success: true, ergebnis: result });
+        setzeKIOutputInFeedback_(_kal.feedbackId, result);
+        return jsonResponse({ success: true, ergebnis: result, feedbackId: _kal.feedbackId });
 
       case 'generierePaare':
         if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
@@ -5192,8 +5276,12 @@ function kiAssistentEndpoint(body) {
           'Erstelle für JEDES Kriterium Niveaustufen (Abstufungen von Max-Punkten bis 0), die beschreiben, ' +
           'was für die jeweilige Punktzahl erwartet wird. Niveaustufen in 0.5- oder 1-Schritten.\n\n' +
           'Antworte als JSON: { "kriterien": [{ "beschreibung": "...", "punkte": 2, "niveaustufen": [{ "punkte": 2, "beschreibung": "Volle Leistung..." }, { "punkte": 1, "beschreibung": "Teilleistung..." }, { "punkte": 0, "beschreibung": "Nicht erfüllt..." }] }, ...] }';
+        // NEU: Kalibrierung v1 — Spec 2026-04-20
+        var _kal = injiziereKalibrierung_(email, 'bewertungsrasterGenerieren', daten);
+        userPrompt = _kal.userPromptPrefix + userPrompt;
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
-        return jsonResponse({ success: true, ergebnis: result });
+        setzeKIOutputInFeedback_(_kal.feedbackId, result);
+        return jsonResponse({ success: true, ergebnis: result, feedbackId: _kal.feedbackId });
 
       case 'bewertungsrasterVerbessern':
         if (!daten.fragetext || !daten.bewertungsraster) return jsonResponse({ error: 'Fragetext und Bewertungsraster fehlen' });
@@ -5226,8 +5314,12 @@ function kiAssistentEndpoint(body) {
           '4. Bloom-Stufe: K1 (Wissen), K2 (Verstehen), K3 (Anwenden), K4 (Analysieren), K5 (Bewerten), K6 (Erschaffen)\n' +
           '5. Tags: 3–5 relevante Schlagwörter als Array\n\n' +
           'Antworte als JSON: { "fachbereich": "VWL"|"BWL"|"Recht", "thema": "...", "unterthema": "...", "bloom": "K1"-"K6", "tags": ["...", "..."] }';
+        // NEU: Kalibrierung v1 — Spec 2026-04-20
+        var _kal = injiziereKalibrierung_(email, 'klassifiziereFrage', daten);
+        userPrompt = _kal.userPromptPrefix + userPrompt;
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
-        return jsonResponse({ success: true, ergebnis: result });
+        setzeKIOutputInFeedback_(_kal.feedbackId, result);
+        return jsonResponse({ success: true, ergebnis: result, feedbackId: _kal.feedbackId });
 
       case 'importiereFragen':
         if (!daten.text) return jsonResponse({ error: 'Text zum Importieren fehlt' });
@@ -5421,7 +5513,11 @@ function kiAssistentEndpoint(body) {
           '\nSchülerantwort:\n' + wrapUserData('antwortText', ftAntwortText) + '\n\n' +
           'Antworte ausschliesslich als JSON: ' + ftJsonFormat;
 
+        // NEU: Kalibrierung v1 — Spec 2026-04-20
+        var _kal = injiziereKalibrierung_(email, 'korrigiereFreitext', daten);
+        ftUserPrompt = _kal.userPromptPrefix + ftUserPrompt;
         var ftResult = rufeClaudeAuf(ftSysPrompt, ftUserPrompt, 1536, email);
+        setzeKIOutputInFeedback_(_kal.feedbackId, ftResult);
 
         // Punkte auf [0, maxPunkte] begrenzen
         var ftPunkte = Number(ftResult.punkte) || 0;
@@ -5452,7 +5548,7 @@ function kiAssistentEndpoint(body) {
         var ftErgebnis = { punkte: ftPunkte, begruendung: ftBegruendung };
         if (ftKriterienBewertung) ftErgebnis.kriterienBewertung = ftKriterienBewertung;
 
-        return jsonResponse({ success: true, ergebnis: ftErgebnis });
+        return jsonResponse({ success: true, ergebnis: ftErgebnis, feedbackId: _kal.feedbackId });
       }
 
       case 'korrigiereZeichnung': {
@@ -5518,31 +5614,71 @@ function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens, callerEmail) {
     throw new Error('Kein API Key verfügbar (weder pro LP noch global)');
   }
 
-  const response = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
-    method: 'post',
-    contentType: 'application/json',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    payload: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    }),
-    muteHttpExceptions: true,
-  });
+  try {
+    const response = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      payload: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: maxTokens,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+      muteHttpExceptions: true,
+    });
 
-  const status = response.getResponseCode();
-  if (status !== 200) {
-    throw new Error('Claude API ' + status + ': ' + response.getContentText().substring(0, 200));
+    const status = response.getResponseCode();
+    if (status !== 200) {
+      const errMsg = 'Claude API ' + status + ': ' + response.getContentText().substring(0, 200);
+      // Quota-Watchdog: Bei echten Rate-Limit/Quota-Fehlern Master-Toggle automatisch deaktivieren.
+      // NICHT bei 529 "overloaded" (transient, Anthropic empfiehlt Retry — kein Auto-Disable).
+      // 'quota' nur mit '.?exceeded' erlaubt (verhindert False-Positives in Claude-Antworten über Wirtschafts-Quoten).
+      if (callerEmail && /429|rate.?limit|daily.?limit|quota.?exceeded/i.test(errMsg)) {
+        auditLog_('kiAssistent:quotaExceeded', callerEmail, { aktion: 'auto-disable-attempt', status: status });
+        var watchdogLock = LockService.getScriptLock();
+        try {
+          watchdogLock.waitLock(5000);
+          var einst = ladeLPKalibrierungsEinstellungen_(callerEmail);
+          einst.global = false;
+          einst.letzterQuotaFehler = new Date().toISOString();
+          speichereLPKalibrierungsEinstellungen_(callerEmail, einst);
+        } catch(lockErr) {
+          console.warn('[Kalibrierung] Quota-Watchdog Lock-Fehler:', lockErr);
+        } finally {
+          try { watchdogLock.releaseLock(); } catch(_) {}
+        }
+      }
+      throw new Error(errMsg);
+    }
+
+    const result = JSON.parse(response.getContentText());
+    const text = result.content[0].text;
+    const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    return JSON.parse(cleaned);
+  } catch(e) {
+    // Quota-Watchdog für Netzwerk-/Transport-Fehler (z.B. UrlFetchApp-Exception).
+    // Gleiche Regex wie oben: kein 'overloaded', 'quota' nur mit '.?exceeded'.
+    if (callerEmail && /429|rate.?limit|daily.?limit|quota.?exceeded/i.test(String(e.message || e))) {
+      auditLog_('kiAssistent:quotaExceeded', callerEmail, { aktion: 'auto-disable-attempt', fehler: String(e.message || e).substring(0, 200) });
+      var watchdogLock2 = LockService.getScriptLock();
+      try {
+        watchdogLock2.waitLock(5000);
+        var einst2 = ladeLPKalibrierungsEinstellungen_(callerEmail);
+        einst2.global = false;
+        einst2.letzterQuotaFehler = new Date().toISOString();
+        speichereLPKalibrierungsEinstellungen_(callerEmail, einst2);
+      } catch(lockErr2) {
+        console.warn('[Kalibrierung] Quota-Watchdog Lock-Fehler (catch):', lockErr2);
+      } finally {
+        try { watchdogLock2.releaseLock(); } catch(_) {}
+      }
+    }
+    throw e; // Bestehender Error-Pfad bleibt erhalten
   }
-
-  const result = JSON.parse(response.getContentText());
-  const text = result.content[0].text;
-  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  return JSON.parse(cleaned);
 }
 
 /** Gemeinsamer System-Prompt für alle KI-Korrekturen */
@@ -6022,7 +6158,19 @@ function speichereKorrekturZeile(body) {
       : null;
     if (!sheet) return jsonResponse({ error: 'Korrektur-Sheet nicht gefunden' });
     const data = getSheetData(sheet);
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    // Body-Felder lesen (Defaults null = nicht ändern)
+    var kPunkte = body.kiPunkte !== undefined ? body.kiPunkte : null;
+    var kBegr = body.kiBegruendung !== undefined ? body.kiBegruendung : null;
+    var kritBew = body.kriterienBewertung !== undefined ? body.kriterienBewertung : null;
+    var quelle = body.quelle !== undefined ? body.quelle : null;
+
+    // Header-Migration: stellt sicher, dass kriterienBewertung-Spalte existiert
+    stelleKorrekturSheetHeaderBereit_(sheet);
+
+    // Headers nach Migration neu lesen
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
     const rowIndex = data.findIndex(r => r.email === schuelerEmail && r.frageId === frageId);
     if (rowIndex < 0) return jsonResponse({ error: 'Zeile nicht gefunden' });
 
@@ -6047,6 +6195,41 @@ function speichereKorrekturZeile(body) {
         sheet.getRange(1, col + 1).setValue('audioKommentarId');
       }
       sheet.getRange(row, col + 1).setValue(body.audioKommentarId || '');
+    }
+
+    // NEU: KI-Korrektur-Felder persistieren (Persistenz-Fix, Audit-Befund)
+    function setIfPresent(colName, wert) {
+      if (wert === null || wert === undefined) return;
+      var idx = headers.indexOf(colName);
+      if (idx < 0) {
+        // Spalte fehlt — am Ende anhängen
+        idx = sheet.getLastColumn();
+        sheet.getRange(1, idx + 1).setValue(colName);
+        headers = sheet.getRange(1, 1, 1, idx + 1).getValues()[0];
+      }
+      var schreibWert = (colName === 'kriterienBewertung') ? JSON.stringify(wert) : wert;
+      sheet.getRange(row, idx + 1).setValue(schreibWert);
+    }
+    setIfPresent('kiPunkte', kPunkte);
+    setIfPresent('kiBegruendung', kBegr);
+    setIfPresent('kriterienBewertung', kritBew);
+    setIfPresent('quelle', quelle);
+
+    // Kalibrierungs-Feedbacks schliessen (analog speichereFrage, Task 8)
+    // Nur schliessen wenn LP tatsächlich bewertet hat (verhindert verfälschte Trainings-Signale)
+    if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)
+        && body.lpPunkte !== undefined && body.lpPunkte !== null) {
+      body.offeneKIFeedbacks.forEach(function(fb) {
+        try {
+          var final = {
+            punkte: body.lpPunkte,
+            begruendung: body.lpKommentar,
+            kriterienBewertung: kritBew,
+            maxPunkte: body.maxPunkte || null
+          };
+          schliesseFeedbackEintrag_(fb.feedbackId, final, { wichtig: !!fb.wichtig });
+        } catch(e) { console.warn('[Kalibrierung] Korrektur-schliesseFeedback:', e); }
+      });
     }
 
     return jsonResponse({ success: true });
@@ -10079,4 +10262,675 @@ function migrierZonenEndpoint_(body) {
   } catch (e) {
     return jsonResponse({ error: 'Zonen-Migration fehlgeschlagen: ' + e.message });
   }
+}
+
+// ============================================================
+// KI-Kalibrierung — Sheet-Setup-Helper (2026-04-20)
+// ============================================================
+
+/**
+ * Idempotent: legt KIFeedback-Sheet mit Headers an, falls fehlt.
+ * Wird bei jedem schreibenden Feedback-Call als erstes aufgerufen.
+ */
+function stelleKIFeedbackSheetBereit_() {
+  var ss = SpreadsheetApp.openById(CONFIGS_ID);
+  var sheet = ss.getSheetByName('KIFeedback');
+  var headers = ['feedbackId','zeitstempel','lpEmail','fachschaft','aktion','fachbereich',
+                 'bloom','inputJson','kiOutputJson','finaleVersionJson','diffScore',
+                 'status','qualifiziert','wichtig','aktiv','teilen','embeddingHash'];
+  if (!sheet) {
+    sheet = ss.insertSheet('KIFeedback');
+    sheet.appendRow(headers);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  var lastCol = sheet.getLastColumn();
+  var vorhandene = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  for (var i = 0; i < headers.length; i++) {
+    if (vorhandene[i] !== headers[i]) {
+      if (i >= lastCol) {
+        // Spalte fehlt am Ende: ergänzen
+        sheet.getRange(1, i + 1).setValue(headers[i]);
+      } else {
+        console.log('[KIFeedback] Header-Mismatch an Position ' + i + ': erwartet=' + headers[i] + ', gefunden=' + vorhandene[i]);
+      }
+    }
+  }
+  return sheet;
+}
+
+/**
+ * Idempotent: ergänzt fehlenden `kriterienBewertung`-Header im Korrektur_-Sheet einer Prüfung.
+ * Aufgerufen von speichereKorrekturZeile vor dem Write.
+ */
+function stelleKorrekturSheetHeaderBereit_(korrekturSheet) {
+  var lastCol = korrekturSheet.getLastColumn();
+  var headers = lastCol > 0 ? korrekturSheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  if (headers.indexOf('kriterienBewertung') === -1) {
+    var neueSpalteIdx = lastCol + 1;
+    korrekturSheet.getRange(1, neueSpalteIdx).setValue('kriterienBewertung');
+  }
+}
+
+// ============================================================
+// KI-Kalibrierung — LP-Einstellungen Load/Save (2026-04-20)
+// ============================================================
+
+// Design-Entscheid (B5): Default global=false.
+// Begründung: Feature ist in v1 dark-launched. LP muss im Settings-Tab bewusst
+// aktivieren. Sobald AN: Feedback-Logging läuft sofort, Few-Shot-Injection
+// greift aber erst ab minBeispiele (Default 3) qualifizierten Paaren — das ist
+// die implizite Kalt-Start-Baseline (Spec Abschnitt 15). User-Onboarding via
+// Statistik-Tab-Empty-State: "Aktiviere KI-Kalibrierung, um von deinen
+// Korrekturen zu lernen".
+var KALIBRIERUNG_DEFAULTS = {
+  global: false,                    // Default AUS — LP schaltet explizit ein (B5)
+  aktionenAktiv: {
+    generiereMusterloesung: true,
+    klassifiziereFrage: true,
+    bewertungsrasterGenerieren: true,
+    korrigiereFreitext: true
+  },
+  minBeispiele: 3,
+  beispielAnzahl: 5
+};
+
+/**
+ * Lädt die Kalibrierungs-Einstellungen einer LP aus dem LPEinstellungen-Sheet.
+ * Fehlende Felder werden mit KALIBRIERUNG_DEFAULTS aufgefüllt (Object.assign).
+ * Falls Sheet fehlt oder LP-Zeile nicht gefunden → KALIBRIERUNG_DEFAULTS.
+ */
+function ladeLPKalibrierungsEinstellungen_(lpEmail) {
+  var emailLower = String(lpEmail || '').toLowerCase();
+  if (emailLower === '') return KALIBRIERUNG_DEFAULTS;
+  var ss = SpreadsheetApp.openById(CONFIGS_ID);
+  var sheet = ss.getSheetByName('LPEinstellungen');
+  if (!sheet) return KALIBRIERUNG_DEFAULTS;
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var emailIdx = headers.indexOf('email');
+  var konfigIdx = headers.indexOf('kalibrierung');
+  if (konfigIdx === -1) return KALIBRIERUNG_DEFAULTS;
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][emailIdx]).toLowerCase() === emailLower) {
+      try {
+        var parsed = JSON.parse(rows[i][konfigIdx] || '{}');
+        return Object.assign({}, KALIBRIERUNG_DEFAULTS, parsed);
+      } catch(e) { return KALIBRIERUNG_DEFAULTS; }
+    }
+  }
+  return KALIBRIERUNG_DEFAULTS;
+}
+
+/**
+ * Speichert die Kalibrierungs-Einstellungen einer LP als JSON-String im LPEinstellungen-Sheet.
+ * Legt Sheet + Headers an falls noch nicht vorhanden (idempotent).
+ * Aktualisiert bestehende LP-Zeile oder hängt neue Zeile an.
+ */
+function speichereLPKalibrierungsEinstellungen_(lpEmail, konfig) {
+  var emailLower = String(lpEmail || '').toLowerCase();
+  if (emailLower === '') {
+    console.warn('[Kalibrierung] speichere ohne lpEmail, ignoriert');
+    return;
+  }
+  var ss = SpreadsheetApp.openById(CONFIGS_ID);
+  var sheet = ss.getSheetByName('LPEinstellungen');
+  if (!sheet) {
+    sheet = ss.insertSheet('LPEinstellungen');
+    sheet.appendRow(['email', 'kalibrierung', 'letzteAenderung']);
+  }
+  var lastCol = sheet.getLastColumn();
+  var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  var emailIdx = headers.indexOf('email');
+  if (emailIdx === -1) {
+    throw new Error('LPEinstellungen-Sheet hat keine email-Spalte — Setup fehlerhaft');
+  }
+  var konfigIdx = headers.indexOf('kalibrierung');
+  if (konfigIdx === -1) {
+    konfigIdx = lastCol; // 0-basierter Index für neue Spalte
+    sheet.getRange(1, lastCol + 1).setValue('kalibrierung');
+  }
+  var rows = sheet.getDataRange().getValues();
+  var konfigStr = JSON.stringify(konfig);
+  var jetzt = new Date().toISOString();
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][emailIdx]).toLowerCase() === emailLower) {
+      sheet.getRange(i + 1, konfigIdx + 1).setValue(konfigStr);
+      var zeitIdx = headers.indexOf('letzteAenderung');
+      if (zeitIdx >= 0) sheet.getRange(i + 1, zeitIdx + 1).setValue(jetzt);
+      return;
+    }
+  }
+  sheet.appendRow([lpEmail, konfigStr, jetzt]);
+}
+
+// ============================================================
+// KI-Kalibrierung — Feedback-Lifecycle (2026-04-20)
+// ============================================================
+
+/** Neue offene Zeile ins KIFeedback-Sheet. Rückgabe: feedbackId. */
+function starteFeedbackEintrag_(args) {
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var feedbackId = 'fb_' + new Date().toISOString().slice(0,10) + '_' + Utilities.getUuid().slice(0,8);
+    var fachschaft = holeFachschaftAusEmail_(args.lpEmail) || '';
+    sheet.appendRow([
+      feedbackId,
+      new Date().toISOString(),
+      args.lpEmail,
+      fachschaft,
+      args.aktion,
+      args.fachbereich || '',
+      args.bloom || '',
+      JSON.stringify(args.inputJson || {}),
+      JSON.stringify(args.kiOutputJson || {}),
+      '',       // finaleVersionJson
+      '',       // diffScore
+      'offen',
+      false,    // qualifiziert
+      false,    // wichtig
+      true,     // aktiv
+      'privat', // teilen
+      ''        // embeddingHash
+    ]);
+    return feedbackId;
+  } catch (e) {
+    console.warn('[KIFeedback] starteFeedbackEintrag_ Lock-Fehler:', e);
+    return null;
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+function holeFachschaftAusEmail_(email) {
+  try {
+    var lpInfo = getLPInfo(email);  // existierender Helper
+    return lpInfo && lpInfo.fachschaft ? lpInfo.fachschaft : '';
+  } catch(e) { return ''; }
+}
+
+function schliesseFeedbackEintrag_(feedbackId, finaleVersionJson, options) {
+  options = options || {};
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var col = function(name) { return headers.indexOf(name); };
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][col('feedbackId')] === feedbackId) {
+        if (rows[i][col('status')] !== 'offen') {
+          console.log('[KIFeedback] Eintrag bereits geschlossen:', feedbackId);
+          return;
+        }
+        var aktion = rows[i][col('aktion')];
+        var kiOutput = safeParse_(rows[i][col('kiOutputJson')]);
+        var diff = berechneDiffScore_(aktion, kiOutput, finaleVersionJson);
+        var wichtig = options.wichtig || false;
+        var qualifiziert = istQualifiziert_(aktion, diff) || wichtig;
+        var rowIdx = i + 1;
+        sheet.getRange(rowIdx, col('finaleVersionJson') + 1).setValue(JSON.stringify(finaleVersionJson));
+        sheet.getRange(rowIdx, col('diffScore') + 1).setValue(diff);
+        sheet.getRange(rowIdx, col('status') + 1).setValue('geschlossen');
+        sheet.getRange(rowIdx, col('qualifiziert') + 1).setValue(qualifiziert);
+        sheet.getRange(rowIdx, col('wichtig') + 1).setValue(wichtig);
+        return;
+      }
+    }
+    console.warn('[KIFeedback] feedbackId nicht gefunden:', feedbackId);
+  } catch(e) {
+    console.warn('[KIFeedback] schliesseFeedbackEintrag_ Lock-Fehler:', e);
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+function markiereFeedbackAlsIgnoriert_(feedbackId) {
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var statusIdx = headers.indexOf('status');
+    var idIdx = headers.indexOf('feedbackId');
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][idIdx] === feedbackId && rows[i][statusIdx] === 'offen') {
+        sheet.getRange(i + 1, statusIdx + 1).setValue('ignoriert');
+        return;
+      }
+    }
+    console.log('[KIFeedback] ignoriert: Eintrag nicht offen oder nicht gefunden:', feedbackId);
+  } catch(e) {
+    console.warn('[KIFeedback] markiereFeedbackAlsIgnoriert_ Lock-Fehler:', e);
+  } finally {
+    try { lock.releaseLock(); } catch(e){}
+  }
+}
+
+// ─── Task 4: Heuristik — gewichtete Diff-Score + Qualifikation ───────────────
+
+function berechneDiffScore_(aktion, ki, lp) {
+  if (!ki || !lp) return 1;
+  switch (aktion) {
+    case 'generiereMusterloesung':
+    case 'bewertungsrasterGenerieren':
+      return levenshteinNorm_(extrahiereText_(aktion, ki), extrahiereText_(aktion, lp));
+    case 'klassifiziereFrage':
+      var w = { fachbereich: 0.4, bloom: 0.25, thema: 0.25, unterthema: 0.1 };
+      var diff = 0;
+      for (var k in w) if ((ki[k] || '') !== (lp[k] || '')) diff += w[k];
+      return Math.min(1, diff);
+    case 'korrigiereFreitext':
+      var maxP = ki.maxPunkte || lp.maxPunkte || 1;
+      var punkteDiff = Math.abs((ki.punkte || 0) - (lp.punkte || 0)) / Math.max(maxP, 1);
+      var textDiff = levenshteinNorm_(ki.begruendung || '', lp.begruendung || '');
+      return 0.6 * Math.min(1, punkteDiff) + 0.4 * textDiff;
+    default:
+      return 0.5;
+  }
+}
+
+function istQualifiziert_(aktion, diff) {
+  return diff === 0 || diff >= 0.15;
+}
+
+function extrahiereText_(aktion, daten) {
+  if (aktion === 'generiereMusterloesung') return daten.loesung || daten.musterlosung || '';
+  if (aktion === 'bewertungsrasterGenerieren') {
+    if (Array.isArray(daten.kriterien)) {
+      var sortiert = daten.kriterien.slice().sort(function(a, b) {
+        return String(a.beschreibung || '').localeCompare(String(b.beschreibung || ''));
+      });
+      return sortiert.map(function(k) {
+        return (k.beschreibung || '') + (k.punkte || '') + (Array.isArray(k.niveaustufen) ? k.niveaustufen.map(function(n){return n.beschreibung;}).join('|') : '');
+      }).join('\n');
+    }
+    return JSON.stringify(daten);
+  }
+  return JSON.stringify(daten);
+}
+
+function levenshteinNorm_(a, b) {
+  a = String(a); b = String(b);
+  if (!a && !b) return 0;
+  if (!a || !b) return 1;
+  var m = a.length, n = b.length;
+  var dp = new Array(n + 1);
+  for (var j = 0; j <= n; j++) dp[j] = j;
+  for (var i = 1; i <= m; i++) {
+    var prev = dp[0]; dp[0] = i;
+    for (var j = 1; j <= n; j++) {
+      var cur = dp[j];
+      dp[j] = a[i-1] === b[j-1] ? prev : Math.min(prev, dp[j-1], dp[j]) + 1;
+      prev = cur;
+    }
+  }
+  return dp[n] / Math.max(m, n);
+}
+
+function testHeuristik_() {
+  // Levenshtein-Norm
+  console.assert(levenshteinNorm_('abc', 'abc') === 0, 'gleicher String = 0');
+  console.assert(levenshteinNorm_('', '') === 0, 'beide leer = 0');
+  console.assert(levenshteinNorm_('abc', 'abd') < 0.4, '1 Zeichen Diff bei 3 = ~0.33');
+  console.assert(levenshteinNorm_('', 'abc') === 1, 'eine leer = 1');
+  var lang = 'A'.repeat ? 'A'.repeat(100) : new Array(101).join('A');
+  var lang2 = 'B'.repeat ? 'B'.repeat(100) : new Array(101).join('B');
+  console.assert(levenshteinNorm_(lang, lang2) === 1, '100 Ersetzungen = 1');
+
+  // Musterlösung — Mikro-Edit darf NICHT qualifizieren
+  var diff1 = berechneDiffScore_('generiereMusterloesung',
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes.'},
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes'});
+  console.assert(!istQualifiziert_('generiereMusterloesung', diff1), 'Mikro-Edit nicht qualifiziert');
+
+  // Musterlösung — deutlicher Rewrite qualifiziert
+  var diff2 = berechneDiffScore_('generiereMusterloesung',
+    {loesung:'BIP misst die Wirtschaftsleistung eines Landes.'},
+    {loesung:'BIP = Bruttoinlandsprodukt. Misst Wert aller produzierten Güter und Dienstleistungen in einem Jahr.'});
+  console.assert(istQualifiziert_('generiereMusterloesung', diff2), 'Rewrite qualifiziert');
+
+  // klassifiziereFrage — fachbereich geändert (0.4) → qualifiziert
+  var diff3 = berechneDiffScore_('klassifiziereFrage',
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:''},
+    {fachbereich:'BWL', bloom:'K2', thema:'BIP', unterthema:''});
+  console.assert(Math.abs(diff3 - 0.4) < 0.001, 'fachbereich-Diff = 0.4');
+  console.assert(istQualifiziert_('klassifiziereFrage', diff3), 'fachbereich-Change qualifiziert');
+
+  // klassifiziereFrage — nur unterthema geändert (0.1) → NICHT qualifiziert
+  var diff4 = berechneDiffScore_('klassifiziereFrage',
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:''},
+    {fachbereich:'VWL', bloom:'K2', thema:'BIP', unterthema:'nominal vs. real'});
+  console.assert(!istQualifiziert_('klassifiziereFrage', diff4), 'nur unterthema nicht qualifiziert');
+
+  // korrigiereFreitext — 2 Punkte von 10 diff → qualifiziert
+  var diff5 = berechneDiffScore_('korrigiereFreitext',
+    {punkte: 5, maxPunkte: 10, begruendung: 'Gut.'},
+    {punkte: 7, maxPunkte: 10, begruendung: 'Gut.'});
+  console.assert(diff5 > 0.1, 'Punktediff signifikant');
+  console.assert(istQualifiziert_('korrigiereFreitext', diff5), 'Punktediff qualifiziert');
+
+  console.log('Alle Heuristik-Tests bestanden.');
+}
+
+function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
+
+// ─── Task 5: Few-Shot-Retrieval + Block-Builder ───────────────────────────────
+
+function holeFewShotBeispiele_(opts) {
+  if (!opts || !opts.aktion || !opts.lpEmail) return [];
+  if (opts.sortierung && opts.sortierung === 'similarity') {
+    throw new Error('NotImplemented: similarity-Retrieval in v3');
+  }
+  var einst = ladeLPKalibrierungsEinstellungen_(opts.lpEmail);
+  if (!einst.global) return [];
+  if (!einst.aktionenAktiv[opts.aktion]) return [];
+
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  var headers = rows[0];
+  var col = function(n) { return headers.indexOf(n); };
+
+  var passend = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (r[col('lpEmail')] !== opts.lpEmail) continue;
+    if (r[col('aktion')] !== opts.aktion) continue;
+    if (r[col('status')] !== 'geschlossen') continue;
+    if (r[col('qualifiziert')] !== true) continue;
+    if (r[col('aktiv')] !== true) continue;
+    if (opts.fachbereich && r[col('fachbereich')] !== opts.fachbereich) continue;
+    passend.push({
+      zeitstempel: r[col('zeitstempel')],
+      bloom: r[col('bloom')],
+      wichtig: r[col('wichtig')],
+      inputJson: safeParse_(r[col('inputJson')]),
+      kiOutputJson: safeParse_(r[col('kiOutputJson')]),
+      finaleVersionJson: safeParse_(r[col('finaleVersionJson')])
+    });
+  }
+
+  passend.sort(function(a, b) {
+    if (a.wichtig !== b.wichtig) return a.wichtig ? -1 : 1;
+    return String(b.zeitstempel).localeCompare(String(a.zeitstempel));
+  });
+
+  if (passend.length < einst.minBeispiele) return [];
+
+  return passend.slice(0, einst.beispielAnzahl);
+}
+
+function baueFewShotBlock_(aktion, beispiele, opts) {
+  if (!beispiele || beispiele.length === 0) return '';
+  var token_cap = 1500;
+  var lines;
+  switch (aktion) {
+    case 'generiereMusterloesung':
+      lines = beispiele.map(function(b, i) {
+        return 'Beispiel ' + (i+1) + ' (' + (b.inputJson.fachbereich || '?') + ', ' + (b.bloom || '?') + '):\n' +
+               'Frage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Musterlösung: "' + truncate_(b.finaleVersionJson.loesung || b.finaleVersionJson.musterlosung || '', 400) + '"';
+      });
+      return '--- ' + beispiele.length + ' Beispiele aus deinen bisherigen Musterlösungen ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'klassifiziereFrage':
+      lines = beispiele.map(function(b, i) {
+        var f = b.finaleVersionJson;
+        return 'Beispiel ' + (i+1) + ':\nFrage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Deine Klassifikation: Fach=' + (f.fachbereich||'?') + ', Thema=' + (f.thema||'?') +
+               ', Bloom=' + (f.bloom||'?') + (f.unterthema ? ', Unterthema=' + f.unterthema : '');
+      });
+      return '--- Beispiele deiner bisherigen Klassifikationen ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'bewertungsrasterGenerieren':
+      lines = beispiele.map(function(b, i) {
+        return 'Beispiel ' + (i+1) + ':\nFrage: "' + truncate_(b.inputJson.fragetext || '', 200) + '"\n' +
+               'Dein Bewertungsraster: ' + truncate_(JSON.stringify(b.finaleVersionJson.kriterien || b.finaleVersionJson), 500);
+      });
+      return '--- Beispiele deiner Bewertungsraster ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    case 'korrigiereFreitext':
+      // PRIVACY: Keine SuS-Antworten! Nur Bewertungs-Logik.
+      lines = beispiele.map(function(b, i) {
+        var f = b.finaleVersionJson, k = b.kiOutputJson;
+        var raster = b.inputJson.bewertungsraster;
+        return 'Beispiel ' + (i+1) + ' (Bewertungsraster-basiert):\n' +
+               'Raster: ' + truncate_(JSON.stringify(raster || []), 300) + '\n' +
+               'KI hatte: ' + (k.punkte||'?') + 'P — "' + truncate_(k.begruendung||'', 150) + '"\n' +
+               'Du gabst: ' + (f.punkte||'?') + 'P — "' + truncate_(f.begruendung||'', 150) + '"';
+      });
+      return '--- Beispiele deiner Korrektur-Entscheidungen (ohne SuS-Antworten) ---\n\n' +
+             capByTokens_(lines.join('\n\n'), token_cap) +
+             '\n\n--- Ende der Beispiele ---\n\n';
+
+    default:
+      return '';
+  }
+}
+
+function truncate_(s, max) { s = String(s||''); return s.length > max ? s.slice(0, max) + '...' : s; }
+function capByTokens_(s, max) {
+  // ~3 Chars/Token konservativ für Deutsch (Englisch wäre 4)
+  var maxChars = max * 3;
+  return s.length > maxChars ? s.slice(0, maxChars) + '\n[… ältere Beispiele abgeschnitten …]' : s;
+}
+
+// ─── Task 7: Finale-Version-Extraktion für schliesseFeedbackEintrag_ ─────────
+
+function extrahiereFinaleVersionEditor_(aktion, frage) {
+  switch (aktion) {
+    case 'generiereMusterloesung':
+      return { loesung: frage.musterlosung || '' };
+    case 'klassifiziereFrage':
+      return {
+        fachbereich: frage.fachbereich || '',
+        thema: frage.thema || '',
+        bloom: frage.bloom || '',
+        unterthema: frage.unterthema || ''
+      };
+    case 'bewertungsrasterGenerieren':
+      return { kriterien: frage.bewertungsraster || [] };
+    default:
+      return frage;
+  }
+}
+
+// ─── Task 9: Review + Statistik + Einstellungs-Endpoints (2026-04-20) ─────────
+
+function listeKIFeedbacks(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  var hdr = rows[0];
+  var c = function(n){return hdr.indexOf(n);};
+  var seite = body.seite || 0;
+  var proSeite = body.proSeite || 50;
+  var f = body.filter || {};
+
+  var result = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+    if (f.aktion && r[c('aktion')] !== f.aktion) continue;
+    if (f.fachbereich && r[c('fachbereich')] !== f.fachbereich) continue;
+    if (f.status && r[c('status')] !== f.status) continue;
+    if (f.nurWichtige && !r[c('wichtig')]) continue;
+    if (f.von && toIsoStr_(r[c('zeitstempel')]) < f.von) continue;
+    if (f.bis && toIsoStr_(r[c('zeitstempel')]) > f.bis) continue;
+
+    var inputParsed = safeParse_(r[c('inputJson')]);
+    // Privacy (W4): SuS-Antwort im Review-Tab truncaten — Screen-Sharing-Risiko
+    if (r[c('aktion')] === 'korrigiereFreitext' && inputParsed.antwortText) {
+      var voll = String(inputParsed.antwortText);
+      inputParsed.antwortText = voll.length > 200 ? voll.slice(0, 200) + '… [gekürzt]' : voll;
+    }
+    result.push({
+      feedbackId: r[c('feedbackId')],
+      zeitstempel: r[c('zeitstempel')],
+      aktion: r[c('aktion')],
+      fachbereich: r[c('fachbereich')],
+      bloom: r[c('bloom')],
+      inputJson: inputParsed,
+      kiOutputJson: safeParse_(r[c('kiOutputJson')]),
+      finaleVersionJson: safeParse_(r[c('finaleVersionJson')]),
+      diffScore: r[c('diffScore')],
+      status: r[c('status')],
+      qualifiziert: r[c('qualifiziert')],
+      wichtig: r[c('wichtig')],
+      aktiv: r[c('aktiv')]
+    });
+  }
+  result.sort(function(a,b){ return String(b.zeitstempel).localeCompare(String(a.zeitstempel)); });
+  var gesamt = result.length;
+  var start = seite * proSeite;
+  return jsonResponse({success:true, data:{eintraege: result.slice(start, start + proSeite), gesamt: gesamt}});
+}
+
+function aktualisiereKIFeedback(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][c('feedbackId')] !== body.feedbackId) continue;
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) {
+        return jsonResponse({success:false, error:'Nicht autorisiert (nicht eigener Eintrag)'});
+      }
+      if (body.wichtig !== undefined) sheet.getRange(i+1, c('wichtig')+1).setValue(!!body.wichtig);
+      if (body.aktiv !== undefined) sheet.getRange(i+1, c('aktiv')+1).setValue(!!body.aktiv);
+      return jsonResponse({success:true});
+    }
+    return jsonResponse({success:false, error:'Eintrag nicht gefunden'});
+  } catch(e) { console.warn('[KIFeedback] aktualisiere Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function loescheKIFeedback(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][c('feedbackId')] !== body.feedbackId) continue;
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) {
+        return jsonResponse({success:false, error:'Nicht autorisiert'});
+      }
+      sheet.deleteRow(i + 1);
+      auditLog_('kiFeedback:delete', body.email, {feedbackId: body.feedbackId});
+      return jsonResponse({success:true});
+    }
+    return jsonResponse({success:false, error:'Nicht gefunden'});
+  } catch(e) { console.warn('[KIFeedback] loesche Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function bulkLoescheKIFeedbacks(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var filter = body.filter || {};
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    var zuLoeschen = [];
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+      if (filter.status && rows[i][c('status')] !== filter.status) continue;
+      if (filter.aelter_als) {
+        if (toIsoStr_(rows[i][c('zeitstempel')]) > filter.aelter_als) continue;
+      }
+      zuLoeschen.push(i + 1);
+    }
+    zuLoeschen.sort(function(a,b){return b-a;}).forEach(function(rowNum){
+      sheet.deleteRow(rowNum);
+    });
+    auditLog_('kiFeedback:bulkDelete', body.email, {anzahl: zuLoeschen.length, filter: filter});
+    return jsonResponse({success:true, data:{geloescht: zuLoeschen.length}});
+  } catch(e) { console.warn('[KIFeedback] bulk-loesche Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function kalibrierungsEinstellungen(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  if (body.modus === 'laden') {
+    var konfig = ladeLPKalibrierungsEinstellungen_(body.email);
+    // Quota-Warn-Flag: innerhalb von 24h nach letztem Quota-Fehler anzeigen
+    if (konfig.letzterQuotaFehler) {
+      var stundenSeitFehler = (Date.now() - new Date(konfig.letzterQuotaFehler).getTime()) / (60*60*1000);
+      konfig.zeigeQuotaWarnung = stundenSeitFehler < 24;
+    }
+    return jsonResponse({success:true, data: konfig});
+  }
+  if (body.modus === 'speichern') {
+    if (!body.konfig) return jsonResponse({success:false, error:'konfig fehlt'});
+    speichereLPKalibrierungsEinstellungen_(body.email, body.konfig);
+    return jsonResponse({success:true});
+  }
+  return jsonResponse({success:false, error:'Unbekannter modus'});
+}
+
+function kalibrierungsStatistik(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var tage = body.zeitraum_tage || 30;
+  var schwelleIso = new Date(Date.now() - tage*24*60*60*1000).toISOString();
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  var hdr = rows[0];
+  var c = function(n){return hdr.indexOf(n);};
+
+  var aktionenStats = {};
+  ['generiereMusterloesung','klassifiziereFrage','bewertungsrasterGenerieren','korrigiereFreitext'].forEach(function(a){
+    aktionenStats[a] = { vorschlaege:0, unveraendert:0, leicht:0, deutlich:0, verworfen:0, aktive:0, wichtige:0 };
+  });
+
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+    var a = r[c('aktion')];
+    if (!aktionenStats[a]) continue;
+    var zs = toIsoStr_(r[c('zeitstempel')]);
+    if (zs < schwelleIso) continue;
+    aktionenStats[a].vorschlaege++;
+    var st = r[c('status')];
+    var diff = Number(r[c('diffScore')]) || 0;
+    if (st === 'ignoriert') aktionenStats[a].verworfen++;
+    else if (st === 'geschlossen') {
+      if (diff === 0) aktionenStats[a].unveraendert++;
+      else if (diff < 0.15) aktionenStats[a].leicht++;
+      else aktionenStats[a].deutlich++;
+    }
+    if (r[c('qualifiziert')] === true && r[c('aktiv')] === true) aktionenStats[a].aktive++;
+    if (r[c('wichtig')] === true) aktionenStats[a].wichtige++;
+  }
+  return jsonResponse({success:true, data:{aktionen: aktionenStats, zeitraum_tage: tage}});
+}
+
+/** Zeitstempel aus Sheet robust zu ISO-String normieren.
+ *  Sheets kann ISO-Strings beim Lesen zu Date-Objekten parsen.
+ *  String(dateObj) liefert dann "Mon Apr 21 2026 ..." — nicht
+ *  lexikographisch mit ISO-Strings vergleichbar. */
+function toIsoStr_(wert) {
+  if (wert instanceof Date) return wert.toISOString();
+  return String(wert || '');
 }

@@ -52,7 +52,7 @@ export function useKorrekturActions({
   }, [batchLaeuft, userEmail, pruefungId, setKorrektur])
 
   const handleBewertungUpdate = useCallback((schuelerEmail: string, frageId: string, updates: {
-    lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: FragenBewertung['quelle']
+    lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: FragenBewertung['quelle']; kriterienBewertung?: import('../../../types/korrektur.ts').KriteriumBewertung[] | null; offeneKIFeedbacks?: import('../../../types/korrektur.ts').KIFeedbackEintrag[]; maxPunkte?: number
   }) => {
     setKorrektur((prev) => {
       if (!prev) return prev

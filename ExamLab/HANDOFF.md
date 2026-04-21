@@ -6,13 +6,95 @@
 
 ---
 
-## Für die nächste Session (S129+)
+## Für die nächste Session (S131+)
 
-### Aktueller Stand (Ende S128)
-- **Alles auf `main`**. Letzter Commit: S128 Polygon-Zonen-Refactor (Merge `3b5b9ac`). Apps-Script deployed, Fragenbank live migriert (4 Sheets, 58 Zonen). Keine offenen Feature-Branches.
-- **Tests:** 455/455 vitest grün, tsc -b grün, build grün.
+### Aktueller Stand (Ende S130, 21.04.2026)
+- **`feature/ki-kalibrierung` auf `preview` force-gepusht** (Commit `700f198`). 36 Commits seit main, Spec+Plan committed, 20 Implementation-Tasks (Phase 1–6) via Subagent-Driven Development ausgeführt inkl. 10 Review-Fix-Runden.
+- **Apps-Script-Backend ist deployed** (Task 11 aus S130, Stand `748b857` — Tasks 1–10). Keine weiteren Backend-Änderungen in Phase 3–6 (die war nur Frontend).
+- **S129 Bundle A** separat auf `main` gemergt (Commits `fbd51cf` + `1175c0f`).
+- **Tests:** 466/466 vitest grün (462 Baseline + 4 neue Kalibrierungs-Tests), tsc -b grün, build grün.
 
-### Session 128 — Polygon-Zonen-Refactor (2026-04-20)
+### Was zu tun ist: E2E-Test im Browser (Task 22 aus S130-Plan)
+Staging-URL: GitHub Pages preview-Deploy. Testen mit **echten Logins** (LP + SuS, nicht Demo). Test-Plan:
+
+1. **Settings-Tab:** Einstellungen → neuer Tab „KI-Kalibrierung" sichtbar mit 3 Sub-Tabs (Beispiele/Statistik/Einstellungen). Master-Toggle Default AUS → Statistik zeigt Onboarding-Empty-State.
+2. **Nach Master=AN:** KI-Call im Frageneditor („Generiere Musterlösung" / „KI klassifizieren" / „Generiere Bewertungsraster") → Network-Tab zeigt `feedbackId` in der Response. Sheet `KIFeedback` im CONFIGS-Spreadsheet bekommt neue Zeile mit `status='offen'`.
+3. **Frage speichern:** Eintrag schliesst sich (`status='geschlossen'`, `diffScore` berechnet, `qualifiziert=true` wenn unverändert übernommen ODER ≥ 15% Abweichung).
+4. **Stern-Toggle im Editor:** Klickbar über der „Übernehmen"/„Verwerfen"-Zeile. Nach Save im Sheet `wichtig=TRUE`.
+5. **Race-Handling:** Zweimal „Generiere Musterlösung" klicken ohne Save → erster Eintrag wird `status='ignoriert'`, zweiter bleibt offen.
+6. **Korrektur-Flow:** Freitext-SuS-Antwort öffnen → „KI-Vorschlag" → anpassen → Save. `kiPunkte`/`kiBegruendung`/`kriterienBewertung` bleiben **nach Reload persistent** (Audit-Blocker-Bug B4 behoben).
+7. **Few-Shot greift ab 3 Beispielen:** Nach 3 qualifizierten Musterlösungen sollte der 4. KI-Vorschlag spürbar am LP-Stil orientiert sein. Backend-Prompt enthält einen `--- Beispiele ---`-Block.
+8. **Settings-Tab „Beispiele":** Filter funktioniert, Pagination, Stern/Aktiv/Löschen pro Zeile, Diff-Modal zeigt KI-Output vs. LP-Endversion.
+9. **Settings-Tab „Statistik":** Zeitraum-Wahl, Akzeptanz-Trend, Karten pro Aktion, Schwellen-Hinweis bei `aktive < minBeispiele`.
+10. **Bulk-Löschen (Aufräumen):** Alle ignorierten / älter als 180 Tage — mit Confirm.
+11. **Manuell im Apps-Script-Editor:** `stelleKIFeedbackSheetBereit_()` und `testHeuristik_()` ausführen — Sheet mit 17 Headers, alle 9 Assertions bestanden.
+12. **Quota-Watchdog (N1):** Schwer manuell zu testen — nur bei echtem 429 von Anthropic. Nicht blockend für Release.
+
+Bei Bugs: kleine Fixes auf `feature/ki-kalibrierung`, erneut `git push origin feature/ki-kalibrierung:preview --force-with-lease`. Bei Freigabe: Merge nach `main` + Branch löschen.
+
+---
+
+## Session 130 — KI-Kalibrierung durch LP-Korrekturen (2026-04-20 bis 21)
+
+Branch `feature/ki-kalibrierung`. Spec `docs/superpowers/specs/2026-04-20-ki-kalibrierung-design.md`. Plan `docs/superpowers/plans/2026-04-20-ki-kalibrierung.md`.
+
+**Ziel:** LP-Korrekturen an KI-Vorschlägen (Musterlösung, Klassifizierung, Bewertungsraster, Freitext-Korrektur) werden geloggt und als Few-Shot-Beispiele in künftige Prompts injiziert. Pro-LP-Scope (v1), Fachschaft/Schule später (Ansatz 3 dark-launched).
+
+**Ansatz 2 (Balanced):** Zentrales `KIFeedback`-Sheet im CONFIGS-Spreadsheet, Recency-basiertes Retrieval mit LP+Aktion+Fachbereich-Filter und Stern-Priorisierung, Review-UI als neuer Settings-Tab.
+
+**Phase 1+2 — Backend (Tasks 1–10):**
+- `KIFeedback`-Sheet + idempotente Header-Migrator (inkl. `kriterienBewertung`-Spalte in Korrektur_-Sheets)
+- LP-Kalibrierungs-Einstellungen in `LPEinstellungen`-Sheet (JSON-Spalte `kalibrierung`), Default `global: false`
+- Feedback-Lifecycle (start / schliesse / markiereIgnoriert) mit `LockService.getScriptLock()`
+- Heuristik: gewichtete `klassifiziereFrage`-Diff (fach=0.4, bloom=0.25, thema=0.25, unterthema=0.1), Levenshtein-Norm, Reorder-robust für Bewertungsraster (Kriterien alphabetisch sortiert vor Vergleich)
+- Few-Shot-Retrieval `holeFewShotBeispiele_` + `baueFewShotBlock_` (4 aktions-spezifische Renderer, SuS-Antworten NIE im Korrektur-Block — Privacy-Invariante 7.6)
+- `kiAssistentEndpoint`: Few-Shot-Prefix + Feedback-Start pro instrumentiertem Case (4 von 23), Response-Schema rückwärtskompatibel `{success, ergebnis, feedbackId?}`
+- `speichereFrage` + `speichereKorrekturZeile` schliessen offene Feedbacks beim Save
+- `speichereKorrekturZeile` Persistenz-Fix: `kiPunkte`, `kiBegruendung`, `kriterienBewertung`, `quelle` werden jetzt wirklich geschrieben (Audit-Blocker B4 behoben via `setIfPresent`-Helper)
+- 7 neue Review/Stats-Endpoints mit `istZugelasseneLP` + `lpEmail`-Scope + IDOR-Schutz auch bei `markiereKIFeedbackAlsIgnoriert`
+- Quota-Watchdog (N1): Bei 429/rate-limit wird Master-Toggle auto-disabled (nur echte Quota-Signale; `overloaded` ausgenommen)
+- ISO-Zeitstempel robust via `toIsoStr_`-Helper (Sheets kann Strings zu Date-Objekten parsen)
+
+**Phase 3 — Frontend Service-Layer (Tasks 12–13):**
+- `EditorServices.kiAssistent` → `Promise<KIAssistentRueckgabe | null>` mit `{ ergebnis, feedbackId? }`
+- Neuer Service `markiereFeedbackAlsIgnoriert` (fire-and-forget mit `.catch`)
+- `useKIAssistent`-Hook: `offeneKIFeedbacks`-Lifecycle + Race-Handling (Mehrfach-Klick derselben Aktion schliesst alten Eintrag als `ignoriert`) + `markiereWichtig`/`alleOffenenFeedbacks`/`reset`
+
+**Phase 4 — Editor-UI (Tasks 14–15):**
+- `ErgebnisAnzeige`: Stern-Toggle-Props (nur wenn Callback gesetzt)
+- Eingehängt in `MetadataSection`, `MusterloesungSection`, `SharedFragenEditor` (nicht `BewertungsrasterEditor`, weil der kein `ki`-Objekt hat)
+- `SharedFragenEditor.onSpeichern` um `meta.offeneKIFeedbacks` erweitert, Host-Adapter reichen an Backend weiter
+- `ki.reset()` nach Save
+
+**Phase 5 — Korrektur-UI (Task 16):**
+- `KorrekturFrageZeile.handleKiVorschlag` speichert `feedbackId` + KI-Korrektur-Felder
+- Stern-Toggle neben KI-Vorschlag
+- Save-Payload erweitert um `kiPunkte/kiBegruendung/kriterienBewertung/quelle/offeneKIFeedbacks/maxPunkte`
+- `KIFeedbackEintrag`-Interface + Typ-Durchreichung durch `useKorrekturActions` + `KorrekturSchuelerZeile`
+
+**Phase 6 — Settings-Tab „KI-Kalibrierung" (Tasks 17–20):**
+- Neuer `kalibrierungApi.ts` via existierendem `postJson`-Helper (CORS-kompatibel mit `text/plain`)
+- **Einstellungen-Sub-Tab:** Master-Toggle, Pro-Aktion-Checkboxes, Min/Anzahl-Werte, Aufräumen, Ansatz-3-Placeholder, 500ms Debounce + Optimistic UI + Fehler-Banner
+- **Statistik-Sub-Tab:** Zeitraum-Wahl, Akzeptanz-Trend, Karten pro Aktion, Schwellen-Hinweis, B5-Onboarding-Empty-State, Ansatz-3-Placeholder
+- **Beispiele-Sub-Tab:** Filter (5 Controls), paginierte Tabelle, Stern/Aktiv/Löschen, Diff-Modal (Parent-State statt Portal)
+- 4 neue vitest-Tests
+
+**Reviewer-Runden:** Bei jeder Task 1 Implementer + 1 Review; bei Issues Fix-Runde. 10 von 20 Tasks brauchten Fix-Runde (meist defensive Guards, Edge-Cases).
+
+**Lehren für Rule-Files:**
+- `code-quality.md`: `lastCol > 0 ? getRange(...) : []` Guard ist Pattern für alle Header-Lese-Helper in Apps Script — sonst crasht `getRange(1,1,1,0)` bei leerem Sheet.
+- `code-quality.md`: `String(date_obj) < isoString` ist nicht zuverlässig — Sheets kann ISO-Strings zu Date-Objekten parsen. `toIsoStr_`-Normalizer am Read-Eintrittspunkt.
+- `regression-prevention.md`: Bei Apps-Script-Endpoints mit fire-and-forget-Helpers: Dispatcher-Case braucht zusätzlichen IDOR-Check — Helper nimmt nur die ID, nicht die LP.
+- `code-quality.md`: `Content-Type: text/plain` (via `postJson`-Pattern) vermeidet CORS-Preflight bei Apps Script — niemals eigene fetch-Calls ohne diesen Pattern.
+
+**Offen nach E2E-Freigabe:**
+1. Merge `feature/ki-kalibrierung` → `main`, Branch löschen
+2. Ansatz 3 (Embedding-basiertes Retrieval + Fachschafts-/Schul-Sharing) als neuer Spec wenn v1 ≥ 4–6 Wochen produktiv stabil läuft
+3. Follow-Ups aus Spec 14: Bewertungsraster-pro-Kriterium-Edit-UI, periodischer Cleanup-Cron für offene Einträge >30 Tage
+
+---
+
+## Session 128 — Polygon-Zonen-Refactor (2026-04-20)
 
 Branch `feature/polygon-zonen` → `main`. Spec `docs/superpowers/specs/2026-04-20-polygon-zonen-design.md`, Plan `docs/superpowers/plans/2026-04-20-polygon-zonen.md`.
 

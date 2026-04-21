@@ -20,7 +20,7 @@ interface Props {
   onBewertungUpdate: (
     schuelerEmail: string,
     frageId: string,
-    updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: 'auto' | 'ki' | 'manuell' | 'fehler' }
+    updates: { lpPunkte?: number | null; lpKommentar?: string | null; geprueft?: boolean; audioKommentarId?: string | null; kiPunkte?: number | null; kiBegruendung?: string | null; quelle?: 'auto' | 'ki' | 'manuell' | 'fehler'; kriterienBewertung?: import('../../../types/korrektur.ts').KriteriumBewertung[] | null; offeneKIFeedbacks?: import('../../../types/korrektur.ts').KIFeedbackEintrag[]; maxPunkte?: number }
   ) => void
   onNoteOverride: (schuelerEmail: string, noteOverride: number | null) => void
   onAudioUpload: (schuelerEmail: string, frageId: string, blob: Blob) => Promise<string | null>

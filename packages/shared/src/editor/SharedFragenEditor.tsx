@@ -49,10 +49,16 @@ import MusterloesungSection from './sections/MusterloesungSection'
 import DefaultAnhangEditor from './components/AnhangEditor'
 
 
+/** Optionale Metadaten die beim Speichern mitgesendet werden (KI-Kalibrierungs-Loop) */
+export interface SpeichernMeta {
+  /** Offene KI-Feedbacks die noch nicht übernommen/verworfen wurden */
+  offeneKIFeedbacks?: Array<{ aktion: string; feedbackId: string; wichtig: boolean }>
+}
+
 export interface SharedFragenEditorProps {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
   frage: Frage | null
-  onSpeichern: (frage: Frage) => void
+  onSpeichern: (frage: Frage, meta?: SpeichernMeta) => void
   onAbbrechen: () => void
   /** Frage löschen (optional — nur bei bestehenden Fragen, mit Bestätigung) */
   onLoeschen?: (frage: Frage) => void
@@ -85,7 +91,7 @@ export interface SharedFragenEditorProps {
   poolInfoSlot?: (props: {
     frage: Frage | null
     typ: string
-    onSpeichern: (frage: Frage) => void
+    onSpeichern: (frage: Frage, meta?: SpeichernMeta) => void
   }) => React.ReactNode
 
   /** Pool-Sync Header-Buttons Slot (optional) */
@@ -674,7 +680,9 @@ export default function SharedFragenEditor({
 
     const neueFrage = erstelleFrageObjekt(basis, typDaten)
     setSpeicherLaeuft(false)
-    onSpeichern(neueFrage)
+    const feedbacks = ki.alleOffenenFeedbacks()
+    await onSpeichern(neueFrage, { offeneKIFeedbacks: feedbacks.length > 0 ? feedbacks : undefined })
+    ki.reset()
   }
 
   return (
@@ -955,6 +963,11 @@ export default function SharedFragenEditor({
                       ki.verwerfen('bewertungsrasterGenerieren')
                     }}
                     onVerwerfen={() => ki.verwerfen('bewertungsrasterGenerieren')}
+                    wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')?.wichtig ?? false}
+                    onWichtigToggle={() => {
+                      const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')
+                      ki.markiereWichtig('bewertungsrasterGenerieren', !(cur?.wichtig ?? false))
+                    }}
                   />
                 </div>
               )}

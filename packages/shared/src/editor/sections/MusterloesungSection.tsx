@@ -73,6 +73,11 @@ export default function MusterloesungSection({
               ki.verwerfen('generiereMusterloesung')
             }}
             onVerwerfen={() => ki.verwerfen('generiereMusterloesung')}
+            wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'generiereMusterloesung')?.wichtig ?? false}
+            onWichtigToggle={() => {
+              const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'generiereMusterloesung')
+              ki.markiereWichtig('generiereMusterloesung', !(cur?.wichtig ?? false))
+            }}
           />
         </div>
       )}

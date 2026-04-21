@@ -40,13 +40,24 @@ export interface EditorConfig {
   features: EditorFeatures
 }
 
+/** Rückgabe-Shape des KI-Assistenten (Spec B1) */
+export interface KIAssistentRueckgabe {
+  /** Das eigentliche KI-Ergebnis (Fragetext, Optionen, Klassifizierung etc.) */
+  ergebnis: Record<string, unknown>
+  /** Nur bei instrumentierten Aktionen gesetzt — für späteren Feedback-Loop */
+  feedbackId?: string
+}
+
 /** Services die der Host implementiert (Dependency Injection) */
 export interface EditorServices {
   /** Datei-Upload (Bilder, PDFs). Null = Upload nicht verfügbar, {error} = Backend-Fehler. */
   uploadAnhang?: (frageId: string, datei: File) => Promise<FrageAnhang | { error: string } | null>
 
   /** KI-Assistent API-Aufruf. Null = KI nicht verfügbar. */
-  kiAssistent?: (aktion: string, daten: Record<string, unknown>) => Promise<Record<string, unknown> | null>
+  kiAssistent?: (aktion: string, daten: Record<string, unknown>) => Promise<KIAssistentRueckgabe | null>
+
+  /** Feedback-Eintrag als ignoriert markieren (fire-and-forget). */
+  markiereFeedbackAlsIgnoriert?: (feedbackId: string) => Promise<void>
 
   /** Prüft ob KI verfügbar ist */
   istKIVerfuegbar: () => boolean

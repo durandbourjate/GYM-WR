@@ -85,6 +85,11 @@ export interface SchuelerAbgabe {
 
 // === Korrektur-Zeile Speicher-Payload ===
 
+export interface KIFeedbackEintrag {
+  feedbackId: string
+  wichtig: boolean
+}
+
 export interface KorrekturZeileUpdate {
   pruefungId: string
   schuelerEmail: string
@@ -93,6 +98,13 @@ export interface KorrekturZeileUpdate {
   lpKommentar?: string | null
   geprueft?: boolean
   audioKommentarId?: string | null  // null = entfernen
+  // KI-Persistenz-Felder (Task 8/16)
+  kiPunkte?: number | null
+  kiBegruendung?: string | null
+  kriterienBewertung?: KriteriumBewertung[] | null
+  quelle?: FragenBewertung['quelle']
+  offeneKIFeedbacks?: KIFeedbackEintrag[]
+  maxPunkte?: number
 }
 
 // === Feedback-Versand-Payload ===
