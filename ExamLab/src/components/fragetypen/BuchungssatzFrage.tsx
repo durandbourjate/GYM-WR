@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BuchungssatzFrage as BuchungssatzFrageType } from '../../types/fragen.ts'
+import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import KontenSelect from '../shared/KontenSelect.tsx'
 
 interface Props {
   frage: BuchungssatzFrageType
+  modus?: 'aufgabe' | 'loesung'
+  antwort?: Antwort | null
 }
 
 /** U2: Vereinfachter Buchungssatz — "Soll-Konto an Haben-Konto Betrag" */
@@ -55,7 +58,14 @@ function vonAntwort(
   }))
 }
 
-export default function BuchungssatzFrage({ frage }: Props) {
+export default function BuchungssatzFrage({ frage, modus = 'aufgabe', antwort: antwortProp }: Props) {
+  if (modus === 'loesung') {
+    return <BuchungssatzLoesung frage={frage} antwort={antwortProp ?? null} />
+  }
+  return <BuchungssatzAufgabe frage={frage} />
+}
+
+function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
   const { antwort, onAntwort, speichereZwischenstand, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   const gespeicherteAntwort =
@@ -241,6 +251,127 @@ export default function BuchungssatzFrage({ frage }: Props) {
         <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
           {korrekt ? '✓ Richtig!' : '✗ Leider falsch.'}
           {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function BuchungssatzLoesung({ frage, antwort }: { frage: BuchungssatzFrageType; antwort: Antwort | null }) {
+  const susBuchungen = antwort?.typ === 'buchungssatz' ? antwort.buchungen : []
+  const korrektBuchungen = frage.buchungen ?? []
+  // Pro SuS-Zeile einen greedy-match versuchen (analog korrektur.ts) — sonst position-based
+  const genutztKorrekt = new Set<number>()
+  const zeilenStatus = korrektBuchungen.map((kz, ki) => {
+    const ezIdx = susBuchungen.findIndex(
+      (ez) =>
+        ez.sollKonto === kz.sollKonto &&
+        ez.habenKonto === kz.habenKonto &&
+        Math.abs(ez.betrag - kz.betrag) < 0.01
+    )
+    if (ezIdx >= 0 && !genutztKorrekt.has(ezIdx)) {
+      genutztKorrekt.add(ezIdx)
+      return { matchedEzIdx: ezIdx, istKorrekt: true, korrekt: kz, korrektIndex: ki }
+    }
+    // Kein perfekter Match — position-based Fallback für Darstellung
+    const fallbackEz = susBuchungen[ki]
+    return { matchedEzIdx: ki < susBuchungen.length ? ki : -1, istKorrekt: false, korrekt: kz, korrektIndex: ki, eingabe: fallbackEz }
+  })
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Header: Badges */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
+          {frage.fachbereich}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {frage.bloom}
+        </span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {frage.punkte} {frage.punkte === 1 ? 'Punkt' : 'Punkte'}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          Buchungssatz
+        </span>
+      </div>
+
+      {/* Geschäftsfall */}
+      <div
+        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.geschaeftsfall) }}
+      />
+
+      {/* Pro korrekte Zeile: Ist-vs-Soll Karte */}
+      <div className="flex flex-col gap-3">
+        {zeilenStatus.map((z, i) => {
+          const ez = z.istKorrekt ? susBuchungen[z.matchedEzIdx] : (z.eingabe ?? {} as typeof susBuchungen[number])
+          const sollKontoOk = z.istKorrekt || (ez?.sollKonto ?? '') === z.korrekt.sollKonto
+          const habenKontoOk = z.istKorrekt || (ez?.habenKonto ?? '') === z.korrekt.habenKonto
+          const betragOk = z.istKorrekt || (ez?.betrag != null && Math.abs(ez.betrag - z.korrekt.betrag) < 0.01)
+          const rahmen = z.istKorrekt
+            ? 'border-green-600 bg-green-50 dark:bg-green-950/20'
+            : 'border-red-600 bg-red-50 dark:bg-red-950/20'
+          return (
+            <div key={z.korrekt.id} className={`border-2 rounded-xl p-4 ${rahmen}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                  Buchung {i + 1}
+                </span>
+                <span className={`text-xs font-bold ${z.istKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                  {z.istKorrekt ? '\u2713 Korrekt' : '\u2717 Falsch'}
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="text-xs w-full">
+                  <thead>
+                    <tr className="text-slate-500 dark:text-slate-400">
+                      <th className="text-left pb-1 pr-3 font-medium">&nbsp;</th>
+                      <th className="text-left pb-1 pr-3 font-medium">Soll-Konto</th>
+                      <th className="text-left pb-1 pr-3 font-medium">an Haben-Konto</th>
+                      <th className="text-right pb-1 pr-3 font-medium">Betrag</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="pr-3 text-slate-500 dark:text-slate-400 align-top py-0.5">Deine Antwort:</td>
+                      <td className={`pr-3 py-0.5 font-mono ${sollKontoOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                        {ez?.sollKonto || <em className="text-slate-500 italic">leer</em>}
+                      </td>
+                      <td className={`pr-3 py-0.5 font-mono ${habenKontoOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                        {ez?.habenKonto || <em className="text-slate-500 italic">leer</em>}
+                      </td>
+                      <td className={`pr-3 py-0.5 font-mono text-right ${betragOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                        {ez?.betrag != null && ez.betrag !== 0 ? ez.betrag.toFixed(2) : <em className="text-slate-500 italic">leer</em>}
+                      </td>
+                    </tr>
+                    {!z.istKorrekt && (
+                      <tr className="border-t border-slate-200 dark:border-slate-600">
+                        <td className="pr-3 text-slate-500 dark:text-slate-400 align-top py-0.5">Korrekt:</td>
+                        <td className="pr-3 py-0.5 font-mono font-semibold text-green-700 dark:text-green-400">{z.korrekt.sollKonto}</td>
+                        <td className="pr-3 py-0.5 font-mono font-semibold text-green-700 dark:text-green-400">{z.korrekt.habenKonto}</td>
+                        <td className="pr-3 py-0.5 font-mono font-semibold text-green-700 dark:text-green-400 text-right">{z.korrekt.betrag.toFixed(2)}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {z.korrekt.erklaerung && (
+                <div className="mt-2 pl-2.5 border-l-2 border-slate-300 dark:border-slate-600 text-xs italic text-slate-600 dark:text-slate-400">
+                  {'\u{1F4A1}'} {z.korrekt.erklaerung}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Hinweis: zusätzliche SuS-Buchungen (falls Länge > korrektBuchungen) */}
+      {susBuchungen.length > korrektBuchungen.length && (
+        <div className="text-xs text-red-700 dark:text-red-400 italic">
+          Hinweis: Du hast {susBuchungen.length - korrektBuchungen.length} zusätzliche Buchungssatz-Zeile(n) erstellt, die nicht gebraucht werden.
         </div>
       )}
     </div>
