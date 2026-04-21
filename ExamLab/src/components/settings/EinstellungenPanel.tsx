@@ -7,6 +7,7 @@ import type { Stammdaten, LPProfil, KursDefinition, FachDefinition, FachschaftDe
 import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 import AdminSettings from '../ueben/admin/AdminSettings'
+import KIKalibrierungTab from './kiKalibrierung/KIKalibrierungTab'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -42,6 +43,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
     { key: 'favoriten', label: 'Favoriten', sichtbar: true },
     { key: 'uebungen', label: 'Übungen', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
+    { key: 'kiKalibrierung', label: 'KI-Kalibrierung', sichtbar: true },
   ]
 
   const sichtbareTabs = tabs.filter(t => t.sichtbar)
@@ -85,6 +87,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         {tab === 'uebungen' && <AdminSettings />}
         {tab === 'admin' && admin && user?.email && (
           <AdminTab email={user.email} stammdaten={stammdaten} />
+        )}
+        {tab === 'kiKalibrierung' && user?.email && (
+          <KIKalibrierungTab email={user.email} />
         )}
       </div>
       </div>
