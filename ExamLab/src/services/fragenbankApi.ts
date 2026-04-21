@@ -71,12 +71,30 @@ export async function loeschePruefung(email: string, pruefungId: string): Promis
   return postBool('loeschePruefung', { email, pruefungId })
 }
 
-/** Einzelne Frage speichern (Fragenbank) */
-export async function speichereFrage(email: string, frage: Frage): Promise<boolean> {
+/** Offener KI-Feedback-Eintrag (spiegelt shared/useKIAssistent::OffenerKIFeedback) */
+interface OffenerKIFeedbackPayload {
+  aktion: string
+  feedbackId: string
+  wichtig: boolean
+}
+
+/** Einzelne Frage speichern (Fragenbank).
+ *  offeneKIFeedbacks: optionale KI-Kalibrierungsdaten — werden im Payload mitgesendet,
+ *  Backend kann sie für Feedback-Loop nutzen oder ignorieren. */
+export async function speichereFrage(
+  email: string,
+  frage: Frage,
+  offeneKIFeedbacks?: OffenerKIFeedbackPayload[]
+): Promise<boolean> {
   if (!APPS_SCRIPT_URL) return false
 
   try {
-    const payload = JSON.stringify({ action: 'speichereFrage', email, frage })
+    const payload = JSON.stringify({
+      action: 'speichereFrage',
+      email,
+      frage,
+      ...(offeneKIFeedbacks && offeneKIFeedbacks.length > 0 ? { offeneKIFeedbacks } : {}),
+    })
 
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',

@@ -9,6 +9,7 @@ import { demoFragen } from '../../../data/demoFragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
 import type { Frage, FrageSummary } from '../../../types/fragen.ts'
+import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
 import { gruppenLabel, gruppenLabelFarbe } from './fragenbrowser/gruppenHelfer.ts'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
@@ -178,7 +179,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   // eslint-disable-next-line react-hooks/exhaustive-deps — handleEditFrage ist stabil genug
   }, [editFrage, filter.sortierteFragen])
 
-  async function handleFrageGespeichert(neueFrage: Frage): Promise<void> {
+  async function handleFrageGespeichert(neueFrage: Frage, meta?: SpeichernMeta): Promise<void> {
     aktualisiereFrage(neueFrage)
     setZeigEditor(false)
     setEditFrage(null)
@@ -186,9 +187,9 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     // fragenMap im Composer synchronisieren
     onFrageAktualisiert?.(neueFrage)
 
-    // Ans Backend senden (im Hintergrund)
+    // Ans Backend senden (im Hintergrund) — offeneKIFeedbacks für Kalibrierungs-Loop mitschicken
     if (user && apiService.istKonfiguriert() && !istDemoModus) {
-      const ok = await apiService.speichereFrage(user.email, neueFrage)
+      const ok = await apiService.speichereFrage(user.email, neueFrage, meta?.offeneKIFeedbacks)
       if (!ok) {
         console.warn('[FragenBrowser] Frage lokal hinzugefügt, aber Backend-Speichern fehlgeschlagen')
       }

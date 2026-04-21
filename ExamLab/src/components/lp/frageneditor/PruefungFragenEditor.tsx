@@ -13,6 +13,7 @@ import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
+import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { generateZeitpunkte, zeitpunktModellAusConfig } from '../../../utils/zeitpunktUtils.ts'
@@ -30,7 +31,7 @@ import Tooltip from '../../ui/Tooltip.tsx'
 
 interface Props {
   frage: Frage | null
-  onSpeichern: (frage: Frage) => void
+  onSpeichern: (frage: Frage, meta?: SpeichernMeta) => void
   onAbbrechen: () => void
   performance?: FragenPerformance
   /** Optional: zur vorherigen Frage der Liste springen. undefined = kein Button. */
@@ -109,7 +110,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     <EditorProvider config={editorConfig} services={editorServices}>
       <SharedFragenEditor
         frage={frage as unknown as SharedFrage | null}
-        onSpeichern={(f) => onSpeichern(f as unknown as Frage)}
+        onSpeichern={(f, meta) => onSpeichern(f as unknown as Frage, meta)}
         onAbbrechen={onAbbrechen}
         performance={performance as any}
         onVorherigeFrage={onVorherigeFrage}
