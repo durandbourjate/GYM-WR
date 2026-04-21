@@ -163,6 +163,11 @@ export default function MetadataSection({
               ki.verwerfen('klassifiziereFrage')
             }}
             onVerwerfen={() => ki.verwerfen('klassifiziereFrage')}
+            wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'klassifiziereFrage')?.wichtig ?? false}
+            onWichtigToggle={() => {
+              const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'klassifiziereFrage')
+              ki.markiereWichtig('klassifiziereFrage', !(cur?.wichtig ?? false))
+            }}
           />
         </div>
       )}

@@ -955,6 +955,11 @@ export default function SharedFragenEditor({
                       ki.verwerfen('bewertungsrasterGenerieren')
                     }}
                     onVerwerfen={() => ki.verwerfen('bewertungsrasterGenerieren')}
+                    wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')?.wichtig ?? false}
+                    onWichtigToggle={() => {
+                      const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')
+                      ki.markiereWichtig('bewertungsrasterGenerieren', !(cur?.wichtig ?? false))
+                    }}
                   />
                 </div>
               )}
