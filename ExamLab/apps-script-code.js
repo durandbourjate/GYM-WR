@@ -1138,6 +1138,18 @@ function doPost(e) {
     case 'admin:migriereZonen':
       return migrierZonenEndpoint_(body);
 
+    // === KI-KALIBRIERUNG: Review + Statistik + Einstellungen (Task 9) ===
+    case 'listeKIFeedbacks': return listeKIFeedbacks(body);
+    case 'aktualisiereKIFeedback': return aktualisiereKIFeedback(body);
+    case 'loescheKIFeedback': return loescheKIFeedback(body);
+    case 'bulkLoescheKIFeedbacks': return bulkLoescheKIFeedbacks(body);
+    case 'kalibrierungsEinstellungen': return kalibrierungsEinstellungen(body);
+    case 'kalibrierungsStatistik': return kalibrierungsStatistik(body);
+    case 'markiereKIFeedbackAlsIgnoriert':
+      if (!istZugelasseneLP(body.email)) return jsonResponse({success:false,error:'Nicht autorisiert'});
+      markiereFeedbackAlsIgnoriert_(body.feedbackId);
+      return jsonResponse({success:true});
+
     default:
       return jsonResponse({ error: 'Unbekannte Aktion' });
   }
@@ -10677,4 +10689,178 @@ function extrahiereFinaleVersionEditor_(aktion, frage) {
     default:
       return frage;
   }
+}
+
+// ─── Task 9: Review + Statistik + Einstellungs-Endpoints (2026-04-20) ─────────
+
+function listeKIFeedbacks(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  var hdr = rows[0];
+  var c = function(n){return hdr.indexOf(n);};
+  var seite = body.seite || 0;
+  var proSeite = body.proSeite || 50;
+  var f = body.filter || {};
+
+  var result = [];
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+    if (f.aktion && r[c('aktion')] !== f.aktion) continue;
+    if (f.fachbereich && r[c('fachbereich')] !== f.fachbereich) continue;
+    if (f.status && r[c('status')] !== f.status) continue;
+    if (f.nurWichtige && !r[c('wichtig')]) continue;
+    if (f.von && String(r[c('zeitstempel')]) < f.von) continue;
+    if (f.bis && String(r[c('zeitstempel')]) > f.bis) continue;
+
+    var inputParsed = safeParse_(r[c('inputJson')]);
+    // Privacy (W4): SuS-Antwort im Review-Tab truncaten — Screen-Sharing-Risiko
+    if (r[c('aktion')] === 'korrigiereFreitext' && inputParsed.antwortText) {
+      var voll = String(inputParsed.antwortText);
+      inputParsed.antwortText = voll.length > 200 ? voll.slice(0, 200) + '… [gekürzt]' : voll;
+    }
+    result.push({
+      feedbackId: r[c('feedbackId')],
+      zeitstempel: r[c('zeitstempel')],
+      aktion: r[c('aktion')],
+      fachbereich: r[c('fachbereich')],
+      bloom: r[c('bloom')],
+      inputJson: inputParsed,
+      kiOutputJson: safeParse_(r[c('kiOutputJson')]),
+      finaleVersionJson: safeParse_(r[c('finaleVersionJson')]),
+      diffScore: r[c('diffScore')],
+      status: r[c('status')],
+      qualifiziert: r[c('qualifiziert')],
+      wichtig: r[c('wichtig')],
+      aktiv: r[c('aktiv')]
+    });
+  }
+  result.sort(function(a,b){ return String(b.zeitstempel).localeCompare(String(a.zeitstempel)); });
+  var gesamt = result.length;
+  var start = seite * proSeite;
+  return jsonResponse({success:true, data:{eintraege: result.slice(start, start + proSeite), gesamt: gesamt}});
+}
+
+function aktualisiereKIFeedback(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][c('feedbackId')] !== body.feedbackId) continue;
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) {
+        return jsonResponse({success:false, error:'Nicht autorisiert (nicht eigener Eintrag)'});
+      }
+      if (body.wichtig !== undefined) sheet.getRange(i+1, c('wichtig')+1).setValue(!!body.wichtig);
+      if (body.aktiv !== undefined) sheet.getRange(i+1, c('aktiv')+1).setValue(!!body.aktiv);
+      return jsonResponse({success:true});
+    }
+    return jsonResponse({success:false, error:'Eintrag nicht gefunden'});
+  } catch(e) { console.warn('[KIFeedback] aktualisiere Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function loescheKIFeedback(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][c('feedbackId')] !== body.feedbackId) continue;
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) {
+        return jsonResponse({success:false, error:'Nicht autorisiert'});
+      }
+      sheet.deleteRow(i + 1);
+      auditLog_('kiFeedback:delete', body.email, {feedbackId: body.feedbackId});
+      return jsonResponse({success:true});
+    }
+    return jsonResponse({success:false, error:'Nicht gefunden'});
+  } catch(e) { console.warn('[KIFeedback] loesche Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function bulkLoescheKIFeedbacks(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var filter = body.filter || {};
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var rows = sheet.getDataRange().getValues();
+    var hdr = rows[0];
+    var c = function(n){return hdr.indexOf(n);};
+    var zuLoeschen = [];
+    for (var i = 1; i < rows.length; i++) {
+      if (String(rows[i][c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+      if (filter.status && rows[i][c('status')] !== filter.status) continue;
+      if (filter.aelter_als) {
+        if (String(rows[i][c('zeitstempel')]) > filter.aelter_als) continue;
+      }
+      zuLoeschen.push(i + 1);
+    }
+    zuLoeschen.sort(function(a,b){return b-a;}).forEach(function(rowNum){
+      sheet.deleteRow(rowNum);
+    });
+    auditLog_('kiFeedback:bulkDelete', body.email, {anzahl: zuLoeschen.length, filter: filter});
+    return jsonResponse({success:true, data:{geloescht: zuLoeschen.length}});
+  } catch(e) { console.warn('[KIFeedback] bulk-loesche Lock-Fehler:', e); return jsonResponse({success:false, error:String(e.message||e)}); }
+  finally { try{lock.releaseLock();}catch(e){} }
+}
+
+function kalibrierungsEinstellungen(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  if (body.modus === 'laden') {
+    return jsonResponse({success:true, data: ladeLPKalibrierungsEinstellungen_(body.email)});
+  }
+  if (body.modus === 'speichern') {
+    if (!body.konfig) return jsonResponse({success:false, error:'konfig fehlt'});
+    speichereLPKalibrierungsEinstellungen_(body.email, body.konfig);
+    return jsonResponse({success:true});
+  }
+  return jsonResponse({success:false, error:'Unbekannter modus'});
+}
+
+function kalibrierungsStatistik(body) {
+  if (!istZugelasseneLP(body.email)) return jsonResponse({success:false, error:'Nicht autorisiert'});
+  var tage = body.zeitraum_tage || 30;
+  var schwelleIso = new Date(Date.now() - tage*24*60*60*1000).toISOString();
+  var sheet = stelleKIFeedbackSheetBereit_();
+  var rows = sheet.getDataRange().getValues();
+  var hdr = rows[0];
+  var c = function(n){return hdr.indexOf(n);};
+
+  var aktionenStats = {};
+  ['generiereMusterloesung','klassifiziereFrage','bewertungsrasterGenerieren','korrigiereFreitext'].forEach(function(a){
+    aktionenStats[a] = { vorschlaege:0, unveraendert:0, leicht:0, deutlich:0, verworfen:0, aktive:0, wichtige:0 };
+  });
+
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
+    var a = r[c('aktion')];
+    if (!aktionenStats[a]) continue;
+    var zs = String(r[c('zeitstempel')]);
+    if (zs < schwelleIso) continue;
+    aktionenStats[a].vorschlaege++;
+    var st = r[c('status')];
+    var diff = Number(r[c('diffScore')]) || 0;
+    if (st === 'ignoriert') aktionenStats[a].verworfen++;
+    else if (st === 'geschlossen') {
+      if (diff === 0) aktionenStats[a].unveraendert++;
+      else if (diff < 0.15) aktionenStats[a].leicht++;
+      else aktionenStats[a].deutlich++;
+    }
+    if (r[c('qualifiziert')] === true && r[c('aktiv')] === true) aktionenStats[a].aktive++;
+    if (r[c('wichtig')] === true) aktionenStats[a].wichtige++;
+  }
+  return jsonResponse({success:true, data:{aktionen: aktionenStats, zeitraum_tage: tage}});
 }
