@@ -1,11 +1,15 @@
 import { useMemo, useRef, useState, useCallback } from 'react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { SortierungFrage as SortierungFrageType } from '../../types/fragen.ts'
+import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
+import { MusterloesungsBlock } from '@shared/ui/MusterloesungsBlock'
 
 interface Props {
   frage: SortierungFrageType
+  modus?: 'aufgabe' | 'loesung'
+  antwort?: Antwort | null
 }
 
 /** Mische ein Array deterministisch (Fisher-Yates mit seed aus frage.id) */
@@ -23,7 +27,14 @@ function mischen(arr: string[], seed: string): string[] {
   return result
 }
 
-export default function SortierungFrage({ frage }: Props) {
+export default function SortierungFrage({ frage, modus = 'aufgabe', antwort: antwortProp }: Props) {
+  if (modus === 'loesung') {
+    return <SortierungLoesung frage={frage} antwort={antwortProp ?? null} />
+  }
+  return <SortierungAufgabe frage={frage} />
+}
+
+function SortierungAufgabe({ frage }: { frage: SortierungFrageType }) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   // Gemischte Anfangsreihenfolge (einmalig berechnet)
@@ -222,6 +233,93 @@ export default function SortierungFrage({ frage }: Props) {
           {korrekt ? '\u2713 Richtig!' : '\u2717 Leider falsch.'}
           {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
+      )}
+    </div>
+  )
+}
+
+function SortierungLoesung({ frage, antwort }: { frage: SortierungFrageType; antwort: Antwort | null }) {
+  const korrekteElemente = frage.elemente ?? []
+  const susReihenfolge: string[] =
+    antwort?.typ === 'sortierung' && antwort.reihenfolge.length > 0
+      ? antwort.reihenfolge
+      : korrekteElemente.map(() => '') // Keine Antwort: leere Slots in korrekter Anzahl
+
+  // Zu zeigen: SuS-Reihenfolge (falls vorhanden) ODER korrekte Reihenfolge (als Fallback-
+  // Anzeige bei fehlender Antwort)
+  const zuZeigen = susReihenfolge.every((e) => !e) ? korrekteElemente : susReihenfolge
+  const susHatGeantwortet = susReihenfolge.some((e) => !!e)
+  const alleKorrekt = susHatGeantwortet && zuZeigen.every((el, i) => el === korrekteElemente[i])
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Header: Badges */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
+          {frage.fachbereich}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {frage.bloom}
+        </span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {frage.punkte} {frage.punkte === 1 ? 'Punkt' : 'Punkte'}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          Sortierung
+        </span>
+      </div>
+
+      {/* Fragetext */}
+      <div
+        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
+      />
+
+      {/* Sortierliste — Lösungs-Ansicht */}
+      <div className="flex flex-col gap-2">
+        {zuZeigen.map((element, index) => {
+          const korrekteIndex = korrekteElemente.indexOf(element)
+          const istKorrekt = susHatGeantwortet && korrekteIndex === index
+          const rahmen = istKorrekt
+            ? 'border-green-600 bg-green-50 dark:bg-green-950/20'
+            : 'border-red-600 bg-red-50 dark:bg-red-950/20'
+          return (
+            <div
+              key={`${element}-${index}`}
+              data-sort-zeile
+              className={`flex items-center gap-3 p-3 rounded-xl border-2 ${rahmen}`}
+            >
+              {/* SuS-Position */}
+              <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${istKorrekt ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'}`}>
+                {index + 1}
+              </span>
+
+              {/* Element-Text */}
+              <span className="flex-1 text-slate-800 dark:text-slate-100">{element || <em className="text-slate-500">leer</em>}</span>
+
+              {/* Status + korrekte Position */}
+              {istKorrekt ? (
+                <span className="text-xs font-semibold text-green-700 dark:text-green-400">{'\u2713 Korrekt'}</span>
+              ) : (
+                <div className="flex flex-col items-end gap-0.5 leading-tight text-xs">
+                  <span className="font-semibold text-red-700 dark:text-red-400">{'\u2717 Falsch'}</span>
+                  {korrekteIndex >= 0 && (
+                    <span className="text-slate-600 dark:text-slate-400">
+                      Korrekt: Position <strong>{korrekteIndex + 1}</strong>
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Musterloesung */}
+      {frage.musterlosung && (
+        <MusterloesungsBlock variant={alleKorrekt ? 'korrekt' : 'falsch'}>
+          <p>{frage.musterlosung}</p>
+        </MusterloesungsBlock>
       )}
     </div>
   )
