@@ -8,9 +8,9 @@
 
 ---
 
-## Projektskizze (934 Zeichen inkl. Leerzeichen)
+## Projektskizze (973 Zeichen inkl. Leerzeichen)
 
-ExamLab ist eine für alle Fächer geeignete Übungs- und Prüfungsplattform mit rund 20 interaktiven Fragetypen und sofortigem Feedback. Lehrpersonen befüllen sie mit eigenen Inhalten, verknüpfen Aufgaben mit Lernzielen und teilen Fragen in Fachschaft oder Schule. Lernende üben zeit- und ortsunabhängig im eigenen Tempo, erhalten direktes Feedback und erkennen Wissenslücken. Lehrpersonen sehen Lernstände ihrer Klassen und richten den Unterricht darauf aus. Optionale KI unterstützt beim Aufgabenerstellen und Beurteilen.
+ExamLab ist eine für alle Fächer geeignete, integrierte Übungs- und Prüfungsplattform. Lehrpersonen befüllen sie mit eigenen Inhalten, verknüpfen Aufgaben mit Lernzielen und teilen Fragen in Fachschaft oder Schule. Lernende üben zeit- und ortsunabhängig im eigenen Tempo, erhalten direktes Feedback und erkennen Wissenslücken — persistent über Sitzungen hinweg. Lehrpersonen sehen Klassen-Lernstände, richten den Unterricht darauf aus und führen digitale Prüfungen über dieselbe Plattform durch. Optionale KI unterstützt beim Aufgabenerstellen und Beurteilen.
 
 Ein funktionsfähiger Prototyp ist in der Fachschaft WR am Gymnasium Hofwil im Einsatz (Eigenleistung des Fachschaftsvorstands und dip-Innovationsscouts der Schule). dipFund ermöglicht den Schritt zum einsatzfähigen Tool: Härtung für Mehrschul-Betrieb, Datenschutz, Dokumentation, Onboarding weiterer Fachschaften, Begleitevaluation der Lernwirksamkeit. Weitere Hofwiler Lehrpersonen haben Interesse signalisiert.
 
@@ -28,9 +28,9 @@ Ein funktionsfähiger Prototyp ist in der Fachschaft WR am Gymnasium Hofwil im E
 
 ## Formular-Antworten (Fragen 7-11, je max 500 Zeichen)
 
-### F7 — Welches Problem soll gelöst werden, welches Ziel wird verfolgt? (479 Zeichen)
+### F7 — Welches Problem soll gelöst werden, welches Ziel wird verfolgt? (499 Zeichen)
 
-Lernende brauchen niederschwellige Möglichkeiten, Stoff individualisiert zu festigen und Wissenslücken zu erkennen. Bestehende Tools beschränken Lehrpersonen auf fertige Inhalte oder sind pflegeintensiv; digitale Prüfungen fehlen vielerorts. Ziel: eine für alle Fächer geeignete, von Lehrpersonen befüllbare Übungs- und Prüfungsplattform, auf der Lernende zeit- und ortsunabhängig üben — und auf der Lehrpersonen Klassen-Lernstände sehen, Fragen teilen und Prüfungen durchführen.
+Lernende brauchen Möglichkeiten, Stoff individualisiert zu festigen und Wissenslücken zu erkennen — nicht erst zur Prüfung. Etablierte Prüfungstools decken die Prüfungsmomente ab, lassen aber selbstständiges Üben mit persistenter Lückenanalyse dazwischen offen. Ziel: eine für alle Fächer geeignete, von Lehrpersonen befüllbare Übungs- und Prüfungsplattform, auf der Lernende zeit- und ortsunabhängig üben — und auf der Lehrpersonen Klassen-Lernstände sehen, Fragen teilen und Prüfungen durchführen.
 
 ### F8 — Welche Massnahmen sind zur Zielerreichung geplant? (480 Zeichen)
 
