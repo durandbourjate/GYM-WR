@@ -19,9 +19,8 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
   }, [])
 
-  if (ladeFehler) return <p className="text-sm text-red-500">{ladeFehler}</p>
-  if (!konfig) return <p className="text-slate-500 dark:text-slate-400">Lädt…</p>
-
+  // Hook-Order (React-Rule): useCallback MUSS vor early-returns stehen,
+  // sonst React Error #310 beim Render nachdem konfig gesetzt wird.
   const update = useCallback((patch: Partial<KalibrierungsEinstellungen>) => {
     if (!konfig) return
     const neu = { ...konfig, ...patch }
@@ -35,6 +34,9 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
         .finally(() => setSaving(false))
     }, 500)
   }, [email, konfig])
+
+  if (ladeFehler) return <p className="text-sm text-red-500">{ladeFehler}</p>
+  if (!konfig) return <p className="text-slate-500 dark:text-slate-400">Lädt…</p>
 
   async function bulkLoeschen(status: string) {
     if (!confirm(`Alle Einträge mit Status "${status}" löschen?`)) return
