@@ -3,12 +3,22 @@ import type { RichtigFalschFrage as RichtigFalschFrageType } from '../../types/f
 import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
+import { AntwortZeile } from '@shared/ui/AntwortZeile'
 
 interface Props {
   frage: RichtigFalschFrageType
+  modus?: 'aufgabe' | 'loesung'
+  antwort?: Antwort | null
 }
 
-export default function RichtigFalschFrage({ frage }: Props) {
+export default function RichtigFalschFrage({ frage, modus = 'aufgabe', antwort: antwortProp }: Props) {
+  if (modus === 'loesung') {
+    return <RichtigFalschLoesung frage={frage} antwort={antwortProp ?? null} />
+  }
+  return <RichtigFalschAufgabe frage={frage} />
+}
+
+function RichtigFalschAufgabe({ frage }: { frage: RichtigFalschFrageType }) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   const bewertungen: Record<string, boolean> =
@@ -124,6 +134,82 @@ export default function RichtigFalschFrage({ frage }: Props) {
           {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
       )}
+    </div>
+  )
+}
+
+function RichtigFalschLoesung({ frage, antwort }: { frage: RichtigFalschFrageType; antwort: Antwort | null }) {
+  const bewertungen: Record<string, boolean> =
+    (antwort as Extract<Antwort, { typ: 'richtigfalsch' }> | null)?.bewertungen ?? {}
+
+  const fragetextIstEinzelAussage =
+    (frage.aussagen?.length ?? 0) === 1 && frage.aussagen?.[0]?.text?.trim() === frage.fragetext?.trim()
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Header: Badges */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
+          {frage.fachbereich}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {frage.bloom}
+        </span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {frage.punkte} {frage.punkte === 1 ? 'Punkt' : 'Punkte'}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          Richtig / Falsch
+        </span>
+      </div>
+
+      {!fragetextIstEinzelAussage && (
+        <div
+          className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.fragetext) }}
+        />
+      )}
+
+      {/* Aussagen — Lösungs-Ansicht */}
+      <div className="flex flex-col">
+        {(frage.aussagen ?? []).map((aussage, index) => {
+          const susUrteil = bewertungen[aussage.id]
+          const hatGeantwortet = susUrteil !== undefined
+          const istKorrekt = hatGeantwortet && susUrteil === aussage.korrekt
+
+          let marker: 'ja' | 'nein' | 'leer'
+          if (!hatGeantwortet) marker = 'leer'
+          else marker = susUrteil ? 'ja' : 'nein'
+
+          let variant: 'korrekt' | 'falsch' | 'neutral'
+          if (istKorrekt) variant = 'korrekt'
+          else if (hatGeantwortet) variant = 'falsch'
+          else variant = 'falsch' // verpasst
+
+          const korrekteAntwortText = aussage.korrekt ? 'Richtig' : 'Falsch'
+          const zusatz = !istKorrekt ? (
+            <span className="text-xs text-slate-700 dark:text-slate-300">
+              → Korrekte Antwort: <strong>{korrekteAntwortText}</strong>
+            </span>
+          ) : undefined
+
+          return (
+            <AntwortZeile
+              key={aussage.id}
+              marker={marker}
+              variant={variant}
+              label={
+                <>
+                  <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">{index + 1}.</span>
+                  <span className="text-slate-800 dark:text-slate-100">{aussage.text}</span>
+                </>
+              }
+              erklaerung={aussage.erklaerung}
+              zusatz={zusatz}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }
