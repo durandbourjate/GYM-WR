@@ -3330,6 +3330,16 @@ function speichereFrage(body) {
       sheet.appendRow(newRow);
     }
 
+    // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
+    if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
+      body.offeneKIFeedbacks.forEach(function(fb) {
+        try {
+          var final = extrahiereFinaleVersionEditor_(fb.aktion, frage);
+          schliesseFeedbackEintrag_(fb.feedbackId, final, { wichtig: !!fb.wichtig });
+        } catch(e) { console.warn('[Kalibrierung] schliesseFeedback fehlgeschlagen:', e); }
+      });
+    }
+
     return jsonResponse({ success: true, id: frage.id });
   } catch (error) {
     return jsonResponse({ error: error.message });
@@ -10600,4 +10610,24 @@ function capByTokens_(s, max) {
   // ~3 Chars/Token konservativ für Deutsch (Englisch wäre 4)
   var maxChars = max * 3;
   return s.length > maxChars ? s.slice(0, maxChars) + '\n[… ältere Beispiele abgeschnitten …]' : s;
+}
+
+// ─── Task 7: Finale-Version-Extraktion für schliesseFeedbackEintrag_ ─────────
+
+function extrahiereFinaleVersionEditor_(aktion, frage) {
+  switch (aktion) {
+    case 'generiereMusterloesung':
+      return { loesung: frage.musterlosung || '' };
+    case 'klassifiziereFrage':
+      return {
+        fachbereich: frage.fachbereich || '',
+        thema: frage.thema || '',
+        bloom: frage.bloom || '',
+        unterthema: frage.unterthema || ''
+      };
+    case 'bewertungsrasterGenerieren':
+      return { kriterien: frage.bewertungsraster || [] };
+    default:
+      return frage;
+  }
 }
