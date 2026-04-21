@@ -192,3 +192,71 @@ case 'markiereKIFeedbackAlsIgnoriert': {
   return jsonResponse({success:true});
 }
 ```
+
+## postJson-Response-Unwrap (S130 Hotfix)
+
+**Problem:** Der projekt-interne `postJson<T>(action, payload)`-Helper in `apiClient.ts` gibt die **komplette** Backend-Response als `T` zurück, inkl. `{success, data, error, ...}`-Wrapper. NICHT das innere `data`-Feld. Das ist TypeScript-typunsicher — der `T`-Cast akzeptiert alles.
+
+**Konkret aufgetreten (S130):** Task-18-Implementer hat `kalibrierungApi.statistik` so geschrieben:
+```ts
+// ❌ Falsch — castet das ganze Response-Objekt auf KalibrierungsStatistik
+postJson<KalibrierungsStatistik>('kalibrierungsStatistik', {...})
+```
+Dann war `stats` das volle `{success:true, data:{aktionen:{...}}}`-Objekt, `stats.aktionen` war undefined, `Object.values(undefined)` crashte im Statistik-Tab. TypeScript hat NICHT gewarnt weil `as T` genau das erlaubt.
+
+**Regel:** Neue API-Wrapper MÜSSEN `.data` explizit extrahieren. Zwei Patterns:
+
+```ts
+// Pattern A — inline, für einfache Fälle (sharingApi/poolApi-Stil):
+const result = await postJson<{ success: boolean; data?: FooType }>(...)
+return result?.data ?? null
+```
+
+```ts
+// Pattern B — via unwrap-Helper (kalibrierungApi-Stil), für API-Module mit vielen Endpoints:
+async function unwrap<T>(result: { success?: boolean; data?: unknown } | null): Promise<T | null> {
+  if (!result || typeof result !== 'object') return null
+  if (result.success === false) return null
+  if (result.data === undefined || result.data === null) return null
+  return result.data as T
+}
+```
+
+**Merkregel:** Die TS-Signatur `postJson<FooType>(...)` ist eine Lüge. Immer so lesen als ob sie `postJson<Response<FooType>>` wäre.
+
+## React-Hooks vor Early-Returns (S130 Hotfix)
+
+**Problem:** React-Hooks-Rules verlangen, dass Hooks in jedem Render in gleicher Reihenfolge laufen. Bei Komponenten mit async-geladenem State (`useState<T | null>(null)` + fetch im useEffect) verlocken early-returns dazu, `useCallback`/`useMemo` danach zu deklarieren — weil man glaubt, der Callback braucht den geladenen State. Das ist falsch: beim ersten Render ist State `null` → early-return → Hook läuft nie. Beim zweiten Render ist State gesetzt → Hook läuft zum ersten Mal → React Error #310 „Rendered more hooks than during the previous render".
+
+**Konkret aufgetreten (S130):** `EinstellungenPanel` des KI-Kalibrierung-Sub-Tabs hatte:
+```tsx
+if (ladeFehler) return <p>{ladeFehler}</p>
+if (!konfig) return <p>Lädt…</p>
+const update = useCallback(..., [konfig])  // ❌ läuft erst nach dem 2. Render
+```
+
+Die Minified-React-Fehlermeldung (`je` bei `useCallback`) war zunächst nicht eindeutig — in unserem Fall nur über Staging sichtbar, weil jsdom-Tests beim 1. Render nichts fetchten (Mock instant).
+
+**Regel:** **Alle** Hooks (useState, useEffect, useCallback, useMemo, useRef, useContext, benutzerdefinierte Hooks) MÜSSEN vor jedem `return`-Statement stehen. Lies die Komponente in dieser Reihenfolge:
+
+1. **Alle Hooks** (kann auch `null`/`undefined`-Werte haben — egal)
+2. **Alle abgeleiteten Werte** (einfache Rechnungen aus State)
+3. **Early-Returns** (Loading, Error, Empty-State)
+4. **Haupt-Render**
+
+Der `useCallback` darf `konfig` in seinem Body lesen als ob es null sein könnte (Guard mit `if (!konfig) return`) — das ist OK. Die Deklaration muss aber vor dem Early-Return stehen:
+
+```tsx
+// ✅ Richtig
+const [konfig, setKonfig] = useState<Konfig | null>(null)
+useEffect(() => { /* load */ }, [])
+const update = useCallback((patch) => {
+  if (!konfig) return  // Body-Guard statt Deklarations-Guard
+  // ...
+}, [konfig])
+
+if (!konfig) return <p>Lädt…</p>
+return <FormularMit {...konfig} onChange={update} />
+```
+
+**Test-Abdeckung:** vitest mit instant-resolving Mocks beim ersten Render deckt diesen Bug nicht ab — der zweite Render passiert nie ohne Re-Trigger. Staging-Test mit echtem async-Fetch ist der einzige reliable Detektor. Für neue Settings-Komponenten mit async-Load: explizit einen Test mit `act(() => advance)` der State-Transition sauber provoziert.

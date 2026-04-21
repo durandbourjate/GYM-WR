@@ -9,28 +9,39 @@
 ## Für die nächste Session (S131+)
 
 ### Aktueller Stand (Ende S130, 21.04.2026)
-- **`feature/ki-kalibrierung` auf `preview` force-gepusht** (Commit `700f198`). 36 Commits seit main, Spec+Plan committed, 20 Implementation-Tasks (Phase 1–6) via Subagent-Driven Development ausgeführt inkl. 10 Review-Fix-Runden.
-- **Apps-Script-Backend ist deployed** (Task 11 aus S130, Stand `748b857` — Tasks 1–10). Keine weiteren Backend-Änderungen in Phase 3–6 (die war nur Frontend).
-- **S129 Bundle A** separat auf `main` gemergt (Commits `fbd51cf` + `1175c0f`).
-- **Tests:** 466/466 vitest grün (462 Baseline + 4 neue Kalibrierungs-Tests), tsc -b grün, build grün.
+- **KI-Kalibrierung komplett auf `main`** (Merge-Commit `1f3abcb`). 38 Commits in der Feature-Arbeit (20 Implementation-Tasks via Subagent-Driven Development + 10 Review-Fix-Runden + 2 Staging-Hotfixes + HANDOFF/Rules-Updates). Feature-Branch gelöscht.
+- **Apps-Script-Backend ist deployed** (Task 11 aus S130). Keine weiteren Backend-Änderungen in Phase 3–6 (nur Frontend).
+- **S129 Bundle A** separat auf `main` (Commits `fbd51cf` + `1175c0f`).
+- **Tests:** 466/466 vitest grün, tsc -b grün, build grün.
+- **Feature ist dark-launched** — Master-Toggle Default=AUS. LP muss unter Einstellungen → KI-Kalibrierung → Einstellungen aktivieren, dann greift Few-Shot ab 3 qualifizierten Beispielen pro Aktion.
 
-### Was zu tun ist: E2E-Test im Browser (Task 22 aus S130-Plan)
-Staging-URL: GitHub Pages preview-Deploy. Testen mit **echten Logins** (LP + SuS, nicht Demo). Test-Plan:
+### Staging-E2E bestätigt (ohne KI-Calls)
+| # | Check | Status |
+|---|---|---|
+| 1 | KI-Kalibrierung-Tab sichtbar in Einstellungen | ✓ |
+| 2 | Statistik-Sub-Tab: Onboarding-Empty-State bei Master=AUS | ✓ |
+| 3 | Einstellungen-Sub-Tab: Master + 4 Pro-Aktion + Min/Anzahl + Aufräumen + Ansatz-3-Placeholder | ✓ |
+| 4 | Master=AUS → Pro-Aktion-Fieldset `opacity-50` + disabled | ✓ |
+| 5 | Beispiele-Sub-Tab: 5 Filter + Pagination + „Keine Einträge" | ✓ |
+| 6 | Master=AN aktiviert Pro-Aktion-Fieldset | ✓ |
+| 7 | Statistik nach Master=AN: 4 Aktions-Karten + Akzeptanz-Trend | ✓ |
+| 8 | Backend-Calls 200 (kalibrierungsEinstellungen save/load) | ✓ |
+| 9 | Persistenz: Master=AN überlebt Hard-Reload | ✓ |
 
-1. **Settings-Tab:** Einstellungen → neuer Tab „KI-Kalibrierung" sichtbar mit 3 Sub-Tabs (Beispiele/Statistik/Einstellungen). Master-Toggle Default AUS → Statistik zeigt Onboarding-Empty-State.
-2. **Nach Master=AN:** KI-Call im Frageneditor („Generiere Musterlösung" / „KI klassifizieren" / „Generiere Bewertungsraster") → Network-Tab zeigt `feedbackId` in der Response. Sheet `KIFeedback` im CONFIGS-Spreadsheet bekommt neue Zeile mit `status='offen'`.
-3. **Frage speichern:** Eintrag schliesst sich (`status='geschlossen'`, `diffScore` berechnet, `qualifiziert=true` wenn unverändert übernommen ODER ≥ 15% Abweichung).
-4. **Stern-Toggle im Editor:** Klickbar über der „Übernehmen"/„Verwerfen"-Zeile. Nach Save im Sheet `wichtig=TRUE`.
-5. **Race-Handling:** Zweimal „Generiere Musterlösung" klicken ohne Save → erster Eintrag wird `status='ignoriert'`, zweiter bleibt offen.
-6. **Korrektur-Flow:** Freitext-SuS-Antwort öffnen → „KI-Vorschlag" → anpassen → Save. `kiPunkte`/`kiBegruendung`/`kriterienBewertung` bleiben **nach Reload persistent** (Audit-Blocker-Bug B4 behoben).
-7. **Few-Shot greift ab 3 Beispielen:** Nach 3 qualifizierten Musterlösungen sollte der 4. KI-Vorschlag spürbar am LP-Stil orientiert sein. Backend-Prompt enthält einen `--- Beispiele ---`-Block.
-8. **Settings-Tab „Beispiele":** Filter funktioniert, Pagination, Stern/Aktiv/Löschen pro Zeile, Diff-Modal zeigt KI-Output vs. LP-Endversion.
-9. **Settings-Tab „Statistik":** Zeitraum-Wahl, Akzeptanz-Trend, Karten pro Aktion, Schwellen-Hinweis bei `aktive < minBeispiele`.
-10. **Bulk-Löschen (Aufräumen):** Alle ignorierten / älter als 180 Tage — mit Confirm.
-11. **Manuell im Apps-Script-Editor:** `stelleKIFeedbackSheetBereit_()` und `testHeuristik_()` ausführen — Sheet mit 17 Headers, alle 9 Assertions bestanden.
-12. **Quota-Watchdog (N1):** Schwer manuell zu testen — nur bei echtem 429 von Anthropic. Nicht blockend für Release.
+### Was bei nächstem Produktiv-Einsatz zu validieren ist (mit 5–10 KI-Calls)
+Kann nach 1–2 Wochen normalem Gebrauch passieren — Feature ist ja standardmässig AUS:
+1. **KI-Call im Editor** (z.B. Generiere Musterlösung) → Response enthält `feedbackId`, Eintrag im KIFeedback-Sheet mit `status='offen'`
+2. **Frage speichern:** Eintrag → `status='geschlossen'`, `diffScore` berechnet, `qualifiziert` gesetzt
+3. **Stern-Toggle im Editor:** Nach Save im Sheet `wichtig=TRUE`
+4. **Race-Handling:** Zweimal dieselbe KI-Aktion klicken → erster Eintrag `ignoriert`
+5. **Korrektur-Flow Persistenz (B4):** Freitext-KI-Korrektur → kiPunkte bleiben nach Reload (war Audit-Bug, jetzt gefixt)
+6. **Few-Shot ab 3 Beispielen:** nach 3 qualifizierten Musterlösungen enthält der 4. Call einen `--- Beispiele ---`-Block im userPrompt
+7. **Manuell:** `testHeuristik_()` im Apps-Script-Editor → alle Assertions bestanden
 
-Bei Bugs: kleine Fixes auf `feature/ki-kalibrierung`, erneut `git push origin feature/ki-kalibrierung:preview --force-with-lease`. Bei Freigabe: Merge nach `main` + Branch löschen.
+### Offene Follow-Ups aus S130-Spec (nicht blockend)
+- **Bewertungsraster-pro-Kriterium-Edit-UI** (eigener Ticket) — LP kann Bewertungsraster heute zwar anzeigen aber nicht pro Kriterium anpassen. Nur dann fliesst ein feinkörniges Kalibrierungs-Signal.
+- **Ansatz 3** (Fachschafts-/Schulweite Kalibrierung + Similarity-Retrieval via Embedding) — als eigener Spec, wenn v1 ≥ 4–6 Wochen produktiv stabil läuft.
+- **Periodischer Cleanup-Cron** für offene Einträge > 30 Tage (`status='offen'` → `ignoriert_auto`).
 
 ---
 
