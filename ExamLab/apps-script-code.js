@@ -3599,7 +3599,8 @@ function batchImportFragen(body) {
 function getTypDaten(frage) {
   switch (frage.typ) {
     case 'mc':
-      return { optionen: frage.optionen, mehrfachauswahl: frage.mehrfachauswahl, zufallsreihenfolge: frage.zufallsreihenfolge };
+      // optionen[].erklaerung: wird automatisch mitgespeichert, da frage.optionen als Ganzes übergeben wird (kein per-Feld-Whitelist auf Sub-Elementen)
+      return { optionen: frage.optionen, mehrfachauswahl: frage.mehrfachauswahl, zufallsreihenfolge: frage.zufallsreihenfolge, erklaerungSichtbar: frage.erklaerungSichtbar };
     case 'freitext':
       return { laenge: frage.laenge, hilfstextPlaceholder: frage.hilfstextPlaceholder };
     case 'lueckentext':
@@ -3607,7 +3608,8 @@ function getTypDaten(frage) {
     case 'zuordnung':
       return { paare: frage.paare, zufallsreihenfolge: frage.zufallsreihenfolge };
     case 'richtigfalsch':
-      return { aussagen: frage.aussagen };
+      // aussagen[].erklaerung: wird automatisch mitgespeichert, da frage.aussagen als Ganzes übergeben wird
+      return { aussagen: frage.aussagen, erklaerungSichtbar: frage.erklaerungSichtbar };
     case 'berechnung':
       return { ergebnisse: frage.ergebnisse, rechenwegErforderlich: frage.rechenwegErforderlich, hilfsmittel: frage.hilfsmittel };
     case 'buchungssatz':
