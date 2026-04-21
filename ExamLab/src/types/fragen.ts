@@ -166,23 +166,32 @@ export interface FreitextFrage extends FrageBase {
   hilfstextPlaceholder?: string;
 }
 
+export interface ZuordnungPaar {
+  links: string;
+  rechts: string;
+  erklaerung?: string;   // Teilerklärung pro Sub-Element (C9)
+}
+
 export interface ZuordnungFrage extends FrageBase {
   typ: 'zuordnung';
   fragetext: string;
-  paare: { links: string; rechts: string }[];
+  paare: ZuordnungPaar[];
   zufallsreihenfolge: boolean;
+}
+
+export interface Luecke {
+  id: string;
+  korrekteAntworten: string[];
+  caseSensitive: boolean;
+  dropdownOptionen?: string[];  // wenn gesetzt und nicht leer → Dropdown statt Texteingabe
+  erklaerung?: string;          // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface LueckentextFrage extends FrageBase {
   typ: 'lueckentext';
   fragetext: string;
   textMitLuecken: string;
-  luecken: {
-    id: string;
-    korrekteAntworten: string[];
-    caseSensitive: boolean;
-    dropdownOptionen?: string[]  // wenn gesetzt und nicht leer → Dropdown statt Texteingabe
-  }[];
+  luecken: Luecke[];
 }
 
 export interface VisualisierungFrage extends FrageBase {
@@ -272,6 +281,7 @@ export interface BuchungssatzZeile {
   sollKonto: string
   habenKonto: string
   betrag: number
+  erklaerung?: string  // Teilerklärung pro Sub-Element (C9)
 }
 
 /** @deprecated Altes Format — nur noch für Referenz */
@@ -336,6 +346,7 @@ export interface Kontenaufgabe {
   id: string
   text: string
   erwarteteAntworten: KontenAntwort[]
+  erklaerung?: string  // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface KontenbestimmungFrage extends FrageBase {
@@ -352,6 +363,7 @@ export interface KontoMitSaldo {
   kontonummer: string
   name?: string
   saldo: number
+  erklaerung?: string  // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface BilanzGruppe {
@@ -430,7 +442,7 @@ export interface InlineTeilaufgabe {
   textMitLuecken?: string
   luecken?: LueckentextFrage['luecken']
   // Zuordnung
-  paare?: { links: string; rechts: string }[]
+  paare?: ZuordnungPaar[]
   // Berechnung
   ergebnisse?: BerechnungFrage['ergebnisse']
   rechenwegErforderlich?: boolean
@@ -578,6 +590,7 @@ export interface HotspotBereich {
   punkte: { x: number; y: number }[]     // Prozent 0-100, ≥3 Punkte (Rechteck = 4)
   label: string
   punktzahl: number                      // Punkte-Wert für Korrektur
+  erklaerung?: string                    // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface HotspotFrage extends FrageBase {
@@ -593,7 +606,8 @@ export interface HotspotFrage extends FrageBase {
 export interface BildbeschriftungLabel {
   id: string
   position: { x: number; y: number }  // Prozent 0-100
-  korrekt: string[]                     // akzeptierte Antworten
+  korrekt: string[]                    // akzeptierte Antworten
+  erklaerung?: string                  // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface BildbeschriftungFrage extends FrageBase {
@@ -618,6 +632,7 @@ export interface DragDropBildZielzone {
   form: 'rechteck' | 'polygon'
   punkte: { x: number; y: number }[]    // Prozent 0-100, ≥3 Punkte (Rechteck = 4)
   korrektesLabel: string
+  erklaerung?: string                   // Teilerklärung pro Sub-Element (C9)
 }
 
 export interface DragDropBildFrage extends FrageBase {
