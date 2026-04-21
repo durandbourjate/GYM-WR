@@ -1,22 +1,40 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { kalibrierungApi, type KalibrierungsEinstellungen } from '../../../services/kalibrierungApi'
 
 export default function KalibrierungsEinstellungen({ email }: { email: string }) {
   const [konfig, setKonfig] = useState<KalibrierungsEinstellungen | null>(null)
   const [saving, setSaving] = useState(false)
+  const [ladeFehler, setLadeFehler] = useState<string | null>(null)
+  const [saveFehler, setSaveFehler] = useState<string | null>(null)
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    kalibrierungApi.ladeEinstellungen(email).then(setKonfig)
+    kalibrierungApi.ladeEinstellungen(email).then(k => {
+      if (k) setKonfig(k)
+      else setLadeFehler('Einstellungen konnten nicht geladen werden')
+    }).catch(() => setLadeFehler('Netzwerkfehler beim Laden'))
   }, [email])
 
+  useEffect(() => () => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+  }, [])
+
+  if (ladeFehler) return <p className="text-sm text-red-500">{ladeFehler}</p>
   if (!konfig) return <p className="text-slate-500 dark:text-slate-400">Lädt…</p>
 
-  function update(patch: Partial<KalibrierungsEinstellungen>) {
-    const neu = { ...konfig!, ...patch }
+  const update = useCallback((patch: Partial<KalibrierungsEinstellungen>) => {
+    if (!konfig) return
+    const neu = { ...konfig, ...patch }
     setKonfig(neu)
-    setSaving(true)
-    kalibrierungApi.speichereEinstellungen(email, neu).finally(() => setSaving(false))
-  }
+    setSaveFehler(null)
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = setTimeout(() => {
+      setSaving(true)
+      kalibrierungApi.speichereEinstellungen(email, neu)
+        .then(ok => { if (!ok) setSaveFehler('Speichern fehlgeschlagen — bitte erneut versuchen') })
+        .finally(() => setSaving(false))
+    }, 500)
+  }, [email, konfig])
 
   async function bulkLoeschen(status: string) {
     if (!confirm(`Alle Einträge mit Status "${status}" löschen?`)) return
@@ -79,7 +97,7 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
             min={0}
             max={20}
             value={konfig.minBeispiele}
-            onChange={e => update({ minBeispiele: parseInt(e.target.value) || 0 })}
+            onChange={e => update({ minBeispiele: parseInt(e.target.value, 10) || 0 })}
             className="p-2 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white text-sm"
           />
         </label>
@@ -87,7 +105,7 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
           <span className="text-xs text-slate-600 dark:text-slate-300">Beispiele pro KI-Call</span>
           <select
             value={konfig.beispielAnzahl}
-            onChange={e => update({ beispielAnzahl: parseInt(e.target.value) })}
+            onChange={e => update({ beispielAnzahl: parseInt(e.target.value, 10) })}
             className="p-2 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white text-sm"
           >
             <option value={3}>3</option>
@@ -127,6 +145,11 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
         </label>
       </div>
 
+      {saveFehler && (
+        <div className="p-2 rounded border border-red-300 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-sm">
+          {saveFehler}
+        </div>
+      )}
       {saving && (
         <p className="text-xs text-slate-400 dark:text-slate-500">Speichern…</p>
       )}
