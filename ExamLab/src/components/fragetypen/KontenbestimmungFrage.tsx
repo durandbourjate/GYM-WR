@@ -1,11 +1,15 @@
+import { Fragment } from 'react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { KontenbestimmungFrage as KontenbestimmungFrageType, Kontenaufgabe } from '../../types/fragen.ts'
+import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import KontenSelect from '../shared/KontenSelect.tsx'
 
 interface Props {
   frage: KontenbestimmungFrageType
+  modus?: 'aufgabe' | 'loesung'
+  antwort?: Antwort | null
 }
 
 interface AufgabeAntwort {
@@ -27,7 +31,14 @@ function vonAntwort(
   return leer
 }
 
-export default function KontenbestimmungFrage({ frage }: Props) {
+export default function KontenbestimmungFrage({ frage, modus = 'aufgabe', antwort: antwortProp }: Props) {
+  if (modus === 'loesung') {
+    return <KontenbestimmungLoesung frage={frage} antwort={antwortProp ?? null} />
+  }
+  return <KontenbestimmungAufgabe frage={frage} />
+}
+
+function KontenbestimmungAufgabe({ frage }: { frage: KontenbestimmungFrageType }) {
   const { antwort, onAntwort, speichereZwischenstand, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
 
   const gespeicherteAntwort =
@@ -213,6 +224,155 @@ export default function KontenbestimmungFrage({ frage }: Props) {
           {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
       )}
+    </div>
+  )
+}
+
+const KATEGORIE_LABEL: Record<string, string> = {
+  aktiv: 'Aktiv', passiv: 'Passiv', aufwand: 'Aufwand', ertrag: 'Ertrag',
+}
+const SEITE_LABEL: Record<string, string> = { soll: 'Soll', haben: 'Haben' }
+
+function KontenbestimmungLoesung({ frage, antwort }: { frage: KontenbestimmungFrageType; antwort: Antwort | null }) {
+  const zeigeKonto = frage.modus === 'konto_bestimmen' || frage.modus === 'gemischt'
+  const zeigeKategorie = frage.modus === 'kategorie_bestimmen' || frage.modus === 'gemischt'
+  const zeigeSeite = frage.modus === 'kategorie_bestimmen' || frage.modus === 'gemischt'
+
+  const aufgabenAntworten = antwort?.typ === 'kontenbestimmung' ? antwort.aufgaben : {}
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Header: Badges */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
+          {frage.fachbereich}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {frage.bloom}
+        </span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {frage.punkte} {frage.punkte === 1 ? 'Punkt' : 'Punkte'}
+        </span>
+        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          Kontenbestimmung
+        </span>
+      </div>
+
+      {/* Aufgabentext */}
+      <div
+        className="text-base leading-relaxed text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(frage.aufgabentext) }}
+      />
+
+      {/* Pro Aufgabe eine Karte */}
+      <div className="flex flex-col gap-3">
+        {(frage.aufgaben ?? []).map((aufgabe, aufgabeIndex) => {
+          const eingabe = aufgabenAntworten[aufgabe.id]?.antworten ?? []
+          const erwartet = aufgabe.erwarteteAntworten ?? []
+
+          // Pro-Zeile-Check: position-based (einfacher als korrektur.ts, aber 99% der Fälle gleich)
+          const zeilenStatus = erwartet.map((e, i) => {
+            const ez = eingabe[i] ?? {}
+            const kontoOk = !zeigeKonto || (ez.kontonummer ?? '') === (e.kontonummer ?? '')
+            const kategorieOk = !zeigeKategorie || (ez.kategorie ?? '') === (e.kategorie ?? '')
+            const seiteOk = !zeigeSeite || (ez.seite ?? '') === (e.seite ?? '')
+            return { kontoOk, kategorieOk, seiteOk, istKorrekt: kontoOk && kategorieOk && seiteOk }
+          })
+
+          const aufgabeKorrekt = erwartet.length > 0 && zeilenStatus.every((z) => z.istKorrekt)
+          const rahmen = aufgabeKorrekt
+            ? 'border-green-600 bg-green-50 dark:bg-green-950/20'
+            : 'border-red-600 bg-red-50 dark:bg-red-950/20'
+
+          return (
+            <div
+              key={aufgabe.id}
+              data-aufgabe-status={aufgabeKorrekt ? 'korrekt' : 'falsch'}
+              className={`border-2 rounded-xl p-4 ${rahmen}`}
+            >
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-sm font-semibold text-slate-600 dark:text-slate-300">
+                    {aufgabeIndex + 1}
+                  </span>
+                  <span className="font-medium text-slate-800 dark:text-slate-100">{aufgabe.text}</span>
+                </div>
+                <span className={`text-xs font-bold ${aufgabeKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                  {aufgabeKorrekt ? '\u2713 Korrekt' : '\u2717 Falsch'}
+                </span>
+              </div>
+
+              {/* Tabelle: Ist vs. Soll pro Zeile */}
+              <div className="ml-10 mt-2 overflow-x-auto">
+                <table className="text-xs w-full">
+                  <thead>
+                    <tr className="text-slate-500 dark:text-slate-400">
+                      <th className="text-left pb-1 pr-3 font-medium">&nbsp;</th>
+                      {zeigeKonto && <th className="text-left pb-1 pr-3 font-medium">Konto</th>}
+                      {zeigeKategorie && <th className="text-left pb-1 pr-3 font-medium">Kategorie</th>}
+                      {zeigeSeite && <th className="text-left pb-1 pr-3 font-medium">Seite</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {erwartet.map((e, i) => {
+                      const ez = eingabe[i] ?? {}
+                      const s = zeilenStatus[i]
+                      return (
+                        <Fragment key={i}>
+                          <tr>
+                            <td className="pr-3 text-slate-500 dark:text-slate-400 align-top py-0.5">Deine Antwort:</td>
+                            {zeigeKonto && (
+                              <td className={`pr-3 py-0.5 font-mono ${s.kontoOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                                {ez.kontonummer || <em className="text-slate-500 italic">leer</em>}
+                              </td>
+                            )}
+                            {zeigeKategorie && (
+                              <td className={`pr-3 py-0.5 ${s.kategorieOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                                {ez.kategorie ? (KATEGORIE_LABEL[ez.kategorie] ?? ez.kategorie) : <em className="text-slate-500 italic">leer</em>}
+                              </td>
+                            )}
+                            {zeigeSeite && (
+                              <td className={`pr-3 py-0.5 ${s.seiteOk ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                                {ez.seite ? (SEITE_LABEL[ez.seite] ?? ez.seite) : <em className="text-slate-500 italic">leer</em>}
+                              </td>
+                            )}
+                          </tr>
+                          {!s.istKorrekt && (
+                            <tr className="border-b border-slate-200 dark:border-slate-600">
+                              <td className="pr-3 text-slate-500 dark:text-slate-400 align-top py-0.5">Korrekt:</td>
+                              {zeigeKonto && (
+                                <td className="pr-3 py-0.5 font-mono font-semibold text-green-700 dark:text-green-400">
+                                  {e.kontonummer || '\u2013'}
+                                </td>
+                              )}
+                              {zeigeKategorie && (
+                                <td className="pr-3 py-0.5 font-semibold text-green-700 dark:text-green-400">
+                                  {e.kategorie ? (KATEGORIE_LABEL[e.kategorie] ?? e.kategorie) : '\u2013'}
+                                </td>
+                              )}
+                              {zeigeSeite && (
+                                <td className="pr-3 py-0.5 font-semibold text-green-700 dark:text-green-400">
+                                  {e.seite ? (SEITE_LABEL[e.seite] ?? e.seite) : '\u2013'}
+                                </td>
+                              )}
+                            </tr>
+                          )}
+                        </Fragment>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {aufgabe.erklaerung && (
+                <div className="ml-10 mt-2 pl-2.5 border-l-2 border-slate-300 dark:border-slate-600 text-xs italic text-slate-600 dark:text-slate-400">
+                  {'\u{1F4A1}'} {aufgabe.erklaerung}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
