@@ -32,9 +32,9 @@ Ein funktionsfähiger Prototyp ist in der Fachschaft WR am Gymnasium Hofwil im E
 
 Lernende brauchen Möglichkeiten, Stoff individualisiert zu festigen und Wissenslücken zu erkennen — nicht erst zur Prüfung. Etablierte Prüfungstools decken die Prüfungsmomente ab, lassen aber selbstständiges Üben mit persistenter Lückenanalyse dazwischen offen. Ziel: eine für alle Fächer geeignete, von Lehrpersonen befüllbare Übungs- und Prüfungsplattform, auf der Lernende zeit- und ortsunabhängig üben — und auf der Lehrpersonen Klassen-Lernstände sehen, Fragen teilen und Prüfungen durchführen.
 
-### F8 — Welche Massnahmen sind zur Zielerreichung geplant? (480 Zeichen)
+### F8 — Welche Massnahmen sind zur Zielerreichung geplant? (484 Zeichen)
 
-Aufbauend auf dem funktionsfähigen Prototyp: (1) technische Härtung für Mehrschul-Betrieb (Multi-Tenant, Rollen- und Datenschutzkonzept nach kantonalen Standards); (2) Dokumentation und Onboarding-Prozess für weitere Fachschaften und Schulen; (3) schrittweise Öffnung für interessierte Hofwiler Fachschaften als Pilot-Erweiterung; (4) Begleitevaluation der Lernwirksamkeit; (5) Erkenntnistransfer im dip-Netzwerk (Austausch mit anderen Schulen, Feedback in die Weiterentwicklung).
+Aufbauend auf dem funktionsfähigen Prototyp: (1) Backend-Migration auf eine skalierbare, datenschutz-konforme Infrastruktur (Multi-Tenant, Rollen- und Datenschutzkonzept nach kantonalen Standards, weg von Public-Cloud-Abhängigkeiten); (2) Dokumentation und Onboarding-Prozess für weitere Fachschaften und Schulen; (3) schrittweise Öffnung für interessierte Hofwiler Fachschaften als Pilot-Erweiterung; (4) Begleitevaluation der Lernwirksamkeit; (5) Erkenntnistransfer im dip-Netzwerk.
 
 ### F9 — Inwiefern ist das Projekt auf andere Schulen übertragbar und längerfristig nutzbar? (490 Zeichen)
 
