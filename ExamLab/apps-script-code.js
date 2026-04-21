@@ -6091,7 +6091,19 @@ function speichereKorrekturZeile(body) {
       : null;
     if (!sheet) return jsonResponse({ error: 'Korrektur-Sheet nicht gefunden' });
     const data = getSheetData(sheet);
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+    // Body-Felder lesen (Defaults null = nicht ändern)
+    var kPunkte = body.kiPunkte !== undefined ? body.kiPunkte : null;
+    var kBegr = body.kiBegruendung !== undefined ? body.kiBegruendung : null;
+    var kritBew = body.kriterienBewertung !== undefined ? body.kriterienBewertung : null;
+    var quelle = body.quelle || null;
+
+    // Header-Migration: stellt sicher, dass kriterienBewertung-Spalte existiert
+    stelleKorrekturSheetHeaderBereit_(sheet);
+
+    // Headers nach Migration neu lesen
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+
     const rowIndex = data.findIndex(r => r.email === schuelerEmail && r.frageId === frageId);
     if (rowIndex < 0) return jsonResponse({ error: 'Zeile nicht gefunden' });
 
@@ -6116,6 +6128,39 @@ function speichereKorrekturZeile(body) {
         sheet.getRange(1, col + 1).setValue('audioKommentarId');
       }
       sheet.getRange(row, col + 1).setValue(body.audioKommentarId || '');
+    }
+
+    // NEU: KI-Korrektur-Felder persistieren (Persistenz-Fix, Audit-Befund)
+    function setIfPresent(colName, wert) {
+      if (wert === null || wert === undefined) return;
+      var idx = headers.indexOf(colName);
+      if (idx < 0) {
+        // Spalte fehlt — am Ende anhängen
+        idx = sheet.getLastColumn();
+        sheet.getRange(1, idx + 1).setValue(colName);
+        headers = sheet.getRange(1, 1, 1, idx + 1).getValues()[0];
+      }
+      var schreibWert = (colName === 'kriterienBewertung') ? JSON.stringify(wert) : wert;
+      sheet.getRange(row, idx + 1).setValue(schreibWert);
+    }
+    setIfPresent('kiPunkte', kPunkte);
+    setIfPresent('kiBegruendung', kBegr);
+    setIfPresent('kriterienBewertung', kritBew);
+    setIfPresent('quelle', quelle);
+
+    // Kalibrierungs-Feedbacks schliessen (analog speichereFrage, Task 8)
+    if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
+      body.offeneKIFeedbacks.forEach(function(fb) {
+        try {
+          var final = {
+            punkte: body.lpPunkte,
+            begruendung: body.lpKommentar,
+            kriterienBewertung: kritBew,
+            maxPunkte: body.maxPunkte || null
+          };
+          schliesseFeedbackEintrag_(fb.feedbackId, final, { wichtig: !!fb.wichtig });
+        } catch(e) { console.warn('[Kalibrierung] Korrektur-schliesseFeedback:', e); }
+      });
     }
 
     return jsonResponse({ success: true });
