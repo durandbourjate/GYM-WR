@@ -1,4 +1,5 @@
 import type { FrageAnhang } from '../types/fragen.ts'
+import type { KIAssistentRueckgabe } from '@shared/editor/types'
 import { APPS_SCRIPT_URL, fileToBase64 } from './apiClient'
 
 /** Material-Datei (PDF/Bild) hochladen und Drive-URL zurückgeben */
@@ -159,7 +160,7 @@ export async function uploadAudioAntwort(pruefungId: string, email: string, frag
 }
 
 /** KI-Assistent: Claude-basierte Hilfe beim Fragenschreiben */
-export async function kiAssistent(email: string, aktion: string, daten: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+export async function kiAssistent(email: string, aktion: string, daten: Record<string, unknown>): Promise<KIAssistentRueckgabe | null> {
   if (!APPS_SCRIPT_URL) return null
 
   try {
@@ -175,9 +176,19 @@ export async function kiAssistent(email: string, aktion: string, daten: Record<s
       const data = JSON.parse(text)
       if (data.error) {
         console.error('[API] kiAssistent:', data.error)
-        return { error: data.error }
+        return { ergebnis: { error: data.error } }
       }
-      return data.ergebnis ?? null
+      if (data.success && data.ergebnis !== undefined) {
+        return {
+          ergebnis: data.ergebnis as Record<string, unknown>,
+          feedbackId: data.feedbackId as string | undefined,
+        }
+      }
+      // Legacy-Fallback: Backend liefert ergebnis direkt (ohne success-Wrapper)
+      if (data.ergebnis !== undefined) {
+        return { ergebnis: data.ergebnis as Record<string, unknown> }
+      }
+      return null
     } catch {
       console.error('[API] kiAssistent: Antwort ist kein JSON')
       return null
@@ -185,5 +196,20 @@ export async function kiAssistent(email: string, aktion: string, daten: Record<s
   } catch (error) {
     console.error('[API] kiAssistent: Netzwerkfehler:', error)
     return null
+  }
+}
+
+/** Feedback-Eintrag als ignoriert markieren (fire-and-forget).
+ *  Teilt dem Backend mit, dass der User das Feedback-UI weggeklickt hat. */
+export async function markiereFeedbackAlsIgnoriert(email: string, feedbackId: string): Promise<void> {
+  if (!APPS_SCRIPT_URL) return
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'markiereKIFeedbackAlsIgnoriert', email, feedbackId }),
+    })
+  } catch (e) {
+    console.warn('[API] markiereFeedbackAlsIgnoriert:', e)
   }
 }

@@ -5,7 +5,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
-import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent } from '../../../services/uploadApi.ts'
+import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent, markiereFeedbackAlsIgnoriert as apiMarkiereFeedbackAlsIgnoriert } from '../../../services/uploadApi.ts'
 import { ladeLernziele as apiLadeLernziele, speichereLernziel as apiSpeichereLernziel } from '../../../services/poolApi.ts'
 import { istKonfiguriert } from '../../../services/apiClient.ts'
 import { EditorProvider } from '@shared/editor/EditorContext'
@@ -88,6 +88,10 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
       if (!user) return null
       return apiKiAssistent(user.email, aktion, daten)
+    },
+    markiereFeedbackAlsIgnoriert: async (feedbackId: string) => {
+      if (!user) return
+      await apiMarkiereFeedbackAlsIgnoriert(user.email, feedbackId)
     },
     istKIVerfuegbar: () => istKonfiguriert(),
     istUploadVerfuegbar: () => istKonfiguriert() && !!user,

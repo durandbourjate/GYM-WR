@@ -43,13 +43,26 @@ export default function UebenEditorProvider({ children }: Props) {
     // KI-Assistent: Ruft das ExamLab-Backend für KI-Aktionen auf
     kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
       try {
-        const response = await uebenApiClient.post<{ success: boolean; data: Record<string, unknown> }>(
+        const response = await uebenApiClient.post<{ success: boolean; data: Record<string, unknown>; feedbackId?: string }>(
           'lernplattformKIAssistent',
           { aktion, daten, email: user?.email },
           getToken()
         )
-        return response?.data ?? null
+        if (!response?.data) return null
+        return {
+          ergebnis: response.data,
+          feedbackId: response.feedbackId,
+        }
       } catch { return null }
+    },
+    markiereFeedbackAlsIgnoriert: async (feedbackId: string) => {
+      try {
+        await uebenApiClient.post(
+          'lernplattformMarkiereKIFeedbackAlsIgnoriert',
+          { feedbackId, email: user?.email },
+          getToken()
+        )
+      } catch { /* fire-and-forget */ }
     },
 
     // Upload: Datei an Drive hochladen

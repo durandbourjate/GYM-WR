@@ -232,13 +232,19 @@ export default function ZeichnenKorrektur({
 
     setKiLaedt(false)
 
-    if (!ergebnis || 'error' in ergebnis) {
+    if (!ergebnis) {
       setKiFehler(true)
       return
     }
 
-    const vorgeschlagenePunkte = typeof ergebnis.punkte === 'number' ? ergebnis.punkte : null
-    const begruendung = typeof ergebnis.begruendung === 'string' ? ergebnis.begruendung : null
+    const daten = ergebnis.ergebnis
+    if ('error' in daten) {
+      setKiFehler(true)
+      return
+    }
+
+    const vorgeschlagenePunkte = typeof daten.punkte === 'number' ? daten.punkte : null
+    const begruendung = typeof daten.begruendung === 'string' ? daten.begruendung : null
 
     setKiPunkte(vorgeschlagenePunkte)
     setKiBegruendung(begruendung)

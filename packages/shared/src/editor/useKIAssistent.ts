@@ -51,13 +51,14 @@ export function useKIAssistent() {
     setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: undefined }))
 
     try {
-      const result = await services.kiAssistent(aktion, daten)
-      if (!result) {
+      const response = await services.kiAssistent(aktion, daten)
+      if (!response) {
         setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: 'Keine Antwort vom Server' } }))
-      } else if ('error' in result && typeof result.error === 'string') {
-        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: result.error as string } }))
+      } else if ('error' in response.ergebnis && typeof response.ergebnis.error === 'string') {
+        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: response.ergebnis.error as string } }))
       } else {
-        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: result, fehler: null } }))
+        // Nur das ergebnis-Feld speichern — feedbackId wird für Task 13 (Feedback-Loop) gebraucht
+        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: response.ergebnis, fehler: null } }))
       }
     } catch {
       setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: 'Netzwerkfehler' } }))
