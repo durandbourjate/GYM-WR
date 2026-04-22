@@ -10766,12 +10766,15 @@ function testC9GeneriereMusterloesung() {
 
 /**
  * C9 Phase 3 — Smoke-Test für generiereMusterloesung mit Teilerklärungen.
- * Benötigt CLAUDE_API_KEY oder LP-spezifischen Key (EMAIL). Verbraucht ~4 API-Calls.
- * NUR im GAS-Script-Editor ausführen (nicht via Webapp-Trigger) — `Session.getActiveUser()`
- * liefert sonst eine leere Adresse und `istZugelasseneLP` scheitert.
+ * Benötigt CLAUDE_API_KEY (Script-Property) oder LP-spezifischen Key. Verbraucht ~4 API-Calls.
+ *
+ * EMAIL-Konstante unten manuell auf eine zugelassene LP-E-Mail setzen (Domain @gymhofwil.ch,
+ * muss in der LP-Liste aktiv sein). Session.getActiveUser() fällt aus, weil das Apps-Script-
+ * Projekt den Scope `userinfo.email` nicht hat und wir den nicht nur für einen Smoke-Test
+ * hinzufügen wollen (würde bei allen Nutzern Re-Autorisierung auslösen).
  */
 function testC9GeneriereMusterloesung_() {
-  var EMAIL = Session.getActiveUser().getEmail();
+  var EMAIL = 'wr.test@gymhofwil.ch'; // ← ggf. auf eigene LP-E-Mail anpassen
 
   // (1) MC mit 2 Optionen — erwartet 2 Teilerklärungen
   var mc = {
