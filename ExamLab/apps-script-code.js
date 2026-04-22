@@ -10775,6 +10775,8 @@ function testC9GeneriereMusterloesung() {
  */
 function testC9GeneriereMusterloesung_() {
   var EMAIL = 'wr.test@gymhofwil.ch'; // ← ggf. auf eigene LP-E-Mail anpassen
+  // Apps-Script-V8 hat KEIN console.assert — eigener Helper der bei false wirft.
+  function assert_(cond, msg) { if (!cond) throw new Error('Assertion fehlgeschlagen: ' + msg); }
 
   // (1) MC mit 2 Optionen — erwartet 2 Teilerklärungen
   var mc = {
@@ -10794,11 +10796,11 @@ function testC9GeneriereMusterloesung_() {
   var r1 = kiAssistentEndpoint(mc);
   var b1 = JSON.parse(r1.getContent());
   Logger.log('MC: ' + JSON.stringify(b1, null, 2));
-  console.assert(b1.success === true, 'MC success');
-  console.assert(b1.ergebnis && typeof b1.ergebnis.musterloesung === 'string' && b1.ergebnis.musterloesung.length > 10, 'MC musterloesung gefuellt');
-  console.assert(Array.isArray(b1.ergebnis.teilerklaerungen) && b1.ergebnis.teilerklaerungen.length === 2, 'MC 2 Teilerklaerungen');
-  console.assert(b1.ergebnis.teilerklaerungen.every(function(t){ return t.feld === 'optionen'; }), 'MC feld=optionen');
-  console.assert(b1.ergebnis.teilerklaerungen.every(function(t){ return t.id === 'opt-a' || t.id === 'opt-b'; }), 'MC ids aus Kontext');
+  assert_(b1.success === true, 'MC success');
+  assert_(b1.ergebnis && typeof b1.ergebnis.musterloesung === 'string' && b1.ergebnis.musterloesung.length > 10, 'MC musterloesung gefuellt');
+  assert_(Array.isArray(b1.ergebnis.teilerklaerungen) && b1.ergebnis.teilerklaerungen.length === 2, 'MC 2 Teilerklaerungen');
+  assert_(b1.ergebnis.teilerklaerungen.every(function(t){ return t.feld === 'optionen'; }), 'MC feld=optionen');
+  assert_(b1.ergebnis.teilerklaerungen.every(function(t){ return t.id === 'opt-a' || t.id === 'opt-b'; }), 'MC ids aus Kontext');
 
   // (2) Freitext — erwartet teilerklaerungen: []
   var ft = {
@@ -10809,9 +10811,9 @@ function testC9GeneriereMusterloesung_() {
   var r2 = kiAssistentEndpoint(ft);
   var b2 = JSON.parse(r2.getContent());
   Logger.log('Freitext: ' + JSON.stringify(b2, null, 2));
-  console.assert(b2.success === true, 'Freitext success');
-  console.assert(b2.ergebnis.musterloesung.length > 20, 'Freitext musterloesung substantiell');
-  console.assert(Array.isArray(b2.ergebnis.teilerklaerungen) && b2.ergebnis.teilerklaerungen.length === 0, 'Freitext teilerklaerungen leer');
+  assert_(b2.success === true, 'Freitext success');
+  assert_(b2.ergebnis.musterloesung.length > 20, 'Freitext musterloesung substantiell');
+  assert_(Array.isArray(b2.ergebnis.teilerklaerungen) && b2.ergebnis.teilerklaerungen.length === 0, 'Freitext teilerklaerungen leer');
 
   // (3) MC ohne Sub-Elemente im Request (Simulation des heutigen Frontend-Callers vor Task 24)
   //     — Backend darf NICHT crashen, teilerklaerungen muss leer sein.
@@ -10823,8 +10825,8 @@ function testC9GeneriereMusterloesung_() {
   var r3 = kiAssistentEndpoint(mcLegacy);
   var b3 = JSON.parse(r3.getContent());
   Logger.log('MC-legacy (ohne optionen): ' + JSON.stringify(b3, null, 2));
-  console.assert(b3.success === true, 'MC-legacy success');
-  console.assert(Array.isArray(b3.ergebnis.teilerklaerungen) && b3.ergebnis.teilerklaerungen.length === 0, 'MC-legacy teilerklaerungen leer');
+  assert_(b3.success === true, 'MC-legacy success');
+  assert_(Array.isArray(b3.ergebnis.teilerklaerungen) && b3.ergebnis.teilerklaerungen.length === 0, 'MC-legacy teilerklaerungen leer');
 
   // (4) Bilanzstruktur mit Duplikat-Kontonummer — Dedup-Check im Normalizer
   var bilanz = {
@@ -10845,13 +10847,13 @@ function testC9GeneriereMusterloesung_() {
   var r4 = kiAssistentEndpoint(bilanz);
   var b4 = JSON.parse(r4.getContent());
   Logger.log('Bilanz: ' + JSON.stringify(b4, null, 2));
-  console.assert(b4.success === true, 'Bilanz success');
-  console.assert(Array.isArray(b4.ergebnis.teilerklaerungen), 'Bilanz teilerklaerungen Array');
-  console.assert(b4.ergebnis.teilerklaerungen.every(function(t){ return t.feld === 'kontenMitSaldi'; }), 'Bilanz feld=kontenMitSaldi');
+  assert_(b4.success === true, 'Bilanz success');
+  assert_(Array.isArray(b4.ergebnis.teilerklaerungen), 'Bilanz teilerklaerungen Array');
+  assert_(b4.ergebnis.teilerklaerungen.every(function(t){ return t.feld === 'kontenMitSaldi'; }), 'Bilanz feld=kontenMitSaldi');
   var _erwarteteKnrs = { '1000': true, '1020': true, '2000': true };
-  console.assert(b4.ergebnis.teilerklaerungen.every(function(t){ return _erwarteteKnrs[t.id]; }), 'Bilanz ids aus Kontext');
+  assert_(b4.ergebnis.teilerklaerungen.every(function(t){ return _erwarteteKnrs[t.id]; }), 'Bilanz ids aus Kontext');
 
-  console.log('✓ C9 generiereMusterloesung-Tests bestanden.');
+  Logger.log('✓ C9 generiereMusterloesung-Tests bestanden.');
 }
 
 function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
