@@ -6,17 +6,36 @@
 
 ---
 
-## Für die nächste Session (S134+)
+## Für die nächste Session (S135+)
 
-### Aktueller Stand (Ende S133, 22.04.2026) — C9 Phase 3 Tasks 22 + 23 fertig, Branch offen
+### Aktueller Stand (Ende S134, 22.04.2026) — C9 Phase 3 Task 24 fertig, Tasks 25 + 26 offen
 
-**C9 = Detaillierte Lösungen pro Teilantwort**. Branch `feature/c9-detaillierte-loesungen` (preview + origin synchron). Phase 1 + 2 + Task 22 (Apps-Script) + Task 23 (Frontend-Normalizer) fertig. Letzter Commit `0792f16`. Phase 3 Tasks 24–26 offen.
+**C9 = Detaillierte Lösungen pro Teilantwort**. Branch `feature/c9-detaillierte-loesungen` (preview + origin synchron). Phase 1 + 2 + Task 22 (Apps-Script) + Task 23 (Frontend-Normalizer) + Task 24 (Editor-UI + Caller) fertig. Letzter Commit `6b454e8`. Phase 3 Tasks 25 + 26 offen.
 
 **Einstieg nächste Session:**
 1. `git checkout feature/c9-detaillierte-loesungen && git pull`
-2. Plan lesen: `ExamLab/docs/superpowers/plans/2026-04-21-c9-detaillierte-loesungen.md` — weiter ab **Task 24** (Editor-UI `KIMusterloesungPreview` + Caller-Umbau)
-3. Spec lesen: `ExamLab/docs/superpowers/specs/2026-04-21-c9-detaillierte-loesungen-design.md` §6.2
-4. **Tests/Build-Status prüfen:** `cd ExamLab && npx tsc -b && npx vitest run` → erwartet 594/594 grün
+2. Plan lesen: `ExamLab/docs/superpowers/plans/2026-04-21-c9-detaillierte-loesungen.md` — weiter ab **Task 25** (Privacy `bereinigeFrageFuerSuS_`)
+3. Spec lesen: `ExamLab/docs/superpowers/specs/2026-04-21-c9-detaillierte-loesungen-design.md` §7
+4. **Tests/Build-Status prüfen:** `cd ExamLab && npx tsc -b && npx vitest run` → erwartet 612/612 grün
+
+### Task 24 Ergebnis (2 Commits, S134 22.04.2026)
+
+**KIMusterloesungPreview + Kontext-Helper + Caller-Umbau.** Commits `ee99497` (Types-Nachtrag) + `6b454e8` (Haupt). **18 neue Tests, 612/612 vitest + tsc -b + build grün.**
+
+- **Neue Komponente** `packages/shared/src/editor/ki/KIMusterloesungPreview.tsx`: rendert normalisiertes KI-Ergebnis als Editor-Panel. Pro Teilerklärung editierbarer Text-Input + Übernehmen-Checkbox. Default-Policy: **nur leere Felder werden übernommen** (bestehende LP-Erklärungen bleiben, Checkbox ungekreuzt + Hinweis). Halluzinierte IDs (nicht in aktueller Frage) werden angezeigt aber disabled. Stern-Toggle für Kalibrierungs-Feedback.
+- **Neuer Helper** `packages/shared/src/editor/musterloesungKontext.ts`: generische `baueTeilerklaerungsKontext`-Factory mit `items`/`getId`/`getLabel`/`getErklaerung`/`setzeErklaerung`/`setItems`. Kapselt Request-Sub-Array + `elementeInfo` + `uebernimmErklaerungen`-Writeback.
+- **MusterloesungSection-Umbau**: sendet bei `generiereMusterloesung` das Sub-Array mit (so liefert Task-22-Backend die Teilerklärungen); zeigt `KIMusterloesungPreview` statt der alten `ErgebnisAnzeige`; schreibt übernommene Teilerklärungen in `frage.<feld>[i].erklaerung`. Fehler-Pfad weiter via `ErgebnisAnzeige`.
+- **SharedFragenEditor**: `useMemo`-Kontext für 6 Fragetypen (mc, richtigfalsch, lueckentext, hotspot, bildbeschriftung, dragdrop_bild). Zuordnung hat keine IDs (→ kein Kontext → Backend liefert `teilerklaerungen: []`). FiBu-Typen rendern weiterhin keine MusterloesungSection (null). `setItems(prev=>u(prev))` gegen stale closures.
+- **Backend-Dual-Write entfernt**: `apps-script-code.js` schreibt nur noch `musterloesung` (Tippo-Alias `musterlosung` weg). Der Normalizer behält intern den Legacy-Fallback für alte Backend-Stände.
+- **Phase-1 Nachtrag**: `erklaerung?:`-Felder an `HotspotBereich`, `BildbeschriftungLabel`, `DragDropBildZielzone`, `Kontenaufgabe`, `BuchungssatzZeile`, `KontoMitSaldo`, `LueckentextFrage.luecken[]` (7 Sub-Typen). Alle optional, Runtime-Verhalten unverändert — ohne diese Felder scheiterte der Caller-Writeback TS-seitig.
+
+**Apps-Script-Deploy Status:**
+- ⚠️ **NOCH NICHT als neue Bereitstellung deployed**. Dual-Write-Entfernung ist backward-kompatibel (Normalizer liest weiterhin `musterlosung` als Fallback). Deploy kann gebündelt werden mit Task 25 (`bereinigeFrageFuerSuS_` Privacy-Fix) — dann 1 Deploy für beide Backend-Changes.
+
+**Lehren S134 (→ code-quality.md bei Gelegenheit):**
+1. **Phase-Vollständigkeit prüfen**: Phase 1 (HANDOFF S131) hatte formal die `erklaerung?:`-Felder "überall" ergänzt — tatsächlich aber nur bei MC/RF. Grund: Phase 1 war via Subagent-Driven Development gemacht, der Subagent hat nur die im Apps-Script offensichtlich erwarteten Typen gesetzt, die weiteren 7 blieben unbemerkt (Tests liefen grün, weil alle Felder optional sind). **Regel**: Bei „erweitere Feld X an allen Sub-Typen"-Tasks am Ende ein `grep`-Check gegen die vollständige Liste aus dem Plan machen, nicht aus der Code-Inspektion extrapolieren.
+2. **setItems-Pattern gegen stale closures**: beim Bauen von Kontexten in `useMemo` mit Setter-Closures immer `setOptionen((prev) => u(prev))` statt `setOptionen(u(optionen))` — sonst liest der Updater den zum Memoization-Zeitpunkt gefrorenen Array-Snapshot.
+3. **Zuordnungspaare ohne ID**: `ZuordnungFrage.paare` hat historisch kein `id`-Feld (`{links, rechts}`). Für Task 24 akzeptiert — Backend liefert für Zuordnung deterministisch `teilerklaerungen: []`. Wenn Zuordnung in Zukunft auch Teilerklärungen haben soll: IDs hinzufügen (Migrator nötig).
 
 ### Task 23 Ergebnis (1 Commit, S133 22.04.2026)
 
