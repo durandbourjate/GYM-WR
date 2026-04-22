@@ -1,15 +1,13 @@
 {
   "name": "migrate-teilerklaerungen",
-  "version": "1.0.0",
-  "description": "C9 Phase 4 — Backfill-Skript fuer Teilerklaerungen auf bestehenden ExamLab-Fragen",
+  "version": "2.0.0",
+  "description": "C9 Phase 4 — Backfill-Migration via Claude Code (keine SDK-Dependency)",
   "type": "module",
   "private": true,
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.27.0"
-  },
   "scripts": {
-    "dry-run": "node migrate.mjs --dry-run --limit=20",
-    "migrate": "node migrate.mjs"
+    "dump": "node dump.mjs",
+    "review": "node review-generator.mjs",
+    "upload": "node upload.mjs"
   },
   "engines": {
     "node": ">=20.11"

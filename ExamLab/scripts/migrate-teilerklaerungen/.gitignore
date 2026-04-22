@@ -1,6 +1,9 @@
 node_modules/
+fragen-input.jsonl
+fragen-updates.jsonl
 state.json
-log.jsonl
-migrate.log
+stichprobe-review.md
+stichprobe-ids.json
+upload.log
 .env
 *.log
