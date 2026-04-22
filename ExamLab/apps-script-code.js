@@ -1857,16 +1857,28 @@ var LOESUNGS_FELDER_ = {
   ],
 
   arrays: [
+    // C9 Task 25: `erklaerung` pro Sub-Element entfernen (Prüfen-SuS).
+    // Flag opts.behalteErklaerung=true im Üben-Modus überschreibt diese Regel.
     { feld: 'optionen', subFelder: ['korrekt', 'erklaerung'] },
     { feld: 'aussagen', subFelder: ['korrekt', 'erklaerung'] },
-    { feld: 'luecken', subFelder: ['korrekteAntworten', 'korrekt'] },
+    { feld: 'luecken', subFelder: ['korrekteAntworten', 'korrekt', 'erklaerung'] },
     { feld: 'ergebnisse', subFelder: ['korrekt', 'toleranz'] },
     { feld: 'bilanzEintraege', subFelder: ['korrekt'] },
-    { feld: 'aufgaben', subFelder: ['erwarteteAntworten'] },
-    { feld: 'beschriftungen', subFelder: ['korrekt'] },
-    { feld: 'zielzonen', subFelder: ['korrektesLabel'] },
-    { feld: 'bereiche', subFelder: ['korrekt'], nurBeiTyp: 'hotspot' },
-    { feld: 'hotspots', subFelder: ['korrekt'], nurBeiTyp: 'hotspot' },
+    { feld: 'aufgaben', subFelder: ['erwarteteAntworten', 'erklaerung'] },
+    { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung'] },
+    { feld: 'zielzonen', subFelder: ['korrektesLabel', 'erklaerung'] },
+    { feld: 'bereiche', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
+    { feld: 'hotspots', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
+    // BilanzER: kontenMitSaldi[].erklaerung (id = kontonummer). saldo selbst
+    // ist die Aufgabenstellung (LP gibt Saldo vor), nicht Lösung — wird nicht gestrippt.
+    { feld: 'kontenMitSaldi', subFelder: ['erklaerung'], nurBeiTyp: 'bilanzstruktur' },
+    // Buchungssatz: erklaerung pro Zeile. Das Array `buchungen` wird im
+    // Prüfen-Modus bereits via typSpezifisch komplett top-level gelöscht —
+    // dieser Eintrag greift daher praktisch nur im Üben-Modus (wo buchungen
+    // durch opts.behalteBuchungen via Caller erhalten bleiben müsste, aktuell
+    // out of scope) und als defensive Absicherung falls typSpezifisch-Delete
+    // umgangen wird.
+    { feld: 'buchungen', subFelder: ['erklaerung'], nurBeiTyp: 'buchungssatz' },
   ],
 
   reihenfolge: [
@@ -1875,7 +1887,9 @@ var LOESUNGS_FELDER_ = {
   ],
 
   konten: {
-    subFelder: ['korrekt', 'eintraege', 'saldo'],
+    // C9 Task 25: `erklaerung` pro TKonto-Eintrag entfernen (Prüfen-SuS).
+    // Flag opts.behalteErklaerung=true im Üben-Modus überschreibt diese Regel.
+    subFelder: ['korrekt', 'eintraege', 'saldo', 'erklaerung'],
     bedingteSubFelder: [
       { feld: 'anfangsbestand', bedingung: function(k) { return !k.anfangsbestandVorgegeben; } },
     ],
@@ -1893,8 +1907,15 @@ var LOESUNGS_FELDER_ = {
  * Rekursiv für Aufgabengruppen. Einziger kanonischer SuS-Bereinigungs-Pfad.
  *
  * Iteriert deklarativ über LOESUNGS_FELDER_ — Single Source of Truth.
+ *
+ * C9 Task 25 (S135 Privacy-Invariante): Optionales opts.behalteErklaerung=true
+ * lässt `erklaerung`-Felder in allen Sub-Arrays stehen. Nur vom Üben-Modus
+ * benutzt (`bereinigeFrageFuerSuSUeben_`) — im Prüfen-Modus bleibt Default=false
+ * (Erklärungen gehören zur Lösung, dürfen SuS nicht sehen).
  */
-function bereinigeFrageFuerSuS_(frage) {
+function bereinigeFrageFuerSuS_(frage, opts) {
+  opts = opts || {};
+  var behalteErklaerung = !!opts.behalteErklaerung;
   var f = JSON.parse(JSON.stringify(frage)); // Deep Copy
 
   // Einfache Felder (gemeinsam)
@@ -1913,7 +1934,10 @@ function bereinigeFrageFuerSuS_(frage) {
     if (f[ts.feld]) delete f[ts.feld];
   }
 
-  // Array-Felder: Sub-Lösungsfelder entfernen
+  // Array-Felder: Sub-Lösungsfelder entfernen. Bei behalteErklaerung=true
+  // bleibt `erklaerung` stehen (Pfad: Üben-Modus → SuS sieht Teilerklärungen
+  // nach "Antwort prüfen"). Sonstige Lösungsfelder (`korrekt`, `korrekteAntworten`,
+  // `korrektesLabel`, `erwarteteAntworten`) werden weiterhin entfernt.
   for (var k = 0; k < LOESUNGS_FELDER_.arrays.length; k++) {
     var arr = LOESUNGS_FELDER_.arrays[k];
     if (arr.nurBeiTyp && f.typ !== arr.nurBeiTyp) continue;
@@ -1921,7 +1945,9 @@ function bereinigeFrageFuerSuS_(frage) {
       f[arr.feld] = f[arr.feld].map(function(item) {
         var cleaned = Object.assign({}, item);
         for (var s = 0; s < arr.subFelder.length; s++) {
-          delete cleaned[arr.subFelder[s]];
+          var sf = arr.subFelder[s];
+          if (sf === 'erklaerung' && behalteErklaerung) continue;
+          delete cleaned[sf];
         }
         return cleaned;
       });
@@ -1936,7 +1962,9 @@ function bereinigeFrageFuerSuS_(frage) {
     f.konten = f.konten.map(function(konto) {
       var c = Object.assign({}, konto);
       for (var s = 0; s < LOESUNGS_FELDER_.konten.subFelder.length; s++) {
-        delete c[LOESUNGS_FELDER_.konten.subFelder[s]];
+        var sf = LOESUNGS_FELDER_.konten.subFelder[s];
+        if (sf === 'erklaerung' && behalteErklaerung) continue;
+        delete c[sf];
       }
       for (var bs = 0; bs < LOESUNGS_FELDER_.konten.bedingteSubFelder.length; bs++) {
         var b = LOESUNGS_FELDER_.konten.bedingteSubFelder[bs];
@@ -1958,9 +1986,10 @@ function bereinigeFrageFuerSuS_(frage) {
     });
   }
 
-  // Aufgabengruppe: rekursiv bereinigen
+  // Aufgabengruppe: rekursiv bereinigen — opts muss mitgegeben werden,
+  // sonst verlieren Teilaufgaben das behalteErklaerung-Flag.
   if (Array.isArray(f.teilaufgaben)) {
-    f.teilaufgaben = f.teilaufgaben.map(bereinigeFrageFuerSuS_);
+    f.teilaufgaben = f.teilaufgaben.map(function(t) { return bereinigeFrageFuerSuS_(t, opts); });
   }
 
   return f;
@@ -2065,9 +2094,15 @@ function extrahiereLoesungsSlice_(frage) {
  * Bereinigung für selbstständiges Üben: strenge Bereinigung + Mischung.
  * Strenge Bereinigung steckt vollständig in bereinigeFrageFuerSuS_;
  * diese Funktion fügt nur noch Fisher-Yates-Mischung hinzu.
+ *
+ * C9 Task 25 (S135): Übungsmodus behält `erklaerung`-Felder pro Sub-Element
+ * (via opts.behalteErklaerung=true) — SuS sieht die Teilerklärungen nach
+ * „Antwort prüfen" direkt aus dem Frage-Payload (siehe fragetypen/*.tsx
+ * modus='loesung'). Im Prüfen-Modus würde die erklaerung indirekt die
+ * Musterlösung verraten; deshalb dort Default=false.
  */
 function bereinigeFrageFuerSuSUeben_(frage) {
-  return mischeFrageOptionen_(bereinigeFrageFuerSuS_(frage));
+  return mischeFrageOptionen_(bereinigeFrageFuerSuS_(frage, { behalteErklaerung: true }));
 }
 
 // === SERVER-SIDE KORREKTUR (Port aus korrektur.ts) ===
@@ -10854,6 +10889,107 @@ function testC9GeneriereMusterloesung_() {
   assert_(b4.ergebnis.teilerklaerungen.every(function(t){ return _erwarteteKnrs[t.id]; }), 'Bilanz ids aus Kontext');
 
   Logger.log('✓ C9 generiereMusterloesung-Tests bestanden.');
+}
+
+/**
+ * Public-Wrapper für testC9Privacy_ — erscheint im GAS-Editor-Dropdown.
+ */
+function testC9Privacy() {
+  return testC9Privacy_();
+}
+
+/**
+ * C9 Phase 3 Task 25 — Privacy-Invariante für erklaerung-Felder.
+ *
+ * Prüft für jeden relevanten Fragetyp:
+ *  - bereinigeFrageFuerSuS_(f) entfernt alle erklaerung-Felder (Prüfen-SuS darf sie nicht sehen).
+ *  - bereinigeFrageFuerSuSUeben_(f) behält alle erklaerung-Felder (Üben-SuS sieht sie nach „Antwort prüfen").
+ *
+ * KEINE API-Calls nötig — rein lokale Bereinigungslogik.
+ */
+function testC9Privacy_() {
+  function assert_(cond, msg) { if (!cond) throw new Error('Assertion fehlgeschlagen: ' + msg); }
+
+  // (1) MC — optionen[].erklaerung
+  var mc = { typ: 'mc', optionen: [
+    { id: 'a', text: 'X', korrekt: true, erklaerung: 'LEAK-A' },
+    { id: 'b', text: 'Y', korrekt: false, erklaerung: 'LEAK-B' },
+  ]};
+  var mcPruefen = bereinigeFrageFuerSuS_(mc);
+  var mcUeben = bereinigeFrageFuerSuSUeben_(mc);
+  assert_(!mcPruefen.optionen[0].erklaerung, 'MC Prüfen: erklaerung[0] entfernt');
+  assert_(!mcPruefen.optionen[1].erklaerung, 'MC Prüfen: erklaerung[1] entfernt');
+  assert_(mcUeben.optionen.length === 2, 'MC Üben: optionen erhalten');
+  var hasA = mcUeben.optionen.some(function(o){ return o.erklaerung === 'LEAK-A'; });
+  var hasB = mcUeben.optionen.some(function(o){ return o.erklaerung === 'LEAK-B'; });
+  assert_(hasA && hasB, 'MC Üben: erklaerung behalten');
+
+  // (2) Richtig/Falsch — aussagen[].erklaerung
+  var rf = { typ: 'richtigfalsch', aussagen: [
+    { id: '1', text: 'A', korrekt: true, erklaerung: 'RF-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(rf).aussagen[0].erklaerung, 'RF Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(rf).aussagen[0].erklaerung === 'RF-ERK', 'RF Üben: erklaerung behalten');
+
+  // (3) Lückentext — luecken[].erklaerung
+  var lt = { typ: 'lueckentext', textMitLuecken: 't', luecken: [
+    { id: 'l1', korrekteAntworten: ['x'], caseSensitive: false, erklaerung: 'LT-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(lt).luecken[0].erklaerung, 'Luecken Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(lt).luecken[0].erklaerung === 'LT-ERK', 'Luecken Üben: erklaerung behalten');
+
+  // (4) Hotspot — bereiche[].erklaerung
+  var hs = { typ: 'hotspot', bereiche: [
+    { id: 'h1', form: 'rechteck', punkte: [], label: 'X', punktzahl: 1, erklaerung: 'HS-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(hs).bereiche[0].erklaerung, 'Hotspot Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(hs).bereiche[0].erklaerung === 'HS-ERK', 'Hotspot Üben: erklaerung behalten');
+
+  // (5) Bildbeschriftung — beschriftungen[].erklaerung
+  var bb = { typ: 'bildbeschriftung', beschriftungen: [
+    { id: 'b1', position: {x: 0, y: 0}, korrekt: ['x'], erklaerung: 'BB-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(bb).beschriftungen[0].erklaerung, 'Bildbeschr Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(bb).beschriftungen[0].erklaerung === 'BB-ERK', 'Bildbeschr Üben: erklaerung behalten');
+
+  // (6) DragDrop Bild — zielzonen[].erklaerung
+  var dd = { typ: 'dragdrop_bild', zielzonen: [
+    { id: 'z1', form: 'rechteck', punkte: [], korrektesLabel: 'X', erklaerung: 'DD-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(dd).zielzonen[0].erklaerung, 'DragDrop Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(dd).zielzonen[0].erklaerung === 'DD-ERK', 'DragDrop Üben: erklaerung behalten');
+
+  // (7) Kontenbestimmung — aufgaben[].erklaerung
+  var kb = { typ: 'kontenbestimmung', aufgaben: [
+    { id: 'a1', text: 'X', erwarteteAntworten: [], erklaerung: 'KB-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(kb).aufgaben[0].erklaerung, 'Kontenb Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(kb).aufgaben[0].erklaerung === 'KB-ERK', 'Kontenb Üben: erklaerung behalten');
+
+  // (8) Bilanzstruktur — kontenMitSaldi[].erklaerung (ID = kontonummer)
+  var bi = { typ: 'bilanzstruktur', kontenMitSaldi: [
+    { kontonummer: '1000', saldo: 100, erklaerung: 'BI-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(bi).kontenMitSaldi[0].erklaerung, 'BilanzER Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(bi).kontenMitSaldi[0].erklaerung === 'BI-ERK', 'BilanzER Üben: erklaerung behalten');
+
+  // (9) TKonto — konten[].erklaerung (eintraege werden weggestrippt, aber erklaerung bleibt im Üben)
+  var tk = { typ: 'tkonto', konten: [
+    { id: 'k1', kontonummer: '1000', eintraege: [{seite:'soll', gegenkonto:'x', betrag:1}], saldo: {betrag:0, seite:'soll'}, erklaerung: 'TK-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(tk).konten[0].erklaerung, 'TKonto Prüfen: erklaerung entfernt');
+  assert_(bereinigeFrageFuerSuSUeben_(tk).konten[0].erklaerung === 'TK-ERK', 'TKonto Üben: erklaerung behalten');
+
+  // (10) Buchungssatz — buchungen wird im Prüfen top-level gelöscht. Im Üben werden buchungen via
+  // separatem mischeFrageOptionen_-Pfad durchgereicht? Heute wird das gesamte buchungen-Array
+  // top-level gelöscht — Üben-Modus hat also keine buchungen. Dieser Test dokumentiert das
+  // Ist-Verhalten; Task 25 ändert das NICHT (separate Feature-Diskussion für Üben-FiBu).
+  var bs = { typ: 'buchungssatz', buchungen: [
+    { id: 'b1', sollKonto: '1000', habenKonto: '2000', betrag: 100, erklaerung: 'BS-ERK' },
+  ]};
+  assert_(!bereinigeFrageFuerSuS_(bs).buchungen, 'Buchungssatz Prüfen: buchungen komplett entfernt (top-level)');
+
+  Logger.log('✓ C9 Privacy-Tests bestanden (9 Typen + Buchungssatz-Dokumentation).');
 }
 
 function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }

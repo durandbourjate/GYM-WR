@@ -212,7 +212,7 @@ describe('Security: bereinigeFrageFuerSuS_ (Backend-Logik)', () => {
     expect(bereinigt.teilaufgaben[0].optionen[0].korrekt).toBeUndefined()
   })
 
-  it('LP bekommt ALLE Felder (bereinigeFrageFuerSuS wird nicht angewandt)', () => {
+  it('LP bekommt ALLE Felder (bereinigeFrageFuerSuS wird nicht angewandt — baseline)', () => {
     const frage = {
       id: '1',
       typ: 'mc',
@@ -228,6 +228,148 @@ describe('Security: bereinigeFrageFuerSuS_ (Backend-Logik)', () => {
     expect(result.musterlosung).toBe('Die Antwort ist A')
     expect(result.bewertungsraster).toBeDefined()
     expect((result.optionen as Array<{ text: string; korrekt: boolean }>)[0].korrekt).toBe(true)
+  })
+})
+
+describe('Security: C9 Task 25 — erklaerung-Privacy pro Fragetyp', () => {
+  /**
+   * Spiegelt die Backend-Logik aus apps-script-code.js::bereinigeFrageFuerSuS_
+   * mit opts.behalteErklaerung. Garantiert dass erklaerung-Felder in Prüfen-Pfaden
+   * entfernt werden, im Üben-Pfad aber erhalten bleiben.
+   */
+  type Opts = { behalteErklaerung?: boolean }
+  function bereinige(frage: Record<string, unknown>, opts: Opts = {}): Record<string, unknown> {
+    const behalte = !!opts.behalteErklaerung
+    const f = JSON.parse(JSON.stringify(frage))
+    delete f.musterlosung
+    delete f.bewertungsraster
+    // buchungen wird im Prüfen-Modus top-level gelöscht (heutiges Verhalten).
+    // Im Üben-Modus ebenfalls heute gelöscht — dokumentiert in GAS-Test-Shim.
+    if (f.buchungen) delete f.buchungen
+
+    const subArrays: Array<{ feld: string; subFelder: string[]; nurBeiTyp?: string }> = [
+      { feld: 'optionen', subFelder: ['korrekt', 'erklaerung'] },
+      { feld: 'aussagen', subFelder: ['korrekt', 'erklaerung'] },
+      { feld: 'luecken', subFelder: ['korrekteAntworten', 'korrekt', 'erklaerung'] },
+      { feld: 'ergebnisse', subFelder: ['korrekt', 'toleranz'] },
+      { feld: 'aufgaben', subFelder: ['erwarteteAntworten', 'erklaerung'] },
+      { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung'] },
+      { feld: 'zielzonen', subFelder: ['korrektesLabel', 'erklaerung'] },
+      { feld: 'bereiche', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
+      { feld: 'kontenMitSaldi', subFelder: ['erklaerung'], nurBeiTyp: 'bilanzstruktur' },
+    ]
+    for (const arr of subArrays) {
+      if (arr.nurBeiTyp && f.typ !== arr.nurBeiTyp) continue
+      if (!Array.isArray(f[arr.feld])) continue
+      f[arr.feld] = (f[arr.feld] as Record<string, unknown>[]).map((item) => {
+        const c: Record<string, unknown> = { ...item }
+        for (const sf of arr.subFelder) {
+          if (sf === 'erklaerung' && behalte) continue
+          delete c[sf]
+        }
+        return c
+      })
+    }
+    // TKonto-konten: erklaerung + Lösungsfelder
+    if (Array.isArray(f.konten)) {
+      f.konten = (f.konten as Record<string, unknown>[]).map((k) => {
+        const c: Record<string, unknown> = { ...k }
+        for (const sf of ['korrekt', 'eintraege', 'saldo', 'erklaerung']) {
+          if (sf === 'erklaerung' && behalte) continue
+          delete c[sf]
+        }
+        return c
+      })
+    }
+    if (Array.isArray(f.teilaufgaben)) {
+      f.teilaufgaben = (f.teilaufgaben as Record<string, unknown>[]).map((t) => bereinige(t, opts))
+    }
+    return f
+  }
+
+  const faelle: Array<{ name: string; frage: Record<string, unknown>; feld: string }> = [
+    {
+      name: 'MC optionen',
+      feld: 'optionen',
+      frage: { typ: 'mc', optionen: [{ id: 'a', text: 'X', korrekt: true, erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'RichtigFalsch aussagen',
+      feld: 'aussagen',
+      frage: { typ: 'richtigfalsch', aussagen: [{ id: '1', text: 'A', korrekt: true, erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'Lückentext luecken',
+      feld: 'luecken',
+      frage: { typ: 'lueckentext', luecken: [{ id: 'l', korrekteAntworten: ['x'], erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'Hotspot bereiche',
+      feld: 'bereiche',
+      frage: { typ: 'hotspot', bereiche: [{ id: 'b', korrekt: true, erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'Bildbeschriftung beschriftungen',
+      feld: 'beschriftungen',
+      frage: { typ: 'bildbeschriftung', beschriftungen: [{ id: 'b', korrekt: ['x'], erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'DragDropBild zielzonen',
+      feld: 'zielzonen',
+      frage: { typ: 'dragdrop_bild', zielzonen: [{ id: 'z', korrektesLabel: 'x', erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'Kontenbestimmung aufgaben',
+      feld: 'aufgaben',
+      frage: { typ: 'kontenbestimmung', aufgaben: [{ id: 'a', erwarteteAntworten: [], erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'BilanzER kontenMitSaldi',
+      feld: 'kontenMitSaldi',
+      frage: { typ: 'bilanzstruktur', kontenMitSaldi: [{ kontonummer: '1000', saldo: 100, erklaerung: 'LEAK' }] },
+    },
+    {
+      name: 'TKonto konten',
+      feld: 'konten',
+      frage: { typ: 'tkonto', konten: [{ id: 'k', kontonummer: '1000', erklaerung: 'LEAK' }] },
+    },
+  ]
+
+  faelle.forEach(({ name, frage, feld }) => {
+    it(`Prüfen-SuS: ${name} — erklaerung entfernt`, () => {
+      const pruefen = bereinige(frage) as Record<string, Array<Record<string, unknown>>>
+      expect(pruefen[feld][0].erklaerung).toBeUndefined()
+    })
+
+    it(`Üben-SuS: ${name} — erklaerung behalten`, () => {
+      const ueben = bereinige(frage, { behalteErklaerung: true }) as Record<string, Array<Record<string, unknown>>>
+      expect(ueben[feld][0].erklaerung).toBe('LEAK')
+    })
+  })
+
+  it('behalteErklaerung wirkt rekursiv auf Teilaufgaben', () => {
+    const frage = {
+      typ: 'aufgabengruppe',
+      teilaufgaben: [
+        { typ: 'mc', optionen: [{ id: 'a', text: 'X', korrekt: true, erklaerung: 'INNER-LEAK' }] },
+      ],
+    }
+    const pruefen = bereinige(frage) as { teilaufgaben: { optionen: Array<{ erklaerung?: string }> }[] }
+    const ueben = bereinige(frage, { behalteErklaerung: true }) as { teilaufgaben: { optionen: Array<{ erklaerung?: string }> }[] }
+    expect(pruefen.teilaufgaben[0].optionen[0].erklaerung).toBeUndefined()
+    expect(ueben.teilaufgaben[0].optionen[0].erklaerung).toBe('INNER-LEAK')
+  })
+
+  it('Prüfen-SuS behält NICHT-Lösungs-Felder (text, label, position)', () => {
+    const frage = {
+      typ: 'mc',
+      optionen: [{ id: 'a', text: 'Option Text', korrekt: true, erklaerung: 'LEAK' }],
+    }
+    const pruefen = bereinige(frage) as { optionen: Array<{ id: string; text: string; korrekt?: boolean; erklaerung?: string }> }
+    expect(pruefen.optionen[0].text).toBe('Option Text')
+    expect(pruefen.optionen[0].id).toBe('a')
+    expect(pruefen.optionen[0].korrekt).toBeUndefined()
+    expect(pruefen.optionen[0].erklaerung).toBeUndefined()
   })
 })
 
