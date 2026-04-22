@@ -8,16 +8,52 @@
 
 ## Für die nächste Session (S133+)
 
-### Aktueller Stand (Ende S132, 21.04.2026) — C9 Phase 2 komplett, Branch offen
+### Aktueller Stand (S133, 22.04.2026) — C9 Phase 3 Task 22 fertig (Apps-Script), Branch offen
 
-**C9 = Detaillierte Lösungen pro Teilantwort**. Branch `feature/c9-detaillierte-loesungen`. Phase 1 + Phase 2 fertig. **Tag `c9-phase2-fragetypen`** (letzter Commit `c5d4c55`). Phase 3 (Backend + Editor-Integration) als nächstes.
+**C9 = Detaillierte Lösungen pro Teilantwort**. Branch `feature/c9-detaillierte-loesungen`. Phase 1 + 2 + Task 22 von Phase 3 fertig. Letzter Commit `c41c77b`. Phase 3 Tasks 23–26 offen.
 
 **Einstieg nächste Session:**
 1. `git checkout feature/c9-detaillierte-loesungen`
-2. Plan lesen: `ExamLab/docs/superpowers/plans/2026-04-21-c9-detaillierte-loesungen.md` — ab **Task 22** (Apps-Script `generiereMusterloesung` Prompt + Response-Schema)
+2. Plan lesen: `ExamLab/docs/superpowers/plans/2026-04-21-c9-detaillierte-loesungen.md` — weiter ab **Task 23** (Service-Layer Response-Type + Normalizer)
 3. Spec lesen: `ExamLab/docs/superpowers/specs/2026-04-21-c9-detaillierte-loesungen-design.md`
-4. Ggf. Mockup prüfen: `.superpowers/brainstorm/c9-loesungen/fragetypen-mockup-v6.html`
-5. Start **Phase 3 Task 22** (Apps-Script Backend)
+
+### Task 22 Ergebnis (4 Commits, S133 22.04.2026)
+
+| Commit | Inhalt |
+|---|---|
+| `a1b9c38` | Helper `baueTeilerklaerungsKontext_` + neuer `generiereMusterloesung`-Case mit Prompt-Erweiterung + Response-Normalizer + Test-Shim |
+| `c6d6cef` | Public-Wrapper `testC9GeneriereMusterloesung` (ohne `_`) für GAS-Editor-Dropdown |
+| `920515b` | Test-Shim E-Mail als Konstante statt `Session.getActiveUser()` (Scope-Permission-Problem) |
+| `c41c77b` | `console.assert` → eigener `assert_`-Helper (Apps-Script-V8 kennt kein `console.assert`) |
+
+**Verifikation im GAS-Editor (yannick.durand@gymhofwil.ch, 4 API-Calls):**
+- MC: 2 Teilerklärungen mit korrekten IDs `opt-a`/`opt-b`, feld=optionen ✓
+- Freitext: `teilerklaerungen: []` ✓
+- MC-legacy (ohne `optionen[]` im Request): kein Crash, `teilerklaerungen: []` ✓
+- Bilanzstruktur: 3 Teilerklärungen mit Kontonummern als IDs, feld=kontenMitSaldi ✓
+
+**Wichtige Design-Entscheidungen aus Task 22 (für Task 23/24 relevant):**
+- **Dual-Write**: Response hat parallel `musterloesung` (korrekt) UND `musterlosung` (Legacy-Tippo). Task 24 entfernt den Alias beim Editor-Caller-Umbau.
+- **Whitelist-Match**: Normalizer droppt Claude-Halluzinations-IDs die nicht im Sub-Element-Kontext stehen. Dedup bei Mehrfach-Output derselben ID.
+- **max_tokens dynamisch**: `Math.min(4096, 1024 + subcount * 150)` — entschärft Truncation-Risiko.
+- **Sub-Element-Übergabe**: Heutiger Caller sendet nur `{fragetext,typ,fachbereich,bloom}` — ohne `optionen[]`/`aussagen[]`/etc. Backend liefert dann `teilerklaerungen: []`. Task 24 erweitert den Caller um Sub-Arrays.
+- **ID-Quelle `bilanzstruktur`**: `kontenMitSaldi[].kontonummer` (kein `.id`-Feld).
+- **`kontenbestimmung`**: Sub-Feld heisst `aufgaben[]`, nicht `konten[]` (Spec war ungenau).
+- **`richtigfalsch`** lowercase (nicht `richtigFalsch`). In Types: `RichtigFalschFrage.typ === 'richtigfalsch'`.
+
+**Apps-Script-Deploy Status:**
+- ⚠️ **NOCH NICHT als neue Bereitstellung deployed**. Smoke-Test lief direkt im GAS-Editor (Script-Code, nicht Webapp). Deploy kann gebündelt werden mit Task 25 (`bereinigeFrageFuerSuS_` Privacy-Fix) — dann 1 Deploy für beide Backend-Changes.
+
+### Phase 3 Rest (Tasks 23–26)
+
+- **Task 23**: Service-Layer Response-Type-Erweiterung + defensiver Normalizer + Unit-Test (kein Deploy, reine TS)
+- **Task 24**: Neue `KIMusterloesungPreview`-Komponente (Editor) + Integration in `SharedFragenEditor`, + Caller-Umbau um Sub-Arrays zu schicken + Dual-Write-Alias `musterlosung` entfernen
+- **Task 25**: Privacy-Invariante — `bereinigeFrageFuerSuS_` muss `erklaerung` aus Sub-Feldern entfernen + Security-Test. ⚠️ Apps-Script-Deploy (gebündelt mit Task 22)
+- **Task 26**: Phase-3-Gate-Tag
+
+### Separater Follow-Up (out of scope von Task 22, S133 entdeckt)
+
+- **`testHeuristik_` in apps-script-code.js** (aus S130) hat dasselbe `console.assert`-Problem wie mein Test. Läuft bei false silent durch. Eigener Fix-Task wenn Zeit: `assert_`-Helper auch dort nutzen.
 
 **Phase 2 Ergebnis (13 Commits für 14 Fragetypen, Tag `c9-phase2-fragetypen`):**
 | Task | Fragetyp | Commit | Tests | Pattern |
