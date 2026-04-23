@@ -6,7 +6,21 @@
 
 ---
 
-## Für die nächste Session (S136+)
+## Für die nächste Session (S138+)
+
+### Aktueller Stand (Ende S137, 23.04.2026) — C9 Phase 4 KOMPLETT auf `main` (Merge-Commit `54d0cb4`)
+
+**C9 = Detaillierte Lösungen pro Teilantwort — abgeschlossen.** Phase 3 (S135) auf main, Phase 4 (S136+S137) auf main. Alle 2412 Fragen in der Fragensammlung haben neue Musterlösung + Teilerklärungen. Feature-Branch `feature/c9-phase4-migration` gelöscht (lokal + remote).
+
+**Upload-Stats (23.04.2026 06:27 CEST):** BWL 536 + Recht 796 + VWL 1080 = 2412 aktualisiert, 0 nichtGefunden, ~22s via Apps-Script `batchUpdateFragenMigration`-Endpoint.
+
+**Alle migrierten Fragen haben `pruefungstauglich=false`** — LP (User) muss sie einzeln im Editor freigeben nach Sichtprüfung. Das ist gewollt per C9-Spec.
+
+### Nächste Schritte (User)
+
+1. **Stichprobenprüfung im Editor:** je 5-10 Fragen pro Fachbereich öffnen, Musterlösung + `KIMusterloesungPreview` (Teilerklärungs-UI) prüfen.
+2. **Freigaben laufend:** 2412 Fragen durchgehen — kein Zeitdruck, kann über Wochen erfolgen. Solange `pruefungstauglich=false`, erscheinen sie nicht mehr in der Prüfungs-Auswahl.
+3. **Lokale Archiv-Dateien** (state.json, fragen-updates.jsonl, upload.log, generate-s*.mjs) bleiben gitignored. Als Archiv extern sichern oder löschen — User-Entscheid.
 
 ### Aktueller Stand (Ende S135, 22.04.2026) — C9 Phase 3 komplett, Tag `c9-phase3-backend` gesetzt
 
