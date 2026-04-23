@@ -8,17 +8,18 @@
 
 import type React from 'react'
 import { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useTabKaskadeConfigLP } from '../shared/header/useTabKaskadeConfig.lp'
 import { useGlobalSucheLP } from '../../hooks/useGlobalSucheLP'
 import { AppHeader } from '../shared/header/AppHeader'
+import type { FeedbackContext } from '../shared/FeedbackModal'
+import { APP_VERSION } from '../../version'
 
 interface Props {
   onHilfe: () => void
-  onFeedback: () => void
   onEinstellungen: () => void
   // Detail-Modus pass-through
   onZurueck?: () => void
@@ -28,7 +29,7 @@ interface Props {
   untertitel?: string
 }
 
-export function LPAppHeaderContainer({ onHilfe, onFeedback, onEinstellungen, onZurueck, breadcrumbs, aktionsButtons, statusText, untertitel }: Props) {
+export function LPAppHeaderContainer({ onHilfe, onEinstellungen, onZurueck, breadcrumbs, aktionsButtons, statusText, untertitel }: Props) {
   const abmelden = useAuthStore((s) => s.abmelden)
   // AuthUser hat .name (Anzeigename), .vorname, .nachname, .email — .name ist immer befüllt.
   const benutzerName = useAuthStore((s) => s.user?.name ?? 'Lehrperson')
@@ -44,7 +45,14 @@ export function LPAppHeaderContainer({ onHilfe, onFeedback, onEinstellungen, onZ
   const theme: 'light' | 'dark' = istAktuellDunkel ? 'dark' : 'light'
 
   const navigate = useNavigate()
+  const location = useLocation()
   const [suchen, setSuchen] = useState('')
+
+  const feedbackContext = useMemo<FeedbackContext>(() => ({
+    rolle: 'lp',
+    ort: location.pathname,
+    appVersion: APP_VERSION,
+  }), [location.pathname])
 
   // Kurse: alle Gruppen aus dem UebenGruppenStore.
   // ladeGruppen(email) gibt bereits nur Gruppen zurück, auf die der User Zugriff hat
@@ -81,7 +89,7 @@ export function LPAppHeaderContainer({ onHilfe, onFeedback, onEinstellungen, onZ
       theme={theme}
       onThemeToggle={toggleMode}
       onHilfe={onHilfe}
-      onFeedback={onFeedback}
+      feedbackContext={feedbackContext}
       onAbmelden={abmelden}
       onEinstellungen={onEinstellungen}
       kaskadeConfig={kaskadeConfig}

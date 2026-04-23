@@ -116,7 +116,6 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
       {!eingebettet && (
         <LPAppHeaderContainer
           onHilfe={() => { setZeigFragenbank(false); setZeigHilfe(!zeigHilfe) }}
-          onFeedback={() => {}}
           onEinstellungen={() => {}}
           onZurueck={() => navigate(istFormativ ? '/uebung' : '/pruefung')}
           statusText={

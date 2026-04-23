@@ -54,7 +54,6 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <SuSAppHeaderContainer
         onHilfe={() => { setHilfeOffen(true); setLernzieleOffen(false) }}
-        onFeedback={() => {}}
         onZurueck={
           aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'gruppenAuswahl' && aktiveGruppe
             ? (istInUebung ? navigiereZuDashboard : zurueck)

@@ -4,7 +4,7 @@ import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import type { Frage } from '../../types/fragen'
-import { istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
+import { bewerteAntwortDetails, istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
 import type { Selbstbewertung } from '../../types/antworten'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
@@ -152,14 +152,30 @@ export default function UebungsScreen() {
             modus={feedbackSichtbar ? 'loesung' : 'aufgabe'}
             antwort={session.antworten[frage.id] ?? null}
           />
-          {feedbackSichtbar && normFrage.musterlosung && (
-            <MusterloesungsBlock
-              variant={letzteAntwortKorrekt === false ? 'falsch' : 'korrekt'}
-              label={letzteAntwortKorrekt === false ? 'Nicht ganz — Musterlösung' : 'Musterlösung'}
-            >
-              <p className="whitespace-pre-wrap">{normFrage.musterlosung}</p>
-            </MusterloesungsBlock>
-          )}
+          {feedbackSichtbar && normFrage.musterlosung && (() => {
+            // S137 Ticket 8 Anpassung 3: dreistufiges Label statt binär.
+            // bewerteAntwortDetails liefert Teilpunkte für Multi-Element-Typen (R/F, Lückentext,
+            // Bildbeschriftung, Zuordnung mit >1 Element). null → Single-Element → binär.
+            const details = letzteAntwortKorrekt === false
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ? bewerteAntwortDetails(normFrage as any, session.antworten[frage.id] ?? null)
+              : null
+            let label = 'Musterlösung'
+            let variant: 'korrekt' | 'falsch' = 'korrekt'
+            if (letzteAntwortKorrekt === false) {
+              variant = 'falsch'
+              if (details && details.erzielt > 0 && details.erzielt < details.max) {
+                label = `Teilweise richtig (${details.erzielt}/${details.max}) — Musterlösung`
+              } else {
+                label = 'Leider falsch — Musterlösung'
+              }
+            }
+            return (
+              <MusterloesungsBlock variant={variant} label={label}>
+                <p className="whitespace-pre-wrap">{normFrage.musterlosung}</p>
+              </MusterloesungsBlock>
+            )
+          })()}
         </div>
 
         {/* Selbstbewertung-Dialog (Freitext/Zeichnen/PDF/Audio/Code).
@@ -194,6 +210,14 @@ export default function UebungsScreen() {
             feedbackSichtbar={feedbackSichtbar}
             onToggleUnsicher={toggleUnsicher}
             onBeenden={handleBeenden}
+            feedbackContext={{
+              rolle: 'sus',
+              ort: 'sus-ueben-frage',
+              modus: 'ueben',
+              frageId: frage.id,
+              frageTyp: frage.typ,
+              gruppeId: session.gruppeId,
+            }}
           />
         </div>
 

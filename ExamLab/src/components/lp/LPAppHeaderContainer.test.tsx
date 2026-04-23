@@ -38,7 +38,7 @@ describe('LPAppHeaderContainer', () => {
   it('rendert AppHeader (Smoke-Test)', () => {
     render(
       <MemoryRouter>
-        <LPAppHeaderContainer onHilfe={vi.fn()} onFeedback={vi.fn()} onEinstellungen={vi.fn()} />
+        <LPAppHeaderContainer onHilfe={vi.fn()} onEinstellungen={vi.fn()} />
       </MemoryRouter>,
     )
     expect(screen.getByText('ExamLab')).toBeInTheDocument()

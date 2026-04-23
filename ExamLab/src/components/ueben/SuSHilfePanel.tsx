@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 
 interface Props {
   onSchliessen: () => void
@@ -21,25 +22,27 @@ type KategorieId = typeof KATEGORIEN[number]['id']
 export default function SuSHilfePanel({ onSchliessen }: Props) {
   const [aktiv, setAktiv] = useState<KategorieId>('start')
 
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex justify-end" onClick={onSchliessen}>
-      <div
-        className="bg-white dark:bg-slate-800 w-full max-w-md h-full overflow-y-auto shadow-xl"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-slate-800 z-10 px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <h2 className="text-lg font-bold dark:text-white">Hilfe</h2>
-          <button
-            onClick={onSchliessen}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 min-w-[44px] min-h-[44px] flex items-center justify-center"
-          >
-            ✕
-          </button>
-        </div>
+  // Ticket 7 S137: topOffset aus Header-Höhe messen — Sidebar startet unter AppHeader,
+  // Titel bleibt sichtbar (vorher z-10 vs AppHeader z-[60] → verdeckt).
+  const [headerH, setHeaderH] = useState(0)
+  useEffect(() => {
+    const h = document.querySelector('header')?.getBoundingClientRect()?.height ?? 0
+    setHeaderH(h)
+  }, [])
 
+  return (
+    <ResizableSidebar
+      mode="overlay"
+      onClose={onSchliessen}
+      title="Hilfe"
+      topOffset={headerH}
+      storageKey="sus-hilfe-breite"
+      defaultWidth={480}
+      minWidth={320}
+    >
+      <div className="flex flex-col h-full">
         {/* Kategorie-Tabs */}
-        <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex flex-wrap gap-1.5">
+        <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex flex-wrap gap-1.5 shrink-0">
           {KATEGORIEN.map(k => (
             <button
               key={k.id}
@@ -56,7 +59,7 @@ export default function SuSHilfePanel({ onSchliessen }: Props) {
         </div>
 
         {/* Inhalt */}
-        <div className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300 space-y-4">
+        <div className="px-5 py-4 text-sm text-slate-700 dark:text-slate-300 space-y-4 overflow-y-auto flex-1">
           {aktiv === 'start' && <HilfeStart />}
           {aktiv === 'ueben' && <HilfeUeben />}
           {aktiv === 'waehrend' && <HilfeWaehrend />}
@@ -68,7 +71,7 @@ export default function SuSHilfePanel({ onSchliessen }: Props) {
           {aktiv === 'faq' && <HilfeFAQ />}
         </div>
       </div>
-    </div>
+    </ResizableSidebar>
   )
 }
 

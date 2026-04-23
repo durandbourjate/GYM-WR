@@ -29,10 +29,10 @@ describe('OptionenMenu', () => {
     expect(screen.queryByText('Einstellungen')).not.toBeInTheDocument()
   })
 
-  it('SuS: zeigt "Problem melden", LP: zeigt "Feedback senden"', () => {
+  it('zeigt "Problem melden" für beide Rollen (einheitliche Benennung)', () => {
     const { rerender } = render(<OptionenMenu rolle="lp" {...baseProps} />)
     fireEvent.click(screen.getByRole('button', { name: /menü/i }))
-    expect(screen.getByText('Feedback senden')).toBeInTheDocument()
+    expect(screen.getByText('Problem melden')).toBeInTheDocument()
 
     rerender(<OptionenMenu rolle="sus" {...baseProps} />)
     expect(screen.getByText('Problem melden')).toBeInTheDocument()

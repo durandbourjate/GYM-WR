@@ -8,17 +8,18 @@
 
 import type React from 'react'
 import { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useTabKaskadeConfigSuS } from '../shared/header/useTabKaskadeConfig.sus'
 import { useGlobalSucheSuS } from '../../hooks/useGlobalSucheSuS'
 import { AppHeader } from '../shared/header/AppHeader'
+import type { FeedbackContext } from '../shared/FeedbackModal'
+import { APP_VERSION } from '../../version'
 
 interface Props {
   onHilfe: () => void
-  onFeedback: () => void
   // Detail-Modus pass-through
   onZurueck?: () => void
   breadcrumbs?: { label: string; aktion?: () => void }[]
@@ -29,7 +30,6 @@ interface Props {
 
 export function SuSAppHeaderContainer({
   onHilfe,
-  onFeedback,
   onZurueck,
   breadcrumbs,
   aktionsButtons,
@@ -51,7 +51,14 @@ export function SuSAppHeaderContainer({
   const theme: 'light' | 'dark' = istAktuellDunkel ? 'dark' : 'light'
 
   const navigate = useNavigate()
+  const location = useLocation()
   const [suchen, setSuchen] = useState('')
+
+  const feedbackContext = useMemo<FeedbackContext>(() => ({
+    rolle: 'sus',
+    ort: location.pathname,
+    appVersion: APP_VERSION,
+  }), [location.pathname])
 
   // Kurse aus gruppenStore — Store liefert nur Gruppen, in denen SuS Mitglied ist.
   const gruppen = useUebenGruppenStore((s) => s.gruppen)
@@ -80,7 +87,7 @@ export function SuSAppHeaderContainer({
       theme={theme}
       onThemeToggle={toggleMode}
       onHilfe={onHilfe}
-      onFeedback={onFeedback}
+      feedbackContext={feedbackContext}
       onAbmelden={abmelden}
       kaskadeConfig={kaskadeConfig}
       suchen={suchen}

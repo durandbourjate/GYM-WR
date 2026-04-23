@@ -71,7 +71,6 @@ export default function KorrekturEinsicht({ pruefungId, onZurueck }: Props) {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
       <SuSAppHeaderContainer
         onHilfe={() => {}}
-        onFeedback={() => {}}
         onZurueck={onZurueck}
         breadcrumbs={[{ label: daten.titel }]}
         statusText={`${daten.gesamtPunkte} / ${daten.maxPunkte} Pkt. (${prozent}%)`}

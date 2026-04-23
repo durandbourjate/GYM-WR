@@ -23,6 +23,14 @@ export function istSelbstbewertungstyp(typ: FrageTyp): boolean {
   return SELBSTBEWERTUNGS_TYPEN.includes(typ)
 }
 
+/**
+ * S137 Ticket 8 Anpassung 1: Text-Antwort normalisieren — trim + Mehrfach-Leerzeichen kollabieren.
+ * Aktiv für Lückentext + Bildbeschriftung (Frontend + Backend spiegeln).
+ */
+export function normalisiereTextAntwort(s: unknown): string {
+  return String(s ?? '').trim().replace(/\s+/g, ' ')
+}
+
 export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean {
   // Normalisierung: konvertiert Legacy-Üben-Felder (gewaehlt, wert, etc.)
   // auf das kanonische Antwort-Schema (gewaehlteOptionen, ergebnisse, etc.)
@@ -61,14 +69,7 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
       if (a.typ !== 'lueckentext') return false
       const luecken = Array.isArray(frage.luecken) ? frage.luecken : []
       const eintraege = a.eintraege ?? {}
-      return luecken.length > 0 && luecken.every(l => {
-        const eingabe = (eintraege[l.id] || '').trim()
-        const korrekt = Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : []
-        if (korrekt.length === 0) return false
-        return korrekt.some(ka =>
-          l.caseSensitive ? eingabe === ka.trim() : eingabe.toLowerCase() === ka.trim().toLowerCase()
-        )
-      })
+      return luecken.length > 0 && luecken.every(l => pruefeLueckeEintrag(l, eintraege[l.id]))
     }
 
     case 'berechnung': {
@@ -206,13 +207,7 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
       if (a.typ !== 'bildbeschriftung') return false
       const beschriftungen = Array.isArray(frage.beschriftungen) ? frage.beschriftungen : []
       const eintraege = a.eintraege ?? {}
-      return beschriftungen.length > 0 && beschriftungen.every(b => {
-        const korrekt = Array.isArray(b.korrekt) ? b.korrekt : []
-        if (korrekt.length === 0) return false
-        return korrekt.some(ka =>
-          (eintraege[b.id] || '').trim().toLowerCase() === ka.trim().toLowerCase()
-        )
-      })
+      return beschriftungen.length > 0 && beschriftungen.every(b => pruefeBeschriftungEintrag(b, eintraege[b.id]))
     }
 
     case 'dragdrop_bild': {
@@ -251,6 +246,89 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
 
     default:
       return false
+  }
+}
+
+/**
+ * S137: Einzelne Lücke prüfen — Mehrfach-Leerzeichen kollabieren, Default case-insensitive.
+ * Nur wenn `caseSensitive === true` wird exakt verglichen. Undefined/false/null → insensitive.
+ */
+function pruefeLueckeEintrag(
+  l: { korrekteAntworten: string[]; caseSensitive?: boolean },
+  eintrag: unknown,
+): boolean {
+  const eingabe = normalisiereTextAntwort(eintrag)
+  const korrekt = Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : []
+  if (korrekt.length === 0) return false
+  return korrekt.some(ka => {
+    const k = normalisiereTextAntwort(ka)
+    return l.caseSensitive === true ? eingabe === k : eingabe.toLowerCase() === k.toLowerCase()
+  })
+}
+
+/**
+ * S137 Ticket 8 Anpassung 4: Bildbeschriftung nutzt jetzt dieselbe case-sensitive-Logik wie Lückentext.
+ * Default=false (case-insensitive), override durch `caseSensitive === true`.
+ */
+function pruefeBeschriftungEintrag(
+  b: { korrekt: string[]; caseSensitive?: boolean },
+  eintrag: unknown,
+): boolean {
+  const eingabe = normalisiereTextAntwort(eintrag)
+  const korrekt = Array.isArray(b.korrekt) ? b.korrekt : []
+  if (korrekt.length === 0) return false
+  return korrekt.some(ka => {
+    const k = normalisiereTextAntwort(ka)
+    return b.caseSensitive === true ? eingabe === k : eingabe.toLowerCase() === k.toLowerCase()
+  })
+}
+
+/**
+ * S137 Ticket 8 Anpassung 3: Teilpunkt-Zähler für Label-Feedback.
+ * Liefert { erzielt, max } für Multi-Element-Typen (R/F, Lückentext, Zuordnung, Sortierung, MC)
+ * und `null` für Single-Element-Typen (Berechnung, Hotspot, Formel etc.) — dort ist
+ * korrekt=binär und braucht nur „korrekt" / „leider falsch".
+ */
+export function bewerteAntwortDetails(
+  frage: Frage,
+  antwort: Antwort | unknown,
+): { erzielt: number; max: number } | null {
+  const a = normalizeAntwort(antwort)
+  switch (frage.typ) {
+    case 'richtigfalsch': {
+      if (a.typ !== 'richtigfalsch') return null
+      const aussagen = Array.isArray(frage.aussagen) ? frage.aussagen : []
+      if (aussagen.length <= 1) return null
+      const bew = a.bewertungen ?? {}
+      const erzielt = aussagen.filter(aus => bew[aus.id] === aus.korrekt).length
+      return { erzielt, max: aussagen.length }
+    }
+    case 'lueckentext': {
+      if (a.typ !== 'lueckentext') return null
+      const luecken = Array.isArray(frage.luecken) ? frage.luecken : []
+      if (luecken.length <= 1) return null
+      const eintraege = a.eintraege ?? {}
+      const erzielt = luecken.filter(l => pruefeLueckeEintrag(l, eintraege[l.id])).length
+      return { erzielt, max: luecken.length }
+    }
+    case 'bildbeschriftung': {
+      if (a.typ !== 'bildbeschriftung') return null
+      const beschr = Array.isArray(frage.beschriftungen) ? frage.beschriftungen : []
+      if (beschr.length <= 1) return null
+      const eintraege = a.eintraege ?? {}
+      const erzielt = beschr.filter(b => pruefeBeschriftungEintrag(b, eintraege[b.id])).length
+      return { erzielt, max: beschr.length }
+    }
+    case 'zuordnung': {
+      if (a.typ !== 'zuordnung') return null
+      const paare = Array.isArray(frage.paare) ? frage.paare : []
+      if (paare.length <= 1) return null
+      const zu = a.zuordnungen ?? {}
+      const erzielt = paare.filter(p => zu[p.links] === p.rechts).length
+      return { erzielt, max: paare.length }
+    }
+    default:
+      return null
   }
 }
 

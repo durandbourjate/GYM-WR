@@ -359,7 +359,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <LPAppHeaderContainer
         onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
-        onFeedback={() => {}}
         onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
         onZurueck={zurueck}
         untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}

@@ -607,6 +607,8 @@ export interface BildbeschriftungLabel {
   id: string
   position: { x: number; y: number }  // Prozent 0-100
   korrekt: string[]                    // akzeptierte Antworten
+  /** S137: Konsistent zu LueckentextFrage — Default=false (case-insensitive). */
+  caseSensitive?: boolean
   erklaerung?: string                  // Teilerklärung pro Sub-Element (C9)
 }
 

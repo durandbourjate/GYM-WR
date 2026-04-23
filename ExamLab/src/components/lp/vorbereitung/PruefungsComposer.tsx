@@ -323,7 +323,6 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <LPAppHeaderContainer
         onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}
-        onFeedback={() => {}}
         onEinstellungen={() => {}}
         onZurueck={onZurueck}
         breadcrumbs={useLPNavigationStore.getState().breadcrumbs}

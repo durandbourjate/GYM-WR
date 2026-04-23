@@ -1,8 +1,10 @@
 import type React from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TabKaskade } from './TabKaskade'
 import { GlobalSuche } from './GlobalSuche'
 import { OptionenMenu } from './OptionenMenu'
+import FeedbackModal, { type FeedbackContext } from '../FeedbackModal'
 import type { Rolle, TabKaskadeConfig } from './types'
 import type { SucheErgebnis } from '../../../hooks/useGlobalSuche.shared'
 import { APP_VERSION } from '../../../version'
@@ -15,7 +17,7 @@ interface Props {
   theme: 'light' | 'dark'
   onThemeToggle: () => void
   onHilfe: () => void
-  onFeedback: () => void
+  feedbackContext: FeedbackContext
   onAbmelden: () => void
   onEinstellungen?: () => void
   kaskadeConfig: TabKaskadeConfig
@@ -34,6 +36,7 @@ export function AppHeader(props: Props) {
   const navigate = useNavigate()
   const tier = useViewport()
   const { canGoBack, goBack } = useGlobalZurueck()
+  const [feedbackOffen, setFeedbackOffen] = useState(false)
 
   // Zurück-Button sichtbar wenn Parent explizit onZurueck setzt (Detail-Modus)
   // ODER wenn der aktuelle Pfad eine Sub-Route ist (globaler Zurück-Button).
@@ -90,12 +93,17 @@ export function AppHeader(props: Props) {
             theme={props.theme}
             onThemeToggle={props.onThemeToggle}
             onHilfe={props.onHilfe}
-            onFeedback={props.onFeedback}
+            onFeedback={() => setFeedbackOffen(true)}
             onAbmelden={props.onAbmelden}
             onEinstellungen={props.onEinstellungen}
           />
         </div>
       </div>
+      <FeedbackModal
+        isOpen={feedbackOffen}
+        onClose={() => setFeedbackOffen(false)}
+        context={props.feedbackContext}
+      />
     </header>
   )
 }

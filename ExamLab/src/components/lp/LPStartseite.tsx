@@ -448,7 +448,6 @@ export default function LPStartseite() {
       {ansicht !== 'composer' && (
         <LPAppHeaderContainer
           onHilfe={toggleHilfe}
-          onFeedback={() => {}}
           onEinstellungen={() => toggleEinstellungen()}
         />
       )}

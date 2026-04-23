@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TabBar } from '../../ui/TabBar'
 import { useUebenSettingsStore } from '../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
+import { useAuthStore } from '../../../store/authStore'
 import AllgemeinTab from './settings/AllgemeinTab'
 import FaecherTab from './settings/FaecherTab'
 import FarbenTab from './settings/FarbenTab'
@@ -24,6 +25,14 @@ export default function AdminSettings() {
   const gruppen = useUebenGruppenStore(s => s.gruppen)
   const aktiveGruppe = useUebenGruppenStore(s => s.aktiveGruppe)
   const waehleGruppe = useUebenGruppenStore(s => s.waehleGruppe)
+  const ladeGruppen = useUebenGruppenStore(s => s.ladeGruppen)
+  const email = useAuthStore(s => s.user?.email)
+
+  // Ticket 1 S137: Gruppen beim Settings-Mount initial laden — sonst bleibt das Kurs-Dropdown leer,
+  // bis der User zuerst den Üben-Tab klickt. Wenn gruppen bereits geladen sind, Noop.
+  useEffect(() => {
+    if (email && gruppen.length === 0) void ladeGruppen(email)
+  }, [email, gruppen.length, ladeGruppen])
 
   return (
     <div className="space-y-5">

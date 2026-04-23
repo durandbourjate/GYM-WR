@@ -36,7 +36,7 @@ describe('SuSAppHeaderContainer', () => {
   it('rendert AppHeader mit SuS-Rolle (Smoke)', () => {
     render(
       <MemoryRouter>
-        <SuSAppHeaderContainer onHilfe={vi.fn()} onFeedback={vi.fn()} />
+        <SuSAppHeaderContainer onHilfe={vi.fn()} />
       </MemoryRouter>,
     )
     expect(screen.getByText('ExamLab')).toBeInTheDocument()

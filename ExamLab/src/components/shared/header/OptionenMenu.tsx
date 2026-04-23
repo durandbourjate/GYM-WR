@@ -40,7 +40,7 @@ export function OptionenMenu({ rolle, benutzerName, theme, onThemeToggle, onHilf
     }`
   }
 
-  const feedbackLabel = rolle === 'sus' ? 'Problem melden' : 'Feedback senden'
+  const feedbackLabel = 'Problem melden'
   const hilfeLabel = rolle === 'sus' ? 'Hilfe (SuS)' : 'Hilfe & Anleitungen'
 
   return (
@@ -76,7 +76,7 @@ export function OptionenMenu({ rolle, benutzerName, theme, onThemeToggle, onHilf
             <span className="w-4 text-center">?</span>{hilfeLabel}
           </button>
           <button role="menuitem" type="button" onClick={() => { onFeedback(); setOffen(false) }} className={itemClass()}>
-            <span className="w-4 text-center">✉</span>{feedbackLabel}
+            <span className="w-4 text-center">⚠</span>{feedbackLabel}
           </button>
           <div className="h-px bg-slate-200 dark:bg-slate-700 my-1" role="separator" />
           <button role="menuitem" type="button" onClick={() => { onAbmelden(); setOffen(false) }} className={itemClass(true)}>

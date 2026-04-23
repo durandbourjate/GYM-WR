@@ -84,7 +84,6 @@ export default function Favoriten() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <LPAppHeaderContainer
         onHilfe={toggleHilfe}
-        onFeedback={() => {}}
         onEinstellungen={() => toggleEinstellungen()}
       />
 

@@ -2122,6 +2122,14 @@ var ANTWORT_ALIAS_ = {
   bilanz: 'bilanzstruktur', gruppe: 'aufgabengruppe',
 };
 
+/**
+ * S137 Ticket 8 Anpassung 1: Text-Antwort normalisieren — trim + Mehrfach-Leerzeichen kollabieren.
+ * 1:1-Spiegel zu frontend `normalisiereTextAntwort` in `ExamLab/src/utils/ueben/korrektur.ts`.
+ */
+function normalisiereTextAntwortServer_(s) {
+  return String(s == null ? '' : s).trim().replace(/\s+/g, ' ');
+}
+
 function normalisiereAntwortServer_(raw) {
   if (!raw || typeof raw !== 'object' || !raw.typ) return raw;
   var typ = ANTWORT_ALIAS_[raw.typ] || raw.typ;
@@ -2234,13 +2242,16 @@ function pruefeAntwortServer_(frage, antwort) {
       var luecken = Array.isArray(frage.luecken) ? frage.luecken : [];
       var eintraege = a.eintraege || {};
       return luecken.length > 0 && luecken.every(function(l) {
-        var eingabe = String(eintraege[l.id] || '').trim();
+        // S137 Ticket 8 Anpassung 1+2: Mehrfach-Leerzeichen kollabieren,
+        // nur `caseSensitive === true` trennt — Default ist case-insensitive.
+        var eingabe = normalisiereTextAntwortServer_(eintraege[l.id]);
         var korrekt = Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : [];
         if (korrekt.length === 0) return false;
         return korrekt.some(function(ka) {
-          return l.caseSensitive
-            ? eingabe === String(ka).trim()
-            : eingabe.toLowerCase() === String(ka).trim().toLowerCase();
+          var k = normalisiereTextAntwortServer_(ka);
+          return l.caseSensitive === true
+            ? eingabe === k
+            : eingabe.toLowerCase() === k.toLowerCase();
         });
       });
     }
@@ -2305,9 +2316,15 @@ function pruefeAntwortServer_(frage, antwort) {
       var beschr = Array.isArray(frage.beschriftungen) ? frage.beschriftungen : [];
       var eintr = a.eintraege || {};
       return beschr.length > 0 && beschr.every(function(b) {
+        // S137 Ticket 8 Anpassung 1+4: konsistent zu Lückentext — Whitespace-Norm + `caseSensitive === true`.
+        var eingabe = normalisiereTextAntwortServer_(eintr[b.id]);
         var kks = Array.isArray(b.korrekt) ? b.korrekt : [];
+        if (kks.length === 0) return false;
         return kks.some(function(ka) {
-          return String(eintr[b.id] || '').trim().toLowerCase() === String(ka).trim().toLowerCase();
+          var k = normalisiereTextAntwortServer_(ka);
+          return b.caseSensitive === true
+            ? eingabe === k
+            : eingabe.toLowerCase() === k.toLowerCase();
         });
       });
     }
@@ -5401,20 +5418,37 @@ function kiAssistentEndpoint(body) {
 
       case 'generiereLuecken':
         if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
+        // S137: KI-Synonym-Verstärkung — explizit mindestens 2-3 Alternativen pro Lücke erzwingen.
+        // Hintergrund: SuS tippen häufig ein gleichwertiges Synonym (z.B. „Mensch" statt „Person"),
+        // das ohne Alternativen als falsch gewertet wird. KI kennt die gängigen Varianten;
+        // LP kann beim Review einzelne wieder entfernen.
         userPrompt = 'Erstelle einen Lückentext für die folgende Prüfungsfrage. ' +
           'Setze Lücken an sinnvollen Stellen (Schlüsselbegriffe, wichtige Fachbegriffe). ' +
-          'Verwende {{1}}, {{2}}, {{3}} usw. als Platzhalter. ' +
-          'Gib für jede Lücke die korrekten Antworten an (inkl. Synonyme und alternative Schreibweisen).\n\n' +
+          'Verwende {{1}}, {{2}}, {{3}} usw. als Platzhalter.\n\n' +
+          'WICHTIG — korrekteAntworten pro Lücke: liefere IMMER mindestens 2-3 alternative Schreibweisen, ' +
+          'wenn sprachlich plausibel. Beispiele für Alternativen:\n' +
+          '- Synonyme (z.B. „Mensch" / „natürliche Person")\n' +
+          '- Schweizer vs. deutsche Schreibweise (z.B. „Strasse" / „Straße", „Gross" / „Groß")\n' +
+          '- Mit/ohne Umlaut-Umschreibung (z.B. „Münchenbuchsee" / „Muenchenbuchsee")\n' +
+          '- Kurz- und Langform (z.B. „SNB" / „Schweizerische Nationalbank")\n' +
+          'Nur wenn die Lücke wirklich nur eine einzige gültige Schreibweise hat (z.B. Zahlenwert, ' +
+          'Gesetzesartikel wie „Art. 11 ZGB") reicht 1 Eintrag. Sonst: mindestens 2-3 Alternativen.\n\n' +
           'Fragetext:\n' + wrapUserData('fragetext', daten.fragetext) + '\n' +
           (daten.textMitLuecken ? 'Basistext:\n' + wrapUserData('textMitLuecken', daten.textMitLuecken) + '\n' : '') + '\n' +
-          'Antworte als JSON: { "textMitLuecken": "...", "luecken": [{ "id": "1", "korrekteAntworten": ["antwort1", "synonym"] }, ...] }';
+          'Antworte als JSON: { "textMitLuecken": "...", "luecken": [{ "id": "1", "korrekteAntworten": ["Hauptantwort", "Synonym", "alt. Schreibweise"] }, ...] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
 
       case 'pruefeLueckenAntworten':
         if (!daten.textMitLuecken || !daten.luecken) return jsonResponse({ error: 'Text mit Lücken und Lücken-Array nötig' });
+        // S137: KI-Synonym-Verstärkung — explizit fehlende Varianten ergänzen (siehe generiereLuecken).
         userPrompt = 'Prüfe ob für die folgenden Lücken alle gültigen Antwortvarianten erfasst sind. ' +
           'Ergänze fehlende Synonyme, alternative Schreibweisen und gleichwertige Formulierungen.\n\n' +
+          'Beispiele für fehlende Varianten, die du ergänzen sollst:\n' +
+          '- Synonyme (z.B. „Mensch" / „natürliche Person")\n' +
+          '- Schweizer vs. deutsche Schreibweise (ss/ß, Umlaut-Umschreibung)\n' +
+          '- Kurz- und Langform (z.B. „SNB" / „Schweizerische Nationalbank")\n' +
+          'Strebe mindestens 2-3 Einträge pro Lücke an, ausser bei eindeutigen Werten (Zahlen, Gesetzesartikel).\n\n' +
           'Text mit Lücken:\n' + wrapUserData('textMitLuecken', daten.textMitLuecken) + '\n\n' +
           'Aktuelle Lücken-Antworten:\n' + wrapUserData('luecken', JSON.stringify(daten.luecken)) + '\n\n' +
           'Antworte als JSON: { "bewertung": "...", "ergaenzteAntworten": [{ "id": "1", "korrekteAntworten": ["erweiterte", "liste"] }, ...] }';

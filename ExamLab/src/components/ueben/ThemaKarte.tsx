@@ -56,20 +56,28 @@ export function ThemaKarte({
     setZeigeGesperrtInfo(false)
   }
 
+  // Ticket 3/4 S137: alle Themen bekommen farbigen linken Rand (analog LP-DetailKarte).
+  // Aktiv zusätzlich border-b-4 + Badge, Gesperrt bleibt grau (keine Fach-Farbe).
+  const zeigeFachRand = !istGesperrt
+
   return (
     <button
       onClick={handleKlick}
       className={`text-left p-4 rounded-xl border-2 transition-colors min-h-[48px] relative cursor-pointer
         ${istGesperrt
           ? 'opacity-60 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:opacity-75'
-          : 'bg-white dark:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-500'
+          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500'
         }
-        ${istAktiv
-          ? 'border-l-4 border-b-4'
-          : 'border-slate-200 dark:border-slate-700'
-        }
+        ${zeigeFachRand ? 'border-l-4' : ''}
+        ${istAktiv ? 'border-b-4' : ''}
       `}
-      style={istAktiv ? { borderLeftColor: farbe, borderBottomColor: farbe } : undefined}
+      style={
+        istAktiv
+          ? { borderLeftColor: farbe, borderBottomColor: farbe }
+          : zeigeFachRand
+            ? { borderLeftColor: farbe }
+            : undefined
+      }
     >
       {/* Aktuell-Badge */}
       {istAktiv && (
@@ -109,10 +117,7 @@ export function ThemaKarte({
         </div>
       )}
 
-      <div className="flex items-start gap-2 mb-2">
-        {!istAktiv && !istGesperrt && (
-          <span className="shrink-0 w-3 h-3 rounded-full mt-1" style={{ backgroundColor: farbe }} />
-        )}
+      <div className="mb-2">
         <span className="font-semibold dark:text-white text-sm leading-tight">{thema}</span>
       </div>
       <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">

@@ -23,7 +23,7 @@ describe('AppHeader', () => {
     theme: 'light' as const,
     onThemeToggle: vi.fn(),
     onHilfe: vi.fn(),
-    onFeedback: vi.fn(),
+    feedbackContext: { rolle: 'lp' as const, ort: '/test' },
     onAbmelden: vi.fn(),
     onEinstellungen: vi.fn(),
     kaskadeConfig: { l1Tabs: [], aktivL1: null },

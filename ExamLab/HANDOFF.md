@@ -6,21 +6,96 @@
 
 ---
 
-## Für die nächste Session (S138+)
+## Für die nächste Session (S139+)
 
-### Aktueller Stand (Ende S137, 23.04.2026) — C9 Phase 4 KOMPLETT auf `main` (Merge-Commit `54d0cb4`)
+### Aktueller Stand (Ende S138, 23.04.2026) — S137 UI/Autokorrektur-Bundle auf `main` gemergt
 
-**C9 = Detaillierte Lösungen pro Teilantwort — abgeschlossen.** Phase 3 (S135) auf main, Phase 4 (S136+S137) auf main. Alle 2412 Fragen in der Fragensammlung haben neue Musterlösung + Teilerklärungen. Feature-Branch `feature/c9-phase4-migration` gelöscht (lokal + remote).
+**Branch `fix/s137-ui-autokorrektur-bundle` nach `main` gemergt + gelöscht.** Staging-E2E komplett durchgeführt, alle 8 Tickets + KI-Synonyme-Prompt verifiziert. Ticket 2 (Übungsstart-Latenz) bleibt offen → Bundle E.
 
-**Upload-Stats (23.04.2026 06:27 CEST):** BWL 536 + Recht 796 + VWL 1080 = 2412 aktualisiert, 0 nichtGefunden, ~22s via Apps-Script `batchUpdateFragenMigration`-Endpoint.
+### S138 E2E-Verifikation (alle Tickets grün)
 
-**Alle migrierten Fragen haben `pruefungstauglich=false`** — LP (User) muss sie einzeln im Editor freigeben nach Sichtprüfung. Das ist gewollt per C9-Spec.
+| # | Ticket | Evidenz |
+|---|--------|---------|
+| 1 | LP-Einstellungen Übungen-Tab Kurs-Dropdown | Option „Test" direkt nach Tab-Wechsel befüllt, ohne Vorab-Klick auf Header-Üben |
+| 3/4 | SuS-Themenkacheln border-l-4 + „Aktuell"-Badge | VWL orange, Recht grün, BWL blau; aktuelle mit zusätzlichem unteren Rand |
+| 5 | Menü „Problem melden" ⚠ (LP + SuS) | Icon ⚠, Label einheitlich, FeedbackModal „Rückmeldung geben" öffnet korrekt |
+| 6 | SuS-Üben-Footer „Problem melden" | Rechts neben „Als unsicher markieren", Modal mit frageId-Kontext |
+| 7 | SuS-Hilfe-Sidebar resizable + Titel | Drag 480→714px, localStorage-persistent nach Reload |
+| 8a/b/d | Lückentext Whitespace-Normalisierung + case-insensitive default | 10/10 synthetische Tests grün (mehrfach-Leerzeichen, case-insensitive, caseSensitive=true respektiert, trim, Combos) |
+| 8c | Dreistufige Labels | Live gesehen: „LEIDER FALSCH — MUSTERLÖSUNG" (0/1) + „TEILWEISE RICHTIG (1/2) — MUSTERLÖSUNG" |
+| 10 | KI-Synonyme `generiereLuecken`-Prompt | Backend-Prompt [apps-script-code.js:5421-5438](apps-script-code.js:5421) verlangt 2-3 Alternativen (Synonyme, Schweizer/DE, Umlaut-Varianten, Kurz/Langform) |
 
-### Nächste Schritte (User)
+### S138 Security-Cleanup
 
-1. **Stichprobenprüfung im Editor:** je 5-10 Fragen pro Fachbereich öffnen, Musterlösung + `KIMusterloesungPreview` (Teilerklärungs-UI) prüfen.
-2. **Freigaben laufend:** 2412 Fragen durchgehen — kein Zeitdruck, kann über Wochen erfolgen. Solange `pruefungstauglich=false`, erscheinen sie nicht mehr in der Prüfungs-Auswahl.
-3. **Lokale Archiv-Dateien** (state.json, fragen-updates.jsonl, upload.log, generate-s*.mjs) bleiben gitignored. Als Archiv extern sichern oder löschen — User-Entscheid.
+GitHub Personal Access Token war im `git remote` im Klartext gespeichert. Behoben:
+1. Token auf GitHub revoked (User)
+2. SSH-Key generiert + auf GitHub hinzugefügt (User)
+3. Remote auf `git@github.com:durandbourjate/GYM-WR-DUY.git` umgestellt
+
+Kein Token mehr in `.git/config`. Alter Token in Backups ist durch Revoke wertlos.
+
+### Offen für S139+
+
+- **Bundle E (Backend-Perf)**: Ticket 2 — Übungsstart-Latenz durch serielle `lernplattformLadeLoesungen`-Schleife (Regression S122 Commit `d6555bc`). Lösung: Batch-Cache + `Promise.all()` + Pre-Warm beim Session-Init. Eigenes Backend-Bundle, separater Deploy.
+- **C9 Phase 4 laufende User-Aufgaben**: Stichprobenprüfung der 2412 migrierten Fragen im Editor pro Fachbereich; Freigaben `pruefungstauglich=true`; lokale Archiv-Dateien extern sichern/löschen.
+
+### Vorgänger-Stand (Ende S137, 23.04.2026)
+
+**8/9 Tickets auf `fix/s137-ui-autokorrektur-bundle` staged, Apps-Script deployed.** Details vor Merge siehe Commits `2ae83a9`/`324c78b`/`56a39a4`/`7a4ce51`/`e324474`/`b8e1c8e`/`c31b30c`.
+
+**User hat 9 Tickets übergeben (S137):**
+1. ✅ **ERLEDIGT (Commit `e324474`)** Einstellungen Übungen: `AdminSettings` ruft `ladeGruppen(email)` beim Mount auf.
+2. ⏸️ SuS Übungsstart dauert mehrere Sekunden (Regression S122 — server-side Korrektur, serielle `lernplattformLadeLoesungen`-Schleife; **Backend, eigenes Bundle E geplant**)
+3. ✅ **ERLEDIGT (Commit `e324474`)** Themenkacheln ganzen Rahmen farbig (verworfen zugunsten 4)
+4. ✅ **ERLEDIGT (Commit `e324474`)** Themenkacheln: `border-l-4` in Fach-Farbe statt farbigem Punkt
+5. ✅ **ERLEDIGT (Commit `b8e1c8e`)** Problem-melden-Button im SuS-Üben-Footer, rechts neben „Als unsicher markieren"
+6. ✅ **ERLEDIGT (Commit `c31b30c`)** Menü-Eintrag „Problem melden" — Icon ✉ → ⚠, Label einheitlich „Problem melden" (beide Rollen), 8 Dead-Handler entfernt, FeedbackModal im AppHeader zentralisiert
+7. ✅ **ERLEDIGT (Commit `e324474`)** SuS-Hilfe-Sidebar auf `ResizableSidebar`-Overlay-Pattern migriert, `topOffset` aus Header-Höhe gemessen — resizable + Titel sichtbar
+8. ✅ **ERLEDIGT (Commit `56a39a4`)** Autokorrektur-Anpassungen 1-4 + KI-Synonym-Prompt. Frontend + Apps-Script synchron. **Apps-Script-Deploy User-Task.**
+9. ✅ **ERLEDIGT** Memory `project_bildfragen_qualitaet.md` um „zu generische Zuordnungen (a/b/c)" ergänzt (Punkt 4 in der Audit-Liste)
+
+**Ticket 8 Anpassungen (User-freigegeben):**
+- (a) Mehrfach-Leerzeichen normalisieren (Lückentext + Bildbeschriftung)
+- (b) Lückentext-Default case-insensitive — Flag-Semantik umkehren
+- (c) Label-Bug dreistufig (KORREKT / TEILWEISE x/n / LEIDER FALSCH statt binär)
+- (d) Bildbeschriftung konsistent `caseSensitive`-Flag wie Lückentext
+
+**Zusatz-Feature (User-freigegeben):** KI-Synonyme beim `generiereMusterloesung` — bei Lückentext/Bildbeschriftung automatisch 2-3 Alternativen in `korrekteAntworten[]` generieren, LP kann per Checkbox übernehmen. Manuelle Eingabe: Eigenverantwortung.
+
+### Einstieg S138
+
+```bash
+git checkout fix/s137-ui-autokorrektur-bundle
+git pull   # falls remote gepusht
+```
+
+**Reihenfolge (Plan S137-Ende):**
+1. Ticket 1 — `EinstellungenPanel` Mount triggert `useUebenGruppenStore.ladeGruppen(email)` (Audit: [AdminSettings.tsx:26](src/components/ueben/admin/AdminSettings.tsx:26) + EinstellungenPanel).
+2. Ticket 3/4 — [ThemaKarte.tsx:36-60](src/components/ueben/ThemaKarte.tsx:36) Punkt via `bg-...` → `border-l-4` analog zu LP-`DetailKarte.tsx`.
+3. Ticket 5 — [QuizActions.tsx:20-33](src/components/ueben/uebung/QuizActions.tsx:20) `FeedbackButton variant="text"` rechts von „Als unsicher markieren" einbauen (context aus Frage: rolle+ort+frageId+frageTyp+modus).
+4. Ticket 7 — `SuSHilfePanel` auf `@shared/ui/ResizableSidebar`-Pattern migrieren; Titel-`z-10` → `z-[70]`. Test: Drag-Handle funktioniert, localStorage-Breite persistiert.
+5. Ticket 8 Anpassungen 1+2+4 (korrektur.ts + apps-script-code.js::`pruefeAntwortServer_` gleichzeitig — Backend-Deploy gebündelt).
+6. Ticket 8 Anpassung 3 (Label-Bug dreistufig): `UebungsScreen.tsx:158` + Store-Erweiterung um Teilpunkt-Info (score/max pro letzte Antwort).
+7. KI-Synonyme — `generiereMusterloesung`-Prompt um Alternativen-Vorschlag erweitern, Editor-UI in `KIMusterloesungPreview` für Lückentext/Bildbeschriftung.
+8. Ticket 9 — Memory-File `project_bildfragen_qualitaet.md` um „zu generische Zuordnungen (a/b/c ohne Fachinhalt)" ergänzen.
+9. Staging-Push + User-E2E mit echten Logins → Freigabe → Merge `main`.
+
+**Backend-Deploy-Bundle (Apps-Script `apps-script-code.js`):**
+- `pruefeAntwortServer_` Mehrfach-Leerzeichen-Norm (Ticket 8 a/b/d)
+- `generiereMusterloesung` KI-Synonyme-Prompt
+
+→ Eine einzige Apps-Script-Bereitstellung am Ende des Bundles. Nicht deployen während aktiver Prüfungen.
+
+### Ticket 2 — separates Bundle E (Backend-Regression)
+
+Commit `d6555bc` (S122) hat `lernplattformLadeLoesungen` seriell gemacht: 10-20 Fragen × ~200ms Sheet-Read = 2-4s Übungsstart. Lösungen: Batch-Loading via `CacheService.putAll()` + `Promise.all()` parallele Sheet-Reads + Pre-Warm beim Session-Init. **Eigenes Bundle**, weil Backend-Deploy separat getestet werden muss (kein UI-Risiko).
+
+### C9 Phase 4 (Vorgänger, 23.04.2026 Morgen) — auf `main` (Merge-Commit `54d0cb4`)
+
+Alle 2412 Fragen migriert mit neuen Teilerklärungen + `pruefungstauglich=false`. **Offen (User-Aufgaben, laufend):**
+1. Stichprobenprüfung im Editor pro Fachbereich
+2. Freigaben (`pruefungstauglich=true` pro Frage nach Sichtprüfung)
+3. Lokale Archiv-Dateien (`state.json`, `fragen-updates.jsonl`, `upload.log`, `generate-s*.mjs`) extern sichern oder löschen
 
 ### Aktueller Stand (Ende S135, 22.04.2026) — C9 Phase 3 komplett, Tag `c9-phase3-backend` gesetzt
 

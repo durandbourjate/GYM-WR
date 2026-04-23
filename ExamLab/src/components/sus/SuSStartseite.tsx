@@ -143,7 +143,6 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <SuSAppHeaderContainer
         onHilfe={() => {}}
-        onFeedback={() => {}}
       />
 
       <main className="max-w-7xl mx-auto p-6">
