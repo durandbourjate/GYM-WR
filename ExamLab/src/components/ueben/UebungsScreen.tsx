@@ -194,6 +194,14 @@ export default function UebungsScreen() {
             feedbackSichtbar={feedbackSichtbar}
             onToggleUnsicher={toggleUnsicher}
             onBeenden={handleBeenden}
+            feedbackContext={{
+              rolle: 'sus',
+              ort: 'sus-ueben-frage',
+              modus: 'ueben',
+              frageId: frage.id,
+              frageTyp: frage.typ,
+              gruppeId: session.gruppeId,
+            }}
           />
         </div>
 
