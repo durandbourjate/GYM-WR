@@ -8,20 +8,20 @@
 
 ## Für die nächste Session (S138+)
 
-### Aktueller Stand (Ende S137, 23.04.2026) — UI-Bundle auf `fix/s137-ui-autokorrektur-bundle` (2/9 Tickets fertig)
+### Aktueller Stand (Ende S137, 23.04.2026) — UI-Bundle auf `fix/s137-ui-autokorrektur-bundle` (6/9 Tickets fertig, auf `origin/preview` live)
 
-**Branch:** `fix/s137-ui-autokorrektur-bundle` (ausgehend von `main`), 2 Commits, **nicht auf main gemergt**.
+**Branch:** `fix/s137-ui-autokorrektur-bundle` (ausgehend von `main`), 5 Commits, **Staging-deployed** (`origin/preview`), **nicht auf main gemergt**.
 
 **User hat 9 Tickets übergeben (S137):**
-1. Einstellungen Übungen Kurs-Dropdown erst nach Üben-Tab-Klick ladbar
-2. SuS Übungsstart dauert mehrere Sekunden (Regression S122 — server-side Korrektur, serielle `lernplattformLadeLoesungen`-Schleife; **Backend, eigenes Bundle E geplant**)
-3. Themenkacheln ganzen Rahmen farbig (verworfen zugunsten 4)
-4. Themenkacheln mit farbigem linken Rand wie LP
-5. Problem-melden-Button rechts von „Als unsicher markieren"
-6. ✅ **ERLEDIGT (Commit `c31b30c`)** Menü-Eintrag „Problem melden" — Icon ✉ → ⚠, Label einheitlich „Problem melden" (beide Rollen), 8 Dead-Handler entfernt, FeedbackModal im AppHeader zentralisiert (feedbackContext-Prop statt onFeedback-Callback, useLocation-basierter Ort)
-7. SuS-Hilfe-Sidebar nicht resizable + Titel hinter Headbar (Migration auf `ResizableSidebar`-Pattern + z-index-Fix)
-8. Autokorrektur-Verhalten dokumentieren + Anpassungen 1-4
-9. Bildfragen-Qualitäts-Memory erweitern (zu generische Zuordnungen)
+1. ✅ **ERLEDIGT (Commit `e324474`)** Einstellungen Übungen: `AdminSettings` ruft `ladeGruppen(email)` beim Mount auf.
+2. ⏸️ SuS Übungsstart dauert mehrere Sekunden (Regression S122 — server-side Korrektur, serielle `lernplattformLadeLoesungen`-Schleife; **Backend, eigenes Bundle E geplant**)
+3. ✅ **ERLEDIGT (Commit `e324474`)** Themenkacheln ganzen Rahmen farbig (verworfen zugunsten 4)
+4. ✅ **ERLEDIGT (Commit `e324474`)** Themenkacheln: `border-l-4` in Fach-Farbe statt farbigem Punkt
+5. ✅ **ERLEDIGT (Commit `b8e1c8e`)** Problem-melden-Button im SuS-Üben-Footer, rechts neben „Als unsicher markieren"
+6. ✅ **ERLEDIGT (Commit `c31b30c`)** Menü-Eintrag „Problem melden" — Icon ✉ → ⚠, Label einheitlich „Problem melden" (beide Rollen), 8 Dead-Handler entfernt, FeedbackModal im AppHeader zentralisiert
+7. ✅ **ERLEDIGT (Commit `e324474`)** SuS-Hilfe-Sidebar auf `ResizableSidebar`-Overlay-Pattern migriert, `topOffset` aus Header-Höhe gemessen — resizable + Titel sichtbar
+8. ⏸️ Autokorrektur-Verhalten — **Doku fertig** (Commit `6a5799b`), **Anpassungen 1-4 offen**
+9. ✅ **ERLEDIGT** Memory `project_bildfragen_qualitaet.md` um „zu generische Zuordnungen (a/b/c)" ergänzt (Punkt 4 in der Audit-Liste)
 
 **Ticket 8 Anpassungen (User-freigegeben):**
 - (a) Mehrfach-Leerzeichen normalisieren (Lückentext + Bildbeschriftung)
