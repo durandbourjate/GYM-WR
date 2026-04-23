@@ -148,7 +148,7 @@ git commit -m "ExamLab F1: Setup-Doku um UUID-Write-Handler erweitert"
 - [ ] **Step 0 (Exploration):** Verifiziere bestehende Konstanten/Helper im Script:
 
 ```bash
-grep -nE "^(var|function) (FRAGENBANK_ID|FRAGENBANK_SYSTEM_TABS|CONFIGS_ID|getLPInfo|findeLPInfo_|alleGruppenLaden_)" ExamLab/apps-script-code.js
+grep -nE "^(var|const|function) (FRAGENBANK_ID|FRAGENBANK_SYSTEM_TABS|CONFIGS_ID|getLPInfo|findeLPInfo_|alleGruppenLaden_)" ExamLab/apps-script-code.js
 ```
 
 Erwartete Treffer:
