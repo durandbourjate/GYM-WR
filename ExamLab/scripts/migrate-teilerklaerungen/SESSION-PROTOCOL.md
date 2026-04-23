@@ -26,7 +26,8 @@ Filter: `state.fragen[frage.id]?.status !== 'done'` UND `status !== 'skip'`.
 
 Batch-Size:
 - **Session 1 (Stichprobe):** 30 Fragen, spezifisch ausgewählt via `stichprobe-ids.json`
-- **Session 2+ (Full-Run):** 100 Fragen, sortiert nach Fachbereich → Typ → ID für deterministische Reihenfolge
+- **Sessions 2–14 (Full-Run alt):** 100 Fragen
+- **Ab Session 15 (Full-Run neu):** 50 Fragen — Reduktion nach wiederholten Session-Ausfällen. Deterministische Reihenfolge (Fachbereich → Typ → ID) bleibt. Pro Session wird die erste Hälfte des 100er-Batches aus `show-batch.mjs` verarbeitet.
 
 Wenn weniger Fragen übrig als Batch-Size: alle übrigen.
 
