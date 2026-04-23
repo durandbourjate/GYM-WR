@@ -447,3 +447,11 @@ Keine — alle relevanten Entscheidungen sind im Brainstorming beantwortet:
 | XSS-Regel für `comment`/`frageText` | Explizite Rendering-Invariante. |
 | SuS-Tab-Filter | `sichtbar: rolle === 'lp'` (+ doppelte Absicherung durch SuS ohne EinstellungenPanel-Route). |
 | Live-Prüfung-Fraud-Risiko | Dokumentiertes Rest-Risiko, kein Fix in v1. |
+
+### Implementation-Notes aus Review-Runde 2 (2026-04-23)
+
+Reviewer hat 3 kleine Hinweise gegeben, die direkt im Plan (nicht Spec-Revision) umgesetzt werden:
+
+1. **`baueGruppeMetaMap_` auftrennen:** `pruefungId` und `gruppeId` kommen aus getrennten Sheets (`Pruefungen` und `Uebungsgruppen`). ID-Kollision zwischen Sheets könnte falsche Sichtbarkeit ergeben. Lösung: entweder zwei getrennte Helper oder ein Helper mit beiden Sheets und `{pruefungen:{}, gruppen:{}}`-Rückgabe.
+2. **Script-Property-Guard:** Beide Endpoints mit `if (!sheetId) return jsonResponse({error: 'Problemmeldungen-Sheet nicht konfiguriert'})` abfangen. Zusätzlich `if (!sheet) return jsonResponse({error: 'Sheet-Tab nicht gefunden'})` für den Fall, dass der Tab-Name nicht stimmt.
+3. **`Recht`-Type-Union Frontend:** `export type Recht = 'inhaber'|'bearbeiter'|'berechtigt'|'admin'|'keine'` definieren (z.B. in `src/types/recht.ts`), sodass `recht === 'inhaber'`-Filter type-safe ist.
