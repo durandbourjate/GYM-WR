@@ -82,7 +82,7 @@ function normalisiereRichtigFalsch(f: any): any {
   }
 }
 
-function normalisiereLueckentext(f: LueckentextFrage): LueckentextFrage {
+export function normalisiereLueckentext(f: LueckentextFrage): LueckentextFrage {
   const raw = Array.isArray(f.luecken) ? f.luecken : []
   const luecken = raw.map((l, index) => {
     const rohKorrekt = (l as { korrekteAntworten?: unknown; korrekt?: unknown; antwort?: unknown; alternativen?: unknown }).korrekteAntworten
@@ -101,7 +101,18 @@ function normalisiereLueckentext(f: LueckentextFrage): LueckentextFrage {
       caseSensitive: l.caseSensitive ?? false,
     }
   })
-  return { ...f, luecken }
+
+  // Modus-Default: expliziter Wert > dropdownOptionen-Heuristik > 'freitext'
+  const explizit = (f as { lueckentextModus?: unknown }).lueckentextModus
+  let lueckentextModus: 'freitext' | 'dropdown'
+  if (explizit === 'freitext' || explizit === 'dropdown') {
+    lueckentextModus = explizit
+  } else {
+    const hatDropdowns = luecken.some(l => Array.isArray(l.dropdownOptionen) && l.dropdownOptionen.length > 0)
+    lueckentextModus = hatDropdowns ? 'dropdown' : 'freitext'
+  }
+
+  return { ...f, luecken, lueckentextModus }
 }
 
 function normalisiereBuchungssatz(f: BuchungssatzFrageMinimal): BuchungssatzFrageMinimal {

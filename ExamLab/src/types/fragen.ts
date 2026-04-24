@@ -192,6 +192,7 @@ export interface LueckentextFrage extends FrageBase {
   fragetext: string;
   textMitLuecken: string;
   luecken: Luecke[];
+  lueckentextModus?: 'freitext' | 'dropdown';  // NEU — default 'freitext' via Normalizer
 }
 
 export interface VisualisierungFrage extends FrageBase {

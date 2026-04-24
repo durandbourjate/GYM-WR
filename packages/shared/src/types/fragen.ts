@@ -157,6 +157,7 @@ export interface LueckentextFrage extends FrageBase {
     /** Teilerklärung (C9): warum dieser Begriff erwartet wird. */
     erklaerung?: string;
   }[];
+  lueckentextModus?: 'freitext' | 'dropdown';  // NEU — default 'freitext' via Normalizer
 }
 
 export interface VisualisierungFrage extends FrageBase {

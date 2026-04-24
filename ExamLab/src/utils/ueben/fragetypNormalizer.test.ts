@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalisiereFrageDaten } from './fragetypNormalizer'
+import { normalisiereFrageDaten, normalisiereLueckentext } from './fragetypNormalizer'
 
 describe('normalisiereMc', () => {
   it('setzt fehlendes optionen[].korrekt auf false (Default)', () => {
@@ -52,5 +52,35 @@ describe('normalisiereZuordnung', () => {
     const f: any = { id: 'f1', typ: 'zuordnung', linksItems: [{ id: 'L1', text: 'a' }], rechtsItems: [{ id: 'R1', text: 'b' }] }
     const n: any = normalisiereFrageDaten(f)
     expect(Array.isArray(n.paare)).toBe(true)
+  })
+})
+
+describe('normalisiereLueckentext — lueckentextModus', () => {
+  it('setzt Default freitext wenn Feld fehlt UND keine dropdownOptionen', () => {
+    const frage: any = {
+      typ: 'lueckentext',
+      luecken: [{ id: 'l0', korrekteAntworten: ['x'], caseSensitive: false }],
+    }
+    const normalisiert = normalisiereLueckentext(frage)
+    expect(normalisiert.lueckentextModus).toBe('freitext')
+  })
+
+  it('setzt dropdown wenn Feld fehlt ABER dropdownOptionen non-empty (Legacy-Fragen)', () => {
+    const frage: any = {
+      typ: 'lueckentext',
+      luecken: [{ id: 'l0', korrekteAntworten: ['x'], dropdownOptionen: ['x','y','z'], caseSensitive: false }],
+    }
+    const normalisiert = normalisiereLueckentext(frage)
+    expect(normalisiert.lueckentextModus).toBe('dropdown')
+  })
+
+  it('respektiert expliziten Wert falls vorhanden', () => {
+    const frage: any = {
+      typ: 'lueckentext',
+      lueckentextModus: 'dropdown',
+      luecken: [{ id: 'l0', korrekteAntworten: ['x'], caseSensitive: false }],
+    }
+    const normalisiert = normalisiereLueckentext(frage)
+    expect(normalisiert.lueckentextModus).toBe('dropdown')
   })
 })
