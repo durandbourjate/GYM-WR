@@ -1,0 +1,16 @@
+{
+  "name": "migrate-lueckentext-antworten",
+  "version": "1.0.0",
+  "description": "Lückentext-Migration Phase 7 — korrekteAntworten + dropdownOptionen via Claude Code + Apps-Script-Batch (keine SDK-Dependency)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dump": "node dump.mjs",
+    "pick": "node pick-stichprobe.mjs",
+    "review": "node review-generator.mjs",
+    "upload": "node upload.mjs"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}
