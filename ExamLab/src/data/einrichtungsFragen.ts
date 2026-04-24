@@ -779,35 +779,6 @@ export const einrichtungsFragen: Frage[] = [
     ],
   },
 
-  // G4 — Audio-Aufnahme: Vorstellen
-  {
-    id: 'einr-audio-vorstellen',
-    typ: 'audio',
-    version: 1,
-    erstelltAm: '2026-03-28T00:00:00.000Z',
-    geaendertAm: '2026-03-28T00:00:00.000Z',
-    fachbereich: 'VWL',
-    fach: 'Allgemein',
-    thema: 'Einführung',
-    unterthema: '',
-    bloom: 'K2',
-    semester: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-    gefaesse: ['SF', 'EF', 'EWR', 'GF'],
-    tags: ['einführung', 'test'],
-    punkte: 2,
-    zeitbedarf: 2,
-    musterlosung: 'Freie Antwort — beurteilt wird: Verständlichkeit, Inhalt, Sprachqualität',
-    bewertungsraster: [
-      { beschreibung: 'Name und Lieblingsfach genannt', punkte: 1 },
-      { beschreibung: 'Fun Fact erwähnt, Aufnahme verständlich', punkte: 1 },
-    ],
-    verwendungen: [],
-    quelle: 'manuell',
-    autor,
-    fragetext: 'Stellen Sie sich kurz **vor**: Sagen Sie Ihren **Namen**, Ihr **Lieblingsfach** und einen **Fun Fact** über sich selbst. Sie haben max. 60 Sekunden.\n\n💡 **Tipp:** Klicken Sie auf den roten Aufnahme-Knopf, sprechen Sie, und klicken Sie erneut zum Stoppen.',
-    maxDauerSekunden: 60,
-  },
-
   // G5 — Drag & Drop Bild: Kontinente auf Weltkarte
   {
     id: 'einr-dd-kontinente',

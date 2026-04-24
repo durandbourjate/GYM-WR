@@ -762,35 +762,6 @@ export const einrichtungsUebungFragen: Frage[] = [
     ],
   },
 
-  // E5 — Audio-Aufnahme: Sich vorstellen
-  {
-    id: 'ueb-audio-vorstellen',
-    typ: 'audio',
-    version: 1,
-    erstelltAm: jetzt,
-    geaendertAm: jetzt,
-    fachbereich: 'VWL',
-    fach: 'Wirtschaft & Recht',
-    thema: 'Einführung',
-    unterthema: 'Audio-Aufnahme',
-    bloom: 'K2',
-    semester: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-    gefaesse: ['SF', 'EF', 'EWR', 'GF'],
-    tags: ['einführung', 'uebung'],
-    punkte: 2,
-    zeitbedarf: 2,
-    musterlosung: 'Freie Antwort — beurteilt wird: Verständlichkeit, Inhalt (Name + Lieblingsfach + Fun Fact).',
-    bewertungsraster: [
-      { beschreibung: 'Name und Lieblingsfach genannt', punkte: 1 },
-      { beschreibung: 'Fun Fact erwähnt, Aufnahme verständlich', punkte: 1 },
-    ],
-    verwendungen: [],
-    quelle: 'manuell',
-    autor,
-    fragetext: 'Stellen Sie sich kurz **vor**: Sagen Sie Ihren **Namen**, Ihr **Lieblingsfach** und einen **Fun Fact** über sich selbst.\n\nSie haben max. **60 Sekunden**.\n\n💡 Klicken Sie auf «Aufnahme starten», sprechen Sie, und klicken Sie dann auf «Stopp».',
-    maxDauerSekunden: 60,
-  },
-
   // E6 — DragDrop-Bild: Kontinente zuordnen
   {
     id: 'ueb-dd-kontinente',
