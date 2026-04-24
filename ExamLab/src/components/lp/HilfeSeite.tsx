@@ -277,7 +277,7 @@ function HilfeFragen() {
         <strong>Freitext</strong> — Kurz, mittel oder lang. SuS können mit Fettschrift und Überschriften formatieren. Optional: Min/Max-Wortlimit konfigurierbar — Warnung bei Unter-/Überschreitung.
       </Text>
       <Text>
-        <strong>Lückentext</strong> — Text mit Platzhaltern (z.B. {`{{1}}`}, {`{{2}}`}). Pro Lücke können mehrere akzeptierte Antworten definiert werden. Optional: Pro Lücke können Dropdown-Optionen definiert werden (Inline-Choice) — SuS wählen dann aus vorgegebenen Antworten statt frei zu tippen.
+        <strong>Lückentext</strong> — Text mit Platzhaltern (z.B. {`{{1}}`}, {`{{2}}`}). Zwei Modi pro Frage wählbar: <strong>Freitext</strong> (SuS tippt — mehrere akzeptierte Antworten/Synonyme pro Lücke) oder <strong>Dropdown</strong> (SuS wählt aus 5 Optionen: 1 korrekte + 4 Distraktoren). Editor zeigt beide Felder, das inaktive ist gedimmt — Toggle pro Frage im Editor. Für alle 253 Bestands-Lückentext-Fragen kann der Modus auch zentral umgeschaltet werden: <strong>Einstellungen → Fragensammlung → Bulk-Toggle</strong> (Admin-only).
       </Text>
       <Text>
         <strong>Zuordnung</strong> — Paare von Begriffen und Definitionen. SuS ordnen per Dropdown zu.

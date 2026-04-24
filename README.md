@@ -27,7 +27,7 @@ Webbasierter Semesterplaner für Lektionen, Sequenzen und Prüfungen.
 
 Digitale Prüfungs- und Übungsplattform mit drei Bereichen: **Prüfen** | **Üben** | **Fragensammlung**.
 
-**[→ Live öffnen](https://durandbourjate.github.io/GYM-WR-DUY/ExamLab/)** · [Quellcode](./Pruefung/)
+**[→ Live öffnen](https://durandbourjate.github.io/GYM-WR-DUY/ExamLab/)** · [Quellcode](./ExamLab/)
 
 - React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 + Tiptap (PWA)
 - **20 Fragetypen:** MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung, 4× FiBu, Aufgabengruppe, Zeichnen, PDF-Annotation, Sortierung, Hotspot, Bildbeschriftung, Audio, Drag & Drop, Code, Formel (LaTeX)

@@ -6,9 +6,28 @@
 
 ---
 
-## Für die nächste Session (S145+)
+## Für die nächste Session (S146+)
 
-### Aktueller Stand (S144, 24.04.2026) — Lückentext-Modus Phase 1-7 auf `main` gemergt
+### Aktueller Stand (S145, 24.04.2026) — Auth-Session-Restore-Fix auf `preview`, `main` unverändert
+
+**Branch `fix/ueben-auth-session-restore-shape` (Commit `f2c88e1`) — auf `origin/preview` force-gepusht.** Nächster Schritt: User-E2E-Test auf Staging, dann Merge auf `main`.
+
+**Bug-Beschreibung:** `ExamLab/src/store/ueben/authStore.ts::sessionWiederherstellen` las das Response-Shape falsch. Frontend checkte `response.data.gueltig`, Backend (`apps-script-code.js:8218-8221 lernplattformValidiereToken`) liefert aber nur `{success: boolean}` ohne `data`-Wrapper. Resultat: `response.data.gueltig` war IMMER `undefined` → Session wurde bei jedem Restore-Call verworfen. Im Standalone-Üben-Modus (aufgerufen via `AppUeben.tsx:88` wenn `!IST_DEMO && !onZurueck`) flog der User bei jedem Refresh raus. Embedded-Flow via LP-Bridge (SuSStartseite) war nicht betroffen, weil dort die Bridge direkt `lernplattformLogin` ruft und den Token in den Store setzt.
+
+**Fix:** `response?.success` als Check, passender Typ-Generic (`{ success: boolean }`). Plus 4 neue Tests in `ExamLab/src/tests/uebenAuthSessionRestore.test.ts` (success-true/false/null-netzwerk/empty-storage).
+
+**Symptom-Trigger:** User meldete „Antwort prüfen → Nicht authentifiziert" bei Lückentext. Post-hoc-Analyse zeigte: echtes Symptom war Deploy-Cache (Hard-Reload hat's gelöst, typisches [deployment-workflow.md](../.claude/rules/deployment-workflow.md) Post-Deploy-Pattern). Während der Root-Cause-Analyse fiel dieser latente Auth-Bug auf — unabhängig vom Lückentext-Merge, aber hätte sporadisch Standalone-Üben-User rausgeworfen.
+
+**Test-Stand:** 684/684 vitest (4 neu), `tsc -b` clean, `npm run build` success.
+
+**Impact-Analyse:** `lernplattformValidiereToken` wird ausschliesslich in `authStore.ts:104` konsumiert — keine weiteren Call-Sites. `sessionWiederherstellen` wird nur in `AppUeben.tsx:88` getriggert. Backend unverändert — kein Apps-Script-Deploy nötig.
+
+**Offen (Phase 5 Merge-Gate):**
+- [ ] Browser-E2E mit echtem SuS-Login (`wr.test@stud.gymhofwil.ch`) auf Staging: Standalone-Üben öffnen → Login → Reload → bleibt eingeloggt. Vorher war Logout garantiert.
+- [ ] LP-Freigabe
+- [ ] Merge `preview` → `main`, Feature-Branch löschen
+
+**Vorgänger-Stand (Ende S144, 24.04.2026) — Lückentext-Modus Phase 1-7 auf `main` gemergt**
 
 **Branch `fix/lueckentext-editor` auf `main` gemergt** (25 Commits: Phase 1-7 + Editor-Feld-Labels). Alle 253 Lückentext-Fragen haben jetzt `korrekteAntworten` (Hauptantwort + Synonyme) + `dropdownOptionen` (genau 5: 1 Korrekte + 4 Distraktoren). `pruefungstauglich=false` gesetzt — wartet auf LP-Review. **Browser-E2E mit echten Logins (Phase 8) wurde beim Merge NICHT durchgeführt** — User hat explizit Freigabe auf Basis von 680/680 vitest + tsc + build erteilt. Falls Regressionen auftauchen, in Follow-up-Session nacharbeiten.
 

@@ -91,7 +91,7 @@ npm install
 npm run dev
 ```
 
-Öffne `http://localhost:5174/GYM-WR-DUY/Pruefung/`
+Öffne `http://localhost:5174/GYM-WR-DUY/ExamLab/`
 
 Ohne Backend-Konfiguration startet die App im **Demo-Modus** mit der Einrichtungsprüfung (alle 20 Fragetypen inkl. Zeichnen + PDF). Kontrollstufe ist auf "Keine" gesetzt (kein Lockdown).
 
@@ -143,8 +143,8 @@ Environment-Variablen werden über GitHub Secrets gesetzt:
 
 | URL | Ansicht |
 |-----|---------|
-| `/Pruefung/` | Login → Demo-Modus |
-| `/Pruefung/?id=abc` | Login → Prüfung `abc` laden |
+| `/ExamLab/` | Login → Demo-Modus |
+| `/ExamLab/?id=abc` | Login → Prüfung `abc` laden |
 | LP ohne `?id=` | LP-Startseite (Prüfungen verwalten, Composer) |
 | LP mit `?id=abc` | Live-Monitoring für Prüfung `abc` |
 | LP mit `?ids=abc,def` | Multi-Dashboard: mehrere Prüfungen parallel überwachen |
