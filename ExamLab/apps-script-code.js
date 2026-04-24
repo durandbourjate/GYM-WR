@@ -12051,3 +12051,34 @@ function zaehleLeereLueckentextAntworten() {
 
   return { summary: summary, betroffene: betroffene, gesamtLueckentext: gesamtLueckentext, gesamtBetroffen: gesamtBetroffen };
 }
+
+/**
+ * Smoke-Test (manuell im GAS-Editor ausführen): bestätigt dass
+ * bereinigeFrageFuerSuS_ das `lueckentextModus`-Feld (Rendering-Metadata)
+ * behält, während Lösungsfelder (`musterlosung`, `luecken[].korrekteAntworten`)
+ * entfernt werden.
+ *
+ * Hintergrund: `LOESUNGS_FELDER_` ist eine BLACKLIST (nur explizit gelistete
+ * Felder werden gelöscht). `lueckentextModus` ist nicht gelistet → bleibt
+ * automatisch erhalten. Dieser Test friert die Invariante ein, damit eine
+ * spätere Ergänzung der Blacklist den Modus nicht versehentlich mit-entfernt.
+ */
+function testBereinigeLueckentextModus_() {
+  // Apps-Script-V8 hat KEIN console.assert — eigener Helper der bei false wirft.
+  function assert_(cond, msg) { if (!cond) throw new Error('Assertion fehlgeschlagen: ' + msg); }
+
+  var frage = {
+    typ: 'lueckentext',
+    lueckentextModus: 'dropdown',
+    luecken: [{ id: 'l0', korrekteAntworten: ['x'], dropdownOptionen: ['x','y','z','a','b'], caseSensitive: false }],
+    musterlosung: 'geheim'
+  };
+  var bereinigt = bereinigeFrageFuerSuS_(frage);
+  assert_(bereinigt.lueckentextModus === 'dropdown', 'lueckentextModus muss erhalten bleiben');
+  assert_(!bereinigt.musterlosung, 'musterlosung muss entfernt sein');
+  assert_(!bereinigt.luecken[0].korrekteAntworten, 'korrekteAntworten muss entfernt sein');
+  Logger.log('✓ testBereinigeLueckentextModus_ OK');
+}
+
+/** Public-Wrapper (ohne trailing _) damit GAS-Editor-Dropdown ihn findet. */
+function testBereinigeLueckentextModus() { testBereinigeLueckentextModus_(); }
