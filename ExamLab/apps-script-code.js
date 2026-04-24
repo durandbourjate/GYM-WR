@@ -11963,3 +11963,91 @@ function testProblemmeldungen() {
   }
   Logger.log('✓ Alle Smoke-Tests bestanden.');
 }
+
+/**
+ * Diagnose: scannt alle Fragenbank-Tabs nach Lückentextfragen mit mindestens
+ * einer leeren korrekteAntworten (Lücke ohne hinterlegte Antwort — SuS kann
+ * nie richtig antworten). Manuell im GAS-Editor ausführen, kein Deploy nötig.
+ *
+ * Output via Logger.log:
+ * - Gesamt-Summary pro Fachbereich
+ * - Pro betroffene Frage: id, fachbereich, Anzahl leerer Lücken, Text-Preview
+ */
+function zaehleLeereLueckentextAntworten() {
+  var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var summary = {};
+  var betroffene = [];
+  var gesamtLueckentext = 0;
+  var gesamtBetroffen = 0;
+
+  for (var t = 0; t < tabs.length; t++) {
+    var tab = tabs[t];
+    var sheet = fragenbank.getSheetByName(tab);
+    if (!sheet) {
+      summary[tab] = { gesamt: 0, betroffen: 0, fehler: 'Sheet fehlt' };
+      continue;
+    }
+    var data = getSheetData(sheet);
+    var inTabGesamt = 0;
+    var inTabBetroffen = 0;
+
+    for (var r = 0; r < data.length; r++) {
+      var row = data[r];
+      if (row.typ !== 'lueckentext') continue;
+      inTabGesamt++;
+      var frage;
+      try {
+        frage = parseFrage(row, tab);
+      } catch (e) {
+        betroffene.push({
+          id: row.id, fachbereich: tab, anzahlLeer: -1,
+          vorschau: 'PARSE-FEHLER: ' + e.message
+        });
+        inTabBetroffen++;
+        continue;
+      }
+      var luecken = Array.isArray(frage.luecken) ? frage.luecken : [];
+      var anzahlLeer = 0;
+      for (var i = 0; i < luecken.length; i++) {
+        var l = luecken[i] || {};
+        var ka = Array.isArray(l.korrekteAntworten) ? l.korrekteAntworten : [];
+        var hatAntwort = false;
+        for (var k = 0; k < ka.length; k++) {
+          if (ka[k] && String(ka[k]).trim().length > 0) { hatAntwort = true; break; }
+        }
+        if (!hatAntwort) anzahlLeer++;
+      }
+      if (anzahlLeer > 0) {
+        inTabBetroffen++;
+        var vorschau = String(frage.textMitLuecken || '').slice(0, 80);
+        betroffene.push({
+          id: row.id, fachbereich: tab,
+          anzahlLeer: anzahlLeer,
+          anzahlLuecken: luecken.length,
+          vorschau: vorschau
+        });
+      }
+    }
+    summary[tab] = { gesamt: inTabGesamt, betroffen: inTabBetroffen };
+    gesamtLueckentext += inTabGesamt;
+    gesamtBetroffen += inTabBetroffen;
+  }
+
+  Logger.log('=== Lückentext-Antworten-Scan ===');
+  for (var tb in summary) {
+    var s = summary[tb];
+    Logger.log(tb + ': ' + (s.betroffen || 0) + ' / ' + (s.gesamt || 0) + ' Fragen mit leeren Lücken' + (s.fehler ? ' — ' + s.fehler : ''));
+  }
+  Logger.log('Total: ' + gesamtBetroffen + ' / ' + gesamtLueckentext + ' Lückentextfragen betroffen');
+
+  if (betroffene.length > 0) {
+    Logger.log('--- Betroffene Fragen ---');
+    for (var i = 0; i < betroffene.length; i++) {
+      var b = betroffene[i];
+      Logger.log('[' + b.fachbereich + '] ' + b.id + ' — ' + b.anzahlLeer + '/' + (b.anzahlLuecken || '?') + ' leer · "' + b.vorschau + '"');
+    }
+  }
+
+  return { summary: summary, betroffene: betroffene, gesamtLueckentext: gesamtLueckentext, gesamtBetroffen: gesamtBetroffen };
+}

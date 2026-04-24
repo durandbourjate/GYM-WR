@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import type { LueckentextFrage } from '../../types/fragen'
 import { Abschnitt, Feld } from '../components/EditorBausteine'
 
@@ -11,8 +11,30 @@ interface LueckentextEditorProps {
   titelRechts?: React.ReactNode
 }
 
+/**
+ * Platzhalter-Regex: akzeptiert sowohl `{N}` (alte/importierte Fragen) als
+ * auch `{{N}}` (kanonisch). SuS-Renderer nutzt dasselbe Pattern.
+ */
+const PLATZHALTER_REGEX = /\{\{?(\d+)\}\}?/g
+
+/** Normalisiert `{N}` → `{{N}}` idempotent, ohne `{{N}}` zu `{{{{N}}}}` zu machen. */
+function normalisierePlatzhalter(text: string): string {
+  return text.replace(PLATZHALTER_REGEX, '{{$1}}')
+}
+
 export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, luecken, setLuecken, titelRechts }: LueckentextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Einmalige Mount-Migration: alte `{N}`-Syntax → kanonisches `{{N}}`. Läuft nur
+  // wenn Text bereits einfach-Klammer-Format enthält (also aus Pool-Import o.ä. stammt).
+  useEffect(() => {
+    if (!textMitLuecken) return
+    const normalisiert = normalisierePlatzhalter(textMitLuecken)
+    if (normalisiert !== textMitLuecken) {
+      setTextMitLuecken(normalisiert)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Auto-parse Lücken aus Text
   function handleTextChange(text: string): void {
@@ -22,7 +44,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
 
   /** Nächste freie Lücken-ID ermitteln */
   function naechsteId(): string {
-    const matches = textMitLuecken.match(/\{\{(\d+)\}\}/g)
+    const matches = textMitLuecken.match(PLATZHALTER_REGEX)
     if (!matches) return '1'
     const ids = matches.map((m) => parseInt(m.replace(/[{}]/g, ''), 10))
     return String(Math.max(...ids) + 1)
@@ -104,6 +126,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
           {luecken.map((luecke, lueckenIndex) => {
             // Defensive: korrekteAntworten kann bei alten/unvollständigen Pool-Fragen undefined sein
             const korrekteAntw = luecke.korrekteAntworten ?? []
+            const hatKorrekteAntwort = korrekteAntw.some((a) => a && a.trim().length > 0)
             const dropdownText = luecke.dropdownOptionen?.join(', ') ?? ''
             const korrekteImDropdown =
               luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0
@@ -127,9 +150,14 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
                       setLuecken(neu)
                     }}
                     placeholder="Korrekte Antworten (Komma-getrennt, z.B. Antwort1, Antwort2)"
-                    className="input-field flex-1"
+                    className={`input-field flex-1 ${hatKorrekteAntwort ? '' : 'border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/10'}`}
                   />
                 </div>
+                {!hatKorrekteAntwort && (
+                  <p className="pl-10 text-xs text-red-600 dark:text-red-400">
+                    Keine korrekte Antwort hinterlegt — diese Lücke wird bei SuS-Antworten immer als falsch bewertet.
+                  </p>
+                )}
                 <div className="flex items-start gap-2 pl-10">
                   <input
                     type="text"
@@ -163,21 +191,41 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
 
 // ---- Hilfsfunktionen ----
 
+/** IDs aus Text extrahieren: akzeptiert `{N}` und `{{N}}`, dedupliziert. */
+function extrahiereIds(text: string): string[] {
+  const matches = text.match(PLATZHALTER_REGEX)
+  if (!matches) return []
+  return [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
+}
+
+/**
+ * Findet eine bestehende Lücke zur Platzhalter-ID und berücksichtigt dabei das
+ * importierte ID-Format `luecke-N` (Pool-Fragen), damit bestehende
+ * korrekteAntworten beim Tippen im Text nicht verloren gehen.
+ */
+function findeBestehendeLuecke(
+  id: string,
+  bisherigeLuecken: LueckentextFrage['luecken'],
+): LueckentextFrage['luecken'][number] | undefined {
+  return (
+    bisherigeLuecken.find((l) => l.id === id) ??
+    bisherigeLuecken.find((l) => l.id === `luecke-${id}`)
+  )
+}
+
 /** Lücken-Array mit Text synchronisieren (bestehende beibehalten, neue hinzufügen) */
 function syncLueckenFromText(
   text: string,
   bisherigeLuecken: LueckentextFrage['luecken'],
   setLuecken: (v: LueckentextFrage['luecken']) => void,
 ): void {
-  const matches = text.match(/\{\{(\d+)\}\}/g)
-  if (matches) {
-    const ids = [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
-    const neueLuecken = ids.map((id) => {
-      const bestehend = bisherigeLuecken.find((l) => l.id === id)
-      return bestehend ?? { id, korrekteAntworten: [''], caseSensitive: false }
-    })
-    setLuecken(neueLuecken)
-  }
+  const ids = extrahiereIds(text)
+  if (ids.length === 0) return
+  const neueLuecken = ids.map((id) => {
+    const bestehend = findeBestehendeLuecke(id, bisherigeLuecken)
+    return bestehend ? { ...bestehend, id } : { id, korrekteAntworten: [''], caseSensitive: false }
+  })
+  setLuecken(neueLuecken)
 }
 
 /** Lücken-Array synchronisieren und zurückgeben (ohne Setter) */
@@ -185,11 +233,9 @@ function syncLueckenArray(
   text: string,
   bisherigeLuecken: LueckentextFrage['luecken'],
 ): LueckentextFrage['luecken'] {
-  const matches = text.match(/\{\{(\d+)\}\}/g)
-  if (!matches) return []
-  const ids = [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
+  const ids = extrahiereIds(text)
   return ids.map((id) => {
-    const bestehend = bisherigeLuecken.find((l) => l.id === id)
-    return bestehend ?? { id, korrekteAntworten: [''], caseSensitive: false }
+    const bestehend = findeBestehendeLuecke(id, bisherigeLuecken)
+    return bestehend ? { ...bestehend, id } : { id, korrekteAntworten: [''], caseSensitive: false }
   })
 }
