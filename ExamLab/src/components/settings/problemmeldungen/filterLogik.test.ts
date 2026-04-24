@@ -37,19 +37,19 @@ describe('filterMeldungen', () => {
 describe('priorisiereDeepLink', () => {
   const m = (patch: Partial<Problemmeldung>): Problemmeldung => ({ ...base, ...patch })
 
-  it('frageId hat höchste Priorität', () => {
+  it('frageId hat höchste Priorität (auch bei Pool-Frage)', () => {
     expect(priorisiereDeepLink(m({ frageId: 'f1', pruefungId: 'p1' }))).toEqual({ art: 'frage', id: 'f1' })
+    // Pool-importierte Fragen sind dennoch in der Fragensammlung erreichbar
+    expect(priorisiereDeepLink(m({ frageId: 'f1', istPoolFrage: true }))).toEqual({ art: 'frage', id: 'f1' })
   })
   it('pruefungId > gruppeId > ort', () => {
-    expect(priorisiereDeepLink(m({ pruefungId: 'p1', gruppeId: 'g1' }))).toEqual({ art: 'pruefung', id: 'p1' })
-    expect(priorisiereDeepLink(m({ gruppeId: 'g1' }))).toEqual({ art: 'gruppe', id: 'g1' })
+    expect(priorisiereDeepLink(m({ pruefungId: 'p1', gruppeId: 'g1' }))).toEqual({ art: 'pruefung', id: 'p1', istUebung: false })
+    expect(priorisiereDeepLink(m({ gruppeId: 'g1' }))).toEqual({ art: 'gruppe', id: 'g1', istUebung: false })
     expect(priorisiereDeepLink(m({ ort: 'dashboard' }))).toEqual({ art: 'ort', id: 'dashboard' })
   })
-  it('Pool-Frage liefert kein Ziel (Deep-Link deaktiviert)', () => {
-    expect(priorisiereDeepLink(m({ frageId: 'f1', istPoolFrage: true, ort: '' }))).toBeNull()
-  })
-  it('Pool-Frage mit zusätzlicher Prüfungs-ID fällt auf Prüfung zurück', () => {
-    expect(priorisiereDeepLink(m({ frageId: 'f1', istPoolFrage: true, pruefungId: 'p1' }))).toEqual({ art: 'pruefung', id: 'p1' })
+  it('modus=ueben setzt istUebung=true', () => {
+    expect(priorisiereDeepLink(m({ pruefungId: 'p1', modus: 'ueben' }))).toEqual({ art: 'pruefung', id: 'p1', istUebung: true })
+    expect(priorisiereDeepLink(m({ gruppeId: 'g1', modus: 'ueben' }))).toEqual({ art: 'gruppe', id: 'g1', istUebung: true })
   })
   it('Alle Felder leer liefert null', () => {
     expect(priorisiereDeepLink(m({ ort: '' }))).toBeNull()

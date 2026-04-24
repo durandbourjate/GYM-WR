@@ -21,14 +21,16 @@ export function filterMeldungen(
 
 export type DeepLinkZiel =
   | { art: 'frage'; id: string }
-  | { art: 'pruefung'; id: string }
-  | { art: 'gruppe'; id: string }
+  | { art: 'pruefung'; id: string; istUebung: boolean }
+  | { art: 'gruppe'; id: string; istUebung: boolean }
   | { art: 'ort'; id: string }
 
 export function priorisiereDeepLink(m: Problemmeldung): DeepLinkZiel | null {
-  if (m.frageId && !m.istPoolFrage) return { art: 'frage', id: m.frageId }
-  if (m.pruefungId) return { art: 'pruefung', id: m.pruefungId }
-  if (m.gruppeId) return { art: 'gruppe', id: m.gruppeId }
+  // Pool-importierte Fragen sind dennoch in der Fragensammlung erreichbar — Deep-Link trotzdem erlauben.
+  if (m.frageId) return { art: 'frage', id: m.frageId }
+  const istUebung = m.modus === 'ueben'
+  if (m.pruefungId) return { art: 'pruefung', id: m.pruefungId, istUebung }
+  if (m.gruppeId) return { art: 'gruppe', id: m.gruppeId, istUebung }
   if (m.ort) return { art: 'ort', id: m.ort }
   return null
 }

@@ -13,8 +13,8 @@ export function useDeepLink(schliesseEinstellungen: () => void) {
         break
       case 'pruefung':
       case 'gruppe':
-        // Composer öffnet sowohl Prüfung als auch Übung (prefix aus Pfad abgeleitet)
-        nav.navigiereZuComposer('', ziel.id)
+        // Präfix explizit aus Meldung-modus, nicht aus window.location (wäre /einstellungen/...)
+        nav.navigate(ziel.istUebung ? `/uebung/${ziel.id}` : `/pruefung/${ziel.id}`)
         break
       case 'ort':
         // Nur Info, kein Navigate
