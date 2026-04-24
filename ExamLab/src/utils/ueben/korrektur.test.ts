@@ -19,6 +19,24 @@ describe('pruefeAntwort — defensive gegen bereinigte Pool-Daten', () => {
     expect(() => pruefeAntwort(f, a)).not.toThrow()
     expect(pruefeAntwort(f, a)).toBe(false)
   })
+  it('lueckentext modus=dropdown: Dropdown-Auswahl wird identisch wie Freitext-Eintrag geprüft (modus-agnostisch)', () => {
+    // S142: Korrektur muss modus-agnostisch sein — egal ob der String aus einem
+    // <select> (Dropdown) oder einem <input> (Freitext) kommt, die Prüfung
+    // vergleicht nur gegen korrekteAntworten[].
+    const f: any = {
+      id: 'f',
+      typ: 'lueckentext',
+      lueckentextModus: 'dropdown',
+      luecken: [{
+        id: 'l0',
+        korrekteAntworten: ['Bern'],
+        dropdownOptionen: ['Bern', 'Zürich', 'Basel'],
+        caseSensitive: false,
+      }],
+    }
+    const a: any = { typ: 'lueckentext', eintraege: { l0: 'Bern' } }
+    expect(pruefeAntwort(f, a)).toBe(true)
+  })
   it('sortierung ohne elemente[] crasht nicht', () => {
     const f: any = { id:'f', typ:'sortierung' }
     const a: any = { typ:'sortierung', reihenfolge:['x'] }
