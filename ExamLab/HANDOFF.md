@@ -6,13 +6,13 @@
 
 ---
 
-## Für die nächste Session (S143+)
+## Für die nächste Session (S144+)
 
-### Aktueller Stand (Ende S142, 24.04.2026) — Phase 1-6 Lückentext-Modus + Apps-Script-Deploy + Migration
+### Aktueller Stand (Ende S143, 24.04.2026) — Phase 7 KI-Batch-Skripte committed, User-Run offen
 
-**Branch `fix/lueckentext-editor`, 15 Commits seit `a3375f7` (Plan-Commit). Nicht auf main gemergt — wartet auf Phase 7 (KI-Batch) + Phase 8 (E2E + Merge).**
+**Branch `fix/lueckentext-editor`, Commit `204043e` mit Phase-7-Skripten. Nicht auf main gemergt — wartet auf Phase 7 Task 19 (User-Run: Dump + Stichprobe + KI-Sessions + Upload) + Phase 8 (E2E + Merge).**
 
-**Plan-Dokument:** [`ExamLab/docs/superpowers/plans/2026-04-24-lueckentext-modus-migration.md`](docs/superpowers/plans/2026-04-24-lueckentext-modus-migration.md) — 22 Tasks in 8 Phasen. Phasen 1-6 komplett, Phase 7 ausstehend.
+**Plan-Dokument:** [`ExamLab/docs/superpowers/plans/2026-04-24-lueckentext-modus-migration.md`](docs/superpowers/plans/2026-04-24-lueckentext-modus-migration.md) — 22 Tasks in 8 Phasen. Phasen 1-6 + Phase 7 Code komplett, Phase 7 Run + Phase 8 offen.
 
 **Was komplett ist:**
 1. **Phase 1** (Datenmodell): `LueckentextFrage.lueckentextModus?: 'freitext' | 'dropdown'` + Normalizer-Default (Heuristik: explizit > dropdownOptionen non-empty > freitext). Commit `5be371c`.
@@ -21,8 +21,9 @@
 4. **Phase 4** (Apps-Script Backend): `bereinigeFrageFuerSuS_` bewahrt Modus (Blacklist-Pattern bestätigt) + Test-Shim. Parser R/W an 3 Stellen (`parseFrage`, `parseFrageKanonisch_`, `getTypDaten`) + DRY-Helper `ermittleLueckentextModus_`. One-shot Migrator `migriereLueckentextModus` mit batch-setValues. Commits `2c92343` + `fa2652b` + `a638965` + `769093e` (Fixes DRY/Admin-Guard/Batch-Write) + `48f96b3` (Session-Scope-Fix).
 5. **Phase 5** (Endpoint): `batchUpdateLueckentextMigration` (Admin-only, partial update, setzt `pruefungstauglich=''`, LockService-geschützt). Test-Shim mit Restore-Logik für Test-Frage. Commits `07cc8f3` + `9928282` (Fixes: Kontrakt-Klärung + Test-Shim-Restore + Empty-Array-Semantik + Concurrency-JSDoc).
 6. **Phase 6** (Settings-Tab): Neuer Tab "Fragensammlung" in LP-Einstellungen, erste Funktion: Bulk-Toggle (Admin-only) zum Umschalten aller 253 Lückentext-Fragen zwischen Freitext/Dropdown. Frontend (Tab + Toggle + API-Wrapper mit `unwrap<T>`) + Backend (`bulkSetzeLueckentextModus_` mit batch-setValues + Cache-Invalidation + LockService). 3 Tests. Commits `5fa0a90` + `fbdd0a4` (LockService-Fix).
+7. **Phase 7 Tasks 15-18** (KI-Batch-Skripte in `ExamLab/scripts/migrate-lueckentext-antworten/`): `dump.mjs` + `prompt-template.md` (schon in S142), neu `pick-stichprobe.mjs` (seed=42, 5/fachbereich), `review-generator.mjs` (Markdown mit alt-vs-neu + Sanity-Checks), `upload.mjs` (pro-fachbereich POST an `batchUpdateLueckentextMigration`, split-on-error bei >10 Einträgen), `package.json`, `.gitignore`, `README.md`, `SESSION-PROTOCOL.md`. Template = C9 Phase 4 (`migrate-teilerklaerungen/`). Commit `204043e`.
 
-**Test-Stand:** 680/680 vitest, tsc -b clean, build success.
+**Test-Stand:** 680/680 vitest, tsc -b clean, build success. (Neue .mjs-Skripte: `node --check` OK.)
 
 **Apps-Script Deploy & User-Tests (24.04.2026):**
 - ✅ `testBereinigeLueckentextModus` → lueckentextModus bleibt nach bereinige erhalten
@@ -32,27 +33,25 @@
 
 **Status der 253 Lückentext-Fragen:** alle haben `lueckentextModus='freitext'`, alle (bis auf 2 Recht-Fragen) mit leeren `korrekteAntworten`. Bereit für KI-Batch-Migration.
 
-### Offen für S143+
+### Offen für S144+
 
-**Phase 7 (KI-Batch-Migration):** 5 Tasks noch nicht angefangen (Rate-Limit Ende S142).
-- Task 15: `dump.mjs` (nutzt bestehenden C9-Endpoint `holeAlleFragenFuerMigration`)
-- Task 16: `prompt-template.md` (System-Prompt für Claude: korrekteAntworten mit Synonymen + exakt 5 dropdownOptionen mit 1 Korrekte + 4 Distraktoren, KEINE Synonyme im Dropdown)
-- Task 17: `pick-stichprobe.mjs` + `review-generator.mjs` (Stichprobe 15 Fragen = 5/fachbereich, Markdown-Review)
-- Task 18: `upload.mjs` (analog C9 — per-fachbereich POST + adaptive-split on error) + `package.json` + `README.md` + `SESSION-PROTOCOL.md`
-- Target-Verzeichnis: `ExamLab/scripts/migrate-lueckentext-antworten/`
-- Template: `ExamLab/scripts/migrate-teilerklaerungen/` (C9 Phase 4)
+**Phase 7 Task 19 (User-Run, Reihenfolge):**
+1. **Setup:** Google-Sheets-Backup erstellen (`ExamLab_Fragenbank_Backup_YYYY-MM-DD_lueckentext`) + Migrations-Fenster ankündigen + Env-Variablen setzen:
+   ```bash
+   export APPS_SCRIPT_URL=https://script.google.com/macros/s/.../exec
+   export MIGRATION_EMAIL=admin@gymhofwil.ch
+   ```
+2. **Dump:** `cd ExamLab/scripts/migrate-lueckentext-antworten && node dump.mjs` → `fragen-dump.json` (~253 Fragen)
+3. **Stichprobe ziehen:** `node pick-stichprobe.mjs` → `stichprobe.json` (15 Fragen: 5 VWL + 5 BWL + 5 Recht, seed=42) + `stichprobe-ids.json`
+4. **Stichprobe verarbeiten (Claude-Code-Session 1):** neue CC-Session, paste-n `prompt-template.md` + `stichprobe.json` → Claude gibt JSON-Array zurück → als `stichprobe-response.json` speichern
+5. **Review:** `node review-generator.mjs` → `stichprobe-review.md` (alt vs. neu pro Lücke + Sanity-Hinweise), LP reviewt + gibt Freigabe. Bei >2 Ablehnungen: Prompt iterieren + Stichprobe neu.
+6. **Full-Run (Claude-Code-Sessions 2+):** alle 253 Fragen in Batches à ~30-50 via CC-Session. Output pro Batch als `batch-<fachbereich>-sN.json` oder gebündelt `lueckentext-updates.jsonl`.
+7. **Upload:** pro Batch (bzw. gebündelt) `node upload.mjs <batch-datei>` → ein POST pro Fachbereich an `batchUpdateLueckentextMigration`, split-on-error. Log in `upload.log`.
+8. **Verifikation:** im GAS-Editor `zaehleLeereLueckentextAntworten` erneut → erwartet **0 / 253**. 5 Fragen pro Fachbereich manuell im Frontend prüfen (Freitext + Dropdown).
 
-**Phase 7 Task 19 (User-Run):**
-1. Google-Sheets-Backup
-2. `node dump.mjs` → 253 Fragen
-3. `node pick-stichprobe.mjs` → 15 Fragen
-4. Neue Claude-Code-Session: `prompt-template.md` + `stichprobe.json` → Response speichern als `stichprobe-response.json`
-5. `node review-generator.mjs` → Markdown, User reviewt + gibt frei
-6. Nach Freigabe: Full-Run in Batches à ~30-50 analog
-7. Uploads pro Batch
-8. Final: `zaehleLeereLueckentextAntworten` erneut → erwartet 0/253
+Detaillierte Anleitung: [`ExamLab/scripts/migrate-lueckentext-antworten/README.md`](scripts/migrate-lueckentext-antworten/README.md). Session-Leitfaden: [`SESSION-PROTOCOL.md`](scripts/migrate-lueckentext-antworten/SESSION-PROTOCOL.md).
 
-**Phase 8 (E2E + Merge):** Test-Plan + Browser-Test mit echten Logins + HANDOFF + Merge zu main.
+**Phase 8 (E2E + Merge):** Test-Plan + Browser-Test mit echten Logins (LP + SuS, Modus-Wechsel pro Frage, Bulk-Toggle, Freitext-Korrektur, Dropdown-Korrektur) + HANDOFF + Merge zu main. Task 20-22.
 
 ---
 
