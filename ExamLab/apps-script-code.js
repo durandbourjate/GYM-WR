@@ -732,8 +732,15 @@ function problemmeldungenColIdx_(headers, name) {
   // Exakter Match
   var idx = headers.indexOf(name);
   if (idx >= 0) return idx;
-  // Normalisierter Match (lowercase, ohne Separatoren)
-  var norm = function(s) { return String(s).toLowerCase().replace(/[-_\s]/g, '').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ä/g, 'a'); };
+  // Normalisierter Match (lowercase, Umlaute zu ue/oe/ae, ohne Separatoren)
+  // Reihenfolge wichtig: Umlaute vor Separator-Entfernung damit 'Prüfung-ID' → 'pruefungid' (nicht 'prufungid').
+  var norm = function(s) {
+    return String(s).toLowerCase()
+      .replace(/ü/g, 'ue')
+      .replace(/ö/g, 'oe')
+      .replace(/ä/g, 'ae')
+      .replace(/[-_\s]/g, '');
+  };
   var target = norm(name);
   for (var i = 0; i < headers.length; i++) {
     if (norm(headers[i]) === target) return i;
