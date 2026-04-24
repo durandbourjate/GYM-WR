@@ -8,6 +8,9 @@ import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 import AdminSettings from '../ueben/admin/AdminSettings'
 import KIKalibrierungTab from './kiKalibrierung/KIKalibrierungTab'
+import ProblemmeldungenTab from './problemmeldungen/ProblemmeldungenTab'
+import { listeProblemmeldungen } from '../../services/problemmeldungenApi'
+import type { Problemmeldung } from '../../types/problemmeldung'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -37,10 +40,23 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email])
 
+  // F1 Problemmeldungen: beim Mount laden (für Tab-Badge mit offenem Count)
+  const [meldungen, setMeldungen] = useState<Problemmeldung[] | null>(null)
+  useEffect(() => {
+    if (!user?.email) return
+    let abgebrochen = false
+    listeProblemmeldungen(user.email)
+      .then(data => { if (!abgebrochen) setMeldungen(data) })
+      .catch(() => { if (!abgebrochen) setMeldungen([]) })
+    return () => { abgebrochen = true }
+  }, [user?.email])
+  const offeneCount = meldungen ? meldungen.filter(m => !m.erledigt).length : 0
+
   const tabs: { key: EinstellungenTab; label: string; sichtbar: boolean }[] = [
     { key: 'profil', label: 'Mein Profil', sichtbar: true },
     { key: 'lernziele', label: 'Lernziele', sichtbar: true },
     { key: 'favoriten', label: 'Favoriten', sichtbar: true },
+    { key: 'problemmeldungen', label: `Problemmeldungen${offeneCount > 0 ? ` (${offeneCount})` : ''}`, sichtbar: true },
     { key: 'uebungen', label: 'Übungen', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
     { key: 'kiKalibrierung', label: 'KI-Kalibrierung', sichtbar: true },
@@ -90,6 +106,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         )}
         {tab === 'kiKalibrierung' && user?.email && (
           <KIKalibrierungTab email={user.email} />
+        )}
+        {tab === 'problemmeldungen' && user?.email && (
+          <ProblemmeldungenTab email={user.email} istAdmin={admin} onSchliessen={onSchliessen} />
         )}
       </div>
       </div>
