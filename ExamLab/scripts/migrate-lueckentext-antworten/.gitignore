@@ -1,5 +1,6 @@
 node_modules/
 fragen-dump.json
+prompt-input-*.json
 stichprobe.json
 stichprobe-ids.json
 stichprobe-response.json

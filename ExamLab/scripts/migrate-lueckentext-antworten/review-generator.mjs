@@ -24,10 +24,18 @@ const OUTPUT = path.join(__dirname, 'stichprobe-review.md')
 function renderLuecke(inputLuecke, outputLuecke) {
   const lines = []
   lines.push(`### Lücke \`${inputLuecke.id}\``)
-  const alteAntworten = Array.isArray(inputLuecke.korrekteAntworten) && inputLuecke.korrekteAntworten.length > 0
+  // Zeige sowohl die neue korrekteAntworten[]-Spalte (oft leer in der DB)
+  // als auch die Legacy-Felder antwort + alternativen (pool-Fragen).
+  const alteKA = Array.isArray(inputLuecke.korrekteAntworten) && inputLuecke.korrekteAntworten.length > 0
     ? inputLuecke.korrekteAntworten.join(' · ')
-    : '_(keine — leer)_'
-  lines.push(`- **Alt (korrekteAntworten):** ${alteAntworten}`)
+    : '—'
+  const legacyAntworten = []
+  if (inputLuecke.antwort) legacyAntworten.push(String(inputLuecke.antwort))
+  if (Array.isArray(inputLuecke.alternativen) && inputLuecke.alternativen.length > 0) {
+    legacyAntworten.push(...inputLuecke.alternativen.map(String))
+  }
+  const legacyStr = legacyAntworten.length > 0 ? legacyAntworten.join(' · ') : '—'
+  lines.push(`- **Alt (korrekteAntworten · antwort+alternativen):** ${alteKA} · Legacy: ${legacyStr}`)
   const alteDropdowns = Array.isArray(inputLuecke.dropdownOptionen) && inputLuecke.dropdownOptionen.length > 0
     ? inputLuecke.dropdownOptionen.join(' · ')
     : '_(keine)_'
