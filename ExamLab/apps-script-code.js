@@ -12641,12 +12641,12 @@ function testBereinigeLueckentextModus() { testBereinigeLueckentextModus_(); }
  * Manuell im GAS-Editor ausführen, NACH Google-Sheets-Backup der Fragenbank.
  */
 function migriereLueckentextModus() {
-  // Admin-Guard: Migrator schreibt Daten in ALLE Fragenbank-Tabs. Nie unbeaufsichtigt
-  // exponieren — identisches Pattern wie testC9BatchUpdateFragenMigration_ (S133).
-  var email = (Session.getActiveUser().getEmail() || '').toLowerCase();
-  if (email !== 'yannick.durand@gymhofwil.ch') {
-    throw new Error('Admin-only — tatsächlicher Caller: ' + email);
-  }
+  // SICHERHEIT: Diese Funktion ist NICHT im doPost-Dispatcher geroutet (grep-verifiziert).
+  // Manuelle Ausführung nur aus dem GAS-Editor möglich. Kein Session.getActiveUser()-Check
+  // weil das den Scope `userinfo.email` aktiv triggern würde (Re-Consent aller Benutzer nötig,
+  // siehe Kommentar bei testC9GeneriereMusterloesung_ um Zeile 11195). Falls diese Funktion
+  // jemals in den Dispatcher wandert: Scope in appsscript.json aktivieren + Email-Check
+  // einbauen (Pattern wie batchUpdateLueckentextMigrationEndpoint).
 
   var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
   var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
