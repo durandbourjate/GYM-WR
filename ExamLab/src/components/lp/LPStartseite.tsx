@@ -84,7 +84,7 @@ export default function LPStartseite() {
 
   // Bundle 13 I: URL-basierte Kurs-Auswahl für Üben-Übungen
   const navigate = useNavigate()
-  const { kursId: urlKursId } = useParams<{ kursId?: string }>()
+  const { kursId: urlKursId, frageId: urlFrageId } = useParams<{ kursId?: string; frageId?: string }>()
   const gruppen = useUebenGruppenStore(s => s.gruppen)
   const aktiverKursId = urlKursId
   const aktiverKurs = useMemo(
@@ -839,7 +839,7 @@ export default function LPStartseite() {
               onHinzufuegen={() => {}}
               onSchliessen={() => useLPNavigationStore.getState().zurueck()}
               bereitsVerwendet={[]}
-              initialEditFrageId={deepLinkFrageId ?? undefined}
+              initialEditFrageId={urlFrageId ?? deepLinkFrageId ?? undefined}
               onFrageAktualisiert={() => { clearDeepLinkFrageId() }}
             />
           </Suspense>
