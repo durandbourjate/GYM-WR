@@ -927,6 +927,82 @@ function listeProblemmeldungen(body) {
   return jsonResponse({ success: true, data: meldungen });
 }
 
+/**
+ * Setzt erledigt-Flag auf einer Meldung.
+ * Auth: LP-Token. Rate-Limit: 60/5min.
+ * IDOR: nicht-Admin muss recht ∈ {inhaber, bearbeiter} auf Frage oder Gruppe haben.
+ */
+function markiereProblemmeldungErledigt(body) {
+  var email = String(body.email || '').toLowerCase().trim();
+  var id = String(body.id || '');
+  var erledigt = !!body.erledigt;
+  if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
+    return jsonResponse({ success: false, error: 'Token ungültig' });
+  }
+  var rl = lernplattformRateLimitCheck_('toggleProblemmeldung', email, 60, 300);
+  if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
+  if (!id) return jsonResponse({ success: false, error: 'id fehlt' });
+
+  var sheetId = PropertiesService.getScriptProperties().getProperty('PROBLEMMELDUNGEN_SHEET_ID');
+  if (!sheetId) return jsonResponse({ success: false, error: 'Problemmeldungen-Sheet nicht konfiguriert' });
+
+  var ss;
+  try { ss = SpreadsheetApp.openById(sheetId); }
+  catch (e) { return jsonResponse({ success: false, error: 'Sheet nicht erreichbar: ' + e.message }); }
+
+  var sheet = ss.getSheetByName('ExamLab-Problemmeldungen');
+  if (!sheet) return jsonResponse({ success: false, error: 'Tab nicht gefunden' });
+
+  var lastCol = sheet.getLastColumn();
+  if (lastCol === 0) return jsonResponse({ success: false, error: 'Sheet leer' });
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h).trim(); });
+  var idCol = headers.indexOf('id');
+  var erledigtCol = headers.indexOf('erledigt');
+  var frageIdCol = headers.indexOf('frageId');
+  var pruefungIdCol = headers.indexOf('pruefungId');
+  var gruppeIdCol = headers.indexOf('gruppeId');
+  if (idCol < 0 || erledigtCol < 0) return jsonResponse({ success: false, error: 'Sheet-Schema kaputt' });
+
+  var lastRow = sheet.getLastRow();
+  var data = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
+
+  var lpInfo = getLPInfo(email);
+  var istAdmin = !!(lpInfo && lpInfo.rolle === 'admin');
+
+  for (var i = 0; i < data.length; i++) {
+    if (String(data[i][idCol]) !== id) continue;
+
+    if (!istAdmin) {
+      var frageId = String(data[i][frageIdCol] || '');
+      var pruefungId = String(data[i][pruefungIdCol] || '');
+      var gruppeId = String(data[i][gruppeIdCol] || '');
+      var recht = 'keine';
+      if (frageId) {
+        var fmeta = baueFrageMetaMap_([frageId])[frageId];
+        if (fmeta && istSichtbarMitLP(email, fmeta, lpInfo, false)) {
+          recht = ermittleRechtMitLP(email, fmeta, lpInfo, false);
+        }
+      }
+      if ((recht === 'keine' || recht === 'betrachter') && (pruefungId || gruppeId)) {
+        var gid = pruefungId || gruppeId;
+        var gmeta = baueGruppeMetaMap_([gid])[gid];
+        if (gmeta && istSichtbarMitLP(email, gmeta, lpInfo, false)) {
+          var gRecht = ermittleRechtMitLP(email, gmeta, lpInfo, false);
+          if (gRecht === 'inhaber' || gRecht === 'bearbeiter') recht = gRecht;
+        }
+      }
+      if (recht !== 'inhaber' && recht !== 'bearbeiter') {
+        return jsonResponse({ success: false, error: 'Keine Berechtigung für diese Meldung' });
+      }
+    }
+
+    sheet.getRange(i + 2, erledigtCol + 1).setValue(erledigt ? 'ja' : '');
+    return jsonResponse({ success: true });
+  }
+  return jsonResponse({ success: false, error: 'Meldung nicht gefunden' });
+}
+
 // Zentrale Daten-Sheets (Synergien)
 const KURSE_SHEET_ID = '1inmEds_g48-lTFCqo9NUqAcxhDxF2mFSoBM5fO6uJng';       // User muss ID einsetzen
 const STUNDENPLAN_SHEET_ID = '1mesBOmPuLewvnY5iNb4iD2zNDUn8-ruK5HE0DsKwUSs';
