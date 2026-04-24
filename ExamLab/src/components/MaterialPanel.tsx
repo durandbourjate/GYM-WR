@@ -279,16 +279,8 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
 
     return (
       <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0 flex items-center justify-between">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           <span>{material.titel}</span>
-          <a
-            href={materialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs underline"
-          >
-            In neuem Tab öffnen ↗
-          </a>
         </div>
         <iframe
           src={embedUrl}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
 import { useFragenbankStore } from '../../store/fragenbankStore.ts'
@@ -39,30 +39,33 @@ const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))
 const EinstellungenPanel = lazyMitRetry(() => import('../settings/EinstellungenPanel.tsx'))
 const AnalyseDashboard = lazyMitRetry(() => import('./ueben/AnalyseDashboard.tsx'))
 
-/** Startseite für Lehrpersonen: Prüfungen verwalten + erstellen */
+/**
+ * Startseite für Lehrpersonen. Dispatcher: basierend auf URL-Query rendert entweder
+ * Multi-Durchführen, Einzel-Durchführen oder das normale Dashboard.
+ *
+ * Wrapper-Pattern statt früherer `useMemo(..., [])`-Early-Returns: beim URL-Wechsel
+ * (L1-Tab-Klick Üben/Fragensammlung) wird der Sub-Tree neu gemountet, Hook-Order in
+ * LPStartseiteInner bleibt stabil (verhindert React-#310 bei Wechsel zwischen
+ * Durchführen-Modus und Liste).
+ */
 export default function LPStartseite() {
-  const user = useAuthStore((s) => s.user)
-  const istDemoModus = useAuthStore((s) => s.istDemoModus)
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const multiIds = params.get('ids')?.split(',').filter(Boolean) ?? []
+  const singleId = params.get('id')
 
-  // Multi-Dashboard: ?ids=abc,def → Vollbild-Dashboard für mehrere Prüfungen
-  const multiIds = useMemo(() => {
-    const params = new URLSearchParams(window.location.search)
-    return params.get('ids')?.split(',').filter(Boolean) ?? []
-  }, [])
   if (multiIds.length > 1) {
     return <MultiDurchfuehrenDashboard pruefungIds={multiIds} />
   }
-
-  // Einzel-Durchführen: ?id=X → DurchfuehrenDashboard (Start/Lobby/Monitoring/Korrektur
-  // je nach Phase). Wird von den Karten-Buttons "Prüfung starten"/"Übung starten"/
-  // "Auswerten" aufgerufen (LPStartseite.PruefungsKarte → <a href={pathname}?id={id}>).
-  const singleId = useMemo(() => {
-    const params = new URLSearchParams(window.location.search)
-    return params.get('id')
-  }, [])
   if (singleId) {
     return <DurchfuehrenDashboard pruefungId={singleId} />
   }
+  return <LPStartseiteInner />
+}
+
+function LPStartseiteInner() {
+  const user = useAuthStore((s) => s.user)
+  const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
   // Navigation aus dem Store
   const ansicht = useLPNavigationStore(s => s.ansicht)
