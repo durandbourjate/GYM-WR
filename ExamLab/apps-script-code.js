@@ -857,9 +857,7 @@ function holeAktiveLPEmails_() {
 function listeProblemmeldungen(body) {
   var email = String(body.email || '').toLowerCase().trim();
   if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
-    return jsonResponse({ success: false, error: 'Token ungültig' });
-  }
+  // Konsistent mit listeKIFeedbacks & Co: kein LP-Session-Token im Frontend → nur istZugelasseneLP.
   var rl = lernplattformRateLimitCheck_('listeProblemmeldungen', email, 30, 300);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
 
@@ -963,9 +961,7 @@ function markiereProblemmeldungErledigt(body) {
   var id = String(body.id || '');
   var erledigt = !!body.erledigt;
   if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
-    return jsonResponse({ success: false, error: 'Token ungültig' });
-  }
+  // Konsistent mit aktualisiereKIFeedback & Co: kein LP-Session-Token → nur istZugelasseneLP.
   var rl = lernplattformRateLimitCheck_('toggleProblemmeldung', email, 60, 300);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
   if (!id) return jsonResponse({ success: false, error: 'id fehlt' });
