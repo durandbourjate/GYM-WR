@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState } from 'react'
 import DOMPurify from 'dompurify'
+import { useResizableHandle } from '@shared/ui/useResizableHandle'
 import type { PruefungsMaterial } from '../types/pruefung.ts'
 import AudioPlayer from './AudioPlayer.tsx'
 import Tooltip from './ui/Tooltip.tsx'
@@ -25,38 +26,19 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
   const [aktivesId, setAktivesId] = useState<string | null>(
     materialien.length === 1 ? materialien[0].id : null
   )
-  // Resize-State für Split-Modus (Breite in px, null = Standard 55%)
-  const [splitBreite, setSplitBreite] = useState<number | null>(null)
-  const resizingRef = useRef(false)
-  const startXRef = useRef(0)
-  const startBreiteRef = useRef(0)
 
-  const handleResizeStart = useCallback((e: React.PointerEvent) => {
-    e.preventDefault()
-    resizingRef.current = true
-    startXRef.current = e.clientX
-    const panel = (e.target as HTMLElement).closest('[data-material-panel]')
-    startBreiteRef.current = panel?.getBoundingClientRect().width ?? 500
-
-    const handleMove = (ev: PointerEvent) => {
-      if (!resizingRef.current) return
-      // Panel wächst nach links → kleinerer clientX = grössere Breite
-      const diff = startXRef.current - ev.clientX
-      const neueBreite = Math.max(300, Math.min(window.innerWidth * 0.8, startBreiteRef.current + diff))
-      setSplitBreite(neueBreite)
-    }
-    const handleUp = () => {
-      resizingRef.current = false
-      document.removeEventListener('pointermove', handleMove)
-      document.removeEventListener('pointerup', handleUp)
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-    }
-    document.addEventListener('pointermove', handleMove)
-    document.addEventListener('pointerup', handleUp)
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
-  }, [])
+  // Resize: Material-Panel sitzt rechts vom Fragenbereich, Drag-Handle am linken Rand
+  // → side='left' (Handle-Position). Default = 55% der Viewport-Breite beim ersten Start.
+  // maxWidth = 80% der Viewport-Breite (wie vor Migration).
+  const defaultBreite = typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.55) : 800
+  const maxBreite = typeof window !== 'undefined' ? Math.round(window.innerWidth * 0.8) : 1600
+  const { width: splitBreite, onPointerDown: handleResizeStart } = useResizableHandle({
+    defaultWidth: defaultBreite,
+    minWidth: 300,
+    maxWidth: maxBreite,
+    side: 'left',
+    storageKey: 'material-panel',
+  })
 
   const aktivesMaterial = materialien.find((m) => m.id === aktivesId)
 
@@ -66,13 +48,14 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
       <div
         data-material-panel
         className="h-full min-h-0 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden relative"
-        style={{ width: splitBreite ? `${splitBreite}px` : '55%', minWidth: 300 }}
+        style={{ width: `${splitBreite}px`, minWidth: 300 }}
       >
         {/* Resize-Handle am linken Rand */}
         <div
           onPointerDown={handleResizeStart}
           className="absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-violet-400 active:bg-violet-500 z-10 transition-colors"
           title="Breite anpassen"
+          style={{ touchAction: 'none' }}
         />
         {/* Header — kompakt im Split-Modus */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-slate-700 shrink-0">
@@ -296,16 +279,8 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
 
     return (
       <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0 flex items-center justify-between">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700/30 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           <span>{material.titel}</span>
-          <a
-            href={materialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs underline"
-          >
-            In neuem Tab öffnen ↗
-          </a>
         </div>
         <iframe
           src={embedUrl}

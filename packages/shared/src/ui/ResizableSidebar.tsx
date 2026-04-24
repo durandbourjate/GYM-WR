@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react';
+import { useState, useCallback, useEffect, type ReactNode } from 'react';
+import { useResizableHandle } from './useResizableHandle';
 
 // Modul-lokaler Zähler: jede neu geöffnete overlay-Sidebar bekommt den nächsthöheren z-Index.
 // Startet bei 50 (unter Dialogen/Toasts), zählt bei jedem Mount hoch.
@@ -50,15 +51,19 @@ export function ResizableSidebar({
   closeOnEsc = true,
   closeOnBackdrop = true,
 }: ResizableSidebarProps) {
-  // Breite aus localStorage laden oder Default verwenden
-  const [width, setWidth] = useState(() => {
-    if (storageKey) {
-      try {
-        const saved = localStorage.getItem(`sidebar-${storageKey}`);
-        if (saved) return Math.max(minWidth, Math.min(maxWidth, Number(saved)));
-      } catch { /* ignorieren */ }
-    }
-    return defaultWidth;
+  // Dynamisches Max: Viewport - 300px Mindestbreite Hauptinhalt
+  const effectiveMax = Math.min(maxWidth, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 300);
+
+  // Drag-Handle via shared Hook.
+  // `side` in ResizableSidebar = Panel-Position im Layout (Sidebar rechts/links).
+  // Im Hook ist `side` = Handle-Position (wo der Drag-Handle physisch sitzt).
+  // Panel rechts → Handle links; Panel links → Handle rechts → invertieren.
+  const { width, setWidth, onPointerDown: basePointerDown } = useResizableHandle({
+    defaultWidth,
+    minWidth,
+    maxWidth: effectiveMax,
+    side: side === 'right' ? 'left' : 'right',
+    storageKey,
   });
 
   const [isMaximized, setIsMaximized] = useState(false);
@@ -71,21 +76,6 @@ export function ResizableSidebar({
     return nextOverlayZIndex;
   });
   const effectiveZIndex = zIndex ?? autoZIndex;
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const startWidth = useRef(0);
-
-  // Dynamisches Max: Viewport - 300px Mindestbreite Hauptinhalt
-  const effectiveMax = Math.min(maxWidth, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 300);
-
-  // localStorage speichern
-  useEffect(() => {
-    if (storageKey && !isMaximized) {
-      try {
-        localStorage.setItem(`sidebar-${storageKey}`, String(width));
-      } catch { /* quota */ }
-    }
-  }, [width, storageKey, isMaximized]);
 
   // ESC zum Schliessen
   useEffect(() => {
@@ -100,33 +90,16 @@ export function ResizableSidebar({
     return () => document.removeEventListener('keydown', handleKeyDown, true);
   }, [closeOnEsc, onClose]);
 
+  // Drag unsetzt Maximize automatisch (Original-Verhalten)
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    isDragging.current = true;
-    startX.current = e.clientX;
-    startWidth.current = width;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-  }, [width]);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging.current) return;
-    const delta = side === 'right'
-      ? startX.current - e.clientX
-      : e.clientX - startX.current;
-    const newWidth = Math.max(minWidth, Math.min(effectiveMax, startWidth.current + delta));
-    setWidth(newWidth);
-    setIsMaximized(false);
-  }, [side, minWidth, effectiveMax]);
-
-  const handlePointerUp = useCallback(() => {
-    isDragging.current = false;
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-  }, []);
+    if (isMaximized) setIsMaximized(false);
+    basePointerDown(e);
+  }, [isMaximized, basePointerDown]);
 
   const toggleMaximize = () => setIsMaximized(v => !v);
   const currentWidth = isMaximized ? effectiveMax : width;
+  // Hook exportiert setWidth — wird nicht benutzt, aber bleibt verfügbar für künftige Programmatik.
+  void setWidth;
 
   // Resize-Handle: transparent per Default, violett bei Hover — einheitlich über beide Modi
   const resizeHandleClass = `${mode === 'overlay' ? 'absolute top-0 bottom-0' : 'flex items-center justify-center'} w-1 cursor-col-resize z-10 bg-transparent hover:bg-violet-400 dark:hover:bg-violet-500 active:bg-violet-500 dark:active:bg-violet-600 transition-colors ${
@@ -140,8 +113,6 @@ export function ResizableSidebar({
       data-testid="resize-handle"
       className={resizeHandleClass}
       onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
       style={{ touchAction: 'none' }}
       title="Breite anpassen"
     >

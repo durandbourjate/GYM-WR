@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import { useResizableHandle } from '@shared/ui/useResizableHandle'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
@@ -25,6 +26,19 @@ import FrageRenderer from './FrageRenderer.tsx'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
 import FrageAnhaenge from './FrageAnhaenge.tsx'
+
+// Einmalige Migration bei Modul-Import: alter Sidebar-Breite-Key (vor Hook-Refactor)
+// → neuer Hook-Key mit Präfix. Nach einigen Wochen kann dieser Block entfernt werden.
+if (typeof window !== 'undefined') {
+  try {
+    const alt = localStorage.getItem('pruefung-sidebar-breite')
+    const neu = localStorage.getItem('sidebar-pruefung-sidebar-breite')
+    if (alt !== null && neu === null) {
+      localStorage.setItem('sidebar-pruefung-sidebar-breite', alt)
+      localStorage.removeItem('pruefung-sidebar-breite')
+    }
+  } catch { /* ignore */ }
+}
 
 export default function Layout() {
   const user = useAuthStore((s) => s.user)
@@ -108,48 +122,15 @@ export default function Layout() {
     }
   }, [abgegeben])
 
-  // Sidebar-Breite: Resizable per Drag, persistiert in localStorage
-  const SIDEBAR_KEY = 'pruefung-sidebar-breite'
-  const DEFAULT_SIDEBAR = 224 // w-56 = 14rem = 224px
-  const MIN_SIDEBAR = 140
-  const MAX_SIDEBAR = 320
-  const [sidebarBreite, setSidebarBreite] = useState<number>(() => {
-    try { const v = localStorage.getItem(SIDEBAR_KEY); return v ? Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, Number(v))) : DEFAULT_SIDEBAR } catch { return DEFAULT_SIDEBAR }
+  // Sidebar-Breite: Resizable per Drag, persistiert in localStorage via shared Hook.
+  // SuS-Sidebar sitzt links, Drag-Handle rechts am Rand → side='right' (Handle-Position).
+  const { width: sidebarBreite, onPointerDown: handleSidebarResizeStart } = useResizableHandle({
+    defaultWidth: 224, // w-56 = 14rem = 224px
+    minWidth: 140,
+    maxWidth: 320,
+    side: 'right',
+    storageKey: 'pruefung-sidebar-breite',
   })
-  const sidebarResizingRef = useRef(false)
-  const sidebarStartXRef = useRef(0)
-  const sidebarStartBreiteRef = useRef(0)
-
-  const handleSidebarResizeStart = useCallback((e: React.PointerEvent) => {
-    e.preventDefault()
-    sidebarResizingRef.current = true
-    sidebarStartXRef.current = e.clientX
-    sidebarStartBreiteRef.current = sidebarBreite
-
-    const handleMove = (ev: PointerEvent) => {
-      if (!sidebarResizingRef.current) return
-      const diff = ev.clientX - sidebarStartXRef.current
-      const neueBreite = Math.max(MIN_SIDEBAR, Math.min(MAX_SIDEBAR, sidebarStartBreiteRef.current + diff))
-      setSidebarBreite(neueBreite)
-    }
-    const handleUp = () => {
-      sidebarResizingRef.current = false
-      document.removeEventListener('pointermove', handleMove)
-      document.removeEventListener('pointerup', handleUp)
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-      try { localStorage.setItem(SIDEBAR_KEY, String(sidebarBreite)) } catch { /* ignore */ }
-    }
-    document.addEventListener('pointermove', handleMove)
-    document.addEventListener('pointerup', handleUp)
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
-  }, [sidebarBreite])
-
-  // Sidebar-Breite in localStorage speichern (bei Änderung)
-  useEffect(() => {
-    try { localStorage.setItem(SIDEBAR_KEY, String(sidebarBreite)) } catch { /* ignore */ }
-  }, [sidebarBreite])
 
   // UX: beforeunload-Warnung, Tastaturnavigation, Escape
   const handleAbgabeDialogSchliessen = useCallback(() => setZeigAbgabeDialog(false), [])

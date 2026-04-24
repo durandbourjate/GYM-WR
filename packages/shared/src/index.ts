@@ -20,6 +20,7 @@ export { useFocusTrap } from './editor/hooks/useFocusTrap'
 export { Abschnitt, Feld } from './editor/components/EditorBausteine'
 export { default as FormattierungsToolbar } from './editor/components/FormattierungsToolbar'
 export { ResizableSidebar } from './ui/ResizableSidebar'
+export { useResizableHandle } from './ui/useResizableHandle'
 
 // Typ-Editoren
 export { default as MCEditor } from './editor/typen/MCEditor'
