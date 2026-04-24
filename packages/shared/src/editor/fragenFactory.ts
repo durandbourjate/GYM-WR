@@ -109,6 +109,7 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         fragetext: typDaten.fragetext.trim(),
         textMitLuecken: typDaten.textMitLuecken.trim(),
         luecken: typDaten.luecken.length > 0 ? typDaten.luecken : parseLuecken(typDaten.textMitLuecken),
+        lueckentextModus: typDaten.lueckentextModus ?? 'freitext',
       } as LueckentextFrage
 
     case 'zuordnung':
