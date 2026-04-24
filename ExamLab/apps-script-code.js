@@ -723,6 +723,25 @@ function parseBerechtigungen(berechtigungen) {
 // === Problemmeldungen — Helper ===
 
 /**
+ * Case-/Separator-insensitive Header-Lookup für Problemmeldungen-Sheet.
+ * Das Feedback-Apps-Script schreibt Header wie `Zeitstempel`, `Frage-ID`, `Prüfung-ID`.
+ * Backend fragt mit dem kanonischen Namen `zeitstempel`, `frageId`, `pruefungId`.
+ * Dieser Helper mappt beide Formen auf den Index.
+ */
+function problemmeldungenColIdx_(headers, name) {
+  // Exakter Match
+  var idx = headers.indexOf(name);
+  if (idx >= 0) return idx;
+  // Normalisierter Match (lowercase, ohne Separatoren)
+  var norm = function(s) { return String(s).toLowerCase().replace(/[-_\s]/g, '').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ä/g, 'a'); };
+  var target = norm(name);
+  for (var i = 0; i < headers.length; i++) {
+    if (norm(headers[i]) === target) return i;
+  }
+  return -1;
+}
+
+/**
  * Liest Fragen-Sheet 1× und gibt Map {frageId: frageMeta} zurück.
  * frageMeta enthält alle Felder, die istSichtbarMitLP / ermittleRechtMitLP brauchen:
  * autor, erstelltVon, berechtigungen, geteilt, fachbereich, quelle.
@@ -852,7 +871,7 @@ function listeProblemmeldungen(body) {
   var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h).trim(); });
   var lastRow = sheet.getLastRow();
   var rows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
-  var col = function(name) { return headers.indexOf(name); };
+  var col = function(name) { return problemmeldungenColIdx_(headers, name); };
 
   var lpInfo = getLPInfo(email);
   var istAdmin = !!(lpInfo && lpInfo.rolle === 'admin');
@@ -957,11 +976,11 @@ function markiereProblemmeldungErledigt(body) {
   var lastCol = sheet.getLastColumn();
   if (lastCol === 0) return jsonResponse({ success: false, error: 'Sheet leer' });
   var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h).trim(); });
-  var idCol = headers.indexOf('id');
-  var erledigtCol = headers.indexOf('erledigt');
-  var frageIdCol = headers.indexOf('frageId');
-  var pruefungIdCol = headers.indexOf('pruefungId');
-  var gruppeIdCol = headers.indexOf('gruppeId');
+  var idCol = problemmeldungenColIdx_(headers, 'id');
+  var erledigtCol = problemmeldungenColIdx_(headers, 'erledigt');
+  var frageIdCol = problemmeldungenColIdx_(headers, 'frageId');
+  var pruefungIdCol = problemmeldungenColIdx_(headers, 'pruefungId');
+  var gruppeIdCol = problemmeldungenColIdx_(headers, 'gruppeId');
   if (idCol < 0 || erledigtCol < 0) return jsonResponse({ success: false, error: 'Sheet-Schema kaputt' });
 
   var lastRow = sheet.getLastRow();
