@@ -6,9 +6,33 @@
 
 ---
 
-## Für die nächste Session (S141+)
+## Für die nächste Session (S142+)
 
-### Aktueller Stand (Ende S140, 24.04.2026) — Bundle F1 (Probleme-Dashboard) + F2 (Bugfix-Bundle) auf `main` gemergt
+### Aktueller Stand (Ende S141, 24.04.2026) — Altlasten-Bundle auf `main` gemergt
+
+**Branch `fix/altlasten-bundle` nach `main` gemergt + gelöscht.** 5 Commits Cleanup-Arbeit, Staging-E2E mit echten Logins bestätigt.
+
+**Inhalte des Bundles:**
+- **Audio-Fragen aus Einführung entfernt** (`einrichtungsFragen.ts` + `einrichtungsUebungFragen.ts`). Audio-Fragetyp war bereits seit S140 UI-seitig deaktiviert; die beiden Demo-Fragen G4/E5 wurden hier aus den Daten-Files entfernt, damit SuS in der Einführung keine leeren Info-Boxen mehr sehen.
+- **Stranded `AdminFragenbank.tsx` gelöscht** — seit S110 nicht mehr importiert (Fragensammlung läuft über `LPHeader → FragenBrowser → SharedFragenEditor`). S129-Lehre zu toten Code-Pfaden.
+- **`useResizableHandle`-Hook** (neu in `packages/shared/src/ui/`) — extrahiert dedupliziertes Drag-to-Resize-Verhalten. 14 Unit-Tests. API: `{defaultWidth, minWidth, maxWidth?, side?, storageKey?}` → `{width, setWidth, onPointerDown, isDragging}`. Hook-`side` bezeichnet Handle-Position; Konsumenten mit anderer Semantik invertieren beim Einsatz.
+- **3 Konsumenten migriert** auf Hook: `ResizableSidebar`, `Layout.tsx` aside (SuS-Prüfungs-Sidebar, mit einmaliger Key-Migration `pruefung-sidebar-breite` → `sidebar-pruefung-sidebar-breite`), `MaterialPanel` (neu mit localStorage-Persistenz, Default beim ersten Start `innerWidth × 0.55`).
+- **2 E2E-Bugfixes im Merge-Bundle:**
+  1. `MaterialPanel` — „In neuem Tab öffnen"-Link entfernt (in aktiver Prüfung nicht erlaubt, Tab-Wechsel = Lockdown-Verstoss).
+  2. `LPStartseite` — Dispatch-Wrapper-Pattern statt früherer `useMemo(() => ..., [])`-Early-Returns. Bug: L1-Tabs (Üben, Fragensammlung) aus `/pruefung?id=xxx` oder `/uebung/durchfuehren?id=xxx` navigierten zwar die URL, aber `singleId` blieb via leerem Dep-Array eingefroren — DurchfuehrenDashboard wurde weiter gerendert. Favoriten funktionierte, weil andere Route (LPFlow→LPStartseite unmountet sich). Fix: Wrapper liest `useLocation().search` bei jedem Render, Inner-Komponente hält die 1800 Zeilen Dashboard-Logik. Sub-Tree-Mount/Unmount beim URL-Wechsel verhindert React-#310 durch stabile Hook-Ordnung in `LPStartseiteInner`.
+
+**Staging-E2E komplett (yannick.durand + wr.test, echte Logins):** SuS-Prüfungs-Sidebar resize ✓ · Material-Panel resize + Link weg ✓ · Einstellungen-Panel resize + Maximize ✓ · Fragensammlung-Sidebar resize ✓ · L1-Tab-Navigation aus Prüfungs- und Übungs-Durchführen ✓ · Einführungsprüfung/-übung ohne Audio-Frage ✓.
+
+**Keine Apps-Script-Änderungen, kein Deploy nötig.**
+
+### Offen für S142+
+
+- **Task A (UX-Feature)**: Bildeditor Keyboard-Delete — Zone/Hotspot/Beschriftung markieren (Klick) + Delete/Backspace löscht. Betrifft Hotspot-, DragDropBild- und Bildbeschriftung-Editor. Eigene Branch.
+- **Bundle E (Backend-Perf)**: Übungsstart-Latenz. `lernplattformLadeLoesungen` (apps-script-code.js:8807-8822) iteriert seriell über Fragen-IDs → N × Sheet-Read (Cache leer beim ersten Start). Bei 10–15 Fragen ergibt das 5–10s zusätzlich zum Apps-Script-Grund-Overhead. Lösungsansätze: Bulk-Tab-Read (1× Fachbereich-Tab laden, in-memory filtern) + `CacheService.putAll()` Pre-Warm. Brainstorming → Spec → Plan nötig.
+- **Audio-Reaktivierung**: Nach Backend-Migration auf Edge-Runtime. Bis dahin deaktiviert. Re-Aktivierung via `git revert 8de1352`.
+- **C9 Phase 4 laufende User-Aufgaben**: Stichprobenprüfung der 2412 migrierten Fragen, Freigaben `pruefungstauglich=true`, Archiv-Dateien extern sichern/löschen.
+
+### Vorgänger-Stand (Ende S140, 24.04.2026) — Bundle F1 (Probleme-Dashboard) + F2 (Bugfix-Bundle) auf `main` gemergt
 
 **Branch `feature/problemmeldungen-dashboard` nach `main` gemergt + gelöscht.** Enthielt sowohl Bundle F1 (komplett neu: Probleme-Dashboard mit Backend-Endpoints + Frontend-UI) als auch Bundle F2 (7 Bugfix-Tickets aus dem Testdurchlauf).
 
