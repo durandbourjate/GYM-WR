@@ -8922,6 +8922,42 @@ function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
   return null;
 }
 
+/**
+ * Gruppiert fragenIds nach {sheetId → tab → Set<frageId>} für Bulk-Read.
+ * - Familie-Gruppe (gruppe.typ === 'familie' && gruppe.fragebankSheetId): alles geht in eigenes Sheet, Tab 'Fragen'
+ * - fachbereichHint gesetzt + Hint ist gültiger Tab: alle IDs in den Hint-Tab (Happy-Path bei Bank)
+ * - Sonst: Worst-Case → alle Bank-Tabs als Suchraum (max. 4 Bulk-Reads). Besser als N×Per-Frage.
+ *
+ * Returns: { [sheetId]: { [tab]: Set<frageId> } }
+ */
+function gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereichHint) {
+  var result = {};
+
+  // Familie-Gruppe: eigenes Sheet, fester Tab 'Fragen'
+  var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
+  if (istFamilie) {
+    result[gruppe.fragebankSheetId] = { 'Fragen': new Set(fragenIds) };
+    return result;
+  }
+
+  // Bank-Gruppe: alle IDs gehen in FRAGENBANK_ID
+  var sheetId = FRAGENBANK_ID;
+  result[sheetId] = {};
+
+  var alleTabs = getFragenbankTabs_();
+  // Hint-Tab muss existieren in der Tab-Liste
+  if (fachbereichHint && alleTabs.indexOf(fachbereichHint) !== -1) {
+    result[sheetId][fachbereichHint] = new Set(fragenIds);
+    return result;
+  }
+
+  // Worst-Case: kein Hint → alle Tabs als Suchraum (Bulk-Read sucht alle IDs in jedem Tab)
+  for (var t = 0; t < alleTabs.length; t++) {
+    result[sheetId][alleTabs[t]] = new Set(fragenIds);
+  }
+  return result;
+}
+
 /** Frage aus einer Sheet-Zeile im kanonischen Format parsen (shared mit ExamLab) */
 function parseFrageKanonisch_(row, fachbereich) {
   // Fachbereich-Mapping anwenden (z.B. "Allgemein" → "Andere")
@@ -12775,4 +12811,44 @@ function migriereLueckentextModus() {
   }
 
   return { total: total, gesetzt: gesetzt, schonGesetzt: schonGesetzt, errors: errors, tabs: tabStats };
+}
+
+// =====================================================================
+// BUNDLE E — Test-Shims (S146)
+// =====================================================================
+
+/** Test-Shim für gruppiereFragenIdsNachTab_ — Public-Wrapper ohne Underscore (GAS-Dropdown-Sichtbarkeit, S133-Lehre) */
+function testGruppiereFragenIdsNachTab() {
+  return testGruppiereFragenIdsNachTab_();
+}
+
+function testGruppiereFragenIdsNachTab_() {
+  function assert_(cond, msg) { if (!cond) throw new Error('ASSERT FAIL: ' + msg); }
+  Logger.log('=== testGruppiereFragenIdsNachTab ===');
+
+  // Case 1: fachbereichHint gesetzt → alle IDs gehen in den Hint-Tab
+  var r1 = gruppiereFragenIdsNachTab_(['id1', 'id2'], null, 'BWL');
+  var sheet1 = Object.keys(r1)[0];
+  assert_(sheet1 === FRAGENBANK_ID, 'Case 1: sheetId muss FRAGENBANK_ID sein, war ' + sheet1);
+  assert_(Object.keys(r1[sheet1]).length === 1, 'Case 1: nur 1 Tab erwartet');
+  assert_(r1[sheet1]['BWL'] !== undefined, 'Case 1: Tab BWL fehlt');
+  assert_(r1[sheet1]['BWL'].size === 2, 'Case 1: 2 IDs erwartet, war ' + r1[sheet1]['BWL'].size);
+  Logger.log('Case 1 (Hint=BWL): OK');
+
+  // Case 2: kein Hint, kein Familie → alle Tabs als Suchraum
+  var r2 = gruppiereFragenIdsNachTab_(['id1'], null, '');
+  var tabs2 = Object.keys(r2[FRAGENBANK_ID]);
+  assert_(tabs2.length >= 2, 'Case 2: mindestens 2 Tabs erwartet (BWL+VWL+...), war ' + tabs2.length);
+  Logger.log('Case 2 (kein Hint): OK, ' + tabs2.length + ' Tabs');
+
+  // Case 3: Familie-Gruppe → eigenes Sheet, Tab "Fragen"
+  var familie = { typ: 'familie', fragebankSheetId: 'FAM_TEST_SHEET_ID' };
+  var r3 = gruppiereFragenIdsNachTab_(['fid1', 'fid2'], familie, 'BWL');
+  assert_(r3['FAM_TEST_SHEET_ID'] !== undefined, 'Case 3: Familie-Sheet fehlt');
+  assert_(r3['FAM_TEST_SHEET_ID']['Fragen'].size === 2, 'Case 3: 2 IDs in Fragen-Tab erwartet');
+  assert_(r3[FRAGENBANK_ID] === undefined, 'Case 3: Bank-Sheet darf nicht da sein');
+  Logger.log('Case 3 (Familie): OK');
+
+  Logger.log('=== testGruppiereFragenIdsNachTab: alle Cases OK ===');
+  return { success: true };
 }
