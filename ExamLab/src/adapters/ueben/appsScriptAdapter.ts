@@ -205,6 +205,11 @@ class AppsScriptFragenAdapter implements FragenService {
     else this.cache.clear()
   }
 
+  /** Bundle G.a — Public-Getter für Pre-Warm-Hooks (Read-Through, kein Backend-Call) */
+  getCachedFragen(gruppeId: string): Frage[] | undefined {
+    return this.cache.get(gruppeId)
+  }
+
   private getToken(): string | undefined {
     try {
       const stored = localStorage.getItem('ueben-auth')
@@ -220,7 +225,7 @@ class AppsScriptFragenAdapter implements FragenService {
   }
 }
 
-export const uebenFragenAdapter: FragenService = new AppsScriptFragenAdapter()
+export const uebenFragenAdapter = new AppsScriptFragenAdapter()
 
 // --- Fortschritt-Adapter: Gruppen-Fortschritt + Lernziele ---
 

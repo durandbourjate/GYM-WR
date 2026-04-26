@@ -271,6 +271,18 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
         letzteAntwortKorrekt: null,
         loesungenPreloaded: preloaded,
       })
+
+      // Bundle G.a — lastUsedThema persistieren für Pre-Warm-Trigger B
+      if (modus === 'standard' && fach && thema && block.length > 0) {
+        try {
+          localStorage.setItem(
+            `examlab.lastUsedThema.${gruppeId}.${fach}`,
+            thema,
+          )
+        } catch {
+          // localStorage nicht verfügbar / quota — silently ignore
+        }
+      }
     } catch {
       set({ ladeStatus: 'fehler' })
     }

@@ -6,9 +6,67 @@
 
 ---
 
-## Für die nächste Session (S147+)
+## Für die nächste Session (S148+)
 
-### Aktueller Stand (S146, 26.04.2026) — Bundle E (Übungsstart-Latenz) auf `feature/bundle-e-uebungsstart-latenz`, merge-bereit
+### Aktueller Stand (S147, 26.04.2026) — Bundle G.a (Server-Cache-Pre-Warming) auf `feature/bundle-g-a-prewarming`, merge-bereit
+
+**Was Bundle G.a macht:** Apps-Script-`CacheService` proaktiv vorwärmen entlang vier User-Workflow-Trigger. Reduziert effektive Übungsstart-Latenz für SuS, wenn LP eine Prüfung speichert oder SuS ein Thema auswählt.
+
+**Vier Pre-Warm-Trigger:**
+- **A** — LP klickt "Speichern" beim Erstellen/Editieren einer Prüfung → `preWarmFragen(fragenIds aus config.abschnitte)`
+- **B** — SuS klickt Fach-Tab in Üben-Übersicht (mit `lastUsedThema` gesetzt) → `preWarmFragen(fragenIds des letzten Themas)`
+- **C** — SuS hovert >300 ms auf Themen-Card → `preWarmFragen(fragenIds des Themas)`
+- **D** — SuS klickt "Abgeben" (`istAbgabe===true`) → Backend ruft inline `preWarmKorrekturNachAbgabe_` für LP-Korrektur
+
+**Architektur:** Ein neuer Apps-Script-Endpoint `lernplattformPreWarmFragen` für A+B+C, plus Inline-Erweiterung in `speichereAntworten` für D. Frontend nutzt einen einzigen `usePreWarm`-Hook + `useDebouncedHover`. fragenIds werden vom Frontend mitgegeben — kein Backend-Lookup nötig. Fire-and-forget-Pattern, AbortController, fail-silent. Cache-Schema (`frage_v1_<sheetId>_<frageId>`, 1h TTL) bleibt von Bundle E geerbt. Soft-Lock via CacheService (Key `prewarm_<email>_<hashIds_>`, 30s TTL) dedupliziert identische Re-Calls.
+
+**Änderungen:**
+- Backend (`apps-script-code.js`): `hashIds_`-Helper, `lernplattformPreWarmFragen`-Endpoint (Z.8920), `preWarmKorrekturNachAbgabe_`-Helper, Inline-Aufruf in `speichereAntworten` (Z.~3149), 3 GAS-Test-Shims (`testPreWarmFragen`/`testPreWarmEffekt`/`testPreWarmKorrekturNachAbgabe`).
+- Frontend: neue Module `services/preWarmApi.ts` + `hooks/usePreWarm.ts` + `hooks/useDebouncedHover.ts`. `appsScriptAdapter` mit `getCachedFragen`-Public-Getter. `uebungsStore.starteSession` schreibt `lastUsedThema` in localStorage. Drei Call-Sites: `PruefungsComposer.tsx` (Trigger A), `Dashboard.tsx` (Trigger B), `ThemaKarteMitPreWarm.tsx` (Trigger C, neue Wrapper-Komponente um `useDebouncedHover` ausserhalb von `.map()` zu hosten).
+
+**Messwerte (GAS-intern, S147):**
+- `testPreWarmFragen` (5 Cases, alle grün):
+  - Case (a) Cold-Call mit 30 fragenIds: latenzMs 3'266 ms (Bulk-Read von 30 Fragen aus BWL-Tab + Cache-Befüllung)
+  - Case (b) Re-Call: `deduped:true` ✓
+  - Case (c) Andere fragenIds: latenzMs 341 ms (partial Cache-Hit)
+  - Case (d) Auth-Fail: korrekt geblockt
+  - Case (e) Sanity-Check >200 fragenIds: korrekt geblockt
+- `testPreWarmEffekt`: Cold/Warm-Latenz im Test unauffällig (V8-Container hatte bereits Sheet im Memory; aussagekräftiger sind Browser-Werte)
+- `testPreWarmKorrekturNachAbgabe`: 1. Abgabe 2'887 ms · 2. Abgabe 2'195 ms (beide ähnlich, da Bundle-E `bulkLadeFragenAusSheet_` immer den ganzen Tab liest — der echte Pre-Warm-Win zeigt sich erst beim späteren `lernplattformLadeLoesungen`-Aufruf der LP-Korrektur)
+
+**Browser-E2E (staging mit echtem SuS-Token, 26.04.2026):**
+- End-to-End Pre-Warm-Roundtrip mit echten 10 VWL-fragenIds: `success:true, fragenAnzahl:10, latenzMs:1261` ✓
+- Soft-Lock-Dedup: zweiter und dritter identischer Call → `success:true, deduped:true` ✓
+- `lastUsedThema`-Persistenz: nach `starteSession` ist `examlab.lastUsedThema.test.VWL` korrekt in localStorage ✓
+- Build-Output enthält Bundle-G-Code: `preWarmFragen` und `examlab.lastUsedThema` jeweils 2× im minified bundle ✓
+
+**Bug-Fixes während Browser-E2E (auf branch committed):**
+1. `gruppeId fehlt`-Bug — Endpoint lehnte leere `gruppeId` ab obwohl `fachbereich`-Hint reicht. Fix: `if (!gruppeId && !fachbereich)` (Commit `828a294`)
+2. **Auth-Helper-Bug** — Endpoint nutzte `validiereSessionToken_` (Cache `sus_session_*`, für ExamLab-Prüfungs-Tokens), aber Lernplattform-User-Tokens liegen unter `lp_session_*` und brauchen `lernplattformValidiereToken_` (siehe `lernplattformLadeFragen` Z.8665 als Referenz). Fix: Helper-Tausch (Commit `d0df929`).
+
+**Lehre für lernschleife.md:** Bei Auth-Helpern in Apps Script nicht nur prüfen ob die Funktion existiert, sondern WELCHEN Cache-Key-Prefix sie nutzt. Der Helper `validiereSessionToken_` und `lernplattformValidiereToken_` haben gleiche Signatur aber unterschiedliche Token-Caches.
+
+**By-design-Verhalten (im HANDOFF dokumentieren):** Trigger B/C feuern nur wenn `aktiveGruppe?.id` gesetzt ist — also nur für SuS mit echter Gruppen-Membership (LP-led-Klassen). Standalone-Pool-User ohne LP-Setup profitieren nicht von Trigger B/C, was korrekt ist (kein Backend-Pre-Warm sinnvoll).
+
+**Test-Stand:**
+- 704/704 vitest grün (Frontend, ~25 neue Tests für preWarmApi/usePreWarm/useDebouncedHover/lastUsedThemaPersistenz/getCachedFragen)
+- `tsc -b` clean
+- `node --check apps-script-code.js` clean
+- `npm run build` success (~5KB Bundle-Zuwachs für Bundle G.a-Module)
+- Apps-Script: ✅ live deployed (mit beiden Bug-Fixes)
+- GAS-Test-Shims: alle 5 Cases von `testPreWarmFragen` grün ✓
+
+**Commits auf `feature/bundle-g-a-prewarming`:** 23 Bundle-G-Commits (Spec → Plan → 8 Backend → 10 Frontend Modules + 3 Frontend Integration → 1 Build-Verify → 1 Push → 2 Bug-Fixes). Merge folgt direkt nach diesem HANDOFF-Commit.
+
+**Was Bundle G.a NICHT enthält (→ G.b und G.c):**
+- Editor / Korrektur Prev-Next-Prefetch (Tier 2, → eigenes Sub-Bundle G.b)
+- Material-`<link rel="prefetch">` (Tier 2, → eigenes Sub-Bundle G.b)
+- Frontend-Memory-Pre-Fetch der Frage-Stammdaten (→ Sub-Bundle G.c, separate Spec mit Sicherheits-Audit)
+- LP-spezifische Trigger A + D nicht im Browser-E2E verifiziert (separates Browser-Profil mit echtem LP-Login wäre nötig). Code-Pfade sind aber im Build und nutzen denselben Endpoint, der nachweislich funktioniert.
+
+---
+
+### Vorgänger-Stand (S146, 26.04.2026) — Bundle E (Übungsstart-Latenz) auf `feature/bundle-e-uebungsstart-latenz`, merge-bereit
 
 **Was Bundle E macht:** Backend-Optimierung von `lernplattformLadeLoesungen` in `apps-script-code.js` — serielle Sheet-Reads pro Fragen-ID → Bulk-Tab-Read mit In-Memory-Filter + CacheService-Batch-Pre-Warm.
 

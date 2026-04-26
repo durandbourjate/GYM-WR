@@ -6,6 +6,7 @@ import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
 import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
 import { useLPNavigationStore } from '../../../store/lpUIStore.ts'
 import { apiService } from '../../../services/apiService.ts'
+import { preWarmFragen } from '../../../services/preWarmApi'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
 import type { Frage } from '../../../types/fragen.ts'
@@ -265,6 +266,15 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
       if (ok) {
         setPruefung(zuSpeichern)
         vorherigePruefungRef.current = JSON.stringify(zuSpeichern)
+
+        // Bundle G.a Trigger A: Pre-Warm der fragenIds dieser Prüfung
+        const fragenIds = (zuSpeichern.abschnitte ?? [])
+          .flatMap((a) => a.fragenIds ?? [])
+          .filter((id): id is string => typeof id === 'string')
+        if (fragenIds.length > 0 && zuSpeichern.klasse) {
+          const fachbereich = (zuSpeichern.fachbereiche ?? [])[0]
+          void preWarmFragen(fragenIds, zuSpeichern.klasse, fachbereich)
+        }
       }
       return ok
     } finally {

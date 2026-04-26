@@ -17,6 +17,9 @@ interface ThemaKarteProps {
   anzahlLernziele?: number
   /** Callback wenn 🏁 Button geklickt wird */
   onLernzieleKlick?: () => void
+  /** Bundle G.a — Hover-Pre-Warm: Handler vom `useDebouncedHover` durchgereicht. */
+  onMouseEnter?: () => void
+  onMouseLeave?: () => void
 }
 
 /**
@@ -30,6 +33,7 @@ export function ThemaKarte({
   thema, fach, anzahlFragen, anzahlUnterthemen,
   fortschritt, themenStatus, fachFarben, onClick,
   anzahlLernziele = 0, onLernzieleKlick,
+  onMouseEnter, onMouseLeave,
 }: ThemaKarteProps) {
   const farbe = getFachFarbe(fach, fachFarben)
   const istAktiv = themenStatus === 'aktiv'
@@ -63,6 +67,8 @@ export function ThemaKarte({
   return (
     <button
       onClick={handleKlick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className={`text-left p-4 rounded-xl border-2 transition-colors min-h-[48px] relative cursor-pointer
         ${istGesperrt
           ? 'opacity-60 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:opacity-75'

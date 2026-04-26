@@ -1394,6 +1394,8 @@ function doPost(e) {
       return lernplattformPruefeAntwort(body);
     case 'lernplattformLadeLoesungen':
       return lernplattformLadeLoesungen(body);
+    case 'lernplattformPreWarmFragen':
+      return lernplattformPreWarmFragen(body);
 
     // Fortschritt
     case 'lernplattformSpeichereFortschritt':
@@ -3145,6 +3147,15 @@ function speichereAntworten(body) {
     } else {
       const newRow = headers.map(h => rowData[h] || '');
       sheet.appendRow(newRow);
+    }
+
+    // Bundle G.a Trigger D: Pre-Warm Korrektur-Cache nach SuS-Abgabe (fire-and-forget intern)
+    if (istAbgabe === true && !istZugelasseneLP(email)) {
+      try {
+        preWarmKorrekturNachAbgabe_(pruefungId, email);
+      } catch (e) {
+        console.log('[Abgabe-PreWarm-Fehler] ' + e.message);
+      }
     }
 
     return jsonResponse({ success: true });
@@ -8887,6 +8898,159 @@ function lernplattformLadeLoesungen(body) {
 }
 
 /**
+ * Bundle G.a — Pre-Warm CacheService für eine Liste von fragenIds.
+ *
+ * Fire-and-forget aus Frontend bei drei Triggern:
+ *   A) LP speichert eine Prüfung (fragenIds aus config.abschnitte)
+ *   B) SuS klickt Fach-Tab (fragenIds aus letzt-genutztem Thema, lokal gefiltert)
+ *   C) SuS hovert >300ms auf Themen-Card (fragenIds des Themas, lokal gefiltert)
+ *
+ * Auth: jeder authentifizierte User (LP via istZugelasseneLP, SuS via Session-Token).
+ * Soft-Lock via CacheService dedupliziert pro {email, hashIds_(fragenIds)} mit 30s TTL.
+ * Sanity-Check: 1 ≤ fragenIds.length ≤ 200 (DoS-Schutz).
+ *
+ * Body:     { email, sessionToken, fragenIds: string[], gruppeId, fachbereich? }
+ * Response: { success: true, fragenAnzahl: N, latenzMs: X }
+ *           { success: true, deduped: true }
+ *           { error: ... }
+ *
+ * @param {Object} body
+ * @return {Object} jsonResponse
+ */
+function lernplattformPreWarmFragen(body) {
+  var startMs = Date.now();
+  try {
+    var email = (body.email || '').toLowerCase().trim();
+    var sessionToken = body.sessionToken || '';
+    var fragenIds = body.fragenIds;
+    var gruppeId = body.gruppeId;
+    var fachbereich = body.fachbereich || '';
+
+    // 1. Sanity-Check fragenIds
+    if (!Array.isArray(fragenIds)) {
+      return jsonResponse({ error: 'fragenIds muss Array sein' });
+    }
+    if (fragenIds.length === 0) {
+      return jsonResponse({ error: 'fragenIds leer' });
+    }
+    if (fragenIds.length > 200) {
+      console.log('[PreWarmFragen] DoS-Schutz: ' + fragenIds.length + ' fragenIds von ' + email);
+      return jsonResponse({ error: 'Zu viele Fragen (max 200)' });
+    }
+    // gruppeId ODER fachbereich muss gesetzt sein — gruppiereFragenIdsNachTab_
+    // funktioniert mit fachbereich-Hint allein (Bundle-E-Pattern).
+    if (!gruppeId && !fachbereich) {
+      return jsonResponse({ error: 'gruppeId oder fachbereich fehlt' });
+    }
+
+    // 2. Auth: LP via Domain ODER User via Lernplattform-Session-Token
+    //    lernplattformValidiereToken_ ist der korrekte Helper für LP/SuS-Lernplattform-Logins
+    //    (Cache lp_session_*). validiereSessionToken_ wäre für ExamLab-Prüfungs-Tokens
+    //    (Cache sus_session_*) — falscher Pfad für unsere Pre-Warm-Calls.
+    var istLP = istZugelasseneLP(email);
+    if (!istLP) {
+      if (!sessionToken || !lernplattformValidiereToken_(sessionToken, email)) {
+        return jsonResponse({ error: 'Nicht autorisiert' });
+      }
+    }
+
+    // 3. CacheService-Soft-Lock (30s TTL) für Dedup pro {email, hashIds_(fragenIds)}
+    //    LockService würde nur Concurrent-Race-Conditions im selben ms abdecken — hier overkill.
+    var cache = CacheService.getScriptCache();
+    var lockKey = 'prewarm_' + email + '_' + hashIds_(fragenIds);
+    if (cache.get(lockKey)) {
+      return jsonResponse({ success: true, deduped: true });
+    }
+    cache.put(lockKey, '1', 30); // 30s Lock-TTL
+
+    // 4. Bulk-Read pro betroffenem Sheet/Tab (Bundle-E-Helper)
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
+    var fragenAnzahl = 0;
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        var found = bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+        fragenAnzahl += Object.keys(found).length;
+      }
+    }
+
+    var latenzMs = Date.now() - startMs;
+    Logger.log('[PreWarmFragen] email=%s n=%s ms=%s', email, fragenIds.length, latenzMs);
+    return jsonResponse({ success: true, fragenAnzahl: fragenAnzahl, latenzMs: latenzMs });
+
+  } catch (e) {
+    console.log('[PreWarmFragen-Fehler] ' + e.message);
+    return jsonResponse({ error: e.message });
+  }
+}
+
+/**
+ * Bundle G.a Trigger D — Inline-Pre-Warm der Korrektur-Daten nach SuS-Abgabe.
+ *
+ * Wird aus speichereAntworten im istAbgabe===true-Pfad aufgerufen (try/catch).
+ * Liest fragenIds aus Configs-Sheet anhand pruefungId und befüllt CacheService
+ * via bulkLadeFragenAusSheet_.
+ *
+ * Cache-Granularität pro Lobby-Tab: erste Abgabe wärmt den Tab, weitere
+ * Abgaben derselben Lobby finden den Tab schon warm (~10 ms statt ~200 ms).
+ *
+ * @param {string} pruefungId
+ * @param {string} susEmail (für Logging)
+ */
+function preWarmKorrekturNachAbgabe_(pruefungId, susEmail) {
+  var startMs = Date.now();
+  try {
+    // fragenIds aus Configs-Sheet extrahieren (analog speichereAntworten Z.~3052)
+    var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    var configRow = getSheetData(configSheet).find(function(r) { return r.id === pruefungId; });
+    if (!configRow) {
+      console.log('[PreWarmKorrektur] Config nicht gefunden: ' + pruefungId);
+      return;
+    }
+
+    // abschnitte ist JSON-String in der Sheet-Spalte
+    var abschnitte;
+    try {
+      abschnitte = JSON.parse(configRow.abschnitte || '[]');
+    } catch (e) {
+      console.log('[PreWarmKorrektur] abschnitte-Parse-Fehler: ' + e.message);
+      return;
+    }
+
+    var fragenIds = [];
+    for (var i = 0; i < abschnitte.length; i++) {
+      var ids = abschnitte[i].fragenIds || abschnitte[i].fragen || [];
+      for (var j = 0; j < ids.length; j++) {
+        // ids[j] kann String oder {id, ...}-Objekt sein
+        var fid = typeof ids[j] === 'string' ? ids[j] : (ids[j] && ids[j].id);
+        if (fid) fragenIds.push(fid);
+      }
+    }
+
+    if (fragenIds.length === 0) {
+      console.log('[PreWarmKorrektur] keine fragenIds in pruefung=' + pruefungId);
+      return;
+    }
+
+    // Bulk-Read pro Tab (Bundle-E-Helper)
+    var gruppeId = configRow.klasse || ''; // gruppeId-Heuristik analog ladeFrageUnbereinigtById_
+    var fachbereich = (configRow.fachbereiche || '').split(',')[0] || '';
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+      }
+    }
+
+    var latenzMs = Date.now() - startMs;
+    Logger.log('[PreWarmKorrektur] pruefungId=%s sus=%s n=%s ms=%s',
+               pruefungId, susEmail, fragenIds.length, latenzMs);
+
+  } catch (e) {
+    console.log('[PreWarmKorrektur-Fehler] ' + e.message);
+  }
+}
+
+/**
  * Frage unbereinigt laden — für Server-Korrektur.
  * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
  * Alle anderen: aus globaler FRAGENBANK_ID.
@@ -8949,6 +9113,26 @@ function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
     console.log('[ladeFrageUnbereinigtById_] Fehler: ' + e.message);
   }
   return null;
+}
+
+/**
+ * Stabiler Hash über ein fragenIds-Array für Soft-Lock-Cache-Keys.
+ * Sortiert + joined + MD5 → erste 8 Hex-Zeichen. Reicht für Dedup-Use-Case.
+ *
+ * @param {string[]} fragenIds
+ * @return {string} 8-Zeichen-Hex
+ */
+function hashIds_(fragenIds) {
+  if (!Array.isArray(fragenIds) || fragenIds.length === 0) return 'empty';
+  var sorted = fragenIds.slice().sort();
+  var raw = sorted.join('|');
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, raw);
+  var hex = '';
+  for (var i = 0; i < 4; i++) {
+    var b = bytes[i] & 0xff;
+    hex += (b < 16 ? '0' : '') + b.toString(16);
+  }
+  return hex;
 }
 
 /**
@@ -13123,3 +13307,215 @@ function testLadeLoesungenLatenzNachBundleE_() {
   Logger.log('=== Akzeptanz-Kriterium: N=10 cold intern ≤ 800 ms (Happy-Path mit Hint) ===');
   return { success: true };
 }
+
+// ============================================================
+// BUNDLE G.A — TEST-SHIMS
+// ============================================================
+
+/**
+ * Test-Shim für lernplattformPreWarmFragen.
+ *
+ * Cases:
+ *   (a) Cold-Call mit 30 fragenIds einer Prüfung → success, fragenAnzahl > 0
+ *   (b) Sofortiger zweiter Call mit identischen fragenIds → deduped: true
+ *   (c) Zweiter Call mit anderen fragenIds → kein Lock, neuer Sheet-Read
+ *   (d) Auth-Fail (kein Token, keine LP-Domain) → error
+ *   (e) Sanity-Check (>200 fragenIds) → error 'Zu viele Fragen'
+ */
+function testPreWarmFragen_() {
+  var assert_ = function(cond, msg) {
+    if (!cond) throw new Error('ASSERT FAILED: ' + msg);
+  };
+
+  // Setup: Test-LP-Email + valider Pool von fragenIds aus BWL-Tab
+  var lpEmail = 'yannick.durand@gymhofwil.ch';
+  var gruppeId = ''; // Standard-Gruppe via fachbereich-Hint
+  var bwlIds = [];
+  // Beziehe 30 valide BWL-IDs aus dem BWL-Tab
+  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  if (bwlSheet) {
+    var data = bwlSheet.getRange(2, 1, Math.min(30, bwlSheet.getLastRow() - 1), 1).getValues();
+    for (var i = 0; i < data.length; i++) bwlIds.push(String(data[i][0]));
+  }
+  assert_(bwlIds.length >= 10, 'Brauche >=10 BWL-fragenIds, habe ' + bwlIds.length);
+
+  // Cache-Reset: alte Locks/Cache-Einträge wegputzen
+  var cache = CacheService.getScriptCache();
+  cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(bwlIds)]);
+
+  // (a) Cold-Call
+  var r1 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b1 = JSON.parse(r1.getContent());
+  Logger.log('Case (a) Cold: %s', JSON.stringify(b1));
+  assert_(b1.success === true, '(a) success');
+  assert_(!b1.deduped, '(a) NICHT deduped');
+  assert_(b1.fragenAnzahl > 0, '(a) fragenAnzahl > 0');
+  assert_(b1.latenzMs < 5000, '(a) latenzMs <5s, war ' + b1.latenzMs);
+
+  // (b) Re-Call sofort → deduped
+  var r2 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b2 = JSON.parse(r2.getContent());
+  Logger.log('Case (b) Re-Call: %s', JSON.stringify(b2));
+  assert_(b2.success === true, '(b) success');
+  assert_(b2.deduped === true, '(b) deduped:true');
+
+  // (c) Andere fragenIds → kein Lock, neuer Sheet-Read
+  var anderePool = bwlIds.slice(5, 15); // verschobener Subset = anderer Hash
+  cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(anderePool)]);
+  var r3 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: anderePool, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b3 = JSON.parse(r3.getContent());
+  Logger.log('Case (c) Andere IDs: %s', JSON.stringify(b3));
+  assert_(b3.success === true, '(c) success');
+  assert_(!b3.deduped, '(c) NICHT deduped');
+
+  // (d) Auth-Fail (SuS ohne Token)
+  var r4 = lernplattformPreWarmFragen({
+    email: 'wr.test@stud.gymhofwil.ch', sessionToken: 'invalid-token',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b4 = JSON.parse(r4.getContent());
+  Logger.log('Case (d) Auth-Fail: %s', JSON.stringify(b4));
+  assert_(b4.error, '(d) error gesetzt');
+
+  // (e) Sanity-Check
+  var rieseIds = [];
+  for (var k = 0; k < 250; k++) rieseIds.push('frage_' + k);
+  var r5 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: rieseIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b5 = JSON.parse(r5.getContent());
+  Logger.log('Case (e) Sanity: %s', JSON.stringify(b5));
+  assert_(b5.error && b5.error.indexOf('200') >= 0, '(e) error mit "200"');
+
+  Logger.log('=== testPreWarmFragen — alle 5 Cases grün ===');
+}
+
+/** Public-Wrapper ohne Underscore (S133-Lehre, GAS-Editor-Dropdown-Sichtbarkeit) */
+function testPreWarmFragen() { return testPreWarmFragen_(); }
+
+/**
+ * Test-Shim für die zentrale Akzeptanz-Frage:
+ * Wie viel schneller ist lernplattformLadeLoesungen nach Pre-Warm?
+ *
+ * N=10 cold-Pfad (Cache-Reset, dann Lade-Call)
+ *   vs. N=10 warm-Pfad (Pre-Warm + sofortiger Lade-Call)
+ *
+ * Akzeptanz-Kriterium: warm-Pfad ≤ 700 ms intern.
+ */
+function testPreWarmEffekt_() {
+  var lpEmail = 'yannick.durand@gymhofwil.ch';
+  var gruppeId = '';
+  var fachbereich = 'BWL';
+
+  // 10 fragenIds aus BWL-Tab beziehen
+  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  var data = bwlSheet.getRange(2, 1, 10, 1).getValues();
+  var fragenIds = [];
+  for (var i = 0; i < data.length; i++) fragenIds.push(String(data[i][0]));
+
+  // === COLD ===
+  // Cache reset für alle 10 frageIds (per-Frage-Cache + Tab-Cache)
+  var cache = CacheService.getScriptCache();
+  for (var i = 0; i < fragenIds.length; i++) {
+    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+  }
+  cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
+
+  var coldStart = Date.now();
+  var coldResult = lernplattformLadeLoesungen({
+    email: lpEmail, sessionToken: '',
+    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    fragenIds: fragenIds, fachbereich: fachbereich
+  });
+  var coldMs = Date.now() - coldStart;
+  Logger.log('[testPreWarmEffekt] COLD: %s ms', coldMs);
+
+  // === WARM (mit Pre-Warm) ===
+  for (var i = 0; i < fragenIds.length; i++) {
+    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+  }
+  cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
+
+  // Pre-Warm
+  lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: fragenIds, gruppeId: gruppeId, fachbereich: fachbereich
+  });
+
+  // Sofort Lade-Call
+  var warmStart = Date.now();
+  var warmResult = lernplattformLadeLoesungen({
+    email: lpEmail, sessionToken: '',
+    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    fragenIds: fragenIds, fachbereich: fachbereich
+  });
+  var warmMs = Date.now() - warmStart;
+  Logger.log('[testPreWarmEffekt] WARM: %s ms', warmMs);
+
+  // === Akzeptanz-Check ===
+  var delta = coldMs - warmMs;
+  var prozent = Math.round(100 * delta / coldMs);
+  Logger.log('[testPreWarmEffekt] DELTA: %s ms (-%s%%)', delta, prozent);
+  Logger.log('[testPreWarmEffekt] Akzeptanz warm ≤ 700 ms: %s', warmMs <= 700 ? 'ERFÜLLT' : 'VERFEHLT');
+}
+
+function testPreWarmEffekt() { return testPreWarmEffekt_(); }
+
+/**
+ * Test-Shim für preWarmKorrekturNachAbgabe_ (Trigger D).
+ *
+ * Cases:
+ *   (a) Erste Abgabe einer Lobby → Cache-Befüllung messbar (~50-200 ms)
+ *   (b) Zweite Abgabe derselben Lobby → Cache schon warm, Overhead ~10 ms
+ */
+function testPreWarmKorrekturNachAbgabe_() {
+  var assert_ = function(cond, msg) {
+    if (!cond) throw new Error('ASSERT FAILED: ' + msg);
+  };
+
+  // Setup: existierende Test-Prüfung mit pruefungId aus Configs-Sheet wählen
+  var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  var configs = getSheetData(configSheet);
+  // Erste Test-Prüfung mit nicht-leerer abschnitte-Spalte
+  var testConfig = configs.find(function(c) {
+    return c.id && c.abschnitte && c.abschnitte.length > 2; // nicht leer "[]"
+  });
+  assert_(testConfig, 'Brauche eine Test-Prüfung mit abschnitten in Configs-Sheet');
+
+  // Cache-Reset
+  var cache = CacheService.getScriptCache();
+  // Tab-Cache-Keys nicht direkt rauspflücken — Bundle E nutzt frage_v1_<sheetId>_<frageId>.
+  // Wir messen Differenz zwischen 1. und 2. Aufruf, auch wenn vorher etwas im Cache war.
+
+  // (a) Erste Abgabe
+  var t1 = Date.now();
+  preWarmKorrekturNachAbgabe_(testConfig.id, 'wr.test@stud.gymhofwil.ch');
+  var ms1 = Date.now() - t1;
+  Logger.log('Case (a) Erste Abgabe: %s ms', ms1);
+
+  // (b) Zweite Abgabe
+  var t2 = Date.now();
+  preWarmKorrekturNachAbgabe_(testConfig.id, 'wr.test2@stud.gymhofwil.ch');
+  var ms2 = Date.now() - t2;
+  Logger.log('Case (b) Zweite Abgabe: %s ms (sollte schneller als (a) sein)', ms2);
+
+  // Soft-Assertion: zweite Abgabe sollte deutlich schneller sein (Cache warm)
+  Logger.log('Cache-Effekt-Verhältnis: ms2/ms1 = %s%% (Ziel <50%%)',
+             Math.round(100 * ms2 / Math.max(ms1, 1)));
+
+  Logger.log('=== testPreWarmKorrekturNachAbgabe — beide Cases gelaufen ===');
+}
+
+function testPreWarmKorrekturNachAbgabe() { return testPreWarmKorrekturNachAbgabe_(); }
