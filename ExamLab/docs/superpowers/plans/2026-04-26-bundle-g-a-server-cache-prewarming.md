@@ -6,7 +6,7 @@
 
 **Architecture:** Ein neuer Apps-Script-Endpoint `lernplattformPreWarmFragen` (für Trigger A/B/C) plus Inline-Erweiterung in `speichereAntworten` (Trigger D). Frontend nutzt einen einzigen `usePreWarm`-Hook + `useDebouncedHover` für Hover. fragenIds werden vom Frontend mitgegeben — kein Backend-Lookup nötig. Fire-and-forget-Pattern, AbortController, fail-silent. Cache-Schema (`frage_v1_<sheetId>_<frageId>`, 1h TTL) bleibt von Bundle E geerbt.
 
-**Tech Stack:** Google Apps Script V8 (CacheService, LockService, SpreadsheetApp), JavaScript ES5+. Frontend: React 19 + TypeScript + Zustand + vitest. Helper aus Bundle E (`gruppiereFragenIdsNachTab_`, `bulkLadeFragenAusSheet_`) werden direkt wiederverwendet.
+**Tech Stack:** Google Apps Script V8 (CacheService, SpreadsheetApp), JavaScript ES5+. Frontend: React 19 + TypeScript + Zustand + vitest. Helper aus Bundle E (`gruppiereFragenIdsNachTab_`, `bulkLadeFragenAusSheet_`) werden direkt wiederverwendet.
 
 **Spec:** [`ExamLab/docs/superpowers/specs/2026-04-26-bundle-g-a-server-cache-prewarming-design.md`](../specs/2026-04-26-bundle-g-a-server-cache-prewarming-design.md)
 
@@ -19,7 +19,7 @@
 1. **Ein Endpoint, drei Trigger:** `lernplattformPreWarmFragen` ist universell für Trigger A (LP `speichereConfig`), B (SuS Fach-Tab) und C (SuS Hover). Frontend-seitige Trigger-Differenzierung über das Aufruf-Timing — Backend kennt nur `{fragenIds, gruppeId, fachbereich?}`.
 2. **Trigger D ist intern, nicht Frontend-getriggert:** Der Pre-Warm für die Korrektur passiert **server-seitig** im `istAbgabe===true`-Pfad von `speichereAntworten`. Frontend-Code dafür: keiner.
 3. **Frontend gibt fragenIds mit:** Kein `holeLobby_`-Helper im Backend — Frontend extrahiert die fragenIds entweder aus `config.abschnitte` (Trigger A) oder aus dem `AppsScriptFragenAdapter`-Cache (Trigger B/C).
-4. **Lock-Key über fragenIds-Hash:** LockService dedupliziert pro `(email, hashIds_(fragenIds))` mit 30s TTL. Re-Hover dieselbe Card → `deduped:true`. Verschiedene Themen blockieren sich nicht.
+4. **Lock-Key über fragenIds-Hash:** Soft-Lock über `CacheService` (Key `prewarm_<email>_<hashIds_(fragenIds)>`, TTL 30s). Re-Hover dieselbe Card → `deduped:true`. Verschiedene Themen blockieren sich nicht. Kein `LockService` — der Cache-basierte Soft-Lock genügt.
 5. **`lastUsedThema` ist neu:** localStorage-Key `examlab.lastUsedThema.<gruppeId>.<fach>` mit Themen-Name (String) als Value. Wird im `uebungsStore.starteSession` gesetzt.
 6. **Akzeptanz-Kriterium intern ≤ 700 ms** für `testPreWarmEffekt` warm-Pfad. Spürbar ≤ 2.5 s im Browser-E2E. Bundle-E-Latenzen dürfen sich nicht verschlechtern (Cold ≤ 1'200 ms intern, Warm ≤ 250 ms intern).
 7. **Kill-Switch:** Frontend-Konstante `PRE_WARM_ENABLED = true` in `preWarmApi.ts`. Bei Production-Issues auf `false` setzen + Frontend-Deploy.
@@ -51,7 +51,7 @@
 
 ## Phase 1: Backend — Neuer Helper `hashIds_`
 
-Stabile Hash-Funktion für fragenIds-Arrays. Wird im LockService-Key verwendet.
+Stabile Hash-Funktion für fragenIds-Arrays. Wird im Soft-Lock-Cache-Key (`prewarm_<email>_<hash>`) verwendet.
 
 ### Task 1: `hashIds_`-Helper
 
@@ -62,7 +62,7 @@ Stabile Hash-Funktion für fragenIds-Arrays. Wird im LockService-Key verwendet.
 
 ```javascript
 /**
- * Stabiler Hash über ein fragenIds-Array für LockService-Keys.
+ * Stabiler Hash über ein fragenIds-Array für Soft-Lock-Cache-Keys.
  * Sortiert + joined + MD5 → erste 8 Hex-Zeichen. Reicht für Dedup-Use-Case.
  *
  * @param {string[]} fragenIds
@@ -94,7 +94,7 @@ Expected: `apps-script-code.js: script syntax is valid` oder ohne Output.
 
 ```bash
 git add ExamLab/apps-script-code.js
-git commit -m "ExamLab Bundle G.a: hashIds_-Helper für LockService-Keys"
+git commit -m "ExamLab Bundle G.a: hashIds_-Helper für Soft-Lock-Cache-Keys"
 ```
 
 ---
@@ -149,7 +149,7 @@ git commit -m "ExamLab Bundle G.a: Dispatcher-Case für lernplattformPreWarmFrag
  *   C) SuS hovert >300ms auf Themen-Card (fragenIds des Themas, lokal gefiltert)
  *
  * Auth: jeder authentifizierte User (LP via istZugelasseneLP, SuS via Session-Token).
- * LockService dedupliziert pro {email, hashIds_(fragenIds)} mit 30s TTL.
+ * Soft-Lock via CacheService dedupliziert pro {email, hashIds_(fragenIds)} mit 30s TTL.
  * Sanity-Check: 1 ≤ fragenIds.length ≤ 200 (DoS-Schutz).
  *
  * Body:     { email, sessionToken, fragenIds: string[], gruppeId, fachbereich? }
@@ -184,67 +184,38 @@ function lernplattformPreWarmFragen(body) {
       return jsonResponse({ error: 'gruppeId fehlt' });
     }
 
-    // 2. Auth: LP via Domain ODER SuS via Token
+    // 2. Auth: LP via Domain ODER SuS via Session-Token
+    //    validiereSessionToken_(token, email, pruefungId?) — pruefungId hier nicht relevant,
+    //    weil Pre-Warm an keine konkrete Prüfung gebunden ist.
     var istLP = istZugelasseneLP(email);
     if (!istLP) {
-      // SuS muss gültigen Session-Token haben (Token validierungslogik wie in speichereAntworten)
-      if (!sessionToken || !validiereTokenFuerEmail_(sessionToken, email)) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
         return jsonResponse({ error: 'Nicht autorisiert' });
       }
     }
 
-    // 3. LockService-Dedup pro {email, hashIds_(fragenIds)}
+    // 3. CacheService-Soft-Lock (30s TTL) für Dedup pro {email, hashIds_(fragenIds)}
+    //    LockService würde nur Concurrent-Race-Conditions im selben ms abdecken — hier overkill.
+    var cache = CacheService.getScriptCache();
     var lockKey = 'prewarm_' + email + '_' + hashIds_(fragenIds);
-    var lock = LockService.getScriptLock();
-    var gotLock = false;
-    try {
-      gotLock = lock.tryLock(100); // 100ms wait — wir wollen NICHT blockieren
-    } catch (e) {
-      gotLock = false;
-    }
-
-    if (!gotLock) {
-      // Konkurrenz-Lock: anderer Pre-Warm läuft → wir warten nicht
+    if (cache.get(lockKey)) {
       return jsonResponse({ success: true, deduped: true });
     }
+    cache.put(lockKey, '1', 30); // 30s Lock-TTL
 
-    try {
-      // CacheService-basierter Lock-Check (überlebt Funktions-Returns, 30s TTL)
-      var cache = CacheService.getScriptCache();
-      var lockHit = cache.get(lockKey);
-      if (lockHit) {
-        return jsonResponse({ success: true, deduped: true });
+    // 4. Bulk-Read pro betroffenem Sheet/Tab (Bundle-E-Helper)
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
+    var fragenAnzahl = 0;
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        var found = bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+        fragenAnzahl += Object.keys(found).length;
       }
-      cache.put(lockKey, '1', 30); // 30s Lock-TTL
-
-      // 4. Bulk-Read pro betroffenem Sheet/Tab (Bundle-E-Helper)
-      var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
-      var fragenAnzahl = 0;
-      for (var sheetId in byTab) {
-        for (var tab in byTab[sheetId]) {
-          var found = bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
-          fragenAnzahl += Object.keys(found).length;
-          // Cache-Filtering zwischen Tabs (analog Bundle E)
-          for (var fid in found) {
-            for (var otherSheet in byTab) {
-              for (var otherTab in byTab[otherSheet]) {
-                if (otherSheet === sheetId && otherTab === tab) continue;
-                if (byTab[otherSheet][otherTab][fid]) {
-                  delete byTab[otherSheet][otherTab][fid];
-                }
-              }
-            }
-          }
-        }
-      }
-
-      var latenzMs = Date.now() - startMs;
-      Logger.log('[PreWarmFragen] email=%s n=%s ms=%s', email, fragenIds.length, latenzMs);
-      return jsonResponse({ success: true, fragenAnzahl: fragenAnzahl, latenzMs: latenzMs });
-
-    } finally {
-      lock.releaseLock();
     }
+
+    var latenzMs = Date.now() - startMs;
+    Logger.log('[PreWarmFragen] email=%s n=%s ms=%s', email, fragenIds.length, latenzMs);
+    return jsonResponse({ success: true, fragenAnzahl: fragenAnzahl, latenzMs: latenzMs });
 
   } catch (e) {
     console.log('[PreWarmFragen-Fehler] ' + e.message);
@@ -703,10 +674,11 @@ git commit -m "ExamLab Bundle G.a: GAS-Test-Shim testPreWarmKorrekturNachAbgabe"
 
 > "Backend-Phase ist fertig. Bitte:
 > 1. Im Apps-Script-Editor: **Bereitstellen → Bereitstellungen verwalten → Neue Version**
-> 2. Im Editor `testPreWarmFragen` aus dem Funktions-Dropdown wählen + ausführen — Logs auf alle 5 Cases grün prüfen
-> 3. `testPreWarmEffekt` ausführen + Latenz-Log notieren (Akzeptanz: warm ≤ 700 ms intern)
-> 4. `testPreWarmKorrekturNachAbgabe` ausführen + Logs notieren
-> 5. Bestätigen mit den drei Latenz-Werten"
+> 2. Test-Reihenfolge (wichtig wegen Cache-State zwischen Tests):
+>    - Zuerst `testPreWarmEffekt` ausführen + Latenz-Log notieren (Akzeptanz: warm ≤ 700 ms intern). Reset eigener Cache-Keys ist im Test integriert.
+>    - Dann `testPreWarmFragen` ausführen — Logs auf alle 5 Cases grün prüfen.
+>    - Zuletzt `testPreWarmKorrekturNachAbgabe` ausführen + Logs notieren.
+> 3. Bestätigen mit den drei Latenz-Werten"
 
 - [ ] **Step 2: Mess-Werte in Plan dokumentieren**
 
@@ -888,10 +860,11 @@ Expected: FAIL — localStorage-Eintrag fehlt.
 
 - [ ] **Step 1: Code einfügen**
 
-In `starteSession`, direkt **nach** `set({ session, ladeStatus: 'bereit' })` (oder analoger Erfolgs-State-Setter) — **vor** `return`:
+In `starteSession` (uebungsStore.ts ~Z. 184). Die Variable `block: Frage[]` wird in der Funktion auf Z. 205 deklariert und ab Z. 216 mit Inhalt gefüllt. Direkt **nach** dem erfolgreichen Setzen der Session (`set({ session, ladeStatus: 'bereit' })` oder analoger Success-Pfad — exakte Stelle anhand des aktuellen Codes lokalisieren), **vor** dem finalen `return`:
 
 ```typescript
       // Bundle G.a — lastUsedThema persistieren für Pre-Warm-Trigger B
+      // (block ist die lokale Fragen-Auswahl von Z. 205, nach dem erstelleBlock-Aufruf)
       if (modus === 'standard' && fach && thema && block.length > 0) {
         try {
           localStorage.setItem(
@@ -984,17 +957,17 @@ describe('preWarmFragen', () => {
     expect(postJsonMock).not.toHaveBeenCalled()
   })
 
-  it('macht keinen Call wenn PRE_WARM_ENABLED false', async () => {
-    vi.resetModules()
-    vi.doMock('../services/preWarmApi', async (orig) => {
-      const real = (await orig()) as typeof import('../services/preWarmApi')
-      return { ...real, PRE_WARM_ENABLED: false }
-    })
-    // Kann via Konstante nicht mocken — alternative: direkt Test mit signal.aborted
+  it('macht keinen Call wenn signal bereits aborted', async () => {
     const { preWarmFragen } = await import('../services/preWarmApi')
     const abortController = new AbortController()
     abortController.abort()
     await preWarmFragen(['f1'], 'gruppe1', 'BWL', abortController.signal)
+    expect(postJsonMock).not.toHaveBeenCalled()
+  })
+
+  it('macht keinen Call wenn gruppeId leer', async () => {
+    const { preWarmFragen } = await import('../services/preWarmApi')
+    await preWarmFragen(['f1'], '', 'BWL')
     expect(postJsonMock).not.toHaveBeenCalled()
   })
 })
@@ -1080,7 +1053,7 @@ export async function preWarmFragen(
 cd ExamLab && npx vitest run src/tests/preWarmApi.test.ts
 ```
 
-Expected: 5/5 passed.
+Expected: 6/6 passed.
 
 - [ ] **Step 3: tsc -b**
 
@@ -1498,7 +1471,7 @@ Innerhalb der `Dashboard`-Komponente, **vor** dem Return-Statement (nach den and
 ```typescript
   // Bundle G.a Trigger B/C: Hilfsfunktion für Pre-Warm via Frontend-Cache-Filter
   const preWarmThema = (fach: string, thema: string): void => {
-    const gruppeId = aktiveGruppeId
+    const gruppeId = aktiveGruppe?.id
     if (!gruppeId) return
     const cached = uebenFragenAdapter.getCachedFragen(gruppeId)
     if (!cached) return
@@ -1511,7 +1484,7 @@ Innerhalb der `Dashboard`-Komponente, **vor** dem Return-Statement (nach den and
   }
 ```
 
-**Note:** `aktiveGruppeId` ist die bestehende Variable in der `Dashboard`-Komponente (im Plan zu verifizieren — falls anders benannt: `gruppeId` aus `useUebenKontext()` oder aus Props).
+**Verifiziert** (Code-Read 2026-04-26): In `Dashboard.tsx:60` wird `aktiveGruppe` via `useUebenGruppenStore()` bezogen, das ist ein Objekt mit `.id`-Feld. Daher `aktiveGruppe?.id` (Optional Chaining wegen möglichem `null`).
 
 - [ ] **Step 3: Trigger im Fach-Tab-Click**
 
@@ -1526,13 +1499,12 @@ Den bestehenden Fach-Tab-Button (Z. 522) erweitern:
                     onClick={() => {
                       const wirdAktiv = aktiverFach !== fach
                       setAktiverFach(wirdAktiv ? fach : null)
-                      if (wirdAktiv) {
+                      if (wirdAktiv && aktiveGruppe?.id) {
                         // Bundle G.a Trigger B
+                        const gid = aktiveGruppe.id
                         const lastUsed = (() => {
                           try {
-                            return localStorage.getItem(
-                              `examlab.lastUsedThema.${aktiveGruppeId}.${fach}`,
-                            )
+                            return localStorage.getItem(`examlab.lastUsedThema.${gid}.${fach}`)
                           } catch {
                             return null
                           }
@@ -1571,8 +1543,9 @@ SuS hovert >300 ms auf Themen-Card → Pre-Warm dieses Themas.
 ### Task 22: Trigger C integrieren
 
 **Files:**
-- Modify: `ExamLab/src/components/ueben/ThemaKarte.tsx`
-- Modify: `ExamLab/src/components/ueben/Dashboard.tsx` (Hover-Handler-Prop weiterreichen)
+- Modify: `ExamLab/src/components/ueben/ThemaKarte.tsx` (Props um `onMouseEnter`/`onMouseLeave` erweitern)
+- Create: `ExamLab/src/components/ueben/ThemaKarteMitPreWarm.tsx` (Wrapper-Komponente, hostet den `useDebouncedHover`-Hook außerhalb der `.map`)
+- Modify: `ExamLab/src/components/ueben/Dashboard.tsx` (alle `<ThemaKarte>`-Verwendungen auf Wrapper umstellen)
 
 - [ ] **Step 1: ThemaKarte-Props um Hover-Handler erweitern**
 
@@ -1629,23 +1602,30 @@ Innerhalb der Map-Funktion, vor dem `<ThemaKarte>`-Aufruf:
 })}
 ```
 
-**Wichtig — Hooks-Regel-Verletzung vermeiden:** `useDebouncedHover` darf **nicht** in einer `.map()`-Schleife direkt aufgerufen werden, da die Aufruf-Reihenfolge bei Re-Renders mit unterschiedlicher Themen-Anzahl bricht.
+**Wichtig — Hooks-Regel:** `useDebouncedHover` darf **nicht** direkt in der `.map()`-Schleife aufgerufen werden — die Hook-Aufruf-Reihenfolge muss zwischen Re-Renders identisch bleiben, was bei wechselnder Themen-Anzahl bricht.
 
-**Lösung:** Eine kleine Wrapper-Komponente einführen, die den Hook intern nutzt:
+**Lösung — neue Datei `ExamLab/src/components/ueben/ThemaKarteMitPreWarm.tsx`:**
 
 ```tsx
-// In Dashboard.tsx oder neuer Datei (ExamLab/src/components/ueben/ThemaKartenMitPreWarm.tsx):
-function ThemaKarteMitPreWarm({ info, onPreWarm, ...rest }: {
-  info: ThemaInfo
-  onPreWarm: (fach: string, thema: string) => void
-  // alle ThemaKarte-Props
-}) {
-  const hover = useDebouncedHover(300, () => onPreWarm(info.fach, info.thema))
+import type { ComponentProps } from 'react'
+import { ThemaKarte } from './ThemaKarte'
+import { useDebouncedHover } from '../../hooks/useDebouncedHover'
+
+type ThemaKarteProps = ComponentProps<typeof ThemaKarte>
+
+interface Props extends Omit<ThemaKarteProps, 'onMouseEnter' | 'onMouseLeave'> {
+  onPreWarm: () => void
+}
+
+/**
+ * Bundle G.a — Wrapper für ThemaKarte, der useDebouncedHover hostet.
+ * Vermeidet Hook-Aufruf in `.map()`-Schleifen (Hooks-Regel-Verletzung).
+ */
+export function ThemaKarteMitPreWarm({ onPreWarm, ...rest }: Props) {
+  const hover = useDebouncedHover(300, onPreWarm)
   return (
     <ThemaKarte
       {...rest}
-      thema={info.thema}
-      fach={info.fach}
       onMouseEnter={hover.onMouseEnter}
       onMouseLeave={hover.onMouseLeave}
     />
@@ -1653,18 +1633,21 @@ function ThemaKarteMitPreWarm({ info, onPreWarm, ...rest }: {
 }
 ```
 
-Dann in der `.map()` im Dashboard:
+Dann in `Dashboard.tsx` an allen 4 `<ThemaKarte>`-Verwendungsstellen (Z. ~568, ~614, ~642 + ggf. weitere) ersetzen:
 
 ```tsx
 {themen.map(info => (
   <ThemaKarteMitPreWarm
     key={`${info.fach}-${info.thema}`}
-    info={info}
-    onPreWarm={preWarmThema}
-    // ...alle weiteren ThemaKarte-Props
+    thema={info.thema}
+    fach={info.fach}
+    /* ... weitere bisherige ThemaKarte-Props 1:1 weiterreichen ... */
+    onPreWarm={() => preWarmThema(info.fach, info.thema)}
   />
 ))}
 ```
+
+**Hinweis:** `ComponentProps<typeof ThemaKarte>` zieht den Props-Typ direkt aus der Komponente — kein Duplizieren der Felder.
 
 - [ ] **Step 3: Imports ergänzen**
 
