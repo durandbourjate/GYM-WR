@@ -13400,3 +13400,72 @@ function testPreWarmFragen_() {
 
 /** Public-Wrapper ohne Underscore (S133-Lehre, GAS-Editor-Dropdown-Sichtbarkeit) */
 function testPreWarmFragen() { return testPreWarmFragen_(); }
+
+/**
+ * Test-Shim für die zentrale Akzeptanz-Frage:
+ * Wie viel schneller ist lernplattformLadeLoesungen nach Pre-Warm?
+ *
+ * N=10 cold-Pfad (Cache-Reset, dann Lade-Call)
+ *   vs. N=10 warm-Pfad (Pre-Warm + sofortiger Lade-Call)
+ *
+ * Akzeptanz-Kriterium: warm-Pfad ≤ 700 ms intern.
+ */
+function testPreWarmEffekt_() {
+  var lpEmail = 'yannick.durand@gymhofwil.ch';
+  var gruppeId = '';
+  var fachbereich = 'BWL';
+
+  // 10 fragenIds aus BWL-Tab beziehen
+  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  var data = bwlSheet.getRange(2, 1, 10, 1).getValues();
+  var fragenIds = [];
+  for (var i = 0; i < data.length; i++) fragenIds.push(String(data[i][0]));
+
+  // === COLD ===
+  // Cache reset für alle 10 frageIds (per-Frage-Cache + Tab-Cache)
+  var cache = CacheService.getScriptCache();
+  for (var i = 0; i < fragenIds.length; i++) {
+    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+  }
+  cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
+
+  var coldStart = Date.now();
+  var coldResult = lernplattformLadeLoesungen({
+    email: lpEmail, sessionToken: '',
+    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    fragenIds: fragenIds, fachbereich: fachbereich
+  });
+  var coldMs = Date.now() - coldStart;
+  Logger.log('[testPreWarmEffekt] COLD: %s ms', coldMs);
+
+  // === WARM (mit Pre-Warm) ===
+  for (var i = 0; i < fragenIds.length; i++) {
+    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+  }
+  cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
+
+  // Pre-Warm
+  lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: fragenIds, gruppeId: gruppeId, fachbereich: fachbereich
+  });
+
+  // Sofort Lade-Call
+  var warmStart = Date.now();
+  var warmResult = lernplattformLadeLoesungen({
+    email: lpEmail, sessionToken: '',
+    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    fragenIds: fragenIds, fachbereich: fachbereich
+  });
+  var warmMs = Date.now() - warmStart;
+  Logger.log('[testPreWarmEffekt] WARM: %s ms', warmMs);
+
+  // === Akzeptanz-Check ===
+  var delta = coldMs - warmMs;
+  var prozent = Math.round(100 * delta / coldMs);
+  Logger.log('[testPreWarmEffekt] DELTA: %s ms (-%s%%)', delta, prozent);
+  Logger.log('[testPreWarmEffekt] Akzeptanz warm ≤ 700 ms: %s', warmMs <= 700 ? 'ERFÜLLT' : 'VERFEHLT');
+}
+
+function testPreWarmEffekt() { return testPreWarmEffekt_(); }
