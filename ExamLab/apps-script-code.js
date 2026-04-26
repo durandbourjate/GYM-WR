@@ -8889,6 +8889,89 @@ function lernplattformLadeLoesungen(body) {
 }
 
 /**
+ * Bundle G.a — Pre-Warm CacheService für eine Liste von fragenIds.
+ *
+ * Fire-and-forget aus Frontend bei drei Triggern:
+ *   A) LP speichert eine Prüfung (fragenIds aus config.abschnitte)
+ *   B) SuS klickt Fach-Tab (fragenIds aus letzt-genutztem Thema, lokal gefiltert)
+ *   C) SuS hovert >300ms auf Themen-Card (fragenIds des Themas, lokal gefiltert)
+ *
+ * Auth: jeder authentifizierte User (LP via istZugelasseneLP, SuS via Session-Token).
+ * Soft-Lock via CacheService dedupliziert pro {email, hashIds_(fragenIds)} mit 30s TTL.
+ * Sanity-Check: 1 ≤ fragenIds.length ≤ 200 (DoS-Schutz).
+ *
+ * Body:     { email, sessionToken, fragenIds: string[], gruppeId, fachbereich? }
+ * Response: { success: true, fragenAnzahl: N, latenzMs: X }
+ *           { success: true, deduped: true }
+ *           { error: ... }
+ *
+ * @param {Object} body
+ * @return {Object} jsonResponse
+ */
+function lernplattformPreWarmFragen(body) {
+  var startMs = Date.now();
+  try {
+    var email = (body.email || '').toLowerCase().trim();
+    var sessionToken = body.sessionToken || '';
+    var fragenIds = body.fragenIds;
+    var gruppeId = body.gruppeId;
+    var fachbereich = body.fachbereich || '';
+
+    // 1. Sanity-Check fragenIds
+    if (!Array.isArray(fragenIds)) {
+      return jsonResponse({ error: 'fragenIds muss Array sein' });
+    }
+    if (fragenIds.length === 0) {
+      return jsonResponse({ error: 'fragenIds leer' });
+    }
+    if (fragenIds.length > 200) {
+      console.log('[PreWarmFragen] DoS-Schutz: ' + fragenIds.length + ' fragenIds von ' + email);
+      return jsonResponse({ error: 'Zu viele Fragen (max 200)' });
+    }
+    if (!gruppeId) {
+      return jsonResponse({ error: 'gruppeId fehlt' });
+    }
+
+    // 2. Auth: LP via Domain ODER SuS via Session-Token
+    //    validiereSessionToken_(token, email, pruefungId?) — pruefungId hier nicht relevant,
+    //    weil Pre-Warm an keine konkrete Prüfung gebunden ist.
+    var istLP = istZugelasseneLP(email);
+    if (!istLP) {
+      if (!sessionToken || !validiereSessionToken_(sessionToken, email)) {
+        return jsonResponse({ error: 'Nicht autorisiert' });
+      }
+    }
+
+    // 3. CacheService-Soft-Lock (30s TTL) für Dedup pro {email, hashIds_(fragenIds)}
+    //    LockService würde nur Concurrent-Race-Conditions im selben ms abdecken — hier overkill.
+    var cache = CacheService.getScriptCache();
+    var lockKey = 'prewarm_' + email + '_' + hashIds_(fragenIds);
+    if (cache.get(lockKey)) {
+      return jsonResponse({ success: true, deduped: true });
+    }
+    cache.put(lockKey, '1', 30); // 30s Lock-TTL
+
+    // 4. Bulk-Read pro betroffenem Sheet/Tab (Bundle-E-Helper)
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
+    var fragenAnzahl = 0;
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        var found = bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+        fragenAnzahl += Object.keys(found).length;
+      }
+    }
+
+    var latenzMs = Date.now() - startMs;
+    Logger.log('[PreWarmFragen] email=%s n=%s ms=%s', email, fragenIds.length, latenzMs);
+    return jsonResponse({ success: true, fragenAnzahl: fragenAnzahl, latenzMs: latenzMs });
+
+  } catch (e) {
+    console.log('[PreWarmFragen-Fehler] ' + e.message);
+    return jsonResponse({ error: e.message });
+  }
+}
+
+/**
  * Frage unbereinigt laden — für Server-Korrektur.
  * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
  * Alle anderen: aus globaler FRAGENBANK_ID.
