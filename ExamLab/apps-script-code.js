@@ -3149,6 +3149,15 @@ function speichereAntworten(body) {
       sheet.appendRow(newRow);
     }
 
+    // Bundle G.a Trigger D: Pre-Warm Korrektur-Cache nach SuS-Abgabe (fire-and-forget intern)
+    if (istAbgabe === true && !istZugelasseneLP(email)) {
+      try {
+        preWarmKorrekturNachAbgabe_(pruefungId, email);
+      } catch (e) {
+        console.log('[Abgabe-PreWarm-Fehler] ' + e.message);
+      }
+    }
+
     return jsonResponse({ success: true });
   } catch (error) {
     return jsonResponse({ error: error.message });
