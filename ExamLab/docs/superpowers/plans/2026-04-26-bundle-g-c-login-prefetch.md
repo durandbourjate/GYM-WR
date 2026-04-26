@@ -335,7 +335,7 @@ Schreibe in den Chat (kein File):
 ### Regression-Checks
 - LP Re-Login danach: FragenBrowser lädt wieder Daten (kein stale-cache)
 - SuS-Login: lädt normal, kein Crash, kein Memory-Leak von LP-Lösungen sichtbar in DevTools→Application→IndexedDB
-- Demo-Modus: Login als Demo-LP funktioniert (Pre-Fetch wirft im Demo-Fehler-Pfad — fail-silent verifizieren)
+- Demo-Modus: Login als Demo-LP über `demoStarten()` läuft normal — Pre-Fetch wird NICHT ausgelöst (anderer Code-Pfad als `anmelden()`), kein Crash
 
 ### Security-Check
 - IDB nach Logout wirklich leer (alle 3 Stores)
