@@ -13304,3 +13304,99 @@ function testLadeLoesungenLatenzNachBundleE_() {
   Logger.log('=== Akzeptanz-Kriterium: N=10 cold intern ≤ 800 ms (Happy-Path mit Hint) ===');
   return { success: true };
 }
+
+// ============================================================
+// BUNDLE G.A — TEST-SHIMS
+// ============================================================
+
+/**
+ * Test-Shim für lernplattformPreWarmFragen.
+ *
+ * Cases:
+ *   (a) Cold-Call mit 30 fragenIds einer Prüfung → success, fragenAnzahl > 0
+ *   (b) Sofortiger zweiter Call mit identischen fragenIds → deduped: true
+ *   (c) Zweiter Call mit anderen fragenIds → kein Lock, neuer Sheet-Read
+ *   (d) Auth-Fail (kein Token, keine LP-Domain) → error
+ *   (e) Sanity-Check (>200 fragenIds) → error 'Zu viele Fragen'
+ */
+function testPreWarmFragen_() {
+  var assert_ = function(cond, msg) {
+    if (!cond) throw new Error('ASSERT FAILED: ' + msg);
+  };
+
+  // Setup: Test-LP-Email + valider Pool von fragenIds aus BWL-Tab
+  var lpEmail = 'yannick.durand@gymhofwil.ch';
+  var gruppeId = ''; // Standard-Gruppe via fachbereich-Hint
+  var bwlIds = [];
+  // Beziehe 30 valide BWL-IDs aus dem BWL-Tab
+  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  if (bwlSheet) {
+    var data = bwlSheet.getRange(2, 1, Math.min(30, bwlSheet.getLastRow() - 1), 1).getValues();
+    for (var i = 0; i < data.length; i++) bwlIds.push(String(data[i][0]));
+  }
+  assert_(bwlIds.length >= 10, 'Brauche >=10 BWL-fragenIds, habe ' + bwlIds.length);
+
+  // Cache-Reset: alte Locks/Cache-Einträge wegputzen
+  var cache = CacheService.getScriptCache();
+  cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(bwlIds)]);
+
+  // (a) Cold-Call
+  var r1 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b1 = JSON.parse(r1.getContent());
+  Logger.log('Case (a) Cold: %s', JSON.stringify(b1));
+  assert_(b1.success === true, '(a) success');
+  assert_(!b1.deduped, '(a) NICHT deduped');
+  assert_(b1.fragenAnzahl > 0, '(a) fragenAnzahl > 0');
+  assert_(b1.latenzMs < 5000, '(a) latenzMs <5s, war ' + b1.latenzMs);
+
+  // (b) Re-Call sofort → deduped
+  var r2 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b2 = JSON.parse(r2.getContent());
+  Logger.log('Case (b) Re-Call: %s', JSON.stringify(b2));
+  assert_(b2.success === true, '(b) success');
+  assert_(b2.deduped === true, '(b) deduped:true');
+
+  // (c) Andere fragenIds → kein Lock, neuer Sheet-Read
+  var anderePool = bwlIds.slice(5, 15); // verschobener Subset = anderer Hash
+  cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(anderePool)]);
+  var r3 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: anderePool, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b3 = JSON.parse(r3.getContent());
+  Logger.log('Case (c) Andere IDs: %s', JSON.stringify(b3));
+  assert_(b3.success === true, '(c) success');
+  assert_(!b3.deduped, '(c) NICHT deduped');
+
+  // (d) Auth-Fail (SuS ohne Token)
+  var r4 = lernplattformPreWarmFragen({
+    email: 'wr.test@stud.gymhofwil.ch', sessionToken: 'invalid-token',
+    fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b4 = JSON.parse(r4.getContent());
+  Logger.log('Case (d) Auth-Fail: %s', JSON.stringify(b4));
+  assert_(b4.error, '(d) error gesetzt');
+
+  // (e) Sanity-Check
+  var rieseIds = [];
+  for (var k = 0; k < 250; k++) rieseIds.push('frage_' + k);
+  var r5 = lernplattformPreWarmFragen({
+    email: lpEmail, sessionToken: '',
+    fragenIds: rieseIds, gruppeId: gruppeId, fachbereich: 'BWL'
+  });
+  var b5 = JSON.parse(r5.getContent());
+  Logger.log('Case (e) Sanity: %s', JSON.stringify(b5));
+  assert_(b5.error && b5.error.indexOf('200') >= 0, '(e) error mit "200"');
+
+  Logger.log('=== testPreWarmFragen — alle 5 Cases grün ===');
+}
+
+/** Public-Wrapper ohne Underscore (S133-Lehre, GAS-Editor-Dropdown-Sichtbarkeit) */
+function testPreWarmFragen() { return testPreWarmFragen_(); }
