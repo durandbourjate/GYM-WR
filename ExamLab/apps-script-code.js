@@ -13017,3 +13017,103 @@ function testBulkLadeFragenAusSheet_() {
   Logger.log('=== testBulkLadeFragenAusSheet: alle Cases OK ===');
   return { success: true };
 }
+
+/** Public-Wrapper ohne Underscore */
+function testLadeLoesungenLatenzNachBundleE() { return testLadeLoesungenLatenzNachBundleE_(); }
+
+/**
+ * Misst die INTERNE Latenz von lernplattformLadeLoesungen nach Bundle E.
+ * Date.now()-Brackets DIREKT um den Bulk-Read + Per-Frage-Loop, nicht um den
+ * gesamten Web-App-Call (= ohne Plattform-Overhead von ~1.5-2 s).
+ * Akzeptanz-Kriterium: N=10 cold ≤ 800 ms intern.
+ */
+function testLadeLoesungenLatenzNachBundleE_() {
+  function assert_(cond, msg) { if (!cond) throw new Error('ASSERT FAIL: ' + msg); }
+  Logger.log('=== testLadeLoesungenLatenzNachBundleE ===');
+
+  // Erste 10 BWL-IDs holen
+  var ss = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var sheet = ss.getSheetByName('BWL');
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).trim(); });
+  var idIdx = headers.indexOf('id');
+  var bwlIds = [];
+  for (var i = 1; i < data.length && bwlIds.length < 10; i++) {
+    if (data[i][idIdx]) bwlIds.push(String(data[i][idIdx]));
+  }
+  assert_(bwlIds.length === 10, 'Setup: brauche 10 BWL-IDs');
+
+  var cache = CacheService.getScriptCache();
+  var n_values = [1, 3, 5, 10];
+
+  Logger.log('--- COLD CACHE (intern, ohne Plattform-Overhead) ---');
+  for (var k = 0; k < n_values.length; k++) {
+    var n = n_values[k];
+    var ids = bwlIds.slice(0, n);
+
+    // Cache-Reset für alle 10 IDs
+    for (var j = 0; j < bwlIds.length; j++) {
+      cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[j]);
+    }
+    Utilities.sleep(50);
+
+    // Internes Brackets — simuliert den Bulk-Read + Per-Frage-Loop von lernplattformLadeLoesungen
+    var t0 = Date.now();
+    var byTab = gruppiereFragenIdsNachTab_(ids, null, 'BWL');
+    var fragenMap = {};
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        var found = bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+        for (var x in found) fragenMap[x] = found[x];
+      }
+    }
+    var loesungen = {};
+    for (var p = 0; p < ids.length; p++) {
+      var frage = fragenMap[ids[p]] || ladeFrageUnbereinigtById_(ids[p], null, 'BWL');
+      if (frage) loesungen[ids[p]] = extrahiereLoesungsSlice_(frage);
+    }
+    var dt = Date.now() - t0;
+    Logger.log('N=%s cold intern: %s ms (gefunden %s/%s)', n, dt, Object.keys(loesungen).length, n);
+  }
+
+  Logger.log('--- WARM CACHE (Re-Run) ---');
+  for (var k = 0; k < n_values.length; k++) {
+    var n = n_values[k];
+    var ids = bwlIds.slice(0, n);
+    var t0 = Date.now();
+    var byTab = gruppiereFragenIdsNachTab_(ids, null, 'BWL');
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+      }
+    }
+    var dt = Date.now() - t0;
+    Logger.log('N=%s warm intern: %s ms', n, dt);
+  }
+
+  // Worst-Case-Variante (Plan-Review-Empfehlung): kein fachbereichHint → alle 4 Tabs durchsuchen
+  Logger.log('--- WORST-CASE COLD (kein fachbereichHint, alle Tabs) ---');
+  // Cache-Reset
+  for (var j = 0; j < bwlIds.length; j++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[j]);
+  Utilities.sleep(50);
+  var t0 = Date.now();
+  var byTabWc = gruppiereFragenIdsNachTab_(bwlIds, null, ''); // leerer Hint
+  var foundCount = 0;
+  for (var sheetId in byTabWc) {
+    for (var tab in byTabWc[sheetId]) {
+      if (byTabWc[sheetId][tab].size === 0) continue;
+      var f = bulkLadeFragenAusSheet_(sheetId, tab, byTabWc[sheetId][tab]);
+      for (var k in f) {
+        foundCount++;
+        for (var nextTab in byTabWc[sheetId]) {
+          if (nextTab !== tab) byTabWc[sheetId][nextTab].delete(k);
+        }
+      }
+    }
+  }
+  var dtWc = Date.now() - t0;
+  Logger.log('N=10 worst-case cold (alle Tabs, mit Cache-Filtering): %s ms (%s/10 gefunden)', dtWc, foundCount);
+
+  Logger.log('=== Akzeptanz-Kriterium: N=10 cold intern ≤ 800 ms (Happy-Path mit Hint) ===');
+  return { success: true };
+}
