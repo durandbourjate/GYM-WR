@@ -9026,9 +9026,11 @@ function bulkLadeFragenAusSheet_(sheetId, tab, idSet) {
           cache.put('frage_v1_' + sheetId + '_' + rowId, serialized, 3600);
         }
       } catch (e) { /* skip cache on serialize error */ }
+      remaining.delete(rowId);
+      if (remaining.size === 0) break;
     }
   } catch (e) {
-    Logger.log('[bulkLadeFragenAusSheet_] Fehler in tab=' + tab + ': ' + e.message);
+    console.log('[bulkLadeFragenAusSheet_] Fehler in tab=' + tab + ': ' + e.message);
   }
 
   return result;
@@ -12971,6 +12973,10 @@ function testBulkLadeFragenAusSheet_() {
   Logger.log('Case 2 (Lücken): OK, 9/10 (Lücke schweigend)');
 
   // Case 3: Cache-Hit — zweiter Call ohne Cache-Reset
+  // Hinweis: relies on Case 1 + Case 2 having written cache entries for bwlIds[0..4].
+  // Case 1 schreibt bwlIds[0..9], Case 2 ruft cache.remove dann erneut für bwlIds[0..8].
+  // → bwlIds[0..4] sind nach Case 2 wieder im Cache. Wenn Cases umsortiert werden,
+  // muss Case 3 entweder einen eigenen Warm-Up-Call machen oder die Annahme dokumentiert bleiben.
   var idSet3 = new Set(bwlIds.slice(0, 5));
   var t0 = Date.now();
   var r3 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet3);
