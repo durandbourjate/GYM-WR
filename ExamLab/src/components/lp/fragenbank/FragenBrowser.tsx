@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
+import { useEditorNeighborPrefetch } from '../../../hooks/useEditorNeighborPrefetch'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { useFragenFilter } from '../../../hooks/useFragenFilter.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
@@ -178,6 +179,26 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps — handleEditFrage ist stabil genug
   }, [editFrage, filter.sortierteFragen])
+
+  // Bundle G.b — ±1 Nachbar-Fragen ins detailCache prefetchen
+  const nachbarFuerPrefetch = useMemo(() => {
+    if (!editFrage) return { previous: null, next: null }
+    const idx = filter.sortierteFragen.findIndex((f) => f.id === editFrage.id)
+    if (idx < 0) return { previous: null, next: null }
+    const prev = idx > 0 ? filter.sortierteFragen[idx - 1] : null
+    const nxt = idx < filter.sortierteFragen.length - 1 ? filter.sortierteFragen[idx + 1] : null
+    return {
+      previous: prev ? { id: prev.id, fachbereich: prev.fachbereich } : null,
+      next: nxt ? { id: nxt.id, fachbereich: nxt.fachbereich } : null,
+    }
+  }, [editFrage, filter.sortierteFragen])
+
+  useEditorNeighborPrefetch({
+    currentFrageId: editFrage?.id ?? null,
+    previous: nachbarFuerPrefetch.previous,
+    next: nachbarFuerPrefetch.next,
+    email: user?.email ?? '',
+  })
 
   async function handleFrageGespeichert(neueFrage: Frage, meta?: SpeichernMeta): Promise<void> {
     aktualisiereFrage(neueFrage)
