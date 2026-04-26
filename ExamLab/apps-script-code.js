@@ -8932,6 +8932,7 @@ function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
  */
 function gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereichHint) {
   var result = {};
+  if (!fragenIds || fragenIds.length === 0) return result;
 
   // Familie-Gruppe: eigenes Sheet, fester Tab 'Fragen'
   var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
