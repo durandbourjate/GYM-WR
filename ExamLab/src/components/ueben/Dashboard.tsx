@@ -20,7 +20,7 @@ import { getFachFarbe } from '../../utils/ueben/fachFarben'
 import { poolTitel } from '../../utils/poolTitelMapping'
 import { useThemenSichtbarkeitStore } from '../../store/ueben/themenSichtbarkeitStore'
 import { useUebenSettingsStore } from '../../store/ueben/settingsStore'
-import { ThemaKarte } from './ThemaKarte'
+import { ThemaKarteMitPreWarm } from './ThemaKarteMitPreWarm'
 import { EmpfehlungsKarte } from './EmpfehlungsKarte'
 import SuSAnalyse from './SuSAnalyse'
 import type { DeepLinkZiel } from '../../hooks/ueben/useDeepLinkAktivierung'
@@ -595,7 +595,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {themenSektionen.aktuelle.map(info => (
-                      <ThemaKarte
+                      <ThemaKarteMitPreWarm
                         key={`${info.fach}-${info.thema}`}
                         thema={info.thema}
                         fach={info.fach}
@@ -607,6 +607,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                         onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
                         anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
                         onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
+                        onPreWarm={() => preWarmThema(info.fach, info.thema)}
                       />
                     ))}
                   </div>
@@ -632,7 +633,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                     {!eingeklappt && (
                       <div className="grid gap-3 sm:grid-cols-2">
                         {themen.map(info => (
-                          <ThemaKarte
+                          <ThemaKarteMitPreWarm
                             key={`${info.fach}-${info.thema}`}
                             thema={info.thema}
                             fach={info.fach}
@@ -644,6 +645,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                             onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
                             anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
                             onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
+                            onPreWarm={() => preWarmThema(info.fach, info.thema)}
                           />
                         ))}
                       </div>
@@ -660,7 +662,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {themenSektionen.weitere.map(info => (
-                      <ThemaKarte
+                      <ThemaKarteMitPreWarm
                         key={`${info.fach}-${info.thema}`}
                         thema={info.thema}
                         fach={info.fach}
@@ -672,6 +674,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                         onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
                         anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
                         onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
+                        onPreWarm={() => preWarmThema(info.fach, info.thema)}
                       />
                     ))}
                   </div>
