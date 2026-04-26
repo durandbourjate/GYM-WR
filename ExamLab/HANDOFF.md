@@ -6,9 +6,33 @@
 
 ---
 
-## Für die nächste Session (S149+)
+## Für die nächste Session (S149)
 
-### Aktueller Stand (S148, 26.04.2026) — Bundle G.b (Editor-Nachbar + Anhang-PDF-Prefetch) auf `main`
+### NÄCHSTER SCHRITT — Bundle G.c ausführen
+
+**Spec:** [`ExamLab/docs/superpowers/specs/2026-04-26-bundle-g-c-login-prefetch-design.md`](docs/superpowers/specs/2026-04-26-bundle-g-c-login-prefetch-design.md)
+**Plan:** [`ExamLab/docs/superpowers/plans/2026-04-26-bundle-g-c-login-prefetch.md`](docs/superpowers/plans/2026-04-26-bundle-g-c-login-prefetch.md)
+
+**Was zu tun ist:** Plan via `superpowers:subagent-driven-development` ausführen. 5 Tasks (Branch+Baseline → 1 TDD-Test-Datei → 2 winzige `authStore.ts`-Edits → Browser-E2E auf staging → Merge nach main). Insgesamt ~5 Code-Zeilen + 1 neue Test-Datei mit 4 Cases.
+
+**Ziele G.c:**
+1. **Login-Pre-Fetch (LP):** Beim Google-Login fire-and-forget `useFragenbankStore.getState().lade(email)` triggern. Erste FragenBrowser-Öffnung wird instant (statt 5–15 s).
+2. **Logout-Cleanup:** Beim Abmelden `useFragenbankStore.getState().reset()` aufrufen (existing `reset()` macht IDB-Cleanup intern). Schliesst Sicherheits-Lücke (LP-Lösungen blieben in IDB nach Logout, kritisch auf geteilten Schul-Geräten).
+
+**Wichtige Abgrenzungen (nicht in G.c, separate spätere Sub-Bundles):**
+- G.d: Lobby "Live schalten"-Pre-Warm (Backend-only)
+- G.e: Fragensammlung Virtualisierung (`react-virtual` für 2400+ Fragen)
+- G.f: LP-Startseite Skeleton-Pattern
+- SuS-Login-Pre-Fetch: explizit aus G.c ausgenommen (Win zu klein nach G.a/G.b)
+- IDB-Verschlüsselung: separates Sub-Bundle, ausserhalb Scope
+
+**Stand bei Session-Start:** main-Branch sauber, 725 vitest grün, tsc clean, build OK. Spec + Plan committed und auf origin/main gepusht. Code-Stand identisch zu S148.
+
+**E2E-Test-Logins (für Browser-Verifikation):** LP `wr.test@gymhofwil.ch`, SuS `wr.test@stud.gymhofwil.ch` (Regression-Check).
+
+---
+
+### Vorgänger-Stand (S148, 26.04.2026) — Bundle G.b (Editor-Nachbar + Anhang-PDF-Prefetch) auf `main`
 
 **Was Bundle G.b macht:** Zwei browser-seitige Prefetch-Trigger ohne neuen Backend-Endpoint:
 1. **Trigger 1 — Editor-Nachbar-Prefetch:** Wenn LP im FragenBrowser eine Frage zum Bearbeiten öffnet, werden ±1 Nachbar-Fragen nach 300 ms Debounce in den `fragenbankStore.detailCache` geladen. Subsequente prev/next-Klicks sind cache-hit, instant.
