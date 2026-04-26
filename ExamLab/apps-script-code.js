@@ -13076,6 +13076,8 @@ function testLadeLoesungenLatenzNachBundleE_() {
     Logger.log('N=%s cold intern: %s ms (gefunden %s/%s)', n, dt, Object.keys(loesungen).length, n);
   }
 
+  // WARM misst nur den Bulk-Read-Pfad (kein Per-Frage-Loop, kein extrahiereLoesungsSlice_).
+  // Da extrahiereLoesungsSlice_ pure CPU ist (kein I/O), ist der Beitrag <5 ms — vernachlässigbar.
   Logger.log('--- WARM CACHE (Re-Run) ---');
   for (var k = 0; k < n_values.length; k++) {
     var n = n_values[k];
@@ -13100,12 +13102,16 @@ function testLadeLoesungenLatenzNachBundleE_() {
   var byTabWc = gruppiereFragenIdsNachTab_(bwlIds, null, ''); // leerer Hint
   var foundCount = 0;
   for (var sheetId in byTabWc) {
+    if (!Object.prototype.hasOwnProperty.call(byTabWc, sheetId)) continue;
     for (var tab in byTabWc[sheetId]) {
+      if (!Object.prototype.hasOwnProperty.call(byTabWc[sheetId], tab)) continue;
       if (byTabWc[sheetId][tab].size === 0) continue;
       var f = bulkLadeFragenAusSheet_(sheetId, tab, byTabWc[sheetId][tab]);
       for (var k in f) {
+        if (!Object.prototype.hasOwnProperty.call(f, k)) continue;
         foundCount++;
         for (var nextTab in byTabWc[sheetId]) {
+          if (!Object.prototype.hasOwnProperty.call(byTabWc[sheetId], nextTab)) continue;
           if (nextTab !== tab) byTabWc[sheetId][nextTab].delete(k);
         }
       }
