@@ -1394,6 +1394,8 @@ function doPost(e) {
       return lernplattformPruefeAntwort(body);
     case 'lernplattformLadeLoesungen':
       return lernplattformLadeLoesungen(body);
+    case 'lernplattformPreWarmFragen':
+      return lernplattformPreWarmFragen(body);
 
     // Fortschritt
     case 'lernplattformSpeichereFortschritt':
