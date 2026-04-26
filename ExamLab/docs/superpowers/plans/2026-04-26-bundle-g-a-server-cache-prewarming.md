@@ -1674,7 +1674,9 @@ Expected: alle Tests grün (684 bestehend + ~30 neue).
 - [ ] **Step 6: Commit**
 
 ```bash
-git add ExamLab/src/components/ueben/Dashboard.tsx ExamLab/src/components/ueben/ThemaKarte.tsx
+git add ExamLab/src/components/ueben/Dashboard.tsx \
+        ExamLab/src/components/ueben/ThemaKarte.tsx \
+        ExamLab/src/components/ueben/ThemaKarteMitPreWarm.tsx
 git commit -m "ExamLab Bundle G.a: Trigger C — Hover-Pre-Warm via useDebouncedHover"
 ```
 
