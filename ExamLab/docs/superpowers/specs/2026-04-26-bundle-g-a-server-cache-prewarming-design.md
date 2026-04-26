@@ -27,18 +27,20 @@ Login-Pre-Warm aus der ursprünglichen Roadmap wurde gestrichen — kein konkret
 
 | ID | Auslöser | Wer ruft | Backend-Pfad |
 |---|---|---|---|
-| **A** | LP klickt "Lobby anlegen" / "Übung erstellen" | Frontend (LP) | neuer Endpoint `lernplattformPreWarmLobby` |
-| **B** | SuS klickt Fach-Tab in Üben-Übersicht | Frontend (SuS) | neuer Endpoint `lernplattformPreWarmThema` |
-| **C** | SuS hovert >300 ms auf Themen-Card | Frontend (SuS) | derselbe Endpoint `lernplattformPreWarmThema` |
-| **D** | SuS klickt "Abgeben" | Backend (in `lernplattformAbgeben`) | inline fire-and-forget, kein neuer Endpoint |
+| **A** | LP klickt "Speichern" beim Erstellen / Editieren einer Prüfung (Trigger-Punkt nach `speichereConfig`-Erfolg) | Frontend (LP) | neuer Endpoint `lernplattformPreWarmFragen` |
+| **B** | SuS klickt Fach-Tab in Üben-Übersicht | Frontend (SuS) | derselbe Endpoint `lernplattformPreWarmFragen` |
+| **C** | SuS hovert >300 ms auf Themen-Card | Frontend (SuS) | derselbe Endpoint `lernplattformPreWarmFragen` |
+| **D** | SuS klickt "Abgeben" (`istAbgabe:true`) | Backend (in `speichereAntworten`-Abgabe-Pfad) | inline fire-and-forget, kein neuer Endpoint |
 
-Trigger A ist absichtlich **frühestmöglich** (beim Anlegen der Lobby, nicht erst beim Live-Schalten) — der LP arbeitet danach 2-10 min im Lobby (SuS einladen, Zusatzzeiten, Einstellungen), während im Hintergrund der Cache warm wird. Längstes Pre-Warm-Fenster.
+Trigger A: Es gibt im aktuellen Code **keinen separaten "Lobby-Anlegen"-Endpoint** — die Prüfung wird via [`speichereConfig`](../../../apps-script-code.js#L4524) (Backend-Handler `speichereConfig`) persistiert. Die `PruefungsConfig.id` ist Frontend-generiert und zur Aufrufzeit bekannt; aus `config.abschnitte` extrahiert der Frontend die `fragenIds`. Trigger A feuert direkt nach erfolgreicher `speichereConfig`-Antwort. Pre-Warm-Fenster: 2-10 min bis LP "Live schaltet".
 
-Trigger B ist **wichtigster SuS-Hebel** (User-Aussage: „grösster Leidensdruck beim selbstständigen Üben"). Nutzt `lastUsedThema[fachbereich]` aus dem Zustand-Store/localStorage.
+Trigger B ist **wichtigster SuS-Hebel** (User-Aussage: „grösster Leidensdruck beim selbstständigen Üben"). Nutzt `lastUsedThema` aus localStorage (in dieser Spec neu einzuführen, Schlüssel `examlab.lastUsedThema.<gruppeId>.<fach>` mit Themen-Name als String-Wert). Frontend filtert die Fragen lokal aus dem `AppsScriptFragenAdapter`-Cache (Map<gruppeId, Frage[]>) auf `{fach, thema}` und sendet die `fragenIds` an Pre-Warm.
 
-Trigger C deckt den Fall, in dem `lastUsedThema` nicht zum gewählten Thema passt (User wechselt das Thema). 300-ms-Hover-Threshold mit `useDebouncedHover`.
+Trigger C deckt den Fall, in dem `lastUsedThema` nicht zum gewählten Thema passt. 300-ms-Hover-Threshold mit `useDebouncedHover`.
 
 Trigger D verschmilzt mit `lernplattformAbgeben` — kein separater Endpoint, kein extra Frontend-Code. Inline-Aufruf vor `return jsonResponse(...)`. Async via Apps-Script-Trigger-API wurde geprüft und verworfen (~5 % Failure-Rate, 30 s+ Latenz, nicht produktionsreif).
+
+**Wichtige Klarstellung — was Bundle G.a wärmt:** Bundle E hat den Apps-Script-`CacheService` für `lernplattformLadeLoesungen` (Lösungen) optimiert. Bundle G.a wärmt **denselben** CacheService proaktiv — den der `lernplattformLadeLoesungen` beim eigentlichen Übungs-Start liest. Frontend-Frage-Stammdaten (geladen via `lernplattformLadeFragen`) werden bereits im [`AppsScriptFragenAdapter`](../../../src/adapters/ueben/appsScriptAdapter.ts#L142) gecacht (In-Memory-Map<gruppeId, Frage[]>) — die sind nicht Teil von G.a.
 
 ## Architektur — Ansatz B (Spezifische Endpoints)
 
@@ -47,62 +49,54 @@ Trigger D verschmilzt mit `lernplattformAbgeben` — kein separater Endpoint, ke
 **Zwei neue Endpoints + eine Erweiterung:**
 
 ```
-+ lernplattformPreWarmLobby(body)     ← neu, Trigger A
-+ lernplattformPreWarmThema(body)     ← neu, Trigger B + C teilen sich
-~ lernplattformAbgeben(body)          ← Erweiterung um inline preWarmKorrekturFuerLobby_, Trigger D
-+ preWarmKorrekturFuerLobby_(...)     ← neuer interner Helper für Trigger D
++ lernplattformPreWarmFragen(body)    ← neu, Trigger A + B + C teilen sich
+~ speichereAntworten(body)            ← Erweiterung um inline preWarmKorrekturNachAbgabe_
+                                         im istAbgabe-Pfad, Trigger D
++ preWarmKorrekturNachAbgabe_(...)    ← neuer interner Helper für Trigger D
 ```
 
-Beide Endpoints nutzen die Bundle-E-Helfer `gruppiereFragenIdsNachTab_` + `bulkLadeFragenAusSheet_` als Kern. Cache-TTL bleibt 1 h (Bundle-E-Erbe).
+Da Frontend immer die `fragenIds` mitsenden kann (sie sind aus `config.abschnitte` bzw. dem Frontend-Cache lokal verfügbar), brauchen wir keinen separaten Lobby-Endpoint und auch keinen `holeLobby_`-Helper im Backend. Ein einziger Endpoint mit gemeinsamem Body-Shape genügt — die Trigger-Differenzierung passiert nur frontend-seitig durch das Aufruf-Timing. Der Endpoint nutzt die Bundle-E-Helfer `gruppiereFragenIdsNachTab_` + `bulkLadeFragenAusSheet_` als Kern. Cache-TTL bleibt 1 h (Bundle-E-Erbe).
 
-**Endpoint 1 — `lernplattformPreWarmLobby`:**
+**Endpoint — `lernplattformPreWarmFragen`:**
 
 ```
-Body:     { email, sessionToken, lobbyId, fachbereich? }
+Body:     { email, sessionToken, fragenIds: string[], gruppeId: string, fachbereich?: string }
 Response: { success: true, fragenAnzahl: N, latenzMs: X }
-          oder { error: 'Nicht autorisiert' | 'Nicht eigene Lobby' | <fehler> }
-
-Verhalten:
-1. validiereLPSession_(email, sessionToken) — nur LPs
-2. IDOR-Check: holeLobby_(lobbyId).lpEmail === email
-3. holeLobby_(lobbyId) → fragenIds[], gruppe, fachbereich
-4. gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereich)
-5. bulkLadeFragenAusSheet_(...) für jeden Tab (befüllt CacheService)
-6. Logger.log('[PreWarmLobby] email=%s lobbyId=%s n=%d ms=%d')
-```
-
-**Endpoint 2 — `lernplattformPreWarmThema`:**
-
-```
-Body:     { email, sessionToken, themaId, fachbereich }
-Response: { success: true, fragenAnzahl: N }
           oder { success: true, deduped: true }
-          oder { error: ... }
+          oder { error: 'Nicht autorisiert' | 'Zu viele Fragen' | <fehler> }
 
 Verhalten:
-1. validiereSession_(email, sessionToken) — LP oder SuS
-2. LockService.tryLock({email, themaId}, 30 s)
+1. validiereTokenFuerEmail_(email, sessionToken) — LP oder SuS, beides erlaubt
+2. Sanity-Check: 1 ≤ fragenIds.length ≤ 200 (DoS-Schutz)
+3. LockService.tryLock(`prewarm_${email}_${hashIds_(fragenIds)}`, 30 s)
    → Lock besteht: return { success: true, deduped: true }
-3. Sheet-Read: alle Fragen mit themaId === target aus fachbereich-Tab
-   via bulkLadeFragenAusSheet_(sheetId, tab, idSet=alle)
-4. Logger.log('[PreWarmThema] email=%s themaId=%s n=%d ms=%d')
+4. gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich)
+5. bulkLadeFragenAusSheet_(sheetId, tab, idSet) für jeden Tab (befüllt CacheService)
+6. Logger.log('[PreWarmFragen] email=%s n=%d ms=%d')
+7. return jsonResponse({success: true, fragenAnzahl: n, latenzMs: ms})
 ```
 
-**Begründung Authorization mode='thema':** Pre-Warm-Endpoint exponiert keine Lösungen — er warmt nur den Server-Cache. Daher keine Privacy-Implikation für SuS-Aufruf. Quota-Schutz via LockService genügt.
+**Begründung Authorization (jeder authentifizierte User):** Pre-Warm-Endpoint exponiert keine Lösungen — er warmt nur den Server-Cache, dessen Inhalt nur durch berechtigten `lernplattformLadeLoesungen`-Call (mit eigenen Auth-Checks) abgerufen werden kann. Daher keine Privacy-Implikation für SuS-Aufruf.
 
-**Erweiterung `lernplattformAbgeben`:**
+**Begründung Lock-Key über Hash der fragenIds:** Trigger A sendet z.B. 30 fragenIds einer Prüfung; Trigger B 50 Fragen eines Themas; Trigger C 50 Fragen eines anderen Themas. Lock auf `(email, fragenIds-Hash)` dedupliziert nur wirklich identische Re-Aufrufe (Hover-Spam: User hovert auf dieselbe Card 5× hintereinander, oder LP klickt 2× "Speichern"). Verschiedene Themen blockieren sich nicht gegenseitig.
 
-Nach erfolgreichem Speichern + vor `return jsonResponse(...)`:
+**Sanity-Check 200 Fragen:** Schutz gegen versehentliche / böswillige Riesen-Requests. Eine durchschnittliche Klassen-Prüfung hat 10-30 Fragen, ein Themen-Pool selten >50.
+
+**Erweiterung `speichereAntworten`:**
+
+Im `istAbgabe === true`-Pfad, nach erfolgreichem Speichern + vor `return jsonResponse(...)`:
 
 ```js
-try {
-  preWarmKorrekturFuerLobby_(lobbyId, susEmail);
-} catch (e) {
-  console.log('[Abgabe-PreWarm-Fehler] ' + e.message);
+if (istAbgabe) {
+  try {
+    preWarmKorrekturNachAbgabe_(pruefungId, email);
+  } catch (e) {
+    console.log('[Abgabe-PreWarm-Fehler] ' + e.message);
+  }
 }
 ```
 
-`preWarmKorrekturFuerLobby_` ist **kein neuer Endpoint**, sondern interne Helper-Funktion. Sie ruft `bulkLadeFragenAusSheet_` für die Korrektur-Daten dieser SuS-Abgabe.
+`preWarmKorrekturNachAbgabe_` ist **kein neuer Endpoint**, sondern interne Helper-Funktion. Sie liest die `fragenIds` aus dem `Configs`-Sheet anhand `pruefungId` (analog zur bestehenden Logik in `speichereAntworten`, die `configRow` in Z. 3052 lookuped) und ruft `bulkLadeFragenAusSheet_` für die Korrektur-Daten dieser SuS-Abgabe.
 
 **Cache-Granularität:** Der Cache wird pro Lobby-Tab aggregiert befüllt (analog Bundle E — `bulkLadeFragenAusSheet_` cached den ganzen Tab). Jede SuS-Abgabe wärmt denselben Tab-Cache; weitere Abgaben aus derselben Lobby finden bei der ersten Abgabe schon einen warmen Cache und triggern via `tryLock`-äquivalentem Mechanismus keinen erneuten Sheet-Read (Detail im Plan).
 
@@ -123,20 +117,17 @@ Latenz-Impact auf Abgabe-Response: 50-200 ms (Sheet-Read + Cache-Write) bei der 
 ```ts
 export const PRE_WARM_ENABLED = true; // Kill-Switch via Frontend-Deploy
 
-export async function preWarmLobby(
-  lobbyId: string,
+export async function preWarmFragen(
+  fragenIds: string[],
+  gruppeId: string,
   fachbereich?: string,
-  signal?: AbortSignal
-): Promise<void>;
-
-export async function preWarmThema(
-  themaId: string,
-  fachbereich: string,
   signal?: AbortSignal
 ): Promise<void>;
 ```
 
-Beide Wrapper:
+Ein einziger Wrapper für alle drei Trigger A/B/C, da Endpoint und Body-Shape identisch sind.
+
+Der Wrapper:
 - Nutzen den existierenden `postJson`-Helper aus `apiClient.ts` (S130-Lehre `postJson<T>` ist Lüge — beide Funktionen extrahieren `.success` selbst)
 - Catch-all-Error-Handler intern (kein Throw nach aussen, fail-silent)
 - Returnen `Promise<void>` — kein Datenpfad zurück
@@ -172,40 +163,60 @@ Verhalten:
 - `onMouseLeave` ruft `clearTimeout`
 - Auf Touch-Devices (iPad): `onMouseEnter` feuert beim Tap — kein Pre-Warm-Spam, weil Tap eh sofort den Klick auslöst und der Lock greift
 
-**Drei Call-Sites** (genaue Komponentenpfade verifiziere ich beim Plan-Schreiben):
+**Drei Call-Sites** (Trigger-A-Komponente per Code-Read verifiziert; B/C-Komponenten exakt im Plan zu lokalisieren):
 
 ```
-~ Lobby-Anlegen-Komponente (vermutlich src/components/lp/durchfuehrung/LobbyPhase.tsx
-  oder ähnlich)
-    Nach erfolgreichem lobbyAnlegen-Mutation:
-    preWarmLobby(neueLobby.id, fachbereich)
+~ Trigger A: src/components/lp/LPStartseite.tsx (speichereConfig wird Z.261/283
+  aufgerufen) oder VorbereitungPhase.tsx
+    Nach erfolgreichem speichereConfig:
+    const fragenIds = config.abschnitte.flatMap(a => a.fragenIds ?? [])
+    if (fragenIds.length > 0) preWarmFragen(fragenIds, gruppeId, fachbereich)
 
-~ Üben-Übersicht (vermutlich src/components/sus/Ueben...)
+~ Trigger B: SuS-Üben-Fach-Tab-Komponente (Plan-Phase: lokalisieren)
     onClick auf Fach-Tab:
-    if (lastUsedThema) preWarmThema(lastUsedThema, fachbereich)
-    via usePreWarm-Hook mit Dep [aktivesFach, lastUsedThema]
+      const lastThema = localStorage.getItem(
+        `examlab.lastUsedThema.${gruppeId}.${fach}`
+      )
+      if (lastThema) {
+        const fragenIds = uebenFragenAdapter.getCachedFragen(gruppeId)
+          ?.filter(f => f.fach === fach && f.thema === lastThema)
+          .map(f => f.id) ?? []
+        if (fragenIds.length > 0) preWarmFragen(fragenIds, gruppeId, fachbereich)
+      }
+    [Schreibt lastUsedThema beim erfolgreichen starteSession()]
 
-~ Themen-Card (vermutlich src/components/sus/...ThemaCard.tsx)
-    via useDebouncedHover(300, () => preWarmThema(thema.id, fachbereich))
+~ Trigger C: ThemaCard-Komponente (Plan-Phase: lokalisieren)
+    via useDebouncedHover(300, () => {
+      const fragenIds = uebenFragenAdapter.getCachedFragen(gruppeId)
+        ?.filter(f => f.fach === fach && f.thema === thema).map(f => f.id) ?? []
+      if (fragenIds.length > 0) preWarmFragen(fragenIds, gruppeId, fachbereich)
+    })
 ```
+
+**Frontend-Cache-Zugriff:** Der `AppsScriptFragenAdapter` ([appsScriptAdapter.ts:142](../../../src/adapters/ueben/appsScriptAdapter.ts#L142)) hält bereits einen In-Memory-Map<gruppeId, Frage[]>. Aktuell ist die `cache`-Property privat — wir ergänzen einen `getCachedFragen(gruppeId)`-Public-Getter (kein neuer Backend-Call, nur Read-Through). Falls der Cache bei einem Trigger noch leer ist (z.B. User klickt sofort nach Login auf einen Tab, vor `ladeFragen`-Call), wird Trigger B/C ein No-Op — keine Pre-Warm. Beim nächsten Klick mit warmem Frontend-Cache feuert Pre-Warm.
+
+**`lastUsedThema`-Persistenz (neu in dieser Spec):** localStorage-Key `examlab.lastUsedThema.<gruppeId>.<fach>` mit Themen-Name als Value. Wird in `uebungsStore.starteSession` gesetzt nach erfolgreichem Session-Start. Try/catch um localStorage-Calls (S118-Lehre).
 
 ## Datenfluss pro Use-Case
 
-### Use-Case A: Lobby-Anlegen → SuS-Lösungen warm
+### Use-Case A: LP speichert neue Prüfung → SuS-Lösungen warm
 
 ```
-LP klickt "Lobby anlegen"
+LP klickt "Speichern" beim Erstellen / Editieren einer Prüfung
   ↓
-Frontend: lobbyAnlegen-Mutation läuft → Lobby gespeichert
+Frontend ruft speichereConfig(email, config) → Backend speichert ins
+  Configs-Sheet
   ↓
-Frontend: preWarmLobby(neueLobby.id, fachbereich)  [fire-and-forget]
+Frontend extrahiert: const fragenIds = config.abschnitte.flatMap(a => a.fragenIds ?? [])
   ↓
-LP arbeitet im Lobby (SuS einladen, Einstellungen) — 2-10 min
+Frontend: preWarmFragen(fragenIds, gruppeId, fachbereich)  [fire-and-forget]
+  ↓
+LP arbeitet weiter (Vorbereitung-Phase, später Lobby SuS einladen,
+  Zusatzzeiten, Einstellungen) — 2-10 min
   ↓
 Backend (parallel zur LP-Arbeit):
-  validiereLPSession_ + IDOR-Check
-  → holeLobby_(lobbyId) → fragenIds, gruppe
-  → gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereich)
+  validiereTokenFuerEmail_ + Sanity-Check + LockService.tryLock
+  → gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich)
   → bulkLadeFragenAusSheet_(...) für jeden Tab → CacheService.putAll()
   Latenz: ~1-2 s GAS-intern
   ↓
@@ -224,24 +235,26 @@ SuS-Browser ruft lernplattformLadeLoesungen
 ```
 SuS klickt z.B. "BWL"-Tab
   ↓
-Frontend liest lastUsedThema[fachbereich] aus localStorage / Zustand-Store
+Frontend liest lastUsedThema = localStorage[`examlab.lastUsedThema.${gruppeId}.BWL`]
   ↓
-Wenn vorhanden: preWarmThema(lastUsedThema, 'BWL')  [fire-and-forget]
+Wenn vorhanden:
+  fragenIds = uebenFragenAdapter.getCachedFragen(gruppeId)
+    .filter(f => f.fach === 'BWL' && f.thema === lastUsedThema)
+    .map(f => f.id)
+  preWarmFragen(fragenIds, gruppeId, 'BWL')  [fire-and-forget]
   ↓
 SuS navigiert: Thema → Schwierigkeit → Anzahl → "Üben starten"
 (5-15 s User-Klicks)
   ↓
 Backend (parallel):
-  LockService.tryLock({email, themaId}, 30 s) — Spam-Schutz
-  → Cache schon warm? Bundle E hat das nicht direkt geprüft, aber tryLock
-    deckt den häufigsten Fall (Re-Hover gleicher User) ab
-  → bulkLadeFragenAusSheet_('BWL', alle Fragen mit themaId)
+  validiereTokenFuerEmail_ + Sanity-Check + LockService.tryLock(hashIds_)
+  → bulkLadeFragenAusSheet_('BWL', idSet=fragenIds)
   → CacheService.putAll()
   Latenz: ~1-2 s GAS-intern
   ↓
 SuS klickt "Üben starten"
   ↓
-Block-Picker rollt 10 Fragen aus dem Thema
+Block-Picker rollt 10 Fragen aus dem Thema (alle aus dem warmen Set)
   ↓
 SuS-Browser ruft lernplattformLadeLoesungen
   → Cache-Hit für ALLE 10 Fragen
@@ -256,34 +269,41 @@ SuS hovert auf "Konjunkturzyklen"-Card
 useDebouncedHover startet 300-ms-Timer
   ↓
 [Mouse leaves <300ms]   [Mouse stays >300ms]
-clearTimeout, kein Call  → preWarmThema(thema.id, 'VWL')
+clearTimeout, kein Call  → fragenIds = uebenFragenAdapter.getCachedFragen(...)
+                              .filter(f => f.thema === 'Konjunkturzyklen').map(f => f.id)
+                          → preWarmFragen(fragenIds, gruppeId, 'VWL')
                           ↓
-                          LockService dedupliziert wenn User
-                          dieses Thema kürzlich (30 s) angeklickt hat
+                          LockService dedupliziert via hashIds_(fragenIds)
+                          wenn User dieselbe Card kürzlich (30 s) gehovert hat
                           ↓
                           Identischer Backend-Pfad wie Use-Case B
 ```
 
-**Hover-Spam-Szenario abgedeckt:** User fährt mit Maus über 8 Themen-Cards in 5 s. Jedes Hover >300 ms triggert `preWarmThema`. Lock dedupliziert pro `{email, themaId}` — Re-Hover dasselbe Thema sofort `deduped:true`. Über verschiedene Themen sind 8 Pre-Warms in 5 s GAS-Quota-mässig kein Problem (Quota = 100k pro Tag).
+**Hover-Spam-Szenario abgedeckt:** User fährt mit Maus über 8 Themen-Cards in 5 s. Jedes Hover >300 ms triggert `preWarmFragen` mit jeweils anderem fragenIds-Set → 8 verschiedene Lock-Keys → keine gegenseitige Blockade. Re-Hover dieselbe Card: gleicher Hash → `deduped:true`. 8 Pre-Warms in 5 s GAS-Quota-mässig kein Problem (Quota = 100k pro Tag).
 
 ### Use-Case D: SuS klickt "Abgeben"
 
 ```
 SuS klickt "Abgeben"
   ↓
-Frontend ruft lernplattformAbgeben(antworten)
+Frontend ruft speichereAntworten({pruefungId, email, antworten, istAbgabe: true, ...})
   ↓
-Backend:
-  schreibeAntworten + setzeStatus('beendet')
+Backend (speichereAntworten in apps-script-code.js:3032):
+  Auth + Status-Check + Speichern der Antworten
   ↓
-  preWarmKorrekturFuerLobby_(lobbyId, susEmail)  [intern, try/catch]
-    → bulkLadeFragenAusSheet_(... für die Korrektur-Daten dieser SuS-Abgabe)
-    → CacheService.putAll()
+  if (istAbgabe) try {
+    preWarmKorrekturNachAbgabe_(pruefungId, email)  [intern, try/catch]
+      → configRow aus Configs-Sheet anhand pruefungId
+      → fragenIds aus configRow.abschnitte extrahieren
+      → bulkLadeFragenAusSheet_(... für die Korrektur-Daten)
+      → CacheService.putAll()
+  }
   ↓
   return jsonResponse({success: true})
-  Latenz: ~50-200 ms zusätzlich gegenüber heutigem Abgabe-Endpoint
+  Latenz: ~50-200 ms zusätzlich gegenüber heutigem Abgabe-Endpoint (erste Abgabe)
+          ~10 ms ab der zweiten Abgabe (Cache schon warm via Tab-Granularität)
   ↓
-LP öffnet Korrektur-Dashboard für diese Lobby
+LP öffnet Korrektur-Dashboard für diese Prüfung
   → Cache-Hit auf Korrektur-Daten dieser SuS
   → Spürbar für LP: ~2 s statt ~3-4 s
 ```
@@ -311,15 +331,15 @@ Pre-Warm ist eine **Performance-Optimierung**. Wenn sie fehlschlägt, muss der r
 | Fehler | Verhalten |
 |---|---|
 | Auth fehlt/ungültig | `{error: 'Nicht autorisiert'}`, Frontend ignoriert |
-| IDOR-Verletzung (Lobby gehört nicht dem LP) | `{error: 'Nicht eigene Lobby'}`, Logger-Warnung |
+| Sanity-Check (>200 fragenIds) | `{error: 'Zu viele Fragen'}`, Logger-Warnung, Frontend ignoriert |
 | LockService-Lock besteht (B/C) | `{success: true, deduped: true}` — kein Fehler |
 | Sheet-Read schlägt fehl | try/catch, Logger.log + `{error}`, Frontend ignoriert |
 | CacheService.putAll quota voll | try/catch im Helper, Logger.log, kein Fehler nach aussen |
-| `preWarmKorrekturFuerLobby_` (D) wirft | try/catch in `lernplattformAbgeben`, Logger.log, **Abgabe-Response bleibt success:true** |
+| `preWarmKorrekturNachAbgabe_` (D) wirft | try/catch in `speichereAntworten`-Abgabe-Pfad, Logger.log, **Abgabe-Response bleibt success:true** |
 
 ### Race-Condition
 
-**Szenario:** LP klickt "Lobby anlegen" → Pre-Warm startet → 3 s später klickt SuS bereits "Übung starten" (z.B. eilig). Pre-Warm-Backend ist noch in `bulkLadeFragenAusSheet_`.
+**Szenario:** LP speichert Prüfung → Pre-Warm startet → 3 s später klickt SuS bereits "Übung starten" (z.B. eilig). Pre-Warm-Backend ist noch in `bulkLadeFragenAusSheet_`.
 
 **Verhalten:** `lernplattformLadeLoesungen` läuft regulär — entweder ist der Cache schon teilweise warm (partial Cache-Hit, schneller als cold) oder noch nicht (cold-Pfad mit Bundle-E-Bulk-Read als Fallback). Beide Pfade liefern korrekte Daten. **Kein Locking auf Lade-Pfad.**
 
@@ -331,31 +351,32 @@ Bei chronischem Production-Failure: Frontend-Konstante `PRE_WARM_ENABLED = false
 
 | Edge-Case | Verhalten |
 |---|---|
-| Lobby ohne Fragen / leere Lobby | `gruppiereFragenIdsNachTab_([])` → leeres Objekt → 0× Schleife → `{success:true, fragenAnzahl:0}` |
+| Prüfung ohne Fragen / leere `abschnitte` | Frontend: `if (fragenIds.length > 0)` Guard verhindert API-Call. Backend bekommt nichts. |
 | SuS-Login während Pre-Warm läuft | GAS-CacheService ist atomar pro `getAll/putAll`. Worst Case: Cache-Miss, Bundle-E-Fallback. Korrekt. |
 | LP wechselt Browser-Tab während Pre-Warm | AbortController stoppt Lauschen, Backend läuft zu Ende. Beabsichtigt — Backend-Arbeit nicht verschwendet. |
-| SuS hat keinen `lastUsedThema` (B) | Hook prüft `if (!lastUsedThema) return` — kein API-Call. Erste Üben-Session profitiert nicht von B, aber Hover (C) feuert. |
-| Doppel-Trigger B + C kombiniert | LockService dedupliziert pro `{email, themaId}`. Quota-OK. |
+| SuS hat keinen `lastUsedThema` (B) | localStorage liefert `null` → Hook ruft API-Funktion gar nicht erst auf. Erste Üben-Session profitiert nicht von B, aber Hover (C) feuert. |
+| Frontend-Frage-Cache leer (B/C) | `getCachedFragen` liefert `undefined` oder leeres Array → `fragenIds.length === 0` → kein API-Call. Wird beim nächsten Klick mit warmem Frontend-Cache feuern. |
+| Doppel-Trigger B + C kombiniert | LockService dedupliziert via `hashIds_(fragenIds)`. Verschiedene Themen blockieren sich nicht. |
 | Cache-Invalidierung beim Frage-Edit | Cached Version max. 1 h alt (Bundle-E-TTL). Bundle G.a verschärft das nicht. Cache-Invalidation auf Edit ist eigenes Sub-Bundle wenn Praxis es zeigt. |
 
 ## Test-Strategie
 
 ### Backend-Tests (Apps Script)
 
-Drei neue GAS-Test-Shims am Dateiende, mit Public-Wrappern ohne Underscore (S133-Lehre):
+Zwei neue GAS-Test-Shims am Dateiende, mit Public-Wrappern ohne Underscore (S133-Lehre):
 
-1. **`testPreWarmLobby_` + `testPreWarmLobby`**
-   - Cases: (a) erfolgreicher Pre-Warm einer 10-Fragen-Lobby, (b) Auth-Fail, (c) IDOR-Versuch (anderer LP)
-   - Assertions: Response-Shape, CacheService-Eintrag tatsächlich vorhanden, Latenz <3 s intern
+1. **`testPreWarmFragen_` + `testPreWarmFragen`**
+   - Cases: (a) Cold-Call mit 30 fragenIds einer Prüfung, (b) zweiter Call mit identischen fragenIds innerhalb 30 s → `deduped:true`, (c) zweiter Call mit anderen fragenIds → kein Lock, neuer Sheet-Read, (d) Auth-Fail (kein Token), (e) Sanity-Check-Verletzung (>200 fragenIds)
+   - Assertions: Response-Shape, LockService-Verhalten, CacheService-Eintrag tatsächlich vorhanden, Latenz <3 s intern
 
-2. **`testPreWarmThema_` + `testPreWarmThema`**
-   - Cases: (a) Cold-Call, (b) zweiter Call innerhalb 30 s → `deduped:true`, (c) zweiter Call nach 31 s → erneuter Sheet-Read
-   - Assertions: LockService-Verhalten, Cache-Befüllung
-
-3. **`testPreWarmEffekt_` + `testPreWarmEffekt`** — **das Akzeptanz-Kriterium**
+2. **`testPreWarmEffekt_` + `testPreWarmEffekt`** — **das Akzeptanz-Kriterium**
    - N=10 cold-Pfad (kein Pre-Warm) vs. N=10 warm-Pfad (nach Pre-Warm) für `lernplattformLadeLoesungen`
    - Output: Latenz-Vergleich in `Logger.log`
    - **Ziel: pre-warmed-Pfad ≤ 700 ms intern**
+
+3. **`testPreWarmKorrekturNachAbgabe_` + `testPreWarmKorrekturNachAbgabe`** — Trigger-D-Verifikation
+   - Cases: (a) Erste Abgabe einer Lobby → CacheService befüllt + Latenz-Overhead messbar (~50-200 ms), (b) Zweite Abgabe derselben Lobby → Cache schon warm, Overhead ~10 ms
+   - Assertions: Cache-Granularität pro Lobby-Tab, Latenz-Akzeptanz erfüllt
 
 ### Frontend-Tests (vitest)
 
@@ -371,13 +392,13 @@ Echte Logins (LP `yannick.durand@gymhofwil.ch` + SuS `wr.test@stud.gymhofwil.ch`
 
 | # | Pfad | Erwartung |
 |---|---|---|
-| 1 | LP legt neue BWL-Lobby an mit 10 Fragen | Network-Tab: `lernplattformPreWarmLobby` direkt nach `lobbyAnlegen` |
+| 1 | LP speichert neue BWL-Prüfung mit 10 Fragen | Network-Tab: `lernplattformPreWarmFragen` direkt nach `speichereConfig` |
 | 2 | LP wartet 30 s, schaltet live | Stackdriver: Pre-Warm fertig vor Live-Schaltung |
-| 3 | SuS startet Übung dieser Lobby | Stoppuhr "Klick → Frage 1 sichtbar" ≤ 2.5 s |
-| 4 | SuS klickt BWL-Tab in Üben-Übersicht | Network-Tab: `lernplattformPreWarmThema`-Call |
+| 3 | SuS startet Übung dieser Prüfung | Stoppuhr "Klick → Frage 1 sichtbar" ≤ 2.5 s |
+| 4 | SuS klickt BWL-Tab in Üben-Übersicht (mit lastUsedThema gesetzt) | Network-Tab: `lernplattformPreWarmFragen`-Call mit fragenIds des Themas |
 | 5 | SuS hovert auf 5 Themen-Cards | 1 Call pro Card (>300 ms), 0 Calls bei <300 ms |
-| 6 | SuS klickt zweimal kurz hintereinander dasselbe Thema | Zweiter Call: `deduped:true` |
-| 7 | SuS gibt Übung ab | Stackdriver: `[PreWarmKorrektur]`-Log nach `lernplattformAbgeben` |
+| 6 | SuS klickt zweimal kurz hintereinander dieselbe Card | Zweiter Call: `deduped:true` |
+| 7 | SuS gibt Übung ab (`istAbgabe:true`) | Stackdriver: `[PreWarmKorrektur]`-Log nach `speichereAntworten` |
 | 8 | LP öffnet Korrektur-Dashboard | Korrektur-Lade-Latenz misst, Vergleich ohne Pre-Warm-Abgabe |
 
 ## Akzeptanz-Kriterien
@@ -389,21 +410,20 @@ Echte Logins (LP `yannick.durand@gymhofwil.ch` + SuS `wr.test@stud.gymhofwil.ch`
 | Bundle-E-Latenzen unverändert (Regressions-Floor) | Cold ≤ 1'200 ms intern, Warm ≤ 250 ms intern |
 | Abgabe-Latenz mit Trigger D (erste Abgabe) | ≤ +250 ms gegenüber Bundle-E-Abgabe-Floor |
 | Abgabe-Latenz mit Trigger D (n-te Abgabe, Cache warm) | ≤ +30 ms gegenüber Bundle-E-Abgabe-Floor |
-| Alle GAS-Test-Shims grün | 9 Cases (3 pro Shim) |
+| Alle GAS-Test-Shims grün | 8 Cases (5 in `testPreWarmFragen` + 1 in `testPreWarmEffekt` + 2 in `testPreWarmKorrekturNachAbgabe`) |
 | Alle vitest-Tests grün | bestehende 684 + ~25 neue |
 | `tsc -b` clean | ja |
 | Browser-E2E grün | 8/8 Punkte |
 
 ## Reihenfolge der Implementierung (Plan-Phase)
 
-1. **Backend zuerst:** `lernplattformPreWarmLobby` + `lernplattformPreWarmThema` + GAS-Test-Shims
+1. **Backend gebündelt:** `lernplattformPreWarmFragen` + Trigger-D-Erweiterung in `lernplattformAbgeben` + `preWarmKorrekturNachAbgabe_` + 3 GAS-Test-Shims (ein Apps-Script-Deploy für alles)
 2. **Apps-Script-Deploy** durch User
-3. **Frontend-Hook + API-Wrapper** mit vitest-Tests
-4. **Use-Case D-Erweiterung** in `lernplattformAbgeben` (sequenziell, da Apps-Script-Deploy gebündelt — bedeutet ggf. zweiter Deploy nach Backend-Phase 1)
-5. **3 Frontend-Call-Sites** integrieren
-6. **Browser-E2E** auf preview mit echten Logins
-7. **Mess-Verifikation** via `testPreWarmEffekt` + Latenz-Stoppuhr
-8. **Merge auf main** nach LP-Freigabe
+3. **Frontend-Hook + API-Wrapper** mit vitest-Tests + neuer `getCachedFragen`-Public-Getter im Adapter + `lastUsedThema`-Persistenz im `uebungsStore`
+4. **3 Frontend-Call-Sites** integrieren (A: nach `speichereConfig`, B: Fach-Tab-Click, C: ThemaCard-Hover)
+5. **Browser-E2E** auf preview mit echten Logins
+6. **Mess-Verifikation** via `testPreWarmEffekt` + Latenz-Stoppuhr
+7. **Merge auf main** nach LP-Freigabe
 
 Geschätzte Subagent-Sessions: ~10-15 Commits in 1-2 Implementations-Sessions (analog Bundle E mit 11 Commits).
 
@@ -416,9 +436,20 @@ Geschätzte Subagent-Sessions: ~10-15 Commits in 1-2 Implementations-Sessions (a
 - **Cache-Invalidierung bei Frage-Edit** → eigenes Sub-Bundle, falls Praxis es zeigt
 - **Login-Pre-Warm** für LP-Korrektur-Stapel → entfällt durch Use-Case D (Pre-Warm beim SuS-Abgabe)
 
-## Annahmen die im Plan zu verifizieren sind
+## Verifizierte Annahmen (Code-Read 2026-04-26)
 
-- **Frontend-Komponenten-Pfade** für die 3 Call-Sites (Lobby-Anlegen, Üben-Fach-Tab, Themen-Card) — verifiziere ich per Code-Read im Plan
-- **`lastUsedThema`-Persistenz:** ob das schon im Zustand-Store / localStorage liegt oder neu eingebaut werden muss
-- **`holeLobby_`-Helper:** ob existiert oder neu zu schreiben (vermutlich existiert, wird in Lobby-Endpoints schon genutzt)
-- **`validiereSession_`-vs.-`validiereLPSession_`:** beide Helper sollten existieren, Pfad zu verifizieren
+Bei der Spec-Erstellung wurden mehrere Annahmen aus dem Brainstorm via Code-Read verifiziert. Resultate:
+
+- **"Lobby-Anlegen"-Endpoint:** existiert nicht. Echter Pfad ist `speichereConfig` ([apps-script-code.js:4524](../../../apps-script-code.js#L4524)). `config.id` wird Frontend-generiert und ist zur Aufrufzeit bekannt. Trigger A feuert direkt nach erfolgreicher `speichereConfig`-Antwort mit den `fragenIds` aus `config.abschnitte`.
+- **`holeLobby_`-Helper:** existiert nicht und ist nicht nötig. Frontend gibt fragenIds direkt mit. Für Trigger D liest `preWarmKorrekturNachAbgabe_` die fragenIds inline aus dem `Configs`-Sheet (Plan-Phase: prüfen ob ein vorhandener Helper wie `ladeConfigById_` reusable ist).
+- **`thema` ist String, nicht ID:** [`uebungsStore.starteSession`](../../../src/store/ueben/uebungsStore.ts#L150) nimmt `thema: string` (Themenname). Lock-Key nutzt deshalb `hashIds_(fragenIds)`, nicht `themaId`.
+- **`lastUsedThema`-Persistenz:** existiert NICHT im aktuellen Code. Wird neu in dieser Spec eingeführt (localStorage-Key `examlab.lastUsedThema.<gruppeId>.<fach>`).
+- **Frontend-Frage-Cache:** existiert in [`AppsScriptFragenAdapter`](../../../src/adapters/ueben/appsScriptAdapter.ts#L142) als private `Map<gruppeId, Frage[]>`. Plan-Phase: `getCachedFragen(gruppeId)`-Public-Getter ergänzen (Read-Through, kein Backend-Call).
+- **Auth-Helper:** `istZugelasseneLP(email)` ist der gängige LP-Check ([apps-script-code.js:4527](../../../apps-script-code.js#L4527)). `validiereTokenFuerEmail_`-Helper-Pfad ist vorhanden (in Bundle E genutzt). `validiereLPSession_` aus dem ursprünglichen Spec-Entwurf gibt es nicht — irrelevant für G.a, da Pre-Warm-Endpoint jeden authentifizierten User akzeptiert.
+
+## Im Plan zu lokalisieren
+
+- **Trigger-A-Komponente:** [`LPStartseite.tsx:261/283`](../../../src/components/lp/LPStartseite.tsx#L261) ruft `speichereConfig` für Demo-Setup. Der eigentliche LP-Workflow (eigene Prüfungen erstellen) muss im Plan exakt lokalisiert werden — vermutlich in `VorbereitungPhase.tsx` oder einem zugehörigen Hook.
+- **Trigger-B-Komponente:** SuS-Üben-Übersicht-Fach-Tabs. Plan-Phase: konkrete Komponente identifizieren.
+- **Trigger-C-Komponente:** ThemaCard. Plan-Phase: konkrete Komponente identifizieren.
+- **Trigger-D-Endpoint:** verifiziert — der SuS-Abgabe-Pfad ist `speichereAntworten` ([apps-script-code.js:3032](../../../apps-script-code.js#L3032)) im `istAbgabe === true`-Zweig. Plan-Phase: exakte Stelle für `preWarmKorrekturNachAbgabe_`-Aufruf identifizieren (nach erfolgreichem Persist + vor Return).
