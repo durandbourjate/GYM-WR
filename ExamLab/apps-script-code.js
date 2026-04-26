@@ -8836,14 +8836,41 @@ function lernplattformLadeLoesungen(body) {
       gruppeId, email, String(fragenIds.length));
   } catch (e) { /* Logger-Unavailable nicht kritisch */ }
 
+  // === Bundle E (S146): Bulk-Read pro Sheet/Tab statt Per-Frage-Read ===
+  // Bei Fehler im Bulk-Pfad: Fallback auf bestehende Per-Frage-Schleife (kein Funktions-Verlust).
+  // Worst-Case-Optimierung (Plan-Review-Empfehlung): nach jedem Tab gefundene IDs aus den idSets
+  // der noch unbearbeiteten Tabs entfernen → spart Sheet-Reads wenn alle IDs in Tab 1 lagen.
+  var fragenMap = {};
+  try {
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppe, body.fachbereich);
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        var idSet = byTab[sheetId][tab];
+        if (idSet.size === 0) continue; // Alles in vorigem Tab gefunden — kein Sheet-Read nötig
+        var found = bulkLadeFragenAusSheet_(sheetId, tab, idSet);
+        for (var k in found) {
+          fragenMap[k] = found[k];
+          // Aus den noch zu durchsuchenden Tabs entfernen (Worst-Case-Speed-up)
+          for (var nextTab in byTab[sheetId]) {
+            if (nextTab !== tab) byTab[sheetId][nextTab].delete(k);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    Logger.log('[lernplattformLadeLoesungen] Bulk-Read-Fallback aktiv: ' + e.message);
+    fragenMap = {}; // Sicherheits-Reset, der Per-Frage-Loop unten füllt neu
+  }
+
   var loesungen = {};
   for (var i = 0; i < fragenIds.length; i++) {
     var frageId = fragenIds[i];
-    var frage = ladeFrageUnbereinigtById_(frageId, gruppe, body.fachbereich);
+    // Aus Bulk-Read-Map; falls Lücke, Per-Frage-Fallback (war heute schon der Pfad)
+    var frage = fragenMap[frageId] || ladeFrageUnbereinigtById_(frageId, gruppe, body.fachbereich);
     if (!frage) continue; // Lücke → Client fällt pro-Frage zurück
 
     loesungen[frageId] = extrahiereLoesungsSlice_(frage);
-    // Aufgabengruppe: Teilaufgaben als eigene Map-Keys ergänzen
+    // Aufgabengruppe: Teilaufgaben als eigene Map-Keys ergänzen (unverändert)
     if (frage.typ === 'aufgabengruppe' && Array.isArray(frage.teilaufgaben)) {
       for (var t = 0; t < frage.teilaufgaben.length; t++) {
         var ta = frage.teilaufgaben[t];
