@@ -9,6 +9,7 @@ import { useUebenAuftragStore } from '../../store/ueben/auftragStore'
 import { useUebenNavigationStore } from '../../store/ueben/navigationStore'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
+import { preWarmFragen } from '../../services/preWarmApi'
 import { berechneEmpfehlungen } from '../../utils/ueben/empfehlungen'
 import type { Frage } from '../../types/ueben/fragen'
 import type { ThemenFortschritt } from '../../types/ueben/fortschritt'
@@ -401,6 +402,20 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     setTypFilter(new Set())
   }
 
+  // Bundle G.a Trigger B/C: Hilfsfunktion für Pre-Warm via Frontend-Cache-Filter
+  const preWarmThema = (fach: string, thema: string): void => {
+    const gruppeId = aktiveGruppe?.id
+    if (!gruppeId) return
+    const cached = uebenFragenAdapter.getCachedFragen(gruppeId)
+    if (!cached) return
+    const fragenIds = cached
+      .filter((f) => f.fach === fach && f.thema === thema)
+      .map((f) => f.id)
+    if (fragenIds.length > 0) {
+      void preWarmFragen(fragenIds, gruppeId, fach)
+    }
+  }
+
   return (
     <div>
       <main className="max-w-5xl mx-auto p-6">
@@ -519,7 +534,22 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 return (
                   <button
                     key={fach}
-                    onClick={() => setAktiverFach(aktiverFach === fach ? null : fach)}
+                    onClick={() => {
+                      const wirdAktiv = aktiverFach !== fach
+                      setAktiverFach(wirdAktiv ? fach : null)
+                      if (wirdAktiv && aktiveGruppe?.id) {
+                        // Bundle G.a Trigger B
+                        const gid = aktiveGruppe.id
+                        const lastUsed = (() => {
+                          try {
+                            return localStorage.getItem(`examlab.lastUsedThema.${gid}.${fach}`)
+                          } catch {
+                            return null
+                          }
+                        })()
+                        if (lastUsed) preWarmThema(fach, lastUsed)
+                      }
+                    }}
                     className="px-4 py-2 rounded-full text-sm font-medium border-2 transition-colors"
                     style={aktiverFach === fach
                       ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
