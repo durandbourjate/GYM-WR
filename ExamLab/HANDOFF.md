@@ -6,9 +6,50 @@
 
 ---
 
-## Für die nächste Session (S148+)
+## Für die nächste Session (S149+)
 
-### Aktueller Stand (S147, 26.04.2026) — Bundle G.a (Server-Cache-Pre-Warming) auf `feature/bundle-g-a-prewarming`, merge-bereit
+### Aktueller Stand (S148, 26.04.2026) — Bundle G.b (Editor-Nachbar + Anhang-PDF-Prefetch) auf `main`
+
+**Was Bundle G.b macht:** Zwei browser-seitige Prefetch-Trigger ohne neuen Backend-Endpoint:
+1. **Trigger 1 — Editor-Nachbar-Prefetch:** Wenn LP im FragenBrowser eine Frage zum Bearbeiten öffnet, werden ±1 Nachbar-Fragen nach 300 ms Debounce in den `fragenbankStore.detailCache` geladen. Subsequente prev/next-Klicks sind cache-hit, instant.
+2. **Trigger 2 — Anhang-PDF-Prefetch:** Wenn SuS/LP eine Frage rendert (Üben/Prüfen/Korrektur), wird der erste PDF-Anhang der **nächsten** Frage via `<link rel="prefetch">` in den Browser-Cache vorgeladen. iframe-Open beim Wechsel ist instant.
+
+**Architektur:** 2 neue Hooks (`usePrefetchAssets`, `useEditorNeighborPrefetch`) + 1 Helper (`pdfPrefetchUrls`) in `src/hooks/` und `src/utils/`. 4 Component-Edits (FragenBrowser/UebungsScreen/Layout/KorrekturFragenAnsicht). Kein Backend-Code (G.a's `lernplattformPreWarmFragen` reicht; Trigger 2 ist Browser-Native). Beide Hooks ehren `PRE_WARM_ENABLED` Kill-Switch aus G.a.
+
+**Änderungen** (8 Commits auf `main`, Merge-Commit folgt):
+- Backend: keine
+- Frontend: `src/hooks/usePrefetchAssets.ts` (NEU, 60 Z, Refcount-Dedup), `src/hooks/useEditorNeighborPrefetch.ts` (NEU, 53 Z, 300 ms Debounce), `src/utils/anhaengePrefetch.ts` (NEU, 16 Z, pure Helper)
+- Component-Edits: `lp/fragenbank/FragenBrowser.tsx` (+21 Z), `ueben/UebungsScreen.tsx` (+13 Z), `Layout.tsx` (+10 Z), `lp/korrektur/KorrekturFragenAnsicht.tsx` (+13 Z)
+- Tests: `usePrefetchAssets.test.tsx` (6 Cases), `usePrefetchAssetsKillSwitch.test.tsx` (1 Case, Kill-Switch via vi.mock), `anhaengePrefetch.test.ts` (7 Cases), `useEditorNeighborPrefetch.test.tsx` (7 Cases), `fragenBrowserEditorPrefetch.test.tsx` (1 describe.todo, plan-authorisiert wegen Mock-Aufwand)
+
+**Test-Stand:**
+- 725/725 vitest grün (88 test files, +21 Cases gegenüber S147 Baseline 704)
+- `tsc -b` clean
+- `npm run build` erfolgreich
+- Apps-Script: keine Änderungen
+- Staging-Deploy verifiziert (last-modified 26.04.2026 20:01)
+
+**Browser-E2E (staging, 26.04.2026):**
+- LP-Login `wr.test@gymhofwil.ch`: FragenBrowser-Editor-Navigation Test → Frage z05 geöffnet → Click "Next" → Editor switcht zu z04 OHNE neuen `ladeFrageDetail`-Backend-Call (Cache-Hit beweist Trigger 1)
+- SuS-Login `wr.test@stud.gymhofwil.ch`: Übungen Bedürfnisse/Sachenrecht durchgespielt → 0 PDF-Anhänge in den Stichproben-Fragen (erwartetes Hook-No-Op-Verhalten bei leerem URL-Array)
+- Bundle-Verifikation: G.b-Code in `AppUeben`-, `Layout`-, `LPStartseite`-Chunks (drive.google.com URLs + /preview-Pfade + naechsteFrage-Variable + rel="prefetch"-Tags)
+- Keine Regression: Login, Übungs-Start, Frage-Render alle clean
+
+**Final Code Review Findings:**
+- I-1 (Kill-Switch-Konsistenz) wurde während Final Review entdeckt und gefixt: `usePrefetchAssets` respektiert jetzt auch `PRE_WARM_ENABLED`. Bei Notfall-Rollback deaktiviert der Kill-Switch beide Trigger.
+- DRY-Optimierung in FragenBrowser/KorrekturFragenAnsicht (zwei Filter-Computations) als nicht-blockierend dokumentiert.
+
+**Lehre für lernschleife.md:** Der Reviewer-Befund I-1 zeigt, dass Kill-Switches projektweit konsistent zu prüfen sind. Wenn ein Bundle ein Feature in mehreren Sub-Bereichen enthält, muss jeder Sub-Bereich ge-gated sein — sonst wird der Switch zur halben Lösung. Pattern: zentraler Kill-Switch-Konstanten-Import in jeden Hook der durchs Feature betroffen ist.
+
+**Was Bundle G.b NICHT enthält (→ G.c):**
+- Login-Pre-Fetch der gesamten Fragenbank (großer Scope, Sicherheits-Audit nötig)
+- Lobby "Live schalten"-Pre-Warm (Tier 2)
+- Fragensammlung-Liste Virtualisierung (Tier 2)
+- LP-Startseite Skeleton-Pattern (Tier 2)
+
+---
+
+### Vorgänger-Stand (S147, 26.04.2026) — Bundle G.a (Server-Cache-Pre-Warming) auf `feature/bundle-g-a-prewarming`, merge-bereit
 
 **Was Bundle G.a macht:** Apps-Script-`CacheService` proaktiv vorwärmen entlang vier User-Workflow-Trigger. Reduziert effektive Übungsstart-Latenz für SuS, wenn LP eine Prüfung speichert oder SuS ein Thema auswählt.
 

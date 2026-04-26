@@ -1,5 +1,7 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useMemo } from 'react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
+import { usePrefetchAssets } from '../../hooks/usePrefetchAssets'
+import { pdfPrefetchUrls } from '../../utils/anhaengePrefetch'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
@@ -28,6 +30,16 @@ export default function UebungsScreen() {
   const { zuErgebnis } = useSuSNavigation()
 
   const frage = aktuelleFrage()
+
+  // Bundle G.b — PDF-Anhang der NÄCHSTEN Frage browser-prefetchen
+  const naechsteFragePdfUrls = useMemo(() => {
+    const idx = session?.aktuelleFrageIndex ?? -1
+    const naechste = session?.fragen?.[idx + 1]
+    return pdfPrefetchUrls(naechste?.anhaenge)
+  }, [session?.aktuelleFrageIndex, session?.fragen])
+
+  usePrefetchAssets(naechsteFragePdfUrls)
+
   const [selbstbewertungOffen, setSelbstbewertungOffen] = useState(false)
 
   // Beim Frage-Wechsel Dialog schliessen

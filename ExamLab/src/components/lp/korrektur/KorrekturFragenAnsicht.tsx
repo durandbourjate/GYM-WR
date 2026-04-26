@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import FeedbackButton from '../../shared/FeedbackButton.tsx'
+import { usePrefetchAssets } from '../../../hooks/usePrefetchAssets'
+import { pdfPrefetchUrls } from '../../../utils/anhaengePrefetch'
 import type { Frage } from '../../../types/fragen.ts'
 import type { PruefungsKorrektur, SchuelerAbgabe, FragenBewertung } from '../../../types/korrektur.ts'
 import type { NotenConfig } from '../../../types/pruefung.ts'
@@ -162,6 +164,15 @@ export default function KorrekturFragenAnsicht({
 }: Props) {
   const [aktiverFrageIndex, setAktiverFrageIndex] = useState(0)
   const [aktiverSchuelerIndex, setAktiverSchuelerIndex] = useState(0)
+
+  // Bundle G.b — PDF-Anhang der naechsten Frage browser-prefetchen
+  const naechsteFragePdfUrls = useMemo(() => {
+    const sichtbar = fragen.filter((f) => f.typ !== 'aufgabengruppe')
+    const naechste = sichtbar[aktiverFrageIndex + 1]
+    return pdfPrefetchUrls(naechste?.anhaenge)
+  }, [fragen, aktiverFrageIndex])
+
+  usePrefetchAssets(naechsteFragePdfUrls)
 
   // Aufgabengruppen-Fragen ausfiltern (nur Teilfragen zeigen)
   const sichtbareFragen = fragen.filter((f) => f.typ !== 'aufgabengruppe')

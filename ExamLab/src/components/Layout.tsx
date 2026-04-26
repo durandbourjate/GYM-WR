@@ -9,6 +9,8 @@ import { usePruefungsUX } from '../hooks/usePruefungsUX.ts'
 import { useTabKonflikt } from '../hooks/useTabKonflikt.ts'
 import { useLockdown } from '../hooks/useLockdown.ts'
 import { useLPNachrichten } from '../hooks/useLPNachrichten.ts'
+import { usePrefetchAssets } from '../hooks/usePrefetchAssets'
+import { pdfPrefetchUrls } from '../utils/anhaengePrefetch'
 import { VerstossOverlay } from './VerstossOverlay.tsx'
 import { SperreOverlay } from './SperreOverlay.tsx'
 import { istImSEB } from '../services/sebService.ts'
@@ -60,6 +62,14 @@ export default function Layout() {
   const beendetUm = usePruefungStore((s) => s.beendetUm)
   const restzeitMinuten = usePruefungStore((s) => s.restzeitMinuten)
   const multiTabWarnung = usePruefungStore((s) => s.multiTabWarnung)
+
+  // Bundle G.b — PDF-Anhang der NÄCHSTEN Frage browser-prefetchen
+  const naechsteFragePdfUrls = useMemo(() => {
+    const naechste = fragen[aktuelleFrageIndex + 1]
+    return pdfPrefetchUrls(naechste?.anhaenge)
+  }, [aktuelleFrageIndex, fragen])
+
+  usePrefetchAssets(naechsteFragePdfUrls)
 
   // Tab-Konflikterkennung (client-seitig + server-seitig)
   const tabKonflikt = useTabKonflikt(config?.id ?? null)
