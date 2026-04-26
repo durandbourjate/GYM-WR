@@ -412,16 +412,23 @@ function lernplattformLadeLoesungen(body) {
 
   // === Bundle E (S146): Bulk-Read pro Sheet/Tab statt Per-Frage-Read ===
   // Bei Fehler im Bulk-Pfad: Fallback auf bestehende Per-Frage-Schleife (kein Funktions-Verlust).
+  // Worst-Case-Optimierung (Plan-Review-Empfehlung): nach jedem Tab gefundene IDs aus den idSets
+  // der noch unbearbeiteten Tabs entfernen → spart Sheet-Reads wenn alle IDs in Tab 1 lagen.
   var fragenMap = {};
   try {
     var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppe, body.fachbereich);
     for (var sheetId in byTab) {
       for (var tab in byTab[sheetId]) {
         var idSet = byTab[sheetId][tab];
-        // Bei Worst-Case (alle Tabs durchsuchen): IDs werden in mehreren Tabs gesucht.
-        // Set bleibt unverändert, weil bulkLadeFragenAusSheet_ nur Treffer in result schreibt.
+        if (idSet.size === 0) continue; // Alles in vorigem Tab gefunden — kein Sheet-Read nötig
         var found = bulkLadeFragenAusSheet_(sheetId, tab, idSet);
-        for (var k in found) fragenMap[k] = found[k];
+        for (var k in found) {
+          fragenMap[k] = found[k];
+          // Aus den noch zu durchsuchenden Tabs entfernen (Worst-Case-Speed-up)
+          for (var nextTab in byTab[sheetId]) {
+            if (nextTab !== tab) byTab[sheetId][nextTab].delete(k);
+          }
+        }
       }
     }
   } catch (e) {
@@ -564,7 +571,30 @@ function testLadeLoesungenLatenzNachBundleE_() {
     Logger.log('N=%s warm intern: %s ms', n, dt);
   }
 
-  Logger.log('=== Akzeptanz-Kriterium: N=10 cold intern ≤ 800 ms ===');
+  // Worst-Case-Variante (Plan-Review-Empfehlung): kein fachbereichHint → alle 4 Tabs durchsuchen
+  Logger.log('--- WORST-CASE COLD (kein fachbereichHint, alle Tabs) ---');
+  // Cache-Reset
+  for (var j = 0; j < bwlIds.length; j++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[j]);
+  Utilities.sleep(50);
+  var t0 = Date.now();
+  var byTabWc = gruppiereFragenIdsNachTab_(bwlIds, null, ''); // leerer Hint
+  var foundCount = 0;
+  for (var sheetId in byTabWc) {
+    for (var tab in byTabWc[sheetId]) {
+      if (byTabWc[sheetId][tab].size === 0) continue;
+      var f = bulkLadeFragenAusSheet_(sheetId, tab, byTabWc[sheetId][tab]);
+      for (var k in f) {
+        foundCount++;
+        for (var nextTab in byTabWc[sheetId]) {
+          if (nextTab !== tab) byTabWc[sheetId][nextTab].delete(k);
+        }
+      }
+    }
+  }
+  var dtWc = Date.now() - t0;
+  Logger.log('N=10 worst-case cold (alle Tabs, mit Cache-Filtering): %s ms (%s/10 gefunden)', dtWc, foundCount);
+
+  Logger.log('=== Akzeptanz-Kriterium: N=10 cold intern ≤ 800 ms (Happy-Path mit Hint) ===');
   return { success: true };
 }
 ```
@@ -637,8 +667,8 @@ Erst nach Bestätigung weiter zu Task 9.
 - [ ] LP-Response unverändert (gleicher Endpoint)
 
 ### Betroffene kritische Pfade
-- [ ] Pfad 1 (SuS lädt Übung) — Übungsstart
-- [ ] Pfad 5 (LP Korrektur) — wird auch ausgelöst wenn LP eine Übung abruft
+- [ ] Pfad 1 (SuS lädt Übung) — Übungsstart, Haupt-Trigger
+- [ ] Pfad 5 (LP Korrektur) — `lernplattformLadeLoesungen` wird auch im LP-Übungs-Vorschau-Pfad gerufen, dieselbe Optimierung greift dort. Explizit testen: LP klickt eine Übung an, sollte ebenfalls schneller laden.
 
 ### Regressions-Tests
 - [ ] Übungsstart Single-Fachbereich (BWL, 10 Fragen)
