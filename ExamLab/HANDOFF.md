@@ -6,9 +6,76 @@
 
 ---
 
-## Für die nächste Session (S146+)
+## Für die nächste Session (S147+)
 
-### Aktueller Stand (S146, 26.04.2026) — Repo-Cleanup auf `chore/cleanup-migration-scripts`
+### Aktueller Stand (S146, 26.04.2026) — Bundle E (Übungsstart-Latenz) auf `feature/bundle-e-uebungsstart-latenz`, merge-bereit
+
+**Was Bundle E macht:** Backend-Optimierung von `lernplattformLadeLoesungen` in `apps-script-code.js` — serielle Sheet-Reads pro Fragen-ID → Bulk-Tab-Read mit In-Memory-Filter + CacheService-Batch-Pre-Warm.
+
+**Änderungen** (nur `apps-script-code.js`, Frontend unverändert, API-Vertrag unverändert):
+- Neuer Helper `gruppiereFragenIdsNachTab_` — gruppiert Fragen-IDs nach Fachbereich-Tab (fachbereichHint oder Heuristik)
+- Neuer Helper `bulkLadeFragenAusSheet_` — lädt ganzen Tab via `getDataRange().getValues()`, filtert in-memory, schreibt Cache via `putAll`
+- `lernplattformLadeLoesungen` (Z.8807) umgebaut auf Bulk-Read mit Try/Catch-Fallback auf alten seriellen Pfad + Worst-Case-Optimierung (Cache-Filtering zwischen Tabs)
+- 3 Test-Shims am Ende der Datei + Public-Wrapper (`testGruppiereFragenIdsNachTab`, `testBulkLadeFragenAusSheet`, `testLadeLoesungenLatenzNachBundleE`)
+
+**Messwerte (GAS-intern, N=10):**
+- Cold-Latenz vorher: 4'322 ms
+- Cold-Latenz nachher: 1'036 ms (**−76%**)
+- Spürbar für User: ~6 s → ~3–4 s (**−50%**)
+- Worst-Case (kein fachbereichHint, alle 4 Tabs): 1'449 ms intern
+- Akzeptanz-Kriterium war ≤ 800 ms intern — verfehlt um 236 ms wegen CacheService-Roundtrip-Overhead (10× cache.get + 10× cache.put). Spürbarer User-Gewinn trotzdem substantiell.
+
+**Test-Stand:**
+- 9/9 vitest grün (`uebenLoesungsApi` + `uebungsStoreLoesungsPreload` — API-Vertrag bestätigt)
+- `tsc -b` clean
+- `node --check apps-script-code.js` clean
+- GAS-Test-Shims: alle 3 Cases pro Shim grün
+- Apps-Script: ✅ live deployed (26.04.2026)
+
+**Browser-E2E (echte Logins, 26.04.2026):**
+- LP `yannick.durand@gymhofwil.ch` + SuS-1 `wr.test@stud.gymhofwil.ch` + SuS-2 (zweiter Login)
+- Beide SuS starten BWL-Übung „Einführung BWL — Grundlagen der Betriebswirtschaftslehre" (10 Fragen)
+- Übungsstart spürbar ~3–4 s (vorher ~6 s) — funktional sauber, alle 10 Fragen geladen, Frage rendert
+- Block-Picker wählte für SuS-1 vs. SuS-2 verschiedene Fragen (Random-Element funktioniert korrekt)
+- API-Vertrag bestätigt: gleiche Response-Shape, kein Frontend-Change nötig
+- Try/Catch-Fallback aktiv (Regressions-Risiko = null)
+
+**Commits auf `feature/bundle-e-uebungsstart-latenz`:** 11 Commits (f4179cc Spec → 2160a4f letzter Code-Review-Fix). Merge folgt direkt nach diesem HANDOFF-Commit.
+
+**Was Bundle E NICHT enthält (→ Bundle G):** Pre-Warm-Strategien (Login-Pre-Warm, Hover-Pre-Warm, Korrektur-Pre-Warm), Frontend-Skeleton-Pattern, Lobby-Pre-Warm, Listen-Virtualisierung. Diese sind in der Bundle-G-Roadmap unten dokumentiert.
+
+---
+
+### Bundle G Roadmap — App-weite Skeleton & Background-Load Patterns (nächste Session)
+
+Ziel: Ladezeit-Verbesserung durch Pre-Warming und Skeleton-UX app-weit. Tier 1 + Tier 2 in einer Session, Tier 3 zurückgestellt.
+
+**Architektur-Prinzip:**
+- 1 universeller Backend-Endpoint `lernplattformPreWarmCache(body)` mit `mode`-Parameter (`login | thema | korrektur | nachbar-frage`). Nutzt `bulkLadeFragenAusSheet_` aus Bundle E als Grundlage.
+- 1 universeller Frontend-Hook `usePreWarm({mode, target, dependencies})` — Re-Use-Pattern für alle Call-Sites
+- LockService-Dedup pro Thema (30s) gegen Concurrent-Login-Spam
+- Spec → Plan → Subagent-Driven-Development analog zu Bundle E
+
+**Tier 1 — Pre-Warm-Pattern (niedriger Aufwand, gleiches Pattern):**
+1. **Login-Pre-Warm:** Nach `lernplattformLogin`-Erfolg fire-and-forget → pre-warmt last_used Thema + alle aktiven LP-Übungen für die Gruppen-Mitgliedschaft. Heuristik: `last_used_thema ∪ alle_aktiven_LP_Uebungen`
+2. **Hover-Pre-Warm in Themen-Auswahl:** User hovert >300 ms auf Themen-Card → Backend pre-warmt dieses Thema
+3. **Korrektur-Pre-Warm nach SuS-Abgabe:** SuS-Status `beendet` → Backend-Trigger pre-warmt LP-Korrektur-Daten
+4. **Material-Panel iframe-Prefetch:** Beim Render einer Prüfung mit Material → `<link rel="prefetch">`
+5. **Frage-Editor Prev/Next-Prefetch:** LP öffnet Frage X → X−1, X+1 im Hintergrund
+6. **Korrektur-Stapel Prev/Next-Prefetch:** LP korrigiert Frage X für SuS Y → X für SuS Y+1 vorausladen
+
+**Tier 2 — Spezifische Architektur-Eingriffe:**
+7. **Prüfungs-Lobby „Live schalten"-Pre-Warm:** LP-Klick warmt SuS-Lösungen für 25 SuS → alle SuS dann instant beim Übungsstart
+8. **Fragensammlung-Liste Virtualisierung:** `react-virtual` für 2'400+ Fragen (ladezeit + Scroll-Performance)
+9. **LP-Startseite Skeleton-Pattern:** Jeder Tab zeigt Skeleton-Boxes sofort, parallele Lade-Pfade unabhängig voneinander
+
+**Tier 3 — zurückgestellt:**
+- Heartbeat Optimistic-Update (Korrektheits-Risiko bei Prüfungs-Abgabe)
+- Service-Worker Background-Sync für Lobby (lohnt erst nach Edge-Migration)
+
+---
+
+### Vorgänger-Stand (S146 Cleanup, 26.04.2026) — Repo-Cleanup auf `chore/cleanup-migration-scripts`
 
 **Untracked-Aufräumung aus HANDOFF S145 erledigt:**
 - 6 macOS-Duplikate (`* 2.md` / `* 2.mjs`) gelöscht: zwei `2026-04-22-c9-migration*`-Files in `docs/superpowers/{plans,specs}/` + vier `* 2.{md,mjs}` in `scripts/migrate-teilerklaerungen/`.
@@ -45,9 +112,11 @@
 
 Neue API-Wrapper immer nach Backend-Shape verifizieren, nicht nach Frontend-Erwartung. Vgl. [code-quality.md](../.claude/rules/code-quality.md) §„postJson-Response-Unwrap".
 
-### Offen für S146+
+### Offen für S147+
 
-**1) Lückentext Phase 8 — Browser-E2E nachholen** (vom S144-Merge übersprungen):
+**1) Bundle G — App-weite Skeleton & Background-Load Patterns** (Tier 1 + Tier 2). Brainstorm + Spec + Plan in neuer Session. Roadmap-Details siehe Bundle-G-Sektion oben.
+
+**2) Lückentext Phase 8 — Browser-E2E nachholen** (vom S144-Merge übersprungen):
 
 Test-Plan schreiben laut `regression-prevention.md` Phase 3.0 (Tabelle Änderung · Erwartetes Verhalten · Regressions-Risiko + Security-Check + kritische Pfade aus §1.3).
 
@@ -71,17 +140,13 @@ Browser-Test mit echten Logins (LP: `yannick.durand@gymhofwil.ch` · SuS: `wr.te
 - [ ] SuS-Request `holeFrage` zeigt im Response-Body KEINE `korrekteAntworten[]` und KEINE `dropdownOptionen[]` mehr als der Renderer braucht
 - [ ] LP-Request sieht alle Felder
 
-**2) LP-Review der migrierten Lückentext-Antworten** (paralleler Prozess, kein Merge-Blocker):
+**3) LP-Review der migrierten Lückentext-Antworten** (paralleler Prozess, kein Merge-Blocker):
 
 Alle 253 Fragen haben `pruefungstauglich=false`. Der LP geht pro Frage im Frontend (Fragensammlung-Editor) durch, prüft Hauptantwort + Synonyme + Distraktoren, passt wo nötig an und setzt `pruefungstauglich=true`. Keine automatische Freischaltung — Fragensammlung bleibt dark-launched bis manuell freigegeben.
-
-**3) Bundle E (Übungsstart-Latenz)** bleibt offen — eigenes Backend-Bundle, nicht Teil des Lückentext-Projekts. `lernplattformLadeLoesungen` (apps-script-code.js:8807-8822) serielle Sheet-Reads optimieren (Bulk-Tab-Read + CacheService.putAll Pre-Warm). Brainstorming → Spec → Plan nötig.
 
 **4) Audio-Reaktivierung** nach Backend-Migration auf Edge-Runtime. Bis dahin deaktiviert. Re-Aktivierung via `git revert 8de1352`.
 
 **5) C9 Phase 4 laufende User-Aufgaben:** Stichprobenprüfung der 2412 migrierten Fragen, Freigaben `pruefungstauglich=true`, Archiv-Dateien extern sichern/löschen.
-
-**6) Aufräumarbeiten** — erledigt in S146 (siehe Aktueller Stand oben).
 
 **Vorgänger-Stand (Ende S144, 24.04.2026) — Lückentext-Modus Phase 1-7 auf `main` gemergt**
 
