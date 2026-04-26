@@ -8959,6 +8959,81 @@ function gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereichHint) {
   return result;
 }
 
+/**
+ * Liest in 1× Sheet-Read alle in idSet angefragten Fragen eines Tabs.
+ *
+ * Performance:
+ * - Cache-Lookup zuerst pro ID (frage_v1_<sheetId>_<frageId>) → Treffer aus idSet entfernen
+ * - Bei restlichem idSet > 0: 1× sheet.getDataRange().getValues() + Linear-Scan + Set.has()
+ * - Pro Treffer: cache.put mit < 100'000 Bytes-Guard (existing pattern)
+ *
+ * Returns: Map { [frageId]: Frage } — nur Treffer; Lücken fehlen schweigend.
+ */
+function bulkLadeFragenAusSheet_(sheetId, tab, idSet) {
+  var result = {};
+  if (!idSet || idSet.size === 0) return result;
+
+  var cache = CacheService.getScriptCache();
+  var remaining = new Set();
+
+  // Cache-Lookup zuerst
+  var ids = Array.from(idSet);
+  for (var i = 0; i < ids.length; i++) {
+    var cacheKey = 'frage_v1_' + sheetId + '_' + ids[i];
+    var cached = cache.get(cacheKey);
+    if (cached) {
+      try {
+        result[ids[i]] = JSON.parse(cached);
+        continue;
+      } catch (e) { /* fallthrough */ }
+    }
+    remaining.add(ids[i]);
+  }
+
+  if (remaining.size === 0) return result;
+
+  // Bulk-Read: 1× getDataRange().getValues()
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName(tab);
+    if (!sheet) return result;
+    var data = sheet.getDataRange().getValues();
+    if (data.length < 2) return result;
+
+    var headers = data[0].map(function(h) { return String(h).trim(); });
+    var idIdx = headers.indexOf('id');
+    if (idIdx === -1) return result;
+
+    // Linear-Scan, Match via Set.has() (O(1) statt O(N) bei jeder Frage)
+    for (var r = 1; r < data.length; r++) {
+      var rowId = String(data[r][idIdx]);
+      if (!remaining.has(rowId)) continue;
+
+      var row = {};
+      for (var c = 0; c < headers.length; c++) {
+        var key = headers[c];
+        var val = data[r][c];
+        if (!key || val === '' || val === null || val === undefined) continue;
+        row[key] = String(val);
+      }
+      var frage = parseFrageKanonisch_(row, tab);
+      result[rowId] = frage;
+
+      // Cache schreiben (< 100'000 Bytes-Guard)
+      try {
+        var serialized = JSON.stringify(frage);
+        if (serialized.length < 100000) {
+          cache.put('frage_v1_' + sheetId + '_' + rowId, serialized, 3600);
+        }
+      } catch (e) { /* skip cache on serialize error */ }
+    }
+  } catch (e) {
+    Logger.log('[bulkLadeFragenAusSheet_] Fehler in tab=' + tab + ': ' + e.message);
+  }
+
+  return result;
+}
+
 /** Frage aus einer Sheet-Zeile im kanonischen Format parsen (shared mit ExamLab) */
 function parseFrageKanonisch_(row, fachbereich) {
   // Fachbereich-Mapping anwenden (z.B. "Allgemein" → "Andere")
@@ -12851,5 +12926,59 @@ function testGruppiereFragenIdsNachTab_() {
   Logger.log('Case 3 (Familie): OK');
 
   Logger.log('=== testGruppiereFragenIdsNachTab: alle Cases OK ===');
+  return { success: true };
+}
+
+/** Public-Wrapper ohne Underscore */
+function testBulkLadeFragenAusSheet() { return testBulkLadeFragenAusSheet_(); }
+
+function testBulkLadeFragenAusSheet_() {
+  function assert_(cond, msg) { if (!cond) throw new Error('ASSERT FAIL: ' + msg); }
+  Logger.log('=== testBulkLadeFragenAusSheet ===');
+
+  // Erste 10 IDs aus BWL-Tab via direktem Sheet-Read holen (deterministisches Test-Set)
+  var ss = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var sheet = ss.getSheetByName('BWL');
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).trim(); });
+  var idIdx = headers.indexOf('id');
+  var bwlIds = [];
+  for (var i = 1; i < data.length && bwlIds.length < 10; i++) {
+    if (data[i][idIdx]) bwlIds.push(String(data[i][idIdx]));
+  }
+  assert_(bwlIds.length === 10, 'Setup: brauche 10 BWL-IDs');
+
+  var cache = CacheService.getScriptCache();
+
+  // Case 1: Happy-Path — 10 IDs, alle gefunden, Cache-Slots gefüllt
+  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[i]);
+  Utilities.sleep(50);
+  var idSet1 = new Set(bwlIds);
+  var r1 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet1);
+  assert_(Object.keys(r1).length === 10, 'Case 1: 10 Treffer erwartet, war ' + Object.keys(r1).length);
+  // Cache-Effekt: ein Eintrag muss jetzt im Cache sein
+  var cached = cache.get('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[5]);
+  assert_(cached !== null, 'Case 1: Cache-Eintrag für ID 5 fehlt');
+  Logger.log('Case 1 (Happy-Path): OK, 10/10 + Cache befüllt');
+
+  // Case 2: Lücken — 9 valide + 1 Garbage-ID
+  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[i]);
+  Utilities.sleep(50);
+  var idSet2 = new Set(bwlIds.slice(0, 9).concat(['nicht-existent-12345']));
+  var r2 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet2);
+  assert_(Object.keys(r2).length === 9, 'Case 2: 9 Treffer erwartet, war ' + Object.keys(r2).length);
+  assert_(r2['nicht-existent-12345'] === undefined, 'Case 2: Garbage-ID darf nicht im Result sein');
+  Logger.log('Case 2 (Lücken): OK, 9/10 (Lücke schweigend)');
+
+  // Case 3: Cache-Hit — zweiter Call ohne Cache-Reset
+  var idSet3 = new Set(bwlIds.slice(0, 5));
+  var t0 = Date.now();
+  var r3 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet3);
+  var dt = Date.now() - t0;
+  assert_(Object.keys(r3).length === 5, 'Case 3: 5 Treffer erwartet');
+  assert_(dt < 200, 'Case 3: Warm-Cache muss < 200 ms sein, war ' + dt);
+  Logger.log('Case 3 (Warm-Cache): OK, 5/5 in ' + dt + ' ms');
+
+  Logger.log('=== testBulkLadeFragenAusSheet: alle Cases OK ===');
   return { success: true };
 }
