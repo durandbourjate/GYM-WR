@@ -47,8 +47,8 @@ interface FragenbankStore {
   setFragen: (fragen: Frage[]) => void
   /** Detail aus Cache holen (synchron, null wenn nicht geladen) */
   getDetail: (frageId: string) => Frage | null
-  /** Zurücksetzen beim Logout */
-  reset: () => void
+  /** Zurücksetzen beim Logout (await für IDB-Commit-Garantie vor Hard-Nav) */
+  reset: () => Promise<void>
 }
 
 function bauFragenMap(fragen: Frage[]): Record<string, Frage> {
@@ -400,7 +400,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
     return state.detailCache[frageId] || state.fragenMap[frageId] || null
   },
 
-  reset: () => {
+  reset: async () => {
     set({
       summaries: [],
       summaryMap: {},
@@ -410,6 +410,6 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
       status: 'idle',
       _cacheInvalid: false,
     })
-    clearFragenbankCache()
+    await clearFragenbankCache()
   },
 }))

@@ -6,29 +6,54 @@
 
 ---
 
-## Für die nächste Session (S149)
+## Für die nächste Session (S150)
 
-### NÄCHSTER SCHRITT — Bundle G.c ausführen
+### Aktueller Stand (S149, 27.04.2026) — Bundle G.c (LP-Login-Pre-Fetch + Logout-Cleanup) auf `main`
 
-**Spec:** [`ExamLab/docs/superpowers/specs/2026-04-26-bundle-g-c-login-prefetch-design.md`](docs/superpowers/specs/2026-04-26-bundle-g-c-login-prefetch-design.md)
-**Plan:** [`ExamLab/docs/superpowers/plans/2026-04-26-bundle-g-c-login-prefetch.md`](docs/superpowers/plans/2026-04-26-bundle-g-c-login-prefetch.md)
+**Was Bundle G.c macht:** Zwei kleine Edits in `useAuthStore` plus IDB-Race-Hotfix:
+1. **Login-Pre-Fetch (LP):** Direkt nach Google-Login wird `useFragenbankStore.getState().lade(email)` fire-and-forget gefeuert (`void ... .catch(...)`). FragenBrowser-Erstöffnung profitiert vom IDB-Cache.
+2. **Logout-Cleanup:** `useFragenbankStore.getState().reset()` läuft in `abmelden()` als ALLERSTES, **awaited** auf IDB-Commit, dann erst Hard-Nav nach `/login`. Schliesst Privacy-Lücke (LP-Lösungen in IDB nach Logout auf geteilten Schul-Geräten).
 
-**Was zu tun ist:** Plan via `superpowers:subagent-driven-development` ausführen. 5 Tasks (Branch+Baseline → 1 TDD-Test-Datei → 2 winzige `authStore.ts`-Edits → Browser-E2E auf staging → Merge nach main). Insgesamt ~5 Code-Zeilen + 1 neue Test-Datei mit 4 Cases.
+**Architektur:** 7 Files / +83 / -15 Zeilen. Keine neuen Hooks, keine Komponenten-Edits jenseits zweier Caller, kein Backend-Code.
 
-**Ziele G.c:**
-1. **Login-Pre-Fetch (LP):** Beim Google-Login fire-and-forget `useFragenbankStore.getState().lade(email)` triggern. Erste FragenBrowser-Öffnung wird instant (statt 5–15 s).
-2. **Logout-Cleanup:** Beim Abmelden `useFragenbankStore.getState().reset()` aufrufen (existing `reset()` macht IDB-Cleanup intern). Schliesst Sicherheits-Lücke (LP-Lösungen blieben in IDB nach Logout, kritisch auf geteilten Schul-Geräten).
+**Code-Stand auf `main`:** 4 Feature-Commits + 1 Merge-Commit
+- `072efd7` Test-Datei (failing) — Login-Pre-Fetch + Logout-Reset
+- `04ffee1` Pre-Fetch in anmelden() — fragenbankStore.lade fire-and-forget
+- `2a166c9` reset() in abmelden() — Logout-Cleanup für Frontend + IDB
+- `6190740` **Hotfix** clearFragenbankCache awaitbar + reset/abmelden async (post-E2E)
 
-**Wichtige Abgrenzungen (nicht in G.c, separate spätere Sub-Bundles):**
-- G.d: Lobby "Live schalten"-Pre-Warm (Backend-only)
-- G.e: Fragensammlung Virtualisierung (`react-virtual` für 2400+ Fragen)
-- G.f: LP-Startseite Skeleton-Pattern
-- SuS-Login-Pre-Fetch: explizit aus G.c ausgenommen (Win zu klein nach G.a/G.b)
-- IDB-Verschlüsselung: separates Sub-Bundle, ausserhalb Scope
+**Test-Stand:**
+- 730/730 vitest grün (90 test files, +5 Cases gegenüber S148 Baseline 725)
+- `tsc -b` clean
+- `npm run build` erfolgreich
+- Apps-Script: keine Änderungen
 
-**Stand bei Session-Start:** main-Branch sauber, 725 vitest grün, tsc clean, build OK. Spec + Plan committed und auf origin/main gepusht. Code-Stand identisch zu S148.
+**Browser-E2E (staging, 27.04.2026, echte Logins):**
+- LP-Login `wr.test@gymhofwil.ch`: Pre-Fetch verifiziert — IDB-meta-timestamp `22:45:24Z` nur 6s nach Login (auth-Check `22:45:30Z`). Trigger 1 ✓.
+- LP-Logout: alle 3 IDB-Stores LEER (0/0/0 Records, Keys leer), sessionStorage leer. Trigger 2 ✓.
+- SuS-Regression `wr.test@stud.gymhofwil.ch`: Session-Restore intakt, IDB leer (kein Pre-Fetch im SuS-Pfad), 0 Errors. ✓.
+- **Privacy-Garantie:** erfüllt. Auf geteiltem Gerät: IDB ist nach Logout nachweisbar leer, bevor der nächste User einloggt.
 
-**E2E-Test-Logins (für Browser-Verifikation):** LP `wr.test@gymhofwil.ch`, SuS `wr.test@stud.gymhofwil.ch` (Regression-Check).
+**Hotfix-Lehre (während E2E entdeckt):**
+Der ursprüngliche Plan ging davon aus, dass `reset()` fire-and-forget reicht. **Browser-Test bewies das Gegenteil:** `window.location.href` triggert Page-Unload, der die in-flight `clearFragenbankCache`-IDB-Transaktion abbricht. Die 2411 Einträge blieben nach erstem Logout im IDB. Genau die Privacy-Lücke die G.c laut Plan-Goal schliessen sollte.
+
+Fix-Bündel:
+- `clearFragenbankCache()` wartet jetzt auf `tx.oncomplete` (Promise um die IDB-Transaktion)
+- `fragenbankStore.reset` wird async und awaitet `clearFragenbankCache`
+- `authStore.abmelden` wird async und awaitet `reset()` BEVOR `window.location.href`
+- `AppUeben.tsx` Caller awaitet `abmelden` (Hard-Nav redundant entfernt — `abmelden()` setzt sie selbst)
+- `App.tsx` Caller mit explicit `void` (Floating-Promise unterdrückt)
+- LPAppHeaderContainer.test.tsx Mock-Type angepasst, Plan-Test 4 mit `await` + neuer Test (#5) für reset-vor-User-State-Reset-Reihenfolge
+
+**Lehre → code-quality.md (S149):** IDB-Transaktionen, die in synchronen Pfaden fire-and-forget verwendet werden, sind unsicher wenn ein Page-Unload (oder beforeunload) folgt. Der Browser bricht in-flight Transaktionen ab, sobald die Page entladen wird. Regel: Wenn vor einer Hard-Nav (window.location.href, full-page-reload) IDB-Schreib-Operationen laufen müssen, IMMER `tx.oncomplete` awaiten und in der gesamten Aufruf-Kette propagieren. Theorie-Kontrolle ("IDB serialisiert Transaktionen") reicht NICHT — die Page-Lifetime-Garantie geht ihr vor.
+
+**Lehre → lernschleife.md / regression-prevention.md (S149):** Browser-E2E-Test mit echten Logins ist der einzige Detektor für IDB-Race-Conditions. Vitest+jsdom kann das nicht: jsdom triggert keinen echten Page-Unload, und IndexedDB-Mocks (fake-indexeddb) serialisieren synchron in Memory. Regel: Bei Features die IDB-Persistenz VOR Hard-Navigation garantieren müssen (Logout-Cleanup, Token-Rotation) IMMER E2E-Verifikation durch Code-Inspection-IDB-vor-und-nach. Plan-Annahmen über Browser-Lifecycles vor Implementierung challengen.
+
+**Offen (S150+):**
+- Bundle G.d (Lobby "Live schalten"-Pre-Warm, Backend-only)
+- Bundle G.e (Fragensammlung Virtualisierung mit react-virtual)
+- Bundle G.f (LP-Startseite Skeleton-Pattern)
+- IDB-Verschlüsselung als eigenes Sub-Bundle (separates Threat-Model)
 
 ---
 

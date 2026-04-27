@@ -185,11 +185,12 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
               Du bist noch keiner Gruppe zugeordnet.
             </p>
             <button
-              onClick={() => {
-                // Beide Auth-Stores aufräumen, damit Session komplett beendet wird
+              onClick={async () => {
+                // Beide Auth-Stores aufräumen, damit Session komplett beendet wird.
+                // useAuthStore.abmelden() awaitet IDB-Clear und triggert dann selbst
+                // die Hard-Nav nach /login (siehe G.c-Hotfix in authStore.ts).
                 useUebenAuthStore.getState().abmelden()
-                useAuthStore.getState().abmelden()
-                window.location.href = import.meta.env.BASE_URL + 'login'
+                await useAuthStore.getState().abmelden()
               }}
               className="px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
             >

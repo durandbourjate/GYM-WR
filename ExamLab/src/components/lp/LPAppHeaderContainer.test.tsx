@@ -4,8 +4,8 @@ import { MemoryRouter } from 'react-router-dom'
 
 // --- Store-Mocks (MÜSSEN vor dem Import der Komponente stehen) ---
 vi.mock('../../store/authStore', () => ({
-  useAuthStore: (selector: (s: { abmelden: () => void; user: { name: string } }) => unknown) =>
-    selector({ abmelden: vi.fn(), user: { name: 'Test LP' } }),
+  useAuthStore: (selector: (s: { abmelden: () => Promise<void>; user: { name: string } }) => unknown) =>
+    selector({ abmelden: vi.fn(async () => undefined), user: { name: 'Test LP' } }),
 }))
 
 vi.mock('../../store/themeStore', () => ({

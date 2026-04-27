@@ -96,7 +96,10 @@ export async function setCachedDetails(details: Frage[]): Promise<void> {
   }
 }
 
-/** Gesamten Fragenbank-Cache leeren (Logout, Invalidierung). */
+/** Gesamten Fragenbank-Cache leeren (Logout, Invalidierung).
+ * Wartet auf Transaktions-Commit — kritisch beim Logout, weil window.location.href
+ * direkt danach den Page-Unload triggert und in-flight IDB-Transaktionen abbricht.
+ */
 export async function clearFragenbankCache(): Promise<void> {
   try {
     const db = await openDB()
@@ -104,6 +107,11 @@ export async function clearFragenbankCache(): Promise<void> {
     tx.objectStore(STORE_SUMMARIES).clear()
     tx.objectStore(STORE_DETAILS).clear()
     tx.objectStore(STORE_META).clear()
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+      tx.onabort = () => reject(tx.error ?? new Error('IDB transaction aborted'))
+    })
   } catch {
     // Silent
   }
