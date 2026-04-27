@@ -6,9 +6,64 @@
 
 ---
 
-## Für die nächste Session (S153)
+## Für die nächste Session (S154)
 
-### Aktueller Stand (S152, 27.04.2026) — Bundle G.d.1 auf `main` (Hebel A/B/C/D)
+### Aktueller Stand (S153, 27.04.2026) — Bundle G.d.2 auf `main` (Stammdaten-IDB-Cache)
+
+**Was die Session machte:** Plan-Phase via `writing-plans`-Skill (1 Reviewer-Loop, approved) → Implementation via `subagent-driven-development`-Skill (5 Implementer-Subagents + 5 Spec-Reviews + 5 Code-Quality-Reviews + 2 Inline-Tasks) → Voll-Verify (tsc + 772 vitest + build) → Browser-E2E mit echten Logins → 1 Bug entdeckt + Fix-Loop → Re-E2E → Merge auf `main`.
+
+**Was Bundle G.d.2 macht:** Direkte Replikation des G.c-Pattern (S149 Fragenbank-Cache) für 2 weitere Datentypen — Klassenlisten (LP-only) + Üben-Gruppen (LP+SuS):
+
+| Datentyp | IDB-Datenbank | Stores | TTL |
+|---|---|---|---|
+| Fragenbank (G.c) | `examlab-fragenbank-cache` | summaries, details, meta | 10 min |
+| Klassenlisten (G.d.2) | `examlab-klassenlisten-cache` | data, meta | 24 h |
+| Gruppen (G.d.2) | `examlab-gruppen-cache` | gruppen, mitglieder, meta | 24 h |
+
+**Architektur:**
+- 2 neue Cache-Module mit `tx.oncomplete`-await im `clearXxxCache` (S149-Lehre)
+- 1 neuer `klassenlistenStore` Cache-First + 1 erweiteter `gruppenStore` (additiv, ~13 Caller rückwärts-kompatibel)
+- LP-Login (`anmelden`) feuert 3 Pre-Fetches parallel fire-and-forget (Fragenbank + Klassenlisten + Gruppen)
+- SuS-Login (`anmeldenMitCode` + `anmelden` mit SuS-Email) feuert nur Gruppen
+- Logout (`abmelden`): `await Promise.all([3 reset()])` vor `window.location.href` — Privacy-Garantie
+- `VorbereitungPhase.tsx` nutzt Store-Selectors statt lokalem `useState`; Refresh-Button mit `force: true`
+- Frontend-only — kein Apps-Script-Deploy nötig
+
+**E2E-Mess-Werte (staging mit echten Logins):**
+
+| Pfad | Wert |
+|---|---|
+| Klassenlisten Cache-Hit (LP-Vorbereitung) | **1ms IDB-Read** statt 2-3s API |
+| Klassenlisten im Cache | 147 Einträge nach Pre-Fetch |
+| Logout-Privacy | alle 3 IDBs (16 Stores total) leer |
+| Bundle G.c unverändert | Fragenbank-IDB nach Logout leer |
+
+**Lehre S153 (Browser-E2E hat sie ans Licht gebracht):**
+SuS kann sich auch via Google-Login einloggen (Email auf `@stud.gymhofwil.ch` → `rolleAusDomain → 'sus'`), nicht nur via Schülercode. `authStore.anmelden` muss daher Pre-Fetches differenzieren: Fragenbank + Klassenlisten sind LP-only → Backend-403 wenn SuS sie ruft. Spec hatte das übersehen, weil sie Q3a als `anmeldenMitCode`-Frage verstanden hatte. Fix: `if (rolle === 'lp')` Guard für die zwei LP-only Pre-Fetches; Gruppen feuert für alle. Verifiziert via 11. Test in `authStoreLoginPrefetch.test.ts`.
+
+**Implementations-Commits auf `main`** (10 Commits + Merge-Commit):
+- `a559c2a` Plan via writing-plans (Plan-Phase, 1 Reviewer-Loop, approved)
+- `62d6909` fake-indexeddb als devDep + globaler IDB-Polyfill
+- `1fbc039` klassenlistenCache (IDB) + 6 Unit-Tests
+- `91f1b89` gruppenCache (IDB, 3 Stores) + 8 Unit-Tests
+- `9b9840d` klassenlistenStore (Cache-First) + 5 Unit-Tests
+- `fd5fd97` gruppenStore Cache-First + reset() + 5 Unit-Tests
+- `66d7e46` LP-Login Pre-Fetch (3 Stores) + Logout Promise.all + 3 Tests
+- `adfd211` SuS-anmeldenMitCode Pre-Fetch nur Gruppen + 1 Test
+- `752d1fd` VorbereitungPhase nutzt klassenlistenStore (Cache-First + force für Refresh)
+- `28c9633` Rollen-Guard für LP-only Pre-Fetches in anmelden() + 1 Test (E2E-Hotfix)
+
+**Test-Stand:** 772 vitest grün (Baseline 743 + 29 neue) | tsc clean | build OK
+
+### Was als nächstes ansteht
+
+- **Bundle G.e** (Fragensammlung-Virtualisierung) — Plan S151 Spec ready
+- **Bundle G.f** (LP-Startseite-Skeleton) — Plan S151 Spec ready
+- Beide Bundles sind unabhängig voneinander → freie Reihenfolge
+
+---
+
+### Vorheriger Stand (S152, 27.04.2026) — Bundle G.d.1 auf `main` (Hebel A/B/C/D)
 
 **Was die Session machte:** Plan-Phase via `writing-plans`-Skill (2 Reviewer-Loops) → Implementation via `subagent-driven-development`-Skill (8 Implementer-Subagents + Spec/Quality-Reviews je Task) → Backend GAS-Tests grün → Frontend-Build grün → Browser-E2E mit echten Logins → Merge auf `main`.
 
