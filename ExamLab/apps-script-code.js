@@ -6552,6 +6552,92 @@ function getOrCreateKorrekturSheet(pruefungId) {
 
 function setKorrekturStatus(sheet, status, erledigt, gesamt) {
   sheet.getRange('Z1').setValue(JSON.stringify({ status, erledigt, gesamt, timestamp: new Date().toISOString() }));
+  // Bundle G.d.1 — Cache-Invalidierung. pruefungId aus Sheet-Name 'Korrektur_<id>' extrahieren.
+  try {
+    var name = sheet.getName();
+    if (name && name.indexOf('Korrektur_') === 0) {
+      CacheService.getScriptCache().remove('korrektur_data_' + name.substring(10));
+    }
+  } catch (e) { /* fail-silent */ }
+}
+
+/**
+ * Bundle G.d.1 — Berechnet die Korrektur-Body-Struktur (ohne jsonResponse-Wrapping
+ * und ohne letzteAktualisierung). Auth-Check ist Caller-Responsibility.
+ *
+ * Wird von ladeKorrektur und lernplattformPreWarmKorrektur genutzt.
+ *
+ * @returns {Object} Body. Bei fehlendem Sheet leerer Schueler-Array + idle-Status.
+ */
+function ladeKorrekturBerechne_(pruefungId) {
+  var sheet = ANTWORTEN_MASTER_ID
+    ? SpreadsheetApp.openById(ANTWORTEN_MASTER_ID).getSheetByName('Korrektur_' + pruefungId)
+    : null;
+
+  var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  var configRow = getSheetData(configSheet).find(function(r) { return r.id === pruefungId; });
+
+  if (!sheet) {
+    return {
+      pruefungId: pruefungId,
+      pruefungTitel: configRow ? configRow.titel : pruefungId,
+      datum: configRow ? configRow.datum : '',
+      klasse: configRow ? configRow.klasse : '',
+      schueler: [],
+      batchStatus: 'idle',
+    };
+  }
+
+  var data = getSheetData(sheet);
+  var statusJson = safeJsonParse(sheet.getRange('Z1').getValue(), { status: 'idle' });
+  var schuelerMap = {};
+  for (var i = 0; i < data.length; i++) {
+    var row = data[i];
+    if (!row.email) continue;
+    if (!schuelerMap[row.email]) {
+      schuelerMap[row.email] = {
+        email: row.email, name: row.name || row.email,
+        bewertungen: {}, gesamtPunkte: 0, maxPunkte: 0, korrekturStatus: 'offen',
+      };
+    }
+    var b = {
+      frageId: row.frageId, fragenTyp: row.fragenTyp || '',
+      maxPunkte: Number(row.maxPunkte) || 0,
+      kiPunkte: row.kiPunkte !== '' ? Number(row.kiPunkte) : null,
+      lpPunkte: row.lpPunkte !== '' ? Number(row.lpPunkte) : null,
+      kiBegruendung: row.kiBegruendung || null,
+      kiFeedback: row.kiFeedback || null,
+      lpKommentar: row.lpKommentar || null,
+      quelle: row.quelle || 'auto',
+      geprueft: row.geprueft === 'true',
+    };
+    schuelerMap[row.email].bewertungen[row.frageId] = b;
+    var eff = b.lpPunkte !== null ? b.lpPunkte : (b.kiPunkte !== null ? b.kiPunkte : 0);
+    schuelerMap[row.email].gesamtPunkte += eff;
+    schuelerMap[row.email].maxPunkte += b.maxPunkte;
+  }
+
+  var schuelerKeys = Object.keys(schuelerMap);
+  for (var k = 0; k < schuelerKeys.length; k++) {
+    var s = schuelerMap[schuelerKeys[k]];
+    var bewertungen = Object.values(s.bewertungen);
+    if (bewertungen.every(function(b) { return b.geprueft; })) {
+      s.korrekturStatus = 'review-fertig';
+    } else if (bewertungen.some(function(b) { return b.quelle === 'ki' || b.quelle === 'auto'; })) {
+      s.korrekturStatus = 'ki-bewertet';
+    }
+  }
+
+  return {
+    pruefungId: pruefungId,
+    pruefungTitel: configRow ? configRow.titel : pruefungId,
+    datum: configRow ? configRow.datum : '',
+    klasse: configRow ? configRow.klasse : '',
+    schueler: Object.values(schuelerMap),
+    batchStatus: statusJson.status || 'idle',
+    batchFortschritt: statusJson.erledigt !== undefined
+      ? { erledigt: statusJson.erledigt, gesamt: statusJson.gesamt } : undefined,
+  };
 }
 
 function ladeKorrektur(pruefungId, email) {
@@ -6560,73 +6646,39 @@ function ladeKorrektur(pruefungId, email) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
 
-    const sheet = ANTWORTEN_MASTER_ID
-      ? SpreadsheetApp.openById(ANTWORTEN_MASTER_ID).getSheetByName('Korrektur_' + pruefungId)
-      : null;
-
-    if (!sheet) {
-      const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
-      const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
-      return jsonResponse({
-        pruefungId,
-        pruefungTitel: configRow ? configRow.titel : pruefungId,
-        datum: configRow ? configRow.datum : '',
-        klasse: configRow ? configRow.klasse : '',
-        schueler: [],
-        batchStatus: 'idle',
-        letzteAktualisierung: new Date().toISOString(),
-      });
-    }
-    const data = getSheetData(sheet);
-    const statusJson = safeJsonParse(sheet.getRange('Z1').getValue(), { status: 'idle' });
-    const configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
-    const configRow = getSheetData(configSheet).find(r => r.id === pruefungId);
-
-    const schuelerMap = {};
-    for (const row of data) {
-      if (!row.email) continue;
-      if (!schuelerMap[row.email]) {
-        schuelerMap[row.email] = {
-          email: row.email, name: row.name || row.email,
-          bewertungen: {}, gesamtPunkte: 0, maxPunkte: 0, korrekturStatus: 'offen',
-        };
-      }
-      const b = {
-        frageId: row.frageId, fragenTyp: row.fragenTyp || '',
-        maxPunkte: Number(row.maxPunkte) || 0,
-        kiPunkte: row.kiPunkte !== '' ? Number(row.kiPunkte) : null,
-        lpPunkte: row.lpPunkte !== '' ? Number(row.lpPunkte) : null,
-        kiBegruendung: row.kiBegruendung || null,
-        kiFeedback: row.kiFeedback || null,
-        lpKommentar: row.lpKommentar || null,
-        quelle: row.quelle || 'auto',
-        geprueft: row.geprueft === 'true',
-      };
-      schuelerMap[row.email].bewertungen[row.frageId] = b;
-      const eff = b.lpPunkte !== null ? b.lpPunkte : (b.kiPunkte !== null ? b.kiPunkte : 0);
-      schuelerMap[row.email].gesamtPunkte += eff;
-      schuelerMap[row.email].maxPunkte += b.maxPunkte;
-    }
-
-    for (const s of Object.values(schuelerMap)) {
-      const bewertungen = Object.values(s.bewertungen);
-      if (bewertungen.every(b => b.geprueft)) {
-        s.korrekturStatus = 'review-fertig';
-      } else if (bewertungen.some(b => b.quelle === 'ki' || b.quelle === 'auto')) {
-        s.korrekturStatus = 'ki-bewertet';
+    // Bundle G.d.1 — Cache-Hit-Pfad
+    var cache = CacheService.getScriptCache();
+    var cacheKey = 'korrektur_data_' + pruefungId;
+    var cached = cache.get(cacheKey);
+    if (cached) {
+      try {
+        var cachedBody = JSON.parse(cached);
+        cachedBody.letzteAktualisierung = new Date().toISOString();
+        return jsonResponse(cachedBody);
+      } catch (e) {
+        console.log('[ladeKorrektur] Cache-Parse-Fehler: ' + e.message);
+        // Fall-through zu Sheet-Read
       }
     }
 
-    return jsonResponse({
-      pruefungId,
-      pruefungTitel: configRow ? configRow.titel : pruefungId,
-      datum: configRow ? configRow.datum : '',
-      klasse: configRow ? configRow.klasse : '',
-      schueler: Object.values(schuelerMap),
-      batchStatus: statusJson.status || 'idle',
-      batchFortschritt: statusJson.erledigt !== undefined ? { erledigt: statusJson.erledigt, gesamt: statusJson.gesamt } : undefined,
-      letzteAktualisierung: new Date().toISOString(),
-    });
+    var body = ladeKorrekturBerechne_(pruefungId);
+    body.letzteAktualisierung = new Date().toISOString();
+
+    // Cache befüllen (best-effort, nicht blockierend)
+    try {
+      var serialized = JSON.stringify(body);
+      // Echter Byte-Count gegen CacheService-100KB-Limit, 80KB als Sicherheits-Threshold
+      var bytes = Utilities.newBlob(serialized).getBytes().length;
+      if (bytes <= 80000) {
+        cache.put(cacheKey, serialized, 60);
+      } else {
+        Logger.log('[ladeKorrektur] body=%s Bytes > 80000, kein Cache-Put', bytes);
+      }
+    } catch (e) {
+      console.log('[ladeKorrektur] Cache-Put-Fehler: ' + e.message);
+    }
+
+    return jsonResponse(body);
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
@@ -6796,6 +6848,11 @@ function speichereKorrekturZeile(body) {
         } catch(e) { console.warn('[Kalibrierung] Korrektur-schliesseFeedback:', e); }
       });
     }
+
+    // Bundle G.d.1 — Cache-Invalidierung
+    try {
+      CacheService.getScriptCache().remove('korrektur_data_' + pruefungId);
+    } catch (e) { /* fail-silent */ }
 
     return jsonResponse({ success: true });
   } catch (error) {
