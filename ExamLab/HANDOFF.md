@@ -6,9 +6,42 @@
 
 ---
 
-## Für die nächste Session (S151)
+## Für die nächste Session (S152)
 
-### Aktueller Stand (S150, 27.04.2026) — autoSave-IDB-Race-Fix auf `main`
+### Aktueller Stand (S151, 27.04.2026) — Bundle G.d/e/f Specs auf `main`, Plan-Phase offen
+
+**Was die Session machte:** Reine Brainstorming + Spec-Phase für die offenen Bundle-G-Sub-Bundles. Vier Specs erstellt, jede via Spec-Reviewer-Subagent geprüft und nach Findings verfeinert. Keine Code-Änderungen am Frontend/Backend.
+
+**Bundle G ursprünglich** (HANDOFF S150) hatte 3 offene Punkte: G.d, G.e, G.f. Im Brainstorming wurde **G.d in zwei Sub-Bundles zerlegt** weil zwei verschiedene Architektur-Familien (G.a-Backend-Pre-Warm vs. G.c-IDB-Cache) ein gemeinsames Bundle künstlich verwoben hätten. Damit existieren jetzt **4 Specs** für die Plan-Phase:
+
+| Sub-Bundle | Spec | Inhalt | Architektur |
+|---|---|---|---|
+| **G.d.1** | `2026-04-27-bundle-g-d-1-phasen-uebergang-latenzen-design.md` | 4 Hebel: LP-Polling Lobby 15s→5s, `schalteFrei` Backend-Pre-Warm Frage-Daten, Korrektur-Pre-Warm bei Tab-Klick "Auswertung" (neuer Endpoint), SuS-Warteraum 5s→3s | G.a-Familie (Backend + Polling-Konstanten) |
+| **G.d.2** | `2026-04-27-bundle-g-d-2-stammdaten-idb-cache-design.md` | IDB-Cache für Klassenlisten + Gruppen, Login-Pre-Fetch (LP: beide, SuS: nur Gruppen), 24h TTL, Logout-Cleanup analog G.c (`tx.oncomplete`-await) | G.c-Familie (Frontend-IDB) |
+| **G.e** | `2026-04-27-bundle-g-e-fragensammlung-virtualisierung-design.md` | `@tanstack/react-virtual` ersetzt `.map`-Rendering in FragenBrowser. DOM ~80 statt ~2400. Lade-Mehr-Button entfällt. Refactor extrahiert `VirtualisierteFragenListe.tsx`. Sticky-Header-Spike als Plan-Schritt 2 | UI-Performance |
+| **G.f** | `2026-04-27-bundle-g-f-lp-startseite-skeleton-design.md` | Globalen `LPSkeleton` durch granulare Per-Section-Skeletons ersetzen (Cards/Tracker/Uebungen). Header+Tabs sofort sichtbar. Skeleton-Anzahl aus localStorage | UI-Wahrnehmung |
+
+**Spec-Commits auf `main`:**
+- `467da2e` G.d.1 Spec + `5ac6641` Review-Refinement (LockService→CacheService-Soft-Lock, E2E-Quantifizierung, Deploy-Hard-Constraint)
+- `d2133fb` G.d.2 Spec (Review approved ohne Spec-Edits — 5 advisory-Items für Plan-Phase)
+- `6753b40` G.e Spec + `291a56c` Review-Refinement (Sticky-Header-Limitation als Plan-Phase-Spike, FragenBrowserHeader-Cleanup, Preflight-Messungen)
+- `8af8191` G.f Spec + `1c53f59` Review-Refinement (localStorage-Bindestrich-Konvention, handleZurueck-Re-Load-Pfad)
+
+**Test-Stand:** unverändert seit S150 — 731/731 vitest grün, kein Code-Change in dieser Session.
+
+**Empfohlene Implementations-Reihenfolge:** G.d.1 → G.d.2 → G.e → G.f (jeweils eigenes Feature-Branch, eigener Plan via writing-plans-Skill, eigenes Browser-E2E + Merge nach LP-Freigabe). G.d.2 hängt nicht von G.d.1 ab — könnte auch parallel oder vorgezogen.
+
+**Lehre S151:** Roadmap-Zeilen sind oft mehrdeutig oder zu eng. "G.d Lobby Live schalten Pre-Warm Backend-only" entpuppte sich beim Brainstormen als 4 Sync-Punkte zwischen LP+SuS, primär Polling-Tuning, NICHT Backend-only. Brainstormen vor Plan-Phase hat den Scope realitätsnah gemacht und das Bundle in 2 Architektur-saubere Teile zerlegt.
+
+**Offen für S152+:**
+- Plan-Phase via `writing-plans`-Skill für G.d.1 (kleinster Scope, schnellster Win)
+- Implementation G.d.1 auf `feature/bundle-g-d-1`-Branch
+- Browser-E2E mit echten Logins, Merge nach LP-Freigabe
+- Danach G.d.2, G.e, G.f sequentiell
+
+---
+
+### Vorgänger-Stand (S150, 27.04.2026) — autoSave-IDB-Race-Fix auf `main`
 
 **Was der Fix macht:** Folge-Hotfix zur S149-Lehre. Derselbe Bug-Pattern wie G.c-`clearFragenbankCache` (S149) existierte auch in `autoSave.ts::clearIndexedDB` — `store.delete()` ohne `tx.oncomplete`-await. Aufgerufen via `resetPruefungState()` als fire-and-forget direkt vor `window.location.href` in `abmelden()`. Bei beendeter Prüfung (LP-beendet-Pfad) blieben SuS-Antwort-Daten nach Logout im IDB hängen.
 
