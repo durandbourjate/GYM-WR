@@ -140,17 +140,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
       saveSession(user)
       saveDemoFlag(false)
       set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
-      // Bundle G.c — Fragenbank im Hintergrund vorladen, damit FragenBrowser instant rendert
-      void useFragenbankStore.getState().lade(credential.email).catch((e) => {
-        console.warn('[G.c] Fragenbank-Pre-Fetch fehlgeschlagen (silent):', e)
-      })
-      // Bundle G.d.2 — Klassenlisten + Gruppen vorladen für instant Vorbereitungs-Tab + Üben-Kurs-Auswahl
-      void useKlassenlistenStore.getState().lade(credential.email).catch((e) => {
-        console.warn('[G.d.2] Klassenlisten-Pre-Fetch fehlgeschlagen (silent):', e)
-      })
+      // Bundle G.d.2 — Gruppen für ALLE Logins (LP + SuS-via-Google)
       void useUebenGruppenStore.getState().ladeGruppen(credential.email).catch((e) => {
         console.warn('[G.d.2] Gruppen-Pre-Fetch fehlgeschlagen (silent):', e)
       })
+      // G.c + G.d.2 — Fragenbank + Klassenlisten sind LP-only.
+      // SuS-Google-Login (rolle='sus') würde sonst 403 vom Backend bekommen
+      // (silent fail, aber unnötiger API-Roundtrip + Console-Warning).
+      if (rolle === 'lp') {
+        void useFragenbankStore.getState().lade(credential.email).catch((e) => {
+          console.warn('[G.c] Fragenbank-Pre-Fetch fehlgeschlagen (silent):', e)
+        })
+        void useKlassenlistenStore.getState().lade(credential.email).catch((e) => {
+          console.warn('[G.d.2] Klassenlisten-Pre-Fetch fehlgeschlagen (silent):', e)
+        })
+      }
     } finally {
       loginInProgress = false
     }
