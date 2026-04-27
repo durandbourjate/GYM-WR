@@ -9051,6 +9051,82 @@ function preWarmKorrekturNachAbgabe_(pruefungId, susEmail) {
 }
 
 /**
+ * Bundle G.d.1 Hebel B — Inline-Pre-Warm der Frage-Daten beim LP-Klick "Freischalten".
+ *
+ * Wird aus schalteFreiEndpoint nach setValue('freigeschaltet') aufgerufen (try/catch).
+ * Liest fragenIds aus Configs-Sheet anhand pruefungId und befüllt CacheService
+ * via bulkLadeFragenAusSheet_. CacheService-Soft-Lock (30s) dedupliziert mit
+ * G.a-Trigger A (lernplattformPreWarmFragen) — Lock-Key konkurriert NICHT
+ * (anderer Prefix), also doppelter Pre-Warm möglich aber unschädlich.
+ *
+ * Latenz-Impact auf schalteFrei-Response: ~50-200ms cold, ~10ms warm.
+ *
+ * @param {string} pruefungId
+ */
+function preWarmFragenBeimFreischalten_(pruefungId) {
+  var startMs = Date.now();
+  try {
+    // CacheService-Soft-Lock (30s) gegen Doppel-Read bei Schnell-Klicks
+    var cache = CacheService.getScriptCache();
+    var lockKey = 'prewarm_freischalten_' + pruefungId;
+    if (cache.get(lockKey)) {
+      Logger.log('[PreWarmFreischalten] dedup pruefungId=%s', pruefungId);
+      return;
+    }
+    cache.put(lockKey, '1', 30);
+
+    // fragenIds aus Configs-Sheet (analog preWarmKorrekturNachAbgabe_ Z.~9000)
+    var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    var configRow = getSheetData(configSheet).find(function(r) { return r.id === pruefungId; });
+    if (!configRow) {
+      console.log('[PreWarmFreischalten] Config nicht gefunden: ' + pruefungId);
+      return;
+    }
+
+    var abschnitte;
+    try { abschnitte = JSON.parse(configRow.abschnitte || '[]'); }
+    catch (e) {
+      console.log('[PreWarmFreischalten] abschnitte-Parse-Fehler: ' + e.message);
+      return;
+    }
+
+    var fragenIds = [];
+    for (var i = 0; i < abschnitte.length; i++) {
+      var ids = abschnitte[i].fragenIds || abschnitte[i].fragen || [];
+      for (var j = 0; j < ids.length; j++) {
+        var fid = typeof ids[j] === 'string' ? ids[j] : (ids[j] && ids[j].id);
+        if (fid) fragenIds.push(fid);
+      }
+    }
+    if (fragenIds.length === 0) {
+      console.log('[PreWarmFreischalten] keine fragenIds in pruefung=' + pruefungId);
+      return;
+    }
+
+    var gruppeId = configRow.klasse || '';
+    var fachbereich = (configRow.fachbereiche || '').split(',')[0] || '';
+    // Guard analog lernplattformPreWarmFragen Z. 8942: ohne beide Hinweise würde
+    // gruppiereFragenIdsNachTab_ undefiniert reagieren (G.a-Pattern).
+    if (!gruppeId && !fachbereich) {
+      console.log('[PreWarmFreischalten] keine gruppeId/fachbereich, skip pruefungId=' + pruefungId);
+      return;
+    }
+    var byTab = gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich);
+    for (var sheetId in byTab) {
+      for (var tab in byTab[sheetId]) {
+        bulkLadeFragenAusSheet_(sheetId, tab, byTab[sheetId][tab]);
+      }
+    }
+
+    var latenzMs = Date.now() - startMs;
+    Logger.log('[PreWarmFreischalten] pruefungId=%s n=%s ms=%s',
+               pruefungId, fragenIds.length, latenzMs);
+  } catch (e) {
+    console.log('[PreWarmFreischalten-Fehler] ' + e.message);
+  }
+}
+
+/**
  * Frage unbereinigt laden — für Server-Korrektur.
  * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
  * Alle anderen: aus globaler FRAGENBANK_ID.
@@ -13519,3 +13595,51 @@ function testPreWarmKorrekturNachAbgabe_() {
 }
 
 function testPreWarmKorrekturNachAbgabe() { return testPreWarmKorrekturNachAbgabe_(); }
+
+/**
+ * Test-Shim für preWarmFragenBeimFreischalten_ (Bundle G.d.1 Hebel B).
+ * Public-Wrapper testPreWarmFragenBeimFreischalten ohne trailing-Underscore
+ * (S133-Lehre: GAS-Editor-Dropdown blendet '_'-Funktionen aus).
+ */
+function testPreWarmFragenBeimFreischalten_() {
+  var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  var rows = getSheetData(configSheet).filter(function(r) { return r.abschnitte; });
+  if (rows.length === 0) {
+    throw new Error('Keine Test-Pruefung mit abschnitte gefunden');
+  }
+  var testConfig = rows[0];
+  Logger.log('Test-Config: id=%s titel=%s', testConfig.id, testConfig.titel);
+
+  // Cache cleanup vor Test
+  var cache = CacheService.getScriptCache();
+  cache.remove('prewarm_freischalten_' + testConfig.id);
+
+  // Case (a) Cold-Call
+  var t1 = Date.now();
+  preWarmFragenBeimFreischalten_(testConfig.id);
+  var ms1 = Date.now() - t1;
+  Logger.log('Case (a) Cold: ms=%s', ms1);
+  assert_(ms1 < 5000, 'Cold-Call > 5s — verdaechtig');
+  assert_(cache.get('prewarm_freischalten_' + testConfig.id) === '1',
+          'Lock-Key nach Cold-Call nicht gesetzt');
+
+  // Case (b) Deduped
+  var t2 = Date.now();
+  preWarmFragenBeimFreischalten_(testConfig.id);
+  var ms2 = Date.now() - t2;
+  Logger.log('Case (b) Deduped: ms=%s', ms2);
+  assert_(ms2 < 500, 'Deduped-Call zu langsam — Lock greift nicht');
+
+  // Case (c) Unbekannte pruefungId — kein Crash
+  preWarmFragenBeimFreischalten_('inexistente-id-xyz');
+  Logger.log('Case (c) Unbekannte ID: kein Crash');
+
+  Logger.log('=== testPreWarmFragenBeimFreischalten_ alle Cases gruen ===');
+}
+function testPreWarmFragenBeimFreischalten() { testPreWarmFragenBeimFreischalten_(); }
+
+// Top-Level assert_ — alle bestehenden assert_-Definitionen sind function-scoped
+// (innerhalb anderer Test-Shims) und damit von hier aus nicht erreichbar.
+// Nur einmal definieren, falls bei Codebase-Update ein Top-Level-assert_ ergänzt wird,
+// kann diese Definition entfallen.
+function assert_(cond, msg) { if (!cond) throw new Error(msg); }
