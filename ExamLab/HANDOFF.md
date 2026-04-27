@@ -6,9 +6,41 @@
 
 ---
 
-## Für die nächste Session (S150)
+## Für die nächste Session (S151)
 
-### Aktueller Stand (S149, 27.04.2026) — Bundle G.c (LP-Login-Pre-Fetch + Logout-Cleanup) auf `main`
+### Aktueller Stand (S150, 27.04.2026) — autoSave-IDB-Race-Fix auf `main`
+
+**Was der Fix macht:** Folge-Hotfix zur S149-Lehre. Derselbe Bug-Pattern wie G.c-`clearFragenbankCache` (S149) existierte auch in `autoSave.ts::clearIndexedDB` — `store.delete()` ohne `tx.oncomplete`-await. Aufgerufen via `resetPruefungState()` als fire-and-forget direkt vor `window.location.href` in `abmelden()`. Bei beendeter Prüfung (LP-beendet-Pfad) blieben SuS-Antwort-Daten nach Logout im IDB hängen.
+
+**Fix-Bündel** (`fix/autosave-idb-race`, Commit `1f7f0e9`):
+- `autoSave.ts::clearIndexedDB` + `clearKorrekturIndexedDB` warten auf `tx.oncomplete` (Pattern aus S149 `fragenbankCache.ts`)
+- `authStore.ts::resetPruefungState` wird async, awaitet `Promise.all([clearIndexedDB, clearQueue])` im LP-beendet-Pfad
+- Caller-Updates: `anmelden`, `anmeldenMitCode`, `abmelden` awaiten `resetPruefungState`
+- `anmeldenMitCode`-Interface auf `Promise<void>`
+- `LoginScreen.tsx`: 3 `anmeldenMitCode`-Aufrufe mit `await` (war bereits in async-Handler)
+- Test-Datei: `pruefungStore`-Mock per Closure steuerbar; neuer Test #6 für LP-beendet-Pfad analog Test #5
+
+**Test-Stand:**
+- 731/731 vitest grün (90 test files, +1 Case gegenüber S149 Baseline 730)
+- `tsc -b` clean, `npm run build` OK
+
+**Browser-E2E (staging, 27.04.2026):** LP-Login `wr.test@gymhofwil.ch` → IDB `pruefung-backup`/`antworten` mit Test-Antwort unter Key `'default'` injiziert + `pruefung-state-default.beendetUm` auf truthy gesetzt + Reload → "Abmelden" → IDB-Antworten-Store **leer** (0 keys), localStorage `pruefung-state-default` weg, sessionStorage leer. Race eliminiert ✓.
+
+**Lehre verstärkt → safety-pwa.md:** Die in S149 dokumentierte Regel "IndexedDB vor Hard-Navigation" hatte direkten Anwendungsfall. Mehrere Bug-Stellen derselben Klasse können in einem Codebase parallel existieren — bei jeder gefixten Stelle ist ein gezielter Sweep über andere `IDBObjectStore.clear/delete/put` ohne `tx.oncomplete`-await sinnvoll. Die Regel ist nicht abstrakt, sondern hat konkreten ROI.
+
+**Offen — verbleibende Stellen mit fire-and-forget IDB vor Hard-Nav:**
+- `cleanupNachAbgabe.ts:13` — `clearIndexedDB(...).catch(...)` ohne await. Aktuell KEIN Hard-Nav direkt danach (Abgabe → Bestätigungsseite, User bleibt auf Tab). Race-Risiko nur wenn User direkt nach Abgabe Tab schliesst. Niedrigere Priorität.
+- `App.tsx:180` — `clearIndexedDB(...).catch(...)` + `clearQueue(...).catch(...)` bei `durchfuehrungId`-Wechsel. Auch hier kein Hard-Nav direkt danach. OK.
+
+**Offen (Bundle G Roadmap, S151+):**
+- Bundle G.d — Lobby "Live schalten"-Pre-Warm (Backend-only, Apps-Script)
+- Bundle G.e — Fragensammlung Virtualisierung mit `react-virtual`
+- Bundle G.f — LP-Startseite Skeleton-Pattern
+- IDB-Verschlüsselung als eigenes Sub-Bundle (separates Threat-Model)
+
+---
+
+### Vorgänger-Stand (S149, 27.04.2026) — Bundle G.c (LP-Login-Pre-Fetch + Logout-Cleanup) auf `main`
 
 **Was Bundle G.c macht:** Zwei kleine Edits in `useAuthStore` plus IDB-Race-Hotfix:
 1. **Login-Pre-Fetch (LP):** Direkt nach Google-Login wird `useFragenbankStore.getState().lade(email)` fire-and-forget gefeuert (`void ... .catch(...)`). FragenBrowser-Erstöffnung profitiert vom IDB-Cache.
