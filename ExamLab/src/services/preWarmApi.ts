@@ -57,3 +57,40 @@ export async function preWarmFragen(
     console.warn('[preWarmFragen] Fehler (silent):', e)
   }
 }
+
+/**
+ * Bundle G.d.1 Hebel C — Pre-Warm der Korrektur-Daten.
+ *
+ * Fire-and-forget: returnt Promise<void>, wirft NIE — Fehler werden silent geswallowed.
+ * Wenn `signal.aborted` bei Eintritt: kein API-Call.
+ * Wenn `pruefungId` leer: kein API-Call.
+ * Wenn `email` leer: kein API-Call.
+ * Wenn `PRE_WARM_ENABLED` false: kein API-Call.
+ *
+ * Backend-Endpoint: `lernplattformPreWarmKorrektur`.
+ */
+export async function preWarmKorrektur(
+  pruefungId: string,
+  email: string,
+  signal?: AbortSignal,
+): Promise<void> {
+  if (!PRE_WARM_ENABLED) return
+  if (signal?.aborted) return
+  if (!pruefungId) return
+  if (!email) return
+
+  try {
+    const user = useUebenAuthStore.getState().user
+    const sessionToken = user?.sessionToken ?? ''
+    const response = await uebenApiClient.post<PreWarmResponse>(
+      'lernplattformPreWarmKorrektur',
+      { email, pruefungId },
+      sessionToken,
+    )
+    if (response?.error) {
+      console.warn('[preWarmKorrektur] Backend-Error:', response.error)
+    }
+  } catch (e) {
+    console.warn('[preWarmKorrektur] Fehler (silent):', e)
+  }
+}

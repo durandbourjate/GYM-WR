@@ -63,3 +63,52 @@ describe('preWarmFragen', () => {
     expect(postJsonMock).not.toHaveBeenCalled()
   })
 })
+
+describe('preWarmKorrektur', () => {
+  beforeEach(() => {
+    postJsonMock.mockReset()
+  })
+
+  it('ruft Backend-Endpoint mit pruefungId und email auf', async () => {
+    postJsonMock.mockResolvedValueOnce({ success: true, latenzMs: 800 })
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    await preWarmKorrektur('p123', 'lp@gymhofwil.ch')
+    expect(postJsonMock).toHaveBeenCalledWith(
+      'lernplattformPreWarmKorrektur',
+      expect.objectContaining({ pruefungId: 'p123', email: 'lp@gymhofwil.ch' }),
+      expect.anything(),
+    )
+  })
+
+  it('resolved mit void bei Backend-Error', async () => {
+    postJsonMock.mockResolvedValueOnce({ error: 'Nicht autorisiert' })
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    await expect(preWarmKorrektur('p123', 'lp@gymhofwil.ch')).resolves.toBeUndefined()
+  })
+
+  it('resolved mit void bei deduped-Response', async () => {
+    postJsonMock.mockResolvedValueOnce({ success: true, deduped: true })
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    await expect(preWarmKorrektur('p123', 'lp@gymhofwil.ch')).resolves.toBeUndefined()
+  })
+
+  it('skippt API-Call bei signal.aborted', async () => {
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    const abortController = new AbortController()
+    abortController.abort()
+    await preWarmKorrektur('p123', 'lp@gymhofwil.ch', abortController.signal)
+    expect(postJsonMock).not.toHaveBeenCalled()
+  })
+
+  it('skippt API-Call bei leerer pruefungId', async () => {
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    await preWarmKorrektur('', 'lp@gymhofwil.ch')
+    expect(postJsonMock).not.toHaveBeenCalled()
+  })
+
+  it('skippt API-Call bei leerer email', async () => {
+    const { preWarmKorrektur } = await import('../services/preWarmApi')
+    await preWarmKorrektur('p123', '')
+    expect(postJsonMock).not.toHaveBeenCalled()
+  })
+})
