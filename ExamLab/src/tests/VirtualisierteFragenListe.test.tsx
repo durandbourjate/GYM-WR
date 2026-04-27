@@ -13,17 +13,25 @@ import {
 import type { GruppierteAnzeige, FilterbareFrage } from '../hooks/useFragenFilter'
 
 // Mock useVirtualizer auf Modul-Ebene: Render-Tests bekommen alle Items sichtbar.
+// `mockFirstVisibleIndex` erlaubt Tests, den ersten sichtbaren Index zu konfigurieren —
+// die Lane-Header-Logik leitet `aktiverHeaderItem` davon ab.
 const scrollToIndexSpy = vi.fn()
+let mockFirstVisibleIndex: number | null = null
 vi.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: ({ count }: { count: number }) => ({
     getTotalSize: () => count * 100,
-    getVirtualItems: () =>
-      Array.from({ length: count }, (_, index) => ({
-        index,
-        key: index,
-        start: index * 100,
-        size: 100,
-      })),
+    getVirtualItems: () => {
+      const startIdx = mockFirstVisibleIndex ?? 0
+      return Array.from({ length: Math.max(0, count - startIdx) }, (_, i) => {
+        const index = startIdx + i
+        return {
+          index,
+          key: index,
+          start: index * 100,
+          size: 100,
+        }
+      })
+    },
     measureElement: () => {},
     scrollToIndex: scrollToIndexSpy,
   }),
@@ -31,6 +39,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 
 beforeEach(() => {
   scrollToIndexSpy.mockClear()
+  mockFirstVisibleIndex = null
 })
 
 const f = (id: string): FilterbareFrage =>
@@ -157,26 +166,29 @@ describe('VirtualisierteFragenListe (mit Virtualizer-Mock)', () => {
     const ga: GruppierteAnzeige[] = [
       { key: 'BWL', label: 'BWL', fragen: [f('1')] },
     ]
-    const { getByText } = await renderListe({
+    const { getAllByText } = await renderListe({
       gruppierteAnzeige: ga,
       gruppierung: 'fachbereich',
       aufgeklappteGruppen: new Set(['BWL']),
     })
-    expect(getByText('BWL')).toBeTruthy()
+    // Mit Lane-Header gibt es bei firstVisibleIndex=0 zwei Buttons mit "BWL" (Lane + virtual).
+    expect(getAllByText('BWL').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('ruft toggleGruppe mit Gruppe-Key bei Header-Klick', async () => {
+  it('ruft toggleGruppe mit Gruppe-Key bei (virtuellem) Header-Klick', async () => {
     const toggle = vi.fn()
     const ga: GruppierteAnzeige[] = [
       { key: 'BWL', label: 'BWL', fragen: [] },
     ]
-    const { getByRole } = await renderListe({
+    const { getAllByRole } = await renderListe({
       gruppierteAnzeige: ga,
       gruppierung: 'fachbereich',
       aufgeklappteGruppen: new Set(),
       toggleGruppe: toggle,
     })
-    fireEvent.click(getByRole('button', { name: /BWL/ }))
+    // Klick auf den letzten BWL-Button (= virtueller Header, nicht Lane).
+    const buttons = getAllByRole('button', { name: /BWL/ })
+    fireEvent.click(buttons[buttons.length - 1])
     expect(toggle).toHaveBeenCalledWith('BWL')
   })
 
@@ -192,6 +204,55 @@ describe('VirtualisierteFragenListe (mit Virtualizer-Mock)', () => {
     })
     // KompaktZeile enthält "+/-"-Toggle-Button als erstes Element der Zeile
     expect(container.querySelector('[data-fragen-zeile]')?.textContent).toMatch(/X/)
+  })
+
+  it('Lane-Header: bei gruppierung="keine" wird kein Lane-Header gerendert', async () => {
+    const ga: GruppierteAnzeige[] = [
+      { key: '__alle__', label: 'Alle', fragen: [f('1'), f('2')] },
+    ]
+    const { queryByTestId } = await renderListe({
+      gruppierteAnzeige: ga,
+      gruppierung: 'keine',
+      aufgeklappteGruppen: new Set(),
+    })
+    expect(queryByTestId('lane-header')).toBeNull()
+  })
+
+  it('Lane-Header: zeigt aktive Gruppe wenn erstes sichtbares Item innerhalb der Gruppe liegt', async () => {
+    const ga: GruppierteAnzeige[] = [
+      // BWL: header bei flat-Index 0, fragen 1-3 bei flat-Index 1-3
+      { key: 'BWL', label: 'BWL', fragen: [f('1'), f('2'), f('3')] },
+      // VWL: header bei flat-Index 4, fragen 4-6 bei flat-Index 5-7
+      { key: 'VWL', label: 'VWL', fragen: [f('4'), f('5'), f('6')] },
+    ]
+    // Erstes sichtbares Item ist Index 2 → mitten in BWL-Fragen → Lane sollte BWL anzeigen.
+    mockFirstVisibleIndex = 2
+    const { getByTestId } = await renderListe({
+      gruppierteAnzeige: ga,
+      gruppierung: 'fachbereich',
+      aufgeklappteGruppen: new Set(['BWL', 'VWL']),
+    })
+    const lane = getByTestId('lane-header')
+    expect(lane.textContent).toMatch(/BWL/)
+  })
+
+  it('Lane-Header: Klick ruft toggleGruppe mit aktivem Gruppe-Key', async () => {
+    const toggle = vi.fn()
+    const ga: GruppierteAnzeige[] = [
+      { key: 'BWL', label: 'BWL', fragen: [f('1'), f('2')] },
+      { key: 'VWL', label: 'VWL', fragen: [f('3'), f('4')] },
+    ]
+    // Erstes sichtbares Item ist Index 4 → VWL-Header (Index 3=ende BWL, Index 4=VWL-header)
+    // Reihenfolge: 0=BWL-header, 1=f1, 2=f2, 3=VWL-header, 4=f3, 5=f4 → Index 4 → aktive=VWL
+    mockFirstVisibleIndex = 4
+    const { getByTestId } = await renderListe({
+      gruppierteAnzeige: ga,
+      gruppierung: 'fachbereich',
+      aufgeklappteGruppen: new Set(['BWL', 'VWL']),
+      toggleGruppe: toggle,
+    })
+    fireEvent.click(getByTestId('lane-header'))
+    expect(toggle).toHaveBeenCalledWith('VWL')
   })
 
   it('ruft virtualizer.scrollToIndex(0) bei scrollResetTrigger-Wechsel', async () => {

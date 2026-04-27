@@ -7,8 +7,15 @@
  * Architektur:
  *   1. `baueFlatItems` plattet `gruppierteAnzeige` zu `FlatItem[]` (Header + Frage gemischt).
  *   2. `useVirtualizer` virtualisiert das flache Array.
- *   3. Pro Index render wir entweder einen Header (sticky) oder eine Frage-Komponente
- *      (KompaktZeile / DetailKarte je nach kompaktModus).
+ *   3. Pro Index render wir entweder einen Header (jetzt OHNE sticky — siehe Lane unten)
+ *      oder eine Frage-Komponente (KompaktZeile / DetailKarte je nach kompaktModus).
+ *   4. **Sticky-Header-Lane** (Variante A nach Spike): `position: sticky` greift nicht in
+ *      virtualisierten Items (`position: absolute; transform`) — bekannte Limitation von
+ *      @tanstack/react-virtual. Deshalb rendern wir EINEN zusätzlichen "Active Header" als
+ *      Sibling (sticky am Scroll-Container), dessen Inhalt vom ersten sichtbaren Item
+ *      abgeleitet wird (rückwärts gesucht bis zum letzten Header bei/vor `firstVisibleIndex`).
+ *      Negativer margin-top am Total-Size-Container kompensiert die Lane-Höhe, sodass
+ *      virtuelle Items ihre Position behalten.
  *
  * `scrollResetTrigger` (z.B. `${suchtext}|${gruppierung}|${count}`) führt bei Wechsel
  * zu einem `scrollToIndex(0)` — verhindert verlassen-im-Scroll bei Filter-Wechsel.
@@ -24,6 +31,9 @@ import type {
   FilterbareFrage,
   GruppierteAnzeige,
 } from '../../../../hooks/useFragenFilter.ts'
+
+/** Höhe der Sticky-Header-Lane in px (muss zur estimateSize-Headerhöhe passen). */
+const LANE_HOEHE = 36
 
 export type FlatItem =
   | {
@@ -122,18 +132,59 @@ export default function VirtualisierteFragenListe(p: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- absichtlich nur scrollResetTrigger
   }, [p.scrollResetTrigger])
 
+  const virtualItems = virtualizer.getVirtualItems()
+  const firstVisibleIndex = virtualItems.length > 0 ? virtualItems[0].index : null
+
+  /**
+   * "Aktiver" Lane-Header — der letzte Header-Eintrag, der bei oder vor dem ersten sichtbaren Item steht.
+   * Bei `gruppierung === 'keine'` oder leerer Liste: null (kein Lane-Header).
+   */
+  const aktiverHeaderItem = useMemo<FlatItem | null>(() => {
+    if (firstVisibleIndex == null) return null
+    if (p.gruppierung === 'keine') return null
+    for (let i = firstVisibleIndex; i >= 0; i--) {
+      const it = flatItems[i]
+      if (it && it.typ === 'header') return it
+    }
+    return null
+  }, [flatItems, firstVisibleIndex, p.gruppierung])
+
   if (flatItems.length === 0) return null
 
   return (
-    <div ref={setRef} className="h-full min-h-0 overflow-y-auto" data-testid="virt-scroll">
+    <div ref={setRef} className="h-full min-h-0 overflow-y-auto relative" data-testid="virt-scroll">
+      {/* Sticky-Header-Lane: rendert den aktiven Gruppenheader als sticky-Sibling, weil
+          `position: sticky` innerhalb virtualisierter (absolute-positionierter) Items
+          nicht greift. Negativer margin-top am Inner-Container darunter kompensiert die
+          Lane-Höhe, sodass virtuelle Items ihre Soll-Positionen behalten. */}
+      {aktiverHeaderItem && aktiverHeaderItem.typ === 'header' && (
+        <button
+          type="button"
+          onClick={() => p.toggleGruppe(aktiverHeaderItem.gruppeKey)}
+          data-testid="lane-header"
+          style={{ height: LANE_HOEHE }}
+          className={`sticky top-0 z-20 w-full text-left flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 cursor-pointer ${farbeHelfer(aktiverHeaderItem.gruppeKey, p.gruppierung)}`}
+        >
+          <span>{aktiverHeaderItem.istAufgeklappt ? '▼' : '▶'}</span>
+          <span className="font-semibold">
+            {labelHelfer(aktiverHeaderItem.gruppeKey, p.gruppierung)}
+          </span>
+          <span className="ml-auto text-xs text-slate-500">
+            {aktiverHeaderItem.fragenAnzahl}
+          </span>
+        </button>
+      )}
       <div
         style={{
           height: virtualizer.getTotalSize(),
           position: 'relative',
           width: '100%',
+          // Negativer Top-Offset = Lane-Höhe, damit virtuelle Items optisch dort beginnen,
+          // wo der Scroll-Container-Top ist (Lane-Header überlagert via z-index).
+          marginTop: aktiverHeaderItem ? -LANE_HOEHE : 0,
         }}
       >
-        {virtualizer.getVirtualItems().map((vItem) => {
+        {virtualItems.map((vItem) => {
           const item = flatItems[vItem.index]
           if (!item) return null
           if (item.typ === 'header') {
@@ -153,7 +204,7 @@ export default function VirtualisierteFragenListe(p: Props) {
                 <button
                   type="button"
                   onClick={() => p.toggleGruppe(item.gruppeKey)}
-                  className={`sticky top-0 z-10 w-full text-left flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 cursor-pointer ${farbeHelfer(item.gruppeKey, p.gruppierung)}`}
+                  className={`w-full text-left flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 cursor-pointer ${farbeHelfer(item.gruppeKey, p.gruppierung)}`}
                 >
                   <span>{item.istAufgeklappt ? '▼' : '▶'}</span>
                   <span className="font-semibold">
