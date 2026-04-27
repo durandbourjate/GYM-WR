@@ -28,8 +28,6 @@ export type FilterKontext = 'alle' | 'schule' | 'privat'
 
 const SCHUL_FACHBEREICHE = schulFachbereiche()
 
-const SEITEN_GROESSE = 30
-
 /** Extrahiert Pool-Thema (Pool-Titel) und Unterthema (Topic-Label) für Pool-Fragen.
  *  Pool-Fragen im alten Format haben thema=Topic-Label und kein unterthema.
  *  Erkennung über quellReferenz "Pool: ...", poolId, oder quelle='pool' */
@@ -79,8 +77,6 @@ interface FragenFilterErgebnis {
   setGruppierung: (v: Gruppierung) => void
   aufgeklappteGruppen: Set<string>
   setAufgeklappteGruppen: React.Dispatch<React.SetStateAction<Set<string>>>
-  angezeigteMenge: number
-  setAngezeigteMenge: React.Dispatch<React.SetStateAction<number>>
   kompaktModus: boolean
   setKompaktModus: (v: boolean) => void
 
@@ -96,7 +92,6 @@ interface FragenFilterErgebnis {
 
   // Aktionen
   filterZuruecksetzen: () => void
-  seitenGroesse: number
 }
 
 export function useFragenFilter(
@@ -121,7 +116,6 @@ export function useFragenFilter(
   const [sortierung, setSortierung] = useState<Sortierung>('thema')
   const [gruppierung, setGruppierung] = useState<Gruppierung>('fachbereich')
   const [aufgeklappteGruppen, setAufgeklappteGruppen] = useState<Set<string>>(new Set())
-  const [angezeigteMenge, setAngezeigteMenge] = useState(SEITEN_GROESSE)
   const [kompaktModus, setKompaktModus] = useState(false)
 
   // Alle Gruppen initial aufklappen
@@ -228,7 +222,7 @@ export function useFragenFilter(
   // Gruppieren
   const gruppierteAnzeige = useMemo(() => {
     if (gruppierung === 'keine') {
-      return [{ key: '', label: '', fragen: sortierteFragen.slice(0, angezeigteMenge) }]
+      return [{ key: '', label: '', fragen: sortierteFragen }]
     }
 
     const gruppenMap = new Map<string, FilterbareFrage[]>()
@@ -245,7 +239,7 @@ export function useFragenFilter(
       label: key,
       fragen: gruppenMap.get(key)!,
     }))
-  }, [sortierteFragen, gruppierung, angezeigteMenge])
+  }, [sortierteFragen, gruppierung])
 
   // Statistiken für Header (gefiltert — zeigt Anzahl der aktuell sichtbaren Fragen)
   const stats = useMemo(() => {
@@ -299,7 +293,6 @@ export function useFragenFilter(
     sortierung, setSortierung,
     gruppierung, setGruppierung,
     aufgeklappteGruppen, setAufgeklappteGruppen,
-    angezeigteMenge, setAngezeigteMenge,
     kompaktModus, setKompaktModus,
     verfuegbareThemen,
     verfuegbareUnterthemen,
@@ -310,6 +303,5 @@ export function useFragenFilter(
     alleStats,
     aktiveFilter,
     filterZuruecksetzen,
-    seitenGroesse: SEITEN_GROESSE,
   }
 }
