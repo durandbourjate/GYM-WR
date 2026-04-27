@@ -7,15 +7,14 @@ import DurchfuehrenDashboardSource from '../DurchfuehrenDashboard.tsx?raw'
 // G.f.2 Rendering-Tests: Mocks müssen VOR allen Komponenten-Imports stehen
 // =============================================================================
 
-// --- kontrollierbare Promises für ladeMonitoring + ladeNachrichten + ladePruefung ---
-let monitoringResolve: ((v: unknown) => void) | null = null
-let pruefungResolve: ((v: unknown) => void) | null = null
+// --- pending Promises für ladeMonitoring + ladeNachrichten + ladePruefung
+// Skeleton-Tests prüfen den ladeStatus='laden'-Pfad — Promises bleiben absichtlich pending. ---
 
 vi.mock('../../../../services/apiService', () => ({
   apiService: {
     istKonfiguriert: () => true,
-    ladeMonitoring: vi.fn(() => new Promise((resolve) => { monitoringResolve = resolve })),
-    ladePruefung: vi.fn(() => new Promise((resolve) => { pruefungResolve = resolve })),
+    ladeMonitoring: vi.fn(() => new Promise(() => { /* bleibt pending */ })),
+    ladePruefung: vi.fn(() => new Promise(() => { /* bleibt pending */ })),
     ladeAbgaben: vi.fn(() => new Promise(() => { /* bleibt pending */ })),
     ladeNachrichten: vi.fn(() => Promise.resolve([])),
     ladeEinzelConfig: vi.fn(() => new Promise(() => { /* bleibt pending */ })),
@@ -141,9 +140,6 @@ describe('DurchfuehrenDashboard — Pre-Warm-Trigger Hebel C', () => {
 describe('G.f.2 Skeleton-Pattern', () => {
   beforeEach(() => {
     localStorage.clear()
-    // Promises zurücksetzen
-    monitoringResolve = null
-    pruefungResolve = null
     vi.clearAllMocks()
     // window.location.search zurücksetzen (kein ?tab)
     Object.defineProperty(window, 'location', {
