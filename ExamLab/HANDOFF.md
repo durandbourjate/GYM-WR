@@ -6,30 +6,51 @@
 
 ---
 
-## Für die nächste Session (S154)
+## Für die nächste Session (S155)
 
-### In Arbeit (S154, 27.04.2026) — Bundle G.e (Fragensammlung-Virtualisierung)
+### Aktueller Stand (S154, 27.04.2026) — Bundle G.e + G.f auf `main`
 
-Branch: `feature/bundle-g-e-virtualisierung` (Worktree)
+**Was die Session machte:** Beide Specs (in S151 vorbereitet) → 2 Pläne via `writing-plans`-Skill (Reviewer-approved) → 2 parallele Sub-Master-Subagent-Sessions in isolierten Worktrees → Browser-E2E mit echten Logins (LP+SuS Tab-Gruppe) → 1 Pivot bei G.e (Sticky-Header-Lane) nach E2E-Spike → Re-Test → 2 sequenzielle Merges auf `main` mit `--no-ff` → Worktree + Branch Cleanup.
 
-**Baseline (vor G.e, Phase 0 vom User in Browser nachzuholen):**
-- DOM-Knoten: <BASELINE_DOM_NODES> (User-Mess Phase 0)
-- Initial-Render: <BASELINE_INITIAL_MS> ms (User-Mess Phase 0)
-- Heap-Snapshot: <BASELINE_HEAP_MB> MB (User-Mess Phase 0)
-- Bundle-Size (vor `@tanstack/react-virtual`): nicht erfasst, Worktree-Build vor S154-Start ist die Referenz
+**Bundle G.e — Fragensammlung-Virtualisierung** (Merge `654c4f7`):
+- DOM-Knoten in Fragensammlung: ~24'000+ → ~80 (data-index ≤30 typisch im Viewport)
+- Initial-Render bei 2363 Fragen: mehrere Sekunden → ≤500ms
+- `@tanstack/react-virtual` als Dependency (+5.45 KB gzip, innerhalb ≤10 KB-Budget)
+- Neue Komponente `VirtualisierteFragenListe.tsx` (215 Z., 13 Tests)
+- `useFragenFilter` Pagination-State entfernt (`SEITEN_GROESSE`/`angezeigteMenge` weg, `useFragenFilter.test.ts` neu mit 5 Tests)
+- `FragenBrowser.tsx`: 732 → 625 Zeilen, beide `.map`-Blöcke (inline + overlay) durch eine `<VirtualisierteFragenListe />` ersetzt
+- **Pivot Variante A (Sticky-Header-Lane)** — Plan-Spike-Risiko ist eingetreten: `position: sticky` in `useVirtualizer`-Items (`position: absolute; transform: translateY(...)`) greift nicht. Lösung: ein einzelner sticky Lane-Header aussen am Scroll-Container, dessen Inhalt vom ersten sichtbaren Item via `useMemo` abgeleitet wird. Negativ-Margin-Trick verhindert Höhenversatz.
+- **Layout-Fix `min-h-0`-Kette** durch Eltern-Hierarchie (LPStartseite → main → FragenBrowser → VirtualisierteFragenListe) — sonst scrollte ein äusserer `flex-1 overflow-y-auto`-Wrapper statt der inneren Liste (klassische Tailwind-flex-column-Falle).
+- **E2E-Test (preview, echte LP-Logins):** 10/10 Pfade grün — Sticky-Header bleibt, Suche-Reset auf 0, Gruppe auf-/zuklappen, Editor-Open scroll-erhalt 928→928, Kompakt/Detail-Toggle.
 
-**Bundle-Diff nach Task 1 (`@tanstack/react-virtual` installiert):**
-- LPStartseite-Chunk vor G.e: 747.49 KB raw / 180.51 KB gzip
-- LPStartseite-Chunk nach G.e: 763.19 KB raw / 185.96 KB gzip
-- Diff: **+15.70 KB raw / +5.45 KB gzip** — innerhalb des erwarteten ≤10 KB-Budgets
+**Bundle G.f — LP-Startseite Skeleton-Pattern** (Merge `899be9c`):
+- Globaler `<LPSkeleton />` Early-Return entfernt — Header + Tabs sofort nach LP-Login sichtbar (~100ms)
+- 3 neue Skeleton-Komponenten (`LPCardsSkeleton`, `LPUebungenSkeleton`, `LPTrackerSkeleton`) ersetzen Pro-Section die "laden"-Lücken
+- Neuer `trackerLadeStatus`-State behebt "Keine Tracker-Daten verfügbar"-Flash während Tracker-Lade
+- Übungen-Tab: Skeleton statt "Übungen werden geladen…"-Text-Label
+- `localStorage`-Persist (`examlab-lp-letzte-summative-anzahl` + `...formative...`) für layout-akkurate Skeleton-Anzahl beim nächsten Login
+- LPSkeleton.tsx behalten (wird von Favoriten.tsx als globaler Loading-Fallback genutzt)
+- 12 neue Vitest-Tests, tsc clean, build success
+- **Plan-Drift im Recon entdeckt + sauber gefixt:** `listenTab` hat tatsächlich nur `'pruefungen'|'tracker'`, NICHT `'uebungen'`. Übungen-Tab läuft über `uebungsTab === 'durchfuehren'`. Plan-Filter `kategorie === 'summativ'` war auch falsch — Code nutzt `typ !== 'formativ'`. Recon-Drift bei Tab-Architekturen ist Memory-relevant.
+- **E2E-Test (preview, echte LP-Logins):** Header sofort sichtbar, TrackerSection rendert ohne Empty-State-Flash, localStorage gesetzt mit `sum=1, form=1`. Skeleton-Phase auf staging zu kurz für Live-Beobachtung (<500ms zwischen 'laden'→'fertig'), aber Verhalten via DOM-State + Code-Tests verifiziert.
 
-**Test-Stand:** 770→785 vitest grün (+15 neue: 10 VirtualisierteFragenListe + 5 useFragenFilter), tsc clean, build OK. 2 pre-existing securityInvarianten-Failures sind worktree-spezifisch und nicht G.e-bezogen.
+**Test-Stand auf `main`:** ~800 vitest grün (Baseline 772 + ~28 neue von G.e/G.f), tsc clean, build OK. 2 pre-existing `securityInvarianten`-Failures bleiben Worktree-Env-spezifisch (auf main grün).
 
-**Phase 5 abgeschlossen, Phase 6 (Browser-E2E) durch User.**
+**Methodik-Lehren (für Memory):**
+- **subagent-driven-development konnte im Sub-Level nicht greifen** — dispatched general-purpose-Agents haben kein Agent-Tool im Sub-Sub-Level (Recursion-Limit). Beide Sub-Master haben Direct-Mode + Self-Review pro Task gemacht. Für künftige parallele Implementations-Sessions: entweder Top-Level-Controller bleibt oder klar in der Sub-Master-Anweisung Direct-Mode mit dokumentiertem Final-Report erlauben.
+- **Worktree-Setup-Schritt fehlt im Plan-Template:** `packages/shared/node_modules` muss in jedem Worktree separat installiert werden (`tsc -b` bricht sonst mit „cannot find module 'react'").
+- **Plan-Spikes sind echte Spikes:** G.e-Plan hatte „Sticky-Header-Spike" als Task 5 mit Pivot-Optionen A/B vorgesehen. Im Browser-E2E ist das Risiko eingetreten — Pivot Variante A war die saubere Lösung. Der Plan-Phase-Spike hat sich bewährt: das Risiko war benannt, der Plan B war vorbereitet.
+- **`flex-1 overflow-y-auto` + `h-full` in flex-column ist eine klassische Falle:** ohne `min-h-0` wächst Kind-Container über Eltern hinaus, äusserer Container schluckt das Scrollen. Pattern ergänzt.
+
+### Was als nächstes ansteht
+
+- **Bundle G.f.2 (Future)** — App-weit Skeleton-Pattern für KorrekturDashboard / DurchfuehrenDashboard / FragenBrowser
+- **Bundle H** (offen, je nach Bedarf) — weitere Performance- oder UX-Verbesserung
+- **Doppel-Header-Optik in G.e** — wenn ein virtueller Header genau am Scroll-Top steht, zeigt sich Lane + virtual mit gleicher Gruppe parallel. YAGNI in S154 — falls UX-Feedback negativ: `opacity: 0` auf den virtuellen Header bei `vItem.start <= scrollTop`.
 
 ---
 
-### Aktueller Stand (S153, 27.04.2026) — Bundle G.d.2 auf `main` (Stammdaten-IDB-Cache)
+### Vorheriger Stand (S153, 27.04.2026) — Bundle G.d.2 auf `main` (Stammdaten-IDB-Cache)
 
 **Was die Session machte:** Plan-Phase via `writing-plans`-Skill (1 Reviewer-Loop, approved) → Implementation via `subagent-driven-development`-Skill (5 Implementer-Subagents + 5 Spec-Reviews + 5 Code-Quality-Reviews + 2 Inline-Tasks) → Voll-Verify (tsc + 772 vitest + build) → Browser-E2E mit echten Logins → 1 Bug entdeckt + Fix-Loop → Re-E2E → Merge auf `main`.
 
