@@ -326,8 +326,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
-        {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto relative">
+        {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. */}
+        <div className="flex-1 relative overflow-hidden">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
@@ -501,8 +501,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
-        {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto relative">
+        {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. */}
+        <div className="flex-1 relative overflow-hidden">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
