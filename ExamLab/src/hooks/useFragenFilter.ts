@@ -8,11 +8,20 @@ import type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/grup
 import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/fragen.ts'
 
 /** Typ der sowohl für Frage als auch FrageSummary funktioniert (Filter braucht nur diese Felder) */
-type FilterbareFrage = Frage | FrageSummary
+export type FilterbareFrage = Frage | FrageSummary
 import { poolTitel } from '../utils/poolTitelMapping'
 import { schulFachbereiche } from '../utils/fachUtils'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
+
+export type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
+
+/** Eine Gruppe in der gruppierten Anzeige (key, Label, Fragen-Array). */
+export interface GruppierteAnzeige {
+  key: string
+  label: string
+  fragen: FilterbareFrage[]
+}
 export type FilterQuelle = 'alle' | 'meine' | 'fachschaft' | 'schule' | 'pool'
 export type FilterPoolStatus = 'alle' | 'ungeprueft' | 'pool_geprueft' | 'pruefungstauglich' | 'update'
 export type FilterKontext = 'alle' | 'schule' | 'privat'
@@ -80,7 +89,7 @@ interface FragenFilterErgebnis {
   verfuegbareUnterthemen: [string, number][]
   gefilterteFragen: FilterbareFrage[]
   sortierteFragen: FilterbareFrage[]
-  gruppierteAnzeige: { key: string; label: string; fragen: FilterbareFrage[] }[]
+  gruppierteAnzeige: GruppierteAnzeige[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   alleStats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   aktiveFilter: number
