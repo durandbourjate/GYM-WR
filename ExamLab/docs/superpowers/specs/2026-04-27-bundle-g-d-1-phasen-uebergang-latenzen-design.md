@@ -73,8 +73,12 @@ Verhalten:
 1. configRow aus Configs-Sheet via existierendem Helper (analog
    preWarmKorrekturNachAbgabe_ aus G.a)
 2. fragenIds aus config.abschnitte extrahieren
-3. LockService.tryLock(`prewarm_freischalten_${pruefungId}`, 30s)
-   → Lock besteht: kein Re-Read, return
+3. CacheService-Soft-Lock (30s TTL) — analog G.a's
+   lernplattformPreWarmFragen (apps-script-code.js:8957-8964):
+     var lockKey = 'prewarm_freischalten_' + pruefungId
+     if (cache.get(lockKey)) return  // dedup
+     cache.put(lockKey, '1', 30)
+   LockService wäre hier overkill (deckt nur ms-genaue Concurrency).
 4. gruppiereFragenIdsNachTab_(fragenIds, gruppeId, fachbereich)
 5. bulkLadeFragenAusSheet_ pro Tab → CacheService.putAll() (G.a-Helpers)
 6. Logger.log('[PreWarmFreischalten] pruefungId=%s n=%d ms=%d')
@@ -99,8 +103,10 @@ Response: { success: true, latenzMs: X }
 Verhalten:
 1. validiereTokenFuerEmail_(email, sessionToken)
 2. istZugelasseneLP(email)
-3. LockService.tryLock(`prewarm_korrektur_${pruefungId}`, 30s)
-   → Lock besteht: return { success: true, deduped: true }
+3. CacheService-Soft-Lock (30s TTL) — analog G.a-Pattern:
+     var lockKey = 'prewarm_korrektur_' + pruefungId
+     if (cache.get(lockKey)) return { success: true, deduped: true }
+     cache.put(lockKey, '1', 30)
 4. configRow + Korrektur-Sheet-Daten lesen (analog der Lese-Pfad
    in ladeKorrektur — exakter Helper im Plan zu lokalisieren)
 5. CacheService.putAll() für die Cache-Keys die ladeKorrektur
@@ -395,7 +401,7 @@ Test-Plan analog regression-prevention.md Phase 3:
 | 5 | LP klickt Auswertung 2× kurz hintereinander | Network-Tab: zweiter Call `deduped:true` |
 | 6 | Bundle G.a Trigger A unverändert (LP "Speichern") | Network-Tab: `lernplattformPreWarmFragen` Call wie vorher |
 | 7 | SuS-Logout-Cleanup (G.c) bleibt funktional | DevTools → IDB nach Logout leer |
-| 8 | Polling-Last sichtbar in Apps-Script-Logs | Logs zeigen 3s-Intervalle für SuS, 5s in Lobby für LP |
+| 8 | Polling-Last sichtbar in Apps-Script-Logs während 1 Min Lobby mit 1 SuS | ~20 SuS-Heartbeats (3s-Intervall) + ~12 LP-Polls (5s-Intervall) im Logger sichtbar; ±20% Toleranz |
 
 ## Akzeptanz-Kriterien
 
@@ -414,6 +420,8 @@ Test-Plan analog regression-prevention.md Phase 3:
 | Browser-E2E grün | 8/8 Punkte |
 
 ## Reihenfolge der Implementierung (Plan-Phase)
+
+**Hard-Constraint:** Ein einziger Apps-Script-Deploy für alle Backend-Änderungen (S133/S135-Lehre: Multi-Deploy-Thrash vermeiden). Backend wird vollständig fertig + GAS-getestet, dann **einmal** deployed, dann Frontend.
 
 1. **Backend gebündelt:** `lernplattformPreWarmKorrektur`-Endpoint + `preWarmFragenBeimFreischalten_`-Helper + `schalteFrei`-Erweiterung + 2 GAS-Test-Shims (ein Apps-Script-Deploy für alles)
 2. **Apps-Script-Deploy** durch User
