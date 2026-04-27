@@ -83,7 +83,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
       } catch {
         // Netzwerkfehler — nächster Poll versucht es erneut
       }
-    }, 5000)
+    }, 3000)
 
     return () => clearInterval(interval)
   }, [istFreigeschaltet, istDemoModus, config.id, user])
