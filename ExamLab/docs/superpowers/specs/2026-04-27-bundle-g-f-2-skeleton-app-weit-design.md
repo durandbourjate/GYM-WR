@@ -397,6 +397,7 @@ Pattern aus G.f wiederverwenden: Vor jedem Skeleton-Render-Test einen `data-test
 | Bestehende Fehler-Box bleibt funktional bei `ladeStatus === 'fehler'` | ja |
 | Eingebettetes KorrekturDashboard unangetastet | ja |
 | Apps-Script unverändert | ja |
+| Eingebettetes KorrekturDashboard zeigt seinen eigenen „Korrektur wird geladen…"-Text bei Cache-Miss | erwartet (kein Regression-Indikator) — siehe Out-of-Scope |
 | Alle vitest grün | ~800 baseline + ~17 neue |
 | `tsc -b` clean | ja |
 | `npm run build` erfolgreich | ja |
@@ -448,3 +449,4 @@ Geschätzte Implementierung: ~6-8 Commits in 1 Subagent-Driven-Session.
 - **Inline-Hinweis bei `ladeStatus === 'fertig' && !config`** — exakte Copy + Reload-Button-Pfad
 - **Eingebettetes KorrekturDashboard im Auswertung-Tab**: prüfen ob die Tab-Switch-Logik beim ersten Render Skeleton-fertig-Übergang ohne Layout-Sprung handhabt
 - **Visual Smoke-Test Pfade**: konkrete Test-Pruefung wählen (Einrichtungsprüfung), Klassen-Variante (z.B. mit 5 vs 22 SuS) für Persist-Effekt
+- **Persist-Trigger-`useEffect` redundante Writes vermeiden**: `useRef<number | null>` für zuletzt geschriebenen Wert — nur schreiben wenn `aktuellerWert !== refWert`. Verhindert localStorage-I/O bei jedem Polling-Update wenn Schüler-Anzahl konstant bleibt. Optional, aber konsistent mit Pattern in `LPStartseite.tsx` (G.f).
