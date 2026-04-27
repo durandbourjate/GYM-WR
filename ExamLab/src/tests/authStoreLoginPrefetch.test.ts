@@ -25,23 +25,24 @@ vi.mock('../services/lpApi', () => ({
   ]),
 }))
 
+// Mocks für autoSave/retryQueue — werden vom internen resetPruefungState im
+// LP-beendet-Pfad aufgerufen. Closure-Variablen erlauben pro Test ein
+// hängendes Promise (siehe Race-Test unten).
+const clearIndexedDBMock = vi.fn(async () => {})
+const clearQueueMock = vi.fn(async () => {})
 vi.mock('../services/autoSave', () => ({
-  clearIndexedDB: vi.fn(async () => {}),
+  clearIndexedDB: (...args: unknown[]) => clearIndexedDBMock(...args as []),
 }))
-
 vi.mock('../services/retryQueue', () => ({
-  clearQueue: vi.fn(async () => {}),
+  clearQueue: (...args: unknown[]) => clearQueueMock(...args as []),
 }))
 
+// pruefungStore-State per Closure steuerbar — Default 'kein Cleanup-Pfad'.
+const pruefungStateMock = { zuruecksetzen: vi.fn(), abgegeben: false, beendetUm: null as string | null }
 vi.mock('../store/pruefungStore', () => ({
   usePruefungStore: {
-    getState: () => ({
-      zuruecksetzen: vi.fn(),
-      abgegeben: false,
-      beendetUm: null,
-    }),
+    getState: () => pruefungStateMock,
   },
-  resetPruefungState: vi.fn(),
 }))
 
 vi.mock('../store/favoritenStore', () => ({
@@ -72,6 +73,12 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
   beforeEach(() => {
     ladeMock.mockClear()
     resetMock.mockClear()
+    clearIndexedDBMock.mockClear()
+    clearIndexedDBMock.mockImplementation(async () => {})
+    clearQueueMock.mockClear()
+    clearQueueMock.mockImplementation(async () => {})
+    pruefungStateMock.abgegeben = false
+    pruefungStateMock.beendetUm = null
     sessionStorage.clear()
     // Auth-Store vor jedem Test in den initialen Zustand zurücksetzen
     useAuthStore.setState({ user: null, istDemoModus: false, ladeStatus: 'idle', fehler: null })
@@ -147,5 +154,31 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     // Nach reset()-Commit: User leer
     expect(useAuthStore.getState().user).toBeNull()
     expect(resetMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('abmelden() wartet auf clearIndexedDB bei LP-beendet-Pfad (S150)', async () => {
+    // resetPruefungState (intern) ruft clearIndexedDB nur wenn beendetUm truthy.
+    pruefungStateMock.beendetUm = new Date().toISOString()
+    let releaseClearIDB: (() => void) | undefined
+    clearIndexedDBMock.mockImplementationOnce(() => new Promise<void>((resolve) => { releaseClearIDB = resolve }))
+    clearQueueMock.mockResolvedValue(undefined)
+
+    useAuthStore.setState({
+      user: { email: 'lp@gymhofwil.ch', name: 'Test', vorname: 'T', nachname: 'L', rolle: 'lp' },
+      istDemoModus: false,
+      ladeStatus: 'fertig',
+      fehler: null,
+    })
+
+    const abmeldenPromise = useAuthStore.getState().abmelden()
+    // Während clearIndexedDB hängt, darf User-State noch nicht gelöscht sein
+    // (Hard-Nav muss warten — sonst würde Page-Unload die IDB-Tx abbrechen).
+    await new Promise<void>((r) => setTimeout(r, 0))
+    expect(useAuthStore.getState().user?.email).toBe('lp@gymhofwil.ch')
+    expect(clearIndexedDBMock).toHaveBeenCalledTimes(1)
+
+    releaseClearIDB?.()
+    await abmeldenPromise
+    expect(useAuthStore.getState().user).toBeNull()
   })
 })

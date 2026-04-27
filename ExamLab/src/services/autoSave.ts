@@ -74,6 +74,14 @@ export async function clearIndexedDB(pruefungId: string): Promise<void> {
     const tx = db.transaction(IDB_STORE, 'readwrite')
     const store = tx.objectStore(IDB_STORE)
     store.delete(pruefungId)
+    // tx.oncomplete-await ist kritisch wenn Caller direkt danach window.location.href
+    // setzt: Browser bricht in-flight IDB-Tx beim Page-Unload ab. Siehe
+    // .claude/rules/safety-pwa.md — "IndexedDB vor Hard-Navigation" (S149).
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+      tx.onabort = () => reject(tx.error ?? new Error('IDB transaction aborted'))
+    })
   } catch (e) {
     console.warn('IndexedDB Clear fehlgeschlagen:', e)
   }
@@ -129,6 +137,12 @@ export async function clearKorrekturIndexedDB(pruefungId: string): Promise<void>
     const tx = db.transaction(IDB_KORREKTUR_STORE, 'readwrite')
     const store = tx.objectStore(IDB_KORREKTUR_STORE)
     store.delete(pruefungId)
+    // Analog clearIndexedDB: tx.oncomplete-await fuer Hard-Nav-Sicherheit.
+    await new Promise<void>((resolve, reject) => {
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+      tx.onabort = () => reject(tx.error ?? new Error('IDB transaction aborted'))
+    })
   } catch (e) {
     console.warn('IndexedDB Korrektur-Clear fehlgeschlagen:', e)
   }

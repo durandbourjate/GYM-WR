@@ -118,7 +118,7 @@ export default function LoginScreen() {
       if (result === null) {
         // Netzwerkfehler → Fallback auf lokale Anmeldung
         console.warn('[Login] Backend nicht erreichbar — Fallback auf lokale Code-Anmeldung')
-        anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
+        await anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
         return
       }
       if (!result.success) {
@@ -129,10 +129,10 @@ export default function LoginScreen() {
       const validierterName = result.vorname && result.name
         ? `${result.vorname} ${result.name}`
         : nameAusEmail(volleEmail)
-      anmeldenMitCode(code, validierterName, volleEmail, result.sessionToken)
+      await anmeldenMitCode(code, validierterName, volleEmail, result.sessionToken)
     } else {
       // Kein Backend → direkt anmelden
-      anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
+      await anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
     }
   }
 

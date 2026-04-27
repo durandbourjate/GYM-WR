@@ -61,7 +61,7 @@ interface AuthStore {
   fehler: string | null
 
   anmelden: (credential: GoogleCredential) => Promise<void>
-  anmeldenMitCode: (schuelerId: string, name: string, email: string, sessionToken?: string) => void
+  anmeldenMitCode: (schuelerId: string, name: string, email: string, sessionToken?: string) => Promise<void>
   demoStarten: (rolle?: 'sus' | 'lp') => void
   abmelden: () => Promise<void>
   setFehler: (fehler: string | null) => void
@@ -75,8 +75,11 @@ interface AuthStore {
  * für Browser-Crash-Recovery.
  * Bei beendeter Prüfung (LP hat beendet) wird aufgeräumt, da App.tsx
  * den Status ohnehin vom Backend holt.
+ *
+ * async: IDB-Clear awaitet auf tx.oncomplete (siehe S149-Lehre in
+ * .claude/rules/safety-pwa.md). Caller müssen vor Hard-Nav awaiten.
  */
-function resetPruefungState(): void {
+async function resetPruefungState(): Promise<void> {
   const pruefungId = new URLSearchParams(window.location.search).get('id') || 'default'
   const state = usePruefungStore.getState()
 
@@ -92,8 +95,12 @@ function resetPruefungState(): void {
     console.log(`[auth] Prüfung ${pruefungId}: LP-beendet — State wird aufgeräumt`)
     usePruefungStore.getState().zuruecksetzen()
     try { localStorage.removeItem(`pruefung-state-${pruefungId}`) } catch { /* ignore */ }
-    clearIndexedDB(pruefungId).catch(() => {})
-    clearQueue().catch(() => {})
+    // Beide IDB-Cleanups awaiten — Privacy-Garantie vor potenzieller Hard-Nav
+    // im Caller (abmelden ruft window.location.href direkt nach uns).
+    await Promise.all([
+      clearIndexedDB(pruefungId).catch(() => {}),
+      clearQueue().catch(() => {}),
+    ])
   } else {
     console.log(`[auth] Prüfung ${pruefungId}: State bleibt erhalten (Prüfung läuft oder noch nicht gestartet)`)
   }
@@ -127,7 +134,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         adminRolle: lpInfo?.rolle === 'admin',
       }
       // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
-      resetPruefungState()
+      await resetPruefungState()
       saveSession(user)
       saveDemoFlag(false)
       set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
@@ -140,7 +147,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  anmeldenMitCode: (schuelerId: string, name: string, email: string, sessionToken?: string) => {
+  anmeldenMitCode: async (schuelerId: string, name: string, email: string, sessionToken?: string) => {
     const user: AuthUser = {
       email,
       name,
@@ -150,8 +157,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
       schuelerId,
       sessionToken,
     }
-    // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login)
-    resetPruefungState()
+    // Alten Prüfungszustand aufräumen (verhindert stale State nach Re-Login).
+    // await: IDB-Clear muss vor dem set() durchgelaufen sein, sonst lädt
+    // die App ggf. Antworten der vorigen Prüfung aus IDB.
+    await resetPruefungState()
     saveSession(user)
     saveDemoFlag(false)
     set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
@@ -188,12 +197,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   abmelden: async () => {
-    // Bundle G.c — Frontend-Cache + IDB-Cache leeren bevor User wechselt.
+    // Bundle G.c + S150-Hotfix — Frontend-Cache + IDB-Cache leeren bevor User wechselt.
     // await ist kritisch: window.location.href triggert Page-Unload und bricht
     // in-flight IDB-Transaktionen ab. Privacy-Garantie würde sonst nicht halten.
+    // Beide IDB-Pfade (Fragenbank + Pruefungs-autoSave) muessen vor der Hard-Nav
+    // committed sein.
     await useFragenbankStore.getState().reset()
     clearSession()
-    resetPruefungState()
+    await resetPruefungState()
     set({ user: null, istDemoModus: false, ladeStatus: 'idle', fehler: null })
     // Hart auf /login navigieren — verhindert dass alte Pfade wie /sus/ueben hängen
     // bleiben (würden nach Re-Login wieder das SuSStartseite-Layout statt direkt
