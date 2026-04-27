@@ -6927,6 +6927,13 @@ function schalteFreiEndpoint(body) {
       configSheet.getRange(rowIndex + 2, col + 1).setValue('true');
     }
 
+    // Bundle G.d.1 Hebel B — Inline-Pre-Warm der Frage-Daten
+    try {
+      preWarmFragenBeimFreischalten_(pruefungId);
+    } catch (e) {
+      console.log('[SchalteFrei-PreWarm-Fehler] ' + e.message);
+    }
+
     return jsonResponse({ success: true });
   } catch (error) {
     return jsonResponse({ error: error.message });
