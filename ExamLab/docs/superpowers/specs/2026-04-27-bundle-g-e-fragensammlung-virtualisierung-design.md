@@ -110,13 +110,20 @@ const virtualizer = useVirtualizer({
 </div>
 ```
 
-**Sticky Group Headers:** Header-Items bekommen `position: sticky; top: 0; z-index: 10` per CSS-Klasse. Funktioniert weil das `transform`-Wrapping div selbst `position: absolute` ist — Sticky-Verhalten greift relativ zum Scroll-Container.
+**Sticky Group Headers — Risiko:** Sticky-Headers in `@tanstack/react-virtual` sind nicht trivial. Theoretisch funktioniert `position: sticky; top: 0; z-index: 10` auf den Header-Items, aber weil die virtuellen Items selbst absolute-positioniert sind via `transform: translateY(...)`, kann der Sticky-Effekt brechen — bekannte Limitation der Library.
+
+**Plan-Phase Spike** zur Verifikation: erster Implementations-Schritt soll mit echten Daten (Test-Pool 100 Fragen + 5 Gruppen) testen, ob Sticky-Headers im virtualisierten Modus korrekt halten. Falls nicht, fallback auf:
+- **Variante A: Sticky-Header-Lane** — Headers ausserhalb der Virtualisierung als separater Layer; `useVirtualizer` virtualisiert nur Frage-Items pro Gruppe in eigenen Sub-Listen.
+- **Variante B: Header-as-Pseudo-Sticky** via `position: fixed` + manuelles Berechnen anhand `virtualizer.getVirtualItems()[0].index` — komplexer, aber möglich.
+
+Die "FlatItem-mit-Header"-Lösung ist Default. Variante A/B werden im Plan nur geöffnet falls Spike negativ ausgeht.
 
 **Scroll-Reset bei Filter-Wechsel:** useEffect mit `scrollResetTrigger`-Dep ruft `virtualizer.scrollToIndex(0)`. Trigger ist eine Kombination aus `gefilterteFragen.length`, `gruppierung` und einer `filter-version`-Hash (für Suche-Änderungen).
 
 ### Refactor — `FragenBrowser.tsx`
 
-Bestehender `.map`-Block (Z. 344-414 + Doppel bei 569-639) ersetzt durch:
+FragenBrowser hat **zwei separate Render-Pfade** (inline-Modus ab Z. 274 + overlay-Modus ab Z. 498), beide enthalten dieselbe `.map`-Logic (Duplikat). **Beide** Render-Pfade rufen `<VirtualisierteFragenListe />` mit identischen Props auf:
+
 ```tsx
 <VirtualisierteFragenListe
   gruppierteAnzeige={filter.gruppierteAnzeige}
@@ -133,19 +140,28 @@ Bestehender `.map`-Block (Z. 344-414 + Doppel bei 569-639) ersetzt durch:
 />
 ```
 
-Beide Duplikate (Z. 344-414 + 569-639) zu einer Stelle konsolidiert. FragenBrowser sinkt von 732 → ~600 Zeilen.
+- Aufrufpunkt 1 ersetzt Z. 344-414 (inline-Modus)
+- Aufrufpunkt 2 ersetzt Z. 569-639 (overlay-Modus)
 
-"Lade-Mehr"-Button (Z. 403-412 + 637-647) entfernt.
+Beide "Lade-Mehr"-Buttons (Z. 403-412 + 637-647) entfernt.
 
-### Cleanup — `useFragenFilter.ts`
+FragenBrowser sinkt von 732 → ~600 Zeilen.
 
-Entfernen:
-- `SEITEN_GROESSE` Konstante (Z. 22)
-- `angezeigteMenge`-State + `setAngezeigteMenge` (Z. 73-74, 115)
-- `slice(0, angezeigteMenge)` Logic in `gruppierteAnzeige` (Z. 222)
-- `seitenGroesse` Property im Return (Z. 304)
+### Cleanup — `useFragenFilter.ts` + `FragenBrowserHeader.tsx`
 
-`gruppierteAnzeige` returnt alle Fragen pro Gruppe (vorher nur die ersten 30 wenn nicht-gruppiert).
+`useFragenFilter.ts`:
+- `SEITEN_GROESSE` Konstante (Z. 22) entfernen
+- `angezeigteMenge`-State + `setAngezeigteMenge` (Z. 73-74, 115) entfernen
+- `slice(0, angezeigteMenge)` Logic in `gruppierteAnzeige` (Z. 222) entfernen
+- `seitenGroesse` Property im Return (Z. 304) entfernen
+
+`FragenBrowserHeader.tsx` (wird von FragenBrowser mit Pagination-Props aufgerufen):
+- Props `angezeigteMenge` und `setAngezeigteMenge` entfernen (FragenBrowser.tsx Z. 311 + 541)
+- Falls Header die Werte für ein "Anzeige X von Y"-Label nutzt: ersetzt durch `gefilterteFragen.length` Anzeige
+
+`gruppierteAnzeige` returnt nach Cleanup alle Fragen pro Gruppe (vorher nur die ersten 30 wenn nicht-gruppiert).
+
+**Tests-Cleanup:** `useFragenFilter.test.ts`-Cases die `SEITEN_GROESSE`/`angezeigteMenge`-Verhalten testen werden entfernt. Replacement-Test: `gruppierteAnzeige liefert alle Fragen ohne Slice` (auch ohne Gruppierung).
 
 ## Datenfluss pro Use-Case
 
@@ -306,14 +322,20 @@ Header bleibt sichtbar, alle Items darunter weg
 
 ## Reihenfolge der Implementierung (Plan-Phase)
 
-1. **`@tanstack/react-virtual`** als Dependency hinzufügen + Bundle-Size-Check
-2. **`VirtualisierteFragenListe.tsx`** als neue Komponente mit Unit-Tests
-3. **`useFragenFilter.ts`** Pagination-Cleanup mit Test-Updates
-4. **`FragenBrowser.tsx`** Refactor: `.map`-Blocks ersetzt durch `<VirtualisierteFragenListe />`
-5. **`tsc -b`** + **`npm run build`** + **`npm test`** komplett grün
-6. **Browser-E2E** auf preview mit echtem LP-Login + 2412 Fragen
-7. **Performance-Mess-Verifikation**: DOM-Anzahl, FPS, Memory in Chrome DevTools
-8. **Merge auf main** nach LP-Freigabe
+0. **Preflight-Messungen** (Baseline vor Implementierung):
+   - Bundle-Size baseline (`npm run build` Output)
+   - Heap-Snapshot mit 2412 Fragen geöffnet
+   - DOM-Knoten-Anzahl in Fragenliste
+   - Initial-Render-Latenz (Performance-Tab)
+1. **`@tanstack/react-virtual`** als Dependency hinzufügen + Bundle-Size-Vergleich vs. Baseline
+2. **Sticky-Header-Spike** (siehe Risiko in Architektur): Test mit 100 Fragen + 5 Gruppen, ob Sticky-Headers im virtualisierten Modus halten. Bei Negativ-Ergebnis Fallback-Variante wählen.
+3. **`VirtualisierteFragenListe.tsx`** als neue Komponente mit Unit-Tests
+4. **`useFragenFilter.ts` + `FragenBrowserHeader.tsx`** Pagination-Cleanup mit Test-Updates
+5. **`FragenBrowser.tsx`** Refactor: beide `.map`-Blocks (inline + overlay) ersetzt durch `<VirtualisierteFragenListe />`
+6. **`tsc -b`** + **`npm run build`** + **`npm test`** komplett grün
+7. **Browser-E2E** auf preview mit echtem LP-Login + 2412 Fragen
+8. **Performance-Mess-Verifikation vs. Preflight-Baseline**: DOM-Anzahl, FPS, Memory in Chrome DevTools
+9. **Merge auf main** nach LP-Freigabe
 
 Geschätzte Subagent-Sessions: ~6-10 Commits in 1 Implementations-Session.
 
