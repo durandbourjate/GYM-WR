@@ -6,9 +6,81 @@
 
 ---
 
-## Für die nächste Session (S155)
+## Für die nächste Session (S156)
 
-### Aktueller Stand (S154, 27.04.2026) — Bundle G.e + G.f auf `main`
+### Aktueller Stand (S155, 27.04.2026) — Bundle G.f.2 auf `main`
+
+**Was die Session machte:** Brainstorming via `superpowers:brainstorming` (4 User-Entscheidungen, Spec-Reviewer-approved + User-approved) → Plan via `superpowers:writing-plans` (Plan-Reviewer-approved) → Implementation via `superpowers:subagent-driven-development` (10 Tasks, je Implementer + Spec-Compliance + Code-Quality-Review) → Voll-Verify (tsc + 827 vitest + build) → Browser-E2E mit echten Logins (7 Pfade) → Merge.
+
+**Was Bundle G.f.2 macht:** Das in G.f (S154) etablierte Skeleton-Pattern (Header sofort sichtbar, Per-Section-Skeletons, layout-akkurate Anzahl aus localStorage) auf zwei weitere LP-Hochlast-Views ausgerollt:
+
+| View | Vorher | Nachher |
+|---|---|---|
+| **DurchfuehrenDashboard** (648→677 Z.) | Globaler Early-Return blendet Header+Tabs 1-3s aus | Header+Tabs sofort sichtbar (~100ms), `DurchfuehrenVorbereitungSkeleton` (Vorbereitungs-Tab) oder `DurchfuehrenSusReihenSkeleton` (Lobby/Live/Auswertung) im Tab-Content |
+| **FragenBrowser** (627→620 Z.) | Zentrierter „Fragensammlung wird geladen…"-Text in 2 Stellen (inline + overlay) | `FragenListeSkeleton` mit 8 Karten in beiden Stellen |
+
+**Architektur:**
+- 3 neue Skeleton-Komponenten in `src/components/lp/skeletons/`
+- localStorage-Key `examlab-lp-letzte-sus-anzahl-{pruefungId}` (Cap 60, Min 5) für layout-akkurates Re-Login
+- `useRef<number | null>`-Guard verhindert redundante Writes bei Polling-Updates (Polling 5-15s)
+- 3-Wege-Switch im Tab-Content: `laden → skeleton`, `fertig+!config → Amber Inline-Hinweis mit Retry`, `else → echter Content`
+- `tabSkeleton` als Variable extrahiert (1-stufiger Ternary, code-quality.md-konform)
+- KorrekturDashboard explizit out-of-scope (G.d.1 Pre-Warm-Cache <500ms macht eigenen Skeleton nicht gerechtfertigt)
+
+**Implementations-Commits auf `main`** (12 Commits + 4 Refinement-Commits + Merge):
+```
+7628459 FragenBrowser-Tests
+0cbeeeb Test-Mock-Setup vereinfacht (TS6133 cleanup)
+5757b7a FragenBrowser — Lade-Text durch FragenListeSkeleton ersetzt
+d928795 DurchfuehrenDashboard-Tests
+4ae845a tabSkeleton als Variable extrahiert (1-stufiger Ternary)
+5ce57a1 DurchfuehrenDashboard — Inline-Hinweis bei fertig+!config
+26ba2fe DurchfuehrenDashboard — localStorage-Persist mit useRef-Guard
+d560d00 DurchfuehrenDashboard — globaler Early-Return entfernt
+66d44fb DurchfuehrenSusReihenSkeleton — animate-pulse-Test
+a1e8963 DurchfuehrenSusReihenSkeleton mit pruefungId-Persist + Tests
+e8c06b8 DurchfuehrenVorbereitungSkeleton + Tests
+76566ff FragenListeSkeleton + Tests
+```
+
+**Test-Stand:** 827 vitest grün (Baseline ~800 + 27 neue) | tsc clean | build OK
+
+**Browser-E2E auf preview, 27.04.2026, echte Logins:**
+
+| # | Test | Ergebnis |
+|---|---|---|
+| 1 | LP klickt Einführungsprüfung-Karte → Header+Tabs sofort + DurchfuehrenVorbereitungSkeleton | ✓ |
+| 2 | URL `?tab=auswertung` → DurchfuehrenSusReihenSkeleton (8 Default-Reihen) | ✓ |
+| 3 | localStorage = '22' → Reload → Skeleton rendert **exakt 22 Reihen** | ✓ |
+| 4 | Fragensammlung-Cache gelöscht → FragenListeSkeleton 4 Karten + Header sofort | ✓ |
+| 5 | Dark Mode — alle Skeletons gut lesbar (kontrastreich) | ✓ |
+| 6 | Inverse-Test: alle Skeleton-Marker weg nach Daten-Load, alter „Fragensammlung wird geladen…"-Text nicht mehr im DOM | ✓ |
+| 7 | Visual Smoke-Test Screenshots (5 saved) | ✓ |
+
+Live-Toggle + ↻-Refresh + TabBar korrekt disabled während Lade. `daten.schueler.length === 0` schreibt kein localStorage (useRef-Guard greift). IDB-Cache aus G.c (Fragensammlung) funktioniert weiterhin — Cache-Hit <50ms.
+
+**Subagent-Driven-Development-Stats:**
+- 10 Implementer-Subagent-Calls (Tasks 1-10)
+- 9 Spec-Compliance-Reviews + 8 Code-Quality-Reviews + 1 Final-Bundle-Review
+- 2 controller-side Hot-Fixes (animate-pulse-Test ergänzt + tabSkeleton-Variable + TS6133-Cleanup) — kürzer als neuer Subagent-Call
+- 2 false-positive Reviewer-Findings (Phasen-Plan-Verständnis): Reviewer dachten Tasks 5/6/9 fehlen bei Tasks 4/8 — sie sind eigenständige Tasks im Plan
+
+**Lehren S155:**
+1. **Phasen-Plan-Disziplin in Subagent-Reviews:** Spec/Code-Reviewer sehen den Phasen-Plan-Kontext nicht. Wenn Task 4 explizit „Steps 1-9, nicht weiter" sagt, melden sie trotzdem „Tasks 5/6 fehlen". Lösung: bei Phasen-aufgeteilten Tasks im Reviewer-Prompt EXPLIZIT erwähnen, dass weitere Tasks separat folgen.
+2. **`@tanstack/react-virtual` muss installiert sein:** S154-Worktree-Lehre — bei `npm install` fehlt diese Dep gelegentlich, manuell installieren wenn `tsc -b` sich beschwert (war hier ein false-positive in Task 4-Report, mit `npm install` behoben).
+3. **TS6133 vs Underscore-Prefix:** TypeScript ist mit `noUnusedLocals: true` strenger als ESLint — Underscore-Prefix wird NICHT akzeptiert. Stattdessen: unused-Variablen-Pattern komplett vermeiden (z.B. anonymous Promise-Constructor `new Promise(() => {})` statt `new Promise(resolve => { _resolver = resolve })`).
+4. **Pragmatic-Hot-Fix vs Subagent-Round-Trip:** Kleine Reviewer-Findings (Konsistenz-Test ergänzen, 2-Ebenen-Ternary auflösen) sind schneller als 1-Edit-Hot-Fix vom Controller als neue Subagent-Session. Skill-Regel „Don't try to fix manually" gilt für komplexe Änderungen — bei <10-Zeilen-Edits ist Pragmatik OK.
+
+### Was als nächstes ansteht
+
+- **Bundle H** (offen, je nach Bedarf) — weitere Performance- oder UX-Verbesserung
+- **Bundle G.f.3** (Future, optional) — KorrekturDashboard-Skeleton (eingebettet + standalone) falls G.d.1 Pre-Warm-Cache-Miss-Flash UX-Feedback negativ erzeugt
+- **Phase-Komponenten-Skeletons** (LobbyPhase/AktivPhase/BeendetPhase intern) — bisher Out-of-Scope, nur falls UX-Feedback negativ
+- **Doppel-Header-Optik in G.e** — YAGNI bis UX-Feedback negativ (S154 offen, weiterhin offen)
+
+---
+
+### Vorheriger Stand (S154, 27.04.2026) — Bundle G.e + G.f auf `main`
 
 **Was die Session machte:** Beide Specs (in S151 vorbereitet) → 2 Pläne via `writing-plans`-Skill (Reviewer-approved) → 2 parallele Sub-Master-Subagent-Sessions in isolierten Worktrees → Browser-E2E mit echten Logins (LP+SuS Tab-Gruppe) → 1 Pivot bei G.e (Sticky-Header-Lane) nach E2E-Spike → Re-Test → 2 sequenzielle Merges auf `main` mit `--no-ff` → Worktree + Branch Cleanup.
 
