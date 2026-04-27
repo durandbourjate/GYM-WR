@@ -467,9 +467,10 @@ function LPStartseiteInner() {
       )}
 
       {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
-      <div className="flex flex-1 overflow-hidden">
-      {/* Scrollbarer Hauptinhalt */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex flex-1 overflow-hidden min-h-0">
+      {/* Scrollbarer Hauptinhalt — bei Fragensammlung scrollt die virtualisierte Liste selbst,
+          deshalb hier overflow-hidden + min-h-0, damit `h-full` der inneren Liste greift. */}
+      <div className={`flex-1 min-h-0 ${ansicht !== 'composer' && modus === 'fragensammlung' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
 
       {ansicht === 'composer' && (
         <Suspense fallback={<LazyFallback />}>
@@ -833,9 +834,10 @@ function LPStartseiteInner() {
 
       </>}
 
-      {/* Fragensammlung als Vollseiteninhalt */}
+      {/* Fragensammlung als Vollseiteninhalt — h-full + min-h-0 damit die virtualisierte
+          Liste den verfügbaren Platz vollständig erhält und SELBST scrollt (nicht der äussere Wrapper). */}
       {ansicht !== 'composer' && modus === 'fragensammlung' && (
-        <main className="p-6">
+        <main className="h-full min-h-0 p-6 flex flex-col overflow-hidden">
           <Suspense fallback={<LazyFallback />}>
             <FragenBrowser
               inline

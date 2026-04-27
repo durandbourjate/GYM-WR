@@ -12,10 +12,8 @@ import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../
 import type { Frage, FrageSummary } from '../../../types/fragen.ts'
 import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
-import { gruppenLabel, gruppenLabelFarbe } from './fragenbrowser/gruppenHelfer.ts'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
-import KompaktZeile from './fragenbrowser/KompaktZeile.tsx'
-import DetailKarte from './fragenbrowser/DetailKarte.tsx'
+import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
 import ExcelImport from './ExcelImport.tsx'
@@ -257,6 +255,16 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     }
   }
 
+  /** Öffnet Lösch-Dialog für eine Frage (DetailKarte-Trash-Klick). */
+  const handleFrageLoeschKandidat = useCallback((frage: Frage | FrageSummary): void => {
+    setLoeschKandidat({
+      id: frage.id,
+      fachbereich: frage.fachbereich,
+      typ: frage.typ,
+      fragetext: 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : '',
+    })
+  }, [])
+
   async function handleFrageLoeschen(): Promise<void> {
     if (!loeschKandidat) return
     entferneFrage(loeschKandidat.id)
@@ -273,7 +281,9 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   // Inline-Modus: als reguläre Seitenkomponente rendern (kein Overlay)
   if (inline) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
+      // flex-1 + min-h-0: Container wächst auf verfügbare Höhe im flex-column-Parent
+      // → die virtualisierte Liste bekommt eine endliche Höhe und scrollt selbst.
+      <div className="flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
         {/* Header mit Suche + Filter */}
         <FragenBrowserHeader
           ladeStatus={ladeStatus}
@@ -283,7 +293,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           verfuegbareThemen={filter.verfuegbareThemen}
           verfuegbareUnterthemen={filter.verfuegbareUnterthemen}
           aktiveFilter={filter.aktiveFilter}
-          seitenGroesse={filter.seitenGroesse}
           suchtext={filter.suchtext}
           setSuchtext={filter.setSuchtext}
           filterFachbereich={filter.filterFachbereich}
@@ -308,7 +317,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           gruppierung={filter.gruppierung}
           setGruppierung={filter.setGruppierung}
           setAufgeklappteGruppen={filter.setAufgeklappteGruppen}
-          setAngezeigteMenge={filter.setAngezeigteMenge}
           kompaktModus={filter.kompaktModus}
           setKompaktModus={filter.setKompaktModus}
           onNeueFrageErstellen={() => { setEditFrage(null); setZeigEditor(true) }}
@@ -320,8 +328,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
-        {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto relative">
+        {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
+        <div className="flex-1 min-h-0 relative overflow-hidden">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
@@ -342,75 +350,21 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           )}
 
           {ladeStatus === 'fertig' && filter.gefilterteFragen.length > 0 && (
-            <div>
-              {filter.gruppierteAnzeige.map((gruppe) => {
-                const istAufgeklappt = filter.gruppierung === 'keine' || filter.aufgeklappteGruppen.has(gruppe.key)
-                const inPruefungInGruppe = gruppe.fragen.filter((f) => bereitsVerwendetSet.has(f.id)).length
-
-                return (
-                  <div key={gruppe.key || '_alle'}>
-                    {filter.gruppierung !== 'keine' && (
-                      <div
-                        className="sticky top-0 z-10 flex items-center gap-2 px-5 py-2 bg-slate-100 dark:bg-slate-700/80 border-b border-slate-200 dark:border-slate-600 cursor-pointer select-none"
-                        onClick={() => toggleGruppe(gruppe.key)}
-                      >
-                        <span className="text-xs text-slate-500 dark:text-slate-400 w-4">
-                          {istAufgeklappt ? '\u25BC' : '\u25B6'}
-                        </span>
-                        <span className={`text-sm font-semibold ${gruppenLabelFarbe(gruppe.key, filter.gruppierung)}`}>
-                          {gruppenLabel(gruppe.key, filter.gruppierung)}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {gruppe.fragen.length}
-                          {inPruefungInGruppe > 0 && (
-                            <span className="ml-1 text-blue-600 dark:text-blue-400">({inPruefungInGruppe} in Prüfung)</span>
-                          )}
-                        </span>
-                      </div>
-                    )}
-
-                    {istAufgeklappt && (
-                      <div className={filter.kompaktModus ? '' : 'px-4 py-2 space-y-1.5'}>
-                        {gruppe.fragen.map((frage) => (
-                          filter.kompaktModus
-                            ? <KompaktZeile
-                                key={frage.id}
-                                frage={frage}
-                                istInPruefung={bereitsVerwendetSet.has(frage.id)}
-                                onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => handleEditFrage(frage)}
-                                onDuplizieren={() => handleFrageDuplizieren(frage)}
-                                zeigeGruppierung={filter.gruppierung}
-                                performance={fragenStats.get(frage.id)}
-                              />
-                            : <DetailKarte
-                                key={frage.id}
-                                frage={frage}
-                                istInPruefung={bereitsVerwendetSet.has(frage.id)}
-                                onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => handleEditFrage(frage)}
-                                onLoeschen={() => setLoeschKandidat({ id: frage.id, fachbereich: frage.fachbereich, typ: frage.typ, fragetext: 'fragetext' in frage ? (frage as any).fragetext : '' })}
-                                onDuplizieren={() => handleFrageDuplizieren(frage)}
-                                performance={fragenStats.get(frage.id)}
-                              />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {filter.gruppierung === 'keine' && filter.angezeigteMenge < filter.sortierteFragen.length && (
-                <div className="px-5 py-4 text-center">
-                  <button
-                    onClick={() => filter.setAngezeigteMenge((p) => p + filter.seitenGroesse)}
-                    className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
-                  >
-                    Weitere {Math.min(filter.seitenGroesse, filter.sortierteFragen.length - filter.angezeigteMenge)} von {filter.sortierteFragen.length} laden
-                  </button>
-                </div>
-              )}
-            </div>
+            <VirtualisierteFragenListe
+              gruppierteAnzeige={filter.gruppierteAnzeige}
+              gruppierung={filter.gruppierung}
+              aufgeklappteGruppen={filter.aufgeklappteGruppen}
+              kompaktModus={filter.kompaktModus}
+              bereitsVerwendetSet={bereitsVerwendetSet}
+              fragenStats={fragenStats}
+              toggleGruppe={toggleGruppe}
+              toggleFrageInPruefung={toggleFrageInPruefung}
+              handleEditFrage={handleEditFrage}
+              handleFrageDuplizieren={handleFrageDuplizieren}
+              handleFrageLoeschen={handleFrageLoeschKandidat}
+              scrollResetTrigger={`${filter.suchtext}|${filter.gruppierung}|${filter.gefilterteFragen.length}`}
+              scrollContainerRef={listeRef}
+            />
           )}
         </div>
 
@@ -513,7 +467,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           verfuegbareThemen={filter.verfuegbareThemen}
           verfuegbareUnterthemen={filter.verfuegbareUnterthemen}
           aktiveFilter={filter.aktiveFilter}
-          seitenGroesse={filter.seitenGroesse}
           suchtext={filter.suchtext}
           setSuchtext={filter.setSuchtext}
           filterFachbereich={filter.filterFachbereich}
@@ -538,7 +491,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           gruppierung={filter.gruppierung}
           setGruppierung={filter.setGruppierung}
           setAufgeklappteGruppen={filter.setAufgeklappteGruppen}
-          setAngezeigteMenge={filter.setAngezeigteMenge}
           kompaktModus={filter.kompaktModus}
           setKompaktModus={filter.setKompaktModus}
           onNeueFrageErstellen={() => { setEditFrage(null); setZeigEditor(true) }}
@@ -551,8 +503,8 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
-        {/* Fragen-Liste */}
-        <div ref={listeRef} className="flex-1 overflow-auto relative">
+        {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
+        <div className="flex-1 min-h-0 relative overflow-hidden">
           {ladeStatus === 'laden' && (
             <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
               Fragensammlung wird geladen...
@@ -573,78 +525,21 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           )}
 
           {ladeStatus === 'fertig' && filter.gefilterteFragen.length > 0 && (
-            <div>
-              {filter.gruppierteAnzeige.map((gruppe) => {
-                const istAufgeklappt = filter.gruppierung === 'keine' || filter.aufgeklappteGruppen.has(gruppe.key)
-                const inPruefungInGruppe = gruppe.fragen.filter((f) => bereitsVerwendetSet.has(f.id)).length
-
-                return (
-                  <div key={gruppe.key || '_alle'}>
-                    {/* Gruppen-Header */}
-                    {filter.gruppierung !== 'keine' && (
-                      <div
-                        className="sticky top-0 z-10 flex items-center gap-2 px-5 py-2 bg-slate-100 dark:bg-slate-700/80 border-b border-slate-200 dark:border-slate-600 cursor-pointer select-none"
-                        onClick={() => toggleGruppe(gruppe.key)}
-                      >
-                        <span className="text-xs text-slate-500 dark:text-slate-400 w-4">
-                          {istAufgeklappt ? '\u25BC' : '\u25B6'}
-                        </span>
-                        <span className={`text-sm font-semibold ${gruppenLabelFarbe(gruppe.key, filter.gruppierung)}`}>
-                          {gruppenLabel(gruppe.key, filter.gruppierung)}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {gruppe.fragen.length}
-                          {inPruefungInGruppe > 0 && (
-                            <span className="ml-1 text-blue-600 dark:text-blue-400">({inPruefungInGruppe} in Prüfung)</span>
-                          )}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Fragen in Gruppe */}
-                    {istAufgeklappt && (
-                      <div className={filter.kompaktModus ? '' : 'px-4 py-2 space-y-1.5'}>
-                        {gruppe.fragen.map((frage) => (
-                          filter.kompaktModus
-                            ? <KompaktZeile
-                                key={frage.id}
-                                frage={frage}
-                                istInPruefung={bereitsVerwendetSet.has(frage.id)}
-                                onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => handleEditFrage(frage)}
-                                onDuplizieren={() => handleFrageDuplizieren(frage)}
-                                zeigeGruppierung={filter.gruppierung}
-                                performance={fragenStats.get(frage.id)}
-                              />
-                            : <DetailKarte
-                                key={frage.id}
-                                frage={frage}
-                                istInPruefung={bereitsVerwendetSet.has(frage.id)}
-                                onToggle={() => toggleFrageInPruefung(frage.id)}
-                                onEdit={() => handleEditFrage(frage)}
-                                onLoeschen={() => setLoeschKandidat({ id: frage.id, fachbereich: frage.fachbereich, typ: frage.typ, fragetext: 'fragetext' in frage ? (frage as any).fragetext : '' })}
-                                onDuplizieren={() => handleFrageDuplizieren(frage)}
-                                performance={fragenStats.get(frage.id)}
-                              />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {/* "Mehr laden" wenn keine Gruppierung */}
-              {filter.gruppierung === 'keine' && filter.angezeigteMenge < filter.sortierteFragen.length && (
-                <div className="px-5 py-4 text-center">
-                  <button
-                    onClick={() => filter.setAngezeigteMenge((p) => p + filter.seitenGroesse)}
-                    className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
-                  >
-                    Weitere {Math.min(filter.seitenGroesse, filter.sortierteFragen.length - filter.angezeigteMenge)} von {filter.sortierteFragen.length} laden
-                  </button>
-                </div>
-              )}
-            </div>
+            <VirtualisierteFragenListe
+              gruppierteAnzeige={filter.gruppierteAnzeige}
+              gruppierung={filter.gruppierung}
+              aufgeklappteGruppen={filter.aufgeklappteGruppen}
+              kompaktModus={filter.kompaktModus}
+              bereitsVerwendetSet={bereitsVerwendetSet}
+              fragenStats={fragenStats}
+              toggleGruppe={toggleGruppe}
+              toggleFrageInPruefung={toggleFrageInPruefung}
+              handleEditFrage={handleEditFrage}
+              handleFrageDuplizieren={handleFrageDuplizieren}
+              handleFrageLoeschen={handleFrageLoeschKandidat}
+              scrollResetTrigger={`${filter.suchtext}|${filter.gruppierung}|${filter.gefilterteFragen.length}`}
+              scrollContainerRef={listeRef}
+            />
           )}
         </div>
       </div>

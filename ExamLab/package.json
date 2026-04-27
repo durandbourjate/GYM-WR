@@ -28,6 +28,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-virtual": "^3.13.24",
     "@tiptap/extension-bullet-list": "^2.25.0",
     "@tiptap/extension-ordered-list": "^2.25.0",
     "@tiptap/extension-placeholder": "^2.27.2",

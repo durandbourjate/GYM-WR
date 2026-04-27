@@ -15,7 +15,6 @@ interface Props {
   verfuegbareThemen: [string, number][]
   verfuegbareUnterthemen: [string, number][]
   aktiveFilter: number
-  seitenGroesse: number
 
   // Filter-State
   suchtext: string
@@ -44,7 +43,6 @@ interface Props {
   gruppierung: Gruppierung
   setGruppierung: (v: Gruppierung) => void
   setAufgeklappteGruppen: React.Dispatch<React.SetStateAction<Set<string>>>
-  setAngezeigteMenge: React.Dispatch<React.SetStateAction<number>>
   kompaktModus: boolean
   setKompaktModus: (v: boolean) => void
 
@@ -68,7 +66,7 @@ interface Props {
 
 /** Header mit Suche, Filter, Sortierung und Aktions-Buttons */
 export default function FragenBrowserHeader({
-  ladeStatus, gefilterteFragen, stats, alleStats: alleStatsProp, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter, seitenGroesse,
+  ladeStatus, gefilterteFragen, stats, alleStats: alleStatsProp, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter,
   suchtext, setSuchtext,
   filterFachbereich, setFilterFachbereich,
   filterTyp, setFilterTyp,
@@ -81,7 +79,7 @@ export default function FragenBrowserHeader({
   filterZuruecksetzen,
   sortierung, setSortierung,
   gruppierung, setGruppierung,
-  setAufgeklappteGruppen, setAngezeigteMenge,
+  setAufgeklappteGruppen,
   kompaktModus, setKompaktModus,
   onNeueFrageErstellen, onBatchExport, onImport, onExcelImport, onSchliessen,
   zielPruefungTitel, zielAbschnittTitel,
@@ -199,7 +197,7 @@ export default function FragenBrowserHeader({
       <input
         type="text"
         value={suchtext}
-        onChange={(e) => { setSuchtext(e.target.value); setAngezeigteMenge(seitenGroesse) }}
+        onChange={(e) => { setSuchtext(e.target.value) }}
         placeholder="Suche nach ID, Thema, Fragetext, Tags..."
         className="w-full px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
       />
@@ -211,7 +209,7 @@ export default function FragenBrowserHeader({
         {/* Fach — immer sichtbar */}
         <select
             value={filterFachbereich}
-            onChange={(e) => { setFilterFachbereich(e.target.value as Fachbereich | ''); setAngezeigteMenge(seitenGroesse) }}
+            onChange={(e) => { setFilterFachbereich(e.target.value as Fachbereich | '') }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
           >
             <option value="">Fach</option>
@@ -224,7 +222,7 @@ export default function FragenBrowserHeader({
         {/* Thema — immer sichtbar */}
         <select
             value={filterThema}
-            onChange={(e) => { setFilterThema(e.target.value); setFilterUnterthema(''); setAngezeigteMenge(seitenGroesse) }}
+            onChange={(e) => { setFilterThema(e.target.value); setFilterUnterthema('') }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer max-w-[180px]"
           >
             <option value="">Thema</option>
@@ -236,7 +234,7 @@ export default function FragenBrowserHeader({
         {/* Unterthema (kaskadierend) — immer sichtbar */}
         <select
             value={filterUnterthema}
-            onChange={(e) => { setFilterUnterthema(e.target.value); setAngezeigteMenge(seitenGroesse) }}
+            onChange={(e) => { setFilterUnterthema(e.target.value) }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer max-w-[180px]"
           >
             <option value="">Unterthema</option>
@@ -248,7 +246,7 @@ export default function FragenBrowserHeader({
         {/* Typ */}
         <select
           value={filterTyp}
-          onChange={(e) => { setFilterTyp(e.target.value); setAngezeigteMenge(seitenGroesse) }}
+          onChange={(e) => { setFilterTyp(e.target.value) }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="">Typ</option>
@@ -262,7 +260,7 @@ export default function FragenBrowserHeader({
         {/* Bloom */}
         <select
           value={filterBloom}
-          onChange={(e) => { setFilterBloom(e.target.value as BloomStufe | ''); setAngezeigteMenge(seitenGroesse) }}
+          onChange={(e) => { setFilterBloom(e.target.value as BloomStufe | '') }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="">Bloom</option>
@@ -274,7 +272,7 @@ export default function FragenBrowserHeader({
         {/* Status */}
         <select
           value={filterPoolStatus}
-          onChange={(e) => { setFilterPoolStatus(e.target.value as FilterPoolStatus); setAngezeigteMenge(seitenGroesse) }}
+          onChange={(e) => { setFilterPoolStatus(e.target.value as FilterPoolStatus) }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
           <option value="alle">Status</option>
@@ -286,7 +284,7 @@ export default function FragenBrowserHeader({
 
         {/* Anhang */}
         <button
-          onClick={() => { setFilterMitAnhang(!filterMitAnhang); setAngezeigteMenge(seitenGroesse) }}
+          onClick={() => { setFilterMitAnhang(!filterMitAnhang) }}
           className={`filter-btn ${filterMitAnhang ? 'filter-btn-active' : ''}`}
         >
           Anhang
@@ -297,7 +295,7 @@ export default function FragenBrowserHeader({
           {(['alle', 'schule', 'privat'] as const).map(k => (
             <button
               key={k}
-              onClick={() => { setFilterKontext(k); setAngezeigteMenge(seitenGroesse) }}
+              onClick={() => { setFilterKontext(k) }}
               className={`filter-btn ${
                 k === 'alle' ? 'rounded-l-lg rounded-r-none' : k === 'privat' ? 'rounded-r-lg rounded-l-none' : 'rounded-none'
               } ${filterKontext === k ? 'filter-btn-active' : ''}`}
