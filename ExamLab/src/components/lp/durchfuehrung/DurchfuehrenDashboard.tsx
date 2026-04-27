@@ -463,11 +463,24 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
       {/* === Tab-Content === */}
       <div className="max-w-7xl mx-auto w-full px-4 py-4 space-y-4 flex-1">
-        {istLadenOderConfigFehlt ? (
-          /* Skeleton während Lade — pro activeTab */
+        {ladeStatus === 'laden' ? (
+          /* Echter Skeleton während Lade — pro activeTab */
           activeTab === 'vorbereitung'
             ? <DurchfuehrenVorbereitungSkeleton />
             : <DurchfuehrenSusReihenSkeleton pruefungId={pruefungId} />
+        ) : !config ? (
+          /* Lade fertig, aber Config fehlt — Inline-Hinweis (verhindert Endlos-Skeleton) */
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 text-center">
+            <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+              Prüfungskonfiguration konnte nicht geladen werden.
+            </p>
+            <button
+              onClick={ladeDaten}
+              className="px-4 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors cursor-pointer"
+            >
+              Erneut versuchen
+            </button>
+          </div>
         ) : (
           /* Echter Tab-Content — config UND daten sind hier garantiert da */
           <>
