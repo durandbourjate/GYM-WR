@@ -33,4 +33,9 @@ describe('DurchfuehrenSusReihenSkeleton', () => {
     const { container } = render(<DurchfuehrenSusReihenSkeleton pruefungId={null} />)
     expect(container.querySelectorAll('[data-testid="sus-reihe-skeleton"]').length).toBe(8)
   })
+
+  it('hat animate-pulse Elemente', () => {
+    const { container } = render(<DurchfuehrenSusReihenSkeleton pruefungId="abc" />)
+    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0)
+  })
 })
