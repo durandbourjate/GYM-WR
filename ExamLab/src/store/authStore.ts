@@ -173,6 +173,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     saveSession(user)
     saveDemoFlag(false)
     set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
+    // Bundle G.d.2 — SuS profitiert vom Gruppen-Pre-Fetch falls Wechsel in den Üben-Tab nach Prüfung.
+    // KEIN Klassenlisten-Pre-Fetch (LP-only). KEIN Fragenbank-Pre-Fetch (LP-only).
+    void useUebenGruppenStore.getState().ladeGruppen(email).catch((e) => {
+      console.warn('[G.d.2] Gruppen-Pre-Fetch fehlgeschlagen (SuS, silent):', e)
+    })
   },
 
   demoStarten: (rolle: 'sus' | 'lp' = 'sus') => {

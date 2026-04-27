@@ -238,4 +238,11 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     expect(gruppenResetMock).toHaveBeenCalledTimes(1)
     expect(resetMock).toHaveBeenCalledTimes(1) // Fragenbank-reset auch
   })
+
+  it('anmeldenMitCode() (SuS) feuert nur Gruppen-Pre-Fetch (NICHT Klassenlisten, NICHT Fragenbank)', async () => {
+    await useAuthStore.getState().anmeldenMitCode('S123', 'Test SuS', 'sus@stud.gymhofwil.ch', 'tok')
+    expect(gruppenLadeMock).toHaveBeenCalledWith('sus@stud.gymhofwil.ch')
+    expect(klassenlistenLadeMock).not.toHaveBeenCalled()
+    expect(ladeMock).not.toHaveBeenCalled()
+  })
 })
