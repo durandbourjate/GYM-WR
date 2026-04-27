@@ -15,7 +15,6 @@ import { formatDatum } from '../../utils/zeit.ts'
 import { getFachFarbe } from '../../utils/ueben/fachFarben.ts'
 import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel, erstelleDemoTrackerDaten } from '../../utils/trackerUtils.ts'
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
-import LPSkeleton from './LPSkeleton.tsx'
 import UebungsToolView from './UebungsToolView.tsx'
 import TrackerSection from './TrackerSection.tsx'
 import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
@@ -30,6 +29,10 @@ import LazyFallback from '../ui/LazyFallback'
 import { lazyMitRetry } from '../../utils/lazyMitRetry'
 
 import { leereUebung } from './vorbereitung/configVorlagen'
+import { schreibeGespeicherteAnzahl } from '../../utils/skeletonAnzahl'
+import LPCardsSkeleton from './skeletons/LPCardsSkeleton'
+import LPUebungenSkeleton from './skeletons/LPUebungenSkeleton'
+import LPTrackerSkeleton from './skeletons/LPTrackerSkeleton'
 
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
@@ -124,7 +127,8 @@ function LPStartseiteInner() {
 
   // Lokaler State (Daten, nicht Navigation)
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
-  const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
+  const [configsLadeStatus, setConfigsLadeStatus] = useState<'laden' | 'fertig'>('laden')
+  const [trackerLadeStatus, setTrackerLadeStatus] = useState<'laden' | 'fertig'>('laden')
   const [backendFehler, setBackendFehler] = useState(false)
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
   const [multiDashboardOffen, setMultiDashboardOffen] = useState(false)
@@ -299,7 +303,8 @@ function LPStartseiteInner() {
         // Demo-Daten
         setConfigs(demoConfigs())
         setTrackerDaten(erstelleDemoTrackerDaten())
-        setLadeStatus('fertig')
+        setConfigsLadeStatus('fertig')
+        setTrackerLadeStatus('fertig')
         return
       }
 
@@ -327,11 +332,22 @@ function LPStartseiteInner() {
       // Configs + Fragenbank-Summaries parallel laden (schnell ~3-5s)
       // TrackerDaten separat im Hintergrund (langsam ~6-8s, blockiert UI nicht)
       useFragenbankStore.getState().lade(user.email)
-      const configResult = await apiService.ladeAlleConfigs(user.email)
+      let configResult: PruefungsConfig[] | null = null
+      try {
+        configResult = await apiService.ladeAlleConfigs(user.email)
+      } catch (err) {
+        console.warn('[LP] ladeAlleConfigs Exception:', err)
+        configResult = null
+      }
 
       if (configResult) {
         setConfigs(configResult)
         setBackendFehler(false)
+        // Persist Anzahl summativ/formativ für layout-akkurates Skeleton beim nächsten Login
+        const summativeAnzahl = configResult.filter(c => c.typ !== 'formativ').length
+        const formativeAnzahl = configResult.filter(c => c.typ === 'formativ').length
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', summativeAnzahl)
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', formativeAnzahl)
         // Einrichtungsprüfung/-übung: nur einmal pro Browser-Session syncen
         // WICHTIG: Verzögert + seriell um Backend nicht zu überlasten (Session 91 Fix)
         // Nicht starten wenn LP gerade eine Durchführung hat (SuS-Saves haben Priorität)
@@ -359,12 +375,18 @@ function LPStartseiteInner() {
       }
 
       // Dashboard sofort interaktiv zeigen (Tracker lädt im Hintergrund)
-      setLadeStatus("fertig")
+      setConfigsLadeStatus("fertig")
 
       // TrackerDaten im Hintergrund nachladen (non-blocking, ~6-8s)
-      apiService.ladeTrackerDaten(user.email).then(trackerResult => {
-        if (trackerResult) setTrackerDaten(trackerResult)
-      }).catch(err => console.warn('[LP] Tracker-Laden fehlgeschlagen:', err))
+      apiService.ladeTrackerDaten(user.email)
+        .then(trackerResult => {
+          if (trackerResult) setTrackerDaten(trackerResult)
+          setTrackerLadeStatus('fertig')
+        })
+        .catch(err => {
+          console.warn('[LP] Tracker-Laden fehlgeschlagen:', err)
+          setTrackerLadeStatus('fertig')
+        })
     }
     lade()
   }, [user, istDemoModus])
@@ -375,13 +397,13 @@ function LPStartseiteInner() {
   // Deep Link: Config via aktiveConfigId öffnen (nachdem Configs geladen)
   // aktiveConfigId wird per useLPRouteSync aus der URL gesetzt
   useEffect(() => {
-    if (ladeStatus !== 'fertig' || !aktiveConfigId || ansicht === 'composer') return
+    if (configsLadeStatus !== 'fertig' || !aktiveConfigId || ansicht === 'composer') return
     const config = configs.find(c => c.id === aktiveConfigId)
     if (!config) return
     setEditConfig(config)
     // navigiereZuComposer nicht nötig — URL ist bereits korrekt (Router hat hierher navigiert)
     useLPNavigationStore.getState().navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
-  }, [ladeStatus, aktiveConfigId, configs])
+  }, [configsLadeStatus, aktiveConfigId, configs])
 
   function handleNeue(): void {
     setEditConfig(null)
@@ -421,15 +443,19 @@ function LPStartseiteInner() {
   function handleZurueck(): void {
     zurueckZumDashboard()
     // Configs neu laden
-    setLadeStatus('laden')
+    setConfigsLadeStatus('laden')
     if (user && apiService.istKonfiguriert() && !istDemoModus) {
       apiService.ladeAlleConfigs(user.email).then((result) => {
-        if (result) setConfigs(result)
-        setLadeStatus('fertig')
+        if (result) {
+          setConfigs(result)
+          schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', result.filter(c => c.typ !== 'formativ').length)
+          schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', result.filter(c => c.typ === 'formativ').length)
+        }
+        setConfigsLadeStatus('fertig')
       })
     } else {
       setConfigs(demoConfigs())
-      setLadeStatus('fertig')
+      setConfigsLadeStatus('fertig')
     }
   }
 
@@ -442,8 +468,8 @@ function LPStartseiteInner() {
     return trackerDaten.pruefungen.find((p) => p.pruefungId === pruefungId)
   }
 
-  // Skeleton während Laden — nicht beim Composer (direkter Aufruf möglich)
-  if (ladeStatus !== 'fertig' && ansicht !== 'composer') return <LPSkeleton />
+  // Header + Tabs immer sofort sichtbar — Skeleton pro Section in Tab-Inhalten unten.
+  // Composer hat eigenen Code-Pfad (keine Tab-Render-Logik) und ist nicht betroffen.
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
@@ -486,10 +512,8 @@ function LPStartseiteInner() {
 
           {uebungsTab === 'durchfuehren' && (
             <main className="p-6">
-              {ladeStatus === 'laden' && (
-                <p className="text-slate-500 dark:text-slate-400 text-center py-12">Übungen werden geladen...</p>
-              )}
-              {ladeStatus === 'fertig' && formativeConfigs.length === 0 && (
+              {configsLadeStatus === 'laden' && <LPUebungenSkeleton />}
+              {configsLadeStatus === 'fertig' && formativeConfigs.length === 0 && (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
                     <span className="text-2xl">📝</span>
@@ -501,7 +525,7 @@ function LPStartseiteInner() {
                   </Button>
                 </div>
               )}
-              {ladeStatus === 'fertig' && formativeConfigs.length > 0 && (
+              {configsLadeStatus === 'fertig' && formativeConfigs.length > 0 && (
                 <div className="space-y-3">
                   {/* Such- und Filterleiste (analog Prüfen) */}
                   <div className="space-y-2">
@@ -612,22 +636,20 @@ function LPStartseiteInner() {
       {ansicht !== 'composer' && modus === 'pruefung' && <>
       {/* Content */}
       <main className="p-6">
-        {ladeStatus === 'laden' && (
-          <p className="text-slate-500 dark:text-slate-400 text-center py-12">
-            Prüfungen werden geladen...
-          </p>
-        )}
+        {configsLadeStatus === 'laden' && listenTab === 'pruefungen' && <LPCardsSkeleton />}
 
-        {ladeStatus === "fertig" && backendFehler && !istDemoModus && (
+        {configsLadeStatus === "fertig" && backendFehler && !istDemoModus && (
           <div className="mb-4 px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 flex items-start gap-2">
             <span className="text-slate-400 shrink-0 mt-0.5">ⓘ</span>
             <span>Backend nicht erreichbar — bestehende Prüfungen konnten nicht geladen werden. Der Composer ist trotzdem nutzbar.</span>
           </div>
         )}
 
-        {/* Tracker-Ansicht */}
-        {ladeStatus === 'fertig' && listenTab === 'tracker' && (
-          trackerDaten ? (
+        {/* Tracker-Ansicht: eigener Lade-Status, unabhängig von Configs */}
+        {listenTab === 'tracker' && (
+          trackerLadeStatus === 'laden' ? (
+            <LPTrackerSkeleton />
+          ) : trackerDaten ? (
             <TrackerSection trackerDaten={trackerDaten} />
           ) : (
             <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-12">
@@ -637,7 +659,7 @@ function LPStartseiteInner() {
         )}
 
         {/* Prüfungen-Ansicht */}
-        {listenTab === 'pruefungen' && ladeStatus === 'fertig' && summativeConfigs.length === 0 && (
+        {listenTab === 'pruefungen' && configsLadeStatus === 'fertig' && summativeConfigs.length === 0 && (
           <div className="text-center py-12">
             <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
               <span className="text-2xl">📝</span>
@@ -654,7 +676,7 @@ function LPStartseiteInner() {
           </div>
         )}
 
-        {listenTab === 'pruefungen' && ladeStatus === 'fertig' && summativeConfigs.length > 0 && (
+        {listenTab === 'pruefungen' && configsLadeStatus === 'fertig' && summativeConfigs.length > 0 && (
           <div className="space-y-3">
             {/* Such- und Filterleiste */}
             <div className="space-y-2">
