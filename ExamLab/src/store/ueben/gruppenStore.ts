@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import type { Gruppe, Mitglied } from '../../types/ueben/gruppen'
 import { uebenGruppenAdapter } from '../../adapters/ueben/appsScriptAdapter'
+import {
+  getCachedGruppen, setCachedGruppen,
+  getCachedMitglieder, setCachedMitglieder,
+  clearGruppenCache,
+} from '../../services/gruppenCache'
 
 interface UebenGruppenState {
   gruppen: Gruppe[]
@@ -8,10 +13,12 @@ interface UebenGruppenState {
   mitglieder: Mitglied[]
   ladeStatus: 'idle' | 'laden' | 'fertig' | 'fehler'
 
-  ladeGruppen: (email: string) => Promise<void>
+  ladeGruppen: (email: string, opts?: { force?: boolean }) => Promise<void>
   waehleGruppe: (gruppeId: string) => Promise<void>
   gruppeAbwaehlen: () => void
   istAdmin: (email: string) => boolean
+  /** Logout-Cleanup: State leeren + IDB-Cache leeren (await wegen Hard-Nav, S149). */
+  reset: () => Promise<void>
 }
 
 const LETZTE_GRUPPE_KEY = 'ueben-letzte-gruppe-id'
@@ -22,11 +29,17 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
   mitglieder: [],
   ladeStatus: 'idle',
 
-  ladeGruppen: async (email: string) => {
+  ladeGruppen: async (email: string, opts?: { force?: boolean }) => {
     set({ ladeStatus: 'laden' })
 
     try {
-      const gruppen = await uebenGruppenAdapter.ladeGruppen(email)
+      // G.d.2 — Cache-First (sofern nicht force)
+      let gruppen: Gruppe[] | null = null
+      if (!opts?.force) gruppen = await getCachedGruppen()
+      if (!gruppen) {
+        gruppen = await uebenGruppenAdapter.ladeGruppen(email)
+        await setCachedGruppen(gruppen)
+      }
 
       // Auto-Select: 1 Gruppe → direkt aktiv, sonst letzte Gruppe aus localStorage
       let aktiveGruppe: Gruppe | null = null
@@ -44,10 +57,15 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
       set({ gruppen, aktiveGruppe, ladeStatus: 'fertig' })
 
       if (aktiveGruppe) {
-        // Letzte Gruppe merken
         try { localStorage.setItem(LETZTE_GRUPPE_KEY, aktiveGruppe.id) } catch { /* */ }
         try {
-          const mitglieder = await uebenGruppenAdapter.ladeMitglieder(aktiveGruppe.id)
+          // G.d.2 — Cache-First für Mitglieder
+          let mitglieder: Mitglied[] | null = null
+          if (!opts?.force) mitglieder = await getCachedMitglieder(aktiveGruppe.id)
+          if (!mitglieder) {
+            mitglieder = await uebenGruppenAdapter.ladeMitglieder(aktiveGruppe.id)
+            await setCachedMitglieder(aktiveGruppe.id, mitglieder)
+          }
           set({ mitglieder })
         } catch (err) {
           console.error('[GruppenStore] Mitglieder laden fehlgeschlagen:', err)
@@ -64,11 +82,15 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
     if (!gruppe) return
 
     set({ aktiveGruppe: gruppe })
-    // Letzte Gruppe merken
     try { localStorage.setItem(LETZTE_GRUPPE_KEY, gruppeId) } catch { /* */ }
 
     try {
-      const mitglieder = await uebenGruppenAdapter.ladeMitglieder(gruppeId)
+      // G.d.2 — Cache-First für Mitglieder bei Gruppen-Wechsel
+      let mitglieder = await getCachedMitglieder(gruppeId)
+      if (!mitglieder) {
+        mitglieder = await uebenGruppenAdapter.ladeMitglieder(gruppeId)
+        await setCachedMitglieder(gruppeId, mitglieder)
+      }
       set({ mitglieder })
     } catch (err) {
       console.error('[GruppenStore] Mitglieder laden bei Gruppenwahl fehlgeschlagen:', err)
@@ -83,5 +105,10 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
     const gruppe = get().aktiveGruppe
     if (!gruppe) return false
     return gruppe.adminEmail.toLowerCase() === email.toLowerCase()
+  },
+
+  reset: async () => {
+    set({ gruppen: [], aktiveGruppe: null, mitglieder: [], ladeStatus: 'idle' })
+    await clearGruppenCache()
   },
 }))
