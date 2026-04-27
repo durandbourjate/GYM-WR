@@ -12,6 +12,7 @@ import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../
 import type { Frage, FrageSummary } from '../../../types/fragen.ts'
 import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
+import FragenListeSkeleton from '../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
@@ -330,11 +331,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
-          {ladeStatus === 'laden' && (
-            <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
-              Fragensammlung wird geladen...
-            </p>
-          )}
+          {ladeStatus === 'laden' && <FragenListeSkeleton />}
 
           {/* Detail-Lade-Overlay */}
           {detailLaden && (
@@ -505,11 +502,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
-          {ladeStatus === 'laden' && (
-            <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
-              Fragensammlung wird geladen...
-            </p>
-          )}
+          {ladeStatus === 'laden' && <FragenListeSkeleton />}
 
           {/* Detail-Lade-Overlay */}
           {detailLaden && (

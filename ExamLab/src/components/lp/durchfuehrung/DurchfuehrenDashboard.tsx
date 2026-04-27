@@ -1,8 +1,11 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { TabBar } from '../../ui/TabBar'
+import DurchfuehrenVorbereitungSkeleton from '../skeletons/DurchfuehrenVorbereitungSkeleton'
+import DurchfuehrenSusReihenSkeleton from '../skeletons/DurchfuehrenSusReihenSkeleton'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmKorrektur } from '../../../services/preWarmApi'
+import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
 import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { einrichtungsPruefung } from '../../../data/einrichtungsPruefung.ts'
@@ -138,6 +141,9 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // AbortController für Monitoring-Polling (Overlap-Schutz)
   const monitoringAbortRef = useRef<AbortController | null>(null)
 
+  // G.f.2 — letzter geschriebener Wert für localStorage-Persist (verhindert redundante Writes)
+  const letzteGeschriebeneAnzahlRef = useRef<number | null>(null)
+
   // Verbindungsfehler-Tracking (Ref statt State → kein useCallback-Rebuild)
   const fehlerCountRef = useRef(0)
   const [zeigeVerbindungsBanner, setZeigeVerbindungsBanner] = useState(false)
@@ -233,6 +239,16 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const interval = setInterval(ladeDaten, intervallMs)
     return () => clearInterval(interval)
   }, [autoRefresh, ladeStatus, ladeDaten, phase])
+
+  // G.f.2 — SuS-Anzahl pro pruefungId persistieren für layout-akkurates Skeleton
+  useEffect(() => {
+    if (ladeStatus !== 'fertig' || !pruefungId) return
+    const anzahl = daten?.schueler?.length ?? 0
+    if (anzahl <= 0) return
+    if (letzteGeschriebeneAnzahlRef.current === anzahl) return
+    schreibeGespeicherteAnzahl(`examlab-lp-letzte-sus-anzahl-${pruefungId}`, anzahl)
+    letzteGeschriebeneAnzahlRef.current = anzahl
+  }, [ladeStatus, daten?.schueler?.length, pruefungId])
 
   // Abgaben + Fragen + Config einmalig laden (ladePruefung gibt beides zurück)
   useEffect(() => {
@@ -342,16 +358,16 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     window.location.reload()
   }
 
-  // Lade-Screens
-  if (ladeStatus === 'laden') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-        <p className="text-slate-500 dark:text-slate-400">Wird geladen...</p>
-      </div>
-    )
-  }
+  // Skeleton- vs. Voll-Layout entscheiden — bei 'laden' zeigt Tab-Content den Skeleton
+  const istLadenOderConfigFehlt = ladeStatus === 'laden' || !config
 
-  if (ladeStatus === 'fehler' || !daten) {
+  // Tab-spezifischer Skeleton — als Variable, damit der JSX-Switch unten 1-stufig bleibt (code-quality.md)
+  const tabSkeleton = activeTab === 'vorbereitung'
+    ? <DurchfuehrenVorbereitungSkeleton />
+    : <DurchfuehrenSusReihenSkeleton pruefungId={pruefungId} />
+
+  // Fehler-Screen nur bei explizitem Fehler-Status (oder daten=null nach erfolgreichem Lade-Abschluss)
+  if (ladeStatus === 'fehler' || (ladeStatus === 'fertig' && !daten)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
         <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
@@ -368,7 +384,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     )
   }
 
-  const titel = config?.titel || daten.pruefungTitel || pruefungId || (config?.typ === 'formativ' ? 'Übung' : 'Prüfung')
+  const titel = config?.titel || daten?.pruefungTitel || pruefungId || (config?.typ === 'formativ' ? 'Übung' : 'Prüfung')
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
@@ -380,23 +396,29 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
         aktionsButtons={
           <>
             <button
+              disabled={istLadenOderConfigFehlt}
               onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors cursor-pointer flex items-center gap-1.5
-                ${autoRefresh
-                  ? 'bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
-                  : 'border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400'
-                }`}
+              className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors flex items-center gap-1.5 ${
+                istLadenOderConfigFehlt ? 'cursor-not-allowed opacity-50 border-slate-300 text-slate-400 dark:border-slate-600 dark:text-slate-500' :
+                autoRefresh
+                  ? 'cursor-pointer bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300'
+                  : 'cursor-pointer border-slate-300 text-slate-500 dark:border-slate-600 dark:text-slate-400'
+              }`}
             >
-              <span className={`inline-block w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
+              <span className={`inline-block w-2 h-2 rounded-full ${autoRefresh && !istLadenOderConfigFehlt ? 'bg-green-500 animate-pulse' : 'bg-slate-400'}`} />
               Live
             </button>
             <button
+              disabled={istLadenOderConfigFehlt}
               onClick={ladeDaten}
-              className="px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className={`px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 rounded-lg transition-colors ${
+                istLadenOderConfigFehlt ? 'cursor-not-allowed opacity-50 text-slate-400 dark:text-slate-500'
+                                        : 'cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
             >
               ↻
             </button>
-            {/* Timer in aktiver Phase */}
+            {/* Timer in aktiver Phase — bleibt unverändert */}
             {phase === 'aktiv' && dauer && (
               <span className="text-sm font-mono text-slate-600 dark:text-slate-300">⏱ {dauer}</span>
             )}
@@ -431,8 +453,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
               return {
                 id: key,
                 label: `${icon} ${label}`,
-                disabled: !istTabVerfuegbar(key, phase),
-                icon: istAktuellePhase && activeTab !== key
+                disabled: istLadenOderConfigFehlt || !istTabVerfuegbar(key, phase),
+                icon: !istLadenOderConfigFehlt && istAktuellePhase && activeTab !== key
                   ? <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   : undefined,
               }
@@ -445,182 +467,189 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       </div>
 
       {/* === Tab-Content === */}
-      {config && (
-        <div className="max-w-7xl mx-auto w-full px-4 py-4 space-y-4 flex-1">
-          {/* Vorbereitung: hidden statt unmount, damit State erhalten bleibt bei "Zurück" */}
-          <div className={activeTab === 'vorbereitung' ? '' : 'hidden'}>
-            <VorbereitungPhase
-              config={config}
-              onTeilnehmerGesetzt={(teilnehmer) => {
-                setConfig({ ...config, teilnehmer })
-              }}
-              onWeiterZurLobby={() => wechsleTab('lobby')}
-              onConfigUpdate={async (updates) => {
-                const neueConfig = { ...config, ...updates }
-                setConfig(neueConfig)
-                if (user && !istDemoModus && apiService.istKonfiguriert()) {
-                  await apiService.speichereConfig(user.email, neueConfig)
-                }
-              }}
-            />
+      <div className="max-w-7xl mx-auto w-full px-4 py-4 space-y-4 flex-1">
+        {ladeStatus === 'laden' ? tabSkeleton : !config ? (
+          /* Lade fertig, aber Config fehlt — Inline-Hinweis (verhindert Endlos-Skeleton) */
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6 text-center">
+            <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+              Prüfungskonfiguration konnte nicht geladen werden.
+            </p>
+            <button
+              onClick={ladeDaten}
+              className="px-4 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors cursor-pointer"
+            >
+              Erneut versuchen
+            </button>
           </div>
-
-          {activeTab === 'lobby' && daten && (
-            <LobbyPhase
-              config={config}
-              schuelerStatus={daten.schueler}
-              freischaltenLaedt={freischaltenLaedt}
-              onFreischalten={async () => {
-                if (!user || freischaltenLaedt) return
-                // Optimistic UI: sofort freigeschaltet anzeigen
-                setFreischaltenLaedt(true)
-                setConfig({ ...config, freigeschaltet: true })
-                const erfolg = await apiService.schaltePruefungFrei(config.id, user.email)
-                setFreischaltenLaedt(false)
-                if (!erfolg) {
-                  // Rollback bei Fehler
-                  setConfig({ ...config, freigeschaltet: false })
-                }
-              }}
-              onZurueck={async () => {
-                if (user) {
-                  await apiService.setzeTeilnehmer(user.email, config.id, [])
-                  setConfig({ ...config, teilnehmer: [] })
-                }
-              }}
-              onAkzeptieren={async (email, name) => {
-                const neueTeilnehmer = [
-                  ...(config.teilnehmer ?? []),
-                  { email, name, vorname: '', klasse: '—', quelle: 'manuell' as const },
-                ]
-                if (user) {
-                  await apiService.setzeTeilnehmer(user.email, config.id, neueTeilnehmer)
-                  setConfig({ ...config, teilnehmer: neueTeilnehmer })
-                }
-              }}
-              onEntfernen={async (email) => {
-                const neueTeilnehmer = (config.teilnehmer ?? []).filter((t) => t.email !== email)
-                if (user) {
-                  await apiService.setzeTeilnehmer(user.email, config.id, neueTeilnehmer)
-                  setConfig({ ...config, teilnehmer: neueTeilnehmer })
-                }
-              }}
-            />
-          )}
-
-          {activeTab === 'live' && daten && (
-            <AktivPhase
-              config={config}
-              schuelerStatus={gefilterteSchueler}
-              startTimestamp={startTimestamp}
-              onConfigUpdate={async (updates) => {
-                const neueConfig = { ...config, ...updates }
-                setConfig(neueConfig)
-                if (user && !istDemoModus && apiService.istKonfiguriert()) {
-                  await apiService.speichereConfig(user.email, neueConfig)
-                }
-              }}
-              onBeenden={() => {
-                // Config als beendet markieren → Phase wechselt sofort zu 'beendet'
-                if (config) {
-                  setConfig({ ...config, beendetUm: new Date().toISOString() })
-                }
-                ladeDaten()
-              }}
-            />
-          )}
-
-          {activeTab === 'auswertung' && daten && pruefungId && (
-            <div className="space-y-4">
-              {/* Ergebnis-Übersicht (Accordion) */}
-              <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => setErgebnisOffen(!ergebnisOffen)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                    <span>⏹</span>
-                    <span>Ergebnis-Übersicht</span>
-                  </span>
-                  <span className={`text-slate-400 dark:text-slate-500 transition-transform duration-200 ${ergebnisOffen ? 'rotate-180' : ''}`}>
-                    ▼
-                  </span>
-                </button>
-                {ergebnisOffen && (
-                  <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">
-                    <BeendetPhase
-                      config={config}
-                      schuelerStatus={gefilterteSchueler}
-                      fragen={fragen}
-                      abgaben={abgaben}
-                      onExportieren={() => {
-                        const csv = exportiereTeilnahmeCSV(config, gefilterteSchueler)
-                        if (csv) {
-                          const dateiname = `${config.titel || config.id}_Teilnahme_${new Date().toISOString().slice(0, 10)}.csv`
-                          downloadCSV(csv, dateiname)
-                        }
-                      }}
-                      onNeueDurchfuehrung={async () => {
-                        if (!user) return
-                        const erfolg = await apiService.resetPruefung(config.id, user.email)
-                        if (erfolg) {
-                          // Alles zurücksetzen: Phase-Tracking, Daten, Config
-                          letztePhaseRef.current = 'vorbereitung'
-                          abgabenGeladen.current = false
-                          setDaten({ pruefungId: config.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
-                          setAbgaben({})
-                          setFragen([])
-                          // Config zurücksetzen: lokal + Backend
-                          // Kontrollstufe abhängig vom Prüfungstyp
-                          const defaultKontrollStufe = config.typ === 'formativ' ? 'locker' as const : 'standard' as const
-                          const resetConfig = {
-                            ...config,
-                            freigeschaltet: false,
-                            beendetUm: undefined,
-                            teilnehmer: [],
-                            sebAusnahmen: [],
-                            zeitverlaengerungen: {},
-                            kontrollStufe: defaultKontrollStufe,
-                            durchfuehrungId: crypto.randomUUID(),
-                          }
-                          setConfig(resetConfig)
-                          // URL-Parameter ?tab=... löschen (verhindert Tab-Sprung zu Auswertung)
-                          const url = new URL(window.location.href)
-                          url.searchParams.delete('tab')
-                          window.history.replaceState({}, '', url.toString())
-                          setActiveTab('vorbereitung')
-                          // Reset ans Backend senden, dann frische Config laden
-                          try {
-                            await apiService.speichereConfig(user!.email, resetConfig)
-                          } catch { /* ignore — lokaler Reset greift trotzdem */ }
-                          try {
-                            const frisch = await apiService.ladeEinzelConfig(config.id, user!.email)
-                            if (frisch) setConfig(frisch)
-                          } catch { /* ignore */ }
-                          ladeDaten()
-                        }
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Korrektur-Dashboard (immer sichtbar) */}
-              <KorrekturDashboard pruefungId={pruefungId} eingebettet config={config} />
+        ) : (
+          /* Echter Tab-Content — config UND daten sind hier garantiert da */
+          <>
+            {/* Vorbereitung: hidden statt unmount, damit State erhalten bleibt bei "Zurück" */}
+            <div className={activeTab === 'vorbereitung' ? '' : 'hidden'}>
+              <VorbereitungPhase
+                config={config!}
+                onTeilnehmerGesetzt={(teilnehmer) => {
+                  setConfig({ ...config!, teilnehmer })
+                }}
+                onWeiterZurLobby={() => wechsleTab('lobby')}
+                onConfigUpdate={async (updates) => {
+                  const neueConfig = { ...config!, ...updates }
+                  setConfig(neueConfig)
+                  if (user && !istDemoModus && apiService.istKonfiguriert()) {
+                    await apiService.speichereConfig(user.email, neueConfig)
+                  }
+                }}
+              />
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Config noch nicht geladen */}
-      {!config && (
-        <div className="max-w-7xl mx-auto w-full px-4 py-4">
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
-            Prüfungskonfiguration wird geladen…
-          </p>
-        </div>
-      )}
+            {activeTab === 'lobby' && daten && (
+              <LobbyPhase
+                config={config!}
+                schuelerStatus={daten.schueler}
+                freischaltenLaedt={freischaltenLaedt}
+                onFreischalten={async () => {
+                  if (!user || freischaltenLaedt) return
+                  // Optimistic UI: sofort freigeschaltet anzeigen
+                  setFreischaltenLaedt(true)
+                  setConfig({ ...config!, freigeschaltet: true })
+                  const erfolg = await apiService.schaltePruefungFrei(config!.id, user.email)
+                  setFreischaltenLaedt(false)
+                  if (!erfolg) {
+                    // Rollback bei Fehler
+                    setConfig({ ...config!, freigeschaltet: false })
+                  }
+                }}
+                onZurueck={async () => {
+                  if (user) {
+                    await apiService.setzeTeilnehmer(user.email, config!.id, [])
+                    setConfig({ ...config!, teilnehmer: [] })
+                  }
+                }}
+                onAkzeptieren={async (email, name) => {
+                  const neueTeilnehmer = [
+                    ...(config!.teilnehmer ?? []),
+                    { email, name, vorname: '', klasse: '—', quelle: 'manuell' as const },
+                  ]
+                  if (user) {
+                    await apiService.setzeTeilnehmer(user.email, config!.id, neueTeilnehmer)
+                    setConfig({ ...config!, teilnehmer: neueTeilnehmer })
+                  }
+                }}
+                onEntfernen={async (email) => {
+                  const neueTeilnehmer = (config!.teilnehmer ?? []).filter((t) => t.email !== email)
+                  if (user) {
+                    await apiService.setzeTeilnehmer(user.email, config!.id, neueTeilnehmer)
+                    setConfig({ ...config!, teilnehmer: neueTeilnehmer })
+                  }
+                }}
+              />
+            )}
+
+            {activeTab === 'live' && daten && (
+              <AktivPhase
+                config={config!}
+                schuelerStatus={gefilterteSchueler}
+                startTimestamp={startTimestamp}
+                onConfigUpdate={async (updates) => {
+                  const neueConfig = { ...config!, ...updates }
+                  setConfig(neueConfig)
+                  if (user && !istDemoModus && apiService.istKonfiguriert()) {
+                    await apiService.speichereConfig(user.email, neueConfig)
+                  }
+                }}
+                onBeenden={() => {
+                  // Config als beendet markieren → Phase wechselt sofort zu 'beendet'
+                  if (config) {
+                    setConfig({ ...config!, beendetUm: new Date().toISOString() })
+                  }
+                  ladeDaten()
+                }}
+              />
+            )}
+
+            {activeTab === 'auswertung' && daten && pruefungId && (
+              <div className="space-y-4">
+                {/* Ergebnis-Übersicht (Accordion) */}
+                <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setErgebnisOffen(!ergebnisOffen)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                      <span>⏹</span>
+                      <span>Ergebnis-Übersicht</span>
+                    </span>
+                    <span className={`text-slate-400 dark:text-slate-500 transition-transform duration-200 ${ergebnisOffen ? 'rotate-180' : ''}`}>
+                      ▼
+                    </span>
+                  </button>
+                  {ergebnisOffen && (
+                    <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">
+                      <BeendetPhase
+                        config={config!}
+                        schuelerStatus={gefilterteSchueler}
+                        fragen={fragen}
+                        abgaben={abgaben}
+                        onExportieren={() => {
+                          const csv = exportiereTeilnahmeCSV(config!, gefilterteSchueler)
+                          if (csv) {
+                            const dateiname = `${config!.titel || config!.id}_Teilnahme_${new Date().toISOString().slice(0, 10)}.csv`
+                            downloadCSV(csv, dateiname)
+                          }
+                        }}
+                        onNeueDurchfuehrung={async () => {
+                          if (!user) return
+                          const erfolg = await apiService.resetPruefung(config!.id, user.email)
+                          if (erfolg) {
+                            // Alles zurücksetzen: Phase-Tracking, Daten, Config
+                            letztePhaseRef.current = 'vorbereitung'
+                            abgabenGeladen.current = false
+                            setDaten({ pruefungId: config!.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
+                            setAbgaben({})
+                            setFragen([])
+                            // Config zurücksetzen: lokal + Backend
+                            // Kontrollstufe abhängig vom Prüfungstyp
+                            const defaultKontrollStufe = config!.typ === 'formativ' ? 'locker' as const : 'standard' as const
+                            const resetConfig = {
+                              ...config!,
+                              freigeschaltet: false,
+                              beendetUm: undefined,
+                              teilnehmer: [],
+                              sebAusnahmen: [],
+                              zeitverlaengerungen: {},
+                              kontrollStufe: defaultKontrollStufe,
+                              durchfuehrungId: crypto.randomUUID(),
+                            }
+                            setConfig(resetConfig)
+                            // URL-Parameter ?tab=... löschen (verhindert Tab-Sprung zu Auswertung)
+                            const url = new URL(window.location.href)
+                            url.searchParams.delete('tab')
+                            window.history.replaceState({}, '', url.toString())
+                            setActiveTab('vorbereitung')
+                            // Reset ans Backend senden, dann frische Config laden
+                            try {
+                              await apiService.speichereConfig(user!.email, resetConfig)
+                            } catch { /* ignore — lokaler Reset greift trotzdem */ }
+                            try {
+                              const frisch = await apiService.ladeEinzelConfig(config!.id, user!.email)
+                              if (frisch) setConfig(frisch)
+                            } catch { /* ignore */ }
+                            ladeDaten()
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Korrektur-Dashboard (immer sichtbar) */}
+                <KorrekturDashboard pruefungId={pruefungId} eingebettet config={config!} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       </div>{/* Ende Scrollbarer Hauptinhalt */}
 
