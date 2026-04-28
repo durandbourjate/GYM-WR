@@ -218,6 +218,7 @@ function FreitextAufgabe({ frage }: { frage: FreitextFrageType }) {
 
       {/* Editor — volle Breite, auto-grow, min-height für leichtes Antippen auf iPad */}
       <div
+        data-no-enter-submit=""
         className={`tiptap-editor w-full border-2 rounded-xl min-h-[120px]
           ${disabled
             ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
