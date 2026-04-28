@@ -7,6 +7,7 @@ import { toAssetUrl } from '../../utils/assetUrl.ts'
 import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 import { ZoneLabel } from '@shared/ui/ZoneLabel'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: BildbeschriftungFrageType
@@ -34,7 +35,9 @@ function BildbeschriftungAufgabe({ frage }: { frage: BildbeschriftungFrageType }
     onAntwort({ typ: 'bildbeschriftung', eintraege: neueEintraege })
   }
 
-  const alleAusgefuellt = (frage.beschriftungen ?? []).every(b => (eintraege[b.id] ?? '').trim() !== '')
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-transparent'
 
   return (
     <div className="flex flex-col gap-5">
@@ -62,7 +65,7 @@ function BildbeschriftungAufgabe({ frage }: { frage: BildbeschriftungFrageType }
 
       {/* Bild mit Labels — feste Container-Breite, damit SVGs ohne explizite width-Attribute
           (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
-      <div className={`relative block w-full max-w-2xl ${!disabled && !alleAusgefuellt ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      <div data-testid="bildbeschriftung-input-area" className={`relative block w-full max-w-2xl rounded-xl border ${violettOutline} p-1`}>
         <div className="relative overflow-hidden w-full">
           {bildQuelle && (
             <img
