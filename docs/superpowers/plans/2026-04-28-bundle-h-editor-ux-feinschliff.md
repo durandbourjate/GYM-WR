@@ -1187,9 +1187,21 @@ git commit -am "feat(examlab): ZuordnungEditor pflichtfeld-violett-outlines"
 
 ### Task 4.1: Audio bereits raus — Regression-Test + KI-Backend
 
-> **Audio-Sweep-Resultate (aus 0.3):**
+> **Audio-Sweep-Resultate (aus 0.3, 28.04.2026 S157):** 35 Treffer.
 >
-> _Wird in Task 0.3 Step 4 inline befüllt._
+> | Kategorie | Treffer | Action |
+> |---|---|---|
+> | **Type-Definition / Factory** (FrageTyp-Union, Antwort-Type, fragenFactory, types/fragen, antworten, excelImport, sichtbareTypen) | 11 | bleibt — Datenmodell stabil |
+> | **SuS-Renderer** (`AudioFrage.tsx`, `MedienPlayer.tsx`) | 3 | bleibt — Bestand wird gerendert |
+> | **LP-Editor defensiv** (`SharedFragenEditor.tsx`, `TypEditorDispatcher.tsx`) | 4 | bleibt — Re-Aktivierung möglich |
+> | **`FrageTypAuswahl.tsx:13`** S140-Kommentar | 1 | bleibt — Typ ist bereits ausgefiltert |
+> | **`AufgabengruppeEditor.tsx:15, 300`** Sub-Typen-Liste | 2 | **Decision: bleibt drin** — Aufgabengruppe darf weiterhin bestehende Audio-Sub-Typen rendern (Bestand bleibt), aber FrageTypAuswahl filtert beim Erstellen neuer Sub-Aufgaben (gleicher Code-Pfad). Kein Code-Change. |
+> | **Korrektur** (`KorrekturFrageVollansicht`, `KorrekturFragenAnsicht`, `DruckAnsicht`) | 4 | bleibt — Bestand korrigierbar |
+> | **Auto-Korrektur / Selbstbewertung** (`uebungsStore`, `antwortStatus`, `korrektur`) | 5 | bleibt — Selbstbewertbar-Liste ist korrekt |
+> | **Tests** (`MediaAnzeige.test`, `sichtbareTypen.test`, `autoKorrektur.test`) | 3 | bleibt — Test-Sicherheit für Bestand |
+> | **Apps-Script-Backend** (`apps-script-code.js`) | 8 (in code.js, nicht im Sweep gezählt) | bleibt — Backend kennt audio defensiv für Bestand. `klassifiziereFrage` (Z. 5873) klassifiziert NICHT auf einen Typ (sondern Fachbereich/Thema/Bloom/Tags), keine Audio-Whitelist nötig. `importiereFragen` (Z. 5894) listet Typen ohne `'audio'` — bereits korrekt. **Kein Backend-Deploy nötig.** |
+>
+> **Phase 4 reduziert auf:** Regression-Test in FrageTypAuswahl (Step 1+2). Step 3 (KI-Backend-Filter) entfällt.
 
 **Files:**
 - Modify: `packages/shared/src/editor/components/FrageTypAuswahl.tsx` (nur falls KI-Backend Audio liefert)
