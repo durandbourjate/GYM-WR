@@ -565,6 +565,8 @@ brauchen Normalizer-Aufruf bevor sie auf neuem Type kompilieren.
 Mitigationen-Reihenfolge in Spec Sektion 5.2.1."
 ```
 
+> **⚠ Implementer-Hinweis:** `npx tsc -b` wird in Phasen 2-7 rot bleiben — das ist beabsichtigt. NICHT versuchen vorzeitig zu fixen indem `as any`-Casts eingestreut werden. Die roten Stellen werden Pfad-für-Pfad in Phase 5-8 durch Normalizer-Aufrufe ersetzt. Erst Task 26 erwartet wieder grünes `tsc -b`.
+
 ---
 
 ## Phase 2 — Frage-Normalizer
@@ -855,20 +857,39 @@ Suche `{ feld: 'zielzonen', subFelder: ['korrektesLabel', 'erklaerung'] }` und e
 { feld: 'zielzonen', subFelder: ['korrektesLabel', 'korrekteLabels', 'erklaerung'] },
 ```
 
-- [ ] **Step 3: S122-Type-Guard im `bereinigeFrageFuerSuS_`-Loop**
+- [ ] **Step 3: S122-Type-Guard verifizieren oder einfügen**
 
-Suche `f.labels = f.labels.map(function(l)` (oder analoge Pattern für DragDrop-Pool-Bereinigung). Falls vorhanden, sicherstellen dass Type-Guard greift:
+Stelle suchen:
+
+```bash
+grep -n "f\.labels\s*=\s*f\.labels\.map\|frage\.labels\.map\|labels\.map.*Object.assign" ExamLab/apps-script-code.js
+```
+
+**Fall A — Stelle vorhanden:** Type-Guard prüfen und ggf. ergänzen:
 
 ```js
 f.labels = (f.labels || []).map(function(l) {
-  if (typeof l !== 'object' || l === null) return l;  // string durchreichen
+  if (typeof l !== 'object' || l === null) return l;  // string durchreichen — S122
   var c = Object.assign({}, l);
   delete c.zoneId;  // legacy field, falls vorhanden
   return c;
 });
 ```
 
-Falls Stelle nicht vorhanden ist (Bereinigung erfolgt nur via `LOESUNGS_FELDER_.arrays`), ist S122-Risiko nicht akut — Test in Task 10 deckt das ab.
+**Fall B — Stelle existiert noch nicht:** In `bereinigeFrageFuerSuS_` (nach `LOESUNGS_FELDER_.arrays`-Loop, vor `return f`) NEU einfügen — Pool-Items bekommen sonst keinerlei Bereinigung, IDs bleiben lesbar (was OK ist), aber S122-Heterogen-Mix-Bug wäre eine Falle bei künftigen Änderungen:
+
+```js
+if (f.typ === 'dragdrop_bild' && Array.isArray(f.labels)) {
+  f.labels = f.labels.map(function(l) {
+    if (typeof l !== 'object' || l === null) return l;
+    return Object.assign({}, l);  // shallow copy, kein delete
+  });
+}
+```
+
+**Wichtig:** Test in Task 10 (`testDragDropMultiZonePrivacy_`) verlangt `typeof bereinigtPre.labels[0] === 'string'`. Dieser Assert läuft nur grün, wenn der Type-Guard tatsächlich existiert — entweder bestehend (Fall A) oder neu eingefügt (Fall B). Test ist dann nicht zirkulär.
+
+Falls `f` ein Deep-Copy via `JSON.parse(JSON.stringify(...))` ist (üblich), ist die `Object.assign`-Schleife strenggenommen Verschwendung — der Type-Guard schützt aber gegen künftige Refactors. Defensive Disziplin.
 
 - [ ] **Step 4: Commit ohne Tests (Tests folgen in Task 10)**
 
@@ -1267,19 +1288,41 @@ git commit -m "Bundle J Phase 5.2 (Pfad 3): autoKorrektur.korrigiereDragDropBild
 **Files:**
 - Modify: `ExamLab/src/utils/ueben/korrektur.ts` (~Z. 226-230)
 
-- [ ] **Step 1: Stelle inspizieren**
+- [ ] **Step 1: Stelle inspizieren + Aufruf-Pattern verifizieren**
 
 ```bash
 sed -n '215,250p' ExamLab/src/utils/ueben/korrektur.ts
+grep -n "korrigiereDragDropBild\|dragdrop_bild" ExamLab/src/utils/ueben/korrektur.ts
 ```
 
-- [ ] **Step 2: Normalizer-Aufruf + Multi-Label-Match einbauen**
+Entscheidungs-Tabelle nach Output:
 
-Identische Logik wie Task 14, aber im Üben-Pfad. Falls die Funktion direkt `autoKorrektur.korrigiereDragDropBild` ruft, ist der Fix bereits in Task 14 enthalten — diese Task ist dann ein No-Op + Verify.
+| Befund | Aktion |
+|---|---|
+| `korrektur.ts` ruft `autoKorrektur.korrigiereDragDropBild` direkt → bereits durch Task 14 abgedeckt | Step 2 ist No-Op. Step 3 verifiziert via Test. |
+| `korrektur.ts` hat **eigene** Korrektur-Logik mit `frage.zielzonen[*].korrektesLabel`-Lookup | Step 2 spiegelt Pattern aus Task 14 (Frage- + Antwort-Normalizer + Multi-Label-Match-Schleife) |
 
-Falls separate Logik existiert (Üben-spezifische Korrektur mit Erklärungs-Anzeige), Pattern aus Task 14 dort spiegeln.
+- [ ] **Step 2: Falls eigene Logik vorhanden — Pattern aus Task 14 spiegeln**
 
-- [ ] **Step 3: Bestehende Tests ausführen**
+```ts
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from './fragetypNormalizer'
+
+// Im DnD-Branch:
+const frage = normalisiereDragDropBild(frageRaw)
+const antwort = normalisiereDragDropAntwort(antwortRaw, frage)
+const labelMap = new Map(frage.labels.map(l => [l.id, l]))
+for (const zone of frage.zielzonen) {
+  const platzierteTexte = Object.entries(antwort.zuordnungen)
+    .filter(([, zid]) => zid === zone.id)
+    .map(([lid]) => (labelMap.get(lid)?.text ?? '').trim())
+    .filter(Boolean)
+  const sollSet = new Set(zone.korrekteLabels.map(s => s.trim().toLowerCase()))
+  const korrekt = platzierteTexte.some(t => sollSet.has(t.toLowerCase()))
+  // … restliche Üben-spezifische Logik (Erklärung-Anzeige etc.)
+}
+```
+
+- [ ] **Step 3: Bestehende Tests ausführen** (vor + nach Änderung gleich grün)
 
 ```bash
 cd ExamLab && npx vitest run src/utils/ueben/
@@ -1289,7 +1332,8 @@ cd ExamLab && npx vitest run src/utils/ueben/
 
 ```bash
 git add ExamLab/src/utils/ueben/korrektur.ts
-git commit -m "Bundle J Phase 5.3 (Pfad 4): Üben-Korrektur via Normalizer + Multi-Label"
+git commit -m "Bundle J Phase 5.3 (Pfad 4): Üben-Korrektur via Normalizer + Multi-Label" || \
+  git commit --allow-empty -m "Bundle J Phase 5.3 (Pfad 4): Üben-Korrektur No-Op (delegiert an autoKorrektur Task 14)"
 ```
 
 ### Task 16: Pfad #5 — antwortStatus
@@ -1303,18 +1347,21 @@ git commit -m "Bundle J Phase 5.3 (Pfad 4): Üben-Korrektur via Normalizer + Mul
 grep -n "dragdrop_bild" ExamLab/src/utils/antwortStatus.ts
 ```
 
-- [ ] **Step 2: Normalizer-Aufruf einbauen**
+- [ ] **Step 2: Normalizer-Aufruf einbauen — Frage UND Antwort**
 
 ```ts
-import { normalisiereDragDropBild } from './ueben/fragetypNormalizer'
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from './ueben/fragetypNormalizer'
 
 // In istDnDBildBeantwortet (oder analog):
-function istDnDBildBeantwortet(frageRaw: DragDropBildFrage, antwort: any): boolean {
+function istDnDBildBeantwortet(frageRaw: DragDropBildFrage, antwortRaw: any): boolean {
+  if (antwortRaw?.typ !== 'dragdrop_bild') return false
   const frage = normalisiereDragDropBild(frageRaw)
-  // Bestehende Logik darf jetzt auf neue Felder zugreifen
-  return Object.keys(antwort?.zuordnungen ?? {}).length > 0
+  const antwort = normalisiereDragDropAntwort(antwortRaw, frage)
+  return Object.keys(antwort.zuordnungen ?? {}).length > 0
 }
 ```
+
+**Begründung Antwort-Normalizer:** Spec Sektion 5.2.2 nennt Pfad 5 explizit als Aufruf-Stelle. Heute reicht die Key-Anzahl für Detection — wenn aber später jemand `labelMap.get(lid)?.text`-Lookup ergänzt (z.B. „Hat SuS in Zone X etwas?"), crasht es bei Pre-Migration-Antwort silent. Defensive Disziplin gegen künftige Regression.
 
 - [ ] **Step 3: Tests ausführen** (vorhandene Tests in `antwortStatus.test.ts`, falls existent)
 
@@ -1322,7 +1369,7 @@ function istDnDBildBeantwortet(frageRaw: DragDropBildFrage, antwort: any): boole
 
 ```bash
 git add ExamLab/src/utils/antwortStatus.ts
-git commit -m "Bundle J Phase 5.4 (Pfad 5): antwortStatus.istBeantwortet via Normalizer"
+git commit -m "Bundle J Phase 5.4 (Pfad 5): antwortStatus.istBeantwortet via Frage+Antwort-Normalizer"
 ```
 
 ### Task 17: Pfad #6 — KorrekturFrageVollansicht
@@ -1380,28 +1427,108 @@ git add ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx
 git commit -m "Bundle J Phase 5.6 (Pfad 7): DruckAnsicht via Normalizer + Multi-Label"
 ```
 
+### Task 18b: Pfad #15 — autoSave.ts::loadFromIndexedDB (IDB-Restore)
+
+**Files:**
+- Modify: `ExamLab/src/services/autoSave.ts`
+
+**Begründung (Spec Risiko #10):** Persistierte SuS-Antworten in IndexedDB (`pruefung-backup.antworten`-Store) sind Pre-Migration text-keyed (`{ 'Aktiva': 'z1' }`). Nach Frontend-Deploy lesen Korrektur und Renderer den Schlüssel als wäre es eine `labelId` → orphaned. Restore-Eintrittspunkt MUSS Antwort-Normalizer aufrufen. Spec Sektion 5.2.2 nennt diese Stelle ausdrücklich.
+
+- [ ] **Step 1: Stelle finden**
+
+```bash
+grep -n "loadFromIndexedDB\|restoreFromIndexedDB\|antworten" ExamLab/src/services/autoSave.ts
+```
+
+- [ ] **Step 2: Antwort-Normalizer in Restore-Pfad einbauen**
+
+Nach IDB-Read der Antworten (vor Rückgabe an State):
+
+```ts
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from '../utils/ueben/fragetypNormalizer'
+
+// In loadFromIndexedDB (oder analog):
+const antworten = await idbStore.get(pruefungId)
+// Pro DnD-Bild-Antwort: Frage aus aktuellem State + Normalizer-Layer
+for (const [fid, antwort] of Object.entries(antworten ?? {})) {
+  if (antwort?.typ !== 'dragdrop_bild') continue
+  const frage = aktuelleFragen.find(f => f.id === fid)
+  if (!frage || frage.typ !== 'dragdrop_bild') continue
+  const frageNorm = normalisiereDragDropBild(frage)
+  antworten[fid] = normalisiereDragDropAntwort(antwort, frageNorm)
+}
+return antworten
+```
+
+**Hinweis:** Falls `loadFromIndexedDB` keine direkten Frage-Referenzen hat (Antworten kommen ohne Frage-Kontext zurück), muss der Caller (`pruefungStore.restore` o.ä.) den Normalizer aufrufen. Pattern dann:
+
+```ts
+// In Caller:
+const antworten = await loadFromIndexedDB(pruefungId)
+const fragen = state.fragen
+for (const [fid, antwort] of Object.entries(antworten)) {
+  if (antwort?.typ === 'dragdrop_bild') {
+    const f = fragen.find(x => x.id === fid)
+    if (f) antworten[fid] = normalisiereDragDropAntwort(antwort, normalisiereDragDropBild(f))
+  }
+}
+```
+
+- [ ] **Step 3: Test ergänzen** in `dragdropAntwortMigration.test.ts` (oder neu `autoSave.test.ts`):
+
+```ts
+it('IDB-Restore mappt Pre-Migration-text-keyed zuordnungen auf id-keyed', () => {
+  const idbAntwort = { typ: 'dragdrop_bild' as const, zuordnungen: { 'Aktiva': 'z1' } }
+  const aktuelleFrage: any = {
+    id: 'f1', typ: 'dragdrop_bild',
+    zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] }],
+    labels: [{ id: 'sid-aktiva', text: 'Aktiva' }],
+  }
+  const out = normalisiereDragDropAntwort(idbAntwort, aktuelleFrage)
+  expect(out.zuordnungen).toEqual({ 'sid-aktiva': 'z1' })
+})
+```
+
+- [ ] **Step 4: Tests ausführen → PASS**
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add ExamLab/src/services/autoSave.ts ExamLab/src/utils/dragdropAntwortMigration.test.ts
+git commit -m "Bundle J Phase 5.6b (Pfad 15): autoSave-IDB-Restore via Antwort-Normalizer
+
+Behebt Spec Risiko #10: Pre-Migration text-keyed SuS-Antworten in IndexedDB
+würden nach Frontend-Deploy orphan, weil Korrektur/Renderer mit ID-Keys arbeiten.
+Restore-Eintrittspunkt mappt jetzt am Lese-Zeitpunkt."
+```
+
 ### Task 19: Pfad #8 — uebungsStore.mergeById
 
 **Files:**
 - Modify: `ExamLab/src/store/ueben/uebungsStore.ts` (~Z. 65)
 
-- [ ] **Step 1: Stelle finden**
+- [ ] **Step 1: Stelle + Caller finden**
 
 ```bash
 sed -n '55,85p' ExamLab/src/store/ueben/uebungsStore.ts
+grep -n "mergeById\|labels:" ExamLab/src/store/ueben/uebungsStore.ts
+grep -rn "uebungsStore" ExamLab/src/ | grep -i "ladeFragen\|setFragen\|addFragen\|merge" | head -10
 ```
 
-- [ ] **Step 2: Caller-Update**
+Erwartet: 1-2 Eintrittspunkte (z.B. `ladeFragen`, `setFragen`, `addToCache`). Diese sind die Stellen die normalisieren müssen.
 
-`mergeById(merged.labels, slice.labels)` setzt `DragDropBildLabel[]` voraus. Caller muss vor Merge normalisieren — Helper `normalisiereDragDropBild` auf jede Frage anwenden bevor sie in den Store geht. Im Store-Action (z.B. `addFragen` oder analog):
+- [ ] **Step 2: Caller-Update — Normalizer vor Eintritt in Store**
+
+`mergeById(merged.labels, slice.labels)` setzt voraus dass beide Seiten `DragDropBildLabel[]` mit `id` sind. Vor Merge MUSS jede DnD-Frage durch `normalisiereDragDropBild` laufen — am Eintrittspunkt der Store-Action:
 
 ```ts
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 
-// In Store-Action:
+// In jedem Eintrittspunkt der Fragen reinholt (aus Schritt 1 Output):
 const normalisierteFragen = neueFragen.map(f =>
   f.typ === 'dragdrop_bild' ? normalisiereDragDropBild(f) : f
 )
+// dann normalisierteFragen weiter in mergeById / setFragen
 ```
 
 - [ ] **Step 3: Tests ausführen** (vorhandene `uebungsStore.test.ts`)
@@ -2389,6 +2516,14 @@ In HANDOFF.md ergänzen:
 - [ ] Hotspot, Bildbeschriftung (gleiche Bild-Pattern)
 - [ ] Sortierung, Zuordnung (Drag-verwandt)
 - [ ] FiBu-Tabellen-Eingabe (Buchungssatz, T-Konto, Bilanz/ER)
+
+### Mobile / iPad-Test (PFLICHT für Stack-Touch-Mechanik)
+- [ ] iPad oder Chrome-DevTools-Mobile-Simulation: Tap-to-Select auf Stack `Soll ×3`
+- [ ] Tap auf Zone → Counter dekrementiert auf ×2
+- [ ] Bei Counter = 0: Stack verschwindet aus Pool
+- [ ] Tap auf platzierten Token in Zone → entfernt, Counter +1
+- [ ] Touch-Targets ≥ 44×44px (Spec/`bilder-in-pools.md` Regel 19)
+- [ ] `touchAction: 'none'` auf interaktiven Elementen während Tap (kein Browser-Scroll dabei)
 ```
 
 - [ ] **Step 2: Commit**
