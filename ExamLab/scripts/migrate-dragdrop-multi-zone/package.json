@@ -1,0 +1,10 @@
+{
+  "name": "migrate-dragdrop-multi-zone",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dump": "node dump.mjs",
+    "migrate": "node migrate.mjs",
+    "upload": "node upload.mjs"
+  }
+}
