@@ -356,16 +356,20 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne die Labels zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'Angebot' },
-        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Nachfrage' },
-        { id: 'z3', form: 'rechteck', punkte: [{x:80,y:20},{x:90,y:20},{x:90,y:30},{x:80,y:30}], korrektesLabel: 'Preis' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['Angebot'] },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Nachfrage'] },
+        { id: 'z3', form: 'rechteck', punkte: [{x:80,y:20},{x:90,y:20},{x:90,y:30},{x:80,y:30}], korrekteLabels: ['Preis'] },
       ],
-      labels: ['Angebot', 'Nachfrage', 'Preis', 'Menge'],
+      labels: [
+        { id: 'l1', text: 'Angebot' },
+        { id: 'l2', text: 'Nachfrage' },
+        { id: 'l3', text: 'Preis' },
+        { id: 'l4', text: 'Menge' },
+      ],
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      // Kanonisches Format: { [labelText]: zoneId }
-      zuordnungen: { Angebot: 'z1', Nachfrage: 'z2', Preis: 'z3' },
+      zuordnungen: { l1: 'z1', l2: 'z2', l3: 'z3' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
@@ -381,14 +385,18 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
-        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Inflation' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Inflation'] },
       ],
-      labels: ['BIP', 'Inflation', 'Deflation'],
+      labels: [
+        { id: 'l1', text: 'BIP' },
+        { id: 'l2', text: 'Inflation' },
+        { id: 'l3', text: 'Deflation' },
+      ],
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { BIP: 'z1', Deflation: 'z2' },
+      zuordnungen: { l1: 'z1', l3: 'z2' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
@@ -404,17 +412,17 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
       ],
-      labels: ['BIP'],
+      labels: [{ id: 'l1', text: 'bip' }],  // Lowercase im Pool
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { bip: 'z1' },
+      zuordnungen: { l1: 'z1' },
     }
     const result = autoKorrigiere(frage, antwort)
     expect(result).not.toBeNull()
-    expect(result!.erreichtePunkte).toBe(2) // Case-insensitive match
+    expect(result!.erreichtePunkte).toBe(2) // Case-insensitive match: 'bip' vs 'BIP'
   })
 
   it('korrigiert DragDropBild leere Zuordnung', () => {
@@ -426,10 +434,13 @@ describe('autoKorrigiere', () => {
       fragetext: 'Ordne zu',
       bildUrl: 'https://example.com/bild.png',
       zielzonen: [
-        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrektesLabel: 'BIP' },
-        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrektesLabel: 'Inflation' },
+        { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
+        { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Inflation'] },
       ],
-      labels: ['BIP', 'Inflation'],
+      labels: [
+        { id: 'l1', text: 'BIP' },
+        { id: 'l2', text: 'Inflation' },
+      ],
     }
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
@@ -533,17 +544,4 @@ describe('korrigiereDragDropBild — Bundle J Multi-Zone + Multi-Label', () => {
     expect(autoKorrigiere(f, a)!.erreichtePunkte).toBe(0)
   })
 
-  it('Pre-Migration-Frage (string[]-Pool, korrektesLabel): Normalizer macht es kompatibel', () => {
-    const fAlt: any = {
-      id: 'f4', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
-      fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
-      musterlosung: '', bewertungsraster: [], verwendungen: [],
-      fragetext: '', bildUrl: '', punkte: 1,
-      zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrektesLabel: 'Aktiva' }],
-      labels: ['Aktiva'],
-    }
-    const aAlt: Antwort = { typ: 'dragdrop_bild', zuordnungen: { 'Aktiva': 'z1' } }
-    expect(autoKorrigiere(fAlt, aAlt)!.erreichtePunkte).toBe(1)
-  })
 })

@@ -62,7 +62,7 @@ export interface LoesungsSlice {
   // Bildbeschriftung / DragDrop
   labels?: Array<{ id: string; zoneId?: string; zone?: string; korrekt?: boolean }>
   beschriftungen?: Array<{ id: string; korrekt?: boolean }>
-  zielzonen?: Array<{ id: string; korrektesLabel?: string }>
+  zielzonen?: Array<{ id: string; korrekteLabels?: string[] }>
 
   // Hotspot
   bereiche?: Array<{ id: string; korrekt?: boolean }>

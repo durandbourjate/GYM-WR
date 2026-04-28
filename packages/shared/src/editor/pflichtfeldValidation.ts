@@ -240,16 +240,23 @@ function validiereDragDropBild(frage: any): ValidationResult {
     .map((l: any) => (typeof l === 'string' ? l.trim() : typeof l?.text === 'string' ? l.text.trim() : ''))
     .filter((l: string) => l.length > 0)
   const mind1Zone =
-    zielzonen.length > 0 && zielzonen.every((z: any) => strNonEmpty(z?.korrektesLabel))
+    zielzonen.length > 0 &&
+    zielzonen.every((z: any) =>
+      Array.isArray(z?.korrekteLabels) &&
+      z.korrekteLabels.length > 0 &&
+      z.korrekteLabels.every((l: unknown) => strNonEmpty(l)),
+    )
   const alleLabelsImPool =
     mind1Zone &&
-    zielzonen.every((z: any) => labels.includes(typeof z?.korrektesLabel === 'string' ? z.korrektesLabel.trim() : ''))
+    zielzonen.every((z: any) =>
+      (z.korrekteLabels as string[]).every((l) => labels.includes(l.trim())),
+    )
 
   const pflichtLeer: string[] = []
   if (!fragetextOk) pflichtLeer.push('Frage-Text')
   if (!bildOk) pflichtLeer.push('Bild-URL')
-  if (!mind1Zone) pflichtLeer.push('Mind. 1 Zielzone mit korrektesLabel')
-  if (mind1Zone && !alleLabelsImPool) pflichtLeer.push('Alle korrektesLabel müssen im Labels-Pool sein')
+  if (!mind1Zone) pflichtLeer.push('Mind. 1 Zielzone mit Korrekt-Label')
+  if (mind1Zone && !alleLabelsImPool) pflichtLeer.push('Alle Korrekt-Labels müssen im Labels-Pool sein')
 
   return {
     pflichtErfuellt: pflichtLeer.length === 0,

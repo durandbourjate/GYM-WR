@@ -119,14 +119,14 @@ describe('normalisiereDragDropBild', () => {
     expect(out.zielzonen[0].korrekteLabels).toEqual(['Aktiva'])
   })
 
-  it('gemischte Migrations-Übergangs-Form: Pre + Post Felder gleichzeitig', () => {
+  it('gemischte string-/object-Labels werden zu DragDropBildLabel[]', () => {
     const mix = {
       id: 'f1',
       typ: 'dragdrop_bild',
       labels: [{ id: 'abc', text: 'Aktiva' }, 'Passiva'],
       zielzonen: [
-        { id: 'z1', korrekteLabels: ['Aktiva'], korrektesLabel: 'Aktiva' },
-        { id: 'z2', korrektesLabel: 'Passiva' },
+        { id: 'z1', korrekteLabels: ['Aktiva'] },
+        { id: 'z2', korrekteLabels: ['Passiva'] },
       ],
     }
     const out = normalisiereDragDropBild(mix)

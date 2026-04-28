@@ -48,7 +48,7 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frageRaw.id)
   const bildQuelle = ermittleBildQuelle(frageRaw)
 
-  // Bundle J Mount-Time-Normalisierung: Pre-Migration (string[]-labels, korrektesLabel) → neues Format
+  // Defensive Normalisierung — robust gegen IDB-Restore aus unbereinigten Caches.
   const frage = useMemo(() => normalisiereDragDropBild(frageRaw), [frageRaw])
   const normAntwort = useMemo(
     () => antwort?.typ === 'dragdrop_bild'

@@ -273,11 +273,9 @@ export function normalisiereDragDropBild(frage: any): DragDropBildFrage {
     punkte: Array.isArray(z.punkte) && z.punkte.every((p: any) => typeof p?.x === 'number' && typeof p?.y === 'number')
       ? z.punkte.map((p: any) => ({ x: normalisiereKoordinate(p.x), y: normalisiereKoordinate(p.y) }))
       : [],
-    korrekteLabels: Array.isArray(z.korrekteLabels) && z.korrekteLabels.length > 0
+    korrekteLabels: Array.isArray(z.korrekteLabels)
       ? z.korrekteLabels.map((s: string) => String(s))
-      : z.korrektesLabel
-        ? [String(z.korrektesLabel)]
-        : [],
+      : [],
   }))
   return { ...frage, labels, zielzonen }
 }

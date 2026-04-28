@@ -43,21 +43,29 @@ export function migriereHotspotBereichAlt(alt: any): HotspotBereich {
 
 /**
  * Konvertiert eine Alt-Format-DragDrop-Zielzone ins neue Polygon-Format.
- * Idempotent.
- * Alt-Format: { position: { x, y, breite, hoehe }, korrektesLabel, id }
+ * Idempotent. Hebt Pre-Bundle-J-`korrektesLabel` auf das neue
+ * `korrekteLabels: string[]` Format.
+ * Alt-Format: { position: { x, y, breite, hoehe }, korrektesLabel?, id }
  */
 export function migriereDragDropZielzoneAlt(alt: any): DragDropBildZielzone {
-  if (Array.isArray(alt.punkte) && alt.punkte.length >= 3) {
+  if (Array.isArray(alt.punkte) && alt.punkte.length >= 3 && Array.isArray(alt.korrekteLabels)) {
     return alt as DragDropBildZielzone
   }
 
   const p = alt.position ?? {}
+  const korrekteLabels: string[] = Array.isArray(alt.korrekteLabels)
+    ? alt.korrekteLabels.map((s: unknown) => String(s ?? ''))
+    : alt.korrektesLabel
+      ? [String(alt.korrektesLabel)]
+      : []
   return {
     id: alt.id,
     form: 'rechteck',
-    punkte: rechteckZuPolygon(p.x ?? 0, p.y ?? 0, p.breite ?? 0, p.hoehe ?? 0),
-    korrektesLabel: alt.korrektesLabel ?? '',
-  } as DragDropBildZielzone
+    punkte: Array.isArray(alt.punkte) && alt.punkte.length >= 3
+      ? alt.punkte
+      : rechteckZuPolygon(p.x ?? 0, p.y ?? 0, p.breite ?? 0, p.hoehe ?? 0),
+    korrekteLabels,
+  }
 }
 
 /**

@@ -23,20 +23,24 @@ const frage = {
   verwendungen: [],
   fragetext: 'Ordne die Labels den Zonen zu.',
   bildUrl: '/bilanz.svg',
-  labels: ['Aktiva', 'Passiva', 'Ertrag'],
+  labels: [
+    { id: 'l-a', text: 'Aktiva' },
+    { id: 'l-p', text: 'Passiva' },
+    { id: 'l-e', text: 'Ertrag' },
+  ],
   zielzonen: [
     {
       id: 'z-links',
       form: 'rechteck',
       punkte: [{x:10,y:10},{x:40,y:10},{x:40,y:40},{x:10,y:40}],
-      korrektesLabel: 'Aktiva',
+      korrekteLabels: ['Aktiva'],
       erklaerung: 'Linke Bilanzseite = Mittelverwendung.',
     },
     {
       id: 'z-rechts',
       form: 'rechteck',
       punkte: [{x:60,y:10},{x:90,y:10},{x:90,y:40},{x:60,y:40}],
-      korrektesLabel: 'Passiva',
+      korrekteLabels: ['Passiva'],
       erklaerung: 'Rechte Bilanzseite = Mittelherkunft.',
     },
   ],
@@ -46,7 +50,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('alle Labels korrekt platziert → alle Zonen grün', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Aktiva: 'z-links', Passiva: 'z-rechts' },
+      zuordnungen: { 'l-a': 'z-links', 'l-p': 'z-rechts' },
     }
     const { container } = render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     const grüneLabels = container.querySelectorAll('.border-green-600')
@@ -56,7 +60,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('falsch platziertes Label → Zone rot mit korrektem Label sichtbar', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Passiva: 'z-links', Aktiva: 'z-rechts' }, // vertauscht
+      zuordnungen: { 'l-p': 'z-links', 'l-a': 'z-rechts' }, // vertauscht
     }
     const { container } = render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     expect(container.querySelector('.border-red-600')).toBeTruthy()
@@ -68,7 +72,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('Zone leer → falsch-Variante mit Placeholder', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Aktiva: 'z-links' }, // z-rechts leer
+      zuordnungen: { 'l-a': 'z-links' }, // z-rechts leer
     }
     render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     expect(screen.getByText(/leer/i)).toBeInTheDocument()
@@ -78,7 +82,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('Distraktor-Label in Zone → Zone falsch, korrektes Label sichtbar', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Ertrag: 'z-links', Passiva: 'z-rechts' }, // Distraktor in z-links
+      zuordnungen: { 'l-e': 'z-links', 'l-p': 'z-rechts' }, // Distraktor in z-links
     }
     const { container } = render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     expect(container.querySelector('.border-red-600')).toBeTruthy()
@@ -88,7 +92,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('rendert Erklärungen pro Zone', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Aktiva: 'z-links', Passiva: 'z-rechts' },
+      zuordnungen: { 'l-a': 'z-links', 'l-p': 'z-rechts' },
     }
     render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     expect(screen.getByText(/Linke Bilanzseite/)).toBeInTheDocument()
@@ -105,7 +109,7 @@ describe('DragDropBildFrage modus=loesung', () => {
   it('keine draggable-Elemente im Lösungsmodus', () => {
     const antwort: Antwort = {
       typ: 'dragdrop_bild',
-      zuordnungen: { Aktiva: 'z-links', Passiva: 'z-rechts' },
+      zuordnungen: { 'l-a': 'z-links', 'l-p': 'z-rechts' },
     }
     const { container } = render(<DragDropBildFrage frage={frage} antwort={antwort} modus="loesung" />)
     expect(container.querySelector('[draggable="true"]')).toBeNull()
