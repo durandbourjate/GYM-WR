@@ -6,6 +6,86 @@
 
 ---
 
+## S158 (28.04.2026) — Bundle J: Spec + Plan freigegeben, Implementation offen
+
+**Was die Session machte:** Reine Brainstorming + Plan-Session. Kein Code-Change. Spec rev3 (2 Reviewer-Iterationen) + Plan rev3 (2 Reviewer-Iterationen) auf `main` committed und gepusht. Implementation für nächste Session reserviert.
+
+**Commits (auf main):**
+
+| SHA | Inhalt |
+|---|---|
+| `2a0f7f3` | Spec rev1 |
+| `01cc5a4` | Spec rev2 (Normalizer + Stack-Pick-Determinismus) |
+| `34e8408` | Spec rev3 (Reviewer-Findings: stabilId-Cross-Env, Antwort-Normalizer, 14-Pfad-Tabelle) |
+| `1b07d71` | Spec-Korrektur (Antwort-Normalizer-Reihenfolge) |
+| `c70cfe4` | Plan rev1 (38 Tasks, 12 Phasen) |
+| `dbe3e63` | Plan rev2 (Reviewer-Findings: autoSave.ts-Pfad, Task-16 Antwort-Normalizer, Task-9 Type-Guard, Task-15 Decision-Table) |
+| `f20c7d1` | Plan rev3 (Konsistenz: 14→15-Pfade, Task-18b Subject-Klarstellung S129) |
+
+**Spec:** [docs/superpowers/specs/2026-04-28-bundle-j-dragdrop-multi-zone-design.md](../docs/superpowers/specs/2026-04-28-bundle-j-dragdrop-multi-zone-design.md)
+**Plan:** [docs/superpowers/plans/2026-04-28-bundle-j-dragdrop-multi-zone.md](../docs/superpowers/plans/2026-04-28-bundle-j-dragdrop-multi-zone.md)
+
+**Bundle J Scope (Spec rev3):**
+
+DnD-Bild-Datenmodell-Migration mit zwei kombinierten Erweiterungen (Option C aus Brainstorming):
+- **Multi-Zone:** Mehrere Zonen mit identischem Lösungs-Label-Text (Bilanz mit 2× Aktiva, T-Konto-Schemas mit mehrfach Soll/Haben).
+- **Multi-Label-Akzeptanz:** Eine Zone akzeptiert Synonyme (z.B. ['Marketing-Mix', '4P', 'McCarthys 4P']).
+
+**Datenmodell-Kern:**
+- `DragDropBildZielzone.korrekteLabels: string[]` (statt `korrektesLabel: string`)
+- `DragDropBildLabel{id: string, text: string}` (statt `labels: string[]`) — Pool-Tokens mit IDs, Duplikate erlaubt
+- Antwort: `Record<labelId, zoneId>` (statt `Record<labelText, zoneId>`)
+
+**Migrations-Pattern:**
+- Zentraler `normalisiereDragDropBild` (Frage) + `normalisiereDragDropAntwort` (Antwort) an 15 Lese-Pfaden
+- `stabilId(frageId, text, index)` SHA-1-Hash, **shared zwischen Frontend (TS) und Migrations-Skript (ESM)** — keine SuS-Antwort-Verluste über die Migrations-Schwelle
+- Pre-Migration-text-keyed-Antworten in IndexedDB werden am Restore-Eintrittspunkt remappt
+
+**SuS-UX (Stacked-Tokens A2):**
+- Pool zeigt Stacks mit Counter ab ≥2 Instanzen (z.B. `Soll ×3`)
+- Counter dekrementiert bei Drop, Stack verschwindet bei Counter=0
+- Tap-to-Select / Tap-to-Place wie heute (Mobile-fähig)
+- Deterministische Stack-Pick-Logik (kleinster Index ungebunden)
+
+**LP-Editor-UX (Option α — klassisch erweitert):**
+- Pro Zone Chip-Input für Synonyme (statt 1-Feld-Texteingabe)
+- Pool mit erlaubten Duplikaten, Bundle-H-Pool-Dedupe-Warnung entfällt
+- Konsistenz-Hinweise (rein informativ, nicht blockierend)
+- DoppelteLabelDialog wird entfernt (Multi-Zone ist jetzt Feature)
+
+**Plan-Struktur:** 39 Tasks in 12 Phasen (0-11):
+- Phase 0: Branch + Audit
+- Phase 1: stabilId TS+ESM + Type-Erweiterung
+- Phase 2: Frage-Normalizer
+- Phase 3: Antwort-Normalizer
+- Phase 4: Apps-Script (LOESUNGS_FELDER + S122-Guard + Test-Shim + Korrektur-Spiegel + User-Deploy)
+- Phase 5: 8 Lese-Pfade-Updates inkl. neuer Task 18b für IDB-Restore
+- Phase 6: Pool-Konverter
+- Phase 7: SuS-Renderer mit Stacks
+- Phase 8: LP-Editor + securityInvarianten + tsc/build verify
+- Phase 9: Migrations-Skript (dump/migrate/upload/SESSION-PROTOCOL)
+- Phase 10: Migration-Run + E2E
+- Phase 11: Merge + Cleanup-Reminder (ScheduleWakeup +14 Tage)
+
+**Bundle J User-Tasks (vor / während Implementation):**
+
+- [ ] Audit-Skript ausführen (Phase 0) — env: `APPS_SCRIPT_URL`, `AUDIT_TOKEN` — Output zur Phasen-Plan-Schätzung verwenden, Multi-Zone-Bug-IDs für Re-Edit-Liste notieren
+- [ ] Apps-Script Bereitstellung erstellen (Phase 4) — neue Version mit `korrekteLabels` in `LOESUNGS_FELDER_` + `batchUpdateFragenMigration`-Endpoint (existiert seit C9 Phase 4 schon)
+- [ ] `testDragDropMultiZonePrivacy` im GAS-Editor ausführen → erwartet `OK`
+- [ ] Google-Sheets-Backup vor Migration-Run (Phase 9) — Datei → Kopie erstellen → benennen `Backup-vor-Bundle-J-YYYY-MM-DD`
+- [ ] Migration-Stichprobe verifizieren (Phase 10 Schritt 4) — LP-Editor + SuS-Üben + LP-Korrektur
+- [ ] Full-Run starten (Phase 10 Schritt 5)
+- [ ] Multi-Zone-Bug-Fragen LP-Re-Edit (Anzahl aus Audit) — Pool ergänzen damit Multi-Zone-Token-Anzahl stimmt
+- [ ] Browser-E2E mit echten Logins (LP + SuS, Mobile/iPad) — Test-Plan in Plan Task 33
+
+**Nächste Session — Eintrittspunkt:**
+
+1. Plan öffnen: `docs/superpowers/plans/2026-04-28-bundle-j-dragdrop-multi-zone.md`
+2. `superpowers:subagent-driven-development` invoken
+3. Beginnt mit Phase 0 Task 1: Branch `feature/bundle-j-dragdrop-multi-zone` + Audit-Skript
+
+---
+
 ## S157 (28.04.2026) — Bundle H: Editor-UX Feinschliff auf `main`
 
 **Branch:** `feature/editor-ux-feinschliff-bundle-h` → `main` (gemergt, gelöscht). 29 Code-Commits + Merge.
