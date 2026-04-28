@@ -13,10 +13,18 @@ export default defineConfig({
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify('test'),
   },
+  server: {
+    fs: {
+      allow: [path.resolve(__dirname, '..')],
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: [
+      'src/**/*.test.{ts,tsx}',
+      '../packages/shared/src/**/*.test.{ts,tsx}',
+    ],
   },
 })
