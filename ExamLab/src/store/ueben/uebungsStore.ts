@@ -8,6 +8,7 @@ import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { erstelleBlock, erstelleMixBlock, erstelleRepetitionsBlock } from '../../utils/ueben/blockBuilder'
 import { istDauerbaustelle } from '../../utils/ueben/mastery'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
+import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
 import type { LoesungsMap, LoesungsSlice } from '../../types/ueben/loesung'
 import { normalizeAntwort } from '../../utils/normalizeAntwort'
@@ -194,6 +195,12 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       } else {
         alleFragen = await uebenFragenAdapter.ladeFragen(gruppeId, { fach, thema })
       }
+
+      // Bundle J Pfad #8: DnD-Bild-Fragen vor Merge normalisieren — sonst
+      // kollidiert mergeById-Pattern mit string[]-vs-DragDropBildLabel[]-Mix.
+      alleFragen = alleFragen.map(f =>
+        f.typ === 'dragdrop_bild' ? normalisiereDragDropBild(f) : f
+      )
 
       const fortschritte = useUebenFortschrittStore.getState().fortschritte
       const mastery: Record<string, MasteryStufe> = {}
