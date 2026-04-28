@@ -97,15 +97,18 @@ export interface DragDropBildFrage extends FrageBase {
 
 **Begründung:** Der Wechsel von Text-Key zu ID-Key ist zwingend, weil bei Multi-Zone zwei Tokens mit identischem Text in unterschiedlichen Zonen liegen müssen.
 
-### 5.2.1 Zentraler Normalizer (`ExamLab/src/utils/ueben/fragetypNormalizer.ts::normalisiereDragDropBild`)
+### 5.2.1 Zentraler Frage-Normalizer (`ExamLab/src/utils/ueben/fragetypNormalizer.ts::normalisiereDragDropBild`)
 
-Analog zum `normalisiereLueckentext`-Pattern (S118-Lehre, `.claude/rules/code-quality.md`): Daten aus Apps-Script werden am Eintrittspunkt normalisiert, nicht im UI-Code verzweigt. Damit ist Dual-Read **eine Stelle**, nicht in Editor + Renderer + Korrektur + SuS-Stack-Logik separat.
+Analog zum `normalisiereLueckentext`-Pattern (S118-Lehre, `.claude/rules/code-quality.md`): Daten aus Apps-Script werden am Eintrittspunkt normalisiert, nicht im UI-Code verzweigt. Damit ist Dual-Read an einer einzigen Stelle.
 
 ```ts
 function normalisiereDragDropBild(frage: any): DragDropBildFrage {
-  const labels = (frage.labels ?? []).map((l: any) =>
-    typeof l === 'string' ? { id: stabilId(frage.id, l), text: l } : { id: l.id ?? stabilId(frage.id, l.text), text: l.text ?? '' }
-  )
+  const labels = (frage.labels ?? []).map((l: any, i: number) => {
+    if (typeof l === 'string') {
+      return { id: stabilId(frage.id, l, i), text: l }
+    }
+    return { id: l.id ?? stabilId(frage.id, l.text ?? '', i), text: l.text ?? '' }
+  })
   const zielzonen = (frage.zielzonen ?? []).map((z: any) => ({
     ...z,
     korrekteLabels: Array.isArray(z.korrekteLabels) && z.korrekteLabels.length > 0
@@ -118,14 +121,58 @@ function normalisiereDragDropBild(frage: any): DragDropBildFrage {
 }
 ```
 
-**Wo der Normalizer aufgerufen wird (eine Stelle pro Pfad):**
+**`stabilId(frageId, text, index)`:** deterministischer Hash (`SHA-1(frageId + '|' + text + '|' + index)`, erste 8 chars base32). Index ist **zwingend** in der Signatur — bei zwei Labels mit identischem Text (Multi-Zone-Fall, Kern-Use-Case!) sonst ID-Kollision. Helper liegt in `packages/shared/src/util/stabilId.ts`, weil sowohl Frontend als auch Migrations-Skript ihn brauchen müssen (siehe Sektion 10.2).
 
-- LP-Editor — beim Mount (`useState`-Init mit Frage als Argument; `key={frage.id}` am Editor sichert Re-Init bei Frage-Wechsel — siehe `code-quality.md` S129).
-- SuS-Renderer (`DragDropBildFrage.tsx`) — am Top des Components, mit `useMemo([frage.id])`.
-- Auto-Korrektur (`korrigiereDragDropBild`) — als erstes vor der Schleife.
-- Apps-Script-Bereinigung — schreibt nur `korrekteLabels`-Feld, aber bereinigt `korrektesLabel` weiterhin (Defense-in-Depth).
+**Wo der Frage-Normalizer aufgerufen wird (vollständige Liste der Lese-Pfade):**
 
-**`stabilId(frageId, text)`-Helper:** deterministischer Hash (z.B. SHA-1 erstes 8-char base32 von `frageId + '|' + index`), damit dieselbe Pre-Migration-Frage nach mehrfachem Mount immer dieselben IDs bekommt — kein Antwort-Verlust durch wechselnde IDs während der Migration. Nach Migration sind IDs in der Datenbank persistent (kein Hash mehr nötig).
+| # | Pfad | Datei | Wann normalisieren |
+|---|------|-------|--------------------|
+| 1 | LP-Editor (Mount-Adapter) | `packages/shared/src/editor/typen/DragDropBildEditor.tsx` | `useState`-Init mit `frage`-Arg, `key={frage.id}` am Editor (S129-Lehre) |
+| 2 | SuS-Renderer | `ExamLab/src/components/fragetypen/DragDropBildFrage.tsx` | `useMemo([frage.id])` am Top |
+| 3 | Auto-Korrektur (Prüfen) | `ExamLab/src/utils/autoKorrektur.ts::korrigiereDragDropBild` | Erste Zeile der Funktion |
+| 4 | Üben-Korrektur | `ExamLab/src/utils/ueben/korrektur.ts:226` | Erste Zeile der DnD-Logik |
+| 5 | Antwort-Status-Detektor | `ExamLab/src/utils/antwortStatus.ts:142` | Erste Zeile von `istDnDBildBeantwortet` |
+| 6 | LP-Korrektur-Vollansicht | `ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx:535` | `useMemo([frage.id])` am Top des dragdrop_bild-Branch |
+| 7 | Druckansicht | `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx:734` | An derselben Stelle |
+| 8 | Üben-Store-Merge | `ExamLab/src/store/ueben/uebungsStore.ts:65` | `mergeById(merged.labels, slice.labels)` setzt voraus dass beide Seiten normalisiert sind — Normalizer im Caller (vor Merge) |
+| 9 | Pool-Konverter | `ExamLab/src/utils/poolConverter.ts:550` | Im case-Branch direkt ausgeführt (Pool-Format ist anders, aber Output-Frage muss normalisiert sein) |
+| 10 | Frage-Factory | `packages/shared/src/editor/fragenFactory.ts:280` | Factory schreibt direkt neues Format (kein Normalizer nötig — Quelle ist „neu") |
+| 11 | Util-Helpers | `ExamLab/src/utils/dragdropBildUtils.ts::labelsInZone/zoneKorrektBelegt` | Helper bekommen normalisierte Frage als Argument — keine eigene Normalisierung |
+| 12 | Apps-Script-Bereinigung | `apps-script-code.js::bereinigeFrageFuerSuS_` | Schreibt nur `korrekteLabels`-Feld, bereinigt `korrektesLabel` weiterhin (Defense-in-Depth). String-Guard im `labels.map(Object.assign)` (S122-Lehre): `typeof l !== 'object' ? l : Object.assign({}, l)` |
+| 13 | Apps-Script-Korrektur | `apps-script-code.js:2668-2672` | Eigener Apps-Script-Normalizer-Helper analog (Korrektur-Spiegel). |
+| 14 | Demo-Frage `einr-dd-kontinente` | `apps-script-code.js:8223` (`labels: ['Nordamerika',...]`) | Beim Frontend-Deploy bleibt String-Format, läuft durch Normalizer-Pfad 2/3 — funktioniert. Kann später beim Cleanup auf neues Format aktualisiert werden. |
+
+Tests (Sektion 11) decken alle 14 Pfade ab — pro Pfad mindestens ein Multi-Zone-Test, der ohne Normalizer falsch korrigieren würde.
+
+### 5.2.2 Zentraler Antwort-Normalizer (`normalisiereDragDropAntwort`)
+
+Schema-Wechsel von `Record<labelText, zoneId>` (alt) auf `Record<labelId, zoneId>` (neu) bricht persistierte Antworten in IndexedDB (`pruefung-backup.antworten`) und im Sheet (`Antworten`-Tab). Antwort-Normalizer mappt am Lese-Eintrittspunkt:
+
+```ts
+function normalisiereDragDropAntwort(
+  antwort: { typ: 'dragdrop_bild'; zuordnungen: Record<string, string> },
+  frage: DragDropBildFrage,
+): { typ: 'dragdrop_bild'; zuordnungen: Record<string, string> } {
+  const labelById = new Map(frage.labels.map(l => [l.id, l]))
+  const labelByText = new Map(frage.labels.map(l => [l.text.trim().toLowerCase(), l.id]))
+  const out: Record<string, string> = {}
+  for (const [key, zoneId] of Object.entries(antwort.zuordnungen ?? {})) {
+    if (labelById.has(key)) {
+      out[key] = zoneId  // bereits ID-Key
+    } else {
+      const id = labelByText.get(key.trim().toLowerCase())
+      if (id) out[id] = zoneId  // Pre-Migration text-Key → id-Key
+    }
+  }
+  return { ...antwort, zuordnungen: out }
+}
+```
+
+**Eindeutigkeit der Text→ID-Auflösung:** Pre-Migration-Pools hatten dank `dedupedLabels` (Bundle H Phase 9.2) keine identischen Text-Duplikate auf SuS-Seite. Daher ist die Auflösung `text → labelId` für persistierte Antworten **immer eindeutig**. Nach Migration werden Antworten direkt mit ID-Key geschrieben — der Normalizer wird zur No-Op für neue Daten.
+
+**Aufruf-Stellen:** überall wo eine Antwort gelesen wird — Pfade 3, 4, 5, 6 aus Tabelle 5.2.1, plus IndexedDB-Restore in `autoSave.ts::restoreFromIndexedDB`. Schreib-Pfade (autoSave-Persist) nutzen das neue ID-Format direkt.
+
+Antwort-Normalizer wird **vor** dem Frage-Normalizer aufgerufen — er braucht die normalisierte Frage als Kontext.
 
 ### 5.3 Korrektur-Logik (`ExamLab/src/utils/autoKorrektur.ts::korrigiereDragDropBild`)
 
@@ -337,7 +384,9 @@ case 'dragdrop_bild': {
 - Total `dragdrop_bild` Fragen → Migrations-Scope.
 - Fragen mit Multi-Zone-Bug heute (≥2 Zonen identisches `korrektesLabel`, case-insensitive) → diese sollten nach Migration LP-Re-Edit (verhalten sich nach Migration gleich wie vorher, weil `korrekteLabels: ['X']` 1-elementig ist; LP muss Pool ergänzen damit Multi-Zone-Token-Anzahl stimmt).
 - Fragen mit Distraktoren (`labels.length > zielzonen.length`) → Info.
-- Output zur Information für User-Tasks-Schätzung.
+- **Aktive `dragdrop_bild`-Üben-Sessions** im IndexedDB (Sheet `Übungssessions` falls vorhanden, sonst Skript-Note für User-Manual-Check) → Risiko-Kohorte für IndexedDB-orphan-Antworten.
+- **`dragdrop_bild`-Antworten in laufenden (nicht beendeten) Prüfungen** im `Antworten`-Sheet → Risiko-Kohorte für Sheet-orphan-Antworten.
+- Output zur Information für User-Tasks-Schätzung und Wahl des Migrations-Fensters.
 
 ### 10.2 Phase Migration — One-Shot-Skript
 
@@ -348,16 +397,24 @@ Re-use `batchUpdateFragenMigration` Endpoint (Admin-only, IDOR-safe, aus C9 Phas
 - `dump.mjs` — fetch alle `dragdrop_bild` Fragen aus Sheet.
 - `migrate.mjs` — pro Frage transformieren:
   ```js
+  import { stabilId } from '../../../packages/shared/src/util/stabilId.mjs'
   // Pro Zone:
   zone.korrekteLabels = zone.korrektesLabel ? [zone.korrektesLabel] : []
   delete zone.korrektesLabel
-  // Pool:
-  frage.labels = frage.labels.map(text => ({ id: nanoid(8), text }))
+  // Pool — DESELBE stabilId-Funktion wie Frontend-Normalizer (Sektion 5.2.1):
+  frage.labels = frage.labels.map((text, i) => ({
+    id: stabilId(frage.id, text, i),
+    text,
+  }))
   // Markierung:
   frage.pruefungstauglich = false  // LP muss bestätigen
   ```
 - `upload.mjs` — Batch-Upload via `batchUpdateFragenMigration`.
 - `SESSION-PROTOCOL.md` — Schrittfolge wie C9.
+
+**ID-Determinismus über die Migrations-Schwelle (zwingend):** Sowohl Frontend-Normalizer (Sektion 5.2.1) als auch Migrations-Skript verwenden **denselben** `stabilId(frageId, text, index)`-Algorithmus. Damit produziert das Migrations-Skript für eine Pre-Migration-Frage `{labels: ['Aktiva', 'Aktiva', 'Passiva']}` exakt dieselben IDs wie der Frontend-Normalizer beim Mount derselben Frage. SuS, die vor der Migration eine Antwort gespeichert haben (mit Frontend-Normalizer-IDs), bekommen nach Migration **identische** IDs aus dem Sheet — die Antwort matcht weiterhin. Tests in Sektion 11 verifizieren das Cross-Environment-Determinismus (Frontend + Node-Skript liefern für gleichen Input gleiche Output-IDs).
+
+`stabilId`-Helper liegt deshalb in `packages/shared/src/util/stabilId.{ts,mjs}` — TypeScript-Variante für Frontend, ESM-Variante für Migrations-Skript, beide implementieren denselben SHA-1-Hash.
 
 ### 10.3 Migrations-Reihenfolge (zwingend)
 
@@ -390,8 +447,11 @@ Sequenz analog C9: Backend kennt beide Felder, bevor Frontend irgendwas neu schr
 | `securityInvarianten.test.ts` | `korrekteLabels` entfernt für SuS, `korrektesLabel` (Legacy) entfernt, Erklärung-Privacy unverändert (C9), Label-ID-Determinismus (kein zone-Pattern) |
 | `poolConverter.test.ts` | Multi-Label aus Pool-Zone-Attribut, Distraktoren ohne zone-Match werden Pool-Items ohne Zone-Bindung, IDs werden generiert wenn Pool-Format keine `id` hat |
 | `dragdropBildUtils.test.ts` (falls neu) | `labelMap`-Helper, `gruppiereStacks`-Helper, deterministische Stack-Pick-Logik (kleinster Index nicht-platziert) |
-| `fragetypNormalizer.test.ts` | `normalisiereDragDropBild` — Dual-Read alte/neue/gemischte Form, `stabilId`-Determinismus über mehrere Mounts mit gleicher `frageId`, Token mit leerem Text wird ignoriert |
-| Apps-Script Test-Shim `testDragDropMultiZonePrivacy_` | Bereinigung beider Felder + Erklärungs-Modi |
+| `fragetypNormalizer.test.ts` | `normalisiereDragDropBild` — Dual-Read alte/neue/gemischte Form. `stabilId`-Determinismus: 2 Labels mit gleichem Text bekommen unterschiedliche IDs. Token mit leerem Text wird ignoriert. `normalisiereDragDropAntwort` mappt Text-Key auf ID-Key (Pre-Migration-Antwort) und lässt ID-Key unverändert (Post-Migration). |
+| `stabilId.test.ts` | Cross-Environment-Determinismus: Frontend-TS + Node-ESM liefern für gleichen `(frageId, text, index)` byte-identische Output-IDs. SHA-1-Hash + base32-encode-Kompatibilität. |
+| `dragdropAntwortMigration.test.ts` | Pre-Migration-Antwort `{'Aktiva': 'z1'}` + post-migration-Frage mit `labels: [{id: stabilId(...), text: 'Aktiva'}]` → Antwort-Normalizer mappt korrekt. Bei Multi-Zone-Pool (2× 'Aktiva') wird Pre-Migration-Antwort korrekt aufgelöst (eindeutig dank `dedupedLabels`-Garantie). |
+| Apps-Script Test-Shim `testDragDropMultiZonePrivacy_` | Bereinigung beider Felder + Erklärungs-Modi + S122-Type-Guard für `labels.map(Object.assign)` (heterogene String/Object-Pool-Items). |
+| Apps-Script Test-Shim `testDragDropMultiZoneKorrektur_` | Spiegel-Korrektur im Backend (falls vorhanden) liefert gleiche Punkte wie Frontend für Multi-Zone- und Multi-Label-Cases. |
 
 Test-Bestand vor Bundle J: 1082 vitest passes (S157). Ziel nach Bundle J: ≥1100.
 
@@ -407,7 +467,10 @@ Test-Bestand vor Bundle J: 1082 vitest passes (S157). Ziel nach Bundle J: ≥110
 | 6 | Browser-Test-Aufwand groß (alle Fragetypen-Risiko-Gruppen) | Test-Plan in Plan-Phase mit konkreten Pfaden. Verwandtschaftsgruppen aus `regression-prevention.md` einhalten. |
 | 7 | Migrations-Skript bricht mid-run ab | `batchUpdateFragenMigration` ist idempotent (überschreibt selbe Felder). Resume möglich via Dump-Re-Lauf. |
 | 8 | Nicht-deterministische ID-Generierung im Editor verursacht Re-Render-Loops | IDs nur **einmal** beim Mount des Editors generieren (`useState`-Init oder `useMemo`-mit-stabilem-Key `frage.id`). Niemals pro Render. |
-| 9 | Adapter nur im Editor → Korrektur/Renderer crashen bei Bestand-Fragen ohne `korrekteLabels` | Zentraler `normalisiereDragDropBild` (Sektion 5.2.1) wird an **allen vier Pfaden** aufgerufen: Editor-Mount, SuS-Renderer, Auto-Korrektur, Konverter. `stabilId` (deterministischer Hash aus `frageId+text+index`) sichert, dass mehrfaches Normalisieren derselben Pre-Migration-Frage immer dieselben IDs liefert — keine Antwort-Verluste durch wechselnde IDs. |
+| 9 | Adapter nur im Editor → Korrektur/Renderer crashen bei Bestand-Fragen ohne `korrekteLabels` | Zentraler `normalisiereDragDropBild` (Sektion 5.2.1) wird an **allen 14 Pfaden** aus der Pfad-Tabelle aufgerufen: Editor, SuS-Renderer, Auto-Korrektur, Üben-Korrektur, Antwort-Status-Detektor, LP-Korrektur-Vollansicht, Druckansicht, Üben-Store-Merge, Pool-Konverter, Frage-Factory, Util-Helpers, Apps-Script-Bereinigung, Apps-Script-Korrektur, Demo-Frage. `stabilId(frageId, text, index)` sichert Determinismus über mehrfache Mounts. |
+| 10 | Persistierte SuS-Antworten (IndexedDB + Sheet) sind Pre-Migration text-keyed, aber Antwort-Schema wechselt auf id-keyed → Antwort-Verlust nach Frontend-Deploy | Antwort-Normalizer (Sektion 5.2.2) mappt am Lese-Eintrittspunkt Text-Keys auf ID-Keys. Pre-Migration-Pools hatten dank `dedupedLabels` keine identischen Texte → Mapping ist eindeutig. Schreibseite nutzt direkt neues ID-Format. |
+| 11 | `stabilId`-Mismatch zwischen Frontend (Hash) und Migrations-Skript (`nanoid` random) → SuS-Antworten orphanen sich beim ID-Wechsel über die Migrations-Schwelle | Migrations-Skript verwendet **denselben** `stabilId(frageId, text, index)`-Algorithmus wie Frontend. Helper liegt in `packages/shared/src/util/stabilId.{ts,mjs}` und ist sowohl von Frontend als auch von Node-Skript importierbar. Cross-Environment-Determinismus-Test (`stabilId.test.ts`) verifiziert byte-identische Outputs. |
+| 12 | S122-Bug in `bereinigeFrageFuerSuS_`: `Object.assign({}, l)` über String-Items → `{0:'A',1:'k',...}`-Char-Objekt | Type-Guard im Apps-Script `labels.map`-Pfad: `typeof l !== 'object' \|\| l === null ? l : Object.assign({}, l)`. Tests im Apps-Script-Shim (`testDragDropMultiZonePrivacy_`) decken heterogene `string \| object`-Pool-Items ab. |
 
 ## 13. Migrations-Phasen-Übersicht
 
@@ -425,7 +488,7 @@ Test-Bestand vor Bundle J: 1082 vitest passes (S157). Ziel nach Bundle J: ≥110
 | 7 | One-Shot Migrations-Skript (dump, migrate, upload) |
 | 8 | Stichprobe-Run + Full-Run + Verification |
 | 9 | E2E Browser-Test (echte Logins, Multi-Zone-Frage, Multi-Label-Frage, Migrations-Frage) |
-| 10 | Merge nach `main` |
+| 10 | Merge nach `main` + ScheduleWakeup-Reminder für Cleanup-Bundle nach 2 Wochen Stabilität (analog `bundle-h-schuelercode-removal-check`) |
 
 ## 14. Akzeptanzkriterien
 
