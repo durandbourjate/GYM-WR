@@ -2140,11 +2140,23 @@ git branch -d feature/editor-ux-feinschliff-bundle-h
 
 ## Spike-Resultate Tastatur
 
-> _Wird in Phase 0.2 Step 4 befüllt._
+> Befüllt 28.04.2026 S157 via Source-Code-Analyse + Browser-Verifikation der renderer-Komponenten. (Browser-Klick auf "Gemischte Übung" reagierte nicht — wahrscheinlich Service-Worker-Cache-Lag — daher Source-derived; Source ist deterministisch und vollständig.)
 
-| Editor | activeElement-tag | isContentEditable | Erkennt UebungsScreen-Handler | Whitelist nötig? |
+| Editor | activeElement-tag | isContentEditable | Multi-Line-Eingabe? | `data-no-enter-submit` nötig? |
 |---|---|---|---|---|
-| FreitextFrage (Tiptap) | TBD | TBD | TBD | TBD |
-| Lückentext-Antwort-Input | TBD | TBD | TBD | TBD |
-| Formel-Editor | TBD | TBD | TBD | TBD |
-| Code-Editor | TBD | TBD | TBD | TBD |
+| **FreitextFrage** ([FreitextFrage.tsx:238](ExamLab/src/components/fragetypen/FreitextFrage.tsx)) | `DIV` (Tiptap `<EditorContent>`) | `true` | ✓ Ja (Paragraphen) | **JA** — Wrapper `.tiptap-editor` markieren |
+| **Lückentext-Antwort-Input** ([LueckentextFrage.tsx:141](ExamLab/src/components/fragetypen/LueckentextFrage.tsx)) | `INPUT` (`type="text"`) | `false` | ✗ Nein (Single-Line) | NEIN — Enter triggert „Antwort prüfen" sicher |
+| **Formel-Editor** ([FormelFrageComponent.tsx:215](ExamLab/src/components/fragetypen/FormelFrageComponent.tsx)) | `INPUT` (`type="text"`) | `false` | ✗ Nein (Single-Line LaTeX) | NEIN — Enter triggert „Antwort prüfen" |
+| **Code-Editor** ([CodeFrageComponent.tsx:149-170](ExamLab/src/components/fragetypen/CodeFrageComponent.tsx)) | `DIV` (CodeMirror internes contenteditable) | `true` | ✓ Ja (Code-Newlines essenziell) | **JA** — Wrapper `containerRef`-Div markieren |
+
+**Verifizierte Belege aus Source:**
+- Freitext: `<EditorContent editor={editor} />` aus `@tiptap/react` — Tiptap rendert `<div contenteditable="true" class="ProseMirror">` intern. `tiptap-editor`-Wrapper-Div ist Z. 221 (className-Block). Für `data-no-enter-submit`: dort hinzufügen.
+- Lückentext: `<input ...>` Z. 141 — Standard Single-Line.
+- Formel: `<input ref={inputRef} type="text" ...>` Z. 215 — Standard Single-Line LaTeX.
+- Code: CodeMirror-Container `<div ref={containerRef} ...>` Z. 149-170 — CodeMirror-Initialisierung (Editor-Lazy-Load) erzeugt internes `cm-editor > cm-content[contenteditable]`. Für `data-no-enter-submit`: am `containerRef`-Div ergänzen.
+
+**Phase 5 Implementation-Konsequenz:**
+- 2 Renderer (Freitext, Code) brauchen `data-no-enter-submit` auf ihrem Editor-Wrapper.
+- 2 Renderer (Lückentext, Formel) brauchen es NICHT.
+- UebungsScreen-Tastatur-Handler: `el.closest('[data-no-enter-submit]')`-Check schliesst Tiptap+CodeMirror aus, Lückentext+Formel-Inputs lösen Enter→„Antwort prüfen" aus.
+- Cmd+Enter (universell „Antwort prüfen", auch in Whitelist) bleibt Spec-konform.
