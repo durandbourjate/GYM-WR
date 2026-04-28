@@ -584,20 +584,33 @@ describe('validierePflichtfelder — dragdrop_bild', () => {
     typ: 'dragdrop_bild',
     fragetext: 'q',
     bildUrl: 'http://x/y.png',
-    zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrektesLabel: 'A' }],
-    labels: ['A', 'B'],
+    zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['A'] }],
+    labels: [{ id: 'l1', text: 'A' }, { id: 'l2', text: 'B' }],
   }
   it('alle erfüllt', () => {
     const r = validierePflichtfelder(gueltig as any)
     expect(r.pflichtErfuellt).toBe(true)
   })
-  it('pflicht-leer wenn korrektesLabel nicht im labels-Pool', () => {
-    const r = validierePflichtfelder({ ...gueltig, labels: ['B', 'C'] } as any)
+  it('pflicht-leer wenn ein korrekteLabels-Eintrag nicht im labels-Pool ist', () => {
+    const r = validierePflichtfelder({ ...gueltig, labels: [{ id: 'l1', text: 'B' }, { id: 'l2', text: 'C' }] } as any)
     expect(r.pflichtErfuellt).toBe(false)
   })
   it('pflicht-leer ohne Zielzonen', () => {
     const r = validierePflichtfelder({ ...gueltig, zielzonen: [] } as any)
     expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('Multi-Label-Synonyme: alle müssen im Pool sein', () => {
+    const multiLabel = {
+      ...gueltig,
+      zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['A', 'Alpha'] }],
+      labels: [{ id: 'l1', text: 'A' }, { id: 'l2', text: 'Alpha' }, { id: 'l3', text: 'B' }],
+    }
+    expect(validierePflichtfelder(multiLabel as any).pflichtErfuellt).toBe(true)
+    const fehlt = {
+      ...multiLabel,
+      labels: [{ id: 'l1', text: 'A' }, { id: 'l3', text: 'B' }],  // 'Alpha' fehlt
+    }
+    expect(validierePflichtfelder(fehlt as any).pflichtErfuellt).toBe(false)
   })
 })
 

@@ -97,7 +97,7 @@ describe('migriereDragDropZielzoneAlt', () => {
       { x: 40, y: 60 },
       { x: 10, y: 60 },
     ])
-    expect(neu.korrektesLabel).toBe('A')
+    expect(neu.korrekteLabels).toEqual(['A'])
     expect(neu.id).toBe('z1')
   })
 })

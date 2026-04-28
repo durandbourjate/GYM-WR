@@ -254,7 +254,7 @@ describe('Security: C9 Task 25 — erklaerung-Privacy pro Fragetyp', () => {
       { feld: 'ergebnisse', subFelder: ['korrekt', 'toleranz'] },
       { feld: 'aufgaben', subFelder: ['erwarteteAntworten', 'erklaerung'] },
       { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung'] },
-      { feld: 'zielzonen', subFelder: ['korrektesLabel', 'korrekteLabels', 'erklaerung'] },
+      { feld: 'zielzonen', subFelder: ['korrekteLabels', 'erklaerung'] },
       { feld: 'bereiche', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
       { feld: 'kontenMitSaldi', subFelder: ['erklaerung'], nurBeiTyp: 'bilanzstruktur' },
     ]
@@ -316,7 +316,7 @@ describe('Security: C9 Task 25 — erklaerung-Privacy pro Fragetyp', () => {
     {
       name: 'DragDropBild zielzonen',
       feld: 'zielzonen',
-      frage: { typ: 'dragdrop_bild', zielzonen: [{ id: 'z', korrektesLabel: 'x', korrekteLabels: ['x'], erklaerung: 'LEAK' }] },
+      frage: { typ: 'dragdrop_bild', zielzonen: [{ id: 'z', korrekteLabels: ['x'], erklaerung: 'LEAK' }] },
     },
     {
       name: 'Kontenbestimmung aufgaben',

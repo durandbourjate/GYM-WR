@@ -639,8 +639,6 @@ export interface DragDropBildZielzone {
    * Min. 1 Eintrag Pflicht. Match per `text.trim().toLowerCase()`.
    */
   korrekteLabels: string[]
-  /** @deprecated Bundle J Cleanup-Bundle entfernt das. Dual-Read im Migrations-Fenster. */
-  korrektesLabel?: string
   erklaerung?: string                   // Teilerklärung pro Sub-Element (C9)
 }
 

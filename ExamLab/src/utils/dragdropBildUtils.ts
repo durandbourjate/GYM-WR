@@ -15,16 +15,6 @@ export function labelsInZone(zuordnungen: Record<string, string> | undefined, zo
     .map(([label]) => label)
 }
 
-/** Prüft, ob in der Zone mindestens ein Label mit dem korrekten Text liegt (case-insensitive). */
-export function zoneKorrektBelegt(
-  zuordnungen: Record<string, string> | undefined,
-  zoneId: string,
-  korrektesLabel: string,
-): boolean {
-  const soll = korrektesLabel.trim().toLowerCase()
-  return labelsInZone(zuordnungen, zoneId).some(l => l.trim().toLowerCase() === soll)
-}
-
 import type { DragDropBildLabel } from '../types/ueben/fragen'
 
 export interface DragDropBildStack {

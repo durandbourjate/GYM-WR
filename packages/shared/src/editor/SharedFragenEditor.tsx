@@ -464,26 +464,20 @@ export default function SharedFragenEditor({
   // DragDrop-Bild-spezifisch
   const [ddZielzonen, setDdZielzonen] = useState<DragDropBildZielzone[]>(() => {
     if (frage?.typ !== 'dragdrop_bild') return []
-    const raw = (frage as DragDropBildFrage).zielzonen ?? []
-    // Migrations-Adapter: korrektesLabel → korrekteLabels
-    return raw.map(z => {
-      if (Array.isArray((z as any).korrekteLabels) && (z as any).korrekteLabels.length > 0) {
-        return z
-      }
-      const legacy = (z as any).korrektesLabel
-      return { ...z, korrekteLabels: legacy ? [String(legacy)] : [] }
-    })
+    return ((frage as DragDropBildFrage).zielzonen ?? []).map(z => ({
+      ...z,
+      korrekteLabels: Array.isArray(z.korrekteLabels) ? z.korrekteLabels : [],
+    }))
   })
   const [ddLabels, setDdLabels] = useState<DragDropBildLabel[]>(() => {
     if (frage?.typ !== 'dragdrop_bild') return []
-    const raw = (frage as DragDropBildFrage).labels ?? []
-    // Migrations-Adapter: string[] → DragDropBildLabel[]
-    return raw.map((l: any, i: number) => {
-      if (typeof l === 'string') {
-        return { id: `lbl-${i}-${Math.random().toString(36).slice(2, 8)}`, text: l }
-      }
+    return ((frage as DragDropBildFrage).labels ?? []).map((l: any, i: number) => {
       if (l && typeof l === 'object' && typeof l.text === 'string') {
         return { id: l.id ?? `lbl-${i}-${Math.random().toString(36).slice(2, 8)}`, text: l.text }
+      }
+      // Defensiv: Pre-Migration-Imports (string[]) abfangen
+      if (typeof l === 'string') {
+        return { id: `lbl-${i}-${Math.random().toString(36).slice(2, 8)}`, text: l }
       }
       return { id: `lbl-${i}-${Math.random().toString(36).slice(2, 8)}`, text: '' }
     })
@@ -595,7 +589,7 @@ export default function SharedFragenEditor({
           feld: 'zielzonen',
           items: ddZielzonen,
           getId: (z) => z.id,
-          getLabel: (z, i) => `Zone ${i + 1}: ${(z.korrektesLabel || '').slice(0, 40) || '(leer)'}`,
+          getLabel: (z, i) => `Zone ${i + 1}: ${((z.korrekteLabels?.[0] ?? '')).slice(0, 40) || '(leer)'}`,
           getErklaerung: (z) => z.erklaerung,
           setzeErklaerung: (z, e) => ({ ...z, erklaerung: e }),
           setItems: (u) => setDdZielzonen((prev) => u(prev)),
@@ -686,12 +680,15 @@ export default function SharedFragenEditor({
     [aktuelleFrage],
   )
 
-  // DnD-Bild: doppelte Zone-Labels detektieren (Korrektur-Bug-Marker)
+  // DnD-Bild: doppelte Zone-Labels detektieren (Bundle-H-Heuristik, vereinfachter
+  // Bundle-J-Match auf erstem Synonym pro Zone — Multi-Zone-Stacks sind seit
+  // Bundle J explizit erlaubt, aber identische Zone-Hauptlabels bleiben
+  // verdächtig genug für eine Warnung).
   const doppelteLabels = useMemo(() => {
     if (typ !== 'dragdrop_bild') return []
     const map = new Map<string, number[]>()
     ddZielzonen.forEach((z, i) => {
-      const l = (z.korrektesLabel ?? '').trim()
+      const l = (z.korrekteLabels?.[0] ?? '').trim()
       if (!l) return
       if (!map.has(l)) map.set(l, [])
       map.get(l)!.push(i)
