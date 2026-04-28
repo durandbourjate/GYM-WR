@@ -48,6 +48,7 @@ export type {
   HotspotBereich,
   BildbeschriftungLabel,
   DragDropBildZielzone,
+  DragDropBildLabel,
   CanvasConfig,
   DiagrammConfig,
 } from '@shared/types/fragen'

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { normalisiereFrageDaten, normalisiereLueckentext } from './fragetypNormalizer'
+import { normalisiereFrageDaten, normalisiereLueckentext, normalisiereDragDropBild } from './fragetypNormalizer'
+import { stabilId } from '../../../../packages/shared/src/utils/stabilId'
 
 describe('normalisiereMc', () => {
   it('setzt fehlendes optionen[].korrekt auf false (Default)', () => {
@@ -82,5 +83,67 @@ describe('normalisiereLueckentext — lueckentextModus', () => {
     }
     const normalisiert = normalisiereLueckentext(frage)
     expect(normalisiert.lueckentextModus).toBe('dropdown')
+  })
+})
+
+describe('normalisiereDragDropBild', () => {
+  it('Pre-Migration-Frage: string[]-Pool wird zu DragDropBildLabel[] mit stabilen IDs', () => {
+    const alt = {
+      id: 'f1',
+      typ: 'dragdrop_bild',
+      labels: ['Aktiva', 'Passiva', 'Aktiva'],
+      zielzonen: [
+        { id: 'z1', korrektesLabel: 'Aktiva' },
+        { id: 'z2', korrektesLabel: 'Passiva' },
+      ],
+    }
+    const out = normalisiereDragDropBild(alt)
+    expect(out.labels).toHaveLength(3)
+    expect(out.labels[0].id).toBe(stabilId('f1', 'Aktiva', 0))
+    expect(out.labels[2].id).toBe(stabilId('f1', 'Aktiva', 2))
+    expect(out.labels[0].id).not.toBe(out.labels[2].id)
+  })
+
+  it('Post-Migration-Frage: DragDropBildLabel[]-Pool bleibt unverändert', () => {
+    const neu = {
+      id: 'f1',
+      typ: 'dragdrop_bild',
+      labels: [{ id: 'abc', text: 'Aktiva' }, { id: 'def', text: 'Passiva' }],
+      zielzonen: [
+        { id: 'z1', korrekteLabels: ['Aktiva'] },
+        { id: 'z2', korrekteLabels: ['Passiva'] },
+      ],
+    }
+    const out = normalisiereDragDropBild(neu)
+    expect(out.labels[0].id).toBe('abc')
+    expect(out.zielzonen[0].korrekteLabels).toEqual(['Aktiva'])
+  })
+
+  it('gemischte Migrations-Übergangs-Form: Pre + Post Felder gleichzeitig', () => {
+    const mix = {
+      id: 'f1',
+      typ: 'dragdrop_bild',
+      labels: [{ id: 'abc', text: 'Aktiva' }, 'Passiva'],
+      zielzonen: [
+        { id: 'z1', korrekteLabels: ['Aktiva'], korrektesLabel: 'Aktiva' },
+        { id: 'z2', korrektesLabel: 'Passiva' },
+      ],
+    }
+    const out = normalisiereDragDropBild(mix)
+    expect(out.labels[0].id).toBe('abc')
+    expect(out.labels[1].id).toBe(stabilId('f1', 'Passiva', 1))
+    expect(out.zielzonen[0].korrekteLabels).toEqual(['Aktiva'])
+    expect(out.zielzonen[1].korrekteLabels).toEqual(['Passiva'])
+  })
+
+  it('leere Zone: korrekteLabels = []', () => {
+    const f = {
+      id: 'f1',
+      typ: 'dragdrop_bild',
+      labels: [],
+      zielzonen: [{ id: 'z1' }],
+    }
+    const out = normalisiereDragDropBild(f)
+    expect(out.zielzonen[0].korrekteLabels).toEqual([])
   })
 })

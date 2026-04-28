@@ -3,7 +3,8 @@
  * Stellt sicher, dass alle erwarteten Felder vorhanden sind,
  * auch wenn das Backend unvollständige Daten liefert.
  */
-import type { Frage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, HotspotFrage, BildbeschriftungFrage, DragDropBildFrage, LueckentextFrage } from '../../types/ueben/fragen'
+import type { Frage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, HotspotFrage, BildbeschriftungFrage, DragDropBildFrage, DragDropBildLabel, DragDropBildZielzone, LueckentextFrage } from '../../types/ueben/fragen'
+import { stabilId } from '../../../../packages/shared/src/utils/stabilId'
 
 // BuchungssatzFrage-Typ aus shared fragen importieren
 interface BuchungssatzFrageMinimal {
@@ -29,7 +30,7 @@ export function normalisiereFrageDaten(frage: Frage): Frage {
     case 'bildbeschriftung':
       return normalisiereBildbeschriftung(frage as BildbeschriftungFrage) as Frage
     case 'dragdrop_bild':
-      return normalisiereDragDrop(frage as DragDropBildFrage) as Frage
+      return normalisiereDragDropBild(frage as DragDropBildFrage) as Frage
     case 'lueckentext':
       return normalisiereLueckentext(frage as LueckentextFrage) as Frage
     case 'mc':
@@ -255,17 +256,28 @@ function normalisiereBildbeschriftung(f: BildbeschriftungFrage): Bildbeschriftun
   }
 }
 
-function normalisiereDragDrop(f: DragDropBildFrage): DragDropBildFrage {
-  return {
-    ...f,
-    zielzonen: Array.isArray(f.zielzonen) ? f.zielzonen.map(z => ({
-      id: z.id || `zone-${Math.random().toString(36).slice(2, 8)}`,
-      form: z.form === 'polygon' ? 'polygon' : 'rechteck',
-      punkte: Array.isArray((z as any).punkte) && (z as any).punkte.every((p: any) => typeof p?.x === 'number' && typeof p?.y === 'number')
-        ? (z as any).punkte.map((p: any) => ({ x: normalisiereKoordinate(p.x), y: normalisiereKoordinate(p.y) }))
+export function normalisiereDragDropBild(frage: any): DragDropBildFrage {
+  const labels: DragDropBildLabel[] = (frage.labels ?? []).map((l: any, i: number) => {
+    if (typeof l === 'string') {
+      return { id: stabilId(frage.id, l, i), text: l }
+    }
+    if (l && typeof l === 'object' && typeof l.text === 'string') {
+      return { id: l.id ?? stabilId(frage.id, l.text, i), text: l.text }
+    }
+    return { id: stabilId(frage.id, '', i), text: '' }
+  })
+  const zielzonen: DragDropBildZielzone[] = (frage.zielzonen ?? []).map((z: any) => ({
+    ...z,
+    id: z.id || `zone-${Math.random().toString(36).slice(2, 8)}`,
+    form: z.form === 'polygon' ? 'polygon' : 'rechteck',
+    punkte: Array.isArray(z.punkte) && z.punkte.every((p: any) => typeof p?.x === 'number' && typeof p?.y === 'number')
+      ? z.punkte.map((p: any) => ({ x: normalisiereKoordinate(p.x), y: normalisiereKoordinate(p.y) }))
+      : [],
+    korrekteLabels: Array.isArray(z.korrekteLabels) && z.korrekteLabels.length > 0
+      ? z.korrekteLabels.map((s: string) => String(s))
+      : z.korrektesLabel
+        ? [String(z.korrektesLabel)]
         : [],
-      korrektesLabel: z.korrektesLabel || '',
-    })) : [],
-    labels: Array.isArray(f.labels) ? f.labels.map(l => typeof l === 'string' ? l : String(l)) : [],
-  }
+  }))
+  return { ...frage, labels, zielzonen }
 }
