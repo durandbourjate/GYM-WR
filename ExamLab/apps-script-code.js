@@ -12781,12 +12781,16 @@ function testDragDropMultiZonePrivacy() {  // public wrapper für GAS-Editor
  * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENBANK. Nach erfolgreichem Test wird der
  * urspruengliche Zustand wiederhergestellt — BIS AUF pruefungstauglich, das
  * der Test deutlich auf '' setzt (User darf nach Test manuell zuruecksetzen).
+ *
+ * Wichtig: getSheetData() liefert ALLE Spalten als String (auch typDaten).
+ * Deshalb durch parseFrage(row, fachbereich) schicken um zielzonen/labels
+ * geparst zu erhalten. Andernfalls ist frage.zielzonen undefined.
  */
 function testBundleJMigrationFelder_() {
   function assert_(cond, msg) { if (!cond) throw new Error('Assertion fehlgeschlagen: ' + msg); }
   var EMAIL = 'wr.test@gymhofwil.ch'; // ggf. auf eigene Admin-LP-E-Mail anpassen
 
-  // 1. Eine dragdrop_bild-Frage in BWL/Recht/VWL finden
+  // 1. Eine dragdrop_bild-Frage in BWL/Recht/VWL finden + parseFrage anwenden
   var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
   var fachbereiche = ['BWL', 'Recht', 'VWL'];
   var dndFrage = null;
@@ -12797,7 +12801,7 @@ function testBundleJMigrationFelder_() {
     var data = getSheetData(sheet);
     for (var i = 0; i < data.length; i++) {
       if (data[i].typ === 'dragdrop_bild') {
-        dndFrage = data[i];
+        dndFrage = parseFrage(data[i], fachbereiche[fb]);
         fachbereichVerwendet = fachbereiche[fb];
         break;
       }
@@ -12807,12 +12811,12 @@ function testBundleJMigrationFelder_() {
   var testId = dndFrage.id;
   Logger.log('Test-Frage: ' + testId + ' aus ' + fachbereichVerwendet);
 
-  // 2. Originalwerte sichern (typDaten via getSheetData kommt schon geparst)
-  var originalTypDaten = JSON.parse(JSON.stringify({
-    zielzonen: dndFrage.zielzonen || [],
-    labels: dndFrage.labels || [],
-  }));
+  // 2. Originalwerte sichern — DEEP COPY weil Patch das Objekt veraendert
+  var originalZielzonen = JSON.parse(JSON.stringify(dndFrage.zielzonen || []));
+  var originalLabels = JSON.parse(JSON.stringify(dndFrage.labels || []));
   var originalMusterlosung = dndFrage.musterlosung;
+  Logger.log('Original zielzonen-Anzahl: ' + originalZielzonen.length + ', labels-Anzahl: ' + originalLabels.length);
+  assert_(originalZielzonen.length > 0, 'Frage muss zielzonen haben (parseFrage hat geparst)');
 
   // 3. Marker-Patch via felder
   var markerZonen = [{ id: 'test-z-marker', korrekteLabels: ['BUNDLE-J-TEST'] }];
@@ -12837,18 +12841,21 @@ function testBundleJMigrationFelder_() {
   assert_(Array.isArray(res.nichtGefunden) && res.nichtGefunden.length === 1, 'nichtGefunden mit 1 Eintrag');
   assert_(res.nichtGefunden[0] === 'definitely-not-existing-bundle-j-id-xyz', 'nichtGefunden enthaelt Marker-ID');
 
-  // 4. Verifikation im Sheet (re-read über getSheetData → typDaten ist geparst)
+  // 4. Verifikation im Sheet — durch parseFrage schicken weil getSheetData stringifiziert
   var sheetVerify = fragenbank.getSheetByName(fachbereichVerwendet);
   var dataNeu = getSheetData(sheetVerify);
   var frageNeu = null;
   for (var j = 0; j < dataNeu.length; j++) {
-    if (dataNeu[j].id === testId) { frageNeu = dataNeu[j]; break; }
+    if (dataNeu[j].id === testId) {
+      frageNeu = parseFrage(dataNeu[j], fachbereichVerwendet);
+      break;
+    }
   }
   assert_(frageNeu, 'Frage nach Update gefunden');
   assert_(JSON.stringify(frageNeu.zielzonen) === JSON.stringify(markerZonen), 'zielzonen wurde via felder gesetzt');
   assert_(JSON.stringify(frageNeu.labels) === JSON.stringify(markerLabels), 'labels wurde via felder gesetzt');
   assert_(String(frageNeu.musterlosung || '') === String(originalMusterlosung || ''), 'musterlosung unveraendert (Bundle-J-Pfad clobbert nicht)');
-  assert_(String(frageNeu.pruefungstauglich || '') === '' || frageNeu.pruefungstauglich === false, 'pruefungstauglich auf false');
+  assert_(frageNeu.pruefungstauglich === false, 'pruefungstauglich auf false');
 
   // 5. Rollback: Originalwerte zurueckschreiben
   var rollbackBody = {
@@ -12858,8 +12865,8 @@ function testBundleJMigrationFelder_() {
     updates: [{
       id: testId,
       felder: {
-        zielzonen: originalTypDaten.zielzonen,
-        labels: originalTypDaten.labels,
+        zielzonen: originalZielzonen,
+        labels: originalLabels,
       },
     }],
   };
@@ -12872,6 +12879,61 @@ function testBundleJMigrationFelder_() {
 
 function testBundleJMigrationFelder() {  // public wrapper für GAS-Editor
   return testBundleJMigrationFelder_();
+}
+
+/**
+ * Bundle J Phase 9 — Recovery-Shim fuer einr-dd-kontinente.
+ *
+ * Setzt die Demo-Frage `einr-dd-kontinente` in BWL auf den kanonischen
+ * Original-Stand zurueck (aus `ExamLab/src/data/einrichtungsFragen.ts`).
+ *
+ * Verwendung wenn ein vorheriger fehlerhafter Test-Lauf die Frage mit
+ * Marker-Daten ueberschrieben hat. Nutzt den felder-Patch — schreibt
+ * korrekteLabels (neues Format) + labels-Objekt-Array. pruefungstauglich
+ * bleibt false (Default des Endpoints), User soll im Editor manuell pruefen
+ * und freigeben.
+ */
+function recoverEinrDdKontinente_() {
+  var EMAIL = 'wr.test@gymhofwil.ch';
+  var TARGET_ID = 'einr-dd-kontinente';
+  var FACHBEREICH = 'BWL';
+
+  // Kanonische Werte aus einrichtungsFragen.ts (Stand 28.04.2026)
+  var zielzonen = [
+    { id: '1', form: 'rechteck', punkte: [{x:12,y:35},{x:32,y:35},{x:32,y:60},{x:12,y:60}], korrekteLabels: ['Nordamerika'] },
+    { id: '2', form: 'rechteck', punkte: [{x:45,y:25},{x:60,y:25},{x:60,y:55},{x:45,y:55}], korrekteLabels: ['Europa'] },
+    { id: '3', form: 'rechteck', punkte: [{x:70,y:35},{x:90,y:35},{x:90,y:65},{x:70,y:65}], korrekteLabels: ['Asien'] },
+    { id: '4', form: 'rechteck', punkte: [{x:20,y:65},{x:35,y:65},{x:35,y:85},{x:20,y:85}], korrekteLabels: ['Südamerika'] },
+  ];
+  var labels = [
+    { id: 'kont-na', text: 'Nordamerika' },
+    { id: 'kont-eu', text: 'Europa' },
+    { id: 'kont-as', text: 'Asien' },
+    { id: 'kont-sa', text: 'Südamerika' },
+    { id: 'kont-af', text: 'Afrika' },
+    { id: 'kont-au', text: 'Australien' },
+  ];
+
+  var body = {
+    action: 'batchUpdateFragenMigration',
+    email: EMAIL,
+    fachbereich: FACHBEREICH,
+    updates: [{
+      id: TARGET_ID,
+      felder: { zielzonen: zielzonen, labels: labels },
+    }],
+  };
+  var r = batchUpdateFragenMigrationEndpoint(body);
+  var res = JSON.parse(r.getContent());
+  Logger.log('Recovery-Response: ' + JSON.stringify(res, null, 2));
+  if (res.success !== true) throw new Error('Recovery fehlgeschlagen: ' + (res.error || JSON.stringify(res)));
+  if (res.aktualisiert !== 1) throw new Error('aktualisiert=1 erwartet (war: ' + res.aktualisiert + '). nichtGefunden: ' + JSON.stringify(res.nichtGefunden));
+  Logger.log('✓ einr-dd-kontinente wiederhergestellt. Bitte im LP-Editor öffnen und pruefungstauglich=true setzen wenn alles ok.');
+  return 'OK';
+}
+
+function recoverEinrDdKontinente() {  // public wrapper für GAS-Editor
+  return recoverEinrDdKontinente_();
 }
 
 function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return {}; } }
