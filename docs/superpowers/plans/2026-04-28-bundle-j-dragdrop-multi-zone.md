@@ -51,6 +51,7 @@
 | `ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx` (Z. 535) | Normalizer-Aufruf am Top des dragdrop_bild-Branch |
 | `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx` (Z. 734) | Normalizer-Aufruf |
 | `ExamLab/src/store/ueben/uebungsStore.ts` (Z. 65) | `mergeById` setzt voraus dass Caller normalisiert hat — Comment + Caller-Update |
+| `ExamLab/src/services/autoSave.ts` | IDB-Restore-Pfad: Antwort-Normalizer-Aufruf (Pfad #15, Spec Risiko #10) |
 | `packages/shared/src/editor/typen/DragDropBildEditor.tsx` | Chip-Input pro Zone, Pool-Duplikate, Konsistenz-Hinweise, DoppelteLabelDialog entfernt, Mount-Adapter |
 | `packages/shared/src/editor/SharedFragenEditor.tsx` (Z. 465) | `key={frage.id}`-Prop für DragDropBild-Editor (S129-Lehre) |
 | `packages/shared/src/editor/fragenFactory.ts` (Z. 280-290) | Default für neue Frage: `labels: []` (DragDropBildLabel[]), `korrekteLabels: ['Label 1']` |
@@ -560,9 +561,10 @@ Erwartet: viele Compile-Fehler in Pfaden, die `frage.labels` als `string[]` lese
 git add packages/shared/src/types/fragen.ts ExamLab/HANDOFF.md
 git commit -m "Bundle J Phase 1.3: DragDropBild-Type-Erweiterung (korrekteLabels + DragDropBildLabel)
 
-tsc -b ist absichtlich rot bis Phase 8 abgeschlossen — alle 14 Lese-Pfade
-brauchen Normalizer-Aufruf bevor sie auf neuem Type kompilieren.
-Mitigationen-Reihenfolge in Spec Sektion 5.2.1."
+tsc -b ist absichtlich rot bis Phase 8 abgeschlossen — alle 15 Lese-Pfade
+(14 aus Spec 5.2.1 + IDB-Restore aus 5.2.2) brauchen Normalizer-Aufruf
+bevor sie auf neuem Type kompilieren. Mitigationen-Reihenfolge in Spec
+Sektion 5.2.1."
 ```
 
 > **⚠ Implementer-Hinweis:** `npx tsc -b` wird in Phasen 2-7 rot bleiben — das ist beabsichtigt. NICHT versuchen vorzeitig zu fixen indem `as any`-Casts eingestreut werden. Die roten Stellen werden Pfad-für-Pfad in Phase 5-8 durch Normalizer-Aufrufe ersetzt. Erst Task 26 erwartet wieder grünes `tsc -b`.
@@ -1029,7 +1031,7 @@ git commit --allow-empty -m "Bundle J Phase 4.4: User-Task Apps-Script-Deploy ma
 
 ---
 
-## Phase 5 — Korrektur-Pfade Update (alle 14 Pfade)
+## Phase 5 — Korrektur-Pfade Update (alle 15 Pfade — 14 aus Spec 5.2.1 + IDB-Restore aus 5.2.2)
 
 ### Task 13: dragdropBildUtils — gruppiereStacks-Helper
 
@@ -1427,51 +1429,105 @@ git add ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx
 git commit -m "Bundle J Phase 5.6 (Pfad 7): DruckAnsicht via Normalizer + Multi-Label"
 ```
 
-### Task 18b: Pfad #15 — autoSave.ts::loadFromIndexedDB (IDB-Restore)
+### Task 18b: Pfad #15 — IDB-Restore für SuS-Antworten
 
 **Files:**
-- Modify: `ExamLab/src/services/autoSave.ts`
+- Modify: `ExamLab/src/services/autoSave.ts` ODER `ExamLab/src/store/pruefungStore.ts` (je nach Subject-Befund — siehe Step 1)
 
 **Begründung (Spec Risiko #10):** Persistierte SuS-Antworten in IndexedDB (`pruefung-backup.antworten`-Store) sind Pre-Migration text-keyed (`{ 'Aktiva': 'z1' }`). Nach Frontend-Deploy lesen Korrektur und Renderer den Schlüssel als wäre es eine `labelId` → orphaned. Restore-Eintrittspunkt MUSS Antwort-Normalizer aufrufen. Spec Sektion 5.2.2 nennt diese Stelle ausdrücklich.
 
-- [ ] **Step 1: Stelle finden**
+- [ ] **Step 1: Subject finden — wo wandert IDB-Antwort in State zurück?**
 
 ```bash
-grep -n "loadFromIndexedDB\|restoreFromIndexedDB\|antworten" ExamLab/src/services/autoSave.ts
+# Wer ruft die Restore-Funktion?
+grep -rn "loadFromIndexedDB\|restoreFromIndexedDB\|getAntworten" ExamLab/src/
+# Antworten-Property-Setter im Store?
+grep -rn "setAntworten\|antworten:" ExamLab/src/store/
 ```
 
-- [ ] **Step 2: Antwort-Normalizer in Restore-Pfad einbauen**
+Entscheidungs-Tabelle:
 
-Nach IDB-Read der Antworten (vor Rückgabe an State):
+| Befund Step 1 | Subject |
+|---|---|
+| `loadFromIndexedDB` hat aktive Caller, Caller geben Frage-Kontext mit | Caller-Pattern (siehe Step 2 Variante B) |
+| `loadFromIndexedDB` hat keine Caller (potenziell tot, S129-Lehre) | Store-Restore-Pfad direkt (e.g. `pruefungStore.restoreFromBackup` o.ä.) |
+| Restore läuft über `clearIndexedDB`-Pattern (S149-Vorbild) — separate Funktion | Diese Stelle |
+
+⚠ Wichtig: Falls `loadFromIndexedDB` tot ist (S129 „tote Code-Pfade") **NICHT** dort einbauen — das wäre ein Fix in totem Pfad. Stattdessen die echte aktive Restore-Stelle finden.
+
+- [ ] **Step 2: Antwort-Normalizer am echten Restore-Pfad einbauen**
+
+**Variante A — In `loadFromIndexedDB` direkt** (nur falls Funktion lebt UND Frage-Liste verfügbar):
 
 ```ts
 import { normalisiereDragDropBild, normalisiereDragDropAntwort } from '../utils/ueben/fragetypNormalizer'
 
-// In loadFromIndexedDB (oder analog):
-const antworten = await idbStore.get(pruefungId)
-// Pro DnD-Bild-Antwort: Frage aus aktuellem State + Normalizer-Layer
-for (const [fid, antwort] of Object.entries(antworten ?? {})) {
-  if (antwort?.typ !== 'dragdrop_bild') continue
-  const frage = aktuelleFragen.find(f => f.id === fid)
-  if (!frage || frage.typ !== 'dragdrop_bild') continue
-  const frageNorm = normalisiereDragDropBild(frage)
-  antworten[fid] = normalisiereDragDropAntwort(antwort, frageNorm)
+// Signatur erweitert um aktuelleFragen:
+export async function loadFromIndexedDB(pruefungId: string, aktuelleFragen: Frage[]) {
+  const antworten = await idbStore.get(pruefungId)
+  for (const [fid, antwort] of Object.entries(antworten ?? {})) {
+    if (antwort?.typ !== 'dragdrop_bild') continue
+    const frage = aktuelleFragen.find(f => f.id === fid)
+    if (!frage || frage.typ !== 'dragdrop_bild') continue
+    const frageNorm = normalisiereDragDropBild(frage)
+    antworten[fid] = normalisiereDragDropAntwort(antwort, frageNorm)
+  }
+  return antworten
 }
-return antworten
 ```
 
-**Hinweis:** Falls `loadFromIndexedDB` keine direkten Frage-Referenzen hat (Antworten kommen ohne Frage-Kontext zurück), muss der Caller (`pruefungStore.restore` o.ä.) den Normalizer aufrufen. Pattern dann:
+**Variante B — Im Caller** (üblicherer Fall, wenn `loadFromIndexedDB` nur `pruefungId` kennt):
 
 ```ts
-// In Caller:
+// In pruefungStore.restoreFromBackup (oder wer-auch-immer der Caller ist):
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from '../../utils/ueben/fragetypNormalizer'
+
 const antworten = await loadFromIndexedDB(pruefungId)
-const fragen = state.fragen
+const fragen = get().fragen  // aus Zustand
 for (const [fid, antwort] of Object.entries(antworten)) {
   if (antwort?.typ === 'dragdrop_bild') {
     const f = fragen.find(x => x.id === fid)
-    if (f) antworten[fid] = normalisiereDragDropAntwort(antwort, normalisiereDragDropBild(f))
+    if (f && f.typ === 'dragdrop_bild') {
+      antworten[fid] = normalisiereDragDropAntwort(antwort, normalisiereDragDropBild(f))
+    }
   }
 }
+set({ antworten })
+```
+
+Welche Variante? **Wahrscheinlich B**, weil `loadFromIndexedDB` typischerweise keine Frage-Liste kennt (separation-of-concerns: Storage-Service kennt nur Bytes). Step 1 entscheidet.
+
+**Vorbild S149:** `clearIndexedDB` wurde dort um `tx.oncomplete`-await ergänzt — gleiche Datei, ähnliches Pattern. Lohnt sich kurz `git log -p ExamLab/src/services/autoSave.ts` zu lesen für Code-Stil.
+
+- [ ] **Step 3: Test ergänzen** in `dragdropAntwortMigration.test.ts`:
+
+```ts
+it('IDB-Restore mappt Pre-Migration-text-keyed zuordnungen auf id-keyed', () => {
+  const idbAntwort = { typ: 'dragdrop_bild' as const, zuordnungen: { 'Aktiva': 'z1' } }
+  const aktuelleFrage: any = {
+    id: 'f1', typ: 'dragdrop_bild',
+    zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] }],
+    labels: [{ id: 'sid-aktiva', text: 'Aktiva' }],
+  }
+  const out = normalisiereDragDropAntwort(idbAntwort, aktuelleFrage)
+  expect(out.zuordnungen).toEqual({ 'sid-aktiva': 'z1' })
+})
+```
+
+(Test prüft Normalizer-Verhalten, nicht IDB-Glue — Caller-Test wäre Integration und passt zu E2E.)
+
+- [ ] **Step 4: Tests ausführen → PASS**
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add ExamLab/src/services/autoSave.ts ExamLab/src/store/pruefungStore.ts ExamLab/src/utils/dragdropAntwortMigration.test.ts
+git commit -m "Bundle J Phase 5.6b (Pfad 15): IDB-Restore via Antwort-Normalizer
+
+Behebt Spec Risiko #10: Pre-Migration text-keyed SuS-Antworten in IndexedDB
+würden nach Frontend-Deploy orphan, weil Korrektur/Renderer mit ID-Keys arbeiten.
+Restore-Eintrittspunkt mappt jetzt am Lese-Zeitpunkt." || \
+git commit --allow-empty -m "Bundle J Phase 5.6b: IDB-Restore — keine Änderung nötig (Normalizer-Aufruf bereits in Pfad 8 uebungsStore)"
 ```
 
 - [ ] **Step 3: Test ergänzen** in `dragdropAntwortMigration.test.ts` (oder neu `autoSave.test.ts`):
@@ -2613,7 +2669,7 @@ prompt="Bundle J ist seit ~2 Wochen auf main. Prüfe Migrations-Stabilität:
 In `~/.claude/projects/.../memory/MEMORY.md`:
 
 ```markdown
-- **[S<n> Bundle J auf main](project_s<n>_bundle_j.md)** — DnD-Bild Multi-Zone-Datenmodell. Merge `<sha>`. Datenmodell: korrekteLabels: string[] + DragDropBildLabel{id,text}. Normalizer-Pattern an 14 Pfaden, stabilId Cross-Environment. Bestand-Migration via batchUpdateFragenMigration. <Anzahl> Tests (vorher 1082).
+- **[S<n> Bundle J auf main](project_s<n>_bundle_j.md)** — DnD-Bild Multi-Zone-Datenmodell. Merge `<sha>`. Datenmodell: korrekteLabels: string[] + DragDropBildLabel{id,text}. Normalizer-Pattern an 15 Pfaden (14 Lese + IDB-Restore), stabilId Cross-Environment. Bestand-Migration via batchUpdateFragenMigration. <Anzahl> Tests (vorher 1082).
 ```
 
 ---
