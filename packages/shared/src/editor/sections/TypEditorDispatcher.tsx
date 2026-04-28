@@ -760,6 +760,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setElemente={props.setSortElemente}
           teilpunkte={props.sortTeilpunkte}
           setTeilpunkte={props.setSortTeilpunkte}
+          feldStatusElemente={feldStatus(props.validation, 'elemente')}
         />
       )}
 
