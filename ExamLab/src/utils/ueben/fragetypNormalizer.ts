@@ -281,3 +281,27 @@ export function normalisiereDragDropBild(frage: any): DragDropBildFrage {
   }))
   return { ...frage, labels, zielzonen }
 }
+
+type DragDropBildAntwort = { typ: 'dragdrop_bild'; zuordnungen: Record<string, string> }
+
+export function normalisiereDragDropAntwort(
+  antwort: DragDropBildAntwort,
+  frage: DragDropBildFrage,
+): DragDropBildAntwort {
+  const labelById = new Map(frage.labels.map(l => [l.id, l]))
+  const labelByText = new Map<string, string>()
+  for (const l of frage.labels) {
+    const k = (l.text ?? '').trim().toLowerCase()
+    if (k && !labelByText.has(k)) labelByText.set(k, l.id)
+  }
+  const out: Record<string, string> = {}
+  for (const [key, zoneId] of Object.entries(antwort.zuordnungen ?? {})) {
+    if (labelById.has(key)) {
+      out[key] = zoneId
+    } else {
+      const id = labelByText.get(key.trim().toLowerCase())
+      if (id) out[id] = zoneId
+    }
+  }
+  return { ...antwort, zuordnungen: out }
+}
