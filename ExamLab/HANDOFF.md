@@ -6,14 +6,24 @@
 
 ---
 
-## Bundle J User-Tasks
+## Bundle J — KOMPLETT auf main (28.04.2026, S160)
 
-- [x] **Audit-Skript ausgeführt (28.04.2026):** 28 DnD-Bild-Fragen total, **0 Multi-Zone-Bugs**, 28 mit Distraktoren (Standard). Keine LP-Re-Edits nach Migration nötig — sauberer 1:1-Migrationspfad.
-- [x] **User-Task Phase 4 (S159):** Apps-Script-Bereitstellung erstellt + `testDragDropMultiZonePrivacy = OK`
-- [ ] **User-Task Phase 9 (S160):** Apps-Script erneut deployen — neue Bereitstellung wegen `batchUpdateFragenMigration`-Erweiterung (`felder`-Patch). URL notieren.
-- [ ] **User-Task Phase 9 (S160):** Im GAS-Editor `testBundleJMigrationFelder` ausführen → erwartet `OK`. (Schreibt kurz Marker in echte Fragenbank, Rollback automatisch.)
-- [ ] **User-Task Phase 10 (S160):** Sheet-Backup machen (Datei → Kopie erstellen → `Backup-vor-Bundle-J-2026-04-28`).
-- [ ] **User-Task Phase 10 (S160):** Env-Variablen setzen + dump.mjs/migrate.mjs/upload.mjs Stichprobe + Browser-E2E gemäss `ExamLab/scripts/migrate-dragdrop-multi-zone/SESSION-PROTOCOL.md`.
+**Migration-Status (28.04.2026 22:50 CEST):**
+- 28/28 dragdrop_bild-Fragen erfolgreich migriert (5 BWL + 10 Recht + 12 VWL + 1 Demo `einr-dd-kontinente`).
+- Re-Dump-Verifikation: 0 Fragen mit altem Format, 0 nicht gefunden.
+- Browser-E2E auf Staging mit echten Logins: LP-Editor (Multi-Label Chip-Input + Pool-Token-Liste + Konsistenz-Hinweise) und SuS-Üben (3-Zonen-Layout + Pool-Tokens als Chips, alle Frage `c3ff19bd-...` Arbeitslosigkeitstypen).
+- Pre-Merge-Checks: tsc 0 Errors, **1098 vitest** (+16 vs main 1082), npm run build ✓.
+
+**Was Bundle J gebracht hat:**
+- DragDrop-Bild-Datenmodell auf Multi-Zone (eine `korrekteLabels: string[]` pro Zone statt Single-Label) und Multi-Label-Akzeptanz (Synonym-Listen).
+- Pool-Tokens jetzt mit ID + Text (`DragDropBildLabel{id, text}`), Stack-Counter für Duplikate, deterministische `stabilId(frageId, text, index)` Cross-Env-Hashes (TS+ESM-Mirror).
+- Generic `felder`-Patch am `batchUpdateFragenMigration`-Endpoint — nutzbar für künftige Migrationen (S160-Erweiterung des C9-Endpoints).
+
+**Apps-Script-Bereitstellungen die in S160 deployed wurden:**
+1. **Erste Bereitstellung (Vor-Session):** Phase 4 — `LOESUNGS_FELDER_` mit `korrekteLabels` + `testDragDropMultiZonePrivacy_`.
+2. **Zweite Bereitstellung (S160 22:30 ca.):** Phase 9.0 — generic `felder`-Patch am `batchUpdateFragenMigrationEndpoint` + `testBundleJMigrationFelder`.
+
+**Cleanup-Reminder (~14 Tage):** Audit-Skript erneut ausführen, prüfen ob noch alte Fragen rumstehen, dann Cleanup-Bundle starten — `korrektesLabel`/`legacyLabels` aus Types entfernen, Dual-Read-Pfade weg.
 
 ---
 
