@@ -34,8 +34,10 @@ export interface DragDropBildStack {
 }
 
 /**
- * Gruppiert Pool-Tokens nach Text und filtert platzierte heraus.
+ * Gruppiert Pool-Tokens nach getrimmten Text und filtert platzierte heraus.
  * Output ist die SuS-Pool-Anzeige (Stack mit Counter).
+ * Trim-Keying ist konsistent mit Bundle-H-Pool-Dedupe (S118) — LP-Tippfehler
+ * wie 'Aktiva' vs ' Aktiva ' kollabieren in einen Stack.
  */
 export function gruppiereStacks(
   labels: DragDropBildLabel[],
@@ -44,8 +46,10 @@ export function gruppiereStacks(
   const map = new Map<string, string[]>()
   for (const l of labels) {
     if (zuordnungen[l.id]) continue
-    if (!map.has(l.text)) map.set(l.text, [])
-    map.get(l.text)!.push(l.id)
+    const key = (l.text ?? '').trim()
+    if (!key) continue
+    if (!map.has(key)) map.set(key, [])
+    map.get(key)!.push(l.id)
   }
   return [...map.entries()]
     .map(([text, freieIds]) => ({ text, anzahl: freieIds.length, freieIds }))
@@ -53,16 +57,17 @@ export function gruppiereStacks(
 }
 
 /**
- * Deterministische ID-Auswahl: kleinster Index in `labels` mit gegebenem Text,
- * dessen ID nicht in `zuordnungen` vorkommt.
+ * Deterministische ID-Auswahl: kleinster Index in `labels` mit gegebenem (getrimmten)
+ * Text, dessen ID nicht in `zuordnungen` vorkommt.
  */
 export function naechsteFreieLabelId(
   labels: DragDropBildLabel[],
   text: string,
   zuordnungen: Record<string, string>,
 ): string | null {
+  const target = (text ?? '').trim()
   for (const l of labels) {
-    if (l.text === text && !zuordnungen[l.id]) return l.id
+    if ((l.text ?? '').trim() === target && !zuordnungen[l.id]) return l.id
   }
   return null
 }

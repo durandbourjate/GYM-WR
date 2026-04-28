@@ -39,32 +39,33 @@ const baseFrage = {
   ],
 } as Omit<DDType, 'labels'>
 
-describe('DragDropBildFrage SuS-Pool-Dedupe (Task 9.2)', () => {
-  it('Doppelte Labels (case-sensitive, getrimmt) werden im Pool nur einmal angezeigt', () => {
-    const frage = { ...baseFrage, labels: ['Aktiva', ' Aktiva ', 'Passiva'] } as DDType
+describe('DragDropBildFrage SuS-Pool-Stacks (Bundle J)', () => {
+  it('Doppelte Labels (case-sensitive, getrimmt) erscheinen als ein Stack mit Counter', () => {
+    const frage = { ...baseFrage, labels: ['Aktiva', ' Aktiva ', 'Passiva'] } as unknown as DDType
     render(<FrageModeProvider mode="pruefung"><DragDropBildFrage frage={frage} /></FrageModeProvider>)
 
-    // Pool-Buttons (verfuegbareLabels) — nur 1× "Aktiva" (nicht 2×)
-    const aktivaTreffer = screen.getAllByText(/^Aktiva$/)
-    expect(aktivaTreffer).toHaveLength(1)
-
-    const passivaTreffer = screen.getAllByText(/^Passiva$/)
-    expect(passivaTreffer).toHaveLength(1)
+    // Bundle J: 'Aktiva' und ' Aktiva ' kollabieren via trim → 1 Stack mit ×2
+    expect(screen.getByTestId('pool-stack-Aktiva')).toBeInTheDocument()
+    expect(screen.getByTestId('pool-stack-Aktiva').textContent).toMatch(/Aktiva\s*×2/)
+    expect(screen.getByTestId('pool-stack-Passiva')).toBeInTheDocument()
+    // Stack mit anzahl=1 zeigt keinen ×-Counter
+    expect(screen.getByTestId('pool-stack-Passiva').textContent).not.toMatch(/×/)
   })
 
   it('Leere/whitespace-only Labels werden gefiltert', () => {
-    const frage = { ...baseFrage, labels: ['Aktiva', '', '   ', 'Passiva'] } as DDType
+    const frage = { ...baseFrage, labels: ['Aktiva', '', '   ', 'Passiva'] } as unknown as DDType
     render(<FrageModeProvider mode="pruefung"><DragDropBildFrage frage={frage} /></FrageModeProvider>)
 
-    expect(screen.getAllByText(/^Aktiva$/)).toHaveLength(1)
-    expect(screen.getAllByText(/^Passiva$/)).toHaveLength(1)
+    expect(screen.getByTestId('pool-stack-Aktiva')).toBeInTheDocument()
+    expect(screen.getByTestId('pool-stack-Passiva')).toBeInTheDocument()
+    expect(screen.queryByTestId('pool-stack-')).toBeNull()
   })
 
-  it('Case-sensitive: "Aktiva" und "aktiva" sind unterschiedlich', () => {
-    const frage = { ...baseFrage, labels: ['Aktiva', 'aktiva'] } as DDType
+  it('Case-sensitive: "Aktiva" und "aktiva" sind unterschiedliche Stacks', () => {
+    const frage = { ...baseFrage, labels: ['Aktiva', 'aktiva'] } as unknown as DDType
     render(<FrageModeProvider mode="pruefung"><DragDropBildFrage frage={frage} /></FrageModeProvider>)
 
-    expect(screen.getAllByText(/^Aktiva$/)).toHaveLength(1)
-    expect(screen.getAllByText(/^aktiva$/)).toHaveLength(1)
+    expect(screen.getByTestId('pool-stack-Aktiva')).toBeInTheDocument()
+    expect(screen.getByTestId('pool-stack-aktiva')).toBeInTheDocument()
   })
 })
