@@ -3,6 +3,7 @@ import type { DragDropBildZielzone } from '../../types/fragen'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
 import ZonenOverlay from '../components/ZonenOverlay'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface Props {
   bildUrl: string
@@ -11,6 +12,14 @@ interface Props {
   setZielzonen: React.Dispatch<React.SetStateAction<DragDropBildZielzone[]>>
   labels: string[]
   setLabels: React.Dispatch<React.SetStateAction<string[]>>
+  /** Pflichtfeld-Status der Zielzonen-Section (Bundle H Phase 6) */
+  feldStatusZielzonen?: FeldStatus
+}
+
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
 }
 
 type Modus = 'rechteck' | 'polygon'
@@ -32,7 +41,7 @@ function rechteckEckeDrag(punkte: { x: number; y: number }[], punktIndex: number
   return neuePunkte
 }
 
-export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, setZielzonen, labels, setLabels }: Props) {
+export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, setZielzonen, labels, setLabels, feldStatusZielzonen }: Props) {
   const [modus, setModus] = useState<Modus>('rechteck')
   const [ersteEcke, setErsteEcke] = useState<{ x: number; y: number } | null>(null)
   const [polyPunkte, setPolyPunkte] = useState<{ x: number; y: number }[]>([])
@@ -329,7 +338,7 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
       )}
 
       {(zielzonen ?? []).length > 0 && (
-        <div className="space-y-2">
+        <div data-testid="dnd-zielzonen-section" className={`space-y-2 ${pflichtCls(feldStatusZielzonen)}`}>
           <h5 className="text-xs font-medium text-slate-600 dark:text-slate-300">
             Zielzonen ({(zielzonen ?? []).length})
           </h5>
@@ -354,9 +363,6 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
                   placeholder="Korrektes Label"
                   className="flex-1 px-2 py-1 text-sm border rounded bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white"
                 />
-                <span className="text-xs text-slate-400 px-1">
-                  {zone.form === 'rechteck' ? '□' : '⬡'} {Array.isArray(zone.punkte) ? zone.punkte.length : '?'}
-                </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handleZoneLoeschen(zone.id) }}
