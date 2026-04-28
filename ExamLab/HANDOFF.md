@@ -9,8 +9,60 @@
 ## Bundle J User-Tasks
 
 - [x] **Audit-Skript ausgeführt (28.04.2026):** 28 DnD-Bild-Fragen total, **0 Multi-Zone-Bugs**, 28 mit Distraktoren (Standard). Keine LP-Re-Edits nach Migration nötig — sauberer 1:1-Migrationspfad.
-- [ ] **User-Task Phase 4:** Apps-Script-Editor öffnen → `testDragDropMultiZonePrivacy` ausführen → erwartet `OK`
-- [ ] **User-Task Phase 4:** Neue Apps-Script-Bereitstellung erstellen (mit erweiterten LOESUNGS_FELDER_) + URL notieren
+- [x] **User-Task Phase 4 (S159):** Apps-Script-Bereitstellung erstellt + `testDragDropMultiZonePrivacy = OK`
+- [ ] **User-Task Phase 9 (S160):** Apps-Script erneut deployen — neue Bereitstellung wegen `batchUpdateFragenMigration`-Erweiterung (`felder`-Patch). URL notieren.
+- [ ] **User-Task Phase 9 (S160):** Im GAS-Editor `testBundleJMigrationFelder` ausführen → erwartet `OK`. (Schreibt kurz Marker in echte Fragenbank, Rollback automatisch.)
+- [ ] **User-Task Phase 10 (S160):** Sheet-Backup machen (Datei → Kopie erstellen → `Backup-vor-Bundle-J-2026-04-28`).
+- [ ] **User-Task Phase 10 (S160):** Env-Variablen setzen + dump.mjs/migrate.mjs/upload.mjs Stichprobe + Browser-E2E gemäss `ExamLab/scripts/migrate-dragdrop-multi-zone/SESSION-PROTOCOL.md`.
+
+---
+
+## Bundle J Browser-E2E Test-Plan (S160)
+
+### Setup
+- Tab-Gruppe mit LP (`wr.test@gymhofwil.ch`) + SuS (`wr.test@stud.gymhofwil.ch`).
+- Test-Prüfung: Einrichtungsprüfung mit DnD-Bild-Frage `einr-dd-kontinente`.
+- Stichprobe-Migration via `node upload.mjs --ids=<5-10 IDs>` vor dem E2E.
+
+### Zu testende Änderungen
+
+| # | Änderung | Erwartetes Verhalten | Regressions-Risiko |
+|---|----------|---------------------|-------------------|
+| 1 | LP-Editor Multi-Zone-Frage | Bilanz-Schema mit 2× `Aktiva`-Zonen + 2 `Aktiva`-Pool-Tokens speicherbar | Editor crasht bei alten Fragen |
+| 2 | LP-Editor Multi-Label | Zone akzeptiert `['Marketing-Mix', '4P']` | Chip-Input verliert Daten |
+| 3 | SuS-Stack-Counter | Pool zeigt `Aktiva ×2`, Counter dekrementiert beim Drop | Stack verschwindet falsch |
+| 4 | SuS-Korrektur Multi-Zone | 2 `Aktiva`-Tokens in 2 `Aktiva`-Zonen → beide korrekt | Eine Zone fälschlich falsch |
+| 5 | Bestand-Frage (vor Mig) | Frage öffnen + lösen wie vorher (Demo-Frage `einr-dd-kontinente`) | Antwort orphaned |
+| 6 | Bestand-Frage (nach Mig) | Frage öffnen + lösen wie vorher (1:1-Mapping) | Antwort orphaned |
+
+### Security-Check
+
+- [ ] SuS-API-Response: keine `korrekteLabels`, kein `korrektesLabel` (DevTools → Network → letzte Antwort-Response).
+- [ ] SuS-API-Response: `labels` hat `id+text` (kein Lösungs-Hint im id-Pattern, IDs sind base32-Hashes).
+- [ ] LP-API-Response: `korrekteLabels` vollständig (bei LP-Editor / Korrektur).
+
+### Kritische Pfade (regression-prevention.md §1.3)
+
+- [ ] SuS lädt Üben-Modus mit DnD-Frage.
+- [ ] LP Korrektur-Vollansicht für DnD-Frage.
+- [ ] LP Druck-Ansicht (`/lp/druck`).
+- [ ] SuS-Heartbeat speichert `zuordnungen`.
+- [ ] SuS-Abgabe persistiert.
+
+### Regressions-Tests (verwandte Fragetypen)
+
+- [ ] Hotspot, Bildbeschriftung (gleiche Bild-Pattern).
+- [ ] Sortierung, Zuordnung (Drag-verwandt).
+- [ ] FiBu-Tabellen-Eingabe (Buchungssatz, T-Konto, Bilanz/ER).
+
+### Mobile / iPad-Test (PFLICHT für Stack-Touch-Mechanik)
+
+- [ ] iPad oder Chrome-DevTools Mobile-Simulation: Tap-to-Select auf Stack `Soll ×3`.
+- [ ] Tap auf Zone → Counter dekrementiert auf ×2.
+- [ ] Bei Counter = 0: Stack verschwindet aus Pool.
+- [ ] Tap auf platzierten Token in Zone → entfernt, Counter +1.
+- [ ] Touch-Targets ≥ 44×44px.
+- [ ] `touchAction: 'none'` auf interaktiven Elementen während Tap.
 
 ---
 
