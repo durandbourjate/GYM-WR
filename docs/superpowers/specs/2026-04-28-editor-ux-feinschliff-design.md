@@ -82,6 +82,8 @@ Bestehende uneinheitliche Akzentfarben in den Editoren (Indigo + Emerald in `Lue
 > – {Feldname 2}
 > Trotzdem speichern?" — `[Speichern (nicht prüfungstauglich)] [Abbrechen]`
 
+Default-Button im Dialog ist `[Abbrechen]`. User muss aktiv „Speichern (nicht prüfungstauglich)" wählen — Konsistent zum Doppelte-Label-Dialog (Sektion 7) und zur Klick-Müdigkeit-Mitigation (Risiko 7).
+
 Hintergrund: Strikt-Block birgt Datenverlust-Risiko (Tab-Wechsel = weg) wenn die Validation einen False-Positive wirft. Die `pruefungstauglich=false`-Mechanik erfüllt den Schutz schon. Der Dialog hebt das Bewusstsein ohne Daten zu riskieren.
 
 ### Pflichtfeld-Liste pro Fragetyp
