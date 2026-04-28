@@ -8,10 +8,7 @@
 
 ## Bundle J User-Tasks
 
-- [ ] Audit-Skript ausführen (env: `APPS_SCRIPT_URL`, `MIGRATION_EMAIL`)
-  - Endpoint `holeAlleFragenFuerMigration` (Admin-LP-Auth, kein Token)
-  - Output zur Phase-Plan-Schätzung verwenden
-  - Multi-Zone-Bug-IDs an LP für Re-Edit-Liste kommunizieren
+- [x] **Audit-Skript ausgeführt (28.04.2026):** 28 DnD-Bild-Fragen total, **0 Multi-Zone-Bugs**, 28 mit Distraktoren (Standard). Keine LP-Re-Edits nach Migration nötig — sauberer 1:1-Migrationspfad.
 
 ---
 

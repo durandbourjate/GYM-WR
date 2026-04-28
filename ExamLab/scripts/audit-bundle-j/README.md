@@ -6,13 +6,6 @@
 - Apps-Script-URL der aktuellen Bereitstellung (`VITE_APPS_SCRIPT_URL` aus `ExamLab/.env.local` ist die heutige Prod-/Staging-URL)
 - Admin-LP-E-Mail (Endpoint `holeAlleFragenFuerMigration` validiert via `istZugelasseneLP` + `rolle='admin'`)
 
-## Setup (einmalig)
-
-```bash
-cd ExamLab/scripts/audit-bundle-j
-npm install
-```
-
 ## Ausführung
 
 ```bash

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // Audit Bundle J — zählt dragdrop_bild-Fragen für Migrations-Scope
-import { request } from 'undici'
 
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL
 const MIGRATION_EMAIL = process.env.MIGRATION_EMAIL
@@ -9,12 +8,17 @@ if (!APPS_SCRIPT_URL || !MIGRATION_EMAIL) {
   process.exit(1)
 }
 
-const { body } = await request(APPS_SCRIPT_URL, {
+const r = await fetch(APPS_SCRIPT_URL, {
   method: 'POST',
   headers: { 'Content-Type': 'text/plain' },
   body: JSON.stringify({ action: 'holeAlleFragenFuerMigration', email: MIGRATION_EMAIL }),
+  redirect: 'follow',
 })
-const data = await body.json()
+if (!r.ok) {
+  console.error(`Apps-Script HTTP ${r.status}`)
+  process.exit(1)
+}
+const data = await r.json()
 if (data.error) {
   console.error('API-Fehler:', data.error)
   process.exit(1)

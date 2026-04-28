@@ -7,9 +7,6 @@
   "scripts": {
     "audit": "node zaehleDragDropFragen.mjs"
   },
-  "dependencies": {
-    "undici": "^6.21.0"
-  },
   "engines": {
     "node": ">=20.11"
   }
