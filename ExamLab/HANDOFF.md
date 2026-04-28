@@ -12,6 +12,40 @@
 
 ---
 
+## Bundle J Phase 1.3 — Compile-Fehler nach Type-Erweiterung
+
+(Stand: nach Task 4, werden in Phase 2-8 Pfad-für-Pfad gefixt)
+
+```
+src/tests/DragDropBildEditorPflicht.test.tsx(30,3): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "rechteck"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+src/tests/DragDropBildEditorPflicht.test.tsx(41,3): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "polygon"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+src/tests/DragDropBildEditorPool.test.tsx(30,3): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "rechteck"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+src/tests/DragDropBildEditorPool.test.tsx(41,3): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "rechteck"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+src/utils/ueben/fragetypNormalizer.ts(261,5): error TS2322: Type '{ id: string; form: "rechteck" | "polygon"; punkte: any; korrektesLabel: string; }[]' is not assignable to type 'DragDropBildZielzone[]'.
+  Property 'korrekteLabels' is missing in type '{ id: string; form: "rechteck" | "polygon"; punkte: any; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+src/utils/ueben/fragetypNormalizer.ts(269,5): error TS2322: Type 'string[]' is not assignable to type 'DragDropBildLabel[]'.
+  Type 'string' is not assignable to type 'DragDropBildLabel'.
+src/utils/ueben/korrektur.ts(229,21): error TS2538: Type 'undefined' cannot be used as an index type.
+src/utils/ueben/korrektur.ts(230,26): error TS2367: This comparison appears to be unintentional because the types 'DragDropBildLabel' and 'string | undefined' have no overlap.
+../packages/shared/src/editor/fragenFactory.ts(282,14): error TS2352: Conversion of type '{ typ: "dragdrop_bild"; fragetext: string; bildUrl: string; bild: MediaQuelle | undefined; zielzonen: DragDropBildZielzone[]; labels: string[]; id: string; ... 22 more ...; pruefungstauglich?: boolean; }' to type 'DragDropBildFrage' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'labels' are incompatible.
+    Type 'string[]' is not comparable to type 'DragDropBildLabel[]'.
+      Type 'string' is not comparable to type 'DragDropBildLabel'.
+../packages/shared/src/editor/SharedFragenEditor.tsx(469,5): error TS2345: Argument of type 'DragDropBildLabel[]' is not assignable to parameter of type 'string[] | (() => string[])'.
+  Type 'DragDropBildLabel[]' is not assignable to type 'string[]'.
+    Type 'DragDropBildLabel' is not assignable to type 'string'.
+../packages/shared/src/editor/typen/DragDropBildEditor.tsx(89,11): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "polygon"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+../packages/shared/src/editor/typen/DragDropBildEditor.tsx(117,15): error TS2741: Property 'korrekteLabels' is missing in type '{ id: string; form: "rechteck"; punkte: { x: number; y: number; }[]; korrektesLabel: string; }' but required in type 'DragDropBildZielzone'.
+../packages/shared/src/editor/typen/DragDropBildEditor.tsx(441,74): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+```
+
+**Total:** 13 Errors über 7 Dateien.
+
+**Hinweis:** Pfade aus Spec 5.2.1 die NICHT in tsc-Output erscheinen — `ExamLab/src/utils/autoKorrektur.ts`, `ExamLab/src/utils/poolConverter.ts`, `ExamLab/src/components/fragetypen/DragDropBildFrage.tsx` — importieren Typen aus `ExamLab/src/types/fragen.ts` (lokale ExamLab-Kopie mit alter Type-Shape), nicht aus `@shared/types/fragen`. Diese müssen in einer der Phase-2-bis-8-Tasks separat angeschaut werden (entweder lokale Kopie ebenfalls migrieren oder Imports auf `@shared/...` umstellen). NICHT in Task 4.
+
+---
+
 ## S158 (28.04.2026) — Bundle J: Spec + Plan freigegeben, Implementation offen
 
 **Was die Session machte:** Reine Brainstorming + Plan-Session. Kein Code-Change. Spec rev3 (2 Reviewer-Iterationen) + Plan rev3 (2 Reviewer-Iterationen) auf `main` committed und gepusht. Implementation für nächste Session reserviert.

@@ -614,9 +614,21 @@ export interface DragDropBildZielzone {
   id: string
   form: 'rechteck' | 'polygon'
   punkte: { x: number; y: number }[]   // Prozent 0-100, ≥3 Punkte (Rechteck = 4)
-  korrektesLabel: string
+  /**
+   * Akzeptierte Label-Texte für diese Zone (Synonyme).
+   * Min. 1 Eintrag Pflicht. Match per `text.trim().toLowerCase()`.
+   */
+  korrekteLabels: string[]
+  /** @deprecated Bundle J Cleanup-Bundle entfernt das. Dual-Read im Migrations-Fenster. */
+  korrektesLabel?: string
   /** Teilerklärung (C9): welches Label hierhin gehört und warum. */
   erklaerung?: string
+}
+
+export interface DragDropBildLabel {
+  /** Stabile Instanz-ID, generiert via `stabilId(frageId, text, index)` oder Editor-Random beim Anlegen. */
+  id: string
+  text: string
 }
 
 export interface DragDropBildFrage extends FrageBase {
@@ -628,7 +640,10 @@ export interface DragDropBildFrage extends FrageBase {
   /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
   bild?: MediaQuelle
   zielzonen: DragDropBildZielzone[]
-  labels: string[]  // Pool von Labels (kann Distraktoren enthalten)
+  /** Pool-Tokens mit IDs. Duplikate erlaubt (Multi-Zone-Tokens). */
+  labels: DragDropBildLabel[]
+  /** @deprecated Bundle J Cleanup-Bundle entfernt das. Dual-Read im Migrations-Fenster. */
+  legacyLabels?: string[]
 }
 
 // === CODE-EDITOR ===
