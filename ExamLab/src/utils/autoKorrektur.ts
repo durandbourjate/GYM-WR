@@ -7,6 +7,7 @@ import type { Antwort } from '../types/antworten'
 import { korrigiereBuchungssatz, korrigiereTKonto, korrigiereKontenbestimmung, korrigiereBilanzER } from './fibuAutoKorrektur'
 import { normalisiereLatex } from './latexRenderer'
 import { labelsInZone, zoneKorrektBelegt } from './dragdropBildUtils'
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from './ueben/fragetypNormalizer'
 import { istPunktInPolygon } from './zonen/polygon'
 export type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
 import type { KorrekturErgebnis, KorrekturDetail } from './fibuAutoKorrektur'
@@ -370,29 +371,40 @@ function korrigiereBildbeschriftung(
 // === DRAG & DROP BILD ===
 
 function korrigiereDragDropBild(
-  frage: DragDropBildFrage,
-  antwort: Extract<Antwort, { typ: 'dragdrop_bild' }>
+  frageRaw: DragDropBildFrage,
+  antwortRaw: Extract<Antwort, { typ: 'dragdrop_bild' }>
 ): KorrekturErgebnis {
-  const details: KorrekturDetail[] = []
+  const frage = normalisiereDragDropBild(frageRaw)
+  const antwort = normalisiereDragDropAntwort(antwortRaw, frage)
+  const labelMap = new Map(frage.labels.map(l => [l.id, l]))
   const punkteProZone = frage.punkte / Math.max(1, frage.zielzonen.length)
+  const details: KorrekturDetail[] = []
 
   for (const zone of frage.zielzonen) {
-    // Antwort-Format: { [labelText]: zoneId } — Reverse-Lookup für Anzeige/Prüfung.
-    const platzierteLabels = labelsInZone(antwort.zuordnungen, zone.id)
-    const korrekt = zoneKorrektBelegt(antwort.zuordnungen, zone.id, zone.korrektesLabel)
-    const anzeige = platzierteLabels.join(', ')
+    const platzierteTexte = Object.entries(antwort.zuordnungen)
+      .filter(([, zid]) => zid === zone.id)
+      .map(([lid]) => (labelMap.get(lid)?.text ?? '').trim())
+      .filter(t => t.length > 0)
+
+    const sollSet = new Set(zone.korrekteLabels.map(s => s.trim().toLowerCase()))
+    const korrekt = platzierteTexte.some(t => sollSet.has(t.toLowerCase()))
+    const anzeigeZone = zone.korrekteLabels.join(' / ')
+
     details.push({
-      bezeichnung: `Zone: ${zone.korrektesLabel}`,
+      bezeichnung: `Zone: ${anzeigeZone}`,
       korrekt,
       erreicht: korrekt ? punkteProZone : 0,
       max: punkteProZone,
-      kommentar: korrekt ? undefined : (anzeige ? `Zugeordnet: ${anzeige}` : 'Nicht zugeordnet'),
+      kommentar: korrekt
+        ? undefined
+        : platzierteTexte.length
+          ? `Zugeordnet: ${platzierteTexte.join(', ')}`
+          : 'Nicht zugeordnet',
     })
   }
-
-  const erreichDd = details.reduce((s, d) => s + d.erreicht, 0)
+  const erreich = details.reduce((s, d) => s + d.erreicht, 0)
   return {
-    erreichtePunkte: Math.round(erreichDd * 100) / 100,
+    erreichtePunkte: Math.round(erreich * 100) / 100,
     maxPunkte: frage.punkte,
     details,
   }

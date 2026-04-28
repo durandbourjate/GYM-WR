@@ -479,3 +479,71 @@ describe('autoKorrigiere', () => {
     expect(result!.erreichtePunkte).toBe(0)
   })
 })
+
+describe('korrigiereDragDropBild — Bundle J Multi-Zone + Multi-Label', () => {
+  it('Multi-Zone: 3 Aktiva-Zonen, 3 Aktiva-Tokens, alle korrekt unabhängig der Reihenfolge', () => {
+    const f = {
+      id: 'f1', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
+      fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      musterlosung: '', bewertungsraster: [], verwendungen: [],
+      fragetext: '', bildUrl: '', punkte: 3,
+      zielzonen: [
+        { id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] },
+        { id: 'z2', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] },
+        { id: 'z3', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] },
+      ],
+      labels: [
+        { id: 'L1', text: 'Aktiva' },
+        { id: 'L2', text: 'Aktiva' },
+        { id: 'L3', text: 'Aktiva' },
+      ],
+    } as unknown as DragDropBildFrage
+    const a: Antwort = { typ: 'dragdrop_bild', zuordnungen: { 'L1': 'z2', 'L2': 'z3', 'L3': 'z1' } }
+    const r = autoKorrigiere(f, a)
+    expect(r).not.toBeNull()
+    expect(r!.erreichtePunkte).toBe(3)
+  })
+
+  it('Multi-Label: Zone akzeptiert mehrere Synonyme', () => {
+    const f = {
+      id: 'f2', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
+      fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      musterlosung: '', bewertungsraster: [], verwendungen: [],
+      fragetext: '', bildUrl: '', punkte: 1,
+      zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Marketing-Mix', '4P'] }],
+      labels: [{ id: 'L1', text: '4P' }],
+    } as unknown as DragDropBildFrage
+    const a: Antwort = { typ: 'dragdrop_bild', zuordnungen: { 'L1': 'z1' } }
+    expect(autoKorrigiere(f, a)!.erreichtePunkte).toBe(1)
+  })
+
+  it('Distraktor in Zone (kein Match) → falsch', () => {
+    const f = {
+      id: 'f3', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
+      fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      musterlosung: '', bewertungsraster: [], verwendungen: [],
+      fragetext: '', bildUrl: '', punkte: 1,
+      zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] }],
+      labels: [{ id: 'L1', text: 'Saldo' }],
+    } as unknown as DragDropBildFrage
+    const a: Antwort = { typ: 'dragdrop_bild', zuordnungen: { 'L1': 'z1' } }
+    expect(autoKorrigiere(f, a)!.erreichtePunkte).toBe(0)
+  })
+
+  it('Pre-Migration-Frage (string[]-Pool, korrektesLabel): Normalizer macht es kompatibel', () => {
+    const fAlt: any = {
+      id: 'f4', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
+      fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      musterlosung: '', bewertungsraster: [], verwendungen: [],
+      fragetext: '', bildUrl: '', punkte: 1,
+      zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrektesLabel: 'Aktiva' }],
+      labels: ['Aktiva'],
+    }
+    const aAlt: Antwort = { typ: 'dragdrop_bild', zuordnungen: { 'Aktiva': 'z1' } }
+    expect(autoKorrigiere(fAlt, aAlt)!.erreichtePunkte).toBe(1)
+  })
+})
