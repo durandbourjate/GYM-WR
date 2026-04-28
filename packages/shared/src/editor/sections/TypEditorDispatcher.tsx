@@ -781,6 +781,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setBildUrl={props.setBildUrl}
           beschriftungen={props.bbBeschriftungen}
           setBeschriftungen={props.setBbBeschriftungen}
+          feldStatusBeschriftungen={feldStatus(props.validation, 'beschriftungen')}
         />
       )}
 
