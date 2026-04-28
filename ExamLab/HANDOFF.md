@@ -6,75 +6,57 @@
 
 ---
 
-## Für die nächste Session (S158) — Bundle H Phase 5+ fortsetzen
+## S157 (28.04.2026) — Bundle H: Editor-UX Feinschliff auf `main`
 
-### Aktueller Stand (S157, 28.04.2026) — Bundle H Phasen 0-4 auf `feature/editor-ux-feinschliff-bundle-h` (gepusht, NICHT auf main)
+**Branch:** `feature/editor-ux-feinschliff-bundle-h` → `main` (gemergt, gelöscht). 29 Code-Commits + Merge.
 
-**Was die Session machte:** Bundle H Implementation gestartet via `superpowers:subagent-driven-development`. **19 Commits** auf Feature-Branch, **961+ vitest grün** (vorher 828, +133), tsc clean. Branch zu `origin/feature/editor-ux-feinschliff-bundle-h` gepusht, NICHT auf main gemergt — Phase 13 E2E-Test + User-Freigabe stehen aus.
+### Was Bundle H macht — Spec rev3 vollständig umgesetzt
 
-**Phasen-Status:**
+| # | Inhalt |
+|---|---|
+| Violett-Pflichtfeld-System | 3-Stufen-Klassifizierung (Pflicht / Empfohlen / OK) pro Frage gekoppelt an `pruefungstauglich`-Flag |
+| Bestätigungsdialoge | PflichtfeldDialog (Pflicht-leer beim Speichern) + DoppelteLabelDialog (DnD-Bild Multi-Zone-Konflikt). Default-Button = Abbrechen (sichere Wahl). DoppelDialog vor PflichtDialog (chained falls beide triggern) |
+| Pflichtfeld-Outline LP | Violett-Outline auf Pflicht-leer-Sections in 6 LP-Editoren (MC, RF, Lückentext, Zuordnung, Hotspot, DragDropBild, Bildbeschriftung). Lückentext indigo/emerald → violet (4 Klassen ersetzt) |
+| Pflichtfeld-Outline SuS | 8 SuS-Renderer haben Violett-Outline auf leeren Eingaben (verschwindet nach Antwort prüfen) via `leereEingabenDetektor`-Helper |
+| 4 typ-spezifische Vereinfachungen | (a) Sortierung: textarea → MC-Pattern + Drag-Reorder + BulkPasteModal · (b) Bildbeschriftung: x/y-Inputs raus + Section-Hinweis · (c) Hotspot+DnD: Form-Indicator + Punkte-Count weg pro Eintrag · (d) DragDropBild: Pool-Dedupe + Doppellabel-Inline-Warnung |
+| SuS-Tastatur-Navigation | Enter / Cmd+Enter triggert Antwort prüfen mit `data-no-enter-submit`-Whitelist (Tiptap-Wrapper, CodeMirror-Container) + Lückentext-Hinweis bei offenen Lücken (3s amber Toast) |
+| Schülercode-UI ausgeblendet | beide LoginScreens (Pruefen + Üben). Backend-Methode `anmeldenMitCode` bleibt für Re-Aktivierung. Reminder für Code-Removal: 9.6.2026 |
+| Audio-Verifikation | Audio bleibt aus FrageTypAuswahl (S140), Regression-Test |
 
-| Phase | Status | Commits | Tests |
-|---|---|---|---|
-| **0 — Vorbedingungen** | ✅ teilw. | 2 (`6e3d1f2` Vitest-Glob, `aa27857` Audit-Skripte+Audio-Sweep) | — |
-| **1 — Pflichtfeld-Validator** | ✅ + Hotfix | 5 (`817c512`/`bf719e5`/`78e08b2`/`f36b7ce` TDD-Tasks 1.1-1.5, `65d91e9` M-2-Hotfix Lückentext-Regex) | +75 |
-| **2 — Dialoge + Save-Hook** | ✅ + 2 Hotfixes | 6 (`22bac75` PflichtfeldDialog, `bf5938c` DoppelteLabelDialog, `5c785bf` PruefungstauglichBadge, `18ad021` SharedFragenEditor-Save-Hook + 4 it.todo, `9035d09` `buildFragePreview`-Helper-Refactor (DRY+LOC), `9a42e9a` 2 echte SharedFragenEditor-Tests für `pruefungstauglich`-Berechnung) | +17 (+22 für buildFragePreview-Tests, +2 SharedFragenEditor) |
-| **3 — 4 Editoren konsumieren Helper** | ✅ | 5 (`5e6f7f4`/`3f1f8ab`/`751219b`/`22948fe` MC/RF/Lückentext/Zuordnung-Outlines, `c34e3cd` Dispatcher+SharedFragenEditor wiring) | +17 |
-| **4 — Audio-Status Verifikation** | ✅ | 1 (`842bb44` FrageTypAuswahl-Regression-Test) | +2 |
+### Tests
 
-**Aufgeschoben aus Phase 0:**
-- Task 0.2 Tastatur-Spike — blockt Phase 5. User muss im Browser mit echtem SuS-Login die 4 Editor-Fragetypen testen + DevTools-Output melden.
-- Task 0.6 Audit-Skripte ausführen — informational, blockt Phase 9 nicht hart. User braucht `APPS_SCRIPT_URL` + `MIGRATION_EMAIL` env-Variablen.
+- **vitest:** 1082 passed + 4 todo (vorher 828 Baseline, +254)
+- **tsc -b:** clean
+- **build:** clean (255 PWA entries, 5200 KiB)
+- **Browser-E2E live verifiziert** auf staging:
+  - LP-Editor: PruefungstauglichBadge sichtbar + Pflichtfeld-Violett-Outlines auf Fach/Thema/Punkte
+  - FrageTypAuswahl: Audio nicht mehr im Picker
+  - SuS-Üben: MC-Optionen-Block mit `border-violet-400` vor Klick → `border-transparent` nach Klick → Enter triggert Antwort prüfen → Erklärung sichtbar
 
-**Noch offen (Phase 5–13):**
+### Architektur-Highlights
 
-| Phase | Beschreibung | Direct-Mode? |
-|---|---|---|
-| 5 | UebungsScreen Tastatur-Erweiterung | ⚠️ Spike vor Start (Task 0.2) |
-| 6 | Hotspot + DragDropBild Form-Indicator+Punkte-Count weg | nein |
-| 7 | Bildbeschriftung x/y-Inputs raus | nein |
-| 8 | Sortierung MC-Pattern + Bulk-Paste | nein |
-| 9 | DragDropBild Pool-Dedupe + Doppellabel-Detection | (Audit-Run vorzuziehen, nicht hart) |
-| 10 | SuS-Renderer Zone-Outline (8 Renderer) | nein |
-| 11 | Schülercode-UI raus (2 LoginScreens) | nein |
-| 12 | Reminder-Task für 2026-06-09 (`/schedule`) | ⚠️ Direct-Mode |
-| 13 | E2E-Browser-Test + Merge | ⚠️ User-Freigabe |
+- **`pflichtfeldValidation.ts`** ([packages/shared/src/editor/pflichtfeldValidation.ts](../packages/shared/src/editor/pflichtfeldValidation.ts)) — pure Validator, defensiv (null/undefined/unknown-typ → kein Save-Block), alle 20 typen + Aufgabengruppe rekursiv max. 3 Ebenen.
+- **`buildFragePreview.ts`** — Helper-Refactor nach Code-Review (vermeidet Switch-Duplikation in SharedFragenEditor zwischen `aktuelleFrage` useMemo und `speichereJetzt`).
+- **`leereEingabenDetektor.ts`** + **`lueckentextChecks.ts`** in `ExamLab/src/utils/ueben/` — pure Helper für SuS-Renderer Phase 10 + Tastatur-Hinweis Phase 5.
+- **3 Inline-Tailwind-Modals** (`PflichtfeldDialog`, `DoppelteLabelDialog`, `BulkPasteModal` in `packages/shared/src/editor/components/`) — KEIN BaseDialog-Cross-Package-Import.
+- **Pflichtfeld-Outline-Wiring**: SharedFragenEditor `validation` (useMemo) → TypEditorDispatcher `validation?` Prop → 6 Editor-Komponenten `feldStatusXXX?` Props.
+- **`@dnd-kit`-Aliases** in `vitest.config.ts` (Phase 8) — Sortierung-Editor importiert dnd-kit aus `packages/shared`.
+- **`useRef<string[]>` + Length-Auto-Sync** für Sortable-IDs (Phase 8) — hält Datenmodell `string[]` unverändert ohne Doppel-Items-Bug.
 
-**Architektur-Highlights aus S157:**
-- **`pflichtfeldValidation.ts`** in `packages/shared/src/editor/` — pure Validator, klassifiziert pro Frage Pflicht/Empfohlen/OK pro Feld. Defensiv (null/undefined/unknown-typ → kein Save-Block). Aufgabengruppe rekursiv max. 3 Ebenen.
-- **`buildFragePreview.ts`** als Hotfix nach Code-Review extrahiert — vermeidet Duplikat-Switch zwischen `aktuelleFrage` useMemo und `speichereJetzt`. SharedFragenEditor.tsx 1233 → 1208 LOC (>800 limit, aber dokumentierte Ausnahme analog plannerStore).
-- **3 Inline-Tailwind-Modals** (PflichtfeldDialog, DoppelteLabelDialog, PruefungstauglichBadge) — KEIN BaseDialog-Cross-Package-Import. autoFocus auf Abbrechen (sichere Wahl).
-- **DoppelDialog vor PflichtDialog** (Doppellabel ist gravierender Korrektur-Bug). Wenn nach Doppel-Confirm noch Pflichten leer: chained.
-- **Editor-Pflichtfeld-Outline-Wiring**: SharedFragenEditor `validation` → TypEditorDispatcher `validation?` Prop → MC/RF/Lückentext/Zuordnung-Editor `feldStatusXXX?` Props. Defensive `?` wenn Validator unbekannten Key hat.
-- **Lückentext indigo/emerald → violet** komplett (4 Treffer ersetzt) gemäss Spec.
+### Out of Scope
 
-**Methodik-Lehren S157 (für Memory):**
-1. **Plan-Snippets-Realität-Check**: Plan-Snippets `<MCEditor frage={...} onUpdate={...}>` waren Fiktion. Echte Editoren haben destrukturierte Props (kein `frage`). Master-Direct-Audit (Lesen der Datei) vor Subagent-Dispatch hat Designed Around-Trip vermieden.
-2. **`@testing-library/react` resolve-Problem**: Tests für shared-Komponenten MÜSSEN in `ExamLab/src/tests/` (nicht packages/shared) — analog zu `AntwortZeile.test.tsx` (S156-Lehre bestätigt).
-3. **Pragmatic-Hot-Fix vs Subagent-Round-Trip** (S155-Lehre angewandt): M-2 Lückentext-Regex und Phase-2-Doppel-Hotfix als Master-Direct-Edit, nicht als neue Subagent-Sessions — bei <30-Zeilen-Edits schneller.
-4. **Plan-Phase-Aufteilung**: Subagent-pro-Phase statt -pro-Task ist effizienter wenn Tasks mechanisch gleich sind (Phase 1 TDD-Validatoren, Phase 3 Editor-Outlines). Subagent-pro-Komponente nur bei strukturell unterschiedlichen Komponenten (Phase 2 Dialogs).
-5. **Spec/Code-Quality-Review-Skipping bei Phase 3**: Implementer-Report war präzise + Tests verifiziert. Skip war pragmatisch (Phase 3 ist sehr mechanisch). Bei Browser-E2E in Phase 13 wird's evaluiert.
+- **Bundle I** — Performance-Audit (LP-Üben 20s, SuS-Login 25s) — eigener Spec
+- **Bundle J** — DnD-Bild Multi-Zone-Datenmodell-Migration — eigener Spec, weil Korrektur-Algorithmus per Label-String indiziert (nicht Zone-ID)
+- **Schülercode-Code-Removal** — Reminder-Task `bundle-h-schuelercode-removal-check` für 2026-06-09 angelegt (`mcp__scheduled-tasks`)
 
-### User-Tasks vor S158
+### Methodik-Lehren S157 (für Memory)
 
-1. **Task 0.2 Tastatur-Spike erledigen** (5-10 Min):
-   - `cd ExamLab && npm run dev`
-   - Login als SuS (`wr.test@stud.gymhofwil.ch`), „Einrichtungsprüfung" starten
-   - Pro Editor-Frage (Freitext/Lückentext/Formel/Code) DevTools-Console:
-     ```js
-     const el = document.activeElement
-     console.log({tag: el.tagName, ce: el.isContentEditable, type: el.type, parent: el.closest('[data-no-enter-submit]')?.tagName})
-     ```
-   - Outputs in Plan-Datei `docs/superpowers/plans/2026-04-28-bundle-h-editor-ux-feinschliff.md` Block „Spike-Resultate Tastatur" am Ende eintragen.
-
-2. **`APPS_SCRIPT_URL` + `MIGRATION_EMAIL` env-Variablen vorbereiten** (für Task 0.6 Audit-Run, blockt Phase 9 nicht hart aber informational).
-
-3. **S158 starten** mit „weiter mit Bundle H Phase 5" oder ähnlich.
-
-### Nicht aufgeschoben:
-- Code ist auf `feature/editor-ux-feinschliff-bundle-h` (lokal + origin synchron)
-- Branch-Cleanup-Note: NICHT mergen bevor Phase 13 E2E erfolgt
-- main-Branch unangetastet
+1. **Plan-Snippets-Realität-Check**: Plan-Snippets `<MCEditor frage={...} onUpdate={...}>` waren Fiktion. Editoren haben destrukturierte Props. Master-Direct-Audit (Lesen der Datei) vor Subagent-Dispatch verhinderte Designed-Around-Trip in Phase 3, 6, 7, 8.
+2. **`@testing-library/react` resolve-Problem**: Tests für shared-Komponenten MÜSSEN in `ExamLab/src/tests/` (nicht `packages/shared`) — analog zu `AntwortZeile.test.tsx` (S156-Lehre bestätigt).
+3. **Pragmatic-Hot-Fix vs Subagent-Round-Trip** (S155-Lehre angewandt): Bei <30-Zeilen-Edits Master-Direct-Edit schneller (M-2 Lückentext-Regex, Phase-2-Hotfix).
+4. **Subagent-pro-Phase statt -pro-Task** ist effizienter bei mechanisch gleichen Tasks (Phase 1 TDD-Validatoren, Phase 3+10 Outline-Wiring). Phase 10 = 10 Commits via einem Subagent.
+5. **`@dnd-kit`-Cross-Package-Import** braucht Vite-Aliase auf ExamLab/node_modules — sonst Modul-Resolution-Failure und Doppel-React-Hooks (Phase 8).
+6. **Spec/Code-Quality-Review-Skipping** bei sehr mechanischen Phases (Phase 3+10) ist OK wenn Implementer-Report präzise + Tests verifiziert. Browser-E2E in Phase 13 evaluiert das letzlich.
 
 ---
 
