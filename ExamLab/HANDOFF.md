@@ -23,7 +23,15 @@
 1. **Erste Bereitstellung (Vor-Session):** Phase 4 — `LOESUNGS_FELDER_` mit `korrekteLabels` + `testDragDropMultiZonePrivacy_`.
 2. **Zweite Bereitstellung (S160 22:30 ca.):** Phase 9.0 — generic `felder`-Patch am `batchUpdateFragenMigrationEndpoint` + `testBundleJMigrationFelder`.
 
-**Cleanup-Reminder (~14 Tage):** Audit-Skript erneut ausführen, prüfen ob noch alte Fragen rumstehen, dann Cleanup-Bundle starten — `korrektesLabel`/`legacyLabels` aus Types entfernen, Dual-Read-Pfade weg.
+**Cleanup auf main (28.04.2026, Merge `000de2e`) — vorgezogen statt 12.05:**
+- Apps-Script: `LOESUNGS_FELDER_.zielzonen.subFelder` jetzt nur noch `korrekteLabels + erklaerung`. `pruefeAntwortServer_` DnD-Case auf Multi-Label-Match. Demo-Frage `einr-dd-kontinente` aufs neue Format.
+- Types: `korrektesLabel?: string` aus DragDropBildZielzone weg (`packages/shared/src/types/fragen.ts`, `ExamLab/src/types/fragen.ts`, `ExamLab/src/types/ueben/loesung.ts`).
+- Frontend: Normalizer/Editor-Adapter/Pflichtfeld-Validation auf reine `korrekteLabels`-Logik. `zoneKorrektBelegt`-Helper entfernt (toter Code).
+- Migrator (`zonen/migriereZone.ts`): hebt jetzt `korrektesLabel`-Werte direkt ins `korrekteLabels[]`-Format (für Pre-Bundle-J-Imports falls jemals einer auftaucht).
+- Tests: 5 Test-Files auf neues Multi-Label + id-keyed Format.
+- Scheduled-Task `bundle-j-cleanup-check` deaktiviert.
+
+**Apps-Script-Re-Deploy nach Cleanup:** ⚠️ Nicht zwingend nötig wenn die aktuelle Bereitstellung läuft — die Cleanups sind nur Striche im LOESUNGS_FELDER_ und im Demo-Frage-Migrator (geringe Risiko-Klasse). Bei nächstem Deploy automatisch mit drin. `pruefeAntwortServer_` DragDrop-Multi-Label-Update sollte aber bald deployed werden, sonst korrigiert das Backend ältere/anders strukturierte Antworten möglicherweise falsch.
 
 ---
 
