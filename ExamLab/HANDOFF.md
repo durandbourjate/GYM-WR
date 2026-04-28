@@ -6,9 +6,79 @@
 
 ---
 
-## Für die nächste Session (S157) — Bundle H Implementation starten
+## Für die nächste Session (S158) — Bundle H Phase 5+ fortsetzen
 
-### Aktueller Stand (S156, 28.04.2026) — Bundle H Spec + Plan freigegeben, Implementation offen
+### Aktueller Stand (S157, 28.04.2026) — Bundle H Phasen 0-4 auf `feature/editor-ux-feinschliff-bundle-h` (gepusht, NICHT auf main)
+
+**Was die Session machte:** Bundle H Implementation gestartet via `superpowers:subagent-driven-development`. **19 Commits** auf Feature-Branch, **961+ vitest grün** (vorher 828, +133), tsc clean. Branch zu `origin/feature/editor-ux-feinschliff-bundle-h` gepusht, NICHT auf main gemergt — Phase 13 E2E-Test + User-Freigabe stehen aus.
+
+**Phasen-Status:**
+
+| Phase | Status | Commits | Tests |
+|---|---|---|---|
+| **0 — Vorbedingungen** | ✅ teilw. | 2 (`6e3d1f2` Vitest-Glob, `aa27857` Audit-Skripte+Audio-Sweep) | — |
+| **1 — Pflichtfeld-Validator** | ✅ + Hotfix | 5 (`817c512`/`bf719e5`/`78e08b2`/`f36b7ce` TDD-Tasks 1.1-1.5, `65d91e9` M-2-Hotfix Lückentext-Regex) | +75 |
+| **2 — Dialoge + Save-Hook** | ✅ + 2 Hotfixes | 6 (`22bac75` PflichtfeldDialog, `bf5938c` DoppelteLabelDialog, `5c785bf` PruefungstauglichBadge, `18ad021` SharedFragenEditor-Save-Hook + 4 it.todo, `9035d09` `buildFragePreview`-Helper-Refactor (DRY+LOC), `9a42e9a` 2 echte SharedFragenEditor-Tests für `pruefungstauglich`-Berechnung) | +17 (+22 für buildFragePreview-Tests, +2 SharedFragenEditor) |
+| **3 — 4 Editoren konsumieren Helper** | ✅ | 5 (`5e6f7f4`/`3f1f8ab`/`751219b`/`22948fe` MC/RF/Lückentext/Zuordnung-Outlines, `c34e3cd` Dispatcher+SharedFragenEditor wiring) | +17 |
+| **4 — Audio-Status Verifikation** | ✅ | 1 (`842bb44` FrageTypAuswahl-Regression-Test) | +2 |
+
+**Aufgeschoben aus Phase 0:**
+- Task 0.2 Tastatur-Spike — blockt Phase 5. User muss im Browser mit echtem SuS-Login die 4 Editor-Fragetypen testen + DevTools-Output melden.
+- Task 0.6 Audit-Skripte ausführen — informational, blockt Phase 9 nicht hart. User braucht `APPS_SCRIPT_URL` + `MIGRATION_EMAIL` env-Variablen.
+
+**Noch offen (Phase 5–13):**
+
+| Phase | Beschreibung | Direct-Mode? |
+|---|---|---|
+| 5 | UebungsScreen Tastatur-Erweiterung | ⚠️ Spike vor Start (Task 0.2) |
+| 6 | Hotspot + DragDropBild Form-Indicator+Punkte-Count weg | nein |
+| 7 | Bildbeschriftung x/y-Inputs raus | nein |
+| 8 | Sortierung MC-Pattern + Bulk-Paste | nein |
+| 9 | DragDropBild Pool-Dedupe + Doppellabel-Detection | (Audit-Run vorzuziehen, nicht hart) |
+| 10 | SuS-Renderer Zone-Outline (8 Renderer) | nein |
+| 11 | Schülercode-UI raus (2 LoginScreens) | nein |
+| 12 | Reminder-Task für 2026-06-09 (`/schedule`) | ⚠️ Direct-Mode |
+| 13 | E2E-Browser-Test + Merge | ⚠️ User-Freigabe |
+
+**Architektur-Highlights aus S157:**
+- **`pflichtfeldValidation.ts`** in `packages/shared/src/editor/` — pure Validator, klassifiziert pro Frage Pflicht/Empfohlen/OK pro Feld. Defensiv (null/undefined/unknown-typ → kein Save-Block). Aufgabengruppe rekursiv max. 3 Ebenen.
+- **`buildFragePreview.ts`** als Hotfix nach Code-Review extrahiert — vermeidet Duplikat-Switch zwischen `aktuelleFrage` useMemo und `speichereJetzt`. SharedFragenEditor.tsx 1233 → 1208 LOC (>800 limit, aber dokumentierte Ausnahme analog plannerStore).
+- **3 Inline-Tailwind-Modals** (PflichtfeldDialog, DoppelteLabelDialog, PruefungstauglichBadge) — KEIN BaseDialog-Cross-Package-Import. autoFocus auf Abbrechen (sichere Wahl).
+- **DoppelDialog vor PflichtDialog** (Doppellabel ist gravierender Korrektur-Bug). Wenn nach Doppel-Confirm noch Pflichten leer: chained.
+- **Editor-Pflichtfeld-Outline-Wiring**: SharedFragenEditor `validation` → TypEditorDispatcher `validation?` Prop → MC/RF/Lückentext/Zuordnung-Editor `feldStatusXXX?` Props. Defensive `?` wenn Validator unbekannten Key hat.
+- **Lückentext indigo/emerald → violet** komplett (4 Treffer ersetzt) gemäss Spec.
+
+**Methodik-Lehren S157 (für Memory):**
+1. **Plan-Snippets-Realität-Check**: Plan-Snippets `<MCEditor frage={...} onUpdate={...}>` waren Fiktion. Echte Editoren haben destrukturierte Props (kein `frage`). Master-Direct-Audit (Lesen der Datei) vor Subagent-Dispatch hat Designed Around-Trip vermieden.
+2. **`@testing-library/react` resolve-Problem**: Tests für shared-Komponenten MÜSSEN in `ExamLab/src/tests/` (nicht packages/shared) — analog zu `AntwortZeile.test.tsx` (S156-Lehre bestätigt).
+3. **Pragmatic-Hot-Fix vs Subagent-Round-Trip** (S155-Lehre angewandt): M-2 Lückentext-Regex und Phase-2-Doppel-Hotfix als Master-Direct-Edit, nicht als neue Subagent-Sessions — bei <30-Zeilen-Edits schneller.
+4. **Plan-Phase-Aufteilung**: Subagent-pro-Phase statt -pro-Task ist effizienter wenn Tasks mechanisch gleich sind (Phase 1 TDD-Validatoren, Phase 3 Editor-Outlines). Subagent-pro-Komponente nur bei strukturell unterschiedlichen Komponenten (Phase 2 Dialogs).
+5. **Spec/Code-Quality-Review-Skipping bei Phase 3**: Implementer-Report war präzise + Tests verifiziert. Skip war pragmatisch (Phase 3 ist sehr mechanisch). Bei Browser-E2E in Phase 13 wird's evaluiert.
+
+### User-Tasks vor S158
+
+1. **Task 0.2 Tastatur-Spike erledigen** (5-10 Min):
+   - `cd ExamLab && npm run dev`
+   - Login als SuS (`wr.test@stud.gymhofwil.ch`), „Einrichtungsprüfung" starten
+   - Pro Editor-Frage (Freitext/Lückentext/Formel/Code) DevTools-Console:
+     ```js
+     const el = document.activeElement
+     console.log({tag: el.tagName, ce: el.isContentEditable, type: el.type, parent: el.closest('[data-no-enter-submit]')?.tagName})
+     ```
+   - Outputs in Plan-Datei `docs/superpowers/plans/2026-04-28-bundle-h-editor-ux-feinschliff.md` Block „Spike-Resultate Tastatur" am Ende eintragen.
+
+2. **`APPS_SCRIPT_URL` + `MIGRATION_EMAIL` env-Variablen vorbereiten** (für Task 0.6 Audit-Run, blockt Phase 9 nicht hart aber informational).
+
+3. **S158 starten** mit „weiter mit Bundle H Phase 5" oder ähnlich.
+
+### Nicht aufgeschoben:
+- Code ist auf `feature/editor-ux-feinschliff-bundle-h` (lokal + origin synchron)
+- Branch-Cleanup-Note: NICHT mergen bevor Phase 13 E2E erfolgt
+- main-Branch unangetastet
+
+---
+
+### Vorheriger Stand (S156, 28.04.2026) — Bundle H Spec + Plan freigegeben, Implementation offen
 
 **Was die Session machte:** Reine Brainstorming + Plan-Session. Kein Code-Change. Spec rev3 (3 Reviewer-Iterationen) + Plan rev2 (2 Reviewer-Iterationen) auf `main` committed und gepusht. Implementation für nächste Session reserviert.
 
