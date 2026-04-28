@@ -6,6 +6,7 @@ import type { Frage, FrageTyp } from '../../types/ueben/fragen'
 import type { Antwort } from '../../types/antworten'
 import { normalizeAntwort } from '../normalizeAntwort'
 import { istPunktInPolygon } from '../zonen/polygon'
+import { normalisiereDragDropBild, normalisiereDragDropAntwort } from './fragetypNormalizer'
 
 /**
  * Fragetypen, die nicht automatisch korrigiert werden können
@@ -222,13 +223,17 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
 
     case 'dragdrop_bild': {
       if (a.typ !== 'dragdrop_bild') return false
-      const zielzonen = Array.isArray(frage.zielzonen) ? frage.zielzonen : []
-      const labels = Array.isArray(frage.labels) ? frage.labels : []
-      const zuordnungen = a.zuordnungen ?? {}
-      return zielzonen.length > 0 && zielzonen.every(z =>
-        zuordnungen[z.korrektesLabel] === z.id ||
-        labels.some(l => l === z.korrektesLabel && zuordnungen[l] === z.id)
-      )
+      const f = normalisiereDragDropBild(frage)
+      const norm = normalisiereDragDropAntwort(a, f)
+      const labelMap = new Map(f.labels.map(l => [l.id, l]))
+      return f.zielzonen.length > 0 && f.zielzonen.every(z => {
+        const platzierteTexte = Object.entries(norm.zuordnungen)
+          .filter(([, zid]) => zid === z.id)
+          .map(([lid]) => (labelMap.get(lid)?.text ?? '').trim().toLowerCase())
+          .filter(Boolean)
+        const sollSet = new Set(z.korrekteLabels.map(s => s.trim().toLowerCase()))
+        return platzierteTexte.some(t => sollSet.has(t))
+      })
     }
 
     // Selbstbewertete Typen
