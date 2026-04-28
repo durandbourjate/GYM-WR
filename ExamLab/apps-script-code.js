@@ -2203,7 +2203,7 @@ var LOESUNGS_FELDER_ = {
     { feld: 'bilanzEintraege', subFelder: ['korrekt'] },
     { feld: 'aufgaben', subFelder: ['erwarteteAntworten', 'erklaerung'] },
     { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung'] },
-    { feld: 'zielzonen', subFelder: ['korrektesLabel', 'korrekteLabels', 'erklaerung'] },
+    { feld: 'zielzonen', subFelder: ['korrekteLabels', 'erklaerung'] },
     { feld: 'bereiche', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
     { feld: 'hotspots', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
     // BilanzER: kontenMitSaldi[].erklaerung (id = kontonummer). saldo selbst
@@ -2668,8 +2668,20 @@ function pruefeAntwortServer_(frage, antwort) {
       var labels = Array.isArray(frage.labels) ? frage.labels : [];
       var zud = a.zuordnungen || {};
       return zielzonen.length > 0 && zielzonen.every(function(z) {
-        if (zud[z.korrektesLabel] === z.id) return true;
-        return labels.some(function(l) { return l === z.korrektesLabel && zud[l] === z.id; });
+        var korrekteLabels = Array.isArray(z.korrekteLabels) ? z.korrekteLabels : [];
+        if (korrekteLabels.length === 0) return false;
+        // Match: irgendein Label-Token in dieser Zone, dessen text einem korrekteLabels-Eintrag entspricht.
+        // Antwort-Keys sind id-keyed (Bundle J Phase 3) ODER text-keyed (Pre-Migration-Fallback).
+        for (var li = 0; li < labels.length; li++) {
+          var l = labels[li];
+          var lid = (l && typeof l === 'object') ? l.id : l;
+          var ltext = (l && typeof l === 'object') ? l.text : l;
+          if (typeof ltext !== 'string') continue;
+          if (zud[lid] === z.id && korrekteLabels.indexOf(ltext) >= 0) return true;
+          // Pre-Migration-Antwort-Format (text-keyed): nur falls keine id-keyed Antwort gefunden
+          if (typeof l === 'string' && zud[l] === z.id && korrekteLabels.indexOf(l) >= 0) return true;
+        }
+        return false;
       });
     }
 
@@ -8215,18 +8227,14 @@ function migriereFachbereich_() {
 // === EINMALIG: Reparatur Einrichtungsprüfung (fehlende typDaten) ===
 // Nach Ausführung kann diese Funktion gelöscht werden.
 function repariereEinrichtungsFragen() {
-  // Bundle J: DragDrop-Korrektur läuft nur im Frontend (autoKorrektur.ts).
-  // Backend speichert nur die ID-keyed Antworten (zuordnungen). Migration des
-  // Antwort-Schemas durch normalisiereDragDropAntwort am Read-Eintrittspunkt.
-  // Demo-Frage `einr-dd-kontinente` bleibt im Legacy-Format (korrektesLabel +
-  // string[]-labels) — Frontend-Normalizer hebt sie zur Laufzeit. Cleanup-Bundle
-  // konvertiert sie aufs neue Format.
+  // DragDrop-Korrektur läuft im Frontend (autoKorrektur.ts) gegen das neue
+  // Multi-Label-Datenmodell. Backend speichert id-keyed Antworten (zuordnungen).
   var reparaturen = {
     'einr-sort-planeten': { elemente: ['Merkur','Venus','Erde','Mars','Jupiter','Saturn','Uranus','Neptun'], teilpunkte: true },
     'einr-hs-europa': { bildUrl: './demo-bilder/europa-karte.svg', bereiche: [{ id: 'schweiz', form: 'rechteck', punkte: [{x:45,y:43},{x:51,y:43},{x:51,y:48},{x:45,y:48}], label: 'Schweiz', punktzahl: 2 }], mehrfachauswahl: false },
     'einr-bb-zelle': { bildUrl: './demo-bilder/tierzelle.svg', beschriftungen: [{ id: '1', position: { x: 50, y: 50 }, korrekt: ['Zellkern','Nukleus','Nucleus'] }, { id: '2', position: { x: 25, y: 30 }, korrekt: ['Zellmembran','Membran'] }, { id: '3', position: { x: 62, y: 55 }, korrekt: ['Mitochondrium','Mitochondrien'] }] },
     'einr-audio-vorstellen': { maxDauerSekunden: 60 },
-    'einr-dd-kontinente': { bildUrl: './demo-bilder/weltkarte.svg', zielzonen: [{ id: '1', form: 'rechteck', punkte: [{x:12,y:35},{x:32,y:35},{x:32,y:60},{x:12,y:60}], korrektesLabel: 'Nordamerika' }, { id: '2', form: 'rechteck', punkte: [{x:45,y:25},{x:60,y:25},{x:60,y:55},{x:45,y:55}], korrektesLabel: 'Europa' }, { id: '3', form: 'rechteck', punkte: [{x:70,y:35},{x:90,y:35},{x:90,y:65},{x:70,y:65}], korrektesLabel: 'Asien' }, { id: '4', form: 'rechteck', punkte: [{x:20,y:65},{x:35,y:65},{x:35,y:85},{x:20,y:85}], korrektesLabel: 'Südamerika' }], labels: ['Nordamerika','Europa','Asien','Südamerika','Afrika','Australien'] },
+    'einr-dd-kontinente': { bildUrl: './demo-bilder/weltkarte.svg', zielzonen: [{ id: '1', form: 'rechteck', punkte: [{x:12,y:35},{x:32,y:35},{x:32,y:60},{x:12,y:60}], korrekteLabels: ['Nordamerika'] }, { id: '2', form: 'rechteck', punkte: [{x:45,y:25},{x:60,y:25},{x:60,y:55},{x:45,y:55}], korrekteLabels: ['Europa'] }, { id: '3', form: 'rechteck', punkte: [{x:70,y:35},{x:90,y:35},{x:90,y:65},{x:70,y:65}], korrekteLabels: ['Asien'] }, { id: '4', form: 'rechteck', punkte: [{x:20,y:65},{x:35,y:65},{x:35,y:85},{x:20,y:85}], korrekteLabels: ['Südamerika'] }], labels: [{id:'kont-na',text:'Nordamerika'},{id:'kont-eu',text:'Europa'},{id:'kont-as',text:'Asien'},{id:'kont-sa',text:'Südamerika'},{id:'kont-af',text:'Afrika'},{id:'kont-au',text:'Australien'}] },
     'einr-code-python': { sprache: 'python', starterCode: 'def ist_primzahl(n):\n    # Ihre Lösung hier\n    pass' },
     'einr-formel-pythagoras': { korrekteFormel: 'a^2 + b^2 = c^2', vergleichsModus: 'exakt' }
   };
