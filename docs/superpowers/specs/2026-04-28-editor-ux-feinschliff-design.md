@@ -2,7 +2,7 @@
 
 > Bundle H: Editor-Vereinheitlichung (Violett-System), Fragetyp-spezifische Cleanups, SuS-Tastaturnavigation, Schülercode-UI-Ausblendung
 > Datum: 2026-04-28
-> Status: In Review (rev2 nach Reviewer-Findings)
+> Status: In Review (rev3 nach Reviewer-Findings)
 > Vorgänger: S155 Bundle G.f.2 (Skeleton-Pattern, Merge `623536b`)
 
 ---
@@ -99,8 +99,8 @@ Hintergrund: Strikt-Block birgt Datenverlust-Risiko (Tab-Wechsel = weg) wenn die
 | Freitext | Frage-Text | Musterlösung, Bewertungsraster | — |
 | Berechnung | Frage-Text, Korrekte Antwort | Toleranz, Einheit, Erklärung | — |
 | FiBu (Buchungssatz / T-Konto / BilanzER / Kontenbestimmung) | Frage-Text, Lösungs-Daten vollständig | Erklärung | — |
-| Visualisierung | Frage-Text, Konfig-Daten | Erklärung | — |
-| Aufgabengruppe | Frage-Text, ≥1 Teilaufgabe; **rekursiv:** alle Teilaufgaben müssen ihre eigenen Pflichten erfüllen | Punkte-Verteilung | — |
+| Visualisierung | Frage-Text + fragetyp-spezifischer Sub-Validator (Plan-Task: konkrete Pflichtfelder aus `VisualisierungFrage`-Type ableiten — vermutlich `config.title`, `config.dataPoints` o.ä.) | Erklärung | — |
+| Aufgabengruppe | Frage-Text, ≥1 Teilaufgabe; **rekursiv:** alle Teilaufgaben müssen ihre eigenen Pflichten erfüllen. **Tiefen-Limit: max. 3 Verschachtelungs-Ebenen** (Performance + UX); tiefere Strukturen werden im Helper als nicht-validiert behandelt + Console-Warning | Punkte-Verteilung | — |
 | PDF-Annotation | Frage-Text, PDF-URL | Punkte | — |
 | Code | Frage-Text, Sprache | Musterlösung, Test-Cases | — |
 | Formel | Frage-Text, Korrekte Formel | Toleranz, Erklärung | — |
@@ -142,14 +142,16 @@ export interface ValidationResult {
 export function validierePflichtfelder(frage: Frage): ValidationResult
 ```
 
-Editoren konsumieren das Result, mappen `felderStatus[feldKey]` auf die Outline-Klassen. `validierePflichtfelder` läuft auch in `bereinigeFrageBeimSpeichern` und setzt `pruefungstauglich=false` wenn `empfohlenErfuellt=false`. Wenn `pflichtErfuellt=false`: Bestätigungsdialog mit Klartext-Liste der Pflicht-leer-Felder; nach User-Bestätigung wird trotzdem gespeichert (mit `pruefungstauglich=false`).
+Editoren konsumieren das Result, mappen `felderStatus[feldKey]` auf die Outline-Klassen. `validierePflichtfelder` läuft im zentralen Save-Path-Hook und setzt `pruefungstauglich=false` wenn `empfohlenErfuellt=false`. Wenn `pflichtErfuellt=false`: Bestätigungsdialog mit Klartext-Liste der Pflicht-leer-Felder; nach User-Bestätigung wird trotzdem gespeichert (mit `pruefungstauglich=false`).
+
+> **Annahme zu prüfen in Plan-Phase:** Spec geht von einem zentralen Save-Path-Hook aus (vermutlich `SharedFragenEditor::handleSpeichern` oder `bereinigeFrageBeimSpeichern`). Falls keine solche Funktion existiert oder mehrere parallele Save-Pfade vorhanden sind: Plan-Task „zentralen Save-Path-Hook im Editor finden bzw. anlegen" — sonst greift Validation nicht überall.
 
 ### Defensiv-Verhalten (Pflicht aus code-quality.md S118)
 
 `validierePflichtfelder` ist defensiv gegen Backend-Inkonsistenzen:
 
 - Null/undefined/non-Array auf erwartet-Array-Feldern → Feld-Status `'ok'` (kein false-positive Block), Console-Warning
-- Unbekannter `frage.typ` → `pflichtErfuellt=true, empfohlenErfuellt=true` (Default-Branch im Switch)
+- **Unbekannter `frage.typ` (z.B. Tippo wie `'mcc'`)** → `pflichtErfuellt=true, empfohlenErfuellt=false` (Default-Branch im Switch). Begründung: speicherbar (kein Datenverlust), aber automatisch `pruefungstauglich=false` (defensiv: wir wissen nicht ob Pflichten gefüllt sind). Plus: Console-Warning + Sentry-Log mit dem unbekannten Typ-String, damit Tippos sichtbar werden.
 - Worst-Case: Helper liefert immer ein gültiges `ValidationResult`-Objekt, niemals throw
 
 Begründung: Validation ist Best-Effort über bekannte Felder. Ein Validation-Bug darf NIEMALS dazu führen, dass eine fertige Frage nicht mehr speicherbar ist (Save-Block-Datenverlust-Klasse). Tests decken die Defensiv-Pfade explizit ab (siehe Test-Strategie).
@@ -182,7 +184,7 @@ grep -rn "'audio'\|\"audio\"\|typ: 'audio'\|typ === 'audio'" \
 Alle Stellen, die Audio in einer Liste oder Conditional führen, werden inventarisiert. Bekannte Kandidaten ausser `FrageTypAuswahl`:
 
 - `KIAssistentPanel.tsx` / `KITypButtons.tsx` — Type-Vorschläge der KI
-- Apps-Script `klassifiziereFrage` — KI-Klassifikation: liefert das Backend `typ='audio'`?
+- Apps-Script `klassifiziereFrageEndpoint` (Bundle KI-Kalibrierung S130, siehe Memory) — liefert das Backend `typ='audio'` als Vorschlag?
 - `FrageTypeRegistry` o.ä. — zentrale Registry für Typ-Properties
 - Tests / Mocks
 
@@ -230,9 +232,9 @@ const istTextarea = (el: EventTarget | null): boolean => {
 - Freitext + Berechnung — Textarea/Input, Cmd+Enter zum Prüfen.
 - Audio — bleibt Mausklick (deaktiviert für SuS sowieso).
 
-**Plan-Vorbedingung — Tastatur-Spike (5 Min):**
+**Plan-Phase-Eintrittsbedingung — Tastatur-Spike (5 Min):**
 
-Vor der Plan-Phase wird in DevTools für jeden der 4 Spezial-Editoren geprüft, ob `el.isContentEditable` true liefert oder das Element als HTMLInputElement/Textarea erkannt wird:
+Der writing-plans-Skill beginnt mit dem Spike als **Task 0** und blockiert weitere Plan-Tasks, bis er durchgelaufen ist. Spike-Resultate fliessen als bekannte Fakten in den Plan-Task „Tastatur-Handler" ein. In DevTools wird für jeden der 4 Spezial-Editoren geprüft, ob `el.isContentEditable` true liefert oder das Element als HTMLInputElement/Textarea erkannt wird:
 
 | Editor | Erwartung | Wenn anders |
 |---|---|---|
@@ -326,7 +328,14 @@ const istNonSubmittableElement = (el: EventTarget | null): boolean => {
 
 - Pro Zone weiter ein einzelnes `korrektesLabel`-Input
 - Pool-Liste wie heute (alle Labels inkl. Distraktoren, kommagetrennt)
-- **Neu — Doppelte-Label-Warnung:** Wenn der LP zwei Zonen mit identischem `korrektesLabel` setzt, zeigt der Editor eine dezente Warn-Markierung: „Achtung: Dieses Label kommt in 2 Zonen vor. Aktuell wird nur eine korrekt ausgewertet — Multi-Zone-Akzeptanz folgt in einem späteren Bundle." (Bestand bleibt funktional wie heute, der LP wird auf den Korrekturen-Bug-Fall hingewiesen.)
+- **Neu — Doppelte-Label aktive Verhinderung beim Speichern:** Wenn der LP zwei Zonen mit identischem `korrektesLabel` gesetzt hat, zeigt der Editor sofort einen Violett-Outline auf den betroffenen Zonen + eine Warn-Markierung. **Beim Speichern** wird ein Bestätigungsdialog erzwungen (analog zur Pflichtfeld-Logik in Sektion 1):
+
+  > „Diese Frage hat **N Zonen mit identischem korrektem Label** ({Liste}). Im Übungs-/Prüfungs-Modus wird dadurch immer eine dieser Zonen falsch ausgewertet, weil der Korrektur-Algorithmus pro Label-String nur eine Zone prüft. Die Multi-Zone-Akzeptanz wird in einem späteren Bundle nachgereicht.
+  >
+  > Trotzdem speichern (nicht prüfungstauglich)?" — `[Speichern (nicht prüfungstauglich)] [Abbrechen]`
+
+  Wenn der User „Speichern" wählt: Frage wird gespeichert mit `pruefungstauglich=false`. Default-Button im Dialog ist `[Abbrechen]` (User muss aktiv Speichern wählen). Konsistent zum Pflichtfeld-Dialog-Pattern und zur S130-Lehre, dass Klick-Müdigkeit ein realer Risiko-Pfad ist.
+
 - **Pool-Eingabe:** wenn der LP denselben String 2× im Pool eingibt, wird der zweite ignoriert + Warnung „Doppelter Eintrag entfernt".
 
 **SuS-Anzeige im Pool:**
@@ -475,7 +484,8 @@ Nicht nötig — keine Backend-Änderungen.
 3. **Schülercode-Login UI-Removal:** Sollte ein SuS sich bisher nur per Code angemeldet haben (kein Google-Account hinterlegt), wäre er ausgesperrt. **Mitigation:** User hat bestätigt, dass alle SuS Google-Accounts haben. Falls Edge-Case auftaucht: Rollback per Git-Revert.
 4. **Pool-Dedupe ändert SuS-Wahrnehmung:** Heute zeigt der Pool jedes Label, auch versehentliche Doppelte. Neu wird dedupliziert. **Mitigation:** Audit-Skript `zaehleDuplizierteDragDropLabels.mjs` zählt betroffene Fragen vor Merge. LP wird via Editor-Warnung auf doppelte Labels hingewiesen.
 5. **Validation-Helper als zentrale Stelle:** Wenn die Definition welche Felder „Pflicht" vs „Empfohlen" sind, sich später ändert, muss die Helper-Tabelle nachgezogen werden. **Mitigation:** Tabelle in Punkt 1 + Test-Cases pro Fragetyp halten die Definition stabil. Defensiv-Verhalten (Sektion 1) garantiert: Bug im Helper kann NIE zu Save-Block werden.
-6. **Multi-Zone-Korrektur-Bug bleibt vorerst bestehen:** Wenn ein LP heute zwei Zonen mit identischem `korrektesLabel` setzt, wird eine zwingend falsch ausgewertet. Bundle H zeigt eine Warnung, behebt den Bug aber nicht. **Mitigation:** Doppelte-Label-Warnung im Editor + Out-of-Scope-Eintrag dokumentiert den Bundle J-Plan. Audit-Skript `zaehleDuplizierteDragDropZonen.mjs` zählt heute betroffene Bestand-Fragen → User-Decision vor Merge ob ein Quick-Fix-Bundle vorgezogen werden muss.
+6. **Multi-Zone-Korrektur-Bug bleibt vorerst bestehen:** Wenn ein LP heute zwei Zonen mit identischem `korrektesLabel` setzt, wird eine zwingend falsch ausgewertet. Bundle H verhindert das beim Speichern mit Bestätigungsdialog (Sektion 7) + automatischem `pruefungstauglich=false`. **Mitigation:** Aktive Verhinderung beim Speichern statt nur Warnung + Out-of-Scope-Eintrag dokumentiert den Bundle J-Plan. Audit-Skript `zaehleDuplizierteDragDropZonen.mjs` zählt heute betroffene Bestand-Fragen → User-Decision vor Merge ob ein Quick-Fix-Bundle vorgezogen werden muss.
+7. **Klick-Müdigkeit bei Bestätigungsdialogen (neu durch rev2-Pattern):** Sowohl der Pflichtfeld-Dialog als auch der Doppelte-Label-Dialog können von einer LP unter Zeitdruck reflexartig durchgeklickt werden — die Frage wird dann degradiert ohne Awareness. **Mitigation:** (a) Default-Button im Dialog ist `[Abbrechen]`, User muss aktiv „Speichern" wählen; (b) `pruefungstauglich=false`-Badge prominent + klickbar im Editor-Header (siehe Sektion 1 Visual Spec); (c) E2E-Test prüft, dass nach Dialog-Bestätigung der Badge sichtbar ist; (d) Dialog-Button-Label ist explizit „Speichern (nicht prüfungstauglich)" statt nur „Speichern", damit das degraded-Status klar wird.
 
 ---
 
@@ -507,7 +517,7 @@ Nicht nötig — keine Backend-Änderungen.
 
 **Post-Merge-Reminder (für Schülercode-Code-Removal):**
 
-Nach Merge legt die Haupt-Session via `mcp__scheduled-tasks__create_scheduled_task` einen einmaligen Reminder für **2026-06-09** (≈6 Wochen nach Merge) an, der prüft: „Sind in den letzten 6 Wochen SuS-Anfragen wegen fehlendem Code-Login gekommen? Wenn nein: Code-Removal-PR öffnen." So bleibt der Removal nicht in der Memory hängen sondern wird aktiv getriggert.
+Der Plan muss als **letzten Task vor `git push origin main`** (gleicher Schritt wie HANDOFF.md-Update) explizit aufnehmen: „Reminder anlegen via `mcp__scheduled-tasks__create_scheduled_task` mit Datum 2026-06-09 und Prompt: ‚Sind in den letzten 6 Wochen SuS-Anfragen wegen fehlendem Code-Login gekommen? Wenn nein: Code-Removal-PR öffnen — siehe Bundle H Sektion 9.'" — Der Plan-Task ist Pflicht, damit der Reminder nicht in der Memory hängen bleibt sondern aktiv getriggert wird.
 
 **Folge-Sessions:**
 
@@ -542,5 +552,20 @@ Reviewer-Findings adressiert:
 - **Issue 11 (Minor):** `toAssetUrl`-Invariante in Sektion 5 + E2E-Test-Pfad.
 - **Issue 12 (Minor):** Plan-Schritt 1 Audio-Sweep über ganzes Projekt + KI-Klassifikation-Backend prüfen.
 - **Issue 13 (Minor):** Z-Order der Outline-Klassen in Sektion 1 Visual Spec.
+
+Nicht adressiert (bewusst): keine.
+
+### rev3 (2026-04-28, nach 2. Reviewer-Iteration)
+
+Reviewer-rev2-Findings adressiert:
+
+- **Issue A (Major):** Sektion 7 — Doppelte-Label-Setzung wird beim Speichern via Bestätigungsdialog aktiv verhindert (analog Pflichtfeld-Pattern), automatisch `pruefungstauglich=false`, Default-Button `[Abbrechen]`. Risiko 6 entsprechend angepasst.
+- **Issue B (Minor):** Rollout — Post-Merge-Reminder als Pflicht-Plan-Task vor `git push origin main` formuliert. Wandert in writing-plans-Verantwortung.
+- **Issue C (Minor):** Sektion 1 Defensiv-Verhalten — Default-Branch für unbekannten `frage.typ` konservativer: `pflichtErfuellt=true, empfohlenErfuellt=false` (speicherbar, aber `pruefungstauglich=false`) + Sentry-Log.
+- **Issue D (Minor):** Sektion 3 Tastatur-Spike als harte Plan-Phase-Eintrittsbedingung (Task 0, blockiert weitere Plan-Tasks).
+- **Issue E (Minor, neu):** Risiko 7 — Klick-Müdigkeit bei Bestätigungsdialogen. Mitigation: Default-Abbrechen, prominent `pruefungstauglich=false`-Badge, expliziter Button-Label „Speichern (nicht prüfungstauglich)".
+- **Issue F (Minor):** Sektion 1 — `bereinigeFrageBeimSpeichern` als Plan-Phase-Annahme markiert; Plan-Task fallback falls Funktion nicht existiert.
+- **Issue G (Minor):** Sektion 2 — KI-Klassifikations-Backend explizit referenziert (`klassifiziereFrageEndpoint`, S130 KI-Kalibrierung).
+- **Issue H (Minor):** Pflichtfeld-Tabelle — Visualisierung präzisiert (Sub-Validator als Plan-Task), Aufgabengruppe Tiefen-Limit max. 3 Ebenen.
 
 Nicht adressiert (bewusst): keine.
