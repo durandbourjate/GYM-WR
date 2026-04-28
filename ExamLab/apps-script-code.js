@@ -8215,6 +8215,12 @@ function migriereFachbereich_() {
 // === EINMALIG: Reparatur Einrichtungsprüfung (fehlende typDaten) ===
 // Nach Ausführung kann diese Funktion gelöscht werden.
 function repariereEinrichtungsFragen() {
+  // Bundle J: DragDrop-Korrektur läuft nur im Frontend (autoKorrektur.ts).
+  // Backend speichert nur die ID-keyed Antworten (zuordnungen). Migration des
+  // Antwort-Schemas durch normalisiereDragDropAntwort am Read-Eintrittspunkt.
+  // Demo-Frage `einr-dd-kontinente` bleibt im Legacy-Format (korrektesLabel +
+  // string[]-labels) — Frontend-Normalizer hebt sie zur Laufzeit. Cleanup-Bundle
+  // konvertiert sie aufs neue Format.
   var reparaturen = {
     'einr-sort-planeten': { elemente: ['Merkur','Venus','Erde','Mars','Jupiter','Saturn','Uranus','Neptun'], teilpunkte: true },
     'einr-hs-europa': { bildUrl: './demo-bilder/europa-karte.svg', bereiche: [{ id: 'schweiz', form: 'rechteck', punkte: [{x:45,y:43},{x:51,y:43},{x:51,y:48},{x:45,y:48}], label: 'Schweiz', punktzahl: 2 }], mehrfachauswahl: false },
