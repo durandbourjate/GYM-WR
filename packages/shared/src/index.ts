@@ -70,3 +70,4 @@ export { loesungsquoteFarbe, loesungsquoteBgFarbe } from './editor/utils/perform
 export { validierePflichtfelder } from './editor/pflichtfeldValidation'
 export type { FeldStatus, ValidationResult } from './editor/pflichtfeldValidation'
 export { default as PflichtfeldDialog } from './editor/components/PflichtfeldDialog'
+export { default as DoppelteLabelDialog } from './editor/components/DoppelteLabelDialog'
