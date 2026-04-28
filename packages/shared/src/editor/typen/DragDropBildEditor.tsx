@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import type { DragDropBildZielzone } from '../../types/fragen'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
@@ -49,7 +49,14 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
   const [labelsText, setLabelsText] = useState((labels ?? []).join(', '))
   const [drag, setDrag] = useState<Drag>(null)
   const [mausPosition, setMausPosition] = useState<{ x: number; y: number } | null>(null)
+  const [poolWarn, setPoolWarn] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!poolWarn) return
+    const t = setTimeout(() => setPoolWarn(null), 3000)
+    return () => clearTimeout(t)
+  }, [poolWarn])
 
   function bildKoordinaten(e: { clientX: number; clientY: number }): { x: number; y: number } | null {
     const container = containerRef.current
@@ -216,8 +223,30 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
 
   const handleLabelsAktualisieren = useCallback((text: string) => {
     setLabelsText(text)
-    setLabels(text.split(',').map(l => l.trim()).filter(Boolean))
+    const eingabe = text.split(',').map(l => l.trim()).filter(Boolean)
+    const seen = new Set<string>()
+    const dedup: string[] = []
+    for (const l of eingabe) {
+      if (seen.has(l)) continue
+      seen.add(l)
+      dedup.push(l)
+    }
+    setLabels(dedup)
+    if (dedup.length < eingabe.length) {
+      setPoolWarn('Doppelte Einträge im Pool wurden entfernt.')
+    }
   }, [setLabels])
+
+  const doppelteZonenLabels = useMemo(() => {
+    const map = new Map<string, number[]>()
+    ;(zielzonen ?? []).forEach((z, i) => {
+      const l = (z.korrektesLabel ?? '').trim()
+      if (!l) return
+      if (!map.has(l)) map.set(l, [])
+      map.get(l)!.push(i + 1)
+    })
+    return [...map.entries()].filter(([, idx]) => idx.length > 1)
+  }, [zielzonen])
 
   function handleMouseMove(e: React.MouseEvent) {
     const p = bildKoordinaten(e)
@@ -342,6 +371,15 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
           <h5 className="text-xs font-medium text-slate-600 dark:text-slate-300">
             Zielzonen ({(zielzonen ?? []).length})
           </h5>
+          {doppelteZonenLabels.length > 0 && (
+            <div role="alert" className="mb-3 p-3 rounded-lg border border-orange-400 bg-orange-50 dark:bg-orange-900/20 dark:border-orange-600 text-sm space-y-1 text-orange-800 dark:text-orange-200">
+              {doppelteZonenLabels.map(([label, zonen]) => (
+                <div key={label}>
+                  ⚠ {zonen.length} Zonen mit identischem Label „{label}" (Zonen {zonen.join(', ')}). Im Übungs-Modus wird eine zwingend falsch ausgewertet.
+                </div>
+              ))}
+            </div>
+          )}
           {(zielzonen ?? []).map((zone, i) => (
             <div
               key={zone.id}
@@ -388,6 +426,11 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
           placeholder="Label 1, Label 2, Distraktor 1, ..."
           className="w-full mt-1 px-3 py-2 text-sm border rounded-lg bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white"
         />
+        {poolWarn && (
+          <div role="status" className="mt-2 p-2 rounded bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200 text-xs">
+            {poolWarn}
+          </div>
+        )}
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
           Muss alle korrekten Labels der Zielzonen enthalten. Zusaetzliche Labels dienen als Distraktoren.
         </p>
