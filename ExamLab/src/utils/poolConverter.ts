@@ -530,6 +530,7 @@ export function konvertierePoolFrage(
     // zones[].{id,x,y,w,h} + labels[].{id,text,zone}
     // -------------------------------------------------------
     case 'dragdrop_bild': {
+      const poolLabels = poolFrage.labels ?? []
       const zielzonen = (poolFrage.zones ?? []).map(zone => ({
         id: zone.id || genId(),
         form: 'rechteck' as const,
@@ -539,10 +540,16 @@ export function konvertierePoolFrage(
           { x: zone.x + zone.w, y: zone.y + zone.h },
           { x: zone.x, y: zone.y + zone.h },
         ],
-        // Finde das erste korrekte Label für diese Zone
-        korrektesLabel: (poolFrage.labels ?? []).find(l => l.zone === zone.id)?.text ?? '',
+        // Bundle J: alle Pool-Labels mit zone-Match landen in korrekteLabels (Multi-Label-Synonyme)
+        korrekteLabels: poolLabels
+          .filter(l => l.zone === zone.id)
+          .map(l => (l.text ?? '').trim())
+          .filter(t => t.length > 0),
       }))
-      const labelTexte = (poolFrage.labels ?? []).map(l => l.text ?? '')
+      const labels = poolLabels.map(l => ({
+        id: l.id ?? genId(),
+        text: l.text ?? '',
+      }))
       const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
       const frage: DragDropBildFrage = {
         ...basis,
@@ -550,7 +557,7 @@ export function konvertierePoolFrage(
         fragetext: poolFrage.q,
         bildUrl,
         zielzonen,
-        labels: labelTexte,
+        labels,
       }
       return frage
     }
