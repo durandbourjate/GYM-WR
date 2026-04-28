@@ -771,6 +771,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setBereiche={props.setHsBereiche}
           mehrfachauswahl={props.hsMehrfachauswahl}
           setMehrfachauswahl={props.setHsMehrfachauswahl}
+          feldStatusBereiche={feldStatus(props.validation, 'bereiche')}
         />
       )}
 
@@ -798,6 +799,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setZielzonen={props.setDdZielzonen}
           labels={props.ddLabels}
           setLabels={props.setDdLabels}
+          feldStatusZielzonen={feldStatus(props.validation, 'zielzonen')}
         />
       )}
 
