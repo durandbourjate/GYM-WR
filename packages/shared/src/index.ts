@@ -72,3 +72,4 @@ export type { FeldStatus, ValidationResult } from './editor/pflichtfeldValidatio
 export { default as PflichtfeldDialog } from './editor/components/PflichtfeldDialog'
 export { default as DoppelteLabelDialog } from './editor/components/DoppelteLabelDialog'
 export { default as PruefungstauglichBadge } from './editor/components/PruefungstauglichBadge'
+export { default as BulkPasteModal } from './editor/components/BulkPasteModal'
