@@ -15,6 +15,7 @@ import { formatFragetext } from '../../../../utils/textFormatierung.tsx'
 import { istBild } from '../../../../utils/mediaUtils.ts'
 import { toAssetUrl } from '../../../../utils/assetUrl.ts'
 import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
+import { normalisiereDragDropBild } from '../../../../utils/ueben/fragetypNormalizer'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 
 interface Props {
@@ -729,7 +730,8 @@ function BildbeschriftungDruck({ frage }: { frage: BildbeschriftungFrage }) {
   )
 }
 
-function DragDropBildDruck({ frage }: { frage: DragDropBildFrage }) {
+function DragDropBildDruck({ frage: frageRaw }: { frage: DragDropBildFrage }) {
+  const frage = normalisiereDragDropBild(frageRaw)
   const zielzonen = frage.zielzonen || []
   const labels = frage.labels || []
   const bildQuelle = ermittleBildQuelle(frage)
@@ -760,8 +762,8 @@ function DragDropBildDruck({ frage }: { frage: DragDropBildFrage }) {
         <p className="text-xs font-medium text-slate-600 print:text-black mb-1">Ordne folgende Begriffe den Zonen (A, B, C...) zu:</p>
         <div className="grid grid-cols-2 gap-1">
           {labels.map((label, i) => (
-            <div key={i} className="flex items-center gap-2 text-sm">
-              <span className="dark:text-white">{label}</span>
+            <div key={label.id ?? i} className="flex items-center gap-2 text-sm">
+              <span className="dark:text-white">{label.text}</span>
               <span className="text-slate-400">→ Zone ___</span>
             </div>
           ))}
