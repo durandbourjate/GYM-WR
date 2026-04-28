@@ -142,6 +142,29 @@ describe('validierePflichtfelder — lueckentext', () => {
     } as any)
     expect(r.pflichtErfuellt).toBe(false)
   })
+  it('akzeptiert {N}-Kurzform (S142)', () => {
+    const r = validierePflichtfelder({
+      id: 'l1',
+      typ: 'lueckentext',
+      fragetext: 'q',
+      textMitLuecken: 'Das ist {1} Test',
+      lueckentextModus: 'freitext',
+      luecken: [{ id: '1', korrekteAntworten: ['x'], caseSensitive: false }],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('falsch-positiv vermieden: { ohne Zahl ist KEIN Platzhalter', () => {
+    const r = validierePflichtfelder({
+      id: 'l1',
+      typ: 'lueckentext',
+      fragetext: 'q',
+      textMitLuecken: 'JSON-Beispiel: { "key": "value" } enthält keine Lücke',
+      lueckentextModus: 'freitext',
+      luecken: [{ id: '1', korrekteAntworten: ['x'], caseSensitive: false }],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+    expect(r.pflichtLeerFelder.some(f => f.includes('Platzhalter'))).toBe(true)
+  })
   it('Dropdown-Modus: alle erfüllt mit korrektem Eintrag', () => {
     const r = validierePflichtfelder({
       id: 'l1',

@@ -116,7 +116,7 @@ function validiereRichtigFalsch(frage: any): ValidationResult {
 function validiereLueckentext(frage: any): ValidationResult {
   const fragetextOk = strNonEmpty(frage.fragetext)
   const text = typeof frage.textMitLuecken === 'string' ? frage.textMitLuecken : ''
-  const platzhalterOk = text.includes('{{') || text.includes('{')
+  const platzhalterOk = /\{\d+\}|\{\{\d+\}\}/.test(text)
   const luecken = Array.isArray(frage.luecken) ? frage.luecken : []
   const modus = frage.lueckentextModus === 'dropdown' ? 'dropdown' : 'freitext'
 
