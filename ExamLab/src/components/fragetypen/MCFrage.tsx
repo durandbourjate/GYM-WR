@@ -4,6 +4,7 @@ import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { AntwortZeile } from '@shared/ui/AntwortZeile'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: MCFrageType
@@ -25,6 +26,10 @@ function MCFrageAufgabe({ frage }: { frage: MCFrageType }) {
 
   const gewaehlte: string[] =
     (antwort as Extract<Antwort, { typ: 'mc' }> | null)?.gewaehlteOptionen ?? []
+
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-transparent'
 
   function handleKlick(optionId: string) {
     if (disabled) return
@@ -67,7 +72,7 @@ function MCFrageAufgabe({ frage }: { frage: MCFrageType }) {
       />
 
       {/* Optionen */}
-      <div className={`flex flex-col gap-2.5 ${!disabled && gewaehlte.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
+      <div data-testid="mc-input-area" className={`flex flex-col gap-2.5 rounded-xl border ${violettOutline} p-1`}>
         {(frage.optionen ?? []).map((option, index) => {
           const istGewaehlt = gewaehlte.includes(option.id)
           const label = String.fromCharCode(65 + index)

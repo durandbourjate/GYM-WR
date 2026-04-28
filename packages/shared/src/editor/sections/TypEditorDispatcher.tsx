@@ -17,6 +17,7 @@ import type {
 } from '../../types/fragen'
 import type { FrageTyp } from '../editorUtils'
 import type { useKIAssistent } from '../useKIAssistent'
+import type { ValidationResult, FeldStatus } from '../pflichtfeldValidation'
 import MCEditor from '../typen/MCEditor'
 import FreitextEditor from '../typen/FreitextEditor'
 import LueckentextEditor from '../typen/LueckentextEditor'
@@ -204,6 +205,13 @@ interface TypEditorDispatcherProps {
   setFormelKorrekteFormel: (v: string) => void
   formelVergleichsModus: 'exakt'
   setFormelVergleichsModus: (v: 'exakt') => void
+
+  /** Pflichtfeld-Validation (Bundle H Phase 3) — wird an MC/RF/Lückentext/Zuordnung weitergereicht */
+  validation?: ValidationResult
+}
+
+function feldStatus(validation: ValidationResult | undefined, key: string): FeldStatus | undefined {
+  return validation?.felderStatus[key]
 }
 
 export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
@@ -233,6 +241,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setMehrfachauswahl={props.setMehrfachauswahl}
             erklaerungSichtbar={props.erklaerungSichtbar}
             setErklaerungSichtbar={props.setErklaerungSichtbar}
+            feldStatusOptionen={feldStatus(props.validation, 'optionen')}
             titelRechts={ki.verfuegbar ? (
               <InlineAktionButton
                 label="Optionen generieren"
@@ -293,6 +302,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setLuecken={props.setLuecken}
             lueckentextModus={props.lueckentextModus}
             setLueckentextModus={props.setLueckentextModus}
+            feldStatusLuecken={feldStatus(props.validation, 'luecken')}
+            feldStatusTextMitLuecken={feldStatus(props.validation, 'textMitLuecken')}
             titelRechts={ki.verfuegbar ? (
               <div className="flex gap-1.5">
                 <InlineAktionButton
@@ -397,6 +408,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           <ZuordnungEditor
             paare={props.paare}
             setPaare={props.setPaare}
+            feldStatusPaare={feldStatus(props.validation, 'paare')}
             titelRechts={ki.verfuegbar ? (
               <div className="flex gap-1.5">
                 <InlineAktionButton
@@ -470,6 +482,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             setAussagen={props.setAussagen}
             erklaerungSichtbar={props.erklaerungSichtbar}
             setErklaerungSichtbar={props.setErklaerungSichtbar}
+            feldStatusAussagen={feldStatus(props.validation, 'aussagen')}
             titelRechts={ki.verfuegbar ? (
               <div className="flex gap-1.5">
                 <InlineAktionButton
@@ -747,6 +760,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setElemente={props.setSortElemente}
           teilpunkte={props.sortTeilpunkte}
           setTeilpunkte={props.setSortTeilpunkte}
+          feldStatusElemente={feldStatus(props.validation, 'elemente')}
         />
       )}
 
@@ -758,6 +772,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setBereiche={props.setHsBereiche}
           mehrfachauswahl={props.hsMehrfachauswahl}
           setMehrfachauswahl={props.setHsMehrfachauswahl}
+          feldStatusBereiche={feldStatus(props.validation, 'bereiche')}
         />
       )}
 
@@ -767,6 +782,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setBildUrl={props.setBildUrl}
           beschriftungen={props.bbBeschriftungen}
           setBeschriftungen={props.setBbBeschriftungen}
+          feldStatusBeschriftungen={feldStatus(props.validation, 'beschriftungen')}
         />
       )}
 
@@ -785,6 +801,7 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
           setZielzonen={props.setDdZielzonen}
           labels={props.ddLabels}
           setLabels={props.setDdLabels}
+          feldStatusZielzonen={feldStatus(props.validation, 'zielzonen')}
         />
       )}
 

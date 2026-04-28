@@ -8,6 +8,11 @@ import { useFocusTrap } from './hooks/useFocusTrap'
 import { ResizableSidebar } from '../ui/ResizableSidebar'
 import { defaultFachbereich } from './fachUtils'
 import { validiereFrage } from './fragenValidierung'
+import { validierePflichtfelder } from './pflichtfeldValidation'
+import { buildFragePreview } from './buildFragePreview'
+import PflichtfeldDialog from './components/PflichtfeldDialog'
+import DoppelteLabelDialog from './components/DoppelteLabelDialog'
+import PruefungstauglichBadge from './components/PruefungstauglichBadge'
 import { erstelleFrageObjekt } from './fragenFactory'
 import type { FrageBasis, TypSpezifischeDaten } from './fragenFactory'
 import type {
@@ -622,6 +627,60 @@ export default function SharedFragenEditor({
     setHeaderH(h)
   }, [])
 
+  // Bundle H Phase 2 — Pflichtfeld + Doppellabel-Dialog State
+  const [pflichtDialogOpen, setPflichtDialogOpen] = useState(false)
+  const [doppelDialogOpen, setDoppelDialogOpen] = useState(false)
+
+  // Minimal-Preview der aktuellen Frage für Validator (nur typ-spezifische Felder relevant).
+  // Switch ausgelagert nach buildFragePreview.ts (DRY + LOC-Reduktion).
+  const aktuelleFrage = useMemo(() => buildFragePreview({
+    id: frage?.id,
+    typ, fragetext,
+    optionen, mehrfachauswahl,
+    musterlosung, bewertungsraster,
+    textMitLuecken, luecken, lueckentextModus,
+    paare, aussagen, ergebnisse,
+    geschaeftsfall, buchungen,
+    tkAufgabentext, tkKonten,
+    kbAufgabentext, kbAufgaben,
+    biAufgabentext, biKontenMitSaldi,
+    agKontext, agTeilaufgaben,
+    canvasConfig,
+    pdfDriveFileId, pdfUrl, pdfBase64, pdfErlaubteWerkzeuge,
+    sortElemente,
+    bildUrl, hsBereiche, bbBeschriftungen, ddZielzonen, ddLabels,
+    codeSprache, codeMusterLoesungCode,
+    formelKorrekteFormel,
+  }), [
+    typ, fragetext, optionen, mehrfachauswahl, musterlosung, bewertungsraster,
+    textMitLuecken, luecken, lueckentextModus, paare, aussagen, ergebnisse,
+    geschaeftsfall, buchungen, tkAufgabentext, tkKonten, kbAufgabentext, kbAufgaben,
+    biAufgabentext, biKontenMitSaldi, agKontext, agTeilaufgaben, canvasConfig,
+    pdfDriveFileId, pdfUrl, pdfBase64, pdfErlaubteWerkzeuge, sortElemente,
+    bildUrl, hsBereiche, bbBeschriftungen, ddZielzonen, ddLabels,
+    codeSprache, codeMusterLoesungCode, formelKorrekteFormel, frage?.id,
+  ])
+
+  const validation = useMemo(
+    () => validierePflichtfelder(aktuelleFrage),
+    [aktuelleFrage],
+  )
+
+  // DnD-Bild: doppelte Zone-Labels detektieren (Korrektur-Bug-Marker)
+  const doppelteLabels = useMemo(() => {
+    if (typ !== 'dragdrop_bild') return []
+    const map = new Map<string, number[]>()
+    ddZielzonen.forEach((z, i) => {
+      const l = (z.korrektesLabel ?? '').trim()
+      if (!l) return
+      if (!map.has(l)) map.set(l, [])
+      map.get(l)!.push(i)
+    })
+    return [...map.entries()]
+      .filter(([, idx]) => idx.length > 1)
+      .map(([label, zonenIndices]) => ({ label, zonenIndices }))
+  }, [typ, ddZielzonen])
+
   async function handleSpeichern(): Promise<void> {
     const errs = validiereFrage({
       typ, thema, fragetext, punkte,
@@ -639,6 +698,20 @@ export default function SharedFragenEditor({
       return
     }
     setFehler([])
+
+    // Bundle H Phase 2 — Doppellabel-Bug VOR Pflichtfeld checken (Korrektur-Bug ist gravierender)
+    if (doppelteLabels.length > 0) {
+      setDoppelDialogOpen(true)
+      return
+    }
+    if (!validation.pflichtErfuellt) {
+      setPflichtDialogOpen(true)
+      return
+    }
+    await speichereJetzt()
+  }
+
+  async function speichereJetzt(): Promise<void> {
     setSpeicherLaeuft(true)
 
     const jetzt = new Date().toISOString()
@@ -694,6 +767,7 @@ export default function SharedFragenEditor({
       geteilt,
       berechtigungen: berechtigungen.length > 0 ? berechtigungen : undefined,
       lernzielIds: lernzielIds.length > 0 ? lernzielIds : undefined,
+      pruefungstauglich: validation.pflichtErfuellt && validation.empfohlenErfuellt,
     }
 
     // Typ-spezifische Daten zusammenstellen
@@ -771,9 +845,15 @@ export default function SharedFragenEditor({
       <div ref={panelRef} className="flex flex-col h-full">
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            {frage ? 'Frage bearbeiten' : 'Neue Frage erstellen'}
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+              {frage ? 'Frage bearbeiten' : 'Neue Frage erstellen'}
+            </h2>
+            <PruefungstauglichBadge
+              pruefungstauglich={validation.pflichtErfuellt && validation.empfohlenErfuellt}
+              empfohlenLeerFelder={validation.empfohlenLeerFelder}
+            />
+          </div>
           <div className="flex items-center gap-2">
             {/* Navigation zwischen Fragen (nur Fragensammlung — optional) */}
             {(onVorherigeFrage || onNaechsteFrage) && (
@@ -906,6 +986,7 @@ export default function SharedFragenEditor({
             fachbereich={fachbereich}
             thema={thema}
             ki={ki}
+            validation={validation}
             PDFEditorComponent={PDFEditorComponent}
             laenge={laenge} setLaenge={setLaenge}
             placeholder={placeholder} setPlaceholder={setPlaceholder}
@@ -1097,6 +1178,32 @@ export default function SharedFragenEditor({
         setRueckSyncOffen(false)
       },
     })}
+
+    {/* Bundle H Phase 2 — Pflichtfeld-Confirm-Dialog */}
+    <PflichtfeldDialog
+      open={pflichtDialogOpen}
+      pflichtLeerFelder={validation.pflichtLeerFelder}
+      onAbbrechen={() => setPflichtDialogOpen(false)}
+      onSpeichern={async () => {
+        setPflichtDialogOpen(false)
+        await speichereJetzt()
+      }}
+    />
+
+    {/* Bundle H Phase 2 — Doppellabel-Confirm-Dialog (DnD-Bild) */}
+    <DoppelteLabelDialog
+      open={doppelDialogOpen}
+      doppelteLabels={doppelteLabels}
+      onAbbrechen={() => setDoppelDialogOpen(false)}
+      onSpeichern={async () => {
+        setDoppelDialogOpen(false)
+        if (!validation.pflichtErfuellt) {
+          setPflichtDialogOpen(true)
+          return
+        }
+        await speichereJetzt()
+      }}
+    />
     </>
   )
 }

@@ -6,6 +6,7 @@ import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { ZoneLabel } from '@shared/ui/ZoneLabel'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: LueckentextFrageType
@@ -40,6 +41,10 @@ function LueckentextAufgabe({ frage }: { frage: LueckentextFrageType }) {
 
   const eintraege: Record<string, string> =
     antwort?.typ === 'lueckentext' ? antwort.eintraege : {}
+
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-slate-200 dark:border-slate-700'
 
   // Gemischte Dropdown-Optionen einmalig pro Frage berechnen (key = luecke.id)
   // Nur befüllen wenn lueckentextModus === 'dropdown' (ab S142). Fallback: modus=dropdown
@@ -100,7 +105,7 @@ function LueckentextAufgabe({ frage }: { frage: LueckentextFrageType }) {
       )}
 
       {/* Text mit Inline-Inputs */}
-      <div className="text-base leading-loose text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
+      <div data-testid="lueckentext-input-area" className={`text-base leading-loose text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 p-5 rounded-xl border ${violettOutline}`}>
         {teile.map((teil, i) => {
           const match = teil.match(/^\{\{?(\d+)\}\}?$/)
           if (match) {

@@ -1,5 +1,6 @@
 import type { MCOption } from '../../types/fragen'
 import { Abschnitt } from '../components/EditorBausteine'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface MCEditorProps {
   optionen: MCOption[]
@@ -11,9 +12,17 @@ interface MCEditorProps {
   /** Erklärungen den SuS in der Korrektur-Einsicht zeigen */
   erklaerungSichtbar?: boolean
   setErklaerungSichtbar?: (v: boolean) => void
+  /** Pflichtfeld-Status der Optionen-Section (Bundle H Phase 3) */
+  feldStatusOptionen?: FeldStatus
 }
 
-export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMehrfachauswahl, titelRechts, erklaerungSichtbar, setErklaerungSichtbar }: MCEditorProps) {
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
+}
+
+export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMehrfachauswahl, titelRechts, erklaerungSichtbar, setErklaerungSichtbar, feldStatusOptionen }: MCEditorProps) {
   function updateOption(index: number, partial: Partial<MCOption>): void {
     const neu = [...optionen]
     neu[index] = { ...neu[index], ...partial }
@@ -44,7 +53,7 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
         </label>
       </div>
 
-      <div className="space-y-2">
+      <div data-testid="mc-optionen-section" className={`space-y-2 ${pflichtCls(feldStatusOptionen)}`}>
         {optionen.map((opt, i) => (
           <div key={opt.id} className="flex items-start gap-2">
             {/* Korrekt-Toggle */}

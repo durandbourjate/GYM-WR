@@ -3,6 +3,7 @@ import type { HotspotBereich } from '../../types/fragen'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
 import ZonenOverlay from '../components/ZonenOverlay'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface Props {
   bildUrl: string
@@ -11,6 +12,14 @@ interface Props {
   setBereiche: React.Dispatch<React.SetStateAction<HotspotBereich[]>>
   mehrfachauswahl: boolean
   setMehrfachauswahl: (v: boolean) => void
+  /** Pflichtfeld-Status der Bereiche-Section (Bundle H Phase 6) */
+  feldStatusBereiche?: FeldStatus
+}
+
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
 }
 
 type Modus = 'rechteck' | 'polygon'
@@ -39,7 +48,7 @@ function rechteckEckeDrag(punkte: { x: number; y: number }[], punktIndex: number
   return neuePunkte
 }
 
-export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereiche, mehrfachauswahl, setMehrfachauswahl }: Props) {
+export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereiche, mehrfachauswahl, setMehrfachauswahl, feldStatusBereiche }: Props) {
   const [modus, setModus] = useState<Modus>('rechteck')
   const [ersteEcke, setErsteEcke] = useState<{ x: number; y: number } | null>(null)
   const [polyPunkte, setPolyPunkte] = useState<{ x: number; y: number }[]>([])
@@ -349,7 +358,7 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
       )}
 
       {(bereiche ?? []).length > 0 && (
-        <div>
+        <div data-testid="hotspot-bereiche-section" className={pflichtCls(feldStatusBereiche)}>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
             Definierte Bereiche ({(bereiche ?? []).length})
           </p>
@@ -387,9 +396,6 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
                     title="Punkte"
                   />
                   <span className="text-xs text-slate-400">Pkt</span>
-                  <span className="text-xs text-slate-400 px-1">
-                    {bereich.form === 'rechteck' ? '□' : '⬡'} {Array.isArray(bereich.punkte) ? bereich.punkte.length : '?'}
-                  </span>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleBereichEntfernen(bereich.id) }}

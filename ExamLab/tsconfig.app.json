@@ -21,7 +21,10 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../packages/shared/src/*"]
+      "@shared/*": ["../packages/shared/src/*"],
+      "@dnd-kit/core": ["./node_modules/@dnd-kit/core"],
+      "@dnd-kit/sortable": ["./node_modules/@dnd-kit/sortable"],
+      "@dnd-kit/utilities": ["./node_modules/@dnd-kit/utilities"]
     }
   },
   "include": ["src"]

@@ -4,6 +4,7 @@ import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { MusterloesungsBlock } from '@shared/ui/MusterloesungsBlock'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: BerechnungFrageType
@@ -25,6 +26,10 @@ function BerechnungAufgabe({ frage }: { frage: BerechnungFrageType }) {
     antwort?.typ === 'berechnung' ? antwort.ergebnisse : {}
   const rechenweg: string =
     antwort?.typ === 'berechnung' ? antwort.rechenweg ?? '' : ''
+
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-transparent'
 
   function handleErgebnis(ergebnisId: string, wert: string) {
     if (disabled) return
@@ -67,7 +72,7 @@ function BerechnungAufgabe({ frage }: { frage: BerechnungFrageType }) {
       />
 
       {/* Ergebnis-Eingaben */}
-      <div className="flex flex-col gap-3">
+      <div data-testid="berechnung-input-area" className={`flex flex-col gap-3 rounded-xl border ${violettOutline} p-1`}>
         {(frage.ergebnisse ?? []).map((erg) => (
           <div key={erg.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">

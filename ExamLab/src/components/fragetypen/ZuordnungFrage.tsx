@@ -4,6 +4,7 @@ import type { ZuordnungFrage as ZuordnungFrageType } from '../../types/fragen.ts
 import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: ZuordnungFrageType
@@ -23,6 +24,10 @@ function ZuordnungAufgabe({ frage }: { frage: ZuordnungFrageType }) {
 
   const zuordnungen: Record<string, string> =
     antwort?.typ === 'zuordnung' ? antwort.zuordnungen : {}
+
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-transparent'
 
   // Rechte Seite: eindeutige Kategorien ermitteln, dann optional mischen.
   // Dedup ist wichtig für N:1-Zuordnungen (z.B. 6 Behauptungen → 2 Kategorien),
@@ -101,7 +106,7 @@ function ZuordnungAufgabe({ frage }: { frage: ZuordnungFrageType }) {
       />
 
       {/* Zuordnungs-Tabelle */}
-      <div className="flex flex-col gap-3">
+      <div data-testid="zuordnung-input-area" className={`flex flex-col gap-3 rounded-xl border ${violettOutline} p-1`}>
         {linkeElemente.map((links, index) => {
           const aktuelleZuordnung = zuordnungen[links] ?? ''
 

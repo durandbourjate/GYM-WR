@@ -1,5 +1,6 @@
 import type { RichtigFalschFrage } from '../../types/fragen'
 import { Abschnitt } from '../components/EditorBausteine'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface RichtigFalschEditorProps {
   aussagen: RichtigFalschFrage['aussagen']
@@ -9,9 +10,17 @@ interface RichtigFalschEditorProps {
   /** Erklärungen den SuS in der Korrektur-Einsicht zeigen */
   erklaerungSichtbar?: boolean
   setErklaerungSichtbar?: (v: boolean) => void
+  /** Pflichtfeld-Status der Aussagen-Section (Bundle H Phase 3) */
+  feldStatusAussagen?: FeldStatus
 }
 
-export default function RichtigFalschEditor({ aussagen, setAussagen, titelRechts, erklaerungSichtbar, setErklaerungSichtbar }: RichtigFalschEditorProps) {
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
+}
+
+export default function RichtigFalschEditor({ aussagen, setAussagen, titelRechts, erklaerungSichtbar, setErklaerungSichtbar, feldStatusAussagen }: RichtigFalschEditorProps) {
   function updateAussage(index: number, partial: Partial<RichtigFalschFrage['aussagen'][0]>): void {
     const neu = [...aussagen]
     neu[index] = { ...neu[index], ...partial }
@@ -33,7 +42,7 @@ export default function RichtigFalschEditor({ aussagen, setAussagen, titelRechts
       <p className="text-xs text-slate-400 dark:text-slate-500 mb-3">
         Geben Sie die Aussagen ein und markieren Sie, ob sie richtig oder falsch sind.
       </p>
-      <div className="space-y-2">
+      <div data-testid="rf-aussagen-section" className={`space-y-2 ${pflichtCls(feldStatusAussagen)}`}>
         {aussagen.map((a, i) => (
           <div key={a.id} className="flex items-start gap-2">
             {/* Richtig/Falsch Toggle */}

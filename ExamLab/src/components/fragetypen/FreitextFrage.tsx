@@ -11,6 +11,7 @@ import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { MusterloesungsBlock } from '@shared/ui/MusterloesungsBlock'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: FreitextFrageType
@@ -142,6 +143,8 @@ function FreitextAufgabe({ frage }: { frage: FreitextFrageType }) {
   const woerterZuWenig = frage.minWoerter ? wortAnzahl < frage.minWoerter && wortAnzahl > 0 : false
   const woerterZuViele = frage.maxWoerter ? wortAnzahl > frage.maxWoerter : false
 
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -218,12 +221,14 @@ function FreitextAufgabe({ frage }: { frage: FreitextFrageType }) {
 
       {/* Editor — volle Breite, auto-grow, min-height für leichtes Antippen auf iPad */}
       <div
+        data-testid="freitext-input-area"
+        data-no-enter-submit=""
         className={`tiptap-editor w-full border-2 rounded-xl min-h-[120px]
           ${disabled
             ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75'
-            : zeichenAnzahl > 0
-              ? 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
-              : 'border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-900'
+            : violettOutline
+              ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 bg-white dark:bg-slate-900'
+              : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 focus-within:border-slate-500 dark:focus-within:border-slate-400'
           }`}
         spellCheck={rechtschreibpruefungAktiv}
         lang={rechtschreibSprache}

@@ -148,6 +148,7 @@ export default function CodeFrageComponent({ frage }: Props) {
         </label>
         <div
           ref={containerRef}
+          data-no-enter-submit=""
           className={`rounded-lg border-2 overflow-hidden min-h-[200px] ${
             disabled
               ? 'border-slate-200 dark:border-slate-700 opacity-75'

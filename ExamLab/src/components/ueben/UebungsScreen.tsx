@@ -7,6 +7,7 @@ import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import type { Frage } from '../../types/fragen'
 import { bewerteAntwortDetails, istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
+import { alleLueckenGefuellt, anzahlOffeneLuecken } from '../../utils/ueben/lueckentextChecks'
 import type { Selbstbewertung } from '../../types/antworten'
 import QuizHeader from './uebung/QuizHeader'
 import QuizNavigation from './uebung/QuizNavigation'
@@ -16,6 +17,17 @@ import { MusterloesungsBlock } from '@shared/ui/MusterloesungsBlock'
 // C9 Task 25+ (S135): nach „Antwort prüfen" rendert FrageRenderer mit modus='loesung' →
 // Phase-2-Lösungs-Komponente mit pro-Sub-Element-Rahmen + erklaerung-Anzeige.
 // MusterloesungsBlock darunter zeigt Gesamt-Musterlösung (ersetzt altes FeedbackPanel).
+
+// Bundle H Phase 5: Tiptap + CodeMirror rendern intern contentEditable-Divs (nicht
+// INPUT/TEXTAREA), darum reicht der bestehende Tag-Whitelist-Check nicht.
+// data-no-enter-submit auf dem Wrapper signalisiert „Enter NICHT als Submit interpretieren".
+function istNonSubmittableElement(el: EventTarget | null): boolean {
+  if (!(el instanceof HTMLElement)) return false
+  if (el.tagName === 'TEXTAREA') return true
+  if (el.isContentEditable) return true
+  if (el.closest('[data-no-enter-submit]')) return true
+  return false
+}
 
 export default function UebungsScreen() {
   const {
@@ -41,9 +53,21 @@ export default function UebungsScreen() {
   usePrefetchAssets(naechsteFragePdfUrls)
 
   const [selbstbewertungOffen, setSelbstbewertungOffen] = useState(false)
+  // Bundle H Phase 5: amber-Hinweis-Banner für Tastatur-Trigger (z.B. „Noch 2 Lücken offen")
+  const [hinweis, setHinweis] = useState<string | null>(null)
 
-  // Beim Frage-Wechsel Dialog schliessen
-  useEffect(() => { setSelbstbewertungOffen(false) }, [frage?.id])
+  // Beim Frage-Wechsel Dialog + Hinweis schliessen
+  useEffect(() => {
+    setSelbstbewertungOffen(false)
+    setHinweis(null)
+  }, [frage?.id])
+
+  // Hinweis nach 3s automatisch ausblenden
+  useEffect(() => {
+    if (!hinweis) return
+    const t = setTimeout(() => setHinweis(null), 3000)
+    return () => clearTimeout(t)
+  }, [hinweis])
 
   // Phase 2: Server liefert für Selbstbewertungstypen letzteMusterloesung —
   // Dialog dann öffnen. Auto-korrigierbare Typen setzen stattdessen feedbackSichtbar.
@@ -56,28 +80,62 @@ export default function UebungsScreen() {
   // Keyboard-Shortcuts
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (!frage || !session) return
-    // Nicht abfangen wenn ein Input/Textarea fokussiert ist
-    const tag = (e.target as HTMLElement)?.tagName
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
 
-    if (e.key === 'ArrowLeft' && kannZurueck()) {
-      e.preventDefault()
-      vorherigeFrage()
-    }
-    if (e.key === 'ArrowRight' && feedbackSichtbar) {
-      e.preventDefault()
-      if (istSessionFertig()) {
-        beendeSession()
-        zuErgebnis()
-      } else {
-        naechsteFrage()
+    // Pfeil-Navigation: Input/Textarea/Select-Whitelist (User in Eingabe will nicht
+    // versehentlich weiternavigieren). Bestehendes Verhalten unverändert.
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const tag = (e.target as HTMLElement)?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+
+      if (e.key === 'ArrowLeft' && kannZurueck()) {
+        e.preventDefault()
+        vorherigeFrage()
       }
+      if (e.key === 'ArrowRight' && feedbackSichtbar) {
+        e.preventDefault()
+        if (istSessionFertig()) {
+          beendeSession()
+          zuErgebnis()
+        } else {
+          naechsteFrage()
+        }
+      }
+      if (e.key === 'ArrowRight' && !feedbackSichtbar && !(frage.id in session.antworten)) {
+        e.preventDefault()
+        ueberspringen()
+      }
+      return
     }
-    if (e.key === 'ArrowRight' && !feedbackSichtbar && !(frage.id in session.antworten)) {
+
+    // Enter / Cmd+Enter: „Antwort prüfen" (oder „Weiter" wenn Feedback sichtbar).
+    // Tiptap + CodeMirror sind contentEditable bzw. tragen data-no-enter-submit →
+    // Enter wird dort durchgelassen, ausser User drückt Cmd/Ctrl-Override.
+    if (e.key === 'Enter') {
+      const istCmd = e.metaKey || e.ctrlKey
+      const isNonSubmit = istNonSubmittableElement(e.target)
+      if (isNonSubmit && !istCmd) return
+
       e.preventDefault()
-      ueberspringen()
+      if (feedbackSichtbar) {
+        if (istSessionFertig()) {
+          beendeSession()
+          zuErgebnis()
+        } else {
+          naechsteFrage()
+        }
+        return
+      }
+      if (frage.typ === 'lueckentext' && !alleLueckenGefuellt(frage, session.antworten[frage.id] ?? null)) {
+        const offen = anzahlOffeneLuecken(frage, session.antworten[frage.id] ?? null)
+        setHinweis(`Noch ${offen} ${offen === 1 ? 'Lücke' : 'Lücken'} offen`)
+        return
+      }
+      // Direkt pruefeAntwortJetzt rufen statt indirekt über handlePruefen —
+      // handlePruefen wird auf jedem Render neu erstellt und würde useCallback-Deps
+      // ständig invalidieren (S130-Lehre: Hooks-Stabilität).
+      pruefeAntwortJetzt(frage.id)
     }
-  }, [frage, session, feedbackSichtbar, kannZurueck, vorherigeFrage, naechsteFrage, ueberspringen, istSessionFertig, beendeSession, zuErgebnis])
+  }, [frage, session, feedbackSichtbar, kannZurueck, vorherigeFrage, naechsteFrage, ueberspringen, istSessionFertig, beendeSession, zuErgebnis, pruefeAntwortJetzt])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -139,6 +197,16 @@ export default function UebungsScreen() {
       />
 
       <main className="max-w-2xl mx-auto p-4">
+        {/* Bundle H Phase 5: Tastatur-Hinweis (z.B. „Noch 2 Lücken offen") */}
+        {hinweis && (
+          <div
+            role="status"
+            className="mb-3 p-3 rounded-lg bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200 text-sm"
+          >
+            {hinweis}
+          </div>
+        )}
+
         {/* Retry-Banner bei fehlgeschlagener Server-Prüfung (Phase 2) */}
         {pruefFehler && (
           <div
@@ -235,7 +303,7 @@ export default function UebungsScreen() {
 
         {/* Keyboard-Hinweis */}
         <div className="mt-4 text-center text-xs text-slate-400 dark:text-slate-600 hidden sm:block">
-          Tastatur: &#8592; Zurück &middot; &#8594; Weiter/Überspringen
+          Tastatur: &#8592; Zurück &middot; &#8594; Weiter/Überspringen &middot; &#8629; Prüfen/Weiter (&#8984;&#8629; erzwingen)
         </div>
       </main>
     </div>

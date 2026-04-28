@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { DragDropBildFrage as DragDropBildFrageType } from '../../types/fragen.ts'
 import type { Antwort } from '../../types/antworten.ts'
@@ -9,6 +9,7 @@ import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 import { istZoneWohlgeformt } from '../../utils/zonen/migriereZone.ts'
 import { ZoneLabel } from '@shared/ui/ZoneLabel'
+import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: DragDropBildFrageType
@@ -51,6 +52,20 @@ function DragDropBildAufgabe({ frage }: { frage: DragDropBildFrageType }) {
   const zuordnungen: Record<string, string> =
     antwort?.typ === 'dragdrop_bild' ? antwort.zuordnungen : {}
 
+  // Pool-Dedupe (Bundle H Phase 9.2): case-sensitive, getrimmt.
+  const dedupedLabels = useMemo(() => {
+    const seen = new Set<string>()
+    const out: string[] = []
+    for (const raw of (frage.labels ?? [])) {
+      const l = (typeof raw === 'string' ? raw : (raw as { text?: string })?.text ?? '').trim()
+      if (!l) continue
+      if (seen.has(l)) continue
+      seen.add(l)
+      out.push(l)
+    }
+    return out
+  }, [frage.labels])
+
   // Dragging State (Desktop: HTML5 DnD, Touch: Tap-to-select + Tap-to-place)
   const [draggingLabel, setDraggingLabel] = useState<string | null>(null)
   const [dragOverZone, setDragOverZone] = useState<string | null>(null)
@@ -58,8 +73,8 @@ function DragDropBildAufgabe({ frage }: { frage: DragDropBildFrageType }) {
 
   const labelZone = (label: string): string | undefined => zuordnungen[label]
   const labelsInZone = (zoneId: string): string[] =>
-    (frage.labels ?? []).filter(l => zuordnungen[l] === zoneId)
-  const verfuegbareLabels = (frage.labels ?? []).filter(l => !labelZone(l))
+    dedupedLabels.filter(l => zuordnungen[l] === zoneId)
+  const verfuegbareLabels = dedupedLabels.filter(l => !labelZone(l))
 
   const platzieren = useCallback((label: string, zoneId: string) => {
     onAntwort({
@@ -115,7 +130,9 @@ function DragDropBildAufgabe({ frage }: { frage: DragDropBildFrageType }) {
     setSelectedLabel(prev => prev === label ? null : label) // Toggle
   }, [disabled])
 
-  const alleZugeordnet = verfuegbareLabels.length === 0
+  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
+    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+    : 'border-transparent'
 
   return (
     <div className="flex flex-col gap-5">
@@ -143,7 +160,7 @@ function DragDropBildAufgabe({ frage }: { frage: DragDropBildFrageType }) {
 
       {/* Bild mit Zielzonen — feste Container-Breite, damit SVGs ohne explizite width-Attribute
           (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
-      <div className={`relative block w-full max-w-2xl ${!disabled && !alleZugeordnet ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`} style={{ touchAction: 'manipulation' }}>
+      <div data-testid="dragdrop_bild-input-area" className={`relative block w-full max-w-2xl rounded-xl border ${violettOutline} p-1`} style={{ touchAction: 'manipulation' }}>
         <div className="relative overflow-hidden w-full">
           {bildQuelle && (
             <img
@@ -274,7 +291,20 @@ function DragDropBildLoesung({ frage, antwort }: { frage: DragDropBildFrageType;
     antwort?.typ === 'dragdrop_bild' ? antwort.zuordnungen : {}
 
   const zielzonen = frage.zielzonen ?? []
-  const alleLabels = frage.labels ?? []
+
+  // Pool-Dedupe (Bundle H Phase 9.2): case-sensitive, getrimmt.
+  const alleLabels = useMemo(() => {
+    const seen = new Set<string>()
+    const out: string[] = []
+    for (const raw of (frage.labels ?? [])) {
+      const l = (typeof raw === 'string' ? raw : (raw as { text?: string })?.text ?? '').trim()
+      if (!l) continue
+      if (seen.has(l)) continue
+      seen.add(l)
+      out.push(l)
+    }
+    return out
+  }, [frage.labels])
 
   function labelsInZone(zoneId: string): string[] {
     return alleLabels.filter(l => zuordnungen[l] === zoneId)

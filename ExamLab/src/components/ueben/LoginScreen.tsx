@@ -7,9 +7,7 @@ import LoginLayout from '../shared/LoginLayout.tsx'
 
 export default function LoginScreen() {
   const googleButtonRef = useRef<HTMLDivElement>(null)
-  const [codeLogin, setCodeLogin] = useState(false)
-  const [code, setCode] = useState('')
-  const { anmeldenMitGoogle, anmeldenMitCode, ladeStatus, fehler } = useUebenAuthStore()
+  const { anmeldenMitGoogle, fehler } = useUebenAuthStore()
   const { istDark, toggleTheme } = useUebenTheme()
   const [hilfeOffen, setHilfeOffen] = useState(false)
 
@@ -23,13 +21,6 @@ export default function LoginScreen() {
       renderLernenGoogleButton(googleButtonRef.current)
     }
   }, [anmeldenMitGoogle])
-
-  const handleCodeSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (code.length >= 6) {
-      anmeldenMitCode(code)
-    }
-  }
 
   return (
     <LoginLayout title="ExamLab">
@@ -54,47 +45,11 @@ export default function LoginScreen() {
         {hilfeOffen && (
           <div className="mb-6 p-3 rounded-lg bg-slate-50 dark:bg-slate-900/20 text-left text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             <p className="mb-2">ExamLab ermöglicht dir, Übungsfragen zu deinen Fächern zu bearbeiten — mit sofortigem Feedback und Fortschrittsverfolgung.</p>
-            <p>Melde dich mit deinem Schulkonto (Google) oder einem Code an, den du von deiner Lehrperson erhalten hast.</p>
+            <p>Melde dich mit deinem Schulkonto (Google) an.</p>
           </div>
         )}
 
-        {!codeLogin ? (
-          <>
-            <div ref={googleButtonRef} className="flex justify-center mb-4" />
-            <button
-              onClick={() => setCodeLogin(true)}
-              className="text-sm text-slate-400 hover:text-slate-600 mt-2"
-            >
-              Mit Code anmelden
-            </button>
-          </>
-        ) : (
-          <form onSubmit={handleCodeSubmit} className="space-y-4">
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="Code eingeben"
-              className="w-full text-center text-2xl tracking-widest border-2 border-slate-200 dark:border-slate-600 rounded-xl p-3 bg-white dark:bg-slate-700 dark:text-white focus:border-slate-500 focus:outline-none"
-              maxLength={6}
-              autoFocus
-            />
-            <button
-              type="submit"
-              disabled={code.length < 6 || ladeStatus === 'laden'}
-              className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-xl py-3 font-medium disabled:opacity-50 hover:bg-slate-900 dark:hover:bg-slate-100"
-            >
-              {ladeStatus === 'laden' ? 'Wird geprüft...' : 'Anmelden'}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setCodeLogin(false); setCode('') }}
-              className="text-sm text-slate-400 hover:text-slate-600"
-            >
-              Zurück zu Google-Login
-            </button>
-          </form>
-        )}
+        <div ref={googleButtonRef} className="flex justify-center mb-4" />
 
         {fehler && (
           <p className="mt-4 text-red-500 text-sm">{fehler}</p>

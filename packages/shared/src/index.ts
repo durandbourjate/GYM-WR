@@ -65,3 +65,11 @@ export { default as MusterloesungSection } from './editor/sections/Musterloesung
 
 // Utils
 export { loesungsquoteFarbe, loesungsquoteBgFarbe } from './editor/utils/performanceUtils'
+
+// Pflichtfeld-Validierung (Bundle H)
+export { validierePflichtfelder } from './editor/pflichtfeldValidation'
+export type { FeldStatus, ValidationResult } from './editor/pflichtfeldValidation'
+export { default as PflichtfeldDialog } from './editor/components/PflichtfeldDialog'
+export { default as DoppelteLabelDialog } from './editor/components/DoppelteLabelDialog'
+export { default as PruefungstauglichBadge } from './editor/components/PruefungstauglichBadge'
+export { default as BulkPasteModal } from './editor/components/BulkPasteModal'

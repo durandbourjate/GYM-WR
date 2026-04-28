@@ -1187,9 +1187,21 @@ git commit -am "feat(examlab): ZuordnungEditor pflichtfeld-violett-outlines"
 
 ### Task 4.1: Audio bereits raus — Regression-Test + KI-Backend
 
-> **Audio-Sweep-Resultate (aus 0.3):**
+> **Audio-Sweep-Resultate (aus 0.3, 28.04.2026 S157):** 35 Treffer.
 >
-> _Wird in Task 0.3 Step 4 inline befüllt._
+> | Kategorie | Treffer | Action |
+> |---|---|---|
+> | **Type-Definition / Factory** (FrageTyp-Union, Antwort-Type, fragenFactory, types/fragen, antworten, excelImport, sichtbareTypen) | 11 | bleibt — Datenmodell stabil |
+> | **SuS-Renderer** (`AudioFrage.tsx`, `MedienPlayer.tsx`) | 3 | bleibt — Bestand wird gerendert |
+> | **LP-Editor defensiv** (`SharedFragenEditor.tsx`, `TypEditorDispatcher.tsx`) | 4 | bleibt — Re-Aktivierung möglich |
+> | **`FrageTypAuswahl.tsx:13`** S140-Kommentar | 1 | bleibt — Typ ist bereits ausgefiltert |
+> | **`AufgabengruppeEditor.tsx:15, 300`** Sub-Typen-Liste | 2 | **Decision: bleibt drin** — Aufgabengruppe darf weiterhin bestehende Audio-Sub-Typen rendern (Bestand bleibt), aber FrageTypAuswahl filtert beim Erstellen neuer Sub-Aufgaben (gleicher Code-Pfad). Kein Code-Change. |
+> | **Korrektur** (`KorrekturFrageVollansicht`, `KorrekturFragenAnsicht`, `DruckAnsicht`) | 4 | bleibt — Bestand korrigierbar |
+> | **Auto-Korrektur / Selbstbewertung** (`uebungsStore`, `antwortStatus`, `korrektur`) | 5 | bleibt — Selbstbewertbar-Liste ist korrekt |
+> | **Tests** (`MediaAnzeige.test`, `sichtbareTypen.test`, `autoKorrektur.test`) | 3 | bleibt — Test-Sicherheit für Bestand |
+> | **Apps-Script-Backend** (`apps-script-code.js`) | 8 (in code.js, nicht im Sweep gezählt) | bleibt — Backend kennt audio defensiv für Bestand. `klassifiziereFrage` (Z. 5873) klassifiziert NICHT auf einen Typ (sondern Fachbereich/Thema/Bloom/Tags), keine Audio-Whitelist nötig. `importiereFragen` (Z. 5894) listet Typen ohne `'audio'` — bereits korrekt. **Kein Backend-Deploy nötig.** |
+>
+> **Phase 4 reduziert auf:** Regression-Test in FrageTypAuswahl (Step 1+2). Step 3 (KI-Backend-Filter) entfällt.
 
 **Files:**
 - Modify: `packages/shared/src/editor/components/FrageTypAuswahl.tsx` (nur falls KI-Backend Audio liefert)
@@ -2128,11 +2140,23 @@ git branch -d feature/editor-ux-feinschliff-bundle-h
 
 ## Spike-Resultate Tastatur
 
-> _Wird in Phase 0.2 Step 4 befüllt._
+> Befüllt 28.04.2026 S157 via Source-Code-Analyse + Browser-Verifikation der renderer-Komponenten. (Browser-Klick auf "Gemischte Übung" reagierte nicht — wahrscheinlich Service-Worker-Cache-Lag — daher Source-derived; Source ist deterministisch und vollständig.)
 
-| Editor | activeElement-tag | isContentEditable | Erkennt UebungsScreen-Handler | Whitelist nötig? |
+| Editor | activeElement-tag | isContentEditable | Multi-Line-Eingabe? | `data-no-enter-submit` nötig? |
 |---|---|---|---|---|
-| FreitextFrage (Tiptap) | TBD | TBD | TBD | TBD |
-| Lückentext-Antwort-Input | TBD | TBD | TBD | TBD |
-| Formel-Editor | TBD | TBD | TBD | TBD |
-| Code-Editor | TBD | TBD | TBD | TBD |
+| **FreitextFrage** ([FreitextFrage.tsx:238](ExamLab/src/components/fragetypen/FreitextFrage.tsx)) | `DIV` (Tiptap `<EditorContent>`) | `true` | ✓ Ja (Paragraphen) | **JA** — Wrapper `.tiptap-editor` markieren |
+| **Lückentext-Antwort-Input** ([LueckentextFrage.tsx:141](ExamLab/src/components/fragetypen/LueckentextFrage.tsx)) | `INPUT` (`type="text"`) | `false` | ✗ Nein (Single-Line) | NEIN — Enter triggert „Antwort prüfen" sicher |
+| **Formel-Editor** ([FormelFrageComponent.tsx:215](ExamLab/src/components/fragetypen/FormelFrageComponent.tsx)) | `INPUT` (`type="text"`) | `false` | ✗ Nein (Single-Line LaTeX) | NEIN — Enter triggert „Antwort prüfen" |
+| **Code-Editor** ([CodeFrageComponent.tsx:149-170](ExamLab/src/components/fragetypen/CodeFrageComponent.tsx)) | `DIV` (CodeMirror internes contenteditable) | `true` | ✓ Ja (Code-Newlines essenziell) | **JA** — Wrapper `containerRef`-Div markieren |
+
+**Verifizierte Belege aus Source:**
+- Freitext: `<EditorContent editor={editor} />` aus `@tiptap/react` — Tiptap rendert `<div contenteditable="true" class="ProseMirror">` intern. `tiptap-editor`-Wrapper-Div ist Z. 221 (className-Block). Für `data-no-enter-submit`: dort hinzufügen.
+- Lückentext: `<input ...>` Z. 141 — Standard Single-Line.
+- Formel: `<input ref={inputRef} type="text" ...>` Z. 215 — Standard Single-Line LaTeX.
+- Code: CodeMirror-Container `<div ref={containerRef} ...>` Z. 149-170 — CodeMirror-Initialisierung (Editor-Lazy-Load) erzeugt internes `cm-editor > cm-content[contenteditable]`. Für `data-no-enter-submit`: am `containerRef`-Div ergänzen.
+
+**Phase 5 Implementation-Konsequenz:**
+- 2 Renderer (Freitext, Code) brauchen `data-no-enter-submit` auf ihrem Editor-Wrapper.
+- 2 Renderer (Lückentext, Formel) brauchen es NICHT.
+- UebungsScreen-Tastatur-Handler: `el.closest('[data-no-enter-submit]')`-Check schliesst Tiptap+CodeMirror aus, Lückentext+Formel-Inputs lösen Enter→„Antwort prüfen" aus.
+- Cmd+Enter (universell „Antwort prüfen", auch in Whitelist) bleibt Spec-konform.

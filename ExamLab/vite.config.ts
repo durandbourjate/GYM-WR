@@ -28,7 +28,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@shared': path.resolve(__dirname, '../packages/shared/src')
+      '@shared': path.resolve(__dirname, '../packages/shared/src'),
+      // Pinne @dnd-kit/* auf ExamLab/node_modules damit shared-Editoren (z.B. SortierungEditor)
+      // dieselbe Instanz verwenden — sonst Doppel-React-Hooks bei Build oder Test.
+      '@dnd-kit/core': path.resolve(__dirname, 'node_modules/@dnd-kit/core'),
+      '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
+      '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities')
     },
     dedupe: ['react', 'react-dom']
   },

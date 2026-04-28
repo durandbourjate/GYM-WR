@@ -53,6 +53,9 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
     }
   },
 
+  // S157 (Bundle H, 2026-04-28): UI ausgeblendet — Schülercode-Login nicht mehr aktiv.
+  // Code für mögliche Re-Aktivierung erhalten. Löschen frühestens nach 4-6 Wochen
+  // ohne SuS-Anfragen — siehe Reminder-Plan-Task 12 (Trigger-Datum 2026-06-09).
   anmeldenMitCode: async (code: string) => {
     set({ ladeStatus: 'laden', fehler: null })
 

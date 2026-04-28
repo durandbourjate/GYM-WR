@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore.ts'
-import { apiService } from '../services/apiService.ts'
 import { initializeGoogleAuth, renderGoogleButton, CLIENT_ID } from '../services/authService.ts'
 import ThemeToggle from './ThemeToggle.tsx'
 import { useSchulConfig } from '../store/schulConfigStore.ts'
@@ -13,7 +12,6 @@ export default function LoginScreen() {
   const [searchParams] = useSearchParams()
   const user = useAuthStore((s) => s.user)
   const anmelden = useAuthStore((s) => s.anmelden)
-  const anmeldenMitCode = useAuthStore((s) => s.anmeldenMitCode)
   const demoStarten = useAuthStore((s) => s.demoStarten)
   const fehler = useAuthStore((s) => s.fehler)
   const setFehler = useAuthStore((s) => s.setFehler)
@@ -31,9 +29,6 @@ export default function LoginScreen() {
   }, [user, navigate, searchParams])
 
   const googleButtonRef = useRef<HTMLDivElement>(null)
-  const [zeigeFallback, setZeigeFallback] = useState(false)
-  const [code, setCode] = useState('')
-  const [email, setEmail] = useState('')
   const [googleGeladen, setGoogleGeladen] = useState(false)
 
   const istProduktion = !!CLIENT_ID
@@ -83,59 +78,6 @@ export default function LoginScreen() {
     }
   }, [googleGeladen])
 
-  const [codeWirdValidiert, setCodeWirdValidiert] = useState(false)
-
-  // Name aus E-Mail ableiten: vorname.nachname → Vorname Nachname
-  function nameAusEmail(emailStr: string): string {
-    const teil = emailStr.split('@')[0] || ''
-    return teil.split('.').map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(' ')
-  }
-
-  async function handleCodeLogin(e: React.FormEvent): Promise<void> {
-    e.preventDefault()
-    if (code.length !== 4 || !email.trim()) {
-      setFehler('Bitte E-Mail und 4-stellige Schüler-ID eingeben.')
-      return
-    }
-    // E-Mail normalisieren: wenn nur Vorname eingegeben → @stud.gymhofwil.ch anhängen
-    let volleEmail = email.trim().toLowerCase()
-    if (!volleEmail.includes('@')) {
-      volleEmail = `${volleEmail}@${config.susDomain}`
-    }
-    if (!volleEmail.endsWith(`@${config.susDomain}`) && !volleEmail.endsWith(`@${config.lpDomain}`)) {
-      setFehler(`Bitte verwenden Sie Ihre Schul-E-Mail (@${config.susDomain}).`)
-      return
-    }
-
-    // Backend-Validierung wenn konfiguriert
-    if (apiService.istKonfiguriert()) {
-      setCodeWirdValidiert(true)
-      setFehler(null)
-      const pruefungId = new URLSearchParams(window.location.search).get('id') || ''
-      const result = await apiService.validiereSchuelercode(volleEmail, code, pruefungId)
-      setCodeWirdValidiert(false)
-
-      if (result === null) {
-        // Netzwerkfehler → Fallback auf lokale Anmeldung
-        console.warn('[Login] Backend nicht erreichbar — Fallback auf lokale Code-Anmeldung')
-        await anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
-        return
-      }
-      if (!result.success) {
-        setFehler(result.error ?? 'Code ungültig oder E-Mail nicht in Klassenliste.')
-        return
-      }
-      // Backend hat validiert: Name aus Klassenliste verwenden
-      const validierterName = result.vorname && result.name
-        ? `${result.vorname} ${result.name}`
-        : nameAusEmail(volleEmail)
-      await anmeldenMitCode(code, validierterName, volleEmail, result.sessionToken)
-    } else {
-      // Kein Backend → direkt anmelden
-      await anmeldenMitCode(code, nameAusEmail(volleEmail), volleEmail)
-    }
-  }
-
   return (
     <LoginLayout>
       <div className="fixed top-4 right-4">
@@ -182,70 +124,10 @@ export default function LoginScreen() {
           </div>
         )}
 
-        {/* Separator */}
-        {istProduktion && (
-          <div className="flex items-center gap-3 my-4">
-            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
-            <span className="text-xs text-slate-400 dark:text-slate-500">oder</span>
-            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
-          </div>
-        )}
-
-        {/* Fallback: Schülercode (Toggle oder direkt wenn kein Google) */}
-        {!zeigeFallback && istProduktion && (
-          <button
-            onClick={() => setZeigeFallback(true)}
-            className="w-full text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
-          >
-            Anmeldung mit Schüler-ID
-          </button>
-        )}
-
-        {(zeigeFallback || !istProduktion) && (
-          <form onSubmit={handleCodeLogin} className="space-y-3">
-            {!istProduktion && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                Google-Login nicht konfiguriert. Anmeldung mit Schüler-ID:
-              </p>
-            )}
-            <div>
-              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
-                Schul-E-Mail
-              </label>
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={`vorname.nachname@${config.susDomain}`}
-                className="w-full px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500"
-              />
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                Nur der Teil vor @ genügt (z.B. «vorname.nachname»). Dein Name wird daraus übernommen.
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
-                Schüler-ID (4-stellig)
-              </label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                placeholder="1234"
-                maxLength={4}
-                inputMode="numeric"
-                className="w-full px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 tabular-nums tracking-widest text-center text-lg"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={code.length !== 4 || !email.trim() || codeWirdValidiert}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-200 dark:hover:bg-slate-100 text-white dark:text-slate-800 text-sm font-semibold rounded-xl transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {codeWirdValidiert ? 'Code wird geprüft…' : 'Anmelden'}
-            </button>
-          </form>
+        {!istProduktion && (
+          <p className="mb-4 text-xs text-slate-500 dark:text-slate-400 text-center">
+            Im Dev-Modus nur Demo-Login verfügbar (kein Google-Client-ID konfiguriert).
+          </p>
         )}
 
         {/* Demo-Modus */}

@@ -1,12 +1,21 @@
 import { Abschnitt } from '../components/EditorBausteine'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface ZuordnungEditorProps {
   paare: { links: string; rechts: string }[]
   setPaare: (p: { links: string; rechts: string }[]) => void
   titelRechts?: React.ReactNode
+  /** Pflichtfeld-Status der Paare-Section (Bundle H Phase 3) */
+  feldStatusPaare?: FeldStatus
 }
 
-export default function ZuordnungEditor({ paare, setPaare, titelRechts }: ZuordnungEditorProps) {
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
+}
+
+export default function ZuordnungEditor({ paare, setPaare, titelRechts, feldStatusPaare }: ZuordnungEditorProps) {
   function updatePaar(index: number, seite: 'links' | 'rechts', wert: string): void {
     const neu = [...paare]
     neu[index] = { ...neu[index], [seite]: wert }
@@ -15,7 +24,7 @@ export default function ZuordnungEditor({ paare, setPaare, titelRechts }: Zuordn
 
   return (
     <Abschnitt titel="Zuordnungspaare" titelRechts={titelRechts}>
-      <div className="space-y-2">
+      <div data-testid="zuordnung-paare-section" className={`space-y-2 ${pflichtCls(feldStatusPaare)}`}>
         <div className="flex gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
           <span className="flex-1">Begriff (links)</span>
           <span className="flex-1">Zuordnung (rechts)</span>

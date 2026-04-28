@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import type { LueckentextFrage } from '../../types/fragen'
 import { Abschnitt, Feld } from '../components/EditorBausteine'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface LueckentextEditorProps {
   textMitLuecken: string
@@ -12,6 +13,16 @@ interface LueckentextEditorProps {
   setLueckentextModus: (v: 'freitext' | 'dropdown') => void
   /** Optionaler Inhalt rechts im Abschnitt-Header (z.B. KI-Buttons) */
   titelRechts?: React.ReactNode
+  /** Pflichtfeld-Status der Lücken-Section (Bundle H Phase 3) */
+  feldStatusLuecken?: FeldStatus
+  /** Pflichtfeld-Status des Lückentext-Felds (Bundle H Phase 3) */
+  feldStatusTextMitLuecken?: FeldStatus
+}
+
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
 }
 
 /**
@@ -25,7 +36,7 @@ function normalisierePlatzhalter(text: string): string {
   return text.replace(PLATZHALTER_REGEX, '{{$1}}')
 }
 
-export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, luecken, setLuecken, lueckentextModus, setLueckentextModus, titelRechts }: LueckentextEditorProps) {
+export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, luecken, setLuecken, lueckentextModus, setLueckentextModus, titelRechts, feldStatusLuecken, feldStatusTextMitLuecken }: LueckentextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // Einmalige Mount-Migration: alte `{N}`-Syntax → kanonisches `{{N}}`. Läuft nur
@@ -110,11 +121,16 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
         </div>
         <textarea
           ref={textareaRef}
+          data-testid="lueckentext-textarea"
           value={textMitLuecken}
           onChange={(e) => handleTextChange(e.target.value)}
           rows={4}
           placeholder="Text eingeben und Wörter markieren, um Lücken zu erstellen..."
-          className="input-field resize-y font-mono text-sm"
+          className={`input-field resize-y font-mono text-sm ${
+            feldStatusTextMitLuecken === 'pflicht-leer'
+              ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
+              : ''
+          }`}
         />
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
           Syntax: {'{{1}}'} = erste Lücke, {'{{2}}'} = zweite Lücke, etc.
@@ -122,14 +138,14 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
       </Feld>
 
       {luecken.length > 0 && (
-        <div className="mt-3 space-y-3">
+        <div data-testid="lueckentext-luecken-section" className={`mt-3 space-y-3 ${pflichtCls(feldStatusLuecken)}`}>
           <div className="flex flex-wrap items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Antwort-Modus:</span>
             <div className="inline-flex rounded-md border border-slate-300 dark:border-slate-600 overflow-hidden">
               <button
                 type="button"
                 onClick={() => setLueckentextModus('freitext')}
-                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'freitext' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
+                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'freitext' ? 'bg-violet-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
                 aria-pressed={lueckentextModus === 'freitext'}
               >
                 Freitext
@@ -137,7 +153,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
               <button
                 type="button"
                 onClick={() => setLueckentextModus('dropdown')}
-                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'dropdown' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
+                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'dropdown' ? 'bg-violet-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
                 aria-pressed={lueckentextModus === 'dropdown'}
               >
                 Dropdown
@@ -170,7 +186,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
                     className={lueckentextModus === 'dropdown' ? 'opacity-50' : ''}
                   >
                     <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-0.5">
-                      <span className="inline-block px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 normal-case font-medium text-[10px]">Freitext</span>
+                      <span className="inline-block px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 normal-case font-medium text-[10px]">Freitext</span>
                       Korrekte Antworten (Hauptantwort + Synonyme)
                     </label>
                     <input
@@ -203,7 +219,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
                     className={lueckentextModus === 'freitext' ? 'opacity-50' : ''}
                   >
                     <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-0.5">
-                      <span className="inline-block px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 normal-case font-medium text-[10px]">Dropdown</span>
+                      <span className="inline-block px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 normal-case font-medium text-[10px]">Dropdown</span>
                       Auswahl-Optionen (1 Korrekte + 4 Distraktoren)
                     </label>
                     <input

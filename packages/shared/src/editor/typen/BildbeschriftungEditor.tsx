@@ -2,17 +2,31 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import type { BildbeschriftungLabel } from '../../types/fragen'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
+import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface Props {
   bildUrl: string
   setBildUrl: (v: string) => void
   beschriftungen: BildbeschriftungLabel[]
   setBeschriftungen: React.Dispatch<React.SetStateAction<BildbeschriftungLabel[]>>
+  /** Pflichtfeld-Status der Beschriftungen-Section (Bundle H Phase 7) */
+  feldStatusBeschriftungen?: FeldStatus
+}
+
+function pflichtCls(status: FeldStatus | undefined): string {
+  return status === 'pflicht-leer'
+    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
+    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
+}
+
+function istBeschriftungLeer(b: BildbeschriftungLabel): boolean {
+  if (!Array.isArray(b.korrekt) || b.korrekt.length === 0) return true
+  return b.korrekt.every(s => !s || !s.trim())
 }
 
 type DragState = { labelId: string; offsetX: number; offsetY: number } | null
 
-export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftungen, setBeschriftungen }: Props) {
+export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftungen, setBeschriftungen, feldStatusBeschriftungen }: Props) {
   const [editId, setEditId] = useState<string | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [drag, setDrag] = useState<DragState>(null)
@@ -68,10 +82,6 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
     setBeschriftungen(prev => prev.map(b =>
       b.id === id ? { ...b, korrekt: text.split(',').map(t => t.trim()).filter(Boolean) } : b
     ))
-  }
-
-  function handlePositionAendern(id: string, feld: 'x' | 'y', wert: number) {
-    setBeschriftungen(prev => prev.map(b => (b.id === id ? { ...b, position: { ...b.position, [feld]: wert } } : b)))
   }
 
   function handleLabelPointerDown(label: BildbeschriftungLabel, e: React.PointerEvent<HTMLDivElement>) {
@@ -145,56 +155,58 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
       )}
 
       {beschriftungen.length > 0 && (
-        <div>
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
-            Label-Punkte ({beschriftungen.length})
+        <div data-testid="bildbeschriftung-marker-section" className={pflichtCls(feldStatusBeschriftungen)}>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+            Marker ({beschriftungen.length})
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+            Marker: per Drag platzieren · Antworten kommagetrennt eingeben
           </p>
           <div className="space-y-2">
-            {beschriftungen.map((b, i) => (
-              <div
-                key={b.id}
-                onClick={() => setSelectedId(b.id)}
-                className={`p-2 rounded-lg border space-y-2 ${
-                  selectedId === b.id
-                    ? 'bg-violet-50 dark:bg-violet-900/20 border-violet-400 dark:border-violet-600'
-                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                    {i + 1}
-                  </span>
-                  <div className="flex-1">
-                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5">
-                      Akzeptierte Antworten (kommagetrennt)
-                    </label>
-                    <input
-                      type="text"
-                      value={b.korrekt.join(', ')}
-                      onChange={(e) => handleKorrektAendern(b.id, e.target.value)}
-                      autoFocus={editId === b.id}
-                      onFocus={() => setEditId(null)}
-                      className="w-full px-2 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-violet-500 focus:outline-none"
-                      placeholder="Antwort 1, Antwort 2, ..."
-                    />
+            {beschriftungen.map((b, i) => {
+              const leer = istBeschriftungLeer(b)
+              const inputCls = leer
+                ? 'w-full px-2 py-1 text-sm rounded border border-violet-400 dark:border-violet-500 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-violet-500 focus:outline-none'
+                : 'w-full px-2 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-violet-500 focus:outline-none'
+              return (
+                <div
+                  key={b.id}
+                  onClick={() => setSelectedId(b.id)}
+                  className={`p-2 rounded-lg border space-y-2 ${
+                    selectedId === b.id
+                      ? 'bg-violet-50 dark:bg-violet-900/20 border-violet-400 dark:border-violet-600'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+                      {i + 1}
+                    </span>
+                    <div className="flex-1" data-testid={`marker-${b.id}-antworten`}>
+                      <label className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5">
+                        Akzeptierte Antworten (kommagetrennt)
+                      </label>
+                      <input
+                        type="text"
+                        value={b.korrekt.join(', ')}
+                        onChange={(e) => handleKorrektAendern(b.id, e.target.value)}
+                        autoFocus={editId === b.id}
+                        onFocus={() => setEditId(null)}
+                        className={inputCls}
+                        placeholder="Antwort 1, Antwort 2, ..."
+                      />
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleEntfernen(b.id) }}
+                      className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer"
+                      title="Label entfernen (oder Delete/Backspace)"
+                    >
+                      {'✕'}
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleEntfernen(b.id) }}
-                    className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer"
-                    title="Label entfernen (oder Delete/Backspace)"
-                  >
-                    {'\u2715'}
-                  </button>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <span>x:</span>
-                  <input type="number" value={Math.round(b.position.x)} onChange={(e) => handlePositionAendern(b.id, 'x', Number(e.target.value))} min={0} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                  <span>y:</span>
-                  <input type="number" value={Math.round(b.position.y)} onChange={(e) => handlePositionAendern(b.id, 'y', Number(e.target.value))} min={0} max={100} className="w-14 px-1 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-center" />
-                  <span className="ml-1 italic">%</span>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
