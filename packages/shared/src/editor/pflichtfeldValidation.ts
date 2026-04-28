@@ -52,6 +52,25 @@ export function validierePflichtfelder(frage: Frage | null | undefined): Validat
         return validiereFreitext(frage as any)
       case 'berechnung':
         return validiereBerechnung(frage as any)
+      case 'buchungssatz':
+        return validiereBuchungssatz(frage as any)
+      case 'tkonto':
+        return validiereTKonto(frage as any)
+      case 'kontenbestimmung':
+        return validiereKontenbestimmung(frage as any)
+      case 'bilanzstruktur':
+        return validiereBilanzstruktur(frage as any)
+      case 'visualisierung':
+      case 'zeichnen':
+        return validiereVisualisierung(frage as any)
+      case 'pdf':
+        return validierePDF(frage as any)
+      case 'code':
+        return validiereCode(frage as any)
+      case 'formel':
+        return validiereFormel(frage as any)
+      case 'aufgabengruppe':
+        return validiereAufgabengruppe(frage as any)
       case 'audio':
         return DEFAULT_OK
       default:
@@ -332,6 +351,233 @@ function validiereBerechnung(frage: any): ValidationResult {
     },
     pflichtLeerFelder: pflichtLeer,
     empfohlenLeerFelder: empfohlenLeer,
+  }
+}
+
+function validiereBuchungssatz(frage: any): ValidationResult {
+  const fragetextOk = strNonEmpty(frage.fragetext) || strNonEmpty(frage.geschaeftsfall)
+  const buchungen = Array.isArray(frage.buchungen) ? frage.buchungen : []
+  const mind1 = buchungen.filter((b: any) => strNonEmpty(b?.sollKonto) || strNonEmpty(b?.habenKonto)).length >= 1
+
+  const pflichtLeer: string[] = []
+  if (!fragetextOk) pflichtLeer.push('Geschäftsfall / Frage-Text')
+  if (!mind1) pflichtLeer.push('Mind. 1 Buchung mit Konto')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      geschaeftsfall: fragetextOk ? 'ok' : 'pflicht-leer',
+      buchungen: mind1 ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validiereTKonto(frage: any): ValidationResult {
+  const aufgabentextOk = strNonEmpty(frage.aufgabentext) || strNonEmpty(frage.tkAufgabentext)
+  const konten = Array.isArray(frage.konten) ? frage.konten : []
+  const mind1 = konten.filter((k: any) => strNonEmpty(k?.kontonummer)).length >= 1
+
+  const pflichtLeer: string[] = []
+  if (!aufgabentextOk) pflichtLeer.push('Aufgabentext')
+  if (!mind1) pflichtLeer.push('Mind. 1 T-Konto mit Kontonummer')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      aufgabentext: aufgabentextOk ? 'ok' : 'pflicht-leer',
+      konten: mind1 ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validiereKontenbestimmung(frage: any): ValidationResult {
+  const aufgabentextOk = strNonEmpty(frage.aufgabentext)
+  const aufgaben = Array.isArray(frage.aufgaben) ? frage.aufgaben : []
+  const mind1 = aufgaben.filter((a: any) => strNonEmpty(a?.text)).length >= 1
+
+  const pflichtLeer: string[] = []
+  if (!aufgabentextOk) pflichtLeer.push('Aufgabentext')
+  if (!mind1) pflichtLeer.push('Mind. 1 Aufgabe mit Text')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      aufgabentext: aufgabentextOk ? 'ok' : 'pflicht-leer',
+      aufgaben: mind1 ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validiereBilanzstruktur(frage: any): ValidationResult {
+  const aufgabentextOk = strNonEmpty(frage.aufgabentext)
+  const konten = Array.isArray(frage.kontenMitSaldi) ? frage.kontenMitSaldi : []
+  const mind1 =
+    konten.filter((k: any) => {
+      const wert = k?.saldo ?? k?.betrag
+      return strNonEmpty(k?.kontonummer) && wert !== undefined && wert !== null && wert !== ''
+    }).length >= 1
+
+  const pflichtLeer: string[] = []
+  if (!aufgabentextOk) pflichtLeer.push('Aufgabentext')
+  if (!mind1) pflichtLeer.push('Mind. 1 Konto mit Saldo/Betrag')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      aufgabentext: aufgabentextOk ? 'ok' : 'pflicht-leer',
+      kontenMitSaldi: mind1 ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validiereVisualisierung(frage: any): ValidationResult {
+  const fragetextOk = strNonEmpty(frage.fragetext)
+  const untertypOk = strNonEmpty(frage.untertyp)
+  const konfigOk =
+    (frage.canvasConfig && typeof frage.canvasConfig === 'object') ||
+    (frage.ausgangsdiagramm && typeof frage.ausgangsdiagramm === 'object')
+
+  const pflichtLeer: string[] = []
+  if (!fragetextOk) pflichtLeer.push('Frage-Text')
+  if (!untertypOk) pflichtLeer.push('Untertyp')
+  if (!konfigOk) pflichtLeer.push('Canvas- oder Diagramm-Konfiguration')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      fragetext: fragetextOk ? 'ok' : 'pflicht-leer',
+      untertyp: untertypOk ? 'ok' : 'pflicht-leer',
+      konfig: konfigOk ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validierePDF(frage: any): ValidationResult {
+  const fragetextOk = strNonEmpty(frage.fragetext)
+  const pdfOk = strNonEmpty(frage.pdfDriveFileId) || strNonEmpty(frage.pdfUrl) || strNonEmpty(frage.pdfBase64)
+  const werkzeugeRaw = Array.isArray(frage.pdfErlaubteWerkzeuge)
+    ? frage.pdfErlaubteWerkzeuge
+    : Array.isArray(frage.erlaubteWerkzeuge)
+      ? frage.erlaubteWerkzeuge
+      : []
+  const werkzeugeOk = werkzeugeRaw.length >= 1
+
+  const pflichtLeer: string[] = []
+  if (!fragetextOk) pflichtLeer.push('Frage-Text')
+  if (!pdfOk) pflichtLeer.push('PDF (Drive-ID oder URL)')
+  if (!werkzeugeOk) pflichtLeer.push('Mind. 1 erlaubtes Werkzeug')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: true,
+    felderStatus: {
+      fragetext: fragetextOk ? 'ok' : 'pflicht-leer',
+      pdf: pdfOk ? 'ok' : 'pflicht-leer',
+      werkzeuge: werkzeugeOk ? 'ok' : 'pflicht-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: [],
+  }
+}
+
+function validiereCode(frage: any): ValidationResult {
+  const fragetextOk = strNonEmpty(frage.fragetext)
+  const sprachenOk = strNonEmpty(frage.sprache)
+  const musterOk = strNonEmpty(frage.musterLoesung) || strNonEmpty(frage.musterloesung)
+  const testCases = Array.isArray(frage.testCases) ? frage.testCases : []
+  const empfohlenOk = musterOk || testCases.length > 0
+
+  const pflichtLeer: string[] = []
+  if (!fragetextOk) pflichtLeer.push('Frage-Text')
+  if (!sprachenOk) pflichtLeer.push('Sprache')
+
+  const empfohlenLeer: string[] = []
+  if (!empfohlenOk) empfohlenLeer.push('Musterlösung oder Testfälle')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: empfohlenLeer.length === 0,
+    felderStatus: {
+      fragetext: fragetextOk ? 'ok' : 'pflicht-leer',
+      sprache: sprachenOk ? 'ok' : 'pflicht-leer',
+      musterloesung: empfohlenOk ? 'ok' : 'empfohlen-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: empfohlenLeer,
+  }
+}
+
+function validiereFormel(frage: any): ValidationResult {
+  const fragetextOk = strNonEmpty(frage.fragetext)
+  const formelOk = strNonEmpty(frage.korrekteFormel)
+  const toleranzOk = typeof frage.toleranz === 'number'
+  const erklaerungOk = strNonEmpty(frage.erklaerung)
+
+  const pflichtLeer: string[] = []
+  if (!fragetextOk) pflichtLeer.push('Frage-Text')
+  if (!formelOk) pflichtLeer.push('Korrekte Formel')
+
+  const empfohlenLeer: string[] = []
+  if (!toleranzOk) empfohlenLeer.push('Toleranz')
+  if (!erklaerungOk) empfohlenLeer.push('Erklärung')
+
+  return {
+    pflichtErfuellt: pflichtLeer.length === 0,
+    empfohlenErfuellt: empfohlenLeer.length === 0,
+    felderStatus: {
+      fragetext: fragetextOk ? 'ok' : 'pflicht-leer',
+      korrekteFormel: formelOk ? 'ok' : 'pflicht-leer',
+      toleranz: toleranzOk ? 'ok' : 'empfohlen-leer',
+      erklaerung: erklaerungOk ? 'ok' : 'empfohlen-leer',
+    },
+    pflichtLeerFelder: pflichtLeer,
+    empfohlenLeerFelder: empfohlenLeer,
+  }
+}
+
+function validiereAufgabengruppe(frage: any, ebene = 0): ValidationResult {
+  if (ebene >= 3) {
+    console.warn('[pflichtfeldValidation] Aufgabengruppen-Tiefe > 3, pass-through')
+    return DEFAULT_OK
+  }
+  const fragetextOk = strNonEmpty(frage.fragetext) || strNonEmpty(frage.kontext)
+  const teilaufgaben = Array.isArray(frage.teilaufgaben) ? frage.teilaufgaben : []
+  if (teilaufgaben.length === 0) {
+    return {
+      pflichtErfuellt: false,
+      empfohlenErfuellt: true,
+      felderStatus: { fragetext: fragetextOk ? 'ok' : 'pflicht-leer' },
+      pflichtLeerFelder: [...(fragetextOk ? [] : ['Frage-Text']), 'Mind. 1 Teilaufgabe'],
+      empfohlenLeerFelder: [],
+    }
+  }
+  const sub = teilaufgaben.map((t: any) =>
+    t?.typ === 'aufgabengruppe' ? validiereAufgabengruppe(t, ebene + 1) : validierePflichtfelder(t),
+  )
+  return {
+    pflichtErfuellt: fragetextOk && sub.every((s: ValidationResult) => s.pflichtErfuellt),
+    empfohlenErfuellt: sub.every((s: ValidationResult) => s.empfohlenErfuellt),
+    felderStatus: { fragetext: fragetextOk ? 'ok' : 'pflicht-leer' },
+    pflichtLeerFelder: [
+      ...(fragetextOk ? [] : ['Frage-Text']),
+      ...sub.flatMap((s: ValidationResult) => s.pflichtLeerFelder),
+    ],
+    empfohlenLeerFelder: sub.flatMap((s: ValidationResult) => s.empfohlenLeerFelder),
   }
 }
 

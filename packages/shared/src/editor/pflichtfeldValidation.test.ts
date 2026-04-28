@@ -210,6 +210,320 @@ describe('validierePflichtfelder — sortierung', () => {
   })
 })
 
+describe('validierePflichtfelder — buchungssatz', () => {
+  const gueltig = {
+    id: 'b1',
+    typ: 'buchungssatz',
+    fragetext: '',
+    geschaeftsfall: 'Wareneinkauf bar',
+    buchungen: [{ id: 'bu1', sollKonto: '6000', habenKonto: '1000', betrag: 100 }],
+  }
+  it('alle erfüllt (geschaeftsfall als fragetext-Ersatz)', () => {
+    const r = validierePflichtfelder(gueltig as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne geschaeftsfall + ohne fragetext', () => {
+    const r = validierePflichtfelder({ ...gueltig, geschaeftsfall: '' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('pflicht-leer ohne Buchungen', () => {
+    const r = validierePflichtfelder({ ...gueltig, buchungen: [] } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('akzeptiert Buchung mit nur sollKonto', () => {
+    const r = validierePflichtfelder({
+      ...gueltig,
+      buchungen: [{ id: 'bu1', sollKonto: '6000', habenKonto: '', betrag: 100 }],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+})
+
+describe('validierePflichtfelder — tkonto', () => {
+  const gueltig = {
+    id: 't1',
+    typ: 'tkonto',
+    aufgabentext: 'Buche',
+    konten: [{ id: 'k1', kontonummer: '1000' }],
+  }
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder(gueltig as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne aufgabentext', () => {
+    const r = validierePflichtfelder({ ...gueltig, aufgabentext: '' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('pflicht-leer ohne Konten', () => {
+    const r = validierePflichtfelder({ ...gueltig, konten: [] } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — kontenbestimmung', () => {
+  const gueltig = {
+    id: 'k1',
+    typ: 'kontenbestimmung',
+    aufgabentext: 'Bestimme',
+    aufgaben: [{ id: 'a1', text: 'Wareneinkauf bar' }],
+  }
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder(gueltig as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne aufgabentext', () => {
+    const r = validierePflichtfelder({ ...gueltig, aufgabentext: '' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('pflicht-leer ohne Aufgaben mit Text', () => {
+    const r = validierePflichtfelder({ ...gueltig, aufgaben: [{ id: 'a1', text: '' }] } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — bilanzstruktur', () => {
+  const gueltig = {
+    id: 'bi1',
+    typ: 'bilanzstruktur',
+    aufgabentext: 'Bilanz erstellen',
+    kontenMitSaldi: [{ kontonummer: '1000', saldo: 500 }],
+  }
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder(gueltig as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne aufgabentext', () => {
+    const r = validierePflichtfelder({ ...gueltig, aufgabentext: '' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('pflicht-leer ohne Konten mit Saldo', () => {
+    const r = validierePflichtfelder({
+      ...gueltig,
+      kontenMitSaldi: [{ kontonummer: '1000' }],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — visualisierung', () => {
+  it('alle erfüllt mit canvasConfig', () => {
+    const r = validierePflichtfelder({
+      id: 'v1',
+      typ: 'visualisierung',
+      fragetext: 'q',
+      untertyp: 'zeichnen',
+      canvasConfig: { breite: 800, hoehe: 600, koordinatensystem: false, werkzeuge: ['stift'] },
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('alle erfüllt mit ausgangsdiagramm', () => {
+    const r = validierePflichtfelder({
+      id: 'v1',
+      typ: 'visualisierung',
+      fragetext: 'q',
+      untertyp: 'diagramm-manipulieren',
+      ausgangsdiagramm: { typ: 'angebot-nachfrage' },
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne untertyp', () => {
+    const r = validierePflichtfelder({ id: 'v1', typ: 'visualisierung', fragetext: 'q' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — pdf', () => {
+  const gueltig = {
+    id: 'p1',
+    typ: 'pdf',
+    fragetext: 'q',
+    pdfDriveFileId: 'abc',
+    erlaubteWerkzeuge: ['highlighter'],
+  }
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder(gueltig as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne pdfDriveFileId/pdfUrl', () => {
+    const r = validierePflichtfelder({
+      ...gueltig,
+      pdfDriveFileId: undefined,
+    } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('pflicht-leer ohne erlaubteWerkzeuge', () => {
+    const r = validierePflichtfelder({ ...gueltig, erlaubteWerkzeuge: [] } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('akzeptiert pdfUrl als Alternative', () => {
+    const r = validierePflichtfelder({
+      id: 'p1',
+      typ: 'pdf',
+      fragetext: 'q',
+      pdfUrl: 'http://x/y.pdf',
+      erlaubteWerkzeuge: ['highlighter'],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+})
+
+describe('validierePflichtfelder — code', () => {
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder({
+      id: 'c1',
+      typ: 'code',
+      fragetext: 'q',
+      sprache: 'python',
+      musterLoesung: 'print(1)',
+      testCases: [{ input: '', output: '1' }],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+    expect(r.empfohlenErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne sprache', () => {
+    const r = validierePflichtfelder({ id: 'c1', typ: 'code', fragetext: 'q' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('empfohlen-leer ohne musterloesung & testCases', () => {
+    const r = validierePflichtfelder({
+      id: 'c1',
+      typ: 'code',
+      fragetext: 'q',
+      sprache: 'python',
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+    expect(r.empfohlenErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — formel', () => {
+  it('alle erfüllt', () => {
+    const r = validierePflichtfelder({
+      id: 'fo1',
+      typ: 'formel',
+      fragetext: 'q',
+      korrekteFormel: 'a^2',
+      toleranz: 0.01,
+      erklaerung: 'Lösung',
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+    expect(r.empfohlenErfuellt).toBe(true)
+  })
+  it('pflicht-leer ohne korrekteFormel', () => {
+    const r = validierePflichtfelder({ id: 'fo1', typ: 'formel', fragetext: 'q' } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('empfohlen-leer ohne toleranz/erklaerung', () => {
+    const r = validierePflichtfelder({
+      id: 'fo1',
+      typ: 'formel',
+      fragetext: 'q',
+      korrekteFormel: 'a^2',
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+    expect(r.empfohlenErfuellt).toBe(false)
+  })
+})
+
+describe('validierePflichtfelder — aufgabengruppe (rekursiv)', () => {
+  it('2 Ebenen alle erfüllt', () => {
+    const r = validierePflichtfelder({
+      id: 'ag1',
+      typ: 'aufgabengruppe',
+      fragetext: 'Kontext',
+      teilaufgaben: [
+        {
+          id: 'ag1_a',
+          typ: 'mc',
+          fragetext: 'q',
+          optionen: [
+            { id: 'o1', text: 'A', korrekt: true, erklaerung: 'e1' },
+            { id: 'o2', text: 'B', korrekt: false, erklaerung: 'e2' },
+          ],
+        },
+      ],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+    expect(r.empfohlenErfuellt).toBe(true)
+  })
+  it('1 Teilaufgabe pflicht-leer → propagiert', () => {
+    const r = validierePflichtfelder({
+      id: 'ag1',
+      typ: 'aufgabengruppe',
+      fragetext: 'Kontext',
+      teilaufgaben: [
+        {
+          id: 'ag1_a',
+          typ: 'mc',
+          fragetext: '',
+          optionen: [],
+        },
+      ],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+    expect(r.pflichtLeerFelder.length).toBeGreaterThan(0)
+  })
+  it('ohne Teilaufgaben → pflicht-leer', () => {
+    const r = validierePflichtfelder({
+      id: 'ag1',
+      typ: 'aufgabengruppe',
+      fragetext: 'Kontext',
+      teilaufgaben: [],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(false)
+  })
+  it('akzeptiert kontext als fragetext-Fallback', () => {
+    const r = validierePflichtfelder({
+      id: 'ag1',
+      typ: 'aufgabengruppe',
+      kontext: 'Kontext',
+      teilaufgaben: [
+        {
+          id: 'ag1_a',
+          typ: 'mc',
+          fragetext: 'q',
+          optionen: [
+            { id: 'o1', text: 'A', korrekt: true, erklaerung: 'e1' },
+            { id: 'o2', text: 'B', korrekt: false, erklaerung: 'e2' },
+          ],
+        },
+      ],
+    } as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('4 Ebenen → Pass-Through bei Tiefe ≥ 3 (DEFAULT_OK)', () => {
+    const tiefe4 = {
+      id: 'ag1',
+      typ: 'aufgabengruppe',
+      fragetext: 'L1',
+      teilaufgaben: [
+        {
+          id: 'ag2',
+          typ: 'aufgabengruppe',
+          fragetext: 'L2',
+          teilaufgaben: [
+            {
+              id: 'ag3',
+              typ: 'aufgabengruppe',
+              fragetext: 'L3',
+              teilaufgaben: [
+                {
+                  id: 'ag4',
+                  typ: 'aufgabengruppe',
+                  fragetext: '',
+                  teilaufgaben: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    const r = validierePflichtfelder(tiefe4 as any)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+})
+
 describe('validierePflichtfelder — bildbeschriftung', () => {
   const gueltig = {
     id: 'b1',
