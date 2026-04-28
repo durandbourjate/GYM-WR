@@ -52,6 +52,7 @@ export interface FrageBasis {
   geteilt: 'privat' | 'fachschaft' | 'schule'
   berechtigungen?: unknown[]
   lernzielIds?: string[]
+  pruefungstauglich?: boolean
 }
 
 /** Typ-spezifische Daten — discriminated union */
