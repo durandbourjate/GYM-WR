@@ -130,8 +130,6 @@ function DragDropBildAufgabe({ frage }: { frage: DragDropBildFrageType }) {
     setSelectedLabel(prev => prev === label ? null : label) // Toggle
   }, [disabled])
 
-  const alleZugeordnet = verfuegbareLabels.length === 0
-
   const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
     ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
     : 'border-transparent'
