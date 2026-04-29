@@ -10,13 +10,10 @@
  * Diese Datei ersetzt das frühere Fat-Union-Interface in
  * `ExamLab/src/types/pool.ts:34`. Dort wird `PoolFrage` jetzt re-exportiert.
  */
-import type {
-  BuchungssatzZeile,
-  TKontoDefinition,
-  Kontenaufgabe,
-  KontoMitSaldo,
-  BilanzERLoesung,
-} from './fragen-core'
+// Storage-Frage-Types werden NICHT mehr direkt referenziert — Pool-Sub-Types
+// modellieren ab Bundle L.b das echte Pool-Rohformat (z.B. `{soll, haben, betrag}`),
+// das sich vom Storage-Format (`BuchungssatzZeile = {id, sollKonto, habenKonto, betrag}`)
+// strukturell unterscheidet. Der Konverter (poolConverter.ts) übernimmt das Mapping.
 
 // === Gemeinsame Felder aller Pool-Fragen ===
 
@@ -130,33 +127,94 @@ export interface PoolFrageZeichnen extends PoolFrageBase {
   sample?: string
 }
 
-// === FiBu-Sub-Types (abgeleitet aus poolConverter.ts:610-666) ===
+// === FiBu-Sub-Types — Pool-Rohformat aus Uebungen/Uebungspools/config/bwl_fibu.js ===
+// (Bundle L.b: Pool-Format != Storage-Format. Mapping in poolConverter.ts.)
+
+/** Pool-Konto-Eintrag in `konten[]`. Pool nutzt `nr` + `name`, optional `kategorie`. */
+export interface PoolKonto {
+  nr: string
+  name: string
+  /** Nur bei `kontenbestimmung` — sonst implizit aus Kontonummer ableitbar. */
+  kategorie?: 'aktiv' | 'passiv' | 'aufwand' | 'ertrag'
+}
+
+/** Pool-Buchung in `buchungssatz.correct[]`. Pool nutzt `soll`/`haben`. */
+export interface PoolBuchung {
+  soll: string
+  haben: string
+  betrag: number
+}
+
+/** Pool-Antwort in `kontenbestimmung.aufgaben[].correct[]`. */
+export interface PoolKontenAntwort {
+  konto?: string
+  kategorie?: 'aktiv' | 'passiv' | 'aufwand' | 'ertrag'
+  seite?: 'soll' | 'haben'
+}
+
+/** Pool-Aufgabe in `kontenbestimmung.aufgaben[]`. */
+export interface PoolKontenAufgabe {
+  text: string
+  correct?: PoolKontenAntwort[]
+}
+
+/** Pool-T-Konto-Eintrag in `tkonto.konten[].correctSoll/correctHaben`. */
+export interface PoolTKontoEintrag {
+  gegen: string
+  betrag: number
+  /** Geschäftsfall-Index (1-basiert) */
+  gf?: number
+}
+
+/** Pool-T-Konto-Saldo in `tkonto.konten[].correctSaldo`. */
+export interface PoolTKontoSaldo {
+  seite: 'soll' | 'haben'
+  betrag: number
+}
+
+/** Pool-T-Konto-Definition in `tkonto.konten[]`. */
+export interface PoolTKontoKonto {
+  nr: string
+  name: string
+  /** Anfangsbestand */
+  ab?: number
+  correctSoll?: PoolTKontoEintrag[]
+  correctHaben?: PoolTKontoEintrag[]
+  correctSaldo?: PoolTKontoSaldo
+}
+
+/** Pool-Lösung in `bilanz.correct`. */
+export interface PoolBilanzLoesung {
+  aktiven?: string[]
+  passiven?: string[]
+  bilanzsumme?: number
+}
 
 export interface PoolFrageBuchungssatz extends PoolFrageBase {
   type: 'buchungssatz'
-  /** Pool-Quelle der Buchungen → wird auf BuchungssatzFrage.buchungen gemappt */
-  correct?: BuchungssatzZeile[]
-  /** Erlaubte Konten → wird auf kontenauswahl.konten gemappt */
-  konten?: string[]
+  konten?: PoolKonto[]
+  correct?: PoolBuchung[]
 }
 
 export interface PoolFrageTKonto extends PoolFrageBase {
   type: 'tkonto'
   geschaeftsfaelle?: string[]
-  konten?: TKontoDefinition[]
+  konten?: PoolTKontoKonto[]
+  /** Optionale Liste der zur Auswahl stehenden Gegenkonten. */
+  gegenkonten?: PoolKonto[]
 }
 
 export interface PoolFrageKontenbestimmung extends PoolFrageBase {
   type: 'kontenbestimmung'
-  aufgaben?: Kontenaufgabe[]
+  konten?: PoolKonto[]
+  aufgaben?: PoolKontenAufgabe[]
 }
 
 export interface PoolFrageBilanz extends PoolFrageBase {
   type: 'bilanz'
   modus?: 'bilanz' | 'erfolgsrechnung' | 'beides'
-  kontenMitSaldi?: KontoMitSaldo[]
-  /** Pool-Quelle der Lösung → wird auf BilanzERFrage.loesung gemappt */
-  correct?: BilanzERLoesung
+  kontenMitSaldi?: { nr: string; name: string; saldo: number }[]
+  correct?: PoolBilanzLoesung
 }
 
 /**

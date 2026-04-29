@@ -41,32 +41,32 @@ describe('PoolFrage Discriminated Union', () => {
     expect(f.blanks).toHaveLength(1)
   })
 
-  it('Buchungssatz akzeptiert BuchungssatzZeile-Array in correct', () => {
+  it('Buchungssatz akzeptiert Pool-Rohformat {soll, haben, betrag}', () => {
     const f: PoolFrageBuchungssatz = {
       id: 't', topic: 'demo', diff: 1, tax: 'K1', q: 'Bezahle Miete',
       type: 'buchungssatz',
-      correct: [{ id: 'b1', sollKonto: '6000', habenKonto: '1020', betrag: 1000 }],
-      konten: ['1020', '6000'],
+      correct: [{ soll: '6000', haben: '1020', betrag: 1000 }],
+      konten: [{ nr: '1020', name: 'Bank' }, { nr: '6000', name: 'Mietaufwand' }],
     }
     expect(f.correct).toHaveLength(1)
-    expect(f.correct?.[0].sollKonto).toBe('6000')
+    expect(f.correct?.[0].soll).toBe('6000')
+    expect(f.konten?.[0].nr).toBe('1020')
   })
 
-  it('Bilanz akzeptiert kontenMitSaldi und correct als Loesung', () => {
+  it('Bilanz akzeptiert Pool-Rohformat (aktiven/passiven als Konten-Array)', () => {
     const f: PoolFrageBilanz = {
       id: 't', topic: 'demo', diff: 1, tax: 'K1', q: 'Erstelle Bilanz',
       type: 'bilanz',
       modus: 'bilanz',
-      kontenMitSaldi: [{ kontonummer: '1020', name: 'Bank', saldo: 5000 }],
+      kontenMitSaldi: [{ nr: '1020', name: 'Bank', saldo: 5000 }],
       correct: {
-        bilanz: {
-          aktivSeite: { label: 'Aktiven', gruppen: [] },
-          passivSeite: { label: 'Passiven', gruppen: [] },
-          bilanzsumme: 5000,
-        },
+        aktiven: ['1020'],
+        passiven: [],
+        bilanzsumme: 5000,
       },
     }
     expect(f.kontenMitSaldi).toHaveLength(1)
+    expect(f.correct?.aktiven).toEqual(['1020'])
   })
 
   it('Gruppe akzeptiert teilaufgaben mit Index-Signatur', () => {
