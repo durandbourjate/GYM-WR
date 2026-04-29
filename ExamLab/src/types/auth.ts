@@ -1,16 +1,10 @@
-/** Rollen basierend auf E-Mail-Domain */
+// Re-Export aus shared (keine Doppeldefinition mehr — identische Inhalte vorher)
+export type { Berechtigung, RechteStufe } from '@shared/types/auth'
+
+/** Rollen basierend auf E-Mail-Domain (ExamLab-Welt — abweichend von shared) */
 export type Rolle = 'sus' | 'lp' | 'unbekannt'
 
-/** Berechtigung für geteilte Inhalte (Google-Docs-Modell) */
-export type RechteStufe = 'betrachter' | 'bearbeiter'
-
-export interface Berechtigung {
-  email: string          // LP-Email, 'fachschaft:WR', oder '*' (schulweit)
-  recht: RechteStufe
-  name?: string          // Anzeigename (vom Backend befüllt)
-}
-
-/** Effektives Recht einer LP auf ein Item */
+/** Effektives Recht einer LP auf ein Item (ExamLab-spezifisch) */
 export type EffektivesRecht = 'inhaber' | 'bearbeiter' | 'betrachter'
 
 /** Authentifizierter Benutzer */
