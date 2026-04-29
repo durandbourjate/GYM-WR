@@ -225,7 +225,9 @@ import type {
 
 type FrageTyp = Frage['typ']
 
-const FRAGE_BASE_DEFAULTS: Omit<FrageBase, 'id' | 'tags' | 'semester' | 'gefaesse' | 'verwendungen'> & Pick<FrageBase, 'id'> = {
+// Skalare Defaults — Arrays werden in `baseDefaults()` separat erzeugt, damit jeder
+// Mock-Aufruf eigene Array-Instanzen bekommt (kein Shared-Reference-Bug).
+const FRAGE_BASE_DEFAULTS: Omit<FrageBase, 'tags' | 'semester' | 'gefaesse' | 'verwendungen'> = {
   id: 'test-frage',
   version: 1,
   erstelltAm: new Date(0).toISOString(),
@@ -580,11 +582,12 @@ npx vitest run ../packages/shared/src/editor/pflichtfeldValidation.test.ts
 
 ```bash
 grep -c "as any" packages/shared/src/editor/pflichtfeldValidation.ts
-# Erwartung: 1 (nur noch das `(frage as { typ?: unknown }).typ` im default — DAS IST KEIN as any)
-# Korrektur: das ist `as { typ?: unknown }` — KEIN as any. Erwartung: 0
+# Erwartung: 0
 ```
 
-Falls noch `as any` übrig: prüfen welche Sub-Funktion sie braucht, und ob die Funktion-Signatur weiter typisiert werden kann.
+Hinweis: Der `(frage as { typ?: unknown }).typ`-Cast im default-Branch ist KEIN `as any` (sondern `as { typ?: unknown }`) und wird vom grep nicht erfasst.
+
+Falls noch echte `as any` übrig: prüfen welche Sub-Funktion sie braucht, und ob die Funktion-Signatur weiter typisiert werden kann.
 
 - [ ] **Step 4: Commit**
 
