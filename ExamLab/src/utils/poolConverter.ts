@@ -654,7 +654,11 @@ export function konvertierePoolFrage(
         id: genId(),
         typ: (typeof teil.type === 'string' ? teil.type : 'freitext'),
         fragetext: (typeof teil.q === 'string' ? teil.q : ''),
-        punkte: berechnePunkte({ ...poolFrage, type: teil.type } as PoolFrage),
+        punkte: berechnePunkte(
+          { ...poolFrage, type: teil.type } as unknown as PoolFrage
+          /* Defensive: synthetic gruppe-Teil — teil.type ist string|undefined und
+             kann ein Wert sein, der nicht in der PoolFrageTyp-Union vorkommt. */
+        ),
         ...teil,
       }))
       const frage: AufgabengruppeFrage = {

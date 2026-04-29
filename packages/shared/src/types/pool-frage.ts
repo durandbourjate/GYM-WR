@@ -52,37 +52,27 @@ export interface PoolFrageMC extends PoolFrageBase {
   type: 'mc'
   options?: { v: string; t: string }[]
   correct?: string
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageMulti extends PoolFrageBase {
   type: 'multi'
   options?: { v: string; t: string }[]
   correct?: string[]
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageTF extends PoolFrageBase {
   type: 'tf'
   correct?: boolean
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageFill extends PoolFrageBase {
   type: 'fill'
   blanks?: { answer: string; alts?: string[] }[]
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageCalc extends PoolFrageBase {
   type: 'calc'
   rows?: { label: string; answer: number; tolerance: number; unit?: string }[]
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageSort extends PoolFrageBase {
@@ -90,23 +80,17 @@ export interface PoolFrageSort extends PoolFrageBase {
   items?: ({ t: string; cat: number } | string)[]
   categories?: string[]
   correct?: number[]
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageOpen extends PoolFrageBase {
   type: 'open'
   sample?: string
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageSortierung extends PoolFrageBase {
   type: 'sortierung'
   items?: ({ t: string; cat: number } | string)[]
   correct?: number[]
-  explain?: string
-  img?: PoolBild
 }
 
 export interface PoolFrageFormel extends PoolFrageBase {
@@ -114,31 +98,24 @@ export interface PoolFrageFormel extends PoolFrageBase {
   hints?: string[]
   sample?: string
   correct?: string
-  explain?: string
 }
 
 export interface PoolFrageHotspot extends PoolFrageBase {
   type: 'hotspot'
-  img?: PoolBild
   hotspots?: { x: number; y: number; r?: number; label?: string }[]
   /** Indices der korrekten Hotspots (in `hotspots[]`). */
   correct?: number[]
-  explain?: string
 }
 
 export interface PoolFrageBildbeschriftung extends PoolFrageBase {
   type: 'bildbeschriftung'
-  img?: PoolBild
   labels?: { id: string; text?: string; x?: number; y?: number; zone?: string }[]
-  explain?: string
 }
 
 export interface PoolFrageDragDropBild extends PoolFrageBase {
   type: 'dragdrop_bild'
-  img?: PoolBild
   zones?: { id: string; x: number; y: number; w: number; h: number }[]
   labels?: { id: string; text?: string; x?: number; y?: number; zone?: string }[]
-  explain?: string
 }
 
 export interface PoolFrageCode extends PoolFrageBase {
@@ -146,14 +123,11 @@ export interface PoolFrageCode extends PoolFrageBase {
   sprache?: string
   starterCode?: string
   sample?: string
-  explain?: string
 }
 
 export interface PoolFrageZeichnen extends PoolFrageBase {
   type: 'zeichnen'
-  img?: PoolBild
   sample?: string
-  explain?: string
 }
 
 // === FiBu-Sub-Types (abgeleitet aus poolConverter.ts:610-666) ===
@@ -164,20 +138,17 @@ export interface PoolFrageBuchungssatz extends PoolFrageBase {
   correct?: BuchungssatzZeile[]
   /** Erlaubte Konten → wird auf kontenauswahl.konten gemappt */
   konten?: string[]
-  explain?: string
 }
 
 export interface PoolFrageTKonto extends PoolFrageBase {
   type: 'tkonto'
   geschaeftsfaelle?: string[]
   konten?: TKontoDefinition[]
-  explain?: string
 }
 
 export interface PoolFrageKontenbestimmung extends PoolFrageBase {
   type: 'kontenbestimmung'
   aufgaben?: Kontenaufgabe[]
-  explain?: string
 }
 
 export interface PoolFrageBilanz extends PoolFrageBase {
@@ -186,7 +157,6 @@ export interface PoolFrageBilanz extends PoolFrageBase {
   kontenMitSaldi?: KontoMitSaldo[]
   /** Pool-Quelle der Lösung → wird auf BilanzERFrage.loesung gemappt */
   correct?: BilanzERLoesung
-  explain?: string
 }
 
 /**
@@ -204,14 +174,12 @@ export interface PoolFrageGruppe extends PoolFrageBase {
   type: 'gruppe'
   context?: string
   teil?: PoolFrageTeilaufgabe[]
-  explain?: string
 }
 
 export interface PoolFragePDF extends PoolFrageBase {
   type: 'pdf'
   /** PDF-Pool-Fragen fallen im Konverter in den Default-Branch (Freitext-Fallback). */
   pdfUrl?: string
-  explain?: string
 }
 
 // === Diskriminierte Union ===

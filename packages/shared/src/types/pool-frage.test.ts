@@ -1,6 +1,6 @@
 import { describe, it, expect, expectTypeOf } from 'vitest'
 import type {
-  PoolFrage, PoolFrageMC, PoolFrageMulti, PoolFrageTF, PoolFrageFill,
+  PoolFrage, PoolFrageMC, PoolFrageTF, PoolFrageFill,
   PoolFrageBuchungssatz, PoolFrageBilanz, PoolFrageGruppe, PoolFrageTyp,
 } from './pool-frage'
 
@@ -58,7 +58,13 @@ describe('PoolFrage Discriminated Union', () => {
       type: 'bilanz',
       modus: 'bilanz',
       kontenMitSaldi: [{ kontonummer: '1020', name: 'Bank', saldo: 5000 }],
-      correct: { bilanz: { aktiva: [], passiva: [] } },
+      correct: {
+        bilanz: {
+          aktivSeite: { label: 'Aktiven', gruppen: [] },
+          passivSeite: { label: 'Passiven', gruppen: [] },
+          bilanzsumme: 5000,
+        },
+      },
     }
     expect(f.kontenMitSaldi).toHaveLength(1)
   })
