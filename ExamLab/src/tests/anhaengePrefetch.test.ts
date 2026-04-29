@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { FrageAnhang } from '../types/fragen'
+import type { FrageAnhang } from '../types/fragen-storage'
 import { pdfPrefetchUrls } from '../utils/anhaengePrefetch'
 
 const mkAnhang = (over: Partial<FrageAnhang>): FrageAnhang => ({

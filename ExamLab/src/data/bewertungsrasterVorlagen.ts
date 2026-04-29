@@ -5,7 +5,7 @@
  * Frage-Punkte skaliert (proportional).
  */
 
-import type { Fachbereich, Bewertungskriterium } from '../types/fragen'
+import type { Fachbereich, Bewertungskriterium } from '../types/fragen-storage'
 
 // === Vorlagen-Typ ===
 

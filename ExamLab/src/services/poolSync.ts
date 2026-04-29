@@ -15,7 +15,7 @@ import type {
   LueckentextFrage,
   BerechnungFrage,
   ZuordnungFrage,
-} from '../types/fragen'
+} from '../types/fragen-storage'
 import type { PoolFrageSnapshot } from '../types/pool'
 import { konvertierePoolFrage, erzeugeSnapshot, konvertierePoolBild } from '../utils/poolConverter'
 
