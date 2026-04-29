@@ -119,5 +119,5 @@ export function mockCoreFrage<T extends FrageTyp>(
     ...subDefaults,
     typ,
     ...(overrides ?? {}),
-  } as Extract<Frage, { typ: T }>
+  } as unknown as Extract<Frage, { typ: T }>
 }
