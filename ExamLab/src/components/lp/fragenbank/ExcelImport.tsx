@@ -4,7 +4,7 @@ import { useAuthStore } from '../../../store/authStore'
 import { fachbereichFarbe, typLabel } from '../../../utils/fachUtils'
 import { parseExcelDatei, exportiereVorlage } from '../../../utils/excelImport'
 import type { ImportZeile } from '../../../utils/excelImport'
-import type { Frage } from '../../../types/fragen'
+import type { Frage } from '../../../types/fragen-storage'
 
 interface Props {
   onImportiert: (fragen: Frage[]) => void

@@ -3,7 +3,7 @@ import { useState, useCallback, useRef } from 'react'
 import { useAuthStore } from '../../../store/authStore'
 import { ladePoolIndex, ladePoolConfig, berechneDelta } from '../../../services/poolSync'
 import { apiService } from '../../../services/apiService'
-import type { Frage } from '../../../types/fragen'
+import type { Frage } from '../../../types/fragen-storage'
 import type { PoolConfig, PoolSyncErgebnis, Lernziel } from '../../../types/pool'
 
 interface Props {

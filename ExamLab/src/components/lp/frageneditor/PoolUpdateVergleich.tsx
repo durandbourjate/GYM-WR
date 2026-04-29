@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Frage } from '../../../types/fragen'
+import type { Frage } from '../../../types/fragen-storage'
 
 interface Props {
   frage: Frage

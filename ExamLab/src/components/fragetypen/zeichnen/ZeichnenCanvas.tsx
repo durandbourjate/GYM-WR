@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import type { CanvasConfig } from '../../../types/fragen';
+import type { CanvasConfig } from '../../../types/fragen-storage';
 import type { Tool, DrawCommand, Point } from './ZeichnenTypes';
 import { GROESSE_PRESETS, generiereCommandId } from './ZeichnenTypes';
 import { useDrawingEngine, findeCommandBeiPunkt } from './useDrawingEngine';

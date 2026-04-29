@@ -2,7 +2,7 @@
 // Batch-Export: Mehrere Fragen gleichzeitig in Pools exportieren
 
 import { useState, useEffect, useMemo } from 'react'
-import type { Frage } from '../../../types/fragen'
+import type { Frage } from '../../../types/fragen-storage'
 import { ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
 import { konvertiereZuPoolFormat } from '../../../utils/poolExporter'
 import { apiService } from '../../../services/apiService'

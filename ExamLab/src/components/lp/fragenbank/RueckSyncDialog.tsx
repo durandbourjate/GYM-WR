@@ -2,7 +2,7 @@
 // Zwei-Modus-Dialog: Update bestehender Pool-Fragen / Export neuer Fragen
 
 import { useState, useEffect } from 'react'
-import type { Frage } from '../../../types/fragen'
+import type { Frage } from '../../../types/fragen-storage'
 import type { RueckSyncDiffFeld } from '../../../services/poolSync'
 import { berechneRueckSyncDiff, ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
 import { konvertiereZuPoolFormat } from '../../../utils/poolExporter'
