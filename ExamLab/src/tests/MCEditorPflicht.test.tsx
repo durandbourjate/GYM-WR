@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { MCEditor } from '@shared/index'
-import type { MCOption } from '@shared/types/fragen'
+import type { MCOption } from '@shared/types/fragen-core'
 
 const baseOptionen: MCOption[] = [
   { id: 'a', text: 'Option A', korrekt: true },

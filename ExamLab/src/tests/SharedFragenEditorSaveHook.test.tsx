@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
-import type { LueckentextFrage } from '@shared/types/fragen'
+import type { LueckentextFrage } from '@shared/types/fragen-core'
 
 const baseConfig: EditorConfig = {
   benutzer: { email: 'test@gymhofwil.ch', fachschaft: 'WR' },

@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { HotspotEditor } from '@shared/index'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
-import type { HotspotBereich } from '@shared/types/fragen'
+import type { HotspotBereich } from '@shared/types/fragen-core'
 
 const baseConfig: EditorConfig = {
   benutzer: { email: 'test@gymhofwil.ch', fachschaft: 'WR' },

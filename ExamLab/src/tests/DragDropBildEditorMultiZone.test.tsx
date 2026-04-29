@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { DragDropBildEditor } from '@shared/index'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
-import type { DragDropBildZielzone, DragDropBildLabel } from '@shared/types/fragen'
+import type { DragDropBildZielzone, DragDropBildLabel } from '@shared/types/fragen-core'
 
 const baseConfig: EditorConfig = {
   benutzer: { email: 'test@gymhofwil.ch', fachschaft: 'WR' },

@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { BildbeschriftungEditor } from '@shared/index'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
-import type { BildbeschriftungLabel } from '@shared/types/fragen'
+import type { BildbeschriftungLabel } from '@shared/types/fragen-core'
 
 const baseConfig: EditorConfig = {
   benutzer: { email: 'test@gymhofwil.ch', fachschaft: 'WR' },

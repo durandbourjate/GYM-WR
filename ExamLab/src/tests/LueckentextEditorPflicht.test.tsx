@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { LueckentextEditor } from '@shared/index'
-import type { LueckentextFrage } from '@shared/types/fragen'
+import type { LueckentextFrage } from '@shared/types/fragen-core'
 
 const baseLuecken: LueckentextFrage['luecken'] = [
   { id: '1', korrekteAntworten: ['Antwort'], caseSensitive: false },

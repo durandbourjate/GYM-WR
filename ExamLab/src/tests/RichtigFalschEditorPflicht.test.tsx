@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { RichtigFalschEditor } from '@shared/index'
-import type { RichtigFalschFrage } from '@shared/types/fragen'
+import type { RichtigFalschFrage } from '@shared/types/fragen-core'
 
 const baseAussagen: RichtigFalschFrage['aussagen'] = [
   { id: '1', text: 'Erste Aussage', korrekt: true },
