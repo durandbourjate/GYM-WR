@@ -1,4 +1,5 @@
 // Pruefung/src/types/pool.ts
+import type { PoolFrage } from '@shared/types/pool-frage'
 
 /** Snapshot einer Pool-Frage für Vergleich im Update-Dialog */
 export interface PoolFrageSnapshot {
@@ -30,40 +31,19 @@ export interface PoolTopic {
   lernziele: string[]
 }
 
-/** Einzelne Pool-Frage (Rohformat aus JS-Config) */
-export interface PoolFrage {
-  id: string
-  topic: string
-  type: 'mc' | 'multi' | 'tf' | 'fill' | 'calc' | 'sort' | 'open'
-    | 'sortierung' | 'formel' | 'hotspot' | 'bildbeschriftung' | 'dragdrop_bild' | 'code'
-    | 'zeichnen' | 'buchungssatz' | 'tkonto' | 'kontenbestimmung' | 'bilanz' | 'gruppe' | 'pdf'
-  diff: number
-  tax: string
-  q: string
-  reviewed?: boolean
-  options?: { v: string; t: string }[]
-  correct?: string | string[] | boolean | number[]
-  explain?: string
-  blanks?: { answer: string; alts?: string[] }[]
-  rows?: { label: string; answer: number; tolerance: number; unit?: string }[]
-  categories?: string[]
-  items?: ({ t: string; cat: number } | string)[]
-  sample?: string
-  img?: { src: string; alt?: string }
-  // Sortierung
-  // items: string[] + correct: number[] (korrekte Reihenfolge als Indices)
-  // Hotspot
-  hotspots?: { x: number; y: number; r?: number; label?: string }[]
-  // Bildbeschriftung
-  labels?: { id: string; text?: string; x?: number; y?: number; zone?: string }[]
-  // DragDrop Bild
-  zones?: { id: string; x: number; y: number; w: number; h: number }[]
-  // Formel
-  hints?: string[]
-  // Code
-  sprache?: string
-  starterCode?: string
-}
+/**
+ * Einzelne Pool-Frage (Rohformat aus JS-Config).
+ * Ab Bundle L.b: Discriminated Union — siehe `@shared/types/pool-frage`.
+ */
+export type {
+  PoolFrage, PoolFrageTyp, PoolFrageBase, PoolBild,
+  PoolFrageMC, PoolFrageMulti, PoolFrageTF, PoolFrageFill, PoolFrageCalc,
+  PoolFrageSort, PoolFrageOpen, PoolFrageSortierung, PoolFrageFormel,
+  PoolFrageHotspot, PoolFrageBildbeschriftung, PoolFrageDragDropBild,
+  PoolFrageCode, PoolFrageZeichnen,
+  PoolFrageBuchungssatz, PoolFrageTKonto, PoolFrageKontenbestimmung,
+  PoolFrageBilanz, PoolFrageGruppe, PoolFragePDF, PoolFrageTeilaufgabe,
+} from '@shared/types/pool-frage'
 
 /** Geparstes Pool-Config-Ergebnis */
 export interface PoolConfig {
