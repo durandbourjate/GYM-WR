@@ -8,6 +8,31 @@
 
 ## Letzter Stand auf main
 
+### Bundle L.b — poolConverter (PoolFrage Discriminated Union) 🟡 IN REVIEW
+
+**Branch:** `refactor/bundle-l-b-pool-converter` (29.04.2026). 1122/1122 vitest (+9 vs L.a 1113), tsc + build clean.
+
+**Geliefert:**
+- `packages/shared/src/types/pool-frage.ts` (neu, ~220 Zeilen) — `PoolFrage` als Discriminated Union mit 20 Sub-Types (`PoolFrageMC`, `PoolFrageBuchungssatz`, ...). FiBu-Sub-Type-Felder aus `poolConverter.ts:610-666` abgeleitet (Strategie a aus Spec). `explain` und `img` als gemeinsame Base-Felder (Snapshot/Hash-Funktionen ohne Switch).
+- `packages/shared/src/types/pool-frage.test.ts` (neu, 9 Tests inkl. Discriminator-Narrowing, FiBu-Felder, exhaustive-Switch).
+- `ExamLab/src/types/pool.ts`: Fat-Union-Interface ersetzt durch Re-Export aus `@shared/types/pool-frage` (mit allen 20 Sub-Type-Aliases).
+- `ExamLab/src/utils/poolConverter.ts`: 19 → 0 `as any`. Switch-Bodies in `berechnePunkte`/`schaetzeZeitbedarf`/`konvertierePoolFrage` direkt typisiert (Discriminator-Narrowing). `erzeugeSnapshot` mit `'X' in poolFrage`-Guards (vor-Switch-Lesepfad).
+- `ExamLab/src/utils/poolConverter.test.ts`: 7 → 0 `as any`. Inline-Test-Fixtures typisiert mit `PoolFrageDragDropBild` + `PoolMeta` + `PoolTopic`. Output-Casts via if-throw-Narrowing entfernt.
+- `ExamLab/src/services/poolSync.ts`: `berechneContentHash` mit `'X' in frage`-Guards für 7 Sub-Type-spezifische Felder (vorher fat-union-Direktzugriff).
+
+**Audit-Stand:** 96 → 71 (-25). 26 Defensive-Marker unverändert. 45 undokumentierte verbleiben (alle in L.c-Scope).
+
+**Strategie-Entscheidung:** (a) Discriminated Union — gewählt, weil Pool-Format seit S107 stabil + klar `type`-diskriminiert. (b) Type-Guards verworfen (mehr Boilerplate, kein automatisches Narrowing). (c) zod verworfen (overkill, externe Dep, statische Pool-Daten ohne Runtime-Mehrwert).
+
+**Lehren:**
+1. **Discriminated Union erfordert vor-Switch-Lesepfade auf `'X' in frage`-Guards umzustellen.** Der `erzeugeSnapshot`/`berechneContentHash`-Pattern (lese alle Felder generisch) klappt mit Fat-Union, aber bricht bei Discriminated Union. Lösung: Common-Felder (`explain`, `img`) ins Base-Interface; Sub-Type-spezifische Felder mit `'X' in frage` defensiv prüfen. Verbose, aber type-safe.
+2. **`PoolFrageHotspot.correct` war ein versteckter Pool-Felder-Audit-Miss.** Aktueller Konverter (`Z. 478`) liest `poolFrage.correct` als `number[]` (Indices der korrekten Hotspots), was im alten fat-union-Type auch da war. Beim Discriminated-Union-Schreiben übersehen → tsc-Error im poolConverter. Korrigiert mit `correct?: number[]` im PoolFrageHotspot.
+
+**Offen (User-Tasks für Merge-Freigabe):**
+- Browser-E2E mit echten Logins (Pool-Sync, FiBu-Pool-Importe, Pool-Frage-Hash-Berechnung) — siehe Test-Plan unten.
+
+---
+
 ### Bundle L.a — Mock-Helper + pflichtfeldValidation-Pilot ✅ MERGED
 
 **Branch:** `refactor/bundle-l-a-mock-helper-pflichtfeld` (29.04.2026). 1113/1113 vitest (+15 vs main 1098), tsc + build clean.
