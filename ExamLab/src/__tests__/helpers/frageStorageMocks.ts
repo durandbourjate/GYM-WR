@@ -16,5 +16,5 @@ export function mockFrage<T extends Frage['typ']>(
   // Core liefert mit tags: string[]. Storage akzeptiert (string | Tag)[]
   // strukturell — leeres Array ist zuweisbar. Sub-Type-Felder sind identisch.
   const core = mockCoreFrage(typ, overrides as never)
-  return core as unknown as Extract<Frage, { typ: T }>
+  return core as unknown as Extract<Frage, { typ: T }> /* Defensive: Core→Storage Layer-Boundary, tags-Type ist breiter */
 }

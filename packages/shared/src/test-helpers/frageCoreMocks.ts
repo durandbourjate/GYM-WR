@@ -119,5 +119,5 @@ export function mockCoreFrage<T extends FrageTyp>(
     ...subDefaults,
     typ,
     ...(overrides ?? {}),
-  } as unknown as Extract<Frage, { typ: T }>
+  } as unknown as Extract<Frage, { typ: T }> /* Defensive: TS kann Spread-Result nicht zur diskriminierten Union narrowen */
 }
