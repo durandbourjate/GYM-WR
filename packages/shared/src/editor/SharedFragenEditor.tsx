@@ -514,7 +514,7 @@ export default function SharedFragenEditor({
 
   // Sharing (Google-Docs-Modell)
   const [geteilt, setGeteilt] = useState<'privat' | 'fachschaft' | 'schule'>(frage?.geteilt ?? 'privat')
-  const [berechtigungen, setBerechtigungen] = useState<Berechtigung[]>((frage?.berechtigungen as Berechtigung[] | undefined) ?? [])
+  const [berechtigungen, setBerechtigungen] = useState<Berechtigung[]>(frage?.berechtigungen ?? [])
 
   // Anhänge
   const [anhaenge, setAnhaenge] = useState<FrageAnhang[]>(frage?.anhaenge ?? [])
