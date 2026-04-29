@@ -91,15 +91,15 @@ export function berechnePunkte(pf: PoolFrage): number {
     case 'zeichnen':
       return 3
     case 'buchungssatz':
-      return ((pf as any).correct?.length ?? 1) * 2
+      return (pf.correct?.length ?? 1) * 2
     case 'tkonto':
-      return ((pf as any).geschaeftsfaelle?.length ?? 1) * 2
+      return (pf.geschaeftsfaelle?.length ?? 1) * 2
     case 'kontenbestimmung':
-      return ((pf as any).aufgaben?.length ?? 1) * 2
+      return (pf.aufgaben?.length ?? 1) * 2
     case 'bilanz':
-      return ((pf as any).kontenMitSaldi?.length ?? 4)
+      return (pf.kontenMitSaldi?.length ?? 4)
     case 'gruppe':
-      return ((pf as any).teil?.length ?? 1) * 2
+      return (pf.teil?.length ?? 1) * 2
     default:
       return 1
   }
@@ -137,15 +137,15 @@ export function schaetzeZeitbedarf(pf: PoolFrage): number {
     case 'zeichnen':
       return 4
     case 'buchungssatz':
-      return ((pf as any).correct?.length ?? 1) * 3
+      return (pf.correct?.length ?? 1) * 3
     case 'tkonto':
-      return ((pf as any).geschaeftsfaelle?.length ?? 1) * 3
+      return (pf.geschaeftsfaelle?.length ?? 1) * 3
     case 'kontenbestimmung':
-      return ((pf as any).aufgaben?.length ?? 1) * 2
+      return (pf.aufgaben?.length ?? 1) * 2
     case 'bilanz':
       return 5
     case 'gruppe':
-      return ((pf as any).teil?.length ?? 1) * 3
+      return (pf.teil?.length ?? 1) * 3
     default:
       return 2
   }
@@ -195,10 +195,10 @@ export function erzeugeSnapshot(poolFrage: PoolFrage): PoolFrageSnapshot {
     schwierigkeit: poolFrage.diff || 2,
   }
 
-  if (poolFrage.options !== undefined) snapshot.optionen = poolFrage.options
-  if (poolFrage.correct !== undefined) snapshot.korrekt = poolFrage.correct
+  if ('options' in poolFrage && poolFrage.options !== undefined) snapshot.optionen = poolFrage.options
+  if ('correct' in poolFrage && poolFrage.correct !== undefined) snapshot.korrekt = poolFrage.correct
   if (poolFrage.explain !== undefined) snapshot.erklaerung = poolFrage.explain
-  if (poolFrage.sample !== undefined) snapshot.musterlosung = poolFrage.sample
+  if ('sample' in poolFrage && poolFrage.sample !== undefined) snapshot.musterlosung = poolFrage.sample
 
   // Typ-spezifische Felder
   if (poolFrage.type === 'fill' && poolFrage.blanks !== undefined) {
@@ -265,7 +265,7 @@ export function konvertierePoolFrage(
     tags: [poolFrage.topic, `diff:${poolFrage.diff}`],
 
     punkte: berechnePunkte(poolFrage),
-    musterlosung: poolFrage.explain ?? poolFrage.sample ?? '',
+    musterlosung: poolFrage.explain ?? ('sample' in poolFrage ? poolFrage.sample : undefined) ?? '',
     bewertungsraster: [] as import('../types/fragen-storage').Bewertungskriterium[],
 
     schwierigkeit: poolFrage.diff,
@@ -589,14 +589,28 @@ export function konvertierePoolFrage(
     }
 
     // bilanz → BilanzERFrage
+    // Pool-Format: { aktiven: string[], passiven: string[], bilanzsumme }
+    // Storage-Format: BilanzERLoesung mit BilanzStruktur (aktivSeite/passivSeite/bilanzsumme)
     case 'bilanz': {
+      const aktivKonten = poolFrage.correct?.aktiven ?? []
+      const passivKonten = poolFrage.correct?.passiven ?? []
       const frage: BilanzERFrage = {
         ...basis,
         typ: 'bilanzstruktur',
         aufgabentext: poolFrage.q,
-        modus: (poolFrage as any).modus ?? 'bilanz',
-        kontenMitSaldi: (poolFrage as any).kontenMitSaldi ?? [],
-        loesung: (poolFrage as any).correct ?? {},
+        modus: poolFrage.modus ?? 'bilanz',
+        kontenMitSaldi: (poolFrage.kontenMitSaldi ?? []).map((k) => ({
+          kontonummer: k.nr,
+          name: k.name,
+          saldo: k.saldo,
+        })),
+        loesung: {
+          bilanz: {
+            aktivSeite: { label: 'Aktiven', gruppen: [{ label: 'Aktiven', konten: aktivKonten }] },
+            passivSeite: { label: 'Passiven', gruppen: [{ label: 'Passiven', konten: passivKonten }] },
+            bilanzsumme: poolFrage.correct?.bilanzsumme ?? 0,
+          },
+        },
         bewertungsoptionen: {
           seitenbeschriftung: true, gruppenbildung: true, gruppenreihenfolge: true,
           kontenreihenfolge: true, betraegeKorrekt: true, zwischentotale: true,
@@ -607,26 +621,59 @@ export function konvertierePoolFrage(
     }
 
     // buchungssatz → BuchungssatzFrage
+    // Pool-Format: correct: [{soll, haben, betrag}], konten: [{nr, name}]
+    // Storage-Format: buchungen: [{id, sollKonto, habenKonto, betrag}], kontenauswahl.konten: string[]
     case 'buchungssatz': {
       const frage: BuchungssatzFrage = {
         ...basis,
         typ: 'buchungssatz',
         geschaeftsfall: poolFrage.q,
-        buchungen: (poolFrage as any).correct ?? [],
-        kontenauswahl: { modus: 'eingeschraenkt' as const, konten: (poolFrage as any).konten ?? [] },
+        buchungen: (poolFrage.correct ?? []).map((b) => ({
+          id: genId(),
+          sollKonto: b.soll,
+          habenKonto: b.haben,
+          betrag: b.betrag,
+        })),
+        kontenauswahl: {
+          modus: 'eingeschraenkt' as const,
+          konten: (poolFrage.konten ?? []).map((k) => k.nr),
+        },
       }
       return frage
     }
 
     // tkonto → TKontoFrage
+    // Pool-Format: konten: [{nr, name, ab, correctSoll, correctHaben, correctSaldo}]
+    // Storage-Format: konten: TKontoDefinition[] mit eintraege: TKontoEintrag[]
     case 'tkonto': {
       const frage: TKontoFrage = {
         ...basis,
         typ: 'tkonto',
         aufgabentext: poolFrage.q,
-        geschaeftsfaelle: (poolFrage as any).geschaeftsfaelle ?? [],
-        konten: (poolFrage as any).konten ?? [],
-        kontenauswahl: { modus: 'voll' },
+        geschaeftsfaelle: poolFrage.geschaeftsfaelle ?? [],
+        konten: (poolFrage.konten ?? []).map((k) => ({
+          id: genId(),
+          kontonummer: k.nr,
+          anfangsbestand: k.ab,
+          anfangsbestandVorgegeben: k.ab !== undefined,
+          eintraege: [
+            ...(k.correctSoll ?? []).map((e) => ({
+              seite: 'soll' as const,
+              gegenkonto: e.gegen,
+              betrag: e.betrag,
+            })),
+            ...(k.correctHaben ?? []).map((e) => ({
+              seite: 'haben' as const,
+              gegenkonto: e.gegen,
+              betrag: e.betrag,
+            })),
+          ],
+          saldo: k.correctSaldo ?? { betrag: 0, seite: 'soll' as const },
+        })),
+        kontenauswahl: {
+          modus: 'eingeschraenkt' as const,
+          konten: (poolFrage.gegenkonten ?? []).map((k) => k.nr),
+        },
         bewertungsoptionen: {
           beschriftungSollHaben: true, kontenkategorie: true,
           zunahmeAbnahme: true, buchungenKorrekt: true, saldoKorrekt: true,
@@ -636,31 +683,48 @@ export function konvertierePoolFrage(
     }
 
     // kontenbestimmung → KontenbestimmungFrage
+    // Pool-Format: aufgaben: [{text, correct: [{konto, seite}]}]
+    // Storage-Format: aufgaben: [{id, text, erwarteteAntworten: [{kontonummer, seite}]}]
     case 'kontenbestimmung': {
       const frage: KontenbestimmungFrage = {
         ...basis,
         typ: 'kontenbestimmung',
         aufgabentext: poolFrage.q,
         modus: 'gemischt',
-        aufgaben: (poolFrage as any).aufgaben ?? [],
-        kontenauswahl: { modus: 'voll' },
+        aufgaben: (poolFrage.aufgaben ?? []).map((a) => ({
+          id: genId(),
+          text: a.text,
+          erwarteteAntworten: (a.correct ?? []).map((c) => ({
+            kontonummer: c.konto,
+            kategorie: c.kategorie,
+            seite: c.seite,
+          })),
+        })),
+        kontenauswahl: {
+          modus: 'eingeschraenkt' as const,
+          konten: (poolFrage.konten ?? []).map((k) => k.nr),
+        },
       }
       return frage
     }
 
     // gruppe → AufgabengruppeFrage (Teilaufgaben inline)
     case 'gruppe': {
-      const teilaufgaben = ((poolFrage as any).teil ?? []).map((teil: any) => ({
+      const teilaufgaben = (poolFrage.teil ?? []).map((teil) => ({
         id: genId(),
-        typ: teil.type ?? 'freitext',
-        fragetext: teil.q ?? '',
-        punkte: berechnePunkte({ ...poolFrage, type: teil.type } as PoolFrage),
+        typ: (typeof teil.type === 'string' ? teil.type : 'freitext'),
+        fragetext: (typeof teil.q === 'string' ? teil.q : ''),
+        punkte: berechnePunkte(
+          { ...poolFrage, type: teil.type } as unknown as PoolFrage
+          /* Defensive: synthetic gruppe-Teil — teil.type ist string|undefined und
+             kann ein Wert sein, der nicht in der PoolFrageTyp-Union vorkommt. */
+        ),
         ...teil,
       }))
       const frage: AufgabengruppeFrage = {
         ...basis,
         typ: 'aufgabengruppe',
-        kontext: `${poolFrage.q}${(poolFrage as any).context ? '\n\n' + (poolFrage as any).context : ''}`,
+        kontext: `${poolFrage.q}${poolFrage.context ? '\n\n' + poolFrage.context : ''}`,
         teilaufgaben,
       }
       return frage

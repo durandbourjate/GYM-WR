@@ -103,17 +103,21 @@ export async function ladePoolConfig(dateiname: string): Promise<PoolConfig> {
  * Wird für Änderungserkennung beim Sync verwendet.
  */
 export async function berechneContentHash(frage: PoolFrage): Promise<string> {
+  // Discriminated Union (Bundle L.b): Sub-Type-spezifische Felder mit
+  // `'X' in frage`-Guards lesen, damit kein `as any`-Cast nötig ist.
+  // REIHENFOLGE STABIL — Apps-Script `berechnePoolContentHash` (apps-script-code.js:195)
+  // muss die identische Field-Order erzeugen, sonst divergieren Sync-Hashes.
   const inhalt = {
     q: frage.q,
     type: frage.type,
     explain: frage.explain,
-    options: frage.options,
-    correct: frage.correct,
-    blanks: frage.blanks,
-    rows: frage.rows,
-    categories: frage.categories,
-    items: frage.items,
-    sample: frage.sample,
+    options: 'options' in frage ? frage.options : undefined,
+    correct: 'correct' in frage ? frage.correct : undefined,
+    blanks: 'blanks' in frage ? frage.blanks : undefined,
+    rows: 'rows' in frage ? frage.rows : undefined,
+    categories: 'categories' in frage ? frage.categories : undefined,
+    items: 'items' in frage ? frage.items : undefined,
+    sample: 'sample' in frage ? frage.sample : undefined,
     img: frage.img,
   }
 
