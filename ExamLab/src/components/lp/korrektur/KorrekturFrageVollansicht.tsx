@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react'
 import DOMPurify from 'dompurify'
-import type { Frage, FrageAnhang } from '../../../types/fragen-storage'
-
-// Storage-Varianten der Fragetypen via Extract<Frage, ...> — damit narrowing aus
-// der Storage-Union die `tags: (string|Tag)[]` + `_recht` + `poolVersion` Felder
-// behält. Direkter Import der named Types liefert Core-Varianten (Tags=string[]),
-// die strukturell inkompatibel sind.
-type MCFrage = Extract<Frage, { typ: 'mc' }>
-type RichtigFalschFrage = Extract<Frage, { typ: 'richtigfalsch' }>
-type LueckentextFrage = Extract<Frage, { typ: 'lueckentext' }>
-type ZuordnungFrage = Extract<Frage, { typ: 'zuordnung' }>
-type BerechnungFrage = Extract<Frage, { typ: 'berechnung' }>
-type KontenbestimmungFrage = Extract<Frage, { typ: 'kontenbestimmung' }>
-type HotspotFrage = Extract<Frage, { typ: 'hotspot' }>
-type BildbeschriftungFrage = Extract<Frage, { typ: 'bildbeschriftung' }>
-type DragDropBildFrage = Extract<Frage, { typ: 'dragdrop_bild' }>
+import type {
+  Frage,
+  FrageAnhang,
+  MCFrage,
+  RichtigFalschFrage,
+  LueckentextFrage,
+  ZuordnungFrage,
+  BerechnungFrage,
+  KontenbestimmungFrage,
+  HotspotFrage,
+  BildbeschriftungFrage,
+  DragDropBildFrage,
+} from '../../../types/fragen-storage'
 import type { Antwort } from '../../../types/antworten'
 import type { KorrekturErgebnis } from '../../../utils/autoKorrektur'
 import MediaAnhang from '../../MediaAnhang.tsx'

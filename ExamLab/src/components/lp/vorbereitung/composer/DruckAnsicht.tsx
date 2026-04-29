@@ -227,26 +227,26 @@ function DruckAnhaenge({ anhaenge }: { anhaenge: FrageAnhang[] }) {
 
 function FrageInhalt({ frage }: { frage: Frage }) {
   switch (frage.typ) {
-    case 'mc': return <MCDruck frage={frage as MCFrage} />
-    case 'richtigfalsch': return <RichtigFalschDruck frage={frage as RichtigFalschFrage} />
-    case 'freitext': return <FreitextDruck frage={frage as FreitextFrage} />
-    case 'lueckentext': return <LueckentextDruck frage={frage as LueckentextFrage} />
-    case 'zuordnung': return <ZuordnungDruck frage={frage as ZuordnungFrage} />
-    case 'berechnung': return <BerechnungDruck frage={frage as BerechnungFrage} />
-    case 'buchungssatz': return <BuchungssatzDruck frage={frage as BuchungssatzFrage} />
-    case 'tkonto': return <TKontoDruck frage={frage as TKontoFrage} />
-    case 'kontenbestimmung': return <KontenbestimmungDruck frage={frage as KontenbestimmungFrage} />
-    case 'bilanzstruktur': return <BilanzDruck frage={frage as BilanzERFrage} />
-    case 'aufgabengruppe': return <AufgabengruppeDruck frage={frage as AufgabengruppeFrage} />
-    case 'sortierung': return <SortierungDruck frage={frage as SortierungFrage} />
+    case 'mc': return <MCDruck frage={frage} />
+    case 'richtigfalsch': return <RichtigFalschDruck frage={frage} />
+    case 'freitext': return <FreitextDruck frage={frage} />
+    case 'lueckentext': return <LueckentextDruck frage={frage} />
+    case 'zuordnung': return <ZuordnungDruck frage={frage} />
+    case 'berechnung': return <BerechnungDruck frage={frage} />
+    case 'buchungssatz': return <BuchungssatzDruck frage={frage} />
+    case 'tkonto': return <TKontoDruck frage={frage} />
+    case 'kontenbestimmung': return <KontenbestimmungDruck frage={frage} />
+    case 'bilanzstruktur': return <BilanzDruck frage={frage} />
+    case 'aufgabengruppe': return <AufgabengruppeDruck frage={frage} />
+    case 'sortierung': return <SortierungDruck frage={frage} />
     case 'visualisierung': return <ZeichenDruck />
     case 'pdf': return <PDFHinweis />
     case 'audio': return <DigitalHinweis typ="Audio-Aufnahme" />
     case 'code': return <CodeDruck />
     case 'formel': return <FormelDruck />
-    case 'hotspot': return <HotspotDruck frage={frage as HotspotFrage} />
-    case 'bildbeschriftung': return <BildbeschriftungDruck frage={frage as BildbeschriftungFrage} />
-    case 'dragdrop_bild': return <DragDropBildDruck frage={frage as DragDropBildFrage} />
+    case 'hotspot': return <HotspotDruck frage={frage} />
+    case 'bildbeschriftung': return <BildbeschriftungDruck frage={frage} />
+    case 'dragdrop_bild': return <DragDropBildDruck frage={frage} />
     default: return null
   }
 }

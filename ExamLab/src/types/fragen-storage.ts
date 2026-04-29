@@ -5,7 +5,7 @@
 // Tag-Objekte (Tag mit Farbe/Ebene) zusätzlich zu blossen string-Tags.
 
 import type * as Core from '@shared/types/fragen-core'
-import type { EffektivesRecht } from './auth'
+import type { EffektivesRecht, Berechtigung } from './auth'
 import type { Tag } from './tags'
 import type { PoolFrageSnapshot } from './pool'
 
@@ -31,37 +31,68 @@ export interface FrageBase extends Omit<Core.FrageBase, 'tags'> {
 export type WithStorageBase<T extends Core.Frage> =
   Omit<T, keyof Core.FrageBase> & FrageBase
 
+// ============================================================
+// Storage-Sub-Types
+// ============================================================
+//
+// Jeder Core-Fragetyp wird hier als Storage-Variante exportiert. Damit
+// liefert `import { MCFrage } from '.../fragen-storage'` automatisch die
+// Storage-Variante (mit Tag-Objekten, _recht, poolVersion) — kein
+// `Extract<Frage, {typ:'mc'}>`-Alias mehr nötig in den Caller-Files.
+//
+// HINWEIS: Bei neuem Core-Fragetyp hier UND in der `Frage`-Union unten Arm
+// ergänzen. TS fängt das nicht automatisch — Storage.Frage hätte den Typ
+// sonst stillschweigend nicht.
+
+export type MCFrage = WithStorageBase<Core.MCFrage>
+export type FreitextFrage = WithStorageBase<Core.FreitextFrage>
+export type ZuordnungFrage = WithStorageBase<Core.ZuordnungFrage>
+export type LueckentextFrage = WithStorageBase<Core.LueckentextFrage>
+export type VisualisierungFrage = WithStorageBase<Core.VisualisierungFrage>
+export type RichtigFalschFrage = WithStorageBase<Core.RichtigFalschFrage>
+export type BerechnungFrage = WithStorageBase<Core.BerechnungFrage>
+export type BuchungssatzFrage = WithStorageBase<Core.BuchungssatzFrage>
+export type TKontoFrage = WithStorageBase<Core.TKontoFrage>
+export type KontenbestimmungFrage = WithStorageBase<Core.KontenbestimmungFrage>
+export type BilanzERFrage = WithStorageBase<Core.BilanzERFrage>
+export type AufgabengruppeFrage = WithStorageBase<Core.AufgabengruppeFrage>
+export type PDFFrage = WithStorageBase<Core.PDFFrage>
+export type SortierungFrage = WithStorageBase<Core.SortierungFrage>
+export type HotspotFrage = WithStorageBase<Core.HotspotFrage>
+export type BildbeschriftungFrage = WithStorageBase<Core.BildbeschriftungFrage>
+export type AudioFrage = WithStorageBase<Core.AudioFrage>
+export type DragDropBildFrage = WithStorageBase<Core.DragDropBildFrage>
+export type CodeFrage = WithStorageBase<Core.CodeFrage>
+export type FormelFrage = WithStorageBase<Core.FormelFrage>
+
 /**
  * Storage-Variante der diskriminierten Frage-Union.
  *
  * Strukturell kompatibel zu Core.Frage für alle Core-Felder, aber typisiert
  * mit der Storage-Erweiterung (FrageBase mit `tags: (string | Tag)[]`,
  * `_recht`, `poolVersion`).
- *
- * HINWEIS: Bei neuem Core-Fragetyp hier Arm ergänzen — TS fängt das nicht
- * automatisch (Storage.Frage hätte den Typ sonst stillschweigend nicht).
  */
 export type Frage =
-  | WithStorageBase<Core.MCFrage>
-  | WithStorageBase<Core.FreitextFrage>
-  | WithStorageBase<Core.ZuordnungFrage>
-  | WithStorageBase<Core.LueckentextFrage>
-  | WithStorageBase<Core.VisualisierungFrage>
-  | WithStorageBase<Core.RichtigFalschFrage>
-  | WithStorageBase<Core.BerechnungFrage>
-  | WithStorageBase<Core.BuchungssatzFrage>
-  | WithStorageBase<Core.TKontoFrage>
-  | WithStorageBase<Core.KontenbestimmungFrage>
-  | WithStorageBase<Core.BilanzERFrage>
-  | WithStorageBase<Core.AufgabengruppeFrage>
-  | WithStorageBase<Core.PDFFrage>
-  | WithStorageBase<Core.SortierungFrage>
-  | WithStorageBase<Core.HotspotFrage>
-  | WithStorageBase<Core.BildbeschriftungFrage>
-  | WithStorageBase<Core.AudioFrage>
-  | WithStorageBase<Core.DragDropBildFrage>
-  | WithStorageBase<Core.CodeFrage>
-  | WithStorageBase<Core.FormelFrage>
+  | MCFrage
+  | FreitextFrage
+  | ZuordnungFrage
+  | LueckentextFrage
+  | VisualisierungFrage
+  | RichtigFalschFrage
+  | BerechnungFrage
+  | BuchungssatzFrage
+  | TKontoFrage
+  | KontenbestimmungFrage
+  | BilanzERFrage
+  | AufgabengruppeFrage
+  | PDFFrage
+  | SortierungFrage
+  | HotspotFrage
+  | BildbeschriftungFrage
+  | AudioFrage
+  | DragDropBildFrage
+  | CodeFrage
+  | FormelFrage
 
 /**
  * Leichtgewichtige Frage-Zusammenfassung für Listenansicht (~200 Bytes statt ~1500).
@@ -94,15 +125,76 @@ export interface FrageSummary {
   hatMaterial: boolean
   schwierigkeit?: number
   fach: string
-  berechtigungen?: import('./auth').Berechtigung[]
+  berechtigungen?: Berechtigung[]
   _recht?: EffektivesRecht
   lernzielIds?: string[]
   semester?: string[]
   gefaesse?: string[]
 }
 
-// Re-Export aller Editor-Types aus Core, damit Storage-Caller nur EINE Datei
-// importieren müssen. `export type *` (TS 5.0+) re-exportiert alle Type-Exports
-// von Core automatisch — vermeidet brüchige named-export-Listen, die bei
-// neuen Sub-Types nachgepflegt werden müssten.
-export type * from '@shared/types/fragen-core'
+// ============================================================
+// Helper-Types aus Core re-exportieren
+// ============================================================
+//
+// Alle Nicht-Sub-Type-Exports von Core werden hier weitergereicht, damit
+// Caller nur EINE Datei importieren müssen. Sub-Types (MCFrage etc.) und
+// die `Frage`-Union sind oben mit Storage-Semantik überschrieben.
+
+export type {
+  // Anhang & Bewertung
+  FrageAnhang,
+  Bewertungskriterium,
+  Niveaustufe,
+  Verwendung,
+  // Diskriminatoren / Enums
+  Fachbereich,
+  Gefaess,
+  BloomStufe,
+  // MC / Lückentext / Zuordnung / Berechnung
+  MCOption,
+  Luecke,
+  ZuordnungPaar,
+  // Visualisierung
+  DiagrammConfig,
+  DiagrammElement,
+  CanvasConfig,
+  // FiBu
+  Kontenkategorie,
+  KontenauswahlConfig,
+  BuchungsKonto,
+  BuchungssatzZeile,
+  SollHabenZeile,
+  TKontoEintrag,
+  TKontoDefinition,
+  TKontoBewertung,
+  KontenAntwort,
+  Kontenaufgabe,
+  KontoMitSaldo,
+  BilanzGruppe,
+  BilanzStruktur,
+  ERStufe,
+  ERStruktur,
+  BilanzERLoesung,
+  BilanzERBewertung,
+  // Aufgabengruppe
+  InlineTeilaufgabe,
+  // PDF
+  PDFAnnotationsWerkzeug,
+  PDFToolbarWerkzeug,
+  PDFKategorie,
+  PDFTextRange,
+  PDFHighlightAnnotation,
+  PDFKommentarAnnotation,
+  PDFFreihandAnnotation,
+  PDFLabelAnnotation,
+  PDFTextAnnotation,
+  PDFAnnotation,
+  // Sortierung / Bild-Fragetypen
+  HotspotBereich,
+  BildbeschriftungLabel,
+  DragDropBildZielzone,
+  DragDropBildLabel,
+  // Sonstige
+  Lernziel,
+  FragenPerformance,
+} from '@shared/types/fragen-core'

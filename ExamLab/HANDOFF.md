@@ -8,6 +8,22 @@
 
 ## Letzter Stand auf main
 
+### Bundle K-Followup — Storage-Sub-Type-Hygiene ✅ MERGED
+
+**Branch:** `refactor/bundle-k-followup` (29.04.2026). 1098/1098 vitest, tsc + build clean.
+
+**Geliefert:**
+- `fragen-storage.ts`: `export type *` durch explizite Helper-Re-Export-Liste ersetzt; 20 Storage-Sub-Types (`MCFrage = WithStorageBase<Core.MCFrage>` etc.) zentral exportiert. `Frage`-Union nutzt jetzt die zentralen Aliases statt inline `WithStorageBase<...>`.
+- `FrageSummary.berechtigungen` von Inline-Type-Expression (`import('./auth').Berechtigung[]`) auf Top-Level-Import umgestellt.
+- `autoKorrektur.ts`, `fibuAutoKorrektur.ts`, `KorrekturFrageVollansicht.tsx`: 23 lokale `Extract<Frage, {typ:'X'}>`-Aliase entfernt — direkt aus `fragen-storage` importiert.
+- `DruckAnsicht.tsx`: 16 `frage as XFrage`-Casts im Typ-Dispatcher entfernt (TS-narrowing der Storage-Frage-Union liefert die korrekten Sub-Types automatisch). Kein `alsCoreFrage<T>`-Helper nötig.
+
+**Item 3 (leereEingabenDetektor auf core) als obsolet eingestuft:** Der Wechsel würde alle Caller (8 SuS-Komponenten) auf Core-Frage-Casts zwingen, weil Storage's `tags: (string | Tag)[]` strukturell nicht zuweisbar ist an Core's `tags: string[]`. Der Helper liest weder `tags` noch `_recht`/`poolVersion` — semantisch ist der SuS-Pfad sauber.
+
+**Lehre für künftige Type-Migrationen:** Wenn ein Storage-Type strukturell breiter ist als der Core-Type (z.B. erweiterter Tag-Union), ist der Storage-Type NICHT zuweisbar an Core. Helper, die nur Schnittmengen-Felder lesen, bleiben deshalb sinnvollerweise auf der Storage-Variante getypt — ein Wechsel auf Core braucht entweder Pick-basierte Schmal-Types oder Generic-Constraints, was die API verkompliziert.
+
+---
+
 ### Bundle K — Type-Konsolidierung Frage Core + Storage ✅ MERGED
 
 **Merge:** `de01e01` auf `main` (29.04.2026). 16 Commits Feature-Arbeit auf `refactor/type-konsolidierung-frage-core-storage` (Branch gelöscht). Audit-Files (Phase 0) post-Merge entfernt.
@@ -34,34 +50,19 @@
 3. **`fragen-storage` re-exportet via `export type *` Core-Sub-Type-Namen mit Core-Tags** — `MCFrage` etc. aus fragen-storage sind die Core-Variante (string-tags), nicht Storage. Storage-Caller die narrow Sub-Types brauchen, müssen `Extract<Frage, {typ:'mc'}>`-Aliase oder explizite `WithStorageBase<Core.MCFrage>`-Exports nutzen. Dokumentiert in 3 Files (autoKorrektur.ts, fibuAutoKorrektur.ts, KorrekturFrageVollansicht.tsx).
 4. **Storage-Felder sind nicht in shared erlaubt** — `poolVersion?: unknown` darf NICHT in fragen-core wieder eingebaut werden, auch wenn ein TS-Fehler an einem Callback-Boundary „nur ein Feld" verlangt. Lösung ist Cast am Callback-Boundary (Spec Risiko-Mitigation #3), nicht Storage-Feld-Leak in Core.
 
-**Tech-Debt aus Code-Review (post-Merge-Bundles):**
-- DruckAnsicht.tsx 11 Casts könnten via `alsCoreFrage<T>`-Helper konsolidiert werden
-- `Extract<Frage, {typ:'X'}>`-Aliases als zentrale Storage-Sub-Type-Exports in fragen-storage exportieren
-- `leereEingabenDetektor.ts` könnte direkt auf `@shared/types/fragen-core` (SuS-Pfad)
-- Inline `import('./auth').Berechtigung[]` in FrageSummary auf top-of-file-Import-Style
+**Tech-Debt aus Code-Review:** Erledigt durch Bundle K-Followup (siehe oben) — Items 1, 2, 4 umgesetzt; Item 3 (`leereEingabenDetektor` auf core) als obsolet eingestuft.
 
 ---
 
 ## Eintrittspunkte für nächste Session
 
-Bundle K ist abgeschlossen. Drei Optionen für die nächste Session — Kosten/Nutzen-Vergleich:
+Bundle K + Followup sind abgeschlossen. Zwei verbleibende Optionen:
 
-### Option A: Bundle K-Nachzügler (klein, ~30 min, easy win)
-Die 4 Tech-Debt-Items aus dem Bundle-K-Code-Review als kleines Hygiene-Bundle umsetzen:
-1. Storage-Sub-Type-Exports in `fragen-storage.ts` zentralisieren (eliminiert 23 `Extract<Frage, …>`-Aliase in 3 Files)
-2. `alsCoreFrage<T>`-Helper für DruckAnsicht (11 Casts → 1 Helper)
-3. `leereEingabenDetektor.ts` Import direkt auf `@shared/types/fragen-core` (SuS-Pfad-Hygiene)
-4. FrageSummary-Inline-Import-Style begradigen
-
-Vorgehen: direkter Implementierungs-Sweep ohne Brainstorming, keine Backend-Änderung, kein Apps-Script-Deploy. Branch `refactor/bundle-k-followup`. Test: tsc + vitest, kein Browser-E2E nötig (rein interner Refactor).
-
-### Option B: `as any`-Cleanup-Bundle (mittel, ~1 Session)
+### Option B: `as any`-Cleanup-Bundle (mittel, ~1 Session) ← USER-WAHL ALS NÄCHSTES
 72 `as any`-Stellen in der Codebase (von 58 gewachsen, siehe `code-quality.md`). Eigenes Hygiene-Bundle. Brainstorming → Plan → Implementation. Reduziert TypeScript-Untyped-Surface, fängt potenzielle Bugs.
 
 ### Option C: Media-Phase-3-5 Dual-Write (groß, ~3-4 Sessions)
 `MediaQuelle`-Type ist in shared definiert, aber Apps-Script kennt ihn nicht. Echte Migration: Backend liest+schreibt beide Formate (`bildUrl`/`pdfBase64` UND `MediaQuelle`), Frontend-Migrator existiert (`mediaQuelleMigrator.ts`). Apps-Script-Deploy nötig. Phase 6 (alte Felder weg, Daten-Migration) als separates Bundle danach.
-
-**Empfehlung:** Option A als Auftakt-Aufgabe — schließt Bundle K sauber ab und ist in <1h erledigt. Danach Option B oder C je nach User-Priorität.
 
 ---
 

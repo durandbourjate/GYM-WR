@@ -2,22 +2,19 @@
  * Auto-Korrektur-Engine für deterministische Fragetypen.
  * Nicht-deterministische Typen (freitext, visualisierung, pdf) → null (manuelle Korrektur).
  */
-import type { Frage } from '../types/fragen-storage'
-
-// Narrow-Helper-Aliases: Storage-Varianten extrahieren wir aus der Storage-Union,
-// damit Sub-Funktionen automatisch die `tags: (string|Tag)[]` + `_recht` + `poolVersion`
-// Felder akzeptieren. Direkter Import von `MCFrage` etc. aus fragen-storage liefert
-// die Core-Varianten (re-exportiert via `export type *`), die strukturell inkompatibel sind.
-type MCFrage = Extract<Frage, { typ: 'mc' }>
-type RichtigFalschFrage = Extract<Frage, { typ: 'richtigfalsch' }>
-type LueckentextFrage = Extract<Frage, { typ: 'lueckentext' }>
-type ZuordnungFrage = Extract<Frage, { typ: 'zuordnung' }>
-type BerechnungFrage = Extract<Frage, { typ: 'berechnung' }>
-type SortierungFrage = Extract<Frage, { typ: 'sortierung' }>
-type HotspotFrage = Extract<Frage, { typ: 'hotspot' }>
-type BildbeschriftungFrage = Extract<Frage, { typ: 'bildbeschriftung' }>
-type DragDropBildFrage = Extract<Frage, { typ: 'dragdrop_bild' }>
-type FormelFrage = Extract<Frage, { typ: 'formel' }>
+import type {
+  Frage,
+  MCFrage,
+  RichtigFalschFrage,
+  LueckentextFrage,
+  ZuordnungFrage,
+  BerechnungFrage,
+  SortierungFrage,
+  HotspotFrage,
+  BildbeschriftungFrage,
+  DragDropBildFrage,
+  FormelFrage,
+} from '../types/fragen-storage'
 import type { Antwort } from '../types/antworten'
 import { korrigiereBuchungssatz, korrigiereTKonto, korrigiereKontenbestimmung, korrigiereBilanzER } from './fibuAutoKorrektur'
 import { normalisiereLatex } from './latexRenderer'
