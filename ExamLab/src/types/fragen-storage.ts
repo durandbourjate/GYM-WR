@@ -3,9 +3,6 @@
 // Storage-Erweiterung der Editor-Types aus `@shared/types/fragen-core`.
 // Ergänzt Backend-berechnete Felder (`_recht`, `poolVersion`) und erlaubt
 // Tag-Objekte (Tag mit Farbe/Ebene) zusätzlich zu blossen string-Tags.
-//
-// Bundle K Phase 2: Diese Datei lebt parallel zur alten `fragen.ts`. Migration
-// der Konsumenten-Imports erfolgt in Phase 3-5.
 
 import type * as Core from '@shared/types/fragen-core'
 import type { EffektivesRecht } from './auth'
