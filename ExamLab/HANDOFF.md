@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Bundle L.b — poolConverter (Discriminated Union + FiBu-Konverter-Bugfix) 🟡 IN REVIEW
+### Bundle L.b — poolConverter (Discriminated Union + FiBu-Konverter-Bugfix) ✅ MERGED
 
-**Branch:** `refactor/bundle-l-b-pool-converter` (29.04.2026). 1127/1127 vitest (+14 vs L.a 1113), tsc + build clean.
+**Merge:** `9ed67db` auf `main` (29.04.2026). Branch `refactor/bundle-l-b-pool-converter` (gelöscht). 1127/1127 vitest (+14 vs L.a 1113), tsc + build clean.
 
 **Geliefert (Type-Cleanup):**
 - `packages/shared/src/types/pool-frage.ts` (neu, ~250 Zeilen) — `PoolFrage` als Discriminated Union mit 20 Sub-Types. `explain` und `img` als gemeinsame Base-Felder. **FiBu-Sub-Types modellieren das echte Pool-Rohformat**, nicht das Storage-Format (siehe M1-Fix unten).

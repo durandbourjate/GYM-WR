@@ -14,7 +14,7 @@ Bei neuen Features: Prüfe ob eine bestehende Datei über 800 Zeilen wächst. Fa
 ## TypeScript-Strenge
 
 - **Build-Check VOR jedem Commit: `npx tsc -b` (NICHT `tsc --noEmit`!)** — `tsc -b` entspricht dem CI. `tsc --noEmit` ist weniger streng und findet nicht alle Fehler. Gilt für Pruefung UND Unterrichtsplaner.
-- Kein neues `as any` einführen (aktuell 58 Stellen — nicht erhöhen)
+- Kein neues `as any` einführen (aktuell 71 Stellen, davon 26 dokumentierte Defensive-Marker — nicht erhöhen). Bundle L.c soll auf 0 undokumentierte Stellen + CI-Gate.
 - Neue Funktionen: explizite Parameter- und Return-Types
 - `JSON.parse()` immer in try/catch wrappen und Rückgabetyp validieren
 
@@ -223,6 +223,39 @@ async function unwrap<T>(result: { success?: boolean; data?: unknown } | null): 
 ```
 
 **Merkregel:** Die TS-Signatur `postJson<FooType>(...)` ist eine Lüge. Immer so lesen als ob sie `postJson<Response<FooType>>` wäre.
+
+## `as any` versteckt nicht nur Type-Lücken, sondern Daten-Mapping-Bugs (Bundle L.b)
+
+**Problem:** Beim Cleanup von `as any`-Stellen reicht es nicht, nur die Type-Annotation zu reparieren. Der Cast kann auch maskieren, dass die Daten-Form auf den beiden Seiten des Casts strukturell unterschiedlich ist.
+
+**Konkret aufgetreten (Bundle L.b, poolConverter.ts):** Der alte Code schrieb Pool-Daten direkt in Storage-Felder:
+```ts
+// Pool-Format: {soll, haben, betrag}
+// Storage-Format: {id, sollKonto, habenKonto, betrag}
+buchungen: (poolFrage as any).correct ?? []  // ❌ schreibt {soll,haben,betrag} in {sollKonto,habenKonto}
+```
+
+Compile-Zeit war stumm (`as any` schluckt alles). Zur Runtime las der Korrektur-Code `frage.buchungen[0].sollKonto` → `undefined`, weil das Feld `soll` heisst. Resultat: jede SuS-Antwort wurde als „Soll-Konto falsch" gewertet.
+
+Der Bug war seit S107 latent und wurde erst beim Discriminated-Union-Refactor sichtbar — TypeScript zeigte plötzlich `Property 'sollKonto' does not exist on type 'PoolBuchung'`, was den Mismatch entlarvt.
+
+**Regel:** Beim Entfernen eines `as any` IMMER prüfen:
+
+1. **Was wird gelesen?** (Pool-Frage, externe API-Response, Storage-Frage, ...)
+2. **Was wird daraus geschrieben?** (Komponenten-Prop, Storage-Feld, anderes Datenmodell?)
+3. **Stimmen die Feldnamen und Typen 1:1 überein?**
+   - Wenn ja → Cast ist nur Type-Lücke, kann sicher entfernt werden
+   - Wenn nein → es gibt einen Mapping-Bug, der vom `as any` versteckt wurde. Erst Mapping fixen (mit explizitem Field-Translation), dann Type-Sicherheit herstellen.
+
+**Faustregel:** Wenn die Pool-Form / API-Form / Storage-Form structural anders aussehen, gehören sie in **getrennte Types** mit explizitem Konverter. Niemals den Cast „durch-shippen" — sonst ist Defensive-Marker das einzig Ehrliche, und das Problem wandert in die Caller.
+
+**Audit-Pattern für künftige Bundle-L.x-Stellen:**
+```bash
+# Pro Datei: was ist die Quell-Form, was ist die Ziel-Form?
+grep -B2 -A4 "as any" <file>
+```
+
+Lies die Quelle (z.B. Pool-Config-File) UND das Ziel (Storage-Type-Definition) parallel. Bei Diskrepanz: Mapping-Bug, kein reiner Type-Refactor.
 
 ## React-Hooks vor Early-Returns (S130 Hotfix)
 
