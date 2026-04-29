@@ -6,20 +6,27 @@
 
 ---
 
-## Aktiv offen
+## Letzter Stand auf main
 
-### Bundle K — Type-Konsolidierung Frage Core + Storage (Phase 5 abgeschlossen, Phase 6 Browser-E2E offen)
+### Bundle K — Type-Konsolidierung Frage Core + Storage ✅ MERGED
 
-**Status:** Phase 0-5 implementiert auf Branch `refactor/type-konsolidierung-frage-core-storage` (HEAD `ce74af9`). 13 Commits. tsc -b clean, vitest 1098 passes, npm run build erfolgreich. **Browser-E2E-Test ausstehend, dann Merge auf main.**
+**Merge:** Bundle K auf `main` (Merge-Commit folgt). 16 Commits Feature-Arbeit auf `refactor/type-konsolidierung-frage-core-storage`.
 
 **Geliefert:**
 - `packages/shared/src/types/fragen-core.ts` (kanonische Editor-Types in shared, 699 Z.)
-- `ExamLab/src/types/fragen-storage.ts` (Storage-Erweiterung mit `WithStorageBase<T>`-Helper, 111 Z.)
+- `ExamLab/src/types/fragen-storage.ts` (Storage-Erweiterung mit `WithStorageBase<T>`-Helper, 108 Z.)
 - `ExamLab/src/types/auth.ts` re-exportet `Berechtigung`/`RechteStufe` aus `@shared/types/auth`
 - Alte `packages/shared/src/types/fragen.ts` + `ExamLab/src/types/fragen.ts` gelöscht
-- index.ts re-exportet nur noch fragen-core (single-export wegen TS2308-Ambiguität bei Dual-Export)
+- index.ts re-exportet nur fragen-core (single-export wegen TS2308-Ambiguität bei Dual-Export)
 
 **Cut-Entscheidung umgesetzt:** `berechtigungen`/`geteilt`/`autor` in core (Editor-Felder), nur `_recht`/`poolVersion` storage-only. `tags: string[]` in core, `tags: (string|Tag)[]` in storage. Strukturelles Subtyping erlaubt Storage-Frage als Editor-Input ohne Mapping; an einer Stelle (`PruefungFragenEditor.poolSyncSlot`) Cast am Callback-Boundary nötig.
+
+**E2E-Verifikation auf staging mit echten Logins:**
+- LP-Fragensammlung lädt 2363 Fragen, Tags rendern, Filter funktionieren
+- MC-Editor öffnet sauber: Pflichtfeld-Outlines violett, Pool-Info-Slot, Sharing-Badge
+- prev/next-Navigation synchronisiert (S129-Regel intakt)
+- SuS-Üben-Modus: MC-Frage Auto-Korrektur funktioniert, Musterlösung mit C9-Phase-2-Layout
+- Privacy: SuS-UI rendert keine Storage-Felder (Pool-Info, Sharing fehlen wie erwartet)
 
 **Lehren aus der Implementation (für künftige Type-Migrationen):**
 1. **Audit-Pattern muss Extension- und inline-import-Varianten erfassen** — Phase-0-Audit `from '...types/fragen'` (single-quote-Ende) hat ~95 Files mit `.ts`-Extension verpasst (`from '../types/fragen.ts'`) und alle inline `import('...types/fragen').X`-Type-Expressions. Phase 5 musste die nachziehen. Künftig: Pattern-Set mit `'`, `.ts'`, `.tsx'`, `.js'` UND `import\\(['"`]` einbeziehen.
@@ -27,38 +34,15 @@
 3. **`fragen-storage` re-exportet via `export type *` Core-Sub-Type-Namen mit Core-Tags** — `MCFrage` etc. aus fragen-storage sind die Core-Variante (string-tags), nicht Storage. Storage-Caller die narrow Sub-Types brauchen, müssen `Extract<Frage, {typ:'mc'}>`-Aliase oder explizite `WithStorageBase<Core.MCFrage>`-Exports nutzen. Dokumentiert in 3 Files (autoKorrektur.ts, fibuAutoKorrektur.ts, KorrekturFrageVollansicht.tsx).
 4. **Storage-Felder sind nicht in shared erlaubt** — `poolVersion?: unknown` darf NICHT in fragen-core wieder eingebaut werden, auch wenn ein TS-Fehler an einem Callback-Boundary „nur ein Feld" verlangt. Lösung ist Cast am Callback-Boundary (Spec Risiko-Mitigation #3), nicht Storage-Feld-Leak in Core.
 
-**Bundle K Browser-E2E Test-Plan**
+**Tech-Debt aus Code-Review (post-Merge-Bundles):**
+- DruckAnsicht.tsx 11 Casts könnten via `alsCoreFrage<T>`-Helper konsolidiert werden
+- `Extract<Frage, {typ:'X'}>`-Aliases als zentrale Storage-Sub-Type-Exports in fragen-storage exportieren
+- `leereEingabenDetektor.ts` könnte direkt auf `@shared/types/fragen-core` (SuS-Pfad)
+- Inline `import('./auth').Berechtigung[]` in FrageSummary auf top-of-file-Import-Style
 
-Setup:
-- Tab-Gruppe LP (`wr.test@gymhofwil.ch`) + SuS (`wr.test@stud.gymhofwil.ch`)
-- Echte Logins, kein Demo-Modus
-- Branch `refactor/type-konsolidierung-frage-core-storage` auf `origin/preview` deployen (force-push mit `--force-with-lease`)
+---
 
-Zu testende Pfade (Type-Refactor — Verhalten unverändert erwartet):
-
-**LP-Pfade:**
-- [ ] Fragensammlung öffnen — alle 20 Fragetypen einmal im Editor öffnen
-- [ ] Pflichtfeld-Outlines erscheinen wo erwartet
-- [ ] prev/next-Navigation: Felder synchronisieren (S129-Regel mit `key={frage.id}`)
-- [ ] Berechtigungs-Editor öffnen, Sharing setzen, speichern
-- [ ] Tag mit Farbe + String-Tag: beide rendern korrekt
-- [ ] Korrektur-Vollansicht: 1 Frage pro Typ-Gruppe (Bild/Drag, FiBu, Standard) — Bewertungsraster + Teilerklärungen sichtbar
-- [ ] PoolSync-Button: Frage aus Pool öffnen, „An Pool"-Button erscheint (wenn `poolVersion` vorhanden)
-
-**SuS-Pfade:**
-- [ ] 1 Frage pro Typ-Gruppe im Üben-Modus lösen + Auto-Korrektur
-- [ ] Heartbeat speichert (Network-Tab beobachten)
-- [ ] Abgabe persistiert
-
-**Security-Check (Network-Tab):**
-- [ ] SuS-API-Response: KEINE `_recht`/`berechtigungen` (sind LP-only)
-- [ ] LP-API-Response: `berechtigungen` + `_recht` durchgereicht
-- [ ] Tag-Objekte mit `farbe`/`ebene` rendern bei LP, nicht bei SuS
-
-**Eintrittspunkt nächste Session:**
-1. Branch auf preview pushen + User testet im Browser per Test-Plan oben
-2. Bei Erfolg: Pre-Merge-Checks + Merge auf main (Phase 7 Task 16)
-3. Bei Issues: Hotfix-Loop, dann erneut testen
+## Aktiv offen
 
 ### Kleine Follow-Ups (nicht blockierend)
 
