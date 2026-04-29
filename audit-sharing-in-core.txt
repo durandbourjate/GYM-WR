@@ -1,0 +1,3 @@
+packages/shared/src/editor/SharedFragenEditor.tsx:516:  const [geteilt, setGeteilt] = useState<'privat' | 'fachschaft' | 'schule'>(frage?.geteilt ?? 'privat')
+packages/shared/src/editor/SharedFragenEditor.tsx:517:  const [berechtigungen, setBerechtigungen] = useState<Berechtigung[]>((frage?.berechtigungen as Berechtigung[] | undefined) ?? [])
+packages/shared/src/editor/SharedFragenEditor.tsx:783:      autor: frage?.autor ?? config.benutzer.email,
