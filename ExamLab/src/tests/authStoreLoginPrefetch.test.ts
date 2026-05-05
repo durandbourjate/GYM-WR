@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 const ladeMock = vi.fn(async () => {})
 const resetMock = vi.fn(async () => {})
 
-vi.mock('../store/fragenbankStore', () => ({
+vi.mock('../store/fragensammlungStore', () => ({
   useFragensammlungStore: {
     getState: () => ({ lade: ladeMock, reset: resetMock }),
   },
@@ -109,7 +109,7 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     vi.useRealTimers()
   })
 
-  it('anmelden() triggert fragenbankStore.lade mit user.email', async () => {
+  it('anmelden() triggert fragensammlungStore.lade mit user.email', async () => {
     await useAuthStore.getState().anmelden(credential)
     expect(ladeMock).toHaveBeenCalledTimes(1)
     expect(ladeMock).toHaveBeenCalledWith('lp@gymhofwil.ch')
@@ -144,7 +144,7 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     consoleSpy.mockRestore()
   })
 
-  it('abmelden() awaitet fragenbankStore.reset (Privacy-Garantie vor Hard-Nav)', async () => {
+  it('abmelden() awaitet fragensammlungStore.reset (Privacy-Garantie vor Hard-Nav)', async () => {
     useAuthStore.setState({
       user: { email: 'lp@gymhofwil.ch', name: 'Test', vorname: 'T', nachname: 'L', rolle: 'lp' },
       istDemoModus: false,
@@ -203,7 +203,7 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     expect(useAuthStore.getState().user).toBeNull()
   })
 
-  it('anmelden() (LP) feuert Pre-Fetch für Fragenbank + Klassenlisten + Gruppen', async () => {
+  it('anmelden() (LP) feuert Pre-Fetch für Fragensammlung + Klassenlisten + Gruppen', async () => {
     await useAuthStore.getState().anmelden(credential)
     expect(ladeMock).toHaveBeenCalledWith('lp@gymhofwil.ch')
     expect(klassenlistenLadeMock).toHaveBeenCalledWith('lp@gymhofwil.ch')
@@ -236,17 +236,17 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     expect(abgeschlossen).toBe(true)
     expect(klassenlistenResetMock).toHaveBeenCalledTimes(1)
     expect(gruppenResetMock).toHaveBeenCalledTimes(1)
-    expect(resetMock).toHaveBeenCalledTimes(1) // Fragenbank-reset auch
+    expect(resetMock).toHaveBeenCalledTimes(1) // Fragensammlung-reset auch
   })
 
-  it('anmeldenMitCode() (SuS) feuert nur Gruppen-Pre-Fetch (NICHT Klassenlisten, NICHT Fragenbank)', async () => {
+  it('anmeldenMitCode() (SuS) feuert nur Gruppen-Pre-Fetch (NICHT Klassenlisten, NICHT Fragensammlung)', async () => {
     await useAuthStore.getState().anmeldenMitCode('S123', 'Test SuS', 'sus@stud.gymhofwil.ch', 'tok')
     expect(gruppenLadeMock).toHaveBeenCalledWith('sus@stud.gymhofwil.ch')
     expect(klassenlistenLadeMock).not.toHaveBeenCalled()
     expect(ladeMock).not.toHaveBeenCalled()
   })
 
-  it('anmelden() (SuS via Google-Login) feuert nur Gruppen, NICHT Fragenbank/Klassenlisten (LP-only)', async () => {
+  it('anmelden() (SuS via Google-Login) feuert nur Gruppen, NICHT Fragensammlung/Klassenlisten (LP-only)', async () => {
     // SuS-Email-Domain → rolleAusDomain returnt 'sus' bevor LP-Liste geprüft wird.
     // Ohne Rollen-Guard würde Backend 403 für ladeKlassenlisten/ladeFragenbank schicken
     // (silent-fail catch + Console-Warning bei jedem SuS-Google-Login).
@@ -260,6 +260,6 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
     await useAuthStore.getState().anmelden(susCredential)
     expect(gruppenLadeMock).toHaveBeenCalledWith('student@stud.gymhofwil.ch')
     expect(klassenlistenLadeMock).not.toHaveBeenCalled()
-    expect(ladeMock).not.toHaveBeenCalled() // Fragenbank
+    expect(ladeMock).not.toHaveBeenCalled() // Fragensammlung
   })
 })

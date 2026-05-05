@@ -2,7 +2,7 @@
  * Bundle 3 P-C.4: beforeunload-Listener-Test
  *
  * Isolierter Test mit TestComponent — vermeide Full-LPStartseite-Mock
- * wegen zu vieler Deps (auth, fragenbank, router, etc.)
+ * wegen zu vieler Deps (auth, fragensammlung, router, etc.)
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render } from '@testing-library/react'
