@@ -43,13 +43,26 @@ Erweiterung der Frage-Storage-Type um drei Felder (in `ExamLab/src/types/fragen-
 
 ```ts
 interface FrageMitDraftLifecycle {
-  status: 'draft' | 'sammlung'        // bisher implizit, jetzt explizit
+  status: 'draft' | 'sammlung'        // REQUIRED mit Default 'sammlung' für Backfill
   geloescht_am: string | null         // ISO-Timestamp für Soft-Delete (Papierkorb)
   // existing: autor, geteilt, pruefungstauglich (bleiben unverändert)
 }
 ```
 
-`pruefungstauglich` bleibt orthogonal: eine Sammlung-Frage darf `pruefungstauglich=false` sein (LP-Begutachtung), ist aber strukturell vollständig.
+`status` ist **required** (nicht optional) — Bundle-L-Lehre „Vaporware-Type-Union vermeiden". Default `'sammlung'` für Migration aller existierenden Fragen. `pruefungstauglich` bleibt orthogonal: eine Sammlung-Frage darf `pruefungstauglich=false` sein (LP-Begutachtung), ist aber strukturell vollständig.
+
+**Sheet-Schema:** Aktuelles Fragen-Sheet hat `A1:T1` (20 Spalten). Bundle 3 erweitert auf `A1:V1` (22 Spalten):
+- Spalte U: `status` (`'draft'` | `'sammlung'`)
+- Spalte V: `geloescht_am` (ISO-String oder leer)
+
+**Migration-Reihenfolge** (zwingend in dieser Reihenfolge):
+1. Manuelles Google-Sheets-Backup (Memory S136 C9-Lehre)
+2. Header-Erweiterung Spalte U+V via Apps-Script-Job
+3. Backfill alle existing Rows: `status='sammlung'`, `geloescht_am=''`
+4. Verify per Stichprobe (3 Fragen)
+5. Endpoints aktivieren
+
+**Vollständigkeits-Trigger (draft↔sammlung): Server ist Authority.** Client zeigt UI-Hinweis (amber-Status) basierend auf lokaler `pflichtfeldValidation`, finaler `status`-Wert wird aber nach jedem Server-Sync aus der Response übernommen. Server-side `istVollstaendig_(frage)` (analog `pflichtfeldValidation`-Logik portiert) ist die einzige Quelle für Status-Wechsel.
 
 ### State-Machine
 
@@ -93,7 +106,7 @@ LP klickt „+ Neue Frage":
 | Tippen | debounced 1s update | debounced 10s sync | grau „Speichert…" / grün „✓ Gespeichert" |
 | Pflichtfelder OK | — | server-side `status: 'sammlung'` | grün „✓ Gespeichert" |
 | Pflichtfeld gelöscht | update | sync `status: 'draft'` | amber „📝 Entwurf — Pflichtfelder fehlen: …" |
-| Editor schließen | letzter sync await | finale Sync vor close | spinner kurz |
+| Editor schließen | letzter sync await | finale Sync vor close (max 3s spinner-block, dann silent close + background sync mit Toast „wird im Hintergrund gespeichert") | spinner kurz, max 3s |
 | Verwerfen-Klick | IDB-Eintrag löschen | `geloescht_am=now` (Soft-Delete in Papierkorb) | nichts (UI schließt) |
 | Wiederherstellen | — | `geloescht_am=null` | Frage zurück in Drafts/Sammlung |
 
@@ -172,9 +185,9 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 - `ExamLab/src/services/draftApi.ts` (neu) — API-Adapter, 4 Endpoints
 - `ExamLab/src/services/draftSync.ts` (neu) — Hybrid IDB+Server mit debounce + Retry
 - `ExamLab/src/hooks/useDirtyTracker.ts` (neu) — boolean state, app-weiter Tracker im store
-- `ExamLab/src/hooks/useAutoSave.ts` (neu) — Editor-Hook, kombiniert Tracker + draftSync
+- `ExamLab/src/hooks/useFragenAutoSave.ts` (neu) — Editor-Hook, kombiniert Tracker + draftSync. Naming bewusst spezifisch (nicht `useAutoSave`), um Verwechslung mit existing `services/autoSave.ts` (SuS-Antworten-Bundle G.c) zu vermeiden.
 - `ExamLab/src/store/draftStore.ts` (neu) — globaler State für aktive Drafts (für UI-Liste + beforeunload)
-- `packages/shared/src/editor/SharedFragenEditor.tsx` — `useAutoSave` integrieren, Save-Button durch Status-Indikator ersetzen
+- `packages/shared/src/editor/SharedFragenEditor.tsx` — `useFragenAutoSave` integrieren, Save-Button durch Status-Indikator ersetzen
 - `packages/shared/src/editor/components/SaveStatusIndikator.tsx` (neu) — 5 Zustände
 - `packages/shared/src/editor/components/SchliessenModal.tsx` (neu) — bei unvollständig
 - `ExamLab/src/components/lp/fragenbank/DraftsSection.tsx` (neu) — Drafts-Sektion in Fragensammlung
@@ -199,7 +212,7 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 
 ### Tests
 
-- **Unit:** `useDirtyTracker`, `useAutoSave`, `draftSync` (debounce, retry, conflict-resolution)
+- **Unit:** `useDirtyTracker`, `useFragenAutoSave`, `draftSync` (debounce, retry, conflict-resolution). BroadcastChannel via `vi.mock` gestubt (jsdom-Support begrenzt), echter Multi-Tab-Test nur in E2E.
 - **Unit:** `draftApi` (alle 4 Endpoints, Mocking via `vi.mock`)
 - **Unit:** Status-Migration-Logik (`istVollstaendig_` ↔ `pflichtfeldValidation`)
 - **Component:** `SaveStatusIndikator` (5 Zustände)
@@ -224,7 +237,7 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 - **Cross-User-Konflikt-Resolution** (versionierung, merge): last-write-wins für Phase 1
 - **Versions-History pro Frage** (Edit-Log)
 - **Offline-Modus** (Service-Worker, Background-Sync) — separates Bundle, PWA-Ebene
-- **Bundle für PruefungsComposer / Stammdaten / Korrektur-Vollansicht**: gleicher Pattern, eigenes Bundle 4 (kann denselben `useAutoSave`-Hook wiederverwenden)
+- **Bundle für PruefungsComposer / Stammdaten / Korrektur-Vollansicht**: gleicher Pattern, eigenes Bundle 4 (kann denselben `useFragenAutoSave`-Hook wiederverwenden)
 - **Auto-Cleanup-Drafts nach 30 Tagen**: Phase-2-Add-On, optional
 - **Server-Side-`istVollstaendig_` als Single-Source**: aktuell Frontend `pflichtfeldValidation` + Server-side-Doppel-Check. Konsolidierung in Phase 2
 
@@ -238,12 +251,12 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 2. **Phase B — Service-Layer**
    - draftApi.ts (Adapter)
    - draftSync.ts (Hybrid IDB+Server mit debounce + Retry)
-   - useDirtyTracker, useAutoSave Hooks
+   - useDirtyTracker, useFragenAutoSave Hooks
    - draftStore (global)
    - Tests
 
 3. **Phase C — Editor-Integration**
-   - SharedFragenEditor: useAutoSave einbinden
+   - SharedFragenEditor: useFragenAutoSave einbinden
    - SaveStatusIndikator
    - SchliessenModal
    - app-weiter beforeunload + Logout-IDB-Cleanup
