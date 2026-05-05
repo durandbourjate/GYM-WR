@@ -3702,9 +3702,166 @@ function ergaenzeFehlendeKontenInAuswahl_(frage) {
   frage.kontenauswahl.konten = Object.keys(set);
 }
 
+/**
+ * Server-side Vollständigkeits-Check (Bundle 3).
+ * Authoritativ für draft|sammlung-Status. Thin: nur strukturelle Basics + Sub-Type-Pflicht-Marker.
+ * Frontend pflichtfeldValidation.ts ist Source-of-Truth fürs UI-Feedback (amber-Status).
+ */
+function istVollstaendig_(frage) {
+  if (!frage || typeof frage !== 'object') return false;
+
+  // Basics — gelten für jeden Typ
+  if (!frage.thema || String(frage.thema).trim() === '') return false;
+  if (!frage.fach || String(frage.fach).trim() === '') return false;
+  if (!frage.fachbereich || String(frage.fachbereich).trim() === '') return false;
+  var punkte = Number(frage.punkte);
+  if (!(punkte > 0)) return false;
+  var fragetext = frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '';
+  if (!fragetext || String(fragetext).trim() === '') return false;
+
+  // Sub-Type-Pflicht-Marker — nur strukturelle Checks (Array-Length / Key-Existenz),
+  // KEINE Item-Inhalt-Mappings (Frontend pflichtfeldValidation.ts ist UI-Source-of-Truth).
+  switch (frage.typ) {
+    case 'mc': {
+      if (!Array.isArray(frage.optionen) || frage.optionen.length < 2) return false;
+      var hatKorrekt = frage.optionen.some(function(o) { return o && o.korrekt === true; });
+      return hatKorrekt;
+    }
+    case 'richtigfalsch':
+      return Array.isArray(frage.aussagen) && frage.aussagen.length >= 1;
+    case 'lueckentext':
+      return Array.isArray(frage.luecken) && frage.luecken.length >= 1;
+    case 'zuordnung':
+      return Array.isArray(frage.paare) && frage.paare.length >= 2;
+    case 'sortierung':
+      return Array.isArray(frage.elemente) && frage.elemente.length >= 2;
+    case 'freitext':
+      return typeof frage.musterlosung === 'string' && frage.musterlosung.trim().length > 0;
+    case 'berechnung':
+      return Array.isArray(frage.ergebnisse) && frage.ergebnisse.length >= 1;
+    case 'buchungssatz':
+      return Array.isArray(frage.buchungen) && frage.buchungen.length >= 1;
+    case 'tkonto':
+      return Array.isArray(frage.konten) && frage.konten.length >= 1;
+    case 'kontenbestimmung':
+      return Array.isArray(frage.aufgaben) && frage.aufgaben.length >= 1;
+    case 'bilanzstruktur':
+      return Number(frage.korrektBilanzsumme) > 0
+        && Array.isArray(frage.kontenMitSaldi) && frage.kontenMitSaldi.length >= 1;
+    case 'hotspot':
+      return !!frage.bildUrl && Array.isArray(frage.bereiche) && frage.bereiche.length >= 1;
+    case 'bildbeschriftung':
+      return !!frage.bildUrl && Array.isArray(frage.beschriftungen) && frage.beschriftungen.length >= 1;
+    case 'dragdrop_bild':
+      return !!frage.bildUrl
+        && Array.isArray(frage.zielzonen) && frage.zielzonen.length >= 1
+        && Array.isArray(frage.labels) && frage.labels.length >= 1;
+    case 'pdf':
+      return !!(frage.pdfUrl || frage.bildUrl);
+    case 'audio':
+      return typeof frage.maxDauerSekunden === 'number' && frage.maxDauerSekunden > 0;
+    case 'visualisierung':
+      return !!frage.canvasConfig
+        && Array.isArray(frage.canvasConfig.werkzeuge)
+        && frage.canvasConfig.werkzeuge.length >= 1;
+    case 'code':
+      return !!frage.programmiersprache;
+    case 'formel':
+      return typeof frage.musterlosung === 'string' && frage.musterlosung.trim().length > 0;
+    case 'aufgabengruppe':
+      return Array.isArray(frage.teilaufgaben) && frage.teilaufgaben.length >= 1;
+    default:
+      // Unbekannter Typ: rückwärts-kompatibel als vollständig behandeln
+      return true;
+  }
+}
+
+/**
+ * Pure-Helper für speichereFrage (Bundle 3).
+ * KEINE Auth-Checks, KEINE Body-Validation, KEIN Kalibrierungs-Feedback —
+ * der Wrapper speichereFrage erledigt das. Direkt aufrufbar von Test-Shims (Phase A.6).
+ *
+ * @param {Object} frage
+ * @param {string} email
+ * @returns {{ success: true, id: string, status: 'sammlung'|'draft' }}
+ */
+function _speichereFrageIntern(frage, email) {
+  // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
+  ergaenzeFehlendeKontenInAuswahl_(frage);
+
+  const tabName = frage.fachbereich;
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  let sheet = fragenbank.getSheetByName(tabName);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + tabName + '" nicht gefunden');
+  }
+
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const status = istVollstaendig_(frage) ? 'sammlung' : 'draft';
+
+  const rowData = {
+    id: frage.id,
+    typ: frage.typ,
+    version: String(frage.version || 1),
+    erstelltAm: frage.erstelltAm || new Date().toISOString(),
+    geaendertAm: new Date().toISOString(),
+    thema: frage.thema || '',
+    unterthema: frage.unterthema || '',
+    semester: (frage.semester || []).join(','),
+    gefaesse: (frage.gefaesse || []).filter(function(g) {
+      return g !== '' && ladeSchulConfig_().gefaesse.includes(g);
+    }).join(','),
+    bloom: frage.bloom || 'K1',
+    tags: (frage.tags || []).join(','),
+    punkte: String(frage.punkte || 0),
+    musterlosung: frage.musterlosung || '',
+    bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
+    fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
+    quelle: frage.quelle || 'manuell',
+    anhaenge: JSON.stringify(frage.anhaenge || []),
+    typDaten: JSON.stringify(getTypDaten(frage)),
+    autor: frage.autor || email,
+    geteilt: frage.geteilt || 'privat',
+    geteiltVon: frage.geteiltVon || '',
+    fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
+    schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
+    // Pool-Sync Felder
+    poolId: frage.poolId || '',
+    poolGeprueft: frage.poolGeprueft ? 'true' : '',
+    pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
+    poolContentHash: frage.poolContentHash || '',
+    poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
+    lernzielIds: (frage.lernzielIds || []).join(','),
+    // Bundle 3: status + soft-delete Marker
+    status: status,
+    geloescht_am: frage.geloescht_am || '',
+  };
+
+  // Fehlende Spalten automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const existingRow = data.findIndex(row => row.id === frage.id);
+  if (existingRow >= 0) {
+    const rowIndex = existingRow + 2;
+    headers.forEach((header, colIndex) => {
+      if (rowData[header] !== undefined) {
+        sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+      }
+    });
+  } else {
+    const newRow = headers.map(h => rowData[h] || '');
+    sheet.appendRow(newRow);
+  }
+
+  return { success: true, id: frage.id, status: status };
+}
+
 function speichereFrage(body) {
   try {
     const { email, frage } = body;
+
     if (!email || !istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
@@ -3712,69 +3869,7 @@ function speichereFrage(body) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
 
-    // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
-    ergaenzeFehlendeKontenInAuswahl_(frage);
-
-    const tabName = frage.fachbereich;
-    const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    let sheet = fragenbank.getSheetByName(tabName);
-    if (!sheet) {
-      return jsonResponse({ error: 'Fachbereich-Tab "' + tabName + '" nicht gefunden' });
-    }
-
-    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const data = getSheetData(sheet);
-
-    const rowData = {
-      id: frage.id,
-      typ: frage.typ,
-      version: String(frage.version || 1),
-      erstelltAm: frage.erstelltAm || new Date().toISOString(),
-      geaendertAm: new Date().toISOString(),
-      thema: frage.thema || '',
-      unterthema: frage.unterthema || '',
-      semester: (frage.semester || []).join(','),
-      gefaesse: (frage.gefaesse || []).filter(function(g) {
-        return g !== '' && ladeSchulConfig_().gefaesse.includes(g);
-      }).join(','),
-      bloom: frage.bloom || 'K1',
-      tags: (frage.tags || []).join(','),
-      punkte: String(frage.punkte || 0),
-      musterlosung: frage.musterlosung || '',
-      bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
-      fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
-      quelle: frage.quelle || 'manuell',
-      anhaenge: JSON.stringify(frage.anhaenge || []),
-      typDaten: JSON.stringify(getTypDaten(frage)),
-      autor: frage.autor || email,
-      geteilt: frage.geteilt || 'privat',
-      geteiltVon: frage.geteiltVon || '',
-      fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
-      schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
-      // Pool-Sync Felder
-      poolId: frage.poolId || '',
-      poolGeprueft: frage.poolGeprueft ? 'true' : '',
-      pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
-      poolContentHash: frage.poolContentHash || '',
-      poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
-      lernzielIds: (frage.lernzielIds || []).join(','),
-    };
-
-    // Fehlende Spalten automatisch hinzufügen
-    headers = ensureColumns(sheet, headers, rowData);
-
-    const existingRow = data.findIndex(row => row.id === frage.id);
-    if (existingRow >= 0) {
-      const rowIndex = existingRow + 2;
-      headers.forEach((header, colIndex) => {
-        if (rowData[header] !== undefined) {
-          sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
-        }
-      });
-    } else {
-      const newRow = headers.map(h => rowData[h] || '');
-      sheet.appendRow(newRow);
-    }
+    const ergebnis = _speichereFrageIntern(frage, email);
 
     // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
@@ -3786,7 +3881,7 @@ function speichereFrage(body) {
       });
     }
 
-    return jsonResponse({ success: true, id: frage.id });
+    return jsonResponse(ergebnis);
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
