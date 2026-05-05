@@ -3803,7 +3803,12 @@ function speichereFrageIntern_(frage, email) {
     throw new Error('Fachbereich-Tab "' + tabName + '" nicht gefunden');
   }
 
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0) "number of columns must be at least 1".
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + tabName + '" hat keine Header-Zeile');
+  }
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   const data = getSheetData(sheet);
 
   const status = istVollstaendig_(frage) ? 'sammlung' : 'draft';
@@ -3914,7 +3919,12 @@ function loescheFrageIntern_(frageId, fachbereich, email) {
     throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
   }
 
-  let headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0).
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" hat keine Header-Zeile');
+  }
+  let headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   const data = getSheetData(sheet);
 
   const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
@@ -3987,7 +3997,12 @@ function stelleWiederHerIntern_(frageId, fachbereich, email) {
     throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
   }
 
-  let headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0).
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" hat keine Header-Zeile');
+  }
+  let headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   const data = getSheetData(sheet);
 
   const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
@@ -4258,7 +4273,10 @@ function autoHardDeleteAlteFragen_() {
     var sheet = fragenbank.getSheetByName(fachbereiche[t]);
     if (!sheet) continue;
 
-    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    // Sheet-Guard (S130): leeres Sheet überspringen statt crashen — Trigger darf nicht eskalieren.
+    var lastCol = sheet.getLastColumn();
+    if (lastCol === 0) continue;
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
     var geloeschtCol = headers.indexOf('geloescht_am');
     if (geloeschtCol < 0) continue; // Spalte noch nicht da (Pre-Bundle-3-Tab)
 
