@@ -2878,6 +2878,10 @@ function parseFrage(row, fachbereich) {
     lernzielIds: (row.lernzielIds || '').split(',').filter(Boolean),
     fach: row.fach || fachschaftZuFach_(fachbereich) || 'Allgemein',
     schwierigkeit: row.schwierigkeit ? Number(row.schwierigkeit) : undefined,
+    // Bundle 3: Lifecycle-Felder. status fallback auf 'sammlung' für Legacy-Daten
+    // ohne Spalte (alle pre-Bundle-3 Fragen). geloescht_am bleibt leer-fallback.
+    status: row.status === 'draft' ? 'draft' : 'sammlung',
+    geloescht_am: row.geloescht_am || '',
   };
 
   // Typ-spezifische Felder aus typDaten-Spalte laden (falls vorhanden)

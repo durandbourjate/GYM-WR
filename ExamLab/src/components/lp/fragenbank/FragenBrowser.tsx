@@ -289,14 +289,19 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   }, [schliessenModalAbschliessen])
 
   const schliessenModalVerwerfen = useCallback(async (): Promise<void> => {
-    // "Verwerfen" / "Trotzdem schliessen" = finalisiere (server-roundtrip falls möglich), dann close
-    try {
-      await autoSaveState.finalisiereVorClose()
-    } catch {
-      // Fehler hier irrelevant — User schliesst trotzdem
+    // Bundle 3 P-C.3 hotfix#3 — Verwerfen-Semantik je nach Variante:
+    // - 'unvollstaendig' → soft-delete (Frage in Papierkorb verschieben, Plan F.4#6)
+    // - 'sync-pending'  → einfach schliessen (User akzeptiert Datenverlust)
+    if (schliessenModal === 'unvollstaendig' && liveFrage && user?.email) {
+      try {
+        await apiService.loescheFrage(user.email, liveFrage.id, liveFrage.fachbereich)
+      } catch {
+        // Fehler hier nicht-blockierend — User schliesst trotzdem; Frage bleibt
+        // im Backend (sammlung/draft), kann später manuell gelöscht werden.
+      }
     }
     schliessenModalAbschliessen()
-  }, [autoSaveState, schliessenModalAbschliessen])
+  }, [schliessenModal, liveFrage, user?.email, schliessenModalAbschliessen])
 
   async function handleFrageGespeichert(neueFrage: Frage, meta?: SpeichernMeta): Promise<void> {
     aktualisiereFrage(neueFrage)
