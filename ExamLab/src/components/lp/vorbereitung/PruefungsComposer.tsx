@@ -15,7 +15,7 @@ import type { FragenPerformance } from '../../../types/tracker.ts'
 
 import BaseDialog from '../../ui/BaseDialog'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
-import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
+import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
 import SuSVorschau from './SuSVorschau.tsx'
 import ConfigTab from './composer/ConfigTab.tsx'

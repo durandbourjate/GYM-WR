@@ -5,7 +5,7 @@
  */
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import DraftsSection from '../components/lp/fragenbank/DraftsSection'
+import DraftsSection from '../components/lp/fragensammlung/DraftsSection'
 import type { Frage } from '../types/fragen-storage'
 
 interface MockOverrides {

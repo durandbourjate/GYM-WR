@@ -361,7 +361,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
     const neueId = await apiService.dupliziereFrage(user.email, frage.id)
     if (neueId) {
-      // Fragenbank neu laden um die Kopie anzuzeigen
+      // Fragensammlung neu laden um die Kopie anzuzeigen
       await useFragensammlungStore.getState().lade(user.email, true)
     }
   }

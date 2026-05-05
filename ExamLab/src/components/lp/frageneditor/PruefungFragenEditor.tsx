@@ -27,7 +27,7 @@ import AnhangEditor from './AnhangEditor.tsx'
 import PDFEditor from './PDFEditor.tsx'
 import BerechtigungenEditor from '../../shared/BerechtigungenEditor.tsx'
 import PoolUpdateVergleich from './PoolUpdateVergleich.tsx'
-import RueckSyncDialog from '../fragenbank/RueckSyncDialog.tsx'
+import RueckSyncDialog from '../fragensammlung/RueckSyncDialog.tsx'
 import Tooltip from '../../ui/Tooltip.tsx'
 
 interface Props {

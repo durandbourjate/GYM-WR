@@ -38,7 +38,7 @@ import LPTrackerSkeleton from './skeletons/LPTrackerSkeleton'
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
 const PruefungsComposer = lazyMitRetry(() => import('./vorbereitung/PruefungsComposer.tsx'))
-const FragenBrowser = lazyMitRetry(() => import('./fragenbank/FragenBrowser.tsx'))
+const FragenBrowser = lazyMitRetry(() => import('./fragensammlung/FragenBrowser.tsx'))
 const PapierkorbView = lazyMitRetry(() => import('./papierkorb/PapierkorbView.tsx'))
 const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))
 const EinstellungenPanel = lazyMitRetry(() => import('../settings/EinstellungenPanel.tsx'))

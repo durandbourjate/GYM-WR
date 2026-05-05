@@ -15,7 +15,7 @@ interface Props {
 
 type Status = 'upload' | 'laden' | 'sheetWahl' | 'vorschau' | 'importieren' | 'fertig' | 'fehler'
 
-/** Modal für Excel-Import von Fragen in die Fragenbank */
+/** Modal für Excel-Import von Fragen in die Fragensammlung */
 export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds }: Props) {
   const user = useAuthStore((s) => s.user)
   const panelRef = useRef<HTMLDivElement>(null)
