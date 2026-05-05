@@ -51,18 +51,13 @@ interface FrageMitDraftLifecycle {
 
 `status` ist **required** (nicht optional) — Bundle-L-Lehre „Vaporware-Type-Union vermeiden". Default `'sammlung'` für Migration aller existierenden Fragen. `pruefungstauglich` bleibt orthogonal: eine Sammlung-Frage darf `pruefungstauglich=false` sein (LP-Begutachtung), ist aber strukturell vollständig.
 
-**Sheet-Schema:** Aktuelles Fragen-Sheet hat `A1:T1` (20 Spalten). Bundle 3 erweitert auf `A1:V1` (22 Spalten):
-- Spalte U: `status` (`'draft'` | `'sammlung'`)
-- Spalte V: `geloescht_am` (ISO-String oder leer)
+**Sheet-Architektur:** Storage ist externer Spreadsheet via `FRAGENBANK_ID` ([apps-script-code.js:106](../../ExamLab/apps-script-code.js)) mit **fachbereich-Tabs** (BWL, VWL, Recht, IN). `speichereFrage` ([:3705](../../ExamLab/apps-script-code.js)) öffnet `tabName = frage.fachbereich`. Pro Tab unterschiedliche Header (via `ensureColumns`-Erweiterung über die Zeit gewachsen).
 
-**Migration-Reihenfolge** (zwingend in dieser Reihenfolge):
-1. Manuelles Google-Sheets-Backup (Memory S136 C9-Lehre)
-2. Header-Erweiterung Spalte U+V via Apps-Script-Job
-3. Backfill alle existing Rows: `status='sammlung'`, `geloescht_am=''`
-4. Verify per Stichprobe (3 Fragen)
-5. Endpoints aktivieren
+**Schema-Migration: keine.** Existing Helper [`ensureColumns(sheet, headers, rowData)`](../../ExamLab/apps-script-code.js) (Z. ~3793) ergänzt fehlende Spalten **automatisch beim ersten Schreiben**. Sobald `speichereFrage` mit `rowData.status` und `rowData.geloescht_am` aufgerufen wird, fügt Apps-Script die Spalten in jedem Tab beim ersten Hit ein. Existing Fragen ohne `status`-Field werden als leerer String gelesen — Frontend interpretiert leer als `'sammlung'` (Fallback in Storage→State-Mapper).
 
-**Vollständigkeits-Trigger (draft↔sammlung): Server ist Authority.** Client zeigt UI-Hinweis (amber-Status) basierend auf lokaler `pflichtfeldValidation`, finaler `status`-Wert wird aber nach jedem Server-Sync aus der Response übernommen. Server-side `istVollstaendig_(frage)` (analog `pflichtfeldValidation`-Logik portiert) ist die einzige Quelle für Status-Wechsel.
+**Lehrer-Mental-Model vs. Storage:** Aktuell sind Tabs nach Fachbereich strukturiert (BWL/VWL/Recht), nicht nach Fach (`SF WR`/`EWR`/`EF`). Frontend aggregiert über Fach-Filter (existing Pattern). Bundle 3 ändert das nicht — die saubere Hierarchie `Schule → Fach → Fachbereich → Frage` ist Backend-Migrations-Scope (Future Bundle).
+
+**Vollständigkeits-Trigger (draft↔sammlung): Server ist Authority.** Client zeigt UI-Hinweis (amber-Status) basierend auf lokaler `pflichtfeldValidation`. Server-side `istVollstaendig_(frage)` wird in `speichereFrage` als Pre-Save-Check eingefügt und schreibt `rowData.status = istVollstaendig_(frage) ? 'sammlung' : 'draft'`. Response enthält den finalen Status — Client übernimmt aus Response.
 
 ### State-Machine
 
@@ -182,7 +177,7 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 
 ### Frontend (ExamLab + shared)
 
-- `ExamLab/src/services/draftApi.ts` (neu) — API-Adapter, 4 Endpoints
+- `ExamLab/src/services/draftApi.ts` (neu) — API-Adapter, **3 neue + Wrapper für existing Endpoints** (`speichereFrage`-Wrapper, `ladeMeineFragen`-Wrapper für Drafts-Filter, `stelleWiederHer`, `hardDeleteFrage`, `listePapierkorb`). `postJson(action, payload)` ohne Token-arg.
 - `ExamLab/src/services/draftSync.ts` (neu) — Hybrid IDB+Server mit debounce + Retry
 - `ExamLab/src/hooks/useDirtyTracker.ts` (neu) — boolean state, app-weiter Tracker im store
 - `ExamLab/src/hooks/useFragenAutoSave.ts` (neu) — Editor-Hook, kombiniert Tracker + draftSync. Naming bewusst spezifisch (nicht `useAutoSave`), um Verwechslung mit existing `services/autoSave.ts` (SuS-Antworten-Bundle G.c) zu vermeiden.
@@ -199,16 +194,39 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 
 ### Backend (Apps-Script)
 
-- `ExamLab/apps-script-code.js`:
-  - Sheet-Schema-Migration: 2 neue Spalten in Fragen-Sheet (`status`, `geloescht_am`) — Header + Migration-Job für existing Rows
-  - 4 neue Endpoints:
-    - `speichereDraft(frage, owner)` — Upsert mit `status` automatisch berechnet via `istVollstaendig_(frage)` (Server-side-Validierung der Pflichtfelder)
-    - `ladeDraft(frageId, requesterEmail)` — single-Frage mit Owner-Check (Sharing respected)
-    - `listeDrafts(requesterEmail)` — alle eigene + geteilte Drafts des Users
-    - `softDeleteFrage(frageId, requesterEmail)` / `stelleWiederHer(frageId)` / `hardDeleteFrage(frageId)` — Papierkorb-Operationen
-  - Existing `lade…`-Endpoints: filter `geloescht_am === null` (Papierkorb-Inhalte ausblenden in normalen Listen)
-  - Daily-Trigger für Auto-Hard-Delete (`installAutoHardDeleteTrigger_`, läuft 1× täglich, löscht alle Einträge mit `geloescht_am < now - 90 Tage`)
-  - GAS-Test-Shim `testBundle3DraftLifecycle_` — deckt: lazy creation, status-Übergang vollständig↔unvollständig, soft-delete, restore, hard-delete
+`ExamLab/apps-script-code.js` — minimal-invasive Erweiterung existing Endpoints:
+
+**Erweiterungen** (existing Endpoints, backward-compatible):
+- `speichereFrage` ([:3705](../../ExamLab/apps-script-code.js)) — server-side `istVollstaendig_(frage)`-Pre-Save-Check, schreibt `rowData.status` + `rowData.geloescht_am`. Response erweitert um `status: 'draft'|'sammlung'`. Existing Caller (PruefungFragenEditor) bleibt funktional — `status`-Field wird ignoriert wenn nicht ausgewertet.
+- `loescheFrage` ([:3797](../../ExamLab/apps-script-code.js)) — von Hard-Delete zu **Soft-Delete** umgestellt (setze `rowData.geloescht_am = ISO-Timestamp`, statt `sheet.deleteRow`). Existing Caller bleibt funktional — die Frage verschwindet aus normalen Listen wegen neuem Filter.
+- Existing Lese-Endpoints (`ladeMeineFragen_`, `ladeFragenFuerLP_` etc.) — filter ergänzen: nur Rows mit leerem `geloescht_am` zurückgeben. Papierkorb-Inhalte sind so für reguläre UI unsichtbar.
+
+**Neue Endpoints** (3 Stück):
+- `stelleWiederHer(body)` — setzt `geloescht_am = ''` zurück. Owner-Check analog `loescheFrage`.
+- `hardDeleteFrage(body)` — endgültig `sheet.deleteRow`. Owner-Check + Confirm-Token-Check (vom Frontend gesendeter UUID, server-validiert).
+- `listePapierkorb(body)` — wie `ladeMeineFragen_` aber filter `geloescht_am !== ''`.
+
+**Helper-Funktionen** (neu, intern):
+- `istVollstaendig_(frage)` — Server-side-Validierung der Pflichtfelder. Inline-Implementation mit per-Typ-Tabelle (~20 Fragetypen) analog `pflichtfeldValidation.ts` (`packages/shared/src/editor/pflichtfeldValidation.ts`). Plan listet den vollständigen per-Typ-Pflichtfeld-Mapping.
+- `_speichereFrageIntern(frage, email)` — Pure Logic ohne Auth-Check (analog Memory-S130-Pattern für `markiereFeedbackAlsIgnoriert_`). `speichereFrage`-Endpoint validiert + ruft Intern auf. Test-Shim ruft Intern direkt ohne Auth-Bypass-Hack.
+
+**Migration: keine** — `ensureColumns` ergänzt `status`/`geloescht_am`-Spalten automatisch beim ersten Schreiben (siehe Daten-Modell-Sektion).
+
+**Daily-Trigger** für Auto-Hard-Delete (`installiereAutoHardDeleteTrigger_`):
+- Läuft 1× täglich (3:00 Uhr), iteriert alle 4 fachbereich-Tabs.
+- Löscht Rows mit `geloescht_am < now - 90 Tage` (Hard-Delete via `sheet.deleteRow`).
+- Pattern existing (Bundle H Schülercode-Removal) — analog zitieren.
+
+**GAS-Test-Shim** `testBundle3DraftLifecycle_` — 5 Cases:
+1. Vollständige Frage → status='sammlung'
+2. Unvollständige Frage → status='draft'
+3. Pflichtfeld-Edit macht 'sammlung'-Frage zu 'draft'
+4. softDelete (via `loescheFrage`) → geloescht_am gesetzt, Frage in Papierkorb
+5. stelleWiederHer + hardDeleteFrage komplett-Lifecycle
+
+Test ruft `_speichereFrageIntern` direkt (ohne Auth) — kein Test-Mode-Flag nötig.
+
+**Auth-Pattern**: existing `istZugelasseneLP(email)` für alle LP-Endpoints. **Kein Token-arg** in Frontend-API-Calls — `postJson` nutzt existing Mechanismus.
 
 ### Tests
 
@@ -244,9 +262,13 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 ## Implementation-Reihenfolge (für Plan)
 
 1. **Phase A — Daten-Modell + Apps-Script-Backend**
-   - Type-Erweiterung
-   - Apps-Script Sheet-Migration + 4 Endpoints + GAS-Test-Shim
-   - **User-Task: Apps-Script-Deploy + Migration-Job für existing Fragen**
+   - Type-Erweiterung (status?, geloescht_am? optional zunächst, in Phase F required)
+   - `speichereFrage` erweitern um `istVollstaendig_` + status-Schreiben
+   - `loescheFrage` zu Soft-Delete
+   - 3 neue Endpoints (stelleWiederHer, hardDeleteFrage, listePapierkorb)
+   - Existing Lese-Endpoints filtern `geloescht_am === ''`
+   - GAS-Test-Shim + Daily-Trigger
+   - **User-Task: Apps-Script-Deploy** (kein expliziter Backfill-Job — `ensureColumns` macht das automatisch beim ersten Schreiben)
 
 2. **Phase B — Service-Layer**
    - draftApi.ts (Adapter)
@@ -286,11 +308,11 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 - Apps-Script `testBundle3DraftLifecycle_` 4-5 Cases grün im GAS-Editor
 - Browser-E2E: 10+ Pfade mit echten Logins (`wr.test@gymhofwil.ch`)
 
-## Aufwand-Schätzung
+## Aufwand-Schätzung (rev3 — vereinfacht)
 
-- **Frontend:** ~15-20 Files (5-6 neu, Rest Modifikation)
-- **Backend:** 4 neue Endpoints + Sheet-Schema-Migration + Daily-Trigger + GAS-Test
+- **Frontend:** ~12-15 Files (4-5 neu, Rest Modifikation)
+- **Backend:** 3 neue Endpoints + 2 Erweiterungen existing Endpoints + Daily-Trigger + GAS-Test (kein Migrations-Job — `ensureColumns` automatisch)
 - **Tests:** ~15-20 neue
-- **Sessions:** 3-4 (komplexer als Bundle 2 wegen mehr Files + Apps-Script-Schema-Migration)
-- **Apps-Script-Deploys:** 2-3 (initiale Endpoints + Daily-Trigger + ggf. Hotfixes)
+- **Sessions:** 2-3 (vereinfacht durch Endpoint-Erweiterung statt -Neuanlage)
+- **Apps-Script-Deploys:** 1-2 (initial + ggf. Hotfix)
 - **Phasen:** 6 (A bis F), pro Phase 1-3 atomare Commits
