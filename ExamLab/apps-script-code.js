@@ -4672,6 +4672,7 @@ function ladeFragenbank(email) {
         if (!sheet) continue;
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
+          if (data[r].geloescht_am) continue; // Bundle 3: Papierkorb-Inhalte ausblenden
           if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
         }
       }
@@ -4726,6 +4727,7 @@ function ladeFragenbankSummary(email) {
           if (!sheet) continue;
           var data = getSheetData(sheet);
           for (var r = 0; r < data.length; r++) {
+            if (data[r].geloescht_am) continue; // Bundle 3: Papierkorb-Inhalte ausblenden
             if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
           }
         }
