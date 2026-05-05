@@ -260,7 +260,7 @@ grep -n "ladeFragenbank\b" ExamLab/apps-script-code.js
 
 Treffer-Liste:
 - Definition (Z. 4842): `function ladeFragenbank(email)` → `function ladeFragensammlung(email)`
-- Dispatcher (Z. ~1063 nach Task 1): `return jsonResponse(ladeFragenbank(body.email));` → `return jsonResponse(ladeFragensammlung(body.email));`
+- Dispatcher (Z. ~1063 nach Task 1): `return ladeFragenbank(email);` → `return ladeFragensammlung(email);` (kein `jsonResponse`-Wrapper, kein `body.` — Konvention der umliegenden Cases)
 - (Sonstige Aufrufer falls existierend)
 
 ```bash
@@ -368,13 +368,14 @@ git add ExamLab/apps-script-code.js
 git commit -m "$(cat <<'EOF'
 Bundle M Task 2: Apps-Script intern alles umbenennen
 
-- FRAGENBANK_ID → FRAGENSAMMLUNG_ID (Konstante + alle ~6 Aufrufer)
-- var fragenbank → var fragensammlung (3 Stellen)
+- FRAGENBANK_ID → FRAGENSAMMLUNG_ID (Konstante + alle ~68 Aufrufer)
+- var/const fragenbank → var/const fragensammlung (~35 Stellen, davon
+  29 var + 6 const)
 - function getFragenbankTabs_() → getFragensammlungTabs_()
 - function ladeFragenbank() → ladeFragensammlung()
 - function ladeFragenbankSummary() → ladeFragensammlungSummary()
 - Cache-Keys 'fragenbank_summary' → 'fragensammlung_summary' (2 Stellen)
-- JS-Field-Variable fragebankSheetId → fragensammlungSheetId (~13 Stellen,
+- JS-Field-Variable fragebankSheetId → fragensammlungSheetId (~36 Stellen,
   ausser im JSON-Response in alleGruppenLaden_() — beide bleiben für
   Backward-Compat bis Task 6)
 
@@ -565,7 +566,7 @@ Erwartet: 1234+/1234+ passes. Falls einzelne Tests scheitern wegen Mock-String-M
 
 **Note:** vitest-Tests die Apps-Script-Action-Strings hardcoded haben (z.B. `'ladeFragenbank'` in Mock-Bedingungen) brechen jetzt → Task 5 fängt sie ab. Aber Tests die nur Service-Funktionen aufrufen sollten passen (sie nutzen die importierte Funktion, nicht den Action-String).
 
-Falls Tests scheitern: dokumentieren in Task 5 + jetzt erstmal weiter zu Step 13.
+Falls Tests scheitern: dokumentieren in Task 5 + jetzt erstmal weiter zu Step 10.
 
 - [ ] **Step 10: build + lint:as-any verifizieren**
 
@@ -911,19 +912,19 @@ Lokalisiere die Doppel-Cases:
 ```js
 case 'ladeFragenbank':           // backward-compat alias (entfernt in Task 6)
 case 'ladeFragensammlung':
-  return jsonResponse(ladeFragensammlung(body.email));
+  return ladeFragensammlung(email);
 case 'ladeFragenbankSummary':    // backward-compat alias (entfernt in Task 6)
 case 'ladeFragensammlungSummary':
-  return jsonResponse(ladeFragensammlungSummary(body.email));
+  return ladeFragensammlungSummary(email);
 ```
 
 Ersetze durch:
 
 ```js
 case 'ladeFragensammlung':
-  return jsonResponse(ladeFragensammlung(body.email));
+  return ladeFragensammlung(email);
 case 'ladeFragensammlungSummary':
-  return jsonResponse(ladeFragensammlungSummary(body.email));
+  return ladeFragensammlungSummary(email);
 ```
 
 - [ ] **Step 3: Audit-Token-Diff laufen lassen**
