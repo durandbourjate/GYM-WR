@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Bundle 3 — Auto-Save + Drafts + Papierkorb 🟡 E2E PASSED, READY FOR MERGE (05.05.2026)
+### Bundle 3 — Auto-Save + Drafts + Papierkorb ✅ MERGED (05.05.2026)
 
-Branch `feature/bundle-3-autosave-drafts-papierkorb` (HEAD `45c3ff0`). Backend deployed (4 Apps-Script-Deploys), Frontend vitest grün (1234/1238), Browser-E2E mit echten Logins absolviert (Pfade 1-7 ✅, 8-10 vitest-covered), 6 E2E-entdeckte Bugs alle gefixt. Merge nach `main` für nächste Session.
+Merge-Commit `7c411e0` auf `main`. Branch `feature/bundle-3-autosave-drafts-papierkorb` lokal + remote gelöscht. Backend `0042b5f`-Stand deployed (4 Apps-Script-Deploys während Phase A + F.4). Frontend vitest grün (1234/1238). Browser-E2E mit echten Logins (`wr.test@gymhofwil.ch`) Pfade 1-7 ✅, 8-10 vitest-covered. 6 E2E-entdeckte Bugs alle gefixt + 5 Memory-Lehren extrahiert.
 
 **Phase A — Apps-Script-Backend (deployed):**
 - A.1 (`731d6b5`): Type-Erweiterung `status?: 'draft'|'sammlung'` + `geloescht_am?: string` in `fragen-storage.ts` (optional, bewusst KEIN required-Pull)
@@ -78,8 +78,7 @@ Pfade 8-10 sind durch Phase-B-Vitest-Mocks abgedeckt (5xx-retry, 401-eskalation,
 3. hotfix#4 (`0042b5f` frageZuSummary_ status-read)
 4. (kein weiterer Apps-Script-Deploy für hotfix#5/#6 — die sind Frontend-only)
 
-**Offen (für nächste Session):**
-- F.5: Merge `feature/bundle-3-autosave-drafts-papierkorb` → `main` + Branch-Cleanup (lokal+remote löschen) + Memory-Update mit allen Lehren
+- F.5 ✅: Merge `7c411e0` auf main. Branch lokal + remote gelöscht. 5 Memory-Lehren in `~/.claude/projects/.../memory/`-Tree erstellt + in MEMORY.md-Index registriert.
 
 **Lehren (für `code-quality.md`/Memory am Bundle-Ende):**
 - **jsdom 29 unterstützt BroadcastChannel nicht nativ** → `globalThis.BroadcastChannel`-Stub-Pattern für Tests
