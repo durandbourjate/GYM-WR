@@ -193,7 +193,7 @@ Component-Stelle TBD per Plan-Task `grep -rn 'aktionenAktiv' ExamLab/src/compone
 
 ### Layer 3 — Doku (Bundle V Annex)
 
-`.claude/rules/code-quality.md` (Pfad TBD bei Plan — möglicherweise im ExamLab-Subverzeichnis oder Repo-Root) erhält neue Section:
+`.claude/rules/code-quality.md` (Pfad bestätigt: Repo-Root) erhält neue Section:
 
 ```markdown
 ## Sprach-Konvention (Hybrid Deutsch/Englisch)
@@ -247,8 +247,9 @@ Phase 2 — Lager A (interne Bezeichner, KEIN Wire-Vertrag, sicher zwischen-push
 Phase 3 — Lager B Atomic (Wire-Vertrag-Bruch in EINEM Push, Apps-Script + Frontend zusammen)
   Pre-Check Task 3.0  Backend-Read-Pfade-Audit (Memory-Regel):
                        grep -n "body\.aktion\|args\.aktion\|fb\.aktion\|col('aktion')\|aktionenAktiv" apps-script-code.js
-                       grep -rn "aktion\|aktionen" packages/shared/src/editor/ ExamLab/src/services/
-                       Liste vollständig in Plan-Tasks abdecken
+                       grep -nE "\.aktionen\b|KalibrierungsStatistik\.aktionen" apps-script-code.js packages/shared/src/ ExamLab/src/
+                       grep -rn "\baktion\b\|\baktionen\b" packages/shared/src/editor/ ExamLab/src/services/ ExamLab/src/components/
+                       Liste vollständig in Plan-Tasks abdecken (jede Stelle in Lager-A oder Lager-B-Klassifizierungs-Tabelle einsortieren)
   Task 3.1  Apps-Script: kiAssistentEndpoint Body-Read + switch + Default-Case
   Task 3.2  Apps-Script: zweiter switch (body.aktion) Z. 11011 (Statistik/Cleanup-Endpoint)
   Task 3.3  Apps-Script: KI-Feedback-Sheet-Header-Array Z. 11895 + alle col('aktion')-Reads
@@ -301,15 +302,23 @@ Phase 5 — Merge auf main
 
 ### Browser-E2E (Phase 4 Task 4.4)
 
-Auf staging mit echten LP-Logins (Memory-Regel: keine Demo). Pflicht-Pfade:
+Auf staging mit echten LP-Logins (Memory-Regel: keine Demo).
 
-1. **KI-Assistent: Fragetext generieren** (`kiAktion: 'generiereFragetext'`)
-2. **KI-Assistent: Musterlösung generieren** (`kiAktion: 'generiereMusterloesung'`)
-3. **KI-Assistent: Frage klassifizieren** (`kiAktion: 'klassifiziereFrage'`)
-4. **KI-Assistent: Bewertungsraster generieren** (`kiAktion: 'bewertungsrasterGenerieren'`)
-5. **KI-Assistent: Freitext-Korrektur** (`kiAktion: 'korrigiereFreitext'`)
-6. **Kalibrierungs-Einstellungen-Tab** — Toggle für `kiAktionenAktiv`-Flags, Speichern, Reload, Werte persistent
-7. **KI-Feedback-Eintrag** — `wichtig` setzen, `qualifiziert` togglen, `aktiv`-Status ändern, persist im Sheet
+**Hintergrund:** Der `switch (kiAktion)`-Dispatcher in `kiAssistentEndpoint` hat 20+ Cases (`generiereFragetext`, `verbessereFragetext`, `pruefeMusterloesung`, `generiereOptionen`, `generiereDistraktoren`, `generiereMusterloesung`, `generierePaare`, `pruefePaare`, `generiereAussagen`, `pruefeAussagen`, `generiereLuecken`, `pruefeLueckenAntworten`, `berechneErgebnis`, `pruefeToleranz`, `bewertungsrasterGenerieren`, `bewertungsrasterVerbessern`, `klassifiziereFrage`, `importiereFragen`, `analysierePruefung`, `generiereFrageZuLernziel`, weitere). Vollständiges E2E-Testen aller wäre Overkill. Stattdessen: Stichprobe pro UI-Aufruf-Kategorie, ergänzt um die zwei Sheet-Lese-Pfade.
+
+**Pflicht-Pfade (mind. 1 pro Kategorie):**
+
+1. **Generierungs-Pfad** (Beispiel: `kiAktion: 'generiereFragetext'` über LP-Editor) — verifiziert Body-Send + Backend-Dispatch + Apps-Script-Read von `body.kiAktion`.
+2. **Klassifizierungs-Pfad** (`kiAktion: 'klassifiziereFrage'`) — verifiziert separater Dispatcher-Branch, Bloom-Output.
+3. **Musterlösungs-Pfad** (`kiAktion: 'generiereMusterloesung'`) — verifiziert `extrahiereText_(kiAktion === 'generiereMusterloesung')`-Helper.
+4. **Bewertungsraster-Pfad** (`kiAktion: 'bewertungsrasterGenerieren'`) — verifiziert weiterer Dispatcher-Branch.
+5. **Kalibrierungs-Einstellungen-Tab** — Toggle für `kiAktionenAktiv`-Flags, Speichern + Reload, Werte persistent (verifiziert Read + Write von `kiAktionenAktiv` Property).
+6. **KI-Feedback-Eintrag verändern** — `wichtig` setzen + `qualifiziert` togglen + `aktiv`-Status ändern, persist im Sheet (verifiziert `col('kiAktion')`-Read im Statistik-Code + `args.kiAktion`-Write).
+7. **Statistik-Tab anzeigen** (falls UI vorhanden) — verifiziert `KalibrierungsStatistik.kiAktionen`-Read + `berechneDiffScore_`/`istQualifiziert_`-Helper.
+
+**Zusätzliches Smoke-Test Cluster:** Nach Phase 4 mind. 3 weitere zufällig gewählte `kiAktion`-Werte aufrufen (z.B. `verbessereFragetext`, `generiereOptionen`, `analysierePruefung`) — kein E2E, nur Smoke (Aufruf returnt success).
+
+**Frontend-Aufruf-Mapping als Plan-Task:** In Phase 3 Task 3.0 zusätzlich `grep -rn "kiAssistent(" ExamLab/src/ packages/shared/src/` machen, alle Frontend-Aufrufer mit ihren `kiAktion`-Werten auflisten und gegen die obigen 7 Pflicht-Pfade abgleichen — falls UI-Aufrufer existieren, die keine der 7 Kategorien treffen, wird die Liste erweitert.
 
 ### Audit-Erfolg (Phase 4 Task 4.5)
 
@@ -363,7 +372,7 @@ Bundle ist „done" wenn:
 
 1. ✅ Audit-Tokens-Re-Run zeigt: `aktion` (Lager A): 0, `kiAktion` als neuer Token: ~35-40
 2. ✅ vitest grün, tsc clean, lint clean, lint:as-any clean, build clean
-3. ✅ Browser-E2E 7/7 mit echten LP-Logins
+3. ✅ Browser-E2E 7/7 Pflicht-Pfade mit echten LP-Logins + 3 zufällige Smoke-Tests
 4. ✅ 2 Sheet-Header korrekt: Audit-Log-Sheet (`action`), KI-Feedback-Sheet (`kiAktion`)
 5. ✅ `code-quality.md` enthält Hybrid-Sprach-Konvention-Section + Bundle-N-Beispiel
 6. ✅ Branch gemerged auf main, lokal + remote gelöscht
