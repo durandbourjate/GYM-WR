@@ -1154,6 +1154,7 @@ function doPost(e) {
     'uploadAnhang', 'uploadMaterial',
     'ladeStammdaten', 'speichereStammdaten', 'ladeLPProfil', 'speichereLPProfil',
     'aktualisiereLernziel', 'loescheLernziel',
+    'stelleWiederHer', 'hardDeleteFrage', // Bundle 3: Schreib-Pfade brauchen Cache-Invalidierung (listePapierkorb ist read-only, bleibt draussen)
   ];
   if (LP_AKTIONEN.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
@@ -1206,6 +1207,12 @@ function doPost(e) {
       return bulkSetzeLueckentextModusEndpoint(body);
     case 'loescheFrage':
       return loescheFrage(body);
+    case 'stelleWiederHer':
+      return stelleWiederHer(body);
+    case 'hardDeleteFrage':
+      return hardDeleteFrage(body);
+    case 'listePapierkorb':
+      return listePapierkorb(body);
     case 'loescheAllePoolFragen':
       return loescheAllePoolFragen(body);
     case 'batchImportFragen':
@@ -2871,6 +2878,10 @@ function parseFrage(row, fachbereich) {
     lernzielIds: (row.lernzielIds || '').split(',').filter(Boolean),
     fach: row.fach || fachschaftZuFach_(fachbereich) || 'Allgemein',
     schwierigkeit: row.schwierigkeit ? Number(row.schwierigkeit) : undefined,
+    // Bundle 3: Lifecycle-Felder. status fallback auf 'sammlung' für Legacy-Daten
+    // ohne Spalte (alle pre-Bundle-3 Fragen). geloescht_am bleibt leer-fallback.
+    status: row.status === 'draft' ? 'draft' : 'sammlung',
+    geloescht_am: row.geloescht_am || '',
   };
 
   // Typ-spezifische Felder aus typDaten-Spalte laden (falls vorhanden)
@@ -3702,9 +3713,171 @@ function ergaenzeFehlendeKontenInAuswahl_(frage) {
   frage.kontenauswahl.konten = Object.keys(set);
 }
 
+/**
+ * Server-side Vollständigkeits-Check (Bundle 3).
+ * Authoritativ für draft|sammlung-Status. Thin: nur strukturelle Basics + Sub-Type-Pflicht-Marker.
+ * Frontend pflichtfeldValidation.ts ist Source-of-Truth fürs UI-Feedback (amber-Status).
+ */
+function istVollstaendig_(frage) {
+  if (!frage || typeof frage !== 'object') return false;
+
+  // Basics — gelten für jeden Typ
+  if (!frage.thema || String(frage.thema).trim() === '') return false;
+  if (!frage.fach || String(frage.fach).trim() === '') return false;
+  if (!frage.fachbereich || String(frage.fachbereich).trim() === '') return false;
+  var punkte = Number(frage.punkte);
+  if (!(punkte > 0)) return false;
+  var fragetext = frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '';
+  if (!fragetext || String(fragetext).trim() === '') return false;
+
+  // Sub-Type-Pflicht-Marker — nur strukturelle Checks (Array-Length / Key-Existenz),
+  // KEINE Item-Inhalt-Mappings (Frontend pflichtfeldValidation.ts ist UI-Source-of-Truth).
+  switch (frage.typ) {
+    case 'mc': {
+      if (!Array.isArray(frage.optionen) || frage.optionen.length < 2) return false;
+      var hatKorrekt = frage.optionen.some(function(o) { return o && o.korrekt === true; });
+      return hatKorrekt;
+    }
+    case 'richtigfalsch':
+      return Array.isArray(frage.aussagen) && frage.aussagen.length >= 1;
+    case 'lueckentext':
+      return Array.isArray(frage.luecken) && frage.luecken.length >= 1;
+    case 'zuordnung':
+      return Array.isArray(frage.paare) && frage.paare.length >= 2;
+    case 'sortierung':
+      return Array.isArray(frage.elemente) && frage.elemente.length >= 2;
+    case 'freitext':
+      return typeof frage.musterlosung === 'string' && frage.musterlosung.trim().length > 0;
+    case 'berechnung':
+      return Array.isArray(frage.ergebnisse) && frage.ergebnisse.length >= 1;
+    case 'buchungssatz':
+      return Array.isArray(frage.buchungen) && frage.buchungen.length >= 1;
+    case 'tkonto':
+      return Array.isArray(frage.konten) && frage.konten.length >= 1;
+    case 'kontenbestimmung':
+      return Array.isArray(frage.aufgaben) && frage.aufgaben.length >= 1;
+    case 'bilanzstruktur':
+      return Number(frage.korrektBilanzsumme) > 0
+        && Array.isArray(frage.kontenMitSaldi) && frage.kontenMitSaldi.length >= 1;
+    case 'hotspot':
+      return !!frage.bildUrl && Array.isArray(frage.bereiche) && frage.bereiche.length >= 1;
+    case 'bildbeschriftung':
+      return !!frage.bildUrl && Array.isArray(frage.beschriftungen) && frage.beschriftungen.length >= 1;
+    case 'dragdrop_bild':
+      return !!frage.bildUrl
+        && Array.isArray(frage.zielzonen) && frage.zielzonen.length >= 1
+        && Array.isArray(frage.labels) && frage.labels.length >= 1;
+    case 'pdf':
+      return !!(frage.pdfUrl || frage.bildUrl);
+    case 'audio':
+      return typeof frage.maxDauerSekunden === 'number' && frage.maxDauerSekunden > 0;
+    case 'visualisierung':
+      return !!frage.canvasConfig
+        && Array.isArray(frage.canvasConfig.werkzeuge)
+        && frage.canvasConfig.werkzeuge.length >= 1;
+    case 'code':
+      return !!frage.programmiersprache;
+    case 'formel':
+      return typeof frage.musterlosung === 'string' && frage.musterlosung.trim().length > 0;
+    case 'aufgabengruppe':
+      return Array.isArray(frage.teilaufgaben) && frage.teilaufgaben.length >= 1;
+    default:
+      // Unbekannter Typ: rückwärts-kompatibel als vollständig behandeln
+      return true;
+  }
+}
+
+/**
+ * Pure-Helper für speichereFrage (Bundle 3).
+ * KEINE Auth-Checks, KEINE Body-Validation, KEIN Kalibrierungs-Feedback —
+ * der Wrapper speichereFrage erledigt das. Direkt aufrufbar von Test-Shims (Phase A.6).
+ *
+ * @param {Object} frage
+ * @param {string} email
+ * @returns {{ success: true, id: string, status: 'sammlung'|'draft' }}
+ */
+function speichereFrageIntern_(frage, email) {
+  // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
+  ergaenzeFehlendeKontenInAuswahl_(frage);
+
+  const tabName = frage.fachbereich;
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  let sheet = fragenbank.getSheetByName(tabName);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + tabName + '" nicht gefunden');
+  }
+
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0) "number of columns must be at least 1".
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + tabName + '" hat keine Header-Zeile');
+  }
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const status = istVollstaendig_(frage) ? 'sammlung' : 'draft';
+
+  const rowData = {
+    id: frage.id,
+    typ: frage.typ,
+    version: String(frage.version || 1),
+    erstelltAm: frage.erstelltAm || new Date().toISOString(),
+    geaendertAm: new Date().toISOString(),
+    thema: frage.thema || '',
+    unterthema: frage.unterthema || '',
+    semester: (frage.semester || []).join(','),
+    gefaesse: (frage.gefaesse || []).filter(function(g) {
+      return g !== '' && ladeSchulConfig_().gefaesse.includes(g);
+    }).join(','),
+    bloom: frage.bloom || 'K1',
+    tags: (frage.tags || []).join(','),
+    punkte: String(frage.punkte || 0),
+    musterlosung: frage.musterlosung || '',
+    bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
+    fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
+    quelle: frage.quelle || 'manuell',
+    anhaenge: JSON.stringify(frage.anhaenge || []),
+    typDaten: JSON.stringify(getTypDaten(frage)),
+    autor: frage.autor || email,
+    geteilt: frage.geteilt || 'privat',
+    geteiltVon: frage.geteiltVon || '',
+    fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
+    schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
+    // Pool-Sync Felder
+    poolId: frage.poolId || '',
+    poolGeprueft: frage.poolGeprueft ? 'true' : '',
+    pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
+    poolContentHash: frage.poolContentHash || '',
+    poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
+    lernzielIds: (frage.lernzielIds || []).join(','),
+    // Bundle 3: status + soft-delete Marker
+    status: status,
+    geloescht_am: frage.geloescht_am || '',
+  };
+
+  // Fehlende Spalten automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const existingRow = data.findIndex(row => row.id === frage.id);
+  if (existingRow >= 0) {
+    const rowIndex = existingRow + 2;
+    headers.forEach((header, colIndex) => {
+      if (rowData[header] !== undefined) {
+        sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+      }
+    });
+  } else {
+    const newRow = headers.map(h => rowData[h] || '');
+    sheet.appendRow(newRow);
+  }
+
+  return { success: true, id: frage.id, status: status };
+}
+
 function speichereFrage(body) {
   try {
     const { email, frage } = body;
+
     if (!email || !istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
@@ -3712,69 +3885,7 @@ function speichereFrage(body) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
 
-    // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
-    ergaenzeFehlendeKontenInAuswahl_(frage);
-
-    const tabName = frage.fachbereich;
-    const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    let sheet = fragenbank.getSheetByName(tabName);
-    if (!sheet) {
-      return jsonResponse({ error: 'Fachbereich-Tab "' + tabName + '" nicht gefunden' });
-    }
-
-    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const data = getSheetData(sheet);
-
-    const rowData = {
-      id: frage.id,
-      typ: frage.typ,
-      version: String(frage.version || 1),
-      erstelltAm: frage.erstelltAm || new Date().toISOString(),
-      geaendertAm: new Date().toISOString(),
-      thema: frage.thema || '',
-      unterthema: frage.unterthema || '',
-      semester: (frage.semester || []).join(','),
-      gefaesse: (frage.gefaesse || []).filter(function(g) {
-        return g !== '' && ladeSchulConfig_().gefaesse.includes(g);
-      }).join(','),
-      bloom: frage.bloom || 'K1',
-      tags: (frage.tags || []).join(','),
-      punkte: String(frage.punkte || 0),
-      musterlosung: frage.musterlosung || '',
-      bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
-      fragetext: frage.fragetext || frage.geschaeftsfall || frage.aufgabentext || frage.kontext || '',
-      quelle: frage.quelle || 'manuell',
-      anhaenge: JSON.stringify(frage.anhaenge || []),
-      typDaten: JSON.stringify(getTypDaten(frage)),
-      autor: frage.autor || email,
-      geteilt: frage.geteilt || 'privat',
-      geteiltVon: frage.geteiltVon || '',
-      fach: frage.fach || fachschaftZuFach_(frage.fachbereich) || 'Allgemein',
-      schwierigkeit: frage.schwierigkeit !== undefined ? String(frage.schwierigkeit) : '',
-      // Pool-Sync Felder
-      poolId: frage.poolId || '',
-      poolGeprueft: frage.poolGeprueft ? 'true' : '',
-      pruefungstauglich: frage.pruefungstauglich ? 'true' : '',
-      poolContentHash: frage.poolContentHash || '',
-      poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
-      lernzielIds: (frage.lernzielIds || []).join(','),
-    };
-
-    // Fehlende Spalten automatisch hinzufügen
-    headers = ensureColumns(sheet, headers, rowData);
-
-    const existingRow = data.findIndex(row => row.id === frage.id);
-    if (existingRow >= 0) {
-      const rowIndex = existingRow + 2;
-      headers.forEach((header, colIndex) => {
-        if (rowData[header] !== undefined) {
-          sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
-        }
-      });
-    } else {
-      const newRow = headers.map(h => rowData[h] || '');
-      sheet.appendRow(newRow);
-    }
+    const ergebnis = speichereFrageIntern_(frage, email);
 
     // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
@@ -3786,13 +3897,70 @@ function speichereFrage(body) {
       });
     }
 
-    return jsonResponse({ success: true, id: frage.id });
+    return jsonResponse(ergebnis);
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
 }
 
 // === Frage aus Fragenbank löschen ===
+
+/**
+ * Pure-Helper für loescheFrage (Bundle 3, Soft-Delete).
+ * KEINE Auth-Checks — der Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Setzt geloescht_am = ISO-Timestamp statt sheet.deleteRow (Soft-Delete).
+ * Owner-Check: existingAutor !== email → throw (Security-Verbesserung Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email — der anfragende LP (für Owner-Check)
+ * @returns {{ success: true, id: string }}
+ */
+function loescheFrageIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0).
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" hat keine Header-Zeile');
+  }
+  let headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie löschbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  const jetzt = new Date().toISOString();
+  const rowData = Object.assign({}, data[rowIdx], {
+    geloescht_am: jetzt,
+    geaendertAm: jetzt,
+  });
+
+  // Fehlende Spalten (z.B. geloescht_am) automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const rowIndex = rowIdx + 2;
+  headers.forEach(function(header, colIndex) {
+    if (rowData[header] !== undefined) {
+      sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+    }
+  });
+
+  return { success: true, id: frageId };
+}
 
 function loescheFrage(body) {
   try {
@@ -3807,25 +3975,355 @@ function loescheFrage(body) {
       return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(fachbereich);
-    if (!sheet) {
-      return jsonResponse({ error: 'Fachbereich-Tab "' + fachbereich + '" nicht gefunden' });
-    }
-
-    var data = getSheetData(sheet);
-    var rowIndex = data.findIndex(function(row) { return row.id === frageId; });
-    if (rowIndex < 0) {
-      return jsonResponse({ error: 'Frage nicht gefunden: ' + frageId });
-    }
-
-    // Zeile löschen (rowIndex + 2 wegen Header-Zeile und 0-basiertem Index)
-    sheet.deleteRow(rowIndex + 2);
-
-    return jsonResponse({ success: true, id: frageId });
+    return jsonResponse(loescheFrageIntern_(frageId, fachbereich, email));
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
+}
+
+// === Bundle 3: Papierkorb (stelleWiederHer / hardDeleteFrage / listePapierkorb) ===
+
+/**
+ * Pure-Helper für stelleWiederHer (Bundle 3, Soft-Restore).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Setzt geloescht_am = '' (leer) → Frage erscheint wieder in regulären Listen.
+ * Owner-Check: existingAutor !== email → throw (Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email
+ * @returns {{ success: true, id: string }}
+ */
+function stelleWiederHerIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  // Sheet-Guard (S130): bei leerem Sheet wirft sheet.getRange(1,1,1,0).
+  const lastCol = sheet.getLastColumn();
+  if (lastCol === 0) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" hat keine Header-Zeile');
+  }
+  let headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie wiederherstellbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  const jetzt = new Date().toISOString();
+  const rowData = Object.assign({}, data[rowIdx], {
+    geloescht_am: '',
+    geaendertAm: jetzt,
+  });
+
+  // Fehlende Spalten (z.B. geloescht_am) automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const rowIndex = rowIdx + 2;
+  headers.forEach(function(header, colIndex) {
+    if (rowData[header] !== undefined) {
+      sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+    }
+  });
+
+  return { success: true, id: frageId };
+}
+
+function stelleWiederHer(body) {
+  try {
+    var email = body.email;
+    var frageId = body.frageId;
+    var fachbereich = body.fachbereich;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!frageId || !fachbereich) {
+      return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
+    }
+
+    return jsonResponse(stelleWiederHerIntern_(frageId, fachbereich, email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Pure-Helper für hardDeleteFrage (Bundle 3, endgültig).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Endgültiges sheet.deleteRow — keine Wiederherstellung möglich.
+ * Owner-Check: existingAutor !== email → throw (Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email
+ * @returns {{ success: true }}
+ */
+function hardDeleteFrageIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie löschbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  // Endgültig: Row löschen (rowIdx ist 0-based im data-Array, +2 für Sheet-Row inkl. Header)
+  sheet.deleteRow(rowIdx + 2);
+
+  return { success: true };
+}
+
+function hardDeleteFrage(body) {
+  try {
+    var email = body.email;
+    var frageId = body.frageId;
+    var fachbereich = body.fachbereich;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!frageId || !fachbereich) {
+      return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
+    }
+
+    return jsonResponse(hardDeleteFrageIntern_(frageId, fachbereich, email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Pure-Helper für listePapierkorb (Bundle 3).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Iteriert alle 4 fachbereich-Tabs, filtert eigene Soft-Delete-Fragen, gibt typisierte Frage-Objekte zurück (Plan-Refinement #4).
+ *
+ * @param {string} email
+ * @returns {{ success: true, fragen: Array<Object> }}
+ */
+function listePapierkorbIntern_(email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  const papierkorb = [];
+
+  for (let i = 0; i < fachbereiche.length; i++) {
+    const tab = fachbereiche[i];
+    const sheet = fragenbank.getSheetByName(tab);
+    if (!sheet) continue;
+    const data = getSheetData(sheet);
+    for (let j = 0; j < data.length; j++) {
+      const row = data[j];
+      if (!row.geloescht_am || row.geloescht_am === '') continue;
+      if (row.autor !== email) continue; // nur eigene
+      papierkorb.push(parseFrage(row, tab));
+    }
+  }
+
+  return { success: true, fragen: papierkorb };
+}
+
+function listePapierkorb(body) {
+  try {
+    var email = body.email;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    return jsonResponse(listePapierkorbIntern_(email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Bundle 3 Test-Shim — Draft-Lifecycle (status, soft-delete, restore, hard-delete).
+ * Ruft direkt Pure-Helpers (Intern_-Endung) -> kein Auth-Bypass nötig.
+ *
+ * Aufruf: im GAS-Editor `testBundle3DraftLifecycle` auswählen + Run.
+ * Cleanup: hardDeleteFrageIntern_ am Ende — Test-Frage hinterlässt keine Spur im Sheet.
+ *
+ * Erwartete Logger-Ausgabe bei Erfolg:
+ *   === Bundle 3 Draft-Lifecycle-Test ===
+ *     ✓ Case 1: vollständig → sammlung
+ *     ✓ Case 2: unvollständig (fragetext leer) → draft
+ *     ✓ Case 3: Pflichtfeld zurück → sammlung
+ *     ✓ Case 4: soft-delete via loescheFrageIntern_
+ *     ✓ Case 5: Restore + Hard-Delete Cleanup
+ *   === Bundle 3 Draft-Lifecycle-Test bestanden ===
+ */
+function testBundle3DraftLifecycle_() {
+  Logger.log('=== Bundle 3 Draft-Lifecycle-Test ===');
+
+  var testEmail = 'test.bundle3@gymhofwil.ch';
+  var testFrageBase = {
+    id: 'test-bundle3-' + Date.now(),
+    typ: 'mc',
+    fach: 'SF WR',
+    fachbereich: 'BWL',
+    thema: 'Test-Bundle3',
+    autor: testEmail,
+    fragetext: 'Test-Frage?',
+    punkte: 1,
+    optionen: [
+      { id: 'o1', text: 'Antwort A', korrekt: true },
+      { id: 'o2', text: 'Antwort B', korrekt: false }
+    ],
+  };
+
+  try {
+    // Case 1: vollständige Frage → status='sammlung'
+    var r1 = speichereFrageIntern_(testFrageBase, testEmail);
+    if (r1.status !== 'sammlung') {
+      throw new Error('Case 1 FAIL: erwartet status=sammlung, bekommen=' + r1.status);
+    }
+    Logger.log('  ✓ Case 1: vollständig → sammlung');
+
+    // Case 2: unvollständige Frage (fragetext leer) → status='draft'
+    var unvollstFrage = Object.assign({}, testFrageBase, { fragetext: '' });
+    var r2 = speichereFrageIntern_(unvollstFrage, testEmail);
+    if (r2.status !== 'draft') {
+      throw new Error('Case 2 FAIL: erwartet status=draft, bekommen=' + r2.status);
+    }
+    Logger.log('  ✓ Case 2: unvollständig (fragetext leer) → draft');
+
+    // Case 3: Pflichtfeld zurück → sammlung
+    var ergFrage = Object.assign({}, testFrageBase, { fragetext: 'Wieder vollständig' });
+    var r3 = speichereFrageIntern_(ergFrage, testEmail);
+    if (r3.status !== 'sammlung') {
+      throw new Error('Case 3 FAIL: erwartet status=sammlung, bekommen=' + r3.status);
+    }
+    Logger.log('  ✓ Case 3: Pflichtfeld zurück → sammlung');
+
+    // Case 4: Soft-Delete via loescheFrageIntern_
+    var r4 = loescheFrageIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r4 || r4.success !== true) {
+      throw new Error('Case 4 FAIL: loescheFrageIntern_ unerwartete Antwort: ' + JSON.stringify(r4));
+    }
+    // Verify: Frage taucht in listePapierkorbIntern_(testEmail) auf
+    var papierkorb = listePapierkorbIntern_(testEmail);
+    var inPapierkorb = papierkorb.fragen.some(function(f) { return f.id === testFrageBase.id; });
+    if (!inPapierkorb) {
+      throw new Error('Case 4 FAIL: Test-Frage nicht in Papierkorb nach loescheFrageIntern_');
+    }
+    Logger.log('  ✓ Case 4: soft-delete via loescheFrageIntern_');
+
+    // Case 5: Restore + Hard-Delete Cleanup
+    var r5a = stelleWiederHerIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r5a || r5a.success !== true) {
+      throw new Error('Case 5a FAIL: stelleWiederHerIntern_ unerwartete Antwort: ' + JSON.stringify(r5a));
+    }
+    var r5b = hardDeleteFrageIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r5b || r5b.success !== true) {
+      throw new Error('Case 5b FAIL: hardDeleteFrageIntern_ unerwartete Antwort: ' + JSON.stringify(r5b));
+    }
+    Logger.log('  ✓ Case 5: Restore + Hard-Delete Cleanup');
+
+    Logger.log('=== Bundle 3 Draft-Lifecycle-Test bestanden ===');
+  } catch (err) {
+    Logger.log('=== Bundle 3 Draft-Lifecycle-Test FEHLGESCHLAGEN ===');
+    Logger.log('Fehler: ' + (err && err.message ? err.message : err));
+    // Best-effort Cleanup wenn Test mid-flight gefailt ist
+    try { hardDeleteFrageIntern_(testFrageBase.id, 'BWL', testEmail); } catch(_) { /* ignore */ }
+    throw err;
+  }
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf (ohne underscore-Suffix). */
+function testBundle3DraftLifecycle() {
+  return testBundle3DraftLifecycle_();
+}
+
+/**
+ * Bundle 3: täglicher Auto-Hard-Delete für Soft-Delete-Inhalte älter als 90 Tage.
+ * Wird von Daily-Trigger aufgerufen (siehe installiereAutoHardDeleteTrigger_).
+ * Reverse-Sort der Row-Indices: deleteRow verschiebt nachfolgende Rows um 1 nach oben,
+ * also von unten nach oben löschen damit die Indices noch passen.
+ *
+ * Sicherheitsnetz: getLastRow() === 1 (nur Header) wird durch sheet.getRange(2, 1, 0, ...)
+ * nicht erfasst — getRange wirft bei numRows=0. Defense: prüfe sheet.getLastRow() > 1
+ * vor dem Lese-Range.
+ */
+function autoHardDeleteAlteFragen_() {
+  var schwelle = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  var totalGeloescht = 0;
+
+  for (var t = 0; t < fachbereiche.length; t++) {
+    var sheet = fragenbank.getSheetByName(fachbereiche[t]);
+    if (!sheet) continue;
+
+    // Sheet-Guard (S130): leeres Sheet überspringen statt crashen — Trigger darf nicht eskalieren.
+    var lastCol = sheet.getLastColumn();
+    if (lastCol === 0) continue;
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    var geloeschtCol = headers.indexOf('geloescht_am');
+    if (geloeschtCol < 0) continue; // Spalte noch nicht da (Pre-Bundle-3-Tab)
+
+    if (sheet.getLastRow() <= 1) continue; // leeres Sheet, kein Daten-Range
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues();
+    var zuLoeschende = [];
+    for (var i = 0; i < data.length; i++) {
+      var geloescht = data[i][geloeschtCol];
+      if (geloescht && String(geloescht) < schwelle) {
+        zuLoeschende.push(i + 2);
+      }
+    }
+    zuLoeschende.sort(function(a, b) { return b - a; }); // Reverse-Sort: deleteRow von unten
+    for (var j = 0; j < zuLoeschende.length; j++) {
+      sheet.deleteRow(zuLoeschende[j]);
+      totalGeloescht++;
+    }
+  }
+
+  Logger.log('Auto-Hard-Delete: ' + totalGeloescht + ' Fragen endgültig gelöscht (älter als 90 Tage)');
+}
+
+/**
+ * Bundle 3: installiert Daily-Trigger für autoHardDeleteAlteFragen_ (3:00 Uhr).
+ * User-Task in Phase A.8: einmalig im GAS-Editor manuell ausführen.
+ * Idempotent: löscht existing Trigger gleicher Handler-Funktion vorher.
+ */
+function installiereAutoHardDeleteTrigger_() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var alteEntfernt = 0;
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'autoHardDeleteAlteFragen_') {
+      ScriptApp.deleteTrigger(triggers[i]);
+      alteEntfernt++;
+    }
+  }
+  ScriptApp.newTrigger('autoHardDeleteAlteFragen_').timeBased().atHour(3).everyDays(1).create();
+  Logger.log('Auto-Hard-Delete Trigger installiert (täglich 3:00). Alte Trigger entfernt: ' + alteEntfernt);
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf. */
+function installiereAutoHardDeleteTrigger() {
+  return installiereAutoHardDeleteTrigger_();
 }
 
 /**
@@ -4361,6 +4859,7 @@ function ladeFragenbank(email) {
         if (!sheet) continue;
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
+          if (data[r].geloescht_am) continue; // Bundle 3: Papierkorb-Inhalte ausblenden
           if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
         }
       }
@@ -4415,6 +4914,7 @@ function ladeFragenbankSummary(email) {
           if (!sheet) continue;
           var data = getSheetData(sheet);
           for (var r = 0; r < data.length; r++) {
+            if (data[r].geloescht_am) continue; // Bundle 3: Papierkorb-Inhalte ausblenden
             if (data[r].id) alleParsed.push(mq_ergaenzeMediaQuelle_(parseFrage(data[r], tabs[t])));
           }
         }
@@ -4482,6 +4982,8 @@ function frageZuSummary_(frage) {
     semester: frage.semester || [],
     gefaesse: frage.gefaesse || [],
     schwierigkeit: frage.schwierigkeit,
+    // Bundle 3: Lifecycle-Felder. Frontend DraftsSection filtert nach status='draft'.
+    status: frage.status === 'draft' ? 'draft' : 'sammlung',
   };
 }
 

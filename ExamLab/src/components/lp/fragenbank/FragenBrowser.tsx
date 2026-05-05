@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { useEditorNeighborPrefetch } from '../../../hooks/useEditorNeighborPrefetch'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
+import { SaveStatusIndikator, SchliessenModal } from '@shared/index'
+import type { SchliessenVariante } from '@shared/index'
 import { useFragenFilter } from '../../../hooks/useFragenFilter.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
@@ -10,11 +12,15 @@ import { demoFragen } from '../../../data/demoFragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
 import type { Frage, FrageSummary } from '../../../types/fragen-storage'
-import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
+import type { Frage as CoreFrage } from '@shared/types/fragen-core'
+import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
+import { useFragenAutoSave } from '../../../hooks/useFragenAutoSave'
+import { tippeFrage as draftSyncTippe, cancelPending as draftSyncCancelPending } from '../../../services/draftSync'
 import FragenListeSkeleton from '../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
+import DraftsSection from './DraftsSection'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
 import ExcelImport from './ExcelImport.tsx'
@@ -60,12 +66,24 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const storeStatus = useFragenbankStore(s => s.status)
 
   // Im Demo-Modus Demo-Fragen, sonst Summaries (oder volle Fragen als Fallback)
-  const alleFragen = (istDemoModus || !apiService.istKonfiguriert())
+  const alleFragenMitDrafts = (istDemoModus || !apiService.istKonfiguriert())
     ? demoFragen
     : (storeSummaries.length > 0 ? storeSummaries : storeFragen)
   const ladeStatus = (istDemoModus || !apiService.istKonfiguriert())
     ? 'fertig' as const
     : (storeStatus === 'summary_fertig' || storeStatus === 'detail_laden' || storeStatus === 'fertig' ? 'fertig' as const : 'laden' as const)
+
+  // Bundle 3 P-D — Drafts oben in eigener Sektion, Sammlung getrennt darunter.
+  // FrageSummary deklariert `status` nicht statisch; Backend liefert es trotzdem
+  // mit (Phase A.4). Defensive Cast: `f as { status?: string }` ist schmal genug.
+  const drafts = useMemo<Frage[]>(
+    () => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status === 'draft') as Frage[] /* Defensive: Summary hat status zur Laufzeit, Type aber nicht */,
+    [alleFragenMitDrafts]
+  )
+  const alleFragen = useMemo(
+    () => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status !== 'draft'),
+    [alleFragenMitDrafts]
+  )
 
   // Store-Mutationen
   const { setFragen: setAlleFragen, aktualisiereFrage, entferneFrage, fuegeFragenHinzu } = useFragenbankStore.getState()
@@ -83,6 +101,17 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
   const [loeschKandidat, setLoeschKandidat] = useState<{ id: string; fachbereich: string; typ: string; fragetext?: string } | null>(null)
   const [detailLaden, setDetailLaden] = useState(false)
+
+  // Bundle 3 P-C.3 — Auto-Save: Status-Hook + Schliessen-Modal-State
+  const [schliessenModal, setSchliessenModal] = useState<SchliessenVariante | null>(null)
+  // Bundle 3 P-C.3 hotfix#2 — `liveFrage` ist die LIVE-Editor-State-Frage (von onTippe
+  // gepflegt), im Gegensatz zu `editFrage` (persistierte Frage beim Open). Hook subscribed
+  // auf `liveFrage.id` damit Status-Indikator + Schliessen-Modal-Logik auch bei "Neue
+  // Frage" (editFrage=null) funktionieren.
+  const [liveFrage, setLiveFrage] = useState<Frage | null>(null)
+  useEffect(() => { setLiveFrage(editFrage) }, [editFrage])
+  const editorId = `fragenbrowser-${liveFrage?.id ?? 'neu'}`
+  const autoSaveState = useFragenAutoSave(editorId, liveFrage)
 
   // Filter/Sort/Gruppierungs-Hook
   const filter = useFragenFilter(alleFragen, user?.email, ladeStatus, istDemoModus)
@@ -200,6 +229,85 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     next: nachbarFuerPrefetch.next,
     email: user?.email ?? '',
   })
+
+  // Bundle 3 P-C.3 — Auto-Save-Adapter für SharedFragenEditor
+  // - statusSlot: SaveStatusIndikator mit live-Status aus useFragenAutoSave
+  // - onTippe: Editor-Preview an draftSync weitergeben (Hook-Bridge: Editor lebt in shared, Hook + draftSync in ExamLab)
+  // - onSchliessenVersuch: Pflichtfeld-leer ODER sync pending → Modal öffnen, sonst silent close
+  const autoSaveAdapter: AutoSaveAdapter | undefined = useMemo(() => {
+    // Demo-Modus: kein Auto-Save, klassischer Save-Flow (Backend nicht erreichbar)
+    if (istDemoModus || !apiService.istKonfiguriert()) return undefined
+    return {
+      statusSlot: (
+        <SaveStatusIndikator
+          status={autoSaveState.status}
+          fehlendePflichtfelder={autoSaveState.fehlendePflichtfelder}
+        />
+      ),
+      onTippe: (frage: CoreFrage) => {
+        if (!user?.email) return
+        // Core→Storage Layer-Boundary: tippeFrage akzeptiert Storage.Frage; Core ist
+        // strukturell kompatibel (tippeFrage liest nur id/fachbereich/typ + speichert volles Objekt).
+        const storageFrage = frage as unknown as Frage /* Defensive: Core→Storage Layer-Boundary, draftSync-tippe behandelt Frage opaque */
+        // Bundle 3 P-C.3 hotfix#2 — liveFrage updaten: useFragenAutoSave subscribed auf
+        // liveFrage.id, daher MUSS jeder Tipp den Hook-Input synchronisieren (sonst
+        // bleibt Status-Indikator auf 'sauber'-Default).
+        setLiveFrage(storageFrage)
+        draftSyncTippe(user.email, storageFrage)
+      },
+      onSchliessenVersuch: async () => {
+        // Sync läuft / Verbindungsproblem / Server-down → Modal "sync-pending"
+        if (
+          autoSaveState.status === 'sync-läuft' ||
+          autoSaveState.status === 'verbindungsproblem' ||
+          autoSaveState.status === 'server-down'
+        ) {
+          setSchliessenModal('sync-pending')
+          return { darfSchliessen: false }
+        }
+        // Pflichtfelder leer → Modal "unvollstaendig"
+        if (autoSaveState.fehlendePflichtfelder.length > 0) {
+          setSchliessenModal('unvollstaendig')
+          return { darfSchliessen: false }
+        }
+        // Sauber → silent close
+        return { darfSchliessen: true }
+      },
+    }
+  }, [istDemoModus, autoSaveState.status, autoSaveState.fehlendePflichtfelder, user?.email])
+
+  /** Bundle 3 P-C.3 — Schliessen-Modal-Handler */
+  const schliessenModalAbschliessen = useCallback((): void => {
+    setSchliessenModal(null)
+    setZeigEditor(false)
+    setEditFrage(null)
+  }, [])
+
+  const schliessenModalEntwurfBehalten = useCallback((): void => {
+    // "Als Entwurf behalten" = Frage bleibt im draftStore, Editor schliesst
+    schliessenModalAbschliessen()
+  }, [schliessenModalAbschliessen])
+
+  const schliessenModalVerwerfen = useCallback(async (): Promise<void> => {
+    // Bundle 3 P-C.3 hotfix#3+5 — Verwerfen-Semantik je nach Variante:
+    // - 'unvollstaendig' → soft-delete (Frage in Papierkorb verschieben, Plan F.4#6)
+    // - 'sync-pending'  → einfach schliessen (User akzeptiert Datenverlust)
+    if (schliessenModal === 'unvollstaendig' && liveFrage && user?.email) {
+      // hotfix#5 — cancel pending IDB+Server-Timer VOR loescheFrage. Ohne diesen Cancel
+      // räumt der pending 10s-Server-Sync nach loescheFrage die geloescht_am-Spalte
+      // wieder leer (un-delete-Race). 2. Cancel NACH await: falls während des Server-
+      // Roundtrips eine neue tippeFrage einen frischen Timer scheduled hat.
+      draftSyncCancelPending(liveFrage.id)
+      try {
+        await apiService.loescheFrage(user.email, liveFrage.id, liveFrage.fachbereich)
+      } catch {
+        // Fehler hier nicht-blockierend — User schliesst trotzdem; Frage bleibt
+        // im Backend (sammlung/draft), kann später manuell gelöscht werden.
+      }
+      draftSyncCancelPending(liveFrage.id)
+    }
+    schliessenModalAbschliessen()
+  }, [schliessenModal, liveFrage, user?.email, schliessenModalAbschliessen])
 
   async function handleFrageGespeichert(neueFrage: Frage, meta?: SpeichernMeta): Promise<void> {
     aktualisiereFrage(neueFrage)
@@ -331,6 +439,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
+        {/* Bundle 3 P-D — Drafts-Sektion oberhalb der Sammlung */}
+        {ladeStatus === 'fertig' && (
+          <DraftsSection
+            drafts={drafts}
+            onClickDraft={(frage) => handleEditFrage(frage)}
+            ownEmail={user?.email ?? ''}
+          />
+        )}
+
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
           {ladeStatus === 'laden' && <FragenListeSkeleton />}
@@ -377,8 +494,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
             performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
             onVorherigeFrage={nachbarCallbacks.onVor}
             onNaechsteFrage={nachbarCallbacks.onNach}
+            autoSave={autoSaveAdapter}
           />
         )}
+
+        {/* Bundle 3 P-C.3 — Schliessen-Modal */}
+        <SchliessenModal
+          open={schliessenModal !== null}
+          variante={schliessenModal ?? 'unvollstaendig'}
+          onAbbrechen={() => setSchliessenModal(null)}
+          onVerwerfen={() => { void schliessenModalVerwerfen() }}
+          onAlsEntwurfBehalten={schliessenModal === 'unvollstaendig' ? schliessenModalEntwurfBehalten : undefined}
+        />
 
         {/* Lösch-Bestätigung */}
         {loeschKandidat && (
@@ -502,6 +629,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
+        {/* Bundle 3 P-D — Drafts-Sektion oberhalb der Sammlung */}
+        {ladeStatus === 'fertig' && (
+          <DraftsSection
+            drafts={drafts}
+            onClickDraft={(frage) => handleEditFrage(frage)}
+            ownEmail={user?.email ?? ''}
+          />
+        )}
+
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
           {ladeStatus === 'laden' && <FragenListeSkeleton />}
@@ -550,8 +686,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
           onVorherigeFrage={nachbarCallbacks.onVor}
           onNaechsteFrage={nachbarCallbacks.onNach}
+          autoSave={autoSaveAdapter}
         />
       )}
+
+      {/* Bundle 3 P-C.3 — Schliessen-Modal */}
+      <SchliessenModal
+        open={schliessenModal !== null}
+        variante={schliessenModal ?? 'unvollstaendig'}
+        onAbbrechen={() => setSchliessenModal(null)}
+        onVerwerfen={() => { void schliessenModalVerwerfen() }}
+        onAlsEntwurfBehalten={schliessenModal === 'unvollstaendig' ? schliessenModalEntwurfBehalten : undefined}
+      />
 
       {/* Lösch-Bestätigung */}
       {loeschKandidat && (
