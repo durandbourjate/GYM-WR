@@ -383,7 +383,7 @@ git commit -m 'Bundle N Lager A: "Unbekannte Aktion"-Error-Strings → Action'
 
 ### Task 2.6: Phase-2-Verification-Grep + Lager-A-Komplettheits-Check
 
-**Files:** Read-only.
+**Files:** Read-only (Tasks 2.2-2.5 haben pro Task einen eigenen Commit gemacht; dieser Task ist nur Verifikations-Backstop).
 
 - [ ] **Step 1: Re-grep Lager-A-Pattern**
 
@@ -395,11 +395,11 @@ Erwartung: 0 Treffer.
 
 - [ ] **Step 2: Falls Treffer übrig — manuell klassifizieren**
 
-Jede verbleibende Stelle gegen Lager-A-vs-Lager-B-Tabelle der Spec (Section „Layer 1") prüfen. Falls Lager A: in einem Follow-up-Commit anpassen. Falls Lager B: in Phase 3 verschieben.
+Jede verbleibende Stelle gegen Lager-A-vs-Lager-B-Tabelle der Spec (Section „Layer 1") prüfen. Falls Lager A vergessen: Follow-up-Commit. Falls Lager B: in Phase 3 verschieben.
 
-- [ ] **Step 3: Phase-2-Snapshot-Commit (optional)**
+- [ ] **Step 3 (optional): Follow-up-Commit nur wenn Step 2 Stellen nachzog**
 
-Falls Step 2 Anpassungen erzwungen hat, separater Commit mit Begründung.
+Falls Step 2 keine Anpassungen brauchte (Standard-Fall), kein Commit nötig — Phase 2 ist abgeschlossen mit den 4 Per-Task-Commits aus 2.2-2.5.
 
 ---
 
@@ -1050,7 +1050,7 @@ Atomic-Bundle mit Wire-Vertrag-Anpassung:
 - Frontend uploadApi.ts::kiAssistent + 3 Type-Files
 - shared/useKIAssistent-Hook + Aufrufer
 - Settings-UI Toggle-Components
-- Tests aktualisiert"
+- Tests aktualisiert (inkl. Snapshots regeneriert: <ja/nein, vom Implementer beim Commit ausfüllen>)"
 ```
 
 ---
@@ -1092,17 +1092,21 @@ Master fragt: „Apps-Script deployed?" — User bestätigt.
 
 User öffnet das Audit-Log-Sheet im Apps-Script-Spreadsheet (ggf. via Apps-Script-Editor → Resources → Spreadsheets).
 
-- [ ] **Step 2: Header-Zelle B1 (oder wo `aktion` steht) editieren**
+- [ ] **Step 2: Header-Zelle in Zeile 1 finden + editieren**
 
-`aktion` → `action`. Speichern.
+In Zeile 1 die Spalte mit dem Inhalt `aktion` suchen (vermutlich Spalte B, aber nicht hardcoden — die `auditLog_`-Funktion definiert die Reihenfolge `['timestamp', 'aktion', 'email', 'details']`, also muss `aktion` in Zeile-1-Spalte-2 stehen). Diese Zelle anklicken, Inhalt zu `action` ändern, Enter drücken zum Speichern.
+
+**Verifikation:** Nach dem Edit sollte der Header lauten: `timestamp | action | email | details`.
 
 - [ ] **Step 3: KI-Feedback-Sheet (`KI_FEEDBACK`) öffnen**
 
 User öffnet das KI-Feedback-Sheet.
 
-- [ ] **Step 4: Header-Zelle E1 (oder wo `aktion` steht) editieren**
+- [ ] **Step 4: Header-Zelle in Zeile 1 finden + editieren**
 
-`aktion` → `kiAktion`. Speichern.
+In Zeile 1 die Spalte mit dem Inhalt `aktion` suchen. Per `headers`-Array-Definition in `apps-script-code.js:11895` ist die Reihenfolge: `['feedbackId', 'zeitstempel', 'lpEmail', 'fachschaft', 'aktion', 'fachbereich', …]`, also Spalte 5 (E). Zelle E1 (oder wo der Inhalt `aktion` steht) anklicken, Inhalt zu `kiAktion` ändern, Enter drücken.
+
+**Verifikation:** Nach dem Edit sollte der Header lauten: `feedbackId | zeitstempel | lpEmail | fachschaft | kiAktion | fachbereich | …`.
 
 - [ ] **Step 5: User-Confirmation**
 
@@ -1314,19 +1318,29 @@ git push origin --delete refactor/bundle-n-action-aktion-vereinheitlichung
 - Create: `~/.claude/projects/-Users-durandbourjate-Documents--Gym-Hofwil-00-Automatisierung-Unterricht/memory/project_bundle_n_v_komplett.md`
 - Modify: `~/.claude/projects/-Users-durandbourjate-Documents--Gym-Hofwil-00-Automatisierung-Unterricht/memory/MEMORY.md` (Index-Update)
 
-- [ ] **Step 1: Memory-File schreiben**
+- [ ] **Step 1: Merge-Hash verifizieren** (Memory-Regel: Commit-Hashes IMMER `git rev-parse` verifizieren)
+
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git rev-parse HEAD
+git log -1 --pretty=format:'%H %s' HEAD
+```
+
+Hash kopieren — wird im Memory-File und MEMORY.md-Index verwendet. Nicht aus dem Kopf rekonstruieren oder schätzen.
+
+- [ ] **Step 2: Memory-File schreiben**
 
 Inhalt analog zu Bundle-M-Memory-Eintrag, mit:
 - Frontmatter (name, description, type=project)
-- Was umgesetzt + Hash + Datum
-- Lehren (insbesondere: Audit-Empfehlungen können bei Wire-Vertrag-Konflikten unvollständig sein → eigener Brainstorming-Pass nötig)
+- Was umgesetzt + verifizierter Hash + Datum
+- Lehren (insbesondere: Audit-Empfehlungen können bei Wire-Vertrag-Konflikten unvollständig sein → eigener Brainstorming-Pass nötig; Lager-A-vs-Lager-B-Disambiguierungs-Heuristik für künftige Begriff-Audits)
 
-- [ ] **Step 2: MEMORY.md Index-Eintrag**
+- [ ] **Step 3: MEMORY.md Index-Eintrag mit verifiziertem Hash**
 
 Eine Zeile in der ExamLab-Sektion ergänzen, analog zu Bundle M:
 
 ```markdown
-- **[Bundle N+V auf main](project_bundle_n_v_komplett.md)** — DD.MM.YYYY Merge `<hash>`. action/aktion-Disambiguierung in 2 Lager + Sprach-Konvention dokumentiert. […einliner-Zusammenfassung mit Lehren-Kürzel…]
+- **[Bundle N+V auf main](project_bundle_n_v_komplett.md)** — DD.MM.YYYY Merge `<hash-aus-step-1>`. action/aktion-Disambiguierung in 2 Lager + Sprach-Konvention dokumentiert. […einliner-Zusammenfassung mit Lehren-Kürzel…]
 ```
 
 - [ ] **Step 3: Bundle abgeschlossen**
