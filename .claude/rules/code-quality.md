@@ -329,3 +329,44 @@ Antimuster: Type-Union-Werte als TODO-Liste im Schema statt als Backlog-Ticket. 
 **Regel:** Bei Field-Removal in Discriminated-Union immer Plan strukturieren als „Konsumenten-Entkopplung (n Commits) + Writer+Type-Bundle (1 Commit)". Plan-Reviewer fängt es auch mit, wenn die Bundling-Entscheidung explizit dokumentiert ist (Plan rev2 nach Reviewer-Round).
 
 **Verwandtes Pattern:** Validator-Dual-Reads (Defensive-Compat-Cast für Legacy-Aliases) erlauben graduelle Migration — siehe Bundle L.b/L.c Lehre. Aber bei vollem Field-Removal aus dem Type ist Bundling unausweichlich.
+
+## Sprach-Konvention (Hybrid Deutsch/Englisch)
+
+ExamLab folgt einem Hybrid-Schema: Domain-Konzepte deutsch, Programming-Primitives englisch. Geltungsbereich: alles unter `ExamLab/`, `packages/shared/`, sowie Apps-Script-Code.
+
+| Bereich | Sprache | Beispiele | Begründung |
+|---|---|---|---|
+| Domain-Entitäten | Deutsch | `Frage`, `Pruefung`, `Schueler`, `Lehrer`, `Korrektur`, `Lernziel`, `Fachbereich`, `Bewertungsraster`, `Musterloesung`, `Aufgabengruppe`, `Lückentext`, `kiAktion` | Bildungs-Domain ist deutsch, keine sauberen englischen Übersetzungen |
+| UI-Strings + Comments | Deutsch (mit Umlaut) | „Prüfung laden", „Schüler", „Lösung" | Lehrer-User, deutsche Schule |
+| Identifier-Form von Domain-Wörtern | Deutsch ohne Umlaut | `pruefung`, `schueler`, `loesung`, `musterloesung`, `kiAktion` | Cross-Tool-Portabilität (Filenames, IDB-Keys, URLs) |
+| Technische Primitives | Englisch | `id`, `data`, `error`, `success`, `dispatch`, `subscribe`, `cache`, `reset`, `clear` | Programming-Universalsprache |
+| Programming-Konvention-Präfixe | Englisch | `set*`, `get*`, `toggle*`, `use*`, `on*`, `handle*` | React/Zustand-Ecosystem |
+| HTTP-API-Vertrag | Englisch | `action`, `body`, `payload`, `params` | HTTP-Standard |
+| Sheet-Spalten | Mix (Backend-Vertrag) | `id`/`typ`/`status` vs. `fachbereich`/`pruefungId`/`zeitstempel` | Storage-Vertrag, sticky |
+
+### Anwendungs-Beispiel: `action` vs. `kiAktion` (Bundle N)
+
+Beide Begriffe existieren parallel im selben HTTP-Body:
+
+```ts
+body: JSON.stringify({
+  action: 'kiAssistent',                  // HTTP-Endpoint-Discriminator (englisch, Wire-Vertrag)
+  email,
+  kiAktion: 'generiereMusterloesung',     // KI-Sub-Action (deutsch, Domain-Konzept)
+  daten,
+})
+```
+
+`action` ist Wire-Vertrag → englisch. `kiAktion` ist Domain-Konzept (welche pädagogische KI-Hilfe wird angefordert) → deutsch ohne Umlaut.
+
+### Anwendungs-Heuristik
+
+Wenn Du einen neuen Bezeichner einführst, frag:
+1. Ist es ein **HTTP-Property/Wire-Vertrag-Feld**? → englisch (`action`, `body`, `id`, `data`)
+2. Ist es ein **Programming-Primitive** (Hook, State-Setter, Event-Handler)? → englisch (`useFoo`, `setFoo`, `onFoo`)
+3. Ist es ein **Domain-Begriff aus dem Schul-Kontext**? → deutsch ohne Umlaut für Identifier (`pruefung`, `schueler`), mit Umlaut für UI-Strings („Prüfung", „Schüler")
+4. Ist es eine **Sheet-Spalte**? → bestehender Storage-Vertrag, nicht anfassen
+
+### Re-Evaluation
+
+Bei einer **Backend-Migration weg von Apps-Script** ist der natürliche Re-Entry-Point für vollständige Vereinheitlichung — dann wäre der Daten-Migrations-Aufwand sowieso anstehend, und Sheet-Spalten + Endpoint-Naming könnten in einem Schritt mit-vereinheitlicht werden.
