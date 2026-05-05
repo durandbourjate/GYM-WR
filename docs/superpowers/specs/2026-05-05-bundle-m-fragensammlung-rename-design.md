@@ -39,7 +39,9 @@ Liste der Files im Ordner:
 - One-Time-Delete-Hook für alte DB in `authStore.anmelden()` (LP-Login):
   ```ts
   // Bundle M: alte fragenbank-DB einmalig droppen (Cleanup)
-  void indexedDB.deleteDatabase('examlab-fragenbank-cache')
+  const req = indexedDB.deleteDatabase('examlab-fragenbank-cache')
+  req.onsuccess = () => console.info('[Bundle M] alte fragenbank-DB gedroppt')
+  // onerror/onblocked silent — DB existiert evtl. nicht (post-Deploy-Re-Login)
   ```
 
 ### 2.2 Apps-Script (ExamLab/apps-script-code.js)
@@ -65,14 +67,22 @@ Liste der Files im Ordner:
 **Sheet-Lookup-String:**
 - `headers.indexOf('fragenbanksheetid')` → `'fragensammlungsheetid'` (Z. 391, in `alleGruppenLaden_()`)
 
-**JS-Field-Name (Typo `fragebank` ohne `n` simultan korrigiert):**
-- `fragebankSheetId` → `fragensammlungSheetId` (~14 Stellen, alle Aufrufer von `gruppe.fragebankSheetId`):
+**JS-Field-Name (Typo `fragebank` ohne `n` simultan korrigiert) — Apps-Script + Frontend:**
+- `fragebankSheetId` → `fragensammlungSheetId` (Audit zeigt: ~14 Apps-Script-Stellen + 5 Frontend-Stellen)
+- Apps-Script-Stellen:
   - Z. 310, 341 (öffnen Spreadsheet)
   - Z. 391 (Field-Definition in `alleGruppenLaden_()`)
   - Z. 8793, 8834, 8886, 8939 (lernplattform-Pfade)
   - Z. 9020 (Initial-Setup)
   - Z. 9041, 9086, 9122, 9193 (lernplattform-Pfade)
   - Z. 9260, 9781, 9792, 9793 (Familie-Gruppen-Logik)
+- **Frontend-Stellen** (im selben Commit 2 oder als eigener Commit 2b — Plan entscheidet):
+  - `ExamLab/src/types/ueben/gruppen.ts:6` — Type-Definition `fragebankSheetId: string`
+  - `ExamLab/src/AppUeben.tsx:74` — Demo-Mock-Daten
+  - `ExamLab/src/adapters/ueben/appsScriptAdapter.ts:35` — Adapter Omit-Type
+  - `ExamLab/src/tests/gruppenStoreCache.test.ts:24` — Test-Mock
+  - `ExamLab/src/tests/gruppenCache.test.ts:11` — Test-Mock
+- Da der Field-Name **serialisiert** zwischen Apps-Script-JSON und Frontend-Type wandert (über `appsScriptAdapter.ts`), nutzen wir die gleiche Backward-Compat-Strategie wie für die Endpoint-Namen: **Apps-Script JSON-Response liefert in Commit 1 BEIDE Felder** (`fragebankSheetId` + `fragensammlungSheetId` mit identischem Wert) → Commit 3 stellt Frontend-Type auf neuen Namen um → Commit 6 entfernt das alte Feld aus der Response. Damit bricht nichts während Deploy-Lag.
 
 ### 2.3 Externes Sheet (User-Action-Item)
 
@@ -101,16 +111,22 @@ Branch: `feature/bundle-m-fragensammlung-rename` von `main`. Jeder Commit: `npx 
 **Ziel:** Apps-Script akzeptiert ALTE und NEUE Endpoint-Namen + Sheet-Spalten-Header gleichzeitig. Kein Frontend-Code-Change.
 
 **Änderungen:**
-- Sheet-Spalten-Lookup in `alleGruppenLaden_()`: liest `'fragensammlungsheetid'` ODER `'fragenbanksheetid'`:
+- Sheet-Spalten-Lookup in `alleGruppenLaden_()`: liest `'fragensammlungsheetid'` ODER `'fragenbanksheetid'`, Response liefert BEIDE Field-Namen mit identischem Wert (Typo-Fix-Backward-Compat):
   ```js
   var idxNeu = headers.indexOf('fragensammlungsheetid');
   var idxAlt = headers.indexOf('fragenbanksheetid');
   var idx = idxNeu !== -1 ? idxNeu : idxAlt;
-  fragebankSheetId: String(idx !== -1 ? data[i][idx] : ''),
+  var sheetId = String(idx !== -1 ? data[i][idx] : '');
+  result.push({
+    ...,
+    fragebankSheetId: sheetId,         // backward-compat (Typo-Field, von Frontend-Bundle alt gelesen)
+    fragensammlungSheetId: sheetId,    // neu (von Frontend-Bundle neu gelesen, ab Commit 3)
+    ...,
+  });
   ```
 - Dispatcher-Cases additiv: `case 'ladeFragensammlung':` + `case 'ladeFragenbank':` rufen denselben Funktions-Body. Analog `…Summary`.
 
-**User-Aktion:** **Deploy 1** (Apps-Script Bereitstellung neu erstellen). Nach Deploy 1 läuft App weiterhin mit alter Frontend-Bundle, ist aber bereit für neuen Frontend.
+**User-Aktion:** kein Deploy nach Commit 1 — wir warten bis nach Commit 2 (siehe Apps-Script-Deploy-Plan unten), beide Commits werden gemeinsam deployed.
 
 ### Commit 2 — Apps-Script intern alles umbenennen
 
@@ -122,16 +138,16 @@ Branch: `feature/bundle-m-fragensammlung-rename` von `main`. Jeder Commit: `npx 
 - `function ladeFragenbankSummary()` → `ladeFragensammlungSummary()`
 - Cache-Keys `'fragenbank_summary'` → `'fragensammlung_summary'`
 - Sheet-Lookup-String: `'fragenbanksheetid'` als bevorzugte Variante belassen (Backward-Compat aus Commit 1 bleibt)
-- JS-Field `fragebankSheetId` → `fragensammlungSheetId` (~14 Stellen, **gleichzeitig** Typo `fragebank` → `fragen` korrigiert)
+- JS-Field-Variable `fragebankSheetId` → `fragensammlungSheetId` (~14 Stellen Apps-Script-intern, **gleichzeitig** Typo korrigiert). JSON-Response weiterhin BEIDE Felder ausliefert (Backward-Compat aus Commit 1 bleibt aktiv).
 - Comments + JSDoc wo relevant
 
 **Endpoint-Cases bleiben unverändert** — beide Aliases (`ladeFragenbank` + `ladeFragensammlung`) leben aus Commit 1 weiter.
 
-**User-Aktion:** **Deploy 2** (oder bei schneller Sequenz mit Deploy 1 zusammenlegen — kein Funktional-Unterschied, aber atomic-Commit-Paritäts-Argument).
+**User-Aktion:** **Deploy 1** (nach Commit 1 + 2 zusammen, ein einziger Deploy aktiviert alles).
 
-**User-Aktion (parallel, vor Commit 6):** Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` umbenennen.
+**User-Aktion (parallel zu Deploy 1, vor Commit 6):** Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` im Gruppen-Tab umbenennen. Backward-Compat im Apps-Script lässt diese Reihenfolge frei (umbenennen vor oder nach Deploy 1, beides funktioniert).
 
-### Commit 3 — Frontend Service-Layer-Rename
+### Commit 3 — Frontend Service-Layer-Rename + Frontend-Type-Field-Rename
 
 **Änderungen:**
 - `git mv ExamLab/src/services/fragenbankApi.ts fragensammlungApi.ts`
@@ -139,11 +155,18 @@ Branch: `feature/bundle-m-fragensammlung-rename` von `main`. Jeder Commit: `npx 
 - `git mv ExamLab/src/store/fragenbankStore.ts fragensammlungStore.ts`
 - File-Inhalte: alle Identifier umbenennen (Klassen, Funktionen, Exports, Typen)
 - Action-Strings: `postJson('ladeFragenbank', ...)` → `postJson('ladeFragensammlung', ...)`
+- **Frontend Type-Field-Rename** (Typo-Fix, hängt an Apps-Script-JSON-Response-Backward-Compat aus Commit 1):
+  - `ExamLab/src/types/ueben/gruppen.ts:6` — Type-Field `fragebankSheetId: string` → `fragensammlungSheetId: string`
+  - `ExamLab/src/AppUeben.tsx:74` — Demo-Mock-Daten
+  - `ExamLab/src/adapters/ueben/appsScriptAdapter.ts:35` — Adapter Omit-Type
+  - `ExamLab/src/tests/gruppenStoreCache.test.ts:24` — Test-Mock
+  - `ExamLab/src/tests/gruppenCache.test.ts:11` — Test-Mock
 - IDB-DB-Name in `fragensammlungCache.ts`: `'examlab-fragenbank-cache'` → `'examlab-fragensammlung-cache'`
-- One-Time-Delete-Hook in `authStore.anmelden()` für LP-Login:
+- One-Time-Delete-Hook in `authStore.anmelden()` für LP-Login (mit Console-Log für E2E-Verifikation):
   ```ts
   // Bundle M: alte fragenbank-DB einmalig droppen
-  void indexedDB.deleteDatabase('examlab-fragenbank-cache')
+  const req = indexedDB.deleteDatabase('examlab-fragenbank-cache')
+  req.onsuccess = () => console.info('[Bundle M] alte fragenbank-DB gedroppt')
   ```
 - Imports + Re-Exports in allen Caller-Files anpassen (wird durch tsc gefangen)
 
@@ -173,11 +196,12 @@ Branch: `feature/bundle-m-fragensammlung-rename` von `main`. Jeder Commit: `npx 
 **Änderungen:**
 - Apps-Script: Dispatcher-Aliases entfernen — `case 'ladeFragenbank':` + `case 'ladeFragenbankSummary':` raus
 - Apps-Script: Sheet-Spalten-Lookup-Backward-Compat entfernen — nur noch `'fragensammlungsheetid'` lesen (Sheet ist jetzt umbenannt)
+- Apps-Script: alten JSON-Field-Namen `fragebankSheetId` aus Response entfernen — nur noch `fragensammlungSheetId` ausliefern
 - HANDOFF.md: Bundle M-Section eingefügt (analog Bundle 3-Stil), Roadmap-Status aktualisiert
 - Memory-Eintrag `project_bundle_m_fragensammlung_rename.md` mit Commit-Hashes + Lehren
-- `./scripts/audit-tokens.sh` re-run, Output-Diff in HANDOFF dokumentieren
+- `./scripts/audit-tokens.sh` re-run, Output-Diff in HANDOFF dokumentieren (Skript wird aus `audit/examlab-vereinfachung`-Branch in `feature/bundle-m`-Branch übernommen via cherry-pick — siehe Task 0 im Plan)
 
-**User-Aktion:** **Deploy 3** (Backward-Compat raus, finaler Stand).
+**User-Aktion:** **Deploy 2** (Backward-Compat raus, finaler Stand).
 
 ## 4. Risiken + Mitigation
 
@@ -186,7 +210,7 @@ Branch: `feature/bundle-m-fragensammlung-rename` von `main`. Jeder Commit: `npx 
 | 1 | Wire-Mismatch Frontend ↔ Apps-Script während Deploy-Lag | Backward-Compat in Commit 1 (Sheet-Spalte + Endpoints parallel akzeptiert). Removal erst Commit 6 nach E2E + User-Sheet-Rename. |
 | 2 | IDB-DB-Cleanup-Hook tötet Cache | DB enthält nur Cache (Frage-Summaries) — regeneriert sich beim nächsten Server-Pull. **Keine Daten-Verluste**, max. 2-3s Cold-Start beim ersten Login nach Deploy. |
 | 3 | User-Tabs mit altem JS-Bundle senden alte Action-Strings | Backward-Compat in Apps-Script deckt das ab bis Commit 6. PWA-Service-Worker-Cache-Bust + Hard-Reload-Empfehlung im HANDOFF. |
-| 4 | `git mv` verliert Tracking-Historie | Pro Datei `git mv old new` ohne Inhalts-Edit, dann separater Edit-Commit. Git erkennt Renames automatisch wenn Diff <50%. |
+| 4 | `git mv` verliert Tracking-Historie | Git erkennt Renames automatisch wenn Diff <50% Similarity. Bei Bundle M sind Identifier-Renames in den meisten Files <<50% Diff → `git mv old new` + Inhalt-Edit im selben Commit ist akzeptabel. Falls einzelne File-Edits zu gross sind (z.B. komplette Index-Datei), Plan splittet sie als 2-Schritt (mv + edit). |
 | 5 | 30+ Import-Pfade übersehen | TypeScript fängt Missing-Imports im `tsc -b`. Auch ESLint-`import/no-unresolved` falls aktiv. |
 | 6 | Sheet-Spalten-Rename vergessen → Commit 6 bricht App | User-Task im HANDOFF: vor Commit 6 Bestätigung „Sheet-Spalte umbenannt? — JA". |
 | 7 | Doku-Files (HANDOFF, audit-Doku) referenzieren `fragenbank` | Bewusst belassen (historische Doku). Erfolgs-Kriterium 1 schliesst Doku-Files explizit aus. |
@@ -205,10 +229,11 @@ Erwartung: alle exit 0, 1234+ vitest passes (kein Test-Verlust), 0/0/0 lint:as-a
 
 **Setup:** Tab-Gruppe mit LP-Login (`wr.test@gymhofwil.ch`) auf `origin/preview` (Force-Push von `feature/bundle-m-fragensammlung-rename` nach `origin/preview` per Memory-Regel `feedback_preview_forcepush.md`).
 
-**Pre-E2E User-Tasks (Reihenfolge wichtig):**
-1. ✅ Apps-Script-Deploy nach Commit 1 oder 2 (Backward-Compat aktiv)
-2. ✅ Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` im Gruppen-Tab umbenennen
-3. ✅ Vorab Hard-Reload in Test-Tabs
+**Pre-E2E User-Tasks (Reihenfolge wichtig — verbindlich VOR E2E-Start, NICHT zwischendurch):**
+1. ✅ Apps-Script-Deploy 1 (nach Commit 1 + 2 gemeinsam) — Backward-Compat aktiv
+2. ✅ Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` im Gruppen-Tab umbenennen — Backward-Compat fängt es trotzdem ab, aber E2E soll mit final-state laufen
+3. ✅ Hard-Reload in Test-Tabs (Cmd+Shift+R) — neuer Frontend-Build wird geladen
+4. ⚠️ **Constraint:** Pre-Bedingungen 1+2 müssen vor Commit 6 erfüllt sein, sonst bricht App nach Deploy 2 (Backward-Compat-Removal)
 
 **E2E-Pfade (LP):**
 
@@ -221,7 +246,7 @@ Erwartung: alle exit 0, 1234+ vitest passes (kein Test-Verlust), 0/0/0 lint:as-a
 | 5 | Pool-Sync-Dialog | Öffnet + lädt Pool-Index (`PoolSyncDialog.tsx` aus renamem Ordner) |
 | 6 | Excel-Import-Dialog | Öffnet (`ExcelImport.tsx` aus renamem Ordner) |
 | 7 | Logout | Beide DBs weg (Logout-Cleanup-Pattern), authStore.zuruecksetzen-Cleanup |
-| 8 | Re-Login | One-Time-Delete-Hook läuft (Console-Log), neue DB füllt sich |
+| 8 | Re-Login | One-Time-Delete-Hook läuft (Console-Log `[Bundle M] alte fragenbank-DB gedroppt` ODER DevTools→Application→IndexedDB: alte DB nicht mehr da), neue DB füllt sich |
 
 **Security-Check (Phase 4 regression-prevention.md):**
 - LP-Response enthält weiterhin Lösungsfelder
@@ -234,18 +259,19 @@ Erwartung: alle exit 0, 1234+ vitest passes (kein Test-Verlust), 0/0/0 lint:as-a
 | Phase | State | User-Action |
 |-------|---|---|
 | Vor Bundle M | Stand `0042b5f` (Bundle 3) | — |
-| Nach Commit 1 | + Backward-Compat (Sheet-Spalte + Endpoints) | **Deploy 1** |
-| Nach Commit 2 | + interner Rename + Cache-Key + JS-Field-Typo-Fix | **Deploy 2** (kombinierbar mit Deploy 1) |
+| Nach Commit 1+2 (gemeinsam) | + Backward-Compat + interner Rename + Cache-Key + JS-Field-Typo-Fix in JSON-Response | **Deploy 1** (ein Deploy nach beiden Commits, weil Commit 2 die Cache-Keys ändert und ohne Deploy nicht aktiv wären) |
 | Vor Commit 6 | (User benennt Sheet-Spalte um) | **Sheet-Spalten-Rename** |
-| Nach Commit 6 | Backward-Compat entfernt | **Deploy 3** |
+| Nach Commit 6 | Backward-Compat entfernt | **Deploy 2** |
 
-**Total:** 2-3 Apps-Script-Deploys (Bundle 3 hatte 4 — vergleichbar).
+**Total:** 2 Apps-Script-Deploys (Bundle 3 hatte 4 — Bundle M ist deutlich einfacher).
 
 ## 6. Erfolgs-Kriterien
 
 Bundle M ist erfolgreich, wenn:
 
 1. `./scripts/audit-tokens.sh` zeigt `fragenbank/Fragenbank/FRAGENBANK` = **0** Treffer in `ExamLab/src/`, `packages/shared/src/`, `ExamLab/apps-script-code.js`. Bewusste Ausnahmen: Doku-Files (HANDOFF.md Historie, audit-Doku, Memory-Einträge, vergangene Spec/Plan-Files), Spreadsheet-ID-Wert, Drive-Filename.
+
+   **Task 0** (vor Commit 1 im Plan): `scripts/audit-tokens.sh` aus Branch `audit/examlab-vereinfachung` (Commit `84151d2`) cherry-picken in `feature/bundle-m-fragensammlung-rename`. Skript existiert auf main (noch) nicht.
 2. `npx tsc -b` exit 0
 3. `npx vitest run` 1234+/1234+ passes (kein Test-Verlust durch Rename)
 4. `npm run build` exit 0, PWA-precache valid
