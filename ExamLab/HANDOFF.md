@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Bundle M — Fragenbank → Fragensammlung Rename ✅ MERGE-READY (05.05.2026)
+### Bundle M — Fragenbank → Fragensammlung Rename ✅ MERGED (05.05.2026)
 
-Branch `feature/bundle-m-fragensammlung-rename` (von main `cd7e9f9`). 9 Sub-Commits, 2 Apps-Script-Deploys, Sheet-Spalten-Rename. Erstes Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Mechanischer Rename, niedriges Risiko.
+Merge-Commit `606f256` auf `main`. Branch `feature/bundle-m-fragensammlung-rename` lokal + remote gelöscht. 9 Sub-Commits, 2 Apps-Script-Deploys, Sheet-Spalten-Rename. Erstes Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Mechanischer Rename, niedriges Risiko.
 
 **Audit-Token-Diff:**
 | Token | vorher | nachher (Code) |
@@ -28,7 +28,8 @@ Branch `feature/bundle-m-fragensammlung-rename` (von main `cd7e9f9`). 9 Sub-Comm
 - `97dfd59` Task 3: Frontend Service-Layer (3 Files) + Type-Field-Rename (7 Stellen) + IDB-Cleanup-Hook in authStore.anmelden()
 - `23d2342` Task 4: Komponenten-Ordner `lp/fragenbank/` → `lp/fragensammlung/` (15 Files)
 - `96d135e` Task 5: Tests + Mocks (1234/1238 vitest grün)
-- `<hash>` Task 6: Backward-Compat-Removal + Apps-Script-Comments + HANDOFF + Memory
+- `05af255` Task 6: Backward-Compat-Removal + Apps-Script-Comments + HANDOFF + Memory
+- `606f256` Merge nach main
 
 **E2E-Pfade (LP, mit echten Logins `wr.test@gymhofwil.ch`):**
 
@@ -45,7 +46,7 @@ Branch `feature/bundle-m-fragensammlung-rename` (von main `cd7e9f9`). 9 Sub-Comm
 
 **Apps-Script-Deploys während Bundle M:**
 1. Deploy 1 nach Task 2 (Backward-Compat aktiv): User durchgeführt ✅
-2. Deploy 2 nach Task 6 (Backward-Compat entfernt, finaler Stand): User-Action offen
+2. Deploy 2 nach Task 6 (Backward-Compat entfernt, finaler Stand): User durchgeführt ✅ — Final-Smoke-Test mit Cache-Buster-URL bestätigt
 
 **User-Aktionen während Bundle M:**
 - Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` im Gruppen-Tab umbenannt ✅
