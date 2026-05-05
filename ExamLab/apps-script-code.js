@@ -1147,7 +1147,7 @@ function doPost(e) {
   const action = body.action;
 
   // SICHERHEIT: Zentrale Auth-Prüfung für LP-only Aktionen
-  var LP_AKTIONEN = [
+  var LP_ACTIONS = [
     'speichereConfig', 'speichereFrage', 'loescheFrage', 'loeschePruefung',
     'beendePruefung', 'speichereKorrekturZeile', 'schalteFrei',
     'importierePoolFragen', 'schreibePoolAenderung', 'setzeBerechtigungen',
@@ -1157,7 +1157,7 @@ function doPost(e) {
     'aktualisiereLernziel', 'loescheLernziel',
     'stelleWiederHer', 'hardDeleteFrage', // Bundle 3: Schreib-Pfade brauchen Cache-Invalidierung (listePapierkorb ist read-only, bleibt draussen)
   ];
-  if (LP_AKTIONEN.indexOf(action) >= 0) {
+  if (LP_ACTIONS.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
     if (!lpEmail || !istZugelasseneLP(lpEmail)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen (Email: ' + (lpEmail || 'nicht angegeben') + ')' });
@@ -1165,8 +1165,8 @@ function doPost(e) {
   }
 
   // SICHERHEIT: SuS-Aktionen brauchen gültige E-Mail-Domain
-  var SUS_AKTIONEN = ['speichereAntworten', 'heartbeat', 'ladeKorrekturenFuerSuS', 'ladeKorrekturDetail'];
-  if (SUS_AKTIONEN.indexOf(action) >= 0) {
+  var SUS_ACTIONS = ['speichereAntworten', 'heartbeat', 'ladeKorrekturenFuerSuS', 'ladeKorrekturDetail'];
+  if (SUS_ACTIONS.indexOf(action) >= 0) {
     var susEmail = body.email;
     if (!susEmail || (!istZugelasseneLP(susEmail) && !susEmail.endsWith('@' + SUS_DOMAIN))) {
       return jsonResponse({ error: 'Nicht autorisiert' });
@@ -1174,8 +1174,8 @@ function doPost(e) {
   }
 
   // Schreibende Aktionen invalidieren den Cache (Configs, Fragensammlung, Tracker)
-  var SCHREIBENDE_AKTIONEN = LP_AKTIONEN.concat(['speichereAntworten']);
-  if (SCHREIBENDE_AKTIONEN.indexOf(action) >= 0) {
+  var SCHREIBENDE_ACTIONS = LP_ACTIONS.concat(['speichereAntworten']);
+  if (SCHREIBENDE_ACTIONS.indexOf(action) >= 0) {
     cacheInvalidieren_();
   }
 
