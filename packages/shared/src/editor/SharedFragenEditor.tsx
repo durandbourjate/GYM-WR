@@ -61,6 +61,30 @@ export interface SpeichernMeta {
   offeneKIFeedbacks?: Array<{ aktion: string; feedbackId: string; wichtig: boolean }>
 }
 
+/**
+ * Bundle 3 P-C.3 — Auto-Save-Adapter (opt-in via prop).
+ *
+ * Wenn gesetzt:
+ * - Save-Button wird durch `statusSlot` ersetzt (Status-Indikator).
+ * - Bei jeder Frage-Änderung wird `onTippe(frage)` mit der live-Preview gerufen,
+ *   die der Caller dann an `tippeFrage(email, frage)` weitergibt (Hook-Bridge).
+ * - Cancel-Button ruft erst `onSchliessenVersuch()` und blockiert Schliessen,
+ *   wenn Caller `{darfSchliessen: false}` returniert (z.B. Schliessen-Modal offen).
+ *
+ * API-Inversion: Hook (useFragenAutoSave) bleibt App-Tree (ExamLab), Shared-Editor
+ * ist agnostisch. Caller (FragenBrowser) bringt Hook-State + Slots mit. Der Editor
+ * erzeugt intern bereits eine memoized `aktuelleFrage`-Preview, die wir hier
+ * upward propagieren — so muss der Caller keine eigene Frage-Snapshot-Logik bauen.
+ */
+export interface AutoSaveAdapter {
+  /** Status-Komponente (`<SaveStatusIndikator … />`), gerendert anstelle des Save-Buttons. */
+  statusSlot: React.ReactNode
+  /** Wird bei jeder Frage-Änderung mit der aktuellen Preview gerufen. Caller routet zu `tippeFrage(email, frage)`. */
+  onTippe: (frage: Frage) => void
+  /** Wird beim Schliessen-Versuch gerufen. `{darfSchliessen:false}` blockiert die Schliessung. */
+  onSchliessenVersuch: () => Promise<{ darfSchliessen: boolean }>
+}
+
 export interface SharedFragenEditorProps {
   /** Bestehende Frage zum Bearbeiten, oder null für neue */
   frage: Frage | null
@@ -124,6 +148,13 @@ export interface SharedFragenEditorProps {
     onSchliessen: () => void
     onErfolg: (updates: Partial<Frage>) => void
   }) => React.ReactNode
+
+  /**
+   * Bundle 3 P-C.3 — Auto-Save-Adapter (opt-in).
+   * Wenn gesetzt: Status-Indikator statt Save-Button + Schliessen-Modal-Hook.
+   * Wenn nicht gesetzt: existing manueller Save-Flow (default).
+   */
+  autoSave?: AutoSaveAdapter
 }
 
 /** Generischer Vollbild-Editor für Prüfungs-/Übungsfragen. Host wrapped mit EditorProvider. */
@@ -133,6 +164,7 @@ export default function SharedFragenEditor({
   anhangEditorSlot, berechtigungenSlot, poolInfoSlot, poolSyncSlot,
   berechtigungenHeaderSlot,
   PDFEditorComponent, rueckSyncSlot,
+  autoSave,
 }: SharedFragenEditorProps) {
   const config = useEditorConfig()
   const services = useEditorServices()
@@ -704,6 +736,30 @@ export default function SharedFragenEditor({
     [aktuelleFrage],
   )
 
+  // Bundle 3 P-C.3 — Auto-Save-Trigger: jeder `aktuelleFrage`-Wechsel = "Editor wurde
+  // verändert"-Signal. `aktuelleFrage` ist memoized über alle relevanten Editor-Felder
+  // → ref-Änderung = mindestens ein Frage-Field hat sich geändert. Skip ersten Render
+  // (Mount-Init) damit nicht beim Editor-Open getippt wird.
+  const istErsterRender = useRef(true)
+  useEffect(() => {
+    if (istErsterRender.current) {
+      istErsterRender.current = false
+      return
+    }
+    if (aktuelleFrage) autoSave?.onTippe(aktuelleFrage)
+  }, [aktuelleFrage, autoSave])
+
+  // Bundle 3 P-C.3 — Schliessen-Versuch: bei autoSave erst Caller fragen, sonst direkt
+  // onAbbrechen. Caller (FragenBrowser) entscheidet basierend auf Status, ob ein
+  // Schliessen-Modal aufgeht (z.B. Pflichtfelder leer / sync pending).
+  const handleAbbrechen = useCallback(async (): Promise<void> => {
+    if (autoSave) {
+      const result = await autoSave.onSchliessenVersuch()
+      if (!result.darfSchliessen) return
+    }
+    onAbbrechen()
+  }, [autoSave, onAbbrechen])
+
   // DnD-Bild: doppelte Zone-Labels detektieren (Bundle-H-Heuristik, vereinfachter
   // Bundle-J-Match auf erstem Synonym pro Zone — Multi-Zone-Stacks sind seit
   // Bundle J explizit erlaubt, aber identische Zone-Hauptlabels bleiben
@@ -879,7 +935,7 @@ export default function SharedFragenEditor({
     <>
     <ResizableSidebar
       mode="overlay"
-      onClose={onAbbrechen}
+      onClose={() => { void handleAbbrechen() }}
       topOffset={headerH}
       storageKey="frageneditor-breite"
     >
@@ -924,18 +980,22 @@ export default function SharedFragenEditor({
             {/* Pool-Sync Buttons (Host-Slot) */}
             {poolSyncSlot?.({ frage, typ, onRueckSync: () => setRueckSyncOffen(true) })}
             <button
-              onClick={onAbbrechen}
+              onClick={() => { void handleAbbrechen() }}
               className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             >
               ← Zurück
             </button>
-            <button
-              onClick={handleSpeichern}
-              disabled={speicherLaeuft}
-              className="px-3 py-1.5 text-sm font-semibold text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              {speicherLaeuft ? 'Speichern...' : 'Speichern'}
-            </button>
+            {autoSave ? (
+              autoSave.statusSlot
+            ) : (
+              <button
+                onClick={handleSpeichern}
+                disabled={speicherLaeuft}
+                className="px-3 py-1.5 text-sm font-semibold text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                {speicherLaeuft ? 'Speichern...' : 'Speichern'}
+              </button>
+            )}
           </div>
         </div>
 

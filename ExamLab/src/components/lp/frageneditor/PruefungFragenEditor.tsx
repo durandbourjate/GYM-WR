@@ -14,7 +14,7 @@ import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
-import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
+import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { generateZeitpunkte, zeitpunktModellAusConfig } from '../../../utils/zeitpunktUtils.ts'
@@ -39,9 +39,11 @@ interface Props {
   onVorherigeFrage?: () => void
   /** Optional: zur nächsten Frage der Liste springen. undefined = kein Button. */
   onNaechsteFrage?: () => void
+  /** Bundle 3 P-C.3 — Auto-Save-Adapter (opt-in, nur Fragensammlung). */
+  autoSave?: AutoSaveAdapter
 }
 
-export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage }: Props) {
+export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
   const summaries = useFragenbankStore((s) => s.summaries)
@@ -130,6 +132,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
         performance={performance}
         onVorherigeFrage={onVorherigeFrage}
         onNaechsteFrage={onNaechsteFrage}
+        autoSave={autoSave}
         PDFEditorComponent={PDFEditor}
         anhangEditorSlot={(props) => (
           <AnhangEditor

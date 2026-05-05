@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { useEditorNeighborPrefetch } from '../../../hooks/useEditorNeighborPrefetch'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
+import { SaveStatusIndikator, SchliessenModal } from '@shared/index'
+import type { SchliessenVariante } from '@shared/index'
 import { useFragenFilter } from '../../../hooks/useFragenFilter.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
@@ -10,8 +12,11 @@ import { demoFragen } from '../../../data/demoFragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
 import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
 import type { Frage, FrageSummary } from '../../../types/fragen-storage'
-import type { SpeichernMeta } from '@shared/editor/SharedFragenEditor'
+import type { Frage as CoreFrage } from '@shared/types/fragen-core'
+import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
+import { useFragenAutoSave } from '../../../hooks/useFragenAutoSave'
+import { tippeFrage as draftSyncTippe } from '../../../services/draftSync'
 import FragenListeSkeleton from '../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
@@ -83,6 +88,11 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
   const [loeschKandidat, setLoeschKandidat] = useState<{ id: string; fachbereich: string; typ: string; fragetext?: string } | null>(null)
   const [detailLaden, setDetailLaden] = useState(false)
+
+  // Bundle 3 P-C.3 — Auto-Save: Status-Hook + Schliessen-Modal-State
+  const [schliessenModal, setSchliessenModal] = useState<SchliessenVariante | null>(null)
+  const editorId = `fragenbrowser-${editFrage?.id ?? 'neu'}`
+  const autoSaveState = useFragenAutoSave(editorId, editFrage)
 
   // Filter/Sort/Gruppierungs-Hook
   const filter = useFragenFilter(alleFragen, user?.email, ladeStatus, istDemoModus)
@@ -200,6 +210,69 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     next: nachbarFuerPrefetch.next,
     email: user?.email ?? '',
   })
+
+  // Bundle 3 P-C.3 — Auto-Save-Adapter für SharedFragenEditor
+  // - statusSlot: SaveStatusIndikator mit live-Status aus useFragenAutoSave
+  // - onTippe: Editor-Preview an draftSync weitergeben (Hook-Bridge: Editor lebt in shared, Hook + draftSync in ExamLab)
+  // - onSchliessenVersuch: Pflichtfeld-leer ODER sync pending → Modal öffnen, sonst silent close
+  const autoSaveAdapter: AutoSaveAdapter | undefined = useMemo(() => {
+    // Demo-Modus: kein Auto-Save, klassischer Save-Flow (Backend nicht erreichbar)
+    if (istDemoModus || !apiService.istKonfiguriert()) return undefined
+    return {
+      statusSlot: (
+        <SaveStatusIndikator
+          status={autoSaveState.status}
+          fehlendePflichtfelder={autoSaveState.fehlendePflichtfelder}
+        />
+      ),
+      onTippe: (frage: CoreFrage) => {
+        if (!user?.email) return
+        // Core→Storage Layer-Boundary: tippeFrage akzeptiert Storage.Frage; Core ist
+        // strukturell kompatibel (tippeFrage liest nur id/fachbereich/typ + speichert volles Objekt).
+        draftSyncTippe(user.email, frage as unknown as Frage /* Defensive: Core→Storage Layer-Boundary, draftSync-tippe behandelt Frage opaque */)
+      },
+      onSchliessenVersuch: async () => {
+        // Sync läuft / Verbindungsproblem / Server-down → Modal "sync-pending"
+        if (
+          autoSaveState.status === 'sync-läuft' ||
+          autoSaveState.status === 'verbindungsproblem' ||
+          autoSaveState.status === 'server-down'
+        ) {
+          setSchliessenModal('sync-pending')
+          return { darfSchliessen: false }
+        }
+        // Pflichtfelder leer → Modal "unvollstaendig"
+        if (autoSaveState.fehlendePflichtfelder.length > 0) {
+          setSchliessenModal('unvollstaendig')
+          return { darfSchliessen: false }
+        }
+        // Sauber → silent close
+        return { darfSchliessen: true }
+      },
+    }
+  }, [istDemoModus, autoSaveState.status, autoSaveState.fehlendePflichtfelder, user?.email])
+
+  /** Bundle 3 P-C.3 — Schliessen-Modal-Handler */
+  const schliessenModalAbschliessen = useCallback((): void => {
+    setSchliessenModal(null)
+    setZeigEditor(false)
+    setEditFrage(null)
+  }, [])
+
+  const schliessenModalEntwurfBehalten = useCallback((): void => {
+    // "Als Entwurf behalten" = Frage bleibt im draftStore, Editor schliesst
+    schliessenModalAbschliessen()
+  }, [schliessenModalAbschliessen])
+
+  const schliessenModalVerwerfen = useCallback(async (): Promise<void> => {
+    // "Verwerfen" / "Trotzdem schliessen" = finalisiere (server-roundtrip falls möglich), dann close
+    try {
+      await autoSaveState.finalisiereVorClose()
+    } catch {
+      // Fehler hier irrelevant — User schliesst trotzdem
+    }
+    schliessenModalAbschliessen()
+  }, [autoSaveState, schliessenModalAbschliessen])
 
   async function handleFrageGespeichert(neueFrage: Frage, meta?: SpeichernMeta): Promise<void> {
     aktualisiereFrage(neueFrage)
@@ -377,8 +450,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
             performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
             onVorherigeFrage={nachbarCallbacks.onVor}
             onNaechsteFrage={nachbarCallbacks.onNach}
+            autoSave={autoSaveAdapter}
           />
         )}
+
+        {/* Bundle 3 P-C.3 — Schliessen-Modal */}
+        <SchliessenModal
+          open={schliessenModal !== null}
+          variante={schliessenModal ?? 'unvollstaendig'}
+          onAbbrechen={() => setSchliessenModal(null)}
+          onVerwerfen={() => { void schliessenModalVerwerfen() }}
+          onAlsEntwurfBehalten={schliessenModal === 'unvollstaendig' ? schliessenModalEntwurfBehalten : undefined}
+        />
 
         {/* Lösch-Bestätigung */}
         {loeschKandidat && (
@@ -550,8 +633,18 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           performance={editFrage ? fragenStats.get(editFrage.id) : undefined}
           onVorherigeFrage={nachbarCallbacks.onVor}
           onNaechsteFrage={nachbarCallbacks.onNach}
+          autoSave={autoSaveAdapter}
         />
       )}
+
+      {/* Bundle 3 P-C.3 — Schliessen-Modal */}
+      <SchliessenModal
+        open={schliessenModal !== null}
+        variante={schliessenModal ?? 'unvollstaendig'}
+        onAbbrechen={() => setSchliessenModal(null)}
+        onVerwerfen={() => { void schliessenModalVerwerfen() }}
+        onAlsEntwurfBehalten={schliessenModal === 'unvollstaendig' ? schliessenModalEntwurfBehalten : undefined}
+      />
 
       {/* Lösch-Bestätigung */}
       {loeschKandidat && (
