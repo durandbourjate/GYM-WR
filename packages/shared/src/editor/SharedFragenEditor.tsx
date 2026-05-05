@@ -736,18 +736,37 @@ export default function SharedFragenEditor({
     [aktuelleFrage],
   )
 
-  // Bundle 3 P-C.3 — Auto-Save-Trigger: jeder `aktuelleFrage`-Wechsel = "Editor wurde
-  // verändert"-Signal. `aktuelleFrage` ist memoized über alle relevanten Editor-Felder
-  // → ref-Änderung = mindestens ein Frage-Field hat sich geändert. Skip ersten Render
-  // (Mount-Init) damit nicht beim Editor-Open getippt wird.
+  // Bundle 3 P-C.3 — Auto-Save-Trigger: jeder Frage-Wechsel = "Editor wurde
+  // verändert"-Signal. `aktuelleFrage` (von buildFragePreview) deckt nur typ-spezifische
+  // Felder ab (für Validator). Auto-Save braucht zusätzlich Metadaten (thema, fach, …),
+  // damit Tippen im Thema-Feld den Hook erreicht. P-C.3 Hotfix: zweite Memo, die
+  // `aktuelleFrage` um Metadata-State erweitert. Skip ersten Render (Mount-Init).
+  const frageFuerAutoSave = useMemo(() => {
+    if (!aktuelleFrage) return null
+    return {
+      ...(aktuelleFrage as object),
+      thema,
+      fach: frage?.fach ?? fachbereich,
+      fachbereich,
+      punkte,
+      bloom,
+      tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+      semester,
+      gefaesse,
+      lernzielIds,
+      geteilt,
+      anhaenge,
+    } as Frage
+  }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach])
+
   const istErsterRender = useRef(true)
   useEffect(() => {
     if (istErsterRender.current) {
       istErsterRender.current = false
       return
     }
-    if (aktuelleFrage) autoSave?.onTippe(aktuelleFrage)
-  }, [aktuelleFrage, autoSave])
+    if (frageFuerAutoSave) autoSave?.onTippe(frageFuerAutoSave)
+  }, [frageFuerAutoSave, autoSave])
 
   // Bundle 3 P-C.3 — Schliessen-Versuch: bei autoSave erst Caller fragen, sonst direkt
   // onAbbrechen. Caller (FragenBrowser) entscheidet basierend auf Status, ob ein
