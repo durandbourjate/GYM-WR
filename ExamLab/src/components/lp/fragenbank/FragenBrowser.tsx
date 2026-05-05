@@ -16,7 +16,7 @@ import type { Frage as CoreFrage } from '@shared/types/fragen-core'
 import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import type { FragenPerformance } from '../../../types/tracker.ts'
 import { useFragenAutoSave } from '../../../hooks/useFragenAutoSave'
-import { tippeFrage as draftSyncTippe } from '../../../services/draftSync'
+import { tippeFrage as draftSyncTippe, cancelPending as draftSyncCancelPending } from '../../../services/draftSync'
 import FragenListeSkeleton from '../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
@@ -289,16 +289,22 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   }, [schliessenModalAbschliessen])
 
   const schliessenModalVerwerfen = useCallback(async (): Promise<void> => {
-    // Bundle 3 P-C.3 hotfix#3 — Verwerfen-Semantik je nach Variante:
+    // Bundle 3 P-C.3 hotfix#3+5 — Verwerfen-Semantik je nach Variante:
     // - 'unvollstaendig' → soft-delete (Frage in Papierkorb verschieben, Plan F.4#6)
     // - 'sync-pending'  → einfach schliessen (User akzeptiert Datenverlust)
     if (schliessenModal === 'unvollstaendig' && liveFrage && user?.email) {
+      // hotfix#5 — cancel pending IDB+Server-Timer VOR loescheFrage. Ohne diesen Cancel
+      // räumt der pending 10s-Server-Sync nach loescheFrage die geloescht_am-Spalte
+      // wieder leer (un-delete-Race). 2. Cancel NACH await: falls während des Server-
+      // Roundtrips eine neue tippeFrage einen frischen Timer scheduled hat.
+      draftSyncCancelPending(liveFrage.id)
       try {
         await apiService.loescheFrage(user.email, liveFrage.id, liveFrage.fachbereich)
       } catch {
         // Fehler hier nicht-blockierend — User schliesst trotzdem; Frage bleibt
         // im Backend (sammlung/draft), kann später manuell gelöscht werden.
       }
+      draftSyncCancelPending(liveFrage.id)
     }
     schliessenModalAbschliessen()
   }, [schliessenModal, liveFrage, user?.email, schliessenModalAbschliessen])

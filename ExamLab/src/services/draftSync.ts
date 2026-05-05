@@ -293,6 +293,20 @@ export function subscribe(
 }
 
 /**
+ * Bundle 3 P-C.3 hotfix#5 — Pending Debouncer + Retry-Timer für eine Frage canceln.
+ * Wichtig vor Soft-Delete (Verwerfen-Flow): sonst race-condition, in der ein pending
+ * 10s-server-sync-timer die Frage nach dem loescheFrage wieder unter geloescht_am=''
+ * speichert (un-deleting). Caller: schliessenModalVerwerfen vor apiService.loescheFrage.
+ */
+export function cancelPending(frageId: string): void {
+  const entry = stateByFrageId.get(frageId)
+  if (!entry) return
+  if (entry.idbTimer) { clearTimeout(entry.idbTimer); entry.idbTimer = undefined }
+  if (entry.serverTimer) { clearTimeout(entry.serverTimer); entry.serverTimer = undefined }
+  if (entry.retryTimer) { clearTimeout(entry.retryTimer); entry.retryTimer = undefined }
+}
+
+/**
  * Test-only: räumt interne Debouncer + State auf.
  */
 export function resetForTesting(): void {
