@@ -1206,6 +1206,12 @@ function doPost(e) {
       return bulkSetzeLueckentextModusEndpoint(body);
     case 'loescheFrage':
       return loescheFrage(body);
+    case 'stelleWiederHer':
+      return stelleWiederHer(body);
+    case 'hardDeleteFrage':
+      return hardDeleteFrage(body);
+    case 'listePapierkorb':
+      return listePapierkorb(body);
     case 'loescheAllePoolFragen':
       return loescheAllePoolFragen(body);
     case 'batchImportFragen':
@@ -3955,6 +3961,179 @@ function loescheFrage(body) {
     }
 
     return jsonResponse(loescheFrageIntern_(frageId, fachbereich, email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+// === Bundle 3: Papierkorb (stelleWiederHer / hardDeleteFrage / listePapierkorb) ===
+
+/**
+ * Pure-Helper für stelleWiederHer (Bundle 3, Soft-Restore).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Setzt geloescht_am = '' (leer) → Frage erscheint wieder in regulären Listen.
+ * Owner-Check: existingAutor !== email → throw (Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email
+ * @returns {{ success: true, id: string }}
+ */
+function stelleWiederHerIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  let headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie wiederherstellbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  const jetzt = new Date().toISOString();
+  const rowData = Object.assign({}, data[rowIdx], {
+    geloescht_am: '',
+    geaendertAm: jetzt,
+  });
+
+  // Fehlende Spalten (z.B. geloescht_am) automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const rowIndex = rowIdx + 2;
+  headers.forEach(function(header, colIndex) {
+    if (rowData[header] !== undefined) {
+      sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+    }
+  });
+
+  return { success: true, id: frageId };
+}
+
+function stelleWiederHer(body) {
+  try {
+    var email = body.email;
+    var frageId = body.frageId;
+    var fachbereich = body.fachbereich;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!frageId || !fachbereich) {
+      return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
+    }
+
+    return jsonResponse(stelleWiederHerIntern_(frageId, fachbereich, email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Pure-Helper für hardDeleteFrage (Bundle 3, endgültig).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Endgültiges sheet.deleteRow — keine Wiederherstellung möglich.
+ * Owner-Check: existingAutor !== email → throw (Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email
+ * @returns {{ success: true }}
+ */
+function hardDeleteFrageIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie löschbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  // Endgültig: Row löschen (rowIdx ist 0-based im data-Array, +2 für Sheet-Row inkl. Header)
+  sheet.deleteRow(rowIdx + 2);
+
+  return { success: true };
+}
+
+function hardDeleteFrage(body) {
+  try {
+    var email = body.email;
+    var frageId = body.frageId;
+    var fachbereich = body.fachbereich;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+    if (!frageId || !fachbereich) {
+      return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
+    }
+
+    return jsonResponse(hardDeleteFrageIntern_(frageId, fachbereich, email));
+  } catch (error) {
+    return jsonResponse({ error: error.message });
+  }
+}
+
+/**
+ * Pure-Helper für listePapierkorb (Bundle 3).
+ * KEINE Auth-Checks — Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Iteriert alle 4 fachbereich-Tabs, filtert eigene Soft-Delete-Fragen, gibt typisierte Frage-Objekte zurück (Plan-Refinement #4).
+ *
+ * @param {string} email
+ * @returns {{ success: true, fragen: Array<Object> }}
+ */
+function listePapierkorbIntern_(email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  const papierkorb = [];
+
+  for (let i = 0; i < fachbereiche.length; i++) {
+    const tab = fachbereiche[i];
+    const sheet = fragenbank.getSheetByName(tab);
+    if (!sheet) continue;
+    const data = getSheetData(sheet);
+    for (let j = 0; j < data.length; j++) {
+      const row = data[j];
+      if (!row.geloescht_am || row.geloescht_am === '') continue;
+      if (row.autor !== email) continue; // nur eigene
+      papierkorb.push(parseFrage(row, tab));
+    }
+  }
+
+  return { success: true, fragen: papierkorb };
+}
+
+function listePapierkorb(body) {
+  try {
+    var email = body.email;
+
+    if (!email || !istZugelasseneLP(email)) {
+      return jsonResponse({ error: 'Nur für Lehrpersonen' });
+    }
+
+    return jsonResponse(listePapierkorbIntern_(email));
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
