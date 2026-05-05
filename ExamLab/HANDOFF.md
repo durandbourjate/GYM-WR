@@ -8,6 +8,45 @@
 
 ## Letzter Stand auf main
 
+### Bundle 3 Spec + Plan freigegeben — Implementation in nächster Session 📋 (05.05.2026)
+
+**Branch:** `feature/bundle-3-autosave-drafts-papierkorb` (auf origin gepusht, head `48d2a76`)
+
+**Spec rev3:** [docs/superpowers/specs/2026-05-05-bundle-3-autosave-drafts-papierkorb-design.md](../docs/superpowers/specs/2026-05-05-bundle-3-autosave-drafts-papierkorb-design.md) (commits `cef6d7f` + `63dd047` + `beb9257`)
+
+**Plan rev3:** [docs/superpowers/plans/2026-05-05-bundle-3-autosave-drafts-papierkorb.md](../docs/superpowers/plans/2026-05-05-bundle-3-autosave-drafts-papierkorb.md) (commits `e340d38` + `beb9257` + `48d2a76`)
+
+**Goal:** Datenverlust-sicheres Auto-Save für LP-Frageneditor mit klarem Draft↔Sammlung-Lifecycle, prominenter Drafts-Sichtbarkeit und Papierkorb-Soft-Delete.
+
+**Architektur:** Hybrid Persistence (IDB-Cache 1s-debounced + Server-Sync 10s-debounced) mit Server als Source-of-Truth. API-Adapter abstrahiert Apps-Script für spätere Backend-Migration. Lazy-Draft-Creation. State-Machine `draft|sammlung`-Status, orthogonal zu `pruefungstauglich`. Soft-Delete-Papierkorb mit 90-Tage-Auto-Hard-Delete.
+
+**Phasen:**
+- A: Daten-Modell + Apps-Script-Backend (8 Tasks A.1-A.8) — User-Task: Apps-Script-Deploy
+- B: Service-Layer (draftApi, draftSync, hooks, store, draftCache)
+- C: Editor-Integration (SaveStatusIndikator, SchliessenModal, SharedFragenEditor, beforeunload, IDB-Cleanup)
+- D: Fragensammlung-UI (DraftsSection)
+- E: Papierkorb (View, Auto-Hard-Delete-Trigger)
+- F: E2E + Merge
+
+**Aufwand:** ~24 Tasks, 2-3 Sessions, 1-2 Apps-Script-Deploys.
+
+**Wichtig (nicht vergessen für nächste Session):**
+- Spec + Plan haben 2 Reviewer-Iterationen durchlaufen. Plan rev3 enthält Implementer-Hinweise-Sektion mit 7 Refinements aus Reviewer-Round-2 (siehe Plan-Sektion „Refinements aus Plan-Review Round 2").
+- Apps-Script-Storage: `FRAGENBANK_ID`-Spreadsheet mit 4 fachbereich-Tabs `['VWL', 'BWL', 'Recht', 'Informatik']` (NICHT `'IN'`!).
+- `ensureColumns()` ergänzt status/geloescht_am-Spalten automatisch — kein expliziter Backfill-Job nötig.
+- Existing `speichereFrage` + `loescheFrage` werden erweitert (backward-compatible). Nur 3 echte neue Endpoints.
+- Implementer soll Pure-Helper-Pattern für loesche/stelleWieder/hardDelete extrahieren (analog `_speichereFrageIntern` in A.2).
+- `clearDraftIDBCache` als B.5 ergänzen mit S149-`tx.oncomplete`-await-Pattern.
+- Browser-E2E muss IDOR-Verschärfung testen: LP-A versucht LP-B-Frage zu löschen → muss fehlschlagen.
+
+**Implementation-Start in neuer Session:**
+1. `git checkout feature/bundle-3-autosave-drafts-papierkorb`
+2. Spec + Plan lesen
+3. `superpowers:subagent-driven-development` aufrufen
+4. Phase A.1 dispatchen
+
+---
+
 ### Bundle 2 — Editor-Komfort ✅ MERGED (04.05.2026)
 
 3 UX-Features als Bundle, alle additiv (kein Breaking Change, keine Daten-Migration).
