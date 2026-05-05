@@ -78,6 +78,74 @@ interface OffenerKIFeedbackPayload {
   wichtig: boolean
 }
 
+/** Bundle-3-Save-Result: enthält den vom Backend bestimmten Status (`'draft' | 'sammlung'`)
+ *  und im Fehlerfall den HTTP-Status für die draftSync-Retry-Eskalation. */
+export interface SpeichereFrageResult {
+  success: boolean
+  /** Vom Backend gesetzter Status nach Save. `'draft'` wenn Pflichtfelder fehlen, sonst `'sammlung'`. */
+  status?: 'draft' | 'sammlung'
+  /** Server-vergebene Frage-ID (falls neu erstellt) */
+  id?: string
+  /** Bei `success=false`: HTTP-Status-Code für Retry-Logik in draftSync.ts.
+   *  Network-Fehler werden als 0 codiert. `Retry-After`-Header wird nach Möglichkeit weitergegeben. */
+  errorStatus?: number
+  /** Bei 429: Wert des `Retry-After`-Headers in Sekunden (oder undefined). */
+  retryAfterSeconds?: number
+}
+
+/** Einzelne Frage speichern UND HTTP-Status zurückgeben (Bundle 3, draftSync.ts).
+ *  Im Gegensatz zum existing `speichereFrage` (boolean-Return) liefert diese Funktion
+ *  den Backend-bestimmten Auto-Save-Status und unterscheidet Fehler-Klassen für
+ *  die 4-Stufen-Retry-Logik. Existing `speichereFrage` bleibt UNVERÄNDERT. */
+export async function speichereFrageMitStatus(
+  email: string,
+  frage: Frage,
+): Promise<SpeichereFrageResult> {
+  if (!APPS_SCRIPT_URL) return { success: false, errorStatus: 0 }
+
+  try {
+    const payload = JSON.stringify({ action: 'speichereFrage', email, frage })
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: payload,
+    })
+
+    if (!response.ok) {
+      const result: SpeichereFrageResult = { success: false, errorStatus: response.status }
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After')
+        const seconds = retryAfter ? parseInt(retryAfter, 10) : NaN
+        if (!isNaN(seconds) && seconds > 0) result.retryAfterSeconds = seconds
+      }
+      return result
+    }
+
+    const text = await response.text()
+    try {
+      const data = JSON.parse(text) as {
+        success?: boolean
+        status?: 'draft' | 'sammlung'
+        id?: string
+        error?: string
+      }
+      if (data.error || data.success === false) {
+        return { success: false, errorStatus: response.status }
+      }
+      return {
+        success: data.success === true,
+        status: data.status,
+        id: data.id,
+      }
+    } catch {
+      return { success: false, errorStatus: response.status }
+    }
+  } catch {
+    // Network-Error → errorStatus=0 signalisiert Retry-fähig (wie 5xx)
+    return { success: false, errorStatus: 0 }
+  }
+}
+
 /** Einzelne Frage speichern (Fragenbank).
  *  offeneKIFeedbacks: optionale KI-Kalibrierungsdaten — werden im Payload mitgesendet,
  *  Backend kann sie für Feedback-Loop nutzen oder ignorieren. */
