@@ -75,3 +75,5 @@ export { default as PruefungstauglichBadge } from './editor/components/Pruefungs
 export { default as BulkPasteModal } from './editor/components/BulkPasteModal'
 export { default as SaveStatusIndikator } from './editor/components/SaveStatusIndikator'
 export type { SaveStatus } from './editor/components/SaveStatusIndikator'
+export { default as SchliessenModal } from './editor/components/SchliessenModal'
+export type { SchliessenVariante } from './editor/components/SchliessenModal'
