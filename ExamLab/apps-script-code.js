@@ -215,13 +215,13 @@ function validiereSessionToken_(token, email, pruefungId) {
  * Rate Limiting für SuS-Endpoints. Gibt { blocked: true, error: '...' } zurück wenn Limit erreicht.
  * Verwendet CacheService mit TTL-basiertem Counter (gleiches Pattern wie validiereSchuelercode).
  */
-function rateLimitCheck_(aktion, email, maxProFenster, fensterSekunden) {
+function rateLimitCheck_(action, email, maxProFenster, fensterSekunden) {
   if (!email) return { blocked: false };
   var cache = CacheService.getScriptCache();
-  var key = 'rl_' + aktion + '_' + email.toLowerCase();
+  var key = 'rl_' + action + '_' + email.toLowerCase();
   var count = Number(cache.get(key)) || 0;
   if (count >= maxProFenster) {
-    return { blocked: true, error: 'Zu viele Anfragen (' + aktion + '). Bitte ' + Math.ceil(fensterSekunden / 60) + ' Min. warten.' };
+    return { blocked: true, error: 'Zu viele Anfragen (' + action + '). Bitte ' + Math.ceil(fensterSekunden / 60) + ' Min. warten.' };
   }
   cache.put(key, String(count + 1), fensterSekunden);
   return { blocked: false };
@@ -262,10 +262,10 @@ function lernplattformValidiereToken_(token, email) {
 /**
  * Rate Limiting für Lernplattform-Endpoints (eigenes Cache-Prefix).
  */
-function lernplattformRateLimitCheck_(aktion, key, maxProFenster, fensterSekunden) {
+function lernplattformRateLimitCheck_(action, key, maxProFenster, fensterSekunden) {
   if (!key) return { blocked: false };
   var cache = CacheService.getScriptCache();
-  var cacheKey = 'lp_rl_' + aktion + '_' + key.toLowerCase();
+  var cacheKey = 'lp_rl_' + action + '_' + key.toLowerCase();
   var count = Number(cache.get(cacheKey)) || 0;
   if (count >= maxProFenster) {
     return { blocked: true, error: 'Zu viele Anfragen. Bitte warten.' };
