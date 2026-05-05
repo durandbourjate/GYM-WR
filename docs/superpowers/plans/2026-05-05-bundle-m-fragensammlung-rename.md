@@ -53,6 +53,21 @@ cd ExamLab && npx tsc -b && npx vitest run --reporter=basic && npm run build && 
 
 Erwartet: `tsc` exit 0, `vitest` 1234+/1234+ passes, `build` exit 0, `lint:as-any` `Total: N, Defensive (OK): N, Undokumentiert (FAIL): 0`.
 
+- [ ] **Step 5: macOS-Duplikat aufräumen (Memory-Regel: regelmässig)**
+
+```bash
+git rm "ExamLab/src/components/lp/fragenbank/fragenbrowser/VirtualisierteFragenListe 2.tsx"
+git commit -m "Bundle M Task 0 cleanup: macOS-Duplikat VirtualisierteFragenListe 2.tsx entfernt"
+```
+
+Verify:
+
+```bash
+find ExamLab/src/components/lp/fragenbank -name "* 2*"
+```
+
+Erwartet: keine Treffer. Damit wandert kein Cruft beim Ordner-Rename in Task 4 mit.
+
 ---
 
 ## Task 1: Apps-Script Backward-Compat (deploy-ready)
@@ -113,13 +128,13 @@ Ersetze den `for`-Block durch:
 
 - [ ] **Step 2: Dispatcher patchen — beide Endpoint-Cases parallel**
 
-Lokalisiere Z. ~1062:
+Lokalisiere Z. ~1062. **Tatsächlicher Code (verifiziert):**
 
 ```js
     case 'ladeFragenbank':
-      return jsonResponse(ladeFragenbank(body.email));
+      return ladeFragenbank(email);
     case 'ladeFragenbankSummary':
-      return jsonResponse(ladeFragenbankSummary(body.email));
+      return ladeFragenbankSummary(email);
 ```
 
 Ersetze durch:
@@ -127,13 +142,13 @@ Ersetze durch:
 ```js
     case 'ladeFragenbank':           // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlung':
-      return jsonResponse(ladeFragenbank(body.email));
+      return ladeFragenbank(email);
     case 'ladeFragenbankSummary':    // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlungSummary':
-      return jsonResponse(ladeFragenbankSummary(body.email));
+      return ladeFragenbankSummary(email);
 ```
 
-(Funktions-Namen `ladeFragenbank`/`ladeFragenbankSummary` werden erst in Task 2 umbenannt — hier noch alte Namen aufrufen.)
+(Kein `jsonResponse(...)`-Wrapper, kein `body.email` — passt zu existierender Dispatcher-Konvention der umliegenden Cases. Funktions-Namen `ladeFragenbank`/`ladeFragenbankSummary` werden erst in Task 2 umbenannt — hier noch alte Namen aufrufen.)
 
 - [ ] **Step 3: tsc + vitest grün halten (kein Frontend-Code-Change)**
 
@@ -193,34 +208,35 @@ const FRAGENSAMMLUNG_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
 - [ ] **Step 2: Alle Aufrufer von FRAGENBANK_ID anpassen**
 
 ```bash
-grep -n "FRAGENBANK_ID" ExamLab/apps-script-code.js
+grep -c "FRAGENBANK_ID" ExamLab/apps-script-code.js
 ```
 
-Erwartet: ~6 Zeilen mit Treffern. Pro Treffer: `FRAGENBANK_ID` → `FRAGENSAMMLUNG_ID`. Verifizieren mit:
+Erwartet (Pre-Edit): mehrere Dutzend Treffer (Audit-Snapshot zeigt 68). Pro Treffer: `FRAGENBANK_ID` → `FRAGENSAMMLUNG_ID`. Massen-Replace via Editor möglich (es gibt **keine** Stelle, wo der String als Literal-String belassen werden muss).
 
 ```bash
 grep -c "FRAGENBANK_ID" ExamLab/apps-script-code.js
 ```
 
-Erwartet: 0 nach Edit.
+**Erwartet (Post-Edit): 0**.
 
-- [ ] **Step 3: var fragenbank-Variablen umbenennen (3 Stellen)**
+- [ ] **Step 3: fragenbank-Variablen umbenennen (var/const/let, mehrere Dutzend Stellen)**
 
 ```bash
-grep -n "var fragenbank " ExamLab/apps-script-code.js
+grep -nE "(var|const|let) fragenbank " ExamLab/apps-script-code.js
 ```
 
-Erwartet: 3 Zeilen (~Z. 280, 761, 2806). Pro Stelle:
-- `var fragenbank = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);` → `var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);`
+Erwartet (Pre-Edit): mehrere Dutzend Treffer (Audit-Snapshot zeigt 35: 29 `var` + 6 `const`). **Achtung:** Der Reviewer fand, dass auch `const fragenbank = ...` (z.B. Z. 2806, 3804, 3920) existiert — **NICHT nur `var`**. Per Stelle:
+- Variable-Deklaration `var/const fragenbank = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);` → `var/const fragensammlung = ...`
 - Innerhalb derselben Funktion: alle Verwendungen von `fragenbank` → `fragensammlung`
 
 Verify:
 
 ```bash
-grep -n "var fragenbank " ExamLab/apps-script-code.js
+grep -cE "(var|const|let) fragenbank\b" ExamLab/apps-script-code.js
+grep -cE "\bfragenbank\." ExamLab/apps-script-code.js
 ```
 
-Erwartet: 0 Treffer.
+**Erwartet (Post-Edit): beide 0**.
 
 - [ ] **Step 4: Funktion getFragenbankTabs_() umbenennen**
 
@@ -288,22 +304,27 @@ Erwartet: 0 Treffer.
 JSON-Response-Felder bleiben in `alleGruppenLaden_()` weiterhin **beide** Namen ausliefern (Backward-Compat aus Task 1). Aber: alle anderen Apps-Script-internen Aufrufer von `gruppe.fragebankSheetId` umbenennen.
 
 ```bash
-grep -n "fragebankSheetId\|fragensammlungSheetId" ExamLab/apps-script-code.js
+grep -c "fragebankSheetId" ExamLab/apps-script-code.js
 ```
 
-Erwartet: ~14 Stellen mit `fragebankSheetId` + 1 Stelle mit `fragensammlungSheetId` (in `alleGruppenLaden_()`).
+Erwartet (Pre-Edit): mehrere Dutzend Treffer (Audit-Snapshot zeigt 36).
 
-Pro Stelle: `gruppe.fragebankSheetId` (oder `g.fragebankSheetId` etc.) → `gruppe.fragensammlungSheetId`.
+Pro Stelle: `gruppe.fragebankSheetId` (oder `g.fragebankSheetId`, `auth.gruppe.fragebankSheetId` etc.) → `gruppe.fragensammlungSheetId`.
 
-**Ausnahme:** in `alleGruppenLaden_()` MUSS `fragebankSheetId: sheetIdValue` als Field bestehen bleiben (für alte Frontend-Bundle), nur `fragensammlungSheetId: sheetIdValue` ist der neue Field — beide Felder bleiben erhalten.
+**Ausnahme:** Genau **eine** Stelle muss `fragebankSheetId` behalten — die JSON-Response-Property in `alleGruppenLaden_()`:
+
+```js
+fragebankSheetId: sheetIdValue,         // backward-compat (Typo, von alter Frontend-Bundle gelesen)
+fragensammlungSheetId: sheetIdValue,    // neu (ab Frontend-Bundle Task 3)
+```
 
 Verify:
 
 ```bash
-grep -n "\.fragebankSheetId\|\bfragebankSheetId\b" ExamLab/apps-script-code.js
+grep -c "fragebankSheetId" ExamLab/apps-script-code.js
 ```
 
-Erwartet: 1 Treffer (nur `fragebankSheetId: sheetIdValue` in `alleGruppenLaden_()`).
+**Erwartet (Post-Edit): 1** (nur `fragebankSheetId: sheetIdValue` in `alleGruppenLaden_()`-JSON).
 
 - [ ] **Step 9: Sheet-Lookup-String präferenz-Order anpassen**
 
@@ -477,41 +498,32 @@ grep -nE "\bfragenbank\b|\bFragenbank\b" ExamLab/src/store/fragensammlungStore.t
 
 Erwartet: 0 Treffer.
 
-- [ ] **Step 6: Frontend-Type-Field-Rename — gruppen.ts (Type-Definition)**
+- [ ] **Step 6: Frontend-Type-Field-Rename — alle Stellen via grep**
 
 ```bash
-grep -n "fragebankSheetId" ExamLab/src/types/ueben/gruppen.ts
+grep -rn "fragebankSheetId" ExamLab/src --include="*.ts" --include="*.tsx"
 ```
 
-Erwartet: 1 Treffer (Z. 6).
+Erwartet (Pre-Edit, Audit verifiziert 7 Stellen):
+- `ExamLab/src/types/ueben/gruppen.ts:6` — Type-Field-Definition `fragebankSheetId: string`
+- `ExamLab/src/AppUeben.tsx:74` — Demo-Mock-Daten
+- `ExamLab/src/adapters/ueben/appsScriptAdapter.ts:35` — Adapter Omit-Type
+- `ExamLab/src/components/lp/UebungsToolView.tsx:40` — weiterer Demo-Mock
+- `ExamLab/src/services/ueben/interfaces.ts:16` — Interface Omit-Type
+- `ExamLab/src/tests/gruppenStoreCache.test.ts:24` — Test-Mock
+- `ExamLab/src/tests/gruppenCache.test.ts:11` — Test-Mock
 
-Edit: `fragebankSheetId: string` → `fragensammlungSheetId: string`.
+Pro Treffer: `fragebankSheetId` → `fragensammlungSheetId` (gleichzeitig Typo `fragebank` → `fragen` korrigiert).
 
-- [ ] **Step 7: Frontend-Type-Field-Rename — AppUeben.tsx (Demo-Mock)**
+Verify:
 
 ```bash
-grep -n "fragebankSheetId" ExamLab/src/AppUeben.tsx
+grep -rc "fragebankSheetId" ExamLab/src --include="*.ts" --include="*.tsx" | grep -v ":0$"
 ```
 
-Erwartet: 1 Treffer (Z. 74). Edit: `fragebankSheetId: 'demo'` → `fragensammlungSheetId: 'demo'`.
+**Erwartet (Post-Edit): keine Treffer ausser `:0` (= alle Files clean).**
 
-- [ ] **Step 8: Frontend-Type-Field-Rename — appsScriptAdapter.ts (Omit-Type)**
-
-```bash
-grep -n "fragebankSheetId" ExamLab/src/adapters/ueben/appsScriptAdapter.ts
-```
-
-Erwartet: 1 Treffer (Z. 35). Edit: `Omit<Gruppe, 'fragebankSheetId' | 'analytikSheetId'>` → `Omit<Gruppe, 'fragensammlungSheetId' | 'analytikSheetId'>`.
-
-- [ ] **Step 9: Schritt 6+7+8 auf Tests anwenden (gruppenStoreCache.test.ts, gruppenCache.test.ts)**
-
-```bash
-grep -n "fragebankSheetId" ExamLab/src/tests/gruppenStoreCache.test.ts ExamLab/src/tests/gruppenCache.test.ts
-```
-
-Erwartet: je 1 Treffer. Beide umbenennen auf `fragensammlungSheetId`.
-
-- [ ] **Step 10: IDB-Cleanup-Hook in authStore.anmelden() einbauen**
+- [ ] **Step 7: IDB-Cleanup-Hook in authStore.anmelden() einbauen**
 
 Lokalisiere `anmelden()` in `ExamLab/src/store/authStore.ts`. Innerhalb des LP-Login-Pfads (nach erfolgreichem Login, parallel zu existierenden Pre-Fetch-Calls):
 
@@ -524,7 +536,7 @@ req.onsuccess = () => console.info('[Bundle M] alte fragenbank-DB gedroppt')
 
 Hinweis: `req.onerror` und `req.onblocked` brauchen keine Handler — `deleteDatabase` auf nicht-existierender DB ist silent no-op.
 
-- [ ] **Step 11: Imports + Re-Exports in allen Caller-Files anpassen**
+- [ ] **Step 8: Imports + Re-Exports in allen Caller-Files anpassen**
 
 ```bash
 cd ExamLab && npx tsc -b 2>&1 | head -50
@@ -543,7 +555,7 @@ cd ExamLab && npx tsc -b
 
 Erwartet: exit 0, keine Errors.
 
-- [ ] **Step 12: Vitest grün — laufen lassen**
+- [ ] **Step 9: Vitest grün — laufen lassen**
 
 ```bash
 cd ExamLab && npx vitest run --reporter=basic && cd ..
@@ -555,7 +567,7 @@ Erwartet: 1234+/1234+ passes. Falls einzelne Tests scheitern wegen Mock-String-M
 
 Falls Tests scheitern: dokumentieren in Task 5 + jetzt erstmal weiter zu Step 13.
 
-- [ ] **Step 13: build + lint:as-any verifizieren**
+- [ ] **Step 10: build + lint:as-any verifizieren**
 
 ```bash
 cd ExamLab && npm run build && npm run lint:as-any && cd ..
@@ -563,10 +575,10 @@ cd ExamLab && npm run build && npm run lint:as-any && cd ..
 
 Erwartet: build exit 0, lint 0 undokumentiert.
 
-- [ ] **Step 14: Commit**
+- [ ] **Step 11: Commit**
 
 ```bash
-git add ExamLab/src/services/ ExamLab/src/store/ ExamLab/src/types/ueben/gruppen.ts ExamLab/src/AppUeben.tsx ExamLab/src/adapters/ueben/appsScriptAdapter.ts ExamLab/src/tests/gruppenStoreCache.test.ts ExamLab/src/tests/gruppenCache.test.ts
+git add ExamLab/src/services/ ExamLab/src/store/ ExamLab/src/types/ueben/gruppen.ts ExamLab/src/AppUeben.tsx ExamLab/src/adapters/ueben/appsScriptAdapter.ts ExamLab/src/components/lp/UebungsToolView.tsx ExamLab/src/services/ueben/interfaces.ts ExamLab/src/tests/gruppenStoreCache.test.ts ExamLab/src/tests/gruppenCache.test.ts
 # Plus alle Caller-Files mit Import-Änderungen
 git add ExamLab/src/  # falls weitere Files
 git commit -m "$(cat <<'EOF'
@@ -580,11 +592,13 @@ Bundle M Task 3: Frontend Service-Layer + Type-Field-Rename + IDB-Cleanup
 - IDB-DB-Name: 'examlab-fragenbank-cache' → 'examlab-fragensammlung-cache'
 - One-Time-Delete-Hook für alte fragenbank-DB in authStore.anmelden()
   (mit Console-Log für E2E-Verifikation)
-- Frontend Type-Field-Rename (Typo-Fix gleichzeitig):
+- Frontend Type-Field-Rename (Typo-Fix gleichzeitig, 7 Stellen):
   fragebankSheetId → fragensammlungSheetId in:
   - types/ueben/gruppen.ts (Type-Definition)
   - AppUeben.tsx (Demo-Mock)
+  - components/lp/UebungsToolView.tsx (weiterer Demo-Mock)
   - adapters/ueben/appsScriptAdapter.ts (Omit-Type)
+  - services/ueben/interfaces.ts (Interface Omit-Type)
   - tests/gruppenStoreCache.test.ts + gruppenCache.test.ts
 - Caller-Imports aktualisiert (~30+ Stellen, tsc-getrieben)
 
@@ -842,6 +856,22 @@ Pro Pfad: User berichtet ✅/❌. Bei ❌: debuggen + Hotfix vor Task 6.
 - Create: `~/.claude/projects/.../memory/project_bundle_m_fragensammlung_rename.md`
 
 **Pre-Bedingung:** Browser-E2E komplett ✅, alle 8 Pfade verifiziert mit echten Logins.
+
+- [ ] **Step 0: Pre-Bedingungen explizit verifizieren**
+
+Vor jedem Code-Edit in Task 6 vom User bestätigen lassen:
+
+```
+"Bundle M Task 6 startet mit Backward-Compat-Removal. Bitte bestätigen:
+✅ Browser-E2E komplett — alle 8 LP-Pfade ✅?
+✅ Sheet-Spalte umbenannt — 'fragenbanksheetid' → 'fragensammlungsheetid' im Gruppen-Tab?
+✅ Apps-Script Deploy 1 (nach Task 2) live aktiv?
+
+Falls EINE Antwort = NEIN: STOP. Backward-Compat-Removal jetzt würde App brechen.
+Falls alle = JA: weiter mit Step 1."
+```
+
+Plan pausiert bis User alle 3 Punkte bestätigt.
 
 - [ ] **Step 1: Apps-Script-Backward-Compat aus alleGruppenLaden_() entfernen**
 
