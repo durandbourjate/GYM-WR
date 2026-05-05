@@ -8986,11 +8986,11 @@ function lernplattformErstelleGruppe(body) {
   }
 
   // Fragenbank-Sheet erstellen
-  var fragenbankSS = SpreadsheetApp.create('Lernplattform: ' + name);
-  var fragenbankId = fragenbankSS.getId();
+  var fragensammlungSS = SpreadsheetApp.create('Lernplattform: ' + name);
+  var fragensammlungId = fragensammlungSS.getId();
 
   // Standard-Tabs erstellen
-  var fragenSheet = fragenbankSS.getSheets()[0];
+  var fragenSheet = fragensammlungSS.getSheets()[0];
   fragenSheet.setName('Fragen');
   fragenSheet.getRange('A1:T1').setValues([[
     'id', 'fach', 'thema', 'typ', 'schwierigkeit', 'taxonomie',
@@ -8999,25 +8999,25 @@ function lernplattformErstelleGruppe(body) {
     'einheit', 'kategorien', 'elemente', 'reihenfolge', 'daten'
   ]]);
 
-  var mitgliederSheet = fragenbankSS.insertSheet('Mitglieder');
+  var mitgliederSheet = fragensammlungSS.insertSheet('Mitglieder');
   mitgliederSheet.getRange('A1:E1').setValues([['email', 'name', 'rolle', 'code', 'beigetreten']]);
 
-  var auftraegeSheet = fragenbankSS.insertSheet('Auftraege');
+  var auftraegeSheet = fragensammlungSS.insertSheet('Auftraege');
   auftraegeSheet.getRange('A1:F1').setValues([['id', 'titel', 'fach', 'thema', 'deadline', 'aktiv']]);
 
-  var fortschrittSheet = fragenbankSS.insertSheet('Fortschritt');
+  var fortschrittSheet = fragensammlungSS.insertSheet('Fortschritt');
   fortschrittSheet.getRange('A1:H1').setValues([[
     'email', 'fragenId', 'versuche', 'richtig', 'richtigInFolge',
     'mastery', 'letzterVersuch', 'sessionIds'
   ]]);
 
-  var sessionSheet = fragenbankSS.insertSheet('Sessions');
+  var sessionSheet = fragensammlungSS.insertSheet('Sessions');
   sessionSheet.getRange('A1:F1').setValues([['sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis']]);
 
   // In Registry eintragen
   var registrySheet = getGruppenRegistry_();
   if (registrySheet) {
-    registrySheet.appendRow([id, name, typ, adminEmail, fragenbankId, '']);
+    registrySheet.appendRow([id, name, typ, adminEmail, fragensammlungId, '']);
   }
 
   var neueGruppe = {
@@ -9025,7 +9025,7 @@ function lernplattformErstelleGruppe(body) {
     name: name,
     typ: typ,
     adminEmail: adminEmail,
-    fragensammlungSheetId: fragenbankId,
+    fragensammlungSheetId: fragensammlungId,
     analytikSheetId: '',
   };
 
@@ -14392,8 +14392,8 @@ function testPreWarmFragen_() {
   var gruppeId = ''; // Standard-Gruppe via fachbereich-Hint
   var bwlIds = [];
   // Beziehe 30 valide BWL-IDs aus dem BWL-Tab
-  var fragebankSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
-  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  var fragensammlungSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var bwlSheet = fragensammlungSs.getSheetByName('BWL');
   if (bwlSheet) {
     var data = bwlSheet.getRange(2, 1, Math.min(30, bwlSheet.getLastRow() - 1), 1).getValues();
     for (var i = 0; i < data.length; i++) bwlIds.push(String(data[i][0]));
@@ -14479,8 +14479,8 @@ function testPreWarmEffekt_() {
   var fachbereich = 'BWL';
 
   // 10 fragenIds aus BWL-Tab beziehen
-  var fragebankSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
-  var bwlSheet = fragebankSs.getSheetByName('BWL');
+  var fragensammlungSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var bwlSheet = fragensammlungSs.getSheetByName('BWL');
   var data = bwlSheet.getRange(2, 1, 10, 1).getValues();
   var fragenIds = [];
   for (var i = 0; i < data.length; i++) fragenIds.push(String(data[i][0]));
