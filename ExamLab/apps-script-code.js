@@ -383,12 +383,18 @@ function alleGruppenLaden_() {
   var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
   var result = [];
   for (var i = 1; i < data.length; i++) {
+    // Bundle M: Sheet-Spalten-Header lookups parallel (alt + neu)
+    var idxNeu = headers.indexOf('fragensammlungsheetid');
+    var idxAlt = headers.indexOf('fragenbanksheetid');
+    var sheetIdIdx = idxNeu !== -1 ? idxNeu : idxAlt;
+    var sheetIdValue = String(sheetIdIdx !== -1 ? data[i][sheetIdIdx] || '' : '');
     result.push({
       id: String(data[i][headers.indexOf('id')] || ''),
       name: String(data[i][headers.indexOf('name')] || ''),
       typ: String(data[i][headers.indexOf('typ')] || ''),
       adminEmail: String(data[i][headers.indexOf('adminemail')] || ''),
-      fragebankSheetId: String(data[i][headers.indexOf('fragenbanksheetid')] || ''),
+      fragebankSheetId: sheetIdValue,         // backward-compat (Typo, von alter Frontend-Bundle gelesen)
+      fragensammlungSheetId: sheetIdValue,    // neu (ab Frontend-Bundle Task 3)
       analytikSheetId: String(data[i][headers.indexOf('analytiksheetid')] || ''),
     });
   }
@@ -1059,9 +1065,11 @@ function doGet(e) {
       return ladeAktivePruefungenFuerSuS(email);
     case 'ladeEinzelConfig':
       return ladeEinzelConfig(e.parameter.id, email);
-    case 'ladeFragenbank':
+    case 'ladeFragenbank':           // backward-compat alias (entfernt in Task 6)
+    case 'ladeFragensammlung':
       return ladeFragenbank(email);
-    case 'ladeFragenbankSummary':
+    case 'ladeFragenbankSummary':    // backward-compat alias (entfernt in Task 6)
+    case 'ladeFragensammlungSummary':
       return ladeFragenbankSummary(email);
     case 'ladeFrageDetail':
       return ladeFrageDetail(e.parameter.frageId, e.parameter.fachbereich, email);
