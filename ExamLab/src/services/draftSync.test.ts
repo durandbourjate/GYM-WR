@@ -59,12 +59,12 @@ vi.mock('idb-keyval', () => ({
   del: vi.fn().mockResolvedValue(undefined),
 }))
 
-vi.mock('./fragenbankApi', () => ({
+vi.mock('./fragensammlungApi', () => ({
   speichereFrageMitStatus: vi.fn(),
 }))
 
 import { set as idbSet } from 'idb-keyval'
-import { speichereFrageMitStatus } from './fragenbankApi'
+import { speichereFrageMitStatus } from './fragensammlungApi'
 import { tippeFrage, finalisiere, subscribe, resetForTesting } from './draftSync'
 
 // Minimale Frage-Form für Tests (Cast über unknown für Test-Zwecke)

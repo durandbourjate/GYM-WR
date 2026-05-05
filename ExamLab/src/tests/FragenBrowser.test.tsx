@@ -13,7 +13,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
-import FragenBrowser from '../components/lp/fragenbank/FragenBrowser'
+import FragenBrowser from '../components/lp/fragensammlung/FragenBrowser'
 
 // --- apiService: konfiguriert, kein Demo ---
 vi.mock('../services/apiService', () => ({
@@ -34,7 +34,7 @@ vi.mock('../store/authStore', () => ({
 
 // --- fragenbankStore: status='idle' → ladeStatus wird 'laden' ---
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: Object.assign(
+  useFragensammlungStore: Object.assign(
     (selector: (s: { summaries: []; fragen: []; status: 'idle' }) => unknown) =>
       selector({ summaries: [], fragen: [], status: 'idle' }),
     {
@@ -54,11 +54,11 @@ vi.mock('../store/fragenbankStore', () => ({
 }))
 
 // --- Schwere Sub-Komponenten mocken (werden nur bei ladeStatus='fertig' gerendert) ---
-vi.mock('../components/lp/fragenbank/fragenbrowser/FragenBrowserHeader', () => ({
+vi.mock('../components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader', () => ({
   default: () => <div data-testid="fragen-browser-header-mock" />,
 }))
 
-vi.mock('../components/lp/fragenbank/fragenbrowser/VirtualisierteFragenListe', () => ({
+vi.mock('../components/lp/fragensammlung/fragenbrowser/VirtualisierteFragenListe', () => ({
   default: () => <div data-testid="virtualisierte-fragen-liste-mock" />,
 }))
 
@@ -66,11 +66,11 @@ vi.mock('../components/lp/frageneditor/FragenEditor', () => ({
   default: () => <div data-testid="fragen-editor-mock" />,
 }))
 
-vi.mock('../components/lp/fragenbank/FragenImport', () => ({
+vi.mock('../components/lp/fragensammlung/FragenImport', () => ({
   default: () => <div data-testid="fragen-import-mock" />,
 }))
 
-vi.mock('../components/lp/fragenbank/ExcelImport', () => ({
+vi.mock('../components/lp/fragensammlung/ExcelImport', () => ({
   default: () => <div data-testid="excel-import-mock" />,
 }))
 

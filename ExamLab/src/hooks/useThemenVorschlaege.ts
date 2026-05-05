@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useFragenbankStore } from '../store/fragenbankStore'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
 
 /**
  * Liefert dedupliziertes, alphabetisch sortiertes Array aller Themen
@@ -8,7 +8,7 @@ import { useFragenbankStore } from '../store/fragenbankStore'
  * Verwendung: HTML <datalist> für Themen-Autocomplete im Frageneditor.
  */
 export function useThemenVorschlaege(fachbereich: string | undefined): string[] {
-  const summaries = useFragenbankStore((s) => s.summaries)
+  const summaries = useFragensammlungStore((s) => s.summaries)
   return useMemo(() => {
     if (!fachbereich) return []
     const themen = new Set<string>()

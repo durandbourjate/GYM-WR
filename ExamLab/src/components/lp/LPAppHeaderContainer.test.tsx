@@ -14,7 +14,7 @@ vi.mock('../../store/themeStore', () => ({
 }))
 
 vi.mock('../../store/fragenbankStore', () => ({
-  useFragenbankStore: (selector: (s: { summaries: [] }) => unknown) =>
+  useFragensammlungStore: (selector: (s: { summaries: [] }) => unknown) =>
     selector({ summaries: [] }),
 }))
 

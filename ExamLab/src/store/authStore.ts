@@ -5,7 +5,7 @@ import { clearIndexedDB } from '../services/autoSave.ts'
 import { clearQueue } from '../services/retryQueue.ts'
 import { ladeLehrpersonen, type LPInfo } from '../services/lpApi.ts'
 import { useFavoritenStore } from './favoritenStore.ts'
-import { useFragenbankStore } from './fragenbankStore.ts'
+import { useFragensammlungStore } from './fragensammlungStore.ts'
 import { useKlassenlistenStore } from './klassenlistenStore.ts'
 import { useUebenGruppenStore } from './ueben/gruppenStore.ts'
 import { clearDraftIDBCache } from '../services/draftCache.ts'
@@ -145,16 +145,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
       void useUebenGruppenStore.getState().ladeGruppen(credential.email).catch((e) => {
         console.warn('[G.d.2] Gruppen-Pre-Fetch fehlgeschlagen (silent):', e)
       })
-      // G.c + G.d.2 — Fragenbank + Klassenlisten sind LP-only.
+      // G.c + G.d.2 — Fragensammlung + Klassenlisten sind LP-only.
       // SuS-Google-Login (rolle='sus') würde sonst 403 vom Backend bekommen
       // (silent fail, aber unnötiger API-Roundtrip + Console-Warning).
       if (rolle === 'lp') {
-        void useFragenbankStore.getState().lade(credential.email).catch((e) => {
-          console.warn('[G.c] Fragenbank-Pre-Fetch fehlgeschlagen (silent):', e)
+        void useFragensammlungStore.getState().lade(credential.email).catch((e) => {
+          console.warn('[G.c] Fragensammlung-Pre-Fetch fehlgeschlagen (silent):', e)
         })
         void useKlassenlistenStore.getState().lade(credential.email).catch((e) => {
           console.warn('[G.d.2] Klassenlisten-Pre-Fetch fehlgeschlagen (silent):', e)
         })
+        // Bundle M: alte fragenbank-DB einmalig droppen (Cleanup nach IDB-Rename)
+        const dropReq = indexedDB.deleteDatabase('examlab-fragenbank-cache')
+        dropReq.onsuccess = () => console.info('[Bundle M] alte fragenbank-DB gedroppt')
+        // onerror/onblocked silent — DB existiert evtl. nicht (post-Deploy-Re-Login)
       }
     } finally {
       loginInProgress = false
@@ -182,7 +186,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     saveDemoFlag(false)
     set({ user, istDemoModus: false, ladeStatus: 'fertig', fehler: null })
     // Bundle G.d.2 — SuS profitiert vom Gruppen-Pre-Fetch falls Wechsel in den Üben-Tab nach Prüfung.
-    // KEIN Klassenlisten-Pre-Fetch (LP-only). KEIN Fragenbank-Pre-Fetch (LP-only).
+    // KEIN Klassenlisten-Pre-Fetch (LP-only). KEIN Fragensammlung-Pre-Fetch (LP-only).
     void useUebenGruppenStore.getState().ladeGruppen(email).catch((e) => {
       console.warn('[G.d.2] Gruppen-Pre-Fetch fehlgeschlagen (SuS, silent):', e)
     })
@@ -226,7 +230,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     // Promise.all parallel — die 4 Datenbanken sind unabhängig, längste bestimmt
     // die Logout-Latenz (typisch ~50 ms).
     await Promise.all([
-      useFragenbankStore.getState().reset(),
+      useFragensammlungStore.getState().reset(),
       useKlassenlistenStore.getState().reset(),
       useUebenGruppenStore.getState().reset(),
       clearDraftIDBCache(), // Bundle 3 P-C.4: Privacy — Draft-Cache aus IDB

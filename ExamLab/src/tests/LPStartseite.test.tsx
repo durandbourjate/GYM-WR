@@ -64,7 +64,7 @@ vi.mock('../store/ueben/gruppenStore', () => ({
 }))
 
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: Object.assign(
+  useFragensammlungStore: Object.assign(
     (selector: (s: { summaries: [] }) => unknown) => selector({ summaries: [] }),
     { getState: () => ({ lade: vi.fn() }) },
   ),

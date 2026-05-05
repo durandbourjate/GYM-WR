@@ -12,7 +12,7 @@ vi.mock('../../store/themeStore', () => ({
     selector({ mode: 'light', toggleMode: vi.fn() }),
 }))
 vi.mock('../../store/fragenbankStore', () => ({
-  useFragenbankStore: (selector: (s: { summaries: [] }) => unknown) => selector({ summaries: [] }),
+  useFragensammlungStore: (selector: (s: { summaries: [] }) => unknown) => selector({ summaries: [] }),
 }))
 
 import { SuSAppHeaderContainer } from './SuSAppHeaderContainer'

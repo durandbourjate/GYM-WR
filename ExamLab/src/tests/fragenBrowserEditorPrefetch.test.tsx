@@ -14,7 +14,7 @@ const getDetailMock = vi.fn(() => null)
 const ladeMock = vi.fn()
 
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: Object.assign(
+  useFragensammlungStore: Object.assign(
     () => ({
       summaries: [
         { id: 'f1', fachbereich: 'BWL', typ: 'mc', titel: 'A' },
@@ -40,7 +40,7 @@ vi.mock('../store/fragenbankStore', () => ({
 // wartet auf den Hook-Effekt und prüft, dass ladeDetail mit f1 und f3 aufgerufen wurde.
 
 // Begründung für describe.todo:
-// FragenBrowser hat ~12 Imports aus Stores/Services (useAuthStore, useFragenbankStore,
+// FragenBrowser hat ~12 Imports aus Stores/Services (useAuthStore, useFragensammlungStore,
 // useFragenFilter, apiService, useFocusTrap, demoFragen, trackerUtils, …) und rendert
 // grosse Child-Komponenten (FragenEditor, FragenImport, BatchExportDialog).
 // Der Setup-Aufwand für ein vollständiges Integration-Mock würde 30+ Minuten brauchen,

@@ -22,7 +22,7 @@ import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage } from '../../../types/fragen-storage'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
-import FragenBrowser from '../fragenbank/FragenBrowser.tsx'
+import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
 import type { PruefungsConfig } from '../../../types/pruefung'
 import type { PruefungsPhase } from '../../../types/monitoring'
@@ -659,7 +659,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       )}
       </div>{/* Ende Flex-Row */}
 
-      {/* Fragenbank Overlay */}
+      {/* Fragensammlung Overlay */}
       {zeigFragenbank && (
         <FragenBrowser
           onHinzufuegen={() => {}}

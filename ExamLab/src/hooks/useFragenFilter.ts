@@ -1,10 +1,10 @@
 /**
- * Hook für Filter-, Sortier- und Gruppierungslogik der Fragenbank.
+ * Hook für Filter-, Sortier- und Gruppierungslogik der Fragensammlung.
  * Extrahiert aus FragenBrowser.tsx.
  */
 import { useState, useMemo, useEffect } from 'react'
-import { gruppenKey } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
-import type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
+import { gruppenKey } from '../components/lp/fragensammlung/fragenbrowser/gruppenHelfer.ts'
+import type { Gruppierung } from '../components/lp/fragensammlung/fragenbrowser/gruppenHelfer.ts'
 import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/fragen-storage'
 
 /** Typ der sowohl für Frage als auch FrageSummary funktioniert (Filter braucht nur diese Felder) */
@@ -14,7 +14,7 @@ import { schulFachbereiche } from '../utils/fachUtils'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
 
-export type { Gruppierung } from '../components/lp/fragenbank/fragenbrowser/gruppenHelfer.ts'
+export type { Gruppierung } from '../components/lp/fragensammlung/fragenbrowser/gruppenHelfer.ts'
 
 /** Eine Gruppe in der gruppierten Anzeige (key, Label, Fragen-Array). */
 export interface GruppierteAnzeige {

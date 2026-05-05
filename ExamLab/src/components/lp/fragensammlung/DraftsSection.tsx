@@ -1,4 +1,4 @@
-// ExamLab/src/components/lp/fragenbank/DraftsSection.tsx
+// ExamLab/src/components/lp/fragensammlung/DraftsSection.tsx
 //
 // Bundle 3 Phase D — Drafts-Sektion oberhalb der Fragensammlung in FragenBrowser.
 // Zeigt alle Fragen mit `status === 'draft'` als klickbare Items. Klick öffnet

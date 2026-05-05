@@ -21,7 +21,7 @@ import {
 
 const g1: Gruppe = {
   id: 'g1', name: 'Klasse 27a', typ: 'gym', adminEmail: 'lp@gymhofwil.ch',
-  fragebankSheetId: 's1', analytikSheetId: 'a1', mitglieder: [],
+  fragensammlungSheetId: 's1', analytikSheetId: 'a1', mitglieder: [],
 }
 const m1: Mitglied[] = [
   { email: 'a@stud.gymhofwil.ch', name: 'A.', rolle: 'lernend', beigetreten: '2026-04-01' },

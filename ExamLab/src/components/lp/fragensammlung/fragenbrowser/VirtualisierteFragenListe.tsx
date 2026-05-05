@@ -1,5 +1,5 @@
 /**
- * VirtualisierteFragenListe — virtualisierte Liste der Fragenbank.
+ * VirtualisierteFragenListe — virtualisierte Liste der Fragensammlung.
  *
  * Ersetzt die zwei `.map`-Blöcke in `FragenBrowser.tsx` (inline + overlay).
  * Statt 2'400+ DOM-Knoten rendert sie nur die sichtbaren Items + 10er-Overscan.

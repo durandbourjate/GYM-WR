@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
-import { useFragenbankStore } from '../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../store/fragensammlungStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
 import { useLPNavigationStore } from '../../store/lpUIStore.ts'
 import { useFavoritenStore } from '../../store/favoritenStore.ts'
@@ -21,7 +21,7 @@ import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
 import { einrichtungsFragen } from '../../data/einrichtungsFragen.ts'
 import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
 import { einrichtungsUebungFragen } from '../../data/einrichtungsUebungFragen.ts'
-import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts'
+import { speichereConfig, speichereFrage } from '../../services/fragensammlungApi.ts'
 import { useDraftStore } from '../../store/draftStore.ts'
 import { MultiDurchfuehrenDashboard } from './durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import DurchfuehrenDashboard from './durchfuehrung/DurchfuehrenDashboard.tsx'
@@ -38,7 +38,7 @@ import LPTrackerSkeleton from './skeletons/LPTrackerSkeleton'
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
 const PruefungsComposer = lazyMitRetry(() => import('./vorbereitung/PruefungsComposer.tsx'))
-const FragenBrowser = lazyMitRetry(() => import('./fragenbank/FragenBrowser.tsx'))
+const FragenBrowser = lazyMitRetry(() => import('./fragensammlung/FragenBrowser.tsx'))
 const PapierkorbView = lazyMitRetry(() => import('./papierkorb/PapierkorbView.tsx'))
 const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))
 const EinstellungenPanel = lazyMitRetry(() => import('../settings/EinstellungenPanel.tsx'))
@@ -335,9 +335,9 @@ function LPStartseiteInner() {
         }
       })
 
-      // Configs + Fragenbank-Summaries parallel laden (schnell ~3-5s)
+      // Configs + Fragensammlung-Summaries parallel laden (schnell ~3-5s)
       // TrackerDaten separat im Hintergrund (langsam ~6-8s, blockiert UI nicht)
-      useFragenbankStore.getState().lade(user.email)
+      useFragensammlungStore.getState().lade(user.email)
       let configResult: PruefungsConfig[] | null = null
       try {
         configResult = await apiService.ladeAlleConfigs(user.email)

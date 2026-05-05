@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useThemenVorschlaege } from './useThemenVorschlaege'
 
-vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: (selector: (s: { summaries: Array<{ thema: string; fachbereich: string }> }) => unknown) =>
+vi.mock('../store/fragensammlungStore', () => ({
+  useFragensammlungStore: (selector: (s: { summaries: Array<{ thema: string; fachbereich: string }> }) => unknown) =>
     selector({
       summaries: [
         { thema: 'Konjunktur', fachbereich: 'VWL' },

@@ -8,7 +8,7 @@ import type { Gruppe, Mitglied } from '../types/ueben/gruppen'
 
 const g1: Gruppe = {
   id: 'g1', name: 'Klasse 27a', typ: 'gym', adminEmail: 'lp@gymhofwil.ch',
-  fragebankSheetId: 'sheet1', analytikSheetId: 'an1', mitglieder: [],
+  fragensammlungSheetId: 'sheet1', analytikSheetId: 'an1', mitglieder: [],
 }
 const g2: Gruppe = { ...g1, id: 'g2', name: 'Klasse 28b' }
 

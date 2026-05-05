@@ -49,7 +49,7 @@ vi.mock('../../../../components/lp/korrektur/KorrekturDashboard', () => ({
 vi.mock('../../../../components/settings/EinstellungenPanel', () => ({
   default: () => <div data-testid="einstellungen-panel-mock">EinstellungenPanel</div>,
 }))
-vi.mock('../../../../components/lp/fragenbank/FragenBrowser', () => ({
+vi.mock('../../../../components/lp/fragensammlung/FragenBrowser', () => ({
   default: () => <div data-testid="fragen-browser-mock">FragenBrowser</div>,
 }))
 vi.mock('../../../../components/lp/HilfeSeite', () => ({

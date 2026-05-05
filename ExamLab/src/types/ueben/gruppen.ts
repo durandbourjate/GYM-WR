@@ -3,7 +3,7 @@ export interface Gruppe {
   name: string
   typ: 'gym' | 'familie'
   adminEmail: string
-  fragebankSheetId: string
+  fragensammlungSheetId: string
   analytikSheetId: string
   mitglieder: string[]
 }

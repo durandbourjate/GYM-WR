@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, fireEvent } from '@testing-library/react'
 import {
   baueFlatItems,
-} from '../components/lp/fragenbank/fragenbrowser/VirtualisierteFragenListe'
+} from '../components/lp/fragensammlung/fragenbrowser/VirtualisierteFragenListe'
 import type { GruppierteAnzeige, FilterbareFrage } from '../hooks/useFragenFilter'
 
 // Mock useVirtualizer auf Modul-Ebene: Render-Tests bekommen alle Items sichtbar.
@@ -142,7 +142,7 @@ describe('VirtualisierteFragenListe (mit Virtualizer-Mock)', () => {
     scrollResetTrigger?: unknown
   }) {
     const { default: VirtualisierteFragenListe } = await import(
-      '../components/lp/fragenbank/fragenbrowser/VirtualisierteFragenListe'
+      '../components/lp/fragensammlung/fragenbrowser/VirtualisierteFragenListe'
     )
     return render(
       <VirtualisierteFragenListe
@@ -260,7 +260,7 @@ describe('VirtualisierteFragenListe (mit Virtualizer-Mock)', () => {
       { key: 'BWL', label: 'BWL', fragen: [f('1')] },
     ]
     const { default: VirtualisierteFragenListe } = await import(
-      '../components/lp/fragenbank/fragenbrowser/VirtualisierteFragenListe'
+      '../components/lp/fragensammlung/fragenbrowser/VirtualisierteFragenListe'
     )
     const { rerender } = render(
       <VirtualisierteFragenListe

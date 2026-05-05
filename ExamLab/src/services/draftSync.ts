@@ -17,7 +17,7 @@
  * TODO: Wenn LP-Auth später Refresh-Token bekommt, hier 401-Retry ergänzen.
  */
 import { set as idbSet } from 'idb-keyval'
-import { speichereFrageMitStatus } from './fragenbankApi'
+import { speichereFrageMitStatus } from './fragensammlungApi'
 import type { Frage } from '../types/fragen-storage'
 
 export type SyncStatus =
