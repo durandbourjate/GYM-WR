@@ -3889,6 +3889,58 @@ function speichereFrage(body) {
 
 // === Frage aus Fragenbank löschen ===
 
+/**
+ * Pure-Helper für loescheFrage (Bundle 3, Soft-Delete).
+ * KEINE Auth-Checks — der Wrapper validiert. Direkt aufrufbar von Test-Shims (Phase A.6).
+ * Setzt geloescht_am = ISO-Timestamp statt sheet.deleteRow (Soft-Delete).
+ * Owner-Check: existingAutor !== email → throw (Security-Verbesserung Plan-Refinement #3).
+ *
+ * @param {string} frageId
+ * @param {string} fachbereich
+ * @param {string} email — der anfragende LP (für Owner-Check)
+ * @returns {{ success: true, id: string }}
+ */
+function loescheFrageIntern_(frageId, fachbereich, email) {
+  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const sheet = fragenbank.getSheetByName(fachbereich);
+  if (!sheet) {
+    throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
+  }
+
+  let headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const data = getSheetData(sheet);
+
+  const rowIdx = data.findIndex(function(row) { return row.id === frageId; });
+  if (rowIdx < 0) {
+    throw new Error('Frage nicht gefunden: ' + frageId);
+  }
+
+  // Owner-Check (Plan-Refinement #3): nur reject wenn autor truthy UND nicht-eigene Frage.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (sonst nie löschbar).
+  const existingAutor = data[rowIdx].autor;
+  if (existingAutor && existingAutor !== email) {
+    throw new Error('Nicht eigene Frage');
+  }
+
+  const jetzt = new Date().toISOString();
+  const rowData = Object.assign({}, data[rowIdx], {
+    geloescht_am: jetzt,
+    geaendertAm: jetzt,
+  });
+
+  // Fehlende Spalten (z.B. geloescht_am) automatisch hinzufügen
+  headers = ensureColumns(sheet, headers, rowData);
+
+  const rowIndex = rowIdx + 2;
+  headers.forEach(function(header, colIndex) {
+    if (rowData[header] !== undefined) {
+      sheet.getRange(rowIndex, colIndex + 1).setValue(rowData[header]);
+    }
+  });
+
+  return { success: true, id: frageId };
+}
+
 function loescheFrage(body) {
   try {
     var email = body.email;
@@ -3902,22 +3954,7 @@ function loescheFrage(body) {
       return jsonResponse({ error: 'frageId und fachbereich erforderlich' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(fachbereich);
-    if (!sheet) {
-      return jsonResponse({ error: 'Fachbereich-Tab "' + fachbereich + '" nicht gefunden' });
-    }
-
-    var data = getSheetData(sheet);
-    var rowIndex = data.findIndex(function(row) { return row.id === frageId; });
-    if (rowIndex < 0) {
-      return jsonResponse({ error: 'Frage nicht gefunden: ' + frageId });
-    }
-
-    // Zeile löschen (rowIndex + 2 wegen Header-Zeile und 0-basiertem Index)
-    sheet.deleteRow(rowIndex + 2);
-
-    return jsonResponse({ success: true, id: frageId });
+    return jsonResponse(loescheFrageIntern_(frageId, fachbereich, email));
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
