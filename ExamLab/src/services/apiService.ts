@@ -3,7 +3,7 @@
 
 import { istKonfiguriert, getJson } from './apiClient'
 import { ladePruefung, ladeEinzelConfig, speichereAntworten, heartbeat, schaltePruefungFrei, beendePruefung, resetPruefung, sebAusnahmeErlauben, entsperreSuS, setzeKontrollStufe } from './pruefungApi'
-import { ladeAlleConfigs, ladeFragenbank, speichereConfig, loeschePruefung, speichereFrage, loescheFrage } from './fragenbankApi'
+import { ladeAlleConfigs, ladeFragensammlung, speichereConfig, loeschePruefung, speichereFrage, loescheFrage } from './fragensammlungApi'
 import { ladeKorrektur, ladeAbgaben, starteKorrektur, ladeKorrekturFortschritt, ladeKorrekturStatus, speichereKorrekturZeile, generiereUndSendeFeedback, korrekturFreigeben, ladeKorrekturenFuerSuS, ladeKorrekturDetail } from './korrekturApi'
 import { importierePoolFragen, importiereLernziele, schreibePoolAenderung, ladeLernziele } from './poolApi'
 import { ladeKlassenlisten, setzeTeilnehmer, sendeEinladungen, validiereSchuelercode } from './klassenlistenApi'
@@ -22,7 +22,7 @@ export const apiService = {
   heartbeat,
   ladeMonitoring,
   ladeAlleConfigs,
-  ladeFragenbank,
+  ladeFragensammlung,
   speichereConfig,
   loeschePruefung,
   speichereFrage,

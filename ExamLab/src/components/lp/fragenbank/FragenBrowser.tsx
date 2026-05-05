@@ -6,7 +6,7 @@ import { SaveStatusIndikator, SchliessenModal } from '@shared/index'
 import type { SchliessenVariante } from '@shared/index'
 import { useFragenFilter } from '../../../hooks/useFragenFilter.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
-import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { typLabel } from '../../../utils/fachUtils.ts'
@@ -61,9 +61,9 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
   // Fragen aus Store (wird beim Login parallel geladen)
   // Summaries für Listenansicht (schnell geladen), Details on-demand
-  const storeSummaries = useFragenbankStore(s => s.summaries)
-  const storeFragen = useFragenbankStore(s => s.fragen)
-  const storeStatus = useFragenbankStore(s => s.status)
+  const storeSummaries = useFragensammlungStore(s => s.summaries)
+  const storeFragen = useFragensammlungStore(s => s.fragen)
+  const storeStatus = useFragensammlungStore(s => s.status)
 
   // Im Demo-Modus Demo-Fragen, sonst Summaries (oder volle Fragen als Fallback)
   const alleFragenMitDrafts = (istDemoModus || !apiService.istKonfiguriert())
@@ -86,7 +86,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   )
 
   // Store-Mutationen
-  const { setFragen: setAlleFragen, aktualisiereFrage, entferneFrage, fuegeFragenHinzu } = useFragenbankStore.getState()
+  const { setFragen: setAlleFragen, aktualisiereFrage, entferneFrage, fuegeFragenHinzu } = useFragensammlungStore.getState()
 
   const [fragenStats, setFragenStats] = useState<Map<string, FragenPerformance>>(new Map())
 
@@ -119,7 +119,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   /** Detail on-demand laden und Editor öffnen */
   async function handleEditFrage(frage: Frage | FrageSummary): Promise<void> {
     // Prüfe ob Detail schon im Cache
-    const detail = useFragenbankStore.getState().getDetail(frage.id)
+    const detail = useFragensammlungStore.getState().getDetail(frage.id)
     if (detail) {
       setEditFrage(detail)
       setZeigEditor(true)
@@ -128,7 +128,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     // Detail vom Backend laden
     if (user && apiService.istKonfiguriert() && !istDemoModus) {
       setDetailLaden(true)
-      const geladen = await useFragenbankStore.getState().ladeDetail(user.email, frage.id, frage.fachbereich)
+      const geladen = await useFragensammlungStore.getState().ladeDetail(user.email, frage.id, frage.fachbereich)
       setDetailLaden(false)
       if (geladen) {
         setEditFrage(geladen)
@@ -144,7 +144,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   // Falls Store noch nicht geladen: Laden anstossen (Fallback)
   useEffect(() => {
     if (!istDemoModus && apiService.istKonfiguriert() && user && storeStatus === 'idle') {
-      useFragenbankStore.getState().lade(user.email)
+      useFragensammlungStore.getState().lade(user.email)
     }
   }, [istDemoModus, user, storeStatus])
 
@@ -351,7 +351,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
     if (istDemoModus || !apiService.istKonfiguriert()) {
       // Demo: Lokale Kopie erstellen — braucht volle Frage
-      const detail = useFragenbankStore.getState().getDetail(frage.id)
+      const detail = useFragensammlungStore.getState().getDetail(frage.id)
       if (detail) {
         const kopie = { ...structuredClone(detail), id: `kopie-${Date.now()}`, autor: user.email } as Frage
         fuegeFragenHinzu([kopie])
@@ -362,7 +362,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     const neueId = await apiService.dupliziereFrage(user.email, frage.id)
     if (neueId) {
       // Fragenbank neu laden um die Kopie anzuzeigen
-      await useFragenbankStore.getState().lade(user.email, true)
+      await useFragensammlungStore.getState().lade(user.email, true)
     }
   }
 
@@ -562,7 +562,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
             fragen={filter.gefilterteFragen as Frage[]}
             onSchliessen={() => setZeigBatchExport(false)}
             onErfolg={(updates) => {
-              const aktuell = useFragenbankStore.getState().fragen
+              const aktuell = useFragensammlungStore.getState().fragen
               setAlleFragen(aktuell.map(f => {
                 const upd = updates.find(u => u.frageId === f.id)
                 if (!upd) return f
@@ -754,7 +754,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           fragen={filter.gefilterteFragen as Frage[]}
           onSchliessen={() => setZeigBatchExport(false)}
           onErfolg={(updates) => {
-            const aktuell = useFragenbankStore.getState().fragen
+            const aktuell = useFragensammlungStore.getState().fragen
             setAlleFragen(aktuell.map(f => {
               const upd = updates.find(u => u.frageId === f.id)
               if (!upd) return f

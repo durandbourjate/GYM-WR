@@ -659,7 +659,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       )}
       </div>{/* Ende Flex-Row */}
 
-      {/* Fragenbank Overlay */}
+      {/* Fragensammlung Overlay */}
       {zeigFragenbank && (
         <FragenBrowser
           onHinzufuegen={() => {}}

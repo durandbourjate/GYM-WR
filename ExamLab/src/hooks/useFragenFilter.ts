@@ -1,5 +1,5 @@
 /**
- * Hook für Filter-, Sortier- und Gruppierungslogik der Fragenbank.
+ * Hook für Filter-, Sortier- und Gruppierungslogik der Fragensammlung.
  * Extrahiert aus FragenBrowser.tsx.
  */
 import { useState, useMemo, useEffect } from 'react'

@@ -8,8 +8,8 @@
  */
 
 import { poolTitel } from './poolTitelMapping'
-import { useFragenbankStore } from '../store/fragenbankStore'
-import { speichereFrage } from '../services/fragenbankApi'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
+import { speichereFrage } from '../services/fragensammlungApi'
 import type { Frage } from '../types/fragen-storage'
 
 export interface MigrationErgebnis {
@@ -30,9 +30,9 @@ export async function migratePoolThemen(email: string): Promise<MigrationErgebni
   }
 
   // Alle Fragen aus dem Store (bereits geladen)
-  const alleFragen = useFragenbankStore.getState().fragen
+  const alleFragen = useFragensammlungStore.getState().fragen
   if (!alleFragen || alleFragen.length === 0) {
-    ergebnis.details.push('Keine Fragen im Store — bitte zuerst Fragenbank laden.')
+    ergebnis.details.push('Keine Fragen im Store — bitte zuerst Fragensammlung laden.')
     return ergebnis
   }
 

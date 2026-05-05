@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import type { Frage, FrageSummary } from '../types/fragen-storage'
-import { ladeFragenbank, ladeFragenbankSummary, ladeFrageDetail } from '../services/fragenbankApi.ts'
+import { ladeFragensammlung, ladeFragensammlungSummary, ladeFrageDetail } from '../services/fragensammlungApi.ts'
 import {
   getCachedSummaries, setCachedSummaries,
   getCachedDetails, setCachedDetails,
-  clearFragenbankCache
-} from '../services/fragenbankCache.ts'
+  clearFragensammlungCache
+} from '../services/fragensammlungCache.ts'
 
 /**
  * Progressive Loading:
@@ -14,9 +14,9 @@ import {
  * 3. ladeDetail() → on-demand für einzelne Fragen
  */
 
-type FragenbankStatus = 'idle' | 'summary_laden' | 'summary_fertig' | 'detail_laden' | 'fertig' | 'fehler'
+type FragensammlungStatus = 'idle' | 'summary_laden' | 'summary_fertig' | 'detail_laden' | 'fertig' | 'fehler'
 
-interface FragenbankStore {
+interface FragensammlungStore {
   /** Leichtgewichtige Summaries für Listenansicht + Filter */
   summaries: FrageSummary[]
   summaryMap: Record<string, FrageSummary>
@@ -25,7 +25,7 @@ interface FragenbankStore {
   /** Legacy: Alle Fragen (gefüllt nach Prefetch) */
   fragen: Frage[]
   fragenMap: Record<string, Frage>
-  status: FragenbankStatus
+  status: FragensammlungStatus
   _cacheInvalid: boolean
 
   /** Summaries laden (schnell, für Listenansicht) */
@@ -43,7 +43,7 @@ interface FragenbankStore {
   entferneFrage: (frageId: string) => void
   /** Mehrere Fragen hinzufügen (z.B. nach Pool-Import) */
   fuegeFragenHinzu: (neueFragen: Frage[]) => void
-  /** Komplette Fragenbank ersetzen (z.B. nach Refresh) */
+  /** Komplette Fragensammlung ersetzen (z.B. nach Refresh) */
   setFragen: (fragen: Frage[]) => void
   /** Detail aus Cache holen (synchron, null wenn nicht geladen) */
   getDetail: (frageId: string) => Frage | null
@@ -63,7 +63,7 @@ function bauSummaryMap(summaries: FrageSummary[]): Record<string, FrageSummary> 
   return map
 }
 
-export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
+export const useFragensammlungStore = create<FragensammlungStore>((set, get) => ({
   summaries: [],
   summaryMap: {},
   detailCache: {},
@@ -77,7 +77,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
     if (status === 'summary_laden' || (status !== 'idle' && !force)) return
 
     set({ status: 'summary_laden' })
-    const result = await ladeFragenbankSummary(email)
+    const result = await ladeFragensammlungSummary(email)
     if (result) {
       // Duplikate entfernen
       const gesehen = new Set<string>()
@@ -122,7 +122,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
     if (status !== 'summary_fertig') return
 
     set({ status: 'detail_laden' })
-    const result = await ladeFragenbank(email)
+    const result = await ladeFragensammlung(email)
     if (result) {
       const gesehen = new Set<string>()
       const eindeutig = result.filter((f: Frage) => {
@@ -183,7 +183,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
         }
 
         // Hintergrund-Revalidierung: Server-Daten holen OHNE Status zu ändern (kein UI-Flicker)
-        ladeFragenbankSummary(email).then(serverSummaries => {
+        ladeFragensammlungSummary(email).then(serverSummaries => {
           if (!serverSummaries) return
           const sGesehen = new Set<string>()
           const sEindeutig = serverSummaries.filter((s: FrageSummary) => {
@@ -206,7 +206,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
     // --- Kein Cache: normal vom Server laden ---
     set({ _cacheInvalid: false })
 
-    const summaryResult = await ladeFragenbankSummary(email)
+    const summaryResult = await ladeFragensammlungSummary(email)
     if (summaryResult) {
       const gesehen = new Set<string>()
       const eindeutig = summaryResult.filter((s: FrageSummary) => {
@@ -225,7 +225,7 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
     }
 
     // Fallback: Alles auf einmal laden (alter Weg)
-    const result = await ladeFragenbank(email)
+    const result = await ladeFragensammlung(email)
     if (result) {
       const gesehen = new Set<string>()
       const eindeutig = result.filter((f: Frage) => {
@@ -410,6 +410,6 @@ export const useFragenbankStore = create<FragenbankStore>((set, get) => ({
       status: 'idle',
       _cacheInvalid: false,
     })
-    await clearFragenbankCache()
+    await clearFragensammlungCache()
   },
 }))

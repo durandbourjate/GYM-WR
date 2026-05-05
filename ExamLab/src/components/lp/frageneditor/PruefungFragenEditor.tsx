@@ -4,7 +4,7 @@
  */
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
-import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
 import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent, markiereFeedbackAlsIgnoriert as apiMarkiereFeedbackAlsIgnoriert } from '../../../services/uploadApi.ts'
 import { ladeLernziele as apiLadeLernziele, speichereLernziel as apiSpeichereLernziel } from '../../../services/poolApi.ts'
@@ -46,7 +46,7 @@ interface Props {
 export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
-  const summaries = useFragenbankStore((s) => s.summaries)
+  const summaries = useFragensammlungStore((s) => s.summaries)
 
   // Themen-Vorschläge: dedupliziertes, sortiertes Set aller Themen pro Fachbereich
   const ladeThemen = useCallback((fachbereich: string): string[] => {

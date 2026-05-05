@@ -2,7 +2,7 @@ import AdminThemensteuerung from './AdminThemensteuerung'
 // AdminAuftraege entfernt (Bundle 8) — Aufträge werden in LearningView verwaltet.
 // AdminUebersicht entfernt (Bundle 13 I) — Inhalt verschoben in Einstellungen→Mitglieder.
 // AdminKindDetail + AdminThemaDetail entfernt (S115 C) — keine Entry-Points mehr.
-// AdminFragenbank entfernt — Fragenbank ist über LPHeader erreichbar
+// AdminFragensammlung entfernt — Fragensammlung ist über LPHeader erreichbar
 
 interface AdminDashboardProps {
   onZuUeben?: () => void

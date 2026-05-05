@@ -5,7 +5,7 @@ import { useEditorNeighborPrefetch } from '../hooks/useEditorNeighborPrefetch'
 const ladeDetailMock = vi.fn(async () => null)
 
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: {
+  useFragensammlungStore: {
     getState: () => ({ ladeDetail: ladeDetailMock }),
   },
 }))

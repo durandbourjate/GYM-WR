@@ -3,7 +3,7 @@ import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
-import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
 import { useLPNavigationStore } from '../../../store/lpUIStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmFragen } from '../../../services/preWarmApi'
@@ -64,9 +64,9 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
 
   // Fragen-Map aus Store (wird beim Login parallel geladen)
   // detailCache wird zuerst gefüllt (on-demand), fragenMap nach Background-Prefetch
-  const storeFragenMap = useFragenbankStore(s => s.fragenMap)
-  const storeDetailCache = useFragenbankStore(s => s.detailCache)
-  const storeStatus = useFragenbankStore(s => s.status)
+  const storeFragenMap = useFragensammlungStore(s => s.fragenMap)
+  const storeDetailCache = useFragensammlungStore(s => s.detailCache)
+  const storeStatus = useFragensammlungStore(s => s.status)
 
   // Im Demo-Modus: Demo-Fragen direkt nutzen, sonst Store (Detail-Cache hat Vorrang)
   const fragenMap = (istDemoModus || !apiService.istKonfiguriert())
@@ -79,7 +79,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   // Falls Store noch nicht geladen: Laden anstossen (Fallback)
   useEffect(() => {
     if (!istDemoModus && apiService.istKonfiguriert() && user && storeStatus === 'idle') {
-      useFragenbankStore.getState().lade(user.email)
+      useFragensammlungStore.getState().lade(user.email)
     }
   }, [istDemoModus, user, storeStatus])
 
@@ -232,7 +232,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
 
   /** fragenMap aktualisieren wenn Frage im Browser erstellt/bearbeitet wird */
   const handleFrageAktualisiert = useCallback((frage: Frage) => {
-    useFragenbankStore.getState().aktualisiereFrage(frage)
+    useFragensammlungStore.getState().aktualisiereFrage(frage)
   }, [])
 
   /** Interne Speicher-Logik (wiederverwendbar für Autosave und manuelles Speichern) */

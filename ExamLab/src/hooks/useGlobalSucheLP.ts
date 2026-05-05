@@ -5,13 +5,13 @@
  * Sensible Felder (musterlosung, korrekt, etc.) werden nie durchsucht.
  *
  * Aktuelle Datenquellen:
- *   - Fragensammlung: useFragenbankStore → summaries[] (fragetext, thema, fach)
+ *   - Fragensammlung: useFragensammlungStore → summaries[] (fragetext, thema, fach)
  *   - Prüfungen: kein zentraler Zustand-Store — TODO: integrieren sobald verfügbar
  *   - Kurse/Übungen: kein zentraler Zustand-Store — TODO: integrieren sobald verfügbar
  */
 
 import { useMemo } from 'react'
-import { useFragenbankStore } from '../store/fragenbankStore'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
 import type { SucheErgebnis, SucheGruppe, Treffer } from './useGlobalSuche.shared'
 import { machtMatch } from './useGlobalSuche.shared'
 
@@ -33,7 +33,7 @@ export function useGlobalSucheLP(
 ): SucheErgebnis {
   // Fragensammlung: Summaries sind leichtgewichtig und enthalten keine sensiblen Felder.
   // FrageSummary enthält: id, fragetext, thema, fach, fachbereich — kein musterlosung/korrekt.
-  const summaries = useFragenbankStore((s) => s.summaries)
+  const summaries = useFragensammlungStore((s) => s.summaries)
 
   // TODO(LP-Prüfungen): Kein zentraler Zustand-Store für die Prüfungsliste vorhanden.
   // Prüfungen werden pro Route via pruefungApi.ts geladen und in lokalem React-State gehalten.

@@ -13,7 +13,7 @@ export interface LernenAuthServiceInterface {
 
 export interface GruppenService {
   ladeGruppen(email: string): Promise<Gruppe[]>
-  erstelleGruppe(gruppe: Omit<Gruppe, 'fragebankSheetId' | 'analytikSheetId'>): Promise<Gruppe>
+  erstelleGruppe(gruppe: Omit<Gruppe, 'fragensammlungSheetId' | 'analytikSheetId'>): Promise<Gruppe>
   ladeMitglieder(gruppeId: string): Promise<Mitglied[]>
   einladen(gruppeId: string, email: string, name: string, rolle?: 'admin' | 'lernend'): Promise<void>
   entfernen(gruppeId: string, email: string): Promise<void>

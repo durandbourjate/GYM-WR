@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useFragenbankStore } from '../store/fragenbankStore'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
 import { PRE_WARM_ENABLED } from '../services/preWarmApi'
 
 const DEBOUNCE_MS = 300
@@ -41,7 +41,7 @@ export function useEditorNeighborPrefetch({
       // Debounce löst über Zeit aus, nicht über jeden Prop-Wechsel.
       // Das ist Absicht — die useMemo-stabilisierten Werte sind beim Timer-Fire aktuell.
       const { previous: p, next: n, email: e } = aktuellRef.current
-      const ladeDetail = useFragenbankStore.getState().ladeDetail
+      const ladeDetail = useFragensammlungStore.getState().ladeDetail
       if (p) void ladeDetail(e, p.id, p.fachbereich)
       if (n) void ladeDetail(e, n.id, n.fachbereich)
     }, DEBOUNCE_MS)

@@ -71,7 +71,7 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
 
       const gruppe = {
         id: 'demo-gruppe', name: 'Demo-Familie', typ: 'familie' as const,
-        adminEmail: 'eltern@demo.ch', fragebankSheetId: 'demo',
+        adminEmail: 'eltern@demo.ch', fragensammlungSheetId: 'demo',
         analytikSheetId: 'demo', mitglieder: ['eltern@demo.ch', 'kind@demo.ch'],
       }
       useUebenGruppenStore.setState({ gruppen: [gruppe], aktiveGruppe: gruppe, ladeStatus: 'fertig' })

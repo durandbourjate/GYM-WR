@@ -34,7 +34,7 @@ vi.mock('../store/authStore', () => ({
 
 // --- fragenbankStore: status='idle' → ladeStatus wird 'laden' ---
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: Object.assign(
+  useFragensammlungStore: Object.assign(
     (selector: (s: { summaries: []; fragen: []; status: 'idle' }) => unknown) =>
       selector({ summaries: [], fragen: [], status: 'idle' }),
     {

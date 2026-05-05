@@ -88,7 +88,7 @@ export default function UebenEditorProvider({ children }: Props) {
     istKIVerfuegbar: () => !!user?.email,
     istUploadVerfuegbar: () => !!user?.email,
 
-    // Lernziele laden (aus Fragenbank-Metadaten)
+    // Lernziele laden (aus Fragensammlung-Metadaten)
     ladeLernziele: async (_gefaess: string, fachbereich: string) => {
       try {
         const response = await uebenApiClient.post<{ success: boolean; data: import('../../../types/fragen-storage').Lernziel[] }>(

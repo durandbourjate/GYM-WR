@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { usePruefungStore } from '../../../store/pruefungStore.ts'
-import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import type { PruefungsConfig } from '../../../types/pruefung.ts'
 import type { Frage } from '../../../types/fragen-storage'
@@ -24,7 +24,7 @@ export default function SuSVorschau({ config, onSchliessen }: Props) {
   const storeSnapshotRef = useRef<Record<string, unknown> | null>(null)
   const gestartetRef = useRef(false)
 
-  // Fragen auflösen: zuerst aus Fragenbank, Fallback auf demoFragen
+  // Fragen auflösen: zuerst aus Fragensammlung, Fallback auf demoFragen
   const vorschauResolved = useRef(resolveVorschauFragen(config))
 
   useEffect(() => {
@@ -115,10 +115,10 @@ export default function SuSVorschau({ config, onSchliessen }: Props) {
   )
 }
 
-/** Löst die Fragen-IDs aus der Config gegen die Fragenbank auf (Fallback: demoFragen) */
+/** Löst die Fragen-IDs aus der Config gegen die Fragensammlung auf (Fallback: demoFragen) */
 function resolveVorschauFragen(config: PruefungsConfig): { navigationsFragen: Frage[]; alleFragen: Frage[] } {
-  // Zuerst Fragenbank versuchen, dann demoFragen als Fallback
-  const fragenbankMap = useFragenbankStore.getState().fragenMap
+  // Zuerst Fragensammlung versuchen, dann demoFragen als Fallback
+  const fragenbankMap = useFragensammlungStore.getState().fragenMap
   const demoMap = new Map(demoFragen.map((f) => [f.id, f]))
 
   function findeFrage(id: string): Frage | undefined {

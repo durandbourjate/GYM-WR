@@ -37,7 +37,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
     if (!istDemoModus || loginStatus !== 'idle') return
     const demoGruppe = {
       id: 'demo-gruppe', name: 'Demo-Klasse', typ: 'gym' as const,
-      adminEmail: 'demo-lp@gymhofwil.ch', fragebankSheetId: 'demo',
+      adminEmail: 'demo-lp@gymhofwil.ch', fragensammlungSheetId: 'demo',
       analytikSheetId: 'demo', mitglieder: ['demo-lp@gymhofwil.ch', 'demo.sus@stud.gymhofwil.ch'],
     }
     useUebenAuthStore.setState({

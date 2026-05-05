@@ -32,7 +32,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
   }
 
   async erstelleGruppe(
-    gruppe: Omit<Gruppe, 'fragebankSheetId' | 'analytikSheetId'>
+    gruppe: Omit<Gruppe, 'fragensammlungSheetId' | 'analytikSheetId'>
   ): Promise<Gruppe> {
     const response = await uebenApiClient.post<{ success: boolean; data: Gruppe }>(
       'lernplattformErstelleGruppe',

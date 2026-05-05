@@ -5,7 +5,7 @@ const ladeMock = vi.fn(async () => {})
 const resetMock = vi.fn(async () => {})
 
 vi.mock('../store/fragenbankStore', () => ({
-  useFragenbankStore: {
+  useFragensammlungStore: {
     getState: () => ({ lade: ladeMock, reset: resetMock }),
   },
 }))

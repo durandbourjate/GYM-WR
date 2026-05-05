@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
-import { useFragenbankStore } from '../../store/fragenbankStore.ts'
+import { useFragensammlungStore } from '../../store/fragensammlungStore.ts'
 import { useStammdatenStore } from '../../store/stammdatenStore.ts'
 import { useLPNavigationStore } from '../../store/lpUIStore.ts'
 import { useFavoritenStore } from '../../store/favoritenStore.ts'
@@ -21,7 +21,7 @@ import { einrichtungsPruefung } from '../../data/einrichtungsPruefung.ts'
 import { einrichtungsFragen } from '../../data/einrichtungsFragen.ts'
 import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
 import { einrichtungsUebungFragen } from '../../data/einrichtungsUebungFragen.ts'
-import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts'
+import { speichereConfig, speichereFrage } from '../../services/fragensammlungApi.ts'
 import { useDraftStore } from '../../store/draftStore.ts'
 import { MultiDurchfuehrenDashboard } from './durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import DurchfuehrenDashboard from './durchfuehrung/DurchfuehrenDashboard.tsx'
@@ -335,9 +335,9 @@ function LPStartseiteInner() {
         }
       })
 
-      // Configs + Fragenbank-Summaries parallel laden (schnell ~3-5s)
+      // Configs + Fragensammlung-Summaries parallel laden (schnell ~3-5s)
       // TrackerDaten separat im Hintergrund (langsam ~6-8s, blockiert UI nicht)
-      useFragenbankStore.getState().lade(user.email)
+      useFragensammlungStore.getState().lade(user.email)
       let configResult: PruefungsConfig[] | null = null
       try {
         configResult = await apiService.ladeAlleConfigs(user.email)

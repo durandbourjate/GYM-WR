@@ -1,7 +1,7 @@
-// src/services/fragenbankCache.ts
+// src/services/fragensammlungCache.ts
 import type { Frage, FrageSummary } from '../types/fragen-storage'
 
-const IDB_NAME = 'examlab-fragenbank-cache'
+const IDB_NAME = 'examlab-fragensammlung-cache'
 const IDB_VERSION = 1
 const STORE_SUMMARIES = 'summaries'
 const STORE_DETAILS = 'details'
@@ -96,11 +96,11 @@ export async function setCachedDetails(details: Frage[]): Promise<void> {
   }
 }
 
-/** Gesamten Fragenbank-Cache leeren (Logout, Invalidierung).
+/** Gesamten Fragensammlung-Cache leeren (Logout, Invalidierung).
  * Wartet auf Transaktions-Commit — kritisch beim Logout, weil window.location.href
  * direkt danach den Page-Unload triggert und in-flight IDB-Transaktionen abbricht.
  */
-export async function clearFragenbankCache(): Promise<void> {
+export async function clearFragensammlungCache(): Promise<void> {
   try {
     const db = await openDB()
     const tx = db.transaction([STORE_SUMMARIES, STORE_DETAILS, STORE_META], 'readwrite')
