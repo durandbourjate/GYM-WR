@@ -73,3 +73,5 @@ export { default as PflichtfeldDialog } from './editor/components/PflichtfeldDia
 export { default as DoppelteLabelDialog } from './editor/components/DoppelteLabelDialog'
 export { default as PruefungstauglichBadge } from './editor/components/PruefungstauglichBadge'
 export { default as BulkPasteModal } from './editor/components/BulkPasteModal'
+export { default as SaveStatusIndikator } from './editor/components/SaveStatusIndikator'
+export type { SaveStatus } from './editor/components/SaveStatusIndikator'
