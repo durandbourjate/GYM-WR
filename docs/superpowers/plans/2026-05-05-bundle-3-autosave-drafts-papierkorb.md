@@ -196,12 +196,12 @@ function istVollstaendig_(frage) {
 }
 ```
 
-- [ ] **Step 2: `_speichereFrageIntern(frage, email)` als pure Helper extrahieren**
+- [ ] **Step 2: `speichereFrageIntern_(frage, email)` als pure Helper extrahieren**
 
 Memory S130-Pattern (markiereFeedbackAlsIgnoriert_ Stil): Pure Logic ohne Auth-Check. Test-Shim ruft Intern direkt.
 
 ```javascript
-function _speichereFrageIntern(frage, email) {
+function speichereFrageIntern_(frage, email) {
   // FiBu-Schutz
   ergaenzeFehlendeKontenInAuswahl_(frage);
 
@@ -291,7 +291,7 @@ function speichereFrage(body) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
 
-    var ergebnis = _speichereFrageIntern(frage, email);
+    var ergebnis = speichereFrageIntern_(frage, email);
 
     // Kalibrierungs-Feedbacks schliessen (existing pattern, unverändert)
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
@@ -542,7 +542,7 @@ git commit -m "Bundle 3 P-A.5: Existing Lese-Endpoints filtern geloescht_am !== 
 **Files:**
 - Modify: `ExamLab/apps-script-code.js`
 
-- [ ] **Step 1: Test-Shim ruft `_speichereFrageIntern` direkt (kein Auth-Bypass)**
+- [ ] **Step 1: Test-Shim ruft `speichereFrageIntern_` direkt (kein Auth-Bypass)**
 
 ```javascript
 function testBundle3DraftLifecycle_() {
@@ -562,19 +562,19 @@ function testBundle3DraftLifecycle_() {
   };
 
   // Case 1: vollständige Frage → status='sammlung'
-  var r1 = _speichereFrageIntern(testFrageBase, testEmail);
+  var r1 = speichereFrageIntern_(testFrageBase, testEmail);
   if (r1.status !== 'sammlung') throw new Error('Case 1 FAIL: status=' + r1.status);
   Logger.log('  ✓ Case 1: vollständig → sammlung');
 
   // Case 2: unvollständig (Pflichtfeld leer) → status='draft'
   var unvollstFrage = Object.assign({}, testFrageBase, { fragetext: '' });
-  var r2 = _speichereFrageIntern(unvollstFrage, testEmail);
+  var r2 = speichereFrageIntern_(unvollstFrage, testEmail);
   if (r2.status !== 'draft') throw new Error('Case 2 FAIL: status=' + r2.status);
   Logger.log('  ✓ Case 2: unvollständig → draft');
 
   // Case 3: Pflichtfeld ergänzen → zurück zu sammlung
   var ergFrage = Object.assign({}, testFrageBase, { fragetext: 'Wieder da' });
-  var r3 = _speichereFrageIntern(ergFrage, testEmail);
+  var r3 = speichereFrageIntern_(ergFrage, testEmail);
   if (r3.status !== 'sammlung') throw new Error('Case 3 FAIL: status=' + r3.status);
   Logger.log('  ✓ Case 3: Pflichtfeld zurück → sammlung');
 
@@ -593,7 +593,7 @@ function testBundle3DraftLifecycle_() {
 function testBundle3DraftLifecycle() { return testBundle3DraftLifecycle_(); }
 ```
 
-**Hinweis Auth-Bypass für Cases 4-5:** `loescheFrage` etc. sind Endpoints mit `istZugelasseneLP(email)`-Check. Test-Email `test.bundle3@gymhofwil.ch` muss in `lpZulassung_`-Sheet eingetragen sein, ODER Test ruft analog `_loescheFrageIntern`-Pure-Helper (analog Pattern aus A.2). Plan-Empfehlung: Pure-Helper-Extraktion für loescheFrage/stelleWiederHer/hardDeleteFrage analog `_speichereFrageIntern` — Test-Shim ohne Auth-Friktion.
+**Hinweis Auth-Bypass für Cases 4-5:** `loescheFrage` etc. sind Endpoints mit `istZugelasseneLP(email)`-Check. Test-Email `test.bundle3@gymhofwil.ch` muss in `lpZulassung_`-Sheet eingetragen sein, ODER Test ruft analog `loescheFrageIntern_`-Pure-Helper (analog Pattern aus A.2). Plan-Empfehlung: Pure-Helper-Extraktion für loescheFrage/stelleWiederHer/hardDeleteFrage analog `speichereFrageIntern_` — Test-Shim ohne Auth-Friktion.
 
 - [ ] **Step 2: Commit**
 
@@ -1142,7 +1142,7 @@ Memory-Update: `project_bundle_3_autosave_drafts_papierkorb.md` schreiben + MEMO
 
 **1. istVollstaendig_ Drift-Strategie.** Plan A.2 listet eine vollständige per-Typ-Tabelle für `istVollstaendig_`. Reviewer hat Drift gegen Frontend `pflichtfeldValidation.ts` in mehreren Typen identifiziert (Freitext: musterloesung empfohlen-vs-Pflicht, Lückentext: lueckentextModus-Unterschied, MC: leere Optionen). **Empfohlener Pfad** (Implementer-Entscheidung): `istVollstaendig_` thin halten — nur Basics (`thema`, `fach`, `fachbereich`, `punkte > 0`, nicht-leerer `fragetext`) plus Pflicht-Marker pro Sub-Type („mind. 1 Option" / „mind. 1 Aussage" etc.). Kein 1:1-Spiegeln der Frontend-Logik. Frontend ist Source-of-Truth fürs UI-Feedback (amber-Status), Server-`status` reflektiert nur „strukturell unbeschädigt". Drift wird damit minimal.
 
-**2. Pure-Helper-Extraktion für loesche/stelleWieder/hardDelete.** Plan A.3+A.4 zeigen Endpoints monolithisch mit Auth-Check. **Implementer soll** analog `_speichereFrageIntern` (A.2) Pure-Helper extrahieren: `_loescheFrageIntern(frageId, fachbereich, email)`, `_stelleWiederHerIntern`, `_hardDeleteFrageIntern`. Endpoint-Wrapper validiert Auth + ruft Intern. Test-Shim (A.6) ruft Intern direkt — kein Auth-Bypass-Hack.
+**2. Pure-Helper-Extraktion für loesche/stelleWieder/hardDelete.** Plan A.3+A.4 zeigen Endpoints monolithisch mit Auth-Check. **Implementer soll** analog `speichereFrageIntern_` (A.2) Pure-Helper extrahieren: `loescheFrageIntern_(frageId, fachbereich, email)`, `stelleWiederHerIntern_`, `hardDeleteFrageIntern_`. Endpoint-Wrapper validiert Auth + ruft Intern. Test-Shim (A.6) ruft Intern direkt — kein Auth-Bypass-Hack.
 
 **3. Owner-Check verschärft existing IDOR-Gap.** Existing `loescheFrage` ([apps-script-code.js:3797](../../ExamLab/apps-script-code.js)) hat aktuell **keinen** Owner-Check (verifiziert per Reviewer-Audit). Plan A.3 fügt einen ein (`existingAutor !== email → reject`). Das ist eine Security-Verbesserung über das eigentliche Bundle-Feature hinaus. **Browser-E2E in Phase F** muss explizit testen: LP-A versucht LP-B-Frage zu löschen → muss fehlschlagen mit „Nicht eigene Frage".
 

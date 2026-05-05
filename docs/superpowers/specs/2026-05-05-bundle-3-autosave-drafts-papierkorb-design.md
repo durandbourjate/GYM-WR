@@ -208,7 +208,7 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 
 **Helper-Funktionen** (neu, intern):
 - `istVollstaendig_(frage)` — Server-side-Validierung der Pflichtfelder. Inline-Implementation mit per-Typ-Tabelle (~20 Fragetypen) analog `pflichtfeldValidation.ts` (`packages/shared/src/editor/pflichtfeldValidation.ts`). Plan listet den vollständigen per-Typ-Pflichtfeld-Mapping.
-- `_speichereFrageIntern(frage, email)` — Pure Logic ohne Auth-Check (analog Memory-S130-Pattern für `markiereFeedbackAlsIgnoriert_`). `speichereFrage`-Endpoint validiert + ruft Intern auf. Test-Shim ruft Intern direkt ohne Auth-Bypass-Hack.
+- `speichereFrageIntern_(frage, email)` — Pure Logic ohne Auth-Check (analog Memory-S130-Pattern für `markiereFeedbackAlsIgnoriert_`). `speichereFrage`-Endpoint validiert + ruft Intern auf. Test-Shim ruft Intern direkt ohne Auth-Bypass-Hack.
 
 **Migration: keine** — `ensureColumns` ergänzt `status`/`geloescht_am`-Spalten automatisch beim ersten Schreiben (siehe Daten-Modell-Sektion).
 
@@ -224,7 +224,7 @@ Kein Daten-Verlust. Pflichtfeld-validierung-fail bleibt mit `pruefungstauglich=f
 4. softDelete (via `loescheFrage`) → geloescht_am gesetzt, Frage in Papierkorb
 5. stelleWiederHer + hardDeleteFrage komplett-Lifecycle
 
-Test ruft `_speichereFrageIntern` direkt (ohne Auth) — kein Test-Mode-Flag nötig.
+Test ruft `speichereFrageIntern_` direkt (ohne Auth) — kein Test-Mode-Flag nötig.
 
 **Auth-Pattern**: existing `istZugelasseneLP(email)` für alle LP-Endpoints. **Kein Token-arg** in Frontend-API-Calls — `postJson` nutzt existing Mechanismus.
 

@@ -3785,7 +3785,7 @@ function istVollstaendig_(frage) {
  * @param {string} email
  * @returns {{ success: true, id: string, status: 'sammlung'|'draft' }}
  */
-function _speichereFrageIntern(frage, email) {
+function speichereFrageIntern_(frage, email) {
   // FiBu-Schutz: fehlende Konten in der eingeschränkten Auswahl automatisch ergänzen
   ergaenzeFehlendeKontenInAuswahl_(frage);
 
@@ -3869,7 +3869,7 @@ function speichereFrage(body) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
 
-    const ergebnis = _speichereFrageIntern(frage, email);
+    const ergebnis = speichereFrageIntern_(frage, email);
 
     // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
