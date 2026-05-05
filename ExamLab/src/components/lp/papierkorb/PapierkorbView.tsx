@@ -181,29 +181,29 @@ export default function PapierkorbView() {
           return (
             <li
               key={frage.id}
-              className="border border-gray-200 rounded p-4 bg-white"
+              className="border border-gray-200 dark:border-slate-700 rounded p-4 bg-white dark:bg-slate-800"
             >
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium">
+                  <div className="font-medium text-gray-900 dark:text-slate-100">
                     {frage.thema || 'Ohne Titel'}
                   </div>
                   {(() => {
                     // BuchungssatzFrage hat kein fragetext-Feld — defensiv lesen
                     const text = (frage as { fragetext?: string }).fragetext
                     return text ? (
-                      <div className="text-sm text-gray-600 mt-1 truncate">
+                      <div className="text-sm text-gray-600 dark:text-slate-300 mt-1 truncate">
                         {snippet(text)}
                       </div>
                     ) : null
                   })()}
-                  <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-500">
+                  <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-500 dark:text-slate-400">
                     <span>{frage.fachbereich}</span>
                     {frage.geloescht_am && (
                       <span>{formatGeloescht(frage.geloescht_am)}</span>
                     )}
                     {istWarnung && (
-                      <span className="px-2 py-1 bg-red-100 text-red-700 rounded font-medium">
+                      <span className="px-2 py-1 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-200 rounded font-medium">
                         Wird in {tageBis} {tageBis === 1 ? 'Tag' : 'Tagen'}{' '}
                         endgültig gelöscht
                       </span>
