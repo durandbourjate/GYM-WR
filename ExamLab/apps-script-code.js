@@ -4982,6 +4982,8 @@ function frageZuSummary_(frage) {
     semester: frage.semester || [],
     gefaesse: frage.gefaesse || [],
     schwierigkeit: frage.schwierigkeit,
+    // Bundle 3: Lifecycle-Felder. Frontend DraftsSection filtert nach status='draft'.
+    status: frage.status === 'draft' ? 'draft' : 'sammlung',
   };
 }
 
