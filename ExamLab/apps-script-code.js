@@ -1154,6 +1154,7 @@ function doPost(e) {
     'uploadAnhang', 'uploadMaterial',
     'ladeStammdaten', 'speichereStammdaten', 'ladeLPProfil', 'speichereLPProfil',
     'aktualisiereLernziel', 'loescheLernziel',
+    'stelleWiederHer', 'hardDeleteFrage', // Bundle 3: Schreib-Pfade brauchen Cache-Invalidierung (listePapierkorb ist read-only, bleibt draussen)
   ];
   if (LP_AKTIONEN.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
