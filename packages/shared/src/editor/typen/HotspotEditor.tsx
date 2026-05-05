@@ -103,10 +103,12 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
   const handleBildKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     // Während aktivem Drag keine Klicks
     if (drag) return
-    // Klicks auf bestehende Zonen (SVG-Elemente im ZonenOverlay) nicht als
+    // Klicks auf bestehende Zonen (SVG-Children: polygon/circle/path) nicht als
     // Start-Klick für eine neue Zone interpretieren — handleZonePointerDown
     // hat das bereits gehandhabt, der bubbling click würde sonst zur ersten Ecke.
-    if (e.target instanceof SVGElement) return
+    // Das ZonenOverlay-`<svg>`-Element selbst (transparenter Hintergrund) muss
+    // aber durchklicken, damit neue Zonen auf leerem Bild gezeichnet werden.
+    if (e.target instanceof SVGElement && e.target.tagName !== 'svg') return
     const p = bildKoordinaten(e)
     if (!p) return
 

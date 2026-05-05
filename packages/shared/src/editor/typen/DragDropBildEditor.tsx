@@ -156,7 +156,10 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
 
   const handleBildKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (drag) return
-    if (e.target instanceof SVGElement) return
+    // SVG-Children (polygon/circle/path für existing Zonen + Punkte) blocken den Klick —
+    // das ZonenOverlay-`<svg>`-Element selbst (transparenter Hintergrund) muss
+    // aber durchklicken, damit neue Zonen auf leerem Bild gezeichnet werden können.
+    if (e.target instanceof SVGElement && e.target.tagName !== 'svg') return
     const p = bildKoordinaten(e)
     if (!p) return
 
