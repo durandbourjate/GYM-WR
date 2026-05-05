@@ -2,7 +2,7 @@
  * LernzielWähler — Multi-Select mit Suche, Fach/Thema-Gruppierung und Neu-erstellen.
  * Ersetzt die einfache Checkbox-Liste in MetadataSection.
  */
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import type { Lernziel, BloomStufe } from '../../types/fragen-core'
 
 interface LernzielWaehlerProps {
@@ -14,6 +14,8 @@ interface LernzielWaehlerProps {
   /** Aktueller Fachbereich der Frage (Vorauswahl beim Erstellen) */
   aktuellerFachbereich?: string
   ladend?: boolean
+  /** Counter-Increment triggert den Reset-Hinweis-Banner für 5s. undefined = kein Hinweis. */
+  zeigeResetHinweis?: number
 }
 
 interface NeuFormState {
@@ -31,7 +33,7 @@ const BLOOM_LABELS: Record<string, string> = {
 
 export default function LernzielWaehler({
   lernziele, gewaehlteIds, onToggle, onNeuErstellen,
-  aktuellerFachbereich, ladend,
+  aktuellerFachbereich, ladend, zeigeResetHinweis,
 }: LernzielWaehlerProps) {
   const [suchtext, setSuchtext] = useState('')
   const [zeigNeuForm, setZeigNeuForm] = useState(false)
@@ -43,6 +45,15 @@ export default function LernzielWaehler({
   const [neuThemaEigen, setNeuThemaEigen] = useState(false)
   const [speichernd, setSpeichernd] = useState(false)
   const [aufgeklappt, setAufgeklappt] = useState<Set<string>>(new Set())
+  const [bannerSichtbar, setBannerSichtbar] = useState(false)
+
+  // Bundle 2 P4.1: Reset-Hinweis-Banner für 5s, getriggert durch Counter-Increment vom Caller.
+  useEffect(() => {
+    if (!zeigeResetHinweis) return
+    setBannerSichtbar(true)
+    const timer = setTimeout(() => setBannerSichtbar(false), 5000)
+    return () => clearTimeout(timer)
+  }, [zeigeResetHinweis])
 
   // Themen-Vorschläge aus bestehenden Lernzielen, gefiltert nach aktuell
   // gewähltem Fach im Formular (Bundle 12 K-2). Eindeutig + alphabetisch.
@@ -149,6 +160,11 @@ export default function LernzielWaehler({
 
   return (
     <div className="mt-3">
+      {bannerSichtbar && (
+        <div role="status" className="mb-2 p-2 rounded text-xs bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200">
+          Lernziele wurden bei Fachwechsel zurückgesetzt.
+        </div>
+      )}
       <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
         Lernziele {gewaehlteIds.length > 0 && (
           <span className="text-slate-400">({gewaehlteIds.length} zugeordnet)</span>

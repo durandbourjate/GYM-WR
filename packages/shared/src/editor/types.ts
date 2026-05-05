@@ -70,4 +70,7 @@ export interface EditorServices {
 
   /** Neues Lernziel erstellen. Gibt die neue ID zurück, oder null bei Fehler. */
   speichereLernziel?: (lernziel: Omit<Lernziel, 'id'>) => Promise<string | null>
+
+  /** Liefert Themen-Vorschläge für Autocomplete im Frageneditor, fach-gefiltert. */
+  ladeThemen?: (fachbereich: string) => string[]
 }

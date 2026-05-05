@@ -592,6 +592,8 @@ export interface BildbeschriftungLabel {
   caseSensitive?: boolean
   /** Teilerklärung (C9): was an dieser Stelle zu beschriften ist und warum. */
   erklaerung?: string
+  /** Optional LP-Übersicht-Name. Privacy: in bereinigeFrageFuerSuS_ gestripped. */
+  label?: string
 }
 
 export interface BildbeschriftungFrage extends FrageBase {
@@ -626,6 +628,8 @@ export interface DragDropBildZielzone {
   korrekteLabels: string[]
   /** Teilerklärung (C9): welches Label hierhin gehört und warum. */
   erklaerung?: string
+  /** Optional LP-Übersicht-Name. Privacy: in bereinigeFrageFuerSuS_ gestripped. */
+  label?: string
 }
 
 export interface DragDropBildLabel {

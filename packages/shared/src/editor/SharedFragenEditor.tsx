@@ -2,7 +2,7 @@
  * SharedFragenEditor — Generischer Editor-Hub für Prüfungsfragen.
  * Wird von Host-Apps (Pruefung, Lernplattform) mit EditorProvider + Slots genutzt.
  */
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useEditorConfig, useEditorServices } from './EditorContext'
 import { useFocusTrap } from './hooks/useFocusTrap'
 import { ResizableSidebar } from '../ui/ResizableSidebar'
@@ -169,7 +169,8 @@ export default function SharedFragenEditor({
     const raster = defaults[neuerTyp] ?? [{ beschreibung: '', punkte: 1 }]
     setBewertungsraster(raster)
   }
-  const [fachbereich, setFachbereich] = useState<Fachbereich>(frage?.fachbereich ?? defaultFachbereich(config.benutzer.fachschaft) as Fachbereich)
+  const [fachbereich, setFachbereichRaw] = useState<Fachbereich>(frage?.fachbereich ?? defaultFachbereich(config.benutzer.fachschaft) as Fachbereich)
+  const [resetBanner, setResetBanner] = useState<number>(0) // Bundle 2 P4.2: Counter — jeder Increment triggert Reset-Banner im LernzielWaehler
   const [thema, setThema] = useState(frage?.thema ?? '')
   const [unterthema, setUnterthema] = useState(frage?.unterthema ?? '')
   const [bloom, setBloom] = useState<BloomStufe>(frage?.bloom ?? 'K2')
@@ -611,7 +612,25 @@ export default function SharedFragenEditor({
   const [gewaehlterLernzielId, setGewaehlterLernzielId] = useState('')
   const [lernzielIds, setLernzielIds] = useState<string[]>(frage?.lernzielIds ?? [])
 
-  // Auto-Load: Lernziele beim Editor-Öffnen laden
+  // Bundle 2 P4.2: setFachbereich-Wrapper — bei Fachwechsel Lernziele-Auswahl + Liste leeren
+  // und Reset-Banner triggern. Nötig weil der nachfolgende Lade-Effect einen Early-Return-Guard
+  // `lernziele.length > 0` hat — ohne setLernziele([]) würde die alte Liste hängen bleiben.
+  const setFachbereich = useCallback((neu: Fachbereich) => {
+    setFachbereichRaw((prev) => {
+      if (prev !== neu) {
+        setLernzielIds([])           // (a) Aktuelle Lernziel-Auswahl der Frage leeren
+        setLernziele([])             // (b) Lernziel-LISTE leeren — sonst greift Early-Return im useEffect
+        setResetBanner((c) => c + 1) // (c) Banner-Counter triggern
+      }
+      return neu
+    })
+  }, [])
+
+  // Themen-Vorschläge per Service holen — sieht aktuellen fachbereich-State
+  const themenVorschlaege = services.ladeThemen?.(fachbereich) ?? []
+
+  // Auto-Load: Lernziele beim Editor-Öffnen UND bei Fachwechsel laden
+  // (lernziele wird vorher in setFachbereich-Wrapper auf [] gesetzt → Guard greift nicht)
   useEffect(() => {
     if (!services.ladeLernziele || lernziele.length > 0) return
     let abgebrochen = false
@@ -622,7 +641,7 @@ export default function SharedFragenEditor({
       .finally(() => { if (!abgebrochen) setLernzieleLadend(false) })
     return () => { abgebrochen = true }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Nur einmal beim Mount laden
+  }, [fachbereich]) // Bei Mount UND bei Fachwechsel laden (lernziele wird vorher in setFachbereich-Wrapper geleert)
 
   // Neues Lernziel erstellen + lokal hinzufügen
   async function handleNeuLernzielErstellen(lernziel: Omit<Lernziel, 'id'>): Promise<string | null> {
@@ -962,6 +981,8 @@ export default function SharedFragenEditor({
             lernzielIds={lernzielIds} setLernzielIds={setLernzielIds}
             onNeuLernzielErstellen={services.speichereLernziel ? handleNeuLernzielErstellen : undefined}
             lernzieleLadend={lernzieleLadend}
+            themenVorschlaege={themenVorschlaege}
+            zeigeLernzielResetHinweis={resetBanner > 0 ? resetBanner : undefined}
           />
 
           {/* Fragetyp wählen — kategorisiert */}

@@ -2,8 +2,9 @@
  * PruefungFragenEditor — Dünner Wrapper um SharedFragenEditor.
  * Stellt EditorProvider + Pruefung-spezifische Slots bereit.
  */
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useAuthStore, ladeUndCacheLPs } from '../../../store/authStore.ts'
+import { useFragenbankStore } from '../../../store/fragenbankStore.ts'
 import type { LPInfo } from '../../../services/lpApi.ts'
 import { uploadAnhang as apiUploadAnhang, kiAssistent as apiKiAssistent, markiereFeedbackAlsIgnoriert as apiMarkiereFeedbackAlsIgnoriert } from '../../../services/uploadApi.ts'
 import { ladeLernziele as apiLadeLernziele, speichereLernziel as apiSpeichereLernziel } from '../../../services/poolApi.ts'
@@ -43,6 +44,19 @@ interface Props {
 export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
+  const summaries = useFragenbankStore((s) => s.summaries)
+
+  // Themen-Vorschläge: dedupliziertes, sortiertes Set aller Themen pro Fachbereich
+  const ladeThemen = useCallback((fachbereich: string): string[] => {
+    if (!fachbereich) return []
+    const themen = new Set<string>()
+    for (const s of summaries) {
+      if (s.fachbereich === fachbereich && s.thema && s.thema.trim()) {
+        themen.add(s.thema.trim())
+      }
+    }
+    return Array.from(themen).sort((a, b) => a.localeCompare(b, 'de'))
+  }, [summaries])
 
   // LP-Liste für BerechtigungenEditor
   const [lpListe, setLpListe] = useState<LPInfo[]>([])
@@ -104,7 +118,8 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
       if (!user) return null
       return apiSpeichereLernziel(user.email, lernziel)
     },
-  }), [user])
+    ladeThemen,
+  }), [user, ladeThemen])
 
   return (
     <EditorProvider config={editorConfig} services={editorServices}>

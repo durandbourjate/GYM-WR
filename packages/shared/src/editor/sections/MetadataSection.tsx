@@ -62,6 +62,10 @@ interface MetadataSectionProps {
   onNeuLernzielErstellen?: (lernziel: Omit<Lernziel, 'id'>) => Promise<string | null>
   /** Lernziele werden gerade geladen */
   lernzieleLadend?: boolean
+  /** Themen-Vorschläge für Autocomplete (datalist) — fach-gefiltert vom Caller */
+  themenVorschlaege?: string[]
+  /** Counter-Increment triggert den Reset-Hinweis-Banner im LernzielWaehler für 5s. undefined = kein Hinweis. */
+  zeigeLernzielResetHinweis?: number
 }
 
 export default function MetadataSection({
@@ -87,6 +91,8 @@ export default function MetadataSection({
   gewaehlterLernzielId: _gewaehlterLernzielId, setGewaehlterLernzielId: _setGewaehlterLernzielId,
   lernzielIds = [], setLernzielIds,
   onNeuLernzielErstellen, lernzieleLadend,
+  themenVorschlaege,
+  zeigeLernzielResetHinweis,
 }: MetadataSectionProps) {
   const [statsOffen, setStatsOffen] = useState(false)
   const config = useEditorConfig()
@@ -195,7 +201,15 @@ export default function MetadataSection({
         </Feld>
         <Feld label="Thema *">
           <input type="text" value={thema} onChange={(e) => setThema(e.target.value)}
-            placeholder="z.B. Marktgleichgewicht" className="input-field input-pflicht" />
+            placeholder="z.B. Marktgleichgewicht" className="input-field input-pflicht"
+            list={themenVorschlaege && themenVorschlaege.length > 0 ? `themen-vorschlaege-${fachbereich}` : undefined} />
+          {themenVorschlaege && themenVorschlaege.length > 0 && (
+            <datalist id={`themen-vorschlaege-${fachbereich}`}>
+              {themenVorschlaege.map((t) => (
+                <option key={t} value={t} />
+              ))}
+            </datalist>
+          )}
         </Feld>
         <Feld label="Zeitbedarf (Min.)">
           <input
@@ -283,6 +297,7 @@ export default function MetadataSection({
           onNeuErstellen={onNeuLernzielErstellen}
           aktuellerFachbereich={fachbereich}
           ladend={lernzieleLadend}
+          zeigeResetHinweis={zeigeLernzielResetHinweis && zeigeLernzielResetHinweis > 0 ? zeigeLernzielResetHinweis : undefined}
         />
       )}
 

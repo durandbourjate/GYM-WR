@@ -8,6 +8,42 @@
 
 ## Letzter Stand auf main
 
+### Bundle 2 — Editor-Komfort ✅ MERGED (04.05.2026)
+
+3 UX-Features als Bundle, alle additiv (kein Breaking Change, keine Daten-Migration).
+
+1. **Bug 2 — Lernziel-Auto-Reset bei Fachwechsel** (`fcb5ed9` + `e478559`):
+   - LernzielWaehler bekommt `zeigeResetHinweis?: number` Prop (Counter) — bei Increment 5s Auto-Hide-Banner mit Amber-Theme.
+   - SharedFragenEditor wrapt `setFachbereich` als useCallback: bei Fach-Wechsel → 3 Resets (`setLernzielIds([])`, `setLernziele([])`, `setResetBanner(c => c+1)`).
+   - useEffect-deps für Lernziele-Load auf `[fachbereich]` — Reload nach `setLernziele([])` greift jetzt (Early-Return-Guard `lernziele.length > 0` wird durch leere Liste übersprungen).
+   - MetadataSection plumbt Banner-Counter durch (`zeigeLernzielResetHinweis` extern, `zeigeResetHinweis` intern).
+
+2. **Bug 3 — Themen-Autocomplete** (`1dba0d0` + `6a2b378`):
+   - Neuer Hook `useThemenVorschlaege(fachbereich)` in `ExamLab/src/hooks/` (3 Tests, dedupe + sort `localeCompare('de')`).
+   - EditorServices erweitert um `ladeThemen?: (fachbereich) => string[]` (synchron, analog zu `ladeLernziele`).
+   - SharedFragenEditor ruft `services.ladeThemen?.(fachbereich)` mit aktuellem State (reagiert auf Fachwechsel im Editor), reicht `themenVorschlaege` an MetadataSection.
+   - MetadataSection rendert HTML5 `<datalist>` mit `list=`-Attribut conditional (Browser-native Autocomplete).
+   - PruefungFragenEditor implementiert `ladeThemen` als useCallback über `useFragenbankStore.summaries` (Hook-Rules-konform: Closure mit dynamic-Param statt Hook-in-Callback).
+
+3. **Bug 6 — Zonennamen-Feld für DnD-Bild + Bildbeschriftung** (`ae1a9d6` + `e1e6ec2` + `eadf477` + `c549d5b`/`017346b` + `da08ddb`):
+   - Type-Erweiterung: `DragDropBildZielzone.label?: string` + `BildbeschriftungLabel.label?: string` (HotspotBereich.label bleibt unverändert — schon required).
+   - LP-Editor (DragDropBildEditor + BildbeschriftungEditor): Zonennamen-Input pro Zone, leer→undefined-Mapping.
+   - Korrektur-Vollansicht: Zone-Header zeigt `label` mit Fallback `Zone N` / `Label N` (existing-Pattern 1:1 gespiegelt).
+   - Apps-Script `LOESUNGS_FELDER_` erweitert: `label` für `zielzonen` + `beschriftungen` gestripped, Hotspot bleibt sichtbar (Aufgabenstellung).
+   - GAS-Test-Shim `testBundle2Privacy_` deckt 3 Cases (DnD-Strip, Bildbeschriftung-Strip, Hotspot-Erhalt).
+
+**Verifikation:** tsc -b clean (ExamLab + shared --force baseline), 1135/1139 vitest (+3 neue: `useThemenVorschlaege` 3 cases), build clean, `lint:as-any` 0/0/0. Browser-E2E auf staging mit echten Logins (LP `wr.test@gymhofwil.ch`).
+
+**Apps-Script-Deploy:** durchgeführt (testBundle2Privacy 3✓ im GAS-Editor, neue Bereitstellung deployed).
+
+**Lehren (für `code-quality.md` bei Gelegenheit):**
+- **Hooks in useCallback nicht erlaubt** (T3.2): `useThemenVorschlaege`-Hook (Test-isoliert, gut für direkte UI-Verwendung) konnte im PruefungFragenEditor nicht in `services.ladeThemen` aufgerufen werden — React-Hook-Rules. Pragmatischer Pfad: Closure mit gleicher Logik + `useFragenbankStore.summaries` als Hook-Top-Level. Hook bleibt im Code als referenzierbare Filter-Logik.
+- **EditorServices-Pattern für Cross-Package-Datenfluss** (T3.2): `packages/shared/`-Editor darf nicht von `ExamLab/src/store/...` importieren (Layering). Pattern: Service-Funktion (`ladeThemen`) als optional Prop in `EditorServices` deklarieren, Implementation im ExamLab-Caller, Aufruf im shared-Editor. Analog zu `ladeLernziele` von Bundle vor 2026.
+- **Plan-Audit-Lücke: `<LernzielWaehler>` ist NICHT direkt in SharedFragenEditor** (T4.2): Komponente wird über MetadataSection gerendert. Plan-rev2 hatte das nicht erkannt → Implementer musste 2 Files committen (mit minimal Prop-Plumbing in MetadataSection). Lehre: bei Plan-Erstellung tatsächlichen Render-Pfad audit'en, nicht aus Datei-Namen erraten.
+- **Lernziel-Reload-Early-Return-Guard** (T4.2): useEffect mit `if (lernziele.length > 0) return` und `[]` deps blockiert Reload bei Fachwechsel — selbst wenn deps auf `[fachbereich]` ergänzt werden. Lösung: Liste explizit leeren im setFachbereich-Wrapper, sodass der Guard durchläuft. Memory S134-Pattern (functional updater + State-Reset-Kette).
+
+---
+
 ### Fragetyp- und Suche-Bugs ✅ MERGED (04.05.2026)
 
 5 Bugfixes aus User-Bug-Report-Bundle. Atomare Commits pro Bug auf `fix/fragetyp-und-suche-bugs`, dann gemerged auf `main`. Apps-Script-Backend unverändert.

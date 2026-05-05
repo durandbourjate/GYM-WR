@@ -2202,8 +2202,8 @@ var LOESUNGS_FELDER_ = {
     { feld: 'ergebnisse', subFelder: ['korrekt', 'toleranz'] },
     { feld: 'bilanzEintraege', subFelder: ['korrekt'] },
     { feld: 'aufgaben', subFelder: ['erwarteteAntworten', 'erklaerung'] },
-    { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung'] },
-    { feld: 'zielzonen', subFelder: ['korrekteLabels', 'erklaerung'] },
+    { feld: 'beschriftungen', subFelder: ['korrekt', 'erklaerung', 'label'] },
+    { feld: 'zielzonen', subFelder: ['korrekteLabels', 'erklaerung', 'label'] },
     { feld: 'bereiche', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
     { feld: 'hotspots', subFelder: ['korrekt', 'erklaerung'], nurBeiTyp: 'hotspot' },
     // BilanzER: kontenMitSaldi[].erklaerung (id = kontonummer). saldo selbst
@@ -12731,6 +12731,77 @@ function testC9Privacy_() {
   assert_(!bereinigeFrageFuerSuS_(bs).buchungen, 'Buchungssatz Prüfen: buchungen komplett entfernt (top-level)');
 
   Logger.log('✓ C9 Privacy-Tests bestanden (9 Typen + Buchungssatz-Dokumentation).');
+}
+
+/**
+ * Public-Wrapper für testBundle2Privacy_ — erscheint im GAS-Editor-Dropdown.
+ */
+function testBundle2Privacy() { return testBundle2Privacy_(); }
+
+/**
+ * Bundle 2 P1.2 — Privacy-Test für `label`-Feld auf Bild-Zonen/-Beschriftungen.
+ *
+ * Prüft:
+ *  - DnD-Bild zielzonen[].label wird aus SuS-Aufgaben-Response gestripped (Lösungs-Hint)
+ *  - Bildbeschriftung beschriftungen[].label wird gestripped (Lösungs-Hint)
+ *  - Hotspot bereiche[].label BLEIBT (= Aufgabenstellung „Markiere X")
+ *
+ * KEINE API-Calls nötig — rein lokale Bereinigungslogik.
+ */
+function testBundle2Privacy_() {
+  Logger.log('=== Bundle 2 Privacy-Test ===')
+
+  // DragDrop-Bild: label muss aus zielzonen[] gestripped werden
+  var ddFrage = {
+    typ: 'dragdrop_bild',
+    bildUrl: 'test.png',
+    zielzonen: [
+      { id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'], label: 'Aktiva-Zone', erklaerung: 'soll' },
+    ],
+    labels: [{ id: 'l1', text: 'Aktiva' }],
+  };
+  var ddBereinigt = bereinigeFrageFuerSuS_(ddFrage, {});
+  if (ddBereinigt.zielzonen[0].label !== undefined) {
+    throw new Error('FAIL DnD: label sollte gestripped sein, ist aber: ' + ddBereinigt.zielzonen[0].label);
+  }
+  if (ddBereinigt.zielzonen[0].korrekteLabels !== undefined) {
+    throw new Error('FAIL DnD: korrekteLabels sollte ebenfalls gestripped sein');
+  }
+  Logger.log('  ✓ DnD-Bild label + korrekteLabels gestripped');
+
+  // Bildbeschriftung: label muss aus beschriftungen[] gestripped werden
+  var bbFrage = {
+    typ: 'bildbeschriftung',
+    bildUrl: 'test.png',
+    beschriftungen: [
+      { id: 'b1', position: { x: 50, y: 50 }, korrekt: ['Eingang'], label: 'Eingang-Zone', erklaerung: 'soll', caseSensitive: false },
+    ],
+  };
+  var bbBereinigt = bereinigeFrageFuerSuS_(bbFrage, {});
+  if (bbBereinigt.beschriftungen[0].label !== undefined) {
+    throw new Error('FAIL Bildbeschriftung: label sollte gestripped sein, ist aber: ' + bbBereinigt.beschriftungen[0].label);
+  }
+  if (bbBereinigt.beschriftungen[0].korrekt !== undefined) {
+    throw new Error('FAIL Bildbeschriftung: korrekt sollte ebenfalls gestripped sein');
+  }
+  Logger.log('  ✓ Bildbeschriftung label + korrekt gestripped');
+
+  // Hotspot: label MUSS BLEIBEN (Aufgabenstellung)
+  var hsFrage = {
+    typ: 'hotspot',
+    bildUrl: 'test.png',
+    bereiche: [
+      { id: 'h1', form: 'rechteck', punkte: [], label: 'Konjunkturindikator', punktzahl: 1, erklaerung: 'wegen X' },
+    ],
+    mehrfachauswahl: false,
+  };
+  var hsBereinigt = bereinigeFrageFuerSuS_(hsFrage, {});
+  if (hsBereinigt.bereiche[0].label !== 'Konjunkturindikator') {
+    throw new Error('FAIL Hotspot: label sollte UNVERÄNDERT bleiben, ist aber: ' + hsBereinigt.bereiche[0].label);
+  }
+  Logger.log('  ✓ Hotspot label bleibt sichtbar (Aufgabenstellung)');
+
+  Logger.log('=== Bundle 2 Privacy-Test bestanden ===');
 }
 
 /**

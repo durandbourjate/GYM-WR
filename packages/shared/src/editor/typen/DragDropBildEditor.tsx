@@ -156,7 +156,10 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
 
   const handleBildKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (drag) return
-    if (e.target instanceof SVGElement) return
+    // SVG-Children (polygon/circle/path für existing Zonen + Punkte) blocken den Klick —
+    // das ZonenOverlay-`<svg>`-Element selbst (transparenter Hintergrund) muss
+    // aber durchklicken, damit neue Zonen auf leerem Bild gezeichnet werden können.
+    if (e.target instanceof SVGElement && e.target.tagName !== 'svg') return
     const p = bildKoordinaten(e)
     if (!p) return
 
@@ -270,6 +273,11 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
   // Bundle J: Multi-Label per Zone (Synonyme)
   const updateZoneLabels = useCallback((zoneId: string, korrekteLabels: string[]) => {
     setZielzonen(prev => prev.map(z => z.id === zoneId ? { ...z, korrekteLabels } : z))
+  }, [setZielzonen])
+
+  // Bundle 2: Zonenname (label, optional)
+  const updateZoneLabel = useCallback((zoneId: string, label: string | undefined) => {
+    setZielzonen(prev => prev.map(z => z.id === zoneId ? { ...z, label } : z))
   }, [setZielzonen])
 
   const handleZoneLoeschen = useCallback((id: string) => {
@@ -457,7 +465,15 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
                 <span className="w-6 h-6 flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-full shrink-0 mt-1">
                   {i + 1}
                 </span>
-                <div className="flex-1">
+                <div className="flex-1 space-y-2">
+                  <input
+                    type="text"
+                    value={zone.label ?? ''}
+                    onChange={(e) => updateZoneLabel(zone.id, e.target.value || undefined)}
+                    placeholder="Zonenname (optional, z.B. 'Aktiva')"
+                    data-testid={`zone-${zone.id}-label-input`}
+                    className="w-full text-sm px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:outline-none"
+                  />
                   <ChipInput
                     chips={zone.korrekteLabels ?? []}
                     onAdd={(t) => updateZoneLabels(zone.id, [...(zone.korrekteLabels ?? []), t])}

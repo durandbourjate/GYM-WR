@@ -520,7 +520,7 @@ function BildbeschriftungAnzeige({ frage, antwort }: { frage: BildbeschriftungFr
           return (
             <div key={label.id} className="text-sm flex items-center gap-2">
               <span className="shrink-0">{eingabe ? (korrekt ? '✓' : '✗') : '—'}</span>
-              <span className="text-slate-500 dark:text-slate-400">Label {i + 1}:</span>
+              <span className="text-slate-500 dark:text-slate-400">{label.label || `Label ${i + 1}`}:</span>
               <span className="text-slate-700 dark:text-slate-200">{eingabe || 'Keine Eingabe'}</span>
               {!korrekt && eingabe && <span className="text-xs text-slate-400">Erwartet: {label.korrekt.join(' / ')}</span>}
             </div>
@@ -580,7 +580,7 @@ function DragDropBildAnzeige({ frage: frageRaw, antwort: antwortRaw }: { frage: 
       )}
       {/* Textliste als Zusatzinfo */}
       <div className="rounded bg-slate-50 dark:bg-slate-700/50 px-3 py-2 mt-2 space-y-0.5">
-        {frage.zielzonen.map((zone) => {
+        {frage.zielzonen.map((zone, idx) => {
           const texte = texteInZone(zone.id)
           const hatAntwort = texte.length > 0
           const korrekt = istKorrekt(zone, texte)
@@ -588,6 +588,7 @@ function DragDropBildAnzeige({ frage: frageRaw, antwort: antwortRaw }: { frage: 
           return (
             <div key={zone.id} className="text-sm flex items-center gap-2">
               <span className="shrink-0">{hatAntwort ? (korrekt ? '✓' : '✗') : '—'}</span>
+              <span className="text-slate-500 dark:text-slate-400">{zone.label || `Zone ${idx + 1}`}:</span>
               <span className="text-slate-700 dark:text-slate-200">{hatAntwort ? texte.join(', ') : 'Nicht platziert'}</span>
               {!korrekt && hatAntwort && <span className="text-xs text-slate-400">Erwartet: {erwartet}</span>}
             </div>
