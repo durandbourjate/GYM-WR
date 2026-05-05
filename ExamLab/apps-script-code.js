@@ -103,7 +103,7 @@ function zn_migriereDragDropZielzone_(alt) {
 }
 
 // === KONFIGURATION ===
-const FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+const FRAGENSAMMLUNG_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
 const CONFIGS_ID = '1QpcC44Ly7BUTLgUkVQtdqjTUDXmgdWdVD8ajjzsd7tE';
 const ANTWORTEN_ORDNER_ID = '1PAF1SUnR7nQ175muXn4iQERdQLJ-UnQQ';
 const ANTWORTEN_MASTER_ID = '1r4CAoCkE0VxON4MbviqHlklSL3qJRe0uZO7bgPoo1KI';
@@ -276,9 +276,9 @@ function lernplattformRateLimitCheck_(aktion, key, maxProFenster, fensterSekunde
 
 // === LERNPLATTFORM: Helper-Funktionen ===
 
-function getFragenbankTabs_() {
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  var sheets = fragenbank.getSheets();
+function getFragensammlungTabs_() {
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheets = fragensammlung.getSheets();
   var tabs = [];
   for (var i = 0; i < sheets.length; i++) {
     var name = sheets[i].getName();
@@ -307,7 +307,7 @@ function istGruppenAdmin_(body, gruppeId) {
 
   // Im Mitglieder-Tab als Admin eingetragen?
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var mitgSheet = ss.getSheetByName('Mitglieder');
     if (!mitgSheet) return null;
     var daten = mitgSheet.getDataRange().getValues();
@@ -338,7 +338,7 @@ function istGruppenMitglied_(body, gruppeId) {
   if (gruppe.adminEmail === email) return { email: email, gruppe: gruppe, rolle: 'admin' };
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var mitgSheet = ss.getSheetByName('Mitglieder');
     if (!mitgSheet) return null;
     var daten = mitgSheet.getDataRange().getValues();
@@ -656,7 +656,7 @@ function ermittleRecht(email, item) {
 
 /**
  * Optimierte Variante von istSichtbar — bekommt lpInfo als Parameter statt es pro Frage zu laden.
- * Wird von ladeFragenbank verwendet (Performance: LP-Info nur 1× laden statt pro Frage).
+ * Wird von ladeFragensammlung verwendet (Performance: LP-Info nur 1× laden statt pro Frage).
  */
 function istSichtbarMitLP(email, item, lpInfo, istAdmin) {
   var inhaber = (item.autor || item.erstelltVon || '').toLowerCase();
@@ -764,8 +764,8 @@ function baueFrageMetaMap_(frageIds) {
   var map = {};
   if (!frageIds || !frageIds.length) return map;
 
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  var sheets = fragenbank.getSheets();
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheets = fragensammlung.getSheets();
   // LP-Emails einmalig holen für inhaberAktiv-Check
   var aktiveEmails = holeAktiveLPEmails_();
 
@@ -1065,12 +1065,12 @@ function doGet(e) {
       return ladeAktivePruefungenFuerSuS(email);
     case 'ladeEinzelConfig':
       return ladeEinzelConfig(e.parameter.id, email);
-    case 'ladeFragenbank':           // backward-compat alias (entfernt in Task 6)
+    case 'ladeFragenbank':               // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlung':
-      return ladeFragenbank(email);
-    case 'ladeFragenbankSummary':    // backward-compat alias (entfernt in Task 6)
+      return ladeFragensammlung(email);
+    case 'ladeFragenbankSummary':        // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlungSummary':
-      return ladeFragenbankSummary(email);
+      return ladeFragensammlungSummary(email);
     case 'ladeFrageDetail':
       return ladeFrageDetail(e.parameter.frageId, e.parameter.fachbereich, email);
     case 'monitoring':
@@ -2811,13 +2811,13 @@ function pruefeFibuAntwortServer_(frage, antwort) {
 // === FRAGEN LADEN ===
 
 function ladeFragen(fragenIds) {
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   const tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
   const alleFragen = [];
 
   // Erste Runde: Direkte Fragen laden
   for (const tab of tabs) {
-    const sheet = fragenbank.getSheetByName(tab);
+    const sheet = fragensammlung.getSheetByName(tab);
     if (!sheet) continue;
     const data = getSheetData(sheet);
     for (const row of data) {
@@ -2841,7 +2841,7 @@ function ladeFragen(fragenIds) {
 
   if (teilaufgabenIds.length > 0) {
     for (const tab of tabs) {
-      const sheet = fragenbank.getSheetByName(tab);
+      const sheet = fragensammlung.getSheetByName(tab);
       if (!sheet) continue;
       const data = getSheetData(sheet);
       for (const row of data) {
@@ -3809,8 +3809,8 @@ function speichereFrageIntern_(frage, email) {
   ergaenzeFehlendeKontenInAuswahl_(frage);
 
   const tabName = frage.fachbereich;
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  let sheet = fragenbank.getSheetByName(tabName);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  let sheet = fragensammlung.getSheetByName(tabName);
   if (!sheet) {
     throw new Error('Fachbereich-Tab "' + tabName + '" nicht gefunden');
   }
@@ -3925,8 +3925,8 @@ function speichereFrage(body) {
  * @returns {{ success: true, id: string }}
  */
 function loescheFrageIntern_(frageId, fachbereich, email) {
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  const sheet = fragenbank.getSheetByName(fachbereich);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  const sheet = fragensammlung.getSheetByName(fachbereich);
   if (!sheet) {
     throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
   }
@@ -4003,8 +4003,8 @@ function loescheFrage(body) {
  * @returns {{ success: true, id: string }}
  */
 function stelleWiederHerIntern_(frageId, fachbereich, email) {
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  const sheet = fragenbank.getSheetByName(fachbereich);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  const sheet = fragensammlung.getSheetByName(fachbereich);
   if (!sheet) {
     throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
   }
@@ -4079,8 +4079,8 @@ function stelleWiederHer(body) {
  * @returns {{ success: true }}
  */
 function hardDeleteFrageIntern_(frageId, fachbereich, email) {
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  const sheet = fragenbank.getSheetByName(fachbereich);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  const sheet = fragensammlung.getSheetByName(fachbereich);
   if (!sheet) {
     throw new Error('Fachbereich-Tab "' + fachbereich + '" nicht gefunden');
   }
@@ -4133,13 +4133,13 @@ function hardDeleteFrage(body) {
  * @returns {{ success: true, fragen: Array<Object> }}
  */
 function listePapierkorbIntern_(email) {
-  const fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  const fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   const fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
   const papierkorb = [];
 
   for (let i = 0; i < fachbereiche.length; i++) {
     const tab = fachbereiche[i];
-    const sheet = fragenbank.getSheetByName(tab);
+    const sheet = fragensammlung.getSheetByName(tab);
     if (!sheet) continue;
     const data = getSheetData(sheet);
     for (let j = 0; j < data.length; j++) {
@@ -4277,12 +4277,12 @@ function testBundle3DraftLifecycle() {
  */
 function autoHardDeleteAlteFragen_() {
   var schwelle = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
   var totalGeloescht = 0;
 
   for (var t = 0; t < fachbereiche.length; t++) {
-    var sheet = fragenbank.getSheetByName(fachbereiche[t]);
+    var sheet = fragensammlung.getSheetByName(fachbereiche[t]);
     if (!sheet) continue;
 
     // Sheet-Guard (S130): leeres Sheet überspringen statt crashen — Trigger darf nicht eskalieren.
@@ -4349,13 +4349,13 @@ function loescheAllePoolFragen(body) {
       return jsonResponse({ error: 'Nur für Admins' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     var geloescht = 0;
     var erhalten = 0;
 
     for (var t = 0; t < tabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(tabs[t]);
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
       if (!sheet) continue;
 
       var data = sheet.getDataRange().getValues();
@@ -4423,14 +4423,14 @@ function batchImportFragen(body) {
       proTab[tab].push(f);
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var importiert = 0;
 
     for (var tabName in proTab) {
-      var sheet = fragenbank.getSheetByName(tabName);
+      var sheet = fragensammlung.getSheetByName(tabName);
       if (!sheet) {
         // Tab erstellen wenn nicht vorhanden
-        sheet = fragenbank.insertSheet(tabName);
+        sheet = fragensammlung.insertSheet(tabName);
       }
 
       var tabFragen = proTab[tabName];
@@ -4847,7 +4847,7 @@ function ladeEinzelConfig(pruefungId, email) {
 
 // === FRAGENBANK LADEN (Composer) ===
 
-function ladeFragenbank(email) {
+function ladeFragensammlung(email) {
   try {
     if (!istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
@@ -4860,10 +4860,10 @@ function ladeFragenbank(email) {
     var alleParsed = cacheGet_('alle_fragen');
     if (!alleParsed) {
       alleParsed = [];
-      var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+      var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
       var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
       for (var t = 0; t < tabs.length; t++) {
-        var sheet = fragenbank.getSheetByName(tabs[t]);
+        var sheet = fragensammlung.getSheetByName(tabs[t]);
         if (!sheet) continue;
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
@@ -4899,7 +4899,7 @@ function ladeFragenbank(email) {
  * Gibt nur die für die Listenansicht nötigen Felder zurück (~200 Bytes/Frage statt ~1500).
  * Nutzt den bestehenden alle_fragen-Cache, extrahiert aber nur Summary-Felder.
  */
-function ladeFragenbankSummary(email) {
+function ladeFragensammlungSummary(email) {
   try {
     if (!istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
@@ -4909,16 +4909,16 @@ function ladeFragenbankSummary(email) {
     var istAdmin = lpInfo && lpInfo.rolle === 'admin';
 
     // Summary-Cache prüfen (viel kleiner als voller Cache)
-    var summaryCache = cacheGet_('fragenbank_summary');
+    var summaryCache = cacheGet_('fragensammlung_summary');
     if (!summaryCache) {
       // Voller Cache als Basis (oder frisch laden)
       var alleParsed = cacheGet_('alle_fragen');
       if (!alleParsed) {
         alleParsed = [];
-        var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+        var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
         var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
         for (var t = 0; t < tabs.length; t++) {
-          var sheet = fragenbank.getSheetByName(tabs[t]);
+          var sheet = fragensammlung.getSheetByName(tabs[t]);
           if (!sheet) continue;
           var data = getSheetData(sheet);
           for (var r = 0; r < data.length; r++) {
@@ -4933,7 +4933,7 @@ function ladeFragenbankSummary(email) {
       summaryCache = alleParsed.map(function(f) {
         return frageZuSummary_(f);
       });
-      cachePut_('fragenbank_summary', summaryCache);
+      cachePut_('fragensammlung_summary', summaryCache);
     }
 
     // Sichtbarkeits-Filter (auf Summary-Daten — braucht quelle, autor, geteilt, berechtigungen, fachbereich)
@@ -5023,8 +5023,8 @@ function ladeFrageDetail(frageId, fachbereich, email) {
 
     // Falls nicht im Cache: direkt aus Sheet laden
     if (!frage && fachbereich) {
-      var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-      var sheet = fragenbank.getSheetByName(fachbereich);
+      var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+      var sheet = fragensammlung.getSheetByName(fachbereich);
       if (sheet) {
         var data = getSheetData(sheet);
         for (var r = 0; r < data.length; r++) {
@@ -5216,10 +5216,10 @@ function setzeBerechtigungenEndpoint(body) {
     }
 
     if (typ === 'frage') {
-      var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+      var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
       var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
       for (var t = 0; t < tabs.length; t++) {
-        var sheet = fragenbank.getSheetByName(tabs[t]);
+        var sheet = fragensammlung.getSheetByName(tabs[t]);
         if (!sheet) continue;
         var fData = getSheetData(sheet);
         var fIdx = fData.findIndex(function(r) { return r.id === id; });
@@ -5253,11 +5253,11 @@ function dupliziereFrageEndpoint(body) {
     if (!email || !istZugelasseneLP(email)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
     if (!frageId) return jsonResponse({ error: 'frageId erforderlich' });
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
 
     for (var t = 0; t < tabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(tabs[t]);
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
       if (!sheet) continue;
       var data = getSheetData(sheet);
       var srcIdx = data.findIndex(function(r) { return r.id === frageId; });
@@ -5541,7 +5541,7 @@ function importierePoolFragen(body) {
       return jsonResponse({ error: 'Keine Fragen zum Importieren' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var importiert = 0;
     var aktualisiert = 0;
     var fehler = [];
@@ -5565,10 +5565,10 @@ function importierePoolFragen(body) {
           continue;
         }
 
-        var sheet = fragenbank.getSheetByName(tabName);
+        var sheet = fragensammlung.getSheetByName(tabName);
         if (!sheet) {
           // Neuen Tab erstellen mit Standard-Headers
-          sheet = fragenbank.insertSheet(tabName);
+          sheet = fragensammlung.insertSheet(tabName);
           sheet.getRange(1, 1, 1, standardHeaders.length).setValues([standardHeaders]);
           sheet.getRange(1, 1, 1, standardHeaders.length).setFontWeight('bold');
         }
@@ -5681,13 +5681,13 @@ function importiereLernziele(body) {
       return jsonResponse({ error: 'Keine Lernziele zum Importieren' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(LERNZIELE_TAB);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = fragensammlung.getSheetByName(LERNZIELE_TAB);
 
     // Tab erstellen falls nicht vorhanden
     var lernzielHeaders = ['id', 'fach', 'poolId', 'thema', 'unterthema', 'text', 'bloom', 'aktiv'];
     if (!sheet) {
-      sheet = fragenbank.insertSheet(LERNZIELE_TAB);
+      sheet = fragensammlung.insertSheet(LERNZIELE_TAB);
       sheet.getRange(1, 1, 1, lernzielHeaders.length).setValues([lernzielHeaders]);
       sheet.getRange(1, 1, 1, lernzielHeaders.length).setFontWeight('bold');
     }
@@ -5838,8 +5838,8 @@ function ladeLernziele(body) {
     } catch (e) { /* Lehrplan-Sheet nicht konfiguriert — Fallback auf Pool-Lernziele */ }
 
     // Fallback: Pool-Lernziele aus Fragenbank (bisherige Logik)
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(LERNZIELE_TAB);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = fragensammlung.getSheetByName(LERNZIELE_TAB);
 
     if (!sheet) {
       return jsonResponse({ lernziele: [] });
@@ -7871,7 +7871,7 @@ function ladeKorrekturDetailEndpoint(body) {
     }
 
     // Fragen laden (für Fragetext-Anzeige)
-    const fragenSheet = SpreadsheetApp.openById(FRAGENBANK_ID).getSheets()[0];
+    const fragenSheet = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID).getSheets()[0];
     const fragenData = getSheetData(fragenSheet);
     const fragen = [];
     const frageIds = Object.keys(bewertungen);
@@ -8684,10 +8684,10 @@ function migriereFachbereich_() {
 
   try {
     // Fragenbank-Tabs migrieren
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     for (var t = 0; t < tabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(tabs[t]);
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
       if (!sheet) continue;
       var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
       var fachIdx = headers.indexOf('fach');
@@ -8752,11 +8752,11 @@ function repariereEinrichtungsFragen() {
     'einr-code-python': { sprache: 'python', starterCode: 'def ist_primzahl(n):\n    # Ihre Lösung hier\n    pass' },
     'einr-formel-pythagoras': { korrekteFormel: 'a^2 + b^2 = c^2', vergleichsModus: 'exakt' }
   };
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var tabs = ['VWL','BWL','Recht','Informatik'];
   var count = 0;
   for (var t = 0; t < tabs.length; t++) {
-    var sheet = fragenbank.getSheetByName(tabs[t]);
+    var sheet = fragensammlung.getSheetByName(tabs[t]);
     if (!sheet) continue;
     var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var typDatenCol = headers.indexOf('typDaten');
@@ -8798,7 +8798,7 @@ function lernplattformLogin(body) {
     if (g.adminEmail === email) return false; // Bereits oben
     // Mitglieder-Tab prüfen
     try {
-      var ss = SpreadsheetApp.openById(g.fragebankSheetId);
+      var ss = SpreadsheetApp.openById(g.fragensammlungSheetId);
       var mitgliederSheet = ss.getSheetByName('Mitglieder');
       if (!mitgliederSheet) return false;
       var daten = mitgliederSheet.getDataRange().getValues();
@@ -8839,7 +8839,7 @@ function lernplattformCodeLogin(body) {
   for (var i = 0; i < gruppen.length; i++) {
     var g = gruppen[i];
     try {
-      var ss = SpreadsheetApp.openById(g.fragebankSheetId);
+      var ss = SpreadsheetApp.openById(g.fragensammlungSheetId);
       var mitgliederSheet = ss.getSheetByName('Mitglieder');
       if (!mitgliederSheet) continue;
 
@@ -8891,7 +8891,7 @@ function lernplattformGeneriereCode(body) {
   var gruppe = auth.gruppe;
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var mitgliederSheet = ss.getSheetByName('Mitglieder');
     if (!mitgliederSheet) return jsonResponse({ success: false, error: 'Mitglieder-Tab fehlt' });
 
@@ -8944,7 +8944,7 @@ function lernplattformLadeGruppen(body) {
   var mitgliedGruppen = alleGruppen.filter(function(g) {
     if (g.adminEmail === email) return false;
     try {
-      var ss = SpreadsheetApp.openById(g.fragebankSheetId);
+      var ss = SpreadsheetApp.openById(g.fragensammlungSheetId);
       var sheet = ss.getSheetByName('Mitglieder');
       if (!sheet) return false;
       var daten = sheet.getDataRange().getValues();
@@ -9025,7 +9025,7 @@ function lernplattformErstelleGruppe(body) {
     name: name,
     typ: typ,
     adminEmail: adminEmail,
-    fragebankSheetId: fragenbankId,
+    fragensammlungSheetId: fragenbankId,
     analytikSheetId: '',
   };
 
@@ -9046,7 +9046,7 @@ function lernplattformLadeMitglieder(body) {
   var gruppe = auth.gruppe;
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Mitglieder');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
@@ -9091,7 +9091,7 @@ function lernplattformEinladen(body) {
   auditLog_('einladen', auth.email, { gruppeId: gruppeId, mitglied: email, name: name, rolle: rolle });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Mitglieder');
     if (!sheet) return jsonResponse({ success: false, error: 'Mitglieder-Tab fehlt' });
 
@@ -9127,7 +9127,7 @@ function lernplattformEntfernen(body) {
   auditLog_('entfernen', auth.email, { gruppeId: gruppeId, mitglied: email });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Mitglieder');
     if (!sheet) return jsonResponse({ success: false, error: 'Mitglieder-Tab fehlt' });
 
@@ -9198,7 +9198,7 @@ function lernplattformAendereRolle(body) {
   auditLog_('aendereRolle', auth.email, { gruppeId: gruppeId, mitglied: mitgliedEmail, neueRolle: neueRolle });
 
   try {
-    var ss = SpreadsheetApp.openById(auth.gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(auth.gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Mitglieder');
     if (!sheet) return jsonResponse({ success: false, error: 'Mitglieder-Tab fehlt' });
 
@@ -9245,7 +9245,7 @@ function lernplattformAendereRolle(body) {
 
 /**
  * Fragen laden aus der GEMEINSAMEN Fragenbank (gleiche Datenquelle wie ExamLab).
- * Liest alle Fragen aus FRAGENBANK_ID, Tabs: VWL, BWL, Recht, Informatik.
+ * Liest alle Fragen aus FRAGENSAMMLUNG_ID, Tabs: VWL, BWL, Recht, Informatik.
  * Gibt Fragen im kanonischen shared-Format zurück (fragetext, fachbereich, bloom, typDaten).
  */
 function lernplattformLadeFragen(body) {
@@ -9265,19 +9265,19 @@ function lernplattformLadeFragen(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   // Familie-Gruppen: weiterhin eigenes Sheet nutzen (falls vorhanden)
-  if (gruppe.typ === 'familie' && gruppe.fragebankSheetId) {
+  if (gruppe.typ === 'familie' && gruppe.fragensammlungSheetId) {
     return lernplattformLadeFragenAusGruppenSheet_(gruppe);
   }
 
   // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
   try {
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var alleFragen = [];
-    var fragenbankTabs = getFragenbankTabs_();
+    var fragenbankTabs = getFragensammlungTabs_();
 
     for (var t = 0; t < fragenbankTabs.length; t++) {
       var tabName = fragenbankTabs[t];
-      var sheet = fragenbank.getSheetByName(tabName);
+      var sheet = fragensammlung.getSheetByName(tabName);
       if (!sheet) continue;
 
       var daten = sheet.getDataRange().getValues();
@@ -9314,7 +9314,7 @@ function lernplattformLadeFragen(body) {
         try {
           var serialized = JSON.stringify(fr);
           if (serialized.length < 95000) { // CacheService Limit ~100KB
-            cacheEntries['frage_v1_' + FRAGENBANK_ID + '_' + fr.id] = serialized;
+            cacheEntries['frage_v1_' + FRAGENSAMMLUNG_ID + '_' + fr.id] = serialized;
           }
         } catch (eS) { /* skip frage on serialize error */ }
       }
@@ -9786,8 +9786,8 @@ function preWarmFragenBeimFreischalten_(pruefungId) {
 
 /**
  * Frage unbereinigt laden — für Server-Korrektur.
- * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragebankSheetId lesen.
- * Alle anderen: aus globaler FRAGENBANK_ID.
+ * Familie-Gruppen mit eigenem Sheet: aus gruppe.fragensammlungSheetId lesen.
+ * Alle anderen: aus globaler FRAGENSAMMLUNG_ID.
  *
  * Performance:
  * - CacheService cached die geparste Frage 1h (Schlüssel = sheetId + frageId).
@@ -9797,8 +9797,8 @@ function preWarmFragenBeimFreischalten_(pruefungId) {
  */
 function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
   try {
-    var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
-    var sheetId = istFamilie ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragensammlungSheetId;
+    var sheetId = istFamilie ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
 
     // Cache-Lookup
     var cache = CacheService.getScriptCache();
@@ -9809,7 +9809,7 @@ function ladeFrageUnbereinigtById_(frageId, gruppe, fachbereichHint) {
     }
 
     var ss = SpreadsheetApp.openById(sheetId);
-    var alleTabs = istFamilie ? ['Fragen'] : getFragenbankTabs_();
+    var alleTabs = istFamilie ? ['Fragen'] : getFragensammlungTabs_();
     // Hint nutzen: nur den richtigen Tab durchsuchen wenn fachbereich bekannt
     var tabs = (fachbereichHint && alleTabs.indexOf(fachbereichHint) !== -1)
       ? [fachbereichHint].concat(alleTabs.filter(function(t) { return t !== fachbereichHint; }))
@@ -9871,7 +9871,7 @@ function hashIds_(fragenIds) {
 
 /**
  * Gruppiert fragenIds nach {sheetId → tab → Set<frageId>} für Bulk-Read.
- * - Familie-Gruppe (gruppe.typ === 'familie' && gruppe.fragebankSheetId): alles geht in eigenes Sheet, Tab 'Fragen'
+ * - Familie-Gruppe (gruppe.typ === 'familie' && gruppe.fragensammlungSheetId): alles geht in eigenes Sheet, Tab 'Fragen'
  * - fachbereichHint gesetzt + Hint ist gültiger Tab: alle IDs in den Hint-Tab (Happy-Path bei Bank)
  * - Sonst: Worst-Case → alle Bank-Tabs als Suchraum (max. 4 Bulk-Reads). Besser als N×Per-Frage.
  *
@@ -9882,17 +9882,17 @@ function gruppiereFragenIdsNachTab_(fragenIds, gruppe, fachbereichHint) {
   if (!fragenIds || fragenIds.length === 0) return result;
 
   // Familie-Gruppe: eigenes Sheet, fester Tab 'Fragen'
-  var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragebankSheetId;
+  var istFamilie = gruppe && gruppe.typ === 'familie' && gruppe.fragensammlungSheetId;
   if (istFamilie) {
-    result[gruppe.fragebankSheetId] = { 'Fragen': new Set(fragenIds) };
+    result[gruppe.fragensammlungSheetId] = { 'Fragen': new Set(fragenIds) };
     return result;
   }
 
-  // Bank-Gruppe: alle IDs gehen in FRAGENBANK_ID
-  var sheetId = FRAGENBANK_ID;
+  // Bank-Gruppe: alle IDs gehen in FRAGENSAMMLUNG_ID
+  var sheetId = FRAGENSAMMLUNG_ID;
   result[sheetId] = {};
 
-  var alleTabs = getFragenbankTabs_();
+  var alleTabs = getFragensammlungTabs_();
   // Hint-Tab muss existieren in der Tab-Liste
   if (fachbereichHint && alleTabs.indexOf(fachbereichHint) !== -1) {
     result[sheetId][fachbereichHint] = new Set(fragenIds);
@@ -10200,7 +10200,7 @@ function parseFrageKanonisch_(row, fachbereich) {
 /** Legacy: Fragen aus gruppenspezifischem Sheet laden (für Familie-Gruppen) */
 function lernplattformLadeFragenAusGruppenSheet_(gruppe) {
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Fragen');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
@@ -10251,17 +10251,17 @@ function lernplattformSpeichereFrage(body) {
   var fachbereich = frage.fachbereich || frage.fach || '';
 
   // Familie-Gruppen: weiterhin eigenes Sheet nutzen
-  if (gruppe.typ === 'familie' && gruppe.fragebankSheetId) {
+  if (gruppe.typ === 'familie' && gruppe.fragensammlungSheetId) {
     return speichereFrageInGruppenSheet_(gruppe, frage);
   }
 
   // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
   try {
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(fachbereich);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = fragensammlung.getSheetByName(fachbereich);
     if (!sheet) {
       // Tab existiert noch nicht → automatisch erstellen
-      sheet = fragenbank.insertSheet(fachbereich);
+      sheet = fragensammlung.insertSheet(fachbereich);
     }
 
     var daten = sheet.getDataRange().getValues();
@@ -10335,7 +10335,7 @@ function speichereFrageInGruppenSheet_(gruppe, frage) {
   }
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Fragen');
     if (!sheet) {
       sheet = ss.insertSheet('Fragen');
@@ -10374,7 +10374,7 @@ function speichereFrageInGruppenSheet_(gruppe, frage) {
 
 /**
  * Frage löschen (nur Admin der Gruppe).
- * Gym-Gruppen: Löscht aus FRAGENBANK_ID (Fach-Tab).
+ * Gym-Gruppen: Löscht aus FRAGENSAMMLUNG_ID (Fach-Tab).
  * Familie-Gruppen: Löscht aus Gruppen-Sheet.
  */
 function lernplattformLoescheFrage(body) {
@@ -10393,14 +10393,14 @@ function lernplattformLoescheFrage(body) {
 
   try {
     var ss, sheet;
-    if (gruppe.typ === 'familie' && gruppe.fragebankSheetId) {
-      ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    if (gruppe.typ === 'familie' && gruppe.fragensammlungSheetId) {
+      ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
       sheet = ss.getSheetByName('Fragen');
     } else {
       if (!fachbereich) {
         return jsonResponse({ success: false, error: 'fachbereich fehlt' });
       }
-      ss = SpreadsheetApp.openById(FRAGENBANK_ID);
+      ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
       sheet = ss.getSheetByName(fachbereich);
     }
 
@@ -10444,7 +10444,7 @@ function lernplattformSpeichereFortschritt(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Fortschritt');
     if (!sheet) return jsonResponse({ success: false, error: 'Fortschritt-Tab fehlt' });
 
@@ -10541,7 +10541,7 @@ function lernplattformLadeFortschritt(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Fortschritt');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
@@ -10581,7 +10581,7 @@ function lernplattformLadeAuftraege(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Auftraege');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
@@ -10634,7 +10634,7 @@ function lernplattformSpeichereAuftrag(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Auftraege');
 
     // Tab erstellen wenn nötig (mit erweiterten Spalten)
@@ -10708,7 +10708,7 @@ function lernplattformLadeThemenSichtbarkeit(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('ThemenSichtbarkeit');
     if (!sheet) return jsonResponse({ success: true, data: [] });
 
@@ -10800,7 +10800,7 @@ function lernplattformSetzeThemenStatus(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('ThemenSichtbarkeit');
 
     // Tab erstellen wenn nötig
@@ -11175,8 +11175,8 @@ function lernplattformLadeLernziele(body) {
   var fachbereich = body.fachbereich || '';
 
   try {
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var alleTabs = getFragenbankTabs_();
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var alleTabs = getFragensammlungTabs_();
     var tabs = fachbereich && alleTabs.indexOf(fachbereich) >= 0
       ? [fachbereich]
       : alleTabs;
@@ -11185,7 +11185,7 @@ function lernplattformLadeLernziele(body) {
     var gesehen = {};
 
     for (var t = 0; t < tabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(tabs[t]);
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
       if (!sheet) continue;
 
       var daten = sheet.getDataRange().getValues();
@@ -11242,7 +11242,7 @@ function lernplattformLadeGruppenFortschritt(body) {
   var gruppe = auth.gruppe;
 
   try {
-    var ss = SpreadsheetApp.openById(gruppe.fragebankSheetId);
+    var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
 
     // Mitglieder-Emails laden (für Filterung bei geteiltem Sheet)
     var mitgSheet = ss.getSheetByName('Mitglieder');
@@ -11313,7 +11313,7 @@ function lernplattformLadeGruppenFortschritt(body) {
 
 /**
  * Lädt Lernziele aus dediziertem Lernziele-Tab.
- * Gym: aus FRAGENBANK_ID, Familie: aus Gruppen-Sheet.
+ * Gym: aus FRAGENSAMMLUNG_ID, Familie: aus Gruppen-Sheet.
  */
 function lernplattformLadeLernzieleV2(body) {
   var email = (body.email || '').toLowerCase().trim();
@@ -11327,7 +11327,7 @@ function lernplattformLadeLernzieleV2(body) {
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
-    var sheetId = gruppe.typ === 'familie' ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var sheetId = gruppe.typ === 'familie' ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
     var ss = SpreadsheetApp.openById(sheetId);
     var lzSheet = ss.getSheetByName('Lernziele');
 
@@ -11376,7 +11376,7 @@ function lernplattformSpeichereLernziel(body) {
   }
 
   try {
-    var sheetId = gruppe.typ === 'familie' ? gruppe.fragebankSheetId : FRAGENBANK_ID;
+    var sheetId = gruppe.typ === 'familie' ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
     var ss = SpreadsheetApp.openById(sheetId);
     var lzSheet = ss.getSheetByName('Lernziele');
 
@@ -11600,7 +11600,7 @@ function autorisiereAlleScopes() {
   Logger.log('Drive OK: ' + testOrdner.getName());
 
   // Spreadsheet-Scope triggern
-  var testSheet = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var testSheet = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   Logger.log('Sheets OK: ' + testSheet.getName());
 
   // External Request Scope triggern
@@ -11649,14 +11649,14 @@ function migrierFragenZuMediaQuelleEndpoint_(body) {
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     if (sheetFilter) tabs = tabs.filter(function(t) { return t === sheetFilter; });
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var summary = [];
     var tabStats = [];
     var errors = [];
 
     for (var ti = 0; ti < tabs.length; ti++) {
       var tabName = tabs[ti];
-      var sheet = fragenbank.getSheetByName(tabName);
+      var sheet = fragensammlung.getSheetByName(tabName);
       if (!sheet) {
         tabStats.push({ name: tabName, rows: 0, aktualisiert: 0, fehler: 'Tab nicht gefunden' });
         continue;
@@ -11769,14 +11769,14 @@ function migrierZonenEndpoint_(body) {
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     if (sheetFilter) tabs = tabs.filter(function(t) { return t === sheetFilter; });
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var summary = [];
     var tabStats = [];
     var errors = [];
 
     for (var ti = 0; ti < tabs.length; ti++) {
       var tabName = tabs[ti];
-      var sheet = fragenbank.getSheetByName(tabName);
+      var sheet = fragensammlung.getSheetByName(tabName);
       if (!sheet) {
         tabStats.push({ name: tabName, rows: 0, aktualisiert: 0, uebersprungen: 0, fehler: 'Tab nicht gefunden' });
         continue;
@@ -12364,13 +12364,13 @@ function holeAlleFragenFuerMigrationEndpoint(body) {
       return jsonResponse({ error: 'Nur für Admins' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
     var alle = [];
 
     for (var t = 0; t < fachbereiche.length; t++) {
       var fachbereich = fachbereiche[t];
-      var sheet = fragenbank.getSheetByName(fachbereich);
+      var sheet = fragensammlung.getSheetByName(fachbereich);
       if (!sheet) continue;
       var rows = getSheetData(sheet);
       for (var r = 0; r < rows.length; r++) {
@@ -12441,8 +12441,8 @@ function batchUpdateFragenMigrationEndpoint(body) {
       return jsonResponse({ error: 'updates[] erwartet' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(fachbereich);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = fragensammlung.getSheetByName(fachbereich);
     if (!sheet) return jsonResponse({ error: 'Sheet ' + fachbereich + ' nicht gefunden' });
 
     // Gesamte Sheet-Daten lesen
@@ -12582,8 +12582,8 @@ function testC9BatchUpdateFragenMigration_() {
   var EMAIL = 'wr.test@gymhofwil.ch'; // ← ggf. auf eigene Admin-LP-E-Mail anpassen
 
   // 1. Eine beliebige MC-Frage aus BWL laden
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  var sheet = fragenbank.getSheetByName('BWL');
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheet = fragensammlung.getSheetByName('BWL');
   var data = getSheetData(sheet);
   var mcFrage = null;
   for (var i = 0; i < data.length; i++) {
@@ -12700,8 +12700,8 @@ function batchUpdateLueckentextMigrationEndpoint(body) {
       return jsonResponse({ error: 'updates[] erwartet' });
     }
 
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var sheet = fragenbank.getSheetByName(fachbereich);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = fragensammlung.getSheetByName(fachbereich);
     if (!sheet) return jsonResponse({ error: 'Sheet ' + fachbereich + ' nicht gefunden' });
 
     // Gesamte Sheet-Daten lesen
@@ -12857,8 +12857,8 @@ function testC9BatchUpdateLueckentextMigration_() {
   var EMAIL = 'wr.test@gymhofwil.ch'; // ← ggf. auf eigene Admin-LP-E-Mail anpassen
 
   // 1. Eine Lückentext-Frage aus BWL laden
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  var sheet = fragenbank.getSheetByName('BWL');
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheet = fragensammlung.getSheetByName('BWL');
   var data = getSheetData(sheet);
   var ltFrage = null;
   for (var i = 0; i < data.length; i++) {
@@ -13049,12 +13049,12 @@ function bulkSetzeLueckentextModus_(body) {
   try {
     lock.waitLock(30000);
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
-    var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var total = 0;
     var geaendert = 0;
 
     for (var t = 0; t < tabs.length; t++) {
-      var sheet = fragenbank.getSheetByName(tabs[t]);
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
       if (!sheet) continue;
       var lastCol = sheet.getLastColumn();
       var lastRow = sheet.getLastRow();
@@ -13384,12 +13384,12 @@ function testBundleJMigrationFelder_() {
   var EMAIL = 'wr.test@gymhofwil.ch'; // ggf. auf eigene Admin-LP-E-Mail anpassen
 
   // 1. Eine dragdrop_bild-Frage in BWL/Recht/VWL finden + parseFrage anwenden
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var fachbereiche = ['BWL', 'Recht', 'VWL'];
   var dndFrage = null;
   var fachbereichVerwendet = null;
   for (var fb = 0; fb < fachbereiche.length && !dndFrage; fb++) {
-    var sheet = fragenbank.getSheetByName(fachbereiche[fb]);
+    var sheet = fragensammlung.getSheetByName(fachbereiche[fb]);
     if (!sheet) continue;
     var data = getSheetData(sheet);
     for (var i = 0; i < data.length; i++) {
@@ -13435,7 +13435,7 @@ function testBundleJMigrationFelder_() {
   assert_(res.nichtGefunden[0] === 'definitely-not-existing-bundle-j-id-xyz', 'nichtGefunden enthaelt Marker-ID');
 
   // 4. Verifikation im Sheet — durch parseFrage schicken weil getSheetData stringifiziert
-  var sheetVerify = fragenbank.getSheetByName(fachbereichVerwendet);
+  var sheetVerify = fragensammlung.getSheetByName(fachbereichVerwendet);
   var dataNeu = getSheetData(sheetVerify);
   var frageNeu = null;
   for (var j = 0; j < dataNeu.length; j++) {
@@ -13904,7 +13904,7 @@ function testProblemmeldungen() {
  */
 function zaehleLeereLueckentextAntworten() {
   var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var summary = {};
   var betroffene = [];
   var gesamtLueckentext = 0;
@@ -13912,7 +13912,7 @@ function zaehleLeereLueckentextAntworten() {
 
   for (var t = 0; t < tabs.length; t++) {
     var tab = tabs[t];
-    var sheet = fragenbank.getSheetByName(tab);
+    var sheet = fragensammlung.getSheetByName(tab);
     if (!sheet) {
       summary[tab] = { gesamt: 0, betroffen: 0, fehler: 'Sheet fehlt' };
       continue;
@@ -14036,7 +14036,7 @@ function migriereLueckentextModus() {
   // einbauen (Pattern wie batchUpdateLueckentextMigrationEndpoint).
 
   var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var total = 0;
   var gesetzt = 0;
   var schonGesetzt = 0;
@@ -14045,7 +14045,7 @@ function migriereLueckentextModus() {
 
   for (var t = 0; t < tabs.length; t++) {
     var tabName = tabs[t];
-    var sheet = fragenbank.getSheetByName(tabName);
+    var sheet = fragensammlung.getSheetByName(tabName);
     if (!sheet) {
       tabStats[tabName] = { gesetzt: 0, schonGesetzt: 0, gesamt: 0, fehler: 'Sheet fehlt' };
       continue;
@@ -14180,7 +14180,7 @@ function testGruppiereFragenIdsNachTab_() {
   // Case 1: fachbereichHint gesetzt → alle IDs gehen in den Hint-Tab
   var r1 = gruppiereFragenIdsNachTab_(['id1', 'id2'], null, 'BWL');
   var sheet1 = Object.keys(r1)[0];
-  assert_(sheet1 === FRAGENBANK_ID, 'Case 1: sheetId muss FRAGENBANK_ID sein, war ' + sheet1);
+  assert_(sheet1 === FRAGENSAMMLUNG_ID, 'Case 1: sheetId muss FRAGENSAMMLUNG_ID sein, war ' + sheet1);
   assert_(Object.keys(r1[sheet1]).length === 1, 'Case 1: nur 1 Tab erwartet');
   assert_(r1[sheet1]['BWL'] !== undefined, 'Case 1: Tab BWL fehlt');
   assert_(r1[sheet1]['BWL'].size === 2, 'Case 1: 2 IDs erwartet, war ' + r1[sheet1]['BWL'].size);
@@ -14188,16 +14188,16 @@ function testGruppiereFragenIdsNachTab_() {
 
   // Case 2: kein Hint, kein Familie → alle Tabs als Suchraum
   var r2 = gruppiereFragenIdsNachTab_(['id1'], null, '');
-  var tabs2 = Object.keys(r2[FRAGENBANK_ID]);
+  var tabs2 = Object.keys(r2[FRAGENSAMMLUNG_ID]);
   assert_(tabs2.length >= 2, 'Case 2: mindestens 2 Tabs erwartet (BWL+VWL+...), war ' + tabs2.length);
   Logger.log('Case 2 (kein Hint): OK, ' + tabs2.length + ' Tabs');
 
   // Case 3: Familie-Gruppe → eigenes Sheet, Tab "Fragen"
-  var familie = { typ: 'familie', fragebankSheetId: 'FAM_TEST_SHEET_ID' };
+  var familie = { typ: 'familie', fragensammlungSheetId: 'FAM_TEST_SHEET_ID' };
   var r3 = gruppiereFragenIdsNachTab_(['fid1', 'fid2'], familie, 'BWL');
   assert_(r3['FAM_TEST_SHEET_ID'] !== undefined, 'Case 3: Familie-Sheet fehlt');
   assert_(r3['FAM_TEST_SHEET_ID']['Fragen'].size === 2, 'Case 3: 2 IDs in Fragen-Tab erwartet');
-  assert_(r3[FRAGENBANK_ID] === undefined, 'Case 3: Bank-Sheet darf nicht da sein');
+  assert_(r3[FRAGENSAMMLUNG_ID] === undefined, 'Case 3: Bank-Sheet darf nicht da sein');
   Logger.log('Case 3 (Familie): OK');
 
   Logger.log('=== testGruppiereFragenIdsNachTab: alle Cases OK ===');
@@ -14212,7 +14212,7 @@ function testBulkLadeFragenAusSheet_() {
   Logger.log('=== testBulkLadeFragenAusSheet ===');
 
   // Erste 10 IDs aus BWL-Tab via direktem Sheet-Read holen (deterministisches Test-Set)
-  var ss = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var sheet = ss.getSheetByName('BWL');
   var data = sheet.getDataRange().getValues();
   var headers = data[0].map(function(h) { return String(h).trim(); });
@@ -14226,21 +14226,21 @@ function testBulkLadeFragenAusSheet_() {
   var cache = CacheService.getScriptCache();
 
   // Case 1: Happy-Path — 10 IDs, alle gefunden, Cache-Slots gefüllt
-  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[i]);
+  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + bwlIds[i]);
   Utilities.sleep(50);
   var idSet1 = new Set(bwlIds);
-  var r1 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet1);
+  var r1 = bulkLadeFragenAusSheet_(FRAGENSAMMLUNG_ID, 'BWL', idSet1);
   assert_(Object.keys(r1).length === 10, 'Case 1: 10 Treffer erwartet, war ' + Object.keys(r1).length);
   // Cache-Effekt: ein Eintrag muss jetzt im Cache sein
-  var cached = cache.get('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[5]);
+  var cached = cache.get('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + bwlIds[5]);
   assert_(cached !== null, 'Case 1: Cache-Eintrag für ID 5 fehlt');
   Logger.log('Case 1 (Happy-Path): OK, 10/10 + Cache befüllt');
 
   // Case 2: Lücken — 9 valide + 1 Garbage-ID
-  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[i]);
+  for (var i = 0; i < bwlIds.length; i++) cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + bwlIds[i]);
   Utilities.sleep(50);
   var idSet2 = new Set(bwlIds.slice(0, 9).concat(['nicht-existent-12345']));
-  var r2 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet2);
+  var r2 = bulkLadeFragenAusSheet_(FRAGENSAMMLUNG_ID, 'BWL', idSet2);
   assert_(Object.keys(r2).length === 9, 'Case 2: 9 Treffer erwartet, war ' + Object.keys(r2).length);
   assert_(r2['nicht-existent-12345'] === undefined, 'Case 2: Garbage-ID darf nicht im Result sein');
   Logger.log('Case 2 (Lücken): OK, 9/10 (Lücke schweigend)');
@@ -14252,7 +14252,7 @@ function testBulkLadeFragenAusSheet_() {
   // muss Case 3 entweder einen eigenen Warm-Up-Call machen oder die Annahme dokumentiert bleiben.
   var idSet3 = new Set(bwlIds.slice(0, 5));
   var t0 = Date.now();
-  var r3 = bulkLadeFragenAusSheet_(FRAGENBANK_ID, 'BWL', idSet3);
+  var r3 = bulkLadeFragenAusSheet_(FRAGENSAMMLUNG_ID, 'BWL', idSet3);
   var dt = Date.now() - t0;
   assert_(Object.keys(r3).length === 5, 'Case 3: 5 Treffer erwartet');
   assert_(dt < 200, 'Case 3: Warm-Cache muss < 200 ms sein, war ' + dt);
@@ -14276,7 +14276,7 @@ function testLadeLoesungenLatenzNachBundleE_() {
   Logger.log('=== testLadeLoesungenLatenzNachBundleE ===');
 
   // Erste 10 BWL-IDs holen
-  var ss = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var sheet = ss.getSheetByName('BWL');
   var data = sheet.getDataRange().getValues();
   var headers = data[0].map(function(h) { return String(h).trim(); });
@@ -14297,7 +14297,7 @@ function testLadeLoesungenLatenzNachBundleE_() {
 
     // Cache-Reset für alle 10 IDs
     for (var j = 0; j < bwlIds.length; j++) {
-      cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[j]);
+      cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + bwlIds[j]);
     }
     Utilities.sleep(50);
 
@@ -14340,7 +14340,7 @@ function testLadeLoesungenLatenzNachBundleE_() {
   // Worst-Case-Variante (Plan-Review-Empfehlung): kein fachbereichHint → alle 4 Tabs durchsuchen
   Logger.log('--- WORST-CASE COLD (kein fachbereichHint, alle Tabs) ---');
   // Cache-Reset
-  for (var j = 0; j < bwlIds.length; j++) cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + bwlIds[j]);
+  for (var j = 0; j < bwlIds.length; j++) cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + bwlIds[j]);
   Utilities.sleep(50);
   var t0 = Date.now();
   var byTabWc = gruppiereFragenIdsNachTab_(bwlIds, null, ''); // leerer Hint
@@ -14392,7 +14392,7 @@ function testPreWarmFragen_() {
   var gruppeId = ''; // Standard-Gruppe via fachbereich-Hint
   var bwlIds = [];
   // Beziehe 30 valide BWL-IDs aus dem BWL-Tab
-  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragebankSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var bwlSheet = fragebankSs.getSheetByName('BWL');
   if (bwlSheet) {
     var data = bwlSheet.getRange(2, 1, Math.min(30, bwlSheet.getLastRow() - 1), 1).getValues();
@@ -14479,7 +14479,7 @@ function testPreWarmEffekt_() {
   var fachbereich = 'BWL';
 
   // 10 fragenIds aus BWL-Tab beziehen
-  var fragebankSs = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragebankSs = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var bwlSheet = fragebankSs.getSheetByName('BWL');
   var data = bwlSheet.getRange(2, 1, 10, 1).getValues();
   var fragenIds = [];
@@ -14489,14 +14489,14 @@ function testPreWarmEffekt_() {
   // Cache reset für alle 10 frageIds (per-Frage-Cache + Tab-Cache)
   var cache = CacheService.getScriptCache();
   for (var i = 0; i < fragenIds.length; i++) {
-    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+    cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + fragenIds[i]);
   }
   cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
 
   var coldStart = Date.now();
   var coldResult = lernplattformLadeLoesungen({
     email: lpEmail, sessionToken: '',
-    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    gruppe: { fragensammlungSheetId: FRAGENSAMMLUNG_ID, id: 'standard' },
     fragenIds: fragenIds, fachbereich: fachbereich
   });
   var coldMs = Date.now() - coldStart;
@@ -14504,7 +14504,7 @@ function testPreWarmEffekt_() {
 
   // === WARM (mit Pre-Warm) ===
   for (var i = 0; i < fragenIds.length; i++) {
-    cache.remove('frage_v1_' + FRAGENBANK_ID + '_' + fragenIds[i]);
+    cache.remove('frage_v1_' + FRAGENSAMMLUNG_ID + '_' + fragenIds[i]);
   }
   cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
 
@@ -14518,7 +14518,7 @@ function testPreWarmEffekt_() {
   var warmStart = Date.now();
   var warmResult = lernplattformLadeLoesungen({
     email: lpEmail, sessionToken: '',
-    gruppe: { fragebankSheetId: FRAGENBANK_ID, id: 'standard' },
+    gruppe: { fragensammlungSheetId: FRAGENSAMMLUNG_ID, id: 'standard' },
     fragenIds: fragenIds, fachbereich: fachbereich
   });
   var warmMs = Date.now() - warmStart;
