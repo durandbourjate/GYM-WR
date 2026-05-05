@@ -3892,7 +3892,7 @@ function speichereFrage(body) {
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
       body.offeneKIFeedbacks.forEach(function(fb) {
         try {
-          var final = extrahiereFinaleVersionEditor_(fb.aktion, frage);
+          var final = extrahiereFinaleVersionEditor_(fb.kiAktion, frage);
           schliesseFeedbackEintrag_(fb.feedbackId, final, { wichtig: !!fb.wichtig });
         } catch(e) { console.warn('[Kalibrierung] schliesseFeedback fehlgeschlagen:', e); }
       });
@@ -5981,18 +5981,18 @@ function wrapUserData(key, value) {
  * Nur für 4 instrumentierte Aktionen aufrufen.
  * Rückgabe: { userPromptPrefix, feedbackId }.
  */
-function injiziereKalibrierung_(email, aktion, daten) {
+function injiziereKalibrierung_(email, kiAktion, daten) {
   var out = { userPromptPrefix: '', feedbackId: null };
   try {
     var einst = ladeLPKalibrierungsEinstellungen_(email);
     if (!einst.global) return out;
     var beispiele = holeFewShotBeispiele_({
-      lpEmail: email, aktion: aktion,
+      lpEmail: email, kiAktion: kiAktion,
       fachbereich: daten.fachbereich, bloom: daten.bloom
     });
-    out.userPromptPrefix = baueFewShotBlock_(aktion, beispiele);
+    out.userPromptPrefix = baueFewShotBlock_(kiAktion, beispiele);
     out.feedbackId = starteFeedbackEintrag_({
-      lpEmail: email, aktion: aktion,
+      lpEmail: email, kiAktion: kiAktion,
       fachbereich: daten.fachbereich, bloom: daten.bloom,
       inputJson: daten, kiOutputJson: {}
     });
@@ -6106,14 +6106,14 @@ function baueTeilerklaerungsKontext_(daten) {
 function kiAssistentEndpoint(body) {
   try {
     var email = body.email;
-    var aktion = body.aktion;
+    var kiAktion = body.kiAktion;
     var daten = body.daten || {};
 
     if (!email || !istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
-    if (!aktion) {
-      return jsonResponse({ error: 'Keine Aktion angegeben' });
+    if (!kiAktion) {
+      return jsonResponse({ error: 'Keine kiAktion angegeben' });
     }
 
     var systemPrompt = 'Du bist Assistent für einen Gymnasiallehrer (Wirtschaft & Recht, Kanton Bern, Lehrplan 17). ' +
@@ -6125,7 +6125,7 @@ function kiAssistentEndpoint(body) {
     var userPrompt = '';
     var result;
 
-    switch (aktion) {
+    switch (kiAktion) {
 
       case 'generiereFragetext':
         userPrompt = 'Generiere eine Prüfungsfrage für das Gymnasium.\n' +
@@ -6681,7 +6681,7 @@ function kiAssistentEndpoint(body) {
         return korrigierePDFAnnotation(daten);
 
       default:
-        return jsonResponse({ error: 'Unbekannte KI-Aktion: ' + aktion });
+        return jsonResponse({ error: 'Unbekannte KI-Aktion: ' + kiAktion });
     }
 
   } catch (err) {
@@ -11008,7 +11008,7 @@ function lernplattformKIAssistent(body) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
 
-  var aktion = body.aktion;
+  var kiAktion = body.kiAktion;
   var daten = body.daten || {};
 
   var apiKey = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
@@ -11021,7 +11021,7 @@ function lernplattformKIAssistent(body) {
     'Antworte IMMER mit validem JSON.';
   var userPrompt = '';
 
-  switch (aktion) {
+  switch (kiAktion) {
     case 'generiereFragetext':
       userPrompt = 'Erstelle eine Prüfungsfrage.\n' +
         'Fachbereich: ' + wrapUserData('fachbereich', daten.fachbereich || '') +
@@ -11055,7 +11055,7 @@ function lernplattformKIAssistent(body) {
         '\n\nAntwort als JSON: {"fragetext": "...", "musterlosung": "..."}';
       break;
     default:
-      return jsonResponse({ success: false, error: 'Unbekannte KI-Aktion: ' + aktion });
+      return jsonResponse({ success: false, error: 'Unbekannte KI-Aktion: ' + kiAktion });
   }
 
   try {
@@ -11892,7 +11892,7 @@ function migrierZonenEndpoint_(body) {
 function stelleKIFeedbackSheetBereit_() {
   var ss = SpreadsheetApp.openById(CONFIGS_ID);
   var sheet = ss.getSheetByName('KIFeedback');
-  var headers = ['feedbackId','zeitstempel','lpEmail','fachschaft','aktion','fachbereich',
+  var headers = ['feedbackId','zeitstempel','lpEmail','fachschaft','kiAktion','fachbereich',
                  'bloom','inputJson','kiOutputJson','finaleVersionJson','diffScore',
                  'status','qualifiziert','wichtig','aktiv','teilen','embeddingHash'];
   if (!sheet) {
@@ -11942,7 +11942,7 @@ function stelleKorrekturSheetHeaderBereit_(korrekturSheet) {
 // Korrekturen zu lernen".
 var KALIBRIERUNG_DEFAULTS = {
   global: false,                    // Default AUS — LP schaltet explizit ein (B5)
-  aktionenAktiv: {
+  kiAktionenAktiv: {
     generiereMusterloesung: true,
     klassifiziereFrage: true,
     bewertungsrasterGenerieren: true,
@@ -12038,7 +12038,7 @@ function starteFeedbackEintrag_(args) {
       new Date().toISOString(),
       args.lpEmail,
       fachschaft,
-      args.aktion,
+      args.kiAktion,
       args.fachbereich || '',
       args.bloom || '',
       JSON.stringify(args.inputJson || {}),
@@ -12083,11 +12083,11 @@ function schliesseFeedbackEintrag_(feedbackId, finaleVersionJson, options) {
           console.log('[KIFeedback] Eintrag bereits geschlossen:', feedbackId);
           return;
         }
-        var aktion = rows[i][col('aktion')];
+        var kiAktion = rows[i][col('kiAktion')];
         var kiOutput = safeParse_(rows[i][col('kiOutputJson')]);
-        var diff = berechneDiffScore_(aktion, kiOutput, finaleVersionJson);
+        var diff = berechneDiffScore_(kiAktion, kiOutput, finaleVersionJson);
         var wichtig = options.wichtig || false;
-        var qualifiziert = istQualifiziert_(aktion, diff) || wichtig;
+        var qualifiziert = istQualifiziert_(kiAktion, diff) || wichtig;
         var rowIdx = i + 1;
         sheet.getRange(rowIdx, col('finaleVersionJson') + 1).setValue(JSON.stringify(finaleVersionJson));
         sheet.getRange(rowIdx, col('diffScore') + 1).setValue(diff);
@@ -12130,12 +12130,12 @@ function markiereFeedbackAlsIgnoriert_(feedbackId) {
 
 // ─── Task 4: Heuristik — gewichtete Diff-Score + Qualifikation ───────────────
 
-function berechneDiffScore_(aktion, ki, lp) {
+function berechneDiffScore_(kiAktion, ki, lp) {
   if (!ki || !lp) return 1;
-  switch (aktion) {
+  switch (kiAktion) {
     case 'generiereMusterloesung':
     case 'bewertungsrasterGenerieren':
-      return levenshteinNorm_(extrahiereText_(aktion, ki), extrahiereText_(aktion, lp));
+      return levenshteinNorm_(extrahiereText_(kiAktion, ki), extrahiereText_(kiAktion, lp));
     case 'klassifiziereFrage':
       var w = { fachbereich: 0.4, bloom: 0.25, thema: 0.25, unterthema: 0.1 };
       var diff = 0;
@@ -12151,13 +12151,13 @@ function berechneDiffScore_(aktion, ki, lp) {
   }
 }
 
-function istQualifiziert_(aktion, diff) {
+function istQualifiziert_(kiAktion, diff) {
   return diff === 0 || diff >= 0.15;
 }
 
-function extrahiereText_(aktion, daten) {
-  if (aktion === 'generiereMusterloesung') return daten.loesung || daten.musterlosung || '';
-  if (aktion === 'bewertungsrasterGenerieren') {
+function extrahiereText_(kiAktion, daten) {
+  if (kiAktion === 'generiereMusterloesung') return daten.loesung || daten.musterlosung || '';
+  if (kiAktion === 'bewertungsrasterGenerieren') {
     if (Array.isArray(daten.kriterien)) {
       var sortiert = daten.kriterien.slice().sort(function(a, b) {
         return String(a.beschreibung || '').localeCompare(String(b.beschreibung || ''));
@@ -12258,7 +12258,7 @@ function testC9GeneriereMusterloesung_() {
 
   // (1) MC mit 2 Optionen — erwartet 2 Teilerklärungen
   var mc = {
-    aktion: 'generiereMusterloesung',
+    kiAktion: 'generiereMusterloesung',
     email: EMAIL,
     daten: {
       typ: 'mc',
@@ -12282,7 +12282,7 @@ function testC9GeneriereMusterloesung_() {
 
   // (2) Freitext — erwartet teilerklaerungen: []
   var ft = {
-    aktion: 'generiereMusterloesung',
+    kiAktion: 'generiereMusterloesung',
     email: EMAIL,
     daten: { typ: 'freitext', fragetext: 'Erklaere den Unterschied zwischen Aufwand und Ausgabe.', bloom: 'K4', fachbereich: 'BWL' }
   };
@@ -12296,7 +12296,7 @@ function testC9GeneriereMusterloesung_() {
   // (3) MC ohne Sub-Elemente im Request (Simulation des heutigen Frontend-Callers vor Task 24)
   //     — Backend darf NICHT crashen, teilerklaerungen muss leer sein.
   var mcLegacy = {
-    aktion: 'generiereMusterloesung',
+    kiAktion: 'generiereMusterloesung',
     email: EMAIL,
     daten: { typ: 'mc', fragetext: 'Welche Kennzahl gehoert zur Liquiditaetsanalyse?', bloom: 'K2', fachbereich: 'BWL' }
   };
@@ -12308,7 +12308,7 @@ function testC9GeneriereMusterloesung_() {
 
   // (4) Bilanzstruktur mit Duplikat-Kontonummer — Dedup-Check im Normalizer
   var bilanz = {
-    aktion: 'generiereMusterloesung',
+    kiAktion: 'generiereMusterloesung',
     email: EMAIL,
     daten: {
       typ: 'bilanzstruktur',
@@ -13527,13 +13527,13 @@ function safeParse_(s) { try { return JSON.parse(s || '{}'); } catch(e) { return
 // ─── Task 5: Few-Shot-Retrieval + Block-Builder ───────────────────────────────
 
 function holeFewShotBeispiele_(opts) {
-  if (!opts || !opts.aktion || !opts.lpEmail) return [];
+  if (!opts || !opts.kiAktion || !opts.lpEmail) return [];
   if (opts.sortierung && opts.sortierung === 'similarity') {
     throw new Error('NotImplemented: similarity-Retrieval in v3');
   }
   var einst = ladeLPKalibrierungsEinstellungen_(opts.lpEmail);
   if (!einst.global) return [];
-  if (!einst.aktionenAktiv[opts.aktion]) return [];
+  if (!einst.kiAktionenAktiv[opts.kiAktion]) return [];
 
   var sheet = stelleKIFeedbackSheetBereit_();
   var rows = sheet.getDataRange().getValues();
@@ -13545,7 +13545,7 @@ function holeFewShotBeispiele_(opts) {
   for (var i = 1; i < rows.length; i++) {
     var r = rows[i];
     if (r[col('lpEmail')] !== opts.lpEmail) continue;
-    if (r[col('aktion')] !== opts.aktion) continue;
+    if (r[col('kiAktion')] !== opts.kiAktion) continue;
     if (r[col('status')] !== 'geschlossen') continue;
     if (r[col('qualifiziert')] !== true) continue;
     if (r[col('aktiv')] !== true) continue;
@@ -13570,11 +13570,11 @@ function holeFewShotBeispiele_(opts) {
   return passend.slice(0, einst.beispielAnzahl);
 }
 
-function baueFewShotBlock_(aktion, beispiele, opts) {
+function baueFewShotBlock_(kiAktion, beispiele, opts) {
   if (!beispiele || beispiele.length === 0) return '';
   var token_cap = 1500;
   var lines;
-  switch (aktion) {
+  switch (kiAktion) {
     case 'generiereMusterloesung':
       lines = beispiele.map(function(b, i) {
         return 'Beispiel ' + (i+1) + ' (' + (b.inputJson.fachbereich || '?') + ', ' + (b.bloom || '?') + '):\n' +
@@ -13633,8 +13633,8 @@ function capByTokens_(s, max) {
 
 // ─── Task 7: Finale-Version-Extraktion für schliesseFeedbackEintrag_ ─────────
 
-function extrahiereFinaleVersionEditor_(aktion, frage) {
-  switch (aktion) {
+function extrahiereFinaleVersionEditor_(kiAktion, frage) {
+  switch (kiAktion) {
     case 'generiereMusterloesung':
       return { loesung: frage.musterlosung || '' };
     case 'klassifiziereFrage':
@@ -13667,7 +13667,7 @@ function listeKIFeedbacks(body) {
   for (var i = 1; i < rows.length; i++) {
     var r = rows[i];
     if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
-    if (f.aktion && r[c('aktion')] !== f.aktion) continue;
+    if (f.kiAktion && r[c('kiAktion')] !== f.kiAktion) continue;
     if (f.fachbereich && r[c('fachbereich')] !== f.fachbereich) continue;
     if (f.status && r[c('status')] !== f.status) continue;
     if (f.nurWichtige && !r[c('wichtig')]) continue;
@@ -13676,14 +13676,14 @@ function listeKIFeedbacks(body) {
 
     var inputParsed = safeParse_(r[c('inputJson')]);
     // Privacy (W4): SuS-Antwort im Review-Tab truncaten — Screen-Sharing-Risiko
-    if (r[c('aktion')] === 'korrigiereFreitext' && inputParsed.antwortText) {
+    if (r[c('kiAktion')] === 'korrigiereFreitext' && inputParsed.antwortText) {
       var voll = String(inputParsed.antwortText);
       inputParsed.antwortText = voll.length > 200 ? voll.slice(0, 200) + '… [gekürzt]' : voll;
     }
     result.push({
       feedbackId: r[c('feedbackId')],
       zeitstempel: r[c('zeitstempel')],
-      aktion: r[c('aktion')],
+      kiAktion: r[c('kiAktion')],
       fachbereich: r[c('fachbereich')],
       bloom: r[c('bloom')],
       inputJson: inputParsed,
@@ -13804,31 +13804,31 @@ function kalibrierungsStatistik(body) {
   var hdr = rows[0];
   var c = function(n){return hdr.indexOf(n);};
 
-  var aktionenStats = {};
+  var kiAktionenStats = {};
   ['generiereMusterloesung','klassifiziereFrage','bewertungsrasterGenerieren','korrigiereFreitext'].forEach(function(a){
-    aktionenStats[a] = { vorschlaege:0, unveraendert:0, leicht:0, deutlich:0, verworfen:0, aktive:0, wichtige:0 };
+    kiAktionenStats[a] = { vorschlaege:0, unveraendert:0, leicht:0, deutlich:0, verworfen:0, aktive:0, wichtige:0 };
   });
 
   for (var i = 1; i < rows.length; i++) {
     var r = rows[i];
     if (String(r[c('lpEmail')]).toLowerCase() !== body.email.toLowerCase()) continue;
-    var a = r[c('aktion')];
-    if (!aktionenStats[a]) continue;
+    var a = r[c('kiAktion')];
+    if (!kiAktionenStats[a]) continue;
     var zs = toIsoStr_(r[c('zeitstempel')]);
     if (zs < schwelleIso) continue;
-    aktionenStats[a].vorschlaege++;
+    kiAktionenStats[a].vorschlaege++;
     var st = r[c('status')];
     var diff = Number(r[c('diffScore')]) || 0;
-    if (st === 'ignoriert') aktionenStats[a].verworfen++;
+    if (st === 'ignoriert') kiAktionenStats[a].verworfen++;
     else if (st === 'geschlossen') {
-      if (diff === 0) aktionenStats[a].unveraendert++;
-      else if (diff < 0.15) aktionenStats[a].leicht++;
-      else aktionenStats[a].deutlich++;
+      if (diff === 0) kiAktionenStats[a].unveraendert++;
+      else if (diff < 0.15) kiAktionenStats[a].leicht++;
+      else kiAktionenStats[a].deutlich++;
     }
-    if (r[c('qualifiziert')] === true && r[c('aktiv')] === true) aktionenStats[a].aktive++;
-    if (r[c('wichtig')] === true) aktionenStats[a].wichtige++;
+    if (r[c('qualifiziert')] === true && r[c('aktiv')] === true) kiAktionenStats[a].aktive++;
+    if (r[c('wichtig')] === true) kiAktionenStats[a].wichtige++;
   }
-  return jsonResponse({success:true, data:{aktionen: aktionenStats, zeitraum_tage: tage}});
+  return jsonResponse({success:true, data:{kiAktionen: kiAktionenStats, zeitraum_tage: tage}});
 }
 
 /** Zeitstempel aus Sheet robust zu ISO-String normieren.
