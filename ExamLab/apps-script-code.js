@@ -4239,6 +4239,72 @@ function testBundle3DraftLifecycle() {
 }
 
 /**
+ * Bundle 3: täglicher Auto-Hard-Delete für Soft-Delete-Inhalte älter als 90 Tage.
+ * Wird von Daily-Trigger aufgerufen (siehe installiereAutoHardDeleteTrigger_).
+ * Reverse-Sort der Row-Indices: deleteRow verschiebt nachfolgende Rows um 1 nach oben,
+ * also von unten nach oben löschen damit die Indices noch passen.
+ *
+ * Sicherheitsnetz: getLastRow() === 1 (nur Header) wird durch sheet.getRange(2, 1, 0, ...)
+ * nicht erfasst — getRange wirft bei numRows=0. Defense: prüfe sheet.getLastRow() > 1
+ * vor dem Lese-Range.
+ */
+function autoHardDeleteAlteFragen_() {
+  var schwelle = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  var totalGeloescht = 0;
+
+  for (var t = 0; t < fachbereiche.length; t++) {
+    var sheet = fragenbank.getSheetByName(fachbereiche[t]);
+    if (!sheet) continue;
+
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var geloeschtCol = headers.indexOf('geloescht_am');
+    if (geloeschtCol < 0) continue; // Spalte noch nicht da (Pre-Bundle-3-Tab)
+
+    if (sheet.getLastRow() <= 1) continue; // leeres Sheet, kein Daten-Range
+    var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues();
+    var zuLoeschende = [];
+    for (var i = 0; i < data.length; i++) {
+      var geloescht = data[i][geloeschtCol];
+      if (geloescht && String(geloescht) < schwelle) {
+        zuLoeschende.push(i + 2);
+      }
+    }
+    zuLoeschende.sort(function(a, b) { return b - a; }); // Reverse-Sort: deleteRow von unten
+    for (var j = 0; j < zuLoeschende.length; j++) {
+      sheet.deleteRow(zuLoeschende[j]);
+      totalGeloescht++;
+    }
+  }
+
+  Logger.log('Auto-Hard-Delete: ' + totalGeloescht + ' Fragen endgültig gelöscht (älter als 90 Tage)');
+}
+
+/**
+ * Bundle 3: installiert Daily-Trigger für autoHardDeleteAlteFragen_ (3:00 Uhr).
+ * User-Task in Phase A.8: einmalig im GAS-Editor manuell ausführen.
+ * Idempotent: löscht existing Trigger gleicher Handler-Funktion vorher.
+ */
+function installiereAutoHardDeleteTrigger_() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var alteEntfernt = 0;
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'autoHardDeleteAlteFragen_') {
+      ScriptApp.deleteTrigger(triggers[i]);
+      alteEntfernt++;
+    }
+  }
+  ScriptApp.newTrigger('autoHardDeleteAlteFragen_').timeBased().atHour(3).everyDays(1).create();
+  Logger.log('Auto-Hard-Delete Trigger installiert (täglich 3:00). Alte Trigger entfernt: ' + alteEntfernt);
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf. */
+function installiereAutoHardDeleteTrigger() {
+  return installiereAutoHardDeleteTrigger_();
+}
+
+/**
  * Batch-Löschung: Alle Pool-Fragen (quelle='pool' ODER poolId gesetzt) aus allen Tabs löschen.
  * Manuell erstellte Fragen bleiben erhalten. Ein einziger API-Call statt 2000+ einzelne.
  */
