@@ -4141,6 +4141,104 @@ function listePapierkorb(body) {
 }
 
 /**
+ * Bundle 3 Test-Shim — Draft-Lifecycle (status, soft-delete, restore, hard-delete).
+ * Ruft direkt Pure-Helpers (Intern_-Endung) -> kein Auth-Bypass nötig.
+ *
+ * Aufruf: im GAS-Editor `testBundle3DraftLifecycle` auswählen + Run.
+ * Cleanup: hardDeleteFrageIntern_ am Ende — Test-Frage hinterlässt keine Spur im Sheet.
+ *
+ * Erwartete Logger-Ausgabe bei Erfolg:
+ *   === Bundle 3 Draft-Lifecycle-Test ===
+ *     ✓ Case 1: vollständig → sammlung
+ *     ✓ Case 2: unvollständig (fragetext leer) → draft
+ *     ✓ Case 3: Pflichtfeld zurück → sammlung
+ *     ✓ Case 4: soft-delete via loescheFrageIntern_
+ *     ✓ Case 5: Restore + Hard-Delete Cleanup
+ *   === Bundle 3 Draft-Lifecycle-Test bestanden ===
+ */
+function testBundle3DraftLifecycle_() {
+  Logger.log('=== Bundle 3 Draft-Lifecycle-Test ===');
+
+  var testEmail = 'test.bundle3@gymhofwil.ch';
+  var testFrageBase = {
+    id: 'test-bundle3-' + Date.now(),
+    typ: 'mc',
+    fach: 'SF WR',
+    fachbereich: 'BWL',
+    thema: 'Test-Bundle3',
+    autor: testEmail,
+    fragetext: 'Test-Frage?',
+    punkte: 1,
+    optionen: [
+      { id: 'o1', text: 'Antwort A', korrekt: true },
+      { id: 'o2', text: 'Antwort B', korrekt: false }
+    ],
+  };
+
+  try {
+    // Case 1: vollständige Frage → status='sammlung'
+    var r1 = speichereFrageIntern_(testFrageBase, testEmail);
+    if (r1.status !== 'sammlung') {
+      throw new Error('Case 1 FAIL: erwartet status=sammlung, bekommen=' + r1.status);
+    }
+    Logger.log('  ✓ Case 1: vollständig → sammlung');
+
+    // Case 2: unvollständige Frage (fragetext leer) → status='draft'
+    var unvollstFrage = Object.assign({}, testFrageBase, { fragetext: '' });
+    var r2 = speichereFrageIntern_(unvollstFrage, testEmail);
+    if (r2.status !== 'draft') {
+      throw new Error('Case 2 FAIL: erwartet status=draft, bekommen=' + r2.status);
+    }
+    Logger.log('  ✓ Case 2: unvollständig (fragetext leer) → draft');
+
+    // Case 3: Pflichtfeld zurück → sammlung
+    var ergFrage = Object.assign({}, testFrageBase, { fragetext: 'Wieder vollständig' });
+    var r3 = speichereFrageIntern_(ergFrage, testEmail);
+    if (r3.status !== 'sammlung') {
+      throw new Error('Case 3 FAIL: erwartet status=sammlung, bekommen=' + r3.status);
+    }
+    Logger.log('  ✓ Case 3: Pflichtfeld zurück → sammlung');
+
+    // Case 4: Soft-Delete via loescheFrageIntern_
+    var r4 = loescheFrageIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r4 || r4.success !== true) {
+      throw new Error('Case 4 FAIL: loescheFrageIntern_ unerwartete Antwort: ' + JSON.stringify(r4));
+    }
+    // Verify: Frage taucht in listePapierkorbIntern_(testEmail) auf
+    var papierkorb = listePapierkorbIntern_(testEmail);
+    var inPapierkorb = papierkorb.fragen.some(function(f) { return f.id === testFrageBase.id; });
+    if (!inPapierkorb) {
+      throw new Error('Case 4 FAIL: Test-Frage nicht in Papierkorb nach loescheFrageIntern_');
+    }
+    Logger.log('  ✓ Case 4: soft-delete via loescheFrageIntern_');
+
+    // Case 5: Restore + Hard-Delete Cleanup
+    var r5a = stelleWiederHerIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r5a || r5a.success !== true) {
+      throw new Error('Case 5a FAIL: stelleWiederHerIntern_ unerwartete Antwort: ' + JSON.stringify(r5a));
+    }
+    var r5b = hardDeleteFrageIntern_(testFrageBase.id, 'BWL', testEmail);
+    if (!r5b || r5b.success !== true) {
+      throw new Error('Case 5b FAIL: hardDeleteFrageIntern_ unerwartete Antwort: ' + JSON.stringify(r5b));
+    }
+    Logger.log('  ✓ Case 5: Restore + Hard-Delete Cleanup');
+
+    Logger.log('=== Bundle 3 Draft-Lifecycle-Test bestanden ===');
+  } catch (err) {
+    Logger.log('=== Bundle 3 Draft-Lifecycle-Test FEHLGESCHLAGEN ===');
+    Logger.log('Fehler: ' + (err && err.message ? err.message : err));
+    // Best-effort Cleanup wenn Test mid-flight gefailt ist
+    try { hardDeleteFrageIntern_(testFrageBase.id, 'BWL', testEmail); } catch(_) { /* ignore */ }
+    throw err;
+  }
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf (ohne underscore-Suffix). */
+function testBundle3DraftLifecycle() {
+  return testBundle3DraftLifecycle_();
+}
+
+/**
  * Batch-Löschung: Alle Pool-Fragen (quelle='pool' ODER poolId gesetzt) aus allen Tabs löschen.
  * Manuell erstellte Fragen bleiben erhalten. Ein einziger API-Call statt 2000+ einzelne.
  */
