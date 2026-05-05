@@ -105,15 +105,15 @@ export default function MetadataSection({
       titelRechts={ki.verfuegbar ? (
         <button
           onClick={() => ki.ausfuehren('klassifiziereFrage', { fragetext })}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
           title="KI klassifiziert die Frage und schlägt Fach, Thema, Bloom-Stufe und Tags vor"
           className={`px-2 py-0.5 text-[11px] rounded-md border transition-colors cursor-pointer inline-flex items-center gap-1
-            ${!fragetext.trim() || ki.ladeAktion !== null
+            ${!fragetext.trim() || ki.ladeKiAktion !== null
               ? 'border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 cursor-not-allowed'
               : 'border-blue-500 dark:border-blue-400 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30'
             }`}
         >
-          {ki.ladeAktion === 'klassifiziereFrage' ? (
+          {ki.ladeKiAktion === 'klassifiziereFrage' ? (
             <>
               <span className="inline-block w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
               Klassifiziere...
@@ -169,9 +169,9 @@ export default function MetadataSection({
               ki.verwerfen('klassifiziereFrage')
             }}
             onVerwerfen={() => ki.verwerfen('klassifiziereFrage')}
-            wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'klassifiziereFrage')?.wichtig ?? false}
+            wichtig={ki.offeneKIFeedbacks.find(f => f.kiAktion === 'klassifiziereFrage')?.wichtig ?? false}
             onWichtigToggle={() => {
-              const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'klassifiziereFrage')
+              const cur = ki.offeneKIFeedbacks.find(f => f.kiAktion === 'klassifiziereFrage')
               ki.markiereWichtig('klassifiziereFrage', !(cur?.wichtig ?? false))
             }}
           />

@@ -1,4 +1,4 @@
-import type { AktionErgebnis } from '../useKIAssistent'
+import type { KiAktionErgebnis } from '../useKIAssistent'
 
 /** Einzelner KI-Aktions-Button mit Lade-, Hinweis- und Tooltip-State */
 export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, onClick, kiAktiv = true }: {
@@ -45,7 +45,7 @@ export function InlineAktionButton({ label, tooltip, hinweis, disabled, ladend, 
 
 /** Ergebnis-Anzeige mit Vorschau, Uebernehmen/Verwerfen-Buttons und optionalem Stern-Toggle */
 export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorschau, onUebernehmen, onVerwerfen, wichtig, onWichtigToggle }: {
-  ergebnis: AktionErgebnis
+  ergebnis: KiAktionErgebnis
   vorschauKey: string
   zusatzKey?: string
   renderVorschau?: (daten: Record<string, unknown>) => React.ReactNode

@@ -58,7 +58,7 @@ import DefaultAnhangEditor from './components/AnhangEditor'
 /** Optionale Metadaten die beim Speichern mitgesendet werden (KI-Kalibrierungs-Loop) */
 export interface SpeichernMeta {
   /** Offene KI-Feedbacks die noch nicht übernommen/verworfen wurden */
-  offeneKIFeedbacks?: Array<{ aktion: string; feedbackId: string; wichtig: boolean }>
+  offeneKIFeedbacks?: Array<{ kiAktion: string; feedbackId: string; wichtig: boolean }>
 }
 
 /**
@@ -1216,8 +1216,8 @@ export default function SharedFragenEditor({
                     <InlineAktionButton
                       label="KI generieren"
                       tooltip="Bewertungsraster basierend auf Frage generieren"
-                      disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                      ladend={ki.ladeAktion === 'bewertungsrasterGenerieren'}
+                      disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                      ladend={ki.ladeKiAktion === 'bewertungsrasterGenerieren'}
                       onClick={() => ki.ausfuehren('bewertungsrasterGenerieren', {
                         fragetext, typ, fachbereich, bloom, punkte, musterlosung
                       })}
@@ -1225,8 +1225,8 @@ export default function SharedFragenEditor({
                     <InlineAktionButton
                       label="KI verbessern"
                       tooltip="Bestehendes Bewertungsraster prüfen und verbessern"
-                      disabled={bewertungsraster.filter(k => k.beschreibung.trim()).length === 0 || ki.ladeAktion !== null}
-                      ladend={ki.ladeAktion === 'bewertungsrasterVerbessern'}
+                      disabled={bewertungsraster.filter(k => k.beschreibung.trim()).length === 0 || ki.ladeKiAktion !== null}
+                      ladend={ki.ladeKiAktion === 'bewertungsrasterVerbessern'}
                       onClick={() => ki.ausfuehren('bewertungsrasterVerbessern', {
                         fragetext, typ, fachbereich, bloom, punkte, musterlosung,
                         bewertungsraster: bewertungsraster.filter(k => k.beschreibung.trim())
@@ -1248,9 +1248,9 @@ export default function SharedFragenEditor({
                       ki.verwerfen('bewertungsrasterGenerieren')
                     }}
                     onVerwerfen={() => ki.verwerfen('bewertungsrasterGenerieren')}
-                    wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')?.wichtig ?? false}
+                    wichtig={ki.offeneKIFeedbacks.find(f => f.kiAktion === 'bewertungsrasterGenerieren')?.wichtig ?? false}
                     onWichtigToggle={() => {
-                      const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'bewertungsrasterGenerieren')
+                      const cur = ki.offeneKIFeedbacks.find(f => f.kiAktion === 'bewertungsrasterGenerieren')
                       ki.markiereWichtig('bewertungsrasterGenerieren', !(cur?.wichtig ?? false))
                     }}
                   />

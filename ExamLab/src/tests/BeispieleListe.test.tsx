@@ -22,7 +22,7 @@ vi.mock('../components/settings/kiKalibrierung/DiffModal', () => ({
 const mockEintrag = {
   feedbackId: 'fb_test_001',
   zeitstempel: '2026-04-21T10:00:00Z',
-  aktion: 'generiereMusterloesung',
+  kiAktion: 'generiereMusterloesung',
   fachbereich: 'VWL',
   bloom: 'K2',
   inputJson: { fragetext: 'Was ist das BIP?' },
@@ -61,7 +61,7 @@ describe('BeispieleListe', () => {
     await waitFor(() => {
       const calls = (api.listeFeedbacks as ReturnType<typeof vi.fn>).mock.calls
       const letzterCall = calls[calls.length - 1]
-      expect(letzterCall[1].aktion).toBe('klassifiziereFrage')
+      expect(letzterCall[1].kiAktion).toBe('klassifiziereFrage')
       expect(letzterCall[2]).toBe(0) // Seite zurückgesetzt
     })
   })

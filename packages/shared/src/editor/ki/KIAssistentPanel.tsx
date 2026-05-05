@@ -3,7 +3,7 @@
  * Hook und UI-Bausteine sind in useKIAssistent.ts / KIBausteine.tsx extrahiert.
  */
 export { useKIAssistent } from '../useKIAssistent'
-export type { AktionKey, AktionErgebnis } from '../useKIAssistent'
+export type { KiAktionKey, KiAktionErgebnis } from '../useKIAssistent'
 
 import type { useKIAssistent } from '../useKIAssistent'
 import type { MCOption } from '../../types/fragen-core'
@@ -39,16 +39,16 @@ export function KIFragetextButtons({
           label="Generieren"
           tooltip="KI erstellt einen neuen Fragetext basierend auf Thema, Fachbereich und Taxonomiestufe"
           hinweis={!thema.trim() ? 'Thema noetig' : undefined}
-          disabled={!thema.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generiereFragetext'}
+          disabled={!thema.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generiereFragetext'}
           onClick={() => ki.ausfuehren('generiereFragetext', { fachbereich, thema, unterthema, typ, bloom })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft den Fragetext auf Klarheit, Eindeutigkeit und Taxonomie-Passung und schlaegt Verbesserungen vor"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'verbessereFragetext'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'verbessereFragetext'}
           onClick={() => ki.ausfuehren('verbessereFragetext', { fragetext })}
         />
       </div>
@@ -110,16 +110,16 @@ export function KIMusterlosungButtons({ ki, fragetext, musterlosung, typ, fachbe
           label="Generieren"
           tooltip="KI erstellt eine Musterloesung basierend auf dem Fragetext"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generiereMusterloesung'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generiereMusterloesung'}
           onClick={() => ki.ausfuehren('generiereMusterloesung', { fragetext, typ, fachbereich, bloom })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft die Musterloesung auf Korrektheit und Vollstaendigkeit und schlaegt Verbesserungen vor"
           hinweis={!fragetext.trim() || !musterlosung.trim() ? 'Fragetext + Musterloesung noetig' : undefined}
-          disabled={!fragetext.trim() || !musterlosung.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'pruefeMusterloesung'}
+          disabled={!fragetext.trim() || !musterlosung.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'pruefeMusterloesung'}
           onClick={() => ki.ausfuehren('pruefeMusterloesung', { fragetext, musterlosung })}
         />
       </div>
@@ -178,8 +178,8 @@ export function KIMCOptionenButton({ ki, fragetext, optionen, onSetOptionen }: K
           label="Optionen generieren"
           tooltip="KI erstellt Antwortoptionen (korrekte und falsche) passend zum Fragetext"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generiereOptionen'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generiereOptionen'}
           onClick={() => ki.ausfuehren('generiereOptionen', { fragetext })}
         />
       </div>

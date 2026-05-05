@@ -28,16 +28,16 @@ export function KIZuordnungButtons({ ki, fragetext, fachbereich, thema, paare, o
           label="Generieren"
           tooltip="KI erstellt passende Zuordnungspaare basierend auf dem Fragetext"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generierePaare'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generierePaare'}
           onClick={() => ki.ausfuehren('generierePaare', { fragetext, fachbereich, thema })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft die Paare auf Konsistenz und Eindeutigkeit"
           hinweis={!hatPaare ? 'Mind. 2 Paare noetig' : undefined}
-          disabled={!hatPaare || !fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'pruefePaare'}
+          disabled={!hatPaare || !fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'pruefePaare'}
           onClick={() => ki.ausfuehren('pruefePaare', { fragetext, paare })}
         />
       </div>
@@ -108,16 +108,16 @@ export function KIRichtigFalschButtons({ ki, fragetext, fachbereich, thema, auss
           label="Generieren"
           tooltip="KI erstellt Richtig/Falsch-Aussagen passend zum Thema"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generiereAussagen'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generiereAussagen'}
           onClick={() => ki.ausfuehren('generiereAussagen', { fragetext, fachbereich, thema })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft Aussagen auf Balance, Eindeutigkeit und fachliche Korrektheit"
           hinweis={!hatAussagen ? 'Mind. 2 Aussagen noetig' : undefined}
-          disabled={!hatAussagen || !fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'pruefeAussagen'}
+          disabled={!hatAussagen || !fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'pruefeAussagen'}
           onClick={() => ki.ausfuehren('pruefeAussagen', { fragetext, aussagen })}
         />
       </div>
@@ -195,16 +195,16 @@ export function KILueckentextButtons({ ki, fragetext, textMitLuecken, luecken, o
           label="Generieren"
           tooltip="KI markiert sinnvolle Lueckenstellen im Text und schlaegt Antworten vor"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'generiereLuecken'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'generiereLuecken'}
           onClick={() => ki.ausfuehren('generiereLuecken', { fragetext, textMitLuecken: textMitLuecken || fragetext })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft ob alle akzeptierten Antwort-Varianten vollstaendig sind"
           hinweis={!hatLuecken ? 'Lueckentext mit {{}} noetig' : undefined}
-          disabled={!hatLuecken || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'pruefeLueckenAntworten'}
+          disabled={!hatLuecken || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'pruefeLueckenAntworten'}
           onClick={() => ki.ausfuehren('pruefeLueckenAntworten', { textMitLuecken, luecken })}
         />
       </div>
@@ -314,16 +314,16 @@ export function KIBerechnungButtons({ ki, fragetext, ergebnisse, onSetErgebnisse
           label="Generieren"
           tooltip="KI berechnet die korrekten Ergebnisse aus dem Aufgabentext"
           hinweis={!fragetext.trim() ? 'Fragetext noetig' : undefined}
-          disabled={!fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'berechneErgebnis'}
+          disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'berechneErgebnis'}
           onClick={() => ki.ausfuehren('berechneErgebnis', { fragetext })}
         />
         <InlineAktionButton
           label="Pruefen & Verbessern"
           tooltip="KI prueft ob die Toleranzbereiche sinnvoll gewaehlt sind"
           hinweis={!hatErgebnisse ? 'Mind. 1 Ergebnis noetig' : undefined}
-          disabled={!hatErgebnisse || !fragetext.trim() || ki.ladeAktion !== null}
-          ladend={ki.ladeAktion === 'pruefeToleranz'}
+          disabled={!hatErgebnisse || !fragetext.trim() || ki.ladeKiAktion !== null}
+          ladend={ki.ladeKiAktion === 'pruefeToleranz'}
           onClick={() => ki.ausfuehren('pruefeToleranz', { fragetext, ergebnisse })}
         />
       </div>

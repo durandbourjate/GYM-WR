@@ -102,9 +102,9 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
       if (!user) return null
       return apiUploadAnhang(user.email, frageId, datei)
     },
-    kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
+    kiAssistent: async (kiAktion: string, daten: Record<string, unknown>) => {
       if (!user) return null
-      return apiKiAssistent(user.email, aktion, daten)
+      return apiKiAssistent(user.email, kiAktion, daten)
     },
     markiereFeedbackAlsIgnoriert: async (feedbackId: string) => {
       if (!user) return

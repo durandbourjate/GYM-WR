@@ -54,7 +54,7 @@ export interface EditorServices {
   uploadAnhang?: (frageId: string, datei: File) => Promise<FrageAnhang | { error: string } | null>
 
   /** KI-Assistent API-Aufruf. Null = KI nicht verfügbar. */
-  kiAssistent?: (aktion: string, daten: Record<string, unknown>) => Promise<KIAssistentRueckgabe | null>
+  kiAssistent?: (kiAktion: string, daten: Record<string, unknown>) => Promise<KIAssistentRueckgabe | null>
 
   /** Feedback-Eintrag als ignoriert markieren (fire-and-forget). */
   markiereFeedbackAlsIgnoriert?: (feedbackId: string) => Promise<void>

@@ -52,7 +52,7 @@ describe('useKIAssistent — offeneKIFeedbacks-Lifecycle + Race-Handling', () =>
 
     expect(result.current.offeneKIFeedbacks).toHaveLength(1)
     expect(result.current.offeneKIFeedbacks[0]).toEqual({
-      aktion: 'klassifiziereFrage',
+      kiAktion: 'klassifiziereFrage',
       feedbackId: 'fb_lifecycle_1',
       wichtig: false,
     })
@@ -113,8 +113,8 @@ describe('useKIAssistent — offeneKIFeedbacks-Lifecycle + Race-Handling', () =>
       result.current.markiereWichtig('klassifiziereFrage', true)
     })
 
-    const klass = result.current.offeneKIFeedbacks.find(f => f.aktion === 'klassifiziereFrage')
-    const muster = result.current.offeneKIFeedbacks.find(f => f.aktion === 'generiereMusterloesung')
+    const klass = result.current.offeneKIFeedbacks.find(f => f.kiAktion === 'klassifiziereFrage')
+    const muster = result.current.offeneKIFeedbacks.find(f => f.kiAktion === 'generiereMusterloesung')
     expect(klass?.wichtig).toBe(true)
     expect(muster?.wichtig).toBe(false)
   })

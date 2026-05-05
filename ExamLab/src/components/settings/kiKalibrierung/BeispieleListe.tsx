@@ -3,7 +3,7 @@ import { kalibrierungApi, type KIFeedbackEintragLP } from '../../../services/kal
 import DiffModal from './DiffModal'
 
 type Filter = {
-  aktion?: string
+  kiAktion?: string
   fachbereich?: string
   status?: string
   nurWichtige?: boolean
@@ -11,7 +11,7 @@ type Filter = {
   bis?: string
 }
 
-const AKTION_LABELS: Record<string, string> = {
+const KIAKTION_LABELS: Record<string, string> = {
   generiereMusterloesung: 'Musterlösung',
   klassifiziereFrage: 'Klassifikation',
   bewertungsrasterGenerieren: 'Bewertungsraster',
@@ -70,7 +70,7 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
       </td>
       <td className="py-2 pr-2">
         <span className="inline-block px-2 py-0.5 text-xs rounded bg-slate-100 dark:bg-slate-700 dark:text-slate-200">
-          {AKTION_LABELS[eintrag.aktion] ?? eintrag.aktion}
+          {KIAKTION_LABELS[eintrag.kiAktion] ?? eintrag.kiAktion}
         </span>
       </td>
       <td className="py-2 pr-2 text-slate-600 dark:text-slate-300 whitespace-nowrap">
@@ -170,11 +170,11 @@ export default function BeispieleListe({ email }: { email: string }) {
     <div className="space-y-3">
       {/* Filter-Leiste */}
       <div className="flex flex-wrap gap-2 pb-3 border-b border-slate-200 dark:border-slate-700">
-        <select value={filter.aktion ?? ''}
-          onChange={e => { setFilter(f => ({ ...f, aktion: e.target.value || undefined })); setSeite(0) }}
+        <select value={filter.kiAktion ?? ''}
+          onChange={e => { setFilter(f => ({ ...f, kiAktion: e.target.value || undefined })); setSeite(0) }}
           className="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white text-sm">
           <option value="">Alle Aktionen</option>
-          {Object.entries(AKTION_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          {Object.entries(KIAKTION_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
 
         <select value={filter.fachbereich ?? ''}

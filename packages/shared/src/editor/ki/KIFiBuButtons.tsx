@@ -19,16 +19,16 @@ export function KIBuchungssatzButtons({ ki, geschaeftsfall }: KIBuchungssatzButt
         label="Konten vorschlagen"
         tooltip="KI schlaegt passende Konten fuer den Geschaeftsfall vor (KMU-Kontenrahmen)"
         hinweis={!geschaeftsfall.trim() ? 'Geschaeftsfall noetig' : undefined}
-        disabled={!geschaeftsfall.trim() || ki.ladeAktion !== null}
-        ladend={ki.ladeAktion === 'generiereKontenauswahl'}
+        disabled={!geschaeftsfall.trim() || ki.ladeKiAktion !== null}
+        ladend={ki.ladeKiAktion === 'generiereKontenauswahl'}
         onClick={() => ki.ausfuehren('generiereKontenauswahl', { geschaeftsfall })}
       />
       <InlineAktionButton
         label="Loesung generieren"
         tooltip="KI erstellt die korrekten Buchungssaetze fuer den Geschaeftsfall"
         hinweis={!geschaeftsfall.trim() ? 'Geschaeftsfall noetig' : undefined}
-        disabled={!geschaeftsfall.trim() || ki.ladeAktion !== null}
-        ladend={ki.ladeAktion === 'generiereBuchungssaetze'}
+        disabled={!geschaeftsfall.trim() || ki.ladeKiAktion !== null}
+        ladend={ki.ladeKiAktion === 'generiereBuchungssaetze'}
         onClick={() => ki.ausfuehren('generiereBuchungssaetze', { geschaeftsfall })}
       />
     </div>
@@ -50,8 +50,8 @@ export function KITKontoButtons({ ki, aufgabentext }: KITKontoButtonsProps) {
         label="T-Konten generieren"
         tooltip="KI erstellt T-Konten-Loesung basierend auf dem Aufgabentext"
         hinweis={!aufgabentext.trim() ? 'Aufgabentext noetig' : undefined}
-        disabled={!aufgabentext.trim() || ki.ladeAktion !== null}
-        ladend={ki.ladeAktion === 'generiereTKonten'}
+        disabled={!aufgabentext.trim() || ki.ladeKiAktion !== null}
+        ladend={ki.ladeKiAktion === 'generiereTKonten'}
         onClick={() => ki.ausfuehren('generiereTKonten', { aufgabentext })}
       />
     </div>
@@ -73,8 +73,8 @@ export function KIKontenbestimmungButtons({ ki, aufgabentext }: KIKontenbestimmu
         label="Aufgaben generieren"
         tooltip="KI erstellt Geschaeftsfaelle fuer die Kontenbestimmung"
         hinweis={!aufgabentext.trim() ? 'Aufgabentext noetig' : undefined}
-        disabled={!aufgabentext.trim() || ki.ladeAktion !== null}
-        ladend={ki.ladeAktion === 'generiereKontenaufgaben'}
+        disabled={!aufgabentext.trim() || ki.ladeKiAktion !== null}
+        ladend={ki.ladeKiAktion === 'generiereKontenaufgaben'}
         onClick={() => ki.ausfuehren('generiereKontenaufgaben', { aufgabentext })}
       />
     </div>
@@ -97,8 +97,8 @@ export function KIBilanzERButtons({ ki, aufgabentext, modus }: KIBilanzERButtons
         label="Struktur generieren"
         tooltip={`KI erstellt eine ${modus === 'erfolgsrechnung' ? 'Erfolgsrechnung' : 'Bilanz'}-Loesung`}
         hinweis={!aufgabentext.trim() ? 'Aufgabentext noetig' : undefined}
-        disabled={!aufgabentext.trim() || ki.ladeAktion !== null}
-        ladend={ki.ladeAktion === 'generiereBilanzStruktur'}
+        disabled={!aufgabentext.trim() || ki.ladeKiAktion !== null}
+        ladend={ki.ladeKiAktion === 'generiereBilanzStruktur'}
         onClick={() => ki.ausfuehren('generiereBilanzStruktur', { aufgabentext, modus })}
       />
     </div>

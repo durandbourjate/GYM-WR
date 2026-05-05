@@ -20,7 +20,7 @@ export default function StatistikKarten({ email }: { email: string }) {
   if (!stats || !einst) return <p className="text-sm text-slate-500 dark:text-slate-400">Lädt…</p>
 
   // Defensive: Backend-Shape kann unerwartet sein (z.B. bei Version-Mismatch)
-  const aktionenSafe = (stats.aktionen && typeof stats.aktionen === 'object') ? stats.aktionen : {}
+  const aktionenSafe = (stats.kiAktionen && typeof stats.kiAktionen === 'object') ? stats.kiAktionen : {}
 
   // B5-Onboarding: Wenn KI-Kalibrierung noch nie aktiviert wurde, klarer Call-to-Action
   const gesamtVorschlaege = Object.values(aktionenSafe).reduce((s, a) => s + (a?.vorschlaege ?? 0), 0)

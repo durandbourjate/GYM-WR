@@ -51,23 +51,23 @@ export default function FragetextSection({
             label="Generieren"
             tooltip="KI erstellt einen neuen Fragetext basierend auf Thema, Fach und Taxonomiestufe"
             hinweis={!thema.trim() ? 'Thema nötig' : undefined}
-            disabled={!thema.trim() || ki.ladeAktion !== null}
-            ladend={ki.ladeAktion === 'generiereFragetext'}
+            disabled={!thema.trim() || ki.ladeKiAktion !== null}
+            ladend={ki.ladeKiAktion === 'generiereFragetext'}
             onClick={() => ki.ausfuehren('generiereFragetext', { fachbereich, thema, unterthema, typ, bloom })}
           />
           <InlineAktionButton
             label="Prüfen & Verbessern"
             tooltip="KI prüft den Fragetext auf Klarheit, Eindeutigkeit und Taxonomie-Passung"
             hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-            disabled={!fragetext.trim() || ki.ladeAktion !== null}
-            ladend={ki.ladeAktion === 'verbessereFragetext'}
+            disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+            ladend={ki.ladeKiAktion === 'verbessereFragetext'}
             onClick={() => ki.ausfuehren('verbessereFragetext', { fragetext })}
           />
           <InlineAktionButton
             label="🤖 KI: Frage aus Lernziel"
             tooltip="KI generiert eine Frage basierend auf einem Lernziel"
-            disabled={ki.ladeAktion !== null}
-            ladend={ki.ladeAktion === 'generiereFrageZuLernziel'}
+            disabled={ki.ladeKiAktion !== null}
+            ladend={ki.ladeKiAktion === 'generiereFrageZuLernziel'}
             onClick={async () => {
               if (!lernziele.length) {
                 const lz = await services.ladeLernziele?.(config.benutzer?.email ?? '', fachbereich)
@@ -141,7 +141,7 @@ export default function FragetextSection({
           </select>
           <div className="flex gap-2">
             <button
-              disabled={!gewaehlterLernzielId || ki.ladeAktion === 'generiereFrageZuLernziel'}
+              disabled={!gewaehlterLernzielId || ki.ladeKiAktion === 'generiereFrageZuLernziel'}
               onClick={() => {
                 const lz = lernziele.find(l => l.id === gewaehlterLernzielId)
                 if (lz) {
@@ -154,7 +154,7 @@ export default function FragetextSection({
               }}
               className="px-3 py-1 text-sm bg-slate-800 text-white rounded hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-600"
             >
-              {ki.ladeAktion === 'generiereFrageZuLernziel' ? 'Generiert...' : 'Generieren'}
+              {ki.ladeKiAktion === 'generiereFrageZuLernziel' ? 'Generiert...' : 'Generieren'}
             </button>
             <button onClick={() => setZeigLernzielDialog(false)}
               className="px-3 py-1 text-sm border border-slate-300 rounded hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300">

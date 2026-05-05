@@ -5,7 +5,7 @@
 import { useState, useCallback } from 'react'
 import { useEditorServices, useEditorConfig } from './EditorContext'
 
-export type AktionKey =
+export type KiAktionKey =
   | 'generiereFragetext'
   | 'verbessereFragetext'
   | 'generiereMusterloesung'
@@ -33,14 +33,14 @@ export type AktionKey =
   | 'generiereBilanzStruktur'
   | 'generiereFallbeispiel'
 
-export interface AktionErgebnis {
+export interface KiAktionErgebnis {
   daten: Record<string, unknown> | null
   fehler: string | null
 }
 
 /** Offener KI-Feedback-Eintrag (noch nicht bestätigt/ignoriert) */
 export interface OffenerKIFeedback {
-  aktion: AktionKey
+  kiAktion: KiAktionKey
   feedbackId: string
   wichtig: boolean
 }
@@ -49,66 +49,66 @@ export interface OffenerKIFeedback {
 export function useKIAssistent() {
   const services = useEditorServices()
   const config = useEditorConfig()
-  const [ladeAktion, setLadeAktion] = useState<AktionKey | null>(null)
-  const [ergebnisse, setErgebnisse] = useState<Partial<Record<AktionKey, AktionErgebnis>>>({})
+  const [ladeKiAktion, setLadeKiAktion] = useState<KiAktionKey | null>(null)
+  const [ergebnisse, setErgebnisse] = useState<Partial<Record<KiAktionKey, KiAktionErgebnis>>>({})
   const [offeneKIFeedbacks, setOffeneKIFeedbacks] = useState<OffenerKIFeedback[]>([])
 
-  const ausfuehren = useCallback(async (aktion: AktionKey, daten: Record<string, unknown>) => {
+  const ausfuehren = useCallback(async (kiAktion: KiAktionKey, daten: Record<string, unknown>) => {
     if (!services.kiAssistent || !config.benutzer.email) return
 
     // Race-Handling (Spec B2): alter offener Eintrag derselben Aktion → fire-and-forget ignorieren
     setOffeneKIFeedbacks(prev => {
-      const alt = prev.find(f => f.aktion === aktion)
+      const alt = prev.find(f => f.kiAktion === kiAktion)
       if (alt && services.markiereFeedbackAlsIgnoriert) {
         services.markiereFeedbackAlsIgnoriert(alt.feedbackId).catch((err: unknown) =>
           console.warn('[Kalibrierung] markiereFeedbackAlsIgnoriert fehlgeschlagen:', err)
         )
       }
-      return prev.filter(f => f.aktion !== aktion)
+      return prev.filter(f => f.kiAktion !== kiAktion)
     })
 
-    setLadeAktion(aktion)
-    setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: undefined }))
+    setLadeKiAktion(kiAktion)
+    setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => ({ ...prev, [kiAktion]: undefined }))
 
     try {
-      const response = await services.kiAssistent(aktion, daten)
+      const response = await services.kiAssistent(kiAktion, daten)
       if (!response) {
-        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: 'Keine Antwort vom Server' } }))
+        setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => ({ ...prev, [kiAktion]: { daten: null, fehler: 'Keine Antwort vom Server' } }))
       } else if ('error' in response.ergebnis && typeof response.ergebnis.error === 'string') {
-        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: response.ergebnis.error as string } }))
+        setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => ({ ...prev, [kiAktion]: { daten: null, fehler: response.ergebnis.error as string } }))
       } else {
-        setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: response.ergebnis, fehler: null } }))
+        setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => ({ ...prev, [kiAktion]: { daten: response.ergebnis, fehler: null } }))
         // feedbackId-Tracking für Kalibrierungs-Feedback-Loop
         if (response.feedbackId) {
-          setOffeneKIFeedbacks(prev => [...prev, { aktion, feedbackId: response.feedbackId!, wichtig: false }])
+          setOffeneKIFeedbacks(prev => [...prev, { kiAktion, feedbackId: response.feedbackId!, wichtig: false }])
         }
       }
     } catch {
-      setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => ({ ...prev, [aktion]: { daten: null, fehler: 'Netzwerkfehler' } }))
+      setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => ({ ...prev, [kiAktion]: { daten: null, fehler: 'Netzwerkfehler' } }))
     } finally {
-      setLadeAktion(null)
+      setLadeKiAktion(null)
     }
   }, [services, config.benutzer.email])
 
   /** Ergebnis verwerfen + offenen Feedback-Eintrag als ignoriert markieren */
-  function verwerfen(aktion: AktionKey): void {
-    const fb = offeneKIFeedbacks.find(f => f.aktion === aktion)
+  function verwerfen(kiAktion: KiAktionKey): void {
+    const fb = offeneKIFeedbacks.find(f => f.kiAktion === kiAktion)
     if (fb && services.markiereFeedbackAlsIgnoriert) {
       services.markiereFeedbackAlsIgnoriert(fb.feedbackId).catch((err: unknown) =>
         console.warn('[Kalibrierung] verwerfen: markiereFeedbackAlsIgnoriert fehlgeschlagen:', err)
       )
     }
-    setOffeneKIFeedbacks(prev => prev.filter(f => f.aktion !== aktion))
-    setErgebnisse((prev: Partial<Record<AktionKey, AktionErgebnis>>) => {
+    setOffeneKIFeedbacks(prev => prev.filter(f => f.kiAktion !== kiAktion))
+    setErgebnisse((prev: Partial<Record<KiAktionKey, KiAktionErgebnis>>) => {
       const neu = { ...prev }
-      delete neu[aktion]
+      delete neu[kiAktion]
       return neu
     })
   }
 
   /** Stern-Markierung: wichtig-Flag auf Eintrag der Aktion setzen */
-  function markiereWichtig(aktion: AktionKey, wert: boolean): void {
-    setOffeneKIFeedbacks(prev => prev.map(f => f.aktion === aktion ? { ...f, wichtig: wert } : f))
+  function markiereWichtig(kiAktion: KiAktionKey, wert: boolean): void {
+    setOffeneKIFeedbacks(prev => prev.map(f => f.kiAktion === kiAktion ? { ...f, wichtig: wert } : f))
   }
 
   /** Snapshot aller offenen Feedback-Einträge (z.B. für Save-Handler) */
@@ -125,7 +125,7 @@ export function useKIAssistent() {
   const verfuegbar = services.istKIVerfuegbar()
 
   return {
-    ladeAktion,
+    ladeKiAktion,
     ergebnisse,
     ausfuehren,
     verwerfen,
