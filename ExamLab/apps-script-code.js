@@ -357,16 +357,16 @@ function istGruppenMitglied_(body, gruppeId) {
  * Loggt sensible Aktionen in den AuditLog-Tab im Registry-Sheet.
  * Darf nie die Hauptaktion blockieren.
  */
-function auditLog_(aktion, email, details) {
+function auditLog_(action, email, details) {
   try {
     var ss = SpreadsheetApp.openById(GRUPPEN_REGISTRY_ID);
     var sheet = ss.getSheetByName('AuditLog');
     if (!sheet) {
       sheet = ss.insertSheet('AuditLog');
-      sheet.appendRow(['timestamp', 'aktion', 'email', 'details']);
+      sheet.appendRow(['timestamp', 'action', 'email', 'details']);
       sheet.setFrozenRows(1);
     }
-    sheet.appendRow([new Date().toISOString(), aktion, email, JSON.stringify(details)]);
+    sheet.appendRow([new Date().toISOString(), action, email, JSON.stringify(details)]);
   } catch(e) { /* Logging darf nie die Hauptaktion blockieren */ }
 }
 
@@ -6720,7 +6720,7 @@ function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens, callerEmail) {
       // NICHT bei 529 "overloaded" (transient, Anthropic empfiehlt Retry — kein Auto-Disable).
       // 'quota' nur mit '.?exceeded' erlaubt (verhindert False-Positives in Claude-Antworten über Wirtschafts-Quoten).
       if (callerEmail && /429|rate.?limit|daily.?limit|quota.?exceeded/i.test(errMsg)) {
-        auditLog_('kiAssistent:quotaExceeded', callerEmail, { aktion: 'auto-disable-attempt', status: status });
+        auditLog_('kiAssistent:quotaExceeded', callerEmail, { action: 'auto-disable-attempt', status: status });
         var watchdogLock = LockService.getScriptLock();
         try {
           watchdogLock.waitLock(5000);
@@ -6745,7 +6745,7 @@ function rufeClaudeAuf(systemPrompt, userPrompt, maxTokens, callerEmail) {
     // Quota-Watchdog für Netzwerk-/Transport-Fehler (z.B. UrlFetchApp-Exception).
     // Gleiche Regex wie oben: kein 'overloaded', 'quota' nur mit '.?exceeded'.
     if (callerEmail && /429|rate.?limit|daily.?limit|quota.?exceeded/i.test(String(e.message || e))) {
-      auditLog_('kiAssistent:quotaExceeded', callerEmail, { aktion: 'auto-disable-attempt', fehler: String(e.message || e).substring(0, 200) });
+      auditLog_('kiAssistent:quotaExceeded', callerEmail, { action: 'auto-disable-attempt', fehler: String(e.message || e).substring(0, 200) });
       var watchdogLock2 = LockService.getScriptLock();
       try {
         watchdogLock2.waitLock(5000);
