@@ -8,6 +8,58 @@
 
 ## Letzter Stand auf main
 
+### Bundle M — Fragenbank → Fragensammlung Rename ✅ MERGE-READY (05.05.2026)
+
+Branch `feature/bundle-m-fragensammlung-rename` (von main `cd7e9f9`). 9 Sub-Commits, 2 Apps-Script-Deploys, Sheet-Spalten-Rename. Erstes Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Mechanischer Rename, niedriges Risiko.
+
+**Audit-Token-Diff:**
+| Token | vorher | nachher (Code) |
+|---|---:|---:|
+| `fragenbank` | 97 | 3 (Bundle-M-Cleanup-Hook in authStore, absichtlich) |
+| `Fragenbank` | 49 | **0** |
+| `FRAGENBANK` | 6 | **0** |
+| Total | 152 | 3 |
+
+**Sub-Commits:**
+- `972e9c2` Task 0: audit-tokens.sh cherry-pick + 27 macOS-Duplikate aufgeräumt
+- `2bed478` Task 1: Apps-Script Backward-Compat (Sheet-Spalte + Endpoints + JSON-Field parallel)
+- `59eba6c` Task 2: Apps-Script intern alles umbenannt (FRAGENSAMMLUNG_ID, var fragensammlung, Funktionen, Cache-Keys, JS-Field-Typo)
+- `7836574` Task 2 follow-up: 9 lokale Temp-Vars (`fragenbankSS`/`fragebankSs`) renamen (Code-Quality-Reviewer-Finding)
+- `97dfd59` Task 3: Frontend Service-Layer (3 Files) + Type-Field-Rename (7 Stellen) + IDB-Cleanup-Hook in authStore.anmelden()
+- `23d2342` Task 4: Komponenten-Ordner `lp/fragenbank/` → `lp/fragensammlung/` (15 Files)
+- `96d135e` Task 5: Tests + Mocks (1234/1238 vitest grün)
+- `<hash>` Task 6: Backward-Compat-Removal + Apps-Script-Comments + HANDOFF + Memory
+
+**E2E-Pfade (LP, mit echten Logins `wr.test@gymhofwil.ch`):**
+
+| # | Pfad | Status |
+|---|---|---|
+| 1 | Fragensammlung lädt 2363 Fragen, neue IDB voll | ✅ |
+| 2 | Frage-Editor + Auto-Save (Bundle 3): „Speichert..." → „✓ Gespeichert" | ✅ |
+| 3 | Drafts-Section (2 Entwürfe) | ✅ |
+| 4 | Papierkorb (1 Eintrag) | ✅ |
+| 5 | Pool-Sync-Dialog Component lädt | ✅ |
+| 6 | Excel-Import-Modal öffnet | ✅ |
+| 7 | Logout: neue IDB leer | ✅ |
+| 8 | Re-Login: Console-Log `[Bundle M] alte fragenbank-DB gedroppt` + alte IDB komplett weg | ✅ |
+
+**Apps-Script-Deploys während Bundle M:**
+1. Deploy 1 nach Task 2 (Backward-Compat aktiv): User durchgeführt ✅
+2. Deploy 2 nach Task 6 (Backward-Compat entfernt, finaler Stand): User-Action offen
+
+**User-Aktionen während Bundle M:**
+- Sheet-Spalte `fragenbanksheetid` → `fragensammlungsheetid` im Gruppen-Tab umbenannt ✅
+
+**Lehren (für Memory + future Renames):**
+- macOS-Duplikate (`* 2.tsx`) im Working-Tree vor Ordner-Rename aufräumen — sonst wandert Cruft beim `git mv` mit (Task 0 + 27 untracked Dupes gelöscht)
+- Backward-Compat-Pattern: Apps-Script + Endpoint-Aliases + Dual-JSON-Field für gleichnamige Wire-Verträge → Frontend-Migration kann zwischen Apps-Script-Deploys laufen ohne Race-Condition
+- Bei `git mv old-Service.ts new-Service.ts` mit präexistierender new-Service.ts (z.B. partielles Frühe-Migration) → MERGEN statt ersetzen, dann `git rm old`. Die initiale Subagent-Iteration übersah das und legte parallele Files an — Reset + manuelles Merge nötig
+- Word-Boundary-Grep `\bfragenbank\b` matched nicht `fragenbankSS` (Suffix-Token) → Code-Quality-Reviewer fängt solche Stellen, sed-Pass mit `(var|const|let) fragenbank ` allein ist nicht genug
+- Apps-Script `case 'X'` Aliases: globale `sed`-Replace auf `ladeFragenbank` würde diese Strings auch ersetzen → manueller Restore nach Mass-Rename nötig
+- IDB-Cleanup-Hook in `anmelden()` feuert NUR bei aktivem Login, nicht bei session-restore. Beim Logout läuft nur der neue (renamen) Cache-Cleanup — die alte DB bleibt bis zum nächsten aktiven Re-Login. Acceptable für 1 Login-Cycle.
+
+---
+
 ### Bundle 3 — Auto-Save + Drafts + Papierkorb ✅ MERGED (05.05.2026)
 
 Merge-Commit `7c411e0` auf `main`. Branch `feature/bundle-3-autosave-drafts-papierkorb` lokal + remote gelöscht. Backend `0042b5f`-Stand deployed (4 Apps-Script-Deploys während Phase A + F.4). Frontend vitest grün (1234/1238). Browser-E2E mit echten Logins (`wr.test@gymhofwil.ch`) Pfade 1-7 ✅, 8-10 vitest-covered. 6 E2E-entdeckte Bugs alle gefixt + 5 Memory-Lehren extrahiert.

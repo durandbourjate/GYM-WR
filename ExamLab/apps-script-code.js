@@ -116,7 +116,7 @@ const LERNZIELE_TAB = 'Lernziele';
 
 // === LERNPLATTFORM-KONFIGURATION ===
 const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
-// Dynamisch: Alle Tabs im Fragenbank-Sheet ausser System-Tabs
+// Dynamisch: Alle Tabs im Fragensammlung-Sheet ausser System-Tabs
 const FRAGENBANK_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
 // Fachbereich-Mapping: Unklare Tab-Namen auf saubere Bezeichnungen mappen
 const FACHBEREICH_MAPPING = { 'Allgemein': 'Andere' };
@@ -383,18 +383,13 @@ function alleGruppenLaden_() {
   var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
   var result = [];
   for (var i = 1; i < data.length; i++) {
-    // Bundle M: Sheet-Spalten-Header lookups parallel (alt + neu)
-    var idxNeu = headers.indexOf('fragensammlungsheetid');
-    var idxAlt = headers.indexOf('fragenbanksheetid');
-    var sheetIdIdx = idxNeu !== -1 ? idxNeu : idxAlt;
-    var sheetIdValue = String(sheetIdIdx !== -1 ? data[i][sheetIdIdx] || '' : '');
+    var sheetIdValue = String(data[i][headers.indexOf('fragensammlungsheetid')] || '');
     result.push({
       id: String(data[i][headers.indexOf('id')] || ''),
       name: String(data[i][headers.indexOf('name')] || ''),
       typ: String(data[i][headers.indexOf('typ')] || ''),
       adminEmail: String(data[i][headers.indexOf('adminemail')] || ''),
-      fragebankSheetId: sheetIdValue,         // backward-compat (Typo, von alter Frontend-Bundle gelesen)
-      fragensammlungSheetId: sheetIdValue,    // neu (ab Frontend-Bundle Task 3)
+      fragensammlungSheetId: sheetIdValue,
       analytikSheetId: String(data[i][headers.indexOf('analytiksheetid')] || ''),
     });
   }
@@ -463,11 +458,11 @@ function getLPInfo(email) {
 }
 
 // === CACHE-SYSTEM (Performance-Optimierung) ===
-// Globaler Cache für Configs, Fragenbank, Tracker.
+// Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
 // Versions-Counter invalidiert alle Caches bei Schreiboperationen.
 
-var CACHE_TTL = 1800; // 30 Minuten (Fragenbank ändert sich selten)
+var CACHE_TTL = 1800; // 30 Minuten (Fragensammlung ändert sich selten)
 var CACHE_MAX_CHUNK = 90000; // 90KB pro CacheService-Key (Limit: 100KB)
 
 /** Liest gecachte Daten (mit Chunking-Support für grosse Datensätze) */
@@ -532,7 +527,7 @@ function cacheInvalidieren_() {
 }
 
 /**
- * Mapping Fachschaft → Fachbereiche in der Fragenbank
+ * Mapping Fachschaft → Fachbereiche in der Fragensammlung
  */
 function fachschaftZuFachbereiche(fachschaft) {
   var mapping = {
@@ -1065,10 +1060,8 @@ function doGet(e) {
       return ladeAktivePruefungenFuerSuS(email);
     case 'ladeEinzelConfig':
       return ladeEinzelConfig(e.parameter.id, email);
-    case 'ladeFragenbank':               // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlung':
       return ladeFragensammlung(email);
-    case 'ladeFragenbankSummary':        // backward-compat alias (entfernt in Task 6)
     case 'ladeFragensammlungSummary':
       return ladeFragensammlungSummary(email);
     case 'ladeFrageDetail':
@@ -1180,7 +1173,7 @@ function doPost(e) {
     }
   }
 
-  // Schreibende Aktionen invalidieren den Cache (Configs, Fragenbank, Tracker)
+  // Schreibende Aktionen invalidieren den Cache (Configs, Fragensammlung, Tracker)
   var SCHREIBENDE_AKTIONEN = LP_AKTIONEN.concat(['speichereAntworten']);
   if (SCHREIBENDE_AKTIONEN.indexOf(action) >= 0) {
     cacheInvalidieren_();
@@ -3682,7 +3675,7 @@ function resetPruefungEndpoint(body) {
   }
 }
 
-// === FRAGE SPEICHERN (Fragenbank) ===
+// === FRAGE SPEICHERN (Fragensammlung) ===
 
 /**
  * Stellt sicher, dass bei FiBu-Fragen mit eingeschränkter Kontenauswahl alle
@@ -3911,7 +3904,7 @@ function speichereFrage(body) {
   }
 }
 
-// === Frage aus Fragenbank löschen ===
+// === Frage aus Fragensammlung löschen ===
 
 /**
  * Pure-Helper für loescheFrage (Bundle 3, Soft-Delete).
@@ -4395,7 +4388,7 @@ function loescheAllePoolFragen(body) {
 }
 
 /**
- * Batch-Import: Mehrere Fragen auf einmal in die Fragenbank schreiben.
+ * Batch-Import: Mehrere Fragen auf einmal in die Fragensammlung schreiben.
  * Nutzt setValues() für alle Fragen eines Fachbereichs auf einmal — Sekunden statt Stunden.
  * Body: { email, fragen: Frage[] }
  */
@@ -4845,7 +4838,7 @@ function ladeEinzelConfig(pruefungId, email) {
   }
 }
 
-// === FRAGENBANK LADEN (Composer) ===
+// === FRAGENSAMMLUNG LADEN (Composer) ===
 
 function ladeFragensammlung(email) {
   try {
@@ -4893,7 +4886,7 @@ function ladeFragensammlung(email) {
   }
 }
 
-// === FRAGENBANK SUMMARY (leichtgewichtig für Listenansicht) ===
+// === FRAGENSAMMLUNG SUMMARY (leichtgewichtig für Listenansicht) ===
 
 /**
  * Gibt nur die für die Listenansicht nötigen Felder zurück (~200 Bytes/Frage statt ~1500).
@@ -4995,7 +4988,7 @@ function frageZuSummary_(frage) {
   };
 }
 
-// === FRAGENBANK DETAIL (einzelne Frage mit allen Feldern) ===
+// === FRAGENSAMMLUNG DETAIL (einzelne Frage mit allen Feldern) ===
 
 /**
  * Lädt eine einzelne Frage mit allen Detail-Feldern.
@@ -5837,7 +5830,7 @@ function ladeLernziele(body) {
       }
     } catch (e) { /* Lehrplan-Sheet nicht konfiguriert — Fallback auf Pool-Lernziele */ }
 
-    // Fallback: Pool-Lernziele aus Fragenbank (bisherige Logik)
+    // Fallback: Pool-Lernziele aus Fragensammlung (bisherige Logik)
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var sheet = fragensammlung.getSheetByName(LERNZIELE_TAB);
 
@@ -8683,7 +8676,7 @@ function migriereFachbereich_() {
   var migriertConfigs = 0;
 
   try {
-    // Fragenbank-Tabs migrieren
+    // Fragensammlung-Tabs migrieren
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var tabs = ['VWL', 'BWL', 'Recht', 'Informatik'];
     for (var t = 0; t < tabs.length; t++) {
@@ -8962,7 +8955,7 @@ function lernplattformLadeGruppen(body) {
 
 /**
  * Neue Gruppe erstellen (Admin-Aktion).
- * Erstellt automatisch Fragenbank-Sheet + Analytik-Tabs.
+ * Erstellt automatisch Fragensammlung-Sheet + Analytik-Tabs.
  */
 function lernplattformErstelleGruppe(body) {
   var name = body.name;
@@ -8985,7 +8978,7 @@ function lernplattformErstelleGruppe(body) {
     id = id + '-' + Date.now().toString(36).substring(-4);
   }
 
-  // Fragenbank-Sheet erstellen
+  // Fragensammlung-Sheet erstellen
   var fragensammlungSS = SpreadsheetApp.create('Lernplattform: ' + name);
   var fragensammlungId = fragensammlungSS.getId();
 
@@ -9244,12 +9237,12 @@ function lernplattformAendereRolle(body) {
 // ============================================================
 
 /**
- * Fragen laden aus der GEMEINSAMEN Fragenbank (gleiche Datenquelle wie ExamLab).
+ * Fragen laden aus der GEMEINSAMEN Fragensammlung (gleiche Datenquelle wie ExamLab).
  * Liest alle Fragen aus FRAGENSAMMLUNG_ID, Tabs: VWL, BWL, Recht, Informatik.
  * Gibt Fragen im kanonischen shared-Format zurück (fragetext, fachbereich, bloom, typDaten).
  */
 function lernplattformLadeFragen(body) {
-  // gruppeId wird für Berechtigungsprüfung noch gebraucht, aber Fragen kommen aus der gemeinsamen Fragenbank
+  // gruppeId wird für Berechtigungsprüfung noch gebraucht, aber Fragen kommen aus der gemeinsamen Fragensammlung
   var gruppeId = body.gruppeId;
   // SICHERHEIT: Email NICHT aus body übernehmen — Token-Validierung ist die einzige Quelle.
   // Ohne validiertes Token: SuS-Pfad (bereinigt), nie LP-Pfad.
@@ -9269,7 +9262,7 @@ function lernplattformLadeFragen(body) {
     return lernplattformLadeFragenAusGruppenSheet_(gruppe);
   }
 
-  // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
+  // Gym-Gruppen: Gemeinsame Fragensammlung (wie ExamLab)
   try {
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var alleFragen = [];
@@ -9373,7 +9366,7 @@ function lernplattformPruefeAntwort(body) {
   var gruppe = mitgliedCheck.gruppe;
 
   // Frage frisch (unbereinigt) laden — NIEMALS aus Request-Body nehmen.
-  // Familie-Gruppen: aus Gruppen-Sheet; sonst globale Fragenbank.
+  // Familie-Gruppen: aus Gruppen-Sheet; sonst globale Fragensammlung.
   // fachbereichHint reduziert Sheet-Reads um ~75% (1 Tab statt 4).
   var frage = ladeFrageUnbereinigtById_(frageId, gruppe, body.fachbereich);
   if (!frage) return jsonResponse({ success: false, error: 'Frage nicht gefunden' });
@@ -10247,7 +10240,7 @@ function lernplattformSpeichereFrage(body) {
   if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung (nur Kurs-Leitung)' });
   var gruppe = auth.gruppe;
 
-  // Fachbereich bestimmt den Tab in der Fragenbank
+  // Fachbereich bestimmt den Tab in der Fragensammlung
   var fachbereich = frage.fachbereich || frage.fach || '';
 
   // Familie-Gruppen: weiterhin eigenes Sheet nutzen
@@ -10255,7 +10248,7 @@ function lernplattformSpeichereFrage(body) {
     return speichereFrageInGruppenSheet_(gruppe, frage);
   }
 
-  // Gym-Gruppen: Gemeinsame Fragenbank (wie ExamLab)
+  // Gym-Gruppen: Gemeinsame Fragensammlung (wie ExamLab)
   try {
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var sheet = fragensammlung.getSheetByName(fachbereich);
@@ -11164,7 +11157,7 @@ function lernplattformUploadAnhang(body) {
 // ============================================================
 
 /**
- * Lernziele aus der Fragenbank laden (aus lernzielIds-Spalte).
+ * Lernziele aus der Fragensammlung laden (aus lernzielIds-Spalte).
  */
 function lernplattformLadeLernziele(body) {
   var email = (body.email || '').toLowerCase().trim();
@@ -11631,7 +11624,7 @@ function autorisiereAlleScopes() {
  *            summary: [erste 50 Aktualisierungen], totalSummary, errors }
  *
  * WICHTIG: User muss VOR dem echten Lauf (dryRun=false) Backup-Kopien der
- * Fragenbank-Sheets erstellen (Google Drive -> "Kopie erstellen").
+ * Fragensammlung-Sheets erstellen (Google Drive -> "Kopie erstellen").
  */
 function migrierFragenZuMediaQuelleEndpoint_(body) {
   try {
@@ -12572,7 +12565,7 @@ function testC9BatchUpdateFragenMigration() {
  *
  * Testet Partial-Update-Semantik + ID-Match + nichtGefunden-Handling.
  *
- * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENBANK (eine BWL-MC-Frage bekommt eine
+ * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENSAMMLUNG (eine BWL-MC-Frage bekommt eine
  * Marker-musterlosung, dann wird die Original-musterlosung sofort wieder zurueck-
  * gesetzt). pruefungstauglich geht dabei auf leer — falls die Test-Frage vorher
  * true war: User setzt sie manuell im Editor zurueck.
@@ -12676,7 +12669,7 @@ function testC9BatchUpdateFragenMigration_() {
  *       (Last-Writer-Wins auf unserer Seite). Darum DARF dieser Endpoint nur
  *       waehrend einem angekuendigten Migrations-Fenster laufen — der Admin
  *       muss vorher sicherstellen, dass keine LP/SuS gleichzeitig editieren
- *       (Status bekannt geben, kurze Fragenbank-Freeze). Phase 6 kann das
+ *       (Status bekannt geben, kurze Fragensammlung-Freeze). Phase 6 kann das
  *       mit Row-Level-Updates (statt Whole-Sheet-Snapshot) entschaerfen.
  */
 function batchUpdateLueckentextMigrationEndpoint(body) {
@@ -12845,7 +12838,7 @@ function testC9BatchUpdateLueckentextMigration() {
  *
  * Testet Partial-Update-Semantik + ID-Match + nichtGefunden-Handling + Typ-Guard.
  *
- * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENBANK: die erste Lückentext-Frage aus BWL
+ * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENSAMMLUNG: die erste Lückentext-Frage aus BWL
  * bekommt TEST-MARKER-korrekteAntworten gesetzt. Nach dem Assert wird der
  * Originalzustand per zweitem Endpoint-Aufruf zurueckgeschrieben PLUS die
  * Spalten pruefungstauglich/geaendertAm/poolContentHash werden direkt per
@@ -13371,7 +13364,7 @@ function testDragDropMultiZonePrivacy() {  // public wrapper für GAS-Editor
  * Bundle J Phase 9 — Smoke-Test fuer batchUpdateFragenMigrationEndpoint mit
  * generic `felder`-Patch (zielzonen, labels, pruefungstauglich).
  *
- * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENBANK. Nach erfolgreichem Test wird der
+ * ⚠️ Schreibt kurz IN DIE ECHTE FRAGENSAMMLUNG. Nach erfolgreichem Test wird der
  * urspruengliche Zustand wiederhergestellt — BIS AUF pruefungstauglich, das
  * der Test deutlich auf '' setzt (User darf nach Test manuell zuruecksetzen).
  *
@@ -13894,7 +13887,7 @@ function testProblemmeldungen() {
 }
 
 /**
- * Diagnose: scannt alle Fragenbank-Tabs nach Lückentextfragen mit mindestens
+ * Diagnose: scannt alle Fragensammlung-Tabs nach Lückentextfragen mit mindestens
  * einer leeren korrekteAntworten (Lücke ohne hinterlegte Antwort — SuS kann
  * nie richtig antworten). Manuell im GAS-Editor ausführen, kein Deploy nötig.
  *
@@ -14025,7 +14018,7 @@ function testBereinigeLueckentextModus() { testBereinigeLueckentextModus_(); }
  * auf `json`/`daten` zurück; für Lückentext nicht, aber wir halten die Quellen
  * konsistent).
  *
- * Manuell im GAS-Editor ausführen, NACH Google-Sheets-Backup der Fragenbank.
+ * Manuell im GAS-Editor ausführen, NACH Google-Sheets-Backup der Fragensammlung.
  */
 function migriereLueckentextModus() {
   // SICHERHEIT: Diese Funktion ist NICHT im doPost-Dispatcher geroutet (grep-verifiziert).
