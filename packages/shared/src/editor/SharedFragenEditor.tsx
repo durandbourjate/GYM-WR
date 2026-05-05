@@ -201,6 +201,11 @@ export default function SharedFragenEditor({
     const raster = defaults[neuerTyp] ?? [{ beschreibung: '', punkte: 1 }]
     setBewertungsraster(raster)
   }
+  // Bundle 3 P-C.3 hotfix#2 — Stable Editor-Frage-ID. Bei `frage===null` (Neue Frage)
+  // generiere lokale UUID, damit Auto-Save unter eindeutigem Key schreibt (`draft:neu-<uuid>`)
+  // statt globalem `draft:preview`-Sammelbecken. Persistierte Fragen behalten ihre id.
+  const [editorFrageId] = useState<string>(() => frage?.id ?? `neu-${typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)}`)
+
   const [fachbereich, setFachbereichRaw] = useState<Fachbereich>(frage?.fachbereich ?? defaultFachbereich(config.benutzer.fachschaft) as Fachbereich)
   const [resetBanner, setResetBanner] = useState<number>(0) // Bundle 2 P4.2: Counter — jeder Increment triggert Reset-Banner im LernzielWaehler
   const [thema, setThema] = useState(frage?.thema ?? '')
@@ -704,7 +709,7 @@ export default function SharedFragenEditor({
   // Minimal-Preview der aktuellen Frage für Validator (nur typ-spezifische Felder relevant).
   // Switch ausgelagert nach buildFragePreview.ts (DRY + LOC-Reduktion).
   const aktuelleFrage = useMemo(() => buildFragePreview({
-    id: frage?.id,
+    id: editorFrageId,
     typ, fragetext,
     optionen, mehrfachauswahl,
     musterlosung, bewertungsraster,
@@ -728,7 +733,7 @@ export default function SharedFragenEditor({
     biAufgabentext, biKontenMitSaldi, agKontext, agTeilaufgaben, canvasConfig,
     pdfDriveFileId, pdfUrl, pdfBase64, pdfErlaubteWerkzeuge, sortElemente,
     bildUrl, hsBereiche, bbBeschriftungen, ddZielzonen, ddLabels,
-    codeSprache, codeMusterLoesungCode, formelKorrekteFormel, frage?.id,
+    codeSprache, codeMusterLoesungCode, formelKorrekteFormel, editorFrageId,
   ])
 
   const validation = useMemo(

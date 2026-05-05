@@ -104,8 +104,14 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
   // Bundle 3 P-C.3 — Auto-Save: Status-Hook + Schliessen-Modal-State
   const [schliessenModal, setSchliessenModal] = useState<SchliessenVariante | null>(null)
-  const editorId = `fragenbrowser-${editFrage?.id ?? 'neu'}`
-  const autoSaveState = useFragenAutoSave(editorId, editFrage)
+  // Bundle 3 P-C.3 hotfix#2 — `liveFrage` ist die LIVE-Editor-State-Frage (von onTippe
+  // gepflegt), im Gegensatz zu `editFrage` (persistierte Frage beim Open). Hook subscribed
+  // auf `liveFrage.id` damit Status-Indikator + Schliessen-Modal-Logik auch bei "Neue
+  // Frage" (editFrage=null) funktionieren.
+  const [liveFrage, setLiveFrage] = useState<Frage | null>(null)
+  useEffect(() => { setLiveFrage(editFrage) }, [editFrage])
+  const editorId = `fragenbrowser-${liveFrage?.id ?? 'neu'}`
+  const autoSaveState = useFragenAutoSave(editorId, liveFrage)
 
   // Filter/Sort/Gruppierungs-Hook
   const filter = useFragenFilter(alleFragen, user?.email, ladeStatus, istDemoModus)
@@ -242,7 +248,12 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
         if (!user?.email) return
         // Core→Storage Layer-Boundary: tippeFrage akzeptiert Storage.Frage; Core ist
         // strukturell kompatibel (tippeFrage liest nur id/fachbereich/typ + speichert volles Objekt).
-        draftSyncTippe(user.email, frage as unknown as Frage /* Defensive: Core→Storage Layer-Boundary, draftSync-tippe behandelt Frage opaque */)
+        const storageFrage = frage as unknown as Frage /* Defensive: Core→Storage Layer-Boundary, draftSync-tippe behandelt Frage opaque */
+        // Bundle 3 P-C.3 hotfix#2 — liveFrage updaten: useFragenAutoSave subscribed auf
+        // liveFrage.id, daher MUSS jeder Tipp den Hook-Input synchronisieren (sonst
+        // bleibt Status-Indikator auf 'sauber'-Default).
+        setLiveFrage(storageFrage)
+        draftSyncTippe(user.email, storageFrage)
       },
       onSchliessenVersuch: async () => {
         // Sync läuft / Verbindungsproblem / Server-down → Modal "sync-pending"
