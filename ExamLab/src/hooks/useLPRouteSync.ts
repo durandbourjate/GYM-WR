@@ -59,6 +59,14 @@ export function useLPRouteSync(): void {
       return
     }
 
+    // Papierkorb: /papierkorb (Bundle 3 Phase E)
+    if (path.startsWith('/papierkorb')) {
+      if (store.modus !== 'papierkorb') {
+        store.setModus('papierkorb')
+      }
+      return
+    }
+
     // Config-ID aus der URL ableiten (für /pruefung/:id und /uebung/:id).
     // Wird unten von Prüfung/Übung-Branch benötigt, um Composer zu öffnen.
     const configIdInUrl = leseConfigIdAusPfad(path)

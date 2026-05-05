@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type LPModus = 'pruefung' | 'uebung' | 'fragensammlung'
+export type LPModus = 'pruefung' | 'uebung' | 'fragensammlung' | 'papierkorb'
 export type LPAnsicht = 'dashboard' | 'composer'
 export type ListenTab = 'pruefungen' | 'tracker'
 export type UebungsTab = 'uebungen' | 'durchfuehren' | 'analyse'
@@ -69,7 +69,7 @@ const MODUS_KEY = 'lp-modus'
 function gespeicherterModus(): LPModus {
   try {
     const val = sessionStorage.getItem(MODUS_KEY)
-    if (val === 'pruefung' || val === 'uebung' || val === 'fragensammlung') return val
+    if (val === 'pruefung' || val === 'uebung' || val === 'fragensammlung' || val === 'papierkorb') return val
   } catch { /* ignore */ }
   return 'pruefung'
 }
@@ -108,14 +108,14 @@ export const useLPUIStore = create<LPUIState>((set, get) => ({
 
   setModus: (m) => {
     const state = get()
-    const vorherigerModus = m === 'fragensammlung'
+    const vorherigerModus = (m === 'fragensammlung' || m === 'papierkorb')
       ? state.vorherigerModus
       : (m === 'pruefung' || m === 'uebung' ? m : state.vorherigerModus)
     try { sessionStorage.setItem(MODUS_KEY, m) } catch { /* ignore */ }
     set({
       modus: m,
       vorherigerModus,
-      ...(m === 'fragensammlung' && state.ansicht === 'composer' ? { ansicht: 'dashboard', ansichtHistory: [] } : {}),
+      ...((m === 'fragensammlung' || m === 'papierkorb') && state.ansicht === 'composer' ? { ansicht: 'dashboard', ansichtHistory: [] } : {}),
     })
   },
 
@@ -138,7 +138,7 @@ export const useLPUIStore = create<LPUIState>((set, get) => ({
 
   zurueck: () => {
     const { ansichtHistory, modus, vorherigerModus } = get()
-    if (modus === 'fragensammlung') {
+    if (modus === 'fragensammlung' || modus === 'papierkorb') {
       try { sessionStorage.setItem(MODUS_KEY, vorherigerModus) } catch { /* ignore */ }
       set({ modus: vorherigerModus })
       return

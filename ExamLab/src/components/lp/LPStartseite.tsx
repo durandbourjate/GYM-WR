@@ -39,6 +39,7 @@ import LPTrackerSkeleton from './skeletons/LPTrackerSkeleton'
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
 const PruefungsComposer = lazyMitRetry(() => import('./vorbereitung/PruefungsComposer.tsx'))
 const FragenBrowser = lazyMitRetry(() => import('./fragenbank/FragenBrowser.tsx'))
+const PapierkorbView = lazyMitRetry(() => import('./papierkorb/PapierkorbView.tsx'))
 const HilfeSeite = lazyMitRetry(() => import('./HilfeSeite.tsx'))
 const EinstellungenPanel = lazyMitRetry(() => import('../settings/EinstellungenPanel.tsx'))
 const AnalyseDashboard = lazyMitRetry(() => import('./ueben/AnalyseDashboard.tsx'))
@@ -890,6 +891,13 @@ function LPStartseiteInner() {
             />
           </Suspense>
         </main>
+      )}
+
+      {/* Papierkorb (Bundle 3 Phase E): Soft-Delete-Liste eigener Fragen */}
+      {ansicht !== 'composer' && modus === 'papierkorb' && (
+        <Suspense fallback={<LazyFallback />}>
+          <PapierkorbView />
+        </Suspense>
       )}
 
       </div>{/* Ende Scrollbarer Hauptinhalt */}

@@ -1,5 +1,5 @@
 // ExamLab/src/components/shared/header/types.ts
-export type L1Id = 'favoriten' | 'pruefung' | 'uebung' | 'fragensammlung'
+export type L1Id = 'favoriten' | 'pruefung' | 'uebung' | 'fragensammlung' | 'papierkorb'
 export type L3Mode = 'single' | 'multi' | 'none'
 
 export interface L3Item {

@@ -129,6 +129,7 @@ export function AppRouter() {
         <Route path="/uebung/:configId" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/fragensammlung" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/fragensammlung/:frageId" element={<LPGuard><LPFlow /></LPGuard>} />
+        <Route path="/papierkorb" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/einstellungen" element={<LPGuard><LPFlow /></LPGuard>} />
         <Route path="/einstellungen/:tab" element={<LPGuard><LPFlow /></LPGuard>} />
 
