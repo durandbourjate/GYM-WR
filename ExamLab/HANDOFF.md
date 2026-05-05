@@ -8,6 +8,61 @@
 
 ## Letzter Stand auf main
 
+### Bundle 3 — Auto-Save + Drafts + Papierkorb 🟡 BRANCH READY (05.05.2026)
+
+Branch `feature/bundle-3-autosave-drafts-papierkorb` (HEAD `0df9c39`). Backend deployed + getestet, Frontend vitest grün, E2E + Merge offen.
+
+**Phase A — Apps-Script-Backend (deployed):**
+- A.1 (`731d6b5`): Type-Erweiterung `status?: 'draft'|'sammlung'` + `geloescht_am?: string` in `fragen-storage.ts` (optional, bewusst KEIN required-Pull)
+- A.2 (`cd65aa2` + `2a76b82` fixup): `istVollstaendig_(frage)` thin server-side Validator + `speichereFrageIntern_` Pure-Helper + `speichereFrage`-Wrapper. ensureColumns ergänzt status/geloescht_am-Spalten automatisch beim ersten Schreiben (kein Backfill-Job nötig).
+- A.3 (`cfb6c43`): `loescheFrage` zu Soft-Delete (`geloescht_am=ISO`) + Owner-Check (Plan-Refinement #3 — Security-Fix für vorher-fehlenden IDOR-Schutz) + `loescheFrageIntern_` Pure-Helper
+- A.4 (`4a4b466`): 3 neue Endpoints `stelleWiederHer` + `hardDeleteFrage` + `listePapierkorb` mit Pure-Helpers (jeweils trailing-underscore-Konvention) + Dispatcher-Cases + Owner-Check + listePapierkorb ruft `parseFrage` (Plan-Refinement #4)
+- A.5 (`8832e3f` + `0b41b0d` fixup): Lese-Endpoints `ladeFragenbank` + `ladeFragenbankSummary` filtern `geloescht_am`. Fixup ergänzt `stelleWiederHer` + `hardDeleteFrage` in `LP_AKTIONEN` für `cacheInvalidieren_`-Trigger
+- A.6 (`621874b`): GAS-Test-Shim `testBundle3DraftLifecycle_` mit 5 Cases (vollständig→sammlung, unvollständig→draft, Restore-Pflichtfeld, Soft-Delete, Restore+Hard-Delete-Cleanup) — **GAS-Editor-Run bestätigt 5/5 ✓ inkl. ensureColumns-Auto-Migration**
+- A.7 (`5ab6e1e` + `4a721ed` fixup): `autoHardDeleteAlteFragen_` (90-Tage-Schwelle, alle 4 fachbereich-Tabs, Reverse-Sort der Row-Indices) + Daily-Trigger-Installer (3:00). Fixup ergänzt `script.scriptapp`-Scope in `appsscript.json` (vorher kein Code rief Trigger-APIs). **GAS-Editor-Run bestätigt Trigger installiert ✓**
+- A.7 zusatz (`0a7f7a7` via Merge `5e17663`): Sheet-Guard für `lastCol === 0` in 4 Bundle-3-Helpern (`speichereFrageIntern_`, `loescheFrageIntern_`, `stelleWiederHerIntern_` werfen; `autoHardDeleteAlteFragen_` `continue` weil Trigger nicht eskalieren darf). S130-Pattern aus `code-quality.md`.
+
+**Phase B — Service-Layer (TDD, ~830 SLOC, +47 Tests):**
+- B.1 (`4c70abf`, +9 Tests): `draftApi.ts` mit 3 Endpoint-Wrappers + `unwrap`-Helper (S130-Pattern: `postJson<T>`-Cast ist Lüge)
+- B.2 (`d00d251`, +8 Tests): `draftSync.ts` Hybrid IDB+Server. 1s/10s-Debouncing, 4-Stufen-Retry (5xx exp.backoff 1s→2s→4s max 3, 401 eskaliert weil kein LP-`sessionWiederherstellen` existiert, 429 wait-Retry-After, 4xx eskaliert sofort), BroadcastChannel via globalThis-Stub (jsdom 29 unterstützt es nicht nativ). Ergänzt `speichereFrageMitStatus(email, frage)` in `fragenbankApi.ts` — existing `speichereFrage` UNVERÄNDERT.
+- B.3 (`d4d5d74`, +12 Tests): `draftStore.ts` (Zustand) — Map-Immutable-Pattern für aktive Drafts pro `editorId`, `hatDirty()` für beforeunload
+- B.4 (`81b45be`, +12 Tests): `useDirtyTracker(editorId)` + `useFragenAutoSave(editorId, frage)` Hooks. Status-Mapping aus draftSync-State + Frontend `validierePflichtfelder`. API-Inversion via Slot-Props.
+- B.5 (`d0693d6`, +6 Tests): `draftCache.ts::clearDraftIDBCache()` — `keys()` + filter `'draft:'`-Prefix + sequenziell `del()`. NICHT `clear()` (würde lp-fragen-* mitlöschen). S149-Pattern via idb-keyval-internal `tx.oncomplete`-await.
+
+**Phase C — Editor-Integration:**
+- C.1 (`3ee0d66`, +10 Tests): `SaveStatusIndikator` (5 Zustände: sauber/sync-läuft/entwurf/verbindungsproblem/server-down) in `packages/shared/src/editor/components/`. Re-Export aus `@shared/index`.
+- C.2 (`43286ba`, +13 Tests): `SchliessenModal` mit 2 Varianten (`unvollstaendig` 3-Buttons, `sync-pending` 2-Buttons) + `open=false`-silent-close-Pattern. Initial-Focus auf Abbrechen, ESC + Backdrop-Click-Handling, ARIA-konform.
+- C.3 (`1b0705c`, +5 Tests): SharedFragenEditor opt-in `autoSave?: AutoSaveAdapter`-Prop mit `statusSlot`/`onTippe(frage)`/`onSchliessenVersuch()`. **API-Inversion** — Hook lebt in ExamLab, Shared-Editor weiß nichts davon. PruefungFragenEditor + UebenEditor reichen Prop transparent durch (existing Verhalten 1:1 wenn nicht gesetzt). FragenBrowser bringt Hook + UI mit.
+- C.4 (`8281503`, +7 Tests): beforeunload-Listener in LPStartseite (`hatDirty()` → preventDefault) + `clearDraftIDBCache()` als 4. Element in `authStore.abmelden()` Promise.all.
+
+**Phase D — Fragensammlung-UI:**
+- D (`e9612cb`, +8 Tests): `DraftsSection` Komponente (Header „✏️ Entwürfe (N)" + Liste mit Owner-Hinweis bei geteilten Drafts) oben in FragenBrowser. `useMemo`-Filter teilt `fragen` in `drafts` + `sammlungFragen` — `VirtualisierteFragenListe` bekommt nur sammlungFragen (kein Doppel-Render).
+
+**Phase E — Papierkorb:**
+- E (`0df9c39`, +9 Tests): `PapierkorbView` mit Liste + Wiederherstellen + Endgültig-löschen (window.confirm vor destruktiv) + Warning-Badge bei ≤7 Tagen bis Auto-Hard-Delete. Route `/papierkorb` + 5. L1-Tab in `useTabKaskadeConfigLP` + Modus-Erweiterung in `lpUIStore` + `useLPRouteSync`-Hook.
+
+**Phase F — Cleanup + Pre-Merge:**
+- F.1 (Plan-rev3-Pfad „Defensive"): `status?` + `geloescht_am?` bleiben optional. Keine 30+ Frage-Erzeugungs-Stellen müssen migriert werden — Server ist authoritativ, Frontend-Default unklar. Doku-Hinweis in HANDOFF.
+- F.2: tsc -b clean (exit=0) + `vitest run` 1234/1238 grün + 4 todo + 0 fail + `npm run build` clean (256 PWA precache, 5223 KiB) + `lint:as-any` 0/0/0
+- F.3: dieser HANDOFF-Eintrag
+
+**Offen (für separate User-Session):**
+- F.4: Browser-E2E auf staging mit echten Logins (LP `wr.test@gymhofwil.ch`). 10 Pfade laut Plan: Editor-Mount-No-Tippen, IDB-Save 1s, Server-Sync 10s, Pflichtfeld→draft, Schließen-Modal, Verwerfen→Papierkorb, Wiederherstellen, Network-5xx-Retry, Multi-Tab BroadcastChannel, Logout-IDB-leer (Privacy-Verifikation).
+- F.5: Merge → main + Branch-Cleanup + Memory-Update
+
+**Lehren (für `code-quality.md`/Memory am Bundle-Ende):**
+- **jsdom 29 unterstützt BroadcastChannel nicht nativ** → `globalThis.BroadcastChannel`-Stub-Pattern für Tests
+- **`postJson<T>(...)` returnt Wrapper-Object, nicht innere data** (Memory S130 wieder bestätigt) — `unwrap`-Helper-Pattern für API-Module mit vielen Endpoints
+- **`as unknown as <Type> /* Defensive: ... */`** wieder relevant: Storage→Core Layer-Boundary bei `validierePflichtfelder` (Frage-Tags-Type unterscheidet sich) — Bundle-L-Lehre bestätigt
+- **Plan-Snippet-Naming vs Projekt-Konvention:** Plan-Code-Snippets nutzten `_speichereFrageIntern` (leading underscore), Projekt-Konvention ist trailing-underscore (`speichereFrageIntern_`). Reviewer fing den Outlier — Plan + Code beide auf trailing umgestellt (A.2-Fixup). Lehre: Plan-Snippets sind nicht authoritativ wenn sie Projekt-Style widersprechen.
+- **OAuth-Scope `script.scriptapp`** muss explizit im Apps-Script-Manifest sein für `ScriptApp.newTrigger`/`getProjectTriggers`. Existing Code rief diese APIs noch nie → Scope nie nötig → A.7 wäre ohne diesen Fix beim ersten Run gescheitert (war so, A.7-Fixup).
+- **API-Inversion (Slot-Pattern) statt Hook-in-Shared:** ExamLab-spezifischer Hook (`useFragenAutoSave`) kann nicht in `packages/shared/` leben (importiert ExamLab-Stores). Lösung: Shared-Editor exposed Slot-Props (`statusSlot`, `onTippe`, `onSchliessenVersuch`), Caller bringt Hook mit. Risiko-conservative weil opt-in: Unterrichtsplaner-Nutzer + Pruefungs-Editor-Nutzer + Üben-Admin-Nutzer bleiben unverändert.
+- **`cacheInvalidieren_` greift via `LP_AKTIONEN`-Liste:** Schreib-Endpoints müssen in dieser Liste sein damit Frontend-Cache nach Schreib invalidiert wird. A.4 hat 2 Endpoints (`stelleWiederHer`, `hardDeleteFrage`) hinzugefügt — Implementer hat es initial vergessen, Reviewer fing's NICHT (Audit zu eng), Controller fand's via expliziten Audit-Run (`grep cacheInvalidieren\\|cacheRemove\\|invalidiereCache`). Lehre: Audit-Pattern bei neuen Schreib-Endpoints muss alle bekannten Cache-Invalidierungs-Konventionen durchgehen, nicht nur naheliegende Token.
+
+**Apps-Script-Deploy Status:** ✅ Deployed (HEAD 5e17663 deployed, Trigger installiert, testBundle3DraftLifecycle 5/5 ✓). Bei Merge nach main wird das vorhandene Backend-Deploy weiterverwendet (kein neuer Deploy nötig — Bundle 3 nur Frontend-Änderungen ab F.5).
+
+---
+
 ### Bundle 2 — Editor-Komfort ✅ MERGED (04.05.2026)
 
 3 UX-Features als Bundle, alle additiv (kein Breaking Change, keine Daten-Migration).
