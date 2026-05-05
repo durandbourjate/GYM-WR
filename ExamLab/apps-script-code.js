@@ -1138,7 +1138,7 @@ function doGet(e) {
     case 'ladeSchuljahr': return ladeSchuljahrEndpoint({ email: e.parameter.email });
     case 'ladeLehrplan': return ladeLehrplanEndpoint({ email: e.parameter.email, fach: e.parameter.fach, gefaess: e.parameter.gefaess });
     default:
-      return jsonResponse({ error: 'Unbekannte Aktion' });
+      return jsonResponse({ error: 'Unbekannte Action' });
   }
 }
 
@@ -1495,7 +1495,7 @@ function doPost(e) {
     }
 
     default:
-      return jsonResponse({ error: 'Unbekannte Aktion' });
+      return jsonResponse({ error: 'Unbekannte Action' });
   }
 }
 
