@@ -471,7 +471,7 @@ function listePapierkorb(body) {
     if (!email || !istZugelasseneLP(email)) return jsonResponse({ error: 'Nur für Lehrpersonen' });
 
     var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-    var fachbereiche = ['BWL', 'VWL', 'Recht', 'IN'];
+    var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
     var papierkorb = [];
 
     for (var i = 0; i < fachbereiche.length; i++) {
@@ -614,7 +614,7 @@ Iteriert alle fachbereich-Tabs (BWL/VWL/Recht/IN), löscht Rows mit `geloescht_a
 function autoHardDeleteAlteFragen_() {
   var schwelle = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
   var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
-  var fachbereiche = ['BWL', 'VWL', 'Recht', 'IN'];
+  var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
   var totalGeloescht = 0;
 
   for (var t = 0; t < fachbereiche.length; t++) {
@@ -1131,8 +1131,25 @@ Memory-Update: `project_bundle_3_autosave_drafts_papierkorb.md` schreiben + MEMO
 
 ## Hinweise für Implementer
 
+### Allgemein
 - **TDD strikt** in Phase B (Service-Layer) — alle Hooks + Sync-Service haben tricky Edge-Cases (Debounce-Race, Retry-Logik)
 - **UI-Tests** in Phase C-E können Component-Test-Library-basiert sein (vitest + @testing-library/react)
 - **BroadcastChannel** im jsdom-Test mocken via `vi.mock('broadcastchannel')` (jsdom-Support begrenzt)
 - **Cleanup-Disziplin** in Phase F — `as unknown as`-Casts mit Defensive-Marker dokumentieren wenn nötig (Bundle-L-Pattern)
 - **API-Adapter strikt halten** — keine Apps-Script-spezifische Logik in `draftApi.ts`, nur generische `success/error/data`-Shape. Bei Backend-Migration tauschst du nur die Implementation aus.
+
+### Refinements aus Plan-Review Round 2 (Implementer beachten)
+
+**1. istVollstaendig_ Drift-Strategie.** Plan A.2 listet eine vollständige per-Typ-Tabelle für `istVollstaendig_`. Reviewer hat Drift gegen Frontend `pflichtfeldValidation.ts` in mehreren Typen identifiziert (Freitext: musterloesung empfohlen-vs-Pflicht, Lückentext: lueckentextModus-Unterschied, MC: leere Optionen). **Empfohlener Pfad** (Implementer-Entscheidung): `istVollstaendig_` thin halten — nur Basics (`thema`, `fach`, `fachbereich`, `punkte > 0`, nicht-leerer `fragetext`) plus Pflicht-Marker pro Sub-Type („mind. 1 Option" / „mind. 1 Aussage" etc.). Kein 1:1-Spiegeln der Frontend-Logik. Frontend ist Source-of-Truth fürs UI-Feedback (amber-Status), Server-`status` reflektiert nur „strukturell unbeschädigt". Drift wird damit minimal.
+
+**2. Pure-Helper-Extraktion für loesche/stelleWieder/hardDelete.** Plan A.3+A.4 zeigen Endpoints monolithisch mit Auth-Check. **Implementer soll** analog `_speichereFrageIntern` (A.2) Pure-Helper extrahieren: `_loescheFrageIntern(frageId, fachbereich, email)`, `_stelleWiederHerIntern`, `_hardDeleteFrageIntern`. Endpoint-Wrapper validiert Auth + ruft Intern. Test-Shim (A.6) ruft Intern direkt — kein Auth-Bypass-Hack.
+
+**3. Owner-Check verschärft existing IDOR-Gap.** Existing `loescheFrage` ([apps-script-code.js:3797](../../ExamLab/apps-script-code.js)) hat aktuell **keinen** Owner-Check (verifiziert per Reviewer-Audit). Plan A.3 fügt einen ein (`existingAutor !== email → reject`). Das ist eine Security-Verbesserung über das eigentliche Bundle-Feature hinaus. **Browser-E2E in Phase F** muss explizit testen: LP-A versucht LP-B-Frage zu löschen → muss fehlschlagen mit „Nicht eigene Frage".
+
+**4. listePapierkorb muss parseFrage rufen.** Plan A.4.c gibt rohe Sheet-Rows zurück (`papierkorb.push(row)`). Frontend erwartet aber typisierte `Frage`-Objekte (z.B. `tags: string[]`, nicht `tags: 'a,b,c'`). **Implementer soll** existing `parseFrage(row, tab)`-Helper aufrufen ([apps-script-code.js:~4364](../../ExamLab/apps-script-code.js)) statt rohe Rows zu pushen. Analog für andere Endpoints die Sheet-Rows zurückgeben.
+
+**5. clearDraftIDBCache als neuer Service** (B.5). Plan C.4 referenziert `clearDraftIDBCache()` aber kein Task definiert es. **Implementer soll als B.5 ergänzen:** `ExamLab/src/services/draftCache.ts` mit `clearDraftIDBCache(): Promise<void>`. Implementation MUSS S149-Pattern befolgen — `tx.oncomplete`-await VOR Promise-Resolve. Sonst Privacy-Lücke beim Logout (analog Bundle G.c-Hotfix).
+
+**6. B.2 (draftSync) Granularität.** Tasks B.2-B.4 sind aktuell als Bullet-Listen ohne konkrete Steps. **Implementer soll** pro Test-Case ein eigenes Failing-Test-Snippet schreiben + Implementation iterativ. Pattern wie A.6 (GAS-Test-Shim) mit explizitem Mock-Setup + Assertions pro Case. Bei subagent-driven-development sollte pro Case ein eigener Step entstehen.
+
+**7. Fachbereich-Tab-Namen.** Plan rev3 nutzt korrekt `['VWL', 'BWL', 'Recht', 'Informatik']` — wichtig: NICHT `'IN'` (siehe Stammdaten-Zwei-Welten: Frontend-Type `'IN'` vs Sheet-Tab `'Informatik'`). Bei jedem Apps-Script-Code, der Tab-Names hardcoded, IMMER diese Reihenfolge verwenden — konsistent mit den 11 existierenden Stellen im File.
