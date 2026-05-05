@@ -22,6 +22,7 @@ import { einrichtungsFragen } from '../../data/einrichtungsFragen.ts'
 import { einrichtungsUebung } from '../../data/einrichtungsUebung.ts'
 import { einrichtungsUebungFragen } from '../../data/einrichtungsUebungFragen.ts'
 import { speichereConfig, speichereFrage } from '../../services/fragenbankApi.ts'
+import { useDraftStore } from '../../store/draftStore.ts'
 import { MultiDurchfuehrenDashboard } from './durchfuehrung/MultiDurchfuehrenDashboard.tsx'
 import DurchfuehrenDashboard from './durchfuehrung/DurchfuehrenDashboard.tsx'
 import Button from '../ui/Button.tsx'
@@ -408,6 +409,20 @@ function LPStartseiteInner() {
     // navigiereZuComposer nicht nötig — URL ist bereits korrekt (Router hat hierher navigiert)
     useLPNavigationStore.getState().navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
   }, [configsLadeStatus, aktiveConfigId, configs])
+
+  // Bundle 3 P-C.4: beforeunload-Listener — warnt vor ungespeicherten Änderungen
+  // Browser zeigt nur generischen Text (Phishing-Schutz), Dialog erscheint nur wenn
+  // hatDirty() == true (min. ein aktiver Editor hat unsaved Changes).
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (useDraftStore.getState().hatDirty()) {
+        e.preventDefault()
+        e.returnValue = '' // Cross-Browser-Trigger für Confirm-Dialog
+      }
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [])
 
   function handleNeue(): void {
     setEditConfig(null)

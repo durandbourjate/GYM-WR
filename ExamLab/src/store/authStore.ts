@@ -8,6 +8,7 @@ import { useFavoritenStore } from './favoritenStore.ts'
 import { useFragenbankStore } from './fragenbankStore.ts'
 import { useKlassenlistenStore } from './klassenlistenStore.ts'
 import { useUebenGruppenStore } from './ueben/gruppenStore.ts'
+import { clearDraftIDBCache } from '../services/draftCache.ts'
 
 // Cache für LP-Liste (pro Session geladen)
 let lpCache: LPInfo[] | null = null
@@ -222,12 +223,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
     // await ist kritisch: window.location.href triggert Page-Unload und bricht
     // in-flight IDB-Transaktionen ab (S149-Lehre, safety-pwa.md). Privacy-Garantie
     // hängt davon ab dass alle 3 reset()-Aufrufe vor der Hard-Nav committed sind.
-    // Promise.all parallel — die 3 Datenbanken sind unabhängig, längste bestimmt
+    // Promise.all parallel — die 4 Datenbanken sind unabhängig, längste bestimmt
     // die Logout-Latenz (typisch ~50 ms).
     await Promise.all([
       useFragenbankStore.getState().reset(),
       useKlassenlistenStore.getState().reset(),
       useUebenGruppenStore.getState().reset(),
+      clearDraftIDBCache(), // Bundle 3 P-C.4: Privacy — Draft-Cache aus IDB
     ])
     clearSession()
     await resetPruefungState()
