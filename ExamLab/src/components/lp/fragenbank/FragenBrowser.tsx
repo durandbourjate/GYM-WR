@@ -20,6 +20,7 @@ import { tippeFrage as draftSyncTippe } from '../../../services/draftSync'
 import FragenListeSkeleton from '../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './fragenbrowser/FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './fragenbrowser/VirtualisierteFragenListe.tsx'
+import DraftsSection from './DraftsSection'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
 import ExcelImport from './ExcelImport.tsx'
@@ -65,12 +66,24 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const storeStatus = useFragenbankStore(s => s.status)
 
   // Im Demo-Modus Demo-Fragen, sonst Summaries (oder volle Fragen als Fallback)
-  const alleFragen = (istDemoModus || !apiService.istKonfiguriert())
+  const alleFragenMitDrafts = (istDemoModus || !apiService.istKonfiguriert())
     ? demoFragen
     : (storeSummaries.length > 0 ? storeSummaries : storeFragen)
   const ladeStatus = (istDemoModus || !apiService.istKonfiguriert())
     ? 'fertig' as const
     : (storeStatus === 'summary_fertig' || storeStatus === 'detail_laden' || storeStatus === 'fertig' ? 'fertig' as const : 'laden' as const)
+
+  // Bundle 3 P-D — Drafts oben in eigener Sektion, Sammlung getrennt darunter.
+  // FrageSummary deklariert `status` nicht statisch; Backend liefert es trotzdem
+  // mit (Phase A.4). Defensive Cast: `f as { status?: string }` ist schmal genug.
+  const drafts = useMemo<Frage[]>(
+    () => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status === 'draft') as Frage[] /* Defensive: Summary hat status zur Laufzeit, Type aber nicht */,
+    [alleFragenMitDrafts]
+  )
+  const alleFragen = useMemo(
+    () => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status !== 'draft'),
+    [alleFragenMitDrafts]
+  )
 
   // Store-Mutationen
   const { setFragen: setAlleFragen, aktualisiereFrage, entferneFrage, fuegeFragenHinzu } = useFragenbankStore.getState()
@@ -404,6 +417,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           listeRef={listeRef}
         />
 
+        {/* Bundle 3 P-D — Drafts-Sektion oberhalb der Sammlung */}
+        {ladeStatus === 'fertig' && (
+          <DraftsSection
+            drafts={drafts}
+            onClickDraft={(frage) => handleEditFrage(frage)}
+            ownEmail={user?.email ?? ''}
+          />
+        )}
+
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
           {ladeStatus === 'laden' && <FragenListeSkeleton />}
@@ -584,6 +606,15 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           zielAbschnittTitel={zielAbschnittTitel}
           listeRef={listeRef}
         />
+
+        {/* Bundle 3 P-D — Drafts-Sektion oberhalb der Sammlung */}
+        {ladeStatus === 'fertig' && (
+          <DraftsSection
+            drafts={drafts}
+            onClickDraft={(frage) => handleEditFrage(frage)}
+            ownEmail={user?.email ?? ''}
+          />
+        )}
 
         {/* Fragen-Liste — Wrapper ohne eigenen Scroll; virtualisierte Liste scrollt selbst und teilt ihren Container per `scrollContainerRef={listeRef}` für Wheel-Forwarding aus dem Header. min-h-0 erlaubt flex-1 zu schrumpfen, damit die innere h-full-Liste eine endliche Höhe bekommt. */}
         <div className="flex-1 min-h-0 relative overflow-hidden">
