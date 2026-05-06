@@ -24,6 +24,7 @@
 
 **Im Scope (zusätzlich zu Stores):**
 - `ExamLab/src/hooks/useLPNavigation.ts` — 5 zusätzliche `navigiereZu*`-Methoden (`navigiereZuEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten`) plus 2 API-Spiegelungen des lpUIStore (`navigiereZuComposer`, `zurueckZumDashboard`). Wird in Phase 6 mit lpUIStore zusammen migriert (siehe Renames-Map).
+- `ExamLab/src/hooks/ueben/useSuSNavigation.ts` — 7 `zu*`-Methoden (`zuDashboard/zuUebung/zuErgebnis/zuAdmin/zuGruppenAuswahl/zuPruefen/zurueck`). Symmetrisch zu useLPNavigation. Wird in eigener Phase 6.5 migriert. Notwendig weil das Final-Audit-Grep-Pattern `\.zurueck\b\(\)` sonst auf `useSuSNavigation.zurueck()` triggert.
 
 **Definition of Done:**
 - 6 Stores (`draftStore`, `ueben/themenSichtbarkeitStore`, `ueben/settingsStore`, `ueben/authStore`, `pruefungStore`, `lpUIStore`) haben alle Programming-Primitive-Actions auf englisch.
@@ -123,9 +124,25 @@
 
 **Konvention:** englisch-Verb + deutsches Domain-Substantiv (Einstellungen/Korrektur/Monitoring/Frageneditor/Favoriten). Mixed-language Compound ist Bundle-V-konform (Domain-Wörter im Identifier deutsch ohne Umlaut, Verb-Präfix englisch).
 
+### useSuSNavigation.ts (6 zusätzliche Renames + Spiegelung von `zurueck`)
+
+`ExamLab/src/hooks/ueben/useSuSNavigation.ts` ist die SuS-Pendant zu useLPNavigation — URL-basierte Navigation für SuS-Üben. Methoden mit `zu*`-Präfix sind UI-State-Mutationen, nach Bundle V Programming-Primitives → englisch (`openX`).
+
+| Aktuell | Neu | Files | Occurrences |
+|---|---|---:|---:|
+| `zuDashboard()` | `openDashboard()` | 4 | 18 |
+| `zuUebung(themaId)` | `openUebung(themaId)` | 3 | 9 |
+| `zuErgebnis()` | `openErgebnis()` | 4 | 16 |
+| `zuAdmin()` | `openAdmin()` | 2 | 5 |
+| `zuGruppenAuswahl()` | `openGruppenAuswahl()` | 2 | 5 |
+| `zuPruefen()` | `openPruefen()` | 3 | 7 |
+| `zurueck()` | `back()` | (Audit-Pattern selber wie lpUIStore.zurueck — wird in Phase 6 erfasst, hier nur Hook-internal-Rewrite) | – |
+
+**Konvention:** englisch-Verb (`open*`) + deutsches Domain-Substantiv (Übung/Ergebnis/Pruefen sind Schul-Domain-Wörter, Dashboard/Admin Borrowed-English).
+
 ### Total
 
-16 Action-Renames in 6 Stores + 1 Hook (5 zusätzliche Hook-only Methoden, 2 sind API-Spiegelung im Store-Rename enthalten). **Caller-Migration-Sweep:** ~31 unique Files, ~130 Occurrences. `authStore.ts` (root) bleibt unangetastet als Sanity-Eintrag im HANDOFF.
+22 Action-Renames in 6 Stores + 2 Hooks. **Caller-Migration-Sweep:** ~36 unique Files, ~190 Occurrences. `authStore.ts` (root) bleibt unangetastet als Sanity-Eintrag im HANDOFF.
 
 ---
 
@@ -141,9 +158,10 @@ Branch: `refactor/bundle-o-store-naming`. 7 atomare Commits, klein → groß.
 | 4 | `Bundle O Phase 4: draftStore registriere/setze* → register/set*` | draftStore | 3 | 34 |
 | 5 | `Bundle O Phase 5: pruefungStore navigiere/zuruecksetzen → navigate/reset` | pruefungStore | 2 | 15 |
 | 6 | `Bundle O Phase 6: lpUIStore + useLPNavigation navigiere*/zurueck* → openX/backToDashboard/back` | lpUIStore + useLPNavigation | 8 (3 Store + 5 Hook) | 37+ |
-| 7 | `Bundle O Phase 7: HANDOFF + Memory` | – | – | – |
+| 7 | `Bundle O Phase 7: useSuSNavigation zu* → open*` | useSuSNavigation | 6 | 60+ |
+| 8 | `Bundle O Phase 8: HANDOFF + Memory` | – | – | – |
 
-Phase 1 ist Smoke-Test (kleinster Commit). Phase 6 (lpUIStore + useLPNavigation-Hook) ist die UI-betreffendste — danach Browser-Smoke vor Final-Verifikation. Hook ist im selben Commit wie Store, weil API-Spiegelung (siehe Renames-Map).
+Phase 1 ist Smoke-Test (kleinster Commit). Phase 6 (lpUIStore + useLPNavigation-Hook) und Phase 7 (useSuSNavigation) sind UI-betreffend — Browser-Smoke nach beiden vor Final-Verifikation. Hook in Phase 6 ist im selben Commit wie Store wegen API-Spiegelung (siehe Renames-Map).
 
 ### Pro Phase
 
@@ -210,8 +228,10 @@ grep -nE "\.zuruecksetzen\b|\.setze[A-Z]|\.navigiereZ|\.zurueckZum|\.zurueck\b\(
 | `\.navigiere(` (pruefungStore) | 7 | 0 |
 | `\.zurueck()` (lpUIStore) | 1 | 0 |
 | `navigiereZuEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten` (Hook) | 11 | 0 |
+| `\.zu(Dashboard|Uebung|Ergebnis|Admin|GruppenAuswahl|Pruefen)` (useSuSNavigation) | 60+ | 0 |
 | `set` (englischer Setter-Präfix) | (Baseline) | +50 |
 | `openEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten` (Hook) | 0 | 11 |
+| `openDashboard/Uebung/Ergebnis/Admin/GruppenAuswahl/Pruefen` (useSuSNavigation) | 0 | 60+ |
 | `register(` | 0 | 19 |
 | `openComposer` | 0 | 14 |
 | `backToDashboard` | 0 | 11 |
