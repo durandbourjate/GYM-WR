@@ -8,6 +8,7 @@ import { useLPNavigationStore } from '../../store/lpUIStore.ts'
 import { useFavoritenStore } from '../../store/favoritenStore.ts'
 import { useLPRouteSync } from '../../hooks/useLPRouteSync.ts'
 import { useLPNavigation } from '../../hooks/useLPNavigation.ts'
+import { useToast } from '../../hooks/useToast'
 import { apiService } from '../../services/apiService.ts'
 import type { PruefungsConfig } from '../../types/pruefung.ts'
 import type { TrackerDaten, TrackerPruefungSummary } from '../../types/tracker.ts'
@@ -71,6 +72,7 @@ export default function LPStartseite() {
 function LPStartseiteInner() {
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
+  const toast = useToast()
 
   // Navigation aus dem Store
   const ansicht = useLPNavigationStore(s => s.ansicht)
@@ -276,6 +278,7 @@ function LPStartseiteInner() {
       console.log(`[LP] Einrichtungsprüfung sync fertig (${einrichtungsFragen.length} Fragen)`)
     } catch (error) {
       console.error('[LP] Einrichtungsprüfung sync fehlgeschlagen:', error)
+      toast.warning('Einrichtungsprüfung konnte nicht synchronisiert werden. Bitte Seite neu laden.')
     }
   }
 
@@ -297,6 +300,7 @@ function LPStartseiteInner() {
       console.log(`[LP] Einführungsübung sync fertig (${einrichtungsUebungFragen.length} Fragen)`)
     } catch (error) {
       console.error('[LP] Einführungsübung sync fehlgeschlagen:', error)
+      toast.warning('Einführungsübung konnte nicht synchronisiert werden. Bitte Seite neu laden.')
     }
   }
 
