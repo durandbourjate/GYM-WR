@@ -25,7 +25,7 @@ const LP_AUTH_KEY = 'ueben-auth'
 export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }: { onKorrekturWaehle: (id: string) => void }) {
   const user = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
-  const { zuPruefen, zuDashboard } = useSuSNavigation()
+  const { openPruefen, openDashboard } = useSuSNavigation()
 
   // Modus aus URL ableiten
   const location = useLocation()
@@ -129,7 +129,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
           </div>
         </div>
       }>
-        <AppUeben onZurueck={zuPruefen} onModusWechsel={(m) => m === 'pruefen' ? zuPruefen() : zuDashboard()} />
+        <AppUeben onZurueck={openPruefen} onModusWechsel={(m) => m === 'pruefen' ? openPruefen() : openDashboard()} />
       </Suspense>
     )
   }

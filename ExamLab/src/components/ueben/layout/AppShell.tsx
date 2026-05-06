@@ -22,7 +22,7 @@ interface Props {
 export default function AppShell({ children, onExamLabHome: _onExamLabHome, onModusWechsel: _onModusWechsel }: Props) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
-  const { zuDashboard, zurueck } = useSuSNavigation()
+  const { openDashboard, back } = useSuSNavigation()
 
   // Screen aus URL ableiten
   const location = useLocation()
@@ -45,7 +45,7 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
     if (istInUebung) {
       useUebenUebungsStore.setState({ session: null })
     }
-    zuDashboard()
+    openDashboard()
   }
 
   if (!zeigeHeader) return <>{children}</>
@@ -56,7 +56,7 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
         onHilfe={() => { setHilfeOffen(true); setLernzieleOffen(false) }}
         onZurueck={
           aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'gruppenAuswahl' && aktiveGruppe
-            ? (istInUebung ? navigiereZuDashboard : zurueck)
+            ? (istInUebung ? navigiereZuDashboard : back)
             : undefined
         }
       />
@@ -76,7 +76,7 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
             import('../../../store/ueben/navigationStore').then(m => {
               m.useUebenNavigationStore.getState().setDeepLinkThema(thema)
             })
-            zuDashboard()
+            openDashboard()
           }}
         />
       )}

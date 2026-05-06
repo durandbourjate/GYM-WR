@@ -7,7 +7,7 @@ import { MemoryRouter } from 'react-router-dom'
 const pruefeAntwortJetzt = vi.fn()
 const naechsteFrage = vi.fn()
 const beendeSession = vi.fn()
-const zuErgebnis = vi.fn()
+const openErgebnis = vi.fn()
 
 let storeState: Record<string, unknown> = {}
 
@@ -16,7 +16,7 @@ vi.mock('../../store/ueben/uebungsStore', () => ({
 }))
 
 vi.mock('../../hooks/ueben/useSuSNavigation', () => ({
-  useSuSNavigation: () => ({ zuErgebnis }),
+  useSuSNavigation: () => ({ openErgebnis }),
 }))
 
 // FrageRenderer rendern wir nicht — keine Apps-Script-Calls, kein Store-Pull
@@ -117,7 +117,7 @@ describe('UebungsScreen Tastatur Bundle H Phase 5', () => {
     pruefeAntwortJetzt.mockReset()
     naechsteFrage.mockReset()
     beendeSession.mockReset()
-    zuErgebnis.mockReset()
+    openErgebnis.mockReset()
   })
 
   afterEach(() => {

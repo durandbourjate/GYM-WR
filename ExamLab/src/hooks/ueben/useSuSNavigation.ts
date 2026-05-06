@@ -3,47 +3,47 @@ import { useCallback } from 'react'
 
 /**
  * Navigation-Hook für SuS-Üben-Bereich.
- * Ersetzt store-basiertes navigiere() durch URL-basierte Navigation via React Router.
+ * Ersetzt store-basiertes navigate() durch URL-basierte Navigation via React Router.
  */
 export function useSuSNavigation() {
   const navigate = useNavigate()
 
-  const zuDashboard = useCallback(() => {
+  const openDashboard = useCallback(() => {
     navigate('/sus/ueben')
   }, [navigate])
 
-  const zuUebung = useCallback((themaId: string) => {
+  const openUebung = useCallback((themaId: string) => {
     navigate(`/sus/ueben/${encodeURIComponent(themaId)}`)
   }, [navigate])
 
-  const zuErgebnis = useCallback(() => {
+  const openErgebnis = useCallback(() => {
     navigate('/sus/ueben/ergebnis')
   }, [navigate])
 
-  const zuAdmin = useCallback(() => {
+  const openAdmin = useCallback(() => {
     navigate('/sus/admin')
   }, [navigate])
 
-  const zuGruppenAuswahl = useCallback(() => {
+  const openGruppenAuswahl = useCallback(() => {
     navigate('/sus/gruppen')
   }, [navigate])
 
-  const zuPruefen = useCallback(() => {
+  const openPruefen = useCallback(() => {
     navigate('/sus/pruefen')
   }, [navigate])
 
-  const zurueck = useCallback(() => {
+  const back = useCallback(() => {
     navigate(-1)
   }, [navigate])
 
   return {
-    zuDashboard,
-    zuUebung,
-    zuErgebnis,
-    zuAdmin,
-    zuGruppenAuswahl,
-    zuPruefen,
-    zurueck,
+    openDashboard,
+    openUebung,
+    openErgebnis,
+    openAdmin,
+    openGruppenAuswahl,
+    openPruefen,
+    back,
     navigate,
   }
 }
