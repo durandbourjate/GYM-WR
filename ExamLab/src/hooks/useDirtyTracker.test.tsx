@@ -13,7 +13,7 @@ describe('useDirtyTracker', () => {
     expect(useDraftStore.getState().aktiveDrafts.has('e1')).toBe(true)
   })
 
-  it('abmelde beim Unmount', () => {
+  it('unregister beim Unmount', () => {
     const { unmount } = renderHook(() => useDirtyTracker('e1'))
     unmount()
     expect(useDraftStore.getState().aktiveDrafts.has('e1')).toBe(false)

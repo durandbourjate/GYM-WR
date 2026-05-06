@@ -2,9 +2,9 @@
  * Bundle 3 Phase B.4 — useDirtyTracker
  *
  * Registriert eine Editor-Instanz beim draftStore + bietet
- * markiereDirty/markiereSauber-Wrapper. Beim Unmount wird abmelde() gerufen.
+ * markiereDirty/markiereSauber-Wrapper. Beim Unmount wird unregister() gerufen.
  *
- * StrictMode-safe: registriere/abmelde im draftStore (B.3) sind idempotent —
+ * StrictMode-safe: register/unregister im draftStore (B.3) sind idempotent —
  * der Doppel-Mount in React-19-Dev wirkt sich nicht negativ aus.
  */
 import { useEffect, useCallback } from 'react'
@@ -18,24 +18,24 @@ export interface UseDirtyTrackerResult {
 
 export function useDirtyTracker(editorId: string): UseDirtyTrackerResult {
   const istDirty = useDraftStore(s => s.aktiveDrafts.get(editorId)?.istDirty ?? false)
-  const registriere = useDraftStore(s => s.registriere)
-  const abmelde = useDraftStore(s => s.abmelde)
-  const setzeDirty = useDraftStore(s => s.setzeDirty)
+  const register = useDraftStore(s => s.register)
+  const unregister = useDraftStore(s => s.unregister)
+  const setDirty = useDraftStore(s => s.setDirty)
 
   useEffect(() => {
-    registriere(editorId)
+    register(editorId)
     return () => {
-      abmelde(editorId)
+      unregister(editorId)
     }
-  }, [editorId, registriere, abmelde])
+  }, [editorId, register, unregister])
 
   const markiereDirty = useCallback(() => {
-    setzeDirty(editorId, true)
-  }, [editorId, setzeDirty])
+    setDirty(editorId, true)
+  }, [editorId, setDirty])
 
   const markiereSauber = useCallback(() => {
-    setzeDirty(editorId, false)
-  }, [editorId, setzeDirty])
+    setDirty(editorId, false)
+  }, [editorId, setDirty])
 
   return { istDirty, markiereDirty, markiereSauber }
 }
