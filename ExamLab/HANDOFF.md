@@ -8,7 +8,50 @@
 
 ## Letzter Stand auf main
 
-### Bundle S.b — VorschauTab-Split ✅ READY FOR MERGE (2026-05-06)
+### Bundle S.c — Utils-Splits (poolConverter + fibuAutoKorrektur) ✅ MERGED (2026-05-06)
+
+Branch `refactor/bundle-s-c-utils-splits`. 5 Commits seit S.a-Merge `ad70bed`. Drittes und letztes Sub-Bundle aus Bundle S — achtes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Master-Spec Sektion 5.3.
+
+**Was geliefert:**
+- `ExamLab/src/utils/poolConverter.ts` (744 Z.) → Folder mit 10 Sub-Dateien (1 `index.ts` Re-Export-Hub + `BasisFelder`-Interface + `konvertierePoolFrage`-Bucket-Dispatcher + 5 Helper-Files (konstanten, helpers, punkte, zeitbedarf, snapshot) + 4 Bucket-Strategy-Files (Standard 11 Cases, Bild 3, Fibu 4, Aufgabengruppe gruppe+default))
+- `ExamLab/src/utils/fibuAutoKorrektur.ts` (600 Z.) → Folder mit 7 Sub-Dateien (1 `index.ts` Re-Export-Hub + 1 `types.ts` zentral + 1 `util.ts` für Bilanz/ER + 4 Strategy-Files: buchungssatz/tkonto/kontenbestimmung/bilanzER)
+- Caller-Imports byte-identisch — `git diff main..HEAD` zeigt 0 Caller-Änderungen
+- Plan: `docs/superpowers/plans/2026-05-06-bundle-s-c-utils-splits.md` (rev1, Reviewer-NIT-Cleanup)
+
+**Hotspot-Bilanz Files >500 Z.:** 2 raus (poolConverter 744 + fibuAutoKorrektur 600). Bundle S komplett (S.a+S.b+S.c kumuliert): **17 → 12** Master-Spec-Ziel ✅
+
+**Verifikation:**
+- vitest **1253 passed | 4 todo (1257 total)** — drift = 0 ✅
+- tsc -b clean, build clean
+- lint:as-any 0 / lint:no-alert 0 / lint:no-tests-dir clean
+- Spec-Compliance-Reviewer-Subagent: APPROVED (alle 17 Sub-Files byte-identisch, Bucket-Routing 19+default korrekt, Bundle-L.b-Defensive-Cast preserviert)
+
+**Browser-E2E auf staging (combined preview, echte LP+SuS-Logins, SW-Cache vorab zurückgesetzt):**
+- ✅ Standard-Bucket via SuS Pool-MC-Frage komplett durchgespielt (Frage rendert + Korrektur mit Feedback pro Option + Musterlösung). Console: 0 Errors
+- Bild-Bucket + Fibu-Bucket + fibuAutoKorrektur: nicht direkt getestet (analog S.a-LP-Korrektur-Strategie); stützt sich auf Reviewer-byte-identity + tsc/vitest
+
+**Phase-4-Security-Check:** Bundle ist reiner Refactor ohne Wire-Vertrag-/API-Body-Berührung.
+
+**Sub-Commits:**
+- `889b5b7` Plan rev1
+- `0386cda` Phase 1.1: poolConverter/ Folder-Skeleton (10 Sub-Dateien)
+- `41b509b` Phase 2.1: fibuAutoKorrektur/ Folder-Skeleton (7 Sub-Dateien)
+- `39a2f4d` Phase 1.2: poolConverter Cutover
+- `5ac0f98` Phase 2.2: fibuAutoKorrektur Cutover
+
+**Lehren:**
+- **Bucket-Pattern als Antwort auf Spec-Vague-"3-4 Files"** — Audit fand: monolithisches `konvertierePoolFrage`-Switch ist ~510 Z. allein. Lösung: 4 Bucket-Files nach Domain (Standard/Bild/Fibu/Aufgabengruppe). Total 10 statt 4 — aber alle <300 Z.
+- **Type-only Zirkular-Import funktioniert in TS** — `BasisFelder` aus `./index` in 4 Bucket-Files importieren ist sicher (TS erased `import type` zur Compile-Zeit).
+- **Defensive-Cast (Bundle L.b-Lehre) byte-identisch übernommen** — `konvertiereAufgabengruppe.ts` hat `as unknown as PoolFrage`-Cast inkl. Defensive-Comment 1:1 aus Original.
+
+**Folge:**
+- Bundle S komplett — Phase 2 Cleanup-Roadmap abgeschlossen.
+- Phase 3 (Bundle P musterlosung Field-Drift, Bundle T Hooks-Splits) und Phase 4 (Bundle U PDFSeite) in Folge-Sessions.
+- Branch lokal+remote löschen 1 Woche nach Merge.
+
+---
+
+### Bundle S.b — VorschauTab-Split ✅ MERGED (2026-05-06)
 
 Branch `refactor/bundle-s-b-vorschau-split`. 2 Implementation-Commits + Plan-Commit. Zweites Sub-Bundle aus Bundle S — siebtes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Folgt direkt auf Bundle S.a (`ad70bed`).
 
@@ -37,9 +80,11 @@ Branch `refactor/bundle-s-b-vorschau-split`. 2 Implementation-Commits + Plan-Com
 
 **Lehre für S.c:** Vor Plan-Schreibung empirisch Path-Tiefe via S.a-Sibling verifizieren (`grep "from '\\.\\." DruckAnsicht/<file>.tsx`). Plan-Author hatte 1-Level-off-by-one in Rev1; Reviewer fing es ab. Für S.c (Folder unter `utils/`) entsprechend selbst empirisch testen statt aus Memory ableiten.
 
+**Browser-E2E auf staging (combined preview, echte LP-Logins, SW-Cache vorab zurückgesetzt):**
+- ✅ LP-Vorschau-Tab: 11 Vorschau-Komponenten (MC einfach + multi, RichtigFalsch, Freitext kurz/mittel, Lückentext, Zuordnung, Berechnung, Buchungssatz, KontenbestimmungVorschau modus-aware, BilanzER mit kontoLabel-Lookup, Aufgabengruppe) + 2 inline-Stubs (Visualisierung 🖌, PDF-Annotation 📄) visuell verifiziert. Console: 0 Errors
+
 **Folge:**
-- Bundle S.c (poolConverter 744 + fibuAutoKorrektur 600) — gleiche Session ODER nächste Session
-- Phase 3 (Bundle P, T) und Phase 4 (Bundle U) folgen
+- Bundle S.c (poolConverter 744 + fibuAutoKorrektur 600) — siehe oben (gleichzeitig gemerged)
 
 ---
 
