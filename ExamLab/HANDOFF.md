@@ -8,6 +8,40 @@
 
 ## Letzter Stand auf main
 
+### Bundle Q — Test-Verzeichnis-Konsolidierung ✅ MERGED (2026-05-06)
+
+Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-q-tests-konsolidierung` lokal + remote gelöscht. 4 Sub-Commits + 1 Follow-up. Drittes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 19 Test-/Helper-Dateien aus 3 `__tests__/`-Verzeichnissen umverteilt nach Heuristik B („Test wandert zur Source"); CI-Gate `lint:no-tests-dir` analog zu `lint:as-any`.
+
+**Audit-Token-Diff:**
+| Dimension | vorher | nachher |
+|---|---:|---:|
+| `__tests__/`-Dirs unter `ExamLab/src` | 3 | 0 |
+| `__tests__/`-Dirs unter `packages/shared/src` | 0 | 0 |
+| Tests in `src/__tests__/`-Tree | 16 | 0 |
+| Tests colocated in `src/utils/`, `src/store/`, `src/types/`, `src/components/` | (Baseline) | +9 |
+| Tests in `packages/shared/src/{components,types,utils}/` | (Baseline) | +7 |
+| Tests in `src/tests/regression/` | 0 | 2 |
+| Files in `src/test-helpers/` | 0 | 2 |
+
+**Sub-Commits:**
+- `5f45a10` Phase 1: src/__tests__/-Hauptmasse (17 Files + vitest-config-Alias `@testing-library/react`)
+- `cd9bd76` Phase 1 Follow-up: stale JSDoc-Pfad in `packages/shared/src/test-helpers/frageCoreMocks.ts`
+- `733205d` Phase 2: components/__tests__/-Subdirs (2 Files; +14 zusätzliche `vi.mock`/`import()`-Pfad-Rewrites in DurchfuehrenDashboard.test.tsx)
+- `f567bc8` Phase 3: scripts/audit-test-locations.sh + lint:no-tests-dir + 2× CI-Gate + Sektion „Test-Layer-Strategie"
+- `<TBD>` Phase 4: HANDOFF + Memory + Lernschleife
+
+**Pre-Push-Verifikation:**
+- vitest: 1234 passed | 4 todo (gleiche Baseline wie nach Bundle N+V) ✅
+- tsc -b: clean ✅
+- npm run lint:as-any: 0 ✅ (Baseline gehalten)
+- npm run lint:no-tests-dir: 0 ✅ (neu)
+- find ExamLab/src packages/shared/src -type d -name __tests__: leer ✅
+
+**Apps-Script-Deploy:** nicht nötig (test-/tooling-only).
+**Kein Browser-E2E** (Audit-Klassifikation mech-rename-niedrig, keine Wire-Vertrag-/UI-Änderung).
+
+**Plan-Lehre (Lernschleife):** Plan-Verifikation-Grep `from '\.\.'` matchte nur ES-Imports, nicht `vi.mock('...')`-Args und `await import('...')`. In Phase 2 hatte DurchfuehrenDashboard.test.tsx 14 weitere Pfade in solchen String-Argumenten — vom Implementer gefangen, weil tsc nach den Moves errored. Plan-Template für künftige Test-File-Moves muss `vi\.mock\(['\"]\.|import\(['\"]\.|require\(['\"]\.|from ['\"]\.` als kombinierte Regex haben.
+
 ### Bundle N+V — action/aktion-Vereinheitlichung + Sprach-Konvention ✅ MERGED (06.05.2026)
 
 Merge-Commit `fd64322` auf `main`. Branch `refactor/bundle-n-action-aktion-vereinheitlichung` lokal + remote gelöscht. 7 Sub-Commits, 1 Apps-Script-Deploy, 2 Sheet-Header-Edits. Zweites Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Disambiguierung in zwei Lager (Lager A: HTTP-Operation-Tag → englisch `action`, Lager B: KI-Sub-Action-Domain-Konzept → deutsch `kiAktion`) plus Hybrid-Sprach-Konvention dokumentiert.
