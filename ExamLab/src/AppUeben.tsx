@@ -99,10 +99,10 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
       if (istAdmin) {
-        if (user.rolle !== 'admin') useUebenAuthStore.getState().setzeRolle('admin')
+        if (user.rolle !== 'admin') useUebenAuthStore.getState().setRolle('admin')
         if (aktuellerScreen !== 'admin') zuAdmin()
       } else {
-        if (user.rolle !== 'lernend') useUebenAuthStore.getState().setzeRolle('lernend')
+        if (user.rolle !== 'lernend') useUebenAuthStore.getState().setRolle('lernend')
         if (aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'uebung' && aktuellerScreen !== 'ergebnis') {
           zuDashboard()
         }
