@@ -8,6 +8,39 @@
 
 ## Letzter Stand auf main
 
+### Bundle R — Error-Handling-Vereinheitlichung ✅ MERGED (2026-05-06)
+
+Merge-Commit `<TBD-nach-merge>` auf `main`. Branch `feature/bundle-r-error-handling-vereinheitlichung` lokal + remote nach Merge gelöscht. 26 Sub-Commits inkl. 2 Hotfixes. Fünftes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Toast-System app-weit, alle alert() migriert, silent-fail console.error ergänzt.
+
+**Was geliefert:**
+- `ExamLab/src/store/toastStore.ts` — Zustand-Store mit `add/dismiss/clear`, `error`-sticky-Default, 4s Auto-Hide für andere Variants
+- `ExamLab/src/hooks/useToast.ts` — module-stable Singleton-Hook (`{ error, success, info, warning, dismiss }`)
+- `ExamLab/src/components/shared/ToastContainer.tsx` — top-right `z-[1000]`, X-Button, Tailwind dark-mode-Pairs, gemounted in `main.tsx` (siehe Hotfix #2)
+- 19 vitest-Tests neu (1234 → 1253)
+- 9 `alert()` migriert: ErrorBoundary (2x), MitgliederTab, BeispieleListe (3x), PapierkorbView (2x), BeendetPhase
+- 8 silent-fail `console.error` aus Audit-Bucket-(b) ergänzt mit Toast: SuSStartseite, useKorrekturActions, PDFKorrektur, KorrekturFrageZeile, LoginScreen, LPStartseite-Sync (2x → `warning`)
+- LPStartseite ad-hoc Toast (`kursNichtGefundenToast`) → `useToast()` (-21/+2 Zeilen)
+- Konvention: `.claude/rules/code-quality.md` Sektion „Error-Handling"
+- CI-Gate: `scripts/audit-no-alert.sh` + `npm run lint:no-alert` (Production + Staging-Steps mit `--if-present` für chicken-and-egg)
+- Audit-File: `docs/superpowers/audits/2026-05-06-bundle-r-console-error-audit.md`
+
+**Hotfixes während Phase 6 E2E:**
+1. `71a4e9e` Phase 5.2: `lint:no-alert --if-present` in production-block — gegen `main`-checkout, das Script noch nicht hat. Self-aktivierend nach Merge.
+2. `d248c79` Phase 1.4: ToastContainer in `main.tsx` (vorher in `App.tsx` — Tote-Code-Pfad weil Router App lazy-importiert aber nicht verwendet).
+
+**Phase 6 Browser-E2E (mit echten LP-Logins):**
+- ✅ PapierkorbView Wiederherstellen (Network-Mock) → roter sticky Toast „Fehler beim Wiederherstellen: ..."
+- ✅ PapierkorbView Endgültig löschen (Network-Mock) → roter sticky Toast „Fehler beim Löschen: ..."
+- ✅ X-Button dismisses
+- ✅ LPStartseite `?kursId=NICHT-EXISTIEREND-XYZ` → gelber `warning`-Toast „Kurs ... nicht gefunden — zu Test umgeleitet", 4s Auto-Hide
+- Phase-2 (BeispieleListe/MitgliederTab/BeendetPhase/ErrorBoundary) und Phase-3 silent-fail-Stellen folgen exakt demselben `useToast().error(...)`-Pattern → durch Reviews + 2 verifizierte Pfade hohe Konfidenz.
+
+**vitest 1253 grün, tsc/build/lint:as-any/lint:no-alert clean.**
+
+**Spawn-Task offen:** `App.tsx` default export + `Router.tsx` Z. 9 `lazyMitRetry(() => import('../App'))` sind Tote-Code-Pfad. Sauberes Removal in eigenem Bundle (S oder Folge-Cleanup).
+
+---
+
 ### Bundle O — Store-Action-Naming-Vereinheitlichung ✅ MERGED (2026-05-06)
 
 Merge-Commit `b025b2d` auf `main`. Branch `refactor/bundle-o-store-naming` lokal + remote gelöscht. 7 Sub-Commits + 1 HANDOFF/Memory. Viertes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 22 Action-Renames in 6 Stores + 2 Navigation-Hooks nach Bundle-V-Sprach-Konvention (Programming-Primitives englisch, Domain-Verben deutsch).

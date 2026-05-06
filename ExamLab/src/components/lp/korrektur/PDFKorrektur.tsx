@@ -7,6 +7,7 @@ import { kiAssistent } from '../../../services/uploadApi.ts'
 import { usePDFRenderer } from '../../fragetypen/pdf/usePDFRenderer.ts'
 import { PDFViewer } from '../../fragetypen/pdf/PDFViewer.tsx'
 import AudioRecorder from '../../AudioRecorder.tsx'
+import { useToast } from '../../../hooks/useToast'
 
 interface Props {
   pruefungId: string
@@ -57,6 +58,7 @@ export default function PDFKorrektur({
 }: Props) {
   // PDF laden
   const renderer = usePDFRenderer()
+  const toast = useToast()
   const [geladenesPdf, setGeladenesPdf] = useState<string | null>(null)
 
   // PDF aus Drive nachladen wenn Base64 fehlt, oder per URL laden als Fallback
@@ -81,7 +83,10 @@ export default function PDFKorrektur({
           }
           reader.readAsDataURL(blob)
         })
-        .catch(err => console.error('[PDFKorrektur] PDF per URL laden fehlgeschlagen:', err))
+        .catch(err => {
+          console.error('[PDFKorrektur] PDF per URL laden fehlgeschlagen:', err)
+          toast.error('PDF-Annotation konnte nicht geladen werden.')
+        })
     }
   }, [frage.pdfDriveFileId, frage.pdfBase64, frage.pdfUrl, frage.anhaenge, schuelerEmail])
 

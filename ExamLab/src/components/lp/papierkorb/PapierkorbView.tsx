@@ -7,6 +7,7 @@
  */
 import { useCallback, useEffect, useState } from 'react'
 import { useAuthStore } from '../../../store/authStore'
+import { useToast } from '../../../hooks/useToast'
 import {
   listePapierkorb,
   stelleWiederHer,
@@ -49,6 +50,7 @@ function snippet(text: string, max = 120): string {
 }
 
 export default function PapierkorbView() {
+  const toast = useToast()
   const ownEmail = useAuthStore((s) => s.user?.email) || ''
   const [fragen, setFragen] = useState<Frage[]>([])
   const [ladestatus, setLadestatus] = useState<Ladestatus>('idle')
@@ -89,10 +91,10 @@ export default function PapierkorbView() {
         setFragen((prev) => prev.filter((f) => f.id !== frage.id))
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
-        window.alert('Fehler beim Wiederherstellen: ' + msg)
+        toast.error(`Fehler beim Wiederherstellen: ${msg}`)
       }
     },
-    [ownEmail],
+    [ownEmail, toast],
   )
 
   const handleEndgueltigLoeschen = useCallback(
@@ -113,10 +115,10 @@ export default function PapierkorbView() {
         setFragen((prev) => prev.filter((f) => f.id !== frage.id))
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
-        window.alert('Fehler beim Löschen: ' + msg)
+        toast.error(`Fehler beim Löschen: ${msg}`)
       }
     },
-    [ownEmail],
+    [ownEmail, toast],
   )
 
   // Loading

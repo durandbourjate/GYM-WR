@@ -390,3 +390,36 @@ Drei Test-Schichten, jeweils klarer Ort:
 2. Multi-Modul / Store-Reset / Service-Mock? → `src/tests/`.
 3. Fixiert einen Incident mit Session/Bug-Bezug? → `src/tests/regression/`.
 4. Testet `@shared/...`-Code? → colocate in `packages/shared/src/...`.
+
+## Error-Handling
+
+### User-Surface
+
+| Pattern | Verwendung |
+|---|---|
+| `useToast().error(...)` | Standard für API-Fehler, async-Catch in Components |
+| `useToast().success(...)` / `.info(...)` / `.warning(...)` | Erfolgs- und Hinweis-Surface |
+| `setError`-State + Inline-Render | Form-Validation (Pflichtfeld leer, ungültige Eingabe) |
+| ErrorBoundary-Fallback-UI | Render-Fehler (unverändert) |
+
+### Konventionen
+
+- **`alert()` deprecated** — keine Neuanlagen. Bestehende Aufrufe wurden in Bundle R migriert (06.05.2026).
+- **Niemals silent-fail**: jeder catch-Block in einer Component muss entweder Toast/setError setzen
+  oder ein bewusstes Fallback-UI rendern. `console.error()` allein ist kein User-Feedback.
+- `console.error()` ergänzt User-Surface, ersetzt es nicht (Debugging-Hilfe für DevTools).
+- Außerhalb von Function-Components (ErrorBoundary, Util-Hooks) wird der Toast direkt via
+  `useToastStore.getState().add(...)` aufgerufen — kein Hook nötig.
+- `useToast()` returnt einen modul-stabilen Singleton — sicher in `useEffect`/`useCallback`-Deps.
+
+### Wo lebt der Toast-Code
+
+- Komponenten: `ExamLab/src/components/shared/ToastContainer.tsx`
+- Store: `ExamLab/src/store/toastStore.ts`
+- Hook: `ExamLab/src/hooks/useToast.ts`
+- (Migration nach `packages/shared` erst wenn externer Konsument auftaucht — YAGNI.)
+
+### CI-Gate
+
+`npm run lint:no-alert --prefix ExamLab` (analog `lint:as-any`) verhindert Neueinführung von
+`alert()`/`window.alert()` in produktivem Code.

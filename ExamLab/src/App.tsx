@@ -21,6 +21,7 @@ import DurchfuehrenDashboard from './components/lp/durchfuehrung/DurchfuehrenDas
 
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
+import { ToastContainer } from './components/shared/ToastContainer.tsx'
 import SuSStartseite from './components/sus/SuSStartseite.tsx'
 import KorrekturEinsicht from './components/sus/KorrekturEinsicht.tsx'
 
@@ -37,6 +38,15 @@ setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmen
 // Im Demo-Modus wird die einrichtungsPruefung aus data/einrichtungsPruefung.ts verwendet.
 
 export default function App() {
+  return (
+    <>
+      <AppRoutes />
+      <ToastContainer />
+    </>
+  )
+}
+
+function AppRoutes() {
   // Build-Timestamp für Versions-Verifikation
   useEffect(() => {
     console.log('[Pruefung] Build:', __BUILD_TIMESTAMP__)

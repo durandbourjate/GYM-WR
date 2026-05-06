@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
+import { useToastStore } from '../store/toastStore'
 
 interface Props {
   children: ReactNode
@@ -44,7 +45,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     try {
       const raw = localStorage.getItem('pruefung-state')
       if (!raw) {
-        alert('Keine gespeicherten Daten gefunden.')
+        useToastStore.getState().add('info', 'Keine gespeicherten Daten gefunden.')
         return
       }
       const data = JSON.parse(raw)
@@ -56,7 +57,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       a.click()
       URL.revokeObjectURL(url)
     } catch {
-      alert('Export fehlgeschlagen. Bitte Lehrperson kontaktieren.')
+      useToastStore.getState().add('error', 'Export fehlgeschlagen. Bitte Lehrperson kontaktieren.', { sticky: true })
     }
   }
 

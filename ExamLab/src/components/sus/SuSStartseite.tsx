@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { uebenApiClient } from '../../services/ueben/apiClient'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
+import { useToast } from '../../hooks/useToast'
 import { lazyMitRetry } from '../../utils/lazyMitRetry'
 import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
@@ -26,6 +27,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
   const user = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
   const { openPruefen, openDashboard } = useSuSNavigation()
+  const toast = useToast()
 
   // Modus aus URL ableiten
   const location = useLocation()
@@ -53,6 +55,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
 
         if (!response || !response.data?.sessionToken) {
           console.error('[SuSStartseite] Login-Bridge fehlgeschlagen — keine gültige Antwort:', response)
+          toast.error('Anmeldung am Üben-Bereich fehlgeschlagen. Bitte erneut anmelden.')
           setLoginBridged(true)
           return
         }
@@ -77,6 +80,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
         setLoginBridged(true)
       } catch (error) {
         console.error('[SuSStartseite] Login-Bridge Fehler:', error)
+        toast.error('Anmeldung am Üben-Bereich fehlgeschlagen. Bitte erneut anmelden.')
         setLoginBridged(true)
       }
     }

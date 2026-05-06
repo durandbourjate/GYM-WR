@@ -4,6 +4,7 @@ import type { PruefungsKorrektur, SchuelerAbgabe, FragenBewertung } from '../../
 import type { Frage } from '../../../types/fragen-storage'
 import { exportiereAlsCSV, exportiereErgebnisseAlsCSV, downloadCSV } from '../../../utils/exportUtils.ts'
 import { exportiereBackupXlsx } from '../../../utils/backupExport.ts'
+import { useToast } from '../../../hooks/useToast'
 
 interface KorrekturActionsOptions {
   pruefungId: string
@@ -18,6 +19,7 @@ interface KorrekturActionsOptions {
 export function useKorrekturActions({
   pruefungId, userEmail, korrektur, setKorrektur, abgaben, fragen, queueSave,
 }: KorrekturActionsOptions) {
+  const toast = useToast()
   const [batchLaeuft, setBatchLaeuft] = useState(false)
   const [aktionLaeuft, setAktionLaeuft] = useState<string | null>(null)
   const [backupLaden, setBackupLaden] = useState(false)
@@ -137,6 +139,7 @@ export function useKorrekturActions({
       })
     } catch (e) {
       console.error('[Backup] Export fehlgeschlagen:', e)
+      toast.error('Backup-Export fehlgeschlagen. Bitte erneut versuchen.')
     } finally {
       setBackupLaden(false)
     }

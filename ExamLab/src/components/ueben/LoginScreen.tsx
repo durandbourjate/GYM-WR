@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { initializeLernenGoogleAuth, renderLernenGoogleButton } from '../../services/ueben/authService'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenTheme } from '../../hooks/ueben/useTheme'
+import { useToast } from '../../hooks/useToast'
 import Tooltip from '../ui/Tooltip.tsx'
 import LoginLayout from '../shared/LoginLayout.tsx'
 
@@ -9,18 +10,22 @@ export default function LoginScreen() {
   const googleButtonRef = useRef<HTMLDivElement>(null)
   const { anmeldenMitGoogle, fehler } = useUebenAuthStore()
   const { istDark, toggleTheme } = useUebenTheme()
+  const toast = useToast()
   const [hilfeOffen, setHilfeOffen] = useState(false)
 
   useEffect(() => {
     initializeLernenGoogleAuth(
       (payload) => anmeldenMitGoogle(payload),
-      (error) => console.error('Auth-Fehler:', error)
+      (error) => {
+        console.error('Auth-Fehler:', error)
+        toast.error(`Anmeldung fehlgeschlagen: ${error}`)
+      }
     )
 
     if (googleButtonRef.current) {
       renderLernenGoogleButton(googleButtonRef.current)
     }
-  }, [anmeldenMitGoogle])
+  }, [anmeldenMitGoogle, toast])
 
   return (
     <LoginLayout title="ExamLab">
