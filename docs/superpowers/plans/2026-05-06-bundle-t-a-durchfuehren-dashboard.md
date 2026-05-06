@@ -708,6 +708,8 @@ const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGelade
 
 **ACHTUNG:** `abgabenGeladen.current` (Z.607) wird in `onNeueDurchfuehrung`-Callback referenziert (`abgabenGeladen.current = false`). Das wird zu `abgabenGeladenRef.current = false`.
 
+**ACHTUNG zu setActiveTab-Zwischenzustand:** In Task 3.2 ist `useDurchfuehrenPhasenTab` noch nicht eingebunden — `setActiveTab` ist also noch der lokale `useState`-Setter aus dem Body (Z.97 ursprünglich). Beim Hook-Aufruf hier wird der lokale Setter reingegeben. Das funktioniert, weil `setX` aus `useState` strukturell kompatibel mit der Hook-Param-Signatur ist. In Task 4.2 wird `setActiveTab` dann durch den Hook-Setter ersetzt — Verhalten bleibt identisch (beide sind `Dispatch<SetStateAction<DurchfuehrenTab>>`).
+
 - [ ] **Step 3: tsc + vitest grün**
 
 ```bash
@@ -851,7 +853,11 @@ import {
 } from '../../../hooks/useDurchfuehrenPhasenTab'
 ```
 
-- [ ] **Step 2: Inline entfernen**
+- [ ] **Step 2: Inline entfernen + finale Hook-Reihenfolge etablieren**
+
+**Hook-Input-Zirkularität:** Alle 3 Hooks (PhasenTab/Load/Monitoring) brauchen `phase`. Aber `phase` kommt aus `bestimmePhase(config, daten.schueler)` und damit aus den Outputs von Load+Monitoring. Das ist zirkular.
+
+**Lösung:** `phase` als useState im Body halten + via useEffect aus config+daten synchronisieren. Damit ist `phase` ein stabil reaktiver Hook-Input.
 
 **Entfernen aus DurchfuehrenDashboard.tsx:**
 - Z.37: `type DurchfuehrenTab = ...`
@@ -860,171 +866,39 @@ import {
 - Z.98: `const letztePhaseRef = useRef...`
 - Z.320-331: useEffect (E8) Phase→Tab
 - Z.342-353: function `wechsleTab(...)` { ... }
+- Z.123-125: `const phase: PruefungsPhase = config && daten ? bestimmePhase(...) : 'vorbereitung'` (per-render-Computation)
 
-**Einfügen** (nach `useDurchfuehrenLoad`-Hook):
-
-```typescript
-const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({ phase, urlTab, user, pruefungId })
-```
-
-**ACHTUNG**: Reihenfolge der Hook-Calls:
-1. `useDurchfuehrenLoad({ ..., setActiveTab })` braucht `setActiveTab`
-2. Aber `setActiveTab` kommt von `useDurchfuehrenPhasenTab`
-
-→ Hook-Reihenfolge muss sein: **PhasenTab zuerst, dann Load**. Im Plan-Code oben muss diese Reihenfolge respektiert werden.
-
-Lösung: 
-```typescript
-const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({
-  phase: 'vorbereitung', // Initial-Wert, wird gleich überschrieben
-  urlTab, user, pruefungId
-})
-const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
-  useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase, urlTab, setActiveTab })
-const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten } =
-  useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase })
-```
-
-**ABER:** `phase` wird aus `config + daten` abgeleitet. Vor `useDurchfuehrenLoad` ist `config` noch nicht da. Vor `useDurchfuehrenMonitoring` ist `daten` noch nicht da. Das wäre Zirkular.
-
-**Architektur-Klärung (KRITISCH):** 
-Ursprünglich: `phase` wird Z.123-125 aus `config && daten ? bestimmePhase(...) : 'vorbereitung'` abgeleitet. Beim ersten Render ist `phase = 'vorbereitung'` (Default).
-
-Lösung-Pattern: 
-1. `useDurchfuehrenPhasenTab` braucht `phase` (für E8 Auto-Forward) — kann mit Default 'vorbereitung' starten, useEffect re-läuft bei phase-Änderung
-2. `useDurchfuehrenLoad` braucht `phase` (für E7 Periodic-Config) — kann auch Default starten, useEffect re-läuft
-3. `useDurchfuehrenMonitoring` braucht `phase` (für E3 Auto-Refresh) — kann auch Default starten
-
-Da `phase` aus `config` + `daten` kommt (beide aus den Hooks), gibt es einen Zyklus. Lösung:
-- Hook-Calls in Reihenfolge: PhasenTab → Load → Monitoring
-- `phase` wird nach allen Hook-Calls berechnet (Z.123-125 bleibt!)
-- Hook-Inputs nutzen das `phase` aus dem **vorigen Render** — das ist OK, weil React-Reactivity die Hook-Effects bei phase-Änderung re-läuft
-
-**Konkretes Pattern in DurchfuehrenDashboard:**
+**Einfügen** im Body (Reihenfolge wichtig — finale Struktur, ersetzt zwischenzeitliche Reihenfolge aus Task 2.2/3.2):
 
 ```typescript
-// Hook 1: PhasenTab (urlTab + Init)
-const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-// Wir reichen 'phase' nach unten — beim ersten Render ist phase='vorbereitung' (s.u.)
-
-// PRE-COMPUTE: Wir brauchen 'phase' für die Hooks. Beim ersten Render kennen wir sie nicht
-// (config+daten sind null). Default 'vorbereitung' ist semantisch korrekt für Render 1.
-// Bei späteren Renders kommt phase aus dem berechneten Wert unten — die Hook-Effects
-// re-laufen mit dem neuen phase-Wert.
-
-// Wir berechnen 'phase' NACH den State-Hooks (Load+Monitoring), brauchen es ABER vor
-// PhasenTab. Lösung: phase wird in zwei Schritten verwendet — initial 'vorbereitung'
-// für den ersten Render-Pass, dann aus useState->useEffect-Reactivity propagiert.
-
-// EINFACHSTE LÖSUNG: Wir reichen 'phase' nicht in PhasenTab, sondern
-//   PhasenTab braucht nur user/pruefungId/urlTab. Phase-Effect (E8) bekommt phase
-//   als zusätzlicher Parameter, der NACH Load+Monitoring berechnet wird.
-
-// → Das bedeutet: useDurchfuehrenPhasenTab muss umgestaltet werden:
-//   Hook gibt activeTab + setActiveTab + wechsleTab zurück, aber der Phase-Watch
-//   wird als separater Effekt im Body durchgeführt — ODER der Hook bekommt 'phase'
-//   als Parameter mit der Erwartung dass er NACH den Daten-Hooks aufgerufen wird.
-```
-
-**ENTSCHEIDUNG:** Hook-Reihenfolge ist:
-1. PhasenTab (gibt activeTab, setActiveTab, wechsleTab zurück) — bekommt aber **nur** urlTab/user/pruefungId. Phase-Auto-Forward-Effect verlagert in den Body von DurchfuehrenDashboard.
-2. Load — bekommt phase, urlTab, setActiveTab
-3. Monitoring — bekommt phase
-
-**ALTERNATIVE:** PhasenTab bekommt phase, aber das Phase-Watch-Effect läuft beim Mount mit phase='vorbereitung' (Default), und re-läuft sobald phase-Computation aktualisiert. Das ist React-konsistent.
-
-**BESTE LÖSUNG:** Hook-Reihenfolge **PhasenTab → Load → Monitoring**, alle bekommen `phase`. Beim allerersten Render ist phase='vorbereitung' (Default vor jeglicher Daten). Hook-Effects re-laufen bei phase-Änderung.
-
-Das funktioniert weil:
-- Hook 1 (PhasenTab) Effekte hängen von phase ab → re-läuft bei phase-Änderung ✓
-- Hook 2 (Load) Effekt E7 hängt von phase ab → re-läuft bei phase-Änderung ✓
-- Hook 3 (Monitoring) Effekt E3 hängt von phase ab → re-läuft bei phase-Änderung ✓
-- `phase` selbst wird nach den Hooks berechnet (Z.123-125 bleibt!)
-
-Aber: Die State-Setter (setActiveTab/setConfig/setDaten) müssen referentiell stabil sein, damit useEffect-Deps stabil sind. `setX` aus useState ist von Natur aus stabil. ✓
-
-**FINALE Hook-Einbindung in DurchfuehrenDashboard:**
-
-```typescript
-// Pre-Compute urlTab
-const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-
-// Hook C: PhasenTab (gibt activeTab, setActiveTab, wechsleTab zurück)
-//   Reihenfolge wichtig: muss VOR useDurchfuehrenLoad kommen (Load braucht setActiveTab)
-const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({
-  phase: 'vorbereitung', // Initial; tatsächliches phase wird unten berechnet, useEffect re-läuft
-  urlTab, user, pruefungId,
-})
-```
-
-**ABER:** Das übergibt 'vorbereitung' fest — kein Re-Run bei phase-Änderung möglich, weil das Argument konstant ist.
-
-Lösung: phase wird **vor** dem ersten Hook berechnet. Das geht aber nicht, weil config+daten erst aus den Hooks kommen.
-
-**FINALE LÖSUNG (Architektur-Pattern: lazy phase-derivation):**
-
-`phase` muss VOR den Hooks bekannt sein. Aber config+daten kommen aus den Hooks. Klassisches Henne-Ei. Lösung: **wir benutzen useState für phase** und aktualisieren es per separatem useEffect aus config+daten.
-
-Oder einfacher: Wir akzeptieren, dass **phase auf Hook-Inputs nicht zur Verfügung steht beim ersten Render** und der Default-Wert 'vorbereitung' aus dem useState-Initial korrekt ist. Wenn config+daten verfügbar werden, ändert sich `phase`, und die useState-basierte Hook-Reaktivität funktioniert NICHT, weil die Hook-Inputs konstant sind.
-
-**Die beste reale Lösung: Hook nicht parametriert mit `phase`. Stattdessen reichen die Hooks `phase` aus dem useState aus DurchfuehrenDashboard rein, der per setPhase aus einem useEffect von config/daten gesetzt wird.**
-
-Das ist Refactor-Aufwand der über reines Hook-Extract hinausgeht. **Pragmatic-Beschluss:**
-
-→ **Phase wird im Body von DurchfuehrenDashboard berechnet wie heute (Z.123-125), und an alle Hooks reingegeben.** Weil `phase` jeden Render neu berechnet wird (es ist eine pure Computation aus config+daten — nicht useState), ist es ein **stable per render** Wert. Hook-Inputs sind dann beim ersten Render `phase='vorbereitung'` (config+daten=null), und ab dem zweiten Render der echte Wert. Die Hook-Effekte hängen von phase ab und re-laufen wenn phase sich ändert. ✓
-
-**REIHENFOLGE im DurchfuehrenDashboard nach diesem Pattern:**
-
-```typescript
-// 1. config kommt aus useDurchfuehrenLoad
-// 2. daten kommt aus useDurchfuehrenMonitoring  
-// 3. phase = config && daten ? bestimmePhase(config, daten.schueler) : 'vorbereitung'
-// 4. PhasenTab bekommt phase
-// 5. Aber: Load+Monitoring brauchen phase als Input
-
-→ Zirkular. Auflösung: 
-
-OPTION X: phase wird in useState gehalten + per useEffect aktualisiert.
-```
-
-**ACHTUNG:** Das ist eine wichtige Architektur-Entscheidung, die wir im Plan **vor Subagent-Dispatch** klären sollten. Im worst-case bedeutet das, dass der Plan einen zusätzlichen Schritt braucht: einen `usePhase`-Helper-Hook oder die phase als useState vom Body.
-
-**KONSERVATIVE LÖSUNG (recommended, einfach):**
-
-Wir lassen `phase` als per-render-Computation im Body, ABER reichen sie nicht in die Hooks rein als Hook-Input-Parameter. Stattdessen:
-
-- `useDurchfuehrenMonitoring` bekommt `phase` rein (nicht zirkular, weil Monitoring ohne Load läuft) → wenn Monitoring vor Load läuft, hat Monitoring `phase` aus Body.
-- `useDurchfuehrenLoad` bekommt `phase` rein → wenn Load vor PhasenTab läuft, ist phase verfügbar.
-
-ABER: Body-Berechnung von `phase` braucht `config` aus Load und `daten` aus Monitoring. → Hook-Aufruf-Reihenfolge muss sein: Load → Monitoring → Body-Berechnung von phase → PhasenTab.
-
-Aber Load braucht phase als Input. → ZIRKULAR.
-
-**LÖSUNG:** `phase` wird im Body als useState gehalten + via useEffect aus config+daten aktualisiert.
-
-**Plan-Anpassung:**
-
-```typescript
-// Im DurchfuehrenDashboard-Body:
+// Phase als useState statt per-render-Computation, damit alle Hook-Inputs reaktiv sind.
+// Ohne das gibt es Hook-Input-Zirkularität: phase aus config+daten (Load+Monitoring),
+// aber die brauchen phase selbst. useState + Sync-Effect löst das sauber.
 const [phase, setPhase] = useState<PruefungsPhase>('vorbereitung')
 
+// urlTab: synchron aus location lesen (kein State, einmal pro Render OK)
+const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
+
 // Hook-Reihenfolge: PhasenTab → Load → Monitoring → Phase-Sync-Effect
+//   PhasenTab muss vor Load kommen, weil Load setActiveTab als Argument braucht.
 const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({ phase, urlTab, user, pruefungId })
 const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
   useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase, urlTab, setActiveTab })
 const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten } =
   useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase })
 
-// Phase-Sync (ersetzt Z.123-125):
+// Phase-Sync: ersetzt die gelöschte Z.123-125-Computation.
 useEffect(() => {
   const neuePhase: PruefungsPhase = config && daten ? bestimmePhase(config, daten.schueler) : 'vorbereitung'
   setPhase(neuePhase)
 }, [config, daten])
 ```
 
-Diese Lösung führt zu einem zusätzlichen useState (`phase`) und einem zusätzlichen useEffect (Phase-Sync), aber löst die Hook-Input-Zirkularität sauber.
+**Warum dieses Pattern funktioniert:**
+- Beim ersten Render: `phase='vorbereitung'` (Default), config/daten=null. Hooks starten mit Default-Phase.
+- Sobald Load+Monitoring Daten liefern: Phase-Sync-Effect setzt phase neu.
+- Setter `setX` aus useState sind referentiell stabil → useEffect-Deps in den Hooks bleiben stabil.
+- React Hook-Order-Regel respektiert: `useState`+3 Hook-Calls+useEffect immer in dieser Reihenfolge pro Render.
 
 - [ ] **Step 3: Pattern dokumentieren als Code-Comment**
 
@@ -1064,7 +938,10 @@ wc -l ExamLab/src/hooks/useDurchfuehrenMonitoring.ts ExamLab/src/hooks/useDurchf
 wc -l ExamLab/src/utils/durchfuehrenMonitoringMapper.ts ExamLab/src/utils/durchfuehrenMonitoringMapper.test.ts
 ```
 
-Erwartung: DurchfuehrenDashboard.tsx ~ 480-520 Z. Wenn >550 Z., zusätzlichen Cluster (z.B. Nachrichten-Polling oder Timer) extrahieren.
+Erwartung: DurchfuehrenDashboard.tsx ~ 480-520 Z. Wenn >550 Z., zusätzlichen Cluster extrahieren — **Reihenfolge: Nachrichten zuerst, dann Timer**:
+
+1. **Nachrichten-Polling** (~12 Z. Ersparnis): `useDurchfuehrenNachrichten({ user, pruefungId, istDemoModus })` neu in `src/hooks/`. Move: `_nachrichten`-State + `setNachrichten`-Setter + `ladeNachrichten`-Callback + E1-Effect. **Hinweis**: `_nachrichten` wird gesetzt, aber nirgends gelesen — Hook-Output kann zunächst `nachrichten` exportieren (Future-Use), dead-code-Cleanup als Spawn-Task post-merge dokumentieren.
+2. **Timer aktive Phase** (~10 Z. Ersparnis): `usePhasenTimer({ phase })` neu in `src/hooks/`. Move: `startTimestamp` lazy-init State + `dauer` State + E9-Effect + `formatDauer`-Top-Level-Function (wandert mit). Test-Hybrid **JA** (Timer-State-Maschine ist pure mit fake-timers testbar).
 
 - [ ] **Step 2: Unused-Imports prüfen**
 
