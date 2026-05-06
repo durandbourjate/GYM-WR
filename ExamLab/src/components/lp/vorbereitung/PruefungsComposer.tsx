@@ -20,7 +20,7 @@ import HilfeSeite from '../HilfeSeite.tsx'
 import SuSVorschau from './SuSVorschau.tsx'
 import ConfigTab from './composer/ConfigTab.tsx'
 import AbschnitteTab from './composer/AbschnitteTab.tsx'
-import VorschauTab from './composer/VorschauTab.tsx'
+import VorschauTab from './composer/VorschauTab'
 import AnalyseTab from './composer/AnalyseTab.tsx'
 
 interface Props {
