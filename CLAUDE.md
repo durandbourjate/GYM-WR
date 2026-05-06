@@ -8,9 +8,22 @@ Lehrer: DUY. Fächer: Wirtschaft & Recht (SF, EWR, EF), Informatik. Klassenlehre
 ```
 Unterrichtsplaner/   → React/TS/Vite PWA (Semesterplaner)
 ExamLab/            → React/TS/Vite PWA (ExamLab: Prüfen + Üben + Fragensammlung)
+packages/shared/     → Shared React/TS-Library (Types, Editor, Mediaquellen) für ExamLab
 Uebungen/            → Übungspools (pool.html + config/*.js) + Informatik-Material
 Projektdateien/      → Claude-Projektanweisungen (nicht deployed)
 ```
+
+## Erstinstallation
+
+Multi-Package-Repo: drei Sub-Packages haben eigene `node_modules`. Im Repo-Root einmalig:
+
+```bash
+npm run setup
+```
+
+Das ruft `npm ci` in `packages/shared`, `Unterrichtsplaner` und `ExamLab` auf. Einzelne Sub-Packages: `npm run setup:shared` / `setup:examlab` / `setup:planer`.
+
+`packages/shared` MUSS vor `ExamLab` installiert sein, sonst scheitern vitest und tsc auf `katex`-Resolution. CI macht das via separater Steps in `deploy.yml`.
 
 ## Konventionen
 
