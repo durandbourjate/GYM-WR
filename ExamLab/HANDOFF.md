@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Bundle P-Doku — `musterlosung` Field-Drift dokumentiert + eingefroren (2026-05-06)
+### Bundle P-Doku — `musterlosung` Field-Drift dokumentiert + eingefroren ✅ MERGED (2026-05-06)
 
-Branch `feature/bundle-p-musterloesung-doku`, bereit für Merge. Aufwärm-Bundle aus Audit-Roadmap-Phase 3.
+Merge `d059ebb` auf main. Branch `feature/bundle-p-musterloesung-doku` gelöscht (lokal+remote). Aufwärm-Bundle aus Audit-Roadmap-Phase 3.
 
 **Was geliefert:**
 - `scripts/audit-musterloesung.sh` mit Per-Token-Baseline (6 Tokens: musterlosung 295, Musterlosung 0, musterloesung 70, Musterloesung 14, musterLoesung 12, MusterLoesung 0). Parallele Arrays statt `declare -A` (bash 3.2 macOS-kompatibel). `--strict`-Modus für CI.
