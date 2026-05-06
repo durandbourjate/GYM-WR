@@ -284,41 +284,60 @@ EOF
 
 ---
 
-## Phase 4 — Commit 4: draftStore.ts (3 Renames)
+## Phase 4 — Commit 4: draftStore.ts (4 Renames)
 
-### Task 4.1: registriere + setzeDirty + setzeStatus → register + setDirty + setStatus
+### Task 4.1: registriere + abmelde + setzeDirty + setzeStatus → register + unregister + setDirty + setStatus
 
 **Files:**
 - Modify: `ExamLab/src/store/draftStore.ts`
 - Modify: `ExamLab/src/store/draftStore.test.ts`
 - Modify: `ExamLab/src/hooks/useDirtyTracker.ts`
+- Modify: `ExamLab/src/hooks/useDirtyTracker.test.tsx`
+
+**Wichtig:** Plan-Reviewer hat aufgedeckt: `draftStore.abmelde` (Sibling zu `registriere` — un-register beim Unmount) ist ebenfalls Programming-Primitive nach Bundle V → englisch. Wird im selben Commit symmetrisch zu `registriere → register` gerenamt: `abmelde → unregister`. Vorsicht: `abmelde` ist NICHT identisch mit auth-domain-`abmelden` (Word-Boundary `\babmelde\b` matcht NICHT `abmelden`, weil das `n` ein Word-Character ist).
 
 - [ ] **Step 4.1.1: Caller-Inventory**
 
-Run: `grep -nE "\b(registriere|setzeDirty|setzeStatus)\b" ExamLab/src --include='*.ts' --include='*.tsx' -r | grep -v themenSichtbarkeit`
-Expected: ~34 Treffer (Phase 3 hat themenSichtbarkeitStore-Treffer schon entfernt).
+Run: `grep -nE "\b(registriere|abmelde|setzeDirty|setzeStatus)\b" ExamLab/src --include='*.ts' --include='*.tsx' -r | grep -v themenSichtbarkeit | grep -v abmelden`
+Expected: ~40 Treffer.
 
 - [ ] **Step 4.1.2: Rename in Store-Datei**
 
 In `ExamLab/src/store/draftStore.ts`:
 - `registriere: (editorId: string) => void` → `register: ...`
+- `abmelde: (editorId: string) => void` → `unregister: ...`
 - `setzeDirty: ...` → `setDirty: ...`
 - `setzeStatus: ...` → `setStatus: ...`
-- Plus alle Implementation-Zeilen.
+- Plus alle Implementation-Zeilen (`registriere: (editorId) => set(...)` etc.).
 
 - [ ] **Step 4.1.3: Rename in useDirtyTracker.ts**
 
 In `ExamLab/src/hooks/useDirtyTracker.ts`:
-- destructure-line + alle Call-Sites + useEffect-deps-array.
+- Doc-Comment Z. 5+7: `abmelde() ... beim Unmount`, `registriere/abmelde im draftStore` → `unregister() ...`, `register/unregister im draftStore`.
+- Z. 22: `const abmelde = useDraftStore(s => s.abmelde)` → `const unregister = useDraftStore(s => s.unregister)`.
+- Z. 28: `abmelde(editorId)` → `unregister(editorId)`.
+- Z. 30 useEffect-deps-array: `[editorId, registriere, abmelde]` → `[editorId, register, unregister]`.
 
-- [ ] **Step 4.1.4: Rename in draftStore.test.ts**
+- [ ] **Step 4.1.4: Rename in useDirtyTracker.test.tsx**
 
-In `ExamLab/src/store/draftStore.test.ts`: jedes `registriere`/`setzeDirty`/`setzeStatus` → `register`/`setDirty`/`setStatus`.
+In `ExamLab/src/hooks/useDirtyTracker.test.tsx`:
+- Z. 16: `it('abmelde beim Unmount', ...)` → `it('unregister beim Unmount', ...)`.
+- Mock-Stellen oder Assertions die `abmelde` referenzieren mit-renamen.
 
-- [ ] **Step 4.1.5: Verify-Audit (draftStore-Actions)**
+- [ ] **Step 4.1.5: Rename in draftStore.test.ts**
+
+In `ExamLab/src/store/draftStore.test.ts`:
+- jedes `registriere`/`abmelde`/`setzeDirty`/`setzeStatus` → `register`/`unregister`/`setDirty`/`setStatus`.
+- Z. 46: `it('abmelde entfernt Eintrag', ...)` → `it('unregister entfernt Eintrag', ...)`.
+- Z. 48: `useDraftStore.getState().abmelde('editor-1')` → `.unregister('editor-1')`.
+
+- [ ] **Step 4.1.6: Verify-Audit (draftStore-Actions)**
 
 Run: `grep -nE "\bregistriere\b" ExamLab/src --include='*.ts' --include='*.tsx' -r`
 Expected: 0 Treffer.
+
+Run: `grep -nE "\babmelde\b" ExamLab/src --include='*.ts' --include='*.tsx' -r`
+Expected: 0 Treffer (Word-Boundary `\b` schliesst `abmelden` aus — auth-domain bleibt deutsch).
 
 Run: `grep -nE "\bsetzeDirty\b" ExamLab/src --include='*.ts' --include='*.tsx' -r`
 Expected: 0 Treffer.
@@ -326,17 +345,22 @@ Expected: 0 Treffer.
 Run: `grep -nE "\bsetzeStatus\b" ExamLab/src --include='*.ts' --include='*.tsx' -r`
 Expected: 0 Treffer (jetzt sowohl draftStore als auch themenSichtbarkeitStore migriert).
 
-- [ ] **Step 4.1.6: tsc + Tests + Commit**
+- [ ] **Step 4.1.7: tsc + Tests + Commit**
 
 ```bash
 git add -A
 git commit -m "$(cat <<'EOF'
-Bundle O Phase 4: draftStore registriere/setze* → register/set*
+Bundle O Phase 4: draftStore registriere/abmelde/setze* → register/unregister/set*
 
-Programming-Primitives englisch (Bundle V). 3 Renames:
+Programming-Primitives englisch (Bundle V). 4 Renames:
 - registriere → register
+- abmelde → unregister (symmetrisches Sibling, vom Reviewer aufgedeckt)
 - setzeDirty → setDirty
 - setzeStatus → setStatus
+
+WICHTIG: draftStore.abmelde (un-register-Hook) ist ein Programming-Primitive,
+NICHT der Auth-Domain-Verb abmelden. Word-Boundary-Grep \babmelde\b
+matcht abmelden nicht (n ist Word-Char).
 
 Damit ist auch der zweite setzeStatus-Konsument (draftStore) migriert,
 nach themenSichtbarkeitStore in Phase 3.
@@ -617,12 +641,19 @@ EOF
 Run:
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
-grep -nE "\.zuruecksetzen\b|\.setze[A-Z]|\.navigiereZ|\.zurueckZum|\.zurueck\b\(\)|\.registriere\b\(|\.navigiere\b\(|\.zuDashboard\b\(|\.zuUebung\b\(|\.zuErgebnis\b\(|\.zuAdmin\b\(|\.zuGruppenAuswahl\b\(|\.zuPruefen\b\(" \
-  ExamLab/src --include='*.ts' --include='*.tsx' -r | grep -v "Defensive\|//\\s*Domain\|anmelden\|abmelden"
+grep -nE "\.zuruecksetzen\b|\.setze[A-Z]|\.navigiereZ|\.zurueckZum|\.zurueck\b\(\)|\.registriere\b\(|\.\babmelde\b\(|\.navigiere\b\(|\.zuDashboard\b\(|\.zuUebung\b\(|\.zuErgebnis\b\(|\.zuAdmin\b\(|\.zuGruppenAuswahl\b\(|\.zuPruefen\b\(" \
+  ExamLab/src --include='*.ts' --include='*.tsx' -r \
+  | grep -v "Defensive\|//\\s*Domain\|abmelden" \
+  | grep -v "setzeTeilnehmer"
 ```
 Expected: 0 Treffer.
 
-Falls Treffer: identifizieren, fixen, neue Audit-Run.
+**Erlaubte Ausnahmen (gefiltert):**
+- `abmelden` (Auth-Domain-Verb, bleibt deutsch per Bundle V).
+- `setzeTeilnehmer` (apiService HTTP-Action — Wire-Vertrag-Property in `klassenlistenApi.ts`, KEIN Store-Action — out-of-scope für Bundle O).
+- Defensive-Marker-Kommentare und `// Domain`-Kommentare.
+
+Falls Treffer ausserhalb dieser Ausnahmen: identifizieren, fixen, neue Audit-Run.
 
 ### Task 8.2: HANDOFF.md aktualisieren
 

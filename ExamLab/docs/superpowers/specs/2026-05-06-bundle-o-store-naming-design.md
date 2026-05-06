@@ -58,13 +58,16 @@
 
 ## Renames-Map (alle 6 Stores, ~119 Occurrence-Rewrites)
 
-### draftStore.ts (3 Renames)
+### draftStore.ts (4 Renames)
 
 | Aktuell | Neu | Files | Occurrences |
 |---|---|---:|---:|
 | `registriere(editorId)` | `register(editorId)` | 3 | 19 |
+| `abmelde(editorId)` | `unregister(editorId)` | 4 | ~10 |
 | `setzeDirty(editorId, dirty)` | `setDirty(editorId, dirty)` | 3 | 15 |
 | `setzeStatus(editorId, status)` | `setStatus(editorId, status)` | (siehe ueben/themen) | (siehe ueben/themen) |
+
+**Wichtig:** `draftStore.abmelde` (un-register-Hook beim Unmount) ist ein Programming-Primitive nach Bundle V — englisch. `\babmelde\b` matcht NICHT `abmelden` (Auth-Domain-Verb), weil `n` ein Word-Character ist.
 
 ### ueben/themenSichtbarkeitStore.ts (2 Renames)
 
@@ -266,6 +269,7 @@ Test-Anzahl unverändert: 1234 passes (vitest-Baseline nach Bundle Q).
 - Domain-Verb-Rename (`anmelden → login`, `abmelden → logout` etc.) — explizit gegen Bundle-V-Konvention.
 - `subscribe`/`unsubscribe`/Zustand-Native-API — Library-Konvention, nicht touched.
 - `authStore.ts` (root, nicht ueben) — bereits konform, keine Änderung.
+- `apiService.setzeTeilnehmer` (HTTP-Action, Wire-Vertrag-Property in `klassenlistenApi.ts`) — KEIN Store-Action, Final-Audit-Grep filtert mit `grep -v setzeTeilnehmer`.
 - Store-Logik-Refactoring, Selector-Performance-Tuning, Cache-Layer-Änderungen.
 - `pruefungStore`-Internals: `setAntwort`'s Antwort-Type-Validierung, `toggleMarkierung`-Persistierung — alles unangetastet.
 
