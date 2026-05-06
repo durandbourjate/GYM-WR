@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import type { DraftSyncState } from '../services/draftSync'
-import { mockFrage } from '../__tests__/helpers/frageStorageMocks'
+import { mockFrage } from '../test-helpers/frageStorageMocks'
 
 // === Mocks ===
 const tippeFrageMock = vi.fn()

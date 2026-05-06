@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { DEFAULT_SCHUL_CONFIG } from '../types/schulConfig'
-import { useSchulConfig } from '../store/schulConfigStore'
+import { useSchulConfig } from './schulConfigStore'
 
 // Zustand-Store vor jedem Test zurücksetzen
 beforeEach(() => {

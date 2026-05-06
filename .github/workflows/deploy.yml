@@ -52,6 +52,10 @@ jobs:
         working-directory: ExamLab
         run: npm run lint:as-any
 
+      - name: Audit __tests__/ Directories (Bundle Q Gate)
+        working-directory: ExamLab
+        run: npm run lint:no-tests-dir
+
       - name: Build ExamLab (unified)
         working-directory: ExamLab
         env:
@@ -101,6 +105,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:as-any
+
+      - name: Audit __tests__/ Directories (Bundle Q Gate, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:no-tests-dir
 
       - name: Build Staging (ExamLab from preview)
         if: steps.checkout-preview.outcome == 'success'
