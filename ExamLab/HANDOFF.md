@@ -10,7 +10,7 @@
 
 ### Bundle O — Store-Action-Naming-Vereinheitlichung ✅ MERGED (2026-05-06)
 
-Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-o-store-naming` lokal + remote gelöscht. 7 Sub-Commits + 1 HANDOFF/Memory. Viertes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 22 Action-Renames in 6 Stores + 2 Navigation-Hooks nach Bundle-V-Sprach-Konvention (Programming-Primitives englisch, Domain-Verben deutsch).
+Merge-Commit `b025b2d` auf `main`. Branch `refactor/bundle-o-store-naming` lokal + remote gelöscht. 7 Sub-Commits + 1 HANDOFF/Memory. Viertes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 22 Action-Renames in 6 Stores + 2 Navigation-Hooks nach Bundle-V-Sprach-Konvention (Programming-Primitives englisch, Domain-Verben deutsch).
 
 **Audit-Token-Diff:**
 | Token | vorher | nachher |
@@ -42,7 +42,7 @@ Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-o-store-nami
 - `84b0f00` Phase 5: pruefungStore navigiere/zuruecksetzen → navigate/reset (2 Renames)
 - `5ba11fd` Phase 6: lpUIStore + useLPNavigation navigiere*/zurueck* → openX/backToDashboard/back (8 Renames: 3 Store + 5 Hook)
 - `32cc6de` Phase 7: useSuSNavigation zu*/zurueck → open*/back (7 Renames)
-- `<TBD>` Phase 8: HANDOFF + Memory
+- `6c13efd` Phase 8: HANDOFF + Memory
 
 **Pre-Push-Verifikation:**
 - vitest: 1234 passed | 4 todo (gleiche Baseline wie nach Bundle Q) ✅
