@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { kalibrierungApi, type KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
+import { useToast } from '../../../hooks/useToast'
 import DiffModal from './DiffModal'
 
 type Filter = {
@@ -28,6 +29,7 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
   onRefresh: () => void
   onDiffOeffnen: (e: KIFeedbackEintragLP) => void
 }) {
+  const toast = useToast()
   const [wichtig, setWichtig] = useState(eintrag.wichtig)
   const [aktiv, setAktiv] = useState(eintrag.aktiv)
 
@@ -39,7 +41,7 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
     const neu = !wichtig
     setWichtig(neu)
     const ok = await kalibrierungApi.aktualisiereFeedback(email, eintrag.feedbackId, { wichtig: neu })
-    if (!ok) { setWichtig(!neu); alert('Speichern fehlgeschlagen'); return }
+    if (!ok) { setWichtig(!neu); toast.error('Speichern fehlgeschlagen'); return }
     onRefresh()
   }
 
@@ -47,14 +49,14 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
     const neu = !aktiv
     setAktiv(neu)
     const ok = await kalibrierungApi.aktualisiereFeedback(email, eintrag.feedbackId, { aktiv: neu })
-    if (!ok) { setAktiv(!neu); alert('Speichern fehlgeschlagen'); return }
+    if (!ok) { setAktiv(!neu); toast.error('Speichern fehlgeschlagen'); return }
     onRefresh()
   }
 
   async function loeschen() {
     if (!confirm('Eintrag wirklich löschen?')) return
     const ok = await kalibrierungApi.loescheFeedback(email, eintrag.feedbackId)
-    if (!ok) { alert('Löschen fehlgeschlagen'); return }
+    if (!ok) { toast.error('Löschen fehlgeschlagen'); return }
     onRefresh()
   }
 
