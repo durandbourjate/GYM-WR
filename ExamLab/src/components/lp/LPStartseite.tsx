@@ -107,21 +107,13 @@ function LPStartseiteInner() {
   )
 
   // Invaliden Kurs → Redirect auf erste Gruppe + Toast
-  const [kursNichtGefundenToast, setKursNichtGefundenToast] = useState<string | null>(null)
   useEffect(() => {
     if (urlKursId && !aktiverKurs && gruppen.length > 0) {
       const zielName = gruppen[0].name
       navigate(`/uebung/kurs/${gruppen[0].id}`, { replace: true })
-      setKursNichtGefundenToast(`Kurs "${urlKursId}" nicht gefunden — zu ${zielName} umgeleitet`)
+      toast.warning(`Kurs "${urlKursId}" nicht gefunden — zu ${zielName} umgeleitet`)
     }
-  }, [urlKursId, aktiverKurs, gruppen, navigate])
-
-  // Toast nach 4s automatisch ausblenden
-  useEffect(() => {
-    if (!kursNichtGefundenToast) return
-    const t = setTimeout(() => setKursNichtGefundenToast(null), 4000)
-    return () => clearTimeout(t)
-  }, [kursNichtGefundenToast])
+  }, [urlKursId, aktiverKurs, gruppen, navigate, toast])
 
   // localStorage: letzten Kurs merken
   useEffect(() => {
@@ -503,17 +495,6 @@ function LPStartseiteInner() {
           onHilfe={toggleHilfe}
           onEinstellungen={() => toggleEinstellungen()}
         />
-      )}
-
-      {/* Toast: Kurs nicht gefunden */}
-      {kursNichtGefundenToast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed top-4 right-4 z-50 bg-amber-50 dark:bg-amber-950/90 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 px-4 py-2 rounded-lg shadow-lg text-sm max-w-sm animate-in fade-in"
-        >
-          <span className="mr-2">⚠️</span>{kursNichtGefundenToast}
-        </div>
       )}
 
       {/* Flex-Row: Hauptinhalt + optionale Sidebar */}
