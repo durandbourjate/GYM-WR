@@ -1,4 +1,4 @@
-import type { Frage } from '../../types/fragen-storage'
+import type { Frage } from '../types/fragen-storage'
 import { mockCoreFrage } from '@shared/test-helpers/frageCoreMocks'
 
 /**

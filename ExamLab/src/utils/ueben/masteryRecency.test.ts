@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { berechneMasteryMitRecency } from '../utils/ueben/mastery'
+import { berechneMasteryMitRecency } from './mastery'
 
 function tageVorher(tage: number): string {
   return new Date(Date.now() - tage * 24 * 60 * 60 * 1000).toISOString()

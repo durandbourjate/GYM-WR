@@ -10,6 +10,7 @@ export default defineConfig({
       '@dnd-kit/core': path.resolve(__dirname, 'node_modules/@dnd-kit/core'),
       '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
       '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities'),
+      '@testing-library/react': path.resolve(__dirname, 'node_modules/@testing-library/react'),
     },
     dedupe: ['react', 'react-dom'],
   },

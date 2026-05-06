@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { getAlleVerfuegbarenTypen, getSichtbareTypen, setSichtbareTypen } from '../utils/sichtbareTypen'
+import { getAlleVerfuegbarenTypen, getSichtbareTypen, setSichtbareTypen } from './sichtbareTypen'
 
 // localStorage-Mock für Tests
 const localStorageMock = (() => {

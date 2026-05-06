@@ -10,7 +10,7 @@ import {
   istWRFachschaft,
   defaultFachbereich,
   zeigeFachbereichBadge,
-} from '../utils/fachUtils'
+} from './fachUtils'
 import type { Tag } from '../types/tags'
 
 // === Neue Funktionen ===

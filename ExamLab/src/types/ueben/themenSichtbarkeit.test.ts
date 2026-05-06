@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { ThemenFreischaltung, ThemenStatus } from '../types/ueben/themenSichtbarkeit'
+import type { ThemenFreischaltung, ThemenStatus } from './themenSichtbarkeit'
 
 /** Default aus GruppenEinstellungen (konfigurierbar, hier für Tests hardcoded) */
 const DEFAULT_MAX_AKTIVE_THEMEN = 5

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { istGueltigesGefaess } from '../utils/gefaessUtils'
+import { istGueltigesGefaess } from './gefaessUtils'
 import { DEFAULT_SCHUL_CONFIG } from '../types/schulConfig'
 
 describe('istGueltigesGefaess', () => {
