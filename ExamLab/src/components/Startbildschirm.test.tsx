@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import componentSource from '../Startbildschirm.tsx?raw'
+import componentSource from './Startbildschirm.tsx?raw'
 
 describe('Startbildschirm — Warteraum-Polling', () => {
   it('Hebel D: Warteraum-Polling auf 3000ms', () => {

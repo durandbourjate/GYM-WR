@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import DurchfuehrenDashboardSource from '../DurchfuehrenDashboard.tsx?raw'
+import DurchfuehrenDashboardSource from './DurchfuehrenDashboard.tsx?raw'
 
 // =============================================================================
 // G.f.2 Rendering-Tests: Mocks müssen VOR allen Komponenten-Imports stehen
@@ -10,7 +10,7 @@ import DurchfuehrenDashboardSource from '../DurchfuehrenDashboard.tsx?raw'
 // --- pending Promises für ladeMonitoring + ladeNachrichten + ladePruefung
 // Skeleton-Tests prüfen den ladeStatus='laden'-Pfad — Promises bleiben absichtlich pending. ---
 
-vi.mock('../../../../services/apiService', () => ({
+vi.mock('../../../services/apiService', () => ({
   apiService: {
     istKonfiguriert: () => true,
     ladeMonitoring: vi.fn(() => new Promise(() => { /* bleibt pending */ })),
@@ -21,50 +21,50 @@ vi.mock('../../../../services/apiService', () => ({
   },
 }))
 
-vi.mock('../../../../services/preWarmApi', () => ({
+vi.mock('../../../services/preWarmApi', () => ({
   preWarmKorrektur: vi.fn(() => Promise.resolve()),
 }))
 
-vi.mock('../../../../store/authStore', () => ({
+vi.mock('../../../store/authStore', () => ({
   useAuthStore: (selector: (s: { user: { email: string; name: string } | null; istDemoModus: boolean }) => unknown) =>
     selector({ user: { email: 'lp@gymhofwil.ch', name: 'Test LP' }, istDemoModus: false }),
 }))
 
 // Schwere Sub-Komponenten mocken — wir testen nur den Skeleton-Pfad
-vi.mock('../VorbereitungPhase', () => ({
+vi.mock('./VorbereitungPhase', () => ({
   default: () => <div data-testid="vorbereitung-phase-mock">VorbereitungPhase</div>,
 }))
-vi.mock('../LobbyPhase', () => ({
+vi.mock('./LobbyPhase', () => ({
   default: () => <div data-testid="lobby-phase-mock">LobbyPhase</div>,
 }))
-vi.mock('../AktivPhase', () => ({
+vi.mock('./AktivPhase', () => ({
   default: () => <div data-testid="aktiv-phase-mock">AktivPhase</div>,
 }))
-vi.mock('../BeendetPhase', () => ({
+vi.mock('./BeendetPhase', () => ({
   default: () => <div data-testid="beendet-phase-mock">BeendetPhase</div>,
 }))
-vi.mock('../../../../components/lp/korrektur/KorrekturDashboard', () => ({
+vi.mock('../../../components/lp/korrektur/KorrekturDashboard', () => ({
   default: () => <div data-testid="korrektur-dashboard-mock">KorrekturDashboard</div>,
 }))
-vi.mock('../../../../components/settings/EinstellungenPanel', () => ({
+vi.mock('../../../components/settings/EinstellungenPanel', () => ({
   default: () => <div data-testid="einstellungen-panel-mock">EinstellungenPanel</div>,
 }))
-vi.mock('../../../../components/lp/fragensammlung/FragenBrowser', () => ({
+vi.mock('../../../components/lp/fragensammlung/FragenBrowser', () => ({
   default: () => <div data-testid="fragen-browser-mock">FragenBrowser</div>,
 }))
-vi.mock('../../../../components/lp/HilfeSeite', () => ({
+vi.mock('../../../components/lp/HilfeSeite', () => ({
   default: () => <div data-testid="hilfe-seite-mock">HilfeSeite</div>,
 }))
 
 // LPAppHeaderContainer: rendert ein <header>-Element
-vi.mock('../../LPAppHeaderContainer', () => ({
+vi.mock('../LPAppHeaderContainer', () => ({
   LPAppHeaderContainer: ({ untertitel }: { untertitel?: string }) => (
     <header data-testid="lp-app-header">{untertitel}</header>
   ),
 }))
 
 // Theme-Store (von LPAppHeaderContainer ggf. transitiv gebraucht — als Fallback)
-vi.mock('../../../../store/themeStore', () => ({
+vi.mock('../../../store/themeStore', () => ({
   useThemeStore: (selector: (s: { mode: string; toggleMode: () => void }) => unknown) =>
     selector({ mode: 'light', toggleMode: vi.fn() }),
 }))
@@ -85,7 +85,7 @@ beforeAll(() => {
 
 // Lazy-import damit vi.mock-Hoisting vor Modul-Init greift
 async function ladeDurchfuehrenDashboard() {
-  const Modul = await import('../DurchfuehrenDashboard')
+  const Modul = await import('./DurchfuehrenDashboard')
   return Modul.default
 }
 
@@ -194,7 +194,7 @@ describe('G.f.2 Skeleton-Pattern', () => {
 
   it('schreibt examlab-lp-letzte-sus-anzahl-{pruefungId} nach erfolgreichem Lade', async () => {
     // ladeMonitoring resolved mit 3 SuS → localStorage-Persist erwartet
-    const { apiService: mockApi } = await import('../../../../services/apiService')
+    const { apiService: mockApi } = await import('../../../services/apiService')
     ;(mockApi.ladeMonitoring as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       pruefungTitel: 'Test-Prüfung',
       schueler: [
