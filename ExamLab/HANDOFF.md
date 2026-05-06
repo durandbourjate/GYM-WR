@@ -10,7 +10,7 @@
 
 ### Bundle Q — Test-Verzeichnis-Konsolidierung ✅ MERGED (2026-05-06)
 
-Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-q-tests-konsolidierung` lokal + remote gelöscht. 4 Sub-Commits + 1 Follow-up. Drittes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 19 Test-/Helper-Dateien aus 3 `__tests__/`-Verzeichnissen umverteilt nach Heuristik B („Test wandert zur Source"); CI-Gate `lint:no-tests-dir` analog zu `lint:as-any`.
+Merge-Commit `dc25f9a` auf `main`. Branch `refactor/bundle-q-tests-konsolidierung` lokal + remote gelöscht. 4 Sub-Commits + 1 Follow-up. Drittes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 19 Test-/Helper-Dateien aus 3 `__tests__/`-Verzeichnissen umverteilt nach Heuristik B („Test wandert zur Source"); CI-Gate `lint:no-tests-dir` analog zu `lint:as-any`.
 
 **Audit-Token-Diff:**
 | Dimension | vorher | nachher |
@@ -28,7 +28,7 @@ Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-q-tests-kons
 - `cd9bd76` Phase 1 Follow-up: stale JSDoc-Pfad in `packages/shared/src/test-helpers/frageCoreMocks.ts`
 - `733205d` Phase 2: components/__tests__/-Subdirs (2 Files; +14 zusätzliche `vi.mock`/`import()`-Pfad-Rewrites in DurchfuehrenDashboard.test.tsx)
 - `f567bc8` Phase 3: scripts/audit-test-locations.sh + lint:no-tests-dir + 2× CI-Gate + Sektion „Test-Layer-Strategie"
-- `<TBD>` Phase 4: HANDOFF + Memory + Lernschleife
+- `be74b64` Phase 4: HANDOFF + Memory + Lernschleife
 
 **Pre-Push-Verifikation:**
 - vitest: 1234 passed | 4 todo (gleiche Baseline wie nach Bundle N+V) ✅
