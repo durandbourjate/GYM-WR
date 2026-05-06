@@ -8,6 +8,41 @@
 
 ## Letzter Stand auf main
 
+### Bundle S.b — VorschauTab-Split ✅ READY FOR MERGE (2026-05-06)
+
+Branch `refactor/bundle-s-b-vorschau-split`. 2 Implementation-Commits + Plan-Commit. Zweites Sub-Bundle aus Bundle S — siebtes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Folgt direkt auf Bundle S.a (`ad70bed`).
+
+**Was geliefert:**
+- `ExamLab/src/components/lp/vorbereitung/composer/VorschauTab.tsx` (643 Z.) → Folder mit 14 Sub-Dateien (1 `index.tsx` Dispatcher mit `VorschauTab`-Default + interner `FrageVorschau`-Dispatcher + 1 `zeitbedarf.ts` mit `schaetzeZeitbedarf` exported + 1 `AnhangMedien.tsx` mit Lightbox-State + 11 `<Fragetyp>Vorschau.tsx`: MC, Freitext, Lueckentext, Zuordnung, RichtigFalsch, Berechnung, Buchungssatz, TKonto, Kontenbestimmung, BilanzER, Aufgabengruppe)
+- 1 minimal-Caller-Edit: `PruefungsComposer.tsx:23` — `.tsx`-Extension gedroppt wegen Folder-Resolution (S.a-Lehre #2)
+- Folder-Pattern + Cutover-Strategie wie S.a, byte-identische Bodies (drift=0 reviewer-bestätigt)
+- Plan: `docs/superpowers/plans/2026-05-06-bundle-s-b-vorschau-split.md` (rev2 nach Reviewer-Findings: 5-up Path-Tiefe für `types/`/`utils/` aus Sub-Files, 4-up für `MediaAnhang`)
+
+**Hotspot-Bilanz (Files >500 Z. im Bundle-Scope):** **15 → 14** ✅ (VorschauTab.tsx 643 raus). Bundle-S.c-Targets (poolConverter 744, fibuAutoKorrektur 600) noch dabei.
+
+**Verifikation:**
+- vitest **1253 passed | 4 todo (1257 total)** — drift = 0 ✅
+- tsc -b clean (force-mode + Output-Inspektion), build clean
+- lint:as-any 0 / lint:no-alert 0 / lint:no-tests-dir clean
+- Spec-Compliance-Reviewer-Subagent: APPROVED (alle 14 Sub-Files byte-identisch zu Original verifiziert, Path-Tiefen korrekt, Skeleton-Dormancy bestätigt)
+
+**Browser-E2E:** offen — Master pusht S.b nach `origin/preview`, User testet auf staging mit echtem LP-Login (Vorschau-Tab öffnen, alle 11 Vorschau-Komponenten + AnhangMedien-Lightbox stichprobe, Console-Errors-Check). Pages-Deploy-Vorbedingung auf main (grüner Pages-Run) vor PR-Merge prüfen.
+
+**Phase-4-Security-Check:** Bundle ist reiner Refactor ohne Wire-Vertrag-/API-Body-/Session-Token-/Response-Filter-Berührung. Folder-Resolution-Mechanik ist build-tool-intern.
+
+**Sub-Commits:**
+- `e93da3c` Plan rev2 (mit korrigierten Path-Tiefen nach Reviewer-Findings)
+- `c7d6d4d` Phase 1.1: VorschauTab/ Folder-Skeleton mit 14 Sub-Dateien
+- `fdc79e1` Phase 1.2: Cutover — alte Datei + Caller-Extension
+
+**Lehre für S.c:** Vor Plan-Schreibung empirisch Path-Tiefe via S.a-Sibling verifizieren (`grep "from '\\.\\." DruckAnsicht/<file>.tsx`). Plan-Author hatte 1-Level-off-by-one in Rev1; Reviewer fing es ab. Für S.c (Folder unter `utils/`) entsprechend selbst empirisch testen statt aus Memory ableiten.
+
+**Folge:**
+- Bundle S.c (poolConverter 744 + fibuAutoKorrektur 600) — gleiche Session ODER nächste Session
+- Phase 3 (Bundle P, T) und Phase 4 (Bundle U) folgen
+
+---
+
 ### Bundle S.a — Renderer-Splits (KorrekturFrageVollansicht + DruckAnsicht) ✅ READY FOR MERGE (2026-05-06)
 
 Branch `refactor/bundle-s-a-renderer-splits` (auch auf `origin/preview` für Staging-E2E gepusht). 4 Implementation-Commits + 3 Doc-Commits (Master-Spec + Plan). Erstes Sub-Bundle aus Bundle S (Niedrig-Risiko-Datei-Splits) — sechstes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05).
