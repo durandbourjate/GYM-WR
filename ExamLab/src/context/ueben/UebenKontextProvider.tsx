@@ -25,7 +25,7 @@ export const UebenKontextContext = createContext<UebenKontext>(DEFAULT_KONTEXT)
 
 export function UebenKontextProvider({ children }: { children: ReactNode }) {
   const { aktiveGruppe } = useUebenGruppenStore()
-  const { einstellungen, setzeEinstellungen, setzeDefaults, abbrecheSave } = useUebenSettingsStore()
+  const { einstellungen, setEinstellungen, setDefaults, abbrecheSave } = useUebenSettingsStore()
 
   // Settings laden wenn Gruppe wechselt
   useEffect(() => {
@@ -35,10 +35,10 @@ export function UebenKontextProvider({ children }: { children: ReactNode }) {
     abbrecheSave()
     let cancelled = false
     uebenGruppenAdapter.ladeEinstellungen(aktiveGruppe.id)
-      .then(e => { if (!cancelled) setzeEinstellungen(e) })
-      .catch(() => { if (!cancelled) setzeDefaults(aktiveGruppe.typ) })
+      .then(e => { if (!cancelled) setEinstellungen(e) })
+      .catch(() => { if (!cancelled) setDefaults(aktiveGruppe.typ) })
     return () => { cancelled = true }
-  }, [aktiveGruppe, setzeEinstellungen, setzeDefaults, abbrecheSave])
+  }, [aktiveGruppe, setEinstellungen, setDefaults, abbrecheSave])
 
   // Fachfarben als CSS Custom Properties setzen
   useEffect(() => {

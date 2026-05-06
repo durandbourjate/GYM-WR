@@ -42,14 +42,14 @@ describe('useUebenSettingsStore — Persistenz', () => {
     speichereSpy.mockRestore()
   })
 
-  it('setzeEinstellungen löst KEINEN Backend-Save aus (Load-Pfad)', async () => {
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+  it('setEinstellungen löst KEINEN Backend-Save aus (Load-Pfad)', async () => {
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     await vi.advanceTimersByTimeAsync(1000)
     expect(speichereSpy).not.toHaveBeenCalled()
   })
 
   it('aktualisiereEinstellungen: In-Memory sofort, Backend-Save nach Debounce', async () => {
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 7 })
 
     // In-Memory: sofort
@@ -68,7 +68,7 @@ describe('useUebenSettingsStore — Persistenz', () => {
   })
 
   it('Mehrere schnelle Updates → ein einziger Save mit letztem Wert', async () => {
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 6 })
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 7 })
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 8 })
@@ -83,7 +83,7 @@ describe('useUebenSettingsStore — Persistenz', () => {
   })
 
   it('abbrecheSave verhindert ausstehenden Save', async () => {
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 9 })
     useUebenSettingsStore.getState().abbrecheSave()
 
@@ -93,7 +93,7 @@ describe('useUebenSettingsStore — Persistenz', () => {
 
   it('Backend-Fehler landet in saveFehler', async () => {
     speichereSpy.mockRejectedValueOnce(new Error('Keine Berechtigung'))
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 7 })
 
     await vi.advanceTimersByTimeAsync(500)
@@ -114,7 +114,7 @@ describe('useUebenSettingsStore — Persistenz', () => {
 
   it('Kein Save wenn kein User oder keine Gruppe', async () => {
     useUebenAuthStore.setState({ user: null } as Parameters<typeof useUebenAuthStore.setState>[0])
-    useUebenSettingsStore.getState().setzeEinstellungen(basisEinstellungen)
+    useUebenSettingsStore.getState().setEinstellungen(basisEinstellungen)
     useUebenSettingsStore.getState().aktualisiereEinstellungen({ maxAktiveThemen: 7 })
 
     await vi.advanceTimersByTimeAsync(1000)
