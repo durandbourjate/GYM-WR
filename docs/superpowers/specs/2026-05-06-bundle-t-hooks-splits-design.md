@@ -87,8 +87,8 @@ Co-Location: bevorzugte Test-Position direkt neben dem Hook-File. Bestehende Tes
 
 ### 5.1 T.d — ZeichnenCanvas.tsx (804 Z., hoch-Risiko)
 
-**State-Inventar (gegrept 2026-05-06):**
-- 14× `useRef`: `canvasRef`, `containerRef`, `onTextCommitRef`, `textInputRef`, `textOverlaySichtbarRef`, `letzterPunktRef`, `stiftBufferRef`, `stiftMetaRef`, `rafIdRef`, `stiftAktivRef`, `renderMitPreviewRef`, `exportiereRef`, `onPNGExportRef`, `onDatenChangeRef`, `serializiereRef`, `textOverlayGeoeffnetRef`, `timerRef` (in inline-`useDebounce`)
+**State-Inventar (gegrept 2026-05-06, vollständig):**
+- 18× `useRef`: `canvasRef`, `containerRef`, `onTextCommitRef`, `textInputRef`, `textOverlaySichtbarRef`, `letzterPunktRef`, `stiftBufferRef`, `stiftMetaRef`, `rafIdRef`, `stiftAktivRef`, `renderMitPreviewRef`, `exportiereRef`, `onPNGExportRef`, `onDatenChangeRef`, `serializiereRef`, `textOverlayGeoeffnetRef`, `timerRef` (in inline-`useDebounce`) — und einige weitere Engine-Sync-Refs
 - 5× `useCallback`: `starteStiftRendering`, `stoppeStiftRendering`, `textAbschliessen`, `handleStart`, `handleMove`, `handleEnd`
 - 1 inline `useDebounce`-Helper (Z. 88–101)
 
@@ -111,19 +111,25 @@ Co-Location: bevorzugte Test-Position direkt neben dem Hook-File. Bestehende Tes
 
 ### 5.2 T.e — Dashboard.tsx Üben (930 Z., hoch-Risiko)
 
-**State-Inventar (gegrept 2026-05-06):**
-- 5× `useState`: `alleFragen`, `laden`, `alleThemenAnzeigen`, `eingeklappteFaecher` (Set, mit localStorage), `sortierung` (mit localStorage)
-- 7× `useMemo`: `themenMap`, `verfuegbareFaecher`, `sichtbareThemenListe`, `letzteUebungProThema`, `themenSektionen`, `themaDetail`, `gefilterteFragen`
+**State-Inventar (gegrept 2026-05-06, vollständig nach Reviewer-Hinweis):**
+- 14× `useState`:
+  - **Daten + Persisted UI**: `alleFragen`, `laden`, `alleThemenAnzeigen`, `eingeklappteFaecher` (Set, mit localStorage), `sortierung` (mit localStorage)
+  - **Dashboard-Navigation**: `dashboardTab` (themen/fortschritt/ergebnisse), `aktiverFach`, `aktivesThema`, `lzMiniModal`, `mixDialogOffen`
+  - **Filter-Cluster** (innerhalb Themen-Detail-Ansicht): `suchtext`, `unterthemaFilter` (Set), `schwierigkeitFilter` (Set), `typFilter` (Set)
+- 8× `useMemo`: `themenMap`, `verfuegbareFaecher`, `sichtbareThemenListe`, `letzteUebungProThema`, `themenSektionen`, `themaDetail`, `gefilterteFragen`, `empfehlungen`
 - 1× `useRef`: `deepLinkVerarbeitet`
 - 9 Stores referenziert: `useUebenAuthStore`, `useUebenGruppenStore`, `useUebenUebungsStore`, `useUebenFortschrittStore`, `useUebenAuftragStore`, `useUebenNavigationStore`, `useThemenSichtbarkeitStore`, `useUebenSettingsStore`, `useUebenKontext`-Hook
 
-**Cut-Hypothese:**
+**Cut-Hypothese (überarbeitet — 4 Hooks/Komponenten-Splits):**
 
 | Hook / Komponente | Verantwortung | Test-Hybrid |
 |---|---|---|
 | `useLernpfadData({ user, gruppe, themenSichtbarkeit })` (`src/hooks/ueben/`) | `ladeFragen` + `ladeFortschritt` + `ladeAuftraege` + `ladeFreischaltungen`, Loading-State, preWarm-Trigger | **NEIN** (4× store-async-Orchestration, Mocking-Aufwand > Wert) |
-| `useThemenKomputationen({ alleFragen, fortschritte, sortierung, eingeklappteFaecher, freischaltungen, lernziele, sichtbareFaecher })` (`src/hooks/ueben/`) | 7 useMemo's: `themenMap` + `verfuegbareFaecher` + `sichtbareThemenListe` + `letzteUebungProThema` + `themenSektionen` + `themaDetail` + `gefilterteFragen` | **JA** (pure Datenkomputation, Decision-Tree gut testbar) |
+| `useThemenKomputationen({ alleFragen, fortschritte, sortierung, eingeklappteFaecher, freischaltungen, lernziele, sichtbareFaecher, auftraege })` (`src/hooks/ueben/`) | 8 useMemo's: `themenMap` + `verfuegbareFaecher` + `sichtbareThemenListe` + `letzteUebungProThema` + `themenSektionen` + `themaDetail` + `gefilterteFragen` + `empfehlungen` | **JA** (pure Datenkomputation, Decision-Tree gut testbar) |
+| `useFragenFilter({ themenFragen })` (`src/hooks/ueben/`) ODER `<FragenFilterPanel>` (Komponenten-Split) | Filter-Cluster: `suchtext` + `unterthemaFilter` + `schwierigkeitFilter` + `typFilter` + Filter-Anwendung. **Entscheidung Hook-vs-Komponente in writing-plans T.e** je nach Coupling mit ThemaDetail-Render. | **JA** falls Hook (pure Filter-Logik) |
 | `<FachSektion>` (Komponenten-Split, gleicher Folder oder `ueben/dashboard/`) | `eingeklappteFaecher`-pro-Fach + ThemaKarten-Render + Empfehlungs-Rendering | **NEIN** (UI-Component, Browser-E2E reicht) |
+
+UI-State `dashboardTab`, `lzMiniModal`, `mixDialogOffen`, `aktiverFach`, `aktivesThema` bleibt im Dashboard-Body — keine Hook-Migration für reinen Tab-/Modal-State.
 
 **Risiken:**
 - 5 useEffect-Aufrufe mit Inter-Deps (Reihenfolge: erst Fragen laden, dann preWarm) — Reihenfolge muss in `useLernpfadData` exakt erhalten bleiben (Lehre `feedback_memo_deps_trigger_vs_compute`)
