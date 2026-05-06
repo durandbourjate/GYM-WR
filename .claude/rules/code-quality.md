@@ -371,6 +371,36 @@ Wenn Du einen neuen Bezeichner einführst, frag:
 
 Bei einer **Backend-Migration weg von Apps-Script** ist der natürliche Re-Entry-Point für vollständige Vereinheitlichung — dann wäre der Daten-Migrations-Aufwand sowieso anstehend, und Sheet-Spalten + Endpoint-Naming könnten in einem Schritt mit-vereinheitlicht werden.
 
+## Field-Drift: Musterlösung
+
+Das Musterlösungs-Konzept hat aus historischen Gründen drei Identifier-Lager im
+Code. Diese sind eingefroren — nicht im laufenden Refactor anpacken; eine
+Vereinheitlichung wäre Bundle P-Migration (Backend-Vertrag betroffen).
+
+| Lager | Identifier | Wo | Warum |
+|---|---|---|---|
+| **Backend-Vertrag** | `musterlosung` (no `e`) | Sheet-Spalte; Default-Field auf `Frage`-Core (`fragen-core.ts:42, :400`) | Historischer Tippfehler-zur-Konvention erstarrt. Umbenennung erfordert Sheet-Migration. |
+| **Bild/Annot-Drift** | `musterloesungBild`, `musterloesungAnnotationen` (mit `e`, lowercase) | `fragen-core.ts:176, :455, :549` | Sub-Felder die nicht direkt auf Sheet-Spalten mappen. Bewusst mit `e` als Frontend-Konvention. |
+| **CodeFrage-Sub-Lager** | `musterLoesung` (mit `e`, mixed-case) | `fragen-core.ts:440, :663` (CodeFrage); `poolConverter/konvertiereStandard.ts:206` | Eigenständiger Frage-Typ. PascalCase-Drift gegen Lager 2 — unklarer Ursprung. |
+
+**Regel für neue Felder:** Default ist Lager 1 (`musterlosung*`, no `e`). Lager 2
+nur wenn explizit Frontend-only-Field ohne Sheet-Mapping. Lager 3 nicht
+ausweiten.
+
+> **Hinweis zu `Musterloesung` (PascalCase, mit `e`):** Diese Treffer sind
+> UI-Strings und JSX-Comments (`{/* Musterloesung */}`), kein Identifier-Lager.
+> Werden vom Audit-Skript trotzdem auf Baseline gelockt, damit neue Treffer
+> bewusst geprüft werden.
+
+**Regel für Refactor:** Innerhalb regulärer Bundles **nicht** umbenennen. Die
+Vereinheitlichung läuft über Bundle P-Migration (separater Plan, Backend-Migration
+nötig).
+
+**CI-Gate:** `npm run lint:musterloesung` (Skript: `scripts/audit-musterloesung.sh`)
+schlägt an, wenn ein Token über die Baseline wächst. Baseline wird aktualisiert,
+wenn Bundle P-Migration läuft oder ein neues Lager bewusst hinzukommt (mit
+Doku-Update).
+
 ## Test-Layer-Strategie
 
 Drei Test-Schichten, jeweils klarer Ort:
