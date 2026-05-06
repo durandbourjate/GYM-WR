@@ -56,6 +56,10 @@ jobs:
         working-directory: ExamLab
         run: npm run lint:no-tests-dir
 
+      - name: Run vitest
+        working-directory: ExamLab
+        run: npm test
+
       - name: Build ExamLab (unified)
         working-directory: ExamLab
         env:
@@ -110,6 +114,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:no-tests-dir
+
+      - name: Run vitest (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm test
 
       - name: Build Staging (ExamLab from preview)
         if: steps.checkout-preview.outcome == 'success'
