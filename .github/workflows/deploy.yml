@@ -54,7 +54,9 @@ jobs:
 
       - name: Audit alert() Use (Bundle R Gate)
         working-directory: ExamLab
-        run: npm run lint:no-alert
+        # --if-present: skipt sauber, falls Bundle R noch nicht auf main gemergt ist.
+        # Sobald Bundle R auf main ist, aktiviert sich der Gate automatisch.
+        run: npm run lint:no-alert --if-present
 
       - name: Audit __tests__/ Directories (Bundle Q Gate)
         working-directory: ExamLab
