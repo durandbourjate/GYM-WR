@@ -118,3 +118,23 @@ git push
 ```
 
 **Erkennung:** Wenn nach `git push` zur Preview-URL gefetcht wird und sich der Build-Timestamp nicht ändert (innerhalb von ~2 Minuten), wahrscheinlich ist der Workflow in der Queue hängengeblieben. Nicht lange raten — leerer Commit ist billig und löst zuverlässig aus.
+
+## CI-Gates auf BEIDEN Workflow-Hälften — preview vor Bundle-Merge mitziehen (Bundle Q Lehre, 2026-05-06)
+
+**Problem:** Bundle Q (Test-Verzeichnis-Konsolidierung) führte zwei neue CI-Gates ein (`lint:no-tests-dir`, `Run vitest`). Beide Gates laufen sowohl im production-Block (gegen `main`) als auch im staging-Block (gegen `preview`-Checkout). Nach dem Bundle-Q-Merge auf `main` waren die Gates dort grün — aber `origin/preview` stand noch auf Bundle-N+V-Stand (`f3aee7c`), hatte also noch `__tests__/`-Verzeichnisse UND nicht den `.env.local`-Flake-Fix. Resultat: 3 main-Pushes liefen rot, weil der staging-Job an dem alten preview-Tree scheiterte.
+
+**Regel:** Bei einem Bundle, das einen CI-Gate-Step in `deploy.yml` einführt der ALSO im staging-Block läuft (typisch: `if: steps.checkout-preview.outcome == 'success'`-Steps), muss `origin/preview` VOR dem Push auf main entweder:
+1. **bereits den gleichen Stand wie main haben** (wenn preview-Branch sowieso strikt hinter main ist), oder
+2. **gleichzeitig mit main mitgezogen werden** durch einen FF-Push: `git push origin main:preview`.
+
+**Vor dem Merge prüfen:**
+```bash
+# Hat preview eigene Commits, die nicht in main sind?
+git log origin/preview ^origin/main --oneline
+```
+- **Leer:** preview ist strikt hinter main → FF `git push origin main:preview` ist sicher.
+- **Treffer:** preview hat work-in-progress → manuell mergen oder cherry-picken, nicht force-pushen (Preview-Force-Push-Regel).
+
+**Erkennung:** CI-Annotation „Process completed with exit code 1" auf einem main-Build der eigentlich grün laufen sollte. Erste Diagnose: welcher Step ist es? Wenn ein staging-`if: ...preview...success`-Step ist, dann ist preview out-of-sync.
+
+**Anti-Pattern:** Den staging-Step temporär deaktivieren oder im if-Guard schwächen, um den CI-Build durchzubekommen. Damit verliert man den Gate-Wert auf staging.
