@@ -7,6 +7,13 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+// Mock import.meta.env — apiClient.ts liest VITE_APPS_SCRIPT_URL beim Modul-Load
+// und short-circuit'et alle POSTs (`if (!APPS_SCRIPT_URL) return false`), wenn die
+// Variable leer ist. Ohne diesen Stub versagen die "speichereAntworten/heartbeat
+// sendet pruefungId"-Tests in einem frischen npm ci-Worktree (oder CI), weil dort
+// .env.local nicht existiert. Pattern identisch zu apiClient.test.ts.
+vi.stubEnv('VITE_APPS_SCRIPT_URL', 'https://script.google.com/test')
+
 // Mock sessionStorage
 const sessionStorageMock = (() => {
   let store: Record<string, string> = {}
