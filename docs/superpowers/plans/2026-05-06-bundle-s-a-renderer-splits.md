@@ -27,12 +27,11 @@
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
 git checkout refactor/bundle-s-master-spec
-git pull --ff-only origin main 2>/dev/null  # optional, falls main weiter ist
 git checkout -b refactor/bundle-s-a-renderer-splits
 git branch --show-current
 ```
 
-Expected: `refactor/bundle-s-a-renderer-splits`
+Expected: `refactor/bundle-s-a-renderer-splits`. (Kein `pull` nötig — Master-Spec-Branch wurde gerade aus main abgeleitet und enthält nur Spec+Plan, keine offenen Remote-Änderungen.)
 
 - [ ] **Step 2: Remote-Push (für spätere PR + Subagent-Sichtbarkeit)**
 
@@ -106,9 +105,29 @@ awk '/^function .*Anzeige/{name=$2; start=NR} /^}$/{if(start){print NR-start " "
 
 Expected: Liste mit Zeilen-Längen pro Anzeige. Funktionen <20 Zeilen sind Konsolidations-Kandidaten. **Entscheidung:** dokumentieren in `_notes.md` oder als Kommentar im PR. Default: alle Anzeigen bleiben separat (Pattern-Konsistenz wichtiger als <20-Z-Regel). Konsolidieren nur, wenn 2+ Anzeigen exakt strukturgleich sind und sich Logik teilen.
 
-- [ ] **Step 4: Kein Commit hier — Audit-Ergebnis nur mental/Notiz**
+- [ ] **Step 4: Audit-Ergebnis als un-committete Notiz festhalten** (für Subagent-Handoff in Phase 1.1)
 
-Audit dient der Extraktions-Phase. Keine Code-Änderung.
+```bash
+cat > /tmp/bundle-s-a-audit-korrektur.md <<'EOF'
+# KorrekturFrageVollansicht — Audit-Notizen
+
+## Helper-Verteilung
+- Top-Level (in util.ts): frageHaupttext (Z. 32-46), KeineAntwort (Z. 603-610)
+- Pro Anzeige private: <hier ergaenzen>
+
+## Free-Identifier-Findings pro Anzeige
+- MCAnzeige: nutzt frageHaupttext? <ja/nein> — andere extern? <auflisten>
+- ... pro Funktion eine Zeile
+
+## Trivial-Konsolidations-Entscheidung
+- <Default: alle bleiben separat. Falls 2+ exakt strukturgleich: hier dokumentieren>
+
+## Geteilte Imports (mehrfach genutzt)
+- z.B. KaTeX, Markdown-Renderer
+EOF
+```
+
+Datei NICHT committen (`/tmp` ist git-ignored). Folge-Subagent liest sie in Phase 1.1.
 
 ### Task 0.4: Closure-Audit für DruckAnsicht.tsx
 
@@ -139,7 +158,7 @@ grep -n "^function .*Druck\b" ExamLab/src/components/lp/vorbereitung/composer/Dr
 
 Dependency: nutzt jede Druck-Funktion `BUCHSTABEN`? Gemeinsame Helper? Mental-Modell aufbauen.
 
-- [ ] **Step 4: Kein Commit**
+- [ ] **Step 4: Audit-Ergebnis analog Task 0.3 Step 4** in `/tmp/bundle-s-a-audit-druck.md` festhalten (gleiche Struktur).
 
 ---
 
@@ -180,8 +199,13 @@ Dependency: nutzt jede Druck-Funktion `BUCHSTABEN`? Gemeinsame Helper? Mental-Mo
 - [ ] **Step 2: `util.ts` erstellen** — `frageHaupttext` (Z. 32-46) + `KeineAntwort` (Z. 603-610) verschieben (kopieren). Imports: nur was diese Helper brauchen (z.B. `Frage` aus `@shared/types/fragen-core`).
 
 - [ ] **Step 3: Pro `<Fragetyp>Anzeige`-Funktion eine eigene Datei** erstellen:
-  - Funktions-Code 1:1 aus Original kopieren
-  - Imports oben in der neuen Datei: nur was diese Funktion braucht (Types, KaTeX, `frageHaupttext` aus `./util`)
+  - Funktions-Code 1:1 aus Original kopieren — keine Logik-Änderung, keine Body-Anpassung.
+  - **Imports explizit machen, was vorher implizit File-Scope war:**
+    - Wenn die Funktion `frageHaupttext` aufruft → `import { frageHaupttext } from './util'` oben in der neuen Datei.
+    - Wenn die Funktion `KeineAntwort` aufruft → `import { KeineAntwort } from './util'`.
+    - Andere lokale Helper aus dem Original (falls in Audit gefunden) ebenso aus `./<Helper>` importieren.
+    - Types aus `@shared/...` direkt importieren.
+    - Externe Libs (KaTeX-Renderer, Markdown etc.) wie im Original importieren.
   - Default-Export: die Funktion. Beispiel `MCAnzeige.tsx`:
     ```tsx
     import type { MCFrage } from '@shared/types/fragen-core'
@@ -208,10 +232,9 @@ import AutoKorrekturDetails from './AutoKorrekturDetails'
 import MusterloesungBox from './MusterloesungBox'
 
 interface Props {
-  frage: Frage
-  antwort: Antwort | undefined
-  autoErgebnis: KorrekturErgebnis | undefined
-  // ... weitere Props aus Original Z. 760-...
+  // *** Props-Interface 1:1 aus Original-Datei kopieren — KEIN Inferieren neuer Props.
+  //     Original hat Default-Export-Funktion `KorrekturFrageVollansicht({...}: Props)` ab Z. 760.
+  //     Den exakten Props-Block aus Original übernehmen. ***
 }
 
 export default function KorrekturFrageVollansicht({ frage, antwort, autoErgebnis, ... }: Props) {
@@ -271,7 +294,7 @@ Expected: `✓ built in …`.
 cd ExamLab && npx vitest run --reporter=default 2>&1 | tail -5
 ```
 
-Expected: gleicher Count wie Baseline (1253 passed). Falls Drift: Diff lesen und entscheiden ob legitim oder Bug.
+Expected: **exakt** gleicher Count wie Baseline (1253 passed | 4 todo | 1 skipped). **Falls Drift (auch nur ±1 Test):** STOP. Mechanische Refactors haben 0 Drift-Toleranz. Hotfix auf S.a-Branch (kein Self-Approve), Ursache analysieren, dann erneut. Bei Unklarheit User eskalieren.
 
 - [ ] **Step 5: Lint-Gates**
 
@@ -381,7 +404,7 @@ git commit -m "Bundle S.a Phase 2.1: DruckAnsicht/ Folder-Skeleton mit 18 Sub-Da
 git rm ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx
 ```
 
-- [ ] **Step 2: tsc + build + vitest verifizieren** (gleicher Block wie Task 1.2):
+- [ ] **Step 2: tsc + build + vitest + lint verifizieren** (gleicher Block wie Task 1.2):
 
 ```bash
 cd ExamLab && npx tsc -b --noEmit
@@ -390,7 +413,7 @@ cd ExamLab && npx vitest run --reporter=default 2>&1 | tail -5
 cd ExamLab && npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir
 ```
 
-Expected: alle exit 0, vitest 1253 passed.
+Expected: alle exit 0, vitest **exakt** 1253 passed | 4 todo | 1 skipped. **Drift-Toleranz: 0** (siehe Task 1.2 Step 4) — bei Drift STOP + Hotfix, kein Self-Approve.
 
 - [ ] **Step 3: Commit**
 
@@ -546,7 +569,7 @@ EOF
 
 - [ ] **Step 4: Code-Reviewer-Subagent dispatchen** vor Merge (siehe Subagent-Driven-Development-Skill für Reviewer-Pattern).
 
-- [ ] **Step 5: Merge** auf main (User-Aktion). Squash oder Merge-Commit nach Repo-Konvention (Memory-Pattern: regulärer Merge-Commit mit `Merge Bundle S.a: …`-Subject).
+- [ ] **Step 5: Merge** auf main (User-Aktion). **Regulärer Merge-Commit (kein Squash)** — Pattern wie Bundle Q/R/N/M. Subject: `Merge Bundle S.a: Renderer-Splits (KorrekturFrageVollansicht + DruckAnsicht)`.
 
 - [ ] **Step 6: Branch lokal+remote löschen** nach 1 Woche Beobachtung (per Memory `project_bundle_l_c_komplett.md` Pattern).
 
