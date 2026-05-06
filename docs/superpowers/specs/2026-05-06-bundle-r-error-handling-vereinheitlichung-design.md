@@ -49,7 +49,7 @@ interface ToastStore {
 
 Default-Verhalten:
 - `error` → `sticky: true` (User muss aktiv dismissen)
-- `success`/`info`/`warning` → `sticky: false`, Auto-Hide 4s
+- `success`/`info`/`warning` → `sticky: false`, Auto-Hide via Konstante `DEFAULT_TOAST_AUTO_HIDE_MS = 4000` (im selben File exportiert; kein Magic-Number-Inline)
 
 Action-Naming folgt **Bundle-O-Konvention** (Programming-Primitives englisch: `add`/`dismiss`/`clear`).
 
@@ -68,7 +68,7 @@ toast.dismiss(id)  // optional, falls Caller die ID braucht
 Intern: ruft `useToastStore.getState().add(...)`. Kein Re-Render-Bezug.
 
 #### 3. `ExamLab/src/components/shared/ToastContainer.tsx`
-Liest `useToastStore(s => s.toasts)`, rendert vertikalen Stack oben-rechts (z-index hoch genug für Modale).
+Liest `useToastStore(s => s.toasts)`, rendert vertikalen Stack oben-rechts. Container: `fixed top-4 right-4 z-[1000] flex flex-col gap-2` (z-index 1000 liegt über existierenden Modal-Layern; wird in Phase 1 gegen vorhandene `z-`-Klassen verifiziert).
 
 Stil: Tailwind, identisch zum bestehenden `LPStartseite`-Banner-Pattern:
 - `error` → rot (`bg-red-100 dark:bg-red-900 border-red-300 text-red-800 dark:text-red-200`)
@@ -217,7 +217,9 @@ Für die 9 `alert()`-Pfade:
 
 Pro silent-fail-Stelle (Phase 3): den Code-Pfad provozieren (z.B. SuSStartseite Login-Bridge: gefakter 500er via `read_network_requests`-Fixture im fetch-hook), prüfen dass User Toast sieht (vorher: nichts).
 
-**Reihenfolge im E2E:** LP-Login → 5 LP-`alert()`-Pfade → Logout → SuS-Login → 4 SuS-Pfade + silent-fail-Pfade → Service-Worker-Cache (laut Workflow-Regel: vor Wire-Vertrag-Bundles). Hier kein Wire-Vertrag, aber bestehende Workflow-Regel beachten (SW unregister + reload nach UI-Migrationen).
+**Reihenfolge im E2E:** LP-Login → 5 LP-`alert()`-Pfade → Logout → SuS-Login → 4 SuS-Pfade + silent-fail-Pfade.
+
+**Service-Worker-Cache:** Bundle R ändert keine Backend-Wire-Verträge (rein UI-Surface), die `feedback_service_worker_cache_wire_bundle.md`-Regel für SW-unregister vor E2E ist hier **optional, nicht Pflicht**. Empfohlen vor erstem E2E-Lauf einmalig SW-unregister + caches.delete + reload, um sicherzustellen dass die neue ToastContainer-Komponente nicht aus altem PWA-Cache geladen wird.
 
 ### Verifikations-Checks
 
