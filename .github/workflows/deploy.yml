@@ -52,6 +52,10 @@ jobs:
         working-directory: ExamLab
         run: npm run lint:as-any
 
+      - name: Audit alert() Use (Bundle R Gate)
+        working-directory: ExamLab
+        run: npm run lint:no-alert
+
       - name: Audit __tests__/ Directories (Bundle Q Gate)
         working-directory: ExamLab
         run: npm run lint:no-tests-dir
@@ -109,6 +113,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:as-any
+
+      - name: Audit alert() Use (Bundle R Gate, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:no-alert
 
       - name: Audit __tests__/ Directories (Bundle Q Gate, staging)
         if: steps.checkout-preview.outcome == 'success'
