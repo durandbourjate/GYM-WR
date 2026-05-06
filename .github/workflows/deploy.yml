@@ -62,6 +62,12 @@ jobs:
         working-directory: ExamLab
         run: npm run lint:no-tests-dir
 
+      - name: Audit musterloesung Field-Drift (Bundle P-Doku Gate)
+        working-directory: ExamLab
+        # --if-present: skipt sauber, falls Bundle P-Doku noch nicht auf main gemergt ist.
+        # Sobald Bundle P-Doku auf main ist, aktiviert sich der Gate automatisch.
+        run: npm run lint:musterloesung --if-present
+
       - name: Run vitest
         working-directory: ExamLab
         run: npm test
@@ -125,6 +131,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:no-tests-dir
+
+      - name: Audit musterloesung Field-Drift (Bundle P-Doku Gate, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:musterloesung
 
       - name: Run vitest (staging)
         if: steps.checkout-preview.outcome == 'success'
