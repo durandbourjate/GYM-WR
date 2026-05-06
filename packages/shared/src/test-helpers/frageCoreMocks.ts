@@ -103,7 +103,7 @@ const SUB_DEFAULTS: { [K in FrageTyp]: Omit<Extract<Frage, { typ: K }>, keyof Fr
  * Felder via `overrides`.
  *
  * Verwendung: Tests in `packages/shared/src/editor/`. ExamLab-Tests verwenden
- * `mockFrage` aus `ExamLab/src/__tests__/helpers/frageStorageMocks.ts`.
+ * `mockFrage` aus `ExamLab/src/test-helpers/frageStorageMocks.ts`.
  *
  * Defensive-Tests die `null`/`undefined`/`{}` an typed-Funktionen uebergeben, nutzen
  * `as unknown as Frage` (mit Kommentar) direkt, NICHT diesen Helper.
