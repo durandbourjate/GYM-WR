@@ -6,7 +6,7 @@
 
 **Architecture:** Bash-Audit-Skript mit per-Token-Baseline (analog `audit-as-any.sh`), npm-Script + GitHub-Actions-Gates auf Production+Staging, und eine neue Sektion „Field-Drift: Musterlösung" in `.claude/rules/code-quality.md`.
 
-**Tech Stack:** Bash 4+, GitHub Actions YAML, npm scripts (ExamLab-Subpackage), Markdown.
+**Tech Stack:** Bash 3.2+ (kompatibel zu macOS-default — keine `declare -A`-Maps; parallele Arrays analog `audit-as-any.sh`), GitHub Actions YAML, npm scripts (ExamLab-Subpackage), Markdown.
 
 **Spec:** [`docs/superpowers/specs/2026-05-06-bundle-p-musterloesung-doku-design.md`](../specs/2026-05-06-bundle-p-musterloesung-doku-design.md)
 
@@ -95,6 +95,7 @@ SOURCES=(
   ExamLab/apps-script-code.js
 )
 
+# Parallele Arrays statt `declare -A` (bash 3.2 macOS-kompatibel, analog audit-as-any.sh).
 TOKENS=(
   "musterlosung"
   "Musterlosung"
@@ -103,20 +104,15 @@ TOKENS=(
   "musterLoesung"
   "MusterLoesung"
 )
+BASELINES=(295 0 70 14 12 0)
 
-declare -A BASELINE=(
-  ["musterlosung"]=295
-  ["Musterlosung"]=0
-  ["musterloesung"]=70
-  ["Musterloesung"]=14
-  ["musterLoesung"]=12
-  ["MusterLoesung"]=0
-)
+# Counts werden parallel zu TOKENS in COUNTS[] geschrieben.
+COUNTS=()
+DRIFT_INDICES=()
 
-declare -A COUNT=()
-DRIFT_TOKENS=()
-
-for token in "${TOKENS[@]}"; do
+for i in "${!TOKENS[@]}"; do
+  token="${TOKENS[$i]}"
+  baseline="${BASELINES[$i]}"
   hits=$(grep -rEn --include='*.ts' --include='*.tsx' --include='*.js' "\b$token\b" "${SOURCES[@]}" 2>/dev/null \
     | grep -vE "^[^:]+:[0-9]+:[[:space:]]*(//|/\*|\*)" || true)
   if [[ -z "$hits" ]]; then
@@ -124,38 +120,42 @@ for token in "${TOKENS[@]}"; do
   else
     count=$(echo "$hits" | grep -c . || true)
   fi
-  COUNT["$token"]=$count
-  if [[ "$count" -gt "${BASELINE[$token]}" ]]; then
-    DRIFT_TOKENS+=("$token")
+  COUNTS+=("$count")
+  if [[ "$count" -gt "$baseline" ]]; then
+    DRIFT_INDICES+=("$i")
   fi
 done
 
 echo "musterloesung-Audit:"
 printf "  %-20s %6s %10s   %s\n" "Token" "Count" "Baseline" "Status"
-for token in "${TOKENS[@]}"; do
+for i in "${!TOKENS[@]}"; do
+  token="${TOKENS[$i]}"
+  count="${COUNTS[$i]}"
+  baseline="${BASELINES[$i]}"
   status="OK"
-  if [[ "${COUNT[$token]}" -gt "${BASELINE[$token]}" ]]; then
-    status="DRIFT +$(( COUNT[$token] - BASELINE[$token] ))"
-  elif [[ "${COUNT[$token]}" -lt "${BASELINE[$token]}" ]]; then
-    status="UNDER -$(( BASELINE[$token] - COUNT[$token] ))"
+  if [[ "$count" -gt "$baseline" ]]; then
+    status="DRIFT +$(( count - baseline ))"
+  elif [[ "$count" -lt "$baseline" ]]; then
+    status="UNDER -$(( baseline - count ))"
   fi
-  printf "  %-20s %6d %10d   %s\n" "$token" "${COUNT[$token]}" "${BASELINE[$token]}" "$status"
+  printf "  %-20s %6d %10d   %s\n" "$token" "$count" "$baseline" "$status"
 done
 
-if [[ "${#DRIFT_TOKENS[@]}" -gt 0 ]]; then
+if [[ "${#DRIFT_INDICES[@]}" -gt 0 ]]; then
   echo ""
-  echo "Drift erkannt: ${#DRIFT_TOKENS[@]} Token über Baseline."
+  echo "Drift erkannt: ${#DRIFT_INDICES[@]} Token über Baseline."
   if [[ "${1:-}" == "--strict" ]]; then
     echo ""
     echo "Verbose-Treffer (max 20 pro Drift-Token):"
-    for token in "${DRIFT_TOKENS[@]}"; do
+    for i in "${DRIFT_INDICES[@]}"; do
+      token="${TOKENS[$i]}"
       echo "  --- $token ---"
       grep -rEn --include='*.ts' --include='*.tsx' --include='*.js' "\b$token\b" "${SOURCES[@]}" 2>/dev/null \
         | grep -vE "^[^:]+:[0-9]+:[[:space:]]*(//|/\*|\*)" \
         | head -20
     done
     echo ""
-    echo "FAIL: ${#DRIFT_TOKENS[@]} Token über Baseline."
+    echo "FAIL: ${#DRIFT_INDICES[@]} Token über Baseline."
     exit 1
   fi
 else
