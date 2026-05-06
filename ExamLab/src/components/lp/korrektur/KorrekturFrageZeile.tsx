@@ -7,6 +7,7 @@ import { effektivePunkte, quelleLabel } from '../../../utils/korrekturUtils.ts'
 import { apiService } from '../../../services/apiService.ts'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import KorrekturFrageVollansicht from './KorrekturFrageVollansicht.tsx'
+import { useToast } from '../../../hooks/useToast'
 
 /** KI-korrigierbare Fragetypen (nicht-deterministische, brauchen Claude API) */
 const KI_KORRIGIERBARE_TYPEN = new Set(['freitext'])
@@ -63,6 +64,7 @@ export default function KorrekturFrageZeile({
   onUpdate,
   onAudioUpload,
 }: Props) {
+  const toast = useToast()
   const [kiLaedt, setKiLaedt] = useState(false)
   // Lokaler State für offene KI-Feedback-ID und Wichtig-Markierung (nicht in FragenBewertung gespeichert)
   const [offeneKIFeedbackId, setOffeneKIFeedbackId] = useState<string | undefined>(undefined)
@@ -113,6 +115,7 @@ export default function KorrekturFrageZeile({
       }
     } catch (err) {
       console.error('[KI-Vorschlag] Fehler:', err)
+      toast.error('KI-Vorschlag fehlgeschlagen. Bitte erneut versuchen.')
     } finally {
       setKiLaedt(false)
     }
