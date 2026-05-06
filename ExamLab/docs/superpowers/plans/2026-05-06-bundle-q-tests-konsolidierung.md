@@ -289,18 +289,20 @@ Expected: `Tests  1234 passed | 4 todo`.
 
 ### Task 1.5: Leeres `src/__tests__/` entfernen
 
-- [ ] **Step 1.5.1: Verzeichnis-Inhalt prüfen**
+- [ ] **Step 1.5.1: Verzeichnis-Inhalt prüfen (nur Test-/TS-Files)**
 
-Run: `find ExamLab/src/__tests__ -type f`
+Run: `find ExamLab/src/__tests__ -type f \( -name '*.ts' -o -name '*.tsx' \)`
 Expected: leer.
 
 Run: `find ExamLab/src/__tests__ -type d`
-Expected: nur `src/__tests__/`, `src/__tests__/helpers`, `src/__tests__/media`, `src/__tests__/regression` (alle leer).
+Expected: nur `src/__tests__/`, `src/__tests__/helpers`, `src/__tests__/media`, `src/__tests__/regression`.
 
-- [ ] **Step 1.5.2: Leere Dirs entfernen (Git tracked nichts, aber filesystem aufräumen)**
+(Hinweis: macOS-`.DS_Store`-Files können in den Dirs liegen und sind nicht git-tracked. Der nächste Schritt entfernt sie zusammen mit den leeren Dirs.)
+
+- [ ] **Step 1.5.2: Leere Dirs (inkl. evt. `.DS_Store`) entfernen**
 
 ```bash
-rmdir ExamLab/src/__tests__/helpers ExamLab/src/__tests__/media ExamLab/src/__tests__/regression ExamLab/src/__tests__
+rm -rf ExamLab/src/__tests__
 ```
 
 Run: `ls ExamLab/src | grep __tests__ || echo "OK"`
@@ -369,18 +371,20 @@ In `ExamLab/src/components/Startbildschirm.test.tsx` ersetzen:
 In `ExamLab/src/components/lp/durchfuehrung/DurchfuehrenDashboard.test.tsx` ersetzen:
 - `from '../DurchfuehrenDashboard.tsx?raw'` → `from './DurchfuehrenDashboard.tsx?raw'`
 
-Weitere relative Imports (falls vorhanden, z.B. auf Stores oder Utils): Tiefe-Erhöhung um 1 zurücknehmen — `from '../../X'` → `from '../X'` etc. Vorgehen: `grep -nE "from '\.\." ExamLab/src/components/lp/durchfuehrung/DurchfuehrenDashboard.test.tsx`, jede `../`-Stufe um 1 reduzieren.
+(Verifiziert: einziger relativer Import im File ist der `?raw`-Source-Self-Import. Andere Imports sind alle Library-Pakete wie `react-router-dom` und `@testing-library/react`.)
 
-Verifikation pro File: `head -10 <file>` zeigt korrigierte Pfade.
+Verifikation: `grep -nE "from '\.\." ExamLab/src/components/lp/durchfuehrung/DurchfuehrenDashboard.test.tsx` darf 0 Treffer haben.
 
 ### Task 2.2: Leere `__tests__/`-Dirs entfernen
 
 - [ ] **Step 2.2.1: Beide Dirs prüfen + entfernen**
 
 ```bash
-find ExamLab/src/components/__tests__ ExamLab/src/components/lp/durchfuehrung/__tests__ -type f
+find ExamLab/src/components/__tests__ ExamLab/src/components/lp/durchfuehrung/__tests__ -type f \( -name '*.ts' -o -name '*.tsx' \)
 # Expected: leer.
-rmdir ExamLab/src/components/__tests__ ExamLab/src/components/lp/durchfuehrung/__tests__
+
+# rm -rf statt rmdir, damit eventuelle .DS_Store-Files den Schritt nicht stoppen.
+rm -rf ExamLab/src/components/__tests__ ExamLab/src/components/lp/durchfuehrung/__tests__
 ```
 
 Run: `find ExamLab/src -type d -name __tests__`
