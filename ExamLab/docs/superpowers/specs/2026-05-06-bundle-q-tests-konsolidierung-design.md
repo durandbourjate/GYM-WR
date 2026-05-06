@@ -1,7 +1,14 @@
 # Bundle Q — Test-Verzeichnis-Konsolidierung (`__tests__/` retiren)
 
-> Cleanup-Bundle aus dem [Vereinfachungs-Audit (2026-05-05)](../audits/2026-05-05-examlab-vereinfachung-audit.md), Abschnitt A2.10 + Roadmap-Bundle Q.
-> Drittes Cleanup-Bundle nach Bundle M (Fragenbank → Fragensammlung) und Bundle N+V (action/aktion + Sprach-Konvention).
+> Drittes Cleanup-Bundle nach Bundle M (Fragenbank → Fragensammlung) und Bundle N+V (action/aktion + Sprach-Konvention). Befundgrundlage stammt aus dem Vereinfachungs-Audit vom 2026-05-05 (Branch `audit/examlab-vereinfachung`, nicht auf `main` committed); die für Bundle Q relevanten Befunde sind unten inline übernommen, damit die Spec self-contained bleibt.
+
+## Audit-Befund (inline aus A2.10 + A2.11 + Roadmap-Bundle Q)
+
+**Befund (A2.10):** Tests verteilt über drei `__tests__/`-Verzeichnisse mit überlappenden Zwecken — `ExamLab/src/__tests__/` (16 Tests + 1 Helper-File), `ExamLab/src/components/__tests__/` (1), `ExamLab/src/components/lp/durchfuehrung/__tests__/` (1). Daneben existieren bereits 92 Files flach in `src/tests/` (modern Integration/Service) und 44 colocated `*.test.{ts,tsx}` neben den Source-Files. Empfehlung: `__tests__/` retiren, klare Test-Layer-Strategie etablieren (colocated Unit + `src/tests/` Integration-Hub).
+
+**Befund (A2.11):** Mock-Helper sind sauber zwischen Core (`packages/shared/src/test-helpers/frageCoreMocks.ts`) und Storage (`ExamLab/src/__tests__/helpers/frageStorageMocks.ts`) getrennt — keine Divergenz. Aber: die Storage-Helper liegt in einem `__tests__/`-Subdir, das durch dieses Bundle entfällt — Helper braucht einen neuen Heimat-Ort.
+
+**Roadmap-Klassifikation:** Bundle Q, Aufwand **S** (1 Session, mechanisch), Risiko **mech-rename** (niedrig), keine Abhängigkeiten. Test-Plan: Vitest grün + Visual-Inspect der Test-Reports.
 
 ---
 
@@ -98,9 +105,9 @@ Da alle Tests via `git mv` bewegt werden und die meisten via `@shared/...`-Alias
 
 - `../utils/...` aus `src/__tests__/X.test.ts` (1 Ebene tief unter `src`) wird zu `./X` resp. den richtigen relativen Pfad. Konkret: nach Bewegung von `src/__tests__/fachUtils.test.ts` → `src/utils/fachUtils.test.ts` muss `../utils/fachUtils` zu `./fachUtils` werden. Diese Pfad-Korrekturen sind Teil des `git mv`-Schritts pro File (nicht automatisch).
 - Tests in `media/` benutzen ausschließlich `@shared/...`-Aliase — Imports bleiben unverändert.
-- Tests in `regression/` benutzen nur `vi.fn()`-Mocks, keine relativen Imports.
+- Tests in `regression/` haben relative Imports auf Source (z.B. `'../../services/apiClient'` mit Tiefe 2). Da Move `src/__tests__/regression/X.test.ts` → `src/tests/regression/X.test.ts` die Tiefe konserviert (beide 2 Ebenen unter `src`), bleiben relative Pfade gültig — keine Anpassung nötig.
 - `helpers/frageStorageMocks.test.ts` testet `./frageStorageMocks` — bleibt relativ-stabil bei gemeinsamer Bewegung.
-- Verschobener Helper `frageStorageMocks.ts` wird aus 2 Tests in `src/tests/` importiert (gem. Audit A2.11). Importpfade in diesen `src/tests/`-Tests müssen aktualisiert werden: `../__tests__/helpers/frageStorageMocks` → `../test-helpers/frageStorageMocks`.
+- Verschobener Helper `frageStorageMocks.ts` wird aus genau **einem** Test ausserhalb des Helpers-Ordners importiert: `ExamLab/src/hooks/useFragenAutoSave.test.tsx` mit Pfad `'../__tests__/helpers/frageStorageMocks'`. Nach Move: `'../test-helpers/frageStorageMocks'`. Verifikation: `grep -rn "frageStorageMocks" ExamLab/src` muss nach dem Bundle ausschliesslich Treffer in `src/test-helpers/` und in `src/hooks/useFragenAutoSave.test.tsx` (mit neuem Pfad) zeigen.
 
 ---
 
@@ -203,7 +210,7 @@ Branch: `refactor/bundle-q-tests-konsolidierung`.
 - Alle 16 Test-Files via `git mv` an Zielort (siehe File-Map).
 - Helper `frageStorageMocks.ts` nach `src/test-helpers/`.
 - Pro File relative Imports anpassen (`../utils/X` → `./X` etc.).
-- 2 Tests in `src/tests/`, die `frageStorageMocks` aus `__tests__/helpers/` importieren, auf `src/test-helpers/` zeigen.
+- Einen Konsumenten ausserhalb des Helpers-Ordners auf neuen Pfad zeigen: `ExamLab/src/hooks/useFragenAutoSave.test.tsx` (`'../__tests__/helpers/frageStorageMocks'` → `'../test-helpers/frageStorageMocks'`).
 - Verifikation: `npm test` gleiche Anzahl passes (1234) + `tsc -b` clean.
 
 **Commit 2 — `components/__tests__/`-Subdirs auflösen (2 Files)**
