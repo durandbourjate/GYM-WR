@@ -326,7 +326,7 @@ class AppsScriptThemenSichtbarkeitAdapter {
     return response?.data || []
   }
 
-  async setzeStatus(
+  async setStatus(
     gruppeId: string,
     fach: string,
     thema: string,

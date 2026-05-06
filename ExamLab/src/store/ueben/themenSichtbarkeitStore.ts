@@ -11,7 +11,7 @@ interface ThemenSichtbarkeitState {
   ladeFreischaltungen: (gruppeId: string) => Promise<void>
 
   // Status setzen
-  setzeStatus: (
+  setStatus: (
     gruppeId: string,
     fach: string,
     thema: string,
@@ -21,7 +21,7 @@ interface ThemenSichtbarkeitState {
   ) => Promise<boolean>
 
   // Unterthemen granular steuern
-  setzeUnterthemen: (
+  setUnterthemen: (
     gruppeId: string,
     fach: string,
     thema: string,
@@ -53,7 +53,7 @@ export const useThemenSichtbarkeitStore = create<ThemenSichtbarkeitState>((set, 
     }
   },
 
-  setzeStatus: async (gruppeId, fach, thema, status, aktiviertVon, typ = 'manuell') => {
+  setStatus: async (gruppeId, fach, thema, status, aktiviertVon, typ = 'manuell') => {
     // Optimistisch: State SOFORT aktualisieren (UI reagiert instant)
     const jetzt = new Date().toISOString()
     set(state => {
@@ -87,14 +87,14 @@ export const useThemenSichtbarkeitStore = create<ThemenSichtbarkeitState>((set, 
     })
 
     // Backend im Hintergrund aktualisieren (Fehler loggen, nicht blockieren)
-    uebenThemenSichtbarkeitAdapter.setzeStatus(
+    uebenThemenSichtbarkeitAdapter.setStatus(
       gruppeId, fach, thema, status, aktiviertVon, typ
     ).catch(err => console.warn('[ThemenSichtbarkeit] Backend-Update fehlgeschlagen:', err))
 
     return true
   },
 
-  setzeUnterthemen: (gruppeId, fach, thema, unterthemen) => {
+  setUnterthemen: (gruppeId, fach, thema, unterthemen) => {
     set(state => ({
       freischaltungen: state.freischaltungen.map(f =>
         f.fach === fach && f.thema === thema
@@ -103,7 +103,7 @@ export const useThemenSichtbarkeitStore = create<ThemenSichtbarkeitState>((set, 
       ),
     }))
     // Backend im Hintergrund
-    uebenThemenSichtbarkeitAdapter.setzeStatus(
+    uebenThemenSichtbarkeitAdapter.setStatus(
       gruppeId, fach, thema,
       get().getStatus(fach, thema),
       '', 'manuell',

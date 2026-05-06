@@ -21,7 +21,7 @@ export function useDeepLinkAktivierung(
   istAngemeldet: boolean
 ): DeepLinkZiel | null {
   const verarbeitet = useRef(false)
-  const { setzeStatus } = useThemenSichtbarkeitStore()
+  const { setStatus } = useThemenSichtbarkeitStore()
   const [ziel, setZiel] = useState<DeepLinkZiel | null>(null)
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function useDeepLinkAktivierung(
     setZiel({ fach, thema, unterthema })
 
     // Thema aktivieren (async, Fehler still schlucken)
-    setzeStatus(gruppeId, fach, thema, 'aktiv', email, 'deeplink')
+    setStatus(gruppeId, fach, thema, 'aktiv', email, 'deeplink')
       .then(erfolg => {
         if (erfolg) {
           console.log(`[DeepLink] Thema aktiviert: ${fach} / ${thema}${unterthema ? ` / ${unterthema}` : ''}`)
@@ -59,7 +59,7 @@ export function useDeepLinkAktivierung(
       ? `${window.location.pathname}?${params.toString()}`
       : window.location.pathname
     window.history.replaceState({}, '', neueUrl)
-  }, [gruppeId, email, istAngemeldet, setzeStatus])
+  }, [gruppeId, email, istAngemeldet, setStatus])
 
   return ziel
 }
