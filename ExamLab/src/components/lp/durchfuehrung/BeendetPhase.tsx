@@ -4,6 +4,7 @@ import type { SchuelerStatus } from '../../../types/monitoring'
 import type { Frage } from '../../../types/fragen-storage'
 import type { SchuelerAbgabe, PruefungsKorrektur } from '../../../types/korrektur'
 import { exportiereBackupXlsx } from '../../../utils/backupExport'
+import { useToast } from '../../../hooks/useToast'
 
 interface Props {
   config: PruefungsConfig
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, korrektur, onNeueDurchfuehrung }: Props) {
+  const toast = useToast()
   const [backupLaden, setBackupLaden] = useState(false)
   const [resetBestaetigung, setResetBestaetigung] = useState(false)
   const abgegeben = schuelerStatus.filter((s) => s.status === 'abgegeben')
@@ -86,7 +88,7 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
                 await exportiereBackupXlsx({ config, fragen, abgaben, korrektur })
               } catch (e) {
                 console.error('[Export] Fehlgeschlagen:', e)
-                alert('Export fehlgeschlagen. Bitte erneut versuchen.')
+                toast.error('Export fehlgeschlagen. Bitte erneut versuchen.')
               } finally {
                 setBackupLaden(false)
               }
