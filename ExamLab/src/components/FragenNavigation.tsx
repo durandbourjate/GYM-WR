@@ -9,7 +9,7 @@ export default function FragenNavigation() {
   const aktuelleFrageIndex = usePruefungStore((s) => s.aktuelleFrageIndex)
   const antworten = usePruefungStore((s) => s.antworten)
   const markierungen = usePruefungStore((s) => s.markierungen)
-  const navigiere = usePruefungStore((s) => s.navigiere)
+  const navigate = usePruefungStore((s) => s.navigate)
   const setPhase = usePruefungStore((s) => s.setPhase)
 
   if (!config) return null
@@ -64,7 +64,7 @@ export default function FragenNavigation() {
               return (
                 <button
                   key={frageId}
-                  onClick={() => navigiere(idx)}
+                  onClick={() => navigate(idx)}
                   title={frage ? `${frage.fachbereich}: ${frage.thema}` : frageId}
                   className={`w-11 h-11 rounded-lg text-sm font-medium transition-all flex items-center justify-center relative
                     ${istAktuell ? 'ring-2 ring-slate-500 ring-offset-1 dark:ring-slate-400 dark:ring-offset-slate-800' : ''}

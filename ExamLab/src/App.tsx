@@ -175,7 +175,7 @@ export default function App() {
             const backendDfId = result.config.durchfuehrungId
             if (backendDfId && storeDfId && backendDfId !== storeDfId) {
               console.log('[App] Prüfung wurde zurückgesetzt (durchfuehrungId geändert). State wird gelöscht.')
-              usePruefungStore.getState().zuruecksetzen()
+              usePruefungStore.getState().reset()
               try { localStorage.removeItem(`pruefung-state-${pruefungIdAusUrl}`) } catch { /* ignore */ }
               // tx.oncomplete-await: Race zwischen IDB-Clear und nachfolgendem
               // Auto-Save (Heartbeat in Layout/Timer) verhindern (S150-Lehre).
@@ -207,7 +207,7 @@ export default function App() {
             // Wenn Store noch State einer ANDEREN Prüfung hat (z.B. Demo → echte Prüfung), aufräumen
             if (config && config.id !== result.config.id) {
               console.log('[App] Andere Prüfung im Store als URL — State wird gelöscht.')
-              usePruefungStore.getState().zuruecksetzen()
+              usePruefungStore.getState().reset()
             }
 
             if (config && config.id === result.config.id && phase !== 'start' && !wurdeZurueckgesetzt) {

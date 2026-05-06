@@ -55,7 +55,7 @@ vi.mock('../services/retryQueue', () => ({
 }))
 
 // pruefungStore-State per Closure steuerbar — Default 'kein Cleanup-Pfad'.
-const pruefungStateMock = { zuruecksetzen: vi.fn(), abgegeben: false, beendetUm: null as string | null }
+const pruefungStateMock = { reset: vi.fn(), abgegeben: false, beendetUm: null as string | null }
 vi.mock('../store/pruefungStore', () => ({
   usePruefungStore: {
     getState: () => pruefungStateMock,
