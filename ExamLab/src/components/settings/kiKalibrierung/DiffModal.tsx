@@ -1,6 +1,6 @@
 import type { KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
 
-const AKTION_LABELS: Record<string, string> = {
+const KIAKTION_LABELS: Record<string, string> = {
   generiereMusterloesung: 'Musterlösung',
   klassifiziereFrage: 'Klassifikation',
   bewertungsrasterGenerieren: 'Bewertungsraster',
@@ -16,7 +16,7 @@ export default function DiffModal({ eintrag, onSchliessen }: { eintrag: KIFeedba
       >
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-bold dark:text-white">
-            Vergleich KI ↔ LP — {AKTION_LABELS[eintrag.aktion] ?? eintrag.aktion}
+            Vergleich KI ↔ LP — {KIAKTION_LABELS[eintrag.kiAktion] ?? eintrag.kiAktion}
           </h3>
           <button
             onClick={onSchliessen}

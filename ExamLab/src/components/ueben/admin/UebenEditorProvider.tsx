@@ -41,11 +41,11 @@ export default function UebenEditorProvider({ children }: Props) {
 
   const services: EditorServices = useMemo(() => ({
     // KI-Assistent: Ruft das ExamLab-Backend für KI-Aktionen auf
-    kiAssistent: async (aktion: string, daten: Record<string, unknown>) => {
+    kiAssistent: async (kiAktion: string, daten: Record<string, unknown>) => {
       try {
         const response = await uebenApiClient.post<{ success: boolean; data?: Record<string, unknown>; feedbackId?: string; error?: string }>(
           'lernplattformKIAssistent',
-          { aktion, daten, email: user?.email },
+          { kiAktion, daten, email: user?.email },
           getToken()
         )
         // Backend-Fehler als strukturiertes Ergebnis zurückgeben (analog uploadApi.ts),

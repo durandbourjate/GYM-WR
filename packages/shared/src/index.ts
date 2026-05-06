@@ -13,7 +13,7 @@ export * from './editor/kontenrahmen'
 export * from './editor/musterloesungGenerierung'
 export * from './editor/musterloesungNormalizer'
 export { useKIAssistent } from './editor/useKIAssistent'
-export type { AktionKey, AktionErgebnis } from './editor/useKIAssistent'
+export type { KiAktionKey, KiAktionErgebnis } from './editor/useKIAssistent'
 export { useFocusTrap } from './editor/hooks/useFocusTrap'
 
 // UI-Komponenten

@@ -80,9 +80,9 @@ export default function KalibrierungsEinstellungen({ email }: { email: string })
           <label key={a} className="flex items-center gap-2 py-1 dark:text-slate-200">
             <input
               type="checkbox"
-              checked={konfig.aktionenAktiv[a]}
+              checked={konfig.kiAktionenAktiv[a]}
               onChange={e =>
-                update({ aktionenAktiv: { ...konfig.aktionenAktiv, [a]: e.target.checked } })
+                update({ kiAktionenAktiv: { ...konfig.kiAktionenAktiv, [a]: e.target.checked } })
               }
             />
             <span>{aktionLabel(a)}</span>

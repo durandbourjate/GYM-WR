@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 
-export type AktionKey =
+export type KiAktionKey =
   // Bestehende Aktionen
   | 'generiereFragetext'
   | 'verbessereFragetext'
@@ -41,7 +41,7 @@ export type AktionKey =
   | 'generiereBilanzStruktur'
   | 'generiereFallbeispiel'
 
-export interface AktionErgebnis {
+export interface KiAktionErgebnis {
   daten: Record<string, unknown> | null
   fehler: string | null
 }
@@ -49,39 +49,39 @@ export interface AktionErgebnis {
 /** Hook: KI-Assistent-Logik (API-Aufrufe, Lade-/Ergebnisstatus) */
 export function useKIAssistent() {
   const user = useAuthStore((s) => s.user)
-  const [ladeAktion, setLadeAktion] = useState<AktionKey | null>(null)
-  const [ergebnisse, setErgebnisse] = useState<Partial<Record<AktionKey, AktionErgebnis>>>({})
+  const [ladeKiAktion, setLadeKiAktion] = useState<KiAktionKey | null>(null)
+  const [ergebnisse, setErgebnisse] = useState<Partial<Record<KiAktionKey, KiAktionErgebnis>>>({})
 
-  const ausfuehren = useCallback(async (aktion: AktionKey, daten: Record<string, unknown>) => {
+  const ausfuehren = useCallback(async (kiAktion: KiAktionKey, daten: Record<string, unknown>) => {
     if (!user?.email) return
-    setLadeAktion(aktion)
-    setErgebnisse((prev) => ({ ...prev, [aktion]: undefined }))
+    setLadeKiAktion(kiAktion)
+    setErgebnisse((prev) => ({ ...prev, [kiAktion]: undefined }))
 
     try {
-      const result = await apiService.kiAssistent(user.email, aktion, daten)
+      const result = await apiService.kiAssistent(user.email, kiAktion, daten)
       if (!result) {
-        setErgebnisse((prev) => ({ ...prev, [aktion]: { daten: null, fehler: 'Keine Antwort vom Server' } }))
+        setErgebnisse((prev) => ({ ...prev, [kiAktion]: { daten: null, fehler: 'Keine Antwort vom Server' } }))
       } else if ('error' in result && typeof result.error === 'string') {
-        setErgebnisse((prev) => ({ ...prev, [aktion]: { daten: null, fehler: result.error as string } }))
+        setErgebnisse((prev) => ({ ...prev, [kiAktion]: { daten: null, fehler: result.error as string } }))
       } else {
-        setErgebnisse((prev) => ({ ...prev, [aktion]: { daten: result, fehler: null } }))
+        setErgebnisse((prev) => ({ ...prev, [kiAktion]: { daten: result, fehler: null } }))
       }
     } catch {
-      setErgebnisse((prev) => ({ ...prev, [aktion]: { daten: null, fehler: 'Netzwerkfehler' } }))
+      setErgebnisse((prev) => ({ ...prev, [kiAktion]: { daten: null, fehler: 'Netzwerkfehler' } }))
     } finally {
-      setLadeAktion(null)
+      setLadeKiAktion(null)
     }
   }, [user?.email])
 
-  function verwerfen(aktion: AktionKey): void {
+  function verwerfen(kiAktion: KiAktionKey): void {
     setErgebnisse((prev) => {
       const neu = { ...prev }
-      delete neu[aktion]
+      delete neu[kiAktion]
       return neu
     })
   }
 
   const verfuegbar = apiService.istKonfiguriert()
 
-  return { ladeAktion, ergebnisse, ausfuehren, verwerfen, verfuegbar }
+  return { ladeKiAktion, ergebnisse, ausfuehren, verwerfen, verfuegbar }
 }

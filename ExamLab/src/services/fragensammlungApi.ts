@@ -73,7 +73,7 @@ export async function loeschePruefung(email: string, pruefungId: string): Promis
 
 /** Offener KI-Feedback-Eintrag (spiegelt shared/useKIAssistent::OffenerKIFeedback) */
 interface OffenerKIFeedbackPayload {
-  aktion: string
+  kiAktion: string
   feedbackId: string
   wichtig: boolean
 }

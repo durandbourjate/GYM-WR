@@ -56,16 +56,16 @@ export default function MusterloesungSection({
             label="Generieren"
             tooltip="KI erstellt eine Musterlösung basierend auf dem Fragetext"
             hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-            disabled={!fragetext.trim() || ki.ladeAktion !== null}
-            ladend={ki.ladeAktion === 'generiereMusterloesung'}
+            disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+            ladend={ki.ladeKiAktion === 'generiereMusterloesung'}
             onClick={generiereMusterloesung}
           />
           <InlineAktionButton
             label="Prüfen & Verbessern"
             tooltip="KI prüft die Musterlösung auf Korrektheit und Vollständigkeit"
             hinweis={!fragetext.trim() || !musterlosung.trim() ? 'Fragetext + Musterlösung nötig' : undefined}
-            disabled={!fragetext.trim() || !musterlosung.trim() || ki.ladeAktion !== null}
-            ladend={ki.ladeAktion === 'pruefeMusterloesung'}
+            disabled={!fragetext.trim() || !musterlosung.trim() || ki.ladeKiAktion !== null}
+            ladend={ki.ladeKiAktion === 'pruefeMusterloesung'}
             onClick={() => ki.ausfuehren('pruefeMusterloesung', { fragetext, musterlosung })}
           />
         </div>
@@ -93,9 +93,9 @@ export default function MusterloesungSection({
               ki.verwerfen('generiereMusterloesung')
             }}
             onVerwerfen={() => ki.verwerfen('generiereMusterloesung')}
-            wichtig={ki.offeneKIFeedbacks.find(f => f.aktion === 'generiereMusterloesung')?.wichtig ?? false}
+            wichtig={ki.offeneKIFeedbacks.find(f => f.kiAktion === 'generiereMusterloesung')?.wichtig ?? false}
             onWichtigToggle={() => {
-              const cur = ki.offeneKIFeedbacks.find(f => f.aktion === 'generiereMusterloesung')
+              const cur = ki.offeneKIFeedbacks.find(f => f.kiAktion === 'generiereMusterloesung')
               ki.markiereWichtig('generiereMusterloesung', !(cur?.wichtig ?? false))
             }}
           />

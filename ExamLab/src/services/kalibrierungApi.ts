@@ -2,7 +2,7 @@ import { postJson } from './apiClient'
 
 export type KalibrierungsEinstellungen = {
   global: boolean
-  aktionenAktiv: {
+  kiAktionenAktiv: {
     generiereMusterloesung: boolean
     klassifiziereFrage: boolean
     bewertungsrasterGenerieren: boolean
@@ -17,7 +17,7 @@ export type KalibrierungsEinstellungen = {
 export type KIFeedbackEintragLP = {
   feedbackId: string
   zeitstempel: string
-  aktion: string
+  kiAktion: string
   fachbereich: string
   bloom?: string
   inputJson: Record<string, unknown>
@@ -31,7 +31,7 @@ export type KIFeedbackEintragLP = {
 }
 
 export type KalibrierungsStatistik = {
-  aktionen: Record<string, {
+  kiAktionen: Record<string, {
     vorschlaege: number
     unveraendert: number
     leicht: number

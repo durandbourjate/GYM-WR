@@ -176,14 +176,14 @@ export async function uploadAudioAntwort(pruefungId: string, email: string, frag
 }
 
 /** KI-Assistent: Claude-basierte Hilfe beim Fragenschreiben */
-export async function kiAssistent(email: string, aktion: string, daten: Record<string, unknown>): Promise<KIAssistentRueckgabe | null> {
+export async function kiAssistent(email: string, kiAktion: string, daten: Record<string, unknown>): Promise<KIAssistentRueckgabe | null> {
   if (!APPS_SCRIPT_URL) return null
 
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'kiAssistent', email, aktion, daten }),
+      body: JSON.stringify({ action: 'kiAssistent', email, kiAktion, daten }),
     })
     if (!response.ok) return null
 

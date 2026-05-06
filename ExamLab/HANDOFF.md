@@ -8,6 +8,58 @@
 
 ## Letzter Stand auf main
 
+### Bundle N+V — action/aktion-Vereinheitlichung + Sprach-Konvention ✅ MERGED (06.05.2026)
+
+Merge-Commit `<TBD>` auf `main`. Branch `refactor/bundle-n-action-aktion-vereinheitlichung` lokal + remote gelöscht. 7 Sub-Commits, 1 Apps-Script-Deploy, 2 Sheet-Header-Edits. Zweites Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Disambiguierung in zwei Lager (Lager A: HTTP-Operation-Tag → englisch `action`, Lager B: KI-Sub-Action-Domain-Konzept → deutsch `kiAktion`) plus Hybrid-Sprach-Konvention dokumentiert.
+
+**Audit-Token-Diff (`apps-script-code.js`):**
+| Token | vorher | nachher |
+|---|---:|---:|
+| `aktion` (Lager A + B) | 56 | 0 |
+| `Aktion` (UI-Strings + Comments) | 6 | 6 (4 JSDoc + 2 KI-Aktion-Strings, alle erlaubt) |
+| `LP_AKTIONEN`/`SUS_AKTIONEN`/`SCHREIBENDE_AKTIONEN` | 6 | 0 |
+| `LP_ACTIONS`/`SUS_ACTIONS`/`SCHREIBENDE_ACTIONS` | 0 | 6 |
+| `kiAktion` (neuer Token) | 0 | 52 |
+
+**Sub-Commits:**
+- `7b464c0` Phase 1 (Bundle V): Sprach-Konvention Hybrid Deutsch/Englisch in `.claude/rules/code-quality.md`
+- `adeaea6` Phase 2 Lager A: rateLimitCheck_ + lernplattformRateLimitCheck_ aktion → action
+- `33527bd` Phase 2 Lager A: auditLog_ aktion → action (Header + Body + 2 Aufrufer-Detail-Objects)
+- `9bc88b3` Phase 2 Lager A: LP_AKTIONEN/SUS_AKTIONEN/SCHREIBENDE_AKTIONEN → *_ACTIONS
+- `71fb6d2` Phase 2 Lager A: "Unbekannte Aktion"-Error-Strings → Action
+- `22dbee8` Phase 3 Lager B Apps-Script (atomic): aktion → kiAktion (kiAssistentEndpoint, Sheet-Header, 6 Helpers, Plural-Formen)
+- `f3aee7c` Phase 3 Lager B Frontend (atomic): aktion → kiAktion (uploadApi, kalibrierungApi, fragensammlungApi, useKIAssistent + 25 Files)
+
+**E2E-Verifikation (LP, mit echten Logins `wr.test@gymhofwil.ch`):**
+
+End-to-End Wire-Vertrag-Test des KI-Endpoints via Fetch-Hook:
+```json
+Body sent:     {"action":"kiAssistent","email":"wr.test@gymhofwil.ch","kiAktion":"generiereMusterloesung","daten":{...}}
+Response 200:  {"success":true,"ergebnis":{"musterloesung":"Der Kauf eines Porsches erfüllt..."}}
+```
+
+- ✅ Frontend sendet `kiAktion`-Property (nicht `aktion`)
+- ✅ Backend liest `body.kiAktion` korrekt (Apps-Script-Code aktiv via clasp push)
+- ✅ Switch-Routing zu KI-Sub-Action funktioniert (`generiereMusterloesung`-Case)
+- ✅ KI generiert sinnvolle Antwort (nicht „Keine kiAktion angegeben")
+
+**Apps-Script-Deploy:** User durchgeführt ✅
+**Sheet-Header-Edits:** User durchgeführt ✅ (Audit-Log-Sheet `aktion` → `action`, KI-Feedback-Sheet `aktion` → `kiAktion`)
+
+**Pre-Push-Verifikation:**
+- vitest: 1234 passed | 4 todo (gleiche Baseline) ✅
+- tsc -b: clean ✅
+- lint:as-any: 0 instances ✅
+- build: clean (PWA generated) ✅
+
+**Lehre — Service-Worker-Cache nach Frontend-Deploy:**
+Nach Wire-Vertrag-ändernden Bundles (HTTP-Body-Property-Rename) ist Hard-Reload + `serviceWorker.unregister() + caches.delete()` vor Browser-E2E zwingend. Beim ersten Test gab User „Keine kiAktion angegeben"-Error (Backend lief auf neuem Code, aber PWA-Service-Worker lieferte alten kompilierten Frontend-Bundle). Nach SW-Kill: KI-Klick funktionierte sofort.
+
+**Lehre — Lager-A-vs-Lager-B-Disambiguierung beim Audit-Empfehlungs-Audit:**
+Audit empfahl mech-rename `aktion → action`. Beim Brainstorming aufgedeckt: Frontend HTTP-Body hat `action: 'kiAssistent'` (Endpoint-Discriminator) UND `aktion: 'generiereMusterloesung'` (KI-Sub-Action) **simultan**. Ohne Disambiguierung wären zwei Properties mit demselben Namen entstanden. Bundle wurde in 2 Lager geschnitten: Lager A (englisch wie Wire-Vertrag) + Lager B (deutsch wie Domain-Konzept). Konvention dokumentiert in code-quality.md.
+
+---
+
 ### Bundle M — Fragenbank → Fragensammlung Rename ✅ MERGED (05.05.2026)
 
 Merge-Commit `606f256` auf `main`. Branch `feature/bundle-m-fragensammlung-rename` lokal + remote gelöscht. 9 Sub-Commits, 2 Apps-Script-Deploys, Sheet-Spalten-Rename. Erstes Cleanup-Bundle aus dem [Vereinfachungs-Audit (05.05.2026)](../docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md). Mechanischer Rename, niedriges Risiko.

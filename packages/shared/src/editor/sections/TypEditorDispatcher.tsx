@@ -248,8 +248,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
                 label="Optionen generieren"
                 tooltip="KI erstellt Antwortoptionen (korrekte und falsche) passend zum Fragetext"
                 hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-                disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                ladend={ki.ladeAktion === 'generiereOptionen'}
+                disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                ladend={ki.ladeKiAktion === 'generiereOptionen'}
                 onClick={() => ki.ausfuehren('generiereOptionen', { fragetext })}
               />
             ) : undefined}
@@ -311,16 +311,16 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
                   label="Generieren"
                   tooltip="KI markiert sinnvolle Lückenstellen im Text"
                   hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-                  disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'generiereLuecken'}
+                  disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'generiereLuecken'}
                   onClick={() => ki.ausfuehren('generiereLuecken', { fragetext, textMitLuecken: props.textMitLuecken || fragetext })}
                 />
                 <InlineAktionButton
                   label="Prüfen & Verbessern"
                   tooltip="KI prüft ob alle akzeptierten Antwort-Varianten vollständig sind"
                   hinweis={!(props.textMitLuecken.includes('{{') && props.luecken.length > 0) ? 'Lückentext mit {{}} nötig' : undefined}
-                  disabled={!(props.textMitLuecken.includes('{{') && props.luecken.length > 0) || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'pruefeLueckenAntworten'}
+                  disabled={!(props.textMitLuecken.includes('{{') && props.luecken.length > 0) || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'pruefeLueckenAntworten'}
                   onClick={() => ki.ausfuehren('pruefeLueckenAntworten', { textMitLuecken: props.textMitLuecken, luecken: props.luecken })}
                 />
               </div>
@@ -416,16 +416,16 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
                   label="Generieren"
                   tooltip="KI erstellt passende Zuordnungspaare basierend auf dem Fragetext"
                   hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-                  disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'generierePaare'}
+                  disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'generierePaare'}
                   onClick={() => ki.ausfuehren('generierePaare', { fragetext, fachbereich, thema })}
                 />
                 <InlineAktionButton
                   label="Prüfen & Verbessern"
                   tooltip="KI prüft die Paare auf Konsistenz und Eindeutigkeit"
                   hinweis={!(props.paare.filter((p) => p.links.trim() && p.rechts.trim()).length >= 2) ? 'Mind. 2 Paare nötig' : undefined}
-                  disabled={!(props.paare.filter((p) => p.links.trim() && p.rechts.trim()).length >= 2) || !fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'pruefePaare'}
+                  disabled={!(props.paare.filter((p) => p.links.trim() && p.rechts.trim()).length >= 2) || !fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'pruefePaare'}
                   onClick={() => ki.ausfuehren('pruefePaare', { fragetext, paare: props.paare })}
                 />
               </div>
@@ -490,16 +490,16 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
                   label="Generieren"
                   tooltip="KI erstellt Richtig/Falsch-Aussagen passend zum Thema"
                   hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-                  disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'generiereAussagen'}
+                  disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'generiereAussagen'}
                   onClick={() => ki.ausfuehren('generiereAussagen', { fragetext, fachbereich, thema })}
                 />
                 <InlineAktionButton
                   label="Prüfen & Verbessern"
                   tooltip="KI prüft Aussagen auf Balance, Eindeutigkeit und fachliche Korrektheit"
                   hinweis={!(props.aussagen.filter((a) => a.text.trim()).length >= 2) ? 'Mind. 2 Aussagen nötig' : undefined}
-                  disabled={!(props.aussagen.filter((a) => a.text.trim()).length >= 2) || !fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'pruefeAussagen'}
+                  disabled={!(props.aussagen.filter((a) => a.text.trim()).length >= 2) || !fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'pruefeAussagen'}
                   onClick={() => ki.ausfuehren('pruefeAussagen', { fragetext, aussagen: props.aussagen })}
                 />
               </div>
@@ -567,16 +567,16 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
                   label="Generieren"
                   tooltip="KI berechnet die korrekten Ergebnisse aus dem Aufgabentext"
                   hinweis={!fragetext.trim() ? 'Fragetext nötig' : undefined}
-                  disabled={!fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'berechneErgebnis'}
+                  disabled={!fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'berechneErgebnis'}
                   onClick={() => ki.ausfuehren('berechneErgebnis', { fragetext })}
                 />
                 <InlineAktionButton
                   label="Prüfen & Verbessern"
                   tooltip="KI prüft ob die Toleranzbereiche sinnvoll gewählt sind"
                   hinweis={!(props.ergebnisse.filter((e) => e.label.trim()).length >= 1) ? 'Mind. 1 Ergebnis nötig' : undefined}
-                  disabled={!(props.ergebnisse.filter((e) => e.label.trim()).length >= 1) || !fragetext.trim() || ki.ladeAktion !== null}
-                  ladend={ki.ladeAktion === 'pruefeToleranz'}
+                  disabled={!(props.ergebnisse.filter((e) => e.label.trim()).length >= 1) || !fragetext.trim() || ki.ladeKiAktion !== null}
+                  ladend={ki.ladeKiAktion === 'pruefeToleranz'}
                   onClick={() => ki.ausfuehren('pruefeToleranz', { fragetext, ergebnisse: props.ergebnisse })}
                 />
               </div>
@@ -643,8 +643,8 @@ export default function TypEditorDispatcher(props: TypEditorDispatcherProps) {
             <InlineAktionButton
               label="Konten vorschlagen"
               tooltip="KI schlägt passende Konten für den Geschäftsfall vor"
-              disabled={ki.ladeAktion !== null}
-              ladend={ki.ladeAktion === 'generiereKontenauswahl'}
+              disabled={ki.ladeKiAktion !== null}
+              ladend={ki.ladeKiAktion === 'generiereKontenauswahl'}
               onClick={() => ki.ausfuehren('generiereKontenauswahl', { geschaeftsfall: props.geschaeftsfall })}
             />
           ) : undefined}
