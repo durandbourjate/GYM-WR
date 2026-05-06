@@ -22,6 +22,9 @@
 - `authStore.ts` (root) ist bereits konform — wird nicht angefasst, nur als „checked"-Eintrag im HANDOFF erwähnt.
 - Domain-Verben (`anmelden/anmeldenMitGoogle/anmeldenMitCode/abmelden`) bleiben deutsch (Bundle-V-Konvention).
 
+**Im Scope (zusätzlich zu Stores):**
+- `ExamLab/src/hooks/useLPNavigation.ts` — 5 zusätzliche `navigiereZu*`-Methoden (`navigiereZuEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten`) plus 2 API-Spiegelungen des lpUIStore (`navigiereZuComposer`, `zurueckZumDashboard`). Wird in Phase 6 mit lpUIStore zusammen migriert (siehe Renames-Map).
+
 **Definition of Done:**
 - 6 Stores (`draftStore`, `ueben/themenSichtbarkeitStore`, `ueben/settingsStore`, `ueben/authStore`, `pruefungStore`, `lpUIStore`) haben alle Programming-Primitive-Actions auf englisch.
 - Final-Audit-Grep: 0 Treffer von `\.zuruecksetzen\b|\.setze[A-Z]|\.navigiereZ|\.zurueckZum|\.zurueck\b\(\)|\.registriere\b\(|\.navigiere\b\(` in `ExamLab/src` (außer in den 4 unangefassten Auth-Domain-Verben `anmelden*/abmelden`).
@@ -98,13 +101,31 @@
 | Aktuell | Neu | Files | Occurrences |
 |---|---|---:|---:|
 | `setModus/setListenTab/setUebungsTab/toggleHilfe/setZeigEinstellungen/toggleEinstellungen/setBreadcrumbs/setAktiveConfigId/reset` | (bleiben — bereits konform) | – | – |
-| `navigiereZuComposer(titel, configId)` | `openComposer(titel, configId)` | 5 | 14 |
-| `zurueckZumDashboard()` | `backToDashboard()` | 5 | 11 |
+| `navigiereZuComposer(titel, configId)` | `openComposer(titel, configId)` | 5* | 14* |
+| `zurueckZumDashboard()` | `backToDashboard()` | 5* | 11* |
 | `zurueck()` | `back()` | 1 | 1 |
+
+*Counts inkludieren sowohl Store-Caller als auch `useLPNavigation`-Hook-Caller (gleicher API-Name, siehe nächster Abschnitt).
+
+### useLPNavigation.ts (5 zusätzliche Renames im selben Phase-6-Commit)
+
+`ExamLab/src/hooks/useLPNavigation.ts` ist eine URL-basierte (React-Router) Replacement-API für lpUIStore. Sie spiegelt 2 Store-Actions namensgleich (`navigiereZuComposer`, `zurueckZumDashboard`) und bietet 5 zusätzliche LP-Routing-Methoden. Damit der Final-Audit-Grep (`\.navigiereZ`) durchgeht und die Hook-API mit dem migrierten Store konsistent bleibt, werden die Hook-Methoden mit-renamed.
+
+| Aktuell | Neu | Files | Occurrences |
+|---|---|---:|---:|
+| `navigiereZuComposer` (Hook-Re-Export) | `openComposer` | (in Store-Phase enthalten) | (in Store-Phase enthalten) |
+| `zurueckZumDashboard` (Hook-Re-Export) | `backToDashboard` | (in Store-Phase enthalten) | (in Store-Phase enthalten) |
+| `navigiereZuEinstellungen(tab?)` | `openEinstellungen(tab?)` | 1 (nur Hook selbst) | 2 |
+| `navigiereZuKorrektur(configId)` | `openKorrektur(configId)` | 1 (nur Hook selbst) | 2 |
+| `navigiereZuMonitoring(configId)` | `openMonitoring(configId)` | 1 (nur Hook selbst) | 2 |
+| `navigiereZuFrageneditor(frageId)` | `openFrageneditor(frageId)` | 2 (Hook + `useDeepLink.ts`) | 3 |
+| `navigiereZuFavoriten()` | `openFavoriten()` | 1 (nur Hook selbst) | 2 |
+
+**Konvention:** englisch-Verb + deutsches Domain-Substantiv (Einstellungen/Korrektur/Monitoring/Frageneditor/Favoriten). Mixed-language Compound ist Bundle-V-konform (Domain-Wörter im Identifier deutsch ohne Umlaut, Verb-Präfix englisch).
 
 ### Total
 
-11 Action-Renames in 6 Stores. **Caller-Migration-Sweep:** ~30 unique Files, ~119 Occurrences. `authStore.ts` (root) bleibt unangetastet als Sanity-Eintrag im HANDOFF.
+16 Action-Renames in 6 Stores + 1 Hook (5 zusätzliche Hook-only Methoden, 2 sind API-Spiegelung im Store-Rename enthalten). **Caller-Migration-Sweep:** ~31 unique Files, ~130 Occurrences. `authStore.ts` (root) bleibt unangetastet als Sanity-Eintrag im HANDOFF.
 
 ---
 
@@ -119,10 +140,10 @@ Branch: `refactor/bundle-o-store-naming`. 7 atomare Commits, klein → groß.
 | 3 | `Bundle O Phase 3: ueben/themenSichtbarkeitStore setze*-Setter → set*` | ueben/themenSichtbarkeitStore | 2 | 24 |
 | 4 | `Bundle O Phase 4: draftStore registriere/setze* → register/set*` | draftStore | 3 | 34 |
 | 5 | `Bundle O Phase 5: pruefungStore navigiere/zuruecksetzen → navigate/reset` | pruefungStore | 2 | 15 |
-| 6 | `Bundle O Phase 6: lpUIStore navigiere*/zurueck* → openComposer/backToDashboard/back` | lpUIStore | 3 | 26+ |
+| 6 | `Bundle O Phase 6: lpUIStore + useLPNavigation navigiere*/zurueck* → openX/backToDashboard/back` | lpUIStore + useLPNavigation | 8 (3 Store + 5 Hook) | 37+ |
 | 7 | `Bundle O Phase 7: HANDOFF + Memory` | – | – | – |
 
-Phase 1 ist Smoke-Test (kleinster Commit). Phase 6 (lpUIStore) ist die UI-betreffendste — danach Browser-Smoke vor Final-Verifikation.
+Phase 1 ist Smoke-Test (kleinster Commit). Phase 6 (lpUIStore + useLPNavigation-Hook) ist die UI-betreffendste — danach Browser-Smoke vor Final-Verifikation. Hook ist im selben Commit wie Store, weil API-Spiegelung (siehe Renames-Map).
 
 ### Pro Phase
 
@@ -188,7 +209,9 @@ grep -nE "\.zuruecksetzen\b|\.setze[A-Z]|\.navigiereZ|\.zurueckZum|\.zurueck\b\(
 | `zurueckZumDashboard` | 11 | 0 |
 | `\.navigiere(` (pruefungStore) | 7 | 0 |
 | `\.zurueck()` (lpUIStore) | 1 | 0 |
+| `navigiereZuEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten` (Hook) | 11 | 0 |
 | `set` (englischer Setter-Präfix) | (Baseline) | +50 |
+| `openEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten` (Hook) | 0 | 11 |
 | `register(` | 0 | 19 |
 | `openComposer` | 0 | 14 |
 | `backToDashboard` | 0 | 11 |
