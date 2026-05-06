@@ -1,0 +1,12 @@
+{
+  "name": "gym-wr-duy",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Multi-Package-Repo: Unterrichtsplaner + ExamLab + packages/shared. Root-Scripts orchestrieren die Sub-Packages.",
+  "scripts": {
+    "setup": "npm --prefix packages/shared ci && npm --prefix Unterrichtsplaner ci && npm --prefix ExamLab ci",
+    "setup:shared": "npm --prefix packages/shared ci",
+    "setup:examlab": "npm --prefix ExamLab ci",
+    "setup:planer": "npm --prefix Unterrichtsplaner ci"
+  }
+}
