@@ -8,6 +8,29 @@
 
 ## Letzter Stand auf main
 
+### Bundle P-Doku — `musterlosung` Field-Drift dokumentiert + eingefroren (2026-05-06)
+
+Branch `feature/bundle-p-musterloesung-doku`, bereit für Merge. Aufwärm-Bundle aus Audit-Roadmap-Phase 3.
+
+**Was geliefert:**
+- `scripts/audit-musterloesung.sh` mit Per-Token-Baseline (6 Tokens: musterlosung 295, Musterlosung 0, musterloesung 70, Musterloesung 14, musterLoesung 12, MusterLoesung 0). Parallele Arrays statt `declare -A` (bash 3.2 macOS-kompatibel). `--strict`-Modus für CI.
+- `lint:musterloesung` in `ExamLab/package.json` (alphabetisch zwischen `lint:as-any` und `lint:no-alert`).
+- CI-Gate auf Production (`--if-present` für chicken-and-egg) + Staging in `.github/workflows/deploy.yml`.
+- Sektion „Field-Drift: Musterlösung" in `.claude/rules/code-quality.md` mit drei Identifier-Lagern + PascalCase-Anti-Match-Hinweis.
+
+**Lokale Verifikation:**
+- audit no-args + `--strict` ohne Drift ✅
+- Drift-Injection-Test: 2 Tokens korrekt erkannt ✅
+- vitest 1253 passes, tsc clean, build clean ✅
+
+**Out of Scope:** Bundle P-Migration (Sheet-Spalten-Migration `musterlosung` → einheitliches Schreibmuster, Backend-Vertrag betroffen) — separates Bundle, ähnliches Risikoprofil wie Bundle J.
+
+**Spec/Plan:**
+- Spec: `docs/superpowers/specs/2026-05-06-bundle-p-musterloesung-doku-design.md`
+- Plan: `docs/superpowers/plans/2026-05-06-bundle-p-musterloesung-doku-plan.md`
+
+---
+
 ### Bundle S.c — Utils-Splits (poolConverter + fibuAutoKorrektur) ✅ MERGED (2026-05-06)
 
 Branch `refactor/bundle-s-c-utils-splits`. 5 Commits seit S.a-Merge `ad70bed`. Drittes und letztes Sub-Bundle aus Bundle S — achtes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Master-Spec Sektion 5.3.
